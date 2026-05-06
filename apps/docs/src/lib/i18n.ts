@@ -13,6 +13,9 @@ const copy = {
     formsTitle: "Forms",
     formsIntro:
       "Champs, sélections et contrôles binaires pour interfaces produit denses et white-label.",
+    overlaysTitle: "Overlays",
+    overlaysIntro:
+      "Dialogues, infobulles et notifications pour actions ponctuelles sans couplage produit.",
     statusStable: "Stable",
     examplesTitle: "Exemples",
     apiTitle: "API",
@@ -24,7 +27,8 @@ const copy = {
     sizes: "Tailles",
     states: "États",
     validation: "Validation",
-    selectionControls: "Contrôles de sélection"
+    selectionControls: "Contrôles de sélection",
+    feedback: "Feedback"
   },
   en: {
     title: "Sent Tech Design System",
@@ -37,6 +41,8 @@ const copy = {
     buttonIntro: "Primary, secondary, ghost, or destructive action.",
     formsTitle: "Forms",
     formsIntro: "Fields, selections, and binary controls for dense white-label product UIs.",
+    overlaysTitle: "Overlays",
+    overlaysIntro: "Dialogs, tooltips, and notifications for focused product interactions.",
     statusStable: "Stable",
     examplesTitle: "Examples",
     apiTitle: "API",
@@ -48,7 +54,8 @@ const copy = {
     sizes: "Sizes",
     states: "States",
     validation: "Validation",
-    selectionControls: "Selection controls"
+    selectionControls: "Selection controls",
+    feedback: "Feedback"
   }
 } as const;
 
