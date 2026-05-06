@@ -51,6 +51,33 @@ export const component = {
     switchTrackChecked: semantic.action.primary,
     switchThumb: semantic.surface.default
   },
+  overlay: {
+    backdrop: semantic.surface.overlay,
+    surface: semantic.surface.raised,
+    border: semantic.border.subtle,
+    shadow: foundation.shadow.floating,
+    radius: foundation.radius.lg,
+    zIndex: foundation.z.modal
+  },
+  tooltip: {
+    background: semantic.surface.inverse,
+    text: semantic.text.inverse,
+    radius: foundation.radius.md,
+    shadow: foundation.shadow.medium,
+    zIndex: foundation.z.overlay
+  },
+  toast: {
+    background: semantic.surface.raised,
+    text: semantic.text.primary,
+    border: semantic.border.subtle,
+    shadow: foundation.shadow.floating,
+    radius: foundation.radius.lg,
+    infoBorder: semantic.feedback.info,
+    successBorder: semantic.feedback.success,
+    warningBorder: semantic.feedback.warning,
+    errorBorder: semantic.feedback.error,
+    zIndex: foundation.z.toast
+  },
   chat: {
     userBubbleBackground: semantic.action.primary,
     userBubbleText: semantic.action.primaryText,
