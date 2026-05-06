@@ -12,6 +12,7 @@
     "check": "node scripts/run-workspaces.mjs check",
     "test": "node scripts/run-workspaces.mjs test",
     "lint": "node scripts/run-workspaces.mjs lint",
+    "verify": "npm run check && npm test && npm run build && npm run docs:build",
     "docs:dev": "npm --workspace apps/docs run dev",
     "docs:build": "npm --workspace apps/docs run build"
   },
