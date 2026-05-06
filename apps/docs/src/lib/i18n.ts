@@ -16,6 +16,9 @@ const copy = {
     overlaysTitle: "Overlays",
     overlaysIntro:
       "Dialogues, infobulles et notifications pour actions ponctuelles sans couplage produit.",
+    dataNavigationTitle: "Data & Navigation",
+    dataNavigationIntro:
+      "Tables, onglets, pagination et navigation latérale pour écrans de données et dashboards.",
     statusStable: "Stable",
     examplesTitle: "Exemples",
     apiTitle: "API",
@@ -28,7 +31,9 @@ const copy = {
     states: "États",
     validation: "Validation",
     selectionControls: "Contrôles de sélection",
-    feedback: "Feedback"
+    feedback: "Feedback",
+    navigation: "Navigation",
+    dataDisplay: "Affichage de données"
   },
   en: {
     title: "Sent Tech Design System",
@@ -43,6 +48,9 @@ const copy = {
     formsIntro: "Fields, selections, and binary controls for dense white-label product UIs.",
     overlaysTitle: "Overlays",
     overlaysIntro: "Dialogs, tooltips, and notifications for focused product interactions.",
+    dataNavigationTitle: "Data & Navigation",
+    dataNavigationIntro:
+      "Tables, tabs, pagination, and side navigation for data-heavy dashboard screens.",
     statusStable: "Stable",
     examplesTitle: "Examples",
     apiTitle: "API",
@@ -55,7 +63,9 @@ const copy = {
     states: "States",
     validation: "Validation",
     selectionControls: "Selection controls",
-    feedback: "Feedback"
+    feedback: "Feedback",
+    navigation: "Navigation",
+    dataDisplay: "Data display"
   }
 } as const;
 

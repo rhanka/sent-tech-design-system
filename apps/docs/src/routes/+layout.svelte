@@ -14,6 +14,7 @@
         <a href="/components/button">Button</a>
         <a href="/components/forms">Forms</a>
         <a href="/components/overlays">Overlays</a>
+        <a href="/components/data-navigation">Data & Nav</a>
       </nav>
     </header>
     <main class="docs-main">
