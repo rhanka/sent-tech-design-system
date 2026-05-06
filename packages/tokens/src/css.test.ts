@@ -25,4 +25,26 @@ describe("token CSS serialization", () => {
       toolCallSurface: expect.any(String)
     });
   });
+
+  it("contains stable form control tokens", () => {
+    expect(component.field).toMatchObject({
+      labelText: expect.any(String),
+      helpText: expect.any(String),
+      errorText: expect.any(String),
+      gap: expect.any(String)
+    });
+    expect(component.control).toMatchObject({
+      background: expect.any(String),
+      border: expect.any(String),
+      focusRing: expect.any(String),
+      invalidBorder: expect.any(String),
+      disabledBackground: expect.any(String),
+      radius: expect.any(String)
+    });
+    expect(component.selection).toMatchObject({
+      checkedBackground: expect.any(String),
+      checkedText: expect.any(String),
+      switchTrack: expect.any(String)
+    });
+  });
 });

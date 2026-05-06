@@ -21,6 +21,36 @@ export const component = {
     focusRing: semantic.border.interactive,
     radius: foundation.radius.md
   },
+  field: {
+    labelText: semantic.text.primary,
+    helpText: semantic.text.secondary,
+    errorText: semantic.feedback.error,
+    gap: foundation.spacing[2],
+    maxWidth: "28rem"
+  },
+  control: {
+    background: semantic.surface.default,
+    text: semantic.text.primary,
+    placeholderText: semantic.text.muted,
+    border: semantic.border.subtle,
+    hoverBorder: semantic.border.strong,
+    focusRing: semantic.border.interactive,
+    invalidBorder: semantic.feedback.error,
+    disabledBackground: semantic.surface.subtle,
+    disabledText: semantic.text.muted,
+    radius: foundation.radius.md,
+    smHeight: "2rem",
+    mdHeight: "2.5rem",
+    lgHeight: "3rem"
+  },
+  selection: {
+    checkedBackground: semantic.action.primary,
+    checkedText: semantic.action.primaryText,
+    border: semantic.border.subtle,
+    switchTrack: semantic.border.strong,
+    switchTrackChecked: semantic.action.primary,
+    switchThumb: semantic.surface.default
+  },
   chat: {
     userBubbleBackground: semantic.action.primary,
     userBubbleText: semantic.action.primaryText,
