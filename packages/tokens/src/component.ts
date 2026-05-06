@@ -1,5 +1,5 @@
-import { foundation } from "./foundation";
-import { semantic } from "./semantic";
+import { foundation } from "./foundation.js";
+import { semantic } from "./semantic.js";
 
 export const component = {
   button: {

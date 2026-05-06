@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { compileTheme } from "./compile";
-import { sentTechTheme } from "./themes/sent-tech";
+import { compileTheme } from "./compile.js";
+import { sentTechTheme } from "./themes/sent-tech.js";
 
 describe("compileTheme", () => {
   it("compiles a tenant theme into scoped CSS variables", () => {

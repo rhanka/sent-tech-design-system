@@ -1,4 +1,4 @@
-import type { TokenTree, TokenValue } from "./foundation";
+import type { TokenTree, TokenValue } from "./foundation.js";
 
 export function flattenTokens(tree: TokenTree, prefix: string[] = []): Record<string, TokenValue> {
   const output: Record<string, TokenValue> = {};

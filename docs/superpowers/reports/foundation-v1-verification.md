@@ -15,10 +15,13 @@ Date: 2026-05-06
 - `npm run build`
 - `npm run docs:build`
 - `npm run verify`
+- `curl -I http://127.0.0.1:5173/components/button`
 
 ## Result
 
 All commands passed through `npm run verify`.
+
+Local docs smoke check returned `HTTP/1.1 200 OK` for `/components/button`.
 
 ## Known Limits
 
