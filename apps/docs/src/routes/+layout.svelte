@@ -13,6 +13,7 @@
       <nav class="docs-nav" aria-label="Documentation">
         <a href="/components/button">Button</a>
         <a href="/components/forms">Forms</a>
+        <a href="/components/overlays">Overlays</a>
       </nav>
     </header>
     <main class="docs-main">
