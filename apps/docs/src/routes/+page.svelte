@@ -24,6 +24,7 @@
     <h2>{t(locale, "components")}</h2>
     <ul class="docs-list">
       <li><a href="/components/button">{t(locale, "buttonTitle")}</a></li>
+      <li><a href="/components/forms">{t(locale, "formsTitle")}</a></li>
     </ul>
   </section>
 

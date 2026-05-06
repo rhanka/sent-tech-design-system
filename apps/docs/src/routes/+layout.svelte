@@ -12,6 +12,7 @@
       <a class="docs-brand" href="/">Sent Tech DS</a>
       <nav class="docs-nav" aria-label="Documentation">
         <a href="/components/button">Button</a>
+        <a href="/components/forms">Forms</a>
       </nav>
     </header>
     <main class="docs-main">
