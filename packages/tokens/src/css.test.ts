@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { component } from "./component";
 import { flattenTokens, toCssVariables } from "./css";
 
 describe("token CSS serialization", () => {
@@ -12,5 +13,16 @@ describe("token CSS serialization", () => {
     expect(toCssVariables({ action: { primary: "#123456" } }, "[data-theme='x']")).toBe(
       "[data-theme='x'] {\n  --st-action-primary: #123456;\n}\n"
     );
+  });
+
+  it("contains stable chat component tokens", () => {
+    expect(component.chat).toMatchObject({
+      userBubbleBackground: expect.any(String),
+      userBubbleText: expect.any(String),
+      assistantBubbleBackground: expect.any(String),
+      assistantBubbleText: expect.any(String),
+      composerSurface: expect.any(String),
+      toolCallSurface: expect.any(String)
+    });
   });
 });
