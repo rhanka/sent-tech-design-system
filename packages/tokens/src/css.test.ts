@@ -47,4 +47,24 @@ describe("token CSS serialization", () => {
       switchTrack: expect.any(String)
     });
   });
+
+  it("contains stable overlay and feedback component tokens", () => {
+    expect(component.overlay).toMatchObject({
+      backdrop: expect.any(String),
+      surface: expect.any(String),
+      border: expect.any(String),
+      shadow: expect.any(String),
+      zIndex: expect.any(Number)
+    });
+    expect(component.tooltip).toMatchObject({
+      background: expect.any(String),
+      text: expect.any(String)
+    });
+    expect(component.toast).toMatchObject({
+      background: expect.any(String),
+      border: expect.any(String),
+      successBorder: expect.any(String),
+      errorBorder: expect.any(String)
+    });
+  });
 });
