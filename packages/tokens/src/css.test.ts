@@ -67,4 +67,36 @@ describe("token CSS serialization", () => {
       errorBorder: expect.any(String)
     });
   });
+
+  it("contains stable data and navigation component tokens", () => {
+    expect(component.dataTable).toMatchObject({
+      headerBackground: expect.any(String),
+      rowBackground: expect.any(String),
+      border: expect.any(String),
+      captionText: expect.any(String)
+    });
+    expect(component.tabs).toMatchObject({
+      activeText: expect.any(String),
+      inactiveText: expect.any(String),
+      indicator: expect.any(String),
+      border: expect.any(String)
+    });
+    expect(component.pagination).toMatchObject({
+      background: expect.any(String),
+      border: expect.any(String),
+      activeBackground: expect.any(String),
+      activeText: expect.any(String)
+    });
+    expect(component.breadcrumb).toMatchObject({
+      text: expect.any(String),
+      currentText: expect.any(String),
+      separator: expect.any(String)
+    });
+    expect(component.sideNav).toMatchObject({
+      background: expect.any(String),
+      itemText: expect.any(String),
+      activeBackground: expect.any(String),
+      activeText: expect.any(String)
+    });
+  });
 });

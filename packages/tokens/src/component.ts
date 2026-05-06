@@ -78,6 +78,45 @@ export const component = {
     errorBorder: semantic.feedback.error,
     zIndex: foundation.z.toast
   },
+  dataTable: {
+    headerBackground: semantic.surface.subtle,
+    rowBackground: semantic.surface.default,
+    rowHoverBackground: semantic.surface.subtle,
+    border: semantic.border.subtle,
+    text: semantic.text.primary,
+    captionText: semantic.text.secondary,
+    radius: foundation.radius.lg
+  },
+  tabs: {
+    activeText: semantic.text.primary,
+    inactiveText: semantic.text.secondary,
+    border: semantic.border.subtle,
+    indicator: semantic.action.primary,
+    panelBackground: semantic.surface.default
+  },
+  pagination: {
+    background: semantic.surface.default,
+    border: semantic.border.subtle,
+    text: semantic.text.primary,
+    activeBackground: semantic.action.primary,
+    activeText: semantic.action.primaryText,
+    disabledText: semantic.text.muted,
+    radius: foundation.radius.md
+  },
+  breadcrumb: {
+    text: semantic.text.secondary,
+    currentText: semantic.text.primary,
+    separator: semantic.text.muted,
+    linkText: semantic.text.link
+  },
+  sideNav: {
+    background: semantic.surface.default,
+    border: semantic.border.subtle,
+    itemText: semantic.text.secondary,
+    activeBackground: semantic.surface.subtle,
+    activeText: semantic.text.primary,
+    width: "16rem"
+  },
   chat: {
     userBubbleBackground: semantic.action.primary,
     userBubbleText: semantic.action.primaryText,
