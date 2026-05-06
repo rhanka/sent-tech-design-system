@@ -119,6 +119,12 @@ select {
   padding: 1rem;
 }
 
+.docs-example--stack {
+  align-items: stretch;
+  display: grid;
+  max-width: 36rem;
+}
+
 .docs-table {
   border-collapse: collapse;
   width: 100%;

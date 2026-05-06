@@ -10,6 +10,9 @@ const copy = {
     components: "Composants",
     buttonTitle: "Button",
     buttonIntro: "Action principale, secondaire, fantôme ou destructive.",
+    formsTitle: "Forms",
+    formsIntro:
+      "Champs, sélections et contrôles binaires pour interfaces produit denses et white-label.",
     statusStable: "Stable",
     examplesTitle: "Exemples",
     apiTitle: "API",
@@ -19,7 +22,9 @@ const copy = {
       "Les composants ne consomment que des variables sémantiques et component tokens afin de pouvoir adapter un tenant ou un design system externe sans réécrire les composants.",
     variants: "Variantes",
     sizes: "Tailles",
-    states: "États"
+    states: "États",
+    validation: "Validation",
+    selectionControls: "Contrôles de sélection"
   },
   en: {
     title: "Sent Tech Design System",
@@ -30,6 +35,8 @@ const copy = {
     components: "Components",
     buttonTitle: "Button",
     buttonIntro: "Primary, secondary, ghost, or destructive action.",
+    formsTitle: "Forms",
+    formsIntro: "Fields, selections, and binary controls for dense white-label product UIs.",
     statusStable: "Stable",
     examplesTitle: "Examples",
     apiTitle: "API",
@@ -39,7 +46,9 @@ const copy = {
       "Components only consume semantic variables and component tokens, so a tenant or external design system can be adapted without rewriting components.",
     variants: "Variants",
     sizes: "Sizes",
-    states: "States"
+    states: "States",
+    validation: "Validation",
+    selectionControls: "Selection controls"
   }
 } as const;
 
