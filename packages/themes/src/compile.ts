@@ -1,5 +1,5 @@
 import { toCssVariables } from "@sent-tech/tokens";
-import { assertTenantTheme, type TenantTheme } from "./schema";
+import { assertTenantTheme, type TenantTheme } from "./schema.js";
 
 export interface CompileThemeOptions {
   selector?: string;

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { component } from "./component";
-import { flattenTokens, toCssVariables } from "./css";
+import { component } from "./component.js";
+import { flattenTokens, toCssVariables } from "./css.js";
 
 describe("token CSS serialization", () => {
   it("flattens nested tokens with dash-separated paths", () => {

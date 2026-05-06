@@ -1,4 +1,4 @@
-import { foundation } from "./foundation";
+import { foundation } from "./foundation.js";
 
 export const semantic = {
   surface: {
