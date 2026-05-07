@@ -109,6 +109,8 @@ jobs:
           npm run build
 
       - name: Publish packages
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           npm publish --workspace @sent-tech/tokens --access public
           npm publish --workspace @sent-tech/themes --access public

@@ -56,6 +56,16 @@ Internal dependencies must match the same version:
 
 ## Publish
 
+For the first publication, mirror the Graphify bootstrap flow:
+
+1. Create a temporary npm granular access token with read/write access to the `@sent-tech` scope.
+2. Store it as the GitHub repository secret `NPM_TOKEN`.
+3. Push the release tag.
+4. Configure Trusted Publishing on the created packages.
+5. Delete the `NPM_TOKEN` repository secret and revoke or let the temporary npm token expire.
+
+For subsequent releases, Trusted Publishing handles `npm publish` through OIDC. The npm CLI checks OIDC first, then falls back to `NODE_AUTH_TOKEN` only when a trusted publisher is not configured.
+
 Publish by pushing `main`, then creating and pushing a tag:
 
 ```bash
