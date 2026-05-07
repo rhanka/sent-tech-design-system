@@ -9,10 +9,10 @@
   ],
   "scripts": {
     "build": "node scripts/run-workspaces.mjs build",
-    "check": "node scripts/run-workspaces.mjs check",
+    "check": "npm run build && node scripts/run-workspaces.mjs check",
     "test": "node --test scripts/*.test.mjs && node scripts/run-workspaces.mjs test",
     "lint": "node scripts/run-workspaces.mjs lint",
-    "verify": "npm run check && npm test && npm run build && npm run docs:build",
+    "verify": "npm run check && npm test && npm run pack:smoke",
     "pack:smoke": "node scripts/smoke-pack.mjs",
     "docs:dev": "npm --workspace apps/docs run dev",
     "docs:build": "npm --workspace apps/docs run build"
