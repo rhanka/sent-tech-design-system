@@ -23,6 +23,8 @@ The packages are scoped and public. Keep `publishConfig.access = "public"` in ea
 
 Before the first release, confirm the npm `@sent-tech` scope is owned by the publishing account or organization.
 
+Each package manifest must keep its `repository.url` pointed at `git+https://github.com/rhanka/sent-tech-design-system.git`; npm uses that metadata when validating GitHub trusted publishing.
+
 ## Local Pre-Release Checks
 
 Run from the repository root:
@@ -84,4 +86,3 @@ npm install \
 ```
 
 Keep `svelte` installed in consuming apps. `@sent-tech/components-svelte` declares Svelte as a peer dependency.
-
