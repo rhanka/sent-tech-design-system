@@ -18,6 +18,10 @@ npm test
 npm run docs:dev
 ```
 
+## Release
+
+Public npm release is tag-driven through GitHub Actions Trusted Publishing. See [docs/release.md](docs/release.md).
+
 ## Public Safety
 
 Ce repo est destiné à être public. Ne pas y publier de secrets, extraits de code propriétaire, URLs internes privées ou détails client non validés.

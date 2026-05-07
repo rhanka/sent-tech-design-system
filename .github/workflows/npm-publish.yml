@@ -1,0 +1,171 @@
+name: NPM Publish
+
+on:
+  push:
+    branches: ["main"]
+    tags: ["v*"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify workspace
+        run: npm run verify
+
+      - name: Smoke packed packages
+        run: npm run pack:smoke
+
+  release-guard:
+    needs: verify
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    env:
+      RELEASE_BRANCH: ${{ github.event.repository.default_branch }}
+      TAG_VERSION: ${{ github.ref_name }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify tag is merged into default branch
+        run: |
+          git fetch origin "${RELEASE_BRANCH}:refs/remotes/origin/${RELEASE_BRANCH}"
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" "origin/${RELEASE_BRANCH}"; then
+            echo "::error::Refusing to publish ${GITHUB_REF_NAME}: ${GITHUB_SHA} is not merged into origin/${RELEASE_BRANCH}."
+            exit 1
+          fi
+
+      - name: Verify package versions match tag
+        env:
+          EXPECTED_VERSION: ${{ github.ref_name }}
+        run: |
+          EXPECTED_VERSION="${EXPECTED_VERSION#v}"
+          EXPECTED_VERSION="$EXPECTED_VERSION" node --input-type=module <<'NODE'
+          import { readdirSync, readFileSync } from "node:fs";
+          import { join } from "node:path";
+
+          const expected = process.env.EXPECTED_VERSION;
+          const packagesDir = "packages";
+          const failures = [];
+
+          for (const entry of readdirSync(packagesDir, { withFileTypes: true })) {
+            if (!entry.isDirectory()) continue;
+
+            const manifestPath = join(packagesDir, entry.name, "package.json");
+            const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
+            if (manifest.version !== expected) {
+              failures.push(`${manifest.name}: ${manifest.version}`);
+            }
+          }
+
+          if (failures.length > 0) {
+            console.error(`Tag version ${expected} does not match package versions:`);
+            for (const failure of failures) console.error(`- ${failure}`);
+            process.exit(1);
+          }
+
+          console.log(`All package versions match ${expected}`);
+          NODE
+
+  publish:
+    needs: release-guard
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Upgrade npm for Trusted Publishing
+        run: |
+          npm install -g npm@11.6.2
+          node --version
+          npm --version
+
+      - name: Install and build
+        run: |
+          npm ci
+          npm run build
+
+      - name: Publish packages
+        run: |
+          npm publish --workspace @sent-tech/tokens --access public
+          npm publish --workspace @sent-tech/themes --access public
+          npm publish --workspace @sent-tech/components-svelte --access public
+
+  post-publish-check:
+    needs: publish
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    env:
+      TAG_VERSION: ${{ github.ref_name }}
+
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Wait for npm propagation
+        run: sleep 30
+
+      - name: Install published packages
+        run: |
+          VERSION="${TAG_VERSION#v}"
+          mkdir /tmp/sent-tech-post-publish
+          cd /tmp/sent-tech-post-publish
+          npm init -y --silent
+          npm install \
+            "@sent-tech/tokens@${VERSION}" \
+            "@sent-tech/themes@${VERSION}" \
+            "@sent-tech/components-svelte@${VERSION}" \
+            "svelte@^5.53.2"
+
+      - name: Verify published package imports
+        run: |
+          cd /tmp/sent-tech-post-publish
+          node --input-type=module <<'NODE'
+          import { readFileSync } from "node:fs";
+
+          const tokens = await import("@sent-tech/tokens");
+          const themes = await import("@sent-tech/themes");
+
+          if (typeof tokens.flattenTokens !== "function") {
+            throw new Error("@sent-tech/tokens missing flattenTokens export");
+          }
+
+          if (typeof themes.compileTheme !== "function") {
+            throw new Error("@sent-tech/themes missing compileTheme export");
+          }
+
+          const componentsEntry = await import.meta.resolve("@sent-tech/components-svelte");
+          const componentIndex = readFileSync(new URL(componentsEntry), "utf8");
+
+          for (const exportName of ["Button", "Card", "Input", "Textarea"]) {
+            if (!componentIndex.includes("as " + exportName)) {
+              throw new Error("@sent-tech/components-svelte missing " + exportName + " export");
+            }
+          }
+
+          console.log("Published package imports verified");
+          NODE
