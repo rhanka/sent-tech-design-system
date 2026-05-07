@@ -5,6 +5,11 @@
   "publishConfig": {
     "access": "public"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rhanka/sent-tech-design-system.git",
+    "directory": "packages/themes"
+  },
   "sideEffects": [
     "**/*.css"
   ],
