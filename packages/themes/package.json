@@ -2,20 +2,30 @@
   "name": "@sent-tech/themes",
   "version": "0.1.0",
   "type": "module",
-  "sideEffects": false,
+  "sideEffects": [
+    "**/*.css"
+  ],
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
-    }
+    },
+    "./css/sent-tech.css": "./css/sent-tech.css",
+    "./css/forge.css": "./css/forge.css",
+    "./css/entropic.css": "./css/entropic.css"
   },
+  "files": [
+    "dist",
+    "css"
+  ],
   "dependencies": {
     "@sent-tech/tokens": "0.1.0"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json && npm run build:css",
+    "build:css": "node scripts/build-css.mjs",
     "check": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run src"
   }
