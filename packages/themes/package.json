@@ -2,6 +2,9 @@
   "name": "@sent-tech/themes",
   "version": "0.1.0",
   "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
   "sideEffects": [
     "**/*.css"
   ],
