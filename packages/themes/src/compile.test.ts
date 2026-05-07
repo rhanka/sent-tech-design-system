@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { compileTheme } from "./compile.js";
 import { sentTechTheme } from "./themes/sent-tech.js";
@@ -14,5 +16,12 @@ describe("compileTheme", () => {
     expect(() => compileTheme({ id: "", label: "Broken", mode: "light", tokens: {} })).toThrow(
       "Theme id is required"
     );
+  });
+
+  it("exports build-time CSS for Forge low-coupling integration", () => {
+    const css = readFileSync(join(process.cwd(), "css", "forge.css"), "utf8");
+    expect(css).toContain('[data-st-theme="forge"]');
+    expect(css).toContain("--st-semantic-action-primary");
+    expect(css).toContain("--st-component-dataTable-headerBackground");
   });
 });
