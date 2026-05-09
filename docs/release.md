@@ -33,11 +33,13 @@ Run from the repository root:
 npm ci
 npm run verify
 npm run pack:smoke
+graphify portable-check .graphify
 git diff --check
 git status --short --branch
 ```
 
 `npm run pack:smoke` verifies the three package tarballs and installs them together in a clean temporary project.
+Release commits must include the current portable `.graphify` artifacts: `graph.json`, `graph.html`, `GRAPH_REPORT.md`, `manifest.json`, `cost.json`, and `.graphify_runtime.json`. Do not commit local lifecycle files such as `.graphify/cache/`, `.graphify/branch.json`, `.graphify/worktree.json`, or `.graphify/needs_update`.
 
 ## Versioning
 
