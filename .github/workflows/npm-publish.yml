@@ -87,6 +87,7 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/v')
     permissions:
       contents: read
+      id-token: write
 
     steps:
       - uses: actions/checkout@v4
@@ -108,8 +109,6 @@ jobs:
           npm run build
 
       - name: Publish packages
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           npm publish --workspace @sent-tech/tokens --access public
           npm publish --workspace @sent-tech/themes --access public
@@ -128,7 +127,34 @@ jobs:
           node-version: "24"
 
       - name: Wait for npm propagation
-        run: sleep 30
+        run: |
+          VERSION="${TAG_VERSION#v}"
+          PACKAGES=(
+            "@sent-tech/tokens"
+            "@sent-tech/themes"
+            "@sent-tech/components-svelte"
+          )
+
+          for attempt in {1..20}; do
+            missing=()
+
+            for package in "${PACKAGES[@]}"; do
+              if ! npm view "${package}@${VERSION}" version --silent > /dev/null 2>&1; then
+                missing+=("${package}@${VERSION}")
+              fi
+            done
+
+            if [ "${#missing[@]}" -eq 0 ]; then
+              echo "All packages are available from npm."
+              exit 0
+            fi
+
+            echo "Waiting for npm propagation, attempt ${attempt}/20: ${missing[*]}"
+            sleep 15
+          done
+
+          echo "::error::Timed out waiting for npm propagation."
+          exit 1
 
       - name: Install published packages
         run: |

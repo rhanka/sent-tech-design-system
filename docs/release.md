@@ -6,7 +6,7 @@ Sent Tech Design System publishes three public npm packages from this private wo
 - `@sent-tech/themes`
 - `@sent-tech/components-svelte`
 
-The release model follows Graphify: GitHub Actions verifies the repo, packs the npm artifacts, guards the tag, publishes through npm Trusted Publishing, then installs the published packages back from npm.
+The release model follows Graphify: GitHub Actions verifies the repo, packs the npm artifacts, guards the tag, publishes through npm Trusted Publishing, waits until npm registry propagation is visible, then installs the published packages back from npm.
 
 ## One-Time Npm Setup
 
@@ -56,7 +56,9 @@ Internal dependencies must match the same version:
 
 ## Publish
 
-For the first publication, mirror the Graphify bootstrap flow:
+The first publication used a temporary bootstrap token because npm Trusted Publishing can only be configured after each package exists.
+
+Bootstrap checklist, only needed if a package has never been published:
 
 1. Create a temporary npm granular access token with read/write access to the `@sent-tech` scope.
 2. Store it as the GitHub repository secret `NPM_TOKEN`.
@@ -64,7 +66,7 @@ For the first publication, mirror the Graphify bootstrap flow:
 4. Configure Trusted Publishing on the created packages.
 5. Delete the `NPM_TOKEN` repository secret and revoke or let the temporary npm token expire.
 
-For subsequent releases, Trusted Publishing handles `npm publish` through OIDC. The npm CLI checks OIDC first, then falls back to `NODE_AUTH_TOKEN` only when a trusted publisher is not configured.
+For normal releases, Trusted Publishing handles `npm publish` through OIDC. The workflow must keep `permissions.id-token = "write"` on the publish job and must not require an npm token secret.
 
 Publish by pushing `main`, then creating and pushing a tag:
 
