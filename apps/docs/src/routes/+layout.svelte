@@ -15,6 +15,7 @@
         <a href="/components/forms">Forms</a>
         <a href="/components/overlays">Overlays</a>
         <a href="/components/data-navigation">Data & Nav</a>
+        <a href="/components/plan-completion">Plan completion</a>
       </nav>
     </header>
     <main class="docs-main">

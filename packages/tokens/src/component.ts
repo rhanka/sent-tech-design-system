@@ -9,11 +9,54 @@ export const component = {
     secondaryBackground: semantic.action.secondary,
     secondaryText: semantic.action.secondaryText
   },
+  link: {
+    text: semantic.text.link,
+    hoverText: semantic.action.primary,
+    disabledText: semantic.text.muted,
+    focusRing: semantic.border.interactive
+  },
+  alert: {
+    background: semantic.surface.raised,
+    text: semantic.text.primary,
+    border: semantic.border.subtle,
+    infoBorder: semantic.feedback.info,
+    successBorder: semantic.feedback.success,
+    warningBorder: semantic.feedback.warning,
+    errorBorder: semantic.feedback.error,
+    radius: foundation.radius.lg
+  },
   card: {
     background: semantic.surface.raised,
     border: semantic.border.subtle,
     radius: foundation.radius.lg,
     shadow: foundation.shadow.subtle
+  },
+  menu: {
+    background: semantic.surface.raised,
+    border: semantic.border.subtle,
+    text: semantic.text.primary,
+    itemHoverBackground: semantic.surface.subtle,
+    disabledText: semantic.text.muted,
+    radius: foundation.radius.md,
+    shadow: foundation.shadow.medium
+  },
+  popover: {
+    background: semantic.surface.raised,
+    border: semantic.border.subtle,
+    text: semantic.text.primary,
+    shadow: foundation.shadow.floating,
+    radius: foundation.radius.lg,
+    zIndex: foundation.z.overlay
+  },
+  dropdown: {
+    background: semantic.surface.default,
+    border: semantic.border.subtle,
+    text: semantic.text.primary,
+    optionHoverBackground: semantic.surface.subtle,
+    selectedBackground: semantic.action.primary,
+    selectedText: semantic.action.primaryText,
+    radius: foundation.radius.md,
+    shadow: foundation.shadow.medium
   },
   input: {
     background: semantic.surface.default,
@@ -58,6 +101,27 @@ export const component = {
     shadow: foundation.shadow.floating,
     radius: foundation.radius.lg,
     zIndex: foundation.z.modal
+  },
+  drawer: {
+    backdrop: semantic.surface.overlay,
+    surface: semantic.surface.raised,
+    border: semantic.border.subtle,
+    shadow: foundation.shadow.floating,
+    width: "24rem",
+    zIndex: foundation.z.modal
+  },
+  emptyState: {
+    background: semantic.surface.subtle,
+    border: semantic.border.subtle,
+    titleText: semantic.text.primary,
+    messageText: semantic.text.secondary,
+    radius: foundation.radius.lg
+  },
+  loadingState: {
+    indicator: semantic.action.primary,
+    track: semantic.surface.subtle,
+    text: semantic.text.secondary,
+    radius: foundation.radius.pill
   },
   tooltip: {
     background: semantic.surface.inverse,

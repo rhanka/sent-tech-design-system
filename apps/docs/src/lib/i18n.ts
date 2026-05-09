@@ -19,6 +19,9 @@ const copy = {
     dataNavigationTitle: "Data & Navigation",
     dataNavigationIntro:
       "Tables, onglets, pagination et navigation latérale pour écrans de données et dashboards.",
+    completionTitle: "Plan completion",
+    completionIntro:
+      "Composants restants du plan initial: liens, alertes, menus, popovers, dropdowns, drawers, empty states et loading states.",
     statusStable: "Stable",
     examplesTitle: "Exemples",
     apiTitle: "API",
@@ -33,7 +36,10 @@ const copy = {
     selectionControls: "Contrôles de sélection",
     feedback: "Feedback",
     navigation: "Navigation",
-    dataDisplay: "Affichage de données"
+    dataDisplay: "Affichage de données",
+    actionsAndLinks: "Actions et liens",
+    disclosure: "Disclosure",
+    operationalStates: "États opérationnels"
   },
   en: {
     title: "Sent Tech Design System",
@@ -51,6 +57,9 @@ const copy = {
     dataNavigationTitle: "Data & Navigation",
     dataNavigationIntro:
       "Tables, tabs, pagination, and side navigation for data-heavy dashboard screens.",
+    completionTitle: "Plan completion",
+    completionIntro:
+      "Remaining components from the initial plan: links, alerts, menus, popovers, dropdowns, drawers, empty states, and loading states.",
     statusStable: "Stable",
     examplesTitle: "Examples",
     apiTitle: "API",
@@ -65,7 +74,10 @@ const copy = {
     selectionControls: "Selection controls",
     feedback: "Feedback",
     navigation: "Navigation",
-    dataDisplay: "Data display"
+    dataDisplay: "Data display",
+    actionsAndLinks: "Actions and links",
+    disclosure: "Disclosure",
+    operationalStates: "Operational states"
   }
 } as const;
 

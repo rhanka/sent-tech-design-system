@@ -99,4 +99,43 @@ describe("token CSS serialization", () => {
       activeText: expect.any(String)
     });
   });
+
+  it("contains stable completion component tokens", () => {
+    expect(component.link).toMatchObject({
+      text: expect.any(String),
+      hoverText: expect.any(String),
+      disabledText: expect.any(String)
+    });
+    expect(component.alert).toMatchObject({
+      background: expect.any(String),
+      border: expect.any(String),
+      infoBorder: expect.any(String),
+      errorBorder: expect.any(String)
+    });
+    expect(component.menu).toMatchObject({
+      background: expect.any(String),
+      border: expect.any(String),
+      itemHoverBackground: expect.any(String)
+    });
+    expect(component.popover).toMatchObject({
+      background: expect.any(String),
+      border: expect.any(String),
+      shadow: expect.any(String)
+    });
+    expect(component.drawer).toMatchObject({
+      backdrop: expect.any(String),
+      surface: expect.any(String),
+      width: expect.any(String)
+    });
+    expect(component.emptyState).toMatchObject({
+      background: expect.any(String),
+      border: expect.any(String),
+      titleText: expect.any(String)
+    });
+    expect(component.loadingState).toMatchObject({
+      indicator: expect.any(String),
+      track: expect.any(String),
+      text: expect.any(String)
+    });
+  });
 });

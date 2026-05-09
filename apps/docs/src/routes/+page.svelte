@@ -27,6 +27,7 @@
       <li><a href="/components/forms">{t(locale, "formsTitle")}</a></li>
       <li><a href="/components/overlays">{t(locale, "overlaysTitle")}</a></li>
       <li><a href="/components/data-navigation">{t(locale, "dataNavigationTitle")}</a></li>
+      <li><a href="/components/plan-completion">{t(locale, "completionTitle")}</a></li>
     </ul>
   </section>
 
