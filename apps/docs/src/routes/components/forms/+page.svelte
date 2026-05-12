@@ -114,7 +114,7 @@
       <h3>{text().errorState}</h3>
       <Textarea
         label="Feedback"
-        rows="4"
+        rows={4}
         invalid
         errorText="Feedback is required before submission"
       />
