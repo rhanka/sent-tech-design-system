@@ -15,7 +15,8 @@
     "verify": "npm run check && npm test && npm run pack:smoke",
     "pack:smoke": "node scripts/smoke-pack.mjs",
     "docs:dev": "npm --workspace apps/docs run dev",
-    "docs:build": "npm --workspace apps/docs run build"
+    "docs:build": "npm --workspace apps/docs run build",
+    "showcase": "npm run docs:dev"
   },
   "devDependencies": {
     "@sveltejs/adapter-static": "^3.0.10",
