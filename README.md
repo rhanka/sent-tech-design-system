@@ -18,6 +18,14 @@ npm test
 npm run docs:dev
 ```
 
+Pour lancer la showcase des primitives de formulaire :
+
+```bash
+npm run showcase
+```
+
+Puis ouvrez `http://localhost:5173/components/forms`.
+
 ## Release
 
 Public npm release is tag-driven through GitHub Actions Trusted Publishing. See [docs/release.md](docs/release.md).
