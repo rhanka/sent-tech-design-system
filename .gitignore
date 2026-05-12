@@ -9,3 +9,12 @@ coverage/
 .env
 .env.*
 !.env.example
+
+# Local tool state
+.playwright-mcp/
+.graphify/.graphify_*.json
+.graphify/.graphify_node
+.graphify/.graphify_runtime_script
+.graphify/branch.json
+.graphify/worktree.json
+.graphify/cache/
