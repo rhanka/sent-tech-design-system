@@ -1,6 +1,6 @@
 {
   "name": "@sent-tech/themes",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "publishConfig": {
     "access": "public"
@@ -29,7 +29,7 @@
     "css"
   ],
   "dependencies": {
-    "@sent-tech/tokens": "0.1.0"
+    "@sent-tech/tokens": "0.2.0"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json && npm run build:css",

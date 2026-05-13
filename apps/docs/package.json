@@ -1,11 +1,11 @@
 {
   "name": "@sent-tech/docs",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "dependencies": {
-    "@sent-tech/components-svelte": "0.1.0",
-    "@sent-tech/themes": "0.1.0",
+    "@sent-tech/components-svelte": "0.2.0",
+    "@sent-tech/themes": "0.2.0",
     "@sveltejs/adapter-static": "^3.0.10",
     "@sveltejs/kit": "^2.43.5",
     "svelte": "^5.53.2"
