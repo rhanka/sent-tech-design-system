@@ -1,7 +1,7 @@
-# Graph Report - .  (2026-05-12)
+# Graph Report - .  (2026-05-13)
 
 ## Corpus Check
-- Corpus is ~24,337 words - fits in a single context window. You may not need a graph.
+- Corpus is ~26,691 words - fits in a single context window. You may not need a graph.
 
 ## Summary
 - 120 nodes · 115 edges · 6 communities detected
@@ -12,12 +12,12 @@
 ## Input Scope
 - Requested: auto
 - Resolved: committed (source: cli)
-- Included files: 82 · Candidates: 98
-- Excluded: 84 untracked · 5333 ignored · 0 sensitive · 0 missing committed
+- Included files: 84 · Candidates: 104
+- Excluded: 0 untracked · 5425 ignored · 0 sensitive · 0 missing committed
 - Recommendation: Use --scope all or graphify.yaml inputs.corpus for a knowledge-base folder.
 
 ## Graph Freshness
-- Built from Git commit: `eaed364`
+- Built from Git commit: `7045323`
 - Compare this hash to `git rev-parse HEAD` before trusting freshness-sensitive graph output.
 ## God Nodes (most connected - your core abstractions)
 1. `Sent Tech Design System` - 6 edges
