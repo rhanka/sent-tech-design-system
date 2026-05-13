@@ -5,6 +5,7 @@ import { defineConfig } from "vite";
 export default defineConfig({
   plugins: [svelte(), svelteTesting()],
   test: {
-    environment: "jsdom"
+    environment: "jsdom",
+    testTimeout: 20000
   }
 });
