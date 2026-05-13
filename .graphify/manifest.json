@@ -176,8 +176,8 @@
     "hash": "28a730fd782c0ab93c10836ceee6973c"
   },
   "/home/antoinefa/src/sent-tech-design-system/packages/components-svelte/vite.config.ts": {
-    "mtime": 1778032318709.0278,
-    "hash": "18dcb3a546be780bfc3155e0e5070707"
+    "mtime": 1778631914386.5227,
+    "hash": "d14748b211d1f72aa69b6359f2703f4a"
   },
   "/home/antoinefa/src/sent-tech-design-system/packages/themes/scripts/build-css.mjs": {
     "mtime": 1778116370508.8552,
@@ -251,6 +251,14 @@
     "mtime": 1778292001159.0486,
     "hash": "717d2366c33c9e9ebda8cd68a903a3fe"
   },
+  "/home/antoinefa/src/sent-tech-design-system/.graphify/GRAPH_REPORT.md": {
+    "mtime": 1778599296291.7395,
+    "hash": "1ae8fc912ce4d9c0aef6b7d9fdbfca78"
+  },
+  "/home/antoinefa/src/sent-tech-design-system/.graphify/graph.html": {
+    "mtime": 1778333599086.0051,
+    "hash": "2bb7a40d6f08cabf08abccee9a51875c"
+  },
   "/home/antoinefa/src/sent-tech-design-system/PLAN.md": {
     "mtime": 1773074428227.4758,
     "hash": "e6dbe3b63ca91598a8d7c63eafa907bd"
@@ -276,8 +284,8 @@
     "hash": "3e95e9b5d67c37837db364b8f11462fe"
   },
   "/home/antoinefa/src/sent-tech-design-system/docs/release.md": {
-    "mtime": 1778335537936.196,
-    "hash": "7f1a15751eadc209b61494f85ccb84c5"
+    "mtime": 1778633789316.4395,
+    "hash": "afc98dcf22ed398d245670663ba7a346"
   },
   "/home/antoinefa/src/sent-tech-design-system/docs/superpowers/plans/2026-05-05-sent-tech-design-system-foundation-v1.md": {
     "mtime": 1778024802225.6777,
