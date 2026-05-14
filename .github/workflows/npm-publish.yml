@@ -110,9 +110,9 @@ jobs:
 
       - name: Publish packages
         run: |
-          npm publish --workspace @sent-tech/tokens --access public
-          npm publish --workspace @sent-tech/themes --access public
-          npm publish --workspace @sent-tech/components-svelte --access public
+          npm publish --workspace @sentropic/tokens --access public
+          npm publish --workspace @sentropic/themes --access public
+          npm publish --workspace @sentropic/components-svelte --access public
 
   post-publish-check:
     needs: publish
@@ -130,9 +130,9 @@ jobs:
         run: |
           VERSION="${TAG_VERSION#v}"
           PACKAGES=(
-            "@sent-tech/tokens"
-            "@sent-tech/themes"
-            "@sent-tech/components-svelte"
+            "@sentropic/tokens"
+            "@sentropic/themes"
+            "@sentropic/components-svelte"
           )
 
           for attempt in {1..20}; do
@@ -163,9 +163,9 @@ jobs:
           cd /tmp/sent-tech-post-publish
           npm init -y --silent
           npm install \
-            "@sent-tech/tokens@${VERSION}" \
-            "@sent-tech/themes@${VERSION}" \
-            "@sent-tech/components-svelte@${VERSION}" \
+            "@sentropic/tokens@${VERSION}" \
+            "@sentropic/themes@${VERSION}" \
+            "@sentropic/components-svelte@${VERSION}" \
             "svelte@^5.53.2"
 
       - name: Verify published package imports
@@ -174,23 +174,23 @@ jobs:
           node --input-type=module <<'NODE'
           import { readFileSync } from "node:fs";
 
-          const tokens = await import("@sent-tech/tokens");
-          const themes = await import("@sent-tech/themes");
+          const tokens = await import("@sentropic/tokens");
+          const themes = await import("@sentropic/themes");
 
           if (typeof tokens.flattenTokens !== "function") {
-            throw new Error("@sent-tech/tokens missing flattenTokens export");
+            throw new Error("@sentropic/tokens missing flattenTokens export");
           }
 
           if (typeof themes.compileTheme !== "function") {
-            throw new Error("@sent-tech/themes missing compileTheme export");
+            throw new Error("@sentropic/themes missing compileTheme export");
           }
 
-          const componentsEntry = await import.meta.resolve("@sent-tech/components-svelte");
+          const componentsEntry = await import.meta.resolve("@sentropic/components-svelte");
           const componentIndex = readFileSync(new URL(componentsEntry), "utf8");
 
           for (const exportName of ["Button", "Card", "Input", "Textarea"]) {
             if (!componentIndex.includes("as " + exportName)) {
-              throw new Error("@sent-tech/components-svelte missing " + exportName + " export");
+              throw new Error("@sentropic/components-svelte missing " + exportName + " export");
             }
           }
 
