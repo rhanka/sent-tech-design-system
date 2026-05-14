@@ -11,11 +11,11 @@ mkdirSync(npmCache);
 
 const packages = [
   {
-    name: "@sentropic/tokens",
+    name: "@sentropic/design-system-tokens",
     requiredFiles: ["dist/index.js", "dist/index.d.ts"],
   },
   {
-    name: "@sentropic/themes",
+    name: "@sentropic/design-system-themes",
     requiredFiles: [
       "dist/index.js",
       "dist/index.d.ts",
@@ -25,7 +25,7 @@ const packages = [
     ],
   },
   {
-    name: "@sentropic/components-svelte",
+    name: "@sentropic/design-system-svelte",
     requiredFiles: [
       "dist/index.js",
       "dist/index.d.ts",
@@ -127,26 +127,26 @@ function writeImportSmoke(installDir) {
     `
 import { readFileSync } from "node:fs";
 
-const tokens = await import("@sentropic/tokens");
-const themes = await import("@sentropic/themes");
+const tokens = await import("@sentropic/design-system-tokens");
+const themes = await import("@sentropic/design-system-themes");
 
 if (typeof tokens.flattenTokens !== "function") {
-  throw new Error("@sentropic/tokens missing flattenTokens export");
+  throw new Error("@sentropic/design-system-tokens missing flattenTokens export");
 }
 
 if (typeof themes.compileTheme !== "function") {
-  throw new Error("@sentropic/themes missing compileTheme export");
+  throw new Error("@sentropic/design-system-themes missing compileTheme export");
 }
 
-const componentsEntry = await import.meta.resolve("@sentropic/components-svelte");
+const componentsEntry = await import.meta.resolve("@sentropic/design-system-svelte");
 if (!componentsEntry.endsWith("/dist/index.js")) {
-  throw new Error("@sentropic/components-svelte resolved to unexpected entry: " + componentsEntry);
+  throw new Error("@sentropic/design-system-svelte resolved to unexpected entry: " + componentsEntry);
 }
 
 const componentIndex = readFileSync(new URL(componentsEntry), "utf8");
 for (const exportName of ["Button", "Card", "Input", "Textarea"]) {
   if (!componentIndex.includes("as " + exportName)) {
-    throw new Error("@sentropic/components-svelte missing " + exportName + " export");
+    throw new Error("@sentropic/design-system-svelte missing " + exportName + " export");
   }
 }
 

@@ -2,9 +2,9 @@
 
 Sent Tech Design System publishes three public npm packages from this private workspace root:
 
-- `@sentropic/tokens`
-- `@sentropic/themes`
-- `@sentropic/components-svelte`
+- `@sentropic/design-system-tokens`
+- `@sentropic/design-system-themes`
+- `@sentropic/design-system-svelte`
 
 The release model follows Graphify: GitHub Actions verifies the repo, packs the npm artifacts, guards the tag, publishes through npm Trusted Publishing, waits until npm registry propagation is visible, then installs the published packages back from npm.
 
@@ -12,9 +12,9 @@ The release model follows Graphify: GitHub Actions verifies the repo, packs the 
 
 Configure npm Trusted Publishing for each package:
 
-- Package: `@sentropic/tokens`
-- Package: `@sentropic/themes`
-- Package: `@sentropic/components-svelte`
+- Package: `@sentropic/design-system-tokens`
+- Package: `@sentropic/design-system-themes`
+- Package: `@sentropic/design-system-svelte`
 - Repository: `rhanka/sent-tech-design-system`
 - Workflow: `.github/workflows/npm-publish.yml`
 - Registry: `https://registry.npmjs.org`
@@ -53,8 +53,8 @@ For `v0.2.0`, these manifests must all contain `"version": "0.2.0"`:
 
 Internal dependencies must match the same version:
 
-- `@sentropic/themes` depends on `@sentropic/tokens`.
-- `@sentropic/components-svelte` depends on `@sentropic/themes`.
+- `@sentropic/design-system-themes` depends on `@sentropic/design-system-tokens`.
+- `@sentropic/design-system-svelte` depends on `@sentropic/design-system-themes`.
 
 ## Publish
 
@@ -81,9 +81,9 @@ git push origin v0.2.0
 The workflow publishes in dependency order:
 
 ```bash
-npm publish --workspace @sentropic/tokens --access public
-npm publish --workspace @sentropic/themes --access public
-npm publish --workspace @sentropic/components-svelte --access public
+npm publish --workspace @sentropic/design-system-tokens --access public
+npm publish --workspace @sentropic/design-system-themes --access public
+npm publish --workspace @sentropic/design-system-svelte --access public
 ```
 
 Do not move a published tag unless the npm publish failed before creating any package version. npm versions are immutable after publication.
@@ -94,9 +94,9 @@ After publication, replace Forge local file dependencies with npm versions:
 
 ```bash
 npm install \
-  @sentropic/tokens@0.2.0 \
-  @sentropic/themes@0.2.0 \
-  @sentropic/components-svelte@0.2.0
+  @sentropic/design-system-tokens@0.2.0 \
+  @sentropic/design-system-themes@0.2.0 \
+  @sentropic/design-system-svelte@0.2.0
 ```
 
-Keep `svelte` installed in consuming apps. `@sentropic/components-svelte` declares Svelte as a peer dependency.
+Keep `svelte` installed in consuming apps. `@sentropic/design-system-svelte` declares Svelte as a peer dependency.
