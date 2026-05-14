@@ -7,6 +7,8 @@
 ## Identité produit
 
 - Scope npm courant : `@sentropic/*` (cible v0.3.0, en cours de release).
+- Convention nommage : `@sentropic/design-system-{tokens,themes,svelte}` (préfixe `design-system-` pour réserver l'espace `@sentropic` à d'autres familles de packages futurs).
+- Évolution prévue : `@sentropic/design-system-svelte` reste le bundle complet ; ouverture future possible vers `@sentropic/design-system-svelte-core` + `@sentropic/design-system-svelte-{component}` (opt-in granulaire par composant).
 - Scope npm legacy : `@sent-tech/*` (dernier publish v0.2.0 le 2026-05-13, à déprécier post-publish v0.3.0).
 - Stack : Svelte 5, Tailwind v4, build Vite, publish via npm Trusted Publishing.
 - Inspiration : IBM Carbon. White-label / multi-tenant via theming runtime CSS variables.
@@ -61,10 +63,10 @@ Périmètre exact : scope npm + dépendances internes + imports source + docs + 
   - [x] Bumper toutes versions à `0.3.0`.
   - [ ] Régénérer `package-lock.json`, `.graphify/` artefacts.
   - [ ] Vérifs : `npm run verify`, build de chaque package, tests showcase.
-- [ ] Tag `v0.3.0` + publish npm `@sentropic/{tokens,themes,components-svelte}@0.3.0`.
-  - [ ] **Pré-requis manuel npm-side** : enregistrer les 3 nouveaux packages `@sentropic/*` dans Trusted Publishing GitHub Actions sur npmjs.com (le workflow ne peut pas se créer ses propres droits).
-- [ ] `npm deprecate @sent-tech/{tokens,themes,components-svelte}` avec message « renamed to @sentropic/* ».
-- [ ] PR Forge — branche `feat/consume-sentropic-0.3.0` : swap `@sent-tech/*@^0.2.0` → `@sentropic/*@^0.3.0`. CI verte. Merge.
+- [ ] Tag `v0.3.0` + publish npm `@sentropic/design-system-{tokens,themes,svelte}@0.3.0`.
+  - [ ] **Pré-requis manuel npm-side** : enregistrer les 3 nouveaux packages `@sentropic/design-system-*` dans Trusted Publishing GitHub Actions sur npmjs.com (le workflow ne peut pas se créer ses propres droits).
+- [ ] `npm deprecate @sent-tech/{tokens,themes,components-svelte}` avec message « renamed to @sentropic/design-system-* ».
+- [ ] PR Forge — branche `feat/consume-sentropic-0.3.0` : swap `@sent-tech/*@^0.2.0` → `@sentropic/design-system-*@^0.3.0` (+ adaptation des imports : `@sent-tech/components-svelte` → `@sentropic/design-system-svelte`, etc.). CI verte. Merge.
 
 ## Phase 4 — Compléter la couverture Carbon
 

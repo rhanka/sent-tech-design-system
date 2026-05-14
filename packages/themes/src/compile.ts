@@ -1,4 +1,4 @@
-import { toCssVariables } from "@sentropic/tokens";
+import { toCssVariables } from "@sentropic/design-system-tokens";
 import { assertTenantTheme, type TenantTheme } from "./schema.js";
 
 export interface CompileThemeOptions {

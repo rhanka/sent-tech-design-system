@@ -1,4 +1,4 @@
-import { component, semantic } from "@sentropic/tokens";
+import { component, semantic } from "@sentropic/design-system-tokens";
 import type { TenantTheme } from "../schema.js";
 
 export const sentTechTheme: TenantTheme = {
