@@ -1,5 +1,5 @@
 {
-  "name": "@sentropic/components-svelte",
+  "name": "@sentropic/design-system-svelte",
   "version": "0.3.0",
   "type": "module",
   "publishConfig": {
@@ -26,7 +26,7 @@
     "dist"
   ],
   "dependencies": {
-    "@sentropic/themes": "0.3.0"
+    "@sentropic/design-system-themes": "0.3.0"
   },
   "peerDependencies": {
     "svelte": "^5.53.2"

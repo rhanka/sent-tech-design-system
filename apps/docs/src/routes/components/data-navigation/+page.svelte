@@ -6,7 +6,7 @@
     SideNav,
     Table,
     Tabs
-  } from "@sentropic/components-svelte";
+  } from "@sentropic/design-system-svelte";
   import { t, type Locale } from "$lib/i18n";
 
   let locale = $state<Locale>("fr");

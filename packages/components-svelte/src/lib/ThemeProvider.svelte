@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
-  import { compileTheme, sentTechTheme, type TenantTheme } from "@sentropic/themes";
+  import { compileTheme, sentTechTheme, type TenantTheme } from "@sentropic/design-system-themes";
 
   type ThemeProviderProps = {
     theme?: TenantTheme;
