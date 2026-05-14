@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Badge, Button, Modal, Toast, Tooltip } from "@sent-tech/components-svelte";
+  import { Badge, Button, Modal, Toast, Tooltip } from "@sentropic/components-svelte";
   import { t, type Locale } from "$lib/i18n";
 
   let locale = $state<Locale>("fr");
