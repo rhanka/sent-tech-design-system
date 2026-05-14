@@ -1,4 +1,4 @@
-import type { TokenTree } from "@sent-tech/tokens";
+import type { TokenTree } from "@sentropic/tokens";
 
 export type ThemeMode = "light" | "dark";
 

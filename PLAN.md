@@ -1,409 +1,140 @@
-# PLAN - Design System Harmonise `top-ai-ideas-fullstack` + `sentech-forge`
+# Sent Tech / Sentropic Design System — Plan vivant
+
+> Source de vérité de l'avancement. À mettre à jour à chaque session : cocher
+> ce qui est livré, ajouter une référence PR/commit à droite quand pertinent,
+> déplacer les items entre phases au fil de l'évolution réelle.
+
+## Identité produit
+
+- Scope npm courant : `@sentropic/*` (cible v0.3.0, en cours de release).
+- Scope npm legacy : `@sent-tech/*` (dernier publish v0.2.0 le 2026-05-13, à déprécier post-publish v0.3.0).
+- Stack : Svelte 5, Tailwind v4, build Vite, publish via npm Trusted Publishing.
+- Inspiration : IBM Carbon. White-label / multi-tenant via theming runtime CSS variables.
+- Repo Git : `sent-tech-design-system` (nom de repo conservé pour l'instant).
+
+## État actuel (synthèse)
+
+- Composants Svelte livrés : 26.
+- Consommateurs migrés : 1 (sentech-forge).
+- Consommateurs Svelte connus restant à migrer : 4 (sent-tech/ui, sent-tech/external/top-ai-ideas-fullstack/ui, nc-fullstack/ui, spa-transpose-cv/ui).
+- Couverture vs Carbon : ~26 / ~40 composants (gaps majeurs : DataTable riche, FileUploader, MultiSelect, DatePicker, NumberInput, Slider, Search…).
+
+---
+
+## Phase 0 — Foundations & socle
+
+- [x] Décision make/buy : *make* custom, inspiration Carbon — implicite, validée par les phases suivantes.
+- [x] Tokens 3 niveaux foundation/semantic/component — `packages/tokens`.
+- [x] Themes par produit (sent-tech, forge, entropic) — `packages/themes`.
+- [x] CSS vars prefix `--st-*`.
+- [x] ThemeProvider Svelte.
+- [x] Build pipeline + npm publish via Trusted Publishing — release v0.2.0 (DS PRs #2, #3, tag v0.2.0).
+
+## Phase 1 — Composants Svelte primitives
+
+- [x] Alert, Badge, Breadcrumb, Button, Card, Checkbox, Drawer, Dropdown.
+- [x] EmptyState, Input, Link, LoadingState, Menu, Modal.
+- [x] Pagination, Popover, Radio, Select, SideNav, Switch.
+- [x] Table, Tabs, Textarea, Toast, Tooltip.
+- [x] ThemeProvider.
+- [x] Showcase form primitives (DS PR #1).
+
+## Phase 2 — Premier consommateur (Forge)
+
+- [x] Migration BlogPost, Hero, Navigation, About, Footer, Marketing, Blog cards (commits Forge `1a4345f` et antérieurs).
+- [x] Migration NotFound + LanguageSwitcher (Forge PR #8).
+- [x] Visual regression CI Playwright (Forge PR #8).
+- [x] Consommation `@sent-tech/*@^0.2.0` depuis npm registry (Forge PR #10).
+- [x] Découplage CI Forge du checkout DS local : script `theme:verify`, workflows `ci.yml` + `visual-regression.yml`, lockfile (Forge PR #11).
+
+## Phase 3 — Rebrand `@sent-tech` → `@sentropic` (en cours)
+
+Périmètre exact : scope npm + dépendances internes + imports source + docs + workflows publish. Hors périmètre pour cette release : prefix CSS vars `--st-*` (gardé en l'état), nom du repo Git.
+
+- [x] Audit exhaustif des occurrences `@sent-tech` (ripgrep) dans DS.
+- [x] PR DS — branche `feat/rebrand-sentropic` :
+  - [x] Renommer `name` dans les 4 `package.json` packages (`tokens`, `themes`, `components-svelte`, `apps/docs`) + root.
+  - [x] Renommer la dépendance interne `@sent-tech/themes` (et autres) dans les `dependencies`.
+  - [x] Renommer les imports source dans `apps/docs/`, tests, exemples.
+  - [x] Mettre à jour README, docs/release.md, docs/integration/forge-low-coupling.md.
+  - [x] Mettre à jour `.github/workflows/npm-publish.yml` (workspaces ciblés + post-publish-check).
+  - [x] Bumper toutes versions à `0.3.0`.
+  - [ ] Régénérer `package-lock.json`, `.graphify/` artefacts.
+  - [ ] Vérifs : `npm run verify`, build de chaque package, tests showcase.
+- [ ] Tag `v0.3.0` + publish npm `@sentropic/{tokens,themes,components-svelte}@0.3.0`.
+  - [ ] **Pré-requis manuel npm-side** : enregistrer les 3 nouveaux packages `@sentropic/*` dans Trusted Publishing GitHub Actions sur npmjs.com (le workflow ne peut pas se créer ses propres droits).
+- [ ] `npm deprecate @sent-tech/{tokens,themes,components-svelte}` avec message « renamed to @sentropic/* ».
+- [ ] PR Forge — branche `feat/consume-sentropic-0.3.0` : swap `@sent-tech/*@^0.2.0` → `@sentropic/*@^0.3.0`. CI verte. Merge.
+
+## Phase 4 — Compléter la couverture Carbon
+
+Composants présents dans Carbon, absents du DS, requis pour les consommateurs riches.
+
+### Priorité haute (chat Entropic + transpose-cv + nc-fullstack form-heavy)
+
+- [ ] DataTable — tri, pagination intégrée, sélection ligne, cellules custom (vs notre `Table` minimal).
+- [ ] FileUploader — drag-drop, multi, progress.
+- [ ] Combobox — recherche dans la liste.
+- [ ] MultiSelect — sélection multiple avec recherche.
+- [ ] Search — pattern Carbon dédié.
+- [ ] NumberInput — increment/decrement, min/max.
+- [ ] DatePicker — single + range, FR/EN.
+- [ ] Slider — range + plage, tooltip valeur.
+- [ ] Tag — entité fermable (vs `Badge` en lecture seule).
+- [ ] PasswordInput — toggle visibility, indicateur force.
+
+### Priorité moyenne
+
+- [ ] Accordion.
+- [ ] ContentSwitcher.
+- [ ] CopyButton.
+- [ ] Form — orchestration : group, fieldset, helper text, validation.
+- [ ] InlineLoading.
+- [ ] OverflowMenu.
+- [ ] PaginationNav (vs `Pagination` simple).
+- [ ] ProgressBar.
+- [ ] ProgressIndicator (steps).
+- [ ] SkeletonText.
+- [ ] Toggle (vs `Switch` — Carbon distingue).
+- [ ] Toggletip — clic vs hover.
+- [ ] UI Shell Header — DS a `SideNav`, manque le Header complet.
+
+### Priorité basse / utilité à challenger
 
-## Objectif
+- [ ] AspectRatio.
+- [ ] CodeSnippet.
+- [ ] StructuredList.
+- [ ] TileGroup.
+- [ ] UnorderedList.
 
-Construire un design system partage entre les deux produits a partir d'un socle de design tokens, puis decider si ce socle doit rester majoritairement custom ou s'appuyer sur une brique externe (`buy`) pour les primitives et/ou les composants.
+## Phase 5 — Migration des consommateurs Svelte restants
 
-Le resultat attendu n'est pas seulement un theme visuel commun. Il faut obtenir un systeme qui couvre:
+Pré-requis : Phase 3 livrée. Phase 4 partielle suffit selon les besoins de chaque app.
 
-- le site marketing et editorial de `sentech-forge`
-- l'application metier de `top-ai-ideas-fullstack`
-- les variantes d'usage visibles dans le code de `top-ai-ideas-fullstack`: web app, impression/rapport, extension Chrome, webview VS Code
+- [ ] `sent-tech/ui` (site Sent Tech principal — distinct de Forge). Stack : Svelte 5 + SvelteKit + Vite 5.
+- [ ] `sent-tech/external/top-ai-ideas-fullstack/ui` (chat conversationnel, ex « top-ai-ideas »). Stack : Svelte 5 + SvelteKit + Vite 6. Form-heavy + chat → priorité Phase 4 haute.
+- [ ] `nc-fullstack/ui` (NC Svelte gen-AI). Stack : Svelte 5 + SvelteKit + Vite 6.
+- [ ] `spa-transpose-cv/ui` (Scalian transpose CV). Stack : Svelte 5 + SvelteKit + Vite 6.
 
-## Perimetre
+## Phase 6 — Ménage
 
-- Repo source 1: `/home/antoinefa/src/top-ai-ideas-fullstack`
-- Repo source 2: `/home/antoinefa/src/sentech-forge`
-- Repo cible de convergence: `/home/antoinefa/src/sentech-forge/sent-tech-design-system`
+- [x] `sentech-forge.tar.gz` (snapshot orphelin du 2026-04-26) supprimé.
+- [ ] Décider sort de `/home/antoinefa/src/top-ai-ideas` (vite_react_shadcn_ts, version React+Radix legacy — la nouvelle vit dans `sent-tech/external/top-ai-ideas-fullstack`).
+- [ ] Décider sort de `/home/antoinefa/src/scalian-transpose-cv` (pas un repo git, pas de `package.json` — orphelin).
+- [ ] `sentech-forge/PLAN.md` — plan SEO P0 daté 2026-02-23, quasi terminé sur le code mais cases pas cochées : valider/cocher les 6 items résiduels ou supprimer si obsolète.
 
-Le plan est organise en 3 phases:
+---
 
-1. analyser les besoins, composants et patterns existants ou implicites
-2. choisir une strategie `make or buy`
-3. implementer le socle retenu: `tokens`, `theme`, ou `tokens + theme + composants Svelte`
+## Décisions ouvertes
 
-## Constats Initiaux Tires Du Code
+- **CSS vars** : prefix `--st-*` reste pour 0.3.0. À reconsidérer en v1.0.0 (renommage = breaking pour tous les consommateurs et tous les overrides).
+- **DS React** : pas de besoin identifié, tous les consommateurs sont Svelte. Le repo legacy `top-ai-ideas` (React+Radix) sera retiré en Phase 6, pas migré.
+- **Repo Git** : `sent-tech-design-system` conservé. Renommer le repo casserait les redirects GitHub vers les vieilles PRs/issues + remote URLs des dev locaux.
 
-### `top-ai-ideas-fullstack`
+## Méta
 
-Constats visibles dans le code:
-
-- stack SvelteKit + Tailwind CSS v3
-- theming aujourd'hui partiellement implicite: `ui/tailwind.config.cjs` expose seulement `primary`, `accent`, `warning`
-- grande partie du style encodee directement dans les classes utilitaires et dans `ui/src/app.css`
-- theme sombre gere par surcouche CSS et classes applicatives (`topai-theme-dark`, `topai-theme-light`), pas par un vrai systeme de tokens semantiques
-- nombreuses surfaces applicatives riches: navigation, auth, formulaires CRUD, tables/listes, dashboards, scatter plot, commentaires, verrous/presence, chat streaming, toasts, menus/popovers, import/export, edition riche/markdown, impression/docx
-- contraintes denses et tres "enterprise app": etats de lecture seule, messages de statut, feedback, badges, overlays, side panel, densite forte
-
-Fichiers structurants repérés:
-
-- `/home/antoinefa/src/top-ai-ideas-fullstack/ui/tailwind.config.cjs`
-- `/home/antoinefa/src/top-ai-ideas-fullstack/ui/src/app.css`
-- `/home/antoinefa/src/top-ai-ideas-fullstack/ui/src/routes/dashboard/+page.svelte`
-- `/home/antoinefa/src/top-ai-ideas-fullstack/ui/src/lib/components/ChatWidget.svelte`
-- `/home/antoinefa/src/top-ai-ideas-fullstack/ui/src/lib/components/Header.svelte`
-- `/home/antoinefa/src/top-ai-ideas-fullstack/ui/src/lib/components/WorkspaceSettingsPanel.svelte`
-
-### `sentech-forge`
-
-Constats visibles dans le code:
-
-- stack Svelte 5 + Tailwind CSS v4
-- presence deja nette d'un socle tokenise via variables CSS HSL et aliases Tailwind semantiques
-- design plus simple mais plus proprement structure: hero, navigation, sections marketing, cartes, blog, CTA, pages editoriales
-- gradients, ombres, radius, animations et couleurs deja nommes de maniere semantique
-- bonne base pour servir de "grammaire" de tokens, mais couverture composant encore limitee aux besoins marketing/contenu
-
-Fichiers structurants repérés:
-
-- `/home/antoinefa/src/sentech-forge/tailwind.config.ts`
-- `/home/antoinefa/src/sentech-forge/src/index.css`
-- `/home/antoinefa/src/sentech-forge/src/components/Navigation.svelte`
-- `/home/antoinefa/src/sentech-forge/src/components/Hero.svelte`
-- `/home/antoinefa/src/sentech-forge/src/components/Services.svelte`
-- `/home/antoinefa/src/sentech-forge/src/components/Blog.svelte`
-
-### Hypothese Structurante
-
-Le code actuel suggere un point de depart clair:
-
-- `sentech-forge` porte deja une logique de tokens et de theme
-- `top-ai-ideas-fullstack` porte la couverture fonctionnelle et la richesse des composants
-
-La phase 1 devra donc:
-
-- reutiliser `sentech-forge` comme point de depart pour la taxonomie de tokens
-- cartographier `top-ai-ideas-fullstack` pour identifier les primitives et patterns manquants
-- separer tres tot ce qui releve de la fondation visuelle, du theme, du composant generique et du composant metier
-
-## Phase 1 - Analyse Des Besoins Et Mapping
-
-### Objectif
-
-Etablir une cartographie exploitable des composants, patterns, et tokens necessaires pour couvrir les deux UIs sans refaire un audit ad hoc a chaque sprint.
-
-### Questions Auxquelles Repondre
-
-- Quelles familles de composants existent deja explicitement dans le code?
-- Quels patterns UI sont repetes sans etre nommes comme composants?
-- Quels styles sont aujourd'hui hardcodes et devraient devenir des tokens?
-- Quels besoins sont communs aux deux repos, et quels besoins sont propres a l'un des deux?
-- Quelle partie du systeme doit rester purement thematique, et quelle partie exige de vrais composants partages?
-
-### Travaux A Mener
-
-#### 1. Inventaire Des Surfaces UI
-
-- lister les routes, pages et zones fonctionnelles de chaque repo
-- regrouper les ecrans par type: marketing, edition, administration, analyse, collaboration, auth, contenu
-- relever les supports a couvrir: responsive web, dark mode, impression, extension/webview
-
-#### 2. Inventaire Des Composants Existants
-
-- reperer les composants explicites deja presents dans `src/components`, `src/lib/components` et les pages qui portent encore leur propre UI
-- distinguer:
-  - primitives potentielles
-  - composants composites partageables
-  - composants metier a ne pas mettre dans le design system de base
-
-#### 3. Inventaire Des Patterns "Devines" Depuis Le Code
-
-Patterns probables a formaliser:
-
-- app shell / header / navigation responsive / burger / user menu
-- hero marketing / section shell / CTA / cartes editoriales
-- formulaires et champs avec validation, lecture seule, inline edit
-- listes, tableaux, cartes de dashboard, empty states, loading states, errors
-- badges, tags, stat pills, etats de statut, feedback success/warning/error/info
-- dropdowns, popovers, menus contextuels, modales, drawers
-- chat panel, timeline de messages, composer, upload/document attach, jobs/queue
-- collaboration: commentaires, lock/presence, annotations, compteurs
-- data viz et objets analytiques: score cards, scatter plot, matrices, rapport imprimable
-- contenu riche: markdown, rich text, blog post, references
-
-#### 4. Extraction Des Tokens Implicites
-
-Categories de tokens a extraire:
-
-- couleur: brand, surface, text, border, accent, status, chart, overlay
-- typographie: familles, tailles, graisses, line-heights, tracking
-- spacing: echelle de padding, gap, layout, section spacing
-- rayon: controles, cartes, overlays, pill badges
-- ombres: subtle, medium, floating, overlay
-- border widths et opacites
-- breakpoints et largeur container
-- motion: durations, easings, entry/exit, hover, attention
-- z-index et couches d'interface
-- densite: compact / default / spacious si necessaire
-
-#### 5. Construction D'Une Taxonomie Cible
-
-Structurer les tokens en trois niveaux:
-
-- `foundation`: valeurs brutes (palette, type scale, spacing scale, radius scale)
-- `semantic`: `surface-default`, `text-muted`, `action-primary`, `feedback-danger`, etc.
-- `component`: variantes fines propres a certains composants, seulement si necessaire
-
-#### 6. Mapping Composants -> Tokens
-
-Pour chaque famille UI, documenter:
-
-- composant ou pattern source dans `top-ai-ideas-fullstack`
-- composant ou pattern source dans `sentech-forge`
-- cible design system
-- tokens requis
-- niveau de mutualisation possible: shared, themed, ou product-specific
-
-### Besoins Deja Visibles Dans Les Deux Repos
-
-#### Besoins Communs
-
-- navigation responsive
-- systeme de cartes
-- hierarchie typographique riche
-- CTA / boutons / liens d'action
-- etats de feedback et badges
-- theming light/dark au minimum pour l'app, potentiellement light-first pour le site
-- support bilingue FR/EN
-- tokens de layout coherents: container, sections, gutters, breakpoints
-
-#### Besoins `top-ai-ideas-fullstack`
-
-- primitives de formulaires robustes
-- tables et listes denses
-- overlays et menus riches
-- chat et composants conversationnels
-- feedback systematique: toasts, inline alerts, badges d'etat
-- data visualization et cartes analytiques
-- patterns collaboratifs: commentaires, presence, verrouillage
-- impression et rapports exportables
-- compatibilite web app + extension + webview
-
-#### Besoins `sentech-forge`
-
-- hero / sections marketing / blog cards / editorial blocks
-- gradients, surfaces premium, visual storytelling
-- composants de contenu et CTA plus expressifs
-- navigation scrollee / anchor links / page blog
-- theme de marque plus narratif que l'application metier
-
-### Livrables Attendus En Sortie De Phase 1
-
-- un inventaire `components-and-patterns.md`
-- une matrice de mapping `component-mapping.csv` ou `.md`
-- une premiere taxonomie de tokens `tokens-draft.md`
-- une liste priorisee des composants a mutualiser
-- un backlog des ecarts: `missing-primitives`, `missing-theme-bridge`, `product-specific-components`
-
-### Definition Of Done Phase 1
-
-- 100% des grandes surfaces UI des deux repos sont classees
-- chaque pattern important a un proprietaire logique: token, theme, composant partage, composant metier
-- les tokens indispensables sont identifies sans ambiguite
-- un ordre de migration est propose
-
-## Phase 2 - Strategie Make Or Buy
-
-### Objectif
-
-Choisir le niveau d'externalisation le plus rationnel pour accelerer la convergence sans perdre la capacite a couvrir les besoins app + marketing.
-
-### Criteres De Decision
-
-- compatibilite Svelte / SvelteKit / Svelte 5
-- capacite de theming par tokens CSS variables
-- couverture de primitives accessibles
-- qualite des overlays, formulaires, navigation, table, feedback
-- aptitude a couvrir a la fois une app dense et un site marketing
-- cout de migration depuis Tailwind v3 et v4
-- possibilite de conserver un branding fort pour `sentech-forge`
-- possibilite de gerer des besoins "enterprise" pour `top-ai-ideas-fullstack`
-- maturite de documentation, maintenance, licence, ergonomie pour l'equipe
-
-### Options A Evaluer
-
-#### Option A - Tokens + Themes Custom, Peu De Buy
-
-Quand la choisir:
-
-- si le besoin de controle est prioritaire
-- si la divergence marketing/app est forte
-- si les composants metier dominent largement les primitives
-
-Implication:
-
-- effort plus eleve
-- meilleure maitrise long terme
-
-#### Option B - Buy Pour Les Primitives, Custom Pour Le Theme Et Les Composites
-
-Options candidates a mettre dans la short list:
-
-- `daisyUI`: rapide pour theming Tailwind, bon pour demarrer, moins fort pour une gouvernance DS exigeante
-- `Carbon`: fort sur l'enterprise, mais risque de cout d'integration et d'ecart avec l'ecosysteme Svelte et avec le site marketing
-- `Bits UI` / `shadcn-svelte` / equivalent: souvent plus adaptes si on veut des primitives accessibles et garder la main sur les tokens et le rendu
-- `Skeleton`: pertinent a examiner pour un contexte Svelte + Tailwind si l'on veut un point d'appui plus proche de l'ecosysteme local
-
-Implication:
-
-- meilleur compromis probable si l'on veut mutualiser vite sans enfermer le branding
-
-#### Option C - Buy Plus Large Avec Theme Mince
-
-Quand l'envisager:
-
-- si la priorite devient la vitesse de livraison court terme
-- si l'equipe accepte une personnalisation plus limitee
-
-Risque:
-
-- dette de contournement importante sur les composants metier de `top-ai-ideas-fullstack`
-- resultat marketing potentiellement trop generique pour `sentech-forge`
-
-### Methode D'Evaluation
-
-- choisir 3 options maximum
-- scorer chaque option sur une matrice commune
-- realiser un spike court sur 2 ecrans tests:
-  - un ecran marketing `sentech-forge`
-  - un ecran dense `top-ai-ideas-fullstack`
-- mesurer:
-  - vitesse de reproduction
-  - flexibilite theming
-  - qualite accessibilite
-  - ecart fonctionnel
-  - dette CSS de contournement
-
-### Livrables Attendus En Sortie De Phase 2
-
-- une decision argumentee `make-buy-decision.md`
-- une matrice de scoring
-- un plan de migration cible
-- une recommandation explicite:
-  - `tokens only`
-  - `tokens + themes`
-  - `tokens + themes + shared svelte components`
-
-### Decision Probable A Challenger Pendant La Phase 2
-
-Hypothese de travail raisonnable au vu du code actuel:
-
-- conserver un socle de tokens et de themes custom
-- evaluer un `buy` surtout pour les primitives accessibles et overlays
-- garder custom les composants metier, analytiques, conversationnels et editoriaux
-
-## Phase 3 - Implementation
-
-### Objectif
-
-Mettre en production le design system choisi, avec une strategie de migration progressive qui n'oblige pas a reerire toutes les UIs d'un coup.
-
-### Architecture Cible Recommandee
-
-Le repo `sent-tech-design-system` devrait pouvoir heberger a terme:
-
-- une source de verite des tokens
-- des themes produits
-- des primitives ou composants Svelte partages si la phase 2 le justifie
-- la documentation et les exemples de mapping
-
-Structure cible possible:
-
-- `tokens/` ou `packages/tokens/`
-- `themes/` ou `packages/themes/`
-- `packages/svelte/` pour les primitives partagees
-- `docs/` pour guidelines, mapping et conventions
-
-### Lots D'Implementation
-
-#### Lot 1 - Foundations
-
-- definir la taxonomie de tokens finale
-- figer les noms semantiques
-- produire les formats de sortie utiles: CSS variables, JSON, eventuellement Tailwind preset
-- traiter explicitement la cohabitation Tailwind v3 / Tailwind v4
-
-#### Lot 2 - Themes Produits
-
-- theme `sent-marketing`
-- theme `topai-app`
-- alignment des modes clair/sombre
-- bridge de compatibilite pour les classes utilitaires existantes pendant la migration
-
-#### Lot 3 - Primitives Partagees
-
-Cibles minimales probables:
-
-- button
-- link
-- input / textarea / select / checkbox / radio / switch
-- card
-- badge
-- alert
-- menu / popover / dropdown
-- dialog / drawer
-- tabs
-- table
-- toast
-- empty state / loading state
-
-#### Lot 4 - Composants Composites Partages
-
-Seulement si la phase 1 montre une vraie convergence:
-
-- app shell/header/footer de base
-- section shell marketing
-- stat card / metric card
-- content block / article card
-- form field wrappers
-
-#### Lot 5 - Composants Metier Restant Hors DS De Base
-
-A priori a laisser dans les produits ou dans une couche "product-ui":
-
-- chat widget et timeline conversationnelle
-- scatter plot et visualisations metier
-- rapport imprimable/docx
-- presence/lock/comments workflow
-- composants lies aux dossiers, organisations, use cases
-
-### Ordre De Migration Recommande
-
-1. tokens et themes sans changer les comportements
-2. remplacement progressif des classes hardcodees par des tokens semantiques
-3. adoption des primitives partagees sur les surfaces les moins risquées
-4. migration des ecrans applicatifs denses
-5. traitement a part des surfaces speciales: print, extension, webview
-
-### Verification Et Qualite
-
-- snapshots visuels ou captures de reference
-- checklist accessibilite clavier/focus/contraste
-- verification des modes responsive
-- verification light/dark
-- verification impression pour `top-ai-ideas-fullstack`
-- revue des regressions de densite et de lisibilite
-
-### Definition Of Done Phase 3
-
-- un socle de tokens unique alimente les deux produits
-- les themes des deux produits sont alignes sur ce socle
-- les primitives partagees couvrent les cas communs sans contorsions majeures
-- les composants metier restent isoles quand la mutualisation n'apporte pas de valeur
-- la dette CSS hardcodee critique baisse fortement dans `top-ai-ideas-fullstack`
-
-## Risques A Suivre Des Le Debut
-
-- ecart Tailwind v3 vs v4
-- tentation de mettre trop de composants metier dans le design system
-- conflit entre branding marketing et ergonomie applicative
-- sous-estimation des etats complexes de `top-ai-ideas-fullstack`
-- absence de bridge temporaire provoquant une migration trop brutale
-
-## Premiers Principes Proposes
-
-- partir d'un socle `token-first`
-- nommer les tokens par role, pas par couleur brute
-- garder des themes differents pour le marketing et l'app si necessaire
-- acheter eventuellement des primitives, pas l'identite produit complete
-- ne mutualiser un composant que s'il couvre un besoin commun stable
+- Format : cases à cocher, mises à jour à chaque session.
+- Conventions commit : Conventional Commits, atomiques, pas de `--no-verify`.
+- Anti co-author : 0 trace de Claude/Anthropic dans les commits — vérifier `git log --format='%H %s%n%b' main..HEAD | grep -iE 'co-auth|claude|anthropic'` doit retourner vide.
+- Vérifs Forge avant commit : `npm run lint && npm run theme:verify && npm run build`.
+- Vérifs DS avant commit : `npm run verify` (lint + tests + build de tous les packages).
