@@ -6,8 +6,8 @@
 
 ## Identité produit
 
-- Scope npm courant : `@sent-tech/*` (v0.2.0 publié 2026-05-13).
-- Scope npm cible : `@sentropic/*` (rebrand en cours, cible v0.3.0).
+- Scope npm courant : `@sentropic/*` (cible v0.3.0, en cours de release).
+- Scope npm legacy : `@sent-tech/*` (dernier publish v0.2.0 le 2026-05-13, à déprécier post-publish v0.3.0).
 - Stack : Svelte 5, Tailwind v4, build Vite, publish via npm Trusted Publishing.
 - Inspiration : IBM Carbon. White-label / multi-tenant via theming runtime CSS variables.
 - Repo Git : `sent-tech-design-system` (nom de repo conservé pour l'instant).
@@ -51,17 +51,18 @@
 
 Périmètre exact : scope npm + dépendances internes + imports source + docs + workflows publish. Hors périmètre pour cette release : prefix CSS vars `--st-*` (gardé en l'état), nom du repo Git.
 
-- [ ] Audit exhaustif des occurrences `@sent-tech` (ripgrep) dans DS.
-- [ ] PR DS — branche `feat/rebrand-sentropic` :
-  - [ ] Renommer `name` dans les 3 `package.json` packages (`tokens`, `themes`, `components-svelte`).
-  - [ ] Renommer la dépendance interne `@sent-tech/themes` (et autres) dans les `dependencies`.
-  - [ ] Renommer les imports source dans `apps/docs/`, tests, exemples.
-  - [ ] Mettre à jour README, docs/, exemples README, CONTRIBUTING.
-  - [ ] Mettre à jour `.github/workflows/*.yml` (paths npm Trusted Publishing si hardcodés).
-  - [ ] Bumper toutes versions à `0.3.0`.
+- [x] Audit exhaustif des occurrences `@sent-tech` (ripgrep) dans DS.
+- [x] PR DS — branche `feat/rebrand-sentropic` :
+  - [x] Renommer `name` dans les 4 `package.json` packages (`tokens`, `themes`, `components-svelte`, `apps/docs`) + root.
+  - [x] Renommer la dépendance interne `@sent-tech/themes` (et autres) dans les `dependencies`.
+  - [x] Renommer les imports source dans `apps/docs/`, tests, exemples.
+  - [x] Mettre à jour README, docs/release.md, docs/integration/forge-low-coupling.md.
+  - [x] Mettre à jour `.github/workflows/npm-publish.yml` (workspaces ciblés + post-publish-check).
+  - [x] Bumper toutes versions à `0.3.0`.
   - [ ] Régénérer `package-lock.json`, `.graphify/` artefacts.
   - [ ] Vérifs : `npm run verify`, build de chaque package, tests showcase.
 - [ ] Tag `v0.3.0` + publish npm `@sentropic/{tokens,themes,components-svelte}@0.3.0`.
+  - [ ] **Pré-requis manuel npm-side** : enregistrer les 3 nouveaux packages `@sentropic/*` dans Trusted Publishing GitHub Actions sur npmjs.com (le workflow ne peut pas se créer ses propres droits).
 - [ ] `npm deprecate @sent-tech/{tokens,themes,components-svelte}` avec message « renamed to @sentropic/* ».
 - [ ] PR Forge — branche `feat/consume-sentropic-0.3.0` : swap `@sent-tech/*@^0.2.0` → `@sentropic/*@^0.3.0`. CI verte. Merge.
 
