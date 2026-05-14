@@ -11,11 +11,11 @@ mkdirSync(npmCache);
 
 const packages = [
   {
-    name: "@sent-tech/tokens",
+    name: "@sentropic/tokens",
     requiredFiles: ["dist/index.js", "dist/index.d.ts"],
   },
   {
-    name: "@sent-tech/themes",
+    name: "@sentropic/themes",
     requiredFiles: [
       "dist/index.js",
       "dist/index.d.ts",
@@ -25,7 +25,7 @@ const packages = [
     ],
   },
   {
-    name: "@sent-tech/components-svelte",
+    name: "@sentropic/components-svelte",
     requiredFiles: [
       "dist/index.js",
       "dist/index.d.ts",
@@ -127,26 +127,26 @@ function writeImportSmoke(installDir) {
     `
 import { readFileSync } from "node:fs";
 
-const tokens = await import("@sent-tech/tokens");
-const themes = await import("@sent-tech/themes");
+const tokens = await import("@sentropic/tokens");
+const themes = await import("@sentropic/themes");
 
 if (typeof tokens.flattenTokens !== "function") {
-  throw new Error("@sent-tech/tokens missing flattenTokens export");
+  throw new Error("@sentropic/tokens missing flattenTokens export");
 }
 
 if (typeof themes.compileTheme !== "function") {
-  throw new Error("@sent-tech/themes missing compileTheme export");
+  throw new Error("@sentropic/themes missing compileTheme export");
 }
 
-const componentsEntry = await import.meta.resolve("@sent-tech/components-svelte");
+const componentsEntry = await import.meta.resolve("@sentropic/components-svelte");
 if (!componentsEntry.endsWith("/dist/index.js")) {
-  throw new Error("@sent-tech/components-svelte resolved to unexpected entry: " + componentsEntry);
+  throw new Error("@sentropic/components-svelte resolved to unexpected entry: " + componentsEntry);
 }
 
 const componentIndex = readFileSync(new URL(componentsEntry), "utf8");
 for (const exportName of ["Button", "Card", "Input", "Textarea"]) {
   if (!componentIndex.includes("as " + exportName)) {
-    throw new Error("@sent-tech/components-svelte missing " + exportName + " export");
+    throw new Error("@sentropic/components-svelte missing " + exportName + " export");
   }
 }
 
