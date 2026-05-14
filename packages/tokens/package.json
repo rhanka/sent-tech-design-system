@@ -1,6 +1,6 @@
 {
-  "name": "@sent-tech/tokens",
-  "version": "0.2.0",
+  "name": "@sentropic/tokens",
+  "version": "0.3.0",
   "type": "module",
   "publishConfig": {
     "access": "public"

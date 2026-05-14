@@ -1,6 +1,6 @@
 {
-  "name": "@sent-tech/components-svelte",
-  "version": "0.2.0",
+  "name": "@sentropic/components-svelte",
+  "version": "0.3.0",
   "type": "module",
   "publishConfig": {
     "access": "public"
@@ -26,7 +26,7 @@
     "dist"
   ],
   "dependencies": {
-    "@sent-tech/themes": "0.2.0"
+    "@sentropic/themes": "0.3.0"
   },
   "peerDependencies": {
     "svelte": "^5.53.2"

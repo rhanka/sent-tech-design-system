@@ -2,9 +2,9 @@
 
 Sent Tech Design System publishes three public npm packages from this private workspace root:
 
-- `@sent-tech/tokens`
-- `@sent-tech/themes`
-- `@sent-tech/components-svelte`
+- `@sentropic/tokens`
+- `@sentropic/themes`
+- `@sentropic/components-svelte`
 
 The release model follows Graphify: GitHub Actions verifies the repo, packs the npm artifacts, guards the tag, publishes through npm Trusted Publishing, waits until npm registry propagation is visible, then installs the published packages back from npm.
 
@@ -12,16 +12,16 @@ The release model follows Graphify: GitHub Actions verifies the repo, packs the 
 
 Configure npm Trusted Publishing for each package:
 
-- Package: `@sent-tech/tokens`
-- Package: `@sent-tech/themes`
-- Package: `@sent-tech/components-svelte`
+- Package: `@sentropic/tokens`
+- Package: `@sentropic/themes`
+- Package: `@sentropic/components-svelte`
 - Repository: `rhanka/sent-tech-design-system`
 - Workflow: `.github/workflows/npm-publish.yml`
 - Registry: `https://registry.npmjs.org`
 
 The packages are scoped and public. Keep `publishConfig.access = "public"` in each publishable workspace.
 
-Before the first release, confirm the npm `@sent-tech` scope is owned by the publishing account or organization.
+Before the first release, confirm the npm `@sentropic` scope is owned by the publishing account or organization.
 
 Each package manifest must keep its `repository.url` pointed at `git+https://github.com/rhanka/sent-tech-design-system.git`; npm uses that metadata when validating GitHub trusted publishing.
 
@@ -53,8 +53,8 @@ For `v0.2.0`, these manifests must all contain `"version": "0.2.0"`:
 
 Internal dependencies must match the same version:
 
-- `@sent-tech/themes` depends on `@sent-tech/tokens`.
-- `@sent-tech/components-svelte` depends on `@sent-tech/themes`.
+- `@sentropic/themes` depends on `@sentropic/tokens`.
+- `@sentropic/components-svelte` depends on `@sentropic/themes`.
 
 ## Publish
 
@@ -62,7 +62,7 @@ The first publication used a temporary bootstrap token because npm Trusted Publi
 
 Bootstrap checklist, only needed if a package has never been published:
 
-1. Create a temporary npm granular access token with read/write access to the `@sent-tech` scope.
+1. Create a temporary npm granular access token with read/write access to the `@sentropic` scope.
 2. Store it as the GitHub repository secret `NPM_TOKEN`.
 3. Push the release tag.
 4. Configure Trusted Publishing on the created packages.
@@ -81,9 +81,9 @@ git push origin v0.2.0
 The workflow publishes in dependency order:
 
 ```bash
-npm publish --workspace @sent-tech/tokens --access public
-npm publish --workspace @sent-tech/themes --access public
-npm publish --workspace @sent-tech/components-svelte --access public
+npm publish --workspace @sentropic/tokens --access public
+npm publish --workspace @sentropic/themes --access public
+npm publish --workspace @sentropic/components-svelte --access public
 ```
 
 Do not move a published tag unless the npm publish failed before creating any package version. npm versions are immutable after publication.
@@ -94,9 +94,9 @@ After publication, replace Forge local file dependencies with npm versions:
 
 ```bash
 npm install \
-  @sent-tech/tokens@0.2.0 \
-  @sent-tech/themes@0.2.0 \
-  @sent-tech/components-svelte@0.2.0
+  @sentropic/tokens@0.2.0 \
+  @sentropic/themes@0.2.0 \
+  @sentropic/components-svelte@0.2.0
 ```
 
-Keep `svelte` installed in consuming apps. `@sent-tech/components-svelte` declares Svelte as a peer dependency.
+Keep `svelte` installed in consuming apps. `@sentropic/components-svelte` declares Svelte as a peer dependency.

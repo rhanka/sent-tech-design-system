@@ -28,10 +28,10 @@ This is the lowest-coupling path: Forge does not depend on unpublished npm packa
 
 ### Option B: Local package import
 
-Install or link `@sent-tech/themes`, then import the Forge theme CSS once in the Forge app shell:
+Install or link `@sentropic/themes`, then import the Forge theme CSS once in the Forge app shell:
 
 ```ts
-import "@sent-tech/themes/css/forge.css";
+import "@sentropic/themes/css/forge.css";
 ```
 
 ## Scope Attribute
@@ -73,4 +73,4 @@ For the first pass, do not replace Forge components. Map existing Forge CSS vari
 
 ## Next Step
 
-After the CSS-only pass, choose one Forge screen for the component pilot and replace a small set of primitives with `@sent-tech/components-svelte`.
+After the CSS-only pass, choose one Forge screen for the component pilot and replace a small set of primitives with `@sentropic/components-svelte`.
