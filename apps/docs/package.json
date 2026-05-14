@@ -1,11 +1,11 @@
 {
-  "name": "@sentropic/docs",
+  "name": "@sentropic/design-system-docs",
   "version": "0.3.0",
   "private": true,
   "type": "module",
   "dependencies": {
-    "@sentropic/components-svelte": "0.3.0",
-    "@sentropic/themes": "0.3.0",
+    "@sentropic/design-system-svelte": "0.3.0",
+    "@sentropic/design-system-themes": "0.3.0",
     "@sveltejs/adapter-static": "^3.0.10",
     "@sveltejs/kit": "^2.43.5",
     "svelte": "^5.53.2"

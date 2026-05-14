@@ -1,7 +1,7 @@
 <script lang="ts">
   import "../app.css";
-  import { ThemeProvider } from "@sentropic/components-svelte";
-  import { sentTechTheme } from "@sentropic/themes";
+  import { ThemeProvider } from "@sentropic/design-system-svelte";
+  import { sentTechTheme } from "@sentropic/design-system-themes";
 
   let { children } = $props();
 </script>

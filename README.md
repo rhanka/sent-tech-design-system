@@ -4,9 +4,9 @@ Design system Svelte pour les produits Sent Tech, avec support marque blanche, t
 
 ## Packages
 
-- `@sentropic/tokens`: tokens foundation, semantic et component.
-- `@sentropic/themes`: thèmes Sent Tech, Forge, Entropic et white-label.
-- `@sentropic/components-svelte`: composants Svelte stylés par tokens.
+- `@sentropic/design-system-tokens`: tokens foundation, semantic et component.
+- `@sentropic/design-system-themes`: thèmes Sent Tech, Forge, Entropic et white-label.
+- `@sentropic/design-system-svelte`: composants Svelte stylés par tokens.
 - `apps/docs`: documentation interactive type Carbon.
 
 ## Development
