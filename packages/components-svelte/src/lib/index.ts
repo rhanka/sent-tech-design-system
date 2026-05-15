@@ -12,6 +12,7 @@ export { default as Link } from "./Link.svelte";
 export { default as LoadingState } from "./LoadingState.svelte";
 export { default as Menu } from "./Menu.svelte";
 export { default as Modal } from "./Modal.svelte";
+export { default as NumberInput } from "./NumberInput.svelte";
 export { default as Pagination } from "./Pagination.svelte";
 export { default as Popover } from "./Popover.svelte";
 export { default as Radio } from "./Radio.svelte";

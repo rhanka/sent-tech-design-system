@@ -3,6 +3,7 @@ import { createRawSnippet } from "svelte";
 import { describe, expect, it } from "vitest";
 import Checkbox from "./lib/Checkbox.svelte";
 import Input from "./lib/Input.svelte";
+import NumberInput from "./lib/NumberInput.svelte";
 import Radio from "./lib/Radio.svelte";
 import Select from "./lib/Select.svelte";
 import Switch from "./lib/Switch.svelte";
@@ -43,5 +44,24 @@ describe("form controls", () => {
     expect(screen.getByRole("switch", { name: "Notifications" }).getAttribute("aria-checked")).toBe(
       "true"
     );
+  });
+
+  it("renders a NumberInput with increment and decrement buttons", () => {
+    render(NumberInput, { props: { label: "Quantity", value: 3, min: 0, max: 10 } });
+    const field = screen.getByLabelText("Quantity") as HTMLInputElement;
+    expect(field.type).toBe("number");
+    expect(field.value).toBe("3");
+    expect(screen.getByRole("button", { name: "Increment value" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Decrement value" })).toBeTruthy();
+  });
+
+  it("disables NumberInput buttons at min/max boundaries", () => {
+    render(NumberInput, { props: { label: "Floor", value: 0, min: 0, max: 5 } });
+    expect(
+      (screen.getByRole("button", { name: "Decrement value" }) as HTMLButtonElement).disabled
+    ).toBe(true);
+    expect(
+      (screen.getByRole("button", { name: "Increment value" }) as HTMLButtonElement).disabled
+    ).toBe(false);
   });
 });
