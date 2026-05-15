@@ -3,6 +3,7 @@ import { createRawSnippet } from "svelte";
 import { describe, expect, it, vi } from "vitest";
 import Accordion from "./lib/Accordion.svelte";
 import Modal from "./lib/Modal.svelte";
+import ProgressBar from "./lib/ProgressBar.svelte";
 import Tag from "./lib/Tag.svelte";
 import Toast from "./lib/Toast.svelte";
 import Tooltip from "./lib/Tooltip.svelte";
@@ -105,5 +106,18 @@ describe("overlay and feedback components", () => {
     expect(latest).toEqual(["a", "b"]);
     expect(screen.getByText("Alpha body")).toBeTruthy();
     expect(screen.getByText("Beta body")).toBeTruthy();
+  });
+
+  it("renders a ProgressBar with progressbar role and aria-value attributes", () => {
+    render(ProgressBar, { props: { label: "Upload", value: 42, max: 100 } });
+    const bar = screen.getByRole("progressbar", { name: "Upload" });
+    expect(bar.getAttribute("aria-valuenow")).toBe("42");
+    expect(bar.getAttribute("aria-valuemax")).toBe("100");
+  });
+
+  it("renders an indeterminate ProgressBar without aria-valuenow", () => {
+    render(ProgressBar, { props: { label: "Loading", indeterminate: true } });
+    const bar = screen.getByRole("progressbar", { name: "Loading" });
+    expect(bar.getAttribute("aria-valuenow")).toBeNull();
   });
 });
