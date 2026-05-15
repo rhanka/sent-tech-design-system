@@ -16,10 +16,10 @@
 
 ## État actuel (synthèse)
 
-- Composants Svelte livrés : 26.
+- Composants Svelte livrés : 34.
 - Consommateurs migrés : 1 (sentech-forge).
 - Consommateurs Svelte connus restant à migrer : 4 (sent-tech/ui, sent-tech/external/top-ai-ideas-fullstack/ui, nc-fullstack/ui, spa-transpose-cv/ui).
-- Couverture vs Carbon : ~26 / ~40 composants (gaps majeurs : DataTable riche, FileUploader, MultiSelect, DatePicker, NumberInput, Slider, Search…).
+- Couverture vs Carbon : ~34 / ~40 composants (gaps majeurs restants : DataTable riche, FileUploader, DatePicker).
 
 ---
 
@@ -70,18 +70,18 @@ Composants présents dans Carbon, absents du DS, requis pour les consommateurs r
 
 - [ ] DataTable — tri, pagination intégrée, sélection ligne, cellules custom (vs notre `Table` minimal).
 - [ ] FileUploader — drag-drop, multi, progress.
-- [ ] Combobox — recherche dans la liste.
-- [ ] MultiSelect — sélection multiple avec recherche.
+- [x] Combobox — recherche dans la liste (DS PR Phase 4 batch 2).
+- [x] MultiSelect — sélection multiple avec recherche (DS PR Phase 4 batch 2).
 - [ ] Search — pattern Carbon dédié.
 - [ ] NumberInput — increment/decrement, min/max.
 - [ ] DatePicker — single + range, FR/EN.
-- [ ] Slider — range + plage, tooltip valeur.
+- [x] Slider — range + plage, tooltip valeur (DS PR Phase 4 batch 2).
 - [ ] Tag — entité fermable (vs `Badge` en lecture seule).
 - [ ] PasswordInput — toggle visibility, indicateur force.
 
 ### Priorité moyenne
 
-- [ ] Accordion.
+- [x] Accordion (DS PR Phase 4 batch 2).
 - [ ] ContentSwitcher.
 - [ ] CopyButton.
 - [ ] Form — orchestration : group, fieldset, helper text, validation.
