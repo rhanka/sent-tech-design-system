@@ -10,6 +10,7 @@ import PasswordInput from "./lib/PasswordInput.svelte";
 import Radio from "./lib/Radio.svelte";
 import Search from "./lib/Search.svelte";
 import Select from "./lib/Select.svelte";
+import Slider from "./lib/Slider.svelte";
 import Switch from "./lib/Switch.svelte";
 import Textarea from "./lib/Textarea.svelte";
 
@@ -141,5 +142,26 @@ describe("form controls", () => {
     expect(captured).toEqual(["a"]);
     await fireEvent.click(screen.getByRole("option", { name: /Beta/ }));
     expect(captured).toEqual(["a", "b"]);
+  });
+
+  it("renders a Slider with range input bound to value", async () => {
+    let latest = 0;
+    render(Slider, {
+      props: {
+        label: "Volume",
+        value: 25,
+        min: 0,
+        max: 100,
+        step: 5,
+        onchange: (next: number) => {
+          latest = next;
+        }
+      }
+    });
+    const range = screen.getByLabelText("Volume") as HTMLInputElement;
+    expect(range.type).toBe("range");
+    expect(range.value).toBe("25");
+    await fireEvent.input(range, { target: { value: "60" } });
+    expect(latest).toBe(60);
   });
 });
