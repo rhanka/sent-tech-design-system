@@ -49,24 +49,18 @@
 - [x] Consommation `@sent-tech/*@^0.2.0` depuis npm registry (Forge PR #10).
 - [x] Découplage CI Forge du checkout DS local : script `theme:verify`, workflows `ci.yml` + `visual-regression.yml`, lockfile (Forge PR #11).
 
-## Phase 3 — Rebrand `@sent-tech` → `@sentropic` (en cours)
+## Phase 3 — Rebrand `@sent-tech` → `@sentropic`
 
-Périmètre exact : scope npm + dépendances internes + imports source + docs + workflows publish. Hors périmètre pour cette release : prefix CSS vars `--st-*` (gardé en l'état), nom du repo Git.
+Périmètre : scope npm + dépendances internes + imports source + docs + workflows publish. Volontairement hors périmètre : préfixe CSS vars `--st-*` (gardé en l'état), nom du repo Git.
 
 - [x] Audit exhaustif des occurrences `@sent-tech` (ripgrep) dans DS.
-- [x] PR DS — branche `feat/rebrand-sentropic` :
-  - [x] Renommer `name` dans les 4 `package.json` packages (`tokens`, `themes`, `components-svelte`, `apps/docs`) + root.
-  - [x] Renommer la dépendance interne `@sent-tech/themes` (et autres) dans les `dependencies`.
-  - [x] Renommer les imports source dans `apps/docs/`, tests, exemples.
-  - [x] Mettre à jour README, docs/release.md, docs/integration/forge-low-coupling.md.
-  - [x] Mettre à jour `.github/workflows/npm-publish.yml` (workspaces ciblés + post-publish-check).
-  - [x] Bumper toutes versions à `0.3.0`.
-  - [ ] Régénérer `package-lock.json`, `.graphify/` artefacts.
-  - [ ] Vérifs : `npm run verify`, build de chaque package, tests showcase.
-- [ ] Tag `v0.3.0` + publish npm `@sentropic/design-system-{tokens,themes,svelte}@0.3.0`.
-  - [ ] **Pré-requis manuel npm-side** : enregistrer les 3 nouveaux packages `@sentropic/design-system-*` dans Trusted Publishing GitHub Actions sur npmjs.com (le workflow ne peut pas se créer ses propres droits).
-- [ ] `npm deprecate @sent-tech/{tokens,themes,components-svelte}` avec message « renamed to @sentropic/design-system-* ».
-- [ ] PR Forge — branche `feat/consume-sentropic-0.3.0` : swap `@sent-tech/*@^0.2.0` → `@sentropic/design-system-*@^0.3.0` (+ adaptation des imports : `@sent-tech/components-svelte` → `@sentropic/design-system-svelte`, etc.). CI verte. Merge.
+- [x] PR DS `#4` (rebrand `@sentropic/{tokens,themes,components-svelte,docs}`) puis PR DS `#7` (renommage à la convention `@sentropic/design-system-*`). Tous les `package.json`, deps internes, imports source, workflows, docs prescriptives, lockfile.
+- [x] Bump versions à `0.3.0`.
+- [x] Publish npm `@sentropic/design-system-{tokens,themes,svelte}@0.3.0` (publish manuel via token bootstrap, première fois nécessaire car npm Trusted Publishing ne supporte pas le pre-publish).
+- [x] Trusted Publishers GitHub Actions configurés sur les 3 packages (repo `rhanka/sent-tech-design-system`, workflow `npm-publish.yml`). Les prochains tags `v*` publieront automatiquement via OIDC sans token.
+- [x] PR Forge `#14` mergée : Forge consomme `@sentropic/design-system-*@^0.3.0` depuis npm.
+- [ ] `npm deprecate @sent-tech/{tokens,themes,components-svelte}` avec message « renamed to @sentropic/design-system-* » (token actuel sans accès `@sent-tech` — à faire en local par le mainteneur ou via nouveau token multi-scope).
+- [ ] Révoquer le token bootstrap `sentropic-bootstrap-publish-v0.3.0` (expire dans 7j de toute façon, mais hygiène).
 
 ## Phase 4 — Compléter la couverture Carbon
 
