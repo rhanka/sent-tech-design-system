@@ -1,3 +1,4 @@
+export { default as Accordion } from "./Accordion.svelte";
 export { default as Alert } from "./Alert.svelte";
 export { default as Badge } from "./Badge.svelte";
 export { default as Breadcrumb } from "./Breadcrumb.svelte";
@@ -31,6 +32,7 @@ export { default as ThemeProvider } from "./ThemeProvider.svelte";
 export { default as Textarea } from "./Textarea.svelte";
 export { default as Toast } from "./Toast.svelte";
 export { default as Tooltip } from "./Tooltip.svelte";
+export type { AccordionItem } from "./Accordion.svelte";
 export type { BreadcrumbItem } from "./Breadcrumb.svelte";
 export type { ComboboxOption } from "./Combobox.svelte";
 export type { DropdownOption } from "./Dropdown.svelte";
