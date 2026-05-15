@@ -59,8 +59,8 @@ Périmètre : scope npm + dépendances internes + imports source + docs + workfl
 - [x] Publish npm `@sentropic/design-system-{tokens,themes,svelte}@0.3.0` (publish manuel via token bootstrap, première fois nécessaire car npm Trusted Publishing ne supporte pas le pre-publish).
 - [x] Trusted Publishers GitHub Actions configurés sur les 3 packages (repo `rhanka/sent-tech-design-system`, workflow `npm-publish.yml`). Les prochains tags `v*` publieront automatiquement via OIDC sans token.
 - [x] PR Forge `#14` mergée : Forge consomme `@sentropic/design-system-*@^0.3.0` depuis npm.
-- [ ] `npm deprecate @sent-tech/{tokens,themes,components-svelte}` avec message « renamed to @sentropic/design-system-* » (token actuel sans accès `@sent-tech` — à faire en local par le mainteneur ou via nouveau token multi-scope).
-- [ ] Révoquer le token bootstrap `sentropic-bootstrap-publish-v0.3.0` (expire dans 7j de toute façon, mais hygiène).
+- [x] `npm deprecate @sent-tech/{tokens,themes,components-svelte}` avec message « Renamed to @sentropic/design-system-* ». Vérifié via `npm view @sent-tech/<name> deprecated`. Le warning s'affiche sur la page npm de chaque package + à chaque `npm install`.
+- [x] Tokens éphémères révoqués (`sentropic-bootstrap-publish-v0.3.0` et `sent-tech-deprecate-bootstrap`). `~/.npmrc` restauré à son état pré-session.
 
 ## Phase 4 — Compléter la couverture Carbon
 
