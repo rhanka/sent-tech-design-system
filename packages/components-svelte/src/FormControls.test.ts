@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import Checkbox from "./lib/Checkbox.svelte";
 import Combobox from "./lib/Combobox.svelte";
 import Input from "./lib/Input.svelte";
+import MultiSelect from "./lib/MultiSelect.svelte";
 import NumberInput from "./lib/NumberInput.svelte";
 import PasswordInput from "./lib/PasswordInput.svelte";
 import Radio from "./lib/Radio.svelte";
@@ -117,5 +118,28 @@ describe("form controls", () => {
     await fireEvent.input(field, { target: { value: "ent" } });
     expect(screen.queryByRole("option", { name: "Forge" })).toBeNull();
     expect(screen.getByRole("option", { name: "Entropic" })).toBeTruthy();
+  });
+
+  it("renders a MultiSelect trigger and toggles option selection", async () => {
+    let captured: string[] = [];
+    render(MultiSelect, {
+      props: {
+        label: "Tags",
+        options: [
+          { label: "Alpha", value: "a" },
+          { label: "Beta", value: "b" }
+        ],
+        onchange: (next: string[]) => {
+          captured = next;
+        }
+      }
+    });
+    const trigger = screen.getByRole("button", { expanded: false });
+    expect(trigger.getAttribute("aria-haspopup")).toBe("listbox");
+    await fireEvent.click(trigger);
+    await fireEvent.click(screen.getByRole("option", { name: /Alpha/ }));
+    expect(captured).toEqual(["a"]);
+    await fireEvent.click(screen.getByRole("option", { name: /Beta/ }));
+    expect(captured).toEqual(["a", "b"]);
   });
 });
