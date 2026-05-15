@@ -3,7 +3,10 @@ import { createRawSnippet } from "svelte";
 import { describe, expect, it } from "vitest";
 import Checkbox from "./lib/Checkbox.svelte";
 import Input from "./lib/Input.svelte";
+import NumberInput from "./lib/NumberInput.svelte";
+import PasswordInput from "./lib/PasswordInput.svelte";
 import Radio from "./lib/Radio.svelte";
+import Search from "./lib/Search.svelte";
 import Select from "./lib/Select.svelte";
 import Switch from "./lib/Switch.svelte";
 import Textarea from "./lib/Textarea.svelte";
@@ -43,5 +46,39 @@ describe("form controls", () => {
     expect(screen.getByRole("switch", { name: "Notifications" }).getAttribute("aria-checked")).toBe(
       "true"
     );
+  });
+
+  it("renders a NumberInput with increment and decrement buttons", () => {
+    render(NumberInput, { props: { label: "Quantity", value: 3, min: 0, max: 10 } });
+    const field = screen.getByLabelText("Quantity") as HTMLInputElement;
+    expect(field.type).toBe("number");
+    expect(field.value).toBe("3");
+    expect(screen.getByRole("button", { name: "Increment value" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Decrement value" })).toBeTruthy();
+  });
+
+  it("disables NumberInput buttons at min/max boundaries", () => {
+    render(NumberInput, { props: { label: "Floor", value: 0, min: 0, max: 5 } });
+    expect(
+      (screen.getByRole("button", { name: "Decrement value" }) as HTMLButtonElement).disabled
+    ).toBe(true);
+    expect(
+      (screen.getByRole("button", { name: "Increment value" }) as HTMLButtonElement).disabled
+    ).toBe(false);
+  });
+
+  it("renders a Search input with searchbox role", () => {
+    render(Search, { props: { label: "Recherche", placeholder: "Filter" } });
+    const box = screen.getByRole("searchbox", { name: "Recherche" }) as HTMLInputElement;
+    expect(box.type).toBe("search");
+    expect(box.placeholder).toBe("Filter");
+  });
+
+  it("renders a PasswordInput hidden by default with toggle button", () => {
+    render(PasswordInput, { props: { label: "Mot de passe" } });
+    const field = screen.getByLabelText("Mot de passe") as HTMLInputElement;
+    expect(field.type).toBe("password");
+    const toggle = screen.getByRole("button", { name: "Show password" });
+    expect(toggle.getAttribute("aria-pressed")).toBe("false");
   });
 });
