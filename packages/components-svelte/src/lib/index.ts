@@ -21,6 +21,7 @@ export { default as SideNav } from "./SideNav.svelte";
 export { default as Switch } from "./Switch.svelte";
 export { default as Table } from "./Table.svelte";
 export { default as Tabs } from "./Tabs.svelte";
+export { default as Tag } from "./Tag.svelte";
 export { default as ThemeProvider } from "./ThemeProvider.svelte";
 export { default as Textarea } from "./Textarea.svelte";
 export { default as Toast } from "./Toast.svelte";
