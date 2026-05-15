@@ -16,10 +16,10 @@
 
 ## État actuel (synthèse)
 
-- Composants Svelte livrés : 35.
+- Composants Svelte livrés : 37.
 - Consommateurs migrés : 2 (sentech-forge, spa-transpose-cv).
 - Consommateurs Svelte connus restant à migrer : 3 (sent-tech/ui, sent-tech/external/top-ai-ideas-fullstack/ui, nc-fullstack/ui).
-- Couverture vs Carbon : ~35 / ~40 composants (gaps majeurs restants : FileUploader, DatePicker).
+- Couverture vs Carbon : ~37 / ~40 composants (gaps majeurs restants : FileUploader, DatePicker).
 
 ---
 
@@ -88,10 +88,10 @@ Composants présents dans Carbon, absents du DS, requis pour les consommateurs r
 - [ ] InlineLoading.
 - [ ] OverflowMenu.
 - [ ] PaginationNav (vs `Pagination` simple).
-- [ ] ProgressBar.
+- [x] ProgressBar — value/max + indeterminate, tones, sizes, full aria (DS PR #11).
 - [ ] ProgressIndicator (steps).
 - [ ] SkeletonText.
-- [ ] Toggle (vs `Switch` — Carbon distingue).
+- [x] Toggle — vs `Switch`, ajoute label latéral on/off (DS PR #11).
 - [ ] Toggletip — clic vs hover.
 - [ ] UI Shell Header — DS a `SideNav`, manque le Header complet.
 
