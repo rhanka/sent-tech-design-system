@@ -16,10 +16,10 @@
 
 ## État actuel (synthèse)
 
-- Composants Svelte livrés : 34.
+- Composants Svelte livrés : 35.
 - Consommateurs migrés : 2 (sentech-forge, spa-transpose-cv).
 - Consommateurs Svelte connus restant à migrer : 3 (sent-tech/ui, sent-tech/external/top-ai-ideas-fullstack/ui, nc-fullstack/ui).
-- Couverture vs Carbon : ~34 / ~40 composants (gaps majeurs restants : DataTable riche, FileUploader, DatePicker).
+- Couverture vs Carbon : ~35 / ~40 composants (gaps majeurs restants : FileUploader, DatePicker).
 
 ---
 
@@ -68,7 +68,7 @@ Composants présents dans Carbon, absents du DS, requis pour les consommateurs r
 
 ### Priorité haute (chat Entropic + transpose-cv + nc-fullstack form-heavy)
 
-- [ ] DataTable — tri, pagination intégrée, sélection ligne, cellules custom (vs notre `Table` minimal).
+- [x] DataTable — tri, pagination intégrée, sélection ligne, cellules custom (vs notre `Table` minimal) (DS PR Phase 4 DataTable).
 - [ ] FileUploader — drag-drop, multi, progress.
 - [x] Combobox — recherche dans la liste (DS PR Phase 4 batch 2).
 - [x] MultiSelect — sélection multiple avec recherche (DS PR Phase 4 batch 2).
