@@ -13,6 +13,7 @@ import Select from "./lib/Select.svelte";
 import Slider from "./lib/Slider.svelte";
 import Switch from "./lib/Switch.svelte";
 import Textarea from "./lib/Textarea.svelte";
+import Toggle from "./lib/Toggle.svelte";
 
 const options = createRawSnippet(() => ({
   render: () => '<option value="forge">Forge</option><option value="entropic">Entropic</option>'
@@ -163,5 +164,20 @@ describe("form controls", () => {
     expect(range.value).toBe("25");
     await fireEvent.input(range, { target: { value: "60" } });
     expect(latest).toBe(60);
+  });
+
+  it("renders a Toggle with on/off side label reflecting state", () => {
+    render(Toggle, { props: { label: "Notifications", checked: true } });
+    expect(screen.getByRole("switch", { name: "Notifications" }).getAttribute("aria-checked")).toBe(
+      "true"
+    );
+    expect(screen.getByText("On")).toBeTruthy();
+  });
+
+  it("renders a Toggle with custom labelOn/labelOff", () => {
+    render(Toggle, {
+      props: { label: "Mode", labelOn: "Sombre", labelOff: "Clair", checked: false }
+    });
+    expect(screen.getByText("Clair")).toBeTruthy();
   });
 });
