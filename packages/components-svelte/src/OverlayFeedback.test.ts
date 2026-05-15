@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/svelte";
 import { createRawSnippet } from "svelte";
 import { describe, expect, it, vi } from "vitest";
+import Accordion from "./lib/Accordion.svelte";
 import Modal from "./lib/Modal.svelte";
 import Tag from "./lib/Tag.svelte";
 import Toast from "./lib/Toast.svelte";
@@ -47,5 +48,62 @@ describe("overlay and feedback components", () => {
     const btn = screen.getByRole("button", { name: "Dismiss" });
     await fireEvent.click(btn);
     expect(onDismiss).toHaveBeenCalledTimes(1);
+  });
+
+  it("renders an Accordion with collapsed sections by default", () => {
+    render(Accordion, {
+      props: {
+        items: [
+          { id: "a", title: "Alpha", content: "Alpha body" },
+          { id: "b", title: "Beta", content: "Beta body" }
+        ]
+      }
+    });
+    const trigger = screen.getByRole("button", { name: "Alpha" });
+    expect(trigger.getAttribute("aria-expanded")).toBe("false");
+    expect(screen.queryByText("Alpha body")).toBeNull();
+  });
+
+  it("expands an Accordion section when triggered and collapses others in single mode", async () => {
+    let latest: string[] = [];
+    render(Accordion, {
+      props: {
+        items: [
+          { id: "a", title: "Alpha", content: "Alpha body" },
+          { id: "b", title: "Beta", content: "Beta body" }
+        ],
+        onchange: (open: string[]) => {
+          latest = open;
+        }
+      }
+    });
+    await fireEvent.click(screen.getByRole("button", { name: "Alpha" }));
+    expect(latest).toEqual(["a"]);
+    expect(screen.getByText("Alpha body")).toBeTruthy();
+    await fireEvent.click(screen.getByRole("button", { name: "Beta" }));
+    expect(latest).toEqual(["b"]);
+    expect(screen.queryByText("Alpha body")).toBeNull();
+    expect(screen.getByText("Beta body")).toBeTruthy();
+  });
+
+  it("supports multi-open Accordion mode", async () => {
+    let latest: string[] = [];
+    render(Accordion, {
+      props: {
+        multiple: true,
+        items: [
+          { id: "a", title: "Alpha", content: "Alpha body" },
+          { id: "b", title: "Beta", content: "Beta body" }
+        ],
+        onchange: (open: string[]) => {
+          latest = open;
+        }
+      }
+    });
+    await fireEvent.click(screen.getByRole("button", { name: "Alpha" }));
+    await fireEvent.click(screen.getByRole("button", { name: "Beta" }));
+    expect(latest).toEqual(["a", "b"]);
+    expect(screen.getByText("Alpha body")).toBeTruthy();
+    expect(screen.getByText("Beta body")).toBeTruthy();
   });
 });
