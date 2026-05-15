@@ -17,8 +17,8 @@
 ## État actuel (synthèse)
 
 - Composants Svelte livrés : 34.
-- Consommateurs migrés : 1 (sentech-forge).
-- Consommateurs Svelte connus restant à migrer : 4 (sent-tech/ui, sent-tech/external/top-ai-ideas-fullstack/ui, nc-fullstack/ui, spa-transpose-cv/ui).
+- Consommateurs migrés : 2 (sentech-forge, spa-transpose-cv).
+- Consommateurs Svelte connus restant à migrer : 3 (sent-tech/ui, sent-tech/external/top-ai-ideas-fullstack/ui, nc-fullstack/ui).
 - Couverture vs Carbon : ~34 / ~40 composants (gaps majeurs restants : DataTable riche, FileUploader, DatePicker).
 
 ---
@@ -110,7 +110,7 @@ Pré-requis : Phase 3 livrée. Phase 4 partielle suffit selon les besoins de cha
 - [ ] `sent-tech/ui` (site Sent Tech principal — distinct de Forge). Stack : Svelte 5 + SvelteKit + Vite 5.
 - [ ] `sent-tech/external/top-ai-ideas-fullstack/ui` (chat conversationnel, ex « top-ai-ideas »). Stack : Svelte 5 + SvelteKit + Vite 6. Form-heavy + chat → priorité Phase 4 haute.
 - [ ] `nc-fullstack/ui` (NC Svelte gen-AI). Stack : Svelte 5 + SvelteKit + Vite 6.
-- [ ] `spa-transpose-cv/ui` (Scalian transpose CV). Stack : Svelte 5 + SvelteKit + Vite 6.
+- [x] `spa-transpose-cv/ui` (Scalian transpose CV). Stack : Svelte 5 + SvelteKit + Vite 6. PR #16 mergée : bridge thème + TenantBuilderForm (Input/Button/Checkbox/Card) + ModelSelector (Card+radiogroup). Disclaimer + dropzones DOCX/CV laissés custom (FileUploader DS pas livré).
 
 ## Phase 6 — Ménage
 
