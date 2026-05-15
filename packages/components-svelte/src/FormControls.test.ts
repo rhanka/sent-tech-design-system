@@ -1,7 +1,8 @@
-import { render, screen } from "@testing-library/svelte";
+import { fireEvent, render, screen } from "@testing-library/svelte";
 import { createRawSnippet } from "svelte";
 import { describe, expect, it } from "vitest";
 import Checkbox from "./lib/Checkbox.svelte";
+import Combobox from "./lib/Combobox.svelte";
 import Input from "./lib/Input.svelte";
 import NumberInput from "./lib/NumberInput.svelte";
 import PasswordInput from "./lib/PasswordInput.svelte";
@@ -80,5 +81,41 @@ describe("form controls", () => {
     expect(field.type).toBe("password");
     const toggle = screen.getByRole("button", { name: "Show password" });
     expect(toggle.getAttribute("aria-pressed")).toBe("false");
+  });
+
+  it("renders a Combobox with combobox role and option list when expanded", async () => {
+    render(Combobox, {
+      props: {
+        label: "Pays",
+        options: [
+          { label: "France", value: "fr" },
+          { label: "Belgique", value: "be" },
+          { label: "Suisse", value: "ch" }
+        ]
+      }
+    });
+    const field = screen.getByLabelText("Pays") as HTMLInputElement;
+    expect(field.getAttribute("role")).toBe("combobox");
+    expect(field.getAttribute("aria-expanded")).toBe("false");
+    await fireEvent.focus(field);
+    expect(field.getAttribute("aria-expanded")).toBe("true");
+    expect(screen.getByRole("option", { name: "France" })).toBeTruthy();
+  });
+
+  it("filters Combobox options as the user types", async () => {
+    render(Combobox, {
+      props: {
+        label: "Cible",
+        options: [
+          { label: "Forge", value: "forge" },
+          { label: "Entropic", value: "entropic" }
+        ]
+      }
+    });
+    const field = screen.getByLabelText("Cible") as HTMLInputElement;
+    await fireEvent.focus(field);
+    await fireEvent.input(field, { target: { value: "ent" } });
+    expect(screen.queryByRole("option", { name: "Forge" })).toBeNull();
+    expect(screen.getByRole("option", { name: "Entropic" })).toBeTruthy();
   });
 });
