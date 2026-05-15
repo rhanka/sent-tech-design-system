@@ -1,13 +1,16 @@
-import { render, screen } from "@testing-library/svelte";
+import { fireEvent, render, screen } from "@testing-library/svelte";
 import { createRawSnippet } from "svelte";
 import { describe, expect, it } from "vitest";
 import Checkbox from "./lib/Checkbox.svelte";
+import Combobox from "./lib/Combobox.svelte";
 import Input from "./lib/Input.svelte";
+import MultiSelect from "./lib/MultiSelect.svelte";
 import NumberInput from "./lib/NumberInput.svelte";
 import PasswordInput from "./lib/PasswordInput.svelte";
 import Radio from "./lib/Radio.svelte";
 import Search from "./lib/Search.svelte";
 import Select from "./lib/Select.svelte";
+import Slider from "./lib/Slider.svelte";
 import Switch from "./lib/Switch.svelte";
 import Textarea from "./lib/Textarea.svelte";
 
@@ -80,5 +83,85 @@ describe("form controls", () => {
     expect(field.type).toBe("password");
     const toggle = screen.getByRole("button", { name: "Show password" });
     expect(toggle.getAttribute("aria-pressed")).toBe("false");
+  });
+
+  it("renders a Combobox with combobox role and option list when expanded", async () => {
+    render(Combobox, {
+      props: {
+        label: "Pays",
+        options: [
+          { label: "France", value: "fr" },
+          { label: "Belgique", value: "be" },
+          { label: "Suisse", value: "ch" }
+        ]
+      }
+    });
+    const field = screen.getByLabelText("Pays") as HTMLInputElement;
+    expect(field.getAttribute("role")).toBe("combobox");
+    expect(field.getAttribute("aria-expanded")).toBe("false");
+    await fireEvent.focus(field);
+    expect(field.getAttribute("aria-expanded")).toBe("true");
+    expect(screen.getByRole("option", { name: "France" })).toBeTruthy();
+  });
+
+  it("filters Combobox options as the user types", async () => {
+    render(Combobox, {
+      props: {
+        label: "Cible",
+        options: [
+          { label: "Forge", value: "forge" },
+          { label: "Entropic", value: "entropic" }
+        ]
+      }
+    });
+    const field = screen.getByLabelText("Cible") as HTMLInputElement;
+    await fireEvent.focus(field);
+    await fireEvent.input(field, { target: { value: "ent" } });
+    expect(screen.queryByRole("option", { name: "Forge" })).toBeNull();
+    expect(screen.getByRole("option", { name: "Entropic" })).toBeTruthy();
+  });
+
+  it("renders a MultiSelect trigger and toggles option selection", async () => {
+    let captured: string[] = [];
+    render(MultiSelect, {
+      props: {
+        label: "Tags",
+        options: [
+          { label: "Alpha", value: "a" },
+          { label: "Beta", value: "b" }
+        ],
+        onchange: (next: string[]) => {
+          captured = next;
+        }
+      }
+    });
+    const trigger = screen.getByRole("button", { expanded: false });
+    expect(trigger.getAttribute("aria-haspopup")).toBe("listbox");
+    await fireEvent.click(trigger);
+    await fireEvent.click(screen.getByRole("option", { name: /Alpha/ }));
+    expect(captured).toEqual(["a"]);
+    await fireEvent.click(screen.getByRole("option", { name: /Beta/ }));
+    expect(captured).toEqual(["a", "b"]);
+  });
+
+  it("renders a Slider with range input bound to value", async () => {
+    let latest = 0;
+    render(Slider, {
+      props: {
+        label: "Volume",
+        value: 25,
+        min: 0,
+        max: 100,
+        step: 5,
+        onchange: (next: number) => {
+          latest = next;
+        }
+      }
+    });
+    const range = screen.getByLabelText("Volume") as HTMLInputElement;
+    expect(range.type).toBe("range");
+    expect(range.value).toBe("25");
+    await fireEvent.input(range, { target: { value: "60" } });
+    expect(latest).toBe(60);
   });
 });
