@@ -2,12 +2,13 @@
   import type { Snippet } from "svelte";
   import type { HTMLSelectAttributes } from "svelte/elements";
 
-  type SelectProps = Omit<HTMLSelectAttributes, "class" | "size"> & {
+  type SelectProps = Omit<HTMLSelectAttributes, "class" | "size" | "value"> & {
     label?: string;
     helperText?: string;
     errorText?: string;
     invalid?: boolean;
     size?: "sm" | "md" | "lg";
+    value?: string | string[] | number | null;
     class?: string;
     children?: Snippet;
   };
@@ -18,6 +19,7 @@
     errorText,
     invalid = false,
     size = "md",
+    value = $bindable(""),
     class: className,
     children,
     ...rest
@@ -31,7 +33,12 @@
 <div class={fieldClasses()}>
   <label class="st-field__control">
     {#if label}<span class="st-field__label">{label}</span>{/if}
-    <select {...rest} class={controlClasses()} aria-invalid={isInvalid() ? "true" : undefined}>
+    <select
+      {...rest}
+      bind:value
+      class={controlClasses()}
+      aria-invalid={isInvalid() ? "true" : undefined}
+    >
       {@render children?.()}
     </select>
   </label>
