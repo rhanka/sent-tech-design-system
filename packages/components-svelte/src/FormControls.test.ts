@@ -25,6 +25,21 @@ describe("form controls", () => {
     expect(screen.getByLabelText("Project")).toHaveProperty("placeholder", "Sent Tech");
   });
 
+  it("Input exposes value as bindable so consumers can two-way bind", async () => {
+    render(Input, { props: { label: "Title", value: "" } });
+    const field = screen.getByLabelText("Title") as HTMLInputElement;
+    await fireEvent.input(field, { target: { value: "Hello" } });
+    expect(field.value).toBe("Hello");
+  });
+
+  it("Textarea exposes value as bindable so consumers can two-way bind", async () => {
+    render(Textarea, { props: { label: "Notes", value: "" } });
+    const field = screen.getByLabelText("Notes") as HTMLTextAreaElement;
+    await fireEvent.input(field, { target: { value: "ligne" } });
+    expect(field.value).toBe("ligne");
+  });
+
+
   it("marks invalid inputs with aria-invalid", () => {
     render(Input, { props: { label: "Email", invalid: true, errorText: "Email requis" } });
     expect(screen.getByLabelText("Email").getAttribute("aria-invalid")).toBe("true");

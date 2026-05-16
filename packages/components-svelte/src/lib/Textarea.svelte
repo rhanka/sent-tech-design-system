@@ -1,11 +1,12 @@
 <script lang="ts">
   import type { HTMLTextareaAttributes } from "svelte/elements";
 
-  type TextareaProps = Omit<HTMLTextareaAttributes, "class"> & {
+  type TextareaProps = Omit<HTMLTextareaAttributes, "class" | "value"> & {
     label?: string;
     helperText?: string;
     errorText?: string;
     invalid?: boolean;
+    value?: string | null;
     class?: string;
   };
 
@@ -14,6 +15,7 @@
     helperText,
     errorText,
     invalid = false,
+    value = $bindable(""),
     class: className,
     ...rest
   }: TextareaProps = $props();
@@ -25,7 +27,12 @@
 <div class={fieldClasses()}>
   <label class="st-field__control">
     {#if label}<span class="st-field__label">{label}</span>{/if}
-    <textarea {...rest} class="st-textarea" aria-invalid={isInvalid() ? "true" : undefined}></textarea>
+    <textarea
+      {...rest}
+      bind:value
+      class="st-textarea"
+      aria-invalid={isInvalid() ? "true" : undefined}
+    ></textarea>
   </label>
   {#if errorText}
     <span class="st-field__error">{errorText}</span>
