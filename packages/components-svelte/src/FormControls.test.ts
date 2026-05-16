@@ -17,6 +17,7 @@ import Select from "./lib/Select.svelte";
 import Slider from "./lib/Slider.svelte";
 import Switch from "./lib/Switch.svelte";
 import Textarea from "./lib/Textarea.svelte";
+import TileGroup from "./lib/TileGroup.svelte";
 import Toggle from "./lib/Toggle.svelte";
 
 const options = createRawSnippet(() => ({
@@ -455,5 +456,30 @@ describe("form controls", () => {
       'input[name="pseudo"]'
     ) as HTMLInputElement;
     expect(input.closest("fieldset[disabled]")).toBe(fieldset);
+  });
+
+  it("TileGroup renders one radio per item and emits the selected value on change", async () => {
+    let captured = "";
+    render(TileGroup, {
+      props: {
+        legend: "Plan",
+        name: "plan",
+        items: [
+          { value: "free", label: "Free", description: "Community" },
+          { value: "pro", label: "Pro", description: "Teams" }
+        ],
+        onchange: (next: string) => {
+          captured = next;
+        }
+      }
+    });
+    const radios = screen.getAllByRole("radio") as HTMLInputElement[];
+    expect(radios).toHaveLength(2);
+    expect(radios[0].name).toBe("plan");
+    expect(screen.getByText("Free")).toBeTruthy();
+    expect(screen.getByText("Community")).toBeTruthy();
+    await fireEvent.click(radios[1]);
+    expect(radios[1].checked).toBe(true);
+    expect(captured).toBe("pro");
   });
 });
