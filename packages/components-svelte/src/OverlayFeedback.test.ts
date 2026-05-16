@@ -2,6 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/svelte";
 import { createRawSnippet } from "svelte";
 import { describe, expect, it, vi } from "vitest";
 import Accordion from "./lib/Accordion.svelte";
+import CodeSnippet from "./lib/CodeSnippet.svelte";
 import CopyButton from "./lib/CopyButton.svelte";
 import Header from "./lib/Header.svelte";
 import InlineLoading from "./lib/InlineLoading.svelte";
@@ -205,5 +206,35 @@ describe("overlay and feedback components", () => {
     const banner = screen.getByRole("banner", { name: "Application header" });
     expect(banner).toBeTruthy();
     expect(banner.textContent).toContain("Sentropic Console");
+  });
+
+  it("CodeSnippet block renders <pre><code> with the source and a copy button by default", async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: { writeText }
+    });
+    const { container } = render(CodeSnippet, {
+      props: { code: "npm install @sentropic/design-system-svelte", language: "bash" }
+    });
+    const pre = container.querySelector("pre.st-codeSnippet") as HTMLPreElement;
+    expect(pre).toBeTruthy();
+    expect(pre.getAttribute("data-language")).toBe("bash");
+    const code = pre.querySelector("code.st-codeSnippet__code") as HTMLElement;
+    expect(code.textContent).toBe("npm install @sentropic/design-system-svelte");
+    const copy = screen.getByRole("button", { name: /Copy/ });
+    await fireEvent.click(copy);
+    expect(writeText).toHaveBeenCalledWith("npm install @sentropic/design-system-svelte");
+  });
+
+  it("CodeSnippet inline variant renders a bare <code> without a copy button", () => {
+    const { container } = render(CodeSnippet, {
+      props: { code: "npm run dev", inline: true }
+    });
+    const code = container.querySelector("code.st-codeSnippet--inline") as HTMLElement;
+    expect(code).toBeTruthy();
+    expect(code.textContent).toBe("npm run dev");
+    expect(container.querySelector("pre")).toBeNull();
+    expect(screen.queryByRole("button", { name: /Copy/ })).toBeNull();
   });
 });
