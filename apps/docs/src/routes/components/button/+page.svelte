@@ -35,6 +35,13 @@
     <div class="docs-example" aria-label={t(locale, "states")}>
       <Button disabled>Disabled</Button>
       <Button variant="secondary" disabled>Disabled secondary</Button>
+      <Button variant="ghost" disabled>Disabled ghost</Button>
+      <Button variant="danger" disabled>Disabled danger</Button>
+    </div>
+    <div class="docs-example" aria-label="Form types">
+      <Button type="submit">Submit</Button>
+      <Button type="reset" variant="secondary">Reset</Button>
+      <Button type="button" variant="ghost">Button</Button>
     </div>
   </section>
 
@@ -47,6 +54,7 @@
       <tbody>
         <tr><td><code>variant</code></td><td><code>"primary" | "secondary" | "ghost" | "danger"</code></td><td><code>"primary"</code></td></tr>
         <tr><td><code>size</code></td><td><code>"sm" | "md" | "lg"</code></td><td><code>"md"</code></td></tr>
+        <tr><td><code>type</code></td><td><code>"button" | "submit" | "reset"</code></td><td><code>"button"</code></td></tr>
         <tr><td><code>disabled</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
       </tbody>
     </table>
