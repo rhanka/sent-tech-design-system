@@ -11,6 +11,7 @@
     <header class="docs-header">
       <a class="docs-brand" href="/">Sent Tech DS</a>
       <nav class="docs-nav" aria-label="Documentation">
+        <a href="/">Catalogue</a>
         <a href="/components/button">Button</a>
         <a href="/components/forms">Forms</a>
         <a href="/components/overlays">Overlays</a>
@@ -21,5 +22,11 @@
     <main class="docs-main">
       {@render children()}
     </main>
+    <footer class="docs-footer">
+      <a href="https://github.com/rhanka/sent-tech-design-system" rel="noreferrer" target="_blank">
+        github.com/rhanka/sent-tech-design-system
+      </a>
+      <span>Sent Tech Design System</span>
+    </footer>
   </div>
 </ThemeProvider>
