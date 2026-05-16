@@ -179,6 +179,17 @@ select {
   color: var(--st-semantic-action-primaryText, #ffffff);
 }
 
+.docs-footer {
+  align-items: center;
+  border-top: 1px solid var(--st-semantic-border-subtle, #e2e8f0);
+  color: var(--st-semantic-text-secondary, #475569);
+  display: flex;
+  font-size: 0.85rem;
+  gap: 1rem;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+}
+
 @media (max-width: 640px) {
   .docs-header {
     align-items: flex-start;
