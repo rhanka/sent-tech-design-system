@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import Checkbox from "./lib/Checkbox.svelte";
 import Combobox from "./lib/Combobox.svelte";
 import DatePicker, { type DatePickerRange } from "./lib/DatePicker.svelte";
+import FileUploader from "./lib/FileUploader.svelte";
 import Input from "./lib/Input.svelte";
 import MultiSelect from "./lib/MultiSelect.svelte";
 import NumberInput from "./lib/NumberInput.svelte";
@@ -19,6 +20,18 @@ import Toggle from "./lib/Toggle.svelte";
 const options = createRawSnippet(() => ({
   render: () => '<option value="forge">Forge</option><option value="entropic">Entropic</option>'
 }));
+
+function makeFileList(files: File[]): FileList {
+  const list = {
+    ...files,
+    length: files.length,
+    item: (index: number) => files[index] ?? null,
+    [Symbol.iterator]: function* () {
+      for (const f of files) yield f;
+    }
+  } as unknown as FileList;
+  return list;
+}
 
 describe("form controls", () => {
   it("renders an accessible text input", () => {
@@ -280,5 +293,81 @@ describe("form controls", () => {
     });
     const field = screen.getByLabelText("Période") as HTMLInputElement;
     expect(field.value).toBe(`${formatter.format(start)} - ${formatter.format(end)}`);
+  });
+
+  it("renders a FileUploader with label, dropzone hint, and trigger button", () => {
+    render(FileUploader, {
+      props: { label: "Pièces jointes", dropzoneLabel: "Déposez vos fichiers" }
+    });
+    expect(screen.getByText("Pièces jointes")).toBeTruthy();
+    expect(screen.getByText("Déposez vos fichiers")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Choose file" })).toBeTruthy();
+  });
+
+  it("renders a FileUploader with multiple-aware default trigger label", () => {
+    render(FileUploader, { props: { label: "Documents", multiple: true } });
+    expect(screen.getByRole("button", { name: "Choose files" })).toBeTruthy();
+  });
+
+  it("FileUploader exposes selected files via onfiles callback on input change", async () => {
+    const captured: File[][] = [];
+    render(FileUploader, {
+      props: {
+        label: "CV",
+        multiple: true,
+        onfiles: (next: File[]) => {
+          captured.push(next);
+        }
+      }
+    });
+    const input = screen.getByLabelText("CV") as HTMLInputElement;
+    const fileA = new File(["alpha"], "alpha.txt", { type: "text/plain" });
+    const fileB = new File(["beta"], "beta.txt", { type: "text/plain" });
+    Object.defineProperty(input, "files", {
+      value: makeFileList([fileA, fileB]),
+      configurable: true
+    });
+    await fireEvent.change(input);
+    expect(captured.at(-1)?.map((f) => f.name)).toEqual(["alpha.txt", "beta.txt"]);
+    expect(screen.getByText("alpha.txt")).toBeTruthy();
+    expect(screen.getByText("beta.txt")).toBeTruthy();
+  });
+
+  it("FileUploader removes a file when its remove button is clicked", async () => {
+    const captured: File[][] = [];
+    render(FileUploader, {
+      props: {
+        label: "Pièces",
+        multiple: true,
+        onfiles: (next: File[]) => {
+          captured.push(next);
+        }
+      }
+    });
+    const input = screen.getByLabelText("Pièces") as HTMLInputElement;
+    const fileA = new File(["a"], "alpha.txt", { type: "text/plain" });
+    const fileB = new File(["b"], "beta.txt", { type: "text/plain" });
+    Object.defineProperty(input, "files", {
+      value: makeFileList([fileA, fileB]),
+      configurable: true
+    });
+    await fireEvent.change(input);
+    expect(screen.getByText("alpha.txt")).toBeTruthy();
+    await fireEvent.click(screen.getByRole("button", { name: "Remove alpha.txt" }));
+    expect(screen.queryByText("alpha.txt")).toBeNull();
+    expect(screen.getByText("beta.txt")).toBeTruthy();
+    expect(captured.at(-1)?.map((f) => f.name)).toEqual(["beta.txt"]);
+  });
+
+  it("FileUploader flags files exceeding maxSizeBytes with an inline error", async () => {
+    render(FileUploader, { props: { label: "Image", maxSizeBytes: 4 } });
+    const input = screen.getByLabelText("Image") as HTMLInputElement;
+    const big = new File(["123456789"], "big.bin", { type: "application/octet-stream" });
+    Object.defineProperty(input, "files", {
+      value: makeFileList([big]),
+      configurable: true
+    });
+    await fireEvent.change(input);
+    expect(screen.getByText(/big\.bin exceeds the/)).toBeTruthy();
   });
 });
