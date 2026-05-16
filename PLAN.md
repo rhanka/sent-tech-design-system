@@ -6,7 +6,7 @@
 
 ## Identité produit
 
-- Scope npm courant : `@sentropic/*` (v0.4.0 incluant les composants Phase 4 batch 1+2+3+DataTable).
+- Scope npm courant : `@sentropic/*` (v0.4.1 — Phase 4 batch 1+2+3+DataTable + fix bindable Input/Textarea/Select).
 - Convention nommage : `@sentropic/design-system-{tokens,themes,svelte}` (préfixe `design-system-` pour réserver l'espace `@sentropic` à d'autres familles de packages futurs).
 - Évolution prévue : `@sentropic/design-system-svelte` reste le bundle complet ; ouverture future possible vers `@sentropic/design-system-svelte-core` + `@sentropic/design-system-svelte-{component}` (opt-in granulaire par composant).
 - Scope npm legacy : `@sent-tech/*` (dernier publish v0.2.0 le 2026-05-13, à déprécier post-publish v0.3.0).
@@ -17,8 +17,8 @@
 ## État actuel (synthèse)
 
 - Composants Svelte livrés : 37.
-- Consommateurs migrés : 2 (sentech-forge, spa-transpose-cv).
-- Consommateurs Svelte connus restant à migrer : 3 (sent-tech/ui, sent-tech/external/top-ai-ideas-fullstack/ui, nc-fullstack/ui).
+- Consommateurs migrés : 3 (sentech-forge, spa-transpose-cv, sent-tech/ui).
+- Consommateurs Svelte connus restant à migrer : 2 (sent-tech/external/top-ai-ideas-fullstack/ui, nc-fullstack/ui).
 - Couverture vs Carbon : ~37 / ~40 composants (gaps majeurs restants : FileUploader, DatePicker).
 
 ---
@@ -107,7 +107,7 @@ Composants présents dans Carbon, absents du DS, requis pour les consommateurs r
 
 Pré-requis : Phase 3 livrée. Phase 4 partielle suffit selon les besoins de chaque app.
 
-- [ ] `sent-tech/ui` (site Sent Tech principal — distinct de Forge). Stack : Svelte 5 + SvelteKit + Vite 5.
+- [x] `sent-tech/ui` (site Sent Tech principal — distinct de Forge). Stack : Svelte 5 + SvelteKit + Vite 5. PR sent-tech #2 mergée : bridge thème via `app.html`+`app.css`+`ThemeProvider`, MissionForm (Input+Textarea+Button), ExportPanel (Select+Button+Link), AssetList (Card+Badge), OfferComposer (Select+MultiSelect+Button), routes harmonisées (Link/Button). A déclenché DS PR #13 fix bindable Input/Textarea/Select + release v0.4.1.
 - [ ] `sent-tech/external/top-ai-ideas-fullstack/ui` (chat conversationnel, ex « top-ai-ideas »). Stack : Svelte 5 + SvelteKit + Vite 6. Form-heavy + chat → priorité Phase 4 haute.
 - [ ] `nc-fullstack/ui` (NC Svelte gen-AI). Stack : Svelte 5 + SvelteKit + Vite 6.
 - [x] `spa-transpose-cv/ui` (Scalian transpose CV). Stack : Svelte 5 + SvelteKit + Vite 6. PR #16 mergée : bridge thème + TenantBuilderForm (Input/Button/Checkbox/Card) + ModelSelector (Card+radiogroup). Disclaimer + dropzones DOCX/CV laissés custom (FileUploader DS pas livré).
