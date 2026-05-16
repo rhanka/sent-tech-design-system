@@ -1,5 +1,12 @@
 <script lang="ts">
-  import { Badge, Button, Modal, Toast, Tooltip } from "@sentropic/design-system-svelte";
+  import {
+    Badge,
+    Button,
+    Modal,
+    OverflowMenu,
+    Toast,
+    Tooltip
+  } from "@sentropic/design-system-svelte";
   import { t, type Locale } from "$lib/i18n";
 
   let locale = $state<Locale>("fr");
@@ -40,6 +47,20 @@
   </section>
 
   <section class="docs-section">
+    <h2>OverflowMenu</h2>
+    <div class="docs-example docs-example--stack">
+      <OverflowMenu
+        triggerLabel="Row actions"
+        items={[
+          { value: "rename", label: "Rename" },
+          { value: "duplicate", label: "Duplicate" },
+          { value: "delete", label: "Delete", danger: true }
+        ]}
+      />
+    </div>
+  </section>
+
+  <section class="docs-section">
     <h2>{t(locale, "feedback")}</h2>
     <div class="docs-example docs-example--stack">
       <Toast tone="success" title="Saved" message="The tenant theme was compiled." />
@@ -57,6 +78,7 @@
         <tr><td><code>Modal</code></td><td><code>open</code>, <code>title</code>, <code>description</code>, <code>onclose</code></td><td><code>role="dialog"</code>, <code>aria-modal</code></td></tr>
         <tr><td><code>Tooltip</code></td><td><code>content</code>, <code>placement</code></td><td><code>role="tooltip"</code></td></tr>
         <tr><td><code>Toast</code></td><td><code>tone</code>, <code>title</code>, <code>message</code></td><td><code>role="status"</code> or <code>role="alert"</code></td></tr>
+        <tr><td><code>OverflowMenu</code></td><td><code>items</code>, <code>open</code>, <code>placement</code>, <code>onselect</code></td><td><code>aria-haspopup="menu"</code>, <code>role="menu"</code></td></tr>
       </tbody>
     </table>
   </section>
