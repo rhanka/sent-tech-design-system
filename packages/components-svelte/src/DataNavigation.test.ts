@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, within } from "@testing-library/svelte";
 import { describe, expect, it } from "vitest";
 import Breadcrumb from "./lib/Breadcrumb.svelte";
+import ContentSwitcher from "./lib/ContentSwitcher.svelte";
 import DataTable from "./lib/DataTable.svelte";
 import Pagination from "./lib/Pagination.svelte";
 import SideNav from "./lib/SideNav.svelte";
@@ -190,5 +191,42 @@ describe("data and navigation components", () => {
 
     expect(screen.getByRole("navigation", { name: "Components" })).toBeTruthy();
     expect(screen.getByRole("link", { name: "Data" }).getAttribute("aria-current")).toBe("page");
+  });
+
+  it("renders ContentSwitcher options as tabs and selects current value", () => {
+    render(ContentSwitcher, {
+      props: {
+        label: "Vue",
+        value: "table",
+        items: [
+          { value: "table", label: "Table" },
+          { value: "card", label: "Cartes" }
+        ]
+      }
+    });
+    const group = screen.getByRole("tablist", { name: "Vue" });
+    const table = within(group).getByRole("tab", { name: "Table" });
+    const card = within(group).getByRole("tab", { name: "Cartes" });
+    expect(table.getAttribute("aria-selected")).toBe("true");
+    expect(card.getAttribute("aria-selected")).toBe("false");
+  });
+
+  it("ContentSwitcher fires onchange when a different option is clicked", async () => {
+    let latest = "table";
+    render(ContentSwitcher, {
+      props: {
+        label: "Vue",
+        value: "table",
+        items: [
+          { value: "table", label: "Table" },
+          { value: "card", label: "Cartes" }
+        ],
+        onchange: (next: string) => {
+          latest = next;
+        }
+      }
+    });
+    await fireEvent.click(screen.getByRole("tab", { name: "Cartes" }));
+    expect(latest).toBe("card");
   });
 });
