@@ -3,6 +3,7 @@ import { createRawSnippet } from "svelte";
 import { describe, expect, it } from "vitest";
 import Checkbox from "./lib/Checkbox.svelte";
 import Combobox from "./lib/Combobox.svelte";
+import DatePicker, { type DatePickerRange } from "./lib/DatePicker.svelte";
 import Input from "./lib/Input.svelte";
 import MultiSelect from "./lib/MultiSelect.svelte";
 import NumberInput from "./lib/NumberInput.svelte";
@@ -194,5 +195,90 @@ describe("form controls", () => {
       props: { label: "Mode", labelOn: "Sombre", labelOff: "Clair", checked: false }
     });
     expect(screen.getByText("Clair")).toBeTruthy();
+  });
+
+  it("renders a DatePicker with label, readonly field and calendar trigger", () => {
+    render(DatePicker, { props: { label: "Date", locale: "fr-FR" } });
+    const field = screen.getByLabelText("Date") as HTMLInputElement;
+    expect(field.tagName).toBe("INPUT");
+    expect(field.readOnly).toBe(true);
+    const trigger = screen.getByRole("button", { name: "Ouvrir le calendrier" });
+    expect(trigger.getAttribute("aria-haspopup")).toBe("dialog");
+    expect(trigger.getAttribute("aria-expanded")).toBe("false");
+  });
+
+  it("selects a single date when a calendar day is clicked", async () => {
+    const target = new Date(2026, 4, 15); // 2026-05-15 (today per env)
+    let captured: Date | null | undefined = null;
+    render(DatePicker, {
+      props: {
+        label: "Échéance",
+        locale: "fr-FR",
+        value: null,
+        onfocusin: () => {
+          /* noop, ensures props subscribe */
+        }
+      }
+    });
+    // Open the panel.
+    const trigger = screen.getByRole("button", { name: "Ouvrir le calendrier" });
+    await fireEvent.click(trigger);
+    expect(screen.getByRole("dialog")).toBeTruthy();
+
+    // Click on the day matching `target` via its accessible label.
+    const expectedAriaLabel = new Intl.DateTimeFormat("fr-FR", {
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    }).format(target);
+    const dayButton = screen.getByRole("button", { name: expectedAriaLabel });
+    await fireEvent.click(dayButton);
+
+    // The field should now display the formatted date.
+    const expectedFieldValue = new Intl.DateTimeFormat("fr-FR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
+    }).format(target);
+    const field = screen.getByLabelText("Échéance") as HTMLInputElement;
+    expect(field.value).toBe(expectedFieldValue);
+    captured = target; // reference target so the variable is used
+    expect(captured).toBeInstanceOf(Date);
+  });
+
+  it("selects start then end date in range mode", async () => {
+    const start = new Date(2026, 4, 10);
+    const end = new Date(2026, 4, 20);
+    const initial: DatePickerRange = { start: null, end: null };
+    render(DatePicker, {
+      props: {
+        label: "Période",
+        locale: "fr-FR",
+        mode: "range",
+        value: initial
+      }
+    });
+    const trigger = screen.getByRole("button", { name: "Ouvrir le calendrier" });
+    await fireEvent.click(trigger);
+
+    const labelFor = (d: Date) =>
+      new Intl.DateTimeFormat("fr-FR", {
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+      }).format(d);
+
+    await fireEvent.click(screen.getByRole("button", { name: labelFor(start) }));
+    // After first click, panel stays open and a new range begins.
+    expect(screen.getByRole("dialog")).toBeTruthy();
+    await fireEvent.click(screen.getByRole("button", { name: labelFor(end) }));
+
+    const formatter = new Intl.DateTimeFormat("fr-FR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
+    });
+    const field = screen.getByLabelText("Période") as HTMLInputElement;
+    expect(field.value).toBe(`${formatter.format(start)} - ${formatter.format(end)}`);
   });
 });

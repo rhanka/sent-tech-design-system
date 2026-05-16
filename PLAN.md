@@ -16,10 +16,10 @@
 
 ## État actuel (synthèse)
 
-- Composants Svelte livrés : 37.
+- Composants Svelte livrés : 38.
 - Consommateurs migrés : 3 (sentech-forge, spa-transpose-cv, sent-tech/ui).
 - Consommateurs Svelte connus restant à migrer : 2 (sent-tech/external/top-ai-ideas-fullstack/ui, nc-fullstack/ui).
-- Couverture vs Carbon : ~37 / ~40 composants (gaps majeurs restants : FileUploader, DatePicker).
+- Couverture vs Carbon : ~38 / ~40 composants (gaps majeurs restants : FileUploader).
 
 ---
 
@@ -74,7 +74,7 @@ Composants présents dans Carbon, absents du DS, requis pour les consommateurs r
 - [x] MultiSelect — sélection multiple avec recherche (DS PR Phase 4 batch 2).
 - [ ] Search — pattern Carbon dédié.
 - [ ] NumberInput — increment/decrement, min/max.
-- [ ] DatePicker — single + range, FR/EN.
+- [x] DatePicker — single + range, FR/EN, bornes min/max, locale-aware via `Intl.DateTimeFormat` (DS PR Phase 4 DatePicker).
 - [x] Slider — range + plage, tooltip valeur (DS PR Phase 4 batch 2).
 - [ ] Tag — entité fermable (vs `Badge` en lecture seule).
 - [ ] PasswordInput — toggle visibility, indicateur force.
