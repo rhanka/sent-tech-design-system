@@ -16,6 +16,7 @@ export { default as EmptyState } from "./EmptyState.svelte";
 export { default as FileUploader } from "./FileUploader.svelte";
 export { default as Form } from "./Form.svelte";
 export { default as FormGroup } from "./FormGroup.svelte";
+export { default as Header } from "./Header.svelte";
 export { default as InlineLoading } from "./InlineLoading.svelte";
 export { default as Input } from "./Input.svelte";
 export { default as Link } from "./Link.svelte";
@@ -24,10 +25,13 @@ export { default as Menu } from "./Menu.svelte";
 export { default as Modal } from "./Modal.svelte";
 export { default as MultiSelect } from "./MultiSelect.svelte";
 export { default as NumberInput } from "./NumberInput.svelte";
+export { default as OverflowMenu } from "./OverflowMenu.svelte";
 export { default as Pagination } from "./Pagination.svelte";
+export { default as PaginationNav } from "./PaginationNav.svelte";
 export { default as PasswordInput } from "./PasswordInput.svelte";
 export { default as Popover } from "./Popover.svelte";
 export { default as ProgressBar } from "./ProgressBar.svelte";
+export { default as ProgressIndicator } from "./ProgressIndicator.svelte";
 export { default as Radio } from "./Radio.svelte";
 export { default as Search } from "./Search.svelte";
 export { default as Select } from "./Select.svelte";
@@ -58,6 +62,11 @@ export type { DropdownOption } from "./Dropdown.svelte";
 export type { FileUploadItem, FileUploadStatus } from "./FileUploader.svelte";
 export type { MenuItem } from "./Menu.svelte";
 export type { MultiSelectOption } from "./MultiSelect.svelte";
+export type { OverflowMenuItem } from "./OverflowMenu.svelte";
+export type {
+  ProgressIndicatorItem,
+  ProgressIndicatorStatus
+} from "./ProgressIndicator.svelte";
 export type { SideNavItem } from "./SideNav.svelte";
 export type { TableColumn, TableRow } from "./Table.svelte";
 export type { TabItem } from "./Tabs.svelte";
