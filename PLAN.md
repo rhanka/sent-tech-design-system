@@ -6,7 +6,7 @@
 
 ## Identité produit
 
-- Scope npm courant : `@sentropic/*` (cible v0.3.0, en cours de release).
+- Scope npm courant : `@sentropic/*` (v0.4.0 incluant les composants Phase 4 batch 1+2+3+DataTable).
 - Convention nommage : `@sentropic/design-system-{tokens,themes,svelte}` (préfixe `design-system-` pour réserver l'espace `@sentropic` à d'autres familles de packages futurs).
 - Évolution prévue : `@sentropic/design-system-svelte` reste le bundle complet ; ouverture future possible vers `@sentropic/design-system-svelte-core` + `@sentropic/design-system-svelte-{component}` (opt-in granulaire par composant).
 - Scope npm legacy : `@sent-tech/*` (dernier publish v0.2.0 le 2026-05-13, à déprécier post-publish v0.3.0).
