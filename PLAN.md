@@ -16,10 +16,10 @@
 
 ## État actuel (synthèse)
 
-- Composants Svelte livrés : 38.
+- Composants Svelte livrés : 44.
 - Consommateurs migrés : 3 (sentech-forge, spa-transpose-cv, sent-tech/ui).
 - Consommateurs Svelte connus restant à migrer : 2 (sent-tech/external/top-ai-ideas-fullstack/ui, nc-fullstack/ui).
-- Couverture vs Carbon : ~38 / ~40 composants (gaps majeurs restants : FileUploader).
+- Couverture vs Carbon : ~44 / ~45 composants. Phase 4 priorité haute terminée. Reste priorité moyenne (Form, OverflowMenu, PaginationNav, ProgressIndicator, UI Shell Header) et basse (AspectRatio, CodeSnippet, StructuredList, TileGroup, UnorderedList).
 
 ---
 
@@ -69,30 +69,32 @@ Composants présents dans Carbon, absents du DS, requis pour les consommateurs r
 ### Priorité haute (chat Entropic + transpose-cv + nc-fullstack form-heavy)
 
 - [x] DataTable — tri, pagination intégrée, sélection ligne, cellules custom (vs notre `Table` minimal) (DS PR Phase 4 DataTable).
-- [ ] FileUploader — drag-drop, multi, progress.
+- [x] FileUploader — drag-drop, multi-fichiers, validation `maxSizeBytes`, liste retirable, type `FileUploadItem` exposé pour évolution progress (DS PR Phase 4 FileUploader).
 - [x] Combobox — recherche dans la liste (DS PR Phase 4 batch 2).
 - [x] MultiSelect — sélection multiple avec recherche (DS PR Phase 4 batch 2).
-- [ ] Search — pattern Carbon dédié.
-- [ ] NumberInput — increment/decrement, min/max.
+- [x] Search — pattern Carbon dédié (DS PR Phase 4 batch 1).
+- [x] NumberInput — increment/decrement, min/max (DS PR Phase 4 batch 1).
 - [x] DatePicker — single + range, FR/EN, bornes min/max, locale-aware via `Intl.DateTimeFormat` (DS PR Phase 4 DatePicker).
 - [x] Slider — range + plage, tooltip valeur (DS PR Phase 4 batch 2).
-- [ ] Tag — entité fermable (vs `Badge` en lecture seule).
-- [ ] PasswordInput — toggle visibility, indicateur force.
+- [x] Tag — entité fermable (vs `Badge` en lecture seule) (DS PR Phase 4 batch 1).
+- [x] PasswordInput — toggle visibility (DS PR Phase 4 batch 1).
+
+**Priorité haute Phase 4 = 100% livrée.**
 
 ### Priorité moyenne
 
 - [x] Accordion (DS PR Phase 4 batch 2).
-- [ ] ContentSwitcher.
-- [ ] CopyButton.
+- [x] ContentSwitcher — segmented control role=tablist + nav clavier ←/→/Home/End (DS PR #14 batch 4).
+- [x] CopyButton — clipboard write avec feedback visuel + label swap (DS PR #14 batch 4).
 - [ ] Form — orchestration : group, fieldset, helper text, validation.
-- [ ] InlineLoading.
+- [x] InlineLoading — spinner+label, status active/success/error/inactive (DS PR #14 batch 4).
 - [ ] OverflowMenu.
 - [ ] PaginationNav (vs `Pagination` simple).
 - [x] ProgressBar — value/max + indeterminate, tones, sizes, full aria (DS PR #11).
 - [ ] ProgressIndicator (steps).
-- [ ] SkeletonText.
+- [x] SkeletonText — placeholder texte animé, lines/heading/paragraph (DS PR #14 batch 4).
 - [x] Toggle — vs `Switch`, ajoute label latéral on/off (DS PR #11).
-- [ ] Toggletip — clic vs hover.
+- [x] Toggletip — clic-toggled vs hover Tooltip, Esc ferme (DS PR #14 batch 4).
 - [ ] UI Shell Header — DS a `SideNav`, manque le Header complet.
 
 ### Priorité basse / utilité à challenger
