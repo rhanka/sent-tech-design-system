@@ -13,6 +13,7 @@ export { default as DatePicker } from "./DatePicker.svelte";
 export { default as Drawer } from "./Drawer.svelte";
 export { default as Dropdown } from "./Dropdown.svelte";
 export { default as EmptyState } from "./EmptyState.svelte";
+export { default as FileUploader } from "./FileUploader.svelte";
 export { default as InlineLoading } from "./InlineLoading.svelte";
 export { default as Input } from "./Input.svelte";
 export { default as Link } from "./Link.svelte";
@@ -52,6 +53,7 @@ export type {
 } from "./DataTable.svelte";
 export type { DatePickerRange } from "./DatePicker.svelte";
 export type { DropdownOption } from "./Dropdown.svelte";
+export type { FileUploadItem, FileUploadStatus } from "./FileUploader.svelte";
 export type { MenuItem } from "./Menu.svelte";
 export type { MultiSelectOption } from "./MultiSelect.svelte";
 export type { SideNavItem } from "./SideNav.svelte";
