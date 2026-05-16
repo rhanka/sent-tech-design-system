@@ -2,10 +2,14 @@ import { fireEvent, render, screen } from "@testing-library/svelte";
 import { createRawSnippet } from "svelte";
 import { describe, expect, it, vi } from "vitest";
 import Accordion from "./lib/Accordion.svelte";
+import CopyButton from "./lib/CopyButton.svelte";
+import InlineLoading from "./lib/InlineLoading.svelte";
 import Modal from "./lib/Modal.svelte";
 import ProgressBar from "./lib/ProgressBar.svelte";
+import SkeletonText from "./lib/SkeletonText.svelte";
 import Tag from "./lib/Tag.svelte";
 import Toast from "./lib/Toast.svelte";
+import Toggletip from "./lib/Toggletip.svelte";
 import Tooltip from "./lib/Tooltip.svelte";
 
 const body = createRawSnippet(() => ({ render: () => "<p>Modal content</p>" }));
@@ -119,5 +123,48 @@ describe("overlay and feedback components", () => {
     render(ProgressBar, { props: { label: "Loading", indeterminate: true } });
     const bar = screen.getByRole("progressbar", { name: "Loading" });
     expect(bar.getAttribute("aria-valuenow")).toBeNull();
+  });
+
+  it("CopyButton writes to clipboard and switches to copied label", async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: { writeText }
+    });
+    const onCopied = vi.fn();
+    render(CopyButton, { props: { value: "secret-value", label: "Copy", copiedLabel: "Copied!", onCopied } });
+    const btn = screen.getByRole("button", { name: /Copy/ });
+    await fireEvent.click(btn);
+    expect(writeText).toHaveBeenCalledWith("secret-value");
+    expect(onCopied).toHaveBeenCalledWith("secret-value");
+    expect(screen.getByText("Copied!")).toBeTruthy();
+  });
+
+  it("InlineLoading uses status role and exposes a label", () => {
+    render(InlineLoading, { props: { label: "Saving…", status: "active" } });
+    const node = screen.getByRole("status");
+    expect(node.textContent).toContain("Saving…");
+  });
+
+  it("InlineLoading uses alert role when status is error", () => {
+    render(InlineLoading, { props: { label: "Failed", status: "error" } });
+    expect(screen.getByRole("alert").textContent).toContain("Failed");
+  });
+
+  it("SkeletonText renders the requested number of lines as a busy status", () => {
+    const { container } = render(SkeletonText, { props: { lines: 3 } });
+    const node = screen.getByRole("status", { name: "Loading…" });
+    expect(node.getAttribute("aria-busy")).toBe("true");
+    expect(container.querySelectorAll(".st-skeleton__line").length).toBe(3);
+  });
+
+  it("Toggletip toggles its bubble on trigger click", async () => {
+    render(Toggletip, { props: { content: "Helpful info", triggerLabel: "Help" } });
+    const trigger = screen.getByRole("button", { name: "Help" });
+    expect(trigger.getAttribute("aria-expanded")).toBe("false");
+    expect(screen.queryByText("Helpful info")).toBeNull();
+    await fireEvent.click(trigger);
+    expect(trigger.getAttribute("aria-expanded")).toBe("true");
+    expect(screen.getByText("Helpful info")).toBeTruthy();
   });
 });
