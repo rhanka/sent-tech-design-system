@@ -6,7 +6,7 @@
 
 ## Identité produit
 
-- Scope npm courant : `@sentropic/*` (v0.4.1 — Phase 4 batch 1+2+3+DataTable + fix bindable Input/Textarea/Select).
+- Scope npm courant : `@sentropic/*` (v0.5.0 — Phase 4 batch 1+2+3+4+DataTable+DatePicker+FileUploader).
 - Convention nommage : `@sentropic/design-system-{tokens,themes,svelte}` (préfixe `design-system-` pour réserver l'espace `@sentropic` à d'autres familles de packages futurs).
 - Évolution prévue : `@sentropic/design-system-svelte` reste le bundle complet ; ouverture future possible vers `@sentropic/design-system-svelte-core` + `@sentropic/design-system-svelte-{component}` (opt-in granulaire par composant).
 - Scope npm legacy : `@sent-tech/*` (dernier publish v0.2.0 le 2026-05-13, à déprécier post-publish v0.3.0).
@@ -16,10 +16,10 @@
 
 ## État actuel (synthèse)
 
-- Composants Svelte livrés : 44.
+- Composants Svelte livrés : 46.
 - Consommateurs migrés : 3 (sentech-forge, spa-transpose-cv, sent-tech/ui).
 - Consommateurs Svelte connus restant à migrer : 2 (sent-tech/external/top-ai-ideas-fullstack/ui, nc-fullstack/ui).
-- Couverture vs Carbon : ~44 / ~45 composants. Phase 4 priorité haute terminée. Reste priorité moyenne (Form, OverflowMenu, PaginationNav, ProgressIndicator, UI Shell Header) et basse (AspectRatio, CodeSnippet, StructuredList, TileGroup, UnorderedList).
+- Couverture vs Carbon : ~46 / ~45 composants. Phase 4 priorité haute terminée. Reste priorité moyenne (OverflowMenu, PaginationNav, ProgressIndicator, UI Shell Header) et basse (AspectRatio, CodeSnippet, StructuredList, TileGroup, UnorderedList).
 
 ---
 
@@ -86,7 +86,7 @@ Composants présents dans Carbon, absents du DS, requis pour les consommateurs r
 - [x] Accordion (DS PR Phase 4 batch 2).
 - [x] ContentSwitcher — segmented control role=tablist + nav clavier ←/→/Home/End (DS PR #14 batch 4).
 - [x] CopyButton — clipboard write avec feedback visuel + label swap (DS PR #14 batch 4).
-- [ ] Form — orchestration : group, fieldset, helper text, validation.
+- [x] Form + FormGroup — `<form>` wrapper async (submitting/submitted/error) + `<fieldset>`/`<legend>` (DS PR Phase 4 Form).
 - [x] InlineLoading — spinner+label, status active/success/error/inactive (DS PR #14 batch 4).
 - [ ] OverflowMenu.
 - [ ] PaginationNav (vs `Pagination` simple).
