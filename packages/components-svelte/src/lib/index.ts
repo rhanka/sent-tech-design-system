@@ -7,6 +7,7 @@ export { default as Card } from "./Card.svelte";
 export { default as Checkbox } from "./Checkbox.svelte";
 export { default as Combobox } from "./Combobox.svelte";
 export { default as DataTable } from "./DataTable.svelte";
+export { default as DatePicker } from "./DatePicker.svelte";
 export { default as Drawer } from "./Drawer.svelte";
 export { default as Dropdown } from "./Dropdown.svelte";
 export { default as EmptyState } from "./EmptyState.svelte";
@@ -44,6 +45,7 @@ export type {
   DataTableSelectMode,
   DataTableSort
 } from "./DataTable.svelte";
+export type { DatePickerRange } from "./DatePicker.svelte";
 export type { DropdownOption } from "./Dropdown.svelte";
 export type { MenuItem } from "./Menu.svelte";
 export type { MultiSelectOption } from "./MultiSelect.svelte";
