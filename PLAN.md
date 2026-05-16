@@ -14,12 +14,16 @@
 - Inspiration : IBM Carbon. White-label / multi-tenant via theming runtime CSS variables.
 - Repo Git : `sent-tech-design-system` (nom de repo conservé pour l'instant).
 
+> **Phase 4 100 % terminée** — couverture Carbon complète (AspectRatio,
+> CodeSnippet, StructuredList, TileGroup, UnorderedList livrés en batch
+> priorité basse).
+
 ## État actuel (synthèse)
 
-- Composants Svelte livrés : 50.
+- Composants Svelte livrés : 55.
 - Consommateurs migrés : 3 (sentech-forge, spa-transpose-cv, sent-tech/ui).
 - Consommateurs Svelte connus restant à migrer : 2 (sent-tech/external/top-ai-ideas-fullstack/ui, nc-fullstack/ui).
-- Couverture vs Carbon : ~50 / ~50 composants. Phase 4 priorité haute + moyenne 100 % livrées. Reste priorité basse (AspectRatio, CodeSnippet, StructuredList, TileGroup, UnorderedList).
+- Couverture vs Carbon : ~55 / ~55 composants. Phase 4 priorité haute + moyenne + basse 100 % livrées.
 
 ---
 
@@ -99,11 +103,13 @@ Composants présents dans Carbon, absents du DS, requis pour les consommateurs r
 
 ### Priorité basse / utilité à challenger
 
-- [ ] AspectRatio.
-- [ ] CodeSnippet.
-- [ ] StructuredList.
-- [ ] TileGroup.
-- [ ] UnorderedList.
+- [x] AspectRatio — wrapper CSS `aspect-ratio` configurable (DS PR Phase 4 batch low).
+- [x] CodeSnippet — bloc `<pre><code>` copiable (CopyButton intégré) + variante `inline` (DS PR Phase 4 batch low).
+- [x] StructuredList — `<dl>`/`<dt>`/`<dd>` key-value, bordures optionnelles (DS PR Phase 4 batch low).
+- [x] TileGroup — `<fieldset>` de tiles cliquables (radio-group, label + description) (DS PR Phase 4 batch low).
+- [x] UnorderedList — `<ul>` stylé avec puce custom, support nesting 1 niveau (DS PR Phase 4 batch low).
+
+**Priorité basse Phase 4 = 100% livrée. Phase 4 globale 100 % terminée.**
 
 ## Phase 5 — Migration des consommateurs Svelte restants
 
