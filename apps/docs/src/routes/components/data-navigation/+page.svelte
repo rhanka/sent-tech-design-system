@@ -2,7 +2,10 @@
   import {
     Badge,
     Breadcrumb,
+    Header,
     Pagination,
+    PaginationNav,
+    ProgressIndicator,
     SideNav,
     Table,
     Tabs
@@ -10,6 +13,7 @@
   import { t, type Locale } from "$lib/i18n";
 
   let locale = $state<Locale>("fr");
+  let demoPage = $state(6);
 
   const rows = [
     { id: "forge", name: "Forge", status: "Active" },
@@ -71,6 +75,32 @@
         {rows}
       />
       <Pagination page={1} pageCount={3} />
+      <PaginationNav bind:page={demoPage} pageCount={20} siblings={1} />
+    </div>
+  </section>
+
+  <section class="docs-section">
+    <h2>UI Shell Header</h2>
+    <div class="docs-example docs-example--stack">
+      <Header title="Sentropic Console" sticky={false} />
+    </div>
+  </section>
+
+  <section class="docs-section">
+    <h2>Progress Indicator</h2>
+    <div class="docs-example docs-example--stack">
+      <ProgressIndicator
+        items={[
+          { value: "intake", label: "Intake", status: "complete" },
+          {
+            value: "review",
+            label: "Review",
+            description: "QA + design sign-off",
+            status: "current"
+          },
+          { value: "publish", label: "Publish", status: "upcoming" }
+        ]}
+      />
     </div>
   </section>
 
@@ -84,8 +114,11 @@
         <tr><td><code>Table</code></td><td><code>columns</code>, <code>rows</code>, <code>caption</code></td><td>native table</td></tr>
         <tr><td><code>Tabs</code></td><td><code>items</code>, <code>activeValue</code>, <code>onchange</code></td><td><code>tablist</code>, <code>tab</code>, <code>tabpanel</code></td></tr>
         <tr><td><code>Pagination</code></td><td><code>page</code>, <code>pageCount</code>, <code>onpagechange</code></td><td><code>aria-current="page"</code></td></tr>
+        <tr><td><code>PaginationNav</code></td><td><code>page</code>, <code>pageCount</code>, <code>siblings</code>, <code>onPageChange</code></td><td><code>aria-current="page"</code>, ellipses</td></tr>
+        <tr><td><code>ProgressIndicator</code></td><td><code>items</code>, <code>vertical</code></td><td><code>list</code> + <code>aria-current="step"</code></td></tr>
         <tr><td><code>Breadcrumb</code></td><td><code>items</code></td><td><code>aria-current="page"</code></td></tr>
         <tr><td><code>SideNav</code></td><td><code>items</code>, <code>label</code></td><td><code>nav</code>, active link current page</td></tr>
+        <tr><td><code>Header</code></td><td><code>title</code>, <code>logo</code>, <code>navigation</code>, <code>actions</code></td><td><code>banner</code> landmark</td></tr>
       </tbody>
     </table>
   </section>
