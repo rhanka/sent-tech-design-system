@@ -1,5 +1,7 @@
 import { fireEvent, render, screen, within } from "@testing-library/svelte";
+import { createRawSnippet } from "svelte";
 import { describe, expect, it } from "vitest";
+import AspectRatio from "./lib/AspectRatio.svelte";
 import Breadcrumb from "./lib/Breadcrumb.svelte";
 import ContentSwitcher from "./lib/ContentSwitcher.svelte";
 import DataTable from "./lib/DataTable.svelte";
@@ -7,8 +9,10 @@ import Pagination from "./lib/Pagination.svelte";
 import PaginationNav from "./lib/PaginationNav.svelte";
 import ProgressIndicator from "./lib/ProgressIndicator.svelte";
 import SideNav from "./lib/SideNav.svelte";
+import StructuredList from "./lib/StructuredList.svelte";
 import Table from "./lib/Table.svelte";
 import Tabs from "./lib/Tabs.svelte";
+import UnorderedList from "./lib/UnorderedList.svelte";
 
 describe("data and navigation components", () => {
   it("renders table caption, headers and row cells", () => {
@@ -285,5 +289,62 @@ describe("data and navigation components", () => {
     expect(items[1].getAttribute("aria-current")).toBe("step");
     expect(items[0].getAttribute("aria-current")).toBeNull();
     expect(within(list).getByText("QA + sign-off")).toBeTruthy();
+  });
+
+  it("AspectRatio wraps children in a container with the requested CSS aspect-ratio", () => {
+    const children = createRawSnippet(() => ({
+      render: () => '<img alt="cover" src="data:," />'
+    }));
+    const { container } = render(AspectRatio, {
+      props: { ratio: "4/3", children }
+    });
+    const wrapper = container.querySelector(".st-aspectRatio") as HTMLDivElement;
+    expect(wrapper).toBeTruthy();
+    expect(wrapper.style.aspectRatio).toBe("4/3");
+    expect(wrapper.querySelector("img")).toBeTruthy();
+  });
+
+  it("StructuredList renders one <dt>/<dd> pair per item", () => {
+    const { container } = render(StructuredList, {
+      props: {
+        items: [
+          { key: "Tenant", value: "Sentropic" },
+          { key: "Env", value: "production" }
+        ]
+      }
+    });
+    const dl = container.querySelector("dl.st-structuredList") as HTMLDListElement;
+    expect(dl).toBeTruthy();
+    const terms = dl.querySelectorAll("dt");
+    const definitions = dl.querySelectorAll("dd");
+    expect(terms).toHaveLength(2);
+    expect(definitions).toHaveLength(2);
+    expect(terms[0].textContent?.trim()).toBe("Tenant");
+    expect(definitions[0].textContent?.trim()).toBe("Sentropic");
+    expect(terms[1].textContent?.trim()).toBe("Env");
+    expect(definitions[1].textContent?.trim()).toBe("production");
+  });
+
+  it("UnorderedList renders string items and supports nested children", () => {
+    const { container } = render(UnorderedList, {
+      props: {
+        items: [
+          { content: "Forge" },
+          {
+            content: "Sentropic",
+            children: [{ content: "Tokens" }, { content: "Themes" }]
+          }
+        ]
+      }
+    });
+    const root = container.querySelector("ul.st-unorderedList") as HTMLUListElement;
+    expect(root).toBeTruthy();
+    const directItems = Array.from(root.children).filter((c) => c.tagName === "LI");
+    expect(directItems).toHaveLength(2);
+    const nested = directItems[1].querySelector("ul");
+    expect(nested).toBeTruthy();
+    expect(nested?.querySelectorAll("li")).toHaveLength(2);
+    expect(screen.getByText("Tokens")).toBeTruthy();
+    expect(screen.getByText("Themes")).toBeTruthy();
   });
 });
