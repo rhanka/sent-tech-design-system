@@ -3,8 +3,10 @@ import { createRawSnippet } from "svelte";
 import { describe, expect, it, vi } from "vitest";
 import Accordion from "./lib/Accordion.svelte";
 import CopyButton from "./lib/CopyButton.svelte";
+import Header from "./lib/Header.svelte";
 import InlineLoading from "./lib/InlineLoading.svelte";
 import Modal from "./lib/Modal.svelte";
+import OverflowMenu from "./lib/OverflowMenu.svelte";
 import ProgressBar from "./lib/ProgressBar.svelte";
 import SkeletonText from "./lib/SkeletonText.svelte";
 import Tag from "./lib/Tag.svelte";
@@ -166,5 +168,42 @@ describe("overlay and feedback components", () => {
     await fireEvent.click(trigger);
     expect(trigger.getAttribute("aria-expanded")).toBe("true");
     expect(screen.getByText("Helpful info")).toBeTruthy();
+  });
+
+  it("OverflowMenu toggles its menu on trigger click and fires onselect on item click", async () => {
+    const onSelect = vi.fn();
+    const itemClick = vi.fn();
+    render(OverflowMenu, {
+      props: {
+        triggerLabel: "Row actions",
+        items: [
+          { value: "edit", label: "Edit", onclick: itemClick },
+          { value: "delete", label: "Delete", danger: true }
+        ],
+        onselect: onSelect
+      }
+    });
+    const trigger = screen.getByRole("button", { name: "Row actions" });
+    expect(trigger.getAttribute("aria-haspopup")).toBe("menu");
+    expect(trigger.getAttribute("aria-expanded")).toBe("false");
+    expect(screen.queryByRole("menu")).toBeNull();
+
+    await fireEvent.click(trigger);
+    expect(trigger.getAttribute("aria-expanded")).toBe("true");
+    const menu = screen.getByRole("menu");
+    expect(menu).toBeTruthy();
+
+    const editItem = screen.getByRole("menuitem", { name: "Edit" });
+    await fireEvent.click(editItem);
+    expect(itemClick).toHaveBeenCalledTimes(1);
+    expect(onSelect).toHaveBeenCalledWith("edit");
+    expect(trigger.getAttribute("aria-expanded")).toBe("false");
+  });
+
+  it("Header renders a banner with optional title", () => {
+    render(Header, { props: { title: "Sentropic Console" } });
+    const banner = screen.getByRole("banner", { name: "Application header" });
+    expect(banner).toBeTruthy();
+    expect(banner.textContent).toContain("Sentropic Console");
   });
 });
