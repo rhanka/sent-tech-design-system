@@ -16,10 +16,10 @@
 
 ## État actuel (synthèse)
 
-- Composants Svelte livrés : 46.
+- Composants Svelte livrés : 50.
 - Consommateurs migrés : 3 (sentech-forge, spa-transpose-cv, sent-tech/ui).
 - Consommateurs Svelte connus restant à migrer : 2 (sent-tech/external/top-ai-ideas-fullstack/ui, nc-fullstack/ui).
-- Couverture vs Carbon : ~46 / ~45 composants. Phase 4 priorité haute terminée. Reste priorité moyenne (OverflowMenu, PaginationNav, ProgressIndicator, UI Shell Header) et basse (AspectRatio, CodeSnippet, StructuredList, TileGroup, UnorderedList).
+- Couverture vs Carbon : ~50 / ~50 composants. Phase 4 priorité haute + moyenne 100 % livrées. Reste priorité basse (AspectRatio, CodeSnippet, StructuredList, TileGroup, UnorderedList).
 
 ---
 
@@ -88,14 +88,14 @@ Composants présents dans Carbon, absents du DS, requis pour les consommateurs r
 - [x] CopyButton — clipboard write avec feedback visuel + label swap (DS PR #14 batch 4).
 - [x] Form + FormGroup — `<form>` wrapper async (submitting/submitted/error) + `<fieldset>`/`<legend>` (DS PR Phase 4 Form).
 - [x] InlineLoading — spinner+label, status active/success/error/inactive (DS PR #14 batch 4).
-- [ ] OverflowMenu.
-- [ ] PaginationNav (vs `Pagination` simple).
+- [x] OverflowMenu — trigger ⋯ + menu d'actions, danger variant, click outside + Esc (DS PR Phase 4 batch 5).
+- [x] PaginationNav — navigation numérotée avec ellipses, siblings configurables, bornes désactivées (DS PR Phase 4 batch 5).
 - [x] ProgressBar — value/max + indeterminate, tones, sizes, full aria (DS PR #11).
-- [ ] ProgressIndicator (steps).
+- [x] ProgressIndicator — steps horizontaux/verticaux, statuts complete/current/upcoming/invalid/disabled (DS PR Phase 4 batch 5).
 - [x] SkeletonText — placeholder texte animé, lines/heading/paragraph (DS PR #14 batch 4).
 - [x] Toggle — vs `Switch`, ajoute label latéral on/off (DS PR #11).
 - [x] Toggletip — clic-toggled vs hover Tooltip, Esc ferme (DS PR #14 batch 4).
-- [ ] UI Shell Header — DS a `SideNav`, manque le Header complet.
+- [x] UI Shell Header — banner sticky avec slots logo/navigation/actions (DS PR Phase 4 batch 5).
 
 ### Priorité basse / utilité à challenger
 
