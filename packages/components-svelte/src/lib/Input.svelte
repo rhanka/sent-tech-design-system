@@ -1,12 +1,13 @@
 <script lang="ts">
   import type { HTMLInputAttributes } from "svelte/elements";
 
-  type InputProps = Omit<HTMLInputAttributes, "class" | "size"> & {
+  type InputProps = Omit<HTMLInputAttributes, "class" | "size" | "value"> & {
     label?: string;
     helperText?: string;
     errorText?: string;
     invalid?: boolean;
     size?: "sm" | "md" | "lg";
+    value?: string | number | null;
     class?: string;
   };
 
@@ -16,6 +17,7 @@
     errorText,
     invalid = false,
     size = "md",
+    value = $bindable(""),
     class: className,
     ...rest
   }: InputProps = $props();
@@ -28,7 +30,12 @@
 <div class={fieldClasses()}>
   <label class="st-field__control">
     {#if label}<span class="st-field__label">{label}</span>{/if}
-    <input {...rest} class={controlClasses()} aria-invalid={isInvalid() ? "true" : undefined} />
+    <input
+      {...rest}
+      bind:value
+      class={controlClasses()}
+      aria-invalid={isInvalid() ? "true" : undefined}
+    />
   </label>
   {#if errorText}
     <span class="st-field__error">{errorText}</span>
