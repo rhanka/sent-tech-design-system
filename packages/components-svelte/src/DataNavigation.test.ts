@@ -4,6 +4,8 @@ import Breadcrumb from "./lib/Breadcrumb.svelte";
 import ContentSwitcher from "./lib/ContentSwitcher.svelte";
 import DataTable from "./lib/DataTable.svelte";
 import Pagination from "./lib/Pagination.svelte";
+import PaginationNav from "./lib/PaginationNav.svelte";
+import ProgressIndicator from "./lib/ProgressIndicator.svelte";
 import SideNav from "./lib/SideNav.svelte";
 import Table from "./lib/Table.svelte";
 import Tabs from "./lib/Tabs.svelte";
@@ -228,5 +230,60 @@ describe("data and navigation components", () => {
     });
     await fireEvent.click(screen.getByRole("tab", { name: "Cartes" }));
     expect(latest).toBe("card");
+  });
+
+  it("PaginationNav renders ellipses, current page marker and previous/next bounds", () => {
+    render(PaginationNav, { props: { page: 6, pageCount: 20, siblings: 1 } });
+
+    const nav = screen.getByRole("navigation", { name: "Pagination" });
+    expect(nav).toBeTruthy();
+    expect(within(nav).getAllByText("…").length).toBe(2);
+    const current = within(nav).getByRole("button", { name: "Page 6" });
+    expect(current.getAttribute("aria-current")).toBe("page");
+    expect(within(nav).getByRole("button", { name: "Page 1" })).toBeTruthy();
+    expect(within(nav).getByRole("button", { name: "Page 20" })).toBeTruthy();
+    expect(within(nav).getByRole("button", { name: "Previous page" })).toHaveProperty(
+      "disabled",
+      false
+    );
+    expect(within(nav).getByRole("button", { name: "Next page" })).toHaveProperty(
+      "disabled",
+      false
+    );
+  });
+
+  it("PaginationNav disables previous on first page and fires onPageChange when clicked", async () => {
+    let latest = 1;
+    render(PaginationNav, {
+      props: {
+        page: 1,
+        pageCount: 5,
+        onPageChange: (next: number) => {
+          latest = next;
+        }
+      }
+    });
+    expect(screen.getByRole("button", { name: "Previous page" })).toHaveProperty("disabled", true);
+    await fireEvent.click(screen.getByRole("button", { name: "Page 3" }));
+    expect(latest).toBe(3);
+  });
+
+  it("ProgressIndicator renders ordered steps with current aria marker", () => {
+    render(ProgressIndicator, {
+      props: {
+        items: [
+          { value: "intake", label: "Intake", status: "complete" },
+          { value: "review", label: "Review", description: "QA + sign-off", status: "current" },
+          { value: "publish", label: "Publish", status: "upcoming" }
+        ]
+      }
+    });
+    const list = screen.getByRole("list", { name: "Progress" });
+    expect(list).toBeTruthy();
+    const items = within(list).getAllByRole("listitem");
+    expect(items).toHaveLength(3);
+    expect(items[1].getAttribute("aria-current")).toBe("step");
+    expect(items[0].getAttribute("aria-current")).toBeNull();
+    expect(within(list).getByText("QA + sign-off")).toBeTruthy();
   });
 });
