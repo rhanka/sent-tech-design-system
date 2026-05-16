@@ -1,10 +1,12 @@
 import { fireEvent, render, screen } from "@testing-library/svelte";
 import { createRawSnippet } from "svelte";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import Checkbox from "./lib/Checkbox.svelte";
 import Combobox from "./lib/Combobox.svelte";
 import DatePicker, { type DatePickerRange } from "./lib/DatePicker.svelte";
 import FileUploader from "./lib/FileUploader.svelte";
+import Form from "./lib/Form.svelte";
+import FormGroup from "./lib/FormGroup.svelte";
 import Input from "./lib/Input.svelte";
 import MultiSelect from "./lib/MultiSelect.svelte";
 import NumberInput from "./lib/NumberInput.svelte";
@@ -369,5 +371,89 @@ describe("form controls", () => {
     });
     await fireEvent.change(input);
     expect(screen.getByText(/big\.bin exceeds the/)).toBeTruthy();
+  });
+
+  it("Form renders a <form> element with helperText below children", () => {
+    const body = createRawSnippet(() => ({
+      render: () => '<button type="submit">Send</button>'
+    }));
+    const { container } = render(Form, {
+      props: { helperText: "We never share your email.", children: body }
+    });
+    expect(container.querySelector("form")).toBeTruthy();
+    expect(screen.getByText("We never share your email.")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Send" })).toBeTruthy();
+  });
+
+  it("Form awaits onsubmit, toggles submitting, then displays successText", async () => {
+    const body = createRawSnippet(() => ({
+      render: () => '<button type="submit">Save</button>'
+    }));
+    let resolveSubmit!: () => void;
+    const pending = new Promise<void>((resolve) => {
+      resolveSubmit = resolve;
+    });
+    const onsubmit = vi.fn(async () => {
+      await pending;
+    });
+    const { container } = render(Form, {
+      props: {
+        onsubmit,
+        successText: "Form saved.",
+        children: body
+      }
+    });
+    const form = container.querySelector("form") as HTMLFormElement;
+    await fireEvent.submit(form);
+    expect(onsubmit).toHaveBeenCalledTimes(1);
+    expect(form.getAttribute("aria-busy")).toBe("true");
+    resolveSubmit();
+    // findByText polls until Svelte has flushed the success state.
+    await screen.findByText("Form saved.");
+    expect(form.getAttribute("aria-busy")).toBeNull();
+  });
+
+  it("Form surfaces a thrown error via the alert message slot", async () => {
+    const body = createRawSnippet(() => ({
+      render: () => '<button type="submit">Send</button>'
+    }));
+    const onsubmit = vi.fn(async () => {
+      throw new Error("Server unavailable");
+    });
+    const { container } = render(Form, {
+      props: { onsubmit, children: body }
+    });
+    const form = container.querySelector("form") as HTMLFormElement;
+    await fireEvent.submit(form);
+    await Promise.resolve();
+    expect(screen.getByRole("alert").textContent).toContain("Server unavailable");
+  });
+
+  it("FormGroup renders <fieldset> + <legend> + helperText and propagates disabled to children", () => {
+    const body = createRawSnippet(() => ({
+      render: () =>
+        '<label>Pseudo<input type="text" name="pseudo" /></label>'
+    }));
+    const { container } = render(FormGroup, {
+      props: {
+        legend: "Profil",
+        helperText: "Renseignez vos préférences.",
+        disabled: true,
+        children: body
+      }
+    });
+    const fieldset = container.querySelector("fieldset") as HTMLFieldSetElement;
+    expect(fieldset).toBeTruthy();
+    expect(fieldset.disabled).toBe(true);
+    expect(fieldset.hasAttribute("disabled")).toBe(true);
+    expect(container.querySelector("legend")?.textContent).toBe("Profil");
+    expect(screen.getByText("Renseignez vos préférences.")).toBeTruthy();
+    // The input lives inside the disabled fieldset so it is a descendant of a
+    // disabled form-owner; JSDOM does not reflect inherited disabled on the
+    // child's `.disabled` getter, so we assert ancestry instead.
+    const input = container.querySelector(
+      'input[name="pseudo"]'
+    ) as HTMLInputElement;
+    expect(input.closest("fieldset[disabled]")).toBe(fieldset);
   });
 });
