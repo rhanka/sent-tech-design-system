@@ -160,7 +160,7 @@
 
   .docs-catalog-group {
     display: grid;
-    gap: 0.75rem;
+    gap: 1rem;
   }
 
   .docs-catalog-group-title {
@@ -172,8 +172,8 @@
 
   .docs-catalog-grid {
     display: grid;
-    gap: 0.75rem;
-    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    gap: 1.15rem;
+    grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
   }
 
   .docs-catalog-card-link {
@@ -190,9 +190,9 @@
   .docs-catalog-card-head {
     align-items: center;
     display: flex;
-    gap: 0.5rem;
+    gap: 0.75rem;
     justify-content: space-between;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
   }
 
   .docs-catalog-card-name {
@@ -201,8 +201,8 @@
 
   .docs-catalog-card-desc {
     color: var(--st-semantic-text-secondary, #475569);
-    font-size: 0.9rem;
-    line-height: 1.45;
+    font-size: 0.95rem;
+    line-height: 1.6;
     margin: 0;
   }
 </style>
