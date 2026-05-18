@@ -1,6 +1,7 @@
 <script lang="ts">
   import { page } from "$app/state";
   import "../app.css";
+  import { ChevronDown, ExternalLink } from "@lucide/svelte";
   import { ThemeProvider } from "@sentropic/design-system-svelte";
   import { sentTechTheme } from "@sentropic/design-system-themes";
   import {
@@ -9,7 +10,8 @@
     DOCS_UTILITY_NAV,
     DOCS_VERSION,
     buildComponentNavGroups,
-    resolveBreadcrumb
+    resolveBreadcrumb,
+    type ComponentNavItem
   } from "$lib/docs-navigation";
 
   let { children } = $props();
@@ -35,6 +37,10 @@
 
     const route = href.split("#")[0];
     return pathname === route || (route !== "/" && pathname.startsWith(route));
+  }
+
+  function isComponentActive(item: ComponentNavItem): boolean {
+    return page.url.pathname === `/components/${item.slug}`;
   }
 </script>
 
@@ -62,6 +68,9 @@
         {#each DOCS_UTILITY_NAV as item (item.href)}
           <a href={item.href} rel={item.external ? "noreferrer" : undefined} target={item.external ? "_blank" : undefined}>
             {item.label}
+            {#if item.external}
+              <ExternalLink class="docs-link-icon" size={14} strokeWidth={2.25} aria-hidden="true" />
+            {/if}
           </a>
         {/each}
       </nav>
@@ -87,11 +96,14 @@
             <h2 id="docs-components-heading">Composants</h2>
             {#each componentGroups as group (group.label)}
               <details class="docs-side-group" open>
-                <summary>{group.label}</summary>
+                <summary>
+                  <ChevronDown class="docs-side-group-icon" size={16} strokeWidth={2.25} aria-hidden="true" />
+                  <span>{group.label}</span>
+                </summary>
                 <ul>
                   {#each group.items as item (item.label)}
                     <li>
-                      <a href={item.href} aria-current={isActive(item.href) ? "page" : undefined}>
+                      <a href={item.href} aria-current={isComponentActive(item) ? "page" : undefined}>
                         <span
                           class:docs-side-status--documented={item.status === "documented"}
                           class="docs-side-status"

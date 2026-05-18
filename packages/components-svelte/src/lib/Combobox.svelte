@@ -7,6 +7,7 @@
 </script>
 
 <script lang="ts">
+  import { ChevronDown, X } from "@lucide/svelte";
   import type { HTMLInputAttributes } from "svelte/elements";
 
   type ComboboxProps = Omit<
@@ -158,7 +159,7 @@
           {disabled}
           onclick={clear}
         >
-          <span aria-hidden="true">×</span>
+          <X size={16} strokeWidth={2.25} aria-hidden="true" />
         </button>
       {/if}
       <button
@@ -169,7 +170,12 @@
         {disabled}
         onclick={() => (expanded = !expanded)}
       >
-        <span aria-hidden="true">▾</span>
+        <ChevronDown
+          class={`st-combobox__toggleIcon ${expanded ? "st-combobox__toggleIcon--open" : ""}`}
+          size={18}
+          strokeWidth={2.25}
+          aria-hidden="true"
+        />
       </button>
     </span>
   </label>
@@ -337,6 +343,14 @@
   .st-combobox__clear:disabled,
   .st-combobox__toggle:disabled {
     cursor: not-allowed;
+  }
+
+  .st-combobox__toggleIcon {
+    transition: transform var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
+  }
+
+  .st-combobox__toggleIcon--open {
+    transform: rotate(180deg);
   }
 
   .st-combobox__list {

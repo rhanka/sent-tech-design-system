@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/svelte";
-import { createRawSnippet } from "svelte";
+import { createRawSnippet, tick } from "svelte";
 import { describe, expect, it, vi } from "vitest";
 import Accordion from "./lib/Accordion.svelte";
 import CodeSnippet from "./lib/CodeSnippet.svelte";
@@ -23,6 +23,15 @@ describe("overlay and feedback components", () => {
     render(Modal, { props: { open: true, title: "Confirm", children: body } });
     expect(screen.getByRole("dialog", { name: "Confirm" })).toBeTruthy();
     expect(screen.getByText("Modal content")).toBeTruthy();
+  });
+
+  it("focuses the modal close button and requests close on Escape", async () => {
+    const onclose = vi.fn();
+    render(Modal, { props: { open: true, title: "Confirm", children: body, onclose } });
+    await tick();
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "Close" }));
+    await fireEvent.keyDown(window, { key: "Escape" });
+    expect(onclose).toHaveBeenCalledTimes(1);
   });
 
   it("does not render a closed modal", () => {

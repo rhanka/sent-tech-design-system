@@ -7,6 +7,7 @@
 </script>
 
 <script lang="ts">
+  import { ChevronDown, X } from "@lucide/svelte";
   import type { HTMLAttributes } from "svelte/elements";
 
   type MultiSelectProps = Omit<HTMLAttributes<HTMLDivElement>, "class" | "onchange"> & {
@@ -115,7 +116,7 @@
             {disabled}
             onclick={() => removeOption(option.value)}
           >
-            <span aria-hidden="true">×</span>
+            <X size={14} strokeWidth={2.25} aria-hidden="true" />
           </button>
         </span>
       {/each}
@@ -135,7 +136,13 @@
       {:else}
         <span class="st-multiSelect__count">{selectedOptions.length} selected</span>
       {/if}
-      <span class="st-multiSelect__caret" aria-hidden="true">▾</span>
+      <span class="st-multiSelect__caret" aria-hidden="true">
+        <ChevronDown
+          class={`st-multiSelect__caretIcon ${expanded ? "st-multiSelect__caretIcon--open" : ""}`}
+          size={18}
+          strokeWidth={2.25}
+        />
+      </span>
       <span class="st-visually-hidden">{toggleLabel}</span>
     </button>
   </span>
@@ -342,9 +349,16 @@
     color: var(--st-semantic-text-secondary);
     display: inline-flex;
     flex: 0 0 auto;
-    font-size: 0.875rem;
     margin-inline-start: auto;
     padding-inline-start: 0.25rem;
+  }
+
+  .st-multiSelect__caretIcon {
+    transition: transform var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
+  }
+
+  .st-multiSelect__caretIcon--open {
+    transform: rotate(180deg);
   }
 
   .st-multiSelect__panel {
