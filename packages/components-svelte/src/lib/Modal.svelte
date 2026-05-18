@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { X } from "@lucide/svelte";
+  import { tick } from "svelte";
   import type { Snippet } from "svelte";
   import type { HTMLAttributes } from "svelte/elements";
 
@@ -25,19 +27,97 @@
     ...rest
   }: ModalProps = $props();
 
+  let dialog: HTMLElement | undefined = $state();
+  let closeButton: HTMLButtonElement | undefined = $state();
+  let previousFocus: HTMLElement | null = null;
   const classes = () => ["st-modal", className].filter(Boolean).join(" ");
+
+  const focusableSelector = [
+    "a[href]",
+    "button:not([disabled])",
+    "input:not([disabled])",
+    "select:not([disabled])",
+    "textarea:not([disabled])",
+    "[tabindex]:not([tabindex='-1'])"
+  ].join(",");
+
+  $effect(() => {
+    if (!open) return;
+    previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    tick().then(() => closeButton?.focus());
+  });
+
+  function requestClose() {
+    onclose?.();
+    tick().then(() => previousFocus?.focus());
+  }
+
+  function trapFocus(event: KeyboardEvent) {
+    if (!dialog || event.key !== "Tab") return;
+    const focusable = Array.from(dialog.querySelectorAll<HTMLElement>(focusableSelector));
+
+    if (focusable.length === 0) {
+      event.preventDefault();
+      dialog.focus();
+      return;
+    }
+
+    const first = focusable[0];
+    const last = focusable.at(-1);
+    const active = document.activeElement;
+
+    if (!dialog.contains(active)) {
+      event.preventDefault();
+      first.focus();
+      return;
+    }
+
+    if (event.shiftKey && active === first) {
+      event.preventDefault();
+      last?.focus();
+    } else if (!event.shiftKey && active === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
+  function onWindowKeydown(event: KeyboardEvent) {
+    if (!open) return;
+    if (event.key === "Escape") {
+      event.preventDefault();
+      requestClose();
+      return;
+    }
+    trapFocus(event);
+  }
 </script>
+
+<svelte:window onkeydown={onWindowKeydown} />
 
 {#if open}
   <div class="st-modal__backdrop">
-    <section {...rest} class={classes()} role="dialog" aria-modal="true" aria-label={title}>
+    <section
+      {...rest}
+      bind:this={dialog}
+      class={classes()}
+      role="dialog"
+      aria-modal="true"
+      aria-label={title}
+      tabindex="-1"
+    >
       <header class="st-modal__header">
         <div>
           <h2 class="st-modal__title">{title}</h2>
           {#if description}<p class="st-modal__description">{description}</p>{/if}
         </div>
-        <button class="st-modal__close" type="button" aria-label={closeLabel} onclick={onclose}>
-          <span aria-hidden="true">x</span>
+        <button
+          bind:this={closeButton}
+          class="st-modal__close"
+          type="button"
+          aria-label={closeLabel}
+          onclick={requestClose}
+        >
+          <X size={18} strokeWidth={2.25} aria-hidden="true" />
         </button>
       </header>
       <div class="st-modal__body">

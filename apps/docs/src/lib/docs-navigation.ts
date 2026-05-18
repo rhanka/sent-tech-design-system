@@ -15,6 +15,7 @@ export interface DocsNavItem {
 }
 
 export interface ComponentNavItem extends DocsNavItem {
+  slug: string;
   status: ComponentStatus;
 }
 
@@ -54,6 +55,7 @@ export function buildComponentNavGroups(): ComponentNavGroup[] {
     items: group.components.map((component) => ({
       label: component.name,
       href: componentHref(component),
+      slug: component.slug,
       status: component.status
     }))
   }));

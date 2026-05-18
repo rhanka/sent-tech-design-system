@@ -15,6 +15,7 @@
 
   let locale = $state<Locale>("fr");
   let drawerOpen = $state(false);
+  let popoverOpen = $state(false);
   let selectedAction = $state("edit");
   let selectedProduct = $state("forge");
 </script>
@@ -65,7 +66,12 @@
         ]}
         onselect={(value) => (selectedProduct = value)}
       />
-      <Popover open label="Service details">
+      <Popover open={popoverOpen} label="Service details">
+        {#snippet trigger()}
+          <Button variant="secondary" onclick={() => (popoverOpen = !popoverOpen)}>
+            Service details
+          </Button>
+        {/snippet}
         <p>Popover content is for compact contextual detail, not full workflows.</p>
       </Popover>
       <Button variant="secondary" onclick={() => (drawerOpen = true)}>Open drawer</Button>

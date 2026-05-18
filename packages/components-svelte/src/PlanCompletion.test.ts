@@ -97,6 +97,30 @@ describe("plan completion components", () => {
     expect(selected).toBe("entropic");
   });
 
+  it("closes dropdown on Escape and outside pointer down", async () => {
+    render(Dropdown, {
+      props: {
+        label: "Product",
+        value: "forge",
+        options: [
+          { label: "Forge", value: "forge" },
+          { label: "Entropic", value: "entropic" }
+        ]
+      }
+    });
+
+    const trigger = screen.getByRole("button", { name: "Product: Forge" });
+    await fireEvent.click(trigger);
+    expect(screen.getByRole("listbox", { name: "Product" })).toBeTruthy();
+    await fireEvent.keyDown(window, { key: "Escape" });
+    expect(screen.queryByRole("listbox", { name: "Product" })).toBeNull();
+
+    await fireEvent.click(trigger);
+    expect(screen.getByRole("listbox", { name: "Product" })).toBeTruthy();
+    await fireEvent.pointerDown(document.body);
+    expect(screen.queryByRole("listbox", { name: "Product" })).toBeNull();
+  });
+
   it("renders empty and loading states with accessible labels", () => {
     render(EmptyState, { props: { title: "No services", message: "Create the first service.", action } });
     render(LoadingState, { props: { label: "Loading services" } });
