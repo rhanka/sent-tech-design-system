@@ -18,75 +18,6 @@
   let popoverOpen = $state(false);
   let selectedAction = $state("edit");
   let selectedProduct = $state("forge");
-
-  const copy = {
-    fr: {
-      linkTitle: "Lien",
-      alertTitle: "Alerte",
-      menuTitle: "Menu",
-      dropdownTitle: "Liste deroulante",
-      popoverTitle: "Popover",
-      drawerTitle: "Drawer",
-      emptyStateTitle: "Etat vide",
-      loadingTitle: "Chargement",
-      dataNavigationDocs: "Documentation donnees et navigation",
-      migrationNote: "Note de migration",
-      migrationBody: "Garder la logique workflow produit hors du design system de base.",
-      menuLabel: "Actions",
-      edit: "Modifier",
-      archive: "Archiver",
-      delete: "Supprimer",
-      selectedAction: "Action selectionnee",
-      productLabel: "Produit",
-      serviceDetails: "Details du service",
-      popoverBody: "Le popover sert aux details contextuels compacts, pas aux workflows complets.",
-      openDrawer: "Ouvrir le drawer",
-      drawerDescription: "Les drawers portent des workflows secondaires sans quitter le contexte courant.",
-      drawerBody: "Utiliser un drawer pour inspecter, configurer ou comparer en parallele.",
-      noServiceTitle: "Aucun service configure",
-      noServiceBody: "Creer un premier service avant de publier l'espace tenant.",
-      createService: "Creer un service",
-      loadingServices: "Chargement des services",
-      loadingSkeleton: "Preparation du squelette",
-      forge: "Forge",
-      entropic: "Entropic",
-      graphify: "Graphify"
-    },
-    en: {
-      linkTitle: "Link",
-      alertTitle: "Alert",
-      menuTitle: "Menu",
-      dropdownTitle: "Dropdown",
-      popoverTitle: "Popover",
-      drawerTitle: "Drawer",
-      emptyStateTitle: "EmptyState",
-      loadingTitle: "LoadingState",
-      dataNavigationDocs: "Data navigation docs",
-      migrationNote: "Migration note",
-      migrationBody: "Keep product-specific workflow logic outside the base design system.",
-      menuLabel: "Actions",
-      edit: "Edit",
-      archive: "Archive",
-      delete: "Delete",
-      selectedAction: "Selected action",
-      productLabel: "Product",
-      serviceDetails: "Service details",
-      popoverBody: "Popover content is for compact contextual detail, not full workflows.",
-      openDrawer: "Open drawer",
-      drawerDescription: "Drawers hold secondary workflows without leaving the current screen.",
-      drawerBody: "Use drawers for inspection, configuration and side-by-side review tasks.",
-      noServiceTitle: "No service configured",
-      noServiceBody: "Create the first service before publishing the tenant workspace.",
-      createService: "Create service",
-      loadingServices: "Loading services",
-      loadingSkeleton: "Preparing skeleton",
-      forge: "Forge",
-      entropic: "Entropic",
-      graphify: "Graphify"
-    }
-  } as const;
-
-  const text = () => copy[locale];
 </script>
 
 <div class="docs-page">
@@ -106,100 +37,65 @@
 
   <section class="docs-section">
     <h2>{t(locale, "actionsAndLinks")}</h2>
-    <div class="docs-demo-stack">
-      <article class="docs-demo-block">
-        <h3>{text().linkTitle}</h3>
-        <div class="docs-demo-inline">
-          <Link href="/components/data-navigation">{text().dataNavigationDocs}</Link>
-        </div>
-      </article>
-
-      <article class="docs-demo-block">
-        <h3>{text().alertTitle}</h3>
-        <Alert tone="warning" title={text().migrationNote} message={text().migrationBody} />
-      </article>
-
-      <article class="docs-demo-block">
-        <h3>{text().menuTitle}</h3>
-        <Menu
-          label={text().menuLabel}
-          items={[
-            { label: text().edit, value: "edit" },
-            { label: text().archive, value: "archive" },
-            { label: text().delete, value: "delete", disabled: true }
-          ]}
-          onselect={(value) => (selectedAction = value)}
-        />
-        <p class="docs-demo-note">{text().selectedAction}: <code>{selectedAction}</code></p>
-      </article>
+    <div class="docs-example docs-example--stack">
+      <Link href="/components/data-navigation">Data navigation docs</Link>
+      <Alert tone="warning" title="Migration note" message="Keep product-specific workflow logic outside the base design system." />
+      <Menu
+        label="Actions"
+        items={[
+          { label: "Edit", value: "edit" },
+          { label: "Archive", value: "archive" },
+          { label: "Delete", value: "delete", disabled: true }
+        ]}
+        onselect={(value) => (selectedAction = value)}
+      />
+      <p>Selected action: <code>{selectedAction}</code></p>
     </div>
   </section>
 
   <section class="docs-section">
     <h2>{t(locale, "disclosure")}</h2>
-    <div class="docs-demo-stack">
-      <article class="docs-demo-block">
-        <h3>{text().dropdownTitle}</h3>
-        <Dropdown
-          label={text().productLabel}
-          value={selectedProduct}
-          options={[
-            { label: text().forge, value: "forge" },
-            { label: text().entropic, value: "entropic" },
-            { label: text().graphify, value: "graphify" }
-          ]}
-          onselect={(value) => (selectedProduct = value)}
-        />
-      </article>
-
-      <article class="docs-demo-block">
-        <h3>{text().popoverTitle}</h3>
-        <Popover open={popoverOpen} label={text().serviceDetails}>
-          {#snippet trigger()}
-            <Button variant="secondary" onclick={() => (popoverOpen = !popoverOpen)}>
-              {text().serviceDetails}
-            </Button>
-          {/snippet}
-          <p>{text().popoverBody}</p>
-        </Popover>
-      </article>
-
-      <article class="docs-demo-block">
-        <h3>{text().drawerTitle}</h3>
-        <div class="docs-demo-inline">
-          <Button variant="secondary" onclick={() => (drawerOpen = true)}>{text().openDrawer}</Button>
-        </div>
-        <Drawer
-          open={drawerOpen}
-          title={text().serviceDetails}
-          description={text().drawerDescription}
-          onclose={() => (drawerOpen = false)}
-        >
-          <p>{text().drawerBody}</p>
-        </Drawer>
-      </article>
+    <div class="docs-example docs-example--stack">
+      <Dropdown
+        label="Product"
+        value={selectedProduct}
+        options={[
+          { label: "Forge", value: "forge" },
+          { label: "Entropic", value: "entropic" },
+          { label: "Graphify", value: "graphify" }
+        ]}
+        onselect={(value) => (selectedProduct = value)}
+      />
+      <Popover open={popoverOpen} label="Service details">
+        {#snippet trigger()}
+          <Button variant="secondary" onclick={() => (popoverOpen = !popoverOpen)}>
+            Service details
+          </Button>
+        {/snippet}
+        <p>Popover content is for compact contextual detail, not full workflows.</p>
+      </Popover>
+      <Button variant="secondary" onclick={() => (drawerOpen = true)}>Open drawer</Button>
+      <Drawer
+        open={drawerOpen}
+        title="Service details"
+        description="Drawers hold secondary workflows without leaving the current screen."
+        onclose={() => (drawerOpen = false)}
+      >
+        <p>Use drawers for inspection, configuration and side-by-side review tasks.</p>
+      </Drawer>
     </div>
   </section>
 
   <section class="docs-section">
     <h2>{t(locale, "operationalStates")}</h2>
-    <div class="docs-demo-stack">
-      <article class="docs-demo-block">
-        <h3>{text().emptyStateTitle}</h3>
-        <EmptyState title={text().noServiceTitle} message={text().noServiceBody}>
-          {#snippet action()}
-            <Button>{text().createService}</Button>
-          {/snippet}
-        </EmptyState>
-      </article>
-
-      <article class="docs-demo-block">
-        <h3>{text().loadingTitle}</h3>
-        <div class="docs-demo-stack">
-          <LoadingState label={text().loadingServices} />
-          <LoadingState label={text().loadingSkeleton} variant="skeleton" />
-        </div>
-      </article>
+    <div class="docs-example docs-example--stack">
+      <EmptyState title="No service configured" message="Create the first service before publishing the tenant workspace.">
+        {#snippet action()}
+          <Button>Create service</Button>
+        {/snippet}
+      </EmptyState>
+      <LoadingState label="Loading services" />
+      <LoadingState label="Preparing skeleton" variant="skeleton" />
     </div>
   </section>
 
