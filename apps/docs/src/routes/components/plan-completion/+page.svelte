@@ -37,65 +37,100 @@
 
   <section class="docs-section">
     <h2>{t(locale, "actionsAndLinks")}</h2>
-    <div class="docs-example docs-example--stack">
-      <Link href="/components/data-navigation">Data navigation docs</Link>
-      <Alert tone="warning" title="Migration note" message="Keep product-specific workflow logic outside the base design system." />
-      <Menu
-        label="Actions"
-        items={[
-          { label: "Edit", value: "edit" },
-          { label: "Archive", value: "archive" },
-          { label: "Delete", value: "delete", disabled: true }
-        ]}
-        onselect={(value) => (selectedAction = value)}
-      />
-      <p>Selected action: <code>{selectedAction}</code></p>
+    <div class="docs-demo-stack">
+      <article class="docs-demo-block">
+        <h3>Link</h3>
+        <div class="docs-demo-inline">
+          <Link href="/components/data-navigation">Data navigation docs</Link>
+        </div>
+      </article>
+
+      <article class="docs-demo-block">
+        <h3>Alert</h3>
+        <Alert tone="warning" title="Migration note" message="Keep product-specific workflow logic outside the base design system." />
+      </article>
+
+      <article class="docs-demo-block">
+        <h3>Menu</h3>
+        <Menu
+          label="Actions"
+          items={[
+            { label: "Edit", value: "edit" },
+            { label: "Archive", value: "archive" },
+            { label: "Delete", value: "delete", disabled: true }
+          ]}
+          onselect={(value) => (selectedAction = value)}
+        />
+        <p class="docs-demo-note">Selected action: <code>{selectedAction}</code></p>
+      </article>
     </div>
   </section>
 
   <section class="docs-section">
     <h2>{t(locale, "disclosure")}</h2>
-    <div class="docs-example docs-example--stack">
-      <Dropdown
-        label="Product"
-        value={selectedProduct}
-        options={[
-          { label: "Forge", value: "forge" },
-          { label: "Entropic", value: "entropic" },
-          { label: "Graphify", value: "graphify" }
-        ]}
-        onselect={(value) => (selectedProduct = value)}
-      />
-      <Popover open={popoverOpen} label="Service details">
-        {#snippet trigger()}
-          <Button variant="secondary" onclick={() => (popoverOpen = !popoverOpen)}>
-            Service details
-          </Button>
-        {/snippet}
-        <p>Popover content is for compact contextual detail, not full workflows.</p>
-      </Popover>
-      <Button variant="secondary" onclick={() => (drawerOpen = true)}>Open drawer</Button>
-      <Drawer
-        open={drawerOpen}
-        title="Service details"
-        description="Drawers hold secondary workflows without leaving the current screen."
-        onclose={() => (drawerOpen = false)}
-      >
-        <p>Use drawers for inspection, configuration and side-by-side review tasks.</p>
-      </Drawer>
+    <div class="docs-demo-stack">
+      <article class="docs-demo-block">
+        <h3>Dropdown</h3>
+        <Dropdown
+          label="Product"
+          value={selectedProduct}
+          options={[
+            { label: "Forge", value: "forge" },
+            { label: "Entropic", value: "entropic" },
+            { label: "Graphify", value: "graphify" }
+          ]}
+          onselect={(value) => (selectedProduct = value)}
+        />
+      </article>
+
+      <article class="docs-demo-block">
+        <h3>Popover</h3>
+        <Popover open={popoverOpen} label="Service details">
+          {#snippet trigger()}
+            <Button variant="secondary" onclick={() => (popoverOpen = !popoverOpen)}>
+              Service details
+            </Button>
+          {/snippet}
+          <p>Popover content is for compact contextual detail, not full workflows.</p>
+        </Popover>
+      </article>
+
+      <article class="docs-demo-block">
+        <h3>Drawer</h3>
+        <div class="docs-demo-inline">
+          <Button variant="secondary" onclick={() => (drawerOpen = true)}>Open drawer</Button>
+        </div>
+        <Drawer
+          open={drawerOpen}
+          title="Service details"
+          description="Drawers hold secondary workflows without leaving the current screen."
+          onclose={() => (drawerOpen = false)}
+        >
+          <p>Use drawers for inspection, configuration and side-by-side review tasks.</p>
+        </Drawer>
+      </article>
     </div>
   </section>
 
   <section class="docs-section">
     <h2>{t(locale, "operationalStates")}</h2>
-    <div class="docs-example docs-example--stack">
-      <EmptyState title="No service configured" message="Create the first service before publishing the tenant workspace.">
-        {#snippet action()}
-          <Button>Create service</Button>
-        {/snippet}
-      </EmptyState>
-      <LoadingState label="Loading services" />
-      <LoadingState label="Preparing skeleton" variant="skeleton" />
+    <div class="docs-demo-stack">
+      <article class="docs-demo-block">
+        <h3>EmptyState</h3>
+        <EmptyState title="No service configured" message="Create the first service before publishing the tenant workspace.">
+          {#snippet action()}
+            <Button>Create service</Button>
+          {/snippet}
+        </EmptyState>
+      </article>
+
+      <article class="docs-demo-block">
+        <h3>LoadingState</h3>
+        <div class="docs-demo-stack">
+          <LoadingState label="Loading services" />
+          <LoadingState label="Preparing skeleton" variant="skeleton" />
+        </div>
+      </article>
     </div>
   </section>
 

@@ -32,7 +32,7 @@
     }
 
     if (href.startsWith("/#")) {
-      return pathname === "/" && (hash === href.slice(1) || (!hash && href === "/#foundations"));
+      return pathname === "/" && hash === href.slice(1);
     }
 
     const route = href.split("#")[0];
@@ -41,6 +41,22 @@
 
   function isComponentActive(item: ComponentNavItem): boolean {
     return page.url.pathname === `/components/${item.slug}`;
+  }
+
+  function isSidebarDocActive(href: string): boolean {
+    if (href === "/") {
+      return page.url.pathname === "/" && !page.url.hash;
+    }
+
+    if (href.startsWith("/#")) {
+      return page.url.pathname === "/" && page.url.hash === href.slice(1);
+    }
+
+    return isActive(href);
+  }
+
+  function isGroupOpen(items: ComponentNavItem[]): boolean {
+    return items.some((item) => isComponentActive(item));
   }
 </script>
 
@@ -84,7 +100,11 @@
             <ul>
               {#each DOCS_FOUNDATION_NAV as item (item.href)}
                 <li>
-                  <a href={item.href} aria-current={isActive(item.href) ? "page" : undefined}>
+                  <a
+                    class="docs-side-link docs-side-link--docs"
+                    href={item.href}
+                    aria-current={isSidebarDocActive(item.href) ? "page" : undefined}
+                  >
                     {item.label}
                   </a>
                 </li>
@@ -95,7 +115,7 @@
           <section class="docs-side-section" aria-labelledby="docs-components-heading">
             <h2 id="docs-components-heading">Composants</h2>
             {#each componentGroups as group (group.label)}
-              <details class="docs-side-group" open>
+              <details class="docs-side-group" open={isGroupOpen(group.items)}>
                 <summary>
                   <ChevronDown class="docs-side-group-icon" size={16} strokeWidth={2.25} aria-hidden="true" />
                   <span>{group.label}</span>
@@ -103,7 +123,11 @@
                 <ul>
                   {#each group.items as item (item.label)}
                     <li>
-                      <a href={item.href} aria-current={isComponentActive(item) ? "page" : undefined}>
+                      <a
+                        class="docs-side-link docs-side-link--component"
+                        href={item.href}
+                        aria-current={isComponentActive(item) ? "page" : undefined}
+                      >
                         <span
                           class:docs-side-status--documented={item.status === "documented"}
                           class="docs-side-status"

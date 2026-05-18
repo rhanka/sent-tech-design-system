@@ -52,6 +52,7 @@
     <div class="docs-example docs-example--stack">
       <OverflowMenu
         triggerLabel="Row actions"
+        placement="bottom-start"
         items={[
           { value: "rename", label: "Rename" },
           { value: "duplicate", label: "Duplicate" },
