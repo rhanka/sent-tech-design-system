@@ -10,18 +10,18 @@ const copy = {
     components: "Composants",
     buttonTitle: "Button",
     buttonIntro: "Action principale, secondaire, fantôme ou destructive.",
-    formsTitle: "Forms",
+    formsTitle: "Formulaires",
     formsIntro:
       "Champs, sélections et contrôles binaires pour interfaces produit denses et white-label.",
     overlaysTitle: "Overlays",
     overlaysIntro:
       "Dialogues, infobulles et notifications pour actions ponctuelles sans couplage produit.",
-    dataNavigationTitle: "Data & Navigation",
+    dataNavigationTitle: "Donnees et navigation",
     dataNavigationIntro:
       "Tables, onglets, pagination et navigation latérale pour écrans de données et dashboards.",
-    completionTitle: "Plan completion",
+    completionTitle: "Plan de completion",
     completionIntro:
-      "Composants restants du plan initial: liens, alertes, menus, popovers, dropdowns, drawers, empty states et loading states.",
+      "Page groupee pour les primitives d'action, d'ouverture et d'etats livrees dans le lot de completion V1.",
     statusStable: "Stable",
     examplesTitle: "Exemples",
     apiTitle: "API",
@@ -38,7 +38,7 @@ const copy = {
     navigation: "Navigation",
     dataDisplay: "Affichage de données",
     actionsAndLinks: "Actions et liens",
-    disclosure: "Disclosure",
+    disclosure: "Ouvertures et panneaux",
     operationalStates: "États opérationnels"
   },
   en: {
