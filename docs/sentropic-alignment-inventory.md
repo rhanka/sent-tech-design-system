@@ -13,6 +13,18 @@ Perimetre: points d'alignement observes dans `/home/antoinefa/src/sentropic/ui` 
 - Separateurs: Sentropic utilise des separateurs explicites `border-t border-slate-100/200` entre groupes logiques.
 - Menus operationnels denses: les menus du composer chat combinent titres de sections, zones scrollables avec max-height, separateurs, lignes local/tool/context avec icones.
 
+## Fichiers source de reference Sentropic
+
+- `../sentropic/ui/src/lib/components/MenuPopover.svelte`
+- `../sentropic/ui/src/lib/components/MenuTriggerButton.svelte`
+- `../sentropic/ui/src/lib/components/FileMenu.svelte`
+- `../sentropic/ui/src/lib/components/Header.svelte`
+- `../sentropic/ui/src/lib/components/DocumentsBlock.svelte`
+- `../sentropic/ui/src/lib/components/ChatPanel.svelte`
+- `../sentropic/ui/src/lib/components/ConfigItemCard.svelte`
+- `../sentropic/ui/src/lib/components/WorkspaceSettingsPanel.svelte`
+- `../sentropic/rules/design-system.md`
+
 ## Backlog d'alignement
 
 ### P0 - clarte des affordances
@@ -34,6 +46,44 @@ Perimetre: points d'alignement observes dans `/home/antoinefa/src/sentropic/ui` 
 - Mettre a jour les exemples docs pour montrer boutons icones, menus groupes, lignes destructives et positionnement popup.
 - Ajouter un guidage visuel sur l'usage de `ChevronDown`, `ChevronDownCircle`, `Ellipsis`, `Plus`, `X`, `Eye/EyeOff`, `Download`, `Upload`, `Trash2`.
 - Ajouter des exemples mobiles pour le placement overlay/menu et le confinement du scroll.
+
+## Rattrapage priorise pour Sentropic
+
+### Lot A - primitives indispensables avant consommation large du DS dans Sentropic
+
+- `IconButton`: primitive compacte 32-36px, icon-only, `aria-label` obligatoire, `title` optionnel, hover/focus visibles. Cible: remplacer les boutons ad hoc de type `Copy`, `Pencil`, `RotateCcw`, `Trash2`, `Eye`, `EyeOff`.
+- `MenuTriggerButton`: primitive DS equivalente au pattern Sentropic actuel. Reference: `../sentropic/ui/src/lib/components/MenuTriggerButton.svelte`.
+- `MenuPopover`: primitive DS de placement avec `placement`, `align`, `outside-click`, fermeture `Escape`, et variante `fixed` pour contexts plus complexes. Reference: `../sentropic/ui/src/lib/components/MenuPopover.svelte`.
+- `Menu` / `OverflowMenu`: items avec icone, danger, disabled, groupe, separateur et largeur contrainte. Reference: `../sentropic/ui/src/lib/components/FileMenu.svelte`.
+
+### Lot B - alignement des contrats visuels a reprendre dans le DS
+
+- Icnes Lucide uniquement dans les composants et la doc.
+- Menus denses avec lignes `icon + label`, pas de simples listes de texte nues lorsqu'on vise Sentropic.
+- Separateurs explicites entre groupes d'actions.
+- Cibles boutons icone >= 32px, avec focus ring visible.
+- Chevron de depliage consistant sur dropdowns, groupes de nav et panneaux pliables.
+
+### Lot C - composants DS a remettre a niveau avant branchement Sentropic
+
+- `CopyButton`
+- `Search`
+- `PasswordInput`
+- `PaginationNav`
+- `ProgressIndicator`
+- `Tag`
+- `FileUploader`
+- `Popover`
+- `OverflowMenu`
+- `Menu`
+
+## Plan d'execution recommande
+
+1. Livrer `IconButton`, `MenuTriggerButton` et l'enrichissement `Menu` / `OverflowMenu`.
+2. Aligner `Popover` sur le contrat `MenuPopover` Sentropic.
+3. Remplacer les SVG inline restants du package DS par Lucide.
+4. Refaire la doc DS pour montrer les patterns Sentropic reels: boutons icone, menus groupes, actions destructives, overlays ancres.
+5. Ouvrir ensuite une passe de branchement cote Sentropic composant par composant, en commencant par les surfaces les plus chargees: `ChatPanel`, `DocumentsBlock`, `ConfigItemCard`, `WorkspaceSettingsPanel`.
 
 ## Passe courante
 
