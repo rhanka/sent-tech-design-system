@@ -45,9 +45,17 @@ export const DOCS_FOUNDATION_NAV: DocsNavItem[] = [
   { label: "Vue d'ensemble", href: "/" },
   { label: "Fondations", href: "/#foundations" },
   { label: "Tokens", href: "/#tokens" },
-  { label: "Themes tenant", href: "/#themes" },
+  { label: "Themes", href: "/#themes" },
   { label: "Contrat marque blanche", href: "/#contracts" }
 ];
+
+const COMPONENT_PAGE_LABELS: Record<string, string> = {
+  button: "Button",
+  forms: "Formulaires",
+  overlays: "Overlays",
+  "data-navigation": "Donnees et navigation",
+  "plan-completion": "Plan de completion"
+};
 
 export function buildComponentNavGroups(): ComponentNavGroup[] {
   return groupByCategory(COMPONENTS).map((group) => ({
@@ -68,15 +76,14 @@ export function resolveBreadcrumb(pathname: string): DocsNavItem[] {
 
   if (pathname.startsWith("/components/")) {
     const slug = pathname.split("/").filter(Boolean).at(-1);
-    const component = COMPONENTS.find(
-      (entry) => entry.slug === slug || entry.groupSlug === slug
-    );
+    const component = slug ? COMPONENTS.find((entry) => entry.slug === slug) : undefined;
+    const label = slug ? COMPONENT_PAGE_LABELS[slug] ?? component?.name ?? "Composant" : "Composant";
 
     return [
       { label: "Catalogue", href: "/" },
       { label: "Composants", href: "/#components" },
       {
-        label: component?.name ?? "Composant",
+        label,
         href: pathname
       }
     ];
