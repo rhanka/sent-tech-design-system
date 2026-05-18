@@ -11,51 +11,6 @@
 
   let locale = $state<Locale>("fr");
   let open = $state(false);
-
-  const copy = {
-    fr: {
-      modalSection: "Modal",
-      tooltipSection: "Tooltip",
-      overflowSection: "OverflowMenu",
-      toastSection: "Toast",
-      openModal: "Ouvrir la modale",
-      modalTitle: "Confirmer l'action",
-      modalDescription: "Les surfaces de modale utilisent les tokens d'overlay.",
-      modalBody: "Le contenu de modale reste neutre au produit et est fourni par l'application hote.",
-      tooltipTrigger: "Survoler ou focus",
-      tooltipContent: "Information contextuelle",
-      rowActions: "Actions de ligne",
-      rename: "Renommer",
-      duplicate: "Dupliquer",
-      delete: "Supprimer",
-      savedTitle: "Enregistre",
-      savedMessage: "Le theme tenant a ete compile.",
-      failedTitle: "Echec",
-      failedMessage: "Le mapping d'adaptateur est incomplet."
-    },
-    en: {
-      modalSection: "Modal",
-      tooltipSection: "Tooltip",
-      overflowSection: "OverflowMenu",
-      toastSection: "Toast",
-      openModal: "Open modal",
-      modalTitle: "Confirm action",
-      modalDescription: "Modal surfaces use overlay tokens.",
-      modalBody: "Modal content remains product-neutral and is supplied by the host application.",
-      tooltipTrigger: "Hover or focus",
-      tooltipContent: "Contextual information",
-      rowActions: "Row actions",
-      rename: "Rename",
-      duplicate: "Duplicate",
-      delete: "Delete",
-      savedTitle: "Saved",
-      savedMessage: "The tenant theme was compiled.",
-      failedTitle: "Failed",
-      failedMessage: "The adapter mapping is incomplete."
-    }
-  } as const;
-
-  const text = () => copy[locale];
 </script>
 
 <div class="docs-page">
@@ -74,64 +29,43 @@
   </section>
 
   <section class="docs-section">
-    <h2>{text().modalSection}</h2>
-    <div class="docs-demo-stack">
-      <article class="docs-demo-block">
-        <h3>{text().modalSection}</h3>
-        <div class="docs-demo-inline">
-          <Button onclick={() => (open = true)}>{text().openModal}</Button>
-        </div>
-        <Modal open={open} title={text().modalTitle} description={text().modalDescription} onclose={() => (open = false)}>
-          <p>{text().modalBody}</p>
-        </Modal>
-      </article>
+    <h2>Modal</h2>
+    <div class="docs-example docs-example--stack">
+      <Button onclick={() => (open = true)}>Open modal</Button>
+      <Modal open={open} title="Confirm action" description="Modal surfaces use overlay tokens." onclose={() => (open = false)}>
+        <p>Modal content remains product-neutral and is supplied by the host application.</p>
+      </Modal>
     </div>
   </section>
 
   <section class="docs-section">
-    <h2>{text().tooltipSection}</h2>
-    <div class="docs-demo-stack">
-      <article class="docs-demo-block">
-        <h3>{text().tooltipSection}</h3>
-        <div class="docs-demo-inline">
-          <Tooltip content={text().tooltipContent}>
-            <Button variant="secondary">{text().tooltipTrigger}</Button>
-          </Tooltip>
-        </div>
-      </article>
+    <h2>Tooltip</h2>
+    <div class="docs-example">
+      <Tooltip content="Contextual information">
+        <Button variant="secondary">Hover or focus</Button>
+      </Tooltip>
     </div>
   </section>
 
   <section class="docs-section">
-    <h2>{text().overflowSection}</h2>
-    <div class="docs-demo-stack">
-      <article class="docs-demo-block">
-        <h3>{text().overflowSection}</h3>
-        <div class="docs-demo-inline">
-          <OverflowMenu
-            triggerLabel={text().rowActions}
-            placement="bottom-start"
-            items={[
-              { value: "rename", label: text().rename },
-              { value: "duplicate", label: text().duplicate },
-              { value: "delete", label: text().delete, danger: true }
-            ]}
-          />
-        </div>
-      </article>
+    <h2>OverflowMenu</h2>
+    <div class="docs-example docs-example--stack">
+      <OverflowMenu
+        triggerLabel="Row actions"
+        items={[
+          { value: "rename", label: "Rename" },
+          { value: "duplicate", label: "Duplicate" },
+          { value: "delete", label: "Delete", danger: true }
+        ]}
+      />
     </div>
   </section>
 
   <section class="docs-section">
     <h2>{t(locale, "feedback")}</h2>
-    <div class="docs-demo-stack">
-      <article class="docs-demo-block">
-        <h3>{text().toastSection}</h3>
-        <div class="docs-demo-stack">
-          <Toast tone="success" title={text().savedTitle} message={text().savedMessage} />
-          <Toast tone="error" title={text().failedTitle} message={text().failedMessage} />
-        </div>
-      </article>
+    <div class="docs-example docs-example--stack">
+      <Toast tone="success" title="Saved" message="The tenant theme was compiled." />
+      <Toast tone="error" title="Failed" message="The adapter mapping is incomplete." />
     </div>
   </section>
 
