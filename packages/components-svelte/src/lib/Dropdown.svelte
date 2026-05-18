@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { ChevronDown } from "@lucide/svelte";
   import type { HTMLAttributes } from "svelte/elements";
 
   export type DropdownOption = {
@@ -28,6 +29,7 @@
     ...rest
   }: DropdownProps = $props();
 
+  let host: HTMLDivElement | undefined = $state();
   let expanded = $state(false);
   let currentValue = $state<string | undefined>(undefined);
   let syncedOpen = $state<boolean | undefined>(undefined);
@@ -40,6 +42,23 @@
     expanded = false;
     onselect?.(option.value);
   };
+
+  function close() {
+    expanded = false;
+  }
+
+  function onWindowKeydown(event: KeyboardEvent) {
+    if (event.key === "Escape" && expanded) {
+      event.preventDefault();
+      close();
+    }
+  }
+
+  function onWindowPointerDown(event: MouseEvent) {
+    if (!expanded) return;
+    const target = event.target as Node | null;
+    if (host && target && !host.contains(target)) close();
+  }
 
   $effect(() => {
     if (syncedOpen !== open) {
@@ -56,7 +75,9 @@
   });
 </script>
 
-<div {...rest} class={classes()}>
+<svelte:window onkeydown={onWindowKeydown} onpointerdown={onWindowPointerDown} />
+
+<div {...rest} bind:this={host} class={classes()}>
   <button
     class="st-dropdown__button"
     type="button"
@@ -65,7 +86,12 @@
     onclick={() => (expanded = !expanded)}
   >
     <span>{label}: {selectedLabel()}</span>
-    <span aria-hidden="true">v</span>
+    <ChevronDown
+      class={`st-dropdown__icon ${expanded ? "st-dropdown__icon--open" : ""}`}
+      size={18}
+      strokeWidth={2.25}
+      aria-hidden="true"
+    />
   </button>
   {#if expanded}
     <div class="st-dropdown__list" role="listbox" aria-label={label}>
@@ -110,6 +136,16 @@
   .st-dropdown__button:focus-visible {
     outline: 2px solid var(--st-component-control-focusRing, var(--st-semantic-border-interactive));
     outline-offset: 2px;
+  }
+
+  .st-dropdown__icon {
+    color: var(--st-semantic-text-secondary);
+    flex: 0 0 auto;
+    transition: transform var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
+  }
+
+  .st-dropdown__icon--open {
+    transform: rotate(180deg);
   }
 
   .st-dropdown__list {

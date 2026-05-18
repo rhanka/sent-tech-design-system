@@ -9,6 +9,7 @@
 </script>
 
 <script lang="ts">
+  import { Ellipsis } from "@lucide/svelte";
   import type { HTMLAttributes } from "svelte/elements";
 
   type OverflowMenuProps = Omit<HTMLAttributes<HTMLDivElement>, "class" | "onselect"> & {
@@ -77,11 +78,7 @@
     aria-label={triggerLabel}
     onclick={toggle}
   >
-    <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false">
-      <circle cx="3" cy="8" r="1.4" fill="currentColor" />
-      <circle cx="8" cy="8" r="1.4" fill="currentColor" />
-      <circle cx="13" cy="8" r="1.4" fill="currentColor" />
-    </svg>
+    <Ellipsis size={18} strokeWidth={2.25} aria-hidden="true" />
   </button>
   {#if open}
     <ul class="st-overflowMenu__list" role="menu" aria-label={label}>

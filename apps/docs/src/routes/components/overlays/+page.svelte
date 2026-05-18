@@ -10,7 +10,7 @@
   import { t, type Locale } from "$lib/i18n";
 
   let locale = $state<Locale>("fr");
-  let open = $state(true);
+  let open = $state(false);
 </script>
 
 <div class="docs-page">

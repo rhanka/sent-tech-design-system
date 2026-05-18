@@ -8,6 +8,7 @@
 </script>
 
 <script lang="ts">
+  import { ChevronDown } from "@lucide/svelte";
   import type { HTMLAttributes } from "svelte/elements";
 
   type AccordionProps = Omit<HTMLAttributes<HTMLDivElement>, "class" | "onchange"> & {
@@ -68,11 +69,15 @@
           onclick={() => toggle(item.id, item.disabled)}
         >
           {#if align === "start"}
-            <span class="st-accordion__icon" aria-hidden="true">▾</span>
+            <span class="st-accordion__icon" aria-hidden="true">
+              <ChevronDown size={18} strokeWidth={2.25} />
+            </span>
             <span class="st-accordion__title">{item.title}</span>
           {:else}
             <span class="st-accordion__title">{item.title}</span>
-            <span class="st-accordion__icon" aria-hidden="true">▾</span>
+            <span class="st-accordion__icon" aria-hidden="true">
+              <ChevronDown size={18} strokeWidth={2.25} />
+            </span>
           {/if}
         </button>
       </h3>
@@ -160,11 +165,14 @@
   }
 
   .st-accordion__icon {
+    align-items: center;
     color: var(--st-semantic-text-secondary);
     display: inline-flex;
     flex: 0 0 auto;
-    font-size: 0.875rem;
+    height: 1.25rem;
+    justify-content: center;
     transition: transform var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
+    width: 1.25rem;
   }
 
   .st-accordion__item--open .st-accordion__icon {
