@@ -1,5 +1,7 @@
 <script lang="ts">
+  import { goto } from "$app/navigation";
   import { Alert, Badge, Link } from "@sentropic/design-system-svelte";
+  import { onMount } from "svelte";
   import { CATEGORY_LABELS } from "$lib/components-catalog";
   import { t, type Locale } from "$lib/i18n";
 
@@ -33,8 +35,31 @@
   } as const;
 
   const text = $derived(copy[locale]);
+
+  onMount(() => {
+    if (data.redirectTo) {
+      goto(data.redirectTo, { replaceState: true });
+    }
+  });
 </script>
 
+<svelte:head>
+  {#if data.redirectTo}
+    <meta http-equiv="refresh" content={`0; url=${data.redirectTo}`} />
+    <link rel="canonical" href={data.redirectTo} />
+  {/if}
+</svelte:head>
+
+{#if data.redirectTo}
+  <div class="docs-page">
+    <section class="docs-hero">
+      <p class="docs-hero-kicker">Composant · {CATEGORY_LABELS[data.component.category][locale]}</p>
+      <h1>{data.component.name}</h1>
+      <p>Cette documentation est regroupée dans la page de famille du composant.</p>
+      <p><Link href={data.redirectTo}>Ouvrir la page documentée</Link></p>
+    </section>
+  </div>
+{:else}
 <div class="docs-page">
   <div class="docs-language" role="group" aria-label="Language">
     <button type="button" aria-pressed={locale === "fr"} onclick={() => (locale = "fr")}>FR</button>
@@ -74,6 +99,7 @@
     <p>{text.alertMessage}</p>
   </section>
 </div>
+{/if}
 
 <style>
   .docs-stub-meta {
