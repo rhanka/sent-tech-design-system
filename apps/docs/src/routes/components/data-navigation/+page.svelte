@@ -29,6 +29,7 @@
   </div>
 
   <section class="docs-hero">
+    <p class="docs-hero-kicker">Famille · Données et navigation</p>
     <h1>
       {t(locale, "dataNavigationTitle")}
       <Badge tone="success">{t(locale, "statusStable")}</Badge>
