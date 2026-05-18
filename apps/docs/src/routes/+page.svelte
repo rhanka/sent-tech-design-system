@@ -7,12 +7,14 @@
     componentHref,
     groupByCategory
   } from "$lib/components-catalog";
+  import { DOCS_VERSION } from "$lib/docs-navigation";
 
   let locale = $state<Locale>("fr");
 
   const groups = groupByCategory(COMPONENTS);
   const total = COMPONENTS.length;
   const documented = COMPONENTS.filter((c) => c.status === "documented").length;
+  const pending = total - documented;
 
   const summary = $derived(
     locale === "fr"
@@ -31,18 +33,56 @@
   </div>
 
   <section class="docs-hero">
+    <p class="docs-hero-kicker">SENT-tech · Product design infrastructure</p>
     <h1>{t(locale, "title")}</h1>
     <p>{t(locale, "subtitle")}</p>
     <p class="docs-hero-meta">{summary}</p>
+    <div class="docs-hero-actions">
+      <a class="docs-button-link" href="#components">{t(locale, "components")}</a>
+      <a class="docs-button-link docs-button-link--secondary" href="#contracts">{t(locale, "tokenPolicyTitle")}</a>
+    </div>
   </section>
 
-  <section class="docs-section">
+  <section class="docs-section" id="foundations">
     <h2>{t(locale, "overview")}</h2>
     <p>{t(locale, "overviewBody")}</p>
+    <div class="docs-metric-grid" aria-label="Documentation status">
+      <div class="docs-metric">
+        <strong>{DOCS_VERSION}</strong>
+        <span>release publiée</span>
+      </div>
+      <div class="docs-metric">
+        <strong>{total}</strong>
+        <span>composants Svelte exportés</span>
+      </div>
+      <div class="docs-metric">
+        <strong>{documented}</strong>
+        <span>pages documentées en détail</span>
+      </div>
+      <div class="docs-metric">
+        <strong>{pending}</strong>
+        <span>stubs à compléter</span>
+      </div>
+    </div>
+    <div class="docs-foundation-grid">
+      <div class="docs-foundation-item">
+        <h3>Tokens sémantiques</h3>
+        <span>Surface, texte, bordures, actions, feedback et statuts sont exposés comme contrat stable.</span>
+      </div>
+      <div class="docs-foundation-item">
+        <h3>Thèmes tenant</h3>
+        <span>Sent Tech, Forge et Entropic partagent la même API de thème et restent remplaçables.</span>
+      </div>
+      <div class="docs-foundation-item">
+        <h3>Composants Svelte</h3>
+        <span>Les primitives restent découplées du produit et prêtes pour Forge, Onyxia et Chat UI.</span>
+      </div>
+    </div>
   </section>
 
-  <section class="docs-section">
+  <section class="docs-section" id="components">
     <h2>{t(locale, "components")}</h2>
+    <p>Catalogue opérationnel des exports `@sentropic/design-system-svelte`, groupé par usage pour retrouver vite le composant et son niveau de documentation.</p>
     {#each groups as group (group.category)}
       <div class="docs-catalog-group">
         <h3 class="docs-catalog-group-title">{CATEGORY_LABELS[group.category][locale]}</h3>
@@ -67,9 +107,47 @@
     {/each}
   </section>
 
-  <section class="docs-section">
+  <section class="docs-section" id="tokens">
+    <h2>Tokens</h2>
+    <p>Le design system publie des tokens foundation, semantic et component. Les composants ne consomment pas les couleurs brutes: ils lisent les variables sémantiques et les component tokens.</p>
+    <div class="docs-contract-grid">
+      <div class="docs-contract-item">
+        <h3>Foundation</h3>
+        <span>Palette, typographie et échelles de base.</span>
+      </div>
+      <div class="docs-contract-item">
+        <h3>Semantic</h3>
+        <span>Surface, texte, action, feedback, statut.</span>
+      </div>
+      <div class="docs-contract-item">
+        <h3>Component</h3>
+        <span>Variables propres aux composants et aux patterns produit.</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="docs-section" id="themes">
+    <h2>Thèmes</h2>
+    <p>Le package `@sentropic/design-system-themes` expose les thèmes Sent Tech, Forge et Entropic. Les consommateurs peuvent utiliser le `ThemeProvider` Svelte ou le CSS build-time selon leur intégration.</p>
+  </section>
+
+  <section class="docs-section" id="contracts">
     <h2>{t(locale, "tokenPolicyTitle")}</h2>
     <p>{t(locale, "tokenPolicyBody")}</p>
+    <div class="docs-contract-grid">
+      <div class="docs-contract-item">
+        <h3>Applications produit</h3>
+        <span>Import des composants Svelte et du thème tenant, sans logique métier dans le DS.</span>
+      </div>
+      <div class="docs-contract-item">
+        <h3>Thèmes externes</h3>
+        <span>Mapping CSS ou runtime depuis les variables sémantiques existantes.</span>
+      </div>
+      <div class="docs-contract-item">
+        <h3>Chat UI Sentropic</h3>
+        <span>Contrat `entropicTheme`, tokens chat et styles consommables sans fork produit.</span>
+      </div>
+    </div>
   </section>
 </div>
 
@@ -89,7 +167,6 @@
     font-size: 1rem;
     margin: 0;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
     color: var(--st-semantic-text-secondary, #475569);
   }
 

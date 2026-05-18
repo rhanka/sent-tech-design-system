@@ -26,6 +26,7 @@
   </div>
 
   <section class="docs-hero">
+    <p class="docs-hero-kicker">Lot · Complétion V1</p>
     <h1>
       {t(locale, "completionTitle")}
       <Badge tone="success">{t(locale, "statusStable")}</Badge>

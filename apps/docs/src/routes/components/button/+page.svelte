@@ -12,6 +12,7 @@
   </div>
 
   <section class="docs-hero">
+    <p class="docs-hero-kicker">Composant · Action</p>
     <h1>
       {t(locale, "buttonTitle")}
       <Badge tone="success">{t(locale, "statusStable")}</Badge>
