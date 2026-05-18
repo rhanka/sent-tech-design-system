@@ -20,6 +20,7 @@
   </div>
 
   <section class="docs-hero">
+    <p class="docs-hero-kicker">Famille · Overlays et feedback</p>
     <h1>
       {t(locale, "overlaysTitle")}
       <Badge tone="success">{t(locale, "statusStable")}</Badge>

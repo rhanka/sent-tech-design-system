@@ -42,6 +42,7 @@
   </div>
 
   <section class="docs-hero">
+    <p class="docs-hero-kicker">Composant · {CATEGORY_LABELS[data.component.category][locale]}</p>
     <h1>
       {data.component.name}
       <Badge tone="neutral">{text.stubBadge}</Badge>

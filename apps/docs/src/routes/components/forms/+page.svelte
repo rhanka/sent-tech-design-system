@@ -70,6 +70,7 @@
   </div>
 
   <section class="docs-hero">
+    <p class="docs-hero-kicker">Famille · Formulaires</p>
     <h1>
       {text().showcaseTitle}
       <Badge tone="success">{t(locale, "statusStable")}</Badge>
