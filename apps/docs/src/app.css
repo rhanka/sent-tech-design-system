@@ -224,13 +224,14 @@ select {
 }
 
 .docs-side-link--docs {
+  border-radius: 0;
   font-size: 0.97rem;
   min-height: 2.05rem;
   padding: 0.4rem 0.65rem;
 }
 
 .docs-side-link--docs[aria-current="page"] {
-  background: transparent;
+  background: #eef4fb;
   box-shadow: inset 3px 0 0 var(--docs-accent);
   color: var(--docs-ink);
   font-weight: 650;
