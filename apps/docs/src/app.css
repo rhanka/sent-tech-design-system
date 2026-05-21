@@ -175,13 +175,13 @@ select {
 
 .docs-side-section {
   display: grid;
-  gap: 0.65rem;
+  gap: 0.2rem;
 }
 
 .docs-side-section + .docs-side-section {
   border-top: 1px solid var(--docs-line);
-  margin-top: 1.25rem;
-  padding-top: 1.25rem;
+  margin-top: 1.1rem;
+  padding-top: 1.1rem;
 }
 
 .docs-side-section h2,
@@ -192,6 +192,10 @@ select {
   line-height: 1.2;
   margin: 0;
   text-transform: uppercase;
+}
+
+.docs-side-section h2 {
+  margin-bottom: 0.55rem;
 }
 
 .docs-side-section ul {
@@ -247,11 +251,7 @@ select {
 
 .docs-side-group {
   display: grid;
-  gap: 0.3rem;
-}
-
-.docs-side-group + .docs-side-group {
-  margin-top: 0.5rem;
+  gap: 0.25rem;
 }
 
 .docs-side-group summary {
@@ -261,7 +261,7 @@ select {
   display: flex;
   gap: 0.45rem;
   list-style: none;
-  padding: 0.28rem 0.65rem;
+  padding: 0.22rem 0.65rem;
 }
 
 .docs-side-group summary::-webkit-details-marker {
