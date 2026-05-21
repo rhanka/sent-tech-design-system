@@ -255,6 +255,10 @@ select {
   gap: 0.25rem;
 }
 
+.docs-side-group > ul {
+  padding-left: 1.25rem;
+}
+
 .docs-side-group summary {
   align-items: center;
   border-radius: 0.375rem;
