@@ -13,6 +13,7 @@
     resolveBreadcrumb,
     type ComponentNavItem
   } from "$lib/docs-navigation";
+  import { locale } from "$lib/locale.svelte";
 
   let { children } = $props();
 
@@ -64,7 +65,7 @@
   <div class="docs-shell">
     <header class="docs-header">
       <a class="docs-brand" href="/" aria-label="Sent Tech Design System">
-        <span class="docs-brand-mark" aria-hidden="true">ST</span>
+        <img class="docs-brand-mark" src="/SENT-logo-squared.svg" alt="" aria-hidden="true" />
         <span class="docs-brand-copy">
           <span class="docs-brand-name">SENT-tech</span>
           <span class="docs-brand-product">Design System</span>
@@ -89,6 +90,18 @@
             {/if}
           </a>
         {/each}
+        <div class="docs-locale" role="group" aria-label="Langue">
+          <button
+            type="button"
+            aria-pressed={locale.value === "fr"}
+            onclick={() => (locale.value = "fr")}
+          >FR</button>
+          <button
+            type="button"
+            aria-pressed={locale.value === "en"}
+            onclick={() => (locale.value = "en")}
+          >EN</button>
+        </div>
       </nav>
     </header>
 
