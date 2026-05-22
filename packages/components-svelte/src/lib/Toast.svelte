@@ -40,7 +40,7 @@
     justify-content: space-between;
     padding: var(--st-spacing-4, 1rem);
     width: min(100%, 28rem);
-    z-index: var(--st-component-toast-zIndex, 100);
+    z-index: var(--st-component-toast-zIndex, 60);
   }
 
   .st-toast--info {
