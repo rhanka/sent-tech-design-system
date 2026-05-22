@@ -11,6 +11,14 @@
 
 <script lang="ts">
   import type { HTMLAttributes } from "svelte/elements";
+  import {
+    Upload,
+    File as FileIcon,
+    LoaderCircle,
+    CircleCheck,
+    CircleAlert,
+    X
+  } from "@lucide/svelte";
 
   type FileUploaderProps = Omit<HTMLAttributes<HTMLDivElement>, "class"> & {
     label?: string;
@@ -22,6 +30,7 @@
     maxSizeBytes?: number;
     disabled?: boolean;
     files?: File[];
+    items?: FileUploadItem[];
     onfiles?: (files: File[]) => void;
     triggerLabel?: string;
     dropzoneLabel?: string;
@@ -41,6 +50,7 @@
     maxSizeBytes,
     disabled = false,
     files = $bindable([]),
+    items,
     onfiles,
     triggerLabel,
     dropzoneLabel = "Drag and drop files here",
@@ -179,6 +189,9 @@
       onchange={onChange}
     />
     <div class="st-fileUploader__content">
+      <span class="st-fileUploader__affordance" aria-hidden="true">
+        <Upload size={18} strokeWidth={2} aria-hidden="true" />
+      </span>
       <button
         type="button"
         class="st-fileUploader__trigger"
@@ -198,7 +211,50 @@
     <span class="st-field__help" id={helperId}>{helperText}</span>
   {/if}
 
-  {#if files.length > 0}
+  {#if items && items.length > 0}
+    <ul class="st-fileUploader__list">
+      {#each items as item, index (item.file.name + index)}
+        <li
+          class={[
+            "st-fileUploader__item",
+            `st-fileUploader__item--${item.status}`
+          ]
+            .filter(Boolean)
+            .join(" ")}
+        >
+          <span class="st-fileUploader__itemIcon" aria-hidden="true">
+            {#if item.status === "uploading"}
+              <span class="st-fileUploader__spinner">
+                <LoaderCircle size={16} strokeWidth={2} aria-hidden="true" />
+              </span>
+            {:else if item.status === "complete"}
+              <CircleCheck size={16} strokeWidth={2} aria-hidden="true" />
+            {:else if item.status === "error"}
+              <CircleAlert size={16} strokeWidth={2} aria-hidden="true" />
+            {:else}
+              <FileIcon size={16} strokeWidth={2} aria-hidden="true" />
+            {/if}
+          </span>
+          <span class="st-fileUploader__itemMeta">
+            <span class="st-fileUploader__itemName">{item.file.name}</span>
+            <span class="st-fileUploader__itemSize">{formatSize(item.file.size)}</span>
+            {#if item.status === "error" && item.error}
+              <span class="st-fileUploader__itemError">{item.error}</span>
+            {/if}
+          </span>
+          <button
+            type="button"
+            class="st-fileUploader__remove"
+            aria-label={removeLabel(item.file.name)}
+            {disabled}
+            onclick={() => removeAt(index)}
+          >
+            <X size={16} strokeWidth={2} aria-hidden="true" />
+          </button>
+        </li>
+      {/each}
+    </ul>
+  {:else if files.length > 0}
     <ul class="st-fileUploader__list">
       {#each files as file, index (file.name + index)}
         {@const itemError = fileError(file)}
@@ -210,6 +266,13 @@
             .filter(Boolean)
             .join(" ")}
         >
+          <span class="st-fileUploader__itemIcon" aria-hidden="true">
+            {#if itemError}
+              <CircleAlert size={16} strokeWidth={2} aria-hidden="true" />
+            {:else}
+              <FileIcon size={16} strokeWidth={2} aria-hidden="true" />
+            {/if}
+          </span>
           <span class="st-fileUploader__itemMeta">
             <span class="st-fileUploader__itemName">{file.name}</span>
             <span class="st-fileUploader__itemSize">{formatSize(file.size)}</span>
@@ -224,7 +287,7 @@
             {disabled}
             onclick={() => removeAt(index)}
           >
-            <span aria-hidden="true">×</span>
+            <X size={16} strokeWidth={2} aria-hidden="true" />
           </button>
         </li>
       {/each}
@@ -313,6 +376,18 @@
     gap: var(--st-spacing-3, 0.75rem);
   }
 
+  .st-fileUploader__affordance {
+    align-items: center;
+    color: var(--st-semantic-text-secondary);
+    display: inline-flex;
+    justify-content: center;
+    line-height: 0;
+  }
+
+  .st-fileUploader__dropzone--dragover .st-fileUploader__affordance {
+    color: var(--st-semantic-action-primary);
+  }
+
   .st-fileUploader__trigger {
     align-items: center;
     background: var(--st-semantic-action-primary);
@@ -373,6 +448,47 @@
     border-color: var(--st-semantic-feedback-error);
   }
 
+  .st-fileUploader__itemIcon {
+    align-items: center;
+    color: var(--st-semantic-text-secondary);
+    display: inline-flex;
+    flex: 0 0 auto;
+    justify-content: center;
+    line-height: 0;
+  }
+
+  .st-fileUploader__item--uploading .st-fileUploader__itemIcon {
+    color: var(--st-semantic-action-primary);
+  }
+
+  .st-fileUploader__item--complete .st-fileUploader__itemIcon {
+    color: var(--st-semantic-feedback-success);
+  }
+
+  .st-fileUploader__item--error .st-fileUploader__itemIcon {
+    color: var(--st-semantic-feedback-error);
+  }
+
+  .st-fileUploader__spinner {
+    align-items: center;
+    animation: st-fileUploader-spin 0.9s linear infinite;
+    display: inline-flex;
+    justify-content: center;
+    line-height: 0;
+  }
+
+  @keyframes st-fileUploader-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .st-fileUploader__spinner {
+      animation: none;
+    }
+  }
+
   .st-fileUploader__itemMeta {
     display: grid;
     gap: 0.125rem;
@@ -406,10 +522,9 @@
     display: inline-flex;
     flex: 0 0 auto;
     font: inherit;
-    font-size: 1.125rem;
     height: 1.75rem;
     justify-content: center;
-    line-height: 1;
+    line-height: 0;
     padding: 0;
     transition: background-color var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
     width: 1.75rem;
