@@ -13,6 +13,9 @@ const copy = {
     iconButtonTitle: "IconButton",
     iconButtonIntro:
       "Bouton icône compact 32-36 px pour les actions secondaires, avec aria-label obligatoire et icône Lucide.",
+    menuTriggerButtonTitle: "MenuTriggerButton",
+    menuTriggerButtonIntro:
+      "Bouton icône carré préconfiguré pour ouvrir un menu, avec aria-haspopup et aria-expanded câblés, et chevron Lucide par défaut.",
     formsTitle: "Forms",
     formsIntro:
       "Champs, sélections et contrôles binaires pour interfaces produit denses et white-label.",
@@ -56,6 +59,9 @@ const copy = {
     iconButtonTitle: "IconButton",
     iconButtonIntro:
       "Compact 32-36 px icon-only button for secondary actions, with mandatory aria-label and Lucide icon.",
+    menuTriggerButtonTitle: "MenuTriggerButton",
+    menuTriggerButtonIntro:
+      "Square icon button preconfigured to open a menu, with aria-haspopup and aria-expanded wired, and a default Lucide chevron icon.",
     formsTitle: "Forms",
     formsIntro: "Fields, selections, and binary controls for dense white-label product UIs.",
     overlaysTitle: "Overlays",
