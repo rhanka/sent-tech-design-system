@@ -27,7 +27,7 @@ export interface ComponentEntry {
    */
   groupSlug?: string;
   /** Short one-line description for the catalog card. */
-  description: string;
+  description: { fr: string; en: string };
 }
 
 export const CATEGORY_LABELS: Record<
@@ -68,14 +68,20 @@ export const COMPONENTS: ComponentEntry[] = [
     status: "documented",
     category: "action",
     groupSlug: "button",
-    description: "Action primaire, secondaire, fantôme ou destructive."
+    description: {
+      fr: "Action primaire, secondaire, fantôme ou destructive.",
+      en: "Primary, secondary, ghost, or destructive action."
+    }
   },
   {
     name: "CopyButton",
     slug: "copy-button",
     status: "stub",
     category: "action",
-    description: "Bouton dédié à la copie d’une valeur dans le presse-papier."
+    description: {
+      fr: "Bouton dédié à la copie d’une valeur dans le presse-papier.",
+      en: "Button dedicated to copying a value to the clipboard."
+    }
   },
   {
     name: "IconButton",
@@ -83,7 +89,10 @@ export const COMPONENTS: ComponentEntry[] = [
     status: "documented",
     category: "action",
     groupSlug: "icon-button",
-    description: "Bouton icône compact 32-36 px, aria-label obligatoire, Lucide."
+    description: {
+      fr: "Bouton icône compact 32-36 px, aria-label obligatoire, Lucide.",
+      en: "Compact 32-36 px icon-only button, mandatory aria-label, Lucide."
+    }
   },
   {
     name: "Link",
@@ -91,7 +100,10 @@ export const COMPONENTS: ComponentEntry[] = [
     status: "documented",
     category: "action",
     groupSlug: "plan-completion",
-    description: "Lien stylé cohérent avec le DS, support disabled/external."
+    description: {
+      fr: "Lien stylé cohérent avec le DS, support disabled/external.",
+      en: "Styled link consistent with the DS, disabled/external support."
+    }
   },
 
   // Forms
@@ -101,35 +113,50 @@ export const COMPONENTS: ComponentEntry[] = [
     status: "documented",
     category: "form",
     groupSlug: "forms",
-    description: "Case à cocher avec états error/disabled et helper text."
+    description: {
+      fr: "Case à cocher avec états error/disabled et helper text.",
+      en: "Checkbox with error/disabled states and helper text."
+    }
   },
   {
     name: "Combobox",
     slug: "combobox",
     status: "stub",
     category: "form",
-    description: "Champ texte autocomplété avec sélection dans une liste."
+    description: {
+      fr: "Champ texte autocomplété avec sélection dans une liste.",
+      en: "Autocomplete text field with selection from a list."
+    }
   },
   {
     name: "Form",
     slug: "form",
     status: "stub",
     category: "form",
-    description: "Wrapper formulaire avec statut submitting/error/success."
+    description: {
+      fr: "Wrapper formulaire avec statut submitting/error/success.",
+      en: "Form wrapper with submitting/error/success status."
+    }
   },
   {
     name: "FormGroup",
     slug: "form-group",
     status: "stub",
     category: "form",
-    description: "Fieldset/legend groupant des contrôles avec helper text."
+    description: {
+      fr: "Fieldset/legend groupant des contrôles avec helper text.",
+      en: "Fieldset/legend grouping controls with helper text."
+    }
   },
   {
     name: "DatePicker",
     slug: "date-picker",
     status: "stub",
     category: "form",
-    description: "Sélecteur de date, mode simple ou plage."
+    description: {
+      fr: "Sélecteur de date, mode simple ou plage.",
+      en: "Date picker, single or range mode."
+    }
   },
   {
     name: "Dropdown",
@@ -137,14 +164,20 @@ export const COMPONENTS: ComponentEntry[] = [
     status: "documented",
     category: "form",
     groupSlug: "plan-completion",
-    description: "Liste déroulante de sélection (listbox)."
+    description: {
+      fr: "Liste déroulante de sélection (listbox).",
+      en: "Selection dropdown (listbox)."
+    }
   },
   {
     name: "FileUploader",
     slug: "file-uploader",
     status: "stub",
     category: "form",
-    description: "Téléversement de fichiers avec états de progression."
+    description: {
+      fr: "Téléversement de fichiers avec états de progression.",
+      en: "File upload with progress states."
+    }
   },
   {
     name: "Input",
@@ -152,28 +185,40 @@ export const COMPONENTS: ComponentEntry[] = [
     status: "documented",
     category: "form",
     groupSlug: "forms",
-    description: "Champ texte standard, tailles sm/md/lg."
+    description: {
+      fr: "Champ texte standard, tailles sm/md/lg.",
+      en: "Standard text field, sm/md/lg sizes."
+    }
   },
   {
     name: "MultiSelect",
     slug: "multi-select",
     status: "stub",
     category: "form",
-    description: "Sélection multiple avec tags filtrables."
+    description: {
+      fr: "Sélection multiple avec tags filtrables.",
+      en: "Multi-select with filterable tags."
+    }
   },
   {
     name: "NumberInput",
     slug: "number-input",
     status: "stub",
     category: "form",
-    description: "Champ numérique avec incrément/décrément."
+    description: {
+      fr: "Champ numérique avec incrément/décrément.",
+      en: "Numeric field with increment/decrement."
+    }
   },
   {
     name: "PasswordInput",
     slug: "password-input",
     status: "stub",
     category: "form",
-    description: "Champ mot de passe avec bascule visibilité."
+    description: {
+      fr: "Champ mot de passe avec bascule visibilité.",
+      en: "Password field with visibility toggle."
+    }
   },
   {
     name: "Radio",
@@ -181,14 +226,20 @@ export const COMPONENTS: ComponentEntry[] = [
     status: "documented",
     category: "form",
     groupSlug: "forms",
-    description: "Bouton radio groupé via `name`."
+    description: {
+      fr: "Bouton radio groupé via `name`.",
+      en: "Radio button grouped via `name`."
+    }
   },
   {
     name: "Search",
     slug: "search",
     status: "stub",
     category: "form",
-    description: "Champ de recherche avec icône et bouton clear."
+    description: {
+      fr: "Champ de recherche avec icône et bouton clear.",
+      en: "Search field with icon and clear button."
+    }
   },
   {
     name: "Select",
@@ -196,14 +247,20 @@ export const COMPONENTS: ComponentEntry[] = [
     status: "documented",
     category: "form",
     groupSlug: "forms",
-    description: "Sélecteur natif stylé, tailles sm/md/lg."
+    description: {
+      fr: "Sélecteur natif stylé, tailles sm/md/lg.",
+      en: "Styled native select, sm/md/lg sizes."
+    }
   },
   {
     name: "Slider",
     slug: "slider",
     status: "stub",
     category: "form",
-    description: "Curseur de valeur continue."
+    description: {
+      fr: "Curseur de valeur continue.",
+      en: "Continuous value slider."
+    }
   },
   {
     name: "Switch",
@@ -211,7 +268,10 @@ export const COMPONENTS: ComponentEntry[] = [
     status: "documented",
     category: "form",
     groupSlug: "forms",
-    description: "Bascule on/off."
+    description: {
+      fr: "Bascule on/off.",
+      en: "On/off switch."
+    }
   },
   {
     name: "Textarea",
@@ -219,14 +279,20 @@ export const COMPONENTS: ComponentEntry[] = [
     status: "documented",
     category: "form",
     groupSlug: "forms",
-    description: "Champ texte multi-ligne."
+    description: {
+      fr: "Champ texte multi-ligne.",
+      en: "Multi-line text field."
+    }
   },
   {
     name: "Toggle",
     slug: "toggle",
     status: "stub",
     category: "form",
-    description: "Toggle compact (variante du Switch)."
+    description: {
+      fr: "Toggle compact (variante du Switch).",
+      en: "Compact toggle (Switch variant)."
+    }
   },
 
   // Navigation
@@ -236,35 +302,50 @@ export const COMPONENTS: ComponentEntry[] = [
     status: "documented",
     category: "navigation",
     groupSlug: "data-navigation",
-    description: "Fil d’Ariane sémantique."
+    description: {
+      fr: "Fil d’Ariane sémantique.",
+      en: "Semantic breadcrumb trail."
+    }
   },
   {
     name: "Header",
     slug: "header",
     status: "stub",
     category: "navigation",
-    description: "En-tête applicatif avec logo, navigation et actions."
+    description: {
+      fr: "En-tête applicatif avec logo, navigation et actions.",
+      en: "Application header with logo, navigation, and actions."
+    }
   },
   {
     name: "OverflowMenu",
     slug: "overflow-menu",
     status: "stub",
     category: "navigation",
-    description: "Menu d’actions secondaires accessibles via un déclencheur compact."
+    description: {
+      fr: "Menu d’actions secondaires accessibles via un déclencheur compact.",
+      en: "Secondary actions menu accessible through a compact trigger."
+    }
   },
   {
     name: "PaginationNav",
     slug: "pagination-nav",
     status: "stub",
     category: "navigation",
-    description: "Pagination étendue avec page numérotée et ellipses."
+    description: {
+      fr: "Pagination étendue avec page numérotée et ellipses.",
+      en: "Extended pagination with numbered pages and ellipses."
+    }
   },
   {
     name: "ContentSwitcher",
     slug: "content-switcher",
     status: "stub",
     category: "navigation",
-    description: "Bascule segmentée entre plusieurs vues."
+    description: {
+      fr: "Bascule segmentée entre plusieurs vues.",
+      en: "Segmented switcher between multiple views."
+    }
   },
   {
     name: "Menu",
@@ -272,7 +353,10 @@ export const COMPONENTS: ComponentEntry[] = [
     status: "documented",
     category: "navigation",
     groupSlug: "plan-completion",
-    description: "Menu d’actions contextuel."
+    description: {
+      fr: "Menu d’actions contextuel.",
+      en: "Contextual actions menu."
+    }
   },
   {
     name: "MenuTriggerButton",
@@ -280,7 +364,10 @@ export const COMPONENTS: ComponentEntry[] = [
     status: "documented",
     category: "navigation",
     groupSlug: "menu-trigger-button",
-    description: "Bouton icône carré préconfiguré pour ouvrir un menu (haspopup/expanded câblés)."
+    description: {
+      fr: "Bouton icône carré préconfiguré pour ouvrir un menu (haspopup/expanded câblés).",
+      en: "Square icon button preconfigured to open a menu (haspopup/expanded wired)."
+    }
   },
   {
     name: "Pagination",
@@ -288,7 +375,10 @@ export const COMPONENTS: ComponentEntry[] = [
     status: "documented",
     category: "navigation",
     groupSlug: "data-navigation",
-    description: "Navigation de pages avec page courante."
+    description: {
+      fr: "Navigation de pages avec page courante.",
+      en: "Page navigation with current page."
+    }
   },
   {
     name: "SideNav",
@@ -296,7 +386,10 @@ export const COMPONENTS: ComponentEntry[] = [
     status: "documented",
     category: "navigation",
     groupSlug: "data-navigation",
-    description: "Navigation latérale verticale."
+    description: {
+      fr: "Navigation latérale verticale.",
+      en: "Vertical side navigation."
+    }
   },
   {
     name: "Tabs",
@@ -304,7 +397,10 @@ export const COMPONENTS: ComponentEntry[] = [
     status: "documented",
     category: "navigation",
     groupSlug: "data-navigation",
-    description: "Onglets tablist/tab/tabpanel."
+    description: {
+      fr: "Onglets tablist/tab/tabpanel.",
+      en: "Tabs with tablist/tab/tabpanel."
+    }
   },
 
   // Overlays
@@ -314,7 +410,10 @@ export const COMPONENTS: ComponentEntry[] = [
     status: "documented",
     category: "overlay",
     groupSlug: "plan-completion",
-    description: "Panneau latéral pour workflows secondaires."
+    description: {
+      fr: "Panneau latéral pour workflows secondaires.",
+      en: "Side panel for secondary workflows."
+    }
   },
   {
     name: "Modal",
@@ -322,7 +421,10 @@ export const COMPONENTS: ComponentEntry[] = [
     status: "documented",
     category: "overlay",
     groupSlug: "overlays",
-    description: "Dialogue modal recentré."
+    description: {
+      fr: "Dialogue modal recentré.",
+      en: "Centered modal dialog."
+    }
   },
   {
     name: "Popover",
@@ -330,14 +432,20 @@ export const COMPONENTS: ComponentEntry[] = [
     status: "documented",
     category: "overlay",
     groupSlug: "plan-completion",
-    description: "Contenu contextuel compact ancré à un déclencheur."
+    description: {
+      fr: "Contenu contextuel compact ancré à un déclencheur.",
+      en: "Compact contextual content anchored to a trigger."
+    }
   },
   {
     name: "Toggletip",
     slug: "toggletip",
     status: "stub",
     category: "overlay",
-    description: "Tooltip activable au clic, persistant."
+    description: {
+      fr: "Tooltip activable au clic, persistant.",
+      en: "Click-activated, persistent tooltip."
+    }
   },
   {
     name: "Tooltip",
@@ -345,7 +453,10 @@ export const COMPONENTS: ComponentEntry[] = [
     status: "documented",
     category: "overlay",
     groupSlug: "overlays",
-    description: "Info contextuelle au survol/focus."
+    description: {
+      fr: "Info contextuelle au survol/focus.",
+      en: "Contextual hint on hover/focus."
+    }
   },
 
   // Feedback
@@ -355,7 +466,10 @@ export const COMPONENTS: ComponentEntry[] = [
     status: "documented",
     category: "feedback",
     groupSlug: "forms",
-    description: "Bandeau d’information info/success/warning/error."
+    description: {
+      fr: "Bandeau d’information info/success/warning/error.",
+      en: "Info/success/warning/error banner."
+    }
   },
   {
     name: "EmptyState",
@@ -363,14 +477,20 @@ export const COMPONENTS: ComponentEntry[] = [
     status: "documented",
     category: "feedback",
     groupSlug: "plan-completion",
-    description: "État vide avec action principale."
+    description: {
+      fr: "État vide avec action principale.",
+      en: "Empty state with a primary action."
+    }
   },
   {
     name: "InlineLoading",
     slug: "inline-loading",
     status: "stub",
     category: "feedback",
-    description: "Indicateur de chargement inline accompagné d’un libellé."
+    description: {
+      fr: "Indicateur de chargement inline accompagné d’un libellé.",
+      en: "Inline loading indicator paired with a label."
+    }
   },
   {
     name: "LoadingState",
@@ -378,28 +498,40 @@ export const COMPONENTS: ComponentEntry[] = [
     status: "documented",
     category: "feedback",
     groupSlug: "plan-completion",
-    description: "Indicateur de chargement plein ou skeleton."
+    description: {
+      fr: "Indicateur de chargement plein ou skeleton.",
+      en: "Full loading indicator or skeleton."
+    }
   },
   {
     name: "ProgressBar",
     slug: "progress-bar",
     status: "stub",
     category: "feedback",
-    description: "Barre de progression déterminée ou indéterminée."
+    description: {
+      fr: "Barre de progression déterminée ou indéterminée.",
+      en: "Determinate or indeterminate progress bar."
+    }
   },
   {
     name: "ProgressIndicator",
     slug: "progress-indicator",
     status: "stub",
     category: "feedback",
-    description: "Suite d’étapes avec statut complete/current/upcoming."
+    description: {
+      fr: "Suite d’étapes avec statut complete/current/upcoming.",
+      en: "Step sequence with complete/current/upcoming status."
+    }
   },
   {
     name: "SkeletonText",
     slug: "skeleton-text",
     status: "stub",
     category: "feedback",
-    description: "Placeholder lignes de texte en chargement."
+    description: {
+      fr: "Placeholder lignes de texte en chargement.",
+      en: "Placeholder text lines while loading."
+    }
   },
   {
     name: "Toast",
@@ -407,7 +539,10 @@ export const COMPONENTS: ComponentEntry[] = [
     status: "documented",
     category: "feedback",
     groupSlug: "overlays",
-    description: "Notification éphémère success/error."
+    description: {
+      fr: "Notification éphémère success/error.",
+      en: "Ephemeral success/error notification."
+    }
   },
 
   // Data
@@ -416,14 +551,20 @@ export const COMPONENTS: ComponentEntry[] = [
     slug: "badge",
     status: "stub",
     category: "data",
-    description: "Étiquette compacte avec tonalité (success/warning/...)."
+    description: {
+      fr: "Étiquette compacte avec tonalité (success/warning/...).",
+      en: "Compact label with tone (success/warning/...)."
+    }
   },
   {
     name: "DataTable",
     slug: "data-table",
     status: "stub",
     category: "data",
-    description: "Table avancée: tri, sélection multi-lignes."
+    description: {
+      fr: "Table avancée: tri, sélection multi-lignes.",
+      en: "Advanced table: sorting, multi-row selection."
+    }
   },
   {
     name: "Table",
@@ -431,14 +572,20 @@ export const COMPONENTS: ComponentEntry[] = [
     status: "documented",
     category: "data",
     groupSlug: "data-navigation",
-    description: "Table HTML stylée colonnes/rows."
+    description: {
+      fr: "Table HTML stylée colonnes/rows.",
+      en: "Styled HTML table with columns/rows."
+    }
   },
   {
     name: "Tag",
     slug: "tag",
     status: "stub",
     category: "data",
-    description: "Tag/chip à libellé court."
+    description: {
+      fr: "Tag/chip à libellé court.",
+      en: "Short-label tag/chip."
+    }
   },
 
   // Layout
@@ -447,14 +594,20 @@ export const COMPONENTS: ComponentEntry[] = [
     slug: "accordion",
     status: "stub",
     category: "layout",
-    description: "Liste de panneaux pliables."
+    description: {
+      fr: "Liste de panneaux pliables.",
+      en: "List of collapsible panels."
+    }
   },
   {
     name: "Card",
     slug: "card",
     status: "stub",
     category: "layout",
-    description: "Conteneur surface avec bordure et padding."
+    description: {
+      fr: "Conteneur surface avec bordure et padding.",
+      en: "Surface container with border and padding."
+    }
   }
 ];
 
