@@ -32,7 +32,7 @@
     background: var(--st-component-toast-background, var(--st-semantic-surface-raised));
     border: 1px solid var(--st-component-toast-border, var(--st-semantic-border-subtle));
     border-left-width: 0.25rem;
-    border-radius: var(--st-component-toast-radius, 0.5rem);
+    border-radius: var(--st-component-toast-radius, 0);
     box-shadow: var(--st-component-toast-shadow, 0 18px 45px rgb(15 23 42 / 0.18));
     color: var(--st-component-toast-text, var(--st-semantic-text-primary));
     display: flex;
