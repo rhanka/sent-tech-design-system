@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { HTMLInputAttributes } from "svelte/elements";
+  import { Search as SearchIcon, X } from "@lucide/svelte";
 
   type SearchProps = Omit<HTMLInputAttributes, "class" | "size" | "type" | "value"> & {
     label?: string;
@@ -41,15 +42,11 @@
     {#if label}<span class="st-field__label">{label}</span>{/if}
     <span class={groupClasses()}>
       <span class="st-search__icon" aria-hidden="true">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16">
-          <circle cx="7" cy="7" r="4.5" />
-          <path d="m13 13-2.6-2.6" stroke-linecap="round" />
-        </svg>
+        <SearchIcon size={16} strokeWidth={2} aria-hidden="true" />
       </span>
       <input
         {...rest}
         type="search"
-        role="searchbox"
         class="st-search__control"
         bind:value
         {placeholder}
@@ -64,7 +61,7 @@
           {disabled}
           onclick={clear}
         >
-          <span aria-hidden="true">×</span>
+          <X size={16} strokeWidth={2} aria-hidden="true" />
         </button>
       {/if}
     </span>
