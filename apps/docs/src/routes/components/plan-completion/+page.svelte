@@ -11,9 +11,9 @@
     Menu,
     Popover
   } from "@sentropic/design-system-svelte";
-  import { t, type Locale } from "$lib/i18n";
+  import { t } from "$lib/i18n";
+  import { locale } from "$lib/locale.svelte";
 
-  let locale = $state<Locale>("fr");
   let drawerOpen = $state(false);
   let popoverOpen = $state(false);
   let selectedAction = $state("edit");
@@ -21,22 +21,17 @@
 </script>
 
 <div class="docs-page">
-  <div class="docs-language" role="group" aria-label="Language">
-    <button type="button" aria-pressed={locale === "fr"} onclick={() => (locale = "fr")}>FR</button>
-    <button type="button" aria-pressed={locale === "en"} onclick={() => (locale = "en")}>EN</button>
-  </div>
-
   <section class="docs-hero">
     <p class="docs-hero-kicker">Lot · Complétion V1</p>
     <h1>
-      {t(locale, "completionTitle")}
-      <Badge tone="success">{t(locale, "statusStable")}</Badge>
+      {t(locale.value, "completionTitle")}
+      <Badge tone="success">{t(locale.value, "statusStable")}</Badge>
     </h1>
-    <p>{t(locale, "completionIntro")}</p>
+    <p>{t(locale.value, "completionIntro")}</p>
   </section>
 
   <section class="docs-section">
-    <h2>{t(locale, "actionsAndLinks")}</h2>
+    <h2>{t(locale.value, "actionsAndLinks")}</h2>
     <div class="docs-demo-stack">
       <article class="docs-demo-block">
         <h3>Link</h3>
@@ -67,7 +62,7 @@
   </section>
 
   <section class="docs-section">
-    <h2>{t(locale, "disclosure")}</h2>
+    <h2>{t(locale.value, "disclosure")}</h2>
     <div class="docs-demo-stack">
       <article class="docs-demo-block">
         <h3>Dropdown</h3>
@@ -113,7 +108,7 @@
   </section>
 
   <section class="docs-section">
-    <h2>{t(locale, "operationalStates")}</h2>
+    <h2>{t(locale.value, "operationalStates")}</h2>
     <div class="docs-demo-stack">
       <article class="docs-demo-block">
         <h3>EmptyState</h3>
@@ -135,7 +130,7 @@
   </section>
 
   <section class="docs-section">
-    <h2>{t(locale, "apiTitle")}</h2>
+    <h2>{t(locale.value, "apiTitle")}</h2>
     <table class="docs-table">
       <thead>
         <tr><th>Component</th><th>Primary props</th><th>Semantics</th></tr>
@@ -154,7 +149,7 @@
   </section>
 
   <section class="docs-section">
-    <h2>{t(locale, "tokensTitle")}</h2>
+    <h2>{t(locale.value, "tokensTitle")}</h2>
     <ul class="docs-token-list">
       <li><code>--st-component-link-text</code></li>
       <li><code>--st-component-alert-infoBorder</code></li>

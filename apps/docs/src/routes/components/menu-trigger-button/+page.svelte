@@ -1,30 +1,25 @@
 <script lang="ts">
   import { Badge, MenuTriggerButton } from "@sentropic/design-system-svelte";
   import { Ellipsis, MoreHorizontal, Settings } from "@lucide/svelte";
-  import { t, type Locale } from "$lib/i18n";
+  import { t } from "$lib/i18n";
+  import { locale } from "$lib/locale.svelte";
 
-  let locale = $state<Locale>("fr");
   let expandedDefault = $state(false);
   let expandedSecondary = $state(false);
 </script>
 
 <div class="docs-page">
-  <div class="docs-language" role="group" aria-label="Language">
-    <button type="button" aria-pressed={locale === "fr"} onclick={() => (locale = "fr")}>FR</button>
-    <button type="button" aria-pressed={locale === "en"} onclick={() => (locale = "en")}>EN</button>
-  </div>
-
   <section class="docs-hero">
     <p class="docs-hero-kicker">Composant · Navigation</p>
     <h1>
-      {t(locale, "menuTriggerButtonTitle")}
-      <Badge tone="success">{t(locale, "statusStable")}</Badge>
+      {t(locale.value, "menuTriggerButtonTitle")}
+      <Badge tone="success">{t(locale.value, "statusStable")}</Badge>
     </h1>
-    <p>{t(locale, "menuTriggerButtonIntro")}</p>
+    <p>{t(locale.value, "menuTriggerButtonIntro")}</p>
   </section>
 
   <section class="docs-section">
-    <h2>{t(locale, "examplesTitle")}</h2>
+    <h2>{t(locale.value, "examplesTitle")}</h2>
     <div class="docs-example" aria-label="Default chevron icon">
       <MenuTriggerButton
         aria-label="Ouvrir le menu"
@@ -43,12 +38,12 @@
         <Settings size={18} strokeWidth={2} aria-hidden="true" />
       </MenuTriggerButton>
     </div>
-    <div class="docs-example" aria-label={t(locale, "sizes")}>
+    <div class="docs-example" aria-label={t(locale.value, "sizes")}>
       <MenuTriggerButton aria-label="Petit" size="sm" />
       <MenuTriggerButton aria-label="Moyen" size="md" />
       <MenuTriggerButton aria-label="Grand" size="lg" />
     </div>
-    <div class="docs-example" aria-label={t(locale, "states")}>
+    <div class="docs-example" aria-label={t(locale.value, "states")}>
       <MenuTriggerButton
         aria-label="Ouvert"
         expanded={expandedSecondary}
@@ -60,7 +55,7 @@
   </section>
 
   <section class="docs-section">
-    <h2>{t(locale, "apiTitle")}</h2>
+    <h2>{t(locale.value, "apiTitle")}</h2>
     <table class="docs-table">
       <thead>
         <tr><th>Prop</th><th>Type</th><th>Default</th></tr>

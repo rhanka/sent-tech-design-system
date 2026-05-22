@@ -9,9 +9,8 @@
     Switch,
     Textarea
   } from "@sentropic/design-system-svelte";
-  import { t, type Locale } from "$lib/i18n";
-
-  let locale = $state<Locale>("fr");
+  import { t } from "$lib/i18n";
+  import { locale } from "$lib/locale.svelte";
 
   const copy = {
     fr: {
@@ -60,20 +59,15 @@
     }
   } as const;
 
-  const text = () => copy[locale];
+  const text = () => copy[locale.value];
 </script>
 
 <div class="docs-page">
-  <div class="docs-language" role="group" aria-label="Language">
-    <button type="button" aria-pressed={locale === "fr"} onclick={() => (locale = "fr")}>FR</button>
-    <button type="button" aria-pressed={locale === "en"} onclick={() => (locale = "en")}>EN</button>
-  </div>
-
   <section class="docs-hero">
     <p class="docs-hero-kicker">Famille · Formulaires</p>
     <h1>
       {text().showcaseTitle}
-      <Badge tone="success">{t(locale, "statusStable")}</Badge>
+      <Badge tone="success">{t(locale.value, "statusStable")}</Badge>
     </h1>
     <p>{text().showcaseIntro}</p>
     <p>{text().sizeVariants}</p>
@@ -229,7 +223,7 @@
   </section>
 
   <section class="docs-section">
-    <h2>{t(locale, "apiTitle")}</h2>
+    <h2>{t(locale.value, "apiTitle")}</h2>
     <table class="docs-table">
       <thead>
         <tr>
@@ -251,7 +245,7 @@
   </section>
 
   <section class="docs-section">
-    <h2>{t(locale, "tokensTitle")}</h2>
+    <h2>{t(locale.value, "tokensTitle")}</h2>
     <ul class="docs-token-list">
       <li><code>--st-component-field-labelText</code></li>
       <li><code>--st-component-field-helpText</code></li>
