@@ -67,7 +67,7 @@
       {data.component.name}
       <Badge tone="neutral">{text.stubBadge}</Badge>
     </h1>
-    <p>{data.component.description}</p>
+    <p>{data.component.description[locale.value]}</p>
     <p class="docs-stub-meta">
       <span>{text.categoryLabel}: <strong>{CATEGORY_LABELS[data.component.category][locale.value]}</strong></span>
     </p>
