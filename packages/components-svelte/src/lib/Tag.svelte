@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
   import type { HTMLAttributes } from "svelte/elements";
+  import { X } from "@lucide/svelte";
 
   type TagProps = Omit<HTMLAttributes<HTMLSpanElement>, "class"> & {
     tone?: "neutral" | "success" | "warning" | "error" | "info";
@@ -46,7 +47,7 @@
       {disabled}
       onclick={handleDismiss}
     >
-      <span aria-hidden="true">×</span>
+      <X size={14} strokeWidth={2} aria-hidden="true" />
     </button>
   {/if}
 </span>
