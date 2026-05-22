@@ -16,6 +16,7 @@
 
 <script lang="ts">
   import type { HTMLAttributes } from "svelte/elements";
+  import { Check, X } from "@lucide/svelte";
 
   type ProgressIndicatorProps = Omit<HTMLAttributes<HTMLOListElement>, "class"> & {
     items: ProgressIndicatorItem[];
@@ -56,26 +57,9 @@
       <span class="st-progressIndicator__indicator" aria-hidden="true">
         <span class="st-progressIndicator__circle">
           {#if status === "complete"}
-            <svg viewBox="0 0 16 16" width="14" height="14" focusable="false">
-              <path
-                d="m3 8 3.5 3.5L13 5"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.6"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
+            <Check size={14} strokeWidth={2} aria-hidden="true" />
           {:else if status === "invalid"}
-            <svg viewBox="0 0 16 16" width="14" height="14" focusable="false">
-              <path
-                d="M4 4l8 8M12 4l-8 8"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.6"
-                stroke-linecap="round"
-              />
-            </svg>
+            <X size={14} strokeWidth={2} aria-hidden="true" />
           {:else if status === "current"}
             <span class="st-progressIndicator__dot"></span>
           {:else}
