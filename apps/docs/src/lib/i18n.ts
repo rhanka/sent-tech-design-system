@@ -19,6 +19,9 @@ const copy = {
     menuPopoverTitle: "MenuPopover",
     menuPopoverIntro:
       "Panneau flottant positionné autour d'un déclencheur externe, avec placement bottom/top × start/end, fermeture au clic extérieur et à Escape, et même surface visuelle que le Menu.",
+    copyButtonTitle: "CopyButton",
+    copyButtonIntro:
+      "Bouton dédié à la copie d'une valeur dans le presse-papier, avec retour visuel temporaire et icônes Lucide.",
     formsTitle: "Forms",
     formsIntro:
       "Champs, sélections et contrôles binaires pour interfaces produit denses et white-label.",
@@ -105,6 +108,9 @@ const copy = {
     menuPopoverTitle: "MenuPopover",
     menuPopoverIntro:
       "Floating panel positioned around an external trigger, with bottom/top × start/end placement, outside-click and Escape close, sharing the Menu visual surface.",
+    copyButtonTitle: "CopyButton",
+    copyButtonIntro:
+      "Button dedicated to copying a value to the clipboard, with temporary visual feedback and Lucide icons.",
     formsTitle: "Forms",
     formsIntro: "Fields, selections, and binary controls for dense white-label product UIs.",
     overlaysTitle: "Overlays",
