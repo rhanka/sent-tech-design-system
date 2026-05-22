@@ -16,6 +16,9 @@ const copy = {
     menuTriggerButtonTitle: "MenuTriggerButton",
     menuTriggerButtonIntro:
       "Bouton icône carré préconfiguré pour ouvrir un menu, avec aria-haspopup et aria-expanded câblés, et chevron Lucide par défaut.",
+    menuPopoverTitle: "MenuPopover",
+    menuPopoverIntro:
+      "Panneau flottant positionné autour d'un déclencheur externe, avec placement bottom/top × start/end, fermeture au clic extérieur et à Escape, et même surface visuelle que le Menu.",
     formsTitle: "Forms",
     formsIntro:
       "Champs, sélections et contrôles binaires pour interfaces produit denses et white-label.",
@@ -99,6 +102,9 @@ const copy = {
     menuTriggerButtonTitle: "MenuTriggerButton",
     menuTriggerButtonIntro:
       "Square icon button preconfigured to open a menu, with aria-haspopup and aria-expanded wired, and a default Lucide chevron icon.",
+    menuPopoverTitle: "MenuPopover",
+    menuPopoverIntro:
+      "Floating panel positioned around an external trigger, with bottom/top × start/end placement, outside-click and Escape close, sharing the Menu visual surface.",
     formsTitle: "Forms",
     formsIntro: "Fields, selections, and binary controls for dense white-label product UIs.",
     overlaysTitle: "Overlays",
