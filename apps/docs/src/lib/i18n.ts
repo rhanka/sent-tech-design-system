@@ -45,7 +45,44 @@ const copy = {
     dataDisplay: "Affichage de données",
     actionsAndLinks: "Actions et liens",
     disclosure: "Disclosure",
-    operationalStates: "États opérationnels"
+    operationalStates: "États opérationnels",
+    homeHeroKicker: "SENT-tech · Infrastructure de design produit",
+    metricReleasePublished: "release publiée",
+    metricExportedComponents: "composants Svelte exportés",
+    metricDocumented: "pages documentées en détail",
+    metricStubs: "stubs à compléter",
+    foundationSemanticTokensTitle: "Tokens sémantiques",
+    foundationSemanticTokensBody:
+      "Surface, texte, bordures, actions, feedback et statuts sont exposés comme contrat stable.",
+    foundationTenantThemesTitle: "Thèmes tenant",
+    foundationTenantThemesBody:
+      "Sent Tech, Forge et Entropic partagent la même API de thème et restent remplaçables.",
+    foundationSvelteComponentsTitle: "Composants Svelte",
+    foundationSvelteComponentsBody:
+      "Les primitives restent découplées du produit et prêtes pour Forge, Onyxia et Chat UI.",
+    componentsCatalogIntro:
+      "Catalogue opérationnel des exports `@sentropic/design-system-svelte`, groupé par usage pour retrouver vite le composant et son niveau de documentation.",
+    tokensSectionTitle: "Tokens",
+    tokensSectionIntro:
+      "Le design system publie des tokens foundation, semantic et component. Les composants ne consomment pas les couleurs brutes : ils lisent les variables sémantiques et les component tokens.",
+    contractFoundationTitle: "Foundation",
+    contractFoundationBody: "Palette, typographie et échelles de base.",
+    contractSemanticTitle: "Semantic",
+    contractSemanticBody: "Surface, texte, action, feedback, statut.",
+    contractComponentTitle: "Component",
+    contractComponentBody: "Variables propres aux composants et aux patterns produit.",
+    themesSectionTitle: "Thèmes",
+    themesSectionIntro:
+      "Le package `@sentropic/design-system-themes` expose les thèmes Sent Tech, Forge et Entropic. Les consommateurs peuvent utiliser le `ThemeProvider` Svelte ou le CSS build-time selon leur intégration.",
+    contractProductAppsTitle: "Applications produit",
+    contractProductAppsBody:
+      "Import des composants Svelte et du thème tenant, sans logique métier dans le DS.",
+    contractExternalThemesTitle: "Thèmes externes",
+    contractExternalThemesBody:
+      "Mapping CSS ou runtime depuis les variables sémantiques existantes.",
+    contractChatUiTitle: "Chat UI Sentropic",
+    contractChatUiBody:
+      "Contrat `entropicTheme`, tokens chat et styles consommables sans fork produit."
   },
   en: {
     title: "Sent Tech Design System",
@@ -89,7 +126,44 @@ const copy = {
     dataDisplay: "Data display",
     actionsAndLinks: "Actions and links",
     disclosure: "Disclosure",
-    operationalStates: "Operational states"
+    operationalStates: "Operational states",
+    homeHeroKicker: "SENT-tech · Product design infrastructure",
+    metricReleasePublished: "published release",
+    metricExportedComponents: "exported Svelte components",
+    metricDocumented: "fully documented pages",
+    metricStubs: "stubs to complete",
+    foundationSemanticTokensTitle: "Semantic tokens",
+    foundationSemanticTokensBody:
+      "Surface, text, borders, actions, feedback, and status are exposed as a stable contract.",
+    foundationTenantThemesTitle: "Tenant themes",
+    foundationTenantThemesBody:
+      "Sent Tech, Forge, and Entropic share the same theme API and stay swappable.",
+    foundationSvelteComponentsTitle: "Svelte components",
+    foundationSvelteComponentsBody:
+      "Primitives remain decoupled from the product and ready for Forge, Onyxia, and Chat UI.",
+    componentsCatalogIntro:
+      "Operational catalog of `@sentropic/design-system-svelte` exports, grouped by usage so each component and its documentation status are easy to find.",
+    tokensSectionTitle: "Tokens",
+    tokensSectionIntro:
+      "The design system publishes foundation, semantic, and component tokens. Components never consume raw colors: they read semantic variables and component tokens.",
+    contractFoundationTitle: "Foundation",
+    contractFoundationBody: "Palette, typography, and base scales.",
+    contractSemanticTitle: "Semantic",
+    contractSemanticBody: "Surface, text, action, feedback, status.",
+    contractComponentTitle: "Component",
+    contractComponentBody: "Variables specific to components and product patterns.",
+    themesSectionTitle: "Themes",
+    themesSectionIntro:
+      "The `@sentropic/design-system-themes` package exposes Sent Tech, Forge, and Entropic themes. Consumers can use the Svelte `ThemeProvider` or build-time CSS depending on their integration.",
+    contractProductAppsTitle: "Product applications",
+    contractProductAppsBody:
+      "Import Svelte components and the tenant theme, with no business logic inside the DS.",
+    contractExternalThemesTitle: "External themes",
+    contractExternalThemesBody:
+      "CSS or runtime mapping from existing semantic variables.",
+    contractChatUiTitle: "Sentropic Chat UI",
+    contractChatUiBody:
+      "`entropicTheme` contract, chat tokens, and consumable styles without product fork."
   }
 } as const;
 
