@@ -597,8 +597,9 @@ export const COMPONENTS: ComponentEntry[] = [
   {
     name: "Tag",
     slug: "tag",
-    status: "stub",
+    status: "documented",
     category: "data",
+    groupSlug: "tag",
     description: {
       fr: "Tag/chip à libellé court.",
       en: "Short-label tag/chip."
