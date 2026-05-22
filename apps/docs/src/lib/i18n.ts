@@ -34,6 +34,9 @@ const copy = {
     progressIndicatorTitle: "ProgressIndicator",
     progressIndicatorIntro:
       "Suite d’étapes ordonnées avec statuts complete/current/upcoming/invalid/disabled, orientation horizontale ou verticale, et icônes Lucide `Check` et `X`.",
+    paginationNavTitle: "PaginationNav",
+    paginationNavIntro:
+      "Pagination étendue avec pages numérotées, ellipses et contrôles précédent/suivant, propulsée par les icônes Lucide `ChevronLeft`, `ChevronRight` et `Ellipsis`.",
     formsTitle: "Forms",
     formsIntro:
       "Champs, sélections et contrôles binaires pour interfaces produit denses et white-label.",
@@ -135,6 +138,9 @@ const copy = {
     progressIndicatorTitle: "ProgressIndicator",
     progressIndicatorIntro:
       "Ordered step sequence with complete/current/upcoming/invalid/disabled statuses, horizontal or vertical orientation, and Lucide `Check` and `X` icons.",
+    paginationNavTitle: "PaginationNav",
+    paginationNavIntro:
+      "Extended pagination with numbered pages, ellipses, and previous/next controls, powered by Lucide `ChevronLeft`, `ChevronRight`, and `Ellipsis` icons.",
     formsTitle: "Forms",
     formsIntro: "Fields, selections, and binary controls for dense white-label product UIs.",
     overlaysTitle: "Overlays",
