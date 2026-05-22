@@ -40,6 +40,9 @@ const copy = {
     tagTitle: "Tag",
     tagIntro:
       "Chip compact avec tonalités neutral/success/warning/error/info, tailles sm/md et option dismissible propulsée par l’icône Lucide `X`.",
+    fileUploaderTitle: "FileUploader",
+    fileUploaderIntro:
+      "Zone de dépôt et liste de fichiers avec statuts idle/uploading/complete/error, propulsée par les icônes Lucide `Upload`, `File`, `LoaderCircle`, `CircleCheck`, `CircleAlert` et `X`.",
     formsTitle: "Forms",
     formsIntro:
       "Champs, sélections et contrôles binaires pour interfaces produit denses et white-label.",
@@ -147,6 +150,9 @@ const copy = {
     tagTitle: "Tag",
     tagIntro:
       "Compact chip with neutral/success/warning/error/info tones, sm/md sizes, and an optional dismissible affordance powered by the Lucide `X` icon.",
+    fileUploaderTitle: "FileUploader",
+    fileUploaderIntro:
+      "Dropzone and file list with idle/uploading/complete/error statuses, powered by Lucide `Upload`, `File`, `LoaderCircle`, `CircleCheck`, `CircleAlert`, and `X` icons.",
     formsTitle: "Forms",
     formsIntro: "Fields, selections, and binary controls for dense white-label product UIs.",
     overlaysTitle: "Overlays",
