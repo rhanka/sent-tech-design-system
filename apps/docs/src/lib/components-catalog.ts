@@ -235,8 +235,9 @@ export const COMPONENTS: ComponentEntry[] = [
   {
     name: "Search",
     slug: "search",
-    status: "stub",
+    status: "documented",
     category: "form",
+    groupSlug: "search",
     description: {
       fr: "Champ de recherche avec icône et bouton clear.",
       en: "Search field with icon and clear button."
