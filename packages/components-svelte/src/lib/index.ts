@@ -25,6 +25,7 @@ export { default as Input } from "./Input.svelte";
 export { default as Link } from "./Link.svelte";
 export { default as LoadingState } from "./LoadingState.svelte";
 export { default as Menu } from "./Menu.svelte";
+export { default as MenuPopover } from "./MenuPopover.svelte";
 export { default as MenuTriggerButton } from "./MenuTriggerButton.svelte";
 export { default as Modal } from "./Modal.svelte";
 export { default as MultiSelect } from "./MultiSelect.svelte";
