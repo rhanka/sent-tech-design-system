@@ -92,7 +92,7 @@
                     <Badge tone="neutral">{stubLabel(locale.value)}</Badge>
                   {/if}
                 </div>
-                <p class="docs-catalog-card-desc">{component.description}</p>
+                <p class="docs-catalog-card-desc">{component.description[locale.value]}</p>
               </Card>
             </a>
           {/each}
