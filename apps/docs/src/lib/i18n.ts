@@ -22,6 +22,9 @@ const copy = {
     copyButtonTitle: "CopyButton",
     copyButtonIntro:
       "Bouton dédié à la copie d'une valeur dans le presse-papier, avec retour visuel temporaire et icônes Lucide.",
+    searchTitle: "Search",
+    searchIntro:
+      "Champ de recherche avec icône loupe, bouton clear et tailles sm/md/lg, basé sur `<input type=\"search\">` et icônes Lucide.",
     formsTitle: "Forms",
     formsIntro:
       "Champs, sélections et contrôles binaires pour interfaces produit denses et white-label.",
@@ -111,6 +114,9 @@ const copy = {
     copyButtonTitle: "CopyButton",
     copyButtonIntro:
       "Button dedicated to copying a value to the clipboard, with temporary visual feedback and Lucide icons.",
+    searchTitle: "Search",
+    searchIntro:
+      "Search field with a magnifier icon, clear button, and sm/md/lg sizes, built on `<input type=\"search\">` with Lucide icons.",
     formsTitle: "Forms",
     formsIntro: "Fields, selections, and binary controls for dense white-label product UIs.",
     overlaysTitle: "Overlays",
