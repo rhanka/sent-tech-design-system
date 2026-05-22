@@ -333,8 +333,9 @@ export const COMPONENTS: ComponentEntry[] = [
   {
     name: "PaginationNav",
     slug: "pagination-nav",
-    status: "stub",
+    status: "documented",
     category: "navigation",
+    groupSlug: "pagination-nav",
     description: {
       fr: "Pagination étendue avec page numérotée et ellipses.",
       en: "Extended pagination with numbered pages and ellipses."
