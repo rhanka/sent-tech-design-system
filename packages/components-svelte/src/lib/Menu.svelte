@@ -1,11 +1,12 @@
 <script lang="ts" module>
   import type { Component } from "svelte";
 
-  export interface MenuIconProps {
-    size?: number;
-    strokeWidth?: number;
+  export type MenuIconProps = {
+    size?: number | string;
+    strokeWidth?: number | string;
+    color?: string;
     class?: string;
-  }
+  } & Record<`data-${string}`, unknown>;
 
   export type MenuIcon = Component<MenuIconProps>;
 
