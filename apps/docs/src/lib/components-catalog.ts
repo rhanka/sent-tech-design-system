@@ -76,8 +76,9 @@ export const COMPONENTS: ComponentEntry[] = [
   {
     name: "CopyButton",
     slug: "copy-button",
-    status: "stub",
+    status: "documented",
     category: "action",
+    groupSlug: "copy-button",
     description: {
       fr: "Bouton dédié à la copie d’une valeur dans le presse-papier.",
       en: "Button dedicated to copying a value to the clipboard."
