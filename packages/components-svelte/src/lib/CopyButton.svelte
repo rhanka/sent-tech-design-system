@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { HTMLButtonAttributes } from "svelte/elements";
+  import { Check, Copy } from "@lucide/svelte";
 
   type CopyButtonProps = Omit<HTMLButtonAttributes, "class" | "type"> & {
     value: string;
@@ -59,14 +60,9 @@
 >
   <span class="st-copyButton__icon" aria-hidden="true">
     {#if copied}
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" width="14" height="14">
-        <path d="m3 8 3.5 3.5L13 5" stroke-linecap="round" stroke-linejoin="round" />
-      </svg>
+      <Check size={14} strokeWidth={2} aria-hidden="true" />
     {:else}
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14">
-        <rect x="4" y="4" width="9" height="10" rx="1.5" />
-        <path d="M3 11V3a1 1 0 0 1 1-1h7" />
-      </svg>
+      <Copy size={14} strokeWidth={2} aria-hidden="true" />
     {/if}
   </span>
   <span class="st-copyButton__label">{copied ? copiedLabel : label}</span>
