@@ -19,6 +19,7 @@ export { default as FileUploader } from "./FileUploader.svelte";
 export { default as Form } from "./Form.svelte";
 export { default as FormGroup } from "./FormGroup.svelte";
 export { default as Header } from "./Header.svelte";
+export { default as IconButton } from "./IconButton.svelte";
 export { default as InlineLoading } from "./InlineLoading.svelte";
 export { default as Input } from "./Input.svelte";
 export { default as Link } from "./Link.svelte";
