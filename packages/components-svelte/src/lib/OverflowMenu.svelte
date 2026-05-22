@@ -1,11 +1,37 @@
 <script lang="ts" module>
-  export interface OverflowMenuItem {
+  import type { Component } from "svelte";
+
+  export interface OverflowMenuIconProps {
+    size?: number;
+    strokeWidth?: number;
+    class?: string;
+  }
+
+  export type OverflowMenuIcon = Component<OverflowMenuIconProps>;
+
+  export interface OverflowMenuActionItem {
+    kind?: "item";
     value: string;
     label: string;
     disabled?: boolean;
     danger?: boolean;
+    icon?: OverflowMenuIcon;
     onclick?: () => void;
   }
+
+  export interface OverflowMenuDividerItem {
+    kind: "divider";
+  }
+
+  export interface OverflowMenuGroupItem {
+    kind: "group";
+    label: string;
+  }
+
+  export type OverflowMenuItem =
+    | OverflowMenuActionItem
+    | OverflowMenuDividerItem
+    | OverflowMenuGroupItem;
 </script>
 
 <script lang="ts">
@@ -19,6 +45,7 @@
     placement?: "bottom-start" | "bottom-end" | "top-start" | "top-end";
     class?: string;
     triggerLabel?: string;
+    dense?: boolean;
     onselect?: (value: string) => void;
   };
 
@@ -29,6 +56,7 @@
     placement = "bottom-end",
     class: className,
     triggerLabel = "More actions",
+    dense = false,
     onselect,
     ...rest
   }: OverflowMenuProps = $props();
@@ -36,7 +64,14 @@
   let host: HTMLDivElement | undefined = $state();
 
   const classes = () =>
-    ["st-overflowMenu", `st-overflowMenu--${placement}`, className].filter(Boolean).join(" ");
+    [
+      "st-overflowMenu",
+      `st-overflowMenu--${placement}`,
+      dense ? "st-overflowMenu--dense" : null,
+      className
+    ]
+      .filter(Boolean)
+      .join(" ");
 
   function toggle() {
     open = !open;
@@ -46,11 +81,15 @@
     open = false;
   }
 
-  function selectItem(item: OverflowMenuItem) {
+  function selectItem(item: OverflowMenuActionItem) {
     if (item.disabled) return;
     item.onclick?.();
     onselect?.(item.value);
     close();
+  }
+
+  function isAction(item: OverflowMenuItem): item is OverflowMenuActionItem {
+    return item.kind === undefined || item.kind === "item";
   }
 
   function onWindowKeydown(event: KeyboardEvent) {
@@ -82,20 +121,32 @@
   </button>
   {#if open}
     <ul class="st-overflowMenu__list" role="menu" aria-label={label}>
-      {#each items as item (item.value)}
-        <li role="none" class="st-overflowMenu__listItem">
-          <button
-            type="button"
-            class="st-overflowMenu__item"
-            class:st-overflowMenu__item--danger={item.danger}
-            role="menuitem"
-            aria-disabled={item.disabled ? "true" : undefined}
-            disabled={item.disabled}
-            onclick={() => selectItem(item)}
-          >
-            {item.label}
-          </button>
-        </li>
+      {#each items as item, index (index)}
+        {#if isAction(item)}
+          {@const Icon = item.icon}
+          <li role="none" class="st-overflowMenu__listItem">
+            <button
+              type="button"
+              class="st-overflowMenu__item"
+              class:st-overflowMenu__item--danger={item.danger}
+              role="menuitem"
+              aria-disabled={item.disabled ? "true" : undefined}
+              disabled={item.disabled}
+              onclick={() => selectItem(item)}
+            >
+              {#if Icon}
+                <span class="st-overflowMenu__itemIcon" aria-hidden="true">
+                  <Icon size={16} strokeWidth={2} />
+                </span>
+              {/if}
+              <span class="st-overflowMenu__itemLabel">{item.label}</span>
+            </button>
+          </li>
+        {:else if item.kind === "divider"}
+          <li role="separator" aria-hidden="true" class="st-overflowMenu__divider"></li>
+        {:else}
+          <li role="presentation" class="st-overflowMenu__group">{item.label}</li>
+        {/if}
       {/each}
     </ul>
   {/if}
@@ -149,7 +200,8 @@
     display: grid;
     list-style: none;
     margin: 0;
-    min-width: 12rem;
+    min-width: var(--st-component-menu-minWidth, 12rem);
+    max-width: var(--st-component-menu-maxWidth, 18rem);
     padding: var(--st-spacing-1, 0.25rem);
     position: absolute;
     z-index: var(--st-component-popover-zIndex, 80);
@@ -181,16 +233,22 @@
   }
 
   .st-overflowMenu__item {
+    align-items: center;
     background: transparent;
     border: 0;
     border-radius: var(--st-radius-small, 0.375rem);
     color: var(--st-component-menu-text, var(--st-semantic-text-primary));
     cursor: pointer;
-    display: block;
+    display: flex;
     font: inherit;
+    gap: var(--st-spacing-2, 0.5rem);
     padding: var(--st-spacing-2, 0.5rem) var(--st-spacing-3, 0.75rem);
     text-align: left;
     width: 100%;
+  }
+
+  .st-overflowMenu--dense .st-overflowMenu__item {
+    padding: 0.3rem 0.6rem;
   }
 
   .st-overflowMenu__item:hover:not(:disabled),
@@ -215,5 +273,36 @@
       var(--st-semantic-feedback-error)
     );
     color: var(--st-component-overflowMenu-dangerHoverText, var(--st-semantic-action-primaryText));
+  }
+
+  .st-overflowMenu__itemIcon {
+    align-items: center;
+    display: inline-flex;
+    flex: 0 0 auto;
+    justify-content: center;
+  }
+
+  .st-overflowMenu__itemLabel {
+    flex: 1 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .st-overflowMenu__divider {
+    background: var(--st-component-menu-border, var(--st-semantic-border-subtle));
+    height: 1px;
+    list-style: none;
+    margin: 0.25rem 0;
+  }
+
+  .st-overflowMenu__group {
+    color: var(--st-component-menu-groupText, var(--st-semantic-text-muted));
+    font-size: 0.72rem;
+    font-weight: 650;
+    letter-spacing: 0.04em;
+    padding: 0.45rem 0.75rem 0.25rem;
+    text-transform: uppercase;
+    list-style: none;
   }
 </style>
