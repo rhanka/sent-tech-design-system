@@ -5,6 +5,7 @@ export { default as Badge } from "./Badge.svelte";
 export { default as Breadcrumb } from "./Breadcrumb.svelte";
 export { default as Button } from "./Button.svelte";
 export { default as Card } from "./Card.svelte";
+export { default as ChatMessage } from "./ChatMessage.svelte";
 export { default as Checkbox } from "./Checkbox.svelte";
 export { default as CodeSnippet } from "./CodeSnippet.svelte";
 export { default as Combobox } from "./Combobox.svelte";
@@ -59,6 +60,7 @@ export { default as Tooltip } from "./Tooltip.svelte";
 export { default as UnorderedList } from "./UnorderedList.svelte";
 export type { AccordionItem } from "./Accordion.svelte";
 export type { BreadcrumbItem } from "./Breadcrumb.svelte";
+export type { ChatMessageRole, ChatMessageStatus } from "./ChatMessage.svelte";
 export type { ComboboxOption } from "./Combobox.svelte";
 export type {
   DataTableColumn,
