@@ -37,6 +37,9 @@ const copy = {
     paginationNavTitle: "PaginationNav",
     paginationNavIntro:
       "Pagination étendue avec pages numérotées, ellipses et contrôles précédent/suivant, propulsée par les icônes Lucide `ChevronLeft`, `ChevronRight` et `Ellipsis`.",
+    tagTitle: "Tag",
+    tagIntro:
+      "Chip compact avec tonalités neutral/success/warning/error/info, tailles sm/md et option dismissible propulsée par l’icône Lucide `X`.",
     formsTitle: "Forms",
     formsIntro:
       "Champs, sélections et contrôles binaires pour interfaces produit denses et white-label.",
@@ -141,6 +144,9 @@ const copy = {
     paginationNavTitle: "PaginationNav",
     paginationNavIntro:
       "Extended pagination with numbered pages, ellipses, and previous/next controls, powered by Lucide `ChevronLeft`, `ChevronRight`, and `Ellipsis` icons.",
+    tagTitle: "Tag",
+    tagIntro:
+      "Compact chip with neutral/success/warning/error/info tones, sm/md sizes, and an optional dismissible affordance powered by the Lucide `X` icon.",
     formsTitle: "Forms",
     formsIntro: "Fields, selections, and binary controls for dense white-label product UIs.",
     overlaysTitle: "Overlays",
