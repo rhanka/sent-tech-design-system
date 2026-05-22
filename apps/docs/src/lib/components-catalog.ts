@@ -173,8 +173,9 @@ export const COMPONENTS: ComponentEntry[] = [
   {
     name: "FileUploader",
     slug: "file-uploader",
-    status: "stub",
+    status: "documented",
     category: "form",
+    groupSlug: "file-uploader",
     description: {
       fr: "Téléversement de fichiers avec états de progression.",
       en: "File upload with progress states."
