@@ -499,8 +499,9 @@ export const COMPONENTS: ComponentEntry[] = [
   {
     name: "InlineLoading",
     slug: "inline-loading",
-    status: "stub",
+    status: "documented",
     category: "feedback",
+    groupSlug: "inline-loading",
     description: {
       fr: "Indicateur de chargement inline accompagné d’un libellé.",
       en: "Inline loading indicator paired with a label."

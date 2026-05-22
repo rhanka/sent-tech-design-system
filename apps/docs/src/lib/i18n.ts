@@ -28,6 +28,9 @@ const copy = {
     passwordInputTitle: "PasswordInput",
     passwordInputIntro:
       "Champ mot de passe avec bascule de visibilité, tailles sm/md/lg, états helper/erreur et icônes Lucide `Eye` / `EyeOff`.",
+    inlineLoadingTitle: "InlineLoading",
+    inlineLoadingIntro:
+      "Indicateur de chargement compact avec libellé, statuts active/success/error/inactive et icônes Lucide `LoaderCircle`, `CircleCheck` et `CircleAlert`.",
     formsTitle: "Forms",
     formsIntro:
       "Champs, sélections et contrôles binaires pour interfaces produit denses et white-label.",
@@ -123,6 +126,9 @@ const copy = {
     passwordInputTitle: "PasswordInput",
     passwordInputIntro:
       "Password field with a visibility toggle, sm/md/lg sizes, helper/error states, and Lucide `Eye` / `EyeOff` icons.",
+    inlineLoadingTitle: "InlineLoading",
+    inlineLoadingIntro:
+      "Compact loading indicator paired with a label, with active/success/error/inactive statuses and Lucide `LoaderCircle`, `CircleCheck`, and `CircleAlert` icons.",
     formsTitle: "Forms",
     formsIntro: "Fields, selections, and binary controls for dense white-label product UIs.",
     overlaysTitle: "Overlays",
