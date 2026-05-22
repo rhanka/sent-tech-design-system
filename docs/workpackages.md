@@ -50,56 +50,60 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 
 ## WP3 — Contrat header cross-site et applications
 
-**Statut global** : 🟡 contrat ecrit + applique sur docs ; restent Sentropic et NC.
+**Statut global** : 🟢 cote DS ; application Sentropic/NC déléguée à l'utilisateur.
 
 | Item | Statut | Commits | Notes |
 |---|---|---|---|
 | Contrat `docs/header-alignment-contract.md` | 🟢 | `44c4871` | 4 decisions validees (logo SENT + langue partout + connexion conditionnelle + burger droite + nav contextuelle) |
 | Application sur docs site | 🟢 | inclus WP2 | |
-| Application sur Sentropic (`../sentropic`) | ⏸️ | — | besoin accord utilisateur pour toucher `../sentropic` |
-| Application sur NC (`../nc-fullstack`) | ⏸️ | — | + slot connexion conditionnelle |
-| Mise a jour `docs/sentropic-alignment-inventory.md` | ⚪ | — | mesurer ecart restant apres application |
+| Application sur Sentropic (`../sentropic`) | ➡️ user | — | **Décidé 2026-05-22** : l'utilisateur applique lui-même. Le DS ne touche pas. |
+| Application sur NC (`../nc-fullstack`) | ➡️ user | — | idem |
+| Mise a jour `docs/sentropic-alignment-inventory.md` | ⚪ | — | mesurer ecart restant une fois apppliqué |
 
-**Dependances** : accord utilisateur pour toucher les autres surfaces.
+**Dependances** : aucune côté DS, le contrat est public.
 **Parallelisable avec** : tous.
 
 ## WP4 — Chat-UI primitives
 
-**Statut global** : ⏸️ roadmap pretee, decision API requise.
+**Statut global** : 🔵 décision API prise, prêt à lancer.
+
+**Décidé 2026-05-22** : **DS purement visuel**. ChatMessage expose props role/status + slot content. Le consommateur orchestre le rendu des blocks (markdown, code, tool I/O).
 
 | Item | Statut | Commits | Notes |
 |---|---|---|---|
 | Roadmap `docs/chat-ui-roadmap.md` | 🟢 | `721474e` | top 5 primitives identifiees |
-| **Decision API : DS visuel OU `blocks: ChatMessageBlock[]`** | ⏸️ | — | recommandation roadmap : option visuelle |
-| ChatMessage | ⚪ | — | P0 |
-| ChatThread | ⚪ | — | P0 |
-| ChatComposer | ⚪ | — | P0 |
-| StreamingMessage | ⚪ | — | P1, mirroir StreamMessage Sentropic |
-| MessageActions | ⚪ | — | P1, rangee IconButton |
-| ToolCallBlock / ToolResultBlock | ⚪ | — | P2 |
-| Citation / Source pill | ⚪ | — | P2 |
+| API décidée : DS visuel | 🟢 | — | enveloppe seule, slot content |
+| ChatMessage | 🔵 | — | P0 |
+| ChatThread | 🔵 | — | P0, scroll + auto-scroll + aria-live |
+| ChatComposer | 🔵 | — | P0, textarea + slots actions |
+| StreamingMessage | 🔵 | — | P1, mirroir StreamMessage Sentropic |
+| MessageActions | 🔵 | — | P1, rangee IconButton |
 
-**Dependances** : decision API.
-**Parallelisable avec** : WP3, WP5, WP6, WP7 des debloque.
+**Dependances** : aucune.
+**Parallelisable avec** : tous.
 
 ## WP5 — Graphics / Charts primitives
 
-**Statut global** : ⏸️ roadmap pretee, decision strategie requise.
+**Statut global** : 🔵 décision foundation prise, prêt à lancer.
+
+**Décidé 2026-05-22** : **C hand-rolled intégral**. Aucune dépendance, full control, white-label parfait. Chaéchelles/axes/tooltips/légendes/a11y écrits par nous.
 
 | Item | Statut | Commits | Notes |
 |---|---|---|---|
-| Roadmap `docs/graphics-roadmap.md` | 🟢 | `76703c3` | strategie B (layercake) recommandee |
-| **Decision foundation : A Carbon Charts / B layercake / C hand-rolled** | ⏸️ | — | reco roadmap : B + Sparkline hand-rolled |
-| Sparkline | ⚪ | — | P0, hand-rolled |
-| BarChart | ⚪ | — | P0, layercake |
-| LineChart | ⚪ | — | P0, layercake |
-| AreaChart | ⚪ | — | P1, layercake |
-| StackedBar | ⚪ | — | P1, layercake |
-| DonutChart | ⚪ | — | P1, layercake |
-| ScatterPlot | ⚪ | — | P2, a confirmer avec `InitiativeScatterPlot` Sentropic |
+| Roadmap `docs/graphics-roadmap.md` | 🟢 | `76703c3` | base de référence |
+| Foundation décidée : C hand-rolled | 🟢 | — | |
+| Sparkline | 🔵 | — | P0, trivial, premier shipped |
+| BarChart | 🔵 | — | P0, scales + axes minimalistes |
+| LineChart | 🔵 | — | P0, scales + axes + smoothing optionnel |
+| AreaChart | ⚪ | — | P1 |
+| StackedBar | ⚪ | — | P1 |
+| DonutChart | ⚪ | — | P1 |
+| ScatterPlot | ⚪ | — | P2 |
 
-**Dependances** : decision foundation.
-**Parallelisable avec** : tous des debloque.
+**Estimé** : 15-20j pour 6 charts P0/P1, mais Sparkline et BarChart livrables dès la première semaine.
+
+**Dependances** : aucune.
+**Parallelisable avec** : tous.
 
 ## WP6 — Fix-plan (bugs DS visuels et comportementaux)
 
@@ -117,36 +121,64 @@ Detail dans `docs/known-issues-and-fixes.md`.
 **Parallelisable avec** : tous (composants disjoints).
 **Bloque** : WP2 re-passe overlays.
 
-## WP7 — Module Impeccable (nouveau track)
+## WP7-A — **Audit DS via skills design (priorité 1)**
 
-**Statut global** : 🟡 etude en cours par agent dedie.
+**Statut global** : 🔵 top priorité, pas encore lancé. **Le plus important.**
+
+Objectif : appliquer les bonnes pratiques de design à NOTRE design system. Audit du docs site + des composants Svelte + des tokens via des skills de design (impeccable upstream, frontend-design Anthropic, ou équivalents) pour identifier ce qui ne respecte pas les standards, puis corriger.
 
 | Item | Statut | Notes |
 |---|---|---|
-| Etude `pbakaus/impeccable` + strategie de modularisation | 🟡 | agent en cours, produit `docs/impeccable-roadmap.md` |
-| Application au DS (skill installe + utilise) | ⚪ | apres etude |
-| Module DS equivalent (package npm / skill / CLI / plugin Vite) | ⚪ | strategie a choisir |
-| Capacite differenciante (mieux que `impeccable` original) | ⚪ | apres parite |
+| Roadmap `docs/impeccable-roadmap.md` | 🟢 | `1ef0051`, base pour la démarche |
+| Installer skill `pbakaus/impeccable` (et frontend-design Anthropic si complémentaire) | 🔵 | `npx skills add pbakaus/impeccable` |
+| Audit `/impeccable audit` sur docs site (toutes les pages) | 🔵 | rapport écrit dans `docs/ds-audit-report.md` |
+| Audit `/impeccable critique` sur captures clés | 🔵 | screenshots vs principes design |
+| Audit `npx impeccable detect` sur le live docs URL | 🔵 | 27 anti-patterns déterministes |
+| Compilation des findings priorité (P0/P1/P2) | 🔵 | match avec les bugs déjà connus dans `docs/known-issues-and-fixes.md` |
+| Application des fixes critiques (P0) | 🔵 | commits atomiques au fur et à mesure |
+| Capacité \"audit on push\" via workflow GitHub | ⚪ | hook CI post-MVP |
 
-**Dependances** : sortie de l'etude.
-**Parallelisable avec** : tous.
+**Dependances** : aucune.
+**Parallelisable avec** : tous (audit ne modifie pas les composants tant que les fixes ne sont pas lancés).
+
+## WP7-B — Module DS impeccable-équivalent (priorité secondaire)
+
+**Statut global** : ⚪ planifié, post-WP7-A.
+
+**Décidé 2026-05-22** : **C réimplémentation, mais refactorée** (parité fonctionnelle, périmètre réduit — pas forcément 27 règles).
+
+Objectif : shipper notre propre librairie de règles design (`@sentropic/design-system-impeccable`), indépendante de l'upstream, avec un périmètre ciblé plutôt qu'une copie 1:1 d'impeccable. Refactor du moteur upstream, pas un fork. Capable de pousser des règles Sent Tech spécifiques (rail+arrondi, hiérarchie z-index, token-usage).
+
+| Item | Statut | Notes |
+|---|---|---|
+| Décision : réimplémentation refactorée | 🟢 | scope réduit, pas de course à la parité numérique |
+| Audit du périmètre upstream — quelles règles garder | ⚪ | sélectionner ~10-15 règles essentielles vs 27 |
+| Architecture du moteur (Puppeteer vs JSDOM vs autre) | ⚪ | après audit périmètre |
+| Packaging `packages/impeccable/` (workspace) | ⚪ | npm package + CLI |
+| Règles essentielles (parité fonctionnelle) | ⚪ | ~10-15 règles |
+| Règles Sent Tech spécifiques | ⚪ | rail+arrondi, z-index, token-usage |
+| Capacité différenciante (mieux qu'impeccable upstream) | ⚪ | post-parité |
+
+**Estimé** : 10-15j pour parité réduite (~10-15 règles bien choisies) + 3-5j de règles Sent Tech.
+
+**Dependances** : sortie de WP7-A (l'audit nous dira quelles règles importent vraiment chez nous).
+**Parallelisable avec** : tous une fois WP7-A bien avancé.
 
 ## Plan de bataille parallele
 
-A tout instant on peut tenir 3 a 4 agents en parallele sans conflit de fichiers :
+A tout instant on peut tenir 3 a 4 agents en parallele sans conflit de fichiers. Priorité actuelle :
 
-1. **WP6 fix-plan** — enchainer les 3 fixes en commits atomiques sequentiels.
-2. **WP3 Sentropic / NC headers** — debloque des accord utilisateur sur `../sentropic` et `../nc-fullstack`.
-3. **WP4 chat-UI** OU **WP5 graphics** — debloquer la decision puis lancer.
-4. **WP7 impeccable** — agent en cours.
+1. **WP7-A audit DS** — priorité 1, applique les bonnes pratiques de design sur notre propre DS d'abord.
+2. **WP6 fix-plan** — corrige les 3 bugs déjà connus en série (Toast/Alert, OverflowMenu, Menu).
+3. **WP5 Sparkline + BarChart** — démarrer les charts hand-rolled, premiers shippés dans la semaine.
+4. **WP4 ChatMessage + ChatThread** — démarrer les chat primitives.
 
-## Decisions ouvertes a trancher
+WP7-A peut surfacer d'autres findings qui se mélangent avec WP6 — attendre son rapport avant de lancer WP6 pourrait éviter du gachis.
 
-1. **WP4** : DS purement visuel (slot `content` + props role/status) ou API typee `blocks: ChatMessageBlock[]` ?
-2. **WP5** : foundation B layercake (reco) ou foundation A `@carbon/charts-svelte` (treemap/alluvial gratuits mais bundle lourd) ?
-3. **WP3** : OK pour qu'un agent touche directement `../sentropic` et `../nc-fullstack` ou on attend que les equipes mergent themselves ?
-4. **WP6** : enchainement immediat des 3 fixes ou pause pour valider l'approche bug par bug ?
+## Decisions ouvertes à trancher
+
+Aucune à ce stade. Les 4 décisions du 2026-05-22 sont consignées dans chaque WP. Prochaine décision attendue : choix des ~10-15 règles essentielles pour WP7-B (post-audit WP7-A).
 
 ## Hygiene de ce doc
 
-Maj attendue apres chaque commit majeur. Owner : main agent. Tracks orphelins ou termines basculent en "Acheve" en bas du doc une fois entierement shippe.
+Maj attendue apres chaque commit majeur. Owner : main agent. Tracks orphelins ou termines basculent en \"Acheve\" en bas du doc une fois entierement shippe.
