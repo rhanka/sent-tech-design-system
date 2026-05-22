@@ -121,59 +121,57 @@ Detail dans `docs/known-issues-and-fixes.md`.
 **Parallelisable avec** : tous (composants disjoints).
 **Bloque** : WP2 re-passe overlays.
 
-## WP7-A — **Audit DS via skills design (priorité 1)**
+## WP7 — Audit DS via skills design (priorité 1, "le plus important")
 
-**Statut global** : 🔵 top priorité, pas encore lancé. **Le plus important.**
+**Statut global** : 🟡 agent en cours.
 
-Objectif : appliquer les bonnes pratiques de design à NOTRE design system. Audit du docs site + des composants Svelte + des tokens via des skills de design (impeccable upstream, frontend-design Anthropic, ou équivalents) pour identifier ce qui ne respecte pas les standards, puis corriger.
+Objectif : appliquer les bonnes pratiques de design à NOTRE design system. Audit du docs site + des composants Svelte + des tokens via skills de design (impeccable upstream, frontend-design Anthropic), pour identifier ce qui ne respecte pas les standards, puis corriger.
 
 | Item | Statut | Notes |
 |---|---|---|
 | Roadmap `docs/impeccable-roadmap.md` | 🟢 | `1ef0051`, base pour la démarche |
-| Installer skill `pbakaus/impeccable` (et frontend-design Anthropic si complémentaire) | 🔵 | `npx skills add pbakaus/impeccable` |
-| Audit `/impeccable audit` sur docs site (toutes les pages) | 🔵 | rapport écrit dans `docs/ds-audit-report.md` |
-| Audit `/impeccable critique` sur captures clés | 🔵 | screenshots vs principes design |
-| Audit `npx impeccable detect` sur le live docs URL | 🔵 | 27 anti-patterns déterministes |
-| Compilation des findings priorité (P0/P1/P2) | 🔵 | match avec les bugs déjà connus dans `docs/known-issues-and-fixes.md` |
-| Application des fixes critiques (P0) | 🔵 | commits atomiques au fur et à mesure |
-| Capacité \"audit on push\" via workflow GitHub | ⚪ | hook CI post-MVP |
+| Installer skill `pbakaus/impeccable` (et frontend-design si complémentaire) | 🟡 | agent en cours |
+| Audit commands (`/impeccable audit`, `critique`) + CLI `npx impeccable detect` | 🟡 | agent en cours |
+| Rapport `docs/ds-audit-report.md` (P0/P1/P2 + friction usage) | 🟡 | agent en cours |
+| Application des fixes critiques (P0) | ⚪ | après rapport |
+| Capacité "audit on push" via workflow GitHub | ⚪ | hook CI post-MVP |
 
-**Dependances** : aucune.
-**Parallelisable avec** : tous (audit ne modifie pas les composants tant que les fixes ne sont pas lancés).
+**Dépendances** : aucune.
+**Parallélisable avec** : tous (audit produit un rapport, ne modifie pas les composants).
 
-## WP7-B — Module DS impeccable-équivalent (priorité secondaire)
+## WP8 — Module DS impeccable-équivalent (librairie maison, parallèle de WP7)
 
-**Statut global** : ⚪ planifié, post-WP7-A.
+**Statut global** : 🔵 prêt à lancer, parallélisable avec WP7.
 
-**Décidé 2026-05-22** : **C réimplémentation, mais refactorée** (parité fonctionnelle, périmètre réduit — pas forcément 27 règles).
+**Décidé 2026-05-22** : **réimplémentation refactorée, parité fonctionnelle** sur un périmètre réduit. Pas une copie 1:1 des 27 règles upstream — on sélectionne les règles essentielles, on les écrit propres, on ajoute les règles Sent Tech (rail+arrondi, hiérarchie z-index, token-usage).
 
-Objectif : shipper notre propre librairie de règles design (`@sentropic/design-system-impeccable`), indépendante de l'upstream, avec un périmètre ciblé plutôt qu'une copie 1:1 d'impeccable. Refactor du moteur upstream, pas un fork. Capable de pousser des règles Sent Tech spécifiques (rail+arrondi, hiérarchie z-index, token-usage).
+Objectif : shipper `@sentropic/design-system-impeccable` (workspace dans `packages/impeccable/`) : moteur maison, CLI, règles essentielles, indépendant de l'upstream.
 
 | Item | Statut | Notes |
 |---|---|---|
-| Décision : réimplémentation refactorée | 🟢 | scope réduit, pas de course à la parité numérique |
-| Audit du périmètre upstream — quelles règles garder | ⚪ | sélectionner ~10-15 règles essentielles vs 27 |
-| Architecture du moteur (Puppeteer vs JSDOM vs autre) | ⚪ | après audit périmètre |
-| Packaging `packages/impeccable/` (workspace) | ⚪ | npm package + CLI |
-| Règles essentielles (parité fonctionnelle) | ⚪ | ~10-15 règles |
-| Règles Sent Tech spécifiques | ⚪ | rail+arrondi, z-index, token-usage |
+| Décision : réimplémentation refactorée parité fonctionnelle | 🟢 | scope réduit, ~10-15 règles bien choisies |
+| Squelette `packages/impeccable/` (workspace, package.json, build) | 🔵 | npm package + CLI binaire |
+| Architecture du moteur (Puppeteer vs JSDOM vs autre) | 🔵 | choisir, documenter dans le package README |
+| ~10-15 règles essentielles (parité fonctionnelle) | 🔵 | sélectionnées via lecture de l'upstream, pas blocage sur WP7 |
+| Règles Sent Tech spécifiques | 🔵 | rail+arrondi, z-index, token-usage |
 | Capacité différenciante (mieux qu'impeccable upstream) | ⚪ | post-parité |
 
-**Estimé** : 10-15j pour parité réduite (~10-15 règles bien choisies) + 3-5j de règles Sent Tech.
+**Estimé** : 10-15j pour parité réduite + 3-5j de règles Sent Tech.
 
-**Dependances** : sortie de WP7-A (l'audit nous dira quelles règles importent vraiment chez nous).
-**Parallelisable avec** : tous une fois WP7-A bien avancé.
+**Dépendances** : aucune dure. WP7 (l'audit) viendra enrichir/valider la sélection des règles essentielles mais ne bloque pas le squelette + architecture.
+**Parallélisable avec** : WP7 et tous les autres.
 
 ## Plan de bataille parallele
 
 A tout instant on peut tenir 3 a 4 agents en parallele sans conflit de fichiers. Priorité actuelle :
 
-1. **WP7-A audit DS** — priorité 1, applique les bonnes pratiques de design sur notre propre DS d'abord.
-2. **WP6 fix-plan** — corrige les 3 bugs déjà connus en série (Toast/Alert, OverflowMenu, Menu).
-3. **WP5 Sparkline + BarChart** — démarrer les charts hand-rolled, premiers shippés dans la semaine.
-4. **WP4 ChatMessage + ChatThread** — démarrer les chat primitives.
+1. **WP7 audit DS** — priorité 1, applique les bonnes pratiques de design sur notre propre DS.
+2. **WP8 librairie impeccable maison** — parallèle à WP7, démarre le squelette + architecture sans attendre.
+3. **WP6 fix-plan** — corrige les 3 bugs déjà connus en série (Toast/Alert, OverflowMenu, Menu).
+4. **WP5 Sparkline + BarChart** — démarrer les charts hand-rolled, premiers shippés dans la semaine.
+5. **WP4 ChatMessage + ChatThread** — démarrer les chat primitives.
 
-WP7-A peut surfacer d'autres findings qui se mélangent avec WP6 — attendre son rapport avant de lancer WP6 pourrait éviter du gachis.
+WP7 et WP8 sont délibérément parallèles : WP7 audite ce qui existe, WP8 construit le moteur ; les deux convergent quand WP7 livre des règles affinées que WP8 intègre.
 
 ## Decisions ouvertes à trancher
 
