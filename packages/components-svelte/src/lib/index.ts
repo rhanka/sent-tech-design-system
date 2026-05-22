@@ -43,6 +43,7 @@ export { default as Select } from "./Select.svelte";
 export { default as SideNav } from "./SideNav.svelte";
 export { default as SkeletonText } from "./SkeletonText.svelte";
 export { default as Slider } from "./Slider.svelte";
+export { default as Sparkline } from "./Sparkline.svelte";
 export { default as StructuredList } from "./StructuredList.svelte";
 export { default as Switch } from "./Switch.svelte";
 export { default as Table } from "./Table.svelte";
