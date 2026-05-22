@@ -7,25 +7,20 @@
     Toast,
     Tooltip
   } from "@sentropic/design-system-svelte";
-  import { t, type Locale } from "$lib/i18n";
+  import { t } from "$lib/i18n";
+  import { locale } from "$lib/locale.svelte";
 
-  let locale = $state<Locale>("fr");
   let open = $state(false);
 </script>
 
 <div class="docs-page">
-  <div class="docs-language" role="group" aria-label="Language">
-    <button type="button" aria-pressed={locale === "fr"} onclick={() => (locale = "fr")}>FR</button>
-    <button type="button" aria-pressed={locale === "en"} onclick={() => (locale = "en")}>EN</button>
-  </div>
-
   <section class="docs-hero">
     <p class="docs-hero-kicker">Famille · Overlays et feedback</p>
     <h1>
-      {t(locale, "overlaysTitle")}
-      <Badge tone="success">{t(locale, "statusStable")}</Badge>
+      {t(locale.value, "overlaysTitle")}
+      <Badge tone="success">{t(locale.value, "statusStable")}</Badge>
     </h1>
-    <p>{t(locale, "overlaysIntro")}</p>
+    <p>{t(locale.value, "overlaysIntro")}</p>
   </section>
 
   <section class="docs-section">
@@ -63,7 +58,7 @@
   </section>
 
   <section class="docs-section">
-    <h2>{t(locale, "feedback")}</h2>
+    <h2>{t(locale.value, "feedback")}</h2>
     <div class="docs-example docs-example--stack">
       <Toast tone="success" title="Saved" message="The tenant theme was compiled." />
       <Toast tone="error" title="Failed" message="The adapter mapping is incomplete." />
@@ -71,7 +66,7 @@
   </section>
 
   <section class="docs-section">
-    <h2>{t(locale, "apiTitle")}</h2>
+    <h2>{t(locale.value, "apiTitle")}</h2>
     <table class="docs-table">
       <thead>
         <tr><th>Component</th><th>Props</th><th>Semantics</th></tr>
@@ -86,7 +81,7 @@
   </section>
 
   <section class="docs-section">
-    <h2>{t(locale, "tokensTitle")}</h2>
+    <h2>{t(locale.value, "tokensTitle")}</h2>
     <ul class="docs-token-list">
       <li><code>--st-component-overlay-backdrop</code></li>
       <li><code>--st-component-overlay-surface</code></li>

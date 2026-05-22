@@ -10,9 +10,9 @@
     Table,
     Tabs
   } from "@sentropic/design-system-svelte";
-  import { t, type Locale } from "$lib/i18n";
+  import { t } from "$lib/i18n";
+  import { locale } from "$lib/locale.svelte";
 
-  let locale = $state<Locale>("fr");
   let demoPage = $state(6);
 
   const rows = [
@@ -23,22 +23,17 @@
 </script>
 
 <div class="docs-page">
-  <div class="docs-language" role="group" aria-label="Language">
-    <button type="button" aria-pressed={locale === "fr"} onclick={() => (locale = "fr")}>FR</button>
-    <button type="button" aria-pressed={locale === "en"} onclick={() => (locale = "en")}>EN</button>
-  </div>
-
   <section class="docs-hero">
     <p class="docs-hero-kicker">Famille · Données et navigation</p>
     <h1>
-      {t(locale, "dataNavigationTitle")}
-      <Badge tone="success">{t(locale, "statusStable")}</Badge>
+      {t(locale.value, "dataNavigationTitle")}
+      <Badge tone="success">{t(locale.value, "statusStable")}</Badge>
     </h1>
-    <p>{t(locale, "dataNavigationIntro")}</p>
+    <p>{t(locale.value, "dataNavigationIntro")}</p>
   </section>
 
   <section class="docs-section">
-    <h2>{t(locale, "navigation")}</h2>
+    <h2>{t(locale.value, "navigation")}</h2>
     <div class="docs-example docs-example--stack">
       <Breadcrumb
         items={[
@@ -59,7 +54,7 @@
   </section>
 
   <section class="docs-section">
-    <h2>{t(locale, "dataDisplay")}</h2>
+    <h2>{t(locale.value, "dataDisplay")}</h2>
     <div class="docs-example docs-example--stack">
       <Tabs
         items={[
@@ -106,7 +101,7 @@
   </section>
 
   <section class="docs-section">
-    <h2>{t(locale, "apiTitle")}</h2>
+    <h2>{t(locale.value, "apiTitle")}</h2>
     <table class="docs-table">
       <thead>
         <tr><th>Component</th><th>Primary props</th><th>Semantics</th></tr>
@@ -125,7 +120,7 @@
   </section>
 
   <section class="docs-section">
-    <h2>{t(locale, "tokensTitle")}</h2>
+    <h2>{t(locale.value, "tokensTitle")}</h2>
     <ul class="docs-token-list">
       <li><code>--st-component-dataTable-headerBackground</code></li>
       <li><code>--st-component-dataTable-border</code></li>

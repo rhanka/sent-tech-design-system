@@ -3,10 +3,10 @@
   import { Alert, Badge, Link } from "@sentropic/design-system-svelte";
   import { onMount } from "svelte";
   import { CATEGORY_LABELS } from "$lib/components-catalog";
-  import { t, type Locale } from "$lib/i18n";
+  import { t } from "$lib/i18n";
+  import { locale } from "$lib/locale.svelte";
 
   let { data } = $props();
-  let locale = $state<Locale>("fr");
 
   const sourceUrl = $derived(
     `https://github.com/rhanka/sent-tech-design-system/blob/main/packages/components-svelte/src/lib/${data.component.name}.svelte`
@@ -34,7 +34,7 @@
     }
   } as const;
 
-  const text = $derived(copy[locale]);
+  const text = $derived(copy[locale.value]);
 
   onMount(() => {
     if (data.redirectTo) {
@@ -53,7 +53,7 @@
 {#if data.redirectTo}
   <div class="docs-page">
     <section class="docs-hero">
-      <p class="docs-hero-kicker">Composant · {CATEGORY_LABELS[data.component.category][locale]}</p>
+      <p class="docs-hero-kicker">Composant · {CATEGORY_LABELS[data.component.category][locale.value]}</p>
       <h1>{data.component.name}</h1>
       <p>Cette documentation est regroupée dans la page de famille du composant.</p>
       <p><Link href={data.redirectTo}>Ouvrir la page documentée</Link></p>
@@ -61,20 +61,15 @@
   </div>
 {:else}
 <div class="docs-page">
-  <div class="docs-language" role="group" aria-label="Language">
-    <button type="button" aria-pressed={locale === "fr"} onclick={() => (locale = "fr")}>FR</button>
-    <button type="button" aria-pressed={locale === "en"} onclick={() => (locale = "en")}>EN</button>
-  </div>
-
   <section class="docs-hero">
-    <p class="docs-hero-kicker">Composant · {CATEGORY_LABELS[data.component.category][locale]}</p>
+    <p class="docs-hero-kicker">Composant · {CATEGORY_LABELS[data.component.category][locale.value]}</p>
     <h1>
       {data.component.name}
       <Badge tone="neutral">{text.stubBadge}</Badge>
     </h1>
     <p>{data.component.description}</p>
     <p class="docs-stub-meta">
-      <span>{text.categoryLabel}: <strong>{CATEGORY_LABELS[data.component.category][locale]}</strong></span>
+      <span>{text.categoryLabel}: <strong>{CATEGORY_LABELS[data.component.category][locale.value]}</strong></span>
     </p>
   </section>
 
@@ -95,7 +90,7 @@
   </section>
 
   <section class="docs-section">
-    <h2>{t(locale, "apiTitle")}</h2>
+    <h2>{t(locale.value, "apiTitle")}</h2>
     <p>{text.alertMessage}</p>
   </section>
 </div>
