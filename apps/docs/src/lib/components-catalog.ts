@@ -416,6 +416,17 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "MenuPopover",
+    slug: "menu-popover",
+    status: "documented",
+    category: "overlay",
+    groupSlug: "menu-popover",
+    description: {
+      fr: "Panneau flottant ancré à un déclencheur externe, avec placement, fermeture extérieure et Escape.",
+      en: "Floating panel anchored to an external trigger, with placement, outside-click, and Escape close."
+    }
+  },
+  {
     name: "Modal",
     slug: "modal",
     status: "documented",
