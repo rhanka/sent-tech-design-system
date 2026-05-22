@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { HTMLAttributes } from "svelte/elements";
+  import { ChevronLeft, ChevronRight, Ellipsis } from "@lucide/svelte";
 
   type PaginationNavProps = Omit<HTMLAttributes<HTMLElement>, "class"> & {
     page: number;
@@ -89,22 +90,15 @@
         disabled={page <= 1 || pageCount <= 0}
         onclick={() => go(page - 1)}
       >
-        <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false">
-          <path
-            d="M10 3 5 8l5 5"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.6"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
+        <ChevronLeft size={16} strokeWidth={2} aria-hidden="true" />
       </button>
     </li>
     {#each slots as slot, index (typeof slot === "number" ? `p-${slot}` : `${slot}-${index}`)}
       <li>
         {#if slot === "ellipsis-start" || slot === "ellipsis-end"}
-          <span class="st-paginationNav__ellipsis" aria-hidden="true">…</span>
+          <span class="st-paginationNav__ellipsis" aria-hidden="true">
+            <Ellipsis size={16} strokeWidth={2} aria-hidden="true" />
+          </span>
         {:else}
           <button
             type="button"
@@ -127,16 +121,7 @@
         disabled={page >= pageCount || pageCount <= 0}
         onclick={() => go(page + 1)}
       >
-        <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false">
-          <path
-            d="M6 3l5 5-5 5"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.6"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
+        <ChevronRight size={16} strokeWidth={2} aria-hidden="true" />
       </button>
     </li>
   </ul>
