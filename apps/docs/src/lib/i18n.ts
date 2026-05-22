@@ -31,6 +31,9 @@ const copy = {
     inlineLoadingTitle: "InlineLoading",
     inlineLoadingIntro:
       "Indicateur de chargement compact avec libellé, statuts active/success/error/inactive et icônes Lucide `LoaderCircle`, `CircleCheck` et `CircleAlert`.",
+    progressIndicatorTitle: "ProgressIndicator",
+    progressIndicatorIntro:
+      "Suite d’étapes ordonnées avec statuts complete/current/upcoming/invalid/disabled, orientation horizontale ou verticale, et icônes Lucide `Check` et `X`.",
     formsTitle: "Forms",
     formsIntro:
       "Champs, sélections et contrôles binaires pour interfaces produit denses et white-label.",
@@ -129,6 +132,9 @@ const copy = {
     inlineLoadingTitle: "InlineLoading",
     inlineLoadingIntro:
       "Compact loading indicator paired with a label, with active/success/error/inactive statuses and Lucide `LoaderCircle`, `CircleCheck`, and `CircleAlert` icons.",
+    progressIndicatorTitle: "ProgressIndicator",
+    progressIndicatorIntro:
+      "Ordered step sequence with complete/current/upcoming/invalid/disabled statuses, horizontal or vertical orientation, and Lucide `Check` and `X` icons.",
     formsTitle: "Forms",
     formsIntro: "Fields, selections, and binary controls for dense white-label product UIs.",
     overlaysTitle: "Overlays",
