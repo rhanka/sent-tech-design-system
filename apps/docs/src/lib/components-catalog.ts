@@ -214,8 +214,9 @@ export const COMPONENTS: ComponentEntry[] = [
   {
     name: "PasswordInput",
     slug: "password-input",
-    status: "stub",
+    status: "documented",
     category: "form",
+    groupSlug: "password-input",
     description: {
       fr: "Champ mot de passe avec bascule visibilité.",
       en: "Password field with visibility toggle."
