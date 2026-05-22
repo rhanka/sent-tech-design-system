@@ -36,6 +36,7 @@
     <div class="docs-demo-stack">
       <article class="docs-demo-block">
         <h3>Link</h3>
+        <p class="docs-demo-context">Lien stylé cohérent avec le DS, sans logique métier.</p>
         <div class="docs-demo-inline">
           <Link href="/components/data-navigation">Data navigation docs</Link>
         </div>
@@ -43,11 +44,13 @@
 
       <article class="docs-demo-block">
         <h3>Alert</h3>
+        <p class="docs-demo-context">Bandeau persistant pour les messages contextuels — pour les notifications éphémères, voir Toast.</p>
         <Alert tone="warning" title="Migration note" message="Keep product-specific workflow logic outside the base design system." />
       </article>
 
       <article class="docs-demo-block">
         <h3>Menu</h3>
+        <p class="docs-demo-context">Menu d'actions avec icônes Lucide, groupes, séparateurs et item destructif.</p>
         <Menu
           label="Actions"
           items={[
@@ -73,6 +76,7 @@
     <div class="docs-demo-stack">
       <article class="docs-demo-block">
         <h3>Dropdown</h3>
+        <p class="docs-demo-context">Sélecteur de valeur unique dans une liste (listbox).</p>
         <Dropdown
           label="Product"
           value={selectedProduct}
@@ -87,6 +91,7 @@
 
       <article class="docs-demo-block">
         <h3>Popover</h3>
+        <p class="docs-demo-context">Détail compact ancré à un déclencheur, sans bloquer le flux.</p>
         <Popover open={popoverOpen} label="Service details">
           {#snippet trigger()}
             <Button variant="secondary" onclick={() => (popoverOpen = !popoverOpen)}>
@@ -99,6 +104,7 @@
 
       <article class="docs-demo-block">
         <h3>Drawer</h3>
+        <p class="docs-demo-context">Workflow secondaire latéral, sans quitter l'écran courant.</p>
         <div class="docs-demo-inline">
           <Button variant="secondary" onclick={() => (drawerOpen = true)}>Open drawer</Button>
         </div>
@@ -119,6 +125,7 @@
     <div class="docs-demo-stack">
       <article class="docs-demo-block">
         <h3>EmptyState</h3>
+        <p class="docs-demo-context">État vide avec une action principale claire vers la suite.</p>
         <EmptyState title="No service configured" message="Create the first service before publishing the tenant workspace.">
           {#snippet action()}
             <Button>Create service</Button>
@@ -128,6 +135,7 @@
 
       <article class="docs-demo-block">
         <h3>LoadingState</h3>
+        <p class="docs-demo-context">Indicateur de chargement plein bloc ou squelette typographique.</p>
         <div class="docs-demo-stack">
           <LoadingState label="Loading services" />
           <LoadingState label="Preparing skeleton" variant="skeleton" />

@@ -328,7 +328,7 @@ select {
 }
 
 .docs-content-area {
-  background: linear-gradient(180deg, #ffffff 0, #ffffff 24rem, #f6f8fb 24rem);
+  background: transparent;
   min-width: 0;
   padding: 2.5rem 3rem 6rem;
 }
@@ -566,6 +566,13 @@ select {
   margin: 0;
 }
 
+.docs-demo-context {
+  color: var(--docs-muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: -0.25rem 0 0;
+}
+
 .docs-demo-inline {
   align-items: center;
   display: flex;
@@ -691,7 +698,7 @@ select {
   }
 
   .docs-content-area {
-    background: linear-gradient(180deg, #ffffff 0, #ffffff 20rem, #f6f8fb 20rem);
+    background: transparent;
     padding: 1.75rem 1.25rem 4rem;
   }
 
