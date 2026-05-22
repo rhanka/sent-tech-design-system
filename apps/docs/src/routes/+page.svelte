@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Badge, Card } from "@sentropic/design-system-svelte";
   import { t, type Locale } from "$lib/i18n";
+  import { locale } from "$lib/locale.svelte";
   import {
     CATEGORY_LABELS,
     COMPONENTS,
@@ -9,15 +10,13 @@
   } from "$lib/components-catalog";
   import { DOCS_VERSION } from "$lib/docs-navigation";
 
-  let locale = $state<Locale>("fr");
-
   const groups = groupByCategory(COMPONENTS);
   const total = COMPONENTS.length;
   const documented = COMPONENTS.filter((c) => c.status === "documented").length;
   const pending = total - documented;
 
   const summary = $derived(
-    locale === "fr"
+    locale.value === "fr"
       ? `${total} composants exportés · ${documented} documentés en détail`
       : `${total} exported components · ${documented} fully documented`
   );
@@ -27,25 +26,20 @@
 </script>
 
 <div class="docs-page">
-  <div class="docs-language" role="group" aria-label="Language">
-    <button type="button" aria-pressed={locale === "fr"} onclick={() => (locale = "fr")}>FR</button>
-    <button type="button" aria-pressed={locale === "en"} onclick={() => (locale = "en")}>EN</button>
-  </div>
-
   <section class="docs-hero">
     <p class="docs-hero-kicker">SENT-tech · Product design infrastructure</p>
-    <h1>{t(locale, "title")}</h1>
-    <p>{t(locale, "subtitle")}</p>
+    <h1>{t(locale.value, "title")}</h1>
+    <p>{t(locale.value, "subtitle")}</p>
     <p class="docs-hero-meta">{summary}</p>
     <div class="docs-hero-actions">
-      <a class="docs-button-link" href="#components">{t(locale, "components")}</a>
-      <a class="docs-button-link docs-button-link--secondary" href="#contracts">{t(locale, "tokenPolicyTitle")}</a>
+      <a class="docs-button-link" href="#components">{t(locale.value, "components")}</a>
+      <a class="docs-button-link docs-button-link--secondary" href="#contracts">{t(locale.value, "tokenPolicyTitle")}</a>
     </div>
   </section>
 
   <section class="docs-section" id="foundations">
-    <h2>{t(locale, "overview")}</h2>
-    <p>{t(locale, "overviewBody")}</p>
+    <h2>{t(locale.value, "overview")}</h2>
+    <p>{t(locale.value, "overviewBody")}</p>
     <div class="docs-metric-grid" aria-label="Documentation status">
       <div class="docs-metric">
         <strong>{DOCS_VERSION}</strong>
@@ -81,11 +75,11 @@
   </section>
 
   <section class="docs-section" id="components">
-    <h2>{t(locale, "components")}</h2>
+    <h2>{t(locale.value, "components")}</h2>
     <p>Catalogue opérationnel des exports `@sentropic/design-system-svelte`, groupé par usage pour retrouver vite le composant et son niveau de documentation.</p>
     {#each groups as group (group.category)}
       <div class="docs-catalog-group">
-        <h3 class="docs-catalog-group-title">{CATEGORY_LABELS[group.category][locale]}</h3>
+        <h3 class="docs-catalog-group-title">{CATEGORY_LABELS[group.category][locale.value]}</h3>
         <div class="docs-catalog-grid">
           {#each group.components as component (component.slug)}
             <a class="docs-catalog-card-link" href={componentHref(component)}>
@@ -93,9 +87,9 @@
                 <div class="docs-catalog-card-head">
                   <span class="docs-catalog-card-name">{component.name}</span>
                   {#if component.status === "documented"}
-                    <Badge tone="success">{documentedLabel(locale)}</Badge>
+                    <Badge tone="success">{documentedLabel(locale.value)}</Badge>
                   {:else}
-                    <Badge tone="neutral">{stubLabel(locale)}</Badge>
+                    <Badge tone="neutral">{stubLabel(locale.value)}</Badge>
                   {/if}
                 </div>
                 <p class="docs-catalog-card-desc">{component.description}</p>
@@ -132,8 +126,8 @@
   </section>
 
   <section class="docs-section" id="contracts">
-    <h2>{t(locale, "tokenPolicyTitle")}</h2>
-    <p>{t(locale, "tokenPolicyBody")}</p>
+    <h2>{t(locale.value, "tokenPolicyTitle")}</h2>
+    <p>{t(locale.value, "tokenPolicyBody")}</p>
     <div class="docs-contract-grid">
       <div class="docs-contract-item">
         <h3>Applications produit</h3>
