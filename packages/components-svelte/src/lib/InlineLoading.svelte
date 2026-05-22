@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { HTMLAttributes } from "svelte/elements";
+  import { LoaderCircle, CircleCheck, CircleAlert } from "@lucide/svelte";
 
   type InlineLoadingProps = Omit<HTMLAttributes<HTMLDivElement>, "class"> & {
     label?: string;
@@ -23,20 +24,13 @@
 <div {...rest} class={classes()} role={role()} aria-live="polite">
   <span class="st-inlineLoading__icon" aria-hidden="true">
     {#if status === "active"}
-      <svg viewBox="0 0 16 16" width="16" height="16">
-        <circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-opacity="0.2" />
-        <path d="M14 8a6 6 0 0 0-6-6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-          <animateTransform attributeName="transform" type="rotate" from="0 8 8" to="360 8 8" dur="0.9s" repeatCount="indefinite" />
-        </path>
-      </svg>
+      <span class="st-inlineLoading__spinner">
+        <LoaderCircle size={16} strokeWidth={2} aria-hidden="true" />
+      </span>
     {:else if status === "success"}
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" width="14" height="14">
-        <path d="m3 8 3.5 3.5L13 5" stroke-linecap="round" stroke-linejoin="round" />
-      </svg>
+      <CircleCheck size={16} strokeWidth={2} aria-hidden="true" />
     {:else if status === "error"}
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" width="14" height="14">
-        <path d="M4 4l8 8M12 4l-8 8" stroke-linecap="round" />
-      </svg>
+      <CircleAlert size={16} strokeWidth={2} aria-hidden="true" />
     {/if}
   </span>
   {#if label}<span class="st-inlineLoading__label">{label}</span>{/if}
@@ -57,6 +51,14 @@
     justify-content: center;
   }
 
+  .st-inlineLoading__spinner {
+    align-items: center;
+    animation: st-inlineLoading-spin 0.9s linear infinite;
+    display: inline-flex;
+    justify-content: center;
+    line-height: 0;
+  }
+
   .st-inlineLoading--active .st-inlineLoading__icon {
     color: var(--st-semantic-action-primary);
   }
@@ -73,9 +75,15 @@
     color: var(--st-semantic-text-muted);
   }
 
+  @keyframes st-inlineLoading-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    .st-inlineLoading__icon svg path animateTransform {
-      display: none;
+    .st-inlineLoading__spinner {
+      animation: none;
     }
   }
 </style>
