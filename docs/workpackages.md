@@ -121,23 +121,46 @@ Detail dans `docs/known-issues-and-fixes.md`.
 **Parallelisable avec** : tous (composants disjoints).
 **Bloque** : WP2 re-passe overlays.
 
-## WP7 — Audit DS via skills design (priorité 1, "le plus important")
+## WP7 — Audit DS large (37 références upstream, 5 clusters parallèles)
 
-**Statut global** : 🟡 agent en cours.
+**Statut global** : 🟡 v1 livrée (`88d70f6`, 17 findings sur 8 références) jugée sous-dimensionnée. **Relancée en v2 : 5 agents d'audit en parallèle, un par cluster d'axes.**
 
-Objectif : appliquer les bonnes pratiques de design à NOTRE design system. Audit du docs site + des composants Svelte + des tokens via skills de design (impeccable upstream, frontend-design Anthropic), pour identifier ce qui ne respecte pas les standards, puis corriger.
+Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couverture complète des 37 références upstream `pbakaus/impeccable`.
 
-| Item | Statut | Notes |
-|---|---|---|
-| Roadmap `docs/impeccable-roadmap.md` | 🟢 | `1ef0051`, base pour la démarche |
-| Installer skill `pbakaus/impeccable` (et frontend-design si complémentaire) | 🟡 | agent en cours |
-| Audit commands (`/impeccable audit`, `critique`) + CLI `npx impeccable detect` | 🟡 | agent en cours |
-| Rapport `docs/ds-audit-report.md` (P0/P1/P2 + friction usage) | 🟡 | agent en cours |
-| Application des fixes critiques (P0) | ⚪ | après rapport |
-| Capacité "audit on push" via workflow GitHub | ⚪ | hook CI post-MVP |
+**Décidé 2026-05-22** : couverture complète des 37 références via 5 agents par cluster d'axes + 1 consolidateur en fin de cycle. Sortie : un rapport par axe + un master consolidé + commits de fixes P0 atomiques au fur et à mesure.
 
-**Dépendances** : aucune.
-**Parallélisable avec** : tous (audit produit un rapport, ne modifie pas les composants).
+| Cluster | Références upstream | Statut | Sortie |
+|---|---|---|---|
+| A. Typography & writing | `typography`, `typeset`, `ux-writing`, `clarify`, `cognitive-load` | 🔵 prêt à lancer | `docs/ds-audit-typography.md` |
+| B. Color & contrast | `color-and-contrast`, `colorize`, `bolder`, `quieter` | 🔵 | `docs/ds-audit-color.md` |
+| C. Spatial & responsive | `spatial-design`, `layout`, `responsive-design`, `shape` | 🔵 | `docs/ds-audit-spatial.md` |
+| D. Motion & interaction | `motion-design`, `animate`, `interaction-design`, `delight`, `overdrive` | 🔵 | `docs/ds-audit-motion.md` |
+| E. Audit/critique/polish | `audit`, `critique`, `polish`, `harden`, `optimize`, `extract`, `distill`, `craft` | 🔵 | `docs/ds-audit-meta.md` |
+| F. Consolidateur | merge des 5 + dédupe vs `docs/known-issues-and-fixes.md` + priorisation P0/P1/P2 | ⚪ post-clusters | `docs/ds-audit-report.md` (master) |
+| Application des fixes critiques (P0) | — | ⚪ après master | commits atomiques au fil de l'eau |
+| Capacité "audit on push" via workflow GitHub | — | ⚪ post-MVP | hook CI |
+
+**Dépendances** : les 5 clusters parallèles ; le consolidateur attend leur sortie.
+
+## WP8 — Librairie maison `lint-ds` + knowledge base + skill multi-harness
+
+**Statut global** : 🟡 v0 scaffold WP8 orphelin (`packages/impeccable/dist`, sans source) à nettoyer. **Relancée en v2 : parité fonctionnelle large + knowledge base + skill multi-harness.**
+
+**Décidé 2026-05-22** : parité fonctionnelle large (~40-50 règles, ~10 axes) + knowledge base markdown sous `docs/principles/` (les principes Sent Tech) + skill multi-harness installable pour **Claude, Codex et Gemini** (squelette d'abord, puis étoffé). Architecture moteur : statique (PostCSS AST + regex + token lookup) en priorité, runtime (Playwright) en option pour ce qui ne se mesure pas statiquement.
+
+| Phase | Item | Statut | Notes |
+|---|---|---|---|
+| 1. Scaffold cœur | `packages/lint-ds/` (moteur, CLI, types, registry) | 🔵 | TypeScript, ESM, jsdom/PostCSS pour parser, sortie JSON+pretty |
+| 1. Scaffold cœur | 10-15 règles initiales bien choisies | 🔵 | mix de règles évidentes (no-bare-hex, contrast-aa, no-rail-with-rounded, z-index-hierarchy) |
+| 1. Knowledge base | `docs/principles/` (5-7 .md alignement Sent Tech) | 🔵 | typography, color, spatial, motion, ux-writing, interaction, responsive |
+| 1. Skill scaffold | `tools/skills/sent-tech-impeccable/` pour Claude | 🔵 | `SKILL.md` + reference + scripts entry |
+| 2. Extension règles | ~30-35 règles additionnelles au fil de WP7 | ⚪ | une règle par finding récurrent |
+| 2. Multi-harness | `.codex/` et `.gemini/` adapters | ⚪ | mirror du skill Claude pour autres harness |
+| 3. Capacité différenciante | règles propres Sent Tech > upstream | ⚪ | post-parité |
+
+**Estimé** : 1 semaine pour Phase 1 (scaffold + 10-15 règles + knowledge base squelette + skill Claude), puis 3-4 semaines d'extension pilotée par WP7.
+
+**Dépendances** : aucune en Phase 1. Phase 2 enrichit selon les findings WP7.
 
 ## WP8 — Module DS impeccable-équivalent (librairie maison, parallèle de WP7)
 
