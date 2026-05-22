@@ -531,8 +531,9 @@ export const COMPONENTS: ComponentEntry[] = [
   {
     name: "ProgressIndicator",
     slug: "progress-indicator",
-    status: "stub",
+    status: "documented",
     category: "feedback",
+    groupSlug: "progress-indicator",
     description: {
       fr: "Suite d’étapes avec statut complete/current/upcoming.",
       en: "Step sequence with complete/current/upcoming status."
