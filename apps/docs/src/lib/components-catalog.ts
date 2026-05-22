@@ -275,6 +275,14 @@ export const COMPONENTS: ComponentEntry[] = [
     description: "Menu d’actions contextuel."
   },
   {
+    name: "MenuTriggerButton",
+    slug: "menu-trigger-button",
+    status: "documented",
+    category: "navigation",
+    groupSlug: "menu-trigger-button",
+    description: "Bouton icône carré préconfiguré pour ouvrir un menu (haspopup/expanded câblés)."
+  },
+  {
     name: "Pagination",
     slug: "pagination",
     status: "documented",
