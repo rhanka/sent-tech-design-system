@@ -25,6 +25,9 @@ const copy = {
     searchTitle: "Search",
     searchIntro:
       "Champ de recherche avec icône loupe, bouton clear et tailles sm/md/lg, basé sur `<input type=\"search\">` et icônes Lucide.",
+    passwordInputTitle: "PasswordInput",
+    passwordInputIntro:
+      "Champ mot de passe avec bascule de visibilité, tailles sm/md/lg, états helper/erreur et icônes Lucide `Eye` / `EyeOff`.",
     formsTitle: "Forms",
     formsIntro:
       "Champs, sélections et contrôles binaires pour interfaces produit denses et white-label.",
@@ -117,6 +120,9 @@ const copy = {
     searchTitle: "Search",
     searchIntro:
       "Search field with a magnifier icon, clear button, and sm/md/lg sizes, built on `<input type=\"search\">` with Lucide icons.",
+    passwordInputTitle: "PasswordInput",
+    passwordInputIntro:
+      "Password field with a visibility toggle, sm/md/lg sizes, helper/error states, and Lucide `Eye` / `EyeOff` icons.",
     formsTitle: "Forms",
     formsIntro: "Fields, selections, and binary controls for dense white-label product UIs.",
     overlaysTitle: "Overlays",
