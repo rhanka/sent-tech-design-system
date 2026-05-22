@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { HTMLInputAttributes } from "svelte/elements";
+  import { Eye, EyeOff } from "@lucide/svelte";
 
   type PasswordInputProps = Omit<HTMLInputAttributes, "class" | "size" | "type" | "value"> & {
     label?: string;
@@ -60,16 +61,9 @@
         onclick={toggle}
       >
         {#if visible}
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" width="16" height="16" aria-hidden="true">
-            <path d="M2 8s2-4 6-4 6 4 6 4-2 4-6 4-6-4-6-4Z" />
-            <circle cx="8" cy="8" r="2" />
-            <path d="M2 2l12 12" stroke-linecap="round" />
-          </svg>
+          <EyeOff size={16} strokeWidth={2} aria-hidden="true" />
         {:else}
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" width="16" height="16" aria-hidden="true">
-            <path d="M2 8s2-4 6-4 6 4 6 4-2 4-6 4-6-4-6-4Z" />
-            <circle cx="8" cy="8" r="2" />
-          </svg>
+          <Eye size={16} strokeWidth={2} aria-hidden="true" />
         {/if}
       </button>
     </span>
