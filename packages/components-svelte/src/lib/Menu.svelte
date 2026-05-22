@@ -43,6 +43,8 @@
   type MenuProps = Omit<HTMLAttributes<HTMLDivElement>, "class" | "onselect"> & {
     label: string;
     items: MenuItem[];
+    open?: boolean;
+    dismissOnSelect?: boolean;
     class?: string;
     dense?: boolean;
     onselect?: (value: string) => void;
@@ -51,58 +53,81 @@
   let {
     label,
     items,
+    open = $bindable(true),
+    dismissOnSelect = false,
     class: className,
     dense = false,
     onselect,
     ...rest
   }: MenuProps = $props();
 
+  let host: HTMLDivElement | undefined = $state();
+
   const classes = () =>
     ["st-menu", dense ? "st-menu--dense" : null, className].filter(Boolean).join(" ");
 
   function selectItem(item: MenuActionItem) {
-    if (!item.disabled) onselect?.(item.value);
+    if (item.disabled) return;
+    onselect?.(item.value);
+    if (dismissOnSelect) open = false;
   }
 
   function isAction(item: MenuItem): item is MenuActionItem {
     return item.kind === undefined || item.kind === "item";
   }
+
+  function onWindowKeydown(event: KeyboardEvent) {
+    if (event.key === "Escape" && open && dismissOnSelect) {
+      event.preventDefault();
+      open = false;
+    }
+  }
+
+  function onWindowPointerDown(event: MouseEvent) {
+    if (!open || !dismissOnSelect) return;
+    const target = event.target as Node | null;
+    if (host && target && !host.contains(target)) open = false;
+  }
 </script>
 
-<div {...rest} class={classes()} role="menu" aria-label={label}>
-  {#each items as item, index (index)}
-    {#if isAction(item)}
-      {@const Icon = item.icon}
-      <button
-        class="st-menu__item"
-        class:st-menu__item--danger={item.danger}
-        type="button"
-        role="menuitem"
-        aria-disabled={item.disabled ? "true" : undefined}
-        disabled={item.disabled}
-        onclick={() => selectItem(item)}
-      >
-        {#if Icon}
-          <span class="st-menu__itemIcon" aria-hidden="true">
-            <Icon size={16} strokeWidth={2} />
-          </span>
-        {/if}
-        <span class="st-menu__itemLabel">{item.label}</span>
-      </button>
-    {:else if item.kind === "divider"}
-      <div class="st-menu__divider" role="separator" aria-hidden="true"></div>
-    {:else}
-      {@const groupId = nextGroupId()}
-      <div
-        class="st-menu__group"
-        id={groupId}
-        role="presentation"
-      >
-        {item.label}
-      </div>
-    {/if}
-  {/each}
-</div>
+<svelte:window onkeydown={onWindowKeydown} onpointerdown={onWindowPointerDown} />
+
+{#if open}
+  <div {...rest} bind:this={host} class={classes()} role="menu" aria-label={label}>
+    {#each items as item, index (index)}
+      {#if isAction(item)}
+        {@const Icon = item.icon}
+        <button
+          class="st-menu__item"
+          class:st-menu__item--danger={item.danger}
+          type="button"
+          role="menuitem"
+          aria-disabled={item.disabled ? "true" : undefined}
+          disabled={item.disabled}
+          onclick={() => selectItem(item)}
+        >
+          {#if Icon}
+            <span class="st-menu__itemIcon" aria-hidden="true">
+              <Icon size={16} strokeWidth={2} />
+            </span>
+          {/if}
+          <span class="st-menu__itemLabel">{item.label}</span>
+        </button>
+      {:else if item.kind === "divider"}
+        <div class="st-menu__divider" role="separator" aria-hidden="true"></div>
+      {:else}
+        {@const groupId = nextGroupId()}
+        <div
+          class="st-menu__group"
+          id={groupId}
+          role="presentation"
+        >
+          {item.label}
+        </div>
+      {/if}
+    {/each}
+  </div>
+{/if}
 
 <style>
   .st-menu {
