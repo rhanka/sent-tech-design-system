@@ -10,6 +10,9 @@ const copy = {
     components: "Composants",
     buttonTitle: "Button",
     buttonIntro: "Action principale, secondaire, fantôme ou destructive.",
+    iconButtonTitle: "IconButton",
+    iconButtonIntro:
+      "Bouton icône compact 32-36 px pour les actions secondaires, avec aria-label obligatoire et icône Lucide.",
     formsTitle: "Forms",
     formsIntro:
       "Champs, sélections et contrôles binaires pour interfaces produit denses et white-label.",
@@ -50,6 +53,9 @@ const copy = {
     components: "Components",
     buttonTitle: "Button",
     buttonIntro: "Primary, secondary, ghost, or destructive action.",
+    iconButtonTitle: "IconButton",
+    iconButtonIntro:
+      "Compact 32-36 px icon-only button for secondary actions, with mandatory aria-label and Lucide icon.",
     formsTitle: "Forms",
     formsIntro: "Fields, selections, and binary controls for dense white-label product UIs.",
     overlaysTitle: "Overlays",
