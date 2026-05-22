@@ -11,6 +11,7 @@
     Menu,
     Popover
   } from "@sentropic/design-system-svelte";
+  import { Archive, Copy, Pencil, Share2, Trash2 } from "@lucide/svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
 
@@ -50,9 +51,15 @@
         <Menu
           label="Actions"
           items={[
-            { label: "Edit", value: "edit" },
-            { label: "Archive", value: "archive" },
-            { label: "Delete", value: "delete", disabled: true }
+            { kind: "group", label: "Edit" },
+            { label: "Edit", value: "edit", icon: Pencil },
+            { label: "Duplicate", value: "duplicate", icon: Copy },
+            { kind: "divider" },
+            { kind: "group", label: "Distribute" },
+            { label: "Share", value: "share", icon: Share2 },
+            { label: "Archive", value: "archive", icon: Archive },
+            { kind: "divider" },
+            { label: "Delete", value: "delete", icon: Trash2, danger: true }
           ]}
           onselect={(value) => (selectedAction = value)}
         />

@@ -7,6 +7,7 @@
     Toast,
     Tooltip
   } from "@sentropic/design-system-svelte";
+  import { Archive, Copy, Pencil, Share2, Trash2 } from "@lucide/svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
 
@@ -49,9 +50,15 @@
         triggerLabel="Row actions"
         placement="bottom-start"
         items={[
-          { value: "rename", label: "Rename" },
-          { value: "duplicate", label: "Duplicate" },
-          { value: "delete", label: "Delete", danger: true }
+          { kind: "group", label: "Edit" },
+          { value: "rename", label: "Rename", icon: Pencil },
+          { value: "duplicate", label: "Duplicate", icon: Copy },
+          { kind: "divider" },
+          { kind: "group", label: "Distribute" },
+          { value: "share", label: "Share", icon: Share2 },
+          { value: "archive", label: "Archive", icon: Archive },
+          { kind: "divider" },
+          { value: "delete", label: "Delete", icon: Trash2, danger: true }
         ]}
       />
     </div>
