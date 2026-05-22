@@ -78,6 +78,14 @@ export const COMPONENTS: ComponentEntry[] = [
     description: "Bouton dédié à la copie d’une valeur dans le presse-papier."
   },
   {
+    name: "IconButton",
+    slug: "icon-button",
+    status: "documented",
+    category: "action",
+    groupSlug: "icon-button",
+    description: "Bouton icône compact 32-36 px, aria-label obligatoire, Lucide."
+  },
+  {
     name: "Link",
     slug: "link",
     status: "documented",
