@@ -1,11 +1,12 @@
 <script lang="ts" module>
   import type { Component } from "svelte";
 
-  export interface OverflowMenuIconProps {
-    size?: number;
-    strokeWidth?: number;
+  export type OverflowMenuIconProps = {
+    size?: number | string;
+    strokeWidth?: number | string;
+    color?: string;
     class?: string;
-  }
+  } & Record<`data-${string}`, unknown>;
 
   export type OverflowMenuIcon = Component<OverflowMenuIconProps>;
 
