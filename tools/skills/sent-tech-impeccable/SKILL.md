@@ -13,6 +13,7 @@ Lightweight DS lint skill for Sentinel/Doc contexts.
 
 - `sent-tech-impeccable audit <target>`
   - `<target>` supports URL, file path or inline HTML content.
+  - The wrapper forwards to the workspace contract `design audit <target>`.
 
 ## Expected output
 
