@@ -1,7 +1,7 @@
 <script lang="ts">
   import { page } from "$app/state";
   import "../app.css";
-  import { ChevronDown, ExternalLink, Globe, LogIn, LogOut, User, Menu, X } from "@lucide/svelte";
+  import { ChevronDown, Github, Globe, LogIn, LogOut, Menu, User, X } from "@lucide/svelte";
   import { ThemeProvider } from "@sentropic/design-system-svelte";
   import { sentTechTheme } from "@sentropic/design-system-themes";
   import {
@@ -73,13 +73,23 @@
   if (isAuthOpen && e.target && !(e.target as Element).closest(".docs-auth-wrapper")) {
     isAuthOpen = false;
   }
+}} onkeydown={(e) => {
+  if (e.key === "Escape") {
+    isOpen = false;
+    isAuthOpen = false;
+    isMobileMenuOpen = false;
+  }
 }} />
 
 <ThemeProvider theme={sentTechTheme}>
   <div class="docs-shell">
     <header class="docs-header">
-      <a class="docs-brand" href="/" aria-label="SENT">
-        <img class="docs-brand-mark" src="/SENT-logo.svg" alt="SENT" />
+      <a class="docs-brand" href="/" aria-label="Sentropic Design System">
+        <img class="docs-brand-mark" src="/SENT-logo-squared.svg" alt="" aria-hidden="true" />
+        <span class="docs-brand-copy">
+          <span class="docs-brand-name">Sentropic</span>
+          <span class="docs-brand-product">Design System</span>
+        </span>
       </a>
 
       <nav class="docs-top-nav" aria-label="Documentation principale">
@@ -91,12 +101,20 @@
       </nav>
 
       <nav class="docs-utility-nav" aria-label="Liens utiles">
-        <span class="docs-version">{DOCS_VERSION}</span>
+        <span class="docs-header-control docs-version">{DOCS_VERSION}</span>
         {#each DOCS_UTILITY_NAV as item (item.href)}
-          <a href={item.href} rel={item.external ? "noreferrer" : undefined} target={item.external ? "_blank" : undefined}>
-            {item.label}
-            {#if item.external}
-              <ExternalLink class="docs-link-icon" size={14} strokeWidth={2.25} aria-hidden="true" />
+          <a
+            class="docs-header-control docs-header-iconLink"
+            href={item.href}
+            rel={item.external ? "noreferrer" : undefined}
+            target={item.external ? "_blank" : undefined}
+            aria-label={item.label}
+            title={item.label}
+          >
+            {#if item.label === "GitHub"}
+              <Github size={16} strokeWidth={2.1} aria-hidden="true" />
+            {:else}
+              <span>{item.label}</span>
             {/if}
           </a>
         {/each}
@@ -104,14 +122,16 @@
         <div class="docs-locale-wrapper">
           <button
             type="button"
-            class="docs-locale-trigger"
+            class="docs-header-control docs-header-menuButton docs-locale-trigger"
             onclick={() => (isOpen = !isOpen)}
             aria-expanded={isOpen}
             aria-haspopup="true"
+            aria-label={locale.value === "fr" ? "Changer la langue" : "Change language"}
+            title={locale.value === "fr" ? "Changer la langue" : "Change language"}
           >
-            <Globe size={14} class="docs-locale-trigger-icon" />
+            <Globe size={14} class="docs-locale-trigger-icon" aria-hidden="true" />
             <span>{locale.value.toUpperCase()}</span>
-            <ChevronDown size={12} class="docs-locale-trigger-chevron {isOpen ? 'rotated' : ''}" />
+            <ChevronDown size={12} class="docs-locale-trigger-chevron {isOpen ? 'rotated' : ''}" aria-hidden="true" />
           </button>
 
           {#if isOpen}
@@ -120,6 +140,7 @@
                 type="button"
                 class="docs-locale-item"
                 class:active={locale.value === "fr"}
+                role="menuitem"
                 onclick={() => { locale.value = "fr"; isOpen = false; }}
               >
                 <span class="locale-check">{#if locale.value === "fr"}✓{/if}</span>
@@ -129,6 +150,7 @@
                 type="button"
                 class="docs-locale-item"
                 class:active={locale.value === "en"}
+                role="menuitem"
                 onclick={() => { locale.value = "en"; isOpen = false; }}
               >
                 <span class="locale-check">{#if locale.value === "en"}✓{/if}</span>
@@ -141,7 +163,7 @@
         <div class="docs-auth-wrapper">
           <button
             type="button"
-            class="docs-auth-trigger"
+            class="docs-header-control docs-header-menuButton docs-auth-trigger"
             onclick={() => (isAuthOpen = !isAuthOpen)}
             aria-expanded={isAuthOpen}
             aria-haspopup="menu"
@@ -164,6 +186,7 @@
                 <button
                   type="button"
                   class="docs-auth-popover-item docs-auth-popover-item--primary"
+                  role="menuitem"
                   onclick={() => { isLoggedIn = true; isAuthOpen = false; }}
                 >
                   <LogIn size={13} />
@@ -172,13 +195,14 @@
               {:else}
                 <div class="docs-auth-user-info">
                   <span class="docs-auth-user-name">Jean-Michel Sentropic</span>
-                  <span class="docs-auth-user-email">jm.sentropic@sent-tech.ca</span>
+                  <span class="docs-auth-user-email">jm.sentropic@example.com</span>
                   <span class="docs-auth-user-role">{locale.value === "fr" ? "Administrateur" : "Administrator"}</span>
                 </div>
                 <hr class="docs-auth-divider" />
                 <button
                   type="button"
                   class="docs-auth-popover-item"
+                  role="menuitem"
                   onclick={() => { isLoggedIn = false; isAuthOpen = false; }}
                 >
                   <LogOut size={13} />
@@ -215,13 +239,16 @@
               onclick={() => (isMobileMenuOpen = false)}
               aria-current={isActive(item.href) ? "page" : undefined}
             >
-              {item.label}
+              {#if item.label === "GitHub"}
+                <Github size={15} strokeWidth={2.1} aria-hidden="true" />
+              {/if}
+              <span>{item.label}</span>
             </a>
           {/each}
         </div>
         <div class="docs-mobile-nav-section">
           <span class="docs-mobile-nav-label">Liens utiles</span>
-          <span class="docs-version">{DOCS_VERSION}</span>
+          <span class="docs-header-control docs-version docs-mobile-version">{DOCS_VERSION}</span>
           {#each DOCS_UTILITY_NAV as item (item.href)}
             <a
               href={item.href}
@@ -330,10 +357,10 @@
     </div>
 
     <footer class="docs-footer">
+      <span>Sentropic Design System</span>
       <a href="https://github.com/rhanka/sent-tech-design-system" rel="noreferrer" target="_blank">
-        github.com/rhanka/sent-tech-design-system
+        GitHub
       </a>
-      <span>Sent Tech Design System</span>
     </footer>
   </div>
 </ThemeProvider>

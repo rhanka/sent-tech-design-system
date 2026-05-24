@@ -10,6 +10,35 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 - ⏸️ Blocked — necessite une decision ou une dependance externe
 - ⚪ Planned — pas demarre
 
+## Suivi Antigravity — reprise header docs 2026-05-24
+
+### Fait
+
+| Track | Finalite | Etat | Avancement | Fait |
+|---|---|---:|---:|---|
+| A — Header docs | Reprendre le header valide par l'utilisateur, pas l'ancien wordmark publie. | 🟢 | 100% | Logo carre `SENT-logo-squared.svg`, titre `Sentropic`, sous-titre `Design System`, GitHub icone, lien `sent-tech.ca` retire du header. |
+| B — Controles droits | Aligner langue, compte, GitHub et version sur une meme grille visuelle. | 🟢 | 100% | Token `--docs-header-control-height`, version neutre, boutons langue/compte sur socle commun, hover/expanded identiques pour les menus. |
+| C — Garde contractuelle | Empêcher une regression vers l'ancien logo ou l'ancien lien header. | 🟢 | 100% | Test `header-contract` verifie logo carre, libelle service, GitHub iconise, absence de `SENT-logo.svg` et absence de `sent-tech.ca` dans la nav utilitaire. |
+| D — Publication | Forcer un deploiement Pages reel, pas seulement une modification de doc. | 🟡 | 80% | Les changements touchent `apps/docs/**`, donc le workflow `Docs` sera declenche au push sur `main`. |
+| E — Suivi | Retablir le mode multi-track `Fait / A faire / Attendus`. | 🟢 | 100% | Ce bloc remplace le suivi implicite et retire les statuts `commit courant` non actionnables. |
+
+### A faire
+
+| Track | Finalite | Avancement | Prochaine action | Owner |
+|---|---|---:|---|---|
+| D — Publication | Prouver que le site public sert bien le nouveau header. | 80% | Commit + push, surveiller le workflow `Docs`, puis verifier l'URL cache-bustee. | Main agent |
+| F — Footer | Reprendre le footer moche sans bloquer la correction header. | 10% | Ouvrir un item dedie apres publication header; `sent-tech.ca` peut y revenir si utile. | Backlog |
+| G — A11y menus | Durcir clavier/focus au-dela du correctif rapide. | 65% | Tester focus trap/roving focus si les popovers deviennent des menus DS reutilisables. | Backlog DS |
+
+### Attendus
+
+| Track | Critere attendu | Verification |
+|---|---|---|
+| Header public | Le header public affiche le logo carre + `Sentropic` / `Design System`, jamais le wordmark complet. | Capture navigateur desktop/mobile + recherche reseau sans `/SENT-logo.svg`. |
+| Zone droite | Version, GitHub, langue et compte partagent hauteur, alignement, couleur de base et densite. | Capture desktop + hover/focus sur langue et compte. |
+| Navigation utilitaire | Le header ne contient plus de lien `sent-tech.ca`; GitHub est iconise. | Test `header-contract` + inspection DOM. |
+| Publication | Le workflow `Docs` passe et deploie le SHA courant. | `gh run watch` + URL cache-bustee `https://design-system.sent-tech.ca/?cb=<SHA>`. |
+
 ## WP1 — DS Core (primitives Svelte)
 
 **Statut global** : 🟢 sweep Sentropic + Lucide epuise.
@@ -40,7 +69,7 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 |---|---|---|---|
 | Sidebar rectangulaire actif + densite groupes | 🟢 | `15d9690`, `ce3bfdc`, `dbdd1be` | |
 | Header docs aligne contrat (logo SENT + langue) | 🟢 | `94e5fce`, `45dd0c8`, `defb1b7` | |
-| Reprise header docs publie + garde contractuelle | 🟢 | commit courant | Wordmark SENT officiel, pas de sous-marque visible, compte icone/popover, burger mobile droite, test `header-contract` |
+| Reprise header docs publie + garde contractuelle | 🟡 | livraison 2026-05-24 | Logo carre + `Sentropic` / `Design System`, GitHub icone, sent-tech.ca retire du header, controles langue/compte harmonises, test `header-contract` |
 | Home i18n complete | 🟢 | `55781c1`, `40b4b98` | catalogue descriptions bilingues |
 | Plan-completion hero shelf + contexte demos | 🟢 | `824a2b7` | |
 | Re-passe `/components/overlays` | ⚪ | — | bloque par WP6 (z-index Toast / OverflowMenu) |
@@ -55,7 +84,7 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 
 | Item | Statut | Commits | Notes |
 |---|---|---|---|
-| Contrat `docs/header-alignment-contract.md` | 🟢 | `44c4871` | 4 decisions validees (logo SENT + langue partout + connexion conditionnelle + burger droite + nav contextuelle) |
+| Contrat `docs/header-alignment-contract.md` | 🟢 | `44c4871` | 4 decisions validees + avenant 2026-05-24: logo carre et libelle de service dans le header |
 | Application sur docs site | 🟢 | inclus WP2 | |
 | Application sur Sentropic (`../sentropic`) | ➡️ user | — | **Décidé 2026-05-22** : l'utilisateur applique lui-même. Le DS ne touche pas. |
 | Application sur NC (`../nc-fullstack`) | ➡️ user | — | idem |
