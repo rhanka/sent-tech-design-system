@@ -5,6 +5,7 @@ import { noEmDashRule } from "./noEmDashRule.js";
 import { singleFontRule } from "./singleFontRule.js";
 import { sideTabOnRoundedRule } from "./sideTabOnRoundedRule.js";
 import { touchTargetRule } from "./touchTargetRule.js";
+import { headingHierarchyRule } from "./headingHierarchyRule.js";
 
 export const defaultRules: Rule[] = [
   singleFontRule,
@@ -12,7 +13,16 @@ export const defaultRules: Rule[] = [
   noEmDashRule,
   sideTabOnRoundedRule,
   lineLengthRule,
-  touchTargetRule
+  touchTargetRule,
+  headingHierarchyRule
 ];
 
-export { lineLengthRule, noBareHexRule, noEmDashRule, singleFontRule, sideTabOnRoundedRule, touchTargetRule };
+export {
+  lineLengthRule,
+  noBareHexRule,
+  noEmDashRule,
+  singleFontRule,
+  sideTabOnRoundedRule,
+  touchTargetRule,
+  headingHierarchyRule
+};
