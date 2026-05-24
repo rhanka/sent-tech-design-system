@@ -8,7 +8,7 @@ Perimetre: contrat visuel et fonctionnel du header partage entre toutes les surf
 |------------------|--------------------------------------------------------------------------|
 | Famille          | Un seul contrat commun. Pas de variante `app shell` pour l'instant.      |
 | Reference visuelle | Etat blanc de `sent-tech.ca/#blog`. Le hero transparent est une variation de fond, pas une autre famille. |
-| Logo             | Logo SENT officiel uniforme partout. La sous-marque produit (`Design System`, `Sentropic`, `NC`) apparait en breadcrumb ou sous-titre discret hors header, pas dans le logo lui-meme. |
+| Logo             | Bloc marque uniforme: logo SENT carre + titre/sous-titre du service. Pour les docs: `Sentropic` / `Design System`. Le texte reste du HTML, pas integre dans l'asset logo. |
 | Favicon          | `SENT-logo-squared.svg` sur toutes les surfaces. Pas de favicon dedie par produit. |
 | Zone droite      | `Langue` visible partout. `Connexion` uniquement sur les surfaces avec authentification. |
 | Burger mobile    | Toujours à droite (validé). Uniforme sur toutes les surfaces publiques et applicatives. Les rails applicatifs latéraux (ex: NC) sont ouverts par un contrôle interne à la page. |
@@ -18,7 +18,7 @@ Perimetre: contrat visuel et fonctionnel du header partage entre toutes les surf
 
 Trois zones horizontales:
 
-1. `Gauche` - logo SENT + sous-titre produit. Cliquable, ramene au point d'entree du produit.
+1. `Gauche` - logo SENT carre + titre/sous-titre du service. Cliquable, ramene au point d'entree du produit.
 2. `Centre` - nav contextuelle horizontale. Les libelles dependent du produit.
 3. `Droite` - utilitaires: langue, version optionnelle, lien externe principal, connexion si applicable.
 
@@ -38,14 +38,15 @@ En desktop, les trois zones s'alignent sur une seule ligne. En mobile, le centre
 Structure standard, uniforme sur toutes les surfaces:
 
 ```
-[Logo SENT officiel]
+[Logo SENT carre] [Titre service]
+                  [Sous-titre service]
 ```
 
-- Asset: `SENT-logo.svg` (wordmark complet) ou `SENT-logo.png` selon dispo locale, hauteur `2rem` desktop / `1.75rem` mobile.
+- Asset: `SENT-logo-squared.svg` (marque carree) ou export bitmap equivalent selon dispo locale, taille `2rem` desktop / `1.75rem` mobile.
 - Sur fond transparent du hero (variante `hero-transparent`), filtre `brightness(0) invert(1)` pour passer en blanc; sur fond `sticky-blanc`, couleur native.
 - Le logo est dans un `<a>` qui pointe vers le point d'entree du produit local.
 - **Intégrité Visuelle du Logo** : Il est strictement interdit d'appliquer un rognage arrondi (`border-radius`) ou un recadrage sur l'icône ou le wordmark de marque SENT. Le logo conserve ses proportions rectangulaires ou carrées d'origine sans aucune altération de ses angles.
-- **Pas de sous-titre produit dans le header**: la sous-marque (`Design System`, `Sentropic`, `NC`) apparait dans le breadcrumb directement sous le header ou dans le titre de page, jamais accole au logo. Le but est que toutes les surfaces aient un header visuellement identique au niveau brand.
+- **Libelle de service dans le header**: le titre et le sous-titre du service apparaissent a droite du logo carre. Le but est d'identifier clairement la surface active sans multiplier les assets de marque. Exemple docs: `Sentropic` en titre, `Design System` en sous-titre.
 
 ### Favicon
 
@@ -74,7 +75,7 @@ Inventaire actuel des nav centrales par surface (etat 2026-05):
 Ordre canonique de gauche a droite:
 
 1. `Version` (optionnel) - badge compact pour les surfaces qui exposent un numero de version pertinent (Design System, Sentropic).
-2. `Liens utilitaires externes` (optionnels) - typiquement un lien vers le site principal et/ou GitHub.
+2. `Liens utilitaires externes` (optionnels) - typiquement GitHub pour les docs. Le renvoi vers `sent-tech.ca` ne vit pas dans le header docs; il peut revenir dans le footer si necessaire.
 3. `Langue` (obligatoire) - Sélecteur sous forme de menu popover dropdown (Globe + Chevron) assurant l'évolutivité multi-langues. Visible sur toutes les surfaces.
 4. `Connexion / Compte` (conditionnelle) - Système orienté **icône dynamique + menu popover** (sans label textuel visible dans le header). 
    *   **Icône dynamique** : Varie selon l'état d'authentification (ex: icône `User` standard si non connecté ; avatar/pastille utilisateur avec badge check ou pastille d'activité si connecté).
