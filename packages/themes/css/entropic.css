@@ -110,13 +110,13 @@
   --st-component-overlay-border: #e2e8f0;
   --st-component-overlay-shadow: 0 18px 45px rgb(15 23 42 / 0.18);
   --st-component-overlay-radius: 0.5rem;
-  --st-component-overlay-zIndex: 90;
+  --st-component-overlay-zIndex: 100;
   --st-component-drawer-backdrop: rgb(15 23 42 / 0.48);
   --st-component-drawer-surface: #ffffff;
   --st-component-drawer-border: #e2e8f0;
   --st-component-drawer-shadow: 0 18px 45px rgb(15 23 42 / 0.18);
   --st-component-drawer-width: 24rem;
-  --st-component-drawer-zIndex: 90;
+  --st-component-drawer-zIndex: 100;
   --st-component-emptyState-background: #f8fafc;
   --st-component-emptyState-border: #e2e8f0;
   --st-component-emptyState-titleText: #0f172a;
@@ -140,7 +140,7 @@
   --st-component-toast-successBorder: #16a34a;
   --st-component-toast-warningBorder: #d97706;
   --st-component-toast-errorBorder: #dc2626;
-  --st-component-toast-zIndex: 100;
+  --st-component-toast-zIndex: 60;
   --st-component-dataTable-headerBackground: #f8fafc;
   --st-component-dataTable-rowBackground: #ffffff;
   --st-component-dataTable-rowHoverBackground: #f8fafc;

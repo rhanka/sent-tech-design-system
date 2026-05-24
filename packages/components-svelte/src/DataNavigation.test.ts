@@ -241,7 +241,7 @@ describe("data and navigation components", () => {
 
     const nav = screen.getByRole("navigation", { name: "Pagination" });
     expect(nav).toBeTruthy();
-    expect(within(nav).getAllByText("…").length).toBe(2);
+    expect(nav.querySelectorAll(".st-paginationNav__ellipsis").length).toBe(2);
     const current = within(nav).getByRole("button", { name: "Page 6" });
     expect(current.getAttribute("aria-current")).toBe("page");
     expect(within(nav).getByRole("button", { name: "Page 1" })).toBeTruthy();

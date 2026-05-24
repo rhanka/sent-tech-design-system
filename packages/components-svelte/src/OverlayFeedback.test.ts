@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import Accordion from "./lib/Accordion.svelte";
 import CodeSnippet from "./lib/CodeSnippet.svelte";
 import CopyButton from "./lib/CopyButton.svelte";
+import Drawer from "./lib/Drawer.svelte";
 import Header from "./lib/Header.svelte";
 import InlineLoading from "./lib/InlineLoading.svelte";
 import Modal from "./lib/Modal.svelte";
@@ -36,6 +37,39 @@ describe("overlay and feedback components", () => {
 
   it("does not render a closed modal", () => {
     render(Modal, { props: { open: false, title: "Confirm", children: body } });
+    expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
+  it("renders an open drawer as a labelled dialog", () => {
+    render(Drawer, { props: { open: true, title: "Options", children: body } });
+    expect(screen.getByRole("dialog", { name: "Options" })).toBeTruthy();
+    expect(screen.getByText("Modal content")).toBeTruthy();
+  });
+
+  it("requests close on Escape key for Drawer", async () => {
+    const onclose = vi.fn();
+    render(Drawer, { props: { open: true, title: "Options", children: body, onclose } });
+    await tick();
+    
+    await fireEvent.keyDown(window, { key: "Escape" });
+    expect(onclose).toHaveBeenCalledTimes(1);
+  });
+
+  it("requests close on backdrop click for Drawer", async () => {
+    const onclose = vi.fn();
+    const { container } = render(Drawer, { props: { open: true, title: "Options", children: body, onclose } });
+    await tick();
+
+    const backdrop = container.querySelector(".st-drawer__backdrop");
+    expect(backdrop).toBeTruthy();
+    if (backdrop) {
+      await fireEvent.click(backdrop);
+      expect(onclose).toHaveBeenCalledTimes(1);
+    }
+  });
+
+  it("does not render a closed drawer", () => {
+    render(Drawer, { props: { open: false, title: "Options", children: body } });
     expect(screen.queryByRole("dialog")).toBeNull();
   });
 

@@ -2,12 +2,13 @@
   import type { Snippet } from "svelte";
   import type { HTMLAttributes } from "svelte/elements";
 
-  export type ChatMessageRole = "user" | "assistant" | "system";
-  export type ChatMessageStatus = "idle" | "streaming" | "error";
+  export type ChatMessageRole = "user" | "assistant" | "system" | "tool";
+  export type ChatMessageStatus = "pending" | "processing" | "completed" | "failed";
+  type ChatMessageLegacyStatus = "idle" | "streaming" | "error";
 
   type ChatMessageProps = Omit<HTMLAttributes<HTMLElement>, "class" | "role"> & {
     role: ChatMessageRole;
-    status?: ChatMessageStatus;
+    status?: ChatMessageStatus | ChatMessageLegacyStatus;
     timestamp?: string;
     class?: string;
     avatar?: Snippet;
@@ -18,7 +19,7 @@
 
   let {
     role,
-    status = "idle",
+    status = "completed",
     timestamp,
     class: className,
     avatar,
@@ -28,11 +29,19 @@
     ...rest
   }: ChatMessageProps = $props();
 
+  const normalizedStatus = () => {
+    if (status === "idle" || status === "streaming") return "processing";
+    if (status === "error") return "failed";
+    return status;
+  };
+
+  const isStreaming = () => normalizedStatus() === "processing";
+
   const classes = () =>
     [
       "st-chatMessage",
       `st-chatMessage--${role}`,
-      status !== "idle" ? `st-chatMessage--${status}` : null,
+      `st-chatMessage--${normalizedStatus()}`,
       className
     ]
       .filter(Boolean)
@@ -45,9 +54,9 @@
   {...rest}
   class={classes()}
   data-role={role}
-  data-status={status}
+  data-status={normalizedStatus()}
   data-align={alignment}
-  aria-live={status === "streaming" ? "polite" : undefined}
+  aria-live={isStreaming() ? "polite" : undefined}
 >
   {#if avatar}
     <div class="st-chatMessage__avatar" aria-hidden="true">
@@ -59,7 +68,7 @@
       <div class="st-chatMessage__content">
         {@render children()}
       </div>
-      {#if status === "streaming"}
+      {#if isStreaming()}
         <span class="st-chatMessage__pulse" aria-hidden="true"></span>
       {/if}
     </div>
@@ -173,7 +182,37 @@
     font-size: 0.875rem;
   }
 
-  .st-chatMessage--error .st-chatMessage__bubble {
+  .st-chatMessage--tool .st-chatMessage__bubble {
+    background: var(
+      --st-component-chatMessage-toolBackground,
+      var(--st-component-chatMessage-assistantBackground, var(--st-component-chat-assistantBubbleBackground, var(--st-semantic-surface-subtle, #f8fafc)))
+    );
+    color: var(
+      --st-component-chatMessage-toolText,
+      var(--st-component-chatMessage-assistantText, var(--st-component-chat-assistantBubbleText, var(--st-semantic-text-primary)))
+    );
+    border-color: var(
+      --st-component-chatMessage-toolBorder,
+      var(--st-semantic-border-subtle)
+    );
+    font-style: italic;
+  }
+
+  .st-chatMessage--pending .st-chatMessage__bubble {
+    border-color: var(
+      --st-component-chatMessage-pendingBorder,
+      var(--st-semantic-status-pending, #d97706)
+    );
+  }
+
+  .st-chatMessage--processing .st-chatMessage__bubble {
+    border-color: var(
+      --st-component-chatMessage-processingBorder,
+      var(--st-semantic-status-processing, #2563eb)
+    );
+  }
+
+  .st-chatMessage--failed .st-chatMessage__bubble {
     border-color: var(
       --st-component-chatMessage-errorBorder,
       var(--st-semantic-feedback-danger, #b91c1c)

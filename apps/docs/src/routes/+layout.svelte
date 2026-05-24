@@ -1,7 +1,7 @@
 <script lang="ts">
   import { page } from "$app/state";
   import "../app.css";
-  import { ChevronDown, ExternalLink } from "@lucide/svelte";
+  import { ChevronDown, ExternalLink, Globe } from "@lucide/svelte";
   import { ThemeProvider } from "@sentropic/design-system-svelte";
   import { sentTechTheme } from "@sentropic/design-system-themes";
   import {
@@ -19,6 +19,8 @@
 
   const componentGroups = buildComponentNavGroups();
   const breadcrumbs = $derived(resolveBreadcrumb(page.url.pathname));
+
+  let isOpen = $state(false);
 
   function isActive(href: string): boolean {
     const pathname = page.url.pathname;
@@ -61,6 +63,12 @@
   }
 </script>
 
+<svelte:window onclick={(e) => {
+  if (isOpen && e.target && !(e.target as Element).closest(".docs-locale-wrapper")) {
+    isOpen = false;
+  }
+}} />
+
 <ThemeProvider theme={sentTechTheme}>
   <div class="docs-shell">
     <header class="docs-header">
@@ -90,17 +98,41 @@
             {/if}
           </a>
         {/each}
-        <div class="docs-locale" role="group" aria-label="Langue">
+        <div class="docs-locale-wrapper">
           <button
             type="button"
-            aria-pressed={locale.value === "fr"}
-            onclick={() => (locale.value = "fr")}
-          >FR</button>
-          <button
-            type="button"
-            aria-pressed={locale.value === "en"}
-            onclick={() => (locale.value = "en")}
-          >EN</button>
+            class="docs-locale-trigger"
+            onclick={() => (isOpen = !isOpen)}
+            aria-expanded={isOpen}
+            aria-haspopup="true"
+          >
+            <Globe size={14} class="docs-locale-trigger-icon" />
+            <span>{locale.value.toUpperCase()}</span>
+            <ChevronDown size={12} class="docs-locale-trigger-chevron {isOpen ? 'rotated' : ''}" />
+          </button>
+
+          {#if isOpen}
+            <div class="docs-locale-menu" role="menu">
+              <button
+                type="button"
+                class="docs-locale-item"
+                class:active={locale.value === "fr"}
+                onclick={() => { locale.value = "fr"; isOpen = false; }}
+              >
+                <span class="locale-check">{#if locale.value === "fr"}✓{/if}</span>
+                <span>Français</span>
+              </button>
+              <button
+                type="button"
+                class="docs-locale-item"
+                class:active={locale.value === "en"}
+                onclick={() => { locale.value = "en"; isOpen = false; }}
+              >
+                <span class="locale-check">{#if locale.value === "en"}✓{/if}</span>
+                <span>English</span>
+              </button>
+            </div>
+          {/if}
         </div>
       </nav>
     </header>

@@ -65,7 +65,7 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 
 ## WP4 — Chat-UI primitives
 
-**Statut global** : 🔵 décision API prise, prêt à lancer.
+**Statut global** : 🟢 livré pour la tranche docs ciblée (API + documentation dédiée pour 6 primitives chat).
 
 **Décidé 2026-05-22** : **DS purement visuel**. ChatMessage expose props role/status + slot content. Le consommateur orchestre le rendu des blocks (markdown, code, tool I/O).
 
@@ -73,11 +73,12 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 |---|---|---|---|
 | Roadmap `docs/chat-ui-roadmap.md` | 🟢 | `721474e` | top 5 primitives identifiees |
 | API décidée : DS visuel | 🟢 | — | enveloppe seule, slot content |
-| ChatMessage | 🔵 | — | P0 |
-| ChatThread | 🔵 | — | P0, scroll + auto-scroll + aria-live |
-| ChatComposer | 🔵 | — | P0, textarea + slots actions |
-| StreamingMessage | 🔵 | — | P1, mirroir StreamMessage Sentropic |
-| MessageActions | 🔵 | — | P1, rangee IconButton |
+| ChatMessage | 🟢 | — | P0 |
+| ChatThread | 🟢 | — | P0, scroll + auto-scroll + aria-live |
+| ChatComposer | 🟢 | — | P0, textarea + slots actions |
+| MessageStatusBadge | 🟢 | — | P1, mappage status → badge |
+| StreamingMessage | 🟢 | — | P1, mirroir StreamMessage Sentropic |
+| MessageActions | 🟢 | — | P1, rangee IconButton |
 
 **Dependances** : aucune.
 **Parallelisable avec** : tous.
@@ -123,7 +124,7 @@ Detail dans `docs/known-issues-and-fixes.md`.
 
 ## WP7 — Audit DS large (37 références upstream, 5 clusters parallèles)
 
-**Statut global** : 🟡 v1 livrée (`88d70f6`, 17 findings sur 8 références) jugée sous-dimensionnée. **Relancée en v2 : 5 agents d'audit en parallèle, un par cluster d'axes.**
+**Statut global** : 🟡 relancée et consolidée en V2 (master dédié disponible), suivi d'implémentation WP7-B en cours.
 
 Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couverture complète des 37 références upstream `pbakaus/impeccable`.
 
@@ -131,12 +132,12 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 | Cluster | Références upstream | Statut | Sortie |
 |---|---|---|---|
-| A. Typography & writing | `typography`, `typeset`, `ux-writing`, `clarify`, `cognitive-load` | 🔵 prêt à lancer | `docs/ds-audit-typography.md` |
-| B. Color & contrast | `color-and-contrast`, `colorize`, `bolder`, `quieter` | 🔵 | `docs/ds-audit-color.md` |
-| C. Spatial & responsive | `spatial-design`, `layout`, `responsive-design`, `shape` | 🔵 | `docs/ds-audit-spatial.md` |
-| D. Motion & interaction | `motion-design`, `animate`, `interaction-design`, `delight`, `overdrive` | 🔵 | `docs/ds-audit-motion.md` |
-| E. Audit/critique/polish | `audit`, `critique`, `polish`, `harden`, `optimize`, `extract`, `distill`, `craft` | 🔵 | `docs/ds-audit-meta.md` |
-| F. Consolidateur | merge des 5 + dédupe vs `docs/known-issues-and-fixes.md` + priorisation P0/P1/P2 | ⚪ post-clusters | `docs/ds-audit-report.md` (master) |
+| A. Typography & writing | `typography`, `typeset`, `ux-writing`, `clarify`, `cognitive-load` | 🟡 en cours | `docs/ds-audit-typography.md` |
+| B. Color & contrast | `color-and-contrast`, `colorize`, `bolder`, `quieter` | 🟡 en cours | `docs/ds-audit-color.md` |
+| C. Spatial & responsive | `spatial-design`, `layout`, `responsive-design`, `shape` | 🟡 en cours | `docs/ds-audit-spatial.md` |
+| D. Motion & interaction | `motion-design`, `animate`, `interaction-design`, `delight`, `overdrive` | 🟡 en cours | `docs/ds-audit-motion.md` |
+| E. Audit/critique/polish | `audit`, `critique`, `polish`, `harden`, `optimize`, `extract`, `distill`, `craft` | 🟡 en cours | `docs/ds-audit-meta.md` |
+| F. Consolidateur | merge des 5 + dédupe vs `docs/known-issues-and-fixes.md` + priorisation P0/P1/P2 | 🟢 post-clusters | `docs/ds-audit-consolidated-v2.md` (master) |
 | Application des fixes critiques (P0) | — | ⚪ après master | commits atomiques au fil de l'eau |
 | Capacité "audit on push" via workflow GitHub | — | ⚪ post-MVP | hook CI |
 
@@ -144,18 +145,18 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 ## WP8 — Librairie maison `lint-ds` + knowledge base + skill multi-harness
 
-**Statut global** : 🟡 v0 scaffold WP8 orphelin (`packages/impeccable/dist`, sans source) à nettoyer. **Relancée en v2 : parité fonctionnelle large + knowledge base + skill multi-harness.**
+**Statut global** : 🟡 v1 scaffold WP8 actif (`packages/impeccable`), cible de revue verrouillée via `docs/wp8-multi-harness-target-review.md`.
 
 **Décidé 2026-05-22** : parité fonctionnelle large (~40-50 règles, ~10 axes) + knowledge base markdown sous `docs/principles/` (les principes Sent Tech) + skill multi-harness installable pour **Claude, Codex et Gemini** (squelette d'abord, puis étoffé). Architecture moteur : statique (PostCSS AST + regex + token lookup) en priorité, runtime (Playwright) en option pour ce qui ne se mesure pas statiquement.
 
 | Phase | Item | Statut | Notes |
 |---|---|---|---|
-| 1. Scaffold cœur | `packages/lint-ds/` (moteur, CLI, types, registry) | 🔵 | TypeScript, ESM, jsdom/PostCSS pour parser, sortie JSON+pretty |
-| 1. Scaffold cœur | 10-15 règles initiales bien choisies | 🔵 | mix de règles évidentes (no-bare-hex, contrast-aa, no-rail-with-rounded, z-index-hierarchy) |
-| 1. Knowledge base | `docs/principles/` (5-7 .md alignement Sent Tech) | 🔵 | typography, color, spatial, motion, ux-writing, interaction, responsive |
-| 1. Skill scaffold | `tools/skills/sent-tech-impeccable/` pour Claude | 🔵 | `SKILL.md` + reference + scripts entry |
+| 1. Scaffold cœur | `packages/impeccable/` (moteur, CLI, types, registry) | 🟢 | TypeScript, ESM, jsdom/PostCSS pour parser, sortie JSON+pretty |
+| 1. Scaffold cœur | 10-15 règles initiales bien choisies | 🔵 | mix de règles évidentes (`no-bare-hex`, `single-font`, `no-em-dash`, `side-tab-on-rounded`, `line-length-cap`, `touch-target-44`) |
+| 1. Knowledge base | `docs/principles/` (5-7 .md alignement Sent Tech) | 🟢 | typography, color, spatial, motion, ux-writing, interaction, responsive |
+| 1. Skill scaffold | `tools/skills/sent-tech-impeccable/` pour Claude | 🟢 | `SKILL.md` + reference + scripts entry |
 | 2. Extension règles | ~30-35 règles additionnelles au fil de WP7 | ⚪ | une règle par finding récurrent |
-| 2. Multi-harness | `.codex/` et `.gemini/` adapters | ⚪ | mirror du skill Claude pour autres harness |
+| 2. Multi-harness | `.codex/` et `.gemini/` adapters | 🟡 | cible de revue définie, implémentation suivante |
 | 3. Capacité différenciante | règles propres Sent Tech > upstream | ⚪ | post-parité |
 
 **Estimé** : 1 semaine pour Phase 1 (scaffold + 10-15 règles + knowledge base squelette + skill Claude), puis 3-4 semaines d'extension pilotée par WP7.
@@ -164,7 +165,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 ## WP8 — Module DS impeccable-équivalent (librairie maison, parallèle de WP7)
 
-**Statut global** : 🔵 prêt à lancer, parallélisable avec WP7.
+**Statut global** : 🟡 en alignement V1, prêt pour livraison incrémentale.
 
 **Décidé 2026-05-22** : **réimplémentation refactorée, parité fonctionnelle** sur un périmètre réduit. Pas une copie 1:1 des 27 règles upstream — on sélectionne les règles essentielles, on les écrit propres, on ajoute les règles Sent Tech (rail+arrondi, hiérarchie z-index, token-usage).
 
@@ -173,9 +174,9 @@ Objectif : shipper `@sentropic/design-system-impeccable` (workspace dans `packag
 | Item | Statut | Notes |
 |---|---|---|
 | Décision : réimplémentation refactorée parité fonctionnelle | 🟢 | scope réduit, ~10-15 règles bien choisies |
-| Squelette `packages/impeccable/` (workspace, package.json, build) | 🔵 | npm package + CLI binaire |
-| Architecture du moteur (Puppeteer vs JSDOM vs autre) | 🔵 | choisir, documenter dans le package README |
-| ~10-15 règles essentielles (parité fonctionnelle) | 🔵 | sélectionnées via lecture de l'upstream, pas blocage sur WP7 |
+| Squelette `packages/impeccable/` (workspace, package.json, build) | 🟢 | npm package + CLI binaire |
+| Architecture du moteur (Puppeteer vs JSDOM vs autre) | 🟢 | choisir, documenter dans le package README |
+| ~10-15 règles essentielles (parité fonctionnelle) | 🟡 | sélectionnées via lecture de l'upstream, pas blocage sur WP7 |
 | Règles Sent Tech spécifiques | 🔵 | rail+arrondi, z-index, token-usage |
 | Capacité différenciante (mieux qu'impeccable upstream) | ⚪ | post-parité |
 
@@ -192,13 +193,15 @@ A tout instant on peut tenir 3 a 4 agents en parallele sans conflit de fichiers.
 2. **WP8 librairie impeccable maison** — parallèle à WP7, démarre le squelette + architecture sans attendre.
 3. **WP6 fix-plan** — corrige les 3 bugs déjà connus en série (Toast/Alert, OverflowMenu, Menu).
 4. **WP5 Sparkline + BarChart** — démarrer les charts hand-rolled, premiers shippés dans la semaine.
-5. **WP4 ChatMessage + ChatThread** — démarrer les chat primitives.
+5. **WP4 ChatMessage + ChatThread** — docs dédiées livrées, stabilisation visuelle si besoin.
 
 WP7 et WP8 sont délibérément parallèles : WP7 audite ce qui existe, WP8 construit le moteur ; les deux convergent quand WP7 livre des règles affinées que WP8 intègre.
 
 ## Decisions ouvertes à trancher
 
-Aucune à ce stade. Les 4 décisions du 2026-05-22 sont consignées dans chaque WP. Prochaine décision attendue : choix des ~10-15 règles essentielles pour WP7-B (post-audit WP7-A).
+1. Validation finale de la cible WP8 de revue (commande + contract JSON).
+2. Implémentation immédiate des adapters multi-harness (`.codex` / `.gemini`) ou bascule en V1.
+3. Ordonnancement d’implantation des règles WP7-B (P0 puis P1).
 
 ## Hygiene de ce doc
 
