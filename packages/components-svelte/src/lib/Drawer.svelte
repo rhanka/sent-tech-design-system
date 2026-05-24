@@ -15,7 +15,7 @@
   };
 
   let {
-    open = false,
+    open = $bindable(false),
     title,
     description,
     side = "right",
@@ -28,17 +28,37 @@
   }: DrawerProps = $props();
 
   const classes = () => ["st-drawer", `st-drawer--${side}`, className].filter(Boolean).join(" ");
+
+  function close() {
+    open = false;
+    onclose?.();
+  }
+
+  function onBackdropClick(event: MouseEvent) {
+    if (event.target === event.currentTarget) {
+      close();
+    }
+  }
+
+  function onWindowKeydown(event: KeyboardEvent) {
+    if (event.key === "Escape" && open) {
+      event.preventDefault();
+      close();
+    }
+  }
 </script>
 
+<svelte:window onkeydown={onWindowKeydown} />
+
 {#if open}
-  <div class="st-drawer__backdrop">
+  <div class="st-drawer__backdrop" onclick={onBackdropClick} role="presentation">
     <aside {...rest} class={classes()} role="dialog" aria-modal="true" aria-label={title}>
       <header class="st-drawer__header">
         <div>
           <h2 class="st-drawer__title">{title}</h2>
           {#if description}<p class="st-drawer__description">{description}</p>{/if}
         </div>
-        <button class="st-drawer__close" type="button" aria-label={closeLabel} onclick={onclose}>
+        <button class="st-drawer__close" type="button" aria-label={closeLabel} onclick={close}>
           <span aria-hidden="true">x</span>
         </button>
       </header>

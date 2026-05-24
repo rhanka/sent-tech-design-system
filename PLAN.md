@@ -6,10 +6,10 @@
 
 ## Identité produit
 
-- Scope npm courant : `@sentropic/*` (v0.5.0 — Phase 4 batch 1+2+3+4+DataTable+DatePicker+FileUploader).
+- Scope npm courant : `@sentropic/design-system-tokens`, `@sentropic/design-system-themes`, `@sentropic/design-system-svelte` (v0.7.0 — Phase 4 complete, 55 composants).
 - Convention nommage : `@sentropic/design-system-{tokens,themes,svelte}` (préfixe `design-system-` pour réserver l'espace `@sentropic` à d'autres familles de packages futurs).
 - Évolution prévue : `@sentropic/design-system-svelte` reste le bundle complet ; ouverture future possible vers `@sentropic/design-system-svelte-core` + `@sentropic/design-system-svelte-{component}` (opt-in granulaire par composant).
-- Scope npm legacy : `@sent-tech/*` (dernier publish v0.2.0 le 2026-05-13, à déprécier post-publish v0.3.0).
+- Scope npm legacy : `@sent-tech/*` (déprécié après le publish `@sentropic/design-system-{tokens,themes,svelte}@0.3.0`).
 - Stack : Svelte 5, Tailwind v4, build Vite, publish via npm Trusted Publishing.
 - Inspiration : IBM Carbon. White-label / multi-tenant via theming runtime CSS variables.
 - Repo Git : `sent-tech-design-system` (nom de repo conservé pour l'instant).
@@ -21,8 +21,9 @@
 ## État actuel (synthèse)
 
 - Composants Svelte livrés : 55.
-- Consommateurs migrés : 3 (sentech-forge, spa-transpose-cv, sent-tech/ui).
-- Consommateurs Svelte connus restant à migrer : 2 (sent-tech/external/top-ai-ideas-fullstack/ui, nc-fullstack/ui).
+- Consommateurs DS `0.7.0` observés : sent-tech/ui, spa-transpose-cv/ui, openerp/apps/web, Sentropic/top-ai UI (`sent-tech/external/top-ai-ideas-fullstack/ui`).
+- Périmètre courant du suivi : repo design system uniquement.
+- Priorités consommateurs à suivre côté DS : `nc-fullstack/ui`, Sentropic/top-ai chat-ui, Onyxia theme, OpenERP web, spa-transpose-cv/ui.
 - Couverture vs Carbon : ~55 / ~55 composants. Phase 4 priorité haute + moyenne + basse 100 % livrées.
 
 ---
@@ -70,7 +71,7 @@ Périmètre : scope npm + dépendances internes + imports source + docs + workfl
 
 Composants présents dans Carbon, absents du DS, requis pour les consommateurs riches.
 
-### Priorité haute (chat Entropic + transpose-cv + nc-fullstack form-heavy)
+### Priorité haute (chat + transpose-cv + formulaires riches)
 
 - [x] DataTable — tri, pagination intégrée, sélection ligne, cellules custom (vs notre `Table` minimal) (DS PR Phase 4 DataTable).
 - [x] FileUploader — drag-drop, multi-fichiers, validation `maxSizeBytes`, liste retirable, type `FileUploadItem` exposé pour évolution progress (DS PR Phase 4 FileUploader).
@@ -111,19 +112,23 @@ Composants présents dans Carbon, absents du DS, requis pour les consommateurs r
 
 **Priorité basse Phase 4 = 100% livrée. Phase 4 globale 100 % terminée.**
 
-## Phase 5 — Migration des consommateurs Svelte restants
+## Phase 5 — Intégrations consommateur DS
 
-Pré-requis : Phase 3 livrée. Phase 4 partielle suffit selon les besoins de chaque app.
+Pré-requis : Phase 3 livrée. Phase 4 complète disponible via les packages `@sentropic/design-system-{tokens,themes,svelte}@0.7.0`.
 
 - [x] `sent-tech/ui` (site Sent Tech principal — distinct de Forge). Stack : Svelte 5 + SvelteKit + Vite 5. PR sent-tech #2 mergée : bridge thème via `app.html`+`app.css`+`ThemeProvider`, MissionForm (Input+Textarea+Button), ExportPanel (Select+Button+Link), AssetList (Card+Badge), OfferComposer (Select+MultiSelect+Button), routes harmonisées (Link/Button). A déclenché DS PR #13 fix bindable Input/Textarea/Select + release v0.4.1.
-- [ ] `sent-tech/external/top-ai-ideas-fullstack/ui` (chat conversationnel, ex « top-ai-ideas »). Stack : Svelte 5 + SvelteKit + Vite 6. Form-heavy + chat → priorité Phase 4 haute.
-- [ ] `nc-fullstack/ui` (NC Svelte gen-AI). Stack : Svelte 5 + SvelteKit + Vite 6.
-- [x] `spa-transpose-cv/ui` (Scalian transpose CV). Stack : Svelte 5 + SvelteKit + Vite 6. PR #16 mergée : bridge thème + TenantBuilderForm (Input/Button/Checkbox/Card) + ModelSelector (Card+radiogroup). Disclaimer + dropzones DOCX/CV laissés custom (FileUploader DS pas livré).
+- [x] `spa-transpose-cv/ui` (Scalian transpose CV). Stack : Svelte 5 + SvelteKit + Vite 6. DS `0.7.0` présent dans `ui/package.json`; composants DS observés dans UploadPage, SessionPage, TenantBuilderForm, ModelSelector et `ThemeProvider`. Repo local sale, donc ne pas conclure sur l'état PR sans vérif dédiée.
+- [x] `openerp/apps/web`. DS `0.7.0` présent dans `apps/web/package.json`; composants DS observés sur login, layout, register-passkey, admin users/roles/audit/settings/approvals. Repo local sale sur des fichiers API/tests, donc à vérifier avant de dire "ok" en release.
+- [x] `nc-fullstack/ui` — priorité. DS bumpé en `@sentropic/design-system-{tokens,themes,svelte}@^0.7.0`; `ui/src/routes/Input.svelte` garde le comportement inline (largeur dynamique) et le marquage des placeholders `[ ... ]` tout en utilisant `Input` DS. Vérif : `npm run check` échoue encore sur 167 erreurs / 42 warnings historiques hors `Input.svelte` (typage JS/TS legacy, imports `.ts`, etc.).
+- [ ] Sentropic/top-ai (`top-ai` == Sentropic dans ce suivi). `sent-tech/external/top-ai-ideas-fullstack/ui` consomme `@sentropic/design-system-{tokens,themes,svelte}@^0.7.0`; diff local sur `Toast.svelte` + `node_modules/` non suivi. Le thread Sentropic chat-ui en développement doit consommer le DS (`design-system-svelte` + thème `entropic.css`/contrat chat) et ne doit pas recréer de primitives visuelles.
+- [x] Onyxia theme. `@sentropic/design-system-themes` bumpé à `0.7.0`; `SENTROPIC_THEME_VERSION` par défaut `v0.7.0`; logo/favicon optionnels, `none` ou env absent => asset local neutre `/icons/home.svg` pour éviter le dragon. Vérif : `npm test` dans `helm-chart/examples/gke-ephemeral/theme` passe (19 tests).
+- [x] Documentation DS : `docs/chat-ui-contract.md` garde le contrat expérimental et ajoute le packet d'échange Sentropic/chat-ui <-> DS (packages, theme, inventaire composants, runtime schema, a11y, décisions de promotion).
+- [ ] Vérification release : maintenir `docs/release.md` aligné avec les versions publiées courantes.
 
 ## Phase 6 — Ménage
 
 - [x] `sentech-forge.tar.gz` (snapshot orphelin du 2026-04-26) supprimé.
-- [ ] Décider sort de `/home/antoinefa/src/top-ai-ideas` (vite_react_shadcn_ts, version React+Radix legacy — la nouvelle vit dans `sent-tech/external/top-ai-ideas-fullstack`).
+- [ ] Décider sort de `/home/antoinefa/src/top-ai-ideas` (React+Radix legacy, distinct du track actif Sentropic/top-ai).
 - [ ] Décider sort de `/home/antoinefa/src/scalian-transpose-cv` (pas un repo git, pas de `package.json` — orphelin).
 - [ ] `sentech-forge/PLAN.md` — plan SEO P0 daté 2026-02-23, quasi terminé sur le code mais cases pas cochées : valider/cocher les 6 items résiduels ou supprimer si obsolète.
 
@@ -132,7 +137,7 @@ Pré-requis : Phase 3 livrée. Phase 4 partielle suffit selon les besoins de cha
 ## Décisions ouvertes
 
 - **CSS vars** : prefix `--st-*` reste pour 0.3.0. À reconsidérer en v1.0.0 (renommage = breaking pour tous les consommateurs et tous les overrides).
-- **DS React** : pas de besoin identifié, tous les consommateurs sont Svelte. Le repo legacy `top-ai-ideas` (React+Radix) sera retiré en Phase 6, pas migré.
+- **DS React** : pas de besoin identifié à date, les consommateurs actifs sont Svelte. Le repo legacy React `/home/antoinefa/src/top-ai-ideas` est distinct du track actif Sentropic/top-ai et ne doit pas être confondu avec lui.
 - **Repo Git** : `sent-tech-design-system` conservé. Renommer le repo casserait les redirects GitHub vers les vieilles PRs/issues + remote URLs des dev locaux.
 
 ## Méta

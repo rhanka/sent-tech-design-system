@@ -1,11 +1,17 @@
 export { default as Accordion } from "./Accordion.svelte";
 export { default as Alert } from "./Alert.svelte";
+export { default as AreaChart } from "./AreaChart.svelte";
 export { default as AspectRatio } from "./AspectRatio.svelte";
 export { default as Badge } from "./Badge.svelte";
 export { default as Breadcrumb } from "./Breadcrumb.svelte";
 export { default as Button } from "./Button.svelte";
 export { default as Card } from "./Card.svelte";
 export { default as ChatMessage } from "./ChatMessage.svelte";
+export { default as ChatComposer } from "./ChatComposer.svelte";
+export { default as ChatThread } from "./ChatThread.svelte";
+export { default as MessageActions } from "./MessageActions.svelte";
+export { default as StreamingMessage } from "./StreamingMessage.svelte";
+export { default as MessageStatusBadge } from "./MessageStatusBadge.svelte";
 export { default as Checkbox } from "./Checkbox.svelte";
 export { default as CodeSnippet } from "./CodeSnippet.svelte";
 export { default as Combobox } from "./Combobox.svelte";
@@ -59,8 +65,11 @@ export { default as Toggletip } from "./Toggletip.svelte";
 export { default as Tooltip } from "./Tooltip.svelte";
 export { default as UnorderedList } from "./UnorderedList.svelte";
 export type { AccordionItem } from "./Accordion.svelte";
+export type { AreaChartDatum, AreaChartTone } from "./AreaChart.svelte";
 export type { BreadcrumbItem } from "./Breadcrumb.svelte";
 export type { ChatMessageRole, ChatMessageStatus } from "./ChatMessage.svelte";
+export type { MessageAction, MessageActionVariant } from "./MessageActions.svelte";
+export type { StreamingMessageEvent, StreamingMessageMode } from "./StreamingMessage.svelte";
 export type { ComboboxOption } from "./Combobox.svelte";
 export type {
   DataTableColumn,

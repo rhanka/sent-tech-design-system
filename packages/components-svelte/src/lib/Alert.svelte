@@ -43,7 +43,7 @@
     background: var(--st-component-alert-background, var(--st-semantic-surface-raised));
     border: 1px solid var(--st-component-alert-border, var(--st-semantic-border-subtle));
     border-left-width: 0.25rem;
-    border-radius: var(--st-component-alert-radius, 0);
+    border-radius: 0;
     color: var(--st-component-alert-text, var(--st-semantic-text-primary));
     display: flex;
     gap: var(--st-spacing-4, 1rem);

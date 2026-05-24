@@ -15,6 +15,38 @@ This contract is the review surface between Entropic and the design system:
 
 It is not a final component catalog. Components can move from `experimental` to `beta` only after Entropic exposes a settled API for message rendering, composer state, queue status, tool permissions, host adapters, and extension or webview modes.
 
+## Exchange Packet
+
+Sentropic/chat-ui and the design system should exchange these artifacts before component promotion:
+
+- `package contract`: chat-ui depends on `@sentropic/design-system-svelte`, `@sentropic/design-system-themes`, and `@sentropic/design-system-tokens` at `^0.7.0` or a pinned `0.7.x` release.
+- `theme contract`: chat-ui imports `@sentropic/design-system-themes/css/entropic.css` or wraps the app in `ThemeProvider` with `entropicTheme`, and sets `data-st-theme="entropic"` at the app shell boundary.
+- `component inventory`: list every chat surface as `DS primitive`, `chat-ui local component`, or `missing DS gap`.
+- `runtime schema`: provide sample payloads for streaming messages, tool calls, permission requests, checkpoints, errors, and retry states.
+- `a11y matrix`: keyboard path, focus return, live-region behavior, reduced-motion behavior, and labels for each interactive state.
+- `release decision`: for each local chat-ui component, decide `keep app-local`, `promote to experimental DS`, or `wait for another consumer`.
+
+## Ownership Split
+
+- Design system owns tokens, CSS variables, primitive controls, shell modes, spacing/radius/motion defaults, and accessibility baseline behavior.
+- Sentropic/chat-ui owns runtime state, streaming assembly, provider adapters, message persistence, tool execution, permission decisions, checkpoints, and product copy.
+- Design system should not absorb provider-specific data models, tool names, workspace orchestration, or agent lifecycle logic.
+- Chat-ui should not recreate Button/Input/Menu/Toast/Drawer/Tabs/DataTable-like primitives. Missing primitives must be reported as DS gaps with a concrete use case.
+
+## Handoff Checklist
+
+- Verify all hardcoded colors, radii, shadows, and focus styles are either removed or mapped to `--st-*` variables.
+- Verify composer, message list, tool-call cards, permission cards, citations, attachments, and checkpoint UI each declare their DS dependency or gap.
+- Provide one smoke route showing: user message, assistant streaming, tool running, permission requested, tool completed, checkpoint requested, and failed message.
+- Provide host-mode expectations for `floating`, `docked`, `sidepanel`, and `embedded`; choose the default mode before API freeze.
+- Confirm dark/light and white-label behavior with the Entropic theme and one override tenant.
+
+## Recommended Decisions
+
+- Default shell mode: `docked` for the full Sentropic web app, `sidepanel` for browser/extension surfaces, `embedded` only for product-specific inline assistants.
+- Message API: exchange normalized `ChatMessage` + `ChatRuntimeEvent` objects at the DS boundary; keep provider-specific payloads behind chat-ui adapters.
+- Promotion rule: promote only generic visual surfaces after two concrete consumers need them. Keep orchestration-heavy pieces local to chat-ui.
+
 ## Modes
 
 - `floating`: detached panel with launcher button.

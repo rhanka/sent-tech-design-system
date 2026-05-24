@@ -18,3 +18,9 @@ coverage/
 .graphify/branch.json
 .graphify/worktree.json
 .graphify/cache/
+
+# Agent & CLI states
+.gemini/
+.agents/
+.antigravitycli/
+.claude/

@@ -289,6 +289,66 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "ChatComposer",
+    slug: "chat-composer",
+    status: "documented",
+    category: "form",
+    description: {
+      fr: "Barre de rédaction avec slots d’actions et envoi/arrêt.",
+      en: "Composer with action slots and send/stop handling."
+    }
+  },
+  {
+    name: "ChatMessage",
+    slug: "chat-message",
+    status: "documented",
+    category: "form",
+    description: {
+      fr: "Bulle de message visuelle avec rôles et statut.",
+      en: "Visual chat message bubble with role and status."
+    }
+  },
+  {
+    name: "ChatThread",
+    slug: "chat-thread",
+    status: "documented",
+    category: "form",
+    description: {
+      fr: "Liste de messages scrollable avec auto-scroll et état vide.",
+      en: "Scrollable message list with auto-scroll and empty-state."
+    }
+  },
+  {
+    name: "MessageStatusBadge",
+    slug: "message-status-badge",
+    status: "documented",
+    category: "action",
+    description: {
+      fr: "Badge de statut de message basé sur les niveaux pending/processing/completed/failed.",
+      en: "Message status badge mapped to pending/processing/completed/failed."
+    }
+  },
+  {
+    name: "MessageActions",
+    slug: "message-actions",
+    status: "documented",
+    category: "action",
+    description: {
+      fr: "Rangée d’actions d’un message avec boutons icône et overflow optionnel.",
+      en: "Message action row with icon buttons and optional overflow."
+    }
+  },
+  {
+    name: "StreamingMessage",
+    slug: "streaming-message",
+    status: "documented",
+    category: "form",
+    description: {
+      fr: "Bulle assistant avec affichage d’événements de streaming (deltas, outils, permissions).",
+      en: "Assistant bubble with streaming event rendering (deltas, tools, permissions)."
+    }
+  },
+  {
     name: "Toggle",
     slug: "toggle",
     status: "stub",
@@ -564,6 +624,17 @@ export const COMPONENTS: ComponentEntry[] = [
   },
 
   // Data
+  {
+    name: "AreaChart",
+    slug: "area-chart",
+    status: "documented",
+    category: "data",
+    groupSlug: "area-chart",
+    description: {
+      fr: "Graphique d’aire pour visualiser des données temporelles ou numériques.",
+      en: "Area chart to visualize temporal or numeric data."
+    }
+  },
   {
     name: "Badge",
     slug: "badge",
