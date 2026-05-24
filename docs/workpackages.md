@@ -40,6 +40,7 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 |---|---|---|---|
 | Sidebar rectangulaire actif + densite groupes | 🟢 | `15d9690`, `ce3bfdc`, `dbdd1be` | |
 | Header docs aligne contrat (logo SENT + langue) | 🟢 | `94e5fce`, `45dd0c8`, `defb1b7` | |
+| Reprise header docs publie + garde contractuelle | 🟢 | commit courant | Wordmark SENT officiel, pas de sous-marque visible, compte icone/popover, burger mobile droite, test `header-contract` |
 | Home i18n complete | 🟢 | `55781c1`, `40b4b98` | catalogue descriptions bilingues |
 | Plan-completion hero shelf + contexte demos | 🟢 | `824a2b7` | |
 | Re-passe `/components/overlays` | ⚪ | — | bloque par WP6 (z-index Toast / OverflowMenu) |

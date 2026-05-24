@@ -2,7 +2,7 @@
   background: #f6f8fb;
   color: var(--st-semantic-text-primary, #0f172a);
   font-family: var(--st-font-sans, Inter, ui-sans-serif, system-ui, sans-serif);
-  --docs-header-height: 4rem;
+  --docs-header-height: 5rem;
   --docs-sidebar-width: 19.5rem;
   --docs-accent: #0043ce;
   --docs-ink: #0f172a;
@@ -47,7 +47,7 @@ select {
   border-bottom: 1px solid var(--docs-line);
   display: grid;
   gap: 1rem;
-  grid-template-columns: minmax(14rem, 18rem) minmax(0, 1fr) auto;
+  grid-template-columns: minmax(7rem, 12rem) minmax(0, 1fr) auto;
   min-height: var(--docs-header-height);
   padding: 0 1.5rem;
   position: sticky;
@@ -70,30 +70,13 @@ select {
 }
 
 .docs-brand-mark {
-  aspect-ratio: 1;
   border-radius: 0;
   display: inline-block;
-  flex: 0 0 2rem;
+  flex: 0 0 auto;
   height: 2rem;
-  width: 2rem;
-}
-
-.docs-brand-copy {
-  display: grid;
-  gap: 0.05rem;
-  min-width: 0;
-}
-
-.docs-brand-name {
-  font-size: 0.95rem;
-  font-weight: 750;
-  line-height: 1.1;
-}
-
-.docs-brand-product {
-  color: var(--docs-muted);
-  font-size: 0.78rem;
-  line-height: 1.1;
+  max-width: 7rem;
+  object-fit: contain;
+  width: auto;
 }
 
 .docs-top-nav,
@@ -117,7 +100,7 @@ select {
   font-size: 0.9rem;
   line-height: 1;
   padding: 0.38rem 0.75rem;
-  border-bottom: 3px solid transparent;
+  border-bottom: 2px solid transparent;
   text-decoration: none;
   white-space: nowrap;
   transition: all var(--st-motion-fast, 120ms) ease;
@@ -153,7 +136,7 @@ select {
 }
 
 .docs-top-nav a[aria-current="page"] {
-  background: #eef4fb;
+  background: transparent;
   color: var(--docs-ink);
   border-bottom-color: var(--docs-accent);
   font-weight: 650;
@@ -275,35 +258,9 @@ select {
   font-size: 0.75rem;
 }
 
-/* --- Premium Auth & Header Shell Sync (WP7) --- */
 .docs-auth-wrapper {
   position: relative;
   display: inline-block;
-}
-
-.docs-signin-btn {
-  align-items: center;
-  background: var(--docs-accent, #0043ce);
-  border: none;
-  border-radius: 0.25rem;
-  color: #ffffff;
-  cursor: pointer;
-  display: inline-flex;
-  font-family: inherit;
-  font-size: 0.8rem;
-  font-weight: 650;
-  gap: 0.45rem;
-  min-height: 2rem;
-  padding: 0.35rem 0.75rem;
-  transition: background-color var(--st-motion-fast, 120ms) ease;
-}
-
-.docs-signin-btn:hover {
-  background: #002d9c;
-}
-
-.docs-signin-btn-icon {
-  flex: 0 0 auto;
 }
 
 .docs-auth-trigger {
@@ -311,7 +268,7 @@ select {
   justify-content: center;
   background: var(--st-semantic-surface-subtle, #f1f5f9);
   border: 1px solid var(--st-semantic-border-subtle, #e2e8f0);
-  border-radius: 50%;
+  border-radius: 0.25rem;
   color: var(--docs-ink, #0f172a);
   cursor: pointer;
   display: inline-flex;
@@ -426,6 +383,14 @@ select {
 
 .docs-auth-popover-item:hover {
   background: rgb(239 68 68 / 0.06);
+}
+
+.docs-auth-popover-item--primary {
+  color: var(--docs-accent, #0043ce);
+}
+
+.docs-auth-popover-item--primary:hover {
+  background: rgb(0 67 206 / 0.06);
 }
 
 /* --- Burger & Responsive Mobile Nav Drawer (WP7) --- */
@@ -1107,9 +1072,18 @@ select {
   }
 
   .docs-header {
+    align-items: center;
     gap: 0.5rem;
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr) auto;
     padding: 0.75rem 1rem;
+    position: static;
+  }
+
+  .docs-mobile-menu-trigger {
+    justify-self: end;
+  }
+
+  .docs-mobile-nav {
     position: static;
   }
 

@@ -78,12 +78,8 @@
 <ThemeProvider theme={sentTechTheme}>
   <div class="docs-shell">
     <header class="docs-header">
-      <a class="docs-brand" href="/" aria-label="Sent Tech Design System">
-        <img class="docs-brand-mark" src="/SENT-logo-squared.svg" alt="" aria-hidden="true" />
-        <span class="docs-brand-copy">
-          <span class="docs-brand-name">SENT-tech</span>
-          <span class="docs-brand-product">Design System</span>
-        </span>
+      <a class="docs-brand" href="/" aria-label="SENT">
+        <img class="docs-brand-mark" src="/SENT-logo.svg" alt="SENT" />
       </a>
 
       <nav class="docs-top-nav" aria-label="Documentation principale">
@@ -143,30 +139,37 @@
         </div>
 
         <div class="docs-auth-wrapper">
-          {#if !isLoggedIn}
-            <button
-              type="button"
-              class="docs-signin-btn"
-              onclick={() => (isLoggedIn = true)}
-            >
-              <LogIn size={13} class="docs-signin-btn-icon" />
-              <span>{locale.value === "fr" ? "Connexion" : "Sign In"}</span>
-            </button>
-          {:else}
-            <button
-              type="button"
-              class="docs-auth-trigger"
-              onclick={() => (isAuthOpen = !isAuthOpen)}
-              aria-expanded={isAuthOpen}
-              aria-haspopup="true"
-              aria-label="Profil utilisateur"
-            >
-              <User size={15} class="docs-auth-avatar-icon" />
+          <button
+            type="button"
+            class="docs-auth-trigger"
+            onclick={() => (isAuthOpen = !isAuthOpen)}
+            aria-expanded={isAuthOpen}
+            aria-haspopup="menu"
+            aria-label={isLoggedIn
+              ? locale.value === "fr" ? "Mon compte (connecté)" : "My account (signed in)"
+              : locale.value === "fr" ? "Se connecter" : "Sign in"}
+            title={isLoggedIn
+              ? locale.value === "fr" ? "Mon compte (connecté)" : "My account (signed in)"
+              : locale.value === "fr" ? "Se connecter" : "Sign in"}
+          >
+            <User size={15} class="docs-auth-avatar-icon" />
+            {#if isLoggedIn}
               <span class="docs-auth-badge" aria-label="Connecté"></span>
-            </button>
+            {/if}
+          </button>
 
-            {#if isAuthOpen}
-              <div class="docs-auth-popover" role="menu">
+          {#if isAuthOpen}
+            <div class="docs-auth-popover" role="menu">
+              {#if !isLoggedIn}
+                <button
+                  type="button"
+                  class="docs-auth-popover-item docs-auth-popover-item--primary"
+                  onclick={() => { isLoggedIn = true; isAuthOpen = false; }}
+                >
+                  <LogIn size={13} />
+                  <span>{locale.value === "fr" ? "Se connecter" : "Sign in"}</span>
+                </button>
+              {:else}
                 <div class="docs-auth-user-info">
                   <span class="docs-auth-user-name">Jean-Michel Sentropic</span>
                   <span class="docs-auth-user-email">jm.sentropic@sent-tech.ca</span>
@@ -179,10 +182,10 @@
                   onclick={() => { isLoggedIn = false; isAuthOpen = false; }}
                 >
                   <LogOut size={13} />
-                  <span>{locale.value === "fr" ? "Se déconnecter" : "Sign Out"}</span>
+                  <span>{locale.value === "fr" ? "Se déconnecter" : "Sign out"}</span>
                 </button>
-              </div>
-            {/if}
+              {/if}
+            </div>
           {/if}
         </div>
       </nav>
