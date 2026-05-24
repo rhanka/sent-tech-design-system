@@ -53,6 +53,7 @@ function printGlobalHelp() {
     `  design <commande> [options] [cible/feature]\n\n` +
     `\x1b[1mCOMMANDES\x1b[0m\n` +
     `  \x1b[1m\x1b[32minit\x1b[0m                  Configuration stratégique de marque et extraction de tokens.\n` +
+    `  \x1b[1m\x1b[32maudit <target>\x1b[0m        Alias V1 strict de check --tech: AuditReport JSON + code retour contractuel.\n` +
     `  \x1b[1m\x1b[32mbuild <feature>\x1b[0m       Proposition ergonomique amont et génération de code (craft).\n` +
     `  \x1b[1m\x1b[32mcheck <target>\x1b[0m        Diagnostics techniques déterministes et heuristiques humaines.\n` +
     `  \x1b[1m\x1b[32malign <target>\x1b[0m        Calibrage et mise en conformité des Fondations & Système physiques.\n` +
@@ -108,6 +109,20 @@ function printCheckHelp() {
     `  design check index.html\n` +
     `  design check https://example.com --tech\n` +
     `  design check "<div>hex bruts: #ff0000</div>" --human\n`
+  );
+}
+
+function printAuditHelp() {
+  process.stderr.write(
+    `\x1b[1m\x1b[36mCommand: design audit <target>\x1b[0m\n` +
+    `Exécute l'audit technique déterministe V1 et retourne le rapport JSON AuditReport.\n\n` +
+    `\x1b[1mCONTRAT\x1b[0m\n` +
+    `  stdout : JSON brut AuditReport\n` +
+    `  stderr : résumé technique lisible\n` +
+    `  codes : 0 aucun finding, 1 findings détectés, 2 erreur d'exécution\n\n` +
+    `\x1b[1mEXEMPLES\x1b[0m\n` +
+    `  design audit index.html\n` +
+    `  design audit https://example.com\n`
   );
 }
 
@@ -457,6 +472,29 @@ async function handleCheck(args: string[]) {
   }
 }
 
+async function handleAudit(args: string[]) {
+  if (args.includes("-h") || args.includes("--help")) {
+    printAuditHelp();
+    process.exit(0);
+  }
+
+  const targetRaw = args.find(arg => !arg.startsWith("-"));
+
+  if (!targetRaw) {
+    process.stderr.write(
+      `\x1b[1m\x1b[31mErreur :\x1b[0m Veuillez spécifier une cible (fichier local, URL ou code HTML brut) pour l'audit.\n` +
+      `Exemple : design audit index.html\n`
+    );
+    process.exit(2);
+  }
+
+  const target = resolveTarget(targetRaw);
+  const report = await audit(target);
+  process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
+  process.stderr.write(`${prettySummary(report.findings, report.durationMs)}\n`);
+  process.exit(report.findings.length === 0 ? 0 : 1);
+}
+
 async function handleAlign(args: string[]) {
   if (args.includes("-h") || args.includes("--help")) {
     printAlignHelp();
@@ -655,6 +693,9 @@ async function main() {
     case "init":
       await handleInit(remainingArgs);
       break;
+    case "audit":
+      await handleAudit(remainingArgs);
+      break;
     case "build":
       await handleBuild(remainingArgs);
       break;
@@ -679,4 +720,3 @@ main().catch((error: Error) => {
   process.stderr.write(`impeccable-sent-tech: ${error.message}\n`);
   process.exit(2);
 });
-

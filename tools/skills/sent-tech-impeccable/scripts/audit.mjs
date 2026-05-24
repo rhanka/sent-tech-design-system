@@ -62,7 +62,9 @@ if (!cliPath) {
 
 const isNodeFile = cliPath.endsWith(".js");
 const command = isNodeFile ? "node" : cliPath;
-const cliArgs = isNodeFile ? [cliPath, target, ...forwardedArgs] : [target, ...forwardedArgs];
+const cliArgs = isNodeFile
+  ? [cliPath, "audit", target, ...forwardedArgs]
+  : ["audit", target, ...forwardedArgs];
 
 const result = spawnSync(command, cliArgs, {
   cwd: repoRoot,

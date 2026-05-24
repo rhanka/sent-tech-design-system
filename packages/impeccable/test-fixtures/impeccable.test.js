@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert";
-import { execSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { existsSync, readFileSync, writeFileSync, rmSync } from "node:fs";
 import { resolve } from "node:path";
 import { audit } from "../dist/index.js";
@@ -13,6 +13,28 @@ test("audit inline html successfully", async () => {
   assert.ok(report);
   assert.ok(report.target);
   assert.ok(Array.isArray(report.findings));
+});
+
+test("cli supports the WP8 design audit contract", () => {
+  const cliPath = resolve(import.meta.dirname || "./test-fixtures", "../dist/cli.js");
+  const result = spawnSync(
+    process.execPath,
+    [cliPath, "audit", "<button style='width: 24px; height: 24px'>x</button>"],
+    { encoding: "utf-8" }
+  );
+
+  assert.strictEqual(result.status, 1);
+  const report = JSON.parse(result.stdout);
+  assert.strictEqual(report.target.kind, "html");
+  assert.ok(Array.isArray(report.findings));
+  assert.ok(report.findings.some((finding) => finding.ruleId === "touch-target-44"));
+  assert.match(result.stderr, /impeccable-sent-tech:/);
+});
+
+test("package exposes the short design binary", () => {
+  const packageJsonPath = resolve(import.meta.dirname || "./test-fixtures", "../package.json");
+  const manifest = JSON.parse(readFileSync(packageJsonPath, "utf-8"));
+  assert.strictEqual(manifest.bin.design, "./dist/cli.js");
 });
 
 test("cli init command in non-interactive mode creates PRODUCT.md", () => {
@@ -36,7 +58,7 @@ test("cli init command in non-interactive mode creates PRODUCT.md", () => {
 
   try {
     // Lancer la CLI avec init et --non-interactive
-    execSync(`node ${cliPath} init --non-interactive`, { stdio: "pipe" });
+    execFileSync(process.execPath, [cliPath, "init", "--non-interactive"], { stdio: "pipe" });
     
     // Vérifier que PRODUCT.md existe et contient le registre par défaut
     assert.ok(existsSync(tempProductPath));
