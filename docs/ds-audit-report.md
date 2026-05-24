@@ -4,6 +4,8 @@ Date : 2026-05-22
 Source : skill `pbakaus/impeccable` (commands + CLI `npx impeccable detect`)
 Référence : `docs/impeccable-roadmap.md`, `docs/known-issues-and-fixes.md`
 
+> Note : ce rapport correspond à la V1 de consolidation. La source de vérité opérationnelle de WP7 est désormais `docs/ds-audit-consolidated-v2.md`.
+
 ## Méthodologie
 
 ### Commands utilisées

@@ -8,6 +8,9 @@ const copy = {
     overviewBody:
       "La V1 expose des tokens stables, un compilateur de thèmes runtime/build-time et des primitives Svelte prêtes pour Forge et Entropic.",
     components: "Composants",
+    areaChartTitle: "AreaChart",
+    areaChartIntro: "Graphique d'aire interactif pour visualiser des séries de données temporelles ou numériques avec lissage optionnel et différentes tonalités.",
+    areaChartKicker: "Composant · Visualisation",
     buttonTitle: "Button",
     buttonIntro: "Action principale, secondaire, fantôme ou destructive.",
     iconButtonTitle: "IconButton",
@@ -109,7 +112,10 @@ const copy = {
       "Mapping CSS ou runtime depuis les variables sémantiques existantes.",
     contractChatUiTitle: "Chat UI Sentropic",
     contractChatUiBody:
-      "Contrat `entropicTheme`, tokens chat et styles consommables sans fork produit."
+      "Contrat `entropicTheme`, tokens chat et styles consommables sans fork produit.",
+    cliSectionTitle: "CLI `design` & Audit Visuel",
+    cliSectionIntro: "La CLI `@sentropic/design-system-skills` est un outil en ligne de commande (CLI) autonome en TypeScript/NodeJS sous licence **MIT**. Elle permet d'assurer la conformité visuelle et l'accessibilité stricts du code directement en local ou en intégration continue (CI/CD).",
+    cliSectionQuestion: "**Note didactique :** Il s'agit d'une CLI locale exécutable via `npx` (ou scripts NPM). Elle ne dépend d'aucun service cloud pour son moteur technique (`--tech`), garantissant une rapidité instantanée et une confidentialité totale du code source. Pour les diagnostics qualitatifs fins (`--human`), elle s'interface sous forme de contexte structuré pour alimenter des agents de codage comme Antigravity ou Claude Code."
   },
   en: {
     title: "Sent Tech Design System",
@@ -118,6 +124,9 @@ const copy = {
     overviewBody:
       "V1 exposes stable tokens, a runtime/build-time theme compiler, and Svelte primitives ready for Forge and Entropic.",
     components: "Components",
+    areaChartTitle: "AreaChart",
+    areaChartIntro: "Interactive area chart to visualize temporal or numeric data series with optional smoothing and different color tones.",
+    areaChartKicker: "Component · Visualization",
     buttonTitle: "Button",
     buttonIntro: "Primary, secondary, ghost, or destructive action.",
     iconButtonTitle: "IconButton",
@@ -217,7 +226,10 @@ const copy = {
       "CSS or runtime mapping from existing semantic variables.",
     contractChatUiTitle: "Sentropic Chat UI",
     contractChatUiBody:
-      "`entropicTheme` contract, chat tokens, and consumable styles without product fork."
+      "`entropicTheme` contract, chat tokens, and consumable styles without product fork.",
+    cliSectionTitle: "`design` CLI & Visual Audit",
+    cliSectionIntro: "The `@sentropic/design-system-skills` CLI is a standalone TypeScript/NodeJS command line tool under the **MIT** license. It allows developers to enforce strict visual compliance and accessibility directly in local environments or during continuous integration (CI/CD).",
+    cliSectionQuestion: "**Didactic note:** This is a local CLI executable via `npx` (or NPM scripts). It does not rely on any cloud service for its technical scanner (`--tech`), ensuring instant execution and absolute code privacy. For advanced reviews (`--human`), it can interface with coding agents like Antigravity or Claude Code."
   }
 } as const;
 

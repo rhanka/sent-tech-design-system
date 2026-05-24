@@ -66,9 +66,9 @@ export const foundation = {
   },
   z: {
     header: 50,
+    toast: 60,
     overlay: 80,
-    modal: 90,
-    toast: 100,
+    modal: 100,
     chat: 110
   }
 } as const satisfies TokenTree;

@@ -45,7 +45,7 @@ Release commits must include the current portable `.graphify` artifacts: `graph.
 
 The release tag must match every publishable package version.
 
-For `v0.2.0`, these manifests must all contain `"version": "0.2.0"`:
+For `v0.7.0`, these manifests must all contain `"version": "0.7.0"`:
 
 - `packages/tokens/package.json`
 - `packages/themes/package.json`
@@ -74,8 +74,8 @@ Publish by pushing `main`, then creating and pushing a tag:
 
 ```bash
 git push origin main
-git tag v0.2.0
-git push origin v0.2.0
+git tag v0.7.0
+git push origin v0.7.0
 ```
 
 The workflow publishes in dependency order:
@@ -94,9 +94,9 @@ After publication, replace Forge local file dependencies with npm versions:
 
 ```bash
 npm install \
-  @sentropic/design-system-tokens@0.2.0 \
-  @sentropic/design-system-themes@0.2.0 \
-  @sentropic/design-system-svelte@0.2.0
+  @sentropic/design-system-tokens@0.7.0 \
+  @sentropic/design-system-themes@0.7.0 \
+  @sentropic/design-system-svelte@0.7.0
 ```
 
 Keep `svelte` installed in consuming apps. `@sentropic/design-system-svelte` declares Svelte as a peer dependency.

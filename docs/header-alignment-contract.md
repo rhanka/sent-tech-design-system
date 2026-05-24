@@ -8,10 +8,11 @@ Perimetre: contrat visuel et fonctionnel du header partage entre toutes les surf
 |------------------|--------------------------------------------------------------------------|
 | Famille          | Un seul contrat commun. Pas de variante `app shell` pour l'instant.      |
 | Reference visuelle | Etat blanc de `sent-tech.ca/#blog`. Le hero transparent est une variation de fond, pas une autre famille. |
-| Logo             | Logo SENT partout en marque parente, sous-titre produit a droite (`Design System`, `Sentropic`, `NC`). |
+| Logo             | Logo SENT officiel uniforme partout. La sous-marque produit (`Design System`, `Sentropic`, `NC`) apparait en breadcrumb ou sous-titre discret hors header, pas dans le logo lui-meme. |
+| Favicon          | `SENT-logo-squared.svg` sur toutes les surfaces. Pas de favicon dedie par produit. |
 | Zone droite      | `Langue` visible partout. `Connexion` uniquement sur les surfaces avec authentification. |
-| Burger mobile    | Toujours a droite. Pas de variante gauche pour declencher un rail applicatif. |
-| Nav centrale     | Contextuelle par surface. Seuls le pattern visuel (typo, espacement, alignement, hover) et le slot horizontal sont partages. |
+| Burger mobile    | Toujours à droite (validé). Uniforme sur toutes les surfaces publiques et applicatives. Les rails applicatifs latéraux (ex: NC) sont ouverts par un contrôle interne à la page. |
+| Nav centrale     | Contextuelle par surface. Seuls le pattern visuel (typo, espacement, alignement, hover) et le slot horizontal sont partages. Libelles par surface a valider. |
 
 ## Anatomie
 
@@ -25,8 +26,8 @@ En desktop, les trois zones s'alignent sur une seule ligne. En mobile, le centre
 
 ## Tokens et metriques
 
-- Hauteur standard desktop: `4rem` (64px). Variable: `--sent-header-height`.
-- Hauteur standard mobile (<640px): `3.5rem` (56px) si la nav centrale tient encore en haut, sinon header en flux normal (`position: static`) et hauteur naturelle.
+- Hauteur standard desktop: `5rem` (80px). Variable: `--sent-header-height`. Aligne sur `www.sent-tech.ca` (`h-20` Tailwind). Le docs actuel est a `4rem` et doit migrer.
+- Hauteur standard mobile (<640px): `4rem` (64px) si la nav centrale tient encore en haut, sinon header en flux normal (`position: static`) et hauteur naturelle.
 - Padding horizontal: `1.5rem` desktop, `1rem` mobile.
 - Fond `sticky-blanc`: `rgb(255 255 255 / 0.96)` avec `border-bottom: 1px solid var(--sent-border-subtle, #e2e8f0)`.
 - Fond `hero-transparent`: transparent jusqu'au depart du hero, transition `background-color 200ms ease` au scroll vers `sticky-blanc`. Le contour, la typo et le layout restent identiques.
@@ -34,21 +35,28 @@ En desktop, les trois zones s'alignent sur une seule ligne. En mobile, le centre
 
 ## Logo
 
-Structure standard:
+Structure standard, uniforme sur toutes les surfaces:
 
 ```
-[Mark SENT] [Nom SENT-tech]
-            [Sous-titre produit]
+[Logo SENT officiel]
 ```
 
-- `Mark SENT` carre `2rem`, fond ink `#0f172a` ou logo officiel SENT, contraste suffisant sur fond clair et fond sombre transitoire.
-- `Nom SENT-tech` `0.95rem` `font-weight: 750`.
-- `Sous-titre produit` `0.78rem`, couleur `--sent-text-muted`. Texte different par surface (`Design System`, `Sentropic`, `NC`, etc.). Optionnel sur le site principal.
-- Tout est dans un `<a>` qui pointe vers le point d'entree du produit local.
+- Asset: `SENT-logo.svg` (wordmark complet) ou `SENT-logo.png` selon dispo locale, hauteur `2rem` desktop / `1.75rem` mobile.
+- Sur fond transparent du hero (variante `hero-transparent`), filtre `brightness(0) invert(1)` pour passer en blanc; sur fond `sticky-blanc`, couleur native.
+- Le logo est dans un `<a>` qui pointe vers le point d'entree du produit local.
+- **Intégrité Visuelle du Logo** : Il est strictement interdit d'appliquer un rognage arrondi (`border-radius`) ou un recadrage sur l'icône ou le wordmark de marque SENT. Le logo conserve ses proportions rectangulaires ou carrées d'origine sans aucune altération de ses angles.
+- **Pas de sous-titre produit dans le header**: la sous-marque (`Design System`, `Sentropic`, `NC`) apparait dans le breadcrumb directement sous le header ou dans le titre de page, jamais accole au logo. Le but est que toutes les surfaces aient un header visuellement identique au niveau brand.
+
+### Favicon
+
+`SENT-logo-squared.svg` sur toutes les surfaces, declare via `<link rel="icon" href="/SENT-logo-squared.svg" type="image/svg+xml" />` dans le `app.html` / `index.html` correspondant. Pas de favicon `Design System` ou `Sentropic` dedie.
 
 ## Nav centrale
 
-- Pattern partage: liens horizontaux, gap `0.25rem`, padding `0.65rem 0.75rem` par item, `border-radius: 0.375rem`, hover fond `--sent-surface-subtle`, etat actif `background: var(--sent-action-soft); color: var(--sent-text-accent); font-weight: 650;`.
+- **Pattern de style strict (Validé)** :
+  - **Forme** : Style strictement carré, sans aucun arrondi (`border-radius: 0`).
+  - **État Sélectionné / Actif** : L'item sélectionné est mis en valeur de manière élégante par un **soulignement** (bordure inférieure d'accent colorée de 2px, `border-bottom: 2px solid var(--st-semantic-action-accent, #2563eb)`).
+  - Hover : Léger fond translucide `--sent-surface-subtle` sans arrondi.
 - Largeur des libelles: courts, un seul mot ou deux quand possible.
 - Le contenu de la nav est defini par chaque surface. Pas de cross-link inter-produits dans la nav centrale au moment de ce contrat - eventuellement ajoute plus tard via un dropdown `Produits SENT` dans la zone droite.
 
@@ -67,8 +75,11 @@ Ordre canonique de gauche a droite:
 
 1. `Version` (optionnel) - badge compact pour les surfaces qui exposent un numero de version pertinent (Design System, Sentropic).
 2. `Liens utilitaires externes` (optionnels) - typiquement un lien vers le site principal et/ou GitHub.
-3. `Langue` (obligatoire) - selecteur ou bouton-bascule FR/EN. Visible sur toutes les surfaces.
-4. `Connexion` (conditionnelle) - bouton ou avatar utilisateur. N'apparait que sur les surfaces avec authentification.
+3. `Langue` (obligatoire) - Sélecteur sous forme de menu popover dropdown (Globe + Chevron) assurant l'évolutivité multi-langues. Visible sur toutes les surfaces.
+4. `Connexion / Compte` (conditionnelle) - Système orienté **icône dynamique + menu popover** (sans label textuel visible dans le header). 
+   *   **Icône dynamique** : Varie selon l'état d'authentification (ex: icône `User` standard si non connecté ; avatar/pastille utilisateur avec badge check ou pastille d'activité si connecté).
+   *   **Popover de compte** : Au clic sur l'icône, déploie un popover contenant les actions contextuelles (ex: "Se connecter", "S'inscrire" si anonyme ; "Mon profil", "Administration", "Se déconnecter" si connecté).
+   *   **Accessibilité (A11y)** : Un label au survol (`aria-label` et `title` dynamiques : "Se connecter" ou "Mon compte (Connecté)") est obligatoire.
 
 Pas de slot vide quand `Connexion` n'est pas applicable: l'espace est repris par les autres elements.
 
@@ -90,6 +101,13 @@ Pas de slot vide quand `Connexion` n'est pas applicable: l'espace est repris par
 - `>= 920px`: layout trois zones complet.
 - `640px <= largeur < 920px`: la nav centrale peut se compresser ou se replier dans le burger selon densite. La zone droite garde au moins `Langue` visible.
 - `< 640px`: header en flux normal (`position: static`), logo + burger visibles, le reste dans le menu deroule.
+
+## Questions encore ouvertes
+
+A trancher avant implementation:
+
+- Burger mobile : Validé (Toujours à droite).
+- Libelles de nav centrale par surface: valider l'inventaire actuel ou ajuster (par exemple harmoniser `A propos` / `About`, ordre, regroupements).
 
 ## Hors perimetre
 
