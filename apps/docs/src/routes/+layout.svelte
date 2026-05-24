@@ -1,7 +1,7 @@
 <script lang="ts">
   import { page } from "$app/state";
   import "../app.css";
-  import { ChevronDown, ExternalLink, Globe } from "@lucide/svelte";
+  import { ChevronDown, ExternalLink, Globe, LogIn, LogOut, User, Menu, X } from "@lucide/svelte";
   import { ThemeProvider } from "@sentropic/design-system-svelte";
   import { sentTechTheme } from "@sentropic/design-system-themes";
   import {
@@ -21,6 +21,9 @@
   const breadcrumbs = $derived(resolveBreadcrumb(page.url.pathname));
 
   let isOpen = $state(false);
+  let isLoggedIn = $state(false);
+  let isAuthOpen = $state(false);
+  let isMobileMenuOpen = $state(false);
 
   function isActive(href: string): boolean {
     const pathname = page.url.pathname;
@@ -67,6 +70,9 @@
   if (isOpen && e.target && !(e.target as Element).closest(".docs-locale-wrapper")) {
     isOpen = false;
   }
+  if (isAuthOpen && e.target && !(e.target as Element).closest(".docs-auth-wrapper")) {
+    isAuthOpen = false;
+  }
 }} />
 
 <ThemeProvider theme={sentTechTheme}>
@@ -98,6 +104,7 @@
             {/if}
           </a>
         {/each}
+        
         <div class="docs-locale-wrapper">
           <button
             type="button"
@@ -134,8 +141,117 @@
             </div>
           {/if}
         </div>
+
+        <div class="docs-auth-wrapper">
+          {#if !isLoggedIn}
+            <button
+              type="button"
+              class="docs-signin-btn"
+              onclick={() => (isLoggedIn = true)}
+            >
+              <LogIn size={13} class="docs-signin-btn-icon" />
+              <span>{locale.value === "fr" ? "Connexion" : "Sign In"}</span>
+            </button>
+          {:else}
+            <button
+              type="button"
+              class="docs-auth-trigger"
+              onclick={() => (isAuthOpen = !isAuthOpen)}
+              aria-expanded={isAuthOpen}
+              aria-haspopup="true"
+              aria-label="Profil utilisateur"
+            >
+              <User size={15} class="docs-auth-avatar-icon" />
+              <span class="docs-auth-badge" aria-label="Connecté"></span>
+            </button>
+
+            {#if isAuthOpen}
+              <div class="docs-auth-popover" role="menu">
+                <div class="docs-auth-user-info">
+                  <span class="docs-auth-user-name">Jean-Michel Sentropic</span>
+                  <span class="docs-auth-user-email">jm.sentropic@sent-tech.ca</span>
+                  <span class="docs-auth-user-role">{locale.value === "fr" ? "Administrateur" : "Administrator"}</span>
+                </div>
+                <hr class="docs-auth-divider" />
+                <button
+                  type="button"
+                  class="docs-auth-popover-item"
+                  onclick={() => { isLoggedIn = false; isAuthOpen = false; }}
+                >
+                  <LogOut size={13} />
+                  <span>{locale.value === "fr" ? "Se déconnecter" : "Sign Out"}</span>
+                </button>
+              </div>
+            {/if}
+          {/if}
+        </div>
       </nav>
+
+      <button
+        type="button"
+        class="docs-mobile-menu-trigger"
+        onclick={() => (isMobileMenuOpen = !isMobileMenuOpen)}
+        aria-expanded={isMobileMenuOpen}
+        aria-label="Menu principal"
+      >
+        {#if isMobileMenuOpen}
+          <X size={20} />
+        {:else}
+          <Menu size={20} />
+        {/if}
+      </button>
     </header>
+
+    {#if isMobileMenuOpen}
+      <nav class="docs-mobile-nav" aria-label="Menu mobile">
+        <div class="docs-mobile-nav-section">
+          <span class="docs-mobile-nav-label">Navigation</span>
+          {#each DOCS_TOP_NAV as item (item.href)}
+            <a
+              href={item.href}
+              onclick={() => (isMobileMenuOpen = false)}
+              aria-current={isActive(item.href) ? "page" : undefined}
+            >
+              {item.label}
+            </a>
+          {/each}
+        </div>
+        <div class="docs-mobile-nav-section">
+          <span class="docs-mobile-nav-label">Liens utiles</span>
+          <span class="docs-version">{DOCS_VERSION}</span>
+          {#each DOCS_UTILITY_NAV as item (item.href)}
+            <a
+              href={item.href}
+              onclick={() => (isMobileMenuOpen = false)}
+              rel={item.external ? "noreferrer" : undefined}
+              target={item.external ? "_blank" : undefined}
+            >
+              {item.label}
+            </a>
+          {/each}
+          
+          <div class="docs-mobile-locale-switcher">
+            <button
+              type="button"
+              class="docs-mobile-locale-btn"
+              class:active={locale.value === "fr"}
+              onclick={() => { locale.value = "fr"; isMobileMenuOpen = false; }}
+            >
+              Français
+            </button>
+            <button
+              type="button"
+              class="docs-mobile-locale-btn"
+              class:active={locale.value === "en"}
+              onclick={() => { locale.value = "en"; isMobileMenuOpen = false; }}
+            >
+              English
+            </button>
+          </div>
+        </div>
+      </nav>
+    {/if}
+
 
     <div class="docs-body">
       <aside class="docs-sidebar">
