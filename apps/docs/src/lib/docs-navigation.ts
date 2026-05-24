@@ -33,7 +33,6 @@ export const DOCS_TOP_NAV: DocsNavItem[] = [
 ];
 
 export const DOCS_UTILITY_NAV: DocsNavItem[] = [
-  { label: "sent-tech.ca", href: "https://www.sent-tech.ca", external: true },
   {
     label: "GitHub",
     href: "https://github.com/rhanka/sent-tech-design-system",
