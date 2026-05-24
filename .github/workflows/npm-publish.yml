@@ -113,6 +113,7 @@ jobs:
           npm publish --workspace @sentropic/design-system-tokens --access public
           npm publish --workspace @sentropic/design-system-themes --access public
           npm publish --workspace @sentropic/design-system-svelte --access public
+          npm publish --workspace @sentropic/design-system-impeccable --access public
 
   post-publish-check:
     needs: publish
@@ -133,6 +134,7 @@ jobs:
             "@sentropic/design-system-tokens"
             "@sentropic/design-system-themes"
             "@sentropic/design-system-svelte"
+            "@sentropic/design-system-impeccable"
           )
 
           for attempt in {1..20}; do
@@ -166,6 +168,7 @@ jobs:
             "@sentropic/design-system-tokens@${VERSION}" \
             "@sentropic/design-system-themes@${VERSION}" \
             "@sentropic/design-system-svelte@${VERSION}" \
+            "@sentropic/design-system-impeccable@${VERSION}" \
             "svelte@^5.53.2"
 
       - name: Verify published package imports
