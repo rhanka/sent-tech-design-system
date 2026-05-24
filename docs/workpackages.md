@@ -19,14 +19,13 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 | A — Header docs | Reprendre le header valide par l'utilisateur, pas l'ancien wordmark publie. | 🟢 | 100% | Logo carre `SENT-logo-squared.svg`, titre `Sentropic`, sous-titre `Design System`, GitHub icone, lien `sent-tech.ca` retire du header. |
 | B — Controles droits | Aligner langue, compte, GitHub et version sur une meme grille visuelle. | 🟢 | 100% | Token `--docs-header-control-height`, version neutre, boutons langue/compte sur socle commun, hover/expanded identiques pour les menus. |
 | C — Garde contractuelle | Empêcher une regression vers l'ancien logo ou l'ancien lien header. | 🟢 | 100% | Test `header-contract` verifie logo carre, libelle service, GitHub iconise, absence de `SENT-logo.svg` et absence de `sent-tech.ca` dans la nav utilitaire. |
-| D — Publication | Forcer un deploiement Pages reel, pas seulement une modification de doc. | 🟡 | 80% | Les changements touchent `apps/docs/**`, donc le workflow `Docs` sera declenche au push sur `main`. |
+| D — Publication | Forcer un deploiement Pages reel, pas seulement une modification de doc. | 🟢 | 100% | Commit `8ace58a` publie; workflow `Docs` `26366918988` vert; URL publique cache-bustee verifiee. |
 | E — Suivi | Retablir le mode multi-track `Fait / A faire / Attendus`. | 🟢 | 100% | Ce bloc remplace le suivi implicite et retire les statuts `commit courant` non actionnables. |
 
 ### A faire
 
 | Track | Finalite | Avancement | Prochaine action | Owner |
 |---|---|---:|---|---|
-| D — Publication | Prouver que le site public sert bien le nouveau header. | 80% | Commit + push, surveiller le workflow `Docs`, puis verifier l'URL cache-bustee. | Main agent |
 | F — Footer | Reprendre le footer moche sans bloquer la correction header. | 10% | Ouvrir un item dedie apres publication header; `sent-tech.ca` peut y revenir si utile. | Backlog |
 | G — A11y menus | Durcir clavier/focus au-dela du correctif rapide. | 65% | Tester focus trap/roving focus si les popovers deviennent des menus DS reutilisables. | Backlog DS |
 
@@ -69,7 +68,7 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 |---|---|---|---|
 | Sidebar rectangulaire actif + densite groupes | 🟢 | `15d9690`, `ce3bfdc`, `dbdd1be` | |
 | Header docs aligne contrat (logo SENT + langue) | 🟢 | `94e5fce`, `45dd0c8`, `defb1b7` | |
-| Reprise header docs publie + garde contractuelle | 🟡 | livraison 2026-05-24 | Logo carre + `Sentropic` / `Design System`, GitHub icone, sent-tech.ca retire du header, controles langue/compte harmonises, test `header-contract` |
+| Reprise header docs publie + garde contractuelle | 🟢 | `8ace58a` | Logo carre + `Sentropic` / `Design System`, GitHub icone, sent-tech.ca retire du header, controles langue/compte harmonises, test `header-contract` |
 | Home i18n complete | 🟢 | `55781c1`, `40b4b98` | catalogue descriptions bilingues |
 | Plan-completion hero shelf + contexte demos | 🟢 | `824a2b7` | |
 | Re-passe `/components/overlays` | ⚪ | — | bloque par WP6 (z-index Toast / OverflowMenu) |
@@ -138,23 +137,23 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 
 ## WP6 — Fix-plan (bugs DS visuels et comportementaux)
 
-**Statut global** : 🔵 3 bugs documentes, pret a lancer.
+**Statut global** : 🟡 bugs corrigés, retest visuel overlays/plan-completion restant.
 
 | Bug | Statut | Surface | Severity |
 |---|---|---|---|
-| Toast / Alert rail gauche + container arrondi | 🔵 | `Toast.svelte`, `Alert.svelte` | haute (anti-pattern visuel signale plusieurs fois) |
-| OverflowMenu z-index < Toast | 🔵 | `OverflowMenu.svelte`, `Toast.svelte` | haute |
-| Drawer click intercepte par Menu | 🔵 | `Menu.svelte` (manque outside-click + Escape) | haute |
+| Toast / Alert rail gauche + container arrondi | 🟢 | `Toast.svelte`, `Alert.svelte` | corrigé `a85a379`; retest visuel overlays restant |
+| OverflowMenu z-index < Toast | 🟢 | `OverflowMenu.svelte`, `Toast.svelte` | corrigé `d85ca6e`; retest visuel overlays restant |
+| Drawer click intercepte par Menu | 🟢 | `Menu.svelte` | corrigé `de0c059`; retest `/components/plan-completion` restant |
 
 Detail dans `docs/known-issues-and-fixes.md`.
 
 **Dependances** : aucune.
 **Parallelisable avec** : tous (composants disjoints).
-**Bloque** : WP2 re-passe overlays.
+**Bloque** : WP2 re-passe overlays tant que le retest visuel n'est pas consigné.
 
 ## WP7 — Audit DS large (37 références upstream, 5 clusters parallèles)
 
-**Statut global** : 🟡 relancée et consolidée en V2 (master dédié disponible), suivi d'implémentation WP7-B en cours.
+**Statut global** : 🟡 65% — audit/reporting consolidé, couverture et fermeture des clusters à prouver.
 
 Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couverture complète des 37 références upstream `pbakaus/impeccable`.
 
@@ -162,57 +161,53 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 | Cluster | Références upstream | Statut | Sortie |
 |---|---|---|---|
-| A. Typography & writing | `typography`, `typeset`, `ux-writing`, `clarify`, `cognitive-load` | 🟡 en cours | `docs/ds-audit-typography.md` |
-| B. Color & contrast | `color-and-contrast`, `colorize`, `bolder`, `quieter` | 🟡 en cours | `docs/ds-audit-color.md` |
-| C. Spatial & responsive | `spatial-design`, `layout`, `responsive-design`, `shape` | 🟡 en cours | `docs/ds-audit-spatial.md` |
-| D. Motion & interaction | `motion-design`, `animate`, `interaction-design`, `delight`, `overdrive` | 🟡 en cours | `docs/ds-audit-motion.md` |
-| E. Audit/critique/polish | `audit`, `critique`, `polish`, `harden`, `optimize`, `extract`, `distill`, `craft` | 🟡 en cours | `docs/ds-audit-meta.md` |
-| F. Consolidateur | merge des 5 + dédupe vs `docs/known-issues-and-fixes.md` + priorisation P0/P1/P2 | 🟢 post-clusters | `docs/ds-audit-consolidated-v2.md` (master) |
-| Application des fixes critiques (P0) | — | ⚪ après master | commits atomiques au fil de l'eau |
-| Capacité "audit on push" via workflow GitHub | — | ⚪ post-MVP | hook CI |
+| A. Typography & writing | `typography`, `typeset`, `ux-writing`, `clarify`, `cognitive-load` | 🟡 70% | `docs/ds-audit-typography.md` |
+| B. Color & contrast | `color-and-contrast`, `colorize`, `bolder`, `quieter` | 🟡 70% | `docs/ds-audit-color.md` |
+| C. Spatial & responsive | `spatial-design`, `layout`, `responsive-design`, `shape` | 🟡 70% | `docs/ds-audit-spatial.md` |
+| D. Motion & interaction | `motion-design`, `animate`, `delight`, `overdrive` | 🟡 65% | `docs/ds-audit-motion.md` |
+| E. Audit/critique/polish | `audit`, `critique`, `polish`, `harden`, `optimize`, `extract`, `distill`, `craft` | 🟡 60% | `docs/ds-audit-meta.md` |
+| F. Consolidateur | merge des 5 + dédupe vs `docs/known-issues-and-fixes.md` + priorisation P0/P1/P2 | 🟢 100% | `docs/ds-audit-consolidated-v2.md` (master) |
+| Application des fixes critiques (P0) | — | 🟡 45% | WP6 corrigé, retest overlays + fixes P0 docs restant |
+| Capacité "audit on push" via workflow GitHub | — | ⚪ 0% | hook CI post-MVP |
 
-**Dépendances** : les 5 clusters parallèles ; le consolidateur attend leur sortie.
+### Suivi WP7
 
-## WP8 — Librairie maison `lint-ds` + knowledge base + skill multi-harness
+| Vue | Track | Finalite | Etat | Avancement | Detail |
+|---|---|---|---:|---:|---|
+| Fait | Audit V1/V2 | Consolider les findings DS en source exploitable | 🟢 | 100% | Audit V1, 5 rapports clusters, master V2, 8 règles prioritaires transmises à WP8. |
+| A faire | Couverture | Prouver la couverture complète des 37 références upstream | 🟡 | 45% | Fermer les statuts A-E et documenter la matrice de couverture. |
+| A faire | Traçabilité | Relier `finding WP7 -> règle WP8 -> test` | 🟡 | 35% | Nécessaire avant extension ruleset WP8 P2. |
+| Attendu | Séparation WP7/WP8 | WP7 reste le chantier audit, WP8 reste le moteur | 🟢 | 100% | Toute règle WP8 doit référencer une entrée WP7 V2. |
 
-**Statut global** : 🟡 v1 scaffold WP8 actif (`packages/impeccable`), cible de revue verrouillée via `docs/wp8-multi-harness-target-review.md`.
+**Dépendances** : WP8 consomme WP7 pour les règles ; WP6 ne bloque plus WP7 mais impose un retest visuel overlays/plan-completion.
 
-**Décidé 2026-05-22** : parité fonctionnelle large (~40-50 règles, ~10 axes) + knowledge base markdown sous `docs/principles/` (les principes Sent Tech) + skill multi-harness installable pour **Claude, Codex et Gemini** (squelette d'abord, puis étoffé). Architecture moteur : statique (PostCSS AST + regex + token lookup) en priorité, runtime (Playwright) en option pour ce qui ne se mesure pas statiquement.
+## WP8 — Moteur `design audit` + knowledge base + skill multi-harness
+
+**Statut global** : 🟡 50% — V1 scaffold actif, contrat `design audit <target>` verrouillé localement.
+
+**Décidé 2026-05-24** : une seule WP8 active. Périmètre V1 strict = `design audit <target>` qui retourne un `AuditReport` JSON, codes `0/1/2`, sans Playwright et sans suite complète `design init/build/align/polish` dans le scope actif. Les docs CLI larges restent exploration future.
 
 | Phase | Item | Statut | Notes |
 |---|---|---|---|
-| 1. Scaffold cœur | `packages/impeccable/` (moteur, CLI, types, registry) | 🟢 | TypeScript, ESM, jsdom/PostCSS pour parser, sortie JSON+pretty |
-| 1. Scaffold cœur | 10-15 règles initiales bien choisies | 🔵 | mix de règles évidentes (`no-bare-hex`, `single-font`, `no-em-dash`, `side-tab-on-rounded`, `line-length-cap`, `touch-target-44`) |
-| 1. Knowledge base | `docs/principles/` (5-7 .md alignement Sent Tech) | 🟢 | typography, color, spatial, motion, ux-writing, interaction, responsive |
-| 1. Skill scaffold | `tools/skills/sent-tech-impeccable/` pour Claude | 🟢 | `SKILL.md` + reference + scripts entry |
-| 2. Extension règles | ~30-35 règles additionnelles au fil de WP7 | ⚪ | une règle par finding récurrent |
-| 2. Multi-harness | `.codex/` et `.gemini/` adapters | 🟡 | cible de revue définie, implémentation suivante |
-| 3. Capacité différenciante | règles propres Sent Tech > upstream | ⚪ | post-parité |
+| P0 Contrat V1 | `design audit <target>`, aliases, codes retour, README/tests | 🟢 100% | binaire `design`, subcommand `audit`, wrapper skill aligné, tests package verts |
+| P1 Moteur statique | `packages/impeccable` API `audit`, CLI, JSON, jsdom | 🟢 100% | moteur compile et expose `AuditReport` |
+| P2 Ruleset initial | 10-15 règles depuis WP7 | 🟡 55% | 7 règles actives; prochaines: `cramped-padding`, `motion-subtle`, `padding-scale-token` |
+| P3 Knowledge base | `docs/principles/*` reliés aux règles | 🟡 60% | principes présents, liens règle/finding à écrire |
+| P4 Skill multi-harness | wrapper unique Claude/Codex/Gemini, zéro logique métier | 🟡 55% | skill local + script unique sur `design audit`; adapters Codex/Gemini à compléter |
+| P5 Distribution/CI | lint CI, publication, règles token-aware | ⚪ 10% | post-V1 |
 
-**Estimé** : 1 semaine pour Phase 1 (scaffold + 10-15 règles + knowledge base squelette + skill Claude), puis 3-4 semaines d'extension pilotée par WP7.
+### Suivi WP8
 
-**Dépendances** : aucune en Phase 1. Phase 2 enrichit selon les findings WP7.
+| Vue | Track | Finalite | Etat | Avancement | Detail |
+|---|---|---|---:|---:|---|
+| Fait | Scaffold moteur | Disposer d'un moteur local deterministe | 🟢 | 100% | `packages/impeccable`, API `audit`, CLI, 7 règles, build TypeScript. |
+| Fait | Knowledge base | Capturer les principes DS | 🟢 | 100% | `docs/principles/*` initialisés. |
+| Fait | Skill V1 | Exécuter le moteur depuis un harness agent | 🟡 | 85% | `tools/skills/sent-tech-impeccable/scripts/audit.mjs` appelle le contrat canonique. |
+| A faire | Ruleset | Passer de 7 à 10-15 règles initiales | 🟡 | 55% | Piloté par `docs/ds-audit-consolidated-v2.md`. |
+| A faire | Traçabilité | Lier règle, principe et finding WP7 | 🟡 | 35% | Matrice à ajouter avant CI. |
+| Attendu | Contrat V1 | Même résultat quel que soit le harness | 🟢 | 100% | `stdout` JSON, `stderr` résumé, exit `0/1/2`, aucune logique métier wrapper. |
 
-## WP8 — Module DS impeccable-équivalent (librairie maison, parallèle de WP7)
-
-**Statut global** : 🟡 en alignement V1, prêt pour livraison incrémentale.
-
-**Décidé 2026-05-22** : **réimplémentation refactorée, parité fonctionnelle** sur un périmètre réduit. Pas une copie 1:1 des 27 règles upstream — on sélectionne les règles essentielles, on les écrit propres, on ajoute les règles Sent Tech (rail+arrondi, hiérarchie z-index, token-usage).
-
-Objectif : shipper `@sentropic/design-system-impeccable` (workspace dans `packages/impeccable/`) : moteur maison, CLI, règles essentielles, indépendant de l'upstream.
-
-| Item | Statut | Notes |
-|---|---|---|
-| Décision : réimplémentation refactorée parité fonctionnelle | 🟢 | scope réduit, ~10-15 règles bien choisies |
-| Squelette `packages/impeccable/` (workspace, package.json, build) | 🟢 | npm package + CLI binaire |
-| Architecture du moteur (Puppeteer vs JSDOM vs autre) | 🟢 | choisir, documenter dans le package README |
-| ~10-15 règles essentielles (parité fonctionnelle) | 🟡 | sélectionnées via lecture de l'upstream, pas blocage sur WP7 |
-| Règles Sent Tech spécifiques | 🔵 | rail+arrondi, z-index, token-usage |
-| Capacité différenciante (mieux qu'impeccable upstream) | ⚪ | post-parité |
-
-**Estimé** : 10-15j pour parité réduite + 3-5j de règles Sent Tech.
-
-**Dépendances** : aucune dure. WP7 (l'audit) viendra enrichir/valider la sélection des règles essentielles mais ne bloque pas le squelette + architecture.
+**Dépendances** : P0/P1 autonomes. P2+ consomme WP7 et doit citer `docs/ds-audit-consolidated-v2.md`.
 **Parallélisable avec** : WP7 et tous les autres.
 
 ## Plan de bataille parallele

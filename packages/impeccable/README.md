@@ -14,9 +14,12 @@ npm install @sentropic/design-system-impeccable
 
 ```bash
 impeccable-sent-tech <url | file.html | inline-html>
+design audit <url | file.html | inline-html>
 ```
 
 Options :
+- `design audit <target>` est le contrat WP8 V1 pour les harness agents.
+- `impeccable-sent-tech <target>` reste supporté en rétrocompatibilité.
 - `stdin` non supporté ; passer une URL, un fichier existant ou un bloc HTML inline.
 - Sortie JSON standard sur `stdout`.
 - Résumé court sur `stderr` (counts + top findings).
@@ -47,6 +50,7 @@ Ou `kind: "url"` / `kind: "html"` pour un bloc HTML brut.
 - `single-font` — alerte quand une seule famille typographique principale est utilisée.
 - `line-length-cap` — signale les blocs de texte denses sans borne de largeur explicite.
 - `touch-target-44` — cible minimale interactive `<44px` sur éléments interactifs en inline style.
+- `heading-hierarchy` — signale les sauts de niveaux de titres qui cassent la structure de page.
 
 ## Architecture
 

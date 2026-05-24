@@ -17,6 +17,7 @@ sent-tech-impeccable audit <url|file.html|inline-html>
 
 Alias techniques possibles (selon harness):
 
+- `design audit <target>`
 - `node tools/skills/sent-tech-impeccable/scripts/audit.mjs <target>`
 
 ## Output
