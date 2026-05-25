@@ -1,10 +1,11 @@
 # Release
 
-Sent Tech Design System publishes three public npm packages from this private workspace root:
+Sent Tech Design System publishes four public npm packages from this private workspace root:
 
 - `@sentropic/design-system-tokens`
 - `@sentropic/design-system-themes`
 - `@sentropic/design-system-svelte`
+- `@sentropic/design-system-impeccable`
 
 The release model follows Graphify: GitHub Actions verifies the repo, packs the npm artifacts, guards the tag, publishes through npm Trusted Publishing, waits until npm registry propagation is visible, then installs the published packages back from npm.
 
@@ -15,6 +16,7 @@ Configure npm Trusted Publishing for each package:
 - Package: `@sentropic/design-system-tokens`
 - Package: `@sentropic/design-system-themes`
 - Package: `@sentropic/design-system-svelte`
+- Package: `@sentropic/design-system-impeccable`
 - Repository: `rhanka/sent-tech-design-system`
 - Workflow: `.github/workflows/npm-publish.yml`
 - Registry: `https://registry.npmjs.org`
@@ -38,7 +40,7 @@ git diff --check
 git status --short --branch
 ```
 
-`npm run pack:smoke` verifies the three package tarballs and installs them together in a clean temporary project.
+`npm run pack:smoke` verifies the four package tarballs and installs them together in a clean temporary project.
 Release commits must include the current portable `.graphify` artifacts: `graph.json`, `graph.html`, `GRAPH_REPORT.md`, `manifest.json`, `cost.json`, and `.graphify_runtime.json`. Do not commit local lifecycle files such as `.graphify/cache/`, `.graphify/branch.json`, `.graphify/worktree.json`, or `.graphify/needs_update`.
 
 ## Versioning
@@ -50,6 +52,7 @@ For `v0.7.0`, these manifests must all contain `"version": "0.7.0"`:
 - `packages/tokens/package.json`
 - `packages/themes/package.json`
 - `packages/components-svelte/package.json`
+- `packages/impeccable/package.json`
 
 Internal dependencies must match the same version:
 
@@ -84,6 +87,7 @@ The workflow publishes in dependency order:
 npm publish --workspace @sentropic/design-system-tokens --access public
 npm publish --workspace @sentropic/design-system-themes --access public
 npm publish --workspace @sentropic/design-system-svelte --access public
+npm publish --workspace @sentropic/design-system-impeccable --access public
 ```
 
 Do not move a published tag unless the npm publish failed before creating any package version. npm versions are immutable after publication.
@@ -96,7 +100,8 @@ After publication, replace Forge local file dependencies with npm versions:
 npm install \
   @sentropic/design-system-tokens@0.7.0 \
   @sentropic/design-system-themes@0.7.0 \
-  @sentropic/design-system-svelte@0.7.0
+  @sentropic/design-system-svelte@0.7.0 \
+  @sentropic/design-system-impeccable@0.7.0
 ```
 
 Keep `svelte` installed in consuming apps. `@sentropic/design-system-svelte` declares Svelte as a peer dependency.

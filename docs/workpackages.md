@@ -17,10 +17,12 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 | Track | Finalite | Etat | Avancement | Fait |
 |---|---|---:|---:|---|
 | A — Header docs | Reprendre le header valide par l'utilisateur, pas l'ancien wordmark publie. | 🟢 | 100% | Logo carre `SENT-logo-squared.svg`, titre `Sentropic`, sous-titre `Design System`, GitHub icone, lien `sent-tech.ca` retire du header. |
-| B — Controles droits | Aligner langue, compte, GitHub et version sur une meme grille visuelle. | 🟢 | 100% | Token `--docs-header-control-height`, version neutre, boutons langue/compte sur socle commun, hover/expanded identiques pour les menus. |
+| B — Socle controles droits | Aligner hauteur et densite de base des controles header. | 🟢 | 100% | Token `--docs-header-control-height`, version neutre, langue et GitHub sur socle commun; compte factice retire du vrai header. |
 | C — Garde contractuelle | Empêcher une regression vers l'ancien logo ou l'ancien lien header. | 🟢 | 100% | Test `header-contract` verifie logo carre, libelle service, GitHub iconise, absence de `SENT-logo.svg` et absence de `sent-tech.ca` dans la nav utilitaire. |
 | D — Publication | Forcer un deploiement Pages reel, pas seulement une modification de doc. | 🟢 | 100% | Commit `8ace58a` publie; workflow `Docs` `26366918988` vert; URL publique cache-bustee verifiee. |
 | E — Suivi | Retablir le mode multi-track `Fait / A faire / Attendus`. | 🟢 | 100% | Ce bloc remplace le suivi implicite et retire les statuts `commit courant` non actionnables. |
+| H — Hover GitHub | Faire partager a GitHub le meme affordance hover/focus que langue. | 🟢 | 100% | GitHub utilise `docs-header-menuButton`; tooltips natifs retires pour eviter le hover different. |
+| I — Compte header | Retirer le faux menu compte du vrai header tant qu'il n'y a pas de session reelle. | 🟢 | 100% | Trigger/popover/auth fictifs retires du layout; les etats anonyme/initiales/photo sont documentes dans `/components/header`. |
 
 ### A faire
 
@@ -34,7 +36,8 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 | Track | Critere attendu | Verification |
 |---|---|---|
 | Header public | Le header public affiche le logo carre + `Sentropic` / `Design System`, jamais le wordmark complet. | Capture navigateur desktop/mobile + recherche reseau sans `/SENT-logo.svg`. |
-| Zone droite | Version, GitHub, langue et compte partagent hauteur, alignement, couleur de base et densite. | Capture desktop + hover/focus sur langue et compte. |
+| Zone droite | Version reste neutre/inert; GitHub, langue et futur compte partagent hauteur, alignement, couleur de base et affordance hover/focus. | Capture desktop + hover/focus GitHub/langue. |
+| Compte header | Aucun faux compte, faux email ou fausse URL de login dans le vrai header public. | Test `header-contract` + inspection DOM; demo auth uniquement dans les pages composants. |
 | Navigation utilitaire | Le header ne contient plus de lien `sent-tech.ca`; GitHub est iconise. | Test `header-contract` + inspection DOM. |
 | Publication | Le workflow `Docs` passe et deploie le SHA courant. | `gh run watch` + URL cache-bustee `https://design-system.sent-tech.ca/?cb=<SHA>`. |
 
@@ -73,9 +76,23 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 | Plan-completion hero shelf + contexte demos | 🟢 | `824a2b7` | |
 | Re-passe `/components/overlays` | ⚪ | — | bloque par WP6 (z-index Toast / OverflowMenu) |
 | Audit visuel pages composants restantes | ⚪ | — | apres WP6 |
+| Inventaire couverture docs composants | 🟢 | — | 59 entrees catalogue, 66 exports publics, 9 stubs restants, 7 exports absents, 22 pages partiellement couvertes par pages famille |
+| Stubs P1 composants | 🟡 | — | Batch 1 ferme: `combobox`, `number-input`, `slider`, `toggle`, `header`, `badge`, `data-table`, `progress-bar`, `skeleton-text`; restants Forms: 4, Navigation: 2, Overlay: 1, Layout: 2 |
+| Exports absents du catalogue | 🟡 | — | `AspectRatio`, `CodeSnippet`, `Sparkline`, `StructuredList`, `TileGroup`, `UnorderedList`; `ThemeProvider` exclu intentionnellement |
 
 **Dependances** : WP6 pour la re-passe overlays.
 **Parallelisable avec** : tous, sauf overlay tant que WP6 pas fait.
+
+### Suivi WP2
+
+| Vue | Track | Finalite | Etat | Avancement | Detail |
+|---|---|---|---:|---:|---|
+| Fait | Inventaire docs | Eviter les stubs invisibles et les exports oublies | 🟢 | 100% | Audit agent Spark xhigh initial: 18 stubs, 7 exports absents, 22 partiels; catalogue reajuste apres batch 1. |
+| Fait | Pages dediees batch 1 | Fermer les stubs P1 les plus visibles | 🟢 | 100% | 9 routes dediees ajoutees et sorties du statut stub: forms 4, header 1, feedback/data 4. |
+| A faire | S1 Forms | Documenter les controles complexes P1 | 🟡 | 50% | Restent `form`, `form-group`, `date-picker`, `multi-select`; `combobox`, `number-input`, `slider`, `toggle` documentes. |
+| A faire | S2-S5 UI | Fermer navigation, overlays, feedback/data, layout | 🟡 | 50% | Restent `overflow-menu`, `content-switcher`, `toggletip`, `accordion`, `card`; `header`, `badge`, `data-table`, `progress-bar`, `skeleton-text` documentes. |
+| A faire | Catalogue absents | Ajouter les exports publics manquants au flux docs | 🔵 | 0% | 6 composants UI absents + decision confirmee pour `ThemeProvider` infra. |
+| Attendu | Couverture publique | Aucun composant exporte ne doit etre invisible ou stub sans owner | 🟡 | 65% | 9 stubs restants + 6 exports absents; poursuivre par batch 2 avant fermeture WP2. |
 
 ## WP3 — Contrat header cross-site et applications
 
@@ -183,18 +200,20 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 ## WP8 — Moteur `design audit` + knowledge base + skill multi-harness
 
-**Statut global** : 🟡 50% — V1 scaffold actif, contrat `design audit <target>` verrouillé localement.
+**Statut global** : 🟡 60% — V1 scaffold actif, contrat `design audit <target>` verrouille localement, premiers ecarts CLI/themes corriges.
 
 **Décidé 2026-05-24** : une seule WP8 active. Périmètre V1 strict = `design audit <target>` qui retourne un `AuditReport` JSON, codes `0/1/2`, sans Playwright et sans suite complète `design init/build/align/polish` dans le scope actif. Les docs CLI larges restent exploration future.
 
+**Constaté 2026-05-24** : `design build` et `design polish` restent des stubs a messages; `design check --human` est une simulation fixe. La CLI ne doit pas etre presentee comme un moteur complet tant que ces flux ne sont pas reels.
+
 | Phase | Item | Statut | Notes |
 |---|---|---|---|
-| P0 Contrat V1 | `design audit <target>`, aliases, codes retour, README/tests | 🟢 100% | binaire `design`, subcommand `audit`, wrapper skill aligné, tests package verts |
+| P0 Contrat V1 | `design audit <target>`, aliases, codes retour, README/tests | 🟢 100% | binaire `design`, subcommand `audit`, wrapper skill aligne, `check --technical/--heuristics` testes, `--personas` refuse explicitement |
 | P1 Moteur statique | `packages/impeccable` API `audit`, CLI, JSON, jsdom | 🟢 100% | moteur compile et expose `AuditReport` |
-| P2 Ruleset initial | 10-15 règles depuis WP7 | 🟡 55% | 7 règles actives; prochaines: `cramped-padding`, `motion-subtle`, `padding-scale-token` |
+| P2 Ruleset initial | 10-15 règles depuis WP7 | 🟡 60% | 7 règles actives; suggestions tokens realignees; prochaines: `cramped-padding`, `motion-subtle`, `padding-scale-token` |
 | P3 Knowledge base | `docs/principles/*` reliés aux règles | 🟡 60% | principes présents, liens règle/finding à écrire |
-| P4 Skill multi-harness | wrapper unique Claude/Codex/Gemini, zéro logique métier | 🟡 55% | skill local + script unique sur `design audit`; adapters Codex/Gemini à compléter |
-| P5 Distribution/CI | lint CI, publication, règles token-aware | ⚪ 10% | post-V1 |
+| P4 Skill multi-harness | wrapper unique Claude/Codex/Gemini, zéro logique métier | 🟡 60% | skill local + script unique sur `design audit`; adapters Codex/Gemini à compléter |
+| P5 Distribution/CI/npm | lint CI, publication, règles token-aware | 🟡 25% | workflow publie 4 packages, smoke-pack inclut maintenant `impeccable`; npm public reste a `0.7.0`, `impeccable` pas encore publie |
 
 ### Suivi WP8
 
@@ -203,9 +222,13 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 | Fait | Scaffold moteur | Disposer d'un moteur local deterministe | 🟢 | 100% | `packages/impeccable`, API `audit`, CLI, 7 règles, build TypeScript. |
 | Fait | Knowledge base | Capturer les principes DS | 🟢 | 100% | `docs/principles/*` initialisés. |
 | Fait | Skill V1 | Exécuter le moteur depuis un harness agent | 🟡 | 85% | `tools/skills/sent-tech-impeccable/scripts/audit.mjs` appelle le contrat canonique. |
+| Fait | Alignement CLI/themes | Mapper les corrections CLI vers les vrais tokens publies | 🟢 | 100% | `design align --tones` remplace vers `--st-semantic-*`; les themes exportent `--st-foundation-*`; tests ajoutes. |
 | A faire | Ruleset | Passer de 7 à 10-15 règles initiales | 🟡 | 55% | Piloté par `docs/ds-audit-consolidated-v2.md`. |
+| A faire | Promesse CLI | Nettoyer ou rendre reels `build`, `polish`, `init --extract`, `check --human` | 🟡 | 35% | Eviter les faux succes et la confusion avec la CLI Impeccable upstream. |
 | A faire | Traçabilité | Lier règle, principe et finding WP7 | 🟡 | 35% | Matrice à ajouter avant CI. |
+| A faire | Release npm | Publier une version coherente apres bump/tag | ⏸️ | 30% | Local + npm historiques sont en `0.7.0`; `@sentropic/design-system-impeccable` retourne 404 sur npm. Recommande: release `0.8.0` coordonnee. |
 | Attendu | Contrat V1 | Même résultat quel que soit le harness | 🟢 | 100% | `stdout` JSON, `stderr` résumé, exit `0/1/2`, aucune logique métier wrapper. |
+| Attendu | Verite produit | Les commandes exposees doivent faire ce qu'elles annoncent | 🟡 | 50% | `audit/check --tech/align --tones` sont concrets; `build/polish/human` restent a durcir ou documenter comme experimentaux. |
 
 **Dépendances** : P0/P1 autonomes. P2+ consomme WP7 et doit citer `docs/ds-audit-consolidated-v2.md`.
 **Parallélisable avec** : WP7 et tous les autres.

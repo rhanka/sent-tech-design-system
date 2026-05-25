@@ -1,4 +1,4 @@
-import { component, semantic } from "@sentropic/design-system-tokens";
+import { component, foundation, semantic } from "@sentropic/design-system-tokens";
 import type { TenantTheme } from "../schema.js";
 
 export const forgeTheme: TenantTheme = {
@@ -6,6 +6,7 @@ export const forgeTheme: TenantTheme = {
   label: "Sent Tech Forge",
   mode: "light",
   tokens: {
+    foundation,
     semantic: {
       ...semantic,
       action: {

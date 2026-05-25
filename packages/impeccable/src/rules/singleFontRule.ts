@@ -19,6 +19,7 @@ function normalizeFontToken(value: string): string | undefined {
 function isMonospaceStyleToken(token: string): boolean {
   return (
     token.includes("--st-font-mono") ||
+    token.includes("--st-foundation-font-mono") ||
     token === "monospace" ||
     token === "ui-monospace" ||
     token === "courier new" ||
@@ -108,7 +109,7 @@ export const singleFontRule: Rule = {
           "Une seule famille typographique principale est détectée (ou quasi uniquement une variante). " +
           "Prévoir une hiérarchie visuelle (display + body) via des variables distinctes.",
         location: "head/style | inline-style",
-        suggestion: "Introduire au moins deux familles textuelles distinctes (ex: var(--st-font-sans) et var(--st-font-serif) ou équivalent)."
+        suggestion: "Introduire une hiérarchie distincte via les tokens exposés, par exemple var(--st-foundation-font-display) et var(--st-foundation-font-sans)."
       }
     ];
   }
