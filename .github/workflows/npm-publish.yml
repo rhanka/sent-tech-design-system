@@ -55,17 +55,20 @@ jobs:
         run: |
           EXPECTED_VERSION="${EXPECTED_VERSION#v}"
           EXPECTED_VERSION="$EXPECTED_VERSION" node --input-type=module <<'NODE'
-          import { readdirSync, readFileSync } from "node:fs";
-          import { join } from "node:path";
+          import { readFileSync } from "node:fs";
 
           const expected = process.env.EXPECTED_VERSION;
-          const packagesDir = "packages";
+          // Publishable design-system packages only. The design-audit engine
+          // (packages/impeccable) is intentionally excluded from npm releases;
+          // it will be productized under an on-brand name after WP8.
+          const publishable = [
+            "packages/tokens/package.json",
+            "packages/themes/package.json",
+            "packages/components-svelte/package.json",
+          ];
           const failures = [];
 
-          for (const entry of readdirSync(packagesDir, { withFileTypes: true })) {
-            if (!entry.isDirectory()) continue;
-
-            const manifestPath = join(packagesDir, entry.name, "package.json");
+          for (const manifestPath of publishable) {
             const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
             if (manifest.version !== expected) {
               failures.push(`${manifest.name}: ${manifest.version}`);
@@ -78,7 +81,7 @@ jobs:
             process.exit(1);
           }
 
-          console.log(`All package versions match ${expected}`);
+          console.log(`All publishable package versions match ${expected}`);
           NODE
 
   publish:
@@ -110,10 +113,13 @@ jobs:
 
       - name: Publish packages
         run: |
+          # Design-system packages only, in dependency order.
+          # The design-audit engine (packages/impeccable) is intentionally NOT
+          # published here; it is parked pending a post-WP8 productization and
+          # an on-brand rename. Do not add it back without an explicit decision.
           npm publish --workspace @sentropic/design-system-tokens --access public
           npm publish --workspace @sentropic/design-system-themes --access public
           npm publish --workspace @sentropic/design-system-svelte --access public
-          npm publish --workspace @sentropic/design-system-impeccable --access public
 
   post-publish-check:
     needs: publish
@@ -134,7 +140,6 @@ jobs:
             "@sentropic/design-system-tokens"
             "@sentropic/design-system-themes"
             "@sentropic/design-system-svelte"
-            "@sentropic/design-system-impeccable"
           )
 
           for attempt in {1..20}; do
@@ -168,7 +173,6 @@ jobs:
             "@sentropic/design-system-tokens@${VERSION}" \
             "@sentropic/design-system-themes@${VERSION}" \
             "@sentropic/design-system-svelte@${VERSION}" \
-            "@sentropic/design-system-impeccable@${VERSION}" \
             "svelte@^5.53.2"
 
       - name: Verify published package imports
