@@ -102,8 +102,9 @@ function printCheckHelp() {
     `\x1b[1m\x1b[36mCommand: design check <target>\x1b[0m\n` +
     `Exécute des diagnostics automatisés de qualité d'interface.\n\n` +
     `\x1b[1mOPTIONS\x1b[0m\n` +
-    `  --tech                Audit technique déterministe statique (6 règles - par défaut).\n` +
-    `  --human               Évaluation qualitative et cognitive pilotée par l'IA.\n` +
+    `  --tech, --technical   Audit technique déterministe statique (par défaut).\n` +
+    `  --human, --heuristics Évaluation qualitative et cognitive pilotée par l'IA.\n` +
+    `  --personas            Non supporté en V1; retourne une erreur explicite.\n` +
     `  -h, --help            Affiche cette aide.\n\n` +
     `\x1b[1mEXEMPLES\x1b[0m\n` +
     `  design check index.html\n` +
@@ -428,7 +429,37 @@ async function handleCheck(args: string[]) {
     process.exit(0);
   }
 
-  const isHuman = args.includes("--human");
+  const technicalFlags = new Set(["--tech", "--technical"]);
+  const humanFlags = new Set(["--human", "--heuristics"]);
+  const allowedFlags = new Set([...technicalFlags, ...humanFlags, "--personas"]);
+  const flags = args.filter((arg) => arg.startsWith("-"));
+  const unknownFlag = flags.find((arg) => !allowedFlags.has(arg));
+  if (unknownFlag) {
+    process.stderr.write(
+      `\x1b[1m\x1b[31mErreur :\x1b[0m Option '${unknownFlag}' non supportée par design check.\n` +
+      `Exemple : design check index.html --tech\n`
+    );
+    process.exit(2);
+  }
+
+  if (args.includes("--personas")) {
+    process.stderr.write(
+      `\x1b[1m\x1b[31mErreur :\x1b[0m '--personas' est documenté comme exploration future mais n'est pas supporté par WP8 V1.\n` +
+      `Utilise '--human'/'--heuristics' pour la passe qualitative disponible, ou 'design audit' pour le contrat déterministe.\n`
+    );
+    process.exit(2);
+  }
+
+  const isTechnical = args.some((arg) => technicalFlags.has(arg));
+  const isHuman = args.some((arg) => humanFlags.has(arg));
+
+  if (isTechnical && isHuman) {
+    process.stderr.write(
+      `\x1b[1m\x1b[31mErreur :\x1b[0m '--tech'/'--technical' et '--human'/'--heuristics' sont mutuellement exclusifs.\n` +
+      `Exemple : design check index.html --tech\n`
+    );
+    process.exit(2);
+  }
 
   const targetRaw = args.find(arg => !arg.startsWith("-"));
 
@@ -539,11 +570,12 @@ async function handleAlign(args: string[]) {
     if (isLocalFile && fileContent) {
       // Auto-correction des couleurs hexa brutes vers les variables CSS du thème
       const hexReplacements: [RegExp, string][] = [
-        [/#0043ce/gi, "var(--docs-accent, #0043ce)"],
-        [/#f8fafc/gi, "var(--st-semantic-surface-subtle, #f8fafc)"],
-        [/#e2e8f0/gi, "var(--st-semantic-border-subtle, #e2e8f0)"],
-        [/#0f172a/gi, "var(--docs-ink, #0f172a)"],
-        [/#64748b/gi, "var(--docs-muted, #64748b)"]
+        [/#0043ce/gi, "var(--st-semantic-action-primary)"],
+        [/#f8fafc/gi, "var(--st-semantic-surface-subtle)"],
+        [/#e2e8f0/gi, "var(--st-semantic-border-subtle)"],
+        [/#0f172a/gi, "var(--st-semantic-text-primary)"],
+        [/#334155/gi, "var(--st-semantic-text-secondary)"],
+        [/#64748b/gi, "var(--st-semantic-text-muted)"]
       ];
 
       let newContent = fileContent;

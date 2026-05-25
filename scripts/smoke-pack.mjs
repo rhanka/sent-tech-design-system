@@ -35,6 +35,10 @@ const packages = [
       "dist/Textarea.svelte",
     ],
   },
+  {
+    name: "@sentropic/design-system-impeccable",
+    requiredFiles: ["dist/index.js", "dist/index.d.ts", "dist/cli.js", "dist/cli.d.ts"],
+  },
 ];
 
 function run(command, args, options = {}) {
@@ -129,6 +133,7 @@ import { readFileSync } from "node:fs";
 
 const tokens = await import("@sentropic/design-system-tokens");
 const themes = await import("@sentropic/design-system-themes");
+const impeccable = await import("@sentropic/design-system-impeccable");
 
 if (typeof tokens.flattenTokens !== "function") {
   throw new Error("@sentropic/design-system-tokens missing flattenTokens export");
@@ -136,6 +141,10 @@ if (typeof tokens.flattenTokens !== "function") {
 
 if (typeof themes.compileTheme !== "function") {
   throw new Error("@sentropic/design-system-themes missing compileTheme export");
+}
+
+if (typeof impeccable.audit !== "function") {
+  throw new Error("@sentropic/design-system-impeccable missing audit export");
 }
 
 const componentsEntry = await import.meta.resolve("@sentropic/design-system-svelte");

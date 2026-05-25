@@ -27,12 +27,9 @@ describe("docs header alignment contract", () => {
     expect(layoutSource).toContain("Github");
     expect(layoutSource).not.toContain("ExternalLink");
     expect(layoutSource).toContain('class="docs-header-control docs-version"');
-    expect(layoutSource).toContain('class="docs-header-control docs-header-iconLink"');
+    expect(layoutSource).toContain('class="docs-header-control docs-header-menuButton docs-header-iconLink"');
     expect(layoutSource).toContain(
       'class="docs-header-control docs-header-menuButton docs-locale-trigger"'
-    );
-    expect(layoutSource).toContain(
-      'class="docs-header-control docs-header-menuButton docs-auth-trigger"'
     );
     expect(appCss).toContain(".docs-header-menuButton:hover");
     expect(appCss).toContain(".docs-header-menuButton[aria-expanded=\"true\"]");
@@ -41,9 +38,17 @@ describe("docs header alignment contract", () => {
     expect(navigationSource).toContain('label: "GitHub"');
   });
 
-  it("renders account access as an icon popover, not a visible text CTA", () => {
+  it("does not render fake auth access in the public docs header", () => {
     expect(layoutSource).not.toContain('"Connexion"');
     expect(layoutSource).not.toContain('"Sign In"');
-    expect(layoutSource).toContain("docs-auth-trigger");
+    expect(layoutSource).not.toContain("docs-auth-trigger");
+    expect(layoutSource).not.toContain("docs-auth-popover");
+    expect(layoutSource).not.toContain("isLoggedIn");
+    expect(layoutSource).not.toContain("jm.sentropic@example.com");
+  });
+
+  it("keeps native browser tooltips out of header controls", () => {
+    expect(layoutSource).not.toContain("title={item.label}");
+    expect(layoutSource).not.toContain("title={locale.value");
   });
 });
