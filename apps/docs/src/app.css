@@ -291,132 +291,6 @@ select {
   font-size: 0.75rem;
 }
 
-.docs-auth-wrapper {
-  position: relative;
-  display: inline-block;
-}
-
-.docs-auth-trigger {
-  position: relative;
-  padding: 0;
-  width: var(--docs-header-control-height);
-}
-
-.docs-auth-avatar-icon {
-  color: currentColor;
-}
-
-.docs-auth-badge {
-  position: absolute;
-  bottom: -1px;
-  right: -1px;
-  background: #22c55e;
-  border: 2px solid #ffffff;
-  border-radius: 50%;
-  width: 10px;
-  height: 10px;
-  box-shadow: 0 0 0 1px rgb(34 197 94 / 0.2);
-  animation: docs-badge-pulse 2s infinite ease-in-out;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .docs-auth-badge {
-    animation: none;
-  }
-}
-
-@keyframes docs-badge-pulse {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.15);
-    opacity: 0.85;
-  }
-}
-
-.docs-auth-popover {
-  background: var(--st-component-menu-background, var(--st-semantic-surface-raised, #ffffff));
-  border: 1px solid var(--st-component-menu-border, var(--st-semantic-border-subtle, #e2e8f0));
-  border-radius: 0.375rem;
-  box-shadow: 0 12px 32px rgb(15 23 42 / 0.1);
-  display: flex;
-  flex-direction: column;
-  min-width: 14rem;
-  padding: 0.65rem 0.5rem;
-  position: absolute;
-  top: calc(100% + 6px);
-  right: 0;
-  z-index: 100;
-}
-
-.docs-auth-user-info {
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-  padding: 0.35rem 0.5rem 0.55rem;
-}
-
-.docs-auth-user-name {
-  color: var(--docs-ink, #0f172a);
-  font-size: 0.85rem;
-  font-weight: 700;
-}
-
-.docs-auth-user-email {
-  color: var(--docs-muted, #64748b);
-  font-size: 0.75rem;
-  word-break: break-all;
-}
-
-.docs-auth-user-role {
-  color: var(--docs-accent, #0043ce);
-  background: rgb(0 67 206 / 0.06);
-  border-radius: 0.25rem;
-  font-size: 0.7rem;
-  font-weight: 650;
-  padding: 0.15rem 0.35rem;
-  width: max-content;
-  margin-top: 0.35rem;
-}
-
-.docs-auth-divider {
-  border: 0;
-  border-top: 1px solid var(--st-semantic-border-subtle, #e2e8f0);
-  margin: 0.35rem 0;
-}
-
-.docs-auth-popover-item {
-  align-items: center;
-  background: transparent;
-  border: 0;
-  border-radius: 0.25rem;
-  color: #ef4444;
-  cursor: pointer;
-  display: flex;
-  font-family: inherit;
-  font-size: 0.82rem;
-  font-weight: 650;
-  gap: 0.45rem;
-  padding: 0.45rem 0.5rem;
-  text-align: left;
-  width: 100%;
-  transition: background-color var(--st-motion-fast, 120ms) ease;
-}
-
-.docs-auth-popover-item:hover {
-  background: rgb(239 68 68 / 0.06);
-}
-
-.docs-auth-popover-item--primary {
-  color: var(--docs-accent, #0043ce);
-}
-
-.docs-auth-popover-item--primary:hover {
-  background: rgb(0 67 206 / 0.06);
-}
-
 /* --- Burger & Responsive Mobile Nav Drawer (WP7) --- */
 .docs-mobile-menu-trigger {
   display: none;
@@ -1092,8 +966,7 @@ select {
     min-height: 2.75rem;
   }
 
-  .docs-header-iconLink,
-  .docs-auth-trigger {
+  .docs-header-iconLink {
     min-width: 2.75rem;
     width: 2.75rem;
   }

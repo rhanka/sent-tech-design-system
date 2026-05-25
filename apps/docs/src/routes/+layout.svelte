@@ -1,7 +1,7 @@
 <script lang="ts">
   import { page } from "$app/state";
   import "../app.css";
-  import { ChevronDown, Github, Globe, LogIn, LogOut, Menu, User, X } from "@lucide/svelte";
+  import { ChevronDown, Github, Globe, Menu, X } from "@lucide/svelte";
   import { ThemeProvider } from "@sentropic/design-system-svelte";
   import { sentTechTheme } from "@sentropic/design-system-themes";
   import {
@@ -21,8 +21,6 @@
   const breadcrumbs = $derived(resolveBreadcrumb(page.url.pathname));
 
   let isOpen = $state(false);
-  let isLoggedIn = $state(false);
-  let isAuthOpen = $state(false);
   let isMobileMenuOpen = $state(false);
 
   function isActive(href: string): boolean {
@@ -70,13 +68,9 @@
   if (isOpen && e.target && !(e.target as Element).closest(".docs-locale-wrapper")) {
     isOpen = false;
   }
-  if (isAuthOpen && e.target && !(e.target as Element).closest(".docs-auth-wrapper")) {
-    isAuthOpen = false;
-  }
 }} onkeydown={(e) => {
   if (e.key === "Escape") {
     isOpen = false;
-    isAuthOpen = false;
     isMobileMenuOpen = false;
   }
 }} />
@@ -104,12 +98,11 @@
         <span class="docs-header-control docs-version">{DOCS_VERSION}</span>
         {#each DOCS_UTILITY_NAV as item (item.href)}
           <a
-            class="docs-header-control docs-header-iconLink"
+            class="docs-header-control docs-header-menuButton docs-header-iconLink"
             href={item.href}
             rel={item.external ? "noreferrer" : undefined}
             target={item.external ? "_blank" : undefined}
             aria-label={item.label}
-            title={item.label}
           >
             {#if item.label === "GitHub"}
               <Github size={16} strokeWidth={2.1} aria-hidden="true" />
@@ -127,7 +120,6 @@
             aria-expanded={isOpen}
             aria-haspopup="true"
             aria-label={locale.value === "fr" ? "Changer la langue" : "Change language"}
-            title={locale.value === "fr" ? "Changer la langue" : "Change language"}
           >
             <Globe size={14} class="docs-locale-trigger-icon" aria-hidden="true" />
             <span>{locale.value.toUpperCase()}</span>
@@ -156,59 +148,6 @@
                 <span class="locale-check">{#if locale.value === "en"}✓{/if}</span>
                 <span>English</span>
               </button>
-            </div>
-          {/if}
-        </div>
-
-        <div class="docs-auth-wrapper">
-          <button
-            type="button"
-            class="docs-header-control docs-header-menuButton docs-auth-trigger"
-            onclick={() => (isAuthOpen = !isAuthOpen)}
-            aria-expanded={isAuthOpen}
-            aria-haspopup="menu"
-            aria-label={isLoggedIn
-              ? locale.value === "fr" ? "Mon compte (connecté)" : "My account (signed in)"
-              : locale.value === "fr" ? "Se connecter" : "Sign in"}
-            title={isLoggedIn
-              ? locale.value === "fr" ? "Mon compte (connecté)" : "My account (signed in)"
-              : locale.value === "fr" ? "Se connecter" : "Sign in"}
-          >
-            <User size={15} class="docs-auth-avatar-icon" />
-            {#if isLoggedIn}
-              <span class="docs-auth-badge" aria-label="Connecté"></span>
-            {/if}
-          </button>
-
-          {#if isAuthOpen}
-            <div class="docs-auth-popover" role="menu">
-              {#if !isLoggedIn}
-                <button
-                  type="button"
-                  class="docs-auth-popover-item docs-auth-popover-item--primary"
-                  role="menuitem"
-                  onclick={() => { isLoggedIn = true; isAuthOpen = false; }}
-                >
-                  <LogIn size={13} />
-                  <span>{locale.value === "fr" ? "Se connecter" : "Sign in"}</span>
-                </button>
-              {:else}
-                <div class="docs-auth-user-info">
-                  <span class="docs-auth-user-name">Jean-Michel Sentropic</span>
-                  <span class="docs-auth-user-email">jm.sentropic@example.com</span>
-                  <span class="docs-auth-user-role">{locale.value === "fr" ? "Administrateur" : "Administrator"}</span>
-                </div>
-                <hr class="docs-auth-divider" />
-                <button
-                  type="button"
-                  class="docs-auth-popover-item"
-                  role="menuitem"
-                  onclick={() => { isLoggedIn = false; isAuthOpen = false; }}
-                >
-                  <LogOut size={13} />
-                  <span>{locale.value === "fr" ? "Se déconnecter" : "Sign out"}</span>
-                </button>
-              {/if}
             </div>
           {/if}
         </div>

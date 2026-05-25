@@ -1,4 +1,4 @@
-import { component, semantic } from "@sentropic/design-system-tokens";
+import { component, foundation, semantic } from "@sentropic/design-system-tokens";
 import type { TenantTheme } from "../schema.js";
 
 export const entropicTheme: TenantTheme = {
@@ -6,20 +6,21 @@ export const entropicTheme: TenantTheme = {
   label: "Entropic",
   mode: "light",
   tokens: {
+    foundation,
     semantic: {
       ...semantic,
       action: {
         ...semantic.action,
         primary: "oklch(50% 0.134 242.749)",
-        primaryText: "#ffffff"
+        primaryText: semantic.action.primaryText
       }
     },
     component: {
       ...component,
       chat: {
         ...component.chat,
-        composerSurface: "#ffffff",
-        toolCallSurface: "#f8fafc"
+        composerSurface: semantic.surface.raised,
+        toolCallSurface: semantic.surface.subtle
       }
     }
   }

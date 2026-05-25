@@ -122,7 +122,7 @@ export const COMPONENTS: ComponentEntry[] = [
   {
     name: "Combobox",
     slug: "combobox",
-    status: "stub",
+    status: "documented",
     category: "form",
     description: {
       fr: "Champ texte autocomplété avec sélection dans une liste.",
@@ -205,7 +205,7 @@ export const COMPONENTS: ComponentEntry[] = [
   {
     name: "NumberInput",
     slug: "number-input",
-    status: "stub",
+    status: "documented",
     category: "form",
     description: {
       fr: "Champ numérique avec incrément/décrément.",
@@ -259,7 +259,7 @@ export const COMPONENTS: ComponentEntry[] = [
   {
     name: "Slider",
     slug: "slider",
-    status: "stub",
+    status: "documented",
     category: "form",
     description: {
       fr: "Curseur de valeur continue.",
@@ -351,7 +351,7 @@ export const COMPONENTS: ComponentEntry[] = [
   {
     name: "Toggle",
     slug: "toggle",
-    status: "stub",
+    status: "documented",
     category: "form",
     description: {
       fr: "Toggle compact (variante du Switch).",
@@ -374,7 +374,7 @@ export const COMPONENTS: ComponentEntry[] = [
   {
     name: "Header",
     slug: "header",
-    status: "stub",
+    status: "documented",
     category: "navigation",
     description: {
       fr: "En-tête applicatif avec logo, navigation et actions.",
@@ -583,7 +583,7 @@ export const COMPONENTS: ComponentEntry[] = [
   {
     name: "ProgressBar",
     slug: "progress-bar",
-    status: "stub",
+    status: "documented",
     category: "feedback",
     description: {
       fr: "Barre de progression déterminée ou indéterminée.",
@@ -604,7 +604,7 @@ export const COMPONENTS: ComponentEntry[] = [
   {
     name: "SkeletonText",
     slug: "skeleton-text",
-    status: "stub",
+    status: "documented",
     category: "feedback",
     description: {
       fr: "Placeholder lignes de texte en chargement.",
@@ -638,7 +638,7 @@ export const COMPONENTS: ComponentEntry[] = [
   {
     name: "Badge",
     slug: "badge",
-    status: "stub",
+    status: "documented",
     category: "data",
     description: {
       fr: "Étiquette compacte avec tonalité (success/warning/...).",
@@ -648,7 +648,7 @@ export const COMPONENTS: ComponentEntry[] = [
   {
     name: "DataTable",
     slug: "data-table",
-    status: "stub",
+    status: "documented",
     category: "data",
     description: {
       fr: "Table avancée: tri, sélection multi-lignes.",

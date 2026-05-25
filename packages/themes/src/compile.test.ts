@@ -8,6 +8,7 @@ describe("compileTheme", () => {
   it("compiles a tenant theme into scoped CSS variables", () => {
     const css = compileTheme(sentTechTheme);
     expect(css).toContain('[data-st-theme="sent-tech"]');
+    expect(css).toContain("--st-foundation-font-sans:");
     expect(css).toContain("--st-semantic-action-primary:");
     expect(css).toContain("--st-component-chat-composerSurface:");
   });
@@ -21,6 +22,7 @@ describe("compileTheme", () => {
   it("exports build-time CSS for Forge low-coupling integration", () => {
     const css = readFileSync(join(process.cwd(), "css", "forge.css"), "utf8");
     expect(css).toContain('[data-st-theme="forge"]');
+    expect(css).toContain("--st-foundation-font-sans");
     expect(css).toContain("--st-semantic-action-primary");
     expect(css).toContain("--st-component-dataTable-headerBackground");
   });
