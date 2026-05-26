@@ -2,6 +2,11 @@
 
 Ce document présente la restructuration profonde, personnalisée et haut de gamme de la CLI **`design`**. Il élimine toute copie littérale des concepts originels, met en avant l'accessibilité (`a11y`) en tant que pilier de premier plan, et distingue formellement l'application des bases structurelles physiques (**`design align`**) du polissage de la finesse esthétique et créative (**`design polish`**).
 
+> **Cadrage produit (canonique).**
+> - **Package npm = `@sentropic/design-system-skills`** (module du design system). Le nom « impeccable » est **proscrit** : c'est la skill source, on ne clone pas. Le binaire reste `design`.
+> - Le moteur `design` = **5 verbes** : `init`, `build`, `check`, `align`, `polish`. L'**audit n'est qu'un verbe** = `design check --tech`. Ne pas réduire le moteur à « audit ».
+> - **État (2026-05-25)** : seul `design check --tech` est livré (V1). Les 4 autres verbes sont à implémenter.
+
 ---
 
 ## 📐 1. Les 5 Commandes Majeures de la CLI `design`
