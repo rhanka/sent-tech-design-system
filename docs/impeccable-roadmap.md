@@ -52,9 +52,9 @@ Objectif : transformer la capacité « audit + langage de design partagé » en 
 
 ### Stratégies de modularisation évaluées
 
-#### Option A. Package npm `@sentropic/design-system-impeccable`
+#### Option A. Package npm `@sentropic/design-system-skills`
 
-**Forme** : nouveau workspace `packages/impeccable/` aligné sur `packages/tokens`, `packages/themes`, `packages/components-svelte`. Expose une CLI (`bin: { "sentech-impeccable": "./dist/cli.js" }`) + une lib programmatique (`import { audit, critique } from '@sentropic/design-system-impeccable'`).
+**Forme** : nouveau workspace `packages/skills/` aligné sur `packages/tokens`, `packages/themes`, `packages/components-svelte`. Expose une CLI (`bin: { "sentech-impeccable": "./dist/cli.js" }`) + une lib programmatique (`import { audit, critique } from '@sentropic/design-system-skills'`).
 
 **Contenu** :
 
@@ -70,7 +70,7 @@ Objectif : transformer la capacité « audit + langage de design partagé » en 
 
 #### Option B. Skill Claude versionné dans le repo
 
-**Forme** : `tools/skills/sent-tech-impeccable/SKILL.md` + `tools/skills/sent-tech-impeccable/reference/*.md` + `tools/skills/sent-tech-impeccable/scripts/*.mjs`. README explique `cp -r tools/skills/sent-tech-impeccable ~/.claude/skills/` ou symlink.
+**Forme** : `tools/skills/sent-tech-skills/SKILL.md` + `tools/skills/sent-tech-skills/reference/*.md` + `tools/skills/sent-tech-skills/scripts/*.mjs`. README explique `cp -r tools/skills/sent-tech-skills ~/.claude/skills/` ou symlink.
 
 **Contenu** :
 
@@ -106,7 +106,7 @@ Objectif : transformer la capacité « audit + langage de design partagé » en 
 
 ### Recommandation
 
-**Combiner A (cœur) + B (langage IA), dans cet ordre.** A délivre le livrable DS au sens propre : un package npm `@sentropic/design-system-impeccable` qui encode les règles Sent Tech et tourne sans IA, en local et en CI, consommable par n'importe quel projet (Svelte, vanilla, etc.). B vient en complément naturel, parce que les références (`tokens.md`, `primitives.md`, `chat-ui.md`) sont une cristallisation des conventions Sent Tech qui sert aussi bien le linter déterministe que les agents qui travaillent sur le DS. C est reporté tant qu'il n'y a pas d'autres sous-commandes à grouper sous un `sentech` global ; D est reporté car il restreint l'audience au sous-ensemble SvelteKit.
+**Combiner A (cœur) + B (langage IA), dans cet ordre.** A délivre le livrable DS au sens propre : un package npm `@sentropic/design-system-skills` qui encode les règles Sent Tech et tourne sans IA, en local et en CI, consommable par n'importe quel projet (Svelte, vanilla, etc.). B vient en complément naturel, parce que les références (`tokens.md`, `primitives.md`, `chat-ui.md`) sont une cristallisation des conventions Sent Tech qui sert aussi bien le linter déterministe que les agents qui travaillent sur le DS. C est reporté tant qu'il n'y a pas d'autres sous-commandes à grouper sous un `sentech` global ; D est reporté car il restreint l'audience au sous-ensemble SvelteKit.
 
 ## Plan d'implémentation (phasé)
 
@@ -127,14 +127,14 @@ Objectif : transformer la capacité « audit + langage de design partagé » en 
 
 **Scope** :
 
-- Créer `packages/impeccable/` (workspace npm), aligné sur `packages/tokens` (TypeScript, `tsc -p tsconfig.json`, publishConfig public, scope `@sentropic`).
+- Créer `packages/skills/` (workspace npm), aligné sur `packages/tokens` (TypeScript, `tsc -p tsconfig.json`, publishConfig public, scope `@sentropic`).
 - Exposer `bin: { "sentech-impeccable": "./dist/cli.js" }` + une API programmatique `audit(target, options)`.
 - Réutiliser **en interne** la CLI `impeccable` upstream comme dépendance (`dependencies: { impeccable: "^x.y.z" }`) pour les règles génériques, et ajouter une couche de configuration Sent Tech (preset `sentech-defaults`).
 - Tests Vitest, build `svelte-package`-compatible, smoke pack via `scripts/smoke-pack.mjs`.
 
 **Dépendances** : Phase 0 (pour avoir une base de règles validée à porter).
 
-**Output** : `packages/impeccable/` publiable, version `0.7.0` (alignée), une release npm 0.8.0 du DS.
+**Output** : `packages/skills/` publiable, version `0.7.0` (alignée), une release npm 0.8.0 du DS.
 
 ### Phase 2 — capacités équivalentes
 
@@ -142,12 +142,12 @@ Objectif : transformer la capacité « audit + langage de design partagé » en 
 
 - Ajouter les règles déterministes spécifiques Sent Tech : anti-pattern « rail gauche + container arrondi » (déjà signalé en mémoire utilisateur), « hero shelf », utilisation de couleurs hors `@sentropic/design-system-tokens`, easings hors `motion`, classes hors design system, niveaux de heading sautés, line-height insuffisant.
 - Adapter qui lit `@sentropic/design-system-tokens/dist` et `@sentropic/design-system-themes/dist` et valide la cohérence dans le projet scanné.
-- Versionner les références (`reference/tokens.md`, `reference/primitives.md`, `reference/chat-ui.md`, `reference/anti-patterns-sent-tech.md`) sous `packages/impeccable/skill/` ET publier le même contenu sous `.claude/skills/sent-tech-impeccable/` (Option B greffée à A).
+- Versionner les références (`reference/tokens.md`, `reference/primitives.md`, `reference/chat-ui.md`, `reference/anti-patterns-sent-tech.md`) sous `packages/skills/skill/` ET publier le même contenu sous `.claude/skills/sent-tech-impeccable/` (Option B greffée à A).
 - Documenter dans `apps/docs` une page « Impeccable Sent Tech » qui présente les règles avec exemples avant/après.
 
 **Dépendances** : Phase 1.
 
-**Output** : `@sentropic/design-system-impeccable` 0.9.0 avec règles propres Sent Tech, skill Claude associé, page de docs.
+**Output** : `@sentropic/design-system-skills` 0.9.0 avec règles propres Sent Tech, skill Claude associé, page de docs.
 
 ### Phase 3 — capacités supérieures (différenciation)
 
@@ -161,7 +161,7 @@ Objectif : transformer la capacité « audit + langage de design partagé » en 
 
 **Dépendances** : Phase 2.
 
-**Output** : `@sentropic/design-system-impeccable` 1.0.0, capacités MCP + diff + chat-UI guard documentées, premier projet consommateur tiers en bêta.
+**Output** : `@sentropic/design-system-skills` 1.0.0, capacités MCP + diff + chat-UI guard documentées, premier projet consommateur tiers en bêta.
 
 ## Décisions ouvertes
 
@@ -171,5 +171,5 @@ Objectif : transformer la capacité « audit + langage de design partagé » en 
 - **Format des fichiers de contexte** : adopter le nommage `PRODUCT.md`/`DESIGN.md` à la racine (convention upstream) ou les ranger sous `docs/impeccable/` pour ne pas polluer la racine déjà chargée (`PLAN.md`, `README.md`, `handover.md`).
 - **Périmètre du linter CI** : informatif (warn only) ou bloquant ? Recommandé warn-only en Phase 0/1, bloquant à partir de la Phase 2 sur les règles « critiques » (rail gauche + arrondi, hero shelf, tokens hors DS).
 - **Anti-patterns prioritaires** : valider la liste initiale des règles Sent Tech-spécifiques (cf. Phase 2) avec le designer/utilisateur avant codage.
-- **Publication npm** : publier `@sentropic/design-system-impeccable` sur le même cadencement que les autres packages (`tokens`, `themes`, `components-svelte`) ou en cycle indépendant ?
+- **Publication npm** : publier `@sentropic/design-system-skills` sur le même cadencement que les autres packages (`tokens`, `themes`, `components-svelte`) ou en cycle indépendant ?
 - **Versioning** : aligner sur la version du DS (`0.7.0`, `0.8.0`...) ou versioning sémantique propre ?

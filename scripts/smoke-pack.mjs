@@ -36,7 +36,7 @@ const packages = [
     ],
   },
   {
-    name: "@sentropic/design-system-impeccable",
+    name: "@sentropic/design-system-skills",
     requiredFiles: ["dist/index.js", "dist/index.d.ts", "dist/cli.js", "dist/cli.d.ts"],
   },
 ];
@@ -133,7 +133,7 @@ import { readFileSync } from "node:fs";
 
 const tokens = await import("@sentropic/design-system-tokens");
 const themes = await import("@sentropic/design-system-themes");
-const impeccable = await import("@sentropic/design-system-impeccable");
+const skills = await import("@sentropic/design-system-skills");
 
 if (typeof tokens.flattenTokens !== "function") {
   throw new Error("@sentropic/design-system-tokens missing flattenTokens export");
@@ -143,8 +143,8 @@ if (typeof themes.compileTheme !== "function") {
   throw new Error("@sentropic/design-system-themes missing compileTheme export");
 }
 
-if (typeof impeccable.audit !== "function") {
-  throw new Error("@sentropic/design-system-impeccable missing audit export");
+if (typeof skills.audit !== "function") {
+  throw new Error("@sentropic/design-system-skills missing audit export");
 }
 
 const componentsEntry = await import.meta.resolve("@sentropic/design-system-svelte");

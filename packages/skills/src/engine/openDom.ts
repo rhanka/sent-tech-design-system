@@ -8,7 +8,7 @@ import type { AuditTarget } from "../types.js";
 export async function openDom(target: AuditTarget): Promise<JSDOM> {
   switch (target.kind) {
     case "html":
-      return new JSDOM(target.value, { url: "https://impeccable.local/" });
+      return new JSDOM(target.value, { url: "https://design.local/" });
     case "file": {
       const html = readFileSync(target.value, "utf8");
       return new JSDOM(html, { url: `file://${target.value}` });

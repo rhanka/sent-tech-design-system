@@ -59,7 +59,7 @@ jobs:
 
           const expected = process.env.EXPECTED_VERSION;
           // Publishable design-system packages only. The design-audit engine
-          // (packages/impeccable) is intentionally excluded from npm releases;
+          // (packages/skills) is intentionally excluded from npm releases;
           // it will be productized under an on-brand name after WP8.
           const publishable = [
             "packages/tokens/package.json",
@@ -114,7 +114,7 @@ jobs:
       - name: Publish packages
         run: |
           # Design-system packages only, in dependency order.
-          # The design-audit engine (packages/impeccable) is intentionally NOT
+          # The design-audit engine (packages/skills) is intentionally NOT
           # published here; it is parked pending a post-WP8 productization and
           # an on-brand rename. Do not add it back without an explicit decision.
           npm publish --workspace @sentropic/design-system-tokens --access public

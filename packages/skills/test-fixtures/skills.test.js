@@ -29,7 +29,7 @@ test("cli supports the WP8 design audit contract", () => {
   assert.strictEqual(report.target.kind, "html");
   assert.ok(Array.isArray(report.findings));
   assert.ok(report.findings.some((finding) => finding.ruleId === "touch-target-44"));
-  assert.match(result.stderr, /impeccable-sent-tech:/);
+  assert.match(result.stderr, /sentech-design:/);
 });
 
 test("package exposes the short design binary", () => {
@@ -75,7 +75,7 @@ test("cli rejects unsupported persona simulations explicitly", () => {
 
 test("cli align tones rewrites common bare hex colors to published theme tokens", () => {
   const cliPath = resolve(import.meta.dirname || "./test-fixtures", "../dist/cli.js");
-  const tempDir = mkdtempSync(join(tmpdir(), "sent-tech-impeccable-"));
+  const tempDir = mkdtempSync(join(tmpdir(), "sent-tech-skills-"));
   const targetPath = join(tempDir, "sample.html");
   writeFileSync(
     targetPath,

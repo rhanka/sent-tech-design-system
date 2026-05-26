@@ -22,7 +22,7 @@
 ### P1
 
 1. **Rendre la sortie de skill réutilisable CI**  
-- Ajouter un rapport unique normalisé (JSON + markdown résumé) quand `packages/impeccable` atteint 8+ règles.  
+- Ajouter un rapport unique normalisé (JSON + markdown résumé) quand `packages/skills` atteint 8+ règles.  
 - Prévoir un script `npm run lint:impeccable` branchable dans GitHub Actions.
 
 ### P2

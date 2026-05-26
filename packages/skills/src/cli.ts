@@ -35,7 +35,7 @@ function prettySummary(findings: Finding[], durationMs: number): string {
     counts[finding.severity]++;
   }
 
-  const header = `impeccable-sent-tech: ${findings.length} finding(s) in ${durationMs}ms — high:${counts.high} medium:${counts.medium} low:${counts.low}`;
+  const header = `sentech-design: ${findings.length} finding(s) in ${durationMs}ms — high:${counts.high} medium:${counts.medium} low:${counts.low}`;
   const preview = [...findings]
     .sort((a, b) => severityRank(a) - severityRank(b))
     .slice(0, 5)
@@ -749,6 +749,6 @@ async function main() {
 }
 
 main().catch((error: Error) => {
-  process.stderr.write(`impeccable-sent-tech: ${error.message}\n`);
+  process.stderr.write(`sentech-design: ${error.message}\n`);
   process.exit(2);
 });
