@@ -1,0 +1,109 @@
+name: Skills Publish
+
+# Publication du module moteur `design` (@sentropic/design-system-skills),
+# sur sa propre ligne de version, indépendante des packages DS (tokens/themes/
+# svelte). Déclenchée par un tag `skills-v<version>`.
+#
+# Premier publish d'un package NEUF : npm Trusted Publishing (OIDC) ne peut pas
+# encore être configuré tant que le package n'existe pas. On utilise donc le
+# secret bootstrap `NPM_TOKEN` (cf. docs/release.md). Une fois le package créé,
+# configurer Trusted Publishing puis retirer le token (passage à l'OIDC pur,
+# comme les packages DS).
+
+on:
+  push:
+    branches: ["main"]
+    tags: ["skills-v*"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+      - run: npm ci
+      - name: Build & test skills
+        run: |
+          npm --workspace packages/skills run build
+          npm --workspace packages/skills run test
+
+  release-guard:
+    needs: verify
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/skills-v')
+    env:
+      RELEASE_BRANCH: ${{ github.event.repository.default_branch }}
+      TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify tag is merged into default branch
+        run: |
+          git fetch origin "${RELEASE_BRANCH}:refs/remotes/origin/${RELEASE_BRANCH}"
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" "origin/${RELEASE_BRANCH}"; then
+            echo "::error::Refusing to publish ${TAG}: ${GITHUB_SHA} is not merged into origin/${RELEASE_BRANCH}."
+            exit 1
+          fi
+      - name: Verify skills version matches tag
+        run: |
+          EXPECTED="${TAG#skills-v}"
+          ACTUAL=$(node -p "require('./packages/skills/package.json').version")
+          if [ "$EXPECTED" != "$ACTUAL" ]; then
+            echo "::error::Tag ${TAG} expects ${EXPECTED} but packages/skills is ${ACTUAL}."
+            exit 1
+          fi
+          echo "skills version matches ${EXPECTED}"
+
+  publish:
+    needs: release-guard
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/skills-v')
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+      - name: Upgrade npm
+        run: npm install -g npm@11.6.2
+      - name: Install and build
+        run: |
+          npm ci
+          npm --workspace packages/skills run build
+      - name: Publish skills
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --workspace @sentropic/design-system-skills --access public
+
+  post-publish-check:
+    needs: publish
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/skills-v')
+    env:
+      TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Wait for npm propagation
+        run: |
+          VERSION="${TAG#skills-v}"
+          for attempt in {1..20}; do
+            if npm view "@sentropic/design-system-skills@${VERSION}" version --silent > /dev/null 2>&1; then
+              echo "@sentropic/design-system-skills@${VERSION} is available from npm."
+              exit 0
+            fi
+            echo "Waiting for npm propagation, attempt ${attempt}/20..."
+            sleep 15
+          done
+          echo "::error::Timed out waiting for npm propagation."
+          exit 1
