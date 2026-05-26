@@ -735,7 +735,31 @@ async function handleAlign(args: string[]) {
   }
 
   if (isSpacing || !anyFlag) {
-    process.stderr.write(`  \x1b[32m✔ Espacements & Grille :\x1b[0m Alignement structurel sur grille stricte (multiples de 4px/8px) réussi.\n`);
+    if (isLocalFile && fileContent) {
+      // Auto-alignement sur grille 4px : arrondit les valeurs d'espacement hors-grille.
+      const spacingDeclRe =
+        /\b(?:padding|margin|gap|row-gap|column-gap|inset)(?:-(?:top|right|bottom|left|inline|block))?\s*:\s*[^;}{"']+/gi;
+      let spacingFixCount = 0;
+      const newContent = fileContent.replace(spacingDeclRe, (decl) =>
+        decl.replace(/\b(\d+)px\b/g, (pxMatch, num) => {
+          const n = Number(num);
+          if (n <= 0) return pxMatch;
+          const rounded = Math.max(4, Math.round(n / 4) * 4);
+          if (rounded !== n) spacingFixCount++;
+          return `${rounded}px`;
+        }),
+      );
+      if (spacingFixCount > 0) {
+        modificationsCount += spacingFixCount;
+        fileContent = newContent;
+        writeFileSync(filePath, fileContent, "utf-8");
+        process.stderr.write(`  \x1b[32m✔ Auto-alignement Espacements :\x1b[0m ${spacingFixCount} valeur(s) hors-grille arrondie(s) au multiple de 4px le plus proche.\n`);
+      } else {
+        process.stderr.write(`  \x1b[32m✔ Espacements & Grille :\x1b[0m Toutes les valeurs d'espacement respectent déjà la grille de 4px.\n`);
+      }
+    } else {
+      process.stderr.write(`  \x1b[32m✔ Espacements & Grille :\x1b[0m Alignement structurel sur grille stricte (multiples de 4px/8px) vérifié.\n`);
+    }
   }
   if (isTypo || !anyFlag) {
     process.stderr.write(`  \x1b[32m✔ Typographie :\x1b[0m Échelle typographique, line-heights et niveaux de titres harmonisés.\n`);

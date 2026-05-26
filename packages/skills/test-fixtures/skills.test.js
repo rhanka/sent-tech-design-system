@@ -123,6 +123,24 @@ test("cli rejects unsupported persona simulations explicitly", () => {
   assert.match(result.stderr, /--personas/);
 });
 
+test("design align --spacing rounds off-grid spacing to the 4px grid", () => {
+  const cliPath = resolve(import.meta.dirname || "./test-fixtures", "../dist/cli.js");
+  const tempDir = mkdtempSync(join(tmpdir(), "sent-tech-spacing-"));
+  const targetPath = join(tempDir, "sample.html");
+  writeFileSync(targetPath, "<style>.box{padding:5px 10px;margin:7px;border:1px solid red;gap:6px}</style>");
+  try {
+    const result = spawnSync(process.execPath, [cliPath, "align", targetPath, "--spacing"], { encoding: "utf-8" });
+    assert.strictEqual(result.status, 0);
+    const out = readFileSync(targetPath, "utf-8");
+    assert.match(out, /padding:4px 12px/);
+    assert.match(out, /margin:8px/);
+    assert.match(out, /gap:8px/);
+    assert.match(out, /border:1px solid red/);
+  } finally {
+    rmSync(tempDir, { recursive: true, force: true });
+  }
+});
+
 test("cli align tones rewrites common bare hex colors to published theme tokens", () => {
   const cliPath = resolve(import.meta.dirname || "./test-fixtures", "../dist/cli.js");
   const tempDir = mkdtempSync(join(tmpdir(), "sent-tech-skills-"));
