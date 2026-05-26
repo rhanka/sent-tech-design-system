@@ -817,10 +817,25 @@ async function handleAlign(args: string[]) {
     }
   }
   if (isTypo || !anyFlag) {
-    process.stderr.write(`  \x1b[32m✔ Typographie :\x1b[0m Échelle typographique, line-heights et niveaux de titres harmonisés.\n`);
+    if (isLocalFile && fileContent) {
+      const fontFamilies = fileContent.match(/font-family\s*:[^;}{]+/gi) || [];
+      const offToken = fontFamilies.filter((decl) => !/var\(--/.test(decl)).length;
+      if (offToken > 0) {
+        process.stderr.write(`  \x1b[33m• Typographie :\x1b[0m ${offToken} déclaration(s) \`font-family\` hors token — envisager \`var(--st-…-fontFamily)\` (passe informative).\n`);
+      } else {
+        process.stderr.write(`  \x1b[32m✔ Typographie :\x1b[0m familles de police déjà tokenisées (ou absentes).\n`);
+      }
+    } else {
+      process.stderr.write(`  \x1b[2m• Typographie :\x1b[0m passe informative — auto-fix déterministe indisponible (cible non-fichier).\n`);
+    }
   }
   if (isResponsive || !anyFlag) {
-    process.stderr.write(`  \x1b[32m✔ Responsiveness :\x1b[0m Adaptabilité fluide vérifiée sur mobiles, tablettes et larges écrans.\n`);
+    if (isLocalFile && fileContent) {
+      const mediaCount = (fileContent.match(/@media/gi) || []).length;
+      process.stderr.write(`  \x1b[2m• Responsiveness :\x1b[0m ${mediaCount} media query(ies) détectée(s) — passe informative (pas d'auto-fix déterministe).\n`);
+    } else {
+      process.stderr.write(`  \x1b[2m• Responsiveness :\x1b[0m passe informative (cible non-fichier).\n`);
+    }
   }
 
   if (modificationsCount > 0) {
