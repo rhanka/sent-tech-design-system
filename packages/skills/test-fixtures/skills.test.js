@@ -111,6 +111,29 @@ test("cli supports design check technical and heuristics aliases", () => {
   assert.strictEqual(heuristicsReport.heuristics.accessibilityFriction, "none");
 });
 
+test("design build scaffolds a real Svelte 5 component file", () => {
+  const cliPath = resolve(import.meta.dirname || "./test-fixtures", "../dist/cli.js");
+  const dir = mkdtempSync(join(tmpdir(), "sent-tech-build-"));
+  try {
+    const result = spawnSync(process.execPath, [cliPath, "build", "FancyCard", "--out", dir], { encoding: "utf-8" });
+    assert.strictEqual(result.status, 0);
+    const file = join(dir, "FancyCard.svelte");
+    assert.ok(existsSync(file), "FancyCard.svelte should be created");
+    const content = readFileSync(file, "utf-8");
+    assert.match(content, /\$props\(\)/);
+    assert.match(content, /st-fancy-card/);
+    assert.match(content, /--st-semantic-text-primary/);
+
+    const second = spawnSync(process.execPath, [cliPath, "build", "FancyCard", "--out", dir], { encoding: "utf-8" });
+    assert.strictEqual(second.status, 1, "must refuse overwrite without --force");
+
+    const propose = spawnSync(process.execPath, [cliPath, "build", "Foo", "--propose"], { encoding: "utf-8" });
+    assert.strictEqual(propose.status, 2, "--propose must be honest (no false success)");
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 test("cli rejects unsupported persona simulations explicitly", () => {
   const cliPath = resolve(import.meta.dirname || "./test-fixtures", "../dist/cli.js");
   const result = spawnSync(

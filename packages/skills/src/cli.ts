@@ -496,6 +496,51 @@ ${accessibility}
   process.exit(0);
 }
 
+function toPascalCase(input: string): string {
+  const parts = input.replace(/[^a-zA-Z0-9]+/g, " ").trim().split(/\s+/).filter(Boolean);
+  const pascal = parts.map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join("");
+  return pascal || "Component";
+}
+
+function toKebabCase(input: string): string {
+  const kebab = input
+    .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
+    .replace(/[^a-zA-Z0-9]+/g, "-")
+    .toLowerCase()
+    .replace(/^-+|-+$/g, "");
+  return kebab || "component";
+}
+
+function scaffoldSvelteComponent(name: string, kebab: string): string {
+  return `<script lang="ts">
+  interface Props {
+    /** Contenu du composant. */
+    children?: import("svelte").Snippet;
+    /** Classe(s) CSS additionnelle(s). */
+    class?: string;
+  }
+
+  let { children, class: className = "" }: Props = $props();
+</script>
+
+<div class={["st-${kebab}", className].filter(Boolean).join(" ")}>
+  {@render children?.()}
+</div>
+
+<style>
+  .st-${kebab} {
+    display: block;
+    padding: 16px;
+    color: var(--st-semantic-text-primary);
+    background: var(--st-semantic-surface-default);
+    border: 1px solid var(--st-semantic-border-subtle);
+    border-radius: var(--st-component-control-radius, 4px);
+    font-family: inherit;
+  }
+</style>
+`;
+}
+
 async function handleBuild(args: string[]) {
   if (args.includes("-h") || args.includes("--help")) {
     printBuildHelp();
@@ -506,33 +551,42 @@ async function handleBuild(args: string[]) {
   const isPromote = args.includes("--promote");
   const isGlobal = args.includes("--global");
 
-  const feature = args.find(arg => !arg.startsWith("-")) || "NewComponent";
-
-  if (isPropose) {
+  // --propose / --promote / --global : passes créatives non déterministes,
+  // pilotées par l'agent. Pas de faux succès tant qu'elles ne produisent pas
+  // d'artefact réel en CLI.
+  if (isPropose || isPromote || isGlobal) {
+    const which = isPropose ? "--propose" : isPromote ? "--promote" : "--global";
     process.stderr.write(
-      `\x1b[1m\x1b[35m[design build] 📐 Proposition ergonomique et zoning pour '${feature}'...\x1b[0m\n` +
-      `\x1b[2mGénération du zoning fonctionnel et structuration logique préliminaire...\x1b[0m\n` +
-      `\x1b[1m\x1b[32m✔ Succès !\x1b[0m Proposition d'architecture visuelle validée pour '${feature}'.\n`
+      `\x1b[33m[design build ${which}]\x1b[0m Passe expérimentale pilotée par l'agent : ` +
+      `aucun artefact déterministe produit en CLI pour l'instant.\n` +
+      `Utilise \`design build <feature>\` (craft) pour générer un squelette de composant réel.\n`
     );
-  } else if (isPromote) {
-    process.stderr.write(
-      `\x1b[1m\x1b[35m[design build] 🚀 Promotion du composant local '${feature}'...\x1b[0m\n` +
-      `\x1b[2mIsolation du composant et extraction des styles vers le design system global...\x1b[0m\n` +
-      `\x1b[1m\x1b[32m✔ Succès !\x1b[0m Le composant '${feature}' est promu au niveau global.\n`
-    );
-  } else if (isGlobal) {
-    process.stderr.write(
-      `\x1b[1m\x1b[35m[design build] 🌍 Alignement et conformité globale de '${feature}'...\x1b[0m\n` +
-      `\x1b[2mExécution du pipeline complet d'assurance qualité visuelle de marque...\x1b[0m\n` +
-      `\x1b[1m\x1b[32m✔ Succès !\x1b[0m Validation impeccable du composant '${feature}' effectuée.\n`
-    );
-  } else {
-    process.stderr.write(
-      `\x1b[1m\x1b[35m[design build] 🔨 Génération de code (craft Svelte 5 / CSS) pour '${feature}'...\x1b[0m\n` +
-      `\x1b[2mAssemblage des fondations physiques et application des règles ergonomiques...\x1b[0m\n` +
-      `\x1b[1m\x1b[32m✔ Succès !\x1b[0m Composant Svelte 5 '${feature}' généré et prêt pour l'intégration.\n`
-    );
+    process.exit(2);
   }
+
+  const outIdx = args.indexOf("--out");
+  const outDir = outIdx >= 0 ? (args[outIdx + 1] ?? process.cwd()) : process.cwd();
+  const force = args.includes("--force");
+  const positionals = args.filter((arg, index) => !arg.startsWith("-") && index !== outIdx + 1);
+  const feature = positionals[0] || "NewComponent";
+
+  const name = toPascalCase(feature);
+  const kebab = toKebabCase(feature);
+  const outPath = resolve(outDir, `${name}.svelte`);
+
+  if (existsSync(outPath) && !force) {
+    process.stderr.write(
+      `\x1b[1m\x1b[31mErreur :\x1b[0m ${name}.svelte existe déjà (${outPath}). Utilise --force pour écraser.\n`
+    );
+    process.exit(1);
+  }
+
+  writeFileSync(outPath, scaffoldSvelteComponent(name, kebab), "utf-8");
+  process.stderr.write(
+    `\x1b[1m\x1b[35m[design build] 🔨 craft Svelte 5\x1b[0m\n` +
+    `\x1b[1m\x1b[32m✔ Composant '${name}' généré :\x1b[0m \x1b[2m${outPath}\x1b[0m ` +
+    `(runes \`$props\`, classe \`st-${kebab}\`, tokens sémantiques \`--st-*\`).\n`
+  );
   process.exit(0);
 }
 
