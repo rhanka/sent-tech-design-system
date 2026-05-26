@@ -38,6 +38,30 @@ test("package exposes the short design binary", () => {
   assert.strictEqual(manifest.bin.design, "./dist/cli.js");
 });
 
+test("design init --extract generates DESIGN.md from real css tokens", () => {
+  const cliPath = resolve(import.meta.dirname || "./test-fixtures", "../dist/cli.js");
+  const dir = mkdtempSync(join(tmpdir(), "sent-tech-extract-"));
+  try {
+    writeFileSync(
+      join(dir, "theme.css"),
+      ":root{--st-foundation-color-blue-500:#1d4ed8;--st-semantic-text-primary:var(--st-foundation-color-blue-500);}",
+    );
+    const result = spawnSync(process.execPath, [cliPath, "init", "--extract"], {
+      cwd: dir,
+      encoding: "utf-8",
+    });
+    assert.strictEqual(result.status, 0);
+    const designPath = join(dir, "DESIGN.md");
+    assert.ok(existsSync(designPath), "DESIGN.md should be created");
+    const content = readFileSync(designPath, "utf-8");
+    assert.match(content, /--st-foundation-color-blue-500/);
+    assert.match(content, /--st-semantic-text-primary/);
+    assert.match(content, /Tokens de design/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 test("cli supports design check technical and heuristics aliases", () => {
   const cliPath = resolve(import.meta.dirname || "./test-fixtures", "../dist/cli.js");
   const technical = spawnSync(

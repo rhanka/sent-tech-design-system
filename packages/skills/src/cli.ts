@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync, readdirSync } from "node:fs";
 import { resolve } from "node:path";
 import readline from "node:readline/promises";
 import { audit } from "./engine/run.js";
@@ -174,6 +174,106 @@ function findProjectRoot(): string {
   return process.cwd();
 }
 
+const EXTRACT_SKIP_DIRS = new Set([
+  "node_modules", ".git", "dist", "build", ".svelte-kit", ".graphify",
+  "coverage", ".next", ".turbo", "out", ".cache",
+]);
+
+function listSourceFiles(dir: string, acc: string[] = []): string[] {
+  let entries;
+  try {
+    entries = readdirSync(dir, { withFileTypes: true });
+  } catch {
+    return acc;
+  }
+  for (const entry of entries) {
+    if (entry.isDirectory()) {
+      if (EXTRACT_SKIP_DIRS.has(entry.name)) continue;
+      listSourceFiles(resolve(dir, entry.name), acc);
+    } else if (/\.(css|scss|svelte)$/.test(entry.name)) {
+      acc.push(resolve(dir, entry.name));
+    }
+  }
+  return acc;
+}
+
+interface ExtractedToken {
+  values: string[];
+  count: number;
+}
+
+function extractDesignTokens(root: string): { tokens: Map<string, ExtractedToken>; fileCount: number } {
+  const files = listSourceFiles(root);
+  const tokens = new Map<string, ExtractedToken>();
+  // Custom-property DEFINITIONS only (`--name: value;`), never var() usages.
+  const declRe = /(--[A-Za-z0-9][A-Za-z0-9_-]*)\s*:\s*([^;{}]+)[;}]/g;
+  for (const file of files) {
+    let content: string;
+    try {
+      content = readFileSync(file, "utf-8");
+    } catch {
+      continue;
+    }
+    let match: RegExpExecArray | null;
+    while ((match = declRe.exec(content)) !== null) {
+      const name = match[1];
+      const value = match[2].trim();
+      if (!value || value.length > 120) continue;
+      let info = tokens.get(name);
+      if (!info) {
+        info = { values: [], count: 0 };
+        tokens.set(name, info);
+      }
+      info.count++;
+      if (info.values.length < 3 && !info.values.includes(value)) {
+        info.values.push(value);
+      }
+    }
+  }
+  return { tokens, fileCount: files.length };
+}
+
+function tokenGroup(name: string): string {
+  const m = name.match(/^--([a-z0-9]+)-([a-z0-9]+)/i);
+  if (name.startsWith("--st-") && m) return `--st-${m[2]}`;
+  if (m) return `--${m[1]}`;
+  return name;
+}
+
+function renderDesignMd(tokens: Map<string, ExtractedToken>, fileCount: number): string {
+  const groups = new Map<string, string[]>();
+  for (const name of [...tokens.keys()].sort()) {
+    const g = tokenGroup(name);
+    if (!groups.has(g)) groups.set(g, []);
+    groups.get(g)!.push(name);
+  }
+  const groupNames = [...groups.keys()].sort(
+    (a, b) => groups.get(b)!.length - groups.get(a)!.length || a.localeCompare(b),
+  );
+  const date = new Date().toISOString().slice(0, 10);
+  let out = `# DESIGN.md — Tokens de design (extraits du code réel)\n\n`;
+  out += `> Généré par \`design init --extract\` le ${date}.\n`;
+  out += `> Inventaire déterministe des propriétés CSS custom (\`--token: valeur;\`) déclarées dans le code source.\n`;
+  out += `> ${tokens.size} token(s) unique(s) sur ${fileCount} fichier(s) \`.css\`/\`.scss\`/\`.svelte\` scannés.\n\n`;
+  out += `## Sommaire\n\n`;
+  for (const g of groupNames) {
+    out += `- \`${g}-*\` — ${groups.get(g)!.length} token(s)\n`;
+  }
+  out += `\n`;
+  for (const g of groupNames) {
+    out += `## \`${g}-*\`\n\n`;
+    out += `| Token | Exemple de valeur | Occurrences |\n`;
+    out += `|---|---|---|\n`;
+    for (const name of groups.get(g)!) {
+      const info = tokens.get(name)!;
+      const sample = (info.values[0] ?? "").replace(/\|/g, "\\|");
+      out += `| \`${name}\` | \`${sample}\` | ${info.count} |\n`;
+    }
+    out += `\n`;
+  }
+  return out;
+}
+
 function parseProductMd(content: string) {
   const sections: Record<string, string> = {};
   const lines = content.split("\n");
@@ -247,10 +347,22 @@ async function handleInit(args: string[]) {
   const isExtract = args.includes("--extract");
 
   if (isExtract) {
+    const root = findProjectRoot();
+    const designPath = resolve(root, "DESIGN.md");
     process.stderr.write(
       `\x1b[1m\x1b[35m[design init] 🔎 Extraction des tokens de style réels...\x1b[0m\n` +
-      `\x1b[2mAnalyse statique des fichiers du projet à la recherche des tokens CSS et variables existants...\x1b[0m\n` +
-      `\x1b[1m\x1b[32m✔ Succès !\x1b[0m Fichier \x1b[1mDESIGN.md\x1b[0m documenté avec les tokens réels extraits du code existant.\n`
+      `\x1b[2mAnalyse statique des fichiers .css/.scss/.svelte du projet...\x1b[0m\n`
+    );
+    const { tokens, fileCount } = extractDesignTokens(root);
+    if (tokens.size === 0) {
+      process.stderr.write(
+        `\x1b[33mAucun token CSS custom (\`--xxx: …;\`) trouvé dans ${fileCount} fichier(s).\x1b[0m\n`
+      );
+      process.exit(1);
+    }
+    writeFileSync(designPath, renderDesignMd(tokens, fileCount), "utf-8");
+    process.stderr.write(
+      `\x1b[1m\x1b[32m✔ Succès !\x1b[0m \x1b[1mDESIGN.md\x1b[0m généré : ${tokens.size} token(s) sur ${fileCount} fichier(s) → \x1b[2m${designPath}\x1b[0m\n`
     );
     process.exit(0);
   }
