@@ -198,13 +198,19 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 **Dépendances** : WP8 consomme WP7 pour les règles ; WP6 ne bloque plus WP7 mais impose un retest visuel overlays/plan-completion.
 
-## WP8 — Moteur `design audit` + knowledge base + skill multi-harness
+## WP8 — Moteur `design` (CLI 5 verbes) + knowledge base + skill multi-harness
 
-**Statut global** : 🟡 60% — V1 scaffold actif, contrat `design audit <target>` verrouille localement, premiers ecarts CLI/themes corriges.
+> **Définition canonique (à ne plus driffer).** WP8 = le **moteur `design`** : ré-implémentation maison des capacités de la skill upstream `pbakaus/impeccable` (un « design language » aux dizaines de méthodes), packagée comme **module du design system**. Spec autoritative : `docs/wp8-design-cli-lean-proposal-v3.md`. Origine : session Claude `de3013d2` (22 mai) — « quelque chose de similaire **sans cloner** ».
+>
+> **Nom du package = `@sentropic/design-system-skills`** (le nom décidé à l'origine). Le rename Codex `→ -impeccable` (commit `3f3cfb6`) est **annulé** : aucun produit ne doit s'appeler « impeccable » (nom de la source).
+>
+> La CLI `design` factorise 17-19 méthodes en **5 verbes** : `init` · `build <feature>` · `check <target>` · `align <target>` · `polish <target>`. **L'audit n'est qu'1 verbe** = `design check --tech`. Ne jamais réduire le moteur `design` à « audit ».
 
-**Décidé 2026-05-24** : une seule WP8 active. Périmètre V1 strict = `design audit <target>` qui retourne un `AuditReport` JSON, codes `0/1/2`, sans Playwright et sans suite complète `design init/build/align/polish` dans le scope actif. Les docs CLI larges restent exploration future.
+**Statut global** : 🟡 — seul `design check --tech` (audit déterministe) est livré en V1 ; `init`/`build`/`align`(partiel)/`polish` restent à implémenter ; package à renommer en `design-system-skills`.
 
-**Constaté 2026-05-24** : `design build` et `design polish` restent des stubs a messages; `design check --human` est une simulation fixe. La CLI ne doit pas etre presentee comme un moteur complet tant que ces flux ne sont pas reels.
+**Périmètre V1 livré** : `design check --tech <target>` retourne un rapport JSON, codes `0/1/2`, sans Playwright. C'est 1 des 5 verbes — pas « la CLI ». Les 4 autres verbes sont le cœur du reste de WP8.
+
+**Constaté** : `design build` et `design polish` restent des stubs à messages ; `design check --human` est une simulation fixe. Ne pas présenter la CLI comme un moteur complet tant que ces flux ne sont pas réels.
 
 | Phase | Item | Statut | Notes |
 |---|---|---|---|
@@ -213,7 +219,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 | P2 Ruleset initial | 10-15 règles depuis WP7 | 🟡 60% | 7 règles actives; suggestions tokens realignees; prochaines: `cramped-padding`, `motion-subtle`, `padding-scale-token` |
 | P3 Knowledge base | `docs/principles/*` reliés aux règles | 🟡 60% | principes présents, liens règle/finding à écrire |
 | P4 Skill multi-harness | wrapper unique Claude/Codex/Gemini, zéro logique métier | 🟡 60% | skill local + script unique sur `design audit`; adapters Codex/Gemini à compléter |
-| P5 Distribution/CI/npm | lint CI, publication, règles token-aware | 🟡 25% | workflow publie 4 packages, smoke-pack inclut maintenant `impeccable`; npm public reste a `0.7.0`, `impeccable` pas encore publie |
+| P5 Distribution/CI/npm | lint CI, publication, règles token-aware | 🟡 25% | DS (tokens/themes/svelte) publiés en `0.8.0` via OIDC (2026-05-25). Le moteur `design` est **exclu du pipeline** (parqué) en attendant le rename `→ @sentropic/design-system-skills` et la productisation. |
 
 ### Suivi WP8
 
@@ -226,7 +232,8 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 | A faire | Ruleset | Passer de 7 à 10-15 règles initiales | 🟡 | 55% | Piloté par `docs/ds-audit-consolidated-v2.md`. |
 | A faire | Promesse CLI | Nettoyer ou rendre reels `build`, `polish`, `init --extract`, `check --human` | 🟡 | 35% | Eviter les faux succes et la confusion avec la CLI Impeccable upstream. |
 | A faire | Traçabilité | Lier règle, principe et finding WP7 | 🟡 | 35% | Matrice à ajouter avant CI. |
-| A faire | Release npm | Publier une version coherente apres bump/tag | ⏸️ | 30% | Local + npm historiques sont en `0.7.0`; `@sentropic/design-system-impeccable` retourne 404 sur npm. Recommande: release `0.8.0` coordonnee. |
+| Fait | Release npm DS | Publier les 3 packages DS | 🟢 | 100% | `@sentropic/design-system-{tokens,themes,svelte}@0.8.0` publiés via OIDC + provenance (run `26422110851`). |
+| A faire | Release moteur `design` | Renommer puis publier le module skills | ⏸️ | 0% | Cible `@sentropic/design-system-skills`. Pas avant rename complet (`packages/impeccable` → `skills`, ~164 réfs) + verbes réels. |
 | Attendu | Contrat V1 | Même résultat quel que soit le harness | 🟢 | 100% | `stdout` JSON, `stderr` résumé, exit `0/1/2`, aucune logique métier wrapper. |
 | Attendu | Verite produit | Les commandes exposees doivent faire ce qu'elles annoncent | 🟡 | 50% | `audit/check --tech/align --tones` sont concrets; `build/polish/human` restent a durcir ou documenter comme experimentaux. |
 
