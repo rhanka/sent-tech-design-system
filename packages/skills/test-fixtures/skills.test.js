@@ -134,6 +134,30 @@ test("design build scaffolds a real Svelte 5 component file", () => {
   }
 });
 
+test("design polish --motion / --essence are deterministic and honest", () => {
+  const cliPath = resolve(import.meta.dirname || "./test-fixtures", "../dist/cli.js");
+  const dir = mkdtempSync(join(tmpdir(), "sent-tech-polish-"));
+  const file = join(dir, "anim.html");
+  writeFileSync(file, "<style>.x{transition: all 0.2s ease;}</style>");
+  try {
+    const motion = spawnSync(process.execPath, [cliPath, "polish", file, "--motion"], { encoding: "utf-8" });
+    assert.strictEqual(motion.status, 0);
+    assert.match(readFileSync(file, "utf-8"), /prefers-reduced-motion/);
+
+    const nested = spawnSync(
+      process.execPath,
+      [cliPath, "polish", '<div class="card"><div class="card">x</div></div>', "--essence"],
+      { encoding: "utf-8" },
+    );
+    assert.strictEqual(nested.status, 1);
+
+    const creative = spawnSync(process.execPath, [cliPath, "polish", "<div>x</div>", "--spark"], { encoding: "utf-8" });
+    assert.strictEqual(creative.status, 2);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 test("cli rejects unsupported persona simulations explicitly", () => {
   const cliPath = resolve(import.meta.dirname || "./test-fixtures", "../dist/cli.js");
   const result = spawnSync(

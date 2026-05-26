@@ -4,6 +4,7 @@ import { resolve } from "node:path";
 import readline from "node:readline/promises";
 import { audit } from "./engine/run.js";
 import { heuristicReview } from "./engine/heuristics.js";
+import { openDom } from "./engine/openDom.js";
 import type { AuditTarget, Finding } from "./types.js";
 
 function resolveTarget(raw: string): AuditTarget {
@@ -840,8 +841,8 @@ async function handlePolish(args: string[]) {
     process.exit(0);
   }
 
-  const target = args.find(arg => !arg.startsWith("-"));
-  if (!target) {
+  const targetRaw = args.find(arg => !arg.startsWith("-"));
+  if (!targetRaw) {
     process.stderr.write(
       `\x1b[1m\x1b[31mErreur :\x1b[0m Veuillez spécifier une cible (fichier local, URL ou code HTML brut) pour le polissage.\n` +
       `Exemple : design polish index.html --motion\n`
@@ -850,44 +851,90 @@ async function handlePolish(args: string[]) {
   }
 
   const isMotion = args.includes("--motion");
+  const isEssence = args.includes("--essence");
   const isBolder = args.includes("--bolder");
   const isQuieter = args.includes("--quieter");
   const isSpark = args.includes("--spark");
   const isCharm = args.includes("--charm");
   const isLucid = args.includes("--lucid");
-  const isEssence = args.includes("--essence");
-  const anyFlag = isMotion || isBolder || isQuieter || isSpark || isCharm || isLucid || isEssence;
+  const anyFlag = isMotion || isEssence || isBolder || isQuieter || isSpark || isCharm || isLucid;
+  const creativeRequested = isBolder || isQuieter || isSpark || isCharm || isLucid;
+
+  // Passes créatives pures (sans pendant déterministe) : honnêtes, pas de faux succès.
+  if (creativeRequested && !isMotion && !isEssence) {
+    process.stderr.write(
+      `\x1b[33m[design polish]\x1b[0m --bolder/--quieter/--spark/--charm/--lucid sont des passes créatives ` +
+      `pilotées par l'agent : pas d'auto-fix déterministe en CLI.\n` +
+      `Passes déterministes : --motion (garde prefers-reduced-motion), --essence (cartes imbriquées).\n`
+    );
+    process.exit(2);
+  }
+
+  const target = resolveTarget(targetRaw);
+  const isLocalFile = target.kind === "file" && existsSync(target.value);
+  const filePath = isLocalFile ? target.value : "";
+  let fileContent = isLocalFile ? readFileSync(filePath, "utf-8") : "";
 
   process.stderr.write(
-    `\x1b[1m\x1b[35m[design polish] ✨ Polissage créatif et finitions esthétiques pour '${target}'...\x1b[0m\n`
+    `\x1b[1m\x1b[35m[design polish] ✨ Polissage pour '${targetRaw}'...\x1b[0m\n`
   );
+
+  let fixes = 0;
+  let issues = 0;
 
   if (isMotion || !anyFlag) {
-    process.stderr.write(`  \x1b[32m✔ Mouvement & Cinétique :\x1b[0m Transitions Svelte fluides et respect de prefers-reduced-motion.\n`);
-  }
-  if (isBolder || !anyFlag) {
-    process.stderr.write(`  \x1b[32m✔ Volume Bolder :\x1b[0m Poids visuel et contrastes de formes accentués pour plus d'impact.\n`);
-  }
-  if (isQuieter || !anyFlag) {
-    process.stderr.write(`  \x1b[32m✔ Clarté Quieter :\x1b[0m Bruit visuel atténué et espaces de respiration optimisés.\n`);
-  }
-  if (isSpark || !anyFlag) {
-    process.stderr.write(`  \x1b[32m✔ Intensité Spark :\x1b[0m Micro-survols cinétiques intenses et effets lumineux d'exception.\n`);
-  }
-  if (isCharm || !anyFlag) {
-    process.stderr.write(`  \x1b[32m✔ Facteur Charm :\x1b[0m Ravissement émotionnel discret, états vides soignés.\n`);
-  }
-  if (isLucid || !anyFlag) {
-    process.stderr.write(`  \x1b[32m✔ Copie Lucid :\x1b[0m Microcopie UX clarifiée, jargon banni, grammaire simplifiée.\n`);
-  }
-  if (isEssence || !anyFlag) {
-    process.stderr.write(`  \x1b[32m✔ Épuration Essence :\x1b[0m Structure HTML épurée des conteneurs inutiles.\n`);
+    if (isLocalFile && fileContent) {
+      const hasMotion = /transition\s*:|animation\s*:|@keyframes/i.test(fileContent);
+      const hasGuard = /prefers-reduced-motion/i.test(fileContent);
+      if (hasMotion && !hasGuard) {
+        const guard =
+          `\n@media (prefers-reduced-motion: reduce) {\n` +
+          `  *, *::before, *::after {\n` +
+          `    animation-duration: 0.01ms !important;\n` +
+          `    animation-iteration-count: 1 !important;\n` +
+          `    transition-duration: 0.01ms !important;\n` +
+          `    scroll-behavior: auto !important;\n` +
+          `  }\n}\n`;
+        fileContent = /<\/style>/i.test(fileContent)
+          ? fileContent.replace(/<\/style>/i, `${guard}</style>`)
+          : fileContent + guard;
+        writeFileSync(filePath, fileContent, "utf-8");
+        fixes++;
+        process.stderr.write(`  \x1b[32m✔ Mouvement :\x1b[0m garde \`prefers-reduced-motion\` ajoutée (animations détectées sans garde).\n`);
+      } else if (hasMotion) {
+        process.stderr.write(`  \x1b[32m✔ Mouvement :\x1b[0m \`prefers-reduced-motion\` déjà présent.\n`);
+      } else {
+        process.stderr.write(`  \x1b[32m✔ Mouvement :\x1b[0m aucune animation/transition à protéger.\n`);
+      }
+    } else {
+      process.stderr.write(`  \x1b[33m• Mouvement :\x1b[0m cible non-fichier — auto-fix indisponible.\n`);
+    }
   }
 
-  process.stderr.write(
-    `\x1b[1m\x1b[32m✔ Succès !\x1b[0m Finitions esthétiques appliquées avec maestria sur '${target}'.\n`
-  );
-  process.exit(0);
+  if (isEssence || !anyFlag) {
+    const dom = await openDom(target);
+    const cardSelector = "[class*='card'], [class*='Card']";
+    let nested = 0;
+    for (const card of Array.from(dom.window.document.querySelectorAll(cardSelector))) {
+      if (card.querySelector(cardSelector)) nested++;
+    }
+    dom.window.close();
+    if (nested > 0) {
+      issues += nested;
+      process.stderr.write(`  \x1b[33m✖ Essence :\x1b[0m ${nested} carte(s) imbriquée(s) détectée(s) (anti-pattern) — aplatir la structure.\n`);
+    } else {
+      process.stderr.write(`  \x1b[32m✔ Essence :\x1b[0m aucune carte imbriquée détectée.\n`);
+    }
+  }
+
+  if (!anyFlag) {
+    process.stderr.write(`  \x1b[2m• Passes créatives (bolder/quieter/spark/charm/lucid) : expérimentales, pilotées agent.\x1b[0m\n`);
+  }
+
+  if (fixes > 0) {
+    process.stderr.write(`\x1b[1m\x1b[32m✔ Polish :\x1b[0m ${fixes} correction(s) appliquée(s) dans \x1b[2m${filePath}\x1b[0m.\n`);
+  }
+  process.exit(issues > 0 ? 1 : 0);
 }
 
 async function main() {
