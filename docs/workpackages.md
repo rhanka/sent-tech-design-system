@@ -206,7 +206,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 >
 > La CLI `design` factorise 17-19 méthodes en **5 verbes** : `init` · `build <feature>` · `check <target>` · `align <target>` · `polish <target>`. **L'audit n'est qu'1 verbe** = `design check --tech`. Ne jamais réduire le moteur `design` à « audit ».
 
-**Statut global** : 🟡 — seul `design check --tech` (audit déterministe) est livré en V1 ; `init`/`build`/`align`(partiel)/`polish` restent à implémenter ; package à renommer en `design-system-skills`.
+**Statut global** : 🟢 cœur livré — les 5 verbes `init`/`build`/`check`/`align`/`polish` sont réels ou honnêtement expérimentaux (plus aucun faux succès), 12 tests verts ; package renommé `@sentropic/design-system-skills`, **publié `0.1.0` sur npm via OIDC Trusted Publishing**.
 
 **Périmètre V1 livré** : `design check --tech <target>` retourne un rapport JSON, codes `0/1/2`, sans Playwright. C'est 1 des 5 verbes — pas « la CLI ». Les 4 autres verbes sont le cœur du reste de WP8.
 
@@ -219,7 +219,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 | P2 Ruleset initial | 10-15 règles depuis WP7 | 🟡 60% | 7 règles actives; suggestions tokens realignees; prochaines: `cramped-padding`, `motion-subtle`, `padding-scale-token` |
 | P3 Knowledge base | `docs/principles/*` reliés aux règles | 🟡 60% | principes présents, liens règle/finding à écrire |
 | P4 Skill multi-harness | wrapper unique Claude/Codex/Gemini, zéro logique métier | 🟡 60% | skill local + script unique sur `design audit`; adapters Codex/Gemini à compléter |
-| P5 Distribution/CI/npm | lint CI, publication, règles token-aware | 🟡 25% | DS (tokens/themes/svelte) publiés en `0.8.0` via OIDC (2026-05-25). Le moteur `design` est **exclu du pipeline** (parqué) en attendant le rename `→ @sentropic/design-system-skills` et la productisation. |
+| P5 Distribution/CI/npm | lint CI, publication, règles token-aware | 🟢 90% | DS `0.8.0` + `@sentropic/design-system-skills@0.1.0` publiés via OIDC Trusted Publishing (provenance SLSA). Workflows `npm-publish.yml` (DS, tag `v*`) et `skills-publish.yml` (skills, tag `skills-v*`). |
 
 ### Suivi WP8
 
@@ -233,7 +233,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 | A faire | Promesse CLI | Nettoyer ou rendre reels `build`, `polish`, `init --extract`, `check --human` | 🟡 | 35% | Eviter les faux succes et la confusion avec la CLI Impeccable upstream. |
 | A faire | Traçabilité | Lier règle, principe et finding WP7 | 🟡 | 35% | Matrice à ajouter avant CI. |
 | Fait | Release npm DS | Publier les 3 packages DS | 🟢 | 100% | `@sentropic/design-system-{tokens,themes,svelte}@0.8.0` publiés via OIDC + provenance (run `26422110851`). |
-| A faire | Release moteur `design` | Renommer puis publier le module skills | ⏸️ | 0% | Cible `@sentropic/design-system-skills`. Pas avant rename complet (`packages/skills` → `skills`, ~164 réfs) + verbes réels. |
+| Fait | Release moteur `design` | Publier le module skills | 🟢 | 100% | `@sentropic/design-system-skills@0.1.0` publié (run `26476030707`) ; Trusted Publishing OIDC configuré (rhanka/sent-tech-design-system + skills-publish.yml) ; token bootstrap retiré et révoqué. |
 | Attendu | Contrat V1 | Même résultat quel que soit le harness | 🟢 | 100% | `stdout` JSON, `stderr` résumé, exit `0/1/2`, aucune logique métier wrapper. |
 | Attendu | Verite produit | Les commandes exposees doivent faire ce qu'elles annoncent | 🟡 | 50% | `audit/check --tech/align --tones` sont concrets; `build/polish/human` restent a durcir ou documenter comme experimentaux. |
 
