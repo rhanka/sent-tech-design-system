@@ -8,7 +8,7 @@ import process from "node:process";
 function printUsage() {
   process.stdout.write(
     "Usage: node scripts/audit.mjs <url | file.html | inline-html>\\n" +
-      "Runs @sentropic/design-system-impeccable and streams the AuditReport JSON result.\\n"
+      "Runs @sentropic/design-system-skills and streams the AuditReport JSON result.\\n"
   );
 }
 
@@ -47,15 +47,15 @@ const target = args[0];
 const forwardedArgs = args.slice(1);
 
 const cliCandidates = [
-  resolve(repoRoot, "packages/impeccable/dist/cli.js"),
-  resolve(repoRoot, "node_modules/.bin/impeccable-sent-tech"),
-  resolve(scriptDir, "../../../../../packages/impeccable/dist/cli.js")
+  resolve(repoRoot, "packages/skills/dist/cli.js"),
+  resolve(repoRoot, "node_modules/.bin/sentech-design"),
+  resolve(scriptDir, "../../../../../packages/skills/dist/cli.js")
 ];
 
 const cliPath = cliCandidates.find((candidate) => existsSync(candidate));
 if (!cliPath) {
   process.stderr.write(
-    "sent-tech-impeccable: CLI non trouvée. Lance d'abord: npm run --workspace packages/impeccable build\\n"
+    "sent-tech-skills: CLI non trouvée. Lance d'abord: npm run --workspace packages/skills build\\n"
   );
   process.exit(2);
 }
@@ -72,7 +72,7 @@ const result = spawnSync(command, cliArgs, {
 });
 
 if (result.error) {
-  process.stderr.write(`sent-tech-impeccable: échec d'exécution: ${result.error.message}\\n`);
+  process.stderr.write(`sent-tech-skills: échec d'exécution: ${result.error.message}\\n`);
   process.exit(2);
 }
 

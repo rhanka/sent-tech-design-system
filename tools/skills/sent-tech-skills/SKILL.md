@@ -1,6 +1,6 @@
 ---
 name: sent-tech-impeccable
-description: "Run @sentropic/design-system-impeccable against a target and return findings as JSON for DS linting."
+description: "Run @sentropic/design-system-skills against a target and return findings as JSON for DS linting."
 argument-hint: "audit <url | file.html | inline-html>"
 user-invocable: true
 allowed-tools:

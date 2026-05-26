@@ -215,7 +215,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 | Phase | Item | Statut | Notes |
 |---|---|---|---|
 | P0 Contrat V1 | `design audit <target>`, aliases, codes retour, README/tests | 🟢 100% | binaire `design`, subcommand `audit`, wrapper skill aligne, `check --technical/--heuristics` testes, `--personas` refuse explicitement |
-| P1 Moteur statique | `packages/impeccable` API `audit`, CLI, JSON, jsdom | 🟢 100% | moteur compile et expose `AuditReport` |
+| P1 Moteur statique | `packages/skills` API `audit`, CLI, JSON, jsdom | 🟢 100% | moteur compile et expose `AuditReport` |
 | P2 Ruleset initial | 10-15 règles depuis WP7 | 🟡 60% | 7 règles actives; suggestions tokens realignees; prochaines: `cramped-padding`, `motion-subtle`, `padding-scale-token` |
 | P3 Knowledge base | `docs/principles/*` reliés aux règles | 🟡 60% | principes présents, liens règle/finding à écrire |
 | P4 Skill multi-harness | wrapper unique Claude/Codex/Gemini, zéro logique métier | 🟡 60% | skill local + script unique sur `design audit`; adapters Codex/Gemini à compléter |
@@ -225,15 +225,15 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 | Vue | Track | Finalite | Etat | Avancement | Detail |
 |---|---|---|---:|---:|---|
-| Fait | Scaffold moteur | Disposer d'un moteur local deterministe | 🟢 | 100% | `packages/impeccable`, API `audit`, CLI, 7 règles, build TypeScript. |
+| Fait | Scaffold moteur | Disposer d'un moteur local deterministe | 🟢 | 100% | `packages/skills`, API `audit`, CLI, 7 règles, build TypeScript. |
 | Fait | Knowledge base | Capturer les principes DS | 🟢 | 100% | `docs/principles/*` initialisés. |
-| Fait | Skill V1 | Exécuter le moteur depuis un harness agent | 🟡 | 85% | `tools/skills/sent-tech-impeccable/scripts/audit.mjs` appelle le contrat canonique. |
+| Fait | Skill V1 | Exécuter le moteur depuis un harness agent | 🟡 | 85% | `tools/skills/sent-tech-skills/scripts/audit.mjs` appelle le contrat canonique. |
 | Fait | Alignement CLI/themes | Mapper les corrections CLI vers les vrais tokens publies | 🟢 | 100% | `design align --tones` remplace vers `--st-semantic-*`; les themes exportent `--st-foundation-*`; tests ajoutes. |
 | A faire | Ruleset | Passer de 7 à 10-15 règles initiales | 🟡 | 55% | Piloté par `docs/ds-audit-consolidated-v2.md`. |
 | A faire | Promesse CLI | Nettoyer ou rendre reels `build`, `polish`, `init --extract`, `check --human` | 🟡 | 35% | Eviter les faux succes et la confusion avec la CLI Impeccable upstream. |
 | A faire | Traçabilité | Lier règle, principe et finding WP7 | 🟡 | 35% | Matrice à ajouter avant CI. |
 | Fait | Release npm DS | Publier les 3 packages DS | 🟢 | 100% | `@sentropic/design-system-{tokens,themes,svelte}@0.8.0` publiés via OIDC + provenance (run `26422110851`). |
-| A faire | Release moteur `design` | Renommer puis publier le module skills | ⏸️ | 0% | Cible `@sentropic/design-system-skills`. Pas avant rename complet (`packages/impeccable` → `skills`, ~164 réfs) + verbes réels. |
+| A faire | Release moteur `design` | Renommer puis publier le module skills | ⏸️ | 0% | Cible `@sentropic/design-system-skills`. Pas avant rename complet (`packages/skills` → `skills`, ~164 réfs) + verbes réels. |
 | Attendu | Contrat V1 | Même résultat quel que soit le harness | 🟢 | 100% | `stdout` JSON, `stderr` résumé, exit `0/1/2`, aucune logique métier wrapper. |
 | Attendu | Verite produit | Les commandes exposees doivent faire ce qu'elles annoncent | 🟡 | 50% | `audit/check --tech/align --tones` sont concrets; `build/polish/human` restent a durcir ou documenter comme experimentaux. |
 

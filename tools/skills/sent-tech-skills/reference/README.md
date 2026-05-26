@@ -1,11 +1,11 @@
 # sent-tech-impeccable reference
 
-Ce skill encapsule le moteur maison `@sentropic/design-system-impeccable`.
+Ce skill encapsule le moteur maison `@sentropic/design-system-skills`.
 
 ## Objectif
 
 - Exposer la qualité visuelle/design DS dans les sessions agent (Claude / Codex / Gemini / autres).
-- Réutiliser la même CLI interne déjà publiée dans `packages/impeccable`.
+- Réutiliser la même CLI interne déjà publiée dans `packages/skills`.
 
 ## Usage attendu
 
@@ -18,7 +18,7 @@ sent-tech-impeccable audit <url|file.html|inline-html>
 Alias techniques possibles (selon harness):
 
 - `design audit <target>`
-- `node tools/skills/sent-tech-impeccable/scripts/audit.mjs <target>`
+- `node tools/skills/sent-tech-skills/scripts/audit.mjs <target>`
 
 ## Output
 

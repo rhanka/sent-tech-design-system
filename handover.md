@@ -70,7 +70,7 @@ Warnings connus non bloquants:
 
 ### A faire
 - WP4 — Vérification visuelle ciblée (Playwright si demandé) et micro-ajustements de snippets docs si nécessaire.
-- WP7 — Clôturer la revue des clusters en Q/R et confirmer le mapping final des règles sur `packages/impeccable`.
+- WP7 — Clôturer la revue des clusters en Q/R et confirmer le mapping final des règles sur `packages/skills`.
 - WP8 — Faire un Q/R segmenté, pas global: commande, orchestrateur, output contract, non-objectifs, preuve, décision blocs bloquants.
 
 ### Attendus

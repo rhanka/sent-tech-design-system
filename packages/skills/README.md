@@ -1,13 +1,13 @@
-# `@sentropic/design-system-impeccable`
+# `@sentropic/design-system-skills`
 
-Moteur maison Sent Tech de lint de design-system, versionnée comme workspace npm (`packages/impeccable`).
+Moteur maison Sent Tech de lint de design-system, versionnée comme workspace npm (`packages/skills`).
 L’objectif est d’offrir une vérification déterministe des anti-patterns principaux d’`impeccable`,
 avec des règles alignées tokens DS et des erreurs orientées action.
 
 ## Installation
 
 ```bash
-npm install @sentropic/design-system-impeccable
+npm install @sentropic/design-system-skills
 ```
 
 ## CLI
@@ -32,7 +32,7 @@ Code retour :
 ## API programmatique
 
 ```ts
-import { audit } from "@sentropic/design-system-impeccable";
+import { audit } from "@sentropic/design-system-skills";
 
 const report = await audit({
   kind: "file",

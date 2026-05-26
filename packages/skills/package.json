@@ -1,5 +1,5 @@
 {
-  "name": "@sentropic/design-system-impeccable",
+  "name": "@sentropic/design-system-skills",
   "version": "0.7.0",
   "type": "module",
   "license": "MIT",
@@ -9,14 +9,13 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",
-    "directory": "packages/impeccable"
+    "directory": "packages/skills"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": {
     "design": "./dist/cli.js",
-    "impeccable-sent-tech": "./dist/cli.js",
-    "sentech-impeccable": "./dist/cli.js"
+    "sentech-design": "./dist/cli.js"
   },
   "exports": {
     ".": {
@@ -38,6 +37,6 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "check": "tsc -p tsconfig.json --noEmit",
-    "test": "node --test ./test-fixtures/impeccable.test.js"
+    "test": "node --test ./test-fixtures/skills.test.js"
   }
 }
