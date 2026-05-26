@@ -4,11 +4,10 @@ name: Skills Publish
 # sur sa propre ligne de version, indépendante des packages DS (tokens/themes/
 # svelte). Déclenchée par un tag `skills-v<version>`.
 #
-# Premier publish d'un package NEUF : npm Trusted Publishing (OIDC) ne peut pas
-# encore être configuré tant que le package n'existe pas. On utilise donc le
-# secret bootstrap `NPM_TOKEN` (cf. docs/release.md). Une fois le package créé,
-# configurer Trusted Publishing puis retirer le token (passage à l'OIDC pur,
-# comme les packages DS).
+# Publication via npm Trusted Publishing (OIDC). Le trusted publisher
+# (rhanka/sent-tech-design-system + skills-publish.yml, permission npm publish)
+# est configuré sur npm : aucun token requis, provenance SLSA automatique,
+# comme les packages DS. Le bootstrap NPM_TOKEN du premier publish a été retiré.
 
 on:
   push:
@@ -80,8 +79,6 @@ jobs:
           npm ci
           npm --workspace packages/skills run build
       - name: Publish skills
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npm publish --workspace @sentropic/design-system-skills --access public
 
   post-publish-check:
