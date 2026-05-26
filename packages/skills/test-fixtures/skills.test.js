@@ -62,6 +62,31 @@ test("design init --extract generates DESIGN.md from real css tokens", () => {
   }
 });
 
+test("design check --human scores real signals and flags accessibility issues", () => {
+  const cliPath = resolve(import.meta.dirname || "./test-fixtures", "../dist/cli.js");
+  const clean = spawnSync(
+    process.execPath,
+    [cliPath, "check", "<main><h1>Titre</h1><p>Contenu suffisant pour la page.</p><button>OK</button></main>", "--human"],
+    { encoding: "utf-8" },
+  );
+  assert.strictEqual(clean.status, 0);
+  const cleanReport = JSON.parse(clean.stdout);
+  assert.strictEqual(cleanReport.heuristics.accessibilityFriction, "none");
+  assert.strictEqual(cleanReport.score, 100);
+
+  const dirty = spawnSync(
+    process.execPath,
+    [cliPath, "check", '<div><input type="text"><img src="x.png"></div>', "--human"],
+    { encoding: "utf-8" },
+  );
+  assert.strictEqual(dirty.status, 1);
+  const dirtyReport = JSON.parse(dirty.stdout);
+  assert.ok(dirtyReport.metrics.unlabeledInputs >= 1);
+  assert.ok(dirtyReport.metrics.imagesWithoutAlt >= 1);
+  assert.notStrictEqual(dirtyReport.heuristics.accessibilityFriction, "none");
+  assert.ok(dirtyReport.score < 100);
+});
+
 test("cli supports design check technical and heuristics aliases", () => {
   const cliPath = resolve(import.meta.dirname || "./test-fixtures", "../dist/cli.js");
   const technical = spawnSync(
@@ -82,7 +107,8 @@ test("cli supports design check technical and heuristics aliases", () => {
 
   assert.strictEqual(heuristics.status, 0);
   const heuristicsReport = JSON.parse(heuristics.stdout);
-  assert.strictEqual(heuristicsReport.score, 92);
+  assert.strictEqual(heuristicsReport.score, 100);
+  assert.strictEqual(heuristicsReport.heuristics.accessibilityFriction, "none");
 });
 
 test("cli rejects unsupported persona simulations explicitly", () => {

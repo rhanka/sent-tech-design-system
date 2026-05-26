@@ -3,6 +3,7 @@ import { existsSync, readFileSync, writeFileSync, readdirSync } from "node:fs";
 import { resolve } from "node:path";
 import readline from "node:readline/promises";
 import { audit } from "./engine/run.js";
+import { heuristicReview } from "./engine/heuristics.js";
 import type { AuditTarget, Finding } from "./types.js";
 
 function resolveTarget(raw: string): AuditTarget {
@@ -584,28 +585,17 @@ async function handleCheck(args: string[]) {
   }
 
   if (isHuman) {
+    const target = resolveTarget(targetRaw);
+    const report = await heuristicReview(target);
+    process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
+    const h = report.heuristics;
     process.stderr.write(
-      `\x1b[1m\x1b[35m[design check] 🧠 Évaluation heuristique humaine et cognitive...\x1b[0m\n` +
-      `\x1b[2mSimulation du parcours utilisateur, charge cognitive et analyse qualitative basée sur l'IA...\x1b[0m\n` +
-      `\x1b[1m\x1b[32m✔ Analyse terminée !\x1b[0m Score heuristique global : \x1b[1m\x1b[32m92/100\x1b[0m (Aucun point de friction critique détecté).\n`
+      `\x1b[1m\x1b[35m[design check --human]\x1b[0m score \x1b[1m${report.score}/100\x1b[0m — ` +
+      `charge:${h.cognitiveLoad} nielsen:${h.nielsenUsability} a11y:${h.accessibilityFriction} (${report.durationMs}ms)\n`
     );
-
-    const reportTarget = resolveTarget(targetRaw);
-    const mockReport = {
-      target: reportTarget,
-      heuristics: {
-        cognitiveLoad: "low",
-        nielsenUsability: "compliant",
-        accessibilityFriction: "none"
-      },
-      score: 92,
-      recommendations: [
-        "Augmenter légèrement le contraste du texte d'aide secondaire",
-        "Simplifier l'enchaînement des étapes d'onboarding"
-      ]
-    };
-    process.stdout.write(`${JSON.stringify(mockReport, null, 2)}\n`);
-    process.exit(0);
+    const clean =
+      h.accessibilityFriction === "none" && h.nielsenUsability === "compliant" && h.cognitiveLoad !== "high";
+    process.exit(clean ? 0 : 1);
   } else {
     const target = resolveTarget(targetRaw);
     const report = await audit(target);
