@@ -132,7 +132,7 @@ export const COMPONENTS: ComponentEntry[] = [
   {
     name: "Form",
     slug: "form",
-    status: "stub",
+    status: "documented",
     category: "form",
     description: {
       fr: "Wrapper formulaire avec statut submitting/error/success.",
@@ -142,7 +142,7 @@ export const COMPONENTS: ComponentEntry[] = [
   {
     name: "FormGroup",
     slug: "form-group",
-    status: "stub",
+    status: "documented",
     category: "form",
     description: {
       fr: "Fieldset/legend groupant des contrôles avec helper text.",
@@ -152,7 +152,7 @@ export const COMPONENTS: ComponentEntry[] = [
   {
     name: "DatePicker",
     slug: "date-picker",
-    status: "stub",
+    status: "documented",
     category: "form",
     description: {
       fr: "Sélecteur de date, mode simple ou plage.",
@@ -195,7 +195,7 @@ export const COMPONENTS: ComponentEntry[] = [
   {
     name: "MultiSelect",
     slug: "multi-select",
-    status: "stub",
+    status: "documented",
     category: "form",
     description: {
       fr: "Sélection multiple avec tags filtrables.",
@@ -384,7 +384,7 @@ export const COMPONENTS: ComponentEntry[] = [
   {
     name: "OverflowMenu",
     slug: "overflow-menu",
-    status: "stub",
+    status: "documented",
     category: "navigation",
     description: {
       fr: "Menu d’actions secondaires accessibles via un déclencheur compact.",
@@ -405,7 +405,7 @@ export const COMPONENTS: ComponentEntry[] = [
   {
     name: "ContentSwitcher",
     slug: "content-switcher",
-    status: "stub",
+    status: "documented",
     category: "navigation",
     description: {
       fr: "Bascule segmentée entre plusieurs vues.",
@@ -516,7 +516,7 @@ export const COMPONENTS: ComponentEntry[] = [
   {
     name: "Toggletip",
     slug: "toggletip",
-    status: "stub",
+    status: "documented",
     category: "overlay",
     description: {
       fr: "Tooltip activable au clic, persistant.",
@@ -682,7 +682,7 @@ export const COMPONENTS: ComponentEntry[] = [
   {
     name: "Accordion",
     slug: "accordion",
-    status: "stub",
+    status: "documented",
     category: "layout",
     description: {
       fr: "Liste de panneaux pliables.",
@@ -692,7 +692,7 @@ export const COMPONENTS: ComponentEntry[] = [
   {
     name: "Card",
     slug: "card",
-    status: "stub",
+    status: "documented",
     category: "layout",
     description: {
       fr: "Conteneur surface avec bordure et padding.",
