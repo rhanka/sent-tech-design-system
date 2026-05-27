@@ -131,7 +131,7 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 
 ## WP5 — Graphics / Charts primitives
 
-**Statut global** : 🔵 décision foundation prise, prêt à lancer.
+**Statut global** : 🟢 P0 livré — Sparkline/BarChart/LineChart/AreaChart hand-rolled, exportés, documentés, **publiés en `0.9.0`** (consommables par agent-stats). Reste P1 : Stacked/Donut/Scatter.
 
 **Décidé 2026-05-22** : **C hand-rolled intégral**. Aucune dépendance, full control, white-label parfait. Chaéchelles/axes/tooltips/légendes/a11y écrits par nous.
 
@@ -139,10 +139,10 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 |---|---|---|---|
 | Roadmap `docs/graphics-roadmap.md` | 🟢 | `76703c3` | base de référence |
 | Foundation décidée : C hand-rolled | 🟢 | — | |
-| Sparkline | 🔵 | — | P0, trivial, premier shipped |
-| BarChart | 🔵 | — | P0, scales + axes minimalistes |
-| LineChart | 🔵 | — | P0, scales + axes + smoothing optionnel |
-| AreaChart | ⚪ | — | P1 |
+| Sparkline | 🟢 | `0.9.0` | exporté + page docs + catalogue |
+| BarChart | 🟢 | `0.9.0` | exporté (était caché) + page docs + catalogue ; vertical/horizontal, tons catégoriels |
+| LineChart | 🟢 | `0.9.0` | exporté (était caché) + page docs + catalogue ; smooth/area, axe X ordinal ou linéaire |
+| AreaChart | 🟢 | — | déjà exporté + page docs |
 | StackedBar | ⚪ | — | P1 |
 | DonutChart | ⚪ | — | P1 |
 | ScatterPlot | ⚪ | — | P2 |
