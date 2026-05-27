@@ -240,23 +240,86 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 **Dépendances** : P0/P1 autonomes. P2+ consomme WP7 et doit citer `docs/ds-audit-consolidated-v2.md`.
 **Parallélisable avec** : WP7 et tous les autres.
 
+## WP9 — Surface Chat / Agent (re-scope + bug d'alignement)
+
+**Statut global** : 🔵 cadré (2026-05-26) — déclenché par un bug visible : les composants chat sont rangés sous « Formulaire » et désalignés.
+
+**Décidé 2026-05-26** : sortir le chat du topic « Formulaire » et créer un topic dédié **« Chat » / « Agent »** dans le catalogue docs. Réaligner les notions du domaine agentique.
+
+| Item | Statut | Notes |
+|---|---|---|
+| Topic catalogue « Chat / Agent » | 🔵 | Recatégoriser ChatMessage/Thread/Composer/StreamingMessage/MessageActions/MessageStatusBadge hors `form` |
+| Input chat multiligne auto-resize | ⚪ | ChatComposer : textarea qui grandit en multilignes (cap hauteur + scroll) |
+| Réalignement notions agentiques | ⚪ | streaming, **reasoning**, **tool calling** : nomenclature + primitives/états cohérents (manque reasoning + tool I/O explicites) |
+| Page docs dédiée « Chat / Agent » | ⚪ | Démos contextualisées : conversation live, streaming, reasoning, appels d'outils |
+
+**Dépendances** : WP4 (primitives existantes) ; WP2 (catégorisation catalogue).
+**Parallélisable avec** : WP10, WP12.
+
+## WP10 — Theming via le moteur `design` (skills) — **AVANT WP7**
+
+**Statut global** : ⚪ cadré (2026-05-26). **Priorité explicite : à faire avant WP7.**
+
+**Décidé 2026-05-26** : deux features du moteur `design` autour du theming.
+
+| Item | Statut | Notes |
+|---|---|---|
+| `design` applique le DS Sentropic | ⚪ | Choisir un thème existant, ou en **créer un de façon assistée** |
+| `design` mappe un DS tiers → thème | ⚪ | Génère un thème Sentropic à partir d'un DS externe (tokens/couleurs/typo/espacements) |
+| Thème `@sentropic/design-system-theme-dsfr` | ⚪ | DSFR (design system de l'État FR) — cas de **test** du mapping, à publier |
+| Thème `@sentropic/design-system-theme-carbon` | ⚪ | IBM Carbon — à publier |
+| Thèmes clients : Airbus / Scalian / CGI | ⚪ | Airbus fourni par l'utilisateur ; Scalian à récupérer ; CGI aussi. Non publics a priori |
+
+**Dépendances** : WP8 (moteur `design` + `packages/themes`).
+**Parallélisable avec** : WP9, WP12.
+
+## WP11 — Dogfooding du moteur publié (complément WP7)
+
+**Statut global** : ⚪ cadré (2026-05-26).
+
+**Décidé 2026-05-26** : utiliser le package **publié** `@sentropic/design-system-skills` pour auditer/aligner **notre propre repo et site** (dogfooding). Complète WP7 par une boucle réelle « le moteur sur lui-même ».
+
+| Item | Statut | Notes |
+|---|---|---|
+| Installer la lib publiée si nécessaire | ⚪ | `npm i -D @sentropic/design-system-skills` (ou `npx`) ; signaler à l'utilisateur |
+| `design check` sur le site/docs DS | ⚪ | Exécuter sur les pages réelles, consigner les findings |
+| Boucler findings → corrections | ⚪ | Rejoint WP6 (bugs) et WP7 (couverture) |
+
+**Dépendances** : WP8 (package publié).
+**Parallélisable avec** : tous.
+
+## WP12 — Templates docs & présentations slides (ESN)
+
+**Statut global** : ⚪ cadré (2026-05-26) — nouveau périmètre à valider.
+
+**Décidé 2026-05-26** : ajouter un périmètre **templates de documents** et **présentations slides** (typologie ESN). Decks Scalian / CGI fournis par l'utilisateur **comme référence de typologie de slides** (pas la colorimétrie).
+
+| Item | Statut | Notes |
+|---|---|---|
+| Cadrage périmètre | ⚪ | Statuer : est-ce dans le scope d'un design system ? format de sortie (HTML/MD/pptx/Slidev ?) |
+| Typologie slides ESN | ⚪ | Couverture, sommaire, sections, contenu, comparatif, closing… à partir des decks Scalian/CGI |
+| Templates docs | ⚪ | Gabarits de documents (rapport, proposition) cohérents avec le DS |
+
+**Dépendances** : à préciser (probablement tokens/themes pour la cohérence visuelle).
+**Parallélisable avec** : tous.
+
 ## Plan de bataille parallele
 
-A tout instant on peut tenir 3 a 4 agents en parallele sans conflit de fichiers. Priorité actuelle :
+A tout instant on peut tenir 3 a 4 agents en parallele sans conflit de fichiers. **Priorité actuelle (révisée 2026-05-26, cœur WP8 livré + 4 packages publiés)** :
 
-1. **WP7 audit DS** — priorité 1, applique les bonnes pratiques de design sur notre propre DS.
-2. **WP8 librairie impeccable maison** — parallèle à WP7, démarre le squelette + architecture sans attendre.
-3. **WP6 fix-plan** — corrige les 3 bugs déjà connus en série (Toast/Alert, OverflowMenu, Menu).
-4. **WP5 Sparkline + BarChart** — démarrer les charts hand-rolled, premiers shippés dans la semaine.
-5. **WP4 ChatMessage + ChatThread** — docs dédiées livrées, stabilisation visuelle si besoin.
-
-WP7 et WP8 sont délibérément parallèles : WP7 audite ce qui existe, WP8 construit le moteur ; les deux convergent quand WP7 livre des règles affinées que WP8 intègre.
+1. **WP9 Chat/Agent** — bug le plus visible : sortir le chat du formulaire, topic dédié, input multiligne, réalignement streaming/reasoning/tool-calling.
+2. **WP10 theming via `design`** — appliquer DS Sentropic + mapper DS tiers → thèmes ; livrer `theme-dsfr` + `theme-carbon`. **Explicitement avant WP7.**
+3. **WP6 fix-plan** — retest visuel Playwright overlays + plan-completion (débloque la re-passe WP2).
+4. **WP11 dogfooding** — moteur publié sur notre propre site (complément WP7).
+5. **WP7 audit DS** — après WP10 ; committer la matrice de couverture, combler les trous règle/test.
+6. Fond : **WP5 charts**, **WP8 ruleset 7→15**, **WP12 templates/slides** (à cadrer).
 
 ## Decisions ouvertes à trancher
 
-1. Validation finale de la cible WP8 de revue (commande + contract JSON).
-2. Implémentation immédiate des adapters multi-harness (`.codex` / `.gemini`) ou bascule en V1.
-3. Ordonnancement d’implantation des règles WP7-B (P0 puis P1).
+1. **WP12** : les templates docs / slides relèvent-ils du périmètre DS ? format de sortie (HTML / Slidev / pptx) ?
+2. **WP10** : stratégie de thème — un thème par client (Airbus/Scalian/CGI) publié ou privé ? convention de nommage `@sentropic/design-system-theme-<x>`.
+3. **WP9** : faut-il de nouvelles primitives (ReasoningBlock, ToolCall) ou enrichir les existantes ?
+4. WP8 : adapters multi-harness (`.codex` / `.gemini`) — implémenter ou rester en wrapper unique.
 
 ## Hygiene de ce doc
 
