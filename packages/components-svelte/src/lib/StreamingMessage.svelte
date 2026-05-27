@@ -9,6 +9,8 @@
   export type StreamingMessageEvent =
     | { type: "message.delta"; messageId?: string; delta: string }
     | { type: "message.completed"; messageId?: string }
+    | { type: "reasoning.delta"; messageId?: string; delta: string }
+    | { type: "reasoning.completed"; messageId?: string }
     | { type: "tool.started"; toolCallId: string; toolName: string; messageId?: string }
     | {
         type: "tool.completed";
@@ -84,6 +86,15 @@
       .join("");
   };
 
+  const resolvedReasoning = () =>
+    mergedEvents()
+      .filter((event) => event.type === "reasoning.delta")
+      .map((event) => event.delta)
+      .join("");
+
+  const reasoningCompleted = () =>
+    mergedEvents().some((event) => event.type === "reasoning.completed");
+
   const hasAnyEvent = () => mergedEvents().length > 0;
 
   const toolCalls = (): ToolCallState[] => {
@@ -129,6 +140,10 @@
         return "message.delta";
       case "message.completed":
         return "message.completed";
+      case "reasoning.delta":
+        return "reasoning.delta";
+      case "reasoning.completed":
+        return "reasoning.completed";
       case "tool.started":
         return `${event.toolName} démarré (${event.toolCallId})`;
       case "tool.completed":
@@ -155,6 +170,15 @@
   footer={footer}
   actions={actions}
 >
+  {#if resolvedReasoning()}
+    <details class="st-streamingMessage__reasoning" open={!reasoningCompleted()}>
+      <summary class="st-streamingMessage__reasoningToggle">
+        Raisonnement{reasoningCompleted() ? "" : "…"}
+      </summary>
+      <p class="st-streamingMessage__reasoningText">{resolvedReasoning()}</p>
+    </details>
+  {/if}
+
   {#if resolvedContent()}
     <p class="st-streamingMessage__text">{resolvedContent()}</p>
   {:else}
@@ -234,6 +258,29 @@
   .st-streamingMessage__text--muted {
     color: var(--st-semantic-text-muted);
     font-style: italic;
+  }
+
+  .st-streamingMessage__reasoning {
+    background: var(--st-component-chatMessage-reasoningBackground, var(--st-semantic-surface-subtle));
+    border-left: 2px solid var(--st-semantic-border-subtle);
+    border-radius: var(--st-component-control-radius, 0.375rem);
+    margin: 0 0 0.5rem;
+    padding: 0.4rem 0.6rem;
+  }
+
+  .st-streamingMessage__reasoningToggle {
+    color: var(--st-semantic-text-muted);
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .st-streamingMessage__reasoningText {
+    color: var(--st-semantic-text-secondary);
+    font-size: 0.8125rem;
+    font-style: italic;
+    margin: 0.35rem 0 0;
+    white-space: pre-wrap;
   }
 
   .st-streamingMessage__meta {
