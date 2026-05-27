@@ -1,5 +1,5 @@
 ---
-name: sent-tech-impeccable
+name: sent-tech-design
 description: "Run @sentropic/design-system-skills against a target and return findings as JSON for DS linting."
 argument-hint: "audit <url | file.html | inline-html>"
 user-invocable: true
@@ -19,3 +19,9 @@ Lightweight DS lint skill for Sentinel/Doc contexts.
 
 - JSON `AuditReport` on stdout.
 - Exit code convention: `0` (clean), `1` (findings), `2` (runtime issue).
+
+## Reference
+
+- `reference/theme-mapping.md` — procédure rodée pour mapper un design system
+  tiers (public ou client) vers un thème Sentropic (`TenantTheme`). Exemples
+  livrés : `packages/theme-dsfr`, `packages/theme-carbon`.
