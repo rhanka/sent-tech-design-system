@@ -79,6 +79,7 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 | Inventaire couverture docs composants | 🟢 | — | 59 entrees catalogue, 66 exports publics, 9 stubs restants, 7 exports absents, 22 pages partiellement couvertes par pages famille |
 | Stubs P1 composants | 🟡 | — | Batch 1 ferme: `combobox`, `number-input`, `slider`, `toggle`, `header`, `badge`, `data-table`, `progress-bar`, `skeleton-text`; restants Forms: 4, Navigation: 2, Overlay: 1, Layout: 2 |
 | Exports absents du catalogue | 🟡 | — | `AspectRatio`, `CodeSnippet`, `Sparkline`, `StructuredList`, `TileGroup`, `UnorderedList`; `ThemeProvider` exclu intentionnellement |
+| Backlog composants (gap DSFR/Carbon) | ⚪ | — | `docs/ds-component-gap-analysis.md` (2026-05-26). **P1** : Footer, Tile unitaire. **P2** : notification inline, tree view, skip links, sélecteur de langue, citation, highlight. P3 : patterns/primitives. Différenciateurs maison (charts, chat) hors couverture upstream — à garder |
 
 **Dependances** : WP6 pour la re-passe overlays.
 **Parallelisable avec** : tous, sauf overlay tant que WP6 pas fait.
@@ -258,17 +259,18 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 ## WP10 — Theming via le moteur `design` (skills) — **AVANT WP7**
 
-**Statut global** : 🟢 mapping rodé (2026-05-26) — 2 thèmes tiers livrés + skill de mapping distillée. Reste : feature `apply` + publication des thèmes.
+**Statut global** : 🟢 mapping rodé + **2 thèmes publiés sur npm** (2026-05-26). Reste : feature `apply` + clients privés.
 
 **Décidé 2026-05-26** : mapping initié en parallèle (agents) sur DSFR + Carbon, puis skill rodée. Apply en feature A.
 
 | Item | Statut | Notes |
 |---|---|---|
 | `design` mappe un DS tiers → thème (skill) | 🟢 | Playbook `tools/skills/sent-tech-skills/reference/theme-mapping.md` rodé sur 2 cas réels (`be6b204`) |
-| Thème `@sentropic/design-system-theme-dsfr` | 🟢 | Livré (`39eea79`) — Bleu France/Marianne/8px/carré ; `compileTheme` OK. **À publier** |
-| Thème `@sentropic/design-system-theme-carbon` | 🟢 | Livré (`39eea79`) — Blue 60/gris/IBM Plex/data-vis ; `compileTheme` OK. **À publier** |
+| Thème `@sentropic/design-system-theme-dsfr` | 🟢 | **Publié `0.1.0`** — Bleu France/Marianne/8px/carré ; 227/227 vars CSS |
+| Thème `@sentropic/design-system-theme-carbon` | 🟢 | **Publié `0.1.0`** — Blue 60/gris/IBM Plex/data-vis ; 227/227 vars CSS |
+| Publication des 2 thèmes | 🟢 | Workflow `themes-publish.yml` sur tag `themes-v*`, **OIDC pur + trusted publishers** (token bootstrap utilisé puis révoqué) |
 | `design` applique le DS Sentropic (feature A) | ⚪ | Choisir/créer un thème assisté + injecter le CSS compilé — pas encore fait |
-| Publication des 2 thèmes | ⚪ | Workflow + tag `theme-<id>-v*` ou pipeline ; 1er publish → Trusted Publishing (clé 2FA) |
+| Test visuel des thèmes (rendu navigateur) | ⚪ | Structurel validé (227/227 vars, valeurs marque OK) ; rendu visuel pas encore vu à l'œil |
 | Thèmes clients : Airbus / Scalian / CGI | ⚪ | Plus tard ; tokens + packages **hors git** (mémoire/gitignore) ; Airbus fourni, Scalian/CGI à récupérer |
 
 **Dépendances** : WP8 (moteur `design` + `packages/themes`).
