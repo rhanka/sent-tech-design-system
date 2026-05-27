@@ -347,8 +347,8 @@ export const COMPONENTS: ComponentEntry[] = [
     status: "documented",
     category: "chat",
     description: {
-      fr: "Bulle assistant avec affichage d’événements de streaming (deltas, outils, permissions).",
-      en: "Assistant bubble with streaming event rendering (deltas, tools, permissions)."
+      fr: "Bulle assistant avec affichage d’événements de streaming (deltas, raisonnement, outils, permissions).",
+      en: "Assistant bubble with streaming event rendering (deltas, reasoning, tools, permissions)."
     }
   },
   {
