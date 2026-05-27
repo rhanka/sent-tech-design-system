@@ -258,17 +258,18 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 ## WP10 — Theming via le moteur `design` (skills) — **AVANT WP7**
 
-**Statut global** : ⚪ cadré (2026-05-26). **Priorité explicite : à faire avant WP7.**
+**Statut global** : 🟢 mapping rodé (2026-05-26) — 2 thèmes tiers livrés + skill de mapping distillée. Reste : feature `apply` + publication des thèmes.
 
-**Décidé 2026-05-26** : deux features du moteur `design` autour du theming.
+**Décidé 2026-05-26** : mapping initié en parallèle (agents) sur DSFR + Carbon, puis skill rodée. Apply en feature A.
 
 | Item | Statut | Notes |
 |---|---|---|
-| `design` applique le DS Sentropic | ⚪ | Choisir un thème existant, ou en **créer un de façon assistée** |
-| `design` mappe un DS tiers → thème | ⚪ | Génère un thème Sentropic à partir d'un DS externe (tokens/couleurs/typo/espacements) |
-| Thème `@sentropic/design-system-theme-dsfr` | ⚪ | DSFR (design system de l'État FR) — cas de **test** du mapping, à publier |
-| Thème `@sentropic/design-system-theme-carbon` | ⚪ | IBM Carbon — à publier |
-| Thèmes clients : Airbus / Scalian / CGI | ⚪ | Airbus fourni par l'utilisateur ; Scalian à récupérer ; CGI aussi. Non publics a priori |
+| `design` mappe un DS tiers → thème (skill) | 🟢 | Playbook `tools/skills/sent-tech-skills/reference/theme-mapping.md` rodé sur 2 cas réels (`be6b204`) |
+| Thème `@sentropic/design-system-theme-dsfr` | 🟢 | Livré (`39eea79`) — Bleu France/Marianne/8px/carré ; `compileTheme` OK. **À publier** |
+| Thème `@sentropic/design-system-theme-carbon` | 🟢 | Livré (`39eea79`) — Blue 60/gris/IBM Plex/data-vis ; `compileTheme` OK. **À publier** |
+| `design` applique le DS Sentropic (feature A) | ⚪ | Choisir/créer un thème assisté + injecter le CSS compilé — pas encore fait |
+| Publication des 2 thèmes | ⚪ | Workflow + tag `theme-<id>-v*` ou pipeline ; 1er publish → Trusted Publishing (clé 2FA) |
+| Thèmes clients : Airbus / Scalian / CGI | ⚪ | Plus tard ; tokens + packages **hors git** (mémoire/gitignore) ; Airbus fourni, Scalian/CGI à récupérer |
 
 **Dépendances** : WP8 (moteur `design` + `packages/themes`).
 **Parallélisable avec** : WP9, WP12.
