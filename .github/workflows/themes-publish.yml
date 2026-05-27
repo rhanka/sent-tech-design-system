@@ -99,10 +99,17 @@ jobs:
           npm --workspace @sentropic/design-system-themes run build
           npm --workspace @sentropic/design-system-theme-dsfr run build
           npm --workspace @sentropic/design-system-theme-carbon run build
+      # BOOTSTRAP (premier publish de packages neufs) : token granulaire scope
+      # @sentropic, le temps que le trusted publisher OIDC soit configuré pour
+      # chacun des deux packages. À RETIRER ensuite (retour OIDC pur).
       - name: Publish theme-dsfr
         run: npm publish --workspace @sentropic/design-system-theme-dsfr --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Publish theme-carbon
         run: npm publish --workspace @sentropic/design-system-theme-carbon --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   post-publish-check:
     needs: publish
