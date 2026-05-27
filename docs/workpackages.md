@@ -242,16 +242,16 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 ## WP9 — Surface Chat / Agent (re-scope + bug d'alignement)
 
-**Statut global** : 🔵 cadré (2026-05-26) — déclenché par un bug visible : les composants chat sont rangés sous « Formulaire » et désalignés.
+**Statut global** : 🟢 cœur livré (2026-05-26) — topic dédié créé, reasoning ajouté. Reste : démo docs reasoning + publication.
 
 **Décidé 2026-05-26** : sortir le chat du topic « Formulaire » et créer un topic dédié **« Chat » / « Agent »** dans le catalogue docs. Réaligner les notions du domaine agentique.
 
 | Item | Statut | Notes |
 |---|---|---|
-| Topic catalogue « Chat / Agent » | 🔵 | Recatégoriser ChatMessage/Thread/Composer/StreamingMessage/MessageActions/MessageStatusBadge hors `form` |
-| Input chat multiligne auto-resize | ⚪ | ChatComposer : textarea qui grandit en multilignes (cap hauteur + scroll) |
-| Réalignement notions agentiques | ⚪ | streaming, **reasoning**, **tool calling** : nomenclature + primitives/états cohérents (manque reasoning + tool I/O explicites) |
-| Page docs dédiée « Chat / Agent » | ⚪ | Démos contextualisées : conversation live, streaming, reasoning, appels d'outils |
+| Topic catalogue « Chat & Agent » | 🟢 | Catégorie `chat` créée ; 6 composants déplacés hors form/action (`21334b5`) |
+| Input chat multiligne auto-resize | 🟢 | `ChatComposer` le faisait déjà (autosize, Enter/Shift+Enter, cap maxRows + scroll) — vérifié |
+| Réalignement notions agentiques | 🟢 | **reasoning ajouté** à StreamingMessage (`reasoning.delta`/`completed` + bloc repliable) ; streaming + tool calling (tool.*/permission/checkpoint) déjà présents (`83d3449`) |
+| Page docs dédiée + démo reasoning | ⚪ | Ajouter une démo reasoning sur la page streaming-message ; publier dans la prochaine release DS (non publié pour l'instant) |
 
 **Dépendances** : WP4 (primitives existantes) ; WP2 (catégorisation catalogue).
 **Parallélisable avec** : WP10, WP12.
