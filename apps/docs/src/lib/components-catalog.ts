@@ -3,6 +3,7 @@ export type ComponentStatus = "documented" | "stub";
 export type ComponentCategory =
   | "action"
   | "form"
+  | "chat"
   | "navigation"
   | "overlay"
   | "feedback"
@@ -36,6 +37,7 @@ export const CATEGORY_LABELS: Record<
 > = {
   action: { fr: "Actions", en: "Actions" },
   form: { fr: "Formulaires", en: "Forms" },
+  chat: { fr: "Chat & Agent", en: "Chat & Agent" },
   navigation: { fr: "Navigation", en: "Navigation" },
   overlay: { fr: "Overlays", en: "Overlays" },
   feedback: { fr: "Feedback", en: "Feedback" },
@@ -47,6 +49,7 @@ export const CATEGORY_LABELS: Record<
 export const CATEGORY_ORDER: ComponentCategory[] = [
   "action",
   "form",
+  "chat",
   "navigation",
   "overlay",
   "feedback",
@@ -292,7 +295,7 @@ export const COMPONENTS: ComponentEntry[] = [
     name: "ChatComposer",
     slug: "chat-composer",
     status: "documented",
-    category: "form",
+    category: "chat",
     description: {
       fr: "Barre de rédaction avec slots d’actions et envoi/arrêt.",
       en: "Composer with action slots and send/stop handling."
@@ -302,7 +305,7 @@ export const COMPONENTS: ComponentEntry[] = [
     name: "ChatMessage",
     slug: "chat-message",
     status: "documented",
-    category: "form",
+    category: "chat",
     description: {
       fr: "Bulle de message visuelle avec rôles et statut.",
       en: "Visual chat message bubble with role and status."
@@ -312,7 +315,7 @@ export const COMPONENTS: ComponentEntry[] = [
     name: "ChatThread",
     slug: "chat-thread",
     status: "documented",
-    category: "form",
+    category: "chat",
     description: {
       fr: "Liste de messages scrollable avec auto-scroll et état vide.",
       en: "Scrollable message list with auto-scroll and empty-state."
@@ -322,7 +325,7 @@ export const COMPONENTS: ComponentEntry[] = [
     name: "MessageStatusBadge",
     slug: "message-status-badge",
     status: "documented",
-    category: "action",
+    category: "chat",
     description: {
       fr: "Badge de statut de message basé sur les niveaux pending/processing/completed/failed.",
       en: "Message status badge mapped to pending/processing/completed/failed."
@@ -332,7 +335,7 @@ export const COMPONENTS: ComponentEntry[] = [
     name: "MessageActions",
     slug: "message-actions",
     status: "documented",
-    category: "action",
+    category: "chat",
     description: {
       fr: "Rangée d’actions d’un message avec boutons icône et overflow optionnel.",
       en: "Message action row with icon buttons and optional overflow."
@@ -342,7 +345,7 @@ export const COMPONENTS: ComponentEntry[] = [
     name: "StreamingMessage",
     slug: "streaming-message",
     status: "documented",
-    category: "form",
+    category: "chat",
     description: {
       fr: "Bulle assistant avec affichage d’événements de streaming (deltas, outils, permissions).",
       en: "Assistant bubble with streaming event rendering (deltas, tools, permissions)."
