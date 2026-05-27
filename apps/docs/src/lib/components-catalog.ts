@@ -636,6 +636,39 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "BarChart",
+    slug: "bar-chart",
+    status: "documented",
+    category: "data",
+    groupSlug: "bar-chart",
+    description: {
+      fr: "Graphique en barres (vertical ou horizontal) avec tons catégoriels.",
+      en: "Bar chart (vertical or horizontal) with categorical tones."
+    }
+  },
+  {
+    name: "LineChart",
+    slug: "line-chart",
+    status: "documented",
+    category: "data",
+    groupSlug: "line-chart",
+    description: {
+      fr: "Graphique en courbes pour séries temporelles ou numériques.",
+      en: "Line chart for temporal or numeric series."
+    }
+  },
+  {
+    name: "Sparkline",
+    slug: "sparkline",
+    status: "documented",
+    category: "data",
+    groupSlug: "sparkline",
+    description: {
+      fr: "Mini-graphique en ligne, inline, pour tendances compactes.",
+      en: "Compact inline line micro-chart for trends."
+    }
+  },
+  {
     name: "Badge",
     slug: "badge",
     status: "documented",
