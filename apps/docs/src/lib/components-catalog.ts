@@ -844,6 +844,56 @@ export const COMPONENTS: ComponentEntry[] = [
       fr: "Barres empilées (séries), légende, tooltip par segment.",
       en: "Stacked bar chart (series), legend, per-segment tooltip."
     }
+  },
+  {
+    name: "AspectRatio",
+    slug: "aspect-ratio",
+    status: "documented",
+    category: "layout",
+    description: {
+      fr: "Conteneur à ratio d'aspect fixe (média, embeds).",
+      en: "Fixed aspect-ratio container (media, embeds)."
+    }
+  },
+  {
+    name: "CodeSnippet",
+    slug: "code-snippet",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Extrait de code inline ou bloc, avec copie.",
+      en: "Inline or block code snippet, with copy."
+    }
+  },
+  {
+    name: "StructuredList",
+    slug: "structured-list",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Liste clé/valeur structurée (paires terme/définition).",
+      en: "Structured key/value list (term/definition pairs)."
+    }
+  },
+  {
+    name: "TileGroup",
+    slug: "tile-group",
+    status: "documented",
+    category: "form",
+    description: {
+      fr: "Groupe de tuiles sélectionnables (radio), avec légende.",
+      en: "Selectable tile group (radio), with legend."
+    }
+  },
+  {
+    name: "UnorderedList",
+    slug: "unordered-list",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Liste à puces, avec imbrication.",
+      en: "Bulleted unordered list, with nesting."
+    }
   }
 ];
 
