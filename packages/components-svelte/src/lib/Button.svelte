@@ -32,38 +32,53 @@
 </button>
 
 <style>
+  /* Anatomy-driven: shape / density / typography / focus all read the themed
+     --st-component-button-anatomy-* tokens (rebuilt per theme via
+     createComponent). Fallbacks mirror the Sent Tech base = no regression. */
   .st-button {
-    border: 1px solid transparent;
-    border-radius: var(--st-component-button-radius, 0.375rem);
-    cursor: pointer;
+    border-width: var(--st-component-button-anatomy-shape-borderWidth, 1px);
+    border-style: var(--st-component-button-anatomy-shape-borderStyle, solid);
+    border-color: transparent;
+    border-radius: var(--st-component-button-anatomy-shape-radius, 0.375rem);
+    cursor: var(--st-cursor-interactive, pointer);
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: var(--st-spacing-2, 0.5rem);
-    font: inherit;
-    font-weight: 600;
+    gap: var(--st-component-button-anatomy-icon-gap, var(--st-spacing-2, 0.5rem));
+    font-family: var(--st-component-button-anatomy-typography-family, inherit);
+    font-weight: var(--st-component-button-anatomy-typography-weight, 600);
+    line-height: var(--st-component-button-anatomy-typography-lineHeight, 1.2);
+    letter-spacing: var(--st-component-button-anatomy-typography-letterSpacing, 0);
+    text-transform: var(--st-component-button-anatomy-typography-textTransform, none);
     transition:
       background var(--st-motion-fast, 120ms) var(--st-motion-easing, ease),
       border-color var(--st-motion-fast, 120ms) var(--st-motion-easing, ease),
-      color var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
+      color var(--st-motion-fast, 120ms) var(--st-motion-easing, ease),
+      box-shadow var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
   }
 
   .st-button--sm {
-    min-height: 2rem;
-    padding: 0 0.75rem;
-    font-size: 0.875rem;
+    min-height: var(--st-component-button-anatomy-density-sm-controlHeight, 2rem);
+    min-width: var(--st-component-button-anatomy-density-sm-minWidth, 2rem);
+    padding: var(--st-component-button-anatomy-density-sm-paddingBlock, 0)
+      var(--st-component-button-anatomy-density-sm-paddingInline, 0.75rem);
+    font-size: var(--st-component-button-anatomy-density-sm-fontSize, 0.875rem);
   }
 
   .st-button--md {
-    min-height: 2.5rem;
-    padding: 0 1rem;
-    font-size: 0.9375rem;
+    min-height: var(--st-component-button-anatomy-density-md-controlHeight, 2.5rem);
+    min-width: var(--st-component-button-anatomy-density-md-minWidth, 2.5rem);
+    padding: var(--st-component-button-anatomy-density-md-paddingBlock, 0)
+      var(--st-component-button-anatomy-density-md-paddingInline, 1rem);
+    font-size: var(--st-component-button-anatomy-density-md-fontSize, var(--st-component-button-anatomy-typography-size, 0.9375rem));
   }
 
   .st-button--lg {
-    min-height: 3rem;
-    padding: 0 1.25rem;
-    font-size: 1rem;
+    min-height: var(--st-component-button-anatomy-density-lg-controlHeight, 3rem);
+    min-width: var(--st-component-button-anatomy-density-lg-minWidth, 3rem);
+    padding: var(--st-component-button-anatomy-density-lg-paddingBlock, 0)
+      var(--st-component-button-anatomy-density-lg-paddingInline, 1.25rem);
+    font-size: var(--st-component-button-anatomy-density-lg-fontSize, 1rem);
   }
 
   .st-button--primary {
@@ -77,6 +92,16 @@
     border-color: var(--st-semantic-border-subtle);
   }
 
+  /* Anatomy v1.1.0: hover bg sourced from states.hover.bg (= primaryHover).
+     Retires the D1/C1 escape. Secondary uses its own semantic hover surface. */
+  .st-button--primary:not(:disabled):hover {
+    background: var(--st-component-button-anatomy-states-hover-bg, var(--st-semantic-action-primary));
+  }
+
+  .st-button--secondary:not(:disabled):hover {
+    background: var(--st-semantic-action-secondaryHover, var(--st-semantic-action-secondary));
+  }
+
   .st-button--ghost {
     background: transparent;
     color: var(--st-semantic-text-link);
@@ -88,12 +113,15 @@
   }
 
   .st-button:disabled {
-    cursor: not-allowed;
-    opacity: 0.55;
+    cursor: var(--st-cursor-disabled, not-allowed);
+    opacity: var(--st-component-button-anatomy-states-disabled-opacity, 0.55);
   }
 
+  /* Shared focus mixin: apply BOTH channels; the strategy (resolved in
+     createComponent) sets the live one and no-ops the other. */
   .st-button:focus-visible {
-    outline: 2px solid var(--st-component-input-focusRing, var(--st-semantic-border-interactive));
-    outline-offset: 2px;
+    outline: var(--st-component-button-anatomy-focus-outline, 2px solid var(--st-semantic-border-interactive));
+    outline-offset: var(--st-component-button-anatomy-focus-offset, 2px);
+    box-shadow: var(--st-component-button-anatomy-focus-boxShadow, none);
   }
 </style>

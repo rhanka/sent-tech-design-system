@@ -58,8 +58,12 @@
   }
 
   .st-field__label {
-    font-size: 0.875rem;
-    font-weight: 600;
+    font-family: var(--st-component-field-labelTypography-family, inherit);
+    font-size: var(--st-component-field-labelTypography-size, 0.875rem);
+    font-weight: var(--st-component-field-labelTypography-weight, 600);
+    line-height: var(--st-component-field-labelTypography-lineHeight, 1.4);
+    letter-spacing: var(--st-component-field-labelTypography-letterSpacing, 0);
+    text-transform: var(--st-component-field-labelTypography-textTransform, none);
   }
 
   .st-field__help,
@@ -77,13 +81,26 @@
   }
 
   .st-control {
-    background: var(--st-component-control-background, var(--st-semantic-surface-default));
-    border: 1px solid var(--st-component-control-border, var(--st-semantic-border-subtle));
-    border-radius: var(--st-component-control-radius, 0.375rem);
+    /* Field style (anatomy v1.2.0): the background fill + per-side borders come
+       from the resolved `field` anatomy. outline (base) = surface.default fill +
+       4 equal borders; filled-underline (DSFR/Carbon) = filled bg + bottom rule
+       only (top/right/left = none). Fallbacks reproduce the prior boxed look. */
+    background: var(--st-component-control-anatomy-field-fillBg, var(--st-component-control-background, var(--st-semantic-surface-default)));
+    border-top: var(--st-component-control-anatomy-field-borderTop, var(--st-component-control-anatomy-shape-borderWidth, 1px) var(--st-component-control-anatomy-shape-borderStyle, solid) var(--st-component-control-border, var(--st-semantic-border-subtle)));
+    border-right: var(--st-component-control-anatomy-field-borderRight, var(--st-component-control-anatomy-shape-borderWidth, 1px) var(--st-component-control-anatomy-shape-borderStyle, solid) var(--st-component-control-border, var(--st-semantic-border-subtle)));
+    border-bottom: var(--st-component-control-anatomy-field-borderBottom, var(--st-component-control-anatomy-shape-borderWidth, 1px) var(--st-component-control-anatomy-shape-borderStyle, solid) var(--st-component-control-border, var(--st-semantic-border-subtle)));
+    border-left: var(--st-component-control-anatomy-field-borderLeft, var(--st-component-control-anatomy-shape-borderWidth, 1px) var(--st-component-control-anatomy-shape-borderStyle, solid) var(--st-component-control-border, var(--st-semantic-border-subtle)));
+    border-radius: var(--st-component-control-anatomy-shape-radius, 0.375rem);
     color: var(--st-component-control-text, var(--st-semantic-text-primary));
-    font: inherit;
+    font-family: var(--st-component-control-anatomy-typography-family, inherit);
+    font-size: var(--st-component-control-anatomy-typography-size, inherit);
+    font-weight: var(--st-component-control-anatomy-typography-weight, 400);
+    line-height: var(--st-component-control-anatomy-typography-lineHeight, 1.5);
     min-width: 0;
-    padding: 0 0.75rem;
+    /* Inputs use the SM inline padding (denser than buttons) — base = 0.75rem. */
+    padding: var(--st-component-control-anatomy-density-md-paddingBlock, 0)
+      var(--st-component-control-anatomy-density-sm-paddingInline, 0.75rem);
+    cursor: var(--st-cursor-text, text);
     transition:
       border-color var(--st-motion-fast, 120ms) var(--st-motion-easing, ease),
       box-shadow var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
@@ -91,15 +108,15 @@
   }
 
   .st-control--sm {
-    min-height: var(--st-component-control-smHeight, 2rem);
+    min-height: var(--st-component-control-anatomy-density-sm-controlHeight, var(--st-component-control-smHeight, 2rem));
   }
 
   .st-control--md {
-    min-height: var(--st-component-control-mdHeight, 2.5rem);
+    min-height: var(--st-component-control-anatomy-density-md-controlHeight, var(--st-component-control-mdHeight, 2.5rem));
   }
 
   .st-control--lg {
-    min-height: var(--st-component-control-lgHeight, 3rem);
+    min-height: var(--st-component-control-anatomy-density-lg-controlHeight, var(--st-component-control-lgHeight, 3rem));
   }
 
   .st-control::placeholder {
@@ -110,10 +127,14 @@
     border-color: var(--st-component-control-hoverBorder, var(--st-semantic-border-strong));
   }
 
+  /* Focus = shared mixin. Base/DSFR use outline; Carbon uses inset box-shadow.
+     The border-color change is the field's own affordance and stays. */
   .st-control:focus-visible {
     border-color: var(--st-component-control-focusRing, var(--st-semantic-border-interactive));
-    box-shadow: 0 0 0 2px var(--st-component-control-focusRing, var(--st-semantic-border-interactive));
-    outline: none;
+    outline: var(--st-component-control-anatomy-focus-outline, none);
+    outline-offset: var(--st-component-control-anatomy-focus-offset, 0);
+    box-shadow: var(--st-component-control-anatomy-focus-boxShadow,
+      0 0 0 2px var(--st-component-control-focusRing, var(--st-semantic-border-interactive)));
   }
 
   .st-control[aria-invalid="true"] {
@@ -123,6 +144,6 @@
   .st-control:disabled {
     background: var(--st-component-control-disabledBackground, var(--st-semantic-surface-subtle));
     color: var(--st-component-control-disabledText, var(--st-semantic-text-muted));
-    cursor: not-allowed;
+    cursor: var(--st-cursor-disabled, not-allowed);
   }
 </style>
