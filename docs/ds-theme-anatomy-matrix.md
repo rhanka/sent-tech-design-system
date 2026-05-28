@@ -175,6 +175,11 @@ Réservée au non-tokenisable (pseudo-éléments, techniques, comportements).
 > PasswordInput, Search, Select, Combobox, MultiSelect, DatePicker). Les panneaux dropdown
 > (`__list`/`__panel`) restent sur les groupes `dropdown`/`popover` (cluster overlay séparé).
 >
+> **Validation banc `/compare`** : Textarea + Select ajoutés au banc (notre mappé vs markup
+> officiel DSFR/Carbon). Rendu RÉEL (thème compilé, non injecté) confirmé : filled-underline
+> `#eeeeee` (DSFR) / `#f4f4f4` (Carbon), radius 0, polices Marianne / IBM Plex Sans. Le
+> `.st-select` consomme désormais la typo d'anatomie (corrige un `font: inherit` résiduel).
+>
 ### Cluster « sélection »
 
 | Composant | Anatomie consommée | Vérif rendu | Statut |
