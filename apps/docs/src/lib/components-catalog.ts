@@ -804,6 +804,16 @@ export const COMPONENTS: ComponentEntry[] = [
       fr: "Liste ordonnée numérotée, avec imbrication.",
       en: "Numbered ordered list, with nesting."
     }
+  },
+  {
+    name: "TreeView",
+    slug: "tree-view",
+    status: "documented",
+    category: "navigation",
+    description: {
+      fr: "Arborescence : expand/collapse, sélection, navigation clavier (flèches).",
+      en: "Tree view: expand/collapse, selection, keyboard navigation (arrows)."
+    }
   }
 ];
 
