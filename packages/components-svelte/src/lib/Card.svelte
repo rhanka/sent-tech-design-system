@@ -21,15 +21,17 @@
 <style>
   .st-card {
     background: var(--st-component-card-background, var(--st-semantic-surface-raised));
-    border: 1px solid var(--st-component-card-border, var(--st-semantic-border-subtle));
-    border-radius: var(--st-component-card-radius, 0.5rem);
+    border-width: var(--st-component-card-anatomy-shape-borderWidth, 1px);
+    border-style: var(--st-component-card-anatomy-shape-borderStyle, solid);
+    border-color: var(--st-component-card-border, var(--st-semantic-border-subtle));
+    border-radius: var(--st-component-card-anatomy-shape-radius, 0.5rem);
     box-shadow: var(--st-component-card-shadow, 0 1px 2px rgb(15 23 42 / 0.08));
     color: var(--st-semantic-text-primary);
     padding: var(--st-spacing-4, 1rem);
   }
 
   .st-card--interactive {
-    cursor: pointer;
+    cursor: var(--st-cursor-interactive, pointer);
     transition:
       box-shadow var(--st-motion-normal, 180ms) var(--st-motion-easing, ease),
       transform var(--st-motion-normal, 180ms) var(--st-motion-easing, ease);
@@ -37,6 +39,6 @@
 
   .st-card--interactive:hover {
     box-shadow: var(--st-shadow-medium, 0 8px 24px rgb(15 23 42 / 0.12));
-    transform: translateY(-1px);
+    transform: var(--st-component-card-anatomy-states-hover-transform, translateY(-1px));
   }
 </style>
