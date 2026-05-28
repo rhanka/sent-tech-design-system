@@ -58,6 +58,16 @@
     { type: "checkpoint.requested", checkpointId: "cp-1", label: "point de contrôle", messageId: "m-3" },
     { type: "message.delta", messageId: "m-3", delta: "Action de validation prise en compte." },
   ];
+
+  // Reasoning : le raisonnement précède la réponse, dans un bloc repliable.
+  const reasoningEvents: StreamingMessageEvent[] = [
+    { type: "reasoning.delta", messageId: "m-4", delta: "L'utilisateur demande la météo. " },
+    { type: "reasoning.delta", messageId: "m-4", delta: "Je vérifie la ville, puis j'appelle l'outil." },
+    { type: "reasoning.completed", messageId: "m-4" },
+    { type: "tool.started", toolCallId: "tool_weather_01", toolName: "get-weather", messageId: "m-4" },
+    { type: "tool.completed", toolCallId: "tool_weather_01", status: "success", toolName: "get-weather", messageId: "m-4" },
+    { type: "message.delta", messageId: "m-4", delta: "Il fera 18°C et ensoleillé." }
+  ];
 </script>
 
 <div class="docs-page">
@@ -81,6 +91,25 @@
         mode="live"
         placeholder={text().emptyText}
         initialEvents={liveEvents}
+        showTrail
+      />
+    </div>
+  </section>
+
+  <section class="docs-section">
+    <h2>Reasoning</h2>
+    <p class="docs-demo-context">
+      Le raisonnement (events <code>reasoning.delta</code> / <code>reasoning.completed</code>)
+      s'affiche dans un bloc <strong>repliable</strong> au-dessus de la réponse — ouvert
+      pendant la réflexion, replié une fois terminé.
+    </p>
+    <div class="docs-example docs-example--stack">
+      <StreamingMessage
+        role="assistant"
+        status="completed"
+        streamId="msg-reasoning-demo"
+        mode="live"
+        initialEvents={reasoningEvents}
         showTrail
       />
     </div>
@@ -119,6 +148,8 @@
     <ul class="docs-token-list">
       <li><code>message.delta</code></li>
       <li><code>message.completed</code></li>
+      <li><code>reasoning.delta</code></li>
+      <li><code>reasoning.completed</code></li>
       <li><code>tool.started</code></li>
       <li><code>tool.completed</code></li>
       <li><code>permission.requested</code></li>
