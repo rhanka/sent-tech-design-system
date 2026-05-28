@@ -253,3 +253,56 @@ test("cli init command in non-interactive mode creates PRODUCT.md", () => {
     }
   }
 });
+
+// --- Couverture directe des 6 règles WP8 jusque-là non testées (cf.
+// docs/ds-audit-coverage-matrix.md §3). Chaque règle : un cas qui la déclenche
+// (positif) + un cas propre (négatif). On asserte uniquement le ruleId ciblé,
+// d'autres findings peuvent coexister. ---
+
+async function ruleIds(html) {
+  const report = await audit({ kind: "html", value: html });
+  return report.findings.map((f) => f.ruleId);
+}
+const LONG = "Lorem ipsum dolor sit amet ".repeat(15); // > 300 chars
+
+test("rule single-font: une seule famille typographique → finding", async () => {
+  assert.ok((await ruleIds("<style>body{font-family:Inter}</style><p>x</p>")).includes("single-font"));
+});
+test("rule single-font: deux familles distinctes → pas de finding", async () => {
+  assert.ok(!(await ruleIds("<style>h1{font-family:Inter}p{font-family:Georgia}</style>")).includes("single-font"));
+});
+
+test("rule no-bare-hex: hex inline → finding", async () => {
+  assert.ok((await ruleIds('<div style="color:#ff0000">x</div>')).includes("no-bare-hex"));
+});
+test("rule no-bare-hex: token sémantique → pas de finding", async () => {
+  assert.ok(!(await ruleIds('<div style="color:var(--st-semantic-text-primary)">x</div>')).includes("no-bare-hex"));
+});
+
+test("rule no-em-dash: em dash dans la copy → finding", async () => {
+  assert.ok((await ruleIds("<p>Avant — après</p>")).includes("no-em-dash"));
+});
+test("rule no-em-dash: copy sans tiret cadratin → pas de finding", async () => {
+  assert.ok(!(await ruleIds("<p>Avant, apres</p>")).includes("no-em-dash"));
+});
+
+test("rule side-tab-on-rounded: bordure gauche + radius → finding", async () => {
+  assert.ok((await ruleIds('<div style="border-left:4px solid red;border-radius:8px">x</div>')).includes("side-tab-on-rounded"));
+});
+test("rule side-tab-on-rounded: rail carré (radius 0) → pas de finding", async () => {
+  assert.ok(!(await ruleIds('<div style="border-left:4px solid red;border-radius:0">x</div>')).includes("side-tab-on-rounded"));
+});
+
+test("rule line-length-cap: paragraphe long sans max-width → finding", async () => {
+  assert.ok((await ruleIds(`<p>${LONG}</p>`)).includes("line-length-cap"));
+});
+test("rule line-length-cap: paragraphe long avec max-width → pas de finding", async () => {
+  assert.ok(!(await ruleIds(`<p style="max-width:65ch">${LONG}</p>`)).includes("line-length-cap"));
+});
+
+test("rule heading-hierarchy: niveau sauté (H1→H3) → finding", async () => {
+  assert.ok((await ruleIds("<h1>A</h1><h3>B</h3>")).includes("heading-hierarchy"));
+});
+test("rule heading-hierarchy: hiérarchie consécutive (H1→H2) → pas de finding", async () => {
+  assert.ok(!(await ruleIds("<h1>A</h1><h2>B</h2>")).includes("heading-hierarchy"));
+});
