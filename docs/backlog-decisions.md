@@ -108,6 +108,14 @@ et dans quel ordre de clusters ? *(Je peux avancer par cluster réversible si tu
   OverflowMenu, Toggletip (triggers hors Button/Link). Panneaux Popover/Modal/Tooltip déjà
   thémés (radius/ombre via foundation) → rien à faire. Matrice à jour (section nav/overlay).
 
+- **WP8 — couverture de tests des règles** : les 6 règles d'audit jusque-là non testées
+  (`single-font`, `no-bare-hex`, `no-em-dash`, `side-tab-on-rounded`, `line-length-cap`,
+  `heading-hierarchy`) ont reçu chacune un test positif + négatif (`packages/skills/
+  test-fixtures/skills.test.js`) → **7/7 règles couvertes**. Matrice de couverture mise à jour
+  (+ correction chemin périmé `packages/impeccable` → `packages/skills`). Sanity-check Codex
+  des composants interactifs manqués : **non concluant** (limite d'usage Codex atteinte jusqu'au
+  30/05) ; je m'appuie sur l'audit repo-wide (0 ring focus orphelin).
+
 ## Fin du loop (réversible épuisé) — OBSOLÈTE, loop relancé
 
 Loop autonome terminé : **12 livrables** (Footer, Tile, SkipLink, Quote, Highlight,
