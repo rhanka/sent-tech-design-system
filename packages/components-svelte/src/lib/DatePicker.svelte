@@ -419,8 +419,12 @@
   }
 
   .st-field__label {
-    font-size: 0.875rem;
-    font-weight: 600;
+    font-family: var(--st-component-field-labelTypography-family, inherit);
+    font-size: var(--st-component-field-labelTypography-size, 0.875rem);
+    font-weight: var(--st-component-field-labelTypography-weight, 600);
+    line-height: var(--st-component-field-labelTypography-lineHeight, 1.4);
+    letter-spacing: var(--st-component-field-labelTypography-letterSpacing, 0);
+    text-transform: var(--st-component-field-labelTypography-textTransform, none);
   }
 
   .st-field__help,
@@ -437,11 +441,15 @@
     color: var(--st-component-field-errorText, var(--st-semantic-feedback-error));
   }
 
+  /* Field box = resolved field anatomy (v1.2.0), same as Input. */
   .st-datepicker {
     align-items: stretch;
-    background: var(--st-component-control-background, var(--st-semantic-surface-default));
-    border: 1px solid var(--st-component-control-border, var(--st-semantic-border-subtle));
-    border-radius: var(--st-component-control-radius, 0.375rem);
+    background: var(--st-component-control-anatomy-field-fillBg, var(--st-component-control-background, var(--st-semantic-surface-default)));
+    border-top: var(--st-component-control-anatomy-field-borderTop, var(--st-component-control-anatomy-shape-borderWidth, 1px) var(--st-component-control-anatomy-shape-borderStyle, solid) var(--st-component-control-border, var(--st-semantic-border-subtle)));
+    border-right: var(--st-component-control-anatomy-field-borderRight, var(--st-component-control-anatomy-shape-borderWidth, 1px) var(--st-component-control-anatomy-shape-borderStyle, solid) var(--st-component-control-border, var(--st-semantic-border-subtle)));
+    border-bottom: var(--st-component-control-anatomy-field-borderBottom, var(--st-component-control-anatomy-shape-borderWidth, 1px) var(--st-component-control-anatomy-shape-borderStyle, solid) var(--st-component-control-border, var(--st-semantic-border-subtle)));
+    border-left: var(--st-component-control-anatomy-field-borderLeft, var(--st-component-control-anatomy-shape-borderWidth, 1px) var(--st-component-control-anatomy-shape-borderStyle, solid) var(--st-component-control-border, var(--st-semantic-border-subtle)));
+    border-radius: var(--st-component-control-anatomy-shape-radius, 0.375rem);
     color: var(--st-component-control-text, var(--st-semantic-text-primary));
     display: inline-flex;
     overflow: hidden;
@@ -469,7 +477,10 @@
 
   .st-datepicker:focus-within {
     border-color: var(--st-component-control-focusRing, var(--st-semantic-border-interactive));
-    box-shadow: 0 0 0 2px var(--st-component-control-focusRing, var(--st-semantic-border-interactive));
+    outline: var(--st-component-control-anatomy-focus-outline, none);
+    outline-offset: var(--st-component-control-anatomy-focus-offset, 0);
+    box-shadow: var(--st-component-control-anatomy-focus-boxShadow,
+      0 0 0 2px var(--st-component-control-focusRing, var(--st-semantic-border-interactive)));
   }
 
   .st-datepicker:has([aria-invalid="true"]) {
