@@ -824,6 +824,16 @@ export const COMPONENTS: ComponentEntry[] = [
       fr: "Graphique en anneau (parts d'un total), tooltip et total au centre.",
       en: "Donut chart (parts of a whole), tooltip and center total."
     }
+  },
+  {
+    name: "ScatterPlot",
+    slug: "scatter-plot",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Nuage de points (deux axes numériques), tooltip, points focusables.",
+      en: "Scatter plot (two numeric axes), tooltip, focusable points."
+    }
   }
 ];
 
