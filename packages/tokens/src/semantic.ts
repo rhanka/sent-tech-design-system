@@ -22,8 +22,12 @@ export const semantic = {
   },
   action: {
     primary: foundation.color.blue[60],
+    // Darker primary used on :hover (anatomy v1.1.0 — states.hover.bg).
+    primaryHover: foundation.color.blue[80],
     primaryText: foundation.color.slate[0],
     secondary: foundation.color.slate[10],
+    // Slightly stronger neutral for the secondary :hover surface.
+    secondaryHover: foundation.color.slate[20],
     secondaryText: foundation.color.slate[90],
     danger: foundation.color.feedback.error
   },
