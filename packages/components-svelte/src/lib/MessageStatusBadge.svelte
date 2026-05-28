@@ -8,10 +8,19 @@
   type MessageStatusBadgeProps = Omit<HTMLAttributes<HTMLSpanElement>, "children"> & {
     status: ChatMessageStatus;
     tone?: StatusTone;
+    /** Surcharge i18n des libellés par statut (défaut : libellés FR). */
+    labels?: Partial<Record<ChatMessageStatus, string>>;
     class?: string;
   };
 
-  let { status, tone, class: className, ...rest }: MessageStatusBadgeProps = $props();
+  let { status, tone, labels, class: className, ...rest }: MessageStatusBadgeProps = $props();
+
+  const DEFAULT_LABELS: Record<ChatMessageStatus, string> = {
+    pending: "En attente",
+    processing: "En cours",
+    completed: "Terminé",
+    failed: "Échec"
+  };
 
   const mappedTone = () => {
     if (tone) return tone;
@@ -21,12 +30,7 @@
     return "warning";
   };
 
-  const label = () => {
-    if (status === "pending") return "En attente";
-    if (status === "processing") return "En cours";
-    if (status === "completed") return "Terminé";
-    return "Échec";
-  };
+  const label = () => labels?.[status] ?? DEFAULT_LABELS[status];
 
   const classes = () => ["st-messageStatusBadge", className].filter(Boolean).join(" ");
 </script>

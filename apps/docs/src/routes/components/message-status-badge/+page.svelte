@@ -12,7 +12,7 @@
       title: "Badges de statut",
       neutralTitle: "Overrides",
       toneTitle: "API",
-      tokens: ["--st-component-chatMessage-pendingBorder", "--st-component-chatMessage-processingBorder", "--st-component-chatMessage-userBackground", "--st-component-chatMessage-assistantBackground"],
+      tokens: ["--st-semantic-feedback-info", "--st-semantic-feedback-success", "--st-semantic-feedback-warning", "--st-semantic-feedback-error", "--st-radius-pill"],
       mapHeader: "Mapping recommandé"
     },
     en: {
@@ -23,7 +23,7 @@
       title: "Status badges",
       neutralTitle: "Overrides",
       toneTitle: "API",
-      tokens: ["--st-component-chatMessage-pendingBorder", "--st-component-chatMessage-processingBorder", "--st-component-chatMessage-userBackground", "--st-component-chatMessage-assistantBackground"],
+      tokens: ["--st-semantic-feedback-info", "--st-semantic-feedback-success", "--st-semantic-feedback-warning", "--st-semantic-feedback-error", "--st-radius-pill"],
       mapHeader: "Recommended mapping"
     }
   } as const;
@@ -86,6 +86,7 @@
       <tbody>
         <tr><td><code>status</code></td><td>Requis. <code>pending | processing | completed | failed</code>.</td></tr>
         <tr><td><code>tone</code></td><td>Override visuel: neutral / success / warning / error / info.</td></tr>
+        <tr><td><code>labels</code></td><td>Surcharge i18n des libellés par statut (défaut : FR).</td></tr>
         <tr><td><code>class</code></td><td>Classes additionnelles.</td></tr>
       </tbody>
     </table>
@@ -93,6 +94,10 @@
 
   <section class="docs-section">
     <h2>Tokens</h2>
+    <p>
+      Le rendu est délégué à <code>Tag</code> : la tonalité consomme les tokens
+      sémantiques de feedback ci-dessous (la pastille hérite de <code>currentColor</code>).
+    </p>
     <ul class="docs-token-list">
       {#each text().tokens as token}
         <li><code>{token}</code></li>
