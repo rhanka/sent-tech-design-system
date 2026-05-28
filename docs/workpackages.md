@@ -132,7 +132,7 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 
 ## WP5 — Graphics / Charts primitives
 
-**Statut global** : 🟢 P0 livré — Sparkline/BarChart/LineChart/AreaChart hand-rolled, exportés, documentés, **publiés en `0.9.0`** (consommables par agent-stats). Reste P1 : Stacked/Donut/Scatter.
+**Statut global** : 🟢 P0 **publié `0.9.0`** (Sparkline/Bar/Line/Area, consommés par agent-stats) + **P1 livré en local** (Donut/Scatter/StackedBar — `8a9ded0`, à publier via D1).
 
 **Décidé 2026-05-22** : **C hand-rolled intégral**. Aucune dépendance, full control, white-label parfait. Chaéchelles/axes/tooltips/légendes/a11y écrits par nous.
 
