@@ -754,6 +754,36 @@ export const COMPONENTS: ComponentEntry[] = [
       fr: "Tuile unitaire : présentation, cliquable (lien/bouton) ou sélectionnable (case).",
       en: "Single tile: static, clickable (link/button) or selectable (checkbox)."
     }
+  },
+  {
+    name: "SkipLink",
+    slug: "skip-link",
+    status: "documented",
+    category: "navigation",
+    description: {
+      fr: "Lien d'évitement (a11y) : hors écran jusqu'au focus clavier.",
+      en: "Skip link (a11y): off-screen until keyboard focus."
+    }
+  },
+  {
+    name: "Quote",
+    slug: "quote",
+    status: "documented",
+    category: "layout",
+    description: {
+      fr: "Citation éditoriale (blockquote) avec auteur et source.",
+      en: "Editorial blockquote with author and source."
+    }
+  },
+  {
+    name: "Highlight",
+    slug: "highlight",
+    status: "documented",
+    category: "layout",
+    description: {
+      fr: "Mise en avant / encart éditorial, avec tonalité d'accent.",
+      en: "Editorial highlight / callout box, with accent tone."
+    }
   }
 ];
 
