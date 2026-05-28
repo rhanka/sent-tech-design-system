@@ -195,3 +195,17 @@ Réservée au non-tokenisable (pseudo-éléments, techniques, comportements).
 > coche, focus par stratégie, indeterminate) = **feature dédiée à risque a11y**, DÉFÉRÉE
 > (cf. backlog D7). Choix réversible : `accent-color` apporte la parité de couleur checked
 > tout de suite, sans risque ; le visuel custom sera arbitré à part.
+
+### Cluster « navigation / overlay »
+
+| Composant | Anatomie consommée | Statut |
+|-----------|--------------------|--------|
+| **PaginationNav** | focus par stratégie (`__page`/`__nav`) | 🟢 focus |
+| **OverflowMenu** | focus par stratégie (`__trigger`) | 🟢 focus |
+| **Toggletip** | focus par stratégie (`__trigger`) | 🟢 focus |
+| Popover / Modal / Tooltip (panneaux) | radius+ombre+bordure via tokens `popover`/`overlay`/`tooltip` (déjà thémés par foundation) | 🟢 déjà |
+
+> Les **panneaux** overlay consomment déjà leurs tokens thémés (radius/ombre dérivés de
+> `foundation` → carré sous DSFR/Carbon). Le seul gap réel était le **focus** des triggers
+> qui ne passent ni par Button ni par Link → migré sur la stratégie d'anatomie. Items de
+> menu (`__item`) gardent un surlignage de fond au focus (standard, theme-agnostique).
