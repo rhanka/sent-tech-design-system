@@ -75,6 +75,13 @@ et dans quel ordre de clusters ? *(Je peux avancer par cluster réversible si tu
   **T#9 clôturé** : les écarts de contenu/correctness ont été corrigés (lots 1-2), la santé runtime
   est verte. Reste comme suite naturelle le rollout anatomie Phase 2 (D6).
 
+- **Phase 2 anatomie (D6) — cluster contrôles, boîte-champ** : Textarea, NumberInput,
+  PasswordInput, Search migrés pour consommer les vars d'anatomie `control`/`field` du pilote
+  Input → héritent de la parité DSFR/Carbon (filled-underline) sans CSS par thème. Vérifié au
+  rendu calculé (base inchangé / flip filled-underline injecté). Matrice de traçabilité mise à
+  jour (section Phase 2). Reste boîte-champ : Select, Combobox, MultiSelect, DatePicker (trigger
+  + dropdown) ; puis cluster « sélection » (Checkbox/Radio/Switch/Toggle, groupe `selection`).
+
 ## Fin du loop (réversible épuisé) — OBSOLÈTE, loop relancé
 
 Loop autonome terminé : **12 livrables** (Footer, Tile, SkipLink, Quote, Highlight,
