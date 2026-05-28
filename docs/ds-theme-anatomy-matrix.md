@@ -1,8 +1,15 @@
-# Matrice de traçabilité — parité anatomique contrôlée (Phase 1 pilote)
+# Matrice de traçabilité — parité anatomique contrôlée (Phase 1 pilote + Phase 2)
 
 > Contrat de schéma : `ComponentAnatomy` v**1.2.0** (`packages/tokens/src/anatomy.ts`).
-> Périmètre : 5 composants × {DSFR, Carbon} (Sent Tech = base de référence).
-> Date : 2026-05-27. Statut : pilote local non poussé, en attente UAT.
+> Périmètre Phase 1 (pilote) : 5 composants × {DSFR, Carbon} (Sent Tech = base de référence).
+> Périmètre Phase 2 (déployé sur `main`) : surface interactive — contrôles de formulaire
+> (boîte-champ : Input + Textarea/NumberInput/PasswordInput/Search/Select/Combobox/MultiSelect/
+> DatePicker ; sélection : Switch/Toggle focus + Checkbox/Radio accent-color) + focus nav/overlay
+> (PaginationNav/OverflowMenu/Toggletip). Panneaux overlay déjà thémés (foundation). Voir
+> §« Phase 2 ». Vérif systématique au **rendu calculé** (Playwright) + banc `/compare` (Textarea/
+> Select vs réel DSFR/Carbon). Restes différés : visuel custom Checkbox/Radio (D7), résidus de
+> fidélité (D3), publication npm (D1).
+> Date : 2026-05-27 (pilote) ; Phase 2 : 2026-05-28. Statut : poussé sur `main`, en attente UAT.
 >
 > **v1.1.0 (extensions additives)** : `states.hover.bg` (retire D1/C1), `states.hover.decoration`
 > du Link via `typography.link.textDecorationHover` (retire la partie tokenisable de C2),
