@@ -744,6 +744,16 @@ export const COMPONENTS: ComponentEntry[] = [
       fr: "Conteneur surface avec bordure et padding.",
       en: "Surface container with border and padding."
     }
+  },
+  {
+    name: "Tile",
+    slug: "tile",
+    status: "documented",
+    category: "layout",
+    description: {
+      fr: "Tuile unitaire : présentation, cliquable (lien/bouton) ou sélectionnable (case).",
+      en: "Single tile: static, clickable (link/button) or selectable (checkbox)."
+    }
   }
 ];
 

@@ -44,3 +44,5 @@ et dans quel ordre de clusters ? *(Je peux avancer par cluster réversible si tu
 ## Journal du loop (réversible, fait en autonomie)
 
 - (init) Backlog créé ; comparaison composer chat menée → D2 ouverte.
+- WP2 : composant **Footer** livré (P1 gap analysis) — `4487c9c`.
+- WP2 : composant **Tile** unitaire livré (P1 gap analysis : static/clickable/selectable).
