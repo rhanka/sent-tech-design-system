@@ -151,7 +151,7 @@
     align-items: center;
     background: transparent;
     border: 0;
-    border-radius: 0.25rem;
+    border-radius: var(--st-radius-sm, 0.25rem);
     color: var(--st-semantic-text-secondary);
     cursor: pointer;
     display: flex;
