@@ -31,6 +31,10 @@
   }
 
   .st-choice__input {
+    /* Thématise la coche native (couleur checked) sans markup custom — additif,
+       a11y native préservée. Le visuel custom (forme/focus par stratégie) reste
+       un item dédié (cf. backlog). */
+    accent-color: var(--st-component-selection-checkedBackground, var(--st-semantic-action-primary));
     height: 1rem;
     margin: 0.125rem 0 0;
     width: 1rem;
