@@ -52,3 +52,12 @@ et dans quel ordre de clusters ? *(Je peux avancer par cluster réversible si tu
 - WP9 : **démo docs reasoning** ajoutée à StreamingMessage (reasoning.delta/completed + bloc repliable). Reste publication → D1.
 - WP5 : **DonutChart** (P1 charts) — arcs SVG annulaires, palette data-vis, tooltip, total au centre.
 - WP5 : **ScatterPlot** (P1 charts) — 2 axes numériques (nice ticks), points tonalisés, tooltip, a11y.
+- WP5 : **StackedBarChart** (P1 charts) — barres empilées multi-séries, légende, tooltip par segment. **WP5 P1 complet.**
+
+## Fin du loop (réversible épuisé)
+
+Loop autonome terminé : **12 livrables** (Footer, Tile, SkipLink, Quote, Highlight,
+LanguageSelector, OrderedList, TreeView, DonutChart, ScatterPlot, StackedBarChart +
+démo reasoning), tous `npm run verify` verts, commités/poussés sur `main`. Restant =
+**décisions D1–D6 ci-dessus** + travaux **browser-dépendants** (T#9 sweep composants au
+clic, WP6 retest overlays) qui requièrent ta présence/validation. Aucun publish npm.
