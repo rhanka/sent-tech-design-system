@@ -68,6 +68,12 @@ et dans quel ordre de clusters ? *(Je peux avancer par cluster réversible si tu
   des docs) ; MessageStatusBadge → prop `labels` i18n (défaut FR) + liste tokens docs corrigée
   (tokens `chatMessage` erronés → tokens feedback réels de `Tag`). ChatComposer slots→snippets
   **non fait** (breaking, voir D2).
+- T#9 **passe interactive (Playwright, port 4321)** : 60/60 routes composants rendent au SSR (aucun
+  crash) ; 0 erreur console sur le home + 11 pages interactives lourdes (combobox, accordion,
+  content-switcher, date-picker, data-table, overflow-menu, multi-select, tree-view, overlays,
+  toggletip, file-uploader) ; combobox vérifié fonctionnel (liste de 6 options à l'ouverture).
+  **T#9 clôturé** : les écarts de contenu/correctness ont été corrigés (lots 1-2), la santé runtime
+  est verte. Reste comme suite naturelle le rollout anatomie Phase 2 (D6).
 
 ## Fin du loop (réversible épuisé) — OBSOLÈTE, loop relancé
 
