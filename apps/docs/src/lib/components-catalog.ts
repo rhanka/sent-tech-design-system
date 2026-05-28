@@ -784,6 +784,26 @@ export const COMPONENTS: ComponentEntry[] = [
       fr: "Mise en avant / encart éditorial, avec tonalité d'accent.",
       en: "Editorial highlight / callout box, with accent tone."
     }
+  },
+  {
+    name: "LanguageSelector",
+    slug: "language-selector",
+    status: "documented",
+    category: "navigation",
+    description: {
+      fr: "Sélecteur de langue compact (i18n) : langue courante + menu.",
+      en: "Compact language switcher (i18n): current locale + menu."
+    }
+  },
+  {
+    name: "OrderedList",
+    slug: "ordered-list",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Liste ordonnée numérotée, avec imbrication.",
+      en: "Numbered ordered list, with nesting."
+    }
   }
 ];
 
