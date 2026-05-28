@@ -387,6 +387,12 @@
     outline-offset: 1px;
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    .st-areaChart__dot {
+      transition: none;
+    }
+  }
+
   .st-areaChart__tooltip {
     background: var(--st-component-areaChart-tooltipBackground, var(--st-semantic-surface-inverse));
     border-radius: var(--st-radius-sm, 0.25rem);
