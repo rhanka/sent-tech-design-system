@@ -132,7 +132,7 @@
       <li><code>--st-toggle-thumbSize</code></li>
       <li><code>--st-motion-fast</code></li>
       <li><code>--st-motion-easing</code></li>
-      <li><code>--st-foundation-radius-pill</code></li>
+      <li><code>--st-radius-pill</code></li>
     </ul>
   </section>
 </div>
