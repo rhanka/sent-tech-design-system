@@ -81,6 +81,10 @@ et dans quel ordre de clusters ? *(Je peux avancer par cluster réversible si tu
   rendu calculé (base inchangé / flip filled-underline injecté). Matrice de traçabilité mise à
   jour (section Phase 2). Reste boîte-champ : Select, Combobox, MultiSelect, DatePicker (trigger
   + dropdown) ; puis cluster « sélection » (Checkbox/Radio/Switch/Toggle, groupe `selection`).
+- **Phase 2 anatomie — boîte-champ COMPLÈTE** : Select/Combobox/MultiSelect/DatePicker migrés
+  (trigger sur anatomie field/control, panneaux dropdown laissés au cluster overlay). Vérifié
+  rendu (Combobox+Select flip filled-underline OK). Cluster boîte-champ = Input + 8 contrôles.
+  Matrice à jour. SUITE : cluster « sélection » (Checkbox/Radio/Switch/Toggle, groupe `selection`).
 
 ## Fin du loop (réversible épuisé) — OBSOLÈTE, loop relancé
 
