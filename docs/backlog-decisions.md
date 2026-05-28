@@ -23,6 +23,10 @@ floating layer mentions). Le nôtre = `<textarea>` autosize + Send/Stop (autosiz
 rich à slots de chat-ui (gros chantier : ProseMirror, floating layer, slots, modes),
 (c) hybride (slots de contrôle + textarea, sans rich-text). 
 **Action attendue** : choisir la cible. *(Engageant — (b) = réécriture majeure.)*
+**Sous-décision liée (slots→snippets)** : migrer l'API `<slot name="attachments|actions-left|actions-right">`
+vers des snippets Svelte 5 est **breaking** (Svelte 5 interdit de mélanger `<slot>` et `{@render}`,
+donc pas de repli additif possible). Reporté ici : à faire en même temps que le choix de direction
+composer, idéalement au prochain bump majeur. *(Pas additif → non fait en autonomie.)*
 
 ### D3 — 🟢 Résidus de fidélité (escapes documentés)
 DSFR : soulignement de lien **animé** (D2 matrice) ; technique du filet bas input
@@ -60,6 +64,10 @@ et dans quel ordre de clusters ? *(Je peux avancer par cluster réversible si tu
   type `UnorderedList.children` assoupli (chaînes acceptées). Reste **lot 2** : AreaChart promesse
   a11y `prefers-reduced-motion`, MessageStatusBadge (tokens docs + labels FR-only), ChatComposer
   `<slot>` legacy → snippets (🟠).
+- T#9 sweep **lot 2** : AreaChart `@media (prefers-reduced-motion: reduce)` (tient la promesse a11y
+  des docs) ; MessageStatusBadge → prop `labels` i18n (défaut FR) + liste tokens docs corrigée
+  (tokens `chatMessage` erronés → tokens feedback réels de `Tag`). ChatComposer slots→snippets
+  **non fait** (breaking, voir D2).
 
 ## Fin du loop (réversible épuisé) — OBSOLÈTE, loop relancé
 
