@@ -1,6 +1,6 @@
 {
   "name": "@sentropic/design-system-svelte",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "type": "module",
   "publishConfig": {
     "access": "public"
@@ -27,7 +27,7 @@
   ],
   "dependencies": {
     "@lucide/svelte": "^0.562.0",
-    "@sentropic/design-system-themes": "0.9.0"
+    "@sentropic/design-system-themes": "0.10.0"
   },
   "peerDependencies": {
     "svelte": "^5.53.2"
@@ -38,8 +38,8 @@
     "test": "vitest run src"
   },
   "devDependencies": {
-    "@sentropic/design-system-theme-carbon": "0.1.0",
-    "@sentropic/design-system-theme-dsfr": "0.1.0",
+    "@sentropic/design-system-theme-carbon": "0.2.0",
+    "@sentropic/design-system-theme-dsfr": "0.2.0",
     "@sveltejs/package": "^2.5.0",
     "@sveltejs/vite-plugin-svelte": "^6.2.4",
     "@testing-library/svelte": "^5.2.8",
