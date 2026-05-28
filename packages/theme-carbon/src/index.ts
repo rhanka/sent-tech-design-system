@@ -1,4 +1,4 @@
-import { component } from "@sentropic/design-system-themes";
+import { createComponent } from "@sentropic/design-system-themes";
 import type { TenantTheme } from "@sentropic/design-system-themes";
 
 /**
@@ -107,13 +107,14 @@ const foundation = {
     12: "3rem", // 48px  = $spacing-09
     16: "4rem" // 64px  = $spacing-10
   },
-  // Carbon corners are nearly square. $spacing tokens drive most radii;
-  // Carbon uses very small radii (most components are square).
+  // Carbon corners are SQUARE for productive components (button/input/tabs).
+  // Source: Carbon v11 — most components have 0 radius. Cards/tiles may use a
+  // tiny radius in newer guidance, but the pilot keeps controls + cards square.
   radius: {
     none: "0", // square (Carbon default for most components)
-    sm: "0.125rem", // 2px
-    md: "0.25rem", // 4px  (Carbon button/tile small radius)
-    lg: "0.5rem", // 8px
+    sm: "0", // controls square
+    md: "0", // button / input / tabs — square in Carbon
+    lg: "0", // cards — square in Carbon
     pill: "999px" // tags / pills
   },
   // Carbon elevation: drop shadows from the public elevation guidance.
@@ -136,6 +137,64 @@ const foundation = {
     overlay: 80,
     modal: 100,
     chat: 110
+  },
+  // --- Anatomy primitives (Phase 1, Carbon v11) -----------------------------
+  // Carbon control borders: 1px subtle; focus ring is a 2px inset stroke.
+  // Source: carbondesignsystem.com (style/themes + component specs).
+  borderWidth: {
+    none: "0",
+    thin: "1px",
+    thick: "2px"
+  },
+  borderStyle: { solid: "solid" },
+  // Carbon field/button sizes: sm 32px, md(field default) 40px, lg 48px.
+  // Source: Carbon "Button" + "Text input" size specs ($spacing scale).
+  // Carbon buttons use asymmetric padding (more on the left, label-left), but
+  // we keep symmetric inline padding here ("à confirmer" the exact 16/64 split).
+  density: {
+    // fontSize per size (anatomy v1.1.0). Carbon scales buttons by HEIGHT, not by
+    // label size — the label stays $body-compact-01 (0.875rem) across sm/md/lg.
+    // Source: Carbon "Button" type spec. (sm/lg "à confirmer" but Carbon keeps it flat.)
+    sm: { controlHeight: "2rem", paddingBlock: "0", paddingInline: "1rem", gap: "0.5rem", minWidth: "2rem", fontSize: "0.875rem" },
+    md: { controlHeight: "2.5rem", paddingBlock: "0", paddingInline: "1rem", gap: "0.5rem", minWidth: "2.5rem", fontSize: "0.875rem" },
+    lg: { controlHeight: "3rem", paddingBlock: "0", paddingInline: "1rem", gap: "0.5rem", minWidth: "3rem", fontSize: "0.875rem" }
+  },
+  // Carbon typography = IBM Plex Sans. Body 0.875rem/1.43 ($body-01),
+  // label 0.75rem/1.33 ($label-01). Source: Carbon "Type" scale.
+  typography: {
+    control: { family: "'IBM Plex Sans', system-ui, sans-serif", size: "0.875rem", weight: "400", lineHeight: "1.29", letterSpacing: "0.16px", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
+    field: { family: "'IBM Plex Sans', system-ui, sans-serif", size: "0.875rem", weight: "400", lineHeight: "1.43", letterSpacing: "0.16px", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
+    label: { family: "'IBM Plex Sans', system-ui, sans-serif", size: "0.75rem", weight: "400", lineHeight: "1.33", letterSpacing: "0.32px", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
+    // Carbon links are NOT underlined by default; underline appears on hover.
+    // Source: Carbon "Link". Base state: no underline → underline on hover, now
+    // tokenised via textDecorationHover (anatomy v1.1.0) instead of a CSS escape.
+    link: { family: "inherit", size: "inherit", weight: "inherit", lineHeight: "inherit", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "0.15em", textDecorationHover: "underline" }
+  },
+  disabledOpacity: "1", // Carbon disabled = token colours, not opacity
+  transition: { property: "background-color, border-color, color, box-shadow", duration: "110ms", easing: "cubic-bezier(0.2, 0, 0.38, 0.9)" },
+  cursor: { interactive: "pointer", disabled: "not-allowed", text: "text" },
+  iconSize: { sm: "1rem", md: "1rem", lg: "1.25rem" },
+  // Carbon FOCUS = 2px INSET box-shadow in $focus (Blue 60). This is Carbon's
+  // signature focus technique (drawn inside the box), NOT a native outline.
+  // Source: Carbon "Focus" guidance — $focus #0f62fe, 2px inset.
+  focus: {
+    strategy: "inset",
+    width: "2px",
+    offset: "0",
+    color: "#0f62fe", // Carbon $focus (Blue 60)
+    inset: "0"
+  },
+  // Carbon « Text input » (White theme) is a FILLED field with a BOTTOM RULE
+  // only (not a boxed encadré): $field-01 fill + a single $border-strong bottom
+  // border. This is the field-style primitive (anatomy v1.2.0) that makes our
+  // input faithful. Source: carbondesignsystem.com / « Text input » (White
+  // theme). fillBg = $field-01 Gray 10 #f4f4f4. Bottom rule = $border-strong
+  // Gray 50 #8d8d8d, 1px. Carré (radius 0, déjà posé).
+  field: {
+    style: "filled-underline",
+    fillBg: carbonColor.gray[10], // #f4f4f4 ($field-01)
+    underlineColor: carbonColor.gray[50], // #8d8d8d ($border-strong)
+    underlineWidth: "1px"
   }
 } as const;
 
@@ -162,8 +221,10 @@ const semantic = {
   },
   action: {
     primary: carbonColor.blue[60], // $interactive / $button-primary (Blue 60)
+    primaryHover: carbonColor.blue[70], // $button-primary-hover (Blue 70 #0043ce) — anatomy v1.1.0
     primaryText: carbonColor.gray[0], // $text-on-color (White)
     secondary: carbonColor.gray[80], // $button-secondary (Gray 80)
+    secondaryHover: carbonColor.gray[90], // $button-secondary-hover (Gray 90)
     secondaryText: carbonColor.gray[0], // $text-on-color (White)
     danger: carbonColor.support.error // $button-danger-primary (Red 60)
   },
@@ -199,11 +260,11 @@ export const carbonTheme: TenantTheme = {
   tokens: {
     foundation,
     semantic,
-    // The `component` layer is structural (it wires component roles to the
-    // semantic/foundation roles above) and is not Carbon-specific, so the
-    // Sentropic base `component` tokens are reused unchanged — same pattern as
-    // the forge/entropic themes in @sentropic/design-system-themes.
-    component
+    // Rebuilt from this theme's own semantic/foundation so Carbon's brand
+    // (Blue 60, grays, radii…) reaches the components, not just the elements
+    // that read semantic vars directly. Reusing the base `component` would
+    // leave components on Sent Tech.
+    component: createComponent(semantic, foundation)
   }
 };
 
