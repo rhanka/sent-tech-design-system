@@ -1,4 +1,4 @@
-import { component } from "@sentropic/design-system-themes";
+import { createComponent } from "@sentropic/design-system-themes";
 import type { TenantTheme } from "@sentropic/design-system-themes";
 
 /**
@@ -117,13 +117,15 @@ const foundation = {
     12: "3rem", // 48px = 12v
     16: "4rem" // 64px = 16v
   },
-  // DSFR aesthetic is squared. Default components have no radius; only a small
-  // set use a 4px radius (tiles/buttons in some contexts). pill kept for tags.
+  // DSFR aesthetic is SQUARED. Controls (button/input/tabs) and cards have no
+  // radius. Source: DSFR design fundamentals — squared corners are a brand
+  // signature. Only pills/tags are rounded. (Prior 0.25rem on md/lg was a
+  // color-era placeholder for tiles; the anatomy clone makes controls square.)
   radius: {
     none: "0", // DSFR default — squared corners
-    sm: "0", // DSFR keeps most controls square
-    md: "0.25rem", // 4px — used on a few DSFR surfaces (tiles, badges)
-    lg: "0.5rem", // 8px — larger DSFR cards
+    sm: "0", // controls square
+    md: "0", // button / input / tabs — square in DSFR
+    lg: "0", // cards — square in DSFR
     pill: "999px" // tags / pills
   },
   // DSFR uses light, subtle elevation. Values approximate the DSFR shadow
@@ -148,6 +150,65 @@ const foundation = {
     overlay: 80,
     modal: 100,
     chat: 110
+  },
+  // --- Anatomy primitives (Phase 1, DSFR) ----------------------------------
+  // DSFR borders: most controls use a 1px stroke; the brand outline is heavier.
+  // Source: gouvernement.github.io/dsfr (foundamentals / borders).
+  borderWidth: {
+    none: "0",
+    thin: "1px",
+    thick: "2px"
+  },
+  borderStyle: { solid: "solid" },
+  // DSFR control density. DSFR buttons (md) are 40px tall; sizes "sm" (32px) and
+  // "lg" (48px) follow the DSFR size scale. Horizontal padding is generous.
+  // Source: DSFR component "Bouton" (sizes SM/MD/LG). Exact paddings "à confirmer"
+  // against the SCSS, but match the public component metrics closely.
+  density: {
+    // fontSize per size (anatomy v1.1.0). DSFR md label = 1rem (body). The sm/lg
+    // label sizes follow the DSFR size scale; sm 0.875rem (14px) / lg 1.125rem
+    // (18px) are "à confirmer" against the SCSS but match the public metrics.
+    sm: { controlHeight: "2rem", paddingBlock: "0", paddingInline: "0.75rem", gap: "0.5rem", minWidth: "2rem", fontSize: "0.875rem" },
+    md: { controlHeight: "2.5rem", paddingBlock: "0", paddingInline: "1rem", gap: "0.5rem", minWidth: "2.5rem", fontSize: "1rem" },
+    lg: { controlHeight: "3rem", paddingBlock: "0", paddingInline: "1.5rem", gap: "0.5rem", minWidth: "3rem", fontSize: "1.125rem" }
+  },
+  // DSFR typography = Marianne. Button labels are medium/bold, no transform.
+  // Source: DSFR "Typographie" — Marianne, body 1rem/1.5, label 0.875rem.
+  typography: {
+    control: { family: "Marianne, arial, sans-serif", size: "1rem", weight: "500", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
+    field: { family: "Marianne, arial, sans-serif", size: "1rem", weight: "400", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
+    label: { family: "Marianne, arial, sans-serif", size: "1rem", weight: "700", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
+    // DSFR links are underlined (link gestion = soulignement). Offset "à confirmer".
+    // Hover keeps the underline (DSFR animates its thickness/offset — that animation
+    // stays an escape, the line itself is tokenised). textDecorationHover = no-op vs rest.
+    link: { family: "inherit", size: "inherit", weight: "inherit", lineHeight: "inherit", letterSpacing: "0", textTransform: "none", textDecoration: "underline", decorationThickness: "auto", decorationOffset: "0.125em", textDecorationHover: "underline" }
+  },
+  disabledOpacity: "1", // DSFR disabled = greyed colours, not opacity dimming
+  transition: { property: "background-color, border-color, color, outline-color", duration: "120ms", easing: "ease" },
+  cursor: { interactive: "pointer", disabled: "not-allowed", text: "text" },
+  iconSize: { sm: "1rem", md: "1rem", lg: "1.5rem" },
+  // DSFR FOCUS = thick offset OUTLINE in the focus colour (2px, offset 2px).
+  // Source: DSFR accessibility — visible focus uses `outline` (not box-shadow),
+  // colour --focus #0a76f6 / Bleu France ring offset from the control.
+  focus: {
+    strategy: "outline",
+    width: "2px",
+    offset: "2px",
+    color: "#0a76f6", // DSFR --focus ring colour
+    inset: "0"
+  },
+  // DSFR « Champ de saisie » is a FILLED field with a BOTTOM RULE only (not a
+  // boxed encadré): a light grey fill + a single darker bottom border. This is
+  // the field-style primitive (anatomy v1.2.0) that makes our input faithful.
+  // Source: DSFR fondamentaux / composant « Champ de saisie » (gouvernement.
+  // github.io/dsfr). fillBg = grey-950 #eeeeee (--grey-950-100, the contrast
+  // background). Bottom rule = grey-200 #3a3a3a (~1px). Carré (radius 0, déjà
+  // posé). « à confirmer » la nuance exacte de la bordure basse contre le SCSS.
+  field: {
+    style: "filled-underline",
+    fillBg: dsfrColor.grey[950], // #eeeeee
+    underlineColor: dsfrColor.grey[200], // #3a3a3a
+    underlineWidth: "1px"
   }
 } as const;
 
@@ -174,8 +235,10 @@ const semantic = {
   },
   action: {
     primary: dsfrColor.blueFrance.sun113, // primary button = Bleu France
+    primaryHover: dsfrColor.blueFrance.hover, // Bleu France hover #1212ff (anatomy v1.1.0)
     primaryText: dsfrColor.grey[1000], // white text on Bleu France
     secondary: dsfrColor.blueFrance["925"], // light Bleu France secondary surface
+    secondaryHover: dsfrColor.blueFrance["850"], // darker light Bleu France on hover
     secondaryText: dsfrColor.blueFrance.sun113, // Bleu France text on light secondary
     danger: dsfrColor.system.error // destructive = DSFR error red
   },
@@ -209,10 +272,11 @@ const semantic = {
 
 /**
  * The DSFR theme as a Sentropic `TenantTheme`. The `tokens` tree is complete:
- * `foundation` and `semantic` carry DSFR-specific values, while the structural
- * `component` layer (which only wires component roles onto the semantic /
- * foundation roles above) is reused unchanged from the Sentropic base — the
- * same pattern used by the forge / entropic / carbon themes.
+ * `foundation` and `semantic` carry DSFR-specific values, and the `component`
+ * layer is REBUILT from this theme's own semantic/foundation via
+ * `createComponent` — so DSFR's brand reaches the components (buttons, tabs,
+ * pagination, chat bubbles…), not just the elements that read semantic vars
+ * directly. Reusing the base `component` would leave components on Sent Tech.
  */
 export const dsfrTheme: TenantTheme = {
   id: "dsfr",
@@ -221,7 +285,7 @@ export const dsfrTheme: TenantTheme = {
   tokens: {
     foundation,
     semantic,
-    component
+    component: createComponent(semantic, foundation)
   }
 };
 
