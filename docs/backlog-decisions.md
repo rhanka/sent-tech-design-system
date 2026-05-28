@@ -104,6 +104,10 @@ et dans quel ordre de clusters ? *(Je peux avancer par cluster réversible si tu
   `font: inherit` → typo d'anatomie. Erreur console sur /compare = provient d'AUTRES onglets
   ouverts (sentropic / radar-immo), pas de la page (vérifié : 0 erreur onglet isolé).
 
+- **Phase 2 anatomie — cluster navigation/overlay** : focus par stratégie sur PaginationNav,
+  OverflowMenu, Toggletip (triggers hors Button/Link). Panneaux Popover/Modal/Tooltip déjà
+  thémés (radius/ombre via foundation) → rien à faire. Matrice à jour (section nav/overlay).
+
 ## Fin du loop (réversible épuisé) — OBSOLÈTE, loop relancé
 
 Loop autonome terminé : **12 livrables** (Footer, Tile, SkipLink, Quote, Highlight,
