@@ -5,8 +5,14 @@ import {
   groupByCategory,
   type ComponentStatus
 } from "./components-catalog";
+import pkg from "../../package.json";
 
-export const DOCS_VERSION = "v0.7.0";
+// Source unique : la version affichée dérive du package.json du docs (aligné sur
+// la version du DS), pour ne plus jamais diverger (ex. v0.7.0 figé alors que le
+// DS était en 0.9.0).
+export const DOCS_VERSION = `v${pkg.version}`;
+/** Version du DS Sentropic ciblée (dépendance épinglée). */
+export const DS_VERSION = pkg.dependencies["@sentropic/design-system-themes"];
 
 export interface DocsNavItem {
   label: string;

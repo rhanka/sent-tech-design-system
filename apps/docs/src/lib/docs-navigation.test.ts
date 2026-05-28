@@ -9,7 +9,7 @@ import {
 
 describe("docs navigation model", () => {
   it("exposes the high-level documentation tracks used by the top nav", () => {
-    expect(DOCS_VERSION).toBe("v0.7.0");
+    expect(DOCS_VERSION).toMatch(/^v\d+\.\d+\.\d+$/);
     expect(DOCS_TOP_NAV.map((item) => item.label)).toEqual([
       "Fondations",
       "Composants",

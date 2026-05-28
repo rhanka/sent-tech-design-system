@@ -218,6 +218,17 @@ select {
   display: inline-block;
 }
 
+.docs-theme-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.docs-theme-trigger {
+  font-size: 0.82rem;
+  min-width: 6.5rem;
+  padding: 0 0.65rem;
+}
+
 .docs-locale-trigger {
   font-size: 0.82rem;
   min-width: 4.8rem;
