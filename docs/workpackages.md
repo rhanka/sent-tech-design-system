@@ -259,19 +259,22 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 ## WP10 — Theming via le moteur `design` (skills) — **AVANT WP7**
 
-**Statut global** : 🟢 mapping rodé + **2 thèmes publiés sur npm** (2026-05-26). Reste : feature `apply` + clients privés.
+**Statut global** : 🟡 **recalibré (2026-05-27)** — cible retargettée « **parité anatomique contrôlée** » (un thème ≠ que des couleurs). Pilote noyau livré **en local** (à publier). Reste : rollout Phase 2 + clients privés.
 
-**Décidé 2026-05-26** : mapping initié en parallèle (agents) sur DSFR + Carbon, puis skill rodée. Apply en feature A.
+**Recadrage (2026-05-27)** : le « 2 thèmes publiés 0.1.0 » ne changeait que **les couleurs** (couche `component` figée + tokens `foundation` débranchés des composants). Retargeté → spec `docs/superpowers/specs/2026-05-27-theme-anatomy-clone-design.md` (revu Codex+Opus). Pilote = Button/Input/Link/Card/Tabs × DSFR+Carbon.
 
 | Item | Statut | Notes |
 |---|---|---|
-| `design` mappe un DS tiers → thème (skill) | 🟢 | Playbook `tools/skills/sent-tech-skills/reference/theme-mapping.md` rodé sur 2 cas réels (`be6b204`) |
-| Thème `@sentropic/design-system-theme-dsfr` | 🟢 | **Publié `0.1.0`** — Bleu France/Marianne/8px/carré ; 227/227 vars CSS |
-| Thème `@sentropic/design-system-theme-carbon` | 🟢 | **Publié `0.1.0`** — Blue 60/gris/IBM Plex/data-vis ; 227/227 vars CSS |
-| Publication des 2 thèmes | 🟢 | Workflow `themes-publish.yml` sur tag `themes-v*`, **OIDC pur + trusted publishers** (token bootstrap utilisé puis révoqué) |
-| `design` applique le DS Sentropic (feature A) | ⚪ | Choisir/créer un thème assisté + injecter le CSS compilé — pas encore fait |
-| Test visuel des thèmes (rendu navigateur) | ⚪ | Structurel validé (227/227 vars, valeurs marque OK) ; rendu visuel pas encore vu à l'œil |
-| Thèmes clients : Airbus / Scalian / CGI | ⚪ | Plus tard ; tokens + packages **hors git** (mémoire/gitignore) ; Airbus fourni, Scalian/CGI à récupérer |
+| Skill de mapping + **passe QA fidélité obligatoire** | 🟢 | `reference/theme-mapping.md` : confronter au réel (banc), mesurer écarts par côté/état, gate avant publish |
+| Socle theming (builder `createComponent` + alias `--st-*`) | 🟢 local | rebranche `foundation` sur tous les composants (bug couleur-only corrigé) |
+| Contrat `ComponentAnatomy` **v1.2.0** (focus strategy, states, density, field.style) | 🟢 local | typé+versionné ; gate Phase 2 = schéma figé |
+| 5 composants pilote lisent l'anatomie | 🟢 local | Button/Input/Link/Card/Tabs, sans régression Sent Tech |
+| Fidélité DSFR/Carbon (noyau) | 🟢 local | input rempli+souligné (Carbon quasi-identique, DSFR proche), résidus tracés matrice |
+| Banc `/compare` réel (ours vs DS officiel en iframe) | 🟢 local | thèmes importés only, hauteur égale, langue native, versions DS+thème |
+| Sélecteur de thème docs (`:root`) | 🟢 local | switch qui change l'**anatomie** (police/radius/focus/champ) |
+| **Publication npm** (DS + thèmes, post-anatomie) | ⚪ | bump à faire (DS `0.9.0`→?, thèmes `0.1.0`→?), **prévenir l'utilisateur** avant tag |
+| Rollout Phase 2 (~55 composants restants) | ⚪ | après schéma figé |
+| Thèmes clients : Airbus / Scalian / CGI | ⚪ | plus tard ; **hors git** |
 
 **Dépendances** : WP8 (moteur `design` + `packages/themes`).
 **Parallélisable avec** : WP9, WP12.
