@@ -166,11 +166,15 @@ Réservée au non-tokenisable (pseudo-éléments, techniques, comportements).
 | **NumberInput** | field + shape + focus (`:focus-within`) + label | base 4 bords r6 ✅ (flip = pattern identique) | 🟢 |
 | **PasswordInput** | field + shape + focus (`:focus-within`) + label | base 4 bords r6 / filled bottom-only r0 #f4f4f4 ✅ | 🟢 |
 | **Search** | field + shape + focus (`:focus-within`) + label | base 4 bords r6 #fff ✅ | 🟢 |
-| Select | ⚪ à faire (trigger = boîte-champ + chevron) | — | ⚪ |
-| Combobox | ⚪ à faire (input + toggle + liste) | — | ⚪ |
-| MultiSelect | ⚪ à faire (input + tags + liste) | — | ⚪ |
-| DatePicker | ⚪ à faire (input + calendrier) | — | ⚪ |
+| **Select** | field + shape + focus (`:focus-visible`) + label | base 4 bords r6 / filled bottom-only r0 #f4f4f4 ✅ | 🟢 |
+| **Combobox** | field + shape + focus (`:focus-within`) + label | base 4 bords r6 / filled bottom-only r0 #eee ✅ | 🟢 |
+| **MultiSelect** | field + shape + focus (`:focus-visible`, sur `__trigger`) + label | base 4 bords r6 ✅ (flip = pattern identique) | 🟢 |
+| **DatePicker** | field + shape + focus (`:focus-within`) + label | base 4 bords r6 ✅ (flip = pattern identique) | 🟢 |
 
+> **Cluster boîte-champ COMPLET** : Input (pilote) + 8 contrôles (Textarea, NumberInput,
+> PasswordInput, Search, Select, Combobox, MultiSelect, DatePicker). Les panneaux dropdown
+> (`__list`/`__panel`) restent sur les groupes `dropdown`/`popover` (cluster overlay séparé).
+>
 > Cluster « sélection » (Checkbox/Radio/Switch/Toggle) : à traiter ensuite — ils
 > n'ont pas de boîte-champ mais relèvent du groupe `selection` + focus/shape (densité
 > et coche). Cluster séparé du rollout boîte-champ.
