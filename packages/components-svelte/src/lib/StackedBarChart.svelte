@@ -1,0 +1,190 @@
+<script lang="ts" module>
+  export type StackedBarTone =
+    | "category1" | "category2" | "category3" | "category4"
+    | "category5" | "category6" | "category7" | "category8";
+
+  export type StackedBarSegment = {
+    label: string;
+    value: number;
+    tone?: StackedBarTone;
+  };
+
+  export type StackedBarDatum = {
+    label: string;
+    segments: StackedBarSegment[];
+  };
+</script>
+
+<script lang="ts">
+  type StackedBarChartProps = {
+    data: StackedBarDatum[];
+    width?: number;
+    height?: number;
+    label: string;
+    showLegend?: boolean;
+    class?: string;
+  };
+
+  let {
+    data,
+    width = 480,
+    height = 260,
+    label,
+    showLegend = true,
+    class: className
+  }: StackedBarChartProps = $props();
+
+  const MARGIN = { top: 14, right: 16, bottom: 34, left: 44 };
+  const TONES = ["category1","category2","category3","category4","category5","category6","category7","category8"] as const;
+
+  function niceTicks(min: number, max: number, target = 5): number[] {
+    if (!Number.isFinite(min) || !Number.isFinite(max) || min === max) return [Number.isFinite(max) ? max : 0];
+    const range = max - min;
+    const rough = range / Math.max(target - 1, 1);
+    const pow = Math.pow(10, Math.floor(Math.log10(rough)));
+    const norm = rough / pow;
+    const step = norm < 1.5 ? pow : norm < 3 ? 2 * pow : norm < 7 ? 5 * pow : 10 * pow;
+    const start = Math.floor(min / step) * step;
+    const end = Math.ceil(max / step) * step;
+    const ticks: number[] = [];
+    for (let v = start; v <= end + step / 2; v += step) ticks.push(Number(v.toFixed(10)));
+    return ticks;
+  }
+  const scaleLinear = (v: number, d0: number, d1: number, r0: number, r1: number) =>
+    d1 === d0 ? r0 : r0 + ((v - d0) * (r1 - r0)) / (d1 - d0);
+  const fmt = (v: number) => (Math.abs(v) >= 1000 ? `${(v / 1000).toFixed(v % 1000 === 0 ? 0 : 1)}k` : Number.isInteger(v) ? String(v) : v.toFixed(1));
+
+  // Légende : tones par label de série (ordre de la 1re barre).
+  const legend = $derived.by(() => {
+    const seen = new Map<string, StackedBarTone>();
+    data.forEach((bar) => bar.segments.forEach((seg, i) => {
+      if (!seen.has(seg.label)) seen.set(seg.label, seg.tone ?? TONES[i % TONES.length]);
+    }));
+    return [...seen.entries()].map(([seriesLabel, tone]) => ({ seriesLabel, tone }));
+  });
+
+  let hovered: { bar: number; seg: number } | null = $state(null);
+
+  const scales = $derived.by(() => {
+    const totals = data.map((b) => b.segments.reduce((s, x) => s + Math.max(x.value, 0), 0));
+    const ticks = niceTicks(0, Math.max(0, ...totals));
+    return {
+      ticks, domainMax: ticks[ticks.length - 1],
+      plotW: Math.max(width - MARGIN.left - MARGIN.right, 1),
+      plotH: Math.max(height - MARGIN.top - MARGIN.bottom, 1)
+    };
+  });
+
+  const bars = $derived.by(() => {
+    const { domainMax, plotW, plotH } = scales;
+    if (data.length === 0) return [];
+    const band = plotW / data.length;
+    const barWidth = band * 0.6;
+    return data.map((bar, bi) => {
+      const x = MARGIN.left + band * bi + (band - barWidth) / 2;
+      let acc = 0;
+      const segs = bar.segments.map((seg, si) => {
+        const v = Math.max(seg.value, 0);
+        const yTop = MARGIN.top + scaleLinear(acc + v, 0, domainMax, plotH, 0);
+        const yBottom = MARGIN.top + scaleLinear(acc, 0, domainMax, plotH, 0);
+        acc += v;
+        return {
+          x, y: yTop, width: barWidth, height: Math.max(yBottom - yTop, 0),
+          seg, tone: seg.tone ?? TONES[si % TONES.length],
+          cx: x + barWidth / 2, cy: yTop + (yBottom - yTop) / 2
+        };
+      });
+      return { x, band, label: bar.label, segs, cxLabel: MARGIN.left + band * (bi + 0.5) };
+    });
+  });
+
+  const classes = () => ["st-stackedBar", className].filter(Boolean).join(" ");
+</script>
+
+<div class={classes()} role="img" aria-label={label}>
+  <svg viewBox="0 0 {width} {height}" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" focusable="false" aria-hidden="true">
+    {#each scales.ticks as t (t)}
+      {@const y = MARGIN.top + scaleLinear(t, 0, scales.domainMax, scales.plotH, 0)}
+      <line class="st-stackedBar__grid" x1={MARGIN.left} x2={width - MARGIN.right} y1={y} y2={y} />
+      <text class="st-stackedBar__tick" x={MARGIN.left - 6} y={y} text-anchor="end" dominant-baseline="middle">{fmt(t)}</text>
+    {/each}
+
+    <line class="st-stackedBar__axis" x1={MARGIN.left} x2={MARGIN.left} y1={MARGIN.top} y2={height - MARGIN.bottom} />
+    <line class="st-stackedBar__axis" x1={MARGIN.left} x2={width - MARGIN.right} y1={height - MARGIN.bottom} y2={height - MARGIN.bottom} />
+
+    {#each bars as bar, bi (bar.label)}
+      <text class="st-stackedBar__categoryLabel" x={bar.cxLabel} y={height - MARGIN.bottom + 16} text-anchor="middle">{bar.label}</text>
+      {#each bar.segs as s, si (s.seg.label)}
+        <rect
+          class="st-stackedBar__seg st-stackedBar__seg--{s.tone}"
+          class:st-stackedBar__seg--dim={hovered !== null && !(hovered.bar === bi && hovered.seg === si)}
+          x={s.x} y={s.y} width={s.width} height={s.height}
+          tabindex="0"
+          role="img"
+          aria-label="{bar.label} — {s.seg.label}: {s.seg.value}"
+          onmouseenter={() => (hovered = { bar: bi, seg: si })}
+          onmouseleave={() => (hovered = null)}
+          onfocus={() => (hovered = { bar: bi, seg: si })}
+          onblur={() => (hovered = null)}
+        />
+      {/each}
+    {/each}
+  </svg>
+
+  {#if hovered && bars[hovered.bar]?.segs[hovered.seg]}
+    {@const s = bars[hovered.bar].segs[hovered.seg]}
+    <div class="st-stackedBar__tooltip" role="presentation" style="left: {(s.cx / width) * 100}%; top: {(s.cy / height) * 100}%">
+      <span class="st-stackedBar__tooltipLabel">{s.seg.label}</span>
+      <span class="st-stackedBar__tooltipValue">{s.seg.value}</span>
+    </div>
+  {/if}
+
+  {#if showLegend && legend.length > 0}
+    <ul class="st-stackedBar__legend">
+      {#each legend as item (item.seriesLabel)}
+        <li class="st-stackedBar__legendItem">
+          <span class="st-stackedBar__legendSwatch st-stackedBar__legendSwatch--{item.tone}" aria-hidden="true"></span>
+          {item.seriesLabel}
+        </li>
+      {/each}
+    </ul>
+  {/if}
+</div>
+
+<style>
+  .st-stackedBar { color: var(--st-semantic-text-secondary); display: block; font-family: inherit; position: relative; width: 100%; }
+  .st-stackedBar svg { display: block; overflow: visible; }
+  .st-stackedBar__grid { stroke: var(--st-semantic-border-subtle); stroke-dasharray: 2 3; stroke-width: 1; opacity: 0.7; }
+  .st-stackedBar__axis { stroke: var(--st-semantic-border-subtle); stroke-width: 1; }
+  .st-stackedBar__tick, .st-stackedBar__categoryLabel { fill: var(--st-semantic-text-secondary); font-size: 0.6875rem; }
+  .st-stackedBar__seg { cursor: pointer; stroke: var(--st-semantic-surface-default, #fff); stroke-width: 1; transition: opacity 120ms ease; }
+  .st-stackedBar__seg--dim { opacity: 0.45; }
+  .st-stackedBar__seg:focus-visible { outline: 2px solid var(--st-semantic-border-interactive); outline-offset: 1px; }
+  .st-stackedBar__seg--category1 { fill: var(--st-semantic-data-category1); }
+  .st-stackedBar__seg--category2 { fill: var(--st-semantic-data-category2); }
+  .st-stackedBar__seg--category3 { fill: var(--st-semantic-data-category3); }
+  .st-stackedBar__seg--category4 { fill: var(--st-semantic-data-category4); }
+  .st-stackedBar__seg--category5 { fill: var(--st-semantic-data-category5); }
+  .st-stackedBar__seg--category6 { fill: var(--st-semantic-data-category6); }
+  .st-stackedBar__seg--category7 { fill: var(--st-semantic-data-category7); }
+  .st-stackedBar__seg--category8 { fill: var(--st-semantic-data-category8); }
+  .st-stackedBar__tooltip {
+    background: var(--st-semantic-surface-inverse); border-radius: var(--st-radius-sm, 0.25rem);
+    color: var(--st-semantic-text-inverse); display: inline-flex; flex-direction: column; font-size: 0.75rem;
+    gap: 0.125rem; line-height: 1.2; padding: 0.375rem 0.5rem; pointer-events: none; position: absolute;
+    transform: translate(-50%, calc(-100% - 8px)); white-space: nowrap; z-index: 1;
+  }
+  .st-stackedBar__tooltipLabel { font-weight: 600; }
+  .st-stackedBar__tooltipValue { opacity: 0.85; }
+  .st-stackedBar__legend { display: flex; flex-wrap: wrap; gap: 0.75rem; list-style: none; margin: 0.5rem 0 0; padding: 0; }
+  .st-stackedBar__legendItem { align-items: center; color: var(--st-semantic-text-secondary); display: inline-flex; font-size: 0.75rem; gap: 0.35rem; }
+  .st-stackedBar__legendSwatch { border-radius: 2px; height: 0.7rem; width: 0.7rem; }
+  .st-stackedBar__legendSwatch--category1 { background: var(--st-semantic-data-category1); }
+  .st-stackedBar__legendSwatch--category2 { background: var(--st-semantic-data-category2); }
+  .st-stackedBar__legendSwatch--category3 { background: var(--st-semantic-data-category3); }
+  .st-stackedBar__legendSwatch--category4 { background: var(--st-semantic-data-category4); }
+  .st-stackedBar__legendSwatch--category5 { background: var(--st-semantic-data-category5); }
+  .st-stackedBar__legendSwatch--category6 { background: var(--st-semantic-data-category6); }
+  .st-stackedBar__legendSwatch--category7 { background: var(--st-semantic-data-category7); }
+  .st-stackedBar__legendSwatch--category8 { background: var(--st-semantic-data-category8); }
+</style>

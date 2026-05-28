@@ -834,6 +834,16 @@ export const COMPONENTS: ComponentEntry[] = [
       fr: "Nuage de points (deux axes numériques), tooltip, points focusables.",
       en: "Scatter plot (two numeric axes), tooltip, focusable points."
     }
+  },
+  {
+    name: "StackedBarChart",
+    slug: "stacked-bar-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Barres empilées (séries), légende, tooltip par segment.",
+      en: "Stacked bar chart (series), legend, per-segment tooltip."
+    }
   }
 ];
 
