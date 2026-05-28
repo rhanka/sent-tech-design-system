@@ -3,7 +3,7 @@
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist",
-    "types": ["svelte", "vitest/globals"]
+    "types": ["svelte", "vitest/globals", "node"]
   },
   "include": ["src/**/*.ts", "src/**/*.svelte"]
 }
