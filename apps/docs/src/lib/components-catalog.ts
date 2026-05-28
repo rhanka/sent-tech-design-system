@@ -385,6 +385,16 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "Footer",
+    slug: "footer",
+    status: "documented",
+    category: "navigation",
+    description: {
+      fr: "Pied de page applicatif : marque, colonnes de liens, copyright et liens légaux.",
+      en: "Application footer: brand, link columns, copyright and legal links."
+    }
+  },
+  {
     name: "OverflowMenu",
     slug: "overflow-menu",
     status: "documented",

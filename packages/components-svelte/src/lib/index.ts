@@ -24,6 +24,7 @@ export { default as Drawer } from "./Drawer.svelte";
 export { default as Dropdown } from "./Dropdown.svelte";
 export { default as EmptyState } from "./EmptyState.svelte";
 export { default as FileUploader } from "./FileUploader.svelte";
+export { default as Footer } from "./Footer.svelte";
 export { default as Form } from "./Form.svelte";
 export { default as FormGroup } from "./FormGroup.svelte";
 export { default as Header } from "./Header.svelte";
