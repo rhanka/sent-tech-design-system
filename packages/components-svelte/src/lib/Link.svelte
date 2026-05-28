@@ -57,9 +57,10 @@
 <style>
   .st-link {
     color: var(--st-component-link-text, var(--st-semantic-text-link));
-    cursor: pointer;
-    text-decoration: underline;
-    text-underline-offset: 0.18em;
+    cursor: var(--st-cursor-interactive, pointer);
+    text-decoration: var(--st-component-link-anatomy-typography-textDecoration, underline);
+    text-decoration-thickness: var(--st-component-link-anatomy-typography-decorationThickness, auto);
+    text-underline-offset: var(--st-component-link-anatomy-typography-decorationOffset, 0.18em);
   }
 
   .st-link--standalone {
@@ -73,18 +74,25 @@
   }
 
   .st-link:hover {
-    color: var(--st-component-link-hoverText, var(--st-semantic-action-primary));
+    color: var(--st-component-link-anatomy-states-hover-text, var(--st-component-link-hoverText, var(--st-semantic-action-primary)));
+    /* Anatomy v1.1.0: hover decoration sourced from states.hover.decoration
+       (= link typography textDecorationHover). Carbon: none → underline; DSFR/base:
+       underline → underline (no-op). The DSFR animated underline stays an escape. */
+    text-decoration-line: var(--st-component-link-anatomy-states-hover-decoration, underline);
   }
 
+  /* Focus = shared mixin. --st-radius-* fixed to the valid `sm` token (was the
+     phantom --st-radius-small). */
   .st-link:focus-visible {
-    border-radius: var(--st-radius-small, 0.375rem);
-    outline: 2px solid var(--st-component-link-focusRing, var(--st-semantic-border-interactive));
-    outline-offset: 2px;
+    border-radius: var(--st-component-link-anatomy-shape-radius, var(--st-radius-sm, 0.25rem));
+    outline: var(--st-component-link-anatomy-focus-outline, 2px solid var(--st-semantic-border-interactive));
+    outline-offset: var(--st-component-link-anatomy-focus-offset, 2px);
+    box-shadow: var(--st-component-link-anatomy-focus-boxShadow, none);
   }
 
   .st-link--disabled {
-    color: var(--st-component-link-disabledText, var(--st-semantic-text-muted));
-    cursor: not-allowed;
-    text-decoration: none;
+    color: var(--st-component-link-anatomy-states-disabled-text, var(--st-component-link-disabledText, var(--st-semantic-text-muted)));
+    cursor: var(--st-cursor-disabled, not-allowed);
+    text-decoration: var(--st-component-link-anatomy-states-disabled-decoration, none);
   }
 </style>

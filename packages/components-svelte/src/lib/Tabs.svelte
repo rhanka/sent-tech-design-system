@@ -77,22 +77,36 @@
   .st-tabs__tab {
     background: transparent;
     border: 0;
-    border-bottom: 2px solid transparent;
+    border-bottom-width: var(--st-component-tabs-anatomy-shape-borderWidth, 2px);
+    border-bottom-style: var(--st-component-tabs-anatomy-shape-borderStyle, solid);
+    border-bottom-color: transparent;
     color: var(--st-component-tabs-inactiveText, var(--st-semantic-text-secondary));
-    cursor: pointer;
-    font: inherit;
-    font-weight: 600;
+    cursor: var(--st-cursor-interactive, pointer);
+    font-family: var(--st-component-tabs-anatomy-typography-family, inherit);
+    font-weight: var(--st-component-tabs-anatomy-typography-weight, 600);
+    line-height: var(--st-component-tabs-anatomy-typography-lineHeight, 1.2);
+    letter-spacing: var(--st-component-tabs-anatomy-typography-letterSpacing, 0);
+    text-transform: var(--st-component-tabs-anatomy-typography-textTransform, none);
     padding: 0.75rem 0.25rem;
   }
 
   .st-tabs__tab--active {
     border-bottom-color: var(--st-component-tabs-indicator, var(--st-semantic-action-primary));
-    color: var(--st-component-tabs-activeText, var(--st-semantic-text-primary));
+    color: var(--st-component-tabs-anatomy-states-hover-text, var(--st-component-tabs-activeText, var(--st-semantic-text-primary)));
+  }
+
+  /* a11y (non-negotiable): tabs previously had NO visible focus ring. The
+     shared focus mixin restores keyboard visibility per theme. */
+  .st-tabs__tab:focus-visible {
+    outline: var(--st-component-tabs-anatomy-focus-outline, 2px solid var(--st-semantic-border-interactive));
+    outline-offset: var(--st-component-tabs-anatomy-focus-offset, 2px);
+    box-shadow: var(--st-component-tabs-anatomy-focus-boxShadow, none);
+    border-radius: var(--st-component-tabs-anatomy-shape-radius, 0);
   }
 
   .st-tabs__tab:disabled {
-    cursor: not-allowed;
-    opacity: 0.55;
+    cursor: var(--st-cursor-disabled, not-allowed);
+    opacity: var(--st-component-tabs-anatomy-states-disabled-opacity, 0.55);
   }
 
   .st-tabs__panel {

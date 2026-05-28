@@ -38,6 +38,8 @@
     "test": "vitest run src"
   },
   "devDependencies": {
+    "@sentropic/design-system-theme-carbon": "0.1.0",
+    "@sentropic/design-system-theme-dsfr": "0.1.0",
     "@sveltejs/package": "^2.5.0",
     "@sveltejs/vite-plugin-svelte": "^6.2.4",
     "@testing-library/svelte": "^5.2.8",
