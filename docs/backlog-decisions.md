@@ -99,6 +99,11 @@ et dans quel ordre de clusters ? *(Je peux avancer par cluster réversible si tu
   (couleur checked, vérifié rendu). Visuel custom Checkbox/Radio (forme carrée + focus) DÉFÉRÉ
   en **D7** (feature à risque a11y). Matrice à jour (section cluster sélection).
 
+- **Banc `/compare` étendu** : Textarea + Select ajoutés (notre mappé vs réel DSFR/Carbon).
+  Validation au rendu RÉEL (thème compilé) du filled-underline + polices. Fix `.st-select`
+  `font: inherit` → typo d'anatomie. Erreur console sur /compare = provient d'AUTRES onglets
+  ouverts (sentropic / radar-immo), pas de la page (vérifié : 0 erreur onglet isolé).
+
 ## Fin du loop (réversible épuisé) — OBSOLÈTE, loop relancé
 
 Loop autonome terminé : **12 livrables** (Footer, Tile, SkipLink, Quote, Highlight,
