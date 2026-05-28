@@ -175,6 +175,18 @@ Réservée au non-tokenisable (pseudo-éléments, techniques, comportements).
 > PasswordInput, Search, Select, Combobox, MultiSelect, DatePicker). Les panneaux dropdown
 > (`__list`/`__panel`) restent sur les groupes `dropdown`/`popover` (cluster overlay séparé).
 >
-> Cluster « sélection » (Checkbox/Radio/Switch/Toggle) : à traiter ensuite — ils
-> n'ont pas de boîte-champ mais relèvent du groupe `selection` + focus/shape (densité
-> et coche). Cluster séparé du rollout boîte-champ.
+### Cluster « sélection »
+
+| Composant | Anatomie consommée | Vérif rendu | Statut |
+|-----------|--------------------|-------------|--------|
+| **Switch** | focus (stratégie, sur `__track`) | mêmes vars focus prouvées (boîte-champ) | 🟢 focus |
+| **Toggle** | focus (stratégie, sur `__track`) | mêmes vars focus prouvées (boîte-champ) | 🟢 focus |
+| **Checkbox** | `accent-color` = `selection.checkedBackground` | base oklch → #0f62fe injecté ✅ | 🟡 natif |
+| **Radio** | `accent-color` = `selection.checkedBackground` | (même classe `.st-choice__input`) | 🟡 natif |
+
+> **Switch/Toggle** : track custom → focus porté par la stratégie d'anatomie (parité a11y).
+> **Checkbox/Radio** : rendus **natifs** (`.st-choice__box` masqué) → seul `accent-color`
+> est thématisable sans markup custom. Le **visuel custom** (boîte carrée DSFR/Carbon,
+> coche, focus par stratégie, indeterminate) = **feature dédiée à risque a11y**, DÉFÉRÉE
+> (cf. backlog D7). Choix réversible : `accent-color` apporte la parité de couleur checked
+> tout de suite, sans risque ; le visuel custom sera arbitré à part.
