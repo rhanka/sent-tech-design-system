@@ -20,6 +20,7 @@ export { default as ContentSwitcher } from "./ContentSwitcher.svelte";
 export { default as CopyButton } from "./CopyButton.svelte";
 export { default as DataTable } from "./DataTable.svelte";
 export { default as DatePicker } from "./DatePicker.svelte";
+export { default as DonutChart } from "./DonutChart.svelte";
 export { default as Drawer } from "./Drawer.svelte";
 export { default as Dropdown } from "./Dropdown.svelte";
 export { default as EmptyState } from "./EmptyState.svelte";
@@ -90,6 +91,7 @@ export type {
   DataTableSort
 } from "./DataTable.svelte";
 export type { DatePickerRange } from "./DatePicker.svelte";
+export type { DonutChartDatum, DonutChartTone } from "./DonutChart.svelte";
 export type { DropdownOption } from "./Dropdown.svelte";
 export type { FileUploadItem, FileUploadStatus } from "./FileUploader.svelte";
 export type { MenuItem } from "./Menu.svelte";

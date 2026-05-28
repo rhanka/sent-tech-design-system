@@ -814,6 +814,16 @@ export const COMPONENTS: ComponentEntry[] = [
       fr: "Arborescence : expand/collapse, sélection, navigation clavier (flèches).",
       en: "Tree view: expand/collapse, selection, keyboard navigation (arrows)."
     }
+  },
+  {
+    name: "DonutChart",
+    slug: "donut-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Graphique en anneau (parts d'un total), tooltip et total au centre.",
+      en: "Donut chart (parts of a whole), tooltip and center total."
+    }
   }
 ];
 
