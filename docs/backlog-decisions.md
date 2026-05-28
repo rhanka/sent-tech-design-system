@@ -8,12 +8,11 @@ non listées ici (voir commits/tracker). Mis à jour au fil du loop.
 
 ## Décisions en attente
 
-### D1 — 🟠 Bump + publication npm (DS coeur + thèmes)
-Le contenu sur `main` (anatomie v1.2.0, builder, alias, thèmes anatomiques) n'est
-**pas publié**. Proposition : tokens/themes/svelte `0.9.0`→**`0.10.0`** (tag `v0.10.0`),
-theme-dsfr/carbon `0.1.0`→**`0.2.0`** (tag `themes-v0.2.0`), via OIDC (sans token).
-**Action attendue** : ton « go » → je bump les package.json + lockfile + commit + tags.
-*(Irréversible — unpublish npm difficile. Ne rien taguer sans go.)*
+### D1 — ✅ FAIT (2026-05-28) — Bump + publication npm (DS coeur + thèmes)
+Publié sur « go » utilisateur. commit `3caacd0` + tags `v0.10.0` et `themes-v0.2.0`.
+**Live sur npm (confirmé via `npm view`)** : tokens/themes/svelte **0.10.0**,
+theme-dsfr/theme-carbon **0.2.0** (Trusted Publishing OIDC, post-publish-check passé).
+skills inchangé (0.1.0, parqué). Bump additif → minor semver.
 
 ### D2 — 🟠 Alignement du composer chat sur `sentropic/chat-ui`
 Écart **architectural** : chat-ui = surface **rich-text ProseMirror à slots**
@@ -115,6 +114,9 @@ et dans quel ordre de clusters ? *(Je peux avancer par cluster réversible si tu
   (+ correction chemin périmé `packages/impeccable` → `packages/skills`). Sanity-check Codex
   des composants interactifs manqués : **non concluant** (limite d'usage Codex atteinte jusqu'au
   30/05) ; je m'appuie sur l'audit repo-wide (0 ring focus orphelin).
+
+- **D1 livrée** : release 0.10.0 (cœur) + 0.2.0 (thèmes) publiée sur npm via tags `v0.10.0` /
+  `themes-v0.2.0` (commit `3caacd0`). Versions confirmées live. `/loop` arrêté à la demande.
 
 ## Fin du loop (réversible épuisé) — OBSOLÈTE, loop relancé
 
