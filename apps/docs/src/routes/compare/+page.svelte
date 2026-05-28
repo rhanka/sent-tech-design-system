@@ -4,7 +4,7 @@
   // d'origine, isolés en iframe). Sent Tech (notre marque) n'a pas de pendant
   // externe → exclu de ce banc. Langue cohérente par DS (DSFR=FR, Carbon=EN).
   // Hors nav.
-  import { Button, Card, Input, Link, Tabs } from "@sentropic/design-system-svelte";
+  import { Button, Card, Input, Link, Select, Tabs, Textarea } from "@sentropic/design-system-svelte";
   import { compileTheme, type TenantTheme } from "@sentropic/design-system-themes";
   import { dsfrTheme } from "@sentropic/design-system-theme-dsfr";
   import { carbonTheme } from "@sentropic/design-system-theme-carbon";
@@ -23,6 +23,8 @@
   type L = {
     primary: string; secondary: string; email: string; helper: string; placeholder: string;
     inline: string; standalone: string; cardTitle: string; cardBody: string;
+    message: string; messagePlaceholder: string; selectLabel: string;
+    options: { value: string; label: string }[];
     tabs: { value: string; label: string; content: string; disabled?: boolean }[];
   };
   const LABELS: Record<string, L> = {
@@ -30,6 +32,12 @@
       primary: "Primaire", secondary: "Secondaire", email: "Email", helper: "Texte d'aide",
       placeholder: "nom@exemple.org", inline: "Lien inline", standalone: "Lien standalone",
       cardTitle: "Titre de carte", cardBody: "Contenu de la carte.",
+      message: "Message", messagePlaceholder: "Votre message…", selectLabel: "Région",
+      options: [
+        { value: "idf", label: "Île-de-France" },
+        { value: "bre", label: "Bretagne" },
+        { value: "occ", label: "Occitanie" }
+      ],
       tabs: [
         { value: "a", label: "Actif", content: "Panneau actif" },
         { value: "b", label: "Second", content: "Second panneau" },
@@ -40,6 +48,12 @@
       primary: "Primary", secondary: "Secondary", email: "Email", helper: "Helper text",
       placeholder: "name@example.org", inline: "Inline link", standalone: "Standalone link",
       cardTitle: "Card title", cardBody: "Card body content.",
+      message: "Message", messagePlaceholder: "Your message…", selectLabel: "Region",
+      options: [
+        { value: "north", label: "North" },
+        { value: "south", label: "South" },
+        { value: "east", label: "East" }
+      ],
       tabs: [
         { value: "a", label: "Active", content: "Active panel" },
         { value: "b", label: "Second", content: "Second panel" },
@@ -58,6 +72,8 @@
     dsfr: {
       Button: `<button class="fr-btn">Primaire</button> <button class="fr-btn fr-btn--secondary">Secondaire</button>`,
       Input: `<div class="fr-input-group"><label class="fr-label" for="d">Email<span class="fr-hint-text">Texte d'aide</span></label><input class="fr-input" id="d" placeholder="nom@exemple.org"></div>`,
+      Textarea: `<div class="fr-input-group"><label class="fr-label" for="dt">Message</label><textarea class="fr-input" id="dt" rows="3" placeholder="Votre message…"></textarea></div>`,
+      Select: `<div class="fr-select-group"><label class="fr-label" for="ds">Région</label><select class="fr-select" id="ds"><option value="idf">Île-de-France</option><option value="bre">Bretagne</option><option value="occ">Occitanie</option></select></div>`,
       Link: `<a class="fr-link" href="#">Lien inline</a><br><a class="fr-link fr-link--lg" href="#">Lien standalone</a>`,
       Card: `<div class="fr-card fr-card--sm" style="max-width:18rem"><div class="fr-card__body"><div class="fr-card__content"><h3 class="fr-card__title">Titre de carte</h3><p class="fr-card__desc">Contenu de la carte.</p></div></div></div>`,
       Tabs: `<div class="fr-tabs"><ul class="fr-tabs__list" role="tablist"><li role="presentation"><button class="fr-tabs__tab" role="tab" aria-selected="true">Actif</button></li><li role="presentation"><button class="fr-tabs__tab" role="tab" aria-selected="false">Second</button></li></ul></div>`
@@ -65,13 +81,15 @@
     carbon: {
       Button: `<button class="bx--btn bx--btn--primary">Primary</button> <button class="bx--btn bx--btn--secondary">Secondary</button>`,
       Input: `<div class="bx--form-item"><label class="bx--label" for="c">Email</label><input class="bx--text-input" id="c" placeholder="name@example.org"><div class="bx--form__helper-text">Helper text</div></div>`,
+      Textarea: `<div class="bx--form-item"><label class="bx--label" for="cta">Message</label><textarea class="bx--text-area" id="cta" rows="3" placeholder="Your message…"></textarea></div>`,
+      Select: `<div class="bx--form-item"><div class="bx--select"><label class="bx--label" for="cse">Region</label><div class="bx--select-input__wrapper"><select class="bx--select-input" id="cse"><option class="bx--select-option" value="north">North</option><option class="bx--select-option" value="south">South</option><option class="bx--select-option" value="east">East</option></select></div></div></div>`,
       Link: `<a class="bx--link" href="#">Inline link</a>`,
       Card: `<div class="bx--tile" style="max-width:18rem"><h3 style="margin:0 0 .5rem">Card title</h3><p style="margin:0">Card body content.</p></div>`,
       Tabs: `<nav class="bx--tabs"><ul class="bx--tabs__nav" role="tablist"><li class="bx--tabs__nav-item bx--tabs__nav-item--selected" role="tab"><a class="bx--tabs__nav-link" href="#">Active</a></li><li class="bx--tabs__nav-item" role="tab"><a class="bx--tabs__nav-link" href="#">Second</a></li></ul></nav>`
     }
   };
 
-  const COMPONENTS = ["Button", "Input", "Link", "Card", "Tabs"] as const;
+  const COMPONENTS = ["Button", "Input", "Textarea", "Select", "Link", "Card", "Tabs"] as const;
 
   function refDoc(themeId: string, comp: string): string {
     const href = CDN[themeId];
@@ -117,6 +135,14 @@
                 </div>
               {:else if comp === "Input"}
                 <Input label={lab.email} placeholder={lab.placeholder} helperText={lab.helper} />
+              {:else if comp === "Textarea"}
+                <Textarea label={lab.message} placeholder={lab.messagePlaceholder} rows={3} />
+              {:else if comp === "Select"}
+                <Select label={lab.selectLabel}>
+                  {#each lab.options as o}
+                    <option value={o.value}>{o.label}</option>
+                  {/each}
+                </Select>
               {:else if comp === "Link"}
                 <div class="cmp-stack">
                   <Link href="#cmp">{lab.inline}</Link>

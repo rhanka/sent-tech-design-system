@@ -94,7 +94,10 @@
     border-left: var(--st-component-control-anatomy-field-borderLeft, var(--st-component-control-anatomy-shape-borderWidth, 1px) var(--st-component-control-anatomy-shape-borderStyle, solid) var(--st-component-control-border, var(--st-semantic-border-subtle)));
     border-radius: var(--st-component-control-anatomy-shape-radius, 0.375rem);
     color: var(--st-component-control-text, var(--st-semantic-text-primary));
-    font: inherit;
+    font-family: var(--st-component-control-anatomy-typography-family, inherit);
+    font-size: var(--st-component-control-anatomy-typography-size, inherit);
+    font-weight: var(--st-component-control-anatomy-typography-weight, 400);
+    line-height: var(--st-component-control-anatomy-typography-lineHeight, 1.5);
     min-width: 0;
     padding: 0 2rem 0 0.75rem;
     width: 100%;
