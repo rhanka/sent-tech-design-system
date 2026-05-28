@@ -49,3 +49,4 @@ et dans quel ordre de clusters ? *(Je peux avancer par cluster réversible si tu
 - WP2 : lot **SkipLink** (a11y), **Quote** (éditorial), **Highlight** (mise en avant) — P2/P3 gap analysis.
 - WP2 : **LanguageSelector** (i18n, P2) + **OrderedList** (complément Carbon, P3).
 - WP2 : **TreeView** (P2, dernier gap P2 : expand/collapse, sélection, roving tabindex + flèches, ARIA tree).
+- WP9 : **démo docs reasoning** ajoutée à StreamingMessage (reasoning.delta/completed + bloc repliable). Reste publication → D1.

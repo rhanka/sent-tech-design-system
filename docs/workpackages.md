@@ -243,7 +243,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 ## WP9 — Surface Chat / Agent (re-scope + bug d'alignement)
 
-**Statut global** : 🟢 cœur livré (2026-05-26) — topic dédié créé, reasoning ajouté. Reste : démo docs reasoning + publication.
+**Statut global** : 🟢 livré (2026-05-27) — topic dédié, reasoning ajouté + **démo docs reasoning**. Reste : publication npm (→ D1). Input auto-resize : présent ; alignement chat-ui = D2.
 
 **Décidé 2026-05-26** : sortir le chat du topic « Formulaire » et créer un topic dédié **« Chat » / « Agent »** dans le catalogue docs. Réaligner les notions du domaine agentique.
 
