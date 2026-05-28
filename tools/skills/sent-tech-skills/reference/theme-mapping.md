@@ -68,11 +68,47 @@ npm run build          # tsc en ordre de deps (tokens → themes → theme-<id>)
 node --input-type=module -e "import {compileThemeStyleTag} from '@sentropic/design-system-themes'; import {<id>Theme} from '@sentropic/design-system-theme-<id>'; console.log(compileThemeStyleTag(<id>Theme).length)"
 ```
 
+## QA de fidélité — OBLIGATOIRE et SYSTÉMATIQUE (gate avant publication)
+
+Un mapping n'est PAS « fait » parce qu'il compile et change les couleurs. Il
+est fait quand, **composant par composant**, notre rendu est confronté au **vrai
+composant officiel** du DS source et que chaque écart est soit fermé (token),
+soit justifié (échappement). Cette passe est un **gate** : pas de publication
+tant qu'il reste des écarts non justifiés.
+
+**Procédure (pour CHAQUE composant mappé) :**
+1. **Confronter au réel** : afficher notre composant mappé À CÔTÉ du vrai
+   composant officiel (CSS+markup d'origine, en iframe isolée). Banc de référence :
+   `apps/docs/src/routes/compare/` (notre DS mappé vs DS officiel, par état
+   default/hover/focus/disabled, dans la langue native du DS).
+2. **Mesurer les écarts** : lire les **styles calculés** des deux côtés (pas les
+   variables) — `bg`, bordures **par côté** (top/right/bottom/left), radius,
+   police/poids/taille, paddings, hauteur, focus (technique), décoration. Ne
+   jamais signer « à l'œil » seul.
+3. **Consigner** chaque écart dans la matrice (`docs/ds-theme-anatomy-matrix.md`)
+   et dans `MAPPING.md` : propriété, valeur ours vs réel, statut.
+4. **Résoudre** : soit **fermer** par token (étendre l'anatomie si la dimension
+   manque), soit **justifier** comme échappement gouverné (propriétaire,
+   justification, date, critère de retrait).
+5. **Gate** : refuser le tag/publish s'il reste un écart **non justifié**.
+
+**Pièges d'anatomie déjà identifiés (à vérifier d'office) :**
+- **Style de champ** : DSFR et Carbon rendent les inputs **remplis + bordure
+  basse seule** (pas un encadré). Si l'anatomie n'exprime que des bordures
+  uniformes, l'input ne peut pas être fidèle → dimension `field.style`
+  (`outline` | `filled-underline`) + bordures par côté + `bg` de champ.
+- **Focus** : différence de **technique** (outline / box-shadow / inset), pas de
+  valeurs (cf. `focus.strategy`).
+- **Soulignement de lien** : conditionnel/animé (DSFR) → souvent échappement.
+- **Langue** : comparer dans la langue native du DS des deux côtés (sinon faux
+  écart de contenu).
+
 ## Publication
 
-Comme le moteur `skills` : tag `theme-<id>-v<version>` + workflow dédié, ou
-intégrer au pipeline. Premier publish d'un package neuf → Trusted Publishing à
-configurer côté npm (clé 2FA utilisateur), puis OIDC pur.
+Gate QA de fidélité **passé** d'abord (ci-dessus). Ensuite, comme le moteur
+`skills` : tag `theme-<id>-v<version>` + workflow dédié, ou intégrer au pipeline.
+Premier publish d'un package neuf → Trusted Publishing à configurer côté npm
+(clé 2FA utilisateur), puis OIDC pur.
 
 ## Exemples rodés
 
