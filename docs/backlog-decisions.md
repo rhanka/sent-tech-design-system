@@ -41,6 +41,15 @@ Bloqué : besoin des assets/tokens (Airbus fourni par toi, Scalian/CGI à récup
 Format de sortie `.pptx` + `.doc` à valider ; typologie slides ESN (decks Scalian/CGI
 en réf, hors colorimétrie). Cadrage à faire avec toi avant tout dev.
 
+### D7 — 🟠 Visuel custom Checkbox/Radio (parité forme DSFR/Carbon)
+Checkbox/Radio rendent en **natif** (la boîte `.st-choice__box` existe mais masquée).
+`accent-color` est désormais thématisé (couleur checked), mais la **forme** (boîte carrée
+DSFR/Carbon, coche custom, focus par stratégie, état `indeterminate`) exigerait un **visuel
+custom** : input masqué + `.st-choice__box` peint, avec a11y à préserver (clavier, lecteur
+d'écran, mode contraste élevé, indeterminate). **Engageant + risque a11y** → non fait en
+autonomie. **Action attendue** : décider si la parité de forme justifie un contrôle custom
+(sinon natif + `accent-color` reste un compromis acceptable). *(Réversible mais feature à part.)*
+
 ### D6 — 🟢 Phase 2 rollout anatomie (~55 composants restants)
 Schéma `ComponentAnatomy` figé v1.2.0 → rollout possible par clusters. Quand lancer,
 et dans quel ordre de clusters ? *(Je peux avancer par cluster réversible si tu veux.)*
@@ -85,6 +94,10 @@ et dans quel ordre de clusters ? *(Je peux avancer par cluster réversible si tu
   (trigger sur anatomie field/control, panneaux dropdown laissés au cluster overlay). Vérifié
   rendu (Combobox+Select flip filled-underline OK). Cluster boîte-champ = Input + 8 contrôles.
   Matrice à jour. SUITE : cluster « sélection » (Checkbox/Radio/Switch/Toggle, groupe `selection`).
+- **Phase 2 anatomie — cluster sélection** : Switch/Toggle → focus par stratégie d'anatomie
+  (parité a11y DSFR outline / Carbon inset) ; Checkbox/Radio (natifs) → `accent-color` thématisé
+  (couleur checked, vérifié rendu). Visuel custom Checkbox/Radio (forme carrée + focus) DÉFÉRÉ
+  en **D7** (feature à risque a11y). Matrice à jour (section cluster sélection).
 
 ## Fin du loop (réversible épuisé) — OBSOLÈTE, loop relancé
 
