@@ -145,3 +145,32 @@ Réservée au non-tokenisable (pseudo-éléments, techniques, comportements).
 - **Contraste du focus** : DSFR `#0a76f6` et Carbon `#0f62fe` sur fond blanc ⇒ contraste élevé
   (à confirmer formellement par mesure de ratio pendant l'UAT navigateur).
 - **Carbon inset** : l'anneau interne 2px ne sort pas du flux (pas de décalage de layout) ✅.
+
+---
+
+## Phase 2 — rollout par cluster (en cours, additif)
+
+> Principe : les contrôles de la **famille champ** consomment désormais les **mêmes**
+> vars d'anatomie `--st-component-control-anatomy-*` (+ `field` v1.2.0) que le pilote
+> Input. Ils **héritent donc par construction** de la parité DSFR/Carbon d'Input
+> (fond + filet bas seul + focus par stratégie), sans CSS par thème. Chaque migration
+> est vérifiée au **rendu calculé** (Playwright) : base inchangé (4 bords, radius 6px)
+> + flip `filled-underline` injecté (top/right/left=`none`, filet bas seul, fond rempli, radius 0).
+
+### Cluster « contrôles de formulaire » — boîte-champ
+
+| Composant | Anatomie consommée | Vérif rendu (base / filled-underline) | Statut |
+|-----------|--------------------|----------------------------------------|--------|
+| Input (pilote) | field + shape + focus + density + typo | référence | 🟢 |
+| **Textarea** | field + shape + focus + typo + label | base 4 bords r6 / filled bottom-only r0 #eee ✅ | 🟢 |
+| **NumberInput** | field + shape + focus (`:focus-within`) + label | base 4 bords r6 ✅ (flip = pattern identique) | 🟢 |
+| **PasswordInput** | field + shape + focus (`:focus-within`) + label | base 4 bords r6 / filled bottom-only r0 #f4f4f4 ✅ | 🟢 |
+| **Search** | field + shape + focus (`:focus-within`) + label | base 4 bords r6 #fff ✅ | 🟢 |
+| Select | ⚪ à faire (trigger = boîte-champ + chevron) | — | ⚪ |
+| Combobox | ⚪ à faire (input + toggle + liste) | — | ⚪ |
+| MultiSelect | ⚪ à faire (input + tags + liste) | — | ⚪ |
+| DatePicker | ⚪ à faire (input + calendrier) | — | ⚪ |
+
+> Cluster « sélection » (Checkbox/Radio/Switch/Toggle) : à traiter ensuite — ils
+> n'ont pas de boîte-champ mais relèvent du groupe `selection` + focus/shape (densité
+> et coche). Cluster séparé du rollout boîte-champ.
