@@ -30,7 +30,7 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">
-      {locale.value === "fr" ? "Composant · Feedback" : "Component · Feedback"}
+      {locale.value === "fr" ? "Composant · Données" : "Component · Data"}
     </p>
     <h1>
       Badge
@@ -100,7 +100,7 @@
       <li><code>--st-semantic-feedback-warning</code></li>
       <li><code>--st-semantic-feedback-error</code></li>
       <li><code>--st-semantic-feedback-info</code></li>
-      <li><code>--st-foundation-radius-pill</code></li>
+      <li><code>--st-radius-pill</code></li>
     </ul>
   </section>
 </div>

@@ -147,7 +147,7 @@
   </section>
 
   <section class="docs-section">
-    <h2>États à documenter</h2>
+    <h2>États</h2>
     <div class="docs-demo-stack">
       <article class="docs-demo-block">
         <h3>Sans auth réelle</h3>

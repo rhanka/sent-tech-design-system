@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Badge, MessageActions, type MessageAction } from "@sentropic/design-system-svelte";
-  import { Check, Copy, Pencil, ThumbsDown, ThumbsUp, Trash2 } from "@lucide/svelte";
+  import { Copy, Pencil, RefreshCw, ThumbsDown, ThumbsUp, Trash2 } from "@lucide/svelte";
   import { locale } from "$lib/locale.svelte";
 
   const copy = {
@@ -72,7 +72,7 @@
 {/snippet}
 
 {#snippet iconRegen()}
-  <Check size={14} strokeWidth={2.2} aria-hidden="true" />
+  <RefreshCw size={14} strokeWidth={2.2} aria-hidden="true" />
 {/snippet}
 
 {#snippet iconLike()}

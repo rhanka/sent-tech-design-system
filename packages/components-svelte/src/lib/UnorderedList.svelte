@@ -1,12 +1,13 @@
 <script lang="ts" module>
   import type { Snippet } from "svelte";
 
+  export type UnorderedListInput = string | UnorderedListItem;
+
   export interface UnorderedListItem {
     content: string | Snippet;
-    children?: UnorderedListItem[];
+    /** Sous-items : chaînes ou objets (normalisés au rendu). */
+    children?: UnorderedListInput[];
   }
-
-  export type UnorderedListInput = string | UnorderedListItem;
 </script>
 
 <script lang="ts">

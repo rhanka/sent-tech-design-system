@@ -156,7 +156,7 @@
       <li><code>--st-semantic-text-primary</code></li>
       <li><code>--st-semantic-text-secondary</code></li>
       <li><code>--st-semantic-surface-subtle</code></li>
-      <li><code>--st-foundation-radius-pill</code></li>
+      <li><code>--st-radius-pill</code></li>
       <li><code>--st-semantic-action-primary</code></li>
       <li><code>--st-semantic-feedback-success</code></li>
       <li><code>--st-semantic-feedback-warning</code></li>

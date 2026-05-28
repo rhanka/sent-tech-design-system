@@ -54,7 +54,14 @@ et dans quel ordre de clusters ? *(Je peux avancer par cluster réversible si tu
 - WP5 : **ScatterPlot** (P1 charts) — 2 axes numériques (nice ticks), points tonalisés, tooltip, a11y.
 - WP5 : **StackedBarChart** (P1 charts) — barres empilées multi-séries, légende, tooltip par segment. **WP5 P1 complet.**
 
-## Fin du loop (réversible épuisé)
+- T#9 sweep (2 agents A–M/N–Z) → **lot 1 corrigé** : 5 composants invisibles rendus visibles
+  (AspectRatio, CodeSnippet, StructuredList, TileGroup, UnorderedList = catalogue + page) ;
+  fixes docs (token `--st-radius-pill` ×3, Badge catégorie, Header titre, MessageActions icône) ;
+  type `UnorderedList.children` assoupli (chaînes acceptées). Reste **lot 2** : AreaChart promesse
+  a11y `prefers-reduced-motion`, MessageStatusBadge (tokens docs + labels FR-only), ChatComposer
+  `<slot>` legacy → snippets (🟠).
+
+## Fin du loop (réversible épuisé) — OBSOLÈTE, loop relancé
 
 Loop autonome terminé : **12 livrables** (Footer, Tile, SkipLink, Quote, Highlight,
 LanguageSelector, OrderedList, TreeView, DonutChart, ScatterPlot, StackedBarChart +
