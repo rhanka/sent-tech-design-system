@@ -101,8 +101,12 @@
     transform: translateX(calc(var(--st-toggle-trackWidth, 2.25rem) - var(--st-toggle-thumbSize, 1rem) - 0.25rem));
   }
 
+  /* Focus = stratégie d'anatomie partagée (outline DSFR / inset Carbon / ring base). */
   .st-toggle__input:focus-visible + .st-toggle__track {
-    box-shadow: 0 0 0 2px var(--st-component-control-focusRing, var(--st-semantic-border-interactive));
+    outline: var(--st-component-control-anatomy-focus-outline, none);
+    outline-offset: var(--st-component-control-anatomy-focus-offset, 0);
+    box-shadow: var(--st-component-control-anatomy-focus-boxShadow,
+      0 0 0 2px var(--st-component-control-focusRing, var(--st-semantic-border-interactive)));
   }
 
   .st-toggle__input:disabled + .st-toggle__track {
