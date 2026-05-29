@@ -306,3 +306,10 @@ test("rule heading-hierarchy: niveau sauté (H1→H3) → finding", async () => 
 test("rule heading-hierarchy: hiérarchie consécutive (H1→H2) → pas de finding", async () => {
   assert.ok(!(await ruleIds("<h1>A</h1><h2>B</h2>")).includes("heading-hierarchy"));
 });
+
+test("rule underline-hardcoded-border: champ avec border-bottom en dur → finding", async () => {
+  assert.ok((await ruleIds('<input style="border-bottom:2px solid #161616">')).includes("underline-hardcoded-border"));
+});
+test("rule underline-hardcoded-border: champ avec box-shadow inset → pas de finding", async () => {
+  assert.ok(!(await ruleIds('<input style="box-shadow:inset 0 -2px #161616">')).includes("underline-hardcoded-border"));
+});

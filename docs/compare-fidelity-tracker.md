@@ -21,7 +21,20 @@ Statut : ⬜ ouvert · 🟦 en cours · ✅ fermé · 🛡️ escape justifié (
 | F9 | **Résidus padding** (≈3) | Button DSFR (block 8px), Select padding-droit | densité par rôle/thème (gabarit chevron Select). | ⬜ |
 
 ## Détections dans le moteur `design-system-skills`
-- ⬜ Ajouter au moteur `@sentropic/design-system-skills` la **détection de fidélité par bord** (capacité issue de `tools/compare/fidelity.mjs`) : comparer un composant à une référence et émettre des findings par bord. (Go utilisateur.)
+- ✅ **Détection de fidélité par bord exposée dans la skill** (capacité issue de
+  `tools/compare/fidelity.mjs`) : nouvelle commande `fidelity` de la skill
+  multi-harness `sent-tech-design` via le wrapper portable
+  `tools/skills/sent-tech-skills/scripts/fidelity.mjs` (résout le repo via
+  `SENT_TECH_DS_ROOT`, lance la comparaison bord par bord vs DSFR/Carbon
+  officiels, écrit `docs/compare-fidelity-report.md` + `tools/compare/last-report.json`).
+  Propagé aux 4 copies installées (Claude / Gemini / Codex / plugin agy).
+  `SKILL.md` documente les deux commandes (`audit` lint statique, `fidelity`
+  comparaison par bord) + `allowed-tools`.
+- ✅ **Règle statique source-level bonus** : `underline-hardcoded-border` ajoutée
+  au moteur `@sentropic/design-system-skills` — signale un champ dessinant son
+  filet bas via un `border-bottom` en dur au lieu d'un `box-shadow inset`
+  (anti-pattern révélé par la famille d'écart F4). Couverte par un test
+  positif + négatif (26 tests verts).
 
 ## Publication (pré-autorisée, conditionnelle)
 - ⬜ Quand **toutes** les familles ci-dessus sont ✅/🛡️ et `verify` vert : bump patch cohérent

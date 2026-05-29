@@ -6,6 +6,7 @@ import { singleFontRule } from "./singleFontRule.js";
 import { sideTabOnRoundedRule } from "./sideTabOnRoundedRule.js";
 import { touchTargetRule } from "./touchTargetRule.js";
 import { headingHierarchyRule } from "./headingHierarchyRule.js";
+import { underlineBorderRule } from "./underlineBorderRule.js";
 
 export const defaultRules: Rule[] = [
   singleFontRule,
@@ -14,7 +15,8 @@ export const defaultRules: Rule[] = [
   sideTabOnRoundedRule,
   lineLengthRule,
   touchTargetRule,
-  headingHierarchyRule
+  headingHierarchyRule,
+  underlineBorderRule
 ];
 
 export {
@@ -24,5 +26,6 @@ export {
   singleFontRule,
   sideTabOnRoundedRule,
   touchTargetRule,
-  headingHierarchyRule
+  headingHierarchyRule,
+  underlineBorderRule
 };
