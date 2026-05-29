@@ -39,6 +39,16 @@ interface FieldInput {
   underlineWidth?: string;
 }
 
+// Card surface primitive a theme may or may not provide. Optional on the INPUT
+// (fallback = base Sent Tech: a `borderWidth.thin` stroke + surface.raised fill).
+// DSFR .fr-card / Carbon .bx--tile have NO border; Carbon's tile fill is the
+// $layer-01 grey (#f4f4f4). `borderWidth` lets a theme drop the stroke to 0 and
+// `background` lets it pick a layer tone — both without touching the base look.
+interface CardInput {
+  borderWidth?: string;
+  background?: string;
+}
+
 interface FoundationInput {
   radius: { none?: string; sm?: string; md: string; lg: string; pill: string };
   shadow: { subtle: string; medium: string; floating: string };
@@ -55,6 +65,7 @@ interface FoundationInput {
   iconSize?: { sm?: string; md?: string; lg?: string };
   focus?: FocusInput;
   field?: FieldInput;
+  card?: CardInput;
 }
 
 // Defaults used when a theme omits an anatomy primitive. These mirror the base
@@ -266,8 +277,14 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
     }
   };
 
+  // Card surface (additive): borderWidth defaults to the base `thin` stroke so
+  // Sent Tech is unchanged; DSFR/Carbon set it to 0 (their cards/tiles have no
+  // border). The fill defaults to surface.raised (base), Carbon overrides it to
+  // its $layer-01 tone via `card.background`.
+  const cardBorderWidth = foundation.card?.borderWidth ?? bw.thin;
+  const cardBackground = foundation.card?.background || semantic.surface.raised;
   const cardAnatomy: ComponentAnatomy = {
-    shape: { radius: foundation.radius.lg, borderWidth: bw.thin, borderStyle },
+    shape: { radius: foundation.radius.lg, borderWidth: cardBorderWidth, borderStyle },
     typography: typographyOf(foundation, "field"),
     focus,
     states: {
@@ -313,7 +330,7 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       radius: foundation.radius.lg
     },
     card: {
-      background: semantic.surface.raised,
+      background: cardBackground,
       border: semantic.border.subtle,
       radius: foundation.radius.lg,
       shadow: foundation.shadow.subtle,

@@ -93,6 +93,7 @@
     font-size: var(--st-component-control-anatomy-typography-size, inherit);
     font-weight: var(--st-component-control-anatomy-typography-weight, 400);
     line-height: var(--st-component-control-anatomy-typography-lineHeight, 1.5);
+    letter-spacing: var(--st-component-control-anatomy-typography-letterSpacing, normal);
     min-height: 6rem;
     min-width: 0;
     padding: 0.625rem var(--st-component-control-anatomy-density-sm-paddingInline, 0.75rem);

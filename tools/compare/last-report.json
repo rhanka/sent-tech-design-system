@@ -11,64 +11,42 @@
     "generatedBy": "tools/compare/fidelity.mjs"
   },
   "global": {
-    "eq": 302,
-    "close": 21,
-    "diff": 109,
-    "fidelity": 74.8
+    "eq": 348,
+    "close": 15,
+    "diff": 69,
+    "fidelity": 84
   },
   "netGaps": [
-    "dsfr/Button: padding-top (Δ-8.0px)",
-    "dsfr/Button: padding-bottom (Δ-8.0px)",
     "dsfr/Button: box width (Δ1.5px)",
+    "dsfr/Button: box height (Δ2.0px)",
     "dsfr/Button: font-family (Marianne vs system-ui)",
     "dsfr/Button: color (rgb(255,255,255) vs rgb(245,245,254))",
     "dsfr/Input: border-bottom style (solid vs none)",
     "dsfr/Input: radius topLeft (Δ-4.0px)",
     "dsfr/Input: radius topRight (Δ-4.0px)",
-    "dsfr/Input: padding-top (Δ-8.0px)",
-    "dsfr/Input: padding-right (Δ-4.0px)",
-    "dsfr/Input: padding-bottom (Δ-8.0px)",
-    "dsfr/Input: padding-left (Δ-4.0px)",
-    "dsfr/Input: box width (Δ-111.0px)",
-    "dsfr/Input: color (rgb(22,22,22) vs rgb(58,58,58))",
+    "dsfr/Input: box width (Δ-103.0px)",
     "dsfr/Textarea: border-bottom style (solid vs none)",
     "dsfr/Textarea: radius topLeft (Δ-4.0px)",
     "dsfr/Textarea: radius topRight (Δ-4.0px)",
     "dsfr/Textarea: padding-top (Δ2.0px)",
-    "dsfr/Textarea: padding-right (Δ-4.0px)",
     "dsfr/Textarea: padding-bottom (Δ2.0px)",
-    "dsfr/Textarea: padding-left (Δ-4.0px)",
-    "dsfr/Textarea: box width (Δ-110.0px)",
+    "dsfr/Textarea: box width (Δ-102.0px)",
     "dsfr/Textarea: box height (Δ8.0px)",
-    "dsfr/Textarea: color (rgb(22,22,22) vs rgb(58,58,58))",
     "dsfr/Select: border-bottom style (solid vs none)",
     "dsfr/Select: radius topLeft (Δ-4.0px)",
     "dsfr/Select: radius topRight (Δ-4.0px)",
-    "dsfr/Select: padding-top (Δ-8.0px)",
     "dsfr/Select: padding-right (Δ-8.0px)",
-    "dsfr/Select: padding-bottom (Δ-8.0px)",
-    "dsfr/Select: padding-left (Δ-4.0px)",
-    "dsfr/Select: box width (Δ-165.0px)",
+    "dsfr/Select: box width (Δ-161.0px)",
     "dsfr/Select: line-height (normal vs 24px)",
-    "dsfr/Select: color (rgb(22,22,22) vs rgb(58,58,58))",
     "dsfr/Link: line-height (normal vs 24px)",
     "dsfr/Link: text-decoration (underline vs none)",
-    "dsfr/Card: border-top style (solid vs none)",
-    "dsfr/Card: border-top color (rgb(238,238,238) vs rgb(58,58,58))",
-    "dsfr/Card: border-right style (solid vs none)",
-    "dsfr/Card: border-right color (rgb(238,238,238) vs rgb(58,58,58))",
-    "dsfr/Card: border-bottom style (solid vs none)",
-    "dsfr/Card: border-bottom color (rgb(238,238,238) vs rgb(58,58,58))",
-    "dsfr/Card: border-left style (solid vs none)",
-    "dsfr/Card: border-left color (rgb(238,238,238) vs rgb(58,58,58))",
     "dsfr/Card: padding-top (Δ15.0px)",
     "dsfr/Card: padding-right (Δ15.0px)",
     "dsfr/Card: padding-bottom (Δ15.0px)",
     "dsfr/Card: padding-left (Δ15.0px)",
-    "dsfr/Card: box width (Δ-102.9px)",
-    "dsfr/Card: box height (Δ-23.6px)",
+    "dsfr/Card: box width (Δ-104.9px)",
+    "dsfr/Card: box height (Δ-25.6px)",
     "dsfr/Card: line-height (normal vs 24px)",
-    "dsfr/Card: color (rgb(22,22,22) vs rgb(58,58,58))",
     "dsfr/Tabs: border-bottom style (solid vs none)",
     "dsfr/Tabs: padding-top (Δ4.0px)",
     "dsfr/Tabs: padding-right (Δ-12.0px)",
@@ -79,7 +57,7 @@
     "dsfr/Tabs: font-family (Marianne vs system-ui)",
     "dsfr/Tabs: font-weight (500 vs 700)",
     "dsfr/Tabs: background-color (rgb(0,0,0)/a0 vs rgb(255,255,255))",
-    "dsfr/Tabs: color (rgb(22,22,22) vs rgb(0,0,145))",
+    "dsfr/Tabs: color (rgb(58,58,58) vs rgb(0,0,145))",
     "carbon/Button: padding-top (Δ-11.0px)",
     "carbon/Button: padding-right (Δ-47.0px)",
     "carbon/Button: padding-bottom (Δ-11.0px)",
@@ -88,43 +66,25 @@
     "carbon/Button: font-family (IBM Plex Sans vs system-ui)",
     "carbon/Input: box width (Δ-95.0px)",
     "carbon/Input: font-family (IBM Plex Sans vs system-ui)",
-    "carbon/Input: line-height (Δ2.0px)",
-    "carbon/Input: letter-spacing (normal vs 0.16px)",
     "carbon/Textarea: box width (Δ-120.0px)",
     "carbon/Textarea: box height (Δ13.0px)",
     "carbon/Textarea: font-family (IBM Plex Sans vs system-ui)",
-    "carbon/Textarea: letter-spacing (normal vs 0.16px)",
+    "carbon/Textarea: line-height (Δ-2.0px)",
     "carbon/Select: padding-right (Δ-16.0px)",
-    "carbon/Select: padding-left (Δ-4.0px)",
-    "carbon/Select: box width (Δ-226.0px)",
+    "carbon/Select: box width (Δ-221.0px)",
     "carbon/Select: font-family (IBM Plex Sans vs system-ui)",
     "carbon/Select: line-height (normal vs 18.0001px)",
-    "carbon/Select: letter-spacing (normal vs 0.16px)",
-    "carbon/Link: box width (Δ7.4px)",
-    "carbon/Link: box height (Δ4.0px)",
-    "carbon/Link: font-size (Δ2.0px)",
-    "carbon/Link: line-height (normal vs 18.0001px)",
-    "carbon/Link: letter-spacing (normal vs 0.16px)",
-    "carbon/Card: border-top style (solid vs none)",
-    "carbon/Card: border-top color (rgb(224,224,224) vs rgb(22,22,22))",
-    "carbon/Card: border-right style (solid vs none)",
-    "carbon/Card: border-right color (rgb(224,224,224) vs rgb(22,22,22))",
-    "carbon/Card: border-bottom style (solid vs none)",
-    "carbon/Card: border-bottom color (rgb(224,224,224) vs rgb(22,22,22))",
-    "carbon/Card: border-left style (solid vs none)",
-    "carbon/Card: border-left color (rgb(224,224,224) vs rgb(22,22,22))",
-    "carbon/Card: box width (Δ-110.9px)",
-    "carbon/Card: box height (Δ-17.6px)",
+    "carbon/Card: box width (Δ-112.9px)",
+    "carbon/Card: box height (Δ-19.6px)",
     "carbon/Card: font-size (Δ2.0px)",
     "carbon/Card: line-height (normal vs 14px)",
     "carbon/Card: letter-spacing (normal vs 0.16px)",
-    "carbon/Card: background-color (rgb(255,255,255) vs rgb(244,244,244))",
     "carbon/Tabs: border-bottom color (rgb(15,98,254) vs rgb(224,224,224))",
     "carbon/Tabs: padding-right (Δ4.0px)",
     "carbon/Tabs: padding-left (Δ4.0px)",
     "carbon/Tabs: font-family (IBM Plex Sans vs system-ui)",
     "carbon/Tabs: font-size (Δ2.0px)",
-    "carbon/Tabs: line-height (Δ4.6px)",
+    "carbon/Tabs: line-height (Δ2.0px)",
     "carbon/Tabs: color (rgb(22,22,22) vs rgb(82,82,82))"
   ],
   "components": [
@@ -135,11 +95,11 @@
       "refSelector": ".fr-btn",
       "refStyled": true,
       "notes": [],
-      "fidelity": 83.9,
+      "fidelity": 87.1,
       "counts": {
-        "eq": 22,
+        "eq": 23,
         "close": 4,
-        "diff": 5
+        "diff": 4
       },
       "rows": [
         {
@@ -273,10 +233,10 @@
         {
           "label": "padding-top",
           "prop": "padding-top",
-          "ours": "0px",
+          "ours": "8px",
           "ref": "8px",
-          "status": "≠",
-          "delta": "Δ-8.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "padding-right",
@@ -289,10 +249,10 @@
         {
           "label": "padding-bottom",
           "prop": "padding-bottom",
-          "ours": "0px",
+          "ours": "8px",
           "ref": "8px",
-          "status": "≠",
-          "delta": "Δ-8.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "padding-left",
@@ -313,10 +273,10 @@
         {
           "label": "box height",
           "prop": "box-height",
-          "ours": "40px",
+          "ours": "42px",
           "ref": "40px",
-          "status": "=",
-          "delta": ""
+          "status": "≠",
+          "delta": "Δ2.0px"
         },
         {
           "label": "font-family",
@@ -423,14 +383,14 @@
             "bottomLeft": "0px"
           },
           "padding": {
-            "top": "0px",
+            "top": "8px",
             "right": "16px",
-            "bottom": "0px",
+            "bottom": "8px",
             "left": "16px"
           },
           "box": {
             "width": 97.3125,
-            "height": 40
+            "height": 42
           },
           "typo": {
             "fontFamily": "Marianne",
@@ -509,11 +469,11 @@
       "refSelector": ".fr-input",
       "refStyled": true,
       "notes": [],
-      "fidelity": 71,
+      "fidelity": 87.1,
       "counts": {
-        "eq": 21,
-        "close": 1,
-        "diff": 9
+        "eq": 25,
+        "close": 2,
+        "diff": 4
       },
       "rows": [
         {
@@ -535,7 +495,7 @@
         {
           "label": "border-top color",
           "prop": "border-top-color",
-          "ours": "rgb(22, 22, 22)",
+          "ours": "rgb(58, 58, 58)",
           "ref": "rgb(58, 58, 58)",
           "status": "=",
           "delta": "bord 0px (invisible)"
@@ -559,7 +519,7 @@
         {
           "label": "border-right color",
           "prop": "border-right-color",
-          "ours": "rgb(22, 22, 22)",
+          "ours": "rgb(58, 58, 58)",
           "ref": "rgb(58, 58, 58)",
           "status": "=",
           "delta": "bord 0px (invisible)"
@@ -607,7 +567,7 @@
         {
           "label": "border-left color",
           "prop": "border-left-color",
-          "ours": "rgb(22, 22, 22)",
+          "ours": "rgb(58, 58, 58)",
           "ref": "rgb(58, 58, 58)",
           "status": "=",
           "delta": "bord 0px (invisible)"
@@ -647,50 +607,50 @@
         {
           "label": "padding-top",
           "prop": "padding-top",
-          "ours": "0px",
+          "ours": "8px",
           "ref": "8px",
-          "status": "≠",
-          "delta": "Δ-8.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "padding-right",
           "prop": "padding-right",
-          "ours": "12px",
+          "ours": "16px",
           "ref": "16px",
-          "status": "≠",
-          "delta": "Δ-4.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "padding-bottom",
           "prop": "padding-bottom",
-          "ours": "0px",
+          "ours": "8px",
           "ref": "8px",
-          "status": "≠",
-          "delta": "Δ-8.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "padding-left",
           "prop": "padding-left",
-          "ours": "12px",
+          "ours": "16px",
           "ref": "16px",
-          "status": "≠",
-          "delta": "Δ-4.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "box width",
           "prop": "box-width",
-          "ours": "218px",
+          "ours": "226px",
           "ref": "329px",
           "status": "≠",
-          "delta": "Δ-111.0px"
+          "delta": "Δ-103.0px"
         },
         {
           "label": "box height",
           "prop": "box-height",
-          "ours": "40px",
+          "ours": "41px",
           "ref": "40px",
-          "status": "=",
-          "delta": ""
+          "status": "~",
+          "delta": "Δ1.0px"
         },
         {
           "label": "font-family",
@@ -759,10 +719,10 @@
         {
           "label": "color",
           "prop": "color",
-          "ours": "rgb(22, 22, 22)",
+          "ours": "rgb(58, 58, 58)",
           "ref": "rgb(58, 58, 58)",
-          "status": "≠",
-          "delta": "rgb(22,22,22) vs rgb(58,58,58)"
+          "status": "=",
+          "delta": ""
         }
       ],
       "raw": {
@@ -772,12 +732,12 @@
             "top": {
               "width": "0px",
               "style": "none",
-              "color": "rgb(22, 22, 22)"
+              "color": "rgb(58, 58, 58)"
             },
             "right": {
               "width": "0px",
               "style": "none",
-              "color": "rgb(22, 22, 22)"
+              "color": "rgb(58, 58, 58)"
             },
             "bottom": {
               "width": "1px",
@@ -787,7 +747,7 @@
             "left": {
               "width": "0px",
               "style": "none",
-              "color": "rgb(22, 22, 22)"
+              "color": "rgb(58, 58, 58)"
             }
           },
           "radius": {
@@ -797,14 +757,14 @@
             "bottomLeft": "0px"
           },
           "padding": {
-            "top": "0px",
-            "right": "12px",
-            "bottom": "0px",
-            "left": "12px"
+            "top": "8px",
+            "right": "16px",
+            "bottom": "8px",
+            "left": "16px"
           },
           "box": {
-            "width": 218,
-            "height": 40
+            "width": 226,
+            "height": 41
           },
           "typo": {
             "fontFamily": "Marianne",
@@ -817,7 +777,7 @@
           },
           "colors": {
             "backgroundColor": "rgb(238, 238, 238)",
-            "color": "rgb(22, 22, 22)"
+            "color": "rgb(58, 58, 58)"
           }
         },
         "ref": {
@@ -883,11 +843,11 @@
       "refSelector": "textarea.fr-input",
       "refStyled": true,
       "notes": [],
-      "fidelity": 67.7,
+      "fidelity": 77.4,
       "counts": {
-        "eq": 20,
+        "eq": 23,
         "close": 1,
-        "diff": 10
+        "diff": 7
       },
       "rows": [
         {
@@ -909,7 +869,7 @@
         {
           "label": "border-top color",
           "prop": "border-top-color",
-          "ours": "rgb(22, 22, 22)",
+          "ours": "rgb(58, 58, 58)",
           "ref": "rgb(58, 58, 58)",
           "status": "=",
           "delta": "bord 0px (invisible)"
@@ -933,7 +893,7 @@
         {
           "label": "border-right color",
           "prop": "border-right-color",
-          "ours": "rgb(22, 22, 22)",
+          "ours": "rgb(58, 58, 58)",
           "ref": "rgb(58, 58, 58)",
           "status": "=",
           "delta": "bord 0px (invisible)"
@@ -981,7 +941,7 @@
         {
           "label": "border-left color",
           "prop": "border-left-color",
-          "ours": "rgb(22, 22, 22)",
+          "ours": "rgb(58, 58, 58)",
           "ref": "rgb(58, 58, 58)",
           "status": "=",
           "delta": "bord 0px (invisible)"
@@ -1029,10 +989,10 @@
         {
           "label": "padding-right",
           "prop": "padding-right",
-          "ours": "12px",
+          "ours": "16px",
           "ref": "16px",
-          "status": "≠",
-          "delta": "Δ-4.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "padding-bottom",
@@ -1045,18 +1005,18 @@
         {
           "label": "padding-left",
           "prop": "padding-left",
-          "ours": "12px",
+          "ours": "16px",
           "ref": "16px",
-          "status": "≠",
-          "delta": "Δ-4.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "box width",
           "prop": "box-width",
-          "ours": "219px",
+          "ours": "227px",
           "ref": "329px",
           "status": "≠",
-          "delta": "Δ-110.0px"
+          "delta": "Δ-102.0px"
         },
         {
           "label": "box height",
@@ -1133,10 +1093,10 @@
         {
           "label": "color",
           "prop": "color",
-          "ours": "rgb(22, 22, 22)",
+          "ours": "rgb(58, 58, 58)",
           "ref": "rgb(58, 58, 58)",
-          "status": "≠",
-          "delta": "rgb(22,22,22) vs rgb(58,58,58)"
+          "status": "=",
+          "delta": ""
         }
       ],
       "raw": {
@@ -1146,12 +1106,12 @@
             "top": {
               "width": "0px",
               "style": "none",
-              "color": "rgb(22, 22, 22)"
+              "color": "rgb(58, 58, 58)"
             },
             "right": {
               "width": "0px",
               "style": "none",
-              "color": "rgb(22, 22, 22)"
+              "color": "rgb(58, 58, 58)"
             },
             "bottom": {
               "width": "1px",
@@ -1161,7 +1121,7 @@
             "left": {
               "width": "0px",
               "style": "none",
-              "color": "rgb(22, 22, 22)"
+              "color": "rgb(58, 58, 58)"
             }
           },
           "radius": {
@@ -1172,12 +1132,12 @@
           },
           "padding": {
             "top": "10px",
-            "right": "12px",
+            "right": "16px",
             "bottom": "10px",
-            "left": "12px"
+            "left": "16px"
           },
           "box": {
-            "width": 219,
+            "width": 227,
             "height": 96
           },
           "typo": {
@@ -1191,7 +1151,7 @@
           },
           "colors": {
             "backgroundColor": "rgb(238, 238, 238)",
-            "color": "rgb(22, 22, 22)"
+            "color": "rgb(58, 58, 58)"
           }
         },
         "ref": {
@@ -1257,11 +1217,11 @@
       "refSelector": ".fr-select",
       "refStyled": true,
       "notes": [],
-      "fidelity": 67.7,
+      "fidelity": 80.6,
       "counts": {
-        "eq": 20,
+        "eq": 24,
         "close": 1,
-        "diff": 10
+        "diff": 6
       },
       "rows": [
         {
@@ -1283,7 +1243,7 @@
         {
           "label": "border-top color",
           "prop": "border-top-color",
-          "ours": "rgb(22, 22, 22)",
+          "ours": "rgb(58, 58, 58)",
           "ref": "rgb(58, 58, 58)",
           "status": "=",
           "delta": "bord 0px (invisible)"
@@ -1307,7 +1267,7 @@
         {
           "label": "border-right color",
           "prop": "border-right-color",
-          "ours": "rgb(22, 22, 22)",
+          "ours": "rgb(58, 58, 58)",
           "ref": "rgb(58, 58, 58)",
           "status": "=",
           "delta": "bord 0px (invisible)"
@@ -1355,7 +1315,7 @@
         {
           "label": "border-left color",
           "prop": "border-left-color",
-          "ours": "rgb(22, 22, 22)",
+          "ours": "rgb(58, 58, 58)",
           "ref": "rgb(58, 58, 58)",
           "status": "=",
           "delta": "bord 0px (invisible)"
@@ -1395,10 +1355,10 @@
         {
           "label": "padding-top",
           "prop": "padding-top",
-          "ours": "0px",
+          "ours": "8px",
           "ref": "8px",
-          "status": "≠",
-          "delta": "Δ-8.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "padding-right",
@@ -1411,26 +1371,26 @@
         {
           "label": "padding-bottom",
           "prop": "padding-bottom",
-          "ours": "0px",
+          "ours": "8px",
           "ref": "8px",
-          "status": "≠",
-          "delta": "Δ-8.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "padding-left",
           "prop": "padding-left",
-          "ours": "12px",
+          "ours": "16px",
           "ref": "16px",
-          "status": "≠",
-          "delta": "Δ-4.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "box width",
           "prop": "box-width",
-          "ours": "164px",
+          "ours": "168px",
           "ref": "329px",
           "status": "≠",
-          "delta": "Δ-165.0px"
+          "delta": "Δ-161.0px"
         },
         {
           "label": "box height",
@@ -1507,10 +1467,10 @@
         {
           "label": "color",
           "prop": "color",
-          "ours": "rgb(22, 22, 22)",
+          "ours": "rgb(58, 58, 58)",
           "ref": "rgb(58, 58, 58)",
-          "status": "≠",
-          "delta": "rgb(22,22,22) vs rgb(58,58,58)"
+          "status": "=",
+          "delta": ""
         }
       ],
       "raw": {
@@ -1520,12 +1480,12 @@
             "top": {
               "width": "0px",
               "style": "none",
-              "color": "rgb(22, 22, 22)"
+              "color": "rgb(58, 58, 58)"
             },
             "right": {
               "width": "0px",
               "style": "none",
-              "color": "rgb(22, 22, 22)"
+              "color": "rgb(58, 58, 58)"
             },
             "bottom": {
               "width": "1px",
@@ -1535,7 +1495,7 @@
             "left": {
               "width": "0px",
               "style": "none",
-              "color": "rgb(22, 22, 22)"
+              "color": "rgb(58, 58, 58)"
             }
           },
           "radius": {
@@ -1545,13 +1505,13 @@
             "bottomLeft": "0px"
           },
           "padding": {
-            "top": "0px",
+            "top": "8px",
             "right": "32px",
-            "bottom": "0px",
-            "left": "12px"
+            "bottom": "8px",
+            "left": "16px"
           },
           "box": {
-            "width": 164,
+            "width": 168,
             "height": 40
           },
           "typo": {
@@ -1565,7 +1525,7 @@
           },
           "colors": {
             "backgroundColor": "rgb(238, 238, 238)",
-            "color": "rgb(22, 22, 22)"
+            "color": "rgb(58, 58, 58)"
           }
         },
         "ref": {
@@ -2005,108 +1965,108 @@
       "refSelector": ".fr-card",
       "refStyled": true,
       "notes": [],
-      "fidelity": 48.4,
+      "fidelity": 77.4,
       "counts": {
-        "eq": 11,
-        "close": 4,
-        "diff": 16
+        "eq": 24,
+        "close": 0,
+        "diff": 7
       },
       "rows": [
         {
           "label": "border-top width",
           "prop": "border-top-width",
-          "ours": "1px",
+          "ours": "0px",
           "ref": "0px",
-          "status": "~",
-          "delta": "Δ1.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "border-top style",
           "prop": "border-top-style",
           "ours": "solid",
           "ref": "none",
-          "status": "≠",
-          "delta": "solid vs none"
+          "status": "=",
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "border-top color",
           "prop": "border-top-color",
           "ours": "rgb(238, 238, 238)",
           "ref": "rgb(58, 58, 58)",
-          "status": "≠",
-          "delta": "rgb(238,238,238) vs rgb(58,58,58)"
+          "status": "=",
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "border-right width",
           "prop": "border-right-width",
-          "ours": "1px",
+          "ours": "0px",
           "ref": "0px",
-          "status": "~",
-          "delta": "Δ1.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "border-right style",
           "prop": "border-right-style",
           "ours": "solid",
           "ref": "none",
-          "status": "≠",
-          "delta": "solid vs none"
+          "status": "=",
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "border-right color",
           "prop": "border-right-color",
           "ours": "rgb(238, 238, 238)",
           "ref": "rgb(58, 58, 58)",
-          "status": "≠",
-          "delta": "rgb(238,238,238) vs rgb(58,58,58)"
+          "status": "=",
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "border-bottom width",
           "prop": "border-bottom-width",
-          "ours": "1px",
+          "ours": "0px",
           "ref": "0px",
-          "status": "~",
-          "delta": "Δ1.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "border-bottom style",
           "prop": "border-bottom-style",
           "ours": "solid",
           "ref": "none",
-          "status": "≠",
-          "delta": "solid vs none"
+          "status": "=",
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "border-bottom color",
           "prop": "border-bottom-color",
           "ours": "rgb(238, 238, 238)",
           "ref": "rgb(58, 58, 58)",
-          "status": "≠",
-          "delta": "rgb(238,238,238) vs rgb(58,58,58)"
+          "status": "=",
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "border-left width",
           "prop": "border-left-width",
-          "ours": "1px",
+          "ours": "0px",
           "ref": "0px",
-          "status": "~",
-          "delta": "Δ1.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "border-left style",
           "prop": "border-left-style",
           "ours": "solid",
           "ref": "none",
-          "status": "≠",
-          "delta": "solid vs none"
+          "status": "=",
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "border-left color",
           "prop": "border-left-color",
           "ours": "rgb(238, 238, 238)",
           "ref": "rgb(58, 58, 58)",
-          "status": "≠",
-          "delta": "rgb(238,238,238) vs rgb(58,58,58)"
+          "status": "=",
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "radius topLeft",
@@ -2175,18 +2135,18 @@
         {
           "label": "box width",
           "prop": "box-width",
-          "ours": "185.1px",
+          "ours": "183.1px",
           "ref": "288px",
           "status": "≠",
-          "delta": "Δ-102.9px"
+          "delta": "Δ-104.9px"
         },
         {
           "label": "box height",
           "prop": "box-height",
-          "ours": "82.4px",
+          "ours": "80.4px",
           "ref": "106px",
           "status": "≠",
-          "delta": "Δ-23.6px"
+          "delta": "Δ-25.6px"
         },
         {
           "label": "font-family",
@@ -2255,10 +2215,10 @@
         {
           "label": "color",
           "prop": "color",
-          "ours": "rgb(22, 22, 22)",
+          "ours": "rgb(58, 58, 58)",
           "ref": "rgb(58, 58, 58)",
-          "status": "≠",
-          "delta": "rgb(22,22,22) vs rgb(58,58,58)"
+          "status": "=",
+          "delta": ""
         }
       ],
       "raw": {
@@ -2266,22 +2226,22 @@
           "found": true,
           "border": {
             "top": {
-              "width": "1px",
+              "width": "0px",
               "style": "solid",
               "color": "rgb(238, 238, 238)"
             },
             "right": {
-              "width": "1px",
+              "width": "0px",
               "style": "solid",
               "color": "rgb(238, 238, 238)"
             },
             "bottom": {
-              "width": "1px",
+              "width": "0px",
               "style": "solid",
               "color": "rgb(238, 238, 238)"
             },
             "left": {
-              "width": "1px",
+              "width": "0px",
               "style": "solid",
               "color": "rgb(238, 238, 238)"
             }
@@ -2299,8 +2259,8 @@
             "left": "16px"
           },
           "box": {
-            "width": 185.0625,
-            "height": 82.390625
+            "width": 183.0625,
+            "height": 80.390625
           },
           "typo": {
             "fontFamily": "system-ui",
@@ -2313,7 +2273,7 @@
           },
           "colors": {
             "backgroundColor": "rgb(255, 255, 255)",
-            "color": "rgb(22, 22, 22)"
+            "color": "rgb(58, 58, 58)"
           }
         },
         "ref": {
@@ -2405,7 +2365,7 @@
         {
           "label": "border-top color",
           "prop": "border-top-color",
-          "ours": "rgb(22, 22, 22)",
+          "ours": "rgb(58, 58, 58)",
           "ref": "rgb(0, 0, 145)",
           "status": "=",
           "delta": "bord 0px (invisible)"
@@ -2429,7 +2389,7 @@
         {
           "label": "border-right color",
           "prop": "border-right-color",
-          "ours": "rgb(22, 22, 22)",
+          "ours": "rgb(58, 58, 58)",
           "ref": "rgb(0, 0, 145)",
           "status": "=",
           "delta": "bord 0px (invisible)"
@@ -2477,7 +2437,7 @@
         {
           "label": "border-left color",
           "prop": "border-left-color",
-          "ours": "rgb(22, 22, 22)",
+          "ours": "rgb(58, 58, 58)",
           "ref": "rgb(0, 0, 145)",
           "status": "=",
           "delta": "bord 0px (invisible)"
@@ -2629,10 +2589,10 @@
         {
           "label": "color",
           "prop": "color",
-          "ours": "rgb(22, 22, 22)",
+          "ours": "rgb(58, 58, 58)",
           "ref": "rgb(0, 0, 145)",
           "status": "≠",
-          "delta": "rgb(22,22,22) vs rgb(0,0,145)"
+          "delta": "rgb(58,58,58) vs rgb(0,0,145)"
         }
       ],
       "raw": {
@@ -2642,12 +2602,12 @@
             "top": {
               "width": "0px",
               "style": "none",
-              "color": "rgb(22, 22, 22)"
+              "color": "rgb(58, 58, 58)"
             },
             "right": {
               "width": "0px",
               "style": "none",
-              "color": "rgb(22, 22, 22)"
+              "color": "rgb(58, 58, 58)"
             },
             "bottom": {
               "width": "1px",
@@ -2657,7 +2617,7 @@
             "left": {
               "width": "0px",
               "style": "none",
-              "color": "rgb(22, 22, 22)"
+              "color": "rgb(58, 58, 58)"
             }
           },
           "radius": {
@@ -2687,7 +2647,7 @@
           },
           "colors": {
             "backgroundColor": "rgba(0, 0, 0, 0)",
-            "color": "rgb(22, 22, 22)"
+            "color": "rgb(58, 58, 58)"
           }
         },
         "ref": {
@@ -2963,10 +2923,10 @@
         {
           "label": "line-height",
           "prop": "line-height",
-          "ours": "18.06px",
+          "ours": "18px",
           "ref": "18.0001px",
           "status": "~",
-          "delta": "Δ0.1px"
+          "delta": "Δ0.0px"
         },
         {
           "label": "letter-spacing",
@@ -3054,7 +3014,7 @@
             "fontFamily": "IBM Plex Sans",
             "fontSize": "14px",
             "fontWeight": "400",
-            "lineHeight": "18.06px",
+            "lineHeight": "18px",
             "letterSpacing": "0.16px",
             "textTransform": "none",
             "textDecorationLine": "none"
@@ -3127,11 +3087,11 @@
       "refSelector": ".bx--text-input",
       "refStyled": true,
       "notes": [],
-      "fidelity": 87.1,
+      "fidelity": 93.5,
       "counts": {
-        "eq": 27,
-        "close": 0,
-        "diff": 4
+        "eq": 28,
+        "close": 1,
+        "diff": 2
       },
       "rows": [
         {
@@ -3337,18 +3297,18 @@
         {
           "label": "line-height",
           "prop": "line-height",
-          "ours": "20.02px",
+          "ours": "18px",
           "ref": "18.0001px",
-          "status": "≠",
-          "delta": "Δ2.0px"
+          "status": "~",
+          "delta": "Δ0.0px"
         },
         {
           "label": "letter-spacing",
           "prop": "letter-spacing",
-          "ours": "normal",
+          "ours": "0.16px",
           "ref": "0.16px",
-          "status": "≠",
-          "delta": "normal vs 0.16px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "text-transform",
@@ -3428,8 +3388,8 @@
             "fontFamily": "IBM Plex Sans",
             "fontSize": "14px",
             "fontWeight": "400",
-            "lineHeight": "20.02px",
-            "letterSpacing": "normal",
+            "lineHeight": "18px",
+            "letterSpacing": "0.16px",
             "textTransform": "none",
             "textDecorationLine": "none"
           },
@@ -3503,8 +3463,8 @@
       "notes": [],
       "fidelity": 87.1,
       "counts": {
-        "eq": 24,
-        "close": 3,
+        "eq": 25,
+        "close": 2,
         "diff": 4
       },
       "rows": [
@@ -3711,18 +3671,18 @@
         {
           "label": "line-height",
           "prop": "line-height",
-          "ours": "20.02px",
+          "ours": "18px",
           "ref": "20px",
-          "status": "~",
-          "delta": "Δ0.0px"
+          "status": "≠",
+          "delta": "Δ-2.0px"
         },
         {
           "label": "letter-spacing",
           "prop": "letter-spacing",
-          "ours": "normal",
+          "ours": "0.16px",
           "ref": "0.16px",
-          "status": "≠",
-          "delta": "normal vs 0.16px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "text-transform",
@@ -3802,8 +3762,8 @@
             "fontFamily": "IBM Plex Sans",
             "fontSize": "14px",
             "fontWeight": "400",
-            "lineHeight": "20.02px",
-            "letterSpacing": "normal",
+            "lineHeight": "18px",
+            "letterSpacing": "0.16px",
             "textTransform": "none",
             "textDecorationLine": "none"
           },
@@ -3875,11 +3835,11 @@
       "refSelector": ".bx--select-input",
       "refStyled": true,
       "notes": [],
-      "fidelity": 80.6,
+      "fidelity": 87.1,
       "counts": {
-        "eq": 25,
+        "eq": 27,
         "close": 0,
-        "diff": 6
+        "diff": 4
       },
       "rows": [
         {
@@ -4037,18 +3997,18 @@
         {
           "label": "padding-left",
           "prop": "padding-left",
-          "ours": "12px",
+          "ours": "16px",
           "ref": "16px",
-          "status": "≠",
-          "delta": "Δ-4.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "box width",
           "prop": "box-width",
-          "ours": "103px",
+          "ours": "108px",
           "ref": "329px",
           "status": "≠",
-          "delta": "Δ-226.0px"
+          "delta": "Δ-221.0px"
         },
         {
           "label": "box height",
@@ -4093,10 +4053,10 @@
         {
           "label": "letter-spacing",
           "prop": "letter-spacing",
-          "ours": "normal",
+          "ours": "0.16px",
           "ref": "0.16px",
-          "status": "≠",
-          "delta": "normal vs 0.16px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "text-transform",
@@ -4166,10 +4126,10 @@
             "top": "0px",
             "right": "32px",
             "bottom": "0px",
-            "left": "12px"
+            "left": "16px"
           },
           "box": {
-            "width": 103,
+            "width": 108,
             "height": 40
           },
           "typo": {
@@ -4177,7 +4137,7 @@
             "fontSize": "14px",
             "fontWeight": "400",
             "lineHeight": "normal",
-            "letterSpacing": "normal",
+            "letterSpacing": "0.16px",
             "textTransform": "none",
             "textDecorationLine": "none"
           },
@@ -4249,11 +4209,11 @@
       "refSelector": ".bx--link",
       "refStyled": true,
       "notes": [],
-      "fidelity": 83.9,
+      "fidelity": 100,
       "counts": {
-        "eq": 26,
-        "close": 0,
-        "diff": 5
+        "eq": 30,
+        "close": 1,
+        "diff": 0
       },
       "rows": [
         {
@@ -4419,18 +4379,18 @@
         {
           "label": "box width",
           "prop": "box-width",
-          "ours": "73.3px",
+          "ours": "65.9px",
           "ref": "65.9px",
-          "status": "≠",
-          "delta": "Δ7.4px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "box height",
           "prop": "box-height",
-          "ours": "22px",
+          "ours": "18px",
           "ref": "18px",
-          "status": "≠",
-          "delta": "Δ4.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "font-family",
@@ -4443,10 +4403,10 @@
         {
           "label": "font-size",
           "prop": "font-size",
-          "ours": "16px",
+          "ours": "14px",
           "ref": "14px",
-          "status": "≠",
-          "delta": "Δ2.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "font-weight",
@@ -4459,18 +4419,18 @@
         {
           "label": "line-height",
           "prop": "line-height",
-          "ours": "normal",
+          "ours": "17.9999px",
           "ref": "18.0001px",
-          "status": "≠",
-          "delta": "normal vs 18.0001px"
+          "status": "~",
+          "delta": "Δ0.0px"
         },
         {
           "label": "letter-spacing",
           "prop": "letter-spacing",
-          "ours": "normal",
+          "ours": "0.16px",
           "ref": "0.16px",
-          "status": "≠",
-          "delta": "normal vs 0.16px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "text-transform",
@@ -4543,15 +4503,15 @@
             "left": "0px"
           },
           "box": {
-            "width": 73.328125,
-            "height": 22
+            "width": 65.921875,
+            "height": 17.984375
           },
           "typo": {
             "fontFamily": "system-ui",
-            "fontSize": "16px",
+            "fontSize": "14px",
             "fontWeight": "400",
-            "lineHeight": "normal",
-            "letterSpacing": "normal",
+            "lineHeight": "17.9999px",
+            "letterSpacing": "0.16px",
             "textTransform": "none",
             "textDecorationLine": "none"
           },
@@ -4623,108 +4583,108 @@
       "refSelector": ".bx--tile",
       "refStyled": true,
       "notes": [],
-      "fidelity": 54.8,
+      "fidelity": 83.9,
       "counts": {
-        "eq": 13,
-        "close": 4,
-        "diff": 14
+        "eq": 26,
+        "close": 0,
+        "diff": 5
       },
       "rows": [
         {
           "label": "border-top width",
           "prop": "border-top-width",
-          "ours": "1px",
+          "ours": "0px",
           "ref": "0px",
-          "status": "~",
-          "delta": "Δ1.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "border-top style",
           "prop": "border-top-style",
           "ours": "solid",
           "ref": "none",
-          "status": "≠",
-          "delta": "solid vs none"
+          "status": "=",
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "border-top color",
           "prop": "border-top-color",
           "ours": "rgb(224, 224, 224)",
           "ref": "rgb(22, 22, 22)",
-          "status": "≠",
-          "delta": "rgb(224,224,224) vs rgb(22,22,22)"
+          "status": "=",
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "border-right width",
           "prop": "border-right-width",
-          "ours": "1px",
+          "ours": "0px",
           "ref": "0px",
-          "status": "~",
-          "delta": "Δ1.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "border-right style",
           "prop": "border-right-style",
           "ours": "solid",
           "ref": "none",
-          "status": "≠",
-          "delta": "solid vs none"
+          "status": "=",
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "border-right color",
           "prop": "border-right-color",
           "ours": "rgb(224, 224, 224)",
           "ref": "rgb(22, 22, 22)",
-          "status": "≠",
-          "delta": "rgb(224,224,224) vs rgb(22,22,22)"
+          "status": "=",
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "border-bottom width",
           "prop": "border-bottom-width",
-          "ours": "1px",
+          "ours": "0px",
           "ref": "0px",
-          "status": "~",
-          "delta": "Δ1.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "border-bottom style",
           "prop": "border-bottom-style",
           "ours": "solid",
           "ref": "none",
-          "status": "≠",
-          "delta": "solid vs none"
+          "status": "=",
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "border-bottom color",
           "prop": "border-bottom-color",
           "ours": "rgb(224, 224, 224)",
           "ref": "rgb(22, 22, 22)",
-          "status": "≠",
-          "delta": "rgb(224,224,224) vs rgb(22,22,22)"
+          "status": "=",
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "border-left width",
           "prop": "border-left-width",
-          "ours": "1px",
+          "ours": "0px",
           "ref": "0px",
-          "status": "~",
-          "delta": "Δ1.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "border-left style",
           "prop": "border-left-style",
           "ours": "solid",
           "ref": "none",
-          "status": "≠",
-          "delta": "solid vs none"
+          "status": "=",
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "border-left color",
           "prop": "border-left-color",
           "ours": "rgb(224, 224, 224)",
           "ref": "rgb(22, 22, 22)",
-          "status": "≠",
-          "delta": "rgb(224,224,224) vs rgb(22,22,22)"
+          "status": "=",
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "radius topLeft",
@@ -4793,18 +4753,18 @@
         {
           "label": "box width",
           "prop": "box-width",
-          "ours": "177.1px",
+          "ours": "175.1px",
           "ref": "288px",
           "status": "≠",
-          "delta": "Δ-110.9px"
+          "delta": "Δ-112.9px"
         },
         {
           "label": "box height",
           "prop": "box-height",
-          "ours": "82.4px",
+          "ours": "80.4px",
           "ref": "100px",
           "status": "≠",
-          "delta": "Δ-17.6px"
+          "delta": "Δ-19.6px"
         },
         {
           "label": "font-family",
@@ -4865,10 +4825,10 @@
         {
           "label": "background-color",
           "prop": "background-color",
-          "ours": "rgb(255, 255, 255)",
+          "ours": "rgb(244, 244, 244)",
           "ref": "rgb(244, 244, 244)",
-          "status": "≠",
-          "delta": "rgb(255,255,255) vs rgb(244,244,244)"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "color",
@@ -4884,22 +4844,22 @@
           "found": true,
           "border": {
             "top": {
-              "width": "1px",
+              "width": "0px",
               "style": "solid",
               "color": "rgb(224, 224, 224)"
             },
             "right": {
-              "width": "1px",
+              "width": "0px",
               "style": "solid",
               "color": "rgb(224, 224, 224)"
             },
             "bottom": {
-              "width": "1px",
+              "width": "0px",
               "style": "solid",
               "color": "rgb(224, 224, 224)"
             },
             "left": {
-              "width": "1px",
+              "width": "0px",
               "style": "solid",
               "color": "rgb(224, 224, 224)"
             }
@@ -4917,8 +4877,8 @@
             "left": "16px"
           },
           "box": {
-            "width": 177.0625,
-            "height": 82.390625
+            "width": 175.0625,
+            "height": 80.390625
           },
           "typo": {
             "fontFamily": "system-ui",
@@ -4930,7 +4890,7 @@
             "textDecorationLine": "none"
           },
           "colors": {
-            "backgroundColor": "rgb(255, 255, 255)",
+            "backgroundColor": "rgb(244, 244, 244)",
             "color": "rgb(22, 22, 22)"
           }
         },
@@ -5194,10 +5154,10 @@
         {
           "label": "line-height",
           "prop": "line-height",
-          "ours": "20.64px",
+          "ours": "18px",
           "ref": "16px",
           "status": "≠",
-          "delta": "Δ4.6px"
+          "delta": "Δ2.0px"
         },
         {
           "label": "letter-spacing",
@@ -5279,13 +5239,13 @@
           },
           "box": {
             "width": 53.921875,
-            "height": 45.625
+            "height": 43
           },
           "typo": {
             "fontFamily": "IBM Plex Sans",
             "fontSize": "16px",
             "fontWeight": "400",
-            "lineHeight": "20.64px",
+            "lineHeight": "18px",
             "letterSpacing": "0.16px",
             "textTransform": "none",
             "textDecorationLine": "none"
