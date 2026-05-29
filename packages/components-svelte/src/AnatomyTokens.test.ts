@@ -91,8 +91,8 @@ describe("anatomy v1.1.0 — hover bg, hover decoration, per-size font size", ()
     THEMES.map((t) => [t.id, compileTheme(t)])
   );
 
-  it("ANATOMY_VERSION is 1.3.0", () => {
-    expect(ANATOMY_VERSION).toBe("1.3.0");
+  it("ANATOMY_VERSION is 1.4.0", () => {
+    expect(ANATOMY_VERSION).toBe("1.4.0");
   });
 
   for (const theme of THEMES) {
@@ -149,10 +149,12 @@ describe("anatomy v1.2.0 — field style (outline vs filled-underline)", () => {
   for (const theme of THEMES) {
     const css = () => compiled.get(theme.id)!;
 
-    it(`${theme.id}: every field var (style/fillBg/border per side + radiusTop/underline/focusShadow) is emitted`, () => {
+    it(`${theme.id}: every field var (style/fillBg/border per side + radiusTop/underline/focusShadow + select leaves) is emitted`, () => {
       for (const leaf of [
         "style", "fillBg", "borderTop", "borderRight", "borderBottom", "borderLeft",
-        "radiusTop", "underline", "focusShadow"
+        "radiusTop", "underline", "focusShadow",
+        // v1.4.0 (F5/F9): native <select> rendering leaves.
+        "selectAppearance", "selectChevron", "selectPaddingRight"
       ]) {
         expect(css(), `${FIELD}-${leaf} missing for ${theme.id}`).toMatch(
           new RegExp(`${FIELD}-${leaf}:\\s*[^;]+;`)

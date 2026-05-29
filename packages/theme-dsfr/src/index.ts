@@ -188,7 +188,10 @@ const foundation = {
     // DSFR links are underlined (link gestion = soulignement). Offset "à confirmer".
     // Hover keeps the underline (DSFR animates its thickness/offset — that animation
     // stays an escape, the line itself is tokenised). textDecorationHover = no-op vs rest.
-    link: { family: "inherit", size: "inherit", weight: "inherit", lineHeight: "inherit", letterSpacing: "0", textTransform: "none", textDecoration: "underline", decorationThickness: "auto", decorationOffset: "0.125em", textDecorationHover: "underline" }
+    // F5: the real `.fr-link` renders line-height 24px (DSFR body 1rem/1.5). The base
+    // link role inherits (`inherit`) so its lineHeight stays unset; DSFR pins 1.5 so
+    // the .st-link line-height matches the measured 24px instead of `normal`.
+    link: { family: "inherit", size: "inherit", weight: "inherit", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "underline", decorationThickness: "auto", decorationOffset: "0.125em", textDecorationHover: "underline" }
   },
   disabledOpacity: "1", // DSFR disabled = greyed colours, not opacity dimming
   transition: { property: "background-color, border-color, color, outline-color", duration: "120ms", easing: "ease" },
@@ -223,14 +226,29 @@ const foundation = {
     underlineColor: dsfrColor.grey[200], // #3a3a3a
     underlineWidth: "1px",
     radiusTop: "4px", // DSFR field: 4px top corners, 0 bottom (F3)
-    underlineMode: "shadow" // DSFR draws its bottom rule as a box-shadow inset (F4)
+    underlineMode: "shadow", // DSFR draws its bottom rule as a box-shadow inset (F4)
+    // F5/F9 (native <select>): the real `.fr-select` uses `appearance: none` +
+    // a Bleu France chevron with a 40px right gutter. `appearance: none` is what
+    // lets the anatomy line-height (24px) actually take effect on the <select>
+    // (a native `appearance: auto` select has its line-height forced to `normal`
+    // by the browser — proven on Chrome). selectChevron redraws the arrow the UA
+    // drops; selectPaddingRight reserves the 40px gutter (was 32px).
+    selectAppearance: "none",
+    selectChevron:
+      "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23000091' d='M8 11L3 6l1-1 4 4 4-4 1 1z'/%3E%3C/svg%3E\") no-repeat right 0.75rem center",
+    selectPaddingRight: "2.5rem" // 40px chevron gutter (F9)
   },
   // DSFR « Carte » (.fr-card) has NO border — its separation is a bottom filet /
   // shadow on the enclosing tile, not a 1px stroke. Drop the card border to 0
   // (the base keeps its 1px stroke via the builder fallback). Fill stays white
   // (surface.raised), matching the .fr-card background.
   card: {
-    borderWidth: "0"
+    borderWidth: "0",
+    // F5: the real `.fr-card` body renders DSFR body type (1rem / line-height
+    // 24px). Pin the card line-height to 1.5 (= 24px at 16px) so `.st-card`
+    // matches the measured reference instead of `normal`. fontSize/letterSpacing
+    // stay inherited/normal (the card already inherits 16px Marianne).
+    lineHeight: "1.5"
   }
 } as const;
 

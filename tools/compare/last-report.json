@@ -11,10 +11,10 @@
     "generatedBy": "tools/compare/fidelity.mjs"
   },
   "global": {
-    "eq": 375,
-    "close": 11,
-    "diff": 46,
-    "fidelity": 89.4
+    "eq": 388,
+    "close": 13,
+    "diff": 31,
+    "fidelity": 92.8
   },
   "netGaps": [
     "dsfr/Button: box width (Δ2.0px)",
@@ -23,17 +23,12 @@
     "dsfr/Textarea: padding-top (Δ2.0px)",
     "dsfr/Textarea: padding-bottom (Δ2.0px)",
     "dsfr/Textarea: box height (Δ8.0px)",
-    "dsfr/Select: padding-right (Δ-8.0px)",
-    "dsfr/Select: box height (Δ2.0px)",
-    "dsfr/Select: line-height (normal vs 24px)",
-    "dsfr/Link: line-height (normal vs 24px)",
     "dsfr/Link: text-decoration (underline vs none)",
     "dsfr/Card: padding-top (Δ15.0px)",
     "dsfr/Card: padding-right (Δ15.0px)",
     "dsfr/Card: padding-bottom (Δ15.0px)",
     "dsfr/Card: padding-left (Δ15.0px)",
     "dsfr/Card: box height (Δ-23.6px)",
-    "dsfr/Card: line-height (normal vs 24px)",
     "dsfr/Tabs: border-bottom style (solid vs none)",
     "dsfr/Tabs: padding-top (Δ4.0px)",
     "dsfr/Tabs: padding-right (Δ-12.0px)",
@@ -44,19 +39,9 @@
     "dsfr/Tabs: font-weight (500 vs 700)",
     "dsfr/Tabs: background-color (rgb(0,0,0)/a0 vs rgb(255,255,255))",
     "dsfr/Tabs: color (rgb(58,58,58) vs rgb(0,0,145))",
-    "carbon/Button: padding-top (Δ-11.0px)",
-    "carbon/Button: padding-right (Δ-47.0px)",
-    "carbon/Button: padding-bottom (Δ-11.0px)",
-    "carbon/Button: box width (Δ-46.0px)",
-    "carbon/Button: box height (Δ-8.0px)",
     "carbon/Textarea: box height (Δ13.0px)",
     "carbon/Textarea: line-height (Δ-2.0px)",
-    "carbon/Select: padding-right (Δ-16.0px)",
-    "carbon/Select: line-height (normal vs 18.0001px)",
-    "carbon/Card: box height (Δ-21.6px)",
-    "carbon/Card: font-size (Δ2.0px)",
-    "carbon/Card: line-height (normal vs 14px)",
-    "carbon/Card: letter-spacing (normal vs 0.16px)",
+    "carbon/Card: box height (Δ-27.6px)",
     "carbon/Tabs: border-bottom color (rgb(15,98,254) vs rgb(224,224,224))",
     "carbon/Tabs: padding-right (Δ4.0px)",
     "carbon/Tabs: padding-left (Δ4.0px)",
@@ -1194,11 +1179,11 @@
       "refSelector": ".fr-select",
       "refStyled": true,
       "notes": [],
-      "fidelity": 90.3,
+      "fidelity": 100,
       "counts": {
-        "eq": 28,
+        "eq": 31,
         "close": 0,
-        "diff": 3
+        "diff": 0
       },
       "rows": [
         {
@@ -1340,10 +1325,10 @@
         {
           "label": "padding-right",
           "prop": "padding-right",
-          "ours": "32px",
+          "ours": "40px",
           "ref": "40px",
-          "status": "≠",
-          "delta": "Δ-8.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "padding-bottom",
@@ -1372,10 +1357,10 @@
         {
           "label": "box height",
           "prop": "box-height",
-          "ours": "42px",
+          "ours": "40px",
           "ref": "40px",
-          "status": "≠",
-          "delta": "Δ2.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "font-family",
@@ -1404,10 +1389,10 @@
         {
           "label": "line-height",
           "prop": "line-height",
-          "ours": "normal",
+          "ours": "24px",
           "ref": "24px",
-          "status": "≠",
-          "delta": "normal vs 24px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "letter-spacing",
@@ -1483,19 +1468,19 @@
           },
           "padding": {
             "top": "8px",
-            "right": "32px",
+            "right": "40px",
             "bottom": "8px",
             "left": "16px"
           },
           "box": {
             "width": 320,
-            "height": 42
+            "height": 40
           },
           "typo": {
             "fontFamily": "Marianne",
             "fontSize": "16px",
             "fontWeight": "400",
-            "lineHeight": "normal",
+            "lineHeight": "24px",
             "letterSpacing": "normal",
             "textTransform": "none",
             "textDecorationLine": "none"
@@ -1568,11 +1553,11 @@
       "refSelector": ".fr-link",
       "refStyled": true,
       "notes": [],
-      "fidelity": 93.5,
+      "fidelity": 96.8,
       "counts": {
-        "eq": 29,
+        "eq": 30,
         "close": 0,
-        "diff": 2
+        "diff": 1
       },
       "rows": [
         {
@@ -1778,10 +1763,10 @@
         {
           "label": "line-height",
           "prop": "line-height",
-          "ours": "normal",
+          "ours": "24px",
           "ref": "24px",
-          "status": "≠",
-          "delta": "normal vs 24px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "letter-spacing",
@@ -1869,7 +1854,7 @@
             "fontFamily": "Marianne",
             "fontSize": "16px",
             "fontWeight": "400",
-            "lineHeight": "normal",
+            "lineHeight": "24px",
             "letterSpacing": "normal",
             "textTransform": "none",
             "textDecorationLine": "underline"
@@ -1942,11 +1927,11 @@
       "refSelector": ".fr-card",
       "refStyled": true,
       "notes": [],
-      "fidelity": 80.6,
+      "fidelity": 83.9,
       "counts": {
-        "eq": 25,
+        "eq": 26,
         "close": 0,
-        "diff": 6
+        "diff": 5
       },
       "rows": [
         {
@@ -2152,10 +2137,10 @@
         {
           "label": "line-height",
           "prop": "line-height",
-          "ours": "normal",
+          "ours": "24px",
           "ref": "24px",
-          "status": "≠",
-          "delta": "normal vs 24px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "letter-spacing",
@@ -2243,7 +2228,7 @@
             "fontFamily": "Marianne",
             "fontSize": "16px",
             "fontWeight": "400",
-            "lineHeight": "normal",
+            "lineHeight": "24px",
             "letterSpacing": "normal",
             "textTransform": "none",
             "textDecorationLine": "none"
@@ -2690,11 +2675,11 @@
       "refSelector": ".bx--btn--primary",
       "refStyled": true,
       "notes": [],
-      "fidelity": 83.9,
+      "fidelity": 100,
       "counts": {
-        "eq": 24,
-        "close": 2,
-        "diff": 5
+        "eq": 28,
+        "close": 3,
+        "diff": 0
       },
       "rows": [
         {
@@ -2828,26 +2813,26 @@
         {
           "label": "padding-top",
           "prop": "padding-top",
-          "ours": "0px",
+          "ours": "11px",
           "ref": "11px",
-          "status": "≠",
-          "delta": "Δ-11.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "padding-right",
           "prop": "padding-right",
-          "ours": "16px",
+          "ours": "63px",
           "ref": "63px",
-          "status": "≠",
-          "delta": "Δ-47.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "padding-bottom",
           "prop": "padding-bottom",
-          "ours": "0px",
+          "ours": "11px",
           "ref": "11px",
-          "status": "≠",
-          "delta": "Δ-11.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "padding-left",
@@ -2860,18 +2845,18 @@
         {
           "label": "box width",
           "prop": "box-width",
-          "ours": "84.1px",
+          "ours": "131.1px",
           "ref": "130.1px",
-          "status": "≠",
-          "delta": "Δ-46.0px"
+          "status": "~",
+          "delta": "Δ1.0px"
         },
         {
           "label": "box height",
           "prop": "box-height",
-          "ours": "40px",
+          "ours": "48px",
           "ref": "48px",
-          "status": "≠",
-          "delta": "Δ-8.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "font-family",
@@ -2978,14 +2963,14 @@
             "bottomLeft": "0px"
           },
           "padding": {
-            "top": "0px",
-            "right": "16px",
-            "bottom": "0px",
+            "top": "11px",
+            "right": "63px",
+            "bottom": "11px",
             "left": "16px"
           },
           "box": {
-            "width": 84.078125,
-            "height": 40
+            "width": 131.078125,
+            "height": 48
           },
           "typo": {
             "fontFamily": "IBM Plex Sans",
@@ -3812,11 +3797,11 @@
       "refSelector": ".bx--select-input",
       "refStyled": true,
       "notes": [],
-      "fidelity": 93.5,
+      "fidelity": 100,
       "counts": {
-        "eq": 29,
-        "close": 0,
-        "diff": 2
+        "eq": 30,
+        "close": 1,
+        "diff": 0
       },
       "rows": [
         {
@@ -3958,10 +3943,10 @@
         {
           "label": "padding-right",
           "prop": "padding-right",
-          "ours": "32px",
+          "ours": "48px",
           "ref": "48px",
-          "status": "≠",
-          "delta": "Δ-16.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "padding-bottom",
@@ -4022,10 +4007,10 @@
         {
           "label": "line-height",
           "prop": "line-height",
-          "ours": "normal",
+          "ours": "18px",
           "ref": "18.0001px",
-          "status": "≠",
-          "delta": "normal vs 18.0001px"
+          "status": "~",
+          "delta": "Δ0.0px"
         },
         {
           "label": "letter-spacing",
@@ -4101,7 +4086,7 @@
           },
           "padding": {
             "top": "0px",
-            "right": "32px",
+            "right": "48px",
             "bottom": "0px",
             "left": "16px"
           },
@@ -4113,7 +4098,7 @@
             "fontFamily": "IBM Plex Sans",
             "fontSize": "14px",
             "fontWeight": "400",
-            "lineHeight": "normal",
+            "lineHeight": "18px",
             "letterSpacing": "0.16px",
             "textTransform": "none",
             "textDecorationLine": "none"
@@ -4560,11 +4545,11 @@
       "refSelector": ".bx--tile",
       "refStyled": true,
       "notes": [],
-      "fidelity": 87.1,
+      "fidelity": 96.8,
       "counts": {
-        "eq": 27,
+        "eq": 30,
         "close": 0,
-        "diff": 4
+        "diff": 1
       },
       "rows": [
         {
@@ -4738,10 +4723,10 @@
         {
           "label": "box height",
           "prop": "box-height",
-          "ours": "78.4px",
+          "ours": "72.4px",
           "ref": "100px",
           "status": "≠",
-          "delta": "Δ-21.6px"
+          "delta": "Δ-27.6px"
         },
         {
           "label": "font-family",
@@ -4754,10 +4739,10 @@
         {
           "label": "font-size",
           "prop": "font-size",
-          "ours": "16px",
+          "ours": "14px",
           "ref": "14px",
-          "status": "≠",
-          "delta": "Δ2.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "font-weight",
@@ -4770,18 +4755,18 @@
         {
           "label": "line-height",
           "prop": "line-height",
-          "ours": "normal",
+          "ours": "14px",
           "ref": "14px",
-          "status": "≠",
-          "delta": "normal vs 14px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "letter-spacing",
           "prop": "letter-spacing",
-          "ours": "normal",
+          "ours": "0.16px",
           "ref": "0.16px",
-          "status": "≠",
-          "delta": "normal vs 0.16px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "text-transform",
@@ -4855,14 +4840,14 @@
           },
           "box": {
             "width": 288,
-            "height": 78.390625
+            "height": 72.390625
           },
           "typo": {
             "fontFamily": "IBM Plex Sans",
-            "fontSize": "16px",
+            "fontSize": "14px",
             "fontWeight": "400",
-            "lineHeight": "normal",
-            "letterSpacing": "normal",
+            "lineHeight": "14px",
+            "letterSpacing": "0.16px",
             "textTransform": "none",
             "textDecorationLine": "none"
           },
