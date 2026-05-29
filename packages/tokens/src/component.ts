@@ -81,6 +81,34 @@ interface CardInput {
   letterSpacing?: string;
 }
 
+// Tabs ACTIVE-tab primitive a theme may or may not provide (F7/F8, additive).
+// The base Sent Tech tab renders its label with the control typography (600,
+// line-height 1.2), an inherited font-size, a 12px/4px padding and a BOTTOM
+// indicator; the active tab keeps a transparent background and the primary text
+// colour. Every leaf below DEFAULTS to that exact render, so the base look is
+// untouched; DSFR / Carbon set the real selected-tab metrics:
+//  - DSFR « Onglet » actif: white fill, Bleu France text, weight 700, padding
+//    8px/16px, and a TOP accent (no bottom border) — `indicatorSide: "top"`.
+//  - Carbon « Tabs » actif: 14px / 16px line-height, 0 inline padding, a blue
+//    BOTTOM indicator (the real selected-tab design; the mobile-base grey the
+//    bench measures at <672px is a breakpoint artifact, justified in the tracker).
+interface TabsInput {
+  activeText?: string;        // active tab text colour; default = semantic.text.primary
+  activeBackground?: string;  // active tab background; default "transparent"
+  activeWeight?: string;      // active tab font-weight; default = control weight
+  paddingBlock?: string;      // tab vertical padding; default "0.75rem" (12px, current)
+  paddingInline?: string;     // tab horizontal padding; default "0.25rem" (4px, current)
+  fontSize?: string;          // tab font-size; default "inherit" (current inherited render)
+  lineHeight?: string;        // tab line-height; default = control lineHeight
+  indicatorSide?: string;     // "bottom" (base/Carbon) | "top" (DSFR); default "bottom"
+  // HOW the active indicator is drawn (F7). "border" (default, base/Carbon): a
+  // real per-side border on the indicator edge — its width/style/colour are
+  // measured. "shadow" (DSFR): an inset `box-shadow` accent on the indicator
+  // edge, so BOTH border sides stay `0 none` (the real DSFR technique — the
+  // official `.fr-tabs__tab` accent is a background-image filet, not a border).
+  indicatorMode?: string;
+}
+
 interface FoundationInput {
   radius: { none?: string; sm?: string; md: string; lg: string; pill: string };
   shadow: { subtle: string; medium: string; floating: string };
@@ -98,6 +126,7 @@ interface FoundationInput {
   focus?: FocusInput;
   field?: FieldInput;
   card?: CardInput;
+  tabs?: TabsInput;
   // F9 (additive): a BUTTON-specific density override. The button shares the
   // control `density` scale with the fields (Input/Select/Textarea/Tabs all read
   // it), so a button-only geometry — e.g. Carbon's tall 48px primary button with
@@ -176,6 +205,61 @@ function buttonDensityOf(f: FoundationInput, size: "sm" | "md" | "lg"): DensityA
     fontSize: override.fontSize ?? base.fontSize,
     // Trailing inline padding: an explicit asymmetric value (Carbon) or = paddingInline.
     paddingInlineEnd: override.paddingInlineEnd ?? paddingInline
+  };
+}
+
+/**
+ * Tabs ACTIVE-tab resolution (F7/F8). Resolves the per-theme selected-tab
+ * primitive into a flat, CSS-ready set the Tabs component consumes verbatim.
+ * Every leaf DEFAULTS to the prior base render (12px/4px padding, inherited
+ * font-size, control weight/line-height, transparent active bg, primary text,
+ * BOTTOM indicator) so the base Sent Tech tab is byte-identical; DSFR / Carbon
+ * override the real selected-tab metrics. `indicatorSide` resolves into two
+ * border-width channels so a theme can put its accent on the top edge (DSFR,
+ * which then has NO bottom border) or the bottom edge (base / Carbon).
+ */
+function tabsOf(
+  f: FoundationInput,
+  controlTypography: TypographyAnatomy,
+  indicatorWidth: string,
+  indicatorColor: string,
+  activeTextDefault: string
+): {
+  activeText: string;
+  activeBackground: string;
+  activeWeight: string;
+  paddingBlock: string;
+  paddingInline: string;
+  fontSize: string;
+  lineHeight: string;
+  indicatorSide: string;
+  activeBorderTopWidth: string;
+  activeBorderBottomWidth: string;
+  activeShadow: string;
+} {
+  const t = f.tabs ?? {};
+  const indicatorSide = t.indicatorSide ?? "bottom";
+  const indicatorMode = t.indicatorMode ?? "border";
+  // The indicator lives on ONE edge; the opposite edge collapses to 0 so the
+  // active tab matches the reference (DSFR active = border-bottom 0 / top accent).
+  const onTop = indicatorSide === "top";
+  // "shadow" mode draws the accent as an inset box-shadow so BOTH border sides
+  // stay 0 (DSFR, whose real accent is a background-image filet, not a border).
+  // "border" mode keeps the real per-side border (base / Carbon) and no shadow.
+  const isShadow = indicatorMode === "shadow";
+  const shadowOffset = onTop ? indicatorWidth : `-${indicatorWidth}`;
+  return {
+    activeText: t.activeText || activeTextDefault,
+    activeBackground: t.activeBackground || "transparent",
+    activeWeight: t.activeWeight ?? controlTypography.weight,
+    paddingBlock: t.paddingBlock ?? "0.75rem",
+    paddingInline: t.paddingInline ?? "0.25rem",
+    fontSize: t.fontSize ?? "inherit",
+    lineHeight: t.lineHeight ?? controlTypography.lineHeight,
+    indicatorSide,
+    activeBorderTopWidth: isShadow ? "0" : onTop ? indicatorWidth : "0",
+    activeBorderBottomWidth: isShadow ? "0" : onTop ? "0" : indicatorWidth,
+    activeShadow: isShadow ? `inset 0 ${shadowOffset} 0 0 ${indicatorColor}` : "none"
   };
 }
 
@@ -437,16 +521,22 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
     }
   };
 
+  const tabsControlTypography = typographyOf(foundation, "control");
   const tabsAnatomy: ComponentAnatomy = {
     shape: { radius: foundation.radius.none ?? "0", borderWidth: bw.thin, borderStyle },
     density: { md: densityOf(foundation, "md") },
-    typography: typographyOf(foundation, "control"),
+    typography: tabsControlTypography,
     focus,
     states: {
       hover: { text: semantic.text.primary },
       disabled: { opacity: disabledOpacity }
     }
   };
+  // F7/F8 — active-tab metrics (additive, per-theme; base render unchanged).
+  // The indicator width is the tab's stroke width (thin); `tabsOf` resolves it
+  // onto the top edge (DSFR) or the bottom edge (base/Carbon), as a real border
+  // (base/Carbon) or an inset box-shadow accent (DSFR).
+  const tabsResolved = tabsOf(foundation, tabsControlTypography, bw.thin, semantic.action.primary, semantic.text.primary);
 
   return {
     button: {
@@ -604,11 +694,21 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       radius: foundation.radius.lg
     },
     tabs: {
-      activeText: semantic.text.primary,
+      // F7/F8: active-tab roles/metrics resolved per theme (base render = current).
+      activeText: tabsResolved.activeText,
+      activeBackground: tabsResolved.activeBackground,
+      activeWeight: tabsResolved.activeWeight,
       inactiveText: semantic.text.secondary,
       border: semantic.border.subtle,
       indicator: semantic.action.primary,
       panelBackground: semantic.surface.default,
+      tabPaddingBlock: tabsResolved.paddingBlock,
+      tabPaddingInline: tabsResolved.paddingInline,
+      tabFontSize: tabsResolved.fontSize,
+      tabLineHeight: tabsResolved.lineHeight,
+      activeBorderTopWidth: tabsResolved.activeBorderTopWidth,
+      activeBorderBottomWidth: tabsResolved.activeBorderBottomWidth,
+      activeShadow: tabsResolved.activeShadow,
       anatomy: tabsAnatomy
     },
     pagination: {

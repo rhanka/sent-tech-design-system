@@ -16,7 +16,7 @@
 
 import type { TokenTree } from "./foundation.js";
 
-export const ANATOMY_VERSION = "1.4.0";
+export const ANATOMY_VERSION = "1.5.0";
 
 /** A CSS-ready value: a literal or a `var(--st-*)` reference. */
 export type CssValue = string;
