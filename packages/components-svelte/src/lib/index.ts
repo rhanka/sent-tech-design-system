@@ -97,6 +97,8 @@ export type {
 export type { DatePickerRange } from "./DatePicker.svelte";
 export type { DonutChartDatum, DonutChartTone } from "./DonutChart.svelte";
 export type { DropdownOption } from "./Dropdown.svelte";
+export type { HeaderAccount } from "./Header.svelte";
+export { deriveInitials } from "./Header.svelte";
 export type { FileUploadItem, FileUploadStatus } from "./FileUploader.svelte";
 export type { MenuItem } from "./Menu.svelte";
 export type { MultiSelectOption } from "./MultiSelect.svelte";
