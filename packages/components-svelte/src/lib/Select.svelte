@@ -92,7 +92,15 @@
     border-right: var(--st-component-control-anatomy-field-borderRight, var(--st-component-control-anatomy-shape-borderWidth, 1px) var(--st-component-control-anatomy-shape-borderStyle, solid) var(--st-component-control-border, var(--st-semantic-border-subtle)));
     border-bottom: var(--st-component-control-anatomy-field-borderBottom, var(--st-component-control-anatomy-shape-borderWidth, 1px) var(--st-component-control-anatomy-shape-borderStyle, solid) var(--st-component-control-border, var(--st-semantic-border-subtle)));
     border-left: var(--st-component-control-anatomy-field-borderLeft, var(--st-component-control-anatomy-shape-borderWidth, 1px) var(--st-component-control-anatomy-shape-borderStyle, solid) var(--st-component-control-border, var(--st-semantic-border-subtle)));
-    border-radius: var(--st-component-control-anatomy-shape-radius, 0.375rem);
+    /* Per-corner radius + box-shadow underline (anatomy v1.3.0) — same field
+       anatomy as Input. TOP corners = radiusTop (DSFR 4px), bottom = shape.radius;
+       bottom rule via inset box-shadow. Fallbacks reproduce the prior uniform
+       rounded box with no underline shadow → base Sent Tech unchanged. */
+    border-top-left-radius: var(--st-component-control-anatomy-field-radiusTop, var(--st-component-control-anatomy-shape-radius, 0.375rem));
+    border-top-right-radius: var(--st-component-control-anatomy-field-radiusTop, var(--st-component-control-anatomy-shape-radius, 0.375rem));
+    border-bottom-right-radius: var(--st-component-control-anatomy-shape-radius, 0.375rem);
+    border-bottom-left-radius: var(--st-component-control-anatomy-shape-radius, 0.375rem);
+    box-shadow: var(--st-component-control-anatomy-field-underline, none);
     color: var(--st-component-control-text, var(--st-semantic-text-primary));
     font-family: var(--st-component-control-anatomy-typography-family, inherit);
     font-size: var(--st-component-control-anatomy-typography-size, inherit);
@@ -132,8 +140,10 @@
     border-color: var(--st-component-control-focusRing, var(--st-semantic-border-interactive));
     outline: var(--st-component-control-anatomy-focus-outline, none);
     outline-offset: var(--st-component-control-anatomy-focus-offset, 0);
-    box-shadow: var(--st-component-control-anatomy-focus-boxShadow,
-      0 0 0 2px var(--st-component-control-focusRing, var(--st-semantic-border-interactive)));
+    /* Composed field focus box-shadow (v1.3.0): keeps the resting underline. */
+    box-shadow: var(--st-component-control-anatomy-field-focusShadow,
+      var(--st-component-control-anatomy-focus-boxShadow,
+        0 0 0 2px var(--st-component-control-focusRing, var(--st-semantic-border-interactive))));
   }
 
   .st-select[aria-invalid="true"] {

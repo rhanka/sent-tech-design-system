@@ -205,17 +205,25 @@ const foundation = {
     inset: "0"
   },
   // DSFR « Champ de saisie » is a FILLED field with a BOTTOM RULE only (not a
-  // boxed encadré): a light grey fill + a single darker bottom border. This is
-  // the field-style primitive (anatomy v1.2.0) that makes our input faithful.
+  // boxed encadré): a light grey fill + a single darker bottom rule. This is
+  // the field-style primitive (anatomy v1.2.0+) that makes our input faithful.
   // Source: DSFR fondamentaux / composant « Champ de saisie » (gouvernement.
   // github.io/dsfr). fillBg = grey-950 #eeeeee (--grey-950-100, the contrast
-  // background). Bottom rule = grey-200 #3a3a3a (~1px). Carré (radius 0, déjà
-  // posé). « à confirmer » la nuance exacte de la bordure basse contre le SCSS.
+  // background). Bottom rule = grey-200 #3a3a3a (~1px).
+  //
+  // v1.3.0 (F3/F4):
+  //  - radiusTop 4px: DSFR rounds ONLY the top corners of a filled field
+  //    (border-top-left/right-radius 4px) while the bottom stays square (the
+  //    bottom rule needs a crisp 0 corner). Measured on the official .fr-input.
+  //  - the bottom rule is rendered by the builder as a `box-shadow inset`
+  //    (the real DSFR technique) — `border-bottom` is `none` (F4).
   field: {
     style: "filled-underline",
     fillBg: dsfrColor.grey[950], // #eeeeee
     underlineColor: dsfrColor.grey[200], // #3a3a3a
-    underlineWidth: "1px"
+    underlineWidth: "1px",
+    radiusTop: "4px", // DSFR field: 4px top corners, 0 bottom (F3)
+    underlineMode: "shadow" // DSFR draws its bottom rule as a box-shadow inset (F4)
   },
   // DSFR « Carte » (.fr-card) has NO border — its separation is a bottom filet /
   // shadow on the enclosing tile, not a 1px stroke. Drop the card border to 0
