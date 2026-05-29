@@ -1,6 +1,6 @@
 {
   "meta": {
-    "date": "2026-05-28",
+    "date": "2026-05-29",
     "browser": "Google Chrome (system)",
     "chromePath": "/usr/bin/google-chrome",
     "url": "http://localhost:4322/compare",
@@ -11,32 +11,29 @@
     "generatedBy": "tools/compare/fidelity.mjs"
   },
   "global": {
-    "eq": 348,
+    "eq": 362,
     "close": 15,
-    "diff": 69,
-    "fidelity": 84
+    "diff": 55,
+    "fidelity": 87.3
   },
   "netGaps": [
-    "dsfr/Button: box width (Δ1.5px)",
+    "dsfr/Button: box width (Δ2.0px)",
     "dsfr/Button: box height (Δ2.0px)",
-    "dsfr/Button: font-family (Marianne vs system-ui)",
     "dsfr/Button: color (rgb(255,255,255) vs rgb(245,245,254))",
     "dsfr/Input: border-bottom style (solid vs none)",
     "dsfr/Input: radius topLeft (Δ-4.0px)",
     "dsfr/Input: radius topRight (Δ-4.0px)",
-    "dsfr/Input: box width (Δ-103.0px)",
     "dsfr/Textarea: border-bottom style (solid vs none)",
     "dsfr/Textarea: radius topLeft (Δ-4.0px)",
     "dsfr/Textarea: radius topRight (Δ-4.0px)",
     "dsfr/Textarea: padding-top (Δ2.0px)",
     "dsfr/Textarea: padding-bottom (Δ2.0px)",
-    "dsfr/Textarea: box width (Δ-102.0px)",
     "dsfr/Textarea: box height (Δ8.0px)",
     "dsfr/Select: border-bottom style (solid vs none)",
     "dsfr/Select: radius topLeft (Δ-4.0px)",
     "dsfr/Select: radius topRight (Δ-4.0px)",
     "dsfr/Select: padding-right (Δ-8.0px)",
-    "dsfr/Select: box width (Δ-161.0px)",
+    "dsfr/Select: box height (Δ3.0px)",
     "dsfr/Select: line-height (normal vs 24px)",
     "dsfr/Link: line-height (normal vs 24px)",
     "dsfr/Link: text-decoration (underline vs none)",
@@ -44,17 +41,15 @@
     "dsfr/Card: padding-right (Δ15.0px)",
     "dsfr/Card: padding-bottom (Δ15.0px)",
     "dsfr/Card: padding-left (Δ15.0px)",
-    "dsfr/Card: box width (Δ-104.9px)",
-    "dsfr/Card: box height (Δ-25.6px)",
+    "dsfr/Card: box height (Δ-23.6px)",
     "dsfr/Card: line-height (normal vs 24px)",
     "dsfr/Tabs: border-bottom style (solid vs none)",
     "dsfr/Tabs: padding-top (Δ4.0px)",
     "dsfr/Tabs: padding-right (Δ-12.0px)",
     "dsfr/Tabs: padding-bottom (Δ4.0px)",
     "dsfr/Tabs: padding-left (Δ-12.0px)",
-    "dsfr/Tabs: box width (Δ-23.4px)",
+    "dsfr/Tabs: box width (Δ-24.5px)",
     "dsfr/Tabs: box height (Δ9.0px)",
-    "dsfr/Tabs: font-family (Marianne vs system-ui)",
     "dsfr/Tabs: font-weight (500 vs 700)",
     "dsfr/Tabs: background-color (rgb(0,0,0)/a0 vs rgb(255,255,255))",
     "dsfr/Tabs: color (rgb(58,58,58) vs rgb(0,0,145))",
@@ -63,26 +58,17 @@
     "carbon/Button: padding-bottom (Δ-11.0px)",
     "carbon/Button: box width (Δ-46.0px)",
     "carbon/Button: box height (Δ-8.0px)",
-    "carbon/Button: font-family (IBM Plex Sans vs system-ui)",
-    "carbon/Input: box width (Δ-95.0px)",
-    "carbon/Input: font-family (IBM Plex Sans vs system-ui)",
-    "carbon/Textarea: box width (Δ-120.0px)",
     "carbon/Textarea: box height (Δ13.0px)",
-    "carbon/Textarea: font-family (IBM Plex Sans vs system-ui)",
     "carbon/Textarea: line-height (Δ-2.0px)",
     "carbon/Select: padding-right (Δ-16.0px)",
-    "carbon/Select: box width (Δ-221.0px)",
-    "carbon/Select: font-family (IBM Plex Sans vs system-ui)",
     "carbon/Select: line-height (normal vs 18.0001px)",
-    "carbon/Card: box width (Δ-112.9px)",
-    "carbon/Card: box height (Δ-19.6px)",
+    "carbon/Card: box height (Δ-21.6px)",
     "carbon/Card: font-size (Δ2.0px)",
     "carbon/Card: line-height (normal vs 14px)",
     "carbon/Card: letter-spacing (normal vs 0.16px)",
     "carbon/Tabs: border-bottom color (rgb(15,98,254) vs rgb(224,224,224))",
     "carbon/Tabs: padding-right (Δ4.0px)",
     "carbon/Tabs: padding-left (Δ4.0px)",
-    "carbon/Tabs: font-family (IBM Plex Sans vs system-ui)",
     "carbon/Tabs: font-size (Δ2.0px)",
     "carbon/Tabs: line-height (Δ2.0px)",
     "carbon/Tabs: color (rgb(22,22,22) vs rgb(82,82,82))"
@@ -95,11 +81,11 @@
       "refSelector": ".fr-btn",
       "refStyled": true,
       "notes": [],
-      "fidelity": 87.1,
+      "fidelity": 90.3,
       "counts": {
-        "eq": 23,
+        "eq": 24,
         "close": 4,
-        "diff": 4
+        "diff": 3
       },
       "rows": [
         {
@@ -265,10 +251,10 @@
         {
           "label": "box width",
           "prop": "box-width",
-          "ours": "97.3px",
-          "ref": "95.8px",
+          "ours": "97.7px",
+          "ref": "95.7px",
           "status": "≠",
-          "delta": "Δ1.5px"
+          "delta": "Δ2.0px"
         },
         {
           "label": "box height",
@@ -282,9 +268,9 @@
           "label": "font-family",
           "prop": "font-family",
           "ours": "Marianne",
-          "ref": "system-ui",
-          "status": "≠",
-          "delta": "Marianne vs system-ui"
+          "ref": "Marianne",
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "font-size",
@@ -389,7 +375,7 @@
             "left": "16px"
           },
           "box": {
-            "width": 97.3125,
+            "width": 97.6875,
             "height": 42
           },
           "typo": {
@@ -443,11 +429,11 @@
             "left": "16px"
           },
           "box": {
-            "width": 95.796875,
+            "width": 95.6875,
             "height": 40
           },
           "typo": {
-            "fontFamily": "system-ui",
+            "fontFamily": "Marianne",
             "fontSize": "16px",
             "fontWeight": "500",
             "lineHeight": "24px",
@@ -469,11 +455,11 @@
       "refSelector": ".fr-input",
       "refStyled": true,
       "notes": [],
-      "fidelity": 87.1,
+      "fidelity": 90.3,
       "counts": {
-        "eq": 25,
+        "eq": 26,
         "close": 2,
-        "diff": 4
+        "diff": 3
       },
       "rows": [
         {
@@ -639,10 +625,10 @@
         {
           "label": "box width",
           "prop": "box-width",
-          "ours": "226px",
-          "ref": "329px",
-          "status": "≠",
-          "delta": "Δ-103.0px"
+          "ours": "320px",
+          "ref": "320px",
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "box height",
@@ -763,7 +749,7 @@
             "left": "16px"
           },
           "box": {
-            "width": 226,
+            "width": 320,
             "height": 41
           },
           "typo": {
@@ -817,7 +803,7 @@
             "left": "16px"
           },
           "box": {
-            "width": 329,
+            "width": 320,
             "height": 40
           },
           "typo": {
@@ -843,11 +829,11 @@
       "refSelector": "textarea.fr-input",
       "refStyled": true,
       "notes": [],
-      "fidelity": 77.4,
+      "fidelity": 80.6,
       "counts": {
-        "eq": 23,
+        "eq": 24,
         "close": 1,
-        "diff": 7
+        "diff": 6
       },
       "rows": [
         {
@@ -1013,10 +999,10 @@
         {
           "label": "box width",
           "prop": "box-width",
-          "ours": "227px",
-          "ref": "329px",
-          "status": "≠",
-          "delta": "Δ-102.0px"
+          "ours": "320px",
+          "ref": "320px",
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "box height",
@@ -1137,7 +1123,7 @@
             "left": "16px"
           },
           "box": {
-            "width": 227,
+            "width": 320,
             "height": 96
           },
           "typo": {
@@ -1191,7 +1177,7 @@
             "left": "16px"
           },
           "box": {
-            "width": 329,
+            "width": 320,
             "height": 88
           },
           "typo": {
@@ -1387,18 +1373,18 @@
         {
           "label": "box width",
           "prop": "box-width",
-          "ours": "168px",
-          "ref": "329px",
-          "status": "≠",
-          "delta": "Δ-161.0px"
+          "ours": "320px",
+          "ref": "320px",
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "box height",
           "prop": "box-height",
-          "ours": "40px",
+          "ours": "43px",
           "ref": "40px",
-          "status": "=",
-          "delta": ""
+          "status": "≠",
+          "delta": "Δ3.0px"
         },
         {
           "label": "font-family",
@@ -1511,8 +1497,8 @@
             "left": "16px"
           },
           "box": {
-            "width": 168,
-            "height": 40
+            "width": 320,
+            "height": 43
           },
           "typo": {
             "fontFamily": "Marianne",
@@ -1565,7 +1551,7 @@
             "left": "16px"
           },
           "box": {
-            "width": 329,
+            "width": 320,
             "height": 40
           },
           "typo": {
@@ -1761,24 +1747,24 @@
         {
           "label": "box width",
           "prop": "box-width",
-          "ours": "76.8px",
-          "ref": "76.8px",
+          "ours": "78.3px",
+          "ref": "78.3px",
           "status": "=",
           "delta": ""
         },
         {
           "label": "box height",
           "prop": "box-height",
-          "ours": "22px",
-          "ref": "22px",
+          "ours": "24px",
+          "ref": "24px",
           "status": "=",
           "delta": ""
         },
         {
           "label": "font-family",
           "prop": "font-family",
-          "ours": "system-ui",
-          "ref": "system-ui",
+          "ours": "Marianne",
+          "ref": "Marianne",
           "status": "=",
           "delta": ""
         },
@@ -1885,11 +1871,11 @@
             "left": "0px"
           },
           "box": {
-            "width": 76.78125,
-            "height": 22
+            "width": 78.265625,
+            "height": 24
           },
           "typo": {
-            "fontFamily": "system-ui",
+            "fontFamily": "Marianne",
             "fontSize": "16px",
             "fontWeight": "400",
             "lineHeight": "normal",
@@ -1939,11 +1925,11 @@
             "left": "0px"
           },
           "box": {
-            "width": 76.78125,
-            "height": 22
+            "width": 78.265625,
+            "height": 24
           },
           "typo": {
-            "fontFamily": "system-ui",
+            "fontFamily": "Marianne",
             "fontSize": "16px",
             "fontWeight": "400",
             "lineHeight": "24px",
@@ -1965,11 +1951,11 @@
       "refSelector": ".fr-card",
       "refStyled": true,
       "notes": [],
-      "fidelity": 77.4,
+      "fidelity": 80.6,
       "counts": {
-        "eq": 24,
+        "eq": 25,
         "close": 0,
-        "diff": 7
+        "diff": 6
       },
       "rows": [
         {
@@ -2135,24 +2121,24 @@
         {
           "label": "box width",
           "prop": "box-width",
-          "ours": "183.1px",
+          "ours": "288px",
           "ref": "288px",
-          "status": "≠",
-          "delta": "Δ-104.9px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "box height",
           "prop": "box-height",
-          "ours": "80.4px",
+          "ours": "82.4px",
           "ref": "106px",
           "status": "≠",
-          "delta": "Δ-25.6px"
+          "delta": "Δ-23.6px"
         },
         {
           "label": "font-family",
           "prop": "font-family",
-          "ours": "system-ui",
-          "ref": "system-ui",
+          "ours": "Marianne",
+          "ref": "Marianne",
           "status": "=",
           "delta": ""
         },
@@ -2259,11 +2245,11 @@
             "left": "16px"
           },
           "box": {
-            "width": 183.0625,
-            "height": 80.390625
+            "width": 288,
+            "height": 82.390625
           },
           "typo": {
-            "fontFamily": "system-ui",
+            "fontFamily": "Marianne",
             "fontSize": "16px",
             "fontWeight": "400",
             "lineHeight": "normal",
@@ -2317,7 +2303,7 @@
             "height": 106
           },
           "typo": {
-            "fontFamily": "system-ui",
+            "fontFamily": "Marianne",
             "fontSize": "16px",
             "fontWeight": "400",
             "lineHeight": "24px",
@@ -2339,11 +2325,11 @@
       "refSelector": ".fr-tabs__tab[aria-selected=\"true\"]",
       "refStyled": true,
       "notes": [],
-      "fidelity": 64.5,
+      "fidelity": 67.7,
       "counts": {
-        "eq": 19,
+        "eq": 20,
         "close": 1,
-        "diff": 11
+        "diff": 10
       },
       "rows": [
         {
@@ -2509,10 +2495,10 @@
         {
           "label": "box width",
           "prop": "box-width",
-          "ours": "45.9px",
-          "ref": "69.3px",
+          "ours": "46.3px",
+          "ref": "70.8px",
           "status": "≠",
-          "delta": "Δ-23.4px"
+          "delta": "Δ-24.5px"
         },
         {
           "label": "box height",
@@ -2526,9 +2512,9 @@
           "label": "font-family",
           "prop": "font-family",
           "ours": "Marianne",
-          "ref": "system-ui",
-          "status": "≠",
-          "delta": "Marianne vs system-ui"
+          "ref": "Marianne",
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "font-size",
@@ -2633,7 +2619,7 @@
             "left": "4px"
           },
           "box": {
-            "width": 45.859375,
+            "width": 46.28125,
             "height": 49
           },
           "typo": {
@@ -2687,11 +2673,11 @@
             "left": "16px"
           },
           "box": {
-            "width": 69.28125,
+            "width": 70.796875,
             "height": 40
           },
           "typo": {
-            "fontFamily": "system-ui",
+            "fontFamily": "Marianne",
             "fontSize": "16px",
             "fontWeight": "700",
             "lineHeight": "24px",
@@ -2713,11 +2699,11 @@
       "refSelector": ".bx--btn--primary",
       "refStyled": true,
       "notes": [],
-      "fidelity": 80.6,
+      "fidelity": 83.9,
       "counts": {
-        "eq": 23,
+        "eq": 24,
         "close": 2,
-        "diff": 6
+        "diff": 5
       },
       "rows": [
         {
@@ -2883,8 +2869,8 @@
         {
           "label": "box width",
           "prop": "box-width",
-          "ours": "86.9px",
-          "ref": "132.9px",
+          "ours": "84.1px",
+          "ref": "130.1px",
           "status": "≠",
           "delta": "Δ-46.0px"
         },
@@ -2900,9 +2886,9 @@
           "label": "font-family",
           "prop": "font-family",
           "ours": "IBM Plex Sans",
-          "ref": "system-ui",
-          "status": "≠",
-          "delta": "IBM Plex Sans vs system-ui"
+          "ref": "IBM Plex Sans",
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "font-size",
@@ -3007,7 +2993,7 @@
             "left": "16px"
           },
           "box": {
-            "width": 86.859375,
+            "width": 84.078125,
             "height": 40
           },
           "typo": {
@@ -3061,11 +3047,11 @@
             "left": "15px"
           },
           "box": {
-            "width": 132.859375,
+            "width": 130.078125,
             "height": 48
           },
           "typo": {
-            "fontFamily": "system-ui",
+            "fontFamily": "IBM Plex Sans",
             "fontSize": "14px",
             "fontWeight": "400",
             "lineHeight": "18.0001px",
@@ -3087,10 +3073,384 @@
       "refSelector": ".bx--text-input",
       "refStyled": true,
       "notes": [],
+      "fidelity": 100,
+      "counts": {
+        "eq": 30,
+        "close": 1,
+        "diff": 0
+      },
+      "rows": [
+        {
+          "label": "border-top width",
+          "prop": "border-top-width",
+          "ours": "0px",
+          "ref": "0px",
+          "status": "=",
+          "delta": ""
+        },
+        {
+          "label": "border-top style",
+          "prop": "border-top-style",
+          "ours": "none",
+          "ref": "none",
+          "status": "=",
+          "delta": "bord 0px (invisible)"
+        },
+        {
+          "label": "border-top color",
+          "prop": "border-top-color",
+          "ours": "rgb(22, 22, 22)",
+          "ref": "rgb(22, 22, 22)",
+          "status": "=",
+          "delta": "bord 0px (invisible)"
+        },
+        {
+          "label": "border-right width",
+          "prop": "border-right-width",
+          "ours": "0px",
+          "ref": "0px",
+          "status": "=",
+          "delta": ""
+        },
+        {
+          "label": "border-right style",
+          "prop": "border-right-style",
+          "ours": "none",
+          "ref": "none",
+          "status": "=",
+          "delta": "bord 0px (invisible)"
+        },
+        {
+          "label": "border-right color",
+          "prop": "border-right-color",
+          "ours": "rgb(22, 22, 22)",
+          "ref": "rgb(22, 22, 22)",
+          "status": "=",
+          "delta": "bord 0px (invisible)"
+        },
+        {
+          "label": "border-bottom width",
+          "prop": "border-bottom-width",
+          "ours": "1px",
+          "ref": "1px",
+          "status": "=",
+          "delta": ""
+        },
+        {
+          "label": "border-bottom style",
+          "prop": "border-bottom-style",
+          "ours": "solid",
+          "ref": "solid",
+          "status": "=",
+          "delta": ""
+        },
+        {
+          "label": "border-bottom color",
+          "prop": "border-bottom-color",
+          "ours": "rgb(141, 141, 141)",
+          "ref": "rgb(141, 141, 141)",
+          "status": "=",
+          "delta": ""
+        },
+        {
+          "label": "border-left width",
+          "prop": "border-left-width",
+          "ours": "0px",
+          "ref": "0px",
+          "status": "=",
+          "delta": ""
+        },
+        {
+          "label": "border-left style",
+          "prop": "border-left-style",
+          "ours": "none",
+          "ref": "none",
+          "status": "=",
+          "delta": "bord 0px (invisible)"
+        },
+        {
+          "label": "border-left color",
+          "prop": "border-left-color",
+          "ours": "rgb(22, 22, 22)",
+          "ref": "rgb(22, 22, 22)",
+          "status": "=",
+          "delta": "bord 0px (invisible)"
+        },
+        {
+          "label": "radius topLeft",
+          "prop": "border-radius",
+          "ours": "0px",
+          "ref": "0px",
+          "status": "=",
+          "delta": ""
+        },
+        {
+          "label": "radius topRight",
+          "prop": "border-radius",
+          "ours": "0px",
+          "ref": "0px",
+          "status": "=",
+          "delta": ""
+        },
+        {
+          "label": "radius bottomRight",
+          "prop": "border-radius",
+          "ours": "0px",
+          "ref": "0px",
+          "status": "=",
+          "delta": ""
+        },
+        {
+          "label": "radius bottomLeft",
+          "prop": "border-radius",
+          "ours": "0px",
+          "ref": "0px",
+          "status": "=",
+          "delta": ""
+        },
+        {
+          "label": "padding-top",
+          "prop": "padding-top",
+          "ours": "0px",
+          "ref": "0px",
+          "status": "=",
+          "delta": ""
+        },
+        {
+          "label": "padding-right",
+          "prop": "padding-right",
+          "ours": "16px",
+          "ref": "16px",
+          "status": "=",
+          "delta": ""
+        },
+        {
+          "label": "padding-bottom",
+          "prop": "padding-bottom",
+          "ours": "0px",
+          "ref": "0px",
+          "status": "=",
+          "delta": ""
+        },
+        {
+          "label": "padding-left",
+          "prop": "padding-left",
+          "ours": "16px",
+          "ref": "16px",
+          "status": "=",
+          "delta": ""
+        },
+        {
+          "label": "box width",
+          "prop": "box-width",
+          "ours": "320px",
+          "ref": "320px",
+          "status": "=",
+          "delta": ""
+        },
+        {
+          "label": "box height",
+          "prop": "box-height",
+          "ours": "40px",
+          "ref": "40px",
+          "status": "=",
+          "delta": ""
+        },
+        {
+          "label": "font-family",
+          "prop": "font-family",
+          "ours": "IBM Plex Sans",
+          "ref": "IBM Plex Sans",
+          "status": "=",
+          "delta": ""
+        },
+        {
+          "label": "font-size",
+          "prop": "font-size",
+          "ours": "14px",
+          "ref": "14px",
+          "status": "=",
+          "delta": ""
+        },
+        {
+          "label": "font-weight",
+          "prop": "font-weight",
+          "ours": "400",
+          "ref": "400",
+          "status": "=",
+          "delta": ""
+        },
+        {
+          "label": "line-height",
+          "prop": "line-height",
+          "ours": "18px",
+          "ref": "18.0001px",
+          "status": "~",
+          "delta": "Δ0.0px"
+        },
+        {
+          "label": "letter-spacing",
+          "prop": "letter-spacing",
+          "ours": "0.16px",
+          "ref": "0.16px",
+          "status": "=",
+          "delta": ""
+        },
+        {
+          "label": "text-transform",
+          "prop": "text-transform",
+          "ours": "none",
+          "ref": "none",
+          "status": "=",
+          "delta": ""
+        },
+        {
+          "label": "text-decoration",
+          "prop": "text-decoration-line",
+          "ours": "none",
+          "ref": "none",
+          "status": "=",
+          "delta": ""
+        },
+        {
+          "label": "background-color",
+          "prop": "background-color",
+          "ours": "rgb(244, 244, 244)",
+          "ref": "rgb(244, 244, 244)",
+          "status": "=",
+          "delta": ""
+        },
+        {
+          "label": "color",
+          "prop": "color",
+          "ours": "rgb(22, 22, 22)",
+          "ref": "rgb(22, 22, 22)",
+          "status": "=",
+          "delta": ""
+        }
+      ],
+      "raw": {
+        "ours": {
+          "found": true,
+          "border": {
+            "top": {
+              "width": "0px",
+              "style": "none",
+              "color": "rgb(22, 22, 22)"
+            },
+            "right": {
+              "width": "0px",
+              "style": "none",
+              "color": "rgb(22, 22, 22)"
+            },
+            "bottom": {
+              "width": "1px",
+              "style": "solid",
+              "color": "rgb(141, 141, 141)"
+            },
+            "left": {
+              "width": "0px",
+              "style": "none",
+              "color": "rgb(22, 22, 22)"
+            }
+          },
+          "radius": {
+            "topLeft": "0px",
+            "topRight": "0px",
+            "bottomRight": "0px",
+            "bottomLeft": "0px"
+          },
+          "padding": {
+            "top": "0px",
+            "right": "16px",
+            "bottom": "0px",
+            "left": "16px"
+          },
+          "box": {
+            "width": 320,
+            "height": 40
+          },
+          "typo": {
+            "fontFamily": "IBM Plex Sans",
+            "fontSize": "14px",
+            "fontWeight": "400",
+            "lineHeight": "18px",
+            "letterSpacing": "0.16px",
+            "textTransform": "none",
+            "textDecorationLine": "none"
+          },
+          "colors": {
+            "backgroundColor": "rgb(244, 244, 244)",
+            "color": "rgb(22, 22, 22)"
+          }
+        },
+        "ref": {
+          "found": true,
+          "border": {
+            "top": {
+              "width": "0px",
+              "style": "none",
+              "color": "rgb(22, 22, 22)"
+            },
+            "right": {
+              "width": "0px",
+              "style": "none",
+              "color": "rgb(22, 22, 22)"
+            },
+            "bottom": {
+              "width": "1px",
+              "style": "solid",
+              "color": "rgb(141, 141, 141)"
+            },
+            "left": {
+              "width": "0px",
+              "style": "none",
+              "color": "rgb(22, 22, 22)"
+            }
+          },
+          "radius": {
+            "topLeft": "0px",
+            "topRight": "0px",
+            "bottomRight": "0px",
+            "bottomLeft": "0px"
+          },
+          "padding": {
+            "top": "0px",
+            "right": "16px",
+            "bottom": "0px",
+            "left": "16px"
+          },
+          "box": {
+            "width": 320,
+            "height": 40
+          },
+          "typo": {
+            "fontFamily": "IBM Plex Sans",
+            "fontSize": "14px",
+            "fontWeight": "400",
+            "lineHeight": "18.0001px",
+            "letterSpacing": "0.16px",
+            "textTransform": "none",
+            "textDecorationLine": "none"
+          },
+          "colors": {
+            "backgroundColor": "rgb(244, 244, 244)",
+            "color": "rgb(22, 22, 22)"
+          }
+        }
+      }
+    },
+    {
+      "theme": "carbon",
+      "component": "Textarea",
+      "ourSelector": ".cmp-scope--carbon .st-textarea",
+      "refSelector": ".bx--text-area",
+      "refStyled": true,
+      "notes": [],
       "fidelity": 93.5,
       "counts": {
-        "eq": 28,
-        "close": 1,
+        "eq": 27,
+        "close": 2,
         "diff": 2
       },
       "rows": [
@@ -3225,380 +3585,6 @@
         {
           "label": "padding-top",
           "prop": "padding-top",
-          "ours": "0px",
-          "ref": "0px",
-          "status": "=",
-          "delta": ""
-        },
-        {
-          "label": "padding-right",
-          "prop": "padding-right",
-          "ours": "16px",
-          "ref": "16px",
-          "status": "=",
-          "delta": ""
-        },
-        {
-          "label": "padding-bottom",
-          "prop": "padding-bottom",
-          "ours": "0px",
-          "ref": "0px",
-          "status": "=",
-          "delta": ""
-        },
-        {
-          "label": "padding-left",
-          "prop": "padding-left",
-          "ours": "16px",
-          "ref": "16px",
-          "status": "=",
-          "delta": ""
-        },
-        {
-          "label": "box width",
-          "prop": "box-width",
-          "ours": "234px",
-          "ref": "329px",
-          "status": "≠",
-          "delta": "Δ-95.0px"
-        },
-        {
-          "label": "box height",
-          "prop": "box-height",
-          "ours": "40px",
-          "ref": "40px",
-          "status": "=",
-          "delta": ""
-        },
-        {
-          "label": "font-family",
-          "prop": "font-family",
-          "ours": "IBM Plex Sans",
-          "ref": "system-ui",
-          "status": "≠",
-          "delta": "IBM Plex Sans vs system-ui"
-        },
-        {
-          "label": "font-size",
-          "prop": "font-size",
-          "ours": "14px",
-          "ref": "14px",
-          "status": "=",
-          "delta": ""
-        },
-        {
-          "label": "font-weight",
-          "prop": "font-weight",
-          "ours": "400",
-          "ref": "400",
-          "status": "=",
-          "delta": ""
-        },
-        {
-          "label": "line-height",
-          "prop": "line-height",
-          "ours": "18px",
-          "ref": "18.0001px",
-          "status": "~",
-          "delta": "Δ0.0px"
-        },
-        {
-          "label": "letter-spacing",
-          "prop": "letter-spacing",
-          "ours": "0.16px",
-          "ref": "0.16px",
-          "status": "=",
-          "delta": ""
-        },
-        {
-          "label": "text-transform",
-          "prop": "text-transform",
-          "ours": "none",
-          "ref": "none",
-          "status": "=",
-          "delta": ""
-        },
-        {
-          "label": "text-decoration",
-          "prop": "text-decoration-line",
-          "ours": "none",
-          "ref": "none",
-          "status": "=",
-          "delta": ""
-        },
-        {
-          "label": "background-color",
-          "prop": "background-color",
-          "ours": "rgb(244, 244, 244)",
-          "ref": "rgb(244, 244, 244)",
-          "status": "=",
-          "delta": ""
-        },
-        {
-          "label": "color",
-          "prop": "color",
-          "ours": "rgb(22, 22, 22)",
-          "ref": "rgb(22, 22, 22)",
-          "status": "=",
-          "delta": ""
-        }
-      ],
-      "raw": {
-        "ours": {
-          "found": true,
-          "border": {
-            "top": {
-              "width": "0px",
-              "style": "none",
-              "color": "rgb(22, 22, 22)"
-            },
-            "right": {
-              "width": "0px",
-              "style": "none",
-              "color": "rgb(22, 22, 22)"
-            },
-            "bottom": {
-              "width": "1px",
-              "style": "solid",
-              "color": "rgb(141, 141, 141)"
-            },
-            "left": {
-              "width": "0px",
-              "style": "none",
-              "color": "rgb(22, 22, 22)"
-            }
-          },
-          "radius": {
-            "topLeft": "0px",
-            "topRight": "0px",
-            "bottomRight": "0px",
-            "bottomLeft": "0px"
-          },
-          "padding": {
-            "top": "0px",
-            "right": "16px",
-            "bottom": "0px",
-            "left": "16px"
-          },
-          "box": {
-            "width": 234,
-            "height": 40
-          },
-          "typo": {
-            "fontFamily": "IBM Plex Sans",
-            "fontSize": "14px",
-            "fontWeight": "400",
-            "lineHeight": "18px",
-            "letterSpacing": "0.16px",
-            "textTransform": "none",
-            "textDecorationLine": "none"
-          },
-          "colors": {
-            "backgroundColor": "rgb(244, 244, 244)",
-            "color": "rgb(22, 22, 22)"
-          }
-        },
-        "ref": {
-          "found": true,
-          "border": {
-            "top": {
-              "width": "0px",
-              "style": "none",
-              "color": "rgb(22, 22, 22)"
-            },
-            "right": {
-              "width": "0px",
-              "style": "none",
-              "color": "rgb(22, 22, 22)"
-            },
-            "bottom": {
-              "width": "1px",
-              "style": "solid",
-              "color": "rgb(141, 141, 141)"
-            },
-            "left": {
-              "width": "0px",
-              "style": "none",
-              "color": "rgb(22, 22, 22)"
-            }
-          },
-          "radius": {
-            "topLeft": "0px",
-            "topRight": "0px",
-            "bottomRight": "0px",
-            "bottomLeft": "0px"
-          },
-          "padding": {
-            "top": "0px",
-            "right": "16px",
-            "bottom": "0px",
-            "left": "16px"
-          },
-          "box": {
-            "width": 329,
-            "height": 40
-          },
-          "typo": {
-            "fontFamily": "system-ui",
-            "fontSize": "14px",
-            "fontWeight": "400",
-            "lineHeight": "18.0001px",
-            "letterSpacing": "0.16px",
-            "textTransform": "none",
-            "textDecorationLine": "none"
-          },
-          "colors": {
-            "backgroundColor": "rgb(244, 244, 244)",
-            "color": "rgb(22, 22, 22)"
-          }
-        }
-      }
-    },
-    {
-      "theme": "carbon",
-      "component": "Textarea",
-      "ourSelector": ".cmp-scope--carbon .st-textarea",
-      "refSelector": ".bx--text-area",
-      "refStyled": true,
-      "notes": [],
-      "fidelity": 87.1,
-      "counts": {
-        "eq": 25,
-        "close": 2,
-        "diff": 4
-      },
-      "rows": [
-        {
-          "label": "border-top width",
-          "prop": "border-top-width",
-          "ours": "0px",
-          "ref": "0px",
-          "status": "=",
-          "delta": ""
-        },
-        {
-          "label": "border-top style",
-          "prop": "border-top-style",
-          "ours": "none",
-          "ref": "none",
-          "status": "=",
-          "delta": "bord 0px (invisible)"
-        },
-        {
-          "label": "border-top color",
-          "prop": "border-top-color",
-          "ours": "rgb(22, 22, 22)",
-          "ref": "rgb(22, 22, 22)",
-          "status": "=",
-          "delta": "bord 0px (invisible)"
-        },
-        {
-          "label": "border-right width",
-          "prop": "border-right-width",
-          "ours": "0px",
-          "ref": "0px",
-          "status": "=",
-          "delta": ""
-        },
-        {
-          "label": "border-right style",
-          "prop": "border-right-style",
-          "ours": "none",
-          "ref": "none",
-          "status": "=",
-          "delta": "bord 0px (invisible)"
-        },
-        {
-          "label": "border-right color",
-          "prop": "border-right-color",
-          "ours": "rgb(22, 22, 22)",
-          "ref": "rgb(22, 22, 22)",
-          "status": "=",
-          "delta": "bord 0px (invisible)"
-        },
-        {
-          "label": "border-bottom width",
-          "prop": "border-bottom-width",
-          "ours": "1px",
-          "ref": "1px",
-          "status": "=",
-          "delta": ""
-        },
-        {
-          "label": "border-bottom style",
-          "prop": "border-bottom-style",
-          "ours": "solid",
-          "ref": "solid",
-          "status": "=",
-          "delta": ""
-        },
-        {
-          "label": "border-bottom color",
-          "prop": "border-bottom-color",
-          "ours": "rgb(141, 141, 141)",
-          "ref": "rgb(141, 141, 141)",
-          "status": "=",
-          "delta": ""
-        },
-        {
-          "label": "border-left width",
-          "prop": "border-left-width",
-          "ours": "0px",
-          "ref": "0px",
-          "status": "=",
-          "delta": ""
-        },
-        {
-          "label": "border-left style",
-          "prop": "border-left-style",
-          "ours": "none",
-          "ref": "none",
-          "status": "=",
-          "delta": "bord 0px (invisible)"
-        },
-        {
-          "label": "border-left color",
-          "prop": "border-left-color",
-          "ours": "rgb(22, 22, 22)",
-          "ref": "rgb(22, 22, 22)",
-          "status": "=",
-          "delta": "bord 0px (invisible)"
-        },
-        {
-          "label": "radius topLeft",
-          "prop": "border-radius",
-          "ours": "0px",
-          "ref": "0px",
-          "status": "=",
-          "delta": ""
-        },
-        {
-          "label": "radius topRight",
-          "prop": "border-radius",
-          "ours": "0px",
-          "ref": "0px",
-          "status": "=",
-          "delta": ""
-        },
-        {
-          "label": "radius bottomRight",
-          "prop": "border-radius",
-          "ours": "0px",
-          "ref": "0px",
-          "status": "=",
-          "delta": ""
-        },
-        {
-          "label": "radius bottomLeft",
-          "prop": "border-radius",
-          "ours": "0px",
-          "ref": "0px",
-          "status": "=",
-          "delta": ""
-        },
-        {
-          "label": "padding-top",
-          "prop": "padding-top",
           "ours": "10px",
           "ref": "11px",
           "status": "~",
@@ -3631,10 +3617,10 @@
         {
           "label": "box width",
           "prop": "box-width",
-          "ours": "209px",
-          "ref": "329px",
-          "status": "≠",
-          "delta": "Δ-120.0px"
+          "ours": "320px",
+          "ref": "320px",
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "box height",
@@ -3648,9 +3634,9 @@
           "label": "font-family",
           "prop": "font-family",
           "ours": "IBM Plex Sans",
-          "ref": "system-ui",
-          "status": "≠",
-          "delta": "IBM Plex Sans vs system-ui"
+          "ref": "IBM Plex Sans",
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "font-size",
@@ -3755,7 +3741,7 @@
             "left": "16px"
           },
           "box": {
-            "width": 209,
+            "width": 320,
             "height": 96
           },
           "typo": {
@@ -3809,11 +3795,11 @@
             "left": "16px"
           },
           "box": {
-            "width": 329,
+            "width": 320,
             "height": 82.953125
           },
           "typo": {
-            "fontFamily": "system-ui",
+            "fontFamily": "IBM Plex Sans",
             "fontSize": "14px",
             "fontWeight": "400",
             "lineHeight": "20px",
@@ -3835,11 +3821,11 @@
       "refSelector": ".bx--select-input",
       "refStyled": true,
       "notes": [],
-      "fidelity": 87.1,
+      "fidelity": 93.5,
       "counts": {
-        "eq": 27,
+        "eq": 29,
         "close": 0,
-        "diff": 4
+        "diff": 2
       },
       "rows": [
         {
@@ -4005,10 +3991,10 @@
         {
           "label": "box width",
           "prop": "box-width",
-          "ours": "108px",
-          "ref": "329px",
-          "status": "≠",
-          "delta": "Δ-221.0px"
+          "ours": "320px",
+          "ref": "320px",
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "box height",
@@ -4022,9 +4008,9 @@
           "label": "font-family",
           "prop": "font-family",
           "ours": "IBM Plex Sans",
-          "ref": "system-ui",
-          "status": "≠",
-          "delta": "IBM Plex Sans vs system-ui"
+          "ref": "IBM Plex Sans",
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "font-size",
@@ -4129,7 +4115,7 @@
             "left": "16px"
           },
           "box": {
-            "width": 108,
+            "width": 320,
             "height": 40
           },
           "typo": {
@@ -4183,11 +4169,11 @@
             "left": "16px"
           },
           "box": {
-            "width": 329,
+            "width": 320,
             "height": 40
           },
           "typo": {
-            "fontFamily": "system-ui",
+            "fontFamily": "IBM Plex Sans",
             "fontSize": "14px",
             "fontWeight": "400",
             "lineHeight": "18.0001px",
@@ -4379,8 +4365,8 @@
         {
           "label": "box width",
           "prop": "box-width",
-          "ours": "65.9px",
-          "ref": "65.9px",
+          "ours": "64.2px",
+          "ref": "64.2px",
           "status": "=",
           "delta": ""
         },
@@ -4395,8 +4381,8 @@
         {
           "label": "font-family",
           "prop": "font-family",
-          "ours": "system-ui",
-          "ref": "system-ui",
+          "ours": "IBM Plex Sans",
+          "ref": "IBM Plex Sans",
           "status": "=",
           "delta": ""
         },
@@ -4503,11 +4489,11 @@
             "left": "0px"
           },
           "box": {
-            "width": 65.921875,
+            "width": 64.203125,
             "height": 17.984375
           },
           "typo": {
-            "fontFamily": "system-ui",
+            "fontFamily": "IBM Plex Sans",
             "fontSize": "14px",
             "fontWeight": "400",
             "lineHeight": "17.9999px",
@@ -4557,11 +4543,11 @@
             "left": "0px"
           },
           "box": {
-            "width": 65.921875,
+            "width": 64.203125,
             "height": 18
           },
           "typo": {
-            "fontFamily": "system-ui",
+            "fontFamily": "IBM Plex Sans",
             "fontSize": "14px",
             "fontWeight": "400",
             "lineHeight": "18.0001px",
@@ -4583,11 +4569,11 @@
       "refSelector": ".bx--tile",
       "refStyled": true,
       "notes": [],
-      "fidelity": 83.9,
+      "fidelity": 87.1,
       "counts": {
-        "eq": 26,
+        "eq": 27,
         "close": 0,
-        "diff": 5
+        "diff": 4
       },
       "rows": [
         {
@@ -4753,24 +4739,24 @@
         {
           "label": "box width",
           "prop": "box-width",
-          "ours": "175.1px",
+          "ours": "288px",
           "ref": "288px",
-          "status": "≠",
-          "delta": "Δ-112.9px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "box height",
           "prop": "box-height",
-          "ours": "80.4px",
+          "ours": "78.4px",
           "ref": "100px",
           "status": "≠",
-          "delta": "Δ-19.6px"
+          "delta": "Δ-21.6px"
         },
         {
           "label": "font-family",
           "prop": "font-family",
-          "ours": "system-ui",
-          "ref": "system-ui",
+          "ours": "IBM Plex Sans",
+          "ref": "IBM Plex Sans",
           "status": "=",
           "delta": ""
         },
@@ -4877,11 +4863,11 @@
             "left": "16px"
           },
           "box": {
-            "width": 175.0625,
-            "height": 80.390625
+            "width": 288,
+            "height": 78.390625
           },
           "typo": {
-            "fontFamily": "system-ui",
+            "fontFamily": "IBM Plex Sans",
             "fontSize": "16px",
             "fontWeight": "400",
             "lineHeight": "normal",
@@ -4935,7 +4921,7 @@
             "height": 100
           },
           "typo": {
-            "fontFamily": "system-ui",
+            "fontFamily": "IBM Plex Sans",
             "fontSize": "14px",
             "fontWeight": "400",
             "lineHeight": "14px",
@@ -4960,11 +4946,11 @@
         "Spec selector `.bx--tabs__nav-item--selected` is the `<li>` wrapper (0×0 box). Measuring its inner `.bx--tabs__nav-link` — the actual styled tab.",
         "reference element is styled (CDN loaded) but its own box collapsed to 0; box width/height excluded from the diff"
       ],
-      "fidelity": 75.9,
+      "fidelity": 79.3,
       "counts": {
-        "eq": 22,
+        "eq": 23,
         "close": 0,
-        "diff": 7
+        "diff": 6
       },
       "rows": [
         {
@@ -5131,9 +5117,9 @@
           "label": "font-family",
           "prop": "font-family",
           "ours": "IBM Plex Sans",
-          "ref": "system-ui",
-          "status": "≠",
-          "delta": "IBM Plex Sans vs system-ui"
+          "ref": "IBM Plex Sans",
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "font-size",
@@ -5238,7 +5224,7 @@
             "left": "4px"
           },
           "box": {
-            "width": 53.921875,
+            "width": 53.421875,
             "height": 43
           },
           "typo": {
@@ -5296,7 +5282,7 @@
             "height": 0
           },
           "typo": {
-            "fontFamily": "system-ui",
+            "fontFamily": "IBM Plex Sans",
             "fontSize": "14px",
             "fontWeight": "400",
             "lineHeight": "16px",

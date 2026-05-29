@@ -3,15 +3,15 @@
 Source de vérité chiffrée : `docs/compare-fidelity-report.md` (régénéré par `tools/compare/fidelity.mjs`).
 Ce tracker = stratégie de fermeture + statut par **famille** d'écarts. Mis à jour à chaque itération du loop.
 
-> Départ : **74,8 %** (109 ≠) → après 1ère passe **84,0 %** (69 ≠). **Cible : 100 % de fermeture**
+> Départ : **74,8 %** (109 ≠) → 1ère passe **84,0 %** (69 ≠) → passe F1+F2 **87,3 %** (55 ≠). **Cible : 100 % de fermeture**
 > (tout écart restant doit être soit fermé, soit un escape PROUVÉ irréductible et justifié ici).
 
 Statut : ⬜ ouvert · 🟦 en cours · ✅ fermé · 🛡️ escape justifié (irréductible, accepté).
 
 | # | Famille d'écart | Composants touchés | Stratégie de fermeture | Statut |
 |---|---|---|---|---|
-| F1 | **Largeur/hauteur de boîte** (≈14) | tous | Banc apples-to-apples : rendre nos cellules et la référence à **largeur égale** (la réf est en 329px pleine largeur, nous contraints). Mesure honnête. | ⬜ |
-| F2 | **Police de marque** vs system-ui (≈7) | Button/Tabs DSFR, Button/Input/Textarea/Select/Tabs Carbon | Charger **Marianne** (DSFR) et **IBM Plex Sans** (Carbon) via CDN **des deux côtés** du banc → comparaison réelle, plus de fallback asymétrique. | ⬜ |
+| F1 | **Largeur de boîte** (artefact de mise en page) | champs + Card | ✅ Banc apples-to-apples : iframe réf à largeur fixe (348px → zone de contenu **320px** identique des deux côtés) + champs (Input/Textarea/Select) à `width:320px` + carte rendue dans le même contexte 18rem que la réf. **box width** des 3 champs et de la carte désormais `=`. Résidu : box-width `≠` ne subsiste que sur 3 composants **à largeur intrinsèque** (dsfr/Button Δ2px metrics Marianne, carbon/Button Δ-46px et dsfr/Tabs Δ-24,5px = **padding** → F7/F9, pas F1). Box-**height** résiduelles = line-height (F5) / padding (F7/F9), pas l'artefact de largeur. | ✅ |
+| F2 | **Police de marque** vs system-ui (≈7) | Button/Tabs DSFR, Button/Input/Textarea/Select/Tabs Carbon | ✅ Polices chargées RÉELLEMENT des deux côtés : **Marianne** (DSFR) via `@font-face` CDN absolus (sans injecter le reset global dsfr.min.css) + utilitaire DSFR dans l'iframe ; **IBM Plex Sans** (Carbon) via Google Fonts ; `font-family` de marque forcée sur le `<body>` de l'iframe + `font-family: var(--st-font-sans)` sur le scope (Link/Card héritent). **14/14 `font-family` désormais `=`, 0 `≠`.** | ✅ |
 | F3 | **Rayon haut 4px champs DSFR** (6) | Input/Textarea/Select | Extension additive **anatomie v1.3.0** : rayon par-coin sur `field` (top 4px / bottom 0). | ⬜ |
 | F4 | **Filet bas DSFR : bordure vs none** (4) | Input/Textarea/Select/Tabs | Basculer notre filled-underline DSFR sur **box-shadow inset** (technique réelle DSFR) au lieu de `border-bottom`. | ⬜ |
 | F5 | **line-height non posé** (≈7) | Select/Link/Card DSFR + Select/Link/Card/Input/Tabs Carbon | Poser la line-height d'anatomie là où le composant ne la consomme pas ; investiguer `<select>` (UA). | ⬜ |
