@@ -91,8 +91,8 @@ describe("anatomy v1.1.0 — hover bg, hover decoration, per-size font size", ()
     THEMES.map((t) => [t.id, compileTheme(t)])
   );
 
-  it("ANATOMY_VERSION is 1.4.0", () => {
-    expect(ANATOMY_VERSION).toBe("1.4.0");
+  it("ANATOMY_VERSION is 1.5.0", () => {
+    expect(ANATOMY_VERSION).toBe("1.5.0");
   });
 
   for (const theme of THEMES) {
@@ -217,5 +217,77 @@ describe("anatomy v1.2.0 — field style (outline vs filled-underline)", () => {
     // Carbon has no box-shadow underline; its focus box-shadow is the plain
     // inset ring (border-bottom carries the rule).
     expect(compiled.get("carbon")!).toContain(`${FIELD}-focusShadow: inset 0 0 0 2px #0f62fe`);
+  });
+});
+
+/**
+ * Anatomy v1.5.0 active-tab metrics (F7/F8): the `tabs` block now carries the
+ * per-theme selected-tab roles/metrics the Tabs component consumes (active
+ * text/bg/weight, tab padding/font-size/line-height, the per-side indicator
+ * widths and the box-shadow accent). Every var must be EMITTED for every theme
+ * (no phantom var) and DEFAULT to the prior base render (base Sent Tech
+ * unchanged) while DSFR/Carbon carry the measured selected-tab values.
+ */
+describe("anatomy v1.5.0 — active-tab metrics (F7 DSFR / F8 Carbon)", () => {
+  const compiled = new Map<string, string>(
+    THEMES.map((t) => [t.id, compileTheme(t)])
+  );
+  const TABS = "--st-component-tabs";
+
+  for (const theme of THEMES) {
+    const css = () => compiled.get(theme.id)!;
+    it(`${theme.id}: every active-tab var is emitted (no phantom var)`, () => {
+      for (const leaf of [
+        "activeText", "activeBackground", "activeWeight",
+        "tabPaddingBlock", "tabPaddingInline", "tabFontSize", "tabLineHeight",
+        "activeBorderTopWidth", "activeBorderBottomWidth", "activeShadow"
+      ]) {
+        expect(css(), `${TABS}-${leaf} missing for ${theme.id}`).toMatch(
+          new RegExp(`${TABS}-${leaf}:\\s*[^;]+;`)
+        );
+      }
+    });
+  }
+
+  it("base Sent Tech reproduces the prior tab render (unchanged): 12px/4px padding, inherited font, 600, transparent, bottom indicator, no shadow", () => {
+    const css = compiled.get("sent-tech")!;
+    expect(css).toContain(`${TABS}-tabPaddingBlock: 0.75rem`);
+    expect(css).toContain(`${TABS}-tabPaddingInline: 0.25rem`);
+    expect(css).toContain(`${TABS}-tabFontSize: inherit`);
+    expect(css).toContain(`${TABS}-activeWeight: 600`);
+    expect(css).toContain(`${TABS}-activeBackground: transparent`);
+    expect(css).toContain(`${TABS}-activeBorderTopWidth: 0`);
+    expect(css).toContain(`${TABS}-activeBorderBottomWidth: 1px`);
+    expect(css).toContain(`${TABS}-activeShadow: none`);
+  });
+
+  it("DSFR active tab (F7): white fill, Bleu France text, weight 700, 8px/16px padding, TOP accent via inset box-shadow (no border)", () => {
+    const css = compiled.get("dsfr")!;
+    expect(css).toContain(`${TABS}-activeText: #000091`);
+    expect(css).toContain(`${TABS}-activeBackground: #ffffff`);
+    expect(css).toContain(`${TABS}-activeWeight: 700`);
+    expect(css).toContain(`${TABS}-tabPaddingBlock: 0.5rem`);
+    expect(css).toContain(`${TABS}-tabPaddingInline: 1rem`);
+    expect(css).toContain(`${TABS}-tabFontSize: 1rem`);
+    expect(css).toContain(`${TABS}-tabLineHeight: 1.5rem`);
+    // shadow mode: both borders stay 0, accent is an inset top box-shadow.
+    expect(css).toContain(`${TABS}-activeBorderTopWidth: 0`);
+    expect(css).toContain(`${TABS}-activeBorderBottomWidth: 0`);
+    expect(css).toContain(`${TABS}-activeShadow: inset 0 1px 0 0 #000091`);
+  });
+
+  it("Carbon active tab (F8): 14px / 16px line-height, 0 inline padding, weight 400, real selected colour #161616, blue bottom border indicator", () => {
+    const css = compiled.get("carbon")!;
+    expect(css).toContain(`${TABS}-tabFontSize: 0.875rem`);
+    expect(css).toContain(`${TABS}-tabLineHeight: 1rem`);
+    expect(css).toContain(`${TABS}-tabPaddingInline: 0`);
+    expect(css).toContain(`${TABS}-activeWeight: 400`);
+    // Real selected-tab design colour (NOT the mobile-base #525252 the bench
+    // measures below Carbon's 42rem breakpoint — that gap is a justified escape).
+    expect(css).toContain(`${TABS}-activeText: #161616`);
+    // Bottom indicator is a real border (the blue #0f62fe selected design),
+    // no box-shadow accent.
+    expect(css).toContain(`${TABS}-activeBorderBottomWidth: 1px`);
+    expect(css).toContain(`${TABS}-activeShadow: none`);
   });
 });

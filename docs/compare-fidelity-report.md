@@ -269,38 +269,38 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 | Propriété / Bord | Nous | Référence officielle | Δ / statut |
 |---|---|---|---|
 | border-top width | 0px | 0px | = |
-| border-top style | none | none | = (bord 0px (invisible)) |
-| border-top color | rgb(58, 58, 58) | rgb(0, 0, 145) | = (bord 0px (invisible)) |
+| border-top style | solid | none | = (bord 0px (invisible)) |
+| border-top color | rgb(0, 0, 145) | rgb(0, 0, 145) | = (bord 0px (invisible)) |
 | border-right width | 0px | 0px | = |
 | border-right style | none | none | = (bord 0px (invisible)) |
-| border-right color | rgb(58, 58, 58) | rgb(0, 0, 145) | = (bord 0px (invisible)) |
-| border-bottom width | 1px | 0px | ~ Δ1.0px |
-| border-bottom style | solid | none | ≠ solid vs none |
-| border-bottom color | rgb(0, 0, 145) | rgb(0, 0, 145) | = |
+| border-right color | rgb(0, 0, 145) | rgb(0, 0, 145) | = (bord 0px (invisible)) |
+| border-bottom width | 0px | 0px | = |
+| border-bottom style | solid | none | = (bord 0px (invisible)) |
+| border-bottom color | rgb(0, 0, 145) | rgb(0, 0, 145) | = (bord 0px (invisible)) |
 | border-left width | 0px | 0px | = |
 | border-left style | none | none | = (bord 0px (invisible)) |
-| border-left color | rgb(58, 58, 58) | rgb(0, 0, 145) | = (bord 0px (invisible)) |
+| border-left color | rgb(0, 0, 145) | rgb(0, 0, 145) | = (bord 0px (invisible)) |
 | radius topLeft | 0px | 0px | = |
 | radius topRight | 0px | 0px | = |
 | radius bottomRight | 0px | 0px | = |
 | radius bottomLeft | 0px | 0px | = |
-| padding-top | 12px | 8px | ≠ Δ4.0px |
-| padding-right | 4px | 16px | ≠ Δ-12.0px |
-| padding-bottom | 12px | 8px | ≠ Δ4.0px |
-| padding-left | 4px | 16px | ≠ Δ-12.0px |
-| box width | 46.3px | 70.8px | ≠ Δ-24.5px |
-| box height | 49px | 40px | ≠ Δ9.0px |
+| padding-top | 8px | 8px | = |
+| padding-right | 16px | 16px | = |
+| padding-bottom | 8px | 8px | = |
+| padding-left | 16px | 16px | = |
+| box width | 70.8px | 70.8px | = |
+| box height | 40px | 40px | = |
 | font-family | Marianne | Marianne | = |
 | font-size | 16px | 16px | = |
-| font-weight | 500 | 700 | ≠ 500 vs 700 |
+| font-weight | 700 | 700 | = |
 | line-height | 24px | 24px | = |
 | letter-spacing | normal | normal | = |
 | text-transform | none | none | = |
 | text-decoration | none | none | = |
-| background-color | rgba(0, 0, 0, 0) | rgb(255, 255, 255) | ≠ rgb(0,0,0)/a0 vs rgb(255,255,255) |
-| color | rgb(58, 58, 58) | rgb(0, 0, 145) | ≠ rgb(58,58,58) vs rgb(0,0,145) |
+| background-color | rgb(255, 255, 255) | rgb(255, 255, 255) | = |
+| color | rgb(0, 0, 145) | rgb(0, 0, 145) | = |
 
-**Fidélité Tabs (dsfr) : 67.7%** — 20 `=`, 1 `~`, 10 `≠` sur 31 propriétés.
+**Fidélité Tabs (dsfr) : 100%** — 31 `=`, 0 `~`, 0 `≠` sur 31 propriétés.
 
 ## Thème : carbon
 
@@ -560,8 +560,8 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 | Propriété / Bord | Nous | Référence officielle | Δ / statut |
 |---|---|---|---|
 | border-top width | 0px | 0px | = |
-| border-top style | none | none | = (bord 0px (invisible)) |
-| border-top color | rgb(22, 22, 22) | rgb(82, 82, 82) | = (bord 0px (invisible)) |
+| border-top style | solid | none | = (bord 0px (invisible)) |
+| border-top color | rgb(15, 98, 254) | rgb(82, 82, 82) | = (bord 0px (invisible)) |
 | border-right width | 0px | 0px | = |
 | border-right style | none | none | = (bord 0px (invisible)) |
 | border-right color | rgb(22, 22, 22) | rgb(82, 82, 82) | = (bord 0px (invisible)) |
@@ -576,25 +576,25 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 | radius bottomRight | 0px | 0px | = |
 | radius bottomLeft | 0px | 0px | = |
 | padding-top | 12px | 12px | = |
-| padding-right | 4px | 0px | ≠ Δ4.0px |
+| padding-right | 0px | 0px | = |
 | padding-bottom | 12px | 12px | = |
-| padding-left | 4px | 0px | ≠ Δ4.0px |
+| padding-left | 0px | 0px | = |
 | font-family | IBM Plex Sans | IBM Plex Sans | = |
-| font-size | 16px | 14px | ≠ Δ2.0px |
+| font-size | 14px | 14px | = |
 | font-weight | 400 | 400 | = |
-| line-height | 18px | 16px | ≠ Δ2.0px |
+| line-height | 16px | 16px | = |
 | letter-spacing | 0.16px | 0.16px | = |
 | text-transform | none | none | = |
 | text-decoration | none | none | = |
 | background-color | rgba(0, 0, 0, 0) | rgba(0, 0, 0, 0) | = |
 | color | rgb(22, 22, 22) | rgb(82, 82, 82) | ≠ rgb(22,22,22) vs rgb(82,82,82) |
 
-**Fidélité Tabs (carbon) : 79.3%** — 23 `=`, 0 `~`, 6 `≠` sur 29 propriétés.
+**Fidélité Tabs (carbon) : 93.1%** — 27 `=`, 0 `~`, 2 `≠` sur 29 propriétés.
 
 ## Récapitulatif global
 
-- **Fidélité globale : 92.8%** (388 `=`, 13 `~`, 31 `≠` sur 432 propriétés mesurées).
-- **Écarts nets restants : 31**
+- **Fidélité globale : 96.1%** (403 `=`, 12 `~`, 17 `≠` sur 432 propriétés mesurées).
+- **Écarts nets restants : 17**
 
   - dsfr/Button: box width (Δ2.0px)
   - dsfr/Button: box height (Δ2.0px)
@@ -608,60 +608,9 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
   - dsfr/Card: padding-bottom (Δ15.0px)
   - dsfr/Card: padding-left (Δ15.0px)
   - dsfr/Card: box height (Δ-23.6px)
-  - dsfr/Tabs: border-bottom style (solid vs none)
-  - dsfr/Tabs: padding-top (Δ4.0px)
-  - dsfr/Tabs: padding-right (Δ-12.0px)
-  - dsfr/Tabs: padding-bottom (Δ4.0px)
-  - dsfr/Tabs: padding-left (Δ-12.0px)
-  - dsfr/Tabs: box width (Δ-24.5px)
-  - dsfr/Tabs: box height (Δ9.0px)
-  - dsfr/Tabs: font-weight (500 vs 700)
-  - dsfr/Tabs: background-color (rgb(0,0,0)/a0 vs rgb(255,255,255))
-  - dsfr/Tabs: color (rgb(58,58,58) vs rgb(0,0,145))
   - carbon/Textarea: box height (Δ13.0px)
   - carbon/Textarea: line-height (Δ-2.0px)
   - carbon/Card: box height (Δ-27.6px)
   - carbon/Tabs: border-bottom color (rgb(15,98,254) vs rgb(224,224,224))
-  - carbon/Tabs: padding-right (Δ4.0px)
-  - carbon/Tabs: padding-left (Δ4.0px)
-  - carbon/Tabs: font-size (Δ2.0px)
-  - carbon/Tabs: line-height (Δ2.0px)
   - carbon/Tabs: color (rgb(22,22,22) vs rgb(82,82,82))
 
-
-## Annexe — fermeture F5 (line-height) + F9 (résidus padding) sur Button/Select/Link/Card
-
-*(Note manuelle, conservée à part du corps automatique régénéré ci-dessus ; régénérer le rapport l'écrase — la trace durable est dans `docs/compare-fidelity-tracker.md`.)*
-
-Global : **89,4 % → 92,8 %** (46 → 31 écarts nets). Aucune régression : dsfr/Input 100 %, carbon/Input 100 %, dsfr/Textarea 90,3 %, carbon/Textarea 93,5 % inchangés.
-
-| Famille | Composant | Avant | Après | Technique |
-|---|---|---|---|---|
-| F5 — line-height | dsfr/Link | 93,5 % | 96,8 % | Rôle link DSFR `lineHeight 1.5` (24px) ; `.st-link` rendait `inherit`→`normal`, désormais `24px`. Base link reste `inherit` (inchangé). |
-| F5 — line-height + typo | dsfr/Card | 80,6 % | 83,9 % | Typo carte additive consommée par `.st-card` (PILOT) ; DSFR `lineHeight 1.5` → 24px. Défaut base = `inherit`/`normal`/`normal` (rendu base inchangé). |
-| F5 — line-height + font-size + letter-spacing | carbon/Card | 87,1 % | 96,8 % | Carbon pose `fontSize 14px`, `lineHeight 14px`, `letterSpacing 0.16px` (métriques réelles `.bx--tile`) → ferme line-height, font-size ET letter-spacing. |
-| F5 — line-height (`<select>` UA) | dsfr/Select | 90,3 % | 100 % | `appearance: none` (anatomie v1.4.0) débloque la `line-height` que l'UA forçait à `normal` sur un `<select>` natif (preuve : `24px !important`→`normal` en `auto`, `24px` en `none`). Chevron Bleu France redessiné. line-height 24px `=` + box height 42→40 `=`. |
-| F5 — line-height (`<select>` UA) | carbon/Select | 93,5 % | 100 % | idem, chevron Gray 100 ; line-height 18px (~). |
-| F9 — padding-right (gabarit chevron) | dsfr/Select | (cf. F5) | 100 % | `field.selectPaddingRight` 40px (base 2rem inchangé). |
-| F9 — padding-right (gabarit chevron) | carbon/Select | (cf. F5) | 100 % | `field.selectPaddingRight` 48px. |
-| F9 — padding asymétrique + hauteur | carbon/Button | 83,9 % | 100 % | `buttonDensity` (override de la SEULE anatomie bouton, les champs gardent la densité `control` à 0px/40px) + 4e valeur `paddingInlineEnd` : block 11px, gauche 16px, droite 63px, hauteur 48px → padding-top/bottom/right `=`, padding-left 16px~15px, box 131~130px, box-height 48px `=`. |
-| F9 — padding-block | dsfr/Button | 90,3 % | 90,3 % | paddingBlock 8px déjà posé → 8/16/8/16 `=`. Résidus (box width/height Δ2px = métriques Marianne ; color rgb(255,255,255) vs rgb(245,245,254)) hors F9. |
-
-### Preuve `<select>` (limite UA Chrome, résolue, PAS un escape)
-
-Mesure headless Chrome système, `<select>` police 16px, bordures/padding 0 :
-
-| `appearance` | `line-height` posé | computed | hauteur |
-|---|---|---|---|
-| `auto` (natif) | `24px` (même `!important`) | `normal` | 19px |
-| `none` | `24px` | `24px` | 24px |
-| `none` | `18px` (font 14px) | `18px` | 18px |
-| `none` | `1.5` (unitless) | `24px` | 24px |
-
-Conclusion : le `<select>` natif n'ignore PAS la line-height par nature — l'UA la force à `normal` UNIQUEMENT en `appearance: auto`. Les vrais `.fr-select`/`.bx--select-input` rendent 24px/18px précisément parce qu'ils sont en `appearance: none`. Fix appliqué (per-thème, base natif inchangé) → écart fermé, aucun escape nécessaire.
-
-### Résidus restants hors lot F5/F9 (Button/Select/Link/Card)
-- dsfr/Card, carbon/Card **box height** : la réf empile plus de contenu interne (structure `.fr-card`/`.bx--tile`), pas un résidu de padding/line-height que nous émettons.
-- dsfr/Card **padding 16 vs 1px** : artefact du wrapper de contenu de la réf (déjà noté F1), pas notre padding.
-- dsfr/Link **text-decoration underline vs none** : le lien DSFR EST souligné ; la réf mesurée `none` est un artefact de markup, hors F5.
-- dsfr/Button **box width/height Δ2px, color** : métriques de la police Marianne + nuance de blanc, ni F5 ni F9.

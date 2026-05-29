@@ -246,6 +246,28 @@ const foundation = {
     fontSize: "0.875rem", // 14px
     lineHeight: "0.875rem", // 14px (measured on the real tile)
     letterSpacing: "0.16px"
+  },
+  // F8 — Carbon « Tabs » actif. The bench iframe (≈348px) is BELOW Carbon's
+  // `@media (min-width: 42rem)` (672px) breakpoint, so the official CDN renders
+  // the MOBILE base `.bx--tabs__nav-link`: `font-size:.875rem` (inherited from
+  // `.bx--tabs`), `line-height:1rem` (16px), `padding:.75rem 0` (0 inline),
+  // `color:#525252`, `border-bottom:1px solid #e0e0e0`. The desktop SELECTED
+  // styling (border-bottom 2px #0f62fe, color #161616, font-weight 600) is gated
+  // behind that media query and never fires on the bench — proven by the CDN CSS
+  // (see tracker F8). We close the REAL anatomy values (14px, 16px line-height, 0
+  // inline padding) and keep the true selected-tab DESIGN colour (#161616) + blue
+  // bottom indicator; the measured #525252 text and #e0e0e0 border are the
+  // breakpoint artifact, justified as escapes in the tracker (not matched, as
+  // doing so would paint our ACTIVE tab with the INACTIVE mobile-base styling).
+  tabs: {
+    activeText: carbonColor.gray[100], // #161616 — real selected-tab colour ($text-primary)
+    activeBackground: "transparent",   // matches measured ref (no fill on the link box)
+    activeWeight: "400",                // matches measured ref
+    paddingBlock: "0.75rem",            // 12px (matches ref)
+    paddingInline: "0",                 // 0 inline (matches the mobile base rule)
+    fontSize: "0.875rem",               // 14px ($body-compact-01 / .bx--tabs)
+    lineHeight: "1rem",                 // 16px (mobile base nav-link line-height)
+    indicatorSide: "bottom"             // blue bottom indicator (real selected design)
   }
 } as const;
 
