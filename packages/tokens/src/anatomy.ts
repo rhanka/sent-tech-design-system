@@ -16,7 +16,7 @@
 
 import type { TokenTree } from "./foundation.js";
 
-export const ANATOMY_VERSION = "1.2.0";
+export const ANATOMY_VERSION = "1.3.0";
 
 /** A CSS-ready value: a literal or a `var(--st-*)` reference. */
 export type CssValue = string;
@@ -66,6 +66,17 @@ export interface ShapeAnatomy {
  * The per-side borders are RESOLVED here (already combining width + style +
  * color into a CSS-ready shorthand) so a component applies them verbatim with
  * no per-theme branching.
+ *
+ * v1.3.0 (additive, F3/F4):
+ *  - `radiusTop` — per-field TOP-corner radius, resolved CSS-ready. The base
+ *    `shape.radius` is a single uniform value; a filled-underline field can
+ *    round only its TOP corners (DSFR « Champ de saisie » = 4px top / 0 bottom)
+ *    while the bottom corners keep `shape.radius`. Defaults to the theme's own
+ *    `shape.radius` so a boxed field stays uniform → no Sent Tech regression.
+ *  - `underline` — the bottom rule rendered as a `box-shadow inset` instead of a
+ *    `border-bottom` (the real DSFR/Carbon technique). `none` for an outline
+ *    field (its rule is a real 4-side border); `inset 0 -<w> 0 0 <color>` for a
+ *    filled-underline field, whose `borderBottom` then becomes `none`.
  */
 export type FieldStyle = "outline" | "filled-underline";
 
@@ -79,6 +90,27 @@ export interface FieldAnatomy {
   borderRight: CssValue;
   borderBottom: CssValue;
   borderLeft: CssValue;
+  /**
+   * TOP-corner radius (v1.3.0). Defaults to the theme's `shape.radius` so a
+   * boxed field is unchanged; a filled-underline field may round only its top
+   * (DSFR = 4px) while the bottom corners keep `shape.radius`.
+   */
+  radiusTop: CssValue;
+  /**
+   * Bottom-rule box-shadow (v1.3.0). `none` for an outline field (it draws a
+   * real border); `inset 0 -<width> 0 0 <color>` for a filled-underline field,
+   * which renders its bottom rule via this shadow instead of `border-bottom`.
+   */
+  underline: CssValue;
+  /**
+   * Focus box-shadow for the field (v1.3.0), composed so the resting underline
+   * is never lost incoherently. An `outline`-strategy theme (DSFR) keeps the
+   * underline as its box-shadow at focus (its ring is a separate native
+   * `outline`); an `inset`/`ring`-strategy theme composes its focus ring AND the
+   * underline into one valid box-shadow list. An outline field with no underline
+   * resolves to the theme's plain focus box-shadow.
+   */
+  focusShadow: CssValue;
 }
 
 /** Density = the geometric envelope of a control for one size. */

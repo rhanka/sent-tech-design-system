@@ -90,7 +90,18 @@
     border-right: var(--st-component-control-anatomy-field-borderRight, var(--st-component-control-anatomy-shape-borderWidth, 1px) var(--st-component-control-anatomy-shape-borderStyle, solid) var(--st-component-control-border, var(--st-semantic-border-subtle)));
     border-bottom: var(--st-component-control-anatomy-field-borderBottom, var(--st-component-control-anatomy-shape-borderWidth, 1px) var(--st-component-control-anatomy-shape-borderStyle, solid) var(--st-component-control-border, var(--st-semantic-border-subtle)));
     border-left: var(--st-component-control-anatomy-field-borderLeft, var(--st-component-control-anatomy-shape-borderWidth, 1px) var(--st-component-control-anatomy-shape-borderStyle, solid) var(--st-component-control-border, var(--st-semantic-border-subtle)));
-    border-radius: var(--st-component-control-anatomy-shape-radius, 0.375rem);
+    /* Per-corner radius (anatomy v1.3.0): the TOP corners read the field's
+       `radiusTop` (DSFR « Champ de saisie » = 4px top, square bottom); the
+       BOTTOM corners keep `shape.radius`. Fallback = shape.radius on all four
+       corners → the base Sent Tech field stays a uniform rounded box. */
+    border-top-left-radius: var(--st-component-control-anatomy-field-radiusTop, var(--st-component-control-anatomy-shape-radius, 0.375rem));
+    border-top-right-radius: var(--st-component-control-anatomy-field-radiusTop, var(--st-component-control-anatomy-shape-radius, 0.375rem));
+    border-bottom-right-radius: var(--st-component-control-anatomy-shape-radius, 0.375rem);
+    border-bottom-left-radius: var(--st-component-control-anatomy-shape-radius, 0.375rem);
+    /* Bottom rule as a box-shadow inset (anatomy v1.3.0, real DSFR/Carbon
+       technique) instead of a border-bottom — keeps the box height honest.
+       Fallback = none → the base boxed field draws its rule via the 4 borders. */
+    box-shadow: var(--st-component-control-anatomy-field-underline, none);
     color: var(--st-component-control-text, var(--st-semantic-text-primary));
     font-family: var(--st-component-control-anatomy-typography-family, inherit);
     font-size: var(--st-component-control-anatomy-typography-size, inherit);
@@ -129,13 +140,17 @@
   }
 
   /* Focus = shared mixin. Base/DSFR use outline; Carbon uses inset box-shadow.
-     The border-color change is the field's own affordance and stays. */
+     The border-color change is the field's own affordance and stays. The field
+     focus box-shadow (anatomy v1.3.0) is COMPOSED so the resting underline is
+     not dropped: DSFR (outline) keeps the underline, Carbon stacks ring +
+     underline. Fallback = the plain focus ring (base boxed field). */
   .st-control:focus-visible {
     border-color: var(--st-component-control-focusRing, var(--st-semantic-border-interactive));
     outline: var(--st-component-control-anatomy-focus-outline, none);
     outline-offset: var(--st-component-control-anatomy-focus-offset, 0);
-    box-shadow: var(--st-component-control-anatomy-focus-boxShadow,
-      0 0 0 2px var(--st-component-control-focusRing, var(--st-semantic-border-interactive)));
+    box-shadow: var(--st-component-control-anatomy-field-focusShadow,
+      var(--st-component-control-anatomy-focus-boxShadow,
+        0 0 0 2px var(--st-component-control-focusRing, var(--st-semantic-border-interactive))));
   }
 
   .st-control[aria-invalid="true"] {

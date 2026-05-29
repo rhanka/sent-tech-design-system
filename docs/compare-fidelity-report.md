@@ -69,14 +69,14 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 | border-right width | 0px | 0px | = |
 | border-right style | none | none | = (bord 0px (invisible)) |
 | border-right color | rgb(58, 58, 58) | rgb(58, 58, 58) | = (bord 0px (invisible)) |
-| border-bottom width | 1px | 0px | ~ Δ1.0px |
-| border-bottom style | solid | none | ≠ solid vs none |
-| border-bottom color | rgb(58, 58, 58) | rgb(58, 58, 58) | = |
+| border-bottom width | 0px | 0px | = |
+| border-bottom style | none | none | = (bord 0px (invisible)) |
+| border-bottom color | rgb(58, 58, 58) | rgb(58, 58, 58) | = (bord 0px (invisible)) |
 | border-left width | 0px | 0px | = |
 | border-left style | none | none | = (bord 0px (invisible)) |
 | border-left color | rgb(58, 58, 58) | rgb(58, 58, 58) | = (bord 0px (invisible)) |
-| radius topLeft | 0px | 4px | ≠ Δ-4.0px |
-| radius topRight | 0px | 4px | ≠ Δ-4.0px |
+| radius topLeft | 4px | 4px | = |
+| radius topRight | 4px | 4px | = |
 | radius bottomRight | 0px | 0px | = |
 | radius bottomLeft | 0px | 0px | = |
 | padding-top | 8px | 8px | = |
@@ -84,7 +84,7 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 | padding-bottom | 8px | 8px | = |
 | padding-left | 16px | 16px | = |
 | box width | 320px | 320px | = |
-| box height | 41px | 40px | ~ Δ1.0px |
+| box height | 40px | 40px | = |
 | font-family | Marianne | Marianne | = |
 | font-size | 16px | 16px | = |
 | font-weight | 400 | 400 | = |
@@ -95,7 +95,7 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 | background-color | rgb(238, 238, 238) | rgb(238, 238, 238) | = |
 | color | rgb(58, 58, 58) | rgb(58, 58, 58) | = |
 
-**Fidélité Input (dsfr) : 90.3%** — 26 `=`, 2 `~`, 3 `≠` sur 31 propriétés.
+**Fidélité Input (dsfr) : 100%** — 31 `=`, 0 `~`, 0 `≠` sur 31 propriétés.
 
 ### Textarea
 
@@ -110,14 +110,14 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 | border-right width | 0px | 0px | = |
 | border-right style | none | none | = (bord 0px (invisible)) |
 | border-right color | rgb(58, 58, 58) | rgb(58, 58, 58) | = (bord 0px (invisible)) |
-| border-bottom width | 1px | 0px | ~ Δ1.0px |
-| border-bottom style | solid | none | ≠ solid vs none |
-| border-bottom color | rgb(58, 58, 58) | rgb(58, 58, 58) | = |
+| border-bottom width | 0px | 0px | = |
+| border-bottom style | none | none | = (bord 0px (invisible)) |
+| border-bottom color | rgb(58, 58, 58) | rgb(58, 58, 58) | = (bord 0px (invisible)) |
 | border-left width | 0px | 0px | = |
 | border-left style | none | none | = (bord 0px (invisible)) |
 | border-left color | rgb(58, 58, 58) | rgb(58, 58, 58) | = (bord 0px (invisible)) |
-| radius topLeft | 0px | 4px | ≠ Δ-4.0px |
-| radius topRight | 0px | 4px | ≠ Δ-4.0px |
+| radius topLeft | 4px | 4px | = |
+| radius topRight | 4px | 4px | = |
 | radius bottomRight | 0px | 0px | = |
 | radius bottomLeft | 0px | 0px | = |
 | padding-top | 10px | 8px | ≠ Δ2.0px |
@@ -136,7 +136,7 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 | background-color | rgb(238, 238, 238) | rgb(238, 238, 238) | = |
 | color | rgb(58, 58, 58) | rgb(58, 58, 58) | = |
 
-**Fidélité Textarea (dsfr) : 80.6%** — 24 `=`, 1 `~`, 6 `≠` sur 31 propriétés.
+**Fidélité Textarea (dsfr) : 90.3%** — 28 `=`, 0 `~`, 3 `≠` sur 31 propriétés.
 
 ### Select
 
@@ -151,14 +151,14 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 | border-right width | 0px | 0px | = |
 | border-right style | none | none | = (bord 0px (invisible)) |
 | border-right color | rgb(58, 58, 58) | rgb(58, 58, 58) | = (bord 0px (invisible)) |
-| border-bottom width | 1px | 0px | ~ Δ1.0px |
-| border-bottom style | solid | none | ≠ solid vs none |
-| border-bottom color | rgb(58, 58, 58) | rgb(58, 58, 58) | = |
+| border-bottom width | 0px | 0px | = |
+| border-bottom style | none | none | = (bord 0px (invisible)) |
+| border-bottom color | rgb(58, 58, 58) | rgb(58, 58, 58) | = (bord 0px (invisible)) |
 | border-left width | 0px | 0px | = |
 | border-left style | none | none | = (bord 0px (invisible)) |
 | border-left color | rgb(58, 58, 58) | rgb(58, 58, 58) | = (bord 0px (invisible)) |
-| radius topLeft | 0px | 4px | ≠ Δ-4.0px |
-| radius topRight | 0px | 4px | ≠ Δ-4.0px |
+| radius topLeft | 4px | 4px | = |
+| radius topRight | 4px | 4px | = |
 | radius bottomRight | 0px | 0px | = |
 | radius bottomLeft | 0px | 0px | = |
 | padding-top | 8px | 8px | = |
@@ -166,7 +166,7 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 | padding-bottom | 8px | 8px | = |
 | padding-left | 16px | 16px | = |
 | box width | 320px | 320px | = |
-| box height | 43px | 40px | ≠ Δ3.0px |
+| box height | 42px | 40px | ≠ Δ2.0px |
 | font-family | Marianne | Marianne | = |
 | font-size | 16px | 16px | = |
 | font-weight | 400 | 400 | = |
@@ -177,7 +177,7 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 | background-color | rgb(238, 238, 238) | rgb(238, 238, 238) | = |
 | color | rgb(58, 58, 58) | rgb(58, 58, 58) | = |
 
-**Fidélité Select (dsfr) : 80.6%** — 24 `=`, 1 `~`, 6 `≠` sur 31 propriétés.
+**Fidélité Select (dsfr) : 90.3%** — 28 `=`, 0 `~`, 3 `≠` sur 31 propriétés.
 
 ### Link
 
@@ -593,26 +593,17 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 
 ## Récapitulatif global
 
-- **Fidélité globale : 87.3%** (362 `=`, 15 `~`, 55 `≠` sur 432 propriétés mesurées).
-- **Écarts nets restants : 55**
+- **Fidélité globale : 89.4%** (375 `=`, 11 `~`, 46 `≠` sur 432 propriétés mesurées).
+- **Écarts nets restants : 46**
 
   - dsfr/Button: box width (Δ2.0px)
   - dsfr/Button: box height (Δ2.0px)
   - dsfr/Button: color (rgb(255,255,255) vs rgb(245,245,254))
-  - dsfr/Input: border-bottom style (solid vs none)
-  - dsfr/Input: radius topLeft (Δ-4.0px)
-  - dsfr/Input: radius topRight (Δ-4.0px)
-  - dsfr/Textarea: border-bottom style (solid vs none)
-  - dsfr/Textarea: radius topLeft (Δ-4.0px)
-  - dsfr/Textarea: radius topRight (Δ-4.0px)
   - dsfr/Textarea: padding-top (Δ2.0px)
   - dsfr/Textarea: padding-bottom (Δ2.0px)
   - dsfr/Textarea: box height (Δ8.0px)
-  - dsfr/Select: border-bottom style (solid vs none)
-  - dsfr/Select: radius topLeft (Δ-4.0px)
-  - dsfr/Select: radius topRight (Δ-4.0px)
   - dsfr/Select: padding-right (Δ-8.0px)
-  - dsfr/Select: box height (Δ3.0px)
+  - dsfr/Select: box height (Δ2.0px)
   - dsfr/Select: line-height (normal vs 24px)
   - dsfr/Link: line-height (normal vs 24px)
   - dsfr/Link: text-decoration (underline vs none)
@@ -653,46 +644,28 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
   - carbon/Tabs: color (rgb(22,22,22) vs rgb(82,82,82))
 
 
-## Annexe — fermeture F1 (largeur/hauteur) & F2 (police de marque)
+## Annexe — fermeture F3 (rayon haut), F4 (filet bas box-shadow), F6 (couleur de texte)
 
-*(Note manuelle, régénérée à part du corps automatique ci-dessus.)*
+*(Note manuelle, conservée à part du corps automatique régénéré ci-dessus.)*
 
-### F2 — police de marque : ✅ FERMÉE
-Les polices de marque sont désormais chargées RÉELLEMENT des deux côtés du banc
-(Marianne via les `@font-face` CDN absolus du DSFR côté nous + l'utilitaire DSFR
-dans l'iframe ; IBM Plex Sans via Google Fonts ; `font-family` de marque forcée
-sur le `<body>` de chaque iframe et `font-family: var(--st-font-sans)` posée sur
-le scope pour que Link/Card héritent). **14/14 lignes `font-family` sont `=`, 0 `≠`**
-(était : 7 `≠` `Marianne`/`IBM Plex Sans` vs `system-ui`). Les CDN jsDelivr (DSFR)
-et Google Fonts / IBM (Carbon) ont bien servi les polices (statuts 200 vérifiés).
+La boîte-champ DSFR (Input / Textarea / Select) est désormais fidèle :
 
-### F1 — largeur de boîte : ✅ FERMÉE (artefact de mise en page éliminé)
-La référence ne s'affiche plus en pleine largeur ~329px : l'iframe est fixée à
-`320 + 2×14 = 348px` (`box-sizing:border-box`) → zone de contenu **320px**
-identique des deux côtés ; nos champs pleine largeur (Input/Textarea/Select) sont
-posés à `width:320px` ; la carte est rendue dans le même contexte `18rem` (288px)
-que la référence officielle.
-
-- **box width** : 10 `=` / 3 `≠`. Les 3 champs et la carte (les 4 composants où
-  l'écart venait du contexte de largeur) sont désormais `=`.
-- **box height** : 4 `=`, 1 `~`, 8 `≠`.
-
-### Résidus laissés (escapes légitimes — hors périmètre F1)
-Les `≠` de boîte restants ne sont PLUS des artefacts de largeur ; ils dépendent de
-l'anatomie (padding / line-height), couverte par d'autres familles :
-
-| Résidu | Δ | Cause réelle | Famille |
+| Famille | Avant | Après | Technique |
 |---|---|---|---|
-| dsfr/Button box width | Δ2,0px | largeur intrinsèque (metrics Marianne + contenu) | intrinsèque |
-| carbon/Button box width | Δ-46,0px | padding-right Carbon (≈63px) vs 16px | F9 (padding) |
-| dsfr/Tabs box width | Δ-24,5px | padding onglet | F7/F9 |
-| dsfr/Button box height | Δ2,0px | metrics Marianne | intrinsèque |
-| carbon/Button box height | Δ-8,0px | padding vertical Carbon | F9 |
-| dsfr/Select box height | Δ3,0px | line-height `<select>` (UA) | F5 |
-| dsfr/Textarea, carbon/Textarea box height | Δ8 / Δ13px | line-height (rows) | F5 |
-| dsfr/Card, carbon/Card box height | Δ-23,6 / Δ-21,6px | line-height + padding interne carte | F5 |
-| dsfr/Tabs box height | Δ9,0px | padding onglet | F7/F9 |
+| F3 — rayon haut 4px | radius topLeft/topRight `≠ Δ-4px` | `=` (top 4px, bottom 0) | Extension anatomie **v1.3.0** : `field.radiusTop` (défaut = `shape.radius` → base inchangée), consommé en `border-top-left/right-radius` ; DSFR pose 4px. |
+| F4 — filet bas | `border-bottom style ≠ (solid vs none)` | `=` (none vs none) | DSFR (`underlineMode: "shadow"`) rend son filet bas via `box-shadow: inset 0 -1px 0 0 #3a3a3a` ; `border-bottom: none`. Composé proprement avec le focus (outline DSFR) — le soulignement de repos n'est pas perdu au focus. Carbon GARDE son vrai `border-bottom` (sa vraie technique) → 100 % préservé. |
+| F6 — couleur de texte | déjà `=` (#3a3a3a) | `=` confirmé | `semantic.text.primary` = grey-200 `#3a3a3a` (`--text-default-grey`), contraste ~8:1 sur fond `#eee` (AA+). |
 
-Conclusion : pour F1, **toute la largeur de boîte imputable au banc** est fermée
-(`=`). Les résidus de largeur intrinsèque et de hauteur sont pilotés par le
-padding/line-height et seront résorbés par F5/F7/F9 (autre lot). F2 est fermée à 100 %.
+Fidélité des composants de champ DSFR (avant → après cette passe) :
+
+- **dsfr/Input : 90,3 % → 100 %** (3 `≠` fermés : radius topLeft, radius topRight, border-bottom style).
+- **dsfr/Textarea : 80,6 % → 90,3 %** (radius + border-bottom fermés ; résidus = padding/line-height → F5/F9).
+- **dsfr/Select : 80,6 % → 90,3 %** (radius + border-bottom fermés ; résidus = padding-right/line-height → F5/F9).
+
+Non-régression vérifiée :
+
+- **carbon/Input 100 % → 100 %**, **carbon/Textarea 93,5 % → 93,5 %**, **carbon/Select 93,5 % → 93,5 %** (Carbon conserve son vrai `border-bottom`).
+- Button / Link / Card / Tabs (DSFR et Carbon) inchangés.
+- **Base Sent Tech inchangée** : champ `outline`, 4 bordures égales, rayon uniforme `0.375rem`, `box-shadow: none` (les fallbacks reproduisent le rendu antérieur exact).
+
+Global : **87,3 % → 89,4 %** (55 → 46 écarts nets).
