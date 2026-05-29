@@ -159,6 +159,21 @@ const foundation = {
     md: { controlHeight: "2.5rem", paddingBlock: "0", paddingInline: "1rem", gap: "0.5rem", minWidth: "2.5rem", fontSize: "0.875rem" },
     lg: { controlHeight: "3rem", paddingBlock: "0", paddingInline: "1rem", gap: "0.5rem", minWidth: "3rem", fontSize: "0.875rem" }
   },
+  // F9 — Carbon button geometry. The real Carbon primary button is TALLER (48px,
+  // not the 40px field height) and ASYMMETRIC: a label-left layout with block
+  // padding ~11px, a 16px leading inline padding and a large ~63px trailing
+  // gutter. That geometry is button-specific (the fields share the control
+  // `density` and must stay at 0 block padding / 40px), so it lives on
+  // `buttonDensity` — overriding ONLY the button anatomy. Source: Carbon v11
+  // « Button » productive spec (measured against the real `.bx--btn--primary`).
+  buttonDensity: {
+    md: {
+      controlHeight: "3rem", // 48px (Carbon button height, vs 40px field)
+      paddingBlock: "0.6875rem", // 11px top/bottom
+      paddingInline: "1rem", // 16px leading (label side)
+      paddingInlineEnd: "3.9375rem" // 63px trailing gutter (label-left layout)
+    }
+  },
   // Carbon typography = IBM Plex Sans. Body 0.875rem/1.43 ($body-01),
   // label 0.75rem/1.33 ($label-01). Source: Carbon "Type" scale.
   typography: {
@@ -206,14 +221,31 @@ const foundation = {
     style: "filled-underline",
     fillBg: carbonColor.gray[10], // #f4f4f4 ($field-01)
     underlineColor: carbonColor.gray[50], // #8d8d8d ($border-strong)
-    underlineWidth: "1px"
+    underlineWidth: "1px",
+    // F5/F9 (native <select>): the real `.bx--select-input` uses `appearance:
+    // none` + a Gray 100 caret with a 48px right gutter. `appearance: none` lets
+    // the anatomy line-height (18px) actually take effect on the <select> (a
+    // native `appearance: auto` select has its line-height forced to `normal` by
+    // the browser — proven on Chrome). selectChevron redraws the dropped arrow;
+    // selectPaddingRight reserves the 48px gutter (was 32px).
+    selectAppearance: "none",
+    selectChevron:
+      "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23161616' d='M8 11L3 6l1-1 4 4 4-4 1 1z'/%3E%3C/svg%3E\") no-repeat right 1rem center",
+    selectPaddingRight: "3rem" // 48px chevron gutter (F9)
   },
   // Carbon « Tile » (.bx--tile) has NO border and sits on the $layer-01 grey
   // (#f4f4f4) — not white. Drop the card border to 0 and fill with Gray 10. The
   // base keeps its 1px stroke + surface.raised via the builder fallback.
   card: {
     borderWidth: "0",
-    background: carbonColor.gray[10] // #f4f4f4 ($layer-01)
+    background: carbonColor.gray[10], // #f4f4f4 ($layer-01)
+    // F5: the real `.bx--tile` body renders Carbon $body-compact-01 metrics:
+    // 14px font-size, 14px line-height and 0.16px tracking. Pin them on the card
+    // typography so `.st-card` matches the measured reference (was 16px / normal
+    // / normal). Source: carbondesignsystem.com « Tile » + $body-compact-01.
+    fontSize: "0.875rem", // 14px
+    lineHeight: "0.875rem", // 14px (measured on the real tile)
+    letterSpacing: "0.16px"
   }
 } as const;
 

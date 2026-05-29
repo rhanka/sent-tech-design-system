@@ -47,6 +47,18 @@ interface FieldInput {
   //    input » technique, which genuinely uses a 1px bottom border).
   // Kept a string (not a boolean) so the `foundation` object stays a TokenTree.
   underlineMode?: string;
+  // v1.4.0 (additive, F5/F9 — native <select>): a native <select> with
+  // `appearance: auto` has its line-height forced to `normal` by the browser, so
+  // the anatomy line-height never lands; `appearance: none` lets it take effect
+  // (the real DSFR/Carbon selects use `appearance: none`). Optional on the INPUT
+  // (fallback = "auto" → base keeps its native arrow + render unchanged).
+  selectAppearance?: string;
+  // Custom chevron background drawn when selectAppearance === "none" (the native
+  // arrow is suppressed). Fallback "none" (base keeps the native arrow).
+  selectChevron?: string;
+  // Right padding reserving the chevron gutter (F9). Fallback "2rem" (the prior
+  // arrow gap → base unchanged); DSFR 40px, Carbon 48px.
+  selectPaddingRight?: string;
 }
 
 // Card surface primitive a theme may or may not provide. Optional on the INPUT
@@ -57,6 +69,16 @@ interface FieldInput {
 interface CardInput {
   borderWidth?: string;
   background?: string;
+  // F5 (additive): per-theme card body typography. The base card renders its
+  // content with an inherited font-size, `line-height: normal` and
+  // `letter-spacing: normal` (no explicit type) — so these default to values
+  // that REPRODUCE that exact render (inherit / normal / normal). DSFR sets
+  // lineHeight to 24px-equivalent (1.5) and Carbon pins its real tile body
+  // metrics (14px / 14px / 0.16px) so `.st-card` matches the measured reference
+  // instead of `normal`. Base Sent Tech stays untouched.
+  fontSize?: string;
+  lineHeight?: string;
+  letterSpacing?: string;
 }
 
 interface FoundationInput {
@@ -76,6 +98,16 @@ interface FoundationInput {
   focus?: FocusInput;
   field?: FieldInput;
   card?: CardInput;
+  // F9 (additive): a BUTTON-specific density override. The button shares the
+  // control `density` scale with the fields (Input/Select/Textarea/Tabs all read
+  // it), so a button-only geometry — e.g. Carbon's tall 48px primary button with
+  // its asymmetric label-left padding (block 11px, left 16px, large right gutter)
+  // — cannot live on the shared density without regressing the 100%-fidelity
+  // fields. `buttonDensity` overrides ONLY the button anatomy's density per size.
+  // Optional: when omitted (base/DSFR), the button keeps the shared density →
+  // unchanged. `paddingInlineEnd` (optional) gives the trailing side a different
+  // value from `paddingInline` for an asymmetric button (Carbon).
+  buttonDensity?: Partial<Record<"sm" | "md" | "lg", Partial<DensityAnatomy> & { paddingInlineEnd?: string }>>;
 }
 
 // Defaults used when a theme omits an anatomy primitive. These mirror the base
@@ -105,7 +137,9 @@ const FALLBACK = {
   // Field style fallback = boxed outline (base Sent Tech). underlineColor /
   // underlineWidth are inert for outline; they only drive filled-underline.
   // radiusTop "" = inherit the theme's shape radius (resolved in fieldOf).
-  field: { style: "outline", fillBg: "", underlineColor: "", underlineWidth: "1px", radiusTop: "" }
+  // v1.4.0: selectAppearance "auto" (native arrow, base unchanged), no chevron,
+  // and the prior 2rem right arrow gap.
+  field: { style: "outline", fillBg: "", underlineColor: "", underlineWidth: "1px", radiusTop: "", selectAppearance: "auto", selectChevron: "none", selectPaddingRight: "2rem" }
 } as const;
 
 function densityOf(f: FoundationInput, size: "sm" | "md" | "lg"): DensityAnatomy {
@@ -118,6 +152,30 @@ function densityOf(f: FoundationInput, size: "sm" | "md" | "lg"): DensityAnatomy
     gap: themed.gap ?? base.gap,
     minWidth: themed.minWidth ?? base.minWidth,
     fontSize: themed.fontSize ?? base.fontSize
+  };
+}
+
+/**
+ * Button density (F9): the shared control density for `size`, overlaid with any
+ * BUTTON-specific override (`buttonDensity`). Adds an optional `paddingInlineEnd`
+ * leaf so a button can be asymmetric (Carbon's large trailing gutter) without
+ * touching the shared density the 100%-fidelity fields read. When the theme omits
+ * `buttonDensity` (base/DSFR), this is identical to `densityOf` → no change, and
+ * `paddingInlineEnd` mirrors `paddingInline` (symmetric).
+ */
+function buttonDensityOf(f: FoundationInput, size: "sm" | "md" | "lg"): DensityAnatomy {
+  const base = densityOf(f, size);
+  const override = f.buttonDensity?.[size] ?? {};
+  const paddingInline = override.paddingInline ?? base.paddingInline;
+  return {
+    controlHeight: override.controlHeight ?? base.controlHeight,
+    paddingBlock: override.paddingBlock ?? base.paddingBlock,
+    paddingInline,
+    gap: override.gap ?? base.gap,
+    minWidth: override.minWidth ?? base.minWidth,
+    fontSize: override.fontSize ?? base.fontSize,
+    // Trailing inline padding: an explicit asymmetric value (Carbon) or = paddingInline.
+    paddingInlineEnd: override.paddingInlineEnd ?? paddingInline
   };
 }
 
@@ -209,6 +267,15 @@ function fieldOf(
   const themed = f.field ?? {};
   const style = (themed.style ?? FALLBACK.field.style) as FieldAnatomy["style"];
   const thin = bw.thin ?? "1px";
+  // v1.4.0 (F5/F9) — native <select> rendering. These are independent of the
+  // outline/filled-underline branch, so resolve them once and spread into each
+  // returned FieldAnatomy. selectAppearance "auto" keeps the base native arrow
+  // (and its UA-forced `line-height: normal`); "none" lets the anatomy
+  // line-height take effect, the chevron then drawn by selectChevron.
+  const selectAppearance = themed.selectAppearance ?? FALLBACK.field.selectAppearance;
+  const selectChevron = themed.selectChevron ?? FALLBACK.field.selectChevron;
+  const selectPaddingRight = themed.selectPaddingRight ?? FALLBACK.field.selectPaddingRight;
+  const selectLeaves = { selectAppearance, selectChevron, selectPaddingRight };
   // Top corners inherit the theme's shape radius unless the theme rounds them
   // explicitly (DSFR field = 4px top). Bottom corners always keep shapeRadius.
   const radiusTop = themed.radiusTop || shapeRadius;
@@ -240,7 +307,8 @@ function fieldOf(
         borderLeft: "none",
         radiusTop,
         underline,
-        focusShadow: composeFocus(underline)
+        focusShadow: composeFocus(underline),
+        ...selectLeaves
       };
     }
     return {
@@ -252,7 +320,8 @@ function fieldOf(
       borderLeft: "none",
       radiusTop,
       underline: "none",
-      focusShadow: composeFocus("none")
+      focusShadow: composeFocus("none"),
+      ...selectLeaves
     };
   }
 
@@ -268,7 +337,8 @@ function fieldOf(
     borderLeft: border,
     radiusTop,
     underline: "none",
-    focusShadow: composeFocus("none")
+    focusShadow: composeFocus("none"),
+    ...selectLeaves
   };
 }
 
@@ -292,7 +362,10 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
   // foundation (radius/density/typography/focus) → the brand reaches anatomy.
   const buttonAnatomy: ComponentAnatomy = {
     shape: { radius: foundation.radius.md, borderWidth: bw.thin, borderStyle },
-    density: { sm: densityOf(foundation, "sm"), md: densityOf(foundation, "md"), lg: densityOf(foundation, "lg") },
+    // F9: button-specific density (shared control density + optional button-only
+    // override) so Carbon's tall, asymmetric primary button doesn't regress the
+    // fields that share the control density. Base/DSFR get the shared density.
+    density: { sm: buttonDensityOf(foundation, "sm"), md: buttonDensityOf(foundation, "md"), lg: buttonDensityOf(foundation, "lg") },
     typography: typographyOf(foundation, "control"),
     focus,
     icon: { size: icon.md, gap: densityOf(foundation, "md").gap },
@@ -342,9 +415,22 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
   // its $layer-01 tone via `card.background`.
   const cardBorderWidth = foundation.card?.borderWidth ?? bw.thin;
   const cardBackground = foundation.card?.background || semantic.surface.raised;
+  // F5 (additive): the card body typography. The base `.st-card` carries NO
+  // explicit font-size / line-height / letter-spacing, so the defaults here
+  // REPRODUCE that exact render (inherit / normal / normal). DSFR/Carbon pin
+  // their real tile body metrics so the card text matches the measured
+  // reference instead of `normal`. Family/weight stay on the field role (no
+  // visible change — the card already inherits the brand sans + 400).
+  const cardTypographyBase = typographyOf(foundation, "field");
+  const cardTypography: TypographyAnatomy = {
+    ...cardTypographyBase,
+    size: foundation.card?.fontSize ?? "inherit",
+    lineHeight: foundation.card?.lineHeight ?? "normal",
+    letterSpacing: foundation.card?.letterSpacing ?? "normal"
+  };
   const cardAnatomy: ComponentAnatomy = {
     shape: { radius: foundation.radius.lg, borderWidth: cardBorderWidth, borderStyle },
-    typography: typographyOf(foundation, "field"),
+    typography: cardTypography,
     focus,
     states: {
       hover: { transform: "translateY(-1px)" }

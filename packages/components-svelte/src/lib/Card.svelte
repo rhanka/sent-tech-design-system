@@ -27,6 +27,13 @@
     border-radius: var(--st-component-card-anatomy-shape-radius, 0.5rem);
     box-shadow: var(--st-component-card-shadow, 0 1px 2px rgb(15 23 42 / 0.08));
     color: var(--st-semantic-text-primary);
+    /* Card body typography (anatomy, F5). The base card carried no explicit
+       type — so the fallbacks reproduce that exact render (inherit / normal /
+       normal). DSFR pins line-height 24px (1.5); Carbon pins its real tile body
+       metrics (14px / 14px / 0.16px). Base Sent Tech unchanged. */
+    font-size: var(--st-component-card-anatomy-typography-size, inherit);
+    line-height: var(--st-component-card-anatomy-typography-lineHeight, normal);
+    letter-spacing: var(--st-component-card-anatomy-typography-letterSpacing, normal);
     padding: var(--st-spacing-4, 1rem);
   }
 

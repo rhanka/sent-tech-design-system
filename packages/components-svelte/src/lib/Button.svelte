@@ -57,10 +57,17 @@
       box-shadow var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
   }
 
+  /* Padding is 4-value (top right bottom left): the trailing side reads
+     `paddingInlineEnd` so a theme can make the button asymmetric (Carbon's
+     label-left primary button has a large right gutter) without a per-component
+     escape. `paddingInlineEnd` falls back to `paddingInline` → symmetric for the
+     base / DSFR (unchanged). */
   .st-button--sm {
     min-height: var(--st-component-button-anatomy-density-sm-controlHeight, 2rem);
     min-width: var(--st-component-button-anatomy-density-sm-minWidth, 2rem);
     padding: var(--st-component-button-anatomy-density-sm-paddingBlock, 0)
+      var(--st-component-button-anatomy-density-sm-paddingInlineEnd, var(--st-component-button-anatomy-density-sm-paddingInline, 0.75rem))
+      var(--st-component-button-anatomy-density-sm-paddingBlock, 0)
       var(--st-component-button-anatomy-density-sm-paddingInline, 0.75rem);
     font-size: var(--st-component-button-anatomy-density-sm-fontSize, 0.875rem);
   }
@@ -69,6 +76,8 @@
     min-height: var(--st-component-button-anatomy-density-md-controlHeight, 2.5rem);
     min-width: var(--st-component-button-anatomy-density-md-minWidth, 2.5rem);
     padding: var(--st-component-button-anatomy-density-md-paddingBlock, 0)
+      var(--st-component-button-anatomy-density-md-paddingInlineEnd, var(--st-component-button-anatomy-density-md-paddingInline, 1rem))
+      var(--st-component-button-anatomy-density-md-paddingBlock, 0)
       var(--st-component-button-anatomy-density-md-paddingInline, 1rem);
     font-size: var(--st-component-button-anatomy-density-md-fontSize, var(--st-component-button-anatomy-typography-size, 0.9375rem));
   }
@@ -77,6 +86,8 @@
     min-height: var(--st-component-button-anatomy-density-lg-controlHeight, 3rem);
     min-width: var(--st-component-button-anatomy-density-lg-minWidth, 3rem);
     padding: var(--st-component-button-anatomy-density-lg-paddingBlock, 0)
+      var(--st-component-button-anatomy-density-lg-paddingInlineEnd, var(--st-component-button-anatomy-density-lg-paddingInline, 1.25rem))
+      var(--st-component-button-anatomy-density-lg-paddingBlock, 0)
       var(--st-component-button-anatomy-density-lg-paddingInline, 1.25rem);
     font-size: var(--st-component-button-anatomy-density-lg-fontSize, 1rem);
   }
