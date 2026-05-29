@@ -1,0 +1,7 @@
+{
+  "name": "sent-tech-design",
+  "version": "0.1.0",
+  "description": "Sent Tech design-system lint: run @sentropic/design-system-skills against a target (url/file/html) and return findings as JSON.",
+  "skills": "./skills/",
+  "commands": {}
+}
