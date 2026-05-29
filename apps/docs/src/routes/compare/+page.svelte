@@ -67,6 +67,49 @@
     carbon: "https://cdn.jsdelivr.net/npm/carbon-components/css/carbon-components.min.css"
   };
 
+  // F2 — police de marque chargée RÉELLEMENT des deux côtés du banc.
+  // DSFR : Marianne via les @font-face de la feuille DSFR (CDN) + la CSS
+  // utilitaire des polices. Carbon : IBM Plex Sans via Google Fonts (en plus
+  // des @font-face de Carbon). On force aussi la chaîne `font-family` de marque
+  // côté <body> de l'iframe, sinon le `font-family:system-ui` inline masquait
+  // Marianne / IBM Plex Sans et faussait la comparaison (fallback asymétrique).
+  const FONT_LINKS: Record<string, string> = {
+    dsfr: `<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr/dist/utility/utility.min.css">`,
+    carbon: `<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&display=swap">`
+  };
+
+  // Chaîne `font-family` de marque appliquée au <body> de l'iframe de référence,
+  // pour que la référence rende la MÊME famille que notre côté (plus de fallback
+  // system-ui asymétrique).
+  const BRAND_FONT: Record<string, string> = {
+    dsfr: "Marianne, arial, system-ui, sans-serif",
+    carbon: "'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif"
+  };
+
+  // @font-face Marianne (URLs CDN absolues) pour NOTRE côté DSFR. On évite
+  // d'injecter tout dsfr.min.css (qui contient un reset global qui fausserait
+  // les mesures de boîte) : on charge SEULEMENT la police. IBM Plex Sans est
+  // chargée via le <link> Google Fonts ci-dessous.
+  const MARIANNE_CDN = "https://cdn.jsdelivr.net/npm/@gouvfr/dsfr/dist/fonts";
+  const MARIANNE_FACES: [number, string, string?][] = [
+    [400, "Marianne-Regular"],
+    [400, "Marianne-Regular_Italic", "italic"],
+    [500, "Marianne-Medium"],
+    [700, "Marianne-Bold"]
+  ];
+  const ourFontFaces = MARIANNE_FACES.map(
+    ([weight, file, style]) =>
+      `@font-face{font-display:swap;font-family:Marianne;font-style:${style ?? "normal"};font-weight:${weight};src:url("${MARIANNE_CDN}/${file}.woff2") format("woff2"),url("${MARIANNE_CDN}/${file}.woff") format("woff")}`
+  ).join("");
+
+  // F1 — banc apples-to-apples : largeur de rendu commune aux DEUX côtés.
+  // Les champs pleine largeur (Input/Textarea/Select) remplissent exactement
+  // BENCH_WIDTH des deux côtés ; les composants à largeur intrinsèque
+  // (Button/Link/Tabs) disposent du même contexte de largeur ; la carte est
+  // rendue dans le même contexte de 18rem que la référence officielle.
+  const BENCH_WIDTH = 320; // px — largeur de contenu identique des deux côtés
+  const IFRAME_PAD = 14; // px — padding du <body> de l'iframe (cf. refDoc)
+
   // Markup officiel par (thème, composant), dans la langue du DS.
   const REF: Record<string, Record<string, string>> = {
     dsfr: {
@@ -91,14 +134,37 @@
 
   const COMPONENTS = ["Button", "Input", "Textarea", "Select", "Link", "Card", "Tabs"] as const;
 
+  // Composants à largeur 100% : remplissent exactement BENCH_WIDTH des deux
+  // côtés → box width/height directement comparables.
+  const FULL_WIDTH = new Set(["Input", "Textarea", "Select"]);
+
   function refDoc(themeId: string, comp: string): string {
     const href = CDN[themeId];
     const body = REF[themeId]?.[comp] ?? "";
-    return `<!doctype html><html lang="${themeId === "dsfr" ? "fr" : "en"}"><head><meta charset="utf-8"><link rel="stylesheet" href="${href}"><style>body{margin:0;padding:14px;font-family:system-ui,sans-serif;background:#fff}</style></head><body>${body}</body></html>`;
+    const fontLinks = FONT_LINKS[themeId] ?? "";
+    const brandFont = BRAND_FONT[themeId] ?? "system-ui, sans-serif";
+    // body width = BENCH_WIDTH + 2*IFRAME_PAD (box-sizing:border-box) pour que
+    // la zone de contenu de référence fasse exactement BENCH_WIDTH px →
+    // apples-to-apples avec notre côté.
+    return `<!doctype html><html lang="${themeId === "dsfr" ? "fr" : "en"}"><head><meta charset="utf-8"><link rel="stylesheet" href="${href}">${fontLinks}<style>html,body{box-sizing:border-box}*,*::before,*::after{box-sizing:inherit}body{margin:0;padding:${IFRAME_PAD}px;font-family:${brandFont};background:#fff}</style></head><body>${body}</body></html>`;
   }
 </script>
 
 <svelte:head>
+  <!-- F2 — polices de marque chargées RÉELLEMENT de NOTRE côté aussi.
+       Marianne (DSFR) : @font-face servis par le CDN (URLs absolues), sans
+       injecter le reset global de dsfr.min.css. IBM Plex Sans (Carbon) :
+       Google Fonts. Sans cela, notre côté retombait sur un fallback alors
+       qu'il déclare Marianne / IBM Plex Sans (comparaison asymétrique). -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin="anonymous" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&display=swap"
+  />
+  <!-- eslint-disable-next-line svelte/no-at-html-tags -->
+  {@html `<style>${ourFontFaces}</style>`}
   <!-- eslint-disable-next-line svelte/no-at-html-tags -->
   {@html `<style>${scopedCss}</style>`}
 </svelte:head>
@@ -127,7 +193,11 @@
 
           <div class="cmp-cell">
             <span class="cmp-cell__tag">Sentropic → {theme.id}</span>
-            <div class="cmp-cell__body">
+            <div
+              class="cmp-cell__body"
+              class:cmp-cell__body--field={FULL_WIDTH.has(comp)}
+              class:cmp-cell__body--card={comp === "Card"}
+            >
               {#if comp === "Button"}
                 <div class="cmp-stack">
                   <Button>{lab.primary}</Button>
@@ -161,7 +231,12 @@
 
           <div class="cmp-cell cmp-cell--ref">
             <span class="cmp-cell__tag">{theme.label} officiel</span>
-            <iframe class="cmp-frame" title="{theme.label} officiel — {comp}" srcdoc={refDoc(theme.id, comp)}></iframe>
+            <iframe
+              class="cmp-frame"
+              style="width:{BENCH_WIDTH + 2 * IFRAME_PAD}px"
+              title="{theme.label} officiel — {comp}"
+              srcdoc={refDoc(theme.id, comp)}
+            ></iframe>
           </div>
         </div>
       {/each}
@@ -186,6 +261,14 @@
     gap: 1.25rem;
     background: var(--st-semantic-surface-default, #fff);
     color: var(--st-semantic-text-primary, #0f172a);
+  }
+  /* F2 — la chaîne `font-family` de marque du thème s'applique à TOUT le scope
+     (comme dans le DS réel) : Link/Card, qui n'imposent pas leur propre famille,
+     héritent ainsi de Marianne / IBM Plex Sans — identique au <body> de marque
+     de l'iframe de référence, plus de fallback system-ui asymétrique. */
+  .cmp-scope--dsfr,
+  .cmp-scope--carbon {
+    font-family: var(--st-font-sans, system-ui, sans-serif);
   }
   .cmp-theme__name {
     margin: 0;
@@ -226,6 +309,28 @@
     justify-content: center;
     align-items: flex-start;
   }
+  /* F1 — banc apples-to-apples : les champs pleine largeur remplissent
+     exactement BENCH_WIDTH (320px), identique à la zone de contenu de
+     l'iframe de référence (largeur iframe − 2×14px de padding). */
+  .cmp-cell__body--field {
+    align-items: stretch;
+  }
+  .cmp-cell__body--field > :global(*) {
+    width: 320px;
+    max-width: 320px;
+  }
+  /* Card : la référence officielle est rendue avec `max-width:18rem` (288px) et
+     remplit la largeur de son body. On rend NOTRE carte dans le MÊME contexte
+     de largeur (18rem) pour une comparaison apples-to-apples ; tout résidu de
+     largeur restant est alors une vraie différence d'anatomie, pas un artefact
+     de mise en page. */
+  .cmp-cell__body--card {
+    align-items: stretch;
+  }
+  .cmp-cell__body--card > :global(*) {
+    width: 18rem;
+    max-width: 18rem;
+  }
   .cmp-stack { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
   .cmp-cell__tag {
     font-size: 0.6875rem;
@@ -234,9 +339,11 @@
     color: #64748b;
   }
   .cmp-frame {
-    flex: 1;
-    width: 100%;
+    /* Largeur fixée en ligne (BENCH_WIDTH + 2×padding) pour rendre la zone de
+       contenu de référence à BENCH_WIDTH, identique à notre côté. */
+    flex: 0 0 auto;
     min-height: 8rem;
+    max-width: 100%;
     border: 0;
     background: #fff;
   }
