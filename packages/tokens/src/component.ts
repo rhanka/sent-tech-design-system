@@ -92,9 +92,30 @@ interface CardInput {
 //  - Carbon « Tabs » actif: 14px / 16px line-height, 0 inline padding, a blue
 //    BOTTOM indicator (the real selected-tab design; the mobile-base grey the
 //    bench measures at <672px is a breakpoint artifact, justified in the tracker).
+// Button SECONDARY-variant primitive a theme may or may not provide (G1, additive).
+// The base Sent Tech secondary button is a FILLED neutral surface with a subtle
+// 1px stroke (background = action.secondary, border = border.subtle, hover =
+// action.secondaryHover). Every leaf below DEFAULTS to that exact render so the
+// base look is byte-identical; a theme overrides only what its real secondary
+// button needs. DSFR « Bouton secondaire » is an OUTLINED button: transparent
+// fill, a 1px Bleu France border and Bleu France text (the light-blue FILL we
+// rendered before was wrong) — `background: "transparent"`, `border: Bleu France`,
+// a light Bleu France fill on hover. Carbon « Secondary button » stays a solid
+// Gray 80 fill (the base default reproduces it — no override needed).
+interface ButtonSecondaryInput {
+  background?: string;      // secondary fill; default = semantic.action.secondary
+  border?: string;          // secondary border colour; default = semantic.border.subtle
+  hoverBackground?: string; // secondary :hover fill; default = action.secondaryHover ?? secondary
+}
+
 interface TabsInput {
   activeText?: string;        // active tab text colour; default = semantic.text.primary
   activeBackground?: string;  // active tab background; default "transparent"
+  // G2 (additive): the RESTING (inactive) tab background. Default "transparent"
+  // (current base/Carbon render). DSFR « Onglet » non sélectionné carries a
+  // light grey-blue fill (--background-action-low-blue-france #e3e3fd) so the
+  // active white tab reads as raised above the inactive ones.
+  inactiveBackground?: string;
   activeWeight?: string;      // active tab font-weight; default = control weight
   paddingBlock?: string;      // tab vertical padding; default "0.75rem" (12px, current)
   paddingInline?: string;     // tab horizontal padding; default "0.25rem" (4px, current)
@@ -127,6 +148,11 @@ interface FoundationInput {
   field?: FieldInput;
   card?: CardInput;
   tabs?: TabsInput;
+  // G1 (additive): the SECONDARY-variant button surface. Optional — when omitted
+  // (base/Carbon) the secondary button keeps the base render (filled neutral +
+  // subtle stroke). DSFR sets a transparent fill + Bleu France border + text to
+  // render its real OUTLINED « Bouton secondaire ».
+  buttonSecondary?: ButtonSecondaryInput;
   // F9 (additive): a BUTTON-specific density override. The button shares the
   // control `density` scale with the fields (Input/Select/Textarea/Tabs all read
   // it), so a button-only geometry — e.g. Carbon's tall 48px primary button with
@@ -227,6 +253,7 @@ function tabsOf(
 ): {
   activeText: string;
   activeBackground: string;
+  inactiveBackground: string;
   activeWeight: string;
   paddingBlock: string;
   paddingInline: string;
@@ -251,6 +278,9 @@ function tabsOf(
   return {
     activeText: t.activeText || activeTextDefault,
     activeBackground: t.activeBackground || "transparent",
+    // G2: resting-tab fill. Default "transparent" (base/Carbon unchanged); DSFR
+    // sets a light grey-blue fill so the white active tab reads as raised.
+    inactiveBackground: t.inactiveBackground || "transparent",
     activeWeight: t.activeWeight ?? controlTypography.weight,
     paddingBlock: t.paddingBlock ?? "0.75rem",
     paddingInline: t.paddingInline ?? "0.25rem",
@@ -260,6 +290,28 @@ function tabsOf(
     activeBorderTopWidth: isShadow ? "0" : onTop ? indicatorWidth : "0",
     activeBorderBottomWidth: isShadow ? "0" : onTop ? "0" : indicatorWidth,
     activeShadow: isShadow ? `inset 0 ${shadowOffset} 0 0 ${indicatorColor}` : "none"
+  };
+}
+
+/**
+ * Button SECONDARY-variant resolution (G1). Resolves the per-theme secondary
+ * button surface into a flat, CSS-ready set the Button component consumes
+ * verbatim (background / border colour / hover background). Every leaf DEFAULTS
+ * to the prior base render (filled `action.secondary`, `border.subtle` stroke,
+ * `action.secondaryHover` hover) so the base Sent Tech secondary button is
+ * byte-identical; DSFR overrides them to render its OUTLINED secondary button
+ * (transparent fill + Bleu France border + light fill on hover).
+ */
+function buttonSecondaryOf(semantic: SemanticInput, f: FoundationInput): {
+  background: string;
+  border: string;
+  hoverBackground: string;
+} {
+  const b = f.buttonSecondary ?? {};
+  return {
+    background: b.background || semantic.action.secondary,
+    border: b.border || semantic.border.subtle,
+    hoverBackground: b.hoverBackground || semantic.action.secondaryHover || semantic.action.secondary
   };
 }
 
@@ -538,12 +590,21 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
   // (base/Carbon) or an inset box-shadow accent (DSFR).
   const tabsResolved = tabsOf(foundation, tabsControlTypography, bw.thin, semantic.action.primary, semantic.text.primary);
 
+  // G1 — secondary button surface (per theme; base render unchanged). DSFR
+  // overrides it to a transparent fill + Bleu France border + text; base/Carbon
+  // keep the filled neutral default.
+  const buttonSecondary = buttonSecondaryOf(semantic, foundation);
+
   return {
     button: {
       radius: foundation.radius.md,
       primaryBackground: semantic.action.primary,
       primaryText: semantic.action.primaryText,
-      secondaryBackground: semantic.action.secondary,
+      // G1: the secondary surface is resolved per theme (transparent + bordered
+      // for DSFR's outlined secondary; filled neutral for base/Carbon).
+      secondaryBackground: buttonSecondary.background,
+      secondaryBorder: buttonSecondary.border,
+      secondaryHoverBackground: buttonSecondary.hoverBackground,
       secondaryText: semantic.action.secondaryText,
       anatomy: buttonAnatomy
     },
@@ -697,6 +758,8 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       // F7/F8: active-tab roles/metrics resolved per theme (base render = current).
       activeText: tabsResolved.activeText,
       activeBackground: tabsResolved.activeBackground,
+      // G2: resting-tab fill (default transparent; DSFR = light grey-blue).
+      inactiveBackground: tabsResolved.inactiveBackground,
       activeWeight: tabsResolved.activeWeight,
       inactiveText: semantic.text.secondary,
       border: semantic.border.subtle,
