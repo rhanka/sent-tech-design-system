@@ -40,14 +40,14 @@ Bloqué : besoin des assets/tokens (Airbus fourni par toi, Scalian/CGI à récup
 Format de sortie `.pptx` + `.doc` à valider ; typologie slides ESN (decks Scalian/CGI
 en réf, hors colorimétrie). Cadrage à faire avec toi avant tout dev.
 
-### D7 — 🟠 Visuel custom Checkbox/Radio (parité forme DSFR/Carbon)
-Checkbox/Radio rendent en **natif** (la boîte `.st-choice__box` existe mais masquée).
-`accent-color` est désormais thématisé (couleur checked), mais la **forme** (boîte carrée
-DSFR/Carbon, coche custom, focus par stratégie, état `indeterminate`) exigerait un **visuel
-custom** : input masqué + `.st-choice__box` peint, avec a11y à préserver (clavier, lecteur
-d'écran, mode contraste élevé, indeterminate). **Engageant + risque a11y** → non fait en
-autonomie. **Action attendue** : décider si la parité de forme justifie un contrôle custom
-(sinon natif + `accent-color` reste un compromis acceptable). *(Réversible mais feature à part.)*
+### D7 — ✅ FAIT — Checkbox/Radio natifs pleinement thémés (pas de refonte)
+Recadrage utilisateur : pas de widget custom, juste rendre le **natif** assez fonctionnel.
+Fait : `accent-color` (couleur de sélection) + **anneau de focus par stratégie d'anatomie**
+(outline DSFR / inset Carbon / ring base, mêmes vars qu'Input/Switch) + états `:disabled`
+(curseur + atténuation + label estompé) et `[aria-invalid]` (teinte erreur). Incohérence
+corrigée : Radio émettait `data-invalid` → désormais `aria-invalid` (comme Checkbox).
+`.st-choice__box` mort retiré. 100% natif (a11y préservée), additif (fallbacks = rendu base).
+`verify` vert. *(L'état `indeterminate` natif reste géré par le consommateur via la prop DOM.)*
 
 ### D6 — 🟢 Phase 2 rollout anatomie (~55 composants restants)
 Schéma `ComponentAnatomy` figé v1.2.0 → rollout possible par clusters. Quand lancer,
