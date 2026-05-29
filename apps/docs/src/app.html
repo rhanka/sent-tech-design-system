@@ -6,6 +6,63 @@
     <title>Sent Tech Design System</title>
     <meta name="description" content="Documentation du design system Sent Tech: composants Svelte, tokens et themes tenant." />
     <link rel="icon" href="/SENT-logo-squared.svg" type="image/svg+xml" />
+
+    <!--
+      Polices de marque chargées GLOBALEMENT (toutes les pages docs, tous les
+      thèmes). Le thème Carbon déclare `--st-font-sans: 'IBM Plex Sans', …` et le
+      thème DSFR `Marianne, …` ; sans ces déclarations de polices, chaque page
+      retombait sur une police système (les polices n'étaient chargées que sur
+      /compare). On charge UNIQUEMENT les polices, jamais le reset global de
+      dsfr.min.css/carbon-components.css.
+      - IBM Plex Sans (Carbon) : Google Fonts.
+      - Marianne (DSFR) : @font-face servis par le CDN DSFR (URLs absolues).
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&display=swap"
+    />
+    <style>
+      /* Marianne (DSFR) — @font-face servis par le CDN DSFR, sans le reset DSFR. */
+      @font-face {
+        font-display: swap;
+        font-family: Marianne;
+        font-style: normal;
+        font-weight: 400;
+        src:
+          url("https://cdn.jsdelivr.net/npm/@gouvfr/dsfr/dist/fonts/Marianne-Regular.woff2") format("woff2"),
+          url("https://cdn.jsdelivr.net/npm/@gouvfr/dsfr/dist/fonts/Marianne-Regular.woff") format("woff");
+      }
+      @font-face {
+        font-display: swap;
+        font-family: Marianne;
+        font-style: italic;
+        font-weight: 400;
+        src:
+          url("https://cdn.jsdelivr.net/npm/@gouvfr/dsfr/dist/fonts/Marianne-Regular_Italic.woff2") format("woff2"),
+          url("https://cdn.jsdelivr.net/npm/@gouvfr/dsfr/dist/fonts/Marianne-Regular_Italic.woff") format("woff");
+      }
+      @font-face {
+        font-display: swap;
+        font-family: Marianne;
+        font-style: normal;
+        font-weight: 500;
+        src:
+          url("https://cdn.jsdelivr.net/npm/@gouvfr/dsfr/dist/fonts/Marianne-Medium.woff2") format("woff2"),
+          url("https://cdn.jsdelivr.net/npm/@gouvfr/dsfr/dist/fonts/Marianne-Medium.woff") format("woff");
+      }
+      @font-face {
+        font-display: swap;
+        font-family: Marianne;
+        font-style: normal;
+        font-weight: 700;
+        src:
+          url("https://cdn.jsdelivr.net/npm/@gouvfr/dsfr/dist/fonts/Marianne-Bold.woff2") format("woff2"),
+          url("https://cdn.jsdelivr.net/npm/@gouvfr/dsfr/dist/fonts/Marianne-Bold.woff") format("woff");
+      }
+    </style>
     %sveltekit.head%
   </head>
   <body data-sveltekit-preload-data="hover">
