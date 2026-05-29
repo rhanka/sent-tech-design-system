@@ -2,6 +2,7 @@
   import { page } from "$app/state";
   import "../app.css";
   import { ChevronDown, Github, Globe, Menu, Palette, X } from "@lucide/svelte";
+  import { Header } from "@sentropic/design-system-svelte";
   import {
     sentTechTheme,
     compileTheme,
@@ -126,129 +127,142 @@
   {@html baseThemeStyle}
 </svelte:head>
 
-<div class="docs-shell" data-st-theme={activeThemeId}>
-    <header class="docs-header">
-      <a class="docs-brand" href="/" aria-label="Sentropic Design System">
-        <img class="docs-brand-mark" src="/SENT-logo-squared.svg" alt="" aria-hidden="true" />
-        <span class="docs-brand-copy">
-          <span class="docs-brand-name">Sentropic</span>
-          <span class="docs-brand-product">Design System</span>
-        </span>
+{#snippet docsBrand()}
+  <a class="docs-brand" href="/" aria-label="Sentropic Design System">
+    <img class="docs-brand-mark" src="/SENT-logo-squared.svg" alt="" aria-hidden="true" />
+    <span class="docs-brand-copy">
+      <span class="docs-brand-name">Sentropic</span>
+      <span class="docs-brand-product">Design System</span>
+    </span>
+  </a>
+{/snippet}
+
+{#snippet docsTopNav()}
+  <nav class="docs-top-nav" aria-label="Documentation principale">
+    {#each DOCS_TOP_NAV as item (item.href)}
+      <a href={item.href} aria-current={isActive(item.href) ? "page" : undefined}>
+        {item.label}
       </a>
+    {/each}
+  </nav>
+{/snippet}
 
-      <nav class="docs-top-nav" aria-label="Documentation principale">
-        {#each DOCS_TOP_NAV as item (item.href)}
-          <a href={item.href} aria-current={isActive(item.href) ? "page" : undefined}>
-            {item.label}
-          </a>
-        {/each}
-      </nav>
+{#snippet docsUtilityNav()}
+  <nav class="docs-utility-nav" aria-label="Liens utiles">
+    <span class="docs-header-control docs-version">{DOCS_VERSION}</span>
+    {#each DOCS_UTILITY_NAV as item (item.href)}
+      <a
+        class="docs-header-control docs-header-menuButton docs-header-iconLink"
+        href={item.href}
+        rel={item.external ? "noreferrer" : undefined}
+        target={item.external ? "_blank" : undefined}
+        aria-label={item.label}
+      >
+        {#if item.label === "GitHub"}
+          <Github size={16} strokeWidth={2.1} aria-hidden="true" />
+        {:else}
+          <span>{item.label}</span>
+        {/if}
+      </a>
+    {/each}
 
-      <nav class="docs-utility-nav" aria-label="Liens utiles">
-        <span class="docs-header-control docs-version">{DOCS_VERSION}</span>
-        {#each DOCS_UTILITY_NAV as item (item.href)}
-          <a
-            class="docs-header-control docs-header-menuButton docs-header-iconLink"
-            href={item.href}
-            rel={item.external ? "noreferrer" : undefined}
-            target={item.external ? "_blank" : undefined}
-            aria-label={item.label}
-          >
-            {#if item.label === "GitHub"}
-              <Github size={16} strokeWidth={2.1} aria-hidden="true" />
-            {:else}
-              <span>{item.label}</span>
-            {/if}
-          </a>
-        {/each}
-        
-        <div class="docs-theme-wrapper">
-          <button
-            type="button"
-            class="docs-header-control docs-header-menuButton docs-locale-trigger docs-theme-trigger"
-            onclick={() => (isThemeOpen = !isThemeOpen)}
-            aria-expanded={isThemeOpen}
-            aria-haspopup="true"
-            aria-label={locale.value === "fr" ? "Changer le thème" : "Change theme"}
-          >
-            <Palette size={14} aria-hidden="true" />
-            <span>{activeTheme.label}</span>
-            <ChevronDown size={12} class="docs-locale-trigger-chevron {isThemeOpen ? 'rotated' : ''}" aria-hidden="true" />
-          </button>
-
-          {#if isThemeOpen}
-            <div class="docs-locale-menu" role="menu">
-              {#each THEMES as theme (theme.id)}
-                <button
-                  type="button"
-                  class="docs-locale-item"
-                  class:active={activeThemeId === theme.id}
-                  role="menuitem"
-                  onclick={() => { activeThemeId = theme.id; isThemeOpen = false; }}
-                >
-                  <span class="locale-check">{#if activeThemeId === theme.id}✓{/if}</span>
-                  <span>{theme.label}</span>
-                </button>
-              {/each}
-            </div>
-          {/if}
-        </div>
-
-        <div class="docs-locale-wrapper">
-          <button
-            type="button"
-            class="docs-header-control docs-header-menuButton docs-locale-trigger"
-            onclick={() => (isOpen = !isOpen)}
-            aria-expanded={isOpen}
-            aria-haspopup="true"
-            aria-label={locale.value === "fr" ? "Changer la langue" : "Change language"}
-          >
-            <Globe size={14} class="docs-locale-trigger-icon" aria-hidden="true" />
-            <span>{locale.value.toUpperCase()}</span>
-            <ChevronDown size={12} class="docs-locale-trigger-chevron {isOpen ? 'rotated' : ''}" aria-hidden="true" />
-          </button>
-
-          {#if isOpen}
-            <div class="docs-locale-menu" role="menu">
-              <button
-                type="button"
-                class="docs-locale-item"
-                class:active={locale.value === "fr"}
-                role="menuitem"
-                onclick={() => { locale.value = "fr"; isOpen = false; }}
-              >
-                <span class="locale-check">{#if locale.value === "fr"}✓{/if}</span>
-                <span>Français</span>
-              </button>
-              <button
-                type="button"
-                class="docs-locale-item"
-                class:active={locale.value === "en"}
-                role="menuitem"
-                onclick={() => { locale.value = "en"; isOpen = false; }}
-              >
-                <span class="locale-check">{#if locale.value === "en"}✓{/if}</span>
-                <span>English</span>
-              </button>
-            </div>
-          {/if}
-        </div>
-      </nav>
-
+    <div class="docs-theme-wrapper">
       <button
         type="button"
-        class="docs-mobile-menu-trigger"
-        onclick={() => (isMobileMenuOpen = !isMobileMenuOpen)}
-        aria-expanded={isMobileMenuOpen}
-        aria-label="Menu principal"
+        class="docs-header-control docs-header-menuButton docs-locale-trigger docs-theme-trigger"
+        onclick={() => (isThemeOpen = !isThemeOpen)}
+        aria-expanded={isThemeOpen}
+        aria-haspopup="true"
+        aria-label={locale.value === "fr" ? "Changer le thème" : "Change theme"}
       >
-        {#if isMobileMenuOpen}
-          <X size={20} />
-        {:else}
-          <Menu size={20} />
-        {/if}
+        <Palette size={14} aria-hidden="true" />
+        <span>{activeTheme.label}</span>
+        <ChevronDown size={12} class="docs-locale-trigger-chevron {isThemeOpen ? 'rotated' : ''}" aria-hidden="true" />
       </button>
-    </header>
+
+      {#if isThemeOpen}
+        <div class="docs-locale-menu" role="menu">
+          {#each THEMES as theme (theme.id)}
+            <button
+              type="button"
+              class="docs-locale-item"
+              class:active={activeThemeId === theme.id}
+              role="menuitem"
+              onclick={() => { activeThemeId = theme.id; isThemeOpen = false; }}
+            >
+              <span class="locale-check">{#if activeThemeId === theme.id}✓{/if}</span>
+              <span>{theme.label}</span>
+            </button>
+          {/each}
+        </div>
+      {/if}
+    </div>
+
+    <div class="docs-locale-wrapper">
+      <button
+        type="button"
+        class="docs-header-control docs-header-menuButton docs-locale-trigger"
+        onclick={() => (isOpen = !isOpen)}
+        aria-expanded={isOpen}
+        aria-haspopup="true"
+        aria-label={locale.value === "fr" ? "Changer la langue" : "Change language"}
+      >
+        <Globe size={14} class="docs-locale-trigger-icon" aria-hidden="true" />
+        <span>{locale.value.toUpperCase()}</span>
+        <ChevronDown size={12} class="docs-locale-trigger-chevron {isOpen ? 'rotated' : ''}" aria-hidden="true" />
+      </button>
+
+      {#if isOpen}
+        <div class="docs-locale-menu" role="menu">
+          <button
+            type="button"
+            class="docs-locale-item"
+            class:active={locale.value === "fr"}
+            role="menuitem"
+            onclick={() => { locale.value = "fr"; isOpen = false; }}
+          >
+            <span class="locale-check">{#if locale.value === "fr"}✓{/if}</span>
+            <span>Français</span>
+          </button>
+          <button
+            type="button"
+            class="docs-locale-item"
+            class:active={locale.value === "en"}
+            role="menuitem"
+            onclick={() => { locale.value = "en"; isOpen = false; }}
+          >
+            <span class="locale-check">{#if locale.value === "en"}✓{/if}</span>
+            <span>English</span>
+          </button>
+        </div>
+      {/if}
+    </div>
+  </nav>
+
+  <button
+    type="button"
+    class="docs-mobile-menu-trigger"
+    onclick={() => (isMobileMenuOpen = !isMobileMenuOpen)}
+    aria-expanded={isMobileMenuOpen}
+    aria-label="Menu principal"
+  >
+    {#if isMobileMenuOpen}
+      <X size={20} />
+    {:else}
+      <Menu size={20} />
+    {/if}
+  </button>
+{/snippet}
+
+<div class="docs-shell" data-st-theme={activeThemeId}>
+    <!-- Barre du haut : composant Header complet et porté (logo + navigation + actions). -->
+    <Header
+      class="docs-header"
+      label="En-tête de la documentation Sentropic"
+      logo={docsBrand}
+      navigation={docsTopNav}
+      actions={docsUtilityNav}
+    />
 
     {#if isMobileMenuOpen}
       <nav class="docs-mobile-nav" aria-label="Menu mobile">

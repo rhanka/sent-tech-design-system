@@ -1,135 +1,71 @@
 <script lang="ts">
-  import { Badge, Button, Header, Popover } from "@sentropic/design-system-svelte";
-  import { ChevronDown } from "@lucide/svelte";
+  import { Badge, Header, type HeaderAccount } from "@sentropic/design-system-svelte";
 
-  type DemoSession = {
-    name: string;
-    email: string;
-    initials: string;
-    avatarUrl: string | null;
-  };
-
-  const sessionWithPhoto: DemoSession = {
+  // Identités de démonstration pour les deux variantes d'état connecté.
+  const accountWithPhoto: HeaderAccount = {
     name: "Alex Martin",
     email: "alex.martin@sentropic.app",
-    initials: "AM",
     avatarUrl: "/SENT-logo-squared.svg"
   };
 
-  const sessionWithInitials: DemoSession = {
-    name: "Camille Noe",
+  const accountWithInitials: HeaderAccount = {
+    name: "Camille Noé",
     email: "camille.noe@sentropic.app",
-    initials: "CN",
     avatarUrl: null
+    // initials dérivées automatiquement de "Camille Noé" -> "CN"
   };
 
-  let isPhotoPopoverOpen = $state(false);
-  let isInitialsPopoverOpen = $state(false);
+  // État ouvert/fermé du menu compte (contrôlé par la page, comme le ferait un parent réel).
+  let photoMenuOpen = $state(false);
+  let initialsMenuOpen = $state(false);
 </script>
 
-{#snippet headerLogo()}
-  <span class="docs-header-brand">
-    <img
-      class="docs-header-brand-mark"
-      src="/SENT-logo-squared.svg"
-      alt=""
-      aria-hidden="true"
-    />
-    <span>Sentropic Console</span>
+{#snippet brand()}
+  <span class="header-brand">
+    <img class="header-brand-mark" src="/SENT-logo-squared.svg" alt="" aria-hidden="true" />
+    <span class="header-brand-copy">
+      <span class="header-brand-name">Sentropic</span>
+      <span class="header-brand-product">Console</span>
+    </span>
   </span>
 {/snippet}
 
-{#snippet headerNavigation()}
-  <a href="/#components">Composants</a>
-  <a href="/#foundations">Fondations</a>
-  <a href="/#contracts">Contrats</a>
+{#snippet primaryNav()}
+  <a href="/components/header" aria-current="page">Tableau de bord</a>
+  <a href="/components/header">Projets</a>
+  <a href="/components/header">Équipe</a>
+  <a href="/components/header">Facturation</a>
 {/snippet}
 
-{#snippet headerActionsAnonymous()}
-  <Button variant="ghost" size="sm">Se connecter</Button>
+{#snippet utilityActions()}
+  <button type="button" class="header-icon-btn" aria-label="Rechercher">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="11" cy="11" r="7" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+    </svg>
+  </button>
+  <button type="button" class="header-icon-btn" aria-label="Notifications">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 0 1-3.46 0" />
+    </svg>
+  </button>
 {/snippet}
 
-{#snippet headerActionsWithPhoto()}
-  <Popover
-    open={isPhotoPopoverOpen}
-    label="Menu utilisateur"
-    placement="bottom"
-  >
-    {#snippet trigger()}
-      <button
-        type="button"
-        class="docs-header-account-trigger"
-        aria-label={`Ouvrir le menu utilisateur ${sessionWithPhoto.name}`}
-        aria-expanded={isPhotoPopoverOpen}
-        onclick={() => (isPhotoPopoverOpen = !isPhotoPopoverOpen)}
-      >
-        <span class="docs-header-avatar docs-header-avatar--square" aria-hidden="true">
-          <img
-            class="docs-header-avatar-image"
-            src={sessionWithPhoto.avatarUrl}
-            alt={`Photo de profil de ${sessionWithPhoto.name}`}
-          />
-        </span>
-        <span class="docs-header-account-meta">
-          <span class="docs-header-account-name">{sessionWithPhoto.name}</span>
-          <span class="docs-header-account-email">{sessionWithPhoto.email}</span>
-        </span>
-        <ChevronDown size={14} aria-hidden="true" />
-      </button>
-    {/snippet}
-
-    <div class="docs-header-popover">
-      <p class="docs-header-popover-title">{sessionWithPhoto.name}</p>
-      <p class="docs-header-popover-email">{sessionWithPhoto.email}</p>
-      <button type="button" class="docs-header-popover-action">
-        Voir le profil
-      </button>
-      <button type="button" class="docs-header-popover-action">
-        Déconnexion
-      </button>
-    </div>
-  </Popover>
+{#snippet photoMenu()}
+  <p class="header-menu-name">{accountWithPhoto.name}</p>
+  <p class="header-menu-email">{accountWithPhoto.email}</p>
+  <hr class="header-menu-sep" />
+  <button type="button" class="header-menu-item">Voir le profil</button>
+  <button type="button" class="header-menu-item">Paramètres du compte</button>
+  <button type="button" class="header-menu-item">Déconnexion</button>
 {/snippet}
 
-{#snippet headerActionsWithInitials()}
-  <Popover
-    open={isInitialsPopoverOpen}
-    label="Menu utilisateur"
-    placement="bottom"
-  >
-    {#snippet trigger()}
-      <button
-        type="button"
-        class="docs-header-account-trigger"
-        aria-label={`Ouvrir le menu utilisateur ${sessionWithInitials.name}`}
-        aria-expanded={isInitialsPopoverOpen}
-        onclick={() => (isInitialsPopoverOpen = !isInitialsPopoverOpen)}
-      >
-        <span
-          class="docs-header-avatar docs-header-avatar--square docs-header-avatar--initials"
-          aria-hidden="true"
-        >
-          {sessionWithInitials.initials}
-        </span>
-        <span class="docs-header-account-meta">
-          <span class="docs-header-account-name">{sessionWithInitials.name}</span>
-          <span class="docs-header-account-email">{sessionWithInitials.email}</span>
-        </span>
-        <ChevronDown size={14} aria-hidden="true" />
-      </button>
-    {/snippet}
-
-    <div class="docs-header-popover">
-      <p class="docs-header-popover-title">{sessionWithInitials.name}</p>
-      <p class="docs-header-popover-email">{sessionWithInitials.email}</p>
-      <button type="button" class="docs-header-popover-action">
-        Voir le profil
-      </button>
-      <button type="button" class="docs-header-popover-action">
-        Déconnexion
-      </button>
-    </div>
-  </Popover>
+{#snippet initialsMenu()}
+  <p class="header-menu-name">{accountWithInitials.name}</p>
+  <p class="header-menu-email">{accountWithInitials.email}</p>
+  <hr class="header-menu-sep" />
+  <button type="button" class="header-menu-item">Voir le profil</button>
+  <button type="button" class="header-menu-item">Paramètres du compte</button>
+  <button type="button" class="header-menu-item">Déconnexion</button>
 {/snippet}
 
 <div class="docs-page">
@@ -140,80 +76,152 @@
       <Badge tone="neutral">Documenté</Badge>
     </h1>
     <p>
-      Le composant <code>Header</code> gère uniquement la structure de l’en-tête
-      (logo, navigation, zone d’actions). La logique d’authentification doit être
-      fournie par le parent via le slot <code>actions</code>.
+      Le composant <code>Header</code> compose l'en-tête applicatif complet : marque
+      (logo + titre), navigation primaire, actions utilitaires et zone compte. La zone
+      compte gère nativement les trois états d'identité — anonyme, connecté avec photo,
+      connecté avec initiales — et garantit qu'une identité connectée affiche
+      <strong>toujours le nom</strong> (jamais un carré sans libellé).
     </p>
   </section>
 
   <section class="docs-section">
-    <h2>États</h2>
+    <h2>Header complet</h2>
+    <p>
+      En conditions réelles, le Header réunit la marque à gauche, la navigation au centre,
+      puis les actions et le compte à droite. C'est l'assemblage utilisé par la barre du
+      haut de cette documentation.
+    </p>
+    <article class="docs-demo-block">
+      <h3>Application connectée</h3>
+      <p class="docs-demo-context">
+        Logo + titre, navigation primaire, actions (recherche, notifications) et compte
+        avec menu. Cliquez sur l'identité pour ouvrir le menu compte.
+      </p>
+      <Header
+        title="Console"
+        label="En-tête de la console Sentropic"
+        sticky={false}
+        logo={brand}
+        navigation={primaryNav}
+        actions={utilityActions}
+        account={accountWithPhoto}
+        accountMenu={photoMenu}
+        accountMenuOpen={photoMenuOpen}
+        onAccountTriggerClick={() => (photoMenuOpen = !photoMenuOpen)}
+      />
+    </article>
+  </section>
+
+  <section class="docs-section">
+    <h2>Les trois états de connexion</h2>
+    <p>
+      La zone compte du Header couvre intégralement le cycle d'authentification. Dans les
+      trois cas le nom reste lisible et la cible cliquable annonce correctement l'identité.
+    </p>
     <div class="docs-demo-stack">
       <article class="docs-demo-block">
-        <h3>Sans auth réelle</h3>
+        <h3>1. Anonyme — appel à la connexion</h3>
         <p class="docs-demo-context">
-          Aucun objet session n’est injecté. La zone action affiche un CTA neutre,
-          sans popover d’utilisateur.
+          Aucune identité n'est fournie (<code>account</code> absent). Le Header affiche un
+          CTA explicite « Se connecter » via <code>onSignIn</code> / <code>signInLabel</code>,
+          sans menu compte ni carré vide.
         </p>
         <Header
-          title="Sentropic Console"
+          title="Console"
           sticky={false}
-          logo={headerLogo}
-          navigation={headerNavigation}
-          actions={headerActionsAnonymous}
+          logo={brand}
+          navigation={primaryNav}
+          actions={utilityActions}
+          signInLabel="Se connecter"
+          onSignIn={() => {}}
         />
       </article>
 
       <article class="docs-demo-block">
-        <h3>Session réelle avec photo</h3>
+        <h3>2. Connecté avec photo</h3>
         <p class="docs-demo-context">
-          L’avatar est un conteneur carré, avec image en <code>object-fit: cover</code>.
-          La popover n’existe que parce que les données de session sont réelles.
+          <code>account.avatarUrl</code> est fourni : la photo est rendue dans un avatar
+          carré (<code>object-fit: cover</code>), accompagnée du nom et de l'email. Le menu
+          compte est disponible.
         </p>
         <Header
-          title="Sentropic Console"
+          title="Console"
           sticky={false}
-          logo={headerLogo}
-          navigation={headerNavigation}
-          actions={headerActionsWithPhoto}
+          logo={brand}
+          navigation={primaryNav}
+          account={accountWithPhoto}
+          accountMenu={photoMenu}
+          accountMenuOpen={photoMenuOpen}
+          onAccountTriggerClick={() => (photoMenuOpen = !photoMenuOpen)}
         />
       </article>
 
       <article class="docs-demo-block">
-        <h3>Session réelle avec fallback initiales</h3>
+        <h3>3. Connecté avec initiales (fallback)</h3>
         <p class="docs-demo-context">
-          En l’absence d’URL photo, on affiche des initiales dans le même format
-          carrée. La popover reste disponible car la session existe.
+          Sans <code>avatarUrl</code>, le Header retombe sur les initiales (ici dérivées
+          automatiquement de « Camille Noé » → <code>CN</code>). Le nom et l'email restent
+          affichés : pas d'icône carrée anonyme.
         </p>
         <Header
-          title="Sentropic Console"
+          title="Console"
           sticky={false}
-          logo={headerLogo}
-          navigation={headerNavigation}
-          actions={headerActionsWithInitials}
+          logo={brand}
+          navigation={primaryNav}
+          account={accountWithInitials}
+          accountMenu={initialsMenu}
+          accountMenuOpen={initialsMenuOpen}
+          onAccountTriggerClick={() => (initialsMenuOpen = !initialsMenuOpen)}
         />
       </article>
     </div>
   </section>
 
   <section class="docs-section">
-    <h2>Règles implémentées</h2>
+    <h2>Règles de la zone compte</h2>
     <ul class="docs-list">
       <li>
-        <strong>Sans session:</strong> aucune donnée utilisateur réelle, donc pas de popover.
+        <strong>Le nom est obligatoire et toujours visible.</strong> Un état connecté ne se
+        réduit jamais à un avatar muet ; <code>account.name</code> est requis.
       </li>
       <li>
-        <strong>Session réelle + photo:</strong> rendre <code>avatarUrl</code> dans un
-        conteneur carré <code>48x48</code> avec <code>object-fit: cover</code> et
-        <code>object-position: center</code>.
+        <strong>Avatar photo :</strong> quand <code>avatarUrl</code> est défini, l'image est
+        rendue dans un conteneur carré <code>32×32</code> avec <code>object-fit: cover</code>.
       </li>
       <li>
-        <strong>Session réelle + pas de photo:</strong> utiliser les initiales dans le
-        même avatar carré.
+        <strong>Fallback initiales :</strong> sans photo, les initiales s'affichent dans le
+        même gabarit. Elles sont dérivées du nom si <code>initials</code> n'est pas fourni.
       </li>
       <li>
-        <strong>Popover:</strong> conditionner le rendu aux données réelles (ne pas
-        afficher de popover simulation si <code>session == null</code>).
+        <strong>Anonyme :</strong> sans <code>account</code>, fournir <code>onSignIn</code>
+        (et éventuellement <code>signInLabel</code>) pour afficher un CTA de connexion.
+      </li>
+      <li>
+        <strong>Menu compte :</strong> le panneau <code>accountMenu</code> n'est rendu que si
+        <code>accountMenuOpen</code> est vrai ; l'état d'ouverture est contrôlé par le parent.
+      </li>
+    </ul>
+  </section>
+
+  <section class="docs-section">
+    <h2>Accessibilité</h2>
+    <ul class="docs-list">
+      <li>
+        L'élément racine est un <code>&lt;header&gt;</code> avec <code>aria-label</code>
+        (prop <code>label</code>) ; la navigation est un <code>&lt;nav aria-label="Primary"&gt;</code>.
+      </li>
+      <li>
+        Le déclencheur compte est un <code>&lt;button&gt;</code> avec
+        <code>aria-haspopup="menu"</code>, <code>aria-expanded</code> reflétant l'état du menu,
+        et <code>aria-label="Compte de {'{'}nom{'}'}"</code> pour annoncer l'identité.
+      </li>
+      <li>
+        L'avatar (photo ou initiales) est <code>aria-hidden</code> : il est purement décoratif,
+        l'identité étant déjà portée par le texte du nom.
+      </li>
+      <li>
+        Le panneau ouvert expose <code>role="menu"</code> et un <code>aria-label</code> nommant
+        l'utilisateur. La gestion de la fermeture au clic extérieur / touche Échap relève du parent.
       </li>
     </ul>
   </section>
@@ -226,6 +234,7 @@
           <th>Prop</th>
           <th>Type</th>
           <th>Par défaut</th>
+          <th>Description</th>
         </tr>
       </thead>
       <tbody>
@@ -233,46 +242,124 @@
           <td><code>title</code></td>
           <td><code>string</code></td>
           <td><em>optionnel</em></td>
+          <td>Titre textuel affiché à côté du logo.</td>
         </tr>
         <tr>
           <td><code>label</code></td>
           <td><code>string</code></td>
           <td><code>"Application header"</code></td>
+          <td><code>aria-label</code> de l'élément <code>&lt;header&gt;</code>.</td>
         </tr>
         <tr>
           <td><code>sticky</code></td>
           <td><code>boolean</code></td>
           <td><code>true</code></td>
+          <td>Colle l'en-tête en haut du viewport (<code>position: sticky</code>).</td>
         </tr>
         <tr>
           <td><code>logo</code></td>
           <td><code>Snippet</code></td>
           <td><em>optionnel</em></td>
+          <td>Contenu de la marque (image, wordmark…).</td>
         </tr>
         <tr>
           <td><code>navigation</code></td>
           <td><code>Snippet</code></td>
           <td><em>optionnel</em></td>
+          <td>Navigation primaire, rendue dans un <code>&lt;nav&gt;</code> centré.</td>
         </tr>
         <tr>
           <td><code>actions</code></td>
           <td><code>Snippet</code></td>
           <td><em>optionnel</em></td>
+          <td>Actions utilitaires à droite (recherche, notifications, sélecteurs…).</td>
+        </tr>
+        <tr>
+          <td><code>account</code></td>
+          <td><code>HeaderAccount</code></td>
+          <td><em>optionnel</em></td>
+          <td>Identité connectée. Active la zone compte (avatar/initiales + nom + email).</td>
+        </tr>
+        <tr>
+          <td><code>accountMenu</code></td>
+          <td><code>Snippet</code></td>
+          <td><em>optionnel</em></td>
+          <td>Contenu du panneau de menu compte (rendu si ouvert).</td>
+        </tr>
+        <tr>
+          <td><code>accountMenuOpen</code></td>
+          <td><code>boolean</code></td>
+          <td><code>false</code></td>
+          <td>État d'ouverture du menu compte (contrôlé par le parent).</td>
+        </tr>
+        <tr>
+          <td><code>onAccountTriggerClick</code></td>
+          <td><code>() =&gt; void</code></td>
+          <td><em>optionnel</em></td>
+          <td>Callback au clic sur le bouton compte (basculer le menu).</td>
+        </tr>
+        <tr>
+          <td><code>signInLabel</code></td>
+          <td><code>string</code></td>
+          <td><code>"Se connecter"</code></td>
+          <td>Libellé du CTA de connexion (état anonyme).</td>
+        </tr>
+        <tr>
+          <td><code>onSignIn</code></td>
+          <td><code>() =&gt; void</code></td>
+          <td><em>optionnel</em></td>
+          <td>Callback du CTA de connexion. Affiche le CTA quand <code>account</code> est absent.</td>
         </tr>
         <tr>
           <td><code>children</code></td>
           <td><code>Snippet</code></td>
           <td><em>optionnel</em></td>
+          <td>Contenu additionnel rendu en fin d'en-tête.</td>
         </tr>
         <tr>
           <td><code>class</code></td>
           <td><code>string</code></td>
           <td><em>optionnel</em></td>
+          <td>Classe(s) CSS supplémentaire(s).</td>
         </tr>
         <tr>
           <td>Autres attributs</td>
           <td><code>HTMLAttributes&lt;HTMLElement&gt;</code></td>
-          <td>propagés sur <code>&lt;header&gt;</code></td>
+          <td>—</td>
+          <td>Propagés sur l'élément <code>&lt;header&gt;</code>.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Type <code>HeaderAccount</code></h3>
+    <table class="docs-table">
+      <thead>
+        <tr>
+          <th>Champ</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>name</code></td>
+          <td><code>string</code></td>
+          <td>Nom affiché. Requis : pas d'identité sans nom.</td>
+        </tr>
+        <tr>
+          <td><code>email</code></td>
+          <td><code>string?</code></td>
+          <td>Email affiché sous le nom et dans le menu.</td>
+        </tr>
+        <tr>
+          <td><code>avatarUrl</code></td>
+          <td><code>string | null</code></td>
+          <td>URL de la photo. Si absente/<code>null</code>, on rend les initiales.</td>
+        </tr>
+        <tr>
+          <td><code>initials</code></td>
+          <td><code>string?</code></td>
+          <td>Initiales explicites. Sinon dérivées du <code>name</code>.</td>
         </tr>
       </tbody>
     </table>
@@ -280,134 +367,107 @@
 </div>
 
 <style>
-  .docs-header-brand {
+  .header-brand {
     align-items: center;
     display: inline-flex;
     gap: 0.5rem;
-    font-weight: 650;
   }
 
-  .docs-header-brand-mark {
-    height: 1rem;
-    width: 1rem;
+  .header-brand-mark {
+    height: 1.5rem;
+    width: 1.5rem;
+  }
+
+  .header-brand-copy {
+    display: grid;
+    gap: 0.05rem;
+    line-height: 1.05;
+  }
+
+  .header-brand-name {
+    font-size: 0.95rem;
+    font-weight: 720;
+  }
+
+  .header-brand-product {
+    color: var(--docs-muted);
+    font-size: 0.72rem;
+    font-weight: 600;
   }
 
   :global(.docs-page .st-header__navigation a),
   :global(.docs-page .st-header__navigation a:visited) {
-    color: var(--st-semantic-text-primary);
+    border-bottom: 2px solid transparent;
+    color: var(--docs-muted);
     font-size: 0.9rem;
+    padding: 0.35rem 0.6rem;
     text-decoration: none;
   }
 
-  .docs-header-account-trigger {
-    align-items: center;
-    background: transparent;
-    border: 1px solid var(--st-semantic-border-subtle);
-    border-radius: 0.4rem;
-    color: inherit;
-    cursor: pointer;
-    display: inline-flex;
-    gap: 0.625rem;
-    max-width: 100%;
-    min-height: 2.125rem;
-    padding: 0.25rem 0.5rem;
+  :global(.docs-page .st-header__navigation a:hover) {
+    color: var(--docs-ink);
   }
 
-  .docs-header-account-trigger:hover,
-  .docs-header-account-trigger:focus-visible {
-    border-color: var(--docs-accent);
+  :global(.docs-page .st-header__navigation a[aria-current="page"]) {
+    border-bottom-color: var(--docs-accent);
+    color: var(--docs-ink);
+    font-weight: 650;
+  }
+
+  .header-icon-btn {
+    align-items: center;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 0.375rem;
+    color: var(--docs-muted);
+    cursor: pointer;
+    display: inline-flex;
+    height: 2.25rem;
+    justify-content: center;
+    width: 2.25rem;
+  }
+
+  .header-icon-btn:hover,
+  .header-icon-btn:focus-visible {
+    background: var(--st-semantic-surface-subtle, #f1f5f9);
+    color: var(--docs-ink);
     outline: none;
   }
 
-  .docs-header-account-meta {
-    display: grid;
-    gap: 0.1rem;
-    text-align: left;
-    min-width: 0;
-  }
-
-  .docs-header-account-name {
-    color: var(--docs-ink);
-    font-size: 0.82rem;
-    font-weight: 600;
-    line-height: 1.2;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .docs-header-account-email {
-    color: var(--docs-muted);
-    font-size: 0.72rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .docs-header-avatar {
-    aspect-ratio: 1;
-    border-radius: 0;
-    flex: 0 0 2rem;
-    height: 2rem;
-    width: 2rem;
-  }
-
-  .docs-header-avatar--square {
-    border-radius: 0;
-    overflow: hidden;
-  }
-
-  .docs-header-avatar--initials {
-    align-items: center;
-    background: var(--st-semantic-surface-subtle);
-    color: var(--st-semantic-text-primary);
-    display: inline-flex;
-    font-size: 0.75rem;
-    font-weight: 700;
-    justify-content: center;
-  }
-
-  .docs-header-avatar-image {
-    background: var(--st-semantic-surface-subtle);
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    width: 100%;
-  }
-
-  .docs-header-popover {
-    display: grid;
-    gap: 0.55rem;
-  }
-
-  .docs-header-popover-title {
+  .header-menu-name {
     color: var(--docs-ink);
     font-size: 0.88rem;
     font-weight: 650;
     margin: 0;
   }
 
-  .docs-header-popover-email {
+  .header-menu-email {
     color: var(--docs-muted);
     font-size: 0.8rem;
     margin: 0;
   }
 
-  .docs-header-popover-action {
+  .header-menu-sep {
+    border: 0;
+    border-top: 1px solid var(--docs-line);
+    margin: 0.25rem 0;
+  }
+
+  .header-menu-item {
     background: transparent;
-    border: 1px solid var(--st-semantic-border-subtle);
-    border-radius: 0.4rem;
+    border: 0;
+    border-radius: 0.375rem;
     color: var(--docs-ink);
     cursor: pointer;
     font: inherit;
-    font-size: 0.8rem;
-    padding: 0.35rem 0.55rem;
+    font-size: 0.84rem;
+    padding: 0.4rem 0.5rem;
     text-align: left;
   }
 
-  .docs-header-popover-action:hover,
-  .docs-header-popover-action:focus-visible {
-    background: var(--st-semantic-surface-subtle);
+  .header-menu-item:hover,
+  .header-menu-item:focus-visible {
+    background: var(--st-semantic-surface-subtle, #f1f5f9);
     outline: none;
   }
 
