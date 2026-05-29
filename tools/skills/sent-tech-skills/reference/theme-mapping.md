@@ -85,6 +85,24 @@ tant qu'il reste des écarts non justifiés.
    variables) — `bg`, bordures **par côté** (top/right/bottom/left), radius,
    police/poids/taille, paddings, hauteur, focus (technique), décoration. Ne
    jamais signer « à l'œil » seul.
+
+   **Outil de mesure par bord (automatisé) :** `tools/compare/fidelity.mjs`
+   (voir `tools/compare/README.md`). CLI Node qui pilote le **Chrome système**
+   (`puppeteer-core`, aucun navigateur téléchargé), démarre le banc `/compare`
+   en statique sur le port **4322** (jamais 5173), et **diffe bord par bord**
+   nos composants vs la référence officielle (chargée du CDN en iframe). Sortie :
+   `docs/compare-fidelity-report.md` (tableau Propriété/Bord | Nous | Référence |
+   Δ/statut, + fidélité par composant et récap global) et
+   `tools/compare/last-report.json` (brut, réusage CI). Statuts `=`/`~`/`≠`
+   (tolérance ±1px et distance RGB ≤ 12). La CLI **vérifie que la référence est
+   réellement stylée** (CSS CDN chargé) et signale toute référence vide plutôt
+   que produire un faux « identique ».
+
+   ```bash
+   npm run --workspace apps/docs build         # prérequis : build statique
+   node tools/compare/fidelity.mjs --date $(date +%F)   # tout
+   node tools/compare/fidelity.mjs --theme dsfr --component Input  # ciblé
+   ```
 3. **Consigner** chaque écart dans la matrice (`docs/ds-theme-anatomy-matrix.md`)
    et dans `MAPPING.md` : propriété, valeur ours vs réel, statut.
 4. **Résoudre** : soit **fermer** par token (étendre l'anatomie si la dimension
