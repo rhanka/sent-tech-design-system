@@ -1,14 +1,14 @@
 {
   "name": "@sentropic/design-system-docs",
-  "version": "0.10.0",
+  "version": "0.10.1",
   "private": true,
   "type": "module",
   "dependencies": {
     "@lucide/svelte": "^0.562.0",
-    "@sentropic/design-system-svelte": "0.10.0",
-    "@sentropic/design-system-themes": "0.10.0",
-    "@sentropic/design-system-theme-dsfr": "0.2.0",
-    "@sentropic/design-system-theme-carbon": "0.2.0",
+    "@sentropic/design-system-svelte": "0.10.1",
+    "@sentropic/design-system-themes": "0.10.1",
+    "@sentropic/design-system-theme-dsfr": "0.2.1",
+    "@sentropic/design-system-theme-carbon": "0.2.1",
     "@sveltejs/adapter-static": "^3.0.10",
     "@sveltejs/kit": "^2.43.5",
     "svelte": "^5.53.2"
