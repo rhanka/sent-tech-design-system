@@ -162,13 +162,25 @@ const foundation = {
   // Carbon typography = IBM Plex Sans. Body 0.875rem/1.43 ($body-01),
   // label 0.75rem/1.33 ($label-01). Source: Carbon "Type" scale.
   typography: {
-    control: { family: "'IBM Plex Sans', system-ui, sans-serif", size: "0.875rem", weight: "400", lineHeight: "1.29", letterSpacing: "0.16px", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
-    field: { family: "'IBM Plex Sans', system-ui, sans-serif", size: "0.875rem", weight: "400", lineHeight: "1.43", letterSpacing: "0.16px", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
-    label: { family: "'IBM Plex Sans', system-ui, sans-serif", size: "0.75rem", weight: "400", lineHeight: "1.33", letterSpacing: "0.32px", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
+    // Carbon $body-compact-01: 0.875rem (14px) / 18px line-height (1.28571) /
+    // 0.16px tracking. The fidelity oracle measures control/field/select/link at
+    // 14px + 0.16px + ~18px against the real Carbon CSS, so the roles carry
+    // those literal values (not unitless 1.43) to match the computed style.
+    // lineHeight expressed in REM (1.125rem = 18px) rather than unitless: a
+    // native `<select>` ignores a unitless line-height (computes `normal`), but
+    // honours an explicit length — so the Select matches the 18px field rule too
+    // (cluster 4). 18px is Carbon $body-compact-01 line-height; Input/Select/
+    // Button all measure 18px against the real Carbon CSS.
+    control: { family: "'IBM Plex Sans', system-ui, sans-serif", size: "0.875rem", weight: "400", lineHeight: "1.125rem", letterSpacing: "0.16px", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
+    field: { family: "'IBM Plex Sans', system-ui, sans-serif", size: "0.875rem", weight: "400", lineHeight: "1.125rem", letterSpacing: "0.16px", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
+    label: { family: "'IBM Plex Sans', system-ui, sans-serif", size: "0.875rem", weight: "400", lineHeight: "1.28571", letterSpacing: "0.16px", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
     // Carbon links are NOT underlined by default; underline appears on hover.
     // Source: Carbon "Link". Base state: no underline → underline on hover, now
     // tokenised via textDecorationHover (anatomy v1.1.0) instead of a CSS escape.
-    link: { family: "inherit", size: "inherit", weight: "inherit", lineHeight: "inherit", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "0.15em", textDecorationHover: "underline" }
+    // Link body = $body-compact-01 too: 14px / 18px / 0.16px (the real .bx--link
+    // renders 14px + 0.16px + 18px), so size/lineHeight/letterSpacing are explicit
+    // rather than `inherit` to match the measured computed style.
+    link: { family: "inherit", size: "0.875rem", weight: "inherit", lineHeight: "1.28571", letterSpacing: "0.16px", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "0.15em", textDecorationHover: "underline" }
   },
   disabledOpacity: "1", // Carbon disabled = token colours, not opacity
   transition: { property: "background-color, border-color, color, box-shadow", duration: "110ms", easing: "cubic-bezier(0.2, 0, 0.38, 0.9)" },
@@ -195,6 +207,13 @@ const foundation = {
     fillBg: carbonColor.gray[10], // #f4f4f4 ($field-01)
     underlineColor: carbonColor.gray[50], // #8d8d8d ($border-strong)
     underlineWidth: "1px"
+  },
+  // Carbon « Tile » (.bx--tile) has NO border and sits on the $layer-01 grey
+  // (#f4f4f4) — not white. Drop the card border to 0 and fill with Gray 10. The
+  // base keeps its 1px stroke + surface.raised via the builder fallback.
+  card: {
+    borderWidth: "0",
+    background: carbonColor.gray[10] // #f4f4f4 ($layer-01)
   }
 } as const;
 
