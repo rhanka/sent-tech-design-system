@@ -63,7 +63,9 @@
 
 <style>
   .st-tabs {
-    color: var(--st-component-tabs-activeText, var(--st-semantic-text-primary));
+    /* Wrapper/panel text = neutral primary (NOT the active-tab colour, which is
+       Bleu France in DSFR and must not bleed into the panel body). */
+    color: var(--st-semantic-text-primary);
     display: grid;
     gap: var(--st-spacing-4, 1rem);
   }
@@ -77,22 +79,35 @@
   .st-tabs__tab {
     background: transparent;
     border: 0;
-    border-bottom-width: var(--st-component-tabs-anatomy-shape-borderWidth, 2px);
+    /* Indicator edge (F7/F8): base/Carbon carry it on the BOTTOM, DSFR on the
+       TOP. The resting tab keeps the same-width transparent stroke on each edge
+       so the baseline does not shift when a tab becomes active. */
+    border-top-width: var(--st-component-tabs-activeBorderTopWidth, 0);
+    border-bottom-width: var(--st-component-tabs-activeBorderBottomWidth, var(--st-component-tabs-anatomy-shape-borderWidth, 2px));
+    border-top-style: var(--st-component-tabs-anatomy-shape-borderStyle, solid);
     border-bottom-style: var(--st-component-tabs-anatomy-shape-borderStyle, solid);
+    border-top-color: transparent;
     border-bottom-color: transparent;
     color: var(--st-component-tabs-inactiveText, var(--st-semantic-text-secondary));
     cursor: var(--st-cursor-interactive, pointer);
     font-family: var(--st-component-tabs-anatomy-typography-family, inherit);
+    font-size: var(--st-component-tabs-tabFontSize, inherit);
     font-weight: var(--st-component-tabs-anatomy-typography-weight, 600);
-    line-height: var(--st-component-tabs-anatomy-typography-lineHeight, 1.2);
+    line-height: var(--st-component-tabs-tabLineHeight, var(--st-component-tabs-anatomy-typography-lineHeight, 1.2));
     letter-spacing: var(--st-component-tabs-anatomy-typography-letterSpacing, 0);
     text-transform: var(--st-component-tabs-anatomy-typography-textTransform, none);
-    padding: 0.75rem 0.25rem;
+    padding: var(--st-component-tabs-tabPaddingBlock, 0.75rem) var(--st-component-tabs-tabPaddingInline, 0.25rem);
   }
 
   .st-tabs__tab--active {
+    background: var(--st-component-tabs-activeBackground, transparent);
+    border-top-color: var(--st-component-tabs-indicator, var(--st-semantic-action-primary));
     border-bottom-color: var(--st-component-tabs-indicator, var(--st-semantic-action-primary));
-    color: var(--st-component-tabs-anatomy-states-hover-text, var(--st-component-tabs-activeText, var(--st-semantic-text-primary)));
+    /* Indicator accent when the theme draws it as a box-shadow (DSFR top filet)
+       rather than a real border — keeps both border sides at `0 none`. */
+    box-shadow: var(--st-component-tabs-activeShadow, none);
+    font-weight: var(--st-component-tabs-activeWeight, var(--st-component-tabs-anatomy-typography-weight, 600));
+    color: var(--st-component-tabs-activeText, var(--st-semantic-text-primary));
   }
 
   /* a11y (non-negotiable): tabs previously had NO visible focus ring. The

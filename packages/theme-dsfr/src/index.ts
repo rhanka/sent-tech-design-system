@@ -249,6 +249,28 @@ const foundation = {
     // matches the measured reference instead of `normal`. fontSize/letterSpacing
     // stay inherited/normal (the card already inherits 16px Marianne).
     lineHeight: "1.5"
+  },
+  // F7 — DSFR « Onglet » actif. Measured on the official `.fr-tabs__tab
+  // [aria-selected="true"]` (CDN dsfr.min.css): white fill, Bleu France text,
+  // font-weight 700, padding 8px/16px, line-height 24px (1.5rem), font-size 16px.
+  // The selected indicator is a 2px Bleu France accent on the TOP edge (the rule
+  // sets `border-bottom:none; border-top:2px solid blue-france` + a top
+  // background-image filet) — so the active tab has NO bottom border.
+  // `indicatorSide: "top"` puts our accent on the top edge and collapses the
+  // bottom border to 0 to match the reference.
+  tabs: {
+    activeText: dsfrColor.blueFrance.sun113, // #000091 Bleu France
+    activeBackground: dsfrColor.grey[1000],  // #ffffff white fill on the active tab
+    activeWeight: "700",                      // DSFR active tab is bold
+    paddingBlock: "0.5rem",                   // 8px (was 12px)
+    paddingInline: "1rem",                    // 16px (was 4px)
+    fontSize: "1rem",                          // 16px (matches the inherited render)
+    lineHeight: "1.5rem",                      // 24px
+    indicatorSide: "top",                      // Bleu France accent on top, no bottom border
+    indicatorMode: "shadow"                    // accent via inset box-shadow (real DSFR technique:
+                                               // a background-image filet, NOT a border) → both
+                                               // border sides stay `0 none` like the reference,
+                                               // and the box height stays exactly 40px.
   }
 } as const;
 

@@ -11,10 +11,10 @@
     "generatedBy": "tools/compare/fidelity.mjs"
   },
   "global": {
-    "eq": 388,
-    "close": 13,
-    "diff": 31,
-    "fidelity": 92.8
+    "eq": 403,
+    "close": 12,
+    "diff": 17,
+    "fidelity": 96.1
   },
   "netGaps": [
     "dsfr/Button: box width (Δ2.0px)",
@@ -29,24 +29,10 @@
     "dsfr/Card: padding-bottom (Δ15.0px)",
     "dsfr/Card: padding-left (Δ15.0px)",
     "dsfr/Card: box height (Δ-23.6px)",
-    "dsfr/Tabs: border-bottom style (solid vs none)",
-    "dsfr/Tabs: padding-top (Δ4.0px)",
-    "dsfr/Tabs: padding-right (Δ-12.0px)",
-    "dsfr/Tabs: padding-bottom (Δ4.0px)",
-    "dsfr/Tabs: padding-left (Δ-12.0px)",
-    "dsfr/Tabs: box width (Δ-24.5px)",
-    "dsfr/Tabs: box height (Δ9.0px)",
-    "dsfr/Tabs: font-weight (500 vs 700)",
-    "dsfr/Tabs: background-color (rgb(0,0,0)/a0 vs rgb(255,255,255))",
-    "dsfr/Tabs: color (rgb(58,58,58) vs rgb(0,0,145))",
     "carbon/Textarea: box height (Δ13.0px)",
     "carbon/Textarea: line-height (Δ-2.0px)",
     "carbon/Card: box height (Δ-27.6px)",
     "carbon/Tabs: border-bottom color (rgb(15,98,254) vs rgb(224,224,224))",
-    "carbon/Tabs: padding-right (Δ4.0px)",
-    "carbon/Tabs: padding-left (Δ4.0px)",
-    "carbon/Tabs: font-size (Δ2.0px)",
-    "carbon/Tabs: line-height (Δ2.0px)",
     "carbon/Tabs: color (rgb(22,22,22) vs rgb(82,82,82))"
   ],
   "components": [
@@ -2301,11 +2287,11 @@
       "refSelector": ".fr-tabs__tab[aria-selected=\"true\"]",
       "refStyled": true,
       "notes": [],
-      "fidelity": 67.7,
+      "fidelity": 100,
       "counts": {
-        "eq": 20,
-        "close": 1,
-        "diff": 10
+        "eq": 31,
+        "close": 0,
+        "diff": 0
       },
       "rows": [
         {
@@ -2319,7 +2305,7 @@
         {
           "label": "border-top style",
           "prop": "border-top-style",
-          "ours": "none",
+          "ours": "solid",
           "ref": "none",
           "status": "=",
           "delta": "bord 0px (invisible)"
@@ -2327,7 +2313,7 @@
         {
           "label": "border-top color",
           "prop": "border-top-color",
-          "ours": "rgb(58, 58, 58)",
+          "ours": "rgb(0, 0, 145)",
           "ref": "rgb(0, 0, 145)",
           "status": "=",
           "delta": "bord 0px (invisible)"
@@ -2351,7 +2337,7 @@
         {
           "label": "border-right color",
           "prop": "border-right-color",
-          "ours": "rgb(58, 58, 58)",
+          "ours": "rgb(0, 0, 145)",
           "ref": "rgb(0, 0, 145)",
           "status": "=",
           "delta": "bord 0px (invisible)"
@@ -2359,18 +2345,18 @@
         {
           "label": "border-bottom width",
           "prop": "border-bottom-width",
-          "ours": "1px",
+          "ours": "0px",
           "ref": "0px",
-          "status": "~",
-          "delta": "Δ1.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "border-bottom style",
           "prop": "border-bottom-style",
           "ours": "solid",
           "ref": "none",
-          "status": "≠",
-          "delta": "solid vs none"
+          "status": "=",
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "border-bottom color",
@@ -2378,7 +2364,7 @@
           "ours": "rgb(0, 0, 145)",
           "ref": "rgb(0, 0, 145)",
           "status": "=",
-          "delta": ""
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "border-left width",
@@ -2399,7 +2385,7 @@
         {
           "label": "border-left color",
           "prop": "border-left-color",
-          "ours": "rgb(58, 58, 58)",
+          "ours": "rgb(0, 0, 145)",
           "ref": "rgb(0, 0, 145)",
           "status": "=",
           "delta": "bord 0px (invisible)"
@@ -2439,50 +2425,50 @@
         {
           "label": "padding-top",
           "prop": "padding-top",
-          "ours": "12px",
+          "ours": "8px",
           "ref": "8px",
-          "status": "≠",
-          "delta": "Δ4.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "padding-right",
           "prop": "padding-right",
-          "ours": "4px",
+          "ours": "16px",
           "ref": "16px",
-          "status": "≠",
-          "delta": "Δ-12.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "padding-bottom",
           "prop": "padding-bottom",
-          "ours": "12px",
+          "ours": "8px",
           "ref": "8px",
-          "status": "≠",
-          "delta": "Δ4.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "padding-left",
           "prop": "padding-left",
-          "ours": "4px",
+          "ours": "16px",
           "ref": "16px",
-          "status": "≠",
-          "delta": "Δ-12.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "box width",
           "prop": "box-width",
-          "ours": "46.3px",
+          "ours": "70.8px",
           "ref": "70.8px",
-          "status": "≠",
-          "delta": "Δ-24.5px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "box height",
           "prop": "box-height",
-          "ours": "49px",
+          "ours": "40px",
           "ref": "40px",
-          "status": "≠",
-          "delta": "Δ9.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "font-family",
@@ -2503,10 +2489,10 @@
         {
           "label": "font-weight",
           "prop": "font-weight",
-          "ours": "500",
+          "ours": "700",
           "ref": "700",
-          "status": "≠",
-          "delta": "500 vs 700"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "line-height",
@@ -2543,18 +2529,18 @@
         {
           "label": "background-color",
           "prop": "background-color",
-          "ours": "rgba(0, 0, 0, 0)",
+          "ours": "rgb(255, 255, 255)",
           "ref": "rgb(255, 255, 255)",
-          "status": "≠",
-          "delta": "rgb(0,0,0)/a0 vs rgb(255,255,255)"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "color",
           "prop": "color",
-          "ours": "rgb(58, 58, 58)",
+          "ours": "rgb(0, 0, 145)",
           "ref": "rgb(0, 0, 145)",
-          "status": "≠",
-          "delta": "rgb(58,58,58) vs rgb(0,0,145)"
+          "status": "=",
+          "delta": ""
         }
       ],
       "raw": {
@@ -2563,23 +2549,23 @@
           "border": {
             "top": {
               "width": "0px",
-              "style": "none",
-              "color": "rgb(58, 58, 58)"
+              "style": "solid",
+              "color": "rgb(0, 0, 145)"
             },
             "right": {
               "width": "0px",
               "style": "none",
-              "color": "rgb(58, 58, 58)"
+              "color": "rgb(0, 0, 145)"
             },
             "bottom": {
-              "width": "1px",
+              "width": "0px",
               "style": "solid",
               "color": "rgb(0, 0, 145)"
             },
             "left": {
               "width": "0px",
               "style": "none",
-              "color": "rgb(58, 58, 58)"
+              "color": "rgb(0, 0, 145)"
             }
           },
           "radius": {
@@ -2589,27 +2575,27 @@
             "bottomLeft": "0px"
           },
           "padding": {
-            "top": "12px",
-            "right": "4px",
-            "bottom": "12px",
-            "left": "4px"
+            "top": "8px",
+            "right": "16px",
+            "bottom": "8px",
+            "left": "16px"
           },
           "box": {
-            "width": 46.28125,
-            "height": 49
+            "width": 70.796875,
+            "height": 40
           },
           "typo": {
             "fontFamily": "Marianne",
             "fontSize": "16px",
-            "fontWeight": "500",
+            "fontWeight": "700",
             "lineHeight": "24px",
             "letterSpacing": "normal",
             "textTransform": "none",
             "textDecorationLine": "none"
           },
           "colors": {
-            "backgroundColor": "rgba(0, 0, 0, 0)",
-            "color": "rgb(58, 58, 58)"
+            "backgroundColor": "rgb(255, 255, 255)",
+            "color": "rgb(0, 0, 145)"
           }
         },
         "ref": {
@@ -4922,11 +4908,11 @@
         "Spec selector `.bx--tabs__nav-item--selected` is the `<li>` wrapper (0×0 box). Measuring its inner `.bx--tabs__nav-link` — the actual styled tab.",
         "reference element is styled (CDN loaded) but its own box collapsed to 0; box width/height excluded from the diff"
       ],
-      "fidelity": 79.3,
+      "fidelity": 93.1,
       "counts": {
-        "eq": 23,
+        "eq": 27,
         "close": 0,
-        "diff": 6
+        "diff": 2
       },
       "rows": [
         {
@@ -4940,7 +4926,7 @@
         {
           "label": "border-top style",
           "prop": "border-top-style",
-          "ours": "none",
+          "ours": "solid",
           "ref": "none",
           "status": "=",
           "delta": "bord 0px (invisible)"
@@ -4948,7 +4934,7 @@
         {
           "label": "border-top color",
           "prop": "border-top-color",
-          "ours": "rgb(22, 22, 22)",
+          "ours": "rgb(15, 98, 254)",
           "ref": "rgb(82, 82, 82)",
           "status": "=",
           "delta": "bord 0px (invisible)"
@@ -5068,10 +5054,10 @@
         {
           "label": "padding-right",
           "prop": "padding-right",
-          "ours": "4px",
+          "ours": "0px",
           "ref": "0px",
-          "status": "≠",
-          "delta": "Δ4.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "padding-bottom",
@@ -5084,10 +5070,10 @@
         {
           "label": "padding-left",
           "prop": "padding-left",
-          "ours": "4px",
+          "ours": "0px",
           "ref": "0px",
-          "status": "≠",
-          "delta": "Δ4.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "font-family",
@@ -5100,10 +5086,10 @@
         {
           "label": "font-size",
           "prop": "font-size",
-          "ours": "16px",
+          "ours": "14px",
           "ref": "14px",
-          "status": "≠",
-          "delta": "Δ2.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "font-weight",
@@ -5116,10 +5102,10 @@
         {
           "label": "line-height",
           "prop": "line-height",
-          "ours": "18px",
+          "ours": "16px",
           "ref": "16px",
-          "status": "≠",
-          "delta": "Δ2.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "letter-spacing",
@@ -5168,8 +5154,8 @@
           "border": {
             "top": {
               "width": "0px",
-              "style": "none",
-              "color": "rgb(22, 22, 22)"
+              "style": "solid",
+              "color": "rgb(15, 98, 254)"
             },
             "right": {
               "width": "0px",
@@ -5195,19 +5181,19 @@
           },
           "padding": {
             "top": "12px",
-            "right": "4px",
+            "right": "0px",
             "bottom": "12px",
-            "left": "4px"
+            "left": "0px"
           },
           "box": {
-            "width": 53.421875,
-            "height": 43
+            "width": 39.859375,
+            "height": 41
           },
           "typo": {
             "fontFamily": "IBM Plex Sans",
-            "fontSize": "16px",
+            "fontSize": "14px",
             "fontWeight": "400",
-            "lineHeight": "18px",
+            "lineHeight": "16px",
             "letterSpacing": "0.16px",
             "textTransform": "none",
             "textDecorationLine": "none"
