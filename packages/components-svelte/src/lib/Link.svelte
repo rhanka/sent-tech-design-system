@@ -58,6 +58,12 @@
   .st-link {
     color: var(--st-component-link-text, var(--st-semantic-text-link));
     cursor: var(--st-cursor-interactive, pointer);
+    /* Anatomy typography (additive): size/line-height/letter-spacing follow the
+       link role per theme. Base/DSFR use `inherit`/`normal` fallbacks → no visible
+       change; Carbon poses 14px / 18px / 0.16px to match the real .bx--link. */
+    font-size: var(--st-component-link-anatomy-typography-size, inherit);
+    line-height: var(--st-component-link-anatomy-typography-lineHeight, normal);
+    letter-spacing: var(--st-component-link-anatomy-typography-letterSpacing, normal);
     text-decoration: var(--st-component-link-anatomy-typography-textDecoration, underline);
     text-decoration-thickness: var(--st-component-link-anatomy-typography-decorationThickness, auto);
     text-underline-offset: var(--st-component-link-anatomy-typography-decorationOffset, 0.18em);

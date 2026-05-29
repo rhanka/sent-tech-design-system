@@ -168,8 +168,15 @@ const foundation = {
     // fontSize per size (anatomy v1.1.0). DSFR md label = 1rem (body). The sm/lg
     // label sizes follow the DSFR size scale; sm 0.875rem (14px) / lg 1.125rem
     // (18px) are "à confirmer" against the SCSS but match the public metrics.
-    sm: { controlHeight: "2rem", paddingBlock: "0", paddingInline: "0.75rem", gap: "0.5rem", minWidth: "2rem", fontSize: "0.875rem" },
-    md: { controlHeight: "2.5rem", paddingBlock: "0", paddingInline: "1rem", gap: "0.5rem", minWidth: "2.5rem", fontSize: "1rem" },
+    // DSFR « Champ de saisie » padding = 0.5rem 1rem (8px vertical, 16px inline).
+    // The fields read md.paddingBlock (vertical) and sm.paddingInline (inline), so
+    // both carry the DSFR field metrics: paddingBlock 0.5rem (8px) gives the
+    // Input/Select vertical padding the spec wants, and sm.paddingInline 1rem
+    // (16px) gives the 16px horizontal padding (was 12px). md.paddingBlock 8px
+    // also lands the DSFR Button vertical padding (ref 8px) without changing the
+    // 40px control height (border-box + min-height).
+    sm: { controlHeight: "2rem", paddingBlock: "0", paddingInline: "1rem", gap: "0.5rem", minWidth: "2rem", fontSize: "0.875rem" },
+    md: { controlHeight: "2.5rem", paddingBlock: "0.5rem", paddingInline: "1rem", gap: "0.5rem", minWidth: "2.5rem", fontSize: "1rem" },
     lg: { controlHeight: "3rem", paddingBlock: "0", paddingInline: "1.5rem", gap: "0.5rem", minWidth: "3rem", fontSize: "1.125rem" }
   },
   // DSFR typography = Marianne. Button labels are medium/bold, no transform.
@@ -209,6 +216,13 @@ const foundation = {
     fillBg: dsfrColor.grey[950], // #eeeeee
     underlineColor: dsfrColor.grey[200], // #3a3a3a
     underlineWidth: "1px"
+  },
+  // DSFR « Carte » (.fr-card) has NO border — its separation is a bottom filet /
+  // shadow on the enclosing tile, not a 1px stroke. Drop the card border to 0
+  // (the base keeps its 1px stroke via the builder fallback). Fill stays white
+  // (surface.raised), matching the .fr-card background.
+  card: {
+    borderWidth: "0"
   }
 } as const;
 
@@ -222,7 +236,13 @@ const semantic = {
     overlay: "rgb(22 22 22 / 0.50)" // modal backdrop
   },
   text: {
-    primary: dsfrColor.grey[50], // title / primary text (#161616)
+    // DSFR `--text-default-grey` (body + form controls) is #3a3a3a (grey-200),
+    // NOT the #161616 title grey. Our `text.primary` is consumed broadly as the
+    // content/field text colour (Input/Select/Textarea/Card all read it), so it
+    // maps to grey-200 #3a3a3a to match the real DSFR field/body text. The
+    // heavier #161616 title grey stays available via `surface.inverse`. Contrast
+    // of #3a3a3a on the #eeeeee field fill is ~8:1 (AA+), no a11y regression.
+    primary: dsfrColor.grey[200], // body / control text (#3a3a3a, --text-default-grey)
     secondary: dsfrColor.grey[425], // secondary / mention text (#666)
     muted: dsfrColor.grey[625], // disabled / placeholder (#929292)
     inverse: dsfrColor.grey[1000], // text on dark / colored surfaces

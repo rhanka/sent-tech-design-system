@@ -118,6 +118,31 @@ et dans quel ordre de clusters ? *(Je peux avancer par cluster réversible si tu
 - **D1 livrée** : release 0.10.0 (cœur) + 0.2.0 (thèmes) publiée sur npm via tags `v0.10.0` /
   `themes-v0.2.0` (commit `3caacd0`). Versions confirmées live. `/loop` arrêté à la demande.
 
+- **Fidélité DSFR/Carbon — 3 clusters fermés (oracle `tools/compare/fidelity.mjs`)** :
+  fidélité globale **74,8 % → 84,0 %** (348 `=`, 15 `~`, 69 `≠`). Aucune régression
+  composant (tous ↑ ou =), base Sent Tech intacte (changements per-thème + CSS additive
+  à fallback identique à la base, vérifié sur le CSS compilé). `npm run verify` vert.
+  - **Cluster typo Carbon** : `letterSpacing 0.16px` posé sur les contrôles/champs/lien ;
+    `size` lien = 0.875rem (14px) ; `lineHeight` champ/contrôle = `1.125rem` (18px, en REM
+    pour que le `<select>` l'honore). Consommation `letter-spacing`/`line-height`/`font-size`
+    ajoutée (additive) dans Input/Textarea/Select/Link. → Carbon Link **83,9 → 100 %**,
+    Input **87,1 → 93,5 %**, Select **80,6 → 87,1 %**.
+  - **Cluster padding champ DSFR** : densité `md.paddingBlock 0.5rem` (8px) + `sm.paddingInline
+    1rem` (16px) ; Select consomme désormais la densité pour le padding (vert./gauche).
+    → DSFR Input **71 → 87,1 %**, Select **67,7 → 80,6 %**, Textarea **67,7 → 77,4 %**,
+    Button **83,9 → 87,1 %** (padding vert. 8px). Couleur texte de contrôle DSFR → `#3a3a3a`
+    (`text.primary` = grey-200, `--text-default-grey` réel, contraste AA+).
+  - **Cluster cartes** : primitive additive `foundation.card.{borderWidth,background}` (défaut =
+    base) ; DSFR/Carbon posent `borderWidth 0` (pas de bordure sur `.fr-card`/`.bx--tile`),
+    Carbon `background #f4f4f4` ($layer-01). → DSFR Card **48,4 → 77,4 %**, Carbon Card
+    **54,8 → 83,9 %**.
+  - **Écarts restants classés** : *escapes justifiés* (police de marque vs system-ui, largeurs
+    de box = contexte banc, filet bas DSFR, soulignement DSFR animé, `<select>` rend
+    `line-height: normal` malgré la valeur posée = limite UA Chrome) ; *nécessite extension
+    schéma* (rayon haut 4px DSFR par-coin ; line-height multiligne distincte pour Textarea
+    Carbon 20px vs champ 18px ; padding-droit Select par-thème = gabarit chevron) ; Carbon/DSFR
+    Tabs (font-size/couleurs = nuance markup, laissé pour ne pas régresser la base).
+
 ## Fin du loop (réversible épuisé) — OBSOLÈTE, loop relancé
 
 Loop autonome terminé : **12 livrables** (Footer, Tile, SkipLink, Quote, Highlight,

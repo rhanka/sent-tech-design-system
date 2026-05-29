@@ -97,9 +97,22 @@
     font-family: var(--st-component-control-anatomy-typography-family, inherit);
     font-size: var(--st-component-control-anatomy-typography-size, inherit);
     font-weight: var(--st-component-control-anatomy-typography-weight, 400);
+    /* Native <select> renders `line-height: normal` unless one is set explicitly;
+       pose the anatomy line-height so DSFR/Carbon select matches the field roles
+       (cluster 4). letter-spacing likewise (Carbon 0.16px). Additive — base keeps
+       its 1.5 fallback so the Sent Tech select is unchanged. */
     line-height: var(--st-component-control-anatomy-typography-lineHeight, 1.5);
+    letter-spacing: var(--st-component-control-anatomy-typography-letterSpacing, normal);
     min-width: 0;
-    padding: 0 2rem 0 0.75rem;
+    /* Padding follows the field density (additive; fallbacks reproduce the prior
+       `0 2rem 0 0.75rem` literal so the base Sent Tech select is unchanged):
+       vertical = md paddingBlock (base 0 → DSFR 8px), left = sm paddingInline
+       (base 0.75rem → DSFR/Carbon 16px). The right side keeps the 2rem arrow gap. */
+    padding:
+      var(--st-component-control-anatomy-density-md-paddingBlock, 0)
+      2rem
+      var(--st-component-control-anatomy-density-md-paddingBlock, 0)
+      var(--st-component-control-anatomy-density-sm-paddingInline, 0.75rem);
     width: 100%;
   }
 
