@@ -16,7 +16,7 @@
 
 import type { TokenTree } from "./foundation.js";
 
-export const ANATOMY_VERSION = "1.3.0";
+export const ANATOMY_VERSION = "1.4.0";
 
 /** A CSS-ready value: a literal or a `var(--st-*)` reference. */
 export type CssValue = string;
@@ -111,6 +111,31 @@ export interface FieldAnatomy {
    * resolves to the theme's plain focus box-shadow.
    */
   focusShadow: CssValue;
+  /**
+   * Native `<select>` rendering primitive (v1.4.0, F5/F9). A native `<select>`
+   * with `appearance: auto` has its `line-height` FORCED to `normal` by the
+   * browser UA (proven on Chrome); only `appearance: none` lets the author
+   * `line-height` take effect (the real DSFR/Carbon selects use `appearance:
+   * none` + a custom chevron, which is why they render 24px/18px). Defaults to
+   * `auto` so the base Sent Tech select keeps its NATIVE arrow + render
+   * (unchanged); a filled-underline theme sets `none` so the anatomy line-height
+   * applies and the chevron is drawn by `selectChevron`.
+   */
+  selectAppearance: CssValue;
+  /**
+   * Custom chevron background for the `<select>` when `selectAppearance` is
+   * `none` (the native arrow is then suppressed). `none` for the base (native
+   * arrow kept); a `url(...) no-repeat ...` background for a filled-underline
+   * theme. Applied as the select `background-image`/position so the arrow
+   * survives `appearance: none`.
+   */
+  selectChevron: CssValue;
+  /**
+   * Right padding of the `<select>` reserving room for the chevron (F9). Defaults
+   * to the prior `2rem` arrow gap (base unchanged); DSFR reserves 40px, Carbon
+   * 48px to match the real `.fr-select` / `.bx--select-input` chevron gutter.
+   */
+  selectPaddingRight: CssValue;
 }
 
 /** Density = the geometric envelope of a control for one size. */

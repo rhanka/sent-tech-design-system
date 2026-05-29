@@ -87,7 +87,18 @@
 
   /* Field box = resolved field anatomy (v1.2.0), same as Input. */
   .st-select {
-    background: var(--st-component-control-anatomy-field-fillBg, var(--st-component-control-background, var(--st-semantic-surface-default)));
+    /* Native <select> rendering (anatomy v1.4.0, F5/F9). A native <select> with
+       `appearance: auto` has its `line-height` FORCED to `normal` by the browser
+       (the anatomy line-height below never lands); `appearance: none` lets it
+       take effect — the real DSFR/Carbon selects use `appearance: none` + a
+       drawn chevron, which is why they render 24px / 18px. Base = `auto` so the
+       Sent Tech select keeps its NATIVE arrow + render (unchanged). When a theme
+       opts into `none`, `selectChevron` redraws the arrow the UA dropped. */
+    appearance: var(--st-component-control-anatomy-field-selectAppearance, auto);
+    -webkit-appearance: var(--st-component-control-anatomy-field-selectAppearance, auto);
+    background:
+      var(--st-component-control-anatomy-field-selectChevron, none),
+      var(--st-component-control-anatomy-field-fillBg, var(--st-component-control-background, var(--st-semantic-surface-default)));
     border-top: var(--st-component-control-anatomy-field-borderTop, var(--st-component-control-anatomy-shape-borderWidth, 1px) var(--st-component-control-anatomy-shape-borderStyle, solid) var(--st-component-control-border, var(--st-semantic-border-subtle)));
     border-right: var(--st-component-control-anatomy-field-borderRight, var(--st-component-control-anatomy-shape-borderWidth, 1px) var(--st-component-control-anatomy-shape-borderStyle, solid) var(--st-component-control-border, var(--st-semantic-border-subtle)));
     border-bottom: var(--st-component-control-anatomy-field-borderBottom, var(--st-component-control-anatomy-shape-borderWidth, 1px) var(--st-component-control-anatomy-shape-borderStyle, solid) var(--st-component-control-border, var(--st-semantic-border-subtle)));
@@ -115,10 +126,11 @@
     /* Padding follows the field density (additive; fallbacks reproduce the prior
        `0 2rem 0 0.75rem` literal so the base Sent Tech select is unchanged):
        vertical = md paddingBlock (base 0 → DSFR 8px), left = sm paddingInline
-       (base 0.75rem → DSFR/Carbon 16px). The right side keeps the 2rem arrow gap. */
+       (base 0.75rem → DSFR/Carbon 16px). The right side reserves the chevron
+       gutter via selectPaddingRight (F9: base 2rem → DSFR 40px / Carbon 48px). */
     padding:
       var(--st-component-control-anatomy-density-md-paddingBlock, 0)
-      2rem
+      var(--st-component-control-anatomy-field-selectPaddingRight, 2rem)
       var(--st-component-control-anatomy-density-md-paddingBlock, 0)
       var(--st-component-control-anatomy-density-sm-paddingInline, 0.75rem);
     width: 100%;
