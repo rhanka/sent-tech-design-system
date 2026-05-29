@@ -77,7 +77,10 @@
   }
 
   .st-tabs__tab {
-    background: transparent;
+    /* Resting tab fill (G2): per-theme. Base/Carbon keep transparent; DSFR puts
+       a light grey-blue fill on the inactive tabs so the white active tab reads
+       as raised. Fallback = transparent → base render unchanged. */
+    background: var(--st-component-tabs-inactiveBackground, transparent);
     border: 0;
     /* Indicator edge (F7/F8): base/Carbon carry it on the BOTTOM, DSFR on the
        TOP. The resting tab keeps the same-width transparent stroke on each edge
