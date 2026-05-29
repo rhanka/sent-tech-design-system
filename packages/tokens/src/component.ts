@@ -37,6 +37,16 @@ interface FieldInput {
   fillBg?: string;
   underlineColor?: string;
   underlineWidth?: string;
+  // v1.3.0 (additive): top-corner radius override for the field. When omitted,
+  // the field's top corners inherit the theme's own shape radius (no change).
+  radiusTop?: string;
+  // v1.3.0 (additive): how the filled-underline bottom rule is drawn.
+  //  - "shadow": a `box-shadow inset` (the REAL DSFR « Champ de saisie »
+  //    technique) — no geometric border, adds no box height.
+  //  - "border" (default): a real `border-bottom` (the REAL Carbon « Text
+  //    input » technique, which genuinely uses a 1px bottom border).
+  // Kept a string (not a boolean) so the `foundation` object stays a TokenTree.
+  underlineMode?: string;
 }
 
 // Card surface primitive a theme may or may not provide. Optional on the INPUT
@@ -94,7 +104,8 @@ const FALLBACK = {
   focus: { strategy: "outline", width: "2px", offset: "2px", color: "var(--st-semantic-border-interactive)", inset: "0" },
   // Field style fallback = boxed outline (base Sent Tech). underlineColor /
   // underlineWidth are inert for outline; they only drive filled-underline.
-  field: { style: "outline", fillBg: "", underlineColor: "", underlineWidth: "1px" }
+  // radiusTop "" = inherit the theme's shape radius (resolved in fieldOf).
+  field: { style: "outline", fillBg: "", underlineColor: "", underlineWidth: "1px", radiusTop: "" }
 } as const;
 
 function densityOf(f: FoundationInput, size: "sm" | "md" | "lg"): DensityAnatomy {
@@ -174,31 +185,74 @@ function focusOf(f: FoundationInput): ComponentAnatomy["focus"] {
  *   borders all = `<borderWidth.thin> solid <border.subtle>`. This reproduces
  *   the existing boxed input EXACTLY → no Sent Tech regression.
  * - `filled-underline` (DSFR / Carbon): `fillBg` = the theme's field fill tone,
- *   top/right/left = `none`, only `borderBottom` = `<underlineWidth> solid
- *   <underlineColor>`. This is what makes DSFR/Carbon inputs faithful (filled +
- *   bottom rule only) instead of a boxed encadré.
+ *   top/right/left = `none`, the bottom rule is the only stroke. HOW the bottom
+ *   rule is drawn depends on the theme's real technique:
+ *     · DSFR (`underlineAsShadow: true`) draws it as a `box-shadow inset` (its
+ *       real CSS), so `borderBottom` is `none` and the rule adds no box height.
+ *     · Carbon (default) genuinely uses a real `border-bottom: 1px solid` — so
+ *       we keep the geometric `borderBottom` and leave `underline` = `none` to
+ *       stay pixel-identical to the official `.bx--text-input`.
+ *
+ * v1.3.0 (additive): `radiusTop` rounds only the field's TOP corners (defaults
+ * to the theme's `shapeRadius` so a boxed field stays uniform — no regression);
+ * `underline` carries the filled-underline bottom rule as an inset box-shadow
+ * when `underlineAsShadow` is set; `focusShadow` composes it with the focus ring.
  */
 function fieldOf(
   semantic: SemanticInput,
   f: FoundationInput,
   bw: { none?: string; thin?: string; thick?: string },
-  borderStyle: string
+  borderStyle: string,
+  shapeRadius: string,
+  focusBoxShadow: string
 ): FieldAnatomy {
   const themed = f.field ?? {};
   const style = (themed.style ?? FALLBACK.field.style) as FieldAnatomy["style"];
   const thin = bw.thin ?? "1px";
+  // Top corners inherit the theme's shape radius unless the theme rounds them
+  // explicitly (DSFR field = 4px top). Bottom corners always keep shapeRadius.
+  const radiusTop = themed.radiusTop || shapeRadius;
+  // Compose the field focus box-shadow so the resting underline is never lost
+  // incoherently: an outline-strategy theme (focusBoxShadow === "none") keeps
+  // the underline; an inset/ring theme stacks its ring + the underline.
+  const composeFocus = (underline: string): string => {
+    const ring = focusBoxShadow && focusBoxShadow !== "none" ? focusBoxShadow : "";
+    if (underline === "none") return ring || "none";
+    if (!ring) return underline; // outline theme: keep the underline at focus
+    return `${ring}, ${underline}`; // inset/ring theme: ring + underline
+  };
 
   if (style === "filled-underline") {
     const fillBg = themed.fillBg || semantic.surface.subtle;
     const underlineColor = themed.underlineColor || semantic.border.strong;
     const underlineWidth = themed.underlineWidth || thin;
+    // DSFR draws the rule as an inset box-shadow (its real technique, cf. rule
+    // `underline-hardcoded-border`); Carbon keeps a real geometric border-bottom
+    // (its real technique) so it stays pixel-identical to `.bx--text-input`.
+    if (themed.underlineMode === "shadow") {
+      const underline = `inset 0 -${underlineWidth} 0 0 ${underlineColor}`;
+      return {
+        style,
+        fillBg,
+        borderTop: "none",
+        borderRight: "none",
+        borderBottom: "none",
+        borderLeft: "none",
+        radiusTop,
+        underline,
+        focusShadow: composeFocus(underline)
+      };
+    }
     return {
       style,
       fillBg,
       borderTop: "none",
       borderRight: "none",
       borderBottom: `${underlineWidth} ${borderStyle} ${underlineColor}`,
-      borderLeft: "none"
+      borderLeft: "none",
+      radiusTop,
+      underline: "none",
+      focusShadow: composeFocus("none")
     };
   }
 
@@ -211,7 +265,10 @@ function fieldOf(
     borderTop: border,
     borderRight: border,
     borderBottom: border,
-    borderLeft: border
+    borderLeft: border,
+    radiusTop,
+    underline: "none",
+    focusShadow: composeFocus("none")
   };
 }
 
@@ -254,7 +311,9 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
     typography: typographyOf(foundation, "field"),
     focus,
     // Field style (v1.2.0): outline (boxed, base) vs filled-underline (DSFR/Carbon).
-    field: fieldOf(semantic, foundation, bw, borderStyle),
+    // v1.3.0: radiusTop defaults to the field's own shape radius (radius.md);
+    // the underline is an inset box-shadow, composed with the focus ring.
+    field: fieldOf(semantic, foundation, bw, borderStyle, foundation.radius.md, focus.boxShadow),
     states: {
       hover: { border: semantic.border.strong },
       focus: { border: semantic.border.interactive },

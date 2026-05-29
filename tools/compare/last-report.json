@@ -11,29 +11,20 @@
     "generatedBy": "tools/compare/fidelity.mjs"
   },
   "global": {
-    "eq": 362,
-    "close": 15,
-    "diff": 55,
-    "fidelity": 87.3
+    "eq": 375,
+    "close": 11,
+    "diff": 46,
+    "fidelity": 89.4
   },
   "netGaps": [
     "dsfr/Button: box width (Δ2.0px)",
     "dsfr/Button: box height (Δ2.0px)",
     "dsfr/Button: color (rgb(255,255,255) vs rgb(245,245,254))",
-    "dsfr/Input: border-bottom style (solid vs none)",
-    "dsfr/Input: radius topLeft (Δ-4.0px)",
-    "dsfr/Input: radius topRight (Δ-4.0px)",
-    "dsfr/Textarea: border-bottom style (solid vs none)",
-    "dsfr/Textarea: radius topLeft (Δ-4.0px)",
-    "dsfr/Textarea: radius topRight (Δ-4.0px)",
     "dsfr/Textarea: padding-top (Δ2.0px)",
     "dsfr/Textarea: padding-bottom (Δ2.0px)",
     "dsfr/Textarea: box height (Δ8.0px)",
-    "dsfr/Select: border-bottom style (solid vs none)",
-    "dsfr/Select: radius topLeft (Δ-4.0px)",
-    "dsfr/Select: radius topRight (Δ-4.0px)",
     "dsfr/Select: padding-right (Δ-8.0px)",
-    "dsfr/Select: box height (Δ3.0px)",
+    "dsfr/Select: box height (Δ2.0px)",
     "dsfr/Select: line-height (normal vs 24px)",
     "dsfr/Link: line-height (normal vs 24px)",
     "dsfr/Link: text-decoration (underline vs none)",
@@ -455,11 +446,11 @@
       "refSelector": ".fr-input",
       "refStyled": true,
       "notes": [],
-      "fidelity": 90.3,
+      "fidelity": 100,
       "counts": {
-        "eq": 26,
-        "close": 2,
-        "diff": 3
+        "eq": 31,
+        "close": 0,
+        "diff": 0
       },
       "rows": [
         {
@@ -513,18 +504,18 @@
         {
           "label": "border-bottom width",
           "prop": "border-bottom-width",
-          "ours": "1px",
+          "ours": "0px",
           "ref": "0px",
-          "status": "~",
-          "delta": "Δ1.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "border-bottom style",
           "prop": "border-bottom-style",
-          "ours": "solid",
+          "ours": "none",
           "ref": "none",
-          "status": "≠",
-          "delta": "solid vs none"
+          "status": "=",
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "border-bottom color",
@@ -532,7 +523,7 @@
           "ours": "rgb(58, 58, 58)",
           "ref": "rgb(58, 58, 58)",
           "status": "=",
-          "delta": ""
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "border-left width",
@@ -561,18 +552,18 @@
         {
           "label": "radius topLeft",
           "prop": "border-radius",
-          "ours": "0px",
+          "ours": "4px",
           "ref": "4px",
-          "status": "≠",
-          "delta": "Δ-4.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "radius topRight",
           "prop": "border-radius",
-          "ours": "0px",
+          "ours": "4px",
           "ref": "4px",
-          "status": "≠",
-          "delta": "Δ-4.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "radius bottomRight",
@@ -633,10 +624,10 @@
         {
           "label": "box height",
           "prop": "box-height",
-          "ours": "41px",
+          "ours": "40px",
           "ref": "40px",
-          "status": "~",
-          "delta": "Δ1.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "font-family",
@@ -726,8 +717,8 @@
               "color": "rgb(58, 58, 58)"
             },
             "bottom": {
-              "width": "1px",
-              "style": "solid",
+              "width": "0px",
+              "style": "none",
               "color": "rgb(58, 58, 58)"
             },
             "left": {
@@ -737,8 +728,8 @@
             }
           },
           "radius": {
-            "topLeft": "0px",
-            "topRight": "0px",
+            "topLeft": "4px",
+            "topRight": "4px",
             "bottomRight": "0px",
             "bottomLeft": "0px"
           },
@@ -750,7 +741,7 @@
           },
           "box": {
             "width": 320,
-            "height": 41
+            "height": 40
           },
           "typo": {
             "fontFamily": "Marianne",
@@ -829,11 +820,11 @@
       "refSelector": "textarea.fr-input",
       "refStyled": true,
       "notes": [],
-      "fidelity": 80.6,
+      "fidelity": 90.3,
       "counts": {
-        "eq": 24,
-        "close": 1,
-        "diff": 6
+        "eq": 28,
+        "close": 0,
+        "diff": 3
       },
       "rows": [
         {
@@ -887,18 +878,18 @@
         {
           "label": "border-bottom width",
           "prop": "border-bottom-width",
-          "ours": "1px",
+          "ours": "0px",
           "ref": "0px",
-          "status": "~",
-          "delta": "Δ1.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "border-bottom style",
           "prop": "border-bottom-style",
-          "ours": "solid",
+          "ours": "none",
           "ref": "none",
-          "status": "≠",
-          "delta": "solid vs none"
+          "status": "=",
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "border-bottom color",
@@ -906,7 +897,7 @@
           "ours": "rgb(58, 58, 58)",
           "ref": "rgb(58, 58, 58)",
           "status": "=",
-          "delta": ""
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "border-left width",
@@ -935,18 +926,18 @@
         {
           "label": "radius topLeft",
           "prop": "border-radius",
-          "ours": "0px",
+          "ours": "4px",
           "ref": "4px",
-          "status": "≠",
-          "delta": "Δ-4.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "radius topRight",
           "prop": "border-radius",
-          "ours": "0px",
+          "ours": "4px",
           "ref": "4px",
-          "status": "≠",
-          "delta": "Δ-4.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "radius bottomRight",
@@ -1100,8 +1091,8 @@
               "color": "rgb(58, 58, 58)"
             },
             "bottom": {
-              "width": "1px",
-              "style": "solid",
+              "width": "0px",
+              "style": "none",
               "color": "rgb(58, 58, 58)"
             },
             "left": {
@@ -1111,8 +1102,8 @@
             }
           },
           "radius": {
-            "topLeft": "0px",
-            "topRight": "0px",
+            "topLeft": "4px",
+            "topRight": "4px",
             "bottomRight": "0px",
             "bottomLeft": "0px"
           },
@@ -1203,11 +1194,11 @@
       "refSelector": ".fr-select",
       "refStyled": true,
       "notes": [],
-      "fidelity": 80.6,
+      "fidelity": 90.3,
       "counts": {
-        "eq": 24,
-        "close": 1,
-        "diff": 6
+        "eq": 28,
+        "close": 0,
+        "diff": 3
       },
       "rows": [
         {
@@ -1261,18 +1252,18 @@
         {
           "label": "border-bottom width",
           "prop": "border-bottom-width",
-          "ours": "1px",
+          "ours": "0px",
           "ref": "0px",
-          "status": "~",
-          "delta": "Δ1.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "border-bottom style",
           "prop": "border-bottom-style",
-          "ours": "solid",
+          "ours": "none",
           "ref": "none",
-          "status": "≠",
-          "delta": "solid vs none"
+          "status": "=",
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "border-bottom color",
@@ -1280,7 +1271,7 @@
           "ours": "rgb(58, 58, 58)",
           "ref": "rgb(58, 58, 58)",
           "status": "=",
-          "delta": ""
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "border-left width",
@@ -1309,18 +1300,18 @@
         {
           "label": "radius topLeft",
           "prop": "border-radius",
-          "ours": "0px",
+          "ours": "4px",
           "ref": "4px",
-          "status": "≠",
-          "delta": "Δ-4.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "radius topRight",
           "prop": "border-radius",
-          "ours": "0px",
+          "ours": "4px",
           "ref": "4px",
-          "status": "≠",
-          "delta": "Δ-4.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "radius bottomRight",
@@ -1381,10 +1372,10 @@
         {
           "label": "box height",
           "prop": "box-height",
-          "ours": "43px",
+          "ours": "42px",
           "ref": "40px",
           "status": "≠",
-          "delta": "Δ3.0px"
+          "delta": "Δ2.0px"
         },
         {
           "label": "font-family",
@@ -1474,8 +1465,8 @@
               "color": "rgb(58, 58, 58)"
             },
             "bottom": {
-              "width": "1px",
-              "style": "solid",
+              "width": "0px",
+              "style": "none",
               "color": "rgb(58, 58, 58)"
             },
             "left": {
@@ -1485,8 +1476,8 @@
             }
           },
           "radius": {
-            "topLeft": "0px",
-            "topRight": "0px",
+            "topLeft": "4px",
+            "topRight": "4px",
             "bottomRight": "0px",
             "bottomLeft": "0px"
           },
@@ -1498,7 +1489,7 @@
           },
           "box": {
             "width": 320,
-            "height": 43
+            "height": 42
           },
           "typo": {
             "fontFamily": "Marianne",
