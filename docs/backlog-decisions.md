@@ -150,3 +150,15 @@ LanguageSelector, OrderedList, TreeView, DonutChart, ScatterPlot, StackedBarChar
 démo reasoning), tous `npm run verify` verts, commités/poussés sur `main`. Restant =
 **décisions D1–D6 ci-dessus** + travaux **browser-dépendants** (T#9 sweep composants au
 clic, WP6 retest overlays) qui requièrent ta présence/validation. Aucun publish npm.
+
+- **Nuit 28→29/05 — Fidélité DSFR/Carbon menée à terme + publiée.** Oracle CLI `tools/compare/fidelity.mjs`
+  (comparaison pixel-perfect par bord, Chrome système). 9 familles d'écarts fermées via agents de fond
+  séquencés par le loop, vérifiées à l'oracle, base Sent Tech intacte, push main au fil de l'eau :
+  74,8 % → **96,1 %** (109 → 17 ≠, les 17 restants = escapes PROUVÉS et documentés dans le tracker :
+  métriques police Marianne, lien DSFR réellement souligné, Textarea multiligne, hauteur de carte =
+  empilement de contenu de la référence, breakpoint markup Carbon tabs). Anatomie étendue v1.2.0 → **v1.5.0**
+  (radiusTop, underline/focusShadow, selectAppearance/selectChevron/selectPaddingRight, buttonDensity,
+  card typo, onglet actif), 100 % additive. **Détection fidélité par bord intégrée à la skill**
+  `design-system-skills` (commande `fidelity` + règle statique `underline-hardcoded-border`), propagée aux
+  4 harness. **Publié** (auto-autorisé) : DS cœur `0.10.1` + thèmes `0.2.1`, live sur npm (`834df0a`,
+  tags `v0.10.1`/`themes-v0.2.1`). Loop arrêté.
