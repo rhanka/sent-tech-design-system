@@ -97,10 +97,15 @@
     color: var(--st-component-button-primaryText, var(--st-semantic-action-primaryText));
   }
 
+  /* Secondary (G1): the surface is per-theme. Base/Carbon = filled neutral with
+     a subtle stroke; DSFR « Bouton secondaire » = transparent fill + a 1px Bleu
+     France border + Bleu France text (outlined, not a light-blue fill). The
+     border colour reads its own component token so a theme can paint it Bleu
+     France; the fallback (--st-semantic-border-subtle) keeps the base render. */
   .st-button--secondary {
     background: var(--st-component-button-secondaryBackground, var(--st-semantic-action-secondary));
     color: var(--st-component-button-secondaryText, var(--st-semantic-action-secondaryText));
-    border-color: var(--st-semantic-border-subtle);
+    border-color: var(--st-component-button-secondaryBorder, var(--st-semantic-border-subtle));
   }
 
   /* Anatomy v1.1.0: hover bg sourced from states.hover.bg (= primaryHover).
@@ -109,8 +114,12 @@
     background: var(--st-component-button-anatomy-states-hover-bg, var(--st-semantic-action-primary));
   }
 
+  /* Secondary hover (G1): a per-theme hover surface — DSFR puts a LIGHT Bleu
+     France fill on its otherwise-transparent outlined button. The component
+     token falls back to the base secondary hover surface so Sent Tech is
+     unchanged. */
   .st-button--secondary:not(:disabled):hover {
-    background: var(--st-semantic-action-secondaryHover, var(--st-semantic-action-secondary));
+    background: var(--st-component-button-secondaryHoverBackground, var(--st-semantic-action-secondaryHover, var(--st-semantic-action-secondary)));
   }
 
   .st-button--ghost {

@@ -258,9 +258,27 @@ const foundation = {
   // background-image filet) — so the active tab has NO bottom border.
   // `indicatorSide: "top"` puts our accent on the top edge and collapses the
   // bottom border to 0 to match the reference.
+  // G1 — DSFR « Bouton secondaire ». The official secondary button is an
+  // OUTLINED button, NOT a filled light-blue tile: a TRANSPARENT background, a
+  // 1px Bleu France border (#000091) and Bleu France text, with a light Bleu
+  // France fill (#e3e3fd, --blue-france-925) appearing on hover. Source: DSFR
+  // composant « Bouton » — secondary = `background: transparent; box-shadow:
+  // inset 0 0 0 1px var(--border-action-high-blue-france)` (Bleu France stroke).
+  // The text colour stays `secondaryText` (already Bleu France). Before this the
+  // secondary read `action.secondary` (#e3e3fd light fill) which was the wrong
+  // FILLED look; now the fill is transparent and the Bleu France stroke is drawn.
+  buttonSecondary: {
+    background: "transparent",
+    border: dsfrColor.blueFrance.sun113, // #000091 1px Bleu France stroke
+    hoverBackground: dsfrColor.blueFrance["925"] // #e3e3fd light fill on hover
+  },
   tabs: {
     activeText: dsfrColor.blueFrance.sun113, // #000091 Bleu France
     activeBackground: dsfrColor.grey[1000],  // #ffffff white fill on the active tab
+    // G2 — DSFR « Onglet » non sélectionné: a light grey-blue fill
+    // (--background-action-low-blue-france #e3e3fd) so the white active tab reads
+    // as raised above the inactive ones. Base/Carbon stay transparent.
+    inactiveBackground: dsfrColor.blueFrance["925"], // #e3e3fd
     activeWeight: "700",                      // DSFR active tab is bold
     paddingBlock: "0.5rem",                   // 8px (was 12px)
     paddingInline: "1rem",                    // 16px (was 4px)
