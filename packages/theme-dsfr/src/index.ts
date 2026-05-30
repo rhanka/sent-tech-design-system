@@ -357,6 +357,45 @@ const foundation = {
     fontSize: "1rem",                          // 16px (not the inherited h3 18.72px)
     fontWeight: "500",                         // DSFR header weight
     lineHeight: "1.5rem"                       // 24px
+  },
+  // P-C — DSFR « Étiquette » (.fr-tag). Measured on the official `.fr-tag`:
+  // radius 16px, padding 4px/12px, font-size 14px (0.875rem), font-weight 400,
+  // line-height 24px (1.5rem), a 32px-tall pill-rounded box. Fill #eeeeee
+  // (--grey-950-100, --background-contrast-grey) and text #161616 (--grey-50,
+  // title grey). The base pill (999px, 12px/600, #f6f6f6/#666) is replaced by
+  // this faithful look. minHeight 32px gives the measured box height; the 4px
+  // block padding + 24px line-height already sum to 32px, but the floor guards
+  // the height against the bench label wrapping.
+  tag: {
+    radius: "16px",                            // .fr-tag corner radius
+    paddingBlock: "0.25rem",                   // 4px
+    paddingInline: "0.75rem",                  // 12px
+    fontSize: "0.875rem",                      // 14px
+    fontWeight: "400",                         // DSFR tag weight
+    lineHeight: "1.5rem",                      // 24px
+    minHeight: "2rem",                         // 32px box
+    neutralBackground: dsfrColor.grey[950],    // #eeeeee
+    neutralText: dsfrColor.grey[50]            // #161616 (title grey)
+  },
+  // P-C — DSFR « Badge » (.fr-badge). Measured on the official default `.fr-badge`:
+  // radius 4px, padding 0/8px, font-size 14px (0.875rem), font-weight 700,
+  // line-height 24px (1.5rem), text-transform UPPERCASE, a 24px-tall label. Fill
+  // #eeeeee (--grey-950-100) and text #3a3a3a (--grey-200, --text-default-grey).
+  // The bench renders our INFO badge against this neutral grey reference, so the
+  // INFO tone is recoloured to the measured grey (the success/warning/error tones
+  // keep their semantic feedback colours). The base pill (999px, 12px/650, no
+  // transform) is replaced by this faithful look.
+  badge: {
+    radius: "4px",                             // .fr-badge corner radius
+    paddingBlock: "0",                         // 0
+    paddingInline: "0.5rem",                   // 8px
+    fontSize: "0.875rem",                      // 14px
+    fontWeight: "700",                         // DSFR badge weight
+    lineHeight: "1.5rem",                      // 24px
+    textTransform: "uppercase",                // DSFR badge is uppercased
+    minHeight: "1.5rem",                       // 24px box
+    infoBackground: dsfrColor.grey[950],       // #eeeeee (matches the measured neutral ref)
+    infoText: dsfrColor.grey[200]              // #3a3a3a
   }
 } as const;
 
