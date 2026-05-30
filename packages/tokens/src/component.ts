@@ -171,6 +171,69 @@ interface BreadcrumbInput {
   currentWeight?: string; // current-page font-weight; default "600" (current render)
 }
 
+// P-B (additive) — Alert / inline-notification primitive. Every leaf is optional
+// and DEFAULTS to the current base render: a `surface.raised` fill, a 1px
+// `border.subtle` box, a 4px left accent coloured per severity, 16px padding on
+// all sides and the inherited body typography (`normal` line-height). So the
+// base Sent Tech alert is byte-identical. DSFR « Alerte » draws NO box border and
+// NO fill — its severity accent is a left FILET drawn as a `::before` (not a
+// border), so all four measured borders are 0; Carbon « inline notification » is
+// a dark Gray-80 banner with white text and a 3px coloured LEFT BAR (a real
+// border) and the rest of the padding carried by inner wrappers.
+interface AlertInput {
+  background?: string;       // alert fill; default = semantic.surface.raised
+  text?: string;             // alert text colour; default = semantic.text.primary
+  // Per-side border shorthands (`<width> <style> <color>` or `none`). Default =
+  // the base 1px subtle box on top/right/bottom; the LEFT side is the accent edge
+  // (default 4px, coloured per severity by the component). A theme can drop the
+  // box (DSFR: all `none`) or keep only a coloured left bar (Carbon).
+  borderTop?: string;
+  borderRight?: string;
+  borderBottom?: string;
+  // The LEFT border WIDTH only (its colour is the per-severity accent, applied by
+  // the component). Default "0.25rem" (4px, current). DSFR sets "0" (accent is a
+  // ::before filet, not a border); Carbon sets "3px".
+  accentWidth?: string;
+  // The FILET width — a `::before` left bar coloured per severity, drawn INSIDE
+  // the box so it adds NO measured border. Default "0" (no filet; base/Carbon use
+  // a real left border). DSFR sets "0.25rem" (4px) AND accentWidth "0", so the
+  // accent reads as a filet and all four measured borders stay 0 — matching the
+  // real `.fr-alert`.
+  filetWidth?: string;
+  paddingTop?: string;       // default "1rem" (16px, current)
+  paddingRight?: string;     // default "1rem"
+  paddingBottom?: string;    // default "1rem"
+  paddingLeft?: string;      // default "1rem"
+  fontSize?: string;         // default "inherit" (current — title/message set their own)
+  lineHeight?: string;       // default "normal" (current render)
+  letterSpacing?: string;    // default "normal" (current render)
+  // Per-severity accent colour overrides. Default = the matching `semantic.
+  // feedback.*` role (base unchanged). Carbon's inline-notification accent is a
+  // dedicated lighter Blue (#4589ff $support-info-inverse-ish), distinct from its
+  // `feedback.info` ($0043ce), so it overrides `accentInfo` without touching the
+  // shared feedback role other components read.
+  accentInfo?: string;
+  accentSuccess?: string;
+  accentWarning?: string;
+  accentError?: string;
+}
+
+// P-B (additive) — Accordion TRIGGER primitive. Every leaf is optional and
+// DEFAULTS to the current base render (14px block / 8px inline padding, inherited
+// font-size via `font: inherit`, weight 600, `normal` line-height, primary text).
+// So the base Sent Tech accordion is byte-identical. DSFR « Accordéon » header:
+// 12px/16px padding, 16px / 24px line-height, weight 500, Bleu France text.
+// Carbon « Accordion » heading: 10px block / 0 inline padding, 14px font, weight
+// 400, primary text.
+interface AccordionInput {
+  text?: string;             // trigger text colour; default = semantic.text.primary
+  paddingBlock?: string;     // trigger vertical padding; default "0.875rem" (14px, current)
+  paddingInline?: string;    // trigger horizontal padding; default "0.5rem" (8px, current)
+  fontSize?: string;         // trigger font-size; default "inherit" (current render)
+  fontWeight?: string;       // trigger font-weight; default "600" (current render)
+  lineHeight?: string;       // trigger line-height; default "normal" (current render)
+}
+
 interface FoundationInput {
   radius: { none?: string; sm?: string; md: string; lg: string; pill: string };
   shadow: { subtle: string; medium: string; floating: string };
@@ -198,6 +261,10 @@ interface FoundationInput {
   // omitted (base) both keep the current render via the resolver defaults.
   pagination?: PaginationInput;
   breadcrumb?: BreadcrumbInput;
+  // P-B (additive): per-theme Alert / Accordion anatomy. Optional — when omitted
+  // (base) both keep the current render via the resolver defaults.
+  alert?: AlertInput;
+  accordion?: AccordionInput;
   // F9 (additive): a BUTTON-specific density override. The button shares the
   // control `density` scale with the fields (Input/Select/Textarea/Tabs all read
   // it), so a button-only geometry — e.g. Carbon's tall 48px primary button with
@@ -440,6 +507,87 @@ function breadcrumbOf(semantic: SemanticInput, f: FoundationInput): {
     lineHeight: b.lineHeight ?? "normal",
     letterSpacing: b.letterSpacing ?? "normal",
     currentWeight: b.currentWeight ?? "600"
+  };
+}
+
+/**
+ * Alert resolution (P-B). Resolves the per-theme alert primitive into a flat,
+ * CSS-ready set the Alert component consumes verbatim. Every leaf DEFAULTS to the
+ * prior base render (surface.raised fill, 1px subtle box on top/right/bottom, a
+ * 4px left accent edge, 16px padding all sides, inherited font / `normal`
+ * line-height) so the base Sent Tech alert is byte-identical. DSFR drops the box
+ * + fill (accent becomes a `::before` filet → left border 0); Carbon paints a
+ * dark banner with a 3px coloured left bar (a real border).
+ */
+function alertOf(semantic: SemanticInput, f: FoundationInput, thin: string, borderStyle: string): {
+  background: string;
+  text: string;
+  borderTop: string;
+  borderRight: string;
+  borderBottom: string;
+  accentWidth: string;
+  filetWidth: string;
+  paddingTop: string;
+  paddingRight: string;
+  paddingBottom: string;
+  paddingLeft: string;
+  fontSize: string;
+  lineHeight: string;
+  letterSpacing: string;
+  accentInfo: string;
+  accentSuccess: string;
+  accentWarning: string;
+  accentError: string;
+} {
+  const a = f.alert ?? {};
+  // The base box border = 1px subtle on top/right/bottom (the left edge is the
+  // accent, sized by accentWidth and coloured per severity by the component).
+  const box = `${thin} ${borderStyle} ${semantic.border.subtle}`;
+  return {
+    background: a.background || semantic.surface.raised,
+    text: a.text || semantic.text.primary,
+    borderTop: a.borderTop || box,
+    borderRight: a.borderRight || box,
+    borderBottom: a.borderBottom || box,
+    accentWidth: a.accentWidth ?? "0.25rem", // 4px (current)
+    filetWidth: a.filetWidth ?? "0",          // no filet (base/Carbon use a real left border)
+    paddingTop: a.paddingTop ?? "1rem",
+    paddingRight: a.paddingRight ?? "1rem",
+    paddingBottom: a.paddingBottom ?? "1rem",
+    paddingLeft: a.paddingLeft ?? "1rem",
+    fontSize: a.fontSize ?? "inherit",
+    lineHeight: a.lineHeight ?? "normal",
+    letterSpacing: a.letterSpacing ?? "normal",
+    accentInfo: a.accentInfo || semantic.feedback.info,
+    accentSuccess: a.accentSuccess || semantic.feedback.success,
+    accentWarning: a.accentWarning || semantic.feedback.warning,
+    accentError: a.accentError || semantic.feedback.error
+  };
+}
+
+/**
+ * Accordion resolution (P-B). Resolves the per-theme accordion-trigger primitive
+ * into a flat set the Accordion component consumes verbatim. Every leaf DEFAULTS
+ * to the prior base render (14px block / 8px inline padding, inherited font-size,
+ * weight 600, `normal` line-height, primary text) so the base Sent Tech accordion
+ * is byte-identical. DSFR / Carbon pin the real header metrics.
+ */
+function accordionOf(semantic: SemanticInput, f: FoundationInput): {
+  text: string;
+  paddingBlock: string;
+  paddingInline: string;
+  fontSize: string;
+  fontWeight: string;
+  lineHeight: string;
+} {
+  const a = f.accordion ?? {};
+  return {
+    text: a.text || semantic.text.primary,
+    paddingBlock: a.paddingBlock ?? "0.875rem", // 14px (current)
+    paddingInline: a.paddingInline ?? "0.5rem", // 8px (current)
+    fontSize: a.fontSize ?? "inherit",
+    fontWeight: a.fontWeight ?? "600",
+    lineHeight: a.lineHeight ?? "normal"
   };
 }
 
@@ -727,6 +875,10 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
   const paginationResolved = paginationOf(semantic, foundation, bw.thin, foundation.radius.md);
   const breadcrumbResolved = breadcrumbOf(semantic, foundation);
 
+  // P-B — Alert / Accordion anatomy (per theme; base render unchanged).
+  const alertResolved = alertOf(semantic, foundation, bw.thin, borderStyle);
+  const accordionResolved = accordionOf(semantic, foundation);
+
   return {
     button: {
       radius: foundation.radius.md,
@@ -748,14 +900,43 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       anatomy: linkAnatomy
     },
     alert: {
-      background: semantic.surface.raised,
-      text: semantic.text.primary,
+      // Existing leaves keep their names (consumers/docs unchanged); background
+      // and text now resolve through `alertOf` (identical defaults = unchanged base).
+      background: alertResolved.background,
+      text: alertResolved.text,
       border: semantic.border.subtle,
-      infoBorder: semantic.feedback.info,
-      successBorder: semantic.feedback.success,
-      warningBorder: semantic.feedback.warning,
-      errorBorder: semantic.feedback.error,
-      radius: foundation.radius.lg
+      // Per-severity accent colours now resolve through `alertOf` (default = the
+      // matching feedback role → base unchanged; Carbon overrides accentInfo).
+      infoBorder: alertResolved.accentInfo,
+      successBorder: alertResolved.accentSuccess,
+      warningBorder: alertResolved.accentWarning,
+      errorBorder: alertResolved.accentError,
+      radius: foundation.radius.lg,
+      // P-B additive leaves — per-theme alert anatomy (base = unchanged).
+      borderTop: alertResolved.borderTop,
+      borderRight: alertResolved.borderRight,
+      borderBottom: alertResolved.borderBottom,
+      // Left accent: a real left border of `accentWidth` (base/Carbon) OR a
+      // `::before` filet of `filetWidth` drawn inside the box (DSFR) so the
+      // measured left border stays 0. Both coloured per severity by the component.
+      accentWidth: alertResolved.accentWidth,
+      filetWidth: alertResolved.filetWidth,
+      paddingTop: alertResolved.paddingTop,
+      paddingRight: alertResolved.paddingRight,
+      paddingBottom: alertResolved.paddingBottom,
+      paddingLeft: alertResolved.paddingLeft,
+      fontSize: alertResolved.fontSize,
+      lineHeight: alertResolved.lineHeight,
+      letterSpacing: alertResolved.letterSpacing
+    },
+    accordion: {
+      // P-B — per-theme accordion-trigger anatomy (base = unchanged).
+      text: accordionResolved.text,
+      paddingBlock: accordionResolved.paddingBlock,
+      paddingInline: accordionResolved.paddingInline,
+      fontSize: accordionResolved.fontSize,
+      fontWeight: accordionResolved.fontWeight,
+      lineHeight: accordionResolved.lineHeight
     },
     card: {
       background: cardBackground,

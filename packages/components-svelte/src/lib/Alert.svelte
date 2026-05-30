@@ -41,30 +41,69 @@
 <style>
   .st-alert {
     background: var(--st-component-alert-background, var(--st-semantic-surface-raised));
-    border: 1px solid var(--st-component-alert-border, var(--st-semantic-border-subtle));
-    border-left-width: 0.25rem;
+    /* Per-side box border (P-B): top/right/bottom resolve per theme (base = 1px
+       subtle box; DSFR = none; Carbon = none — its only visible edge is the left
+       bar). Fallbacks reproduce the prior 1px subtle box. */
+    border-top: var(
+      --st-component-alert-borderTop,
+      1px solid var(--st-component-alert-border, var(--st-semantic-border-subtle))
+    );
+    border-right: var(
+      --st-component-alert-borderRight,
+      1px solid var(--st-component-alert-border, var(--st-semantic-border-subtle))
+    );
+    border-bottom: var(
+      --st-component-alert-borderBottom,
+      1px solid var(--st-component-alert-border, var(--st-semantic-border-subtle))
+    );
+    /* Left accent edge: a real left border of `accentWidth` (base 4px / Carbon
+       3px), coloured per severity via --alert-accent. DSFR sets accentWidth 0 and
+       draws the accent as a ::before filet instead (see below). */
+    border-left-style: solid;
+    border-left-width: var(--st-component-alert-accentWidth, 0.25rem);
+    border-left-color: var(--alert-accent, var(--st-semantic-feedback-info));
     border-radius: 0;
     color: var(--st-component-alert-text, var(--st-semantic-text-primary));
     display: flex;
+    font-size: var(--st-component-alert-fontSize, inherit);
+    line-height: var(--st-component-alert-lineHeight, normal);
+    letter-spacing: var(--st-component-alert-letterSpacing, normal);
     gap: var(--st-spacing-4, 1rem);
     justify-content: space-between;
-    padding: var(--st-spacing-4, 1rem);
+    position: relative;
+    padding: var(--st-component-alert-paddingTop, var(--st-spacing-4, 1rem))
+      var(--st-component-alert-paddingRight, var(--st-spacing-4, 1rem))
+      var(--st-component-alert-paddingBottom, var(--st-spacing-4, 1rem))
+      var(--st-component-alert-paddingLeft, var(--st-spacing-4, 1rem));
+  }
+
+  /* Severity filet (DSFR): a left bar drawn as a ::before INSIDE the box, so it
+     adds NO measured border (the real `.fr-alert` accent technique). Width 0 by
+     default (base/Carbon use a real left border) → the bar is invisible. */
+  .st-alert::before {
+    background: var(--alert-accent, var(--st-semantic-feedback-info));
+    bottom: 0;
+    content: "";
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: var(--st-component-alert-filetWidth, 0);
   }
 
   .st-alert--info {
-    border-left-color: var(--st-component-alert-infoBorder, var(--st-semantic-feedback-info));
+    --alert-accent: var(--st-component-alert-infoBorder, var(--st-semantic-feedback-info));
   }
 
   .st-alert--success {
-    border-left-color: var(--st-component-alert-successBorder, var(--st-semantic-feedback-success));
+    --alert-accent: var(--st-component-alert-successBorder, var(--st-semantic-feedback-success));
   }
 
   .st-alert--warning {
-    border-left-color: var(--st-component-alert-warningBorder, var(--st-semantic-feedback-warning));
+    --alert-accent: var(--st-component-alert-warningBorder, var(--st-semantic-feedback-warning));
   }
 
   .st-alert--error {
-    border-left-color: var(--st-component-alert-errorBorder, var(--st-semantic-feedback-error));
+    --alert-accent: var(--st-component-alert-errorBorder, var(--st-semantic-feedback-error));
   }
 
   .st-alert__content {

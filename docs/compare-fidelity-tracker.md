@@ -144,7 +144,7 @@ restés en « Sent Tech base », vers ~95 % à l'oracle. Per-thème, base intact
 | Cluster | Composants (fidélité départ) | Statut |
 |---|---|---|
 | P-A | Pagination (48/35 %), Breadcrumb (84 %) | ✅ Pagination **100 %/100 %**, Breadcrumb **96,8 %/100 %** (F10) |
-| P-B | Alert (48/42 %), Accordion (68/74 %) | ⬜ |
+| P-B | Alert (48/42 %), Accordion (68/74 %) | ✅ Alert **93,5 %/93,5 %**, Accordion **96,8 %/96,8 %** (résidus = boîte W/H bench) |
 | P-C | Tag (58 %), Badge (55 % DSFR) | ⬜ |
 | P-D | Toggle (58/51 %), Search (77/81 %), Checkbox/Radio (87 %) résidus | ⬜ |
 
@@ -178,6 +178,51 @@ posées par thème dans `theme-dsfr`/`theme-carbon`.
   à la line-box de 20px. Écart de **modèle de boîte inline-vs-flex du markup de référence**, pas une
   dérive de token : ramener la boîte à 18px casserait l'alignement du séparateur sans changer aucune
   valeur stylée mesurée. Classé escape prouvé.
+
+### P-B — Alert & Accordion portés à l'anatomie DSFR/Carbon (additif) ✅
+Primitives additives `AlertInput` / `AccordionInput` dans `packages/tokens/src/component.ts`
+(résolveurs `alertOf` / `accordionOf`), émises pour les **3 thèmes** ; tout leaf par défaut =
+**rendu base actuel** (alerte : fond `surface.raised`, encadré 1px `border.subtle`, accent gauche 4px
+par sévérité, padding 16px partout, typo héritée / line-height `normal` ; accordéon : padding 14/8px,
+font-size hérité, poids 600, line-height `normal`, texte `text.primary`) → base Sent Tech **inchangée**
+(`sent-tech.css`/`forge.css`/`entropic.css` ne gagnent que **18 vars inertes** chacun, 0 ligne existante
+modifiée). Valeurs réelles posées par thème dans `theme-dsfr`/`theme-carbon`.
+
+- **Alert** : encadré par bord + fond + padding + typo + accent latéral, par thème. L'accent de sévérité
+  est tiré soit comme **bordure gauche réelle** (base 4px / Carbon 3px) soit comme **filet `::before`**
+  (DSFR) dessiné DANS la boîte → 0 bordure mesurée, technique réelle de `.fr-alert`. La couleur d'accent
+  par sévérité reste `feedback.*` (base) ; Carbon surcharge `accentInfo` (#4589ff, distinct de son
+  `feedback.info` #0043ce) sans toucher le rôle partagé.
+  - DSFR `.fr-alert` : **fond transparent, 0 bordure** (accent = filet `::before` 4px), padding
+    16/36/12/56px (gouttières icône+fermeture), 16px / line-height 24px, texte #3a3a3a → **93,5 %** (48,4 → 93,5).
+  - Carbon `.bx--inline-notification` : **bannière Gray-80 #393939**, texte blanc, **barre gauche 3px**
+    `#4589ff`, padding 0 (porté par les wrappers internes), 14px / line-height 14px / tracking 0,16px → **93,5 %** (41,9 → 93,5).
+- **Accordion** : typo + padding + couleur du déclencheur (`.st-accordion__trigger`), par thème.
+  - DSFR `.fr-accordion__btn` : en-tête **Bleu France #000091**, padding 12/16px, **16px / 500 /
+    line-height 24px** (au lieu du 18,72px/600 hérité du h3) → **96,8 %** (67,7 → 96,8).
+  - Carbon `.bx--accordion__heading` : padding 10px/0, **13,33px / 400**, line-height `normal`, texte
+    #161616 (déjà `text.primary`) → **96,8 %** (74,2 → 96,8).
+
+#### Résidus 🛡️ justifiés (P-B)
+Tous les résidus restants sont des écarts de **boîte W/H** ; **toutes** les propriétés *stylées*
+(bordures, fond, accent, padding, typo, couleur) matchent à l'identique des deux côtés.
+- **Accordion DSFR & Carbon — box width 301px vs 273px (Δ28px), 1 seul ≠ chacun.** Même artefact de
+  **largeur de banc** que P-A : la cellule de comparaison met en page le déclencheur à sa largeur
+  intrinsèque (301px) tandis que l'iframe de référence rend son contenu à 273px. Padding/typo/couleur =
+  identiques. Pas une dérive de token.
+- **Alert DSFR — box width 301 vs 273 + box height 98 vs 108 (Δ-10px), 2 ≠.** Largeur = artefact de banc
+  (idem). Hauteur : la réf, plus étroite (273px), fait **retourner le texte sur plus de lignes** et
+  réserve la rangée du bouton de fermeture, d'où +10px ; toutes les valeurs *stylées* (padding 16/36/12/56,
+  line-height 24px, fond transparent, 0 bordure) matchent. Écart **dérivé du retour à la ligne du contenu
+  à largeur de réf**, pas un token.
+- **Alert Carbon — box width 191,6 vs 288 + box height 39 vs 66, 2 ≠.** La `.bx--inline-notification`
+  officielle est un **conteneur flex pleine largeur** dont la largeur (288px) et la hauteur (66px,
+  min-height) sont portées par ses wrappers internes `__details`/`__text-wrapper` (la boîte externe a
+  **padding 0**, exactement comme nous) ; notre `.st-alert` plat est dimensionné par son contenu (191,6 ×
+  39). Écart de **structure de markup imbriqué de la référence**, pas une dérive de token : reproduire le
+  288×66 imposerait d'imbriquer des wrappers Carbon-spécifiques dans `.st-alert` (régression des autres
+  thèmes + base). Classé escape prouvé — toutes les propriétés stylées (fond #393939, texte blanc, barre
+  gauche 3px #4589ff, padding 0, 14px/14px/0,16px) sont identiques à la réf.
 
 Puis : **reste G9** (pages docs Modal/Toast/Drawer/Popover/Dropdown/Menu au standard exhaustif), puis
 **publication groupée** `0.10.2` / `0.2.2` (cœur + thèmes) — autorisée par l'utilisateur (« fais dans l'ordre que tu préconises »).

@@ -599,39 +599,39 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 
 | Propriété / Bord | Nous | Référence officielle | Δ / statut |
 |---|---|---|---|
-| border-top width | 1px | 0px | ~ Δ1.0px |
-| border-top style | solid | none | ≠ solid vs none |
-| border-top color | rgb(238, 238, 238) | rgb(58, 58, 58) | ≠ rgb(238,238,238) vs rgb(58,58,58) |
-| border-right width | 1px | 0px | ~ Δ1.0px |
-| border-right style | solid | none | ≠ solid vs none |
-| border-right color | rgb(238, 238, 238) | rgb(58, 58, 58) | ≠ rgb(238,238,238) vs rgb(58,58,58) |
-| border-bottom width | 1px | 0px | ~ Δ1.0px |
-| border-bottom style | solid | none | ≠ solid vs none |
-| border-bottom color | rgb(238, 238, 238) | rgb(58, 58, 58) | ≠ rgb(238,238,238) vs rgb(58,58,58) |
-| border-left width | 4px | 0px | ≠ Δ4.0px |
-| border-left style | solid | none | ≠ solid vs none |
-| border-left color | rgb(0, 99, 203) | rgb(58, 58, 58) | ≠ rgb(0,99,203) vs rgb(58,58,58) |
+| border-top width | 0px | 0px | = |
+| border-top style | none | none | = (bord 0px (invisible)) |
+| border-top color | rgb(58, 58, 58) | rgb(58, 58, 58) | = (bord 0px (invisible)) |
+| border-right width | 0px | 0px | = |
+| border-right style | none | none | = (bord 0px (invisible)) |
+| border-right color | rgb(58, 58, 58) | rgb(58, 58, 58) | = (bord 0px (invisible)) |
+| border-bottom width | 0px | 0px | = |
+| border-bottom style | none | none | = (bord 0px (invisible)) |
+| border-bottom color | rgb(58, 58, 58) | rgb(58, 58, 58) | = (bord 0px (invisible)) |
+| border-left width | 0px | 0px | = |
+| border-left style | solid | none | = (bord 0px (invisible)) |
+| border-left color | rgb(0, 99, 203) | rgb(58, 58, 58) | = (bord 0px (invisible)) |
 | radius topLeft | 0px | 0px | = |
 | radius topRight | 0px | 0px | = |
 | radius bottomRight | 0px | 0px | = |
 | radius bottomLeft | 0px | 0px | = |
 | padding-top | 16px | 16px | = |
-| padding-right | 16px | 36px | ≠ Δ-20.0px |
-| padding-bottom | 16px | 12px | ≠ Δ4.0px |
-| padding-left | 16px | 56px | ≠ Δ-40.0px |
-| box width | 296.2px | 273px | ≠ Δ23.2px |
-| box height | 82px | 108px | ≠ Δ-26.0px |
+| padding-right | 36px | 36px | = |
+| padding-bottom | 12px | 12px | = |
+| padding-left | 56px | 56px | = |
+| box width | 301px | 273px | ≠ Δ28.0px |
+| box height | 98px | 108px | ≠ Δ-10.0px |
 | font-family | Marianne | Marianne | = |
 | font-size | 16px | 16px | = |
 | font-weight | 400 | 400 | = |
-| line-height | normal | 24px | ≠ normal vs 24px |
+| line-height | 24px | 24px | = |
 | letter-spacing | normal | normal | = |
 | text-transform | none | none | = |
 | text-decoration | none | none | = |
-| background-color | rgb(255, 255, 255) | rgba(0, 0, 0, 0) | ≠ rgb(255,255,255) vs rgb(0,0,0)/a0 |
+| background-color | rgba(0, 0, 0, 0) | rgba(0, 0, 0, 0) | = |
 | color | rgb(58, 58, 58) | rgb(58, 58, 58) | = |
 
-**Fidélité Alert (dsfr) : 48.4%** — 12 `=`, 3 `~`, 16 `≠` sur 31 propriétés.
+**Fidélité Alert (dsfr) : 93.5%** — 29 `=`, 0 `~`, 2 `≠` sur 31 propriétés.
 
 ### Accordion
 
@@ -642,37 +642,37 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 |---|---|---|---|
 | border-top width | 0px | 0px | = |
 | border-top style | none | none | = (bord 0px (invisible)) |
-| border-top color | rgb(58, 58, 58) | rgb(0, 0, 145) | = (bord 0px (invisible)) |
+| border-top color | rgb(0, 0, 145) | rgb(0, 0, 145) | = (bord 0px (invisible)) |
 | border-right width | 0px | 0px | = |
 | border-right style | none | none | = (bord 0px (invisible)) |
-| border-right color | rgb(58, 58, 58) | rgb(0, 0, 145) | = (bord 0px (invisible)) |
+| border-right color | rgb(0, 0, 145) | rgb(0, 0, 145) | = (bord 0px (invisible)) |
 | border-bottom width | 0px | 0px | = |
 | border-bottom style | none | none | = (bord 0px (invisible)) |
-| border-bottom color | rgb(58, 58, 58) | rgb(0, 0, 145) | = (bord 0px (invisible)) |
+| border-bottom color | rgb(0, 0, 145) | rgb(0, 0, 145) | = (bord 0px (invisible)) |
 | border-left width | 0px | 0px | = |
 | border-left style | none | none | = (bord 0px (invisible)) |
-| border-left color | rgb(58, 58, 58) | rgb(0, 0, 145) | = (bord 0px (invisible)) |
+| border-left color | rgb(0, 0, 145) | rgb(0, 0, 145) | = (bord 0px (invisible)) |
 | radius topLeft | 0px | 0px | = |
 | radius topRight | 0px | 0px | = |
 | radius bottomRight | 0px | 0px | = |
 | radius bottomLeft | 0px | 0px | = |
-| padding-top | 14px | 12px | ≠ Δ2.0px |
-| padding-right | 8px | 16px | ≠ Δ-8.0px |
-| padding-bottom | 14px | 12px | ≠ Δ2.0px |
-| padding-left | 8px | 16px | ≠ Δ-8.0px |
+| padding-top | 12px | 12px | = |
+| padding-right | 16px | 16px | = |
+| padding-bottom | 12px | 12px | = |
+| padding-left | 16px | 16px | = |
 | box width | 301px | 273px | ≠ Δ28.0px |
-| box height | 56px | 48px | ≠ Δ8.0px |
+| box height | 48px | 48px | = |
 | font-family | Marianne | Marianne | = |
-| font-size | 18.72px | 16px | ≠ Δ2.7px |
-| font-weight | 600 | 500 | ≠ 600 vs 500 |
-| line-height | normal | 24px | ≠ normal vs 24px |
+| font-size | 16px | 16px | = |
+| font-weight | 500 | 500 | = |
+| line-height | 24px | 24px | = |
 | letter-spacing | normal | normal | = |
 | text-transform | none | none | = |
 | text-decoration | none | none | = |
 | background-color | rgba(0, 0, 0, 0) | rgba(0, 0, 0, 0) | = |
-| color | rgb(58, 58, 58) | rgb(0, 0, 145) | ≠ rgb(58,58,58) vs rgb(0,0,145) |
+| color | rgb(0, 0, 145) | rgb(0, 0, 145) | = |
 
-**Fidélité Accordion (dsfr) : 67.7%** — 21 `=`, 0 `~`, 10 `≠` sur 31 propriétés.
+**Fidélité Accordion (dsfr) : 96.8%** — 30 `=`, 0 `~`, 1 `≠` sur 31 propriétés.
 
 ### Breadcrumb
 
@@ -1465,39 +1465,39 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 
 | Propriété / Bord | Nous | Référence officielle | Δ / statut |
 |---|---|---|---|
-| border-top width | 1px | 0px | ~ Δ1.0px |
-| border-top style | solid | none | ≠ solid vs none |
-| border-top color | rgb(224, 224, 224) | rgb(255, 255, 255) | ≠ rgb(224,224,224) vs rgb(255,255,255) |
-| border-right width | 1px | 0px | ~ Δ1.0px |
-| border-right style | solid | none | ≠ solid vs none |
-| border-right color | rgb(224, 224, 224) | rgb(255, 255, 255) | ≠ rgb(224,224,224) vs rgb(255,255,255) |
-| border-bottom width | 1px | 0px | ~ Δ1.0px |
-| border-bottom style | solid | none | ≠ solid vs none |
-| border-bottom color | rgb(224, 224, 224) | rgb(255, 255, 255) | ≠ rgb(224,224,224) vs rgb(255,255,255) |
-| border-left width | 4px | 3px | ~ Δ1.0px |
+| border-top width | 0px | 0px | = |
+| border-top style | none | none | = (bord 0px (invisible)) |
+| border-top color | rgb(255, 255, 255) | rgb(255, 255, 255) | = (bord 0px (invisible)) |
+| border-right width | 0px | 0px | = |
+| border-right style | none | none | = (bord 0px (invisible)) |
+| border-right color | rgb(255, 255, 255) | rgb(255, 255, 255) | = (bord 0px (invisible)) |
+| border-bottom width | 0px | 0px | = |
+| border-bottom style | none | none | = (bord 0px (invisible)) |
+| border-bottom color | rgb(255, 255, 255) | rgb(255, 255, 255) | = (bord 0px (invisible)) |
+| border-left width | 3px | 3px | = |
 | border-left style | solid | solid | = |
-| border-left color | rgb(0, 67, 206) | rgb(69, 137, 255) | ≠ rgb(0,67,206) vs rgb(69,137,255) |
+| border-left color | rgb(69, 137, 255) | rgb(69, 137, 255) | = |
 | radius topLeft | 0px | 0px | = |
 | radius topRight | 0px | 0px | = |
 | radius bottomRight | 0px | 0px | = |
 | radius bottomLeft | 0px | 0px | = |
-| padding-top | 16px | 0px | ≠ Δ16.0px |
-| padding-right | 16px | 0px | ≠ Δ16.0px |
-| padding-bottom | 16px | 0px | ≠ Δ16.0px |
-| padding-left | 16px | 0px | ≠ Δ16.0px |
-| box width | 221.2px | 288px | ≠ Δ-66.8px |
-| box height | 78px | 66px | ≠ Δ12.0px |
+| padding-top | 0px | 0px | = |
+| padding-right | 0px | 0px | = |
+| padding-bottom | 0px | 0px | = |
+| padding-left | 0px | 0px | = |
+| box width | 191.6px | 288px | ≠ Δ-96.4px |
+| box height | 39px | 66px | ≠ Δ-27.0px |
 | font-family | IBM Plex Sans | IBM Plex Sans | = |
-| font-size | 16px | 14px | ≠ Δ2.0px |
+| font-size | 14px | 14px | = |
 | font-weight | 400 | 400 | = |
-| line-height | normal | 14px | ≠ normal vs 14px |
-| letter-spacing | normal | 0.16px | ≠ normal vs 0.16px |
+| line-height | 14px | 14px | = |
+| letter-spacing | 0.16px | 0.16px | = |
 | text-transform | none | none | = |
 | text-decoration | none | none | = |
-| background-color | rgb(255, 255, 255) | rgb(57, 57, 57) | ≠ rgb(255,255,255) vs rgb(57,57,57) |
-| color | rgb(22, 22, 22) | rgb(255, 255, 255) | ≠ rgb(22,22,22) vs rgb(255,255,255) |
+| background-color | rgb(57, 57, 57) | rgb(57, 57, 57) | = |
+| color | rgb(255, 255, 255) | rgb(255, 255, 255) | = |
 
-**Fidélité Alert (carbon) : 41.9%** — 9 `=`, 4 `~`, 18 `≠` sur 31 propriétés.
+**Fidélité Alert (carbon) : 93.5%** — 29 `=`, 0 `~`, 2 `≠` sur 31 propriétés.
 
 ### Accordion
 
@@ -1522,15 +1522,15 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 | radius topRight | 0px | 0px | = |
 | radius bottomRight | 0px | 0px | = |
 | radius bottomLeft | 0px | 0px | = |
-| padding-top | 14px | 10px | ≠ Δ4.0px |
-| padding-right | 8px | 0px | ≠ Δ8.0px |
-| padding-bottom | 14px | 10px | ≠ Δ4.0px |
-| padding-left | 8px | 0px | ≠ Δ8.0px |
+| padding-top | 10px | 10px | = |
+| padding-right | 0px | 0px | = |
+| padding-bottom | 10px | 10px | = |
+| padding-left | 0px | 0px | = |
 | box width | 301px | 273px | ≠ Δ28.0px |
-| box height | 52px | 40px | ≠ Δ12.0px |
+| box height | 40px | 40px | = |
 | font-family | IBM Plex Sans | IBM Plex Sans | = |
-| font-size | 18.72px | 13.3333px | ≠ Δ5.4px |
-| font-weight | 600 | 400 | ≠ 600 vs 400 |
+| font-size | 13.3333px | 13.3333px | = |
+| font-weight | 400 | 400 | = |
 | line-height | normal | normal | = |
 | letter-spacing | normal | normal | = |
 | text-transform | none | none | = |
@@ -1538,7 +1538,7 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 | background-color | rgba(0, 0, 0, 0) | rgba(0, 0, 0, 0) | = |
 | color | rgb(22, 22, 22) | rgb(22, 22, 22) | = |
 
-**Fidélité Accordion (carbon) : 74.2%** — 23 `=`, 0 `~`, 8 `≠` sur 31 propriétés.
+**Fidélité Accordion (carbon) : 96.8%** — 30 `=`, 0 `~`, 1 `≠` sur 31 propriétés.
 
 ### Breadcrumb
 
@@ -1725,8 +1725,8 @@ Couverture mesurée : **41 paires** (notre composant mappé vs vrai composant of
 | dsfr | Toggle | 58.1% | 18 | 0 | 13 | oui |
 | dsfr | Tag | 58.1% | 18 | 0 | 13 | oui |
 | dsfr | Badge | 54.8% | 17 | 0 | 14 | oui |
-| dsfr | Alert | 48.4% | 12 | 3 | 16 | oui |
-| dsfr | Accordion | 67.7% | 21 | 0 | 10 | oui |
+| dsfr | Alert | 93.5% | 29 | 0 | 2 | oui |
+| dsfr | Accordion | 96.8% | 30 | 0 | 1 | oui |
 | dsfr | Breadcrumb | 96.8% | 30 | 0 | 1 | oui |
 | dsfr | Pagination | 100% | 31 | 0 | 0 | oui |
 | dsfr | Card | 80.6% | 25 | 0 | 6 | oui |
@@ -1746,8 +1746,8 @@ Couverture mesurée : **41 paires** (notre composant mappé vs vrai composant of
 | carbon | Radio | 90.3% | 26 | 2 | 3 | oui |
 | carbon | Toggle | 51.6% | 16 | 0 | 15 | oui |
 | carbon | Tag | 58.1% | 18 | 0 | 13 | oui |
-| carbon | Alert | 41.9% | 9 | 4 | 18 | oui |
-| carbon | Accordion | 74.2% | 23 | 0 | 8 | oui |
+| carbon | Alert | 93.5% | 29 | 0 | 2 | oui |
+| carbon | Accordion | 96.8% | 30 | 0 | 1 | oui |
 | carbon | Breadcrumb | 100% | 30 | 1 | 0 | oui |
 | carbon | Pagination | 100% | 31 | 0 | 0 | oui |
 | carbon | Card | 93.5% | 29 | 0 | 2 | oui |
@@ -1755,9 +1755,9 @@ Couverture mesurée : **41 paires** (notre composant mappé vs vrai composant of
 
 ## Récapitulatif global
 
-- **Fidélité globale : 83.1%** (1019 `=`, 36 `~`, 214 `≠` sur 1269 propriétés mesurées).
+- **Fidélité globale : 86.8%** (1072 `=`, 29 `~`, 168 `≠` sur 1269 propriétés mesurées).
 - **Couverture : 41 paires composant×thème mesurées.**
-- **Écarts nets restants : 214**
+- **Écarts nets restants : 168**
 
   - dsfr/Button: box width (Δ2.0px)
   - dsfr/Button: box height (Δ2.0px)
@@ -1831,32 +1831,9 @@ Couverture mesurée : **41 paires** (notre composant mappé vs vrai composant of
   - dsfr/Badge: text-transform (none vs uppercase)
   - dsfr/Badge: background-color (color(srgb 0.86 0.914353 0.971451) vs rgb(238,238,238))
   - dsfr/Badge: color (rgb(0,99,203) vs rgb(58,58,58))
-  - dsfr/Alert: border-top style (solid vs none)
-  - dsfr/Alert: border-top color (rgb(238,238,238) vs rgb(58,58,58))
-  - dsfr/Alert: border-right style (solid vs none)
-  - dsfr/Alert: border-right color (rgb(238,238,238) vs rgb(58,58,58))
-  - dsfr/Alert: border-bottom style (solid vs none)
-  - dsfr/Alert: border-bottom color (rgb(238,238,238) vs rgb(58,58,58))
-  - dsfr/Alert: border-left width (Δ4.0px)
-  - dsfr/Alert: border-left style (solid vs none)
-  - dsfr/Alert: border-left color (rgb(0,99,203) vs rgb(58,58,58))
-  - dsfr/Alert: padding-right (Δ-20.0px)
-  - dsfr/Alert: padding-bottom (Δ4.0px)
-  - dsfr/Alert: padding-left (Δ-40.0px)
-  - dsfr/Alert: box width (Δ23.2px)
-  - dsfr/Alert: box height (Δ-26.0px)
-  - dsfr/Alert: line-height (normal vs 24px)
-  - dsfr/Alert: background-color (rgb(255,255,255) vs rgb(0,0,0)/a0)
-  - dsfr/Accordion: padding-top (Δ2.0px)
-  - dsfr/Accordion: padding-right (Δ-8.0px)
-  - dsfr/Accordion: padding-bottom (Δ2.0px)
-  - dsfr/Accordion: padding-left (Δ-8.0px)
+  - dsfr/Alert: box width (Δ28.0px)
+  - dsfr/Alert: box height (Δ-10.0px)
   - dsfr/Accordion: box width (Δ28.0px)
-  - dsfr/Accordion: box height (Δ8.0px)
-  - dsfr/Accordion: font-size (Δ2.7px)
-  - dsfr/Accordion: font-weight (600 vs 500)
-  - dsfr/Accordion: line-height (normal vs 24px)
-  - dsfr/Accordion: color (rgb(58,58,58) vs rgb(0,0,145))
   - dsfr/Breadcrumb: box height (Δ2.0px)
   - dsfr/Card: padding-top (Δ15.0px)
   - dsfr/Card: padding-right (Δ15.0px)
@@ -1943,32 +1920,9 @@ Couverture mesurée : **41 paires** (notre composant mappé vs vrai composant of
   - carbon/Tag: letter-spacing (normal vs 0.32px)
   - carbon/Tag: background-color (rgb(244,244,244) vs rgb(224,224,224))
   - carbon/Tag: color (rgb(82,82,82) vs rgb(57,57,57))
-  - carbon/Alert: border-top style (solid vs none)
-  - carbon/Alert: border-top color (rgb(224,224,224) vs rgb(255,255,255))
-  - carbon/Alert: border-right style (solid vs none)
-  - carbon/Alert: border-right color (rgb(224,224,224) vs rgb(255,255,255))
-  - carbon/Alert: border-bottom style (solid vs none)
-  - carbon/Alert: border-bottom color (rgb(224,224,224) vs rgb(255,255,255))
-  - carbon/Alert: border-left color (rgb(0,67,206) vs rgb(69,137,255))
-  - carbon/Alert: padding-top (Δ16.0px)
-  - carbon/Alert: padding-right (Δ16.0px)
-  - carbon/Alert: padding-bottom (Δ16.0px)
-  - carbon/Alert: padding-left (Δ16.0px)
-  - carbon/Alert: box width (Δ-66.8px)
-  - carbon/Alert: box height (Δ12.0px)
-  - carbon/Alert: font-size (Δ2.0px)
-  - carbon/Alert: line-height (normal vs 14px)
-  - carbon/Alert: letter-spacing (normal vs 0.16px)
-  - carbon/Alert: background-color (rgb(255,255,255) vs rgb(57,57,57))
-  - carbon/Alert: color (rgb(22,22,22) vs rgb(255,255,255))
-  - carbon/Accordion: padding-top (Δ4.0px)
-  - carbon/Accordion: padding-right (Δ8.0px)
-  - carbon/Accordion: padding-bottom (Δ4.0px)
-  - carbon/Accordion: padding-left (Δ8.0px)
+  - carbon/Alert: box width (Δ-96.4px)
+  - carbon/Alert: box height (Δ-27.0px)
   - carbon/Accordion: box width (Δ28.0px)
-  - carbon/Accordion: box height (Δ12.0px)
-  - carbon/Accordion: font-size (Δ5.4px)
-  - carbon/Accordion: font-weight (600 vs 400)
   - carbon/Card: box width (Δ15.0px)
   - carbon/Card: box height (Δ-27.6px)
   - carbon/Tabs: border-bottom color (rgb(15,98,254) vs rgb(224,224,224))
