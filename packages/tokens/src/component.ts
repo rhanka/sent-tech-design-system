@@ -234,6 +234,59 @@ interface AccordionInput {
   lineHeight?: string;       // trigger line-height; default "normal" (current render)
 }
 
+// F10+ (additive, cluster P-C) — Tag primitive. Every leaf is optional and
+// DEFAULTS to the current base render of the NEUTRAL `.st-tag` (a pill: radius
+// 999px, padding 4px block / 10px inline at md, font-size 12px, weight 600,
+// line-height 1, no text-transform, `surface.subtle` fill + `text.secondary`
+// text). So the base Sent Tech tag is byte-identical. The geometry/typography
+// leaves apply to ALL tones (radius/padding/font/weight/line-height/transform
+// are tone-independent); `neutralBackground`/`neutralText` recolour only the
+// NEUTRAL tone (the one the bench measures), leaving the success/warning/error/
+// info tones on their semantic feedback colours.
+//  - DSFR « Étiquette » (.fr-tag): radius 16px, padding 4px/12px, font-size
+//    14px, weight 400, line-height 24px, fill #eeeeee (grey-950), text #161616
+//    (grey-50). A 32px-tall pill-rounded box.
+//  - Carbon « Tag » (.bx--tag--gray): radius 15px, padding 4px/8px, font-size
+//    12px, weight 400, line-height 16px, letter-spacing 0.32px, fill #e0e0e0
+//    (Gray 20), text #393939 (Gray 80). A 24px-tall box.
+interface TagInput {
+  radius?: string;            // corner radius; default "999px" (pill, current)
+  paddingBlock?: string;      // vertical padding; default "0.25rem" (4px, current md)
+  paddingInline?: string;     // horizontal padding; default "0.625rem" (10px, current md)
+  fontSize?: string;          // font-size; default "0.75rem" (12px, current md)
+  fontWeight?: string;        // font-weight; default "600" (current)
+  lineHeight?: string;        // line-height; default "1" (current)
+  letterSpacing?: string;     // letter-spacing; default "normal" (current)
+  textTransform?: string;     // text-transform; default "none" (current)
+  minHeight?: string;         // min box height; default "0" (no floor, current)
+  neutralBackground?: string; // NEUTRAL tone fill; default = semantic.surface.subtle
+  neutralText?: string;       // NEUTRAL tone text; default = semantic.text.secondary
+}
+
+// F10+ (additive, cluster P-C) — Badge primitive. Every leaf is optional and
+// DEFAULTS to the current base render of the `.st-badge` (a pill: radius 999px,
+// padding 4px block / 8px inline, font-size 12px, weight 650, line-height 1, no
+// text-transform; the tone colours stay the per-tone semantic feedback mix). So
+// the base Sent Tech badge is byte-identical. The geometry/typography leaves
+// apply to ALL tones; `infoBackground`/`infoText` recolour only the INFO tone
+// (the one the bench renders) to the measured grey `.fr-badge`.
+//  - DSFR « Badge » (.fr-badge): radius 4px, padding 0/8px, font-size 14px,
+//    weight 700, line-height 24px, text-transform uppercase, fill #eeeeee
+//    (grey-950), text #3a3a3a (grey-200). A 24px-tall small label.
+interface BadgeInput {
+  radius?: string;          // corner radius; default "999px" (pill, current)
+  paddingBlock?: string;    // vertical padding; default "0.25rem" (4px, current)
+  paddingInline?: string;   // horizontal padding; default "0.5rem" (8px, current)
+  fontSize?: string;        // font-size; default "0.75rem" (12px, current)
+  fontWeight?: string;      // font-weight; default "650" (current)
+  lineHeight?: string;      // line-height; default "1" (current)
+  letterSpacing?: string;   // letter-spacing; default "normal" (current)
+  textTransform?: string;   // text-transform; default "none" (current)
+  minHeight?: string;       // min box height; default "0" (no floor, current)
+  infoBackground?: string;  // INFO tone fill; default = the per-tone feedback mix
+  infoText?: string;        // INFO tone text; default = semantic.feedback.info
+}
+
 interface FoundationInput {
   radius: { none?: string; sm?: string; md: string; lg: string; pill: string };
   shadow: { subtle: string; medium: string; floating: string };
@@ -265,6 +318,10 @@ interface FoundationInput {
   // (base) both keep the current render via the resolver defaults.
   alert?: AlertInput;
   accordion?: AccordionInput;
+  // P-C (additive): per-theme Tag / Badge anatomy. Optional — when omitted
+  // (base) both keep the current render via the resolver defaults.
+  tag?: TagInput;
+  badge?: BadgeInput;
   // F9 (additive): a BUTTON-specific density override. The button shares the
   // control `density` scale with the fields (Input/Select/Textarea/Tabs all read
   // it), so a button-only geometry — e.g. Carbon's tall 48px primary button with
@@ -591,6 +648,84 @@ function accordionOf(semantic: SemanticInput, f: FoundationInput): {
   };
 }
 
+/**
+ * Tag resolution (P-C). Resolves the per-theme tag primitive into a flat,
+ * CSS-ready set the Tag component consumes verbatim. Every leaf DEFAULTS to the
+ * prior base render (pill radius 999px, 4px/10px padding, 12px font, weight 600,
+ * line-height 1, no transform, no min-height, NEUTRAL tone = surface.subtle fill
+ * + text.secondary text) so the base Sent Tech tag is byte-identical. DSFR /
+ * Carbon override the real `.fr-tag` / `.bx--tag` metrics + neutral colours.
+ */
+function tagOf(semantic: SemanticInput, f: FoundationInput): {
+  radius: string;
+  paddingBlock: string;
+  paddingInline: string;
+  fontSize: string;
+  fontWeight: string;
+  lineHeight: string;
+  letterSpacing: string;
+  textTransform: string;
+  minHeight: string;
+  neutralBackground: string;
+  neutralText: string;
+} {
+  const t = f.tag ?? {};
+  return {
+    radius: t.radius ?? "999px",
+    paddingBlock: t.paddingBlock ?? "0.25rem",   // 4px (current md)
+    paddingInline: t.paddingInline ?? "0.625rem", // 10px (current md)
+    fontSize: t.fontSize ?? "0.75rem",            // 12px (current md)
+    fontWeight: t.fontWeight ?? "600",
+    lineHeight: t.lineHeight ?? "1",
+    letterSpacing: t.letterSpacing ?? "normal",
+    textTransform: t.textTransform ?? "none",
+    minHeight: t.minHeight ?? "0",
+    neutralBackground: t.neutralBackground || semantic.surface.subtle,
+    neutralText: t.neutralText || semantic.text.secondary
+  };
+}
+
+/**
+ * Badge resolution (P-C). Resolves the per-theme badge primitive into a flat,
+ * CSS-ready set the Badge component consumes verbatim. Every leaf DEFAULTS to
+ * the prior base render (pill radius 999px, 4px/8px padding, 12px font, weight
+ * 650, line-height 1, no transform, no min-height; tone colours stay the per-tone
+ * feedback mix) so the base Sent Tech badge is byte-identical. DSFR overrides the
+ * real `.fr-badge` metrics + recolours the INFO tone (the bench-rendered one) to
+ * the measured grey badge.
+ */
+function badgeOf(semantic: SemanticInput, f: FoundationInput): {
+  radius: string;
+  paddingBlock: string;
+  paddingInline: string;
+  fontSize: string;
+  fontWeight: string;
+  lineHeight: string;
+  letterSpacing: string;
+  textTransform: string;
+  minHeight: string;
+  infoBackground: string;
+  infoText: string;
+} {
+  const b = f.badge ?? {};
+  return {
+    radius: b.radius ?? "999px",
+    paddingBlock: b.paddingBlock ?? "0.25rem",   // 4px (current)
+    paddingInline: b.paddingInline ?? "0.5rem",  // 8px (current)
+    fontSize: b.fontSize ?? "0.75rem",           // 12px (current)
+    fontWeight: b.fontWeight ?? "650",
+    lineHeight: b.lineHeight ?? "1",
+    letterSpacing: b.letterSpacing ?? "normal",
+    textTransform: b.textTransform ?? "none",
+    minHeight: b.minHeight ?? "0",
+    // Default INFO fill reproduces the current `color-mix(... feedback.info 14%,
+    // white)`; a theme can replace it with a flat measured colour.
+    infoBackground:
+      b.infoBackground || `color-mix(in srgb, ${semantic.feedback.info} 14%, white)`,
+    infoText: b.infoText || semantic.feedback.info
+  };
+}
+
 function typographyOf(f: FoundationInput, role: "control" | "field" | "label" | "link"): TypographyAnatomy {
   // Widen to TypographyAnatomy so the optional textDecorationHover leaf is
   // readable across all roles (only `link` carries it in the FALLBACK literal).
@@ -879,6 +1014,10 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
   const alertResolved = alertOf(semantic, foundation, bw.thin, borderStyle);
   const accordionResolved = accordionOf(semantic, foundation);
 
+  // P-C — Tag / Badge anatomy (per theme; base render unchanged).
+  const tagResolved = tagOf(semantic, foundation);
+  const badgeResolved = badgeOf(semantic, foundation);
+
   return {
     button: {
       radius: foundation.radius.md,
@@ -937,6 +1076,34 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       fontSize: accordionResolved.fontSize,
       fontWeight: accordionResolved.fontWeight,
       lineHeight: accordionResolved.lineHeight
+    },
+    tag: {
+      // P-C — per-theme tag anatomy (base = unchanged via resolver defaults).
+      radius: tagResolved.radius,
+      paddingBlock: tagResolved.paddingBlock,
+      paddingInline: tagResolved.paddingInline,
+      fontSize: tagResolved.fontSize,
+      fontWeight: tagResolved.fontWeight,
+      lineHeight: tagResolved.lineHeight,
+      letterSpacing: tagResolved.letterSpacing,
+      textTransform: tagResolved.textTransform,
+      minHeight: tagResolved.minHeight,
+      neutralBackground: tagResolved.neutralBackground,
+      neutralText: tagResolved.neutralText
+    },
+    badge: {
+      // P-C — per-theme badge anatomy (base = unchanged via resolver defaults).
+      radius: badgeResolved.radius,
+      paddingBlock: badgeResolved.paddingBlock,
+      paddingInline: badgeResolved.paddingInline,
+      fontSize: badgeResolved.fontSize,
+      fontWeight: badgeResolved.fontWeight,
+      lineHeight: badgeResolved.lineHeight,
+      letterSpacing: badgeResolved.letterSpacing,
+      textTransform: badgeResolved.textTransform,
+      minHeight: badgeResolved.minHeight,
+      infoBackground: badgeResolved.infoBackground,
+      infoText: badgeResolved.infoText
     },
     card: {
       background: cardBackground,
