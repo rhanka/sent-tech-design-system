@@ -52,19 +52,37 @@
 
   .st-pagination button {
     background: var(--st-component-pagination-background, var(--st-semantic-surface-default));
-    border: 1px solid var(--st-component-pagination-border, var(--st-semantic-border-subtle));
+    border: var(--st-component-pagination-borderWidth, 1px) solid
+      var(--st-component-pagination-border, var(--st-semantic-border-subtle));
     border-radius: var(--st-component-pagination-radius, 0.375rem);
     color: var(--st-component-pagination-text, var(--st-semantic-text-primary));
     cursor: pointer;
-    font: inherit;
-    min-height: 2.25rem;
-    min-width: 2.25rem;
-    padding: 0 0.75rem;
+    font-family: inherit;
+    font-size: var(--st-component-pagination-fontSize, inherit);
+    line-height: var(--st-component-pagination-lineHeight, normal);
+    letter-spacing: var(--st-component-pagination-letterSpacing, normal);
+    min-height: var(--st-component-pagination-minSize, 2.25rem);
+    min-width: var(--st-component-pagination-minSize, 2.25rem);
+    padding: var(--st-component-pagination-paddingBlock, 0)
+      var(--st-component-pagination-paddingInline, 0.75rem);
   }
 
-  .st-pagination__page--active {
+  /* Active page — scoped under `.st-pagination button` so it outweighs the base
+     button rule. The prior single-class selector (specificity 0,1,0) LOST to the
+     element+class base rule (0,1,1), so the active fill/colour never applied
+     (the report measured the active page on white, not the action fill). */
+  .st-pagination button.st-pagination__page--active {
     background: var(--st-component-pagination-activeBackground, var(--st-semantic-action-primary));
+    border-color: var(
+      --st-component-pagination-activeBorder,
+      var(--st-component-pagination-border, var(--st-semantic-border-subtle))
+    );
+    border-width: var(
+      --st-component-pagination-activeBorderWidth,
+      var(--st-component-pagination-borderWidth, 1px)
+    );
     color: var(--st-component-pagination-activeText, var(--st-semantic-action-primaryText));
+    font-weight: var(--st-component-pagination-activeWeight, inherit);
   }
 
   .st-pagination button:disabled {
