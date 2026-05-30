@@ -9,7 +9,7 @@
   };
 
   let { label, helperText, invalid = false, class: className, ...rest }: RadioProps = $props();
-  const classes = () => ["st-choice", className].filter(Boolean).join(" ");
+  const classes = () => ["st-choice", "st-choice--radio", className].filter(Boolean).join(" ");
 </script>
 
 <label class={classes()}>
@@ -69,7 +69,15 @@
   }
 
   .st-choice__label {
-    font-size: 0.9375rem;
+    /* P-D: label typography per theme (base = 15px / normal / inherited colour).
+       Radio carries its own line-height (Carbon $body-01 = 20px, vs the checkbox
+       $body-compact-01 = 18px); the var defaults to the shared choice line-height
+       so a theme that does not split them stays consistent. */
+    color: var(--st-component-selection-choiceLabelColor, inherit);
+    font-size: var(--st-component-selection-choiceLabelFontSize, 0.9375rem);
+    line-height: var(--st-component-selection-choiceRadioLineHeight,
+      var(--st-component-selection-choiceLabelLineHeight, normal));
+    letter-spacing: var(--st-component-selection-choiceLabelLetterSpacing, normal);
   }
 
   .st-choice__help {

@@ -9,7 +9,7 @@
   };
 
   let { label, helperText, invalid = false, class: className, ...rest }: CheckboxProps = $props();
-  const classes = () => ["st-choice", className].filter(Boolean).join(" ");
+  const classes = () => ["st-choice", "st-choice--checkbox", className].filter(Boolean).join(" ");
 </script>
 
 <label class={classes()}>
@@ -69,7 +69,12 @@
   }
 
   .st-choice__label {
-    font-size: 0.9375rem;
+    /* P-D: label typography per theme (base = 15px / normal / inherited colour).
+       The checked control colour + focus stay on the native input above. */
+    color: var(--st-component-selection-choiceLabelColor, inherit);
+    font-size: var(--st-component-selection-choiceLabelFontSize, 0.9375rem);
+    line-height: var(--st-component-selection-choiceLabelLineHeight, normal);
+    letter-spacing: var(--st-component-selection-choiceLabelLetterSpacing, normal);
   }
 
   .st-choice__help {

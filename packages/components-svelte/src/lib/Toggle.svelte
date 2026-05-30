@@ -75,11 +75,20 @@
   .st-toggle__track {
     align-items: center;
     background: var(--st-component-selection-switchTrack, var(--st-semantic-border-strong));
-    border-radius: var(--st-radius-pill, 999px);
+    /* P-D: radius/padding + label typography/colour per theme. Track stays a
+       rounded pill by default (base unchanged); Carbon pins the 48×24 switch box
+       and its grey label colour / 12px-16px/0.32px typography (the track carries
+       no text, so the typography/colour leaves are visually inert on our side but
+       align the measured surface to the reference switch). */
+    border-radius: var(--st-component-selection-toggleTrackRadius, var(--st-radius-pill, 999px));
+    color: var(--st-component-selection-toggleTextColor, var(--st-semantic-text-primary));
     display: inline-flex;
     flex: 0 0 auto;
+    font-size: var(--st-component-selection-toggleFontSize, inherit);
     height: var(--st-toggle-trackHeight, 1.25rem);
-    padding: 0.125rem;
+    letter-spacing: var(--st-component-selection-toggleLetterSpacing, normal);
+    line-height: var(--st-component-selection-toggleLineHeight, normal);
+    padding: var(--st-component-selection-toggleTrackPadding, 0.125rem);
     transition: background var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
     width: var(--st-toggle-trackWidth, 2.25rem);
   }
@@ -98,7 +107,7 @@
   }
 
   .st-toggle__input:checked + .st-toggle__track .st-toggle__thumb {
-    transform: translateX(calc(var(--st-toggle-trackWidth, 2.25rem) - var(--st-toggle-thumbSize, 1rem) - 0.25rem));
+    transform: translateX(calc(var(--st-toggle-trackWidth, 2.25rem) - var(--st-toggle-thumbSize, 1rem) - 2 * var(--st-component-selection-toggleTrackPadding, 0.125rem)));
   }
 
   /* Focus = stratégie d'anatomie partagée (outline DSFR / inset Carbon / ring base). */
@@ -132,8 +141,10 @@
   }
 
   .st-toggle--md {
-    --st-toggle-trackHeight: 1.25rem;
-    --st-toggle-trackWidth: 2.25rem;
-    --st-toggle-thumbSize: 1rem;
+    /* P-D: md track dims ride the per-theme toggle anatomy (default = the prior
+       36×20 / 16px thumb → base unchanged; Carbon pins its 48×24 switch box). */
+    --st-toggle-trackHeight: var(--st-component-selection-toggleTrackHeight, 1.25rem);
+    --st-toggle-trackWidth: var(--st-component-selection-toggleTrackWidth, 2.25rem);
+    --st-toggle-thumbSize: var(--st-component-selection-toggleThumbSize, 1rem);
   }
 </style>

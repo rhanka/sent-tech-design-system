@@ -396,6 +396,42 @@ const foundation = {
     minHeight: "1.5rem",                       // 24px box
     infoBackground: dsfrColor.grey[950],       // #eeeeee (matches the measured neutral ref)
     infoText: dsfrColor.grey[200]              // #3a3a3a
+  },
+  // P-D — DSFR Checkbox/Radio LABEL (.fr-checkbox-group label / .fr-radio-group
+  // label). Measured: Marianne 16px (1rem), line-height 24px (1.5rem), colour
+  // #161616 (--grey-50, the title grey the real `.fr-label` paints — darker than
+  // our #3a3a3a body grey). The base 15px / normal / #3a3a3a label is replaced by
+  // this faithful look (the native checked control colour + focus are unchanged).
+  choice: {
+    labelFontSize: "1rem",                     // 16px
+    labelLineHeight: "1.5rem",                 // 24px (checkbox + radio share 24px in DSFR)
+    radioLineHeight: "1.5rem",                 // 24px
+    labelColor: dsfrColor.grey[50]             // #161616 (title grey)
+  },
+  // P-D — DSFR « Barre de recherche » inner input (.fr-search-bar .fr-input).
+  // Measured: padding 8px/16px, line-height 24px (1.5rem), font 16px (1rem). The
+  // field box (fill #eeeeee, bottom-rule box-shadow, 4px top corners) is already
+  // the shared field anatomy mapped for DSFR; we pad the WRAPPER so the measured
+  // box carries the real 8/16 padding (base = 0 padding).
+  search: {
+    paddingBlock: "0.5rem",                    // 8px
+    paddingInline: "1rem",                     // 16px
+    fontSize: "1rem",                          // 16px
+    lineHeight: "1.5rem"                       // 24px
+  },
+  // P-D — DSFR « Interrupteur » (.fr-toggle). The bench measures our switch TRACK
+  // against the official `.fr-toggle__label` (the switch itself is a `::before/
+  // ::after` pseudo on the label, unmeasurable). The label is a 241×40 text block
+  // (transparent, #161616, 24px line-height) — a DIFFERENT element from our pill
+  // track, so the track radius/padding/box/fill stay (a switch must read as a
+  // rounded coloured pill; matching the label box would destroy the control).
+  // We align only what the track CAN match without a visual cost: the inherited
+  // text COLOUR (#161616) and LINE-HEIGHT (24px) — the track carries no text, so
+  // these are visually inert on our side but close two measured gaps.
+  toggle: {
+    trackPadding: "0",                         // .fr-toggle__label padding is 0 (thumb stays inset via align-items)
+    lineHeight: "1.5rem",                      // 24px (matches .fr-toggle__label)
+    textColor: dsfrColor.grey[50]              // #161616 (title grey)
   }
 } as const;
 
