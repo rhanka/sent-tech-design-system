@@ -321,27 +321,27 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 | border-left width | 0px | 0px | = |
 | border-left style | none | none | = (bord 0px (invisible)) |
 | border-left color | rgb(58, 58, 58) | rgb(58, 58, 58) | = (bord 0px (invisible)) |
-| radius topLeft | 0px | 4px | ≠ Δ-4.0px |
-| radius topRight | 0px | 0px | = |
+| radius topLeft | 4px | 4px | = |
+| radius topRight | 4px | 0px | ≠ Δ4.0px |
 | radius bottomRight | 0px | 0px | = |
 | radius bottomLeft | 0px | 0px | = |
-| padding-top | 0px | 8px | ≠ Δ-8.0px |
-| padding-right | 0px | 16px | ≠ Δ-16.0px |
-| padding-bottom | 0px | 8px | ≠ Δ-8.0px |
-| padding-left | 0px | 16px | ≠ Δ-16.0px |
+| padding-top | 8px | 8px | = |
+| padding-right | 16px | 16px | = |
+| padding-bottom | 8px | 8px | = |
+| padding-left | 16px | 16px | = |
 | box width | 320px | 233px | ≠ Δ87.0px |
 | box height | 40px | 40px | = |
 | font-family | Marianne | Marianne | = |
 | font-size | 16px | 16px | = |
 | font-weight | 400 | 400 | = |
-| line-height | normal | 24px | ≠ normal vs 24px |
+| line-height | 24px | 24px | = |
 | letter-spacing | normal | normal | = |
 | text-transform | none | none | = |
 | text-decoration | none | none | = |
 | background-color | rgb(238, 238, 238) | rgb(238, 238, 238) | = |
 | color | rgb(58, 58, 58) | rgb(58, 58, 58) | = |
 
-**Fidélité Search (dsfr) : 77.4%** — 24 `=`, 0 `~`, 7 `≠` sur 31 propriétés.
+**Fidélité Search (dsfr) : 93.5%** — 29 `=`, 0 `~`, 2 `≠` sur 31 propriétés.
 
 ### Link
 
@@ -394,16 +394,16 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 |---|---|---|---|
 | border-top width | 0px | 0px | = |
 | border-top style | none | none | = (bord 0px (invisible)) |
-| border-top color | rgb(58, 58, 58) | rgb(22, 22, 22) | = (bord 0px (invisible)) |
+| border-top color | rgb(22, 22, 22) | rgb(22, 22, 22) | = (bord 0px (invisible)) |
 | border-right width | 0px | 0px | = |
 | border-right style | none | none | = (bord 0px (invisible)) |
-| border-right color | rgb(58, 58, 58) | rgb(22, 22, 22) | = (bord 0px (invisible)) |
+| border-right color | rgb(22, 22, 22) | rgb(22, 22, 22) | = (bord 0px (invisible)) |
 | border-bottom width | 0px | 0px | = |
 | border-bottom style | none | none | = (bord 0px (invisible)) |
-| border-bottom color | rgb(58, 58, 58) | rgb(22, 22, 22) | = (bord 0px (invisible)) |
+| border-bottom color | rgb(22, 22, 22) | rgb(22, 22, 22) | = (bord 0px (invisible)) |
 | border-left width | 0px | 0px | = |
 | border-left style | none | none | = (bord 0px (invisible)) |
-| border-left color | rgb(58, 58, 58) | rgb(22, 22, 22) | = (bord 0px (invisible)) |
+| border-left color | rgb(22, 22, 22) | rgb(22, 22, 22) | = (bord 0px (invisible)) |
 | radius topLeft | 0px | 0px | = |
 | radius topRight | 0px | 0px | = |
 | radius bottomRight | 0px | 0px | = |
@@ -412,19 +412,19 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 | padding-right | 0px | 0px | = |
 | padding-bottom | 0px | 0px | = |
 | padding-left | 0px | 0px | = |
-| box width | 170.8px | 241px | ≠ Δ-70.2px |
-| box height | 23px | 44px | ≠ Δ-21.0px |
+| box width | 182.2px | 241px | ≠ Δ-58.8px |
+| box height | 24px | 44px | ≠ Δ-20.0px |
 | font-family | Marianne | Marianne | = |
-| font-size | 15px | 16px | ~ Δ1.0px |
+| font-size | 16px | 16px | = |
 | font-weight | 400 | 400 | = |
-| line-height | normal | 24px | ≠ normal vs 24px |
+| line-height | 24px | 24px | = |
 | letter-spacing | normal | normal | = |
 | text-transform | none | none | = |
 | text-decoration | none | none | = |
 | background-color | rgba(0, 0, 0, 0) | rgba(0, 0, 0, 0) | = |
-| color | rgb(58, 58, 58) | rgb(22, 22, 22) | ≠ rgb(58,58,58) vs rgb(22,22,22) |
+| color | rgb(22, 22, 22) | rgb(22, 22, 22) | = |
 
-**Fidélité Checkbox (dsfr) : 87.1%** — 26 `=`, 1 `~`, 4 `≠` sur 31 propriétés.
+**Fidélité Checkbox (dsfr) : 93.5%** — 29 `=`, 0 `~`, 2 `≠` sur 31 propriétés.
 
 ### Radio
 
@@ -436,16 +436,16 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 |---|---|---|---|
 | border-top width | 0px | 0px | = |
 | border-top style | none | none | = (bord 0px (invisible)) |
-| border-top color | rgb(58, 58, 58) | rgb(22, 22, 22) | = (bord 0px (invisible)) |
+| border-top color | rgb(22, 22, 22) | rgb(22, 22, 22) | = (bord 0px (invisible)) |
 | border-right width | 0px | 0px | = |
 | border-right style | none | none | = (bord 0px (invisible)) |
-| border-right color | rgb(58, 58, 58) | rgb(22, 22, 22) | = (bord 0px (invisible)) |
+| border-right color | rgb(22, 22, 22) | rgb(22, 22, 22) | = (bord 0px (invisible)) |
 | border-bottom width | 0px | 0px | = |
 | border-bottom style | none | none | = (bord 0px (invisible)) |
-| border-bottom color | rgb(58, 58, 58) | rgb(22, 22, 22) | = (bord 0px (invisible)) |
+| border-bottom color | rgb(22, 22, 22) | rgb(22, 22, 22) | = (bord 0px (invisible)) |
 | border-left width | 0px | 0px | = |
 | border-left style | none | none | = (bord 0px (invisible)) |
-| border-left color | rgb(58, 58, 58) | rgb(22, 22, 22) | = (bord 0px (invisible)) |
+| border-left color | rgb(22, 22, 22) | rgb(22, 22, 22) | = (bord 0px (invisible)) |
 | radius topLeft | 0px | 0px | = |
 | radius topRight | 0px | 0px | = |
 | radius bottomRight | 0px | 0px | = |
@@ -454,19 +454,19 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 | padding-right | 0px | 0px | = |
 | padding-bottom | 0px | 0px | = |
 | padding-left | 0px | 32px | ≠ Δ-32.0px |
-| box width | 170.8px | 103.1px | ≠ Δ67.7px |
-| box height | 23px | 24px | ~ Δ1.0px |
+| box width | 182.2px | 103.1px | ≠ Δ79.1px |
+| box height | 24px | 24px | = |
 | font-family | Marianne | Marianne | = |
-| font-size | 15px | 16px | ~ Δ1.0px |
+| font-size | 16px | 16px | = |
 | font-weight | 400 | 400 | = |
-| line-height | normal | 24px | ≠ normal vs 24px |
+| line-height | 24px | 24px | = |
 | letter-spacing | normal | normal | = |
 | text-transform | none | none | = |
 | text-decoration | none | none | = |
 | background-color | rgba(0, 0, 0, 0) | rgba(0, 0, 0, 0) | = |
-| color | rgb(58, 58, 58) | rgb(22, 22, 22) | ≠ rgb(58,58,58) vs rgb(22,22,22) |
+| color | rgb(22, 22, 22) | rgb(22, 22, 22) | = |
 
-**Fidélité Radio (dsfr) : 87.1%** — 25 `=`, 2 `~`, 4 `≠` sur 31 propriétés.
+**Fidélité Radio (dsfr) : 93.5%** — 29 `=`, 0 `~`, 2 `≠` sur 31 propriétés.
 
 ### Toggle
 
@@ -478,16 +478,16 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 |---|---|---|---|
 | border-top width | 0px | 0px | = |
 | border-top style | none | none | = (bord 0px (invisible)) |
-| border-top color | rgb(58, 58, 58) | rgb(22, 22, 22) | = (bord 0px (invisible)) |
+| border-top color | rgb(22, 22, 22) | rgb(22, 22, 22) | = (bord 0px (invisible)) |
 | border-right width | 0px | 0px | = |
 | border-right style | none | none | = (bord 0px (invisible)) |
-| border-right color | rgb(58, 58, 58) | rgb(22, 22, 22) | = (bord 0px (invisible)) |
+| border-right color | rgb(22, 22, 22) | rgb(22, 22, 22) | = (bord 0px (invisible)) |
 | border-bottom width | 0px | 0px | = |
 | border-bottom style | none | none | = (bord 0px (invisible)) |
-| border-bottom color | rgb(58, 58, 58) | rgb(22, 22, 22) | = (bord 0px (invisible)) |
+| border-bottom color | rgb(22, 22, 22) | rgb(22, 22, 22) | = (bord 0px (invisible)) |
 | border-left width | 0px | 0px | = |
 | border-left style | none | none | = (bord 0px (invisible)) |
-| border-left color | rgb(58, 58, 58) | rgb(22, 22, 22) | = (bord 0px (invisible)) |
+| border-left color | rgb(22, 22, 22) | rgb(22, 22, 22) | = (bord 0px (invisible)) |
 | radius topLeft | 999px | 0px | ≠ Δ999.0px |
 | radius topRight | 999px | 0px | ≠ Δ999.0px |
 | radius bottomRight | 999px | 0px | ≠ Δ999.0px |
@@ -501,14 +501,14 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 | font-family | Marianne | Marianne | = |
 | font-size | 16px | 16px | = |
 | font-weight | 400 | 400 | = |
-| line-height | normal | 24px | ≠ normal vs 24px |
+| line-height | 24px | 24px | = |
 | letter-spacing | normal | normal | = |
 | text-transform | none | none | = |
 | text-decoration | none | none | = |
 | background-color | rgb(0, 0, 145) | rgba(0, 0, 0, 0) | ≠ rgb(0,0,145) vs rgb(0,0,0)/a0 |
-| color | rgb(58, 58, 58) | rgb(22, 22, 22) | ≠ rgb(58,58,58) vs rgb(22,22,22) |
+| color | rgb(22, 22, 22) | rgb(22, 22, 22) | = |
 
-**Fidélité Toggle (dsfr) : 58.1%** — 18 `=`, 0 `~`, 13 `≠` sur 31 propriétés.
+**Fidélité Toggle (dsfr) : 64.5%** — 20 `=`, 0 `~`, 11 `≠` sur 31 propriétés.
 
 ### Tag
 
@@ -1234,22 +1234,22 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 | radius bottomRight | 0px | 0px | = |
 | radius bottomLeft | 0px | 0px | = |
 | padding-top | 0px | 0px | = |
-| padding-right | 0px | 40px | ≠ Δ-40.0px |
+| padding-right | 40px | 40px | = |
 | padding-bottom | 0px | 0px | = |
-| padding-left | 0px | 40px | ≠ Δ-40.0px |
+| padding-left | 40px | 40px | = |
 | box width | 320px | 273px | ≠ Δ47.0px |
 | box height | 40px | 40px | = |
 | font-family | IBM Plex Sans | IBM Plex Sans | = |
-| font-size | 16px | 14px | ≠ Δ2.0px |
+| font-size | 14px | 14px | = |
 | font-weight | 400 | 400 | = |
-| line-height | normal | 18.0001px | ≠ normal vs 18.0001px |
-| letter-spacing | normal | 0.16px | ≠ normal vs 0.16px |
+| line-height | 18px | 18.0001px | ~ Δ0.0px |
+| letter-spacing | 0.16px | 0.16px | = |
 | text-transform | none | none | = |
 | text-decoration | none | none | = |
 | background-color | rgb(244, 244, 244) | rgb(244, 244, 244) | = |
 | color | rgb(22, 22, 22) | rgb(22, 22, 22) | = |
 
-**Fidélité Search (carbon) : 80.6%** — 25 `=`, 0 `~`, 6 `≠` sur 31 propriétés.
+**Fidélité Search (carbon) : 96.8%** — 29 `=`, 1 `~`, 1 `≠` sur 31 propriétés.
 
 ### Link
 
@@ -1320,19 +1320,19 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 | padding-right | 0px | 0px | = |
 | padding-bottom | 0px | 0px | = |
 | padding-left | 0px | 6px | ≠ Δ-6.0px |
-| box width | 123px | 123.7px | ~ Δ0.7px |
-| box height | 19px | 21px | ≠ Δ-2.0px |
+| box width | 117.7px | 123.7px | ≠ Δ-6.0px |
+| box height | 18px | 21px | ≠ Δ-3.0px |
 | font-family | IBM Plex Sans | IBM Plex Sans | = |
-| font-size | 15px | 14px | ~ Δ1.0px |
+| font-size | 14px | 14px | = |
 | font-weight | 400 | 400 | = |
-| line-height | normal | 18.0001px | ≠ normal vs 18.0001px |
-| letter-spacing | normal | 0.16px | ≠ normal vs 0.16px |
+| line-height | 18px | 18.0001px | ~ Δ0.0px |
+| letter-spacing | 0.16px | 0.16px | = |
 | text-transform | none | none | = |
 | text-decoration | none | none | = |
 | background-color | rgba(0, 0, 0, 0) | rgba(0, 0, 0, 0) | = |
 | color | rgb(22, 22, 22) | rgb(22, 22, 22) | = |
 
-**Fidélité Checkbox (carbon) : 87.1%** — 25 `=`, 2 `~`, 4 `≠` sur 31 propriétés.
+**Fidélité Checkbox (carbon) : 90.3%** — 27 `=`, 1 `~`, 3 `≠` sur 31 propriétés.
 
 ### Radio
 
@@ -1362,19 +1362,19 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 | padding-right | 0px | 0px | = |
 | padding-bottom | 0px | 0px | = |
 | padding-left | 0px | 0px | = |
-| box width | 123px | 55.7px | ≠ Δ67.3px |
-| box height | 19px | 20px | ~ Δ1.0px |
+| box width | 117.7px | 55.7px | ≠ Δ62.0px |
+| box height | 18px | 20px | ≠ Δ-2.0px |
 | font-family | IBM Plex Sans | IBM Plex Sans | = |
-| font-size | 15px | 14px | ~ Δ1.0px |
+| font-size | 14px | 14px | = |
 | font-weight | 400 | 400 | = |
-| line-height | normal | 20px | ≠ normal vs 20px |
-| letter-spacing | normal | 0.16px | ≠ normal vs 0.16px |
+| line-height | 18px | 20px | ≠ Δ-2.0px |
+| letter-spacing | 0.16px | 0.16px | = |
 | text-transform | none | none | = |
 | text-decoration | none | none | = |
 | background-color | rgba(0, 0, 0, 0) | rgba(0, 0, 0, 0) | = |
 | color | rgb(22, 22, 22) | rgb(22, 22, 22) | = |
 
-**Fidélité Radio (carbon) : 90.3%** — 26 `=`, 2 `~`, 3 `≠` sur 31 propriétés.
+**Fidélité Radio (carbon) : 90.3%** — 28 `=`, 0 `~`, 3 `≠` sur 31 propriétés.
 
 ### Toggle
 
@@ -1385,37 +1385,37 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 |---|---|---|---|
 | border-top width | 0px | 0px | = |
 | border-top style | none | none | = (bord 0px (invisible)) |
-| border-top color | rgb(22, 22, 22) | rgb(82, 82, 82) | = (bord 0px (invisible)) |
+| border-top color | rgb(82, 82, 82) | rgb(82, 82, 82) | = (bord 0px (invisible)) |
 | border-right width | 0px | 0px | = |
 | border-right style | none | none | = (bord 0px (invisible)) |
-| border-right color | rgb(22, 22, 22) | rgb(82, 82, 82) | = (bord 0px (invisible)) |
+| border-right color | rgb(82, 82, 82) | rgb(82, 82, 82) | = (bord 0px (invisible)) |
 | border-bottom width | 0px | 0px | = |
 | border-bottom style | none | none | = (bord 0px (invisible)) |
-| border-bottom color | rgb(22, 22, 22) | rgb(82, 82, 82) | = (bord 0px (invisible)) |
+| border-bottom color | rgb(82, 82, 82) | rgb(82, 82, 82) | = (bord 0px (invisible)) |
 | border-left width | 0px | 0px | = |
 | border-left style | none | none | = (bord 0px (invisible)) |
-| border-left color | rgb(22, 22, 22) | rgb(82, 82, 82) | = (bord 0px (invisible)) |
+| border-left color | rgb(82, 82, 82) | rgb(82, 82, 82) | = (bord 0px (invisible)) |
 | radius topLeft | 999px | 0px | ≠ Δ999.0px |
 | radius topRight | 999px | 0px | ≠ Δ999.0px |
 | radius bottomRight | 999px | 0px | ≠ Δ999.0px |
 | radius bottomLeft | 999px | 0px | ≠ Δ999.0px |
-| padding-top | 2px | 0px | ≠ Δ2.0px |
-| padding-right | 2px | 0px | ≠ Δ2.0px |
-| padding-bottom | 2px | 0px | ≠ Δ2.0px |
-| padding-left | 2px | 0px | ≠ Δ2.0px |
-| box width | 36px | 48px | ≠ Δ-12.0px |
-| box height | 20px | 24px | ≠ Δ-4.0px |
+| padding-top | 0px | 0px | = |
+| padding-right | 0px | 0px | = |
+| padding-bottom | 0px | 0px | = |
+| padding-left | 0px | 0px | = |
+| box width | 48px | 48px | = |
+| box height | 24px | 24px | = |
 | font-family | IBM Plex Sans | IBM Plex Sans | = |
-| font-size | 16px | 12px | ≠ Δ4.0px |
+| font-size | 12px | 12px | = |
 | font-weight | 400 | 400 | = |
-| line-height | normal | 16px | ≠ normal vs 16px |
-| letter-spacing | normal | 0.32px | ≠ normal vs 0.32px |
+| line-height | 16px | 16px | = |
+| letter-spacing | 0.32px | 0.32px | = |
 | text-transform | none | none | = |
 | text-decoration | none | none | = |
 | background-color | rgb(15, 98, 254) | rgba(0, 0, 0, 0) | ≠ rgb(15,98,254) vs rgb(0,0,0)/a0 |
-| color | rgb(22, 22, 22) | rgb(82, 82, 82) | ≠ rgb(22,22,22) vs rgb(82,82,82) |
+| color | rgb(82, 82, 82) | rgb(82, 82, 82) | = |
 
-**Fidélité Toggle (carbon) : 51.6%** — 16 `=`, 0 `~`, 15 `≠` sur 31 propriétés.
+**Fidélité Toggle (carbon) : 83.9%** — 26 `=`, 0 `~`, 5 `≠` sur 31 propriétés.
 
 ### Tag
 
@@ -1718,11 +1718,11 @@ Couverture mesurée : **41 paires** (notre composant mappé vs vrai composant of
 | dsfr | InputDisabled | 93.5% | 29 | 0 | 2 | oui |
 | dsfr | Textarea | 87.1% | 27 | 0 | 4 | oui |
 | dsfr | Select | 96.8% | 30 | 0 | 1 | oui |
-| dsfr | Search | 77.4% | 24 | 0 | 7 | oui |
+| dsfr | Search | 93.5% | 29 | 0 | 2 | oui |
 | dsfr | Link | 96.8% | 30 | 0 | 1 | oui |
-| dsfr | Checkbox | 87.1% | 26 | 1 | 4 | oui |
-| dsfr | Radio | 87.1% | 25 | 2 | 4 | oui |
-| dsfr | Toggle | 58.1% | 18 | 0 | 13 | oui |
+| dsfr | Checkbox | 93.5% | 29 | 0 | 2 | oui |
+| dsfr | Radio | 93.5% | 29 | 0 | 2 | oui |
+| dsfr | Toggle | 64.5% | 20 | 0 | 11 | oui |
 | dsfr | Tag | 100% | 31 | 0 | 0 | oui |
 | dsfr | Badge | 100% | 31 | 0 | 0 | oui |
 | dsfr | Alert | 93.5% | 29 | 0 | 2 | oui |
@@ -1740,11 +1740,11 @@ Couverture mesurée : **41 paires** (notre composant mappé vs vrai composant of
 | carbon | InputDisabled | 90.3% | 27 | 1 | 3 | oui |
 | carbon | Textarea | 90.3% | 26 | 2 | 3 | oui |
 | carbon | Select | 96.8% | 29 | 1 | 1 | oui |
-| carbon | Search | 80.6% | 25 | 0 | 6 | oui |
+| carbon | Search | 96.8% | 29 | 1 | 1 | oui |
 | carbon | Link | 100% | 30 | 1 | 0 | oui |
-| carbon | Checkbox | 87.1% | 25 | 2 | 4 | oui |
-| carbon | Radio | 90.3% | 26 | 2 | 3 | oui |
-| carbon | Toggle | 51.6% | 16 | 0 | 15 | oui |
+| carbon | Checkbox | 90.3% | 27 | 1 | 3 | oui |
+| carbon | Radio | 90.3% | 28 | 0 | 3 | oui |
+| carbon | Toggle | 83.9% | 26 | 0 | 5 | oui |
 | carbon | Tag | 100% | 31 | 0 | 0 | oui |
 | carbon | Alert | 93.5% | 29 | 0 | 2 | oui |
 | carbon | Accordion | 96.8% | 30 | 0 | 1 | oui |
@@ -1755,9 +1755,9 @@ Couverture mesurée : **41 paires** (notre composant mappé vs vrai composant of
 
 ## Récapitulatif global
 
-- **Fidélité globale : 89.9%** (1112 `=`, 29 `~`, 128 `≠` sur 1269 propriétés mesurées).
+- **Fidélité globale : 92%** (1144 `=`, 24 `~`, 101 `≠` sur 1269 propriétés mesurées).
 - **Couverture : 41 paires composant×thème mesurées.**
-- **Écarts nets restants : 128**
+- **Écarts nets restants : 101**
 
   - dsfr/Button: box width (Δ2.0px)
   - dsfr/Button: box height (Δ2.0px)
@@ -1775,22 +1775,13 @@ Couverture mesurée : **41 paires** (notre composant mappé vs vrai composant of
   - dsfr/Textarea: box width (Δ47.0px)
   - dsfr/Textarea: box height (Δ8.0px)
   - dsfr/Select: box width (Δ47.0px)
-  - dsfr/Search: radius topLeft (Δ-4.0px)
-  - dsfr/Search: padding-top (Δ-8.0px)
-  - dsfr/Search: padding-right (Δ-16.0px)
-  - dsfr/Search: padding-bottom (Δ-8.0px)
-  - dsfr/Search: padding-left (Δ-16.0px)
+  - dsfr/Search: radius topRight (Δ4.0px)
   - dsfr/Search: box width (Δ87.0px)
-  - dsfr/Search: line-height (normal vs 24px)
   - dsfr/Link: text-decoration (underline vs none)
-  - dsfr/Checkbox: box width (Δ-70.2px)
-  - dsfr/Checkbox: box height (Δ-21.0px)
-  - dsfr/Checkbox: line-height (normal vs 24px)
-  - dsfr/Checkbox: color (rgb(58,58,58) vs rgb(22,22,22))
+  - dsfr/Checkbox: box width (Δ-58.8px)
+  - dsfr/Checkbox: box height (Δ-20.0px)
   - dsfr/Radio: padding-left (Δ-32.0px)
-  - dsfr/Radio: box width (Δ67.7px)
-  - dsfr/Radio: line-height (normal vs 24px)
-  - dsfr/Radio: color (rgb(58,58,58) vs rgb(22,22,22))
+  - dsfr/Radio: box width (Δ79.1px)
   - dsfr/Toggle: radius topLeft (Δ999.0px)
   - dsfr/Toggle: radius topRight (Δ999.0px)
   - dsfr/Toggle: radius bottomRight (Δ999.0px)
@@ -1801,9 +1792,7 @@ Couverture mesurée : **41 paires** (notre composant mappé vs vrai composant of
   - dsfr/Toggle: padding-left (Δ2.0px)
   - dsfr/Toggle: box width (Δ-205.0px)
   - dsfr/Toggle: box height (Δ-20.0px)
-  - dsfr/Toggle: line-height (normal vs 24px)
   - dsfr/Toggle: background-color (rgb(0,0,145) vs rgb(0,0,0)/a0)
-  - dsfr/Toggle: color (rgb(58,58,58) vs rgb(22,22,22))
   - dsfr/Alert: box width (Δ28.0px)
   - dsfr/Alert: box height (Δ-10.0px)
   - dsfr/Accordion: box width (Δ28.0px)
@@ -1852,34 +1841,18 @@ Couverture mesurée : **41 paires** (notre composant mappé vs vrai composant of
   - carbon/Textarea: box height (Δ13.0px)
   - carbon/Textarea: line-height (Δ-2.0px)
   - carbon/Select: box width (Δ47.0px)
-  - carbon/Search: padding-right (Δ-40.0px)
-  - carbon/Search: padding-left (Δ-40.0px)
   - carbon/Search: box width (Δ47.0px)
-  - carbon/Search: font-size (Δ2.0px)
-  - carbon/Search: line-height (normal vs 18.0001px)
-  - carbon/Search: letter-spacing (normal vs 0.16px)
   - carbon/Checkbox: padding-left (Δ-6.0px)
-  - carbon/Checkbox: box height (Δ-2.0px)
-  - carbon/Checkbox: line-height (normal vs 18.0001px)
-  - carbon/Checkbox: letter-spacing (normal vs 0.16px)
-  - carbon/Radio: box width (Δ67.3px)
-  - carbon/Radio: line-height (normal vs 20px)
-  - carbon/Radio: letter-spacing (normal vs 0.16px)
+  - carbon/Checkbox: box width (Δ-6.0px)
+  - carbon/Checkbox: box height (Δ-3.0px)
+  - carbon/Radio: box width (Δ62.0px)
+  - carbon/Radio: box height (Δ-2.0px)
+  - carbon/Radio: line-height (Δ-2.0px)
   - carbon/Toggle: radius topLeft (Δ999.0px)
   - carbon/Toggle: radius topRight (Δ999.0px)
   - carbon/Toggle: radius bottomRight (Δ999.0px)
   - carbon/Toggle: radius bottomLeft (Δ999.0px)
-  - carbon/Toggle: padding-top (Δ2.0px)
-  - carbon/Toggle: padding-right (Δ2.0px)
-  - carbon/Toggle: padding-bottom (Δ2.0px)
-  - carbon/Toggle: padding-left (Δ2.0px)
-  - carbon/Toggle: box width (Δ-12.0px)
-  - carbon/Toggle: box height (Δ-4.0px)
-  - carbon/Toggle: font-size (Δ4.0px)
-  - carbon/Toggle: line-height (normal vs 16px)
-  - carbon/Toggle: letter-spacing (normal vs 0.32px)
   - carbon/Toggle: background-color (rgb(15,98,254) vs rgb(0,0,0)/a0)
-  - carbon/Toggle: color (rgb(22,22,22) vs rgb(82,82,82))
   - carbon/Alert: box width (Δ-96.4px)
   - carbon/Alert: box height (Δ-27.0px)
   - carbon/Accordion: box width (Δ28.0px)

@@ -287,6 +287,86 @@ interface BadgeInput {
   infoText?: string;        // INFO tone text; default = semantic.feedback.info
 }
 
+// F10+ (additive, cluster P-D) — Choice (Checkbox / Radio) LABEL typography
+// primitive. The bench compares our `.st-choice__label` against the official
+// `.fr-checkbox-group label` / `.fr-radio-group label` (DSFR) and
+// `.bx--checkbox-label-text` / `.bx--radio-button__label-text` (Carbon) — i.e.
+// the TYPOGRAPHY/COLOUR the label actually paints (the visual control is a
+// `::before` pseudo on the official side, unmeasurable, so the label text is the
+// comparable surface). Every leaf is optional and DEFAULTS to the current base
+// render of `.st-choice__label` (font-size 0.9375rem/15px, line-height `normal`,
+// letter-spacing `normal`, colour `text.primary`) so the base Sent Tech
+// checkbox/radio is byte-identical. The accent-color (checked control) and focus
+// strategy already resolve through `selection`/`control` — untouched here.
+//  - DSFR labels: 16px / line-height 24px, colour #161616 (title grey, the real
+//    `.fr-label` colour — darker than our #3a3a3a body grey).
+//  - Carbon labels: 14px / letter-spacing 0.16px; line-height 18px for the
+//    checkbox ($body-compact-01) and 20px for the radio ($body-01), so the radio
+//    line-height is carried separately (`radioLineHeight`).
+interface ChoiceInput {
+  labelFontSize?: string;     // label font-size; default "0.9375rem" (15px, current)
+  labelLineHeight?: string;   // checkbox label line-height; default "normal" (current)
+  radioLineHeight?: string;   // radio label line-height; default = labelLineHeight
+  labelLetterSpacing?: string; // label letter-spacing; default "normal" (current)
+  labelColor?: string;        // label colour; default = semantic.text.primary
+}
+
+// F10+ (additive, cluster P-D) — Search FIELD primitive. The bench compares our
+// `.st-search` field-box wrapper against the official INNER input
+// (`.fr-search-bar .fr-input` for DSFR, `.bx--search-input` for Carbon) — the
+// element that carries the real padding / radius / typography on the official
+// side. Our `.st-search` is a flex wrapper whose padding lives on its inner
+// icon/input, so the wrapper measures 0 padding; this primitive lets a theme
+// pad the WRAPPER (so the measured box matches the reference input) and pin its
+// type metrics, without disturbing the resolved field anatomy (fillBg / borders
+// / radius are still the shared field box, already mapped like Input). Every
+// leaf DEFAULTS to the current `.st-search` render (0 padding, inherited
+// 16px / `normal` typography) so the base Sent Tech search is byte-identical.
+//  - DSFR `.fr-search-bar .fr-input`: padding 8px/16px, line-height 24px, font
+//    16px (the filled-underline search field; its top-corner radius rides the
+//    shared field radiusTop already mapped for DSFR = 4px).
+//  - Carbon `.bx--search-input`: padding 0/40px (icon + clear gutters), font 14px,
+//    line-height 18px, letter-spacing 0.16px.
+interface SearchInput {
+  paddingBlock?: string;      // field-box vertical padding; default "0" (current)
+  paddingInline?: string;     // field-box horizontal padding; default "0" (current)
+  fontSize?: string;          // input font-size; default "1rem" (16px, current inherited)
+  lineHeight?: string;        // input line-height; default "normal" (current)
+  letterSpacing?: string;     // input letter-spacing; default "normal" (current)
+}
+
+// F10+ (additive, cluster P-D) — Toggle / Switch primitive. The bench compares
+// our `.st-toggle__track` against the official DSFR LABEL (`.fr-toggle__label`,
+// the switch itself is a `::before/::after` pseudo, unmeasurable) and the Carbon
+// `.bx--toggle__switch` (a real switch element). The track GEOMETRY (radius,
+// padding, dimensions) and the label TYPOGRAPHY can be aligned per theme so the
+// measured surfaces match the reference. Every leaf DEFAULTS to the current
+// `.st-toggle__track` / `.st-toggle__label` render (pill radius 999px, 2px inner
+// padding, 36×20 md track, inherited `normal` typography, primary text) so the
+// base Sent Tech toggle is byte-identical.
+//  - Carbon `.bx--toggle__switch`: a 48×24 rounded-rect track measuring radius 0
+//    on its own box (the visual rounding is a child pseudo), padding 0, font 12px,
+//    line-height 16px, letter-spacing 0.32px, colour #525252 (Gray 70). We pin the
+//    track to 48×24 with radius 0 + 0 inner padding to match the measured box.
+//  - DSFR `.fr-toggle__label` is the LABEL text (radius 0, padding 0, transparent
+//    bg, colour #161616, 16px / line-height 24px) — a different element from our
+//    track, so the DSFR toggle keeps a justified structural residual; the
+//    typography/colour leaves still align what the track CAN match.
+interface ToggleInput {
+  trackRadius?: string;       // track corner radius; default "999px" (pill, current)
+  trackPadding?: string;      // track inner padding; default "0.125rem" (2px, current)
+  trackWidth?: string;        // md track width; default "2.25rem" (36px, current)
+  trackHeight?: string;       // md track height; default "1.25rem" (20px, current)
+  thumbSize?: string;         // md thumb size; default "1rem" (16px, current)
+  trackColor?: string;        // resting track fill; default = semantic.border.strong
+  trackCheckedColor?: string; // checked track fill; default = semantic.action.primary
+  thumbColor?: string;        // thumb fill; default = semantic.surface.default
+  fontSize?: string;          // toggle state-label font-size; default "inherit" (current)
+  lineHeight?: string;        // toggle label line-height; default "normal" (current)
+  letterSpacing?: string;     // toggle label letter-spacing; default "normal" (current)
+  textColor?: string;         // toggle label text colour; default = semantic.text.primary
+}
+
 interface FoundationInput {
   radius: { none?: string; sm?: string; md: string; lg: string; pill: string };
   shadow: { subtle: string; medium: string; floating: string };
@@ -322,6 +402,12 @@ interface FoundationInput {
   // (base) both keep the current render via the resolver defaults.
   tag?: TagInput;
   badge?: BadgeInput;
+  // P-D (additive): per-theme Choice (Checkbox/Radio) label typography, Search
+  // field box and Toggle/Switch anatomy. Optional — when omitted (base) all keep
+  // the current render via the resolver defaults.
+  choice?: ChoiceInput;
+  search?: SearchInput;
+  toggle?: ToggleInput;
   // F9 (additive): a BUTTON-specific density override. The button shares the
   // control `density` scale with the fields (Input/Select/Textarea/Tabs all read
   // it), so a button-only geometry — e.g. Carbon's tall 48px primary button with
@@ -726,6 +812,96 @@ function badgeOf(semantic: SemanticInput, f: FoundationInput): {
   };
 }
 
+/**
+ * Choice (Checkbox/Radio) LABEL resolution (P-D). Resolves the per-theme label
+ * typography into a flat, CSS-ready set the `.st-choice__label` consumes
+ * verbatim. Every leaf DEFAULTS to the prior base render (15px font, `normal`
+ * line-height + letter-spacing, primary text) so the base Sent Tech
+ * checkbox/radio is byte-identical. `radioLineHeight` defaults to the checkbox
+ * line-height (single value) so a theme that does not split them stays
+ * consistent; Carbon splits 18px (checkbox) / 20px (radio).
+ */
+function choiceOf(semantic: SemanticInput, f: FoundationInput): {
+  labelFontSize: string;
+  labelLineHeight: string;
+  radioLineHeight: string;
+  labelLetterSpacing: string;
+  labelColor: string;
+} {
+  const c = f.choice ?? {};
+  const labelLineHeight = c.labelLineHeight ?? "normal";
+  return {
+    labelFontSize: c.labelFontSize ?? "0.9375rem", // 15px (current)
+    labelLineHeight,
+    radioLineHeight: c.radioLineHeight ?? labelLineHeight,
+    labelLetterSpacing: c.labelLetterSpacing ?? "normal",
+    labelColor: c.labelColor || semantic.text.primary
+  };
+}
+
+/**
+ * Search FIELD resolution (P-D). Resolves the per-theme search-box padding +
+ * input typography into a flat set the `.st-search` consumes verbatim. Every
+ * leaf DEFAULTS to the prior base render (0 padding on the wrapper, inherited
+ * 16px / `normal` typography) so the base Sent Tech search is byte-identical.
+ * The field box (fill / borders / radius) is the shared field anatomy, unchanged.
+ */
+function searchOf(f: FoundationInput): {
+  paddingBlock: string;
+  paddingInline: string;
+  fontSize: string;
+  lineHeight: string;
+  letterSpacing: string;
+} {
+  const s = f.search ?? {};
+  return {
+    paddingBlock: s.paddingBlock ?? "0",
+    paddingInline: s.paddingInline ?? "0",
+    fontSize: s.fontSize ?? "1rem",       // 16px (current inherited)
+    lineHeight: s.lineHeight ?? "normal",
+    letterSpacing: s.letterSpacing ?? "normal"
+  };
+}
+
+/**
+ * Toggle / Switch resolution (P-D). Resolves the per-theme track geometry +
+ * colours + label typography into a flat set the Toggle/Switch components
+ * consume verbatim. Every leaf DEFAULTS to the prior base render (pill radius
+ * 999px, 2px inner padding, 36×20 md track, 16px md thumb, border.strong resting
+ * track, action.primary checked track, surface.default thumb, inherited `normal`
+ * typography, primary text) so the base Sent Tech toggle is byte-identical.
+ */
+function toggleOf(semantic: SemanticInput, f: FoundationInput): {
+  trackRadius: string;
+  trackPadding: string;
+  trackWidth: string;
+  trackHeight: string;
+  thumbSize: string;
+  trackColor: string;
+  trackCheckedColor: string;
+  thumbColor: string;
+  fontSize: string;
+  lineHeight: string;
+  letterSpacing: string;
+  textColor: string;
+} {
+  const t = f.toggle ?? {};
+  return {
+    trackRadius: t.trackRadius ?? "999px",
+    trackPadding: t.trackPadding ?? "0.125rem", // 2px (current)
+    trackWidth: t.trackWidth ?? "2.25rem",      // 36px (current md)
+    trackHeight: t.trackHeight ?? "1.25rem",    // 20px (current md)
+    thumbSize: t.thumbSize ?? "1rem",           // 16px (current md)
+    trackColor: t.trackColor || semantic.border.strong,
+    trackCheckedColor: t.trackCheckedColor || semantic.action.primary,
+    thumbColor: t.thumbColor || semantic.surface.default,
+    fontSize: t.fontSize ?? "inherit",
+    lineHeight: t.lineHeight ?? "normal",
+    letterSpacing: t.letterSpacing ?? "normal",
+    textColor: t.textColor || semantic.text.primary
+  };
+}
+
 function typographyOf(f: FoundationInput, role: "control" | "field" | "label" | "link"): TypographyAnatomy {
   // Widen to TypographyAnatomy so the optional textDecorationHover leaf is
   // readable across all roles (only `link` carries it in the FALLBACK literal).
@@ -1018,6 +1194,12 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
   const tagResolved = tagOf(semantic, foundation);
   const badgeResolved = badgeOf(semantic, foundation);
 
+  // P-D — Choice (Checkbox/Radio) / Search / Toggle anatomy (per theme; base
+  // render unchanged via the resolver defaults).
+  const choiceResolved = choiceOf(semantic, foundation);
+  const searchResolved = searchOf(foundation);
+  const toggleResolved = toggleOf(semantic, foundation);
+
   return {
     button: {
       radius: foundation.radius.md,
@@ -1173,9 +1355,38 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       checkedBackground: semantic.action.primary,
       checkedText: semantic.action.primaryText,
       border: semantic.border.subtle,
-      switchTrack: semantic.border.strong,
-      switchTrackChecked: semantic.action.primary,
-      switchThumb: semantic.surface.default
+      // Existing switch colour leaves now resolve through `toggleOf` (identical
+      // defaults = unchanged base; DSFR/Carbon set their measured track colours).
+      switchTrack: toggleResolved.trackColor,
+      switchTrackChecked: toggleResolved.trackCheckedColor,
+      switchThumb: toggleResolved.thumbColor,
+      // P-D additive — Choice (Checkbox/Radio) label typography (base = unchanged).
+      choiceLabelFontSize: choiceResolved.labelFontSize,
+      choiceLabelLineHeight: choiceResolved.labelLineHeight,
+      choiceRadioLineHeight: choiceResolved.radioLineHeight,
+      choiceLabelLetterSpacing: choiceResolved.labelLetterSpacing,
+      choiceLabelColor: choiceResolved.labelColor,
+      // P-D additive — Toggle/Switch track geometry + label typography (base =
+      // unchanged via the resolver defaults).
+      toggleTrackRadius: toggleResolved.trackRadius,
+      toggleTrackPadding: toggleResolved.trackPadding,
+      toggleTrackWidth: toggleResolved.trackWidth,
+      toggleTrackHeight: toggleResolved.trackHeight,
+      toggleThumbSize: toggleResolved.thumbSize,
+      toggleFontSize: toggleResolved.fontSize,
+      toggleLineHeight: toggleResolved.lineHeight,
+      toggleLetterSpacing: toggleResolved.letterSpacing,
+      toggleTextColor: toggleResolved.textColor
+    },
+    search: {
+      // P-D additive — Search field box padding + input typography (base =
+      // unchanged via the resolver defaults). The field box (fill/border/radius)
+      // stays the shared `control.anatomy.field` already mapped like Input.
+      paddingBlock: searchResolved.paddingBlock,
+      paddingInline: searchResolved.paddingInline,
+      fontSize: searchResolved.fontSize,
+      lineHeight: searchResolved.lineHeight,
+      letterSpacing: searchResolved.letterSpacing
     },
     overlay: {
       backdrop: semantic.surface.overlay,

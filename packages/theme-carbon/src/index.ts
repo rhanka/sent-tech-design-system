@@ -354,6 +354,50 @@ const foundation = {
     minHeight: "1.5rem",                       // 24px box
     neutralBackground: carbonColor.gray[20],   // #e0e0e0 ($tag-background-gray)
     neutralText: carbonColor.gray[80]          // #393939 ($tag-color-gray)
+  },
+  // P-D — Carbon Checkbox/Radio LABEL. Measured on `.bx--checkbox-label-text`
+  // ($body-compact-01 = 14px / line-height 18px) and `.bx--radio-button__label-
+  // text` ($body-01 = 14px / line-height 20px); both carry $label tracking
+  // 0.16px and colour #161616 (Gray 100, $text-primary — already our text.primary,
+  // so labelColor is left default). The base 15px / normal label is replaced by
+  // this faithful look (the native checked control colour + focus are unchanged).
+  choice: {
+    labelFontSize: "0.875rem",                 // 14px
+    labelLineHeight: "18px",                   // checkbox $body-compact-01 line-height
+    radioLineHeight: "20px",                   // radio $body-01 line-height
+    labelLetterSpacing: "0.16px"               // $label-01 tracking
+  },
+  // P-D — Carbon « Search » inner input (.bx--search-input). Measured: padding
+  // 0/40px (the magnifier icon + clear-button gutters), font 14px (0.875rem),
+  // line-height 18px, letter-spacing 0.16px. The field box (fill #f4f4f4, real
+  // border-bottom #8d8d8d) is already the shared field anatomy mapped for Carbon;
+  // we pad the WRAPPER so the measured box carries the real 0/40 padding.
+  search: {
+    paddingBlock: "0",                         // 0
+    paddingInline: "2.5rem",                   // 40px (icon + clear gutters)
+    fontSize: "0.875rem",                      // 14px
+    lineHeight: "18px",                        // $body-compact-01
+    letterSpacing: "0.16px"                    // $label tracking
+  },
+  // P-D — Carbon « Toggle » (.bx--toggle__switch). Measured: a 48×24 switch box,
+  // padding 0, font 12px (0.75rem), line-height 16px (1rem), letter-spacing
+  // 0.32px ($label-02 tracking), colour #525252 (Gray 70). We pin the track to
+  // the real 48×24 box with 0 inner padding and align its inherited typography +
+  // colour (the track carries no text, so these are visually inert but close the
+  // measured gaps). The 18px thumb gives the real Carbon thumb size. The track
+  // RADIUS stays a pill (the official switch reports radius 0 only because its
+  // visual rounding lives on a `::before`; a square track would stop reading as a
+  // switch) and the checked BACKGROUND stays Blue 60 (a switch must be coloured) —
+  // both are justified structural residuals.
+  toggle: {
+    trackPadding: "0",                         // 0 (Carbon switch has no inner padding)
+    trackWidth: "3rem",                        // 48px
+    trackHeight: "1.5rem",                     // 24px
+    thumbSize: "1.125rem",                     // 18px (real Carbon thumb)
+    fontSize: "0.75rem",                       // 12px
+    lineHeight: "1rem",                        // 16px
+    letterSpacing: "0.32px",                   // $label-02 tracking
+    textColor: carbonColor.gray[70]            // #525252 (Gray 70)
   }
 } as const;
 
