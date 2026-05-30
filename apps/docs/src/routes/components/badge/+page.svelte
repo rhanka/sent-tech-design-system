@@ -40,6 +40,15 @@
   </section>
 
   <section class="docs-section">
+    <h2>{locale.value === "fr" ? "Quand l'utiliser" : "When to use"}</h2>
+    <ul class="docs-list docs-list--plain">
+      <li>{locale.value === "fr" ? "Étiqueter un statut, une catégorie ou un état (ex. « Stable », « Pending »)." : "Label a status, category, or state (e.g. \"Stable\", \"Pending\")."}</li>
+      <li>{locale.value === "fr" ? "Badge est non interactif. Pour un chip fermable ou cliquable, utilisez Tag." : "Badge is non-interactive. For a dismissible or clickable chip, use Tag."}</li>
+      <li>{locale.value === "fr" ? "Choisissez la tonalité selon le sens, pas une hiérarchie métier." : "Choose tone by meaning, not by business hierarchy."}</li>
+    </ul>
+  </section>
+
+  <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
     <div class="docs-example" aria-label={locale.value === "fr" ? "Tonalités" : "Tones"}>
@@ -83,12 +92,32 @@
   </section>
 
   <section class="docs-section">
-    <h2>{text().usageTitle}</h2>
-    <ul class="docs-token-list">
-      <li>{text().usageTone}</li>
-      <li>{text().usageSpread}</li>
-      <li>{text().usageA11y}</li>
+    <h2>{locale.value === "fr" ? "Accessibilité" : "Accessibility"}</h2>
+    <ul class="docs-list docs-list--plain">
+      <li>{locale.value === "fr" ? "Le composant rend un <span> inline : le texte est lu tel quel." : "The component renders an inline <span>: the text is read as-is."}</li>
+      <li>{locale.value === "fr" ? "La couleur n'est jamais le seul indice : le libellé porte le sens." : "Color is never the only cue: the label carries the meaning."}</li>
+      <li>{locale.value === "fr" ? "Si le badge est purement décoratif à côté d'un texte explicite, ajoutez aria-hidden." : "If the badge is purely decorative next to explicit text, add aria-hidden."}</li>
     </ul>
+  </section>
+
+  <section class="docs-section">
+    <h2>{text().usageTitle}</h2>
+    <div class="docs-guidelines">
+      <div class="docs-guideline docs-guideline--do">
+        <p class="docs-guideline__tag">{locale.value === "fr" ? "À faire" : "Do"}</p>
+        <ul>
+          <li>{locale.value === "fr" ? "Un libellé court, un ou deux mots." : "A short label, one or two words."}</li>
+          <li>{locale.value === "fr" ? "Une tonalité cohérente entre badges de même nature." : "A consistent tone across badges of the same kind."}</li>
+        </ul>
+      </div>
+      <div class="docs-guideline docs-guideline--dont">
+        <p class="docs-guideline__tag">{locale.value === "fr" ? "À éviter" : "Don't"}</p>
+        <ul>
+          <li>{locale.value === "fr" ? "Y câbler une action : utilisez Tag ou un bouton." : "Wire an action onto it: use Tag or a button."}</li>
+          <li>{locale.value === "fr" ? "Des phrases entières dans un badge." : "Full sentences inside a badge."}</li>
+        </ul>
+      </div>
+    </div>
   </section>
 
   <section class="docs-section">
