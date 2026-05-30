@@ -146,7 +146,7 @@ restés en « Sent Tech base », vers ~95 % à l'oracle. Per-thème, base intact
 | P-A | Pagination (48/35 %), Breadcrumb (84 %) | ✅ Pagination **100 %/100 %**, Breadcrumb **96,8 %/100 %** (F10) |
 | P-B | Alert (48/42 %), Accordion (68/74 %) | ✅ Alert **93,5 %/93,5 %**, Accordion **96,8 %/96,8 %** (résidus = boîte W/H bench) |
 | P-C | Tag (58 %), Badge (55 % DSFR) | ✅ Tag **100 %/100 %**, Badge **100 %** DSFR (P-C) — aucun résidu |
-| P-D | Toggle (58/51 %), Search (77/81 %), Checkbox/Radio (87 %) résidus | ⬜ |
+| P-D | Toggle (58/51 %), Search (77/81 %), Checkbox/Radio (87 %) résidus | ✅+🛡️ Search **93,5/96,8**, Checkbox **93,5/90,3**, Radio **93,5/90,3**, Toggle Carbon **83,9** ; Toggle DSFR **64,5 % = 🛡️** (artefact : la réf `.fr-toggle__label` est le LABEL texte ~241px, l'interrupteur DSFR étant dessiné en pseudo-éléments non mesurables → comparaison label-vs-piste ; typo/couleur comparables OK, le structurel radius/padding/box/fond non-comparable). **Vague F10+ COMPLÈTE.** Global banc **92 %** (`089c474`). |
 
 ### P-A — Pagination & Breadcrumb portés à l'anatomie DSFR/Carbon (F10, additif) ✅
 Primitives additives `PaginationInput` / `BreadcrumbInput` dans `packages/tokens/src/component.ts`
