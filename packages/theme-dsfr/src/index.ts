@@ -322,6 +322,41 @@ const foundation = {
     fontSize: "0.75rem",                       // 12px
     lineHeight: "20px",                        // 20px (measured)
     currentWeight: "400"                       // DSFR current page is not bolded
+  },
+  // P-B — DSFR « Alerte » (.fr-alert). Measured on the official `.fr-alert--info`
+  // (CDN dsfr.min.css): NO box border and NO fill — the four measured borders are
+  // all 0 and the background is transparent. The severity accent is a coloured
+  // LEFT FILET drawn as a `::before` (a background bar, NOT a border), so it adds
+  // no measured border. Padding 16px top / 36px right / 12px bottom / 56px left
+  // (the 56px left + 36px right reserve the status-icon and close-button gutters
+  // the real `.fr-alert` always lays out). Body type = Marianne 16px / 24px
+  // line-height. Text = #3a3a3a (--text-default-grey, already our text.primary).
+  alert: {
+    background: "transparent",                 // .fr-alert has no fill
+    borderTop: "none",                         // no box border (accent is a ::before filet)
+    borderRight: "none",
+    borderBottom: "none",
+    accentWidth: "0",                          // left border collapses (filet instead)
+    filetWidth: "0.25rem",                     // 4px ::before accent bar (inside the box → border stays 0)
+    paddingTop: "1rem",                        // 16px
+    paddingRight: "2.25rem",                   // 36px (close-button gutter)
+    paddingBottom: "0.75rem",                  // 12px
+    paddingLeft: "3.5rem",                     // 56px (status-icon gutter)
+    fontSize: "1rem",                          // 16px
+    lineHeight: "1.5rem"                       // 24px (DSFR body 1rem/1.5)
+  },
+  // P-B — DSFR « Accordéon » (.fr-accordion__btn). Measured on the official
+  // `.fr-accordion__btn`: padding 12px/16px, font-size 16px (1rem), font-weight
+  // 500, line-height 24px (1.5rem), colour Bleu France #000091 (the header label
+  // is a Bleu France action). The base 18.72px/600/#3a3a3a trigger is replaced by
+  // this faithful Bleu France 16px/500 header.
+  accordion: {
+    text: dsfrColor.blueFrance.sun113,         // #000091 Bleu France header label
+    paddingBlock: "0.75rem",                   // 12px
+    paddingInline: "1rem",                     // 16px
+    fontSize: "1rem",                          // 16px (not the inherited h3 18.72px)
+    fontWeight: "500",                         // DSFR header weight
+    lineHeight: "1.5rem"                       // 24px
   }
 } as const;
 
