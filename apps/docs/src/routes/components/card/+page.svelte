@@ -60,6 +60,15 @@
   </section>
 
   <section class="docs-section">
+    <h2>{locale.value === "fr" ? "Quand l'utiliser" : "When to use"}</h2>
+    <ul class="docs-list docs-list--plain">
+      <li>{locale.value === "fr" ? "Regrouper visuellement un bloc de contenu autonome (résumé, plan, élément de liste riche)." : "Visually group a self-contained block of content (summary, plan, rich list item)."}</li>
+      <li>{locale.value === "fr" ? "Utilisez interactive uniquement si toute la carte mène à une action ou une destination." : "Use interactive only when the whole card leads to a single action or destination."}</li>
+      <li>{locale.value === "fr" ? "N'imbriquez pas une carte dans une autre carte." : "Don't nest a card inside another card."}</li>
+    </ul>
+  </section>
+
+  <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
     <div class="docs-example" aria-label={text().staticLabel}>
@@ -79,6 +88,44 @@
         <p>{text().planBody}</p>
         <Button variant="primary">{text().planAction}</Button>
       </Card>
+    </div>
+  </section>
+
+  <section class="docs-section">
+    <h2>{locale.value === "fr" ? "Anatomie" : "Anatomy"}</h2>
+    <ul class="docs-list docs-list--plain">
+      <li>{locale.value === "fr" ? "Élément racine : un <section> (classe st-card) avec bordure, rayon et ombre." : "Root element: a <section> (class st-card) with border, radius, and shadow."}</li>
+      <li>{locale.value === "fr" ? "Contenu : entièrement libre, via le slot children." : "Content: fully free-form, via the children slot."}</li>
+      <li>{locale.value === "fr" ? "Variante interactive : ajoute une élévation et une translation au survol." : "Interactive variant: adds elevation and a lift on hover."}</li>
+    </ul>
+  </section>
+
+  <section class="docs-section">
+    <h2>{locale.value === "fr" ? "Accessibilité" : "Accessibility"}</h2>
+    <ul class="docs-list docs-list--plain">
+      <li>{locale.value === "fr" ? "La carte est un <section> neutre : ce n'est pas un contrôle par défaut." : "The card is a neutral <section>: it is not a control by default."}</li>
+      <li>{locale.value === "fr" ? "Pour une carte cliquable, câblez role/tabindex/onclick (ou englobez un seul lien/bouton) et assurez un focus visible." : "For a clickable card, wire role/tabindex/onclick (or wrap a single link/button) and ensure a visible focus."}</li>
+      <li>{locale.value === "fr" ? "Ne reposez pas l'interactivité sur le seul effet de survol : prévoyez un état focus." : "Don't rely on hover alone for interactivity: provide a focus state."}</li>
+    </ul>
+  </section>
+
+  <section class="docs-section">
+    <h2>{locale.value === "fr" ? "Lignes directrices" : "Guidelines"}</h2>
+    <div class="docs-guidelines">
+      <div class="docs-guideline docs-guideline--do">
+        <p class="docs-guideline__tag">{locale.value === "fr" ? "À faire" : "Do"}</p>
+        <ul>
+          <li>{locale.value === "fr" ? "Une seule action principale par carte interactive." : "A single primary action per interactive card."}</li>
+          <li>{locale.value === "fr" ? "Aligner les cartes sur une grille régulière." : "Align cards on a consistent grid."}</li>
+        </ul>
+      </div>
+      <div class="docs-guideline docs-guideline--dont">
+        <p class="docs-guideline__tag">{locale.value === "fr" ? "À éviter" : "Don't"}</p>
+        <ul>
+          <li>{locale.value === "fr" ? "Imbriquer des cartes ou empiler des ombres." : "Nest cards or stack shadows."}</li>
+          <li>{locale.value === "fr" ? "Marquer interactive sans cible cliquable réelle." : "Mark interactive without a real clickable target."}</li>
+        </ul>
+      </div>
     </div>
   </section>
 

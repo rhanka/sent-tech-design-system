@@ -900,6 +900,83 @@ select {
   padding: 0.125rem 0.25rem;
 }
 
+/* Plain bullet list (intro/usage/anatomy/accessibility narratives). Distinct
+   from .docs-list which renders link cards. */
+.docs-list--plain {
+  display: grid;
+  gap: 0.6rem;
+  list-style: disc;
+  padding-left: 1.2rem;
+}
+
+.docs-list--plain li {
+  color: var(--docs-muted);
+  line-height: 1.6;
+  max-width: 46rem;
+}
+
+.docs-list--plain code,
+.docs-section p code,
+.docs-demo-note code {
+  background: var(--st-semantic-surface-subtle, #f8fafc);
+  border: 1px solid var(--docs-line);
+  border-radius: 0.375rem;
+  font-size: 0.85em;
+  padding: 0.05rem 0.3rem;
+}
+
+/* Do / Don't guidance cards (Carbon-style usage guidelines). */
+.docs-guidelines {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+}
+
+.docs-guideline {
+  background: #ffffff;
+  border: 1px solid var(--docs-line);
+  border-left-width: 0.25rem;
+  border-radius: 0.5rem;
+  padding: 1rem 1.1rem;
+}
+
+.docs-guideline--do {
+  border-left-color: var(--st-semantic-feedback-success, #16a34a);
+}
+
+.docs-guideline--dont {
+  border-left-color: var(--st-semantic-feedback-error, #dc2626);
+}
+
+.docs-guideline__tag {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  margin: 0 0 0.5rem;
+  text-transform: uppercase;
+}
+
+.docs-guideline--do .docs-guideline__tag {
+  color: var(--st-semantic-feedback-success, #16a34a);
+}
+
+.docs-guideline--dont .docs-guideline__tag {
+  color: var(--st-semantic-feedback-error, #dc2626);
+}
+
+.docs-guideline ul {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.docs-guideline li {
+  color: var(--docs-muted);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
 .docs-language {
   align-items: center;
   display: none;
