@@ -35,6 +35,16 @@
 </nav>
 
 <style>
+  /* F10: breadcrumb typography on the root so the trail/link/separator inherit
+     the per-theme size/line-height/tracking. Defaults (inherit / normal) keep
+     the base Sent Tech render byte-identical; DSFR/Carbon pin their real metrics
+     (DSFR 12px/20px, Carbon 14px/18px/0.16px). */
+  .st-breadcrumb {
+    font-size: var(--st-component-breadcrumb-fontSize, inherit);
+    letter-spacing: var(--st-component-breadcrumb-letterSpacing, normal);
+    line-height: var(--st-component-breadcrumb-lineHeight, normal);
+  }
+
   .st-breadcrumb ol {
     align-items: center;
     display: flex;
@@ -58,7 +68,7 @@
 
   .st-breadcrumb [aria-current="page"] {
     color: var(--st-component-breadcrumb-currentText, var(--st-semantic-text-primary));
-    font-weight: 600;
+    font-weight: var(--st-component-breadcrumb-currentWeight, 600);
   }
 
   .st-breadcrumb__separator {

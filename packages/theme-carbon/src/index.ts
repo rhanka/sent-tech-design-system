@@ -268,6 +268,38 @@ const foundation = {
     fontSize: "0.875rem",               // 14px ($body-compact-01 / .bx--tabs)
     lineHeight: "1rem",                 // 16px (mobile base nav-link line-height)
     indicatorSide: "bottom"             // blue bottom indicator (real selected design)
+  },
+  // F10 — Carbon « Pagination Nav » (.bx--pagination-nav__page). Measured on the
+  // official `.bx--pagination-nav__page--active`: a BORDERLESS 48px square button
+  // with a TRANSPARENT background and Gray 70 (#525252) text, 17px block / 4px
+  // inline padding, font-size 14px (0.875rem), font-weight 600, line-height 14px
+  // (0.875rem) and 0.16px tracking. (The active page reads as the heavier-weight
+  // current item; its blue underline indicator sits below the digit.) The base
+  // Sent Tech bordered/filled-blue active page is replaced by this faithful look.
+  pagination: {
+    background: "transparent",                 // resting page = no fill
+    border: "transparent",
+    borderWidth: "0",                          // Carbon pagination-nav pages carry no stroke
+    text: carbonColor.gray[100],               // #161616 resting page text ($text-primary)
+    activeBackground: "transparent",           // active page bg is transparent (ref measured a0)
+    activeText: carbonColor.gray[70],           // #525252 active page text ($text-secondary)
+    activeBorderWidth: "0",                    // active page has no border (ref measured 0)
+    activeWeight: "600",                        // active page digit is semibold
+    paddingBlock: "1.0625rem",                 // 17px (48px box at 14px line-height)
+    paddingInline: "0.25rem",                  // 4px
+    minSize: "3rem",                           // 48px (Carbon page box)
+    fontSize: "0.875rem",                      // 14px
+    lineHeight: "0.875rem",                    // 14px (measured)
+    letterSpacing: "0.16px"                    // $body-compact-01 tracking
+  },
+  // F10 — Carbon « Breadcrumb » (.bx--breadcrumb-item .bx--link). The link colour
+  // (#0f62fe Blue 60, $link-primary) already matches via semantic.text.link; only
+  // the type metrics differ from the base: font-size 14px ($body-compact-01),
+  // line-height 18px (1.125rem) and 0.16px tracking.
+  breadcrumb: {
+    fontSize: "0.875rem",                      // 14px ($body-compact-01)
+    lineHeight: "1.125rem",                    // 18px
+    letterSpacing: "0.16px"
   }
 } as const;
 

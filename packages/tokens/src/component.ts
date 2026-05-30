@@ -130,6 +130,47 @@ interface TabsInput {
   indicatorMode?: string;
 }
 
+// F10 (additive) — Pagination ACTIVE-page primitive. Every leaf is optional and
+// DEFAULTS to the current base render (1px subtle stroke, radius.md, 0 block /
+// 12px inline padding, filled action.primary active page, inherited typography),
+// so the base Sent Tech pagination is byte-identical. DSFR fills the active page
+// with Bleu France (no border, 14px / 24px line-height); Carbon renders the
+// active page as a borderless 48px square with 0.16px-tracked 14px/600 text.
+interface PaginationInput {
+  background?: string;        // resting page background; default = semantic.surface.default
+  border?: string;           // page border colour; default = semantic.border.subtle
+  borderWidth?: string;      // page border width; default = thin (1px)
+  text?: string;             // resting page text colour; default = semantic.text.primary
+  radius?: string;           // page corner radius; default = foundation.radius.md
+  activeBackground?: string; // active page background; default = semantic.action.primary
+  activeText?: string;       // active page text colour; default = semantic.action.primaryText
+  activeBorder?: string;     // active page border colour; default = page `border`
+  activeBorderWidth?: string;// active page border width; default = page `borderWidth`
+  activeWeight?: string;     // active page font-weight; default = "inherit"
+  disabledText?: string;     // disabled control text colour; default = semantic.text.muted
+  paddingBlock?: string;     // page vertical padding; default "0" (current render)
+  paddingInline?: string;    // page horizontal padding; default "0.75rem" (12px, current)
+  minSize?: string;          // page min-width / min-height; default "2.25rem" (36px, current)
+  fontSize?: string;         // page font-size; default "inherit" (current inherited render)
+  lineHeight?: string;       // page line-height; default "normal" (current render)
+  letterSpacing?: string;    // page letter-spacing; default "normal" (current render)
+}
+
+// F10 (additive) — Breadcrumb LINK/typography primitive. Every leaf is optional
+// and DEFAULTS to the current base render (link reads semantic.text.link, no
+// explicit font metrics → inherited 16px / normal). DSFR pins the grey 12px /
+// 20px breadcrumb link; Carbon pins the 14px / 18px / 0.16px-tracked link.
+interface BreadcrumbInput {
+  text?: string;          // trail (non-link) text colour; default = semantic.text.secondary
+  linkText?: string;      // link colour; default = semantic.text.link
+  currentText?: string;   // current-page text colour; default = semantic.text.primary
+  separator?: string;     // separator glyph colour; default = semantic.text.muted
+  fontSize?: string;      // breadcrumb font-size; default "inherit" (current render)
+  lineHeight?: string;    // breadcrumb line-height; default "normal" (current render)
+  letterSpacing?: string; // breadcrumb letter-spacing; default "normal" (current render)
+  currentWeight?: string; // current-page font-weight; default "600" (current render)
+}
+
 interface FoundationInput {
   radius: { none?: string; sm?: string; md: string; lg: string; pill: string };
   shadow: { subtle: string; medium: string; floating: string };
@@ -153,6 +194,10 @@ interface FoundationInput {
   // subtle stroke). DSFR sets a transparent fill + Bleu France border + text to
   // render its real OUTLINED « Bouton secondaire ».
   buttonSecondary?: ButtonSecondaryInput;
+  // F10 (additive): per-theme Pagination / Breadcrumb anatomy. Optional — when
+  // omitted (base) both keep the current render via the resolver defaults.
+  pagination?: PaginationInput;
+  breadcrumb?: BreadcrumbInput;
   // F9 (additive): a BUTTON-specific density override. The button shares the
   // control `density` scale with the fields (Input/Select/Textarea/Tabs all read
   // it), so a button-only geometry — e.g. Carbon's tall 48px primary button with
@@ -312,6 +357,89 @@ function buttonSecondaryOf(semantic: SemanticInput, f: FoundationInput): {
     background: b.background || semantic.action.secondary,
     border: b.border || semantic.border.subtle,
     hoverBackground: b.hoverBackground || semantic.action.secondaryHover || semantic.action.secondary
+  };
+}
+
+/**
+ * Pagination resolution (F10). Resolves the per-theme pagination primitive into
+ * a flat, CSS-ready set the Pagination component consumes verbatim. Every leaf
+ * DEFAULTS to the prior base render (1px subtle stroke, radius.md, 0 block /
+ * 12px inline padding, 36px min size, filled action.primary active page,
+ * inherited font metrics) so the base Sent Tech pagination is byte-identical.
+ * DSFR / Carbon override the real active-page metrics.
+ */
+function paginationOf(semantic: SemanticInput, f: FoundationInput, thin: string, radiusMd: string): {
+  background: string;
+  border: string;
+  borderWidth: string;
+  text: string;
+  radius: string;
+  activeBackground: string;
+  activeText: string;
+  activeBorder: string;
+  activeBorderWidth: string;
+  activeWeight: string;
+  disabledText: string;
+  paddingBlock: string;
+  paddingInline: string;
+  minSize: string;
+  fontSize: string;
+  lineHeight: string;
+  letterSpacing: string;
+} {
+  const p = f.pagination ?? {};
+  const border = p.border || semantic.border.subtle;
+  const borderWidth = p.borderWidth ?? thin;
+  return {
+    background: p.background || semantic.surface.default,
+    border,
+    borderWidth,
+    text: p.text || semantic.text.primary,
+    radius: p.radius ?? radiusMd,
+    activeBackground: p.activeBackground || semantic.action.primary,
+    activeText: p.activeText || semantic.action.primaryText,
+    // The active page can drop its border (DSFR/Carbon active page has none);
+    // default = the resting page border so the base render is unchanged.
+    activeBorder: p.activeBorder || border,
+    activeBorderWidth: p.activeBorderWidth ?? borderWidth,
+    activeWeight: p.activeWeight ?? "inherit",
+    disabledText: p.disabledText || semantic.text.muted,
+    paddingBlock: p.paddingBlock ?? "0",
+    paddingInline: p.paddingInline ?? "0.75rem",
+    minSize: p.minSize ?? "2.25rem",
+    fontSize: p.fontSize ?? "inherit",
+    lineHeight: p.lineHeight ?? "normal",
+    letterSpacing: p.letterSpacing ?? "normal"
+  };
+}
+
+/**
+ * Breadcrumb resolution (F10). Resolves the per-theme breadcrumb primitive into
+ * a flat set the Breadcrumb component consumes verbatim. Every leaf DEFAULTS to
+ * the prior base render (link = text.link, no explicit font metrics → inherited
+ * 16px / normal, current 600 weight on the current page). DSFR / Carbon pin the
+ * real breadcrumb link colour + typography.
+ */
+function breadcrumbOf(semantic: SemanticInput, f: FoundationInput): {
+  text: string;
+  linkText: string;
+  currentText: string;
+  separator: string;
+  fontSize: string;
+  lineHeight: string;
+  letterSpacing: string;
+  currentWeight: string;
+} {
+  const b = f.breadcrumb ?? {};
+  return {
+    text: b.text || semantic.text.secondary,
+    linkText: b.linkText || semantic.text.link,
+    currentText: b.currentText || semantic.text.primary,
+    separator: b.separator || semantic.text.muted,
+    fontSize: b.fontSize ?? "inherit",
+    lineHeight: b.lineHeight ?? "normal",
+    letterSpacing: b.letterSpacing ?? "normal",
+    currentWeight: b.currentWeight ?? "600"
   };
 }
 
@@ -595,6 +723,10 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
   // keep the filled neutral default.
   const buttonSecondary = buttonSecondaryOf(semantic, foundation);
 
+  // F10 — Pagination / Breadcrumb anatomy (per theme; base render unchanged).
+  const paginationResolved = paginationOf(semantic, foundation, bw.thin, foundation.radius.md);
+  const breadcrumbResolved = breadcrumbOf(semantic, foundation);
+
   return {
     button: {
       radius: foundation.radius.md,
@@ -775,19 +907,37 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       anatomy: tabsAnatomy
     },
     pagination: {
-      background: semantic.surface.default,
-      border: semantic.border.subtle,
-      text: semantic.text.primary,
-      activeBackground: semantic.action.primary,
-      activeText: semantic.action.primaryText,
-      disabledText: semantic.text.muted,
-      radius: foundation.radius.md
+      // Existing leaves keep their names (consumers/docs unchanged); they now
+      // resolve through `paginationOf` (identical defaults = unchanged base).
+      background: paginationResolved.background,
+      border: paginationResolved.border,
+      text: paginationResolved.text,
+      activeBackground: paginationResolved.activeBackground,
+      activeText: paginationResolved.activeText,
+      disabledText: paginationResolved.disabledText,
+      radius: paginationResolved.radius,
+      // F10 additive leaves — per-theme active-page metrics (base = unchanged).
+      borderWidth: paginationResolved.borderWidth,
+      activeBorder: paginationResolved.activeBorder,
+      activeBorderWidth: paginationResolved.activeBorderWidth,
+      activeWeight: paginationResolved.activeWeight,
+      paddingBlock: paginationResolved.paddingBlock,
+      paddingInline: paginationResolved.paddingInline,
+      minSize: paginationResolved.minSize,
+      fontSize: paginationResolved.fontSize,
+      lineHeight: paginationResolved.lineHeight,
+      letterSpacing: paginationResolved.letterSpacing
     },
     breadcrumb: {
-      text: semantic.text.secondary,
-      currentText: semantic.text.primary,
-      separator: semantic.text.muted,
-      linkText: semantic.text.link
+      text: breadcrumbResolved.text,
+      currentText: breadcrumbResolved.currentText,
+      separator: breadcrumbResolved.separator,
+      linkText: breadcrumbResolved.linkText,
+      // F10 additive leaves — per-theme breadcrumb typography (base = unchanged).
+      fontSize: breadcrumbResolved.fontSize,
+      lineHeight: breadcrumbResolved.lineHeight,
+      letterSpacing: breadcrumbResolved.letterSpacing,
+      currentWeight: breadcrumbResolved.currentWeight
     },
     sideNav: {
       background: semantic.surface.default,

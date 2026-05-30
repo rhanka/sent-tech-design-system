@@ -1,6 +1,6 @@
 {
   "meta": {
-    "date": "2026-05-29",
+    "date": "2026-05-30",
     "browser": "Google Chrome (system)",
     "chromePath": "/usr/bin/google-chrome",
     "url": "http://localhost:4322/compare",
@@ -11,10 +11,10 @@
     "generatedBy": "tools/compare/fidelity.mjs"
   },
   "global": {
-    "eq": 967,
-    "close": 43,
-    "diff": 259,
-    "fidelity": 79.6
+    "eq": 1019,
+    "close": 36,
+    "diff": 214,
+    "fidelity": 83.1
   },
   "netGaps": [
     "dsfr/Button: box width (Δ2.0px)",
@@ -115,27 +115,7 @@
     "dsfr/Accordion: font-weight (600 vs 500)",
     "dsfr/Accordion: line-height (normal vs 24px)",
     "dsfr/Accordion: color (rgb(58,58,58) vs rgb(0,0,145))",
-    "dsfr/Breadcrumb: box width (Δ14.2px)",
-    "dsfr/Breadcrumb: box height (Δ6.0px)",
-    "dsfr/Breadcrumb: font-size (Δ4.0px)",
-    "dsfr/Breadcrumb: line-height (normal vs 20px)",
-    "dsfr/Breadcrumb: color (rgb(0,0,145) vs rgb(102,102,102))",
-    "dsfr/Pagination: border-top style (solid vs none)",
-    "dsfr/Pagination: border-top color (rgb(238,238,238) vs rgb(245,245,254))",
-    "dsfr/Pagination: border-right style (solid vs none)",
-    "dsfr/Pagination: border-right color (rgb(238,238,238) vs rgb(245,245,254))",
-    "dsfr/Pagination: border-bottom style (solid vs none)",
-    "dsfr/Pagination: border-bottom color (rgb(238,238,238) vs rgb(245,245,254))",
-    "dsfr/Pagination: border-left style (solid vs none)",
-    "dsfr/Pagination: border-left color (rgb(238,238,238) vs rgb(245,245,254))",
-    "dsfr/Pagination: padding-top (Δ-4.0px)",
-    "dsfr/Pagination: padding-bottom (Δ-4.0px)",
-    "dsfr/Pagination: box width (Δ3.6px)",
-    "dsfr/Pagination: box height (Δ4.0px)",
-    "dsfr/Pagination: font-size (Δ2.0px)",
-    "dsfr/Pagination: line-height (normal vs 24px)",
-    "dsfr/Pagination: background-color (rgb(255,255,255) vs rgb(0,0,145))",
-    "dsfr/Pagination: color (rgb(58,58,58) vs rgb(245,245,254))",
+    "dsfr/Breadcrumb: box height (Δ2.0px)",
     "dsfr/Card: padding-top (Δ15.0px)",
     "dsfr/Card: padding-right (Δ15.0px)",
     "dsfr/Card: padding-bottom (Δ15.0px)",
@@ -247,31 +227,6 @@
     "carbon/Accordion: box height (Δ12.0px)",
     "carbon/Accordion: font-size (Δ5.4px)",
     "carbon/Accordion: font-weight (600 vs 400)",
-    "carbon/Breadcrumb: box width (Δ4.7px)",
-    "carbon/Breadcrumb: box height (Δ2.0px)",
-    "carbon/Breadcrumb: font-size (Δ2.0px)",
-    "carbon/Breadcrumb: line-height (normal vs 18.0001px)",
-    "carbon/Breadcrumb: letter-spacing (normal vs 0.16px)",
-    "carbon/Pagination: border-top style (solid vs none)",
-    "carbon/Pagination: border-top color (rgb(224,224,224) vs rgb(82,82,82))",
-    "carbon/Pagination: border-right style (solid vs none)",
-    "carbon/Pagination: border-right color (rgb(224,224,224) vs rgb(82,82,82))",
-    "carbon/Pagination: border-bottom style (solid vs none)",
-    "carbon/Pagination: border-bottom color (rgb(224,224,224) vs rgb(82,82,82))",
-    "carbon/Pagination: border-left style (solid vs none)",
-    "carbon/Pagination: border-left color (rgb(224,224,224) vs rgb(82,82,82))",
-    "carbon/Pagination: padding-top (Δ-17.0px)",
-    "carbon/Pagination: padding-right (Δ8.0px)",
-    "carbon/Pagination: padding-bottom (Δ-17.0px)",
-    "carbon/Pagination: padding-left (Δ8.0px)",
-    "carbon/Pagination: box width (Δ-12.0px)",
-    "carbon/Pagination: box height (Δ-12.0px)",
-    "carbon/Pagination: font-size (Δ2.0px)",
-    "carbon/Pagination: font-weight (400 vs 600)",
-    "carbon/Pagination: line-height (normal vs 14px)",
-    "carbon/Pagination: letter-spacing (normal vs 0.16px)",
-    "carbon/Pagination: background-color (rgb(255,255,255) vs rgb(0,0,0)/a0)",
-    "carbon/Pagination: color (rgb(22,22,22) vs rgb(82,82,82))",
     "carbon/Card: box width (Δ15.0px)",
     "carbon/Card: box height (Δ-27.6px)",
     "carbon/Tabs: border-bottom color (rgb(15,98,254) vs rgb(224,224,224))",
@@ -6275,11 +6230,11 @@
       "refSelector": ".fr-breadcrumb__link",
       "refStyled": true,
       "notes": [],
-      "fidelity": 83.9,
+      "fidelity": 96.8,
       "counts": {
-        "eq": 26,
+        "eq": 30,
         "close": 0,
-        "diff": 5
+        "diff": 1
       },
       "rows": [
         {
@@ -6301,7 +6256,7 @@
         {
           "label": "border-top color",
           "prop": "border-top-color",
-          "ours": "rgb(0, 0, 145)",
+          "ours": "rgb(102, 102, 102)",
           "ref": "rgb(102, 102, 102)",
           "status": "=",
           "delta": "bord 0px (invisible)"
@@ -6325,7 +6280,7 @@
         {
           "label": "border-right color",
           "prop": "border-right-color",
-          "ours": "rgb(0, 0, 145)",
+          "ours": "rgb(102, 102, 102)",
           "ref": "rgb(102, 102, 102)",
           "status": "=",
           "delta": "bord 0px (invisible)"
@@ -6349,7 +6304,7 @@
         {
           "label": "border-bottom color",
           "prop": "border-bottom-color",
-          "ours": "rgb(0, 0, 145)",
+          "ours": "rgb(102, 102, 102)",
           "ref": "rgb(102, 102, 102)",
           "status": "=",
           "delta": "bord 0px (invisible)"
@@ -6373,7 +6328,7 @@
         {
           "label": "border-left color",
           "prop": "border-left-color",
-          "ours": "rgb(0, 0, 145)",
+          "ours": "rgb(102, 102, 102)",
           "ref": "rgb(102, 102, 102)",
           "status": "=",
           "delta": "bord 0px (invisible)"
@@ -6445,18 +6400,18 @@
         {
           "label": "box width",
           "prop": "box-width",
-          "ours": "56.8px",
+          "ours": "42.6px",
           "ref": "42.6px",
-          "status": "≠",
-          "delta": "Δ14.2px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "box height",
           "prop": "box-height",
-          "ours": "24px",
+          "ours": "20px",
           "ref": "18px",
           "status": "≠",
-          "delta": "Δ6.0px"
+          "delta": "Δ2.0px"
         },
         {
           "label": "font-family",
@@ -6469,10 +6424,10 @@
         {
           "label": "font-size",
           "prop": "font-size",
-          "ours": "16px",
+          "ours": "12px",
           "ref": "12px",
-          "status": "≠",
-          "delta": "Δ4.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "font-weight",
@@ -6485,10 +6440,10 @@
         {
           "label": "line-height",
           "prop": "line-height",
-          "ours": "normal",
+          "ours": "20px",
           "ref": "20px",
-          "status": "≠",
-          "delta": "normal vs 20px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "letter-spacing",
@@ -6525,10 +6480,10 @@
         {
           "label": "color",
           "prop": "color",
-          "ours": "rgb(0, 0, 145)",
+          "ours": "rgb(102, 102, 102)",
           "ref": "rgb(102, 102, 102)",
-          "status": "≠",
-          "delta": "rgb(0,0,145) vs rgb(102,102,102)"
+          "status": "=",
+          "delta": ""
         }
       ],
       "raw": {
@@ -6538,22 +6493,22 @@
             "top": {
               "width": "0px",
               "style": "none",
-              "color": "rgb(0, 0, 145)"
+              "color": "rgb(102, 102, 102)"
             },
             "right": {
               "width": "0px",
               "style": "none",
-              "color": "rgb(0, 0, 145)"
+              "color": "rgb(102, 102, 102)"
             },
             "bottom": {
               "width": "0px",
               "style": "none",
-              "color": "rgb(0, 0, 145)"
+              "color": "rgb(102, 102, 102)"
             },
             "left": {
               "width": "0px",
               "style": "none",
-              "color": "rgb(0, 0, 145)"
+              "color": "rgb(102, 102, 102)"
             }
           },
           "radius": {
@@ -6569,21 +6524,21 @@
             "left": "0px"
           },
           "box": {
-            "width": 56.8125,
-            "height": 24
+            "width": 42.609375,
+            "height": 20
           },
           "typo": {
             "fontFamily": "Marianne",
-            "fontSize": "16px",
+            "fontSize": "12px",
             "fontWeight": "400",
-            "lineHeight": "normal",
+            "lineHeight": "20px",
             "letterSpacing": "normal",
             "textTransform": "none",
             "textDecorationLine": "none"
           },
           "colors": {
             "backgroundColor": "rgba(0, 0, 0, 0)",
-            "color": "rgb(0, 0, 145)"
+            "color": "rgb(102, 102, 102)"
           }
         },
         "ref": {
@@ -6651,108 +6606,108 @@
       "notes": [
         "Page active = `.fr-pagination__link[aria-current=\"page\"]` (lien rempli Bleu France)."
       ],
-      "fidelity": 48.4,
+      "fidelity": 100,
       "counts": {
-        "eq": 11,
-        "close": 4,
-        "diff": 16
+        "eq": 31,
+        "close": 0,
+        "diff": 0
       },
       "rows": [
         {
           "label": "border-top width",
           "prop": "border-top-width",
-          "ours": "1px",
+          "ours": "0px",
           "ref": "0px",
-          "status": "~",
-          "delta": "Δ1.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "border-top style",
           "prop": "border-top-style",
           "ours": "solid",
           "ref": "none",
-          "status": "≠",
-          "delta": "solid vs none"
+          "status": "=",
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "border-top color",
           "prop": "border-top-color",
-          "ours": "rgb(238, 238, 238)",
+          "ours": "rgba(0, 0, 0, 0)",
           "ref": "rgb(245, 245, 254)",
-          "status": "≠",
-          "delta": "rgb(238,238,238) vs rgb(245,245,254)"
+          "status": "=",
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "border-right width",
           "prop": "border-right-width",
-          "ours": "1px",
+          "ours": "0px",
           "ref": "0px",
-          "status": "~",
-          "delta": "Δ1.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "border-right style",
           "prop": "border-right-style",
           "ours": "solid",
           "ref": "none",
-          "status": "≠",
-          "delta": "solid vs none"
+          "status": "=",
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "border-right color",
           "prop": "border-right-color",
-          "ours": "rgb(238, 238, 238)",
+          "ours": "rgba(0, 0, 0, 0)",
           "ref": "rgb(245, 245, 254)",
-          "status": "≠",
-          "delta": "rgb(238,238,238) vs rgb(245,245,254)"
+          "status": "=",
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "border-bottom width",
           "prop": "border-bottom-width",
-          "ours": "1px",
+          "ours": "0px",
           "ref": "0px",
-          "status": "~",
-          "delta": "Δ1.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "border-bottom style",
           "prop": "border-bottom-style",
           "ours": "solid",
           "ref": "none",
-          "status": "≠",
-          "delta": "solid vs none"
+          "status": "=",
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "border-bottom color",
           "prop": "border-bottom-color",
-          "ours": "rgb(238, 238, 238)",
+          "ours": "rgba(0, 0, 0, 0)",
           "ref": "rgb(245, 245, 254)",
-          "status": "≠",
-          "delta": "rgb(238,238,238) vs rgb(245,245,254)"
+          "status": "=",
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "border-left width",
           "prop": "border-left-width",
-          "ours": "1px",
+          "ours": "0px",
           "ref": "0px",
-          "status": "~",
-          "delta": "Δ1.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "border-left style",
           "prop": "border-left-style",
           "ours": "solid",
           "ref": "none",
-          "status": "≠",
-          "delta": "solid vs none"
+          "status": "=",
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "border-left color",
           "prop": "border-left-color",
-          "ours": "rgb(238, 238, 238)",
+          "ours": "rgba(0, 0, 0, 0)",
           "ref": "rgb(245, 245, 254)",
-          "status": "≠",
-          "delta": "rgb(238,238,238) vs rgb(245,245,254)"
+          "status": "=",
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "radius topLeft",
@@ -6789,10 +6744,10 @@
         {
           "label": "padding-top",
           "prop": "padding-top",
-          "ours": "0px",
+          "ours": "4px",
           "ref": "4px",
-          "status": "≠",
-          "delta": "Δ-4.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "padding-right",
@@ -6805,10 +6760,10 @@
         {
           "label": "padding-bottom",
           "prop": "padding-bottom",
-          "ours": "0px",
+          "ours": "4px",
           "ref": "4px",
-          "status": "≠",
-          "delta": "Δ-4.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "padding-left",
@@ -6821,18 +6776,18 @@
         {
           "label": "box width",
           "prop": "box-width",
-          "ours": "36px",
+          "ours": "32.4px",
           "ref": "32.4px",
-          "status": "≠",
-          "delta": "Δ3.6px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "box height",
           "prop": "box-height",
-          "ours": "36px",
+          "ours": "32px",
           "ref": "32px",
-          "status": "≠",
-          "delta": "Δ4.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "font-family",
@@ -6845,10 +6800,10 @@
         {
           "label": "font-size",
           "prop": "font-size",
-          "ours": "16px",
+          "ours": "14px",
           "ref": "14px",
-          "status": "≠",
-          "delta": "Δ2.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "font-weight",
@@ -6861,10 +6816,10 @@
         {
           "label": "line-height",
           "prop": "line-height",
-          "ours": "normal",
+          "ours": "24px",
           "ref": "24px",
-          "status": "≠",
-          "delta": "normal vs 24px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "letter-spacing",
@@ -6893,18 +6848,18 @@
         {
           "label": "background-color",
           "prop": "background-color",
-          "ours": "rgb(255, 255, 255)",
+          "ours": "rgb(0, 0, 145)",
           "ref": "rgb(0, 0, 145)",
-          "status": "≠",
-          "delta": "rgb(255,255,255) vs rgb(0,0,145)"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "color",
           "prop": "color",
-          "ours": "rgb(58, 58, 58)",
+          "ours": "rgb(245, 245, 254)",
           "ref": "rgb(245, 245, 254)",
-          "status": "≠",
-          "delta": "rgb(58,58,58) vs rgb(245,245,254)"
+          "status": "=",
+          "delta": ""
         }
       ],
       "raw": {
@@ -6912,24 +6867,24 @@
           "found": true,
           "border": {
             "top": {
-              "width": "1px",
+              "width": "0px",
               "style": "solid",
-              "color": "rgb(238, 238, 238)"
+              "color": "rgba(0, 0, 0, 0)"
             },
             "right": {
-              "width": "1px",
+              "width": "0px",
               "style": "solid",
-              "color": "rgb(238, 238, 238)"
+              "color": "rgba(0, 0, 0, 0)"
             },
             "bottom": {
-              "width": "1px",
+              "width": "0px",
               "style": "solid",
-              "color": "rgb(238, 238, 238)"
+              "color": "rgba(0, 0, 0, 0)"
             },
             "left": {
-              "width": "1px",
+              "width": "0px",
               "style": "solid",
-              "color": "rgb(238, 238, 238)"
+              "color": "rgba(0, 0, 0, 0)"
             }
           },
           "radius": {
@@ -6939,27 +6894,27 @@
             "bottomLeft": "0px"
           },
           "padding": {
-            "top": "0px",
+            "top": "4px",
             "right": "12px",
-            "bottom": "0px",
+            "bottom": "4px",
             "left": "12px"
           },
           "box": {
-            "width": 36,
-            "height": 36
+            "width": 32.40625,
+            "height": 32
           },
           "typo": {
             "fontFamily": "Marianne",
-            "fontSize": "16px",
+            "fontSize": "14px",
             "fontWeight": "400",
-            "lineHeight": "normal",
+            "lineHeight": "24px",
             "letterSpacing": "normal",
             "textTransform": "none",
             "textDecorationLine": "none"
           },
           "colors": {
-            "backgroundColor": "rgb(255, 255, 255)",
-            "color": "rgb(58, 58, 58)"
+            "backgroundColor": "rgb(0, 0, 145)",
+            "color": "rgb(245, 245, 254)"
           }
         },
         "ref": {
@@ -14135,11 +14090,11 @@
       "refSelector": ".bx--breadcrumb-item .bx--link",
       "refStyled": true,
       "notes": [],
-      "fidelity": 83.9,
+      "fidelity": 100,
       "counts": {
-        "eq": 26,
-        "close": 0,
-        "diff": 5
+        "eq": 30,
+        "close": 1,
+        "diff": 0
       },
       "rows": [
         {
@@ -14305,18 +14260,18 @@
         {
           "label": "box width",
           "prop": "box-width",
-          "ours": "43px",
+          "ours": "38.3px",
           "ref": "38.3px",
-          "status": "≠",
-          "delta": "Δ4.7px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "box height",
           "prop": "box-height",
-          "ours": "20px",
+          "ours": "18px",
           "ref": "18px",
-          "status": "≠",
-          "delta": "Δ2.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "font-family",
@@ -14329,10 +14284,10 @@
         {
           "label": "font-size",
           "prop": "font-size",
-          "ours": "16px",
+          "ours": "14px",
           "ref": "14px",
-          "status": "≠",
-          "delta": "Δ2.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "font-weight",
@@ -14345,18 +14300,18 @@
         {
           "label": "line-height",
           "prop": "line-height",
-          "ours": "normal",
+          "ours": "18px",
           "ref": "18.0001px",
-          "status": "≠",
-          "delta": "normal vs 18.0001px"
+          "status": "~",
+          "delta": "Δ0.0px"
         },
         {
           "label": "letter-spacing",
           "prop": "letter-spacing",
-          "ours": "normal",
+          "ours": "0.16px",
           "ref": "0.16px",
-          "status": "≠",
-          "delta": "normal vs 0.16px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "text-transform",
@@ -14429,15 +14384,15 @@
             "left": "0px"
           },
           "box": {
-            "width": 43.03125,
-            "height": 20
+            "width": 38.296875,
+            "height": 18
           },
           "typo": {
             "fontFamily": "IBM Plex Sans",
-            "fontSize": "16px",
+            "fontSize": "14px",
             "fontWeight": "400",
-            "lineHeight": "normal",
-            "letterSpacing": "normal",
+            "lineHeight": "18px",
+            "letterSpacing": "0.16px",
             "textTransform": "none",
             "textDecorationLine": "none"
           },
@@ -14511,108 +14466,108 @@
       "notes": [
         "Active page = `.bx--pagination-nav__page--active` (the styled active page button)."
       ],
-      "fidelity": 35.5,
+      "fidelity": 100,
       "counts": {
-        "eq": 7,
-        "close": 4,
-        "diff": 20
+        "eq": 31,
+        "close": 0,
+        "diff": 0
       },
       "rows": [
         {
           "label": "border-top width",
           "prop": "border-top-width",
-          "ours": "1px",
+          "ours": "0px",
           "ref": "0px",
-          "status": "~",
-          "delta": "Δ1.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "border-top style",
           "prop": "border-top-style",
           "ours": "solid",
           "ref": "none",
-          "status": "≠",
-          "delta": "solid vs none"
+          "status": "=",
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "border-top color",
           "prop": "border-top-color",
-          "ours": "rgb(224, 224, 224)",
+          "ours": "rgba(0, 0, 0, 0)",
           "ref": "rgb(82, 82, 82)",
-          "status": "≠",
-          "delta": "rgb(224,224,224) vs rgb(82,82,82)"
+          "status": "=",
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "border-right width",
           "prop": "border-right-width",
-          "ours": "1px",
+          "ours": "0px",
           "ref": "0px",
-          "status": "~",
-          "delta": "Δ1.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "border-right style",
           "prop": "border-right-style",
           "ours": "solid",
           "ref": "none",
-          "status": "≠",
-          "delta": "solid vs none"
+          "status": "=",
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "border-right color",
           "prop": "border-right-color",
-          "ours": "rgb(224, 224, 224)",
+          "ours": "rgba(0, 0, 0, 0)",
           "ref": "rgb(82, 82, 82)",
-          "status": "≠",
-          "delta": "rgb(224,224,224) vs rgb(82,82,82)"
+          "status": "=",
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "border-bottom width",
           "prop": "border-bottom-width",
-          "ours": "1px",
+          "ours": "0px",
           "ref": "0px",
-          "status": "~",
-          "delta": "Δ1.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "border-bottom style",
           "prop": "border-bottom-style",
           "ours": "solid",
           "ref": "none",
-          "status": "≠",
-          "delta": "solid vs none"
+          "status": "=",
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "border-bottom color",
           "prop": "border-bottom-color",
-          "ours": "rgb(224, 224, 224)",
+          "ours": "rgba(0, 0, 0, 0)",
           "ref": "rgb(82, 82, 82)",
-          "status": "≠",
-          "delta": "rgb(224,224,224) vs rgb(82,82,82)"
+          "status": "=",
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "border-left width",
           "prop": "border-left-width",
-          "ours": "1px",
+          "ours": "0px",
           "ref": "0px",
-          "status": "~",
-          "delta": "Δ1.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "border-left style",
           "prop": "border-left-style",
           "ours": "solid",
           "ref": "none",
-          "status": "≠",
-          "delta": "solid vs none"
+          "status": "=",
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "border-left color",
           "prop": "border-left-color",
-          "ours": "rgb(224, 224, 224)",
+          "ours": "rgba(0, 0, 0, 0)",
           "ref": "rgb(82, 82, 82)",
-          "status": "≠",
-          "delta": "rgb(224,224,224) vs rgb(82,82,82)"
+          "status": "=",
+          "delta": "bord 0px (invisible)"
         },
         {
           "label": "radius topLeft",
@@ -14649,50 +14604,50 @@
         {
           "label": "padding-top",
           "prop": "padding-top",
-          "ours": "0px",
+          "ours": "17px",
           "ref": "17px",
-          "status": "≠",
-          "delta": "Δ-17.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "padding-right",
           "prop": "padding-right",
-          "ours": "12px",
+          "ours": "4px",
           "ref": "4px",
-          "status": "≠",
-          "delta": "Δ8.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "padding-bottom",
           "prop": "padding-bottom",
-          "ours": "0px",
+          "ours": "17px",
           "ref": "17px",
-          "status": "≠",
-          "delta": "Δ-17.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "padding-left",
           "prop": "padding-left",
-          "ours": "12px",
+          "ours": "4px",
           "ref": "4px",
-          "status": "≠",
-          "delta": "Δ8.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "box width",
           "prop": "box-width",
-          "ours": "36px",
+          "ours": "48px",
           "ref": "48px",
-          "status": "≠",
-          "delta": "Δ-12.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "box height",
           "prop": "box-height",
-          "ours": "36px",
+          "ours": "48px",
           "ref": "48px",
-          "status": "≠",
-          "delta": "Δ-12.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "font-family",
@@ -14705,34 +14660,34 @@
         {
           "label": "font-size",
           "prop": "font-size",
-          "ours": "16px",
+          "ours": "14px",
           "ref": "14px",
-          "status": "≠",
-          "delta": "Δ2.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "font-weight",
           "prop": "font-weight",
-          "ours": "400",
+          "ours": "600",
           "ref": "600",
-          "status": "≠",
-          "delta": "400 vs 600"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "line-height",
           "prop": "line-height",
-          "ours": "normal",
+          "ours": "14px",
           "ref": "14px",
-          "status": "≠",
-          "delta": "normal vs 14px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "letter-spacing",
           "prop": "letter-spacing",
-          "ours": "normal",
+          "ours": "0.16px",
           "ref": "0.16px",
-          "status": "≠",
-          "delta": "normal vs 0.16px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "text-transform",
@@ -14753,18 +14708,18 @@
         {
           "label": "background-color",
           "prop": "background-color",
-          "ours": "rgb(255, 255, 255)",
+          "ours": "rgba(0, 0, 0, 0)",
           "ref": "rgba(0, 0, 0, 0)",
-          "status": "≠",
-          "delta": "rgb(255,255,255) vs rgb(0,0,0)/a0"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "color",
           "prop": "color",
-          "ours": "rgb(22, 22, 22)",
+          "ours": "rgb(82, 82, 82)",
           "ref": "rgb(82, 82, 82)",
-          "status": "≠",
-          "delta": "rgb(22,22,22) vs rgb(82,82,82)"
+          "status": "=",
+          "delta": ""
         }
       ],
       "raw": {
@@ -14772,24 +14727,24 @@
           "found": true,
           "border": {
             "top": {
-              "width": "1px",
+              "width": "0px",
               "style": "solid",
-              "color": "rgb(224, 224, 224)"
+              "color": "rgba(0, 0, 0, 0)"
             },
             "right": {
-              "width": "1px",
+              "width": "0px",
               "style": "solid",
-              "color": "rgb(224, 224, 224)"
+              "color": "rgba(0, 0, 0, 0)"
             },
             "bottom": {
-              "width": "1px",
+              "width": "0px",
               "style": "solid",
-              "color": "rgb(224, 224, 224)"
+              "color": "rgba(0, 0, 0, 0)"
             },
             "left": {
-              "width": "1px",
+              "width": "0px",
               "style": "solid",
-              "color": "rgb(224, 224, 224)"
+              "color": "rgba(0, 0, 0, 0)"
             }
           },
           "radius": {
@@ -14799,27 +14754,27 @@
             "bottomLeft": "0px"
           },
           "padding": {
-            "top": "0px",
-            "right": "12px",
-            "bottom": "0px",
-            "left": "12px"
+            "top": "17px",
+            "right": "4px",
+            "bottom": "17px",
+            "left": "4px"
           },
           "box": {
-            "width": 36,
-            "height": 36
+            "width": 48,
+            "height": 48
           },
           "typo": {
             "fontFamily": "IBM Plex Sans",
-            "fontSize": "16px",
-            "fontWeight": "400",
-            "lineHeight": "normal",
-            "letterSpacing": "normal",
+            "fontSize": "14px",
+            "fontWeight": "600",
+            "lineHeight": "14px",
+            "letterSpacing": "0.16px",
             "textTransform": "none",
             "textDecorationLine": "none"
           },
           "colors": {
-            "backgroundColor": "rgb(255, 255, 255)",
-            "color": "rgb(22, 22, 22)"
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "color": "rgb(82, 82, 82)"
           }
         },
         "ref": {
