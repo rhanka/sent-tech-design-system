@@ -136,3 +136,17 @@ pas des artefacts : ils définissent le prochain chantier de mapping (familles F
   poussés, workflows OIDC verts (post-publish-check inclus). **Live sur npm (confirmé `npm view`)** :
   tokens/themes/svelte **0.10.1**, theme-dsfr/theme-carbon **0.2.1**. skills inchangé (0.1.0, parqué).
   → Les gains de fidélité (74,8 % → 96,1 %) sont désormais disponibles pour les consommateurs.
+
+## Vague de portage anatomie F10+ (30/05) — composants nouvellement révélés par le banc élargi
+Objectif : porter à l'anatomie DSFR/Carbon (forme/focus/couleurs/typo/densité par thème) les composants
+restés en « Sent Tech base », vers ~95 % à l'oracle. Per-thème, base intacte, additif, verify vert.
+
+| Cluster | Composants (fidélité départ) | Statut |
+|---|---|---|
+| P-A | Pagination (48/35 %), Breadcrumb (84 %) | ⬜ |
+| P-B | Alert (48/42 %), Accordion (68/74 %) | ⬜ |
+| P-C | Tag (58 %), Badge (55 % DSFR) | ⬜ |
+| P-D | Toggle (58/51 %), Search (77/81 %), Checkbox/Radio (87 %) résidus | ⬜ |
+
+Puis : **reste G9** (pages docs Modal/Toast/Drawer/Popover/Dropdown/Menu au standard exhaustif), puis
+**publication groupée** `0.10.2` / `0.2.2` (cœur + thèmes) — autorisée par l'utilisateur (« fais dans l'ordre que tu préconises »).
