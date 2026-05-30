@@ -143,10 +143,41 @@ restés en « Sent Tech base », vers ~95 % à l'oracle. Per-thème, base intact
 
 | Cluster | Composants (fidélité départ) | Statut |
 |---|---|---|
-| P-A | Pagination (48/35 %), Breadcrumb (84 %) | ⬜ |
+| P-A | Pagination (48/35 %), Breadcrumb (84 %) | ✅ Pagination **100 %/100 %**, Breadcrumb **96,8 %/100 %** (F10) |
 | P-B | Alert (48/42 %), Accordion (68/74 %) | ⬜ |
 | P-C | Tag (58 %), Badge (55 % DSFR) | ⬜ |
 | P-D | Toggle (58/51 %), Search (77/81 %), Checkbox/Radio (87 %) résidus | ⬜ |
+
+### P-A — Pagination & Breadcrumb portés à l'anatomie DSFR/Carbon (F10, additif) ✅
+Primitives additives `PaginationInput` / `BreadcrumbInput` dans `packages/tokens/src/component.ts`
+(résolveurs `paginationOf` / `breadcrumbOf`), émises pour les **3 thèmes** ; tout leaf par défaut =
+**rendu base actuel** (padding 0/12px, min 36px, font/line-height hérités, page active remplie
+`action.primary`, lien fil d'Ariane = `text.link`, courant 600) → base Sent Tech **inchangée**
+(`sent-tech.css`/`forge.css`/`entropic.css` ne gagnent que 14 vars inertes chacun). Valeurs réelles
+posées par thème dans `theme-dsfr`/`theme-carbon`.
+
+- **Pagination** : un bug de spécificité masquait le remplissage de la page active (sélecteur
+  `.st-pagination__page--active` (0,1,0) perdait face à `.st-pagination button` (0,1,1) → page active
+  rendue sur blanc). Corrigé en scopant `.st-pagination button.st-pagination__page--active`.
+  - DSFR `.fr-pagination__link[aria-current]` : page active **remplie Bleu France** `#000091`, texte
+    `#f5f5fe`, **sans bordure**, padding 4px/12px, 14px / line-height 24px, boîte 32×32 → **100 %** (48,4 → 100).
+  - Carbon `.bx--pagination-nav__page--active` : carré 48×48 **sans bordure ni fond**, texte Gray 70
+    `#525252` **600**, padding 17px/4px, 14px / line-height 14px, tracking 0,16px → **100 %** (35,5 → 100).
+- **Breadcrumb** : typographie par thème sur la racine `.st-breadcrumb` (héritée par lien/fil/séparateur).
+  - DSFR `.fr-breadcrumb__link` : lien **gris** `#666666` (pas Bleu France), 12px / line-height 20px,
+    courant non gras → **96,8 %** (83,9 → 96,8).
+  - Carbon `.bx--breadcrumb-item .bx--link` : Blue 60 `#0f62fe` (déjà via `text.link`) + 14px /
+    line-height 18px / tracking 0,16px → **100 %** (83,9 → 100).
+
+#### Résidu 🛡️ justifié (P-A)
+- **Breadcrumb DSFR — box height 20px vs 18px (Δ2px), 1 seul ≠.** Toutes les propriétés *stylées*
+  matchent à l'identique (font-size 12px, **line-height 20px = ref**, width 42,6px, couleur #666). Le
+  CDN officiel rend `.fr-breadcrumb__link` en `display:inline` (`line-height:1.25rem`, `vertical-align:.25rem`) :
+  Chrome rapporte alors la **boîte du contenu de l'inline (~18px)**, pas la line-box de 20px. Notre lien
+  est un flex-item (`li{display:inline-flex;align-items:center}` pour aligner le séparateur), donc étiré
+  à la line-box de 20px. Écart de **modèle de boîte inline-vs-flex du markup de référence**, pas une
+  dérive de token : ramener la boîte à 18px casserait l'alignement du séparateur sans changer aucune
+  valeur stylée mesurée. Classé escape prouvé.
 
 Puis : **reste G9** (pages docs Modal/Toast/Drawer/Popover/Dropdown/Menu au standard exhaustif), puis
 **publication groupée** `0.10.2` / `0.2.2` (cœur + thèmes) — autorisée par l'utilisateur (« fais dans l'ordre que tu préconises »).

@@ -289,6 +289,39 @@ const foundation = {
                                                // a background-image filet, NOT a border) → both
                                                // border sides stay `0 none` like the reference,
                                                // and the box height stays exactly 40px.
+  },
+  // F10 — DSFR « Pagination ». Measured on the official `.fr-pagination__link`
+  // (CDN dsfr.min.css). The resting page is a BORDERLESS Bleu France text link;
+  // the ACTIVE page (`[aria-current="page"]`) is a FILLED Bleu France square with
+  // near-white text (#f5f5fe = --grey-1000-50 on a coloured surface), NO border,
+  // padding 4px/12px, font-size 14px (0.875rem), line-height 24px (1.5rem) and a
+  // 32px min size. The base Sent Tech bordered/white pagination is replaced by
+  // this faithful filled-active look.
+  pagination: {
+    background: "transparent",                 // resting page = borderless text link
+    border: "transparent",
+    borderWidth: "0",                          // DSFR pagination links carry no stroke
+    text: dsfrColor.blueFrance.sun113,         // #000091 Bleu France link text
+    activeBackground: dsfrColor.blueFrance.sun113, // #000091 filled active page
+    activeText: "#f5f5fe",                     // near-white text on Bleu France (--grey-1000-50)
+    activeBorderWidth: "0",                    // active page has no border (ref measured 0)
+    paddingBlock: "0.25rem",                   // 4px
+    paddingInline: "0.75rem",                  // 12px
+    minSize: "2rem",                           // 32px (DSFR page box)
+    fontSize: "0.875rem",                      // 14px
+    lineHeight: "1.5rem"                       // 24px
+  },
+  // F10 — DSFR « Fil d'Ariane » (.fr-breadcrumb__link). Measured: grey #666666
+  // (--grey-425-625, mention text), font-size 12px (0.75rem), line-height 20px.
+  // The base 16px Bleu France link is replaced by this faithful grey 12px link.
+  breadcrumb: {
+    linkText: dsfrColor.grey[425],             // #666666 — DSFR breadcrumb link is grey, not blue
+    text: dsfrColor.grey[425],                 // trail text matches
+    currentText: dsfrColor.grey[425],          // current page is the same grey (no bold accent)
+    separator: dsfrColor.grey[425],
+    fontSize: "0.75rem",                       // 12px
+    lineHeight: "20px",                        // 20px (measured)
+    currentWeight: "400"                       // DSFR current page is not bolded
   }
 } as const;
 

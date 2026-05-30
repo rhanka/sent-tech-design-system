@@ -5,7 +5,7 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 
 | Champ | Valeur |
 |---|---|
-| Date | 2026-05-29 |
+| Date | 2026-05-30 |
 | Navigateur | Google Chrome système (`/usr/bin/google-chrome`) via puppeteer-core, headless |
 | URL mesurée | http://localhost:4322/compare (build statique servi) |
 | Tolérance longueur | ±1px → statut `~` |
@@ -683,16 +683,16 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 |---|---|---|---|
 | border-top width | 0px | 0px | = |
 | border-top style | none | none | = (bord 0px (invisible)) |
-| border-top color | rgb(0, 0, 145) | rgb(102, 102, 102) | = (bord 0px (invisible)) |
+| border-top color | rgb(102, 102, 102) | rgb(102, 102, 102) | = (bord 0px (invisible)) |
 | border-right width | 0px | 0px | = |
 | border-right style | none | none | = (bord 0px (invisible)) |
-| border-right color | rgb(0, 0, 145) | rgb(102, 102, 102) | = (bord 0px (invisible)) |
+| border-right color | rgb(102, 102, 102) | rgb(102, 102, 102) | = (bord 0px (invisible)) |
 | border-bottom width | 0px | 0px | = |
 | border-bottom style | none | none | = (bord 0px (invisible)) |
-| border-bottom color | rgb(0, 0, 145) | rgb(102, 102, 102) | = (bord 0px (invisible)) |
+| border-bottom color | rgb(102, 102, 102) | rgb(102, 102, 102) | = (bord 0px (invisible)) |
 | border-left width | 0px | 0px | = |
 | border-left style | none | none | = (bord 0px (invisible)) |
-| border-left color | rgb(0, 0, 145) | rgb(102, 102, 102) | = (bord 0px (invisible)) |
+| border-left color | rgb(102, 102, 102) | rgb(102, 102, 102) | = (bord 0px (invisible)) |
 | radius topLeft | 0px | 0px | = |
 | radius topRight | 0px | 0px | = |
 | radius bottomRight | 0px | 0px | = |
@@ -701,19 +701,19 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 | padding-right | 0px | 0px | = |
 | padding-bottom | 0px | 0px | = |
 | padding-left | 0px | 0px | = |
-| box width | 56.8px | 42.6px | ≠ Δ14.2px |
-| box height | 24px | 18px | ≠ Δ6.0px |
+| box width | 42.6px | 42.6px | = |
+| box height | 20px | 18px | ≠ Δ2.0px |
 | font-family | Marianne | Marianne | = |
-| font-size | 16px | 12px | ≠ Δ4.0px |
+| font-size | 12px | 12px | = |
 | font-weight | 400 | 400 | = |
-| line-height | normal | 20px | ≠ normal vs 20px |
+| line-height | 20px | 20px | = |
 | letter-spacing | normal | normal | = |
 | text-transform | none | none | = |
 | text-decoration | none | none | = |
 | background-color | rgba(0, 0, 0, 0) | rgba(0, 0, 0, 0) | = |
-| color | rgb(0, 0, 145) | rgb(102, 102, 102) | ≠ rgb(0,0,145) vs rgb(102,102,102) |
+| color | rgb(102, 102, 102) | rgb(102, 102, 102) | = |
 
-**Fidélité Breadcrumb (dsfr) : 83.9%** — 26 `=`, 0 `~`, 5 `≠` sur 31 propriétés.
+**Fidélité Breadcrumb (dsfr) : 96.8%** — 30 `=`, 0 `~`, 1 `≠` sur 31 propriétés.
 
 ### Pagination
 
@@ -723,39 +723,39 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 
 | Propriété / Bord | Nous | Référence officielle | Δ / statut |
 |---|---|---|---|
-| border-top width | 1px | 0px | ~ Δ1.0px |
-| border-top style | solid | none | ≠ solid vs none |
-| border-top color | rgb(238, 238, 238) | rgb(245, 245, 254) | ≠ rgb(238,238,238) vs rgb(245,245,254) |
-| border-right width | 1px | 0px | ~ Δ1.0px |
-| border-right style | solid | none | ≠ solid vs none |
-| border-right color | rgb(238, 238, 238) | rgb(245, 245, 254) | ≠ rgb(238,238,238) vs rgb(245,245,254) |
-| border-bottom width | 1px | 0px | ~ Δ1.0px |
-| border-bottom style | solid | none | ≠ solid vs none |
-| border-bottom color | rgb(238, 238, 238) | rgb(245, 245, 254) | ≠ rgb(238,238,238) vs rgb(245,245,254) |
-| border-left width | 1px | 0px | ~ Δ1.0px |
-| border-left style | solid | none | ≠ solid vs none |
-| border-left color | rgb(238, 238, 238) | rgb(245, 245, 254) | ≠ rgb(238,238,238) vs rgb(245,245,254) |
+| border-top width | 0px | 0px | = |
+| border-top style | solid | none | = (bord 0px (invisible)) |
+| border-top color | rgba(0, 0, 0, 0) | rgb(245, 245, 254) | = (bord 0px (invisible)) |
+| border-right width | 0px | 0px | = |
+| border-right style | solid | none | = (bord 0px (invisible)) |
+| border-right color | rgba(0, 0, 0, 0) | rgb(245, 245, 254) | = (bord 0px (invisible)) |
+| border-bottom width | 0px | 0px | = |
+| border-bottom style | solid | none | = (bord 0px (invisible)) |
+| border-bottom color | rgba(0, 0, 0, 0) | rgb(245, 245, 254) | = (bord 0px (invisible)) |
+| border-left width | 0px | 0px | = |
+| border-left style | solid | none | = (bord 0px (invisible)) |
+| border-left color | rgba(0, 0, 0, 0) | rgb(245, 245, 254) | = (bord 0px (invisible)) |
 | radius topLeft | 0px | 0px | = |
 | radius topRight | 0px | 0px | = |
 | radius bottomRight | 0px | 0px | = |
 | radius bottomLeft | 0px | 0px | = |
-| padding-top | 0px | 4px | ≠ Δ-4.0px |
+| padding-top | 4px | 4px | = |
 | padding-right | 12px | 12px | = |
-| padding-bottom | 0px | 4px | ≠ Δ-4.0px |
+| padding-bottom | 4px | 4px | = |
 | padding-left | 12px | 12px | = |
-| box width | 36px | 32.4px | ≠ Δ3.6px |
-| box height | 36px | 32px | ≠ Δ4.0px |
+| box width | 32.4px | 32.4px | = |
+| box height | 32px | 32px | = |
 | font-family | Marianne | Marianne | = |
-| font-size | 16px | 14px | ≠ Δ2.0px |
+| font-size | 14px | 14px | = |
 | font-weight | 400 | 400 | = |
-| line-height | normal | 24px | ≠ normal vs 24px |
+| line-height | 24px | 24px | = |
 | letter-spacing | normal | normal | = |
 | text-transform | none | none | = |
 | text-decoration | none | none | = |
-| background-color | rgb(255, 255, 255) | rgb(0, 0, 145) | ≠ rgb(255,255,255) vs rgb(0,0,145) |
-| color | rgb(58, 58, 58) | rgb(245, 245, 254) | ≠ rgb(58,58,58) vs rgb(245,245,254) |
+| background-color | rgb(0, 0, 145) | rgb(0, 0, 145) | = |
+| color | rgb(245, 245, 254) | rgb(245, 245, 254) | = |
 
-**Fidélité Pagination (dsfr) : 48.4%** — 11 `=`, 4 `~`, 16 `≠` sur 31 propriétés.
+**Fidélité Pagination (dsfr) : 100%** — 31 `=`, 0 `~`, 0 `≠` sur 31 propriétés.
 
 ### Card
 
@@ -1567,19 +1567,19 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 | padding-right | 0px | 0px | = |
 | padding-bottom | 0px | 0px | = |
 | padding-left | 0px | 0px | = |
-| box width | 43px | 38.3px | ≠ Δ4.7px |
-| box height | 20px | 18px | ≠ Δ2.0px |
+| box width | 38.3px | 38.3px | = |
+| box height | 18px | 18px | = |
 | font-family | IBM Plex Sans | IBM Plex Sans | = |
-| font-size | 16px | 14px | ≠ Δ2.0px |
+| font-size | 14px | 14px | = |
 | font-weight | 400 | 400 | = |
-| line-height | normal | 18.0001px | ≠ normal vs 18.0001px |
-| letter-spacing | normal | 0.16px | ≠ normal vs 0.16px |
+| line-height | 18px | 18.0001px | ~ Δ0.0px |
+| letter-spacing | 0.16px | 0.16px | = |
 | text-transform | none | none | = |
 | text-decoration | none | none | = |
 | background-color | rgba(0, 0, 0, 0) | rgba(0, 0, 0, 0) | = |
 | color | rgb(15, 98, 254) | rgb(15, 98, 254) | = |
 
-**Fidélité Breadcrumb (carbon) : 83.9%** — 26 `=`, 0 `~`, 5 `≠` sur 31 propriétés.
+**Fidélité Breadcrumb (carbon) : 100%** — 30 `=`, 1 `~`, 0 `≠` sur 31 propriétés.
 
 ### Pagination
 
@@ -1589,39 +1589,39 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 
 | Propriété / Bord | Nous | Référence officielle | Δ / statut |
 |---|---|---|---|
-| border-top width | 1px | 0px | ~ Δ1.0px |
-| border-top style | solid | none | ≠ solid vs none |
-| border-top color | rgb(224, 224, 224) | rgb(82, 82, 82) | ≠ rgb(224,224,224) vs rgb(82,82,82) |
-| border-right width | 1px | 0px | ~ Δ1.0px |
-| border-right style | solid | none | ≠ solid vs none |
-| border-right color | rgb(224, 224, 224) | rgb(82, 82, 82) | ≠ rgb(224,224,224) vs rgb(82,82,82) |
-| border-bottom width | 1px | 0px | ~ Δ1.0px |
-| border-bottom style | solid | none | ≠ solid vs none |
-| border-bottom color | rgb(224, 224, 224) | rgb(82, 82, 82) | ≠ rgb(224,224,224) vs rgb(82,82,82) |
-| border-left width | 1px | 0px | ~ Δ1.0px |
-| border-left style | solid | none | ≠ solid vs none |
-| border-left color | rgb(224, 224, 224) | rgb(82, 82, 82) | ≠ rgb(224,224,224) vs rgb(82,82,82) |
+| border-top width | 0px | 0px | = |
+| border-top style | solid | none | = (bord 0px (invisible)) |
+| border-top color | rgba(0, 0, 0, 0) | rgb(82, 82, 82) | = (bord 0px (invisible)) |
+| border-right width | 0px | 0px | = |
+| border-right style | solid | none | = (bord 0px (invisible)) |
+| border-right color | rgba(0, 0, 0, 0) | rgb(82, 82, 82) | = (bord 0px (invisible)) |
+| border-bottom width | 0px | 0px | = |
+| border-bottom style | solid | none | = (bord 0px (invisible)) |
+| border-bottom color | rgba(0, 0, 0, 0) | rgb(82, 82, 82) | = (bord 0px (invisible)) |
+| border-left width | 0px | 0px | = |
+| border-left style | solid | none | = (bord 0px (invisible)) |
+| border-left color | rgba(0, 0, 0, 0) | rgb(82, 82, 82) | = (bord 0px (invisible)) |
 | radius topLeft | 0px | 0px | = |
 | radius topRight | 0px | 0px | = |
 | radius bottomRight | 0px | 0px | = |
 | radius bottomLeft | 0px | 0px | = |
-| padding-top | 0px | 17px | ≠ Δ-17.0px |
-| padding-right | 12px | 4px | ≠ Δ8.0px |
-| padding-bottom | 0px | 17px | ≠ Δ-17.0px |
-| padding-left | 12px | 4px | ≠ Δ8.0px |
-| box width | 36px | 48px | ≠ Δ-12.0px |
-| box height | 36px | 48px | ≠ Δ-12.0px |
+| padding-top | 17px | 17px | = |
+| padding-right | 4px | 4px | = |
+| padding-bottom | 17px | 17px | = |
+| padding-left | 4px | 4px | = |
+| box width | 48px | 48px | = |
+| box height | 48px | 48px | = |
 | font-family | IBM Plex Sans | IBM Plex Sans | = |
-| font-size | 16px | 14px | ≠ Δ2.0px |
-| font-weight | 400 | 600 | ≠ 400 vs 600 |
-| line-height | normal | 14px | ≠ normal vs 14px |
-| letter-spacing | normal | 0.16px | ≠ normal vs 0.16px |
+| font-size | 14px | 14px | = |
+| font-weight | 600 | 600 | = |
+| line-height | 14px | 14px | = |
+| letter-spacing | 0.16px | 0.16px | = |
 | text-transform | none | none | = |
 | text-decoration | none | none | = |
-| background-color | rgb(255, 255, 255) | rgba(0, 0, 0, 0) | ≠ rgb(255,255,255) vs rgb(0,0,0)/a0 |
-| color | rgb(22, 22, 22) | rgb(82, 82, 82) | ≠ rgb(22,22,22) vs rgb(82,82,82) |
+| background-color | rgba(0, 0, 0, 0) | rgba(0, 0, 0, 0) | = |
+| color | rgb(82, 82, 82) | rgb(82, 82, 82) | = |
 
-**Fidélité Pagination (carbon) : 35.5%** — 7 `=`, 4 `~`, 20 `≠` sur 31 propriétés.
+**Fidélité Pagination (carbon) : 100%** — 31 `=`, 0 `~`, 0 `≠` sur 31 propriétés.
 
 ### Card
 
@@ -1727,8 +1727,8 @@ Couverture mesurée : **41 paires** (notre composant mappé vs vrai composant of
 | dsfr | Badge | 54.8% | 17 | 0 | 14 | oui |
 | dsfr | Alert | 48.4% | 12 | 3 | 16 | oui |
 | dsfr | Accordion | 67.7% | 21 | 0 | 10 | oui |
-| dsfr | Breadcrumb | 83.9% | 26 | 0 | 5 | oui |
-| dsfr | Pagination | 48.4% | 11 | 4 | 16 | oui |
+| dsfr | Breadcrumb | 96.8% | 30 | 0 | 1 | oui |
+| dsfr | Pagination | 100% | 31 | 0 | 0 | oui |
 | dsfr | Card | 80.6% | 25 | 0 | 6 | oui |
 | dsfr | Tabs | 100% | 31 | 0 | 0 | oui |
 | dsfr | Quote | 67.7% | 21 | 0 | 10 | oui |
@@ -1748,16 +1748,16 @@ Couverture mesurée : **41 paires** (notre composant mappé vs vrai composant of
 | carbon | Tag | 58.1% | 18 | 0 | 13 | oui |
 | carbon | Alert | 41.9% | 9 | 4 | 18 | oui |
 | carbon | Accordion | 74.2% | 23 | 0 | 8 | oui |
-| carbon | Breadcrumb | 83.9% | 26 | 0 | 5 | oui |
-| carbon | Pagination | 35.5% | 7 | 4 | 20 | oui |
+| carbon | Breadcrumb | 100% | 30 | 1 | 0 | oui |
+| carbon | Pagination | 100% | 31 | 0 | 0 | oui |
 | carbon | Card | 93.5% | 29 | 0 | 2 | oui |
 | carbon | Tabs | 93.1% | 27 | 0 | 2 | oui |
 
 ## Récapitulatif global
 
-- **Fidélité globale : 79.6%** (967 `=`, 43 `~`, 259 `≠` sur 1269 propriétés mesurées).
+- **Fidélité globale : 83.1%** (1019 `=`, 36 `~`, 214 `≠` sur 1269 propriétés mesurées).
 - **Couverture : 41 paires composant×thème mesurées.**
-- **Écarts nets restants : 259**
+- **Écarts nets restants : 214**
 
   - dsfr/Button: box width (Δ2.0px)
   - dsfr/Button: box height (Δ2.0px)
@@ -1857,27 +1857,7 @@ Couverture mesurée : **41 paires** (notre composant mappé vs vrai composant of
   - dsfr/Accordion: font-weight (600 vs 500)
   - dsfr/Accordion: line-height (normal vs 24px)
   - dsfr/Accordion: color (rgb(58,58,58) vs rgb(0,0,145))
-  - dsfr/Breadcrumb: box width (Δ14.2px)
-  - dsfr/Breadcrumb: box height (Δ6.0px)
-  - dsfr/Breadcrumb: font-size (Δ4.0px)
-  - dsfr/Breadcrumb: line-height (normal vs 20px)
-  - dsfr/Breadcrumb: color (rgb(0,0,145) vs rgb(102,102,102))
-  - dsfr/Pagination: border-top style (solid vs none)
-  - dsfr/Pagination: border-top color (rgb(238,238,238) vs rgb(245,245,254))
-  - dsfr/Pagination: border-right style (solid vs none)
-  - dsfr/Pagination: border-right color (rgb(238,238,238) vs rgb(245,245,254))
-  - dsfr/Pagination: border-bottom style (solid vs none)
-  - dsfr/Pagination: border-bottom color (rgb(238,238,238) vs rgb(245,245,254))
-  - dsfr/Pagination: border-left style (solid vs none)
-  - dsfr/Pagination: border-left color (rgb(238,238,238) vs rgb(245,245,254))
-  - dsfr/Pagination: padding-top (Δ-4.0px)
-  - dsfr/Pagination: padding-bottom (Δ-4.0px)
-  - dsfr/Pagination: box width (Δ3.6px)
-  - dsfr/Pagination: box height (Δ4.0px)
-  - dsfr/Pagination: font-size (Δ2.0px)
-  - dsfr/Pagination: line-height (normal vs 24px)
-  - dsfr/Pagination: background-color (rgb(255,255,255) vs rgb(0,0,145))
-  - dsfr/Pagination: color (rgb(58,58,58) vs rgb(245,245,254))
+  - dsfr/Breadcrumb: box height (Δ2.0px)
   - dsfr/Card: padding-top (Δ15.0px)
   - dsfr/Card: padding-right (Δ15.0px)
   - dsfr/Card: padding-bottom (Δ15.0px)
@@ -1989,31 +1969,6 @@ Couverture mesurée : **41 paires** (notre composant mappé vs vrai composant of
   - carbon/Accordion: box height (Δ12.0px)
   - carbon/Accordion: font-size (Δ5.4px)
   - carbon/Accordion: font-weight (600 vs 400)
-  - carbon/Breadcrumb: box width (Δ4.7px)
-  - carbon/Breadcrumb: box height (Δ2.0px)
-  - carbon/Breadcrumb: font-size (Δ2.0px)
-  - carbon/Breadcrumb: line-height (normal vs 18.0001px)
-  - carbon/Breadcrumb: letter-spacing (normal vs 0.16px)
-  - carbon/Pagination: border-top style (solid vs none)
-  - carbon/Pagination: border-top color (rgb(224,224,224) vs rgb(82,82,82))
-  - carbon/Pagination: border-right style (solid vs none)
-  - carbon/Pagination: border-right color (rgb(224,224,224) vs rgb(82,82,82))
-  - carbon/Pagination: border-bottom style (solid vs none)
-  - carbon/Pagination: border-bottom color (rgb(224,224,224) vs rgb(82,82,82))
-  - carbon/Pagination: border-left style (solid vs none)
-  - carbon/Pagination: border-left color (rgb(224,224,224) vs rgb(82,82,82))
-  - carbon/Pagination: padding-top (Δ-17.0px)
-  - carbon/Pagination: padding-right (Δ8.0px)
-  - carbon/Pagination: padding-bottom (Δ-17.0px)
-  - carbon/Pagination: padding-left (Δ8.0px)
-  - carbon/Pagination: box width (Δ-12.0px)
-  - carbon/Pagination: box height (Δ-12.0px)
-  - carbon/Pagination: font-size (Δ2.0px)
-  - carbon/Pagination: font-weight (400 vs 600)
-  - carbon/Pagination: line-height (normal vs 14px)
-  - carbon/Pagination: letter-spacing (normal vs 0.16px)
-  - carbon/Pagination: background-color (rgb(255,255,255) vs rgb(0,0,0)/a0)
-  - carbon/Pagination: color (rgb(22,22,22) vs rgb(82,82,82))
   - carbon/Card: box width (Δ15.0px)
   - carbon/Card: box height (Δ-27.6px)
   - carbon/Tabs: border-bottom color (rgb(15,98,254) vs rgb(224,224,224))
