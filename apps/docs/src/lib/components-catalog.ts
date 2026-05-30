@@ -836,6 +836,16 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "ForceGraph",
+    slug: "force-graph",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Graphe à force dirigée (nœuds/liens), simulation autonome, nœuds focusables, tooltip.",
+      en: "Force-directed graph (nodes/edges), self-contained simulation, focusable nodes, tooltip."
+    }
+  },
+  {
     name: "StackedBarChart",
     slug: "stacked-bar-chart",
     status: "documented",
