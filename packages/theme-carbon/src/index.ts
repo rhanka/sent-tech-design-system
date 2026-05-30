@@ -335,6 +335,25 @@ const foundation = {
     fontSize: "0.833333rem",                   // 13.3333px (measured)
     fontWeight: "400",                         // Carbon accordion heading weight
     lineHeight: "normal"                       // matches the measured normal
+  },
+  // P-C — Carbon « Tag » (.bx--tag--gray). Measured on the official gray tag:
+  // radius 15px, padding 4px/8px, font-size 12px (0.75rem), font-weight 400,
+  // line-height 16px (1rem), letter-spacing 0.32px ($label-01 tracking), a
+  // 24px-tall box. Fill #e0e0e0 (Gray 20, $tag-background-gray) and text #393939
+  // (Gray 80, $tag-color-gray). The base pill (999px, 600, #f4f4f4/#525252) is
+  // replaced by this faithful look. Carbon has no dedicated badge component (its
+  // badge IS the tag), so no badge primitive is set.
+  tag: {
+    radius: "15px",                            // .bx--tag corner radius (pill clamps at 15)
+    paddingBlock: "0.25rem",                   // 4px
+    paddingInline: "0.5rem",                   // 8px
+    fontSize: "0.75rem",                       // 12px
+    fontWeight: "400",                         // Carbon tag weight
+    lineHeight: "1rem",                        // 16px
+    letterSpacing: "0.32px",                   // $label-01 tracking
+    minHeight: "1.5rem",                       // 24px box
+    neutralBackground: carbonColor.gray[20],   // #e0e0e0 ($tag-background-gray)
+    neutralText: carbonColor.gray[80]          // #393939 ($tag-color-gray)
   }
 } as const;
 

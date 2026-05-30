@@ -53,29 +53,37 @@
 </span>
 
 <style>
+  /* P-C: per-theme tag anatomy. Every var falls back to the prior base literal,
+     so a theme that emits no `--st-component-tag-*` renders byte-identically. */
   .st-tag {
     align-items: center;
-    border-radius: var(--st-radius-pill, 999px);
+    border-radius: var(--st-component-tag-radius, var(--st-radius-pill, 999px));
     display: inline-flex;
-    font-weight: 600;
+    font-weight: var(--st-component-tag-fontWeight, 600);
     gap: 0.25rem;
-    line-height: 1;
-    padding: 0.25rem 0.5rem;
+    letter-spacing: var(--st-component-tag-letterSpacing, normal);
+    line-height: var(--st-component-tag-lineHeight, 1);
+    min-height: var(--st-component-tag-minHeight, 0);
+    padding: var(--st-component-tag-paddingBlock, 0.25rem)
+      var(--st-component-tag-paddingInline, 0.5rem);
+    text-transform: var(--st-component-tag-textTransform, none);
   }
 
   .st-tag--sm {
-    font-size: 0.6875rem;
-    padding: 0.1875rem 0.5rem;
+    font-size: var(--st-component-tag-fontSize, 0.6875rem);
+    padding: var(--st-component-tag-paddingBlock, 0.1875rem)
+      var(--st-component-tag-paddingInline, 0.5rem);
   }
 
   .st-tag--md {
-    font-size: 0.75rem;
-    padding: 0.25rem 0.625rem;
+    font-size: var(--st-component-tag-fontSize, 0.75rem);
+    padding: var(--st-component-tag-paddingBlock, 0.25rem)
+      var(--st-component-tag-paddingInline, 0.625rem);
   }
 
   .st-tag--neutral {
-    background: var(--st-semantic-surface-subtle);
-    color: var(--st-semantic-text-secondary);
+    background: var(--st-component-tag-neutralBackground, var(--st-semantic-surface-subtle));
+    color: var(--st-component-tag-neutralText, var(--st-semantic-text-secondary));
   }
 
   .st-tag--success {

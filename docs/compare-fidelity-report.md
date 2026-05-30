@@ -519,37 +519,37 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 |---|---|---|---|
 | border-top width | 0px | 0px | = |
 | border-top style | none | none | = (bord 0px (invisible)) |
-| border-top color | rgb(102, 102, 102) | rgb(22, 22, 22) | = (bord 0px (invisible)) |
+| border-top color | rgb(22, 22, 22) | rgb(22, 22, 22) | = (bord 0px (invisible)) |
 | border-right width | 0px | 0px | = |
 | border-right style | none | none | = (bord 0px (invisible)) |
-| border-right color | rgb(102, 102, 102) | rgb(22, 22, 22) | = (bord 0px (invisible)) |
+| border-right color | rgb(22, 22, 22) | rgb(22, 22, 22) | = (bord 0px (invisible)) |
 | border-bottom width | 0px | 0px | = |
 | border-bottom style | none | none | = (bord 0px (invisible)) |
-| border-bottom color | rgb(102, 102, 102) | rgb(22, 22, 22) | = (bord 0px (invisible)) |
+| border-bottom color | rgb(22, 22, 22) | rgb(22, 22, 22) | = (bord 0px (invisible)) |
 | border-left width | 0px | 0px | = |
 | border-left style | none | none | = (bord 0px (invisible)) |
-| border-left color | rgb(102, 102, 102) | rgb(22, 22, 22) | = (bord 0px (invisible)) |
-| radius topLeft | 999px | 16px | ≠ Δ983.0px |
-| radius topRight | 999px | 16px | ≠ Δ983.0px |
-| radius bottomRight | 999px | 16px | ≠ Δ983.0px |
-| radius bottomLeft | 999px | 16px | ≠ Δ983.0px |
+| border-left color | rgb(22, 22, 22) | rgb(22, 22, 22) | = (bord 0px (invisible)) |
+| radius topLeft | 16px | 16px | = |
+| radius topRight | 16px | 16px | = |
+| radius bottomRight | 16px | 16px | = |
+| radius bottomLeft | 16px | 16px | = |
 | padding-top | 4px | 4px | = |
-| padding-right | 10px | 12px | ≠ Δ-2.0px |
+| padding-right | 12px | 12px | = |
 | padding-bottom | 4px | 4px | = |
-| padding-left | 10px | 12px | ≠ Δ-2.0px |
-| box width | 74.7px | 87px | ≠ Δ-12.3px |
-| box height | 20px | 32px | ≠ Δ-12.0px |
+| padding-left | 12px | 12px | = |
+| box width | 87px | 87px | = |
+| box height | 32px | 32px | = |
 | font-family | Marianne | Marianne | = |
-| font-size | 12px | 14px | ≠ Δ-2.0px |
-| font-weight | 600 | 400 | ≠ 600 vs 400 |
-| line-height | 12px | 24px | ≠ Δ-12.0px |
+| font-size | 14px | 14px | = |
+| font-weight | 400 | 400 | = |
+| line-height | 24px | 24px | = |
 | letter-spacing | normal | normal | = |
 | text-transform | none | none | = |
 | text-decoration | none | none | = |
-| background-color | rgb(246, 246, 246) | rgb(238, 238, 238) | ≠ rgb(246,246,246) vs rgb(238,238,238) |
-| color | rgb(102, 102, 102) | rgb(22, 22, 22) | ≠ rgb(102,102,102) vs rgb(22,22,22) |
+| background-color | rgb(238, 238, 238) | rgb(238, 238, 238) | = |
+| color | rgb(22, 22, 22) | rgb(22, 22, 22) | = |
 
-**Fidélité Tag (dsfr) : 58.1%** — 18 `=`, 0 `~`, 13 `≠` sur 31 propriétés.
+**Fidélité Tag (dsfr) : 100%** — 31 `=`, 0 `~`, 0 `≠` sur 31 propriétés.
 
 ### Badge
 
@@ -560,37 +560,37 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 |---|---|---|---|
 | border-top width | 0px | 0px | = |
 | border-top style | none | none | = (bord 0px (invisible)) |
-| border-top color | rgb(0, 99, 203) | rgb(58, 58, 58) | = (bord 0px (invisible)) |
+| border-top color | rgb(58, 58, 58) | rgb(58, 58, 58) | = (bord 0px (invisible)) |
 | border-right width | 0px | 0px | = |
 | border-right style | none | none | = (bord 0px (invisible)) |
-| border-right color | rgb(0, 99, 203) | rgb(58, 58, 58) | = (bord 0px (invisible)) |
+| border-right color | rgb(58, 58, 58) | rgb(58, 58, 58) | = (bord 0px (invisible)) |
 | border-bottom width | 0px | 0px | = |
 | border-bottom style | none | none | = (bord 0px (invisible)) |
-| border-bottom color | rgb(0, 99, 203) | rgb(58, 58, 58) | = (bord 0px (invisible)) |
+| border-bottom color | rgb(58, 58, 58) | rgb(58, 58, 58) | = (bord 0px (invisible)) |
 | border-left width | 0px | 0px | = |
 | border-left style | none | none | = (bord 0px (invisible)) |
-| border-left color | rgb(0, 99, 203) | rgb(58, 58, 58) | = (bord 0px (invisible)) |
-| radius topLeft | 999px | 4px | ≠ Δ995.0px |
-| radius topRight | 999px | 4px | ≠ Δ995.0px |
-| radius bottomRight | 999px | 4px | ≠ Δ995.0px |
-| radius bottomLeft | 999px | 4px | ≠ Δ995.0px |
-| padding-top | 4px | 0px | ≠ Δ4.0px |
+| border-left color | rgb(58, 58, 58) | rgb(58, 58, 58) | = (bord 0px (invisible)) |
+| radius topLeft | 4px | 4px | = |
+| radius topRight | 4px | 4px | = |
+| radius bottomRight | 4px | 4px | = |
+| radius bottomLeft | 4px | 4px | = |
+| padding-top | 0px | 0px | = |
 | padding-right | 8px | 8px | = |
-| padding-bottom | 4px | 0px | ≠ Δ4.0px |
+| padding-bottom | 0px | 0px | = |
 | padding-left | 8px | 8px | = |
-| box width | 68.2px | 89px | ≠ Δ-20.8px |
-| box height | 20px | 24px | ≠ Δ-4.0px |
+| box width | 89px | 89px | = |
+| box height | 24px | 24px | = |
 | font-family | Marianne | Marianne | = |
-| font-size | 12px | 14px | ≠ Δ-2.0px |
-| font-weight | 650 | 700 | ≠ 650 vs 700 |
-| line-height | 12px | 24px | ≠ Δ-12.0px |
+| font-size | 14px | 14px | = |
+| font-weight | 700 | 700 | = |
+| line-height | 24px | 24px | = |
 | letter-spacing | normal | normal | = |
-| text-transform | none | uppercase | ≠ none vs uppercase |
+| text-transform | uppercase | uppercase | = |
 | text-decoration | none | none | = |
-| background-color | color(srgb 0.86 0.914353 0.971451) | rgb(238, 238, 238) | ≠ color(srgb 0.86 0.914353 0.971451) vs rgb(238,238,238) |
-| color | rgb(0, 99, 203) | rgb(58, 58, 58) | ≠ rgb(0,99,203) vs rgb(58,58,58) |
+| background-color | rgb(238, 238, 238) | rgb(238, 238, 238) | = |
+| color | rgb(58, 58, 58) | rgb(58, 58, 58) | = |
 
-**Fidélité Badge (dsfr) : 54.8%** — 17 `=`, 0 `~`, 14 `≠` sur 31 propriétés.
+**Fidélité Badge (dsfr) : 100%** — 31 `=`, 0 `~`, 0 `≠` sur 31 propriétés.
 
 ### Alert
 
@@ -1426,37 +1426,37 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 |---|---|---|---|
 | border-top width | 0px | 0px | = |
 | border-top style | none | none | = (bord 0px (invisible)) |
-| border-top color | rgb(82, 82, 82) | rgb(57, 57, 57) | = (bord 0px (invisible)) |
+| border-top color | rgb(57, 57, 57) | rgb(57, 57, 57) | = (bord 0px (invisible)) |
 | border-right width | 0px | 0px | = |
 | border-right style | none | none | = (bord 0px (invisible)) |
-| border-right color | rgb(82, 82, 82) | rgb(57, 57, 57) | = (bord 0px (invisible)) |
+| border-right color | rgb(57, 57, 57) | rgb(57, 57, 57) | = (bord 0px (invisible)) |
 | border-bottom width | 0px | 0px | = |
 | border-bottom style | none | none | = (bord 0px (invisible)) |
-| border-bottom color | rgb(82, 82, 82) | rgb(57, 57, 57) | = (bord 0px (invisible)) |
+| border-bottom color | rgb(57, 57, 57) | rgb(57, 57, 57) | = (bord 0px (invisible)) |
 | border-left width | 0px | 0px | = |
 | border-left style | none | none | = (bord 0px (invisible)) |
-| border-left color | rgb(82, 82, 82) | rgb(57, 57, 57) | = (bord 0px (invisible)) |
-| radius topLeft | 999px | 15px | ≠ Δ984.0px |
-| radius topRight | 999px | 15px | ≠ Δ984.0px |
-| radius bottomRight | 999px | 15px | ≠ Δ984.0px |
-| radius bottomLeft | 999px | 15px | ≠ Δ984.0px |
+| border-left color | rgb(57, 57, 57) | rgb(57, 57, 57) | = (bord 0px (invisible)) |
+| radius topLeft | 15px | 15px | = |
+| radius topRight | 15px | 15px | = |
+| radius bottomRight | 15px | 15px | = |
+| radius bottomLeft | 15px | 15px | = |
 | padding-top | 4px | 4px | = |
-| padding-right | 10px | 8px | ≠ Δ2.0px |
+| padding-right | 8px | 8px | = |
 | padding-bottom | 4px | 4px | = |
-| padding-left | 10px | 8px | ≠ Δ2.0px |
-| box width | 39.4px | 35.7px | ≠ Δ3.7px |
-| box height | 20px | 24px | ≠ Δ-4.0px |
+| padding-left | 8px | 8px | = |
+| box width | 35.7px | 35.7px | = |
+| box height | 24px | 24px | = |
 | font-family | IBM Plex Sans | IBM Plex Sans | = |
 | font-size | 12px | 12px | = |
-| font-weight | 600 | 400 | ≠ 600 vs 400 |
-| line-height | 12px | 16px | ≠ Δ-4.0px |
-| letter-spacing | normal | 0.32px | ≠ normal vs 0.32px |
+| font-weight | 400 | 400 | = |
+| line-height | 16px | 16px | = |
+| letter-spacing | 0.32px | 0.32px | = |
 | text-transform | none | none | = |
 | text-decoration | none | none | = |
-| background-color | rgb(244, 244, 244) | rgb(224, 224, 224) | ≠ rgb(244,244,244) vs rgb(224,224,224) |
-| color | rgb(82, 82, 82) | rgb(57, 57, 57) | ≠ rgb(82,82,82) vs rgb(57,57,57) |
+| background-color | rgb(224, 224, 224) | rgb(224, 224, 224) | = |
+| color | rgb(57, 57, 57) | rgb(57, 57, 57) | = |
 
-**Fidélité Tag (carbon) : 58.1%** — 18 `=`, 0 `~`, 13 `≠` sur 31 propriétés.
+**Fidélité Tag (carbon) : 100%** — 31 `=`, 0 `~`, 0 `≠` sur 31 propriétés.
 
 ### Alert
 
@@ -1723,8 +1723,8 @@ Couverture mesurée : **41 paires** (notre composant mappé vs vrai composant of
 | dsfr | Checkbox | 87.1% | 26 | 1 | 4 | oui |
 | dsfr | Radio | 87.1% | 25 | 2 | 4 | oui |
 | dsfr | Toggle | 58.1% | 18 | 0 | 13 | oui |
-| dsfr | Tag | 58.1% | 18 | 0 | 13 | oui |
-| dsfr | Badge | 54.8% | 17 | 0 | 14 | oui |
+| dsfr | Tag | 100% | 31 | 0 | 0 | oui |
+| dsfr | Badge | 100% | 31 | 0 | 0 | oui |
 | dsfr | Alert | 93.5% | 29 | 0 | 2 | oui |
 | dsfr | Accordion | 96.8% | 30 | 0 | 1 | oui |
 | dsfr | Breadcrumb | 96.8% | 30 | 0 | 1 | oui |
@@ -1745,7 +1745,7 @@ Couverture mesurée : **41 paires** (notre composant mappé vs vrai composant of
 | carbon | Checkbox | 87.1% | 25 | 2 | 4 | oui |
 | carbon | Radio | 90.3% | 26 | 2 | 3 | oui |
 | carbon | Toggle | 51.6% | 16 | 0 | 15 | oui |
-| carbon | Tag | 58.1% | 18 | 0 | 13 | oui |
+| carbon | Tag | 100% | 31 | 0 | 0 | oui |
 | carbon | Alert | 93.5% | 29 | 0 | 2 | oui |
 | carbon | Accordion | 96.8% | 30 | 0 | 1 | oui |
 | carbon | Breadcrumb | 100% | 30 | 1 | 0 | oui |
@@ -1755,9 +1755,9 @@ Couverture mesurée : **41 paires** (notre composant mappé vs vrai composant of
 
 ## Récapitulatif global
 
-- **Fidélité globale : 86.8%** (1072 `=`, 29 `~`, 168 `≠` sur 1269 propriétés mesurées).
+- **Fidélité globale : 89.9%** (1112 `=`, 29 `~`, 128 `≠` sur 1269 propriétés mesurées).
 - **Couverture : 41 paires composant×thème mesurées.**
-- **Écarts nets restants : 168**
+- **Écarts nets restants : 128**
 
   - dsfr/Button: box width (Δ2.0px)
   - dsfr/Button: box height (Δ2.0px)
@@ -1804,33 +1804,6 @@ Couverture mesurée : **41 paires** (notre composant mappé vs vrai composant of
   - dsfr/Toggle: line-height (normal vs 24px)
   - dsfr/Toggle: background-color (rgb(0,0,145) vs rgb(0,0,0)/a0)
   - dsfr/Toggle: color (rgb(58,58,58) vs rgb(22,22,22))
-  - dsfr/Tag: radius topLeft (Δ983.0px)
-  - dsfr/Tag: radius topRight (Δ983.0px)
-  - dsfr/Tag: radius bottomRight (Δ983.0px)
-  - dsfr/Tag: radius bottomLeft (Δ983.0px)
-  - dsfr/Tag: padding-right (Δ-2.0px)
-  - dsfr/Tag: padding-left (Δ-2.0px)
-  - dsfr/Tag: box width (Δ-12.3px)
-  - dsfr/Tag: box height (Δ-12.0px)
-  - dsfr/Tag: font-size (Δ-2.0px)
-  - dsfr/Tag: font-weight (600 vs 400)
-  - dsfr/Tag: line-height (Δ-12.0px)
-  - dsfr/Tag: background-color (rgb(246,246,246) vs rgb(238,238,238))
-  - dsfr/Tag: color (rgb(102,102,102) vs rgb(22,22,22))
-  - dsfr/Badge: radius topLeft (Δ995.0px)
-  - dsfr/Badge: radius topRight (Δ995.0px)
-  - dsfr/Badge: radius bottomRight (Δ995.0px)
-  - dsfr/Badge: radius bottomLeft (Δ995.0px)
-  - dsfr/Badge: padding-top (Δ4.0px)
-  - dsfr/Badge: padding-bottom (Δ4.0px)
-  - dsfr/Badge: box width (Δ-20.8px)
-  - dsfr/Badge: box height (Δ-4.0px)
-  - dsfr/Badge: font-size (Δ-2.0px)
-  - dsfr/Badge: font-weight (650 vs 700)
-  - dsfr/Badge: line-height (Δ-12.0px)
-  - dsfr/Badge: text-transform (none vs uppercase)
-  - dsfr/Badge: background-color (color(srgb 0.86 0.914353 0.971451) vs rgb(238,238,238))
-  - dsfr/Badge: color (rgb(0,99,203) vs rgb(58,58,58))
   - dsfr/Alert: box width (Δ28.0px)
   - dsfr/Alert: box height (Δ-10.0px)
   - dsfr/Accordion: box width (Δ28.0px)
@@ -1907,19 +1880,6 @@ Couverture mesurée : **41 paires** (notre composant mappé vs vrai composant of
   - carbon/Toggle: letter-spacing (normal vs 0.32px)
   - carbon/Toggle: background-color (rgb(15,98,254) vs rgb(0,0,0)/a0)
   - carbon/Toggle: color (rgb(22,22,22) vs rgb(82,82,82))
-  - carbon/Tag: radius topLeft (Δ984.0px)
-  - carbon/Tag: radius topRight (Δ984.0px)
-  - carbon/Tag: radius bottomRight (Δ984.0px)
-  - carbon/Tag: radius bottomLeft (Δ984.0px)
-  - carbon/Tag: padding-right (Δ2.0px)
-  - carbon/Tag: padding-left (Δ2.0px)
-  - carbon/Tag: box width (Δ3.7px)
-  - carbon/Tag: box height (Δ-4.0px)
-  - carbon/Tag: font-weight (600 vs 400)
-  - carbon/Tag: line-height (Δ-4.0px)
-  - carbon/Tag: letter-spacing (normal vs 0.32px)
-  - carbon/Tag: background-color (rgb(244,244,244) vs rgb(224,224,224))
-  - carbon/Tag: color (rgb(82,82,82) vs rgb(57,57,57))
   - carbon/Alert: box width (Δ-96.4px)
   - carbon/Alert: box height (Δ-27.0px)
   - carbon/Accordion: box width (Δ28.0px)

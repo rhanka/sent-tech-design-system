@@ -145,7 +145,7 @@ restés en « Sent Tech base », vers ~95 % à l'oracle. Per-thème, base intact
 |---|---|---|
 | P-A | Pagination (48/35 %), Breadcrumb (84 %) | ✅ Pagination **100 %/100 %**, Breadcrumb **96,8 %/100 %** (F10) |
 | P-B | Alert (48/42 %), Accordion (68/74 %) | ✅ Alert **93,5 %/93,5 %**, Accordion **96,8 %/96,8 %** (résidus = boîte W/H bench) |
-| P-C | Tag (58 %), Badge (55 % DSFR) | ⬜ |
+| P-C | Tag (58 %), Badge (55 % DSFR) | ✅ Tag **100 %/100 %**, Badge **100 %** DSFR (P-C) — aucun résidu |
 | P-D | Toggle (58/51 %), Search (77/81 %), Checkbox/Radio (87 %) résidus | ⬜ |
 
 ### P-A — Pagination & Breadcrumb portés à l'anatomie DSFR/Carbon (F10, additif) ✅
@@ -223,6 +223,35 @@ Tous les résidus restants sont des écarts de **boîte W/H** ; **toutes** les p
   288×66 imposerait d'imbriquer des wrappers Carbon-spécifiques dans `.st-alert` (régression des autres
   thèmes + base). Classé escape prouvé — toutes les propriétés stylées (fond #393939, texte blanc, barre
   gauche 3px #4589ff, padding 0, 14px/14px/0,16px) sont identiques à la réf.
+
+### P-C — Tag & Badge portés à l'anatomie DSFR/Carbon (additif) ✅
+Primitives additives `TagInput` / `BadgeInput` dans `packages/tokens/src/component.ts`
+(résolveurs `tagOf` / `badgeOf`), émises pour les **3 thèmes** ; tout leaf par défaut =
+**rendu base actuel** (tag : pilule radius 999px, padding 4/10px md, 12px / 600, line-height 1, pas de
+transform, ton neutre = `surface.subtle` + `text.secondary` ; badge : pilule radius 999px, padding 4/8px,
+12px / 650, line-height 1, ton info = mélange `feedback.info`) → base Sent Tech **inchangée**
+(`sent-tech.css`/`forge.css`/`entropic.css` ne gagnent que des **vars inertes**, 0 ligne existante
+modifiée). Valeurs réelles posées par thème dans `theme-dsfr`/`theme-carbon`.
+
+Les leaves géométrie/typo (radius, padding, font-size, poids, line-height, letter-spacing, text-transform,
+min-height) s'appliquent à **tous les tons** ; seules `neutralBackground`/`neutralText` (Tag) et
+`infoBackground`/`infoText` (Badge) recolorent **le ton mesuré par le banc** (Tag neutre, Badge info),
+laissant les tons success/warning/error sur leurs couleurs `feedback.*`.
+
+- **Tag** (`.st-tag`, ton neutre mesuré).
+  - DSFR `.fr-tag` : radius **16px**, padding 4/12px, **14px / 400 / line-height 24px**, boîte 32px, fond
+    **#eeeeee** (grey-950), texte **#161616** (grey-50) → **100 %** (58,1 → 100).
+  - Carbon `.bx--tag--gray` : radius **15px**, padding 4/8px, **12px / 400 / line-height 16px**, tracking
+    **0,32px**, boîte 24px, fond **#e0e0e0** (Gray 20), texte **#393939** (Gray 80) → **100 %** (58,1 → 100).
+- **Badge** (`.st-badge`, ton info mesuré — DSFR uniquement, Carbon n'a pas de badge propre, son badge EST `bx--tag`).
+  - DSFR `.fr-badge` : radius **4px**, padding 0/8px, **14px / 700 / line-height 24px**, **UPPERCASE**,
+    boîte 24px, fond **#eeeeee** (grey-950), texte **#3a3a3a** (grey-200) → **100 %** (54,8 → 100).
+
+**Aucun résidu 🛡️** : les 3 paires Tag/Badge atteignent 31/31 (100 %). La boîte W/H matche aussi
+(le tag/badge est dimensionné par son contenu des deux côtés — pas d'artefact de largeur de banc comme
+pour Alert/Accordion). Aucune régression : le tableau de synthèse est identique à la base sur tous les
+autres composants (Button 90,3 %, Input/Select/Link 96,8 %, Tabs 100 %, Accordion 96,8 %, Card 80,6 %/93,5 %,
+Pagination 100 %, Breadcrumb 96,8 %/100 %, Alert 93,5 %…). **Fidélité globale 86,8 % → 89,9 %.**
 
 Puis : **reste G9** (pages docs Modal/Toast/Drawer/Popover/Dropdown/Menu au standard exhaustif), puis
 **publication groupée** `0.10.2` / `0.2.2` (cœur + thèmes) — autorisée par l'utilisateur (« fais dans l'ordre que tu préconises »).
