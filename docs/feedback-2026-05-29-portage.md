@@ -13,7 +13,7 @@ VISUELS réels car le banc ne mesurait que certains états/variants. Chantiers l
 | G6 | **Police IBM Plex Carbon** | ne charge pas la bonne police à tous les endroits (Carbon). | D (police) | 🟦 bg |
 | G7 | **Header complet à porter** | (a) dans le switch de thème, (b) dans le menu header il devrait y avoir le **header complet** ; surprenant qu'il manque. | C (header) | 🟦 bg |
 | G8 | **Connexion header — mode ID** | pas de mode sélectionné/arbitré pour l'identité (icône carrée sans nom). | C | 🟦 bg |
-| G9 | **Pages de présentation composants** | s'inspirer VRAIMENT de Carbon & DSFR docs ; pas assez exhaustif. | E (docs exhaustivité) | ⬜ en file |
+| G9 | **Pages de présentation composants** | s'inspirer VRAIMENT de Carbon & DSFR docs ; pas assez exhaustif. | E (docs exhaustivité) | 🟩 étendu (overlays/feedback portés) |
 
 ## Chantiers parallèles (worktrees isolés, push main, verify vert)
 - **A — Fidélité visuelle** : bouton secondaire DSFR (transparent+bordure), onglets actif/inactif, épaisseurs ; + Carbon. Oracle `tools/compare/fidelity.mjs`.
@@ -23,3 +23,28 @@ VISUELS réels car le banc ne mesurait que certains états/variants. Chantiers l
 - **E — Exhaustivité des pages composants** (inspiration Carbon/DSFR) : en file (gros chantier, après C/D pour éviter collisions docs).
 
 > Règles : per-thème (base intacte), additif, verify vert avant push, oracle pour la fidélité, jamais port 5173, pas de publish sans go (les paquets 0.10.1/0.2.1 sont déjà live ; un re-bump éventuel attendra le regroupement de ces correctifs).
+
+## G9 — extension (overlays & feedback)
+
+Suite du lot G9 (déjà livré pour button/input/select/checkbox/radio/switch/tabs/breadcrumb/
+pagination/tooltip/alert/link/card/badge/accordion/header). Composants encore servis par les
+pages de famille (`overlays`, `plan-completion`) ou trop succincts, désormais portés au standard
+exhaustif (intro, quand l'utiliser / ne pas l'utiliser, exemples vivants par variantes/états,
+anatomie, accessibilité concrète, do/don't, table d'API vérifiée contre le `.svelte`, tokens réels,
+bilingue FR/EN).
+
+| Composant | Page dédiée | Catalogue (groupSlug) |
+|-----------|-------------|------------------------|
+| Modal | `components/modal` (créée) | `overlays` → `modal` |
+| Toast | `components/toast` (créée) | `overlays` → `toast` |
+| Drawer | `components/drawer` (créée) | `plan-completion` → `drawer` |
+| Popover | `components/popover` (créée) | `plan-completion` → `popover` |
+| Dropdown | `components/dropdown` (créée) | `plan-completion` → `dropdown` |
+| Menu | `components/menu` (créée) | `plan-completion` → `menu` |
+| EmptyState | `components/empty-state` (créée) | `plan-completion` → `empty-state` |
+| LoadingState | `components/loading-state` (créée) | `plan-completion` → `loading-state` |
+| MenuPopover | `components/menu-popover` (déjà dédiée, portée au standard complet) | inchangé |
+
+Les pages de famille `overlays` et `plan-completion` restent en place (additif ; toujours liées
+depuis `data-navigation`). Vérif headless : 9 pages en HTTP 200, bon `h1`, zéro erreur console
+(script jetable hors commit, port 8123 ≠ 5173). `npm run verify` vert.

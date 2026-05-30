@@ -167,7 +167,7 @@ export const COMPONENTS: ComponentEntry[] = [
     slug: "dropdown",
     status: "documented",
     category: "form",
-    groupSlug: "plan-completion",
+    groupSlug: "dropdown",
     description: {
       fr: "Liste déroulante de sélection (listbox).",
       en: "Selection dropdown (listbox)."
@@ -430,7 +430,7 @@ export const COMPONENTS: ComponentEntry[] = [
     slug: "menu",
     status: "documented",
     category: "navigation",
-    groupSlug: "plan-completion",
+    groupSlug: "menu",
     description: {
       fr: "Menu d’actions contextuel.",
       en: "Contextual actions menu."
@@ -487,7 +487,7 @@ export const COMPONENTS: ComponentEntry[] = [
     slug: "drawer",
     status: "documented",
     category: "overlay",
-    groupSlug: "plan-completion",
+    groupSlug: "drawer",
     description: {
       fr: "Panneau latéral pour workflows secondaires.",
       en: "Side panel for secondary workflows."
@@ -509,7 +509,7 @@ export const COMPONENTS: ComponentEntry[] = [
     slug: "modal",
     status: "documented",
     category: "overlay",
-    groupSlug: "overlays",
+    groupSlug: "modal",
     description: {
       fr: "Dialogue modal recentré.",
       en: "Centered modal dialog."
@@ -520,7 +520,7 @@ export const COMPONENTS: ComponentEntry[] = [
     slug: "popover",
     status: "documented",
     category: "overlay",
-    groupSlug: "plan-completion",
+    groupSlug: "popover",
     description: {
       fr: "Contenu contextuel compact ancré à un déclencheur.",
       en: "Compact contextual content anchored to a trigger."
@@ -565,7 +565,7 @@ export const COMPONENTS: ComponentEntry[] = [
     slug: "empty-state",
     status: "documented",
     category: "feedback",
-    groupSlug: "plan-completion",
+    groupSlug: "empty-state",
     description: {
       fr: "État vide avec action principale.",
       en: "Empty state with a primary action."
@@ -587,7 +587,7 @@ export const COMPONENTS: ComponentEntry[] = [
     slug: "loading-state",
     status: "documented",
     category: "feedback",
-    groupSlug: "plan-completion",
+    groupSlug: "loading-state",
     description: {
       fr: "Indicateur de chargement plein ou skeleton.",
       en: "Full loading indicator or skeleton."
@@ -629,7 +629,7 @@ export const COMPONENTS: ComponentEntry[] = [
     slug: "toast",
     status: "documented",
     category: "feedback",
-    groupSlug: "overlays",
+    groupSlug: "toast",
     description: {
       fr: "Notification éphémère success/error.",
       en: "Ephemeral success/error notification."
