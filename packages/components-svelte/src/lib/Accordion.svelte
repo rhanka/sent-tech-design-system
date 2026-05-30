@@ -115,14 +115,22 @@
     align-items: center;
     background: transparent;
     border: 0;
-    color: inherit;
+    /* Trigger colour (P-B): per theme. Default = primary text (inherited base
+       render); DSFR = Bleu France, Carbon = primary. */
+    color: var(--st-component-accordion-text, inherit);
     cursor: pointer;
     display: flex;
     font: inherit;
-    font-weight: 600;
+    /* Per-theme trigger typography (P-B). Defaults reproduce the prior render:
+       font-size inherits the heading size (≈18.72px), weight 600, normal
+       line-height. DSFR pins 16px / 500 / 24px, Carbon 13.33px / 400. */
+    font-size: var(--st-component-accordion-fontSize, inherit);
+    font-weight: var(--st-component-accordion-fontWeight, 600);
+    line-height: var(--st-component-accordion-lineHeight, normal);
     gap: 0.75rem;
     justify-content: space-between;
-    padding: 0.875rem 0.5rem;
+    padding: var(--st-component-accordion-paddingBlock, 0.875rem)
+      var(--st-component-accordion-paddingInline, 0.5rem);
     text-align: start;
     transition: background-color var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
     width: 100%;

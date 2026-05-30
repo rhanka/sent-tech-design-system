@@ -300,6 +300,41 @@ const foundation = {
     fontSize: "0.875rem",                      // 14px ($body-compact-01)
     lineHeight: "1.125rem",                    // 18px
     letterSpacing: "0.16px"
+  },
+  // P-B — Carbon « Inline notification » (.bx--inline-notification). Measured on
+  // the official `.bx--inline-notification--info`: a dark Gray-80 banner (#393939,
+  // $background-inverse-ish notification surface) with WHITE text, NO top/right/
+  // bottom border, and a 3px coloured LEFT BAR (a real border, $support-info
+  // lighter Blue #4589ff). The notification box itself carries 0 padding (the
+  // padding lives on its inner `__details`/`__text-wrapper` wrappers). Body type =
+  // IBM Plex Sans 14px / 14px line-height / 0.16px tracking ($body-compact-01).
+  alert: {
+    background: "#393939",                     // Gray 80 notification surface
+    text: "#ffffff",                           // white text on the dark banner
+    borderTop: "none",                         // only the left bar is visible
+    borderRight: "none",
+    borderBottom: "none",
+    accentWidth: "3px",                        // 3px coloured left bar (a real border)
+    accentInfo: "#4589ff",                     // $support-info lighter Blue (measured #4589ff)
+    paddingTop: "0",                           // padding lives on the inner wrappers
+    paddingRight: "0",
+    paddingBottom: "0",
+    paddingLeft: "0",
+    fontSize: "0.875rem",                      // 14px
+    lineHeight: "0.875rem",                    // 14px (measured)
+    letterSpacing: "0.16px"                    // $body-compact-01 tracking
+  },
+  // P-B — Carbon « Accordion » (.bx--accordion__heading). Measured on the official
+  // heading button: padding 10px block / 0 inline, font-size 13.3333px (the Carbon
+  // heading metric), font-weight 400, line-height normal, colour #161616
+  // ($text-primary, already our text.primary). The base 18.72px/600 trigger is
+  // replaced by this faithful 13.33px/400 header.
+  accordion: {
+    paddingBlock: "0.625rem",                  // 10px
+    paddingInline: "0",                        // 0 inline (the heading spans full width)
+    fontSize: "0.833333rem",                   // 13.3333px (measured)
+    fontWeight: "400",                         // Carbon accordion heading weight
+    lineHeight: "normal"                       // matches the measured normal
   }
 } as const;
 
