@@ -98,6 +98,15 @@
   </section>
 
   <section class="docs-section">
+    <h2>{locale.value === "fr" ? "Quand l'utiliser" : "When to use"}</h2>
+    <ul class="docs-list docs-list--plain">
+      <li>{locale.value === "fr" ? "Condenser un contenu long en sections repliables (FAQ, paramètres avancés)." : "Condense long content into collapsible sections (FAQ, advanced settings)."}</li>
+      <li>{locale.value === "fr" ? "multiple={false} pour un focus sur une section à la fois ; multiple pour comparer." : "multiple={false} to focus on one section at a time; multiple to compare."}</li>
+      <li>{locale.value === "fr" ? "Pour basculer entre des vues d'un même objet, préférez Tabs." : "To switch between views of the same object, prefer Tabs."}</li>
+    </ul>
+  </section>
+
+  <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
     <div class="docs-example" aria-label={text().multipleLabel}>
@@ -148,6 +157,45 @@
         <tr><td><code>disabled</code></td><td><code>boolean</code> (<em>{locale.value === "fr" ? "optionnel" : "optional"}</em>)</td></tr>
       </tbody>
     </table>
+  </section>
+
+  <section class="docs-section">
+    <h2>{locale.value === "fr" ? "Anatomie" : "Anatomy"}</h2>
+    <ul class="docs-list docs-list--plain">
+      <li>{locale.value === "fr" ? "Item (.st-accordion__item) : un en-tête + un panneau pliable." : "Item (.st-accordion__item): a header + a collapsible panel."}</li>
+      <li>{locale.value === "fr" ? "Déclencheur (.st-accordion__trigger) : un <button> dans un <h3>, avec chevron qui pivote." : "Trigger (.st-accordion__trigger): a <button> inside an <h3>, with a rotating chevron."}</li>
+      <li>{locale.value === "fr" ? "Panneau (.st-accordion__panel, role=\"region\") : le contenu, rendu seulement si ouvert." : "Panel (.st-accordion__panel, role=\"region\"): the content, rendered only when open."}</li>
+    </ul>
+  </section>
+
+  <section class="docs-section">
+    <h2>{locale.value === "fr" ? "Accessibilité" : "Accessibility"}</h2>
+    <ul class="docs-list docs-list--plain">
+      <li>{locale.value === "fr" ? "Chaque déclencheur expose aria-expanded et aria-controls vers son panneau." : "Each trigger exposes aria-expanded and aria-controls pointing to its panel."}</li>
+      <li>{locale.value === "fr" ? "Le panneau a role=\"region\" et aria-labelledby vers son en-tête." : "The panel has role=\"region\" and aria-labelledby pointing to its header."}</li>
+      <li>{locale.value === "fr" ? "Les en-têtes sont des <button> dans des <h3> : navigables et activables au clavier." : "Headers are <button>s inside <h3>s: keyboard-navigable and activatable."}</li>
+      <li>{locale.value === "fr" ? "Un item disabled est non focusable et ignore le clic." : "A disabled item is non-focusable and ignores clicks."}</li>
+    </ul>
+  </section>
+
+  <section class="docs-section">
+    <h2>{locale.value === "fr" ? "Lignes directrices" : "Guidelines"}</h2>
+    <div class="docs-guidelines">
+      <div class="docs-guideline docs-guideline--do">
+        <p class="docs-guideline__tag">{locale.value === "fr" ? "À faire" : "Do"}</p>
+        <ul>
+          <li>{locale.value === "fr" ? "Des titres de section clairs et autoportants." : "Clear, self-explanatory section titles."}</li>
+          <li>{locale.value === "fr" ? "Ouvrir par défaut la section la plus utile." : "Open the most useful section by default."}</li>
+        </ul>
+      </div>
+      <div class="docs-guideline docs-guideline--dont">
+        <p class="docs-guideline__tag">{locale.value === "fr" ? "À éviter" : "Don't"}</p>
+        <ul>
+          <li>{locale.value === "fr" ? "Cacher du contenu critique derrière un pli." : "Hide critical content behind a fold."}</li>
+          <li>{locale.value === "fr" ? "Imbriquer des accordéons sur plusieurs niveaux." : "Nest accordions across multiple levels."}</li>
+        </ul>
+      </div>
+    </div>
   </section>
 
   <section class="docs-section">

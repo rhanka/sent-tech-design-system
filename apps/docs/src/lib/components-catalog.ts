@@ -103,7 +103,7 @@ export const COMPONENTS: ComponentEntry[] = [
     slug: "link",
     status: "documented",
     category: "action",
-    groupSlug: "plan-completion",
+    groupSlug: "link",
     description: {
       fr: "Lien stylé cohérent avec le DS, support disabled/external.",
       en: "Styled link consistent with the DS, disabled/external support."
@@ -116,7 +116,7 @@ export const COMPONENTS: ComponentEntry[] = [
     slug: "checkbox",
     status: "documented",
     category: "form",
-    groupSlug: "forms",
+    groupSlug: "checkbox",
     description: {
       fr: "Case à cocher avec états error/disabled et helper text.",
       en: "Checkbox with error/disabled states and helper text."
@@ -189,7 +189,7 @@ export const COMPONENTS: ComponentEntry[] = [
     slug: "input",
     status: "documented",
     category: "form",
-    groupSlug: "forms",
+    groupSlug: "input",
     description: {
       fr: "Champ texte standard, tailles sm/md/lg.",
       en: "Standard text field, sm/md/lg sizes."
@@ -231,7 +231,7 @@ export const COMPONENTS: ComponentEntry[] = [
     slug: "radio",
     status: "documented",
     category: "form",
-    groupSlug: "forms",
+    groupSlug: "radio",
     description: {
       fr: "Bouton radio groupé via `name`.",
       en: "Radio button grouped via `name`."
@@ -253,7 +253,7 @@ export const COMPONENTS: ComponentEntry[] = [
     slug: "select",
     status: "documented",
     category: "form",
-    groupSlug: "forms",
+    groupSlug: "select",
     description: {
       fr: "Sélecteur natif stylé, tailles sm/md/lg.",
       en: "Styled native select, sm/md/lg sizes."
@@ -274,7 +274,7 @@ export const COMPONENTS: ComponentEntry[] = [
     slug: "switch",
     status: "documented",
     category: "form",
-    groupSlug: "forms",
+    groupSlug: "switch",
     description: {
       fr: "Bascule on/off.",
       en: "On/off switch."
@@ -285,7 +285,7 @@ export const COMPONENTS: ComponentEntry[] = [
     slug: "textarea",
     status: "documented",
     category: "form",
-    groupSlug: "forms",
+    groupSlug: "textarea",
     description: {
       fr: "Champ texte multi-ligne.",
       en: "Multi-line text field."
@@ -368,7 +368,7 @@ export const COMPONENTS: ComponentEntry[] = [
     slug: "breadcrumb",
     status: "documented",
     category: "navigation",
-    groupSlug: "data-navigation",
+    groupSlug: "breadcrumb",
     description: {
       fr: "Fil d’Ariane sémantique.",
       en: "Semantic breadcrumb trail."
@@ -452,7 +452,7 @@ export const COMPONENTS: ComponentEntry[] = [
     slug: "pagination",
     status: "documented",
     category: "navigation",
-    groupSlug: "data-navigation",
+    groupSlug: "pagination",
     description: {
       fr: "Navigation de pages avec page courante.",
       en: "Page navigation with current page."
@@ -474,7 +474,7 @@ export const COMPONENTS: ComponentEntry[] = [
     slug: "tabs",
     status: "documented",
     category: "navigation",
-    groupSlug: "data-navigation",
+    groupSlug: "tabs",
     description: {
       fr: "Onglets tablist/tab/tabpanel.",
       en: "Tabs with tablist/tab/tabpanel."
@@ -541,7 +541,7 @@ export const COMPONENTS: ComponentEntry[] = [
     slug: "tooltip",
     status: "documented",
     category: "overlay",
-    groupSlug: "overlays",
+    groupSlug: "tooltip",
     description: {
       fr: "Info contextuelle au survol/focus.",
       en: "Contextual hint on hover/focus."
@@ -554,7 +554,7 @@ export const COMPONENTS: ComponentEntry[] = [
     slug: "alert",
     status: "documented",
     category: "feedback",
-    groupSlug: "forms",
+    groupSlug: "alert",
     description: {
       fr: "Bandeau d’information info/success/warning/error.",
       en: "Info/success/warning/error banner."
