@@ -39,36 +39,131 @@ const COMPARE_URL = `${BASE_URL}/compare`;
 const BUILD_DIR = join(REPO_ROOT, "apps", "docs", "build");
 
 // ---------------------------------------------------------------------------
-// Selectors: component -> our box / reference box, per theme.
+// Bench catalogue: component/variant -> our box / reference box, per theme.
+//
+// G5 — coverage widened well beyond the original 7. Each key is a stable id
+// shared with apps/docs/src/routes/compare/+page.svelte (same row order). The
+// page renders one row per key for each theme that has a REAL official
+// equivalent; the CLI only measures (theme, key) pairs that exist on BOTH the
+// page (`hasTheme`) and the REF_SELECTOR map below (no false pairs).
 // ---------------------------------------------------------------------------
-const COMPONENTS = ["Button", "Input", "Textarea", "Select", "Link", "Card", "Tabs"];
+const COMPONENTS = [
+  "Button",
+  "ButtonDisabled",
+  "Input",
+  "InputError",
+  "InputDisabled",
+  "Textarea",
+  "Select",
+  "Search",
+  "Link",
+  "Checkbox",
+  "Radio",
+  "Toggle",
+  "Tag",
+  "Badge",
+  "Alert",
+  "Accordion",
+  "Breadcrumb",
+  "Pagination",
+  "Card",
+  "Tabs",
+  "Quote",
+  "Highlight",
+];
+
+// Per-key list of themes for which an official equivalent exists. Must mirror
+// `ENTRIES[].themes` on the page so the per-theme row order matches exactly.
+const COMPONENT_THEMES = {
+  Badge: ["dsfr"], // Carbon has no dedicated badge (its badge IS bx--tag).
+  Quote: ["dsfr"], // Carbon has no editorial quote component.
+  Highlight: ["dsfr"], // Carbon has no editorial highlight component.
+};
 
 const OUR_SELECTOR = {
   Button: ".st-button",
+  ButtonDisabled: ".st-button:disabled",
   Input: ".st-control",
+  // The error/disabled variants set the state on the control itself.
+  InputError: ".st-control[aria-invalid=\"true\"]",
+  InputDisabled: ".st-control:disabled",
   Textarea: ".st-textarea",
   Select: ".st-select",
+  // Search field box (the bordered wrapper, not the bare input).
+  Search: ".st-search",
   Link: ".st-link",
+  // Checkbox/Radio: the visible control is a styled NATIVE input on our side and
+  // a `::before` pseudo on the official side (unmeasurable). We compare the
+  // LABEL text — the typography/colour both sides actually paint.
+  Checkbox: ".st-choice__label",
+  Radio: ".st-choice__label",
+  // Toggle: the switch track is a real element on our side and on Carbon; DSFR
+  // draws it as a `::before/::after` on the label, so for DSFR we measure the
+  // label text (see REF_SELECTOR + note). Track on our side stays the track.
+  Toggle: ".st-toggle__track",
+  Tag: ".st-tag",
+  Badge: ".st-badge",
+  Alert: ".st-alert",
+  // Accordion: the clickable trigger row carries the box/padding/typography.
+  Accordion: ".st-accordion__trigger",
+  // Breadcrumb: the link is the styled, comparable element.
+  Breadcrumb: ".st-breadcrumb a",
+  // Pagination: the active page button.
+  Pagination: ".st-pagination__page--active",
   Card: ".st-card",
   Tabs: ".st-tabs__tab[aria-selected=\"true\"]",
+  Quote: ".st-quote",
+  Highlight: ".st-highlight",
 };
 
 const REF_SELECTOR = {
   dsfr: {
     Button: ".fr-btn",
+    ButtonDisabled: ".fr-btn:disabled",
     Input: ".fr-input",
+    InputError: ".fr-input--error",
+    InputDisabled: ".fr-input:disabled",
     Textarea: "textarea.fr-input",
     Select: ".fr-select",
+    Search: ".fr-search-bar .fr-input",
     Link: ".fr-link",
+    Checkbox: ".fr-checkbox-group label",
+    Radio: ".fr-radio-group label",
+    // DSFR toggle switch is drawn via pseudo-elements on the label; measure the
+    // label text (the comparable typography/colour). See note below.
+    Toggle: ".fr-toggle__label",
+    Tag: ".fr-tag",
+    Badge: ".fr-badge",
+    Alert: ".fr-alert",
+    Accordion: ".fr-accordion__btn",
+    Breadcrumb: ".fr-breadcrumb__link",
+    // Active page link (aria-current="page") — the styled, filled page.
+    Pagination: ".fr-pagination__link[aria-current=\"page\"]",
     Card: ".fr-card",
     Tabs: ".fr-tabs__tab[aria-selected=\"true\"]",
+    Quote: ".fr-quote",
+    Highlight: ".fr-highlight",
   },
   carbon: {
     Button: ".bx--btn--primary",
+    ButtonDisabled: ".bx--btn--primary:disabled",
     Input: ".bx--text-input",
+    InputError: ".bx--text-input--invalid",
+    InputDisabled: ".bx--text-input:disabled",
     Textarea: ".bx--text-area",
     Select: ".bx--select-input",
+    Search: ".bx--search-input",
     Link: ".bx--link",
+    Checkbox: ".bx--checkbox-label-text",
+    Radio: ".bx--radio-button__label-text",
+    // Carbon toggle switch IS a real element.
+    Toggle: ".bx--toggle__switch",
+    Tag: ".bx--tag",
+    Alert: ".bx--inline-notification",
+    Accordion: ".bx--accordion__heading",
+    Breadcrumb: ".bx--breadcrumb-item .bx--link",
+    // Carbon pagination-nav active page button.
+    Pagination: ".bx--pagination-nav__page--active",
     Card: ".bx--tile",
     // The selected `<li>.bx--tabs__nav-item--selected` collapses to a 0×0 box in
     // Carbon's `<li>`-based tabs markup; the visually-styled tab (padding,
@@ -80,14 +175,46 @@ const REF_SELECTOR = {
 
 // Justified deviations from the literal spec selector, surfaced in the report.
 const REF_SELECTOR_NOTE = {
+  dsfr: {
+    Checkbox:
+      "Le contrôle visuel DSFR est dessiné en `::before` sur le label (non mesurable). " +
+      "On compare le LABEL (`.fr-checkbox-group label`) — la typo/couleur réellement peintes.",
+    Radio:
+      "Idem checkbox : contrôle en pseudo-élément. On compare le label (`.fr-radio-group label`).",
+    Toggle:
+      "L'interrupteur DSFR est dessiné en `::before/::after` sur le label. " +
+      "On compare le label (`.fr-toggle__label`) — typo/couleur comparables.",
+    Pagination:
+      "Page active = `.fr-pagination__link[aria-current=\"page\"]` (lien rempli Bleu France).",
+  },
   carbon: {
     Tabs:
       "Spec selector `.bx--tabs__nav-item--selected` is the `<li>` wrapper (0×0 box). " +
       "Measuring its inner `.bx--tabs__nav-link` — the actual styled tab.",
+    Checkbox:
+      "Carbon checkbox control is a `::before` on the label. Measuring the label text " +
+      "(`.bx--checkbox-label-text`) — the comparable typography/colour.",
+    Radio:
+      "Carbon radio control is `.bx--radio-button__appearance` (a circle). Measuring the " +
+      "label text (`.bx--radio-button__label-text`) — comparable typography/colour.",
+    Pagination:
+      "Active page = `.bx--pagination-nav__page--active` (the styled active page button).",
   },
 };
 
 const THEMES = ["dsfr", "carbon"];
+
+/** True when an official equivalent exists for (theme, component). */
+function themeHasComponent(theme, component) {
+  const allowed = COMPONENT_THEMES[component];
+  if (allowed && !allowed.includes(theme)) return false;
+  return Boolean(REF_SELECTOR[theme] && REF_SELECTOR[theme][component]);
+}
+
+/** Ordered list of components rendered for a theme (mirrors the page filter). */
+function componentsForTheme(theme, components) {
+  return components.filter((c) => themeHasComponent(theme, c));
+}
 
 // Tolerances for the `~` (close) status.
 const TOL = {
@@ -514,7 +641,9 @@ async function run(opts) {
 
     for (const theme of themes) {
       const scope = `.cmp-scope--${theme}`;
-      for (const component of components) {
+      // Only the components that actually render for THIS theme, in page order.
+      const themeComponents = componentsForTheme(theme, components);
+      for (const component of themeComponents) {
         const entry = {
           theme,
           component,
@@ -540,7 +669,10 @@ async function run(opts) {
         }
 
         // --- Locate the reference iframe for THIS row ---
-        const frame = await locateRefFrame(page, scope, component);
+        // Row index = position within the per-theme rendered list (the page
+        // filters Badge/Quote/Highlight to DSFR only, so indices differ).
+        const rowIdx = themeComponents.indexOf(component);
+        const frame = await locateRefFrame(page, scope, rowIdx);
         if (!frame) {
           entry.notes.push("reference iframe for this row not found");
           warnings.push(`[${theme}/${component}] ref iframe missing`);
@@ -577,9 +709,8 @@ async function run(opts) {
 }
 
 /** Find the contentFrame of the .cmp-cell--ref iframe inside the right row. */
-async function locateRefFrame(page, scope, component) {
-  // The rows are ordered exactly as COMPONENTS within each scope section.
-  const idx = COMPONENTS.indexOf(component);
+async function locateRefFrame(page, scope, idx) {
+  // `idx` = the row's position within the per-theme rendered list.
   const handle = await page.evaluateHandle(
     (scopeSel, rowIdx) => {
       const section = document.querySelector(scopeSel);
@@ -792,9 +923,27 @@ function buildReport({ results, warnings, useStatic }, opts) {
   const gTotal = globalEq + globalClose + globalDiff;
   const gFid = gTotal ? Math.round(((globalEq + globalClose) / gTotal) * 1000) / 10 : null;
 
+  // Per-component fidelity recap (G5): one row per measured (theme, component).
+  lines.push("## Récap de fidélité par composant");
+  lines.push("");
+  lines.push(`Couverture mesurée : **${scored.length} paires** (notre composant mappé vs vrai composant officiel).`);
+  lines.push("");
+  lines.push("| Thème | Composant / variant | Fidélité | `=` | `~` | `≠` | Réf stylée ? |");
+  lines.push("|---|---|---|---|---|---|---|");
+  for (const s of scored) {
+    const e = s.entry;
+    const fid = s.fidelity == null ? "—" : `${s.fidelity}%`;
+    const styled = e.ours && e.ours.found && e.ref && e.ref.found && e.refStyled ? "oui" : "non (diff supprimé)";
+    lines.push(
+      `| ${e.theme} | ${e.component} | ${fid} | ${s.counts.eq} | ${s.counts.close} | ${s.counts.diff} | ${styled} |`
+    );
+  }
+  lines.push("");
+
   lines.push("## Récapitulatif global");
   lines.push("");
   lines.push(`- **Fidélité globale : ${gFid}%** (${globalEq} \`=\`, ${globalClose} \`~\`, ${globalDiff} \`≠\` sur ${gTotal} propriétés mesurées).`);
+  lines.push(`- **Couverture : ${scored.length} paires composant×thème mesurées.**`);
   lines.push(`- **Écarts nets restants : ${netGaps.length}**`);
   if (netGaps.length) {
     lines.push("");
