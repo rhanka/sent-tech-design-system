@@ -33,31 +33,33 @@
   }
 
   .st-switch__input {
-    height: 1.25rem;
+    height: var(--st-component-selection-toggleTrackHeight, 1.25rem);
     margin: 0;
     opacity: 0;
     position: absolute;
-    width: 2.25rem;
+    width: var(--st-component-selection-toggleTrackWidth, 2.25rem);
   }
 
   .st-switch__track {
     align-items: center;
     background: var(--st-component-selection-switchTrack, var(--st-semantic-border-strong));
-    border-radius: var(--st-radius-pill, 999px);
+    /* P-D: dims/radius/padding ride the per-theme toggle anatomy (default = the
+       prior 36×20 pill → base unchanged), so Switch stays coherent with Toggle. */
+    border-radius: var(--st-component-selection-toggleTrackRadius, var(--st-radius-pill, 999px));
     display: inline-flex;
-    height: 1.25rem;
-    padding: 0.125rem;
+    height: var(--st-component-selection-toggleTrackHeight, 1.25rem);
+    padding: var(--st-component-selection-toggleTrackPadding, 0.125rem);
     transition: background var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
-    width: 2.25rem;
+    width: var(--st-component-selection-toggleTrackWidth, 2.25rem);
   }
 
   .st-switch__thumb {
     background: var(--st-component-selection-switchThumb, var(--st-semantic-surface-default));
     border-radius: var(--st-radius-pill, 999px);
-    height: 1rem;
+    height: var(--st-component-selection-toggleThumbSize, 1rem);
     transform: translateX(0);
     transition: transform var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
-    width: 1rem;
+    width: var(--st-component-selection-toggleThumbSize, 1rem);
   }
 
   .st-switch__input:checked + .st-switch__track {
@@ -65,7 +67,7 @@
   }
 
   .st-switch__input:checked + .st-switch__track .st-switch__thumb {
-    transform: translateX(1rem);
+    transform: translateX(calc(var(--st-component-selection-toggleTrackWidth, 2.25rem) - var(--st-component-selection-toggleThumbSize, 1rem) - 2 * var(--st-component-selection-toggleTrackPadding, 0.125rem)));
   }
 
   /* Focus = stratégie d'anatomie partagée (outline DSFR / inset Carbon / ring base). */

@@ -117,9 +117,21 @@
     border-right: var(--st-component-control-anatomy-field-borderRight, var(--st-component-control-anatomy-shape-borderWidth, 1px) var(--st-component-control-anatomy-shape-borderStyle, solid) var(--st-component-control-border, var(--st-semantic-border-subtle)));
     border-bottom: var(--st-component-control-anatomy-field-borderBottom, var(--st-component-control-anatomy-shape-borderWidth, 1px) var(--st-component-control-anatomy-shape-borderStyle, solid) var(--st-component-control-border, var(--st-semantic-border-subtle)));
     border-left: var(--st-component-control-anatomy-field-borderLeft, var(--st-component-control-anatomy-shape-borderWidth, 1px) var(--st-component-control-anatomy-shape-borderStyle, solid) var(--st-component-control-border, var(--st-semantic-border-subtle)));
-    border-radius: var(--st-component-control-anatomy-shape-radius, 0.375rem);
+    /* Top corners ride the shared field `radiusTop` (DSFR rounds top 4px, like
+       the Input field box); bottom corners keep the field shape radius. */
+    border-top-left-radius: var(--st-component-control-anatomy-field-radiusTop, var(--st-component-control-anatomy-shape-radius, 0.375rem));
+    border-top-right-radius: var(--st-component-control-anatomy-field-radiusTop, var(--st-component-control-anatomy-shape-radius, 0.375rem));
+    border-bottom-right-radius: var(--st-component-control-anatomy-shape-radius, 0.375rem);
+    border-bottom-left-radius: var(--st-component-control-anatomy-shape-radius, 0.375rem);
     color: var(--st-component-control-text, var(--st-semantic-text-primary));
     display: inline-flex;
+    /* P-D: field-box padding + input typography per theme. Default = the prior
+       render (0 padding on the wrapper, inherited 16px / `normal` typography);
+       DSFR pads 8/16px, Carbon 0/40px to match the measured reference input. */
+    padding: var(--st-component-search-paddingBlock, 0) var(--st-component-search-paddingInline, 0);
+    font-size: var(--st-component-search-fontSize, 1rem);
+    line-height: var(--st-component-search-lineHeight, normal);
+    letter-spacing: var(--st-component-search-letterSpacing, normal);
     transition:
       border-color var(--st-motion-fast, 120ms) var(--st-motion-easing, ease),
       box-shadow var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);

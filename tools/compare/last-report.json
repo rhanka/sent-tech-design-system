@@ -11,10 +11,10 @@
     "generatedBy": "tools/compare/fidelity.mjs"
   },
   "global": {
-    "eq": 1112,
-    "close": 29,
-    "diff": 128,
-    "fidelity": 89.9
+    "eq": 1144,
+    "close": 24,
+    "diff": 101,
+    "fidelity": 92
   },
   "netGaps": [
     "dsfr/Button: box width (Δ2.0px)",
@@ -33,22 +33,13 @@
     "dsfr/Textarea: box width (Δ47.0px)",
     "dsfr/Textarea: box height (Δ8.0px)",
     "dsfr/Select: box width (Δ47.0px)",
-    "dsfr/Search: radius topLeft (Δ-4.0px)",
-    "dsfr/Search: padding-top (Δ-8.0px)",
-    "dsfr/Search: padding-right (Δ-16.0px)",
-    "dsfr/Search: padding-bottom (Δ-8.0px)",
-    "dsfr/Search: padding-left (Δ-16.0px)",
+    "dsfr/Search: radius topRight (Δ4.0px)",
     "dsfr/Search: box width (Δ87.0px)",
-    "dsfr/Search: line-height (normal vs 24px)",
     "dsfr/Link: text-decoration (underline vs none)",
-    "dsfr/Checkbox: box width (Δ-70.2px)",
-    "dsfr/Checkbox: box height (Δ-21.0px)",
-    "dsfr/Checkbox: line-height (normal vs 24px)",
-    "dsfr/Checkbox: color (rgb(58,58,58) vs rgb(22,22,22))",
+    "dsfr/Checkbox: box width (Δ-58.8px)",
+    "dsfr/Checkbox: box height (Δ-20.0px)",
     "dsfr/Radio: padding-left (Δ-32.0px)",
-    "dsfr/Radio: box width (Δ67.7px)",
-    "dsfr/Radio: line-height (normal vs 24px)",
-    "dsfr/Radio: color (rgb(58,58,58) vs rgb(22,22,22))",
+    "dsfr/Radio: box width (Δ79.1px)",
     "dsfr/Toggle: radius topLeft (Δ999.0px)",
     "dsfr/Toggle: radius topRight (Δ999.0px)",
     "dsfr/Toggle: radius bottomRight (Δ999.0px)",
@@ -59,9 +50,7 @@
     "dsfr/Toggle: padding-left (Δ2.0px)",
     "dsfr/Toggle: box width (Δ-205.0px)",
     "dsfr/Toggle: box height (Δ-20.0px)",
-    "dsfr/Toggle: line-height (normal vs 24px)",
     "dsfr/Toggle: background-color (rgb(0,0,145) vs rgb(0,0,0)/a0)",
-    "dsfr/Toggle: color (rgb(58,58,58) vs rgb(22,22,22))",
     "dsfr/Alert: box width (Δ28.0px)",
     "dsfr/Alert: box height (Δ-10.0px)",
     "dsfr/Accordion: box width (Δ28.0px)",
@@ -110,34 +99,18 @@
     "carbon/Textarea: box height (Δ13.0px)",
     "carbon/Textarea: line-height (Δ-2.0px)",
     "carbon/Select: box width (Δ47.0px)",
-    "carbon/Search: padding-right (Δ-40.0px)",
-    "carbon/Search: padding-left (Δ-40.0px)",
     "carbon/Search: box width (Δ47.0px)",
-    "carbon/Search: font-size (Δ2.0px)",
-    "carbon/Search: line-height (normal vs 18.0001px)",
-    "carbon/Search: letter-spacing (normal vs 0.16px)",
     "carbon/Checkbox: padding-left (Δ-6.0px)",
-    "carbon/Checkbox: box height (Δ-2.0px)",
-    "carbon/Checkbox: line-height (normal vs 18.0001px)",
-    "carbon/Checkbox: letter-spacing (normal vs 0.16px)",
-    "carbon/Radio: box width (Δ67.3px)",
-    "carbon/Radio: line-height (normal vs 20px)",
-    "carbon/Radio: letter-spacing (normal vs 0.16px)",
+    "carbon/Checkbox: box width (Δ-6.0px)",
+    "carbon/Checkbox: box height (Δ-3.0px)",
+    "carbon/Radio: box width (Δ62.0px)",
+    "carbon/Radio: box height (Δ-2.0px)",
+    "carbon/Radio: line-height (Δ-2.0px)",
     "carbon/Toggle: radius topLeft (Δ999.0px)",
     "carbon/Toggle: radius topRight (Δ999.0px)",
     "carbon/Toggle: radius bottomRight (Δ999.0px)",
     "carbon/Toggle: radius bottomLeft (Δ999.0px)",
-    "carbon/Toggle: padding-top (Δ2.0px)",
-    "carbon/Toggle: padding-right (Δ2.0px)",
-    "carbon/Toggle: padding-bottom (Δ2.0px)",
-    "carbon/Toggle: padding-left (Δ2.0px)",
-    "carbon/Toggle: box width (Δ-12.0px)",
-    "carbon/Toggle: box height (Δ-4.0px)",
-    "carbon/Toggle: font-size (Δ4.0px)",
-    "carbon/Toggle: line-height (normal vs 16px)",
-    "carbon/Toggle: letter-spacing (normal vs 0.32px)",
     "carbon/Toggle: background-color (rgb(15,98,254) vs rgb(0,0,0)/a0)",
-    "carbon/Toggle: color (rgb(22,22,22) vs rgb(82,82,82))",
     "carbon/Alert: box width (Δ-96.4px)",
     "carbon/Alert: box height (Δ-27.0px)",
     "carbon/Accordion: box width (Δ28.0px)",
@@ -2772,11 +2745,11 @@
       "refSelector": ".fr-search-bar .fr-input",
       "refStyled": true,
       "notes": [],
-      "fidelity": 77.4,
+      "fidelity": 93.5,
       "counts": {
-        "eq": 24,
+        "eq": 29,
         "close": 0,
-        "diff": 7
+        "diff": 2
       },
       "rows": [
         {
@@ -2878,18 +2851,18 @@
         {
           "label": "radius topLeft",
           "prop": "border-radius",
-          "ours": "0px",
+          "ours": "4px",
           "ref": "4px",
-          "status": "≠",
-          "delta": "Δ-4.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "radius topRight",
           "prop": "border-radius",
-          "ours": "0px",
+          "ours": "4px",
           "ref": "0px",
-          "status": "=",
-          "delta": ""
+          "status": "≠",
+          "delta": "Δ4.0px"
         },
         {
           "label": "radius bottomRight",
@@ -2910,34 +2883,34 @@
         {
           "label": "padding-top",
           "prop": "padding-top",
-          "ours": "0px",
+          "ours": "8px",
           "ref": "8px",
-          "status": "≠",
-          "delta": "Δ-8.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "padding-right",
           "prop": "padding-right",
-          "ours": "0px",
+          "ours": "16px",
           "ref": "16px",
-          "status": "≠",
-          "delta": "Δ-16.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "padding-bottom",
           "prop": "padding-bottom",
-          "ours": "0px",
+          "ours": "8px",
           "ref": "8px",
-          "status": "≠",
-          "delta": "Δ-8.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "padding-left",
           "prop": "padding-left",
-          "ours": "0px",
+          "ours": "16px",
           "ref": "16px",
-          "status": "≠",
-          "delta": "Δ-16.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "box width",
@@ -2982,10 +2955,10 @@
         {
           "label": "line-height",
           "prop": "line-height",
-          "ours": "normal",
+          "ours": "24px",
           "ref": "24px",
-          "status": "≠",
-          "delta": "normal vs 24px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "letter-spacing",
@@ -3054,16 +3027,16 @@
             }
           },
           "radius": {
-            "topLeft": "0px",
-            "topRight": "0px",
+            "topLeft": "4px",
+            "topRight": "4px",
             "bottomRight": "0px",
             "bottomLeft": "0px"
           },
           "padding": {
-            "top": "0px",
-            "right": "0px",
-            "bottom": "0px",
-            "left": "0px"
+            "top": "8px",
+            "right": "16px",
+            "bottom": "8px",
+            "left": "16px"
           },
           "box": {
             "width": 320,
@@ -3073,7 +3046,7 @@
             "fontFamily": "Marianne",
             "fontSize": "16px",
             "fontWeight": "400",
-            "lineHeight": "normal",
+            "lineHeight": "24px",
             "letterSpacing": "normal",
             "textTransform": "none",
             "textDecorationLine": "none"
@@ -3522,11 +3495,11 @@
       "notes": [
         "Le contrôle visuel DSFR est dessiné en `::before` sur le label (non mesurable). On compare le LABEL (`.fr-checkbox-group label`) — la typo/couleur réellement peintes."
       ],
-      "fidelity": 87.1,
+      "fidelity": 93.5,
       "counts": {
-        "eq": 26,
-        "close": 1,
-        "diff": 4
+        "eq": 29,
+        "close": 0,
+        "diff": 2
       },
       "rows": [
         {
@@ -3548,7 +3521,7 @@
         {
           "label": "border-top color",
           "prop": "border-top-color",
-          "ours": "rgb(58, 58, 58)",
+          "ours": "rgb(22, 22, 22)",
           "ref": "rgb(22, 22, 22)",
           "status": "=",
           "delta": "bord 0px (invisible)"
@@ -3572,7 +3545,7 @@
         {
           "label": "border-right color",
           "prop": "border-right-color",
-          "ours": "rgb(58, 58, 58)",
+          "ours": "rgb(22, 22, 22)",
           "ref": "rgb(22, 22, 22)",
           "status": "=",
           "delta": "bord 0px (invisible)"
@@ -3596,7 +3569,7 @@
         {
           "label": "border-bottom color",
           "prop": "border-bottom-color",
-          "ours": "rgb(58, 58, 58)",
+          "ours": "rgb(22, 22, 22)",
           "ref": "rgb(22, 22, 22)",
           "status": "=",
           "delta": "bord 0px (invisible)"
@@ -3620,7 +3593,7 @@
         {
           "label": "border-left color",
           "prop": "border-left-color",
-          "ours": "rgb(58, 58, 58)",
+          "ours": "rgb(22, 22, 22)",
           "ref": "rgb(22, 22, 22)",
           "status": "=",
           "delta": "bord 0px (invisible)"
@@ -3692,18 +3665,18 @@
         {
           "label": "box width",
           "prop": "box-width",
-          "ours": "170.8px",
+          "ours": "182.2px",
           "ref": "241px",
           "status": "≠",
-          "delta": "Δ-70.2px"
+          "delta": "Δ-58.8px"
         },
         {
           "label": "box height",
           "prop": "box-height",
-          "ours": "23px",
+          "ours": "24px",
           "ref": "44px",
           "status": "≠",
-          "delta": "Δ-21.0px"
+          "delta": "Δ-20.0px"
         },
         {
           "label": "font-family",
@@ -3716,10 +3689,10 @@
         {
           "label": "font-size",
           "prop": "font-size",
-          "ours": "15px",
+          "ours": "16px",
           "ref": "16px",
-          "status": "~",
-          "delta": "Δ1.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "font-weight",
@@ -3732,10 +3705,10 @@
         {
           "label": "line-height",
           "prop": "line-height",
-          "ours": "normal",
+          "ours": "24px",
           "ref": "24px",
-          "status": "≠",
-          "delta": "normal vs 24px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "letter-spacing",
@@ -3772,10 +3745,10 @@
         {
           "label": "color",
           "prop": "color",
-          "ours": "rgb(58, 58, 58)",
+          "ours": "rgb(22, 22, 22)",
           "ref": "rgb(22, 22, 22)",
-          "status": "≠",
-          "delta": "rgb(58,58,58) vs rgb(22,22,22)"
+          "status": "=",
+          "delta": ""
         }
       ],
       "raw": {
@@ -3785,22 +3758,22 @@
             "top": {
               "width": "0px",
               "style": "none",
-              "color": "rgb(58, 58, 58)"
+              "color": "rgb(22, 22, 22)"
             },
             "right": {
               "width": "0px",
               "style": "none",
-              "color": "rgb(58, 58, 58)"
+              "color": "rgb(22, 22, 22)"
             },
             "bottom": {
               "width": "0px",
               "style": "none",
-              "color": "rgb(58, 58, 58)"
+              "color": "rgb(22, 22, 22)"
             },
             "left": {
               "width": "0px",
               "style": "none",
-              "color": "rgb(58, 58, 58)"
+              "color": "rgb(22, 22, 22)"
             }
           },
           "radius": {
@@ -3816,21 +3789,21 @@
             "left": "0px"
           },
           "box": {
-            "width": 170.78125,
-            "height": 23
+            "width": 182.171875,
+            "height": 24
           },
           "typo": {
             "fontFamily": "Marianne",
-            "fontSize": "15px",
+            "fontSize": "16px",
             "fontWeight": "400",
-            "lineHeight": "normal",
+            "lineHeight": "24px",
             "letterSpacing": "normal",
             "textTransform": "none",
             "textDecorationLine": "none"
           },
           "colors": {
             "backgroundColor": "rgba(0, 0, 0, 0)",
-            "color": "rgb(58, 58, 58)"
+            "color": "rgb(22, 22, 22)"
           }
         },
         "ref": {
@@ -3898,11 +3871,11 @@
       "notes": [
         "Idem checkbox : contrôle en pseudo-élément. On compare le label (`.fr-radio-group label`)."
       ],
-      "fidelity": 87.1,
+      "fidelity": 93.5,
       "counts": {
-        "eq": 25,
-        "close": 2,
-        "diff": 4
+        "eq": 29,
+        "close": 0,
+        "diff": 2
       },
       "rows": [
         {
@@ -3924,7 +3897,7 @@
         {
           "label": "border-top color",
           "prop": "border-top-color",
-          "ours": "rgb(58, 58, 58)",
+          "ours": "rgb(22, 22, 22)",
           "ref": "rgb(22, 22, 22)",
           "status": "=",
           "delta": "bord 0px (invisible)"
@@ -3948,7 +3921,7 @@
         {
           "label": "border-right color",
           "prop": "border-right-color",
-          "ours": "rgb(58, 58, 58)",
+          "ours": "rgb(22, 22, 22)",
           "ref": "rgb(22, 22, 22)",
           "status": "=",
           "delta": "bord 0px (invisible)"
@@ -3972,7 +3945,7 @@
         {
           "label": "border-bottom color",
           "prop": "border-bottom-color",
-          "ours": "rgb(58, 58, 58)",
+          "ours": "rgb(22, 22, 22)",
           "ref": "rgb(22, 22, 22)",
           "status": "=",
           "delta": "bord 0px (invisible)"
@@ -3996,7 +3969,7 @@
         {
           "label": "border-left color",
           "prop": "border-left-color",
-          "ours": "rgb(58, 58, 58)",
+          "ours": "rgb(22, 22, 22)",
           "ref": "rgb(22, 22, 22)",
           "status": "=",
           "delta": "bord 0px (invisible)"
@@ -4068,18 +4041,18 @@
         {
           "label": "box width",
           "prop": "box-width",
-          "ours": "170.8px",
+          "ours": "182.2px",
           "ref": "103.1px",
           "status": "≠",
-          "delta": "Δ67.7px"
+          "delta": "Δ79.1px"
         },
         {
           "label": "box height",
           "prop": "box-height",
-          "ours": "23px",
+          "ours": "24px",
           "ref": "24px",
-          "status": "~",
-          "delta": "Δ1.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "font-family",
@@ -4092,10 +4065,10 @@
         {
           "label": "font-size",
           "prop": "font-size",
-          "ours": "15px",
+          "ours": "16px",
           "ref": "16px",
-          "status": "~",
-          "delta": "Δ1.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "font-weight",
@@ -4108,10 +4081,10 @@
         {
           "label": "line-height",
           "prop": "line-height",
-          "ours": "normal",
+          "ours": "24px",
           "ref": "24px",
-          "status": "≠",
-          "delta": "normal vs 24px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "letter-spacing",
@@ -4148,10 +4121,10 @@
         {
           "label": "color",
           "prop": "color",
-          "ours": "rgb(58, 58, 58)",
+          "ours": "rgb(22, 22, 22)",
           "ref": "rgb(22, 22, 22)",
-          "status": "≠",
-          "delta": "rgb(58,58,58) vs rgb(22,22,22)"
+          "status": "=",
+          "delta": ""
         }
       ],
       "raw": {
@@ -4161,22 +4134,22 @@
             "top": {
               "width": "0px",
               "style": "none",
-              "color": "rgb(58, 58, 58)"
+              "color": "rgb(22, 22, 22)"
             },
             "right": {
               "width": "0px",
               "style": "none",
-              "color": "rgb(58, 58, 58)"
+              "color": "rgb(22, 22, 22)"
             },
             "bottom": {
               "width": "0px",
               "style": "none",
-              "color": "rgb(58, 58, 58)"
+              "color": "rgb(22, 22, 22)"
             },
             "left": {
               "width": "0px",
               "style": "none",
-              "color": "rgb(58, 58, 58)"
+              "color": "rgb(22, 22, 22)"
             }
           },
           "radius": {
@@ -4192,21 +4165,21 @@
             "left": "0px"
           },
           "box": {
-            "width": 170.78125,
-            "height": 23
+            "width": 182.171875,
+            "height": 24
           },
           "typo": {
             "fontFamily": "Marianne",
-            "fontSize": "15px",
+            "fontSize": "16px",
             "fontWeight": "400",
-            "lineHeight": "normal",
+            "lineHeight": "24px",
             "letterSpacing": "normal",
             "textTransform": "none",
             "textDecorationLine": "none"
           },
           "colors": {
             "backgroundColor": "rgba(0, 0, 0, 0)",
-            "color": "rgb(58, 58, 58)"
+            "color": "rgb(22, 22, 22)"
           }
         },
         "ref": {
@@ -4274,11 +4247,11 @@
       "notes": [
         "L'interrupteur DSFR est dessiné en `::before/::after` sur le label. On compare le label (`.fr-toggle__label`) — typo/couleur comparables."
       ],
-      "fidelity": 58.1,
+      "fidelity": 64.5,
       "counts": {
-        "eq": 18,
+        "eq": 20,
         "close": 0,
-        "diff": 13
+        "diff": 11
       },
       "rows": [
         {
@@ -4300,7 +4273,7 @@
         {
           "label": "border-top color",
           "prop": "border-top-color",
-          "ours": "rgb(58, 58, 58)",
+          "ours": "rgb(22, 22, 22)",
           "ref": "rgb(22, 22, 22)",
           "status": "=",
           "delta": "bord 0px (invisible)"
@@ -4324,7 +4297,7 @@
         {
           "label": "border-right color",
           "prop": "border-right-color",
-          "ours": "rgb(58, 58, 58)",
+          "ours": "rgb(22, 22, 22)",
           "ref": "rgb(22, 22, 22)",
           "status": "=",
           "delta": "bord 0px (invisible)"
@@ -4348,7 +4321,7 @@
         {
           "label": "border-bottom color",
           "prop": "border-bottom-color",
-          "ours": "rgb(58, 58, 58)",
+          "ours": "rgb(22, 22, 22)",
           "ref": "rgb(22, 22, 22)",
           "status": "=",
           "delta": "bord 0px (invisible)"
@@ -4372,7 +4345,7 @@
         {
           "label": "border-left color",
           "prop": "border-left-color",
-          "ours": "rgb(58, 58, 58)",
+          "ours": "rgb(22, 22, 22)",
           "ref": "rgb(22, 22, 22)",
           "status": "=",
           "delta": "bord 0px (invisible)"
@@ -4484,10 +4457,10 @@
         {
           "label": "line-height",
           "prop": "line-height",
-          "ours": "normal",
+          "ours": "24px",
           "ref": "24px",
-          "status": "≠",
-          "delta": "normal vs 24px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "letter-spacing",
@@ -4524,10 +4497,10 @@
         {
           "label": "color",
           "prop": "color",
-          "ours": "rgb(58, 58, 58)",
+          "ours": "rgb(22, 22, 22)",
           "ref": "rgb(22, 22, 22)",
-          "status": "≠",
-          "delta": "rgb(58,58,58) vs rgb(22,22,22)"
+          "status": "=",
+          "delta": ""
         }
       ],
       "raw": {
@@ -4537,22 +4510,22 @@
             "top": {
               "width": "0px",
               "style": "none",
-              "color": "rgb(58, 58, 58)"
+              "color": "rgb(22, 22, 22)"
             },
             "right": {
               "width": "0px",
               "style": "none",
-              "color": "rgb(58, 58, 58)"
+              "color": "rgb(22, 22, 22)"
             },
             "bottom": {
               "width": "0px",
               "style": "none",
-              "color": "rgb(58, 58, 58)"
+              "color": "rgb(22, 22, 22)"
             },
             "left": {
               "width": "0px",
               "style": "none",
-              "color": "rgb(58, 58, 58)"
+              "color": "rgb(22, 22, 22)"
             }
           },
           "radius": {
@@ -4575,14 +4548,14 @@
             "fontFamily": "Marianne",
             "fontSize": "16px",
             "fontWeight": "400",
-            "lineHeight": "normal",
+            "lineHeight": "24px",
             "letterSpacing": "normal",
             "textTransform": "none",
             "textDecorationLine": "none"
           },
           "colors": {
             "backgroundColor": "rgb(0, 0, 145)",
-            "color": "rgb(58, 58, 58)"
+            "color": "rgb(22, 22, 22)"
           }
         },
         "ref": {
@@ -11008,11 +10981,11 @@
       "refSelector": ".bx--search-input",
       "refStyled": true,
       "notes": [],
-      "fidelity": 80.6,
+      "fidelity": 96.8,
       "counts": {
-        "eq": 25,
-        "close": 0,
-        "diff": 6
+        "eq": 29,
+        "close": 1,
+        "diff": 1
       },
       "rows": [
         {
@@ -11154,10 +11127,10 @@
         {
           "label": "padding-right",
           "prop": "padding-right",
-          "ours": "0px",
+          "ours": "40px",
           "ref": "40px",
-          "status": "≠",
-          "delta": "Δ-40.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "padding-bottom",
@@ -11170,10 +11143,10 @@
         {
           "label": "padding-left",
           "prop": "padding-left",
-          "ours": "0px",
+          "ours": "40px",
           "ref": "40px",
-          "status": "≠",
-          "delta": "Δ-40.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "box width",
@@ -11202,10 +11175,10 @@
         {
           "label": "font-size",
           "prop": "font-size",
-          "ours": "16px",
+          "ours": "14px",
           "ref": "14px",
-          "status": "≠",
-          "delta": "Δ2.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "font-weight",
@@ -11218,18 +11191,18 @@
         {
           "label": "line-height",
           "prop": "line-height",
-          "ours": "normal",
+          "ours": "18px",
           "ref": "18.0001px",
-          "status": "≠",
-          "delta": "normal vs 18.0001px"
+          "status": "~",
+          "delta": "Δ0.0px"
         },
         {
           "label": "letter-spacing",
           "prop": "letter-spacing",
-          "ours": "normal",
+          "ours": "0.16px",
           "ref": "0.16px",
-          "status": "≠",
-          "delta": "normal vs 0.16px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "text-transform",
@@ -11297,9 +11270,9 @@
           },
           "padding": {
             "top": "0px",
-            "right": "0px",
+            "right": "40px",
             "bottom": "0px",
-            "left": "0px"
+            "left": "40px"
           },
           "box": {
             "width": 320,
@@ -11307,10 +11280,10 @@
           },
           "typo": {
             "fontFamily": "IBM Plex Sans",
-            "fontSize": "16px",
+            "fontSize": "14px",
             "fontWeight": "400",
-            "lineHeight": "normal",
-            "letterSpacing": "normal",
+            "lineHeight": "18px",
+            "letterSpacing": "0.16px",
             "textTransform": "none",
             "textDecorationLine": "none"
           },
@@ -11758,11 +11731,11 @@
       "notes": [
         "Carbon checkbox control is a `::before` on the label. Measuring the label text (`.bx--checkbox-label-text`) — the comparable typography/colour."
       ],
-      "fidelity": 87.1,
+      "fidelity": 90.3,
       "counts": {
-        "eq": 25,
-        "close": 2,
-        "diff": 4
+        "eq": 27,
+        "close": 1,
+        "diff": 3
       },
       "rows": [
         {
@@ -11928,18 +11901,18 @@
         {
           "label": "box width",
           "prop": "box-width",
-          "ours": "123px",
+          "ours": "117.7px",
           "ref": "123.7px",
-          "status": "~",
-          "delta": "Δ0.7px"
+          "status": "≠",
+          "delta": "Δ-6.0px"
         },
         {
           "label": "box height",
           "prop": "box-height",
-          "ours": "19px",
+          "ours": "18px",
           "ref": "21px",
           "status": "≠",
-          "delta": "Δ-2.0px"
+          "delta": "Δ-3.0px"
         },
         {
           "label": "font-family",
@@ -11952,10 +11925,10 @@
         {
           "label": "font-size",
           "prop": "font-size",
-          "ours": "15px",
+          "ours": "14px",
           "ref": "14px",
-          "status": "~",
-          "delta": "Δ1.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "font-weight",
@@ -11968,18 +11941,18 @@
         {
           "label": "line-height",
           "prop": "line-height",
-          "ours": "normal",
+          "ours": "18px",
           "ref": "18.0001px",
-          "status": "≠",
-          "delta": "normal vs 18.0001px"
+          "status": "~",
+          "delta": "Δ0.0px"
         },
         {
           "label": "letter-spacing",
           "prop": "letter-spacing",
-          "ours": "normal",
+          "ours": "0.16px",
           "ref": "0.16px",
-          "status": "≠",
-          "delta": "normal vs 0.16px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "text-transform",
@@ -12052,15 +12025,15 @@
             "left": "0px"
           },
           "box": {
-            "width": 123.03125,
-            "height": 19
+            "width": 117.703125,
+            "height": 18
           },
           "typo": {
             "fontFamily": "IBM Plex Sans",
-            "fontSize": "15px",
+            "fontSize": "14px",
             "fontWeight": "400",
-            "lineHeight": "normal",
-            "letterSpacing": "normal",
+            "lineHeight": "18px",
+            "letterSpacing": "0.16px",
             "textTransform": "none",
             "textDecorationLine": "none"
           },
@@ -12136,8 +12109,8 @@
       ],
       "fidelity": 90.3,
       "counts": {
-        "eq": 26,
-        "close": 2,
+        "eq": 28,
+        "close": 0,
         "diff": 3
       },
       "rows": [
@@ -12304,18 +12277,18 @@
         {
           "label": "box width",
           "prop": "box-width",
-          "ours": "123px",
+          "ours": "117.7px",
           "ref": "55.7px",
           "status": "≠",
-          "delta": "Δ67.3px"
+          "delta": "Δ62.0px"
         },
         {
           "label": "box height",
           "prop": "box-height",
-          "ours": "19px",
+          "ours": "18px",
           "ref": "20px",
-          "status": "~",
-          "delta": "Δ1.0px"
+          "status": "≠",
+          "delta": "Δ-2.0px"
         },
         {
           "label": "font-family",
@@ -12328,10 +12301,10 @@
         {
           "label": "font-size",
           "prop": "font-size",
-          "ours": "15px",
+          "ours": "14px",
           "ref": "14px",
-          "status": "~",
-          "delta": "Δ1.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "font-weight",
@@ -12344,18 +12317,18 @@
         {
           "label": "line-height",
           "prop": "line-height",
-          "ours": "normal",
+          "ours": "18px",
           "ref": "20px",
           "status": "≠",
-          "delta": "normal vs 20px"
+          "delta": "Δ-2.0px"
         },
         {
           "label": "letter-spacing",
           "prop": "letter-spacing",
-          "ours": "normal",
+          "ours": "0.16px",
           "ref": "0.16px",
-          "status": "≠",
-          "delta": "normal vs 0.16px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "text-transform",
@@ -12428,15 +12401,15 @@
             "left": "0px"
           },
           "box": {
-            "width": 123.03125,
-            "height": 19
+            "width": 117.703125,
+            "height": 18
           },
           "typo": {
             "fontFamily": "IBM Plex Sans",
-            "fontSize": "15px",
+            "fontSize": "14px",
             "fontWeight": "400",
-            "lineHeight": "normal",
-            "letterSpacing": "normal",
+            "lineHeight": "18px",
+            "letterSpacing": "0.16px",
             "textTransform": "none",
             "textDecorationLine": "none"
           },
@@ -12508,11 +12481,11 @@
       "refSelector": ".bx--toggle__switch",
       "refStyled": true,
       "notes": [],
-      "fidelity": 51.6,
+      "fidelity": 83.9,
       "counts": {
-        "eq": 16,
+        "eq": 26,
         "close": 0,
-        "diff": 15
+        "diff": 5
       },
       "rows": [
         {
@@ -12534,7 +12507,7 @@
         {
           "label": "border-top color",
           "prop": "border-top-color",
-          "ours": "rgb(22, 22, 22)",
+          "ours": "rgb(82, 82, 82)",
           "ref": "rgb(82, 82, 82)",
           "status": "=",
           "delta": "bord 0px (invisible)"
@@ -12558,7 +12531,7 @@
         {
           "label": "border-right color",
           "prop": "border-right-color",
-          "ours": "rgb(22, 22, 22)",
+          "ours": "rgb(82, 82, 82)",
           "ref": "rgb(82, 82, 82)",
           "status": "=",
           "delta": "bord 0px (invisible)"
@@ -12582,7 +12555,7 @@
         {
           "label": "border-bottom color",
           "prop": "border-bottom-color",
-          "ours": "rgb(22, 22, 22)",
+          "ours": "rgb(82, 82, 82)",
           "ref": "rgb(82, 82, 82)",
           "status": "=",
           "delta": "bord 0px (invisible)"
@@ -12606,7 +12579,7 @@
         {
           "label": "border-left color",
           "prop": "border-left-color",
-          "ours": "rgb(22, 22, 22)",
+          "ours": "rgb(82, 82, 82)",
           "ref": "rgb(82, 82, 82)",
           "status": "=",
           "delta": "bord 0px (invisible)"
@@ -12646,50 +12619,50 @@
         {
           "label": "padding-top",
           "prop": "padding-top",
-          "ours": "2px",
+          "ours": "0px",
           "ref": "0px",
-          "status": "≠",
-          "delta": "Δ2.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "padding-right",
           "prop": "padding-right",
-          "ours": "2px",
+          "ours": "0px",
           "ref": "0px",
-          "status": "≠",
-          "delta": "Δ2.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "padding-bottom",
           "prop": "padding-bottom",
-          "ours": "2px",
+          "ours": "0px",
           "ref": "0px",
-          "status": "≠",
-          "delta": "Δ2.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "padding-left",
           "prop": "padding-left",
-          "ours": "2px",
+          "ours": "0px",
           "ref": "0px",
-          "status": "≠",
-          "delta": "Δ2.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "box width",
           "prop": "box-width",
-          "ours": "36px",
+          "ours": "48px",
           "ref": "48px",
-          "status": "≠",
-          "delta": "Δ-12.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "box height",
           "prop": "box-height",
-          "ours": "20px",
+          "ours": "24px",
           "ref": "24px",
-          "status": "≠",
-          "delta": "Δ-4.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "font-family",
@@ -12702,10 +12675,10 @@
         {
           "label": "font-size",
           "prop": "font-size",
-          "ours": "16px",
+          "ours": "12px",
           "ref": "12px",
-          "status": "≠",
-          "delta": "Δ4.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "font-weight",
@@ -12718,18 +12691,18 @@
         {
           "label": "line-height",
           "prop": "line-height",
-          "ours": "normal",
+          "ours": "16px",
           "ref": "16px",
-          "status": "≠",
-          "delta": "normal vs 16px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "letter-spacing",
           "prop": "letter-spacing",
-          "ours": "normal",
+          "ours": "0.32px",
           "ref": "0.32px",
-          "status": "≠",
-          "delta": "normal vs 0.32px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "text-transform",
@@ -12758,10 +12731,10 @@
         {
           "label": "color",
           "prop": "color",
-          "ours": "rgb(22, 22, 22)",
+          "ours": "rgb(82, 82, 82)",
           "ref": "rgb(82, 82, 82)",
-          "status": "≠",
-          "delta": "rgb(22,22,22) vs rgb(82,82,82)"
+          "status": "=",
+          "delta": ""
         }
       ],
       "raw": {
@@ -12771,22 +12744,22 @@
             "top": {
               "width": "0px",
               "style": "none",
-              "color": "rgb(22, 22, 22)"
+              "color": "rgb(82, 82, 82)"
             },
             "right": {
               "width": "0px",
               "style": "none",
-              "color": "rgb(22, 22, 22)"
+              "color": "rgb(82, 82, 82)"
             },
             "bottom": {
               "width": "0px",
               "style": "none",
-              "color": "rgb(22, 22, 22)"
+              "color": "rgb(82, 82, 82)"
             },
             "left": {
               "width": "0px",
               "style": "none",
-              "color": "rgb(22, 22, 22)"
+              "color": "rgb(82, 82, 82)"
             }
           },
           "radius": {
@@ -12796,27 +12769,27 @@
             "bottomLeft": "999px"
           },
           "padding": {
-            "top": "2px",
-            "right": "2px",
-            "bottom": "2px",
-            "left": "2px"
+            "top": "0px",
+            "right": "0px",
+            "bottom": "0px",
+            "left": "0px"
           },
           "box": {
-            "width": 36,
-            "height": 20
+            "width": 48,
+            "height": 24
           },
           "typo": {
             "fontFamily": "IBM Plex Sans",
-            "fontSize": "16px",
+            "fontSize": "12px",
             "fontWeight": "400",
-            "lineHeight": "normal",
-            "letterSpacing": "normal",
+            "lineHeight": "16px",
+            "letterSpacing": "0.32px",
             "textTransform": "none",
             "textDecorationLine": "none"
           },
           "colors": {
             "backgroundColor": "rgb(15, 98, 254)",
-            "color": "rgb(22, 22, 22)"
+            "color": "rgb(82, 82, 82)"
           }
         },
         "ref": {
