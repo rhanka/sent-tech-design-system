@@ -30,8 +30,15 @@ import { fileURLToPath } from "node:url";
 
 import puppeteer from "puppeteer-core";
 
-import { COMPARE_MANIFEST } from "../../apps/docs/src/lib/compare/manifest.mjs";
+import { getCompareManifest } from "../../apps/docs/src/lib/compare/manifest.mjs";
+import { getReferenceThemes } from "../../apps/docs/src/lib/compare/reference-themes.mjs";
 import { gapKey, manifestHash, mergeRegistry } from "../../apps/docs/src/lib/compare/registry.mjs";
+
+// Charge le manifest et les thèmes de référence avec les overlays privés locaux
+// s'ils existent (fichiers gitignorés — stubs créés par
+// scripts/ensure-compare-local-overlays.mjs avant chaque build).
+const COMPARE_MANIFEST = getCompareManifest({ includeLocal: true });
+const REFERENCE_THEMES = getReferenceThemes({ includeLocal: true });
 import { ANATOMY_VERSION } from "@sentropic/design-system-themes";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -76,7 +83,8 @@ const REF_SELECTOR_NOTE = Object.fromEntries(
   ])
 );
 
-const THEMES = ["dsfr", "carbon"];
+// Déduit dynamiquement depuis REFERENCE_THEMES (inclut les thèmes privés locaux).
+const THEMES = Object.keys(REFERENCE_THEMES);
 
 /** True when an official equivalent exists for (theme, component). */
 function themeHasComponent(theme, component) {

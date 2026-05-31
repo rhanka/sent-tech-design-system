@@ -1,4 +1,6 @@
 // apps/docs/src/lib/compare/manifest.mjs
+// Pour brancher des thèmes privés locaux, voir local-overlays.mjs +
+// scripts/ensure-compare-local-overlays.mjs.
 // Single source of truth for the compare bench + oracle: theme → key →
 // {component, scenario, state, ourSelector, refSelector, refMarkup, lang, note?}.
 // Replaces the duplicated maps in fidelity.mjs and the REF object in
@@ -13,6 +15,8 @@
 // - refMarkup = REF[theme][key] verbatim
 // - lang = dsfr?"fr":"en"
 // - note = REF_SELECTOR_NOTE[theme]?.[key] if present
+
+import { COMPARE_MANIFEST_LOCAL, mergeManifestOverlay } from "./local-overlays.mjs";
 
 export const COMPARE_MANIFEST = {
   dsfr: {
@@ -234,3 +238,15 @@ export const COMPARE_MANIFEST = {
     },
   },
 };
+
+/**
+ * Retourne le manifest de comparaison, optionnellement enrichi de l'overlay
+ * privé local (thèmes gitignorés, ex. Airbus).
+ *
+ * @param {{ includeLocal?: boolean }} [opts]
+ * @returns {Record<string, Record<string, import('./manifest.d.ts').CompareEntry>>}
+ */
+export function getCompareManifest({ includeLocal = false } = {}) {
+  if (!includeLocal) return COMPARE_MANIFEST;
+  return mergeManifestOverlay(COMPARE_MANIFEST, COMPARE_MANIFEST_LOCAL);
+}
