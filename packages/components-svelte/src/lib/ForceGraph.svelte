@@ -54,6 +54,27 @@
      * animates the remainder unless reduced motion is requested.
      */
     iterations?: number;
+    /**
+     * IDs of currently selected nodes. Highlighted visually without
+     * re-running the layout. Defaults to [].
+     */
+    selectedIds?: string[];
+    /**
+     * ID of the node to focus/centre visually (ring highlight). Does not
+     * re-run the layout. Defaults to null.
+     */
+    focusId?: string | null;
+    /**
+     * Called when the user clicks (or presses Space/Enter) a node.
+     * Fires with the node's stable id.
+     */
+    onSelect?: (id: string) => void;
+    /**
+     * Called when the user activates a node (double-click or Enter key while
+     * keyboard-focused). Intended to open a detail panel.
+     * Fires with the node's stable id.
+     */
+    onOpenEntity?: (id: string) => void;
     class?: string;
   };
 
@@ -66,6 +87,10 @@
     nodeRadius = 7,
     showLabels = true,
     iterations = 300,
+    selectedIds = [],
+    focusId = null,
+    onSelect,
+    onOpenEntity,
     class: className
   }: ForceGraphProps = $props();
 
@@ -262,6 +287,21 @@
 
   let hoveredIndex: number | null = $state(null);
 
+  // Fast lookup sets — recomputed only when selectedIds/focusId props change,
+  // never when nodes/edges change.
+  const selectedSet = $derived(new Set<string>(selectedIds));
+
+  // Keyboard handler for a node circle: Space/Enter → onSelect, Enter → onOpenEntity.
+  function handleNodeKeydown(id: string, e: KeyboardEvent) {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      onSelect?.(id);
+    }
+    if (e.key === "Enter") {
+      onOpenEntity?.(id);
+    }
+  }
+
   const classes = () =>
     ["st-forceGraph", prefersReducedMotion ? "st-forceGraph--static" : null, className]
       .filter(Boolean)
@@ -296,18 +336,24 @@
         <g
           class="st-forceGraph__node st-forceGraph__node--{p.tone}"
           class:st-forceGraph__node--dim={hoveredIndex !== null && hoveredIndex !== p.i}
+          class:st-forceGraph__node--selected={selectedSet.has(p.node.id)}
+          class:st-forceGraph__node--focus={focusId === p.node.id}
           transform="translate({p.x} {p.y})"
         >
           <circle
             class="st-forceGraph__dot"
             r={p.r}
             tabindex="0"
-            role="img"
+            role="button"
             aria-label="{p.title}{p.node.group !== undefined ? ` — ${p.node.group}` : ''}"
+            aria-pressed={selectedSet.has(p.node.id)}
             onmouseenter={() => (hoveredIndex = p.i)}
             onmouseleave={() => (hoveredIndex = null)}
             onfocus={() => (hoveredIndex = p.i)}
             onblur={() => (hoveredIndex = null)}
+            onclick={() => onSelect?.(p.node.id)}
+            ondblclick={() => onOpenEntity?.(p.node.id)}
+            onkeydown={(e) => handleNodeKeydown(p.node.id, e)}
           />
           {#if showLabels}
             <text class="st-forceGraph__label" x={p.r + 3} y="0" dominant-baseline="middle">{p.title}</text>
@@ -378,6 +424,21 @@
   .st-forceGraph__dot:focus-visible {
     outline: 2px solid var(--st-semantic-border-interactive);
     outline-offset: 1px;
+  }
+
+  /* Selection highlight: slightly thicker stroke ring, full opacity. */
+  .st-forceGraph__node--selected .st-forceGraph__dot {
+    fill-opacity: 1;
+    stroke: var(--st-semantic-border-interactive, #0f62fe);
+    stroke-width: 2.5;
+  }
+
+  /* Focus (keyboard/programmatic focus): stronger ring + slight scale. */
+  .st-forceGraph__node--focus .st-forceGraph__dot {
+    fill-opacity: 1;
+    stroke: var(--st-semantic-border-interactive, #0f62fe);
+    stroke-width: 3.5;
+    filter: drop-shadow(0 0 4px var(--st-semantic-border-interactive, #0f62fe));
   }
 
   .st-forceGraph__label {
