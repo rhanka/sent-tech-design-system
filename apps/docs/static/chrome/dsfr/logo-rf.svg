@@ -1,0 +1,16 @@
+<!--
+  PLACEHOLDER — Bloc marque DSFR « RÉPUBLIQUE FRANÇAISE »
+  À remplacer par le bloc-marque SVG officiel disponible sur :
+  https://www.systeme-de-design.gouv.fr/outils/logo-et-pictos
+  Dimensions cible : ~80×80px (carré), fond blanc, tricolore + devise.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80" aria-label="République Française">
+  <!-- Tricolore simplifié -->
+  <rect x="0" y="0" width="26" height="80" fill="#002395"/>
+  <rect x="27" y="0" width="26" height="80" fill="#EDEDED"/>
+  <rect x="54" y="0" width="26" height="80" fill="#ED2939"/>
+  <!-- Texte superposé -->
+  <text x="40" y="28" font-family="'Marianne', Arial, sans-serif" font-size="7" font-weight="700" fill="white" text-anchor="middle">LIBERTÉ</text>
+  <text x="40" y="40" font-family="'Marianne', Arial, sans-serif" font-size="7" font-weight="700" fill="white" text-anchor="middle">ÉGALITÉ</text>
+  <text x="40" y="52" font-family="'Marianne', Arial, sans-serif" font-size="7" font-weight="700" fill="white" text-anchor="middle">FRATERNITÉ</text>
+</svg>
