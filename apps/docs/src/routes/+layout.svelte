@@ -1,5 +1,6 @@
 <script lang="ts">
   import { page } from "$app/state";
+  import { browser } from "$app/environment";
   import "../app.css";
   import { ChevronDown, Github, Globe, Menu, Palette, X } from "@lucide/svelte";
   import { Header } from "@sentropic/design-system-svelte";
@@ -21,6 +22,9 @@
     type ComponentNavItem
   } from "$lib/docs-navigation";
   import { locale } from "$lib/locale.svelte";
+  import CompareButton from "$lib/compare/CompareButton.svelte";
+  import CompareTriptych from "$lib/compare/CompareTriptych.svelte";
+
 
   let { children } = $props();
 
@@ -107,6 +111,28 @@
   function isGroupOpen(items: ComponentNavItem[]): boolean {
     return items.some((item) => isComponentActive(item));
   }
+
+  // ── Mode compare (Lot 2) ─────────────────────────────────────────────────
+  // Toute la logique compare est CLIENT-ONLY : les query params ne sont pas
+  // présents au SSR (prerender=true → page canonique sans params).
+  // On utilise browser pour éviter tout accès localStorage/URL au SSR.
+
+  const compareActive = $derived(
+    browser && page.url.searchParams.get("compare") === "1"
+  );
+  const compareThemeId = $derived(
+    browser ? (page.url.searchParams.get("theme") ?? null) : null
+  );
+  const compareScenarioId = $derived(
+    browser ? (page.url.searchParams.get("scenario") ?? null) : null
+  );
+  const compareComponent = $derived(
+    (() => {
+      const match = page.url.pathname.match(/\/components\/([^/]+)/);
+      if (!match) return null;
+      return match[1].charAt(0).toUpperCase() + match[1].slice(1);
+    })()
+  );
 </script>
 
 <svelte:window onclick={(e) => {
@@ -199,6 +225,9 @@
         </div>
       {/if}
     </div>
+
+    <!-- Bouton Compare — client-only, visible ssi thème d'import + page composant -->
+    <CompareButton activeThemeId={activeThemeId} pathname={page.url.pathname} />
 
     <div class="docs-locale-wrapper">
       <button
@@ -386,7 +415,7 @@
         </nav>
       </aside>
 
-      <div class="docs-content-area">
+      <div class="docs-content-area" class:docs-content-area--compare={compareActive}>
         <nav class="docs-breadcrumb" aria-label="Fil d'Ariane">
           <ol>
             {#each breadcrumbs as crumb, index (crumb.href)}
@@ -401,9 +430,30 @@
           </ol>
         </nav>
 
-        <main class="docs-main" id="main-content">
-          {@render children()}
-        </main>
+        {#if compareActive && compareThemeId && compareScenarioId && compareComponent}
+          <!-- Mode compare : triptyque plein-écran sous la breadcrumb.
+               Le panneau (a) rend le contenu normal de la page (notre composant live).
+               Le panneau (b) rend l'iframe officielle CDN (visuelle uniquement).
+               Le panneau (c) = rail de gaps lus du registre JSON. -->
+          <div class="docs-compare-wrap">
+            {#snippet ourLive()}
+              <main class="docs-main docs-main--compare" id="main-content">
+                {@render children()}
+              </main>
+            {/snippet}
+            <CompareTriptych
+              themeId={compareThemeId}
+              scenarioId={compareScenarioId}
+              component={compareComponent}
+              pathname={page.url.pathname}
+              liveSlot={ourLive}
+            />
+          </div>
+        {:else}
+          <main class="docs-main" id="main-content">
+            {@render children()}
+          </main>
+        {/if}
       </div>
     </div>
 
