@@ -20,8 +20,8 @@
     "dist"
   ],
   "dependencies": {
-    "@sentropic/design-system-themes": "0.10.2",
-    "@sentropic/design-system-tokens": "0.10.2"
+    "@sentropic/design-system-themes": "0.10.3",
+    "@sentropic/design-system-tokens": "0.10.3"
   },
   "devDependencies": {
     "typescript": "^5.9.3",
