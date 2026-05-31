@@ -541,10 +541,8 @@ async function run(opts) {
         }
 
         // --- Locate the reference iframe for THIS row ---
-        // Row index = position within the per-theme rendered list (the page
-        // filters Badge/Quote/Highlight to DSFR only, so indices differ).
-        const rowIdx = themeComponents.indexOf(component);
-        const frame = await locateRefFrame(page, scope, rowIdx);
+        // Located by data-compare-* attributes (fixes --component indexing bug, C6).
+        const frame = await locateRefFrame(page, theme, component);
         if (!frame) {
           entry.notes.push("reference iframe for this row not found");
           warnings.push(`[${theme}/${component}] ref iframe missing`);
@@ -580,20 +578,17 @@ async function run(opts) {
   return { results, warnings, useStatic };
 }
 
-/** Find the contentFrame of the .cmp-cell--ref iframe inside the right row. */
-async function locateRefFrame(page, scope, idx) {
-  // `idx` = the row's position within the per-theme rendered list.
+/** Find the contentFrame of the ref iframe in the row tagged for (theme, component). */
+async function locateRefFrame(page, theme, component) {
   const handle = await page.evaluateHandle(
-    (scopeSel, rowIdx) => {
-      const section = document.querySelector(scopeSel);
-      if (!section) return null;
-      const rows = section.querySelectorAll(".cmp-row");
-      const row = rows[rowIdx];
-      if (!row) return null;
-      return row.querySelector(".cmp-cell--ref iframe.cmp-frame");
+    (t, c) => {
+      const row = document.querySelector(
+        `.cmp-row[data-compare-theme="${t}"][data-compare-component="${c}"]`
+      );
+      return row ? row.querySelector(".cmp-cell--ref iframe.cmp-frame") : null;
     },
-    scope,
-    idx
+    theme,
+    component
   );
   const el = handle.asElement();
   if (!el) {
