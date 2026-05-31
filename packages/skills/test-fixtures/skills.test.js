@@ -4,7 +4,7 @@ import { execFileSync, spawnSync } from "node:child_process";
 import { existsSync, readFileSync, writeFileSync, rmSync, mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { audit } from "../dist/index.js";
+import { audit, defaultRules } from "../dist/index.js";
 
 test("audit inline html successfully", async () => {
   const report = await audit({
@@ -312,4 +312,68 @@ test("rule underline-hardcoded-border: champ avec border-bottom en dur → findi
 });
 test("rule underline-hardcoded-border: champ avec box-shadow inset → pas de finding", async () => {
   assert.ok(!(await ruleIds('<input style="box-shadow:inset 0 -2px #161616">')).includes("underline-hardcoded-border"));
+});
+
+test("ruleset WP8: 15 règles actives avec traçabilité WP7", () => {
+  assert.strictEqual(defaultRules.length, 15);
+  for (const rule of defaultRules) {
+    assert.ok(rule.principle, `${rule.id} should expose a design principle`);
+    assert.ok(rule.wp7Finding, `${rule.id} should expose its WP7 finding source`);
+  }
+});
+
+test("rule cramped-padding: surface avec padding trop faible → finding", async () => {
+  assert.ok((await ruleIds('<section class="docs-panel" style="padding:4px"><p>Dense</p></section>')).includes("cramped-padding"));
+});
+test("rule cramped-padding: padding tokenisé → pas de finding", async () => {
+  assert.ok(!(await ruleIds('<section class="docs-panel" style="padding:var(--st-foundation-spacing-4)"><p>OK</p></section>')).includes("cramped-padding"));
+});
+
+test("rule motion-subtle: transition sans reduced-motion → finding", async () => {
+  assert.ok((await ruleIds("<style>.btn{transition:all 250ms ease}</style><button class='btn'>OK</button>")).includes("motion-subtle"));
+});
+test("rule motion-subtle: transition tokenisée et reduced-motion aware → pas de finding", async () => {
+  const html = "<style>.btn{transition:opacity var(--st-motion-duration-fast) ease}@media (prefers-reduced-motion: reduce){.btn{transition:none}}</style><button class='btn'>OK</button>";
+  assert.ok(!(await ruleIds(html)).includes("motion-subtle"));
+});
+
+test("rule padding-scale-token: spacing hors grille 4px → finding", async () => {
+  assert.ok((await ruleIds("<style>.box{padding:5px;margin:7px;gap:6px}</style><div class='box'>x</div>")).includes("padding-scale-token"));
+});
+test("rule padding-scale-token: spacing tokenisé ou sur grille → pas de finding", async () => {
+  assert.ok(!(await ruleIds("<style>.box{padding:var(--st-foundation-spacing-4);margin:8px;gap:12px}</style><div class='box'>x</div>")).includes("padding-scale-token"));
+});
+
+test("rule rail-vs-radius-consistency: rail arrondi → finding", async () => {
+  assert.ok((await ruleIds('<aside class="docs-rail" style="border-radius:12px"><a href="#">Item</a></aside>')).includes("rail-vs-radius-consistency"));
+});
+test("rule rail-vs-radius-consistency: rail carré → pas de finding", async () => {
+  assert.ok(!(await ruleIds('<aside class="docs-rail" style="border-radius:0"><a href="#">Item</a></aside>')).includes("rail-vs-radius-consistency"));
+});
+
+test("rule grid-variance: grille de cartes uniforme et répétitive → finding", async () => {
+  const cards = Array.from({ length: 6 }, (_, i) => `<article class="card">Card ${i}</article>`).join("");
+  const html = `<style>.cards{display:grid;grid-template-columns:repeat(3,1fr)}</style><div class="cards">${cards}</div>`;
+  assert.ok((await ruleIds(html)).includes("grid-variance"));
+});
+test("rule grid-variance: grille tokenisée → pas de finding", async () => {
+  const cards = Array.from({ length: 6 }, (_, i) => `<article class="card">Card ${i}</article>`).join("");
+  const html = `<style>.cards{display:grid;grid-template-columns:var(--st-layout-card-grid)}</style><div class="cards">${cards}</div>`;
+  assert.ok(!(await ruleIds(html)).includes("grid-variance"));
+});
+
+test("rule contrast-token-pair: paire foreground/background hex à faible contraste → finding", async () => {
+  assert.ok((await ruleIds('<div style="color:#777777;background:#888888">Low contrast</div>')).includes("contrast-token-pair"));
+});
+test("rule contrast-token-pair: paire tokenisée → pas de finding", async () => {
+  const html = '<div style="color:var(--st-semantic-text-primary);background:var(--st-semantic-surface-default)">OK</div>';
+  assert.ok(!(await ruleIds(html)).includes("contrast-token-pair"));
+});
+
+test("rule typography-scale-token: taille typographique hors échelle → finding", async () => {
+  assert.ok((await ruleIds("<style>.copy{font-size:15px;line-height:17px}</style><p class='copy'>x</p>")).includes("typography-scale-token"));
+});
+test("rule typography-scale-token: taille tokenisée ou palier autorisé → pas de finding", async () => {
+  const html = "<style>.copy{font-size:var(--st-typography-body-size);line-height:24px}</style><p class='copy'>x</p>";
+  assert.ok(!(await ruleIds(html)).includes("typography-scale-token"));
 });

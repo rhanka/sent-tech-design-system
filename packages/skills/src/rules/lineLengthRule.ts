@@ -10,6 +10,8 @@ function hasNoLineLengthCap(element: Element): boolean {
 export const lineLengthRule: Rule = {
   id: "line-length-cap",
   description: "Les blocs de texte sans borne de largeur peuvent créer des lignes trop longues.",
+  principle: "design align --typo",
+  wp7Finding: "P0.4 longueur de ligne trop élevée",
   severity: "medium",
   evaluate(context: RuleContext): Finding[] {
     const findings: Finding[] = [];

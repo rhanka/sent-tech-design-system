@@ -44,6 +44,8 @@ export const underlineBorderRule: Rule = {
   id: "underline-hardcoded-border",
   description:
     "Signale un champ qui dessine son filet bas via un border-bottom en dur au lieu d'un box-shadow inset.",
+  principle: "design align --spacing",
+  wp7Finding: "P1.5 tailles d'espace bruitées / alignement par bord",
   severity: "low",
   evaluate(context: RuleContext): Finding[] {
     const findings: Finding[] = [];

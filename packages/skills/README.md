@@ -51,6 +51,14 @@ Ou `kind: "url"` / `kind: "html"` pour un bloc HTML brut.
 - `line-length-cap` — signale les blocs de texte denses sans borne de largeur explicite.
 - `touch-target-44` — cible minimale interactive `<44px` sur éléments interactifs en inline style.
 - `heading-hierarchy` — signale les sauts de niveaux de titres qui cassent la structure de page.
+- `underline-hardcoded-border` — signale les bordures inférieures hardcodées qui contournent les tokens.
+- `cramped-padding` — signale les surfaces de contenu avec padding non tokenisé inférieur à 8px.
+- `motion-subtle` — exige motion tokenisée et garde `prefers-reduced-motion`.
+- `padding-scale-token` — signale `padding`/`margin`/`gap` hors grille 4px lorsqu'ils ne sont pas tokenisés.
+- `rail-vs-radius-consistency` — évite de mélanger identité de rail latéral et surface arrondie.
+- `grid-variance` — détecte les grilles de cartes répétitives sans variance ni token de layout.
+- `contrast-token-pair` — calcule les paires texte/fond hex et signale les contrastes insuffisants.
+- `typography-scale-token` — signale `font-size`/`line-height` hors échelle lorsqu'ils ne sont pas tokenisés.
 
 ## Architecture
 
@@ -60,5 +68,5 @@ Ou `kind: "url"` / `kind: "html"` pour un bloc HTML brut.
 
 ## Notes
 
-- Cette version est une première base de parité fonctionnelle ; l’enrichissement de règles (`~10-15` au départ,
-  puis ~`30-35`) est géré via WP7/8.
+- Cette version expose 15 règles déterministes, chacune reliée à un principe `design` et à un finding WP7.
+  L’enrichissement vers ~`30-35` règles reste géré via WP7/8.
