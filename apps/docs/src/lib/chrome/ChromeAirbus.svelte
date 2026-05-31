@@ -1,17 +1,14 @@
 <!--
   Chrome documentaire Airbus Design System
-  Placeholder propre — forme à affiner avec le kit de référence Codex (branche codex-airbus-full).
-  Structure : header fond blanc (#fff), logo Airbus gauche (SVG placeholder), titre, actions droite.
+  Header : fond NAVY (#00205b), logo Airbus blanc + séparateur + titre app | tabs actif accent-haut | icônes | bouton Contact.
   Sidebar : items simples, item actif surbrillance bleu Airbus + barre accent.
-  Typo : Airbus utilise une typo propriétaire ; Arial/sans-serif en fallback.
-
-  POINT DE REMPLACEMENT LOGO : /chrome/airbus/logo.svg
-  (à remplacer par le SVG officiel Airbus une fois le kit livré par Codex)
+  Typo : Arial/Helvetica Neue (fallback typo propriétaire Airbus).
+  Logo : /chrome/airbus/logo-white.svg (wordmark Airbus blanc, copie privée locale).
 -->
 <script lang="ts">
   import type { Snippet } from "svelte";
   import { page } from "$app/state";
-  import { ChevronDown, Github } from "@lucide/svelte";
+  import { ChevronDown } from "@lucide/svelte";
   import {
     DOCS_FOUNDATION_NAV,
     DOCS_TOP_NAV,
@@ -70,54 +67,69 @@
 </script>
 
 <div class="abus-shell">
-  <!-- ── HEADER Airbus ── -->
+  <!-- ── HEADER Airbus (fond NAVY, conforme à la référence utilisateur) ── -->
   <header class="abus-header" aria-label="Airbus Design System">
     <div class="abus-header__inner">
-      <div class="abus-header__leading">
+
+      <!-- Gauche : logo blanc + séparateur + App Name -->
+      <div class="abus-header__brand-group">
         <a class="abus-header__brand" href="/" aria-label="Airbus Design System accueil">
-          <!--
-            LOGO Airbus — POINT DE REMPLACEMENT
-            Remplacer par : <img src="/chrome/airbus/logo.svg" alt="" aria-hidden="true" height="32" />
-            une fois le SVG officiel Airbus fourni par le kit Codex (branche codex-airbus-full).
-          -->
-          <span class="abus-logo-placeholder" aria-hidden="true">
-            <svg viewBox="0 0 48 20" width="48" height="20" fill="none" aria-hidden="true">
-              <!-- Silhouette avion Airbus stylisée -->
-              <path d="M2 14 L14 4 L26 14 L22 14 L14 7 L6 14 Z" fill="#00205B"/>
-              <path d="M8 14 L8 18 L11 16 Z" fill="#00205B"/>
-              <path d="M17 14 L17 18 L20 16 Z" fill="#00205B"/>
-            </svg>
-          </span>
-          <span class="abus-brand-text">
-            <span class="abus-brand-name">AIRBUS</span>
-            <span class="abus-brand-sub">Design System</span>
-          </span>
+          <!-- Logo Airbus wordmark blanc (SVG privé, non versionné Git) -->
+          <img
+            src="/chrome/airbus/logo-white.svg"
+            alt="Airbus"
+            class="abus-header__logo"
+            height="28"
+            aria-hidden="true"
+          />
         </a>
+        <!-- Séparateur vertical fin -->
+        <span class="abus-header__sep" aria-hidden="true"></span>
+        <!-- Titre application -->
+        <span class="abus-header__app-name">Design System</span>
       </div>
 
-      <nav class="abus-header__nav" aria-label="Navigation principale">
+      <!-- Centre : onglets de navigation (Tab Label), actif = fond bleu clair + accent haut) -->
+      <nav class="abus-header__tabs" aria-label="Navigation principale">
         {#each DOCS_TOP_NAV.slice(0, 5) as item (item.href)}
           <a
-            class="abus-header__nav-link"
+            class="abus-header__tab"
             href={item.href}
             aria-current={isActive(item.href) ? "page" : undefined}
           >{item.label}</a>
         {/each}
       </nav>
 
+      <!-- Droite : icônes + bouton Contact + switchers docs -->
       <div class="abus-header__actions">
+        <!-- Icône Recherche -->
+        <button type="button" class="abus-header__icon-btn" aria-label="Rechercher">
+          <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <circle cx="8.5" cy="8.5" r="5.5"/>
+            <line x1="13" y1="13" x2="18" y2="18"/>
+          </svg>
+        </button>
+        <!-- Icône Notifications -->
+        <button type="button" class="abus-header__icon-btn" aria-label="Notifications">
+          <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <path d="M10 2a6 6 0 0 1 6 6c0 3.5 1.5 5 1.5 5h-15s1.5-1.5 1.5-5a6 6 0 0 1 6-6Z"/>
+            <path d="M8.5 17.5a1.5 1.5 0 0 0 3 0"/>
+          </svg>
+        </button>
+        <!-- Icône Aide -->
+        <button type="button" class="abus-header__icon-btn" aria-label="Aide">
+          <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <circle cx="10" cy="10" r="8"/>
+            <path d="M7.5 7.5a2.5 2.5 0 0 1 5 0c0 2-2.5 2.5-2.5 4"/>
+            <circle cx="10" cy="15" r="0.7" fill="currentColor"/>
+          </svg>
+        </button>
+        <!-- Bouton Contact (blanc, texte navy) -->
+        <button type="button" class="abus-header__contact-btn">Contact</button>
+        <!-- Switchers thème / langue (outils docs) -->
         {@render compareButton()}
         {@render themeSwitcher()}
         {@render localeSwitcher()}
-        <a
-          class="abus-header__github"
-          href="https://github.com/rhanka/sent-tech-design-system"
-          target="_blank"
-          rel="noreferrer"
-          aria-label="GitHub"
-        >
-          <Github size={16} strokeWidth={2} aria-hidden="true" />
-        </a>
         <!-- Burger mobile -->
         <button
           type="button"
@@ -210,6 +222,9 @@
   /* ── Variables Airbus ── */
   .abus-shell {
     --abus-navy: #00205B;
+    --abus-navy-hover: #003080;
+    --abus-tab-active-bg: #1a3a7a; /* bleu légèrement plus clair que navy pour onglet actif */
+    --abus-tab-accent: #4d9cf4; /* accent bleu clair sur le dessus de l'onglet actif */
     --abus-blue: #1565C0;
     --abus-blue-light: #E3F2FD;
     --abus-blue-accent: #1E88E5;
@@ -221,152 +236,211 @@
     --abus-white: #ffffff;
     --abus-sidebar-width: 16.5rem;
     --abus-header-height: 4rem;
-    font-family: 'Arial', 'Helvetica Neue', sans-serif; /* POINT DE REMPLACEMENT : typo propriétaire Airbus */
+    font-family: 'Arial', 'Helvetica Neue', sans-serif;
     background: var(--abus-gray-100);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
   }
 
-  /* ── Header Airbus ── */
+  /* ── Header Airbus (fond NAVY) ── */
   .abus-header {
-    background: var(--abus-white);
-    border-bottom: 2px solid var(--abus-navy);
+    background: var(--abus-navy);
     position: sticky;
     top: 0;
     z-index: 60;
   }
 
   .abus-header__inner {
-    align-items: center;
+    align-items: stretch;
     display: flex;
-    gap: 1rem;
+    gap: 0;
     height: var(--abus-header-height);
     margin: 0 auto;
     max-width: 90rem;
-    padding: 0 1.5rem;
+    padding: 0 1.25rem;
   }
 
-  .abus-header__leading {
+  /* Groupe gauche : logo + séparateur + app name */
+  .abus-header__brand-group {
+    align-items: center;
+    display: flex;
     flex: 0 0 auto;
+    gap: 0;
+    padding-right: 1.5rem;
   }
 
   .abus-header__brand {
     align-items: center;
-    color: var(--abus-navy);
     display: inline-flex;
-    gap: 0.75rem;
     text-decoration: none;
     transition: opacity 120ms ease;
   }
 
   .abus-header__brand:hover {
-    opacity: 0.8;
+    opacity: 0.85;
     text-decoration: none;
   }
 
-  .abus-logo-placeholder {
-    align-items: center;
-    display: inline-flex;
+  .abus-header__logo {
+    display: block;
+    height: 1.75rem; /* ~28px */
+    width: auto;
   }
 
-  .abus-brand-text {
-    display: flex;
-    flex-direction: column;
-    gap: 0.1rem;
+  /* Séparateur vertical fin entre logo et app name */
+  .abus-header__sep {
+    background: rgba(255, 255, 255, 0.3);
+    display: block;
+    height: 1.5rem;
+    margin: 0 0.875rem;
+    width: 1px;
   }
 
-  .abus-brand-name {
-    color: var(--abus-navy);
-    font-size: 1rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    line-height: 1;
-  }
-
-  .abus-brand-sub {
-    color: var(--abus-gray-500);
-    font-size: 0.72rem;
+  .abus-header__app-name {
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 0.875rem;
     font-weight: 400;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
   }
 
-  .abus-header__nav {
-    align-items: center;
+  /* ── Tabs de navigation (centre) ── */
+  .abus-header__tabs {
+    align-items: stretch;
     display: flex;
     flex: 1 1 auto;
     gap: 0;
-    height: 100%;
     overflow: hidden;
   }
 
-  .abus-header__nav-link {
+  .abus-header__tab {
     align-items: center;
-    border-bottom: 3px solid transparent;
-    color: var(--abus-text);
+    border-top: 3px solid transparent; /* accent en HAUT pour l'état actif */
+    color: rgba(255, 255, 255, 0.8);
     display: inline-flex;
     font-size: 0.875rem;
     font-weight: 500;
     height: 100%;
     padding: 0 1rem;
     text-decoration: none;
-    transition: border-color 120ms ease, color 120ms ease, background 120ms ease;
+    transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
     white-space: nowrap;
   }
 
-  .abus-header__nav-link:hover,
-  .abus-header__nav-link:focus-visible {
-    background: var(--abus-gray-100);
-    color: var(--abus-navy);
+  .abus-header__tab:hover,
+  .abus-header__tab:focus-visible {
+    background: var(--abus-navy-hover);
+    color: var(--abus-white);
     text-decoration: none;
+    outline: none;
   }
 
-  .abus-header__nav-link[aria-current="page"] {
-    border-bottom-color: var(--abus-navy);
-    color: var(--abus-navy);
-    font-weight: 700;
+  /* Onglet actif : fond bleu légèrement plus clair + accent TOP bleu vif */
+  .abus-header__tab[aria-current="page"] {
+    background: var(--abus-tab-active-bg);
+    border-top-color: var(--abus-tab-accent);
+    color: var(--abus-white);
+    font-weight: 600;
   }
 
+  /* ── Actions droite ── */
   .abus-header__actions {
     align-items: center;
     display: flex;
     flex: 0 0 auto;
-    gap: 0.5rem;
+    gap: 0.25rem;
+    padding-left: 0.75rem;
   }
 
-  /* Overrides switchers dans header Airbus */
-  .abus-header__actions :global(.docs-header-control) {
+  /* Icônes loupe / cloche / aide */
+  .abus-header__icon-btn {
+    align-items: center;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    display: inline-flex;
+    height: 2.25rem;
+    justify-content: center;
+    padding: 0;
+    transition: background 120ms ease, color 120ms ease;
+    width: 2.25rem;
+  }
+
+  .abus-header__icon-btn:hover,
+  .abus-header__icon-btn:focus-visible {
+    background: rgba(255, 255, 255, 0.12);
+    color: var(--abus-white);
+    outline: none;
+  }
+
+  /* Bouton Contact — fond blanc, texte navy */
+  .abus-header__contact-btn {
     background: var(--abus-white);
-    border-color: var(--abus-border);
-    color: var(--abus-gray-500);
+    border: none;
+    border-radius: 3px;
+    color: var(--abus-navy);
+    cursor: pointer;
     font-family: inherit;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    height: 2rem;
+    padding: 0 0.875rem;
+    transition: background 120ms ease, color 120ms ease;
+    white-space: nowrap;
+  }
+
+  .abus-header__contact-btn:hover,
+  .abus-header__contact-btn:focus-visible {
+    background: #e8edf5;
+    outline: none;
+  }
+
+  /* Overrides switchers thème/langue dans header NAVY Airbus */
+  .abus-header__actions :global(.docs-theme-wrapper),
+  .abus-header__actions :global(.docs-locale-wrapper) {
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+  .abus-header__actions :global(.docs-header-control) {
+    background: transparent;
+    border-color: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    color: rgba(255, 255, 255, 0.8);
+    font-family: inherit;
+    font-size: 0.8125rem;
   }
 
   .abus-header__actions :global(.docs-header-control:hover),
   .abus-header__actions :global(.docs-header-control[aria-expanded="true"]) {
-    background: var(--abus-gray-100);
-    border-color: var(--abus-navy);
-    color: var(--abus-navy);
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: var(--abus-white);
     box-shadow: none;
   }
 
-  .abus-header__github {
-    align-items: center;
-    background: transparent;
-    border: 1px solid var(--abus-border);
+  .abus-header__actions :global(.docs-locale-menu) {
+    background: #0a2d6e;
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 4px;
-    color: var(--abus-gray-500);
-    display: inline-flex;
-    height: 2rem;
-    justify-content: center;
-    text-decoration: none;
-    transition: border-color 120ms ease, color 120ms ease;
-    width: 2rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
   }
 
-  .abus-header__github:hover {
-    border-color: var(--abus-navy);
-    color: var(--abus-navy);
+  .abus-header__actions :global(.docs-locale-item) {
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .abus-header__actions :global(.docs-locale-item:hover) {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--abus-white);
+  }
+
+  .abus-header__actions :global(.docs-locale-item.active) {
+    color: var(--abus-white);
   }
 
   .abus-header__burger {
@@ -374,7 +448,7 @@
     align-items: center;
     background: transparent;
     border: none;
-    color: var(--abus-navy);
+    color: var(--abus-white);
     cursor: pointer;
     justify-content: center;
     min-height: 2.75rem;
@@ -544,7 +618,12 @@
       display: none;
     }
 
-    .abus-header__nav {
+    .abus-header__tabs {
+      display: none;
+    }
+
+    .abus-header__icon-btn,
+    .abus-header__contact-btn {
       display: none;
     }
 
@@ -556,7 +635,9 @@
 
   /* ── Reduced motion ── */
   @media (prefers-reduced-motion: reduce) {
-    .abus-header__nav-link,
+    .abus-header__tab,
+    .abus-header__icon-btn,
+    .abus-header__contact-btn,
     .abus-side-link,
     .abus-side-group :global(.abus-side-group__icon) {
       transition: none;

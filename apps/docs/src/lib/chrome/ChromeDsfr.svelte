@@ -80,24 +80,15 @@
         <!-- Gauche : logo RF + titre -->
         <div class="dsfr-header__brand">
           <a href="/" class="dsfr-header__brand-link" aria-label="Retour à l'accueil">
-            <!--
-              LOGO DSFR « RÉPUBLIQUE FRANÇAISE »
-              POINT DE REMPLACEMENT : remplacer ce bloc par
-              <img src="/chrome/dsfr/logo-rf.svg" alt="République Française" height="80" />
-              une fois le bloc-marque SVG officiel fourni.
-            -->
-            <div class="dsfr-logo-placeholder" aria-hidden="true">
-              <div class="dsfr-logo-tricolor">
-                <span class="dsfr-logo-blue"></span>
-                <span class="dsfr-logo-white"></span>
-                <span class="dsfr-logo-red"></span>
-              </div>
-              <div class="dsfr-logo-text">
-                <span class="dsfr-logo-line dsfr-logo-line--top">LIBERTÉ</span>
-                <span class="dsfr-logo-line dsfr-logo-line--mid">ÉGALITÉ</span>
-                <span class="dsfr-logo-line dsfr-logo-line--bot">FRATERNITÉ</span>
-              </div>
-            </div>
+            <!-- LOGO DSFR réel — bloc marque République Française (Marianne tricolore) -->
+            <img
+              src="/chrome/dsfr/logo-rf.svg"
+              alt="République Française"
+              class="dsfr-logo-img"
+              width="96"
+              height="116"
+              aria-hidden="true"
+            />
             <div class="dsfr-brand-text">
               <span class="dsfr-brand-republic">RÉPUBLIQUE<br/>FRANÇAISE</span>
               <span class="dsfr-brand-title">Système de Design<br/>de l'État</span>
@@ -159,19 +150,27 @@
       </div>
     </header>
 
-    <!-- Nav horizontale DSFR (onglets soulignés) -->
+    <!-- Nav horizontale DSFR (onglets soulignés, alignée sur le conteneur) -->
     <nav class="dsfr-nav" aria-label="Navigation principale">
-      <ul class="dsfr-nav__list">
-        {#each DOCS_TOP_NAV as item (item.href)}
-          <li class="dsfr-nav__item">
-            <a
-              class="dsfr-nav__link"
-              href={item.href}
-              aria-current={isActive(item.href) ? "page" : undefined}
-            >{item.label}</a>
-          </li>
-        {/each}
-      </ul>
+      <div class="dsfr-nav__inner">
+        <ul class="dsfr-nav__list">
+          {#each DOCS_TOP_NAV as item (item.href)}
+            <li class="dsfr-nav__item">
+              <a
+                class="dsfr-nav__link"
+                href={item.href}
+                aria-current={isActive(item.href) ? "page" : undefined}
+              >
+                {item.label}
+                <!-- Chevron indiquant un sous-menu déroulant (tous les items top-nav en ont un) -->
+                <svg class="dsfr-nav__chevron" viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                  <polyline points="2,4 6,8 10,4"/>
+                </svg>
+              </a>
+            </li>
+          {/each}
+        </ul>
+      </div>
     </nav>
   </div>
 
@@ -303,53 +302,12 @@
     text-decoration: none;
   }
 
-  /* Bloc logo tricolore placeholder */
-  .dsfr-logo-placeholder {
-    display: flex;
-    flex-direction: column;
-    height: 4rem;
-    overflow: hidden;
-    position: relative;
-    width: 3.5rem;
-  }
-
-  .dsfr-logo-tricolor {
-    display: flex;
-    height: 100%;
-    width: 100%;
-  }
-
-  .dsfr-logo-blue,
-  .dsfr-logo-white,
-  .dsfr-logo-red {
-    flex: 1;
-  }
-
-  .dsfr-logo-blue { background: #002395; }
-  .dsfr-logo-white { background: #ededed; border-left: 1px solid #ccc; border-right: 1px solid #ccc; }
-  .dsfr-logo-red { background: #ed2939; }
-
-  .dsfr-logo-text {
-    bottom: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
-    justify-content: center;
-    left: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-    z-index: 1;
-  }
-
-  .dsfr-logo-line {
+  /* Logo DSFR réel (bloc marque Marianne SVG officiel) */
+  .dsfr-logo-img {
     display: block;
-    font-size: 0.38rem;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-    text-align: center;
-    color: white;
-    text-shadow: 0 0 2px rgba(0,0,0,0.8);
+    flex: 0 0 auto;
+    height: 5rem; /* ~80px — taille bureau conforme à la spec DSFR */
+    width: auto;
   }
 
   .dsfr-brand-text {
@@ -514,15 +472,21 @@
     box-shadow: 0 1px 4px rgb(0 0 145 / 0.06);
   }
 
+  /* Conteneur interne aligné sur le même conteneur que le header (max 78rem, padding latéral) */
+  .dsfr-nav__inner {
+    margin: 0 auto;
+    max-width: 78rem;
+    overflow-x: auto;
+    padding: 0 1.5rem;
+  }
+
   .dsfr-nav__list {
     align-items: center;
     display: flex;
     gap: 0;
     list-style: none;
     margin: 0;
-    max-width: 78rem;
-    overflow-x: auto;
-    padding: 0 1.5rem;
+    padding: 0;
   }
 
   .dsfr-nav__item {
@@ -536,6 +500,7 @@
     display: inline-flex;
     font-size: 0.9375rem;
     font-weight: 500;
+    gap: 0.3rem;
     min-height: 3rem;
     padding: 0 1rem;
     text-decoration: none;
@@ -553,6 +518,16 @@
     border-bottom-color: var(--dsfr-blue);
     color: var(--dsfr-blue);
     font-weight: 700;
+  }
+
+  .dsfr-nav__chevron {
+    flex: 0 0 auto;
+    opacity: 0.6;
+  }
+
+  .dsfr-nav__link[aria-current="page"] .dsfr-nav__chevron {
+    color: var(--dsfr-blue);
+    opacity: 1;
   }
 
   /* ── Body DSFR ── */
