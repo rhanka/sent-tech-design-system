@@ -1,0 +1,13 @@
+<!--
+  PLACEHOLDER — Logo Carbon Design System (IBM)
+  À remplacer par le wordmark SVG officiel Carbon / IBM.
+  Référence : https://carbondesignsystem.com (icône flame + texte "Carbon Design System")
+  Taille cible : hauteur ~28px, texte blanc sur fond noir.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 28" width="200" height="28" aria-label="Carbon Design System">
+  <!-- Flamme Carbon (placeholder géométrique) -->
+  <path d="M4 24 C4 16 10 12 10 6 C14 10 16 16 12 24 Z" fill="white" opacity="0.9"/>
+  <path d="M10 24 C10 18 14 14 13 8 C17 12 18 18 15 24 Z" fill="white" opacity="0.7"/>
+  <!-- Texte -->
+  <text x="22" y="19" font-family="'IBM Plex Sans', Arial, sans-serif" font-size="13" font-weight="400" fill="white" letter-spacing="0.5">Carbon Design System</text>
+</svg>
