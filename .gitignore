@@ -24,3 +24,8 @@ coverage/
 .agents/
 .antigravitycli/
 .claude/
+
+# Overlays privés locaux (thèmes gitignorés, ex. Airbus) — stubs générés auto
+apps/docs/src/lib/compare/*.local.mjs
+apps/docs/src/lib/compare/compare-gaps.local.json
+apps/docs/static/compare-local/**
