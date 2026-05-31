@@ -12,6 +12,22 @@
 
 ---
 
+## Corrections post-relecture (Opus 4.8 — verdict « à ajuster avant dev », 0 bloquant)
+
+Cœur vérifié empiriquement (registry.mjs 12 tests verts, import croisé ESM OK, svelte-check OK, dérivation manifeste fidèle, invariant C5 satisfait). À intégrer :
+
+- **M1 (majeur — finir C8) :** la page `/compare` garde des CDN **non épinglés** (`+page.svelte:149-152`) ; l'oracle mesure ces iframes → le seed `compare-gaps.json` serait produit sur du CSS `latest` flottant et `reference-themes.mjs` resterait orphelin. **Fix : dans Task 5, migrer `refDoc()` de la page (`CDN`/`FONT_LINKS`/`BRAND_FONT`, lignes 149-195/288-297) pour importer depuis `reference-themes.mjs`** (mêmes valeurs, mais épinglées). Rend `reference-themes.mjs` vivant et le seed reproductible. *(La fonte Marianne « notre côté » `MARIANNE_CDN` reste inchangée — c'est notre rendu, pas la référence.)*
+- **Mi1 :** `.cmp-row` est à `+page.svelte:339` (l'élément `{#each … as entry}`), **pas 411** (411 = `.cmp-cell--ref` à l'intérieur). Les `data-compare-*` vont sur la ligne 339.
+- **Mi2 :** la variable de boucle est `entry` → utiliser `entry.key` (pas `e.key`). `theme.id` est correct.
+- **Mi3 :** `npm … run test -- registry` ne filtre PAS (le script a `src` codé en dur → lance les 3 fichiers). Inoffensif. Pour cibler un fichier : `npm --workspace apps/docs exec -- vitest run src/lib/compare/registry`. Sinon accepter que toute la suite `apps/docs` tourne.
+- **Mi4 (finir C8) :** `opts.anatomyVersion/dsVersion/themeVersion` n'existent pas → stamps `null`. **Fix : lire les vraies versions** depuis `apps/docs/package.json` (`dependencies["@sentropic/design-system-themes"]` et `…-theme-{dsfr,carbon}`, comme la page l.55-57) et `ANATOMY_VERSION` depuis le paquet themes ; passer ces valeurs au `stamp` de `mergeRegistry`.
+- **Mi5 :** dans les snippets de vérif, remplacer `node -e "…require('./….json')…"` par `JSON.parse(fs.readFileSync(...))` (repo `type:module`).
+- **Mi6 (invariant pour l'auteur du manifeste) :** `OUR_SELECTOR` est theme-indépendant → pour chaque clé partagée, `ourSelector` DOIT être identique en `dsfr` et `carbon` (la dérivation Task 4 prend `dsfr ?? carbon`). Vrai pour la migration 1:1.
+
+Notes non bloquantes : le test de parité Task 3 ne compare pas au `REF` réel de la page (ne détecte pas un drift jusqu'à la migration page en Lot 2) ; `regressed` couvre aussi les auto-fix oracle (à raffiner si besoin de distinguer le triage humain).
+
+---
+
 ### Task 1: Helpers de registre — fonctions pures (`registry.mjs`)
 
 C'est le cœur du Lot 1 (corrections C1 identité + C5 merge). Pur, sans dépendance, testé en premier.
