@@ -4,6 +4,8 @@ import { createFindingFromElement } from "./utils.js";
 export const headingHierarchyRule: Rule = {
   id: "heading-hierarchy",
   description: "Enforce correct semantic heading hierarchy (H1-H6) and exactly one H1 per page for SEO and a11y.",
+  principle: "design align --a11y",
+  wp7Finding: "P1.1 échelle typographique dense / hiérarchie affaiblie",
   severity: "medium",
   evaluate(context: RuleContext): Finding[] {
     const findings: Finding[] = [];

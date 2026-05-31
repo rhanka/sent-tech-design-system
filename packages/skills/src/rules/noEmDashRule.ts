@@ -9,6 +9,8 @@ function hasForbiddenDash(text: string): boolean {
 export const noEmDashRule: Rule = {
   id: "no-em-dash",
   description: "Interdit l'utilisation d'un em dash (—) dans les copies textuelles.",
+  principle: "design polish --lucid",
+  wp7Finding: "P1.3 em dash en microcopy",
   severity: "high",
   evaluate(context: RuleContext): Finding[] {
     const findings: Finding[] = [];
