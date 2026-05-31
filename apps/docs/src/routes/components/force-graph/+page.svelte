@@ -29,6 +29,26 @@
     { source: "acme", target: "atlas", relation: "owns" },
     { source: "bob", target: "atlas", relation: "contributes_to", weak: true }
   ];
+
+  // --- Démo sélection ---
+  let selectedIds = $state<string[]>([]);
+  let focusId = $state<string | null>(null);
+  let lastOpenedEntity = $state<string | null>(null);
+
+  function handleSelect(id: string) {
+    // Bascule la sélection du nœud cliqué.
+    if (selectedIds.includes(id)) {
+      selectedIds = selectedIds.filter((s) => s !== id);
+      if (focusId === id) focusId = null;
+    } else {
+      selectedIds = [...selectedIds, id];
+      focusId = id;
+    }
+  }
+
+  function handleOpenEntity(id: string) {
+    lastOpenedEntity = id;
+  }
 </script>
 
 <div class="docs-page">
@@ -58,6 +78,48 @@
   </section>
 
   <section class="docs-section">
+    <h2>Sélection de nœuds</h2>
+    <p>
+      Cliquez ou appuyez sur <kbd>Espace</kbd> / <kbd>Entrée</kbd> sur un nœud
+      pour le sélectionner (highlight). Double-clic ou <kbd>Entrée</kbd> active
+      <code>onOpenEntity</code>. La position des nœuds reste stable — la
+      simulation n'est <em>pas</em> relancée.
+    </p>
+    <div class="docs-graph-box">
+      <ForceGraph
+        {nodes}
+        {edges}
+        label="Graphe avec sélection"
+        width={520}
+        height={380}
+        {selectedIds}
+        {focusId}
+        onSelect={handleSelect}
+        onOpenEntity={handleOpenEntity}
+      />
+    </div>
+    <div class="docs-selection-status" aria-live="polite">
+      {#if selectedIds.length === 0}
+        <span class="docs-selection-hint">Aucun nœud sélectionné — cliquez sur un nœud.</span>
+      {:else}
+        <span>
+          <strong>Sélectionné{selectedIds.length > 1 ? 's' : ''} :</strong>
+          {selectedIds.join(', ')}
+        </span>
+        {#if focusId}
+          <span><strong>Focus :</strong> {focusId}</span>
+        {/if}
+        {#if lastOpenedEntity}
+          <span><strong>Entité ouverte :</strong> {lastOpenedEntity}</span>
+        {/if}
+        <button class="docs-selection-reset" onclick={() => { selectedIds = []; focusId = null; lastOpenedEntity = null; }}>
+          Réinitialiser la sélection
+        </button>
+      {/if}
+    </div>
+  </section>
+
+  <section class="docs-section">
     <h2>API du composant</h2>
     <table class="docs-table">
       <thead>
@@ -71,6 +133,10 @@
         <tr><td><code>nodeRadius</code></td><td><code>number</code></td><td><code>7</code></td></tr>
         <tr><td><code>showLabels</code></td><td><code>boolean</code></td><td><code>true</code></td></tr>
         <tr><td><code>iterations</code></td><td><code>number</code></td><td><code>300</code></td></tr>
+        <tr><td><code>selectedIds</code></td><td><code>string[]</code></td><td><code>[]</code></td></tr>
+        <tr><td><code>focusId</code></td><td><code>string | null</code></td><td><code>null</code></td></tr>
+        <tr><td><code>onSelect</code></td><td><code>(id: string) =&gt; void</code></td><td>—</td></tr>
+        <tr><td><code>onOpenEntity</code></td><td><code>(id: string) =&gt; void</code></td><td>—</td></tr>
       </tbody>
     </table>
     <p class="docs-demo-context">
@@ -87,4 +153,29 @@
 
 <style>
   .docs-graph-box { max-width: 36rem; }
+
+  .docs-selection-status {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    font-size: 0.875rem;
+    gap: 0.25rem;
+    margin-top: 0.75rem;
+    min-height: 1.5rem;
+  }
+
+  .docs-selection-hint { color: var(--st-semantic-text-helper, #6f6f6f); }
+
+  .docs-selection-reset {
+    background: none;
+    border: 1px solid var(--st-semantic-border-strong);
+    border-radius: var(--st-radius-sm, 0.25rem);
+    color: var(--st-semantic-text-primary);
+    cursor: pointer;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .docs-selection-reset:hover { background: var(--st-semantic-surface-hover); }
 </style>
