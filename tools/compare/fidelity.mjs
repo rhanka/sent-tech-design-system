@@ -30,6 +30,8 @@ import { fileURLToPath } from "node:url";
 
 import puppeteer from "puppeteer-core";
 
+import { COMPARE_MANIFEST } from "../../apps/docs/src/lib/compare/manifest.mjs";
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = resolve(__dirname, "..", "..");
 const CHROME_PATH = "/usr/bin/google-chrome";
@@ -39,168 +41,38 @@ const COMPARE_URL = `${BASE_URL}/compare`;
 const BUILD_DIR = join(REPO_ROOT, "apps", "docs", "build");
 
 // ---------------------------------------------------------------------------
-// Bench catalogue: component/variant -> our box / reference box, per theme.
-//
-// G5 — coverage widened well beyond the original 7. Each key is a stable id
-// shared with apps/docs/src/routes/compare/+page.svelte (same row order). The
-// page renders one row per key for each theme that has a REAL official
-// equivalent; the CLI only measures (theme, key) pairs that exist on BOTH the
-// page (`hasTheme`) and the REF_SELECTOR map below (no false pairs).
+// Bench catalogue derived from the single manifest (no duplication).
 // ---------------------------------------------------------------------------
-const COMPONENTS = [
-  "Button",
-  "ButtonDisabled",
-  "Input",
-  "InputError",
-  "InputDisabled",
-  "Textarea",
-  "Select",
-  "Search",
-  "Link",
-  "Checkbox",
-  "Radio",
-  "Toggle",
-  "Tag",
-  "Badge",
-  "Alert",
-  "Accordion",
-  "Breadcrumb",
-  "Pagination",
-  "Card",
-  "Tabs",
-  "Quote",
-  "Highlight",
-];
 
-// Per-key list of themes for which an official equivalent exists. Must mirror
-// `ENTRIES[].themes` on the page so the per-theme row order matches exactly.
-const COMPONENT_THEMES = {
-  Badge: ["dsfr"], // Carbon has no dedicated badge (its badge IS bx--tag).
-  Quote: ["dsfr"], // Carbon has no editorial quote component.
-  Highlight: ["dsfr"], // Carbon has no editorial highlight component.
-};
-
-const OUR_SELECTOR = {
-  Button: ".st-button",
-  ButtonDisabled: ".st-button:disabled",
-  Input: ".st-control",
-  // The error/disabled variants set the state on the control itself.
-  InputError: ".st-control[aria-invalid=\"true\"]",
-  InputDisabled: ".st-control:disabled",
-  Textarea: ".st-textarea",
-  Select: ".st-select",
-  // Search field box (the bordered wrapper, not the bare input).
-  Search: ".st-search",
-  Link: ".st-link",
-  // Checkbox/Radio: the visible control is a styled NATIVE input on our side and
-  // a `::before` pseudo on the official side (unmeasurable). We compare the
-  // LABEL text — the typography/colour both sides actually paint.
-  Checkbox: ".st-choice__label",
-  Radio: ".st-choice__label",
-  // Toggle: the switch track is a real element on our side and on Carbon; DSFR
-  // draws it as a `::before/::after` on the label, so for DSFR we measure the
-  // label text (see REF_SELECTOR + note). Track on our side stays the track.
-  Toggle: ".st-toggle__track",
-  Tag: ".st-tag",
-  Badge: ".st-badge",
-  Alert: ".st-alert",
-  // Accordion: the clickable trigger row carries the box/padding/typography.
-  Accordion: ".st-accordion__trigger",
-  // Breadcrumb: the link is the styled, comparable element.
-  Breadcrumb: ".st-breadcrumb a",
-  // Pagination: the active page button.
-  Pagination: ".st-pagination__page--active",
-  Card: ".st-card",
-  Tabs: ".st-tabs__tab[aria-selected=\"true\"]",
-  Quote: ".st-quote",
-  Highlight: ".st-highlight",
-};
-
-const REF_SELECTOR = {
-  dsfr: {
-    Button: ".fr-btn",
-    ButtonDisabled: ".fr-btn:disabled",
-    Input: ".fr-input",
-    InputError: ".fr-input--error",
-    InputDisabled: ".fr-input:disabled",
-    Textarea: "textarea.fr-input",
-    Select: ".fr-select",
-    Search: ".fr-search-bar .fr-input",
-    Link: ".fr-link",
-    Checkbox: ".fr-checkbox-group label",
-    Radio: ".fr-radio-group label",
-    // DSFR toggle switch is drawn via pseudo-elements on the label; measure the
-    // label text (the comparable typography/colour). See note below.
-    Toggle: ".fr-toggle__label",
-    Tag: ".fr-tag",
-    Badge: ".fr-badge",
-    Alert: ".fr-alert",
-    Accordion: ".fr-accordion__btn",
-    Breadcrumb: ".fr-breadcrumb__link",
-    // Active page link (aria-current="page") — the styled, filled page.
-    Pagination: ".fr-pagination__link[aria-current=\"page\"]",
-    Card: ".fr-card",
-    Tabs: ".fr-tabs__tab[aria-selected=\"true\"]",
-    Quote: ".fr-quote",
-    Highlight: ".fr-highlight",
-  },
-  carbon: {
-    Button: ".bx--btn--primary",
-    ButtonDisabled: ".bx--btn--primary:disabled",
-    Input: ".bx--text-input",
-    InputError: ".bx--text-input--invalid",
-    InputDisabled: ".bx--text-input:disabled",
-    Textarea: ".bx--text-area",
-    Select: ".bx--select-input",
-    Search: ".bx--search-input",
-    Link: ".bx--link",
-    Checkbox: ".bx--checkbox-label-text",
-    Radio: ".bx--radio-button__label-text",
-    // Carbon toggle switch IS a real element.
-    Toggle: ".bx--toggle__switch",
-    Tag: ".bx--tag",
-    Alert: ".bx--inline-notification",
-    Accordion: ".bx--accordion__heading",
-    Breadcrumb: ".bx--breadcrumb-item .bx--link",
-    // Carbon pagination-nav active page button.
-    Pagination: ".bx--pagination-nav__page--active",
-    Card: ".bx--tile",
-    // The selected `<li>.bx--tabs__nav-item--selected` collapses to a 0×0 box in
-    // Carbon's `<li>`-based tabs markup; the visually-styled tab (padding,
-    // border-bottom, typography) is the inner `<a>.bx--tabs__nav-link`. We
-    // measure the link so the diff is real rather than a false empty box.
-    Tabs: ".bx--tabs__nav-item--selected .bx--tabs__nav-link",
-  },
-};
-
-// Justified deviations from the literal spec selector, surfaced in the report.
-const REF_SELECTOR_NOTE = {
-  dsfr: {
-    Checkbox:
-      "Le contrôle visuel DSFR est dessiné en `::before` sur le label (non mesurable). " +
-      "On compare le LABEL (`.fr-checkbox-group label`) — la typo/couleur réellement peintes.",
-    Radio:
-      "Idem checkbox : contrôle en pseudo-élément. On compare le label (`.fr-radio-group label`).",
-    Toggle:
-      "L'interrupteur DSFR est dessiné en `::before/::after` sur le label. " +
-      "On compare le label (`.fr-toggle__label`) — typo/couleur comparables.",
-    Pagination:
-      "Page active = `.fr-pagination__link[aria-current=\"page\"]` (lien rempli Bleu France).",
-  },
-  carbon: {
-    Tabs:
-      "Spec selector `.bx--tabs__nav-item--selected` is the `<li>` wrapper (0×0 box). " +
-      "Measuring its inner `.bx--tabs__nav-link` — the actual styled tab.",
-    Checkbox:
-      "Carbon checkbox control is a `::before` on the label. Measuring the label text " +
-      "(`.bx--checkbox-label-text`) — the comparable typography/colour.",
-    Radio:
-      "Carbon radio control is `.bx--radio-button__appearance` (a circle). Measuring the " +
-      "label text (`.bx--radio-button__label-text`) — comparable typography/colour.",
-    Pagination:
-      "Active page = `.bx--pagination-nav__page--active` (the styled active page button).",
-  },
-};
+const COMPONENTS = Array.from(
+  new Set(Object.values(COMPARE_MANIFEST).flatMap((t) => Object.keys(t)))
+);
+const COMPONENT_THEMES = {}; // key → [themes that have it]
+for (const theme of Object.keys(COMPARE_MANIFEST)) {
+  for (const key of Object.keys(COMPARE_MANIFEST[theme])) {
+    (COMPONENT_THEMES[key] ??= []).push(theme);
+  }
+}
+const OUR_SELECTOR = Object.fromEntries(
+  COMPONENTS.map((k) => {
+    const entry = COMPARE_MANIFEST.dsfr?.[k] ?? COMPARE_MANIFEST.carbon?.[k];
+    return [k, entry.ourSelector];
+  })
+);
+const REF_SELECTOR = Object.fromEntries(
+  Object.entries(COMPARE_MANIFEST).map(([theme, keys]) => [
+    theme,
+    Object.fromEntries(Object.entries(keys).map(([k, m]) => [k, m.refSelector])),
+  ])
+);
+const REF_SELECTOR_NOTE = Object.fromEntries(
+  Object.entries(COMPARE_MANIFEST).map(([theme, keys]) => [
+    theme,
+    Object.fromEntries(
+      Object.entries(keys).filter(([, m]) => m.note).map(([k, m]) => [k, m.note])
+    ),
+  ])
+);
 
 const THEMES = ["dsfr", "carbon"];
 
