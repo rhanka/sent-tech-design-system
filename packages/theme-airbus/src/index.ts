@@ -172,12 +172,12 @@ const foundation = {
   },
   borderWidth: {
     none: "0",
-    thin: "1px",
+    thin: "2px",
     thick: "2px"
   },
   borderStyle: { solid: "solid" },
   density: {
-    sm: { controlHeight: "2rem", paddingBlock: "0.25rem", paddingInline: "1rem", gap: "0.5rem", minWidth: "2rem", fontSize: "0.875rem" },
+    sm: { controlHeight: "2rem", paddingBlock: "0.25rem", paddingInline: "0.5rem", gap: "0.5rem", minWidth: "2rem", fontSize: "0.875rem" },
     md: { controlHeight: "2.5rem", paddingBlock: "0.5rem", paddingInline: "0.5rem", gap: "0.5rem", minWidth: "2.5rem", fontSize: "0.875rem" },
     lg: { controlHeight: "3rem", paddingBlock: "0.75rem", paddingInline: "1.5rem", gap: "0.5rem", minWidth: "3rem", fontSize: "1rem" }
   },
@@ -215,7 +215,7 @@ const foundation = {
     selectAppearance: "none",
     selectChevron:
       "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%2300205b' d='M8 11L3 6l1-1 4 4 4-4 1 1z'/%3E%3C/svg%3E\") no-repeat right 0.75rem center",
-    selectPaddingRight: "2.5rem"
+    selectPaddingRight: "0.5rem"
   },
   buttonSecondary: {
     background: airbusColor.base.white,
@@ -225,26 +225,28 @@ const foundation = {
   card: {
     borderWidth: "0",
     background: airbusColor.base.white,
-    fontSize: "0.875rem",
-    lineHeight: "1.25rem"
+    fontSize: "1rem",
+    lineHeight: "normal"
   },
   tabs: {
-    activeText: airbusColor.primaryBlue[90],
+    activeText: airbusColor.primaryBlue[70],
     activeBackground: "transparent",
     activeWeight: "700",
     paddingBlock: "0.5rem",
     paddingInline: "1rem",
     fontSize: "0.875rem",
     lineHeight: "1.5rem",
-    indicatorSide: "bottom"
+    indicatorSide: "bottom",
+    indicatorMode: "shadow"
   },
   pagination: {
     border: "transparent",
-    borderWidth: "0",
-    activeBackground: airbusColor.primaryBlue[70],
+    borderWidth: "2px",
+    activeBackground: "transparent",
     activeBorder: "transparent",
-    activeBorderWidth: "0",
-    activeWeight: "700",
+    activeBorderWidth: "2px",
+    activeWeight: "500",
+    activeText: airbusColor.dark[70],
     paddingBlock: "0",
     paddingInline: "0",
     minSize: "2rem",
@@ -268,7 +270,7 @@ const foundation = {
     borderTop: "none",
     borderRight: "none",
     borderBottom: "none",
-    accentWidth: "0.5rem",
+    accentWidth: "0",
     paddingTop: "0.5rem",
     paddingRight: "1rem",
     paddingBottom: "0.5rem",
@@ -278,10 +280,10 @@ const foundation = {
     letterSpacing: "0"
   },
   accordion: {
-    text: airbusColor.primaryBlue[90],
+    text: airbusColor.dark[70],
     paddingBlock: "0.5rem",
     paddingInline: "1rem",
-    fontSize: "0.875rem",
+    fontSize: "1rem",
     fontWeight: "700",
     lineHeight: "1.5rem"
   },
@@ -291,7 +293,7 @@ const foundation = {
     paddingInline: "0.75rem",
     fontSize: "0.875rem",
     fontWeight: "500",
-    lineHeight: "1.5rem",
+    lineHeight: "normal",
     letterSpacing: "0",
     minHeight: "1.5rem",
     neutralBackground: airbusColor.coolGrey[20],
@@ -323,8 +325,8 @@ const foundation = {
     lineHeight: "1.25rem"
   },
   toggle: {
-    trackRadius: "2.5rem",
-    trackPadding: "0.1875rem",
+    trackRadius: "0",
+    trackPadding: "0",
     trackWidth: "3rem",
     trackHeight: "1.5rem",
     thumbSize: "1.125rem",

@@ -26,9 +26,10 @@ describe("airbusTheme", () => {
     const component = airbusTheme.tokens.component as ThemeComponent;
 
     expect(component.pagination).toMatchObject({
-      activeBackground: "#063b9e",
-      activeBorderWidth: "0",
-      activeWeight: "700",
+      activeBackground: "transparent",
+      activeBorderWidth: "2px",
+      activeText: "#14171d",
+      activeWeight: "500",
       minSize: "2rem",
       fontSize: "0.875rem",
       lineHeight: "1.5rem"
@@ -41,7 +42,7 @@ describe("airbusTheme", () => {
     });
 
     expect(component.alert).toMatchObject({
-      accentWidth: "0.5rem",
+      accentWidth: "0",
       paddingTop: "0.5rem",
       paddingLeft: "1.5rem",
       fontSize: "0.875rem",
@@ -49,9 +50,10 @@ describe("airbusTheme", () => {
     });
 
     expect(component.accordion).toMatchObject({
+      text: "#14171d",
       paddingBlock: "0.5rem",
       paddingInline: "1rem",
-      fontSize: "0.875rem",
+      fontSize: "1rem",
       fontWeight: "700",
       lineHeight: "1.5rem"
     });
@@ -74,7 +76,7 @@ describe("airbusTheme", () => {
       toggleTrackWidth: "3rem",
       toggleTrackHeight: "1.5rem",
       toggleThumbSize: "1.125rem",
-      toggleTrackPadding: "0.1875rem"
+      toggleTrackPadding: "0"
     });
   });
 
