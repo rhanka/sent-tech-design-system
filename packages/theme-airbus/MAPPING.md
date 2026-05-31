@@ -11,10 +11,11 @@ explicitly decided.
 
 - `packages/design-tokens/src/core/color/palette.json`
 - `packages/design-tokens/src/airbus/color/{surface,text,border}.json`
+- `packages/design-tokens/src/airbus/color/{dimmed,saturated}.json`
 - `packages/design-tokens/src/core/font/{family,size,lineheight,weight}.json`
 - `packages/design-tokens/src/core/size/{spacing,radius}.json`
 - `packages/design-tokens/src/core/elevation/{shadow,zindex}.json`
-- `packages/styles/src/elements/{Button,Input,Tabs,Card}/index.ts`
+- `packages/styles/src/elements/{Button,Input,Tabs,Card,Chip,Badge,Breadcrumb,Pagination,Checkbox,Radio,Toggle,Toast}/index.ts`
 - `packages/styles/src/helpers/focus.ts`
 
 ## Foundation
@@ -65,21 +66,49 @@ for mono. Spacing maps pixel-for-pixel to the Sentropic keys that already carry
 | `action.secondaryHover` | `surface.interaction.hover.light` | `#f1f1f1` |
 | `action.secondaryText` | `text.accent.default.light` | `#00205b` |
 
+## Dark Semantic
+
+The package also exports `airbusDarkTheme` (`id: airbus-dark`, `mode: dark`).
+Dark values follow the same Airbus decision-token families:
+
+| Sentropic role | Airbus source | Value |
+|---|---|---|
+| `surface.default` | `surface.interaction.default.dark` | `#111111` |
+| `surface.subtle` | `surface.componentbackground.minimal.dark` | `#25282e` |
+| `surface.raised` | `surface.elevation.1.dark` | `#14171d` |
+| `text.primary` | `text.neutral.default.dark` | `#ffffff` |
+| `text.secondary` | `text.neutral.moderate.dark` | `#e0e3e9` |
+| `text.link` | `text.link.neutral.default.dark` | `#638ee0` |
+| `border.subtle` | `border.neutral.moderate.dark` | `#3c4657` |
+| `border.strong` | `border.neutral.strong.dark` | `#ced5dd` |
+| `border.interactive` | `border.accent.focus.dark` | `#e5ecf7` |
+| `action.primary` | `surface.accent.default.dark` | `#86a8e9` |
+| `action.primaryHover` | `surface.accent.hover.dark` | `#b3cbf8` |
+| `action.primaryText` | `text.neutral.minimal.dark` | `#14171d` |
+
 ## Anatomy
 
-Initial anatomy covers the same pilot path used by DSFR/Carbon:
+Anatomy now covers the Airbus component primitives supported by
+`createComponent`:
 
 - Buttons: Airbus small technical buttons, bold 14px label, primary corporate
   blue, secondary outlined on white.
-- Inputs/selects: filled field, `warmgrey.10` background, top radius `3px`,
-  bottom rule via inset shadow, focus blue `#255fcc`.
-- Tabs: square tabs, 8px/16px padding, bottom selected indicator.
-- Cards: white elevated surface, 6px radius, no explicit border.
-- Tags/search: basic geometry from Airbus styles, enough to start visual QA.
+- Inputs/selects/search: filled field, `warmgrey.10` light background
+  (`dark.40` in dark mode), top radius `3px`, bottom rule via inset shadow,
+  focus blue from the Airbus focus border token.
+- Tabs: 8px/16px padding, bold selected tab, bottom selected indicator.
+- Cards: white/dark elevated surface, 6px radius, no explicit border.
+- Chip/tag and badge: Airbus chip and badge geometry (`24px` chip,
+  `16px` badge) mapped onto Sentropic tag/badge roles.
+- Breadcrumb and pagination: 14px labels, 24px line-height, active pagination
+  on Airbus active accent blue with borderless icon-button geometry.
+- Checkbox/radio and toggle: Airbus 14px choice labels, 48px by 24px toggle
+  track, 18px thumb, Airbus accent checked states.
+- Alert: mapped from the inline Toast/Banner anatomy: left status rail, compact
+  8px/16px body padding and 14px/20px text.
 
 ## Open Gaps
 
-- Dark mode is not mapped yet.
 - React/Angular component behavior is out of scope for this package; this is a
   theme port only.
 - Fidelity still needs the `/compare` bench once a visual Airbus reference page
