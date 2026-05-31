@@ -67,7 +67,7 @@ for mono. Spacing maps pixel-for-pixel to the Sentropic keys that already carry
 
 ## Anatomy
 
-Initial anatomy covers the same pilot path used by DSFR/Carbon:
+Anatomy now covers the same token-resolved surface used by DSFR/Carbon:
 
 - Buttons: Airbus small technical buttons, bold 14px label, primary corporate
   blue, secondary outlined on white.
@@ -75,11 +75,29 @@ Initial anatomy covers the same pilot path used by DSFR/Carbon:
   bottom rule via inset shadow, focus blue `#255fcc`.
 - Tabs: square tabs, 8px/16px padding, bottom selected indicator.
 - Cards: white elevated surface, 6px radius, no explicit border.
-- Tags/search: basic geometry from Airbus styles, enough to start visual QA.
+- Pagination/breadcrumb: compact Airbus typography, 3px radius, active corporate
+  blue state.
+- Alerts/accordion: compact technical density, corporate blue accents and
+  14px/20-24px typography.
+- Tags/badges/search/choice/toggle: Airbus radius, density and typography
+  projected through the component anatomy builder.
+
+## Dark Mode
+
+`airbusDarkTheme` exports the private dark variant:
+
+- `id`: `airbus-dark`
+- `label`: `Airbus Dark`
+- `mode`: `dark`
+
+The dark variant keeps the same foundation scale and overrides the semantic
+surfaces, text, border, action roles, focus colour and surface-dependent
+component anatomy (`field`, secondary button, cards, tags, badges, choice and
+toggle). `airbusThemes` exports `[airbusTheme, airbusDarkTheme]` for consumers
+that want both modes.
 
 ## Open Gaps
 
-- Dark mode is not mapped yet.
 - React/Angular component behavior is out of scope for this package; this is a
   theme port only.
 - Fidelity still needs the `/compare` bench once a visual Airbus reference page
