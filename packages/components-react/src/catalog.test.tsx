@@ -192,7 +192,7 @@ describe("React public catalog parity", () => {
     expect(screen.getByText("Beta").className).toContain("st-tag");
     expect(screen.getByText("More detail").className).toContain("st-tooltip");
     expect(screen.getByRole("dialog", { name: "Confirm" }).className).toContain("st-modal");
-    expect(screen.getByRole("complementary", { name: "Filters" }).className).toContain("st-drawer");
+    expect(screen.getByRole("dialog", { name: "Filters" }).className).toContain("st-drawer");
     expect(screen.getByText("Saved").closest(".st-toast")).not.toBeNull();
     expect(screen.getByRole("progressbar").className).toContain("st-progressBar");
   });

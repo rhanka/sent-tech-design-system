@@ -61,6 +61,81 @@ function useControlled<T>(value: T | undefined, defaultValue: T, onChange?: (nex
   ];
 }
 
+const FOCUSABLE_SELECTOR = [
+  "a[href]",
+  "button:not([disabled])",
+  "input:not([disabled])",
+  "select:not([disabled])",
+  "textarea:not([disabled])",
+  "[tabindex]:not([tabindex='-1'])",
+].join(",");
+
+function focusableIn(root: HTMLElement | null): HTMLElement[] {
+  if (!root) return [];
+  return Array.from(root.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR));
+}
+
+function useBodyScrollLock(active: boolean): void {
+  React.useEffect(() => {
+    if (!active) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [active]);
+}
+
+function useOutsideMouseDown(active: boolean, ref: React.RefObject<HTMLElement | null>, onOutside: () => void): void {
+  React.useEffect(() => {
+    if (!active) return;
+    const onMouseDown = (event: MouseEvent) => {
+      const target = event.target as Node | null;
+      if (target && ref.current && !ref.current.contains(target)) onOutside();
+    };
+    document.addEventListener("mousedown", onMouseDown);
+    return () => document.removeEventListener("mousedown", onMouseDown);
+  }, [active, onOutside, ref]);
+}
+
+function useEscape(active: boolean, onClose?: () => void): void {
+  React.useEffect(() => {
+    if (!active || !onClose) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        onClose();
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [active, onClose]);
+}
+
+function trapTabKey(event: KeyboardEvent | React.KeyboardEvent, root: HTMLElement | null): void {
+  if (event.key !== "Tab" || !root || !root.contains(document.activeElement)) return;
+  const focusable = focusableIn(root);
+  if (focusable.length === 0) {
+    event.preventDefault();
+    root.focus();
+    return;
+  }
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first.focus();
+  }
+}
+
+function moveIndex(index: number, max: number, delta: number): number {
+  if (max <= 0) return -1;
+  return (index + delta + max) % max;
+}
+
 type FieldProps = {
   label?: React.ReactNode;
   helperText?: React.ReactNode;
@@ -143,14 +218,18 @@ export function Accordion({ items, openIds, defaultOpenIds = [], allowMultiple =
       {items.map((item, index) => {
         const itemId = idFrom(item, index, "accordion");
         const isOpen = open.includes(itemId);
+        const triggerId = `st-accordion-trigger-${itemId}`;
+        const panelId = `st-accordion-panel-${itemId}`;
         return (
           <section key={itemId} className={classNames("st-accordion__item", isOpen && "st-accordion__item--open")}>
             <h3 className="st-accordion__heading">
               <button
+                id={triggerId}
                 type="button"
                 className="st-accordion__trigger"
                 disabled={item.disabled}
                 aria-expanded={isOpen}
+                aria-controls={panelId}
                 onClick={() => toggle(itemId)}
               >
                 <span className="st-accordion__title">{item.title}</span>
@@ -160,7 +239,7 @@ export function Accordion({ items, openIds, defaultOpenIds = [], allowMultiple =
               </button>
             </h3>
             {isOpen ? (
-              <div className="st-accordion__panel" id={`st-accordion-panel-${itemId}`}>
+              <div className="st-accordion__panel" id={panelId} role="region" aria-labelledby={triggerId}>
                 {node(item.content)}
               </div>
             ) : null}
@@ -499,29 +578,114 @@ export function CodeSnippet({ code, inline = false, className, ...rest }: CodeSn
 }
 
 export interface ComboboxOption extends OptionItem {}
-export type ComboboxProps = React.HTMLAttributes<HTMLDivElement> & {
+export type ComboboxProps = Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> & {
   label?: React.ReactNode;
   options: ComboboxOption[];
   value?: string;
   size?: Size;
   placeholder?: string;
   open?: boolean;
+  allowCustomValue?: boolean;
+  noResultsLabel?: React.ReactNode;
+  onChange?: (value: string) => void;
+  onSelect?: (value: string) => void;
 };
-export function Combobox({ label, options, value, size = "md", placeholder = "Select", open = false, className, ...rest }: ComboboxProps) {
+export function Combobox({
+  label,
+  options,
+  value,
+  size = "md",
+  placeholder = "Select or type",
+  open: controlledOpen,
+  allowCustomValue = true,
+  noResultsLabel = "No results",
+  onChange,
+  onSelect,
+  className,
+  ...rest
+}: ComboboxProps) {
+  const reactId = React.useId();
+  const inputId = `st-combobox-input-${reactId}`;
+  const listId = `st-combobox-list-${reactId}`;
+  const initial = text(options.find((option) => option.value === value)?.label ?? value ?? "");
+  const [inputValue, setInputValue] = React.useState<string>(initial);
+  const [open, setOpen] = useControlled(controlledOpen, false);
+  const [activeIndex, setActiveIndex] = React.useState(-1);
+  const filtered = options.filter((option) => {
+    const query = inputValue.trim().toLowerCase();
+    return !query || text(option.label).toLowerCase().includes(query);
+  });
   const selected = options.find((option) => option.value === value);
+  const selectOption = (option: ComboboxOption) => {
+    if (option.disabled) return;
+    setInputValue(text(option.label));
+    setOpen(false);
+    setActiveIndex(-1);
+    onSelect?.(option.value);
+    onChange?.(option.value);
+  };
   return (
     <div {...rest} className={classNames("st-combobox", `st-combobox--${size}`, className)}>
-      {label ? <span className="st-field__label">{label}</span> : null}
-      <button type="button" className="st-combobox__control">
-        {selected?.label ?? placeholder}
-      </button>
+      {label ? <label className="st-field__label" htmlFor={inputId}>{label}</label> : null}
+      <input
+        id={inputId}
+        className="st-combobox__control"
+        role="combobox"
+        aria-expanded={open}
+        aria-autocomplete="list"
+        aria-controls={listId}
+        aria-activedescendant={activeIndex >= 0 && filtered[activeIndex] ? `${listId}-${filtered[activeIndex].value}` : undefined}
+        placeholder={placeholder}
+        value={selected?.label ? text(selected.label) : inputValue}
+        onFocus={() => setOpen(true)}
+        onChange={(event) => {
+          setInputValue(event.currentTarget.value);
+          setOpen(true);
+          setActiveIndex(-1);
+          if (allowCustomValue) onChange?.(event.currentTarget.value);
+        }}
+        onKeyDown={(event) => {
+          if (event.key === "ArrowDown") {
+            event.preventDefault();
+            setOpen(true);
+            setActiveIndex((index) => moveIndex(index, filtered.length, 1));
+          } else if (event.key === "ArrowUp") {
+            event.preventDefault();
+            setOpen(true);
+            setActiveIndex((index) => moveIndex(index < 0 ? filtered.length : index, filtered.length, -1));
+          } else if (event.key === "Enter" && open && activeIndex >= 0 && filtered[activeIndex]) {
+            event.preventDefault();
+            selectOption(filtered[activeIndex]);
+          } else if (event.key === "Escape" && open) {
+            event.preventDefault();
+            setOpen(false);
+            setActiveIndex(-1);
+          }
+        }}
+      />
+      {selected ? <span className="st-combobox__value st-visually-hidden">{selected.label}</span> : null}
       {open ? (
-        <ul className="st-combobox__list" role="listbox">
-          {options.map((option) => (
-            <li key={option.value} className={classNames("st-combobox__option", option.value === value && "st-combobox__option--active")}>
-              {option.label}
-            </li>
-          ))}
+        <ul id={listId} className="st-combobox__list" role="listbox" aria-label={text(label) || "Options"}>
+          {filtered.length ? (
+            filtered.map((option, index) => (
+              <li
+                key={option.value}
+                id={`${listId}-${option.value}`}
+                className={classNames("st-combobox__option", index === activeIndex && "st-combobox__option--active", option.value === value && "st-combobox__option--selected")}
+                role="option"
+                aria-selected={option.value === value}
+                aria-disabled={option.disabled ? "true" : undefined}
+                onMouseDown={(event) => {
+                  event.preventDefault();
+                  selectOption(option);
+                }}
+              >
+                {option.label}
+              </li>
+            ))
+          ) : (
+            <li className="st-combobox__empty" role="option" aria-disabled="true" aria-selected="false">{noResultsLabel}</li>
+          )}
         </ul>
       ) : null}
     </div>
@@ -661,19 +825,50 @@ export type DrawerProps = React.HTMLAttributes<HTMLElement> & {
   onClose?: () => void;
 };
 export function Drawer({ open = false, title, description, footer, placement = "right", onClose, children, className, ...rest }: DrawerProps) {
+  const panelRef = React.useRef<HTMLElement>(null);
+  const closeRef = React.useRef<HTMLButtonElement>(null);
+  useBodyScrollLock(open);
+  useEscape(open, onClose);
+  React.useEffect(() => {
+    if (open) closeRef.current?.focus();
+  }, [open]);
+  React.useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (event: KeyboardEvent) => trapTabKey(event, panelRef.current);
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [open]);
   if (!open) return null;
   return (
-    <aside {...rest} className={classNames("st-drawer", `st-drawer--${placement}`, className)} role="complementary" aria-label={text(title) || "Drawer"}>
-      <div className="st-drawer__header">
-        {title ? <h2 className="st-drawer__title">{title}</h2> : null}
-        <button type="button" className="st-drawer__close" onClick={onClose} aria-label="Close">
-          x
-        </button>
-      </div>
-      {description ? <p className="st-drawer__description">{description}</p> : null}
-      <div className="st-drawer__body">{children}</div>
-      {footer ? <div className="st-drawer__footer">{footer}</div> : null}
-    </aside>
+    <div
+      className="st-drawer__backdrop"
+      data-testid="st-drawer-backdrop"
+      role="presentation"
+      onClick={(event) => {
+        if (event.target === event.currentTarget) onClose?.();
+      }}
+    >
+      <aside
+        {...rest}
+        ref={panelRef}
+        className={classNames("st-drawer", `st-drawer--${placement}`, className)}
+        role="dialog"
+        aria-modal="true"
+        aria-label={text(title) || "Drawer"}
+        tabIndex={-1}
+        onKeyDown={(event) => trapTabKey(event, panelRef.current)}
+      >
+        <div className="st-drawer__header">
+          {title ? <h2 className="st-drawer__title">{title}</h2> : null}
+          <button ref={closeRef} type="button" className="st-drawer__close" onClick={onClose} aria-label="Close">
+            x
+          </button>
+        </div>
+        {description ? <p className="st-drawer__description">{description}</p> : null}
+        <div className="st-drawer__body">{children}</div>
+        {footer ? <div className="st-drawer__footer">{footer}</div> : null}
+      </aside>
+    </div>
   );
 }
 
@@ -682,24 +877,85 @@ export type DropdownProps = React.HTMLAttributes<HTMLDivElement> & {
   label?: React.ReactNode;
   options: DropdownOption[];
   value?: string;
+  open?: boolean;
+  placeholder?: React.ReactNode;
   onSelect?: (value: string) => void;
 };
-export function Dropdown({ label = "Select", options, value, onSelect, className, ...rest }: DropdownProps) {
-  const selected = options.find((option) => option.value === value);
+export function Dropdown({ label = "Select", options, value, open: controlledOpen, placeholder = "Select", onSelect, className, ...rest }: DropdownProps) {
+  const hostRef = React.useRef<HTMLDivElement>(null);
+  const itemRefs = React.useRef<Array<HTMLButtonElement | null>>([]);
+  const [open, setOpen] = useControlled(controlledOpen, false);
+  const [current, setCurrent] = useControlled(value, value ?? "");
+  const [activeIndex, setActiveIndex] = React.useState(-1);
+  const selected = options.find((option) => option.value === current);
+  const focusOption = (index: number) => {
+    setActiveIndex(index);
+  };
+  React.useEffect(() => {
+    if (open && activeIndex >= 0) itemRefs.current[activeIndex]?.focus();
+  }, [activeIndex, open]);
+  const selectOption = (option: DropdownOption) => {
+    if (option.disabled) return;
+    setCurrent(option.value);
+    setOpen(false);
+    setActiveIndex(-1);
+    onSelect?.(option.value);
+  };
+  useOutsideMouseDown(open, hostRef, () => setOpen(false));
+  useEscape(open, () => setOpen(false));
   return (
-    <div {...rest} className={classNames("st-dropdown", className)}>
-      <button type="button" className="st-dropdown__button">
-        {label}: {selected?.label ?? options[0]?.label}
+    <div {...rest} ref={hostRef} className={classNames("st-dropdown", className)}>
+      <button
+        type="button"
+        className="st-dropdown__button"
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        onClick={() => setOpen(!open)}
+        onKeyDown={(event) => {
+          if (event.key === "ArrowDown") {
+            event.preventDefault();
+            setOpen(true);
+            focusOption(0);
+          }
+        }}
+      >
+        <span className="st-dropdown__label">{label}</span>: <span className="st-dropdown__value">{selected?.label ?? placeholder}</span>
       </button>
-      <ul className="st-dropdown__list" role="listbox">
-        {options.map((option) => (
-          <li key={option.value}>
-            <button type="button" className="st-dropdown__option" disabled={option.disabled} onClick={() => onSelect?.(option.value)}>
+      {open ? (
+        <div className="st-dropdown__list" role="listbox" aria-label={text(label) || "Options"}>
+          {options.map((option, index) => (
+            <button
+              key={option.value}
+              ref={(node) => {
+                itemRefs.current[index] = node;
+              }}
+              type="button"
+              role="option"
+              className="st-dropdown__option"
+              disabled={option.disabled}
+              aria-selected={option.value === current}
+              onClick={() => selectOption(option)}
+              onKeyDown={(event) => {
+                if (event.key === "ArrowDown") {
+                  event.preventDefault();
+                  focusOption(moveIndex(index, options.length, 1));
+                } else if (event.key === "ArrowUp") {
+                  event.preventDefault();
+                  focusOption(moveIndex(index, options.length, -1));
+                } else if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  selectOption(option);
+                } else if (event.key === "Escape") {
+                  event.preventDefault();
+                  setOpen(false);
+                }
+              }}
+            >
               {option.label}
             </button>
-          </li>
-        ))}
-      </ul>
+          ))}
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -1002,8 +1258,32 @@ export type MenuProps = React.HTMLAttributes<HTMLDivElement> & {
   onSelect?: (item: MenuActionItem) => void;
 };
 export function Menu({ items, dense = false, onSelect, className, role, ...rest }: MenuProps) {
+  const rootRef = React.useRef<HTMLDivElement>(null);
+  const handleItemKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>, item: MenuActionItem) => {
+    const focusable = Array.from(rootRef.current?.querySelectorAll<HTMLButtonElement>('[role="menuitem"]:not(:disabled)') ?? []);
+    const currentIndex = focusable.indexOf(event.currentTarget);
+    const focusAt = (index: number) => focusable[index]?.focus();
+
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      focusAt(moveIndex(currentIndex, focusable.length, 1));
+    } else if (event.key === "ArrowUp") {
+      event.preventDefault();
+      focusAt(moveIndex(currentIndex < 0 ? focusable.length : currentIndex, focusable.length, -1));
+    } else if (event.key === "Home") {
+      event.preventDefault();
+      focusAt(0);
+    } else if (event.key === "End") {
+      event.preventDefault();
+      focusAt(focusable.length - 1);
+    } else if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      if (!item.disabled) onSelect?.(item);
+    }
+  };
+
   return (
-    <div {...rest} className={classNames("st-menu", dense && "st-menu--dense", className)} role={role ?? "menu"}>
+    <div {...rest} ref={rootRef} className={classNames("st-menu", dense && "st-menu--dense", className)} role={role ?? "menu"}>
       {items.map((item, index) => {
         if (isDivider(item)) return <div key={item.id ?? index} className="st-menu__divider" role="separator" />;
         if (isGroup(item)) {
@@ -1011,7 +1291,7 @@ export function Menu({ items, dense = false, onSelect, className, role, ...rest 
             <section key={item.id ?? index} className="st-menu__group">
               <h3>{item.label}</h3>
               {item.items.map((child) => (
-                <button key={child.id ?? text(child.label)} type="button" className="st-menu__item" onClick={() => onSelect?.(child)}>
+                <button key={child.id ?? text(child.label)} type="button" role="menuitem" className="st-menu__item" disabled={child.disabled} onClick={() => onSelect?.(child)} onKeyDown={(event) => handleItemKeyDown(event, child)}>
                   <span className="st-menu__itemLabel">{child.label}</span>
                 </button>
               ))}
@@ -1019,7 +1299,7 @@ export function Menu({ items, dense = false, onSelect, className, role, ...rest 
           );
         }
         return (
-          <button key={item.id ?? text(item.label) ?? index} type="button" role="menuitem" disabled={item.disabled} className={classNames("st-menu__item", item.variant === "danger" && "st-menu__item--danger")} onClick={() => onSelect?.(item)}>
+          <button key={item.id ?? text(item.label) ?? index} type="button" role="menuitem" disabled={item.disabled} className={classNames("st-menu__item", item.variant === "danger" && "st-menu__item--danger")} onClick={() => onSelect?.(item)} onKeyDown={(event) => handleItemKeyDown(event, item)}>
             <span className="st-menu__itemLabel">{item.label}</span>
           </button>
         );
@@ -1095,19 +1375,42 @@ export type ModalProps = React.HTMLAttributes<HTMLElement> & {
   onClose?: () => void;
 };
 export function Modal({ open = false, title, description, footer, onClose, children, className, ...rest }: ModalProps) {
+  const dialogRef = React.useRef<HTMLElement>(null);
+  const closeRef = React.useRef<HTMLButtonElement>(null);
+  useBodyScrollLock(open);
+  useEscape(open, onClose);
+  React.useEffect(() => {
+    if (open) closeRef.current?.focus();
+  }, [open]);
+  React.useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (event: KeyboardEvent) => trapTabKey(event, dialogRef.current);
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [open]);
   if (!open) return null;
   return (
-    <section {...rest} className={classNames("st-modal", className)} role="dialog" aria-modal="true" aria-label={text(title) || "Modal"}>
-      <div className="st-modal__header">
-        {title ? <h2 className="st-modal__title">{title}</h2> : null}
-        <button type="button" className="st-modal__close" onClick={onClose} aria-label="Close">
-          x
-        </button>
-      </div>
-      {description ? <p className="st-modal__description">{description}</p> : null}
-      <div className="st-modal__body">{children}</div>
-      {footer ? <div className="st-modal__footer">{footer}</div> : null}
-    </section>
+    <div className="st-modal__backdrop">
+      <section
+        {...rest}
+        ref={dialogRef}
+        className={classNames("st-modal", className)}
+        role="dialog"
+        aria-modal="true"
+        aria-label={text(title) || "Modal"}
+        tabIndex={-1}
+      >
+        <div className="st-modal__header">
+          {title ? <h2 className="st-modal__title">{title}</h2> : null}
+          <button ref={closeRef} type="button" className="st-modal__close" onClick={onClose} aria-label="Close">
+            x
+          </button>
+        </div>
+        {description ? <p className="st-modal__description">{description}</p> : null}
+        <div className="st-modal__body">{children}</div>
+        {footer ? <div className="st-modal__footer">{footer}</div> : null}
+      </section>
+    </div>
   );
 }
 
@@ -1119,25 +1422,63 @@ export type MultiSelectProps = React.HTMLAttributes<HTMLDivElement> & {
   values?: string[];
   size?: Size;
   open?: boolean;
+  onChange?: (values: string[]) => void;
 };
-export function MultiSelect({ label, options, value, values, size = "md", open = false, className, ...rest }: MultiSelectProps) {
-  const selected = new Set(value ?? values ?? []);
+export function MultiSelect({ label, options, value, values, size = "md", open: controlledOpen, onChange, className, ...rest }: MultiSelectProps) {
+  const reactId = React.useId();
+  const listId = `st-multiSelect-list-${reactId}`;
+  const [open, setOpen] = useControlled(controlledOpen, false);
+  const [selectedValues, setSelectedValues] = useControlled(value ?? values, value ?? values ?? [], onChange);
+  const selected = new Set(selectedValues);
+  const selectedOptions = options.filter((option) => selected.has(option.value));
+  const toggleOption = (option: MultiSelectOption) => {
+    if (option.disabled) return;
+    const next = selected.has(option.value)
+      ? selectedValues.filter((entry) => entry !== option.value)
+      : [...selectedValues, option.value];
+    setSelectedValues(next);
+    setOpen(false);
+  };
+
   return (
     <div {...rest} className={classNames("st-multiSelect", `st-multiSelect--${size}`, className)}>
       {label ? <span className="st-field__label">{label}</span> : null}
-      <button type="button" className="st-multiSelect__trigger">
+      <button
+        type="button"
+        className="st-multiSelect__trigger"
+        aria-label={text(label) || "Select options"}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        aria-controls={listId}
+        onClick={() => setOpen(!open)}
+      >
+        {label ? <span className="st-multiSelect__triggerLabel">{label}</span> : null}
         <span className="st-multiSelect__tags">
-          {options.filter((option) => selected.has(option.value)).map((option) => (
+          {selectedOptions.length ? selectedOptions.map((option) => (
             <span key={option.value} className="st-multiSelect__tag">
               <span className="st-multiSelect__tagLabel">{option.label}</span>
             </span>
-          ))}
+          )) : <span className="st-multiSelect__placeholder">Select</span>}
         </span>
       </button>
       {open ? (
-        <ul className="st-multiSelect__list">
+        <ul id={listId} className="st-multiSelect__list" role="listbox" aria-label={text(label) || "Options"} aria-multiselectable="true">
           {options.map((option) => (
-            <li key={option.value} className="st-multiSelect__option">
+            <li
+              key={option.value}
+              className={classNames("st-multiSelect__option", selected.has(option.value) && "st-multiSelect__option--selected")}
+              role="option"
+              aria-selected={selected.has(option.value)}
+              aria-disabled={option.disabled ? "true" : undefined}
+              tabIndex={option.disabled ? undefined : 0}
+              onClick={() => toggleOption(option)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  toggleOption(option);
+                }
+              }}
+            >
               {option.label}
             </li>
           ))}
@@ -1194,14 +1535,16 @@ export type OverflowMenuProps = React.HTMLAttributes<HTMLDivElement> & {
   label?: React.ReactNode;
   open?: boolean;
   dense?: boolean;
+  placement?: "top-start" | "top-end" | "bottom-start" | "bottom-end";
 };
-export function OverflowMenu({ items, label = "More", open = true, dense = false, className, ...rest }: OverflowMenuProps) {
+export function OverflowMenu({ items, label = "More", open: controlledOpen, dense = false, placement = "bottom-start", className, ...rest }: OverflowMenuProps) {
+  const [open, setOpen] = useControlled(controlledOpen, false);
   return (
     <div {...rest} className={classNames("st-overflowMenu", dense && "st-overflowMenu--dense", className)}>
-      <button type="button" className="st-overflowMenu__trigger" aria-expanded={open}>
+      <button type="button" className="st-overflowMenu__trigger" aria-expanded={open} onClick={() => setOpen(!open)}>
         {label}
       </button>
-      {open ? <div className="st-overflowMenu__list"><Menu items={items as MenuItem[]} role="presentation" /></div> : null}
+      {open ? <div className={classNames("st-overflowMenu__list", `st-overflowMenu__list--${placement}`)}><Menu items={items as MenuItem[]} /></div> : null}
     </div>
   );
 }
@@ -1211,16 +1554,33 @@ export type PaginationProps = React.HTMLAttributes<HTMLElement> & {
   pageSize?: number;
   totalItems?: number;
   totalPages?: number;
+  pageCount?: number;
+  onPageChange?: (page: number) => void;
 };
-export function Pagination({ page, pageSize = 10, totalItems, totalPages, className, ...rest }: PaginationProps) {
-  const pages = totalPages ?? (totalItems ? Math.max(1, Math.ceil(totalItems / pageSize)) : page);
+export function Pagination({ page, pageSize = 10, totalItems, totalPages, pageCount, onPageChange, className, ...rest }: PaginationProps) {
+  const pages = pageCount ?? totalPages ?? (totalItems ? Math.max(1, Math.ceil(totalItems / pageSize)) : page);
   const start = totalItems ? (page - 1) * pageSize + 1 : page;
   const end = totalItems ? Math.min(page * pageSize, totalItems) : page;
+  const visiblePages = Array.from({ length: pages }, (_, index) => index + 1);
   return (
     <nav {...rest} className={classNames("st-pagination", className)} aria-label="Pagination">
-      <button type="button" disabled={page <= 1}>Previous</button>
+      <button type="button" disabled={page <= 1} onClick={() => onPageChange?.(page - 1)}>Previous</button>
       <span className="st-pagination__page--active">{totalItems ? `${start}-${end} of ${totalItems}` : `Page ${page} of ${pages}`}</span>
-      <button type="button" disabled={page >= pages}>Next</button>
+      <span className="st-pagination__pages">
+        {visiblePages.map((pageNumber) => (
+          <button
+            key={pageNumber}
+            type="button"
+            className={classNames("st-pagination__page", pageNumber === page && "st-pagination__page--active")}
+            aria-label={`Page ${pageNumber}`}
+            aria-current={pageNumber === page ? "page" : undefined}
+            onClick={() => onPageChange?.(pageNumber)}
+          >
+            {pageNumber}
+          </button>
+        ))}
+      </span>
+      <button type="button" disabled={page >= pages} onClick={() => onPageChange?.(page + 1)}>Next</button>
     </nav>
   );
 }
@@ -1277,11 +1637,23 @@ export type PopoverProps = Omit<React.HTMLAttributes<HTMLElement>, "content"> & 
   open?: boolean;
   placement?: "top" | "right" | "bottom" | "left";
 };
-export function Popover({ trigger, content, open = true, placement = "bottom", children, className, ...rest }: PopoverProps) {
+export function Popover({ trigger, content, open: controlledOpen, placement = "bottom", children, className, ...rest }: PopoverProps) {
+  const hostRef = React.useRef<HTMLSpanElement>(null);
+  const [open, setOpen] = useControlled(controlledOpen, false);
+  const triggerNode = trigger ?? children;
+  const contentNode = content ?? (trigger ? children : null);
+  const label = text(React.isValidElement(triggerNode) ? (triggerNode.props as { children?: React.ReactNode }).children : triggerNode) || "Popover";
+  useOutsideMouseDown(open, hostRef, () => setOpen(false));
+  useEscape(open, () => setOpen(false));
+
   return (
-    <span {...rest} className={classNames("st-popover-host", className)}>
-      {trigger ?? children}
-      {open ? <span className={classNames("st-popover", `st-popover--${placement}`)}>{content ?? children}</span> : null}
+    <span {...rest} ref={hostRef} className={classNames("st-popover-host", className)} onClick={() => setOpen(true)}>
+      {triggerNode}
+      {open ? (
+        <span className={classNames("st-popover", `st-popover--${placement}`)} role="dialog" aria-label={label}>
+          {contentNode}
+        </span>
+      ) : null}
     </span>
   );
 }
@@ -1502,7 +1874,7 @@ export type SwitchProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, "typ
 export function Switch({ label, helperText, className, ...rest }: SwitchProps) {
   return (
     <label className={classNames("st-switch", className)}>
-      <input {...rest} className="st-switch__input" type="checkbox" role="switch" />
+      <input {...rest} className="st-switch__input" type="checkbox" role="switch" aria-checked={rest.checked ?? rest.defaultChecked ?? undefined} />
       <span className="st-switch__track"><span className="st-switch__thumb" /></span>
       <span className="st-switch__content">
         <span className="st-switch__label">{label}</span>
@@ -1558,22 +1930,79 @@ export type TabsProps = React.HTMLAttributes<HTMLElement> & {
   onChange?: (value: string) => void;
 };
 export function Tabs({ items, activeValue, activeId, label = "Tabs", onChange, className, ...rest }: TabsProps) {
+  const reactId = React.useId();
+  const tabRefs = React.useRef<Array<HTMLButtonElement | null>>([]);
   const first = items.find((item) => !item.disabled) ?? items[0];
   const [current, setCurrent] = useControlled(activeValue ?? activeId, idFrom(first ?? {}, 0, "tab"), onChange);
-  const active = items.find((item, index) => idFrom(item, index, "tab") === current) ?? first;
+  const itemIds = items.map((item, index) => idFrom(item, index, "tab"));
+  const activeIndex = Math.max(0, itemIds.indexOf(current));
+  const active = items[activeIndex] ?? first;
+  const activateIndex = (index: number) => {
+    const item = items[index];
+    if (!item || item.disabled) return;
+    setCurrent(itemIds[index]);
+    tabRefs.current[index]?.focus();
+  };
+  const moveTab = (index: number, delta: number) => {
+    const enabled = items.map((item, itemIndex) => ({ item, itemIndex })).filter(({ item }) => !item.disabled);
+    const enabledIndex = enabled.findIndex(({ itemIndex }) => itemIndex === index);
+    const next = enabled[moveIndex(enabledIndex, enabled.length, delta)];
+    if (next) activateIndex(next.itemIndex);
+  };
+
   return (
     <section {...rest} className={classNames("st-tabs", className)}>
       <div className="st-tabs__list" role="tablist" aria-label={label}>
         {items.map((item, index) => {
           const itemId = idFrom(item, index, "tab");
+          const tabId = `st-tabs-${reactId}-tab-${itemId}`;
+          const panelId = `st-tabs-${reactId}-panel-${itemId}`;
           return (
-            <button key={itemId} type="button" role="tab" className={classNames("st-tabs__tab", itemId === current && "st-tabs__tab--active")} aria-selected={itemId === current} disabled={item.disabled} onClick={() => setCurrent(itemId)}>
+            <button
+              key={itemId}
+              ref={(node) => {
+                tabRefs.current[index] = node;
+              }}
+              id={tabId}
+              type="button"
+              role="tab"
+              className={classNames("st-tabs__tab", itemId === current && "st-tabs__tab--active")}
+              aria-selected={itemId === current}
+              aria-controls={panelId}
+              tabIndex={itemId === current ? 0 : -1}
+              disabled={item.disabled}
+              onClick={() => activateIndex(index)}
+              onKeyDown={(event) => {
+                if (event.key === "ArrowRight") {
+                  event.preventDefault();
+                  moveTab(index, 1);
+                } else if (event.key === "ArrowLeft") {
+                  event.preventDefault();
+                  moveTab(index, -1);
+                } else if (event.key === "Home") {
+                  event.preventDefault();
+                  const firstEnabled = items.findIndex((candidate) => !candidate.disabled);
+                  activateIndex(firstEnabled >= 0 ? firstEnabled : 0);
+                } else if (event.key === "End") {
+                  event.preventDefault();
+                  const lastEnabled = items.map((candidate, candidateIndex) => ({ candidate, candidateIndex })).filter(({ candidate }) => !candidate.disabled).at(-1)?.candidateIndex ?? items.length - 1;
+                  activateIndex(lastEnabled);
+                }
+              }}
+            >
               {item.label}
             </button>
           );
         })}
       </div>
-      <div className="st-tabs__panel" role="tabpanel">{active?.content}</div>
+      <div
+        id={`st-tabs-${reactId}-panel-${itemIds[activeIndex]}`}
+        className="st-tabs__panel"
+        role="tabpanel"
+        aria-labelledby={`st-tabs-${reactId}-tab-${itemIds[activeIndex]}`}
+      >
+        {active?.content}
+      </div>
     </section>
   );
 }
@@ -1658,14 +2087,52 @@ export function TileGroup({ legend, items, value, disabled = false, className, .
   );
 }
 
+export type ToastItem = {
+  id: string;
+  tone?: Exclude<Tone, "neutral">;
+  title: React.ReactNode;
+  message?: React.ReactNode;
+  actions?: React.ReactNode;
+};
 export type ToastProps = React.HTMLAttributes<HTMLElement> & {
   tone?: Exclude<Tone, "neutral">;
   title: React.ReactNode;
   message?: React.ReactNode;
   actions?: React.ReactNode;
   onClose?: () => void;
+  items?: ToastItem[];
+  autoDismiss?: boolean;
+  duration?: number;
+  onDismiss?: (id: string) => void;
 };
-export function Toast({ tone = "info", title, message, actions, onClose, children, className, ...rest }: ToastProps) {
+export function Toast({ tone = "info", title, message, actions, onClose, items, autoDismiss = false, duration = 5000, onDismiss, children, className, ...rest }: ToastProps) {
+  React.useEffect(() => {
+    if (!autoDismiss || !items?.length || !onDismiss) return;
+    const timeout = window.setTimeout(() => onDismiss(items[0].id), duration);
+    return () => window.clearTimeout(timeout);
+  }, [autoDismiss, duration, items, onDismiss]);
+
+  if (items?.length) {
+    return (
+      <div {...rest} className={classNames("st-toastQueue", className)}>
+        {items.map((item) => (
+          <aside key={item.id} className={classNames("st-toast", `st-toast--${item.tone ?? "info"}`)} role="status">
+            <div className="st-toast__content">
+              <h2 className="st-toast__title">{item.title}</h2>
+              {item.message ? <p className="st-toast__message">{item.message}</p> : null}
+            </div>
+            {item.actions ? <div className="st-toast__actions">{item.actions}</div> : null}
+            {onDismiss ? (
+              <button type="button" onClick={() => onDismiss(item.id)} aria-label={`Dismiss ${text(item.title)}`}>
+                Close
+              </button>
+            ) : null}
+          </aside>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <aside {...rest} className={classNames("st-toast", `st-toast--${tone}`, className)} role="status">
       <div className="st-toast__content">
@@ -1688,7 +2155,7 @@ export function Toggle({ label, helperText, size = "md", className, ...rest }: T
     <label className={classNames("st-toggle", `st-toggle--${size}`, className)}>
       <span className="st-toggle__row">
         <span className="st-toggle__label">{label}</span>
-        <input {...rest} className="st-toggle__input" type="checkbox" role="switch" />
+        <input {...rest} className="st-toggle__input" type="checkbox" role="switch" aria-checked={rest.checked ?? rest.defaultChecked ?? undefined} />
         <span className="st-toggle__track"><span className="st-toggle__thumb" /></span>
       </span>
       {helperText ? <span className="st-toggle__help">{helperText}</span> : null}
@@ -1702,11 +2169,13 @@ export type ToggletipProps = Omit<React.HTMLAttributes<HTMLSpanElement>, "conten
   open?: boolean;
   placement?: "top" | "bottom" | "start" | "end";
 };
-export function Toggletip({ label, content, open = true, placement = "top", children, className, ...rest }: ToggletipProps) {
+export function Toggletip({ label, content, open: controlledOpen, placement = "top", children, className, ...rest }: ToggletipProps) {
+  const [open, setOpen] = useControlled(controlledOpen, false);
+  useEscape(open, () => setOpen(false));
   return (
     <span {...rest} className={classNames("st-toggletip", `st-toggletip--${placement}`, className)}>
-      <button type="button" className="st-toggletip__trigger">{label}</button>
-      {open ? <span className="st-toggletip__bubble"><span className="st-toggletip__content">{content ?? children}</span></span> : null}
+      <button type="button" className="st-toggletip__trigger" aria-expanded={open} onClick={() => setOpen(!open)}>{label}</button>
+      {open ? <span className="st-toggletip__bubble" role="status"><span className="st-toggletip__content">{content ?? children}</span></span> : null}
     </span>
   );
 }
@@ -1716,10 +2185,21 @@ export type TooltipProps = Omit<React.HTMLAttributes<HTMLSpanElement>, "content"
   placement?: "top" | "bottom";
 };
 export function Tooltip({ content, placement = "top", children, className, ...rest }: TooltipProps) {
+  const [open, setOpen] = React.useState(false);
+  const tooltipId = React.useId();
   return (
-    <span {...rest} className={classNames("st-tooltip", `st-tooltip--${placement}`, className)}>
+    <span
+      {...rest}
+      className={classNames("st-tooltip", `st-tooltip--${placement}`, className)}
+      onFocus={() => setOpen(true)}
+      onBlur={() => setOpen(false)}
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
       <span className="st-tooltip__trigger">{children}</span>
-      <span className="st-tooltip__content">{content}</span>
+      <span id={tooltipId} className="st-tooltip__content" role="tooltip" aria-hidden={open ? "false" : "true"}>
+        {content}
+      </span>
     </span>
   );
 }
