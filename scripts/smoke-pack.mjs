@@ -36,6 +36,19 @@ const packages = [
     ],
   },
   {
+    name: "@sentropic/design-system-react",
+    requiredFiles: [
+      "dist/index.js",
+      "dist/index.d.ts",
+      "dist/Button.js",
+      "dist/Card.js",
+      "dist/Input.js",
+      "dist/Badge.js",
+      "dist/ThemeProvider.js",
+      "dist/styles.css",
+    ],
+  },
+  {
     name: "@sentropic/design-system-skills",
     requiredFiles: ["dist/index.js", "dist/index.d.ts", "dist/cli.js", "dist/cli.d.ts"],
   },
@@ -157,6 +170,23 @@ for (const exportName of ["Button", "Card", "Input", "Textarea"]) {
   if (!componentIndex.includes("as " + exportName)) {
     throw new Error("@sentropic/design-system-svelte missing " + exportName + " export");
   }
+}
+
+const reactEntry = await import.meta.resolve("@sentropic/design-system-react");
+if (!reactEntry.endsWith("/dist/index.js")) {
+  throw new Error("@sentropic/design-system-react resolved to unexpected entry: " + reactEntry);
+}
+
+const reactIndex = readFileSync(new URL(reactEntry), "utf8");
+for (const exportName of ["Button", "Card", "Input", "Badge", "ThemeProvider"]) {
+  if (!reactIndex.includes("from \\"./" + exportName + ".js\\"")) {
+    throw new Error("@sentropic/design-system-react missing " + exportName + " export");
+  }
+}
+
+const reactStyles = await import.meta.resolve("@sentropic/design-system-react/styles.css");
+if (!reactStyles.endsWith("/dist/styles.css")) {
+  throw new Error("@sentropic/design-system-react styles resolved to unexpected path: " + reactStyles);
 }
 
 console.log("Package imports verified");
