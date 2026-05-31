@@ -274,10 +274,21 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 | Sélecteur de thème docs (`:root`) | 🟢 local | switch qui change l'**anatomie** (police/radius/focus/champ) |
 | **Publication npm** (DS + thèmes, post-anatomie) | ⚪ | bump à faire (DS `0.9.0`→?, thèmes `0.1.0`→?), **prévenir l'utilisateur** avant tag |
 | Rollout Phase 2 (~55 composants restants) | ⚪ | après schéma figé |
-| Thèmes clients : Airbus / Scalian / CGI | ⚪ | plus tard ; **hors git** |
+| Thème client Airbus | 🟡 | Codex owner ; portage initié depuis `../airbus-design-system` en package privé `packages/theme-airbus` (`airbusTheme`, test de contrat, `MAPPING.md`). Publication bloquée jusqu'à décision privé/public. |
+| Thèmes clients : Scalian / CGI | ⚪ | plus tard ; **hors git** tant que non cadrés |
 
 **Dépendances** : WP8 (moteur `design` + `packages/themes`).
 **Parallélisable avec** : WP9, WP12.
+
+### Suivi WP10 Airbus
+
+| Vue | Track | Finalite | Etat | Avancement | Detail |
+|---|---|---|---:|---:|---|
+| Fait | Coordination | Declarer l'ownership du portage Airbus | 🟢 | 100% | Session h2a ouverte comme `codex:sent-tech-design-system`; messages envoyes aux agents DS et Airbus. |
+| Fait | Scaffold theme | Isoler le portage dans un package theme dedie | 🟢 | 100% | `packages/theme-airbus`, package prive `@sentropic/design-system-theme-airbus`, export `airbusTheme`. |
+| Fait | Contrat test | Proteger l'identite minimale du theme | 🟢 | 100% | Test Vitest red/green sur `compileTheme(airbusTheme)` et tokens Airbus clefs. |
+| A faire | Fidelity | Comparer les composants pilotes contre Airbus reel | 🟡 | 20% | Mapping initial Button/Input/Tabs/Card/Search/Tag depuis tokens + styles Airbus ; banc `/compare` a brancher. |
+| A faire | Gouvernance | Decider la distribution du theme client | ⏸️ | 0% | Rester prive tant que publication, nommage et contraintes Airbus ne sont pas valides. |
 
 ## WP11 — Dogfooding du moteur publié (complément WP7)
 
@@ -309,23 +320,93 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 **Dépendances** : à préciser (probablement tokens/themes pour la cohérence visuelle).
 **Parallélisable avec** : tous.
 
+## WP13 — DS React (portage cadré, sans collision Svelte)
+
+**Statut global** : 🟡 **port complet livré (2026-05-31), à intégrer**. `packages/components-react` couvre les **80 exports publics** Svelte (branche `codex-react-mvp`, `private:true`, NON mergé). Port actuel = parité de contrat (export/class/jsdom) ; lot Codex en cours = **parité comportementale réelle** (interactions, focus, a11y) + surface docs React. Intégration (merge + revue des fichiers partagés : `package-lock.json`, `scripts/smoke-pack.mjs`) côté Claude.
+
+**Décidé 2026-05-30** : Codex prend le rôle d'owner React. Claude conserve les chantiers Svelte/docs/themes/release/fidelity en cours. Toute modification de fichiers partagés (`package-lock.json`, scripts racine, navigation docs, release tags) doit être annoncée via h2a avant édition.
+
+| Item | Statut | Owner | Notes |
+|---|---|---|---|
+| État des lieux React | 🟡 | Codex | Confirmer absence de `packages/components-react`, inventorier legacy React, identifier composants MVP. |
+| Contrat React | ⚪ | Codex | API props, theming CSS variables, stratégie icons, dépendances peer (`react`, `react-dom`) et non-objectifs. |
+| Scaffold `packages/components-react` | ⚪ | Codex | À créer isolé, après stabilisation des travaux Claude sur release/docs/fidelity. |
+| Docs React | ⚪ | Codex | Entrée dédiée ou onglets React/Svelte, sans réécrire les pages Svelte en cours. |
+| Tracks Svelte/docs/themes/release/fidelity | 🟡 | Claude | Hors scope Codex React, sauf demande explicite ou accord h2a. |
+
+### Coordination WP13
+
+| Quand | Codex | Claude | Règle |
+|---|---|---|---|
+| Maintenant | Consigner le scope React dans `PLAN.md` + ce WP. | Continuer les tracks non React. | Pas de changement de code React tant que le cadrage n'est pas posé. |
+| Après cadrage | Proposer MVP + fichiers exacts à créer. | Signaler tout conflit sur scripts/docs/release. | h2a avant tout fichier partagé. |
+| Après stabilisation des travaux Claude en cours | Créer le package React isolé et ses tests. | Ne pas modifier `packages/components-react` sans message. | `components-svelte` reste la référence, pas une cible de refactor. |
+| Avant release | Vérifier build/test React + DS existant. | Vérifier release globale et tags. | Release coordonnée, pas de tag partiel non annoncé. |
+
+**Dépendances** : tokens/themes existants ; stabilisation des changements release/docs/fidelity en cours côté Claude.
+**Parallélisable avec** : WP7/WP8/WP10 côté Claude tant que les fichiers partagés sont évités.
+
+## Mise à jour 2026-05-31 — ports React/Airbus livrés (à intégrer), chrome par thème ouvert
+
+- **ForceGraph 0.10.3** (API sélection : `selectedIds`/`focusId`/`onSelect`/`onOpenEntity`) **publié npm** (lockstep tokens/themes/svelte 0.10.3).
+- **Compare-mode** : Lot 1 (socle de vérité partagée) livré sur main ; Lot 2 (UI triptyque, Δ lus du registre) livré sur branche `claude-compare-lot2` (en revue) ; hooks d'overlay privé générique = **next step** (Claude).
+- **WP13 React** : **port complet livré** (80 exports publics portés, parité jsdom 87 tests, branche `codex-react-mvp`, `private`, NON mergé) → **en attente d'intégration** (merge + revue côté Claude). Lot Codex en cours = **parité comportementale réelle** (interactions, a11y) + surface docs React.
+- **WP10 Airbus** : **thème complet livré** (palette + anatomie + dark mode `airbusDarkTheme`, branche `codex-airbus-full`, NON mergé) ; thème déjà committé sur main + dans le switcher docs ; overlay privé prêt hors-git. Lot Codex en cours = **pipeline fidélité `@airbus/styles`** + **réf chrome Airbus** (pour WP14).
+- **WP14 (nouveau)** : chrome documentaire par thème (ci-dessous).
+
+## WP14 — Chrome documentaire par thème (header + barre latérale fidèles au DS)
+
+**Statut global** : 🔵 cadré (2026-05-31), démarrage **Carbon + DSFR** (captures de référence fournies par l'utilisateur).
+
+**Problème (signalé par l'utilisateur — déjà demandé)** : aujourd'hui, basculer de thème ne change **que la police / l'anatomie** (tokens). Le **chrome documentaire** (header avec logo, menu de header, menu de barre latérale) reste le nôtre → « **pas crédible** ». Exigence : quand on passe sur un thème d'import, **tout le chrome des docs doit prendre la FORME du site de documentation réel de ce design system** — **logos pixel-perfect**, forme du header, forme du menu de header, forme du menu latéral. On parle de la **FORME** (header / nav / sidebar), pas du contenu de présentation.
+
+**Références (captures utilisateur 2026-05-31)** :
+- **Carbon (IBM)** : header **barre noire** pleine largeur, « Carbon Design System » à gauche, icônes recherche + grille (3×3) à droite ; **barre latérale gauche** = arbre de nav (All about Carbon, What's happening, **Designing** [actif, surbrillance grise], Developing, Contributing, Migrating, puis Elements / Guidelines / Components / Patterns / Community assets / Data visualization / Help, **GitHub** avec icône lien externe). Typo IBM Plex.
+- **DSFR (État FR)** : header **blanc**, **logo RF** (bloc « RÉPUBLIQUE FRANÇAISE » + devise) + titre « Système de Design de l'État » ; à droite « Être tenu informé » + sélecteur de version `</> v1.14` + **grande barre de recherche** ; **nav horizontale** (Premiers pas / Fondamentaux / Composants / Modèles / Mesure d'audience / Communauté / Aide / À propos) avec onglet actif **souligné** ; **barre latérale gauche** (item actif en **bloc bleu** + barre latérale d'accent) + **fil d'Ariane**. Typo Marianne.
+- **Airbus** : même esprit, **référence extraite de `../airbus-design-system`** par Codex (logo SVG + forme header + barre latérale) — capture fournie plus tard par l'utilisateur.
+- **Standard (sent-tech)** : un **chrome standard** de base, propre (le nôtre).
+
+**Doute explicite à lever** : les composants utilisés pour le rendu de la doc (header, menu de header, barre latérale) ne sont peut-être pas assez **paramétrables** pour porter ces formes (« y a que la police qui change ») → audit puis généralisation si besoin.
+
+| Item | Statut | Owner | Notes |
+|---|---|---|---|
+| Audit du chrome actuel (header/menu/sidebar paramétrables par thème ?) | ⚪ | Claude | `apps/docs/src/routes/+layout.svelte` (header + barre latérale), composant `Header` (`packages/components-svelte`), `apps/docs/src/app.css`. |
+| Logos pixel-perfect par DS | ⚪ | Claude (Carbon/DSFR) + Codex (Airbus) | SVG officiels : wordmark Carbon, bloc RF/Marianne DSFR, logo Airbus. |
+| Chrome **Carbon** (barre noire + sidebar arbre + icônes) | ⚪ | Claude | activé quand thème actif = `carbon`. |
+| Chrome **DSFR** (logo RF + nav horizontale soulignée + sidebar bloc actif + fil d'Ariane) | ⚪ | Claude | activé quand thème actif = `dsfr`. |
+| Chrome **Airbus** (même esprit) | ⚪ | Claude + réf Codex | dépend de la réf chrome Airbus (WP10). |
+| Chrome **standard** sent-tech | ⚪ | Claude | header de base propre. |
+
+### Suivi WP14
+| Vue | Track | Finalité | État | Avancement | Détail |
+|---|---|---|---:|---:|---|
+| À faire | Audit chrome | Vérifier la paramétrabilité header/menu/sidebar par thème | ⚪ | 0% | Sinon, généraliser les composants de chrome (forme, pas que tokens). |
+| À faire | Carbon + DSFR | Reproduire la FORME des 2 sites de doc réels (header + nav + sidebar + logo pixel-perfect) | ⚪ | 0% | Captures de référence fournies (Image Carbon + Image DSFR). |
+| À faire | Airbus + standard | Airbus dans le même esprit + un chrome standard sent-tech | ⚪ | 0% | Réf Airbus depuis `../airbus-design-system` (Codex). |
+| Attendu | Crédibilité | Basculer le thème change le **chrome entier** (header/logo/nav/sidebar), pas que la police | ⚪ | 0% | Comparaison côte à côte avec les vrais sites Carbon/DSFR. |
+
+**Dépendances** : thème actif (switcher, WP10) ; réf chrome Airbus (WP10/Codex). **Owner** : Claude (docs). **Parallélisable** : oui (apps/docs, hors `packages/components-react/**` et `packages/theme-airbus/**`).
+
 ## Plan de bataille parallele
 
-A tout instant on peut tenir 3 a 4 agents en parallele sans conflit de fichiers. **Priorité actuelle (révisée 2026-05-26, cœur WP8 livré + 4 packages publiés)** :
+A tout instant on peut tenir 3 a 4 agents en parallele sans conflit de fichiers. **Priorité actuelle (révisée 2026-05-30, cœur WP8 livré + 4 packages publiés, WP10 Airbus initié, WP13 React cadré)** :
 
-1. **WP9 Chat/Agent** — bug le plus visible : sortir le chat du formulaire, topic dédié, input multiligne, réalignement streaming/reasoning/tool-calling.
-2. **WP10 theming via `design`** — appliquer DS Sentropic + mapper DS tiers → thèmes ; livrer `theme-dsfr` + `theme-carbon`. **Explicitement avant WP7.**
-3. **WP6 fix-plan** — retest visuel Playwright overlays + plan-completion (débloque la re-passe WP2).
-4. **WP11 dogfooding** — moteur publié sur notre propre site (complément WP7).
-5. **WP7 audit DS** — après WP10 ; committer la matrice de couverture, combler les trous règle/test.
-6. Fond : **WP5 charts**, **WP8 ruleset 7→15**, **WP12 templates/slides** (à cadrer).
+1. **WP10 thème Airbus** — Codex owner : continuer le mapping theme/anatomie depuis `../airbus-design-system`, puis brancher la fidélité visuelle.
+2. **WP13 DS React** — cadrage Codex uniquement pour l'instant : état des lieux, contrat MVP, pas de scaffold avant coordination h2a.
+3. **WP9 Chat/Agent** — bug le plus visible : sortir le chat du formulaire, topic dédié, input multiligne, réalignement streaming/reasoning/tool-calling.
+4. **WP10 theming via `design`** — appliquer DS Sentropic + mapper DS tiers → thèmes ; livrer `theme-dsfr` + `theme-carbon`. **Explicitement avant WP7.**
+5. **WP6 fix-plan** — retest visuel Playwright overlays + plan-completion (débloque la re-passe WP2).
+6. **WP11 dogfooding** — moteur publié sur notre propre site (complément WP7).
+7. **WP7 audit DS** — après WP10 ; committer la matrice de couverture, combler les trous règle/test.
+8. Fond : **WP5 charts**, **WP8 ruleset 7→15**, **WP12 templates/slides** (à cadrer).
 
 ## Decisions ouvertes à trancher
 
 1. **WP12** : les templates docs / slides relèvent-ils du périmètre DS ? format de sortie (HTML / Slidev / pptx) ?
-2. **WP10** : stratégie de thème — un thème par client (Airbus/Scalian/CGI) publié ou privé ? convention de nommage `@sentropic/design-system-theme-<x>`.
+2. **WP10** ✅ tranché (2026-05-31) : le **port Airbus est committable** (jugé non confidentiel — simple port de tokens), package `private:true` **non publié npm**, présent dans le switcher docs. La **référence visuelle** Airbus (assets/CSS/logo pour fidélité + chrome) reste **privée hors-git** (idem futurs Scalian/CGI).
 3. **WP9** : faut-il de nouvelles primitives (ReasoningBlock, ToolCall) ou enrichir les existantes ?
-4. WP8 : adapters multi-harness (`.codex` / `.gemini`) — implémenter ou rester en wrapper unique.
+4. **WP13** ✅ tranché (2026-05-31) : **couverture large** — port complet des 80 exports, **composants React purs** (pas de dép headless), `private`/non publié ; parité comportementale + surface docs React en cours. Intégration en **un merge** quand le lot comportemental est prêt.
+5. WP8 : adapters multi-harness (`.codex` / `.gemini`) — implémenter ou rester en wrapper unique.
 
 ## Hygiene de ce doc
 
