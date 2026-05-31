@@ -10,3 +10,8 @@ export interface CompareEntry {
   note?: string;
 }
 export declare const COMPARE_MANIFEST: Record<string, Record<string, CompareEntry>>;
+
+export interface GetCompareManifestOptions {
+  includeLocal?: boolean;
+}
+export declare function getCompareManifest(opts?: GetCompareManifestOptions): Record<string, Record<string, CompareEntry>>;
