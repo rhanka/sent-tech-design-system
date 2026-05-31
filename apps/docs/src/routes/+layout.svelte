@@ -10,6 +10,7 @@
   } from "@sentropic/design-system-themes";
   import { dsfrTheme } from "@sentropic/design-system-theme-dsfr";
   import { carbonTheme } from "@sentropic/design-system-theme-carbon";
+  import { airbusTheme } from "@sentropic/design-system-theme-airbus";
   import {
     DOCS_FOUNDATION_NAV,
     DOCS_TOP_NAV,
@@ -26,9 +27,10 @@
   const componentGroups = buildComponentNavGroups();
   const breadcrumbs = $derived(resolveBreadcrumb(page.url.pathname));
 
-  // Thèmes proposés : le DS Sentropic de référence + les 2 mappings tiers.
+  // Thèmes proposés : le DS Sentropic de référence + les 2 mappings tiers
+  // (DSFR/Carbon) + le thème client Airbus (port d'anatomie).
   // (forge/entropic sont des tenants de démo internes — exclus du sélecteur.)
-  const THEMES: TenantTheme[] = [sentTechTheme, dsfrTheme, carbonTheme];
+  const THEMES: TenantTheme[] = [sentTechTheme, dsfrTheme, carbonTheme, airbusTheme];
   const THEME_STORAGE_KEY = "st-docs-theme";
   // Balise <style> du thème de base, injectée en SSR pour le premier rendu.
   // (Construite dans le script pour éviter un littéral <style> dans le markup.)
