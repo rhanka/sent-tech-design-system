@@ -46,6 +46,9 @@
   import { dsfrTheme } from "@sentropic/design-system-theme-dsfr";
   import { carbonTheme } from "@sentropic/design-system-theme-carbon";
   import docsPkg from "../../../package.json";
+  // Source unique pinée (C8) : CDN/polices de référence sortis dans un registre
+  // docs-local, partagé avec l'oracle de fidélité.
+  import { REFERENCE_THEMES } from "$lib/compare/reference-themes.mjs";
 
   // Thèmes importés uniquement.
   const THEMES: TenantTheme[] = [dsfrTheme, carbonTheme];
@@ -146,29 +149,22 @@
     }
   };
 
-  const CDN: Record<string, string> = {
-    dsfr: "https://cdn.jsdelivr.net/npm/@gouvfr/dsfr/dist/dsfr.min.css",
-    carbon: "https://cdn.jsdelivr.net/npm/carbon-components/css/carbon-components.min.css"
-  };
-
-  // F2 — police de marque chargée RÉELLEMENT des deux côtés du banc.
-  // DSFR : Marianne via les @font-face de la feuille DSFR (CDN) + la CSS
-  // utilitaire des polices. Carbon : IBM Plex Sans via Google Fonts (en plus
-  // des @font-face de Carbon). On force aussi la chaîne `font-family` de marque
-  // côté <body> de l'iframe, sinon le `font-family:system-ui` inline masquait
-  // Marianne / IBM Plex Sans et faussait la comparaison (fallback asymétrique).
-  const FONT_LINKS: Record<string, string> = {
-    dsfr: `<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr/dist/utility/utility.min.css">`,
-    carbon: `<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&display=swap">`
-  };
-
-  // Chaîne `font-family` de marque appliquée au <body> de l'iframe de référence,
-  // pour que la référence rende la MÊME famille que notre côté (plus de fallback
-  // system-ui asymétrique).
-  const BRAND_FONT: Record<string, string> = {
-    dsfr: "Marianne, arial, system-ui, sans-serif",
-    carbon: "'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif"
-  };
+  // F2 / C8 — CDN (pinés) + polices de marque chargées RÉELLEMENT des deux côtés
+  // du banc, dérivés de la source unique `reference-themes.mjs` (mêmes valeurs
+  // épinglées que celles mesurées par l'oracle → registre reproductible).
+  // DSFR : Marianne via la CSS utilitaire DSFR. Carbon : IBM Plex Sans via Google
+  // Fonts (Carbon ne sert pas la police). On force aussi la chaîne `font-family`
+  // de marque côté <body> de l'iframe, sinon `system-ui` masquait Marianne /
+  // IBM Plex Sans et faussait la comparaison (fallback asymétrique).
+  const CDN: Record<string, string> = Object.fromEntries(
+    Object.entries(REFERENCE_THEMES).map(([id, t]) => [id, t.cssUrl])
+  );
+  const FONT_LINKS: Record<string, string> = Object.fromEntries(
+    Object.entries(REFERENCE_THEMES).map(([id, t]) => [id, t.fontLinks])
+  );
+  const BRAND_FONT: Record<string, string> = Object.fromEntries(
+    Object.entries(REFERENCE_THEMES).map(([id, t]) => [id, t.brandFont])
+  );
 
   // @font-face Marianne (URLs CDN absolues) pour NOTRE côté DSFR. On évite
   // d'injecter tout dsfr.min.css (qui contient un reset global qui fausserait

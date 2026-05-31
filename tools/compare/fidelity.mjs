@@ -32,6 +32,7 @@ import puppeteer from "puppeteer-core";
 
 import { COMPARE_MANIFEST } from "../../apps/docs/src/lib/compare/manifest.mjs";
 import { gapKey, manifestHash, mergeRegistry } from "../../apps/docs/src/lib/compare/registry.mjs";
+import { ANATOMY_VERSION } from "@sentropic/design-system-themes";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = resolve(__dirname, "..", "..");
@@ -892,12 +893,26 @@ async function main() {
   } catch {
     existing = null; // first seed
   }
+  // Mi4 — stamp REAL versions (C8 reproducibility): anatomy from the tokens
+  // package, DS/theme pins from the docs deps (same source as the bench header).
+  let deps = {};
+  try {
+    const docsPkg = JSON.parse(
+      await readFile(join(REPO_ROOT, "apps", "docs", "package.json"), "utf8")
+    );
+    deps = docsPkg.dependencies ?? {};
+  } catch {
+    deps = {};
+  }
   const registry = mergeRegistry(existing, oracleGaps, {
     manifestHash: manifestHash(COMPARE_MANIFEST),
     generatedAt,
-    anatomyVersion: opts.anatomyVersion ?? null,
-    dsVersion: opts.dsVersion ?? null,
-    themeVersion: opts.themeVersion ?? null,
+    anatomyVersion: ANATOMY_VERSION,
+    dsVersion: deps["@sentropic/design-system-themes"] ?? null,
+    themeVersion: {
+      dsfr: deps["@sentropic/design-system-theme-dsfr"] ?? null,
+      carbon: deps["@sentropic/design-system-theme-carbon"] ?? null,
+    },
   });
 
   const mdPath = join(REPO_ROOT, "docs", "compare-fidelity-report.md");

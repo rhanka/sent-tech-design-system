@@ -1,6 +1,6 @@
 {
   "meta": {
-    "date": "2026-05-30",
+    "date": null,
     "browser": "Google Chrome (system)",
     "chromePath": "/usr/bin/google-chrome",
     "url": "http://localhost:4322/compare",
@@ -11,10 +11,10 @@
     "generatedBy": "tools/compare/fidelity.mjs"
   },
   "global": {
-    "eq": 1144,
+    "eq": 1148,
     "close": 24,
-    "diff": 101,
-    "fidelity": 92
+    "diff": 97,
+    "fidelity": 92.4
   },
   "netGaps": [
     "dsfr/Button: box width (Δ2.0px)",
@@ -44,10 +44,6 @@
     "dsfr/Toggle: radius topRight (Δ999.0px)",
     "dsfr/Toggle: radius bottomRight (Δ999.0px)",
     "dsfr/Toggle: radius bottomLeft (Δ999.0px)",
-    "dsfr/Toggle: padding-top (Δ2.0px)",
-    "dsfr/Toggle: padding-right (Δ2.0px)",
-    "dsfr/Toggle: padding-bottom (Δ2.0px)",
-    "dsfr/Toggle: padding-left (Δ2.0px)",
     "dsfr/Toggle: box width (Δ-205.0px)",
     "dsfr/Toggle: box height (Δ-20.0px)",
     "dsfr/Toggle: background-color (rgb(0,0,145) vs rgb(0,0,0)/a0)",
@@ -4247,11 +4243,11 @@
       "notes": [
         "L'interrupteur DSFR est dessiné en `::before/::after` sur le label. On compare le label (`.fr-toggle__label`) — typo/couleur comparables."
       ],
-      "fidelity": 64.5,
+      "fidelity": 77.4,
       "counts": {
-        "eq": 20,
+        "eq": 24,
         "close": 0,
-        "diff": 11
+        "diff": 7
       },
       "rows": [
         {
@@ -4385,34 +4381,34 @@
         {
           "label": "padding-top",
           "prop": "padding-top",
-          "ours": "2px",
+          "ours": "0px",
           "ref": "0px",
-          "status": "≠",
-          "delta": "Δ2.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "padding-right",
           "prop": "padding-right",
-          "ours": "2px",
+          "ours": "0px",
           "ref": "0px",
-          "status": "≠",
-          "delta": "Δ2.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "padding-bottom",
           "prop": "padding-bottom",
-          "ours": "2px",
+          "ours": "0px",
           "ref": "0px",
-          "status": "≠",
-          "delta": "Δ2.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "padding-left",
           "prop": "padding-left",
-          "ours": "2px",
+          "ours": "0px",
           "ref": "0px",
-          "status": "≠",
-          "delta": "Δ2.0px"
+          "status": "=",
+          "delta": ""
         },
         {
           "label": "box width",
@@ -4535,10 +4531,10 @@
             "bottomLeft": "999px"
           },
           "padding": {
-            "top": "2px",
-            "right": "2px",
-            "bottom": "2px",
-            "left": "2px"
+            "top": "0px",
+            "right": "0px",
+            "bottom": "0px",
+            "left": "0px"
           },
           "box": {
             "width": 36,

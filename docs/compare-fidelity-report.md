@@ -5,7 +5,7 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 
 | Champ | Valeur |
 |---|---|
-| Date | 2026-05-30 |
+| Date | <date> |
 | Navigateur | Google Chrome système (`/usr/bin/google-chrome`) via puppeteer-core, headless |
 | URL mesurée | http://localhost:4322/compare (build statique servi) |
 | Tolérance longueur | ±1px → statut `~` |
@@ -492,10 +492,10 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 | radius topRight | 999px | 0px | ≠ Δ999.0px |
 | radius bottomRight | 999px | 0px | ≠ Δ999.0px |
 | radius bottomLeft | 999px | 0px | ≠ Δ999.0px |
-| padding-top | 2px | 0px | ≠ Δ2.0px |
-| padding-right | 2px | 0px | ≠ Δ2.0px |
-| padding-bottom | 2px | 0px | ≠ Δ2.0px |
-| padding-left | 2px | 0px | ≠ Δ2.0px |
+| padding-top | 0px | 0px | = |
+| padding-right | 0px | 0px | = |
+| padding-bottom | 0px | 0px | = |
+| padding-left | 0px | 0px | = |
 | box width | 36px | 241px | ≠ Δ-205.0px |
 | box height | 20px | 40px | ≠ Δ-20.0px |
 | font-family | Marianne | Marianne | = |
@@ -508,7 +508,7 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 | background-color | rgb(0, 0, 145) | rgba(0, 0, 0, 0) | ≠ rgb(0,0,145) vs rgb(0,0,0)/a0 |
 | color | rgb(22, 22, 22) | rgb(22, 22, 22) | = |
 
-**Fidélité Toggle (dsfr) : 64.5%** — 20 `=`, 0 `~`, 11 `≠` sur 31 propriétés.
+**Fidélité Toggle (dsfr) : 77.4%** — 24 `=`, 0 `~`, 7 `≠` sur 31 propriétés.
 
 ### Tag
 
@@ -1722,7 +1722,7 @@ Couverture mesurée : **41 paires** (notre composant mappé vs vrai composant of
 | dsfr | Link | 96.8% | 30 | 0 | 1 | oui |
 | dsfr | Checkbox | 93.5% | 29 | 0 | 2 | oui |
 | dsfr | Radio | 93.5% | 29 | 0 | 2 | oui |
-| dsfr | Toggle | 64.5% | 20 | 0 | 11 | oui |
+| dsfr | Toggle | 77.4% | 24 | 0 | 7 | oui |
 | dsfr | Tag | 100% | 31 | 0 | 0 | oui |
 | dsfr | Badge | 100% | 31 | 0 | 0 | oui |
 | dsfr | Alert | 93.5% | 29 | 0 | 2 | oui |
@@ -1755,9 +1755,9 @@ Couverture mesurée : **41 paires** (notre composant mappé vs vrai composant of
 
 ## Récapitulatif global
 
-- **Fidélité globale : 92%** (1144 `=`, 24 `~`, 101 `≠` sur 1269 propriétés mesurées).
+- **Fidélité globale : 92.4%** (1148 `=`, 24 `~`, 97 `≠` sur 1269 propriétés mesurées).
 - **Couverture : 41 paires composant×thème mesurées.**
-- **Écarts nets restants : 101**
+- **Écarts nets restants : 97**
 
   - dsfr/Button: box width (Δ2.0px)
   - dsfr/Button: box height (Δ2.0px)
@@ -1786,10 +1786,6 @@ Couverture mesurée : **41 paires** (notre composant mappé vs vrai composant of
   - dsfr/Toggle: radius topRight (Δ999.0px)
   - dsfr/Toggle: radius bottomRight (Δ999.0px)
   - dsfr/Toggle: radius bottomLeft (Δ999.0px)
-  - dsfr/Toggle: padding-top (Δ2.0px)
-  - dsfr/Toggle: padding-right (Δ2.0px)
-  - dsfr/Toggle: padding-bottom (Δ2.0px)
-  - dsfr/Toggle: padding-left (Δ2.0px)
   - dsfr/Toggle: box width (Δ-205.0px)
   - dsfr/Toggle: box height (Δ-20.0px)
   - dsfr/Toggle: background-color (rgb(0,0,145) vs rgb(0,0,0)/a0)

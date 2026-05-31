@@ -10,17 +10,25 @@ export const REFERENCE_THEMES = {
   dsfr: {
     label: "Système de Design de l'État (DSFR)",
     cssUrl: `${DSFR_CDN}/dsfr.min.css`,
+    // Marianne via les @font-face de la CSS utilitaire DSFR (pinée).
     fontLinks:
       `<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>` +
       `<link rel="stylesheet" href="${DSFR_CDN}/utility/utility.min.css">`,
-    brandFont: "Marianne, system-ui, sans-serif",
+    // Chaîne de marque appliquée au <body> de l'iframe de référence (mêmes
+    // fallbacks que notre côté → comparaison sans fallback asymétrique).
+    brandFont: "Marianne, arial, system-ui, sans-serif",
     lang: "fr",
   },
   carbon: {
     label: "Carbon Design System (IBM)",
     cssUrl: `${CARBON_CDN}/css/carbon-components.min.css`,
-    fontLinks: "",
-    brandFont: "'IBM Plex Sans', system-ui, sans-serif",
+    // IBM Plex Sans via Google Fonts (Carbon ne sert pas la police lui-même) —
+    // sans quoi la référence retombe sur un fallback système (régression G6).
+    fontLinks:
+      `<link rel="preconnect" href="https://fonts.googleapis.com">` +
+      `<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>` +
+      `<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&display=swap">`,
+    brandFont: "'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif",
     lang: "en",
   },
 };
