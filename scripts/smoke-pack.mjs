@@ -335,7 +335,7 @@ for (const exportName of [
   "TreeView",
   "UnorderedList"
 ]) {
-  if (!reactIndex.includes("from \"./" + exportName + ".js\"")) {
+  if (!reactIndex.includes('from "./' + exportName + '.js"')) {
     throw new Error("@sentropic/design-system-react missing " + exportName + " export");
   }
 }
