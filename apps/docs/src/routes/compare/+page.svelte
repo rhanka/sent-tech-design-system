@@ -336,7 +336,7 @@
       </h2>
 
       {#each ENTRIES.filter((e) => hasTheme(e, theme.id)) as entry (entry.key)}
-        <div class="cmp-row">
+        <div class="cmp-row" data-compare-theme={theme.id} data-compare-component={entry.key} data-compare-scenario={entry.key}>
           <div class="cmp-row__label">{entry.label}</div>
 
           <div class="cmp-cell">
