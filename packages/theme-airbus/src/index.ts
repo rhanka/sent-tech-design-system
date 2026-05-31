@@ -68,9 +68,6 @@ const airbusColor = {
   }
 } as const;
 
-const airbusSelectChevron = (fill: string) =>
-  `url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='${fill.replace("#", "%23")}' d='M8 11L3 6l1-1 4 4 4-4 1 1z'/%3E%3C/svg%3E\") no-repeat right 0.75rem center`;
-
 const foundation = {
   color: {
     blue: {
@@ -182,7 +179,8 @@ const foundation = {
     radiusTop: "0.1875rem",
     underlineMode: "shadow",
     selectAppearance: "none",
-    selectChevron: airbusSelectChevron(airbusColor.primaryBlue[90]),
+    selectChevron:
+      "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%2300205b' d='M8 11L3 6l1-1 4 4 4-4 1 1z'/%3E%3C/svg%3E\") no-repeat right 0.75rem center",
     selectPaddingRight: "2.5rem"
   },
   buttonSecondary: {
@@ -206,58 +204,6 @@ const foundation = {
     lineHeight: "1.5rem",
     indicatorSide: "bottom"
   },
-  pagination: {
-    background: airbusColor.base.white,
-    border: "transparent",
-    borderWidth: "0",
-    text: airbusColor.dark[70],
-    radius: "0.1875rem",
-    activeBackground: airbusColor.primaryBlue[90],
-    activeText: airbusColor.base.white,
-    activeBorder: "transparent",
-    activeBorderWidth: "0",
-    activeWeight: "700",
-    disabledText: airbusColor.coolGrey[50],
-    paddingBlock: "0.375rem",
-    paddingInline: "0.75rem",
-    minSize: "2.25rem",
-    fontSize: "0.875rem",
-    lineHeight: "1.5rem",
-    letterSpacing: "0"
-  },
-  breadcrumb: {
-    text: airbusColor.coolGrey[60],
-    linkText: airbusColor.primaryBlue[60],
-    currentText: airbusColor.dark[70],
-    separator: airbusColor.coolGrey[50],
-    fontSize: "0.875rem",
-    lineHeight: "1.25rem",
-    letterSpacing: "0",
-    currentWeight: "700"
-  },
-  alert: {
-    background: airbusColor.skyBlue[10],
-    text: airbusColor.dark[70],
-    borderTop: `1px solid ${airbusColor.coolGrey[20]}`,
-    borderRight: `1px solid ${airbusColor.coolGrey[20]}`,
-    borderBottom: `1px solid ${airbusColor.coolGrey[20]}`,
-    accentWidth: "0.1875rem",
-    paddingTop: "0.75rem",
-    paddingRight: "1rem",
-    paddingBottom: "0.75rem",
-    paddingLeft: "1rem",
-    fontSize: "0.875rem",
-    lineHeight: "1.25rem",
-    letterSpacing: "0"
-  },
-  accordion: {
-    text: airbusColor.primaryBlue[90],
-    paddingBlock: "0.75rem",
-    paddingInline: "1rem",
-    fontSize: "0.875rem",
-    fontWeight: "700",
-    lineHeight: "1.5rem"
-  },
   tag: {
     radius: "0.1875rem",
     paddingBlock: "0.25rem",
@@ -265,52 +211,14 @@ const foundation = {
     fontSize: "0.75rem",
     fontWeight: "700",
     lineHeight: "1rem",
-    letterSpacing: "0",
-    textTransform: "none",
-    minHeight: "1.5rem",
     neutralBackground: airbusColor.coolGrey[10],
     neutralText: airbusColor.dark[70]
-  },
-  badge: {
-    radius: "0.1875rem",
-    paddingBlock: "0.125rem",
-    paddingInline: "0.5rem",
-    fontSize: "0.75rem",
-    fontWeight: "700",
-    lineHeight: "1rem",
-    letterSpacing: "0",
-    textTransform: "none",
-    minHeight: "1.25rem",
-    infoBackground: airbusColor.primaryBlue[10],
-    infoText: airbusColor.primaryBlue[90]
-  },
-  choice: {
-    labelFontSize: "0.875rem",
-    labelLineHeight: "1.25rem",
-    radioLineHeight: "1.25rem",
-    labelLetterSpacing: "0",
-    labelColor: airbusColor.dark[70]
   },
   search: {
     paddingBlock: "0.5rem",
     paddingInline: "2.5rem",
     fontSize: "0.875rem",
-    lineHeight: "1.25rem",
-    letterSpacing: "0"
-  },
-  toggle: {
-    trackRadius: "62.5rem",
-    trackPadding: "0.125rem",
-    trackWidth: "2.5rem",
-    trackHeight: "1.25rem",
-    thumbSize: "1rem",
-    trackColor: airbusColor.coolGrey[60],
-    trackCheckedColor: airbusColor.primaryBlue[90],
-    thumbColor: airbusColor.base.white,
-    fontSize: "0.875rem",
-    lineHeight: "1.25rem",
-    letterSpacing: "0",
-    textColor: airbusColor.dark[70]
+    lineHeight: "1.25rem"
   }
 } as const;
 
@@ -367,136 +275,6 @@ const semantic = {
   }
 } as const;
 
-const darkSemantic = {
-  ...semantic,
-  surface: {
-    default: airbusColor.dark[70],
-    subtle: airbusColor.warmGrey[100],
-    raised: airbusColor.coolGrey[80],
-    inverse: airbusColor.base.white,
-    overlay: "rgb(0 0 0 / 0.72)"
-  },
-  text: {
-    primary: airbusColor.coolGrey[10],
-    secondary: airbusColor.coolGrey[30],
-    muted: airbusColor.coolGrey[50],
-    inverse: airbusColor.dark[70],
-    link: airbusColor.skyBlue[50]
-  },
-  border: {
-    subtle: airbusColor.coolGrey[80],
-    strong: airbusColor.coolGrey[60],
-    interactive: airbusColor.skyBlue[50]
-  },
-  action: {
-    primary: airbusColor.skyBlue[60],
-    primaryHover: airbusColor.skyBlue[50],
-    primaryText: airbusColor.primaryBlue[100],
-    secondary: "transparent",
-    secondaryHover: airbusColor.coolGrey[80],
-    secondaryText: airbusColor.skyBlue[50],
-    danger: airbusColor.red[70]
-  },
-  feedback: {
-    success: airbusColor.green[80],
-    warning: airbusColor.yellow[70],
-    error: airbusColor.red[70],
-    info: airbusColor.skyBlue[50]
-  },
-  status: {
-    pending: airbusColor.yellow[70],
-    processing: airbusColor.skyBlue[50],
-    completed: airbusColor.green[80],
-    failed: airbusColor.red[70]
-  },
-  data: {
-    category1: airbusColor.skyBlue[60],
-    category2: airbusColor.turquoise[50],
-    category3: airbusColor.primaryBlue[60],
-    category4: airbusColor.green[80],
-    category5: airbusColor.orange[70],
-    category6: airbusColor.yellow[70],
-    category7: airbusColor.purple[70],
-    category8: airbusColor.red[70]
-  }
-} as const;
-
-const darkFoundation = {
-  ...foundation,
-  focus: {
-    ...foundation.focus,
-    color: airbusColor.skyBlue[50]
-  },
-  field: {
-    ...foundation.field,
-    fillBg: airbusColor.coolGrey[80],
-    underlineColor: airbusColor.coolGrey[50],
-    selectChevron: airbusSelectChevron(airbusColor.skyBlue[10])
-  },
-  buttonSecondary: {
-    background: "transparent",
-    border: airbusColor.skyBlue[50],
-    hoverBackground: airbusColor.coolGrey[80]
-  },
-  card: {
-    ...foundation.card,
-    background: airbusColor.coolGrey[80]
-  },
-  tabs: {
-    ...foundation.tabs,
-    activeText: airbusColor.skyBlue[50]
-  },
-  pagination: {
-    ...foundation.pagination,
-    background: "transparent",
-    text: airbusColor.coolGrey[10],
-    activeBackground: airbusColor.skyBlue[60],
-    activeText: airbusColor.primaryBlue[100],
-    disabledText: airbusColor.coolGrey[50]
-  },
-  breadcrumb: {
-    ...foundation.breadcrumb,
-    text: airbusColor.coolGrey[30],
-    linkText: airbusColor.skyBlue[50],
-    currentText: airbusColor.coolGrey[10],
-    separator: airbusColor.coolGrey[50]
-  },
-  alert: {
-    ...foundation.alert,
-    background: airbusColor.coolGrey[80],
-    text: airbusColor.coolGrey[10],
-    borderTop: `1px solid ${airbusColor.coolGrey[60]}`,
-    borderRight: `1px solid ${airbusColor.coolGrey[60]}`,
-    borderBottom: `1px solid ${airbusColor.coolGrey[60]}`,
-    accentInfo: airbusColor.skyBlue[50]
-  },
-  accordion: {
-    ...foundation.accordion,
-    text: airbusColor.skyBlue[50]
-  },
-  tag: {
-    ...foundation.tag,
-    neutralBackground: airbusColor.coolGrey[80],
-    neutralText: airbusColor.coolGrey[10]
-  },
-  badge: {
-    ...foundation.badge,
-    infoBackground: airbusColor.primaryBlue[80],
-    infoText: airbusColor.skyBlue[10]
-  },
-  choice: {
-    ...foundation.choice,
-    labelColor: airbusColor.coolGrey[10]
-  },
-  toggle: {
-    ...foundation.toggle,
-    trackColor: airbusColor.coolGrey[60],
-    trackCheckedColor: airbusColor.skyBlue[60],
-    thumbColor: airbusColor.dark[70],
-    textColor: airbusColor.coolGrey[10]
-  }
-} as const;
-
 export const airbusTheme: TenantTheme = {
   id: "airbus",
   label: "Airbus",
@@ -507,18 +285,5 @@ export const airbusTheme: TenantTheme = {
     component: createComponent(semantic, foundation)
   }
 };
-
-export const airbusDarkTheme: TenantTheme = {
-  id: "airbus-dark",
-  label: "Airbus Dark",
-  mode: "dark",
-  tokens: {
-    foundation: darkFoundation,
-    semantic: darkSemantic,
-    component: createComponent(darkSemantic, darkFoundation)
-  }
-};
-
-export const airbusThemes = [airbusTheme, airbusDarkTheme] as const;
 
 export default airbusTheme;
