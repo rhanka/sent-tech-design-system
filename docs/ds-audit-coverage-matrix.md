@@ -3,7 +3,7 @@
 Document de traçabilité (livrable documentaire WP7). Deux matrices :
 
 1. **Couverture des références upstream `pbakaus/impeccable`** : pour chaque référence, son cluster (A–E), son statut de couverture, et le doc d'audit local qui la traite.
-2. **Traçabilité `finding WP7 → règle WP8 (packages/impeccable) → test`** : pour chaque règle réellement présente dans le code, le finding source et le test qui la couvre.
+2. **Traçabilité `finding WP7 → règle WP8 (packages/skills) → test`** : pour chaque règle réellement présente dans le code, le finding source et le test qui la couvre.
 
 Ce fichier ne modifie aucun autre track : il consolide ce qui est *prouvé par les fichiers du repo*, pas ce qui est promis.
 
@@ -19,7 +19,7 @@ Ce fichier ne modifie aucun autre track : il consolide ce qui est *prouvé par l
   - `reference/*.md` : **36 fichiers** de référence réels.
   - `scripts/command-metadata.json` : **23 commandes** décrites.
   - `SKILL.md` : table de **24 commandes** (les 23 + `shape`).
-- Le moteur réel : `packages/impeccable/src/rules/*.ts`, `src/rules/index.ts`, et le test `packages/impeccable/test-fixtures/impeccable.test.js`.
+- Le moteur réel : `packages/skills/src/rules/*.ts`, `src/rules/index.ts`, et le test `packages/skills/test-fixtures/skills.test.js`.
 
 ### Compte réel des références : 36 fichiers trouvés, pas exactement « 37 »
 
@@ -139,7 +139,7 @@ Ces fichiers existent dans `reference/` mais ne figurent dans **aucun** des 5 cl
 
 ### Règles réellement présentes dans le code
 
-Source : `packages/skills/src/rules/index.ts` (`defaultRules`) et les fichiers `src/rules/*.ts`. **7 règles actives**, conformes au « 7 règles actives » de `workpackages.md` (WP8 P2). *(Note : le moteur vit dans `packages/skills`, pas `packages/impeccable` — ancien chemin corrigé.)*
+Source : `packages/skills/src/rules/index.ts` (`defaultRules`) et les fichiers `src/rules/*.ts`. **15 règles actives** en WP8, chacune reliée dans le code à un principe `design` et à un finding WP7 via `Rule.principle` / `Rule.wp7Finding`. *(Note : le moteur vit dans `packages/skills`, pas `packages/impeccable` — ancien chemin corrigé.)*
 
 | `ruleId` (exact) | Export (nom de code) | Fichier source |
 |---|---|---|
@@ -150,12 +150,20 @@ Source : `packages/skills/src/rules/index.ts` (`defaultRules`) et les fichiers `
 | `line-length-cap` | `lineLengthRule` | `src/rules/lineLengthRule.ts` |
 | `touch-target-44` | `touchTargetRule` | `src/rules/touchTargetRule.ts` |
 | `heading-hierarchy` | `headingHierarchyRule` | `src/rules/headingHierarchyRule.ts` |
+| `underline-hardcoded-border` | `underlineBorderRule` | `src/rules/underlineBorderRule.ts` |
+| `cramped-padding` | `crampedPaddingRule` | `src/rules/crampedPaddingRule.ts` |
+| `motion-subtle` | `motionSubtleRule` | `src/rules/motionSubtleRule.ts` |
+| `padding-scale-token` | `paddingScaleTokenRule` | `src/rules/paddingScaleTokenRule.ts` |
+| `rail-vs-radius-consistency` | `railVsRadiusConsistencyRule` | `src/rules/railVsRadiusConsistencyRule.ts` |
+| `grid-variance` | `gridVarianceRule` | `src/rules/gridVarianceRule.ts` |
+| `contrast-token-pair` | `contrastTokenPairRule` | `src/rules/contrastTokenPairRule.ts` |
+| `typography-scale-token` | `typographyScaleTokenRule` | `src/rules/typographyScaleTokenRule.ts` |
 
 ### Table de traçabilité
 
 Finding = entrée priorisée de `docs/ds-audit-consolidated-v2.md` (et son ID cluster dans `ds-audit-report.md` / docs cluster). Test = présence dans `packages/skills/test-fixtures/skills.test.js`.
 
-> **Mise à jour** : les 6 règles auparavant non testées ont chacune reçu un test direct (positif + négatif) via `audit()` — voir `skills.test.js` (bloc « Couverture directe des 6 règles WP8 »). **7/7 règles actives couvertes.**
+> **Mise à jour WP8** : les 15 règles actives ont une couverture directe via `audit()` (positif + négatif pour les règles comportementales) et le test de garde vérifie aussi `defaultRules.length === 15` plus la présence de `principle` / `wp7Finding`.
 
 | Finding WP7 (consolidated-v2 / cluster) | Règle WP8 (`ruleId`) | Test couvrant la règle | Statut test |
 |---|---|---|---|
@@ -166,21 +174,25 @@ Finding = entrée priorisée de `docs/ds-audit-consolidated-v2.md` (et son ID cl
 | P0-4 longueur de ligne > 75ch (cluster A) | `line-length-cap` | test positif (paragraphe long sans max-width → finding) + négatif (avec max-width) | **Couvert** |
 | P1-2 cible tactile < 44px (cluster C) | `touch-target-44` | **Oui** : 3 tests asservissent `findings.some(ruleId === "touch-target-44")` (contrat `audit`, `check --technical`, exit code 1) | **Couvert** |
 | (anti-pattern a11y générique, non listé P0/P1/P2 explicitement) | `heading-hierarchy` | test positif (niveau sauté H1→H3 → finding) + négatif (H1→H2) | **Couvert** |
+| P1-5 tailles d'espace bruitées / alignement par bord | `underline-hardcoded-border` | test positif (border-bottom hardcodé) + négatif (box-shadow inset) | **Couvert** |
+| P1-7 cramped spacing sur certains blocs docs | `cramped-padding` | test positif (surface padding 4px) + négatif (padding tokenisé) | **Couvert** |
+| P1-6 motion quasi absente + P2-5 absence de `prefers-reduced-motion` | `motion-subtle` | test positif (transition brute sans garde) + négatif (token + media reduced-motion) | **Couvert** |
+| P1-5 tailles d'espace bruitées | `padding-scale-token` | test positif (spacing 5/6/7px) + négatif (token ou grille 4px) | **Couvert** |
+| P1-4 rail gauche + surface arrondie | `rail-vs-radius-consistency` | test positif (rail arrondi) + négatif (rail carré) | **Couvert** |
+| P0-3 monotonie des grilles de cartes | `grid-variance` | test positif (6 cartes, repeat(3,1fr)) + négatif (grille tokenisée) | **Couvert** |
+| P0-2 contraste/alignement chromatique incohérent | `contrast-token-pair` | test positif (paire hex faible contraste) + négatif (paire tokenisée) | **Couvert** |
+| P1-1 échelle typographique dense | `typography-scale-token` | test positif (font-size/line-height hors échelle) + négatif (token ou palier autorisé) | **Couvert** |
 
-### Findings priorisés SANS règle implémentée
+### Findings priorisés restant SANS règle implémentée
 
-Issus de la liste opérationnelle de `consolidated-v2.md` (« 8 règles immédiates » + « 2–4 secondaires ») et des findings P0/P1/P2 :
+Issus de la liste opérationnelle de `consolidated-v2.md` et des findings P2 :
 
 | Finding / règle planifiée | État dans le code |
 |---|---|
-| `cramped-padding` (P1-7 padding bruité / cramped spacing) | **Non implémentée** (annoncée « prochaine » dans `workpackages.md` WP8 P2) |
-| `motion-subtle` (P1-6 motion absente + P2-5 reduced-motion) | **Non implémentée** (annoncée « prochaine ») |
-| `padding-scale-token` (P1-7) | **Non implémentée** (priorité secondaire) |
-| `rail-vs-radius-consistency` (règle maison, P1-5) | **Non implémentée** — note : `side-tab-on-rounded` existe et recouvre partiellement P1-5, mais la règle « maison » distincte n'est pas codée |
-| `grid-variance` (P0-3 monotonie de grilles) | **Non implémentée** |
 | P2-1 dark-mode absent (cluster B) | **Aucune règle** |
 | P2-2 badge inline dans H1 | **Aucune règle** |
 | P2-3 labels sans coût info (footer/github) | **Aucune règle** |
+| P2-4 statut des docs sans légende explicite | **Aucune règle** |
 
 ### Findings du scan déterministe NON couverts par règle (limites connues)
 
@@ -196,13 +208,14 @@ D'après `consolidated-v2.md` § « Alignement avec known-issues » :
 27 des 36 fichiers de référence ne sont **pas** traités par un finding propre : toutes les références marquées `Partielle` (nommées cluster source mais sans finding) et toutes les `Non couverte` (supports/registres : `cognitive-load`, `teach`, `document`, `onboard`, `adapt`, `live`, `brand`, `product`, `heuristics-scoring`, `personas`, `codex`).
 
 ### Findings sans règle
-P0-3 (monotonie grilles), P1-6/P2-5 (motion + reduced-motion), P1-7 (padding scale/cramped), et tous les P2 (dark-mode, badge-in-H1, labels, légende statut) n'ont **aucune règle** dans `packages/impeccable`. Les règles planifiées `cramped-padding`, `motion-subtle`, `padding-scale-token`, `grid-variance`, `rail-vs-radius-consistency` ne sont pas codées.
+Les principaux P0/P1 issus de WP7 ont désormais une règle déterministe dans `packages/skills`. Les manques restants sont surtout P2 ou non déterministes en statique : dark-mode absent, badge inline dans H1, labels mineurs sans coût informationnel, légende de statut des docs, `OverflowMenu` z-index trop bas et conflit Drawer/menu close.
 
 ### Règles sans test — RÉSOLU
-~~6 des 7 règles actives n'ont aucun test direct~~ → **7/7 règles couvertes**. Les 6 manquantes
-(`single-font`, `no-bare-hex`, `no-em-dash`, `side-tab-on-rounded`, `line-length-cap`,
-`heading-hierarchy`) ont reçu chacune un test positif + négatif via `audit()` dans
-`packages/skills/test-fixtures/skills.test.js`. `touch-target-44` était déjà testée (3 assertions).
+~~6 des 7 règles actives n'avaient aucun test direct~~ → **15/15 règles couvertes**. Les règles WP8 ajoutées
+(`cramped-padding`, `motion-subtle`, `padding-scale-token`, `rail-vs-radius-consistency`,
+`grid-variance`, `contrast-token-pair`, `typography-scale-token`) ont chacune reçu un test positif + négatif
+via `audit()` dans `packages/skills/test-fixtures/skills.test.js`. Le test de garde vérifie aussi la traçabilité
+`principle` / `wp7Finding` de chaque règle.
 
 ### Écart de décompte
 **36 fichiers de référence trouvés vs 37 annoncés** → 1 écart, attribué (à confirmer) à la capacité CLI `npx impeccable detect` qui n'a pas de fichier `reference/*.md`. Aucune référence n'a été inventée pour combler l'écart.
