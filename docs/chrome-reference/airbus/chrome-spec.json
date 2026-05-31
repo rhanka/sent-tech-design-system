@@ -1,0 +1,134 @@
+{
+  "theme": "airbus",
+  "label": "Airbus Design System",
+  "source": {
+    "kind": "private-local",
+    "repository": "/home/antoinefa/src/airbus-design-system",
+    "assetSources": [
+      "/home/antoinefa/src/airbus-design-system/packages/design-tokens/assets/airbus_dark.svg",
+      "/home/antoinefa/src/airbus-design-system/packages/design-tokens/assets/airbus.svg"
+    ],
+    "notes": [
+      "Airbus assets are private and must remain out of git.",
+      "A local private copy was prepared in /tmp/sent-tech-wp14-chrome-private/airbus/ for Claude's chrome implementation work."
+    ]
+  },
+  "assets": {
+    "logo": {
+      "privatePath": "/tmp/sent-tech-wp14-chrome-private/airbus/logo.svg",
+      "sourcePath": "/home/antoinefa/src/airbus-design-system/packages/design-tokens/assets/airbus_dark.svg",
+      "fill": "#002D80",
+      "viewBox": "0 0 400 75",
+      "targetHeight": "28-32px on white header"
+    },
+    "logoInverse": {
+      "privatePath": "/tmp/sent-tech-wp14-chrome-private/airbus/logo-inverse.svg",
+      "sourcePath": "/home/antoinefa/src/airbus-design-system/packages/design-tokens/assets/airbus.svg",
+      "fill": "#ffffff",
+      "viewBox": "0 0 400 75",
+      "targetHeight": "28-32px on dark or navy surface"
+    }
+  },
+  "layout": {
+    "header": {
+      "background": "#ffffff",
+      "foreground": "#1A2332",
+      "borderBottom": "2px solid #00205B",
+      "height": "64px",
+      "maxWidth": "90rem",
+      "paddingInline": "24px",
+      "position": "sticky top 0",
+      "zIndex": 60,
+      "brand": {
+        "display": "inline-flex",
+        "gap": "12px",
+        "logoHeight": "32px",
+        "name": {
+          "text": "AIRBUS",
+          "fontSize": "16px",
+          "fontWeight": 700,
+          "letterSpacing": "0.12em",
+          "color": "#00205B"
+        },
+        "subtitle": {
+          "text": "Design System",
+          "fontSize": "11.5px",
+          "fontWeight": 400,
+          "color": "#78909C"
+        }
+      },
+      "actions": {
+        "alignment": "right",
+        "gap": "8px",
+        "githubButtonSize": "32px",
+        "controlBorder": "1px solid #D1D9E0",
+        "hoverBorder": "#00205B"
+      }
+    },
+    "headerNav": {
+      "height": "64px",
+      "itemPaddingInline": "16px",
+      "fontSize": "14px",
+      "fontWeight": 500,
+      "inactiveColor": "#1A2332",
+      "hoverBackground": "#F7F9FB",
+      "hoverColor": "#00205B",
+      "activeColor": "#00205B",
+      "activeFontWeight": 700,
+      "activeIndicator": {
+        "side": "bottom",
+        "height": "3px",
+        "color": "#00205B"
+      }
+    },
+    "sidebar": {
+      "width": "16.5rem",
+      "background": "#ffffff",
+      "borderRight": "1px solid #D1D9E0",
+      "top": "64px",
+      "item": {
+        "minHeight": "40px",
+        "padding": "8px 16px",
+        "fontSize": "14px",
+        "lineHeight": 1.4,
+        "color": "#1A2332",
+        "hoverBackground": "#ECEFF4",
+        "hoverColor": "#00205B",
+        "activeBackground": "#E3F2FD",
+        "activeColor": "#00205B",
+        "activeFontWeight": 700,
+        "activeIndicator": {
+          "side": "left",
+          "width": "3px",
+          "color": "#00205B"
+        }
+      },
+      "group": {
+        "summaryMinHeight": "36px",
+        "summaryFontSize": "11.5px",
+        "summaryFontWeight": 700,
+        "summaryLetterSpacing": "0.06em",
+        "summaryTextTransform": "uppercase",
+        "subItemMinHeight": "32px",
+        "subItemPaddingLeft": "32px"
+      }
+    },
+    "breadcrumb": {
+      "presence": "required above page content",
+      "separator": "/",
+      "fontSize": "14px",
+      "linkColor": "#1565C0",
+      "currentColor": "#1A2332",
+      "currentFontWeight": 600,
+      "marginBottom": "24px"
+    }
+  },
+  "implementationTargets": [
+    "apps/docs/src/lib/chrome/ChromeAirbus.svelte logo placeholder",
+    "apps/docs/static/chrome/airbus/logo.svg placeholder"
+  ],
+  "privacy": {
+    "committable": false,
+    "reason": "Airbus logo assets come from a private local client design-system repository."
+  }
+}

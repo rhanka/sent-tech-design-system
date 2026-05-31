@@ -1,0 +1,98 @@
+{
+  "theme": "carbon",
+  "label": "Carbon Design System",
+  "source": {
+    "kind": "public",
+    "url": "https://carbondesignsystem.com/",
+    "notes": [
+      "Reference shape: black masthead, IBM Plex Sans, left documentation tree, active side-nav item with gray fill and blue accent.",
+      "Carbon public site header is implemented with Carbon shell/navigation primitives; this spec captures the chrome geometry and states needed by Sent Tech docs."
+    ]
+  },
+  "assets": {
+    "wordmark": {
+      "path": "assets/carbon-wordmark.svg",
+      "targetHeight": "32px asset, rendered at 24-28px inside a 48px header",
+      "usage": "Use on black header background. Keep alt text on the link, not on a decorative nested image."
+    }
+  },
+  "layout": {
+    "header": {
+      "background": "#161616",
+      "foreground": "#f4f4f4",
+      "height": "48px",
+      "position": "sticky top 0",
+      "zIndex": 60,
+      "leftZoneWidth": "256px",
+      "brand": {
+        "display": "inline-flex",
+        "height": "48px",
+        "paddingInline": "16px",
+        "gap": "10px",
+        "fontFamily": "IBM Plex Sans",
+        "fontSize": "14px",
+        "fontWeight": 400,
+        "hoverBackground": "#353535"
+      },
+      "actions": {
+        "position": "right",
+        "buttonSize": "48px",
+        "iconColor": "#c6c6c6",
+        "hoverBackground": "#353535",
+        "hoverColor": "#ffffff",
+        "expected": ["search", "app-switcher", "theme-switcher", "locale-switcher", "compare"]
+      }
+    },
+    "headerNav": {
+      "height": "48px",
+      "itemPaddingInline": "16px",
+      "fontSize": "14px",
+      "inactiveColor": "#c6c6c6",
+      "hoverBackground": "#353535",
+      "activeColor": "#ffffff",
+      "activeIndicator": {
+        "side": "bottom",
+        "height": "3px",
+        "color": "#0f62fe"
+      }
+    },
+    "sidebar": {
+      "width": "256px",
+      "background": "#f4f4f4",
+      "borderRight": "1px solid #e0e0e0",
+      "position": "sticky",
+      "top": "48px",
+      "item": {
+        "minHeight": "40px",
+        "paddingInline": "16px",
+        "fontSize": "14px",
+        "color": "#525252",
+        "hoverBackground": "#e0e0e0",
+        "activeBackground": "#e0e0e0",
+        "activeColor": "#161616",
+        "activeFontWeight": 600,
+        "activeIndicator": {
+          "side": "left",
+          "width": "3px",
+          "color": "#0f62fe"
+        }
+      },
+      "group": {
+        "summaryMinHeight": "40px",
+        "summaryFontSize": "12px",
+        "summaryFontWeight": 600,
+        "summaryTextTransform": "uppercase",
+        "subItemMinHeight": "32px",
+        "subItemPaddingLeft": "32px"
+      }
+    },
+    "breadcrumb": {
+      "presence": "not part of Carbon masthead reference",
+      "recommendation": "Keep page breadcrumbs inside content if needed; do not add a Carbon-specific breadcrumb bar to the shell."
+    }
+  },
+  "implementationTargets": [
+    "apps/docs/src/lib/chrome/ChromeCarbon.svelte logo placeholder",
+    "apps/docs/static/chrome/carbon/logo.svg placeholder"
+  ]
+}
