@@ -1,6 +1,6 @@
 {
   "name": "@sentropic/design-system-theme-dsfr",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "type": "module",
   "publishConfig": {
     "access": "public"
@@ -22,8 +22,8 @@
     "dist"
   ],
   "dependencies": {
-    "@sentropic/design-system-themes": "0.10.1",
-    "@sentropic/design-system-tokens": "0.10.1"
+    "@sentropic/design-system-themes": "0.10.2",
+    "@sentropic/design-system-tokens": "0.10.2"
   },
   "devDependencies": {
     "typescript": "^5.9.3"
