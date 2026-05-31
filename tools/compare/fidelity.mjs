@@ -30,16 +30,20 @@ import { fileURLToPath } from "node:url";
 
 import puppeteer from "puppeteer-core";
 
-import { getCompareManifest } from "../../apps/docs/src/lib/compare/manifest.mjs";
-import { getReferenceThemes } from "../../apps/docs/src/lib/compare/reference-themes.mjs";
+import { getCompareManifest, COMPARE_MANIFEST as COMPARE_MANIFEST_PUBLIC } from "../../apps/docs/src/lib/compare/manifest.mjs";
+import { getReferenceThemes, REFERENCE_THEMES as REFERENCE_THEMES_PUBLIC } from "../../apps/docs/src/lib/compare/reference-themes.mjs";
 import { gapKey, manifestHash, mergeRegistry } from "../../apps/docs/src/lib/compare/registry.mjs";
+import { ANATOMY_VERSION } from "@sentropic/design-system-themes";
 
 // Charge le manifest et les thèmes de référence avec les overlays privés locaux
 // s'ils existent (fichiers gitignorés — stubs créés par
 // scripts/ensure-compare-local-overlays.mjs avant chaque build).
 const COMPARE_MANIFEST = getCompareManifest({ includeLocal: true });
 const REFERENCE_THEMES = getReferenceThemes({ includeLocal: true });
-import { ANATOMY_VERSION } from "@sentropic/design-system-themes";
+
+// Ensemble des thèmes publics (dsfr, carbon) — leurs gaps vont dans compare-gaps.json.
+// Les thèmes locaux (ex. airbus) vont dans compare-gaps.local.json (gitignorés).
+const PUBLIC_THEMES = new Set(Object.keys(REFERENCE_THEMES_PUBLIC));
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = resolve(__dirname, "..", "..");
@@ -64,8 +68,14 @@ for (const theme of Object.keys(COMPARE_MANIFEST)) {
 }
 const OUR_SELECTOR = Object.fromEntries(
   COMPONENTS.map((k) => {
-    const entry = COMPARE_MANIFEST.dsfr?.[k] ?? COMPARE_MANIFEST.carbon?.[k];
-    return [k, entry.ourSelector];
+    // Cherche ourSelector dans le premier thème qui possède ce composant
+    // (dsfr en priorité, carbon ensuite, puis tout thème local comme airbus).
+    const themes = Object.keys(COMPARE_MANIFEST);
+    const entry =
+      COMPARE_MANIFEST.dsfr?.[k] ??
+      COMPARE_MANIFEST.carbon?.[k] ??
+      themes.map((t) => COMPARE_MANIFEST[t]?.[k]).find(Boolean);
+    return [k, entry?.ourSelector ?? ""];
   })
 );
 const REF_SELECTOR = Object.fromEntries(
@@ -873,17 +883,23 @@ async function main() {
   const json = buildJson(raw, report, opts);
 
   // Build the gap list from the scored rows (≠ and ~ are gaps; = is parity).
+  // Les thèmes publics (dsfr, carbon) → compare-gaps.json (versionné).
+  // Les thèmes privés locaux (ex. airbus) → compare-gaps.local.json (gitignorés).
   const REGISTRY_PATH = join(
     REPO_ROOT, "apps", "docs", "src", "lib", "compare", "compare-gaps.json"
   );
+  const REGISTRY_LOCAL_PATH = join(
+    REPO_ROOT, "apps", "docs", "src", "lib", "compare", "compare-gaps.local.json"
+  );
   const generatedAt = new Date().toISOString();
-  const oracleGaps = [];
+  const oracleGaps = [];       // thèmes publics seulement
+  const oracleGapsLocal = [];  // thèmes privés locaux seulement
   for (const c of json.components) {
     const m = COMPARE_MANIFEST[c.theme]?.[c.component];
     if (!m) continue; // safety: only manifested pairs
     for (const r of c.rows) {
       if (r.status === "=") continue;
-      oracleGaps.push({
+      const gap = {
         theme: c.theme,
         component: m.component,
         scenario: m.scenario,
@@ -892,7 +908,12 @@ async function main() {
         ours: r.ours,
         ref: r.ref,
         delta: r.delta,
-      });
+      };
+      if (PUBLIC_THEMES.has(c.theme)) {
+        oracleGaps.push(gap);
+      } else {
+        oracleGapsLocal.push(gap);
+      }
     }
   }
   let existing = null;
@@ -900,6 +921,12 @@ async function main() {
     existing = JSON.parse(await readFile(REGISTRY_PATH, "utf8"));
   } catch {
     existing = null; // first seed
+  }
+  let existingLocal = null;
+  try {
+    existingLocal = JSON.parse(await readFile(REGISTRY_LOCAL_PATH, "utf8"));
+  } catch {
+    existingLocal = null; // first seed
   }
   // Mi4 — stamp REAL versions (C8 reproducibility): anatomy from the tokens
   // package, DS/theme pins from the docs deps (same source as the bench header).
@@ -912,7 +939,19 @@ async function main() {
   } catch {
     deps = {};
   }
-  const registry = mergeRegistry(existing, oracleGaps, {
+  // Stamp pour les thèmes publics uniquement (hash du manifest public).
+  const publicStamp = {
+    manifestHash: manifestHash(COMPARE_MANIFEST_PUBLIC),
+    generatedAt,
+    anatomyVersion: ANATOMY_VERSION,
+    dsVersion: deps["@sentropic/design-system-themes"] ?? null,
+    themeVersion: {
+      dsfr: deps["@sentropic/design-system-theme-dsfr"] ?? null,
+      carbon: deps["@sentropic/design-system-theme-carbon"] ?? null,
+    },
+  };
+  // Stamp pour les thèmes locaux (hash du manifest complet).
+  const localStamp = {
     manifestHash: manifestHash(COMPARE_MANIFEST),
     generatedAt,
     anatomyVersion: ANATOMY_VERSION,
@@ -921,7 +960,10 @@ async function main() {
       dsfr: deps["@sentropic/design-system-theme-dsfr"] ?? null,
       carbon: deps["@sentropic/design-system-theme-carbon"] ?? null,
     },
-  });
+  };
+
+  const registry = mergeRegistry(existing, oracleGaps, publicStamp);
+  const registryLocal = mergeRegistry(existingLocal, oracleGapsLocal, localStamp);
 
   const mdPath = join(REPO_ROOT, "docs", "compare-fidelity-report.md");
   const jsonPath = join(REPO_ROOT, "tools", "compare", "last-report.json");
@@ -931,6 +973,11 @@ async function main() {
   await writeFile(jsonPath, JSON.stringify(json, null, 2) + "\n", "utf8");
   await mkdir(dirname(REGISTRY_PATH), { recursive: true });
   await writeFile(REGISTRY_PATH, JSON.stringify(registry, null, 2) + "\n", "utf8");
+  // Écrit les gaps locaux seulement s'il y en a (ou si le fichier existait déjà).
+  if (oracleGapsLocal.length > 0 || existingLocal !== null) {
+    await mkdir(dirname(REGISTRY_LOCAL_PATH), { recursive: true });
+    await writeFile(REGISTRY_LOCAL_PATH, JSON.stringify(registryLocal, null, 2) + "\n", "utf8");
+  }
 
   if (opts.json) {
     process.stdout.write(JSON.stringify(json, null, 2) + "\n");
@@ -938,7 +985,10 @@ async function main() {
     console.log(`Fidelity report written:`);
     console.log(`  - ${mdPath}`);
     console.log(`  - ${jsonPath}`);
-    console.log(`  - ${REGISTRY_PATH} (${Object.keys(registry.entries).length} entrées)`);
+    console.log(`  - ${REGISTRY_PATH} (${Object.keys(registry.entries).length} entrées, thèmes publics)`);
+    if (oracleGapsLocal.length > 0 || existingLocal !== null) {
+      console.log(`  - ${REGISTRY_LOCAL_PATH} (${Object.keys(registryLocal.entries).length} entrées, thèmes locaux — gitignorés)`);
+    }
     console.log(
       `Global fidelity: ${report.global.fidelity}% ` +
         `(${report.global.eq} =, ${report.global.close} ~, ${report.global.diff} ≠). ` +
