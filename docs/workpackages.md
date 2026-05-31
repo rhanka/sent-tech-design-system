@@ -356,7 +356,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 ## WP14 — Chrome documentaire par thème (header + barre latérale fidèles au DS)
 
-**Statut global** : 🔵 cadré (2026-05-31), démarrage **Carbon + DSFR** (captures de référence fournies par l'utilisateur).
+**Statut global** : 🟢 implémenté (2026-05-31) sur branche `claude-wp14-chrome` — Chrome Carbon + DSFR + Airbus (placeholder) + sent-tech livrés. Logos = placeholders SVG propres à remplacer. En revue avant merge sur main.
 
 **Problème (signalé par l'utilisateur — déjà demandé)** : aujourd'hui, basculer de thème ne change **que la police / l'anatomie** (tokens). Le **chrome documentaire** (header avec logo, menu de header, menu de barre latérale) reste le nôtre → « **pas crédible** ». Exigence : quand on passe sur un thème d'import, **tout le chrome des docs doit prendre la FORME du site de documentation réel de ce design system** — **logos pixel-perfect**, forme du header, forme du menu de header, forme du menu latéral. On parle de la **FORME** (header / nav / sidebar), pas du contenu de présentation.
 
@@ -370,20 +370,20 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 | Item | Statut | Owner | Notes |
 |---|---|---|---|
-| Audit du chrome actuel (header/menu/sidebar paramétrables par thème ?) | ⚪ | Claude | `apps/docs/src/routes/+layout.svelte` (header + barre latérale), composant `Header` (`packages/components-svelte`), `apps/docs/src/app.css`. |
-| Logos pixel-perfect par DS | ⚪ | Claude (Carbon/DSFR) + Codex (Airbus) | SVG officiels : wordmark Carbon, bloc RF/Marianne DSFR, logo Airbus. |
-| Chrome **Carbon** (barre noire + sidebar arbre + icônes) | ⚪ | Claude | activé quand thème actif = `carbon`. |
-| Chrome **DSFR** (logo RF + nav horizontale soulignée + sidebar bloc actif + fil d'Ariane) | ⚪ | Claude | activé quand thème actif = `dsfr`. |
-| Chrome **Airbus** (même esprit) | ⚪ | Claude + réf Codex | dépend de la réf chrome Airbus (WP10). |
-| Chrome **standard** sent-tech | ⚪ | Claude | header de base propre. |
+| Audit du chrome actuel (header/menu/sidebar paramétrables par thème ?) | ✅ | Claude | Fait — chrome non paramétrable → généralisé (3 composants + layout conditionnel). |
+| Logos pixel-perfect par DS | 🔵 | Claude (Carbon/DSFR) + Codex (Airbus) | Placeholders propres dans `apps/docs/static/chrome/<theme>/`. SVG officiels à remplacer quand fournis. |
+| Chrome **Carbon** (barre noire + sidebar arbre + icônes) | ✅ | Claude | Livré sur branche `claude-wp14-chrome`. |
+| Chrome **DSFR** (logo RF + nav horizontale soulignée + sidebar bloc actif + fil d'Ariane) | ✅ | Claude | Livré sur branche `claude-wp14-chrome`. Marianne active (chargée via CDN). |
+| Chrome **Airbus** (même esprit) | 🔵 | Claude + réf Codex | Placeholder propre livré. À affiner avec kit visuel Codex (WP10). |
+| Chrome **standard** sent-tech | ✅ | Claude | Chrome d'origine conservé intact (rendu SSR + thème par défaut). |
 
 ### Suivi WP14
 | Vue | Track | Finalité | État | Avancement | Détail |
 |---|---|---|---:|---:|---|
-| À faire | Audit chrome | Vérifier la paramétrabilité header/menu/sidebar par thème | ⚪ | 0% | Sinon, généraliser les composants de chrome (forme, pas que tokens). |
-| À faire | Carbon + DSFR | Reproduire la FORME des 2 sites de doc réels (header + nav + sidebar + logo pixel-perfect) | ⚪ | 0% | Captures de référence fournies (Image Carbon + Image DSFR). |
-| À faire | Airbus + standard | Airbus dans le même esprit + un chrome standard sent-tech | ⚪ | 0% | Réf Airbus depuis `../airbus-design-system` (Codex). |
-| Attendu | Crédibilité | Basculer le thème change le **chrome entier** (header/logo/nav/sidebar), pas que la police | ⚪ | 0% | Comparaison côte à côte avec les vrais sites Carbon/DSFR. |
+| Fait | Audit chrome | Vérifier la paramétrabilité header/menu/sidebar par thème | ✅ | 100% | Chrome non paramétrable → 3 composants ChromeCarbon/ChromeDsfr/ChromeAirbus + layout conditionnel client-only. |
+| Fait | Carbon + DSFR | Reproduire la FORME des 2 sites de doc réels (header + nav + sidebar + logo pixel-perfect) | ✅ | 90% | Forme fidèle livrée. Logos = placeholders SVG propres (POINT DE REMPLACEMENT documenté). |
+| En cours | Airbus + standard | Airbus dans le même esprit + chrome standard sent-tech | 🔵 | 60% | Standard intact. Airbus placeholder propre — attend kit visuel Codex. |
+| Attendu | Crédibilité | Basculer le thème change le **chrome entier** (header/logo/nav/sidebar), pas que la police | ✅ | 100% | Implémenté sur branche `claude-wp14-chrome` — à valider visuellement avant merge. |
 
 **Dépendances** : thème actif (switcher, WP10) ; réf chrome Airbus (WP10/Codex). **Owner** : Claude (docs). **Parallélisable** : oui (apps/docs, hors `packages/components-react/**` et `packages/theme-airbus/**`).
 
