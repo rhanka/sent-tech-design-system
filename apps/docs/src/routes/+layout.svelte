@@ -24,6 +24,10 @@
   import { locale } from "$lib/locale.svelte";
   import CompareButton from "$lib/compare/CompareButton.svelte";
   import CompareTriptych from "$lib/compare/CompareTriptych.svelte";
+  // Chromes thématisés — importés conditionnellement côté client uniquement.
+  import ChromeCarbon from "$lib/chrome/ChromeCarbon.svelte";
+  import ChromeDsfr from "$lib/chrome/ChromeDsfr.svelte";
+  import ChromeAirbus from "$lib/chrome/ChromeAirbus.svelte";
 
 
   let { children } = $props();
@@ -133,6 +137,16 @@
       return match[1].charAt(0).toUpperCase() + match[1].slice(1);
     })()
   );
+
+  // ── Chrome par thème ────────────────────────────────────────────────────
+  // SSR rend toujours le chrome sent-tech (pas d'accès localStorage).
+  // Côté client, activeThemeId est restauré depuis localStorage et le chrome
+  // bascule réactivement.
+  // Les chromes Carbon/DSFR/Airbus encapsulent leur propre header + sidebar.
+  // Le chrome sent-tech utilise le Header du composant DS + la sidebar existante.
+  const useCustomChrome = $derived(
+    browser && (activeThemeId === "carbon" || activeThemeId === "dsfr" || activeThemeId === "airbus")
+  );
 </script>
 
 <svelte:window onclick={(e) => {
@@ -194,80 +208,12 @@
       </a>
     {/each}
 
-    <div class="docs-theme-wrapper">
-      <button
-        type="button"
-        class="docs-header-control docs-header-menuButton docs-locale-trigger docs-theme-trigger"
-        onclick={() => (isThemeOpen = !isThemeOpen)}
-        aria-expanded={isThemeOpen}
-        aria-haspopup="true"
-        aria-label={locale.value === "fr" ? "Changer le thème" : "Change theme"}
-      >
-        <Palette size={14} aria-hidden="true" />
-        <span>{activeTheme.label}</span>
-        <ChevronDown size={12} class="docs-locale-trigger-chevron {isThemeOpen ? 'rotated' : ''}" aria-hidden="true" />
-      </button>
-
-      {#if isThemeOpen}
-        <div class="docs-locale-menu" role="menu">
-          {#each THEMES as theme (theme.id)}
-            <button
-              type="button"
-              class="docs-locale-item"
-              class:active={activeThemeId === theme.id}
-              role="menuitem"
-              onclick={() => { activeThemeId = theme.id; isThemeOpen = false; }}
-            >
-              <span class="locale-check">{#if activeThemeId === theme.id}✓{/if}</span>
-              <span>{theme.label}</span>
-            </button>
-          {/each}
-        </div>
-      {/if}
-    </div>
+    {@render themeSelector()}
 
     <!-- Bouton Compare — client-only, visible ssi thème d'import + page composant -->
     <CompareButton activeThemeId={activeThemeId} pathname={page.url.pathname} />
 
-    <div class="docs-locale-wrapper">
-      <button
-        type="button"
-        class="docs-header-control docs-header-menuButton docs-locale-trigger"
-        onclick={() => (isOpen = !isOpen)}
-        aria-expanded={isOpen}
-        aria-haspopup="true"
-        aria-label={locale.value === "fr" ? "Changer la langue" : "Change language"}
-      >
-        <Globe size={14} class="docs-locale-trigger-icon" aria-hidden="true" />
-        <span>{locale.value.toUpperCase()}</span>
-        <ChevronDown size={12} class="docs-locale-trigger-chevron {isOpen ? 'rotated' : ''}" aria-hidden="true" />
-      </button>
-
-      {#if isOpen}
-        <div class="docs-locale-menu" role="menu">
-          <button
-            type="button"
-            class="docs-locale-item"
-            class:active={locale.value === "fr"}
-            role="menuitem"
-            onclick={() => { locale.value = "fr"; isOpen = false; }}
-          >
-            <span class="locale-check">{#if locale.value === "fr"}✓{/if}</span>
-            <span>Français</span>
-          </button>
-          <button
-            type="button"
-            class="docs-locale-item"
-            class:active={locale.value === "en"}
-            role="menuitem"
-            onclick={() => { locale.value = "en"; isOpen = false; }}
-          >
-            <span class="locale-check">{#if locale.value === "en"}✓{/if}</span>
-            <span>English</span>
-          </button>
-        </div>
-      {/if}
-    </div>
+    {@render langSelector()}
   </nav>
 
   <button
@@ -285,7 +231,196 @@
   </button>
 {/snippet}
 
-<div class="docs-shell" data-st-theme={activeThemeId}>
+<!-- ── Snippet partagé : sélecteur de thème ──────────────────────────── -->
+{#snippet themeSelector()}
+  <div class="docs-theme-wrapper">
+    <button
+      type="button"
+      class="docs-header-control docs-header-menuButton docs-locale-trigger docs-theme-trigger"
+      onclick={() => (isThemeOpen = !isThemeOpen)}
+      aria-expanded={isThemeOpen}
+      aria-haspopup="true"
+      aria-label={locale.value === "fr" ? "Changer le thème" : "Change theme"}
+    >
+      <Palette size={14} aria-hidden="true" />
+      <span>{activeTheme.label}</span>
+      <ChevronDown size={12} class="docs-locale-trigger-chevron {isThemeOpen ? 'rotated' : ''}" aria-hidden="true" />
+    </button>
+
+    {#if isThemeOpen}
+      <div class="docs-locale-menu" role="menu">
+        {#each THEMES as theme (theme.id)}
+          <button
+            type="button"
+            class="docs-locale-item"
+            class:active={activeThemeId === theme.id}
+            role="menuitem"
+            onclick={() => { activeThemeId = theme.id; isThemeOpen = false; }}
+          >
+            <span class="locale-check">{#if activeThemeId === theme.id}✓{/if}</span>
+            <span>{theme.label}</span>
+          </button>
+        {/each}
+      </div>
+    {/if}
+  </div>
+{/snippet}
+
+<!-- ── Snippet partagé : sélecteur de langue ─────────────────────────── -->
+{#snippet langSelector()}
+  <div class="docs-locale-wrapper">
+    <button
+      type="button"
+      class="docs-header-control docs-header-menuButton docs-locale-trigger"
+      onclick={() => (isOpen = !isOpen)}
+      aria-expanded={isOpen}
+      aria-haspopup="true"
+      aria-label={locale.value === "fr" ? "Changer la langue" : "Change language"}
+    >
+      <Globe size={14} class="docs-locale-trigger-icon" aria-hidden="true" />
+      <span>{locale.value.toUpperCase()}</span>
+      <ChevronDown size={12} class="docs-locale-trigger-chevron {isOpen ? 'rotated' : ''}" aria-hidden="true" />
+    </button>
+
+    {#if isOpen}
+      <div class="docs-locale-menu" role="menu">
+        <button
+          type="button"
+          class="docs-locale-item"
+          class:active={locale.value === "fr"}
+          role="menuitem"
+          onclick={() => { locale.value = "fr"; isOpen = false; }}
+        >
+          <span class="locale-check">{#if locale.value === "fr"}✓{/if}</span>
+          <span>Français</span>
+        </button>
+        <button
+          type="button"
+          class="docs-locale-item"
+          class:active={locale.value === "en"}
+          role="menuitem"
+          onclick={() => { locale.value = "en"; isOpen = false; }}
+        >
+          <span class="locale-check">{#if locale.value === "en"}✓{/if}</span>
+          <span>English</span>
+        </button>
+      </div>
+    {/if}
+  </div>
+{/snippet}
+
+<!-- ── Snippet partagé : bouton Compare (passé aux chromes tiers) ─────── -->
+{#snippet sharedCompareButton()}
+  <CompareButton activeThemeId={activeThemeId} pathname={page.url.pathname} />
+{/snippet}
+
+<!-- ── Contenu de page (encapsulé avec le mode compare Lot 2) ────────── -->
+{#snippet pageContent()}
+  <div class="docs-content-area" class:docs-content-area--compare={compareActive}>
+    <nav class="docs-breadcrumb" aria-label="Fil d'Ariane">
+      <ol>
+        {#each breadcrumbs as crumb, index (crumb.href)}
+          <li>
+            {#if index === breadcrumbs.length - 1}
+              <span aria-current="page">{crumb.label}</span>
+            {:else}
+              <a href={crumb.href}>{crumb.label}</a>
+            {/if}
+          </li>
+        {/each}
+      </ol>
+    </nav>
+
+    {#if compareActive && compareThemeId && compareScenarioId && compareComponent}
+      <!-- Mode compare : triptyque plein-écran sous la breadcrumb.
+           Le panneau (a) rend le contenu normal de la page (notre composant live).
+           Le panneau (b) rend l'iframe officielle CDN (visuelle uniquement).
+           Le panneau (c) = rail de gaps lus du registre JSON. -->
+      <div class="docs-compare-wrap">
+        {#snippet ourLive()}
+          <main class="docs-main docs-main--compare" id="main-content">
+            {@render children()}
+          </main>
+        {/snippet}
+        <CompareTriptych
+          themeId={compareThemeId}
+          scenarioId={compareScenarioId}
+          component={compareComponent}
+          pathname={page.url.pathname}
+          liveSlot={ourLive}
+        />
+      </div>
+    {:else}
+      <main class="docs-main" id="main-content">
+        {@render children()}
+      </main>
+    {/if}
+  </div>
+{/snippet}
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     RENDU : chrome tiers (Carbon/DSFR/Airbus) ou chrome sent-tech par défaut.
+     Le chrome tiers encapsule entièrement header + sidebar + contenu.
+     Le chrome sent-tech conserve exactement la structure d'origine.
+     ═══════════════════════════════════════════════════════════════════════ -->
+
+{#if useCustomChrome && activeThemeId === "carbon"}
+  <div data-st-theme={activeThemeId}>
+    <ChromeCarbon
+      activeThemeId={activeThemeId}
+      isThemeOpen={isThemeOpen}
+      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      themeSwitcher={themeSelector}
+      localeSwitcher={langSelector}
+      compareButton={sharedCompareButton}
+      mobileMenuOpen={isMobileMenuOpen}
+      onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
+    >
+      {#snippet children()}
+        {@render pageContent()}
+      {/snippet}
+    </ChromeCarbon>
+  </div>
+
+{:else if useCustomChrome && activeThemeId === "dsfr"}
+  <div data-st-theme={activeThemeId}>
+    <ChromeDsfr
+      activeThemeId={activeThemeId}
+      isThemeOpen={isThemeOpen}
+      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      themeSwitcher={themeSelector}
+      localeSwitcher={langSelector}
+      compareButton={sharedCompareButton}
+      mobileMenuOpen={isMobileMenuOpen}
+      onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
+    >
+      {#snippet children()}
+        {@render pageContent()}
+      {/snippet}
+    </ChromeDsfr>
+  </div>
+
+{:else if useCustomChrome && activeThemeId === "airbus"}
+  <div data-st-theme={activeThemeId}>
+    <ChromeAirbus
+      activeThemeId={activeThemeId}
+      isThemeOpen={isThemeOpen}
+      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      themeSwitcher={themeSelector}
+      localeSwitcher={langSelector}
+      compareButton={sharedCompareButton}
+      mobileMenuOpen={isMobileMenuOpen}
+      onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
+    >
+      {#snippet children()}
+        {@render pageContent()}
+      {/snippet}
+    </ChromeAirbus>
+  </div>
+
+{:else}
+  <!-- ── Chrome sent-tech par défaut (SSR + thème sent-tech) ── -->
+  <div class="docs-shell" data-st-theme={activeThemeId}>
     <!-- Barre du haut : composant Header complet et porté (logo + navigation + actions). -->
     <Header
       class="docs-header"
@@ -325,7 +460,7 @@
               {item.label}
             </a>
           {/each}
-          
+
           <span class="docs-mobile-nav-label">{locale.value === "fr" ? "Thème" : "Theme"}</span>
           <div class="docs-mobile-locale-switcher docs-mobile-theme-switcher">
             {#each THEMES as theme (theme.id)}
@@ -415,46 +550,7 @@
         </nav>
       </aside>
 
-      <div class="docs-content-area" class:docs-content-area--compare={compareActive}>
-        <nav class="docs-breadcrumb" aria-label="Fil d'Ariane">
-          <ol>
-            {#each breadcrumbs as crumb, index (crumb.href)}
-              <li>
-                {#if index === breadcrumbs.length - 1}
-                  <span aria-current="page">{crumb.label}</span>
-                {:else}
-                  <a href={crumb.href}>{crumb.label}</a>
-                {/if}
-              </li>
-            {/each}
-          </ol>
-        </nav>
-
-        {#if compareActive && compareThemeId && compareScenarioId && compareComponent}
-          <!-- Mode compare : triptyque plein-écran sous la breadcrumb.
-               Le panneau (a) rend le contenu normal de la page (notre composant live).
-               Le panneau (b) rend l'iframe officielle CDN (visuelle uniquement).
-               Le panneau (c) = rail de gaps lus du registre JSON. -->
-          <div class="docs-compare-wrap">
-            {#snippet ourLive()}
-              <main class="docs-main docs-main--compare" id="main-content">
-                {@render children()}
-              </main>
-            {/snippet}
-            <CompareTriptych
-              themeId={compareThemeId}
-              scenarioId={compareScenarioId}
-              component={compareComponent}
-              pathname={page.url.pathname}
-              liveSlot={ourLive}
-            />
-          </div>
-        {:else}
-          <main class="docs-main" id="main-content">
-            {@render children()}
-          </main>
-        {/if}
-      </div>
+      {@render pageContent()}
     </div>
 
     <footer class="docs-footer">
@@ -464,3 +560,4 @@
       </a>
     </footer>
   </div>
+{/if}
