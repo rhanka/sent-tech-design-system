@@ -89,6 +89,8 @@ function isSingleFamily(fontFamilies: string[]): boolean {
 export const singleFontRule: Rule = {
   id: "single-font",
   description: "Détecte les pages qui n'utilisent qu'une seule famille typographique principale.",
+  principle: "design align --typo",
+  wp7Finding: "P0.5 single-font / overused-font",
   severity: "high",
   evaluate(context: RuleContext): Finding[] {
     const styleFonts = [...collectFromStyleTags(context), ...collectFromInlineStyles(context)];

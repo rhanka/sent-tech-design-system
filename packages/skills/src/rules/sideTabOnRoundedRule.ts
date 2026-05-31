@@ -23,6 +23,8 @@ function hasSideTabWithRoundedBorder(element: Element): boolean {
 export const sideTabOnRoundedRule: Rule = {
   id: "side-tab-on-rounded",
   description: "Alerte la combinaison bordure gauche colorée + radius non nul (rail gauche + arrondi).",
+  principle: "design align --spacing",
+  wp7Finding: "P1.4 rail gauche + surface arrondie dans le même langage visuel",
   severity: "medium",
   evaluate(context: RuleContext): Finding[] {
     const findings: Finding[] = [];

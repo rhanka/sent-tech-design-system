@@ -44,6 +44,8 @@ function isInteractiveElement(element: Element): boolean {
 export const touchTargetRule: Rule = {
   id: "touch-target-44",
   description: "Cible trop petite pour une interaction au clic (inline style only).",
+  principle: "design align --a11y",
+  wp7Finding: "P1.2 taille de cible tactile sous 44px",
   severity: "low",
   evaluate(context: RuleContext): Finding[] {
     const findings: Finding[] = [];

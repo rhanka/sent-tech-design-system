@@ -21,6 +21,8 @@ export interface RuleContext {
 export interface Rule {
   id: string;
   description: string;
+  principle?: string;
+  wp7Finding?: string;
   severity: Severity;
   evaluate(context: RuleContext): Finding[];
 }

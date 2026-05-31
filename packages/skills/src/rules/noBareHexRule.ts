@@ -48,6 +48,8 @@ function collectBareHexFromStyleTags(context: RuleContext): Finding[] {
 export const noBareHexRule: Rule = {
   id: "no-bare-hex",
   description: "Interdit l'usage de couleurs hex dans le markup source.",
+  principle: "design align --tones",
+  wp7Finding: "P0.1 hard-coded colors dans la vitrine docs",
   severity: "high",
   evaluate(context: RuleContext): Finding[] {
     return [...collectBareHexFromInlineStyle(context), ...collectBareHexFromStyleTags(context)];
