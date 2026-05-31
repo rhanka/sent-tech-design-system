@@ -29,3 +29,7 @@ coverage/
 apps/docs/src/lib/compare/*.local.mjs
 apps/docs/src/lib/compare/compare-gaps.local.json
 apps/docs/static/compare-local/**
+
+# Logos privés Airbus (source privée locale, non distribuable)
+apps/docs/static/chrome/airbus/logo-white.svg
+apps/docs/static/chrome/airbus/logo-dark.svg
