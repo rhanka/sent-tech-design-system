@@ -24,13 +24,14 @@
 import { spawn } from "node:child_process";
 import http from "node:http";
 import { createReadStream, existsSync, statSync } from "node:fs";
-import { mkdir, writeFile } from "node:fs/promises";
+import { readFile, mkdir, writeFile } from "node:fs/promises";
 import { extname, join, resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import puppeteer from "puppeteer-core";
 
 import { COMPARE_MANIFEST } from "../../apps/docs/src/lib/compare/manifest.mjs";
+import { gapKey, manifestHash, mergeRegistry } from "../../apps/docs/src/lib/compare/registry.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = resolve(__dirname, "..", "..");
@@ -862,12 +863,51 @@ async function main() {
   const report = buildReport(raw, opts);
   const json = buildJson(raw, report, opts);
 
+  // Build the gap list from the scored rows (≠ and ~ are gaps; = is parity).
+  const REGISTRY_PATH = join(
+    REPO_ROOT, "apps", "docs", "src", "lib", "compare", "compare-gaps.json"
+  );
+  const generatedAt = new Date().toISOString();
+  const oracleGaps = [];
+  for (const c of json.components) {
+    const m = COMPARE_MANIFEST[c.theme]?.[c.component];
+    if (!m) continue; // safety: only manifested pairs
+    for (const r of c.rows) {
+      if (r.status === "=") continue;
+      oracleGaps.push({
+        theme: c.theme,
+        component: m.component,
+        scenario: m.scenario,
+        state: m.state,
+        property: r.prop,
+        ours: r.ours,
+        ref: r.ref,
+        delta: r.delta,
+      });
+    }
+  }
+  let existing = null;
+  try {
+    existing = JSON.parse(await readFile(REGISTRY_PATH, "utf8"));
+  } catch {
+    existing = null; // first seed
+  }
+  const registry = mergeRegistry(existing, oracleGaps, {
+    manifestHash: manifestHash(COMPARE_MANIFEST),
+    generatedAt,
+    anatomyVersion: opts.anatomyVersion ?? null,
+    dsVersion: opts.dsVersion ?? null,
+    themeVersion: opts.themeVersion ?? null,
+  });
+
   const mdPath = join(REPO_ROOT, "docs", "compare-fidelity-report.md");
   const jsonPath = join(REPO_ROOT, "tools", "compare", "last-report.json");
   await mkdir(dirname(mdPath), { recursive: true });
   await mkdir(dirname(jsonPath), { recursive: true });
   await writeFile(mdPath, report.markdown, "utf8");
   await writeFile(jsonPath, JSON.stringify(json, null, 2) + "\n", "utf8");
+  await mkdir(dirname(REGISTRY_PATH), { recursive: true });
+  await writeFile(REGISTRY_PATH, JSON.stringify(registry, null, 2) + "\n", "utf8");
 
   if (opts.json) {
     process.stdout.write(JSON.stringify(json, null, 2) + "\n");
@@ -875,6 +915,7 @@ async function main() {
     console.log(`Fidelity report written:`);
     console.log(`  - ${mdPath}`);
     console.log(`  - ${jsonPath}`);
+    console.log(`  - ${REGISTRY_PATH} (${Object.keys(registry.entries).length} entrées)`);
     console.log(
       `Global fidelity: ${report.global.fidelity}% ` +
         `(${report.global.eq} =, ${report.global.close} ~, ${report.global.diff} ≠). ` +
