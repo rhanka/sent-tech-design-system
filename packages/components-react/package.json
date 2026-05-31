@@ -29,7 +29,7 @@
     "test": "vitest run src"
   },
   "dependencies": {
-    "@sentropic/design-system-themes": "0.10.2"
+    "@sentropic/design-system-themes": "0.10.3"
   },
   "peerDependencies": {
     "react": "^18.3.0 || ^19.0.0",
