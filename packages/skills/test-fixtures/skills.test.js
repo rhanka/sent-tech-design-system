@@ -321,6 +321,15 @@ test("rule single-font: deux familles distinctes → pas de finding", async () =
 test("rule no-bare-hex: hex inline → finding", async () => {
   assert.ok((await ruleIds('<div style="color:#ff0000">x</div>')).includes("no-bare-hex"));
 });
+test("rule no-bare-hex: hex direct dans un bloc style → finding", async () => {
+  assert.ok((await ruleIds("<style>.x{background:#ffffff}</style><div class=\"x\">x</div>")).includes("no-bare-hex"));
+});
+test("rule no-bare-hex: déclaration de token CSS → pas de finding", async () => {
+  assert.ok(!(await ruleIds("<style>:root{--st-semantic-text-primary:#0f172a;--docs-accent:#0043ce}</style>")).includes("no-bare-hex"));
+});
+test("rule no-bare-hex: fallback var tokenisé → pas de finding", async () => {
+  assert.ok(!(await ruleIds('<div style="color:var(--st-semantic-text-primary, #0f172a)">x</div>')).includes("no-bare-hex"));
+});
 test("rule no-bare-hex: token sémantique → pas de finding", async () => {
   assert.ok(!(await ruleIds('<div style="color:var(--st-semantic-text-primary)">x</div>')).includes("no-bare-hex"));
 });
