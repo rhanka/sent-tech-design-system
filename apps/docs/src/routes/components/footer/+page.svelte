@@ -24,8 +24,8 @@
 {/snippet}
 
 {#snippet footerLegal()}
-  <Link href="/#legal">Mentions légales</Link>
-  <Link href="/#privacy">Confidentialité</Link>
+  <Link href="#footer-demo">Mentions légales</Link>
+  <Link href="#footer-demo">Confidentialité</Link>
 {/snippet}
 
 <div class="docs-page">
@@ -43,7 +43,7 @@
     </p>
   </section>
 
-  <section class="docs-section">
+  <section class="docs-section" id="footer-demo">
     <h2>Exemple complet</h2>
     <p class="docs-demo-context">
       Marque + deux colonnes de liens en zone de tête, copyright + liens légaux en barre du bas.
