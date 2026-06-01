@@ -224,7 +224,8 @@ describe("form controls", () => {
   });
 
   it("selects a single date when a calendar day is clicked", async () => {
-    const target = new Date(2026, 4, 15); // 2026-05-15 (today per env)
+    const currentMonth = new Date();
+    const target = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 15);
     let captured: Date | null | undefined = null;
     render(DatePicker, {
       props: {
@@ -263,8 +264,9 @@ describe("form controls", () => {
   });
 
   it("selects start then end date in range mode", async () => {
-    const start = new Date(2026, 4, 10);
-    const end = new Date(2026, 4, 20);
+    const currentMonth = new Date();
+    const start = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 10);
+    const end = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 20);
     const initial: DatePickerRange = { start: null, end: null };
     render(DatePicker, {
       props: {
