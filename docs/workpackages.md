@@ -65,7 +65,7 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 
 ## WP2 — Site docs UX
 
-**Statut global** : 🟡 couverture publique fermee, retest visuel final restant.
+**Statut global** : 🟢 couverture publique fermee, retest navigateur cible overlays/plan-completion consigne.
 
 | Item | Statut | Commits | Notes |
 |---|---|---|---|
@@ -74,15 +74,15 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 | Reprise header docs publie + garde contractuelle | 🟢 | `8ace58a` | Logo carre + `Sentropic` / `Design System`, GitHub icone, sent-tech.ca retire du header, controles langue/compte harmonises, test `header-contract` |
 | Home i18n complete | 🟢 | `55781c1`, `40b4b98` | catalogue descriptions bilingues |
 | Plan-completion hero shelf + contexte demos | 🟢 | `824a2b7` | |
-| Re-passe `/components/overlays` | 🔵 | — | WP6 ne bloque plus; reste une validation visuelle ciblee overlays/plan-completion. |
-| Audit visuel pages composants restantes | 🔵 | — | Couverture catalogue fermee; reste validation rendu desktop/mobile. |
+| Re-passe `/components/overlays` | 🟢 | — | Retest Chrome headless desktop/mobile OK: modal Escape, OverflowMenu z-index 80 > Toast 60. |
+| Audit visuel pages composants restantes | 🟢 | — | Retest cible `/components/overlays` + `/components/plan-completion` desktop/mobile OK; validation publique ex post reste a faire en fin de loop. |
 | Inventaire couverture docs composants | 🟢 | — | 79 entrees catalogue = 79 exports publics Svelte hors `ThemeProvider`; 0 stub catalogue; garde `docs-navigation.test.ts`. |
 | Stubs P1 composants | 🟢 | — | Les routes dediees existent pour les composants precedemment restants: forms, navigation, overlays, feedback/data, layout. |
 | Exports absents du catalogue | 🟢 | — | Aucun export UI absent; `ThemeProvider` reste exclu intentionnellement (primitive infra). |
 | Backlog composants (gap DSFR/Carbon) | ⚪ | — | `docs/ds-component-gap-analysis.md` (2026-05-26). **P1** : Footer, Tile unitaire. **P2** : notification inline, tree view, skip links, sélecteur de langue, citation, highlight. P3 : patterns/primitives. Différenciateurs maison (charts, chat) hors couverture upstream — à garder |
 
-**Dependances** : WP6 pour la re-passe overlays.
-**Parallelisable avec** : tous, sauf overlay tant que WP6 pas fait.
+**Dependances** : aucune pour la couverture docs courante; WP6 retest cible consigne.
+**Parallelisable avec** : tous.
 
 ### Suivi WP2
 
@@ -91,7 +91,7 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 | Fait | Inventaire docs | Eviter les stubs invisibles et les exports oublies | 🟢 | 100% | `COMPONENTS` couvre les 79 exports publics Svelte hors `ThemeProvider`; test de parite ajoute. |
 | Fait | Pages dediees | Fermer les stubs P1 visibles et les composants anciennement groupes | 🟢 | 100% | Routes dediees presentes pour forms, navigation, overlays, feedback/data, layout et charts. |
 | Fait | Catalogue absents | Ajouter les exports publics manquants au flux docs | 🟢 | 100% | Aucun export UI absent; `ThemeProvider` reste infra et exclu. |
-| A faire | Validation visuelle | Rejouer le site docs sur desktop/mobile et inspecter overlays + plan-completion | 🔵 | 0% | A faire en validation ex post site web, sans changer le contrat catalogue. |
+| Fait | Validation navigateur cible | Rejouer le site docs sur desktop/mobile et inspecter overlays + plan-completion | 🟢 | 100% | `npm --workspace apps/docs run build` puis smoke Chrome headless: overlays desktop/mobile (modal Escape, menu z 80 > toast 60), plan-completion desktop/mobile (popover z 80, drawer backdrop fixed z 100, Escape close). Validation publique ex post gardee pour la fin du loop. |
 | Attendu | Couverture publique | Aucun composant exporte ne doit etre invisible ou stub sans owner | 🟢 | 100% | Garde automatique: catalogue = exports publics et tous les statuts catalogue sont `documented`. |
 
 ## WP3 — Contrat header cross-site et applications
@@ -154,19 +154,19 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 
 ## WP6 — Fix-plan (bugs DS visuels et comportementaux)
 
-**Statut global** : 🟡 bugs corrigés, retest visuel overlays/plan-completion restant.
+**Statut global** : 🟢 bugs corrigés et retest navigateur cible overlays/plan-completion consigné.
 
 | Bug | Statut | Surface | Severity |
 |---|---|---|---|
-| Toast / Alert rail gauche + container arrondi | 🟢 | `Toast.svelte`, `Alert.svelte` | corrigé `a85a379`; retest visuel overlays restant |
-| OverflowMenu z-index < Toast | 🟢 | `OverflowMenu.svelte`, `Toast.svelte` | corrigé `d85ca6e`; retest visuel overlays restant |
-| Drawer click intercepte par Menu | 🟢 | `Menu.svelte` | corrigé `de0c059`; retest `/components/plan-completion` restant |
+| Toast / Alert rail gauche + container arrondi | 🟢 | `Toast.svelte`, `Alert.svelte` | corrigé `a85a379`; retest `/components/overlays` desktop/mobile OK |
+| OverflowMenu z-index < Toast | 🟢 | `OverflowMenu.svelte`, `Toast.svelte` | corrigé `d85ca6e`; Chrome confirme menu z-index 80 > Toast 60 |
+| Drawer click intercepte par Menu | 🟢 | `Menu.svelte` | corrigé `de0c059`; retest `/components/plan-completion` desktop/mobile OK |
 
 Detail dans `docs/known-issues-and-fixes.md`.
 
 **Dependances** : aucune.
 **Parallelisable avec** : tous (composants disjoints).
-**Bloque** : WP2 re-passe overlays tant que le retest visuel n'est pas consigné.
+**Bloque** : rien; la re-passe WP2 overlays/plan-completion est consignée.
 
 ## WP7 — Audit DS large (37 références upstream, 5 clusters parallèles)
 

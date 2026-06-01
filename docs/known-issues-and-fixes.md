@@ -6,6 +6,19 @@ Liste vivante des bugs visuels et comportementaux signalés sur le design system
 
 (rien d'ouvert pour l'instant — les trois bugs du 2026-05-22 sont passés en « Corrigés » ci-dessous)
 
+## Retest navigateur 2026-06-01
+
+Build vérifié : `npm --workspace apps/docs run build` (succès; seuls les 3 warnings Svelte legacy de `ChatComposer` restent, parqués en D2).
+
+Smoke Chrome headless sur `apps/docs/build` :
+
+| Page | Viewport | Vérification | Résultat |
+|---|---|---|---|
+| `/components/overlays` | Desktop 1440×1000 | Modal ouvre puis se ferme avec Escape; `OverflowMenu` ouvert au-dessus des Toast. | OK — menu z-index 80 > Toast 60 |
+| `/components/overlays` | Mobile 390×844 | Même parcours Modal + OverflowMenu. | OK — menu z-index 80 > Toast 60 |
+| `/components/plan-completion` | Desktop 1440×1000 | Popover visible; Drawer ouvre, backdrop `fixed` z-index 100, fermeture Escape. | OK |
+| `/components/plan-completion` | Mobile 390×844 | Même parcours Popover + Drawer. | OK |
+
 ## Principes DS à formaliser (déclenchés par les bugs ci-dessous)
 
 1. **Pas de rail gauche + container arrondi** — déjà documenté en mémoire de session ; à inscrire dans la doc principes formelle.
@@ -25,4 +38,4 @@ Liste vivante des bugs visuels et comportementaux signalés sur le design system
 ### Drawer — clic « Open drawer » ferme le menu au lieu d'ouvrir (corrigé 2026-05-22, `de0c059`)
 - **Cause** : `Menu` n'avait ni outside-click ni Escape câblés, et son comportement inline ne distinguait pas un usage popover d'un usage anchored.
 - **Fix** : ajout d'un `open` bindable (default `true` pour préserver l'usage inline existant) et d'un opt-in `dismissOnSelect`. Quand le consommateur active `dismissOnSelect`, Escape et pointerdown extérieur ferment le menu — pattern identique à OverflowMenu. Les usages inline (incluant la page plan-completion) gardent l'ancien comportement « toujours ouvert » sans interception d'événement, ce qui débloque le click sur le bouton Drawer.
-- **À retester visuellement** : passer sur `/components/plan-completion` après déploiement pour confirmer que cliquer « Open drawer » ouvre bien le Drawer maintenant que Menu n'intercepte plus rien par défaut.
+- **Retest** : Chrome headless desktop/mobile sur `/components/plan-completion` confirme que « Open drawer » ouvre le Drawer, que le backdrop est `fixed` z-index 100 et que Escape referme le panneau.
