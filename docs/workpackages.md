@@ -131,23 +131,23 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 
 ## WP5 — Graphics / Charts primitives
 
-**Statut global** : 🟢 P0 **publié `0.9.0`** (Sparkline/Bar/Line/Area, consommés par agent-stats) + **P1 livré en local** (Donut/Scatter/StackedBar — `8a9ded0`, à publier via D1).
+**Statut global** : 🟢 V1 charts livré dans `@sentropic/design-system-svelte@0.10.3` : Sparkline, BarChart, LineChart, AreaChart, DonutChart, ScatterPlot et StackedBarChart exportés, documentés et couverts par les tests d'accessibilité.
 
-**Décidé 2026-05-22** : **C hand-rolled intégral**. Aucune dépendance, full control, white-label parfait. Chaéchelles/axes/tooltips/légendes/a11y écrits par nous.
+**Décidé 2026-05-22** : **C hand-rolled intégral**. Aucune dépendance, full control, white-label parfait. Échelles/axes/tooltips/légendes/a11y écrits par nous.
 
 | Item | Statut | Commits | Notes |
 |---|---|---|---|
 | Roadmap `docs/graphics-roadmap.md` | 🟢 | `76703c3` | base de référence |
 | Foundation décidée : C hand-rolled | 🟢 | — | |
 | Sparkline | 🟢 | `0.9.0` | exporté + page docs + catalogue |
-| BarChart | 🟢 | `0.9.0` | exporté (était caché) + page docs + catalogue ; vertical/horizontal, tons catégoriels |
-| LineChart | 🟢 | `0.9.0` | exporté (était caché) + page docs + catalogue ; smooth/area, axe X ordinal ou linéaire |
-| AreaChart | 🟢 | — | déjà exporté + page docs |
-| StackedBar | ⚪ | — | P1 |
-| DonutChart | ⚪ | — | P1 |
-| ScatterPlot | ⚪ | — | P2 |
+| BarChart | 🟢 | `0.9.0` | exporté + page docs + catalogue ; vertical/horizontal, tons catégoriels |
+| LineChart | 🟢 | `0.9.0` | exporté + page docs + catalogue ; smooth/area, axe X ordinal ou linéaire |
+| AreaChart | 🟢 | `0.10.3` | exporté + page docs + catalogue + test dédié |
+| DonutChart | 🟢 | `0.10.3` | exporté + page docs + catalogue + garde a11y |
+| ScatterPlot | 🟢 | `0.10.3` | exporté + page docs + catalogue + garde a11y |
+| StackedBarChart | 🟢 | `0.10.3` | exporté + page docs + catalogue + garde a11y |
 
-**Estimé** : 15-20j pour 6 charts P0/P1, mais Sparkline et BarChart livrables dès la première semaine.
+**Reste V2** : Heatmap, ChartLegend et ChartTooltip transverses si un besoin produit les déclenche.
 
 **Dependances** : aucune.
 **Parallelisable avec** : tous.

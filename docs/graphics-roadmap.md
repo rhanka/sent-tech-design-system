@@ -1,8 +1,10 @@
 # Graphics / charts roadmap pour le design system Sent Tech
 
-Périmètre : primitives de visualisation de données à ajouter au DS pour les besoins Sentropic, NC, et futurs produits (Forge, Entropic). Aujourd'hui le DS expose 0 composant chart, et chaque produit qui en a besoin importe sa propre stack.
+Périmètre : primitives de visualisation de données à ajouter au DS pour les besoins Sentropic, NC, et futurs produits (Forge, Entropic).
 
-## État actuel
+> Note 2026-06-01 : ce document conserve la baseline de cadrage initiale. État courant : le DS expose Sparkline, BarChart, LineChart, AreaChart, DonutChart, ScatterPlot et StackedBarChart dans `@sentropic/design-system-svelte@0.10.3`; les exports, pages docs catalogue et tests a11y sont en place.
+
+## Baseline initiale
 
 ### DS Sent Tech (`packages/components-svelte/src/lib/`)
 - Aucune brick chart. ~50 primitives livrées (Accordion → UnorderedList) couvrent layout, formulaires, navigation, feedback. Pas de Sparkline, BarChart, LineChart, DonutChart, ScatterPlot, Heatmap, Gauge, Treemap.
