@@ -11,7 +11,7 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
   import { page } from "$app/state";
-  import { ChevronDown } from "@lucide/svelte";
+  import { ChevronDown, Menu, Search, X } from "@lucide/svelte";
   import {
     DOCS_FOUNDATION_NAV,
     DOCS_TOP_NAV,
@@ -119,10 +119,7 @@
                 aria-label="Rechercher dans la documentation"
               />
               <button type="button" class="dsfr-search__btn" aria-label="Lancer la recherche">
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                  <circle cx="11" cy="11" r="7"/>
-                  <line x1="17" y1="17" x2="22" y2="22"/>
-                </svg>
+                <Search size={16} strokeWidth={2} aria-hidden="true" />
               </button>
             </div>
           </div>
@@ -136,16 +133,11 @@
           aria-expanded={mobileMenuOpen}
           aria-label="Menu principal"
         >
-          <svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-            {#if mobileMenuOpen}
-              <line x1="3" y1="3" x2="17" y2="17"/>
-              <line x1="17" y1="3" x2="3" y2="17"/>
-            {:else}
-              <line x1="2" y1="5" x2="18" y2="5"/>
-              <line x1="2" y1="10" x2="18" y2="10"/>
-              <line x1="2" y1="15" x2="18" y2="15"/>
-            {/if}
-          </svg>
+          {#if mobileMenuOpen}
+            <X size={20} strokeWidth={1.8} aria-hidden="true" />
+          {:else}
+            <Menu size={20} strokeWidth={1.8} aria-hidden="true" />
+          {/if}
         </button>
       </div>
     </header>
@@ -163,9 +155,9 @@
               >
                 {item.label}
                 <!-- Chevron indiquant un sous-menu déroulant (tous les items top-nav en ont un) -->
-                <svg class="dsfr-nav__chevron" viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                  <polyline points="2,4 6,8 10,4"/>
-                </svg>
+                <span class="dsfr-nav__chevron" aria-hidden="true">
+                  <ChevronDown size={10} strokeWidth={1.8} />
+                </span>
               </a>
             </li>
           {/each}

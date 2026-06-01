@@ -8,7 +8,7 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
   import { page } from "$app/state";
-  import { ChevronDown } from "@lucide/svelte";
+  import { Bell, ChevronDown, CircleQuestionMark, Menu, Search, X } from "@lucide/svelte";
   import {
     DOCS_FOUNDATION_NAV,
     DOCS_TOP_NAV,
@@ -104,25 +104,15 @@
       <div class="abus-header__actions">
         <!-- Icône Recherche -->
         <button type="button" class="abus-header__icon-btn" aria-label="Rechercher">
-          <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-            <circle cx="8.5" cy="8.5" r="5.5"/>
-            <line x1="13" y1="13" x2="18" y2="18"/>
-          </svg>
+          <Search size={16} strokeWidth={1.8} aria-hidden="true" />
         </button>
         <!-- Icône Notifications -->
         <button type="button" class="abus-header__icon-btn" aria-label="Notifications">
-          <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-            <path d="M10 2a6 6 0 0 1 6 6c0 3.5 1.5 5 1.5 5h-15s1.5-1.5 1.5-5a6 6 0 0 1 6-6Z"/>
-            <path d="M8.5 17.5a1.5 1.5 0 0 0 3 0"/>
-          </svg>
+          <Bell size={16} strokeWidth={1.8} aria-hidden="true" />
         </button>
         <!-- Icône Aide -->
         <button type="button" class="abus-header__icon-btn" aria-label="Aide">
-          <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-            <circle cx="10" cy="10" r="8"/>
-            <path d="M7.5 7.5a2.5 2.5 0 0 1 5 0c0 2-2.5 2.5-2.5 4"/>
-            <circle cx="10" cy="15" r="0.7" fill="currentColor"/>
-          </svg>
+          <CircleQuestionMark size={16} strokeWidth={1.8} aria-hidden="true" />
         </button>
         <!-- Bouton Contact (blanc, texte navy) -->
         <button type="button" class="abus-header__contact-btn">Contact</button>
@@ -138,16 +128,11 @@
           aria-expanded={mobileMenuOpen}
           aria-label="Menu principal"
         >
-          <svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-            {#if mobileMenuOpen}
-              <line x1="3" y1="3" x2="17" y2="17"/>
-              <line x1="17" y1="3" x2="3" y2="17"/>
-            {:else}
-              <line x1="2" y1="5" x2="18" y2="5"/>
-              <line x1="2" y1="10" x2="18" y2="10"/>
-              <line x1="2" y1="15" x2="18" y2="15"/>
-            {/if}
-          </svg>
+          {#if mobileMenuOpen}
+            <X size={20} strokeWidth={1.8} aria-hidden="true" />
+          {:else}
+            <Menu size={20} strokeWidth={1.8} aria-hidden="true" />
+          {/if}
         </button>
       </div>
     </div>
