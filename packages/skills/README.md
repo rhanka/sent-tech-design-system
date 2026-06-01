@@ -13,14 +13,19 @@ npm install @sentropic/design-system-skills
 ## CLI
 
 ```bash
-impeccable-sent-tech <url | file.html | inline-html>
 design audit <url | file.html | inline-html>
+design check <url | file.html | inline-html> --tech
+sentech-design audit <url | file.html | inline-html>
 ```
 
 Options :
 - `design audit <target>` est le contrat WP8 V1 pour les harness agents.
-- `impeccable-sent-tech <target>` reste supporté en rétrocompatibilité.
+- `design` et `sentech-design` sont les binaires publiés par le package.
 - `design check <target> --fail-under <score>` active un gate qualité 0-100. En mode technique, `<target>` peut être un fichier HTML, du HTML inline, une URL ou un dossier de build statique contenant des pages `.html`.
+- `design check <target> --human` retourne une revue heuristique déterministe (charge cognitive, structure, signaux a11y) ; ce n'est pas une simulation IA.
+- `design init --extract` génère `DESIGN.md` à partir de tokens CSS réels.
+- `design build <feature>` génère un squelette Svelte 5 réel ; `--propose`, `--promote` et `--global` sont explicitement expérimentaux et retournent `2`.
+- `design polish --motion` et `--essence` sont déterministes ; les passes créatives `--bolder`, `--quieter`, `--spark`, `--charm`, `--lucid` sont agentiques et retournent `2` quand elles sont demandées seules.
 - `stdin` non supporté ; passer une URL, un fichier existant ou un bloc HTML inline.
 - Sortie JSON standard sur `stdout`.
 - Résumé court sur `stderr` (counts + top findings).
