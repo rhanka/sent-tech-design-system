@@ -74,7 +74,7 @@
     <ul class="docs-list docs-list--plain">
       <li>{fr("Radios natifs : les flèches déplacent la sélection dans le groupe (name commun).", "Native radios: arrow keys move the selection within the group (shared name).")}</li>
       <li>{fr("Le libellé englobe l'input : cliquer le texte sélectionne.", "The label wraps the input: clicking the text selects it.")}</li>
-      <li>{fr("aria-invalid=\"true\" en erreur.", "aria-invalid=\"true\" in the error state.")}</li>
+      <li>{fr("L'état erreur est visuel sur le radio; appliquez aria-invalid au groupe si toute la question est invalide.", "The error state is visual on the radio; apply aria-invalid to the group when the whole question is invalid.")}</li>
       <li>{fr("Groupez sous un FormGroup avec légende pour un libellé de groupe accessible.", "Group under a FormGroup with a legend for an accessible group label.")}</li>
     </ul>
   </section>
@@ -108,7 +108,7 @@
       <tbody>
         <tr><td><code>label</code></td><td><code>string</code></td><td><em>{fr("requis", "required")}</em></td><td>{fr("Libellé visible du bouton.", "Visible label of the button.")}</td></tr>
         <tr><td><code>helperText</code></td><td><code>string</code></td><td><em>{fr("optionnel", "optional")}</em></td><td>{fr("Texte d'aide sous le libellé.", "Helper text below the label.")}</td></tr>
-        <tr><td><code>invalid</code></td><td><code>boolean</code></td><td><code>false</code></td><td>{fr("Active l'état erreur (aria-invalid).", "Triggers the error state (aria-invalid).")}</td></tr>
+        <tr><td><code>invalid</code></td><td><code>boolean</code></td><td><code>false</code></td><td>{fr("Active l'état erreur visuel du radio.", "Triggers the radio visual error state.")}</td></tr>
         <tr><td><code>class</code></td><td><code>string</code></td><td><em>{fr("optionnel", "optional")}</em></td><td>{fr("Classe(s) sur le <label>.", "Class(es) on the <label>.")}</td></tr>
         <tr><td>{fr("Autres attributs", "Other attributes")}</td><td><code>HTMLInputAttributes</code></td><td>—</td><td>{fr("Propagés sur l'<input> (name, value, checked, disabled…).", "Spread onto the <input> (name, value, checked, disabled…).")}</td></tr>
       </tbody>
