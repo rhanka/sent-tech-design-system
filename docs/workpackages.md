@@ -251,7 +251,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 | Topic catalogue « Chat & Agent » | 🟢 | Catégorie `chat` créée ; 6 composants déplacés hors form/action (`21334b5`) |
 | Input chat multiligne auto-resize | 🟢 | `ChatComposer` le faisait déjà (autosize, Enter/Shift+Enter, cap maxRows + scroll) — vérifié |
 | Réalignement notions agentiques | 🟢 | **reasoning ajouté** à StreamingMessage (`reasoning.delta`/`completed` + bloc repliable) ; streaming + tool calling (tool.*/permission/checkpoint) déjà présents (`83d3449`) |
-| Page docs dédiée + démo reasoning | ⚪ | Ajouter une démo reasoning sur la page streaming-message ; publier dans la prochaine release DS (non publié pour l'instant) |
+| Page docs dédiée + démo reasoning | 🟢 | Page `streaming-message` documentée avec démo reasoning + tool + permission ; publication npm reste D1 |
 
 **Dépendances** : WP4 (primitives existantes) ; WP2 (catégorisation catalogue).
 **Parallélisable avec** : WP10, WP12.

@@ -11,6 +11,10 @@
       liveTitle: "Streaming actif",
       passiveTitle: "Snapshot de contenu final",
       detailTitle: "Trail détaillé",
+      reasoningTitle: "Reasoning + outil",
+      reasoningDelta1: "L'utilisateur demande la météo. ",
+      reasoningDelta2: "Je vérifie la ville, puis j'appelle l'outil météo.",
+      reasoningAnswer: "Il fera 18°C et ensoleillé.",
       statusTitle: "API",
       token1: "--st-streamingMessage-text-muted",
       token2: "--st-streamingMessage-trail",
@@ -28,6 +32,10 @@
       liveTitle: "Active streaming",
       passiveTitle: "Final content snapshot",
       detailTitle: "Detailed trail",
+      reasoningTitle: "Reasoning + tool",
+      reasoningDelta1: "The user is asking for weather. ",
+      reasoningDelta2: "I check the city, then call the weather tool.",
+      reasoningAnswer: "It will be 18°C and sunny.",
       statusTitle: "API",
       token1: "--st-streamingMessage-text-muted",
       token2: "--st-streamingMessage-trail",
@@ -59,14 +67,19 @@
     { type: "message.delta", messageId: "m-3", delta: "Action de validation prise en compte." },
   ];
 
-  // Reasoning : le raisonnement précède la réponse, dans un bloc repliable.
-  const reasoningEvents: StreamingMessageEvent[] = [
-    { type: "reasoning.delta", messageId: "m-4", delta: "L'utilisateur demande la météo. " },
-    { type: "reasoning.delta", messageId: "m-4", delta: "Je vérifie la ville, puis j'appelle l'outil." },
+  const permissionChoices = () =>
+    locale.value === "fr"
+      ? ["autoriser une fois", "refuser"]
+      : ["allow once", "deny"];
+
+  const reasoningEvents = (): StreamingMessageEvent[] => [
+    { type: "reasoning.delta", messageId: "m-4", delta: text().reasoningDelta1 },
+    { type: "reasoning.delta", messageId: "m-4", delta: text().reasoningDelta2 },
     { type: "reasoning.completed", messageId: "m-4" },
     { type: "tool.started", toolCallId: "tool_weather_01", toolName: "get-weather", messageId: "m-4" },
+    { type: "permission.requested", toolCallId: "tool_weather_01", choices: permissionChoices(), messageId: "m-4" },
     { type: "tool.completed", toolCallId: "tool_weather_01", status: "success", toolName: "get-weather", messageId: "m-4" },
-    { type: "message.delta", messageId: "m-4", delta: "Il fera 18°C et ensoleillé." }
+    { type: "message.delta", messageId: "m-4", delta: text().reasoningAnswer }
   ];
 </script>
 
@@ -97,11 +110,11 @@
   </section>
 
   <section class="docs-section">
-    <h2>Reasoning</h2>
+    <h2>{text().reasoningTitle}</h2>
     <p class="docs-demo-context">
-      Le raisonnement (events <code>reasoning.delta</code> / <code>reasoning.completed</code>)
-      s'affiche dans un bloc <strong>repliable</strong> au-dessus de la réponse — ouvert
-      pendant la réflexion, replié une fois terminé.
+      {locale.value === "fr"
+        ? "Le raisonnement s'affiche dans un bloc repliable au-dessus de la réponse, puis le trail expose l'outil et la permission associés."
+        : "Reasoning appears in a collapsible block above the answer, then the trail exposes the related tool and permission."}
     </p>
     <div class="docs-example docs-example--stack">
       <StreamingMessage
@@ -109,7 +122,7 @@
         status="completed"
         streamId="msg-reasoning-demo"
         mode="live"
-        initialEvents={reasoningEvents}
+        initialEvents={reasoningEvents()}
         showTrail
       />
     </div>
