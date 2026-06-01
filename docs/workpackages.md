@@ -206,7 +206,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 >
 > La CLI `design` factorise 17-19 méthodes en **5 verbes** : `init` · `build <feature>` · `check <target>` · `align <target>` · `polish <target>`. **L'audit n'est qu'1 verbe** = `design check --tech`. Ne jamais réduire le moteur `design` à « audit ».
 
-**Statut global** : 🟢 cœur livré — les 5 verbes `init`/`build`/`check`/`align`/`polish` sont réels ou honnêtement expérimentaux (plus aucun faux succès), 70 tests skills verts ; package renommé `@sentropic/design-system-skills`, **publié `0.1.0` sur npm via OIDC Trusted Publishing**.
+**Statut global** : 🟢 cœur livré — les 5 verbes `init`/`build`/`check`/`align`/`polish` sont réels ou honnêtement expérimentaux (plus aucun faux succès), 73 tests skills verts ; package renommé `@sentropic/design-system-skills`, **publié `0.1.0` sur npm via OIDC Trusted Publishing**.
 
 **Périmètre V1 livré** : `design check --tech <target>` retourne un rapport JSON, codes `0/1/2`, sans Playwright. C'est 1 des 5 verbes — pas « la CLI ». Les 4 autres verbes sont le cœur du reste de WP8.
 
@@ -229,7 +229,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 | Fait | Knowledge base | Capturer les principes DS | 🟢 | 100% | `docs/principles/*` initialisés. |
 | Fait | Skill V1 | Exécuter le moteur depuis un harness agent | 🟡 | 85% | `tools/skills/sent-tech-skills/scripts/audit.mjs` appelle le contrat canonique. |
 | Fait | Alignement CLI/themes | Mapper les corrections CLI vers les vrais tokens publies | 🟢 | 100% | `design align --tones` remplace vers `--st-semantic-*`; les themes exportent `--st-foundation-*`; tests ajoutes. |
-| Fait | Ruleset | Passer de 7 à 25 règles initiales | 🟢 | 100% | 25 règles actives pilotées par `docs/ds-audit-consolidated-v2.md`; 70 tests skills verts. |
+| Fait | Ruleset | Passer de 7 à 25 règles initiales | 🟢 | 100% | 25 règles actives pilotées par `docs/ds-audit-consolidated-v2.md`; 73 tests skills verts. |
 | Fait | Promesse CLI | Nettoyer ou rendre reels `build`, `polish`, `init --extract`, `check --human` | 🟢 | 100% | `init --extract`, `build` craft, `check --human`, `polish --motion/--essence` sont concrets; passes agentiques non déterministes retournent `2`. |
 | Fait | Traçabilité | Lier règle, principe et finding WP7 | 🟢 | 100% | `Rule.principle` / `Rule.wp7Finding` obligatoires et documentés dans `docs/wp8-design-cli-traceability.md`. |
 | Fait | Release npm DS | Publier les 3 packages DS | 🟢 | 100% | `@sentropic/design-system-{tokens,themes,svelte}@0.8.0` publiés via OIDC + provenance (run `26422110851`). |
@@ -298,8 +298,8 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 | Item | Statut | Notes |
 |---|---|---|
 | Installer la lib publiée si nécessaire | 🟢 | Workspace local utilisé; package publié `@sentropic/design-system-skills@0.1.0` déjà disponible. |
-| `design check` sur le site/docs DS | 🟢 | Build docs courant audité: 85 pages, 25 règles, 231 findings après corrections `h1-inline-badge`, `status-indicator-label`, `line-length-cap` et déduplication `no-em-dash`; voir `docs/dogfooding-design-check.md`. |
-| Boucler findings → corrections | 🟡 | Dette prioritaire restante: `no-bare-hex` 86, `single-font` 85, `no-em-dash` 60; `h1-inline-badge`, `status-indicator-label` et `line-length-cap` ramenés à 0. |
+| `design check` sur le site/docs DS | 🟢 | Build docs courant audité: 85 pages, 25 règles, 145 findings après corrections `h1-inline-badge`, `status-indicator-label`, `line-length-cap`, déduplication `no-em-dash` et précision `no-bare-hex`; voir `docs/dogfooding-design-check.md`. |
+| Boucler findings → corrections | 🟡 | Dette prioritaire restante: `single-font` 85, `no-em-dash` 60; `no-bare-hex`, `h1-inline-badge`, `status-indicator-label` et `line-length-cap` ramenés à 0. |
 
 **Dépendances** : WP8 (package publié).
 **Parallélisable avec** : tous.
