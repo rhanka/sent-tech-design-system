@@ -36,9 +36,10 @@ DSFR : soulignement de lien **animé** (D2 matrice) ; technique du filet bas inp
 Bloqué : besoin des assets/tokens (Airbus fourni par toi, Scalian/CGI à récupérer)
 + confirmation **hors git** (mémoire/gitignore). *(Bloqué sur fourniture.)*
 
-### D5 — 🟠 WP12 templates docs & slides (ESN)
-Format de sortie `.pptx` + `.doc` à valider ; typologie slides ESN (decks Scalian/CGI
-en réf, hors colorimétrie). Cadrage à faire avec toi avant tout dev.
+### D5 — 🟡 WP12 templates docs & slides (ESN)
+Premier kit source livré : `docs/templates/esn/` en Markdown-first avec taxonomie,
+proposition, rapport de livraison et deck Slidev-compatible. Les exports `.pptx`
+et `.docx` restent à décider plus tard si un pipeline binaire devient nécessaire.
 
 ### D7 — ✅ FAIT — Checkbox/Radio natifs pleinement thémés (pas de refonte)
 Recadrage utilisateur : pas de widget custom, juste rendre le **natif** assez fonctionnel.
