@@ -9,7 +9,8 @@ import { spawnSync } from "node:child_process";
 import { resolve } from "node:path";
 import process from "node:process";
 
-const args = process.argv.slice(2);
+const rawArgs = process.argv.slice(2);
+const args = rawArgs[0] === "fidelity" ? rawArgs.slice(1) : rawArgs;
 
 const root = process.env.SENT_TECH_DS_ROOT || "/home/antoinefa/src/sent-tech-design-system";
 const candidates = [

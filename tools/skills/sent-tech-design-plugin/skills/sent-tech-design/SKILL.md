@@ -17,7 +17,7 @@ pixel-perfect bord par bord vs les vrais composants officiels DSFR / Carbon).
 - `node scripts/audit.mjs <target>`
   - `<target>` supporte une URL, un chemin de fichier ou du HTML inline.
   - Le wrapper relaie vers le contrat workspace `design audit <target>`.
-  - Linter **statique jsdom** (7 règles, aucun navigateur requis).
+  - Linter **statique jsdom** (25 règles actives, aucun navigateur requis).
 
 ### Sortie `audit`
 
