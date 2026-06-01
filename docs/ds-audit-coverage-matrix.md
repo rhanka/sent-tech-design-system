@@ -198,7 +198,7 @@ Finding = entrée priorisée de `docs/ds-audit-consolidated-v2.md` (et son ID cl
 | P0-5 `single-font` / `overused-font` | `display-body-font-pair` | test positif (même famille display/body) + négatif (tokens distincts) | **Couvert** |
 | P0-4 longueur de ligne trop élevée | `line-length-max-width` | test positif (`max-width:48rem` sur texte long) + négatif (`65ch`) | **Couvert** |
 | P2-2 badge inline dans le H1 | `h1-inline-badge` | test positif (badge dans H1) + négatif (badge hors H1) | **Couvert** |
-| P2-4 statut docs sans légende explicite | `status-indicator-label` | test positif (dot sans nom) + négatif (`aria-label`) | **Couvert** |
+| P2-4 statut docs sans légende explicite | `status-indicator-label` | test positif (dot sans nom) + négatifs (`aria-label`, libellé court, enfant décoratif d'un indicateur nommé) | **Couvert** |
 | P2-3 labels mineurs sans coût informationnel | `redundant-url-label` | test positif (URL visible redondante) + négatif (libellé utile) | **Couvert** |
 | P0-3 monotonie des grilles de cartes | `auto-fit-card-grid` | test positif (`repeat(auto-fit,minmax(...))`) + négatif (token layout) | **Couvert** |
 | P1-2 cible/affordance interactive insuffisante | `focus-visible-ring` | test positif (`outline:none` sans focus-visible) + négatif (focus ring tokenisé) | **Couvert** |
