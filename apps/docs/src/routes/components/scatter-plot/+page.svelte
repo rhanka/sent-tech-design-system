@@ -21,8 +21,8 @@
     </div>
     <p>
       Nuage de points : deux axes numériques (graduations « jolies » automatiques),
-      points colorés par <code>tone</code> (palette data-vis), tooltip au survol/focus,
-      points focusables avec label a11y.
+      points colorés par <code>tone</code> (palette data-vis), tooltip au survol et
+      liste accessible des coordonnées hors SVG.
     </p>
   </section>
 

@@ -11,6 +11,8 @@
 </script>
 
 <script lang="ts">
+  import ChartDataList from "./ChartDataList.svelte";
+
   type DonutChartProps = {
     data: DonutChartDatum[];
     /** Diamètre du SVG. */
@@ -69,32 +71,49 @@
 
   const classes = () => ["st-donutChart", className].filter(Boolean).join(" ");
   const fmtPct = (p: number) => `${p.toFixed(p < 10 ? 1 : 0)}%`;
+  const dataValueItems = $derived(
+    slices.items.map((slice) => `${slice.d.label}: ${slice.d.value} (${fmtPct(slice.pct)})`)
+  );
+
+  function handleVisualPointerMove(event: PointerEvent) {
+    const target = event.target;
+    if (!(target instanceof Element)) {
+      hoveredIndex = null;
+      return;
+    }
+    const index = Number(target.getAttribute("data-chart-index"));
+    hoveredIndex = Number.isInteger(index) ? index : null;
+  }
 </script>
 
-<div class={classes()} role="img" aria-label={label}>
-  <svg viewBox="0 0 {size} {size}" width="100%" height="100%" focusable="false" aria-hidden="true">
-    {#if slices.total > 0}
-      {#each slices.items as slice, i (slice.d.label)}
-        <path
-          class="st-donutChart__slice st-donutChart__slice--{slice.tone}"
-          class:st-donutChart__slice--dim={hoveredIndex !== null && hoveredIndex !== i}
-          d={slice.path}
-          tabindex="0"
-          role="img"
-          aria-label="{slice.d.label}: {slice.d.value} ({fmtPct(slice.pct)})"
-          onmouseenter={() => (hoveredIndex = i)}
-          onmouseleave={() => (hoveredIndex = null)}
-          onfocus={() => (hoveredIndex = i)}
-          onblur={() => (hoveredIndex = null)}
-        />
-      {/each}
-      {#if centerLabel !== null}
-        <text class="st-donutChart__center" x={size / 2} y={size / 2} text-anchor="middle" dominant-baseline="central">
-          {centerLabel ?? slices.total}
-        </text>
+<div class={classes()}>
+  <div
+    class="st-donutChart__visual"
+    role="img"
+    aria-label={label}
+    onpointermove={handleVisualPointerMove}
+    onpointerleave={() => (hoveredIndex = null)}
+  >
+    <svg viewBox="0 0 {size} {size}" width="100%" height="100%" focusable="false" aria-hidden="true">
+      {#if slices.total > 0}
+        {#each slices.items as slice, i (slice.d.label)}
+          <path
+            class="st-donutChart__slice st-donutChart__slice--{slice.tone}"
+            class:st-donutChart__slice--dim={hoveredIndex !== null && hoveredIndex !== i}
+            d={slice.path}
+            data-chart-index={i}
+          />
+        {/each}
+        {#if centerLabel !== null}
+          <text class="st-donutChart__center" x={size / 2} y={size / 2} text-anchor="middle" dominant-baseline="central">
+            {centerLabel ?? slices.total}
+          </text>
+        {/if}
       {/if}
-    {/if}
-  </svg>
+    </svg>
+  </div>
+
+  <ChartDataList {label} items={dataValueItems} />
 
   {#if hoveredIndex !== null && slices.items[hoveredIndex]}
     {@const s = slices.items[hoveredIndex]}
@@ -114,7 +133,8 @@
     position: relative;
   }
 
-  .st-donutChart svg { display: block; overflow: visible; }
+  .st-donutChart svg,
+  .st-donutChart__visual { display: block; overflow: visible; }
 
   .st-donutChart__slice {
     cursor: pointer;
@@ -124,11 +144,6 @@
   }
 
   .st-donutChart__slice--dim { opacity: 0.4; }
-
-  .st-donutChart__slice:focus-visible {
-    outline: 2px solid var(--st-semantic-border-interactive);
-    outline-offset: 1px;
-  }
 
   .st-donutChart__slice--category1 { fill: var(--st-semantic-data-category1); }
   .st-donutChart__slice--category2 { fill: var(--st-semantic-data-category2); }

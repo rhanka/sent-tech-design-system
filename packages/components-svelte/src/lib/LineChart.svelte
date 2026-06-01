@@ -16,6 +16,8 @@
 </script>
 
 <script lang="ts">
+  import ChartDataList from "./ChartDataList.svelte";
+
   type LineChartProps = {
     data: LineChartDatum[];
     width?: number;
@@ -128,6 +130,8 @@
     });
   });
 
+  const dataValueItems = $derived(data.map((d) => `${d.x}: ${d.y}`));
+
   function buildLinearPath(pts: { x: number; y: number }[]): string {
     return pts.map((p, i) => `${i === 0 ? "M" : "L"}${p.x.toFixed(2)},${p.y.toFixed(2)}`).join(" ");
   }
@@ -190,26 +194,39 @@
     return entries;
   });
 
-  function handleEnter(i: number) {
-    hoveredIndex = i;
-  }
   function handleLeave() {
     hoveredIndex = null;
+  }
+  function handleVisualPointerMove(event: PointerEvent) {
+    const target = event.target;
+    if (!(target instanceof Element)) {
+      hoveredIndex = null;
+      return;
+    }
+    const index = Number(target.getAttribute("data-chart-index"));
+    hoveredIndex = Number.isInteger(index) ? index : null;
   }
 
   const classes = () =>
     ["st-lineChart", `st-lineChart--${tone}`, className].filter(Boolean).join(" ");
 </script>
 
-<div class={classes()} role="img" aria-label={label}>
-  <svg
-    viewBox="0 0 {width} {height}"
-    preserveAspectRatio="xMidYMid meet"
-    width="100%"
-    height="100%"
-    focusable="false"
-    aria-hidden="true"
+<div class={classes()}>
+  <div
+    class="st-lineChart__visual"
+    role="img"
+    aria-label={label}
+    onpointermove={handleVisualPointerMove}
+    onpointerleave={handleLeave}
   >
+    <svg
+      viewBox="0 0 {width} {height}"
+      preserveAspectRatio="xMidYMid meet"
+      width="100%"
+      height="100%"
+      focusable="false"
+      aria-hidden="true"
+    >
     <!-- gridlines + Y axis ticks -->
     {#each gridLines as g (g.value)}
       <line
@@ -278,16 +295,13 @@
         cx={p.x}
         cy={p.y}
         r="4"
-        tabindex="0"
-        role="img"
-        aria-label="{p.datum.x}: {p.datum.y}"
-        onmouseenter={() => handleEnter(p.index)}
-        onmouseleave={handleLeave}
-        onfocus={() => handleEnter(p.index)}
-        onblur={handleLeave}
+        data-chart-index={p.index}
       />
     {/each}
-  </svg>
+    </svg>
+  </div>
+
+  <ChartDataList {label} items={dataValueItems} />
 
   {#if hoveredIndex !== null && points[hoveredIndex]}
     {@const p = points[hoveredIndex]}
@@ -325,6 +339,10 @@
     overflow: visible;
   }
 
+  .st-lineChart__visual {
+    display: block;
+  }
+
   .st-lineChart__grid {
     stroke: var(--st-component-lineChart-gridStroke, var(--st-semantic-border-subtle));
     stroke-dasharray: 2 3;
@@ -360,14 +378,8 @@
     transition: r 120ms ease;
   }
 
-  .st-lineChart__dot:hover,
-  .st-lineChart__dot:focus-visible {
+  .st-lineChart__dot:hover {
     r: 5.5;
-  }
-
-  .st-lineChart__dot:focus-visible {
-    outline: 2px solid var(--st-semantic-border-interactive);
-    outline-offset: 1px;
   }
 
   .st-lineChart__tooltip {

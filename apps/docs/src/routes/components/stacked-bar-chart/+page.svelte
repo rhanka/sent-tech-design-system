@@ -30,7 +30,7 @@
     <p>
       Barres empilées : chaque barre cumule plusieurs séries (segments). Couleur par
       série (palette data-vis), légende dérivée des labels, tooltip par segment au
-      survol/focus, segments focusables a11y.
+      survol et liste accessible des segments hors SVG.
     </p>
   </section>
 

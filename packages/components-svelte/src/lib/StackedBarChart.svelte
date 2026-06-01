@@ -16,6 +16,8 @@
 </script>
 
 <script lang="ts">
+  import ChartDataList from "./ChartDataList.svelte";
+
   type StackedBarChartProps = {
     data: StackedBarDatum[];
     width?: number;
@@ -98,38 +100,58 @@
     });
   });
 
+  const dataValueItems = $derived(
+    data.flatMap((bar) => bar.segments.map((seg) => `${bar.label}, ${seg.label}: ${seg.value}`))
+  );
+
+  function handleVisualPointerMove(event: PointerEvent) {
+    const target = event.target;
+    if (!(target instanceof Element)) {
+      hovered = null;
+      return;
+    }
+    const bar = Number(target.getAttribute("data-bar-index"));
+    const seg = Number(target.getAttribute("data-segment-index"));
+    hovered = Number.isInteger(bar) && Number.isInteger(seg) ? { bar, seg } : null;
+  }
+
   const classes = () => ["st-stackedBar", className].filter(Boolean).join(" ");
 </script>
 
-<div class={classes()} role="img" aria-label={label}>
-  <svg viewBox="0 0 {width} {height}" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" focusable="false" aria-hidden="true">
-    {#each scales.ticks as t (t)}
-      {@const y = MARGIN.top + scaleLinear(t, 0, scales.domainMax, scales.plotH, 0)}
-      <line class="st-stackedBar__grid" x1={MARGIN.left} x2={width - MARGIN.right} y1={y} y2={y} />
-      <text class="st-stackedBar__tick" x={MARGIN.left - 6} y={y} text-anchor="end" dominant-baseline="middle">{fmt(t)}</text>
-    {/each}
-
-    <line class="st-stackedBar__axis" x1={MARGIN.left} x2={MARGIN.left} y1={MARGIN.top} y2={height - MARGIN.bottom} />
-    <line class="st-stackedBar__axis" x1={MARGIN.left} x2={width - MARGIN.right} y1={height - MARGIN.bottom} y2={height - MARGIN.bottom} />
-
-    {#each bars as bar, bi (bar.label)}
-      <text class="st-stackedBar__categoryLabel" x={bar.cxLabel} y={height - MARGIN.bottom + 16} text-anchor="middle">{bar.label}</text>
-      {#each bar.segs as s, si (s.seg.label)}
-        <rect
-          class="st-stackedBar__seg st-stackedBar__seg--{s.tone}"
-          class:st-stackedBar__seg--dim={hovered !== null && !(hovered.bar === bi && hovered.seg === si)}
-          x={s.x} y={s.y} width={s.width} height={s.height}
-          tabindex="0"
-          role="img"
-          aria-label="{bar.label} — {s.seg.label}: {s.seg.value}"
-          onmouseenter={() => (hovered = { bar: bi, seg: si })}
-          onmouseleave={() => (hovered = null)}
-          onfocus={() => (hovered = { bar: bi, seg: si })}
-          onblur={() => (hovered = null)}
-        />
+<div class={classes()}>
+  <div
+    class="st-stackedBar__visual"
+    role="img"
+    aria-label={label}
+    onpointermove={handleVisualPointerMove}
+    onpointerleave={() => (hovered = null)}
+  >
+    <svg viewBox="0 0 {width} {height}" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" focusable="false" aria-hidden="true">
+      {#each scales.ticks as t (t)}
+        {@const y = MARGIN.top + scaleLinear(t, 0, scales.domainMax, scales.plotH, 0)}
+        <line class="st-stackedBar__grid" x1={MARGIN.left} x2={width - MARGIN.right} y1={y} y2={y} />
+        <text class="st-stackedBar__tick" x={MARGIN.left - 6} y={y} text-anchor="end" dominant-baseline="middle">{fmt(t)}</text>
       {/each}
-    {/each}
-  </svg>
+
+      <line class="st-stackedBar__axis" x1={MARGIN.left} x2={MARGIN.left} y1={MARGIN.top} y2={height - MARGIN.bottom} />
+      <line class="st-stackedBar__axis" x1={MARGIN.left} x2={width - MARGIN.right} y1={height - MARGIN.bottom} y2={height - MARGIN.bottom} />
+
+      {#each bars as bar, bi (bar.label)}
+        <text class="st-stackedBar__categoryLabel" x={bar.cxLabel} y={height - MARGIN.bottom + 16} text-anchor="middle">{bar.label}</text>
+        {#each bar.segs as s, si (s.seg.label)}
+          <rect
+            class="st-stackedBar__seg st-stackedBar__seg--{s.tone}"
+            class:st-stackedBar__seg--dim={hovered !== null && !(hovered.bar === bi && hovered.seg === si)}
+            x={s.x} y={s.y} width={s.width} height={s.height}
+            data-bar-index={bi}
+            data-segment-index={si}
+          />
+        {/each}
+      {/each}
+    </svg>
+  </div>
+
+  <ChartDataList {label} items={dataValueItems} />
 
   {#if hovered && bars[hovered.bar]?.segs[hovered.seg]}
     {@const s = bars[hovered.bar].segs[hovered.seg]}
@@ -153,13 +175,12 @@
 
 <style>
   .st-stackedBar { color: var(--st-semantic-text-secondary); display: block; font-family: inherit; position: relative; width: 100%; }
-  .st-stackedBar svg { display: block; overflow: visible; }
+  .st-stackedBar svg, .st-stackedBar__visual { display: block; overflow: visible; }
   .st-stackedBar__grid { stroke: var(--st-semantic-border-subtle); stroke-dasharray: 2 3; stroke-width: 1; opacity: 0.7; }
   .st-stackedBar__axis { stroke: var(--st-semantic-border-subtle); stroke-width: 1; }
   .st-stackedBar__tick, .st-stackedBar__categoryLabel { fill: var(--st-semantic-text-secondary); font-size: 0.6875rem; }
   .st-stackedBar__seg { cursor: pointer; stroke: var(--st-semantic-surface-default, #fff); stroke-width: 1; transition: opacity 120ms ease; }
   .st-stackedBar__seg--dim { opacity: 0.45; }
-  .st-stackedBar__seg:focus-visible { outline: 2px solid var(--st-semantic-border-interactive); outline-offset: 1px; }
   .st-stackedBar__seg--category1 { fill: var(--st-semantic-data-category1); }
   .st-stackedBar__seg--category2 { fill: var(--st-semantic-data-category2); }
   .st-stackedBar__seg--category3 { fill: var(--st-semantic-data-category3); }

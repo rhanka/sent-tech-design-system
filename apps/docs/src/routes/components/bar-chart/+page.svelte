@@ -6,7 +6,7 @@
   const copy = {
     fr: {
       intro:
-        "Graphique à barres pour comparer des valeurs catégorielles. Orientation verticale ou horizontale, échelle automatique avec graduations « nice », tons sémantiques par barre et infobulle au survol/focus.",
+        "Graphique à barres pour comparer des valeurs catégorielles. Orientation verticale ou horizontale, échelle automatique avec graduations « nice », tons sémantiques par barre, infobulle au survol et liste de valeurs accessible.",
       verticalTitle: "Vertical (par défaut)",
       verticalDesc: "Tokens consommés par jour de la semaine.",
       horizontalTitle: "Horizontal",
@@ -15,7 +15,7 @@
       tonesDesc: "Chaque barre peut porter son propre `tone` (`category1` à `category8`).",
       usageTitle: "Notes d’usage",
       usageNote1:
-        "`label` est obligatoire : il alimente l’`aria-label` du conteneur (`role=\"img\"`). Chaque barre expose aussi son propre `aria-label` « libellé : valeur » et est focusable au clavier.",
+        "`label` est obligatoire : il alimente l’`aria-label` du conteneur (`role=\"img\"`). Les valeurs détaillées sont exposées dans une liste accessible hors SVG, sans multiplier les arrêts de tabulation.",
       usageNote2:
         "L’échelle inclut toujours zéro et les valeurs négatives sont supportées (les barres partent de la ligne du zéro).",
       usageNote3:
@@ -23,7 +23,7 @@
     },
     en: {
       intro:
-        "Bar chart for comparing categorical values. Vertical or horizontal orientation, automatic nice-tick scale, per-bar semantic tones, and a hover/focus tooltip.",
+        "Bar chart for comparing categorical values. Vertical or horizontal orientation, automatic nice-tick scale, per-bar semantic tones, a hover tooltip, and an accessible value list.",
       verticalTitle: "Vertical (default)",
       verticalDesc: "Tokens consumed per weekday.",
       horizontalTitle: "Horizontal",
@@ -32,7 +32,7 @@
       tonesDesc: "Each bar can carry its own `tone` (`category1` to `category8`).",
       usageTitle: "Usage notes",
       usageNote1:
-        "`label` is required: it feeds the container `aria-label` (`role=\"img\"`). Each bar also exposes its own `aria-label` \"label: value\" and is keyboard focusable.",
+        "`label` is required: it feeds the container `aria-label` (`role=\"img\"`). Detailed values are exposed in an accessible list outside the SVG, without adding a tab stop for every bar.",
       usageNote2:
         "The scale always includes zero and negative values are supported (bars start from the zero line).",
       usageNote3:

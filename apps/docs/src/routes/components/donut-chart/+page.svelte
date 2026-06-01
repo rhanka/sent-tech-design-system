@@ -18,8 +18,9 @@
     </div>
     <p>
       Graphique en anneau : parts d'un total, palette data-vis catégorielle du thème
-      (<code>category1…8</code>), tooltip au survol/focus (valeur + %), total affiché
-      au centre. Chaque part est focusable (a11y), <code>role="img"</code> + label parlant.
+      (<code>category1…8</code>), tooltip au survol (valeur + %), total affiché
+      au centre. Le graphique porte <code>role="img"</code> avec un label parlant et
+      expose les parts dans une liste accessible hors SVG.
     </p>
   </section>
 
