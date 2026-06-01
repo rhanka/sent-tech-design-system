@@ -1,3 +1,6 @@
+import { existsSync, readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import type { Finding, RuleContext } from "../types.js";
 
 export function getNodePath(node: Element | null): string {
@@ -59,6 +62,8 @@ export interface CssRuleBlock {
   location: string;
 }
 
+const linkedCssCache = new Map<string, string | undefined>();
+
 export function isSentropicToken(value: string): boolean {
   return /var\(\s*--st-/i.test(value);
 }
@@ -97,25 +102,100 @@ export function getDeclaration(declarations: CssDeclaration[], property: string)
   return declarations.find((decl) => decl.property === normalized)?.value;
 }
 
+function extractRuleBlocksFromCss(css: string, locationPrefix: string): CssRuleBlock[] {
+  const blocks: CssRuleBlock[] = [];
+  const cleaned = css.replace(/\/\*[\s\S]*?\*\//g, "");
+  const ruleRe = /([^{}@]+)\{([^{}]+)\}/g;
+  let match: RegExpExecArray | null;
+
+  while ((match = ruleRe.exec(cleaned)) !== null) {
+    const selector = match[1].trim();
+    const body = match[2].trim();
+    if (!selector || !body) continue;
+    blocks.push({
+      selector,
+      declarations: parseDeclarations(body),
+      location: `${locationPrefix} ${selector}`
+    });
+  }
+
+  return blocks;
+}
+
 export function extractCssRuleBlocks(context: RuleContext): CssRuleBlock[] {
   const blocks: CssRuleBlock[] = [];
 
   context.document.querySelectorAll("style").forEach((styleElement, styleIndex) => {
     const css = styleElement.textContent || "";
-    const cleaned = css.replace(/\/\*[\s\S]*?\*\//g, "");
-    const ruleRe = /([^{}@]+)\{([^{}]+)\}/g;
-    let match: RegExpExecArray | null;
+    blocks.push(...extractRuleBlocksFromCss(css, `style[${styleIndex + 1}]`));
+  });
 
-    while ((match = ruleRe.exec(cleaned)) !== null) {
-      const selector = match[1].trim();
-      const body = match[2].trim();
-      if (!selector || !body) continue;
-      blocks.push({
-        selector,
-        declarations: parseDeclarations(body),
-        location: `style[${styleIndex + 1}] ${selector}`
-      });
+  return blocks;
+}
+
+function cleanStylesheetHref(href: string): string | undefined {
+  const clean = href.trim().split("#")[0]?.split("?")[0] ?? "";
+  if (!clean || /^data:/i.test(clean) || /^https?:\/\//i.test(clean) || clean.startsWith("//")) {
+    return undefined;
+  }
+  return clean;
+}
+
+function resolveLinkedStylesheetPath(targetPath: string, href: string): string | undefined {
+  const cleanHref = cleanStylesheetHref(href);
+  if (!cleanHref) return undefined;
+
+  if (cleanHref.startsWith("file://")) {
+    try {
+      return fileURLToPath(cleanHref);
+    } catch {
+      return undefined;
     }
+  }
+
+  const targetDir = dirname(resolve(targetPath));
+  if (!cleanHref.startsWith("/")) {
+    return resolve(targetDir, cleanHref);
+  }
+
+  const relativeHref = cleanHref.slice(1);
+  let currentDir = targetDir;
+  while (true) {
+    const candidate = resolve(currentDir, relativeHref);
+    if (existsSync(candidate)) return candidate;
+    const parentDir = dirname(currentDir);
+    if (parentDir === currentDir) break;
+    currentDir = parentDir;
+  }
+
+  return undefined;
+}
+
+function readLinkedCss(path: string): string | undefined {
+  if (linkedCssCache.has(path)) return linkedCssCache.get(path);
+  try {
+    const css = readFileSync(path, "utf8");
+    linkedCssCache.set(path, css);
+    return css;
+  } catch {
+    linkedCssCache.set(path, undefined);
+    return undefined;
+  }
+}
+
+export function extractLinkedCssRuleBlocks(context: RuleContext): CssRuleBlock[] {
+  if (context.target.kind !== "file") return [];
+
+  const blocks: CssRuleBlock[] = [];
+  const seen = new Set<string>();
+  context.document.querySelectorAll<HTMLLinkElement>("link[rel~='stylesheet'][href]").forEach((link) => {
+    const stylesheetPath = resolveLinkedStylesheetPath(context.target.value, link.getAttribute("href") || "");
+    if (!stylesheetPath || seen.has(stylesheetPath)) return;
+    seen.add(stylesheetPath);
+
+    const css = readLinkedCss(stylesheetPath);
+    if (!css) return;
+    blocks.push(...extractRuleBlocksFromCss(css, stylesheetPath));
   });
 
   return blocks;

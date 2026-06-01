@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert";
 import { execFileSync, spawnSync } from "node:child_process";
-import { existsSync, readFileSync, writeFileSync, rmSync, mkdtempSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync, rmSync, mkdtempSync, mkdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { audit, defaultRules } from "../dist/index.js";
@@ -344,6 +344,30 @@ test("rule line-length-cap: paragraphe long sans max-width → finding", async (
 });
 test("rule line-length-cap: paragraphe long avec max-width → pas de finding", async () => {
   assert.ok(!(await ruleIds(`<p style="max-width:65ch">${LONG}</p>`)).includes("line-length-cap"));
+});
+test("rule line-length-cap: max-width depuis style inline → pas de finding", async () => {
+  const html = `<style>.docs-section p{max-width:46rem}</style><section class="docs-section"><p>${LONG}</p></section>`;
+  assert.ok(!(await ruleIds(html)).includes("line-length-cap"));
+});
+test("rule line-length-cap: max-width depuis stylesheet lié → pas de finding", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "sent-tech-linked-css-"));
+  try {
+    const appDir = join(dir, "_app");
+    const pageDir = join(dir, "components");
+    mkdirSync(appDir, { recursive: true });
+    mkdirSync(pageDir, { recursive: true });
+    writeFileSync(join(appDir, "docs.css"), ".docs-section p{max-width:46rem}");
+    const pagePath = join(pageDir, "menu-popover.html");
+    writeFileSync(
+      pagePath,
+      `<link rel="stylesheet" href="/_app/docs.css"><section class="docs-section"><p>${LONG}</p></section>`,
+    );
+
+    const report = await audit({ kind: "file", value: pagePath });
+    assert.ok(!report.findings.some((finding) => finding.ruleId === "line-length-cap"));
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
 });
 
 test("rule heading-hierarchy: niveau sauté (H1→H3) → finding", async () => {

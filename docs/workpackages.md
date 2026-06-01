@@ -298,8 +298,8 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 | Item | Statut | Notes |
 |---|---|---|
 | Installer la lib publiée si nécessaire | 🟢 | Workspace local utilisé; package publié `@sentropic/design-system-skills@0.1.0` déjà disponible. |
-| `design check` sur le site/docs DS | 🟢 | Build docs courant audité: 85 pages, 25 règles, 590 findings après corrections `h1-inline-badge` et `status-indicator-label`; voir `docs/dogfooding-design-check.md`. |
-| Boucler findings → corrections | 🟡 | Dette prioritaire: `no-em-dash`, `no-bare-hex`, `single-font`, rares `line-length-cap`; `h1-inline-badge` et `status-indicator-label` ramenés à 0. |
+| `design check` sur le site/docs DS | 🟢 | Build docs courant audité: 85 pages, 25 règles, 580 findings après corrections `h1-inline-badge`, `status-indicator-label` et `line-length-cap`; voir `docs/dogfooding-design-check.md`. |
+| Boucler findings → corrections | 🟡 | Dette prioritaire: `no-em-dash`, `no-bare-hex`, `single-font`; `h1-inline-badge`, `status-indicator-label` et `line-length-cap` ramenés à 0. |
 
 **Dépendances** : WP8 (package publié).
 **Parallélisable avec** : tous.
