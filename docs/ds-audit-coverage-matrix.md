@@ -179,7 +179,7 @@ Finding = entrée priorisée de `docs/ds-audit-consolidated-v2.md` (et son ID cl
 |---|---|---|---|
 | P0-5 `single-font` / `overused-font` (cluster A) | `single-font` | test positif (1 famille → finding) + négatif (2 familles → rien) | **Couvert** |
 | P0-1 couleurs hard-codées (`#fff`/`#000`/hex) (cluster B) | `no-bare-hex` | test positif (hex inline → finding) + négatif (token sémantique → rien) ; aussi couverture indirecte via `align --tones` | **Couvert** |
-| P1-3 em dash (`—`) en microcopy (cluster A) | `no-em-dash` | test positif (— → finding) + négatif | **Couvert** |
+| P1-3 em dash (`—`) en microcopy (cluster A) | `no-em-dash` | test positif (— → finding) + négatif + garde anti-duplication ancêtres/direct text | **Couvert** |
 | P1-5 rail gauche + container arrondi / side-tab (cluster C + `known-issues`) | `side-tab-on-rounded` | test positif (border-left + radius → finding) + négatif (radius 0) | **Couvert** |
 | P0-4 longueur de ligne > 75ch (cluster A) | `line-length-cap` | test positif (paragraphe long sans max-width → finding) + négatifs (max-width inline, `<style>` et stylesheet lié local) | **Couvert** |
 | P1-2 cible tactile < 44px (cluster C) | `touch-target-44` | **Oui** : 3 tests asservissent `findings.some(ruleId === "touch-target-44")` (contrat `audit`, `check --technical`, exit code 1) | **Couvert** |

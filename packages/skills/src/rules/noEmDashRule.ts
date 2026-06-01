@@ -1,9 +1,19 @@
 import type { Finding, Rule, RuleContext } from "../types.js";
 
 const DANGEROUS_DASH = /—| -- /;
+const IGNORED_TEXT_CONTAINERS = new Set(["SCRIPT", "STYLE", "NOSCRIPT", "TEMPLATE", "SVG"]);
 
 function hasForbiddenDash(text: string): boolean {
   return DANGEROUS_DASH.test(text);
+}
+
+function directTextContent(element: HTMLElement): string {
+  return Array.from(element.childNodes)
+    .filter((node) => node.nodeType === 3)
+    .map((node) => node.nodeValue || "")
+    .join("")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 export const noEmDashRule: Rule = {
@@ -16,7 +26,9 @@ export const noEmDashRule: Rule = {
     const findings: Finding[] = [];
 
     for (const element of Array.from(context.document.querySelectorAll<HTMLElement>("body *"))) {
-      const text = element.textContent || "";
+      if (IGNORED_TEXT_CONTAINERS.has(element.tagName)) continue;
+
+      const text = directTextContent(element);
       if (hasForbiddenDash(text)) {
         findings.push({
           ruleId: "no-em-dash",

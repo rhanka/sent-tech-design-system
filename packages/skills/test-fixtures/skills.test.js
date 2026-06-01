@@ -328,6 +328,24 @@ test("rule no-bare-hex: token sémantique → pas de finding", async () => {
 test("rule no-em-dash: em dash dans la copy → finding", async () => {
   assert.ok((await ruleIds("<p>Avant — après</p>")).includes("no-em-dash"));
 });
+test("rule no-em-dash: texte imbriqué → un seul finding sur le propriétaire direct", async () => {
+  const report = await audit({
+    kind: "html",
+    value: "<main><section><p>Avant — après <strong>OK</strong></p></section></main>"
+  });
+  const findings = report.findings.filter((finding) => finding.ruleId === "no-em-dash");
+
+  assert.equal(findings.length, 1);
+  assert.match(findings[0].location, /^p\[text=Avant/);
+});
+test("rule no-em-dash: script et style ignorés", async () => {
+  const report = await audit({
+    kind: "html",
+    value: "<main><style>.x{content:'—'}</style><script>const x = '—';</script><p>Avant, apres</p></main>"
+  });
+
+  assert.equal(report.findings.filter((finding) => finding.ruleId === "no-em-dash").length, 0);
+});
 test("rule no-em-dash: copy sans tiret cadratin → pas de finding", async () => {
   assert.ok(!(await ruleIds("<p>Avant, apres</p>")).includes("no-em-dash"));
 });
