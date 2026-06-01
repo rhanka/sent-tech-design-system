@@ -15,7 +15,7 @@ Périmètre audité :
 - Spot-check CLI : `node packages/skills/dist/cli.js check apps/docs/build/compare.html --tech`.
 - Agrégation full-site : API `audit({ kind: "file" })` sur chaque fichier HTML généré, avec le même `defaultRules`.
 
-Le spot-check CLI retourne le code `1`, attendu parce que des findings sont présents. Sur `compare.html`, le résumé CLI est : 14 findings, `high:14 medium:0 low:0`, `score:44/100`.
+Le spot-check CLI retourne le code `1`, attendu parce que des findings sont présents. Sur `compare.html`, le résumé CLI est : 13 findings, `high:13 medium:0 low:0`, `score:48/100`.
 
 ## Résultat global
 
@@ -23,8 +23,8 @@ Le spot-check CLI retourne le code `1`, attendu parce que des findings sont pré
 |---|---:|
 | Pages auditées | 85 |
 | Règles actives | 25 |
-| Findings totaux | 145 |
-| High | 145 |
+| Findings totaux | 60 |
+| High | 60 |
 | Medium | 0 |
 | Low | 0 |
 
@@ -32,32 +32,30 @@ Le spot-check CLI retourne le code `1`, attendu parce que des findings sont pré
 
 | Règle | Findings |
 |---|---:|
-| `single-font` | 85 |
 | `no-em-dash` | 60 |
-| 23 autres règles actives | 0 |
+| 24 autres règles actives | 0 |
 
-Lecture : les deux dettes basses remontées par les nouvelles règles (`h1-inline-badge`, `status-indicator-label`) restent à 0 sur le build docs, les faux positifs `line-length-cap` sont fermés par la lecture des stylesheets liés locaux, `no-em-dash` ne duplique plus les ancêtres des nœuds de texte fautifs et `no-bare-hex` ignore désormais les déclarations/fallbacks tokenisés (`--*`, `var(...)`). Les findings restants sont éditoriaux/fondation : single-font global et tirets cadratins de microcopy.
+Lecture : les deux dettes basses remontées par les nouvelles règles (`h1-inline-badge`, `status-indicator-label`) restent à 0 sur le build docs, les faux positifs `line-length-cap` sont fermés par la lecture des stylesheets liés locaux, `no-em-dash` ne duplique plus les ancêtres des nœuds de texte fautifs, `no-bare-hex` ignore les déclarations/fallbacks tokenisés (`--*`, `var(...)`) et `single-font` ignore `@font-face` tout en lisant les stylesheets liés locaux. Les findings restants sont les tirets cadratins de microcopy.
 
 ## Pages les plus signalées
 
 | Page | Findings | Règles dominantes |
 |---|---:|---|
-| `compare.html` | 14 | `no-em-dash` 13, `single-font` 1 |
-| `components/force-graph.html` | 5 | `no-em-dash` 4, `single-font` 1 |
-| `components/button.html` | 4 | `no-em-dash` 3, `single-font` 1 |
-| `components/header.html` | 4 | `no-em-dash` 3, `single-font` 1 |
-| `components/input.html` | 4 | `no-em-dash` 3, `single-font` 1 |
-| `components/menu-popover.html` | 4 | `no-em-dash` 3, `single-font` 1 |
-| `components/modal.html` | 4 | `no-em-dash` 3, `single-font` 1 |
-| `components/drawer.html` | 3 | `no-em-dash` 2, `single-font` 1 |
-| `components/dropdown.html` | 3 | `no-em-dash` 2, `single-font` 1 |
-| `components/empty-state.html` | 3 | `no-em-dash` 2, `single-font` 1 |
+| `compare.html` | 13 | `no-em-dash` 13 |
+| `components/force-graph.html` | 4 | `no-em-dash` 4 |
+| `components/button.html` | 3 | `no-em-dash` 3 |
+| `components/header.html` | 3 | `no-em-dash` 3 |
+| `components/input.html` | 3 | `no-em-dash` 3 |
+| `components/menu-popover.html` | 3 | `no-em-dash` 3 |
+| `components/modal.html` | 3 | `no-em-dash` 3 |
+| `components/drawer.html` | 2 | `no-em-dash` 2 |
+| `components/dropdown.html` | 2 | `no-em-dash` 2 |
+| `components/empty-state.html` | 2 | `no-em-dash` 2 |
 
 ## Exemples de findings
 
 | Page | Règle | Localisation | Message |
 |---|---|---|---|
-| `compare.html` | `single-font` | `head/style \| inline-style` | Une seule famille typographique principale est détectée. |
 | `compare.html` | `no-em-dash` | `h1[text=Banc de fidélité — notre...]` | Em dash détecté dans la copy. |
 
 ## Synthèse opérationnelle
@@ -67,7 +65,8 @@ Lecture : les deux dettes basses remontées par les nouvelles règles (`h1-inlin
 - Les dettes `h1-inline-badge`, `status-indicator-label` et `line-length-cap` sont corrigées sur le build docs et restent couvertes par fixtures dédiées.
 - `no-em-dash` signale maintenant uniquement les éléments propriétaires d'un texte direct fautif et ignore `script/style`; le total dogfooding passe de 580 à 231 findings sans masquer la dette éditoriale réelle.
 - `no-bare-hex` ne signale plus les variables CSS ni les fallbacks `var(...)`, ce qui supprime 86 faux positifs dogfooding tout en gardant les usages directs comme `background:#fff` couverts par test.
-- La dette détectée prioritaire reste éditoriale et fondation globale : introduire une vraie hiérarchie typographique display/body, puis réduire les `—` restants.
+- `single-font` ignore `@font-face` et lit les stylesheets liés locaux; les 85 findings restants étaient liés aux polices chargées globalement, pas à une absence prouvée de hiérarchie sur les pages.
+- La dette détectée prioritaire restante est éditoriale : réduire les `—` restants.
 
 ## Limites
 

@@ -1,6 +1,10 @@
 import type { Finding, Rule, RuleContext } from "../types.js";
-
-const FONT_FAMILY_DECLARATION = /font-family\s*:\s*([^;!}]+);?/gi;
+import {
+  extractCssRuleBlocks,
+  extractInlineStyleBlocks,
+  extractLinkedCssRuleBlocks,
+  getDeclaration
+} from "./utils.js";
 
 function normalizeFontToken(value: string): string | undefined {
   const trimmed = value.trim().replace(/^["']|["']$/g, "");
@@ -27,37 +31,20 @@ function isMonospaceStyleToken(token: string): boolean {
   );
 }
 
-function extractFontFamilies(css: string): string[] {
-  const families: string[] = [];
-  const seen = new Set<string>();
-
-  for (const match of css.matchAll(FONT_FAMILY_DECLARATION)) {
-    const declaration = (match[1] || "").trim();
-    const firstToken = declaration.split(",")[0];
-    const normalized = normalizeFontToken(firstToken);
-    if (!normalized) continue;
-    if (!seen.has(normalized)) {
-      families.push(normalized);
-      seen.add(normalized);
-    }
-  }
-
-  return families;
-}
-
 function collectFromStyleTags(context: RuleContext): string[] {
   const fontFamilies: string[] = [];
   const seen = new Set<string>();
 
-  for (const styleElement of Array.from(context.document.querySelectorAll("style"))) {
-    const css = styleElement.textContent || "";
-    for (const family of extractFontFamilies(css)) {
-      if (isMonospaceStyleToken(family)) continue;
-      if (!seen.has(family)) {
-        fontFamilies.push(family);
-        seen.add(family);
-      }
-    }
+  for (const block of [...extractCssRuleBlocks(context), ...extractLinkedCssRuleBlocks(context)]) {
+    if (block.selector.toLowerCase() === "font-face") continue;
+
+    const declaration = getDeclaration(block.declarations, "font-family");
+    if (!declaration) continue;
+
+    const normalized = normalizeFontToken(declaration.split(",")[0] || "");
+    if (!normalized || isMonospaceStyleToken(normalized) || seen.has(normalized)) continue;
+    fontFamilies.push(normalized);
+    seen.add(normalized);
   }
 
   return fontFamilies;
@@ -67,15 +54,14 @@ function collectFromInlineStyles(context: RuleContext): string[] {
   const fontFamilies: string[] = [];
   const seen = new Set<string>();
 
-  for (const element of Array.from(context.document.querySelectorAll<HTMLElement>("[style]"))) {
-    const inlineStyle = element.getAttribute("style") || "";
-    for (const family of extractFontFamilies(inlineStyle)) {
-      if (isMonospaceStyleToken(family)) continue;
-      if (!seen.has(family)) {
-        fontFamilies.push(family);
-        seen.add(family);
-      }
-    }
+  for (const entry of extractInlineStyleBlocks(context)) {
+    const declaration = getDeclaration(entry.declarations, "font-family");
+    if (!declaration) continue;
+
+    const normalized = normalizeFontToken(declaration.split(",")[0] || "");
+    if (!normalized || isMonospaceStyleToken(normalized) || seen.has(normalized)) continue;
+    fontFamilies.push(normalized);
+    seen.add(normalized);
   }
 
   return fontFamilies;
