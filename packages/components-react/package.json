@@ -1,8 +1,11 @@
 {
   "name": "@sentropic/design-system-react",
   "version": "0.1.0",
-  "private": true,
+  "description": "React components for the Sentropic design system.",
   "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",

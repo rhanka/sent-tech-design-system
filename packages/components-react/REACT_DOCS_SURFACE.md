@@ -1,6 +1,6 @@
 # React Docs Surface Proposal
 
-This package is private and should stay non-published until the React port is reviewed and merged. The docs surface should expose React as a peer implementation of the existing Svelte catalogue, not as a separate design system.
+The docs surface should expose React as a peer implementation of the existing Svelte catalogue, not as a separate design system.
 
 ## Goals
 
@@ -15,7 +15,7 @@ This package is private and should stay non-published until the React port is re
 2. Reuse the same component metadata keys already used by the docs app.
 3. Add a React example module per component only when the example differs from Svelte syntax.
 4. Add a `Behavior` note for interactive components when the React port has explicit jsdom coverage.
-5. Keep package install copy private/internal until integration approves publishing.
+5. Keep package install copy aligned with the public package README and release channel.
 
 ## Initial Coverage
 

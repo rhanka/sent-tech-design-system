@@ -3,9 +3,9 @@
 This package maps the local Airbus Design System reference at
 `../airbus-design-system` onto the Sentropic `TenantTheme` contract.
 
-The package is intentionally `private: true` for now. Airbus is tracked as a
-client theme until publication scope, naming, and distribution rules are
-explicitly decided.
+The package is public-ready from a manifest standpoint. It is not included in
+the npm publication workflow until versioning, release tag, and distribution
+rules are explicitly decided.
 
 ## Sources
 
@@ -113,4 +113,5 @@ Anatomy now covers the Airbus component primitives supported by
   theme port only.
 - Fidelity still needs the `/compare` bench once a visual Airbus reference page
   is available locally.
-- Publication is blocked until the client-theme privacy policy is decided.
+- Publication is blocked until the client-theme versioning and release policy is
+  decided.

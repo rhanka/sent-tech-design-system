@@ -259,7 +259,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 ## WP10 — Theming via le moteur `design` (skills) — **AVANT WP7**
 
-**Statut global** : 🟡 **recalibré (2026-05-27)** — cible retargettée « **parité anatomique contrôlée** » (un thème ≠ que des couleurs). Pilote noyau livré **en local** (à publier). Reste : rollout Phase 2 + clients privés.
+**Statut global** : 🟡 **recalibré (2026-05-27)** — cible retargettée « **parité anatomique contrôlée** » (un thème ≠ que des couleurs). Pilote noyau livré **en local** (à publier). Reste : rollout Phase 2 + thèmes clients tiers.
 
 **Recadrage (2026-05-27)** : le « 2 thèmes publiés 0.1.0 » ne changeait que **les couleurs** (couche `component` figée + tokens `foundation` débranchés des composants). Retargeté → spec `docs/superpowers/specs/2026-05-27-theme-anatomy-clone-design.md` (revu Codex+Opus). Pilote = Button/Input/Link/Card/Tabs × DSFR+Carbon.
 
@@ -274,7 +274,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 | Sélecteur de thème docs (`:root`) | 🟢 local | switch qui change l'**anatomie** (police/radius/focus/champ) |
 | **Publication npm** (DS + thèmes, post-anatomie) | ⚪ | bump à faire (DS `0.9.0`→?, thèmes `0.1.0`→?), **prévenir l'utilisateur** avant tag |
 | Rollout Phase 2 (~55 composants restants) | ⚪ | après schéma figé |
-| Thème client Airbus | 🟡 | Codex owner ; portage initié depuis `../airbus-design-system` en package privé `packages/theme-airbus` (`airbusTheme`, test de contrat, `MAPPING.md`). Publication bloquée jusqu'à décision privé/public. |
+| Thème client Airbus | 🟡 | Codex owner ; portage initié depuis `../airbus-design-system` en package public-ready `packages/theme-airbus` (`airbusTheme`, test de contrat, `MAPPING.md`). Publication npm bloquée jusqu'à décision version/release. |
 | Thèmes clients : Scalian / CGI | ⚪ | plus tard ; **hors git** tant que non cadrés |
 
 **Dépendances** : WP8 (moteur `design` + `packages/themes`).
@@ -285,10 +285,10 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 | Vue | Track | Finalite | Etat | Avancement | Detail |
 |---|---|---|---:|---:|---|
 | Fait | Coordination | Declarer l'ownership du portage Airbus | 🟢 | 100% | Session h2a ouverte comme `codex:sent-tech-design-system`; messages envoyes aux agents DS et Airbus. |
-| Fait | Scaffold theme | Isoler le portage dans un package theme dedie | 🟢 | 100% | `packages/theme-airbus`, package prive `@sentropic/design-system-theme-airbus`, export `airbusTheme`. |
+| Fait | Scaffold theme | Isoler le portage dans un package theme dedie | 🟢 | 100% | `packages/theme-airbus`, package public-ready `@sentropic/design-system-theme-airbus`, export `airbusTheme`. |
 | Fait | Contrat test | Proteger l'identite minimale du theme | 🟢 | 100% | Test Vitest red/green sur `compileTheme(airbusTheme)` et tokens Airbus clefs. |
 | A faire | Fidelity | Comparer les composants pilotes contre Airbus reel | 🟡 | 20% | Mapping initial Button/Input/Tabs/Card/Search/Tag depuis tokens + styles Airbus ; banc `/compare` a brancher. |
-| A faire | Gouvernance | Decider la distribution du theme client | ⏸️ | 0% | Rester prive tant que publication, nommage et contraintes Airbus ne sont pas valides. |
+| A faire | Gouvernance | Decider la distribution du theme client | ⏸️ | 0% | Ne pas publier npm tant que version, nommage et contraintes Airbus ne sont pas valides. |
 
 ## WP11 — Dogfooding du moteur publié (complément WP7)
 
@@ -322,7 +322,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 ## WP13 — DS React (portage cadré, sans collision Svelte)
 
-**Statut global** : 🟡 **port complet livré (2026-05-31), à intégrer**. `packages/components-react` couvre les **80 exports publics** Svelte (branche `codex-react-mvp`, `private:true`, NON mergé). Port actuel = parité de contrat (export/class/jsdom) ; lot Codex en cours = **parité comportementale réelle** (interactions, focus, a11y) + surface docs React. Intégration (merge + revue des fichiers partagés : `package-lock.json`, `scripts/smoke-pack.mjs`) côté Claude.
+**Statut global** : 🟡 **port complet livré (2026-05-31), à intégrer**. `packages/components-react` couvre les **80 exports publics** Svelte (branche `codex-react-mvp`). Port actuel = parité de contrat (export/class/jsdom) ; lot Codex en cours = **parité comportementale réelle** (interactions, focus, a11y) + surface docs React. Intégration (merge + revue des fichiers partagés : `package-lock.json`, `scripts/smoke-pack.mjs`) côté Claude.
 
 **Décidé 2026-05-30** : Codex prend le rôle d'owner React. Claude conserve les chantiers Svelte/docs/themes/release/fidelity en cours. Toute modification de fichiers partagés (`package-lock.json`, scripts racine, navigation docs, release tags) doit être annoncée via h2a avant édition.
 
@@ -349,9 +349,9 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 ## Mise à jour 2026-05-31 — ports React/Airbus livrés (à intégrer), chrome par thème ouvert
 
 - **ForceGraph 0.10.3** (API sélection : `selectedIds`/`focusId`/`onSelect`/`onOpenEntity`) **publié npm** (lockstep tokens/themes/svelte 0.10.3).
-- **Compare-mode** : Lot 1 (socle de vérité partagée) livré sur main ; Lot 2 (UI triptyque, Δ lus du registre) livré sur branche `claude-compare-lot2` (en revue) ; hooks d'overlay privé générique = **next step** (Claude).
-- **WP13 React** : **port complet livré** (80 exports publics portés, parité jsdom 87 tests, branche `codex-react-mvp`, `private`, NON mergé) → **en attente d'intégration** (merge + revue côté Claude). Lot Codex en cours = **parité comportementale réelle** (interactions, a11y) + surface docs React.
-- **WP10 Airbus** : **thème complet livré** (palette + anatomie + dark mode `airbusDarkTheme`, branche `codex-airbus-full`, NON mergé) ; thème déjà committé sur main + dans le switcher docs ; overlay privé prêt hors-git. Lot Codex en cours = **pipeline fidélité `@airbus/styles`** + **réf chrome Airbus** (pour WP14).
+- **Compare-mode** : Lot 1 (socle de vérité partagée) livré sur main ; Lot 2 (UI triptyque, Δ lus du registre) livré sur branche `claude-compare-lot2` (en revue) ; hooks d'overlay local générique = **next step** (Claude).
+- **WP13 React** : **port complet livré** (80 exports publics portés, parité jsdom 87 tests, branche `codex-react-mvp`, intégration package à suivre) → **en attente d'intégration** (merge + revue côté Claude). Lot Codex en cours = **parité comportementale réelle** (interactions, a11y) + surface docs React.
+- **WP10 Airbus** : **thème complet livré** (palette + anatomie + dark mode `airbusDarkTheme`, branche `codex-airbus-full`, NON mergé) ; thème déjà committé sur main + dans le switcher docs ; overlay local prêt hors-git. Lot Codex en cours = **pipeline fidélité `@airbus/styles`** + **réf chrome Airbus** (pour WP14).
 - **WP14 (nouveau)** : chrome documentaire par thème (ci-dessous).
 
 ## WP14 — Chrome documentaire par thème (header + barre latérale fidèles au DS)
@@ -403,9 +403,9 @@ A tout instant on peut tenir 3 a 4 agents en parallele sans conflit de fichiers.
 ## Decisions ouvertes à trancher
 
 1. **WP12** : les templates docs / slides relèvent-ils du périmètre DS ? format de sortie (HTML / Slidev / pptx) ?
-2. **WP10** ✅ tranché (2026-05-31) : le **port Airbus est committable** (jugé non confidentiel — simple port de tokens), package `private:true` **non publié npm**, présent dans le switcher docs. La **référence visuelle** Airbus (assets/CSS/logo pour fidélité + chrome) reste **privée hors-git** (idem futurs Scalian/CGI).
+2. **WP10** ✅ tranché (2026-05-31) : le **port Airbus est committable** (jugé non confidentiel — simple port de tokens), package public-ready **non publié npm**, présent dans le switcher docs. La **référence visuelle** Airbus (assets/CSS/logo pour fidélité + chrome) reste hors-git tant que la redistribution des assets n'est pas validée (idem futurs Scalian/CGI).
 3. **WP9** : faut-il de nouvelles primitives (ReasoningBlock, ToolCall) ou enrichir les existantes ?
-4. **WP13** ✅ tranché (2026-05-31) : **couverture large** — port complet des 80 exports, **composants React purs** (pas de dép headless), `private`/non publié ; parité comportementale + surface docs React en cours. Intégration en **un merge** quand le lot comportemental est prêt.
+4. **WP13** ✅ tranché (2026-05-31) : **couverture large** — port complet des 80 exports, **composants React purs** (pas de dép headless), parité comportementale + surface docs React en cours. Intégration en **un merge** quand le lot comportemental est prêt.
 5. WP8 : adapters multi-harness (`.codex` / `.gemini`) — implémenter ou rester en wrapper unique.
 
 ## Hygiene de ce doc
