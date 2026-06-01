@@ -11,14 +11,15 @@ Le chrome Airbus doit rester plus sobre et plus produit que Carbon/DSFR :
 - Sidebar blanche avec active item en bleu clair `#E3F2FD` et rail navy 3px.
 - Fil d'Ariane présent au-dessus du contenu, séparateur `/`.
 
-## Assets Privés
+## Assets Versionnés
 
-Les logos Airbus ne sont pas committés.
+Les logos Airbus utilisés par le chrome docs sont versionnés après décision de redistribution locale (2026-05-31).
 
-Copies locales préparées :
+Assets docs :
 
-- `/tmp/sent-tech-wp14-chrome-private/airbus/logo.svg`
-- `/tmp/sent-tech-wp14-chrome-private/airbus/logo-inverse.svg`
+- `apps/docs/static/chrome/airbus/logo.svg`
+- `apps/docs/static/chrome/airbus/logo-dark.svg`
+- `apps/docs/static/chrome/airbus/logo-white.svg`
 
 Sources :
 
@@ -27,4 +28,4 @@ Sources :
 
 ## Notes D'intégration
 
-Le shell existant `ChromeAirbus.svelte` contient encore un placeholder. Pour l'implémentation chrome, remplacer uniquement le visuel par l'asset privé local et garder les assets Airbus dans une zone gitignorée ou hors repo. Ne pas écrire le logo Airbus officiel dans un fichier committable.
+Le shell `ChromeAirbus.svelte` consomme `logo-white.svg` pour le header navy. Les futures retouches doivent préserver la structure actuelle (header navy, wordmark blanc, navigation horizontale, sidebar active avec rail) et ne remplacer les assets que si une référence validée est fournie.
