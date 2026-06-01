@@ -77,6 +77,14 @@ describe("form controls", () => {
     expect(screen.getByLabelText("Principal")).toHaveProperty("checked", true);
   });
 
+  it("marks invalid radios visually without unsupported aria-invalid on the radio input", () => {
+    const { container } = render(Radio, {
+      props: { label: "Principal", name: "choice", invalid: true }
+    });
+    expect(screen.getByLabelText("Principal").getAttribute("aria-invalid")).toBeNull();
+    expect(container.querySelector(".st-choice")?.getAttribute("data-invalid")).toBe("true");
+  });
+
   it("renders a switch using the switch role", () => {
     render(Switch, { props: { label: "Notifications", checked: true } });
     expect(screen.getByRole("switch", { name: "Notifications" }).getAttribute("aria-checked")).toBe(

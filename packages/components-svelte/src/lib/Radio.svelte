@@ -12,8 +12,8 @@
   const classes = () => ["st-choice", "st-choice--radio", className].filter(Boolean).join(" ");
 </script>
 
-<label class={classes()}>
-  <input {...rest} class="st-choice__input" type="radio" aria-invalid={invalid ? "true" : undefined} />
+<label class={classes()} data-invalid={invalid ? "true" : undefined}>
+  <input {...rest} class="st-choice__input" type="radio" />
   <span class="st-choice__content">
     <span class="st-choice__label">{label}</span>
     {#if helperText}<span class="st-choice__help">{helperText}</span>{/if}
@@ -48,7 +48,7 @@
       0 0 0 2px var(--st-component-control-focusRing, var(--st-semantic-border-interactive)));
   }
 
-  .st-choice__input[aria-invalid="true"] {
+  .st-choice[data-invalid="true"] .st-choice__input {
     accent-color: var(--st-component-control-invalidBorder, var(--st-semantic-feedback-error));
     outline-color: var(--st-component-control-invalidBorder, var(--st-semantic-feedback-error));
   }
