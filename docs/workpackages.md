@@ -306,17 +306,17 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 ## WP12 — Templates docs & présentations slides (ESN)
 
-**Statut global** : ⚪ cadré (2026-05-26) — nouveau périmètre à valider.
+**Statut global** : 🟡 premier kit source livré (2026-06-01) — périmètre DS confirmé en structure/typologie, exports binaires à décider plus tard.
 
 **Décidé 2026-05-26** : ajouter un périmètre **templates de documents** et **présentations slides** (typologie ESN). Decks Scalian / CGI fournis par l'utilisateur **comme référence de typologie de slides** (pas la colorimétrie).
 
 | Item | Statut | Notes |
 |---|---|---|
-| Cadrage périmètre | ⚪ | Statuer : est-ce dans le scope d'un design system ? format de sortie (HTML/MD/pptx/Slidev ?) |
-| Typologie slides ESN | ⚪ | Couverture, sommaire, sections, contenu, comparatif, closing… à partir des decks Scalian/CGI |
-| Templates docs | ⚪ | Gabarits de documents (rapport, proposition) cohérents avec le DS |
+| Cadrage périmètre | 🟢 | Décision opérationnelle: le DS porte la structure, la typologie et les contrats de contenu; les marques client et exports finaux restent côté consommateur. Format source Markdown-first, convertible ensuite en `.docx`, `.pptx`, HTML ou Slidev. |
+| Typologie slides ESN | 🟢 | `docs/templates/esn/taxonomy.md` couvre familles documentaires et slides: cover, agenda, situation, problem framing, target state, options, recommendation, roadmap, gouvernance, commercial frame, next steps. |
+| Templates docs | 🟢 | `proposal-template.md`, `delivery-report-template.md` et `slide-deck-template.md` livrés comme gabarits neutres. |
 
-**Dépendances** : à préciser (probablement tokens/themes pour la cohérence visuelle).
+**Dépendances** : tokens/themes pour la présentation finale; export `.docx/.pptx` non requis pour le kit source.
 **Parallélisable avec** : tous.
 
 ## WP13 — DS React (portage cadré, sans collision Svelte)
