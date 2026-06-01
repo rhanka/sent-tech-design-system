@@ -8,10 +8,18 @@
     class?: string;
   };
 
+  const FALLBACK_LABELS = {
+    active: "Loading",
+    success: "Completed",
+    error: "Error",
+    inactive: "Inactive"
+  } as const;
+
   let {
     label,
     status = "active",
     class: className,
+    "aria-label": ariaLabel,
     ...rest
   }: InlineLoadingProps = $props();
 
@@ -19,9 +27,10 @@
     ["st-inlineLoading", `st-inlineLoading--${status}`, className].filter(Boolean).join(" ");
 
   const role = () => (status === "error" ? "alert" : "status");
+  const accessibleLabel = () => ariaLabel ?? (label ? undefined : FALLBACK_LABELS[status]);
 </script>
 
-<div {...rest} class={classes()} role={role()} aria-live="polite">
+<div {...rest} class={classes()} role={role()} aria-label={accessibleLabel()} aria-live="polite">
   <span class="st-inlineLoading__icon" aria-hidden="true">
     {#if status === "active"}
       <span class="st-inlineLoading__spinner">

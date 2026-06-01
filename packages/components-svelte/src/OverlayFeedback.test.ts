@@ -192,6 +192,11 @@ describe("overlay and feedback components", () => {
     expect(node.textContent).toContain("Saving…");
   });
 
+  it("InlineLoading exposes a fallback label when no visible label is provided", () => {
+    render(InlineLoading, { props: { status: "active" } });
+    expect(screen.getByRole("status", { name: "Loading" })).toBeTruthy();
+  });
+
   it("InlineLoading uses alert role when status is error", () => {
     render(InlineLoading, { props: { label: "Failed", status: "error" } });
     expect(screen.getByRole("alert").textContent).toContain("Failed");

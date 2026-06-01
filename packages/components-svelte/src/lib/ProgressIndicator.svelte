@@ -22,13 +22,23 @@
     items: ProgressIndicatorItem[];
     vertical?: boolean;
     label?: string;
+    statusLabels?: Partial<Record<ProgressIndicatorStatus, string>>;
     class?: string;
+  };
+
+  const DEFAULT_STATUS_LABELS: Record<ProgressIndicatorStatus, string> = {
+    complete: "Complete",
+    current: "Current",
+    upcoming: "Upcoming",
+    invalid: "Invalid",
+    disabled: "Disabled"
   };
 
   let {
     items,
     vertical = false,
     label = "Progress",
+    statusLabels,
     class: className,
     ...rest
   }: ProgressIndicatorProps = $props();
@@ -44,6 +54,8 @@
 
   const resolvedStatus = (item: ProgressIndicatorItem): ProgressIndicatorStatus =>
     item.status ?? "upcoming";
+  const indicatorLabel = (item: ProgressIndicatorItem, status: ProgressIndicatorStatus) =>
+    `${statusLabels?.[status] ?? DEFAULT_STATUS_LABELS[status]}: ${item.label}`;
 </script>
 
 <ol {...rest} class={classes()} aria-label={label}>
@@ -54,7 +66,7 @@
       class={["st-progressIndicator__step", `st-progressIndicator__step--${status}`].join(" ")}
       aria-current={status === "current" ? "step" : undefined}
     >
-      <span class="st-progressIndicator__indicator" aria-hidden="true">
+      <span class="st-progressIndicator__indicator" role="img" aria-label={indicatorLabel(item, status)}>
         <span class="st-progressIndicator__circle">
           {#if status === "complete"}
             <Check size={14} strokeWidth={2} aria-hidden="true" />

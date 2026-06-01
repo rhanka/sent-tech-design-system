@@ -3,19 +3,31 @@ import { createFindingFromElement } from "./utils.js";
 
 const STATUS_HINT = /status|state|dot|indicator/i;
 
+function tokenCarriesStatusHint(token: string): boolean {
+  const scopedName = token.includes("__") ? token.slice(token.indexOf("__") + 2) : token;
+  const elementName = scopedName.split("--")[0] || scopedName;
+  return STATUS_HINT.test(elementName);
+}
+
 function isStatusIndicator(element: HTMLElement): boolean {
   const className = element.getAttribute("class") || "";
   const id = element.id || "";
   const role = element.getAttribute("role") || "";
-  return STATUS_HINT.test(className) || STATUS_HINT.test(id) || role === "status";
+  const classHasStatusHint = className.split(/\s+/).filter(Boolean).some(tokenCarriesStatusHint);
+  return classHasStatusHint || STATUS_HINT.test(id) || role === "status";
 }
 
 function hasAccessibleName(element: HTMLElement): boolean {
   if (element.getAttribute("aria-label")) return true;
   if (element.getAttribute("aria-labelledby")) return true;
   if (element.getAttribute("title")) return true;
+  for (let parent = element.parentElement; parent; parent = parent.parentElement) {
+    if (parent.getAttribute("aria-label")) return true;
+    if (parent.getAttribute("aria-labelledby")) return true;
+    if (parent.getAttribute("title")) return true;
+  }
   const ownText = (element.textContent || "").replace(/\s+/g, " ").trim();
-  if (ownText.length > 2) return true;
+  if (ownText.length > 0) return true;
   const parentText = (element.parentElement?.textContent || "").replace(/\s+/g, " ").trim();
   return parentText.length > ownText.length + 2;
 }
