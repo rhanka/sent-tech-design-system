@@ -5,7 +5,7 @@ Reference pack for rebuilding the documentation chrome shape of Carbon, DSFR and
 ## Scope
 
 - `carbon/` and `dsfr/` contain public, committable SVG references plus JSON/MD implementation specs.
-- `airbus/` contains the committable structure spec only. Airbus SVG assets are private and were copied outside git to `/tmp/sent-tech-wp14-chrome-private/airbus/`.
+- `airbus/` contains the committable structure spec. Airbus SVG assets used by the docs chrome are now versioned under `apps/docs/static/chrome/airbus/` after the 2026-05-31 redistribution decision.
 - The specs target chrome shape only: header, header nav, sidebar, active states and breadcrumb. Component bodies remain out of scope.
 
 ## Files
@@ -14,10 +14,10 @@ Reference pack for rebuilding the documentation chrome shape of Carbon, DSFR and
 |---|---|---|
 | Carbon | `carbon/assets/carbon-wordmark.svg` | `carbon/chrome-spec.json` |
 | DSFR | `dsfr/assets/logo-rf-marianne.svg` | `dsfr/chrome-spec.json` |
-| Airbus | private `/tmp/sent-tech-wp14-chrome-private/airbus/logo*.svg` | `airbus/chrome-spec.json` |
+| Airbus | `apps/docs/static/chrome/airbus/logo*.svg` | `airbus/chrome-spec.json` |
 
 ## Integration Notes
 
 - Carbon chrome should keep the full black 48px masthead and 256px left tree.
 - DSFR chrome should keep the two-tier header, the underlined horizontal nav and the left active block with blue accent.
-- Airbus chrome should use the official Airbus wordmark from the private local asset path and keep its assets out of git.
+- Airbus chrome uses the versioned Airbus wordmark assets in `apps/docs/static/chrome/airbus/`.
