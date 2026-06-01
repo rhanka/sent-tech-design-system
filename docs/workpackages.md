@@ -65,7 +65,7 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 
 ## WP2 — Site docs UX
 
-**Statut global** : 🟡 base alignee, deux re-passes restantes.
+**Statut global** : 🟡 couverture publique fermee, retest visuel final restant.
 
 | Item | Statut | Commits | Notes |
 |---|---|---|---|
@@ -74,11 +74,11 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 | Reprise header docs publie + garde contractuelle | 🟢 | `8ace58a` | Logo carre + `Sentropic` / `Design System`, GitHub icone, sent-tech.ca retire du header, controles langue/compte harmonises, test `header-contract` |
 | Home i18n complete | 🟢 | `55781c1`, `40b4b98` | catalogue descriptions bilingues |
 | Plan-completion hero shelf + contexte demos | 🟢 | `824a2b7` | |
-| Re-passe `/components/overlays` | ⚪ | — | bloque par WP6 (z-index Toast / OverflowMenu) |
-| Audit visuel pages composants restantes | ⚪ | — | apres WP6 |
-| Inventaire couverture docs composants | 🟢 | — | 59 entrees catalogue, 66 exports publics, 9 stubs restants, 7 exports absents, 22 pages partiellement couvertes par pages famille |
-| Stubs P1 composants | 🟡 | — | Batch 1 ferme: `combobox`, `number-input`, `slider`, `toggle`, `header`, `badge`, `data-table`, `progress-bar`, `skeleton-text`; restants Forms: 4, Navigation: 2, Overlay: 1, Layout: 2 |
-| Exports absents du catalogue | 🟡 | — | `AspectRatio`, `CodeSnippet`, `Sparkline`, `StructuredList`, `TileGroup`, `UnorderedList`; `ThemeProvider` exclu intentionnellement |
+| Re-passe `/components/overlays` | 🔵 | — | WP6 ne bloque plus; reste une validation visuelle ciblee overlays/plan-completion. |
+| Audit visuel pages composants restantes | 🔵 | — | Couverture catalogue fermee; reste validation rendu desktop/mobile. |
+| Inventaire couverture docs composants | 🟢 | — | 79 entrees catalogue = 79 exports publics Svelte hors `ThemeProvider`; 0 stub catalogue; garde `docs-navigation.test.ts`. |
+| Stubs P1 composants | 🟢 | — | Les routes dediees existent pour les composants precedemment restants: forms, navigation, overlays, feedback/data, layout. |
+| Exports absents du catalogue | 🟢 | — | Aucun export UI absent; `ThemeProvider` reste exclu intentionnellement (primitive infra). |
 | Backlog composants (gap DSFR/Carbon) | ⚪ | — | `docs/ds-component-gap-analysis.md` (2026-05-26). **P1** : Footer, Tile unitaire. **P2** : notification inline, tree view, skip links, sélecteur de langue, citation, highlight. P3 : patterns/primitives. Différenciateurs maison (charts, chat) hors couverture upstream — à garder |
 
 **Dependances** : WP6 pour la re-passe overlays.
@@ -88,12 +88,11 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 
 | Vue | Track | Finalite | Etat | Avancement | Detail |
 |---|---|---|---:|---:|---|
-| Fait | Inventaire docs | Eviter les stubs invisibles et les exports oublies | 🟢 | 100% | Audit agent Spark xhigh initial: 18 stubs, 7 exports absents, 22 partiels; catalogue reajuste apres batch 1. |
-| Fait | Pages dediees batch 1 | Fermer les stubs P1 les plus visibles | 🟢 | 100% | 9 routes dediees ajoutees et sorties du statut stub: forms 4, header 1, feedback/data 4. |
-| A faire | S1 Forms | Documenter les controles complexes P1 | 🟡 | 50% | Restent `form`, `form-group`, `date-picker`, `multi-select`; `combobox`, `number-input`, `slider`, `toggle` documentes. |
-| A faire | S2-S5 UI | Fermer navigation, overlays, feedback/data, layout | 🟡 | 50% | Restent `overflow-menu`, `content-switcher`, `toggletip`, `accordion`, `card`; `header`, `badge`, `data-table`, `progress-bar`, `skeleton-text` documentes. |
-| A faire | Catalogue absents | Ajouter les exports publics manquants au flux docs | 🔵 | 0% | 6 composants UI absents + decision confirmee pour `ThemeProvider` infra. |
-| Attendu | Couverture publique | Aucun composant exporte ne doit etre invisible ou stub sans owner | 🟡 | 65% | 9 stubs restants + 6 exports absents; poursuivre par batch 2 avant fermeture WP2. |
+| Fait | Inventaire docs | Eviter les stubs invisibles et les exports oublies | 🟢 | 100% | `COMPONENTS` couvre les 79 exports publics Svelte hors `ThemeProvider`; test de parite ajoute. |
+| Fait | Pages dediees | Fermer les stubs P1 visibles et les composants anciennement groupes | 🟢 | 100% | Routes dediees presentes pour forms, navigation, overlays, feedback/data, layout et charts. |
+| Fait | Catalogue absents | Ajouter les exports publics manquants au flux docs | 🟢 | 100% | Aucun export UI absent; `ThemeProvider` reste infra et exclu. |
+| A faire | Validation visuelle | Rejouer le site docs sur desktop/mobile et inspecter overlays + plan-completion | 🔵 | 0% | A faire en validation ex post site web, sans changer le contrat catalogue. |
+| Attendu | Couverture publique | Aucun composant exporte ne doit etre invisible ou stub sans owner | 🟢 | 100% | Garde automatique: catalogue = exports publics et tous les statuts catalogue sont `documented`. |
 
 ## WP3 — Contrat header cross-site et applications
 

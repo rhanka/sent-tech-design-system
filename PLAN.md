@@ -25,8 +25,8 @@
 - Périmètre courant du suivi : repo design system uniquement.
 - Priorités consommateurs à suivre côté DS : `nc-fullstack/ui`, Sentropic/top-ai chat-ui, Onyxia theme, OpenERP web, spa-transpose-cv/ui.
 - Couverture vs Carbon : ~55 / ~55 composants. Phase 4 priorité haute + moyenne + basse 100 % livrées.
-- Track React ouvert en cadrage (2026-05-30) : pas encore de package React dans ce repo. Codex prend l'owner du périmètre React ; Claude garde les tracks Svelte/docs/themes/release/fidelity en cours. Toute modification croisée passe par h2a avant edit.
-- Track thème Airbus ouvert (2026-05-30) : Codex prend l'owner du portage `../airbus-design-system` en thème Sentropic. Package `packages/theme-airbus` initié ; publication npm bloquée tant que la stratégie de version/release n'est pas tranchée.
+- Track React (2026-05-31) : `packages/components-react` existe et couvre les exports publics Svelte; package public-ready mais publication npm non lancee tant que le tag/release global n'est pas decide.
+- Track thème Airbus (2026-05-31) : `packages/theme-airbus` existe, package public-ready, fidélité mesurée à 90,3%; publication npm bloquée tant que la stratégie de version/release et la redistribution des assets ne sont pas tranchées.
 
 ---
 
