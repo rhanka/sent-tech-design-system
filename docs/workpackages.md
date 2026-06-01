@@ -218,7 +218,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 | P1 Moteur statique | `packages/skills` API `audit`, CLI, JSON, jsdom | 🟢 100% | moteur compile et expose `AuditReport` |
 | P2 Ruleset initial | 25 règles depuis WP7 | 🟢 100% | 25 règles actives, token-aware, tracées `rule -> principle -> finding WP7`; dogfooding WP11 documenté |
 | P3 Knowledge base | `docs/principles/*` reliés aux règles | 🟢 85% | principes présents; chaque règle expose `principle`/`wp7Finding`; matrice WP8 mise à jour |
-| P4 Skill multi-harness | wrapper unique Claude/Codex/Gemini, zéro logique métier | 🟡 60% | skill local + script unique sur `design audit`; adapters Codex/Gemini à compléter |
+| P4 Skill multi-harness | wrapper unique Claude/Codex/Gemini, zéro logique métier | 🟢 85% | skill local + plugin portable; wrappers acceptent `audit <target>`/`<target>` et `fidelity ...`; installation harness hors repo à maintenir |
 | P5 Distribution/CI/npm | lint CI, publication, règles token-aware | 🟢 90% | DS `0.8.0` + `@sentropic/design-system-skills@0.1.0` publiés via OIDC Trusted Publishing (provenance SLSA). Workflows `npm-publish.yml` (DS, tag `v*`) et `skills-publish.yml` (skills, tag `skills-v*`). |
 
 ### Suivi WP8
@@ -227,7 +227,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 |---|---|---|---:|---:|---|
 | Fait | Scaffold moteur | Disposer d'un moteur local deterministe | 🟢 | 100% | `packages/skills`, API `audit`, CLI, 25 règles, build TypeScript. |
 | Fait | Knowledge base | Capturer les principes DS | 🟢 | 100% | `docs/principles/*` initialisés. |
-| Fait | Skill V1 | Exécuter le moteur depuis un harness agent | 🟡 | 85% | `tools/skills/sent-tech-skills/scripts/audit.mjs` appelle le contrat canonique. |
+| Fait | Skill V1 | Exécuter le moteur depuis un harness agent | 🟢 | 95% | `tools/skills/sent-tech-skills/scripts/audit.mjs` et la copie plugin appellent le contrat canonique; préfixe `audit` optionnel vérifié. |
 | Fait | Alignement CLI/themes | Mapper les corrections CLI vers les vrais tokens publies | 🟢 | 100% | `design align --tones` remplace vers `--st-semantic-*`; les themes exportent `--st-foundation-*`; tests ajoutes. |
 | Fait | Ruleset | Passer de 7 à 25 règles initiales | 🟢 | 100% | 25 règles actives pilotées par `docs/ds-audit-consolidated-v2.md`; 75 tests skills verts. |
 | Fait | Promesse CLI | Nettoyer ou rendre reels `build`, `polish`, `init --extract`, `check --human` | 🟢 | 100% | `init --extract`, `build` craft, `check --human`, `polish --motion/--essence` sont concrets; passes agentiques non déterministes retournent `2`. |

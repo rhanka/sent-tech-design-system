@@ -1,4 +1,4 @@
-# WP8 — Cible de revue : skill multi-harness Sent Tech impeccable
+# WP8 — Cible de revue : skill multi-harness Sent Tech design
 
 ## Contexte
 
@@ -7,7 +7,7 @@ WP8 est découpé en deux couches :
 1. **Moteur maison** `@sentropic/design-system-skills` (`packages/skills`) pour l’analyse visuelle.
 2. **Skill harness** pour exécuter ce moteur depuis les assistants avec une friction minimale.
 
-Cette passe reste une **version V1 scaffold** et non un clone complet de `pbakaus/impeccable`.
+Cette passe reste une **version V1 portable** et non un clone complet de `pbakaus/impeccable`.
 
 ## Atelier de revue — ce qui doit être accepté avant continuation
 
@@ -15,12 +15,15 @@ Cette passe reste une **version V1 scaffold** et non un clone complet de `pbakau
 
 1. **Commandes supportées**
    - `design audit <target>`
+   - `node tools/skills/sent-tech-skills/scripts/audit.mjs [audit] <target>`
+   - `node tools/skills/sent-tech-skills/scripts/fidelity.mjs [fidelity] [options]`
    - `<target>` = `url` | `file.html` | `inline-html`
    - Même signature d’input que l’outil interne, sans transformation de contrat.
 
 2. **Harness unifié**
    - Orchestrateur unique : `tools/skills/sent-tech-skills/scripts/audit.mjs`.
-   - Les différents assistants réutilisent ce même appel.
+   - Copie plugin : `tools/skills/sent-tech-design-plugin/skills/sent-tech-design/`.
+   - Les différents assistants réutilisent ces mêmes appels, que le harness transmette `audit <target>` ou seulement `<target>`.
 
 3. **Output contract**
    - `stdout` : JSON brut du rapport `AuditReport`.
@@ -36,7 +39,7 @@ Cette passe reste une **version V1 scaffold** et non un clone complet de `pbakau
 
 ### Non-objectifs en V1
 
-- Pas de Playwright runtime.
+- Pas de Playwright runtime dans `audit`.
 - Pas de commandes frontales supplémentaires (`polish`, `shape`, `craft`, etc.).
 - Pas d’internationalisation de la commande.
 
@@ -51,12 +54,17 @@ Cette passe reste une **version V1 scaffold** et non un clone complet de `pbakau
 1. Les fichiers suivants existent :
    - `tools/skills/sent-tech-skills/SKILL.md`
    - `tools/skills/sent-tech-skills/scripts/audit.mjs`
+   - `tools/skills/sent-tech-skills/scripts/fidelity.mjs`
+   - `tools/skills/sent-tech-design-plugin/skills/sent-tech-design/SKILL.md`
    - `tools/skills/sent-tech-skills/reference/README.md`
    - `docs/wp8-multi-harness-target-review.md`
    - `docs/ds-audit-consolidated-v2.md`
 2. Vérification locale :
    ```bash
    node tools/skills/sent-tech-skills/scripts/audit.mjs http://localhost:4173
+   node tools/skills/sent-tech-skills/scripts/audit.mjs audit apps/docs/build/compare.html
+   node tools/skills/sent-tech-design-plugin/skills/sent-tech-design/scripts/audit.mjs audit apps/docs/build/compare.html
+   node tools/skills/sent-tech-skills/scripts/fidelity.mjs fidelity --help
    ```
    retourne JSON valide + code de sortie conforme.
 3. `docs/workpackages.md` et `docs/ds-audit-consolidated-v2.md` sont alignés.
