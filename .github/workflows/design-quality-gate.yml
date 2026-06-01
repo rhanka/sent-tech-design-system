@@ -1,0 +1,50 @@
+name: Design Quality Gate
+
+on:
+  pull_request:
+    paths:
+      - "apps/docs/**"
+      - "docs/**"
+      - "packages/skills/**"
+      - "packages/components-svelte/**"
+      - "packages/themes/**"
+      - "packages/tokens/**"
+      - ".github/workflows/design-quality-gate.yml"
+  push:
+    branches: ["main"]
+    paths:
+      - "apps/docs/**"
+      - "docs/**"
+      - "packages/skills/**"
+      - "packages/components-svelte/**"
+      - "packages/themes/**"
+      - "packages/tokens/**"
+      - ".github/workflows/design-quality-gate.yml"
+  workflow_dispatch:
+
+jobs:
+  design-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build packages and docs
+        run: npm run build
+
+      - name: Run design quality gate
+        run: node packages/skills/dist/cli.js check apps/docs/build --tech --fail-under 70 > design-quality-report.json
+
+      - name: Upload design report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: design-quality-report
+          path: design-quality-report.json
