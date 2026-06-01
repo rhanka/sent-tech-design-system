@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { COMPONENTS } from "./components-catalog";
 import {
   DOCS_TOP_NAV,
@@ -8,6 +10,24 @@ import {
 } from "./docs-navigation";
 
 describe("docs navigation model", () => {
+  it("keeps the component catalog aligned with public Svelte exports", () => {
+    const publicIndexPath = fileURLToPath(
+      new URL("../../../../packages/components-svelte/src/lib/index.ts", import.meta.url)
+    );
+    const indexSource = readFileSync(
+      publicIndexPath,
+      "utf8"
+    );
+    const exportedComponents = [...indexSource.matchAll(/export \{ default as (\w+) \}/g)]
+      .map((match) => match[1])
+      .filter((name) => name !== "ThemeProvider")
+      .sort();
+    const catalogComponents = COMPONENTS.map((component) => component.name).sort();
+
+    expect(catalogComponents).toEqual(exportedComponents);
+    expect(COMPONENTS.every((component) => component.status === "documented")).toBe(true);
+  });
+
   it("exposes the high-level documentation tracks used by the top nav", () => {
     expect(DOCS_VERSION).toMatch(/^v\d+\.\d+\.\d+$/);
     expect(DOCS_TOP_NAV.map((item) => item.label)).toEqual([
