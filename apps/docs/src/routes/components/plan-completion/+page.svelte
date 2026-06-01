@@ -24,10 +24,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">Lot · Complétion V1</p>
-    <h1>
-      {t(locale.value, "completionTitle")}
+    <div class="docs-hero-title">
+      <h1>{t(locale.value, "completionTitle")}</h1>
       <Badge tone="success">{t(locale.value, "statusStable")}</Badge>
-    </h1>
+    </div>
     <p>{t(locale.value, "completionIntro")}</p>
   </section>
 

@@ -63,10 +63,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">Composant · {CATEGORY_LABELS[data.component.category][locale.value]}</p>
-    <h1>
-      {data.component.name}
+    <div class="docs-hero-title">
+      <h1>{data.component.name}</h1>
       <Badge tone="neutral">{text.stubBadge}</Badge>
-    </h1>
+    </div>
     <p>{data.component.description[locale.value]}</p>
     <p class="docs-stub-meta">
       <span>{text.categoryLabel}: <strong>{CATEGORY_LABELS[data.component.category][locale.value]}</strong></span>

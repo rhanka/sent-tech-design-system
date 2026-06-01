@@ -38,10 +38,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">{fr("Composant · Navigation", "Component · Navigation")}</p>
-    <h1>
-      Tabs
+    <div class="docs-hero-title">
+      <h1>Tabs</h1>
       <Badge tone="success">{t(locale.value, "statusStable")}</Badge>
-    </h1>
+    </div>
     <p>
       {fr(
         "Onglets pour basculer entre plusieurs vues d'un même contexte sans quitter la page. Implémente le motif ARIA tablist / tab / tabpanel ; un onglet peut être désactivé.",

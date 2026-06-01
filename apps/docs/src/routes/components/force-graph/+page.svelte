@@ -54,10 +54,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">Composant · Données</p>
-    <h1>
-      ForceGraph
+    <div class="docs-hero-title">
+      <h1>ForceGraph</h1>
       <Badge tone="neutral">Documenté</Badge>
-    </h1>
+    </div>
     <p>
       Graphe à force dirigée pour visualiser une ontologie (nœuds + liens). La
       simulation de force est <strong>autonome</strong> (aucune dépendance type

@@ -51,10 +51,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">{fr("Composant · Overlay", "Component · Overlay")}</p>
-    <h1>
-      MenuPopover
+    <div class="docs-hero-title">
+      <h1>MenuPopover</h1>
       <Badge tone="success">{t(locale.value, "statusStable")}</Badge>
-    </h1>
+    </div>
     <p>
       {fr(
         "Panneau flottant ancré à un déclencheur externe, positionné en absolu d'après le rectangle du déclencheur. Il gère le placement, la fermeture au clic extérieur et sur Escape, et recalcule sa position au scroll et au resize. Combiné à MenuTriggerButton + Menu, il forme un menu d'actions ancré complet.",

@@ -11,10 +11,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">{fr("Composant · Formulaire", "Component · Form")}</p>
-    <h1>
-      Select
+    <div class="docs-hero-title">
+      <h1>Select</h1>
       <Badge tone="success">{t(locale.value, "statusStable")}</Badge>
-    </h1>
+    </div>
     <p>
       {fr(
         "Sélecteur natif <select> stylé, avec libellé, texte d'aide, état d'erreur et trois tailles. Les options sont passées en enfants comme des <option> natives.",

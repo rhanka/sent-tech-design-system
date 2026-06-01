@@ -23,10 +23,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">Composant · Données</p>
-    <h1>
-      StackedBarChart
+    <div class="docs-hero-title">
+      <h1>StackedBarChart</h1>
       <Badge tone="neutral">Documenté</Badge>
-    </h1>
+    </div>
     <p>
       Barres empilées : chaque barre cumule plusieurs séries (segments). Couleur par
       série (palette data-vis), légende dérivée des labels, tooltip par segment au

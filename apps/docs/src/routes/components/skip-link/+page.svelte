@@ -5,10 +5,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">Composant · Navigation · a11y</p>
-    <h1>
-      SkipLink
+    <div class="docs-hero-title">
+      <h1>SkipLink</h1>
       <Badge tone="neutral">Documenté</Badge>
-    </h1>
+    </div>
     <p>
       Le <code>SkipLink</code> (lien d'évitement) permet aux utilisateurs clavier de
       sauter la navigation et d'atteindre directement le contenu principal. Il est

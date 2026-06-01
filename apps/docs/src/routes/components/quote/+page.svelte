@@ -5,10 +5,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">Composant · Layout · éditorial</p>
-    <h1>
-      Quote
+    <div class="docs-hero-title">
+      <h1>Quote</h1>
       <Badge tone="neutral">Documenté</Badge>
-    </h1>
+    </div>
     <p>
       <code>Quote</code> met en forme une citation éditoriale (<code>&lt;figure&gt;</code> +
       <code>&lt;blockquote&gt;</code>) avec attribution optionnelle (auteur, source).

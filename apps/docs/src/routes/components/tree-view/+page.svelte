@@ -35,10 +35,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">Composant · Navigation</p>
-    <h1>
-      TreeView
+    <div class="docs-hero-title">
+      <h1>TreeView</h1>
       <Badge tone="neutral">Documenté</Badge>
-    </h1>
+    </div>
     <p>
       Arborescence hiérarchique : déplier/replier les branches, sélectionner une feuille,
       navigation clavier (<kbd>↑</kbd>/<kbd>↓</kbd> déplacer, <kbd>→</kbd>/<kbd>←</kbd>

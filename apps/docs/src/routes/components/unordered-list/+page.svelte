@@ -15,10 +15,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">Composant · Données</p>
-    <h1>
-      UnorderedList
+    <div class="docs-hero-title">
+      <h1>UnorderedList</h1>
       <Badge tone="neutral">Documenté</Badge>
-    </h1>
+    </div>
     <p>
       Liste à puces (non ordonnée), pendant d'<code>OrderedList</code>. Accepte des chaînes
       ou des objets <code>{`{ content, children }`}</code> pour l'imbrication.

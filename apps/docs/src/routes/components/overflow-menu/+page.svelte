@@ -73,10 +73,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">Composant · {t(locale.value, "navigation")}</p>
-    <h1>
-      OverflowMenu
+    <div class="docs-hero-title">
+      <h1>OverflowMenu</h1>
       <Badge tone="success">{t(locale.value, "statusStable")}</Badge>
-    </h1>
+    </div>
     <p>{text().intro}</p>
   </section>
 

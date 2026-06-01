@@ -5,10 +5,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">Composant · Layout</p>
-    <h1>
-      AspectRatio
+    <div class="docs-hero-title">
+      <h1>AspectRatio</h1>
       <Badge tone="neutral">Documenté</Badge>
-    </h1>
+    </div>
     <p>
       Conteneur qui maintient un <strong>ratio d'aspect</strong> constant (via la propriété
       CSS <code>aspect-ratio</code>) pour médias, images ou embeds responsives. Le contenu

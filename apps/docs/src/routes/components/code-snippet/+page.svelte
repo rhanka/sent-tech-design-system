@@ -7,10 +7,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">Composant · Données</p>
-    <h1>
-      CodeSnippet
+    <div class="docs-hero-title">
+      <h1>CodeSnippet</h1>
       <Badge tone="neutral">Documenté</Badge>
-    </h1>
+    </div>
     <p>
       Affiche du code en <strong>bloc</strong> (avec bouton de copie) ou <strong>inline</strong>.
       S'appuie sur <code>CopyButton</code> pour la copie.

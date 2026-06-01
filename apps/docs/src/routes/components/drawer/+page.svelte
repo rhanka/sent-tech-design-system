@@ -13,10 +13,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">{fr("Composant · Overlay", "Component · Overlay")}</p>
-    <h1>
-      Drawer
+    <div class="docs-hero-title">
+      <h1>Drawer</h1>
       <Badge tone="success">{t(locale.value, "statusStable")}</Badge>
-    </h1>
+    </div>
     <p>
       {fr(
         "Panneau latéral coulissant pour un workflow secondaire — inspection, configuration, revue côte à côte — sans quitter l'écran courant. Il s'ouvre à droite (défaut) ou à gauche et garde le contexte visible derrière le fond.",

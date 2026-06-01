@@ -373,7 +373,7 @@
   {@html `<style>${scopedCss}</style>`}
 </svelte:head>
 
-<div class="cmp">
+<div class="cmp" id="cmp">
   <header class="cmp-head">
     <h1>Banc de fidélité — notre DS mappé vs DS officiel</h1>
     <p>

@@ -11,10 +11,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">Composant · Navigation</p>
-    <h1>
-      {t(locale.value, "paginationNavTitle")}
+    <div class="docs-hero-title">
+      <h1>{t(locale.value, "paginationNavTitle")}</h1>
       <Badge tone="success">{t(locale.value, "statusStable")}</Badge>
-    </h1>
+    </div>
     <p>{t(locale.value, "paginationNavIntro")}</p>
   </section>
 

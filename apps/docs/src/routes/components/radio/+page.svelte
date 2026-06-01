@@ -9,10 +9,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">{fr("Composant · Formulaire", "Component · Form")}</p>
-    <h1>
-      Radio
+    <div class="docs-hero-title">
+      <h1>Radio</h1>
       <Badge tone="success">{t(locale.value, "statusStable")}</Badge>
-    </h1>
+    </div>
     <p>
       {fr(
         "Bouton radio pour un choix exclusif parmi plusieurs options. Les radios partageant le même attribut name forment un groupe : une seule sélection possible. Input natif, libellé requis.",

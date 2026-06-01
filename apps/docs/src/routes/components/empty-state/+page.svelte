@@ -9,10 +9,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">{fr("Composant · Feedback", "Component · Feedback")}</p>
-    <h1>
-      EmptyState
+    <div class="docs-hero-title">
+      <h1>EmptyState</h1>
       <Badge tone="success">{t(locale.value, "statusStable")}</Badge>
-    </h1>
+    </div>
     <p>
       {fr(
         "Bloc centré affiché quand une zone n'a pas encore de contenu : il explique pourquoi c'est vide et propose une action principale claire pour avancer. À distinguer d'une erreur — l'état vide est attendu et constructif.",

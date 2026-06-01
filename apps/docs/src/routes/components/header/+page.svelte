@@ -71,10 +71,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">Composant · Structure</p>
-    <h1>
-      Header
+    <div class="docs-hero-title">
+      <h1>Header</h1>
       <Badge tone="neutral">Documenté</Badge>
-    </h1>
+    </div>
     <p>
       Le composant <code>Header</code> compose l'en-tête applicatif complet : marque
       (logo + titre), navigation primaire, actions utilitaires et zone compte. La zone

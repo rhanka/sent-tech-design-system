@@ -15,10 +15,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">Composant · Formulaire</p>
-    <h1>
-      {t(locale.value, "passwordInputTitle")}
+    <div class="docs-hero-title">
+      <h1>{t(locale.value, "passwordInputTitle")}</h1>
       <Badge tone="success">{t(locale.value, "statusStable")}</Badge>
-    </h1>
+    </div>
     <p>{t(locale.value, "passwordInputIntro")}</p>
   </section>
 

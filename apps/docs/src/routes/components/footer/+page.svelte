@@ -31,10 +31,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">Composant · Structure</p>
-    <h1>
-      Footer
+    <div class="docs-hero-title">
+      <h1>Footer</h1>
       <Badge tone="neutral">Documenté</Badge>
-    </h1>
+    </div>
     <p>
       Le composant <code>Footer</code> fournit la structure du pied de page applicatif
       (région <code>contentinfo</code>) : marque, colonnes de liens, copyright et liens

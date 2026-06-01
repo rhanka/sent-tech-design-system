@@ -12,10 +12,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">Composant · Formulaires</p>
-    <h1>
-      TileGroup
+    <div class="docs-hero-title">
+      <h1>TileGroup</h1>
       <Badge tone="neutral">Documenté</Badge>
-    </h1>
+    </div>
     <p>
       Groupe de <strong>tuiles sélectionnables</strong> (sémantique radio dans un
       <code>&lt;fieldset&gt;</code> + légende). Sélection unique <code>value</code> bindable.

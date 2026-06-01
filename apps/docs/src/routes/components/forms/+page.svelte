@@ -65,10 +65,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">Famille · Formulaires</p>
-    <h1>
-      {text().showcaseTitle}
+    <div class="docs-hero-title">
+      <h1>{text().showcaseTitle}</h1>
       <Badge tone="success">{t(locale.value, "statusStable")}</Badge>
-    </h1>
+    </div>
     <p>{text().showcaseIntro}</p>
     <p>{text().sizeVariants}</p>
     <p>{text().alertTones}</p>

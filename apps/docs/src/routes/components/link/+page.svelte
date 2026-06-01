@@ -11,10 +11,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">{fr("Composant · Action", "Component · Action")}</p>
-    <h1>
-      Link
+    <div class="docs-hero-title">
+      <h1>Link</h1>
       <Badge tone="success">{t(locale.value, "statusStable")}</Badge>
-    </h1>
+    </div>
     <p>
       {fr(
         "Lien stylé cohérent avec le DS pour naviguer vers une autre URL. Trois variantes (inline, standalone, muted), prise en charge des liens externes et d'un état désactivé.",

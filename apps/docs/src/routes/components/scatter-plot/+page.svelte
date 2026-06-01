@@ -15,10 +15,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">Composant · Données</p>
-    <h1>
-      ScatterPlot
+    <div class="docs-hero-title">
+      <h1>ScatterPlot</h1>
       <Badge tone="neutral">Documenté</Badge>
-    </h1>
+    </div>
     <p>
       Nuage de points : deux axes numériques (graduations « jolies » automatiques),
       points colorés par <code>tone</code> (palette data-vis), tooltip au survol/focus,
