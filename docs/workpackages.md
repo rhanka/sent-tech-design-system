@@ -170,7 +170,7 @@ Detail dans `docs/known-issues-and-fixes.md`.
 
 ## WP7 — Audit DS large (37 références upstream, 5 clusters parallèles)
 
-**Statut global** : 🟡 65% — audit/reporting consolidé, couverture et fermeture des clusters à prouver.
+**Statut global** : 🟡 80% — audit/reporting, traçabilité règles/tests, dogfooding et gate `design check` sur push sont fermés. Reste : couverture individuelle des références upstream hors findings statiques.
 
 Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couverture complète des 37 références upstream `pbakaus/impeccable`.
 
@@ -184,15 +184,15 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 | D. Motion & interaction | `motion-design`, `animate`, `delight`, `overdrive` | 🟡 65% | `docs/ds-audit-motion.md` |
 | E. Audit/critique/polish | `audit`, `critique`, `polish`, `harden`, `optimize`, `extract`, `distill`, `craft` | 🟡 60% | `docs/ds-audit-meta.md` |
 | F. Consolidateur | merge des 5 + dédupe vs `docs/known-issues-and-fixes.md` + priorisation P0/P1/P2 | 🟢 100% | `docs/ds-audit-consolidated-v2.md` (master) |
-| Application des fixes critiques (P0) | — | 🟡 45% | WP6 corrigé, retest overlays + fixes P0 docs restant |
-| Capacité "audit on push" via workflow GitHub | — | ⚪ 0% | hook CI post-MVP |
+| Application des fixes critiques (P0) | — | 🟢 100% | WP6 corrigé; dogfooding build docs courant à 0 finding. |
+| Capacité "audit on push" via workflow GitHub | — | 🟢 100% | `.github/workflows/design-quality-gate.yml` construit les packages/docs puis exécute `design check apps/docs/build --tech --fail-under 100` sur PR et push `main`. |
 
 ### Suivi WP7
 
 | Vue | Track | Finalite | Etat | Avancement | Detail |
 |---|---|---|---:|---:|---|
 | Fait | Audit V1/V2 | Consolider les findings DS en source exploitable | 🟢 | 100% | Audit V1, 5 rapports clusters, master V2, 25 règles actives transmises à WP8. |
-| A faire | Couverture | Prouver la couverture complète des 37 références upstream | 🟡 | 45% | Fermer les statuts A-E et documenter la matrice de couverture. |
+| A faire | Couverture upstream | Étendre les findings au-delà des règles statiques déjà livrées | 🟡 | 65% | `docs/ds-audit-coverage-matrix.md` prouve 36 fichiers réels, 25 règles couvertes par tests, 9/36 références avec finding local direct; le reste est partiel, hors-cluster ou non déterministe. |
 | Fait | Traçabilité | Relier `finding WP7 -> règle WP8 -> test` | 🟢 | 100% | `docs/ds-audit-coverage-matrix.md` et `docs/wp8-design-cli-traceability.md` couvrent les 25 règles + tests. |
 | Attendu | Séparation WP7/WP8 | WP7 reste le chantier audit, WP8 reste le moteur | 🟢 | 100% | Toute règle WP8 doit référencer une entrée WP7 V2. |
 
@@ -298,7 +298,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 | Item | Statut | Notes |
 |---|---|---|
 | Installer la lib publiée si nécessaire | 🟢 | Workspace local utilisé; package publié `@sentropic/design-system-skills@0.1.0` déjà disponible. |
-| `design check` sur le site/docs DS | 🟢 | Build docs courant audité: 85 pages, 25 règles, 0 finding après corrections `h1-inline-badge`, `status-indicator-label`, `line-length-cap`, déduplication `no-em-dash`, précision `no-bare-hex`, `single-font` et copy docs; voir `docs/dogfooding-design-check.md`. |
+| `design check` sur le site/docs DS | 🟢 | Build docs courant audité: 86 pages, 25 règles, 0 finding après corrections `h1-inline-badge`, `status-indicator-label`, `line-length-cap`, déduplication `no-em-dash`, précision `no-bare-hex`, `single-font` et copy docs; voir `docs/dogfooding-design-check.md`. |
 | Boucler findings → corrections | 🟢 | Dette prioritaire `no-em-dash` 60 → 0; `single-font`, `no-bare-hex`, `h1-inline-badge`, `status-indicator-label` et `line-length-cap` restent à 0. |
 
 **Dépendances** : WP8 (package publié).
@@ -348,7 +348,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 - **ForceGraph 0.10.3** (API sélection : `selectedIds`/`focusId`/`onSelect`/`onOpenEntity`) **publié npm** (lockstep tokens/themes/svelte 0.10.3).
 - **Compare-mode** : Lot 1 (socle de vérité partagée) livré sur main ; Lot 2 (UI triptyque, Δ lus du registre) livré sur branche `claude-compare-lot2` (en revue) ; hooks d'overlay local générique = **next step** (Claude).
-- **WP13 React** : **port complet intégré sur `main`** (package public-ready, build/check OK, 95 tests verts au 2026-06-01). Reste : surface docs React + release workflow dédié.
+- **WP13 React** : **port complet intégré sur `main`** (package public-ready, build/check OK, 95 tests verts au 2026-06-01) + surface docs `/react` intégrée. Reste : release workflow dédié.
 - **WP10 Airbus** : **thème complet sur `main`** (palette + anatomie + dark mode `airbusDarkTheme`, package public-ready non publié) ; vérification locale build/check/test OK. Reste : pipeline fidélité final et gouvernance publication.
 - **WP14** : chrome documentaire par thème présent sur `main` (ci-dessous), validation visuelle publique gardée pour la fin de loop.
 
@@ -403,7 +403,7 @@ A tout instant on peut tenir 3 a 4 agents en parallele sans conflit de fichiers.
 1. **WP12** : les templates docs / slides relèvent-ils du périmètre DS ? format de sortie (HTML / Slidev / pptx) ?
 2. **WP10** ✅ tranché (2026-05-31) : le **port Airbus est committable** (jugé non confidentiel), package public-ready **non publié npm**, présent dans le switcher docs. Les logos chrome Airbus utilisés par la doc sont désormais versionnés; les CSS/références privées futures restent hors-git tant que leur redistribution n'est pas validée (idem futurs Scalian/CGI).
 3. **WP9** : faut-il de nouvelles primitives (ReasoningBlock, ToolCall) ou enrichir les existantes ?
-4. **WP13** ✅ tranché (2026-05-31) : **couverture large** — port complet des exports publics, **composants React purs** (pas de dép headless), package intégré sur `main`; surface docs React et release workflow dédiés restent à finir.
+4. **WP13** ✅ tranché (2026-05-31) : **couverture large** — port complet des exports publics, **composants React purs** (pas de dép headless), package intégré sur `main`; surface docs React intégrée, release workflow dédié reste à finir.
 5. WP8 : adapters multi-harness (`.codex` / `.gemini`) — implémenter ou rester en wrapper unique.
 
 ## Hygiene de ce doc
