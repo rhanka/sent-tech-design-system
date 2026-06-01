@@ -245,7 +245,7 @@
 </ChatMessage>
 
 <style>
-  .st-streamingMessage {
+  :global(.st-streamingMessage) {
     position: relative;
   }
 
