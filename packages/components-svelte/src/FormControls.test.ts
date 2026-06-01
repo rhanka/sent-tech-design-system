@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/svelte";
+import { readFileSync } from "node:fs";
 import { createRawSnippet } from "svelte";
 import { describe, expect, it, vi } from "vitest";
 import Checkbox from "./lib/Checkbox.svelte";
@@ -99,6 +100,13 @@ describe("form controls", () => {
     expect(field.value).toBe("3");
     expect(screen.getByRole("button", { name: "Increment value" })).toBeTruthy();
     expect(screen.getByRole("button", { name: "Decrement value" })).toBeTruthy();
+  });
+
+  it("keeps NumberInput spin-button reset compatible across engines", () => {
+    const source = readFileSync("src/lib/NumberInput.svelte", "utf-8");
+    expect(source).toMatch(
+      /\.st-numberInput__control\[type="number"\]\s*\{[^}]*appearance:\s*textfield;[^}]*-moz-appearance:\s*textfield;/s
+    );
   });
 
   it("disables NumberInput buttons at min/max boundaries", () => {
