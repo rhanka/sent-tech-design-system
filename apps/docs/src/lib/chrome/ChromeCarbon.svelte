@@ -9,7 +9,7 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
   import { page } from "$app/state";
-  import { ChevronDown, Github } from "@lucide/svelte";
+  import { ChevronDown, ExternalLink, Github, Grid3x3, Menu, Search, X } from "@lucide/svelte";
   import {
     DOCS_FOUNDATION_NAV,
     DOCS_TOP_NAV,
@@ -107,25 +107,12 @@
 
       <!-- Icône recherche (placeholder fonctionnel : pointe vers GitHub) -->
       <button type="button" class="cbn-header__icon-btn" aria-label="Rechercher" title="Rechercher (placeholder)">
-        <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-          <circle cx="8.5" cy="8.5" r="5.5"/>
-          <line x1="13" y1="13" x2="18" y2="18"/>
-        </svg>
+        <Search size={16} strokeWidth={1.8} aria-hidden="true" />
       </button>
 
       <!-- Icône grille 3×3 (menu produits IBM — placeholder) -->
       <button type="button" class="cbn-header__icon-btn" aria-label="Menu applications IBM" title="Applications (placeholder)">
-        <svg viewBox="0 0 20 20" width="16" height="16" fill="currentColor" aria-hidden="true">
-          <rect x="2" y="2" width="4" height="4" rx="0.5"/>
-          <rect x="8" y="2" width="4" height="4" rx="0.5"/>
-          <rect x="14" y="2" width="4" height="4" rx="0.5"/>
-          <rect x="2" y="8" width="4" height="4" rx="0.5"/>
-          <rect x="8" y="8" width="4" height="4" rx="0.5"/>
-          <rect x="14" y="8" width="4" height="4" rx="0.5"/>
-          <rect x="2" y="14" width="4" height="4" rx="0.5"/>
-          <rect x="8" y="14" width="4" height="4" rx="0.5"/>
-          <rect x="14" y="14" width="4" height="4" rx="0.5"/>
-        </svg>
+        <Grid3x3 size={16} strokeWidth={1.8} aria-hidden="true" />
       </button>
 
       <!-- Burger mobile -->
@@ -136,16 +123,11 @@
         aria-expanded={mobileMenuOpen}
         aria-label="Menu principal"
       >
-        <svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-          {#if mobileMenuOpen}
-            <line x1="3" y1="3" x2="17" y2="17"/>
-            <line x1="17" y1="3" x2="3" y2="17"/>
-          {:else}
-            <line x1="2" y1="5" x2="18" y2="5"/>
-            <line x1="2" y1="10" x2="18" y2="10"/>
-            <line x1="2" y1="15" x2="18" y2="15"/>
-          {/if}
-        </svg>
+        {#if mobileMenuOpen}
+          <X size={20} strokeWidth={1.8} aria-hidden="true" />
+        {:else}
+          <Menu size={20} strokeWidth={1.8} aria-hidden="true" />
+        {/if}
       </button>
     </div>
   </header>
@@ -204,12 +186,9 @@
             >
               <Github size={14} strokeWidth={2} aria-hidden="true" />
               <span>GitHub</span>
-              <!-- Icône lien externe -->
-              <svg viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" class="cbn-external-icon">
-                <path d="M5 2H2a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V7"/>
-                <path d="M8 1h3v3"/>
-                <line x1="11" y1="1" x2="5" y2="7"/>
-              </svg>
+              <span class="cbn-external-icon" aria-hidden="true">
+                <ExternalLink size={10} strokeWidth={1.8} />
+              </span>
             </a>
           </li>
         </ul>
