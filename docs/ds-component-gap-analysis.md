@@ -27,7 +27,16 @@ Identifier les composants présents dans le **DSFR** (Système de design de l'É
 
 > **Note d'honnêteté :** les sites officiels DSFR et Carbon renvoient tous deux 403 aux fetch automatisés. La liste DSFR provient donc de **deux miroirs d'implémentation concordants** (Django-DSFR + VueDsfr) ; la liste Carbon provient du **dépôt source GitHub officiel** (faisant autorité, mais incluant des sous-composants et primitives de layout qui ne sont pas tous des « composants » au sens catalogue). Les modèles/pages-types DSFR n'ont pu être listés exhaustivement (site 403) — seuls les plus connus, confirmés par recherche, figurent ici. Aucun composant n'a été inventé.
 
-### Nos composants (source de vérité — 60 composants exportés)
+## c0) Mise à jour 2026-06-01
+
+Ce document reste le snapshot de cadrage du 2026-05-26. État courant vérifié sur `main` :
+
+- Le package Svelte exporte 80 symboles UI, dont `ThemeProvider`; le catalogue docs couvre 79 composants publics hors primitive infra.
+- Les gaps P1 initiaux `Footer` et `Tile` sont fermés : composants exportés, pages docs dédiées et entrées catalogue présentes.
+- Les gaps P2 `TreeView`, `SkipLink`, `LanguageSelector`, `Quote` et `Highlight` sont également fermés.
+- Le backlog résiduel utile concerne surtout `Notification inline/actionable`, `Table of contents`, `Back to top`, `Transcription`, `Display settings`, `Media content` et les patterns composites DSFR, selon besoin produit.
+
+### Nos composants au snapshot initial (source de vérité — 60 composants exportés)
 
 Accordion, Alert, AreaChart, AspectRatio, Badge, BarChart, Breadcrumb, Button, Card, ChatMessage, ChatComposer, ChatThread, MessageActions, StreamingMessage, MessageStatusBadge, Checkbox, CodeSnippet, Combobox, ContentSwitcher, CopyButton, DataTable, DatePicker, Drawer, Dropdown, EmptyState, FileUploader, Form, FormGroup, Header, IconButton, InlineLoading, Input, LineChart, Link, LoadingState, Menu, MenuPopover, MenuTriggerButton, Modal, MultiSelect, NumberInput, OverflowMenu, Pagination, PaginationNav, PasswordInput, Popover, ProgressBar, ProgressIndicator, Radio, Search, Select, SideNav, SkeletonText, Slider, Sparkline, StructuredList, Switch, Table, Tabs, Tag, ThemeProvider, Textarea, TileGroup, Toast, Toggle, Toggletip, Tooltip, UnorderedList.
 
@@ -35,7 +44,7 @@ Accordion, Alert, AreaChart, AspectRatio, Badge, BarChart, Breadcrumb, Button, C
 
 Légende : ✅ = présent / oui ; ❌ = absent / non ; ~ = couvert partiellement ou par un autre composant.
 
-### Manques réels (présent chez DSFR et/ou Carbon, absent chez nous)
+### Manques réels au snapshot initial (présent chez DSFR et/ou Carbon, absent chez nous)
 
 | Composant | Présent chez nous ? | DSFR ? | Carbon ? | Recommandation backlog |
 | --- | --- | --- | --- | --- |
@@ -70,7 +79,7 @@ Accordion, Alert, Badge, Breadcrumb, Button, Card, Checkbox, CodeSnippet, Combob
 
 **En plus de la référence (différenciateurs « maison ») :** AreaChart, BarChart, LineChart, Sparkline (data-viz), et toute la famille **Chat** (ChatMessage, ChatComposer, ChatThread, MessageActions, StreamingMessage, MessageStatusBadge) + AspectRatio, EmptyState, ThemeProvider. Ni DSFR ni Carbon ne couvrent ces composants — atouts produit à conserver.
 
-## d) Backlog proposé (trié P1 > P2 > P3)
+## d) Backlog proposé au snapshot initial (trié P1 > P2 > P3)
 
 ### P1 — présent dans DSFR **et** Carbon, manque réel
 1. **Footer / Pied de page** — brique d'app shell manquante (on a Header sans Footer).
