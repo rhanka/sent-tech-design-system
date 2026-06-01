@@ -6,9 +6,10 @@ import { spawnSync } from "node:child_process";
 import { resolve } from "node:path";
 import process from "node:process";
 
-const args = process.argv.slice(2);
+const rawArgs = process.argv.slice(2);
+const args = rawArgs[0] === "audit" ? rawArgs.slice(1) : rawArgs;
 if (args.length === 0 || args.includes("--help") || args.includes("-h")) {
-  process.stdout.write("Usage: node scripts/audit.mjs <url | file.html | inline-html>\n");
+  process.stdout.write("Usage: node scripts/audit.mjs [audit] <url | file.html | inline-html>\n");
   process.exit(args.length === 0 ? 1 : 0);
 }
 
