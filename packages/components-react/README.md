@@ -61,4 +61,4 @@ npm --workspace @sentropic/design-system-react run test
 npm run pack:smoke
 ```
 
-Publishing is ready for a dedicated `react-v*` tag once the release workflow selects this workspace.
+Publishing is handled by `.github/workflows/react-publish.yml` with a `react-v*` tag.
