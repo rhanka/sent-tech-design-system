@@ -20,6 +20,7 @@ design audit <url | file.html | inline-html>
 Options :
 - `design audit <target>` est le contrat WP8 V1 pour les harness agents.
 - `impeccable-sent-tech <target>` reste supporté en rétrocompatibilité.
+- `design check <target> --fail-under <score>` active un gate qualité 0-100. En mode technique, `<target>` peut être un fichier HTML, du HTML inline, une URL ou un dossier de build statique contenant des pages `.html`.
 - `stdin` non supporté ; passer une URL, un fichier existant ou un bloc HTML inline.
 - Sortie JSON standard sur `stdout`.
 - Résumé court sur `stderr` (counts + top findings).
@@ -27,6 +28,7 @@ Options :
 Code retour :
 - `0` quand aucun finding
 - `1` quand findings trouvés
+- avec `--fail-under`, `0` quand le score est supérieur ou égal au seuil, `1` sinon
 - `2` en cas d’erreur d’exécution
 
 ## API programmatique
@@ -59,6 +61,16 @@ Ou `kind: "url"` / `kind: "html"` pour un bloc HTML brut.
 - `grid-variance` — détecte les grilles de cartes répétitives sans variance ni token de layout.
 - `contrast-token-pair` — calcule les paires texte/fond hex et signale les contrastes insuffisants.
 - `typography-scale-token` — signale `font-size`/`line-height` hors échelle lorsqu'ils ne sont pas tokenisés.
+- `no-pure-black-white` — signale `#000`/`#fff` et équivalents bruts sur les propriétés de couleur.
+- `raw-color-value` — signale les fonctions couleur locales (`rgb`, `hsl`, `oklch`, etc.) hors tokens.
+- `font-family-token` — exige que les familles typographiques produit passent par des tokens Sent Tech.
+- `display-body-font-pair` — détecte la même famille pour les rôles display et body.
+- `line-length-max-width` — signale les bornes de lecture trop larges même avec `max-width`.
+- `h1-inline-badge` — signale les badges/tags placés dans un titre H1.
+- `status-indicator-label` — signale les indicateurs de statut sans libellé explicite.
+- `redundant-url-label` — signale les liens dont le texte répète l'URL brute.
+- `auto-fit-card-grid` — détecte les grilles auto-fit de cartes répétitives hors token de layout.
+- `focus-visible-ring` — signale la suppression d'outline sans focus-visible tokenisé.
 
 ## Architecture
 
@@ -68,5 +80,5 @@ Ou `kind: "url"` / `kind: "html"` pour un bloc HTML brut.
 
 ## Notes
 
-- Cette version expose 15 règles déterministes, chacune reliée à un principe `design` et à un finding WP7.
+- Cette version expose 25 règles déterministes, chacune reliée à un principe `design` et à un finding WP7.
   L’enrichissement vers ~`30-35` règles reste géré via WP7/8.
