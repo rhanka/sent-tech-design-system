@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { COMPONENTS } from "./components-catalog";
 import {
+  DOCS_FOUNDATION_NAV,
   DOCS_TOP_NAV,
   DOCS_VERSION,
   buildComponentNavGroups,
@@ -33,10 +34,22 @@ describe("docs navigation model", () => {
     expect(DOCS_TOP_NAV.map((item) => item.label)).toEqual([
       "Fondations",
       "Composants",
+      "React",
       "Tokens",
       "Thèmes",
       "Contrats"
     ]);
+  });
+
+  it("exposes the React docs surface as a first-class route", () => {
+    const reactRoute = fileURLToPath(new URL("../routes/react/+page.svelte", import.meta.url));
+
+    expect(DOCS_FOUNDATION_NAV).toContainEqual({ label: "React", href: "/react" });
+    expect(resolveBreadcrumb("/react").map((item) => item.label)).toEqual([
+      "Catalogue",
+      "React"
+    ]);
+    expect(readFileSync(reactRoute, "utf8")).toContain("React package");
   });
 
   it("builds a side navigation entry for every exported component", () => {

@@ -91,7 +91,7 @@
 
     <!-- Nav principale masquée sur mobile -->
     <nav class="cbn-header__nav" aria-label="Navigation principale">
-      {#each DOCS_TOP_NAV.slice(0, 4) as item (item.href)}
+      {#each DOCS_TOP_NAV.slice(0, 5) as item (item.href)}
         <a
           class="cbn-header__nav-link"
           href={item.href}
