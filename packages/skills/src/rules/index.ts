@@ -14,6 +14,16 @@ import { railVsRadiusConsistencyRule } from "./railVsRadiusConsistencyRule.js";
 import { gridVarianceRule } from "./gridVarianceRule.js";
 import { contrastTokenPairRule } from "./contrastTokenPairRule.js";
 import { typographyScaleTokenRule } from "./typographyScaleTokenRule.js";
+import { noPureBlackWhiteRule } from "./noPureBlackWhiteRule.js";
+import { rawColorValueRule } from "./rawColorValueRule.js";
+import { fontFamilyTokenRule } from "./fontFamilyTokenRule.js";
+import { displayBodyFontPairRule } from "./displayBodyFontPairRule.js";
+import { lineLengthMaxWidthRule } from "./lineLengthMaxWidthRule.js";
+import { h1InlineBadgeRule } from "./h1InlineBadgeRule.js";
+import { statusIndicatorLabelRule } from "./statusIndicatorLabelRule.js";
+import { redundantUrlLabelRule } from "./redundantUrlLabelRule.js";
+import { autoFitCardGridRule } from "./autoFitCardGridRule.js";
+import { focusVisibleRingRule } from "./focusVisibleRingRule.js";
 
 export const defaultRules: Rule[] = [
   singleFontRule,
@@ -30,7 +40,17 @@ export const defaultRules: Rule[] = [
   railVsRadiusConsistencyRule,
   gridVarianceRule,
   contrastTokenPairRule,
-  typographyScaleTokenRule
+  typographyScaleTokenRule,
+  noPureBlackWhiteRule,
+  rawColorValueRule,
+  fontFamilyTokenRule,
+  displayBodyFontPairRule,
+  lineLengthMaxWidthRule,
+  h1InlineBadgeRule,
+  statusIndicatorLabelRule,
+  redundantUrlLabelRule,
+  autoFitCardGridRule,
+  focusVisibleRingRule
 ];
 
 export {
@@ -48,5 +68,15 @@ export {
   railVsRadiusConsistencyRule,
   gridVarianceRule,
   contrastTokenPairRule,
-  typographyScaleTokenRule
+  typographyScaleTokenRule,
+  noPureBlackWhiteRule,
+  rawColorValueRule,
+  fontFamilyTokenRule,
+  displayBodyFontPairRule,
+  lineLengthMaxWidthRule,
+  h1InlineBadgeRule,
+  statusIndicatorLabelRule,
+  redundantUrlLabelRule,
+  autoFitCardGridRule,
+  focusVisibleRingRule
 };

@@ -139,7 +139,7 @@ Ces fichiers existent dans `reference/` mais ne figurent dans **aucun** des 5 cl
 
 ### Règles réellement présentes dans le code
 
-Source : `packages/skills/src/rules/index.ts` (`defaultRules`) et les fichiers `src/rules/*.ts`. **15 règles actives** en WP8, chacune reliée dans le code à un principe `design` et à un finding WP7 via `Rule.principle` / `Rule.wp7Finding`. *(Note : le moteur vit dans `packages/skills`, pas `packages/impeccable` — ancien chemin corrigé.)*
+Source : `packages/skills/src/rules/index.ts` (`defaultRules`) et les fichiers `src/rules/*.ts`. **25 règles actives** en WP8, chacune reliée dans le code à un principe `design` et à un finding WP7 via `Rule.principle` / `Rule.wp7Finding`. *(Note : le moteur vit dans `packages/skills`, pas `packages/impeccable` — ancien chemin corrigé.)*
 
 | `ruleId` (exact) | Export (nom de code) | Fichier source |
 |---|---|---|
@@ -158,12 +158,22 @@ Source : `packages/skills/src/rules/index.ts` (`defaultRules`) et les fichiers `
 | `grid-variance` | `gridVarianceRule` | `src/rules/gridVarianceRule.ts` |
 | `contrast-token-pair` | `contrastTokenPairRule` | `src/rules/contrastTokenPairRule.ts` |
 | `typography-scale-token` | `typographyScaleTokenRule` | `src/rules/typographyScaleTokenRule.ts` |
+| `no-pure-black-white` | `noPureBlackWhiteRule` | `src/rules/noPureBlackWhiteRule.ts` |
+| `raw-color-value` | `rawColorValueRule` | `src/rules/rawColorValueRule.ts` |
+| `font-family-token` | `fontFamilyTokenRule` | `src/rules/fontFamilyTokenRule.ts` |
+| `display-body-font-pair` | `displayBodyFontPairRule` | `src/rules/displayBodyFontPairRule.ts` |
+| `line-length-max-width` | `lineLengthMaxWidthRule` | `src/rules/lineLengthMaxWidthRule.ts` |
+| `h1-inline-badge` | `h1InlineBadgeRule` | `src/rules/h1InlineBadgeRule.ts` |
+| `status-indicator-label` | `statusIndicatorLabelRule` | `src/rules/statusIndicatorLabelRule.ts` |
+| `redundant-url-label` | `redundantUrlLabelRule` | `src/rules/redundantUrlLabelRule.ts` |
+| `auto-fit-card-grid` | `autoFitCardGridRule` | `src/rules/autoFitCardGridRule.ts` |
+| `focus-visible-ring` | `focusVisibleRingRule` | `src/rules/focusVisibleRingRule.ts` |
 
 ### Table de traçabilité
 
 Finding = entrée priorisée de `docs/ds-audit-consolidated-v2.md` (et son ID cluster dans `ds-audit-report.md` / docs cluster). Test = présence dans `packages/skills/test-fixtures/skills.test.js`.
 
-> **Mise à jour WP8** : les 15 règles actives ont une couverture directe via `audit()` (positif + négatif pour les règles comportementales) et le test de garde vérifie aussi `defaultRules.length === 15` plus la présence de `principle` / `wp7Finding`.
+> **Mise à jour WP8** : les 25 règles actives ont une couverture directe via `audit()` (positif + négatif pour les règles comportementales) et le test de garde vérifie aussi `defaultRules.length === 25` plus la présence de `principle` / `wp7Finding`.
 
 | Finding WP7 (consolidated-v2 / cluster) | Règle WP8 (`ruleId`) | Test couvrant la règle | Statut test |
 |---|---|---|---|
@@ -182,6 +192,16 @@ Finding = entrée priorisée de `docs/ds-audit-consolidated-v2.md` (et son ID cl
 | P0-3 monotonie des grilles de cartes | `grid-variance` | test positif (6 cartes, repeat(3,1fr)) + négatif (grille tokenisée) | **Couvert** |
 | P0-2 contraste/alignement chromatique incohérent | `contrast-token-pair` | test positif (paire hex faible contraste) + négatif (paire tokenisée) | **Couvert** |
 | P1-1 échelle typographique dense | `typography-scale-token` | test positif (font-size/line-height hors échelle) + négatif (token ou palier autorisé) | **Couvert** |
+| P0-2 contraste/alignement chromatique incohérent sur fonds colorés | `no-pure-black-white` | test positif (#fff/#000 → finding) + négatif (tokens texte/surface) | **Couvert** |
+| P0-1 couleurs hard-codées hors tokens | `raw-color-value` | test positif (`rgb`/`hsl` bruts → finding) + négatif (tokens couleur) | **Couvert** |
+| P0-5 `single-font` / `overused-font` | `font-family-token` | test positif (Inter brut → finding) + négatif (token font) | **Couvert** |
+| P0-5 `single-font` / `overused-font` | `display-body-font-pair` | test positif (même famille display/body) + négatif (tokens distincts) | **Couvert** |
+| P0-4 longueur de ligne trop élevée | `line-length-max-width` | test positif (`max-width:48rem` sur texte long) + négatif (`65ch`) | **Couvert** |
+| P2-2 badge inline dans le H1 | `h1-inline-badge` | test positif (badge dans H1) + négatif (badge hors H1) | **Couvert** |
+| P2-4 statut docs sans légende explicite | `status-indicator-label` | test positif (dot sans nom) + négatif (`aria-label`) | **Couvert** |
+| P2-3 labels mineurs sans coût informationnel | `redundant-url-label` | test positif (URL visible redondante) + négatif (libellé utile) | **Couvert** |
+| P0-3 monotonie des grilles de cartes | `auto-fit-card-grid` | test positif (`repeat(auto-fit,minmax(...))`) + négatif (token layout) | **Couvert** |
+| P1-2 cible/affordance interactive insuffisante | `focus-visible-ring` | test positif (`outline:none` sans focus-visible) + négatif (focus ring tokenisé) | **Couvert** |
 
 ### Findings priorisés restant SANS règle implémentée
 
@@ -189,10 +209,7 @@ Issus de la liste opérationnelle de `consolidated-v2.md` et des findings P2 :
 
 | Finding / règle planifiée | État dans le code |
 |---|---|
-| P2-1 dark-mode absent (cluster B) | **Aucune règle** |
-| P2-2 badge inline dans H1 | **Aucune règle** |
-| P2-3 labels sans coût info (footer/github) | **Aucune règle** |
-| P2-4 statut des docs sans légende explicite | **Aucune règle** |
+| P2-1 dark-mode absent (cluster B) | **Aucune règle** : nécessite une preuve de thème runtime ou un contrat de démo, pas un scan HTML statique seul |
 
 ### Findings du scan déterministe NON couverts par règle (limites connues)
 
@@ -211,10 +228,13 @@ D'après `consolidated-v2.md` § « Alignement avec known-issues » :
 Les principaux P0/P1 issus de WP7 ont désormais une règle déterministe dans `packages/skills`. Les manques restants sont surtout P2 ou non déterministes en statique : dark-mode absent, badge inline dans H1, labels mineurs sans coût informationnel, légende de statut des docs, `OverflowMenu` z-index trop bas et conflit Drawer/menu close.
 
 ### Règles sans test — RÉSOLU
-~~6 des 7 règles actives n'avaient aucun test direct~~ → **15/15 règles couvertes**. Les règles WP8 ajoutées
+~~6 des 7 règles actives n'avaient aucun test direct~~ → **25/25 règles couvertes**. Les règles WP8 ajoutées
 (`cramped-padding`, `motion-subtle`, `padding-scale-token`, `rail-vs-radius-consistency`,
-`grid-variance`, `contrast-token-pair`, `typography-scale-token`) ont chacune reçu un test positif + négatif
-via `audit()` dans `packages/skills/test-fixtures/skills.test.js`. Le test de garde vérifie aussi la traçabilité
+`grid-variance`, `contrast-token-pair`, `typography-scale-token`, `no-pure-black-white`,
+`raw-color-value`, `font-family-token`, `display-body-font-pair`, `line-length-max-width`,
+`h1-inline-badge`, `status-indicator-label`, `redundant-url-label`, `auto-fit-card-grid`,
+`focus-visible-ring`) ont chacune reçu un test positif + négatif via `audit()` dans
+`packages/skills/test-fixtures/skills.test.js`. Le test de garde vérifie aussi la traçabilité
 `principle` / `wp7Finding` de chaque règle.
 
 ### Écart de décompte

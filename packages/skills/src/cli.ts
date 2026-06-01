@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { existsSync, readFileSync, writeFileSync, readdirSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync, readdirSync, statSync } from "node:fs";
 import { resolve } from "node:path";
 import readline from "node:readline/promises";
 import { audit } from "./engine/run.js";
@@ -18,6 +18,114 @@ function resolveTarget(raw: string): AuditTarget {
   return { kind: "html", value: raw };
 }
 
+interface DirectoryTarget {
+  kind: "directory";
+  value: string;
+}
+
+interface TechnicalCheckReport {
+  target: AuditTarget | DirectoryTarget;
+  pages: number;
+  findings: Finding[];
+  score: number;
+  durationMs: number;
+}
+
+function parseFailUnderOption(args: string[]): { args: string[]; failUnder?: number; error?: string } {
+  const index = args.indexOf("--fail-under");
+  if (index < 0) return { args };
+
+  const rawValue = args[index + 1];
+  if (!rawValue || rawValue.startsWith("-")) {
+    return { args, error: "--fail-under attend un seuil numérique entre 0 et 100." };
+  }
+
+  const failUnder = Number(rawValue);
+  if (!Number.isFinite(failUnder) || failUnder < 0 || failUnder > 100) {
+    return { args, error: "--fail-under doit être un nombre entre 0 et 100." };
+  }
+
+  return {
+    args: args.filter((_, argIndex) => argIndex !== index && argIndex !== index + 1),
+    failUnder
+  };
+}
+
+function designQualityScore(findings: Finding[], pages: number): number {
+  const weighted = findings.reduce((total, finding) => {
+    if (finding.severity === "high") return total + 4;
+    if (finding.severity === "medium") return total + 2;
+    return total + 1;
+  }, 0);
+  const score = 100 - weighted / Math.max(1, pages);
+  return Math.max(0, Math.min(100, Math.round(score)));
+}
+
+function listHtmlFiles(dir: string, acc: string[] = []): string[] {
+  let entries;
+  try {
+    entries = readdirSync(dir, { withFileTypes: true });
+  } catch {
+    return acc;
+  }
+
+  for (const entry of entries) {
+    const path = resolve(dir, entry.name);
+    if (entry.isDirectory()) {
+      listHtmlFiles(path, acc);
+    } else if (/\.html$/i.test(entry.name) && entry.name !== "404.html") {
+      acc.push(path);
+    }
+  }
+
+  return acc.sort();
+}
+
+function isDirectoryPath(raw: string): boolean {
+  const path = resolve(process.cwd(), raw);
+  try {
+    return existsSync(path) && statSync(path).isDirectory();
+  } catch {
+    return false;
+  }
+}
+
+async function auditTechnicalTarget(raw: string): Promise<TechnicalCheckReport> {
+  const start = Date.now();
+  if (isDirectoryPath(raw)) {
+    const dir = resolve(process.cwd(), raw);
+    const files = listHtmlFiles(dir);
+    const findings: Finding[] = [];
+
+    for (const file of files) {
+      const report = await audit({ kind: "file", value: file });
+      const rel = file.slice(dir.length + 1);
+      findings.push(
+        ...report.findings.map((finding) => ({
+          ...finding,
+          location: `${rel}:${finding.location}`
+        }))
+      );
+    }
+
+    const pages = files.length;
+    return {
+      target: { kind: "directory", value: dir },
+      pages,
+      findings,
+      score: designQualityScore(findings, pages),
+      durationMs: Date.now() - start
+    };
+  }
+
+  const report = await audit(resolveTarget(raw));
+  return {
+    ...report,
+    pages: 1,
+    score: designQualityScore(report.findings, 1)
+  };
+}
+
 function severityRank(finding: Finding): number {
   switch (finding.severity) {
     case "high":
@@ -31,13 +139,14 @@ function severityRank(finding: Finding): number {
   }
 }
 
-function prettySummary(findings: Finding[], durationMs: number): string {
+function prettySummary(findings: Finding[], durationMs: number, score?: number): string {
   const counts = { high: 0, medium: 0, low: 0 };
   for (const finding of findings) {
     counts[finding.severity]++;
   }
 
-  const header = `sentech-design: ${findings.length} finding(s) in ${durationMs}ms — high:${counts.high} medium:${counts.medium} low:${counts.low}`;
+  const scoreSuffix = score === undefined ? "" : ` score:${score}/100`;
+  const header = `sentech-design: ${findings.length} finding(s) in ${durationMs}ms — high:${counts.high} medium:${counts.medium} low:${counts.low}${scoreSuffix}`;
   const preview = [...findings]
     .sort((a, b) => severityRank(a) - severityRank(b))
     .slice(0, 5)
@@ -106,6 +215,7 @@ function printCheckHelp() {
     `\x1b[1mOPTIONS\x1b[0m\n` +
     `  --tech, --technical   Audit technique déterministe statique (par défaut).\n` +
     `  --human, --heuristics Évaluation qualitative et cognitive pilotée par l'IA.\n` +
+    `  --fail-under <score>  Gate qualité 0-100; supporte un dossier HTML statique en mode technique.\n` +
     `  --personas            Non supporté en V1; retourne une erreur explicite.\n` +
     `  -h, --help            Affiche cette aide.\n\n` +
     `\x1b[1mEXEMPLES\x1b[0m\n` +
@@ -597,9 +707,17 @@ async function handleCheck(args: string[]) {
     process.exit(0);
   }
 
+  const parsedFailUnder = parseFailUnderOption(args);
+  if (parsedFailUnder.error) {
+    process.stderr.write(`\x1b[1m\x1b[31mErreur :\x1b[0m ${parsedFailUnder.error}\n`);
+    process.exit(2);
+  }
+
+  const checkArgs = parsedFailUnder.args;
+  const failUnder = parsedFailUnder.failUnder;
   const technicalFlags = new Set(["--tech", "--technical"]);
   const humanFlags = new Set(["--human", "--heuristics"]);
-  const allowedFlags = new Set([...technicalFlags, ...humanFlags, "--personas"]);
+  const allowedFlags = new Set([...technicalFlags, ...humanFlags, "--personas", "--fail-under"]);
   const flags = args.filter((arg) => arg.startsWith("-"));
   const unknownFlag = flags.find((arg) => !allowedFlags.has(arg));
   if (unknownFlag) {
@@ -610,7 +728,7 @@ async function handleCheck(args: string[]) {
     process.exit(2);
   }
 
-  if (args.includes("--personas")) {
+  if (checkArgs.includes("--personas")) {
     process.stderr.write(
       `\x1b[1m\x1b[31mErreur :\x1b[0m '--personas' est documenté comme exploration future mais n'est pas supporté par WP8 V1.\n` +
       `Utilise '--human'/'--heuristics' pour la passe qualitative disponible, ou 'design audit' pour le contrat déterministe.\n`
@@ -618,8 +736,8 @@ async function handleCheck(args: string[]) {
     process.exit(2);
   }
 
-  const isTechnical = args.some((arg) => technicalFlags.has(arg));
-  const isHuman = args.some((arg) => humanFlags.has(arg));
+  const isTechnical = checkArgs.some((arg) => technicalFlags.has(arg));
+  const isHuman = checkArgs.some((arg) => humanFlags.has(arg));
 
   if (isTechnical && isHuman) {
     process.stderr.write(
@@ -629,7 +747,7 @@ async function handleCheck(args: string[]) {
     process.exit(2);
   }
 
-  const targetRaw = args.find(arg => !arg.startsWith("-"));
+  const targetRaw = checkArgs.find(arg => !arg.startsWith("-"));
 
   if (!targetRaw) {
     process.stderr.write(
@@ -640,6 +758,13 @@ async function handleCheck(args: string[]) {
   }
 
   if (isHuman) {
+    if (isDirectoryPath(targetRaw)) {
+      process.stderr.write(
+        `\x1b[1m\x1b[31mErreur :\x1b[0m design check --human ne supporte pas encore les dossiers HTML.\n` +
+        `Utilise le mode technique par défaut pour \`--fail-under\` sur un build docs.\n`
+      );
+      process.exit(2);
+    }
     const target = resolveTarget(targetRaw);
     const report = await heuristicReview(target);
     process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
@@ -650,13 +775,12 @@ async function handleCheck(args: string[]) {
     );
     const clean =
       h.accessibilityFriction === "none" && h.nielsenUsability === "compliant" && h.cognitiveLoad !== "high";
-    process.exit(clean ? 0 : 1);
+    process.exit(failUnder === undefined ? (clean ? 0 : 1) : report.score >= failUnder ? 0 : 1);
   } else {
-    const target = resolveTarget(targetRaw);
-    const report = await audit(target);
+    const report = await auditTechnicalTarget(targetRaw);
     process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
-    process.stderr.write(`${prettySummary(report.findings, report.durationMs)}\n`);
-    process.exit(report.findings.length === 0 ? 0 : 1);
+    process.stderr.write(`${prettySummary(report.findings, report.durationMs, report.score)}\n`);
+    process.exit(failUnder === undefined ? (report.findings.length === 0 ? 0 : 1) : report.score >= failUnder ? 0 : 1);
   }
 }
 

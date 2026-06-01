@@ -111,6 +111,52 @@ test("cli supports design check technical and heuristics aliases", () => {
   assert.strictEqual(heuristicsReport.heuristics.accessibilityFriction, "none");
 });
 
+test("design check --fail-under gates by deterministic quality score", () => {
+  const cliPath = resolve(import.meta.dirname || "./test-fixtures", "../dist/cli.js");
+  const dirtyHtml = "<style>.hero{color:#fff;background:#000}</style><h1>Titre <span class='badge'>Stable</span></h1>";
+  const pass = spawnSync(
+    process.execPath,
+    [cliPath, "check", dirtyHtml, "--tech", "--fail-under", "80"],
+    { encoding: "utf-8" }
+  );
+  assert.strictEqual(pass.status, 0);
+  const passReport = JSON.parse(pass.stdout);
+  assert.ok(passReport.score >= 80);
+  assert.ok(passReport.findings.length > 0);
+  assert.match(pass.stderr, /score/);
+
+  const fail = spawnSync(
+    process.execPath,
+    [cliPath, "check", dirtyHtml, "--tech", "--fail-under", "99"],
+    { encoding: "utf-8" }
+  );
+  assert.strictEqual(fail.status, 1);
+  const failReport = JSON.parse(fail.stdout);
+  assert.ok(failReport.score < 99);
+});
+
+test("design check --fail-under aggregates directory HTML targets", () => {
+  const cliPath = resolve(import.meta.dirname || "./test-fixtures", "../dist/cli.js");
+  const dir = mkdtempSync(join(tmpdir(), "sent-tech-design-gate-"));
+  try {
+    writeFileSync(join(dir, "index.html"), "<main><h1>OK</h1><p>Texte court.</p></main>");
+    writeFileSync(join(dir, "component.html"), "<style>.hero{color:#fff;background:#000}</style><h1>Titre</h1>");
+    const result = spawnSync(
+      process.execPath,
+      [cliPath, "check", dir, "--fail-under", "90"],
+      { encoding: "utf-8" }
+    );
+    assert.strictEqual(result.status, 0);
+    const report = JSON.parse(result.stdout);
+    assert.strictEqual(report.target.kind, "directory");
+    assert.strictEqual(report.pages, 2);
+    assert.ok(report.score >= 90);
+    assert.ok(report.findings.some((finding) => finding.ruleId === "no-pure-black-white"));
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 test("design build scaffolds a real Svelte 5 component file", () => {
   const cliPath = resolve(import.meta.dirname || "./test-fixtures", "../dist/cli.js");
   const dir = mkdtempSync(join(tmpdir(), "sent-tech-build-"));
@@ -314,8 +360,8 @@ test("rule underline-hardcoded-border: champ avec box-shadow inset → pas de fi
   assert.ok(!(await ruleIds('<input style="box-shadow:inset 0 -2px #161616">')).includes("underline-hardcoded-border"));
 });
 
-test("ruleset WP8: 15 règles actives avec traçabilité WP7", () => {
-  assert.strictEqual(defaultRules.length, 15);
+test("ruleset WP8: 25 règles actives avec traçabilité WP7", () => {
+  assert.strictEqual(defaultRules.length, 25);
   for (const rule of defaultRules) {
     assert.ok(rule.principle, `${rule.id} should expose a design principle`);
     assert.ok(rule.wp7Finding, `${rule.id} should expose its WP7 finding source`);
@@ -376,4 +422,100 @@ test("rule typography-scale-token: taille typographique hors échelle → findin
 test("rule typography-scale-token: taille tokenisée ou palier autorisé → pas de finding", async () => {
   const html = "<style>.copy{font-size:var(--st-typography-body-size);line-height:24px}</style><p class='copy'>x</p>";
   assert.ok(!(await ruleIds(html)).includes("typography-scale-token"));
+});
+
+test("rule no-pure-black-white: noir/blanc purs → finding", async () => {
+  const html = "<style>.hero{color:#ffffff;background:#000}</style><section class='hero'>x</section>";
+  assert.ok((await ruleIds(html)).includes("no-pure-black-white"));
+});
+test("rule no-pure-black-white: couleurs tokenisées → pas de finding", async () => {
+  const html = "<style>.hero{color:var(--st-semantic-text-inverse);background:var(--st-semantic-surface-inverse)}</style><section class='hero'>x</section>";
+  assert.ok(!(await ruleIds(html)).includes("no-pure-black-white"));
+});
+
+test("rule raw-color-value: fonction couleur brute → finding", async () => {
+  const html = "<style>.badge{background:rgb(22 163 74);color:hsl(0 0% 100%)}</style><span class='badge'>OK</span>";
+  assert.ok((await ruleIds(html)).includes("raw-color-value"));
+});
+test("rule raw-color-value: fonction couleur via token → pas de finding", async () => {
+  const html = "<style>.badge{background:var(--st-semantic-feedback-success);color:var(--st-semantic-text-inverse)}</style><span class='badge'>OK</span>";
+  assert.ok(!(await ruleIds(html)).includes("raw-color-value"));
+});
+
+test("rule font-family-token: famille typographique brute → finding", async () => {
+  const html = "<style>.copy{font-family:Inter, system-ui, sans-serif}</style><p class='copy'>x</p>";
+  assert.ok((await ruleIds(html)).includes("font-family-token"));
+});
+test("rule font-family-token: famille typographique tokenisée → pas de finding", async () => {
+  const html = "<style>.copy{font-family:var(--st-foundation-font-sans)}</style><p class='copy'>x</p>";
+  assert.ok(!(await ruleIds(html)).includes("font-family-token"));
+});
+test("rule font-family-token: @font-face source → pas de finding", async () => {
+  const html = "<style>@font-face{font-family:Marianne;src:url('/fonts/marianne.woff2')}body{font-family:var(--st-foundation-font-sans)}</style><p>x</p>";
+  assert.ok(!(await ruleIds(html)).includes("font-family-token"));
+});
+
+test("rule display-body-font-pair: même famille display/body → finding", async () => {
+  const html = "<style>h1{font-family:Inter}.copy{font-family:Inter}</style><h1>Titre</h1><p class='copy'>Texte</p>";
+  assert.ok((await ruleIds(html)).includes("display-body-font-pair"));
+});
+test("rule display-body-font-pair: tokens display/body distincts → pas de finding", async () => {
+  const html = "<style>h1{font-family:var(--st-foundation-font-display)}.copy{font-family:var(--st-foundation-font-sans)}</style><h1>Titre</h1><p class='copy'>Texte</p>";
+  assert.ok(!(await ruleIds(html)).includes("display-body-font-pair"));
+});
+
+test("rule line-length-max-width: max-width trop large → finding", async () => {
+  const html = `<style>.copy{max-width:48rem}</style><p class='copy'>${LONG}</p>`;
+  assert.ok((await ruleIds(html)).includes("line-length-max-width"));
+});
+test("rule line-length-max-width: max-width lisible → pas de finding", async () => {
+  const html = `<style>.copy{max-width:65ch}</style><p class='copy'>${LONG}</p>`;
+  assert.ok(!(await ruleIds(html)).includes("line-length-max-width"));
+});
+
+test("rule h1-inline-badge: badge dans H1 → finding", async () => {
+  const html = "<h1>Button <span class='badge'>Stable</span></h1>";
+  assert.ok((await ruleIds(html)).includes("h1-inline-badge"));
+});
+test("rule h1-inline-badge: badge hors H1 → pas de finding", async () => {
+  const html = "<header><p><span class='badge'>Stable</span></p><h1>Button</h1></header>";
+  assert.ok(!(await ruleIds(html)).includes("h1-inline-badge"));
+});
+
+test("rule status-indicator-label: indicateur sans libellé → finding", async () => {
+  const html = "<nav><span class='status-dot' style='width:8px;height:8px;border-radius:999px'></span></nav>";
+  assert.ok((await ruleIds(html)).includes("status-indicator-label"));
+});
+test("rule status-indicator-label: indicateur nommé → pas de finding", async () => {
+  const html = "<nav><span class='status-dot' aria-label='Documenté' style='width:8px;height:8px;border-radius:999px'></span></nav>";
+  assert.ok(!(await ruleIds(html)).includes("status-indicator-label"));
+});
+
+test("rule redundant-url-label: URL visible redondante → finding", async () => {
+  const html = "<footer><a href='https://github.com/rhanka/sent-tech-design-system'>github.com/rhanka/sent-tech-design-system</a></footer>";
+  assert.ok((await ruleIds(html)).includes("redundant-url-label"));
+});
+test("rule redundant-url-label: libellé utile → pas de finding", async () => {
+  const html = "<footer><a href='https://github.com/rhanka/sent-tech-design-system'>Repository</a></footer>";
+  assert.ok(!(await ruleIds(html)).includes("redundant-url-label"));
+});
+
+test("rule auto-fit-card-grid: grille auto-fit de cartes → finding", async () => {
+  const cards = Array.from({ length: 5 }, (_, i) => `<article class="card">Card ${i}</article>`).join("");
+  const html = `<style>.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(16rem,1fr))}</style><div class="cards">${cards}</div>`;
+  assert.ok((await ruleIds(html)).includes("auto-fit-card-grid"));
+});
+test("rule auto-fit-card-grid: grille via token → pas de finding", async () => {
+  const cards = Array.from({ length: 5 }, (_, i) => `<article class="card">Card ${i}</article>`).join("");
+  const html = `<style>.cards{display:grid;grid-template-columns:var(--st-layout-card-grid)}</style><div class="cards">${cards}</div>`;
+  assert.ok(!(await ruleIds(html)).includes("auto-fit-card-grid"));
+});
+
+test("rule focus-visible-ring: outline supprimé sans focus-visible → finding", async () => {
+  const html = "<style>button{outline:none}</style><button>OK</button>";
+  assert.ok((await ruleIds(html)).includes("focus-visible-ring"));
+});
+test("rule focus-visible-ring: focus-visible tokenisé → pas de finding", async () => {
+  const html = "<style>button{outline:none}button:focus-visible{outline:2px solid var(--st-semantic-focus-ring)}</style><button>OK</button>";
+  assert.ok(!(await ruleIds(html)).includes("focus-visible-ring"));
 });
