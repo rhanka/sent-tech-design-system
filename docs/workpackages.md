@@ -321,7 +321,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 ## WP13 — DS React (portage cadré, sans collision Svelte)
 
-**Statut global** : 🟢 **port complet intégré sur `main`**. `packages/components-react` couvre les exports publics Svelte via un package public-ready `@sentropic/design-system-react@0.1.0`. Vérifié 2026-06-01 : build/check OK, 95 tests React verts. Reste hors cœur : surface docs React exploitable côté site et release workflow dédié.
+**Statut global** : 🟢 **port complet intégré sur `main`**. `packages/components-react` couvre les exports publics Svelte via un package public-ready `@sentropic/design-system-react@0.1.0`. Vérifié 2026-06-01 : build/check OK, 95 tests React verts; surface docs React intégrée au site. Reste hors cœur : release workflow dédié.
 
 **Décidé 2026-05-30** : Codex prend le rôle d'owner React. Claude conserve les chantiers Svelte/docs/themes/release/fidelity en cours. Toute modification de fichiers partagés (`package-lock.json`, scripts racine, navigation docs, release tags) doit être annoncée via h2a avant édition.
 
@@ -330,7 +330,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 | État des lieux React | 🟢 | Codex | Inventaire et périmètre clos; package React présent sur `main`. |
 | Contrat React | 🟢 | Codex | API props + CSS variables + peer deps `react`/`react-dom` documentés dans `packages/components-react/README.md`. |
 | Scaffold `packages/components-react` | 🟢 | Codex | Package isolé, build TypeScript, styles partagés, exports et tests présents. |
-| Docs React | 🟡 | Codex | `REACT_DOCS_SURFACE.md` proposé; intégration dans le site docs à faire sans réécrire les pages Svelte. |
+| Docs React | 🟢 | Codex | Route `/react` intégrée au site docs avec installation, exemple TSX, contrat de surface et matrice de couverture comportementale; pages Svelte non dupliquées. |
 | Tracks Svelte/docs/themes/release/fidelity | 🟢 | Claude | Pas de conflit bloquant restant; release React à traiter comme workflow séparé. |
 
 ### Coordination WP13
@@ -338,7 +338,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 | Quand | Codex | Claude | Règle |
 |---|---|---|---|
 | Maintenant | Maintenir `packages/components-react` isolé et ses tests. | Continuer les tracks non React. | Tout fichier partagé reste annoncé avant édition. |
-| Avant docs React | Proposer surface docs React incrémentale. | Vérifier navigation/catalogue docs. | Ne pas dupliquer les pages Svelte sans besoin. |
+| Docs React | Surface incrémentale intégrée. | Navigation/catalogue vérifiés par test. | Route `/react` dédiée, pas de duplication des pages Svelte. |
 | Avant release | Vérifier build/test React + smoke package. | Vérifier workflow/tags. | Release coordonnée, pas de tag partiel non annoncé. |
 
 **Dépendances** : tokens/themes existants ; stabilisation des changements release/docs/fidelity en cours côté Claude.
