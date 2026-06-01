@@ -194,11 +194,11 @@ function printInitHelp() {
 function printBuildHelp() {
   process.stderr.write(
     `\x1b[1m\x1b[36mCommand: design build <feature>\x1b[0m\n` +
-    `Atelier de création ergonomique et génération de code de composants.\n\n` +
+    `Génère un squelette Svelte 5 déterministe; les passes créatives restent agentiques.\n\n` +
     `\x1b[1mOPTIONS\x1b[0m\n` +
-    `  --propose             Génère le zoning ergonomique et l'architecture logique (zoning).\n` +
-    `  --promote             Isole un composant local et extrait ses styles vers le global.\n` +
-    `  --global              Pipeline complet de conformité globale de l'interface.\n` +
+    `  --propose             Expérimental agentique : pas d'artefact CLI, retourne 2.\n` +
+    `  --promote             Expérimental agentique : pas d'artefact CLI, retourne 2.\n` +
+    `  --global              Expérimental agentique : pas d'artefact CLI, retourne 2.\n` +
     `  -h, --help            Affiche cette aide.\n\n` +
     `\x1b[1mCOMPORTEMENT PAR DÉFAUT\x1b[0m\n` +
     `  Génération complète de code Svelte 5 / CSS pour la feature ('craft').\n\n` +
@@ -214,7 +214,7 @@ function printCheckHelp() {
     `Exécute des diagnostics automatisés de qualité d'interface.\n\n` +
     `\x1b[1mOPTIONS\x1b[0m\n` +
     `  --tech, --technical   Audit technique déterministe statique (par défaut).\n` +
-    `  --human, --heuristics Évaluation qualitative et cognitive pilotée par l'IA.\n` +
+    `  --human, --heuristics Revue heuristique déterministe (charge, structure, a11y), sans IA.\n` +
     `  --fail-under <score>  Gate qualité 0-100; supporte un dossier HTML statique en mode technique.\n` +
     `  --personas            Non supporté en V1; retourne une erreur explicite.\n` +
     `  -h, --help            Affiche cette aide.\n\n` +
@@ -259,19 +259,19 @@ function printAlignHelp() {
 function printPolishHelp() {
   process.stderr.write(
     `\x1b[1m\x1b[36mCommand: design polish <target>\x1b[0m\n` +
-    `Réalise les ajustements créatifs, animations et finitions esthétiques fines.\n\n` +
+    `Réalise les finitions déterministes disponibles; les passes créatives restent agentiques.\n\n` +
     `\x1b[1mOPTIONS\x1b[0m\n` +
-    `  --motion              Optimisation cinétique et respect du mouvement réduit.\n` +
-    `  --bolder              Accentuation des contrastes de poids visuels pour plus d'impact.\n` +
-    `  --quieter             Atténuation du bruit visuel pour reposer le regard.\n` +
-    `  --spark               Effets d'intensité cinétique et halos lumineux fins.\n` +
-    `  --charm               Soin des interactions émotionnelles et états vides.\n` +
-    `  --lucid               Clarté textuelle et simplification de la microcopie UX.\n` +
-    `  --essence             Épuration structurelle HTML (simplification du DOM).\n` +
+    `  --motion              Déterministe : ajoute une garde prefers-reduced-motion si nécessaire.\n` +
+    `  --essence             Déterministe : détecte les cartes imbriquées et retourne 1 si trouvées.\n` +
+    `  --bolder              Expérimental agentique : pas d'auto-fix CLI, retourne 2 seul.\n` +
+    `  --quieter             Expérimental agentique : pas d'auto-fix CLI, retourne 2 seul.\n` +
+    `  --spark               Expérimental agentique : pas d'auto-fix CLI, retourne 2 seul.\n` +
+    `  --charm               Expérimental agentique : pas d'auto-fix CLI, retourne 2 seul.\n` +
+    `  --lucid               Expérimental agentique : pas d'auto-fix CLI, retourne 2 seul.\n` +
     `  -h, --help            Affiche cette aide.\n\n` +
     `\x1b[1mEXEMPLES\x1b[0m\n` +
-    `  design polish component.html --motion --spark\n` +
-    `  design polish landing.html --quieter\n`
+    `  design polish component.html --motion\n` +
+    `  design polish landing.html --essence\n`
   );
 }
 
