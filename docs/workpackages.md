@@ -321,7 +321,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 ## WP13 — DS React (portage cadré, sans collision Svelte)
 
-**Statut global** : 🟢 **port complet intégré sur `main`**. `packages/components-react` couvre les exports publics Svelte via un package public-ready `@sentropic/design-system-react@0.1.0`. Vérifié 2026-06-01 : build/check OK, 95 tests React verts; surface docs React intégrée au site. Reste hors cœur : release workflow dédié.
+**Statut global** : 🟢 **port complet intégré sur `main`**. `packages/components-react` couvre les exports publics Svelte via un package public-ready `@sentropic/design-system-react@0.1.0`. Vérifié 2026-06-01 : build/check OK, 95 tests React verts; surface docs React intégrée au site; workflow `react-v*` dédié ajouté.
 
 **Décidé 2026-05-30** : Codex prend le rôle d'owner React. Claude conserve les chantiers Svelte/docs/themes/release/fidelity en cours. Toute modification de fichiers partagés (`package-lock.json`, scripts racine, navigation docs, release tags) doit être annoncée via h2a avant édition.
 
@@ -331,6 +331,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 | Contrat React | 🟢 | Codex | API props + CSS variables + peer deps `react`/`react-dom` documentés dans `packages/components-react/README.md`. |
 | Scaffold `packages/components-react` | 🟢 | Codex | Package isolé, build TypeScript, styles partagés, exports et tests présents. |
 | Docs React | 🟢 | Codex | Route `/react` intégrée au site docs avec installation, exemple TSX, contrat de surface et matrice de couverture comportementale; pages Svelte non dupliquées. |
+| Release workflow React | 🟢 | Codex | `.github/workflows/react-publish.yml` vérifie build/check/test + pack smoke et publie uniquement sur tag `react-v<version>` aligné avec `packages/components-react/package.json`. |
 | Tracks Svelte/docs/themes/release/fidelity | 🟢 | Claude | Pas de conflit bloquant restant; release React à traiter comme workflow séparé. |
 
 ### Coordination WP13
@@ -339,7 +340,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 |---|---|---|---|
 | Maintenant | Maintenir `packages/components-react` isolé et ses tests. | Continuer les tracks non React. | Tout fichier partagé reste annoncé avant édition. |
 | Docs React | Surface incrémentale intégrée. | Navigation/catalogue vérifiés par test. | Route `/react` dédiée, pas de duplication des pages Svelte. |
-| Avant release | Vérifier build/test React + smoke package. | Vérifier workflow/tags. | Release coordonnée, pas de tag partiel non annoncé. |
+| Release React | Workflow dédié intégré. | Tags et publication effective à déclencher séparément. | Pas de tag partiel non annoncé. |
 
 **Dépendances** : tokens/themes existants ; stabilisation des changements release/docs/fidelity en cours côté Claude.
 **Parallélisable avec** : WP7/WP8/WP10 côté Claude tant que les fichiers partagés sont évités.
@@ -348,7 +349,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 - **ForceGraph 0.10.3** (API sélection : `selectedIds`/`focusId`/`onSelect`/`onOpenEntity`) **publié npm** (lockstep tokens/themes/svelte 0.10.3).
 - **Compare-mode** : Lot 1 (socle de vérité partagée) livré sur main ; Lot 2 (UI triptyque, Δ lus du registre) livré sur branche `claude-compare-lot2` (en revue) ; hooks d'overlay local générique = **next step** (Claude).
-- **WP13 React** : **port complet intégré sur `main`** (package public-ready, build/check OK, 95 tests verts au 2026-06-01) + surface docs `/react` intégrée. Reste : release workflow dédié.
+- **WP13 React** : **port complet intégré sur `main`** (package public-ready, build/check OK, 95 tests verts au 2026-06-01) + surface docs `/react` + workflow `react-v*` intégrés.
 - **WP10 Airbus** : **thème complet sur `main`** (palette + anatomie + dark mode `airbusDarkTheme`, package public-ready non publié) ; vérification locale build/check/test OK. Reste : pipeline fidélité final et gouvernance publication.
 - **WP14** : chrome documentaire par thème présent sur `main` (ci-dessous), validation visuelle publique gardée pour la fin de loop.
 
@@ -403,7 +404,7 @@ A tout instant on peut tenir 3 a 4 agents en parallele sans conflit de fichiers.
 1. **WP12** : les templates docs / slides relèvent-ils du périmètre DS ? format de sortie (HTML / Slidev / pptx) ?
 2. **WP10** ✅ tranché (2026-05-31) : le **port Airbus est committable** (jugé non confidentiel), package public-ready **non publié npm**, présent dans le switcher docs. Les logos chrome Airbus utilisés par la doc sont désormais versionnés; les CSS/références privées futures restent hors-git tant que leur redistribution n'est pas validée (idem futurs Scalian/CGI).
 3. **WP9** : faut-il de nouvelles primitives (ReasoningBlock, ToolCall) ou enrichir les existantes ?
-4. **WP13** ✅ tranché (2026-05-31) : **couverture large** — port complet des exports publics, **composants React purs** (pas de dép headless), package intégré sur `main`; surface docs React intégrée, release workflow dédié reste à finir.
+4. **WP13** ✅ tranché (2026-05-31) : **couverture large** — port complet des exports publics, **composants React purs** (pas de dép headless), package intégré sur `main`; surface docs React et release workflow dédiés intégrés.
 5. WP8 : adapters multi-harness (`.codex` / `.gemini`) — implémenter ou rester en wrapper unique.
 
 ## Hygiene de ce doc
