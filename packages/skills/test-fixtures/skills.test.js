@@ -317,6 +317,26 @@ test("rule single-font: une seule famille typographique → finding", async () =
 test("rule single-font: deux familles distinctes → pas de finding", async () => {
   assert.ok(!(await ruleIds("<style>h1{font-family:Inter}p{font-family:Georgia}</style>")).includes("single-font"));
 });
+test("rule single-font: @font-face seul → pas de finding", async () => {
+  assert.ok(!(await ruleIds("<style>@font-face{font-family:Marianne;src:url('/fonts/marianne.woff2')}</style><p>x</p>")).includes("single-font"));
+});
+test("rule single-font: stylesheet lié local → finding", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "sent-tech-single-font-css-"));
+  try {
+    const appDir = join(dir, "_app");
+    const pageDir = join(dir, "components");
+    mkdirSync(appDir, { recursive: true });
+    mkdirSync(pageDir, { recursive: true });
+    writeFileSync(join(appDir, "docs.css"), "body{font-family:Inter, sans-serif}");
+    const pagePath = join(pageDir, "button.html");
+    writeFileSync(pagePath, '<link rel="stylesheet" href="/_app/docs.css"><p>x</p>');
+
+    const report = await audit({ kind: "file", value: pagePath });
+    assert.ok(report.findings.some((finding) => finding.ruleId === "single-font"));
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
 
 test("rule no-bare-hex: hex inline → finding", async () => {
   assert.ok((await ruleIds('<div style="color:#ff0000">x</div>')).includes("no-bare-hex"));
