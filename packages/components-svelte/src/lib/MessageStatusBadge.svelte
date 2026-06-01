@@ -41,7 +41,7 @@
 </Tag>
 
 <style>
-  .st-messageStatusBadge {
+  :global(.st-messageStatusBadge) {
     align-items: center;
     text-transform: none;
   }

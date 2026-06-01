@@ -1,4 +1,5 @@
 import { render, screen, fireEvent } from "@testing-library/svelte";
+import { readFileSync } from "node:fs";
 import { createRawSnippet } from "svelte";
 import { describe, expect, it, vi } from "vitest";
 import ChatMessage from "./lib/ChatMessage.svelte";
@@ -29,6 +30,11 @@ const dummyActions = createRawSnippet(() => ({
 }));
 
 describe("MessageStatusBadge", () => {
+  it("uses a global root selector because its class is forwarded to Tag", () => {
+    const source = readFileSync("src/lib/MessageStatusBadge.svelte", "utf-8");
+    expect(source).toContain(":global(.st-messageStatusBadge)");
+  });
+
   it("renders correctly with default warning for pending", () => {
     render(MessageStatusBadge, { props: { status: "pending" } });
     const badge = screen.getByLabelText("Statut: En attente");
@@ -250,6 +256,11 @@ describe("ChatMessage", () => {
 });
 
 describe("StreamingMessage", () => {
+  it("uses a global root selector because its class is forwarded to ChatMessage", () => {
+    const source = readFileSync("src/lib/StreamingMessage.svelte", "utf-8");
+    expect(source).toContain(":global(.st-streamingMessage)");
+  });
+
   it("renders finalContent when provided", () => {
     render(StreamingMessage, {
       props: {
