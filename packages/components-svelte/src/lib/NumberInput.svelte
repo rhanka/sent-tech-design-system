@@ -217,6 +217,7 @@
   }
 
   .st-numberInput__control[type="number"] {
+    appearance: textfield;
     -moz-appearance: textfield;
   }
 
