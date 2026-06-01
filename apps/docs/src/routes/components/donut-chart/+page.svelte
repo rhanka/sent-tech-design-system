@@ -12,10 +12,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">Composant · Données</p>
-    <h1>
-      DonutChart
+    <div class="docs-hero-title">
+      <h1>DonutChart</h1>
       <Badge tone="neutral">Documenté</Badge>
-    </h1>
+    </div>
     <p>
       Graphique en anneau : parts d'un total, palette data-vis catégorielle du thème
       (<code>category1…8</code>), tooltip au survol/focus (valeur + %), total affiché

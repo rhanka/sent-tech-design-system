@@ -5,10 +5,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">Composant · Layout · éditorial</p>
-    <h1>
-      Highlight
+    <div class="docs-hero-title">
+      <h1>Highlight</h1>
       <Badge tone="neutral">Documenté</Badge>
-    </h1>
+    </div>
     <p>
       <code>Highlight</code> est un encart de mise en avant (DSFR « Mise en avant »),
       avec titre optionnel et tonalité d'accent (<code>neutral</code>, <code>info</code>,

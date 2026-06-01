@@ -9,10 +9,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">{fr("Composant · Formulaire", "Component · Form")}</p>
-    <h1>
-      Switch
+    <div class="docs-hero-title">
+      <h1>Switch</h1>
       <Badge tone="success">{t(locale.value, "statusStable")}</Badge>
-    </h1>
+    </div>
     <p>
       {fr(
         "Interrupteur on/off pour un réglage appliqué immédiatement. Case <input type=\"checkbox\" role=\"switch\"> avec piste et pastille, libellé à droite et texte d'aide optionnel.",

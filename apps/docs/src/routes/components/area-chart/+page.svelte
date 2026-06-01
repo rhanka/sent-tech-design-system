@@ -100,10 +100,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">{t(locale.value, "areaChartKicker")}</p>
-    <h1>
-      {t(locale.value, "areaChartTitle")}
+    <div class="docs-hero-title">
+      <h1>{t(locale.value, "areaChartTitle")}</h1>
       <Badge tone="success">{t(locale.value, "statusStable")}</Badge>
-    </h1>
+    </div>
     <p>{t(locale.value, "areaChartIntro")}</p>
   </section>
 

@@ -8,10 +8,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">Composant · Layout</p>
-    <h1>
-      Tile
+    <div class="docs-hero-title">
+      <h1>Tile</h1>
       <Badge tone="neutral">Documenté</Badge>
-    </h1>
+    </div>
     <p>
       <code>Tile</code> est la tuile <strong>unitaire</strong> (là où <code>TileGroup</code>
       gère un groupe radio). Trois variantes : <code>static</code> (présentation),

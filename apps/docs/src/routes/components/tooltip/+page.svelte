@@ -9,10 +9,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">{fr("Composant · Overlay", "Component · Overlay")}</p>
-    <h1>
-      Tooltip
+    <div class="docs-hero-title">
+      <h1>Tooltip</h1>
       <Badge tone="success">{t(locale.value, "statusStable")}</Badge>
-    </h1>
+    </div>
     <p>
       {fr(
         "Bulle d'aide contextuelle qui apparaît au survol ou au focus d'un élément. Non interactive et purement informative ; le contenu doit rester court.",

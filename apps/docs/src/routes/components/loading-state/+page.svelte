@@ -9,10 +9,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">{fr("Composant · Feedback", "Component · Feedback")}</p>
-    <h1>
-      LoadingState
+    <div class="docs-hero-title">
+      <h1>LoadingState</h1>
       <Badge tone="success">{t(locale.value, "statusStable")}</Badge>
-    </h1>
+    </div>
     <p>
       {fr(
         "Indicateur de chargement inline accompagné d'un libellé, en deux variantes : un spinner qui tourne, ou un squelette animé. Il signale qu'une zone est occupée (aria-busy) et annonce poliment l'attente aux lecteurs d'écran.",

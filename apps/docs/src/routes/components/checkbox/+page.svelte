@@ -9,10 +9,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">{fr("Composant · Formulaire", "Component · Form")}</p>
-    <h1>
-      Checkbox
+    <div class="docs-hero-title">
+      <h1>Checkbox</h1>
       <Badge tone="success">{t(locale.value, "statusStable")}</Badge>
-    </h1>
+    </div>
     <p>
       {fr(
         "Case à cocher pour un choix binaire indépendant ou une sélection multiple dans une liste. Case <input type=\"checkbox\"> native, stylée par accent-color, avec libellé requis et texte d'aide optionnel.",

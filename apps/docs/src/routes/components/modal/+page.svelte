@@ -12,10 +12,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">{fr("Composant · Overlay", "Component · Overlay")}</p>
-    <h1>
-      Modal
+    <div class="docs-hero-title">
+      <h1>Modal</h1>
       <Badge tone="success">{t(locale.value, "statusStable")}</Badge>
-    </h1>
+    </div>
     <p>
       {fr(
         "Dialogue modal recentré qui interrompt le flux pour une tâche courte et focalisée : confirmation, formulaire bref ou décision bloquante. Il piège le focus et assombrit l'arrière-plan jusqu'à la fermeture.",

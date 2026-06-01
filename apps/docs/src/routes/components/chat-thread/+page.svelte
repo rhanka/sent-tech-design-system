@@ -260,10 +260,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">{text().kicker}</p>
-    <h1>
-      ChatThread
+    <div class="docs-hero-title">
+      <h1>ChatThread</h1>
       <Badge tone="success">{text().status}</Badge>
-    </h1>
+    </div>
     <p>{text().intro}</p>
   </section>
 

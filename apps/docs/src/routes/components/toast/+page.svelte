@@ -9,10 +9,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">{fr("Composant · Feedback", "Component · Feedback")}</p>
-    <h1>
-      Toast
+    <div class="docs-hero-title">
+      <h1>Toast</h1>
       <Badge tone="success">{t(locale.value, "statusStable")}</Badge>
-    </h1>
+    </div>
     <p>
       {fr(
         "Notification éphémère qui confirme le résultat d'une action sans interrompre la tâche en cours. Brève, non bloquante, elle s'efface seule ; l'application hôte gère l'apparition, la pile et la durée.",
