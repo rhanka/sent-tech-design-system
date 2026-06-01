@@ -1341,6 +1341,7 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       placeholderText: semantic.text.muted,
       border: semantic.border.subtle,
       hoverBorder: semantic.border.strong,
+      hoverBackground: semantic.surface.subtle,
       focusRing: semantic.border.interactive,
       invalidBorder: semantic.feedback.error,
       disabledBackground: semantic.surface.subtle,

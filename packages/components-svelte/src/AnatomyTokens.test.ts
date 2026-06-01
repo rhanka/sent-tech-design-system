@@ -221,6 +221,26 @@ describe("anatomy v1.2.0 — field style (outline vs filled-underline)", () => {
 });
 
 /**
+ * Phase 2 rollout guard: form-like and menu-like controls outside the original
+ * 5 pilots consume `--st-component-control-hoverBackground` for secondary icon
+ * buttons, clear buttons and row controls. The token must be emitted by every
+ * compiled theme instead of relying on component-level fallbacks.
+ */
+describe("anatomy phase 2 — shared control hover background", () => {
+  const compiled = new Map<string, string>(
+    THEMES.map((t) => [t.id, compileTheme(t)])
+  );
+
+  for (const theme of THEMES) {
+    it(`${theme.id}: emits shared control hover background`, () => {
+      expect(compiled.get(theme.id)!).toMatch(
+        /--st-component-control-hoverBackground:\s*[^;]+;/
+      );
+    });
+  }
+});
+
+/**
  * Anatomy v1.5.0 active-tab metrics (F7/F8): the `tabs` block now carries the
  * per-theme selected-tab roles/metrics the Tabs component consumes (active
  * text/bg/weight, tab padding/font-size/line-height, the per-side indicator
