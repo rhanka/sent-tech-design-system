@@ -127,7 +127,7 @@ Ces fichiers existent dans `reference/` mais ne figurent dans **aucun** des 5 cl
 | Statut | Nombre (sur 36 fichiers) |
 |---|---|
 | Couverte | 9 (`typography`, `ux-writing`, `color-and-contrast`, `spatial-design`, `layout`, `motion-design`, `audit`, `critique`, `polish`) |
-| Partielle | 14 (`typeset`, `clarify`, `colorize`, `bolder`, `quieter`, `responsive-design`, `shape`, `animate`, `delight`, `overdrive`, `interaction-design`, `harden`, `optimize`, `extract`, `distill`, `craft` — voir tables ; 16 lignes, certaines recoupées) |
+| Partielle | 16 lignes de référence (`typeset`, `clarify`, `colorize`, `bolder`, `quieter`, `responsive-design`, `shape`, `animate`, `delight`, `overdrive`, `interaction-design`, `harden`, `optimize`, `extract`, `distill`, `craft`), certaines recoupées |
 | Non couverte | les supports/hors-cluster (`cognitive-load`, `teach`, `document`, `onboard`, `adapt`, `live`, `brand`, `product`, `heuristics-scoring`, `personas`, `codex`) |
 | À confirmer | la 37e « référence » (capacité CLI `detect`) |
 
@@ -225,7 +225,7 @@ D'après `consolidated-v2.md` § « Alignement avec known-issues » :
 27 des 36 fichiers de référence ne sont **pas** traités par un finding propre : toutes les références marquées `Partielle` (nommées cluster source mais sans finding) et toutes les `Non couverte` (supports/registres : `cognitive-load`, `teach`, `document`, `onboard`, `adapt`, `live`, `brand`, `product`, `heuristics-scoring`, `personas`, `codex`).
 
 ### Findings sans règle
-Les principaux P0/P1 issus de WP7 ont désormais une règle déterministe dans `packages/skills`. Les manques restants sont surtout P2 ou non déterministes en statique : dark-mode absent, badge inline dans H1, labels mineurs sans coût informationnel, légende de statut des docs, `OverflowMenu` z-index trop bas et conflit Drawer/menu close.
+Les principaux P0/P1 issus de WP7 et les P2 éditoriaux exploitables en statique ont désormais une règle déterministe dans `packages/skills`. Les manques restants sont surtout non déterministes en statique : dark-mode absent, `OverflowMenu` z-index trop bas et conflit Drawer/menu close.
 
 ### Règles sans test — RÉSOLU
 ~~6 des 7 règles actives n'avaient aucun test direct~~ → **25/25 règles couvertes**. Les règles WP8 ajoutées
