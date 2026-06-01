@@ -206,17 +206,17 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 >
 > La CLI `design` factorise 17-19 méthodes en **5 verbes** : `init` · `build <feature>` · `check <target>` · `align <target>` · `polish <target>`. **L'audit n'est qu'1 verbe** = `design check --tech`. Ne jamais réduire le moteur `design` à « audit ».
 
-**Statut global** : 🟢 cœur livré — les 5 verbes `init`/`build`/`check`/`align`/`polish` sont réels ou honnêtement expérimentaux (plus aucun faux succès), 12 tests verts ; package renommé `@sentropic/design-system-skills`, **publié `0.1.0` sur npm via OIDC Trusted Publishing**.
+**Statut global** : 🟢 cœur livré — les 5 verbes `init`/`build`/`check`/`align`/`polish` sont réels ou honnêtement expérimentaux (plus aucun faux succès), 64 tests skills verts ; package renommé `@sentropic/design-system-skills`, **publié `0.1.0` sur npm via OIDC Trusted Publishing**.
 
 **Périmètre V1 livré** : `design check --tech <target>` retourne un rapport JSON, codes `0/1/2`, sans Playwright. C'est 1 des 5 verbes — pas « la CLI ». Les 4 autres verbes sont le cœur du reste de WP8.
 
-**Constaté** : `design build` et `design polish` restent des stubs à messages ; `design check --human` est une simulation fixe. Ne pas présenter la CLI comme un moteur complet tant que ces flux ne sont pas réels.
+**Constaté** : `design init --extract`, `design build <feature>`, `design check --tech/--human`, `design align --tones/--spacing` et `design polish --motion/--essence` produisent des effets ou rapports déterministes réels. Les passes non déterministes (`build --propose/--promote/--global`, `polish --bolder/--quieter/--spark/--charm/--lucid`) sont marquées expérimentales et retournent `2` quand aucun artefact CLI n'est produit.
 
 | Phase | Item | Statut | Notes |
 |---|---|---|---|
 | P0 Contrat V1 | `design audit <target>`, aliases, codes retour, README/tests | 🟢 100% | binaire `design`, subcommand `audit`, wrapper skill aligne, `check --technical/--heuristics` testes, `--personas` refuse explicitement |
 | P1 Moteur statique | `packages/skills` API `audit`, CLI, JSON, jsdom | 🟢 100% | moteur compile et expose `AuditReport` |
-| P2 Ruleset initial | 10-15 règles depuis WP7 | 🟢 100% | 15 règles actives, token-aware, tracées `rule -> principle -> finding WP7`; dogfooding WP11 documenté |
+| P2 Ruleset initial | 25 règles depuis WP7 | 🟢 100% | 25 règles actives, token-aware, tracées `rule -> principle -> finding WP7`; dogfooding WP11 documenté |
 | P3 Knowledge base | `docs/principles/*` reliés aux règles | 🟢 85% | principes présents; chaque règle expose `principle`/`wp7Finding`; matrice WP8 mise à jour |
 | P4 Skill multi-harness | wrapper unique Claude/Codex/Gemini, zéro logique métier | 🟡 60% | skill local + script unique sur `design audit`; adapters Codex/Gemini à compléter |
 | P5 Distribution/CI/npm | lint CI, publication, règles token-aware | 🟢 90% | DS `0.8.0` + `@sentropic/design-system-skills@0.1.0` publiés via OIDC Trusted Publishing (provenance SLSA). Workflows `npm-publish.yml` (DS, tag `v*`) et `skills-publish.yml` (skills, tag `skills-v*`). |
@@ -225,17 +225,17 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 | Vue | Track | Finalite | Etat | Avancement | Detail |
 |---|---|---|---:|---:|---|
-| Fait | Scaffold moteur | Disposer d'un moteur local deterministe | 🟢 | 100% | `packages/skills`, API `audit`, CLI, 15 règles, build TypeScript. |
+| Fait | Scaffold moteur | Disposer d'un moteur local deterministe | 🟢 | 100% | `packages/skills`, API `audit`, CLI, 25 règles, build TypeScript. |
 | Fait | Knowledge base | Capturer les principes DS | 🟢 | 100% | `docs/principles/*` initialisés. |
 | Fait | Skill V1 | Exécuter le moteur depuis un harness agent | 🟡 | 85% | `tools/skills/sent-tech-skills/scripts/audit.mjs` appelle le contrat canonique. |
 | Fait | Alignement CLI/themes | Mapper les corrections CLI vers les vrais tokens publies | 🟢 | 100% | `design align --tones` remplace vers `--st-semantic-*`; les themes exportent `--st-foundation-*`; tests ajoutes. |
-| Fait | Ruleset | Passer de 7 à 10-15 règles initiales | 🟢 | 100% | 15 règles actives pilotées par `docs/ds-audit-consolidated-v2.md`; 41 tests skills verts. |
-| A faire | Promesse CLI | Nettoyer ou rendre reels `build`, `polish`, `init --extract`, `check --human` | 🟡 | 35% | Eviter les faux succes et la confusion avec la CLI Impeccable upstream. |
+| Fait | Ruleset | Passer de 7 à 25 règles initiales | 🟢 | 100% | 25 règles actives pilotées par `docs/ds-audit-consolidated-v2.md`; 64 tests skills verts. |
+| Fait | Promesse CLI | Nettoyer ou rendre reels `build`, `polish`, `init --extract`, `check --human` | 🟢 | 100% | `init --extract`, `build` craft, `check --human`, `polish --motion/--essence` sont concrets; passes agentiques non déterministes retournent `2`. |
 | Fait | Traçabilité | Lier règle, principe et finding WP7 | 🟢 | 100% | `Rule.principle` / `Rule.wp7Finding` obligatoires et documentés dans `docs/wp8-design-cli-traceability.md`. |
 | Fait | Release npm DS | Publier les 3 packages DS | 🟢 | 100% | `@sentropic/design-system-{tokens,themes,svelte}@0.8.0` publiés via OIDC + provenance (run `26422110851`). |
 | Fait | Release moteur `design` | Publier le module skills | 🟢 | 100% | `@sentropic/design-system-skills@0.1.0` publié (run `26476030707`) ; Trusted Publishing OIDC configuré (rhanka/sent-tech-design-system + skills-publish.yml) ; token bootstrap retiré et révoqué. |
 | Attendu | Contrat V1 | Même résultat quel que soit le harness | 🟢 | 100% | `stdout` JSON, `stderr` résumé, exit `0/1/2`, aucune logique métier wrapper. |
-| Attendu | Verite produit | Les commandes exposees doivent faire ce qu'elles annoncent | 🟡 | 50% | `audit/check --tech/align --tones` sont concrets; `build/polish/human` restent a durcir ou documenter comme experimentaux. |
+| Attendu | Verite produit | Les commandes exposees doivent faire ce qu'elles annoncent | 🟢 | 100% | Les commandes concrètes produisent des artefacts/rapports; les options agentiques sans artefact CLI sont documentées comme expérimentales et sortent en `2`. |
 
 **Dépendances** : P0/P1 autonomes. P2+ consomme WP7 et doit citer `docs/ds-audit-consolidated-v2.md`.
 **Parallélisable avec** : WP7 et tous les autres.
