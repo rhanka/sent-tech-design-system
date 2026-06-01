@@ -79,7 +79,7 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 | Inventaire couverture docs composants | 🟢 | — | 79 entrees catalogue = 79 exports publics Svelte hors `ThemeProvider`; 0 stub catalogue; garde `docs-navigation.test.ts`. |
 | Stubs P1 composants | 🟢 | — | Les routes dediees existent pour les composants precedemment restants: forms, navigation, overlays, feedback/data, layout. |
 | Exports absents du catalogue | 🟢 | — | Aucun export UI absent; `ThemeProvider` reste exclu intentionnellement (primitive infra). |
-| Backlog composants (gap DSFR/Carbon) | ⚪ | — | `docs/ds-component-gap-analysis.md` (2026-05-26). **P1** : Footer, Tile unitaire. **P2** : notification inline, tree view, skip links, sélecteur de langue, citation, highlight. P3 : patterns/primitives. Différenciateurs maison (charts, chat) hors couverture upstream — à garder |
+| Backlog composants (gap DSFR/Carbon) | 🟡 | — | Snapshot `docs/ds-component-gap-analysis.md` mis à jour 2026-06-01. P1/P2 fermés pour Footer, Tile, TreeView, SkipLink, LanguageSelector, Quote, Highlight. Reste backlog résiduel selon besoin produit : notification inline/actionable, table of contents, back-to-top, transcription, display settings, media content et patterns composites. |
 
 **Dependances** : aucune pour la couverture docs courante; WP6 retest cible consigne.
 **Parallelisable avec** : tous.
