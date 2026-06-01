@@ -28,6 +28,7 @@ jobs:
         run: |
           npm --workspace @sentropic/design-system-tokens run build
           npm --workspace @sentropic/design-system-themes run build
+          npm --workspace @sentropic/design-system-svelte run build
       - name: Verify React package
         run: |
           npm --workspace @sentropic/design-system-react run build
