@@ -11,7 +11,7 @@ Objectif : exécuter le ruleset WP8 sur des pages réelles de notre documentatio
 Périmètre audité :
 
 - Build statique complet : `npm run build`, sortie `apps/docs/build`.
-- 85 pages HTML réelles sous `apps/docs/build`, hors `404.html`.
+- 86 pages HTML réelles sous `apps/docs/build`, hors `404.html`.
 - Spot-check CLI : `node packages/skills/dist/cli.js check apps/docs/build/compare.html --tech`.
 - Agrégation full-site : API `audit({ kind: "file" })` sur chaque fichier HTML généré, avec le même `defaultRules`.
 
@@ -21,7 +21,7 @@ Le spot-check CLI retourne le code `0`. Sur `compare.html`, le résumé CLI est 
 
 | Mesure | Valeur |
 |---|---:|
-| Pages auditées | 85 |
+| Pages auditées | 86 |
 | Règles actives | 25 |
 | Findings totaux | 0 |
 | High | 0 |
