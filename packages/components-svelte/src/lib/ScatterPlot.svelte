@@ -12,6 +12,8 @@
 </script>
 
 <script lang="ts">
+  import ChartDataList from "./ChartDataList.svelte";
+
   type ScatterPlotProps = {
     data: ScatterPlotDatum[];
     width?: number;
@@ -95,51 +97,69 @@
     }));
   });
 
+  const dataValueItems = $derived(
+    data.map((d) => (d.label ? `${d.label}: x ${d.x}, y ${d.y}` : `x ${d.x}, y ${d.y}`))
+  );
+
+  function handleVisualPointerMove(event: PointerEvent) {
+    const target = event.target;
+    if (!(target instanceof Element)) {
+      hoveredIndex = null;
+      return;
+    }
+    const index = Number(target.getAttribute("data-chart-index"));
+    hoveredIndex = Number.isInteger(index) ? index : null;
+  }
+
   const classes = () => ["st-scatterPlot", className].filter(Boolean).join(" ");
 </script>
 
-<div class={classes()} role="img" aria-label={label}>
-  <svg viewBox="0 0 {width} {height}" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" focusable="false" aria-hidden="true">
-    <!-- gridlines + ticks Y -->
-    {#each scales.yTicks as t (t)}
-      {@const y = MARGIN.top + scaleLinear(t, scales.yMin, scales.yMax, scales.plotH, 0)}
-      <line class="st-scatterPlot__grid" x1={MARGIN.left} x2={width - MARGIN.right} y1={y} y2={y} />
-      <text class="st-scatterPlot__tick" x={MARGIN.left - 6} y={y} text-anchor="end" dominant-baseline="middle">{fmt(t)}</text>
-    {/each}
-    <!-- ticks X -->
-    {#each scales.xTicks as t (t)}
-      {@const x = MARGIN.left + scaleLinear(t, scales.xMin, scales.xMax, 0, scales.plotW)}
-      <text class="st-scatterPlot__tick" x={x} y={height - MARGIN.bottom + 16} text-anchor="middle">{fmt(t)}</text>
-    {/each}
+<div class={classes()}>
+  <div
+    class="st-scatterPlot__visual"
+    role="img"
+    aria-label={label}
+    onpointermove={handleVisualPointerMove}
+    onpointerleave={() => (hoveredIndex = null)}
+  >
+    <svg viewBox="0 0 {width} {height}" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" focusable="false" aria-hidden="true">
+      <!-- gridlines + ticks Y -->
+      {#each scales.yTicks as t (t)}
+        {@const y = MARGIN.top + scaleLinear(t, scales.yMin, scales.yMax, scales.plotH, 0)}
+        <line class="st-scatterPlot__grid" x1={MARGIN.left} x2={width - MARGIN.right} y1={y} y2={y} />
+        <text class="st-scatterPlot__tick" x={MARGIN.left - 6} y={y} text-anchor="end" dominant-baseline="middle">{fmt(t)}</text>
+      {/each}
+      <!-- ticks X -->
+      {#each scales.xTicks as t (t)}
+        {@const x = MARGIN.left + scaleLinear(t, scales.xMin, scales.xMax, 0, scales.plotW)}
+        <text class="st-scatterPlot__tick" x={x} y={height - MARGIN.bottom + 16} text-anchor="middle">{fmt(t)}</text>
+      {/each}
 
-    <!-- axes -->
-    <line class="st-scatterPlot__axis" x1={MARGIN.left} x2={MARGIN.left} y1={MARGIN.top} y2={height - MARGIN.bottom} />
-    <line class="st-scatterPlot__axis" x1={MARGIN.left} x2={width - MARGIN.right} y1={height - MARGIN.bottom} y2={height - MARGIN.bottom} />
+      <!-- axes -->
+      <line class="st-scatterPlot__axis" x1={MARGIN.left} x2={MARGIN.left} y1={MARGIN.top} y2={height - MARGIN.bottom} />
+      <line class="st-scatterPlot__axis" x1={MARGIN.left} x2={width - MARGIN.right} y1={height - MARGIN.bottom} y2={height - MARGIN.bottom} />
 
-    {#if xLabel}
-      <text class="st-scatterPlot__axisLabel" x={MARGIN.left + scales.plotW / 2} y={height - 4} text-anchor="middle">{xLabel}</text>
-    {/if}
-    {#if yLabel}
-      <text class="st-scatterPlot__axisLabel" x={12} y={MARGIN.top + scales.plotH / 2} text-anchor="middle" transform="rotate(-90 12 {MARGIN.top + scales.plotH / 2})">{yLabel}</text>
-    {/if}
+      {#if xLabel}
+        <text class="st-scatterPlot__axisLabel" x={MARGIN.left + scales.plotW / 2} y={height - 4} text-anchor="middle">{xLabel}</text>
+      {/if}
+      {#if yLabel}
+        <text class="st-scatterPlot__axisLabel" x={12} y={MARGIN.top + scales.plotH / 2} text-anchor="middle" transform="rotate(-90 12 {MARGIN.top + scales.plotH / 2})">{yLabel}</text>
+      {/if}
 
-    <!-- points -->
-    {#each points as p, i (i)}
-      <circle
-        class="st-scatterPlot__point st-scatterPlot__point--{p.tone}"
-        cx={p.cx}
-        cy={p.cy}
-        r={radius}
-        tabindex="0"
-        role="img"
-        aria-label="{p.datum.label ? p.datum.label + ': ' : ''}x {p.datum.x}, y {p.datum.y}"
-        onmouseenter={() => (hoveredIndex = i)}
-        onmouseleave={() => (hoveredIndex = null)}
-        onfocus={() => (hoveredIndex = i)}
-        onblur={() => (hoveredIndex = null)}
-      />
-    {/each}
-  </svg>
+      <!-- points -->
+      {#each points as p, i (i)}
+        <circle
+          class="st-scatterPlot__point st-scatterPlot__point--{p.tone}"
+          cx={p.cx}
+          cy={p.cy}
+          r={radius}
+          data-chart-index={i}
+        />
+      {/each}
+    </svg>
+  </div>
+
+  <ChartDataList {label} items={dataValueItems} />
 
   {#if hoveredIndex !== null && points[hoveredIndex]}
     {@const p = points[hoveredIndex]}
@@ -152,14 +172,13 @@
 
 <style>
   .st-scatterPlot { color: var(--st-semantic-text-secondary); display: block; font-family: inherit; position: relative; width: 100%; }
-  .st-scatterPlot svg { display: block; overflow: visible; }
+  .st-scatterPlot svg, .st-scatterPlot__visual { display: block; overflow: visible; }
   .st-scatterPlot__grid { stroke: var(--st-semantic-border-subtle); stroke-dasharray: 2 3; stroke-width: 1; opacity: 0.7; }
   .st-scatterPlot__axis { stroke: var(--st-semantic-border-subtle); stroke-width: 1; }
   .st-scatterPlot__tick { fill: var(--st-semantic-text-secondary); font-size: 0.6875rem; }
   .st-scatterPlot__axisLabel { fill: var(--st-semantic-text-secondary); font-size: 0.75rem; font-weight: 600; }
   .st-scatterPlot__point { cursor: pointer; fill-opacity: 0.85; transition: fill-opacity 120ms ease, r 120ms ease; }
-  .st-scatterPlot__point:hover, .st-scatterPlot__point:focus-visible { fill-opacity: 1; }
-  .st-scatterPlot__point:focus-visible { outline: 2px solid var(--st-semantic-border-interactive); outline-offset: 1px; }
+  .st-scatterPlot__point:hover { fill-opacity: 1; }
   .st-scatterPlot__point--category1 { fill: var(--st-semantic-data-category1); }
   .st-scatterPlot__point--category2 { fill: var(--st-semantic-data-category2); }
   .st-scatterPlot__point--category3 { fill: var(--st-semantic-data-category3); }

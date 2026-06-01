@@ -831,8 +831,8 @@ export const COMPONENTS: ComponentEntry[] = [
     status: "documented",
     category: "data",
     description: {
-      fr: "Nuage de points (deux axes numériques), tooltip, points focusables.",
-      en: "Scatter plot (two numeric axes), tooltip, focusable points."
+      fr: "Nuage de points (deux axes numériques), tooltip et liste de valeurs accessible.",
+      en: "Scatter plot (two numeric axes), tooltip and accessible value list."
     }
   },
   {

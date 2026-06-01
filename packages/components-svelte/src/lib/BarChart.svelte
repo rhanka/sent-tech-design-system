@@ -17,6 +17,8 @@
 </script>
 
 <script lang="ts">
+  import ChartDataList from "./ChartDataList.svelte";
+
   type BarChartProps = {
     data: BarChartDatum[];
     width?: number;
@@ -72,8 +74,6 @@
   }
 
   let hoveredIndex: number | null = $state(null);
-  let containerRect: { left: number; top: number } = $state({ left: 0, top: 0 });
-  let chartRoot: HTMLDivElement | null = $state(null);
 
   const scales = $derived.by(() => {
     const values = data.map((d) => d.value);
@@ -133,6 +133,8 @@
     });
   });
 
+  const dataValueItems = $derived(data.map((d) => `${d.label}: ${d.value}`));
+
   const valueAxisTicks = $derived.by(() => {
     const { ticks, domainMin, domainMax, plotWidth, plotHeight } = scales;
     if (orientation === "vertical") {
@@ -157,36 +159,38 @@
     }));
   });
 
-  function handleEnter(index: number, event: Event) {
-    hoveredIndex = index;
-    if (chartRoot) {
-      const r = chartRoot.getBoundingClientRect();
-      containerRect = { left: r.left, top: r.top };
-    }
-    event.stopPropagation();
-  }
-
   function handleLeave() {
     hoveredIndex = null;
+  }
+  function handleVisualPointerMove(event: PointerEvent) {
+    const target = event.target;
+    if (!(target instanceof Element)) {
+      hoveredIndex = null;
+      return;
+    }
+    const index = Number(target.getAttribute("data-chart-index"));
+    hoveredIndex = Number.isInteger(index) ? index : null;
   }
 
   const classes = () => ["st-barChart", className].filter(Boolean).join(" ");
 </script>
 
-<div
-  class={classes()}
-  role="img"
-  aria-label={label}
-  bind:this={chartRoot}
->
-  <svg
-    viewBox="0 0 {width} {height}"
-    preserveAspectRatio="xMidYMid meet"
-    width="100%"
-    height="100%"
-    focusable="false"
-    aria-hidden="true"
+<div class={classes()}>
+  <div
+    class="st-barChart__visual"
+    role="img"
+    aria-label={label}
+    onpointermove={handleVisualPointerMove}
+    onpointerleave={handleLeave}
   >
+    <svg
+      viewBox="0 0 {width} {height}"
+      preserveAspectRatio="xMidYMid meet"
+      width="100%"
+      height="100%"
+      focusable="false"
+      aria-hidden="true"
+    >
     <!-- gridlines + value axis ticks -->
     {#if orientation === "vertical"}
       {#each valueAxisTicks as tick (tick.value)}
@@ -276,16 +280,13 @@
         width={bar.width}
         height={bar.height}
         rx="2"
-        tabindex="0"
-        role="img"
-        aria-label="{bar.datum.label}: {bar.datum.value}"
-        onmouseenter={(e) => handleEnter(i, e)}
-        onmouseleave={handleLeave}
-        onfocus={(e) => handleEnter(i, e)}
-        onblur={handleLeave}
+        data-chart-index={i}
       />
     {/each}
-  </svg>
+    </svg>
+  </div>
+
+  <ChartDataList {label} items={dataValueItems} />
 
   {#if hoveredIndex !== null && bars[hoveredIndex]}
     {@const bar = bars[hoveredIndex]}
@@ -314,6 +315,10 @@
     overflow: visible;
   }
 
+  .st-barChart__visual {
+    display: block;
+  }
+
   .st-barChart__grid {
     stroke: var(--st-component-barChart-gridStroke, var(--st-semantic-border-subtle));
     stroke-dasharray: 2 3;
@@ -337,14 +342,8 @@
     transition: opacity 120ms ease;
   }
 
-  .st-barChart__bar:hover,
-  .st-barChart__bar:focus-visible {
+  .st-barChart__bar:hover {
     opacity: 0.82;
-  }
-
-  .st-barChart__bar:focus-visible {
-    outline: 2px solid var(--st-semantic-border-interactive);
-    outline-offset: 1px;
   }
 
   .st-barChart__bar--category1 { fill: var(--st-semantic-data-category1); }
