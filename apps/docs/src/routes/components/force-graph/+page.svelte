@@ -82,7 +82,7 @@
     <p>
       Cliquez ou appuyez sur <kbd>Espace</kbd> / <kbd>Entrée</kbd> sur un nœud
       pour le sélectionner (highlight). Double-clic ou <kbd>Entrée</kbd> active
-      <code>onOpenEntity</code>. La position des nœuds reste stable — la
+      <code>onOpenEntity</code>. La position des nœuds reste stable, la
       simulation n'est <em>pas</em> relancée.
     </p>
     <div class="docs-graph-box">
@@ -100,7 +100,7 @@
     </div>
     <div class="docs-selection-status" aria-live="polite">
       {#if selectedIds.length === 0}
-        <span class="docs-selection-hint">Aucun nœud sélectionné — cliquez sur un nœud.</span>
+        <span class="docs-selection-hint">Aucun nœud sélectionné: cliquez sur un nœud.</span>
       {:else}
         <span>
           <strong>Sélectionné{selectedIds.length > 1 ? 's' : ''} :</strong>
@@ -135,8 +135,8 @@
         <tr><td><code>iterations</code></td><td><code>number</code></td><td><code>300</code></td></tr>
         <tr><td><code>selectedIds</code></td><td><code>string[]</code></td><td><code>[]</code></td></tr>
         <tr><td><code>focusId</code></td><td><code>string | null</code></td><td><code>null</code></td></tr>
-        <tr><td><code>onSelect</code></td><td><code>(id: string) =&gt; void</code></td><td>—</td></tr>
-        <tr><td><code>onOpenEntity</code></td><td><code>(id: string) =&gt; void</code></td><td>—</td></tr>
+        <tr><td><code>onSelect</code></td><td><code>(id: string) =&gt; void</code></td><td>N/A</td></tr>
+        <tr><td><code>onOpenEntity</code></td><td><code>(id: string) =&gt; void</code></td><td>N/A</td></tr>
       </tbody>
     </table>
     <p class="docs-demo-context">

@@ -115,7 +115,7 @@
         <tr><td><code>nextLabel</code></td><td><code>string</code></td><td><code>"Next"</code></td><td>{fr("Libellé du bouton suivant.", "Next button label.")}</td></tr>
         <tr><td><code>onpagechange</code></td><td><code>(page: number) => void</code></td><td><em>{fr("optionnel", "optional")}</em></td><td>{fr("Appelé avec la page demandée.", "Called with the requested page.")}</td></tr>
         <tr><td><code>class</code></td><td><code>string</code></td><td><em>{fr("optionnel", "optional")}</em></td><td>{fr("Classe(s) supplémentaire(s).", "Additional class(es).")}</td></tr>
-        <tr><td>{fr("Autres attributs", "Other attributes")}</td><td><code>HTMLAttributes&lt;HTMLElement&gt;</code></td><td>—</td><td>{fr("Propagés sur le <nav>.", "Spread onto the <nav>.")}</td></tr>
+        <tr><td>{fr("Autres attributs", "Other attributes")}</td><td><code>HTMLAttributes&lt;HTMLElement&gt;</code></td><td>N/A</td><td>{fr("Propagés sur le <nav>.", "Spread onto the <nav>.")}</td></tr>
       </tbody>
     </table>
   </section>

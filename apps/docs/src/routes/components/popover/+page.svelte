@@ -127,7 +127,7 @@
         <tr><td><code>trigger</code></td><td><code>Snippet</code></td><td><em>{fr("optionnel", "optional")}</em></td><td>{fr("Élément déclencheur, rendu dans l'hôte.", "Trigger element, rendered in the host.")}</td></tr>
         <tr><td><code>children</code></td><td><code>Snippet</code></td><td><em>{fr("optionnel", "optional")}</em></td><td>{fr("Contenu du panneau.", "Panel content.")}</td></tr>
         <tr><td><code>class</code></td><td><code>string</code></td><td><em>{fr("optionnel", "optional")}</em></td><td>{fr("Classe(s) sur le panneau.", "Class(es) on the panel.")}</td></tr>
-        <tr><td>{fr("Autres attributs", "Other attributes")}</td><td><code>HTMLAttributes&lt;HTMLElement&gt;</code></td><td>—</td><td>{fr("Propagés sur le <section> panneau.", "Spread onto the <section> panel.")}</td></tr>
+        <tr><td>{fr("Autres attributs", "Other attributes")}</td><td><code>HTMLAttributes&lt;HTMLElement&gt;</code></td><td>N/A</td><td>{fr("Propagés sur le <section> panneau.", "Spread onto the <section> panel.")}</td></tr>
       </tbody>
     </table>
   </section>

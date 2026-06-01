@@ -200,7 +200,7 @@
               {#each toolCalls() as toolCall}
                 <li>
                   <span>{toolCall.toolName}</span>
-                  <span> — {toolCall.status}</span>
+                  <span>: {toolCall.status}</span>
                 </li>
               {/each}
             </ul>

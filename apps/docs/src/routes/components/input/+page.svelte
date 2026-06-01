@@ -28,7 +28,7 @@
     <ul class="docs-list docs-list--plain">
       <li>{fr("Saisir une valeur courte sur une ligne : nom, e-mail, identifiant, URL.", "Capture a short single-line value: name, email, slug, URL.")}</li>
       <li>{fr("Pour un texte multi-ligne, utilisez Textarea ; pour un choix dans une liste, Select.", "For multi-line text use Textarea; for choosing from a list, Select.")}</li>
-      <li>{fr("Toujours fournir un libellé visible (prop label) — pas seulement un placeholder.", "Always provide a visible label (label prop) — not just a placeholder.")}</li>
+      <li>{fr("Toujours fournir un libellé visible (prop label), pas seulement un placeholder.", "Always provide a visible label (label prop), not just a placeholder.")}</li>
     </ul>
   </section>
 
@@ -51,7 +51,7 @@
       />
       <h3>{fr("Saisie liée (bind)", "Bound value (bind)")}</h3>
       <Input label={fr("Recherche", "Search")} bind:value={liveValue} placeholder={fr("Tapez…", "Type…")} />
-      <p class="docs-demo-note">{fr("Valeur courante", "Current value")}: <code>{liveValue || "—"}</code></p>
+      <p class="docs-demo-note">{fr("Valeur courante", "Current value")}: <code>{liveValue || fr("Aucune", "None")}</code></p>
       <h3>{fr("Désactivé", "Disabled")}</h3>
       <Input label={fr("Titre du projet", "Project title")} value={fr("Lecture seule", "Read-only")} disabled />
       <h3>{fr("Erreur", "Error")}</h3>
@@ -145,7 +145,7 @@
         <tr><td><code>size</code></td><td><code>"sm" | "md" | "lg"</code></td><td><code>"md"</code></td><td>{fr("Hauteur du contrôle.", "Control height.")}</td></tr>
         <tr><td><code>value</code></td><td><code>string | number | null</code></td><td><code>""</code></td><td>{fr("Valeur, bindable via bind:value.", "Value, bindable via bind:value.")}</td></tr>
         <tr><td><code>class</code></td><td><code>string</code></td><td><em>{fr("optionnel", "optional")}</em></td><td>{fr("Classe(s) ajoutée(s) au conteneur.", "Class(es) added to the container.")}</td></tr>
-        <tr><td>{fr("Autres attributs", "Other attributes")}</td><td><code>HTMLInputAttributes</code></td><td>—</td><td>{fr("Propagés sur l'<input> (type, placeholder, required, autocomplete…).", "Spread onto the <input> (type, placeholder, required, autocomplete…).")}</td></tr>
+        <tr><td>{fr("Autres attributs", "Other attributes")}</td><td><code>HTMLInputAttributes</code></td><td>N/A</td><td>{fr("Propagés sur l'<input> (type, placeholder, required, autocomplete…).", "Spread onto the <input> (type, placeholder, required, autocomplete…).")}</td></tr>
       </tbody>
     </table>
   </section>

@@ -43,7 +43,7 @@
   </section>
 
   <section class="docs-section">
-    <h2>{fr("Exemple — confirmation", "Example — confirmation")}</h2>
+    <h2>{fr("Exemple: confirmation", "Example: confirmation")}</h2>
     <p>{fr("Le bouton ouvre un dialogue avec titre, description et corps. Escape ou le bouton de fermeture le referment.", "The button opens a dialog with title, description, and body. Escape or the close button dismiss it.")}</p>
     <div class="docs-example docs-example--stack">
       <Button onclick={() => (confirmOpen = true)}>{fr("Ouvrir le dialogue", "Open dialog")}</Button>
@@ -60,7 +60,7 @@
   </section>
 
   <section class="docs-section">
-    <h2>{fr("Exemple — avec pied d'actions", "Example — with action footer")}</h2>
+    <h2>{fr("Exemple: avec pied d'actions", "Example: with action footer")}</h2>
     <p>{fr("Le snippet footer accueille les boutons d'action, alignés à droite.", "The footer snippet hosts action buttons, right-aligned.")}</p>
     <div class="docs-example docs-example--stack">
       <Button variant="secondary" onclick={() => (footerOpen = true)}>{fr("Ouvrir avec actions", "Open with actions")}</Button>
@@ -136,7 +136,7 @@
         <tr><td><code>children</code></td><td><code>Snippet</code></td><td><em>{fr("optionnel", "optional")}</em></td><td>{fr("Contenu du corps.", "Body content.")}</td></tr>
         <tr><td><code>footer</code></td><td><code>Snippet</code></td><td><em>{fr("optionnel", "optional")}</em></td><td>{fr("Zone d'actions en pied.", "Footer actions area.")}</td></tr>
         <tr><td><code>class</code></td><td><code>string</code></td><td><em>{fr("optionnel", "optional")}</em></td><td>{fr("Classe(s) sur le dialogue.", "Class(es) on the dialog.")}</td></tr>
-        <tr><td>{fr("Autres attributs", "Other attributes")}</td><td><code>HTMLAttributes&lt;HTMLElement&gt;</code></td><td>—</td><td>{fr("Propagés sur le <section> dialogue.", "Spread onto the <section> dialog.")}</td></tr>
+        <tr><td>{fr("Autres attributs", "Other attributes")}</td><td><code>HTMLAttributes&lt;HTMLElement&gt;</code></td><td>N/A</td><td>{fr("Propagés sur le <section> dialogue.", "Spread onto the <section> dialog.")}</td></tr>
       </tbody>
     </table>
   </section>

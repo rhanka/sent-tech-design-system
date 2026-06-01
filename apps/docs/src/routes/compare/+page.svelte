@@ -283,11 +283,11 @@
 
   // Libellés lisibles par clé (invariants entre thèmes).
   const ENTRY_LABELS: Record<string, string> = {
-    Button: "Button — primaire + secondaire",
-    ButtonDisabled: "Button — désactivé",
+    Button: "Button: primaire + secondaire",
+    ButtonDisabled: "Button: désactivé",
     Input: "Input",
-    InputError: "Input — erreur",
-    InputDisabled: "Input — désactivé",
+    InputError: "Input: erreur",
+    InputDisabled: "Input: désactivé",
     Textarea: "Textarea",
     Select: "Select",
     Search: "Search",
@@ -375,7 +375,7 @@
 
 <div class="cmp" id="cmp">
   <header class="cmp-head">
-    <h1>Banc de fidélité — notre DS mappé vs DS officiel</h1>
+    <h1>Banc de fidélité: notre DS mappé vs DS officiel</h1>
     <p>
       Thèmes importés uniquement. Pour chacun : <strong>notre composant mappé</strong> à gauche,
       le <strong>vrai composant officiel</strong> (CSS+markup d'origine, en iframe isolée) à droite.
@@ -470,7 +470,7 @@
               <iframe
                 class="cmp-frame"
                 style="width:{BENCH_WIDTH + 2 * IFRAME_PAD}px"
-                title="{theme.label} officiel — {entry.label}"
+                title="{theme.label} officiel: {entry.label}"
                 srcdoc={refDoc(theme.id, entry.key)}
               ></iframe>
             </div>

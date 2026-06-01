@@ -105,7 +105,7 @@
         <tr><td><code>label</code></td><td><code>string</code></td><td><code>"Loading"</code></td><td>{fr("Libellé visible et aria-label.", "Visible label and aria-label.")}</td></tr>
         <tr><td><code>variant</code></td><td><code>"spinner" | "skeleton"</code></td><td><code>"spinner"</code></td><td>{fr("Type d'indicateur affiché.", "Type of indicator displayed.")}</td></tr>
         <tr><td><code>class</code></td><td><code>string</code></td><td><em>{fr("optionnel", "optional")}</em></td><td>{fr("Classe(s) sur le conteneur.", "Class(es) on the container.")}</td></tr>
-        <tr><td>{fr("Autres attributs", "Other attributes")}</td><td><code>HTMLAttributes&lt;HTMLElement&gt;</code></td><td>—</td><td>{fr("Propagés sur le <section> conteneur.", "Spread onto the <section> container.")}</td></tr>
+        <tr><td>{fr("Autres attributs", "Other attributes")}</td><td><code>HTMLAttributes&lt;HTMLElement&gt;</code></td><td>N/A</td><td>{fr("Propagés sur le <section> conteneur.", "Spread onto the <section> container.")}</td></tr>
       </tbody>
     </table>
   </section>

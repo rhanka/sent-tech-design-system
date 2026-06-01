@@ -106,7 +106,7 @@
         <tr><td><code>placement</code></td><td><code>"top" | "bottom"</code></td><td><code>"top"</code></td><td>{fr("Position de la bulle par rapport au déclencheur.", "Bubble position relative to the trigger.")}</td></tr>
         <tr><td><code>children</code></td><td><code>Snippet</code></td><td><em>{fr("déclencheur", "trigger")}</em></td><td>{fr("L'élément qui déclenche le tooltip.", "The element that triggers the tooltip.")}</td></tr>
         <tr><td><code>class</code></td><td><code>string</code></td><td><em>{fr("optionnel", "optional")}</em></td><td>{fr("Classe(s) sur le conteneur.", "Class(es) on the container.")}</td></tr>
-        <tr><td>{fr("Autres attributs", "Other attributes")}</td><td><code>HTMLAttributes&lt;HTMLSpanElement&gt;</code></td><td>—</td><td>{fr("Propagés sur le <span> conteneur.", "Spread onto the container <span>.")}</td></tr>
+        <tr><td>{fr("Autres attributs", "Other attributes")}</td><td><code>HTMLAttributes&lt;HTMLSpanElement&gt;</code></td><td>N/A</td><td>{fr("Propagés sur le <span> conteneur.", "Spread onto the container <span>.")}</td></tr>
       </tbody>
     </table>
   </section>

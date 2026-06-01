@@ -19,8 +19,8 @@
     </div>
     <p>
       {fr(
-        "Panneau latéral coulissant pour un workflow secondaire — inspection, configuration, revue côte à côte — sans quitter l'écran courant. Il s'ouvre à droite (défaut) ou à gauche et garde le contexte visible derrière le fond.",
-        "Sliding side panel for a secondary workflow — inspection, configuration, side-by-side review — without leaving the current screen. It opens on the right (default) or left and keeps the context visible behind the backdrop."
+        "Panneau latéral coulissant pour un workflow secondaire : inspection, configuration, revue côte à côte, sans quitter l'écran courant. Il s'ouvre à droite (défaut) ou à gauche et garde le contexte visible derrière le fond.",
+        "Sliding side panel for a secondary workflow: inspection, configuration, side-by-side review, without leaving the current screen. It opens on the right (default) or left and keeps the context visible behind the backdrop."
       )}
     </p>
   </section>
@@ -147,7 +147,7 @@
         <tr><td><code>children</code></td><td><code>Snippet</code></td><td><em>{fr("optionnel", "optional")}</em></td><td>{fr("Contenu du corps.", "Body content.")}</td></tr>
         <tr><td><code>footer</code></td><td><code>Snippet</code></td><td><em>{fr("optionnel", "optional")}</em></td><td>{fr("Zone d'actions en pied.", "Footer actions area.")}</td></tr>
         <tr><td><code>class</code></td><td><code>string</code></td><td><em>{fr("optionnel", "optional")}</em></td><td>{fr("Classe(s) sur le panneau.", "Class(es) on the panel.")}</td></tr>
-        <tr><td>{fr("Autres attributs", "Other attributes")}</td><td><code>HTMLAttributes&lt;HTMLElement&gt;</code></td><td>—</td><td>{fr("Propagés sur le <aside> panneau.", "Spread onto the <aside> panel.")}</td></tr>
+        <tr><td>{fr("Autres attributs", "Other attributes")}</td><td><code>HTMLAttributes&lt;HTMLElement&gt;</code></td><td>N/A</td><td>{fr("Propagés sur le <aside> panneau.", "Spread onto the <aside> panel.")}</td></tr>
       </tbody>
     </table>
   </section>

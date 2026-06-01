@@ -98,7 +98,7 @@
     <!-- Panneau (a) : notre composant live -->
     <section class="ctrip__panel ctrip__panel--ours" aria-labelledby="ctrip-ours-label">
       <div class="ctrip__panel-header">
-        <span id="ctrip-ours-label" class="ctrip__panel-tag">Sentropic — {themeId}</span>
+        <span id="ctrip-ours-label" class="ctrip__panel-tag">Sentropic: {themeId}</span>
       </div>
       <div class="ctrip__panel-body">
         {#if liveSlot}
@@ -119,7 +119,7 @@
           <iframe
             class="ctrip__frame"
             style="width:{BENCH_WIDTH + 2 * IFRAME_PAD}px"
-            title="{themeLabel} officiel — {entry?.component ?? component} {entry?.scenario ?? scenarioId}"
+            title="{themeLabel} officiel: {entry?.component ?? component} {entry?.scenario ?? scenarioId}"
             srcdoc={refIframeSrc()}
           ></iframe>
         {:else}

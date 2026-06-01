@@ -124,7 +124,7 @@
         <tr><td><code>value</code></td><td><code>string | string[] | number | null</code></td><td><code>""</code></td><td>{fr("Valeur sélectionnée, bindable.", "Selected value, bindable.")}</td></tr>
         <tr><td><code>children</code></td><td><code>Snippet</code></td><td><em>{fr("options", "options")}</em></td><td>{fr("Les <option> du sélecteur.", "The select's <option> elements.")}</td></tr>
         <tr><td><code>class</code></td><td><code>string</code></td><td><em>{fr("optionnel", "optional")}</em></td><td>{fr("Classe(s) du conteneur.", "Container class(es).")}</td></tr>
-        <tr><td>{fr("Autres attributs", "Other attributes")}</td><td><code>HTMLSelectAttributes</code></td><td>—</td><td>{fr("Propagés sur le <select> (required, name, disabled…).", "Spread onto the <select> (required, name, disabled…).")}</td></tr>
+        <tr><td>{fr("Autres attributs", "Other attributes")}</td><td><code>HTMLSelectAttributes</code></td><td>N/A</td><td>{fr("Propagés sur le <select> (required, name, disabled…).", "Spread onto the <select> (required, name, disabled…).")}</td></tr>
       </tbody>
     </table>
   </section>

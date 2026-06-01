@@ -34,7 +34,7 @@
       <li>{fr("Soumettre un formulaire ou confirmer un dialogue.", "Submit a form or confirm a dialog.")}</li>
       <li>{fr("Déclencher une opération (enregistrer, publier, recalculer).", "Trigger an operation (save, publish, recompute).")}</li>
       <li>{fr("Une seule action primaire par zone : hiérarchisez avec secondary / ghost.", "A single primary action per zone: rank the rest with secondary / ghost.")}</li>
-      <li>{fr("Pour aller vers une page, préférez Link — pas un Button stylé en lien.", "To go to a page, prefer Link — not a Button styled as a link.")}</li>
+      <li>{fr("Pour aller vers une page, préférez Link plutôt qu'un Button stylé en lien.", "To go to a page, prefer Link rather than a Button styled as a link.")}</li>
     </ul>
   </section>
 
@@ -125,7 +125,7 @@
     <ul class="docs-list docs-list--plain">
       <li>{fr("Élément natif ", "Native ")}<code>&lt;button&gt;</code>{fr(" : focusable au clavier, activable avec Entrée et Espace.", " element: keyboard-focusable, activated with Enter and Space.")}</li>
       <li>{fr("Focus toujours visible via :focus-visible (outline 2px ou box-shadow selon le thème).", "Focus always visible via :focus-visible (2px outline or box-shadow depending on theme).")}</li>
-      <li>{fr("Un bouton sans texte (icône seule) doit recevoir un aria-label — sinon utilisez IconButton.", "An icon-only button must carry an aria-label — otherwise use IconButton.")}</li>
+      <li>{fr("Un bouton sans texte (icône seule) doit recevoir un aria-label ; sinon utilisez IconButton.", "An icon-only button must carry an aria-label; otherwise use IconButton.")}</li>
       <li>{fr("disabled retire le bouton de l'ordre de tabulation : ne placez pas d'info essentielle uniquement dessus.", "disabled removes the button from the tab order: don't put essential information only there.")}</li>
     </ul>
   </section>
@@ -165,7 +165,7 @@
         <tr><td><code>disabled</code></td><td><code>boolean</code></td><td><code>false</code></td><td>{fr("Désactive le bouton et le retire du focus.", "Disables the button and removes it from focus.")}</td></tr>
         <tr><td><code>class</code></td><td><code>string</code></td><td><em>{fr("optionnel", "optional")}</em></td><td>{fr("Classe(s) CSS supplémentaire(s).", "Additional CSS class(es).")}</td></tr>
         <tr><td><code>children</code></td><td><code>Snippet</code></td><td><em>{fr("libellé", "label")}</em></td><td>{fr("Contenu du bouton (texte / icône).", "Button content (text / icon).")}</td></tr>
-        <tr><td>{fr("Autres attributs", "Other attributes")}</td><td><code>HTMLButtonAttributes</code></td><td>—</td><td>{fr("Propagés sur l'élément <button> (onclick, aria-*, name…).", "Spread onto the <button> element (onclick, aria-*, name…).")}</td></tr>
+        <tr><td>{fr("Autres attributs", "Other attributes")}</td><td><code>HTMLButtonAttributes</code></td><td>N/A</td><td>{fr("Propagés sur l'élément <button> (onclick, aria-*, name…).", "Spread onto the <button> element (onclick, aria-*, name…).")}</td></tr>
       </tbody>
     </table>
   </section>

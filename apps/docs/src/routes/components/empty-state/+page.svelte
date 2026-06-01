@@ -15,8 +15,8 @@
     </div>
     <p>
       {fr(
-        "Bloc centré affiché quand une zone n'a pas encore de contenu : il explique pourquoi c'est vide et propose une action principale claire pour avancer. À distinguer d'une erreur — l'état vide est attendu et constructif.",
-        "Centered block shown when an area has no content yet: it explains why it is empty and offers a clear primary action to move forward. Distinct from an error — the empty state is expected and constructive."
+        "Bloc centré affiché quand une zone n'a pas encore de contenu : il explique pourquoi c'est vide et propose une action principale claire pour avancer. À distinguer d'une erreur : l'état vide est attendu et constructif.",
+        "Centered block shown when an area has no content yet: it explains why it is empty and offers a clear primary action to move forward. Distinct from an error: the empty state is expected and constructive."
       )}
     </p>
   </section>
@@ -133,7 +133,7 @@
         <tr><td><code>action</code></td><td><code>Snippet</code></td><td><em>{fr("optionnel", "optional")}</em></td><td>{fr("Zone d'action principale.", "Primary action area.")}</td></tr>
         <tr><td><code>children</code></td><td><code>Snippet</code></td><td><em>{fr("optionnel", "optional")}</em></td><td>{fr("Contenu libre entre message et action.", "Free content between message and action.")}</td></tr>
         <tr><td><code>class</code></td><td><code>string</code></td><td><em>{fr("optionnel", "optional")}</em></td><td>{fr("Classe(s) sur le conteneur.", "Class(es) on the container.")}</td></tr>
-        <tr><td>{fr("Autres attributs", "Other attributes")}</td><td><code>HTMLAttributes&lt;HTMLElement&gt;</code></td><td>—</td><td>{fr("Propagés sur le <section> conteneur.", "Spread onto the <section> container.")}</td></tr>
+        <tr><td>{fr("Autres attributs", "Other attributes")}</td><td><code>HTMLAttributes&lt;HTMLElement&gt;</code></td><td>N/A</td><td>{fr("Propagés sur le <section> conteneur.", "Spread onto the <section> container.")}</td></tr>
       </tbody>
     </table>
   </section>

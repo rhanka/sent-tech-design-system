@@ -68,7 +68,7 @@
         label={fr("Sections du projet", "Project sections")}
         onchange={(value) => (lastChanged = value)}
       />
-      <p class="docs-demo-note">onchange → <code>{lastChanged || "—"}</code></p>
+      <p class="docs-demo-note">onchange → <code>{lastChanged || "N/A"}</code></p>
     </div>
   </section>
 

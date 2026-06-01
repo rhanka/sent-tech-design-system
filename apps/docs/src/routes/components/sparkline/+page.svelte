@@ -122,17 +122,17 @@
         <div class="metric-card">
           <span class="metric-label">{text().tokensConsumed}</span>
           <span class="metric-value">8,2k</span>
-          <Sparkline data={trendUp} tone="success" width={140} height={32} area label={`${text().tokensConsumed} — ${text().week}`} />
+          <Sparkline data={trendUp} tone="success" width={140} height={32} area label={`${text().tokensConsumed}: ${text().week}`} />
         </div>
         <div class="metric-card">
           <span class="metric-label">{text().avgLatency}</span>
           <span class="metric-value">412 ms</span>
-          <Sparkline data={trendDown} tone="warning" width={140} height={32} area label={`${text().avgLatency} — ${text().week}`} />
+          <Sparkline data={trendDown} tone="warning" width={140} height={32} area label={`${text().avgLatency}: ${text().week}`} />
         </div>
         <div class="metric-card">
           <span class="metric-label">{text().successRate}</span>
           <span class="metric-value">98,4 %</span>
-          <Sparkline data={wobble} tone="neutral" width={140} height={32} label={`${text().successRate} — ${text().week}`} />
+          <Sparkline data={wobble} tone="neutral" width={140} height={32} label={`${text().successRate}: ${text().week}`} />
         </div>
       </div>
     </div>

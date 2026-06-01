@@ -101,7 +101,7 @@
         <Menu label={fr("Actions", "Actions")} items={actionItems} onselect={selectAction} />
       </MenuPopover>
       <p class="docs-demo-note">
-        {fr("Dernière action", "Last action")} : <code>{lastAction ?? "—"}</code>
+        {fr("Dernière action", "Last action")} : <code>{lastAction ?? fr("Aucune", "None")}</code>
       </p>
     </div>
 
@@ -189,7 +189,7 @@
     <ul class="docs-list docs-list--plain">
       <li>{fr("Déclencheur : élément externe référencé par la prop trigger (HTMLElement).", "Trigger: external element referenced by the trigger prop (HTMLElement).")}</li>
       <li>{fr("Panneau (.st-menuPopover, role=\"dialog\") : surface flottante positionnée en absolu.", "Panel (.st-menuPopover, role=\"dialog\"): floating surface, absolutely positioned.")}</li>
-      <li>{fr("Contenu : fourni via children — typiquement un Menu, dont il partage la surface visuelle.", "Content: supplied via children — typically a Menu, whose visual surface it shares.")}</li>
+      <li>{fr("Contenu : fourni via children, typiquement un Menu dont il partage la surface visuelle.", "Content: supplied via children, typically a Menu whose visual surface it shares.")}</li>
       <li>{fr("Modificateurs de placement (--bottom-start, --top-end…) et d'alignement (--alignEnd, --alignCenter).", "Placement modifiers (--bottom-start, --top-end…) and alignment ones (--alignEnd, --alignCenter).")}</li>
     </ul>
   </section>
@@ -240,7 +240,7 @@
         <tr><td><code>closeOnEscape</code></td><td><code>boolean</code></td><td><code>true</code></td><td>{fr("Ferme sur Escape.", "Closes on Escape.")}</td></tr>
         <tr><td><code>children</code></td><td><code>Snippet</code></td><td><em>{fr("optionnel", "optional")}</em></td><td>{fr("Contenu du panneau.", "Panel content.")}</td></tr>
         <tr><td><code>class</code></td><td><code>string</code></td><td><em>{fr("optionnel", "optional")}</em></td><td>{fr("Classe(s) sur le panneau.", "Class(es) on the panel.")}</td></tr>
-        <tr><td>{fr("Autres attributs", "Other attributes")}</td><td><code>HTMLAttributes&lt;HTMLDivElement&gt;</code></td><td>—</td><td>{fr("Propagés sur le <div> panneau.", "Spread onto the <div> panel.")}</td></tr>
+        <tr><td>{fr("Autres attributs", "Other attributes")}</td><td><code>HTMLAttributes&lt;HTMLDivElement&gt;</code></td><td>N/A</td><td>{fr("Propagés sur le <div> panneau.", "Spread onto the <div> panel.")}</td></tr>
       </tbody>
     </table>
     <p>
