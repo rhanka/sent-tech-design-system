@@ -44,8 +44,9 @@ en réf, hors colorimétrie). Cadrage à faire avec toi avant tout dev.
 Recadrage utilisateur : pas de widget custom, juste rendre le **natif** assez fonctionnel.
 Fait : `accent-color` (couleur de sélection) + **anneau de focus par stratégie d'anatomie**
 (outline DSFR / inset Carbon / ring base, mêmes vars qu'Input/Switch) + états `:disabled`
-(curseur + atténuation + label estompé) et `[aria-invalid]` (teinte erreur). Incohérence
-corrigée : Radio émettait `data-invalid` → désormais `aria-invalid` (comme Checkbox).
+(curseur + atténuation + label estompé) et état erreur. Checkbox garde `[aria-invalid]`;
+Radio utilise `data-invalid` sur le label pour éviter l'attribut ARIA non supporté sur le rôle radio
+individuel (le consommateur pose `aria-invalid` au niveau groupe si nécessaire).
 `.st-choice__box` mort retiré. 100% natif (a11y préservée), additif (fallbacks = rendu base).
 `verify` vert. *(L'état `indeterminate` natif reste géré par le consommateur via la prop DOM.)*
 
