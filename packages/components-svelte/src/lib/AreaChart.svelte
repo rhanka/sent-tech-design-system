@@ -16,6 +16,8 @@
 </script>
 
 <script lang="ts">
+  import ChartDataList from "./ChartDataList.svelte";
+
   type AreaChartProps = {
     data: (number | AreaChartDatum)[];
     width?: number;
@@ -84,6 +86,8 @@
       return d;
     });
   });
+
+  const dataValueItems = $derived(normalizedData.map((d) => `${d.x}: ${d.y}`));
 
   let hoveredIndex: number | null = $state(null);
 
@@ -197,11 +201,17 @@
     return entries;
   });
 
-  function handleEnter(i: number) {
-    hoveredIndex = i;
-  }
   function handleLeave() {
     hoveredIndex = null;
+  }
+  function handleVisualPointerMove(event: PointerEvent) {
+    const target = event.target;
+    if (!(target instanceof Element)) {
+      hoveredIndex = null;
+      return;
+    }
+    const index = Number(target.getAttribute("data-chart-index"));
+    hoveredIndex = Number.isInteger(index) ? index : null;
   }
 
   // Generates a unique gradient id to avoid conflicts when rendering multiple charts on the same page
@@ -213,15 +223,22 @@
     ["st-areaChart", `st-areaChart--${tone}`, className].filter(Boolean).join(" ");
 </script>
 
-<div class={classes()} role="img" aria-label={label}>
-  <svg
-    viewBox="0 0 {width} {height}"
-    preserveAspectRatio="xMidYMid meet"
-    width="100%"
-    height="100%"
-    focusable="false"
-    aria-hidden="true"
+<div class={classes()}>
+  <div
+    class="st-areaChart__visual"
+    role="img"
+    aria-label={label}
+    onpointermove={handleVisualPointerMove}
+    onpointerleave={handleLeave}
   >
+    <svg
+      viewBox="0 0 {width} {height}"
+      preserveAspectRatio="xMidYMid meet"
+      width="100%"
+      height="100%"
+      focusable="false"
+      aria-hidden="true"
+    >
     <defs>
       <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
         <stop offset="0%" stop-color="currentColor" stop-opacity="0.3" />
@@ -297,16 +314,13 @@
         cx={p.x}
         cy={p.y}
         r="4"
-        tabindex="0"
-        role="img"
-        aria-label="{p.datum.x}: {p.datum.y}"
-        onmouseenter={() => handleEnter(p.index)}
-        onmouseleave={handleLeave}
-        onfocus={() => handleEnter(p.index)}
-        onblur={handleLeave}
+        data-chart-index={p.index}
       />
     {/each}
-  </svg>
+    </svg>
+  </div>
+
+  <ChartDataList {label} items={dataValueItems} />
 
   {#if hoveredIndex !== null && points[hoveredIndex]}
     {@const p = points[hoveredIndex]}
@@ -344,6 +358,10 @@
     overflow: visible;
   }
 
+  .st-areaChart__visual {
+    display: block;
+  }
+
   .st-areaChart__grid {
     stroke: var(--st-component-areaChart-gridStroke, var(--st-semantic-border-subtle));
     stroke-dasharray: 2 3;
@@ -377,14 +395,8 @@
     transition: r 120ms ease;
   }
 
-  .st-areaChart__dot:hover,
-  .st-areaChart__dot:focus-visible {
+  .st-areaChart__dot:hover {
     r: 5.5;
-  }
-
-  .st-areaChart__dot:focus-visible {
-    outline: 2px solid var(--st-semantic-border-interactive);
-    outline-offset: 1px;
   }
 
   @media (prefers-reduced-motion: reduce) {

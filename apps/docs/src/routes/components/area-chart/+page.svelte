@@ -429,17 +429,17 @@
       <li>
         <strong>{#if locale.value === "fr"}Lecteurs d'écran{:else}Screen Readers{/if} :</strong> 
         {#if locale.value === "fr"}
-          Le conteneur possède un rôle <code>img</code> avec le libellé <code>label</code> fourni. Les cercles de données individuels possèdent également leur propre <code>aria-label</code> (ex. "Lun: 42") pour offrir une description alternative précise de chaque point.
+          Le rendu visuel possède un rôle <code>img</code> avec le libellé <code>label</code> fourni. Les valeurs détaillées sont exposées dans une liste accessible hors SVG (ex. "Lun: 42") pour offrir une description alternative précise de chaque point.
         {:else}
-          The main SVG container features an <code>img</code> role with the provided <code>label</code>. Individual data dots also have their own <code>aria-label</code> (e.g. "Lun: 42") to provide accurate text alternatives for each data point.
+          The visual rendering has an <code>img</code> role with the provided <code>label</code>. Detailed values are exposed in an accessible list outside the SVG (e.g. "Lun: 42") to provide accurate text alternatives for each data point.
         {/if}
       </li>
       <li>
         <strong>{#if locale.value === "fr"}Navigation au clavier{:else}Keyboard Navigation{/if} :</strong> 
         {#if locale.value === "fr"}
-          Chaque point est navigable au clavier grâce à un attribut <code>tabindex="0"</code>. L'infobulle d'information s'affiche automatiquement lorsque le point reçoit le focus (<code>focus-visible</code>), avec un indicateur visuel de focus conforme aux normes de contraste.
+          Le graphique évite les arrêts de tabulation par point. Les lecteurs d'écran parcourent la liste de valeurs, tandis que l'infobulle reste réservée au survol visuel.
         {:else}
-          Every data point is focusable via keyboard navigation with <code>tabindex="0"</code>. The detailed tooltip automatically displays when a point receives focus (<code>focus-visible</code>), utilizing a high-contrast focus indicator ring.
+          The chart avoids one tab stop per point. Screen readers can browse the value list, while the tooltip stays reserved for visual hover.
         {/if}
       </li>
       <li>

@@ -21,10 +21,10 @@ describe("AreaChart", () => {
     });
 
     // Check SVG container and role
-    const wrapper = screen.getByRole("img", { name: "Ventes mensuelles" });
-    expect(wrapper).toBeTruthy();
-    expect(wrapper.className).toContain("st-areaChart");
-    expect(wrapper.className).toContain("st-areaChart--category1");
+    expect(screen.getByRole("img", { name: "Ventes mensuelles" })).toBeTruthy();
+    const wrapper = container.querySelector(".st-areaChart");
+    expect(wrapper?.className).toContain("st-areaChart");
+    expect(wrapper?.className).toContain("st-areaChart--category1");
 
     // Check lines and area path
     const svg = container.querySelector("svg");
@@ -55,8 +55,9 @@ describe("AreaChart", () => {
       }
     });
 
-    const wrapper = screen.getByRole("img", { name: "Performance" });
-    expect(wrapper.className).toContain("st-areaChart--category3");
+    expect(screen.getByRole("img", { name: "Performance" })).toBeTruthy();
+    const wrapper = container.querySelector(".st-areaChart");
+    expect(wrapper?.className).toContain("st-areaChart--category3");
 
     // Check X axis tick labels
     expect(screen.getByText("Jan")).toBeTruthy();
@@ -81,7 +82,7 @@ describe("AreaChart", () => {
 
     // Hover the second point (Feb: 200)
     const dots = container.querySelectorAll(".st-areaChart__dot");
-    await fireEvent.mouseEnter(dots[1]);
+    await fireEvent.pointerMove(dots[1]);
 
     // Tooltip should be visible now
     const tooltip = screen.getByRole("presentation");
@@ -89,15 +90,14 @@ describe("AreaChart", () => {
     expect(screen.getAllByText("Feb").length).toBeGreaterThan(0);
     expect(screen.getAllByText("200").length).toBeGreaterThan(0);
 
-    // Move focus/hover to another point (Mar: 150)
-    await fireEvent.mouseLeave(dots[1]);
-    await fireEvent.focus(dots[2]);
+    // Move hover to another point (Mar: 150)
+    await fireEvent.pointerMove(dots[2]);
 
     expect(screen.getAllByText("Mar").length).toBeGreaterThan(0);
     expect(screen.getAllByText("150").length).toBeGreaterThan(0);
 
-    // Remove focus/hover
-    await fireEvent.blur(dots[2]);
+    // Remove hover
+    await fireEvent.pointerLeave(container.querySelector(".st-areaChart__visual") as Element);
     expect(screen.queryByRole("presentation")).toBeNull();
   });
 });

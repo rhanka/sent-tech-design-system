@@ -6,7 +6,7 @@
   const copy = {
     fr: {
       intro:
-        "Graphique en ligne pour visualiser une série temporelle ou numérique. Axe X ordinal (libellés) ou numérique (échelle linéaire), lissage Bézier optionnel, remplissage d’aire optionnel, tons sémantiques et infobulle au survol/focus.",
+        "Graphique en ligne pour visualiser une série temporelle ou numérique. Axe X ordinal (libellés) ou numérique (échelle linéaire), lissage Bézier optionnel, remplissage d’aire optionnel, tons sémantiques, infobulle au survol et liste de valeurs accessible.",
       simpleTitle: "Ligne simple",
       simpleDesc: "Série hebdomadaire avec axe X ordinal.",
       smoothTitle: "Lissage + aire",
@@ -15,7 +15,7 @@
       numericDesc: "Quand tous les `x` sont des nombres, l’axe utilise une échelle linéaire et n’affiche qu’une sélection de graduations.",
       usageTitle: "Notes d’usage",
       usageNote1:
-        "`label` est obligatoire : il alimente l’`aria-label` du conteneur (`role=\"img\"`). Chaque point expose aussi son `aria-label` « x : y » et est focusable au clavier.",
+        "`label` est obligatoire : il alimente l’`aria-label` du conteneur (`role=\"img\"`). Les couples `x : y` sont exposés dans une liste accessible hors SVG, sans multiplier les arrêts de tabulation.",
       usageNote2:
         "L’axe Y est rembourré (~8 %) autour des valeurs et utilise des graduations « nice » ; le domaine ne force pas le zéro.",
       usageNote3:
@@ -23,7 +23,7 @@
     },
     en: {
       intro:
-        "Line chart for a temporal or numeric series. Ordinal X axis (labels) or numeric X axis (linear scale), optional Bezier smoothing, optional area fill, semantic tones, and a hover/focus tooltip.",
+        "Line chart for a temporal or numeric series. Ordinal X axis (labels) or numeric X axis (linear scale), optional Bezier smoothing, optional area fill, semantic tones, a hover tooltip, and an accessible value list.",
       simpleTitle: "Simple line",
       simpleDesc: "Weekly series with an ordinal X axis.",
       smoothTitle: "Smoothing + area",
@@ -32,7 +32,7 @@
       numericDesc: "When every `x` is a number, the axis uses a linear scale and renders only a subset of ticks.",
       usageTitle: "Usage notes",
       usageNote1:
-        "`label` is required: it feeds the container `aria-label` (`role=\"img\"`). Each point also exposes its `aria-label` \"x: y\" and is keyboard focusable.",
+        "`label` is required: it feeds the container `aria-label` (`role=\"img\"`). The `x: y` pairs are exposed in an accessible list outside the SVG, without adding a tab stop for every point.",
       usageNote2:
         "The Y axis is padded (~8%) around values and uses nice ticks; the domain does not force zero.",
       usageNote3:
