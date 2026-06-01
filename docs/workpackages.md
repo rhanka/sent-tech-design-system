@@ -242,7 +242,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 ## WP9 — Surface Chat / Agent (re-scope + bug d'alignement)
 
-**Statut global** : 🟢 livré (2026-05-27) — topic dédié, reasoning ajouté + **démo docs reasoning**. Reste : publication npm (→ D1). Input auto-resize : présent ; alignement chat-ui = D2.
+**Statut global** : 🟢 livré et intégré à la ligne Svelte `0.10.3` — topic dédié, reasoning ajouté + **démo docs reasoning**. Input auto-resize : présent ; alignement chat-ui couvert par les primitives existantes.
 
 **Décidé 2026-05-26** : sortir le chat du topic « Formulaire » et créer un topic dédié **« Chat » / « Agent »** dans le catalogue docs. Réaligner les notions du domaine agentique.
 
@@ -251,7 +251,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 | Topic catalogue « Chat & Agent » | 🟢 | Catégorie `chat` créée ; 6 composants déplacés hors form/action (`21334b5`) |
 | Input chat multiligne auto-resize | 🟢 | `ChatComposer` le faisait déjà (autosize, Enter/Shift+Enter, cap maxRows + scroll) — vérifié |
 | Réalignement notions agentiques | 🟢 | **reasoning ajouté** à StreamingMessage (`reasoning.delta`/`completed` + bloc repliable) ; streaming + tool calling (tool.*/permission/checkpoint) déjà présents (`83d3449`) |
-| Page docs dédiée + démo reasoning | 🟢 | Page `streaming-message` documentée avec démo reasoning + tool + permission ; publication npm reste D1 |
+| Page docs dédiée + démo reasoning | 🟢 | Page `streaming-message` documentée avec démo reasoning + tool + permission ; exports `StreamingMessageEvent`/modes présents dans le package Svelte publié |
 
 **Dépendances** : WP4 (primitives existantes) ; WP2 (catégorisation catalogue).
 **Parallélisable avec** : WP10, WP12.
@@ -392,7 +392,7 @@ A tout instant on peut tenir 3 a 4 agents en parallele sans conflit de fichiers.
 
 1. **WP10 thème Airbus** — Codex owner : continuer le mapping theme/anatomie depuis `../airbus-design-system`, puis brancher la fidélité visuelle.
 2. **WP13 DS React** — cadrage Codex uniquement pour l'instant : état des lieux, contrat MVP, pas de scaffold avant coordination h2a.
-3. **WP9 Chat/Agent** — bug le plus visible : sortir le chat du formulaire, topic dédié, input multiligne, réalignement streaming/reasoning/tool-calling.
+3. **WP9 Chat/Agent** — fermé : topic dédié, input multiligne, streaming/reasoning/tool-calling et package Svelte `0.10.3` alignés.
 4. **WP10 theming via `design`** — appliquer DS Sentropic + mapper DS tiers → thèmes ; livrer `theme-dsfr` + `theme-carbon`. **Explicitement avant WP7.**
 5. **WP6 fix-plan** — retest visuel Playwright overlays + plan-completion (débloque la re-passe WP2).
 6. **WP11 dogfooding** — moteur publié sur notre propre site (complément WP7).
@@ -403,7 +403,7 @@ A tout instant on peut tenir 3 a 4 agents en parallele sans conflit de fichiers.
 
 1. **WP12** : les templates docs / slides relèvent-ils du périmètre DS ? format de sortie (HTML / Slidev / pptx) ?
 2. **WP10** ✅ tranché (2026-05-31) : le **port Airbus est committable** (jugé non confidentiel), package public-ready **non publié npm**, présent dans le switcher docs. Les logos chrome Airbus utilisés par la doc sont désormais versionnés; les CSS/références privées futures restent hors-git tant que leur redistribution n'est pas validée (idem futurs Scalian/CGI).
-3. **WP9** : faut-il de nouvelles primitives (ReasoningBlock, ToolCall) ou enrichir les existantes ?
+3. **WP9** ✅ tranché (2026-06-01) : enrichissement de `StreamingMessage` retenu pour reasoning/tool/permission ; pas de nouvelles primitives dédiées à ce stade.
 4. **WP13** ✅ tranché (2026-05-31) : **couverture large** — port complet des exports publics, **composants React purs** (pas de dép headless), package intégré sur `main`; surface docs React et release workflow dédiés intégrés.
 5. WP8 : adapters multi-harness (`.codex` / `.gemini`) — implémenter ou rester en wrapper unique.
 
