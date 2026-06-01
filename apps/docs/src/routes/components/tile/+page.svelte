@@ -21,7 +21,7 @@
     </p>
   </section>
 
-  <section class="docs-section">
+  <section class="docs-section" id="tile">
     <h2>Variantes</h2>
     <div class="docs-tile-grid">
       <Tile variant="static" title="Statique" description="Conteneur de présentation, non interactif." />
