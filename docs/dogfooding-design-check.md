@@ -72,5 +72,5 @@ Lecture : les deux dettes basses remontées par les nouvelles règles (`h1-inlin
 ## Limites
 
 - L'audit est statique via `jsdom`; il ne remplace pas une passe navigateur avec styles calculés et viewports.
-- Les warnings Svelte restants du build portent sur les charts SVG focusables, les slots Svelte legacy de `ChatComposer` et deux sélecteurs CSS inutilisés; les warnings d'ancres manquantes et `aria-invalid` sur `Radio` ne se reproduisent plus.
+- Les warnings Svelte restants du build portent sur les charts SVG focusables et les slots Svelte legacy de `ChatComposer`; les warnings d'ancres manquantes, `aria-invalid` sur `Radio` et sélecteurs CSS inutilisés ne se reproduisent plus.
 - Les fichiers générés `apps/docs/build/**` ne sont pas versionnés dans ce rapport.
