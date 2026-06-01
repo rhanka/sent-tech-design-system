@@ -75,7 +75,7 @@
         ]}
         onselect={(value) => (plan = value)}
       />
-      <p class="docs-demo-note">{fr("Sélection", "Selection")} : <code>{plan ?? "—"}</code></p>
+      <p class="docs-demo-note">{fr("Sélection", "Selection")} : <code>{plan ?? "N/A"}</code></p>
     </div>
   </section>
 
@@ -134,7 +134,7 @@
         <tr><td><code>open</code></td><td><code>boolean</code></td><td><code>false</code></td><td>{fr("Ouvre la liste à l'initialisation.", "Opens the list on init.")}</td></tr>
         <tr><td><code>onselect</code></td><td><code>(value: string) =&gt; void</code></td><td><em>{fr("optionnel", "optional")}</em></td><td>{fr("Appelé avec la valeur choisie.", "Called with the chosen value.")}</td></tr>
         <tr><td><code>class</code></td><td><code>string</code></td><td><em>{fr("optionnel", "optional")}</em></td><td>{fr("Classe(s) sur le conteneur.", "Class(es) on the container.")}</td></tr>
-        <tr><td>{fr("Autres attributs", "Other attributes")}</td><td><code>HTMLAttributes&lt;HTMLDivElement&gt;</code></td><td>—</td><td>{fr("Propagés sur le <div> conteneur.", "Spread onto the <div> container.")}</td></tr>
+        <tr><td>{fr("Autres attributs", "Other attributes")}</td><td><code>HTMLAttributes&lt;HTMLDivElement&gt;</code></td><td>N/A</td><td>{fr("Propagés sur le <div> conteneur.", "Spread onto the <div> container.")}</td></tr>
       </tbody>
     </table>
   </section>

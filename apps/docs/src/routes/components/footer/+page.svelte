@@ -38,7 +38,7 @@
     <p>
       Le composant <code>Footer</code> fournit la structure du pied de page applicatif
       (région <code>contentinfo</code>) : marque, colonnes de liens, copyright et liens
-      légaux. Comme <code>Header</code>, il est piloté par slots — le contenu est injecté
+      légaux. Comme <code>Header</code>, il est piloté par slots : le contenu est injecté
       par le parent. Complète l'app shell (Header + Footer).
     </p>
   </section>

@@ -345,7 +345,7 @@
             r={p.r}
             tabindex="0"
             role="button"
-            aria-label="{p.title}{p.node.group !== undefined ? ` — ${p.node.group}` : ''}"
+            aria-label="{p.title}{p.node.group !== undefined ? `: ${p.node.group}` : ''}"
             aria-pressed={selectedSet.has(p.node.id)}
             onmouseenter={() => (hoveredIndex = p.i)}
             onmouseleave={() => (hoveredIndex = null)}

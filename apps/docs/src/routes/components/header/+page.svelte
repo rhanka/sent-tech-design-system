@@ -78,8 +78,8 @@
     <p>
       Le composant <code>Header</code> compose l'en-tête applicatif complet : marque
       (logo + titre), navigation primaire, actions utilitaires et zone compte. La zone
-      compte gère nativement les trois états d'identité — anonyme, connecté avec photo,
-      connecté avec initiales — et garantit qu'une identité connectée affiche
+      compte gère nativement les trois états d'identité : anonyme, connecté avec photo,
+      connecté avec initiales. Une identité connectée affiche
       <strong>toujours le nom</strong> (jamais un carré sans libellé).
     </p>
   </section>
@@ -120,7 +120,7 @@
     </p>
     <div class="docs-demo-stack">
       <article class="docs-demo-block">
-        <h3>1. Anonyme — appel à la connexion</h3>
+        <h3>1. Anonyme: appel à la connexion</h3>
         <p class="docs-demo-context">
           Aucune identité n'est fournie (<code>account</code> absent). Le Header affiche un
           CTA explicite « Se connecter » via <code>onSignIn</code> / <code>signInLabel</code>,
@@ -325,7 +325,7 @@
         <tr>
           <td>Autres attributs</td>
           <td><code>HTMLAttributes&lt;HTMLElement&gt;</code></td>
-          <td>—</td>
+          <td>N/A</td>
           <td>Propagés sur l'élément <code>&lt;header&gt;</code>.</td>
         </tr>
       </tbody>

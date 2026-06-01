@@ -6,7 +6,7 @@
 
   const fr = (frText: string, enText: string) => (locale.value === "fr" ? frText : enText);
 
-  let lastAction = $state("—");
+  let lastAction = $state("N/A");
 
   const actionItems = [
     { kind: "group" as const, label: fr("Édition", "Edit") },
@@ -133,7 +133,7 @@
         <tr><td><code>dense</code></td><td><code>boolean</code></td><td><code>false</code></td><td>{fr("Réduit la hauteur des items.", "Reduces item height.")}</td></tr>
         <tr><td><code>onselect</code></td><td><code>(value: string) =&gt; void</code></td><td><em>{fr("optionnel", "optional")}</em></td><td>{fr("Appelé avec la valeur de l'item choisi.", "Called with the chosen item's value.")}</td></tr>
         <tr><td><code>class</code></td><td><code>string</code></td><td><em>{fr("optionnel", "optional")}</em></td><td>{fr("Classe(s) sur le conteneur.", "Class(es) on the container.")}</td></tr>
-        <tr><td>{fr("Autres attributs", "Other attributes")}</td><td><code>HTMLAttributes&lt;HTMLDivElement&gt;</code></td><td>—</td><td>{fr("Propagés sur le <div> conteneur.", "Spread onto the <div> container.")}</td></tr>
+        <tr><td>{fr("Autres attributs", "Other attributes")}</td><td><code>HTMLAttributes&lt;HTMLDivElement&gt;</code></td><td>N/A</td><td>{fr("Propagés sur le <div> conteneur.", "Spread onto the <div> container.")}</td></tr>
       </tbody>
     </table>
     <p>{fr("Un item (MenuActionItem) accepte : ", "An item (MenuActionItem) accepts: ")}<code>label</code>, <code>value</code>, <code>icon?</code>, <code>disabled?</code>, <code>danger?</code>. {fr("Un MenuGroupItem porte ", "A MenuGroupItem carries ")}<code>kind: "group"</code> {fr("et", "and")} <code>label</code> ; {fr("un MenuDividerItem porte ", "a MenuDividerItem carries ")}<code>kind: "divider"</code>.</p>

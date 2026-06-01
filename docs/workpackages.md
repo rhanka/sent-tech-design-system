@@ -291,15 +291,15 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 ## WP11 — Dogfooding du moteur publié (complément WP7)
 
-**Statut global** : 🟢 passage WP11 consigné (2026-06-01), corrections de dette à traiter par WP2/WP6/WP7.
+**Statut global** : 🟢 passage WP11 consigné et fermé (2026-06-01), audit full-site à 0 finding sur le build docs.
 
 **Décidé 2026-05-26** : utiliser le package **publié** `@sentropic/design-system-skills` pour auditer/aligner **notre propre repo et site** (dogfooding). Complète WP7 par une boucle réelle « le moteur sur lui-même ».
 
 | Item | Statut | Notes |
 |---|---|---|
 | Installer la lib publiée si nécessaire | 🟢 | Workspace local utilisé; package publié `@sentropic/design-system-skills@0.1.0` déjà disponible. |
-| `design check` sur le site/docs DS | 🟢 | Build docs courant audité: 85 pages, 25 règles, 60 findings après corrections `h1-inline-badge`, `status-indicator-label`, `line-length-cap`, déduplication `no-em-dash`, précision `no-bare-hex` et `single-font`; voir `docs/dogfooding-design-check.md`. |
-| Boucler findings → corrections | 🟡 | Dette prioritaire restante: `no-em-dash` 60; `single-font`, `no-bare-hex`, `h1-inline-badge`, `status-indicator-label` et `line-length-cap` ramenés à 0. |
+| `design check` sur le site/docs DS | 🟢 | Build docs courant audité: 85 pages, 25 règles, 0 finding après corrections `h1-inline-badge`, `status-indicator-label`, `line-length-cap`, déduplication `no-em-dash`, précision `no-bare-hex`, `single-font` et copy docs; voir `docs/dogfooding-design-check.md`. |
+| Boucler findings → corrections | 🟢 | Dette prioritaire `no-em-dash` 60 → 0; `single-font`, `no-bare-hex`, `h1-inline-badge`, `status-indicator-label` et `line-length-cap` restent à 0. |
 
 **Dépendances** : WP8 (package publié).
 **Parallélisable avec** : tous.

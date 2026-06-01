@@ -110,7 +110,7 @@
         <tr><td><code>helperText</code></td><td><code>string</code></td><td><em>{fr("optionnel", "optional")}</em></td><td>{fr("Texte d'aide sous le libellé.", "Helper text below the label.")}</td></tr>
         <tr><td><code>invalid</code></td><td><code>boolean</code></td><td><code>false</code></td><td>{fr("Active l'état erreur visuel du radio.", "Triggers the radio visual error state.")}</td></tr>
         <tr><td><code>class</code></td><td><code>string</code></td><td><em>{fr("optionnel", "optional")}</em></td><td>{fr("Classe(s) sur le <label>.", "Class(es) on the <label>.")}</td></tr>
-        <tr><td>{fr("Autres attributs", "Other attributes")}</td><td><code>HTMLInputAttributes</code></td><td>—</td><td>{fr("Propagés sur l'<input> (name, value, checked, disabled…).", "Spread onto the <input> (name, value, checked, disabled…).")}</td></tr>
+        <tr><td>{fr("Autres attributs", "Other attributes")}</td><td><code>HTMLInputAttributes</code></td><td>N/A</td><td>{fr("Propagés sur l'<input> (name, value, checked, disabled…).", "Spread onto the <input> (name, value, checked, disabled…).")}</td></tr>
       </tbody>
     </table>
   </section>

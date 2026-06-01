@@ -6,7 +6,7 @@ Moteur : `@sentropic/design-system-skills` local, 25 règles actives
 
 ## Cadrage
 
-Objectif : exécuter le ruleset WP8 sur des pages réelles de notre documentation générée, puis consigner les résultats sans modifier les pages `apps/docs`.
+Objectif : exécuter le ruleset WP8 sur des pages réelles de notre documentation générée, corriger les dettes exploitables, puis consigner le résultat sur la sortie statique.
 
 Périmètre audité :
 
@@ -15,7 +15,7 @@ Périmètre audité :
 - Spot-check CLI : `node packages/skills/dist/cli.js check apps/docs/build/compare.html --tech`.
 - Agrégation full-site : API `audit({ kind: "file" })` sur chaque fichier HTML généré, avec le même `defaultRules`.
 
-Le spot-check CLI retourne le code `1`, attendu parce que des findings sont présents. Sur `compare.html`, le résumé CLI est : 13 findings, `high:13 medium:0 low:0`, `score:48/100`.
+Le spot-check CLI retourne le code `0`. Sur `compare.html`, le résumé CLI est : 0 finding, `high:0 medium:0 low:0`, `score:100/100`.
 
 ## Résultat global
 
@@ -23,8 +23,8 @@ Le spot-check CLI retourne le code `1`, attendu parce que des findings sont pré
 |---|---:|
 | Pages auditées | 85 |
 | Règles actives | 25 |
-| Findings totaux | 60 |
-| High | 60 |
+| Findings totaux | 0 |
+| High | 0 |
 | Medium | 0 |
 | Low | 0 |
 
@@ -32,41 +32,31 @@ Le spot-check CLI retourne le code `1`, attendu parce que des findings sont pré
 
 | Règle | Findings |
 |---|---:|
-| `no-em-dash` | 60 |
-| 24 autres règles actives | 0 |
+| 25 règles actives | 0 |
 
-Lecture : les deux dettes basses remontées par les nouvelles règles (`h1-inline-badge`, `status-indicator-label`) restent à 0 sur le build docs, les faux positifs `line-length-cap` sont fermés par la lecture des stylesheets liés locaux, `no-em-dash` ne duplique plus les ancêtres des nœuds de texte fautifs, `no-bare-hex` ignore les déclarations/fallbacks tokenisés (`--*`, `var(...)`) et `single-font` ignore `@font-face` tout en lisant les stylesheets liés locaux. Les findings restants sont les tirets cadratins de microcopy.
+Lecture : les deux dettes basses remontées par les nouvelles règles (`h1-inline-badge`, `status-indicator-label`) restent à 0 sur le build docs, les faux positifs `line-length-cap` sont fermés par la lecture des stylesheets liés locaux, `no-em-dash` ne duplique plus les ancêtres des nœuds de texte fautifs, `no-bare-hex` ignore les déclarations/fallbacks tokenisés (`--*`, `var(...)`) et `single-font` ignore `@font-face` tout en lisant les stylesheets liés locaux. La dette éditoriale `no-em-dash` détectée sur 60 occurrences est corrigée dans les pages docs et le build package Svelte consommé par la doc.
 
 ## Pages les plus signalées
 
 | Page | Findings | Règles dominantes |
 |---|---:|---|
-| `compare.html` | 13 | `no-em-dash` 13 |
-| `components/force-graph.html` | 4 | `no-em-dash` 4 |
-| `components/button.html` | 3 | `no-em-dash` 3 |
-| `components/header.html` | 3 | `no-em-dash` 3 |
-| `components/input.html` | 3 | `no-em-dash` 3 |
-| `components/menu-popover.html` | 3 | `no-em-dash` 3 |
-| `components/modal.html` | 3 | `no-em-dash` 3 |
-| `components/drawer.html` | 2 | `no-em-dash` 2 |
-| `components/dropdown.html` | 2 | `no-em-dash` 2 |
-| `components/empty-state.html` | 2 | `no-em-dash` 2 |
+| Aucune | 0 | Aucune |
 
 ## Exemples de findings
 
 | Page | Règle | Localisation | Message |
 |---|---|---|---|
-| `compare.html` | `no-em-dash` | `h1[text=Banc de fidélité — notre...]` | Em dash détecté dans la copy. |
+| Aucune | Aucune | Aucune | Aucun finding restant. |
 
 ## Synthèse opérationnelle
 
 - WP8 est maintenant au palier demandé : 25 règles actives, avec traçabilité `rule -> principle -> finding WP7`.
-- WP11 dogfooding confirme que le ruleset s'exécute sur le vrai build docs et produit des findings exploitables.
+- WP11 dogfooding confirme que le ruleset s'exécute sur le vrai build docs, produit des findings exploitables, puis valide leur fermeture.
 - Les dettes `h1-inline-badge`, `status-indicator-label` et `line-length-cap` sont corrigées sur le build docs et restent couvertes par fixtures dédiées.
 - `no-em-dash` signale maintenant uniquement les éléments propriétaires d'un texte direct fautif et ignore `script/style`; le total dogfooding passe de 580 à 231 findings sans masquer la dette éditoriale réelle.
 - `no-bare-hex` ne signale plus les variables CSS ni les fallbacks `var(...)`, ce qui supprime 86 faux positifs dogfooding tout en gardant les usages directs comme `background:#fff` couverts par test.
-- `single-font` ignore `@font-face` et lit les stylesheets liés locaux; les 85 findings restants étaient liés aux polices chargées globalement, pas à une absence prouvée de hiérarchie sur les pages.
-- La dette détectée prioritaire restante est éditoriale : réduire les `—` restants.
+- `single-font` ignore `@font-face` et lit les stylesheets liés locaux; les 85 findings précédents étaient liés aux polices chargées globalement, pas à une absence prouvée de hiérarchie sur les pages.
+- La dette éditoriale `no-em-dash` restante est fermée sur le build statique audité : 0 finding full-site.
 
 ## Limites
 

@@ -104,7 +104,7 @@
         <tr><td><code>invalid</code></td><td><code>boolean</code></td><td><code>false</code></td><td>{fr("Force l'état erreur.", "Forces the error state.")}</td></tr>
         <tr><td><code>value</code></td><td><code>string | null</code></td><td><code>""</code></td><td>{fr("Valeur, bindable via bind:value.", "Value, bindable via bind:value.")}</td></tr>
         <tr><td><code>class</code></td><td><code>string</code></td><td><em>{fr("optionnel", "optional")}</em></td><td>{fr("Classe(s) du conteneur.", "Container class(es).")}</td></tr>
-        <tr><td>{fr("Autres attributs", "Other attributes")}</td><td><code>HTMLTextareaAttributes</code></td><td>—</td><td>{fr("Propagés sur la <textarea> (rows, placeholder, maxlength…).", "Spread onto the <textarea> (rows, placeholder, maxlength…).")}</td></tr>
+        <tr><td>{fr("Autres attributs", "Other attributes")}</td><td><code>HTMLTextareaAttributes</code></td><td>N/A</td><td>{fr("Propagés sur la <textarea> (rows, placeholder, maxlength…).", "Spread onto the <textarea> (rows, placeholder, maxlength…).")}</td></tr>
       </tbody>
     </table>
   </section>
