@@ -25,6 +25,8 @@
 - Périmètre courant du suivi : repo design system uniquement.
 - Priorités consommateurs à suivre côté DS : `nc-fullstack/ui`, Sentropic/top-ai chat-ui, Onyxia theme, OpenERP web, spa-transpose-cv/ui.
 - Couverture vs Carbon : ~55 / ~55 composants. Phase 4 priorité haute + moyenne + basse 100 % livrées.
+- Track React ouvert en cadrage (2026-05-30) : pas encore de package React dans ce repo. Codex prend l'owner du périmètre React ; Claude garde les tracks Svelte/docs/themes/release/fidelity en cours. Toute modification croisée passe par h2a avant edit.
+- Track thème Airbus ouvert (2026-05-30) : Codex prend l'owner du portage `../airbus-design-system` en thème Sentropic. Package `packages/theme-airbus` initié ; publication npm bloquée tant que la stratégie de version/release n'est pas tranchée.
 
 ---
 
@@ -125,10 +127,56 @@ Pré-requis : Phase 3 livrée. Phase 4 complète disponible via les packages `@s
 - [x] Documentation DS : `docs/chat-ui-contract.md` garde le contrat expérimental et ajoute le packet d'échange Sentropic/chat-ui <-> DS (packages, theme, inventaire composants, runtime schema, a11y, décisions de promotion).
 - [ ] Vérification release : maintenir `docs/release.md` aligné avec les versions publiées courantes.
 
+## Phase 5B — Portage React du design system
+
+Objectif : ouvrir une surface React du DS sans perturber le socle Svelte. Le portage React doit consommer les mêmes packages `tokens` / `themes` / CSS variables et ne doit pas forker l'identité visuelle.
+
+### Scope et ownership
+
+| Zone | Owner | Statut | Règle de collision |
+|---|---|---|---|
+| Cadrage React, inventaire composants à porter, API React cible | Codex | 🟡 à formaliser | Codex édite le plan et les futurs fichiers React ; Claude ne touche pas sans message h2a. |
+| Futur package `packages/components-react` | Codex | ⚪ pas créé | Créer isolé, sans modifier `packages/components-svelte` hors contrat partagé explicitement validé. |
+| Docs React dans le site DS | Codex | ⚪ pas créé | Ajouter sous une entrée dédiée React ; ne pas réécrire les pages Svelte en cours de travail par Claude. |
+| Svelte, thèmes DSFR/Carbon, banc fidelity, release `0.10.2` / `0.2.2` | Claude | 🟡 en cours | Claude continue ; Codex ne touche pas ces fichiers sauf demande explicite. |
+| Legacy `/home/antoinefa/src/top-ai-ideas` React+Radix | Audit only | ⚪ à décider | Source d'inventaire possible, pas cible de migration directe, et hors repo DS. |
+
+### Séquence
+
+1. [ ] Consigner l'état initial React : aucun package React dans le repo, seules traces locales = legacy `/home/antoinefa/src/top-ai-ideas`.
+2. [ ] Définir le MVP React : primitives prioritaires, API props, stratégie CSS/theme, dépendances acceptées (`react`, `react-dom`, `lucide-react` si nécessaire).
+3. [ ] Créer un scaffold isolé `packages/components-react` seulement après stabilisation des travaux Claude en cours sur release/docs/fidelity.
+4. [ ] Ajouter tests/build du package React sans changer les contrats Svelte existants.
+5. [ ] Ajouter docs React dédiées ou onglets React/Svelte avec migration progressive, sans retirer les pages Svelte.
+6. [ ] Valider avec Claude via h2a avant tout changement partagé (`package-lock.json`, scripts racine, navigation docs, release tags).
+
+## Phase 5C — Portage thème Airbus
+
+Objectif : porter `../airbus-design-system` comme thème Sentropic sans importer de composants Airbus, et sans modifier le repo source Airbus. Le portage doit rester un mapping `TenantTheme` fondé sur les tokens Airbus et compatible avec les composants Svelte existants.
+
+### Scope et ownership
+
+| Zone | Owner | Statut | Règle de collision |
+|---|---|---|---|
+| Déclaration h2a auprès des agents DS/Airbus | Codex | 🟢 fait | Messages envoyés à `claude:sent-tech-design-system` et `claude:airbus-design-system`. |
+| Source `../airbus-design-system` | Read-only | 🟢 inspectée | Ne pas modifier ; uniquement lire tokens/styles comme référence. |
+| Package `packages/theme-airbus` | Codex | 🟡 initié | Package public-ready, export `airbusTheme`, test de contrat, mapping initial tokens/anatomie. |
+| Documentation mapping | Codex | 🟡 initiée | `packages/theme-airbus/MAPPING.md`; compléter au fil des passes fidélité. |
+| Publication / distribution | À trancher | ⏸️ bloqué | Client theme : ne pas publier npm tant que version, release tag et nommage ne sont pas validés. |
+
+### Séquence
+
+1. [x] Se déclarer via h2a et annoncer l'ownership du portage Airbus.
+2. [x] Créer le package `@sentropic/design-system-theme-airbus`.
+3. [x] Ajouter un test de contrat theme + compilation CSS.
+4. [x] Mapper le noyau Airbus : couleurs, typographie, espacements, radius, elevation, focus, Button/Input/Tabs/Card.
+5. [ ] Étendre le mapping aux composants restants selon le banc fidélité (`/compare`) et les pages docs.
+6. [ ] Décider la stratégie de publication : version, tag de release et inclusion éventuelle dans le workflow npm.
+
 ## Phase 6 — Ménage
 
 - [x] `sentech-forge.tar.gz` (snapshot orphelin du 2026-04-26) supprimé.
-- [ ] Décider sort de `/home/antoinefa/src/top-ai-ideas` (React+Radix legacy, distinct du track actif Sentropic/top-ai).
+- [ ] Décider sort de `/home/antoinefa/src/top-ai-ideas` (React+Radix legacy, distinct du track actif Sentropic/top-ai). Depuis le cadrage React DS : utilisable comme inventaire historique, pas comme package DS React.
 - [ ] Décider sort de `/home/antoinefa/src/scalian-transpose-cv` (pas un repo git, pas de `package.json` — orphelin).
 - [ ] `sentech-forge/PLAN.md` — plan SEO P0 daté 2026-02-23, quasi terminé sur le code mais cases pas cochées : valider/cocher les 6 items résiduels ou supprimer si obsolète.
 
@@ -137,7 +185,8 @@ Pré-requis : Phase 3 livrée. Phase 4 complète disponible via les packages `@s
 ## Décisions ouvertes
 
 - **CSS vars** : prefix `--st-*` reste pour 0.3.0. À reconsidérer en v1.0.0 (renommage = breaking pour tous les consommateurs et tous les overrides).
-- **DS React** : pas de besoin identifié à date, les consommateurs actifs sont Svelte. Le repo legacy React `/home/antoinefa/src/top-ai-ideas` est distinct du track actif Sentropic/top-ai et ne doit pas être confondu avec lui.
+- **DS React** : besoin rouvert en cadrage. Codex owner du portage React ; Claude owner du reste des chantiers DS actifs. Le repo legacy React `/home/antoinefa/src/top-ai-ideas` reste distinct du track actif Sentropic/top-ai et ne doit pas être confondu avec un package DS React.
+- **Thème Airbus** : portage initié en package public-ready. Ne pas publier tant que la stratégie de version/release et les contraintes de distribution Airbus ne sont pas validées.
 - **Repo Git** : `sent-tech-design-system` conservé. Renommer le repo casserait les redirects GitHub vers les vieilles PRs/issues + remote URLs des dev locaux.
 
 ## Méta
