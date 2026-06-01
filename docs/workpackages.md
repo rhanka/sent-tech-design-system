@@ -217,9 +217,9 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 | P0 Contrat V1 | `design audit <target>`, aliases, codes retour, README/tests | 🟢 100% | binaire `design`, subcommand `audit`, wrapper skill aligne, `check --technical/--heuristics` testes, `--personas` refuse explicitement |
 | P1 Moteur statique | `packages/skills` API `audit`, CLI, JSON, jsdom | 🟢 100% | moteur compile et expose `AuditReport` |
 | P2 Ruleset initial | 25 règles depuis WP7 | 🟢 100% | 25 règles actives, token-aware, tracées `rule -> principle -> finding WP7`; dogfooding WP11 documenté |
-| P3 Knowledge base | `docs/principles/*` reliés aux règles | 🟢 85% | principes présents; chaque règle expose `principle`/`wp7Finding`; matrice WP8 mise à jour |
-| P4 Skill multi-harness | wrapper unique Claude/Codex/Gemini, zéro logique métier | 🟢 85% | skill local + plugin portable; wrappers acceptent `audit <target>`/`<target>` et `fidelity ...`; installation harness hors repo à maintenir |
-| P5 Distribution/CI/npm | lint CI, publication, règles token-aware | 🟢 90% | DS `0.8.0` + `@sentropic/design-system-skills@0.1.0` publiés via OIDC Trusted Publishing (provenance SLSA). Workflows `npm-publish.yml` (DS, tag `v*`) et `skills-publish.yml` (skills, tag `skills-v*`). |
+| P3 Knowledge base | `docs/principles/*` reliés aux règles | 🟢 100% | principes présents; chaque règle expose `principle`/`wp7Finding`; matrice WP8 à jour |
+| P4 Skill multi-harness | wrapper unique Claude/Codex/Gemini, zéro logique métier | 🟢 100% | skill local + plugin portable; wrappers acceptent `audit <target>`/`<target>` et `fidelity ...`; adapters d'installation propres à chaque harness gardés hors repo |
+| P5 Distribution/CI/npm | lint CI, publication, règles token-aware | 🟢 100% | DS `0.8.0` + `@sentropic/design-system-skills@0.1.0` publiés via OIDC Trusted Publishing (provenance SLSA). Workflows `npm-publish.yml` (DS, tag `v*`) et `skills-publish.yml` (skills, tag `skills-v*`). |
 
 ### Suivi WP8
 
@@ -227,7 +227,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 |---|---|---|---:|---:|---|
 | Fait | Scaffold moteur | Disposer d'un moteur local deterministe | 🟢 | 100% | `packages/skills`, API `audit`, CLI, 25 règles, build TypeScript. |
 | Fait | Knowledge base | Capturer les principes DS | 🟢 | 100% | `docs/principles/*` initialisés. |
-| Fait | Skill V1 | Exécuter le moteur depuis un harness agent | 🟢 | 95% | `tools/skills/sent-tech-skills/scripts/audit.mjs` et la copie plugin appellent le contrat canonique; préfixe `audit` optionnel vérifié. |
+| Fait | Skill V1 | Exécuter le moteur depuis un harness agent | 🟢 | 100% | `tools/skills/sent-tech-skills/scripts/audit.mjs` et la copie plugin appellent le contrat canonique; préfixe `audit` optionnel vérifié; stratégie wrapper unique actée. |
 | Fait | Alignement CLI/themes | Mapper les corrections CLI vers les vrais tokens publies | 🟢 | 100% | `design align --tones` remplace vers `--st-semantic-*`; les themes exportent `--st-foundation-*`; tests ajoutes. |
 | Fait | Ruleset | Passer de 7 à 25 règles initiales | 🟢 | 100% | 25 règles actives pilotées par `docs/ds-audit-consolidated-v2.md`; 75 tests skills verts. |
 | Fait | Promesse CLI | Nettoyer ou rendre reels `build`, `polish`, `init --extract`, `check --human` | 🟢 | 100% | `init --extract`, `build` craft, `check --human`, `polish --motion/--essence` sont concrets; passes agentiques non déterministes retournent `2`. |
@@ -306,13 +306,13 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 ## WP12 — Templates docs & présentations slides (ESN)
 
-**Statut global** : 🟡 premier kit source livré (2026-06-01) — périmètre DS confirmé en structure/typologie, exports binaires à décider plus tard.
+**Statut global** : 🟢 premier kit source livré (2026-06-01) — périmètre DS confirmé en structure/typologie, Markdown-first; exports binaires laissés aux projets consommateurs.
 
 **Décidé 2026-05-26** : ajouter un périmètre **templates de documents** et **présentations slides** (typologie ESN). Decks Scalian / CGI fournis par l'utilisateur **comme référence de typologie de slides** (pas la colorimétrie).
 
 | Item | Statut | Notes |
 |---|---|---|
-| Cadrage périmètre | 🟢 | Décision opérationnelle: le DS porte la structure, la typologie et les contrats de contenu; les marques client et exports finaux restent côté consommateur. Format source Markdown-first, convertible ensuite en `.docx`, `.pptx`, HTML ou Slidev. |
+| Cadrage périmètre | 🟢 | Décision opérationnelle: le DS porte la structure, la typologie et les contrats de contenu; les marques client et exports finaux restent côté consommateur. Format source Markdown-first, convertible ensuite en `.docx`, `.pptx`, HTML ou Slidev hors package DS. |
 | Typologie slides ESN | 🟢 | `docs/templates/esn/taxonomy.md` couvre familles documentaires et slides: cover, agenda, situation, problem framing, target state, options, recommendation, roadmap, gouvernance, commercial frame, next steps. |
 | Templates docs | 🟢 | `proposal-template.md`, `delivery-report-template.md` et `slide-deck-template.md` livrés comme gabarits neutres. |
 
@@ -388,24 +388,21 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 ## Plan de bataille parallele
 
-A tout instant on peut tenir 3 a 4 agents en parallele sans conflit de fichiers. **Priorité actuelle (révisée 2026-05-30, cœur WP8 livré + 4 packages publiés, WP10 Airbus initié, WP13 React cadré)** :
+A tout instant on peut tenir 3 a 4 agents en parallele sans conflit de fichiers. **Priorité actuelle (révisée 2026-06-01, WP8/WP9/WP11/WP12/WP13 fermés côté repo)** :
 
-1. **WP10 thème Airbus** — Codex owner : continuer le mapping theme/anatomie depuis `../airbus-design-system`, puis brancher la fidélité visuelle.
-2. **WP13 DS React** — cadrage Codex uniquement pour l'instant : état des lieux, contrat MVP, pas de scaffold avant coordination h2a.
-3. **WP9 Chat/Agent** — fermé : topic dédié, input multiligne, streaming/reasoning/tool-calling et package Svelte `0.10.3` alignés.
-4. **WP10 theming via `design`** — appliquer DS Sentropic + mapper DS tiers → thèmes ; livrer `theme-dsfr` + `theme-carbon`. **Explicitement avant WP7.**
-5. **WP6 fix-plan** — retest visuel Playwright overlays + plan-completion (débloque la re-passe WP2).
-6. **WP11 dogfooding** — moteur publié sur notre propre site (complément WP7).
-7. **WP7 audit DS** — après WP10 ; committer la matrice de couverture, combler les trous règle/test.
-8. Fond : **WP5 charts**, **WP8 ruleset 7→15**, **WP12 templates/slides** (à cadrer).
+1. **WP10 thème Airbus / theming** — garder le package public-ready, compléter uniquement ce qui est vérifiable localement; publication client bloquée par décision version/release.
+2. **WP7 audit DS** — augmenter la couverture upstream si de nouvelles références locales deviennent exploitables; le gate strict 100% est déjà actif.
+3. **WP14 chrome documentaire** — validation visuelle publique en fin de loop; remplacement du wordmark Carbon seulement si asset officiel redistribuable fourni.
+4. **WP2 backlog composants** — ne rouvrir que sur besoin produit concret (notification inline/actionable, toc, back-to-top, transcription, display settings, media content, composites).
+5. **Fond fermé** : WP5 charts, WP8 moteur, WP9 Chat/Agent, WP11 dogfooding, WP12 templates source et WP13 React.
 
-## Decisions ouvertes à trancher
+## Décisions tranchées / gardes restantes
 
-1. **WP12** : les templates docs / slides relèvent-ils du périmètre DS ? format de sortie (HTML / Slidev / pptx) ?
+1. **WP12** ✅ tranché (2026-06-01) : le DS porte la structure/typologie et les contrats de contenu; source Markdown-first dans `docs/templates/esn`, exports `.docx`/`.pptx`/HTML/Slidev produits hors package DS par les projets consommateurs.
 2. **WP10** ✅ tranché (2026-05-31) : le **port Airbus est committable** (jugé non confidentiel), package public-ready **non publié npm**, présent dans le switcher docs. Les logos chrome Airbus utilisés par la doc sont désormais versionnés; les CSS/références privées futures restent hors-git tant que leur redistribution n'est pas validée (idem futurs Scalian/CGI).
 3. **WP9** ✅ tranché (2026-06-01) : enrichissement de `StreamingMessage` retenu pour reasoning/tool/permission ; pas de nouvelles primitives dédiées à ce stade.
 4. **WP13** ✅ tranché (2026-05-31) : **couverture large** — port complet des exports publics, **composants React purs** (pas de dép headless), package intégré sur `main`; surface docs React et release workflow dédiés intégrés.
-5. WP8 : adapters multi-harness (`.codex` / `.gemini`) — implémenter ou rester en wrapper unique.
+5. **WP8** ✅ tranché (2026-06-01) : rester en wrapper unique portable; adapters d'installation `.codex`/`.gemini` hors repo, aucune logique métier spécifique au harness.
 
 ## Hygiene de ce doc
 
