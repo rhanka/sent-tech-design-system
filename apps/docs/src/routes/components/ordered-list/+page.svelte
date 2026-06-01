@@ -15,10 +15,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">Composant · Données</p>
-    <h1>
-      OrderedList
+    <div class="docs-hero-title">
+      <h1>OrderedList</h1>
       <Badge tone="neutral">Documenté</Badge>
-    </h1>
+    </div>
     <p>
       Liste <strong>ordonnée</strong> numérotée (complément de <code>UnorderedList</code>).
       Accepte des chaînes ou des objets <code>{`{ content, children }`}</code> pour

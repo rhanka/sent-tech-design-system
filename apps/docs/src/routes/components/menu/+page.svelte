@@ -31,10 +31,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">{fr("Composant · Navigation", "Component · Navigation")}</p>
-    <h1>
-      Menu
+    <div class="docs-hero-title">
+      <h1>Menu</h1>
       <Badge tone="success">{t(locale.value, "statusStable")}</Badge>
-    </h1>
+    </div>
     <p>
       {fr(
         "Liste verticale d'actions (role=\"menu\") avec icônes Lucide optionnelles, groupes titrés, séparateurs et items destructifs ou désactivés. Le surface visuelle est partagée avec MenuPopover ; pour ancrer le menu à un déclencheur flottant, combinez les deux.",

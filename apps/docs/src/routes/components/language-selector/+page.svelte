@@ -12,10 +12,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">Composant · Navigation · i18n</p>
-    <h1>
-      LanguageSelector
+    <div class="docs-hero-title">
+      <h1>LanguageSelector</h1>
       <Badge tone="neutral">Documenté</Badge>
-    </h1>
+    </div>
     <p>
       Sélecteur de langue compact : affiche la langue courante et ouvre un menu
       (<code>listbox</code>) des langues disponibles. État <code>value</code> bindable,

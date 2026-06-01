@@ -9,10 +9,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">{fr("Composant · Formulaire", "Component · Form")}</p>
-    <h1>
-      Textarea
+    <div class="docs-hero-title">
+      <h1>Textarea</h1>
       <Badge tone="success">{t(locale.value, "statusStable")}</Badge>
-    </h1>
+    </div>
     <p>
       {fr(
         "Champ de saisie texte multi-ligne, redimensionnable verticalement, avec libellé, texte d'aide et état d'erreur. Partage l'anatomie de champ de l'Input.",

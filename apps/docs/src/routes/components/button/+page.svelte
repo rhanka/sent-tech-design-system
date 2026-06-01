@@ -15,10 +15,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">{fr("Composant · Action", "Component · Action")}</p>
-    <h1>
-      {t(locale.value, "buttonTitle")}
+    <div class="docs-hero-title">
+      <h1>{t(locale.value, "buttonTitle")}</h1>
       <Badge tone="success">{t(locale.value, "statusStable")}</Badge>
-    </h1>
+    </div>
     <p>{t(locale.value, "buttonIntro")}</p>
     <p>
       {fr(

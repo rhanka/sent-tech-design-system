@@ -13,10 +13,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">{fr("Composant · Feedback", "Component · Feedback")}</p>
-    <h1>
-      Alert
+    <div class="docs-hero-title">
+      <h1>Alert</h1>
       <Badge tone="success">{t(locale.value, "statusStable")}</Badge>
-    </h1>
+    </div>
     <p>
       {fr(
         "Bandeau d'information persistant lié au contexte de la page : info, succès, avertissement ou erreur. Titre obligatoire, message optionnel, et zone d'actions optionnelle.",

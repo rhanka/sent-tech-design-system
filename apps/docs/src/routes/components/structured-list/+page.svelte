@@ -12,10 +12,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">Composant · Données</p>
-    <h1>
-      StructuredList
+    <div class="docs-hero-title">
+      <h1>StructuredList</h1>
       <Badge tone="neutral">Documenté</Badge>
-    </h1>
+    </div>
     <p>
       Liste structurée de paires <strong>clé / valeur</strong> (sémantique
       <code>&lt;dl&gt;</code>/<code>&lt;dt&gt;</code>/<code>&lt;dd&gt;</code>). La valeur

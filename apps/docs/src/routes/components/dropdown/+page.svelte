@@ -12,10 +12,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">{fr("Composant · Formulaire", "Component · Form")}</p>
-    <h1>
-      Dropdown
+    <div class="docs-hero-title">
+      <h1>Dropdown</h1>
       <Badge tone="success">{t(locale.value, "statusStable")}</Badge>
-    </h1>
+    </div>
     <p>
       {fr(
         "Liste déroulante de sélection d'une valeur unique parmi des options (pattern listbox). Le déclencheur affiche l'étiquette et la valeur courante ; la liste s'ouvre au clic et se referme au choix, sur Escape ou au clic extérieur.",

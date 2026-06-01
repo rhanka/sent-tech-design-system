@@ -32,10 +32,10 @@
     <p class="docs-hero-kicker">
       {locale.value === "fr" ? "Composant · Données" : "Component · Data"}
     </p>
-    <h1>
-      Badge
+    <div class="docs-hero-title">
+      <h1>Badge</h1>
       <Badge tone="success">{t(locale.value, "statusStable")}</Badge>
-    </h1>
+    </div>
     <p>{text().intro}</p>
   </section>
 

@@ -11,10 +11,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">{fr("Composant · Formulaire", "Component · Form")}</p>
-    <h1>
-      Input
+    <div class="docs-hero-title">
+      <h1>Input</h1>
       <Badge tone="success">{t(locale.value, "statusStable")}</Badge>
-    </h1>
+    </div>
     <p>
       {fr(
         "Champ de saisie texte sur une ligne, avec libellé, texte d'aide, état d'erreur et trois tailles. Construit sur un <input> natif lié à son <label>.",

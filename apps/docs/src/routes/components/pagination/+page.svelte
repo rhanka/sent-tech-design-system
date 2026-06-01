@@ -12,10 +12,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">{fr("Composant · Navigation", "Component · Navigation")}</p>
-    <h1>
-      Pagination
+    <div class="docs-hero-title">
+      <h1>Pagination</h1>
       <Badge tone="success">{t(locale.value, "statusStable")}</Badge>
-    </h1>
+    </div>
     <p>
       {fr(
         "Navigation de pages numérotées avec contrôles Précédent / Suivant. La page courante est mise en valeur et annoncée ; idéale pour un faible nombre de pages.",

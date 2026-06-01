@@ -21,10 +21,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">{fr("Composant · Navigation", "Component · Navigation")}</p>
-    <h1>
-      Breadcrumb
+    <div class="docs-hero-title">
+      <h1>Breadcrumb</h1>
       <Badge tone="success">{t(locale.value, "statusStable")}</Badge>
-    </h1>
+    </div>
     <p>
       {fr(
         "Fil d'Ariane indiquant la position de la page courante dans la hiérarchie et permettant de remonter. Rendu sémantique : <nav> + liste ordonnée, dernier élément marqué comme page courante.",

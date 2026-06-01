@@ -75,10 +75,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">{t(locale.value, "areaChartKicker")}</p>
-    <h1>
-      LineChart
+    <div class="docs-hero-title">
+      <h1>LineChart</h1>
       <Badge tone="success">{t(locale.value, "statusStable")}</Badge>
-    </h1>
+    </div>
     <p>{text().intro}</p>
   </section>
 

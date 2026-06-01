@@ -22,10 +22,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">Composant · Feedback</p>
-    <h1>
-      {t(locale.value, "progressIndicatorTitle")}
+    <div class="docs-hero-title">
+      <h1>{t(locale.value, "progressIndicatorTitle")}</h1>
       <Badge tone="success">{t(locale.value, "statusStable")}</Badge>
-    </h1>
+    </div>
     <p>{t(locale.value, "progressIndicatorIntro")}</p>
   </section>
 

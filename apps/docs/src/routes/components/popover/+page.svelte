@@ -14,10 +14,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">{fr("Composant · Overlay", "Component · Overlay")}</p>
-    <h1>
-      Popover
+    <div class="docs-hero-title">
+      <h1>Popover</h1>
       <Badge tone="success">{t(locale.value, "statusStable")}</Badge>
-    </h1>
+    </div>
     <p>
       {fr(
         "Surface flottante compacte ancrée à un déclencheur, pour un détail contextuel ou une mini-tâche sans bloquer le flux. Contrairement au Tooltip, son contenu peut être interactif ; contrairement au Modal, il n'assombrit pas l'arrière-plan.",

@@ -44,10 +44,10 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">Composant · Formulaire</p>
-    <h1>
-      {t(locale.value, "fileUploaderTitle")}
+    <div class="docs-hero-title">
+      <h1>{t(locale.value, "fileUploaderTitle")}</h1>
       <Badge tone="success">{t(locale.value, "statusStable")}</Badge>
-    </h1>
+    </div>
     <p>{t(locale.value, "fileUploaderIntro")}</p>
   </section>
 
