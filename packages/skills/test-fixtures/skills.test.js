@@ -490,6 +490,14 @@ test("rule status-indicator-label: indicateur nommé → pas de finding", async 
   const html = "<nav><span class='status-dot' aria-label='Documenté' style='width:8px;height:8px;border-radius:999px'></span></nav>";
   assert.ok(!(await ruleIds(html)).includes("status-indicator-label"));
 });
+test("rule status-indicator-label: libellé court visible → pas de finding", async () => {
+  const html = "<span class='st-toggle__state'>On</span>";
+  assert.ok(!(await ruleIds(html)).includes("status-indicator-label"));
+});
+test("rule status-indicator-label: enfant décoratif d'un indicateur nommé → pas de finding", async () => {
+  const html = "<span class='st-progressIndicator__indicator' aria-label='Complete: Intake'><span class='st-progressIndicator__dot'></span></span>";
+  assert.ok(!(await ruleIds(html)).includes("status-indicator-label"));
+});
 
 test("rule redundant-url-label: URL visible redondante → finding", async () => {
   const html = "<footer><a href='https://github.com/rhanka/sent-tech-design-system'>github.com/rhanka/sent-tech-design-system</a></footer>";

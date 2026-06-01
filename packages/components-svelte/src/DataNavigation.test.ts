@@ -288,6 +288,11 @@ describe("data and navigation components", () => {
     expect(items).toHaveLength(3);
     expect(items[1].getAttribute("aria-current")).toBe("step");
     expect(items[0].getAttribute("aria-current")).toBeNull();
+    expect(
+      items[0]
+        .querySelector(".st-progressIndicator__indicator")
+        ?.getAttribute("aria-label")
+    ).toBe("Complete: Intake");
     expect(within(list).getByText("QA + sign-off")).toBeTruthy();
   });
 
