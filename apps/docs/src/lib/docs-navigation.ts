@@ -33,6 +33,7 @@ export interface ComponentNavGroup {
 export const DOCS_TOP_NAV: DocsNavItem[] = [
   { label: "Fondations", href: "/#foundations" },
   { label: "Composants", href: "/#components" },
+  { label: "React", href: "/react" },
   { label: "Tokens", href: "/#tokens" },
   { label: "Thèmes", href: "/#themes" },
   { label: "Contrats", href: "/#contracts" }
@@ -49,6 +50,7 @@ export const DOCS_UTILITY_NAV: DocsNavItem[] = [
 export const DOCS_FOUNDATION_NAV: DocsNavItem[] = [
   { label: "Vue d'ensemble", href: "/" },
   { label: "Fondations", href: "/#foundations" },
+  { label: "React", href: "/react" },
   { label: "Tokens", href: "/#tokens" },
   { label: "Themes tenant", href: "/#themes" },
   { label: "Contrat marque blanche", href: "/#contracts" }
@@ -84,6 +86,13 @@ export function resolveBreadcrumb(pathname: string): DocsNavItem[] {
         label: component?.name ?? "Composant",
         href: pathname
       }
+    ];
+  }
+
+  if (pathname === "/react") {
+    return [
+      { label: "Catalogue", href: "/" },
+      { label: "React", href: "/react" }
     ];
   }
 

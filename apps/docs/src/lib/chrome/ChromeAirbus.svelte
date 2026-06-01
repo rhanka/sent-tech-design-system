@@ -91,7 +91,7 @@
 
       <!-- Centre : onglets de navigation (Tab Label), actif = fond bleu clair + accent haut) -->
       <nav class="abus-header__tabs" aria-label="Navigation principale">
-        {#each DOCS_TOP_NAV.slice(0, 5) as item (item.href)}
+        {#each DOCS_TOP_NAV.slice(0, 6) as item (item.href)}
           <a
             class="abus-header__tab"
             href={item.href}
