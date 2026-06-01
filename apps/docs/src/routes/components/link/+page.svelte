@@ -118,7 +118,7 @@
         <tr><td><code>onclick</code></td><td><code>(e: MouseEvent) => void</code></td><td><em>{fr("optionnel", "optional")}</em></td><td>{fr("Bloqué si disabled.", "Blocked when disabled.")}</td></tr>
         <tr><td><code>children</code></td><td><code>Snippet</code></td><td><em>{fr("libellé", "label")}</em></td><td>{fr("Contenu du lien.", "Link content.")}</td></tr>
         <tr><td><code>class</code></td><td><code>string</code></td><td><em>{fr("optionnel", "optional")}</em></td><td>{fr("Classe(s) supplémentaire(s).", "Additional class(es).")}</td></tr>
-        <tr><td>{fr("Autres attributs", "Other attributes")}</td><td><code>HTMLAnchorAttributes</code></td><td>—</td><td>{fr("Propagés sur l'<a>.", "Spread onto the <a>.")}</td></tr>
+        <tr><td>{fr("Autres attributs", "Other attributes")}</td><td><code>HTMLAnchorAttributes</code></td><td>N/A</td><td>{fr("Propagés sur l'<a>.", "Spread onto the <a>.")}</td></tr>
       </tbody>
     </table>
   </section>

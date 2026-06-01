@@ -117,7 +117,7 @@
         <tr><td><code>actions</code></td><td><code>Snippet</code></td><td><em>{fr("optionnel", "optional")}</em></td><td>{fr("Boutons d'action à droite.", "Action buttons on the right.")}</td></tr>
         <tr><td><code>children</code></td><td><code>Snippet</code></td><td><em>{fr("optionnel", "optional")}</em></td><td>{fr("Contenu additionnel sous le message.", "Extra content below the message.")}</td></tr>
         <tr><td><code>class</code></td><td><code>string</code></td><td><em>{fr("optionnel", "optional")}</em></td><td>{fr("Classe(s) supplémentaire(s).", "Additional class(es).")}</td></tr>
-        <tr><td>{fr("Autres attributs", "Other attributes")}</td><td><code>HTMLAttributes&lt;HTMLElement&gt;</code></td><td>—</td><td>{fr("Propagés sur la <section>.", "Spread onto the <section>.")}</td></tr>
+        <tr><td>{fr("Autres attributs", "Other attributes")}</td><td><code>HTMLAttributes&lt;HTMLElement&gt;</code></td><td>N/A</td><td>{fr("Propagés sur la <section>.", "Spread onto the <section>.")}</td></tr>
       </tbody>
     </table>
   </section>

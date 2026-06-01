@@ -44,7 +44,7 @@
 
       <article class="docs-demo-block">
         <h3>Alert</h3>
-        <p class="docs-demo-context">Bandeau persistant pour les messages contextuels — pour les notifications éphémères, voir Toast.</p>
+        <p class="docs-demo-context">Bandeau persistant pour les messages contextuels ; pour les notifications éphémères, voir Toast.</p>
         <Alert tone="warning" title="Migration note" message="Keep product-specific workflow logic outside the base design system." />
       </article>
 

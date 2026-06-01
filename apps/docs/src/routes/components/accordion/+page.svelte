@@ -112,7 +112,7 @@
     <div class="docs-example" aria-label={text().multipleLabel}>
       <Accordion items={faqItems} multiple bind:open={multiOpen} />
       <p class="docs-demo-note">
-        {text().openLabel}: <code>{multiOpen.join(", ") || "—"}</code>
+        {text().openLabel}: <code>{multiOpen.join(", ") || "N/A"}</code>
       </p>
     </div>
 

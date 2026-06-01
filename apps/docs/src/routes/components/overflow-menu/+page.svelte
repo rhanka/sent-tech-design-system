@@ -38,7 +38,7 @@
 
   const text = () => copy[locale.value];
 
-  let lastSelected = $state("—");
+  let lastSelected = $state("N/A");
 
   const rowItems: OverflowMenuItem[] = [
     { kind: "group", label: locale.value === "fr" ? "Actions" : "Actions" },
@@ -149,7 +149,7 @@
       </thead>
       <tbody>
         <tr><td><code>"item"</code> ({locale.value === "fr" ? "défaut" : "default"})</td><td><code>value</code>, <code>label</code>, <code>disabled?</code>, <code>danger?</code>, <code>icon?</code>, <code>onclick?</code></td></tr>
-        <tr><td><code>"divider"</code></td><td>—</td></tr>
+        <tr><td><code>"divider"</code></td><td>N/A</td></tr>
         <tr><td><code>"group"</code></td><td><code>label</code></td></tr>
       </tbody>
     </table>
