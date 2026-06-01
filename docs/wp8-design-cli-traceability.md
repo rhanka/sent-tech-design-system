@@ -66,5 +66,5 @@ Les règles WP8 privilégient les tokens Sent Tech (`var(--st-*)`) et évitent d
 ## Limites connues
 
 - Le moteur reste statique (`jsdom`) : il ne calcule pas les styles post-hydratation ni les dimensions de viewport réelles.
-- Les règles CSS lisent les styles inline et les blocs `<style>` du HTML audité ; elles ne remplacent pas une passe navigateur Playwright.
+- Les règles CSS lisent les styles inline et les blocs `<style>` du HTML audité ; `line-length-cap` lit aussi les stylesheets liés locaux pour éviter les faux positifs sur build statique. Elles ne remplacent pas une passe navigateur Playwright.
 - Certains findings WP7 restent hors règles déterministes : dark-mode absent, z-index `OverflowMenu`, conflit Drawer/menu close.
