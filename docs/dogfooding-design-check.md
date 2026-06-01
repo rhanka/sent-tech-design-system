@@ -15,7 +15,7 @@ Périmètre audité :
 - Spot-check CLI : `node packages/skills/dist/cli.js check apps/docs/build/compare.html --tech`.
 - Agrégation full-site : API `audit({ kind: "file" })` sur chaque fichier HTML généré, avec le même `defaultRules`.
 
-Le spot-check CLI retourne le code `1`, attendu parce que des findings sont présents. Sur `compare.html`, le résumé CLI est : 38 findings, `high:38 medium:0 low:0`, `score:0/100`.
+Le spot-check CLI retourne le code `1`, attendu parce que des findings sont présents. Sur `compare.html`, le résumé CLI est : 16 findings, `high:16 medium:0 low:0`, `score:36/100`.
 
 ## Résultat global
 
@@ -23,8 +23,8 @@ Le spot-check CLI retourne le code `1`, attendu parce que des findings sont pré
 |---|---:|
 | Pages auditées | 85 |
 | Règles actives | 25 |
-| Findings totaux | 580 |
-| High | 580 |
+| Findings totaux | 231 |
+| High | 231 |
 | Medium | 0 |
 | Low | 0 |
 
@@ -32,24 +32,27 @@ Le spot-check CLI retourne le code `1`, attendu parce que des findings sont pré
 
 | Règle | Findings |
 |---|---:|
-| `no-em-dash` | 409 |
 | `no-bare-hex` | 86 |
 | `single-font` | 85 |
+| `no-em-dash` | 60 |
 | 22 autres règles actives | 0 |
 
-Lecture : les deux dettes basses remontées par les nouvelles règles (`h1-inline-badge`, `status-indicator-label`) restent à 0 sur le build docs, et les faux positifs `line-length-cap` sont fermés par la lecture des stylesheets liés locaux. Les findings restants sont éditoriaux/fondation : tirets cadratins de microcopy, hex dans certains blocs `<style>` et single-font global.
+Lecture : les deux dettes basses remontées par les nouvelles règles (`h1-inline-badge`, `status-indicator-label`) restent à 0 sur le build docs, les faux positifs `line-length-cap` sont fermés par la lecture des stylesheets liés locaux, et `no-em-dash` ne duplique plus les ancêtres des nœuds de texte fautifs. Les findings restants sont éditoriaux/fondation : hex dans certains blocs `<style>`, single-font global et tirets cadratins de microcopy.
 
 ## Pages les plus signalées
 
 | Page | Findings | Règles dominantes |
 |---|---:|---|
-| `compare.html` | 38 | `no-em-dash` 35, `no-bare-hex` 2, `single-font` 1 |
-| `components/streaming-message.html` | 32 | `no-em-dash` 30, `no-bare-hex` 1, `single-font` 1 |
-| `components/input.html` | 20 | `no-em-dash` 18, `no-bare-hex` 1, `single-font` 1 |
-| `components/menu-popover.html` | 20 | `no-em-dash` 18, `no-bare-hex` 1, `single-font` 1 |
-| `components/button.html` | 19 | `no-em-dash` 17, `no-bare-hex` 1, `single-font` 1 |
-| `components/force-graph.html` | 19 | `no-em-dash` 17, `no-bare-hex` 1, `single-font` 1 |
-| `components/header.html` | 19 | `no-em-dash` 17, `no-bare-hex` 1, `single-font` 1 |
+| `compare.html` | 16 | `no-em-dash` 13, `no-bare-hex` 2, `single-font` 1 |
+| `components/force-graph.html` | 6 | `no-em-dash` 4, `no-bare-hex` 1, `single-font` 1 |
+| `components/button.html` | 5 | `no-em-dash` 3, `no-bare-hex` 1, `single-font` 1 |
+| `components/header.html` | 5 | `no-em-dash` 3, `no-bare-hex` 1, `single-font` 1 |
+| `components/input.html` | 5 | `no-em-dash` 3, `no-bare-hex` 1, `single-font` 1 |
+| `components/menu-popover.html` | 5 | `no-em-dash` 3, `no-bare-hex` 1, `single-font` 1 |
+| `components/modal.html` | 5 | `no-em-dash` 3, `no-bare-hex` 1, `single-font` 1 |
+| `components/drawer.html` | 4 | `no-em-dash` 2, `no-bare-hex` 1, `single-font` 1 |
+| `components/dropdown.html` | 4 | `no-em-dash` 2, `no-bare-hex` 1, `single-font` 1 |
+| `components/empty-state.html` | 4 | `no-em-dash` 2, `no-bare-hex` 1, `single-font` 1 |
 
 ## Exemples de findings
 
@@ -65,7 +68,8 @@ Lecture : les deux dettes basses remontées par les nouvelles règles (`h1-inlin
 - WP8 est maintenant au palier demandé : 25 règles actives, avec traçabilité `rule -> principle -> finding WP7`.
 - WP11 dogfooding confirme que le ruleset s'exécute sur le vrai build docs et produit des findings exploitables.
 - Les dettes `h1-inline-badge`, `status-indicator-label` et `line-length-cap` sont corrigées sur le build docs et restent couvertes par fixtures dédiées.
-- La dette détectée prioritaire reste éditoriale et fondation globale : réduire les `—`, supprimer les hex restants, puis introduire une vraie hiérarchie typographique display/body.
+- `no-em-dash` signale maintenant uniquement les éléments propriétaires d'un texte direct fautif et ignore `script/style`; le total dogfooding passe de 580 à 231 findings sans masquer la dette éditoriale réelle.
+- La dette détectée prioritaire reste éditoriale et fondation globale : supprimer les hex restants, introduire une vraie hiérarchie typographique display/body, puis réduire les `—` restants.
 
 ## Limites
 
