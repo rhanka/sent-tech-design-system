@@ -191,9 +191,9 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 | Vue | Track | Finalite | Etat | Avancement | Detail |
 |---|---|---|---:|---:|---|
-| Fait | Audit V1/V2 | Consolider les findings DS en source exploitable | 🟢 | 100% | Audit V1, 5 rapports clusters, master V2, 8 règles prioritaires transmises à WP8. |
+| Fait | Audit V1/V2 | Consolider les findings DS en source exploitable | 🟢 | 100% | Audit V1, 5 rapports clusters, master V2, 25 règles actives transmises à WP8. |
 | A faire | Couverture | Prouver la couverture complète des 37 références upstream | 🟡 | 45% | Fermer les statuts A-E et documenter la matrice de couverture. |
-| A faire | Traçabilité | Relier `finding WP7 -> règle WP8 -> test` | 🟡 | 35% | Nécessaire avant extension ruleset WP8 P2. |
+| Fait | Traçabilité | Relier `finding WP7 -> règle WP8 -> test` | 🟢 | 100% | `docs/ds-audit-coverage-matrix.md` et `docs/wp8-design-cli-traceability.md` couvrent les 25 règles + tests. |
 | Attendu | Séparation WP7/WP8 | WP7 reste le chantier audit, WP8 reste le moteur | 🟢 | 100% | Toute règle WP8 doit référencer une entrée WP7 V2. |
 
 **Dépendances** : WP8 consomme WP7 pour les règles ; WP6 ne bloque plus WP7 mais impose un retest visuel overlays/plan-completion.
@@ -291,15 +291,15 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 ## WP11 — Dogfooding du moteur publié (complément WP7)
 
-**Statut global** : ⚪ cadré (2026-05-26).
+**Statut global** : 🟢 passage WP11 consigné (2026-06-01), corrections de dette à traiter par WP2/WP6/WP7.
 
 **Décidé 2026-05-26** : utiliser le package **publié** `@sentropic/design-system-skills` pour auditer/aligner **notre propre repo et site** (dogfooding). Complète WP7 par une boucle réelle « le moteur sur lui-même ».
 
 | Item | Statut | Notes |
 |---|---|---|
-| Installer la lib publiée si nécessaire | ⚪ | `npm i -D @sentropic/design-system-skills` (ou `npx`) ; signaler à l'utilisateur |
-| `design check` sur le site/docs DS | ⚪ | Exécuter sur les pages réelles, consigner les findings |
-| Boucler findings → corrections | ⚪ | Rejoint WP6 (bugs) et WP7 (couverture) |
+| Installer la lib publiée si nécessaire | 🟢 | Workspace local utilisé; package publié `@sentropic/design-system-skills@0.1.0` déjà disponible. |
+| `design check` sur le site/docs DS | 🟢 | Build docs courant audité: 85 pages, 25 règles, 703 findings; voir `docs/dogfooding-design-check.md`. |
+| Boucler findings → corrections | 🟡 | Dette prioritaire: `no-em-dash`, `no-bare-hex`, `single-font`, `h1-inline-badge`, `status-indicator-label`, rares `line-length-cap`. |
 
 **Dépendances** : WP8 (package publié).
 **Parallélisable avec** : tous.
