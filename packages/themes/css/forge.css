@@ -478,6 +478,7 @@
   --st-component-control-placeholderText: #64748b;
   --st-component-control-border: #e2e8f0;
   --st-component-control-hoverBorder: #94a3b8;
+  --st-component-control-hoverBackground: #f8fafc;
   --st-component-control-focusRing: oklch(50% 0.134 242.749);
   --st-component-control-invalidBorder: #dc2626;
   --st-component-control-disabledBackground: #f8fafc;
