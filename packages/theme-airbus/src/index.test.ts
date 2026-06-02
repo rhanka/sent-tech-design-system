@@ -78,6 +78,13 @@ describe("airbusTheme", () => {
       toggleThumbSize: "1.125rem",
       toggleTrackPadding: "0"
     });
+
+    expect(component.search).toMatchObject({
+      paddingBlock: "0.5rem",
+      paddingInline: "2.5rem",
+      fontSize: "0.875rem",
+      lineHeight: "1.25rem"
+    });
   });
 
   it("exports a dark Airbus theme mapped from Airbus dark decision tokens", () => {
