@@ -401,10 +401,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 | Fait | Audit chrome | Vérifier la paramétrabilité header/menu/sidebar par thème | ✅ | 100% | Chrome non paramétrable → 3 composants ChromeCarbon/ChromeDsfr/ChromeAirbus + layout conditionnel client-only. |
 | Fait | Carbon + DSFR | Reproduire la FORME des 2 sites de doc réels (header + nav + sidebar + logo pixel-perfect) | ✅ | 100% | Forme fidèle livrée; Wordmark Carbon branché en production (`/chrome/carbon/logo.svg`), DSFR asset versionné. |
 <<<<<<< HEAD
-| Fait | Airbus + standard | Airbus dans le même esprit + chrome standard sent-tech | ✅ | 95% | Standard intact. Airbus header navy + wordmark blanc + sidebar livrés; les actions (recherche, notifications, aide, contact) sont désormais des liens explicites ; affinement futur dépend d'une référence visuelle validée. |
-=======
-| Fait | Airbus + standard | Airbus dans le même esprit + chrome standard sent-tech | ✅ | 95% | Standard intact. Airbus header navy + wordmark blanc + sidebar livrés; affinement futur dépend d'une référence visuelle validée. |
->>>>>>> 8806798 (docs: improve WP14 theme chrome action links and status)
+| Fait | Airbus + standard | Airbus dans le même esprit + chrome standard sent-tech | ✅ | 95% | Standard intact. Airbus header navy + wordmark blanc + sidebar livrés ; les actions (recherche, notifications, aide, contact) sont désormais des liens explicites ; affinement futur dépend d'une référence visuelle validée. |
 | Fait | Icônes chrome | Standardiser les icônes interactives sur la librairie du repo | ✅ | 100% | Lucide remplace les SVG inline d'action; `svelte-check` 0 warning après wrappers de classe. |
 | Attendu | Crédibilité | Basculer le thème change le **chrome entier** (header/logo/nav/sidebar), pas que la police | ✅ | 100% | Implémenté sur `main`; validation visuelle publique ex post à la fin. |
 
