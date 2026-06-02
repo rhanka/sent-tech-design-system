@@ -346,7 +346,7 @@
   }
 
   .st-multiSelect__tagRemove:hover:not(:disabled) {
-    background: color-mix(in srgb, currentColor 18%, transparent);
+    background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle));
   }
 
   .st-multiSelect__tagRemove:focus-visible {

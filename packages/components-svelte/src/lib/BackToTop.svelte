@@ -122,7 +122,7 @@
 
   .st-backToTop:hover:not(:disabled),
   .st-backToTop:focus-visible {
-    background: var(--st-component-control-hoverBackground, #111827);
+    background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle));
     box-shadow: 0 0 0 2px var(--st-component-control-focusRing, #38bdf8);
     outline: none;
   }

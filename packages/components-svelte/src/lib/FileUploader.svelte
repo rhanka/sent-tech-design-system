@@ -407,7 +407,7 @@
   }
 
   .st-fileUploader__trigger:hover:not(:disabled) {
-    background: color-mix(in srgb, var(--st-semantic-action-primary) 88%, black);
+    background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle));
   }
 
   .st-fileUploader__trigger:focus-visible {
@@ -531,7 +531,7 @@
   }
 
   .st-fileUploader__remove:hover:not(:disabled) {
-    background: color-mix(in srgb, currentColor 14%, transparent);
+    background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle));
   }
 
   .st-fileUploader__remove:focus-visible {
