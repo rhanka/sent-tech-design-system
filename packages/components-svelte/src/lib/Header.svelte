@@ -256,6 +256,7 @@
 
   .st-header__account-trigger:hover,
   .st-header__account-trigger:focus-visible {
+    background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle));
     border-color: var(--st-semantic-border-interactive, var(--st-semantic-action-primary));
     outline: none;
   }
@@ -350,7 +351,7 @@
 
   .st-header__signin:hover,
   .st-header__signin:focus-visible {
-    background: var(--st-semantic-surface-subtle, #f1f5f9);
+    background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle));
     outline: none;
   }
 </style>

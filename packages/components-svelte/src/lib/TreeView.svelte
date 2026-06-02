@@ -164,7 +164,7 @@
   }
 
   .st-treeView__row:hover:not(.st-treeView__row--disabled) {
-    background: var(--st-semantic-surface-subtle);
+    background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle));
   }
 
   .st-treeView__row:focus-visible {
@@ -173,7 +173,7 @@
   }
 
   .st-treeView__row--selected {
-    background: var(--st-semantic-surface-subtle);
+    background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle));
     color: var(--st-semantic-action-primary);
     font-weight: 600;
   }

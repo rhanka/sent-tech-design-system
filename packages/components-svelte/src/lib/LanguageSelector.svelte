@@ -104,6 +104,7 @@
   }
 
   .st-languageSelector__trigger:hover:not(:disabled) {
+    background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle));
     border-color: var(--st-component-control-hoverBorder, var(--st-semantic-border-strong));
   }
 
@@ -164,7 +165,7 @@
   }
 
   .st-languageSelector__option:hover {
-    background: var(--st-semantic-surface-subtle);
+    background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle));
     color: var(--st-semantic-text-primary);
   }
 

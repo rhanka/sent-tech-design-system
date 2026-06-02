@@ -24,6 +24,13 @@ const here = dirname(fileURLToPath(import.meta.url));
 const LIB = join(here, "lib");
 
 const PILOT_COMPONENTS = ["Button", "Input", "Link", "Card", "Tabs"] as const;
+const PHASE2_COMPONENTS = [
+  "ContentSwitcher",
+  "LanguageSelector",
+  "Header",
+  "Toggletip",
+  "TreeView"
+] as const;
 
 // The set of vars a theme actually emits is derived from the compiled CSS
 // itself (which includes the short foundation aliases the compiler adds, see
@@ -246,6 +253,19 @@ describe("anatomy phase 2 — shared control hover background", () => {
       expect(compiled.get(theme.id)!).toMatch(
         /--st-component-control-hoverBackground:\s*[^;]+;/
       );
+    });
+  }
+});
+
+describe("anatomy phase 2 — interaction surfaces consume shared hover background", () => {
+  for (const name of PHASE2_COMPONENTS) {
+    it(`${name}: consumes --st-component-control-hoverBackground`, () => {
+      const source = readFileSync(join(LIB, `${name}.svelte`), "utf8");
+      const token = "var(--st-component-control-hoverBackground";
+      expect(
+        source.includes(token),
+        `${name} should reference --st-component-control-hoverBackground`
+      ).toBe(true);
     });
   }
 });
