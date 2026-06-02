@@ -51,6 +51,22 @@ import {
   TileGroup,
   Toggle,
   UnorderedList,
+  Combobox,
+  DataTable,
+  DatePicker,
+  Menu,
+  MenuPopover,
+  MenuTriggerButton,
+  Modal,
+  MultiSelect,
+  OverflowMenu,
+  Popover,
+  Table,
+  Tabs,
+  Toast,
+  Toggletip,
+  Tooltip,
+  TreeView,
 } from "./index.js";
 
 describe("Vue behavioral parity — primitives", () => {
@@ -1768,6 +1784,747 @@ describe("Vue behavioral parity — batch 3", () => {
 
     it("each batch 3 component has a name property matching its key", () => {
       for (const [name, component] of Object.entries(batch3)) {
+        expect(component.name, `${name}.name`).toBe(name);
+      }
+    });
+  });
+});
+
+// ─── Batch 4: overlays / menus / tables ─────────────────────────────────────
+
+describe("Vue behavioral parity — batch 4", () => {
+  // --- Menu ---
+  describe("Menu", () => {
+    it("renders a div.st-menu with role=menu", () => {
+      const wrapper = mount(Menu, { props: { items: [] } });
+      expect(wrapper.find(".st-menu").exists()).toBe(true);
+      expect(wrapper.find("[role='menu']").exists()).toBe(true);
+    });
+
+    it("renders action items as buttons with role=menuitem", () => {
+      const wrapper = mount(Menu, {
+        props: { items: [{ label: "Copy" }, { label: "Paste" }] },
+      });
+      expect(wrapper.findAll("[role='menuitem']").length).toBe(2);
+    });
+
+    it("applies danger modifier on danger variant item", () => {
+      const wrapper = mount(Menu, {
+        props: { items: [{ label: "Delete", variant: "danger" }] },
+      });
+      expect(wrapper.find(".st-menu__item--danger").exists()).toBe(true);
+    });
+
+    it("renders divider with role=separator", () => {
+      const wrapper = mount(Menu, {
+        props: { items: [{ type: "divider" }] },
+      });
+      expect(wrapper.find("[role='separator']").exists()).toBe(true);
+    });
+
+    it("renders group with section.st-menu__group", () => {
+      const wrapper = mount(Menu, {
+        props: {
+          items: [
+            { type: "group", label: "Group", items: [{ label: "Item" }] },
+          ],
+        },
+      });
+      expect(wrapper.find(".st-menu__group").exists()).toBe(true);
+    });
+
+    it("applies dense modifier", () => {
+      const wrapper = mount(Menu, {
+        props: { items: [], dense: true },
+      });
+      expect(wrapper.find(".st-menu--dense").exists()).toBe(true);
+    });
+
+    it("emits select when item clicked", async () => {
+      const wrapper = mount(Menu, {
+        props: { items: [{ id: "a", label: "Copy" }] },
+      });
+      await wrapper.find("[role='menuitem']").trigger("click");
+      expect(wrapper.emitted("select")).toBeTruthy();
+    });
+
+    it("has name Menu", () => {
+      expect(Menu.name).toBe("Menu");
+    });
+  });
+
+  // --- MenuPopover ---
+  describe("MenuPopover", () => {
+    it("renders div.st-menuPopover", () => {
+      const wrapper = mount(MenuPopover, { props: { items: [], open: false } });
+      expect(wrapper.find(".st-menuPopover").exists()).toBe(true);
+    });
+
+    it("shows content when open=true", () => {
+      const wrapper = mount(MenuPopover, {
+        props: { items: [{ label: "Item" }], open: true },
+      });
+      expect(wrapper.find(".st-menuPopover__content").exists()).toBe(true);
+    });
+
+    it("hides content when open=false", () => {
+      const wrapper = mount(MenuPopover, {
+        props: { items: [{ label: "Item" }], open: false },
+      });
+      expect(wrapper.find(".st-menuPopover__content").exists()).toBe(false);
+    });
+
+    it("applies placement modifier", () => {
+      const wrapper = mount(MenuPopover, {
+        props: { items: [], open: false, placement: "top-end" },
+      });
+      expect(wrapper.find(".st-menuPopover--top-end").exists()).toBe(true);
+    });
+
+    it("has name MenuPopover", () => {
+      expect(MenuPopover.name).toBe("MenuPopover");
+    });
+  });
+
+  // --- MenuTriggerButton ---
+  describe("MenuTriggerButton", () => {
+    it("renders a button with correct classes", () => {
+      const wrapper = mount(MenuTriggerButton, { slots: { default: "Menu" } });
+      const btn = wrapper.find("button");
+      expect(btn.classes()).toContain("st-menuTriggerButton");
+      expect(btn.classes()).toContain("st-button--secondary");
+    });
+
+    it("sets aria-expanded from open prop", () => {
+      const wrapper = mount(MenuTriggerButton, {
+        props: { open: true },
+        slots: { default: "Menu" },
+      });
+      expect(wrapper.find("button").attributes("aria-expanded")).toBe("true");
+    });
+
+    it("has name MenuTriggerButton", () => {
+      expect(MenuTriggerButton.name).toBe("MenuTriggerButton");
+    });
+  });
+
+  // --- Modal ---
+  describe("Modal", () => {
+    it("renders nothing when open=false", () => {
+      const wrapper = mount(Modal, { props: { open: false } });
+      expect(wrapper.find(".st-modal").exists()).toBe(false);
+    });
+
+    it("renders section.st-modal when open=true", () => {
+      const wrapper = mount(Modal, { props: { open: true } });
+      expect(wrapper.find(".st-modal").exists()).toBe(true);
+    });
+
+    it("renders title when provided", () => {
+      const wrapper = mount(Modal, { props: { open: true, title: "My Modal" } });
+      expect(wrapper.find(".st-modal__title").text()).toBe("My Modal");
+    });
+
+    it("renders close button", () => {
+      const wrapper = mount(Modal, { props: { open: true } });
+      expect(wrapper.find(".st-modal__close").exists()).toBe(true);
+    });
+
+    it("emits close when close button clicked", async () => {
+      const wrapper = mount(Modal, { props: { open: true } });
+      await wrapper.find(".st-modal__close").trigger("click");
+      expect(wrapper.emitted("close")).toBeTruthy();
+    });
+
+    it("renders modal backdrop", () => {
+      const wrapper = mount(Modal, { props: { open: true } });
+      expect(wrapper.find(".st-modal__backdrop").exists()).toBe(true);
+    });
+
+    it("has name Modal", () => {
+      expect(Modal.name).toBe("Modal");
+    });
+  });
+
+  // --- OverflowMenu ---
+  describe("OverflowMenu", () => {
+    it("renders div.st-overflowMenu", () => {
+      const wrapper = mount(OverflowMenu, { props: { items: [] } });
+      expect(wrapper.find(".st-overflowMenu").exists()).toBe(true);
+    });
+
+    it("renders trigger button", () => {
+      const wrapper = mount(OverflowMenu, { props: { items: [] } });
+      expect(wrapper.find(".st-overflowMenu__trigger").exists()).toBe(true);
+    });
+
+    it("opens list when trigger clicked", async () => {
+      const wrapper = mount(OverflowMenu, {
+        props: { items: [{ label: "Edit" }] },
+      });
+      expect(wrapper.find(".st-overflowMenu__list").exists()).toBe(false);
+      await wrapper.find(".st-overflowMenu__trigger").trigger("click");
+      expect(wrapper.find(".st-overflowMenu__list").exists()).toBe(true);
+    });
+
+    it("applies dense modifier", () => {
+      const wrapper = mount(OverflowMenu, {
+        props: { items: [], dense: true },
+      });
+      expect(wrapper.find(".st-overflowMenu--dense").exists()).toBe(true);
+    });
+
+    it("has name OverflowMenu", () => {
+      expect(OverflowMenu.name).toBe("OverflowMenu");
+    });
+  });
+
+  // --- Popover ---
+  describe("Popover", () => {
+    it("renders span.st-popover-host", () => {
+      const wrapper = mount(Popover, { props: { content: "Info" } });
+      expect(wrapper.find(".st-popover-host").exists()).toBe(true);
+    });
+
+    it("shows popover content when open=true", () => {
+      const wrapper = mount(Popover, {
+        props: { content: "Tooltip content", open: true },
+      });
+      expect(wrapper.find(".st-popover").exists()).toBe(true);
+    });
+
+    it("hides popover content when open=false", () => {
+      const wrapper = mount(Popover, {
+        props: { content: "Tooltip content", open: false },
+      });
+      expect(wrapper.find(".st-popover").exists()).toBe(false);
+    });
+
+    it("applies placement modifier", () => {
+      const wrapper = mount(Popover, {
+        props: { content: "Info", open: true, placement: "top" },
+      });
+      expect(wrapper.find(".st-popover--top").exists()).toBe(true);
+    });
+
+    it("has name Popover", () => {
+      expect(Popover.name).toBe("Popover");
+    });
+  });
+
+  // --- Tabs ---
+  describe("Tabs", () => {
+    it("renders section.st-tabs", () => {
+      const wrapper = mount(Tabs, {
+        props: { items: [{ id: "a", label: "Tab A", content: "Content A" }] },
+      });
+      expect(wrapper.find(".st-tabs").exists()).toBe(true);
+    });
+
+    it("renders a tablist with tabs", () => {
+      const wrapper = mount(Tabs, {
+        props: {
+          items: [
+            { id: "a", label: "Tab A", content: "A" },
+            { id: "b", label: "Tab B", content: "B" },
+          ],
+        },
+      });
+      expect(wrapper.find("[role='tablist']").exists()).toBe(true);
+      expect(wrapper.findAll("[role='tab']").length).toBe(2);
+    });
+
+    it("marks the first tab as active by default", () => {
+      const wrapper = mount(Tabs, {
+        props: {
+          items: [{ id: "a", label: "A", content: "C" }],
+        },
+      });
+      expect(wrapper.find(".st-tabs__tab--active").exists()).toBe(true);
+    });
+
+    it("renders tab panel", () => {
+      const wrapper = mount(Tabs, {
+        props: { items: [{ id: "a", label: "A", content: "Content A" }] },
+      });
+      expect(wrapper.find("[role='tabpanel']").exists()).toBe(true);
+    });
+
+    it("emits change when tab clicked", async () => {
+      const wrapper = mount(Tabs, {
+        props: {
+          items: [
+            { id: "a", label: "A", content: "A" },
+            { id: "b", label: "B", content: "B" },
+          ],
+        },
+      });
+      const tabs = wrapper.findAll("[role='tab']");
+      await tabs[1].trigger("click");
+      expect(wrapper.emitted("change")).toBeTruthy();
+    });
+
+    it("has name Tabs", () => {
+      expect(Tabs.name).toBe("Tabs");
+    });
+  });
+
+  // --- Toast ---
+  describe("Toast", () => {
+    it("renders aside.st-toast with default tone info", () => {
+      const wrapper = mount(Toast, { props: { title: "Notice" } });
+      expect(wrapper.find("aside.st-toast").exists()).toBe(true);
+      expect(wrapper.find(".st-toast--info").exists()).toBe(true);
+    });
+
+    it("applies tone modifier class", () => {
+      const wrapper = mount(Toast, {
+        props: { tone: "error", title: "Error!" },
+      });
+      expect(wrapper.find(".st-toast--error").exists()).toBe(true);
+    });
+
+    it("renders title text", () => {
+      const wrapper = mount(Toast, { props: { title: "Done" } });
+      expect(wrapper.find(".st-toast__title").text()).toBe("Done");
+    });
+
+    it("renders message when provided", () => {
+      const wrapper = mount(Toast, {
+        props: { title: "T", message: "Something happened" },
+      });
+      expect(wrapper.find(".st-toast__message").text()).toBe("Something happened");
+    });
+
+    it("renders a queue of items when items prop provided", () => {
+      const wrapper = mount(Toast, {
+        props: {
+          items: [
+            { id: "1", title: "Toast 1" },
+            { id: "2", title: "Toast 2" },
+          ],
+        },
+      });
+      expect(wrapper.find(".st-toastQueue").exists()).toBe(true);
+      expect(wrapper.findAll(".st-toast").length).toBe(2);
+    });
+
+    it("emits close on close button click", async () => {
+      const wrapper = mount(Toast, { props: { title: "Hello" } });
+      await wrapper.find("button").trigger("click");
+      expect(wrapper.emitted("close")).toBeTruthy();
+    });
+
+    it("has name Toast", () => {
+      expect(Toast.name).toBe("Toast");
+    });
+  });
+
+  // --- Toggletip ---
+  describe("Toggletip", () => {
+    it("renders span.st-toggletip with default placement top", () => {
+      const wrapper = mount(Toggletip, { props: { label: "Info" } });
+      expect(wrapper.find(".st-toggletip").exists()).toBe(true);
+      expect(wrapper.find(".st-toggletip--top").exists()).toBe(true);
+    });
+
+    it("renders trigger button", () => {
+      const wrapper = mount(Toggletip, { props: { label: "Info" } });
+      expect(wrapper.find(".st-toggletip__trigger").exists()).toBe(true);
+    });
+
+    it("opens bubble when trigger clicked", async () => {
+      const wrapper = mount(Toggletip, {
+        props: { label: "Info", content: "Details here" },
+      });
+      expect(wrapper.find(".st-toggletip__bubble").exists()).toBe(false);
+      await wrapper.find(".st-toggletip__trigger").trigger("click");
+      expect(wrapper.find(".st-toggletip__bubble").exists()).toBe(true);
+    });
+
+    it("shows content inside bubble", async () => {
+      const wrapper = mount(Toggletip, {
+        props: { label: "Info", content: "Hello details" },
+      });
+      await wrapper.find(".st-toggletip__trigger").trigger("click");
+      expect(wrapper.find(".st-toggletip__content").text()).toBe("Hello details");
+    });
+
+    it("emits update:open on toggle", async () => {
+      const wrapper = mount(Toggletip, { props: { label: "Info" } });
+      await wrapper.find(".st-toggletip__trigger").trigger("click");
+      expect(wrapper.emitted("update:open")).toBeTruthy();
+    });
+
+    it("has name Toggletip", () => {
+      expect(Toggletip.name).toBe("Toggletip");
+    });
+  });
+
+  // --- Tooltip ---
+  describe("Tooltip", () => {
+    it("renders span.st-tooltip with default placement top", () => {
+      const wrapper = mount(Tooltip, {
+        props: { content: "Help text" },
+        slots: { default: "Hover me" },
+      });
+      expect(wrapper.find(".st-tooltip").exists()).toBe(true);
+      expect(wrapper.find(".st-tooltip--top").exists()).toBe(true);
+    });
+
+    it("renders trigger slot in st-tooltip__trigger", () => {
+      const wrapper = mount(Tooltip, {
+        props: { content: "Info" },
+        slots: { default: "Button" },
+      });
+      expect(wrapper.find(".st-tooltip__trigger").text()).toBe("Button");
+    });
+
+    it("renders tooltip content", () => {
+      const wrapper = mount(Tooltip, {
+        props: { content: "My tooltip" },
+        slots: { default: "?" },
+      });
+      expect(wrapper.find(".st-tooltip__content").text()).toBe("My tooltip");
+    });
+
+    it("tooltip content has role=tooltip", () => {
+      const wrapper = mount(Tooltip, {
+        props: { content: "info" },
+        slots: { default: "x" },
+      });
+      expect(wrapper.find("[role='tooltip']").exists()).toBe(true);
+    });
+
+    it("applies placement modifier", () => {
+      const wrapper = mount(Tooltip, {
+        props: { content: "Info", placement: "bottom" },
+        slots: { default: "x" },
+      });
+      expect(wrapper.find(".st-tooltip--bottom").exists()).toBe(true);
+    });
+
+    it("has name Tooltip", () => {
+      expect(Tooltip.name).toBe("Tooltip");
+    });
+  });
+
+  // --- TreeView ---
+  describe("TreeView", () => {
+    it("renders div.st-treeView with role=tree", () => {
+      const wrapper = mount(TreeView, {
+        props: { nodes: [{ id: "n1", label: "Node 1" }] },
+      });
+      expect(wrapper.find(".st-treeView").exists()).toBe(true);
+      expect(wrapper.find("[role='tree']").exists()).toBe(true);
+    });
+
+    it("renders tree rows", () => {
+      const wrapper = mount(TreeView, {
+        props: {
+          nodes: [
+            { id: "n1", label: "Node 1" },
+            { id: "n2", label: "Node 2" },
+          ],
+        },
+      });
+      expect(wrapper.findAll(".st-treeView__row").length).toBe(2);
+    });
+
+    it("marks selected row", () => {
+      const wrapper = mount(TreeView, {
+        props: {
+          nodes: [{ id: "n1", label: "Node 1" }],
+          selectedId: "n1",
+        },
+      });
+      expect(wrapper.find(".st-treeView__row--selected").exists()).toBe(true);
+    });
+
+    it("renders caret as leaf when node has no children", () => {
+      const wrapper = mount(TreeView, {
+        props: { nodes: [{ id: "n1", label: "Leaf" }] },
+      });
+      expect(wrapper.find(".st-treeView__caret--leaf").exists()).toBe(true);
+    });
+
+    it("expands children when id in expandedIds", () => {
+      const wrapper = mount(TreeView, {
+        props: {
+          nodes: [
+            {
+              id: "n1",
+              label: "Parent",
+              children: [{ id: "n1a", label: "Child" }],
+            },
+          ],
+          expandedIds: ["n1"],
+        },
+      });
+      expect(wrapper.findAll(".st-treeView__row").length).toBe(2);
+    });
+
+    it("has name TreeView", () => {
+      expect(TreeView.name).toBe("TreeView");
+    });
+  });
+
+  // --- Combobox ---
+  describe("Combobox", () => {
+    it("renders div.st-combobox with default size md", () => {
+      const wrapper = mount(Combobox, {
+        props: { options: [{ value: "a", label: "A" }] },
+      });
+      expect(wrapper.find(".st-combobox").exists()).toBe(true);
+      expect(wrapper.find(".st-combobox--md").exists()).toBe(true);
+    });
+
+    it("renders a combobox input", () => {
+      const wrapper = mount(Combobox, { props: { options: [] } });
+      expect(wrapper.find("input[role='combobox']").exists()).toBe(true);
+    });
+
+    it("shows option list when input focused", async () => {
+      const wrapper = mount(Combobox, {
+        props: { options: [{ value: "a", label: "Option A" }] },
+      });
+      await wrapper.find("input").trigger("focus");
+      expect(wrapper.find(".st-combobox__list").exists()).toBe(true);
+    });
+
+    it("renders options in list", async () => {
+      const wrapper = mount(Combobox, {
+        props: {
+          options: [
+            { value: "a", label: "A" },
+            { value: "b", label: "B" },
+          ],
+        },
+      });
+      await wrapper.find("input").trigger("focus");
+      expect(wrapper.findAll(".st-combobox__option").length).toBe(2);
+    });
+
+    it("applies size modifier", () => {
+      const wrapper = mount(Combobox, {
+        props: { options: [], size: "sm" },
+      });
+      expect(wrapper.find(".st-combobox--sm").exists()).toBe(true);
+    });
+
+    it("has name Combobox", () => {
+      expect(Combobox.name).toBe("Combobox");
+    });
+  });
+
+  // --- MultiSelect ---
+  describe("MultiSelect", () => {
+    it("renders div.st-multiSelect with default size md", () => {
+      const wrapper = mount(MultiSelect, {
+        props: { options: [{ value: "a", label: "A" }] },
+      });
+      expect(wrapper.find(".st-multiSelect").exists()).toBe(true);
+      expect(wrapper.find(".st-multiSelect--md").exists()).toBe(true);
+    });
+
+    it("renders a trigger button", () => {
+      const wrapper = mount(MultiSelect, { props: { options: [] } });
+      expect(wrapper.find(".st-multiSelect__trigger").exists()).toBe(true);
+    });
+
+    it("opens list when trigger clicked", async () => {
+      const wrapper = mount(MultiSelect, {
+        props: { options: [{ value: "a", label: "A" }] },
+      });
+      expect(wrapper.find(".st-multiSelect__list").exists()).toBe(false);
+      await wrapper.find(".st-multiSelect__trigger").trigger("click");
+      expect(wrapper.find(".st-multiSelect__list").exists()).toBe(true);
+    });
+
+    it("renders options in list", async () => {
+      const wrapper = mount(MultiSelect, {
+        props: {
+          options: [
+            { value: "a", label: "A" },
+            { value: "b", label: "B" },
+          ],
+        },
+      });
+      await wrapper.find(".st-multiSelect__trigger").trigger("click");
+      expect(wrapper.findAll(".st-multiSelect__option").length).toBe(2);
+    });
+
+    it("marks selected options with --selected class", async () => {
+      const wrapper = mount(MultiSelect, {
+        props: {
+          options: [
+            { value: "a", label: "A" },
+            { value: "b", label: "B" },
+          ],
+          value: ["a"],
+        },
+      });
+      await wrapper.find(".st-multiSelect__trigger").trigger("click");
+      const options = wrapper.findAll(".st-multiSelect__option");
+      expect(options[0].classes()).toContain("st-multiSelect__option--selected");
+      expect(options[1].classes()).not.toContain("st-multiSelect__option--selected");
+    });
+
+    it("has name MultiSelect", () => {
+      expect(MultiSelect.name).toBe("MultiSelect");
+    });
+  });
+
+  // --- DatePicker ---
+  describe("DatePicker", () => {
+    it("renders div.st-datepicker", () => {
+      const wrapper = mount(DatePicker);
+      expect(wrapper.find(".st-datepicker").exists()).toBe(true);
+    });
+
+    it("applies size modifier", () => {
+      const wrapper = mount(DatePicker, { props: { size: "sm" } });
+      expect(wrapper.find(".st-datepicker--sm").exists()).toBe(true);
+    });
+
+    it("renders a date input", () => {
+      const wrapper = mount(DatePicker);
+      expect(wrapper.find("input[type=date]").exists()).toBe(true);
+    });
+
+    it("renders label when provided", () => {
+      const wrapper = mount(DatePicker, { props: { label: "Birth date" } });
+      expect(wrapper.find(".st-field__label").text()).toBe("Birth date");
+    });
+
+    it("has name DatePicker", () => {
+      expect(DatePicker.name).toBe("DatePicker");
+    });
+  });
+
+  // --- DataTable ---
+  describe("DataTable", () => {
+    it("renders div.st-dataTable-wrap with table.st-dataTable", () => {
+      const wrapper = mount(DataTable, {
+        props: { columns: [{ key: "name", label: "Name" }], rows: [] },
+      });
+      expect(wrapper.find(".st-dataTable-wrap").exists()).toBe(true);
+      expect(wrapper.find("table.st-dataTable").exists()).toBe(true);
+    });
+
+    it("applies size modifier", () => {
+      const wrapper = mount(DataTable, {
+        props: { columns: [], rows: [], size: "sm" },
+      });
+      expect(wrapper.find(".st-dataTable--sm").exists()).toBe(true);
+    });
+
+    it("renders column headers", () => {
+      const wrapper = mount(DataTable, {
+        props: {
+          columns: [
+            { key: "a", label: "Col A" },
+            { key: "b", label: "Col B" },
+          ],
+          rows: [],
+        },
+      });
+      expect(wrapper.findAll("th").length).toBe(2);
+    });
+
+    it("renders rows", () => {
+      const wrapper = mount(DataTable, {
+        props: {
+          columns: [{ key: "name", label: "Name" }],
+          rows: [
+            { id: "1", name: "Alice" },
+            { id: "2", name: "Bob" },
+          ],
+        },
+      });
+      expect(wrapper.findAll("tbody tr").length).toBe(2);
+    });
+
+    it("has name DataTable", () => {
+      expect(DataTable.name).toBe("DataTable");
+    });
+  });
+
+  // --- Table ---
+  describe("Table", () => {
+    it("renders div.st-table-wrap with table.st-table", () => {
+      const wrapper = mount(Table, {
+        props: { columns: [{ key: "name", label: "Name" }], rows: [] },
+      });
+      expect(wrapper.find(".st-table-wrap").exists()).toBe(true);
+      expect(wrapper.find("table.st-table").exists()).toBe(true);
+    });
+
+    it("renders column headers", () => {
+      const wrapper = mount(Table, {
+        props: {
+          columns: [
+            { key: "a", label: "Col A" },
+            { key: "b", label: "Col B" },
+          ],
+          rows: [],
+        },
+      });
+      expect(wrapper.findAll("th").length).toBe(2);
+    });
+
+    it("renders rows with cell data", () => {
+      const wrapper = mount(Table, {
+        props: {
+          columns: [{ key: "name", label: "Name" }],
+          rows: [{ id: "1", name: "Alice" }, { id: "2", name: "Bob" }],
+        },
+      });
+      expect(wrapper.findAll("tbody tr").length).toBe(2);
+    });
+
+    it("renders caption", () => {
+      const wrapper = mount(Table, {
+        props: { columns: [], rows: [], caption: "My Table" },
+      });
+      expect(wrapper.find("caption").text()).toBe("My Table");
+    });
+
+    it("has name Table", () => {
+      expect(Table.name).toBe("Table");
+    });
+  });
+
+  // --- Batch 4 export surface ---
+  describe("export surface — batch 4", () => {
+    const batch4 = {
+      Combobox,
+      DataTable,
+      DatePicker,
+      Menu,
+      MenuPopover,
+      MenuTriggerButton,
+      Modal,
+      MultiSelect,
+      OverflowMenu,
+      Popover,
+      Table,
+      Tabs,
+      Toast,
+      Toggletip,
+      Tooltip,
+      TreeView,
+    };
+
+    it("exports all batch 4 components", () => {
+      for (const [name, component] of Object.entries(batch4)) {
+        expect(component, `${name} should be exported`).toBeDefined();
+        expect(typeof component).toBe("object");
+      }
+    });
+
+    it("each batch 4 component has a name property matching its key", () => {
+      for (const [name, component] of Object.entries(batch4)) {
         expect(component.name, `${name}.name`).toBe(name);
       }
     });
