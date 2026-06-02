@@ -16,6 +16,8 @@
         "Quand le déclencheur est à gauche, préférez `placement=\"bottom-start\"` pour que la liste s’ouvre vers la droite (alignée à gauche du déclencheur). `bottom-end` (défaut) aligne la liste à droite.",
       usageNote3:
         "Le menu se ferme sur Escape et sur pointerdown extérieur (géré via `svelte:window`). `onselect` reçoit la `value` de l’item, après l’`onclick` de l’item.",
+      usageNote4:
+        "Navigation clavier : Enter/Espace/ArrowDown ouvre et focus le premier item; puis flèches Haut/Bas, Home/End et Enter/Espace pour naviguer/activer; les items désactivés sont ignorés.",
       basicLabel: "Menu de base (déclencheur à gauche, ouverture à droite)",
       placementLabel: "Placements",
       stateLabel: "Items désactivés et danger"
@@ -30,6 +32,8 @@
         "When the trigger sits on the left, use `placement=\"bottom-start\"` so the list opens to the right (left-aligned to the trigger). `bottom-end` (default) right-aligns the list.",
       usageNote3:
         "The menu closes on Escape and outside pointerdown (handled via `svelte:window`). `onselect` receives the item `value`, after the item `onclick`.",
+      usageNote4:
+        "Keyboard support: Enter/Space/ArrowDown opens and focuses the first item, then Up/Down arrows, Home/End and Enter/Space navigate/activate (disabled items are skipped).",
       basicLabel: "Basic menu (left trigger, opens to the right)",
       placementLabel: "Placements",
       stateLabel: "Disabled and danger items"
@@ -160,6 +164,7 @@
     <p class="docs-demo-note">{text().usageNote1}</p>
     <p class="docs-demo-note">{text().usageNote2}</p>
     <p class="docs-demo-note">{text().usageNote3}</p>
+    <p class="docs-demo-note">{text().usageNote4}</p>
   </section>
 
   <section class="docs-section">
