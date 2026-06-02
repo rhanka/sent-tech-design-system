@@ -777,6 +777,26 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "TableOfContents",
+    slug: "table-of-contents",
+    status: "documented",
+    category: "navigation",
+    description: {
+      fr: "Menu d’itinéraire de page avec liens ancres par niveau.",
+      en: "Page route menu with anchor links by level."
+    }
+  },
+  {
+    name: "BackToTop",
+    slug: "back-to-top",
+    status: "documented",
+    category: "navigation",
+    description: {
+      fr: "Bouton d’accès rapide qui remonte vers le haut de la page au défilement.",
+      en: "Quick-access button to return to the top after scrolling."
+    }
+  },
+  {
     name: "Quote",
     slug: "quote",
     status: "documented",

@@ -1,0 +1,112 @@
+<script lang="ts">
+  import { Badge, TableOfContents } from "@sentropic/design-system-svelte";
+
+  const items = [
+    { id: "intro", label: "Intro", level: 1 },
+    { id: "usage", label: "Utilisation", level: 1 },
+    { id: "nested", label: "Niveau 2", level: 2 },
+    { id: "api", label: "API", level: 1 },
+    { id: "acc", label: "Accessibilité", level: 1 }
+  ];
+</script>
+
+<div class="docs-page">
+  <section class="docs-hero">
+    <p class="docs-hero-kicker">Composant · Navigation</p>
+    <div class="docs-hero-title">
+      <h1>TableOfContents</h1>
+      <Badge tone="neutral">Documenté</Badge>
+    </div>
+    <p>
+      <code>TableOfContents</code> affiche une table d’ancres structurée avec
+      niveaux hiérarchiques. Idéal pour guider la navigation verticale des longues pages.
+    </p>
+  </section>
+
+  <section class="docs-section" id="intro">
+    <h2>Présentation</h2>
+    <div class="docs-example">
+      <TableOfContents {items} title="Sur cette page" activeId="intro" />
+    </div>
+  </section>
+
+  <section class="docs-section" id="usage">
+    <h2>Cas d’usage</h2>
+    <div class="docs-example docs-example--stack">
+      <p>Placez un identifiant par rubrique et branchez le tableau d’items côté layout.</p>
+      <TableOfContents {items} title="Sommaire" activeId="usage" />
+      <p class="docs-demo-context">
+        L’identifiant actif est purement déclaratif (via <code>activeId</code>) dans cette version.
+        Les ancres sont générées avec <code>href=&quot;#&lt;id&gt;&quot;</code>.
+      </p>
+    </div>
+  </section>
+
+  <section class="docs-section" id="nested">
+    <h2>Hiérarchie</h2>
+    <div class="docs-example">
+      <TableOfContents
+        items={[
+          { id: "intro", label: "Intro", level: 1 },
+          { id: "usage", label: "Utilisation", level: 1 },
+          { id: "nested", label: "Niveau secondaire", level: 2 },
+          { id: "api", label: "Niveau tertiaire", level: 3 },
+          { id: "api", label: "API", level: 1 }
+        ]}
+        title="Sommaire hiérarchique"
+      />
+      <div class="docs-note">Les niveaux inférieurs gagnent une indentation visuelle.</div>
+    </div>
+  </section>
+
+  <section class="docs-section" id="api">
+    <h2>API</h2>
+    <table class="docs-table">
+      <thead>
+        <tr>
+          <th>Prop</th>
+          <th>Type</th>
+          <th>Défaut</th>
+          <th>Effet</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>items</code></td>
+          <td><code>TableOfContentsItem[]</code></td>
+          <td>obligatoire</td>
+          <td>Pivots du sommaire</td>
+        </tr>
+        <tr>
+          <td><code>activeId</code></td>
+          <td><code>string</code></td>
+          <td>—</td>
+          <td>Item actif visuel via <code>aria-current</code></td>
+        </tr>
+        <tr>
+          <td><code>title</code></td>
+          <td><code>string</code></td>
+          <td>—</td>
+          <td>Intitulé optionnel du bloc</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="docs-section" id="acc">
+    <h2>Accessibilité</h2>
+    <ul class="docs-token-list">
+      <li>Le conteneur expose un <code>nav</code> avec <code>aria-label</code> explicite.</li>
+      <li>Chaque entrée est un lien classique avec <code>href=#id</code>.</li>
+      <li>Le repère actif porte <code>aria-current="location"</code>.</li>
+    </ul>
+  </section>
+
+  <section class="docs-section">
+    <h2>Type</h2>
+    <p>
+      Export Svelte: <code>TableOfContentsItem</code> contient <code>id</code>, <code>label</code>,
+      et <code>level?</code> (1 = racine, 2/3 = indentations).
+    </p>
+  </section>
+</div>
