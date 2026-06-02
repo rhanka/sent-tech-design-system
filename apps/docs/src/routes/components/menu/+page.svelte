@@ -94,6 +94,7 @@
     <ul class="docs-list docs-list--plain">
       <li>{fr("Le conteneur a role=\"menu\" et un aria-label fourni par label.", "The container has role=\"menu\" and an aria-label supplied by label.")}</li>
       <li>{fr("Chaque action a role=\"menuitem\" ; les items désactivés portent aria-disabled.", "Each action has role=\"menuitem\"; disabled items carry aria-disabled.")}</li>
+      <li>{fr("Navigation clavier : fleches haut/bas pour parcourir, Home/End pour aller aux bornes, Enter/Espace pour activer.", "Keyboard navigation: up/down arrows to move, Home/End to jump, Enter/Space to activate.")}</li>
       <li>{fr("Avec dismissOnSelect, Escape et le clic extérieur ferment le menu.", "With dismissOnSelect, Escape and outside clicks close the menu.")}</li>
       <li>{fr("Les groupes et séparateurs sont décoratifs (presentation / aria-hidden).", "Groups and dividers are decorative (presentation / aria-hidden).")}</li>
     </ul>
