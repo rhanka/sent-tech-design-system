@@ -1308,7 +1308,7 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       text: semantic.text.primary,
       itemHoverBackground: semantic.surface.subtle,
       dangerText: semantic.feedback.error,
-      dangerHoverBackground: `color-mix(in srgb, ${semantic.feedback.error} 8%, transparent)`,
+      dangerHoverBackground: "rgba(185, 28, 28, 0.08)",
       disabledText: semantic.text.muted,
       radius: foundation.radius.md,
       shadow: foundation.shadow.medium
