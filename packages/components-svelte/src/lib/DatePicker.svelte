@@ -643,7 +643,7 @@
 
   .st-datepicker__day--inRange {
     background: var(
-      --st-component-dropdown-optionHoverBackground,
+      --st-component-control-hoverBackground,
       var(--st-semantic-surface-subtle)
     );
   }

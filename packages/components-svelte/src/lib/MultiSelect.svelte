@@ -426,7 +426,7 @@
   .st-multiSelect__option:hover:not(:disabled),
   .st-multiSelect__option:focus-visible {
     background: var(
-      --st-component-dropdown-optionHoverBackground,
+      --st-component-control-hoverBackground,
       var(--st-semantic-surface-subtle)
     );
     outline: none;
