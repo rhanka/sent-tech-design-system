@@ -121,14 +121,17 @@
        the Input field box); bottom corners keep the field shape radius. */
     border-top-left-radius: var(--st-component-control-anatomy-field-radiusTop, var(--st-component-control-anatomy-shape-radius, 0.375rem));
     border-top-right-radius: var(--st-component-control-anatomy-field-radiusTop, var(--st-component-control-anatomy-shape-radius, 0.375rem));
-    border-bottom-right-radius: var(--st-component-control-anatomy-shape-radius, 0.375rem);
-    border-bottom-left-radius: var(--st-component-control-anatomy-shape-radius, 0.375rem);
+    border-bottom-right-radius: var(--st-component-control-anatomy-field-radiusBottom, var(--st-component-control-anatomy-shape-radius, 0.375rem));
+    border-bottom-left-radius: var(--st-component-control-anatomy-field-radiusBottom, var(--st-component-control-anatomy-shape-radius, 0.375rem));
     color: var(--st-component-control-text, var(--st-semantic-text-primary));
     display: inline-flex;
     /* P-D: field-box padding + input typography per theme. Default = the prior
        render (0 padding on the wrapper, inherited 16px / `normal` typography);
        DSFR pads 8/16px, Carbon 0/40px to match the measured reference input. */
-    padding: var(--st-component-search-paddingBlock, 0) var(--st-component-search-paddingInline, 0);
+    padding: var(--st-component-search-paddingBlock, 0)
+      var(--st-component-search-paddingRight, var(--st-component-search-paddingInline, 0))
+      var(--st-component-search-paddingBlock, 0)
+      var(--st-component-search-paddingLeft, var(--st-component-search-paddingInline, 0));
     font-size: var(--st-component-search-fontSize, 1rem);
     line-height: var(--st-component-search-lineHeight, normal);
     letter-spacing: var(--st-component-search-letterSpacing, normal);

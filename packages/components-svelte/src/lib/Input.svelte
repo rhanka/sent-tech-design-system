@@ -96,8 +96,8 @@
        corners → the base Sent Tech field stays a uniform rounded box. */
     border-top-left-radius: var(--st-component-control-anatomy-field-radiusTop, var(--st-component-control-anatomy-shape-radius, 0.375rem));
     border-top-right-radius: var(--st-component-control-anatomy-field-radiusTop, var(--st-component-control-anatomy-shape-radius, 0.375rem));
-    border-bottom-right-radius: var(--st-component-control-anatomy-shape-radius, 0.375rem);
-    border-bottom-left-radius: var(--st-component-control-anatomy-shape-radius, 0.375rem);
+    border-bottom-right-radius: var(--st-component-control-anatomy-field-radiusBottom, var(--st-component-control-anatomy-shape-radius, 0.375rem));
+    border-bottom-left-radius: var(--st-component-control-anatomy-field-radiusBottom, var(--st-component-control-anatomy-shape-radius, 0.375rem));
     /* Bottom rule as a box-shadow inset (anatomy v1.3.0, real DSFR/Carbon
        technique) instead of a border-bottom — keeps the box height honest.
        Fallback = none → the base boxed field draws its rule via the 4 borders. */

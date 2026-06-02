@@ -130,8 +130,8 @@ describe("anatomy v1.1.0 — hover bg, hover decoration, per-size font size", ()
     THEMES.map((t) => [t.id, compileTheme(t)])
   );
 
-  it("ANATOMY_VERSION is 1.5.0", () => {
-    expect(ANATOMY_VERSION).toBe("1.5.0");
+  it("ANATOMY_VERSION is 1.6.0", () => {
+    expect(ANATOMY_VERSION).toBe("1.6.0");
   });
 
   for (const theme of THEMES) {
@@ -242,7 +242,7 @@ describe("anatomy v1.2.0 — field style (outline vs filled-underline)", () => {
     it(`${theme.id}: every field var (style/fillBg/border per side + radiusTop/underline/focusShadow + select leaves) is emitted`, () => {
       for (const leaf of [
         "style", "fillBg", "borderTop", "borderRight", "borderBottom", "borderLeft",
-        "radiusTop", "underline", "focusShadow",
+        "radiusTop", "radiusBottom", "underline", "focusShadow",
         // v1.4.0 (F5/F9): native <select> rendering leaves.
         "selectAppearance", "selectChevron", "selectPaddingRight"
       ]) {
@@ -266,6 +266,7 @@ describe("anatomy v1.2.0 — field style (outline vs filled-underline)", () => {
     // inherit the theme's shape radius (uniform box) → no Sent Tech regression.
     expect(css).toContain(`${FIELD}-underline: none`);
     expect(css).toContain(`${FIELD}-radiusTop: 0.375rem`);
+    expect(css).toContain(`${FIELD}-radiusBottom: 0.375rem`);
   });
 
   it("DSFR = filled-underline: #eeeeee fill, bottom rule via inset box-shadow #3a3a3a, no border on any side, 4px top corners", () => {
@@ -280,6 +281,7 @@ describe("anatomy v1.2.0 — field style (outline vs filled-underline)", () => {
     expect(css).toContain(`${FIELD}-underline: inset 0 -1px 0 0 #3a3a3a`);
     // F3: DSFR rounds only the top corners (4px), bottom stays square.
     expect(css).toContain(`${FIELD}-radiusTop: 4px`);
+    expect(css).toContain(`${FIELD}-radiusBottom: 0`);
   });
 
   it("Carbon = filled-underline with a REAL border-bottom (#8d8d8d) — its real technique, no box-shadow underline", () => {
@@ -295,6 +297,7 @@ describe("anatomy v1.2.0 — field style (outline vs filled-underline)", () => {
     expect(css).toContain(`${FIELD}-underline: none`);
     // Carbon fields are square top and bottom (radiusTop inherits shape radius 0).
     expect(css).toContain(`${FIELD}-radiusTop: 0`);
+    expect(css).toContain(`${FIELD}-radiusBottom: 0`);
   });
 
   it("only the DSFR field opts into the box-shadow underline (F4); Carbon stays on its real border-bottom", () => {
