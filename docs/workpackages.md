@@ -26,7 +26,7 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 | WP11 | Dogfooding moteur publié | 🟢 | 100% | `design check` full-site exécuté sans finding critique ; boucle findings fermée. | Continuer routine périodique. | Aucun. |
 | WP12 | Templates docs / slides ESN | 🟢 | 100% | Typologie + 3 gabarits livrés en source Markdown-first. | Ajouter de nouveaux templates métier si besoin. | Aucun. |
 | WP13 | Portage React | 🟢 | 100% | Package React complet, docs `/react`, workflow de release dédié, 95 tests verts. | Mise à l’échelle/retouches post-release. | Aucun. |
-| WP14 | Chrome documentaire par thème | 🟢 | 95% | Forme du chrome (header/nav/sidebar/logo) adaptée pour DSFR/Carbon/Airbus + audit fidélité local (91,1%/93,9%). | Ajustements finaux de finesse visuelle selon retours externes. | Validation publique de la fidélité avant clôture définitive. |
+| WP14 | Chrome documentaire par thème | 🟢 | 98% | Forme du chrome (header/nav/sidebar/logo) adaptée pour DSFR/Carbon/Airbus + audit fidélité local (rapport `92,4%` global, `2026-06-02`) + compare local généré automatiquement. | Ajustements finaux de finesse visuelle selon retours externes. | Validation publique de la fidélité avant clôture définitive (session d'alignement visuel en attente). |
 
 ## Suivi Antigravity — reprise header docs 2026-05-24
 
@@ -288,7 +288,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 | Banc `/compare` réel (ours vs DS officiel en iframe) | 🟢 local | thèmes importés only, hauteur égale, langue native, versions DS+thème |
 | Sélecteur de thème docs (`:root`) | 🟢 local | switch qui change l'**anatomie** (police/radius/focus/champ) |
 | **Publication npm** (DS + thèmes, post-anatomie) | 🟢 | DS/tokens/themes/svelte publiés jusqu'à la ligne 0.10.x; les thèmes clients restent hors publication automatique. |
-| Rollout Phase 2 (~55 composants restants) | 🟡 | Garde `control.hoverBackground` étendue: le builder l'émet pour tous les thèmes, et 31 composants hors pilotes ont été élargis (Accordion, BackToTop, Combobox, ContentSwitcher, CopyButton, DataTable, DatePicker, Dropdown, FileUploader, Header, IconButton, Input, LanguageSelector, Menu, MultiSelect, NumberInput, Notification, OverflowMenu, PasswordInput, Pagination, PaginationNav, Search, Select, SideNav, Table, Tag, Textarea, Toggletip, Tile, TileGroup, TreeView) → 31/55 composants cibles. |
+| Rollout Phase 2 (~55 composants restants) | 🟡 | Garde `control.hoverBackground` étendue: le builder l'émet pour tous les thèmes, et 31 composants élargis (Input déjà traité en pilote + 30 hors pilotes) : Accordion, BackToTop, Combobox, ContentSwitcher, CopyButton, DataTable, DatePicker, Dropdown, FileUploader, Header, IconButton, LanguageSelector, Menu, MultiSelect, NumberInput, Notification, OverflowMenu, PasswordInput, Pagination, PaginationNav, Search, Select, SideNav, Table, Tag, Textarea, Toggletip, Tile, TileGroup, TreeView → 31/55 composants cibles. |
 | Thème client Airbus | 🟡 | Package public-ready `packages/theme-airbus` (`airbusTheme`, `airbusDarkTheme`, tests, `MAPPING.md`) sur `main`; publication npm bloquée jusqu'à décision version/release. |
 | Thèmes clients : Scalian / CGI | ⚪ | plus tard ; **hors git** tant que non cadrés |
 
@@ -386,7 +386,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 | Item | Statut | Owner | Notes |
 |---|---|---|---|
-| Vérification fidélité locale DSFR/Carbon (comparatif bord à bord) | ✅ | Claude | Rapport généré via `node tools/compare/fidelity.mjs` (2026-06-01) : 91,1% (DSFR) et 93,9% (Carbon), artefacts `docs/compare-fidelity-report.md` + `tools/compare/last-report.json`.
+| Vérification fidélité locale DSFR/Carbon (comparatif bord à bord) | ✅ | Claude | Rapport généré via `node tools/compare/fidelity.mjs` (2026-06-02) : `Global fidelity: 92,4%` (1148 `=`, 24 `~`, 97 `≠`), artefacts `docs/compare-fidelity-report.md` + `tools/compare/last-report.json` + `apps/docs/src/lib/compare/compare-gaps.json`.
 | Audit du chrome actuel (header/menu/sidebar paramétrables par thème ?) | ✅ | Claude | Fait — chrome non paramétrable → généralisé (3 composants + layout conditionnel). |
 | Logos pixel-perfect par DS | 🟢 | Claude + Codex | DSFR + Airbus + Carbon utilisent des SVG versionnés ; le wordmark Carbon officiel est branché depuis `assets/carbon-wordmark.svg`. |
 | Chrome **Carbon** (barre noire + sidebar arbre + icônes) | ✅ | Claude | Livré sur `main`; forme documentaire Carbon présente. |
