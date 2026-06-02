@@ -80,20 +80,29 @@
         <!-- Gauche : logo RF + titre -->
         <div class="dsfr-header__brand">
           <a href="/" class="dsfr-header__brand-link" aria-label="Accueil — Système de Design de l'État">
-            <!-- Bloc-marque DSFR officiel : drapeau + Marianne (SVG, chemins repris du
-                 .fr-logo::before de systeme-de-design.gouv.fr) AU-DESSUS de RÉPUBLIQUE FRANÇAISE. -->
+            <!-- Bloc-marque DSFR officiel (dimensions exactes du .fr-logo de
+                 systeme-de-design.gouv.fr) : drapeau+Marianne au-dessus de
+                 RÉPUBLIQUE FRANÇAISE, puis devise « Liberté Égalité Fraternité ». -->
             <span class="dsfr-logo">
               <img
                 src="/chrome/dsfr/logo-rf.svg"
                 alt=""
                 class="dsfr-logo-img"
-                width="44"
-                height="18"
+                width="33"
+                height="14"
                 aria-hidden="true"
               />
               <span class="dsfr-logo-rf">RÉPUBLIQUE<br/>FRANÇAISE</span>
+              <img
+                src="/chrome/dsfr/logo-devise.svg"
+                alt=""
+                class="dsfr-logo-devise"
+                width="32"
+                height="23"
+                aria-hidden="true"
+              />
             </span>
-            <span class="dsfr-service-title">Système de Design<br/>de l'État</span>
+            <span class="dsfr-service-title">Système de Design de l'État</span>
           </a>
         </div>
 
@@ -287,7 +296,7 @@
     align-items: center;
     color: var(--dsfr-black);
     display: inline-flex;
-    gap: 1rem;
+    gap: 1.5rem;
     text-decoration: none;
   }
 
@@ -295,7 +304,8 @@
     text-decoration: none;
   }
 
-  /* Bloc-marque DSFR : drapeau+Marianne au-dessus de RÉPUBLIQUE FRANÇAISE */
+  /* Bloc-marque DSFR — dimensions exactes du .fr-logo officiel :
+     drapeau+Marianne (33×12) + RÉPUBLIQUE FRANÇAISE (12,6px) + devise. */
   .dsfr-logo {
     display: flex;
     flex: 0 0 auto;
@@ -305,25 +315,34 @@
 
   .dsfr-logo-img {
     display: block;
-    width: 2.75rem; /* 44px ; ratio 44:18 du drapeau officiel préservé */
+    width: 33px; /* drapeau+Marianne, ratio officiel préservé */
     height: auto;
-    margin-bottom: 0.25rem; /* 4px, comme le .fr-logo::before officiel */
+    margin-bottom: 4px; /* comme le .fr-logo::before officiel */
   }
 
   .dsfr-logo-rf {
     color: #161616;
-    font-size: 0.875rem;
+    font-size: 12.6px;
     font-weight: 700;
     letter-spacing: -0.01em;
-    line-height: 0.95;
+    line-height: 13px;
     text-transform: uppercase;
   }
 
+  /* Devise « Liberté Égalité Fraternité » (gravure officielle), collée sous FRANÇAISE */
+  .dsfr-logo-devise {
+    display: block;
+    width: 31.5px;
+    height: auto;
+    margin-top: 3px;
+  }
+
   .dsfr-service-title {
-    color: var(--dsfr-blue);
-    font-size: 1.125rem;
+    color: #161616;
+    font-size: 20px;
     font-weight: 700;
-    line-height: 1.25;
+    line-height: 28px;
+    white-space: nowrap;
   }
 
   .dsfr-header__tools {
