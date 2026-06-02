@@ -223,12 +223,15 @@
   }
 
   .st-menu__item--danger {
-    color: var(--st-component-menu-dangerText, var(--st-semantic-feedback-error, #b91c1c));
+    color: var(--st-component-menu-dangerText, var(--st-semantic-feedback-error));
   }
 
   .st-menu__item--danger:hover:not(:disabled),
   .st-menu__item--danger:focus-visible {
-    background: var(--st-component-menu-dangerHoverBackground, rgba(185, 28, 28, 0.08));
+    background: var(
+      --st-component-menu-dangerHoverBackground,
+      var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle))
+    );
   }
 
   .st-menu__itemIcon {
