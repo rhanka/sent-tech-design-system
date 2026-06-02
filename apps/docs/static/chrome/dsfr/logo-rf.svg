@@ -1,18 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 116" width="96" height="116" role="img" aria-labelledby="title desc">
-  <title id="title">République Française</title>
-  <desc id="desc">Bloc marque République Française avec Marianne stylisée, pour référence chrome DSFR.</desc>
-  <rect width="96" height="116" fill="#ffffff"/>
-  <path d="M8 8h24v100H8z" fill="#000091"/>
-  <path d="M64 8h24v100H64z" fill="#e1000f"/>
-  <path d="M32 8h32v100H32z" fill="#ffffff"/>
-  <path d="M25 79c10-9 23-14 38-17 5-1 9-2 13-5-2 8-10 16-23 23-16 8-30 18-42 29v-9c4-7 8-14 14-21Z" fill="#000091" opacity=".82"/>
-  <path d="M54 8c8 0 24 8 29 16 3 5 1 11-4 13 10 5 16 14 13 24-2 6-9 8-14 11-5 4 1 10 2 15 2 9-4 15-13 15-10 0-18-4-28-2-9 2-17 8-24 16H8V8h46Z" fill="#e1000f" opacity=".92"/>
-  <path d="M8 8h40c-9 7-17 16-20 29-4 16 3 27 18 32-14 3-26 8-38 16V8Z" fill="#000091" opacity=".92"/>
-  <g fill="#161616" font-family="Marianne, Arial, sans-serif" text-anchor="middle">
-    <text x="48" y="42" font-size="10" font-weight="700" letter-spacing=".7">RÉPUBLIQUE</text>
-    <text x="48" y="54" font-size="10" font-weight="700" letter-spacing=".7">FRANÇAISE</text>
-    <text x="48" y="77" font-size="5.2" letter-spacing=".15">Liberté</text>
-    <text x="48" y="85" font-size="5.2" letter-spacing=".15">Égalité</text>
-    <text x="48" y="93" font-size="5.2" letter-spacing=".15">Fraternité</text>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72" width="72" height="72" role="img" aria-label="Drapeau de la République Française">
+  <title>République Française</title>
+  <!--
+    Bloc-marque DSFR : drapeau tricolore seul, propre.
+    Le texte « RÉPUBLIQUE FRANÇAISE » + titre du service sont rendus en HTML
+    à côté de cette image (cf. ChromeDsfr.svelte / chrome-spec.json).
+    Couleurs officielles : Bleu France #000091, Blanc, Rouge Marianne #e1000f.
+  -->
+  <rect x="0" y="0" width="24" height="72" fill="#000091"/>
+  <rect x="24" y="0" width="24" height="72" fill="#ffffff"/>
+  <rect x="48" y="0" width="24" height="72" fill="#e1000f"/>
+  <!-- Filet discret pour détacher la bande blanche du fond blanc du header -->
+  <rect x="0.5" y="0.5" width="71" height="71" fill="none" stroke="#dddddd" stroke-width="1"/>
 </svg>
