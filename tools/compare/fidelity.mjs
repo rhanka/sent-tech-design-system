@@ -49,8 +49,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = resolve(__dirname, "..", "..");
 const CHROME_PATH = "/usr/bin/google-chrome";
 const PORT = 4322; // NEVER 5173
-const BASE_URL = `http://localhost:${PORT}`;
-const COMPARE_URL = `${BASE_URL}/compare`;
+const DEFAULT_FIDELITY_HOST = process.env.FIDELITY_HOST || "127.0.0.1";
+const BASE_URL = (host) => `http://${host}:${PORT}`;
 const BUILD_DIR = join(REPO_ROOT, "apps", "docs", "build");
 
 // ---------------------------------------------------------------------------
@@ -118,11 +118,20 @@ const TOL = {
 // CLI args
 // ---------------------------------------------------------------------------
 function parseArgs(argv) {
-  const out = { theme: null, component: null, json: false, date: null, keepServer: false, failUnder: null };
+  const out = {
+    theme: null,
+    component: null,
+    host: DEFAULT_FIDELITY_HOST,
+    json: false,
+    date: null,
+    keepServer: false,
+    failUnder: null,
+  };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === "--theme") out.theme = argv[++i];
     else if (a === "--component") out.component = argv[++i];
+    else if (a === "--host") out.host = argv[++i];
     else if (a === "--json") out.json = true;
     else if (a === "--date") out.date = argv[++i];
     else if (a === "--keep-server") out.keepServer = true;
@@ -148,6 +157,7 @@ Usage:
 Options:
   --theme <dsfr|carbon>      Limit to one theme (default: all)
   --component <Name>         Limit to one component (default: all)
+  --host <hostname>          Local server bind/target host (default: ${DEFAULT_FIDELITY_HOST})
   --json                     Print the raw JSON report to stdout
   --date <YYYY-MM-DD>        Date stamped in the report (default: placeholder)
   --keep-server              Do not kill the docs server on exit (debug)
@@ -192,7 +202,7 @@ function resolveStaticPath(urlPath) {
   return null;
 }
 
-function startStaticServer() {
+function startStaticServer(host) {
   return new Promise((resolveFn, rejectFn) => {
     const server = http.createServer((req, res) => {
       const filePath = resolveStaticPath(req.url || "/");
@@ -213,17 +223,17 @@ function startStaticServer() {
       createReadStream(filePath).pipe(res);
     });
     server.on("error", rejectFn);
-    server.listen(PORT, () => resolveFn(server));
+    server.listen(PORT, host, () => resolveFn(server));
   });
 }
 
 // ---------------------------------------------------------------------------
 // Dev server fallback (only if build dir is missing).
 // ---------------------------------------------------------------------------
-function startDevServer() {
+function startDevServer(host) {
   const child = spawn(
     "npm",
-    ["run", "--workspace", "apps/docs", "dev", "--", "--port", String(PORT), "--strictPort"],
+    ["run", "--workspace", "apps/docs", "dev", "--", "--host", host, "--port", String(PORT), "--strictPort"],
     { cwd: REPO_ROOT, stdio: ["ignore", "pipe", "pipe"] }
   );
   child.stdout.on("data", () => {});
@@ -500,18 +510,20 @@ async function run(opts) {
   // --- Start server (static build preferred; dev fallback) ---
   let server = null;
   let devChild = null;
+  const host = opts.host || DEFAULT_FIDELITY_HOST;
+  const compareUrl = `${BASE_URL(host)}/compare`;
   const useStatic = existsSync(join(BUILD_DIR, "compare.html"));
 
   if (useStatic) {
-    server = await startStaticServer();
+    server = await startStaticServer(host);
   } else {
-    devChild = startDevServer();
+    devChild = startDevServer(host);
   }
 
-  const up = await waitForServer(COMPARE_URL, { timeoutMs: useStatic ? 15000 : 90000 });
+  const up = await waitForServer(compareUrl, { timeoutMs: useStatic ? 15000 : 90000 });
   if (!up) {
     cleanup(server, devChild, opts);
-    throw new Error(`Docs server did not respond at ${COMPARE_URL}`);
+    throw new Error(`Docs server did not respond at ${compareUrl}`);
   }
 
   const browser = await puppeteer.launch({
@@ -526,7 +538,7 @@ async function run(opts) {
   try {
     const page = await browser.newPage();
     await page.setViewport({ width: 1400, height: 2200, deviceScaleFactor: 1 });
-    await page.goto(COMPARE_URL, { waitUntil: "networkidle2", timeout: 60000 });
+    await page.goto(compareUrl, { waitUntil: "networkidle2", timeout: 60000 });
 
     // Wait for our scoped sections to exist.
     await page.waitForSelector(".cmp-scope--dsfr", { timeout: 20000 }).catch(() => {});
