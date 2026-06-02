@@ -20,14 +20,20 @@ headless ; aucune valeur n'est inventée. Le côté officiel est rendu dans une
   npm run --workspace apps/docs build
   ```
 
-La CLI démarre elle-même un serveur HTTP statique sur **le port 4322** (jamais
-5173), sert `apps/docs/build`, mesure, puis arrête le serveur.
+La CLI démarre elle-même un serveur HTTP statique sur **le port 4322**
+(jamais 5173), sert `apps/docs/build`, mesure, puis arrête le serveur.
+
+Le port peut être forcé via `--port` (ou `FIDELITY_PORT`), et la CLI retombe
+automatiquement sur un port éphémère si le port choisi est déjà occupé / interdit.
 
 ## Usage
 
 ```bash
 # Tout (les 2 thèmes × 7 composants)
-node tools/compare/fidelity.mjs
+node tools/compare/fidelity.mjs --port 4322
+
+# Laisser la CLI choisir un port disponible (fallback recommandé en environnement verrouillé)
+node tools/compare/fidelity.mjs --port 0
 
 # Filtrer
 node tools/compare/fidelity.mjs --theme dsfr
@@ -44,7 +50,8 @@ node tools/compare/fidelity.mjs --fail-under 70
 ```
 
 Options : `--theme dsfr|carbon`, `--component Button|Input|Textarea|Select|Link|Card|Tabs`,
-`--json`, `--date YYYY-MM-DD`, `--fail-under <pct>`, `--keep-server` (debug), `--help`.
+`--host <hostname>`, `--port <number>`, `--json`, `--date YYYY-MM-DD`,
+`--fail-under <pct>`, `--keep-server` (debug), `--help`.
 
 Code retour **0** par défaut (c'est un rapport). `--fail-under` est le seul cas de
 sortie non nulle.

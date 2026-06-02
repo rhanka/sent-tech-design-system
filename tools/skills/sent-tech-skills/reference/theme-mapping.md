@@ -89,7 +89,8 @@ tant qu'il reste des écarts non justifiés.
    **Outil de mesure par bord (automatisé) :** `tools/compare/fidelity.mjs`
    (voir `tools/compare/README.md`). CLI Node qui pilote le **Chrome système**
    (`puppeteer-core`, aucun navigateur téléchargé), démarre le banc `/compare`
-   en statique sur le port **4322** (jamais 5173), et **diffe bord par bord**
+   en statique sur le port **4322** par défaut (jamais 5173), surcouchable via
+   `--port`/`FIDELITY_PORT`, et **diffe bord par bord**
    nos composants vs la référence officielle (chargée du CDN en iframe). Sortie :
    `docs/compare-fidelity-report.md` (tableau Propriété/Bord | Nous | Référence |
    Δ/statut, + fidélité par composant et récap global) et
@@ -102,6 +103,7 @@ tant qu'il reste des écarts non justifiés.
    npm run --workspace apps/docs build         # prérequis : build statique
    node tools/compare/fidelity.mjs --date $(date +%F)   # tout
    node tools/compare/fidelity.mjs --theme dsfr --component Input  # ciblé
+   node tools/compare/fidelity.mjs --port 0  # auto-port si 4322 indisponible
    ```
 3. **Consigner** chaque écart dans la matrice (`docs/ds-theme-anatomy-matrix.md`)
    et dans `MAPPING.md` : propriété, valeur ours vs réel, statut.
