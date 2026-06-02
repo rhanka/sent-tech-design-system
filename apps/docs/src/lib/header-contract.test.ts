@@ -50,6 +50,10 @@ describe("docs header alignment contract", () => {
     expect(navigationSource).toContain('label: "GitHub"');
   });
 
+  it("includes the Airbus imported tenant in the theme picker", () => {
+    expect(layoutSource).toContain('const THEMES: TenantTheme[] = [sentTechTheme, dsfrTheme, carbonTheme, airbusTheme]');
+  });
+
   it("does not render fake auth access in the public docs header", () => {
     expect(layoutSource).not.toContain('"Connexion"');
     expect(layoutSource).not.toContain('"Sign In"');
@@ -83,6 +87,9 @@ describe("docs themed chrome contract", () => {
     expect(carbonChromeSource).toContain('src="/chrome/carbon/logo.svg"');
     expect(carbonChromeSource).toContain("class=\"cbn-header\"");
     expect(carbonChromeSource).toContain("class=\"cbn-sidebar\"");
+    expect(carbonChromeSource).toContain('href="https://www.carbondesignsystem.com/search/"');
+    expect(carbonChromeSource).toContain('href="https://www.ibm.com/design/"');
+    expect(carbonChromeSource).not.toContain('Wire-up réel en attente');
   });
 
   it("documents dsfr chrome structure and brand asset", () => {
@@ -99,5 +106,9 @@ describe("docs themed chrome contract", () => {
     expect(airbusChromeSource).toContain("class=\"abus-header\"");
     expect(airbusChromeSource).toContain("class=\"abus-sidebar\"");
     expect(airbusChromeSource).toContain("class=\"abus-breadcrumb\"");
+    expect(airbusChromeSource).toContain('href="/components/search"');
+    expect(airbusChromeSource).toContain('href="/components/notification"');
+    expect(airbusChromeSource).toContain('href="/components/overlays"');
+    expect(airbusChromeSource).toContain('mailto:contact@airbus.com?subject=Contact%20documentation%20design%20system');
   });
 });
