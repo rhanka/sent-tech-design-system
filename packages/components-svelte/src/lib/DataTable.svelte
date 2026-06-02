@@ -396,7 +396,10 @@
   }
 
   .st-dataTable tbody tr:hover {
-    background: var(--st-component-dataTable-rowHoverBackground, var(--st-semantic-surface-subtle));
+    background: var(
+      --st-component-control-hoverBackground,
+      var(--st-component-dataTable-rowHoverBackground, var(--st-semantic-surface-subtle))
+    );
   }
 
   .st-dataTable tbody tr:last-child td {
