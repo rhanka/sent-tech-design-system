@@ -1,5 +1,7 @@
 <script lang="ts">
   import { Badge, Tile } from "@sentropic/design-system-svelte";
+  import { t } from "$lib/i18n";
+  import { locale } from "$lib/locale.svelte";
 
   let selectedA = $state(false);
   let selectedB = $state(true);
