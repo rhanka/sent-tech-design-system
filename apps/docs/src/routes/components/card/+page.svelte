@@ -158,6 +158,7 @@
       <li><code>--st-component-card-border</code></li>
       <li><code>--st-component-card-radius</code></li>
       <li><code>--st-component-card-shadow</code></li>
+      <li><code>--st-component-card-anatomy-states-hover-bg</code></li>
       <li><code>--st-semantic-surface-raised</code></li>
       <li><code>--st-semantic-border-subtle</code></li>
       <li><code>--st-semantic-text-primary</code></li>

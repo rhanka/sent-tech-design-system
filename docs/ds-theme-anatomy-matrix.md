@@ -57,7 +57,7 @@ portée par la primitive `focus.strategy` + le mixin partagé résolu dans `crea
 |           | focus  | 4/4 | 🟢 | `outline` décalé + radius `sm` (carré) |
 |           | disabled | 3/3 | 🟢 | couleur + retrait soulignement (delta tokenisé) |
 | **Card** | default | 4/4 | 🟢 | carré (radius 0), bordure, ombre via rôles |
-|           | hover  | 1/1 | 🟢 | `transform` (delta tokenisé) ; DSFR cards plates : l'ombre medium reste hors anatomie |
+|           | hover  | 2/2 | 🟢 | `transform` (delta tokenisé) + `states.hover.bg` (surface maintenue) ; l'ombre medium reste hors anatomie |
 |           | focus  | — | — | Card non focusable par défaut (N/A) |
 |           | disabled | — | — | N/A |
 | **Tabs** | default | 8/9 | 🟢 | indicateur (rôle), typo Marianne, bordure ; `padding` 0.25rem en dur |
@@ -82,7 +82,7 @@ portée par la primitive `focus.strategy` + le mixin partagé résolu dans `crea
 |           | focus  | 4/4 | 🟢 | `box-shadow inset` + radius `sm` (carré) |
 |           | disabled | 3/3 | 🟢 | couleur + retrait soulignement |
 | **Card** | default | 4/4 | 🟢 | carré (Carbon v11), bordure, ombre via rôles |
-|           | hover  | 1/1 | 🟢 | `transform` ; Carbon tiles utilisent souvent un changement de `$layer` au hover (non tokenisé en delta) |
+|           | hover  | 2/2 | 🟢 | `transform` + `states.hover.bg` (`$layer-hover` simulé par `Gray 20`) |
 |           | focus  | — | — | N/A |
 |           | disabled | — | — | N/A |
 | **Tabs** | default | 8/9 | 🟢 | indicateur, IBM Plex ; `padding` 0.25rem en dur |
@@ -132,13 +132,13 @@ Réservée au non-tokenisable (pseudo-éléments, techniques, comportements).
 
 | # | Cible | Propriété | Justification | Propriétaire | Date | Critère de retrait |
 |---|-------|-----------|---------------|--------------|------|--------------------|
-| C4 | `.st-card--interactive:hover` | `background`/`$layer` | Carbon change la couche (`$layer-hover`) au survol plutôt que d'élever par ombre | équipe DS | 2026-05-27 | Ajouter `states.hover.bg` à Card si parité requise |
+| C4 | `.st-card--interactive:hover` | `background`/`$layer` | Carried via `states.hover.bg` (`#e0e0e0`) sur Carbon | équipe DS | 2026-06-01 | Vérifier la fidélité visuelle navigateur avec la référence officielle Carbon |
 
-> Retirés en v1.1.0 : **C1** (hover bg) → `states.hover.bg` = `#0043ce` ; **C2** (soulignement hover) → `states.hover.decoration` = `underline` (la partie tokenisable ; pas d'animation côté Carbon) ; **C3** (font-size sm/lg) → `density.{sm,md,lg}.fontSize`.
+> Retirés en v1.1.0 : **C2** (soulignement hover) → `states.hover.decoration` = `underline` (la partie tokenisable ; pas d'animation côté Carbon) ; **C3** (font-size sm/lg) → `density.{sm,md,lg}.fontSize`. **C4** (hover bg carte) → `states.hover.bg` = `#e0e0e0`.
 > Retiré en v1.2.0 : **C-input** (style de champ « encadré » ≠ réel) → `field.style = filled-underline`, `fillBg = #f4f4f4` ($field-01), `borderBottom = 1px solid #8d8d8d` ($border-strong), top/right/left = `none`.
 
 > Note : à ce stade, la **seule** entrée d'échappement restante est D2 (animation du soulignement
-> DSFR) et C4 (changement de `$layer` au hover des cartes Carbon) — toutes deux des
+> DSFR) — toutes deux des
 > **comportements**, pas des valeurs. Aucune feuille `[data-st-theme="<id>"]{…}` n'est encore
 > écrite : tout le pilote tient dans les tokens d'anatomie (schéma v1.2.0). Ces écarts sont à
 > arbitrer avec l'utilisateur (spec §7/§8) avant d'être figés ou convertis en extensions.
