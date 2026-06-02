@@ -59,7 +59,10 @@
       state.lineSpacing !== synced.lineSpacing ||
       state.reducedMotion !== synced.reducedMotion
     ) {
-      state = synced;
+      state = {
+        ...state,
+        ...synced
+      };
     }
   });
 
