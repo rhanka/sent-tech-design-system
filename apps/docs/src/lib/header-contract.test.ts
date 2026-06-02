@@ -7,6 +7,18 @@ const layoutSource = readFileSync(resolve(docsRoot, "src/routes/+layout.svelte")
 const navigationSource = readFileSync(resolve(docsRoot, "src/lib/docs-navigation.ts"), "utf8");
 const appCss = readFileSync(resolve(docsRoot, "src/app.css"), "utf8");
 const appHtml = readFileSync(resolve(docsRoot, "src/app.html"), "utf8");
+const carbonChromeSource = readFileSync(
+  resolve(docsRoot, "src/lib/chrome/ChromeCarbon.svelte"),
+  "utf8"
+);
+const dsfrChromeSource = readFileSync(
+  resolve(docsRoot, "src/lib/chrome/ChromeDsfr.svelte"),
+  "utf8"
+);
+const airbusChromeSource = readFileSync(
+  resolve(docsRoot, "src/lib/chrome/ChromeAirbus.svelte"),
+  "utf8"
+);
 
 describe("docs header alignment contract", () => {
   it("uses the square SENT mark with the Sentropic service title", () => {
@@ -50,5 +62,42 @@ describe("docs header alignment contract", () => {
   it("keeps native browser tooltips out of header controls", () => {
     expect(layoutSource).not.toContain("title={item.label}");
     expect(layoutSource).not.toContain("title={locale.value");
+  });
+});
+
+describe("docs themed chrome contract", () => {
+  it("wires dedicated chrome shells for mapped import themes", () => {
+    expect(layoutSource).toContain('const useCustomChrome = $derived(');
+    expect(layoutSource).toContain('browser && (activeThemeId === "carbon" || activeThemeId === "dsfr" || activeThemeId === "airbus")');
+    expect(layoutSource).toContain("<ChromeCarbon");
+    expect(layoutSource).toContain("<ChromeDsfr");
+    expect(layoutSource).toContain("<ChromeAirbus");
+  });
+
+  it("keeps sent-tech shell as default chrome contract", () => {
+    expect(layoutSource).toContain('class="docs-shell"');
+  });
+
+  it("documents carbon chrome structure and brand asset", () => {
+    expect(carbonChromeSource).toContain('class="cbn-shell"');
+    expect(carbonChromeSource).toContain('src="/chrome/carbon/logo.svg"');
+    expect(carbonChromeSource).toContain("class=\"cbn-header\"");
+    expect(carbonChromeSource).toContain("class=\"cbn-sidebar\"");
+  });
+
+  it("documents dsfr chrome structure and brand asset", () => {
+    expect(dsfrChromeSource).toContain('class="dsfr-shell"');
+    expect(dsfrChromeSource).toContain('src="/chrome/dsfr/logo-rf.svg"');
+    expect(dsfrChromeSource).toContain("class=\"dsfr-header\"");
+    expect(dsfrChromeSource).toContain("class=\"dsfr-sidebar\"");
+    expect(dsfrChromeSource).toContain("class=\"dsfr-nav\"");
+  });
+
+  it("documents airbus chrome structure and brand asset", () => {
+    expect(airbusChromeSource).toContain('class="abus-shell"');
+    expect(airbusChromeSource).toContain('src="/chrome/airbus/logo-white.svg"');
+    expect(airbusChromeSource).toContain("class=\"abus-header\"");
+    expect(airbusChromeSource).toContain("class=\"abus-sidebar\"");
+    expect(airbusChromeSource).toContain("class=\"abus-breadcrumb\"");
   });
 });
