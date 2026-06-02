@@ -1,9 +1,9 @@
 {
   "meta": {
-    "date": null,
+    "date": "2026-06-02",
     "browser": "Google Chrome (system)",
     "chromePath": "/usr/bin/google-chrome",
-    "url": "http://127.0.0.1:38529/compare",
+    "url": "http://127.0.0.1:4322/compare",
     "tolerances": {
       "lengthPx": 1,
       "colorDist": 12

@@ -5,9 +5,9 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 
 | Champ | Valeur |
 |---|---|
-| Date | <date> |
+| Date | 2026-06-02 |
 | Navigateur | Google Chrome système (`/usr/bin/google-chrome`) via puppeteer-core, headless |
-| URL mesurée | http://127.0.0.1:38529/compare (build statique servi) |
+| URL mesurée | http://127.0.0.1:4322/compare (build statique servi) |
 | Tolérance longueur | ±1px → statut `~` |
 | Tolérance couleur | distance RGB ≤ 12 → statut `~` |
 | Statuts | `=` identique · `~` proche (tolérance) · `≠` écart net |
