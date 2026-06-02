@@ -50,7 +50,9 @@ const PHASE2_COMPONENTS = [
   "NumberInput",
   "PasswordInput",
   "Toggletip",
-  "TreeView"
+  "TreeView",
+  "Tile",
+  "TileGroup"
 ] as const;
 
 // The set of vars a theme actually emits is derived from the compiled CSS
