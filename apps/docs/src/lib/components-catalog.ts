@@ -777,6 +777,36 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "DisplaySettings",
+    slug: "display-settings",
+    status: "documented",
+    category: "other",
+    description: {
+      fr: "Préférences d’affichage (taille de texte, contraste, interligne, animations).",
+      en: "Display preferences controls (font size, contrast, line spacing, motion)."
+    }
+  },
+  {
+    name: "MediaContent",
+    slug: "media-content",
+    status: "documented",
+    category: "other",
+    description: {
+      fr: "Conteneur de média avec légende, titre et métadonnées associées.",
+      en: "Media wrapper with caption, title, and related metadata."
+    }
+  },
+  {
+    name: "Transcription",
+    slug: "transcription",
+    status: "documented",
+    category: "other",
+    description: {
+      fr: "Bloc repliable de transcription audio/vidéo avec horodatage et intervenant.",
+      en: "Collapsible transcript panel with timestamps and speaker labels."
+    }
+  },
+  {
     name: "TableOfContents",
     slug: "table-of-contents",
     status: "documented",

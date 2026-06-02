@@ -32,6 +32,9 @@ export { default as Form } from "./Form.svelte";
 export { default as FormGroup } from "./FormGroup.svelte";
 export { default as Header } from "./Header.svelte";
 export { default as Highlight } from "./Highlight.svelte";
+export { default as DisplaySettings } from "./DisplaySettings.svelte";
+export { default as MediaContent } from "./MediaContent.svelte";
+export { default as Transcription } from "./Transcription.svelte";
 export { default as IconButton } from "./IconButton.svelte";
 export { default as InlineLoading } from "./InlineLoading.svelte";
 export { default as Input } from "./Input.svelte";
@@ -114,6 +117,8 @@ export type {
 } from "./ProgressIndicator.svelte";
 export type { SideNavItem } from "./SideNav.svelte";
 export type { StructuredListItem } from "./StructuredList.svelte";
+export type { DisplayFontScale, DisplayContrast, DisplayLineSpacing, DisplaySettingsState } from "./DisplaySettings.svelte";
+export type { TranscriptionSegment } from "./Transcription.svelte";
 export type { TableColumn, TableRow } from "./Table.svelte";
 export type { TableOfContentsItem } from "./TableOfContents.svelte";
 export type { TabItem } from "./Tabs.svelte";
