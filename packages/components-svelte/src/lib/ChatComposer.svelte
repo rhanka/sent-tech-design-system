@@ -210,6 +210,10 @@
     outline: none;
   }
 
+  .st-chatComposer__inputShell:hover .st-chatComposer__textarea:not(:disabled) {
+    background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle));
+  }
+
   .st-chatComposer__textarea[aria-disabled="true"] {
     background: var(--st-component-control-disabledBackground, var(--st-semantic-surface-subtle));
     color: var(--st-component-control-disabledText, var(--st-semantic-text-muted));
