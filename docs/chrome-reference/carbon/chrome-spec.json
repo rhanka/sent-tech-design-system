@@ -92,7 +92,7 @@
     }
   },
   "implementationTargets": [
-    "apps/docs/src/lib/chrome/ChromeCarbon.svelte logo placeholder",
-    "apps/docs/static/chrome/carbon/logo.svg placeholder"
+    "apps/docs/src/lib/chrome/ChromeCarbon.svelte",
+    "apps/docs/static/chrome/carbon/logo.svg"
   ]
 }

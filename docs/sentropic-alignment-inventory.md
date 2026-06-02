@@ -85,6 +85,11 @@ Perimetre: points d'alignement observes dans `/home/antoinefa/src/sentropic/ui` 
 4. Refaire la doc DS pour montrer les patterns Sentropic reels: boutons icone, menus groupes, actions destructives, overlays ancres.
 5. Ouvrir ensuite une passe de branchement cote Sentropic composant par composant, en commencant par les surfaces les plus chargees: `ChatPanel`, `DocumentsBlock`, `ConfigItemCard`, `WorkspaceSettingsPanel`.
 
+## État d'exécution au 2026-06-01
+
+- Les lots A/B/C sont en grande partie livrés côté DS (notamment `Menu`, `OverflowMenu`, `MenuTriggerButton` et les icônes de contrôle/overlay).
+- Les remplacements Lucide ciblés et les ajustements focus/overlay documentés dans `docs/workpackages.md` ont été consolidés pour le lot courant.
+
 ## Passe courante
 
 - Ajout de `@lucide/svelte` a l'app docs DS et au package de composants Svelte.
