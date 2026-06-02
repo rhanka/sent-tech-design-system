@@ -26,7 +26,7 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 | WP11 | Dogfooding moteur publié | 🟢 | 100% | `design check` full-site exécuté sans finding critique ; boucle findings fermée. | Continuer routine périodique. | Aucun. |
 | WP12 | Templates docs / slides ESN | 🟢 | 100% | Typologie + 3 gabarits livrés en source Markdown-first. | Ajouter de nouveaux templates métier si besoin. | Aucun. |
 | WP13 | Portage React | 🟢 | 100% | Package React complet, docs `/react`, workflow de release dédié, 95 tests verts. | Mise à l’échelle/retouches post-release. | Aucun. |
-| WP14 | Chrome documentaire par thème | 🟢 | 95% | Forme du chrome (header/nav/sidebar/logo) adaptée pour DSFR/Carbon/Airbus + audit fidélité local (91,1%/93,9%). | Ajustements finaux de finesse visuelle selon retours externes. | Validation publique de la fidélité avant clôture définitive. |
+| WP14 | Chrome documentaire par thème | 🟢 | 95% | Forme du chrome (header/nav/sidebar/logo) adaptée pour DSFR/Carbon/Airbus + audit fidélité local (89,1% global, 203 écarts nets). | Ajustements finaux de finesse visuelle selon retours externes. | Validation publique de la fidélité avant clôture définitive. |
 
 ## Suivi Antigravity — reprise header docs 2026-05-24
 
