@@ -13,6 +13,7 @@
   import {
     DOCS_FOUNDATION_NAV,
     DOCS_TOP_NAV,
+    DOCS_VERSION,
     buildComponentNavGroups,
     type ComponentNavItem
   } from "$lib/docs-navigation";
@@ -23,6 +24,7 @@
     isThemeOpen: boolean;
     onThemeToggle: () => void;
     themeSwitcher: Snippet;
+    frameworkSwitcher: Snippet;
     localeSwitcher: Snippet;
     compareButton: Snippet;
     mobileMenuOpen: boolean;
@@ -34,6 +36,7 @@
     isThemeOpen,
     onThemeToggle,
     themeSwitcher,
+    frameworkSwitcher,
     localeSwitcher,
     compareButton,
     mobileMenuOpen,
@@ -94,6 +97,7 @@
 
     <div class="cbn-header__actions">
       {@render compareButton()}
+      {@render frameworkSwitcher()}
       {@render themeSwitcher()}
       {@render localeSwitcher()}
 
@@ -179,24 +183,26 @@
             </li>
           {/each}
 
-          <!-- Séparateur + GitHub -->
-          <li class="cbn-side-divider" role="separator"></li>
-          <li>
-            <a
-              class="cbn-side-link cbn-side-link--external"
-              href="https://github.com/rhanka/sent-tech-design-system"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <Github size={14} strokeWidth={2} aria-hidden="true" />
-              <span>GitHub</span>
-              <span class="cbn-external-icon" aria-hidden="true">
-                <ExternalLink size={10} strokeWidth={1.8} />
-              </span>
-            </a>
-          </li>
         </ul>
       </nav>
+
+      <!-- Pied de barre latérale : version + GitHub (déplacés du header). -->
+      <div class="cbn-sidebar-footer">
+        <span class="cbn-version">{DOCS_VERSION}</span>
+        <a
+          class="cbn-sidebar-github"
+          href="https://github.com/rhanka/sent-tech-design-system"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="GitHub"
+        >
+          <Github size={14} strokeWidth={2} aria-hidden="true" />
+          <span>GitHub</span>
+          <span class="cbn-external-icon" aria-hidden="true">
+            <ExternalLink size={10} strokeWidth={1.8} />
+          </span>
+        </a>
+      </div>
     </aside>
 
     <!-- Contenu principal -->
@@ -412,16 +418,53 @@
   .cbn-sidebar {
     background: var(--cbn-gray-10);
     border-right: 1px solid var(--cbn-gray-20);
+    display: flex;
+    flex-direction: column;
     flex: 0 0 var(--cbn-sidebar-width);
     min-width: 0;
-    overflow-y: auto;
     max-height: calc(100vh - var(--cbn-header-height));
     position: sticky;
     top: var(--cbn-header-height);
   }
 
   .cbn-side-nav {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
     padding: 1rem 0;
+  }
+
+  /* Pied de barre latérale Carbon : version + GitHub épinglés en bas. */
+  .cbn-sidebar-footer {
+    align-items: center;
+    border-top: 1px solid var(--cbn-gray-20);
+    display: flex;
+    flex: 0 0 auto;
+    gap: 0.75rem;
+    justify-content: space-between;
+    padding: 0.625rem 1rem;
+  }
+
+  .cbn-version {
+    color: var(--cbn-gray-70);
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+
+  .cbn-sidebar-github {
+    align-items: center;
+    color: var(--cbn-gray-70);
+    display: inline-flex;
+    font-size: 0.8125rem;
+    gap: 0.375rem;
+    text-decoration: none;
+    transition: color 120ms ease;
+  }
+
+  .cbn-sidebar-github:hover,
+  .cbn-sidebar-github:focus-visible {
+    color: var(--cbn-black);
+    text-decoration: none;
   }
 
   .cbn-side-list,
@@ -462,11 +505,6 @@
     font-size: 0.8125rem;
     min-height: 2rem;
     padding-left: calc(2rem - 3px);
-  }
-
-  .cbn-side-link--external {
-    color: var(--cbn-gray-70);
-    gap: 0.375rem;
   }
 
   .cbn-external-icon {

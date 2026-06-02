@@ -11,10 +11,11 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
   import { page } from "$app/state";
-  import { ChevronDown, Menu, Search, X } from "@lucide/svelte";
+  import { ChevronDown, Github, Menu, Search, X } from "@lucide/svelte";
   import {
     DOCS_FOUNDATION_NAV,
     DOCS_TOP_NAV,
+    DOCS_UTILITY_NAV,
     DOCS_VERSION,
     buildComponentNavGroups,
     resolveBreadcrumb,
@@ -27,6 +28,7 @@
     isThemeOpen: boolean;
     onThemeToggle: () => void;
     themeSwitcher: Snippet;
+    frameworkSwitcher: Snippet;
     localeSwitcher: Snippet;
     compareButton: Snippet;
     mobileMenuOpen: boolean;
@@ -36,6 +38,7 @@
   let {
     children,
     themeSwitcher,
+    frameworkSwitcher,
     localeSwitcher,
     compareButton,
     mobileMenuOpen,
@@ -109,11 +112,8 @@
         <!-- Droite : actions + recherche -->
         <div class="dsfr-header__tools">
           <div class="dsfr-header__tools-links">
-            <a class="dsfr-header__tool-link" href="https://github.com/rhanka/sent-tech-design-system" target="_blank" rel="noreferrer">
-              Être tenu informé
-            </a>
-            <span class="dsfr-version-badge">&lt;/&gt; {DOCS_VERSION}</span>
             {@render compareButton()}
+            {@render frameworkSwitcher()}
             {@render themeSwitcher()}
             {@render localeSwitcher()}
           </div>
@@ -217,6 +217,23 @@
           {/each}
         </ul>
       </nav>
+
+      <!-- Pied de barre latérale : version + GitHub (déplacés du header). -->
+      <div class="dsfr-sidebar-footer">
+        <span class="dsfr-version-badge">&lt;/&gt; {DOCS_VERSION}</span>
+        {#each DOCS_UTILITY_NAV as item (item.href)}
+          <a
+            class="dsfr-sidebar-github"
+            href={item.href}
+            rel={item.external ? "noreferrer" : undefined}
+            target={item.external ? "_blank" : undefined}
+            aria-label={item.label}
+          >
+            <Github size={15} strokeWidth={2} aria-hidden="true" />
+            <span>{item.label}</span>
+          </a>
+        {/each}
+      </div>
     </aside>
 
     <!-- Contenu principal + fil d'Ariane -->
@@ -360,18 +377,6 @@
     gap: 0.75rem;
     flex-wrap: wrap;
     justify-content: flex-end;
-  }
-
-  .dsfr-header__tool-link {
-    color: var(--dsfr-blue);
-    font-size: 0.875rem;
-    font-weight: 500;
-    text-decoration: underline;
-    white-space: nowrap;
-  }
-
-  .dsfr-header__tool-link:hover {
-    color: var(--dsfr-blue-hover);
   }
 
   .dsfr-version-badge {
@@ -557,15 +562,44 @@
   .dsfr-sidebar {
     background: var(--dsfr-white);
     border-right: 1px solid var(--dsfr-border);
+    display: flex;
+    flex-direction: column;
     min-width: 0;
+    max-height: calc(100vh - 10rem);
+    position: sticky;
+    top: 10rem; /* approx header+nav height */
   }
 
   .dsfr-side-nav {
-    max-height: calc(100vh - 10rem);
+    flex: 1 1 auto;
+    min-height: 0;
     overflow-y: auto;
     padding: 1.25rem 0;
-    position: sticky;
-    top: 10rem; /* approx header+nav height */
+  }
+
+  /* Pied de barre latérale DSFR : version + GitHub épinglés en bas. */
+  .dsfr-sidebar-footer {
+    align-items: center;
+    border-top: 1px solid var(--dsfr-border);
+    display: flex;
+    flex: 0 0 auto;
+    gap: 0.75rem;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+  }
+
+  .dsfr-sidebar-github {
+    align-items: center;
+    color: var(--dsfr-blue);
+    display: inline-flex;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    gap: 0.4rem;
+    text-decoration: underline;
+  }
+
+  .dsfr-sidebar-github:hover {
+    color: var(--dsfr-blue-hover);
   }
 
   .dsfr-side-list,
