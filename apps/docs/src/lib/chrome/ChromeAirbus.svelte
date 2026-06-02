@@ -8,10 +8,12 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
   import { page } from "$app/state";
-  import { Bell, ChevronDown, CircleQuestionMark, Menu, Search, X } from "@lucide/svelte";
+  import { Bell, ChevronDown, CircleQuestionMark, Github, Menu, Search, X } from "@lucide/svelte";
   import {
     DOCS_FOUNDATION_NAV,
     DOCS_TOP_NAV,
+    DOCS_UTILITY_NAV,
+    DOCS_VERSION,
     buildComponentNavGroups,
     resolveBreadcrumb,
     type ComponentNavItem
@@ -23,6 +25,7 @@
     isThemeOpen: boolean;
     onThemeToggle: () => void;
     themeSwitcher: Snippet;
+    frameworkSwitcher: Snippet;
     localeSwitcher: Snippet;
     compareButton: Snippet;
     mobileMenuOpen: boolean;
@@ -32,6 +35,7 @@
   let {
     children,
     themeSwitcher,
+    frameworkSwitcher,
     localeSwitcher,
     compareButton,
     mobileMenuOpen,
@@ -136,8 +140,9 @@
         >
           Contact
         </a>
-        <!-- Switchers thème / langue (outils docs) -->
+        <!-- Switchers framework / thème / langue (outils docs) -->
         {@render compareButton()}
+        {@render frameworkSwitcher()}
         {@render themeSwitcher()}
         {@render localeSwitcher()}
         <!-- Burger mobile -->
@@ -199,6 +204,23 @@
           {/each}
         </ul>
       </nav>
+
+      <!-- Pied de barre latérale : version + GitHub (déplacés du header). -->
+      <div class="abus-sidebar-footer">
+        <span class="abus-version">{DOCS_VERSION}</span>
+        {#each DOCS_UTILITY_NAV as item (item.href)}
+          <a
+            class="abus-sidebar-github"
+            href={item.href}
+            rel={item.external ? "noreferrer" : undefined}
+            target={item.external ? "_blank" : undefined}
+            aria-label={item.label}
+          >
+            <Github size={15} strokeWidth={2} aria-hidden="true" />
+            <span>{item.label}</span>
+          </a>
+        {/each}
+      </div>
     </aside>
 
     <!-- Contenu principal -->
@@ -477,15 +499,53 @@
   .abus-sidebar {
     background: var(--abus-white);
     border-right: 1px solid var(--abus-border);
+    display: flex;
+    flex-direction: column;
     min-width: 0;
+    max-height: calc(100vh - var(--abus-header-height));
+    position: sticky;
+    top: var(--abus-header-height);
   }
 
   .abus-side-nav {
-    max-height: calc(100vh - var(--abus-header-height));
+    flex: 1 1 auto;
+    min-height: 0;
     overflow-y: auto;
     padding: 1.25rem 0;
-    position: sticky;
-    top: var(--abus-header-height);
+  }
+
+  /* Pied de barre latérale Airbus : version + GitHub épinglés en bas. */
+  .abus-sidebar-footer {
+    align-items: center;
+    border-top: 1px solid var(--abus-border);
+    display: flex;
+    flex: 0 0 auto;
+    gap: 0.75rem;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+  }
+
+  .abus-version {
+    color: var(--abus-gray-500);
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+
+  .abus-sidebar-github {
+    align-items: center;
+    color: var(--abus-blue);
+    display: inline-flex;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    gap: 0.4rem;
+    text-decoration: none;
+    transition: color 120ms ease;
+  }
+
+  .abus-sidebar-github:hover,
+  .abus-sidebar-github:focus-visible {
+    color: var(--abus-navy);
+    text-decoration: none;
   }
 
   .abus-side-list,

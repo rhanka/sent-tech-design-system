@@ -2,7 +2,7 @@
   import { page } from "$app/state";
   import { browser } from "$app/environment";
   import "../app.css";
-  import { ChevronDown, Github, Globe, Menu, Palette, X } from "@lucide/svelte";
+  import { Boxes, ChevronDown, Github, Globe, Menu, Palette, X } from "@lucide/svelte";
   import { Header } from "@sentropic/design-system-svelte";
   import {
     sentTechTheme,
@@ -22,6 +22,8 @@
     type ComponentNavItem
   } from "$lib/docs-navigation";
   import { locale } from "$lib/locale.svelte";
+  import { FRAMEWORKS, framework } from "$lib/framework.svelte";
+  import FrameworkBanner from "$lib/FrameworkBanner.svelte";
   import CompareButton from "$lib/compare/CompareButton.svelte";
   import CompareTriptych from "$lib/compare/CompareTriptych.svelte";
   // Chromes thématisés — importés conditionnellement côté client uniquement.
@@ -72,8 +74,20 @@
     localStorage.setItem(THEME_STORAGE_KEY, activeThemeId);
   });
 
+  // Restaure le framework choisi (client uniquement ; SSR rend le défaut Svelte).
+  $effect(() => {
+    framework.restore();
+  });
+
+  // Reflète le framework actif sur <html data-st-framework> et persiste le choix.
+  $effect(() => {
+    framework.value; // dépendance explicite pour la réactivité
+    framework.persist();
+  });
+
   let isOpen = $state(false);
   let isThemeOpen = $state(false);
+  let isFrameworkOpen = $state(false);
   let isMobileMenuOpen = $state(false);
 
   function isActive(href: string): boolean {
@@ -157,10 +171,14 @@
   if (isThemeOpen && target && !target.closest(".docs-theme-wrapper")) {
     isThemeOpen = false;
   }
+  if (isFrameworkOpen && target && !target.closest(".docs-framework-wrapper")) {
+    isFrameworkOpen = false;
+  }
 }} onkeydown={(e) => {
   if (e.key === "Escape") {
     isOpen = false;
     isThemeOpen = false;
+    isFrameworkOpen = false;
     isMobileMenuOpen = false;
   }
 }} />
@@ -191,22 +209,7 @@
 
 {#snippet docsUtilityNav()}
   <nav class="docs-utility-nav" aria-label="Liens utiles">
-    <span class="docs-header-control docs-version">{DOCS_VERSION}</span>
-    {#each DOCS_UTILITY_NAV as item (item.href)}
-      <a
-        class="docs-header-control docs-header-menuButton docs-header-iconLink"
-        href={item.href}
-        rel={item.external ? "noreferrer" : undefined}
-        target={item.external ? "_blank" : undefined}
-        aria-label={item.label}
-      >
-        {#if item.label === "GitHub"}
-          <Github size={16} strokeWidth={2.1} aria-hidden="true" />
-        {:else}
-          <span>{item.label}</span>
-        {/if}
-      </a>
-    {/each}
+    {@render frameworkSelector()}
 
     {@render themeSelector()}
 
@@ -259,6 +262,41 @@
           >
             <span class="locale-check">{#if activeThemeId === theme.id}✓{/if}</span>
             <span>{theme.label}</span>
+          </button>
+        {/each}
+      </div>
+    {/if}
+  </div>
+{/snippet}
+
+<!-- ── Snippet partagé : sélecteur de framework (Svelte/React/Vue) ────── -->
+{#snippet frameworkSelector()}
+  <div class="docs-framework-wrapper">
+    <button
+      type="button"
+      class="docs-header-control docs-header-menuButton docs-locale-trigger docs-framework-trigger"
+      onclick={() => (isFrameworkOpen = !isFrameworkOpen)}
+      aria-expanded={isFrameworkOpen}
+      aria-haspopup="true"
+      aria-label={locale.value === "fr" ? "Changer de framework" : "Change framework"}
+    >
+      <Boxes size={14} aria-hidden="true" />
+      <span>{framework.option.label}</span>
+      <ChevronDown size={12} class="docs-locale-trigger-chevron {isFrameworkOpen ? 'rotated' : ''}" aria-hidden="true" />
+    </button>
+
+    {#if isFrameworkOpen}
+      <div class="docs-locale-menu" role="menu">
+        {#each FRAMEWORKS as option (option.id)}
+          <button
+            type="button"
+            class="docs-locale-item"
+            class:active={framework.value === option.id}
+            role="menuitem"
+            onclick={() => { framework.value = option.id; isFrameworkOpen = false; }}
+          >
+            <span class="locale-check">{#if framework.value === option.id}✓{/if}</span>
+            <span>{option.label}</span>
           </button>
         {/each}
       </div>
@@ -352,6 +390,7 @@
       </div>
     {:else}
       <main class="docs-main" id="main-content">
+        <FrameworkBanner />
         {@render children()}
       </main>
     {/if}
@@ -371,6 +410,7 @@
       isThemeOpen={isThemeOpen}
       onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
       themeSwitcher={themeSelector}
+      frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
       mobileMenuOpen={isMobileMenuOpen}
@@ -389,6 +429,7 @@
       isThemeOpen={isThemeOpen}
       onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
       themeSwitcher={themeSelector}
+      frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
       mobileMenuOpen={isMobileMenuOpen}
@@ -407,6 +448,7 @@
       isThemeOpen={isThemeOpen}
       onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
       themeSwitcher={themeSelector}
+      frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
       mobileMenuOpen={isMobileMenuOpen}
@@ -460,6 +502,20 @@
               {item.label}
             </a>
           {/each}
+
+          <span class="docs-mobile-nav-label">Framework</span>
+          <div class="docs-mobile-locale-switcher docs-mobile-framework-switcher">
+            {#each FRAMEWORKS as option (option.id)}
+              <button
+                type="button"
+                class="docs-mobile-locale-btn"
+                class:active={framework.value === option.id}
+                onclick={() => { framework.value = option.id; isMobileMenuOpen = false; }}
+              >
+                {option.label}
+              </button>
+            {/each}
+          </div>
 
           <span class="docs-mobile-nav-label">{locale.value === "fr" ? "Thème" : "Theme"}</span>
           <div class="docs-mobile-locale-switcher docs-mobile-theme-switcher">
@@ -548,16 +604,28 @@
             {/each}
           </section>
         </nav>
+
+        <!-- Pied de barre latérale : version + lien GitHub (déplacés du header). -->
+        <div class="docs-sidebar-footer">
+          <span class="docs-sidebar-version">{DOCS_VERSION}</span>
+          {#each DOCS_UTILITY_NAV as item (item.href)}
+            <a
+              class="docs-sidebar-github"
+              href={item.href}
+              rel={item.external ? "noreferrer" : undefined}
+              target={item.external ? "_blank" : undefined}
+              aria-label={item.label}
+            >
+              {#if item.label === "GitHub"}
+                <Github size={16} strokeWidth={2.1} aria-hidden="true" />
+              {/if}
+              <span>{item.label}</span>
+            </a>
+          {/each}
+        </div>
       </aside>
 
       {@render pageContent()}
     </div>
-
-    <footer class="docs-footer">
-      <span>Sentropic Design System</span>
-      <a href="https://github.com/rhanka/sent-tech-design-system" rel="noreferrer" target="_blank">
-        GitHub
-      </a>
-    </footer>
   </div>
 {/if}
