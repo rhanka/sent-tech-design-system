@@ -7,8 +7,8 @@
     locale.value === "fr" ? frText : enText;
 
   const sideNavItems = [
-    { label: fr("Vue d’ensemble", "Overview"), href: "/components" },
     { label: fr("Composants", "Components"), href: "/components/button" },
+    { label: fr("Vue d’ensemble", "Overview"), href: "/components/side-nav" },
     { label: fr("Thèmes", "Themes"), href: "/#themes", active: true },
     { label: fr("Contrats", "Contracts"), href: "/#contracts" }
   ];

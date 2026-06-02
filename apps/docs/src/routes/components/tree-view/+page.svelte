@@ -1,5 +1,7 @@
 <script lang="ts">
   import { Badge, TreeView, type TreeNode } from "@sentropic/design-system-svelte";
+  import { t } from "$lib/i18n";
+  import { locale } from "$lib/locale.svelte";
 
   let selected = $state("tokens");
   const nodes: TreeNode[] = [

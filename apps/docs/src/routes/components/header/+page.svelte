@@ -1,5 +1,7 @@
 <script lang="ts">
   import { Badge, Header, type HeaderAccount } from "@sentropic/design-system-svelte";
+  import { t } from "$lib/i18n";
+  import { locale } from "$lib/locale.svelte";
 
   // Identités de démonstration pour les deux variantes d'état connecté.
   const accountWithPhoto: HeaderAccount = {
