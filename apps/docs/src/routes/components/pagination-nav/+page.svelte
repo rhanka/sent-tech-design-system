@@ -17,7 +17,6 @@
     </div>
     <p>{t(locale.value, "paginationNavIntro")}</p>
   </section>
-
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
@@ -74,7 +73,6 @@
       </p>
     </div>
   </section>
-
   <section class="docs-section">
     <h2>{t(locale.value, "apiTitle")}</h2>
     <table class="docs-table">
@@ -106,4 +104,12 @@
       <code>&lt;nav&gt;</code> sont transmis via spread.
     </p>
   </section>
+  <section class="docs-section">
+    <h2>{t(locale.value, "tokensTitle")}</h2>
+    <ul class="docs-token-list">
+      <li><code>--st-component-control-hoverBorder</code></li>
+      <li><code>--st-component-control-hoverBackground</code></li>
+    </ul>
+  </section>
+
 </div>
