@@ -186,12 +186,16 @@ const foundation = {
     field: { family: "Marianne, arial, sans-serif", size: "1rem", weight: "400", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
     label: { family: "Marianne, arial, sans-serif", size: "1rem", weight: "700", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
     // DSFR links are underlined (link gestion = soulignement). Offset "à confirmer".
-    // Hover keeps the underline (DSFR animates its thickness/offset — that animation
-    // stays an escape, the line itself is tokenised). textDecorationHover = no-op vs rest.
+    // Hover keeps the underline (DSFR animates its thickness/offset — now
+    // tokenised via decorationThicknessHover / decorationOffsetHover).
     // F5: the real `.fr-link` renders line-height 24px (DSFR body 1rem/1.5). The base
     // link role inherits (`inherit`) so its lineHeight stays unset; DSFR pins 1.5 so
     // the .st-link line-height matches the measured 24px instead of `normal`.
-    link: { family: "inherit", size: "inherit", weight: "inherit", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "underline", decorationThickness: "auto", decorationOffset: "0.125em", textDecorationHover: "underline" }
+    link: {
+      family: "inherit", size: "inherit", weight: "inherit", lineHeight: "1.5", letterSpacing: "0", textTransform: "none",
+      textDecoration: "underline", decorationThickness: "0.08em", decorationOffset: "0.125em",
+      textDecorationHover: "underline", decorationThicknessHover: "0.14em", decorationOffsetHover: "0.155em"
+    }
   },
   disabledOpacity: "1", // DSFR disabled = greyed colours, not opacity dimming
   transition: { property: "background-color, border-color, color, outline-color", duration: "120ms", easing: "ease" },

@@ -349,6 +349,8 @@
   --st-component-link-anatomy-typography-textDecoration: underline;
   --st-component-link-anatomy-typography-decorationThickness: auto;
   --st-component-link-anatomy-typography-decorationOffset: 0.18em;
+  --st-component-link-anatomy-typography-decorationThicknessHover: auto;
+  --st-component-link-anatomy-typography-decorationOffsetHover: 0.18em;
   --st-component-link-anatomy-typography-textDecorationHover: underline;
   --st-component-link-anatomy-focus-strategy: outline;
   --st-component-link-anatomy-focus-width: 2px;
