@@ -83,7 +83,7 @@
   }
 
   .st-iconButton:hover:not(:disabled) {
-    background: var(--st-component-iconButton-hoverBackground, var(--st-semantic-surface-subtle));
+    background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle));
   }
 
   .st-iconButton--secondary:hover:not(:disabled) {
