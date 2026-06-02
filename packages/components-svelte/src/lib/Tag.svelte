@@ -135,7 +135,7 @@
   }
 
   .st-tag__dismiss:hover:not(:disabled) {
-    background: color-mix(in srgb, currentColor 18%, transparent);
+    background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle));
   }
 
   .st-tag__dismiss:focus-visible {
