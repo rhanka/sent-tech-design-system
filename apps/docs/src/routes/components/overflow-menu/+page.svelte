@@ -198,6 +198,8 @@
       <li><code>--st-spacing-2</code></li>
       <li><code>--st-spacing-3</code></li>
       <li><code>--st-radius-small</code></li>
+      <li><code>--st-component-control-hoverBorder</code></li>
+      <li><code>--st-component-control-hoverBackground</code></li>
     </ul>
   </section>
 </div>
