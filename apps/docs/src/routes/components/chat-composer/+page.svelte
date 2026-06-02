@@ -122,15 +122,15 @@
 
   // Dynamic code generation
   const generatedCode = $derived.by(() => {
-    let slotsCode = "";
+    let snippetsCode = "";
     if (showAttachments) {
-      slotsCode += `\n  <span slot="attachments" class="attachments-slot">\n    📎 2 files attached\n  </span>`;
+      snippetsCode += `\n  {#snippet attachments()}\n    <span class="attachments-slot">\n      📎 2 files attached\n    </span>\n  {/snippet}`;
     }
     if (showActionsLeft) {
-      slotsCode += `\n  <button slot="actions-left" type="button" class="btn-left">\n    + Add\n  </button>`;
+      snippetsCode += `\n  {#snippet actionsLeft()}\n    <button type="button" class="btn-left">\n      + Add\n    </button>\n  {/snippet}`;
     }
     if (showActionsRight) {
-      slotsCode += `\n  <div slot="actions-right" class="btn-right">\n    <span class="status-indicator">Ready</span>\n  </div>`;
+      snippetsCode += `\n  {#snippet actionsRight()}\n    <div class="btn-right">\n      <span class="status-indicator">Ready</span>\n    </div>\n  {/snippet}`;
     }
 
     return `<script lang="ts">
@@ -158,7 +158,7 @@
   stoppable={${stoppable}}
   onsubmit={handleSubmit}
   onstop={handleStop}
->${slotsCode ? slotsCode + "\n" : ""}</ChatComposer>`;
+>${snippetsCode ? snippetsCode + "\n" : ""}</ChatComposer>`;
   });
 </script>
 
@@ -191,28 +191,30 @@
             onsubmit={handlePlaygroundSubmit}
             onstop={handleStop}
           >
-            <svelte:fragment slot="attachments">
-              {#if showAttachments}
+            {#if showAttachments}
+              {#snippet attachments()}
                 <span class="docs-attachments-wrapper">
                   {text().attachmentsText}
                 </span>
-              {/if}
-            </svelte:fragment>
-            <svelte:fragment slot="actions-left">
-              {#if showActionsLeft}
+              {/snippet}
+            {/if}
+
+            {#if showActionsLeft}
+              {#snippet actionsLeft()}
                 <button type="button" class="docs-composer-action-btn">
                   <Plus size={14} aria-hidden="true" />
                   <span>{text().localActionText}</span>
                 </button>
-              {/if}
-            </svelte:fragment>
-            <svelte:fragment slot="actions-right">
-              {#if showActionsRight}
+              {/snippet}
+            {/if}
+
+            {#if showActionsRight}
+              {#snippet actionsRight()}
                 <span class="docs-composer-right-badge">
                   <MessageStatusBadge status={isBusy ? "processing" : "completed"} />
                 </span>
-              {/if}
-            </svelte:fragment>
+              {/snippet}
+            {/if}
           </ChatComposer>
         </div>
 
@@ -439,7 +441,7 @@
     <h2>Slots supportés</h2>
     <ul>
       <li>
-        <strong>attachments :</strong>
+        <strong>attachments() :</strong>
         {#if locale.value === "fr"}
           Zone située juste au-dessus du bloc de saisie principal pour lister les pièces jointes, fichiers téléversés, ou jetons contextuels.
         {:else}
@@ -447,7 +449,7 @@
         {/if}
       </li>
       <li>
-        <strong>actions-left :</strong>
+        <strong>actionsLeft() :</strong>
         {#if locale.value === "fr"}
           Zone d'actions à gauche sous la zone de saisie, généralement utilisée pour ajouter des pièces jointes ou configurer le modèle de langue.
         {:else}
@@ -455,7 +457,7 @@
         {/if}
       </li>
       <li>
-        <strong>actions-right :</strong>
+        <strong>actionsRight() :</strong>
         {#if locale.value === "fr"}
           Zone à droite du bouton de soumission pour placer un badge de statut de message, un compteur de tokens ou des actions secondaires.
         {:else}

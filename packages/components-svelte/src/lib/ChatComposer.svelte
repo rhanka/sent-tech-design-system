@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Send, Square } from "@lucide/svelte";
+  import type { Snippet } from "svelte";
   import type { HTMLFormAttributes } from "svelte/elements";
   import Button from "./Button.svelte";
 
@@ -27,6 +28,9 @@
     clearOnSubmit?: boolean;
     onsubmit?: ChatComposerSubmitEvent;
     onstop?: () => void;
+    attachments?: Snippet;
+    actionsLeft?: Snippet;
+    actionsRight?: Snippet;
   };
 
   let {
@@ -47,6 +51,9 @@
     clearOnSubmit = true,
     onsubmit,
     onstop,
+    attachments,
+    actionsLeft,
+    actionsRight,
     ...rest
   }: ChatComposerProps = $props();
 
@@ -129,15 +136,21 @@
         onkeydown={handleTextareaKeydown}
       ></textarea>
     </div>
-    <slot name="attachments"></slot>
+    {#if attachments}
+      {@render attachments()}
+    {/if}
   </div>
 
   <div class="st-chatComposer__toolbar">
     <div class="st-chatComposer__actions st-chatComposer__actions--left">
-      <slot name="actions-left"></slot>
+      {#if actionsLeft}
+        {@render actionsLeft()}
+      {/if}
     </div>
     <div class="st-chatComposer__actions st-chatComposer__actions--right">
-      <slot name="actions-right"></slot>
+      {#if actionsRight}
+        {@render actionsRight()}
+      {/if}
       {#if hasActivity() && stoppable && onstop}
         <Button type="button" variant="danger" onclick={handleStop} aria-label={stopAriaLabel}>
           <Square size={16} strokeWidth={2} aria-hidden="true" />

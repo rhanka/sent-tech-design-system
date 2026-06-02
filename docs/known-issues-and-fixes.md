@@ -8,7 +8,7 @@ Liste vivante des bugs visuels et comportementaux signalés sur le design system
 
 ## Retest navigateur 2026-06-01
 
-Build vérifié : `npm --workspace apps/docs run build` (succès; seuls les 3 warnings Svelte legacy de `ChatComposer` restent, parqués en D2).
+Build vérifié : `npm --workspace apps/docs run build` (succès; 0 warning Svelte de série restante). Les anciennes warnings legacy `ChatComposer` ont été supprimées après migration vers les snippets.
 
 Smoke Chrome headless sur `apps/docs/build` :
 
