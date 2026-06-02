@@ -34,6 +34,7 @@ const PHASE2_COMPONENTS = [
   "Notification",
   "IconButton",
   "Menu",
+  "Pagination",
   "PaginationNav",
   "Tag",
   "Search",

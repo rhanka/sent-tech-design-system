@@ -85,6 +85,13 @@
     font-weight: var(--st-component-pagination-activeWeight, inherit);
   }
 
+  .st-pagination button:hover:not(:disabled) {
+    background: var(
+      --st-component-control-hoverBackground,
+      var(--st-component-pagination-hoverBackground, var(--st-semantic-surface-subtle))
+    );
+  }
+
   .st-pagination button:disabled {
     color: var(--st-component-pagination-disabledText, var(--st-semantic-text-muted));
     cursor: not-allowed;
