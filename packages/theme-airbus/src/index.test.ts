@@ -116,4 +116,19 @@ describe("airbusTheme", () => {
     expect(css).toContain("--st-semantic-action-primary: #86a8e9;");
     expect(css).toContain("--st-foundation-field-fillBg: #25282e;");
   });
+
+  it("keeps phase 2 anatomy shared tokens explicit in emitted CSS", () => {
+    const light = compileTheme(airbusTheme);
+    const dark = compileTheme(airbusDarkTheme);
+
+    expect(light).toContain("--st-component-control-hoverBackground: #fafafa;");
+    expect(light).toContain("--st-component-button-anatomy-states-hover-bg: #002d80;");
+    expect(light).toContain("--st-component-card-anatomy-states-hover-bg: #f1f1f1;");
+    expect(light).toContain("--st-component-link-anatomy-states-hover-decoration: underline;");
+
+    expect(dark).toContain("--st-component-control-hoverBackground: #25282e;");
+    expect(dark).toContain("--st-component-button-anatomy-states-hover-bg: #b3cbf8;");
+    expect(dark).toContain("--st-component-card-anatomy-states-hover-bg: #25282e;");
+    expect(dark).toContain("--st-component-link-anatomy-states-hover-decoration: underline;");
+  });
 });
