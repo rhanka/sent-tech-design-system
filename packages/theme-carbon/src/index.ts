@@ -239,6 +239,8 @@ const foundation = {
   card: {
     borderWidth: "0",
     background: carbonColor.gray[10], // #f4f4f4 ($layer-01)
+    // C4: emulate Carbon tile hover (`$layer-hover`) with a subtle Gray-20 step.
+    hoverBackground: carbonColor.gray[20],
     // F5: the real `.bx--tile` body renders Carbon $body-compact-01 metrics:
     // 14px font-size, 14px line-height and 0.16px tracking. Pin them on the card
     // typography so `.st-card` matches the measured reference (was 16px / normal

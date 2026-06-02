@@ -248,7 +248,10 @@ const foundation = {
     // 24px). Pin the card line-height to 1.5 (= 24px at 16px) so `.st-card`
     // matches the measured reference instead of `normal`. fontSize/letterSpacing
     // stay inherited/normal (the card already inherits 16px Marianne).
-    lineHeight: "1.5"
+    lineHeight: "1.5",
+    // C4 (hover): keep the same tile tone unless DSFR guidance indicates a
+    // different state surface. Carrière plate remains stable by default.
+    hoverBackground: dsfrColor.grey[1000]
   },
   // F7 — DSFR « Onglet » actif. Measured on the official `.fr-tabs__tab
   // [aria-selected="true"]` (CDN dsfr.min.css): white fill, Bleu France text,

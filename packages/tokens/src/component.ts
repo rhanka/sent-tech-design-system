@@ -69,6 +69,10 @@ interface FieldInput {
 interface CardInput {
   borderWidth?: string;
   background?: string;
+  // F11 (additive): per-theme card hover fill (`states.hover.bg`). Default
+  // keeps the resting card surface, preserving base behavior unless a theme
+  // intentionally tunes layer depth on hover.
+  hoverBackground?: string;
   // F5 (additive): per-theme card body typography. The base card renders its
   // content with an inherited font-size, `line-height: normal` and
   // `letter-spacing: normal` (no explicit type) — so these default to values
@@ -1138,6 +1142,7 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
   // its $layer-01 tone via `card.background`.
   const cardBorderWidth = foundation.card?.borderWidth ?? bw.thin;
   const cardBackground = foundation.card?.background || semantic.surface.raised;
+  const cardHoverBackground = foundation.card?.hoverBackground || cardBackground;
   // F5 (additive): the card body typography. The base `.st-card` carries NO
   // explicit font-size / line-height / letter-spacing, so the defaults here
   // REPRODUCE that exact render (inherit / normal / normal). DSFR/Carbon pin
@@ -1156,7 +1161,10 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
     typography: cardTypography,
     focus,
     states: {
-      hover: { transform: "translateY(-1px)" }
+      hover: {
+        bg: cardHoverBackground,
+        transform: "translateY(-1px)"
+      }
     }
   };
 

@@ -225,6 +225,7 @@ const foundation = {
   card: {
     borderWidth: "0",
     background: airbusColor.base.white,
+    hoverBackground: airbusColor.warmGrey[20],
     fontSize: "1rem",
     lineHeight: "normal"
   },
@@ -466,7 +467,8 @@ const darkFoundation = {
   },
   card: {
     ...foundation.card,
-    background: airbusColor.dark[50]
+    background: airbusColor.dark[50],
+    hoverBackground: airbusColor.dark[40]
   },
   tabs: {
     ...foundation.tabs,
