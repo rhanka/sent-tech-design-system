@@ -20,9 +20,9 @@
     "vitest": "^4.1.5"
   },
   "scripts": {
-    "predev": "node ../../scripts/ensure-compare-local-overlays.mjs",
+    "predev": "node ../../scripts/ensure-compare-local-overlays.mjs && (cd ../.. && npm --workspace packages/theme-dsfr run build && npm --workspace packages/theme-carbon run build && npm --workspace packages/theme-airbus run build)",
     "dev": "vite dev",
-    "prebuild": "node ../../scripts/ensure-compare-local-overlays.mjs",
+    "prebuild": "node ../../scripts/ensure-compare-local-overlays.mjs && (cd ../.. && npm --workspace packages/theme-dsfr run build && npm --workspace packages/theme-carbon run build && npm --workspace packages/theme-airbus run build)",
     "build": "vite build",
     "check": "svelte-kit sync && svelte-check --tsconfig tsconfig.json",
     "test": "vitest run src --passWithNoTests"
