@@ -46,7 +46,6 @@
       Rôles ARIA <code>tree</code>/<code>treeitem</code> + roving tabindex.
     </p>
   </section>
-
   <section class="docs-section">
     <h2>Démo</h2>
     <p class="docs-demo-context">Sélection : <strong>{selected}</strong></p>
@@ -54,7 +53,6 @@
       <TreeView {nodes} bind:selected defaultExpanded={["foundations", "components", "navigation"]} />
     </div>
   </section>
-
   <section class="docs-section">
     <h2>API du composant</h2>
     <table class="docs-table">
@@ -73,6 +71,14 @@
       <code>TreeNode</code> = <code>{`{ id, label, children?, disabled? }`}</code>.
     </p>
   </section>
+  <section class="docs-section">
+    <h2>{t(locale.value, "tokensTitle")}</h2>
+    <ul class="docs-token-list">
+      <li><code>--st-component-control-hoverBorder</code></li>
+      <li><code>--st-component-control-hoverBackground</code></li>
+    </ul>
+  </section>
+
 </div>
 
 <style>

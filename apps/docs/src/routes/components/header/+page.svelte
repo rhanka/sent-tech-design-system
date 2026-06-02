@@ -83,7 +83,6 @@
       <strong>toujours le nom</strong> (jamais un carré sans libellé).
     </p>
   </section>
-
   <section class="docs-section">
     <h2>Header complet</h2>
     <p>
@@ -111,7 +110,6 @@
       />
     </article>
   </section>
-
   <section class="docs-section">
     <h2>Les trois états de connexion</h2>
     <p>
@@ -176,7 +174,6 @@
       </article>
     </div>
   </section>
-
   <section class="docs-section">
     <h2>Règles de la zone compte</h2>
     <ul class="docs-list">
@@ -202,7 +199,6 @@
       </li>
     </ul>
   </section>
-
   <section class="docs-section">
     <h2>Accessibilité</h2>
     <ul class="docs-list">
@@ -225,7 +221,6 @@
       </li>
     </ul>
   </section>
-
   <section class="docs-section">
     <h2>API du composant</h2>
     <table class="docs-table">
@@ -364,6 +359,14 @@
       </tbody>
     </table>
   </section>
+  <section class="docs-section">
+    <h2>{t(locale.value, "tokensTitle")}</h2>
+    <ul class="docs-token-list">
+      <li><code>--st-component-control-hoverBorder</code></li>
+      <li><code>--st-component-control-hoverBackground</code></li>
+    </ul>
+  </section>
+
 </div>
 
 <style>

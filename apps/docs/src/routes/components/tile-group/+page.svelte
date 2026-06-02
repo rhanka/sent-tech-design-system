@@ -22,13 +22,11 @@
       Pour une tuile isolée, voir <code>Tile</code>.
     </p>
   </section>
-
   <section class="docs-section">
     <h2>Exemple</h2>
     <p class="docs-demo-context">Sélection : <strong>{plan}</strong></p>
     <TileGroup {items} bind:value={plan} legend="Choisir une formule" />
   </section>
-
   <section class="docs-section">
     <h2>API du composant</h2>
     <table class="docs-table">
@@ -46,4 +44,12 @@
       <code>TileGroupItem</code> = <code>{`{ value, label, description?, disabled? }`}</code>.
     </p>
   </section>
+  <section class="docs-section">
+    <h2>{t(locale.value, "tokensTitle")}</h2>
+    <ul class="docs-token-list">
+      <li><code>--st-component-control-hoverBorder</code></li>
+      <li><code>--st-component-control-hoverBackground</code></li>
+    </ul>
+  </section>
+
 </div>
