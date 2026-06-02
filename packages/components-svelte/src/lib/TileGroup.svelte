@@ -134,6 +134,10 @@
   }
 
   .st-tileGroup__tile:hover:not(.st-tileGroup__tile--disabled) {
+    background: var(
+      --st-component-control-hoverBackground,
+      var(--st-semantic-surface-subtle)
+    );
     border-color: var(
       --st-component-control-hoverBorder,
       var(--st-semantic-border-strong)
