@@ -105,6 +105,7 @@
   }
 
   .st-contentSwitcher__option:hover:not([disabled]):not(.st-contentSwitcher__option--selected) {
+    background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle));
     color: var(--st-semantic-text-primary);
   }
 

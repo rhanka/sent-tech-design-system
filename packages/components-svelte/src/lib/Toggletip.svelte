@@ -90,7 +90,7 @@
   }
 
   .st-toggletip__trigger:hover {
-    background: var(--st-semantic-border-strong);
+    background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle));
   }
 
   /* Focus = stratégie d'anatomie partagée (outline DSFR / inset Carbon / ring base). */
