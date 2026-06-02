@@ -76,6 +76,7 @@ Ou `kind: "url"` / `kind: "html"` pour un bloc HTML brut.
 - `redundant-url-label` — signale les liens dont le texte répète l'URL brute.
 - `auto-fit-card-grid` — détecte les grilles auto-fit de cartes répétitives hors token de layout.
 - `focus-visible-ring` — signale la suppression d'outline sans focus-visible tokenisé.
+- `viewport-zoom` — signale les métas viewport bloquant/réduisant excessivement le zoom page.
 
 ## Architecture
 
@@ -85,5 +86,5 @@ Ou `kind: "url"` / `kind: "html"` pour un bloc HTML brut.
 
 ## Notes
 
-- Cette version expose 25 règles déterministes, chacune reliée à un principe `design` et à un finding WP7.
+- Cette version expose 26 règles déterministes, chacune reliée à un principe `design` et à un finding WP7.
   L’enrichissement vers ~`30-35` règles reste géré via WP7/8.

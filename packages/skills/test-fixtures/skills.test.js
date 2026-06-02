@@ -431,8 +431,8 @@ test("rule underline-hardcoded-border: champ avec box-shadow inset → pas de fi
   assert.ok(!(await ruleIds('<input style="box-shadow:inset 0 -2px #161616">')).includes("underline-hardcoded-border"));
 });
 
-test("ruleset WP8: 25 règles actives avec traçabilité WP7", () => {
-  assert.strictEqual(defaultRules.length, 25);
+test("ruleset WP8: 26 règles actives avec traçabilité WP7", () => {
+  assert.strictEqual(defaultRules.length, 26);
   for (const rule of defaultRules) {
     assert.ok(rule.principle, `${rule.id} should expose a design principle`);
     assert.ok(rule.wp7Finding, `${rule.id} should expose its WP7 finding source`);
@@ -597,4 +597,21 @@ test("rule focus-visible-ring: outline supprimé sans focus-visible → finding"
 test("rule focus-visible-ring: focus-visible tokenisé → pas de finding", async () => {
   const html = "<style>button{outline:none}button:focus-visible{outline:2px solid var(--st-semantic-focus-ring)}</style><button>OK</button>";
   assert.ok(!(await ruleIds(html)).includes("focus-visible-ring"));
+});
+
+test("rule viewport-zoom: user-scalable=no → finding", async () => {
+  const html = '<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><main>OK</main>';
+  assert.ok((await ruleIds(html)).includes("viewport-zoom"));
+});
+test("rule viewport-zoom: maximum-scale sous 2 → finding", async () => {
+  const html = '<meta name="viewport" content="width=device-width, maximum-scale=1.5"><main>OK</main>';
+  assert.ok((await ruleIds(html)).includes("viewport-zoom"));
+});
+test("rule viewport-zoom: initial-scale et viewport-fit seuls → pas de finding", async () => {
+  const html = '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><main>OK</main>';
+  assert.ok(!(await ruleIds(html)).includes("viewport-zoom"));
+});
+test("rule viewport-zoom: maximum-scale à 2 → pas de finding", async () => {
+  const html = '<meta name="viewport" content="width=device-width, maximum-scale=2"><main>OK</main>';
+  assert.ok(!(await ruleIds(html)).includes("viewport-zoom"));
 });

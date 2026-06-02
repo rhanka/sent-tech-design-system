@@ -139,7 +139,7 @@ Ces fichiers existent dans `reference/` mais ne figurent dans **aucun** des 5 cl
 
 ### Règles réellement présentes dans le code
 
-Source : `packages/skills/src/rules/index.ts` (`defaultRules`) et les fichiers `src/rules/*.ts`. **25 règles actives** en WP8, chacune reliée dans le code à un principe `design` et à un finding WP7 via `Rule.principle` / `Rule.wp7Finding`. *(Note : le moteur vit dans `packages/skills`, pas `packages/impeccable` — ancien chemin corrigé.)*
+Source : `packages/skills/src/rules/index.ts` (`defaultRules`) et les fichiers `src/rules/*.ts`. **26 règles actives** en WP8, chacune reliée dans le code à un principe `design` et à un finding WP7 via `Rule.principle` / `Rule.wp7Finding`. *(Note : le moteur vit dans `packages/skills`, pas `packages/impeccable` — ancien chemin corrigé.)*
 
 | `ruleId` (exact) | Export (nom de code) | Fichier source |
 |---|---|---|
@@ -168,12 +168,13 @@ Source : `packages/skills/src/rules/index.ts` (`defaultRules`) et les fichiers `
 | `redundant-url-label` | `redundantUrlLabelRule` | `src/rules/redundantUrlLabelRule.ts` |
 | `auto-fit-card-grid` | `autoFitCardGridRule` | `src/rules/autoFitCardGridRule.ts` |
 | `focus-visible-ring` | `focusVisibleRingRule` | `src/rules/focusVisibleRingRule.ts` |
+| `viewport-zoom` | `viewportZoomRule` | `src/rules/viewportZoomRule.ts` |
 
 ### Table de traçabilité
 
 Finding = entrée priorisée de `docs/ds-audit-consolidated-v2.md` (et son ID cluster dans `ds-audit-report.md` / docs cluster). Test = présence dans `packages/skills/test-fixtures/skills.test.js`.
 
-> **Mise à jour WP8** : les 25 règles actives ont une couverture directe via `audit()` (positif + négatif pour les règles comportementales) et le test de garde vérifie aussi `defaultRules.length === 25` plus la présence de `principle` / `wp7Finding`.
+> **Mise à jour WP8** : les 26 règles actives ont une couverture directe via `audit()` (positif + négatif pour les règles comportementales) et le test de garde vérifie aussi `defaultRules.length === 26` plus la présence de `principle` / `wp7Finding`.
 
 | Finding WP7 (consolidated-v2 / cluster) | Règle WP8 (`ruleId`) | Test couvrant la règle | Statut test |
 |---|---|---|---|
@@ -202,6 +203,7 @@ Finding = entrée priorisée de `docs/ds-audit-consolidated-v2.md` (et son ID cl
 | P2-3 labels mineurs sans coût informationnel | `redundant-url-label` | test positif (URL visible redondante) + négatif (libellé utile) | **Couvert** |
 | P0-3 monotonie des grilles de cartes | `auto-fit-card-grid` | test positif (`repeat(auto-fit,minmax(...))`) + négatif (token layout) | **Couvert** |
 | P1-2 cible/affordance interactive insuffisante | `focus-visible-ring` | test positif (`outline:none` sans focus-visible) + négatif (focus ring tokenisé) | **Couvert** |
+| P2-1 zoom utilisateur restreint (cluster B) | `viewport-zoom` | test positif (`user-scalable=no` et `maximum-scale<2`) + négatif (`initial-scale`, `max-scale=2`) | **Couvert** |
 
 ### Findings priorisés restant SANS règle implémentée
 
@@ -228,12 +230,12 @@ D'après `consolidated-v2.md` § « Alignement avec known-issues » :
 Les principaux P0/P1 issus de WP7 et les P2 éditoriaux exploitables en statique ont désormais une règle déterministe dans `packages/skills`. Les manques restants sont surtout non déterministes en statique : dark-mode absent, `OverflowMenu` z-index trop bas et conflit Drawer/menu close.
 
 ### Règles sans test — RÉSOLU
-~~6 des 7 règles actives n'avaient aucun test direct~~ → **25/25 règles couvertes**. Les règles WP8 ajoutées
+**26/26 règles couvertes**. Les règles WP8 ajoutées
 (`cramped-padding`, `motion-subtle`, `padding-scale-token`, `rail-vs-radius-consistency`,
 `grid-variance`, `contrast-token-pair`, `typography-scale-token`, `no-pure-black-white`,
 `raw-color-value`, `font-family-token`, `display-body-font-pair`, `line-length-max-width`,
 `h1-inline-badge`, `status-indicator-label`, `redundant-url-label`, `auto-fit-card-grid`,
-`focus-visible-ring`) ont chacune reçu un test positif + négatif via `audit()` dans
+`focus-visible-ring`, `viewport-zoom`) ont chacune reçu un test positif + négatif via `audit()` dans
 `packages/skills/test-fixtures/skills.test.js`. Le test de garde vérifie aussi la traçabilité
 `principle` / `wp7Finding` de chaque règle.
 

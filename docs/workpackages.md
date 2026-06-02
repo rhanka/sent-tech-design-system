@@ -191,9 +191,9 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 | Vue | Track | Finalite | Etat | Avancement | Detail |
 |---|---|---|---:|---:|---|
-| Fait | Audit V1/V2 | Consolider les findings DS en source exploitable | 🟢 | 100% | Audit V1, 5 rapports clusters, master V2, 25 règles actives transmises à WP8. |
-| A faire | Couverture upstream | Étendre les findings au-delà des règles statiques déjà livrées | 🟡 | 65% | `docs/ds-audit-coverage-matrix.md` prouve 36 fichiers réels, 25 règles couvertes par tests, 9/36 références avec finding local direct; le reste est partiel, hors-cluster ou non déterministe. |
-| Fait | Traçabilité | Relier `finding WP7 -> règle WP8 -> test` | 🟢 | 100% | `docs/ds-audit-coverage-matrix.md` et `docs/wp8-design-cli-traceability.md` couvrent les 25 règles + tests. |
+| Fait | Audit V1/V2 | Consolider les findings DS en source exploitable | 🟢 | 100% | Audit V1, 5 rapports clusters, master V2, 26 règles actives transmises à WP8. |
+| A faire | Couverture upstream | Étendre les findings au-delà des règles statiques déjà livrées | 🟡 | 65% | `docs/ds-audit-coverage-matrix.md` prouve 36 fichiers réels, 26 règles couvertes par tests, 9/36 références avec finding local direct; le reste est partiel, hors-cluster ou non déterministe. |
+| Fait | Traçabilité | Relier `finding WP7 -> règle WP8 -> test` | 🟢 | 100% | `docs/ds-audit-coverage-matrix.md` et `docs/wp8-design-cli-traceability.md` couvrent les 26 règles + tests. |
 | Attendu | Séparation WP7/WP8 | WP7 reste le chantier audit, WP8 reste le moteur | 🟢 | 100% | Toute règle WP8 doit référencer une entrée WP7 V2. |
 
 **Dépendances** : WP8 consomme WP7 pour les règles ; WP6 ne bloque plus WP7 mais impose un retest visuel overlays/plan-completion.
@@ -206,7 +206,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 >
 > La CLI `design` factorise 17-19 méthodes en **5 verbes** : `init` · `build <feature>` · `check <target>` · `align <target>` · `polish <target>`. **L'audit n'est qu'1 verbe** = `design check --tech`. Ne jamais réduire le moteur `design` à « audit ».
 
-**Statut global** : 🟢 cœur livré — les 5 verbes `init`/`build`/`check`/`align`/`polish` sont réels ou honnêtement expérimentaux (plus aucun faux succès), 75 tests skills verts ; package renommé `@sentropic/design-system-skills`, **publié `0.1.0` sur npm via OIDC Trusted Publishing**.
+**Statut global** : 🟢 cœur livré — les 5 verbes `init`/`build`/`check`/`align`/`polish` sont réels ou honnêtement expérimentaux (plus aucun faux succès), 79 tests skills verts ; package renommé `@sentropic/design-system-skills`, **publié `0.1.0` sur npm via OIDC Trusted Publishing**.
 
 **Périmètre V1 livré** : `design check --tech <target>` retourne un rapport JSON, codes `0/1/2`, sans Playwright. C'est 1 des 5 verbes — pas « la CLI ». Les 4 autres verbes sont le cœur du reste de WP8.
 
@@ -216,7 +216,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 |---|---|---|---|
 | P0 Contrat V1 | `design audit <target>`, aliases, codes retour, README/tests | 🟢 100% | binaire `design`, subcommand `audit`, wrapper skill aligne, `check --technical/--heuristics` testes, `--personas` refuse explicitement |
 | P1 Moteur statique | `packages/skills` API `audit`, CLI, JSON, jsdom | 🟢 100% | moteur compile et expose `AuditReport` |
-| P2 Ruleset initial | 25 règles depuis WP7 | 🟢 100% | 25 règles actives, token-aware, tracées `rule -> principle -> finding WP7`; dogfooding WP11 documenté |
+| P2 Ruleset initial | 26 règles depuis WP7 | 🟢 100% | 26 règles actives, token-aware, tracées `rule -> principle -> finding WP7`; dogfooding WP11 documenté |
 | P3 Knowledge base | `docs/principles/*` reliés aux règles | 🟢 100% | principes présents; chaque règle expose `principle`/`wp7Finding`; matrice WP8 à jour |
 | P4 Skill multi-harness | wrapper unique Claude/Codex/Gemini, zéro logique métier | 🟢 100% | skill local + plugin portable; wrappers acceptent `audit <target>`/`<target>` et `fidelity ...`; adapters d'installation propres à chaque harness gardés hors repo |
 | P5 Distribution/CI/npm | lint CI, publication, règles token-aware | 🟢 100% | DS `0.8.0` + `@sentropic/design-system-skills@0.1.0` publiés via OIDC Trusted Publishing (provenance SLSA). Workflows `npm-publish.yml` (DS, tag `v*`) et `skills-publish.yml` (skills, tag `skills-v*`). |
@@ -225,11 +225,11 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 | Vue | Track | Finalite | Etat | Avancement | Detail |
 |---|---|---|---:|---:|---|
-| Fait | Scaffold moteur | Disposer d'un moteur local deterministe | 🟢 | 100% | `packages/skills`, API `audit`, CLI, 25 règles, build TypeScript. |
+| Fait | Scaffold moteur | Disposer d'un moteur local deterministe | 🟢 | 100% | `packages/skills`, API `audit`, CLI, 26 règles, build TypeScript. |
 | Fait | Knowledge base | Capturer les principes DS | 🟢 | 100% | `docs/principles/*` initialisés. |
 | Fait | Skill V1 | Exécuter le moteur depuis un harness agent | 🟢 | 100% | `tools/skills/sent-tech-skills/scripts/audit.mjs` et la copie plugin appellent le contrat canonique; préfixe `audit` optionnel vérifié; stratégie wrapper unique actée. |
 | Fait | Alignement CLI/themes | Mapper les corrections CLI vers les vrais tokens publies | 🟢 | 100% | `design align --tones` remplace vers `--st-semantic-*`; les themes exportent `--st-foundation-*`; tests ajoutes. |
-| Fait | Ruleset | Passer de 7 à 25 règles initiales | 🟢 | 100% | 25 règles actives pilotées par `docs/ds-audit-consolidated-v2.md`; 75 tests skills verts. |
+| Fait | Ruleset | Passer de 7 à 26 règles initiales | 🟢 100% | 26 règles actives pilotées par `docs/ds-audit-consolidated-v2.md`; 79 tests skills verts. |
 | Fait | Promesse CLI | Nettoyer ou rendre reels `build`, `polish`, `init --extract`, `check --human` | 🟢 | 100% | `init --extract`, `build` craft, `check --human`, `polish --motion/--essence` sont concrets; passes agentiques non déterministes retournent `2`. |
 | Fait | Traçabilité | Lier règle, principe et finding WP7 | 🟢 | 100% | `Rule.principle` / `Rule.wp7Finding` obligatoires et documentés dans `docs/wp8-design-cli-traceability.md`. |
 | Fait | Release npm DS | Publier les 3 packages DS | 🟢 | 100% | `@sentropic/design-system-{tokens,themes,svelte}@0.8.0` publiés via OIDC + provenance (run `26422110851`). |
@@ -299,7 +299,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 | Item | Statut | Notes |
 |---|---|---|
 | Installer la lib publiée si nécessaire | 🟢 | Workspace local utilisé; package publié `@sentropic/design-system-skills@0.1.0` déjà disponible. |
-| `design check` sur le site/docs DS | 🟢 | Build docs courant audité: 86 pages, 25 règles, 0 finding après corrections `h1-inline-badge`, `status-indicator-label`, `line-length-cap`, déduplication `no-em-dash`, précision `no-bare-hex`, `single-font` et copy docs; voir `docs/dogfooding-design-check.md`. |
+| `design check` sur le site/docs DS | 🟢 | Build docs courant audité: 86 pages, 26 règles, 0 finding après corrections `h1-inline-badge`, `status-indicator-label`, `line-length-cap`, déduplication `no-em-dash`, précision `no-bare-hex`, `single-font` et copy docs; voir `docs/dogfooding-design-check.md`. |
 | Boucler findings → corrections | 🟢 | Dette prioritaire `no-em-dash` 60 → 0; `single-font`, `no-bare-hex`, `h1-inline-badge`, `status-indicator-label` et `line-length-cap` restent à 0. |
 
 **Dépendances** : WP8 (package publié).
