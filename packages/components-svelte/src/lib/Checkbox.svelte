@@ -48,6 +48,10 @@
       0 0 0 2px var(--st-component-control-focusRing, var(--st-semantic-border-interactive)));
   }
 
+  .st-choice:hover .st-choice__input {
+    background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle));
+  }
+
   .st-choice__input[aria-invalid="true"] {
     accent-color: var(--st-component-control-invalidBorder, var(--st-semantic-feedback-error));
     outline-color: var(--st-component-control-invalidBorder, var(--st-semantic-feedback-error));

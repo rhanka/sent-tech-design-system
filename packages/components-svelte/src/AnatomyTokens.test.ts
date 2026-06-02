@@ -27,8 +27,10 @@ const PILOT_COMPONENTS = ["Button", "Input", "Link", "Card", "Tabs"] as const;
 const PHASE2_COMPONENTS = [
   "Accordion",
   "BackToTop",
+  "ChatComposer",
   "Combobox",
   "ContentSwitcher",
+  "Checkbox",
   "LanguageSelector",
   "Header",
   "Notification",
@@ -46,6 +48,7 @@ const PHASE2_COMPONENTS = [
   "SideNav",
   "DataTable",
   "DatePicker",
+  "Radio",
   "FileUploader",
   "MultiSelect",
   "NumberInput",
