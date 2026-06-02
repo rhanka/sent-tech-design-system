@@ -439,6 +439,8 @@
   --st-component-menu-border: #e2e8f0;
   --st-component-menu-text: #0f172a;
   --st-component-menu-itemHoverBackground: #f8fafc;
+  --st-component-menu-dangerText: #dc2626;
+  --st-component-menu-dangerHoverBackground: rgba(185, 28, 28, 0.08);
   --st-component-menu-disabledText: #64748b;
   --st-component-menu-radius: 0.375rem;
   --st-component-menu-shadow: 0 8px 24px rgb(15 23 42 / 0.12);

@@ -20,9 +20,9 @@ describe("MediaContent", () => {
   it("renders fallback slot when source is absent", () => {
     render(MediaContent, {
       props: {
-        title: "Média personnalisé"
-      },
-      children: createRawSnippet(() => ({ render: () => "<p>Données médias externes</p>" }))
+        title: "Média personnalisé",
+        children: createRawSnippet(() => ({ render: () => "<p>Données médias externes</p>" }))
+      }
     });
 
     expect(screen.getByText("Données médias externes")).toBeTruthy();
