@@ -188,9 +188,9 @@ Detail dans `docs/known-issues-and-fixes.md`.
 
 **Statut global** : 🟡 80% — audit/reporting, traçabilité règles/tests, dogfooding et gate `design check` sur push sont fermés. Reste : couverture individuelle des références upstream hors findings statiques.
 
-Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couverture complète des 37 références upstream `pbakaus/impeccable`.
+Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couverture complète des 36 références upstream `pbakaus/impeccable` (plus la capacité CLI détectée).
 
-**Décidé 2026-05-22** : couverture complète des 37 références via 5 agents par cluster d'axes + 1 consolidateur en fin de cycle. Sortie : un rapport par axe + un master consolidé + commits de fixes P0 atomiques au fur et à mesure.
+**Décidé 2026-05-22** : couverture complète des 36 références via 5 agents par cluster d'axes + 1 consolidateur en fin de cycle, et prise en compte de la capacité CLI détectée. Sortie : un rapport par axe + un master consolidé + commits de fixes P0 atomiques au fur et à mesure.
 
 | Cluster | Références upstream | Statut | Sortie |
 |---|---|---|---|
@@ -288,7 +288,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 | Banc `/compare` réel (ours vs DS officiel en iframe) | 🟢 local | thèmes importés only, hauteur égale, langue native, versions DS+thème |
 | Sélecteur de thème docs (`:root`) | 🟢 local | switch qui change l'**anatomie** (police/radius/focus/champ) |
 | **Publication npm** (DS + thèmes, post-anatomie) | 🟢 | DS/tokens/themes/svelte publiés jusqu'à la ligne 0.10.x; les thèmes clients restent hors publication automatique. |
-| Rollout Phase 2 (~55 composants restants) | 🟡 | Garde `control.hoverBackground` étendue: le builder l'émet pour tous les thèmes, et 31 composants hors pilotes ont été élargis (Accordion, BackToTop, Combobox, ContentSwitcher, CopyButton, DataTable, DatePicker, Dropdown, FileUploader, Header, IconButton, Input, LanguageSelector, Menu, MultiSelect, NumberInput, Notification, OverflowMenu, PasswordInput, Pagination, PaginationNav, Search, Select, SideNav, Table, Tag, Textarea, Toggletip, Tile, TileGroup, TreeView). |
+| Rollout Phase 2 (~55 composants restants) | 🟡 | Garde `control.hoverBackground` étendue: le builder l'émet pour tous les thèmes, et 31 composants hors pilotes ont été élargis (Accordion, BackToTop, Combobox, ContentSwitcher, CopyButton, DataTable, DatePicker, Dropdown, FileUploader, Header, IconButton, Input, LanguageSelector, Menu, MultiSelect, NumberInput, Notification, OverflowMenu, PasswordInput, Pagination, PaginationNav, Search, Select, SideNav, Table, Tag, Textarea, Toggletip, Tile, TileGroup, TreeView) → 31/55 composants cibles. |
 | Thème client Airbus | 🟡 | Package public-ready `packages/theme-airbus` (`airbusTheme`, `airbusDarkTheme`, tests, `MAPPING.md`) sur `main`; publication npm bloquée jusqu'à décision version/release. |
 | Thèmes clients : Scalian / CGI | ⚪ | plus tard ; **hors git** tant que non cadrés |
 
