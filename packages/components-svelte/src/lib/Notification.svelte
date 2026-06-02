@@ -145,6 +145,6 @@
   }
 
   .st-notification__close:hover {
-    background: var(--st-semantic-surface-container);
+    background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle));
   }
 </style>
