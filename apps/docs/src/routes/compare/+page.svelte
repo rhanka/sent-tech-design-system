@@ -35,6 +35,7 @@
     Pagination,
     Quote,
     Radio,
+    Switch,
     Search,
     Select,
     Tabs,
@@ -90,7 +91,7 @@
     message: string; messagePlaceholder: string; selectLabel: string;
     options: { value: string; label: string }[];
     tabs: { value: string; label: string; content: string; disabled?: boolean }[];
-    check: string; checkHelp: string; radio: string; toggle: string; toggleOn: string; toggleOff: string;
+    check: string; checkHelp: string; radio: string; toggle: string; toggleOn: string; toggleOff: string; switchLabel: string;
     tag: string; badge: string;
     alertTitle: string; alertMessage: string;
     accordion: { id: string; title: string; content: string }[];
@@ -119,6 +120,7 @@
       ],
       check: "J'accepte les conditions", checkHelp: "Texte d'aide",
       radio: "Option A", toggle: "Activer les notifications", toggleOn: "Activé", toggleOff: "Désactivé",
+      switchLabel: "Désactiver le mode silencieux",
       tag: "Étiquette", badge: "Nouveau",
       alertTitle: "Information", alertMessage: "Votre demande a bien été enregistrée.",
       accordion: [
@@ -154,6 +156,7 @@
       ],
       check: "I accept the terms", checkHelp: "Helper text",
       radio: "Option A", toggle: "Enable notifications", toggleOn: "On", toggleOff: "Off",
+      switchLabel: "Enable silent mode",
       tag: "Tag", badge: "New",
       alertTitle: "Notification", alertMessage: "Your request has been saved.",
       accordion: [
@@ -190,6 +193,7 @@
       ],
       check: "I accept the terms", checkHelp: "Helper text",
       radio: "Option A", toggle: "Enable notifications", toggleOn: "On", toggleOff: "Off",
+      switchLabel: "Enable silent mode",
       tag: "Tag", badge: "New",
       alertTitle: "Notification", alertMessage: "Your request has been saved.",
       accordion: [
@@ -264,7 +268,7 @@
     "Button", "ButtonDisabled",
     "Input", "InputError", "InputDisabled",
     "Textarea", "Select", "Search",
-    "Link", "Checkbox", "Radio", "Toggle",
+    "Link", "Checkbox", "Radio", "Toggle", "Switch",
     "Tag", "Badge",
     "Alert", "Accordion", "Breadcrumb", "Pagination",
     "Card", "Tabs",
@@ -295,6 +299,7 @@
     Checkbox: "Checkbox",
     Radio: "Radio",
     Toggle: "Toggle / Switch",
+    Switch: "Switch",
     Tag: "Tag",
     Badge: "Badge",
     Alert: "Alert / Notification",
@@ -437,6 +442,8 @@
                 <Radio label={lab.radio} name="cmp-radio-{theme.id}" checked />
               {:else if entry.key === "Toggle"}
                 <Toggle label={lab.toggle} labelOn={lab.toggleOn} labelOff={lab.toggleOff} checked />
+              {:else if entry.key === "Switch"}
+                <Switch label={lab.switchLabel} checked />
               {:else if entry.key === "Tag"}
                 <Tag>{lab.tag}</Tag>
               {:else if entry.key === "Badge"}
