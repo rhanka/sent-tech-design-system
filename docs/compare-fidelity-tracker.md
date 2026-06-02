@@ -49,8 +49,8 @@ CSS de la page `/compare` uniquement) :
   calé à la même origine → nos boîtes et le markup officiel partent du même coin.
 - Libellé de ligne aligné en haut (plus de `padding-top:1.5rem` qui le faisait flotter).
 - F1 préservé : `--field` à `width:320px`, `--card` à `18rem` inchangés (apples-to-apples).
-- **Preuve visuelle** : captures headless (Chrome système, port 4322 ≠ 5173) des sections
-  DSFR et Carbon — chaque paire est alignée, contenu et réf au même niveau, aucun élément
+- **Preuve visuelle** : captures headless (Chrome système, port 4322 par défaut, ≠ 5173) 
+  des sections DSFR et Carbon — chaque paire est alignée, contenu et réf au même niveau, aucun élément
   flottant.
 
 ## G5 — couverture du banc élargie ✅
