@@ -33,9 +33,9 @@
 
   const formatInterval = (segment: TranscriptionSegment) => {
     if (!showTimestamps || (!segment.startTime && !segment.endTime)) return "";
-    if (!segment.startTime) return segment.endTime ? `— ${segment.endTime}` : "";
-    if (!segment.endTime) return `${segment.startTime} —`;
-    return `${segment.startTime} — ${segment.endTime}`;
+    if (!segment.startTime) return segment.endTime ? `- ${segment.endTime}` : "";
+    if (!segment.endTime) return `${segment.startTime} -`;
+    return `${segment.startTime} - ${segment.endTime}`;
   };
 
   const classes = () => ["st-transcription", className].filter(Boolean).join(" ");

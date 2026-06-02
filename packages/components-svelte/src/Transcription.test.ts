@@ -26,7 +26,7 @@ describe("Transcription", () => {
 
     expect(screen.getByText("Transcription de test")).toBeTruthy();
     expect(screen.getByText("Narration")).toBeTruthy();
-    expect(screen.getByText("00:00 — 00:10")).toBeTruthy();
+    expect(screen.getByText("00:00 - 00:10")).toBeTruthy();
     expect(screen.getByText("Hello there")).toBeTruthy();
   });
 

@@ -64,7 +64,7 @@
         <tr>
           <td><code>text</code></td>
           <td><code>string</code></td>
-          <td>—</td>
+          <td>aucun texte</td>
           <td>Fallback texte brut quand <code>segments</code> absent</td>
         </tr>
         <tr>

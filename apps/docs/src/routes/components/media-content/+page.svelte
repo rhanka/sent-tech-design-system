@@ -44,7 +44,7 @@
         <tr>
           <td><code>media</code></td>
           <td><code>string</code></td>
-          <td>—</td>
+          <td>obligatoire</td>
           <td>URL du média principal (image/vidéo).</td>
         </tr>
         <tr>
@@ -68,13 +68,13 @@
         <tr>
           <td><code>title</code></td>
           <td><code>string</code></td>
-          <td><code>—</code></td>
+          <td><code>« sans titre »</code></td>
           <td>Titre dans la légende figure.</td>
         </tr>
         <tr>
           <td><code>caption</code></td>
           <td><code>string</code></td>
-          <td><code>—</code></td>
+          <td><code>« sans caption »</code></td>
           <td>Légende visible sous le média.</td>
         </tr>
       </tbody>

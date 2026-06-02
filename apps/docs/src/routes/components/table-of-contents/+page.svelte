@@ -80,13 +80,13 @@
         <tr>
           <td><code>activeId</code></td>
           <td><code>string</code></td>
-          <td>—</td>
+          <td>obligatoire</td>
           <td>Item actif visuel via <code>aria-current</code></td>
         </tr>
         <tr>
           <td><code>title</code></td>
           <td><code>string</code></td>
-          <td>—</td>
+          <td>""</td>
           <td>Intitulé optionnel du bloc</td>
         </tr>
       </tbody>
