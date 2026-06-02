@@ -158,11 +158,11 @@ describe("anatomy v1.1.0 — hover bg, hover decoration, per-size font size", ()
     expect(compiled.get("carbon")!).toContain("--st-component-button-anatomy-states-hover-bg: #0043ce");
   });
 
-    it("link hover decoration differs by theme intent (Carbon none → underline on hover)", () => {
+  it("link hover decoration differs by theme intent (Carbon none → underline on hover)", () => {
       // Carbon: rest decoration none, hover decoration underline (the toggle).
       expect(compiled.get("carbon")!).toContain("--st-component-link-anatomy-typography-textDecoration: none");
       expect(compiled.get("carbon")!).toContain("--st-component-link-anatomy-states-hover-decoration: underline");
-      // DSFR: underlined at rest, underline on hover (no-op toggle, animated thickness stays an escape).
+      // DSFR: underlined at rest, underline on hover (no-op toggle, animated thickness is tokenized).
       expect(compiled.get("dsfr")!).toContain("--st-component-link-anatomy-typography-textDecoration: underline");
       expect(compiled.get("dsfr")!).toContain("--st-component-link-anatomy-states-hover-decoration: underline");
     });
@@ -173,6 +173,47 @@ describe("anatomy v1.1.0 — hover bg, hover decoration, per-size font size", ()
       expect(compiled.get("carbon")!).toContain("--st-component-card-anatomy-states-hover-bg: #e0e0e0");
     });
   });
+
+describe("anatomy v1.5.0 — link underline geometry (hover)", () => {
+  const compiled = new Map<string, string>(
+    THEMES.map((t) => [t.id, compileTheme(t)])
+  );
+
+  for (const theme of THEMES) {
+    const css = () => compiled.get(theme.id)!;
+
+    it(`${theme.id}: link underline geometry vars are emitted`, () => {
+      expect(css(), `${theme.id}: baseline underline thickness missing`).toMatch(
+        /--st-component-link-anatomy-typography-decorationThickness:\s*[^;]+;/
+      );
+      expect(css(), `${theme.id}: baseline underline offset missing`).toMatch(
+        /--st-component-link-anatomy-typography-decorationOffset:\s*[^;]+;/
+      );
+      expect(css(), `${theme.id}: hover underline thickness token emitted`).toMatch(
+        /--st-component-link-anatomy-typography-decorationThicknessHover:\s*[^;]+;/
+      );
+      expect(css(), `${theme.id}: hover underline offset token emitted`).toMatch(
+        /--st-component-link-anatomy-typography-decorationOffsetHover:\s*[^;]+;/
+      );
+    });
+  }
+
+  it("DSFR emits dedicated underline geometry for hover animation", () => {
+    const css = compiled.get("dsfr")!;
+    expect(css).toContain("--st-component-link-anatomy-typography-decorationThickness: 0.08em");
+    expect(css).toContain("--st-component-link-anatomy-typography-decorationOffset: 0.125em");
+    expect(css).toContain("--st-component-link-anatomy-typography-decorationThicknessHover: 0.14em");
+    expect(css).toContain("--st-component-link-anatomy-typography-decorationOffsetHover: 0.155em");
+  });
+
+  it("Sent Tech and Carbon keep stable hover geometry fallback values", () => {
+    for (const id of ["sent-tech", "carbon"] as const) {
+      const css = compiled.get(id)!;
+      expect(css).toContain("--st-component-link-anatomy-typography-decorationThicknessHover: auto");
+      expect(css).toContain("--st-component-link-anatomy-typography-decorationOffsetHover: 0.18em");
+    }
+  });
+});
 
 /**
  * Anatomy v1.2.0 field style (cf. spec extension): the input/control anatomy now
