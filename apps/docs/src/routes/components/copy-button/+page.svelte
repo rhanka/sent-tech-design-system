@@ -13,7 +13,6 @@
     </div>
     <p>{t(locale.value, "copyButtonIntro")}</p>
   </section>
-
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
     <div class="docs-example" aria-label={t(locale.value, "sizes")}>
@@ -30,7 +29,6 @@
       <CopyButton value="désactivé" label="Désactivé" copiedLabel="Copié" disabled />
     </div>
   </section>
-
   <section class="docs-section">
     <h2>{t(locale.value, "apiTitle")}</h2>
     <table class="docs-table">
@@ -54,4 +52,12 @@
       avec <code>aria-live="polite"</code> pour annoncer l'état copié.
     </p>
   </section>
+  <section class="docs-section">
+    <h2>{t(locale.value, "tokensTitle")}</h2>
+    <ul class="docs-token-list">
+      <li><code>--st-component-control-hoverBorder</code></li>
+      <li><code>--st-component-control-hoverBackground</code></li>
+    </ul>
+  </section>
+
 </div>

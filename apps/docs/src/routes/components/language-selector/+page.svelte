@@ -22,13 +22,11 @@
       fermeture au clic extérieur / <kbd>Échap</kbd>.
     </p>
   </section>
-
   <section class="docs-section">
     <h2>Démo</h2>
     <p class="docs-demo-context">Langue courante : <strong>{lang}</strong></p>
     <LanguageSelector bind:value={lang} {options} />
   </section>
-
   <section class="docs-section">
     <h2>API du composant</h2>
     <table class="docs-table">
@@ -44,4 +42,12 @@
       </tbody>
     </table>
   </section>
+  <section class="docs-section">
+    <h2>{t(locale.value, "tokensTitle")}</h2>
+    <ul class="docs-token-list">
+      <li><code>--st-component-control-hoverBorder</code></li>
+      <li><code>--st-component-control-hoverBackground</code></li>
+    </ul>
+  </section>
+
 </div>
