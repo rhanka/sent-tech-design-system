@@ -169,6 +169,10 @@ export interface TypographyAnatomy {
   textDecoration: CssValue;
   decorationThickness: CssValue;
   decorationOffset: CssValue;
+  /** Optional hover-specific decoration thickness, used to animate underline metrics. */
+  decorationThicknessHover?: CssValue;
+  /** Optional hover-specific underline offset, used to animate anchor underline metrics. */
+  decorationOffsetHover?: CssValue;
   /**
    * Decoration line in the hover state (v1.1.0). Source for
    * `states.hover.decoration` on the link anatomy: DSFR/base stay `underline`

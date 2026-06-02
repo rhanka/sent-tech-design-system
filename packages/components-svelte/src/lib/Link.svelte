@@ -67,6 +67,9 @@
     text-decoration: var(--st-component-link-anatomy-typography-textDecoration, underline);
     text-decoration-thickness: var(--st-component-link-anatomy-typography-decorationThickness, auto);
     text-underline-offset: var(--st-component-link-anatomy-typography-decorationOffset, 0.18em);
+    transition-property: color, text-decoration-thickness, text-underline-offset;
+    transition-duration: var(--st-motion-normal, 180ms);
+    transition-timing-function: var(--st-motion-easing, cubic-bezier(0.4, 0, 0.2, 1));
   }
 
   .st-link--standalone {
@@ -83,8 +86,11 @@
     color: var(--st-component-link-anatomy-states-hover-text, var(--st-component-link-hoverText, var(--st-semantic-action-primary)));
     /* Anatomy v1.1.0: hover decoration sourced from states.hover.decoration
        (= link typography textDecorationHover). Carbon: none → underline; DSFR/base:
-       underline → underline (no-op). The DSFR animated underline stays an escape. */
+       underline → underline (no-op). The DSFR animated underline now
+       transitions thickness/offset via anatomy-hover vars when provided. */
     text-decoration-line: var(--st-component-link-anatomy-states-hover-decoration, underline);
+    text-decoration-thickness: var(--st-component-link-anatomy-typography-decorationThicknessHover, var(--st-component-link-anatomy-typography-decorationThickness, auto));
+    text-underline-offset: var(--st-component-link-anatomy-typography-decorationOffsetHover, var(--st-component-link-anatomy-typography-decorationOffset, 0.18em));
   }
 
   /* Focus = shared mixin. --st-radius-* fixed to the valid `sm` token (was the

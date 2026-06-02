@@ -52,7 +52,7 @@ portée par la primitive `focus.strategy` + le mixin partagé résolu dans `crea
 |           | hover  | 1/1 | 🟢 | `border-color` recolore le filet bas (rôle) |
 |           | focus  | 3/3 | 🟢 | `outline` décalé (stratégie) ; bordure interactive conservée |
 |           | disabled | 2/2 | 🟢 | bg + texte via rôles |
-| **Link** | default | 4/5 | 🟡 | `text-decoration: underline` tokenisé ; couleur de marque OK ; **animation** d'épaisseur/position du soulignement DSFR non répliquée (technique) → échappement résiduel D2 |
+| **Link** | default | 5/5 | 🟢 | `text-decoration: underline` tokenisé ; couleur de marque OK ; animation d'épaisseur/position du soulignement DSFR répliquée via variables d'anatomie |
 |           | hover  | 2/2 | 🟢 | couleur hover + `states.hover.decoration` (`underline`, no-op vs repos) tokenisés |
 |           | focus  | 4/4 | 🟢 | `outline` décalé + radius `sm` (carré) |
 |           | disabled | 3/3 | 🟢 | couleur + retrait soulignement (delta tokenisé) |
@@ -98,7 +98,7 @@ portée par la primitive `focus.strategy` + le mixin partagé résolu dans `crea
 |-----------|----------------|------------------|--------------------------------|
 | Button | 100% (14/14) | 100% (14/14) | — (hover bg + font-size par taille tokenisés en v1.1.0) |
 | Input  | 100% (13/13) | 100% (13/13) | — (style de champ `filled-underline` tokenisé en v1.2.0 ; focus = technique, déjà couverte par stratégie) |
-| Link   | ~80% (4/5) DSFR · 100% (5/5) Carbon | idem | DSFR : **animation** du soulignement (épaisseur/position) — comportement, pas valeur |
+| Link   | 100% (5/5) DSFR · 100% (5/5) Carbon | idem | DSFR : animation d'épaisseur/position du soulignement désormais fermée (`decorationThicknessHover` / `decorationOffsetHover`) |
 | Card   | 100% (4/4) | 100% (4/4) | ombre/`$layer` au hover |
 | Tabs   | ~89% (8/9) | ~89% (8/9) | padding inline fixe |
 
@@ -109,8 +109,9 @@ portée par la primitive `focus.strategy` + le mixin partagé résolu dans `crea
 > tokenisé via `states.hover.decoration`. Avec v1.2.0, le **style de champ** (DSFR/Carbon
 > remplis + bordure basse seule) est porté par `field.style = filled-underline` + `fillBg` +
 > bordures par côté — ce qui ferme l'écart « encadré ≠ réel » de l'input (D-input/C-input) qui
-> était signé « à l'œil » à tort. Le **seul** échappement de décoration restant est
-> l'**animation** d'épaisseur/position du soulignement DSFR (D2) — un comportement, pas une valeur.
+> était signé « à l'œil » à tort. Aucune entrée d'échappement restante n'est documentée dans ce
+> périmètre pilote/phase 2 après la réplication de l'animation de soulignement DSFR via
+> `decorationThicknessHover` / `decorationOffsetHover`.
 
 ---
 
@@ -123,7 +124,7 @@ Réservée au non-tokenisable (pseudo-éléments, techniques, comportements).
 
 | # | Cible | Propriété | Justification | Propriétaire | Date | Critère de retrait |
 |---|-------|-----------|---------------|--------------|------|--------------------|
-| D2 | `.st-link` (hover) | `text-decoration` (**animation**) | Le soulignement DSFR **anime** son épaisseur/position au survol — comportement, pas valeur. La ligne elle-même est tokenisée (`states.hover.decoration`) ; seule l'animation reste un écart | équipe DS | 2026-05-27 | Décision produit : répliquer l'animation (transition `text-decoration-thickness`) ou accepter l'écart documenté |
+| D2 | `.st-link` (hover) | `text-decoration` (**animation**) | Le soulignement DSFR anime son épaisseur/position au survol (animation désormais répliquée via vars `decorationThicknessHover`/`decorationOffsetHover`) ; comportement tokenisable localement dans la v1.2.0 | équipe DS | 2026-05-27 | Revue UAT visuelle + régression test : pas d'écart attendu en production |
 
 > Retirés en v1.1.0 : **D1** (hover bg) → `states.hover.bg` = `#1212ff` ; **D3** (font-size sm/lg) → `density.{sm,md,lg}.fontSize`.
 > Retiré en v1.2.0 : **D-input** (style de champ « encadré » ≠ réel) → `field.style = filled-underline`, `fillBg = #eeeeee`, `borderBottom = 1px solid #3a3a3a`, top/right/left = `none`.
@@ -137,11 +138,12 @@ Réservée au non-tokenisable (pseudo-éléments, techniques, comportements).
 > Retirés en v1.1.0 : **C2** (soulignement hover) → `states.hover.decoration` = `underline` (la partie tokenisable ; pas d'animation côté Carbon) ; **C3** (font-size sm/lg) → `density.{sm,md,lg}.fontSize`. **C4** (hover bg carte) → `states.hover.bg` = `#e0e0e0`.
 > Retiré en v1.2.0 : **C-input** (style de champ « encadré » ≠ réel) → `field.style = filled-underline`, `fillBg = #f4f4f4` ($field-01), `borderBottom = 1px solid #8d8d8d` ($border-strong), top/right/left = `none`.
 
-> Note : à ce stade, la **seule** entrée d'échappement restante est D2 (animation du soulignement
-> DSFR) — toutes deux des
-> **comportements**, pas des valeurs. Aucune feuille `[data-st-theme="<id>"]{…}` n'est encore
-> écrite : tout le pilote tient dans les tokens d'anatomie (schéma v1.2.0). Ces écarts sont à
-> arbitrer avec l'utilisateur (spec §7/§8) avant d'être figés ou convertis en extensions.
+> Note : aucun écart structurel n'est à ce stade documenté pour la pilotage DSFR/Carbon dans la
+> matrice v1.2.0 ; la fidélité restante se limite à des éléments non-tokenisés hors anatomy
+> (notamment certains raffinements visuels globaux). Aucune feuille
+> `[data-st-theme="<id>"]{…}` n'est encore écrite : tout le pilote tient dans les tokens
+> d'anatomie (`ComponentAnatomy` v1.2.0). Les points de marge de manœuvre restent à arbitrer
+> avec l'utilisateur (spec §7/§8) avant extension formelle.
 
 ---
 

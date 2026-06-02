@@ -441,7 +441,14 @@ const FALLBACK = {
     field: { family: "var(--st-font-sans)", size: "1rem", weight: "400", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
     label: { family: "var(--st-font-sans)", size: "0.875rem", weight: "600", lineHeight: "1.4", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
     // Base/DSFR links are underlined at rest → underline on hover is a no-op.
-    link: { family: "inherit", size: "inherit", weight: "inherit", lineHeight: "inherit", letterSpacing: "0", textTransform: "none", textDecoration: "underline", decorationThickness: "auto", decorationOffset: "0.18em", textDecorationHover: "underline" }
+    // decorationThicknessHover / decorationOffsetHover default to rest metrics so
+    // themes that do not animate underline geometry (Sent Tech / Carbon) stay
+    // stable without phantom var requirements.
+    link: {
+      family: "inherit", size: "inherit", weight: "inherit", lineHeight: "inherit", letterSpacing: "0", textTransform: "none",
+      textDecoration: "underline", decorationThickness: "auto", decorationOffset: "0.18em",
+      decorationThicknessHover: "auto", decorationOffsetHover: "0.18em", textDecorationHover: "underline"
+    }
   } satisfies Record<"control" | "field" | "label" | "link", TypographyAnatomy>,
   disabledOpacity: "0.55",
   transition: { property: "background-color, border-color, color, box-shadow, outline-color", duration: "120ms", easing: "cubic-bezier(0.4, 0, 0.2, 1)" },
@@ -921,6 +928,8 @@ function typographyOf(f: FoundationInput, role: "control" | "field" | "label" | 
     textDecoration: themed.textDecoration ?? base.textDecoration,
     decorationThickness: themed.decorationThickness ?? base.decorationThickness,
     decorationOffset: themed.decorationOffset ?? base.decorationOffset,
+    decorationThicknessHover: themed.decorationThicknessHover ?? base.decorationThicknessHover,
+    decorationOffsetHover: themed.decorationOffsetHover ?? base.decorationOffsetHover,
     textDecorationHover: themed.textDecorationHover ?? base.textDecorationHover
   };
 }
