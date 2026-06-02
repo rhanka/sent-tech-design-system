@@ -129,6 +129,28 @@ describe("airbusTheme", () => {
       currentWeight: "700"
     });
 
+    expect(component.button).toMatchObject({
+      primaryBackground: "#00205b",
+      primaryText: "#ffffff",
+      secondaryBackground: "#ffffff",
+      secondaryBorder: "#00205b",
+      secondaryHoverBackground: "#f1f1f1",
+      secondaryText: "#00205b"
+    });
+
+    expect(component.input).toMatchObject({
+      background: "#ffffff",
+      border: "#e0e3e9",
+      focusRing: "#255fcc",
+      radius: "0.1875rem"
+    });
+
+    expect(component.link).toMatchObject({
+      text: "#255fcc",
+      hoverText: "#00205b",
+      disabledText: "#919cb0"
+    });
+
     expect(component.chat).toMatchObject({
       userBubbleBackground: "#00205b",
       userBubbleText: "#ffffff",
@@ -252,6 +274,22 @@ describe("airbusTheme", () => {
       dangerText: "#e4002b"
     });
 
+    expect(component.tag).toMatchObject({
+      radius: "0.75rem",
+      neutralBackground: "#e0e3e9",
+      neutralText: "#14171d"
+    });
+
+    expect(component.graph).toMatchObject({
+      panelBackground: "#14171d",
+      panelText: "#ffffff",
+      edgeDefault: "rgb(226 232 240 / 0.56)",
+      community1: "#00205b",
+      community2: "#3cb7ff",
+      community3: "#00aec7",
+      community4: "#08875b"
+    });
+
     expect(component.dropdown).toMatchObject({
       background: "#ffffff",
       text: "#14171d",
@@ -308,6 +346,38 @@ describe("airbusTheme", () => {
       activeBorderTopWidth: "0",
       activeBorderBottomWidth: "0",
       activeShadow: "inset 0 -2px 0 0 #86a8e9"
+    });
+    expect(darkComponent.button).toMatchObject({
+      primaryBackground: "#86a8e9",
+      primaryText: "#14171d",
+      secondaryBackground: "#111111",
+      secondaryBorder: "#86a8e9",
+      secondaryHoverBackground: "#32353b",
+      secondaryText: "#86a8e9"
+    });
+    expect(darkComponent.input).toMatchObject({
+      background: "#111111",
+      border: "#3c4657",
+      focusRing: "#e5ecf7",
+      radius: "0.1875rem"
+    });
+    expect(darkComponent.link).toMatchObject({
+      text: "#638ee0",
+      hoverText: "#86a8e9",
+      disabledText: "#a3a3a3"
+    });
+    expect(darkComponent.tag).toMatchObject({
+      neutralBackground: "#25282e",
+      neutralText: "#ffffff"
+    });
+    expect(darkComponent.graph).toMatchObject({
+      panelBackground: "#ffffff",
+      panelText: "#14171d",
+      edgeDefault: "rgb(226 232 240 / 0.56)",
+      community1: "#86a8e9",
+      community2: "#82d1ff",
+      community3: "#16d4f0",
+      community4: "#27e7a7"
     });
 
     const css = compileTheme(airbusDarkTheme);
@@ -366,6 +436,13 @@ describe("airbusTheme", () => {
     expect(light).toContain("--st-component-menu-itemHoverBackground: #fafafa;");
     expect(light).toContain("--st-component-dropdown-optionHoverBackground: #fafafa;");
     expect(light).toContain("--st-component-dataTable-rowHoverBackground: #fafafa;");
+    expect(light).toContain("--st-component-button-primaryBackground: #00205b;");
+    expect(light).toContain("--st-component-button-secondaryBackground: #ffffff;");
+    expect(light).toContain("--st-component-input-background: #ffffff;");
+    expect(light).toContain("--st-component-link-text: #255fcc;");
+    expect(light).toContain("--st-component-link-hoverText: #00205b;");
+    expect(light).toContain("--st-component-tag-neutralBackground: #e0e3e9;");
+    expect(light).toContain("--st-component-graph-community4: #08875b;");
 
     expect(dark).toContain("--st-component-control-hoverBackground: #25282e;");
     expect(dark).toContain("--st-component-control-focusRing: #e5ecf7;");
@@ -386,6 +463,13 @@ describe("airbusTheme", () => {
     expect(dark).toContain("--st-component-menu-itemHoverBackground: #25282e;");
     expect(dark).toContain("--st-component-dropdown-optionHoverBackground: #25282e;");
     expect(dark).toContain("--st-component-dataTable-rowHoverBackground: #25282e;");
+    expect(dark).toContain("--st-component-button-primaryBackground: #86a8e9;");
+    expect(dark).toContain("--st-component-button-secondaryBackground: #111111;");
+    expect(dark).toContain("--st-component-input-background: #111111;");
+    expect(dark).toContain("--st-component-link-text: #638ee0;");
+    expect(dark).toContain("--st-component-link-hoverText: #86a8e9;");
+    expect(dark).toContain("--st-component-tag-neutralBackground: #25282e;");
+    expect(dark).toContain("--st-component-graph-community4: #27e7a7;");
     expect(dark).toContain("--st-component-drawer-zIndex: 1300;");
     expect(dark).toContain("--st-component-overlay-zIndex: 1300;");
     expect(dark).toContain("--st-component-popover-zIndex: 1000;");
