@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generatedAt": "2026-06-02T09:51:14.689Z",
-  "manifestHash": "5a77b2d0",
+  "generatedAt": "2026-06-02T12:35:05.926Z",
+  "manifestHash": "29940d3a",
   "anatomyVersion": "1.5.0",
   "dsVersion": "0.10.3",
   "themeVersion": {
@@ -18,10 +18,10 @@
       "ours": "1px",
       "ref": "0px",
       "delta": "Δ1.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Button/primary/rest/border-right-width": {
@@ -33,10 +33,10 @@
       "ours": "1px",
       "ref": "0px",
       "delta": "Δ1.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Button/primary/rest/border-bottom-width": {
@@ -48,10 +48,10 @@
       "ours": "1px",
       "ref": "0px",
       "delta": "Δ1.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Button/primary/rest/border-left-width": {
@@ -63,10 +63,10 @@
       "ours": "1px",
       "ref": "0px",
       "delta": "Δ1.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Button/primary/rest/box-width": {
@@ -78,10 +78,10 @@
       "ours": "97.7px",
       "ref": "95.7px",
       "delta": "Δ2.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Button/primary/rest/box-height": {
@@ -93,10 +93,10 @@
       "ours": "42px",
       "ref": "40px",
       "delta": "Δ2.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Button/primary/rest/color": {
@@ -108,10 +108,10 @@
       "ours": "rgb(255, 255, 255)",
       "ref": "rgb(245, 245, 254)",
       "delta": "rgb(255,255,255) vs rgb(245,245,254)",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Button/disabled/disabled/border-top-width": {
@@ -123,10 +123,10 @@
       "ours": "1px",
       "ref": "0px",
       "delta": "Δ1.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Button/disabled/disabled/border-right-width": {
@@ -138,10 +138,10 @@
       "ours": "1px",
       "ref": "0px",
       "delta": "Δ1.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Button/disabled/disabled/border-bottom-width": {
@@ -153,10 +153,10 @@
       "ours": "1px",
       "ref": "0px",
       "delta": "Δ1.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Button/disabled/disabled/border-left-width": {
@@ -168,10 +168,10 @@
       "ours": "1px",
       "ref": "0px",
       "delta": "Δ1.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Button/disabled/disabled/box-width": {
@@ -183,10 +183,10 @@
       "ours": "110px",
       "ref": "108px",
       "delta": "Δ2.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Button/disabled/disabled/box-height": {
@@ -198,10 +198,10 @@
       "ours": "42px",
       "ref": "40px",
       "delta": "Δ2.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Button/disabled/disabled/background-color": {
@@ -213,10 +213,10 @@
       "ours": "rgb(0, 0, 145)",
       "ref": "rgb(229, 229, 229)",
       "delta": "rgb(0,0,145) vs rgb(229,229,229)",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Button/disabled/disabled/color": {
@@ -228,10 +228,10 @@
       "ours": "rgb(255, 255, 255)",
       "ref": "rgb(146, 146, 146)",
       "delta": "rgb(255,255,255) vs rgb(146,146,146)",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Input/default/rest/box-width": {
@@ -243,10 +243,10 @@
       "ours": "320px",
       "ref": "273px",
       "delta": "Δ47.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Input/error/error/box-width": {
@@ -258,10 +258,10 @@
       "ours": "320px",
       "ref": "273px",
       "delta": "Δ47.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Input/disabled/disabled/box-width": {
@@ -273,10 +273,10 @@
       "ours": "320px",
       "ref": "273px",
       "delta": "Δ47.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Input/disabled/disabled/background-color": {
@@ -288,10 +288,10 @@
       "ours": "rgb(246, 246, 246)",
       "ref": "rgb(238, 238, 238)",
       "delta": "rgb(246,246,246) vs rgb(238,238,238)",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Textarea/default/rest/padding-top": {
@@ -303,10 +303,10 @@
       "ours": "10px",
       "ref": "8px",
       "delta": "Δ2.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Textarea/default/rest/padding-bottom": {
@@ -318,10 +318,10 @@
       "ours": "10px",
       "ref": "8px",
       "delta": "Δ2.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Textarea/default/rest/box-width": {
@@ -333,10 +333,10 @@
       "ours": "320px",
       "ref": "273px",
       "delta": "Δ47.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Textarea/default/rest/box-height": {
@@ -348,10 +348,10 @@
       "ours": "96px",
       "ref": "88px",
       "delta": "Δ8.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Select/default/rest/box-width": {
@@ -363,10 +363,10 @@
       "ours": "320px",
       "ref": "273px",
       "delta": "Δ47.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Search/default/rest/border-radius": {
@@ -378,10 +378,10 @@
       "ours": "4px",
       "ref": "0px",
       "delta": "Δ4.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Search/default/rest/box-width": {
@@ -393,10 +393,10 @@
       "ours": "320px",
       "ref": "233px",
       "delta": "Δ87.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Link/default/rest/text-decoration-line": {
@@ -408,10 +408,10 @@
       "ours": "underline",
       "ref": "none",
       "delta": "underline vs none",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Checkbox/default/rest/box-width": {
@@ -423,10 +423,10 @@
       "ours": "182.2px",
       "ref": "241px",
       "delta": "Δ-58.8px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Checkbox/default/rest/box-height": {
@@ -438,10 +438,10 @@
       "ours": "24px",
       "ref": "44px",
       "delta": "Δ-20.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Radio/default/rest/padding-left": {
@@ -453,10 +453,10 @@
       "ours": "0px",
       "ref": "32px",
       "delta": "Δ-32.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Radio/default/rest/box-width": {
@@ -468,10 +468,10 @@
       "ours": "182.2px",
       "ref": "103.1px",
       "delta": "Δ79.1px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Toggle/default/rest/border-radius": {
@@ -483,10 +483,10 @@
       "ours": "999px",
       "ref": "0px",
       "delta": "Δ999.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Toggle/default/rest/box-width": {
@@ -498,10 +498,10 @@
       "ours": "36px",
       "ref": "241px",
       "delta": "Δ-205.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Toggle/default/rest/box-height": {
@@ -513,10 +513,10 @@
       "ours": "20px",
       "ref": "40px",
       "delta": "Δ-20.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Toggle/default/rest/background-color": {
@@ -528,10 +528,10 @@
       "ours": "rgb(0, 0, 145)",
       "ref": "rgba(0, 0, 0, 0)",
       "delta": "rgb(0,0,145) vs rgb(0,0,0)/a0",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Alert/default/rest/box-width": {
@@ -543,10 +543,10 @@
       "ours": "301px",
       "ref": "273px",
       "delta": "Δ28.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Alert/default/rest/box-height": {
@@ -558,10 +558,10 @@
       "ours": "98px",
       "ref": "108px",
       "delta": "Δ-10.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Accordion/default/rest/box-width": {
@@ -573,10 +573,10 @@
       "ours": "301px",
       "ref": "273px",
       "delta": "Δ28.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Breadcrumb/default/rest/box-height": {
@@ -588,10 +588,10 @@
       "ours": "20px",
       "ref": "18px",
       "delta": "Δ2.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Card/default/rest/padding-top": {
@@ -603,10 +603,10 @@
       "ours": "16px",
       "ref": "1px",
       "delta": "Δ15.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Card/default/rest/padding-right": {
@@ -618,10 +618,10 @@
       "ours": "16px",
       "ref": "1px",
       "delta": "Δ15.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Card/default/rest/padding-bottom": {
@@ -633,10 +633,10 @@
       "ours": "16px",
       "ref": "1px",
       "delta": "Δ15.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Card/default/rest/padding-left": {
@@ -648,10 +648,10 @@
       "ours": "16px",
       "ref": "1px",
       "delta": "Δ15.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Card/default/rest/box-width": {
@@ -663,10 +663,10 @@
       "ours": "288px",
       "ref": "273px",
       "delta": "Δ15.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Card/default/rest/box-height": {
@@ -678,10 +678,10 @@
       "ours": "82.4px",
       "ref": "106px",
       "delta": "Δ-23.6px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Quote/default/rest/border-left-width": {
@@ -693,10 +693,10 @@
       "ours": "4px",
       "ref": "0px",
       "delta": "Δ4.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Quote/default/rest/border-left-style": {
@@ -708,10 +708,10 @@
       "ours": "solid",
       "ref": "none",
       "delta": "solid vs none",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Quote/default/rest/border-left-color": {
@@ -723,10 +723,10 @@
       "ours": "rgb(0, 0, 145)",
       "ref": "rgb(58, 58, 58)",
       "delta": "rgb(0,0,145) vs rgb(58,58,58)",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Quote/default/rest/padding-top": {
@@ -738,10 +738,10 @@
       "ours": "8px",
       "ref": "0px",
       "delta": "Δ8.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Quote/default/rest/padding-right": {
@@ -753,10 +753,10 @@
       "ours": "0px",
       "ref": "8px",
       "delta": "Δ-8.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Quote/default/rest/padding-bottom": {
@@ -768,10 +768,10 @@
       "ours": "8px",
       "ref": "32px",
       "delta": "Δ-24.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Quote/default/rest/padding-left": {
@@ -783,10 +783,10 @@
       "ours": "16px",
       "ref": "8px",
       "delta": "Δ8.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Quote/default/rest/box-width": {
@@ -798,10 +798,10 @@
       "ours": "301px",
       "ref": "273px",
       "delta": "Δ28.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Quote/default/rest/box-height": {
@@ -813,10 +813,10 @@
       "ours": "102.6px",
       "ref": "204px",
       "delta": "Δ-101.4px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Quote/default/rest/line-height": {
@@ -828,10 +828,10 @@
       "ours": "normal",
       "ref": "24px",
       "delta": "normal vs 24px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Highlight/default/rest/border-left-width": {
@@ -843,10 +843,10 @@
       "ours": "4px",
       "ref": "0px",
       "delta": "Δ4.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Highlight/default/rest/border-left-style": {
@@ -858,10 +858,10 @@
       "ours": "solid",
       "ref": "none",
       "delta": "solid vs none",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Highlight/default/rest/border-left-color": {
@@ -873,10 +873,10 @@
       "ours": "rgb(0, 0, 145)",
       "ref": "rgb(58, 58, 58)",
       "delta": "rgb(0,0,145) vs rgb(58,58,58)",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Highlight/default/rest/padding-top": {
@@ -888,10 +888,10 @@
       "ours": "16px",
       "ref": "0px",
       "delta": "Δ16.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Highlight/default/rest/padding-right": {
@@ -903,10 +903,10 @@
       "ours": "16px",
       "ref": "0px",
       "delta": "Δ16.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Highlight/default/rest/padding-bottom": {
@@ -918,10 +918,10 @@
       "ours": "16px",
       "ref": "0px",
       "delta": "Δ16.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Highlight/default/rest/padding-left": {
@@ -933,10 +933,10 @@
       "ours": "16px",
       "ref": "20px",
       "delta": "Δ-4.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Highlight/default/rest/box-width": {
@@ -948,10 +948,10 @@
       "ours": "301px",
       "ref": "273px",
       "delta": "Δ28.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Highlight/default/rest/box-height": {
@@ -963,10 +963,10 @@
       "ours": "111.3px",
       "ref": "48px",
       "delta": "Δ63.3px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Highlight/default/rest/line-height": {
@@ -978,10 +978,10 @@
       "ours": "normal",
       "ref": "24px",
       "delta": "normal vs 24px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "dsfr/Highlight/default/rest/background-color": {
@@ -993,10 +993,10 @@
       "ours": "rgb(246, 246, 246)",
       "ref": "rgba(0, 0, 0, 0)",
       "delta": "rgb(246,246,246) vs rgb(0,0,0)/a0",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
     },
     "carbon/Button/primary/rest/padding-left": {
@@ -1008,11 +1008,11 @@
       "ours": "16px",
       "ref": "15px",
       "delta": "Δ1.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Button/primary/rest/box-width": {
       "theme": "carbon",
@@ -1023,11 +1023,11 @@
       "ours": "131.1px",
       "ref": "130.1px",
       "delta": "Δ1.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Button/primary/rest/line-height": {
       "theme": "carbon",
@@ -1038,11 +1038,11 @@
       "ours": "18px",
       "ref": "18.0001px",
       "delta": "Δ0.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Button/disabled/disabled/border-top-color": {
       "theme": "carbon",
@@ -1053,11 +1053,11 @@
       "ours": "rgba(0, 0, 0, 0)",
       "ref": "rgb(198, 198, 198)",
       "delta": "rgb(0,0,0)/a0 vs rgb(198,198,198)",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Button/disabled/disabled/border-right-color": {
       "theme": "carbon",
@@ -1068,11 +1068,11 @@
       "ours": "rgba(0, 0, 0, 0)",
       "ref": "rgb(198, 198, 198)",
       "delta": "rgb(0,0,0)/a0 vs rgb(198,198,198)",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Button/disabled/disabled/border-bottom-color": {
       "theme": "carbon",
@@ -1083,11 +1083,11 @@
       "ours": "rgba(0, 0, 0, 0)",
       "ref": "rgb(198, 198, 198)",
       "delta": "rgb(0,0,0)/a0 vs rgb(198,198,198)",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Button/disabled/disabled/border-left-color": {
       "theme": "carbon",
@@ -1098,11 +1098,11 @@
       "ours": "rgba(0, 0, 0, 0)",
       "ref": "rgb(198, 198, 198)",
       "delta": "rgb(0,0,0)/a0 vs rgb(198,198,198)",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Button/disabled/disabled/padding-left": {
       "theme": "carbon",
@@ -1113,11 +1113,11 @@
       "ours": "16px",
       "ref": "15px",
       "delta": "Δ1.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Button/disabled/disabled/box-width": {
       "theme": "carbon",
@@ -1128,11 +1128,11 @@
       "ours": "137.2px",
       "ref": "136.2px",
       "delta": "Δ1.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Button/disabled/disabled/line-height": {
       "theme": "carbon",
@@ -1143,11 +1143,11 @@
       "ours": "18px",
       "ref": "18.0001px",
       "delta": "Δ0.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Button/disabled/disabled/background-color": {
       "theme": "carbon",
@@ -1158,11 +1158,11 @@
       "ours": "rgb(15, 98, 254)",
       "ref": "rgb(198, 198, 198)",
       "delta": "rgb(15,98,254) vs rgb(198,198,198)",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Button/disabled/disabled/color": {
       "theme": "carbon",
@@ -1173,11 +1173,11 @@
       "ours": "rgb(255, 255, 255)",
       "ref": "rgb(141, 141, 141)",
       "delta": "rgb(255,255,255) vs rgb(141,141,141)",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Input/default/rest/box-width": {
       "theme": "carbon",
@@ -1188,11 +1188,11 @@
       "ours": "320px",
       "ref": "273px",
       "delta": "Δ47.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Input/default/rest/line-height": {
       "theme": "carbon",
@@ -1203,11 +1203,11 @@
       "ours": "18px",
       "ref": "18.0001px",
       "delta": "Δ0.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Input/error/error/border-bottom-color": {
       "theme": "carbon",
@@ -1218,11 +1218,11 @@
       "ours": "rgb(218, 30, 40)",
       "ref": "rgb(141, 141, 141)",
       "delta": "rgb(218,30,40) vs rgb(141,141,141)",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Input/error/error/padding-right": {
       "theme": "carbon",
@@ -1233,11 +1233,11 @@
       "ours": "16px",
       "ref": "40px",
       "delta": "Δ-24.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Input/error/error/box-width": {
       "theme": "carbon",
@@ -1248,11 +1248,11 @@
       "ours": "320px",
       "ref": "273px",
       "delta": "Δ47.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Input/error/error/line-height": {
       "theme": "carbon",
@@ -1263,11 +1263,11 @@
       "ours": "18px",
       "ref": "18.0001px",
       "delta": "Δ0.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Input/disabled/disabled/border-bottom-color": {
       "theme": "carbon",
@@ -1278,11 +1278,11 @@
       "ours": "rgb(141, 141, 141)",
       "ref": "rgba(0, 0, 0, 0)",
       "delta": "rgb(141,141,141) vs rgb(0,0,0)/a0",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Input/disabled/disabled/box-width": {
       "theme": "carbon",
@@ -1293,11 +1293,11 @@
       "ours": "320px",
       "ref": "273px",
       "delta": "Δ47.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Input/disabled/disabled/line-height": {
       "theme": "carbon",
@@ -1308,11 +1308,11 @@
       "ours": "18px",
       "ref": "18.0001px",
       "delta": "Δ0.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Input/disabled/disabled/color": {
       "theme": "carbon",
@@ -1323,11 +1323,11 @@
       "ours": "rgb(111, 111, 111)",
       "ref": "rgb(198, 198, 198)",
       "delta": "rgb(111,111,111) vs rgb(198,198,198)",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Textarea/default/rest/padding-top": {
       "theme": "carbon",
@@ -1338,11 +1338,11 @@
       "ours": "10px",
       "ref": "11px",
       "delta": "Δ1.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Textarea/default/rest/padding-bottom": {
       "theme": "carbon",
@@ -1353,11 +1353,11 @@
       "ours": "10px",
       "ref": "11px",
       "delta": "Δ1.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Textarea/default/rest/box-width": {
       "theme": "carbon",
@@ -1368,11 +1368,11 @@
       "ours": "320px",
       "ref": "273px",
       "delta": "Δ47.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Textarea/default/rest/box-height": {
       "theme": "carbon",
@@ -1383,11 +1383,11 @@
       "ours": "96px",
       "ref": "83px",
       "delta": "Δ13.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Textarea/default/rest/line-height": {
       "theme": "carbon",
@@ -1398,11 +1398,11 @@
       "ours": "18px",
       "ref": "20px",
       "delta": "Δ-2.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Select/default/rest/box-width": {
       "theme": "carbon",
@@ -1413,11 +1413,11 @@
       "ours": "320px",
       "ref": "273px",
       "delta": "Δ47.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Select/default/rest/line-height": {
       "theme": "carbon",
@@ -1428,11 +1428,11 @@
       "ours": "18px",
       "ref": "18.0001px",
       "delta": "Δ0.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Search/default/rest/box-width": {
       "theme": "carbon",
@@ -1443,11 +1443,11 @@
       "ours": "320px",
       "ref": "273px",
       "delta": "Δ47.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Search/default/rest/line-height": {
       "theme": "carbon",
@@ -1458,11 +1458,11 @@
       "ours": "18px",
       "ref": "18.0001px",
       "delta": "Δ0.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Link/default/rest/line-height": {
       "theme": "carbon",
@@ -1473,11 +1473,11 @@
       "ours": "17.9999px",
       "ref": "18.0001px",
       "delta": "Δ0.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Checkbox/default/rest/padding-left": {
       "theme": "carbon",
@@ -1488,11 +1488,11 @@
       "ours": "0px",
       "ref": "6px",
       "delta": "Δ-6.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Checkbox/default/rest/box-width": {
       "theme": "carbon",
@@ -1503,11 +1503,11 @@
       "ours": "117.7px",
       "ref": "123.7px",
       "delta": "Δ-6.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Checkbox/default/rest/box-height": {
       "theme": "carbon",
@@ -1518,11 +1518,11 @@
       "ours": "18px",
       "ref": "21px",
       "delta": "Δ-3.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Checkbox/default/rest/line-height": {
       "theme": "carbon",
@@ -1533,11 +1533,11 @@
       "ours": "18px",
       "ref": "18.0001px",
       "delta": "Δ0.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Radio/default/rest/box-width": {
       "theme": "carbon",
@@ -1548,11 +1548,11 @@
       "ours": "117.7px",
       "ref": "55.7px",
       "delta": "Δ62.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Radio/default/rest/box-height": {
       "theme": "carbon",
@@ -1563,11 +1563,11 @@
       "ours": "18px",
       "ref": "20px",
       "delta": "Δ-2.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Radio/default/rest/line-height": {
       "theme": "carbon",
@@ -1578,11 +1578,11 @@
       "ours": "18px",
       "ref": "20px",
       "delta": "Δ-2.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Toggle/default/rest/border-radius": {
       "theme": "carbon",
@@ -1593,11 +1593,11 @@
       "ours": "999px",
       "ref": "0px",
       "delta": "Δ999.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Toggle/default/rest/background-color": {
       "theme": "carbon",
@@ -1608,11 +1608,11 @@
       "ours": "rgb(15, 98, 254)",
       "ref": "rgba(0, 0, 0, 0)",
       "delta": "rgb(15,98,254) vs rgb(0,0,0)/a0",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Alert/default/rest/box-width": {
       "theme": "carbon",
@@ -1623,11 +1623,11 @@
       "ours": "191.6px",
       "ref": "288px",
       "delta": "Δ-96.4px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Alert/default/rest/box-height": {
       "theme": "carbon",
@@ -1638,11 +1638,11 @@
       "ours": "39px",
       "ref": "66px",
       "delta": "Δ-27.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Accordion/default/rest/box-width": {
       "theme": "carbon",
@@ -1653,11 +1653,11 @@
       "ours": "301px",
       "ref": "273px",
       "delta": "Δ28.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Breadcrumb/default/rest/line-height": {
       "theme": "carbon",
@@ -1668,11 +1668,11 @@
       "ours": "18px",
       "ref": "18.0001px",
       "delta": "Δ0.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Card/default/rest/box-width": {
       "theme": "carbon",
@@ -1683,11 +1683,11 @@
       "ours": "288px",
       "ref": "273px",
       "delta": "Δ15.0px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Card/default/rest/box-height": {
       "theme": "carbon",
@@ -1698,11 +1698,11 @@
       "ours": "72.4px",
       "ref": "100px",
       "delta": "Δ-27.6px",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Tabs/selected/selected/border-bottom-color": {
       "theme": "carbon",
@@ -1713,11 +1713,11 @@
       "ours": "rgb(15, 98, 254)",
       "ref": "rgb(224, 224, 224)",
       "delta": "rgb(15,98,254) vs rgb(224,224,224)",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
-      "regressed": false
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     },
     "carbon/Tabs/selected/selected/color": {
       "theme": "carbon",
@@ -1728,11 +1728,191 @@
       "ours": "rgb(22, 22, 22)",
       "ref": "rgb(82, 82, 82)",
       "delta": "rgb(22,22,22) vs rgb(82,82,82)",
-      "status": "open",
+      "status": "fixed",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:51:14.689Z",
-      "manifestHash": "5a77b2d0",
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
+    },
+    "dsfr/Switch/default/rest/border-radius": {
+      "theme": "dsfr",
+      "component": "Switch",
+      "scenario": "default",
+      "state": "rest",
+      "property": "border-radius",
+      "ours": "999px",
+      "ref": "0px",
+      "delta": "Δ999.0px",
+      "status": "fixed",
+      "source": "oracle",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
       "regressed": false
+    },
+    "dsfr/Switch/default/rest/box-width": {
+      "theme": "dsfr",
+      "component": "Switch",
+      "scenario": "default",
+      "state": "rest",
+      "property": "box-width",
+      "ours": "36px",
+      "ref": "241px",
+      "delta": "Δ-205.0px",
+      "status": "fixed",
+      "source": "oracle",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
+      "regressed": false
+    },
+    "dsfr/Switch/default/rest/box-height": {
+      "theme": "dsfr",
+      "component": "Switch",
+      "scenario": "default",
+      "state": "rest",
+      "property": "box-height",
+      "ours": "20px",
+      "ref": "48px",
+      "delta": "Δ-28.0px",
+      "status": "fixed",
+      "source": "oracle",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
+      "regressed": false
+    },
+    "dsfr/Switch/default/rest/line-height": {
+      "theme": "dsfr",
+      "component": "Switch",
+      "scenario": "default",
+      "state": "rest",
+      "property": "line-height",
+      "ours": "normal",
+      "ref": "24px",
+      "delta": "normal vs 24px",
+      "status": "fixed",
+      "source": "oracle",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
+      "regressed": false
+    },
+    "dsfr/Switch/default/rest/background-color": {
+      "theme": "dsfr",
+      "component": "Switch",
+      "scenario": "default",
+      "state": "rest",
+      "property": "background-color",
+      "ours": "rgb(0, 0, 145)",
+      "ref": "rgba(0, 0, 0, 0)",
+      "delta": "rgb(0,0,145) vs rgb(0,0,0)/a0",
+      "status": "fixed",
+      "source": "oracle",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
+      "regressed": false
+    },
+    "dsfr/Switch/default/rest/color": {
+      "theme": "dsfr",
+      "component": "Switch",
+      "scenario": "default",
+      "state": "rest",
+      "property": "color",
+      "ours": "rgb(58, 58, 58)",
+      "ref": "rgb(22, 22, 22)",
+      "delta": "rgb(58,58,58) vs rgb(22,22,22)",
+      "status": "fixed",
+      "source": "oracle",
+      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "manifestHash": "29940d3a",
+      "regressed": false
+    },
+    "carbon/Switch/default/rest/border-radius": {
+      "theme": "carbon",
+      "component": "Switch",
+      "scenario": "default",
+      "state": "rest",
+      "property": "border-radius",
+      "ours": "999px",
+      "ref": "0px",
+      "delta": "Δ999.0px",
+      "status": "fixed",
+      "source": "oracle",
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
+    },
+    "carbon/Switch/default/rest/font-size": {
+      "theme": "carbon",
+      "component": "Switch",
+      "scenario": "default",
+      "state": "rest",
+      "property": "font-size",
+      "ours": "16px",
+      "ref": "12px",
+      "delta": "Δ4.0px",
+      "status": "fixed",
+      "source": "oracle",
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
+    },
+    "carbon/Switch/default/rest/line-height": {
+      "theme": "carbon",
+      "component": "Switch",
+      "scenario": "default",
+      "state": "rest",
+      "property": "line-height",
+      "ours": "normal",
+      "ref": "16px",
+      "delta": "normal vs 16px",
+      "status": "fixed",
+      "source": "oracle",
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
+    },
+    "carbon/Switch/default/rest/letter-spacing": {
+      "theme": "carbon",
+      "component": "Switch",
+      "scenario": "default",
+      "state": "rest",
+      "property": "letter-spacing",
+      "ours": "normal",
+      "ref": "0.32px",
+      "delta": "normal vs 0.32px",
+      "status": "fixed",
+      "source": "oracle",
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
+    },
+    "carbon/Switch/default/rest/background-color": {
+      "theme": "carbon",
+      "component": "Switch",
+      "scenario": "default",
+      "state": "rest",
+      "property": "background-color",
+      "ours": "rgb(15, 98, 254)",
+      "ref": "rgba(0, 0, 0, 0)",
+      "delta": "rgb(15,98,254) vs rgb(0,0,0)/a0",
+      "status": "fixed",
+      "source": "oracle",
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
+    },
+    "carbon/Switch/default/rest/color": {
+      "theme": "carbon",
+      "component": "Switch",
+      "scenario": "default",
+      "state": "rest",
+      "property": "color",
+      "ours": "rgb(22, 22, 22)",
+      "ref": "rgb(82, 82, 82)",
+      "delta": "rgb(22,22,22) vs rgb(82,82,82)",
+      "status": "fixed",
+      "source": "oracle",
+      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "manifestHash": "29940d3a",
+      "regressed": true
     }
   }
 }
