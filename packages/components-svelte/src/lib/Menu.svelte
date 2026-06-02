@@ -163,7 +163,7 @@
 
   .st-menu__item:hover:not(:disabled),
   .st-menu__item:focus-visible {
-    background: var(--st-component-menu-itemHoverBackground, var(--st-semantic-surface-subtle));
+    background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle));
     outline: none;
   }
 
