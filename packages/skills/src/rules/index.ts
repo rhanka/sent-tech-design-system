@@ -25,6 +25,7 @@ import { redundantUrlLabelRule } from "./redundantUrlLabelRule.js";
 import { autoFitCardGridRule } from "./autoFitCardGridRule.js";
 import { focusVisibleRingRule } from "./focusVisibleRingRule.js";
 import { viewportZoomRule } from "./viewportZoomRule.js";
+import { darkModeRule } from "./darkModeRule.js";
 
 export const defaultRules: Rule[] = [
   singleFontRule,
@@ -52,7 +53,8 @@ export const defaultRules: Rule[] = [
   redundantUrlLabelRule,
   autoFitCardGridRule,
   focusVisibleRingRule,
-  viewportZoomRule
+  viewportZoomRule,
+  darkModeRule
 ];
 
 export {
@@ -81,5 +83,6 @@ export {
   redundantUrlLabelRule,
   autoFitCardGridRule,
   focusVisibleRingRule,
-  viewportZoomRule
+  viewportZoomRule,
+  darkModeRule
 };
