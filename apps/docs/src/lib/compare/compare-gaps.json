@@ -1,8 +1,8 @@
 {
   "version": 1,
-  "generatedAt": "2026-06-02T12:35:05.926Z",
+  "generatedAt": "2026-06-02T16:21:15.349Z",
   "manifestHash": "29940d3a",
-  "anatomyVersion": "1.5.0",
+  "anatomyVersion": "1.6.0",
   "dsVersion": "0.10.3",
   "themeVersion": {
     "dsfr": "0.2.2",
@@ -18,9 +18,9 @@
       "ours": "1px",
       "ref": "0px",
       "delta": "Δ1.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -33,9 +33,9 @@
       "ours": "1px",
       "ref": "0px",
       "delta": "Δ1.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -48,9 +48,9 @@
       "ours": "1px",
       "ref": "0px",
       "delta": "Δ1.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -63,9 +63,9 @@
       "ours": "1px",
       "ref": "0px",
       "delta": "Δ1.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -78,9 +78,9 @@
       "ours": "97.7px",
       "ref": "95.7px",
       "delta": "Δ2.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -93,9 +93,9 @@
       "ours": "42px",
       "ref": "40px",
       "delta": "Δ2.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -108,9 +108,9 @@
       "ours": "rgb(255, 255, 255)",
       "ref": "rgb(245, 245, 254)",
       "delta": "rgb(255,255,255) vs rgb(245,245,254)",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -123,9 +123,9 @@
       "ours": "1px",
       "ref": "0px",
       "delta": "Δ1.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -138,9 +138,9 @@
       "ours": "1px",
       "ref": "0px",
       "delta": "Δ1.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -153,9 +153,9 @@
       "ours": "1px",
       "ref": "0px",
       "delta": "Δ1.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -168,9 +168,9 @@
       "ours": "1px",
       "ref": "0px",
       "delta": "Δ1.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -183,9 +183,9 @@
       "ours": "110px",
       "ref": "108px",
       "delta": "Δ2.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -198,9 +198,9 @@
       "ours": "42px",
       "ref": "40px",
       "delta": "Δ2.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -213,9 +213,9 @@
       "ours": "rgb(0, 0, 145)",
       "ref": "rgb(229, 229, 229)",
       "delta": "rgb(0,0,145) vs rgb(229,229,229)",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -228,9 +228,9 @@
       "ours": "rgb(255, 255, 255)",
       "ref": "rgb(146, 146, 146)",
       "delta": "rgb(255,255,255) vs rgb(146,146,146)",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -243,9 +243,9 @@
       "ours": "320px",
       "ref": "273px",
       "delta": "Δ47.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -258,9 +258,9 @@
       "ours": "320px",
       "ref": "273px",
       "delta": "Δ47.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -273,9 +273,9 @@
       "ours": "320px",
       "ref": "273px",
       "delta": "Δ47.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -288,9 +288,9 @@
       "ours": "rgb(246, 246, 246)",
       "ref": "rgb(238, 238, 238)",
       "delta": "rgb(246,246,246) vs rgb(238,238,238)",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -303,9 +303,9 @@
       "ours": "10px",
       "ref": "8px",
       "delta": "Δ2.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -318,9 +318,9 @@
       "ours": "10px",
       "ref": "8px",
       "delta": "Δ2.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -333,9 +333,9 @@
       "ours": "320px",
       "ref": "273px",
       "delta": "Δ47.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -348,9 +348,9 @@
       "ours": "96px",
       "ref": "88px",
       "delta": "Δ8.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -363,9 +363,9 @@
       "ours": "320px",
       "ref": "273px",
       "delta": "Δ47.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -378,9 +378,9 @@
       "ours": "4px",
       "ref": "0px",
       "delta": "Δ4.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -393,9 +393,9 @@
       "ours": "320px",
       "ref": "233px",
       "delta": "Δ87.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -408,9 +408,9 @@
       "ours": "underline",
       "ref": "none",
       "delta": "underline vs none",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -423,9 +423,9 @@
       "ours": "182.2px",
       "ref": "241px",
       "delta": "Δ-58.8px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -438,9 +438,9 @@
       "ours": "24px",
       "ref": "44px",
       "delta": "Δ-20.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -453,9 +453,9 @@
       "ours": "0px",
       "ref": "32px",
       "delta": "Δ-32.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -468,9 +468,9 @@
       "ours": "182.2px",
       "ref": "103.1px",
       "delta": "Δ79.1px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -483,9 +483,9 @@
       "ours": "999px",
       "ref": "0px",
       "delta": "Δ999.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -498,9 +498,9 @@
       "ours": "36px",
       "ref": "241px",
       "delta": "Δ-205.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -513,9 +513,9 @@
       "ours": "20px",
       "ref": "40px",
       "delta": "Δ-20.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -528,9 +528,9 @@
       "ours": "rgb(0, 0, 145)",
       "ref": "rgba(0, 0, 0, 0)",
       "delta": "rgb(0,0,145) vs rgb(0,0,0)/a0",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -543,9 +543,9 @@
       "ours": "301px",
       "ref": "273px",
       "delta": "Δ28.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -558,9 +558,9 @@
       "ours": "98px",
       "ref": "108px",
       "delta": "Δ-10.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -573,9 +573,9 @@
       "ours": "301px",
       "ref": "273px",
       "delta": "Δ28.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -588,9 +588,9 @@
       "ours": "20px",
       "ref": "18px",
       "delta": "Δ2.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -603,9 +603,9 @@
       "ours": "16px",
       "ref": "1px",
       "delta": "Δ15.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -618,9 +618,9 @@
       "ours": "16px",
       "ref": "1px",
       "delta": "Δ15.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -633,9 +633,9 @@
       "ours": "16px",
       "ref": "1px",
       "delta": "Δ15.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -648,9 +648,9 @@
       "ours": "16px",
       "ref": "1px",
       "delta": "Δ15.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -663,9 +663,9 @@
       "ours": "288px",
       "ref": "273px",
       "delta": "Δ15.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -678,9 +678,9 @@
       "ours": "82.4px",
       "ref": "106px",
       "delta": "Δ-23.6px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -693,9 +693,9 @@
       "ours": "4px",
       "ref": "0px",
       "delta": "Δ4.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -708,9 +708,9 @@
       "ours": "solid",
       "ref": "none",
       "delta": "solid vs none",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -723,9 +723,9 @@
       "ours": "rgb(0, 0, 145)",
       "ref": "rgb(58, 58, 58)",
       "delta": "rgb(0,0,145) vs rgb(58,58,58)",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -738,9 +738,9 @@
       "ours": "8px",
       "ref": "0px",
       "delta": "Δ8.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -753,9 +753,9 @@
       "ours": "0px",
       "ref": "8px",
       "delta": "Δ-8.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -768,9 +768,9 @@
       "ours": "8px",
       "ref": "32px",
       "delta": "Δ-24.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -783,9 +783,9 @@
       "ours": "16px",
       "ref": "8px",
       "delta": "Δ8.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -798,9 +798,9 @@
       "ours": "301px",
       "ref": "273px",
       "delta": "Δ28.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -813,9 +813,9 @@
       "ours": "102.6px",
       "ref": "204px",
       "delta": "Δ-101.4px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -828,9 +828,9 @@
       "ours": "normal",
       "ref": "24px",
       "delta": "normal vs 24px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -843,9 +843,9 @@
       "ours": "4px",
       "ref": "0px",
       "delta": "Δ4.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -858,9 +858,9 @@
       "ours": "solid",
       "ref": "none",
       "delta": "solid vs none",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -873,9 +873,9 @@
       "ours": "rgb(0, 0, 145)",
       "ref": "rgb(58, 58, 58)",
       "delta": "rgb(0,0,145) vs rgb(58,58,58)",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -888,9 +888,9 @@
       "ours": "16px",
       "ref": "0px",
       "delta": "Δ16.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -903,9 +903,9 @@
       "ours": "16px",
       "ref": "0px",
       "delta": "Δ16.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -918,9 +918,9 @@
       "ours": "16px",
       "ref": "0px",
       "delta": "Δ16.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -933,9 +933,9 @@
       "ours": "16px",
       "ref": "20px",
       "delta": "Δ-4.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -948,9 +948,9 @@
       "ours": "301px",
       "ref": "273px",
       "delta": "Δ28.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -963,9 +963,9 @@
       "ours": "111.3px",
       "ref": "48px",
       "delta": "Δ63.3px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -978,9 +978,9 @@
       "ours": "normal",
       "ref": "24px",
       "delta": "normal vs 24px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -993,9 +993,9 @@
       "ours": "rgb(246, 246, 246)",
       "ref": "rgba(0, 0, 0, 0)",
       "delta": "rgb(246,246,246) vs rgb(0,0,0)/a0",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -1008,11 +1008,11 @@
       "ours": "16px",
       "ref": "15px",
       "delta": "Δ1.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Button/primary/rest/box-width": {
       "theme": "carbon",
@@ -1023,11 +1023,11 @@
       "ours": "131.1px",
       "ref": "130.1px",
       "delta": "Δ1.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Button/primary/rest/line-height": {
       "theme": "carbon",
@@ -1038,11 +1038,11 @@
       "ours": "18px",
       "ref": "18.0001px",
       "delta": "Δ0.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Button/disabled/disabled/border-top-color": {
       "theme": "carbon",
@@ -1053,11 +1053,11 @@
       "ours": "rgba(0, 0, 0, 0)",
       "ref": "rgb(198, 198, 198)",
       "delta": "rgb(0,0,0)/a0 vs rgb(198,198,198)",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Button/disabled/disabled/border-right-color": {
       "theme": "carbon",
@@ -1068,11 +1068,11 @@
       "ours": "rgba(0, 0, 0, 0)",
       "ref": "rgb(198, 198, 198)",
       "delta": "rgb(0,0,0)/a0 vs rgb(198,198,198)",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Button/disabled/disabled/border-bottom-color": {
       "theme": "carbon",
@@ -1083,11 +1083,11 @@
       "ours": "rgba(0, 0, 0, 0)",
       "ref": "rgb(198, 198, 198)",
       "delta": "rgb(0,0,0)/a0 vs rgb(198,198,198)",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Button/disabled/disabled/border-left-color": {
       "theme": "carbon",
@@ -1098,11 +1098,11 @@
       "ours": "rgba(0, 0, 0, 0)",
       "ref": "rgb(198, 198, 198)",
       "delta": "rgb(0,0,0)/a0 vs rgb(198,198,198)",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Button/disabled/disabled/padding-left": {
       "theme": "carbon",
@@ -1113,11 +1113,11 @@
       "ours": "16px",
       "ref": "15px",
       "delta": "Δ1.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Button/disabled/disabled/box-width": {
       "theme": "carbon",
@@ -1128,11 +1128,11 @@
       "ours": "137.2px",
       "ref": "136.2px",
       "delta": "Δ1.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Button/disabled/disabled/line-height": {
       "theme": "carbon",
@@ -1143,11 +1143,11 @@
       "ours": "18px",
       "ref": "18.0001px",
       "delta": "Δ0.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Button/disabled/disabled/background-color": {
       "theme": "carbon",
@@ -1158,11 +1158,11 @@
       "ours": "rgb(15, 98, 254)",
       "ref": "rgb(198, 198, 198)",
       "delta": "rgb(15,98,254) vs rgb(198,198,198)",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Button/disabled/disabled/color": {
       "theme": "carbon",
@@ -1173,11 +1173,11 @@
       "ours": "rgb(255, 255, 255)",
       "ref": "rgb(141, 141, 141)",
       "delta": "rgb(255,255,255) vs rgb(141,141,141)",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Input/default/rest/box-width": {
       "theme": "carbon",
@@ -1188,11 +1188,11 @@
       "ours": "320px",
       "ref": "273px",
       "delta": "Δ47.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Input/default/rest/line-height": {
       "theme": "carbon",
@@ -1203,11 +1203,11 @@
       "ours": "18px",
       "ref": "18.0001px",
       "delta": "Δ0.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Input/error/error/border-bottom-color": {
       "theme": "carbon",
@@ -1218,11 +1218,11 @@
       "ours": "rgb(218, 30, 40)",
       "ref": "rgb(141, 141, 141)",
       "delta": "rgb(218,30,40) vs rgb(141,141,141)",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Input/error/error/padding-right": {
       "theme": "carbon",
@@ -1233,11 +1233,11 @@
       "ours": "16px",
       "ref": "40px",
       "delta": "Δ-24.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Input/error/error/box-width": {
       "theme": "carbon",
@@ -1248,11 +1248,11 @@
       "ours": "320px",
       "ref": "273px",
       "delta": "Δ47.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Input/error/error/line-height": {
       "theme": "carbon",
@@ -1263,11 +1263,11 @@
       "ours": "18px",
       "ref": "18.0001px",
       "delta": "Δ0.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Input/disabled/disabled/border-bottom-color": {
       "theme": "carbon",
@@ -1278,11 +1278,11 @@
       "ours": "rgb(141, 141, 141)",
       "ref": "rgba(0, 0, 0, 0)",
       "delta": "rgb(141,141,141) vs rgb(0,0,0)/a0",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Input/disabled/disabled/box-width": {
       "theme": "carbon",
@@ -1293,11 +1293,11 @@
       "ours": "320px",
       "ref": "273px",
       "delta": "Δ47.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Input/disabled/disabled/line-height": {
       "theme": "carbon",
@@ -1308,11 +1308,11 @@
       "ours": "18px",
       "ref": "18.0001px",
       "delta": "Δ0.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Input/disabled/disabled/color": {
       "theme": "carbon",
@@ -1323,11 +1323,11 @@
       "ours": "rgb(111, 111, 111)",
       "ref": "rgb(198, 198, 198)",
       "delta": "rgb(111,111,111) vs rgb(198,198,198)",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Textarea/default/rest/padding-top": {
       "theme": "carbon",
@@ -1338,11 +1338,11 @@
       "ours": "10px",
       "ref": "11px",
       "delta": "Δ1.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Textarea/default/rest/padding-bottom": {
       "theme": "carbon",
@@ -1353,11 +1353,11 @@
       "ours": "10px",
       "ref": "11px",
       "delta": "Δ1.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Textarea/default/rest/box-width": {
       "theme": "carbon",
@@ -1368,11 +1368,11 @@
       "ours": "320px",
       "ref": "273px",
       "delta": "Δ47.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Textarea/default/rest/box-height": {
       "theme": "carbon",
@@ -1383,11 +1383,11 @@
       "ours": "96px",
       "ref": "83px",
       "delta": "Δ13.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Textarea/default/rest/line-height": {
       "theme": "carbon",
@@ -1398,11 +1398,11 @@
       "ours": "18px",
       "ref": "20px",
       "delta": "Δ-2.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Select/default/rest/box-width": {
       "theme": "carbon",
@@ -1413,11 +1413,11 @@
       "ours": "320px",
       "ref": "273px",
       "delta": "Δ47.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Select/default/rest/line-height": {
       "theme": "carbon",
@@ -1428,11 +1428,11 @@
       "ours": "18px",
       "ref": "18.0001px",
       "delta": "Δ0.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Search/default/rest/box-width": {
       "theme": "carbon",
@@ -1443,11 +1443,11 @@
       "ours": "320px",
       "ref": "273px",
       "delta": "Δ47.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Search/default/rest/line-height": {
       "theme": "carbon",
@@ -1458,11 +1458,11 @@
       "ours": "18px",
       "ref": "18.0001px",
       "delta": "Δ0.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Link/default/rest/line-height": {
       "theme": "carbon",
@@ -1473,11 +1473,11 @@
       "ours": "17.9999px",
       "ref": "18.0001px",
       "delta": "Δ0.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Checkbox/default/rest/padding-left": {
       "theme": "carbon",
@@ -1488,11 +1488,11 @@
       "ours": "0px",
       "ref": "6px",
       "delta": "Δ-6.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Checkbox/default/rest/box-width": {
       "theme": "carbon",
@@ -1503,11 +1503,11 @@
       "ours": "117.7px",
       "ref": "123.7px",
       "delta": "Δ-6.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Checkbox/default/rest/box-height": {
       "theme": "carbon",
@@ -1518,11 +1518,11 @@
       "ours": "18px",
       "ref": "21px",
       "delta": "Δ-3.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Checkbox/default/rest/line-height": {
       "theme": "carbon",
@@ -1533,11 +1533,11 @@
       "ours": "18px",
       "ref": "18.0001px",
       "delta": "Δ0.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Radio/default/rest/box-width": {
       "theme": "carbon",
@@ -1548,11 +1548,11 @@
       "ours": "117.7px",
       "ref": "55.7px",
       "delta": "Δ62.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Radio/default/rest/box-height": {
       "theme": "carbon",
@@ -1563,11 +1563,11 @@
       "ours": "18px",
       "ref": "20px",
       "delta": "Δ-2.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Radio/default/rest/line-height": {
       "theme": "carbon",
@@ -1578,11 +1578,11 @@
       "ours": "18px",
       "ref": "20px",
       "delta": "Δ-2.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Toggle/default/rest/border-radius": {
       "theme": "carbon",
@@ -1593,11 +1593,11 @@
       "ours": "999px",
       "ref": "0px",
       "delta": "Δ999.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Toggle/default/rest/background-color": {
       "theme": "carbon",
@@ -1608,11 +1608,11 @@
       "ours": "rgb(15, 98, 254)",
       "ref": "rgba(0, 0, 0, 0)",
       "delta": "rgb(15,98,254) vs rgb(0,0,0)/a0",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Alert/default/rest/box-width": {
       "theme": "carbon",
@@ -1623,11 +1623,11 @@
       "ours": "191.6px",
       "ref": "288px",
       "delta": "Δ-96.4px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Alert/default/rest/box-height": {
       "theme": "carbon",
@@ -1638,11 +1638,11 @@
       "ours": "39px",
       "ref": "66px",
       "delta": "Δ-27.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Accordion/default/rest/box-width": {
       "theme": "carbon",
@@ -1653,11 +1653,11 @@
       "ours": "301px",
       "ref": "273px",
       "delta": "Δ28.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Breadcrumb/default/rest/line-height": {
       "theme": "carbon",
@@ -1668,11 +1668,11 @@
       "ours": "18px",
       "ref": "18.0001px",
       "delta": "Δ0.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Card/default/rest/box-width": {
       "theme": "carbon",
@@ -1683,11 +1683,11 @@
       "ours": "288px",
       "ref": "273px",
       "delta": "Δ15.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Card/default/rest/box-height": {
       "theme": "carbon",
@@ -1698,11 +1698,11 @@
       "ours": "72.4px",
       "ref": "100px",
       "delta": "Δ-27.6px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Tabs/selected/selected/border-bottom-color": {
       "theme": "carbon",
@@ -1713,11 +1713,11 @@
       "ours": "rgb(15, 98, 254)",
       "ref": "rgb(224, 224, 224)",
       "delta": "rgb(15,98,254) vs rgb(224,224,224)",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Tabs/selected/selected/color": {
       "theme": "carbon",
@@ -1728,11 +1728,11 @@
       "ours": "rgb(22, 22, 22)",
       "ref": "rgb(82, 82, 82)",
       "delta": "rgb(22,22,22) vs rgb(82,82,82)",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "dsfr/Switch/default/rest/border-radius": {
       "theme": "dsfr",
@@ -1743,9 +1743,9 @@
       "ours": "999px",
       "ref": "0px",
       "delta": "Δ999.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -1758,9 +1758,9 @@
       "ours": "36px",
       "ref": "241px",
       "delta": "Δ-205.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -1773,9 +1773,9 @@
       "ours": "20px",
       "ref": "48px",
       "delta": "Δ-28.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -1788,9 +1788,9 @@
       "ours": "normal",
       "ref": "24px",
       "delta": "normal vs 24px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -1803,9 +1803,9 @@
       "ours": "rgb(0, 0, 145)",
       "ref": "rgba(0, 0, 0, 0)",
       "delta": "rgb(0,0,145) vs rgb(0,0,0)/a0",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -1818,9 +1818,9 @@
       "ours": "rgb(58, 58, 58)",
       "ref": "rgb(22, 22, 22)",
       "delta": "rgb(58,58,58) vs rgb(22,22,22)",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:04.278Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
       "regressed": false
     },
@@ -1833,11 +1833,11 @@
       "ours": "999px",
       "ref": "0px",
       "delta": "Δ999.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Switch/default/rest/font-size": {
       "theme": "carbon",
@@ -1848,11 +1848,11 @@
       "ours": "16px",
       "ref": "12px",
       "delta": "Δ4.0px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Switch/default/rest/line-height": {
       "theme": "carbon",
@@ -1863,11 +1863,11 @@
       "ours": "normal",
       "ref": "16px",
       "delta": "normal vs 16px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Switch/default/rest/letter-spacing": {
       "theme": "carbon",
@@ -1878,11 +1878,11 @@
       "ours": "normal",
       "ref": "0.32px",
       "delta": "normal vs 0.32px",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Switch/default/rest/background-color": {
       "theme": "carbon",
@@ -1893,11 +1893,11 @@
       "ours": "rgb(15, 98, 254)",
       "ref": "rgba(0, 0, 0, 0)",
       "delta": "rgb(15,98,254) vs rgb(0,0,0)/a0",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     },
     "carbon/Switch/default/rest/color": {
       "theme": "carbon",
@@ -1908,11 +1908,11 @@
       "ours": "rgb(22, 22, 22)",
       "ref": "rgb(82, 82, 82)",
       "delta": "rgb(22,22,22) vs rgb(82,82,82)",
-      "status": "fixed",
+      "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T12:35:05.926Z",
+      "lastSeen": "2026-06-02T16:21:15.349Z",
       "manifestHash": "29940d3a",
-      "regressed": true
+      "regressed": false
     }
   }
 }

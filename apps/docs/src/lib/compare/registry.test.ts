@@ -51,8 +51,22 @@ describe("mergeRegistry", () => {
     expect(out.entries[key].status).toBe("fixed");
   });
 
-  it("flags regressed when a human-fixed gap reappears", () => {
+  it("does not mark out-of-scope gaps fixed during filtered runs", () => {
+    const existing = { version: 1, entries: { [key]: { ...gap, status: "open", source: "oracle" } } };
+    const otherKey = gapKey({ theme: "carbon", component: "Button", scenario: "primary", state: "rest", property: "box-width" });
+    const out = mergeRegistry(existing, [], stamp, new Set([otherKey]));
+    expect(out.entries[key].status).toBe("open");
+  });
+
+  it("reopens an auto-fixed oracle gap when it reappears", () => {
     const existing = { version: 1, entries: { [key]: { ...gap, status: "fixed", source: "oracle" } } };
+    const out = mergeRegistry(existing, [gap], stamp);
+    expect(out.entries[key].status).toBe("open");
+    expect(out.entries[key].regressed).toBe(false);
+  });
+
+  it("flags regressed when a human-fixed gap reappears", () => {
+    const existing = { version: 1, entries: { [key]: { ...gap, status: "fixed", source: "manual", note: "accepted fixed" } } };
     const out = mergeRegistry(existing, [gap], stamp);
     expect(out.entries[key].status).toBe("fixed"); // human intent kept
     expect(out.entries[key].regressed).toBe(true);

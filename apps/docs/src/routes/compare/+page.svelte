@@ -580,8 +580,8 @@
     align-items: stretch;
   }
   .cmp-cell__body--field > :global(*) {
-    width: 320px;
-    max-width: 320px;
+    width: min(320px, var(--st-component-field-maxWidth, 320px));
+    max-width: min(320px, var(--st-component-field-maxWidth, 320px));
   }
   /* Card : la référence officielle est rendue avec `max-width:18rem` (288px) et
      remplit la largeur de son body. On rend NOTRE carte dans le MÊME contexte
