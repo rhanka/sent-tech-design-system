@@ -35,11 +35,14 @@ describe("docs header alignment contract", () => {
     expect(appHtml).toContain('href="/SENT-logo-squared.svg"');
   });
 
-  it("keeps right-side controls aligned and limits utility links to GitHub", () => {
+  it("keeps right-side controls aligned and exposes a framework switcher", () => {
     expect(layoutSource).toContain("Github");
     expect(layoutSource).not.toContain("ExternalLink");
-    expect(layoutSource).toContain('class="docs-header-control docs-version"');
-    expect(layoutSource).toContain('class="docs-header-control docs-header-menuButton docs-header-iconLink"');
+    // Le sélecteur de framework reprend la mécanique du sélecteur de langue/thème.
+    expect(layoutSource).toContain(
+      'class="docs-header-control docs-header-menuButton docs-locale-trigger docs-framework-trigger"'
+    );
+    expect(layoutSource).toContain("frameworkSelector");
     expect(layoutSource).toContain(
       'class="docs-header-control docs-header-menuButton docs-locale-trigger"'
     );
@@ -48,6 +51,29 @@ describe("docs header alignment contract", () => {
     expect(layoutSource).not.toContain("sent-tech.ca");
     expect(navigationSource).not.toContain("sent-tech.ca");
     expect(navigationSource).toContain('label: "GitHub"');
+  });
+
+  it("moves the version + GitHub link to the bottom of the left sidebar", () => {
+    // Plus de version ni de lien utilitaire GitHub dans la barre du header.
+    expect(layoutSource).not.toContain('class="docs-header-control docs-version"');
+    expect(layoutSource).not.toContain(
+      'class="docs-header-control docs-header-menuButton docs-header-iconLink"'
+    );
+    // Pied de barre latérale par défaut.
+    expect(layoutSource).toContain('class="docs-sidebar-footer"');
+    expect(layoutSource).toContain('class="docs-sidebar-version"');
+    expect(layoutSource).toContain('class="docs-sidebar-github"');
+    expect(appCss).toContain(".docs-sidebar-footer");
+    // Pied de barre latérale dans chaque chrome tiers.
+    expect(carbonChromeSource).toContain('class="cbn-sidebar-footer"');
+    expect(dsfrChromeSource).toContain('class="dsfr-sidebar-footer"');
+    expect(airbusChromeSource).toContain('class="abus-sidebar-footer"');
+  });
+
+  it("renders the framework switcher in every themed chrome header", () => {
+    expect(carbonChromeSource).toContain("frameworkSwitcher");
+    expect(dsfrChromeSource).toContain("frameworkSwitcher");
+    expect(airbusChromeSource).toContain("frameworkSwitcher");
   });
 
   it("includes the Airbus imported tenant in the theme picker", () => {

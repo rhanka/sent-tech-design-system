@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { COMPONENTS } from "./components-catalog";
 import {
@@ -34,22 +34,19 @@ describe("docs navigation model", () => {
     expect(DOCS_TOP_NAV.map((item) => item.label)).toEqual([
       "Fondations",
       "Composants",
-      "React",
       "Tokens",
       "Thèmes",
       "Contrats"
     ]);
   });
 
-  it("exposes the React docs surface as a first-class route", () => {
+  it("drops the dedicated React surface in favour of the framework switcher", () => {
     const reactRoute = fileURLToPath(new URL("../routes/react/+page.svelte", import.meta.url));
 
-    expect(DOCS_FOUNDATION_NAV).toContainEqual({ label: "React", href: "/react" });
-    expect(resolveBreadcrumb("/react").map((item) => item.label)).toEqual([
-      "Catalogue",
-      "React"
-    ]);
-    expect(readFileSync(reactRoute, "utf8")).toContain("React package");
+    expect(existsSync(reactRoute)).toBe(false);
+    expect(DOCS_TOP_NAV.some((item) => item.href === "/react")).toBe(false);
+    expect(DOCS_FOUNDATION_NAV.some((item) => item.href === "/react")).toBe(false);
+    expect(resolveBreadcrumb("/react").map((item) => item.label)).toEqual(["Catalogue"]);
   });
 
   it("builds a side navigation entry for every exported component", () => {
