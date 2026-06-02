@@ -34,6 +34,7 @@ describe("docs navigation model", () => {
     expect(DOCS_TOP_NAV.map((item) => item.label)).toEqual([
       "Fondations",
       "Composants",
+      "Aperçu",
       "Tokens",
       "Thèmes",
       "Contrats"
