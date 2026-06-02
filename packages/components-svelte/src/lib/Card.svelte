@@ -40,11 +40,13 @@
   .st-card--interactive {
     cursor: var(--st-cursor-interactive, pointer);
     transition:
+      background-color var(--st-motion-normal, 180ms) var(--st-motion-easing, ease),
       box-shadow var(--st-motion-normal, 180ms) var(--st-motion-easing, ease),
       transform var(--st-motion-normal, 180ms) var(--st-motion-easing, ease);
   }
 
   .st-card--interactive:hover {
+    background: var(--st-component-card-anatomy-states-hover-bg, var(--st-component-card-background, var(--st-semantic-surface-raised)));
     box-shadow: var(--st-shadow-medium, 0 8px 24px rgb(15 23 42 / 0.12));
     transform: var(--st-component-card-anatomy-states-hover-transform, translateY(-1px));
   }

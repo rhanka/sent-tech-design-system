@@ -106,6 +106,10 @@ describe("anatomy v1.1.0 — hover bg, hover decoration, per-size font size", ()
       expect(css()).toMatch(/--st-component-link-anatomy-states-hover-decoration:\s*[^;]+;/);
     });
 
+    it(`${theme.id}: card hover background is emitted (states.hover.bg)`, () => {
+      expect(css()).toMatch(/--st-component-card-anatomy-states-hover-bg:\s*[^;]+;/);
+    });
+
     it(`${theme.id}: button font size is emitted for every size`, () => {
       for (const size of ["sm", "md", "lg"] as const) {
         expect(css()).toMatch(
@@ -121,15 +125,21 @@ describe("anatomy v1.1.0 — hover bg, hover decoration, per-size font size", ()
     expect(compiled.get("carbon")!).toContain("--st-component-button-anatomy-states-hover-bg: #0043ce");
   });
 
-  it("link hover decoration differs by theme intent (Carbon none → underline on hover)", () => {
-    // Carbon: rest decoration none, hover decoration underline (the toggle).
-    expect(compiled.get("carbon")!).toContain("--st-component-link-anatomy-typography-textDecoration: none");
-    expect(compiled.get("carbon")!).toContain("--st-component-link-anatomy-states-hover-decoration: underline");
-    // DSFR: underlined at rest, underline on hover (no-op toggle, animated thickness stays an escape).
-    expect(compiled.get("dsfr")!).toContain("--st-component-link-anatomy-typography-textDecoration: underline");
-    expect(compiled.get("dsfr")!).toContain("--st-component-link-anatomy-states-hover-decoration: underline");
+    it("link hover decoration differs by theme intent (Carbon none → underline on hover)", () => {
+      // Carbon: rest decoration none, hover decoration underline (the toggle).
+      expect(compiled.get("carbon")!).toContain("--st-component-link-anatomy-typography-textDecoration: none");
+      expect(compiled.get("carbon")!).toContain("--st-component-link-anatomy-states-hover-decoration: underline");
+      // DSFR: underlined at rest, underline on hover (no-op toggle, animated thickness stays an escape).
+      expect(compiled.get("dsfr")!).toContain("--st-component-link-anatomy-typography-textDecoration: underline");
+      expect(compiled.get("dsfr")!).toContain("--st-component-link-anatomy-states-hover-decoration: underline");
+    });
+
+    it("card hover background carries each theme's card surface intent", () => {
+      expect(compiled.get("sent-tech")!).toContain("--st-component-card-anatomy-states-hover-bg: #ffffff");
+      expect(compiled.get("dsfr")!).toContain("--st-component-card-anatomy-states-hover-bg: #ffffff");
+      expect(compiled.get("carbon")!).toContain("--st-component-card-anatomy-states-hover-bg: #e0e0e0");
+    });
   });
-});
 
 /**
  * Anatomy v1.2.0 field style (cf. spec extension): the input/control anatomy now
