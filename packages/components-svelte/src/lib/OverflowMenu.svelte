@@ -38,6 +38,7 @@
 <script lang="ts">
   import { Ellipsis } from "@lucide/svelte";
   import type { HTMLAttributes } from "svelte/elements";
+  import { tick } from "svelte";
 
   type OverflowMenuProps = Omit<HTMLAttributes<HTMLDivElement>, "class" | "onselect"> & {
     items: OverflowMenuItem[];
@@ -63,6 +64,35 @@
   }: OverflowMenuProps = $props();
 
   let host: HTMLDivElement | undefined = $state();
+  let list: HTMLUListElement | undefined = $state();
+
+  function getFocusableItems(): HTMLButtonElement[] {
+    return Array.from(
+      list?.querySelectorAll<HTMLButtonElement>('[role="menuitem"]:not(:disabled)') ?? []
+    );
+  }
+
+  function moveIndex(index: number, size: number, step: number) {
+    if (size <= 0) return 0;
+    return ((index + step) % size + size) % size;
+  }
+
+  function focusAt(index: number) {
+    const focusable = getFocusableItems();
+    if (!focusable.length) return;
+    const target = moveIndex(index, focusable.length, 0);
+    focusable.forEach((button, idx) => {
+      button.tabIndex = idx === target ? 0 : -1;
+    });
+    focusable[target]?.focus();
+  }
+
+  function openAndFocus() {
+    open = true;
+    tick().then(() => {
+      focusAt(0);
+    });
+  }
 
   const classes = () =>
     [
@@ -71,11 +101,15 @@
       dense ? "st-overflowMenu--dense" : null,
       className
     ]
-      .filter(Boolean)
-      .join(" ");
+    .filter(Boolean)
+    .join(" ");
 
   function toggle() {
-    open = !open;
+    if (open) {
+      close();
+    } else {
+      openAndFocus();
+    }
   }
 
   function close() {
@@ -105,6 +139,46 @@
     const target = event.target as Node | null;
     if (host && target && !host.contains(target)) close();
   }
+
+  function onTriggerKeyDown(event: KeyboardEvent) {
+    if (!["ArrowDown", "Enter", " "].includes(event.key)) return;
+    event.preventDefault();
+    if (open) {
+      focusAt(0);
+    } else {
+      openAndFocus();
+    }
+  }
+
+  function onItemKeyDown(event: KeyboardEvent, item: OverflowMenuActionItem) {
+    const focusable = getFocusableItems();
+    const current = focusable.indexOf(event.currentTarget as HTMLButtonElement);
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      focusAt(current + 1);
+      return;
+    }
+    if (event.key === "ArrowUp") {
+      event.preventDefault();
+      focusAt(current - 1);
+      return;
+    }
+    if (event.key === "Home") {
+      event.preventDefault();
+      focusAt(0);
+      return;
+    }
+    if (event.key === "End") {
+      event.preventDefault();
+      focusAt(focusable.length - 1);
+      return;
+    }
+    if (item.disabled) return;
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      selectItem(item);
+    }
+  }
 </script>
 
 <svelte:window onkeydown={onWindowKeydown} onpointerdown={onWindowPointerDown} />
@@ -117,11 +191,12 @@
     aria-expanded={open ? "true" : "false"}
     aria-label={triggerLabel}
     onclick={toggle}
+    onkeydown={onTriggerKeyDown}
   >
     <Ellipsis size={18} strokeWidth={2.25} aria-hidden="true" />
   </button>
   {#if open}
-    <ul class="st-overflowMenu__list" role="menu" aria-label={label}>
+    <ul bind:this={list} class="st-overflowMenu__list" role="menu" aria-label={label}>
       {#each items as item, index (index)}
         {#if isAction(item)}
           {@const Icon = item.icon}
@@ -133,7 +208,9 @@
               role="menuitem"
               aria-disabled={item.disabled ? "true" : undefined}
               disabled={item.disabled}
+              tabindex={-1}
               onclick={() => selectItem(item)}
+              onkeydown={(event) => onItemKeyDown(event, item)}
             >
               {#if Icon}
                 <span class="st-overflowMenu__itemIcon" aria-hidden="true">

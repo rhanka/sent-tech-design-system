@@ -29,7 +29,7 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 | Track | Finalite | Avancement | Prochaine action | Owner |
 |---|---|---:|---|---|
 | F — Footer | Reprendre le footer moche sans bloquer la correction header. | 10% | Ouvrir un item dedie apres publication header; `sent-tech.ca` peut y revenir si utile. | Backlog |
-| G — A11y menus | Durcir clavier/focus au-dela du correctif rapide. | 65% | Tester focus trap/roving focus si les popovers deviennent des menus DS reutilisables. | Backlog DS |
+| G — A11y menus | Durcir clavier/focus au-dela du correctif rapide. | 90% | Nav clavier menu/overflow (Arrow/Home/End, Enter, skip disabled) + tests ; à valider sur popovers réels + focus trap si la surface l'exige. | Backlog DS |
 
 ### Attendus
 
