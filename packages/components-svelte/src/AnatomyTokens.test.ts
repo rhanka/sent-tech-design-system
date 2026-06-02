@@ -25,6 +25,7 @@ const LIB = join(here, "lib");
 
 const PILOT_COMPONENTS = ["Button", "Input", "Link", "Card", "Tabs"] as const;
 const PHASE2_COMPONENTS = [
+  "Input",
   "Accordion",
   "BackToTop",
   "Combobox",
@@ -34,6 +35,7 @@ const PHASE2_COMPONENTS = [
   "Notification",
   "IconButton",
   "Menu",
+  "Textarea",
   "Pagination",
   "PaginationNav",
   "Tag",

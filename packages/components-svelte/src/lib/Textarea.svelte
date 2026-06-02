@@ -117,6 +117,7 @@
   }
 
   .st-textarea:hover:not(:disabled) {
+    background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle));
     border-color: var(--st-component-control-hoverBorder, var(--st-semantic-border-strong));
   }
 
