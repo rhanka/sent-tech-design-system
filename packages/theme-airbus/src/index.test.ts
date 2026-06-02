@@ -98,6 +98,41 @@ describe("airbusTheme", () => {
       fontSize: "0.875rem",
       lineHeight: "1.25rem"
     });
+
+    expect(component.paginationNav).toMatchObject({
+      text: "#14171d",
+      activeText: "#14171d",
+      hoverBackground: "#fafafa",
+      activeBackground: "transparent"
+    });
+
+    expect(component.sideNav).toMatchObject({
+      background: "#ffffff",
+      itemText: "#63728a",
+      activeText: "#14171d",
+      width: "16rem"
+    });
+
+    expect(component.menu).toMatchObject({
+      background: "#ffffff",
+      text: "#14171d",
+      itemHoverBackground: "#fafafa",
+      dangerText: "#e4002b"
+    });
+
+    expect(component.dropdown).toMatchObject({
+      background: "#ffffff",
+      text: "#14171d",
+      optionHoverBackground: "#fafafa",
+      selectedBackground: "#00205b"
+    });
+
+    expect(component.dataTable).toMatchObject({
+      rowBackground: "#ffffff",
+      rowHoverBackground: "#fafafa",
+      border: "#e0e3e9",
+      captionText: "#63728a"
+    });
   });
 
   it("exports a dark Airbus theme mapped from Airbus dark decision tokens", () => {
@@ -168,6 +203,11 @@ describe("airbusTheme", () => {
     expect(light).toContain("--st-component-card-anatomy-states-hover-bg: #f1f1f1;");
     expect(light).toContain("--st-component-link-anatomy-states-hover-text: #00205b;");
     expect(light).toContain("--st-component-link-anatomy-states-hover-decoration: underline;");
+    expect(light).toContain("--st-component-paginationNav-hoverBackground: #fafafa;");
+    expect(light).toContain("--st-component-sideNav-itemText: #63728a;");
+    expect(light).toContain("--st-component-menu-itemHoverBackground: #fafafa;");
+    expect(light).toContain("--st-component-dropdown-optionHoverBackground: #fafafa;");
+    expect(light).toContain("--st-component-dataTable-rowHoverBackground: #fafafa;");
 
     expect(dark).toContain("--st-component-control-hoverBackground: #25282e;");
     expect(dark).toContain("--st-component-control-focusRing: #e5ecf7;");
@@ -184,5 +224,11 @@ describe("airbusTheme", () => {
     expect(dark).toContain("--st-component-card-anatomy-states-hover-bg: #25282e;");
     expect(dark).toContain("--st-component-link-anatomy-states-hover-text: #86a8e9;");
     expect(dark).toContain("--st-component-link-anatomy-states-hover-decoration: underline;");
+    expect(dark).toContain("--st-component-paginationNav-hoverBackground: #25282e;");
+    expect(dark).toContain("--st-component-sideNav-itemText: #e0e3e9;");
+    expect(dark).toContain("--st-component-sideNav-activeText: #ffffff;");
+    expect(dark).toContain("--st-component-menu-itemHoverBackground: #25282e;");
+    expect(dark).toContain("--st-component-dropdown-optionHoverBackground: #25282e;");
+    expect(dark).toContain("--st-component-dataTable-rowHoverBackground: #25282e;");
   });
 });
