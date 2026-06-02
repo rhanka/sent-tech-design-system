@@ -122,13 +122,23 @@ describe("airbusTheme", () => {
     const dark = compileTheme(airbusDarkTheme);
 
     expect(light).toContain("--st-component-control-hoverBackground: #fafafa;");
+    expect(light).toContain("--st-component-control-focusRing: #255fcc;");
+    expect(light).toContain("--st-component-control-anatomy-states-hover-border: #63728a;");
+    expect(light).toContain("--st-component-control-anatomy-states-focus-border: #255fcc;");
+    expect(light).toContain("--st-component-control-anatomy-field-fillBg: #fafafa;");
     expect(light).toContain("--st-component-button-anatomy-states-hover-bg: #002d80;");
     expect(light).toContain("--st-component-card-anatomy-states-hover-bg: #f1f1f1;");
+    expect(light).toContain("--st-component-link-anatomy-states-hover-text: #00205b;");
     expect(light).toContain("--st-component-link-anatomy-states-hover-decoration: underline;");
 
     expect(dark).toContain("--st-component-control-hoverBackground: #25282e;");
+    expect(dark).toContain("--st-component-control-focusRing: #e5ecf7;");
+    expect(dark).toContain("--st-component-control-anatomy-states-hover-border: #ced5dd;");
+    expect(dark).toContain("--st-component-control-anatomy-states-focus-border: #e5ecf7;");
+    expect(dark).toContain("--st-component-control-anatomy-field-fillBg: #25282e;");
     expect(dark).toContain("--st-component-button-anatomy-states-hover-bg: #b3cbf8;");
     expect(dark).toContain("--st-component-card-anatomy-states-hover-bg: #25282e;");
+    expect(dark).toContain("--st-component-link-anatomy-states-hover-text: #86a8e9;");
     expect(dark).toContain("--st-component-link-anatomy-states-hover-decoration: underline;");
   });
 });
