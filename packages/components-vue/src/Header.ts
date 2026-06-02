@@ -14,7 +14,7 @@ export type HeaderProps = {
   class?: string;
 };
 
-function deriveInitials(name?: string): string {
+export function deriveInitials(name?: string): string {
   return (name ?? "")
     .trim()
     .split(/\s+/)
