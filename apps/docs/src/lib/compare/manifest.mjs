@@ -83,6 +83,12 @@ export const COMPARE_MANIFEST = {
       refMarkup: `<div class="fr-toggle"><input type="checkbox" class="fr-toggle__input" id="dtg" checked><label class="fr-toggle__label" for="dtg" data-fr-checked-label="Activé" data-fr-unchecked-label="Désactivé">Activer les notifications</label></div>`,
       note: "L'interrupteur DSFR est dessiné en `::before/::after` sur le label. On compare le label (`.fr-toggle__label`) — typo/couleur comparables.",
     },
+    Switch: {
+      component: "Switch", scenario: "default", state: "rest",
+      ourSelector: ".st-switch__track", refSelector: ".fr-toggle__label", lang: "fr",
+      refMarkup: `<div class="fr-toggle"><input type="checkbox" class="fr-toggle__input" id="dsg" checked><label class="fr-toggle__label" for="dsg">Activer le mode silencieux</label></div>`,
+      note: "Le style DSFR est documenté via le même pattern Toggle. Pour comparer la surface toggle, on aligne la mesure sur le label (`.fr-toggle__label`).",
+    },
     Tag: {
       component: "Tag", scenario: "default", state: "rest",
       ourSelector: ".st-tag", refSelector: ".fr-tag", lang: "fr",
@@ -197,6 +203,12 @@ export const COMPARE_MANIFEST = {
       component: "Toggle", scenario: "default", state: "rest",
       ourSelector: ".st-toggle__track", refSelector: ".bx--toggle__switch", lang: "en",
       refMarkup: `<div class="bx--form-item"><input type="checkbox" id="ctg" class="bx--toggle-input" checked><label class="bx--toggle-input__label" for="ctg">Enable notifications<span class="bx--toggle__switch"><span class="bx--toggle__text--off">Off</span><span class="bx--toggle__text--on">On</span></span></label></div>`,
+    },
+    Switch: {
+      component: "Switch", scenario: "default", state: "rest",
+      ourSelector: ".st-switch__track", refSelector: ".bx--toggle__switch", lang: "en",
+      refMarkup: `<div class="bx--form-item"><input type="checkbox" id="csg" class="bx--toggle-input" checked><label class="bx--toggle-input__label" for="csg">Enable notifications<span class="bx--toggle__switch"><span class="bx--toggle__text--off">Off</span><span class="bx--toggle__text--on">On</span></span></label></div>`,
+      note: "Carbon n'expose pas de composant \"Switch\" séparé dans ce périmètre, mais le mapping le plus fidèle est le même patron Toggle.",
     },
     Tag: {
       component: "Tag", scenario: "default", state: "rest",
