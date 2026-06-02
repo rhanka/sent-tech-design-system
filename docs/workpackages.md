@@ -387,6 +387,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 | Item | Statut | Owner | Notes |
 |---|---|---|---|
 | Vérification fidélité locale DSFR/Carbon (comparatif bord à bord) | ✅ | Claude | Rapport généré via `node tools/compare/fidelity.mjs` (2026-06-02) : 92,4% global (91,1% DSFR, 93,9% Carbon), artefacts `docs/compare-fidelity-report.md` + `tools/compare/last-report.json`.
+| Validation package smoke | ✅ | Release/CI | `npm_config_cache=$HOME/.npm npm run pack:smoke` passé (packaging + imports de vérification OK). |
 | Audit du chrome actuel (header/menu/sidebar paramétrables par thème ?) | ✅ | Claude | Fait — chrome non paramétrable → généralisé (3 composants + layout conditionnel). |
 | Logos pixel-perfect par DS | 🟢 | Claude + Codex | DSFR + Airbus + Carbon utilisent des SVG versionnés ; le wordmark Carbon officiel est branché depuis `assets/carbon-wordmark.svg`. |
 | Chrome **Carbon** (barre noire + sidebar arbre + icônes) | ✅ | Claude | Livré sur `main`; forme documentaire Carbon présente. |
