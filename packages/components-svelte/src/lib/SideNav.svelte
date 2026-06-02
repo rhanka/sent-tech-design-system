@@ -55,6 +55,12 @@
     text-decoration: none;
   }
 
+  .st-sidenav a:hover:not(:focus-visible):not(.st-sidenav__link--active),
+  .st-sidenav a:focus-visible:not(.st-sidenav__link--active) {
+    background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle));
+    outline: none;
+  }
+
   .st-sidenav__link--active {
     background: var(--st-component-sideNav-activeBackground, var(--st-semantic-surface-subtle));
     color: var(--st-component-sideNav-activeText, var(--st-semantic-text-primary));

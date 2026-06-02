@@ -43,6 +43,7 @@ const PHASE2_COMPONENTS = [
   "OverflowMenu",
   "CopyButton",
   "Dropdown",
+  "SideNav",
   "DataTable",
   "DatePicker",
   "FileUploader",
