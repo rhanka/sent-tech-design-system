@@ -240,6 +240,34 @@ describe("anatomy phase 2 — shared control hover background", () => {
   }
 });
 
+describe("anatomy phase 2 — PaginationNav aliases", () => {
+  const compiled = new Map<string, string>(
+    THEMES.map((t) => [t.id, compileTheme(t)])
+  );
+
+  for (const theme of THEMES) {
+    const css = () => compiled.get(theme.id)!;
+
+    it(`${theme.id}: emits every PaginationNav primary token`, () => {
+      for (const leaf of [
+        "background",
+        "border",
+        "radius",
+        "text",
+        "hoverBackground",
+        "activeBackground",
+        "activeText",
+        "disabledText",
+        "ellipsisText"
+      ]) {
+        expect(css(), `paginationNav.${leaf} missing for ${theme.id}`).toMatch(
+          new RegExp(`--st-component-paginationNav-${leaf}:\\s*[^;]+;`)
+        );
+      }
+    });
+  }
+});
+
 /**
  * Anatomy v1.5.0 active-tab metrics (F7/F8): the `tabs` block now carries the
  * per-theme selected-tab roles/metrics the Tabs component consumes (active
