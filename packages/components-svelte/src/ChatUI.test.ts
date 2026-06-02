@@ -381,6 +381,30 @@ describe("ChatComposer", () => {
     expect(sendBtn.disabled).toBe(false);
   });
 
+  it("renders attachments/actions snippets when provided", () => {
+    const attachments = createRawSnippet(() => ({
+      render: () => '<div data-testid="composer-attachments">Fichiers</div>'
+    }));
+    const actionsLeft = createRawSnippet(() => ({
+      render: () => '<button data-testid="composer-actions-left">Gauche</button>'
+    }));
+    const actionsRight = createRawSnippet(() => ({
+      render: () => '<button data-testid="composer-actions-right">Droite</button>'
+    }));
+
+    render(ChatComposer, {
+      props: {
+        attachments,
+        actionsLeft,
+        actionsRight
+      }
+    });
+
+    expect(screen.getByTestId("composer-attachments")).toBeTruthy();
+    expect(screen.getByTestId("composer-actions-left")).toBeTruthy();
+    expect(screen.getByTestId("composer-actions-right")).toBeTruthy();
+  });
+
   it("calls onsubmit with text and source 'submit' when submitting form", async () => {
     const onsubmit = vi.fn();
     render(ChatComposer, {

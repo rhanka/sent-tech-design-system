@@ -62,5 +62,5 @@ Lecture : les deux dettes basses remontées par les nouvelles règles (`h1-inlin
 
 - L'audit est statique via `jsdom`; il ne remplace pas une passe navigateur avec styles calculés et viewports.
 - La règle `line-length-cap` lit les styles inline, les blocs `<style>` et les stylesheets liés locaux pour reconnaître les bornes de lecture sur un build statique.
-- Les warnings Svelte restants du build portent uniquement sur les slots Svelte legacy de `ChatComposer`; les warnings charts SVG focusables, ancres manquantes, `aria-invalid` sur `Radio` et sélecteurs CSS inutilisés ne se reproduisent plus.
+- Les warnings Svelte restants liés à la route documentée ont été réglés après la migration de `ChatComposer` vers des snippets. Les warnings charts SVG focusables, ancres manquantes, `aria-invalid` sur `Radio` et sélecteurs CSS inutilisés ne se reproduisent plus.
 - Les fichiers générés `apps/docs/build/**` ne sont pas versionnés dans ce rapport.
