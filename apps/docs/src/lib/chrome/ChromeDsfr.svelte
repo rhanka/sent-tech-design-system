@@ -80,13 +80,14 @@
         <!-- Gauche : logo RF + titre -->
         <div class="dsfr-header__brand">
           <a href="/" class="dsfr-header__brand-link" aria-label="Retour à l'accueil">
-            <!-- LOGO DSFR réel — bloc marque République Française (Marianne tricolore) -->
+            <!-- LOGO DSFR réel — bloc marque République Française (drapeau tricolore).
+                 Décoratif : le nom est porté par le texte HTML ci-dessous. -->
             <img
               src="/chrome/dsfr/logo-rf.svg"
-              alt="République Française"
+              alt=""
               class="dsfr-logo-img"
-              width="96"
-              height="116"
+              width="72"
+              height="72"
               aria-hidden="true"
             />
             <div class="dsfr-brand-text">
@@ -294,11 +295,11 @@
     text-decoration: none;
   }
 
-  /* Logo DSFR réel (bloc marque Marianne SVG officiel) */
+  /* Logo DSFR — drapeau tricolore carré (bloc-marque officiel) */
   .dsfr-logo-img {
     display: block;
     flex: 0 0 auto;
-    height: 5rem; /* ~80px — taille bureau conforme à la spec DSFR */
+    height: 4rem; /* 64px — dans la borne 64-80px de la spec DSFR */
     width: auto;
   }
 
