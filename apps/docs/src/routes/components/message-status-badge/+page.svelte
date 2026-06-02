@@ -2,6 +2,7 @@
   import { MessageStatusBadge, type ChatMessageStatus } from "@sentropic/design-system-svelte";
   import { Badge } from "@sentropic/design-system-svelte";
   import { locale } from "$lib/locale.svelte";
+  import { t } from "$lib/i18n";
 
   const copy = {
     fr: {
@@ -93,7 +94,7 @@
   </section>
 
   <section class="docs-section">
-    <h2>Tokens</h2>
+    <h2>{t(locale.value, "tokensTitle")}</h2>
     <p>
       Le rendu est délégué à <code>Tag</code> : la tonalité consomme les tokens
       sémantiques de feedback ci-dessous (la pastille hérite de <code>currentColor</code>).

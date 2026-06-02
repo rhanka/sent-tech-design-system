@@ -1,5 +1,7 @@
 <script lang="ts">
   import { BackToTop, Badge } from "@sentropic/design-system-svelte";
+  import { locale } from "$lib/locale.svelte";
+  import { t } from "$lib/i18n";
 </script>
 
 <div class="docs-page">
@@ -105,7 +107,7 @@
   </section>
 
   <section class="docs-section">
-    <h2>Tokens</h2>
+    <h2>{t(locale.value, "tokensTitle")}</h2>
     <ul class="docs-token-list">
       <li><code>--st-component-control-hoverBorder</code></li>
       <li><code>--st-component-control-hoverBackground</code></li>
