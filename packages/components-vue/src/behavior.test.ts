@@ -3,20 +3,30 @@ import { mount } from "@vue/test-utils";
 import {
   Accordion,
   Alert,
+  AreaChart,
   AspectRatio,
   Badge,
+  BarChart,
   Breadcrumb,
   Button,
   Card,
+  ChatComposer,
+  ChatMessage,
+  ChatThread,
   Checkbox,
   CodeSnippet,
+  Combobox,
   ContentSwitcher,
   CopyButton,
+  DataTable,
+  DatePicker,
+  DonutChart,
   Drawer,
   Dropdown,
   EmptyState,
   FileUploader,
   Footer,
+  ForceGraph,
   Form,
   FormGroup,
   Header,
@@ -25,48 +35,52 @@ import {
   InlineLoading,
   Input,
   LanguageSelector,
+  LineChart,
   Link,
   LoadingState,
+  Menu,
+  MenuPopover,
+  MenuTriggerButton,
+  MessageActions,
+  MessageStatusBadge,
+  Modal,
+  MultiSelect,
   NumberInput,
   OrderedList,
+  OverflowMenu,
   Pagination,
   PaginationNav,
   PasswordInput,
+  Popover,
   ProgressBar,
   ProgressIndicator,
   Quote,
   Radio,
+  ScatterPlot,
   Search,
   Select,
   SideNav,
   SkeletonText,
   SkipLink,
   Slider,
+  Sparkline,
+  StackedBarChart,
+  StreamingMessage,
   StructuredList,
   Switch,
+  Table,
+  Tabs,
   Tag,
   Textarea,
   ThemeProvider,
   Tile,
   TileGroup,
-  Toggle,
-  UnorderedList,
-  Combobox,
-  DataTable,
-  DatePicker,
-  Menu,
-  MenuPopover,
-  MenuTriggerButton,
-  Modal,
-  MultiSelect,
-  OverflowMenu,
-  Popover,
-  Table,
-  Tabs,
   Toast,
+  Toggle,
   Toggletip,
   Tooltip,
   TreeView,
+  UnorderedList,
 } from "./index.js";
 
 describe("Vue behavioral parity — primitives", () => {
@@ -2525,6 +2539,534 @@ describe("Vue behavioral parity — batch 4", () => {
 
     it("each batch 4 component has a name property matching its key", () => {
       for (const [name, component] of Object.entries(batch4)) {
+        expect(component.name, `${name}.name`).toBe(name);
+      }
+    });
+  });
+});
+
+// ─── Batch 5: charts / data-viz / chat ──────────────────────────────────────
+
+describe("Vue behavioral parity — batch 5", () => {
+  // --- AreaChart ---
+  describe("AreaChart", () => {
+    it("renders figure.st-areaChart with aria-label", () => {
+      const wrapper = mount(AreaChart, {
+        props: { data: [{ value: 10 }, { value: 20 }] },
+      });
+      expect(wrapper.find("figure.st-areaChart").exists()).toBe(true);
+    });
+
+    it("renders SVG with a polyline and polygon", () => {
+      const wrapper = mount(AreaChart, {
+        props: { data: [{ value: 5 }, { value: 10 }] },
+      });
+      expect(wrapper.find(".st-areaChart__line").exists()).toBe(true);
+      expect(wrapper.find(".st-areaChart__area").exists()).toBe(true);
+    });
+
+    it("renders dot circles for each datum", () => {
+      const wrapper = mount(AreaChart, {
+        props: { data: [{ value: 1 }, { value: 2 }, { value: 3 }] },
+      });
+      expect(wrapper.findAll(".st-areaChart__dot").length).toBe(3);
+    });
+
+    it("renders accessible label in visually-hidden span", () => {
+      const wrapper = mount(AreaChart, {
+        props: { data: [], label: "My Area Chart" },
+      });
+      expect(wrapper.find(".st-visually-hidden").text()).toBe("My Area Chart");
+    });
+
+    it("has name AreaChart", () => {
+      expect(AreaChart.name).toBe("AreaChart");
+    });
+  });
+
+  // --- BarChart ---
+  describe("BarChart", () => {
+    it("renders figure.st-barChart", () => {
+      const wrapper = mount(BarChart, {
+        props: { data: [{ value: 10 }] },
+      });
+      expect(wrapper.find("figure.st-barChart").exists()).toBe(true);
+    });
+
+    it("renders one rect per datum", () => {
+      const wrapper = mount(BarChart, {
+        props: { data: [{ value: 5 }, { value: 8 }, { value: 3 }] },
+      });
+      expect(wrapper.findAll(".st-barChart__bar").length).toBe(3);
+    });
+
+    it("applies tone class to bars", () => {
+      const wrapper = mount(BarChart, {
+        props: { data: [{ value: 10, tone: "category2" }] },
+      });
+      expect(wrapper.find(".st-barChart__bar--category2").exists()).toBe(true);
+    });
+
+    it("has name BarChart", () => {
+      expect(BarChart.name).toBe("BarChart");
+    });
+  });
+
+  // --- LineChart ---
+  describe("LineChart", () => {
+    it("renders figure.st-lineChart", () => {
+      const wrapper = mount(LineChart, {
+        props: { data: [{ value: 10 }, { value: 20 }] },
+      });
+      expect(wrapper.find("figure.st-lineChart").exists()).toBe(true);
+    });
+
+    it("renders a polyline with no fill", () => {
+      const wrapper = mount(LineChart, {
+        props: { data: [{ value: 5 }, { value: 10 }] },
+      });
+      expect(wrapper.find(".st-lineChart__line").exists()).toBe(true);
+    });
+
+    it("renders dot circles for each datum", () => {
+      const wrapper = mount(LineChart, {
+        props: { data: [{ value: 1 }, { value: 2 }] },
+      });
+      expect(wrapper.findAll(".st-lineChart__dot").length).toBe(2);
+    });
+
+    it("has name LineChart", () => {
+      expect(LineChart.name).toBe("LineChart");
+    });
+  });
+
+  // --- DonutChart ---
+  describe("DonutChart", () => {
+    it("renders figure.st-donutChart", () => {
+      const wrapper = mount(DonutChart, {
+        props: { data: [{ value: 30 }, { value: 70 }] },
+      });
+      expect(wrapper.find("figure.st-donutChart").exists()).toBe(true);
+    });
+
+    it("renders one circle slice per datum", () => {
+      const wrapper = mount(DonutChart, {
+        props: { data: [{ value: 40 }, { value: 60 }] },
+      });
+      expect(wrapper.findAll(".st-donutChart__slice").length).toBe(2);
+    });
+
+    it("renders center text with total", () => {
+      const wrapper = mount(DonutChart, {
+        props: { data: [{ value: 30 }, { value: 70 }] },
+      });
+      expect(wrapper.find(".st-donutChart__center").text()).toBe("100");
+    });
+
+    it("has name DonutChart", () => {
+      expect(DonutChart.name).toBe("DonutChart");
+    });
+  });
+
+  // --- ScatterPlot ---
+  describe("ScatterPlot", () => {
+    it("renders figure.st-scatterPlot", () => {
+      const wrapper = mount(ScatterPlot, {
+        props: { data: [{ x: 1, y: 2 }] },
+      });
+      expect(wrapper.find("figure.st-scatterPlot").exists()).toBe(true);
+    });
+
+    it("renders one circle per datum", () => {
+      const wrapper = mount(ScatterPlot, {
+        props: { data: [{ x: 1, y: 2 }, { x: 3, y: 4 }, { x: 5, y: 6 }] },
+      });
+      expect(wrapper.findAll(".st-scatterPlot__point").length).toBe(3);
+    });
+
+    it("applies tone class to points", () => {
+      const wrapper = mount(ScatterPlot, {
+        props: { data: [{ x: 1, y: 2, tone: "category3" }] },
+      });
+      expect(wrapper.find(".st-scatterPlot__point--category3").exists()).toBe(true);
+    });
+
+    it("has name ScatterPlot", () => {
+      expect(ScatterPlot.name).toBe("ScatterPlot");
+    });
+  });
+
+  // --- Sparkline ---
+  describe("Sparkline", () => {
+    it("renders figure.st-sparkline with default tone neutral", () => {
+      const wrapper = mount(Sparkline, { props: { data: [1, 2, 3] } });
+      expect(wrapper.find("figure.st-sparkline").exists()).toBe(true);
+      expect(wrapper.find(".st-sparkline--neutral").exists()).toBe(true);
+    });
+
+    it("applies tone modifier", () => {
+      const wrapper = mount(Sparkline, {
+        props: { data: [1, 2, 3], tone: "success" },
+      });
+      expect(wrapper.find(".st-sparkline--success").exists()).toBe(true);
+    });
+
+    it("renders a polyline in SVG", () => {
+      const wrapper = mount(Sparkline, { props: { data: [10, 20, 30] } });
+      expect(wrapper.find(".st-sparkline__line").exists()).toBe(true);
+    });
+
+    it("has name Sparkline", () => {
+      expect(Sparkline.name).toBe("Sparkline");
+    });
+  });
+
+  // --- StackedBarChart ---
+  describe("StackedBarChart", () => {
+    it("renders figure.st-stackedBar", () => {
+      const wrapper = mount(StackedBarChart, {
+        props: {
+          data: [{ label: "Row 1", segments: [{ label: "A", value: 50 }, { label: "B", value: 50 }] }],
+        },
+      });
+      expect(wrapper.find("figure.st-stackedBar").exists()).toBe(true);
+    });
+
+    it("renders segment rects", () => {
+      const wrapper = mount(StackedBarChart, {
+        props: {
+          data: [
+            {
+              label: "Row 1",
+              segments: [
+                { label: "A", value: 60 },
+                { label: "B", value: 40 },
+              ],
+            },
+          ],
+        },
+      });
+      expect(wrapper.findAll(".st-stackedBar__seg").length).toBe(2);
+    });
+
+    it("renders category labels", () => {
+      const wrapper = mount(StackedBarChart, {
+        props: {
+          data: [{ label: "Row A", segments: [{ label: "X", value: 100 }] }],
+        },
+      });
+      expect(wrapper.find(".st-stackedBar__categoryLabel").text()).toBe("Row A");
+    });
+
+    it("has name StackedBarChart", () => {
+      expect(StackedBarChart.name).toBe("StackedBarChart");
+    });
+  });
+
+  // --- ForceGraph ---
+  describe("ForceGraph", () => {
+    it("renders figure.st-forceGraph", () => {
+      const wrapper = mount(ForceGraph, {
+        props: { nodes: [{ id: "a", label: "A" }], edges: [] },
+      });
+      expect(wrapper.find("figure.st-forceGraph").exists()).toBe(true);
+    });
+
+    it("renders node circles", () => {
+      const wrapper = mount(ForceGraph, {
+        props: {
+          nodes: [{ id: "a" }, { id: "b" }],
+          edges: [],
+        },
+      });
+      expect(wrapper.findAll(".st-forceGraph__dot").length).toBe(2);
+    });
+
+    it("renders edges as lines", () => {
+      const wrapper = mount(ForceGraph, {
+        props: {
+          nodes: [{ id: "a" }, { id: "b" }],
+          edges: [{ source: "a", target: "b" }],
+        },
+      });
+      expect(wrapper.findAll(".st-forceGraph__edge").length).toBe(1);
+    });
+
+    it("marks selected nodes", () => {
+      const wrapper = mount(ForceGraph, {
+        props: {
+          nodes: [{ id: "a" }],
+          edges: [],
+          selectedIds: ["a"],
+        },
+      });
+      expect(wrapper.find(".st-forceGraph__node--selected").exists()).toBe(true);
+    });
+
+    it("applies weak class to weak edges", () => {
+      const wrapper = mount(ForceGraph, {
+        props: {
+          nodes: [{ id: "a" }, { id: "b" }],
+          edges: [{ source: "a", target: "b", weak: true }],
+        },
+      });
+      expect(wrapper.find(".st-forceGraph__edge--weak").exists()).toBe(true);
+    });
+
+    it("emits select when node clicked", async () => {
+      const wrapper = mount(ForceGraph, {
+        props: { nodes: [{ id: "n1" }], edges: [] },
+      });
+      await wrapper.find(".st-forceGraph__node").trigger("click");
+      expect(wrapper.emitted("select")).toBeTruthy();
+      expect(wrapper.emitted("select")?.[0]).toEqual(["n1"]);
+    });
+
+    it("has name ForceGraph", () => {
+      expect(ForceGraph.name).toBe("ForceGraph");
+    });
+  });
+
+  // --- ChatComposer ---
+  describe("ChatComposer", () => {
+    it("renders form.st-chatComposer", () => {
+      const wrapper = mount(ChatComposer);
+      expect(wrapper.find("form.st-chatComposer").exists()).toBe(true);
+    });
+
+    it("renders a textarea", () => {
+      const wrapper = mount(ChatComposer);
+      expect(wrapper.find(".st-chatComposer__textarea").exists()).toBe(true);
+    });
+
+    it("renders a submit button with submitLabel", () => {
+      const wrapper = mount(ChatComposer, { props: { submitLabel: "Go" } });
+      const btn = wrapper.find("button[type=submit]");
+      expect(btn.exists()).toBe(true);
+      expect(btn.text()).toBe("Go");
+    });
+
+    it("emits submit with current value on form submit", async () => {
+      const wrapper = mount(ChatComposer, { props: { value: "hello" } });
+      await wrapper.find("form").trigger("submit");
+      expect(wrapper.emitted("submit")).toBeTruthy();
+    });
+
+    it("has name ChatComposer", () => {
+      expect(ChatComposer.name).toBe("ChatComposer");
+    });
+  });
+
+  // --- ChatMessage ---
+  describe("ChatMessage", () => {
+    it("renders article.st-chatMessage with default role assistant", () => {
+      const wrapper = mount(ChatMessage);
+      expect(wrapper.find("article.st-chatMessage").exists()).toBe(true);
+      expect(wrapper.find(".st-chatMessage--assistant").exists()).toBe(true);
+    });
+
+    it("applies role modifier class", () => {
+      const wrapper = mount(ChatMessage, { props: { role: "user" } });
+      expect(wrapper.find(".st-chatMessage--user").exists()).toBe(true);
+    });
+
+    it("renders avatar initial", () => {
+      const wrapper = mount(ChatMessage, { props: { role: "user" } });
+      expect(wrapper.find(".st-chatMessage__avatar").text()).toBe("U");
+    });
+
+    it("renders content", () => {
+      const wrapper = mount(ChatMessage, { props: { content: "Hello!" } });
+      expect(wrapper.find(".st-chatMessage__content").text()).toBe("Hello!");
+    });
+
+    it("normalizes streaming status to processing", () => {
+      const wrapper = mount(ChatMessage, { props: { status: "streaming" } });
+      expect(wrapper.find(".st-chatMessage--processing").exists()).toBe(true);
+    });
+
+    it("normalizes error status to failed", () => {
+      const wrapper = mount(ChatMessage, { props: { status: "error" } });
+      expect(wrapper.find(".st-chatMessage--failed").exists()).toBe(true);
+    });
+
+    it("has name ChatMessage", () => {
+      expect(ChatMessage.name).toBe("ChatMessage");
+    });
+  });
+
+  // --- ChatThread ---
+  describe("ChatThread", () => {
+    it("renders section.st-chatThread", () => {
+      const wrapper = mount(ChatThread);
+      expect(wrapper.find("section.st-chatThread").exists()).toBe(true);
+    });
+
+    it("renders empty label when no messages", () => {
+      const wrapper = mount(ChatThread, { props: { emptyLabel: "No messages yet" } });
+      expect(wrapper.find(".st-chatThread__empty").text()).toBe("No messages yet");
+    });
+
+    it("renders ChatMessage for each message in messages prop", () => {
+      const wrapper = mount(ChatThread, {
+        props: {
+          messages: [
+            { id: "1", role: "user", content: "Hello" },
+            { id: "2", role: "assistant", content: "Hi" },
+          ],
+        },
+      });
+      expect(wrapper.findAll(".st-chatMessage").length).toBe(2);
+    });
+
+    it("has name ChatThread", () => {
+      expect(ChatThread.name).toBe("ChatThread");
+    });
+  });
+
+  // --- StreamingMessage ---
+  describe("StreamingMessage", () => {
+    it("renders section.st-streamingMessage with default mode live", () => {
+      const wrapper = mount(StreamingMessage);
+      expect(wrapper.find("section.st-streamingMessage").exists()).toBe(true);
+      expect(wrapper.find(".st-streamingMessage--live").exists()).toBe(true);
+    });
+
+    it("applies mode modifier", () => {
+      const wrapper = mount(StreamingMessage, { props: { mode: "passive" } });
+      expect(wrapper.find(".st-streamingMessage--passive").exists()).toBe(true);
+    });
+
+    it("renders text", () => {
+      const wrapper = mount(StreamingMessage, { props: { text: "Loading..." } });
+      expect(wrapper.find(".st-streamingMessage__text").text()).toBe("Loading...");
+    });
+
+    it("renders events as list items", () => {
+      const wrapper = mount(StreamingMessage, {
+        props: {
+          events: [
+            { id: "e1", label: "Step 1" },
+            { id: "e2", label: "Step 2" },
+          ],
+        },
+      });
+      expect(wrapper.findAll(".st-streamingMessage__trailList li").length).toBe(2);
+    });
+
+    it("has name StreamingMessage", () => {
+      expect(StreamingMessage.name).toBe("StreamingMessage");
+    });
+  });
+
+  // --- MessageActions ---
+  describe("MessageActions", () => {
+    it("renders nav.st-messageActions", () => {
+      const wrapper = mount(MessageActions, { props: { actions: [] } });
+      expect(wrapper.find("nav.st-messageActions").exists()).toBe(true);
+    });
+
+    it("renders action buttons", () => {
+      const wrapper = mount(MessageActions, {
+        props: {
+          actions: [
+            { label: "Copy", onClick: () => {} },
+            { label: "Delete", variant: "danger" },
+          ],
+        },
+      });
+      expect(wrapper.findAll("button").length).toBe(2);
+    });
+
+    it("applies danger class to danger variant actions", () => {
+      const wrapper = mount(MessageActions, {
+        props: { actions: [{ label: "Remove", variant: "danger" }] },
+      });
+      expect(wrapper.find(".st-button--danger").exists()).toBe(true);
+    });
+
+    it("applies hoverOnly modifier when visibility=hover", () => {
+      const wrapper = mount(MessageActions, {
+        props: { actions: [], visibility: "hover" },
+      });
+      expect(wrapper.find(".st-messageActions--hoverOnly").exists()).toBe(true);
+    });
+
+    it("has name MessageActions", () => {
+      expect(MessageActions.name).toBe("MessageActions");
+    });
+  });
+
+  // --- MessageStatusBadge ---
+  describe("MessageStatusBadge", () => {
+    it("renders span.st-messageStatusBadge", () => {
+      const wrapper = mount(MessageStatusBadge, { props: { status: "completed" } });
+      expect(wrapper.find("span.st-messageStatusBadge").exists()).toBe(true);
+    });
+
+    it("applies success tone for completed status", () => {
+      const wrapper = mount(MessageStatusBadge, { props: { status: "completed" } });
+      expect(wrapper.find(".st-badge--success").exists()).toBe(true);
+    });
+
+    it("applies error tone for failed status", () => {
+      const wrapper = mount(MessageStatusBadge, { props: { status: "failed" } });
+      expect(wrapper.find(".st-badge--error").exists()).toBe(true);
+    });
+
+    it("applies info tone for processing status", () => {
+      const wrapper = mount(MessageStatusBadge, { props: { status: "processing" } });
+      expect(wrapper.find(".st-badge--info").exists()).toBe(true);
+    });
+
+    it("normalizes sent to completed", () => {
+      const wrapper = mount(MessageStatusBadge, { props: { status: "sent" } });
+      expect(wrapper.find(".st-badge--success").exists()).toBe(true);
+    });
+
+    it("normalizes streaming to processing", () => {
+      const wrapper = mount(MessageStatusBadge, { props: { status: "streaming" } });
+      expect(wrapper.find(".st-badge--info").exists()).toBe(true);
+    });
+
+    it("renders the dot element", () => {
+      const wrapper = mount(MessageStatusBadge, { props: { status: "pending" } });
+      expect(wrapper.find(".st-messageStatusBadge__dot").exists()).toBe(true);
+    });
+
+    it("has name MessageStatusBadge", () => {
+      expect(MessageStatusBadge.name).toBe("MessageStatusBadge");
+    });
+  });
+
+  // --- Batch 5 export surface ---
+  describe("export surface — batch 5", () => {
+    const batch5 = {
+      AreaChart,
+      BarChart,
+      LineChart,
+      DonutChart,
+      ScatterPlot,
+      Sparkline,
+      StackedBarChart,
+      ForceGraph,
+      ChatComposer,
+      ChatMessage,
+      ChatThread,
+      StreamingMessage,
+      MessageActions,
+      MessageStatusBadge,
+    };
+
+    it("exports all batch 5 components", () => {
+      for (const [name, component] of Object.entries(batch5)) {
+        expect(component, `${name} should be exported`).toBeDefined();
+        expect(typeof component).toBe("object");
+      }
+    });
+
+    it("each batch 5 component has a name property matching its key", () => {
+      for (const [name, component] of Object.entries(batch5)) {
         expect(component.name, `${name}.name`).toBe(name);
       }
     });
