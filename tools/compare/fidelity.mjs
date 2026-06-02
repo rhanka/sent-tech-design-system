@@ -607,7 +607,7 @@ async function run(opts) {
     cleanup(server, devChild, opts);
   }
 
-  return { results, warnings, useStatic };
+  return { results, warnings, useStatic, compareUrl };
 }
 
 /** Find the contentFrame of the ref iframe in the row tagged for (theme, component). */
@@ -733,7 +733,7 @@ function scoreEntry(entry) {
   return { rows, counts, fidelity };
 }
 
-function buildReport({ results, warnings, useStatic }, opts) {
+function buildReport({ results, warnings, useStatic, compareUrl }, opts) {
   const date = opts.date || "<date>";
   const scored = results.map((e) => ({ entry: e, ...scoreEntry(e) }));
 
@@ -759,7 +759,7 @@ function buildReport({ results, warnings, useStatic }, opts) {
   lines.push("|---|---|");
   lines.push(`| Date | ${date} |`);
   lines.push(`| Navigateur | Google Chrome système (\`${CHROME_PATH}\`) via puppeteer-core, headless |`);
-  lines.push(`| URL mesurée | ${COMPARE_URL} (${useStatic ? "build statique servi" : "serveur dev"}) |`);
+  lines.push(`| URL mesurée | ${compareUrl} (${useStatic ? "build statique servi" : "serveur dev"}) |`);
   lines.push(`| Tolérance longueur | ±${TOL.lengthPx}px → statut \`~\` |`);
   lines.push(`| Tolérance couleur | distance RGB ≤ ${TOL.colorDist} → statut \`~\` |`);
   lines.push(`| Statuts | \`=\` identique · \`~\` proche (tolérance) · \`≠\` écart net |`);
@@ -858,13 +858,13 @@ function md(v) {
   return String(v ?? "").replace(/\|/g, "\\|");
 }
 
-function buildJson({ results }, report, opts) {
+function buildJson({ results }, report, compareUrl, opts) {
   return {
     meta: {
       date: opts.date || null,
       browser: "Google Chrome (system)",
       chromePath: CHROME_PATH,
-      url: COMPARE_URL,
+      url: compareUrl,
       tolerances: TOL,
       generatedBy: "tools/compare/fidelity.mjs",
     },
@@ -892,7 +892,7 @@ async function main() {
   const opts = parseArgs(process.argv.slice(2));
   const raw = await run(opts);
   const report = buildReport(raw, opts);
-  const json = buildJson(raw, report, opts);
+  const json = buildJson(raw, report, raw.compareUrl, opts);
 
   // Build the gap list from the scored rows (≠ and ~ are gaps; = is parity).
   // Les thèmes publics (dsfr, carbon) → compare-gaps.json (versionné).
