@@ -33,6 +33,7 @@ export interface ComponentNavGroup {
 export const DOCS_TOP_NAV: DocsNavItem[] = [
   { label: "Fondations", href: "/#foundations" },
   { label: "Composants", href: "/#components" },
+  { label: "Aperçu", href: "/preview" },
   { label: "Tokens", href: "/#tokens" },
   { label: "Thèmes", href: "/#themes" },
   { label: "Contrats", href: "/#contracts" }
@@ -49,6 +50,7 @@ export const DOCS_UTILITY_NAV: DocsNavItem[] = [
 export const DOCS_FOUNDATION_NAV: DocsNavItem[] = [
   { label: "Vue d'ensemble", href: "/" },
   { label: "Fondations", href: "/#foundations" },
+  { label: "Aperçu multi-framework", href: "/preview" },
   { label: "Tokens", href: "/#tokens" },
   { label: "Themes tenant", href: "/#themes" },
   { label: "Contrat marque blanche", href: "/#contracts" }
@@ -69,6 +71,13 @@ export function buildComponentNavGroups(): ComponentNavGroup[] {
 export function resolveBreadcrumb(pathname: string): DocsNavItem[] {
   if (pathname === "/") {
     return [{ label: "Catalogue", href: "/" }];
+  }
+
+  if (pathname === "/preview") {
+    return [
+      { label: "Catalogue", href: "/" },
+      { label: "Aperçu multi-framework", href: "/preview" }
+    ];
   }
 
   if (pathname.startsWith("/components/")) {
