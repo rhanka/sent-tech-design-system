@@ -9,7 +9,7 @@ Ce document relie le ruleset déterministe `@sentropic/design-system-skills` aux
 - Commande d'audit déterministe : `design check <target> --tech` ou `design audit <target>`.
 - Source WP7 : `docs/ds-audit-consolidated-v2.md`.
 - Moteur : `packages/skills/src/rules/index.ts`.
-- Contrat : 26 règles actives, toutes token-aware quand elles portent sur des styles, et traçables par `Rule.principle` / `Rule.wp7Finding`.
+- Contrat : 27 règles actives, toutes token-aware quand elles portent sur des styles, et traçables par `Rule.principle` / `Rule.wp7Finding`.
 - Gate CI : `design check <build-html-dir> --fail-under <score>` agrège les pages HTML statiques et échoue sous le score minimal.
 
 ## Règles actives
@@ -42,6 +42,7 @@ Ce document relie le ruleset déterministe `@sentropic/design-system-skills` aux
 | `auto-fit-card-grid` | `design polish --quieter` | P0.3 monotonie des grilles de cartes sur la home | low |
 | `focus-visible-ring` | `design harden --a11y` | P1.2 taille/cible interactive + affordance focus insuffisante | medium |
 | `viewport-zoom` | `design harden --a11y` | P2.1 zoom utilisateur restreint | medium |
+| `missing-dark-mode` | `design align --theme` | P2-1 dark-mode absent (cluster B) | low |
 
 ## Garde-fous token-aware
 
@@ -59,7 +60,7 @@ Les règles WP8 privilégient les tokens Sent Tech (`var(--st-*)`) et évitent d
 `packages/skills/test-fixtures/skills.test.js` couvre :
 
 - Le contrat public `audit()` et la CLI `check --technical`.
-- Les 26 règles actives via tests directs.
+- Les 27 règles actives via tests directs.
 - Les 11 règles ajoutées en extension WP8 avec un couple positif/négatif chacune.
 - Le gate `design check --fail-under`, y compris l'agrégation d'un dossier HTML.
 - La garde de traçabilité : chaque règle de `defaultRules` doit exposer `principle` et `wp7Finding`.
@@ -68,4 +69,4 @@ Les règles WP8 privilégient les tokens Sent Tech (`var(--st-*)`) et évitent d
 
 - Le moteur reste statique (`jsdom`) : il ne calcule pas les styles post-hydratation ni les dimensions de viewport réelles.
 - Les règles CSS lisent les styles inline et les blocs `<style>` du HTML audité ; `line-length-cap` lit aussi les stylesheets liés locaux pour éviter les faux positifs sur build statique. Elles ne remplacent pas une passe navigateur Playwright.
-- Certains findings WP7 restent hors règles déterministes : dark-mode absent, z-index `OverflowMenu`, conflit Drawer/menu close.
+- Certains findings WP7 restent hors règles déterministes : z-index `OverflowMenu`, conflit Drawer/menu close.

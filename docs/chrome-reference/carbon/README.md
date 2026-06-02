@@ -13,13 +13,13 @@ Carbon doit lire comme une documentation IBM Carbon :
 
 ## Assets
 
-- `assets/carbon-wordmark.svg` : wordmark committable pour remplacer le placeholder actuel.
+- `assets/carbon-wordmark.svg` : wordmark officiel versionné, utilisé pour `apps/docs/static/chrome/carbon/logo.svg`.
 
 ## Notes D'intégration
 
-Le shell existant `ChromeCarbon.svelte` est déjà proche de cette structure. Les remplacements attendus sont surtout :
+Le shell existant `ChromeCarbon.svelte` est déjà proche de cette structure. Les remplacements attendus sont désormais:
 
-- remplacer le SVG placeholder de flamme par le wordmark du kit ;
+- `ChromeCarbon.svelte` lit `apps/docs/static/chrome/carbon/logo.svg` (copie de `assets/carbon-wordmark.svg`).
 - conserver la hauteur header 48px ;
 - conserver la sidebar à 256px ;
 - éviter les radius et cartes flottantes dans le chrome.

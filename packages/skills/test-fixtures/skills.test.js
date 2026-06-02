@@ -300,10 +300,9 @@ test("cli init command in non-interactive mode creates PRODUCT.md", () => {
   }
 });
 
-// --- Couverture directe des 6 règles WP8 jusque-là non testées (cf.
-// docs/ds-audit-coverage-matrix.md §3). Chaque règle : un cas qui la déclenche
-// (positif) + un cas propre (négatif). On asserte uniquement le ruleId ciblé,
-// d'autres findings peuvent coexister. ---
+// --- Couverture directe des règles WP8 (références historiques + ajout dark-mode)
+// Chaque règle : un cas qui la déclenche (positif) + un cas propre (négatif).
+// On asserte uniquement le ruleId ciblé, d'autres findings peuvent coexister.
 
 async function ruleIds(html) {
   const report = await audit({ kind: "html", value: html });
@@ -431,12 +430,21 @@ test("rule underline-hardcoded-border: champ avec box-shadow inset → pas de fi
   assert.ok(!(await ruleIds('<input style="box-shadow:inset 0 -2px #161616">')).includes("underline-hardcoded-border"));
 });
 
-test("ruleset WP8: 26 règles actives avec traçabilité WP7", () => {
-  assert.strictEqual(defaultRules.length, 26);
+test("ruleset WP8: 27 règles actives avec traçabilité WP7", () => {
+  assert.strictEqual(defaultRules.length, 27);
   for (const rule of defaultRules) {
     assert.ok(rule.principle, `${rule.id} should expose a design principle`);
     assert.ok(rule.wp7Finding, `${rule.id} should expose its WP7 finding source`);
   }
+});
+
+test("rule missing-dark-mode: absence de media query dark-mode → finding", async () => {
+  const findings = await ruleIds("<style>body{background:#ffffff;color:#0f172a}</style><p>Demo</p>");
+  assert.ok(findings.includes("missing-dark-mode"));
+});
+test("rule missing-dark-mode: media query prefers-color-scheme dark présente → pas de finding", async () => {
+  const html = `<style>@media (prefers-color-scheme: dark){body{background:#161616;color:#f4f4f4}}</style><style>body{background:#ffffff;color:#0f172a}</style>`;
+  assert.ok(!(await ruleIds(html)).includes("missing-dark-mode"));
 });
 
 test("rule cramped-padding: surface avec padding trop faible → finding", async () => {

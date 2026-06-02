@@ -124,8 +124,8 @@
     }
   },
   "implementationTargets": [
-    "apps/docs/src/lib/chrome/ChromeAirbus.svelte logo placeholder",
-    "apps/docs/static/chrome/airbus/logo.svg placeholder"
+    "apps/docs/src/lib/chrome/ChromeAirbus.svelte",
+    "apps/docs/static/chrome/airbus/logo.svg"
   ],
   "privacy": {
     "committable": false,

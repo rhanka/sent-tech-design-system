@@ -86,5 +86,5 @@ Ou `kind: "url"` / `kind: "html"` pour un bloc HTML brut.
 
 ## Notes
 
-- Cette version expose 26 règles déterministes, chacune reliée à un principe `design` et à un finding WP7.
+- Cette version expose 27 règles déterministes, chacune reliée à un principe `design` et à un finding WP7.
   L’enrichissement vers ~`30-35` règles reste géré via WP7/8.
