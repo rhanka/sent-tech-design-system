@@ -99,6 +99,7 @@
     color: var(--st-semantic-text-primary);
     text-decoration: underline;
     text-underline-offset: 0.15em;
+    background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle));
   }
 
   .st-tableOfContents__link[aria-current="location"] {
