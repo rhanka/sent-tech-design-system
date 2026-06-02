@@ -53,10 +53,14 @@
 
   $effect(() => {
     const synced = resolvedValues();
-    state = {
-      ...state,
-      ...synced
-    };
+    if (
+      state.fontScale !== synced.fontScale ||
+      state.contrast !== synced.contrast ||
+      state.lineSpacing !== synced.lineSpacing ||
+      state.reducedMotion !== synced.reducedMotion
+    ) {
+      state = synced;
+    }
   });
 
   const currentState = () => ({
