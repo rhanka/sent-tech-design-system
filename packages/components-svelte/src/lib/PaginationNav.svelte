@@ -163,8 +163,8 @@
   .st-paginationNav__page:hover:not(:disabled),
   .st-paginationNav__nav:hover:not(:disabled) {
     background: var(
-      --st-component-paginationNav-hoverBackground,
-      var(--st-semantic-surface-subtle)
+      --st-component-control-hoverBackground,
+      var(--st-component-paginationNav-hoverBackground, var(--st-semantic-surface-subtle))
     );
   }
 
