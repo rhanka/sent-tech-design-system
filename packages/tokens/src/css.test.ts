@@ -115,7 +115,9 @@ describe("token CSS serialization", () => {
     expect(component.menu).toMatchObject({
       background: expect.any(String),
       border: expect.any(String),
-      itemHoverBackground: expect.any(String)
+      itemHoverBackground: expect.any(String),
+      dangerText: expect.any(String),
+      dangerHoverBackground: expect.any(String)
     });
     expect(component.popover).toMatchObject({
       background: expect.any(String),
