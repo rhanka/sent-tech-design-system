@@ -76,8 +76,8 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 | Plan-completion hero shelf + contexte demos | 🟢 | `824a2b7` | |
 | Re-passe `/components/overlays` | 🟢 | — | Retest Chrome headless desktop/mobile OK: modal Escape, OverflowMenu z-index 80 > Toast 60. |
 | Audit visuel pages composants restantes | 🟢 | — | Retest cible `/components/overlays` + `/components/plan-completion` desktop/mobile OK; validation publique ex post reste a faire en fin de loop. |
-| Inventaire couverture docs composants | 🟢 | — | 80 entrees catalogue = 80 exports publics Svelte hors `ThemeProvider`; 0 stub catalogue; garde `docs-navigation.test.ts`. |
-| Backlog composants (gap DSFR/Carbon) | 🟡 | — | Les routes dediees existent pour les composants precedemment restants: forms, navigation, overlays, feedback/data, layout; `Notification` ajouté. P1/P2 fermés pour Footer, Tile, TreeView, SkipLink, LanguageSelector, Quote, Highlight, Notification. Résiduel: table of contents, back-to-top, transcription, display settings, media content et patterns composites. |
+| Inventaire couverture docs composants | 🟢 | — | 85 entrees catalogue = 85 exports publics Svelte hors `ThemeProvider`; 0 stub catalogue; garde `docs-navigation.test.ts`. |
+| Backlog composants (gap DSFR/Carbon) | 🟢 | — | Les routes dédiées existent pour les composants précédemment restants: forms, navigation, overlays, feedback/data, layout et tableaux composites; `Notification` ajouté. P1/P2 fermés pour Footer, Tile, TreeView, SkipLink, LanguageSelector, Quote, Highlight, Notification. |
 | Exports absents du catalogue | 🟢 | — | Aucun export UI absent; `ThemeProvider` reste exclu intentionnellement (primitive infra). |
 **Dependances** : aucune pour la couverture docs courante; WP6 retest cible consigne.
 **Parallelisable avec** : tous.
@@ -86,7 +86,7 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 
 | Vue | Track | Finalite | Etat | Avancement | Detail |
 |---|---|---|---:|---:|---|
-| Fait | Inventaire docs | Eviter les stubs invisibles et les exports oublies | 🟢 | 100% | `COMPONENTS` couvre les 80 exports publics Svelte hors `ThemeProvider`; test de parite ajoute. |
+| Fait | Inventaire docs | Eviter les stubs invisibles et les exports oublies | 🟢 | 100% | `COMPONENTS` couvre les 85 exports publics Svelte hors `ThemeProvider`; test de parité ajoute. |
 | Fait | Pages dediees | Fermer les stubs P1 visibles et les composants anciennement groupes | 🟢 | 100% | Routes dediees presentes pour forms, navigation, overlays, feedback/data, layout et charts. |
 | Fait | Catalogue absents | Ajouter les exports publics manquants au flux docs | 🟢 | 100% | Aucun export UI absent; `ThemeProvider` reste infra et exclu. |
 | Fait | Validation navigateur cible | Rejouer le site docs sur desktop/mobile et inspecter overlays + plan-completion | 🟢 | 100% | `npm --workspace apps/docs run build` puis smoke Chrome headless: overlays desktop/mobile (modal Escape, menu z 80 > toast 60), plan-completion desktop/mobile (popover z 80, drawer backdrop fixed z 100, Escape close). Validation publique ex post gardee pour la fin du loop. |
@@ -395,7 +395,7 @@ A tout instant on peut tenir 3 a 4 agents en parallele sans conflit de fichiers.
 1. **WP10 thème Airbus / theming** — garder le package public-ready, compléter uniquement ce qui est vérifiable localement; publication client bloquée par décision version/release.
 2. **WP7 audit DS** — augmenter la couverture upstream si de nouvelles références locales deviennent exploitables; le gate strict 100% est déjà actif.
 3. **WP14 chrome documentaire** — validation visuelle publique en fin de loop; monitorer l'alignement visuel Carbon/DSFR/Airbus avec référence.
-4. **WP2 backlog composants** — ne rouvrir que sur besoin produit concret (toc, back-to-top, transcription, display settings, media content, composites).
+4. **WP2 backlog composants** — ne rouvrir que sur besoin produit concret (composites uniquement, e.g. modèles/pages-types).
 5. **Fond fermé** : WP5 charts, WP8 moteur, WP9 Chat/Agent, WP11 dogfooding, WP12 templates source et WP13 React.
 
 ## Décisions tranchées / gardes restantes
