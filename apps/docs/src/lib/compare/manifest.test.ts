@@ -2,11 +2,11 @@
 import { describe, it, expect } from "vitest";
 import { COMPARE_MANIFEST } from "./manifest.mjs";
 
-// The 22 bench keys that MUST migrate, with their theme coverage.
+// The 23 bench keys that MUST migrate, with their theme coverage.
 // (mirrors fidelity.mjs COMPONENTS + COMPONENT_THEMES; Carbon lacks Badge/Quote/Highlight)
 const EXPECTED = {
-  dsfr: ["Button", "ButtonDisabled", "Input", "InputError", "InputDisabled", "Textarea", "Select", "Search", "Link", "Checkbox", "Radio", "Toggle", "Tag", "Badge", "Alert", "Accordion", "Breadcrumb", "Pagination", "Card", "Tabs", "Quote", "Highlight"],
-  carbon: ["Button", "ButtonDisabled", "Input", "InputError", "InputDisabled", "Textarea", "Select", "Search", "Link", "Checkbox", "Radio", "Toggle", "Tag", "Alert", "Accordion", "Breadcrumb", "Pagination", "Card", "Tabs"],
+  dsfr: ["Button", "ButtonDisabled", "Input", "InputError", "InputDisabled", "Textarea", "Select", "Search", "Link", "Checkbox", "Radio", "Toggle", "Switch", "Tag", "Badge", "Alert", "Accordion", "Breadcrumb", "Pagination", "Card", "Tabs", "Quote", "Highlight"],
+  carbon: ["Button", "ButtonDisabled", "Input", "InputError", "InputDisabled", "Textarea", "Select", "Search", "Link", "Checkbox", "Radio", "Toggle", "Switch", "Tag", "Alert", "Accordion", "Breadcrumb", "Pagination", "Card", "Tabs"],
 };
 
 describe("COMPARE_MANIFEST parity with the legacy bench", () => {
