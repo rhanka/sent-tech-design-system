@@ -3,20 +3,34 @@ import { mount } from "@vue/test-utils";
 import {
   Accordion,
   Alert,
+  AspectRatio,
   Badge,
   Breadcrumb,
   Button,
   Card,
   Checkbox,
+  CodeSnippet,
   ContentSwitcher,
+  CopyButton,
+  Drawer,
+  Dropdown,
   EmptyState,
+  FileUploader,
+  Footer,
+  Form,
+  FormGroup,
+  Header,
   Highlight,
   IconButton,
   InlineLoading,
   Input,
+  LanguageSelector,
   Link,
   LoadingState,
   NumberInput,
+  OrderedList,
+  Pagination,
+  PaginationNav,
   PasswordInput,
   ProgressBar,
   ProgressIndicator,
@@ -24,8 +38,11 @@ import {
   Radio,
   Search,
   Select,
+  SideNav,
   SkeletonText,
   SkipLink,
+  Slider,
+  StructuredList,
   Switch,
   Tag,
   Textarea,
@@ -33,6 +50,7 @@ import {
   Tile,
   TileGroup,
   Toggle,
+  UnorderedList,
 } from "./index.js";
 
 describe("Vue behavioral parity — primitives", () => {
@@ -1116,6 +1134,640 @@ describe("Vue behavioral parity — batch 2", () => {
 
     it("each batch 2 component has a name property matching its key", () => {
       for (const [name, component] of Object.entries(batch2)) {
+        expect(component.name, `${name}.name`).toBe(name);
+      }
+    });
+  });
+});
+
+// ─── Batch 3: overlays / nav / lists / forms ────────────────────────────────
+
+describe("Vue behavioral parity — batch 3", () => {
+  // --- AspectRatio ---
+  describe("AspectRatio", () => {
+    it("renders a div.st-aspectRatio", () => {
+      const wrapper = mount(AspectRatio, { slots: { default: "content" } });
+      expect(wrapper.find(".st-aspectRatio").exists()).toBe(true);
+    });
+
+    it("applies inline aspectRatio style from ratio prop (string)", () => {
+      const wrapper = mount(AspectRatio, { props: { ratio: "4 / 3" }, slots: { default: "" } });
+      expect((wrapper.find(".st-aspectRatio").element as HTMLElement).style.aspectRatio).toBe("4 / 3");
+    });
+
+    it("applies inline aspectRatio style from ratio prop (number)", () => {
+      const wrapper = mount(AspectRatio, { props: { ratio: 2 }, slots: { default: "" } });
+      expect((wrapper.find(".st-aspectRatio").element as HTMLElement).style.aspectRatio).toBe("2");
+    });
+
+    it("has name AspectRatio", () => {
+      expect(AspectRatio.name).toBe("AspectRatio");
+    });
+  });
+
+  // --- CodeSnippet ---
+  describe("CodeSnippet", () => {
+    it("renders a pre.st-codeSnippet by default", () => {
+      const wrapper = mount(CodeSnippet, { props: { code: "const x = 1;" } });
+      expect(wrapper.find("pre.st-codeSnippet").exists()).toBe(true);
+    });
+
+    it("renders code in st-codeSnippet__code", () => {
+      const wrapper = mount(CodeSnippet, { props: { code: "hello" } });
+      expect(wrapper.find(".st-codeSnippet__code").text()).toBe("hello");
+    });
+
+    it("renders inline as code.st-codeSnippet--inline", () => {
+      const wrapper = mount(CodeSnippet, { props: { code: "x", inline: true } });
+      expect(wrapper.find("code.st-codeSnippet--inline").exists()).toBe(true);
+    });
+
+    it("has name CodeSnippet", () => {
+      expect(CodeSnippet.name).toBe("CodeSnippet");
+    });
+  });
+
+  // --- CopyButton ---
+  describe("CopyButton", () => {
+    it("renders button.st-copyButton", () => {
+      const wrapper = mount(CopyButton);
+      expect(wrapper.find("button.st-copyButton").exists()).toBe(true);
+    });
+
+    it("applies size modifier class", () => {
+      const wrapper = mount(CopyButton, { props: { size: "sm" } });
+      expect(wrapper.find("button").classes()).toContain("st-copyButton--sm");
+    });
+
+    it("shows copy label by default", () => {
+      const wrapper = mount(CopyButton, { props: { label: "Copy" } });
+      expect(wrapper.find(".st-copyButton__label").text()).toBe("Copy");
+    });
+
+    it("has name CopyButton", () => {
+      expect(CopyButton.name).toBe("CopyButton");
+    });
+  });
+
+  // --- Drawer ---
+  describe("Drawer", () => {
+    it("renders nothing when open=false", () => {
+      const wrapper = mount(Drawer, { props: { open: false } });
+      expect(wrapper.find(".st-drawer").exists()).toBe(false);
+    });
+
+    it("renders aside.st-drawer when open=true", () => {
+      const wrapper = mount(Drawer, { props: { open: true } });
+      expect(wrapper.find("aside.st-drawer").exists()).toBe(true);
+    });
+
+    it("applies placement modifier", () => {
+      const wrapper = mount(Drawer, { props: { open: true, placement: "left" } });
+      expect(wrapper.find(".st-drawer--left").exists()).toBe(true);
+    });
+
+    it("renders title when provided", () => {
+      const wrapper = mount(Drawer, { props: { open: true, title: "My Drawer" } });
+      expect(wrapper.find(".st-drawer__title").text()).toBe("My Drawer");
+    });
+
+    it("renders close button", () => {
+      const wrapper = mount(Drawer, { props: { open: true } });
+      expect(wrapper.find(".st-drawer__close").exists()).toBe(true);
+    });
+
+    it("emits close when close button clicked", async () => {
+      const wrapper = mount(Drawer, { props: { open: true } });
+      await wrapper.find(".st-drawer__close").trigger("click");
+      expect(wrapper.emitted("close")).toBeTruthy();
+    });
+
+    it("has name Drawer", () => {
+      expect(Drawer.name).toBe("Drawer");
+    });
+  });
+
+  // --- Dropdown ---
+  describe("Dropdown", () => {
+    it("renders div.st-dropdown", () => {
+      const wrapper = mount(Dropdown, { props: { options: [] } });
+      expect(wrapper.find(".st-dropdown").exists()).toBe(true);
+    });
+
+    it("renders a trigger button", () => {
+      const wrapper = mount(Dropdown, {
+        props: { options: [{ value: "a", label: "A" }] },
+      });
+      expect(wrapper.find(".st-dropdown__button").exists()).toBe(true);
+    });
+
+    it("opens list when trigger clicked", async () => {
+      const wrapper = mount(Dropdown, {
+        props: { options: [{ value: "a", label: "A" }] },
+      });
+      expect(wrapper.find(".st-dropdown__list").exists()).toBe(false);
+      await wrapper.find(".st-dropdown__button").trigger("click");
+      expect(wrapper.find(".st-dropdown__list").exists()).toBe(true);
+    });
+
+    it("renders options in open list", async () => {
+      const wrapper = mount(Dropdown, {
+        props: {
+          options: [
+            { value: "a", label: "A" },
+            { value: "b", label: "B" },
+          ],
+        },
+      });
+      await wrapper.find(".st-dropdown__button").trigger("click");
+      expect(wrapper.findAll(".st-dropdown__option").length).toBe(2);
+    });
+
+    it("has name Dropdown", () => {
+      expect(Dropdown.name).toBe("Dropdown");
+    });
+  });
+
+  // --- FileUploader ---
+  describe("FileUploader", () => {
+    it("renders div.st-fileUploader-field", () => {
+      const wrapper = mount(FileUploader);
+      expect(wrapper.find(".st-fileUploader-field").exists()).toBe(true);
+    });
+
+    it("renders file input", () => {
+      const wrapper = mount(FileUploader);
+      expect(wrapper.find("input[type=file]").exists()).toBe(true);
+    });
+
+    it("renders items list", () => {
+      const wrapper = mount(FileUploader, {
+        props: {
+          items: [
+            { name: "file1.txt", status: "complete" },
+            { name: "file2.pdf", status: "error" },
+          ],
+        },
+      });
+      expect(wrapper.findAll(".st-fileUploader__item").length).toBe(2);
+    });
+
+    it("applies item status modifier", () => {
+      const wrapper = mount(FileUploader, {
+        props: { items: [{ name: "f.txt", status: "uploading" }] },
+      });
+      expect(wrapper.find(".st-fileUploader__item--uploading").exists()).toBe(true);
+    });
+
+    it("has name FileUploader", () => {
+      expect(FileUploader.name).toBe("FileUploader");
+    });
+  });
+
+  // --- Footer ---
+  describe("Footer", () => {
+    it("renders footer.st-footer", () => {
+      const wrapper = mount(Footer);
+      expect(wrapper.find("footer.st-footer").exists()).toBe(true);
+    });
+
+    it("renders brand when provided", () => {
+      const wrapper = mount(Footer, { props: { brand: "SENT" } });
+      expect(wrapper.find(".st-footer__brand").text()).toBe("SENT");
+    });
+
+    it("renders link columns", () => {
+      const wrapper = mount(Footer, {
+        props: {
+          columns: [
+            { title: "Col 1", links: [{ label: "Link", href: "/link" }] },
+          ],
+        },
+      });
+      expect(wrapper.find("nav").exists()).toBe(true);
+      expect(wrapper.find("a").exists()).toBe(true);
+    });
+
+    it("renders copyright", () => {
+      const wrapper = mount(Footer, { props: { copyright: "© 2025" } });
+      expect(wrapper.find(".st-footer__copyright").text()).toBe("© 2025");
+    });
+
+    it("has name Footer", () => {
+      expect(Footer.name).toBe("Footer");
+    });
+  });
+
+  // --- Form ---
+  describe("Form", () => {
+    it("renders form.st-form", () => {
+      const wrapper = mount(Form);
+      expect(wrapper.find("form.st-form").exists()).toBe(true);
+    });
+
+    it("renders children in st-form__body", () => {
+      const wrapper = mount(Form, { slots: { default: "<input />" } });
+      expect(wrapper.find(".st-form__body").exists()).toBe(true);
+    });
+
+    it("renders message with correct status class", () => {
+      const wrapper = mount(Form, {
+        props: { message: "Saved!", status: "submitted" },
+      });
+      expect(wrapper.find(".st-form__message--success").text()).toBe("Saved!");
+    });
+
+    it("renders error message", () => {
+      const wrapper = mount(Form, {
+        props: { message: "Failed", status: "error" },
+      });
+      expect(wrapper.find(".st-form__message--error").exists()).toBe(true);
+    });
+
+    it("emits submit on form submit", async () => {
+      const wrapper = mount(Form);
+      await wrapper.find("form").trigger("submit");
+      expect(wrapper.emitted("submit")).toBeTruthy();
+    });
+
+    it("has name Form", () => {
+      expect(Form.name).toBe("Form");
+    });
+  });
+
+  // --- FormGroup ---
+  describe("FormGroup", () => {
+    it("renders fieldset.st-formGroup", () => {
+      const wrapper = mount(FormGroup, { props: { legend: "Group" } });
+      expect(wrapper.find("fieldset.st-formGroup").exists()).toBe(true);
+    });
+
+    it("renders legend", () => {
+      const wrapper = mount(FormGroup, { props: { legend: "My Group" } });
+      expect(wrapper.find(".st-formGroup__legend").text()).toBe("My Group");
+    });
+
+    it("renders helperText when provided", () => {
+      const wrapper = mount(FormGroup, {
+        props: { legend: "G", helperText: "Hint" },
+      });
+      expect(wrapper.find(".st-formGroup__help").text()).toBe("Hint");
+    });
+
+    it("renders slot content in body", () => {
+      const wrapper = mount(FormGroup, {
+        props: { legend: "G" },
+        slots: { default: "<input />" },
+      });
+      expect(wrapper.find(".st-formGroup__body").exists()).toBe(true);
+    });
+
+    it("has name FormGroup", () => {
+      expect(FormGroup.name).toBe("FormGroup");
+    });
+  });
+
+  // --- Header ---
+  describe("Header", () => {
+    it("renders header.st-header", () => {
+      const wrapper = mount(Header);
+      expect(wrapper.find("header.st-header").exists()).toBe(true);
+    });
+
+    it("applies sticky modifier", () => {
+      const wrapper = mount(Header, { props: { sticky: true } });
+      expect(wrapper.find(".st-header--sticky").exists()).toBe(true);
+    });
+
+    it("renders brand link", () => {
+      const wrapper = mount(Header, { props: { brand: "MyBrand" } });
+      expect(wrapper.find(".st-header__logo").text()).toBe("MyBrand");
+    });
+
+    it("renders nav links", () => {
+      const wrapper = mount(Header, {
+        props: {
+          navigation: [
+            { label: "Home", href: "/" },
+            { label: "About", href: "/about" },
+          ],
+        },
+      });
+      expect(wrapper.findAll(".st-header__navigation a").length).toBe(2);
+    });
+
+    it("renders account initials", () => {
+      const wrapper = mount(Header, {
+        props: { account: { name: "John Doe" } },
+      });
+      expect(wrapper.find(".st-header__avatar--initials").text()).toBe("JD");
+    });
+
+    it("has name Header", () => {
+      expect(Header.name).toBe("Header");
+    });
+  });
+
+  // --- LanguageSelector ---
+  describe("LanguageSelector", () => {
+    it("renders div.st-languageSelector", () => {
+      const wrapper = mount(LanguageSelector, {
+        props: { options: [{ value: "en", label: "English" }] },
+      });
+      expect(wrapper.find(".st-languageSelector").exists()).toBe(true);
+    });
+
+    it("renders trigger button", () => {
+      const wrapper = mount(LanguageSelector, {
+        props: { options: [{ value: "en", label: "English" }] },
+      });
+      expect(wrapper.find(".st-languageSelector__trigger").exists()).toBe(true);
+    });
+
+    it("shows menu when open=true", () => {
+      const wrapper = mount(LanguageSelector, {
+        props: {
+          options: [{ value: "en", label: "English" }, { value: "fr", label: "French" }],
+          open: true,
+        },
+      });
+      expect(wrapper.find(".st-languageSelector__menu").exists()).toBe(true);
+      expect(wrapper.findAll(".st-languageSelector__option").length).toBe(2);
+    });
+
+    it("marks active option", () => {
+      const wrapper = mount(LanguageSelector, {
+        props: {
+          options: [{ value: "en", label: "English" }, { value: "fr", label: "French" }],
+          value: "fr",
+          open: true,
+        },
+      });
+      const activeOpts = wrapper.findAll(".st-languageSelector__option--active");
+      expect(activeOpts.length).toBe(1);
+    });
+
+    it("emits change on option click", async () => {
+      const wrapper = mount(LanguageSelector, {
+        props: {
+          options: [{ value: "en", label: "English" }],
+          open: true,
+        },
+      });
+      await wrapper.find(".st-languageSelector__option").trigger("click");
+      expect(wrapper.emitted("change")).toBeTruthy();
+    });
+
+    it("has name LanguageSelector", () => {
+      expect(LanguageSelector.name).toBe("LanguageSelector");
+    });
+  });
+
+  // --- OrderedList ---
+  describe("OrderedList", () => {
+    it("renders ol.st-orderedList", () => {
+      const wrapper = mount(OrderedList, { props: { items: ["A", "B"] } });
+      expect(wrapper.find("ol.st-orderedList").exists()).toBe(true);
+    });
+
+    it("renders items as li.st-orderedList__item", () => {
+      const wrapper = mount(OrderedList, { props: { items: ["X", "Y", "Z"] } });
+      expect(wrapper.findAll(".st-orderedList__item").length).toBe(3);
+    });
+
+    it("renders nested items", () => {
+      const wrapper = mount(OrderedList, {
+        props: {
+          items: [{ label: "Parent", children: ["Child"] }],
+        },
+      });
+      expect(wrapper.find("ol").exists()).toBe(true);
+    });
+
+    it("has name OrderedList", () => {
+      expect(OrderedList.name).toBe("OrderedList");
+    });
+  });
+
+  // --- UnorderedList ---
+  describe("UnorderedList", () => {
+    it("renders ul.st-unorderedList", () => {
+      const wrapper = mount(UnorderedList, { props: { items: ["A", "B"] } });
+      expect(wrapper.find("ul.st-unorderedList").exists()).toBe(true);
+    });
+
+    it("renders items as li.st-unorderedList__item", () => {
+      const wrapper = mount(UnorderedList, { props: { items: ["X", "Y"] } });
+      expect(wrapper.findAll(".st-unorderedList__item").length).toBe(2);
+    });
+
+    it("has name UnorderedList", () => {
+      expect(UnorderedList.name).toBe("UnorderedList");
+    });
+  });
+
+  // --- StructuredList ---
+  describe("StructuredList", () => {
+    it("renders dl.st-structuredList", () => {
+      const wrapper = mount(StructuredList, {
+        props: { items: [{ term: "Name", description: "Alice" }] },
+      });
+      expect(wrapper.find("dl.st-structuredList").exists()).toBe(true);
+    });
+
+    it("renders rows with dt and dd", () => {
+      const wrapper = mount(StructuredList, {
+        props: {
+          items: [
+            { term: "Name", description: "Alice" },
+            { label: "Role", value: "Admin" },
+          ],
+        },
+      });
+      expect(wrapper.findAll(".st-structuredList__row").length).toBe(2);
+      expect(wrapper.find(".st-structuredList__term").text()).toBe("Name");
+      expect(wrapper.find(".st-structuredList__definition").text()).toBe("Alice");
+    });
+
+    it("applies bordered modifier", () => {
+      const wrapper = mount(StructuredList, {
+        props: { items: [], bordered: true },
+      });
+      expect(wrapper.find(".st-structuredList--bordered").exists()).toBe(true);
+    });
+
+    it("has name StructuredList", () => {
+      expect(StructuredList.name).toBe("StructuredList");
+    });
+  });
+
+  // --- SideNav ---
+  describe("SideNav", () => {
+    it("renders nav.st-sideNav", () => {
+      const wrapper = mount(SideNav, {
+        props: { items: [{ label: "Home", href: "/" }] },
+      });
+      expect(wrapper.find("nav.st-sideNav").exists()).toBe(true);
+    });
+
+    it("renders nav links", () => {
+      const wrapper = mount(SideNav, {
+        props: {
+          items: [
+            { label: "Home", href: "/" },
+            { label: "About", href: "/about" },
+          ],
+        },
+      });
+      expect(wrapper.findAll("a").length).toBe(2);
+    });
+
+    it("marks active link", () => {
+      const wrapper = mount(SideNav, {
+        props: {
+          items: [{ label: "Active", href: "/active", active: true }],
+        },
+      });
+      expect(wrapper.find(".st-sideNav__link--active").exists()).toBe(true);
+    });
+
+    it("has name SideNav", () => {
+      expect(SideNav.name).toBe("SideNav");
+    });
+  });
+
+  // --- Pagination ---
+  describe("Pagination", () => {
+    it("renders nav.st-pagination", () => {
+      const wrapper = mount(Pagination, { props: { page: 1 } });
+      expect(wrapper.find("nav.st-pagination").exists()).toBe(true);
+    });
+
+    it("renders Previous and Next buttons", () => {
+      const wrapper = mount(Pagination, {
+        props: { page: 2, totalItems: 30, pageSize: 10 },
+      });
+      const buttons = wrapper.findAll("button");
+      expect(buttons[0].text()).toBe("Previous");
+      expect(buttons[buttons.length - 1].text()).toBe("Next");
+    });
+
+    it("disables Previous on first page", () => {
+      const wrapper = mount(Pagination, {
+        props: { page: 1, totalItems: 20, pageSize: 10 },
+      });
+      expect(wrapper.find("button[disabled]").text()).toBe("Previous");
+    });
+
+    it("emits pageChange on page button click", async () => {
+      const wrapper = mount(Pagination, {
+        props: { page: 1, totalItems: 20, pageSize: 10 },
+      });
+      const pageButtons = wrapper.findAll(".st-pagination__page");
+      await pageButtons[1].trigger("click");
+      expect(wrapper.emitted("pageChange")).toBeTruthy();
+    });
+
+    it("has name Pagination", () => {
+      expect(Pagination.name).toBe("Pagination");
+    });
+  });
+
+  // --- PaginationNav ---
+  describe("PaginationNav", () => {
+    it("renders nav.st-paginationNav", () => {
+      const wrapper = mount(PaginationNav);
+      expect(wrapper.find("nav.st-paginationNav").exists()).toBe(true);
+    });
+
+    it("renders page buttons", () => {
+      const wrapper = mount(PaginationNav, { props: { totalPages: 3 } });
+      expect(wrapper.findAll(".st-paginationNav__page").length).toBe(3);
+    });
+
+    it("marks current page as active", () => {
+      const wrapper = mount(PaginationNav, { props: { page: 2, totalPages: 3 } });
+      expect(wrapper.find(".st-paginationNav__page--active").text()).toBe("Page 2");
+    });
+
+    it("renders anchor when previousHref provided", () => {
+      const wrapper = mount(PaginationNav, {
+        props: { previousHref: "/prev" },
+      });
+      expect(wrapper.find("a[href='/prev']").exists()).toBe(true);
+    });
+
+    it("has name PaginationNav", () => {
+      expect(PaginationNav.name).toBe("PaginationNav");
+    });
+  });
+
+  // --- Slider ---
+  describe("Slider", () => {
+    it("renders div.st-slider with type=range input", () => {
+      const wrapper = mount(Slider);
+      expect(wrapper.find(".st-slider").exists()).toBe(true);
+      expect(wrapper.find("input[type=range]").exists()).toBe(true);
+    });
+
+    it("applies size modifier", () => {
+      const wrapper = mount(Slider, { props: { size: "sm" } });
+      expect(wrapper.find(".st-slider--sm").exists()).toBe(true);
+    });
+
+    it("renders label when provided", () => {
+      const wrapper = mount(Slider, { props: { label: "Volume" } });
+      expect(wrapper.find(".st-field__label").text()).toBe("Volume");
+    });
+
+    it("renders current value", () => {
+      const wrapper = mount(Slider, { props: { modelValue: 42 } });
+      expect(wrapper.find(".st-slider__value").text()).toBe("42");
+    });
+
+    it("emits update:modelValue on input", async () => {
+      const wrapper = mount(Slider);
+      await wrapper.find("input").setValue("75");
+      expect(wrapper.emitted("update:modelValue")).toBeTruthy();
+    });
+
+    it("has name Slider", () => {
+      expect(Slider.name).toBe("Slider");
+    });
+  });
+
+  // --- Batch 3 export surface ---
+  describe("export surface — batch 3", () => {
+    const batch3 = {
+      AspectRatio,
+      CodeSnippet,
+      CopyButton,
+      Drawer,
+      Dropdown,
+      FileUploader,
+      Footer,
+      Form,
+      FormGroup,
+      Header,
+      LanguageSelector,
+      OrderedList,
+      UnorderedList,
+      StructuredList,
+      SideNav,
+      Pagination,
+      PaginationNav,
+      Slider,
+    };
+
+    it("exports all batch 3 components", () => {
+      for (const [name, component] of Object.entries(batch3)) {
+        expect(component, `${name} should be exported`).toBeDefined();
+        expect(typeof component).toBe("object");
+      }
+    });
+
+    it("each batch 3 component has a name property matching its key", () => {
+      for (const [name, component] of Object.entries(batch3)) {
         expect(component.name, `${name}.name`).toBe(name);
       }
     });
