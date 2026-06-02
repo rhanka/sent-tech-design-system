@@ -81,10 +81,10 @@ Statut : `Couverte` = traitée par ≥1 finding ou nommée cluster source explic
 | # | Référence upstream | Cluster | Statut | Doc d'audit local |
 |---|---|---|---|---|
 | 14 | `motion-design` | D | Couverte | `ds-audit-motion.md` (P1-6 absence de motion, P2-5 reduced-motion) |
-| 15 | `animate` | D | Partielle | nommée cluster D ; pas de finding propre |
+| 15 | `animate` | D | Couverte | `ds-audit-motion.md` (P1-7 motion sur retour de zones de contenu + garde reduced-motion) |
 | 16 | `delight` | D | Partielle | nommée cluster D ; pas de finding propre |
 | 17 | `overdrive` | D | Partielle | nommée cluster D ; pas de finding propre |
-| 18 | `interaction-design` | D | Partielle | cluster source listé dans `ds-audit-motion.md` ; pas de finding interaction dédié (focus/forms/loading) |
+| 18 | `interaction-design` | D | Couverte | `ds-audit-motion.md` (P1-7 motion sur zones de contenu + retour + garde reduced-motion) |
 
 ### Cluster E — Audit / critique / polish (`docs/ds-audit-meta.md`)
 
@@ -126,12 +126,12 @@ Ces fichiers existent dans `reference/` mais ne figurent dans **aucun** des 5 cl
 
 | Statut | Nombre (sur 36 fichiers) |
 |---|---|
-| Couverte | 9 (`typography`, `ux-writing`, `color-and-contrast`, `spatial-design`, `layout`, `motion-design`, `audit`, `critique`, `polish`) |
-| Partielle | 16 lignes de référence (`typeset`, `clarify`, `colorize`, `bolder`, `quieter`, `responsive-design`, `shape`, `animate`, `delight`, `overdrive`, `interaction-design`, `harden`, `optimize`, `extract`, `distill`, `craft`), certaines recoupées |
+| Couverte | 11 (`typography`, `ux-writing`, `color-and-contrast`, `spatial-design`, `layout`, `motion-design`, `interaction-design`, `animate`, `audit`, `critique`, `polish`) |
+| Partielle | 14 lignes de référence (`typeset`, `clarify`, `colorize`, `bolder`, `quieter`, `responsive-design`, `shape`, `delight`, `overdrive`, `harden`, `optimize`, `extract`, `distill`, `craft`), certaines recoupées |
 | Non couverte | les supports/hors-cluster (`cognitive-load`, `teach`, `document`, `onboard`, `adapt`, `live`, `brand`, `product`, `heuristics-scoring`, `personas`, `codex`) |
 | À confirmer | la 37e « référence » (capacité CLI `detect`) |
 
-**Couverture réellement *prouvée par un finding local* : 9 / 36 références.** Le reste est soit « nommé comme cluster source » sans finding propre (Partielle), soit hors périmètre audit (Non couverte). Les statuts A–E à « 60–70 % » de `workpackages.md` sont donc optimistes au regard du nombre de références *individuellement* traitées.
+**Couverture réellement *prouvée par un finding local* : 11 / 36 références.** Le reste est soit « nommé comme cluster source » sans finding propre (Partielle), soit hors périmètre audit (Non couverte). Les statuts A–E à « 60–70 % » de `workpackages.md` sont donc plus prudents à l'échelle individuelle.
 
 ---
 

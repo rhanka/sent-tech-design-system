@@ -15,6 +15,65 @@
   --docs-header-control-ring: rgb(0 67 206 / 0.14);
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .docs-page {
+    animation: docs-page-enter var(--st-motion-normal, 180ms) var(--st-motion-easing, ease);
+  }
+
+  .docs-hero,
+  .docs-section {
+    animation: docs-fade-up var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
+  }
+
+  .docs-mobile-nav {
+    animation: docs-nav-slide var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@keyframes docs-page-enter {
+  from {
+    opacity: 0.98;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes docs-fade-up {
+  from {
+    opacity: 0.9;
+    transform: translateY(0.15rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes docs-nav-slide {
+  from {
+    transform: translateY(-0.2rem);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;

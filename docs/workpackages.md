@@ -190,7 +190,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 | Vue | Track | Finalite | Etat | Avancement | Detail |
 |---|---|---|---:|---:|---|
 | Fait | Audit V1/V2 | Consolider les findings DS en source exploitable | 🟢 | 100% | Audit V1, 5 rapports clusters, master V2, 27 règles actives transmises à WP8. |
-| A faire | Couverture upstream | Étendre les findings au-delà des règles statiques déjà livrées | 🟡 | 65% | `docs/ds-audit-coverage-matrix.md` prouve 36 fichiers réels, 27 règles couvertes par tests, 9/36 références avec finding local direct; le reste est partiel, hors-cluster ou non déterministe. |
+| A faire | Couverture upstream | Étendre les findings au-delà des règles statiques déjà livrées | 🟡 | 65% | `docs/ds-audit-coverage-matrix.md` prouve 36 fichiers réels, 27 règles couvertes par tests, 11/36 références avec finding local direct; le reste est partiel, hors-cluster ou non déterministe. |
 | Fait | Traçabilité | Relier `finding WP7 -> règle WP8 -> test` | 🟢 | 100% | `docs/ds-audit-coverage-matrix.md` et `docs/wp8-design-cli-traceability.md` couvrent les 27 règles + tests. |
 | Attendu | Séparation WP7/WP8 | WP7 reste le chantier audit, WP8 reste le moteur | 🟢 | 100% | Toute règle WP8 doit référencer une entrée WP7 V2. |
 
