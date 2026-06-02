@@ -24,6 +24,7 @@ import { statusIndicatorLabelRule } from "./statusIndicatorLabelRule.js";
 import { redundantUrlLabelRule } from "./redundantUrlLabelRule.js";
 import { autoFitCardGridRule } from "./autoFitCardGridRule.js";
 import { focusVisibleRingRule } from "./focusVisibleRingRule.js";
+import { viewportZoomRule } from "./viewportZoomRule.js";
 
 export const defaultRules: Rule[] = [
   singleFontRule,
@@ -50,7 +51,8 @@ export const defaultRules: Rule[] = [
   statusIndicatorLabelRule,
   redundantUrlLabelRule,
   autoFitCardGridRule,
-  focusVisibleRingRule
+  focusVisibleRingRule,
+  viewportZoomRule
 ];
 
 export {
@@ -78,5 +80,6 @@ export {
   statusIndicatorLabelRule,
   redundantUrlLabelRule,
   autoFitCardGridRule,
-  focusVisibleRingRule
+  focusVisibleRingRule,
+  viewportZoomRule
 };

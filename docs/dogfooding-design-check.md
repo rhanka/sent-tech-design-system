@@ -2,7 +2,7 @@
 
 Date : 2026-06-01  
 Branche : `main`  
-Moteur : `@sentropic/design-system-skills` local, 25 règles actives
+Moteur : `@sentropic/design-system-skills` local, 26 règles actives
 
 ## Cadrage
 
@@ -22,7 +22,7 @@ Le spot-check CLI retourne le code `0`. Sur `compare.html`, le résumé CLI est 
 | Mesure | Valeur |
 |---|---:|
 | Pages auditées | 86 |
-| Règles actives | 25 |
+| Règles actives | 26 |
 | Findings totaux | 0 |
 | High | 0 |
 | Medium | 0 |
@@ -32,7 +32,7 @@ Le spot-check CLI retourne le code `0`. Sur `compare.html`, le résumé CLI est 
 
 | Règle | Findings |
 |---|---:|
-| 25 règles actives | 0 |
+| 26 règles actives | 0 |
 
 Lecture : les deux dettes basses remontées par les nouvelles règles (`h1-inline-badge`, `status-indicator-label`) restent à 0 sur le build docs, les faux positifs `line-length-cap` sont fermés par la lecture des stylesheets liés locaux, `no-em-dash` ne duplique plus les ancêtres des nœuds de texte fautifs, `no-bare-hex` ignore les déclarations/fallbacks tokenisés (`--*`, `var(...)`) et `single-font` ignore `@font-face` tout en lisant les stylesheets liés locaux. La dette éditoriale `no-em-dash` détectée sur 60 occurrences est corrigée dans les pages docs et le build package Svelte consommé par la doc.
 
@@ -50,7 +50,7 @@ Lecture : les deux dettes basses remontées par les nouvelles règles (`h1-inlin
 
 ## Synthèse opérationnelle
 
-- WP8 est maintenant au palier demandé : 25 règles actives, avec traçabilité `rule -> principle -> finding WP7`.
+- WP8 est maintenant au palier demandé : 26 règles actives, avec traçabilité `rule -> principle -> finding WP7`.
 - WP11 dogfooding confirme que le ruleset s'exécute sur le vrai build docs, produit des findings exploitables, puis valide leur fermeture.
 - Les dettes `h1-inline-badge`, `status-indicator-label` et `line-length-cap` sont corrigées sur le build docs et restent couvertes par fixtures dédiées.
 - `no-em-dash` signale maintenant uniquement les éléments propriétaires d'un texte direct fautif et ignore `script/style`; le total dogfooding passe de 580 à 231 findings sans masquer la dette éditoriale réelle.
