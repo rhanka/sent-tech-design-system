@@ -24,7 +24,22 @@ export type ComponentName =
   | "Checkbox"
   | "Radio"
   | "Alert"
-  | "Tag";
+  | "Tag"
+  | "Select"
+  | "Textarea"
+  | "Toggle"
+  | "Switch"
+  | "Link"
+  | "Breadcrumb"
+  | "Tooltip"
+  | "ProgressBar"
+  | "Pagination"
+  | "IconButton"
+  | "NumberInput"
+  | "Search"
+  | "Tabs"
+  | "Accordion"
+  | "Slider";
 
 export interface ComponentNodeSpec {
   comp: ComponentName;
@@ -510,6 +525,859 @@ import { Tag } from "@sentropic/design-system-vue";
   <Tag tone="warning">Warning</Tag>
   <Tag tone="error">Error</Tag>
   <Tag tone="info">Info</Tag>
+</template>`
+    }
+  },
+
+  select: {
+    id: "select",
+    slug: "select",
+    nodes: [
+      wrap([
+        {
+          comp: "Select",
+          props: {
+            label: "Environnement",
+            options: [
+              { value: "prod", label: "Production" },
+              { value: "staging", label: "Staging" },
+              { value: "dev", label: "Développement" }
+            ]
+          }
+        },
+        {
+          comp: "Select",
+          props: {
+            label: "Région",
+            helperText: "Choisissez la région la plus proche.",
+            options: [
+              { value: "ca-qc", label: "Canada — Québec" },
+              { value: "ca-on", label: "Canada — Ontario" },
+              { value: "us-east", label: "États-Unis — Est" }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { Select } from "@sentropic/design-system-svelte";
+</script>
+
+<Select
+  label="Environnement"
+  options={[
+    { value: "prod", label: "Production" },
+    { value: "staging", label: "Staging" },
+    { value: "dev", label: "Développement" }
+  ]}
+/>
+<Select
+  label="Région"
+  helperText="Choisissez la région la plus proche."
+  options={[
+    { value: "ca-qc", label: "Canada — Québec" },
+    { value: "ca-on", label: "Canada — Ontario" },
+    { value: "us-east", label: "États-Unis — Est" }
+  ]}
+/>`,
+      react: `import { Select } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <Select
+        label="Environnement"
+        options={[
+          { value: "prod", label: "Production" },
+          { value: "staging", label: "Staging" },
+          { value: "dev", label: "Développement" }
+        ]}
+      />
+      <Select
+        label="Région"
+        helperText="Choisissez la région la plus proche."
+        options={[
+          { value: "ca-qc", label: "Canada — Québec" },
+          { value: "ca-on", label: "Canada — Ontario" },
+          { value: "us-east", label: "États-Unis — Est" }
+        ]}
+      />
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { Select } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Select
+    label="Environnement"
+    :options="[
+      { value: 'prod', label: 'Production' },
+      { value: 'staging', label: 'Staging' },
+      { value: 'dev', label: 'Développement' }
+    ]"
+  />
+  <Select
+    label="Région"
+    helperText="Choisissez la région la plus proche."
+    :options="[
+      { value: 'ca-qc', label: 'Canada — Québec' },
+      { value: 'ca-on', label: 'Canada — Ontario' },
+      { value: 'us-east', label: 'États-Unis — Est' }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  textarea: {
+    id: "textarea",
+    slug: "textarea",
+    nodes: [
+      wrap([
+        {
+          comp: "Textarea",
+          props: {
+            label: "Description du projet",
+            placeholder: "Décrivez votre projet en quelques phrases…",
+            rows: 4
+          }
+        },
+        {
+          comp: "Textarea",
+          props: {
+            label: "Message d'erreur",
+            errorText: "Ce champ est obligatoire.",
+            invalid: true,
+            rows: 3
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { Textarea } from "@sentropic/design-system-svelte";
+</script>
+
+<Textarea
+  label="Description du projet"
+  placeholder="Décrivez votre projet en quelques phrases…"
+  rows={4}
+/>
+<Textarea
+  label="Message d'erreur"
+  errorText="Ce champ est obligatoire."
+  invalid
+  rows={3}
+/>`,
+      react: `import { Textarea } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <Textarea
+        label="Description du projet"
+        placeholder="Décrivez votre projet en quelques phrases…"
+        rows={4}
+      />
+      <Textarea
+        label="Message d'erreur"
+        errorText="Ce champ est obligatoire."
+        invalid
+        rows={3}
+      />
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { Textarea } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Textarea
+    label="Description du projet"
+    placeholder="Décrivez votre projet en quelques phrases…"
+    :rows="4"
+  />
+  <Textarea
+    label="Message d'erreur"
+    errorText="Ce champ est obligatoire."
+    invalid
+    :rows="3"
+  />
+</template>`
+    }
+  },
+
+  toggle: {
+    id: "toggle",
+    slug: "toggle",
+    nodes: [
+      wrap([
+        { comp: "Toggle", props: { label: "Mode sombre" } },
+        { comp: "Toggle", props: { label: "Notifications push", defaultChecked: true } },
+        {
+          comp: "Toggle",
+          props: {
+            label: "Synchronisation automatique",
+            helperText: "Synchronise toutes les 5 minutes.",
+            defaultChecked: true
+          }
+        },
+        { comp: "Toggle", props: { label: "Fonctionnalité bêta", disabled: true } }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { Toggle } from "@sentropic/design-system-svelte";
+</script>
+
+<Toggle label="Mode sombre" />
+<Toggle label="Notifications push" checked />
+<Toggle label="Synchronisation automatique" helperText="Synchronise toutes les 5 minutes." checked />
+<Toggle label="Fonctionnalité bêta" disabled />`,
+      react: `import { Toggle } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <Toggle label="Mode sombre" />
+      <Toggle label="Notifications push" defaultChecked />
+      <Toggle label="Synchronisation automatique" helperText="Synchronise toutes les 5 minutes." defaultChecked />
+      <Toggle label="Fonctionnalité bêta" disabled />
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { Toggle } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Toggle label="Mode sombre" />
+  <Toggle label="Notifications push" :checked="true" />
+  <Toggle label="Synchronisation automatique" helperText="Synchronise toutes les 5 minutes." :checked="true" />
+  <Toggle label="Fonctionnalité bêta" disabled />
+</template>`
+    }
+  },
+
+  switch: {
+    id: "switch",
+    slug: "switch",
+    nodes: [
+      wrap([
+        { comp: "Switch", props: { label: "Activer le service" } },
+        { comp: "Switch", props: { label: "Accès public", defaultChecked: true } },
+        {
+          comp: "Switch",
+          props: {
+            label: "Journal d'audit",
+            helperText: "Enregistre toutes les actions utilisateurs.",
+            defaultChecked: true
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { Switch } from "@sentropic/design-system-svelte";
+</script>
+
+<Switch label="Activer le service" />
+<Switch label="Accès public" checked />
+<Switch label="Journal d'audit" helperText="Enregistre toutes les actions utilisateurs." checked />`,
+      react: `import { Switch } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <Switch label="Activer le service" />
+      <Switch label="Accès public" defaultChecked />
+      <Switch label="Journal d'audit" helperText="Enregistre toutes les actions utilisateurs." defaultChecked />
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { Switch } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Switch label="Activer le service" />
+  <Switch label="Accès public" :checked="true" />
+  <Switch label="Journal d'audit" helperText="Enregistre toutes les actions utilisateurs." :checked="true" />
+</template>`
+    }
+  },
+
+  link: {
+    id: "link",
+    slug: "link",
+    nodes: [
+      wrap([
+        { comp: "Link", props: { href: "#" }, children: ["Lien standard"] },
+        { comp: "Link", props: { href: "#", standalone: true }, children: ["Lien autonome"] },
+        { comp: "Link", props: { href: "#", muted: true }, children: ["Lien discret"] },
+        { comp: "Link", props: { href: "#", disabled: true }, children: ["Lien désactivé"] }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { Link } from "@sentropic/design-system-svelte";
+</script>
+
+<Link href="#">Lien standard</Link>
+<Link href="#" standalone>Lien autonome</Link>
+<Link href="#" muted>Lien discret</Link>
+<Link href="#" disabled>Lien désactivé</Link>`,
+      react: `import { Link } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <Link href="#">Lien standard</Link>
+      <Link href="#" standalone>Lien autonome</Link>
+      <Link href="#" muted>Lien discret</Link>
+      <Link href="#" disabled>Lien désactivé</Link>
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { Link } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Link href="#">Lien standard</Link>
+  <Link href="#" standalone>Lien autonome</Link>
+  <Link href="#" muted>Lien discret</Link>
+  <Link href="#" disabled>Lien désactivé</Link>
+</template>`
+    }
+  },
+
+  breadcrumb: {
+    id: "breadcrumb",
+    slug: "breadcrumb",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "Breadcrumb",
+            props: {
+              items: [
+                { label: "Accueil", href: "/" },
+                { label: "Composants", href: "/components" },
+                { label: "Breadcrumb", current: true }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { Breadcrumb } from "@sentropic/design-system-svelte";
+</script>
+
+<Breadcrumb
+  items={[
+    { label: "Accueil", href: "/" },
+    { label: "Composants", href: "/components" },
+    { label: "Breadcrumb", current: true }
+  ]}
+/>`,
+      react: `import { Breadcrumb } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <Breadcrumb
+      items={[
+        { label: "Accueil", href: "/" },
+        { label: "Composants", href: "/components" },
+        { label: "Breadcrumb", current: true }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { Breadcrumb } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Breadcrumb
+    :items="[
+      { label: 'Accueil', href: '/' },
+      { label: 'Composants', href: '/components' },
+      { label: 'Breadcrumb', current: true }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  tooltip: {
+    id: "tooltip",
+    slug: "tooltip",
+    nodes: [
+      wrap([
+        {
+          comp: "Tooltip",
+          props: { content: "Créer un nouvel espace de travail" },
+          children: [{ comp: "Button", props: { variant: "secondary" }, children: ["Nouveau"] }]
+        },
+        {
+          comp: "Tooltip",
+          props: { content: "Cette action est irréversible", placement: "bottom" },
+          children: [{ comp: "Button", props: { variant: "danger" }, children: ["Supprimer"] }]
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { Tooltip, Button } from "@sentropic/design-system-svelte";
+</script>
+
+<Tooltip content="Créer un nouvel espace de travail">
+  <Button variant="secondary">Nouveau</Button>
+</Tooltip>
+<Tooltip content="Cette action est irréversible" placement="bottom">
+  <Button variant="danger">Supprimer</Button>
+</Tooltip>`,
+      react: `import { Tooltip, Button } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <Tooltip content="Créer un nouvel espace de travail">
+        <Button variant="secondary">Nouveau</Button>
+      </Tooltip>
+      <Tooltip content="Cette action est irréversible" placement="bottom">
+        <Button variant="danger">Supprimer</Button>
+      </Tooltip>
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { Tooltip, Button } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Tooltip content="Créer un nouvel espace de travail">
+    <Button variant="secondary">Nouveau</Button>
+  </Tooltip>
+  <Tooltip content="Cette action est irréversible" placement="bottom">
+    <Button variant="danger">Supprimer</Button>
+  </Tooltip>
+</template>`
+    }
+  },
+
+  progressbar: {
+    id: "progressbar",
+    slug: "progress-bar",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          { comp: "ProgressBar", props: { label: "Téléchargement", value: 65 } },
+          { comp: "ProgressBar", props: { label: "Déploiement", value: 100, tone: "success" } },
+          { comp: "ProgressBar", props: { label: "Quota disque", value: 82, tone: "warning" } },
+          { comp: "ProgressBar", props: { label: "Chargement…", indeterminate: true } }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { ProgressBar } from "@sentropic/design-system-svelte";
+</script>
+
+<ProgressBar label="Téléchargement" value={65} />
+<ProgressBar label="Déploiement" value={100} tone="success" />
+<ProgressBar label="Quota disque" value={82} tone="warning" />
+<ProgressBar label="Chargement…" indeterminate />`,
+      react: `import { ProgressBar } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <ProgressBar label="Téléchargement" value={65} />
+      <ProgressBar label="Déploiement" value={100} tone="success" />
+      <ProgressBar label="Quota disque" value={82} tone="warning" />
+      <ProgressBar label="Chargement…" indeterminate />
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { ProgressBar } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <ProgressBar label="Téléchargement" :value="65" />
+  <ProgressBar label="Déploiement" :value="100" tone="success" />
+  <ProgressBar label="Quota disque" :value="82" tone="warning" />
+  <ProgressBar label="Chargement…" :indeterminate="true" />
+</template>`
+    }
+  },
+
+  pagination: {
+    id: "pagination",
+    slug: "pagination",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          { comp: "Pagination", props: { page: 3, totalItems: 120, pageSize: 10 } }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { Pagination } from "@sentropic/design-system-svelte";
+  let page = 3;
+</script>
+
+<Pagination {page} totalItems={120} pageSize={10} onPageChange={(p) => page = p} />`,
+      react: `import { useState } from "react";
+import { Pagination } from "@sentropic/design-system-react";
+
+export function Demo() {
+  const [page, setPage] = useState(3);
+  return <Pagination page={page} totalItems={120} pageSize={10} onPageChange={setPage} />;
+}`,
+      vue: `<script setup>
+import { ref } from "vue";
+import { Pagination } from "@sentropic/design-system-vue";
+const page = ref(3);
+</script>
+
+<template>
+  <Pagination :page="page" :totalItems="120" :pageSize="10" @pageChange="p => page = p" />
+</template>`
+    }
+  },
+
+  iconbutton: {
+    id: "iconbutton",
+    slug: "icon-button",
+    nodes: [
+      wrap([
+        { comp: "IconButton", props: { "aria-label": "Copier", variant: "secondary" }, children: ["⧉"] },
+        { comp: "IconButton", props: { "aria-label": "Modifier", variant: "ghost" }, children: ["✎"] },
+        { comp: "IconButton", props: { "aria-label": "Supprimer", variant: "danger" }, children: ["✕"] },
+        { comp: "IconButton", props: { "aria-label": "Ajouter", disabled: true }, children: ["＋"] }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { IconButton } from "@sentropic/design-system-svelte";
+</script>
+
+<IconButton aria-label="Copier" variant="secondary">⧉</IconButton>
+<IconButton aria-label="Modifier" variant="ghost">✎</IconButton>
+<IconButton aria-label="Supprimer" variant="danger">✕</IconButton>
+<IconButton aria-label="Ajouter" disabled>＋</IconButton>`,
+      react: `import { IconButton } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <IconButton aria-label="Copier" variant="secondary">⧉</IconButton>
+      <IconButton aria-label="Modifier" variant="ghost">✎</IconButton>
+      <IconButton aria-label="Supprimer" variant="danger">✕</IconButton>
+      <IconButton aria-label="Ajouter" disabled>＋</IconButton>
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { IconButton } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <IconButton aria-label="Copier" variant="secondary">⧉</IconButton>
+  <IconButton aria-label="Modifier" variant="ghost">✎</IconButton>
+  <IconButton aria-label="Supprimer" variant="danger">✕</IconButton>
+  <IconButton aria-label="Ajouter" disabled>＋</IconButton>
+</template>`
+    }
+  },
+
+  numberinput: {
+    id: "numberinput",
+    slug: "number-input",
+    nodes: [
+      wrap([
+        {
+          comp: "NumberInput",
+          props: { label: "Nombre de réplicas", defaultValue: 3, min: 1, max: 10 }
+        },
+        {
+          comp: "NumberInput",
+          props: {
+            label: "Délai d'expiration (s)",
+            defaultValue: 30,
+            helperText: "Entre 1 et 3600 secondes.",
+            min: 1,
+            max: 3600
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { NumberInput } from "@sentropic/design-system-svelte";
+</script>
+
+<NumberInput label="Nombre de réplicas" value={3} min={1} max={10} />
+<NumberInput label="Délai d'expiration (s)" value={30} helperText="Entre 1 et 3600 secondes." min={1} max={3600} />`,
+      react: `import { NumberInput } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <NumberInput label="Nombre de réplicas" defaultValue={3} min={1} max={10} />
+      <NumberInput label="Délai d'expiration (s)" defaultValue={30} helperText="Entre 1 et 3600 secondes." min={1} max={3600} />
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { NumberInput } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <NumberInput label="Nombre de réplicas" :modelValue="3" :min="1" :max="10" />
+  <NumberInput label="Délai d'expiration (s)" :modelValue="30" helperText="Entre 1 et 3600 secondes." :min="1" :max="3600" />
+</template>`
+    }
+  },
+
+  search: {
+    id: "search",
+    slug: "search",
+    nodes: [
+      wrap([
+        {
+          comp: "Search",
+          props: { label: "Rechercher", placeholder: "Rechercher un composant…" }
+        },
+        {
+          comp: "Search",
+          props: { label: "Filtrer", placeholder: "Filtrer par nom…", size: "sm" }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { Search } from "@sentropic/design-system-svelte";
+</script>
+
+<Search label="Rechercher" placeholder="Rechercher un composant…" />
+<Search label="Filtrer" placeholder="Filtrer par nom…" size="sm" />`,
+      react: `import { Search } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <Search label="Rechercher" placeholder="Rechercher un composant…" />
+      <Search label="Filtrer" placeholder="Filtrer par nom…" size="sm" />
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { Search } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Search label="Rechercher" placeholder="Rechercher un composant…" />
+  <Search label="Filtrer" placeholder="Filtrer par nom…" size="sm" />
+</template>`
+    }
+  },
+
+  tabs: {
+    id: "tabs",
+    slug: "tabs",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "Tabs",
+            props: {
+              items: [
+                { id: "overview", label: "Vue d'ensemble", content: "Contenu de la vue d'ensemble." },
+                { id: "settings", label: "Paramètres", content: "Contenu des paramètres." },
+                { id: "logs", label: "Journaux", content: "Contenu des journaux.", disabled: false }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { Tabs } from "@sentropic/design-system-svelte";
+</script>
+
+<Tabs
+  items={[
+    { id: "overview", label: "Vue d'ensemble", content: "Contenu de la vue d'ensemble." },
+    { id: "settings", label: "Paramètres", content: "Contenu des paramètres." },
+    { id: "logs", label: "Journaux", content: "Contenu des journaux." }
+  ]}
+/>`,
+      react: `import { Tabs } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <Tabs
+      items={[
+        { id: "overview", label: "Vue d'ensemble", content: "Contenu de la vue d'ensemble." },
+        { id: "settings", label: "Paramètres", content: "Contenu des paramètres." },
+        { id: "logs", label: "Journaux", content: "Contenu des journaux." }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { Tabs } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Tabs
+    :items="[
+      { id: 'overview', label: 'Vue d\\'ensemble', content: 'Contenu de la vue d\\'ensemble.' },
+      { id: 'settings', label: 'Paramètres', content: 'Contenu des paramètres.' },
+      { id: 'logs', label: 'Journaux', content: 'Contenu des journaux.' }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  accordion: {
+    id: "accordion",
+    slug: "accordion",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "Accordion",
+            props: {
+              items: [
+                {
+                  id: "install",
+                  title: "Installation",
+                  content: "Installez le paquet via npm install @sentropic/design-system."
+                },
+                {
+                  id: "usage",
+                  title: "Utilisation",
+                  content: "Importez les composants depuis le package correspondant à votre framework."
+                },
+                {
+                  id: "theming",
+                  title: "Thématisation",
+                  content: "Enveloppez votre application dans ThemeProvider pour personnaliser le thème."
+                }
+              ],
+              defaultOpenIds: ["install"]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { Accordion } from "@sentropic/design-system-svelte";
+</script>
+
+<Accordion
+  items={[
+    { id: "install", title: "Installation", content: "Installez le paquet via npm install." },
+    { id: "usage", title: "Utilisation", content: "Importez les composants depuis le package." },
+    { id: "theming", title: "Thématisation", content: "Enveloppez dans ThemeProvider." }
+  ]}
+  defaultOpenIds={["install"]}
+/>`,
+      react: `import { Accordion } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <Accordion
+      items={[
+        { id: "install", title: "Installation", content: "Installez le paquet via npm install." },
+        { id: "usage", title: "Utilisation", content: "Importez les composants depuis le package." },
+        { id: "theming", title: "Thématisation", content: "Enveloppez dans ThemeProvider." }
+      ]}
+      defaultOpenIds={["install"]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { Accordion } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Accordion
+    :items="[
+      { id: 'install', title: 'Installation', content: 'Installez le paquet via npm install.' },
+      { id: 'usage', title: 'Utilisation', content: 'Importez les composants depuis le package.' },
+      { id: 'theming', title: 'Thématisation', content: 'Enveloppez dans ThemeProvider.' }
+    ]"
+    :defaultOpenIds="['install']"
+  />
+</template>`
+    }
+  },
+
+  slider: {
+    id: "slider",
+    slug: "slider",
+    nodes: [
+      wrap([
+        {
+          comp: "Slider",
+          props: { label: "Volume", defaultValue: 70, min: 0, max: 100 }
+        },
+        {
+          comp: "Slider",
+          props: { label: "Délai (ms)", defaultValue: 250, min: 0, max: 1000 }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { Slider } from "@sentropic/design-system-svelte";
+</script>
+
+<Slider label="Volume" value={70} min={0} max={100} />
+<Slider label="Délai (ms)" value={250} min={0} max={1000} />`,
+      react: `import { Slider } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <Slider label="Volume" defaultValue={70} min={0} max={100} />
+      <Slider label="Délai (ms)" defaultValue={250} min={0} max={1000} />
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { Slider } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Slider label="Volume" :modelValue="70" :min="0" :max="100" />
+  <Slider label="Délai (ms)" :modelValue="250" :min="0" :max="1000" />
 </template>`
     }
   }
