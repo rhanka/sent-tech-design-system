@@ -35,6 +35,7 @@ const PHASE2_COMPONENTS = [
   "Header",
   "Notification",
   "IconButton",
+  "TableOfContents",
   "Menu",
   "Textarea",
   "Pagination",
