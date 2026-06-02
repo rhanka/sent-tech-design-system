@@ -75,14 +75,9 @@
   <!-- ── HEADER Carbon ────────────────────────────────────────────────── -->
   <header class="cbn-header" aria-label="Carbon Design System">
     <div class="cbn-header__leading">
-      <a class="cbn-header__brand" href="/" aria-label="Carbon Design System accueil">
-        <img
-          class="cbn-header__logo-icon"
-          src="/chrome/carbon/logo.svg"
-          alt=""
-          height="28"
-          aria-hidden="true"
-        />
+      <a class="cbn-header__brand" href="/">
+        <!-- Carbon n'affiche aucun logo : juste le wordmark texte (cf. carbondesignsystem.com) -->
+        <span class="cbn-header__brand-name">Carbon Design System</span>
       </a>
     </div>
 
@@ -273,8 +268,12 @@
     text-decoration: none;
   }
 
-  .cbn-header__logo-icon {
+  .cbn-header__brand-name {
+    color: var(--cbn-white);
     flex: 0 0 auto;
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
   }
 
   .cbn-header__nav {

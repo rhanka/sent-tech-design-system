@@ -82,9 +82,10 @@ describe("docs themed chrome contract", () => {
     expect(layoutSource).toContain('class="docs-shell"');
   });
 
-  it("documents carbon chrome structure and brand asset", () => {
+  it("documents carbon chrome structure without a brand logo (Carbon ships none)", () => {
     expect(carbonChromeSource).toContain('class="cbn-shell"');
-    expect(carbonChromeSource).toContain('src="/chrome/carbon/logo.svg"');
+    expect(carbonChromeSource).not.toContain('src="/chrome/carbon/logo.svg"');
+    expect(carbonChromeSource).toContain('class="cbn-header__brand-name">Carbon Design System');
     expect(carbonChromeSource).toContain("class=\"cbn-header\"");
     expect(carbonChromeSource).toContain("class=\"cbn-sidebar\"");
     expect(carbonChromeSource).toContain('href="https://www.carbondesignsystem.com/search/"');
