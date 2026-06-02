@@ -139,7 +139,7 @@ Ces fichiers existent dans `reference/` mais ne figurent dans **aucun** des 5 cl
 
 ### Règles réellement présentes dans le code
 
-Source : `packages/skills/src/rules/index.ts` (`defaultRules`) et les fichiers `src/rules/*.ts`. **26 règles actives** en WP8, chacune reliée dans le code à un principe `design` et à un finding WP7 via `Rule.principle` / `Rule.wp7Finding`. *(Note : le moteur vit dans `packages/skills`, pas `packages/impeccable` — ancien chemin corrigé.)*
+Source : `packages/skills/src/rules/index.ts` (`defaultRules`) et les fichiers `src/rules/*.ts`. **27 règles actives** en WP8, chacune reliée dans le code à un principe `design` et à un finding WP7 via `Rule.principle` / `Rule.wp7Finding`. *(Note : le moteur vit dans `packages/skills`, pas `packages/impeccable` — ancien chemin corrigé.)*
 
 | `ruleId` (exact) | Export (nom de code) | Fichier source |
 |---|---|---|
@@ -169,12 +169,13 @@ Source : `packages/skills/src/rules/index.ts` (`defaultRules`) et les fichiers `
 | `auto-fit-card-grid` | `autoFitCardGridRule` | `src/rules/autoFitCardGridRule.ts` |
 | `focus-visible-ring` | `focusVisibleRingRule` | `src/rules/focusVisibleRingRule.ts` |
 | `viewport-zoom` | `viewportZoomRule` | `src/rules/viewportZoomRule.ts` |
+| `missing-dark-mode` | `darkModeRule` | `src/rules/darkModeRule.ts` |
 
 ### Table de traçabilité
 
 Finding = entrée priorisée de `docs/ds-audit-consolidated-v2.md` (et son ID cluster dans `ds-audit-report.md` / docs cluster). Test = présence dans `packages/skills/test-fixtures/skills.test.js`.
 
-> **Mise à jour WP8** : les 26 règles actives ont une couverture directe via `audit()` (positif + négatif pour les règles comportementales) et le test de garde vérifie aussi `defaultRules.length === 26` plus la présence de `principle` / `wp7Finding`.
+> **Mise à jour WP8** : les 27 règles actives ont une couverture directe via `audit()` (positif + négatif pour les règles comportementales) et le test de garde vérifie aussi `defaultRules.length === 27` plus la présence de `principle` / `wp7Finding`.
 
 | Finding WP7 (consolidated-v2 / cluster) | Règle WP8 (`ruleId`) | Test couvrant la règle | Statut test |
 |---|---|---|---|
@@ -204,14 +205,12 @@ Finding = entrée priorisée de `docs/ds-audit-consolidated-v2.md` (et son ID cl
 | P0-3 monotonie des grilles de cartes | `auto-fit-card-grid` | test positif (`repeat(auto-fit,minmax(...))`) + négatif (token layout) | **Couvert** |
 | P1-2 cible/affordance interactive insuffisante | `focus-visible-ring` | test positif (`outline:none` sans focus-visible) + négatif (focus ring tokenisé) | **Couvert** |
 | P2-1 zoom utilisateur restreint (cluster B) | `viewport-zoom` | test positif (`user-scalable=no` et `maximum-scale<2`) + négatif (`initial-scale`, `max-scale=2`) | **Couvert** |
+| P2-1 dark-mode absent (cluster B) | `missing-dark-mode` | test positif (styles colorés sans media-query `prefers-color-scheme`) + négatif (présence d’un media-query `prefers-color-scheme: dark`) | **Couvert** |
 
 ### Findings priorisés restant SANS règle implémentée
 
 Issus de la liste opérationnelle de `consolidated-v2.md` et des findings P2 :
-
-| Finding / règle planifiée | État dans le code |
-|---|---|
-| P2-1 dark-mode absent (cluster B) | **Aucune règle** : nécessite une preuve de thème runtime ou un contrat de démo, pas un scan HTML statique seul |
+Aucune entrée sans règle restante après clôture WP7→WP8.
 
 ### Findings du scan déterministe NON couverts par règle (limites connues)
 
@@ -227,15 +226,15 @@ D'après `consolidated-v2.md` § « Alignement avec known-issues » :
 27 des 36 fichiers de référence ne sont **pas** traités par un finding propre : toutes les références marquées `Partielle` (nommées cluster source mais sans finding) et toutes les `Non couverte` (supports/registres : `cognitive-load`, `teach`, `document`, `onboard`, `adapt`, `live`, `brand`, `product`, `heuristics-scoring`, `personas`, `codex`).
 
 ### Findings sans règle
-Les principaux P0/P1 issus de WP7 et les P2 éditoriaux exploitables en statique ont désormais une règle déterministe dans `packages/skills`. Les manques restants sont surtout non déterministes en statique : dark-mode absent, `OverflowMenu` z-index trop bas et conflit Drawer/menu close.
+Les principaux P0/P1 issus de WP7 et les P2 éditoriaux exploitables en statique ont désormais une règle déterministe dans `packages/skills`. Les manques restants sont surtout non déterministes en statique : `OverflowMenu` z-index trop bas et conflit Drawer/menu close.
 
 ### Règles sans test — RÉSOLU
-**26/26 règles couvertes**. Les règles WP8 ajoutées
+**27/27 règles couvertes**. Les règles WP8 ajoutées
 (`cramped-padding`, `motion-subtle`, `padding-scale-token`, `rail-vs-radius-consistency`,
 `grid-variance`, `contrast-token-pair`, `typography-scale-token`, `no-pure-black-white`,
 `raw-color-value`, `font-family-token`, `display-body-font-pair`, `line-length-max-width`,
 `h1-inline-badge`, `status-indicator-label`, `redundant-url-label`, `auto-fit-card-grid`,
-`focus-visible-ring`, `viewport-zoom`) ont chacune reçu un test positif + négatif via `audit()` dans
+`focus-visible-ring`, `viewport-zoom`, `missing-dark-mode`) ont chacune reçu un test positif + négatif via `audit()` dans
 `packages/skills/test-fixtures/skills.test.js`. Le test de garde vérifie aussi la traçabilité
 `principle` / `wp7Finding` de chaque règle.
 

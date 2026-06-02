@@ -10,6 +10,7 @@ import InlineLoading from "./lib/InlineLoading.svelte";
 import Modal from "./lib/Modal.svelte";
 import OverflowMenu from "./lib/OverflowMenu.svelte";
 import ProgressBar from "./lib/ProgressBar.svelte";
+import Notification from "./lib/Notification.svelte";
 import SkeletonText from "./lib/SkeletonText.svelte";
 import Tag from "./lib/Tag.svelte";
 import Toast from "./lib/Toast.svelte";
@@ -169,6 +170,34 @@ describe("overlay and feedback components", () => {
     render(ProgressBar, { props: { label: "Loading", indeterminate: true } });
     const bar = screen.getByRole("progressbar", { name: "Loading" });
     expect(bar.getAttribute("aria-valuenow")).toBeNull();
+  });
+
+  it("renders inline Notification with role and optional children", () => {
+    const extra = createRawSnippet(() => ({ render: () => "<strong>Retry now</strong>" }));
+    render(Notification, {
+      props: {
+        tone: "warning",
+        title: "Check details",
+        message: "Some fields are missing",
+        children: extra
+      }
+    });
+    expect(screen.getByRole("status").textContent).toContain("Check details");
+    expect(screen.getByText("Retry now")).toBeTruthy();
+  });
+
+  it("fires onDismiss when Notification close button is clicked", async () => {
+    const onDismiss = vi.fn();
+    render(Notification, {
+      props: {
+        tone: "error",
+        title: "Upload failed",
+        dismissible: true,
+        onDismiss
+      }
+    });
+    await fireEvent.click(screen.getByRole("button", { name: "Dismiss" }));
+    expect(onDismiss).toHaveBeenCalledTimes(1);
   });
 
   it("CopyButton writes to clipboard and switches to copied label", async () => {

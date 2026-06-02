@@ -114,7 +114,7 @@
     }
   },
   "implementationTargets": [
-    "apps/docs/src/lib/chrome/ChromeDsfr.svelte logo placeholder",
-    "apps/docs/static/chrome/dsfr/logo-rf.svg placeholder"
+    "apps/docs/src/lib/chrome/ChromeDsfr.svelte",
+    "apps/docs/static/chrome/dsfr/logo-rf.svg"
   ]
 }

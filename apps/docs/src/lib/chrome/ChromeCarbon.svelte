@@ -76,16 +76,13 @@
   <header class="cbn-header" aria-label="Carbon Design System">
     <div class="cbn-header__leading">
       <a class="cbn-header__brand" href="/" aria-label="Carbon Design System accueil">
-        <!--
-          LOGO Carbon — placeholder SVG.
-          Remplacer par <img src="/chrome/carbon/logo.svg" alt="" aria-hidden="true" height="20" />
-          une fois le wordmark officiel Carbon/IBM fourni.
-        -->
-        <svg class="cbn-header__logo-icon" viewBox="0 0 18 24" width="18" height="24" aria-hidden="true" fill="white">
-          <path d="M3 22 C3 14 9 10 9 4 C13 8 15 14 11 22 Z" opacity="0.9"/>
-          <path d="M9 22 C9 16 13 12 12 6 C16 10 17 16 14 22 Z" opacity="0.65"/>
-        </svg>
-        <span class="cbn-header__brand-text">Carbon Design System</span>
+        <img
+          class="cbn-header__logo-icon"
+          src="/chrome/carbon/logo.svg"
+          alt=""
+          height="28"
+          aria-hidden="true"
+        />
       </a>
     </div>
 
@@ -105,13 +102,13 @@
       {@render themeSwitcher()}
       {@render localeSwitcher()}
 
-      <!-- Icône recherche (placeholder fonctionnel : pointe vers GitHub) -->
-      <button type="button" class="cbn-header__icon-btn" aria-label="Rechercher" title="Rechercher (placeholder)">
+      <!-- Icône recherche (wire-up réel en attente) -->
+      <button type="button" class="cbn-header__icon-btn" aria-label="Rechercher" title="Rechercher">
         <Search size={16} strokeWidth={1.8} aria-hidden="true" />
       </button>
 
-      <!-- Icône grille 3×3 (menu produits IBM — placeholder) -->
-      <button type="button" class="cbn-header__icon-btn" aria-label="Menu applications IBM" title="Applications (placeholder)">
+      <!-- Icône grille 3×3 (liste d'outils; endpoint IBM réel à connecter) -->
+      <button type="button" class="cbn-header__icon-btn" aria-label="Menu applications IBM" title="Applications">
         <Grid3x3 size={16} strokeWidth={1.8} aria-hidden="true" />
       </button>
 
@@ -266,12 +263,6 @@
 
   .cbn-header__logo-icon {
     flex: 0 0 auto;
-  }
-
-  .cbn-header__brand-text {
-    font-size: 0.875rem;
-    font-weight: 400;
-    letter-spacing: 0.01em;
   }
 
   .cbn-header__nav {
