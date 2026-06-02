@@ -193,8 +193,8 @@ Réservée au non-tokenisable (pseudo-éléments, techniques, comportements).
 
 | Composant | Anatomie consommée | Vérif rendu | Statut |
 |-----------|--------------------|-------------|--------|
-| **Switch** | focus (stratégie, sur `__track`) | mêmes vars focus prouvées (boîte-champ) | 🟢 focus |
-| **Toggle** | focus (stratégie, sur `__track`) | mêmes vars focus prouvées (boîte-champ) | 🟢 focus |
+| **Switch** | focus (stratégie, sur `__track`) + hover (`control.hoverBackground` sur off) | mêmes vars focus + token d'hover partagées | 🟢 |
+| **Toggle** | focus (stratégie, sur `__track`) + hover (`control.hoverBackground` sur off) | mêmes vars focus + token d'hover partagées | 🟢 |
 | **Checkbox** | `accent-color` = `selection.checkedBackground` | base oklch → #0f62fe injecté ✅ | 🟡 natif |
 | **Radio** | `accent-color` = `selection.checkedBackground` | (même classe `.st-choice__input`) | 🟡 natif |
 

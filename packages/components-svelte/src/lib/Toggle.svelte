@@ -106,6 +106,10 @@
     background: var(--st-component-selection-switchTrackChecked, var(--st-semantic-action-primary));
   }
 
+  .st-toggle__input:not(:disabled):not(:checked):hover + .st-toggle__track {
+    background: var(--st-component-control-hoverBackground, var(--st-component-selection-switchTrack));
+  }
+
   .st-toggle__input:checked + .st-toggle__track .st-toggle__thumb {
     transform: translateX(calc(var(--st-toggle-trackWidth, 2.25rem) - var(--st-toggle-thumbSize, 1rem) - 2 * var(--st-component-selection-toggleTrackPadding, 0.125rem)));
   }

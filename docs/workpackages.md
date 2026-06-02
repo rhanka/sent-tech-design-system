@@ -19,14 +19,14 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 | WP4 | Chat-UI primitives | 🟢 | 100% | 6 primitives chat publiées (API + doc dédiée + démos). | Enrichissement hors périmètre initial. | Rien. |
 | WP5 | Graphics / Charts primitives | 🟢 | 100% | Sparkline + 6 graphiques livrés et documentés. | Option V2 : Heatmap, ChartLegend, ChartTooltip si besoin produit. | Besoin produit pour V2. |
 | WP6 | Fix-plan bugs visuels/comportementaux | 🟢 | 100% | Bugs critiques traités, retests navigateur et traces disponibles (`known-issues-and-fixes.md`). | — | Surveiller nouveaux regressions via CI et retests visuels. |
-| WP7 | Audit DS large (36 refs + capacité CLI détectée) | 🟡 | 80% | Consolidation V1/V2 et matrice de traçabilité WP7→WP8 achevées ; 27 règles + 5 clusters + P0-P2 traités dans les règles. | Étendre les findings des références encore partiellement couvertes et des références non cibles (supports/hors-cluster) hors P0/P1/P2. | Validation externe de couverture 100% + référentiel final. |
+| WP7 | Audit DS large (37 refs, 5 clusters) | 🟡 | 80% | Consolidation V1/V2 et matrice de traçabilité WP7→WP8 achevées ; règle/ tests 27 actifs. | Etendre les findings des références encore partiellement couvertes (hors P0/P1/P2). | Validation externe de couverture 100% + référentiel final. |
 | WP8 | Moteur `design` + skill multi-harness | 🟢 | 100% | 5 verbes livrés (dont V1 réel), skill publiée npm, 81 tests verts, CI de qualite. | Maintenir la documentation des verbes expérimentaux. | Aucun blocage connu. |
 | WP9 | Surface Chat / Agent | 🟢 | 100% | Topic dédié, reasoning et demos ajoutés, composants alignés. | Ajustements de portée produit. | Aucun (ouverture sur nouveaux besoins uniquement). |
-| WP10 | Theming via moteur design | 🟡 | 74% | DSFR/Carbon et Airbus public-ready sur `main`, composant anatomy étendue, compare local opérationnel, 31 composants phase 2 validés par `AnatomyTokens.test.ts`. | Rollout Phase 2 des composants hors pilotes + gouvernance de publication client. | Décision de distribution publique du thème Airbus. |
+| WP10 | Theming via moteur design | 🟡 | 76% | DSFR/Carbon et Airbus public-ready sur `main`, composant anatomy étendue, compare local opérationnel. | Rollout Phase 2 des composants hors pilotes + gouvernance de publication client. | Décision de distribution publique du thème Airbus. |
 | WP11 | Dogfooding moteur publié | 🟢 | 100% | `design check` full-site exécuté sans finding critique ; boucle findings fermée. | Continuer routine périodique. | Aucun. |
 | WP12 | Templates docs / slides ESN | 🟢 | 100% | Typologie + 3 gabarits livrés en source Markdown-first. | Ajouter de nouveaux templates métier si besoin. | Aucun. |
 | WP13 | Portage React | 🟢 | 100% | Package React complet, docs `/react`, workflow de release dédié, 95 tests verts. | Mise à l’échelle/retouches post-release. | Aucun. |
-| WP14 | Chrome documentaire par thème | 🟢 | 98% | Forme du chrome (header/nav/sidebar/logo) adaptée pour DSFR/Carbon/Airbus + audit fidélité local (rapport `92,4%` global, `2026-06-02`) + compare local généré automatiquement. | Ajustements finaux de finesse visuelle selon retours externes. | Validation publique de la fidélité avant clôture définitive (session d'alignement visuel en attente). |
+| WP14 | Chrome documentaire par thème | 🟢 | 95% | Forme du chrome (header/nav/sidebar/logo) adaptée pour DSFR/Carbon/Airbus + audit fidélité local (91,1%/93,9%). | Ajustements finaux de finesse visuelle selon retours externes. | Validation publique de la fidélité avant clôture définitive. |
 
 ## Suivi Antigravity — reprise header docs 2026-05-24
 
@@ -184,13 +184,13 @@ Detail dans `docs/known-issues-and-fixes.md`.
 **Parallelisable avec** : tous (composants disjoints).
 **Bloque** : rien; la re-passe WP2 overlays/plan-completion est consignée.
 
-## WP7 — Audit DS large (36 références upstream + capacité CLI, 5 clusters parallèles)
+## WP7 — Audit DS large (37 références upstream, 5 clusters parallèles)
 
 **Statut global** : 🟡 80% — audit/reporting, traçabilité règles/tests, dogfooding et gate `design check` sur push sont fermés. Reste : couverture individuelle des références upstream hors findings statiques.
 
-Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couverture complète des 36 références upstream `pbakaus/impeccable` (plus la capacité CLI détectée).
+Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couverture complète des 37 références upstream `pbakaus/impeccable`.
 
-**Décidé 2026-05-22** : couverture complète des 36 références via 5 agents par cluster d'axes + 1 consolidateur en fin de cycle, et prise en compte de la capacité CLI détectée. Sortie : un rapport par axe + un master consolidé + commits de fixes P0 atomiques au fur et à mesure.
+**Décidé 2026-05-22** : couverture complète des 37 références via 5 agents par cluster d'axes + 1 consolidateur en fin de cycle. Sortie : un rapport par axe + un master consolidé + commits de fixes P0 atomiques au fur et à mesure.
 
 | Cluster | Références upstream | Statut | Sortie |
 |---|---|---|---|
@@ -208,7 +208,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 | Vue | Track | Finalite | Etat | Avancement | Detail |
 |---|---|---|---:|---:|---|
 | Fait | Audit V1/V2 | Consolider les findings DS en source exploitable | 🟢 | 100% | Audit V1, 5 rapports clusters, master V2, 27 règles actives transmises à WP8. |
-| A faire | Couverture upstream | Étendre les findings au-delà des règles statiques déjà livrées | 🟡 | 65% | `docs/ds-audit-coverage-matrix.md` recense 36 références réelles (la "37e" est la capacité CLI) ; 11 couvertes directes par finding local, 14 partiellement traitées, 11 hors périmètre ou non déterministes. |
+| A faire | Couverture upstream | Étendre les findings au-delà des règles statiques déjà livrées | 🟡 | 65% | `docs/ds-audit-coverage-matrix.md` prouve 36 fichiers réels, 27 règles couvertes par tests, 9/36 références avec finding local direct; le reste est partiel, hors-cluster ou non déterministe. |
 | Fait | Traçabilité | Relier `finding WP7 -> règle WP8 -> test` | 🟢 | 100% | `docs/ds-audit-coverage-matrix.md` et `docs/wp8-design-cli-traceability.md` couvrent les 27 règles + tests. |
 | Attendu | Séparation WP7/WP8 | WP7 reste le chantier audit, WP8 reste le moteur | 🟢 | 100% | Toute règle WP8 doit référencer une entrée WP7 V2. |
 
@@ -288,7 +288,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 | Banc `/compare` réel (ours vs DS officiel en iframe) | 🟢 local | thèmes importés only, hauteur égale, langue native, versions DS+thème |
 | Sélecteur de thème docs (`:root`) | 🟢 local | switch qui change l'**anatomie** (police/radius/focus/champ) |
 | **Publication npm** (DS + thèmes, post-anatomie) | 🟢 | DS/tokens/themes/svelte publiés jusqu'à la ligne 0.10.x; les thèmes clients restent hors publication automatique. |
-| Rollout Phase 2 (~55 composants restants) | 🟡 | Garde `control.hoverBackground` étendue: le builder l'émet pour tous les thèmes, et 31 composants élargis (Input déjà traité en pilote + 30 hors pilotes) : Accordion, BackToTop, Combobox, ContentSwitcher, CopyButton, DataTable, DatePicker, Dropdown, FileUploader, Header, IconButton, LanguageSelector, Menu, MultiSelect, NumberInput, Notification, OverflowMenu, PasswordInput, Pagination, PaginationNav, Search, Select, SideNav, Table, Tag, Textarea, Toggletip, Tile, TileGroup, TreeView → 31/55 composants cibles. |
+| Rollout Phase 2 (~55 composants restants) | 🟡 | Garde `control.hoverBackground` étendue: le builder l'émet pour tous les thèmes, et les composants hors pilotes ont été élargis (Accordion, BackToTop, Combobox, ContentSwitcher, CopyButton, DataTable, DatePicker, Dropdown, FileUploader, Header, IconButton, Input, LanguageSelector, Menu, MultiSelect, NumberInput, Notification, OverflowMenu, PasswordInput, Pagination, PaginationNav, Search, Select, SideNav, Table, Tag, Textarea, Toggletip, Tile, TileGroup, TreeView, Toggle, Switch). |
 | Thème client Airbus | 🟡 | Package public-ready `packages/theme-airbus` (`airbusTheme`, `airbusDarkTheme`, tests, `MAPPING.md`) sur `main`; publication npm bloquée jusqu'à décision version/release. |
 | Thèmes clients : Scalian / CGI | ⚪ | plus tard ; **hors git** tant que non cadrés |
 
@@ -303,7 +303,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 | Fait | Scaffold theme | Isoler le portage dans un package theme dedie | 🟢 | 100% | `packages/theme-airbus`, package public-ready `@sentropic/design-system-theme-airbus`, export `airbusTheme`. |
 | Fait | Contrat test | Proteger l'identite minimale du theme | 🟢 | 100% | Test Vitest red/green sur `compileTheme(airbusTheme)` et tokens Airbus clefs. |
 | En cours | Fidelity | Comparer les composants pilotes contre Airbus reel | 🟡 | 75% | Anatomie étendue + dark mode + alignements pilotes portés; dernier jalon local annonce 90,3% sur le périmètre mesuré. Vérifié 2026-06-01: build/check/test `packages/theme-airbus` OK, 3 tests verts. Reste référence visuelle redistribuable/pipeline final. |
-| En cours | Rollout Phase 2 | Étendre les tokens partagés consommés hors pilotes | 🟡 | 56% | `control.hoverBackground` émis par tous les thèmes; élargissement de la consommation aux surfaces de survol de contrôles et de menus (31 composants listés) + garde anti-phantom dans `AnatomyTokens.test.ts` (tests verts). |
+| En cours | Rollout Phase 2 | Étendre les tokens partagés consommés hors pilotes | 🟡 | 64% | `control.hoverBackground` émis par tous les thèmes; élargissement de la consommation aux surfaces de survol de contrôles et de menus, plus `Switch`/`Toggle` (`hover` hors-checked + focus par stratégie) (Accordion, BackToTop, Combobox, ContentSwitcher, CopyButton, DataTable, DatePicker, Dropdown, FileUploader, Header, IconButton, Input, LanguageSelector, Menu, MultiSelect, NumberInput, Pagination, PaginationNav, Notification, OverflowMenu, PasswordInput, Search, Select, SideNav, Table, Tag, Textarea, Toggletip, Tile, TileGroup, TreeView, Toggle, Switch). |
 | A faire | Gouvernance | Decider la distribution du theme client | ⏸️ | 0% | Ne pas publier npm tant que version, nommage et contraintes Airbus ne sont pas valides. |
 
 ## WP11 — Dogfooding du moteur publié (complément WP7)
@@ -386,7 +386,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 | Item | Statut | Owner | Notes |
 |---|---|---|---|
-| Vérification fidélité locale DSFR/Carbon (comparatif bord à bord) | ✅ | Claude | Rapport généré via `node tools/compare/fidelity.mjs` (2026-06-02) : `Global fidelity: 92,4%` (1148 `=`, 24 `~`, 97 `≠`), artefacts `docs/compare-fidelity-report.md` + `tools/compare/last-report.json` + `apps/docs/src/lib/compare/compare-gaps.json`.
+| Vérification fidélité locale DSFR/Carbon (comparatif bord à bord) | ✅ | Claude | Rapport généré via `node tools/compare/fidelity.mjs` (2026-06-01) : 91,1% (DSFR) et 93,9% (Carbon), artefacts `docs/compare-fidelity-report.md` + `tools/compare/last-report.json`.
 | Audit du chrome actuel (header/menu/sidebar paramétrables par thème ?) | ✅ | Claude | Fait — chrome non paramétrable → généralisé (3 composants + layout conditionnel). |
 | Logos pixel-perfect par DS | 🟢 | Claude + Codex | DSFR + Airbus + Carbon utilisent des SVG versionnés ; le wordmark Carbon officiel est branché depuis `assets/carbon-wordmark.svg`. |
 | Chrome **Carbon** (barre noire + sidebar arbre + icônes) | ✅ | Claude | Livré sur `main`; forme documentaire Carbon présente. |
