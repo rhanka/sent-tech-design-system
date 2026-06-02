@@ -103,6 +103,14 @@
       <li>Intégrez une marge de placement selon votre header fixe.</li>
     </ul>
   </section>
+
+  <section class="docs-section">
+    <h2>Tokens</h2>
+    <ul class="docs-token-list">
+      <li><code>--st-component-control-hoverBorder</code></li>
+      <li><code>--st-component-control-hoverBackground</code></li>
+    </ul>
+  </section>
 </div>
 
 <div id="top"></div>

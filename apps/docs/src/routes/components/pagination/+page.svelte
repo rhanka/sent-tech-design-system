@@ -130,6 +130,8 @@
       <li><code>--st-component-pagination-activeText</code></li>
       <li><code>--st-component-pagination-disabledText</code></li>
       <li><code>--st-component-pagination-radius</code></li>
+      <li><code>--st-component-control-hoverBorder</code></li>
+      <li><code>--st-component-control-hoverBackground</code></li>
     </ul>
   </section>
 </div>

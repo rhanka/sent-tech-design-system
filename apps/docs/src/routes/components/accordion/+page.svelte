@@ -210,6 +210,7 @@
     <ul class="docs-token-list">
       <li><code>--st-component-control-border</code></li>
       <li><code>--st-component-control-hoverBackground</code></li>
+      <li><code>--st-component-control-hoverBorder</code></li>
       <li><code>--st-component-control-focusRing</code></li>
       <li><code>--st-semantic-text-primary</code></li>
       <li><code>--st-semantic-text-secondary</code></li>

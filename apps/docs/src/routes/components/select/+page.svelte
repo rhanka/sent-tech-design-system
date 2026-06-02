@@ -134,6 +134,8 @@
     <ul class="docs-token-list">
       <li><code>--st-component-control-background</code></li>
       <li><code>--st-component-control-border</code></li>
+      <li><code>--st-component-control-hoverBorder</code></li>
+      <li><code>--st-component-control-hoverBackground</code></li>
       <li><code>--st-component-control-focusRing</code></li>
       <li><code>--st-component-control-invalidBorder</code></li>
       <li><code>--st-component-control-anatomy-field-selectChevron</code></li>

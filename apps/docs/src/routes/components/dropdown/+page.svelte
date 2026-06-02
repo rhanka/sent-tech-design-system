@@ -151,6 +151,8 @@
       <li><code>--st-component-dropdown-selectedBackground</code></li>
       <li><code>--st-component-dropdown-selectedText</code></li>
       <li><code>--st-component-control-focusRing</code></li>
+      <li><code>--st-component-control-hoverBorder</code></li>
+      <li><code>--st-component-control-hoverBackground</code></li>
     </ul>
   </section>
 </div>

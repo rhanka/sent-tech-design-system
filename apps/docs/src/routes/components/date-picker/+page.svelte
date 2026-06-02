@@ -162,6 +162,8 @@
       <li><code>--st-component-field-errorText</code></li>
       <li><code>--st-component-field-maxWidth</code></li>
       <li><code>--st-component-control-border</code></li>
+      <li><code>--st-component-control-hoverBorder</code></li>
+      <li><code>--st-component-control-hoverBackground</code></li>
       <li><code>--st-component-control-radius</code></li>
       <li><code>--st-component-control-focusRing</code></li>
       <li><code>--st-component-control-mdHeight</code></li>

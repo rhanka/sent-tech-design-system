@@ -152,6 +152,8 @@
       <li><code>--st-semantic-border-interactive</code></li>
       <li><code>--st-motion-fast</code></li>
       <li><code>--st-motion-easing</code></li>
+      <li><code>--st-component-control-hoverBorder</code></li>
+      <li><code>--st-component-control-hoverBackground</code></li>
     </ul>
   </section>
 </div>

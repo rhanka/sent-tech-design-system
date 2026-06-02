@@ -150,6 +150,8 @@
       <li><code>--st-radius-md</code></li>
       <li><code>--st-shadow-sm</code></li>
       <li><code>--st-zindex-overlay</code></li>
+      <li><code>--st-component-control-hoverBorder</code></li>
+      <li><code>--st-component-control-hoverBackground</code></li>
     </ul>
   </section>
 </div>

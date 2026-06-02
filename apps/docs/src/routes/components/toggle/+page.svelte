@@ -134,6 +134,7 @@
       <li><code>--st-motion-fast</code></li>
       <li><code>--st-motion-easing</code></li>
       <li><code>--st-radius-pill</code></li>
+      <li><code>--st-component-control-hoverBorder</code></li>
     </ul>
   </section>
 </div>
