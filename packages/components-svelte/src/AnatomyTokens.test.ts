@@ -35,9 +35,11 @@ const PHASE2_COMPONENTS = [
   "Search",
   "OverflowMenu",
   "CopyButton",
+  "Dropdown",
   "DataTable",
   "DatePicker",
   "FileUploader",
+  "MultiSelect",
   "NumberInput",
   "PasswordInput",
   "Toggletip",
@@ -273,9 +275,9 @@ describe("anatomy phase 2 — interaction surfaces consume shared hover backgrou
   for (const name of PHASE2_COMPONENTS) {
     it(`${name}: consumes --st-component-control-hoverBackground`, () => {
       const source = readFileSync(join(LIB, `${name}.svelte`), "utf8");
-      const token = "var(--st-component-control-hoverBackground";
+      const token = /var\(\s*--st-component-control-hoverBackground/;
       expect(
-        source.includes(token),
+        token.test(source),
         `${name} should reference --st-component-control-hoverBackground`
       ).toBe(true);
     });

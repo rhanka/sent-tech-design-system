@@ -398,7 +398,7 @@
   .st-combobox__option:hover:not(:disabled),
   .st-combobox__option--active {
     background: var(
-      --st-component-dropdown-optionHoverBackground,
+      --st-component-control-hoverBackground,
       var(--st-semantic-surface-subtle)
     );
   }
