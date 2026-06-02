@@ -433,6 +433,7 @@
   --st-component-card-anatomy-focus-inset: 0;
   --st-component-card-anatomy-focus-outline: 2px solid var(--st-semantic-border-interactive);
   --st-component-card-anatomy-focus-boxShadow: none;
+  --st-component-card-anatomy-states-hover-bg: #ffffff;
   --st-component-card-anatomy-states-hover-transform: translateY(-1px);
   --st-component-menu-background: #ffffff;
   --st-component-menu-border: #e2e8f0;
@@ -667,6 +668,15 @@
   --st-component-pagination-fontSize: inherit;
   --st-component-pagination-lineHeight: normal;
   --st-component-pagination-letterSpacing: normal;
+  --st-component-paginationNav-background: #ffffff;
+  --st-component-paginationNav-border: #e2e8f0;
+  --st-component-paginationNav-radius: 0.375rem;
+  --st-component-paginationNav-text: #0f172a;
+  --st-component-paginationNav-hoverBackground: #f8fafc;
+  --st-component-paginationNav-activeBackground: oklch(50% 0.134 242.749);
+  --st-component-paginationNav-activeText: #ffffff;
+  --st-component-paginationNav-disabledText: #64748b;
+  --st-component-paginationNav-ellipsisText: #64748b;
   --st-component-breadcrumb-text: #475569;
   --st-component-breadcrumb-currentText: #0f172a;
   --st-component-breadcrumb-separator: #64748b;
