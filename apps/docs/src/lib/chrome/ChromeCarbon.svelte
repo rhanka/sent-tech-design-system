@@ -102,15 +102,27 @@
       {@render themeSwitcher()}
       {@render localeSwitcher()}
 
-      <!-- Icône recherche (wire-up réel en attente) -->
-      <button type="button" class="cbn-header__icon-btn" aria-label="Rechercher" title="Rechercher">
+      <a
+        class="cbn-header__icon-btn"
+        href="https://www.carbondesignsystem.com/search/"
+        target="_blank"
+        rel="noreferrer"
+        aria-label="Rechercher sur Carbon Design System"
+        title="Rechercher"
+      >
         <Search size={16} strokeWidth={1.8} aria-hidden="true" />
-      </button>
+      </a>
 
-      <!-- Icône grille 3×3 (liste d'outils; endpoint IBM réel à connecter) -->
-      <button type="button" class="cbn-header__icon-btn" aria-label="Menu applications IBM" title="Applications">
+      <a
+        class="cbn-header__icon-btn"
+        href="https://www.ibm.com/design/"
+        target="_blank"
+        rel="noreferrer"
+        aria-label="Menu applications IBM"
+        title="Applications"
+      >
         <Grid3x3 size={16} strokeWidth={1.8} aria-hidden="true" />
-      </button>
+      </a>
 
       <!-- Burger mobile -->
       <button
@@ -364,6 +376,7 @@
     display: inline-flex;
     height: var(--cbn-header-height);
     justify-content: center;
+    text-decoration: none;
     padding: 0;
     transition: background 120ms ease, color 120ms ease;
     width: var(--cbn-header-height);
