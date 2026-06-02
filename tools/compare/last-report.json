@@ -3,7 +3,7 @@
     "date": "2026-06-02",
     "browser": "Google Chrome (system)",
     "chromePath": "/usr/bin/google-chrome",
-    "url": "http://0.0.0.0:43589/compare",
+    "url": "http://0.0.0.0:32935/compare",
     "tolerances": {
       "lengthPx": 1,
       "colorDist": 12
