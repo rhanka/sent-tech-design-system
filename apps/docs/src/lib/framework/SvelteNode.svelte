@@ -16,7 +16,22 @@
     Checkbox,
     Radio,
     Alert,
-    Tag
+    Tag,
+    Select,
+    Textarea,
+    Toggle,
+    Switch,
+    Link,
+    Breadcrumb,
+    Tooltip,
+    ProgressBar,
+    Pagination,
+    IconButton,
+    NumberInput,
+    Search,
+    Tabs,
+    Accordion,
+    Slider
   } from "@sentropic/design-system-svelte";
   import Self from "./SvelteNode.svelte";
   import type { Component } from "svelte";
@@ -35,7 +50,22 @@
     Checkbox,
     Radio,
     Alert,
-    Tag
+    Tag,
+    Select,
+    Textarea,
+    Toggle,
+    Switch,
+    Link,
+    Breadcrumb,
+    Tooltip,
+    ProgressBar,
+    Pagination,
+    IconButton,
+    NumberInput,
+    Search,
+    Tabs,
+    Accordion,
+    Slider
   } as unknown as Record<ComponentName, Component<Record<string, unknown>>>;
 
   let { node }: { node: NodeSpec } = $props();
