@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { existsSync, readFileSync, writeFileSync, readdirSync, statSync } from "node:fs";
 import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import readline from "node:readline/promises";
 import { audit } from "./engine/run.js";
 import { heuristicReview } from "./engine/heuristics.js";
@@ -1076,9 +1077,7 @@ async function handlePolish(args: string[]) {
   process.exit(issues > 0 ? 1 : 0);
 }
 
-async function main() {
-  const args = process.argv.slice(2);
-
+async function runCommandFromArgs(args: string[]) {
   if (args.length === 0 || args[0] === "--help" || args[0] === "-h" || args[0] === "help") {
     printGlobalHelp();
     process.exit(args.length === 0 ? 1 : 0);
@@ -1114,7 +1113,95 @@ async function main() {
   }
 }
 
-main().catch((error: Error) => {
-  process.stderr.write(`sentech-design: ${error.message}\n`);
-  process.exit(2);
-});
+export interface CliRunResult {
+  status: number;
+  stdout: string;
+  stderr: string;
+}
+
+class CliExitSignal extends Error {
+  constructor(public readonly code: number) {
+    super(`CLI exit ${code}`);
+    this.name = "CliExitSignal";
+  }
+}
+
+export async function runCommand(args: string[]): Promise<CliRunResult> {
+  const originalArgv = [...process.argv];
+  const originalExit = process.exit;
+  const originalStdoutWrite = process.stdout.write.bind(process.stdout);
+  const originalStderrWrite = process.stderr.write.bind(process.stderr);
+
+  const stdoutChunks: string[] = [];
+  const stderrChunks: string[] = [];
+  let status = 0;
+
+  const toText = (chunk: unknown): string => {
+    if (chunk === undefined || chunk === null) {
+      return "";
+    }
+    if (Buffer.isBuffer(chunk) || chunk instanceof Uint8Array) {
+      return Buffer.from(chunk).toString("utf-8");
+    }
+    return typeof chunk === "string" ? chunk : String(chunk);
+  };
+
+  process.stdout.write = ((chunk: unknown, encoding?: BufferEncoding | ((error?: Error | null) => void), cb?: (error?: Error | null) => void) => {
+    stdoutChunks.push(toText(chunk));
+    if (typeof encoding === "function") {
+      encoding();
+    } else if (typeof cb === "function") {
+      cb();
+    }
+    return true;
+  }) as typeof process.stdout.write;
+
+  process.stderr.write = ((chunk: unknown, encoding?: BufferEncoding | ((error?: Error | null) => void), cb?: (error?: Error | null) => void) => {
+    stderrChunks.push(toText(chunk));
+    if (typeof encoding === "function") {
+      encoding();
+    } else if (typeof cb === "function") {
+      cb();
+    }
+    return true;
+  }) as typeof process.stderr.write;
+
+  process.exit = ((code?: number) => {
+    throw new CliExitSignal(code === undefined ? 0 : Number(code));
+  }) as unknown as typeof process.exit;
+
+  process.argv = ["node", "design", ...args];
+
+  try {
+    await runCommandFromArgs(process.argv.slice(2));
+  } catch (error) {
+    if (error instanceof CliExitSignal) {
+      status = error.code;
+    } else {
+      process.stderr.write(`sentech-design: ${(error as Error).message}\n`);
+      status = 2;
+    }
+  } finally {
+    process.exit = originalExit;
+    process.stdout.write = originalStdoutWrite;
+    process.stderr.write = originalStderrWrite;
+    process.argv = originalArgv;
+  }
+
+  return {
+    status,
+    stdout: stdoutChunks.join(""),
+    stderr: stderrChunks.join("")
+  };
+}
+
+async function main() {
+  await runCommandFromArgs(process.argv.slice(2));
+}
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  main().catch((error: Error) => {
+    process.stderr.write(`sentech-design: ${error.message}\n`);
+    process.exit(2);
+  });
+}

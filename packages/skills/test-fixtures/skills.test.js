@@ -1,10 +1,37 @@
 import { test } from "node:test";
 import assert from "node:assert";
-import { execFileSync, spawnSync } from "node:child_process";
 import { existsSync, readFileSync, writeFileSync, rmSync, mkdtempSync, mkdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { audit, defaultRules } from "../dist/index.js";
+import { runCommand } from "../dist/cli.js";
+
+function parseCommandReport(output, label) {
+  const stdout = (output.stdout || "").trim();
+  const stderr = (output.stderr || "").trim();
+
+  const candidates = [stdout, stderr].filter(Boolean);
+  for (const candidate of candidates) {
+    const start = candidate.indexOf("{");
+    const end = candidate.lastIndexOf("}");
+    if (start >= 0 && end > start) {
+      return JSON.parse(candidate.slice(start, end + 1));
+    }
+  }
+
+  throw new Error(`Could not extract JSON report for ${label}. stdoutLen=${stdout.length}, stderrLen=${stderr.length}.`);
+}
+
+async function runCliCommand(args, options = {}) {
+  const originalCwd = process.cwd();
+  const targetCwd = options.cwd;
+  if (targetCwd) process.chdir(targetCwd);
+  try {
+    return await runCommand(args);
+  } finally {
+    if (targetCwd) process.chdir(originalCwd);
+  }
+}
 
 test("audit inline html successfully", async () => {
   const report = await audit({
@@ -16,16 +43,11 @@ test("audit inline html successfully", async () => {
   assert.ok(Array.isArray(report.findings));
 });
 
-test("cli supports the WP8 design audit contract", () => {
-  const cliPath = resolve(import.meta.dirname || "./test-fixtures", "../dist/cli.js");
-  const result = spawnSync(
-    process.execPath,
-    [cliPath, "audit", "<button style='width: 24px; height: 24px'>x</button>"],
-    { encoding: "utf-8" }
-  );
+test("cli supports the WP8 design audit contract", async () => {
+  const result = await runCliCommand(["audit", "<button style='width: 24px; height: 24px'>x</button>"]);
 
   assert.strictEqual(result.status, 1);
-  const report = JSON.parse(result.stdout);
+  const report = parseCommandReport(result, "design audit");
   assert.strictEqual(report.target.kind, "html");
   assert.ok(Array.isArray(report.findings));
   assert.ok(report.findings.some((finding) => finding.ruleId === "touch-target-44"));
@@ -38,18 +60,14 @@ test("package exposes the short design binary", () => {
   assert.strictEqual(manifest.bin.design, "./dist/cli.js");
 });
 
-test("design init --extract generates DESIGN.md from real css tokens", () => {
-  const cliPath = resolve(import.meta.dirname || "./test-fixtures", "../dist/cli.js");
+test("design init --extract generates DESIGN.md from real css tokens", async () => {
   const dir = mkdtempSync(join(tmpdir(), "sent-tech-extract-"));
   try {
     writeFileSync(
       join(dir, "theme.css"),
       ":root{--st-foundation-color-blue-500:#1d4ed8;--st-semantic-text-primary:var(--st-foundation-color-blue-500);}",
     );
-    const result = spawnSync(process.execPath, [cliPath, "init", "--extract"], {
-      cwd: dir,
-      encoding: "utf-8",
-    });
+    const result = await runCliCommand(["init", "--extract"], { cwd: dir });
     assert.strictEqual(result.status, 0);
     const designPath = join(dir, "DESIGN.md");
     assert.ok(existsSync(designPath), "DESIGN.md should be created");
@@ -62,92 +80,76 @@ test("design init --extract generates DESIGN.md from real css tokens", () => {
   }
 });
 
-test("design check --human scores real signals and flags accessibility issues", () => {
-  const cliPath = resolve(import.meta.dirname || "./test-fixtures", "../dist/cli.js");
-  const clean = spawnSync(
-    process.execPath,
-    [cliPath, "check", "<main><h1>Titre</h1><p>Contenu suffisant pour la page.</p><button>OK</button></main>", "--human"],
-    { encoding: "utf-8" },
-  );
+test("design check --human scores real signals and flags accessibility issues", async () => {
+  const clean = await runCliCommand([
+    "check",
+    "<main><h1>Titre</h1><p>Contenu suffisant pour la page.</p><button>OK</button></main>",
+    "--human",
+  ]);
   assert.strictEqual(clean.status, 0);
-  const cleanReport = JSON.parse(clean.stdout);
+  const cleanReport = parseCommandReport(clean, "design check --human clean");
   assert.strictEqual(cleanReport.heuristics.accessibilityFriction, "none");
   assert.strictEqual(cleanReport.score, 100);
 
-  const dirty = spawnSync(
-    process.execPath,
-    [cliPath, "check", '<div><input type="text"><img src="x.png"></div>', "--human"],
-    { encoding: "utf-8" },
-  );
+  const dirty = await runCliCommand([
+    "check",
+    '<div><input type="text"><img src="x.png"></div>',
+    "--human",
+  ]);
   assert.strictEqual(dirty.status, 1);
-  const dirtyReport = JSON.parse(dirty.stdout);
+  const dirtyReport = parseCommandReport(dirty, "design check --human dirty");
   assert.ok(dirtyReport.metrics.unlabeledInputs >= 1);
   assert.ok(dirtyReport.metrics.imagesWithoutAlt >= 1);
   assert.notStrictEqual(dirtyReport.heuristics.accessibilityFriction, "none");
   assert.ok(dirtyReport.score < 100);
 });
 
-test("cli supports design check technical and heuristics aliases", () => {
-  const cliPath = resolve(import.meta.dirname || "./test-fixtures", "../dist/cli.js");
-  const technical = spawnSync(
-    process.execPath,
-    [cliPath, "check", "--technical", "<button style='width: 24px; height: 24px'>x</button>"],
-    { encoding: "utf-8" }
-  );
+test("cli supports design check technical and heuristics aliases", async () => {
+  const technical = await runCliCommand([
+    "check",
+    "--technical",
+    "<button style='width: 24px; height: 24px'>x</button>"
+  ]);
 
   assert.strictEqual(technical.status, 1);
-  const technicalReport = JSON.parse(technical.stdout);
+  const technicalReport = parseCommandReport(technical, "design check --technical");
   assert.ok(technicalReport.findings.some((finding) => finding.ruleId === "touch-target-44"));
 
-  const heuristics = spawnSync(
-    process.execPath,
-    [cliPath, "check", "--heuristics", "<main><h1>Dashboard</h1></main>"],
-    { encoding: "utf-8" }
-  );
+  const heuristics = await runCliCommand([
+    "check",
+    "--heuristics",
+    "<main><h1>Dashboard</h1></main>",
+  ]);
 
   assert.strictEqual(heuristics.status, 0);
-  const heuristicsReport = JSON.parse(heuristics.stdout);
+  const heuristicsReport = parseCommandReport(heuristics, "design check --heuristics");
   assert.strictEqual(heuristicsReport.score, 100);
   assert.strictEqual(heuristicsReport.heuristics.accessibilityFriction, "none");
 });
 
-test("design check --fail-under gates by deterministic quality score", () => {
-  const cliPath = resolve(import.meta.dirname || "./test-fixtures", "../dist/cli.js");
+test("design check --fail-under gates by deterministic quality score", async () => {
   const dirtyHtml = "<style>.hero{color:#fff;background:#000}</style><h1>Titre <span class='badge'>Stable</span></h1>";
-  const pass = spawnSync(
-    process.execPath,
-    [cliPath, "check", dirtyHtml, "--tech", "--fail-under", "80"],
-    { encoding: "utf-8" }
-  );
+  const pass = await runCliCommand(["check", dirtyHtml, "--tech", "--fail-under", "80"]);
   assert.strictEqual(pass.status, 0);
-  const passReport = JSON.parse(pass.stdout);
+  const passReport = parseCommandReport(pass, "design check --tech --fail-under pass");
   assert.ok(passReport.score >= 80);
   assert.ok(passReport.findings.length > 0);
   assert.match(pass.stderr, /score/);
 
-  const fail = spawnSync(
-    process.execPath,
-    [cliPath, "check", dirtyHtml, "--tech", "--fail-under", "99"],
-    { encoding: "utf-8" }
-  );
+  const fail = await runCliCommand(["check", dirtyHtml, "--tech", "--fail-under", "99"]);
   assert.strictEqual(fail.status, 1);
-  const failReport = JSON.parse(fail.stdout);
+  const failReport = parseCommandReport(fail, "design check --tech --fail-under fail");
   assert.ok(failReport.score < 99);
 });
 
-test("design check --fail-under aggregates directory HTML targets", () => {
-  const cliPath = resolve(import.meta.dirname || "./test-fixtures", "../dist/cli.js");
+test("design check --fail-under aggregates directory HTML targets", async () => {
   const dir = mkdtempSync(join(tmpdir(), "sent-tech-design-gate-"));
   try {
     writeFileSync(join(dir, "index.html"), "<main><h1>OK</h1><p>Texte court.</p></main>");
     writeFileSync(join(dir, "component.html"), "<style>.hero{color:#fff;background:#000}</style><h1>Titre</h1>");
-    const result = spawnSync(
-      process.execPath,
-      [cliPath, "check", dir, "--fail-under", "90"],
-      { encoding: "utf-8" }
-    );
+    const result = await runCliCommand(["check", dir, "--fail-under", "90"]);
     assert.strictEqual(result.status, 0);
-    const report = JSON.parse(result.stdout);
+    const report = parseCommandReport(result, "design check --fail-under directory");
     assert.strictEqual(report.target.kind, "directory");
     assert.strictEqual(report.pages, 2);
     assert.ok(report.score >= 90);
@@ -157,11 +159,10 @@ test("design check --fail-under aggregates directory HTML targets", () => {
   }
 });
 
-test("design build scaffolds a real Svelte 5 component file", () => {
-  const cliPath = resolve(import.meta.dirname || "./test-fixtures", "../dist/cli.js");
+test("design build scaffolds a real Svelte 5 component file", async () => {
   const dir = mkdtempSync(join(tmpdir(), "sent-tech-build-"));
   try {
-    const result = spawnSync(process.execPath, [cliPath, "build", "FancyCard", "--out", dir], { encoding: "utf-8" });
+    const result = await runCliCommand(["build", "FancyCard", "--out", dir]);
     assert.strictEqual(result.status, 0);
     const file = join(dir, "FancyCard.svelte");
     assert.ok(existsSync(file), "FancyCard.svelte should be created");
@@ -170,59 +171,56 @@ test("design build scaffolds a real Svelte 5 component file", () => {
     assert.match(content, /st-fancy-card/);
     assert.match(content, /--st-semantic-text-primary/);
 
-    const second = spawnSync(process.execPath, [cliPath, "build", "FancyCard", "--out", dir], { encoding: "utf-8" });
+    const second = await runCliCommand(["build", "FancyCard", "--out", dir]);
     assert.strictEqual(second.status, 1, "must refuse overwrite without --force");
 
-    const propose = spawnSync(process.execPath, [cliPath, "build", "Foo", "--propose"], { encoding: "utf-8" });
+    const propose = await runCliCommand(["build", "Foo", "--propose"]);
     assert.strictEqual(propose.status, 2, "--propose must be honest (no false success)");
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
 });
 
-test("design polish --motion / --essence are deterministic and honest", () => {
-  const cliPath = resolve(import.meta.dirname || "./test-fixtures", "../dist/cli.js");
+test("design polish --motion / --essence are deterministic and honest", async () => {
   const dir = mkdtempSync(join(tmpdir(), "sent-tech-polish-"));
   const file = join(dir, "anim.html");
   writeFileSync(file, "<style>.x{transition: all 0.2s ease;}</style>");
   try {
-    const motion = spawnSync(process.execPath, [cliPath, "polish", file, "--motion"], { encoding: "utf-8" });
+    const motion = await runCliCommand(["polish", file, "--motion"]);
     assert.strictEqual(motion.status, 0);
     assert.match(readFileSync(file, "utf-8"), /prefers-reduced-motion/);
 
-    const nested = spawnSync(
-      process.execPath,
-      [cliPath, "polish", '<div class="card"><div class="card">x</div></div>', "--essence"],
-      { encoding: "utf-8" },
-    );
+    const nested = await runCliCommand([
+      "polish",
+      '<div class="card"><div class="card">x</div></div>',
+      "--essence",
+    ]);
     assert.strictEqual(nested.status, 1);
 
-    const creative = spawnSync(process.execPath, [cliPath, "polish", "<div>x</div>", "--spark"], { encoding: "utf-8" });
+    const creative = await runCliCommand(["polish", "<div>x</div>", "--spark"]);
     assert.strictEqual(creative.status, 2);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
 });
 
-test("cli rejects unsupported persona simulations explicitly", () => {
-  const cliPath = resolve(import.meta.dirname || "./test-fixtures", "../dist/cli.js");
-  const result = spawnSync(
-    process.execPath,
-    [cliPath, "check", "--personas", "<main><h1>Dashboard</h1></main>"],
-    { encoding: "utf-8" }
-  );
+test("cli rejects unsupported persona simulations explicitly", async () => {
+  const result = await runCliCommand([
+    "check",
+    "--personas",
+    "<main><h1>Dashboard</h1></main>",
+  ]);
 
   assert.strictEqual(result.status, 2);
   assert.match(result.stderr, /--personas/);
 });
 
-test("design align --spacing rounds off-grid spacing to the 4px grid", () => {
-  const cliPath = resolve(import.meta.dirname || "./test-fixtures", "../dist/cli.js");
+test("design align --spacing rounds off-grid spacing to the 4px grid", async () => {
   const tempDir = mkdtempSync(join(tmpdir(), "sent-tech-spacing-"));
   const targetPath = join(tempDir, "sample.html");
   writeFileSync(targetPath, "<style>.box{padding:5px 10px;margin:7px;border:1px solid red;gap:6px}</style>");
   try {
-    const result = spawnSync(process.execPath, [cliPath, "align", targetPath, "--spacing"], { encoding: "utf-8" });
+    const result = await runCliCommand(["align", targetPath, "--spacing"]);
     assert.strictEqual(result.status, 0);
     const out = readFileSync(targetPath, "utf-8");
     assert.match(out, /padding:4px 12px/);
@@ -234,8 +232,7 @@ test("design align --spacing rounds off-grid spacing to the 4px grid", () => {
   }
 });
 
-test("cli align tones rewrites common bare hex colors to published theme tokens", () => {
-  const cliPath = resolve(import.meta.dirname || "./test-fixtures", "../dist/cli.js");
+test("cli align tones rewrites common bare hex colors to published theme tokens", async () => {
   const tempDir = mkdtempSync(join(tmpdir(), "sent-tech-skills-"));
   const targetPath = join(tempDir, "sample.html");
   writeFileSync(
@@ -245,9 +242,7 @@ test("cli align tones rewrites common bare hex colors to published theme tokens"
   );
 
   try {
-    const result = spawnSync(process.execPath, [cliPath, "align", targetPath, "--tones"], {
-      encoding: "utf-8"
-    });
+    const result = await runCliCommand(["align", targetPath, "--tones"]);
 
     assert.strictEqual(result.status, 0);
     const aligned = readFileSync(targetPath, "utf-8");
@@ -262,8 +257,7 @@ test("cli align tones rewrites common bare hex colors to published theme tokens"
   }
 });
 
-test("cli init command in non-interactive mode creates PRODUCT.md", () => {
-  const cliPath = resolve(import.meta.dirname || "./test-fixtures", "../dist/cli.js");
+test("cli init command in non-interactive mode creates PRODUCT.md", async () => {
   
   // Trouver la racine du projet
   let projectRoot = process.cwd();
@@ -283,7 +277,8 @@ test("cli init command in non-interactive mode creates PRODUCT.md", () => {
 
   try {
     // Lancer la CLI avec init et --non-interactive
-    execFileSync(process.execPath, [cliPath, "init", "--non-interactive"], { stdio: "pipe" });
+    const result = await runCliCommand(["init", "--non-interactive"]);
+    assert.strictEqual(result.status, 0);
     
     // Vérifier que PRODUCT.md existe et contient le registre par défaut
     assert.ok(existsSync(tempProductPath));
