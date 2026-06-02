@@ -182,3 +182,5 @@ export { MessageActions } from "./MessageActions.js";
 export type { MessageActionsProps, MessageAction, MessageActionVariant } from "./MessageActions.js";
 export { MessageStatusBadge } from "./MessageStatusBadge.js";
 export type { MessageStatusBadgeProps } from "./MessageStatusBadge.js";
+
+export { deriveInitials } from "./Header.js";
