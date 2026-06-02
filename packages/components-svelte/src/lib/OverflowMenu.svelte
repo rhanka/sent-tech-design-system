@@ -174,10 +174,7 @@
   }
 
   .st-overflowMenu__trigger:hover {
-    background: var(
-      --st-component-overflowMenu-triggerHoverBackground,
-      var(--st-semantic-surface-subtle)
-    );
+    background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle));
   }
 
   /* Focus = stratégie d'anatomie partagée (outline DSFR / inset Carbon / ring base). */
@@ -190,10 +187,7 @@
   }
 
   .st-overflowMenu__trigger[aria-expanded="true"] {
-    background: var(
-      --st-component-overflowMenu-triggerHoverBackground,
-      var(--st-semantic-surface-subtle)
-    );
+    background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle));
   }
 
   .st-overflowMenu__list {
@@ -257,7 +251,7 @@
 
   .st-overflowMenu__item:hover:not(:disabled),
   .st-overflowMenu__item:focus-visible {
-    background: var(--st-component-menu-itemHoverBackground, var(--st-semantic-surface-subtle));
+    background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle));
     outline: none;
   }
 

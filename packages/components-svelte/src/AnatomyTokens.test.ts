@@ -28,6 +28,9 @@ const PHASE2_COMPONENTS = [
   "ContentSwitcher",
   "LanguageSelector",
   "Header",
+  "IconButton",
+  "Menu",
+  "OverflowMenu",
   "Toggletip",
   "TreeView"
 ] as const;
