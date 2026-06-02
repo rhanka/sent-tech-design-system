@@ -10,6 +10,24 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 - ⏸️ Blocked — necessite une decision ou une dependance externe
 - ⚪ Planned — pas demarre
 
+## Synthèse WP2 → WP14
+
+| WP | Finalité | Statut | Avancement | Fait | A faire | Attente |
+|---|---|---|---:|---|---|---|
+| WP2 | Site docs UX | 🟢 | 100% | Header, sidebar et docs publics finalisés ; inventaire des exports vérifié ; retest navigateur overlays/plan-completion consigné. | — | Validation visuelle publique finale (surtout si nouveaux composants ou captures utiles). |
+| WP3 | Contrat header cross-site et applications | 🟢 | 100% | Contrat headers public partagé + appliqué sur docs ; inventaire de cohérence mis à jour. | Aucune action DS restante. | Application côté Sentropic/NC côté user en attente. |
+| WP4 | Chat-UI primitives | 🟢 | 100% | 6 primitives chat publiées (API + doc dédiée + démos). | Enrichissement hors périmètre initial. | Rien. |
+| WP5 | Graphics / Charts primitives | 🟢 | 100% | Sparkline + 6 graphiques livrés et documentés. | Option V2 : Heatmap, ChartLegend, ChartTooltip si besoin produit. | Besoin produit pour V2. |
+| WP6 | Fix-plan bugs visuels/comportementaux | 🟢 | 100% | Bugs critiques traités, retests navigateur et traces disponibles (`known-issues-and-fixes.md`). | — | Surveiller nouveaux regressions via CI et retests visuels. |
+| WP7 | Audit DS large (37 refs, 5 clusters) | 🟡 | 80% | Consolidation V1/V2 et matrice de traçabilité WP7→WP8 achevées ; règle/ tests 27 actifs. | Etendre les findings des références encore partiellement couvertes (hors P0/P1/P2). | Validation externe de couverture 100% + référentiel final. |
+| WP8 | Moteur `design` + skill multi-harness | 🟢 | 100% | 5 verbes livrés (dont V1 réel), skill publiée npm, 81 tests verts, CI de qualite. | Maintenir la documentation des verbes expérimentaux. | Aucun blocage connu. |
+| WP9 | Surface Chat / Agent | 🟢 | 100% | Topic dédié, reasoning et demos ajoutés, composants alignés. | Ajustements de portée produit. | Aucun (ouverture sur nouveaux besoins uniquement). |
+| WP10 | Theming via moteur design | 🟡 | 74% | DSFR/Carbon et Airbus public-ready sur `main`, composant anatomy étendue, compare local opérationnel. | Rollout Phase 2 des composants hors pilotes + gouvernance de publication client. | Décision de distribution publique du thème Airbus. |
+| WP11 | Dogfooding moteur publié | 🟢 | 100% | `design check` full-site exécuté sans finding critique ; boucle findings fermée. | Continuer routine périodique. | Aucun. |
+| WP12 | Templates docs / slides ESN | 🟢 | 100% | Typologie + 3 gabarits livrés en source Markdown-first. | Ajouter de nouveaux templates métier si besoin. | Aucun. |
+| WP13 | Portage React | 🟢 | 100% | Package React complet, docs `/react`, workflow de release dédié, 95 tests verts. | Mise à l’échelle/retouches post-release. | Aucun. |
+| WP14 | Chrome documentaire par thème | 🟢 | 95% | Forme du chrome (header/nav/sidebar/logo) adaptée pour DSFR/Carbon/Airbus + audit fidélité local (91,1%/93,9%). | Ajustements finaux de finesse visuelle selon retours externes. | Validation publique de la fidélité avant clôture définitive. |
+
 ## Suivi Antigravity — reprise header docs 2026-05-24
 
 ### Fait
