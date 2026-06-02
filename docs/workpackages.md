@@ -22,11 +22,11 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 | WP7 | Audit DS large (37 refs, 5 clusters) | 🟡 | 80% | Consolidation V1/V2 et matrice de traçabilité WP7→WP8 achevées ; règle/ tests 27 actifs. | Etendre les findings des références encore partiellement couvertes (hors P0/P1/P2). | Validation externe de couverture 100% + référentiel final. |
 | WP8 | Moteur `design` + skill multi-harness | 🟢 | 100% | 5 verbes livrés (dont V1 réel), skill publiée npm, 81 tests verts, CI de qualite. | Maintenir la documentation des verbes expérimentaux. | Aucun blocage connu. |
 | WP9 | Surface Chat / Agent | 🟢 | 100% | Topic dédié, reasoning et demos ajoutés, composants alignés. | Ajustements de portée produit. | Aucun (ouverture sur nouveaux besoins uniquement). |
-| WP10 | Theming via moteur design | 🟡 | 75% | DSFR/Carbon et Airbus public-ready sur `main`, comparatif local opérationnel, garde-fous tests phase2 Airbus (Switch/Toggle/Field étendu, focus/hover partagés) + CSS tokens de navigation/overlay et panneaux. | Rollout Phase 2 des composants hors pilotes + gouvernance de publication client. | Validation finale de fidélité locale (Airbus) et décision de distribution publique du thème. |
+| WP10 | Theming via moteur design | 🟡 | 82% | DSFR/Carbon et Airbus public-ready sur `main`, comparatif local complet à jour (DSFR 90,2% / Carbon 92,7% / Airbus 86,6%), garde-fous tests phase2 Airbus + CSS tokens de navigation/overlay et panneaux. | Rollout Phase 2 des composants hors pilotes + gouvernance de publication client. | Décision de distribution publique du thème Airbus/client. |
 | WP11 | Dogfooding moteur publié | 🟢 | 100% | `design check` full-site exécuté sans finding critique ; boucle findings fermée. | Continuer routine périodique. | Aucun. |
 | WP12 | Templates docs / slides ESN | 🟢 | 100% | Typologie + 3 gabarits livrés en source Markdown-first. | Ajouter de nouveaux templates métier si besoin. | Aucun. |
 | WP13 | Portage React | 🟢 | 100% | Package React complet, docs `/react`, workflow de release dédié, 95 tests verts. | Mise à l’échelle/retouches post-release. | Aucun. |
-| WP14 | Chrome documentaire par thème | 🟢 | 100% | Forme du chrome (header/nav/sidebar/logo) adaptée pour DSFR/Carbon/Airbus + vérification fidélité DSFR 90,2% / Carbon 92,7% (et Airbus en stabilisation, 82%). | Ajustements finaux de finesse visuelle selon retours externes. | Validation publique de la fidélité avant clôture définitive. |
+| WP14 | Chrome documentaire par thème | 🟢 | 100% | Forme du chrome (header/nav/sidebar/logo) adaptée pour DSFR/Carbon/Airbus + vérification fidélité DSFR 90,2% / Carbon 92,7% / Airbus 86,6%. | Ajustements finaux de finesse visuelle selon retours externes. | Validation publique de la fidélité avant clôture définitive. |
 
 ## Suivi Antigravity — reprise header docs 2026-05-24
 
@@ -302,7 +302,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 | Fait | Coordination | Declarer l'ownership du portage Airbus | 🟢 | 100% | Session h2a ouverte comme `codex:sent-tech-design-system`; messages envoyes aux agents DS et Airbus. |
 | Fait | Scaffold theme | Isoler le portage dans un package theme dedie | 🟢 | 100% | `packages/theme-airbus`, package public-ready `@sentropic/design-system-theme-airbus`, export `airbusTheme`. |
 | Fait | Contrat test | Proteger l'identite minimale du theme | 🟢 | 100% | Test Vitest red/green sur `compileTheme(airbusTheme)`/`airbusDarkTheme`, tokens clés + garde-explicite phase2 (hover/background/focus/link). |
-| En cours | Fidelity | Comparer les composants pilotes contre Airbus reel | 🟡 | 75% | Anatomie étendue + dark mode + alignements pilotes portés. Runs ciblés exécutés avec seuil 85 : `--theme dsfr` (90,2%), `--theme carbon` (92,7%), `--theme airbus` (82,0%, 106 écarts). Vérifié 2026-06-02: build/check/test `packages/theme-airbus` OK, 4 tests verts. Reste référence visuelle redistribuable/pipeline final. |
+| En cours | Fidelity | Comparer les composants pilotes contre Airbus reel | 🟡 | 85% | Anatomie étendue + dark mode + alignements pilotes portés. Run complet 2026-06-02 : global 89,9%, DSFR 90,2%, Carbon 92,7%, Airbus 86,6% (83 écarts). Airbus Input/Search sont à 100%, Select 96,8%; build docs force désormais le rebuild Svelte avant mesure. Reste référence visuelle redistribuable/pipeline final. |
 | En cours | Rollout Phase 2 | Étendre les tokens partagés consommés hors pilotes | 🟡 | 69% | `control.hoverBackground` émis par tous les thèmes; élargissement de la consommation aux surfaces de survol de contrôles et de menus, plus `Switch`/`Toggle` (`hover` hors-checked + focus par stratégie). Bilan de consommation détaillé (status per composant) dans `docs/ds-theme-anatomy-matrix.md` (cluster formulaire + navigation/overlay). airbus redonne `control/card/button/link hover` via tests compilés light/dark. Les `Choice` (`label`/`radio`/`checkbox`), `Search` et `Tabs` héritent désormais explicitement des anatomies phase 2 dans les assertions tests (`packages/theme-airbus/src/index.test.ts`). |
 | A faire | Gouvernance | Decider la distribution du theme client | ⏸️ | 0% | Ne pas publier npm tant que version, nommage et contraintes Airbus ne sont pas valides. |
 
@@ -367,12 +367,12 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 - **ForceGraph 0.10.3** (API sélection : `selectedIds`/`focusId`/`onSelect`/`onOpenEntity`) **publié npm** (lockstep tokens/themes/svelte 0.10.3).
 - **Compare-mode** : Lot 1 (socle de vérité partagée) livré sur main ; Lot 2 (UI triptyque, Δ lus du registre) livré sur branche `claude-compare-lot2` (en revue) ; hooks d'overlay local générique = **next step** (Claude).
 - **WP13 React** : **port complet intégré sur `main`** (package public-ready, build/check OK, 95 tests verts au 2026-06-01) + surface docs `/react` + workflow `react-v*` intégrés.
-- **WP10 Airbus** : **thème complet sur `main`** (palette + anatomie + dark mode `airbusDarkTheme`, package public-ready non publié) ; vérification locale build/check/test OK. Reste : pipeline fidélité final et gouvernance publication.
+- **WP10 Airbus** : **thème complet sur `main`** (palette + anatomie + dark mode `airbusDarkTheme`, package public-ready non publié) ; vérification locale build/check/test/fidelity OK (Airbus 86,6%). Reste : référence redistribuable/pipeline final et gouvernance publication.
 - **WP14** : chrome documentaire par thème présent sur `main` (ci-dessous), validation visuelle publique gardée pour la fin de loop.
 
 ## WP14 — Chrome documentaire par thème (header + barre latérale fidèles au DS)
 
-**Statut global** : 🟢 implémenté sur `main` — Chrome Carbon + DSFR + Airbus + sent-tech livrés. DSFR et Airbus utilisent des assets SVG versionnés; Carbon utilise désormais le wordmark officiel `carbon-wordmark.svg` dans l'asset `apps/docs/static/chrome/carbon/logo.svg`. L'exécution ex post `node tools/compare/fidelity.mjs --theme dsfr --theme carbon --fail-under 85` est passée (90,2% DSFR, 92,7% Carbon), tandis que le flux Airbus reste en cours de stabilisation (82,0%). Validation visuelle publique planifiée en fin de loop.
+**Statut global** : 🟢 implémenté sur `main` — Chrome Carbon + DSFR + Airbus + sent-tech livrés. DSFR et Airbus utilisent des assets SVG versionnés; Carbon utilise désormais le wordmark officiel `carbon-wordmark.svg` dans l'asset `apps/docs/static/chrome/carbon/logo.svg`. L'exécution ex post complète `node tools/compare/fidelity.mjs` est passée (global 89,9% ; DSFR 90,2% ; Carbon 92,7% ; Airbus 86,6%). Validation visuelle publique planifiée en fin de loop.
 
 **Problème (signalé par l'utilisateur — déjà demandé)** : aujourd'hui, basculer de thème ne change **que la police / l'anatomie** (tokens). Le **chrome documentaire** (header avec logo, menu de header, menu de barre latérale) reste le nôtre → « **pas crédible** ». Exigence : quand on passe sur un thème d'import, **tout le chrome des docs doit prendre la FORME du site de documentation réel de ce design system** — **logos pixel-perfect**, forme du header, forme du menu de header, forme du menu latéral. On parle de la **FORME** (header / nav / sidebar), pas du contenu de présentation.
 
@@ -386,7 +386,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 | Item | Statut | Owner | Notes |
 |---|---|---|---|
-| Vérification fidélité locale DSFR/Carbon (comparatif bord à bord) | ✅ | Claude | Rapport généré via `node tools/compare/fidelity.mjs` (2026-06-02) : 90,2% DSFR, 92,7% Carbon, artefacts `docs/compare-fidelity-report.md` + `tools/compare/last-report.json`.
+| Vérification fidélité locale DSFR/Carbon/Airbus (comparatif bord à bord) | ✅ | Claude + Codex | Rapport généré via `node tools/compare/fidelity.mjs` (2026-06-02) : global 89,9%, DSFR 90,2%, Carbon 92,7%, Airbus 86,6%, artefacts `docs/compare-fidelity-report.md` + `tools/compare/last-report.json`.
 | Validation package smoke | ✅ | Release/CI | `npm_config_cache=$HOME/.npm npm run pack:smoke` passé (packaging + imports de vérification OK). |
 | Audit du chrome actuel (header/menu/sidebar paramétrables par thème ?) | ✅ | Claude | Fait — chrome non paramétrable → généralisé (3 composants + layout conditionnel). |
 | Logos pixel-perfect par DS | 🟢 | Claude + Codex | DSFR + Airbus + Carbon utilisent des SVG versionnés ; le wordmark Carbon officiel est branché depuis `assets/carbon-wordmark.svg`. |
@@ -403,7 +403,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 | Fait | Carbon + DSFR | Reproduire la FORME des 2 sites de doc réels (header + nav + sidebar + logo pixel-perfect) | ✅ | 100% | Forme fidèle livrée; Wordmark Carbon branché en production (`/chrome/carbon/logo.svg`), DSFR asset versionné. |
 | Fait | Airbus + standard | Airbus dans le même esprit + chrome standard sent-tech | ✅ | 95% | Standard intact. Airbus header navy + wordmark blanc + sidebar livrés ; les actions (recherche, notifications, aide, contact) sont désormais des liens explicites ; affinement futur dépend d'une référence visuelle validée. |
 | Fait | Icônes chrome | Standardiser les icônes interactives sur la librairie du repo | ✅ | 100% | Lucide remplace les SVG inline d'action; `svelte-check` 0 warning après wrappers de classe. |
-| Attendu | Crédibilité | Basculer le thème change le **chrome entier** (header/logo/nav/sidebar), pas que la police | ✅ | 100% | Implémenté sur `main`; run de fidélité en clôture avec `node tools/compare/fidelity.mjs --theme dsfr --theme carbon --fail-under 85` (DSFR 90,2% / Carbon 92,7%). |
+| Attendu | Crédibilité | Basculer le thème change le **chrome entier** (header/logo/nav/sidebar), pas que la police | ✅ | 100% | Implémenté sur `main`; run de fidélité complet avec `node tools/compare/fidelity.mjs` (global 89,9% ; DSFR 90,2% ; Carbon 92,7% ; Airbus 86,6%). |
 
 **Dépendances** : thème actif (switcher, WP10) ; réf chrome Airbus (WP10/Codex). **Owner** : Claude (docs). **Parallélisable** : oui (apps/docs, hors `packages/components-react/**` et `packages/theme-airbus/**`).
 

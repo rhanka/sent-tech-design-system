@@ -933,10 +933,24 @@ async function main() {
   const generatedAt = new Date().toISOString();
   const oracleGaps = [];       // thèmes publics seulement
   const oracleGapsLocal = [];  // thèmes privés locaux seulement
+  const measuredPublicKeys = new Set();
+  const measuredLocalKeys = new Set();
   for (const c of json.components) {
     const m = COMPARE_MANIFEST[c.theme]?.[c.component];
     if (!m) continue; // safety: only manifested pairs
     for (const r of c.rows) {
+      const measuredKey = gapKey({
+        theme: c.theme,
+        component: m.component,
+        scenario: m.scenario,
+        state: m.state,
+        property: r.prop,
+      });
+      if (PUBLIC_THEMES.has(c.theme)) {
+        measuredPublicKeys.add(measuredKey);
+      } else {
+        measuredLocalKeys.add(measuredKey);
+      }
       if (r.status === "=") continue;
       const gap = {
         theme: c.theme,
@@ -1001,8 +1015,8 @@ async function main() {
     },
   };
 
-  const registry = mergeRegistry(existing, oracleGaps, publicStamp);
-  const registryLocal = mergeRegistry(existingLocal, oracleGapsLocal, localStamp);
+  const registry = mergeRegistry(existing, oracleGaps, publicStamp, measuredPublicKeys);
+  const registryLocal = mergeRegistry(existingLocal, oracleGapsLocal, localStamp, measuredLocalKeys);
 
   const mdPath = join(REPO_ROOT, "docs", "compare-fidelity-report.md");
   const jsonPath = join(REPO_ROOT, "tools", "compare", "last-report.json");

@@ -40,8 +40,11 @@ export function manifestHash(manifest) {
  * @param {object|null} existing  prior registry ({version, entries:{}}) or null
  * @param {Array} oracleGaps      [{theme,component,scenario,state,property,ours,ref,delta}]
  * @param {object} stamp          {manifestHash, generatedAt, anatomyVersion, dsVersion, themeVersion}
+ * @param {Set<string>|null} measuredKeys  gap keys whose property was measured in
+ *   this run. When provided, only those entries may be auto-closed; filtered
+ *   runs must not mark out-of-scope gaps fixed.
  */
-export function mergeRegistry(existing, oracleGaps, stamp) {
+export function mergeRegistry(existing, oracleGaps, stamp, measuredKeys = null) {
   const next = {};
   for (const [key, e] of Object.entries(existing?.entries ?? {})) {
     next[key] = { ...e };
@@ -53,14 +56,16 @@ export function mergeRegistry(existing, oracleGaps, stamp) {
     seen.add(key);
     const prior = next[key];
     if (prior) {
+      const wasAutoFixed = prior.status === "fixed" && prior.source === "oracle" && !prior.note;
       next[key] = {
         ...prior,
         ours: g.ours,
         ref: g.ref,
         delta: g.delta,
+        status: wasAutoFixed ? "open" : prior.status,
         lastSeen: stamp.generatedAt,
         manifestHash: stamp.manifestHash,
-        regressed: prior.status === "fixed",
+        regressed: prior.status === "fixed" && !wasAutoFixed,
       };
     } else {
       next[key] = {
@@ -81,8 +86,11 @@ export function mergeRegistry(existing, oracleGaps, stamp) {
   }
 
   // Oracle-sourced gaps not seen this run = closed → fixed (keep history).
+  // Scope matters: a filtered run (theme/component) must not close gaps that
+  // were not measured at all.
   for (const e of Object.values(next)) {
-    if (e.source === "oracle" && !seen.has(gapKey(e))) {
+    const key = gapKey(e);
+    if (e.source === "oracle" && !seen.has(key) && (!measuredKeys || measuredKeys.has(key))) {
       if (e.status === "open") {
         e.status = "fixed";
         e.lastSeen = stamp.generatedAt;
