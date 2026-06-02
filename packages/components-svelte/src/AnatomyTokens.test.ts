@@ -55,7 +55,9 @@ const PHASE2_COMPONENTS = [
   "Select",
   "Table",
   "Tile",
-  "TileGroup"
+  "TileGroup",
+  "Switch",
+  "Toggle"
 ] as const;
 
 // The set of vars a theme actually emits is derived from the compiled CSS
@@ -306,7 +308,8 @@ describe("anatomy v1.2.0 — field style (outline vs filled-underline)", () => {
 
 /**
  * Phase 2 rollout guard: form-like and menu-like controls outside the original
- * 5 pilots consume `--st-component-control-hoverBackground` for secondary icon
+ * Pilot/components out of scope consume `--st-component-control-hoverBackground` on
+ * secondary interactions + selection controls (Switch/Toggle unchecked hover).
  * buttons, clear buttons and row controls. The token must be emitted by every
  * compiled theme instead of relying on component-level fallbacks.
  */
