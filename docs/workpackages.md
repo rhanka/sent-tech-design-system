@@ -184,7 +184,7 @@ Detail dans `docs/known-issues-and-fixes.md`.
 **Parallelisable avec** : tous (composants disjoints).
 **Bloque** : rien; la re-passe WP2 overlays/plan-completion est consignée.
 
-## WP7 — Audit DS large (37 références upstream, 5 clusters parallèles)
+## WP7 — Audit DS large (36 références upstream + capacité CLI, 5 clusters parallèles)
 
 **Statut global** : 🟡 80% — audit/reporting, traçabilité règles/tests, dogfooding et gate `design check` sur push sont fermés. Reste : couverture individuelle des références upstream hors findings statiques.
 
