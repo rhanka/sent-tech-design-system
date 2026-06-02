@@ -1,5 +1,6 @@
 import { createComponent } from "@sentropic/design-system-themes";
 import type { TenantTheme } from "@sentropic/design-system-themes";
+type ComponentFactoryInput = Parameters<typeof createComponent>;
 
 /**
  * Airbus Design System theme for the Sentropic token structure.
@@ -172,7 +173,7 @@ const foundation = {
   },
   borderWidth: {
     none: "0",
-    thin: "2px",
+    thin: "1px",
     thick: "2px"
   },
   borderStyle: { solid: "solid" },
@@ -211,6 +212,7 @@ const foundation = {
     underlineColor: airbusColor.coolGrey[60],
     underlineWidth: "1px",
     radiusTop: "0.1875rem",
+    radiusBottom: "0",
     underlineMode: "shadow",
     selectAppearance: "none",
     selectChevron:
@@ -322,6 +324,8 @@ const foundation = {
   search: {
     paddingBlock: "0.5rem",
     paddingInline: "2.5rem",
+    paddingLeft: "2.25rem",
+    paddingRight: "0.5rem",
     fontSize: "0.875rem",
     lineHeight: "1.25rem"
   },
@@ -531,9 +535,20 @@ export const airbusTheme: TenantTheme = {
   tokens: {
     foundation,
     semantic,
-    component: createComponent(semantic, foundation)
+    component: createAirbusComponent(semantic, foundation)
   }
 };
+
+function createAirbusComponent(semanticTheme: ComponentFactoryInput[0], foundationTheme: ComponentFactoryInput[1]) {
+  const component = createComponent(semanticTheme, foundationTheme);
+  return {
+    ...component,
+    field: {
+      ...component.field,
+      maxWidth: "17.0625rem"
+    }
+  };
+}
 
 export const airbusDarkTheme: TenantTheme = {
   id: "airbus-dark",
@@ -542,7 +557,7 @@ export const airbusDarkTheme: TenantTheme = {
   tokens: {
     foundation: darkFoundation,
     semantic: darkSemantic,
-    component: createComponent(darkSemantic, darkFoundation)
+    component: createAirbusComponent(darkSemantic, darkFoundation)
   }
 };
 

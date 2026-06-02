@@ -89,15 +89,18 @@ describe("airbusTheme", () => {
       tabLineHeight: "1.5rem",
       activeBorderTopWidth: "0",
       activeBorderBottomWidth: "0",
-      activeShadow: "inset 0 -2px 0 0 #00205b"
+      activeShadow: "inset 0 -1px 0 0 #00205b"
     });
 
     expect(component.search).toMatchObject({
       paddingBlock: "0.5rem",
       paddingInline: "2.5rem",
+      paddingLeft: "2.25rem",
+      paddingRight: "0.5rem",
       fontSize: "0.875rem",
       lineHeight: "1.25rem"
     });
+    expect(component.field).toMatchObject({ maxWidth: "17.0625rem" });
 
     expect(component.card).toMatchObject({
       border: "#e0e3e9",
@@ -202,6 +205,7 @@ describe("airbusTheme", () => {
       fillBg: "#25282e",
       underline: "inset 0 -1px 0 0 #ced5dd"
     });
+    expect(darkComponent.field).toMatchObject({ maxWidth: "17.0625rem" });
     expect(darkComponent.tabs).toMatchObject({
       activeText: "#86a8e9",
       activeBackground: "transparent",
@@ -212,7 +216,7 @@ describe("airbusTheme", () => {
       tabLineHeight: "1.5rem",
       activeBorderTopWidth: "0",
       activeBorderBottomWidth: "0",
-      activeShadow: "inset 0 -2px 0 0 #86a8e9"
+      activeShadow: "inset 0 -1px 0 0 #86a8e9"
     });
 
     const css = compileTheme(airbusDarkTheme);
@@ -235,7 +239,7 @@ describe("airbusTheme", () => {
     expect(light).toContain("--st-component-tabs-tabFontSize: 0.875rem;");
     expect(light).toContain("--st-component-tabs-tabLineHeight: 1.5rem;");
     expect(light).toContain("--st-component-tabs-activeText: #063b9e;");
-    expect(light).toContain("--st-component-tabs-activeShadow: inset 0 -2px 0 0 #00205b;");
+    expect(light).toContain("--st-component-tabs-activeShadow: inset 0 -1px 0 0 #00205b;");
     expect(light).toContain("--st-component-button-anatomy-states-hover-bg: #002d80;");
     expect(light).toContain("--st-component-drawer-zIndex: 1300;");
     expect(light).toContain("--st-component-overlay-zIndex: 1300;");
@@ -248,6 +252,8 @@ describe("airbusTheme", () => {
     expect(light).toContain("--st-component-card-anatomy-states-hover-bg: #f1f1f1;");
     expect(light).toContain("--st-component-link-anatomy-states-hover-text: #00205b;");
     expect(light).toContain("--st-component-link-anatomy-states-hover-decoration: underline;");
+    expect(light).toContain("--st-component-field-maxWidth: 17.0625rem;");
+    expect(light).toContain("--st-foundation-borderWidth-thin: 1px;");
 
     expect(dark).toContain("--st-component-control-hoverBackground: #25282e;");
     expect(dark).toContain("--st-component-control-focusRing: #e5ecf7;");
@@ -259,7 +265,7 @@ describe("airbusTheme", () => {
     expect(dark).toContain("--st-component-tabs-tabFontSize: 0.875rem;");
     expect(dark).toContain("--st-component-tabs-tabLineHeight: 1.5rem;");
     expect(dark).toContain("--st-component-tabs-activeText: #86a8e9;");
-    expect(dark).toContain("--st-component-tabs-activeShadow: inset 0 -2px 0 0 #86a8e9;");
+    expect(dark).toContain("--st-component-tabs-activeShadow: inset 0 -1px 0 0 #86a8e9;");
     expect(dark).toContain("--st-component-drawer-zIndex: 1300;");
     expect(dark).toContain("--st-component-overlay-zIndex: 1300;");
     expect(dark).toContain("--st-component-popover-zIndex: 1000;");

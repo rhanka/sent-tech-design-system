@@ -40,6 +40,9 @@ interface FieldInput {
   // v1.3.0 (additive): top-corner radius override for the field. When omitted,
   // the field's top corners inherit the theme's own shape radius (no change).
   radiusTop?: string;
+  // v1.6.0 (additive): bottom-corner radius override for the field. When
+  // omitted, bottom corners inherit the theme's own shape radius (no change).
+  radiusBottom?: string;
   // v1.3.0 (additive): how the filled-underline bottom rule is drawn.
   //  - "shadow": a `box-shadow inset` (the REAL DSFR « Champ de saisie »
   //    technique) — no geometric border, adds no box height.
@@ -334,6 +337,10 @@ interface ChoiceInput {
 interface SearchInput {
   paddingBlock?: string;      // field-box vertical padding; default "0" (current)
   paddingInline?: string;     // field-box horizontal padding; default "0" (current)
+  // v1.6.0 (additive): left/right asymmetric wrapper padding.
+  // If omitted, each side falls back to `paddingInline` for backward compatibility.
+  paddingLeft?: string;       // field-box left padding; default = `paddingInline`
+  paddingRight?: string;      // field-box right padding; default = `paddingInline`
   fontSize?: string;          // input font-size; default "1rem" (16px, current inherited)
   lineHeight?: string;        // input line-height; default "normal" (current)
   letterSpacing?: string;     // input letter-spacing; default "normal" (current)
@@ -457,10 +464,11 @@ const FALLBACK = {
   focus: { strategy: "outline", width: "2px", offset: "2px", color: "var(--st-semantic-border-interactive)", inset: "0" },
   // Field style fallback = boxed outline (base Sent Tech). underlineColor /
   // underlineWidth are inert for outline; they only drive filled-underline.
-  // radiusTop "" = inherit the theme's shape radius (resolved in fieldOf).
+  // v1.6.0: radiusTop/radiusBottom "" = inherit the theme's shape radius
+  // (resolved in fieldOf).
   // v1.4.0: selectAppearance "auto" (native arrow, base unchanged), no chevron,
   // and the prior 2rem right arrow gap.
-  field: { style: "outline", fillBg: "", underlineColor: "", underlineWidth: "1px", radiusTop: "", selectAppearance: "auto", selectChevron: "none", selectPaddingRight: "2rem" }
+  field: { style: "outline", fillBg: "", underlineColor: "", underlineWidth: "1px", radiusTop: "", radiusBottom: "", selectAppearance: "auto", selectChevron: "none", selectPaddingRight: "2rem" }
 } as const;
 
 function densityOf(f: FoundationInput, size: "sm" | "md" | "lg"): DensityAnatomy {
@@ -860,14 +868,21 @@ function choiceOf(semantic: SemanticInput, f: FoundationInput): {
 function searchOf(f: FoundationInput): {
   paddingBlock: string;
   paddingInline: string;
+  paddingLeft: string;
+  paddingRight: string;
   fontSize: string;
   lineHeight: string;
   letterSpacing: string;
 } {
   const s = f.search ?? {};
+  const paddingInline = s.paddingInline ?? "0";
   return {
     paddingBlock: s.paddingBlock ?? "0",
-    paddingInline: s.paddingInline ?? "0",
+    paddingInline: paddingInline,
+    // v1.6.0 (additive): left/right wrapper padding. Preserve backward
+    // compatibility by defaulting each side to the single paddingInline value.
+    paddingLeft: s.paddingLeft ?? paddingInline,
+    paddingRight: s.paddingRight ?? paddingInline,
     fontSize: s.fontSize ?? "1rem",       // 16px (current inherited)
     lineHeight: s.lineHeight ?? "normal",
     letterSpacing: s.letterSpacing ?? "normal"
@@ -1013,8 +1028,9 @@ function fieldOf(
   const selectPaddingRight = themed.selectPaddingRight ?? FALLBACK.field.selectPaddingRight;
   const selectLeaves = { selectAppearance, selectChevron, selectPaddingRight };
   // Top corners inherit the theme's shape radius unless the theme rounds them
-  // explicitly (DSFR field = 4px top). Bottom corners always keep shapeRadius.
+  // explicitly (DSFR field = 4px top). Bottom corners default to shapeRadius.
   const radiusTop = themed.radiusTop || shapeRadius;
+  const radiusBottom = themed.radiusBottom || shapeRadius;
   // Compose the field focus box-shadow so the resting underline is never lost
   // incoherently: an outline-strategy theme (focusBoxShadow === "none") keeps
   // the underline; an inset/ring theme stacks its ring + the underline.
@@ -1042,6 +1058,7 @@ function fieldOf(
         borderBottom: "none",
         borderLeft: "none",
         radiusTop,
+        radiusBottom,
         underline,
         focusShadow: composeFocus(underline),
         ...selectLeaves
@@ -1055,6 +1072,7 @@ function fieldOf(
       borderBottom: `${underlineWidth} ${borderStyle} ${underlineColor}`,
       borderLeft: "none",
       radiusTop,
+      radiusBottom,
       underline: "none",
       focusShadow: composeFocus("none"),
       ...selectLeaves
@@ -1072,6 +1090,7 @@ function fieldOf(
     borderBottom: border,
     borderLeft: border,
     radiusTop,
+    radiusBottom,
     underline: "none",
     focusShadow: composeFocus("none"),
     ...selectLeaves
@@ -1404,6 +1423,8 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       // stays the shared `control.anatomy.field` already mapped like Input.
       paddingBlock: searchResolved.paddingBlock,
       paddingInline: searchResolved.paddingInline,
+      paddingLeft: searchResolved.paddingLeft,
+      paddingRight: searchResolved.paddingRight,
       fontSize: searchResolved.fontSize,
       lineHeight: searchResolved.lineHeight,
       letterSpacing: searchResolved.letterSpacing
