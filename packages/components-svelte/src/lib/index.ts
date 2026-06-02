@@ -42,6 +42,7 @@ export { default as Menu } from "./Menu.svelte";
 export { default as MenuPopover } from "./MenuPopover.svelte";
 export { default as MenuTriggerButton } from "./MenuTriggerButton.svelte";
 export { default as Modal } from "./Modal.svelte";
+export { default as Notification } from "./Notification.svelte";
 export { default as MultiSelect } from "./MultiSelect.svelte";
 export { default as NumberInput } from "./NumberInput.svelte";
 export { default as OrderedList } from "./OrderedList.svelte";

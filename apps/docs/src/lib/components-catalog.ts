@@ -594,6 +594,17 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "Notification",
+    slug: "notification",
+    status: "documented",
+    category: "feedback",
+    groupSlug: "notification",
+    description: {
+      fr: "Notification inline/actionable avec tonalités info/success/warning/error.",
+      en: "Inline/actionable notification with info/success/warning/error tones."
+    }
+  },
+  {
     name: "ProgressBar",
     slug: "progress-bar",
     status: "documented",

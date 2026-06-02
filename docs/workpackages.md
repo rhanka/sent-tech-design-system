@@ -76,11 +76,9 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 | Plan-completion hero shelf + contexte demos | 🟢 | `824a2b7` | |
 | Re-passe `/components/overlays` | 🟢 | — | Retest Chrome headless desktop/mobile OK: modal Escape, OverflowMenu z-index 80 > Toast 60. |
 | Audit visuel pages composants restantes | 🟢 | — | Retest cible `/components/overlays` + `/components/plan-completion` desktop/mobile OK; validation publique ex post reste a faire en fin de loop. |
-| Inventaire couverture docs composants | 🟢 | — | 79 entrees catalogue = 79 exports publics Svelte hors `ThemeProvider`; 0 stub catalogue; garde `docs-navigation.test.ts`. |
-| Stubs P1 composants | 🟢 | — | Les routes dediees existent pour les composants precedemment restants: forms, navigation, overlays, feedback/data, layout. |
+| Inventaire couverture docs composants | 🟢 | — | 80 entrees catalogue = 80 exports publics Svelte hors `ThemeProvider`; 0 stub catalogue; garde `docs-navigation.test.ts`. |
+| Backlog composants (gap DSFR/Carbon) | 🟡 | — | Les routes dediees existent pour les composants precedemment restants: forms, navigation, overlays, feedback/data, layout; `Notification` ajouté. P1/P2 fermés pour Footer, Tile, TreeView, SkipLink, LanguageSelector, Quote, Highlight, Notification. Résiduel: table of contents, back-to-top, transcription, display settings, media content et patterns composites. |
 | Exports absents du catalogue | 🟢 | — | Aucun export UI absent; `ThemeProvider` reste exclu intentionnellement (primitive infra). |
-| Backlog composants (gap DSFR/Carbon) | 🟡 | — | Snapshot `docs/ds-component-gap-analysis.md` mis à jour 2026-06-01. P1/P2 fermés pour Footer, Tile, TreeView, SkipLink, LanguageSelector, Quote, Highlight. Reste backlog résiduel selon besoin produit : notification inline/actionable, table of contents, back-to-top, transcription, display settings, media content et patterns composites. |
-
 **Dependances** : aucune pour la couverture docs courante; WP6 retest cible consigne.
 **Parallelisable avec** : tous.
 
@@ -88,7 +86,7 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 
 | Vue | Track | Finalite | Etat | Avancement | Detail |
 |---|---|---|---:|---:|---|
-| Fait | Inventaire docs | Eviter les stubs invisibles et les exports oublies | 🟢 | 100% | `COMPONENTS` couvre les 79 exports publics Svelte hors `ThemeProvider`; test de parite ajoute. |
+| Fait | Inventaire docs | Eviter les stubs invisibles et les exports oublies | 🟢 | 100% | `COMPONENTS` couvre les 80 exports publics Svelte hors `ThemeProvider`; test de parite ajoute. |
 | Fait | Pages dediees | Fermer les stubs P1 visibles et les composants anciennement groupes | 🟢 | 100% | Routes dediees presentes pour forms, navigation, overlays, feedback/data, layout et charts. |
 | Fait | Catalogue absents | Ajouter les exports publics manquants au flux docs | 🟢 | 100% | Aucun export UI absent; `ThemeProvider` reste infra et exclu. |
 | Fait | Validation navigateur cible | Rejouer le site docs sur desktop/mobile et inspecter overlays + plan-completion | 🟢 | 100% | `npm --workspace apps/docs run build` puis smoke Chrome headless: overlays desktop/mobile (modal Escape, menu z 80 > toast 60), plan-completion desktop/mobile (popover z 80, drawer backdrop fixed z 100, Escape close). Validation publique ex post gardee pour la fin du loop. |
@@ -104,7 +102,7 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 | Application sur docs site | 🟢 | inclus WP2 | |
 | Application sur Sentropic (`../sentropic`) | ➡️ user | — | **Décidé 2026-05-22** : l'utilisateur applique lui-même. Le DS ne touche pas. |
 | Application sur NC (`../nc-fullstack`) | ➡️ user | — | idem |
-| Mise a jour `docs/sentropic-alignment-inventory.md` | ⚪ | — | mesurer ecart restant une fois apppliqué |
+| Mise a jour `docs/sentropic-alignment-inventory.md` | ✅ | — | inventaire mis à jour en cohérence avec la reprise DS + progression réelle documentée |
 
 **Dependances** : aucune côté DS, le contrat est public.
 **Parallelisable avec** : tous.
@@ -191,9 +189,9 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 | Vue | Track | Finalite | Etat | Avancement | Detail |
 |---|---|---|---:|---:|---|
-| Fait | Audit V1/V2 | Consolider les findings DS en source exploitable | 🟢 | 100% | Audit V1, 5 rapports clusters, master V2, 26 règles actives transmises à WP8. |
-| A faire | Couverture upstream | Étendre les findings au-delà des règles statiques déjà livrées | 🟡 | 65% | `docs/ds-audit-coverage-matrix.md` prouve 36 fichiers réels, 26 règles couvertes par tests, 9/36 références avec finding local direct; le reste est partiel, hors-cluster ou non déterministe. |
-| Fait | Traçabilité | Relier `finding WP7 -> règle WP8 -> test` | 🟢 | 100% | `docs/ds-audit-coverage-matrix.md` et `docs/wp8-design-cli-traceability.md` couvrent les 26 règles + tests. |
+| Fait | Audit V1/V2 | Consolider les findings DS en source exploitable | 🟢 | 100% | Audit V1, 5 rapports clusters, master V2, 27 règles actives transmises à WP8. |
+| A faire | Couverture upstream | Étendre les findings au-delà des règles statiques déjà livrées | 🟡 | 65% | `docs/ds-audit-coverage-matrix.md` prouve 36 fichiers réels, 27 règles couvertes par tests, 9/36 références avec finding local direct; le reste est partiel, hors-cluster ou non déterministe. |
+| Fait | Traçabilité | Relier `finding WP7 -> règle WP8 -> test` | 🟢 | 100% | `docs/ds-audit-coverage-matrix.md` et `docs/wp8-design-cli-traceability.md` couvrent les 27 règles + tests. |
 | Attendu | Séparation WP7/WP8 | WP7 reste le chantier audit, WP8 reste le moteur | 🟢 | 100% | Toute règle WP8 doit référencer une entrée WP7 V2. |
 
 **Dépendances** : WP8 consomme WP7 pour les règles ; WP6 ne bloque plus WP7 mais impose un retest visuel overlays/plan-completion.
@@ -206,7 +204,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 >
 > La CLI `design` factorise 17-19 méthodes en **5 verbes** : `init` · `build <feature>` · `check <target>` · `align <target>` · `polish <target>`. **L'audit n'est qu'1 verbe** = `design check --tech`. Ne jamais réduire le moteur `design` à « audit ».
 
-**Statut global** : 🟢 cœur livré — les 5 verbes `init`/`build`/`check`/`align`/`polish` sont réels ou honnêtement expérimentaux (plus aucun faux succès), 79 tests skills verts ; package renommé `@sentropic/design-system-skills`, **publié `0.1.0` sur npm via OIDC Trusted Publishing**.
+**Statut global** : 🟢 cœur livré — les 5 verbes `init`/`build`/`check`/`align`/`polish` sont réels ou honnêtement expérimentaux (plus aucun faux succès), 81 tests skills verts ; package renommé `@sentropic/design-system-skills`, **publié `0.1.0` sur npm via OIDC Trusted Publishing**.
 
 **Périmètre V1 livré** : `design check --tech <target>` retourne un rapport JSON, codes `0/1/2`, sans Playwright. C'est 1 des 5 verbes — pas « la CLI ». Les 4 autres verbes sont le cœur du reste de WP8.
 
@@ -216,7 +214,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 |---|---|---|---|
 | P0 Contrat V1 | `design audit <target>`, aliases, codes retour, README/tests | 🟢 100% | binaire `design`, subcommand `audit`, wrapper skill aligne, `check --technical/--heuristics` testes, `--personas` refuse explicitement |
 | P1 Moteur statique | `packages/skills` API `audit`, CLI, JSON, jsdom | 🟢 100% | moteur compile et expose `AuditReport` |
-| P2 Ruleset initial | 26 règles depuis WP7 | 🟢 100% | 26 règles actives, token-aware, tracées `rule -> principle -> finding WP7`; dogfooding WP11 documenté |
+| P2 Ruleset initial | 27 règles depuis WP7 | 🟢 100% | 27 règles actives, token-aware, tracées `rule -> principle -> finding WP7`; dogfooding WP11 documenté |
 | P3 Knowledge base | `docs/principles/*` reliés aux règles | 🟢 100% | principes présents; chaque règle expose `principle`/`wp7Finding`; matrice WP8 à jour |
 | P4 Skill multi-harness | wrapper unique Claude/Codex/Gemini, zéro logique métier | 🟢 100% | skill local + plugin portable; wrappers acceptent `audit <target>`/`<target>` et `fidelity ...`; adapters d'installation propres à chaque harness gardés hors repo |
 | P5 Distribution/CI/npm | lint CI, publication, règles token-aware | 🟢 100% | DS `0.8.0` + `@sentropic/design-system-skills@0.1.0` publiés via OIDC Trusted Publishing (provenance SLSA). Workflows `npm-publish.yml` (DS, tag `v*`) et `skills-publish.yml` (skills, tag `skills-v*`). |
@@ -225,11 +223,11 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 | Vue | Track | Finalite | Etat | Avancement | Detail |
 |---|---|---|---:|---:|---|
-| Fait | Scaffold moteur | Disposer d'un moteur local deterministe | 🟢 | 100% | `packages/skills`, API `audit`, CLI, 26 règles, build TypeScript. |
+| Fait | Scaffold moteur | Disposer d'un moteur local deterministe | 🟢 | 100% | `packages/skills`, API `audit`, CLI, 27 règles, build TypeScript. |
 | Fait | Knowledge base | Capturer les principes DS | 🟢 | 100% | `docs/principles/*` initialisés. |
 | Fait | Skill V1 | Exécuter le moteur depuis un harness agent | 🟢 | 100% | `tools/skills/sent-tech-skills/scripts/audit.mjs` et la copie plugin appellent le contrat canonique; préfixe `audit` optionnel vérifié; stratégie wrapper unique actée. |
 | Fait | Alignement CLI/themes | Mapper les corrections CLI vers les vrais tokens publies | 🟢 | 100% | `design align --tones` remplace vers `--st-semantic-*`; les themes exportent `--st-foundation-*`; tests ajoutes. |
-| Fait | Ruleset | Passer de 7 à 26 règles initiales | 🟢 100% | 26 règles actives pilotées par `docs/ds-audit-consolidated-v2.md`; 79 tests skills verts. |
+| Fait | Ruleset | Passer de 7 à 27 règles initiales | 🟢 100% | 27 règles actives pilotées par `docs/ds-audit-consolidated-v2.md`; 81 tests skills verts. |
 | Fait | Promesse CLI | Nettoyer ou rendre reels `build`, `polish`, `init --extract`, `check --human` | 🟢 | 100% | `init --extract`, `build` craft, `check --human`, `polish --motion/--essence` sont concrets; passes agentiques non déterministes retournent `2`. |
 | Fait | Traçabilité | Lier règle, principe et finding WP7 | 🟢 | 100% | `Rule.principle` / `Rule.wp7Finding` obligatoires et documentés dans `docs/wp8-design-cli-traceability.md`. |
 | Fait | Release npm DS | Publier les 3 packages DS | 🟢 | 100% | `@sentropic/design-system-{tokens,themes,svelte}@0.8.0` publiés via OIDC + provenance (run `26422110851`). |
@@ -299,7 +297,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 | Item | Statut | Notes |
 |---|---|---|
 | Installer la lib publiée si nécessaire | 🟢 | Workspace local utilisé; package publié `@sentropic/design-system-skills@0.1.0` déjà disponible. |
-| `design check` sur le site/docs DS | 🟢 | Build docs courant audité: 86 pages, 26 règles, 0 finding après corrections `h1-inline-badge`, `status-indicator-label`, `line-length-cap`, déduplication `no-em-dash`, précision `no-bare-hex`, `single-font` et copy docs; voir `docs/dogfooding-design-check.md`. |
+| `design check` sur le site/docs DS | 🟢 | Build docs courant audité: 86 pages, 27 règles, 0 finding après corrections `h1-inline-badge`, `status-indicator-label`, `line-length-cap`, déduplication `no-em-dash`, précision `no-bare-hex`, `single-font` et copy docs; voir `docs/dogfooding-design-check.md`. |
 | Boucler findings → corrections | 🟢 | Dette prioritaire `no-em-dash` 60 → 0; `single-font`, `no-bare-hex`, `h1-inline-badge`, `status-indicator-label` et `line-length-cap` restent à 0. |
 
 **Dépendances** : WP8 (package publié).
@@ -356,7 +354,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 ## WP14 — Chrome documentaire par thème (header + barre latérale fidèles au DS)
 
-**Statut global** : 🟢 implémenté sur `main` — Chrome Carbon + DSFR + Airbus + sent-tech livrés. DSFR et Airbus utilisent des assets SVG versionnés; Carbon garde un wordmark placeholder propre. Validation visuelle publique ex post gardée pour la fin de loop.
+**Statut global** : 🟢 implémenté sur `main` — Chrome Carbon + DSFR + Airbus + sent-tech livrés. DSFR et Airbus utilisent des assets SVG versionnés; Carbon utilise désormais le wordmark officiel `carbon-wordmark.svg` dans l'asset `apps/docs/static/chrome/carbon/logo.svg`. Validation visuelle publique ex post gardée pour la fin de loop.
 
 **Problème (signalé par l'utilisateur — déjà demandé)** : aujourd'hui, basculer de thème ne change **que la police / l'anatomie** (tokens). Le **chrome documentaire** (header avec logo, menu de header, menu de barre latérale) reste le nôtre → « **pas crédible** ». Exigence : quand on passe sur un thème d'import, **tout le chrome des docs doit prendre la FORME du site de documentation réel de ce design system** — **logos pixel-perfect**, forme du header, forme du menu de header, forme du menu latéral. On parle de la **FORME** (header / nav / sidebar), pas du contenu de présentation.
 
@@ -371,7 +369,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 | Item | Statut | Owner | Notes |
 |---|---|---|---|
 | Audit du chrome actuel (header/menu/sidebar paramétrables par thème ?) | ✅ | Claude | Fait — chrome non paramétrable → généralisé (3 composants + layout conditionnel). |
-| Logos pixel-perfect par DS | 🟡 | Claude + Codex | DSFR + Airbus SVG versionnés dans `apps/docs/static/chrome/`; Carbon reste placeholder propre à remplacer par wordmark officiel si fourni. |
+| Logos pixel-perfect par DS | 🟢 | Claude + Codex | DSFR + Airbus + Carbon utilisent des SVG versionnés ; le wordmark Carbon officiel est branché depuis `assets/carbon-wordmark.svg`. |
 | Chrome **Carbon** (barre noire + sidebar arbre + icônes) | ✅ | Claude | Livré sur `main`; forme documentaire Carbon présente. |
 | Chrome **DSFR** (logo RF + nav horizontale soulignée + sidebar bloc actif + fil d'Ariane) | ✅ | Claude | Livré sur `main`; Marianne active (chargée via CDN). |
 | Chrome **Airbus** (même esprit) | ✅ | Claude + réf Codex | Livré sur `main` avec header navy, wordmark blanc et sidebar Airbus. À affiner uniquement après nouvelle référence visuelle. |
@@ -382,7 +380,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 | Vue | Track | Finalité | État | Avancement | Détail |
 |---|---|---|---:|---:|---|
 | Fait | Audit chrome | Vérifier la paramétrabilité header/menu/sidebar par thème | ✅ | 100% | Chrome non paramétrable → 3 composants ChromeCarbon/ChromeDsfr/ChromeAirbus + layout conditionnel client-only. |
-| Fait | Carbon + DSFR | Reproduire la FORME des 2 sites de doc réels (header + nav + sidebar + logo pixel-perfect) | ✅ | 90% | Forme fidèle livrée; Carbon logo placeholder, DSFR asset versionné. |
+| Fait | Carbon + DSFR | Reproduire la FORME des 2 sites de doc réels (header + nav + sidebar + logo pixel-perfect) | ✅ | 100% | Forme fidèle livrée; Wordmark Carbon branché en production (`/chrome/carbon/logo.svg`), DSFR asset versionné. |
 | Fait | Airbus + standard | Airbus dans le même esprit + chrome standard sent-tech | ✅ | 85% | Standard intact. Airbus header navy + wordmark blanc + sidebar livrés; affinement futur dépend d'une référence visuelle validée. |
 | Fait | Icônes chrome | Standardiser les icônes interactives sur la librairie du repo | ✅ | 100% | Lucide remplace les SVG inline d'action; `svelte-check` 0 warning après wrappers de classe. |
 | Attendu | Crédibilité | Basculer le thème change le **chrome entier** (header/logo/nav/sidebar), pas que la police | ✅ | 100% | Implémenté sur `main`; validation visuelle publique ex post à la fin. |
@@ -395,8 +393,8 @@ A tout instant on peut tenir 3 a 4 agents en parallele sans conflit de fichiers.
 
 1. **WP10 thème Airbus / theming** — garder le package public-ready, compléter uniquement ce qui est vérifiable localement; publication client bloquée par décision version/release.
 2. **WP7 audit DS** — augmenter la couverture upstream si de nouvelles références locales deviennent exploitables; le gate strict 100% est déjà actif.
-3. **WP14 chrome documentaire** — validation visuelle publique en fin de loop; remplacement du wordmark Carbon seulement si asset officiel redistribuable fourni.
-4. **WP2 backlog composants** — ne rouvrir que sur besoin produit concret (notification inline/actionable, toc, back-to-top, transcription, display settings, media content, composites).
+3. **WP14 chrome documentaire** — validation visuelle publique en fin de loop; monitorer l'alignement visuel Carbon/DSFR/Airbus avec référence.
+4. **WP2 backlog composants** — ne rouvrir que sur besoin produit concret (toc, back-to-top, transcription, display settings, media content, composites).
 5. **Fond fermé** : WP5 charts, WP8 moteur, WP9 Chat/Agent, WP11 dogfooding, WP12 templates source et WP13 React.
 
 ## Décisions tranchées / gardes restantes
