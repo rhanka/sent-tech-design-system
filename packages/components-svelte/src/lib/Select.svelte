@@ -109,8 +109,8 @@
        rounded box with no underline shadow → base Sent Tech unchanged. */
     border-top-left-radius: var(--st-component-control-anatomy-field-radiusTop, var(--st-component-control-anatomy-shape-radius, 0.375rem));
     border-top-right-radius: var(--st-component-control-anatomy-field-radiusTop, var(--st-component-control-anatomy-shape-radius, 0.375rem));
-    border-bottom-right-radius: var(--st-component-control-anatomy-shape-radius, 0.375rem);
-    border-bottom-left-radius: var(--st-component-control-anatomy-shape-radius, 0.375rem);
+    border-bottom-right-radius: var(--st-component-control-anatomy-field-radiusBottom, var(--st-component-control-anatomy-shape-radius, 0.375rem));
+    border-bottom-left-radius: var(--st-component-control-anatomy-field-radiusBottom, var(--st-component-control-anatomy-shape-radius, 0.375rem));
     box-shadow: var(--st-component-control-anatomy-field-underline, none);
     color: var(--st-component-control-text, var(--st-semantic-text-primary));
     font-family: var(--st-component-control-anatomy-typography-family, inherit);

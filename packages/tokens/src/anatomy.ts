@@ -16,7 +16,7 @@
 
 import type { TokenTree } from "./foundation.js";
 
-export const ANATOMY_VERSION = "1.5.0";
+export const ANATOMY_VERSION = "1.6.0";
 
 /** A CSS-ready value: a literal or a `var(--st-*)` reference. */
 export type CssValue = string;
@@ -96,6 +96,12 @@ export interface FieldAnatomy {
    * (DSFR = 4px) while the bottom corners keep `shape.radius`.
    */
   radiusTop: CssValue;
+  /**
+   * BOTTOM-corner radius (v1.6.0). Defaults to the theme's `shape.radius` so a
+   * boxed field is unchanged; a filled-underline field may set this to `0` to keep
+   * square lower corners while the top corners remain rounded.
+   */
+  radiusBottom: CssValue;
   /**
    * Bottom-rule box-shadow (v1.3.0). `none` for an outline field (it draws a
    * real border); `inset 0 -<width> 0 0 <color>` for a filled-underline field,
