@@ -136,6 +136,12 @@
     width: 100%;
   }
 
+  .st-select:hover {
+    background:
+      var(--st-component-control-anatomy-field-selectChevron, none),
+      var(--st-component-control-hoverBackground, var(--st-component-control-anatomy-field-fillBg, var(--st-component-control-background, var(--st-semantic-surface-default))));
+  }
+
   .st-select--sm {
     min-height: var(--st-component-control-smHeight, 2rem);
   }

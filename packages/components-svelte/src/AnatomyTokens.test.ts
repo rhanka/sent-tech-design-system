@@ -52,6 +52,8 @@ const PHASE2_COMPONENTS = [
   "PasswordInput",
   "Toggletip",
   "TreeView",
+  "Select",
+  "Table",
   "Tile",
   "TileGroup"
 ] as const;
