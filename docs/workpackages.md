@@ -104,7 +104,7 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 | Application sur docs site | 🟢 | inclus WP2 | |
 | Application sur Sentropic (`../sentropic`) | ➡️ user | — | **Décidé 2026-05-22** : l'utilisateur applique lui-même. Le DS ne touche pas. |
 | Application sur NC (`../nc-fullstack`) | ➡️ user | — | idem |
-| Mise a jour `docs/sentropic-alignment-inventory.md` | ⚪ | — | mesurer ecart restant une fois apppliqué |
+| Mise a jour `docs/sentropic-alignment-inventory.md` | ✅ | — | inventaire mis à jour en cohérence avec la reprise DS + progression réelle documentée |
 
 **Dependances** : aucune côté DS, le contrat est public.
 **Parallelisable avec** : tous.
@@ -356,7 +356,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 ## WP14 — Chrome documentaire par thème (header + barre latérale fidèles au DS)
 
-**Statut global** : 🟢 implémenté sur `main` — Chrome Carbon + DSFR + Airbus + sent-tech livrés. DSFR et Airbus utilisent des assets SVG versionnés; Carbon garde un wordmark placeholder propre. Validation visuelle publique ex post gardée pour la fin de loop.
+**Statut global** : 🟢 implémenté sur `main` — Chrome Carbon + DSFR + Airbus + sent-tech livrés. DSFR et Airbus utilisent des assets SVG versionnés; Carbon utilise désormais le wordmark officiel `carbon-wordmark.svg` dans l'asset `apps/docs/static/chrome/carbon/logo.svg`. Validation visuelle publique ex post gardée pour la fin de loop.
 
 **Problème (signalé par l'utilisateur — déjà demandé)** : aujourd'hui, basculer de thème ne change **que la police / l'anatomie** (tokens). Le **chrome documentaire** (header avec logo, menu de header, menu de barre latérale) reste le nôtre → « **pas crédible** ». Exigence : quand on passe sur un thème d'import, **tout le chrome des docs doit prendre la FORME du site de documentation réel de ce design system** — **logos pixel-perfect**, forme du header, forme du menu de header, forme du menu latéral. On parle de la **FORME** (header / nav / sidebar), pas du contenu de présentation.
 
@@ -371,7 +371,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 | Item | Statut | Owner | Notes |
 |---|---|---|---|
 | Audit du chrome actuel (header/menu/sidebar paramétrables par thème ?) | ✅ | Claude | Fait — chrome non paramétrable → généralisé (3 composants + layout conditionnel). |
-| Logos pixel-perfect par DS | 🟡 | Claude + Codex | DSFR + Airbus SVG versionnés dans `apps/docs/static/chrome/`; Carbon reste placeholder propre à remplacer par wordmark officiel si fourni. |
+| Logos pixel-perfect par DS | 🟢 | Claude + Codex | DSFR + Airbus + Carbon utilisent des SVG versionnés ; le wordmark Carbon officiel est branché depuis `assets/carbon-wordmark.svg`. |
 | Chrome **Carbon** (barre noire + sidebar arbre + icônes) | ✅ | Claude | Livré sur `main`; forme documentaire Carbon présente. |
 | Chrome **DSFR** (logo RF + nav horizontale soulignée + sidebar bloc actif + fil d'Ariane) | ✅ | Claude | Livré sur `main`; Marianne active (chargée via CDN). |
 | Chrome **Airbus** (même esprit) | ✅ | Claude + réf Codex | Livré sur `main` avec header navy, wordmark blanc et sidebar Airbus. À affiner uniquement après nouvelle référence visuelle. |
@@ -382,7 +382,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 | Vue | Track | Finalité | État | Avancement | Détail |
 |---|---|---|---:|---:|---|
 | Fait | Audit chrome | Vérifier la paramétrabilité header/menu/sidebar par thème | ✅ | 100% | Chrome non paramétrable → 3 composants ChromeCarbon/ChromeDsfr/ChromeAirbus + layout conditionnel client-only. |
-| Fait | Carbon + DSFR | Reproduire la FORME des 2 sites de doc réels (header + nav + sidebar + logo pixel-perfect) | ✅ | 90% | Forme fidèle livrée; Carbon logo placeholder, DSFR asset versionné. |
+| Fait | Carbon + DSFR | Reproduire la FORME des 2 sites de doc réels (header + nav + sidebar + logo pixel-perfect) | ✅ | 100% | Forme fidèle livrée; Wordmark Carbon branché en production (`/chrome/carbon/logo.svg`), DSFR asset versionné. |
 | Fait | Airbus + standard | Airbus dans le même esprit + chrome standard sent-tech | ✅ | 85% | Standard intact. Airbus header navy + wordmark blanc + sidebar livrés; affinement futur dépend d'une référence visuelle validée. |
 | Fait | Icônes chrome | Standardiser les icônes interactives sur la librairie du repo | ✅ | 100% | Lucide remplace les SVG inline d'action; `svelte-check` 0 warning après wrappers de classe. |
 | Attendu | Crédibilité | Basculer le thème change le **chrome entier** (header/logo/nav/sidebar), pas que la police | ✅ | 100% | Implémenté sur `main`; validation visuelle publique ex post à la fin. |
@@ -395,7 +395,7 @@ A tout instant on peut tenir 3 a 4 agents en parallele sans conflit de fichiers.
 
 1. **WP10 thème Airbus / theming** — garder le package public-ready, compléter uniquement ce qui est vérifiable localement; publication client bloquée par décision version/release.
 2. **WP7 audit DS** — augmenter la couverture upstream si de nouvelles références locales deviennent exploitables; le gate strict 100% est déjà actif.
-3. **WP14 chrome documentaire** — validation visuelle publique en fin de loop; remplacement du wordmark Carbon seulement si asset officiel redistribuable fourni.
+3. **WP14 chrome documentaire** — validation visuelle publique en fin de loop; monitorer l'alignement visuel Carbon/DSFR/Airbus avec référence.
 4. **WP2 backlog composants** — ne rouvrir que sur besoin produit concret (notification inline/actionable, toc, back-to-top, transcription, display settings, media content, composites).
 5. **Fond fermé** : WP5 charts, WP8 moteur, WP9 Chat/Agent, WP11 dogfooding, WP12 templates source et WP13 React.
 
