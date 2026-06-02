@@ -1,0 +1,64 @@
+import { defineComponent, h } from "vue";
+import { classNames } from "./classNames.js";
+
+export type FooterLink = { label: unknown; href: string };
+export type FooterColumn = { title?: unknown; links: FooterLink[] };
+
+export type FooterProps = {
+  brand?: unknown;
+  columns?: FooterColumn[];
+  links?: FooterLink[];
+  copyright?: unknown;
+  class?: string;
+};
+
+export const Footer = defineComponent({
+  name: "Footer",
+  props: {
+    brand: { type: [String, Object] as unknown as () => unknown, default: undefined },
+    columns: { type: Array as () => FooterColumn[], default: undefined },
+    links: { type: Array as () => FooterLink[], default: undefined },
+    copyright: { type: [String, Object] as unknown as () => unknown, default: undefined },
+    class: { type: String, default: undefined },
+  },
+  setup(props, { slots, attrs }) {
+    return () => {
+      const groups: FooterColumn[] =
+        props.columns ?? (props.links ? [{ links: props.links }] : []);
+
+      return h(
+        "footer",
+        {
+          ...attrs,
+          class: classNames("st-footer", props.class),
+        },
+        [
+          h("div", { class: "st-footer__top" }, [
+            props.brand
+              ? h("div", { class: "st-footer__brand" }, props.brand as string)
+              : slots.brand
+                ? h("div", { class: "st-footer__brand" }, slots.brand())
+                : null,
+            h(
+              "div",
+              { class: "st-footer__columns" },
+              groups.map((group, index) =>
+                h("nav", { key: index }, [
+                  group.title
+                    ? h("h2", group.title as string)
+                    : null,
+                  ...group.links.map((link) =>
+                    h("a", { key: link.href, href: link.href }, link.label as string),
+                  ),
+                ]),
+              ),
+            ),
+          ]),
+          props.copyright
+            ? h("div", { class: "st-footer__copyright" }, props.copyright as string)
+            : null,
+        ],
+      );
+    };
+  },
+});
