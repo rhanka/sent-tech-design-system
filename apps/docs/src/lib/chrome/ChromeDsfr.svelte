@@ -79,21 +79,21 @@
       <div class="dsfr-header__inner">
         <!-- Gauche : logo RF + titre -->
         <div class="dsfr-header__brand">
-          <a href="/" class="dsfr-header__brand-link" aria-label="Retour à l'accueil">
-            <!-- LOGO DSFR réel — bloc marque République Française (drapeau tricolore).
-                 Décoratif : le nom est porté par le texte HTML ci-dessous. -->
-            <img
-              src="/chrome/dsfr/logo-rf.svg"
-              alt=""
-              class="dsfr-logo-img"
-              width="72"
-              height="72"
-              aria-hidden="true"
-            />
-            <div class="dsfr-brand-text">
-              <span class="dsfr-brand-republic">RÉPUBLIQUE<br/>FRANÇAISE</span>
-              <span class="dsfr-brand-title">Système de Design<br/>de l'État</span>
-            </div>
+          <a href="/" class="dsfr-header__brand-link" aria-label="Accueil — Système de Design de l'État">
+            <!-- Bloc-marque DSFR officiel : drapeau + Marianne (SVG, chemins repris du
+                 .fr-logo::before de systeme-de-design.gouv.fr) AU-DESSUS de RÉPUBLIQUE FRANÇAISE. -->
+            <span class="dsfr-logo">
+              <img
+                src="/chrome/dsfr/logo-rf.svg"
+                alt=""
+                class="dsfr-logo-img"
+                width="44"
+                height="18"
+                aria-hidden="true"
+              />
+              <span class="dsfr-logo-rf">RÉPUBLIQUE<br/>FRANÇAISE</span>
+            </span>
+            <span class="dsfr-service-title">Système de Design<br/>de l'État</span>
           </a>
         </div>
 
@@ -295,34 +295,35 @@
     text-decoration: none;
   }
 
-  /* Logo DSFR — drapeau tricolore carré (bloc-marque officiel) */
+  /* Bloc-marque DSFR : drapeau+Marianne au-dessus de RÉPUBLIQUE FRANÇAISE */
+  .dsfr-logo {
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
   .dsfr-logo-img {
     display: block;
-    flex: 0 0 auto;
-    height: 4rem; /* 64px — dans la borne 64-80px de la spec DSFR */
-    width: auto;
+    width: 2.75rem; /* 44px ; ratio 44:18 du drapeau officiel préservé */
+    height: auto;
+    margin-bottom: 0.25rem; /* 4px, comme le .fr-logo::before officiel */
   }
 
-  .dsfr-brand-text {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-
-  .dsfr-brand-republic {
-    color: var(--dsfr-black);
-    font-size: 0.75rem;
+  .dsfr-logo-rf {
+    color: #161616;
+    font-size: 0.875rem;
     font-weight: 700;
-    letter-spacing: 0.04em;
-    line-height: 1.2;
+    letter-spacing: -0.01em;
+    line-height: 0.95;
     text-transform: uppercase;
   }
 
-  .dsfr-brand-title {
+  .dsfr-service-title {
     color: var(--dsfr-blue);
-    font-size: 0.8rem;
-    font-weight: 600;
-    line-height: 1.3;
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1.25;
   }
 
   .dsfr-header__tools {
