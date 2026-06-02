@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-06-02T09:23:00.693Z",
+  "generatedAt": "2026-06-02T09:51:14.689Z",
   "manifestHash": "5a77b2d0",
   "anatomyVersion": "1.5.0",
   "dsVersion": "0.10.3",
@@ -20,7 +20,7 @@
       "delta": "Δ1.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -35,7 +35,7 @@
       "delta": "Δ1.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -50,7 +50,7 @@
       "delta": "Δ1.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -65,7 +65,7 @@
       "delta": "Δ1.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -80,7 +80,7 @@
       "delta": "Δ2.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -95,7 +95,7 @@
       "delta": "Δ2.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -110,7 +110,7 @@
       "delta": "rgb(255,255,255) vs rgb(245,245,254)",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -125,7 +125,7 @@
       "delta": "Δ1.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -140,7 +140,7 @@
       "delta": "Δ1.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -155,7 +155,7 @@
       "delta": "Δ1.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -170,7 +170,7 @@
       "delta": "Δ1.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -185,7 +185,7 @@
       "delta": "Δ2.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -200,7 +200,7 @@
       "delta": "Δ2.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -215,7 +215,7 @@
       "delta": "rgb(0,0,145) vs rgb(229,229,229)",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -230,7 +230,7 @@
       "delta": "rgb(255,255,255) vs rgb(146,146,146)",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -245,7 +245,7 @@
       "delta": "Δ47.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -260,7 +260,7 @@
       "delta": "Δ47.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -275,7 +275,7 @@
       "delta": "Δ47.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -290,7 +290,7 @@
       "delta": "rgb(246,246,246) vs rgb(238,238,238)",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -305,7 +305,7 @@
       "delta": "Δ2.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -320,7 +320,7 @@
       "delta": "Δ2.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -335,7 +335,7 @@
       "delta": "Δ47.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -350,7 +350,7 @@
       "delta": "Δ8.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -365,7 +365,7 @@
       "delta": "Δ47.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -380,7 +380,7 @@
       "delta": "Δ4.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -395,7 +395,7 @@
       "delta": "Δ87.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -410,7 +410,7 @@
       "delta": "underline vs none",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -425,7 +425,7 @@
       "delta": "Δ-58.8px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -440,7 +440,7 @@
       "delta": "Δ-20.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -455,7 +455,7 @@
       "delta": "Δ-32.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -470,7 +470,7 @@
       "delta": "Δ79.1px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -485,7 +485,7 @@
       "delta": "Δ999.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -500,7 +500,7 @@
       "delta": "Δ-205.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -515,7 +515,7 @@
       "delta": "Δ-20.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -530,7 +530,7 @@
       "delta": "rgb(0,0,145) vs rgb(0,0,0)/a0",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -545,7 +545,7 @@
       "delta": "Δ28.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -560,7 +560,7 @@
       "delta": "Δ-10.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -575,7 +575,7 @@
       "delta": "Δ28.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -590,7 +590,7 @@
       "delta": "Δ2.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -605,7 +605,7 @@
       "delta": "Δ15.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -620,7 +620,7 @@
       "delta": "Δ15.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -635,7 +635,7 @@
       "delta": "Δ15.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -650,7 +650,7 @@
       "delta": "Δ15.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -665,7 +665,7 @@
       "delta": "Δ15.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -680,7 +680,7 @@
       "delta": "Δ-23.6px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -695,7 +695,7 @@
       "delta": "Δ4.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -710,7 +710,7 @@
       "delta": "solid vs none",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -725,7 +725,7 @@
       "delta": "rgb(0,0,145) vs rgb(58,58,58)",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -740,7 +740,7 @@
       "delta": "Δ8.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -755,7 +755,7 @@
       "delta": "Δ-8.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -770,7 +770,7 @@
       "delta": "Δ-24.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -785,7 +785,7 @@
       "delta": "Δ8.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -800,7 +800,7 @@
       "delta": "Δ28.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -815,7 +815,7 @@
       "delta": "Δ-101.4px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -830,7 +830,7 @@
       "delta": "normal vs 24px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -845,7 +845,7 @@
       "delta": "Δ4.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -860,7 +860,7 @@
       "delta": "solid vs none",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -875,7 +875,7 @@
       "delta": "rgb(0,0,145) vs rgb(58,58,58)",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -890,7 +890,7 @@
       "delta": "Δ16.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -905,7 +905,7 @@
       "delta": "Δ16.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -920,7 +920,7 @@
       "delta": "Δ16.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -935,7 +935,7 @@
       "delta": "Δ-4.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -950,7 +950,7 @@
       "delta": "Δ28.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -965,7 +965,7 @@
       "delta": "Δ63.3px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -980,7 +980,7 @@
       "delta": "normal vs 24px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -995,7 +995,7 @@
       "delta": "rgb(246,246,246) vs rgb(0,0,0)/a0",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1010,7 +1010,7 @@
       "delta": "Δ1.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1025,7 +1025,7 @@
       "delta": "Δ1.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1040,7 +1040,7 @@
       "delta": "Δ0.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1055,7 +1055,7 @@
       "delta": "rgb(0,0,0)/a0 vs rgb(198,198,198)",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1070,7 +1070,7 @@
       "delta": "rgb(0,0,0)/a0 vs rgb(198,198,198)",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1085,7 +1085,7 @@
       "delta": "rgb(0,0,0)/a0 vs rgb(198,198,198)",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1100,7 +1100,7 @@
       "delta": "rgb(0,0,0)/a0 vs rgb(198,198,198)",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1115,7 +1115,7 @@
       "delta": "Δ1.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1130,7 +1130,7 @@
       "delta": "Δ1.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1145,7 +1145,7 @@
       "delta": "Δ0.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1160,7 +1160,7 @@
       "delta": "rgb(15,98,254) vs rgb(198,198,198)",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1175,7 +1175,7 @@
       "delta": "rgb(255,255,255) vs rgb(141,141,141)",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1190,7 +1190,7 @@
       "delta": "Δ47.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1205,7 +1205,7 @@
       "delta": "Δ0.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1220,7 +1220,7 @@
       "delta": "rgb(218,30,40) vs rgb(141,141,141)",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1235,7 +1235,7 @@
       "delta": "Δ-24.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1250,7 +1250,7 @@
       "delta": "Δ47.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1265,7 +1265,7 @@
       "delta": "Δ0.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1280,7 +1280,7 @@
       "delta": "rgb(141,141,141) vs rgb(0,0,0)/a0",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1295,7 +1295,7 @@
       "delta": "Δ47.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1310,7 +1310,7 @@
       "delta": "Δ0.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1325,7 +1325,7 @@
       "delta": "rgb(111,111,111) vs rgb(198,198,198)",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1340,7 +1340,7 @@
       "delta": "Δ1.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1355,7 +1355,7 @@
       "delta": "Δ1.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1370,7 +1370,7 @@
       "delta": "Δ47.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1385,7 +1385,7 @@
       "delta": "Δ13.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1400,7 +1400,7 @@
       "delta": "Δ-2.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1415,7 +1415,7 @@
       "delta": "Δ47.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1430,7 +1430,7 @@
       "delta": "Δ0.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1445,7 +1445,7 @@
       "delta": "Δ47.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1460,7 +1460,7 @@
       "delta": "Δ0.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1475,7 +1475,7 @@
       "delta": "Δ0.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1490,7 +1490,7 @@
       "delta": "Δ-6.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1505,7 +1505,7 @@
       "delta": "Δ-6.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1520,7 +1520,7 @@
       "delta": "Δ-3.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1535,7 +1535,7 @@
       "delta": "Δ0.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1550,7 +1550,7 @@
       "delta": "Δ62.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1565,7 +1565,7 @@
       "delta": "Δ-2.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1580,7 +1580,7 @@
       "delta": "Δ-2.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1595,7 +1595,7 @@
       "delta": "Δ999.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1610,7 +1610,7 @@
       "delta": "rgb(15,98,254) vs rgb(0,0,0)/a0",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1625,7 +1625,7 @@
       "delta": "Δ-96.4px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1640,7 +1640,7 @@
       "delta": "Δ-27.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1655,7 +1655,7 @@
       "delta": "Δ28.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1670,7 +1670,7 @@
       "delta": "Δ0.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1685,7 +1685,7 @@
       "delta": "Δ15.0px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1700,7 +1700,7 @@
       "delta": "Δ-27.6px",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1715,7 +1715,7 @@
       "delta": "rgb(15,98,254) vs rgb(224,224,224)",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     },
@@ -1730,7 +1730,7 @@
       "delta": "rgb(22,22,22) vs rgb(82,82,82)",
       "status": "open",
       "source": "oracle",
-      "lastSeen": "2026-06-02T09:23:00.693Z",
+      "lastSeen": "2026-06-02T09:51:14.689Z",
       "manifestHash": "5a77b2d0",
       "regressed": false
     }

@@ -7,7 +7,7 @@ Toutes les valeurs proviennent des **styles calculés réels** (computed styles)
 |---|---|
 | Date | 2026-06-02 |
 | Navigateur | Google Chrome système (`/usr/bin/google-chrome`) via puppeteer-core, headless |
-| URL mesurée | http://0.0.0.0:40187/compare (build statique servi) |
+| URL mesurée | http://127.0.0.1:42985/compare (build statique servi) |
 | Tolérance longueur | ±1px → statut `~` |
 | Tolérance couleur | distance RGB ≤ 12 → statut `~` |
 | Statuts | `=` identique · `~` proche (tolérance) · `≠` écart net |
