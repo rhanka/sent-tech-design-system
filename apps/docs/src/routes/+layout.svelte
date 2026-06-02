@@ -1,6 +1,7 @@
 <script lang="ts">
   import { page } from "$app/state";
   import { browser } from "$app/environment";
+  import { replaceState } from "$app/navigation";
   import "../app.css";
   import { Boxes, ChevronDown, Github, Globe, Menu, Palette, X } from "@lucide/svelte";
   import { Header } from "@sentropic/design-system-svelte";
@@ -22,7 +23,14 @@
     type ComponentNavItem
   } from "$lib/docs-navigation";
   import { locale } from "$lib/locale.svelte";
-  import { FRAMEWORKS, framework } from "$lib/framework.svelte";
+  import { FRAMEWORKS, framework, FRAMEWORK_STORAGE_KEY } from "$lib/framework.svelte";
+  import {
+    readUrlParams,
+    resolveTheme,
+    resolveFramework,
+    buildUpdatedSearch,
+    type ThemeId as UrlThemeId
+  } from "$lib/url-state";
   import FrameworkBanner from "$lib/FrameworkBanner.svelte";
   import CompareButton from "$lib/compare/CompareButton.svelte";
   import CompareTriptych from "$lib/compare/CompareTriptych.svelte";
@@ -51,12 +59,11 @@
     THEMES.find((theme) => theme.id === activeThemeId) ?? sentTechTheme
   );
 
-  // Restaure le thème choisi (client uniquement ; SSR rend le thème par défaut).
+  // Restaure le thème : URL > localStorage > défaut (client uniquement ; SSR rend le défaut).
   $effect(() => {
-    const saved = localStorage.getItem(THEME_STORAGE_KEY);
-    if (saved && THEMES.some((theme) => theme.id === saved)) {
-      activeThemeId = saved;
-    }
+    const { theme: urlTheme, framework: urlFramework } = readUrlParams();
+    activeThemeId = resolveTheme(urlTheme, THEME_STORAGE_KEY);
+    framework.value = resolveFramework(urlFramework, FRAMEWORK_STORAGE_KEY);
   });
 
   // Applique le thème actif sur :root via un <style> géré (réactif et fiable),
@@ -74,15 +81,20 @@
     localStorage.setItem(THEME_STORAGE_KEY, activeThemeId);
   });
 
-  // Restaure le framework choisi (client uniquement ; SSR rend le défaut Svelte).
-  $effect(() => {
-    framework.restore();
-  });
-
   // Reflète le framework actif sur <html data-st-framework> et persiste le choix.
   $effect(() => {
     framework.value; // dépendance explicite pour la réactivité
     framework.persist();
+  });
+
+  // Synchronise l'URL (theme + framework) via replaceState (pas d'entrée historique).
+  // Déclenché à chaque changement de thème ou de framework, après l'init.
+  $effect(() => {
+    const newSearch = buildUpdatedSearch(activeThemeId as UrlThemeId, framework.value);
+    const currentSearch = window.location.search;
+    if (newSearch !== currentSearch) {
+      replaceState(page.url.pathname + newSearch, page.state);
+    }
   });
 
   let isOpen = $state(false);
