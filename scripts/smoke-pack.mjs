@@ -127,6 +127,21 @@ const packages = [
     name: "@sentropic/design-system-skills",
     requiredFiles: ["dist/index.js", "dist/index.d.ts", "dist/cli.js", "dist/cli.d.ts"],
   },
+  {
+    name: "@sentropic/design-system-vue",
+    requiredFiles: [
+      "dist/index.js",
+      "dist/index.d.ts",
+      "dist/Button.js",
+      "dist/Card.js",
+      "dist/Input.js",
+      "dist/Badge.js",
+      "dist/Checkbox.js",
+      "dist/Radio.js",
+      "dist/ThemeProvider.js",
+      "dist/styles.css",
+    ],
+  },
 ];
 
 function run(command, args, options = {}) {
@@ -343,6 +358,23 @@ for (const exportName of [
 const reactStyles = await import.meta.resolve("@sentropic/design-system-react/styles.css");
 if (!reactStyles.endsWith("/dist/styles.css")) {
   throw new Error("@sentropic/design-system-react styles resolved to unexpected path: " + reactStyles);
+}
+
+const vueEntry = await import.meta.resolve("@sentropic/design-system-vue");
+if (!vueEntry.endsWith("/dist/index.js")) {
+  throw new Error("@sentropic/design-system-vue resolved to unexpected entry: " + vueEntry);
+}
+
+const vueIndex = readFileSync(new URL(vueEntry), "utf8");
+for (const exportName of ["Button", "Card", "Input", "Badge", "Checkbox", "Radio", "ThemeProvider"]) {
+  if (!vueIndex.includes('from "./' + exportName + '.js"')) {
+    throw new Error("@sentropic/design-system-vue missing " + exportName + " export");
+  }
+}
+
+const vueStyles = await import.meta.resolve("@sentropic/design-system-vue/styles.css");
+if (!vueStyles.endsWith("/dist/styles.css")) {
+  throw new Error("@sentropic/design-system-vue styles resolved to unexpected path: " + vueStyles);
 }
 
 console.log("Package imports verified");
