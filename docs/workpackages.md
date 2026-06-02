@@ -270,7 +270,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 | Banc `/compare` réel (ours vs DS officiel en iframe) | 🟢 local | thèmes importés only, hauteur égale, langue native, versions DS+thème |
 | Sélecteur de thème docs (`:root`) | 🟢 local | switch qui change l'**anatomie** (police/radius/focus/champ) |
 | **Publication npm** (DS + thèmes, post-anatomie) | 🟢 | DS/tokens/themes/svelte publiés jusqu'à la ligne 0.10.x; les thèmes clients restent hors publication automatique. |
-| Rollout Phase 2 (~55 composants restants) | 🟡 | Garde `control.hoverBackground` étendue: le builder l'émet pour tous les thèmes, et les composants hors pilotes ont été élargis (Accordion, Combobox, ContentSwitcher, CopyButton, DataTable, DatePicker, FileUploader, Header, IconButton, LanguageSelector, Menu, NumberInput, OverflowMenu, PasswordInput, Search, Toggletip, TreeView). |
+| Rollout Phase 2 (~55 composants restants) | 🟡 | Garde `control.hoverBackground` étendue: le builder l'émet pour tous les thèmes, et les composants hors pilotes ont été élargis (Accordion, BackToTop, Combobox, ContentSwitcher, CopyButton, DataTable, DatePicker, FileUploader, Header, IconButton, LanguageSelector, Menu, NumberInput, OverflowMenu, PasswordInput, Search, Toggletip, TreeView). |
 | Thème client Airbus | 🟡 | Package public-ready `packages/theme-airbus` (`airbusTheme`, `airbusDarkTheme`, tests, `MAPPING.md`) sur `main`; publication npm bloquée jusqu'à décision version/release. |
 | Thèmes clients : Scalian / CGI | ⚪ | plus tard ; **hors git** tant que non cadrés |
 
