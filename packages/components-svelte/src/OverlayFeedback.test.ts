@@ -278,6 +278,33 @@ describe("overlay and feedback components", () => {
     expect(trigger.getAttribute("aria-expanded")).toBe("false");
   });
 
+  it("supports keyboard navigation in OverflowMenu", async () => {
+    render(OverflowMenu, {
+      props: {
+        triggerLabel: "Row actions",
+        items: [
+          { value: "edit", label: "Edit" },
+          { value: "archive", label: "Archive", disabled: true },
+          { value: "delete", label: "Delete" }
+        ]
+      }
+    });
+
+    const trigger = screen.getByRole("button", { name: "Row actions" });
+    await fireEvent.click(trigger);
+
+    const edit = screen.getByRole("menuitem", { name: "Edit" });
+    const deleteItem = screen.getByRole("menuitem", { name: "Delete" });
+    expect(trigger.getAttribute("aria-expanded")).toBe("true");
+    expect(document.activeElement).toBe(edit);
+
+    await fireEvent.keyDown(edit, { key: "ArrowDown" });
+    expect(document.activeElement).toBe(deleteItem);
+
+    await fireEvent.keyDown(deleteItem, { key: "ArrowUp" });
+    expect(document.activeElement).toBe(edit);
+  });
+
   it("Header renders a banner with optional title", () => {
     render(Header, { props: { title: "Sentropic Console" } });
     const banner = screen.getByRole("banner", { name: "Application header" });

@@ -62,6 +62,26 @@
   }: MenuProps = $props();
 
   let host: HTMLDivElement | undefined = $state();
+  function getFocusableItems(): HTMLButtonElement[] {
+    return Array.from(
+      host?.querySelectorAll<HTMLButtonElement>('[role="menuitem"]:not(:disabled)') ?? []
+    );
+  }
+
+  function moveIndex(index: number, size: number, step: number) {
+    if (size <= 0) return 0;
+    return ((index + step) % size + size) % size;
+  }
+
+  function focusAt(index: number) {
+    const focusable = getFocusableItems();
+    if (!focusable.length) return;
+    const target = moveIndex(index, focusable.length, 0);
+    focusable.forEach((button, idx) => {
+      button.tabIndex = idx === target ? 0 : -1;
+    });
+    focusable[target]?.focus();
+  }
 
   const classes = () =>
     ["st-menu", dense ? "st-menu--dense" : null, className].filter(Boolean).join(" ");
@@ -74,6 +94,35 @@
 
   function isAction(item: MenuItem): item is MenuActionItem {
     return item.kind === undefined || item.kind === "item";
+  }
+
+  function onItemKeyDown(event: KeyboardEvent, item: MenuActionItem) {
+    const focusable = getFocusableItems();
+    const current = focusable.indexOf(event.currentTarget as HTMLButtonElement);
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      focusAt(current + 1);
+      return;
+    }
+    if (event.key === "ArrowUp") {
+      event.preventDefault();
+      focusAt(current - 1);
+      return;
+    }
+    if (event.key === "Home") {
+      event.preventDefault();
+      focusAt(0);
+      return;
+    }
+    if (event.key === "End") {
+      event.preventDefault();
+      focusAt(focusable.length - 1);
+      return;
+    }
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      if (!item.disabled) selectItem(item);
+    }
   }
 
   function onWindowKeydown(event: KeyboardEvent) {
@@ -105,6 +154,7 @@
           aria-disabled={item.disabled ? "true" : undefined}
           disabled={item.disabled}
           onclick={() => selectItem(item)}
+          onkeydown={(event) => onItemKeyDown(event, item)}
         >
           {#if Icon}
             <span class="st-menu__itemIcon" aria-hidden="true">
