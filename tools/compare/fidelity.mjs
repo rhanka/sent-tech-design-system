@@ -48,9 +48,8 @@ const PUBLIC_THEMES = new Set(Object.keys(REFERENCE_THEMES_PUBLIC));
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = resolve(__dirname, "..", "..");
 const CHROME_PATH = "/usr/bin/google-chrome";
-const PORT = 4322; // NEVER 5173
+const DEFAULT_PORT = 4322; // NEVER 5173
 const DEFAULT_FIDELITY_HOST = process.env.FIDELITY_HOST || "127.0.0.1";
-const BASE_URL = (host) => `http://${host}:${PORT}`;
 const BUILD_DIR = join(REPO_ROOT, "apps", "docs", "build");
 
 // ---------------------------------------------------------------------------
@@ -122,6 +121,7 @@ function parseArgs(argv) {
     theme: null,
     component: null,
     host: DEFAULT_FIDELITY_HOST,
+    port: null,
     json: false,
     date: null,
     keepServer: false,
@@ -132,6 +132,7 @@ function parseArgs(argv) {
     if (a === "--theme") out.theme = argv[++i];
     else if (a === "--component") out.component = argv[++i];
     else if (a === "--host") out.host = argv[++i];
+    else if (a === "--port") out.port = Number(argv[++i]);
     else if (a === "--json") out.json = true;
     else if (a === "--date") out.date = argv[++i];
     else if (a === "--keep-server") out.keepServer = true;
@@ -158,6 +159,7 @@ Options:
   --theme <dsfr|carbon>      Limit to one theme (default: all)
   --component <Name>         Limit to one component (default: all)
   --host <hostname>          Local server bind/target host (default: ${DEFAULT_FIDELITY_HOST})
+  --port <number>            Local server port (default: ${DEFAULT_PORT}; or FIDELITY_PORT env)
   --json                     Print the raw JSON report to stdout
   --date <YYYY-MM-DD>        Date stamped in the report (default: placeholder)
   --keep-server              Do not kill the docs server on exit (debug)
@@ -202,7 +204,7 @@ function resolveStaticPath(urlPath) {
   return null;
 }
 
-function startStaticServer(host) {
+function startStaticServer(host, port) {
   return new Promise((resolveFn, rejectFn) => {
     const server = http.createServer((req, res) => {
       const filePath = resolveStaticPath(req.url || "/");
@@ -223,17 +225,21 @@ function startStaticServer(host) {
       createReadStream(filePath).pipe(res);
     });
     server.on("error", rejectFn);
-    server.listen(PORT, host, () => resolveFn(server));
+    server.listen(port, host, () => {
+      const actual = server.address();
+      const usedPort = typeof actual === "string" ? port : actual?.port;
+      resolveFn({ server, usedPort: usedPort ?? port });
+    });
   });
 }
 
 // ---------------------------------------------------------------------------
 // Dev server fallback (only if build dir is missing).
 // ---------------------------------------------------------------------------
-function startDevServer(host) {
+function startDevServer(host, port) {
   const child = spawn(
     "npm",
-    ["run", "--workspace", "apps/docs", "dev", "--", "--host", host, "--port", String(PORT), "--strictPort"],
+    ["run", "--workspace", "apps/docs", "dev", "--", "--host", host, "--port", String(port), "--strictPort"],
     { cwd: REPO_ROOT, stdio: ["ignore", "pipe", "pipe"] }
   );
   child.stdout.on("data", () => {});
@@ -511,13 +517,34 @@ async function run(opts) {
   let server = null;
   let devChild = null;
   const host = opts.host || DEFAULT_FIDELITY_HOST;
-  const compareUrl = `${BASE_URL(host)}/compare`;
+  const preferredPort = Number(
+    opts.port != null ? opts.port : process.env.FIDELITY_PORT != null ? process.env.FIDELITY_PORT : DEFAULT_PORT
+  );
+  if (!Number.isFinite(preferredPort) || preferredPort < 0) {
+    throw new Error(`Invalid --port value: ${preferredPort}`);
+  }
+  const port = Math.floor(preferredPort);
   const useStatic = existsSync(join(BUILD_DIR, "compare.html"));
+  let compareUrl = `http://${host}:${port}/compare`;
 
   if (useStatic) {
-    server = await startStaticServer(host);
+    try {
+      const started = await startStaticServer(host, port);
+      server = started.server;
+      compareUrl = `http://${host}:${started.usedPort}/compare`;
+    } catch (err) {
+      if (opts.keepServer || port === 0) throw err;
+      const autoErr = ["EADDRINUSE", "EACCES"];
+      if (autoErr.includes(err?.code)) {
+        const started = await startStaticServer(host, 0);
+        server = started.server;
+        compareUrl = `http://${host}:${started.usedPort}/compare`;
+      } else {
+        throw err;
+      }
+    }
   } else {
-    devChild = startDevServer(host);
+    devChild = startDevServer(host, port);
   }
 
   const up = await waitForServer(compareUrl, { timeoutMs: useStatic ? 15000 : 90000 });
