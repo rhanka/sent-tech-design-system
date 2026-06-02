@@ -15,6 +15,12 @@
   --docs-header-control-ring: rgb(0 67 206 / 0.14);
 }
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+  }
+}
+
 * {
   box-sizing: border-box;
 }

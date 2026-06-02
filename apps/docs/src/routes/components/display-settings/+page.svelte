@@ -55,7 +55,7 @@
         <tr>
           <td><code>onChange</code></td>
           <td><code>(state: DisplaySettingsState) =&gt; void</code></td>
-          <td>—</td>
+          <td>non défini</td>
           <td>Callback déclenché à chaque réglage modifié.</td>
         </tr>
         <tr>
