@@ -103,19 +103,39 @@
       <!-- Droite : icônes + bouton Contact + switchers docs -->
       <div class="abus-header__actions">
         <!-- Icône Recherche -->
-        <button type="button" class="abus-header__icon-btn" aria-label="Rechercher">
+        <a
+          class="abus-header__icon-btn"
+          href="/components/search"
+          aria-label="Rechercher"
+          title="Rechercher"
+        >
           <Search size={16} strokeWidth={1.8} aria-hidden="true" />
-        </button>
+        </a>
         <!-- Icône Notifications -->
-        <button type="button" class="abus-header__icon-btn" aria-label="Notifications">
+        <a
+          class="abus-header__icon-btn"
+          href="/components/notification"
+          aria-label="Notifications"
+          title="Notifications"
+        >
           <Bell size={16} strokeWidth={1.8} aria-hidden="true" />
-        </button>
+        </a>
         <!-- Icône Aide -->
-        <button type="button" class="abus-header__icon-btn" aria-label="Aide">
+        <a
+          class="abus-header__icon-btn"
+          href="/components/overlays"
+          aria-label="Aide"
+          title="Aide"
+        >
           <CircleQuestionMark size={16} strokeWidth={1.8} aria-hidden="true" />
-        </button>
+        </a>
         <!-- Bouton Contact (blanc, texte navy) -->
-        <button type="button" class="abus-header__contact-btn">Contact</button>
+        <a
+          href="mailto:contact@airbus.com?subject=Contact%20documentation%20design%20system"
+          class="abus-header__contact-btn"
+        >
+          Contact
+        </a>
         <!-- Switchers thème / langue (outils docs) -->
         {@render compareButton()}
         {@render themeSwitcher()}
@@ -350,6 +370,7 @@
     height: 2.25rem;
     justify-content: center;
     padding: 0;
+    text-decoration: none;
     transition: background 120ms ease, color 120ms ease;
     width: 2.25rem;
   }
@@ -373,6 +394,7 @@
     font-weight: 600;
     height: 2rem;
     padding: 0 0.875rem;
+    text-decoration: none;
     transition: background 120ms ease, color 120ms ease;
     white-space: nowrap;
   }
