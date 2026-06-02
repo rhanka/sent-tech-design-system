@@ -1488,6 +1488,20 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       lineHeight: paginationResolved.lineHeight,
       letterSpacing: paginationResolved.letterSpacing
     },
+    paginationNav: {
+      // Phase 2 aliases for the ellipsis/previous/next pagination control. These
+      // mirror `pagination` where the visual role is identical and use the shared
+      // control hover colour for the interactive page/nav buttons.
+      background: paginationResolved.background,
+      border: paginationResolved.border,
+      radius: paginationResolved.radius,
+      text: paginationResolved.text,
+      hoverBackground: semantic.surface.subtle,
+      activeBackground: paginationResolved.activeBackground,
+      activeText: paginationResolved.activeText,
+      disabledText: paginationResolved.disabledText,
+      ellipsisText: semantic.text.muted
+    },
     breadcrumb: {
       text: breadcrumbResolved.text,
       currentText: breadcrumbResolved.currentText,
