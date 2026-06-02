@@ -155,6 +155,8 @@
       <li><code>--st-component-menu-dangerText</code></li>
       <li><code>--st-component-menu-dangerHoverBackground</code></li>
       <li><code>--st-component-menu-groupText</code></li>
+      <li><code>--st-component-control-hoverBorder</code></li>
+      <li><code>--st-component-control-hoverBackground</code></li>
     </ul>
   </section>
 </div>

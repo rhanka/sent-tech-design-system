@@ -201,6 +201,7 @@
       <li><code>--st-component-pagination-radius</code></li>
       <li><code>--st-component-control-focusRing</code></li>
       <li><code>--st-component-control-hoverBackground</code></li>
+      <li><code>--st-component-control-hoverBorder</code></li>
       <li><code>--st-semantic-action-primary</code></li>
       <li><code>--st-semantic-border-subtle</code></li>
       <li><code>--st-semantic-surface-subtle</code></li>

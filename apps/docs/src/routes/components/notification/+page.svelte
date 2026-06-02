@@ -122,6 +122,8 @@
       <li><code>--st-component-notification-successAccent</code></li>
       <li><code>--st-component-notification-warningAccent</code></li>
       <li><code>--st-component-notification-errorAccent</code></li>
+      <li><code>--st-component-control-hoverBorder</code></li>
+      <li><code>--st-component-control-hoverBackground</code></li>
     </ul>
   </section>
 </div>

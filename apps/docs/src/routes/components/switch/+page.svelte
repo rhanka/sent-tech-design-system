@@ -118,6 +118,7 @@
       <li><code>--st-component-control-focusRing</code></li>
       <li><code>--st-component-field-labelText</code></li>
       <li><code>--st-component-field-helpText</code></li>
+      <li><code>--st-component-control-hoverBorder</code></li>
     </ul>
   </section>
 </div>

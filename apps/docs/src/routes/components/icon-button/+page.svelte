@@ -81,6 +81,8 @@
       <li><code>--st-component-iconButton-lgSize</code></li>
       <li><code>--st-component-iconButton-hoverBackground</code></li>
       <li><code>--st-component-iconButton-focusRing</code></li>
+      <li><code>--st-component-control-hoverBorder</code></li>
+      <li><code>--st-component-control-hoverBackground</code></li>
     </ul>
   </section>
 </div>
