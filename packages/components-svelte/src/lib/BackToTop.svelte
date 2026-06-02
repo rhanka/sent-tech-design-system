@@ -4,6 +4,7 @@
 
   type BackToTopProps = Omit<HTMLAttributes<HTMLButtonElement>, "class"> & {
     label?: string;
+    disabled?: boolean;
     targetId?: string;
     threshold?: number;
     autoHide?: boolean;
@@ -17,6 +18,7 @@
     threshold = 240,
     autoHide = true,
     smooth = true,
+    disabled = false,
     class: className,
     ...rest
   }: BackToTopProps = $props();
@@ -81,7 +83,7 @@
   aria-hidden={autoHide && !visible}
   aria-live={autoHide && !visible ? "polite" : undefined}
   tabindex={autoHide && !visible ? -1 : undefined}
-  disabled={rest.disabled}
+  {disabled}
   {...rest}
 >
   <span class="st-backToTop__icon" aria-hidden="true">
