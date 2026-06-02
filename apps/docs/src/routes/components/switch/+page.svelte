@@ -114,6 +114,7 @@
       <li><code>--st-component-selection-switchTrack</code></li>
       <li><code>--st-component-selection-switchTrackChecked</code></li>
       <li><code>--st-component-selection-switchThumb</code></li>
+      <li><code>--st-component-control-hoverBackground</code></li>
       <li><code>--st-component-control-focusRing</code></li>
       <li><code>--st-component-field-labelText</code></li>
       <li><code>--st-component-field-helpText</code></li>
