@@ -34,6 +34,7 @@
   import FrameworkBanner from "$lib/FrameworkBanner.svelte";
   import CompareButton from "$lib/compare/CompareButton.svelte";
   import CompareTriptych from "$lib/compare/CompareTriptych.svelte";
+  import ChatWidget from "$lib/chat/ChatWidget.svelte";
   // Chromes thématisés — importés conditionnellement côté client uniquement.
   import ChromeCarbon from "$lib/chrome/ChromeCarbon.svelte";
   import ChromeDsfr from "$lib/chrome/ChromeDsfr.svelte";
@@ -641,3 +642,7 @@
     </div>
   </div>
 {/if}
+
+<!-- Widget de chat « light-auth » — persistant sur toutes les routes/thèmes.
+     Client-only (rendu gardé par `browser`), positionné en fixed bottom-right. -->
+<ChatWidget />
