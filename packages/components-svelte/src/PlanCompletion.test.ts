@@ -66,6 +66,46 @@ describe("plan completion components", () => {
     );
   });
 
+  it("supports keyboard navigation in Menu (Arrow/Home/End) with disabled items skipped", async () => {
+    let selected = "";
+    render(Menu, {
+      props: {
+        label: "Actions",
+        items: [
+          { label: "Edit", value: "edit" },
+          { label: "Archive", value: "archive", disabled: true },
+          { label: "Delete", value: "delete" }
+        ],
+        onselect: (value: string) => {
+          selected = value;
+        }
+      }
+    });
+
+    const edit = screen.getByRole("menuitem", { name: "Edit" });
+    const deleteItem = screen.getByRole("menuitem", { name: "Delete" });
+    edit.focus();
+    expect(document.activeElement).toBe(edit);
+
+    await fireEvent.keyDown(edit, { key: "ArrowDown" });
+    expect(document.activeElement).toBe(deleteItem);
+
+    await fireEvent.keyDown(deleteItem, { key: "ArrowDown" });
+    expect(document.activeElement).toBe(edit);
+
+    await fireEvent.keyDown(edit, { key: "ArrowUp" });
+    expect(document.activeElement).toBe(deleteItem);
+
+    await fireEvent.keyDown(edit, { key: "Home" });
+    expect(document.activeElement).toBe(edit);
+
+    await fireEvent.keyDown(edit, { key: "End" });
+    expect(document.activeElement).toBe(deleteItem);
+
+    await fireEvent.keyDown(deleteItem, { key: "Enter" });
+    expect(selected).toBe("delete");
+  });
+
   it("renders popover and drawer only when open", () => {
     render(Popover, { props: { open: true, label: "Details", trigger, children: content } });
     render(Drawer, { props: { open: true, title: "Inspector", children: content } });
