@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Badge, CodeSnippet } from "@sentropic/design-system-svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   const block = `import { Button } from "@sentropic/design-system-svelte";\n\n<Button variant="primary">Envoyer</Button>`;
 </script>
@@ -16,6 +17,8 @@
       S'appuie sur <code>CopyButton</code> pour la copie.
     </p>
   </section>
+  <FrameworkPreview example="codesnippet" title="Aperçu live" />
+
 
   <section class="docs-section">
     <h2>Bloc</h2>

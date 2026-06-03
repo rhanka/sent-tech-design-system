@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Badge, SkipLink } from "@sentropic/design-system-svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 </script>
 
 <div class="docs-page">
@@ -16,6 +17,8 @@
       À placer en tout premier élément focusable du document.
     </p>
   </section>
+  <FrameworkPreview example="skiplink" title="Aperçu live" />
+
 
   <section class="docs-section">
     <h2>Démo</h2>

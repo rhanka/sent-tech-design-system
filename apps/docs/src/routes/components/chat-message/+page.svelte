@@ -2,6 +2,7 @@
   import { Badge, ChatMessage, IconButton } from "@sentropic/design-system-svelte";
   import { UserRound, Sparkles, Copy, ThumbsUp, ThumbsDown, Info } from "@lucide/svelte";
   import { locale } from "$lib/locale.svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   const copy = {
     fr: {
@@ -184,6 +185,8 @@
     </div>
     <p>{text().intro}</p>
   </section>
+  <FrameworkPreview example="chatmessage" title="Aperçu live" />
+
 
   <!-- Interactive Playground Section -->
   <section class="docs-section">

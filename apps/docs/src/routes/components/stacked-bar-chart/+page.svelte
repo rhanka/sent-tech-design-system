@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Badge, StackedBarChart, type StackedBarDatum } from "@sentropic/design-system-svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   const data: StackedBarDatum[] = [
     { label: "Q1", segments: [
@@ -33,6 +34,8 @@
       survol et liste accessible des segments hors SVG.
     </p>
   </section>
+  <FrameworkPreview example="stackedbarchart" title="Aperçu live" />
+
 
   <section class="docs-section">
     <h2>Exemple</h2>

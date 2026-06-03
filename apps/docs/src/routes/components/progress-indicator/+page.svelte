@@ -3,6 +3,7 @@
   import type { ProgressIndicatorItem } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   const horizontalSteps: ProgressIndicatorItem[] = [
     { value: "account", label: "Compte", description: "Identité créée", status: "complete" },
@@ -28,6 +29,8 @@
     </div>
     <p>{t(locale.value, "progressIndicatorIntro")}</p>
   </section>
+  <FrameworkPreview example="progressindicator" title="Aperçu live" />
+
 
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>

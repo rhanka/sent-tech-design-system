@@ -2,6 +2,7 @@
   import { Badge, Button, AreaChart, type AreaChartDatum, type AreaChartTone } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   // State variables for the interactive playground
   let smooth = $state(false);
@@ -106,6 +107,8 @@
     </div>
     <p>{t(locale.value, "areaChartIntro")}</p>
   </section>
+  <FrameworkPreview example="areachart" title="Aperçu live" />
+
 
   <!-- Interactive Playground -->
   <section class="docs-section">

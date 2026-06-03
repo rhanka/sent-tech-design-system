@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Badge, Quote } from "@sentropic/design-system-svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 </script>
 
 <div class="docs-page">
@@ -14,6 +15,8 @@
       <code>&lt;blockquote&gt;</code>) avec attribution optionnelle (auteur, source).
     </p>
   </section>
+  <FrameworkPreview example="quote" title="Aperçu live" />
+
 
   <section class="docs-section">
     <h2>Avec attribution</h2>

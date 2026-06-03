@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Badge, ScatterPlot, type ScatterPlotDatum } from "@sentropic/design-system-svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   const data: ScatterPlotDatum[] = [
     { x: 1, y: 2, label: "A" },
@@ -25,6 +26,8 @@
       liste accessible des coordonnées hors SVG.
     </p>
   </section>
+  <FrameworkPreview example="scatterplot" title="Aperçu live" />
+
 
   <section class="docs-section">
     <h2>Exemple</h2>

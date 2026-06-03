@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Badge, OrderedList } from "@sentropic/design-system-svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   const steps = [
     "Installer les packages",
@@ -25,6 +26,8 @@
       l'imbrication. Numérotation via compteur CSS (tabular-nums).
     </p>
   </section>
+  <FrameworkPreview example="orderedlist" title="Aperçu live" />
+
 
   <section class="docs-section">
     <h2>Avec imbrication</h2>

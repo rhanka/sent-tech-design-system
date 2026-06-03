@@ -1,5 +1,6 @@
 <script lang="ts">
   import { AspectRatio, Badge } from "@sentropic/design-system-svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 </script>
 
 <div class="docs-page">
@@ -15,6 +16,8 @@
       remplit la boîte.
     </p>
   </section>
+  <FrameworkPreview example="aspectratio" title="Aperçu live" />
+
 
   <section class="docs-section">
     <h2>Exemples</h2>

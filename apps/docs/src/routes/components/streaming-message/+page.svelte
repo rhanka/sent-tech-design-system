@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Badge, StreamingMessage, type StreamingMessageEvent } from "@sentropic/design-system-svelte";
   import { locale } from "$lib/locale.svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   const copy = {
     fr: {
@@ -92,6 +93,8 @@
     </div>
     <p>{text().intro}</p>
   </section>
+  <FrameworkPreview example="streamingmessage" title="Aperçu live" />
+
 
   <section class="docs-section">
     <h2>{text().liveTitle}</h2>

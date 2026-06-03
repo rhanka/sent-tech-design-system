@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Badge, Footer, Link } from "@sentropic/design-system-svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 </script>
 
 {#snippet footerBrand()}
@@ -42,6 +43,8 @@
       par le parent. Complète l'app shell (Header + Footer).
     </p>
   </section>
+  <FrameworkPreview example="footer" title="Aperçu live" />
+
 
   <section class="docs-section" id="footer-demo">
     <h2>Exemple complet</h2>

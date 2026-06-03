@@ -2,6 +2,7 @@
   import { Badge, Header, type HeaderAccount } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   // Identités de démonstration pour les deux variantes d'état connecté.
   const accountWithPhoto: HeaderAccount = {
@@ -85,6 +86,8 @@
       <strong>toujours le nom</strong> (jamais un carré sans libellé).
     </p>
   </section>
+  <FrameworkPreview example="header" title="Aperçu live" />
+
   <section class="docs-section">
     <h2>Header complet</h2>
     <p>
