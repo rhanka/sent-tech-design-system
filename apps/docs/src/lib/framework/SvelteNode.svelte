@@ -46,7 +46,22 @@
     OrderedList,
     UnorderedList,
     StructuredList,
-    SkipLink
+    SkipLink,
+    Header,
+    SideNav,
+    Form,
+    FormGroup,
+    FileUploader,
+    LanguageSelector,
+    Table,
+    DataTable,
+    TreeView,
+    Combobox,
+    MultiSelect,
+    DatePicker,
+    Toast,
+    Dropdown,
+    Footer
   } from "@sentropic/design-system-svelte";
   import Self from "./SvelteNode.svelte";
   import type { Component } from "svelte";
@@ -95,7 +110,22 @@
     OrderedList,
     UnorderedList,
     StructuredList,
-    SkipLink
+    SkipLink,
+    Header,
+    SideNav,
+    Form,
+    FormGroup,
+    FileUploader,
+    LanguageSelector,
+    Table,
+    DataTable,
+    TreeView,
+    Combobox,
+    MultiSelect,
+    DatePicker,
+    Toast,
+    Dropdown,
+    Footer
   } as unknown as Record<ComponentName, Component<Record<string, unknown>>>;
 
   let { node }: { node: NodeSpec } = $props();
