@@ -166,4 +166,22 @@ export { TreeView } from "./TreeView.js";
 export type { TreeViewProps, TreeNode } from "./TreeView.js";
 export { UnorderedList } from "./UnorderedList.js";
 export type { UnorderedListProps, UnorderedListInput, UnorderedListItem } from "./UnorderedList.js";
+export { BackToTop } from "./BackToTop.js";
+export type { BackToTopProps } from "./BackToTop.js";
+export { DisplaySettings } from "./DisplaySettings.js";
+export type {
+  DisplaySettingsProps,
+  DisplaySettingsState,
+  DisplayFontScale,
+  DisplayContrast,
+  DisplayLineSpacing,
+} from "./DisplaySettings.js";
+export { MediaContent } from "./MediaContent.js";
+export type { MediaContentProps, MediaKind } from "./MediaContent.js";
+export { Notification } from "./Notification.js";
+export type { NotificationProps } from "./Notification.js";
+export { TableOfContents } from "./TableOfContents.js";
+export type { TableOfContentsProps, TableOfContentsItem } from "./TableOfContents.js";
+export { Transcription } from "./Transcription.js";
+export type { TranscriptionProps, TranscriptionSegment } from "./Transcription.js";
 export { deriveInitials } from "./catalog.js";
