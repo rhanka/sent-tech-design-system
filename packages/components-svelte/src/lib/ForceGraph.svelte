@@ -3,6 +3,14 @@
     | "category1" | "category2" | "category3" | "category4"
     | "category5" | "category6" | "category7" | "category8";
 
+  export type ForceGraphNodeShape =
+    | "dot" | "circle"
+    | "diamond"
+    | "star"
+    | "hexagon"
+    | "box" | "square"
+    | "triangle";
+
   export type ForceGraphNode = {
     /** Stable identifier; referenced by edges. */
     id: string;
@@ -20,6 +28,11 @@
     /** Pin the node to a fixed position (ignored by the simulation). */
     fx?: number;
     fy?: number;
+    /**
+     * Visual shape for the node. Defaults to 'dot' (circle).
+     * Supported: 'dot'|'circle', 'diamond', 'star', 'hexagon', 'box'|'square', 'triangle'.
+     */
+    shape?: ForceGraphNodeShape;
   };
 
   export type ForceGraphEdge = {
@@ -35,6 +48,57 @@
      */
     weak?: boolean;
   };
+
+  export type ForceGraphLegendEntry = {
+    /** Label shown in the legend. */
+    label: string;
+    /** Shape for this entry (node legend). Absent = line-style legend entry. */
+    shape?: ForceGraphNodeShape;
+    /** Tone for this entry. Defaults to category1. */
+    tone?: ForceGraphTone;
+    /** When true, renders as a dashed line (edge legend). */
+    weak?: boolean;
+  };
+
+  // ---------------------------------------------------------------------------
+  // SVG path helpers for the various node shapes.
+  // All shapes are centered at (0,0) and sized to inscribe within radius r.
+  // ---------------------------------------------------------------------------
+  export function nodeShapePath(shape: ForceGraphNodeShape | undefined, r: number): string | null {
+    const s = shape ?? "dot";
+    if (s === "dot" || s === "circle") return null; // use <circle>
+    if (s === "diamond") {
+      return `M 0 ${-r} L ${r} 0 L 0 ${r} L ${-r} 0 Z`;
+    }
+    if (s === "star") {
+      const outer = r;
+      const inner = r * 0.42;
+      const pts: string[] = [];
+      for (let i = 0; i < 10; i++) {
+        const angle = (i * Math.PI) / 5 - Math.PI / 2;
+        const rad = i % 2 === 0 ? outer : inner;
+        pts.push(`${rad * Math.cos(angle)},${rad * Math.sin(angle)}`);
+      }
+      return `M ${pts.join(" L ")} Z`;
+    }
+    if (s === "hexagon") {
+      const pts: string[] = [];
+      for (let i = 0; i < 6; i++) {
+        const angle = (i * Math.PI) / 3 - Math.PI / 6;
+        pts.push(`${r * Math.cos(angle)},${r * Math.sin(angle)}`);
+      }
+      return `M ${pts.join(" L ")} Z`;
+    }
+    if (s === "box" || s === "square") {
+      const h = r * 0.85;
+      return `M ${-h} ${-h} L ${h} ${-h} L ${h} ${h} L ${-h} ${h} Z`;
+    }
+    if (s === "triangle") {
+      const h = r * 1.1;
+      return `M 0 ${-h} L ${h * 0.9} ${h * 0.6} L ${-h * 0.9} ${h * 0.6} Z`;
+    }
+    return null;
+  }
 </script>
 
 <script lang="ts">
@@ -75,6 +139,16 @@
      * Fires with the node's stable id.
      */
     onOpenEntity?: (id: string) => void;
+    /**
+     * Called when the user hovers an edge.
+     * Fires with the edge object (source/target/relation/weak).
+     */
+    onEdgeHover?: (edge: ForceGraphEdge) => void;
+    /**
+     * Legend entries rendered as a corner overlay.
+     * Each entry has a label + optional shape (node) or weak (edge).
+     */
+    legend?: ForceGraphLegendEntry[];
     class?: string;
   };
 
@@ -91,6 +165,8 @@
     focusId = null,
     onSelect,
     onOpenEntity,
+    onEdgeHover,
+    legend,
     class: className
   }: ForceGraphProps = $props();
 
@@ -262,30 +338,46 @@
   const positionedNodes = $derived.by(() =>
     nodes.map((n, i) => {
       const p = layout.get(n.id) ?? { x: width / 2, y: height / 2 };
+      const r = nodeRadius * Math.sqrt(Math.max(n.weight ?? 1, 0.25));
+      const shapePath = nodeShapePath(n.shape, r);
       return {
         node: n,
         i,
         x: p.x,
         y: p.y,
-        r: nodeRadius * Math.sqrt(Math.max(n.weight ?? 1, 0.25)),
+        r,
         tone: toneMap.get(n.id) ?? "category1",
-        title: n.label ?? n.id
+        title: n.label ?? n.id,
+        shapePath
       };
     })
   );
 
   const positionedEdges = $derived.by(() => {
+    const nodeById = new Map(nodes.map((n) => [n.id, n]));
     return edges
       .map((e, i) => {
         const a = layout.get(e.source);
         const b = layout.get(e.target);
         if (!a || !b) return null;
-        return { edge: e, i, x1: a.x, y1: a.y, x2: b.x, y2: b.y };
+        const srcNode = nodeById.get(e.source);
+        const tgtNode = nodeById.get(e.target);
+        return {
+          edge: e,
+          i,
+          x1: a.x,
+          y1: a.y,
+          x2: b.x,
+          y2: b.y,
+          srcLabel: srcNode?.label ?? e.source,
+          tgtLabel: tgtNode?.label ?? e.target
+        };
       })
       .filter((e): e is NonNullable<typeof e> => e !== null);
   });
 
-  let hoveredIndex: number | null = $state(null);
+  let hoveredNodeIndex: number | null = $state(null);
+  let hoveredEdgeIndex: number | null = $state(null);
 
   // Fast lookup sets — recomputed only when selectedIds/focusId props change,
   // never when nodes/edges change.
@@ -302,31 +394,128 @@
     }
   }
 
+  // ---------------------------------------------------------------------------
+  // Zoom + pan state (Feature 2)
+  // Store zoom as a scale multiplier + pan offset so syncing with width/height
+  // props is trivial (no stale-capture warnings).
+  //   vbW = width / zoomScale,  vbH = height / zoomScale
+  //   vbX / vbY = pan offset in SVG coordinate space
+  // ---------------------------------------------------------------------------
+  let zoomScale = $state(1);
+  let panX = $state(0);
+  let panY = $state(0);
+
+  let isPanning = $state(false);
+  let panStart = $state({ x: 0, y: 0, panX: 0, panY: 0 });
+  let svgEl: SVGSVGElement | null = $state(null);
+
+  // Derived viewBox dimensions always reflect current props + zoom.
+  const vbW = $derived(width / zoomScale);
+  const vbH = $derived(height / zoomScale);
+  const vbX = $derived(panX);
+  const vbY = $derived(panY);
+
+  function resetView() {
+    zoomScale = 1;
+    panX = 0;
+    panY = 0;
+  }
+
+  function handleWheel(ev: WheelEvent) {
+    if (prefersReducedMotion) return;
+    ev.preventDefault();
+    // Zoom factor: ~10% per step.
+    const factor = ev.deltaY > 0 ? 0.9 : 1.1;
+    // Clamp zoom: 0.2x – 8x.
+    const newScale = Math.min(Math.max(zoomScale * factor, 0.2), 8);
+    // Anchor zoom around the cursor position in SVG coords.
+    if (svgEl) {
+      const rect = svgEl.getBoundingClientRect();
+      const cursorSvgX = panX + ((ev.clientX - rect.left) / rect.width) * (width / zoomScale);
+      const cursorSvgY = panY + ((ev.clientY - rect.top) / rect.height) * (height / zoomScale);
+      const newVbW = width / newScale;
+      const newVbH = height / newScale;
+      const ratioX = (cursorSvgX - panX) / (width / zoomScale);
+      const ratioY = (cursorSvgY - panY) / (height / zoomScale);
+      panX = cursorSvgX - ratioX * newVbW;
+      panY = cursorSvgY - ratioY * newVbH;
+    }
+    zoomScale = newScale;
+  }
+
+  function handleBgMouseDown(ev: MouseEvent) {
+    // Only start pan when clicking the background (not a node/edge element).
+    if ((ev.target as Element).closest(".st-forceGraph__node")) return;
+    if (prefersReducedMotion) return;
+    isPanning = true;
+    panStart = { x: ev.clientX, y: ev.clientY, panX, panY };
+  }
+
+  function handleMouseMove(ev: MouseEvent) {
+    if (!isPanning || !svgEl) return;
+    const rect = svgEl.getBoundingClientRect();
+    const dx = ((ev.clientX - panStart.x) / rect.width) * vbW;
+    const dy = ((ev.clientY - panStart.y) / rect.height) * vbH;
+    panX = panStart.panX - dx;
+    panY = panStart.panY - dy;
+  }
+
+  function handleMouseUp() {
+    isPanning = false;
+  }
+
+  const viewBox = $derived(`${vbX} ${vbY} ${vbW} ${vbH}`);
+  const isZoomed = $derived(zoomScale !== 1 || panX !== 0 || panY !== 0);
+
   const classes = () =>
     ["st-forceGraph", prefersReducedMotion ? "st-forceGraph--static" : null, className]
       .filter(Boolean)
       .join(" ");
 </script>
 
-<div class={classes()} role="img" aria-label={label}>
+<div
+  class={classes()}
+  role="img"
+  aria-label={label}
+>
   <svg
-    viewBox="0 0 {width} {height}"
+    bind:this={svgEl}
+    viewBox={viewBox}
     preserveAspectRatio="xMidYMid meet"
     width="100%"
     height="100%"
     focusable="false"
     aria-hidden="true"
+    class:st-forceGraph__svg--panning={isPanning}
+    onwheel={handleWheel}
+    onmousedown={handleBgMouseDown}
+    onmousemove={handleMouseMove}
+    onmouseup={handleMouseUp}
+    onmouseleave={handleMouseUp}
   >
     <!-- edges first so nodes paint on top -->
     <g class="st-forceGraph__edges">
       {#each positionedEdges as e (e.i)}
+        <!-- Invisible wider hit area for edge hover -->
         <line
-          class="st-forceGraph__edge"
-          class:st-forceGraph__edge--weak={e.edge.weak}
+          class="st-forceGraph__edgeHit"
+          role="presentation"
           x1={e.x1}
           y1={e.y1}
           x2={e.x2}
           y2={e.y2}
+          onmouseenter={() => { hoveredEdgeIndex = e.i; onEdgeHover?.(e.edge); }}
+          onmouseleave={() => { hoveredEdgeIndex = null; }}
+        />
+        <line
+          class="st-forceGraph__edge"
+          class:st-forceGraph__edge--weak={e.edge.weak}
+          class:st-forceGraph__edge--hovered={hoveredEdgeIndex === e.i}
+          x1={e.x1}
+          y1={e.y1}
+          x2={e.x2}
+          y2={e.y2}
+          pointer-events="none"
         />
       {/each}
     </g>
@@ -335,26 +524,44 @@
       {#each positionedNodes as p (p.node.id)}
         <g
           class="st-forceGraph__node st-forceGraph__node--{p.tone}"
-          class:st-forceGraph__node--dim={hoveredIndex !== null && hoveredIndex !== p.i}
+          class:st-forceGraph__node--dim={hoveredNodeIndex !== null && hoveredNodeIndex !== p.i}
           class:st-forceGraph__node--selected={selectedSet.has(p.node.id)}
           class:st-forceGraph__node--focus={focusId === p.node.id}
           transform="translate({p.x} {p.y})"
         >
-          <circle
-            class="st-forceGraph__dot"
-            r={p.r}
-            tabindex="0"
-            role="button"
-            aria-label="{p.title}{p.node.group !== undefined ? `: ${p.node.group}` : ''}"
-            aria-pressed={selectedSet.has(p.node.id)}
-            onmouseenter={() => (hoveredIndex = p.i)}
-            onmouseleave={() => (hoveredIndex = null)}
-            onfocus={() => (hoveredIndex = p.i)}
-            onblur={() => (hoveredIndex = null)}
-            onclick={() => onSelect?.(p.node.id)}
-            ondblclick={() => onOpenEntity?.(p.node.id)}
-            onkeydown={(e) => handleNodeKeydown(p.node.id, e)}
-          />
+          {#if p.shapePath}
+            <path
+              class="st-forceGraph__dot"
+              d={p.shapePath}
+              tabindex="0"
+              role="button"
+              aria-label="{p.title}{p.node.group !== undefined ? `: ${p.node.group}` : ''}"
+              aria-pressed={selectedSet.has(p.node.id)}
+              onmouseenter={() => (hoveredNodeIndex = p.i)}
+              onmouseleave={() => (hoveredNodeIndex = null)}
+              onfocus={() => (hoveredNodeIndex = p.i)}
+              onblur={() => (hoveredNodeIndex = null)}
+              onclick={() => onSelect?.(p.node.id)}
+              ondblclick={() => onOpenEntity?.(p.node.id)}
+              onkeydown={(e) => handleNodeKeydown(p.node.id, e)}
+            />
+          {:else}
+            <circle
+              class="st-forceGraph__dot"
+              r={p.r}
+              tabindex="0"
+              role="button"
+              aria-label="{p.title}{p.node.group !== undefined ? `: ${p.node.group}` : ''}"
+              aria-pressed={selectedSet.has(p.node.id)}
+              onmouseenter={() => (hoveredNodeIndex = p.i)}
+              onmouseleave={() => (hoveredNodeIndex = null)}
+              onfocus={() => (hoveredNodeIndex = p.i)}
+              onblur={() => (hoveredNodeIndex = null)}
+              onclick={() => onSelect?.(p.node.id)}
+              ondblclick={() => onOpenEntity?.(p.node.id)}
+              onkeydown={(e) => handleNodeKeydown(p.node.id, e)}
+            />
+          {/if}
           {#if showLabels}
             <text class="st-forceGraph__label" x={p.r + 3} y="0" dominant-baseline="middle">{p.title}</text>
           {/if}
@@ -363,15 +570,16 @@
     </g>
   </svg>
 
-  {#if hoveredIndex !== null && positionedNodes[hoveredIndex]}
-    {@const p = positionedNodes[hoveredIndex]}
+  <!-- Node tooltip -->
+  {#if hoveredNodeIndex !== null && positionedNodes[hoveredNodeIndex]}
+    {@const p = positionedNodes[hoveredNodeIndex]}
     {@const relCount = positionedEdges.filter(
       (e) => e.edge.source === p.node.id || e.edge.target === p.node.id
     ).length}
     <div
       class="st-forceGraph__tooltip"
       role="presentation"
-      style="left: {(p.x / width) * 100}%; top: {(p.y / height) * 100}%"
+      style="left: {((p.x - vbX) / vbW) * 100}%; top: {((p.y - vbY) / vbH) * 100}%"
     >
       <span class="st-forceGraph__tooltipLabel">{p.title}</span>
       {#if p.node.group !== undefined}
@@ -380,6 +588,91 @@
       {#if relCount > 0}
         <span class="st-forceGraph__tooltipMeta">{relCount} relation{relCount === 1 ? "" : "s"}</span>
       {/if}
+    </div>
+  {/if}
+
+  <!-- Edge tooltip -->
+  {#if hoveredEdgeIndex !== null}
+    {@const e = positionedEdges.find((pe) => pe.i === hoveredEdgeIndex)}
+    {#if e}
+      {@const midX = (e.x1 + e.x2) / 2}
+      {@const midY = (e.y1 + e.y2) / 2}
+      <div
+        class="st-forceGraph__tooltip st-forceGraph__tooltip--edge"
+        role="presentation"
+        style="left: {((midX - vbX) / vbW) * 100}%; top: {((midY - vbY) / vbH) * 100}%"
+      >
+        <span class="st-forceGraph__tooltipLabel">{e.srcLabel}</span>
+        {#if e.edge.relation}
+          <span class="st-forceGraph__tooltipRelation">{e.edge.relation}</span>
+        {/if}
+        <span class="st-forceGraph__tooltipLabel">{e.tgtLabel}</span>
+      </div>
+    {/if}
+  {/if}
+
+  <!-- Reset view button (only shown when zoomed/panned) -->
+  {#if isZoomed}
+    <button
+      class="st-forceGraph__resetBtn"
+      type="button"
+      aria-label="Reset view"
+      onclick={resetView}
+    >
+      ↺
+    </button>
+  {/if}
+
+  <!-- Legend overlay -->
+  {#if legend && legend.length > 0}
+    <div class="st-forceGraph__legend" aria-label="Graph legend">
+      {#each legend as entry}
+        {@const swatchPath = entry.shape !== undefined ? nodeShapePath(entry.shape, 7) : null}
+        {@const swatchTone = entry.tone ?? "category1"}
+        <div class="st-forceGraph__legendEntry">
+          {#if entry.shape !== undefined}
+            <!-- Node shape legend entry -->
+            <svg
+              class="st-forceGraph__legendSwatch"
+              viewBox="-8 -8 16 16"
+              width="16"
+              height="16"
+              aria-hidden="true"
+            >
+              {#if swatchPath}
+                <path
+                  d={swatchPath}
+                  class="st-forceGraph__legendShape st-forceGraph__legendShape--{swatchTone}"
+                />
+              {:else}
+                <circle
+                  r="7"
+                  class="st-forceGraph__legendShape st-forceGraph__legendShape--{swatchTone}"
+                />
+              {/if}
+            </svg>
+          {:else}
+            <!-- Edge style legend entry -->
+            <svg
+              class="st-forceGraph__legendSwatch"
+              viewBox="0 0 16 8"
+              width="16"
+              height="8"
+              aria-hidden="true"
+            >
+              <line
+                x1="0"
+                y1="4"
+                x2="16"
+                y2="4"
+                class="st-forceGraph__legendEdge"
+                class:st-forceGraph__legendEdge--weak={entry.weak}
+              />
+            </svg>
+          {/if}
+          <span class="st-forceGraph__legendLabel">{entry.label}</span>
+        </div>
+      {/each}
     </div>
   {/if}
 </div>
@@ -395,16 +688,32 @@
 
   .st-forceGraph svg { display: block; overflow: visible; }
 
+  .st-forceGraph__svg--panning { cursor: grabbing; }
+
   .st-forceGraph__edge {
     stroke: var(--st-semantic-border-strong);
     stroke-width: 1;
     opacity: 0.55;
+    transition: opacity 120ms ease, stroke-width 120ms ease;
   }
 
   .st-forceGraph__edge--weak {
     stroke: var(--st-semantic-border-subtle);
     stroke-dasharray: 3 3;
     opacity: 0.5;
+  }
+
+  .st-forceGraph__edge--hovered {
+    opacity: 0.9;
+    stroke-width: 2;
+  }
+
+  /* Invisible wide hit target for edge hover */
+  .st-forceGraph__edgeHit {
+    stroke: transparent;
+    stroke-width: 10;
+    fill: none;
+    cursor: crosshair;
   }
 
   .st-forceGraph__node { transition: opacity 120ms ease; }
@@ -475,9 +784,102 @@
 
   .st-forceGraph__tooltipLabel { font-weight: 600; }
   .st-forceGraph__tooltipMeta { opacity: 0.85; }
+  .st-forceGraph__tooltipRelation {
+    opacity: 0.75;
+    font-style: italic;
+    font-size: 0.6875rem;
+  }
+
+  /* Reset view button */
+  .st-forceGraph__resetBtn {
+    background: var(--st-semantic-surface-overlay, rgba(0,0,0,0.55));
+    border: none;
+    border-radius: var(--st-radius-sm, 0.25rem);
+    color: var(--st-semantic-text-inverse, #fff);
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+    padding: 0.25rem 0.5rem;
+    position: absolute;
+    bottom: 0.5rem;
+    right: 0.5rem;
+    opacity: 0.8;
+    transition: opacity 120ms ease;
+    z-index: 2;
+  }
+
+  .st-forceGraph__resetBtn:hover,
+  .st-forceGraph__resetBtn:focus-visible {
+    opacity: 1;
+  }
+
+  .st-forceGraph__resetBtn:focus-visible {
+    outline: 2px solid var(--st-semantic-border-interactive);
+    outline-offset: 2px;
+  }
+
+  /* Legend overlay */
+  .st-forceGraph__legend {
+    background: var(--st-semantic-surface-overlay, rgba(0,0,0,0.45));
+    border-radius: var(--st-radius-sm, 0.25rem);
+    color: var(--st-semantic-text-inverse, #fff);
+    display: flex;
+    flex-direction: column;
+    font-size: 0.6875rem;
+    gap: 0.25rem;
+    padding: 0.375rem 0.5rem;
+    pointer-events: none;
+    position: absolute;
+    bottom: 0.5rem;
+    left: 0.5rem;
+    z-index: 2;
+  }
+
+  .st-forceGraph__legendEntry {
+    align-items: center;
+    display: flex;
+    gap: 0.375rem;
+  }
+
+  .st-forceGraph__legendSwatch {
+    flex-shrink: 0;
+  }
+
+  .st-forceGraph__legendLabel {
+    white-space: nowrap;
+  }
+
+  .st-forceGraph__legendShape {
+    fill-opacity: 0.9;
+    stroke: var(--st-semantic-surface-default, #fff);
+    stroke-width: 1;
+  }
+
+  .st-forceGraph__legendShape--category1 { fill: var(--st-semantic-data-category1); }
+  .st-forceGraph__legendShape--category2 { fill: var(--st-semantic-data-category2); }
+  .st-forceGraph__legendShape--category3 { fill: var(--st-semantic-data-category3); }
+  .st-forceGraph__legendShape--category4 { fill: var(--st-semantic-data-category4); }
+  .st-forceGraph__legendShape--category5 { fill: var(--st-semantic-data-category5); }
+  .st-forceGraph__legendShape--category6 { fill: var(--st-semantic-data-category6); }
+  .st-forceGraph__legendShape--category7 { fill: var(--st-semantic-data-category7); }
+  .st-forceGraph__legendShape--category8 { fill: var(--st-semantic-data-category8); }
+
+  .st-forceGraph__legendEdge {
+    stroke: var(--st-semantic-border-strong, #888);
+    stroke-width: 1.5;
+    opacity: 0.8;
+  }
+
+  .st-forceGraph__legendEdge--weak {
+    stroke: var(--st-semantic-border-subtle, #aaa);
+    stroke-dasharray: 3 3;
+    opacity: 0.65;
+  }
 
   @media (prefers-reduced-motion: reduce) {
     .st-forceGraph__node,
-    .st-forceGraph__dot { transition: none; }
+    .st-forceGraph__dot,
+    .st-forceGraph__edge,
+    .st-forceGraph__resetBtn { transition: none; }
   }
 </style>

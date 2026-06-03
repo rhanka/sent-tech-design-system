@@ -28,6 +28,7 @@ export { default as EmptyState } from "./EmptyState.svelte";
 export { default as FileUploader } from "./FileUploader.svelte";
 export { default as Footer } from "./Footer.svelte";
 export { default as ForceGraph } from "./ForceGraph.svelte";
+export { default as GraphLegend } from "./GraphLegend.svelte";
 export { default as Form } from "./Form.svelte";
 export { default as FormGroup } from "./FormGroup.svelte";
 export { default as Header } from "./Header.svelte";
@@ -103,7 +104,8 @@ export type {
 } from "./DataTable.svelte";
 export type { DatePickerRange } from "./DatePicker.svelte";
 export type { DonutChartDatum, DonutChartTone } from "./DonutChart.svelte";
-export type { ForceGraphNode, ForceGraphEdge, ForceGraphTone } from "./ForceGraph.svelte";
+export type { ForceGraphNode, ForceGraphEdge, ForceGraphTone, ForceGraphNodeShape, ForceGraphLegendEntry } from "./ForceGraph.svelte";
+export { nodeShapePath } from "./ForceGraph.svelte";
 export type { DropdownOption } from "./Dropdown.svelte";
 export type { HeaderAccount } from "./Header.svelte";
 export { deriveInitials } from "./Header.svelte";
