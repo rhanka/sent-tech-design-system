@@ -168,8 +168,17 @@ export { Sparkline } from "./Sparkline.js";
 export type { SparklineProps, SparklineTone } from "./Sparkline.js";
 export { StackedBarChart } from "./StackedBarChart.js";
 export type { StackedBarChartProps, StackedBarDatum, StackedBarSegment, StackedBarTone } from "./StackedBarChart.js";
-export { ForceGraph } from "./ForceGraph.js";
-export type { ForceGraphProps, ForceGraphNode, ForceGraphEdge, ForceGraphTone } from "./ForceGraph.js";
+export { ForceGraph, nodeShapePath } from "./ForceGraph.js";
+export type {
+  ForceGraphProps,
+  ForceGraphNode,
+  ForceGraphEdge,
+  ForceGraphTone,
+  ForceGraphNodeShape,
+  ForceGraphLegendEntry,
+} from "./ForceGraph.js";
+export { GraphLegend } from "./GraphLegend.js";
+export type { GraphLegendProps } from "./GraphLegend.js";
 export { ChatComposer } from "./ChatComposer.js";
 export type { ChatComposerProps } from "./ChatComposer.js";
 export { ChatMessage } from "./ChatMessage.js";
