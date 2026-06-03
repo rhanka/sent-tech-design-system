@@ -2,6 +2,7 @@
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   const copy = {
     fr: {
@@ -38,6 +39,8 @@
     </div>
     <p>{text().intro}</p>
   </section>
+
+  <FrameworkPreview example="badge" title="Aperçu live" />
 
   <section class="docs-section">
     <h2>{locale.value === "fr" ? "Quand l'utiliser" : "When to use"}</h2>

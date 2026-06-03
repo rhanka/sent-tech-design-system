@@ -2,6 +2,7 @@
   import { Badge, Tag } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   let tags = $state(["alpha", "beta", "gamma"]);
 
@@ -23,6 +24,9 @@
     </div>
     <p>{t(locale.value, "tagIntro")}</p>
   </section>
+
+  <FrameworkPreview example="tag" title="Aperçu live" />
+
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
