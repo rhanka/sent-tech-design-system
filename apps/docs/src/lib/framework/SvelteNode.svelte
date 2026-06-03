@@ -31,7 +31,22 @@
     Search,
     Tabs,
     Accordion,
-    Slider
+    Slider,
+    Quote,
+    Highlight,
+    EmptyState,
+    Tile,
+    ContentSwitcher,
+    SkeletonText,
+    ProgressIndicator,
+    InlineLoading,
+    LoadingState,
+    CodeSnippet,
+    CopyButton,
+    OrderedList,
+    UnorderedList,
+    StructuredList,
+    SkipLink
   } from "@sentropic/design-system-svelte";
   import Self from "./SvelteNode.svelte";
   import type { Component } from "svelte";
@@ -65,7 +80,22 @@
     Search,
     Tabs,
     Accordion,
-    Slider
+    Slider,
+    Quote,
+    Highlight,
+    EmptyState,
+    Tile,
+    ContentSwitcher,
+    SkeletonText,
+    ProgressIndicator,
+    InlineLoading,
+    LoadingState,
+    CodeSnippet,
+    CopyButton,
+    OrderedList,
+    UnorderedList,
+    StructuredList,
+    SkipLink
   } as unknown as Record<ComponentName, Component<Record<string, unknown>>>;
 
   let { node }: { node: NodeSpec } = $props();
