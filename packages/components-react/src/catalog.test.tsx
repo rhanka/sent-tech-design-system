@@ -26,6 +26,8 @@ import {
   FileUploader,
   Footer,
   ForceGraph,
+  GraphLegend,
+  nodeShapePath,
   Form,
   FormGroup,
   Header,
@@ -221,7 +223,7 @@ describe("React public catalog parity", () => {
         <ScatterPlot data={[{ x: 1, y: 2, label: "Point" }]} />
         <StackedBarChart data={[{ label: "Q1", segments: [{ label: "A", value: 2 }] }]} />
         <Sparkline data={[1, 2, 3]} />
-        <ForceGraph nodes={[{ id: "a", label: "A" }]} edges={[]} />
+        <ForceGraph label="Force graph" nodes={[{ id: "a", label: "A" }]} edges={[]} />
         <ChatThread>
           <ChatMessage role="assistant" content="Ready" />
           <ChatComposer value="" placeholder="Ask" />
@@ -254,5 +256,116 @@ describe("React public catalog parity", () => {
     fireEvent.click(screen.getByRole("button", { name: "Refresh" }));
     expect(onClick).toHaveBeenCalledTimes(1);
     expect(screen.getByRole("button", { name: "Copy" }).className).toContain("st-copyButton");
+  });
+});
+
+describe("ForceGraph parity (0.10.4)", () => {
+  it("nodeShapePath returns null for dot & circle and a path for other shapes", () => {
+    expect(nodeShapePath("dot", 7)).toBeNull();
+    expect(nodeShapePath("circle", 7)).toBeNull();
+    expect(nodeShapePath(undefined, 7)).toBeNull();
+    for (const shape of ["diamond", "star", "hexagon", "box", "square", "triangle"] as const) {
+      const path = nodeShapePath(shape, 7);
+      expect(path).not.toBeNull();
+      expect(typeof path).toBe("string");
+      expect((path as string).length).toBeGreaterThan(0);
+    }
+  });
+
+  it("renders an svg with node groups and edge lines", () => {
+    const { container } = render(
+      <ForceGraph
+        label="Knowledge graph"
+        nodes={[
+          { id: "a", label: "Alpha" },
+          { id: "b", label: "Beta" },
+        ]}
+        edges={[{ source: "a", target: "b" }]}
+      />,
+    );
+
+    expect(container.querySelector("svg")).toBeTruthy();
+    expect(container.querySelectorAll(".st-forceGraph__node").length).toBe(2);
+    // one visible edge line + one hit-area line per edge
+    expect(container.querySelectorAll(".st-forceGraph__edge").length).toBe(1);
+    expect(container.querySelectorAll(".st-forceGraph__edgeHit").length).toBe(1);
+    expect(screen.getByRole("img", { name: "Knowledge graph" })).toBeTruthy();
+  });
+
+  it("renders a path with st-forceGraph__shape for non-dot shapes", () => {
+    const { container } = render(
+      <ForceGraph
+        label="Shapes"
+        nodes={[
+          { id: "a", label: "Alpha", shape: "diamond" },
+          { id: "b", label: "Beta", shape: "dot" },
+        ]}
+        edges={[]}
+      />,
+    );
+
+    const shapePath = container.querySelector("path.st-forceGraph__shape");
+    expect(shapePath).toBeTruthy();
+    // the dot node renders a circle, not a path
+    expect(container.querySelectorAll("circle.st-forceGraph__shape").length).toBe(1);
+  });
+
+  it("renders the legend overlay when legend is set", () => {
+    const { container } = render(
+      <ForceGraph
+        label="With legend"
+        nodes={[{ id: "a", label: "Alpha" }]}
+        edges={[]}
+        legend={[
+          { label: "Entity", shape: "circle", tone: "category1" },
+          { label: "Weak link", weak: true },
+        ]}
+      />,
+    );
+
+    const legend = container.querySelector(".st-forceGraph__legend");
+    expect(legend).toBeTruthy();
+    expect(legend?.querySelectorAll(".st-forceGraph__legendEntry").length).toBe(2);
+    expect(screen.getByText("Entity")).toBeTruthy();
+    expect(screen.getByText("Weak link")).toBeTruthy();
+  });
+
+  it("fires onEdgeHover when an edge is hovered", () => {
+    const onEdgeHover = vi.fn();
+    const edge = { source: "a", target: "b", relation: "links" };
+    const { container } = render(
+      <ForceGraph
+        label="Hover graph"
+        nodes={[
+          { id: "a", label: "Alpha" },
+          { id: "b", label: "Beta" },
+        ]}
+        edges={[edge]}
+        onEdgeHover={onEdgeHover}
+      />,
+    );
+
+    const hit = container.querySelector(".st-forceGraph__edgeHit");
+    expect(hit).toBeTruthy();
+    fireEvent.mouseEnter(hit as Element);
+    expect(onEdgeHover).toHaveBeenCalledTimes(1);
+    expect(onEdgeHover).toHaveBeenCalledWith(edge);
+  });
+
+  it("GraphLegend renders exactly one entry per item", () => {
+    const { container } = render(
+      <GraphLegend
+        title="Legend"
+        entries={[
+          { label: "One", shape: "circle" },
+          { label: "Two", shape: "diamond", tone: "category2" },
+          { label: "Three", weak: true },
+        ]}
+      />,
+    );
+
+    expect(container.querySelector(".st-graphLegend")).toBeTruthy();
+    expect(container.querySelectorAll(".st-graphLegend__entry").length).toBe(3);
+    expect(screen.getByText("Legend").className).toContain("st-graphLegend__title");
   });
 });

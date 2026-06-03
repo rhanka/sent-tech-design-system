@@ -1,2 +1,10 @@
-export { ForceGraph } from "./catalog.js";
-export type { ForceGraphProps, ForceGraphNode, ForceGraphEdge, ForceGraphTone } from "./catalog.js";
+export { ForceGraph, GraphLegend, nodeShapePath } from "./catalog.js";
+export type {
+  ForceGraphProps,
+  ForceGraphNode,
+  ForceGraphEdge,
+  ForceGraphTone,
+  ForceGraphNodeShape,
+  ForceGraphLegendEntry,
+  GraphLegendProps,
+} from "./catalog.js";
