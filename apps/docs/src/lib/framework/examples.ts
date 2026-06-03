@@ -39,7 +39,22 @@ export type ComponentName =
   | "Search"
   | "Tabs"
   | "Accordion"
-  | "Slider";
+  | "Slider"
+  | "Quote"
+  | "Highlight"
+  | "EmptyState"
+  | "Tile"
+  | "ContentSwitcher"
+  | "SkeletonText"
+  | "ProgressIndicator"
+  | "InlineLoading"
+  | "LoadingState"
+  | "CodeSnippet"
+  | "CopyButton"
+  | "OrderedList"
+  | "UnorderedList"
+  | "StructuredList"
+  | "SkipLink";
 
 export interface ComponentNodeSpec {
   comp: ComponentName;
@@ -1378,6 +1393,846 @@ import { Slider } from "@sentropic/design-system-vue";
 <template>
   <Slider label="Volume" :modelValue="70" :min="0" :max="100" />
   <Slider label="Délai (ms)" :modelValue="250" :min="0" :max="1000" />
+</template>`
+    }
+  },
+
+  quote: {
+    id: "quote",
+    slug: "quote",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "Quote",
+            props: { author: "Fabien Antoine", source: "Sent Tech Blog" },
+            children: ["Un bon système de design réduit la friction entre l'idée et l'interface."]
+          },
+          {
+            comp: "Quote",
+            props: { author: "Équipe Forge" },
+            children: ["La cohérence visuelle est la première forme d'accessibilité."]
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { Quote } from "@sentropic/design-system-svelte";
+</script>
+
+<Quote author="Fabien Antoine" source="Sent Tech Blog">
+  Un bon système de design réduit la friction entre l'idée et l'interface.
+</Quote>
+<Quote author="Équipe Forge">
+  La cohérence visuelle est la première forme d'accessibilité.
+</Quote>`,
+      react: `import { Quote } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <Quote author="Fabien Antoine" source="Sent Tech Blog">
+        Un bon système de design réduit la friction entre l'idée et l'interface.
+      </Quote>
+      <Quote author="Équipe Forge">
+        La cohérence visuelle est la première forme d'accessibilité.
+      </Quote>
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { Quote } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Quote author="Fabien Antoine" source="Sent Tech Blog">
+    Un bon système de design réduit la friction entre l'idée et l'interface.
+  </Quote>
+  <Quote author="Équipe Forge">
+    La cohérence visuelle est la première forme d'accessibilité.
+  </Quote>
+</template>`
+    }
+  },
+
+  highlight: {
+    id: "highlight",
+    slug: "highlight",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "Highlight",
+            props: { tone: "info", title: "Conseil" },
+            children: ["Utilisez ThemeProvider pour personnaliser les tokens de couleur."]
+          },
+          {
+            comp: "Highlight",
+            props: { tone: "warning", title: "Attention" },
+            children: ["Cette API est en version bêta et peut changer sans préavis."]
+          },
+          {
+            comp: "Highlight",
+            props: { tone: "success", title: "Bonne pratique" },
+            children: ["Déclarez vos dépendances dans peerDependencies."]
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { Highlight } from "@sentropic/design-system-svelte";
+</script>
+
+<Highlight tone="info" title="Conseil">
+  Utilisez ThemeProvider pour personnaliser les tokens de couleur.
+</Highlight>
+<Highlight tone="warning" title="Attention">
+  Cette API est en version bêta et peut changer sans préavis.
+</Highlight>
+<Highlight tone="success" title="Bonne pratique">
+  Déclarez vos dépendances dans peerDependencies.
+</Highlight>`,
+      react: `import { Highlight } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <Highlight tone="info" title="Conseil">
+        Utilisez ThemeProvider pour personnaliser les tokens de couleur.
+      </Highlight>
+      <Highlight tone="warning" title="Attention">
+        Cette API est en version bêta et peut changer sans préavis.
+      </Highlight>
+      <Highlight tone="success" title="Bonne pratique">
+        Déclarez vos dépendances dans peerDependencies.
+      </Highlight>
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { Highlight } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Highlight tone="info" title="Conseil">
+    Utilisez ThemeProvider pour personnaliser les tokens de couleur.
+  </Highlight>
+  <Highlight tone="warning" title="Attention">
+    Cette API est en version bêta et peut changer sans préavis.
+  </Highlight>
+  <Highlight tone="success" title="Bonne pratique">
+    Déclarez vos dépendances dans peerDependencies.
+  </Highlight>
+</template>`
+    }
+  },
+
+  emptystate: {
+    id: "emptystate",
+    slug: "empty-state",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "EmptyState",
+            props: {
+              title: "Aucun composant trouvé",
+              message: "Essayez d'ajuster vos filtres ou d'effacer votre recherche."
+            }
+          },
+          {
+            comp: "EmptyState",
+            props: {
+              title: "Aucun déploiement récent",
+              message: "Votre première mise en production apparaîtra ici."
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { EmptyState } from "@sentropic/design-system-svelte";
+</script>
+
+<EmptyState
+  title="Aucun composant trouvé"
+  message="Essayez d'ajuster vos filtres ou d'effacer votre recherche."
+/>
+<EmptyState
+  title="Aucun déploiement récent"
+  message="Votre première mise en production apparaîtra ici."
+/>`,
+      react: `import { EmptyState } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <EmptyState
+        title="Aucun composant trouvé"
+        message="Essayez d'ajuster vos filtres ou d'effacer votre recherche."
+      />
+      <EmptyState
+        title="Aucun déploiement récent"
+        message="Votre première mise en production apparaîtra ici."
+      />
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { EmptyState } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <EmptyState
+    title="Aucun composant trouvé"
+    message="Essayez d'ajuster vos filtres ou d'effacer votre recherche."
+  />
+  <EmptyState
+    title="Aucun déploiement récent"
+    message="Votre première mise en production apparaîtra ici."
+  />
+</template>`
+    }
+  },
+
+  tile: {
+    id: "tile",
+    slug: "tile",
+    nodes: [
+      wrap([
+        {
+          comp: "Tile",
+          props: {
+            title: "Plan Starter",
+            description: "Idéal pour explorer le design system.",
+            variant: "static"
+          }
+        },
+        {
+          comp: "Tile",
+          props: {
+            title: "Plan Pro",
+            description: "Accès complet aux composants avancés.",
+            variant: "clickable"
+          }
+        },
+        {
+          comp: "Tile",
+          props: {
+            title: "Plan Entreprise",
+            description: "Support prioritaire et SLA garanti.",
+            variant: "selectable",
+            selected: true
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { Tile } from "@sentropic/design-system-svelte";
+</script>
+
+<Tile title="Plan Starter" description="Idéal pour explorer le design system." variant="static" />
+<Tile title="Plan Pro" description="Accès complet aux composants avancés." variant="clickable" />
+<Tile title="Plan Entreprise" description="Support prioritaire et SLA garanti." variant="selectable" selected />`,
+      react: `import { Tile } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <Tile title="Plan Starter" description="Idéal pour explorer le design system." variant="static" />
+      <Tile title="Plan Pro" description="Accès complet aux composants avancés." variant="clickable" />
+      <Tile title="Plan Entreprise" description="Support prioritaire et SLA garanti." variant="selectable" selected />
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { Tile } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Tile title="Plan Starter" description="Idéal pour explorer le design system." variant="static" />
+  <Tile title="Plan Pro" description="Accès complet aux composants avancés." variant="clickable" />
+  <Tile title="Plan Entreprise" description="Support prioritaire et SLA garanti." variant="selectable" :selected="true" />
+</template>`
+    }
+  },
+
+  contentswitcher: {
+    id: "contentswitcher",
+    slug: "content-switcher",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "ContentSwitcher",
+            props: {
+              items: [
+                { id: "list", label: "Liste" },
+                { id: "grid", label: "Grille" },
+                { id: "table", label: "Tableau" }
+              ]
+            }
+          },
+          {
+            comp: "ContentSwitcher",
+            props: {
+              size: "sm",
+              items: [
+                { id: "day", label: "Jour" },
+                { id: "week", label: "Semaine" },
+                { id: "month", label: "Mois" }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { ContentSwitcher } from "@sentropic/design-system-svelte";
+</script>
+
+<ContentSwitcher
+  items={[
+    { id: "list", label: "Liste" },
+    { id: "grid", label: "Grille" },
+    { id: "table", label: "Tableau" }
+  ]}
+/>
+<ContentSwitcher
+  size="sm"
+  items={[
+    { id: "day", label: "Jour" },
+    { id: "week", label: "Semaine" },
+    { id: "month", label: "Mois" }
+  ]}
+/>`,
+      react: `import { ContentSwitcher } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <ContentSwitcher
+        items={[
+          { id: "list", label: "Liste" },
+          { id: "grid", label: "Grille" },
+          { id: "table", label: "Tableau" }
+        ]}
+      />
+      <ContentSwitcher
+        size="sm"
+        items={[
+          { id: "day", label: "Jour" },
+          { id: "week", label: "Semaine" },
+          { id: "month", label: "Mois" }
+        ]}
+      />
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { ContentSwitcher } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <ContentSwitcher
+    :items="[
+      { id: 'list', label: 'Liste' },
+      { id: 'grid', label: 'Grille' },
+      { id: 'table', label: 'Tableau' }
+    ]"
+  />
+  <ContentSwitcher
+    size="sm"
+    :items="[
+      { id: 'day', label: 'Jour' },
+      { id: 'week', label: 'Semaine' },
+      { id: 'month', label: 'Mois' }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  skeletontext: {
+    id: "skeletontext",
+    slug: "skeleton-text",
+    nodes: [
+      wrap([
+        { comp: "SkeletonText", props: { lines: 3, label: "Chargement du contenu…" } },
+        { comp: "SkeletonText", props: { lines: 5, label: "Chargement de l'article…" } }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { SkeletonText } from "@sentropic/design-system-svelte";
+</script>
+
+<SkeletonText lines={3} label="Chargement du contenu…" />
+<SkeletonText lines={5} label="Chargement de l'article…" />`,
+      react: `import { SkeletonText } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <SkeletonText lines={3} label="Chargement du contenu…" />
+      <SkeletonText lines={5} label="Chargement de l'article…" />
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { SkeletonText } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <SkeletonText :lines="3" label="Chargement du contenu…" />
+  <SkeletonText :lines="5" label="Chargement de l'article…" />
+</template>`
+    }
+  },
+
+  progressindicator: {
+    id: "progressindicator",
+    slug: "progress-indicator",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "ProgressIndicator",
+            props: {
+              items: [
+                { id: "account", label: "Compte", status: "complete" },
+                { id: "project", label: "Projet", status: "current" },
+                { id: "deploy", label: "Déploiement", status: "incomplete" }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { ProgressIndicator } from "@sentropic/design-system-svelte";
+</script>
+
+<ProgressIndicator
+  items={[
+    { id: "account", label: "Compte", status: "complete" },
+    { id: "project", label: "Projet", status: "current" },
+    { id: "deploy", label: "Déploiement", status: "incomplete" }
+  ]}
+/>`,
+      react: `import { ProgressIndicator } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <ProgressIndicator
+      items={[
+        { id: "account", label: "Compte", status: "complete" },
+        { id: "project", label: "Projet", status: "current" },
+        { id: "deploy", label: "Déploiement", status: "incomplete" }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { ProgressIndicator } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <ProgressIndicator
+    :items="[
+      { id: 'account', label: 'Compte', status: 'complete' },
+      { id: 'project', label: 'Projet', status: 'current' },
+      { id: 'deploy', label: 'Déploiement', status: 'incomplete' }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  inlineloading: {
+    id: "inlineloading",
+    slug: "inline-loading",
+    nodes: [
+      wrap([
+        { comp: "InlineLoading", props: { label: "Enregistrement…", status: "active" } },
+        { comp: "InlineLoading", props: { label: "Enregistré", status: "success" } },
+        { comp: "InlineLoading", props: { label: "Échec de l'enregistrement", status: "error" } }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { InlineLoading } from "@sentropic/design-system-svelte";
+</script>
+
+<InlineLoading label="Enregistrement…" status="active" />
+<InlineLoading label="Enregistré" status="success" />
+<InlineLoading label="Échec de l'enregistrement" status="error" />`,
+      react: `import { InlineLoading } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <InlineLoading label="Enregistrement…" status="active" />
+      <InlineLoading label="Enregistré" status="success" />
+      <InlineLoading label="Échec de l'enregistrement" status="error" />
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { InlineLoading } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <InlineLoading label="Enregistrement…" status="active" />
+  <InlineLoading label="Enregistré" status="success" />
+  <InlineLoading label="Échec de l'enregistrement" status="error" />
+</template>`
+    }
+  },
+
+  loadingstate: {
+    id: "loadingstate",
+    slug: "loading-state",
+    nodes: [
+      wrap([
+        { comp: "LoadingState", props: { label: "Chargement des composants…", variant: "spinner" } },
+        { comp: "LoadingState", props: { label: "Chargement du contenu…", variant: "skeleton" } }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { LoadingState } from "@sentropic/design-system-svelte";
+</script>
+
+<LoadingState label="Chargement des composants…" variant="spinner" />
+<LoadingState label="Chargement du contenu…" variant="skeleton" />`,
+      react: `import { LoadingState } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <LoadingState label="Chargement des composants…" variant="spinner" />
+      <LoadingState label="Chargement du contenu…" variant="skeleton" />
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { LoadingState } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <LoadingState label="Chargement des composants…" variant="spinner" />
+  <LoadingState label="Chargement du contenu…" variant="skeleton" />
+</template>`
+    }
+  },
+
+  codesnippet: {
+    id: "codesnippet",
+    slug: "code-snippet",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "CodeSnippet",
+            props: { code: "npm install @sentropic/design-system-react" }
+          },
+          {
+            comp: "CodeSnippet",
+            props: { code: "import { Button } from \"@sentropic/design-system-react\";" }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { CodeSnippet } from "@sentropic/design-system-svelte";
+</script>
+
+<CodeSnippet code="npm install @sentropic/design-system-react" />
+<CodeSnippet code={'import { Button } from "@sentropic/design-system-react";'} />`,
+      react: `import { CodeSnippet } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <CodeSnippet code="npm install @sentropic/design-system-react" />
+      <CodeSnippet code={'import { Button } from "@sentropic/design-system-react";'} />
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { CodeSnippet } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <CodeSnippet code="npm install @sentropic/design-system-react" />
+  <CodeSnippet code='import { Button } from &quot;@sentropic/design-system-react&quot;;' />
+</template>`
+    }
+  },
+
+  copybutton: {
+    id: "copybutton",
+    slug: "copy-button",
+    nodes: [
+      wrap([
+        { comp: "CopyButton", props: { text: "npm install @sentropic/design-system-react", label: "Copier" } },
+        { comp: "CopyButton", props: { text: "https://sent-tech.ca", label: "Copier l'URL", size: "sm" } }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { CopyButton } from "@sentropic/design-system-svelte";
+</script>
+
+<CopyButton text="npm install @sentropic/design-system-react" label="Copier" />
+<CopyButton text="https://sent-tech.ca" label="Copier l'URL" size="sm" />`,
+      react: `import { CopyButton } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <CopyButton text="npm install @sentropic/design-system-react" label="Copier" />
+      <CopyButton text="https://sent-tech.ca" label="Copier l'URL" size="sm" />
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { CopyButton } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <CopyButton text="npm install @sentropic/design-system-react" label="Copier" />
+  <CopyButton text="https://sent-tech.ca" label="Copier l'URL" size="sm" />
+</template>`
+    }
+  },
+
+  orderedlist: {
+    id: "orderedlist",
+    slug: "ordered-list",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "OrderedList",
+            props: {
+              items: [
+                "Installer les dépendances",
+                "Importer le ThemeProvider",
+                "Utiliser les composants"
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { OrderedList } from "@sentropic/design-system-svelte";
+</script>
+
+<OrderedList
+  items={[
+    "Installer les dépendances",
+    "Importer le ThemeProvider",
+    "Utiliser les composants"
+  ]}
+/>`,
+      react: `import { OrderedList } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <OrderedList
+      items={[
+        "Installer les dépendances",
+        "Importer le ThemeProvider",
+        "Utiliser les composants"
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { OrderedList } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <OrderedList
+    :items="[
+      'Installer les dépendances',
+      'Importer le ThemeProvider',
+      'Utiliser les composants'
+    ]"
+  />
+</template>`
+    }
+  },
+
+  unorderedlist: {
+    id: "unorderedlist",
+    slug: "unordered-list",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "UnorderedList",
+            props: {
+              items: [
+                "Svelte",
+                "React",
+                "Vue"
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { UnorderedList } from "@sentropic/design-system-svelte";
+</script>
+
+<UnorderedList items={["Svelte", "React", "Vue"]} />`,
+      react: `import { UnorderedList } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return <UnorderedList items={["Svelte", "React", "Vue"]} />;
+}`,
+      vue: `<script setup>
+import { UnorderedList } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <UnorderedList :items="['Svelte', 'React', 'Vue']" />
+</template>`
+    }
+  },
+
+  structuredlist: {
+    id: "structuredlist",
+    slug: "structured-list",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "StructuredList",
+            props: {
+              items: [
+                { term: "Framework", description: "Svelte, React, Vue" },
+                { term: "Version", description: "1.0.0" },
+                { term: "Licence", description: "MIT" }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { StructuredList } from "@sentropic/design-system-svelte";
+</script>
+
+<StructuredList
+  items={[
+    { term: "Framework", description: "Svelte, React, Vue" },
+    { term: "Version", description: "1.0.0" },
+    { term: "Licence", description: "MIT" }
+  ]}
+/>`,
+      react: `import { StructuredList } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <StructuredList
+      items={[
+        { term: "Framework", description: "Svelte, React, Vue" },
+        { term: "Version", description: "1.0.0" },
+        { term: "Licence", description: "MIT" }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { StructuredList } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <StructuredList
+    :items="[
+      { term: 'Framework', description: 'Svelte, React, Vue' },
+      { term: 'Version', description: '1.0.0' },
+      { term: 'Licence', description: 'MIT' }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  skiplink: {
+    id: "skiplink",
+    slug: "skip-link",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          { comp: "SkipLink", props: { href: "#main" }, children: ["Aller au contenu principal"] },
+          { comp: "SkipLink", props: { href: "#nav" }, children: ["Aller à la navigation"] }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { SkipLink } from "@sentropic/design-system-svelte";
+</script>
+
+<!-- Les SkipLink sont visibles uniquement au focus (Tab) -->
+<SkipLink href="#main">Aller au contenu principal</SkipLink>
+<SkipLink href="#nav">Aller à la navigation</SkipLink>`,
+      react: `import { SkipLink } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      {/* Les SkipLink sont visibles uniquement au focus (Tab) */}
+      <SkipLink href="#main">Aller au contenu principal</SkipLink>
+      <SkipLink href="#nav">Aller à la navigation</SkipLink>
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { SkipLink } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <!-- Les SkipLink sont visibles uniquement au focus (Tab) -->
+  <SkipLink href="#main">Aller au contenu principal</SkipLink>
+  <SkipLink href="#nav">Aller à la navigation</SkipLink>
 </template>`
     }
   }
