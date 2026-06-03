@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Badge, DonutChart, type DonutChartDatum } from "@sentropic/design-system-svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   const data: DonutChartDatum[] = [
     { label: "Composants", value: 62 },
@@ -23,6 +24,8 @@
       expose les parts dans une liste accessible hors SVG.
     </p>
   </section>
+  <FrameworkPreview example="donutchart" title="Aperçu live" />
+
 
   <section class="docs-section">
     <h2>Exemple</h2>

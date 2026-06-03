@@ -6,6 +6,7 @@
   } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   let dropzoneFiles = $state<File[]>([]);
   let singleFiles = $state<File[]>([]);
@@ -50,6 +51,8 @@
     </div>
     <p>{t(locale.value, "fileUploaderIntro")}</p>
   </section>
+  <FrameworkPreview example="fileuploader" title="Aperçu live" />
+
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 

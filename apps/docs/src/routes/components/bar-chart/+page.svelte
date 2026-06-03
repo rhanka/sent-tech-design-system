@@ -2,6 +2,7 @@
   import { Badge, BarChart, type BarChartDatum } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   const copy = {
     fr: {
@@ -76,6 +77,8 @@
     </div>
     <p>{text().intro}</p>
   </section>
+  <FrameworkPreview example="barchart" title="Aperçu live" />
+
 
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>

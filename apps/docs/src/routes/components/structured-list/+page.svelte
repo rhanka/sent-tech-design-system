@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Badge, StructuredList, type StructuredListItem } from "@sentropic/design-system-svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   const items: StructuredListItem[] = [
     { key: "Nom", value: "Sentropic Design System" },
@@ -22,6 +23,8 @@
       accepte une chaîne ou un <code>Snippet</code>.
     </p>
   </section>
+  <FrameworkPreview example="structuredlist" title="Aperçu live" />
+
 
   <section class="docs-section">
     <h2>Exemple</h2>
