@@ -61,7 +61,25 @@
     DatePicker,
     Toast,
     Dropdown,
-    Footer
+    Footer,
+    AreaChart,
+    BarChart,
+    LineChart,
+    DonutChart,
+    ScatterPlot,
+    Sparkline,
+    StackedBarChart,
+    ChatThread,
+    ChatMessage,
+    StreamingMessage,
+    MessageActions,
+    MessageStatusBadge,
+    ChatComposer,
+    Menu,
+    MenuPopover,
+    OverflowMenu,
+    Popover,
+    AspectRatio
   } from "@sentropic/design-system-svelte";
   import Self from "./SvelteNode.svelte";
   import type { Component } from "svelte";
@@ -125,7 +143,25 @@
     DatePicker,
     Toast,
     Dropdown,
-    Footer
+    Footer,
+    AreaChart,
+    BarChart,
+    LineChart,
+    DonutChart,
+    ScatterPlot,
+    Sparkline,
+    StackedBarChart,
+    ChatThread,
+    ChatMessage,
+    StreamingMessage,
+    MessageActions,
+    MessageStatusBadge,
+    ChatComposer,
+    Menu,
+    MenuPopover,
+    OverflowMenu,
+    Popover,
+    AspectRatio
   } as unknown as Record<ComponentName, Component<Record<string, unknown>>>;
 
   let { node }: { node: NodeSpec } = $props();

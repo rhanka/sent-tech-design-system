@@ -69,7 +69,25 @@ export type ComponentName =
   | "DatePicker"
   | "Toast"
   | "Dropdown"
-  | "Footer";
+  | "Footer"
+  | "AreaChart"
+  | "BarChart"
+  | "LineChart"
+  | "DonutChart"
+  | "ScatterPlot"
+  | "Sparkline"
+  | "StackedBarChart"
+  | "ChatThread"
+  | "ChatMessage"
+  | "StreamingMessage"
+  | "MessageActions"
+  | "MessageStatusBadge"
+  | "ChatComposer"
+  | "Menu"
+  | "MenuPopover"
+  | "OverflowMenu"
+  | "Popover"
+  | "AspectRatio";
 
 export interface ComponentNodeSpec {
   comp: ComponentName;
@@ -3303,6 +3321,1197 @@ import { Dropdown } from "@sentropic/design-system-vue";
       { value: 'lg', label: 'Grande' }
     ]"
   />
+</template>`
+    }
+  },
+
+  areachart: {
+    id: "areachart",
+    slug: "area-chart",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "AreaChart",
+            props: {
+              label: "Visites mensuelles",
+              data: [
+                { x: "Jan", y: 40 },
+                { x: "Fév", y: 65 },
+                { x: "Mar", y: 55 },
+                { x: "Avr", y: 80 },
+                { x: "Mai", y: 72 }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { AreaChart } from "@sentropic/design-system-svelte";
+</script>
+
+<AreaChart
+  label="Visites mensuelles"
+  data={[
+    { x: "Jan", y: 40 },
+    { x: "Fév", y: 65 },
+    { x: "Mar", y: 55 },
+    { x: "Avr", y: 80 },
+    { x: "Mai", y: 72 }
+  ]}
+/>`,
+      react: `import { AreaChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <AreaChart
+      label="Visites mensuelles"
+      data={[
+        { x: "Jan", y: 40 },
+        { x: "Fév", y: 65 },
+        { x: "Mar", y: 55 },
+        { x: "Avr", y: 80 },
+        { x: "Mai", y: 72 }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { AreaChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <AreaChart
+    label="Visites mensuelles"
+    :data="[
+      { x: 'Jan', y: 40 },
+      { x: 'Fév', y: 65 },
+      { x: 'Mar', y: 55 },
+      { x: 'Avr', y: 80 },
+      { x: 'Mai', y: 72 }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  barchart: {
+    id: "barchart",
+    slug: "bar-chart",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "BarChart",
+            props: {
+              label: "Déploiements par environnement",
+              data: [
+                { x: "Production", y: 12 },
+                { x: "Staging", y: 28 },
+                { x: "Dev", y: 45 },
+                { x: "Test", y: 19 }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { BarChart } from "@sentropic/design-system-svelte";
+</script>
+
+<BarChart
+  label="Déploiements par environnement"
+  data={[
+    { x: "Production", y: 12 },
+    { x: "Staging", y: 28 },
+    { x: "Dev", y: 45 },
+    { x: "Test", y: 19 }
+  ]}
+/>`,
+      react: `import { BarChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <BarChart
+      label="Déploiements par environnement"
+      data={[
+        { x: "Production", y: 12 },
+        { x: "Staging", y: 28 },
+        { x: "Dev", y: 45 },
+        { x: "Test", y: 19 }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { BarChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <BarChart
+    label="Déploiements par environnement"
+    :data="[
+      { x: 'Production', y: 12 },
+      { x: 'Staging', y: 28 },
+      { x: 'Dev', y: 45 },
+      { x: 'Test', y: 19 }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  linechart: {
+    id: "linechart",
+    slug: "line-chart",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "LineChart",
+            props: {
+              label: "Temps de réponse (ms)",
+              data: [
+                { x: "00h", y: 120 },
+                { x: "06h", y: 95 },
+                { x: "12h", y: 180 },
+                { x: "18h", y: 145 },
+                { x: "24h", y: 110 }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { LineChart } from "@sentropic/design-system-svelte";
+</script>
+
+<LineChart
+  label="Temps de réponse (ms)"
+  data={[
+    { x: "00h", y: 120 },
+    { x: "06h", y: 95 },
+    { x: "12h", y: 180 },
+    { x: "18h", y: 145 },
+    { x: "24h", y: 110 }
+  ]}
+/>`,
+      react: `import { LineChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <LineChart
+      label="Temps de réponse (ms)"
+      data={[
+        { x: "00h", y: 120 },
+        { x: "06h", y: 95 },
+        { x: "12h", y: 180 },
+        { x: "18h", y: 145 },
+        { x: "24h", y: 110 }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { LineChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <LineChart
+    label="Temps de réponse (ms)"
+    :data="[
+      { x: '00h', y: 120 },
+      { x: '06h', y: 95 },
+      { x: '12h', y: 180 },
+      { x: '18h', y: 145 },
+      { x: '24h', y: 110 }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  donutchart: {
+    id: "donutchart",
+    slug: "donut-chart",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "DonutChart",
+            props: {
+              label: "Répartition des composants",
+              data: [
+                { label: "Formulaires", value: 18 },
+                { label: "Navigation", value: 12 },
+                { label: "Données", value: 9 },
+                { label: "Feedback", value: 15 }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { DonutChart } from "@sentropic/design-system-svelte";
+</script>
+
+<DonutChart
+  label="Répartition des composants"
+  data={[
+    { label: "Formulaires", value: 18 },
+    { label: "Navigation", value: 12 },
+    { label: "Données", value: 9 },
+    { label: "Feedback", value: 15 }
+  ]}
+/>`,
+      react: `import { DonutChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <DonutChart
+      label="Répartition des composants"
+      data={[
+        { label: "Formulaires", value: 18 },
+        { label: "Navigation", value: 12 },
+        { label: "Données", value: 9 },
+        { label: "Feedback", value: 15 }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { DonutChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <DonutChart
+    label="Répartition des composants"
+    :data="[
+      { label: 'Formulaires', value: 18 },
+      { label: 'Navigation', value: 12 },
+      { label: 'Données', value: 9 },
+      { label: 'Feedback', value: 15 }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  scatterplot: {
+    id: "scatterplot",
+    slug: "scatter-plot",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "ScatterPlot",
+            props: {
+              label: "Performance vs complexité",
+              data: [
+                { x: 1, y: 9, label: "Button" },
+                { x: 3, y: 7, label: "Input" },
+                { x: 5, y: 5, label: "DataTable" },
+                { x: 2, y: 8, label: "Badge" },
+                { x: 6, y: 3, label: "TreeView" }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { ScatterPlot } from "@sentropic/design-system-svelte";
+</script>
+
+<ScatterPlot
+  label="Performance vs complexité"
+  data={[
+    { x: 1, y: 9, label: "Button" },
+    { x: 3, y: 7, label: "Input" },
+    { x: 5, y: 5, label: "DataTable" },
+    { x: 2, y: 8, label: "Badge" },
+    { x: 6, y: 3, label: "TreeView" }
+  ]}
+/>`,
+      react: `import { ScatterPlot } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <ScatterPlot
+      label="Performance vs complexité"
+      data={[
+        { x: 1, y: 9, label: "Button" },
+        { x: 3, y: 7, label: "Input" },
+        { x: 5, y: 5, label: "DataTable" },
+        { x: 2, y: 8, label: "Badge" },
+        { x: 6, y: 3, label: "TreeView" }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { ScatterPlot } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <ScatterPlot
+    label="Performance vs complexité"
+    :data="[
+      { x: 1, y: 9, label: 'Button' },
+      { x: 3, y: 7, label: 'Input' },
+      { x: 5, y: 5, label: 'DataTable' },
+      { x: 2, y: 8, label: 'Badge' },
+      { x: 6, y: 3, label: 'TreeView' }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  sparkline: {
+    id: "sparkline",
+    slug: "sparkline",
+    nodes: [
+      wrap([
+        {
+          comp: "Sparkline",
+          props: { label: "Activité (neutre)", data: [4, 7, 5, 9, 6, 8, 10, 7], tone: "neutral" }
+        },
+        {
+          comp: "Sparkline",
+          props: { label: "Activité (succès)", data: [2, 5, 4, 8, 7, 9, 11, 10], tone: "success" }
+        },
+        {
+          comp: "Sparkline",
+          props: { label: "Activité (erreur)", data: [10, 8, 9, 6, 4, 3, 2, 1], tone: "error" }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { Sparkline } from "@sentropic/design-system-svelte";
+</script>
+
+<Sparkline label="Activité" data={[4, 7, 5, 9, 6, 8, 10, 7]} tone="neutral" />
+<Sparkline label="Activité" data={[2, 5, 4, 8, 7, 9, 11, 10]} tone="success" />
+<Sparkline label="Activité" data={[10, 8, 9, 6, 4, 3, 2, 1]} tone="error" />`,
+      react: `import { Sparkline } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <Sparkline label="Activité" data={[4, 7, 5, 9, 6, 8, 10, 7]} tone="neutral" />
+      <Sparkline label="Activité" data={[2, 5, 4, 8, 7, 9, 11, 10]} tone="success" />
+      <Sparkline label="Activité" data={[10, 8, 9, 6, 4, 3, 2, 1]} tone="error" />
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { Sparkline } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Sparkline label="Activité" :data="[4, 7, 5, 9, 6, 8, 10, 7]" tone="neutral" />
+  <Sparkline label="Activité" :data="[2, 5, 4, 8, 7, 9, 11, 10]" tone="success" />
+  <Sparkline label="Activité" :data="[10, 8, 9, 6, 4, 3, 2, 1]" tone="error" />
+</template>`
+    }
+  },
+
+  stackedbarchart: {
+    id: "stackedbarchart",
+    slug: "stacked-bar-chart",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "StackedBarChart",
+            props: {
+              label: "Composants par catégorie et framework",
+              data: [
+                {
+                  label: "Svelte",
+                  segments: [
+                    { label: "Formulaires", value: 18 },
+                    { label: "Navigation", value: 10 },
+                    { label: "Données", value: 8 }
+                  ]
+                },
+                {
+                  label: "React",
+                  segments: [
+                    { label: "Formulaires", value: 18 },
+                    { label: "Navigation", value: 10 },
+                    { label: "Données", value: 8 }
+                  ]
+                },
+                {
+                  label: "Vue",
+                  segments: [
+                    { label: "Formulaires", value: 18 },
+                    { label: "Navigation", value: 10 },
+                    { label: "Données", value: 8 }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { StackedBarChart } from "@sentropic/design-system-svelte";
+</script>
+
+<StackedBarChart
+  label="Composants par catégorie et framework"
+  data={[
+    { label: "Svelte", segments: [{ label: "Formulaires", value: 18 }, { label: "Navigation", value: 10 }] },
+    { label: "React",  segments: [{ label: "Formulaires", value: 18 }, { label: "Navigation", value: 10 }] },
+    { label: "Vue",    segments: [{ label: "Formulaires", value: 18 }, { label: "Navigation", value: 10 }] }
+  ]}
+/>`,
+      react: `import { StackedBarChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <StackedBarChart
+      label="Composants par catégorie et framework"
+      data={[
+        { label: "Svelte", segments: [{ label: "Formulaires", value: 18 }, { label: "Navigation", value: 10 }] },
+        { label: "React",  segments: [{ label: "Formulaires", value: 18 }, { label: "Navigation", value: 10 }] },
+        { label: "Vue",    segments: [{ label: "Formulaires", value: 18 }, { label: "Navigation", value: 10 }] }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { StackedBarChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <StackedBarChart
+    label="Composants par catégorie et framework"
+    :data="[
+      { label: 'Svelte', segments: [{ label: 'Formulaires', value: 18 }, { label: 'Navigation', value: 10 }] },
+      { label: 'React',  segments: [{ label: 'Formulaires', value: 18 }, { label: 'Navigation', value: 10 }] },
+      { label: 'Vue',    segments: [{ label: 'Formulaires', value: 18 }, { label: 'Navigation', value: 10 }] }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  chatthread: {
+    id: "chatthread",
+    slug: "chat-thread",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "ChatThread",
+            props: {
+              messages: [
+                { id: "1", role: "user", content: "Comment puis-je installer le design system ?" },
+                { id: "2", role: "assistant", content: "Lancez `npm install @sentropic/design-system-react` puis importez vos composants.", status: "completed" },
+                { id: "3", role: "user", content: "Merci ! Et pour Vue ?" },
+                { id: "4", role: "assistant", content: "Le paquet Vue s'installe de la même façon : `@sentropic/design-system-vue`.", status: "completed" }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { ChatThread } from "@sentropic/design-system-svelte";
+</script>
+
+<ChatThread
+  messages={[
+    { id: "1", role: "user", content: "Comment puis-je installer le design system ?" },
+    { id: "2", role: "assistant", content: "Lancez npm install @sentropic/design-system-react.", status: "completed" }
+  ]}
+/>`,
+      react: `import { ChatThread } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <ChatThread
+      messages={[
+        { id: "1", role: "user", content: "Comment puis-je installer le design system ?" },
+        { id: "2", role: "assistant", content: "Lancez npm install.", status: "completed" }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { ChatThread } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <ChatThread
+    :messages="[
+      { id: '1', role: 'user', content: 'Comment puis-je installer le design system ?' },
+      { id: '2', role: 'assistant', content: 'Lancez npm install.', status: 'completed' }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  chatmessage: {
+    id: "chatmessage",
+    slug: "chat-message",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "ChatMessage",
+            props: { role: "user", content: "Quelle est la différence entre Badge et Tag ?" }
+          },
+          {
+            comp: "ChatMessage",
+            props: {
+              role: "assistant",
+              content: "Badge est statique (indicateur) ; Tag est interactif (filtrable, supprimable).",
+              status: "completed",
+              timestamp: "14:32"
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { ChatMessage } from "@sentropic/design-system-svelte";
+</script>
+
+<ChatMessage role="user" content="Quelle est la différence entre Badge et Tag ?" />
+<ChatMessage
+  role="assistant"
+  content="Badge est statique ; Tag est interactif."
+  status="completed"
+  timestamp="14:32"
+/>`,
+      react: `import { ChatMessage } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <ChatMessage role="user" content="Quelle est la différence entre Badge et Tag ?" />
+      <ChatMessage
+        role="assistant"
+        content="Badge est statique ; Tag est interactif."
+        status="completed"
+        timestamp="14:32"
+      />
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { ChatMessage } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <ChatMessage role="user" content="Quelle est la différence entre Badge et Tag ?" />
+  <ChatMessage
+    role="assistant"
+    content="Badge est statique ; Tag est interactif."
+    status="completed"
+    timestamp="14:32"
+  />
+</template>`
+    }
+  },
+
+  streamingmessage: {
+    id: "streamingmessage",
+    slug: "streaming-message",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "StreamingMessage",
+            props: {
+              text: "Génération de la réponse en cours…",
+              mode: "live",
+              events: [
+                { id: "e1", label: "Lecture du contexte" },
+                { id: "e2", label: "Raisonnement" }
+              ]
+            }
+          },
+          {
+            comp: "StreamingMessage",
+            props: {
+              text: "Le design system est prêt.",
+              mode: "passive"
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { StreamingMessage } from "@sentropic/design-system-svelte";
+</script>
+
+<StreamingMessage
+  text="Génération de la réponse en cours…"
+  mode="live"
+  events={[
+    { id: "e1", label: "Lecture du contexte" },
+    { id: "e2", label: "Raisonnement" }
+  ]}
+/>
+<StreamingMessage text="Le design system est prêt." mode="passive" />`,
+      react: `import { StreamingMessage } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <StreamingMessage
+        text="Génération de la réponse en cours…"
+        mode="live"
+        events={[
+          { id: "e1", label: "Lecture du contexte" },
+          { id: "e2", label: "Raisonnement" }
+        ]}
+      />
+      <StreamingMessage text="Le design system est prêt." mode="passive" />
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { StreamingMessage } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <StreamingMessage
+    text="Génération de la réponse en cours…"
+    mode="live"
+    :events="[
+      { id: 'e1', label: 'Lecture du contexte' },
+      { id: 'e2', label: 'Raisonnement' }
+    ]"
+  />
+  <StreamingMessage text="Le design system est prêt." mode="passive" />
+</template>`
+    }
+  },
+
+  messageactions: {
+    id: "messageactions",
+    slug: "message-actions",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "MessageActions",
+            props: {
+              actions: [
+                { id: "copy", label: "Copier" },
+                { id: "regen", label: "Régénérer" },
+                { id: "delete", label: "Supprimer", variant: "danger" }
+              ],
+              visibility: "always"
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { MessageActions } from "@sentropic/design-system-svelte";
+</script>
+
+<MessageActions
+  actions={[
+    { id: "copy", label: "Copier" },
+    { id: "regen", label: "Régénérer" },
+    { id: "delete", label: "Supprimer", variant: "danger" }
+  ]}
+  visibility="always"
+/>`,
+      react: `import { MessageActions } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <MessageActions
+      actions={[
+        { id: "copy", label: "Copier" },
+        { id: "regen", label: "Régénérer" },
+        { id: "delete", label: "Supprimer", variant: "danger" }
+      ]}
+      visibility="always"
+    />
+  );
+}`,
+      vue: `<script setup>
+import { MessageActions } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <MessageActions
+    :actions="[
+      { id: 'copy', label: 'Copier' },
+      { id: 'regen', label: 'Régénérer' },
+      { id: 'delete', label: 'Supprimer', variant: 'danger' }
+    ]"
+    visibility="always"
+  />
+</template>`
+    }
+  },
+
+  messagestatusbadge: {
+    id: "messagestatusbadge",
+    slug: "message-status-badge",
+    nodes: [
+      wrap([
+        { comp: "MessageStatusBadge", props: { status: "pending" } },
+        { comp: "MessageStatusBadge", props: { status: "processing" } },
+        { comp: "MessageStatusBadge", props: { status: "completed" } },
+        { comp: "MessageStatusBadge", props: { status: "failed" } }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { MessageStatusBadge } from "@sentropic/design-system-svelte";
+</script>
+
+<MessageStatusBadge status="pending" />
+<MessageStatusBadge status="processing" />
+<MessageStatusBadge status="completed" />
+<MessageStatusBadge status="failed" />`,
+      react: `import { MessageStatusBadge } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <MessageStatusBadge status="pending" />
+      <MessageStatusBadge status="processing" />
+      <MessageStatusBadge status="completed" />
+      <MessageStatusBadge status="failed" />
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { MessageStatusBadge } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <MessageStatusBadge status="pending" />
+  <MessageStatusBadge status="processing" />
+  <MessageStatusBadge status="completed" />
+  <MessageStatusBadge status="failed" />
+</template>`
+    }
+  },
+
+  chatcomposer: {
+    id: "chatcomposer",
+    slug: "chat-composer",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "ChatComposer",
+            props: {
+              placeholder: "Posez votre question…",
+              submitLabel: "Envoyer"
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { ChatComposer } from "@sentropic/design-system-svelte";
+</script>
+
+<ChatComposer
+  placeholder="Posez votre question…"
+  submitLabel="Envoyer"
+/>`,
+      react: `import { ChatComposer } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <ChatComposer
+      placeholder="Posez votre question…"
+      submitLabel="Envoyer"
+    />
+  );
+}`,
+      vue: `<script setup>
+import { ChatComposer } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <ChatComposer
+    placeholder="Posez votre question…"
+    submitLabel="Envoyer"
+  />
+</template>`
+    }
+  },
+
+  menu: {
+    id: "menu",
+    slug: "menu",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "Menu",
+            props: {
+              items: [
+                { id: "edit", label: "Modifier" },
+                { id: "duplicate", label: "Dupliquer" },
+                { type: "divider" },
+                { id: "delete", label: "Supprimer", variant: "danger" }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { Menu } from "@sentropic/design-system-svelte";
+</script>
+
+<Menu
+  items={[
+    { id: "edit", label: "Modifier" },
+    { id: "duplicate", label: "Dupliquer" },
+    { type: "divider" },
+    { id: "delete", label: "Supprimer", variant: "danger" }
+  ]}
+/>`,
+      react: `import { Menu } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <Menu
+      items={[
+        { id: "edit", label: "Modifier" },
+        { id: "duplicate", label: "Dupliquer" },
+        { type: "divider" },
+        { id: "delete", label: "Supprimer", variant: "danger" }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { Menu } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Menu
+    :items="[
+      { id: 'edit', label: 'Modifier' },
+      { id: 'duplicate', label: 'Dupliquer' },
+      { type: 'divider' },
+      { id: 'delete', label: 'Supprimer', variant: 'danger' }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  menupopover: {
+    id: "menupopover",
+    slug: "menu-popover",
+    nodes: [
+      wrap([
+        {
+          comp: "MenuPopover",
+          props: {
+            open: true,
+            placement: "bottom-start",
+            items: [
+              { id: "view", label: "Voir les détails" },
+              { id: "edit", label: "Modifier" },
+              { type: "divider" },
+              { id: "archive", label: "Archiver" }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { MenuPopover } from "@sentropic/design-system-svelte";
+</script>
+
+<MenuPopover
+  open={true}
+  placement="bottom-start"
+  items={[
+    { id: "view", label: "Voir les détails" },
+    { id: "edit", label: "Modifier" },
+    { type: "divider" },
+    { id: "archive", label: "Archiver" }
+  ]}
+/>`,
+      react: `import { MenuPopover } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <MenuPopover
+      open={true}
+      placement="bottom-start"
+      items={[
+        { id: "view", label: "Voir les détails" },
+        { id: "edit", label: "Modifier" },
+        { type: "divider" },
+        { id: "archive", label: "Archiver" }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { MenuPopover } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <MenuPopover
+    :open="true"
+    placement="bottom-start"
+    :items="[
+      { id: 'view', label: 'Voir les détails' },
+      { id: 'edit', label: 'Modifier' },
+      { type: 'divider' },
+      { id: 'archive', label: 'Archiver' }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  overflowmenu: {
+    id: "overflowmenu",
+    slug: "overflow-menu",
+    nodes: [
+      wrap([
+        {
+          comp: "OverflowMenu",
+          props: {
+            label: "⋮",
+            open: true,
+            placement: "bottom-start",
+            items: [
+              { id: "rename", label: "Renommer" },
+              { id: "move", label: "Déplacer" },
+              { id: "delete", label: "Supprimer" }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { OverflowMenu } from "@sentropic/design-system-svelte";
+</script>
+
+<OverflowMenu
+  label="⋮"
+  :open="true"
+  placement="bottom-start"
+  items={[
+    { id: "rename", label: "Renommer" },
+    { id: "move", label: "Déplacer" },
+    { id: "delete", label: "Supprimer" }
+  ]}
+/>`,
+      react: `import { OverflowMenu } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <OverflowMenu
+      label="⋮"
+      open={true}
+      placement="bottom-start"
+      items={[
+        { id: "rename", label: "Renommer" },
+        { id: "move", label: "Déplacer" },
+        { id: "delete", label: "Supprimer" }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { OverflowMenu } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <OverflowMenu
+    label="⋮"
+    :open="true"
+    placement="bottom-start"
+    :items="[
+      { id: 'rename', label: 'Renommer' },
+      { id: 'move', label: 'Déplacer' },
+      { id: 'delete', label: 'Supprimer' }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  popover: {
+    id: "popover",
+    slug: "popover",
+    nodes: [
+      wrap([
+        {
+          comp: "Popover",
+          props: {
+            open: true,
+            placement: "bottom",
+            content: "Cliquez pour copier l'identifiant du composant."
+          },
+          children: [
+            { comp: "Button", props: { variant: "secondary" }, children: ["Info"] }
+          ]
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { Popover, Button } from "@sentropic/design-system-svelte";
+</script>
+
+<Popover content="Cliquez pour copier l'identifiant." placement="bottom">
+  <Button variant="secondary">Info</Button>
+</Popover>`,
+      react: `import { Popover, Button } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <Popover content="Cliquez pour copier l'identifiant." placement="bottom" open>
+      <Button variant="secondary">Info</Button>
+    </Popover>
+  );
+}`,
+      vue: `<script setup>
+import { Popover, Button } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Popover content="Cliquez pour copier l'identifiant." placement="bottom" :open="true">
+    <Button variant="secondary">Info</Button>
+  </Popover>
+</template>`
+    }
+  },
+
+  aspectratio: {
+    id: "aspectratio",
+    slug: "aspect-ratio",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "AspectRatio",
+            props: { ratio: "16 / 9" },
+            children: [
+              {
+                el: "div",
+                props: { style: "background:var(--st-color-surface-subtle,#f0f0f0);width:100%;height:100%;display:flex;align-items:center;justify-content:center;border-radius:4px" },
+                children: ["16 / 9"]
+              }
+            ]
+          },
+          {
+            comp: "AspectRatio",
+            props: { ratio: "1 / 1" },
+            children: [
+              {
+                el: "div",
+                props: { style: "background:var(--st-color-surface-subtle,#f0f0f0);width:100%;height:100%;display:flex;align-items:center;justify-content:center;border-radius:4px" },
+                children: ["1 / 1"]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { AspectRatio } from "@sentropic/design-system-svelte";
+</script>
+
+<AspectRatio ratio="16 / 9">
+  <div style="background:#f0f0f0;width:100%;height:100%;">16 / 9</div>
+</AspectRatio>
+<AspectRatio ratio="1 / 1">
+  <div style="background:#f0f0f0;width:100%;height:100%;">1 / 1</div>
+</AspectRatio>`,
+      react: `import { AspectRatio } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <AspectRatio ratio="16 / 9">
+        <div style={{ background: "#f0f0f0", width: "100%", height: "100%" }}>16 / 9</div>
+      </AspectRatio>
+      <AspectRatio ratio="1 / 1">
+        <div style={{ background: "#f0f0f0", width: "100%", height: "100%" }}>1 / 1</div>
+      </AspectRatio>
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { AspectRatio } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <AspectRatio ratio="16 / 9">
+    <div style="background:#f0f0f0;width:100%;height:100%;">16 / 9</div>
+  </AspectRatio>
+  <AspectRatio ratio="1 / 1">
+    <div style="background:#f0f0f0;width:100%;height:100%;">1 / 1</div>
+  </AspectRatio>
 </template>`
     }
   },
