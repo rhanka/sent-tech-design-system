@@ -52,8 +52,16 @@ export { FileUploader } from "./FileUploader.js";
 export type { FileUploaderProps, FileUploadItem, FileUploadStatus } from "./FileUploader.js";
 export { Footer } from "./Footer.js";
 export type { FooterProps } from "./Footer.js";
-export { ForceGraph } from "./ForceGraph.js";
-export type { ForceGraphProps, ForceGraphNode, ForceGraphEdge, ForceGraphTone } from "./ForceGraph.js";
+export { ForceGraph, GraphLegend, nodeShapePath } from "./ForceGraph.js";
+export type {
+  ForceGraphProps,
+  ForceGraphNode,
+  ForceGraphEdge,
+  ForceGraphTone,
+  ForceGraphNodeShape,
+  ForceGraphLegendEntry,
+  GraphLegendProps,
+} from "./ForceGraph.js";
 export { Form } from "./Form.js";
 export type { FormProps } from "./Form.js";
 export { FormGroup } from "./FormGroup.js";

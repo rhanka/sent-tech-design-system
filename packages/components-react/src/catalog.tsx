@@ -1034,44 +1034,730 @@ export function Footer({ brand, columns, links, copyright, className, ...rest }:
   );
 }
 
-export type ForceGraphTone = DataTone;
-export type ForceGraphNode = { id: string; label?: string; group?: string | number; tone?: ForceGraphTone; weight?: number; fx?: number; fy?: number };
-export type ForceGraphEdge = { source: string; target: string; relation?: string; weak?: boolean };
+export type ForceGraphTone =
+  | "category1"
+  | "category2"
+  | "category3"
+  | "category4"
+  | "category5"
+  | "category6"
+  | "category7"
+  | "category8";
+
+export type ForceGraphNodeShape =
+  | "dot"
+  | "circle"
+  | "diamond"
+  | "star"
+  | "hexagon"
+  | "box"
+  | "square"
+  | "triangle";
+
+export type ForceGraphNode = {
+  /** Stable identifier; referenced by edges. */
+  id: string;
+  /** Visible label (falls back to id). */
+  label?: string;
+  /**
+   * Grouping key (e.g. node type or community). Nodes sharing a group get
+   * the same tone when `tone` is not set explicitly.
+   */
+  group?: string | number;
+  /** Explicit data-vis tone; overrides the group-derived tone. */
+  tone?: ForceGraphTone;
+  /** Relative node radius weight (defaults to 1). */
+  weight?: number;
+  /** Pin the node to a fixed position (ignored by the simulation). */
+  fx?: number;
+  fy?: number;
+  /**
+   * Visual shape for the node. Defaults to 'dot' (circle).
+   * Supported: 'dot'|'circle', 'diamond', 'star', 'hexagon', 'box'|'square', 'triangle'.
+   */
+  shape?: ForceGraphNodeShape;
+};
+
+export type ForceGraphEdge = {
+  /** Source node id. */
+  source: string;
+  /** Target node id. */
+  target: string;
+  /** Optional relation label, surfaced in the tooltip on hover/focus. */
+  relation?: string;
+  /**
+   * When true the link renders as a dashed/faded "weak" link. Lets callers
+   * map a confidence dimension onto link strength without extra props.
+   */
+  weak?: boolean;
+};
+
+export type ForceGraphLegendEntry = {
+  /** Label shown in the legend. */
+  label: string;
+  /** Shape for this entry (node legend). Absent = line-style legend entry. */
+  shape?: ForceGraphNodeShape;
+  /** Tone for this entry. Defaults to category1. */
+  tone?: ForceGraphTone;
+  /** When true, renders as a dashed line (edge legend). */
+  weak?: boolean;
+};
+
+// ---------------------------------------------------------------------------
+// SVG path helpers for the various node shapes.
+// All shapes are centered at (0,0) and sized to inscribe within radius r.
+// ---------------------------------------------------------------------------
+export function nodeShapePath(shape: ForceGraphNodeShape | undefined, r: number): string | null {
+  const s = shape ?? "dot";
+  if (s === "dot" || s === "circle") return null; // use <circle>
+  if (s === "diamond") {
+    return `M 0 ${-r} L ${r} 0 L 0 ${r} L ${-r} 0 Z`;
+  }
+  if (s === "star") {
+    const outer = r;
+    const inner = r * 0.42;
+    const pts: string[] = [];
+    for (let i = 0; i < 10; i++) {
+      const angle = (i * Math.PI) / 5 - Math.PI / 2;
+      const rad = i % 2 === 0 ? outer : inner;
+      pts.push(`${rad * Math.cos(angle)},${rad * Math.sin(angle)}`);
+    }
+    return `M ${pts.join(" L ")} Z`;
+  }
+  if (s === "hexagon") {
+    const pts: string[] = [];
+    for (let i = 0; i < 6; i++) {
+      const angle = (i * Math.PI) / 3 - Math.PI / 6;
+      pts.push(`${r * Math.cos(angle)},${r * Math.sin(angle)}`);
+    }
+    return `M ${pts.join(" L ")} Z`;
+  }
+  if (s === "box" || s === "square") {
+    const h = r * 0.85;
+    return `M ${-h} ${-h} L ${h} ${-h} L ${h} ${h} L ${-h} ${h} Z`;
+  }
+  if (s === "triangle") {
+    const h = r * 1.1;
+    return `M 0 ${-h} L ${h * 0.9} ${h * 0.6} L ${-h * 0.9} ${h * 0.6} Z`;
+  }
+  return null;
+}
+
+const FORCE_GRAPH_TONES: ForceGraphTone[] = [
+  "category1",
+  "category2",
+  "category3",
+  "category4",
+  "category5",
+  "category6",
+  "category7",
+  "category8",
+];
+
+// ---------------------------------------------------------------------------
+// Tone assignment: explicit tone wins, else stable per-group, else per-index.
+// ---------------------------------------------------------------------------
+function buildForceGraphToneMap(ns: ForceGraphNode[]): Map<string, ForceGraphTone> {
+  const groups: (string | number)[] = [];
+  const seen = new Set<string | number>();
+  for (const n of ns) {
+    if (n.group === undefined) continue;
+    if (seen.has(n.group)) continue;
+    seen.add(n.group);
+    groups.push(n.group);
+  }
+  const groupTone = new Map<string | number, ForceGraphTone>();
+  groups.forEach((g, i) => groupTone.set(g, FORCE_GRAPH_TONES[i % FORCE_GRAPH_TONES.length]));
+  const map = new Map<string, ForceGraphTone>();
+  ns.forEach((n, i) => {
+    if (n.tone) map.set(n.id, n.tone);
+    else if (n.group !== undefined && groupTone.has(n.group)) map.set(n.id, groupTone.get(n.group)!);
+    else map.set(n.id, FORCE_GRAPH_TONES[i % FORCE_GRAPH_TONES.length]);
+  });
+  return map;
+}
+
+// ---------------------------------------------------------------------------
+// Lightweight force simulation (no external dependency).
+//   - repulsion (Coulomb-like, O(n^2), fine for ontology-scale graphs)
+//   - spring links (Hooke toward a rest length)
+//   - mild gravity toward the centre to keep disconnected nodes on-canvas
+// A deterministic seeded layout keeps SSR / tests stable.
+// ---------------------------------------------------------------------------
+type ForceGraphSimNode = { id: string; x: number; y: number; vx: number; vy: number; fixed: boolean };
+
+function forceGraphMulberry32(seed: number): () => number {
+  let a = seed >>> 0;
+  return () => {
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function runForceGraphSimulation(
+  ns: ForceGraphNode[],
+  es: ForceGraphEdge[],
+  w: number,
+  h: number,
+  ticks: number,
+  nodeRadius: number,
+): Map<string, { x: number; y: number }> {
+  const cx = w / 2;
+  const cy = h / 2;
+  const rand = forceGraphMulberry32(ns.length * 2654435761 + es.length);
+  const idIndex = new Map<string, number>();
+  const sim: ForceGraphSimNode[] = ns.map((n, i) => {
+    idIndex.set(n.id, i);
+    const fixed = typeof n.fx === "number" && typeof n.fy === "number";
+    // Seed on a loose ring so the first ticks fan the graph out predictably.
+    const angle = (i / Math.max(ns.length, 1)) * Math.PI * 2;
+    const r = Math.min(w, h) * 0.3 * (0.5 + rand() * 0.5);
+    return {
+      id: n.id,
+      x: fixed ? (n.fx as number) : cx + Math.cos(angle) * r,
+      y: fixed ? (n.fy as number) : cy + Math.sin(angle) * r,
+      vx: 0,
+      vy: 0,
+      fixed,
+    };
+  });
+
+  const links = es
+    .map((e) => ({ s: idIndex.get(e.source), t: idIndex.get(e.target) }))
+    .filter((l): l is { s: number; t: number } => l.s !== undefined && l.t !== undefined);
+
+  const area = w * h;
+  const k = Math.sqrt(area / Math.max(ns.length, 1)); // ideal node distance
+  const repulsion = k * k * 0.9;
+  const restLength = k * 0.8;
+  const springK = 0.04;
+  const gravity = 0.012;
+  const damping = 0.85;
+  let temperature = Math.min(w, h) * 0.08;
+  const cooling = ticks > 0 ? Math.pow(0.02, 1 / ticks) : 0.95;
+
+  for (let step = 0; step < ticks; step++) {
+    // Repulsion between all node pairs.
+    for (let i = 0; i < sim.length; i++) {
+      for (let j = i + 1; j < sim.length; j++) {
+        let dx = sim[i].x - sim[j].x;
+        let dy = sim[i].y - sim[j].y;
+        let dist2 = dx * dx + dy * dy;
+        if (dist2 < 0.01) {
+          dx = (rand() - 0.5) * 0.1;
+          dy = (rand() - 0.5) * 0.1;
+          dist2 = dx * dx + dy * dy + 0.01;
+        }
+        const dist = Math.sqrt(dist2);
+        const force = repulsion / dist2;
+        const fx = (dx / dist) * force;
+        const fy = (dy / dist) * force;
+        sim[i].vx += fx;
+        sim[i].vy += fy;
+        sim[j].vx -= fx;
+        sim[j].vy -= fy;
+      }
+    }
+    // Spring attraction along links.
+    for (const l of links) {
+      const a = sim[l.s];
+      const b = sim[l.t];
+      const dx = b.x - a.x;
+      const dy = b.y - a.y;
+      const dist = Math.sqrt(dx * dx + dy * dy) || 0.01;
+      const force = (dist - restLength) * springK;
+      const fx = (dx / dist) * force;
+      const fy = (dy / dist) * force;
+      a.vx += fx;
+      a.vy += fy;
+      b.vx -= fx;
+      b.vy -= fy;
+    }
+    // Gravity toward centre + integrate with capped, cooling step.
+    for (const sn of sim) {
+      if (sn.fixed) {
+        sn.vx = 0;
+        sn.vy = 0;
+        continue;
+      }
+      sn.vx += (cx - sn.x) * gravity;
+      sn.vy += (cy - sn.y) * gravity;
+      sn.vx *= damping;
+      sn.vy *= damping;
+      const speed = Math.sqrt(sn.vx * sn.vx + sn.vy * sn.vy);
+      if (speed > temperature) {
+        sn.vx = (sn.vx / speed) * temperature;
+        sn.vy = (sn.vy / speed) * temperature;
+      }
+      sn.x += sn.vx;
+      sn.y += sn.vy;
+      // Keep inside a padded viewport.
+      sn.x = Math.max(nodeRadius * 2, Math.min(w - nodeRadius * 2, sn.x));
+      sn.y = Math.max(nodeRadius * 2, Math.min(h - nodeRadius * 2, sn.y));
+    }
+    temperature *= cooling;
+  }
+
+  const out = new Map<string, { x: number; y: number }>();
+  for (const sn of sim) out.set(sn.id, { x: sn.x, y: sn.y });
+  return out;
+}
+
 export type ForceGraphProps = React.HTMLAttributes<HTMLElement> & {
   nodes: ForceGraphNode[];
   edges: ForceGraphEdge[];
-  label?: string;
+  /** Accessible name for the figure (required). */
+  label: string;
+  width?: number;
+  height?: number;
+  /** Base node radius in px (scaled by node.weight). */
+  nodeRadius?: number;
+  /** Show text labels next to nodes. */
+  showLabels?: boolean;
+  /**
+   * Number of cooling ticks. The simulation runs a synchronous warmup then
+   * animates the remainder unless reduced motion is requested.
+   */
+  iterations?: number;
+  /**
+   * IDs of currently selected nodes. Highlighted visually without
+   * re-running the layout. Defaults to [].
+   */
   selectedIds?: string[];
+  /**
+   * ID of the node to focus/centre visually (ring highlight). Does not
+   * re-run the layout. Defaults to null.
+   */
   focusId?: string | null;
+  /**
+   * Called when the user clicks (or presses Space/Enter) a node.
+   * Fires with the node's stable id.
+   */
   onSelect?: (id: string) => void;
+  /**
+   * Called when the user activates a node (double-click or Enter key while
+   * keyboard-focused). Intended to open a detail panel.
+   * Fires with the node's stable id.
+   */
   onOpenEntity?: (id: string) => void;
+  /**
+   * Called when the user hovers an edge.
+   * Fires with the edge object (source/target/relation/weak).
+   */
+  onEdgeHover?: (edge: ForceGraphEdge) => void;
+  /**
+   * Legend entries rendered as a corner overlay.
+   * Each entry has a label + optional shape (node) or weak (edge).
+   */
+  legend?: ForceGraphLegendEntry[];
 };
-export function ForceGraph({ nodes, edges, label = "Force graph", selectedIds = [], focusId = null, onSelect, onOpenEntity, className, ...rest }: ForceGraphProps) {
+
+export function ForceGraph({
+  nodes,
+  edges,
+  label,
+  width = 480,
+  height = 360,
+  nodeRadius = 7,
+  showLabels = true,
+  iterations = 300,
+  selectedIds = [],
+  focusId = null,
+  onSelect,
+  onOpenEntity,
+  onEdgeHover,
+  legend,
+  className,
+  ...rest
+}: ForceGraphProps) {
+  // SSR-safe reduced-motion check (window may be undefined during SSR/tests).
+  const prefersReducedMotion =
+    typeof window !== "undefined" &&
+    typeof window.matchMedia === "function" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const toneMap = React.useMemo(() => buildForceGraphToneMap(nodes), [nodes]);
+
+  // The whole layout is recomputed when inputs change. The same settled
+  // layout is used as the rendered target — a static, deterministic frame —
+  // which keeps the component framework-light and test-friendly while still
+  // honouring the motion preference (no rAF loop, no jitter).
+  const layout = React.useMemo(() => {
+    const ticks = Math.max(1, Math.round(iterations));
+    return runForceGraphSimulation(nodes, edges, width, height, ticks, nodeRadius);
+  }, [nodes, edges, width, height, iterations, nodeRadius]);
+
+  const positionedNodes = React.useMemo(
+    () =>
+      nodes.map((n, i) => {
+        const p = layout.get(n.id) ?? { x: width / 2, y: height / 2 };
+        const r = nodeRadius * Math.sqrt(Math.max(n.weight ?? 1, 0.25));
+        const shapePath = nodeShapePath(n.shape, r);
+        return {
+          node: n,
+          i,
+          x: p.x,
+          y: p.y,
+          r,
+          tone: toneMap.get(n.id) ?? ("category1" as ForceGraphTone),
+          title: n.label ?? n.id,
+          shapePath,
+        };
+      }),
+    [nodes, layout, width, height, nodeRadius, toneMap],
+  );
+
+  const positionedEdges = React.useMemo(() => {
+    const nodeById = new Map(nodes.map((n) => [n.id, n]));
+    return edges
+      .map((e, i) => {
+        const a = layout.get(e.source);
+        const b = layout.get(e.target);
+        if (!a || !b) return null;
+        const srcNode = nodeById.get(e.source);
+        const tgtNode = nodeById.get(e.target);
+        return {
+          edge: e,
+          i,
+          x1: a.x,
+          y1: a.y,
+          x2: b.x,
+          y2: b.y,
+          srcLabel: srcNode?.label ?? e.source,
+          tgtLabel: tgtNode?.label ?? e.target,
+        };
+      })
+      .filter((e): e is NonNullable<typeof e> => e !== null);
+  }, [nodes, edges, layout]);
+
+  const [hoveredNodeIndex, setHoveredNodeIndex] = React.useState<number | null>(null);
+  const [hoveredEdgeIndex, setHoveredEdgeIndex] = React.useState<number | null>(null);
+
+  const selectedSet = React.useMemo(() => new Set<string>(selectedIds), [selectedIds]);
+
+  // Keyboard handler for a node element: Space/Enter → onSelect, Enter → onOpenEntity.
+  function handleNodeKeydown(id: string, e: React.KeyboardEvent) {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      onSelect?.(id);
+    }
+    if (e.key === "Enter") {
+      onOpenEntity?.(id);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Zoom + pan state. Store zoom as a scale multiplier + pan offset so syncing
+  // with width/height props is trivial.
+  //   vbW = width / zoomScale,  vbH = height / zoomScale
+  //   vbX / vbY = pan offset in SVG coordinate space
+  // ---------------------------------------------------------------------------
+  const [zoomScale, setZoomScale] = React.useState(1);
+  const [panX, setPanX] = React.useState(0);
+  const [panY, setPanY] = React.useState(0);
+
+  const isPanningRef = React.useRef(false);
+  const panStartRef = React.useRef({ x: 0, y: 0, panX: 0, panY: 0 });
+  const svgRef = React.useRef<SVGSVGElement | null>(null);
+  const [isPanning, setIsPanning] = React.useState(false);
+
+  const vbW = width / zoomScale;
+  const vbH = height / zoomScale;
+  const vbX = panX;
+  const vbY = panY;
+
+  function resetView() {
+    setZoomScale(1);
+    setPanX(0);
+    setPanY(0);
+  }
+
+  function handleWheel(ev: React.WheelEvent<SVGSVGElement>) {
+    if (prefersReducedMotion) return;
+    ev.preventDefault();
+    // Zoom factor: ~10% per step.
+    const factor = ev.deltaY > 0 ? 0.9 : 1.1;
+    // Clamp zoom: 0.2x – 8x.
+    const newScale = Math.min(Math.max(zoomScale * factor, 0.2), 8);
+    // Anchor zoom around the cursor position in SVG coords.
+    if (svgRef.current) {
+      const rect = svgRef.current.getBoundingClientRect();
+      const cursorSvgX = panX + ((ev.clientX - rect.left) / rect.width) * (width / zoomScale);
+      const cursorSvgY = panY + ((ev.clientY - rect.top) / rect.height) * (height / zoomScale);
+      const newVbW = width / newScale;
+      const newVbH = height / newScale;
+      const ratioX = (cursorSvgX - panX) / (width / zoomScale);
+      const ratioY = (cursorSvgY - panY) / (height / zoomScale);
+      setPanX(cursorSvgX - ratioX * newVbW);
+      setPanY(cursorSvgY - ratioY * newVbH);
+    }
+    setZoomScale(newScale);
+  }
+
+  function handleBgMouseDown(ev: React.MouseEvent<SVGSVGElement>) {
+    // Only start pan when clicking the background (not a node/edge element).
+    if ((ev.target as Element).closest(".st-forceGraph__node")) return;
+    if (prefersReducedMotion) return;
+    isPanningRef.current = true;
+    setIsPanning(true);
+    panStartRef.current = { x: ev.clientX, y: ev.clientY, panX, panY };
+  }
+
+  function handleMouseMove(ev: React.MouseEvent<SVGSVGElement>) {
+    if (!isPanningRef.current || !svgRef.current) return;
+    const rect = svgRef.current.getBoundingClientRect();
+    const dx = ((ev.clientX - panStartRef.current.x) / rect.width) * vbW;
+    const dy = ((ev.clientY - panStartRef.current.y) / rect.height) * vbH;
+    setPanX(panStartRef.current.panX - dx);
+    setPanY(panStartRef.current.panY - dy);
+  }
+
+  function handleMouseUp() {
+    isPanningRef.current = false;
+    setIsPanning(false);
+  }
+
+  const viewBox = `${vbX} ${vbY} ${vbW} ${vbH}`;
+  const isZoomed = zoomScale !== 1 || panX !== 0 || panY !== 0;
+
+  const hoveredNode = hoveredNodeIndex !== null ? positionedNodes[hoveredNodeIndex] : null;
+  const hoveredEdge = hoveredEdgeIndex !== null ? positionedEdges.find((pe) => pe.i === hoveredEdgeIndex) : null;
+  const hoveredNodeRelCount = hoveredNode
+    ? positionedEdges.filter((e) => e.edge.source === hoveredNode.node.id || e.edge.target === hoveredNode.node.id).length
+    : 0;
+
   return (
-    <figure {...rest} className={classNames("st-forceGraph st-forceGraph--static", className)} aria-label={label}>
-      <span className="st-visually-hidden">{label}</span>
-      <svg viewBox="0 0 360 220" aria-hidden="true">
+    <div
+      {...rest}
+      className={classNames("st-forceGraph", prefersReducedMotion && "st-forceGraph--static", className)}
+      role="img"
+      aria-label={label}
+    >
+      <svg
+        ref={svgRef}
+        viewBox={viewBox}
+        preserveAspectRatio="xMidYMid meet"
+        width="100%"
+        height="100%"
+        focusable="false"
+        aria-hidden="true"
+        className={classNames(isPanning && "st-forceGraph__svg--panning")}
+        onWheel={handleWheel}
+        onMouseDown={handleBgMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+      >
+        {/* edges first so nodes paint on top */}
         <g className="st-forceGraph__edges">
-          {edges.map((edge, index) => (
-            <line key={`${edge.source}-${edge.target}-${index}`} className={classNames("st-forceGraph__edge", edge.weak && "st-forceGraph__edge--weak")} x1="40" y1={40 + index * 20} x2="260" y2={80 + index * 20} />
+          {positionedEdges.map((e) => (
+            <React.Fragment key={e.i}>
+              {/* Invisible wider hit area for edge hover */}
+              <line
+                className="st-forceGraph__edgeHit"
+                role="presentation"
+                x1={e.x1}
+                y1={e.y1}
+                x2={e.x2}
+                y2={e.y2}
+                onMouseEnter={() => {
+                  setHoveredEdgeIndex(e.i);
+                  onEdgeHover?.(e.edge);
+                }}
+                onMouseLeave={() => setHoveredEdgeIndex(null)}
+              />
+              <line
+                className={classNames(
+                  "st-forceGraph__edge",
+                  e.edge.weak && "st-forceGraph__edge--weak",
+                  hoveredEdgeIndex === e.i && "st-forceGraph__edge--hovered",
+                )}
+                x1={e.x1}
+                y1={e.y1}
+                x2={e.x2}
+                y2={e.y2}
+                pointerEvents="none"
+              />
+            </React.Fragment>
           ))}
         </g>
+
         <g className="st-forceGraph__nodes">
-          {nodes.map((graphNode, index) => {
-            const x = graphNode.fx ?? 48 + (index % 5) * 64;
-            const y = graphNode.fy ?? 56 + Math.floor(index / 5) * 56;
+          {positionedNodes.map((p) => {
+            const ariaLabel = `${p.title}${p.node.group !== undefined ? `: ${p.node.group}` : ""}`;
+            const pressed = selectedSet.has(p.node.id);
+            const shapeProps = {
+              className: "st-forceGraph__shape st-forceGraph__dot",
+              tabIndex: 0,
+              role: "button" as const,
+              "aria-label": ariaLabel,
+              "aria-pressed": pressed,
+              onMouseEnter: () => setHoveredNodeIndex(p.i),
+              onMouseLeave: () => setHoveredNodeIndex(null),
+              onFocus: () => setHoveredNodeIndex(p.i),
+              onBlur: () => setHoveredNodeIndex(null),
+              onClick: () => onSelect?.(p.node.id),
+              onDoubleClick: () => onOpenEntity?.(p.node.id),
+              onKeyDown: (e: React.KeyboardEvent) => handleNodeKeydown(p.node.id, e),
+            };
             return (
-              <g key={graphNode.id} className={classNames("st-forceGraph__node", `st-forceGraph__node--${graphNode.tone ?? DATA_TONES[index % DATA_TONES.length]}`, selectedIds.includes(graphNode.id) && "st-forceGraph__node--selected", focusId === graphNode.id && "st-forceGraph__node--focus")} tabIndex={0} onClick={() => onSelect?.(graphNode.id)} onDoubleClick={() => onOpenEntity?.(graphNode.id)}>
-                <circle className="st-forceGraph__dot" cx={x} cy={y} r={8 * (graphNode.weight ?? 1)} />
-                <text className="st-forceGraph__label" x={x + 12} y={y + 4}>
-                  {graphNode.label ?? graphNode.id}
-                </text>
+              <g
+                key={p.node.id}
+                className={classNames(
+                  "st-forceGraph__node",
+                  `st-forceGraph__node--${p.tone}`,
+                  hoveredNodeIndex !== null && hoveredNodeIndex !== p.i && "st-forceGraph__node--dim",
+                  pressed && "st-forceGraph__node--selected",
+                  focusId === p.node.id && "st-forceGraph__node--focus",
+                )}
+                transform={`translate(${p.x} ${p.y})`}
+              >
+                {p.shapePath ? (
+                  <path {...shapeProps} d={p.shapePath} />
+                ) : (
+                  <circle {...shapeProps} r={p.r} />
+                )}
+                {showLabels ? (
+                  <text className="st-forceGraph__label" x={p.r + 3} y={0} dominantBaseline="middle">
+                    {p.title}
+                  </text>
+                ) : null}
               </g>
             );
           })}
         </g>
       </svg>
-    </figure>
+
+      {/* Node tooltip */}
+      {hoveredNode ? (
+        <div
+          className="st-forceGraph__tooltip"
+          role="presentation"
+          style={{
+            left: `${((hoveredNode.x - vbX) / vbW) * 100}%`,
+            top: `${((hoveredNode.y - vbY) / vbH) * 100}%`,
+          }}
+        >
+          <span className="st-forceGraph__tooltipLabel">{hoveredNode.title}</span>
+          {hoveredNode.node.group !== undefined ? (
+            <span className="st-forceGraph__tooltipMeta">{hoveredNode.node.group}</span>
+          ) : null}
+          {hoveredNodeRelCount > 0 ? (
+            <span className="st-forceGraph__tooltipMeta">
+              {hoveredNodeRelCount} relation{hoveredNodeRelCount === 1 ? "" : "s"}
+            </span>
+          ) : null}
+        </div>
+      ) : null}
+
+      {/* Edge tooltip */}
+      {hoveredEdge ? (
+        <div
+          className="st-forceGraph__tooltip st-forceGraph__tooltip--edge"
+          role="presentation"
+          style={{
+            left: `${(((hoveredEdge.x1 + hoveredEdge.x2) / 2 - vbX) / vbW) * 100}%`,
+            top: `${(((hoveredEdge.y1 + hoveredEdge.y2) / 2 - vbY) / vbH) * 100}%`,
+          }}
+        >
+          <span className="st-forceGraph__tooltipLabel">{hoveredEdge.srcLabel}</span>
+          {hoveredEdge.edge.relation ? (
+            <span className="st-forceGraph__tooltipRelation">{hoveredEdge.edge.relation}</span>
+          ) : null}
+          <span className="st-forceGraph__tooltipLabel">{hoveredEdge.tgtLabel}</span>
+        </div>
+      ) : null}
+
+      {/* Reset view button (only shown when zoomed/panned) */}
+      {isZoomed ? (
+        <button className="st-forceGraph__resetBtn" type="button" aria-label="Reset view" onClick={resetView}>
+          ↺
+        </button>
+      ) : null}
+
+      {/* Legend overlay */}
+      {legend && legend.length > 0 ? (
+        <div className="st-forceGraph__legend" aria-label="Graph legend">
+          {legend.map((entry, idx) => {
+            const swatchPath = entry.shape !== undefined ? nodeShapePath(entry.shape, 7) : null;
+            const swatchTone = entry.tone ?? "category1";
+            return (
+              <div className="st-forceGraph__legendEntry" key={idx}>
+                {entry.shape !== undefined ? (
+                  // Node shape legend entry
+                  <svg className="st-forceGraph__legendSwatch" viewBox="-8 -8 16 16" width="16" height="16" aria-hidden="true">
+                    {swatchPath ? (
+                      <path d={swatchPath} className={`st-forceGraph__legendShape st-forceGraph__legendShape--${swatchTone}`} />
+                    ) : (
+                      <circle r="7" className={`st-forceGraph__legendShape st-forceGraph__legendShape--${swatchTone}`} />
+                    )}
+                  </svg>
+                ) : (
+                  // Edge style legend entry
+                  <svg className="st-forceGraph__legendSwatch" viewBox="0 0 16 8" width="16" height="8" aria-hidden="true">
+                    <line
+                      x1="0"
+                      y1="4"
+                      x2="16"
+                      y2="4"
+                      className={classNames("st-forceGraph__legendEdge", entry.weak && "st-forceGraph__legendEdge--weak")}
+                    />
+                  </svg>
+                )}
+                <span className="st-forceGraph__legendLabel">{entry.label}</span>
+              </div>
+            );
+          })}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+export type GraphLegendProps = React.HTMLAttributes<HTMLDivElement> & {
+  entries: ForceGraphLegendEntry[];
+  /** Optional heading shown above entries. */
+  title?: string;
+};
+
+export function GraphLegend({ entries, title, className, ...rest }: GraphLegendProps) {
+  return (
+    <div {...rest} className={classNames("st-graphLegend", className)} aria-label={title ?? "Graph legend"}>
+      {title ? <p className="st-graphLegend__title">{title}</p> : null}
+      <ul className="st-graphLegend__list" role="list">
+        {entries.map((entry, idx) => {
+          const swatchPath = entry.shape !== undefined ? nodeShapePath(entry.shape, 7) : null;
+          const swatchTone = entry.tone ?? "category1";
+          return (
+            <li className="st-graphLegend__entry" key={idx}>
+              {entry.shape !== undefined ? (
+                <svg className="st-graphLegend__swatch" viewBox="-8 -8 16 16" width="16" height="16" aria-hidden="true">
+                  {swatchPath ? (
+                    <path d={swatchPath} className={`st-graphLegend__shape st-graphLegend__shape--${swatchTone}`} />
+                  ) : (
+                    <circle r="7" className={`st-graphLegend__shape st-graphLegend__shape--${swatchTone}`} />
+                  )}
+                </svg>
+              ) : (
+                <svg className="st-graphLegend__swatch" viewBox="0 0 16 8" width="16" height="8" aria-hidden="true">
+                  <line
+                    x1="0"
+                    y1="4"
+                    x2="16"
+                    y2="4"
+                    className={classNames("st-graphLegend__edge", entry.weak && "st-graphLegend__edge--weak")}
+                  />
+                </svg>
+              )}
+              <span className="st-graphLegend__label">{entry.label}</span>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   );
 }
 
