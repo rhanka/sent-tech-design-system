@@ -54,7 +54,22 @@ export type ComponentName =
   | "OrderedList"
   | "UnorderedList"
   | "StructuredList"
-  | "SkipLink";
+  | "SkipLink"
+  | "Header"
+  | "SideNav"
+  | "Form"
+  | "FormGroup"
+  | "FileUploader"
+  | "LanguageSelector"
+  | "Table"
+  | "DataTable"
+  | "TreeView"
+  | "Combobox"
+  | "MultiSelect"
+  | "DatePicker"
+  | "Toast"
+  | "Dropdown"
+  | "Footer";
 
 export interface ComponentNodeSpec {
   comp: ComponentName;
@@ -2233,6 +2248,1177 @@ import { SkipLink } from "@sentropic/design-system-vue";
   <!-- Les SkipLink sont visibles uniquement au focus (Tab) -->
   <SkipLink href="#main">Aller au contenu principal</SkipLink>
   <SkipLink href="#nav">Aller à la navigation</SkipLink>
+</template>`
+    }
+  },
+
+  header: {
+    id: "header",
+    slug: "header",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "Header",
+            props: {
+              title: "Sent Tech",
+              navItems: [
+                { label: "Composants", href: "/components" },
+                { label: "Documentation", href: "/docs" },
+                { label: "Blog", href: "/blog" }
+              ],
+              account: { name: "Fabien Antoine", email: "fabien@sent-tech.ca" }
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { Header } from "@sentropic/design-system-svelte";
+</script>
+
+<Header
+  title="Sent Tech"
+  navItems={[
+    { label: "Composants", href: "/components" },
+    { label: "Documentation", href: "/docs" },
+    { label: "Blog", href: "/blog" }
+  ]}
+  account={{ name: "Fabien Antoine", email: "fabien@sent-tech.ca" }}
+/>`,
+      react: `import { Header } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <Header
+      title="Sent Tech"
+      navItems={[
+        { label: "Composants", href: "/components" },
+        { label: "Documentation", href: "/docs" },
+        { label: "Blog", href: "/blog" }
+      ]}
+      account={{ name: "Fabien Antoine", email: "fabien@sent-tech.ca" }}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { Header } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Header
+    title="Sent Tech"
+    :navItems="[
+      { label: 'Composants', href: '/components' },
+      { label: 'Documentation', href: '/docs' },
+      { label: 'Blog', href: '/blog' }
+    ]"
+    :account="{ name: 'Fabien Antoine', email: 'fabien@sent-tech.ca' }"
+  />
+</template>`
+    }
+  },
+
+  sidenav: {
+    id: "sidenav",
+    slug: "side-nav",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "SideNav",
+            props: {
+              items: [
+                { label: "Vue d'ensemble", href: "/overview", active: true },
+                { label: "Composants", href: "/components" },
+                { label: "Tokens", href: "/tokens" },
+                { label: "Documentation", href: "/docs" }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { SideNav } from "@sentropic/design-system-svelte";
+</script>
+
+<SideNav
+  items={[
+    { label: "Vue d'ensemble", href: "/overview", active: true },
+    { label: "Composants", href: "/components" },
+    { label: "Tokens", href: "/tokens" },
+    { label: "Documentation", href: "/docs" }
+  ]}
+/>`,
+      react: `import { SideNav } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <SideNav
+      items={[
+        { label: "Vue d'ensemble", href: "/overview", active: true },
+        { label: "Composants", href: "/components" },
+        { label: "Tokens", href: "/tokens" },
+        { label: "Documentation", href: "/docs" }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { SideNav } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <SideNav
+    :items="[
+      { label: 'Vue d\\'ensemble', href: '/overview', active: true },
+      { label: 'Composants', href: '/components' },
+      { label: 'Tokens', href: '/tokens' },
+      { label: 'Documentation', href: '/docs' }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  form: {
+    id: "form",
+    slug: "form",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "Form",
+            props: { status: "idle" },
+            children: [
+              { comp: "Input", props: { label: "Nom du projet", placeholder: "Sent Forge" } },
+              { comp: "Input", props: { label: "URL", placeholder: "https://", type: "url" } },
+              { comp: "Button", props: { variant: "primary", type: "submit" }, children: ["Créer"] }
+            ]
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { Form, Input, Button } from "@sentropic/design-system-svelte";
+</script>
+
+<Form status="idle">
+  <Input label="Nom du projet" placeholder="Sent Forge" />
+  <Input label="URL" placeholder="https://" type="url" />
+  <Button variant="primary" type="submit">Créer</Button>
+</Form>`,
+      react: `import { Form, Input, Button } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <Form status="idle">
+      <Input label="Nom du projet" placeholder="Sent Forge" />
+      <Input label="URL" placeholder="https://" type="url" />
+      <Button variant="primary" type="submit">Créer</Button>
+    </Form>
+  );
+}`,
+      vue: `<script setup>
+import { Form, Input, Button } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Form status="idle">
+    <Input label="Nom du projet" placeholder="Sent Forge" />
+    <Input label="URL" placeholder="https://" type="url" />
+    <Button variant="primary" type="submit">Créer</Button>
+  </Form>
+</template>`
+    }
+  },
+
+  formgroup: {
+    id: "formgroup",
+    slug: "form-group",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "FormGroup",
+            props: { legend: "Préférences de notification", helperText: "Choisissez comment recevoir les alertes." },
+            children: [
+              { comp: "Checkbox", props: { label: "Par e-mail", checked: true } },
+              { comp: "Checkbox", props: { label: "Par SMS" } },
+              { comp: "Checkbox", props: { label: "Dans l'application", checked: true } }
+            ]
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { FormGroup, Checkbox } from "@sentropic/design-system-svelte";
+</script>
+
+<FormGroup legend="Préférences de notification" helperText="Choisissez comment recevoir les alertes.">
+  <Checkbox label="Par e-mail" checked />
+  <Checkbox label="Par SMS" />
+  <Checkbox label="Dans l'application" checked />
+</FormGroup>`,
+      react: `import { FormGroup, Checkbox } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <FormGroup legend="Préférences de notification" helperText="Choisissez comment recevoir les alertes.">
+      <Checkbox label="Par e-mail" defaultChecked />
+      <Checkbox label="Par SMS" />
+      <Checkbox label="Dans l'application" defaultChecked />
+    </FormGroup>
+  );
+}`,
+      vue: `<script setup>
+import { FormGroup, Checkbox } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <FormGroup legend="Préférences de notification" helperText="Choisissez comment recevoir les alertes.">
+    <Checkbox label="Par e-mail" :checked="true" />
+    <Checkbox label="Par SMS" />
+    <Checkbox label="Dans l'application" :checked="true" />
+  </FormGroup>
+</template>`
+    }
+  },
+
+  fileuploader: {
+    id: "fileuploader",
+    slug: "file-uploader",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "FileUploader",
+            props: {
+              label: "Glisser-déposer ou cliquer pour importer",
+              items: [
+                { name: "design-tokens.json", status: "complete" },
+                { name: "composants.zip", status: "uploading" },
+                { name: "fichier-invalide.exe", status: "error", error: "Format non supporté" }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { FileUploader } from "@sentropic/design-system-svelte";
+</script>
+
+<FileUploader
+  label="Glisser-déposer ou cliquer pour importer"
+  items={[
+    { name: "design-tokens.json", status: "complete" },
+    { name: "composants.zip", status: "uploading" },
+    { name: "fichier-invalide.exe", status: "error", error: "Format non supporté" }
+  ]}
+/>`,
+      react: `import { FileUploader } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <FileUploader
+      label="Glisser-déposer ou cliquer pour importer"
+      items={[
+        { name: "design-tokens.json", status: "complete" },
+        { name: "composants.zip", status: "uploading" },
+        { name: "fichier-invalide.exe", status: "error", error: "Format non supporté" }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { FileUploader } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <FileUploader
+    label="Glisser-déposer ou cliquer pour importer"
+    :items="[
+      { name: 'design-tokens.json', status: 'complete' },
+      { name: 'composants.zip', status: 'uploading' },
+      { name: 'fichier-invalide.exe', status: 'error', error: 'Format non supporté' }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  languageselector: {
+    id: "languageselector",
+    slug: "language-selector",
+    nodes: [
+      wrap([
+        {
+          comp: "LanguageSelector",
+          props: {
+            value: "fr",
+            options: [
+              { value: "fr", label: "Français" },
+              { value: "en", label: "English" },
+              { value: "es", label: "Español" }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { LanguageSelector } from "@sentropic/design-system-svelte";
+</script>
+
+<LanguageSelector
+  value="fr"
+  options={[
+    { value: "fr", label: "Français" },
+    { value: "en", label: "English" },
+    { value: "es", label: "Español" }
+  ]}
+/>`,
+      react: `import { LanguageSelector } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <LanguageSelector
+      value="fr"
+      options={[
+        { value: "fr", label: "Français" },
+        { value: "en", label: "English" },
+        { value: "es", label: "Español" }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { LanguageSelector } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <LanguageSelector
+    value="fr"
+    :options="[
+      { value: 'fr', label: 'Français' },
+      { value: 'en', label: 'English' },
+      { value: 'es', label: 'Español' }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  table: {
+    id: "table",
+    slug: "table",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "Table",
+            props: {
+              caption: "Composants du design system",
+              columns: [
+                { key: "name", label: "Composant" },
+                { key: "category", label: "Catégorie" },
+                { key: "status", label: "Statut" }
+              ],
+              rows: [
+                { id: "1", name: "Button", category: "Action", status: "Stable" },
+                { id: "2", name: "Input", category: "Formulaire", status: "Stable" },
+                { id: "3", name: "DataTable", category: "Données", status: "Stable" }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { Table } from "@sentropic/design-system-svelte";
+</script>
+
+<Table
+  caption="Composants du design system"
+  columns={[
+    { key: "name", label: "Composant" },
+    { key: "category", label: "Catégorie" },
+    { key: "status", label: "Statut" }
+  ]}
+  rows={[
+    { id: "1", name: "Button", category: "Action", status: "Stable" },
+    { id: "2", name: "Input", category: "Formulaire", status: "Stable" },
+    { id: "3", name: "DataTable", category: "Données", status: "Stable" }
+  ]}
+/>`,
+      react: `import { Table } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <Table
+      caption="Composants du design system"
+      columns={[
+        { key: "name", label: "Composant" },
+        { key: "category", label: "Catégorie" },
+        { key: "status", label: "Statut" }
+      ]}
+      rows={[
+        { id: "1", name: "Button", category: "Action", status: "Stable" },
+        { id: "2", name: "Input", category: "Formulaire", status: "Stable" },
+        { id: "3", name: "DataTable", category: "Données", status: "Stable" }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { Table } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Table
+    caption="Composants du design system"
+    :columns="[
+      { key: 'name', label: 'Composant' },
+      { key: 'category', label: 'Catégorie' },
+      { key: 'status', label: 'Statut' }
+    ]"
+    :rows="[
+      { id: '1', name: 'Button', category: 'Action', status: 'Stable' },
+      { id: '2', name: 'Input', category: 'Formulaire', status: 'Stable' },
+      { id: '3', name: 'DataTable', category: 'Données', status: 'Stable' }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  datatable: {
+    id: "datatable",
+    slug: "data-table",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "DataTable",
+            props: {
+              caption: "Déploiements récents",
+              columns: [
+                { key: "env", label: "Environnement" },
+                { key: "version", label: "Version" },
+                { key: "date", label: "Date" },
+                { key: "status", label: "Statut" }
+              ],
+              rows: [
+                { id: "1", env: "Production", version: "v1.4.2", date: "2026-06-01", status: "Succès" },
+                { id: "2", env: "Staging", version: "v1.4.3-rc1", date: "2026-06-02", status: "En cours" },
+                { id: "3", env: "Dev", version: "v1.5.0-alpha", date: "2026-06-02", status: "Échoué" }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { DataTable } from "@sentropic/design-system-svelte";
+</script>
+
+<DataTable
+  caption="Déploiements récents"
+  columns={[
+    { key: "env", label: "Environnement" },
+    { key: "version", label: "Version" },
+    { key: "date", label: "Date" },
+    { key: "status", label: "Statut" }
+  ]}
+  rows={[
+    { id: "1", env: "Production", version: "v1.4.2", date: "2026-06-01", status: "Succès" },
+    { id: "2", env: "Staging", version: "v1.4.3-rc1", date: "2026-06-02", status: "En cours" },
+    { id: "3", env: "Dev", version: "v1.5.0-alpha", date: "2026-06-02", status: "Échoué" }
+  ]}
+/>`,
+      react: `import { DataTable } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <DataTable
+      caption="Déploiements récents"
+      columns={[
+        { key: "env", label: "Environnement" },
+        { key: "version", label: "Version" },
+        { key: "date", label: "Date" },
+        { key: "status", label: "Statut" }
+      ]}
+      rows={[
+        { id: "1", env: "Production", version: "v1.4.2", date: "2026-06-01", status: "Succès" },
+        { id: "2", env: "Staging", version: "v1.4.3-rc1", date: "2026-06-02", status: "En cours" },
+        { id: "3", env: "Dev", version: "v1.5.0-alpha", date: "2026-06-02", status: "Échoué" }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { DataTable } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <DataTable
+    caption="Déploiements récents"
+    :columns="[
+      { key: 'env', label: 'Environnement' },
+      { key: 'version', label: 'Version' },
+      { key: 'date', label: 'Date' },
+      { key: 'status', label: 'Statut' }
+    ]"
+    :rows="[
+      { id: '1', env: 'Production', version: 'v1.4.2', date: '2026-06-01', status: 'Succès' },
+      { id: '2', env: 'Staging', version: 'v1.4.3-rc1', date: '2026-06-02', status: 'En cours' },
+      { id: '3', env: 'Dev', version: 'v1.5.0-alpha', date: '2026-06-02', status: 'Échoué' }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  treeview: {
+    id: "treeview",
+    slug: "tree-view",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "TreeView",
+            props: {
+              defaultExpandedIds: ["components", "forms"],
+              selectedId: "button",
+              nodes: [
+                {
+                  id: "components",
+                  label: "Composants",
+                  children: [
+                    { id: "button", label: "Button" },
+                    { id: "input", label: "Input" }
+                  ]
+                },
+                {
+                  id: "forms",
+                  label: "Formulaires",
+                  children: [
+                    { id: "form", label: "Form" },
+                    { id: "formgroup", label: "FormGroup" }
+                  ]
+                },
+                { id: "tokens", label: "Tokens" }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { TreeView } from "@sentropic/design-system-svelte";
+</script>
+
+<TreeView
+  defaultExpandedIds={["components", "forms"]}
+  selectedId="button"
+  nodes={[
+    {
+      id: "components",
+      label: "Composants",
+      children: [
+        { id: "button", label: "Button" },
+        { id: "input", label: "Input" }
+      ]
+    },
+    {
+      id: "forms",
+      label: "Formulaires",
+      children: [
+        { id: "form", label: "Form" },
+        { id: "formgroup", label: "FormGroup" }
+      ]
+    },
+    { id: "tokens", label: "Tokens" }
+  ]}
+/>`,
+      react: `import { TreeView } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <TreeView
+      defaultExpandedIds={["components", "forms"]}
+      selectedId="button"
+      nodes={[
+        {
+          id: "components",
+          label: "Composants",
+          children: [
+            { id: "button", label: "Button" },
+            { id: "input", label: "Input" }
+          ]
+        },
+        {
+          id: "forms",
+          label: "Formulaires",
+          children: [
+            { id: "form", label: "Form" },
+            { id: "formgroup", label: "FormGroup" }
+          ]
+        },
+        { id: "tokens", label: "Tokens" }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { TreeView } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <TreeView
+    :defaultExpandedIds="['components', 'forms']"
+    selectedId="button"
+    :nodes="[
+      {
+        id: 'components',
+        label: 'Composants',
+        children: [
+          { id: 'button', label: 'Button' },
+          { id: 'input', label: 'Input' }
+        ]
+      },
+      {
+        id: 'forms',
+        label: 'Formulaires',
+        children: [
+          { id: 'form', label: 'Form' },
+          { id: 'formgroup', label: 'FormGroup' }
+        ]
+      },
+      { id: 'tokens', label: 'Tokens' }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  combobox: {
+    id: "combobox",
+    slug: "combobox",
+    nodes: [
+      wrap([
+        {
+          comp: "Combobox",
+          props: {
+            label: "Framework",
+            placeholder: "Choisir ou saisir…",
+            options: [
+              { value: "svelte", label: "Svelte" },
+              { value: "react", label: "React" },
+              { value: "vue", label: "Vue" },
+              { value: "angular", label: "Angular" }
+            ]
+          }
+        },
+        {
+          comp: "Combobox",
+          props: {
+            label: "Région",
+            placeholder: "Choisir une région…",
+            value: "ca-qc",
+            options: [
+              { value: "ca-qc", label: "Canada — Québec" },
+              { value: "ca-on", label: "Canada — Ontario" },
+              { value: "us-east", label: "États-Unis — Est" }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { Combobox } from "@sentropic/design-system-svelte";
+</script>
+
+<Combobox
+  label="Framework"
+  placeholder="Choisir ou saisir…"
+  options={[
+    { value: "svelte", label: "Svelte" },
+    { value: "react", label: "React" },
+    { value: "vue", label: "Vue" }
+  ]}
+/>
+<Combobox
+  label="Région"
+  value="ca-qc"
+  options={[
+    { value: "ca-qc", label: "Canada — Québec" },
+    { value: "ca-on", label: "Canada — Ontario" },
+    { value: "us-east", label: "États-Unis — Est" }
+  ]}
+/>`,
+      react: `import { Combobox } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <Combobox
+        label="Framework"
+        placeholder="Choisir ou saisir…"
+        options={[
+          { value: "svelte", label: "Svelte" },
+          { value: "react", label: "React" },
+          { value: "vue", label: "Vue" }
+        ]}
+      />
+      <Combobox
+        label="Région"
+        value="ca-qc"
+        options={[
+          { value: "ca-qc", label: "Canada — Québec" },
+          { value: "ca-on", label: "Canada — Ontario" },
+          { value: "us-east", label: "États-Unis — Est" }
+        ]}
+      />
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { Combobox } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Combobox
+    label="Framework"
+    placeholder="Choisir ou saisir…"
+    :options="[
+      { value: 'svelte', label: 'Svelte' },
+      { value: 'react', label: 'React' },
+      { value: 'vue', label: 'Vue' }
+    ]"
+  />
+  <Combobox
+    label="Région"
+    value="ca-qc"
+    :options="[
+      { value: 'ca-qc', label: 'Canada — Québec' },
+      { value: 'ca-on', label: 'Canada — Ontario' },
+      { value: 'us-east', label: 'États-Unis — Est' }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  multiselect: {
+    id: "multiselect",
+    slug: "multi-select",
+    nodes: [
+      wrap([
+        {
+          comp: "MultiSelect",
+          props: {
+            label: "Frameworks supportés",
+            values: ["svelte", "react"],
+            options: [
+              { value: "svelte", label: "Svelte" },
+              { value: "react", label: "React" },
+              { value: "vue", label: "Vue" },
+              { value: "angular", label: "Angular" }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { MultiSelect } from "@sentropic/design-system-svelte";
+</script>
+
+<MultiSelect
+  label="Frameworks supportés"
+  values={["svelte", "react"]}
+  options={[
+    { value: "svelte", label: "Svelte" },
+    { value: "react", label: "React" },
+    { value: "vue", label: "Vue" },
+    { value: "angular", label: "Angular" }
+  ]}
+/>`,
+      react: `import { MultiSelect } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <MultiSelect
+      label="Frameworks supportés"
+      values={["svelte", "react"]}
+      options={[
+        { value: "svelte", label: "Svelte" },
+        { value: "react", label: "React" },
+        { value: "vue", label: "Vue" },
+        { value: "angular", label: "Angular" }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { MultiSelect } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <MultiSelect
+    label="Frameworks supportés"
+    :values="['svelte', 'react']"
+    :options="[
+      { value: 'svelte', label: 'Svelte' },
+      { value: 'react', label: 'React' },
+      { value: 'vue', label: 'Vue' },
+      { value: 'angular', label: 'Angular' }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  datepicker: {
+    id: "datepicker",
+    slug: "date-picker",
+    nodes: [
+      wrap([
+        {
+          comp: "DatePicker",
+          props: { label: "Date de déploiement", value: "2026-06-15" }
+        },
+        {
+          comp: "DatePicker",
+          props: { label: "Date d'expiration", value: "2026-12-31", size: "sm" }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { DatePicker } from "@sentropic/design-system-svelte";
+</script>
+
+<DatePicker label="Date de déploiement" value="2026-06-15" />
+<DatePicker label="Date d'expiration" value="2026-12-31" size="sm" />`,
+      react: `import { DatePicker } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <DatePicker label="Date de déploiement" value="2026-06-15" />
+      <DatePicker label="Date d'expiration" value="2026-12-31" size="sm" />
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { DatePicker } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <DatePicker label="Date de déploiement" value="2026-06-15" />
+  <DatePicker label="Date d'expiration" value="2026-12-31" size="sm" />
+</template>`
+    }
+  },
+
+  toast: {
+    id: "toast",
+    slug: "toast",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "Toast",
+            props: { tone: "success", title: "Déploiement réussi", message: "La version v1.4.2 est en production." }
+          },
+          {
+            comp: "Toast",
+            props: { tone: "error", title: "Erreur de déploiement", message: "Impossible de contacter le serveur." }
+          },
+          {
+            comp: "Toast",
+            props: { tone: "info", title: "Synchronisation en cours", message: "Les modifications seront disponibles dans quelques instants." }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { Toast } from "@sentropic/design-system-svelte";
+</script>
+
+<Toast tone="success" title="Déploiement réussi" message="La version v1.4.2 est en production." />
+<Toast tone="error" title="Erreur de déploiement" message="Impossible de contacter le serveur." />
+<Toast tone="info" title="Synchronisation en cours" message="Les modifications seront disponibles dans quelques instants." />`,
+      react: `import { Toast } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <Toast tone="success" title="Déploiement réussi" message="La version v1.4.2 est en production." />
+      <Toast tone="error" title="Erreur de déploiement" message="Impossible de contacter le serveur." />
+      <Toast tone="info" title="Synchronisation en cours" message="Les modifications seront disponibles dans quelques instants." />
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { Toast } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Toast tone="success" title="Déploiement réussi" message="La version v1.4.2 est en production." />
+  <Toast tone="error" title="Erreur de déploiement" message="Impossible de contacter le serveur." />
+  <Toast tone="info" title="Synchronisation en cours" message="Les modifications seront disponibles dans quelques instants." />
+</template>`
+    }
+  },
+
+  dropdown: {
+    id: "dropdown",
+    slug: "dropdown",
+    nodes: [
+      wrap([
+        {
+          comp: "Dropdown",
+          props: {
+            label: "Environnement",
+            value: "staging",
+            options: [
+              { value: "prod", label: "Production" },
+              { value: "staging", label: "Staging" },
+              { value: "dev", label: "Développement" }
+            ]
+          }
+        },
+        {
+          comp: "Dropdown",
+          props: {
+            label: "Taille",
+            options: [
+              { value: "sm", label: "Petite" },
+              { value: "md", label: "Moyenne" },
+              { value: "lg", label: "Grande" }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { Dropdown } from "@sentropic/design-system-svelte";
+</script>
+
+<Dropdown
+  label="Environnement"
+  value="staging"
+  options={[
+    { value: "prod", label: "Production" },
+    { value: "staging", label: "Staging" },
+    { value: "dev", label: "Développement" }
+  ]}
+/>
+<Dropdown
+  label="Taille"
+  options={[
+    { value: "sm", label: "Petite" },
+    { value: "md", label: "Moyenne" },
+    { value: "lg", label: "Grande" }
+  ]}
+/>`,
+      react: `import { Dropdown } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <Dropdown
+        label="Environnement"
+        value="staging"
+        options={[
+          { value: "prod", label: "Production" },
+          { value: "staging", label: "Staging" },
+          { value: "dev", label: "Développement" }
+        ]}
+      />
+      <Dropdown
+        label="Taille"
+        options={[
+          { value: "sm", label: "Petite" },
+          { value: "md", label: "Moyenne" },
+          { value: "lg", label: "Grande" }
+        ]}
+      />
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { Dropdown } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Dropdown
+    label="Environnement"
+    value="staging"
+    :options="[
+      { value: 'prod', label: 'Production' },
+      { value: 'staging', label: 'Staging' },
+      { value: 'dev', label: 'Développement' }
+    ]"
+  />
+  <Dropdown
+    label="Taille"
+    :options="[
+      { value: 'sm', label: 'Petite' },
+      { value: 'md', label: 'Moyenne' },
+      { value: 'lg', label: 'Grande' }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  footer: {
+    id: "footer",
+    slug: "footer",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "Footer",
+            props: {
+              brand: "Sent Tech",
+              columns: [
+                {
+                  title: "Produit",
+                  links: [
+                    { label: "Composants", href: "/components" },
+                    { label: "Tokens", href: "/tokens" },
+                    { label: "Documentation", href: "/docs" }
+                  ]
+                },
+                {
+                  title: "Entreprise",
+                  links: [
+                    { label: "À propos", href: "/about" },
+                    { label: "Blog", href: "/blog" },
+                    { label: "Contact", href: "/contact" }
+                  ]
+                }
+              ],
+              copyright: "© 2026 Sent Tech. Tous droits réservés."
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { Footer } from "@sentropic/design-system-svelte";
+</script>
+
+<Footer
+  brand="Sent Tech"
+  columns={[
+    {
+      title: "Produit",
+      links: [
+        { label: "Composants", href: "/components" },
+        { label: "Tokens", href: "/tokens" }
+      ]
+    },
+    {
+      title: "Entreprise",
+      links: [
+        { label: "À propos", href: "/about" },
+        { label: "Blog", href: "/blog" }
+      ]
+    }
+  ]}
+  copyright="© 2026 Sent Tech. Tous droits réservés."
+/>`,
+      react: `import { Footer } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <Footer
+      brand="Sent Tech"
+      columns={[
+        {
+          title: "Produit",
+          links: [
+            { label: "Composants", href: "/components" },
+            { label: "Tokens", href: "/tokens" }
+          ]
+        },
+        {
+          title: "Entreprise",
+          links: [
+            { label: "À propos", href: "/about" },
+            { label: "Blog", href: "/blog" }
+          ]
+        }
+      ]}
+      copyright="© 2026 Sent Tech. Tous droits réservés."
+    />
+  );
+}`,
+      vue: `<script setup>
+import { Footer } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Footer
+    brand="Sent Tech"
+    :columns="[
+      {
+        title: 'Produit',
+        links: [
+          { label: 'Composants', href: '/components' },
+          { label: 'Tokens', href: '/tokens' }
+        ]
+      },
+      {
+        title: 'Entreprise',
+        links: [
+          { label: 'À propos', href: '/about' },
+          { label: 'Blog', href: '/blog' }
+        ]
+      }
+    ]"
+    copyright="© 2026 Sent Tech. Tous droits réservés."
+  />
 </template>`
     }
   }
