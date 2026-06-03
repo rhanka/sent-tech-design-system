@@ -29,6 +29,7 @@ import {
   ForceGraph,
   Form,
   FormGroup,
+  GraphLegend,
   Header,
   Highlight,
   IconButton,
@@ -81,6 +82,7 @@ import {
   Tooltip,
   TreeView,
   UnorderedList,
+  nodeShapePath,
 } from "./index.js";
 
 describe("Vue behavioral parity — primitives", () => {
@@ -2822,8 +2824,142 @@ describe("Vue behavioral parity — batch 5", () => {
       expect(wrapper.emitted("select")?.[0]).toEqual(["n1"]);
     });
 
+    it("renders an svg", () => {
+      const wrapper = mount(ForceGraph, {
+        props: { nodes: [{ id: "a" }], edges: [] },
+      });
+      expect(wrapper.find("svg").exists()).toBe(true);
+    });
+
+    it("renders a node group per node", () => {
+      const wrapper = mount(ForceGraph, {
+        props: { nodes: [{ id: "a" }, { id: "b" }, { id: "c" }], edges: [] },
+      });
+      expect(wrapper.findAll(".st-forceGraph__node").length).toBe(3);
+    });
+
+    it("renders a path.st-forceGraph__shape for non-dot shapes", () => {
+      const wrapper = mount(ForceGraph, {
+        props: {
+          nodes: [
+            { id: "d", shape: "diamond" },
+            { id: "s", shape: "star" },
+          ],
+          edges: [],
+        },
+      });
+      expect(wrapper.findAll("path.st-forceGraph__shape").length).toBe(2);
+    });
+
+    it("uses a circle (no shape path) for dot/circle shapes", () => {
+      const wrapper = mount(ForceGraph, {
+        props: {
+          nodes: [{ id: "a", shape: "dot" }, { id: "b", shape: "circle" }],
+          edges: [],
+        },
+      });
+      expect(wrapper.findAll("path.st-forceGraph__shape").length).toBe(0);
+      expect(wrapper.findAll("circle.st-forceGraph__dot").length).toBe(2);
+    });
+
+    it("renders the legend overlay when legend prop is set", () => {
+      const wrapper = mount(ForceGraph, {
+        props: {
+          nodes: [{ id: "a" }],
+          edges: [],
+          legend: [
+            { label: "Person", shape: "circle", tone: "category1" },
+            { label: "Weak link", weak: true },
+          ],
+        },
+      });
+      expect(wrapper.find(".st-forceGraph__legend").exists()).toBe(true);
+      expect(wrapper.findAll(".st-forceGraph__legendEntry").length).toBe(2);
+    });
+
+    it("emits edgeHover when an edge hit area is hovered", async () => {
+      const wrapper = mount(ForceGraph, {
+        props: {
+          nodes: [{ id: "a" }, { id: "b" }],
+          edges: [{ source: "a", target: "b", relation: "knows" }],
+        },
+      });
+      await wrapper.find(".st-forceGraph__edgeHit").trigger("mouseenter");
+      expect(wrapper.emitted("edgeHover")).toBeTruthy();
+      expect(wrapper.emitted("edgeHover")?.[0]?.[0]).toMatchObject({
+        source: "a",
+        target: "b",
+        relation: "knows",
+      });
+    });
+
     it("has name ForceGraph", () => {
       expect(ForceGraph.name).toBe("ForceGraph");
+    });
+  });
+
+  // --- nodeShapePath helper ---
+  describe("nodeShapePath", () => {
+    it("returns null for dot and circle", () => {
+      expect(nodeShapePath("dot", 7)).toBeNull();
+      expect(nodeShapePath("circle", 7)).toBeNull();
+      expect(nodeShapePath(undefined, 7)).toBeNull();
+    });
+
+    it("returns a non-null path for shaped nodes", () => {
+      for (const shape of ["diamond", "star", "hexagon", "box", "square", "triangle"] as const) {
+        const path = nodeShapePath(shape, 7);
+        expect(path, `${shape} should produce a path`).not.toBeNull();
+        expect(typeof path).toBe("string");
+        expect((path as string).startsWith("M")).toBe(true);
+      }
+    });
+  });
+
+  // --- GraphLegend ---
+  describe("GraphLegend", () => {
+    it("renders div.st-graphLegend", () => {
+      const wrapper = mount(GraphLegend, {
+        props: { entries: [{ label: "Person", shape: "circle" }] },
+      });
+      expect(wrapper.find("div.st-graphLegend").exists()).toBe(true);
+    });
+
+    it("renders exactly one entry per entries item", () => {
+      const wrapper = mount(GraphLegend, {
+        props: {
+          entries: [
+            { label: "Person", shape: "circle", tone: "category1" },
+            { label: "Place", shape: "diamond", tone: "category2" },
+            { label: "Weak", weak: true },
+          ],
+        },
+      });
+      expect(wrapper.findAll(".st-graphLegend__entry").length).toBe(3);
+    });
+
+    it("renders the title when provided", () => {
+      const wrapper = mount(GraphLegend, {
+        props: { entries: [], title: "Legend" },
+      });
+      expect(wrapper.find(".st-graphLegend__title").text()).toBe("Legend");
+    });
+
+    it("renders a shape path for shaped entries and a line for edge entries", () => {
+      const wrapper = mount(GraphLegend, {
+        props: {
+          entries: [
+            { label: "Diamond", shape: "diamond" },
+            { label: "Edge", weak: true },
+          ],
+        },
+      });
+      expect(wrapper.find("path.st-graphLegend__shape").exists()).toBe(true);
+      expect(wrapper.find("line.st-graphLegend__edge").exists()).toBe(true);
+    });
+
+    it("has name GraphLegend", () => {
+      expect(GraphLegend.name).toBe("GraphLegend");
     });
   });
 
@@ -3050,6 +3186,7 @@ describe("Vue behavioral parity — batch 5", () => {
       Sparkline,
       StackedBarChart,
       ForceGraph,
+      GraphLegend,
       ChatComposer,
       ChatMessage,
       ChatThread,
