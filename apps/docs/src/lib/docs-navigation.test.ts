@@ -21,7 +21,10 @@ describe("docs navigation model", () => {
     );
     const exportedComponents = [...indexSource.matchAll(/export \{ default as (\w+) \}/g)]
       .map((match) => match[1])
-      .filter((name) => name !== "ThemeProvider")
+      // ThemeProvider = primitive infra ; GraphLegend = compagnon de ForceGraph
+      // (légende du graphe, documentée avec le composant graphe), pas une brique
+      // catalogue autonome.
+      .filter((name) => name !== "ThemeProvider" && name !== "GraphLegend")
       .sort();
     const catalogComponents = COMPONENTS.map((component) => component.name).sort();
 
