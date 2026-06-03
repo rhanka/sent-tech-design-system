@@ -2,6 +2,7 @@
   import { Badge, Tile } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   let selectedA = $state(false);
   let selectedB = $state(true);
@@ -22,6 +23,8 @@
       état <code>selected</code> bindable).
     </p>
   </section>
+  <FrameworkPreview example="tile" title="Aperçu live" />
+
 
   <section class="docs-section" id="tile">
     <h2>Variantes</h2>

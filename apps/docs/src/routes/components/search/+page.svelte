@@ -2,6 +2,7 @@
   import { Badge, Search } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   let smValue = $state("");
   let mdValue = $state("");
@@ -20,6 +21,8 @@
     </div>
     <p>{t(locale.value, "searchIntro")}</p>
   </section>
+  <FrameworkPreview example="search" title="Aperçu live" />
+
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
     <div class="docs-example" aria-label={t(locale.value, "sizes")}>

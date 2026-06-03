@@ -8,6 +8,7 @@
   import { Archive, Copy, Pencil, Share2, Trash2 } from "@lucide/svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   const fr = (frText: string, enText: string) => (locale.value === "fr" ? frText : enText);
 
@@ -62,6 +63,8 @@
       )}
     </p>
   </section>
+  <FrameworkPreview example="menupopover" title="Aperçu live" />
+
 
   <section class="docs-section">
     <h2>{fr("Quand l'utiliser", "When to use")}</h2>

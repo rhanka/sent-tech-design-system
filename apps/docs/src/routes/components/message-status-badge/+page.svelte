@@ -2,6 +2,7 @@
   import { MessageStatusBadge, type ChatMessageStatus } from "@sentropic/design-system-svelte";
   import { Badge } from "@sentropic/design-system-svelte";
   import { locale } from "$lib/locale.svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
   import { t } from "$lib/i18n";
 
   const copy = {
@@ -48,6 +49,8 @@
     </div>
     <p>{text().intro}</p>
   </section>
+  <FrameworkPreview example="messagestatusbadge" title="Aperçu live" />
+
 
   <section class="docs-section">
     <h2>{text().title}</h2>

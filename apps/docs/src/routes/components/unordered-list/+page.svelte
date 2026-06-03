@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Badge, UnorderedList } from "@sentropic/design-system-svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   const items = [
     "Tokens stables",
@@ -24,6 +25,8 @@
       ou des objets <code>{`{ content, children }`}</code> pour l'imbrication.
     </p>
   </section>
+  <FrameworkPreview example="unorderedlist" title="Aperçu live" />
+
 
   <section class="docs-section">
     <h2>Avec imbrication</h2>
