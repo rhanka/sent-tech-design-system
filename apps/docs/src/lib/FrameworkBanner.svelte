@@ -2,8 +2,8 @@
   Bandeau d'implémentation framework.
   Rendu au-dessus du contenu de chaque page documentaire quand un framework
   autre que Svelte (référence) est sélectionné dans le header.
-  - React : indique que les exemples portés React sont disponibles via le package.
-  - Vue : portage en cours → placeholder « bientôt ».
+  - React : implémentation portée, disponible via le package @sentropic/design-system-react.
+  - Vue : implémentation portée, disponible via le package @sentropic/design-system-vue.
   Volontairement léger : pas d'island runtime React/Vue, juste un indicateur clair.
 -->
 <script lang="ts">
@@ -31,11 +31,11 @@
     <span class="docs-framework-banner__tag">Vue</span>
     <span class="docs-framework-banner__text">
       {#if fr}
-        Vue — bientôt. Le portage Vue du catalogue est en cours ; en attendant,
-        référez-vous à l'implémentation Svelte.
+        Implémentation Vue — mêmes tokens, thèmes et classes que la version Svelte,
+        via <code>@sentropic/design-system-vue</code>.
       {:else}
-        Vue — coming soon. The Vue port of the catalog is in progress; in the meantime,
-        refer to the Svelte implementation.
+        Vue implementation — same tokens, themes and component classes as the Svelte
+        version, through <code>@sentropic/design-system-vue</code>.
       {/if}
     </span>
   </aside>
