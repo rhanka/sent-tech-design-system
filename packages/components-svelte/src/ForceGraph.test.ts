@@ -2,8 +2,30 @@ import { fireEvent, render, screen } from "@testing-library/svelte";
 import { describe, expect, it, vi } from "vitest";
 import ForceGraph from "./lib/ForceGraph.svelte";
 import GraphLegend from "./lib/GraphLegend.svelte";
-import { nodeShapePath } from "./lib/ForceGraph.svelte";
-import type { ForceGraphNode, ForceGraphEdge, ForceGraphLegendEntry } from "./lib/ForceGraph.svelte";
+import { nodeShapePath, edgeDashArray } from "./lib/ForceGraph.svelte";
+import type {
+  ForceGraphNode,
+  ForceGraphEdge,
+  ForceGraphLegendEntry,
+  ForceGraphEdgeDash
+} from "./lib/ForceGraph.svelte";
+
+// Approximate filled area of an SVG polygon/path made of straight segments.
+// Parses M/L/Q (treats Q control as a vertex for a rough convex estimate is
+// wrong; instead we sample). For our equal-area assertions we only use shapes
+// built from straight M/L segments, so a shoelace over the L/M points is exact.
+function polygonArea(d: string): number {
+  const nums = d.match(/-?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?/g)?.map(Number) ?? [];
+  const pts: [number, number][] = [];
+  for (let i = 0; i + 1 < nums.length; i += 2) pts.push([nums[i], nums[i + 1]]);
+  let a = 0;
+  for (let i = 0; i < pts.length; i++) {
+    const [x1, y1] = pts[i];
+    const [x2, y2] = pts[(i + 1) % pts.length];
+    a += x1 * y2 - x2 * y1;
+  }
+  return Math.abs(a) / 2;
+}
 
 describe("ForceGraph", () => {
   const nodes: ForceGraphNode[] = [
@@ -52,12 +74,18 @@ describe("ForceGraph", () => {
     expect(classOf(3)).toContain("st-forceGraph__node--category5");
   });
 
-  it("produces finite, in-bounds coordinates for every node", () => {
+  it("produces finite coordinates within the relaxed bounds for every node", () => {
+    const w = 400;
+    const h = 300;
     const { container } = render(ForceGraph, {
-      props: { nodes, edges, label: "Bounded graph", width: 400, height: 300 }
+      props: { nodes, edges, label: "Bounded graph", width: w, height: h }
     });
     const groups = container.querySelectorAll(".st-forceGraph__node");
     expect(groups.length).toBe(4);
+    // Soft clamp allows overflow up to half the canvas on each side so the
+    // graph keeps a natural shape (fit-to-content reframes it afterwards).
+    const padX = w * 0.5 + 20;
+    const padY = h * 0.5 + 20;
     for (const g of groups) {
       const transform = g.getAttribute("transform") ?? "";
       const m = transform.match(/translate\(([-\d.]+) ([-\d.]+)\)/);
@@ -66,10 +94,10 @@ describe("ForceGraph", () => {
       const y = Number(m?.[2]);
       expect(Number.isFinite(x)).toBe(true);
       expect(Number.isFinite(y)).toBe(true);
-      expect(x).toBeGreaterThanOrEqual(0);
-      expect(x).toBeLessThanOrEqual(400);
-      expect(y).toBeGreaterThanOrEqual(0);
-      expect(y).toBeLessThanOrEqual(300);
+      expect(x).toBeGreaterThanOrEqual(-padX);
+      expect(x).toBeLessThanOrEqual(w + padX);
+      expect(y).toBeGreaterThanOrEqual(-padY);
+      expect(y).toBeLessThanOrEqual(h + padY);
     }
   });
 
@@ -160,13 +188,18 @@ describe("ForceGraph", () => {
   // Feature 2: Zoom + pan
   // ---------------------------------------------------------------------------
   describe("zoom + pan", () => {
-    it("renders an SVG with initial viewBox matching width/height", () => {
+    it("renders an SVG with a fit-to-content viewBox of four finite numbers", () => {
       const { container } = render(ForceGraph, {
         props: { nodes, edges, label: "Zoom test", width: 400, height: 300 }
       });
       const svg = container.querySelector("svg");
       expect(svg).toBeTruthy();
-      expect(svg?.getAttribute("viewBox")).toBe("0 0 400 300");
+      const vb = (svg?.getAttribute("viewBox") ?? "").split(/\s+/).map(Number);
+      expect(vb.length).toBe(4);
+      for (const n of vb) expect(Number.isFinite(n)).toBe(true);
+      // Width and height of the frame are positive.
+      expect(vb[2]).toBeGreaterThan(0);
+      expect(vb[3]).toBeGreaterThan(0);
     });
 
     it("does not show reset button when not zoomed", () => {
@@ -179,12 +212,12 @@ describe("ForceGraph", () => {
         props: { nodes, edges, label: "Pan test", width: 400, height: 300 }
       });
       const svg = container.querySelector("svg")!;
+      const before = svg.getAttribute("viewBox") ?? "";
       // Simulate a wheel event to trigger zoom
       await fireEvent.wheel(svg, { deltaY: 100, clientX: 200, clientY: 150 });
-      // After zoom, viewBox should have changed from default
+      // After zoom, viewBox should have changed from its initial value
       const vb = svg.getAttribute("viewBox") ?? "";
-      // The viewBox string should differ from "0 0 400 300"
-      expect(vb).not.toBe("0 0 400 300");
+      expect(vb).not.toBe(before);
     });
   });
 
@@ -345,6 +378,255 @@ describe("ForceGraph", () => {
       });
       const weakLines = container.querySelectorAll(".st-forceGraph__legendEdge--weak");
       expect(weakLines.length).toBe(1);
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // Round-0.10.5 evolution 3: roundedbox shape
+  // ---------------------------------------------------------------------------
+  describe("roundedbox shape", () => {
+    it("nodeShapePath returns a path with arcs for roundedbox", () => {
+      const d = nodeShapePath("roundedbox", 7);
+      expect(d).toBeTruthy();
+      expect(d).toMatch(/^M /);
+      expect(d).toContain("A"); // rounded corners use arc commands
+      expect(d).toContain("Z");
+    });
+
+    it("renders a <path> for roundedbox nodes", () => {
+      const shaped: ForceGraphNode[] = [{ id: "r", label: "R", shape: "roundedbox" }];
+      const { container } = render(ForceGraph, {
+        props: { nodes: shaped, edges: [], label: "Rounded" }
+      });
+      const dot = container.querySelector(".st-forceGraph__dot");
+      expect(dot?.tagName.toLowerCase()).toBe("path");
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // Round-0.10.5 evolution 4: equal-area shape calibration (≈ π·r²)
+  // ---------------------------------------------------------------------------
+  describe("equal-area shape calibration", () => {
+    const r = 10;
+    const target = Math.PI * r * r;
+
+    it.each(["square", "box", "diamond", "hexagon", "triangle", "star"] as const)(
+      "%s has an area within ~3%% of the reference circle π·r²",
+      (shape) => {
+        const d = nodeShapePath(shape, r)!;
+        const area = polygonArea(d);
+        expect(area).toBeGreaterThan(target * 0.97);
+        expect(area).toBeLessThan(target * 1.03);
+      }
+    );
+
+    it("square is calibrated to half-side √π/2·r (smaller than the old 0.85·r)", () => {
+      const d = nodeShapePath("square", 100)!;
+      const nums = d.match(/-?\d+(?:\.\d+)?/g)!.map(Number);
+      const maxAbs = Math.max(...nums.map(Math.abs));
+      // half-side = √π/2·100 ≈ 88.6, distinctly different from the old 85.
+      expect(maxAbs).toBeCloseTo((Math.sqrt(Math.PI) / 2) * 100, 1);
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // Round-0.10.5 evolution 1: curved edges
+  // ---------------------------------------------------------------------------
+  describe("curved edges", () => {
+    it("renders edges as <path> when edgeCurve > 0", () => {
+      const { container } = render(ForceGraph, {
+        props: { nodes, edges, label: "Curved", edgeCurve: 0.3 }
+      });
+      const edgeEls = container.querySelectorAll(".st-forceGraph__edge");
+      expect(edgeEls.length).toBe(3);
+      for (const el of edgeEls) {
+        expect(el.tagName.toLowerCase()).toBe("path");
+        expect(el.getAttribute("d")).toMatch(/Q/); // quadratic control point
+      }
+    });
+
+    it("renders edges as straight <line> when edgeCurve = 0 (back-compat)", () => {
+      const { container } = render(ForceGraph, {
+        props: { nodes, edges, label: "Straight", edgeCurve: 0 }
+      });
+      const edgeEls = container.querySelectorAll(".st-forceGraph__edge");
+      expect(edgeEls.length).toBe(3);
+      for (const el of edgeEls) {
+        expect(el.tagName.toLowerCase()).toBe("line");
+      }
+    });
+
+    it("defaults to a light curve (paths, not lines)", () => {
+      const { container } = render(ForceGraph, {
+        props: { nodes, edges, label: "Default curve" }
+      });
+      const lines = container.querySelectorAll("line.st-forceGraph__edge");
+      const paths = container.querySelectorAll("path.st-forceGraph__edge");
+      expect(lines.length).toBe(0);
+      expect(paths.length).toBe(3);
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // Round-0.10.5 evolution 2: typed edge dash styles
+  // ---------------------------------------------------------------------------
+  describe("typed edge dash", () => {
+    it("edgeDashArray maps styles to stroke-dasharrays", () => {
+      expect(edgeDashArray("solid")).toBeNull();
+      expect(edgeDashArray("dashed")).toBe("6 4");
+      expect(edgeDashArray("dotted")).toBe("1 4");
+      expect(edgeDashArray("long-dash")).toBe("12 6");
+      // weak (no explicit dash) falls back to dashed.
+      expect(edgeDashArray(undefined, true)).toBe("6 4");
+      expect(edgeDashArray(undefined, false)).toBeNull();
+      // explicit dash wins over weak.
+      expect(edgeDashArray("dotted", true)).toBe("1 4");
+    });
+
+    it("applies the dash-array attribute to typed edges", () => {
+      const dashEdges: ForceGraphEdge[] = [
+        { source: "a", target: "b", dash: "dotted" },
+        { source: "b", target: "c", dash: "long-dash" }
+      ];
+      const { container } = render(ForceGraph, {
+        props: { nodes, edges: dashEdges, label: "Dash", edgeCurve: 0 }
+      });
+      const edgeEls = Array.from(container.querySelectorAll(".st-forceGraph__edge"));
+      const dashes = edgeEls.map((el) => el.getAttribute("stroke-dasharray"));
+      expect(dashes).toContain("1 4");
+      expect(dashes).toContain("12 6");
+    });
+
+    it("legend edge swatch honours dash", () => {
+      const legend: ForceGraphLegendEntry[] = [
+        { label: "Dotted", dash: "dotted" }
+      ];
+      const { container } = render(ForceGraph, {
+        props: { nodes, edges, label: "Dash legend", legend }
+      });
+      const line = container.querySelector(".st-forceGraph__legendEdge");
+      expect(line?.getAttribute("stroke-dasharray")).toBe("1 4");
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // Round-0.10.5 evolution 8: emphasised (bold) edges
+  // ---------------------------------------------------------------------------
+  describe("emphasised edges", () => {
+    it("adds the emphasis class and a thicker stroke width", () => {
+      const emphEdges: ForceGraphEdge[] = [
+        { source: "a", target: "b", emphasis: true }
+      ];
+      const { container } = render(ForceGraph, {
+        props: { nodes, edges: emphEdges, label: "Bold", edgeCurve: 0 }
+      });
+      const edge = container.querySelector(".st-forceGraph__edge");
+      expect(edge?.classList.contains("st-forceGraph__edge--emphasis")).toBe(true);
+      expect(Number(edge?.getAttribute("stroke-width"))).toBeGreaterThan(1);
+    });
+
+    it("honours an explicit width override", () => {
+      const wEdges: ForceGraphEdge[] = [{ source: "a", target: "b", width: 5 }];
+      const { container } = render(ForceGraph, {
+        props: { nodes, edges: wEdges, label: "Width", edgeCurve: 0 }
+      });
+      const edge = container.querySelector(".st-forceGraph__edge");
+      expect(edge?.getAttribute("stroke-width")).toBe("5");
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // Round-0.10.5 evolution 5: fit-to-content viewBox
+  // ---------------------------------------------------------------------------
+  describe("fit-to-content viewBox", () => {
+    it("frames every node (with margin) inside the initial viewBox", () => {
+      const { container } = render(ForceGraph, {
+        props: { nodes, edges, label: "Fit", width: 400, height: 300 }
+      });
+      const svg = container.querySelector("svg")!;
+      const [vx, vy, vw, vh] = (svg.getAttribute("viewBox") ?? "").split(/\s+/).map(Number);
+      const groups = container.querySelectorAll(".st-forceGraph__node");
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      for (const g of groups) {
+        const m = (g.getAttribute("transform") ?? "").match(/translate\(([-\d.]+) ([-\d.]+)\)/);
+        const x = Number(m?.[1]);
+        const y = Number(m?.[2]);
+        minX = Math.min(minX, x); minY = Math.min(minY, y);
+        maxX = Math.max(maxX, x); maxY = Math.max(maxY, y);
+      }
+      // Every node centre lies strictly inside the framed viewBox.
+      expect(minX).toBeGreaterThanOrEqual(vx);
+      expect(minY).toBeGreaterThanOrEqual(vy);
+      expect(maxX).toBeLessThanOrEqual(vx + vw);
+      expect(maxY).toBeLessThanOrEqual(vy + vh);
+      // There is a non-zero margin on at least one axis (content < frame).
+      const contentW = maxX - minX;
+      const contentH = maxY - minY;
+      expect(vw).toBeGreaterThan(contentW);
+      expect(vh).toBeGreaterThan(contentH);
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // Round-0.10.5 fix 6: selection keeps direct neighbours fully visible
+  // ---------------------------------------------------------------------------
+  describe("selection keeps neighbours visible", () => {
+    // a-b, b-c, c-d. Select "b": neighbours a and c stay visible; only d dims.
+    it("dims only non-neighbours when a node is selected", () => {
+      const { container } = render(ForceGraph, {
+        props: { nodes, edges, label: "Neighbours", selectedIds: ["b"] }
+      });
+      // Node order matches the nodes array: a, b, c, d.
+      const [a, b, c, d] = Array.from(container.querySelectorAll(".st-forceGraph__node"));
+      const dim = (el: Element) => el.classList.contains("st-forceGraph__node--dim");
+      expect(dim(b)).toBe(false); // selected
+      expect(dim(a)).toBe(false); // neighbour of b
+      expect(dim(c)).toBe(false); // neighbour of b
+      expect(dim(d)).toBe(true); // not connected to b
+    });
+
+    it("does not dim anything when there is no selection/focus", () => {
+      const { container } = render(ForceGraph, {
+        props: { nodes, edges, label: "No selection" }
+      });
+      const dimmed = container.querySelectorAll(".st-forceGraph__node--dim");
+      expect(dimmed.length).toBe(0);
+    });
+
+    it("keeps the focused node's neighbours visible too", () => {
+      const { container } = render(ForceGraph, {
+        props: { nodes, edges, label: "Focus neighbours", focusId: "b" }
+      });
+      const [a, b, c, d] = Array.from(container.querySelectorAll(".st-forceGraph__node"));
+      const dim = (el: Element) => el.classList.contains("st-forceGraph__node--dim");
+      expect(dim(b)).toBe(false);
+      expect(dim(a)).toBe(false);
+      expect(dim(c)).toBe(false);
+      expect(dim(d)).toBe(true);
+    });
+
+    it("dims edges that touch no selected/focused node", () => {
+      const { container } = render(ForceGraph, {
+        props: { nodes, edges, label: "Edge dim", selectedIds: ["a"] }
+      });
+      // edges: a-b (touches a, visible), b-c (dim), c-d (dim)
+      const dimEdges = container.querySelectorAll(".st-forceGraph__edge--dim");
+      expect(dimEdges.length).toBe(2);
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // Round-0.10.5 fix 7: edge hover opacity matches node visibility
+  // ---------------------------------------------------------------------------
+  describe("edge hover opacity", () => {
+    it("applies the hovered class (opacity raised to full) on edge hover", async () => {
+      const { container } = render(ForceGraph, {
+        props: { nodes, edges, label: "Hover opacity" }
+      });
+      const hit = container.querySelectorAll(".st-forceGraph__edgeHit");
+      await fireEvent.mouseEnter(hit[0]);
+      const hovered = container.querySelector(".st-forceGraph__edge--hovered");
+      expect(hovered).toBeTruthy();
     });
   });
 });
