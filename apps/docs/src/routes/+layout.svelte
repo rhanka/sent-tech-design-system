@@ -48,6 +48,12 @@
 
   const componentGroups = buildComponentNavGroups();
   const breadcrumbs = $derived(resolveBreadcrumb(page.url.pathname));
+  // Le sélecteur de framework n'a d'effet que là où des composants sont rendus
+  // (pages composant + galerie /preview). Ailleurs (home, fondations, tokens,
+  // thèmes, contrats) il ne bascule rien -> on le masque pour ne pas paraître cassé.
+  const showFrameworkSwitcher = $derived(
+    page.url.pathname.startsWith("/components") || page.url.pathname === "/preview"
+  );
 
   // Thèmes proposés : le DS Sentropic de référence + les 2 mappings tiers
   // (DSFR/Carbon) + le thème client Airbus (port d'anatomie).
@@ -225,7 +231,9 @@
 
 {#snippet docsUtilityNav()}
   <nav class="docs-utility-nav" aria-label="Liens utiles">
-    {@render frameworkSelector()}
+    {#if showFrameworkSwitcher}
+      {@render frameworkSelector()}
+    {/if}
 
     {@render themeSelector()}
 
