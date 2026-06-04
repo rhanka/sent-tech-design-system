@@ -1,9 +1,11 @@
 import { defineComponent, h } from "vue";
 import { classNames } from "./classNames.js";
 
+// `pageCount` (Svelte-canonical) is accepted as an alias of `totalPages`.
 export type PaginationNavProps = {
   page?: number;
   totalPages?: number;
+  pageCount?: number;
   previousHref?: string;
   nextHref?: string;
   class?: string;
@@ -13,7 +15,8 @@ export const PaginationNav = defineComponent({
   name: "PaginationNav",
   props: {
     page: { type: Number, default: 1 },
-    totalPages: { type: Number, default: 1 },
+    totalPages: { type: Number, default: undefined },
+    pageCount: { type: Number, default: undefined },
     previousHref: { type: String, default: undefined },
     nextHref: { type: String, default: undefined },
     class: { type: String, default: undefined },
@@ -21,7 +24,7 @@ export const PaginationNav = defineComponent({
   setup(props, { attrs }) {
     return () => {
       const page = props.page ?? 1;
-      const totalPages = props.totalPages ?? 1;
+      const totalPages = props.totalPages ?? props.pageCount ?? 1;
 
       return h(
         "nav",
