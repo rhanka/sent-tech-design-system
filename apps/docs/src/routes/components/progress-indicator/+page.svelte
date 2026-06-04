@@ -1,23 +1,39 @@
 <script lang="ts">
-  import { Badge, ProgressIndicator } from "@sentropic/design-system-svelte";
-  import type { ProgressIndicatorItem } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
-  const horizontalSteps: ProgressIndicatorItem[] = [
+  const horizontalSteps = [
     { value: "account", label: "Compte", description: "Identité créée", status: "complete" },
     { value: "profile", label: "Profil", description: "En cours", status: "current" },
     { value: "billing", label: "Facturation", status: "upcoming" },
     { value: "review", label: "Vérification", status: "upcoming" }
   ];
 
-  const verticalSteps: ProgressIndicatorItem[] = [
+  const verticalSteps = [
     { value: "draft", label: "Brouillon", status: "complete" },
     { value: "validation", label: "Validation", description: "Erreur de saisie", status: "invalid" },
     { value: "publish", label: "Publication", status: "upcoming" },
     { value: "archive", label: "Archivage", status: "disabled" }
   ];
+
+  // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
+  // (toute la page bascule, pas seulement le bloc Aperçu live).
+  const horizontalDemo: NodeSpec[] = $derived([
+    {
+      comp: "ProgressIndicator",
+      props: { items: horizontalSteps, label: locale.value === "fr" ? "Création de compte" : "Account creation" }
+    }
+  ]);
+  const verticalDemo: NodeSpec[] = $derived([
+    {
+      comp: "ProgressIndicator",
+      props: { vertical: true, items: verticalSteps, label: locale.value === "fr" ? "Publication" : "Publication" }
+    }
+  ]);
 </script>
 
 <div class="docs-page">
@@ -35,20 +51,15 @@
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
-    <div class="docs-example" aria-label={locale.value === "fr" ? "Orientation horizontale" : "Horizontal orientation"}>
-      <ProgressIndicator
-        items={horizontalSteps}
-        label={locale.value === "fr" ? "Création de compte" : "Account creation"}
-      />
-    </div>
+    <FrameworkDemo
+      nodes={horizontalDemo}
+      label={locale.value === "fr" ? "Orientation horizontale" : "Horizontal orientation"}
+    />
 
-    <div class="docs-example" aria-label={locale.value === "fr" ? "Orientation verticale" : "Vertical orientation"}>
-      <ProgressIndicator
-        vertical
-        items={verticalSteps}
-        label={locale.value === "fr" ? "Publication" : "Publication"}
-      />
-    </div>
+    <FrameworkDemo
+      nodes={verticalDemo}
+      label={locale.value === "fr" ? "Orientation verticale" : "Vertical orientation"}
+    />
   </section>
 
   <section class="docs-section">

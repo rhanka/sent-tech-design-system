@@ -1,10 +1,44 @@
 <script lang="ts">
-  import { Badge, Button, Tooltip } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
   const fr = (frText: string, enText: string) => (locale.value === "fr" ? frText : enText);
+
+  // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
+  // (toute la page bascule, pas seulement le bloc Aperçu live).
+  const placementDemo: NodeSpec[] = $derived([
+    {
+      comp: "Tooltip",
+      props: { content: fr("Affiché au-dessus", "Shown above"), placement: "top" },
+      children: [{ comp: "Button", props: { variant: "secondary" }, children: [fr("Survol haut", "Hover top")] }]
+    },
+    {
+      comp: "Tooltip",
+      props: { content: fr("Affiché en dessous", "Shown below"), placement: "bottom" },
+      children: [{ comp: "Button", props: { variant: "secondary" }, children: [fr("Survol bas", "Hover bottom")] }]
+    }
+  ]);
+  const triggersDemo: NodeSpec[] = $derived([
+    {
+      comp: "Tooltip",
+      props: { content: fr("Synchroniser maintenant", "Sync now") },
+      children: [{ comp: "Button", children: [fr("Action", "Action")] }]
+    },
+    {
+      comp: "Tooltip",
+      props: {
+        content: fr(
+          "Aide sur ce champ : tabulez jusqu'ici pour voir la bulle au focus.",
+          "Help on this field: tab here to see the bubble on focus."
+        )
+      },
+      children: [{ el: "a", props: { href: "#tooltip-demo" }, children: [fr("Lien focusable", "Focusable link")] }]
+    }
+  ]);
 </script>
 
 <div class="docs-page">
@@ -36,27 +70,13 @@
   <section class="docs-section">
     <h2>{fr("Placement", "Placement")}</h2>
     <p>{fr("Le tooltip s'affiche au-dessus (top, défaut) ou en dessous (bottom) du déclencheur.", "The tooltip appears above (top, default) or below (bottom) the trigger.")}</p>
-    <div class="docs-example">
-      <Tooltip content={fr("Affiché au-dessus", "Shown above")} placement="top">
-        <Button variant="secondary">{fr("Survol haut", "Hover top")}</Button>
-      </Tooltip>
-      <Tooltip content={fr("Affiché en dessous", "Shown below")} placement="bottom">
-        <Button variant="secondary">{fr("Survol bas", "Hover bottom")}</Button>
-      </Tooltip>
-    </div>
+    <FrameworkDemo nodes={placementDemo} label={fr("Placement", "Placement")} />
   </section>
 
   <section class="docs-section" id="tooltip-demo">
     <h2>{fr("Déclencheurs", "Triggers")}</h2>
     <p>{fr("Le tooltip apparaît au survol et au focus du déclencheur (clavier inclus).", "The tooltip appears on hover and on focus of the trigger (keyboard included).")}</p>
-    <div class="docs-example">
-      <Tooltip content={fr("Synchroniser maintenant", "Sync now")}>
-        <Button>{fr("Action", "Action")}</Button>
-      </Tooltip>
-      <Tooltip content={fr("Aide sur ce champ : tabulez jusqu'ici pour voir la bulle au focus.", "Help on this field: tab here to see the bubble on focus.")}>
-        <a href="#tooltip-demo">{fr("Lien focusable", "Focusable link")}</a>
-      </Tooltip>
-    </div>
+    <FrameworkDemo nodes={triggersDemo} label={fr("Déclencheurs", "Triggers")} />
   </section>
 
   <section class="docs-section">

@@ -1,8 +1,10 @@
 <script lang="ts">
-  import { Badge, Toggle } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
   const copy = {
     fr: {
@@ -23,10 +25,25 @@
 
   const text = () => copy[locale.value];
 
-  let emailAlerts = $state(false);
-  let compactMode = $state(true);
-  let darkMode = $state(false);
-  let archiveMode = $state(false);
+  // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
+  // (toute la page bascule, pas seulement le bloc Aperçu live). Les démos
+  // interactives d'origine sont rendues en états statiques équivalents ; les
+  // notes d'état restent en prose.
+  const variantsDemo: NodeSpec[] = $derived([
+    { comp: "Toggle", props: { label: locale.value === "fr" ? "Notifications e-mail" : "Email notifications" } },
+    { comp: "Toggle", props: { label: locale.value === "fr" ? "Mode compact (sm)" : "Compact mode (sm)", size: "sm", checked: true } },
+    { comp: "Toggle", props: { label: locale.value === "fr" ? "Mode compact désactivé" : "Compact mode disabled", disabled: true } }
+  ]);
+  const customLabelsDemo: NodeSpec[] = $derived([
+    {
+      comp: "Toggle",
+      props: {
+        label: "Dark mode",
+        labelOn: locale.value === "fr" ? "Activé" : "Enabled",
+        labelOff: locale.value === "fr" ? "Désactivé" : "Disabled"
+      }
+    }
+  ]);
 </script>
 
 <div class="docs-page">
@@ -44,41 +61,20 @@
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
-    <div class="docs-example" aria-label={t(locale.value, "variants")}>
-      <Toggle
-        label={locale.value === "fr" ? "Notifications e-mail" : "Email notifications"}
-        bind:checked={emailAlerts}
-      />
-      <Toggle
-        label={locale.value === "fr" ? "Mode compact (sm)" : "Compact mode (sm)"}
-        bind:checked={compactMode}
-        size="sm"
-      />
-      <Toggle
-        label={locale.value === "fr" ? "Mode compact désactivé" : "Compact mode disabled"}
-        bind:checked={archiveMode}
-        disabled
-      />
-      <p class="docs-demo-note">
-        {locale.value === "fr" ? "Notifications" : "Notifications"} :
-        <code>{emailAlerts ? (locale.value === "fr" ? "On" : "On") : (locale.value === "fr" ? "Off" : "Off")}</code>
-        · {locale.value === "fr" ? "Mode compact" : "Compact mode"} :
-        <code>{compactMode ? "On" : "Off"}</code>
-      </p>
-    </div>
+    <FrameworkDemo nodes={variantsDemo} label={t(locale.value, "variants")} />
+    <p class="docs-demo-note">
+      {locale.value === "fr" ? "Notifications" : "Notifications"} : <code>Off</code>
+      · {locale.value === "fr" ? "Mode compact" : "Compact mode"} : <code>On</code>
+    </p>
 
-    <div class="docs-example" aria-label={locale.value === "fr" ? "Libellés personnalisés" : "Custom labels"}>
-      <Toggle
-        label={locale.value === "fr" ? "Dark mode" : "Dark mode"}
-        bind:checked={darkMode}
-        labelOn={locale.value === "fr" ? "Activé" : "Enabled"}
-        labelOff={locale.value === "fr" ? "Désactivé" : "Disabled"}
-      />
-      <p class="docs-demo-note">
-        {locale.value === "fr" ? "État actuel" : "Current state"} :
-        <code>{darkMode ? (locale.value === "fr" ? "Activé" : "Enabled") : (locale.value === "fr" ? "Désactivé" : "Disabled")}</code>
-      </p>
-    </div>
+    <FrameworkDemo
+      nodes={customLabelsDemo}
+      label={locale.value === "fr" ? "Libellés personnalisés" : "Custom labels"}
+    />
+    <p class="docs-demo-note">
+      {locale.value === "fr" ? "État actuel" : "Current state"} :
+      <code>{locale.value === "fr" ? "Désactivé" : "Disabled"}</code>
+    </p>
   </section>
 
   <section class="docs-section">
