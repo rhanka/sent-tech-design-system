@@ -107,17 +107,17 @@ const chartData = [
   { label: "Feb", x: "Feb", y: 18, value: 18, tone: "category2" as const },
 ];
 
-const componentCases: Array<{ name: string; element: React.ReactElement; text: string }> = [
+const componentCases: Array<{ name: string; element: React.ReactElement; text?: string; label?: string }> = [
   {
     name: "Accordion",
     element: <Accordion items={[{ id: "a", title: "Accordion title", content: "Accordion panel" }]} defaultOpenIds={["a"]} />,
     text: "Accordion panel",
   },
   { name: "Alert", element: <Alert title="Alert title" message="Alert message" tone="warning" />, text: "Alert message" },
-  { name: "AreaChart", element: <AreaChart data={chartData} label="Area label" />, text: "Area label" },
+  { name: "AreaChart", element: <AreaChart data={chartData} label="Area label" />, label: "Area label" },
   { name: "AspectRatio", element: <AspectRatio><span>Ratio content</span></AspectRatio>, text: "Ratio content" },
   { name: "Badge", element: <Badge tone="info">Badge text</Badge>, text: "Badge text" },
-  { name: "BarChart", element: <BarChart data={chartData} label="Bar label" />, text: "Bar label" },
+  { name: "BarChart", element: <BarChart data={chartData} label="Bar label" />, label: "Bar label" },
   { name: "Breadcrumb", element: <Breadcrumb items={[{ label: "Root", href: "/" }, { label: "Current", current: true }]} />, text: "Current" },
   { name: "Button", element: <Button variant="secondary">Button text</Button>, text: "Button text" },
   { name: "Card", element: <Card interactive>Card body</Card>, text: "Card body" },
@@ -146,7 +146,7 @@ const componentCases: Array<{ name: string; element: React.ReactElement; text: s
   { name: "InlineLoading", element: <InlineLoading label="Inline loading" status="active" />, text: "Inline loading" },
   { name: "Input", element: <Input label="Input label" helperText="Input help" />, text: "Input help" },
   { name: "LanguageSelector", element: <LanguageSelector options={[{ value: "fr", label: "French" }]} value="fr" />, text: "French" },
-  { name: "LineChart", element: <LineChart data={chartData} label="Line label" />, text: "Line label" },
+  { name: "LineChart", element: <LineChart data={chartData} label="Line label" />, label: "Line label" },
   { name: "Link", element: <Link href="/docs">Link text</Link>, text: "Link text" },
   { name: "LoadingState", element: <LoadingState label="Loading label" />, text: "Loading label" },
   { name: "Menu", element: <Menu items={[{ id: "open", label: "Open item" }]} />, text: "Open item" },
@@ -174,7 +174,7 @@ const componentCases: Array<{ name: string; element: React.ReactElement; text: s
   { name: "SkeletonText", element: <SkeletonText lines={2} label="Loading skeleton" />, text: "Loading skeleton" },
   { name: "SkipLink", element: <SkipLink href="#main">Skip target</SkipLink>, text: "Skip target" },
   { name: "Slider", element: <Slider label="Slider label" value={40} />, text: "40" },
-  { name: "Sparkline", element: <Sparkline data={[1, 3, 2]} label="Sparkline label" />, text: "Sparkline label" },
+  { name: "Sparkline", element: <Sparkline data={[1, 3, 2]} label="Sparkline label" />, label: "Sparkline label" },
   { name: "StackedBarChart", element: <StackedBarChart data={[{ label: "Q1", segments: [{ label: "Won", value: 7 }] }]} label="Stacked label" />, text: "Stacked label" },
   { name: "StreamingMessage", element: <StreamingMessage text="Streaming body" events={[{ id: "e1", label: "Tool call" }]} />, text: "Streaming body" },
   { name: "StructuredList", element: <StructuredList items={[{ term: "Term", description: "Definition" }]} />, text: "Definition" },
@@ -197,7 +197,11 @@ describe("React design system catalogue", () => {
   for (const componentCase of componentCases) {
     it(`renders ${componentCase.name} with the shared DS class contract`, () => {
       render(componentCase.element);
-      expect(screen.getByText(componentCase.text)).toBeTruthy();
+      if (componentCase.label !== undefined) {
+        expect(screen.getByLabelText(componentCase.label)).toBeTruthy();
+      } else {
+        expect(screen.getByText(componentCase.text as string)).toBeTruthy();
+      }
       expect(document.querySelector(`[class*="st-"]`)).toBeTruthy();
     });
   }
