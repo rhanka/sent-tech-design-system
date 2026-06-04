@@ -1,16 +1,65 @@
 <script lang="ts">
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import { Badge, PasswordInput } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
-  let smValue = $state("");
-  let mdValue = $state("");
-  let lgValue = $state("");
-  let placeholderValue = $state("");
-  let disabledValue = $state("");
-  let invalidValue = $state("");
-  let value = $state("");
+  // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
+  // (toute la page bascule, pas seulement le bloc « Aperçu live »). État
+  // statique : pas de liaison bidirectionnelle live (note conservée en prose).
+  // Le nom de prop de valeur diffère par moteur : Svelte/React `value`, Vue
+  // `modelValue`. On passe les deux pour figer le même état initial (props
+  // inconnues ignorées).
+  const sizesDemo: NodeSpec[] = [
+    {
+      el: "div",
+      props: { class: "docs-demo-stack" },
+      children: [
+        { comp: "PasswordInput", props: { size: "sm", placeholder: "Mot de passe (sm)" } },
+        { comp: "PasswordInput", props: { size: "md", placeholder: "Mot de passe (md)" } },
+        { comp: "PasswordInput", props: { size: "lg", placeholder: "Mot de passe (lg)" } }
+      ]
+    }
+  ];
+
+  const validationDemo: NodeSpec[] = [
+    {
+      el: "div",
+      props: { class: "docs-demo-stack" },
+      children: [
+        {
+          comp: "PasswordInput",
+          props: {
+            label: "Mot de passe",
+            placeholder: "Au moins 8 caractères",
+            helperText: "Mélangez majuscules, minuscules et chiffres."
+          }
+        },
+        {
+          comp: "PasswordInput",
+          props: {
+            label: "Mot de passe",
+            placeholder: "Mot de passe",
+            errorText: "Le mot de passe est trop court.",
+            invalid: true
+          }
+        }
+      ]
+    }
+  ];
+
+  const statesDemo: NodeSpec[] = [
+    { comp: "PasswordInput", props: { placeholder: "Champ désactivé", disabled: true } }
+  ];
+
+  const bindingDemo: NodeSpec[] = [
+    {
+      comp: "PasswordInput",
+      props: { placeholder: "Tapez votre mot de passe", value: "secret42", modelValue: "secret42" }
+    }
+  ];
 </script>
 
 <div class="docs-page">
@@ -26,40 +75,15 @@
 
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
-    <div class="docs-example" aria-label={t(locale.value, "sizes")}>
-      <PasswordInput size="sm" bind:value={smValue} placeholder="Mot de passe (sm)" />
-      <PasswordInput size="md" bind:value={mdValue} placeholder="Mot de passe (md)" />
-      <PasswordInput size="lg" bind:value={lgValue} placeholder="Mot de passe (lg)" />
-    </div>
-    <div class="docs-example" aria-label={t(locale.value, "validation")}>
-      <PasswordInput
-        label="Mot de passe"
-        bind:value={placeholderValue}
-        placeholder="Au moins 8 caractères"
-        helperText="Mélangez majuscules, minuscules et chiffres."
-      />
-      <PasswordInput
-        label="Mot de passe"
-        bind:value={invalidValue}
-        placeholder="Mot de passe"
-        errorText="Le mot de passe est trop court."
-        invalid
-      />
-    </div>
-    <div class="docs-example" aria-label={t(locale.value, "states")}>
-      <PasswordInput
-        bind:value={disabledValue}
-        placeholder="Champ désactivé"
-        disabled
-      />
-    </div>
-    <div class="docs-example" aria-label="Liaison bidirectionnelle">
-      <PasswordInput bind:value placeholder="Tapez votre mot de passe" />
-      <p>
-        Longueur courante :
-        <code>{value.length}</code>
-      </p>
-    </div>
+    <FrameworkDemo nodes={sizesDemo} label={t(locale.value, "sizes")} />
+    <FrameworkDemo nodes={validationDemo} label={t(locale.value, "validation")} />
+    <FrameworkDemo nodes={statesDemo} label={t(locale.value, "states")} />
+    <FrameworkDemo nodes={bindingDemo} label="Liaison bidirectionnelle" />
+    <p class="docs-demo-note">
+      {locale.value === "fr"
+        ? "La valeur est bindable (value en Svelte/React, modelValue en Vue) ; figée ici pour la démonstration. Le bouton œil bascule la visibilité."
+        : "The value is bindable (value in Svelte/React, modelValue in Vue); frozen here for the demo. The eye button toggles visibility."}
+    </p>
   </section>
   <section class="docs-section">
     <h2>{t(locale.value, "apiTitle")}</h2>

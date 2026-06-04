@@ -1,11 +1,28 @@
 <script lang="ts">
-  import { Badge, Tile } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
-  let selectedA = $state(false);
-  let selectedB = $state(true);
+  // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
+  // (toute la page bascule, pas seulement le bloc « Aperçu live »). État
+  // statique : la sélection bindable n'est pas live (note conservée en prose).
+  const variantsDemo: NodeSpec[] = [
+    {
+      el: "div",
+      props: { class: "docs-demo-stack" },
+      children: [
+        { comp: "Tile", props: { variant: "static", title: "Statique", description: "Conteneur de présentation, non interactif." } },
+        { comp: "Tile", props: { variant: "clickable", href: "#tile", title: "Cliquable (lien)", description: "Rend un <a> car href est fourni." } },
+        { comp: "Tile", props: { variant: "clickable", title: "Cliquable (bouton)", description: "Rend un <button> sans href." } },
+        { comp: "Tile", props: { variant: "selectable", selected: false, title: "Sélectionnable", description: "Cliquer pour sélectionner" } },
+        { comp: "Tile", props: { variant: "selectable", selected: true, title: "Sélectionnée par défaut", description: "État initial coché." } },
+        { comp: "Tile", props: { variant: "selectable", disabled: true, title: "Désactivée", description: "Non sélectionnable." } }
+      ]
+    }
+  ];
 </script>
 
 <div class="docs-page">
@@ -28,14 +45,11 @@
 
   <section class="docs-section" id="tile">
     <h2>Variantes</h2>
-    <div class="docs-tile-grid">
-      <Tile variant="static" title="Statique" description="Conteneur de présentation, non interactif." />
-      <Tile variant="clickable" href="#tile" title="Cliquable (lien)" description="Rend un <a> car href est fourni." />
-      <Tile variant="clickable" title="Cliquable (bouton)" description="Rend un <button> sans href." onclick={() => {}} />
-      <Tile variant="selectable" bind:selected={selectedA} title="Sélectionnable" description={selectedA ? "Sélectionnée" : "Cliquer pour sélectionner"} />
-      <Tile variant="selectable" bind:selected={selectedB} title="Sélectionnée par défaut" description="État initial coché." />
-      <Tile variant="selectable" disabled title="Désactivée" description="Non sélectionnable." />
-    </div>
+    <FrameworkDemo nodes={variantsDemo} label="Variantes" />
+    <p class="docs-demo-note">
+      L’état <code>selected</code> est <code>bindable</code> : ici figé pour la
+      démonstration (la deuxième tuile sélectionnable est cochée par défaut).
+    </p>
   </section>
   <section class="docs-section">
     <h2>API du composant</h2>
@@ -65,11 +79,3 @@
   </section>
 
 </div>
-
-<style>
-  .docs-tile-grid {
-    display: grid;
-    gap: 0.75rem;
-    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-  }
-</style>

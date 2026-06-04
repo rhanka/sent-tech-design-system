@@ -1,12 +1,14 @@
 <script lang="ts">
-  import { Badge, Tabs, type TabItem } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
   const fr = (frText: string, enText: string) => (locale.value === "fr" ? frText : enText);
 
-  const items: TabItem[] = $derived([
+  const items = $derived([
     {
       value: "overview",
       label: fr("Aperçu", "Overview"),
@@ -33,7 +35,20 @@
     }
   ]);
 
-  let lastChanged = $state<string>("");
+  // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
+  // (toute la page bascule, pas seulement le bloc « Aperçu live »). État
+  // statique : la sélection est interactive dans chaque moteur, mais le callback
+  // onchange/onChange n'est pas branché ici (note conservée en prose).
+  const interactiveDemo: NodeSpec[] = $derived([
+    { comp: "Tabs", props: { items, label: fr("Sections du projet", "Project sections") } }
+  ]);
+
+  const initialDemo: NodeSpec[] = $derived([
+    {
+      comp: "Tabs",
+      props: { items, activeValue: "settings", label: fr("Avec onglet initial", "With initial tab") }
+    }
+  ]);
 </script>
 
 <div class="docs-page">
@@ -65,22 +80,19 @@
   <section class="docs-section">
     <h2>{fr("Exemple interactif", "Interactive example")}</h2>
     <p>{fr("Le dernier onglet est désactivé. onchange remonte la valeur sélectionnée.", "The last tab is disabled. onchange reports the selected value.")}</p>
-    <div class="docs-example docs-example--stack">
-      <Tabs
-        {items}
-        label={fr("Sections du projet", "Project sections")}
-        onchange={(value) => (lastChanged = value)}
-      />
-      <p class="docs-demo-note">onchange → <code>{lastChanged || "N/A"}</code></p>
-    </div>
+    <FrameworkDemo nodes={interactiveDemo} label={fr("Sections du projet", "Project sections")} />
+    <p class="docs-demo-note">
+      {fr(
+        "La sélection est interactive dans les trois moteurs ; onchange (Svelte) / onChange (React) / @change (Vue) remonterait la valeur dans une intégration réelle.",
+        "Selection is interactive in all three engines; onchange (Svelte) / onChange (React) / @change (Vue) would report the value in a real integration."
+      )}
+    </p>
   </section>
 
   <section class="docs-section">
     <h2>{fr("Onglet actif initial", "Initial active tab")}</h2>
     <p>{fr("activeValue fixe l'onglet sélectionné au montage.", "activeValue sets the selected tab on mount.")}</p>
-    <div class="docs-example docs-example--stack">
-      <Tabs {items} activeValue="settings" label={fr("Avec onglet initial", "With initial tab")} />
-    </div>
+    <FrameworkDemo nodes={initialDemo} label={fr("Avec onglet initial", "With initial tab")} />
   </section>
 
   <section class="docs-section">
