@@ -1,13 +1,47 @@
 <script lang="ts">
-  import { Badge, Dropdown } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
   const fr = (frText: string, enText: string) => (locale.value === "fr" ? frText : enText);
 
-  let product = $state("forge");
-  let plan = $state<string | undefined>(undefined);
+  // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
+  // (toute la page bascule, pas seulement le bloc « Aperçu live »). État
+  // statique : onselect (Svelte) / onSelect (React) / @select (Vue) n'est pas
+  // branché ici ; la sélection initiale est figée via `value` (note conservée
+  // en prose).
+  const initialDemo: NodeSpec[] = $derived([
+    {
+      comp: "Dropdown",
+      props: {
+        label: fr("Produit", "Product"),
+        value: "forge",
+        options: [
+          { label: "Forge", value: "forge" },
+          { label: "Entropic", value: "entropic" },
+          { label: "Graphify", value: "graphify" }
+        ]
+      }
+    }
+  ]);
+
+  const placeholderDemo: NodeSpec[] = $derived([
+    {
+      comp: "Dropdown",
+      props: {
+        label: fr("Forfait", "Plan"),
+        placeholder: fr("Choisir un forfait", "Choose a plan"),
+        options: [
+          { label: fr("Découverte", "Starter"), value: "starter" },
+          { label: fr("Équipe", "Team"), value: "team" },
+          { label: fr("Entreprise (bientôt)", "Enterprise (soon)"), value: "enterprise", disabled: true }
+        ]
+      }
+    }
+  ]);
 </script>
 
 <div class="docs-page">
@@ -48,38 +82,20 @@
   <section class="docs-section">
     <h2>{fr("Avec valeur initiale", "With initial value")}</h2>
     <p>{fr("La prop value fixe la sélection de départ ; onselect remonte le choix.", "The value prop sets the initial selection; onselect bubbles the choice up.")}</p>
-    <div class="docs-example docs-example--stack">
-      <Dropdown
-        label={fr("Produit", "Product")}
-        value={product}
-        options={[
-          { label: "Forge", value: "forge" },
-          { label: "Entropic", value: "entropic" },
-          { label: "Graphify", value: "graphify" }
-        ]}
-        onselect={(value) => (product = value)}
-      />
-      <p class="docs-demo-note">{fr("Sélection", "Selection")} : <code>{product}</code></p>
-    </div>
+    <FrameworkDemo nodes={initialDemo} label={fr("Produit", "Product")} />
+    <p class="docs-demo-note">{fr("Sélection initiale figée", "Frozen initial selection")} : <code>forge</code></p>
   </section>
 
   <section class="docs-section">
     <h2>{fr("Placeholder et option désactivée", "Placeholder and disabled option")}</h2>
     <p>{fr("Sans value, le placeholder s'affiche. Une option peut être marquée disabled.", "With no value, the placeholder shows. An option can be marked disabled.")}</p>
-    <div class="docs-example docs-example--stack">
-      <Dropdown
-        label={fr("Forfait", "Plan")}
-        placeholder={fr("Choisir un forfait", "Choose a plan")}
-        value={plan}
-        options={[
-          { label: fr("Découverte", "Starter"), value: "starter" },
-          { label: fr("Équipe", "Team"), value: "team" },
-          { label: fr("Entreprise (bientôt)", "Enterprise (soon)"), value: "enterprise", disabled: true }
-        ]}
-        onselect={(value) => (plan = value)}
-      />
-      <p class="docs-demo-note">{fr("Sélection", "Selection")} : <code>{plan ?? "N/A"}</code></p>
-    </div>
+    <FrameworkDemo nodes={placeholderDemo} label={fr("Forfait", "Plan")} />
+    <p class="docs-demo-note">
+      {fr(
+        "L'option « Entreprise » est disabled et ne peut pas être choisie.",
+        "The \"Enterprise\" option is disabled and cannot be chosen."
+      )}
+    </p>
   </section>
 
   <section class="docs-section">
