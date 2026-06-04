@@ -1,8 +1,10 @@
 <script lang="ts">
-  import { Badge, Card, Button } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
   const copy = {
     fr: {
@@ -48,6 +50,36 @@
   } as const;
 
   const text = () => copy[locale.value];
+
+  // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
+  // (toute la page bascule, pas seulement le bloc Aperçu live).
+  const staticDemo: NodeSpec[] = $derived([
+    {
+      comp: "Card",
+      children: [
+        { el: "h3", children: [text().cardTitleA] },
+        { el: "p", children: [text().cardBodyA] }
+      ]
+    },
+    {
+      comp: "Card",
+      props: { interactive: true },
+      children: [
+        { el: "h3", children: [text().cardTitleB] },
+        { el: "p", children: [text().cardBodyB] }
+      ]
+    }
+  ]);
+  const contentDemo: NodeSpec[] = $derived([
+    {
+      comp: "Card",
+      children: [
+        { el: "h3", children: [text().planTitle] },
+        { el: "p", children: [text().planBody] },
+        { comp: "Button", props: { variant: "primary" }, children: [text().planAction] }
+      ]
+    }
+  ]);
 </script>
 
 <div class="docs-page">
@@ -74,24 +106,9 @@
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
-    <div class="docs-example" aria-label={text().staticLabel}>
-      <Card>
-        <h3>{text().cardTitleA}</h3>
-        <p>{text().cardBodyA}</p>
-      </Card>
-      <Card interactive>
-        <h3>{text().cardTitleB}</h3>
-        <p>{text().cardBodyB}</p>
-      </Card>
-    </div>
+    <FrameworkDemo nodes={staticDemo} label={text().staticLabel} />
 
-    <div class="docs-example" aria-label={text().contentLabel}>
-      <Card>
-        <h3>{text().planTitle}</h3>
-        <p>{text().planBody}</p>
-        <Button variant="primary">{text().planAction}</Button>
-      </Card>
-    </div>
+    <FrameworkDemo nodes={contentDemo} label={text().contentLabel} />
   </section>
 
   <section class="docs-section">

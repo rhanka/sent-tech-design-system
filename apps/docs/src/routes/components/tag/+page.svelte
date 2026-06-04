@@ -1,18 +1,35 @@
 <script lang="ts">
-  import { Badge, Tag } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
-  let tags = $state(["alpha", "beta", "gamma"]);
-
-  function removeTag(value: string) {
-    tags = tags.filter((tag) => tag !== value);
-  }
-
-  function resetTags() {
-    tags = ["alpha", "beta", "gamma"];
-  }
+  // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
+  // (toute la page bascule, pas seulement le bloc Aperçu live).
+  const tonesDemo: NodeSpec[] = [
+    { comp: "Tag", props: { tone: "neutral" }, children: ["Neutral"] },
+    { comp: "Tag", props: { tone: "success" }, children: ["Success"] },
+    { comp: "Tag", props: { tone: "warning" }, children: ["Warning"] },
+    { comp: "Tag", props: { tone: "error" }, children: ["Error"] },
+    { comp: "Tag", props: { tone: "info" }, children: ["Info"] }
+  ];
+  const sizesDemo: NodeSpec[] = [
+    { comp: "Tag", props: { tone: "info", size: "sm" }, children: ["Small"] },
+    { comp: "Tag", props: { tone: "info", size: "md" }, children: ["Medium"] }
+  ];
+  // Version statique de la démo interactive (tags fermables) : on montre les
+  // trois tags fermables côte à côte plutôt qu'un retrait live piloté par état.
+  const dismissibleDemo: NodeSpec[] = $derived([
+    { comp: "Tag", props: { tone: "success", dismissible: true, dismissLabel: locale.value === "fr" ? "Retirer alpha" : "Remove alpha" }, children: ["alpha"] },
+    { comp: "Tag", props: { tone: "success", dismissible: true, dismissLabel: locale.value === "fr" ? "Retirer beta" : "Remove beta" }, children: ["beta"] },
+    { comp: "Tag", props: { tone: "success", dismissible: true, dismissLabel: locale.value === "fr" ? "Retirer gamma" : "Remove gamma" }, children: ["gamma"] }
+  ]);
+  const disabledDemo: NodeSpec[] = [
+    { comp: "Tag", props: { tone: "warning", dismissible: true, disabled: true }, children: ["Read-only"] },
+    { comp: "Tag", props: { tone: "error", disabled: true }, children: ["Archived"] }
+  ];
 </script>
 
 <div class="docs-page">
@@ -30,83 +47,39 @@
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
-    <div
-      class="docs-example"
-      aria-label={locale.value === "fr" ? "Tonalités" : "Tones"}
-    >
-      <div class="docs-example__row">
-        <Tag tone="neutral">Neutral</Tag>
-        <Tag tone="success">Success</Tag>
-        <Tag tone="warning">Warning</Tag>
-        <Tag tone="error">Error</Tag>
-        <Tag tone="info">Info</Tag>
-      </div>
-      <p class="docs-example__caption">
-        {locale.value === "fr"
-          ? "Cinq tonalités sémantiques alignées sur les feedback tokens."
-          : "Five semantic tones aligned with feedback tokens."}
-      </p>
-    </div>
+    <FrameworkDemo nodes={tonesDemo} label={locale.value === "fr" ? "Tonalités" : "Tones"} />
+    <p class="docs-example__caption">
+      {locale.value === "fr"
+        ? "Cinq tonalités sémantiques alignées sur les feedback tokens."
+        : "Five semantic tones aligned with feedback tokens."}
+    </p>
 
-    <div
-      class="docs-example"
-      aria-label={locale.value === "fr" ? "Tailles" : "Sizes"}
-    >
-      <div class="docs-example__row">
-        <Tag tone="info" size="sm">Small</Tag>
-        <Tag tone="info" size="md">Medium</Tag>
-      </div>
-      <p class="docs-example__caption">
-        {locale.value === "fr"
-          ? "Tailles sm (0.6875rem) et md (0.75rem)."
-          : "Sizes sm (0.6875rem) and md (0.75rem)."}
-      </p>
-    </div>
+    <FrameworkDemo nodes={sizesDemo} label={locale.value === "fr" ? "Tailles" : "Sizes"} />
+    <p class="docs-example__caption">
+      {locale.value === "fr"
+        ? "Tailles sm (0.6875rem) et md (0.75rem)."
+        : "Sizes sm (0.6875rem) and md (0.75rem)."}
+    </p>
 
-    <div
-      class="docs-example"
-      aria-label={locale.value === "fr" ? "Tags fermables" : "Dismissible tags"}
-    >
-      <div class="docs-example__row">
-        {#each tags as label (label)}
-          <Tag
-            tone="success"
-            dismissible
-            dismissLabel={locale.value === "fr" ? `Retirer ${label}` : `Remove ${label}`}
-            onDismiss={() => removeTag(label)}
-          >
-            {label}
-          </Tag>
-        {/each}
-        {#if tags.length === 0}
-          <span class="docs-example__empty">
-            {locale.value === "fr" ? "Aucun tag restant." : "No tags left."}
-          </span>
-        {/if}
-      </div>
-      <p class="docs-example__caption">
-        <button type="button" class="docs-example__reset" onclick={resetTags}>
-          {locale.value === "fr" ? "Réinitialiser" : "Reset"}
-        </button>
-        · {locale.value === "fr" ? "Tags restants" : "Remaining tags"} :
-        <code>{tags.length}</code>
-      </p>
-    </div>
+    <FrameworkDemo
+      nodes={dismissibleDemo}
+      label={locale.value === "fr" ? "Tags fermables" : "Dismissible tags"}
+    />
+    <p class="docs-example__caption">
+      {locale.value === "fr"
+        ? "Les tags fermables exposent un bouton de retrait (icône X) qui déclenche onDismiss. Câblez la suppression dans l’état de votre application."
+        : "Dismissible tags expose a remove button (X icon) that fires onDismiss. Wire the removal into your application state."}
+    </p>
 
-    <div
-      class="docs-example"
-      aria-label={locale.value === "fr" ? "État désactivé" : "Disabled state"}
-    >
-      <div class="docs-example__row">
-        <Tag tone="warning" dismissible disabled>Read-only</Tag>
-        <Tag tone="error" disabled>Archived</Tag>
-      </div>
-      <p class="docs-example__caption">
-        {locale.value === "fr"
-          ? "L’option dismissible reste rendue mais le bouton est inactif."
-          : "The dismissible affordance is rendered but the button is inert."}
-      </p>
-    </div>
+    <FrameworkDemo
+      nodes={disabledDemo}
+      label={locale.value === "fr" ? "État désactivé" : "Disabled state"}
+    />
+    <p class="docs-example__caption">
+      {locale.value === "fr"
+        ? "L’option dismissible reste rendue mais le bouton est inactif."
+        : "The dismissible affordance is rendered but the button is inert."}
+    </p>
   </section>
   <section class="docs-section">
     <h2>{t(locale.value, "apiTitle")}</h2>
@@ -146,32 +119,3 @@
   </section>
 
 </div>
-
-<style>
-  .docs-example__row {
-    align-items: center;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .docs-example__empty {
-    color: var(--st-semantic-text-muted);
-    font-size: 0.875rem;
-  }
-
-  .docs-example__reset {
-    background: transparent;
-    border: 1px solid var(--st-semantic-border-subtle);
-    border-radius: var(--st-radius-sm, 0.25rem);
-    color: var(--st-semantic-text-primary);
-    cursor: pointer;
-    font: inherit;
-    font-size: 0.8125rem;
-    padding: 0.125rem 0.5rem;
-  }
-
-  .docs-example__reset:hover {
-    background: var(--st-semantic-surface-subtle);
-  }
-</style>

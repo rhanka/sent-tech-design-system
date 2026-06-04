@@ -1,8 +1,26 @@
 <script lang="ts">
-  import { Badge, CopyButton } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
+
+  // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
+  // (toute la page bascule, pas seulement le bloc Aperçu live).
+  const sizesDemo: NodeSpec[] = [
+    { comp: "CopyButton", props: { value: "npm install @sentropic/design-system-svelte", size: "sm", label: "Copier", copiedLabel: "Copié" } },
+    { comp: "CopyButton", props: { value: "npm install @sentropic/design-system-svelte", size: "md", label: "Copier", copiedLabel: "Copié" } },
+    { comp: "CopyButton", props: { value: "npm install @sentropic/design-system-svelte", size: "lg", label: "Copier", copiedLabel: "Copié" } }
+  ];
+  const valuesDemo: NodeSpec[] = [
+    { comp: "CopyButton", props: { value: "sent-tech.ca", label: "Copier le domaine", copiedLabel: "Copié" } },
+    { comp: "CopyButton", props: { value: "contact@sent-tech.ca", label: "Copier l'email", copiedLabel: "Copié" } },
+    { comp: "CopyButton", props: { value: "ST-2026-0001", label: "Copier l'identifiant", copiedLabel: "Copié" } }
+  ];
+  const statesDemo: NodeSpec[] = [
+    { comp: "CopyButton", props: { value: "désactivé", label: "Désactivé", copiedLabel: "Copié", disabled: true } }
+  ];
 </script>
 
 <div class="docs-page">
@@ -18,19 +36,9 @@
 
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
-    <div class="docs-example" aria-label={t(locale.value, "sizes")}>
-      <CopyButton value="npm install @sentropic/design-system-svelte" size="sm" label="Copier" copiedLabel="Copié" />
-      <CopyButton value="npm install @sentropic/design-system-svelte" size="md" label="Copier" copiedLabel="Copié" />
-      <CopyButton value="npm install @sentropic/design-system-svelte" size="lg" label="Copier" copiedLabel="Copié" />
-    </div>
-    <div class="docs-example" aria-label="Copier différentes valeurs">
-      <CopyButton value="sent-tech.ca" label="Copier le domaine" copiedLabel="Copié" />
-      <CopyButton value="contact@sent-tech.ca" label="Copier l'email" copiedLabel="Copié" />
-      <CopyButton value="ST-2026-0001" label="Copier l'identifiant" copiedLabel="Copié" />
-    </div>
-    <div class="docs-example" aria-label={t(locale.value, "states")}>
-      <CopyButton value="désactivé" label="Désactivé" copiedLabel="Copié" disabled />
-    </div>
+    <FrameworkDemo nodes={sizesDemo} label={t(locale.value, "sizes")} />
+    <FrameworkDemo nodes={valuesDemo} label="Copier différentes valeurs" />
+    <FrameworkDemo nodes={statesDemo} label={t(locale.value, "states")} />
   </section>
   <section class="docs-section">
     <h2>{t(locale.value, "apiTitle")}</h2>
