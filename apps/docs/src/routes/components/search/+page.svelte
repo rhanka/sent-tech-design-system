@@ -1,15 +1,45 @@
 <script lang="ts">
-  import { Badge, Search } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
-  let smValue = $state("");
-  let mdValue = $state("");
-  let lgValue = $state("");
-  let placeholderValue = $state("");
-  let disabledValue = $state("");
-  let value = $state("");
+  // Démos en arbre NodeSpec neutre -> rendues dans le framework actif.
+  // État statique : valeurs figées (pas de binding live ; note prose).
+  const sizesDemo: NodeSpec[] = [
+    {
+      el: "div",
+      props: { class: "docs-demo-stack" },
+      children: [
+        { comp: "Search", props: { size: "sm", placeholder: "Rechercher (sm)" } },
+        { comp: "Search", props: { size: "md", placeholder: "Rechercher (md)" } },
+        { comp: "Search", props: { size: "lg", placeholder: "Rechercher (lg)" } }
+      ]
+    }
+  ];
+
+  const statesDemo: NodeSpec[] = [
+    {
+      el: "div",
+      props: { class: "docs-demo-stack" },
+      children: [
+        { comp: "Search", props: { placeholder: "Rechercher un composant…" } },
+        { comp: "Search", props: { placeholder: "Champ désactivé", disabled: true } }
+      ]
+    }
+  ];
+
+  // Démo « liaison bidirectionnelle » : version statique avec valeur figée.
+  // Noms de prop par moteur (Svelte `value`, React `defaultValue`, Vue
+  // `modelValue`) tous passés pour afficher la même valeur partout.
+  const bindingDemo: NodeSpec[] = [
+    {
+      comp: "Search",
+      props: { value: "design", defaultValue: "design", modelValue: "design", placeholder: "Tapez puis effacez" }
+    }
+  ];
 </script>
 
 <div class="docs-page">
@@ -25,22 +55,13 @@
 
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
-    <div class="docs-example" aria-label={t(locale.value, "sizes")}>
-      <Search size="sm" bind:value={smValue} placeholder="Rechercher (sm)" />
-      <Search size="md" bind:value={mdValue} placeholder="Rechercher (md)" />
-      <Search size="lg" bind:value={lgValue} placeholder="Rechercher (lg)" />
-    </div>
-    <div class="docs-example" aria-label={t(locale.value, "states")}>
-      <Search bind:value={placeholderValue} placeholder="Rechercher un composant…" />
-      <Search bind:value={disabledValue} placeholder="Champ désactivé" disabled />
-    </div>
-    <div class="docs-example" aria-label="Liaison bidirectionnelle">
-      <Search bind:value placeholder="Tapez puis effacez" />
-      <p>
-        Valeur courante :
-        <code>{value === "" ? "(vide)" : value}</code>
-      </p>
-    </div>
+    <FrameworkDemo nodes={sizesDemo} label={t(locale.value, "sizes")} />
+    <FrameworkDemo nodes={statesDemo} label={t(locale.value, "states")} />
+    <FrameworkDemo nodes={bindingDemo} label="Liaison bidirectionnelle" />
+    <p class="docs-demo-note">
+      Valeur courante :
+      <code>design</code>
+    </p>
   </section>
   <section class="docs-section">
     <h2>{t(locale.value, "apiTitle")}</h2>

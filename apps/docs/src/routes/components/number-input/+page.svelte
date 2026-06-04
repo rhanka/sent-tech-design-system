@@ -1,8 +1,10 @@
 <script lang="ts">
-  import { Badge, NumberInput } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
   const copy = {
     fr: {
@@ -27,13 +29,108 @@
 
   const text = () => copy[locale.value];
 
-  let smValue = $state<number | null>(8);
-  let mdValue = $state<number | null>(16);
-  let lgValue = $state<number | null>(128);
-  let boundedValue = $state<number | null>(42);
-  let errorValue = $state<number | null>(null);
-  let disabledValue = $state<number | null>(10);
-  let currentValue = $state<number | null>(null);
+  // Démos en arbre NodeSpec neutre -> rendues dans le framework actif.
+  // État statique : la valeur initiale est figée. Les noms de prop diffèrent par
+  // moteur (Svelte `value`, React `defaultValue`, Vue `modelValue`) : on les passe
+  // tous pour afficher la même valeur partout sans binding live (note en prose).
+  const sizesDemo: NodeSpec[] = $derived([
+    {
+      el: "div",
+      props: { class: "docs-demo-stack" },
+      children: [
+        {
+          comp: "NumberInput",
+          props: {
+            size: "sm",
+            label: locale.value === "fr" ? "Taille sm" : "Small",
+            value: 8,
+            defaultValue: 8,
+            modelValue: 8,
+            placeholder: locale.value === "fr" ? "Valeur sm" : "Small value"
+          }
+        },
+        {
+          comp: "NumberInput",
+          props: {
+            size: "md",
+            label: locale.value === "fr" ? "Taille md" : "Medium",
+            value: 16,
+            defaultValue: 16,
+            modelValue: 16,
+            placeholder: locale.value === "fr" ? "Valeur md" : "Medium value"
+          }
+        },
+        {
+          comp: "NumberInput",
+          props: {
+            size: "lg",
+            label: locale.value === "fr" ? "Taille lg" : "Large",
+            value: 128,
+            defaultValue: 128,
+            modelValue: 128,
+            placeholder: locale.value === "fr" ? "Valeur lg" : "Large value"
+          }
+        }
+      ]
+    }
+  ]);
+
+  const validationDemo: NodeSpec[] = $derived([
+    {
+      el: "div",
+      props: { class: "docs-demo-stack" },
+      children: [
+        {
+          comp: "NumberInput",
+          props: {
+            label: locale.value === "fr" ? "Bornes + pas" : "Bounds + step",
+            value: 42,
+            defaultValue: 42,
+            modelValue: 42,
+            min: 0,
+            max: 100,
+            step: 10,
+            helperText: locale.value === "fr" ? "min 0, max 100, pas 10" : "min 0, max 100, step 10"
+          }
+        },
+        {
+          comp: "NumberInput",
+          props: {
+            label: locale.value === "fr" ? "Erreur" : "Error",
+            min: 1,
+            max: 10,
+            step: 1,
+            placeholder: locale.value === "fr" ? "Doit être entre 1 et 10" : "Must be between 1 and 10",
+            invalid: true,
+            errorText: locale.value === "fr" ? "La valeur est hors plage." : "Value is out of range."
+          }
+        },
+        {
+          comp: "NumberInput",
+          props: {
+            label: locale.value === "fr" ? "Désactivé" : "Disabled",
+            value: 10,
+            defaultValue: 10,
+            modelValue: 10,
+            disabled: true
+          }
+        }
+      ]
+    }
+  ]);
+
+  const customDemo: NodeSpec[] = $derived([
+    {
+      comp: "NumberInput",
+      props: {
+        label: locale.value === "fr" ? "Étiquettes personnalisées" : "Custom button labels",
+        min: 0,
+        max: 9,
+        incrementLabel: locale.value === "fr" ? "Augmenter" : "Increase",
+        decrementLabel: locale.value === "fr" ? "Diminuer" : "Decrease"
+      }
+    }
+  ]);
 </script>
 
 <div class="docs-page">
@@ -51,69 +148,15 @@
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
-    <div class="docs-example" aria-label={t(locale.value, "sizes")}>
-      <NumberInput
-        size="sm"
-        label={locale.value === "fr" ? "Taille sm" : "Small"}
-        bind:value={smValue}
-        placeholder={locale.value === "fr" ? "Valeur sm" : "Small value"}
-      />
-      <NumberInput
-        size="md"
-        label={locale.value === "fr" ? "Taille md" : "Medium"}
-        bind:value={mdValue}
-        placeholder={locale.value === "fr" ? "Valeur md" : "Medium value"}
-      />
-      <NumberInput
-        size="lg"
-        label={locale.value === "fr" ? "Taille lg" : "Large"}
-        bind:value={lgValue}
-        placeholder={locale.value === "fr" ? "Valeur lg" : "Large value"}
-      />
-    </div>
+    <FrameworkDemo nodes={sizesDemo} label={t(locale.value, "sizes")} />
 
-    <div class="docs-example" aria-label={t(locale.value, "validation")}>
-      <NumberInput
-        label={locale.value === "fr" ? "Bornes + pas" : "Bounds + step"}
-        bind:value={boundedValue}
-        min={0}
-        max={100}
-        step={10}
-        helperText={locale.value === "fr"
-          ? "min 0, max 100, pas 10"
-          : "min 0, max 100, step 10"}
-      />
-      <NumberInput
-        label={locale.value === "fr" ? "Erreur" : "Error"}
-        bind:value={errorValue}
-        min={1}
-        max={10}
-        step={1}
-        placeholder={locale.value === "fr" ? "Doit être entre 1 et 10" : "Must be between 1 and 10"}
-        invalid
-        errorText={locale.value === "fr" ? "La valeur est hors plage." : "Value is out of range."}
-      />
-      <NumberInput
-        label={locale.value === "fr" ? "Désactivé" : "Disabled"}
-        bind:value={disabledValue}
-        disabled
-      />
-    </div>
+    <FrameworkDemo nodes={validationDemo} label={t(locale.value, "validation")} />
 
-    <div class="docs-example" aria-label={locale.value === "fr" ? "Boutons custom" : "Custom buttons"}>
-      <NumberInput
-        label={locale.value === "fr" ? "Étiquettes personnalisées" : "Custom button labels"}
-        bind:value={currentValue}
-        min={0}
-        max={9}
-        incrementLabel={locale.value === "fr" ? "Augmenter" : "Increase"}
-        decrementLabel={locale.value === "fr" ? "Diminuer" : "Decrease"}
-      />
-      <p class="docs-demo-note">
-        {locale.value === "fr" ? "Valeur courante" : "Current value"} :
-        <code>{currentValue === null ? "null" : currentValue}</code>
-      </p>
-    </div>
+    <FrameworkDemo nodes={customDemo} label={locale.value === "fr" ? "Boutons custom" : "Custom buttons"} />
+    <p class="docs-demo-note">
+      {locale.value === "fr" ? "Valeur courante" : "Current value"} :
+      <code>null</code>
+    </p>
   </section>
 
   <section class="docs-section">
