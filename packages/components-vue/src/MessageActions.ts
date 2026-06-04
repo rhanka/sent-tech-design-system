@@ -2,9 +2,15 @@ import { defineComponent, h } from "vue";
 import { classNames } from "./classNames.js";
 
 export type MessageActionVariant = "default" | "danger";
+/**
+ * `label` (React/Vue) is rendered when present; otherwise `icon` (the
+ * Svelte-canonical content) is rendered. `label` is always used for the
+ * accessible name when provided. At least one of `label`/`icon` should be set.
+ */
 export type MessageAction = {
   id?: string;
-  label: unknown;
+  label?: unknown;
+  icon?: unknown;
   disabled?: boolean;
   variant?: MessageActionVariant;
   onClick?: () => void;
@@ -51,9 +57,13 @@ export const MessageActions = defineComponent({
                 action.variant === "danger" && "st-button--danger",
               ),
               disabled: action.disabled,
+              "aria-label":
+                action.label == null && action.icon != null
+                  ? action.id
+                  : undefined,
               onClick: action.onClick,
             },
-            action.label as string,
+            (action.label ?? action.icon) as string,
           ),
         ),
       );
