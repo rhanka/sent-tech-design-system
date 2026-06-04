@@ -1,12 +1,70 @@
 <script lang="ts">
-  import { Badge, Select } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
   const fr = (frText: string, enText: string) => (locale.value === "fr" ? frText : enText);
 
-  let tenant = $state("forge");
+  // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
+  // (toute la page bascule, pas seulement le bloc Aperçu live). La démo « Défaut »
+  // est rendue statique (Forge présélectionné) ; la note d'état reste en prose.
+  const statesDemo: NodeSpec[] = $derived([
+    {
+      el: "div",
+      props: { class: "docs-demo-stack" },
+      children: [
+        { el: "h3", children: [fr("Défaut", "Default")] },
+        {
+          comp: "Select",
+          props: { label: fr("Tenant", "Tenant"), value: "forge" },
+          children: [
+            { el: "option", props: { value: "forge" }, children: ["Forge"] },
+            { el: "option", props: { value: "entropic" }, children: ["Entropic"] },
+            { el: "option", props: { value: "graphify" }, children: ["Graphify"] }
+          ]
+        },
+        { el: "h3", children: [fr("Avec option vide (placeholder)", "With empty option (placeholder)")] },
+        {
+          comp: "Select",
+          props: { label: fr("Tenant", "Tenant"), helperText: fr("Choisissez un tenant.", "Choose a tenant.") },
+          children: [
+            { el: "option", props: { value: "" }, children: [fr("Sélectionner…", "Select…")] },
+            { el: "option", props: { value: "forge" }, children: ["Forge"] },
+            { el: "option", props: { value: "entropic" }, children: ["Entropic"] }
+          ]
+        },
+        { el: "h3", children: [fr("Désactivé", "Disabled")] },
+        {
+          comp: "Select",
+          props: { label: fr("Tenant", "Tenant"), disabled: true },
+          children: [{ el: "option", props: { value: "forge" }, children: ["Forge"] }]
+        },
+        { el: "h3", children: [fr("Erreur", "Error")] },
+        {
+          comp: "Select",
+          props: { label: fr("Tenant", "Tenant"), invalid: true, errorText: fr("Le tenant est requis.", "Tenant is required.") },
+          children: [
+            { el: "option", props: { value: "" }, children: [fr("Sélectionner…", "Select…")] },
+            { el: "option", props: { value: "forge" }, children: ["Forge"] }
+          ]
+        }
+      ]
+    }
+  ]);
+  const sizesDemo: NodeSpec[] = [
+    {
+      el: "div",
+      props: { class: "docs-demo-stack" },
+      children: [
+        { comp: "Select", props: { label: "Small", size: "sm" }, children: [{ el: "option", children: ["sm"] }] },
+        { comp: "Select", props: { label: "Medium", size: "md" }, children: [{ el: "option", children: ["md"] }] },
+        { comp: "Select", props: { label: "Large", size: "lg" }, children: [{ el: "option", children: ["lg"] }] }
+      ]
+    }
+  ];
 </script>
 
 <div class="docs-page">
@@ -37,40 +95,14 @@
 
   <section class="docs-section">
     <h2>{t(locale.value, "states")}</h2>
-    <div class="docs-example docs-example--stack">
-      <h3>{fr("Défaut", "Default")}</h3>
-      <Select label={fr("Tenant", "Tenant")} bind:value={tenant}>
-        <option value="forge">Forge</option>
-        <option value="entropic">Entropic</option>
-        <option value="graphify">Graphify</option>
-      </Select>
-      <p class="docs-demo-note">{fr("Sélection", "Selection")}: <code>{tenant}</code></p>
-      <h3>{fr("Avec option vide (placeholder)", "With empty option (placeholder)")}</h3>
-      <Select label={fr("Tenant", "Tenant")} helperText={fr("Choisissez un tenant.", "Choose a tenant.")}>
-        <option value="">{fr("Sélectionner…", "Select…")}</option>
-        <option value="forge">Forge</option>
-        <option value="entropic">Entropic</option>
-      </Select>
-      <h3>{fr("Désactivé", "Disabled")}</h3>
-      <Select label={fr("Tenant", "Tenant")} disabled>
-        <option value="forge">Forge</option>
-      </Select>
-      <h3>{fr("Erreur", "Error")}</h3>
-      <Select label={fr("Tenant", "Tenant")} invalid errorText={fr("Le tenant est requis.", "Tenant is required.")}>
-        <option value="">{fr("Sélectionner…", "Select…")}</option>
-        <option value="forge">Forge</option>
-      </Select>
-    </div>
+    <FrameworkDemo nodes={statesDemo} label={t(locale.value, "states")} />
+    <p class="docs-demo-note">{fr("Sélection par défaut", "Default selection")}: <code>forge</code></p>
   </section>
 
   <section class="docs-section">
     <h2>{t(locale.value, "sizes")}</h2>
     <p>{fr("sm (2 rem), md (2,5 rem, défaut), lg (3 rem).", "sm (2 rem), md (2.5 rem, default), lg (3 rem).")}</p>
-    <div class="docs-example docs-example--stack">
-      <Select label="Small" size="sm"><option>sm</option></Select>
-      <Select label="Medium" size="md"><option>md</option></Select>
-      <Select label="Large" size="lg"><option>lg</option></Select>
-    </div>
+    <FrameworkDemo nodes={sizesDemo} label={t(locale.value, "sizes")} />
   </section>
 
   <section class="docs-section">
