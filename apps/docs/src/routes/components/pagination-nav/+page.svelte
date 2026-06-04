@@ -1,12 +1,58 @@
 <script lang="ts">
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import { Badge, PaginationNav } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
-  let shortPage = $state(1);
-  let longPage = $state(12);
-  let smallPage = $state(1);
+  // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
+  // (toute la page bascule, pas seulement le bloc « Aperçu live »). État
+  // statique : la page courante bindable n'est pas live (note conservée en
+  // prose). Le nom du total diffère par moteur : Svelte `pageCount`, React/Vue
+  // `totalPages`. On passe les deux pour figer le même état (props inconnues
+  // ignorées).
+  const shortDemo: NodeSpec[] = $derived([
+    {
+      comp: "PaginationNav",
+      props: {
+        page: 1,
+        pageCount: 5,
+        totalPages: 5,
+        label: locale.value === "fr" ? "Pagination courte" : "Short pagination",
+        previousLabel: locale.value === "fr" ? "Page précédente" : "Previous page",
+        nextLabel: locale.value === "fr" ? "Page suivante" : "Next page"
+      }
+    }
+  ]);
+
+  const longDemo: NodeSpec[] = $derived([
+    {
+      comp: "PaginationNav",
+      props: {
+        page: 12,
+        pageCount: 30,
+        totalPages: 30,
+        label: locale.value === "fr" ? "Pagination longue" : "Long pagination",
+        previousLabel: locale.value === "fr" ? "Page précédente" : "Previous page",
+        nextLabel: locale.value === "fr" ? "Page suivante" : "Next page"
+      }
+    }
+  ]);
+
+  const compactDemo: NodeSpec[] = $derived([
+    {
+      comp: "PaginationNav",
+      props: {
+        page: 1,
+        pageCount: 3,
+        totalPages: 3,
+        label: locale.value === "fr" ? "Pagination compacte" : "Compact pagination",
+        previousLabel: locale.value === "fr" ? "Page précédente" : "Previous page",
+        nextLabel: locale.value === "fr" ? "Page suivante" : "Next page"
+      }
+    }
+  ]);
 </script>
 
 <div class="docs-page">
@@ -23,58 +69,32 @@
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
-    <div
-      class="docs-example"
-      aria-label={locale.value === "fr" ? "Pagination courte" : "Short pagination"}
-    >
-      <PaginationNav
-        bind:page={shortPage}
-        pageCount={5}
-        label={locale.value === "fr" ? "Pagination courte" : "Short pagination"}
-        previousLabel={locale.value === "fr" ? "Page précédente" : "Previous page"}
-        nextLabel={locale.value === "fr" ? "Page suivante" : "Next page"}
-      />
-      <p class="docs-example__caption">
-        {locale.value === "fr" ? "Page courante" : "Current page"} : <code>{shortPage}</code>
-      </p>
-    </div>
+    <FrameworkDemo
+      nodes={shortDemo}
+      label={locale.value === "fr" ? "Pagination courte" : "Short pagination"}
+    />
+    <p class="docs-demo-note">
+      {locale.value === "fr" ? "Page courante figée" : "Frozen current page"} : <code>1</code>
+      · {locale.value === "fr" ? "« Précédent » désactivé à la borne" : "“Previous” disabled at the boundary"}
+    </p>
 
-    <div
-      class="docs-example"
-      aria-label={locale.value === "fr" ? "Pagination longue avec ellipses" : "Long pagination with ellipses"}
-    >
-      <PaginationNav
-        bind:page={longPage}
-        pageCount={30}
-        label={locale.value === "fr" ? "Pagination longue" : "Long pagination"}
-        previousLabel={locale.value === "fr" ? "Page précédente" : "Previous page"}
-        nextLabel={locale.value === "fr" ? "Page suivante" : "Next page"}
-      />
-      <p class="docs-example__caption">
-        {locale.value === "fr" ? "Page courante" : "Current page"} : <code>{longPage}</code>
-      </p>
-    </div>
+    <FrameworkDemo
+      nodes={longDemo}
+      label={locale.value === "fr" ? "Pagination longue avec ellipses" : "Long pagination with ellipses"}
+    />
+    <p class="docs-demo-note">
+      {locale.value === "fr" ? "Page courante figée" : "Frozen current page"} : <code>12</code>
+      · {locale.value === "fr" ? "ellipses automatiques aux extrémités" : "automatic ellipses at the ends"}
+    </p>
 
-    <div
-      class="docs-example"
-      aria-label={locale.value === "fr" ? "Bornes désactivées" : "Disabled boundaries"}
-    >
-      <PaginationNav
-        bind:page={smallPage}
-        pageCount={3}
-        label={locale.value === "fr" ? "Pagination compacte" : "Compact pagination"}
-        previousLabel={locale.value === "fr" ? "Page précédente" : "Previous page"}
-        nextLabel={locale.value === "fr" ? "Page suivante" : "Next page"}
-      />
-      <p class="docs-example__caption">
-        {locale.value === "fr" ? "Page courante" : "Current page"} : <code>{smallPage}</code>
-        {#if smallPage === 1}
-          · {locale.value === "fr" ? "« Précédent » désactivé" : "“Previous” disabled"}
-        {:else if smallPage === 3}
-          · {locale.value === "fr" ? "« Suivant » désactivé" : "“Next” disabled"}
-        {/if}
-      </p>
-    </div>
+    <FrameworkDemo
+      nodes={compactDemo}
+      label={locale.value === "fr" ? "Bornes désactivées" : "Disabled boundaries"}
+    />
+    <p class="docs-demo-note">
+      {locale.value === "fr" ? "Page courante figée" : "Frozen current page"} : <code>1</code>
+      · {locale.value === "fr" ? "« Précédent » désactivé" : "“Previous” disabled"}
+    </p>
   </section>
   <section class="docs-section">
     <h2>{t(locale.value, "apiTitle")}</h2>

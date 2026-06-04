@@ -1,6 +1,8 @@
 <script lang="ts">
-  import { Badge, TableOfContents } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
   const items = [
     { id: "intro", label: "Intro", level: 1 },
@@ -8,6 +10,33 @@
     { id: "nested", label: "Niveau 2", level: 2 },
     { id: "api", label: "API", level: 1 },
     { id: "acc", label: "Accessibilité", level: 1 }
+  ];
+
+  // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
+  // (toute la page bascule, pas seulement le bloc « Aperçu live »).
+  const presentationDemo: NodeSpec[] = [
+    { comp: "TableOfContents", props: { items, title: "Sur cette page", activeId: "intro" } }
+  ];
+
+  const usageDemo: NodeSpec[] = [
+    { comp: "TableOfContents", props: { items, title: "Sommaire", activeId: "usage" } }
+  ];
+
+  const hierarchyDemo: NodeSpec[] = [
+    {
+      comp: "TableOfContents",
+      props: {
+        items: [
+          { id: "intro", label: "Intro", level: 1 },
+          { id: "usage", label: "Utilisation", level: 1 },
+          { id: "nested", label: "Niveau secondaire", level: 2 },
+          { id: "api-3", label: "Niveau tertiaire", level: 3 },
+          { id: "api", label: "API", level: 1 }
+        ],
+        title: "Sommaire hiérarchique",
+        activeId: "intro"
+      }
+    }
   ];
 </script>
 
@@ -28,38 +57,22 @@
 
   <section class="docs-section" id="intro">
     <h2>Présentation</h2>
-    <div class="docs-example">
-      <TableOfContents {items} title="Sur cette page" activeId="intro" />
-    </div>
+    <FrameworkDemo nodes={presentationDemo} label="Présentation" />
   </section>
 
   <section class="docs-section" id="usage">
     <h2>Cas d’usage</h2>
-    <div class="docs-example docs-example--stack">
-      <p>Placez un identifiant par rubrique et branchez le tableau d’items côté layout.</p>
-      <TableOfContents {items} title="Sommaire" activeId="usage" />
-      <p class="docs-demo-context">
-        L’identifiant actif est purement déclaratif (via <code>activeId</code>) dans cette version.
-        Les ancres sont générées avec <code>href=&quot;#&lt;id&gt;&quot;</code>.
-      </p>
-    </div>
+    <FrameworkDemo nodes={usageDemo} label="Cas d’usage" />
+    <p class="docs-demo-note">
+      L’identifiant actif est purement déclaratif (via <code>activeId</code>) dans cette version.
+      Les ancres sont générées avec <code>href=&quot;#&lt;id&gt;&quot;</code>.
+    </p>
   </section>
 
   <section class="docs-section" id="nested">
     <h2>Hiérarchie</h2>
-    <div class="docs-example">
-      <TableOfContents
-        items={[
-          { id: "intro", label: "Intro", level: 1 },
-          { id: "usage", label: "Utilisation", level: 1 },
-          { id: "nested", label: "Niveau secondaire", level: 2 },
-          { id: "api", label: "Niveau tertiaire", level: 3 },
-          { id: "api", label: "API", level: 1 }
-        ]}
-        title="Sommaire hiérarchique"
-      />
-      <div class="docs-note">Les niveaux inférieurs gagnent une indentation visuelle.</div>
-    </div>
+    <FrameworkDemo nodes={hierarchyDemo} label="Sommaire hiérarchique" />
+    <p class="docs-demo-note">Les niveaux inférieurs gagnent une indentation visuelle.</p>
   </section>
 
   <section class="docs-section" id="api">

@@ -1,8 +1,10 @@
 <script lang="ts">
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import { Badge, Toggletip } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
   const copy = {
     fr: {
@@ -10,34 +12,105 @@
         "Infobulle activable au clic et persistante : contrairement au Tooltip (survol/focus), la bulle reste affichée jusqu’à un nouveau clic ou Escape. Adaptée à un contenu lisible au lecteur d’écran (`aria-live=\"polite\"`).",
       usageTitle: "Notes d’usage",
       usageNote1:
-        "Le déclencheur est un bouton rond « i ». `open` est `$bindable` : le clic bascule l’état, Escape ferme (géré via `svelte:window`).",
+        "Le déclencheur est un bouton rond « i » (Svelte). `open` est `$bindable` : le clic bascule l’état, Escape ferme (géré via `svelte:window`).",
       usageNote2:
         "`content` est la chaîne affichée dans la bulle ; `label` ajoute un sur-titre optionnel. L’`aria-label` du bouton utilise `triggerLabel ?? label ?? \"More information\"`.",
       usageNote3:
-        "`placement` positionne la bulle : `top` (défaut), `bottom`, `start`, `end`. Le slot `children` permet d’ajouter du contenu (ex. un libellé) avant le déclencheur.",
+        "`placement` positionne la bulle : `top` (défaut), `bottom`, `start`, `end`. Le slot `children` (Svelte) permet d’ajouter du contenu (ex. un libellé) avant le déclencheur ; en React/Vue, `label` sert de texte du bouton.",
       placementLabel: "Placements",
-      labelLabel: "Avec sur-titre et contenu enfant",
-      inlineLabel: "Toggletip inline dans un libellé"
+      labelLabel: "Avec sur-titre et contenu",
+      inlineLabel: "Toggletip inline"
     },
     en: {
       intro:
         "Click-activated, persistent tip: unlike Tooltip (hover/focus), the bubble stays open until another click or Escape. Suited to screen-reader-readable content (`aria-live=\"polite\"`).",
       usageTitle: "Usage notes",
       usageNote1:
-        "The trigger is a round “i” button. `open` is `$bindable`: clicking toggles it, Escape closes (handled via `svelte:window`).",
+        "The trigger is a round “i” button (Svelte). `open` is `$bindable`: clicking toggles it, Escape closes (handled via `svelte:window`).",
       usageNote2:
         "`content` is the string rendered in the bubble; `label` adds an optional overline. The button `aria-label` uses `triggerLabel ?? label ?? \"More information\"`.",
       usageNote3:
-        "`placement` positions the bubble: `top` (default), `bottom`, `start`, `end`. The `children` slot renders content (e.g. a label) before the trigger.",
+        "`placement` positions the bubble: `top` (default), `bottom`, `start`, `end`. The `children` slot (Svelte) renders content (e.g. a label) before the trigger; in React/Vue, `label` is the button text.",
       placementLabel: "Placements",
-      labelLabel: "With overline and child content",
-      inlineLabel: "Inline toggletip within a label"
+      labelLabel: "With overline and content",
+      inlineLabel: "Inline toggletip"
     }
   } as const;
 
   const text = () => copy[locale.value];
 
-  let topOpen = $state(false);
+  // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
+  // (toute la page bascule, pas seulement le bloc « Aperçu live »). État
+  // statique : pas de binding live (note en prose). Divergence de moteur :
+  // Svelte rend une icône « i » et utilise `triggerLabel` comme aria-label ;
+  // React/Vue rendent `label` comme texte du bouton. On passe les deux
+  // (l'extra est ignoré).
+  const labelDemo: NodeSpec[] = $derived([
+    {
+      comp: "Toggletip",
+      props: {
+        label: locale.value === "fr" ? "Aide" : "Help",
+        content:
+          locale.value === "fr"
+            ? "La bulle reste ouverte jusqu’à un nouveau clic ou à la touche Escape."
+            : "The bubble stays open until you click again or press Escape.",
+        triggerLabel: locale.value === "fr" ? "Plus d’informations" : "More information"
+      }
+    }
+  ]);
+
+  const placementDemo: NodeSpec[] = $derived([
+    {
+      comp: "Toggletip",
+      props: {
+        placement: "top",
+        label: "top",
+        content: locale.value === "fr" ? "Placement top" : "Top placement",
+        triggerLabel: "top"
+      }
+    },
+    {
+      comp: "Toggletip",
+      props: {
+        placement: "bottom",
+        label: "bottom",
+        content: locale.value === "fr" ? "Placement bottom" : "Bottom placement",
+        triggerLabel: "bottom"
+      }
+    },
+    {
+      comp: "Toggletip",
+      props: {
+        placement: "start",
+        label: "start",
+        content: locale.value === "fr" ? "Placement start" : "Start placement",
+        triggerLabel: "start"
+      }
+    },
+    {
+      comp: "Toggletip",
+      props: {
+        placement: "end",
+        label: "end",
+        content: locale.value === "fr" ? "Placement end" : "End placement",
+        triggerLabel: "end"
+      }
+    }
+  ]);
+
+  const inlineDemo: NodeSpec[] = $derived([
+    {
+      comp: "Toggletip",
+      props: {
+        label: locale.value === "fr" ? "Taux d’occupation" : "Occupancy rate",
+        content:
+          locale.value === "fr"
+            ? "Pourcentage de places réservées sur la capacité totale."
+            : "Share of booked seats over total capacity.",
+        triggerLabel: locale.value === "fr" ? "Définition" : "Definition"
+      }
+    }
+  ]);
 </script>
 
 <div class="docs-page">
@@ -55,63 +128,21 @@
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
-    <div class="docs-example" aria-label={text().labelLabel}>
-      <Toggletip
-        bind:open={topOpen}
-        label={locale.value === "fr" ? "Aide" : "Help"}
-        content={locale.value === "fr"
-          ? "La bulle reste ouverte jusqu’à un nouveau clic ou à la touche Escape."
-          : "The bubble stays open until you click again or press Escape."}
-        triggerLabel={locale.value === "fr" ? "Plus d’informations" : "More information"}
-      >
-        <span>{locale.value === "fr" ? "Quota mensuel" : "Monthly quota"}</span>
-      </Toggletip>
-      <p class="docs-demo-note">
-        {locale.value === "fr" ? "État ouvert (binding)" : "Open state (binding)"}
-        : <code>{topOpen}</code>
-      </p>
-    </div>
+    <FrameworkDemo nodes={labelDemo} label={text().labelLabel} />
+    <p class="docs-demo-note">
+      {locale.value === "fr"
+        ? "État fermé par défaut : cliquez le déclencheur pour ouvrir la bulle (open est bindable)."
+        : "Closed by default: click the trigger to open the bubble (open is bindable)."}
+    </p>
 
-    <div class="docs-example" aria-label={text().placementLabel}>
-      <Toggletip
-        placement="top"
-        content={locale.value === "fr" ? "Placement top" : "Top placement"}
-        triggerLabel="top"
-      >
-        <span>top</span>
-      </Toggletip>
-      <Toggletip
-        placement="bottom"
-        content={locale.value === "fr" ? "Placement bottom" : "Bottom placement"}
-        triggerLabel="bottom"
-      >
-        <span>bottom</span>
-      </Toggletip>
-      <Toggletip
-        placement="start"
-        content={locale.value === "fr" ? "Placement start" : "Start placement"}
-        triggerLabel="start"
-      >
-        <span>start</span>
-      </Toggletip>
-      <Toggletip
-        placement="end"
-        content={locale.value === "fr" ? "Placement end" : "End placement"}
-        triggerLabel="end"
-      >
-        <span>end</span>
-      </Toggletip>
-    </div>
+    <FrameworkDemo nodes={placementDemo} label={text().placementLabel} />
 
-    <div class="docs-demo-inline" aria-label={text().inlineLabel}>
-      <span>{locale.value === "fr" ? "Taux d’occupation" : "Occupancy rate"}</span>
-      <Toggletip
-        content={locale.value === "fr"
-          ? "Pourcentage de places réservées sur la capacité totale."
-          : "Share of booked seats over total capacity."}
-        triggerLabel={locale.value === "fr" ? "Définition" : "Definition"}
-      />
-    </div>
+    <FrameworkDemo nodes={inlineDemo} label={text().inlineLabel} />
+    <p class="docs-demo-note">
+      {locale.value === "fr"
+        ? "Sans slot children, le déclencheur s’affiche seul (icône « i » en Svelte, texte label en React/Vue)."
+        : "With no children slot, the trigger stands alone (an “i” icon in Svelte, the label text in React/Vue)."}
+    </p>
   </section>
 
   <section class="docs-section">

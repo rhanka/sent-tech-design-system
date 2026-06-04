@@ -79,7 +79,12 @@
     MenuPopover,
     OverflowMenu,
     Popover,
-    AspectRatio
+    AspectRatio,
+    TableOfContents,
+    PasswordInput,
+    PaginationNav,
+    MenuTriggerButton,
+    Toggletip
   } from "@sentropic/design-system-svelte";
   import Self from "./SvelteNode.svelte";
   import type { Component } from "svelte";
@@ -161,7 +166,12 @@
     MenuPopover,
     OverflowMenu,
     Popover,
-    AspectRatio
+    AspectRatio,
+    TableOfContents,
+    PasswordInput,
+    PaginationNav,
+    MenuTriggerButton,
+    Toggletip
   } as unknown as Record<ComponentName, Component<Record<string, unknown>>>;
 
   let { node }: { node: NodeSpec } = $props();
