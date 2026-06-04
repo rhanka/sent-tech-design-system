@@ -5001,6 +5001,212 @@ const value = ref("");
   <PasswordInput label="Mot de passe" placeholder="••••••••" v-model="value" />
 </template>`
     }
+  },
+  paginationnav: {
+    id: "paginationnav",
+    slug: "pagination-nav",
+    nodes: [
+      wrap([
+        {
+          comp: "PaginationNav",
+          props: {
+            page: 2,
+            pageCount: 5,
+            label: "Pagination",
+            previousLabel: "Page précédente",
+            nextLabel: "Page suivante"
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { PaginationNav } from "@sentropic/design-system-svelte";
+  let page = $state(2);
+</script>
+
+<PaginationNav bind:page pageCount={5} label="Pagination" previousLabel="Page précédente" nextLabel="Page suivante" />`,
+      react: `import { useState } from "react";
+import { PaginationNav } from "@sentropic/design-system-react";
+
+export function Demo() {
+  const [page, setPage] = useState(2);
+  return (
+    <PaginationNav
+      page={page}
+      pageCount={5}
+      label="Pagination"
+      previousLabel="Page précédente"
+      nextLabel="Page suivante"
+      onPageChange={setPage}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { ref } from "vue";
+import { PaginationNav } from "@sentropic/design-system-vue";
+const page = ref(2);
+</script>
+
+<template>
+  <PaginationNav v-model:page="page" :page-count="5" label="Pagination" previous-label="Page précédente" next-label="Page suivante" />
+</template>`
+    }
+  },
+  tilegroup: {
+    id: "tilegroup",
+    slug: "tile-group",
+    nodes: [
+      wrap([
+        {
+          comp: "TileGroup",
+          props: {
+            legend: "Choisir une formule",
+            value: "pro",
+            items: [
+              { value: "free", label: "Gratuit", description: "Pour démarrer." },
+              { value: "pro", label: "Pro", description: "Pour les équipes." },
+              { value: "ent", label: "Entreprise", description: "Sur devis.", disabled: true }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { TileGroup } from "@sentropic/design-system-svelte";
+  const items = [
+    { value: "free", label: "Gratuit", description: "Pour démarrer." },
+    { value: "pro", label: "Pro", description: "Pour les équipes." },
+    { value: "ent", label: "Entreprise", description: "Sur devis.", disabled: true }
+  ];
+  let value = $state("pro");
+</script>
+
+<TileGroup {items} bind:value legend="Choisir une formule" />`,
+      react: `import { useState } from "react";
+import { TileGroup } from "@sentropic/design-system-react";
+
+const items = [
+  { value: "free", label: "Gratuit", description: "Pour démarrer." },
+  { value: "pro", label: "Pro", description: "Pour les équipes." },
+  { value: "ent", label: "Entreprise", description: "Sur devis.", disabled: true }
+];
+
+export function Demo() {
+  const [value, setValue] = useState("pro");
+  return <TileGroup items={items} value={value} legend="Choisir une formule" onChange={setValue} />;
+}`,
+      vue: `<script setup>
+import { ref } from "vue";
+import { TileGroup } from "@sentropic/design-system-vue";
+const items = [
+  { value: "free", label: "Gratuit", description: "Pour démarrer." },
+  { value: "pro", label: "Pro", description: "Pour les équipes." },
+  { value: "ent", label: "Entreprise", description: "Sur devis.", disabled: true }
+];
+const value = ref("pro");
+</script>
+
+<template>
+  <TileGroup :items="items" v-model="value" legend="Choisir une formule" />
+</template>`
+    }
+  },
+  menutriggerbutton: {
+    id: "menutriggerbutton",
+    slug: "menu-trigger-button",
+    nodes: [
+      wrap([
+        { comp: "MenuTriggerButton", props: { "aria-label": "Plus d'options" }, children: ["⋯"] },
+        { comp: "MenuTriggerButton", props: { "aria-label": "Paramètres", variant: "secondary" }, children: ["⚙"] }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { MenuTriggerButton } from "@sentropic/design-system-svelte";
+  import { Ellipsis } from "@lucide/svelte";
+</script>
+
+<MenuTriggerButton aria-label="Plus d'options">
+  <Ellipsis size={18} aria-hidden="true" />
+</MenuTriggerButton>`,
+      react: `import { MenuTriggerButton } from "@sentropic/design-system-react";
+import { Ellipsis } from "lucide-react";
+
+export function Demo() {
+  return (
+    <MenuTriggerButton aria-label="Plus d'options">
+      <Ellipsis size={18} aria-hidden="true" />
+    </MenuTriggerButton>
+  );
+}`,
+      vue: `<script setup>
+import { MenuTriggerButton } from "@sentropic/design-system-vue";
+import { Ellipsis } from "lucide-vue-next";
+</script>
+
+<template>
+  <MenuTriggerButton aria-label="Plus d'options">
+    <Ellipsis :size="18" aria-hidden="true" />
+  </MenuTriggerButton>
+</template>`
+    }
+  },
+  toggletip: {
+    id: "toggletip",
+    slug: "toggletip",
+    nodes: [
+      wrap([
+        {
+          comp: "Toggletip",
+          props: {
+            label: "Aide",
+            content: "La bulle reste ouverte jusqu'à un nouveau clic ou la touche Escape.",
+            triggerLabel: "Plus d'informations"
+          },
+          children: [{ el: "span", children: ["Quota mensuel"] }]
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { Toggletip } from "@sentropic/design-system-svelte";
+  let open = $state(false);
+</script>
+
+<Toggletip bind:open label="Aide" content="La bulle reste ouverte jusqu'à un nouveau clic ou Escape." triggerLabel="Plus d'informations">
+  <span>Quota mensuel</span>
+</Toggletip>`,
+      react: `import { useState } from "react";
+import { Toggletip } from "@sentropic/design-system-react";
+
+export function Demo() {
+  const [open, setOpen] = useState(false);
+  return (
+    <Toggletip
+      open={open}
+      onOpenChange={setOpen}
+      label="Aide"
+      content="La bulle reste ouverte jusqu'à un nouveau clic ou Escape."
+      triggerLabel="Plus d'informations"
+    >
+      <span>Quota mensuel</span>
+    </Toggletip>
+  );
+}`,
+      vue: `<script setup>
+import { ref } from "vue";
+import { Toggletip } from "@sentropic/design-system-vue";
+const open = ref(false);
+</script>
+
+<template>
+  <Toggletip v-model:open="open" label="Aide" content="La bulle reste ouverte jusqu'à un nouveau clic ou Escape." trigger-label="Plus d'informations">
+    <span>Quota mensuel</span>
+  </Toggletip>
+</template>`
+    }
   }
 };
 
