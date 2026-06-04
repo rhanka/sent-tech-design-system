@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Badge, MediaContent } from "@sentropic/design-system-svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 </script>
 
 <div class="docs-page">
@@ -14,6 +15,8 @@
       utile pour les blocs éditoriaux enrichis (capture, infographie, illustration, vidéo).
     </p>
   </section>
+  <FrameworkPreview example="mediacontent" title="Aperçu live" />
+
 
   <section class="docs-section" id="Introduction">
     <h2>Présentation</h2>
