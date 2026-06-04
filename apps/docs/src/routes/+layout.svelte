@@ -3,6 +3,10 @@
   import { browser } from "$app/environment";
   import { replaceState } from "$app/navigation";
   import "../app.css";
+  // CSS global des composants (classes .st-*) pour styler les îles React/Vue :
+  // le Svelte a ses styles scoped, mais les rendus React/Vue n'ont que les classes
+  // sans règles tant que ce stylesheet global (identique entre frameworks) n'est pas chargé.
+  import "@sentropic/design-system-react/styles.css";
   import { Boxes, ChevronDown, Github, Globe, Menu, Palette, X } from "@lucide/svelte";
   import { Header } from "@sentropic/design-system-svelte";
   import {
