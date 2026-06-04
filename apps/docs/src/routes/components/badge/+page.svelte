@@ -3,6 +3,25 @@
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
+
+  // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
+  // (toute la page bascule, pas seulement le bloc Aperçu live).
+  const tonesDemo: NodeSpec[] = [
+    { comp: "Badge", children: ["Neutral"] },
+    { comp: "Badge", props: { tone: "success" }, children: ["Success"] },
+    { comp: "Badge", props: { tone: "warning" }, children: ["Warning"] },
+    { comp: "Badge", props: { tone: "error" }, children: ["Error"] },
+    { comp: "Badge", props: { tone: "info" }, children: ["Info"] }
+  ];
+  const contextDemo: NodeSpec[] = $derived([
+    { el: "span", children: [locale.value === "fr" ? "Export terminé : " : "Export finished : "] },
+    { comp: "Badge", props: { tone: "success" }, children: ["Completed"] },
+    { el: "span", children: ["•"] },
+    { el: "span", children: [locale.value === "fr" ? "Validation requise : " : "Requires validation : "] },
+    { comp: "Badge", props: { tone: "warning" }, children: ["Pending"] }
+  ]);
 
   const copy = {
     fr: {
@@ -54,24 +73,12 @@
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
-    <div class="docs-example" aria-label={locale.value === "fr" ? "Tonalités" : "Tones"}>
-      <Badge>Neutral</Badge>
-      <Badge tone="success">Success</Badge>
-      <Badge tone="warning">Warning</Badge>
-      <Badge tone="error">Error</Badge>
-      <Badge tone="info">Info</Badge>
-    </div>
+    <FrameworkDemo nodes={tonesDemo} label={locale.value === "fr" ? "Tonalités" : "Tones"} />
 
-    <div
-      class="docs-example"
-      aria-label={locale.value === "fr" ? "Usage en contexte" : "In-context usage"}
-    >
-      <span>Export {locale.value === "fr" ? "terminé" : "finished"} : </span>
-      <Badge tone="success">Completed</Badge>
-      <span>•</span>
-      <span>{locale.value === "fr" ? "Validation requise" : "Requires validation"} : </span>
-      <Badge tone="warning">Pending</Badge>
-    </div>
+    <FrameworkDemo
+      nodes={contextDemo}
+      label={locale.value === "fr" ? "Usage en contexte" : "In-context usage"}
+    />
   </section>
 
   <section class="docs-section">

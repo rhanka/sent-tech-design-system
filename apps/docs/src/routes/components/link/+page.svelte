@@ -1,12 +1,52 @@
 <script lang="ts">
-  import { Badge, Link } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
   const fr = (frText: string, enText: string) => (locale.value === "fr" ? frText : enText);
 
-  let clicks = $state(0);
+  // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
+  // (toute la page bascule, pas seulement le bloc Aperçu live).
+  const variantsDemo: NodeSpec[] = $derived([
+    {
+      el: "div",
+      props: { class: "docs-demo-stack" },
+      children: [
+        { el: "h3", children: ["inline"] },
+        {
+          el: "p",
+          children: [
+            fr("Lisez la ", "Read the "),
+            { comp: "Link", props: { href: "#link-demo" }, children: [fr("documentation des tokens", "tokens documentation")] },
+            fr(" pour comprendre le contrat marque blanche.", " to understand the white-label contract.")
+          ]
+        },
+        { el: "h3", children: ["standalone"] },
+        { comp: "Link", props: { href: "#link-demo", variant: "standalone" }, children: [fr("Voir tous les composants", "View all components")] },
+        { el: "h3", children: ["muted"] },
+        { comp: "Link", props: { href: "#link-demo", variant: "muted" }, children: [fr("Mentions légales", "Legal notice")] }
+      ]
+    }
+  ]);
+  // Version statique de la démo onclick (le compteur live n'est pas exprimable en
+  // NodeSpec neutre) : on montre le lien externe, désactivé et avec onclick côte à côte.
+  const statesDemo: NodeSpec[] = $derived([
+    {
+      el: "div",
+      props: { class: "docs-demo-stack" },
+      children: [
+        { el: "h3", children: [fr("Externe", "External")] },
+        { comp: "Link", props: { href: "https://github.com/rhanka/sent-tech-design-system", external: true, variant: "standalone" }, children: [fr("Dépôt GitHub", "GitHub repository")] },
+        { el: "h3", children: [fr("Désactivé", "Disabled")] },
+        { comp: "Link", props: { href: "#link-demo", disabled: true }, children: [fr("Lien désactivé", "Disabled link")] },
+        { el: "h3", children: ["onclick"] },
+        { comp: "Link", props: { href: "#link-demo" }, children: [fr("Lien avec onclick", "Link with onclick")] }
+      ]
+    }
+  ]);
 </script>
 
 <div class="docs-page">
@@ -37,33 +77,15 @@
 
   <section class="docs-section">
     <h2>{fr("Variantes", "Variants")}</h2>
-    <div class="docs-example docs-example--stack">
-      <h3>inline</h3>
-      <p>
-        {fr("Lisez la ", "Read the ")}<Link href="#link-demo">{fr("documentation des tokens", "tokens documentation")}</Link>{fr(" pour comprendre le contrat marque blanche.", " to understand the white-label contract.")}
-      </p>
-      <h3>standalone</h3>
-      <Link href="#link-demo" variant="standalone">{fr("Voir tous les composants", "View all components")}</Link>
-      <h3>muted</h3>
-      <Link href="#link-demo" variant="muted">{fr("Mentions légales", "Legal notice")}</Link>
-    </div>
+    <FrameworkDemo nodes={variantsDemo} label={fr("Variantes", "Variants")} />
   </section>
 
   <section class="docs-section" id="link-demo">
     <h2>{t(locale.value, "states")}</h2>
-    <div class="docs-example docs-example--stack">
-      <h3>{fr("Externe", "External")}</h3>
-      <Link href="https://github.com/rhanka/sent-tech-design-system" external variant="standalone">
-        {fr("Dépôt GitHub", "GitHub repository")}
-      </Link>
-      <p class="docs-demo-note">{fr("external pose target=\"_blank\" et rel=\"noreferrer\".", "external sets target=\"_blank\" and rel=\"noreferrer\".")}</p>
-      <h3>{fr("Désactivé", "Disabled")}</h3>
-      <Link href="#link-demo" disabled>{fr("Lien désactivé", "Disabled link")}</Link>
-      <p class="docs-demo-note">{fr("disabled retire le href, pose aria-disabled et bloque le clic.", "disabled removes href, sets aria-disabled, and blocks the click.")}</p>
-      <h3>onclick</h3>
-      <Link href="#link-demo" onclick={() => (clicks += 1)}>{fr("Lien avec onclick", "Link with onclick")}</Link>
-      <p class="docs-demo-note">{fr("Clics", "Clicks")}: <code>{clicks}</code></p>
-    </div>
+    <FrameworkDemo nodes={statesDemo} label={t(locale.value, "states")} />
+    <p class="docs-demo-note">{fr("external pose target=\"_blank\" et rel=\"noreferrer\".", "external sets target=\"_blank\" and rel=\"noreferrer\".")}</p>
+    <p class="docs-demo-note">{fr("disabled retire le href, pose aria-disabled et bloque le clic.", "disabled removes href, sets aria-disabled, and blocks the click.")}</p>
+    <p class="docs-demo-note">{fr("onclick est appelé au clic (et bloqué si disabled) ; câblez-y votre logique.", "onclick fires on click (and is blocked when disabled); wire your logic into it.")}</p>
   </section>
 
   <section class="docs-section">

@@ -1,8 +1,10 @@
 <script lang="ts">
-  import { Badge, Breadcrumb, type BreadcrumbItem } from "@sentropic/design-system-svelte";
+  import { Badge, type BreadcrumbItem } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
   const fr = (frText: string, enText: string) => (locale.value === "fr" ? frText : enText);
 
@@ -16,6 +18,21 @@
   const shortTrail: BreadcrumbItem[] = $derived([
     { label: fr("Catalogue", "Catalog"), href: "#" },
     { label: "Breadcrumb", current: true }
+  ]);
+
+  // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
+  // (toute la page bascule, pas seulement le bloc Aperçu live).
+  const examplesDemo: NodeSpec[] = $derived([
+    {
+      el: "div",
+      props: { class: "docs-demo-stack" },
+      children: [
+        { el: "h3", children: [fr("Hiérarchie profonde", "Deep hierarchy")] },
+        { comp: "Breadcrumb", props: { items: trail, label: fr("Fil d'Ariane", "Breadcrumb") } },
+        { el: "h3", children: [fr("Deux niveaux", "Two levels")] },
+        { comp: "Breadcrumb", props: { items: shortTrail, label: fr("Fil d'Ariane court", "Short breadcrumb") } }
+      ]
+    }
   ]);
 </script>
 
@@ -47,12 +64,7 @@
 
   <section class="docs-section">
     <h2>{fr("Exemples", "Examples")}</h2>
-    <div class="docs-example docs-example--stack">
-      <h3>{fr("Hiérarchie profonde", "Deep hierarchy")}</h3>
-      <Breadcrumb items={trail} label={fr("Fil d'Ariane", "Breadcrumb")} />
-      <h3>{fr("Deux niveaux", "Two levels")}</h3>
-      <Breadcrumb items={shortTrail} label={fr("Fil d'Ariane court", "Short breadcrumb")} />
-    </div>
+    <FrameworkDemo nodes={examplesDemo} label={fr("Exemples", "Examples")} />
   </section>
 
   <section class="docs-section">

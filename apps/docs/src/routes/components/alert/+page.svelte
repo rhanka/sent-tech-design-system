@@ -1,15 +1,54 @@
 <script lang="ts">
-  import { Alert, Badge, Button } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
   const fr = (frText: string, enText: string) => (locale.value === "fr" ? frText : enText);
-</script>
 
-{#snippet retryActions()}
-  <Button size="sm" variant="secondary">{fr("Réessayer", "Retry")}</Button>
-{/snippet}
+  // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
+  // (toute la page bascule, pas seulement le bloc Aperçu live).
+  const tonesDemo: NodeSpec[] = $derived([
+    {
+      el: "div",
+      props: { class: "docs-demo-stack" },
+      children: [
+        { comp: "Alert", props: { tone: "info", title: "Info", message: fr("Une synchronisation est planifiée pour ce soir.", "A sync is scheduled for tonight.") } },
+        { comp: "Alert", props: { tone: "success", title: fr("Succès", "Success"), message: fr("Les modifications ont été enregistrées.", "Your changes were saved.") } },
+        { comp: "Alert", props: { tone: "warning", title: fr("Avertissement", "Warning"), message: fr("Votre quota approche de la limite.", "Your quota is nearing the limit.") } },
+        { comp: "Alert", props: { tone: "error", title: fr("Erreur", "Error"), message: fr("Impossible de contacter le serveur.", "Could not reach the server.") } }
+      ]
+    }
+  ]);
+  // La zone actions (Snippet) n'est pas exprimable en NodeSpec neutre : on rend
+  // le bouton d'action via children (sous le message), équivalent visuel proche.
+  const actionsDemo: NodeSpec[] = $derived([
+    {
+      el: "div",
+      props: { class: "docs-demo-stack" },
+      children: [
+        {
+          comp: "Alert",
+          props: {
+            tone: "error",
+            title: fr("Échec du déploiement", "Deployment failed"),
+            message: fr("La build a échoué à l'étape de tests.", "The build failed at the test step.")
+          },
+          children: [{ comp: "Button", props: { size: "sm", variant: "secondary" }, children: [fr("Réessayer", "Retry")] }]
+        }
+      ]
+    }
+  ]);
+  const titleOnlyDemo: NodeSpec[] = $derived([
+    {
+      el: "div",
+      props: { class: "docs-demo-stack" },
+      children: [{ comp: "Alert", props: { tone: "success", title: fr("Connexion réussie.", "Signed in successfully.") } }]
+    }
+  ]);
+</script>
 
 <div class="docs-page">
   <section class="docs-hero">
@@ -40,33 +79,25 @@
   <section class="docs-section">
     <h2>{fr("Tonalités", "Tones")}</h2>
     <p>{fr("Quatre tonalités, marquées par un filet coloré à gauche.", "Four tones, marked by a colored left rule.")}</p>
-    <div class="docs-example docs-example--stack">
-      <Alert tone="info" title="Info" message={fr("Une synchronisation est planifiée pour ce soir.", "A sync is scheduled for tonight.")} />
-      <Alert tone="success" title={fr("Succès", "Success")} message={fr("Les modifications ont été enregistrées.", "Your changes were saved.")} />
-      <Alert tone="warning" title={fr("Avertissement", "Warning")} message={fr("Votre quota approche de la limite.", "Your quota is nearing the limit.")} />
-      <Alert tone="error" title={fr("Erreur", "Error")} message={fr("Impossible de contacter le serveur.", "Could not reach the server.")} />
-    </div>
+    <FrameworkDemo nodes={tonesDemo} label={fr("Tonalités", "Tones")} />
   </section>
 
   <section class="docs-section">
     <h2>{fr("Avec actions", "With actions")}</h2>
     <p>{fr("La zone actions (snippet) accueille des boutons à droite du message.", "The actions slot (snippet) hosts buttons to the right of the message.")}</p>
-    <div class="docs-example docs-example--stack">
-      <Alert
-        tone="error"
-        title={fr("Échec du déploiement", "Deployment failed")}
-        message={fr("La build a échoué à l'étape de tests.", "The build failed at the test step.")}
-        actions={retryActions}
-      />
-    </div>
+    <FrameworkDemo nodes={actionsDemo} label={fr("Avec actions", "With actions")} />
+    <p class="docs-demo-note">
+      {fr(
+        "La zone actions est un Snippet dédié (à droite du message). Cette démo neutre rend le bouton via children pour rester identique dans les trois frameworks ; en usage réel, passez-le à la prop actions.",
+        "The actions area is a dedicated Snippet (to the right of the message). This neutral demo renders the button via children to stay identical across the three frameworks; in real usage, pass it to the actions prop."
+      )}
+    </p>
   </section>
 
   <section class="docs-section">
     <h2>{fr("Titre seul", "Title only")}</h2>
     <p>{fr("Le message est optionnel : un titre suffit pour une alerte courte.", "The message is optional: a title alone works for a short alert.")}</p>
-    <div class="docs-example docs-example--stack">
-      <Alert tone="success" title={fr("Connexion réussie.", "Signed in successfully.")} />
-    </div>
+    <FrameworkDemo nodes={titleOnlyDemo} label={fr("Titre seul", "Title only")} />
   </section>
 
   <section class="docs-section">
