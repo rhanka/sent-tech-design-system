@@ -1,4 +1,5 @@
 <script lang="ts">
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
   import { Badge, PaginationNav } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
@@ -17,6 +18,8 @@
     </div>
     <p>{t(locale.value, "paginationNavIntro")}</p>
   </section>
+  <FrameworkPreview example="paginationnav" title="Aperçu live" />
+
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
