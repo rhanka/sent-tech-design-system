@@ -52,13 +52,14 @@ export { FileUploader } from "./FileUploader.js";
 export type { FileUploaderProps, FileUploadItem, FileUploadStatus } from "./FileUploader.js";
 export { Footer } from "./Footer.js";
 export type { FooterProps } from "./Footer.js";
-export { ForceGraph, GraphLegend, nodeShapePath } from "./ForceGraph.js";
+export { ForceGraph, GraphLegend, nodeShapePath, edgeDashArray } from "./ForceGraph.js";
 export type {
   ForceGraphProps,
   ForceGraphNode,
   ForceGraphEdge,
   ForceGraphTone,
   ForceGraphNodeShape,
+  ForceGraphEdgeDash,
   ForceGraphLegendEntry,
   GraphLegendProps,
 } from "./ForceGraph.js";
