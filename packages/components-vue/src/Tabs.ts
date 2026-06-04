@@ -9,11 +9,15 @@ export type TabItem = {
   disabled?: boolean;
 };
 
+// In addition to the Vue-native `@change` emit (which already routes to an
+// `onChange` listener), an `onchange` callback prop (Svelte-canonical,
+// lowercase) is accepted and fired on change.
 export type TabsProps = {
   items: TabItem[];
   activeValue?: string;
   activeId?: string;
   label?: string;
+  onchange?: (value: string) => void;
   class?: string;
 };
 
@@ -38,6 +42,7 @@ export const Tabs = defineComponent({
     activeValue: { type: String, default: undefined },
     activeId: { type: String, default: undefined },
     label: { type: String, default: "Tabs" },
+    onchange: { type: Function as unknown as () => (value: string) => void, default: undefined },
     class: { type: String, default: undefined },
   },
   emits: ["change"],
@@ -65,6 +70,7 @@ export const Tabs = defineComponent({
         localCurrent.value = val;
       }
       emit("change", val);
+      props.onchange?.(val);
     };
 
     const tabRefs = ref<Array<HTMLElement | null>>([]);

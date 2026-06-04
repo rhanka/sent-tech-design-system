@@ -14,8 +14,19 @@ export type DataTone =
   | "category8";
 
 type AnyRecord = Record<string, unknown>;
-type ActionItem = { id?: string; label: React.ReactNode; disabled?: boolean; variant?: "default" | "danger"; onClick?: () => void };
+// `value` (Svelte-canonical) is accepted as an alias of `id`; `danger: true`
+// (Svelte-canonical) is accepted as an alias of `variant: "danger"`.
+type ActionItem = { id?: string; value?: string; label: React.ReactNode; disabled?: boolean; variant?: "default" | "danger"; danger?: boolean; onClick?: () => void };
 type OptionItem = { value: string; label: React.ReactNode; disabled?: boolean };
+
+// Normalises an action item so the rest of the component only deals with the
+// React-native shape: `id` (from id|value) and `variant` (from variant|danger).
+function actionId(item: { id?: string; value?: string }, index?: number, prefix = "item"): string | undefined {
+  return item.id ?? item.value ?? (index === undefined ? undefined : `${prefix}-${index}`);
+}
+function isDangerAction(item: { variant?: "default" | "danger"; danger?: boolean }): boolean {
+  return item.variant === "danger" || item.danger === true;
+}
 
 const DATA_TONES: DataTone[] = [
   "category1",
@@ -525,14 +536,17 @@ export function Combobox({
 }
 
 export type ContentSwitcherItem = { id?: string; value?: string; label: React.ReactNode; disabled?: boolean };
+// `onchange` (Svelte-canonical, lowercase) is accepted as an alias of `onChange`.
 export type ContentSwitcherProps = React.HTMLAttributes<HTMLDivElement> & {
   items: ContentSwitcherItem[];
   value?: string;
   activeId?: string;
   onChange?: (value: string) => void;
+  onchange?: (value: string) => void;
   size?: Size;
 };
-export function ContentSwitcher({ items, value, activeId, onChange, size = "md", className, ...rest }: ContentSwitcherProps) {
+export function ContentSwitcher({ items, value, activeId, onChange, onchange, size = "md", className, ...rest }: ContentSwitcherProps) {
+  const handleChange = onChange ?? onchange;
   const current = value ?? activeId ?? idFrom(items[0] ?? {}, 0, "content");
   return (
     <div {...rest} className={classNames("st-contentSwitcher", `st-contentSwitcher--${size}`, className)} role="group">
@@ -545,7 +559,7 @@ export function ContentSwitcher({ items, value, activeId, onChange, size = "md",
             className={classNames("st-contentSwitcher__option st-contentSwitcher__button", itemId === current && "st-contentSwitcher__option--selected")}
             disabled={item.disabled}
             aria-pressed={itemId === current}
-            onClick={() => onChange?.(itemId)}
+            onClick={() => handleChange?.(itemId)}
           >
             {item.label}
           </button>
@@ -652,15 +666,18 @@ export function Drawer({ open = false, title, description, footer, placement = "
 }
 
 export interface DropdownOption extends OptionItem {}
-export type DropdownProps = React.HTMLAttributes<HTMLDivElement> & {
+// `onselect` (Svelte-canonical, lowercase) is accepted as an alias of `onSelect`.
+export type DropdownProps = Omit<React.HTMLAttributes<HTMLDivElement>, "onSelect"> & {
   label?: React.ReactNode;
   options: DropdownOption[];
   value?: string;
   open?: boolean;
   placeholder?: React.ReactNode;
   onSelect?: (value: string) => void;
+  onselect?: (value: string) => void;
 };
-export function Dropdown({ label = "Select", options, value, open: controlledOpen, placeholder = "Select", onSelect, className, ...rest }: DropdownProps) {
+export function Dropdown({ label = "Select", options, value, open: controlledOpen, placeholder = "Select", onSelect, onselect, className, ...rest }: DropdownProps) {
+  const handleSelect = onSelect ?? onselect;
   const hostRef = React.useRef<HTMLDivElement>(null);
   const itemRefs = React.useRef<Array<HTMLButtonElement | null>>([]);
   const [open, setOpen] = useControlled(controlledOpen, false);
@@ -678,7 +695,7 @@ export function Dropdown({ label = "Select", options, value, open: controlledOpe
     setCurrent(option.value);
     setOpen(false);
     setActiveIndex(-1);
-    onSelect?.(option.value);
+    handleSelect?.(option.value);
   };
   useOutsideMouseDown(open, hostRef, () => setOpen(false));
   useEscape(open, () => setOpen(false));
@@ -1741,14 +1758,20 @@ export function LoadingState({ label, title, variant = "spinner", className, ...
 }
 
 export type MenuActionItem = ActionItem;
-export type MenuDividerItem = { type: "divider"; id?: string };
-export type MenuGroupItem = { type: "group"; id?: string; label: React.ReactNode; items: MenuActionItem[] };
+// `kind` (Svelte-canonical) is accepted as an alias of `type`. Svelte groups
+// are flat (label-only, no nested `items`); React groups may nest `items`.
+export type MenuDividerItem = { type?: "divider"; kind?: "divider"; id?: string };
+export type MenuGroupItem = { type?: "group"; kind?: "group"; id?: string; label: React.ReactNode; items?: MenuActionItem[] };
 export type MenuItem = MenuActionItem | MenuDividerItem | MenuGroupItem;
+function itemKind(item: MenuItem): string | undefined {
+  const tagged = item as { type?: string; kind?: string };
+  return tagged.type ?? tagged.kind;
+}
 function isDivider(item: MenuItem): item is MenuDividerItem {
-  return "type" in item && item.type === "divider";
+  return itemKind(item) === "divider";
 }
 function isGroup(item: MenuItem): item is MenuGroupItem {
-  return "type" in item && item.type === "group";
+  return itemKind(item) === "group";
 }
 export type MenuProps = React.HTMLAttributes<HTMLDivElement> & {
   items: MenuItem[];
@@ -1788,17 +1811,18 @@ export function Menu({ items, dense = false, onSelect, className, role, ...rest 
           return (
             <section key={item.id ?? index} className="st-menu__group">
               <h3>{item.label}</h3>
-              {item.items.map((child) => (
-                <button key={child.id ?? text(child.label)} type="button" role="menuitem" className="st-menu__item" disabled={child.disabled} onClick={() => onSelect?.(child)} onKeyDown={(event) => handleItemKeyDown(event, child)}>
+              {(item.items ?? []).map((child) => (
+                <button key={actionId(child) ?? text(child.label)} type="button" role="menuitem" className={classNames("st-menu__item", isDangerAction(child) && "st-menu__item--danger")} disabled={child.disabled} onClick={() => onSelect?.(child)} onKeyDown={(event) => handleItemKeyDown(event, child)}>
                   <span className="st-menu__itemLabel">{child.label}</span>
                 </button>
               ))}
             </section>
           );
         }
+        const action = item as MenuActionItem;
         return (
-          <button key={item.id ?? text(item.label) ?? index} type="button" role="menuitem" disabled={item.disabled} className={classNames("st-menu__item", item.variant === "danger" && "st-menu__item--danger")} onClick={() => onSelect?.(item)} onKeyDown={(event) => handleItemKeyDown(event, item)}>
-            <span className="st-menu__itemLabel">{item.label}</span>
+          <button key={actionId(action) ?? text(action.label) ?? index} type="button" role="menuitem" disabled={action.disabled} className={classNames("st-menu__item", isDangerAction(action) && "st-menu__item--danger")} onClick={() => onSelect?.(action)} onKeyDown={(event) => handleItemKeyDown(event, action)}>
+            <span className="st-menu__itemLabel">{action.label}</span>
           </button>
         );
       })}
@@ -1821,10 +1845,12 @@ export function MenuPopover({ trigger, items = [], open = true, placement = "bot
   );
 }
 
-export type MenuTriggerButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & { open?: boolean };
-export function MenuTriggerButton({ open = false, type = "button", className, children, ...rest }: MenuTriggerButtonProps) {
+// `expanded` (Svelte-canonical) is accepted as an alias of `open`.
+export type MenuTriggerButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & { open?: boolean; expanded?: boolean };
+export function MenuTriggerButton({ open, expanded, type = "button", className, children, ...rest }: MenuTriggerButtonProps) {
+  const isOpen = open ?? expanded ?? false;
   return (
-    <button {...rest} type={type} className={classNames("st-menuTriggerButton st-button st-button--secondary st-button--sm", className)} aria-expanded={open}>
+    <button {...rest} type={type} className={classNames("st-menuTriggerButton st-button st-button--secondary st-button--sm", className)} aria-expanded={isOpen}>
       {children}
     </button>
   );
@@ -2099,18 +2125,21 @@ export function Pagination({ page, pageSize = 10, totalItems, totalPages, pageCo
   );
 }
 
+// `pageCount` (Svelte-canonical) is accepted as an alias of `totalPages`.
 export type PaginationNavProps = React.HTMLAttributes<HTMLElement> & {
   page?: number;
   totalPages?: number;
+  pageCount?: number;
   previousHref?: string;
   nextHref?: string;
 };
-export function PaginationNav({ page = 1, totalPages = 1, previousHref, nextHref, className, ...rest }: PaginationNavProps) {
+export function PaginationNav({ page = 1, totalPages, pageCount, previousHref, nextHref, className, ...rest }: PaginationNavProps) {
+  const pages = totalPages ?? pageCount ?? 1;
   return (
     <nav {...rest} className={classNames("st-paginationNav", className)} aria-label="Pagination navigation">
       {previousHref ? <a href={previousHref}>Previous</a> : <button type="button" disabled={page <= 1}>Previous</button>}
       <ol className="st-paginationNav__list">
-        {Array.from({ length: totalPages }, (_, index) => index + 1).map((item) => (
+        {Array.from({ length: pages }, (_, index) => index + 1).map((item) => (
           <li key={item}>
             <button type="button" className={classNames("st-paginationNav__page", item === page && "st-paginationNav__page--active")}>
               Page {item}
@@ -2118,7 +2147,7 @@ export function PaginationNav({ page = 1, totalPages = 1, previousHref, nextHref
           </li>
         ))}
       </ol>
-      {nextHref ? <a href={nextHref}>Next</a> : <button type="button" disabled={page >= totalPages}>Next</button>}
+      {nextHref ? <a href={nextHref}>Next</a> : <button type="button" disabled={page >= pages}>Next</button>}
     </nav>
   );
 }
@@ -2424,18 +2453,21 @@ export interface TabItem {
   content?: React.ReactNode;
   disabled?: boolean;
 }
+// `onchange` (Svelte-canonical, lowercase) is accepted as an alias of `onChange`.
 export type TabsProps = React.HTMLAttributes<HTMLElement> & {
   items: TabItem[];
   activeValue?: string;
   activeId?: string;
   label?: string;
   onChange?: (value: string) => void;
+  onchange?: (value: string) => void;
 };
-export function Tabs({ items, activeValue, activeId, label = "Tabs", onChange, className, ...rest }: TabsProps) {
+export function Tabs({ items, activeValue, activeId, label = "Tabs", onChange, onchange, className, ...rest }: TabsProps) {
+  const handleChange = onChange ?? onchange;
   const reactId = React.useId();
   const tabRefs = React.useRef<Array<HTMLButtonElement | null>>([]);
   const first = items.find((item) => !item.disabled) ?? items[0];
-  const [current, setCurrent] = useControlled(activeValue ?? activeId, idFrom(first ?? {}, 0, "tab"), onChange);
+  const [current, setCurrent] = useControlled(activeValue ?? activeId, idFrom(first ?? {}, 0, "tab"), handleChange);
   const itemIds = items.map((item, index) => idFrom(item, index, "tab"));
   const activeIndex = Math.max(0, itemIds.indexOf(current));
   const active = items[activeIndex] ?? first;

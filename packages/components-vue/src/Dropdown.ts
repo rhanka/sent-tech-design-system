@@ -7,12 +7,15 @@ export type DropdownOption = {
   disabled?: boolean;
 };
 
+// In addition to the Vue-native `@select` emit, an `onSelect` callback prop
+// (React/Svelte parity) is accepted; both fire on selection.
 export type DropdownProps = {
   label?: string;
   options: DropdownOption[];
   value?: string;
   open?: boolean;
   placeholder?: string;
+  onSelect?: (value: string) => void;
   class?: string;
 };
 
@@ -24,6 +27,7 @@ export const Dropdown = defineComponent({
     value: { type: String, default: undefined },
     open: { type: Boolean, default: undefined },
     placeholder: { type: String, default: "Select" },
+    onSelect: { type: Function as unknown as () => (value: string) => void, default: undefined },
     class: { type: String, default: undefined },
   },
   emits: ["select", "update:open"],

@@ -10,11 +10,15 @@ export type ContentSwitcherItem = {
   disabled?: boolean;
 };
 
+// In addition to the Vue-native `@change` emit (which already routes to an
+// `onChange` listener), an `onchange` callback prop (Svelte-canonical,
+// lowercase) is accepted and fired on change.
 export type ContentSwitcherProps = {
   items: ContentSwitcherItem[];
   value?: string;
   activeId?: string;
   size?: ContentSwitcherSize;
+  onchange?: (value: string) => void;
   class?: string;
 };
 
@@ -36,6 +40,7 @@ export const ContentSwitcher = defineComponent({
       type: String as () => ContentSwitcherSize,
       default: "md",
     },
+    onchange: { type: Function as unknown as () => (value: string) => void, default: undefined },
     class: { type: String, default: undefined },
   },
   emits: ["change"],
@@ -70,7 +75,10 @@ export const ContentSwitcher = defineComponent({
               ),
               disabled: item.disabled,
               "aria-pressed": itemId === current,
-              onClick: () => emit("change", itemId),
+              onClick: () => {
+                emit("change", itemId);
+                props.onchange?.(itemId);
+              },
             },
             item.label as string,
           );
