@@ -1,8 +1,10 @@
 <script lang="ts">
-  import { Badge, BarChart, type BarChartDatum } from "@sentropic/design-system-svelte";
+  import { Badge, type BarChartDatum } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
   const copy = {
     fr: {
@@ -66,6 +68,62 @@
     { label: "Réessais", value: 22, tone: "category6" },
     { label: "Échecs", value: 9, tone: "category8" }
   ];
+
+  // Démos basculées dans le framework actif (arbre NodeSpec neutre).
+  const verticalDemo = $derived<NodeSpec[]>([
+    {
+      el: "div",
+      props: { class: "chart-wrapper" },
+      children: [
+        {
+          comp: "BarChart",
+          props: {
+            data: weekly,
+            label: locale.value === "fr" ? "Tokens consommés par jour" : "Tokens consumed per day",
+            width: 520,
+            height: 260
+          }
+        }
+      ]
+    }
+  ]);
+
+  const horizontalDemo = $derived<NodeSpec[]>([
+    {
+      el: "div",
+      props: { class: "chart-wrapper" },
+      children: [
+        {
+          comp: "BarChart",
+          props: {
+            data: byTool,
+            orientation: "horizontal",
+            label: locale.value === "fr" ? "Appels par outil d'agent" : "Calls per agent tool",
+            width: 520,
+            height: 260
+          }
+        }
+      ]
+    }
+  ]);
+
+  const tonesDemo = $derived<NodeSpec[]>([
+    {
+      el: "div",
+      props: { class: "chart-wrapper" },
+      children: [
+        {
+          comp: "BarChart",
+          props: {
+            data: toned,
+            label: locale.value === "fr" ? "Issues des exécutions" : "Run outcomes",
+            width: 520,
+            height: 240
+          }
+        }
+      ]
+    }
+  ]);
 </script>
 
 <div class="docs-page">
@@ -83,45 +141,17 @@
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
-    <div class="docs-example" aria-label={text().verticalTitle}>
-      <h3 class="docs-demo-title">{text().verticalTitle}</h3>
-      <p class="docs-demo-note">{text().verticalDesc}</p>
-      <div class="chart-wrapper">
-        <BarChart
-          data={weekly}
-          label={locale.value === "fr" ? "Tokens consommés par jour" : "Tokens consumed per day"}
-          width={520}
-          height={260}
-        />
-      </div>
-    </div>
+    <h3 class="docs-demo-title">{text().verticalTitle}</h3>
+    <p class="docs-demo-note">{text().verticalDesc}</p>
+    <FrameworkDemo nodes={verticalDemo} label={text().verticalTitle} />
 
-    <div class="docs-example" aria-label={text().horizontalTitle}>
-      <h3 class="docs-demo-title">{text().horizontalTitle}</h3>
-      <p class="docs-demo-note">{text().horizontalDesc}</p>
-      <div class="chart-wrapper">
-        <BarChart
-          data={byTool}
-          orientation="horizontal"
-          label={locale.value === "fr" ? "Appels par outil d'agent" : "Calls per agent tool"}
-          width={520}
-          height={260}
-        />
-      </div>
-    </div>
+    <h3 class="docs-demo-title">{text().horizontalTitle}</h3>
+    <p class="docs-demo-note">{text().horizontalDesc}</p>
+    <FrameworkDemo nodes={horizontalDemo} label={text().horizontalTitle} />
 
-    <div class="docs-example" aria-label={text().tonesTitle}>
-      <h3 class="docs-demo-title">{text().tonesTitle}</h3>
-      <p class="docs-demo-note">{text().tonesDesc}</p>
-      <div class="chart-wrapper">
-        <BarChart
-          data={toned}
-          label={locale.value === "fr" ? "Issues des exécutions" : "Run outcomes"}
-          width={520}
-          height={240}
-        />
-      </div>
-    </div>
+    <h3 class="docs-demo-title">{text().tonesTitle}</h3>
+    <p class="docs-demo-note">{text().tonesDesc}</p>
+    <FrameworkDemo nodes={tonesDemo} label={text().tonesTitle} />
   </section>
 
   <section class="docs-section">
@@ -184,7 +214,8 @@
     color: var(--st-semantic-text-primary);
   }
 
-  .chart-wrapper {
+  /* Rendu dans un composant enfant (SvelteNode) / île : style global requis. */
+  :global(.chart-wrapper) {
     width: 100%;
     max-width: 560px;
     margin-top: 0.75rem;

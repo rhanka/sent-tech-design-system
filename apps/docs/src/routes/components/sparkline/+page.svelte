@@ -1,8 +1,10 @@
 <script lang="ts">
-  import { Badge, Sparkline } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
   const copy = {
     fr: {
@@ -54,6 +56,163 @@
   const trendUp = [12, 18, 14, 22, 19, 28, 34];
   const trendDown = [48, 44, 46, 38, 30, 26, 21];
   const wobble = [30, 42, 35, 50, 38, 44, 41];
+
+  // Démos basculées dans le framework actif (arbre NodeSpec neutre). Les textes
+  // bilingues sont dérivés de la locale.
+  const inlineDemo = $derived<NodeSpec[]>([
+    {
+      el: "p",
+      props: { class: "inline-demo" },
+      children: [
+        locale.value === "fr" ? "Consommation de tokens " : "Token usage ",
+        {
+          comp: "Sparkline",
+          props: {
+            data: trendUp,
+            tone: "success",
+            label: locale.value === "fr" ? "Tendance à la hausse sur 7 jours" : "Upward 7-day trend"
+          }
+        },
+        locale.value === "fr" ? " en hausse, et latence " : " rising, and latency ",
+        {
+          comp: "Sparkline",
+          props: {
+            data: trendDown,
+            tone: "error",
+            label: locale.value === "fr" ? "Tendance à la baisse sur 7 jours" : "Downward 7-day trend"
+          }
+        },
+        locale.value === "fr" ? " en baisse." : " falling."
+      ]
+    }
+  ]);
+
+  const tonesDemo: NodeSpec[] = [
+    {
+      el: "div",
+      props: { class: "tone-row" },
+      children: [
+        {
+          el: "span",
+          children: [
+            { el: "code", children: ["neutral"] },
+            " ",
+            { comp: "Sparkline", props: { data: wobble, tone: "neutral", label: "neutral" } }
+          ]
+        },
+        {
+          el: "span",
+          children: [
+            { el: "code", children: ["success"] },
+            " ",
+            { comp: "Sparkline", props: { data: trendUp, tone: "success", label: "success" } }
+          ]
+        },
+        {
+          el: "span",
+          children: [
+            { el: "code", children: ["warning"] },
+            " ",
+            { comp: "Sparkline", props: { data: wobble, tone: "warning", label: "warning" } }
+          ]
+        },
+        {
+          el: "span",
+          children: [
+            { el: "code", children: ["error"] },
+            " ",
+            { comp: "Sparkline", props: { data: trendDown, tone: "error", label: "error" } }
+          ]
+        }
+      ]
+    }
+  ];
+
+  const areaDemo = $derived<NodeSpec[]>([
+    {
+      el: "div",
+      props: { class: "tone-row" },
+      children: [
+        {
+          comp: "Sparkline",
+          props: {
+            data: trendUp,
+            tone: "success",
+            area: true,
+            width: 160,
+            height: 40,
+            strokeWidth: 2,
+            label: locale.value === "fr" ? "Tendance avec aire remplie" : "Trend with filled area"
+          }
+        }
+      ]
+    }
+  ]);
+
+  const cardsDemo = $derived<NodeSpec[]>([
+    {
+      el: "div",
+      props: { class: "card-row" },
+      children: [
+        {
+          el: "div",
+          props: { class: "metric-card" },
+          children: [
+            { el: "span", props: { class: "metric-label" }, children: [text().tokensConsumed] },
+            { el: "span", props: { class: "metric-value" }, children: ["8,2k"] },
+            {
+              comp: "Sparkline",
+              props: {
+                data: trendUp,
+                tone: "success",
+                width: 140,
+                height: 32,
+                area: true,
+                label: `${text().tokensConsumed}: ${text().week}`
+              }
+            }
+          ]
+        },
+        {
+          el: "div",
+          props: { class: "metric-card" },
+          children: [
+            { el: "span", props: { class: "metric-label" }, children: [text().avgLatency] },
+            { el: "span", props: { class: "metric-value" }, children: ["412 ms"] },
+            {
+              comp: "Sparkline",
+              props: {
+                data: trendDown,
+                tone: "warning",
+                width: 140,
+                height: 32,
+                area: true,
+                label: `${text().avgLatency}: ${text().week}`
+              }
+            }
+          ]
+        },
+        {
+          el: "div",
+          props: { class: "metric-card" },
+          children: [
+            { el: "span", props: { class: "metric-label" }, children: [text().successRate] },
+            { el: "span", props: { class: "metric-value" }, children: ["98,4 %"] },
+            {
+              comp: "Sparkline",
+              props: {
+                data: wobble,
+                tone: "neutral",
+                width: 140,
+                height: 32,
+                label: `${text().successRate}: ${text().week}`
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]);
 </script>
 
 <div class="docs-page">
@@ -71,74 +230,21 @@
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
-    <div class="docs-example" aria-label={text().inlineTitle}>
-      <h3 class="docs-demo-title">{text().inlineTitle}</h3>
-      <p class="docs-demo-note">{text().inlineDesc}</p>
-      <p class="inline-demo">
-        {locale.value === "fr" ? "Consommation de tokens" : "Token usage"}
-        <Sparkline
-          data={trendUp}
-          tone="success"
-          label={locale.value === "fr" ? "Tendance à la hausse sur 7 jours" : "Upward 7-day trend"}
-        />
-        {locale.value === "fr" ? "en hausse, et latence" : "rising, and latency"}
-        <Sparkline
-          data={trendDown}
-          tone="error"
-          label={locale.value === "fr" ? "Tendance à la baisse sur 7 jours" : "Downward 7-day trend"}
-        />
-        {locale.value === "fr" ? "en baisse." : "falling."}
-      </p>
-    </div>
+    <h3 class="docs-demo-title">{text().inlineTitle}</h3>
+    <p class="docs-demo-note">{text().inlineDesc}</p>
+    <FrameworkDemo nodes={inlineDemo} label={text().inlineTitle} />
 
-    <div class="docs-example" aria-label={text().tonesTitle}>
-      <h3 class="docs-demo-title">{text().tonesTitle}</h3>
-      <p class="docs-demo-note">{text().tonesDesc}</p>
-      <div class="tone-row">
-        <span><code>neutral</code> <Sparkline data={wobble} tone="neutral" label="neutral" /></span>
-        <span><code>success</code> <Sparkline data={trendUp} tone="success" label="success" /></span>
-        <span><code>warning</code> <Sparkline data={wobble} tone="warning" label="warning" /></span>
-        <span><code>error</code> <Sparkline data={trendDown} tone="error" label="error" /></span>
-      </div>
-    </div>
+    <h3 class="docs-demo-title">{text().tonesTitle}</h3>
+    <p class="docs-demo-note">{text().tonesDesc}</p>
+    <FrameworkDemo nodes={tonesDemo} label={text().tonesTitle} />
 
-    <div class="docs-example" aria-label={text().areaTitle}>
-      <h3 class="docs-demo-title">{text().areaTitle}</h3>
-      <p class="docs-demo-note">{text().areaDesc}</p>
-      <div class="tone-row">
-        <Sparkline
-          data={trendUp}
-          tone="success"
-          area
-          width={160}
-          height={40}
-          strokeWidth={2}
-          label={locale.value === "fr" ? "Tendance avec aire remplie" : "Trend with filled area"}
-        />
-      </div>
-    </div>
+    <h3 class="docs-demo-title">{text().areaTitle}</h3>
+    <p class="docs-demo-note">{text().areaDesc}</p>
+    <FrameworkDemo nodes={areaDemo} label={text().areaTitle} />
 
-    <div class="docs-example" aria-label={text().cardsTitle}>
-      <h3 class="docs-demo-title">{text().cardsTitle}</h3>
-      <p class="docs-demo-note">{text().cardsDesc}</p>
-      <div class="card-row">
-        <div class="metric-card">
-          <span class="metric-label">{text().tokensConsumed}</span>
-          <span class="metric-value">8,2k</span>
-          <Sparkline data={trendUp} tone="success" width={140} height={32} area label={`${text().tokensConsumed}: ${text().week}`} />
-        </div>
-        <div class="metric-card">
-          <span class="metric-label">{text().avgLatency}</span>
-          <span class="metric-value">412 ms</span>
-          <Sparkline data={trendDown} tone="warning" width={140} height={32} area label={`${text().avgLatency}: ${text().week}`} />
-        </div>
-        <div class="metric-card">
-          <span class="metric-label">{text().successRate}</span>
-          <span class="metric-value">98,4 %</span>
-          <Sparkline data={wobble} tone="neutral" width={140} height={32} label={`${text().successRate}: ${text().week}`} />
-        </div>
-      </div>
-    </div>
+    <h3 class="docs-demo-title">{text().cardsTitle}</h3>
+    <p class="docs-demo-note">{text().cardsDesc}</p>
+    <FrameworkDemo nodes={cardsDemo} label={text().cardsTitle} />
   </section>
 
   <section class="docs-section">
@@ -189,12 +295,14 @@
     color: var(--st-semantic-text-primary);
   }
 
-  .inline-demo {
+  /* Les démos sont rendues dans des composants enfants (SvelteNode) ou des îles
+     React/Vue : leurs styles doivent être globaux pour traverser la frontière. */
+  :global(.inline-demo) {
     line-height: 2.2;
     color: var(--st-semantic-text-primary);
   }
 
-  .tone-row {
+  :global(.tone-row) {
     display: flex;
     flex-wrap: wrap;
     gap: 1.5rem;
@@ -202,21 +310,21 @@
     margin-top: 0.75rem;
   }
 
-  .tone-row span {
+  :global(.tone-row span) {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
     color: var(--st-semantic-text-secondary);
   }
 
-  .card-row {
+  :global(.card-row) {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
     margin-top: 0.75rem;
   }
 
-  .metric-card {
+  :global(.metric-card) {
     display: flex;
     flex-direction: column;
     gap: 0.375rem;
@@ -227,12 +335,12 @@
     min-width: 160px;
   }
 
-  .metric-label {
+  :global(.metric-label) {
     font-size: 0.8125rem;
     color: var(--st-semantic-text-secondary);
   }
 
-  .metric-value {
+  :global(.metric-value) {
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--st-semantic-text-primary);
