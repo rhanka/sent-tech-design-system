@@ -1,6 +1,8 @@
 <script lang="ts">
-  import { Badge, ScatterPlot, type ScatterPlotDatum } from "@sentropic/design-system-svelte";
+  import { Badge, type ScatterPlotDatum } from "@sentropic/design-system-svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
   const data: ScatterPlotDatum[] = [
     { x: 1, y: 2, label: "A" },
@@ -10,6 +12,16 @@
     { x: 5, y: 4.2, label: "E", tone: "category3" },
     { x: 6, y: 6.1, label: "F", tone: "category3" },
     { x: 7, y: 5.5, label: "G", tone: "category4" }
+  ];
+
+  const exampleDemo: NodeSpec[] = [
+    {
+      el: "div",
+      props: { class: "docs-scatter-box" },
+      children: [
+        { comp: "ScatterPlot", props: { data, label: "Corrélation démo", xLabel: "Effort", yLabel: "Valeur" } }
+      ]
+    }
   ];
 </script>
 
@@ -31,9 +43,7 @@
 
   <section class="docs-section">
     <h2>Exemple</h2>
-    <div class="docs-scatter-box">
-      <ScatterPlot {data} label="Corrélation démo" xLabel="Effort" yLabel="Valeur" />
-    </div>
+    <FrameworkDemo nodes={exampleDemo} label="Corrélation démo" />
   </section>
 
   <section class="docs-section">
@@ -57,5 +67,6 @@
 </div>
 
 <style>
-  .docs-scatter-box { max-width: 32rem; }
+  /* Rendu dans un composant enfant (SvelteNode) / île : style global requis. */
+  :global(.docs-scatter-box) { max-width: 32rem; }
 </style>

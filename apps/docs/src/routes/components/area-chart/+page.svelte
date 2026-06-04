@@ -1,101 +1,99 @@
 <script lang="ts">
-  import { Badge, Button, AreaChart, type AreaChartDatum, type AreaChartTone } from "@sentropic/design-system-svelte";
+  import { Badge, type AreaChartDatum } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
-  // State variables for the interactive playground
-  let smooth = $state(false);
-  let tone = $state<AreaChartTone>("category1");
-  let width = $state(480);
-  let height = $state(240);
-  let label = $state("Statistiques d'utilisation");
-
-  // Predefined datasets
-  const datasets = {
-    server: {
-      nameFr: "Activité serveur (Hebdomadaire)",
-      nameEn: "Server Activity (Weekly)",
-      data: [
-        { x: "Lun", y: 42 },
-        { x: "Mar", y: 65 },
-        { x: "Mer", y: 30 },
-        { x: "Jeu", y: 85 },
-        { x: "Ven", y: 55 },
-        { x: "Sam", y: 20 },
-        { x: "Dim", y: 15 }
-      ]
-    },
-    sales: {
-      nameFr: "Ventes mensuelles (k$)",
-      nameEn: "Monthly Sales (k$)",
-      data: [
-        { x: "Jan", y: 120 },
-        { x: "Fév", y: 150 },
-        { x: "Mar", y: 220 },
-        { x: "Avr", y: 180 },
-        { x: "Mai", y: 270 },
-        { x: "Jui", y: 340 }
-      ]
-    },
-    numeric: {
-      nameFr: "Axe X numérique (Échelle linéaire)",
-      nameEn: "Numeric X Axis (Linear Scale)",
-      data: [
-        { x: 0, y: 10 },
-        { x: 5, y: 25 },
-        { x: 10, y: 15 },
-        { x: 15, y: 45 },
-        { x: 20, y: 30 },
-        { x: 25, y: 60 }
-      ]
-    },
-    numbers: {
-      nameFr: "Nombres bruts normalisés",
-      nameEn: "Raw Normalized Numbers",
-      data: [15, 35, 20, 50, 40, 75, 60]
-    }
-  };
-
-  let activeDatasetKey = $state<keyof typeof datasets>("server");
-  const activeDataset = $derived(datasets[activeDatasetKey]);
-
-  // Dynamic code generation for the playground
-  const generatedCode = $derived.by(() => {
-    let dataStr = "";
-    if (activeDatasetKey === "numbers") {
-      dataStr = "[15, 35, 20, 50, 40, 75, 60]";
-    } else {
-      const items = activeDataset.data as AreaChartDatum[];
-      dataStr = `[\n    ` + items.map(d => `{ x: ${typeof d.x === 'string' ? `"${d.x}"` : d.x}, y: ${d.y} }`).join(",\n    ") + `\n  ]`;
-    }
-
-    return `<script lang="ts">
-  import { AreaChart } from "@sentropic/design-system-svelte";
-
-  const chartData = ${dataStr};
-<\/script>
-
-<AreaChart
-  data={chartData}
-  label="${label}"
-  tone="${tone}"
-  width={${width}}
-  height={${height}}
-  smooth={${smooth}}
-/>`;
-  });
-
-  const tones: AreaChartTone[] = [
-    "category1",
-    "category2",
-    "category3",
-    "category4",
-    "category5",
-    "category6",
-    "category7",
-    "category8"
+  // Jeux de données présentés en exemples statiques (le bac à sable interactif
+  // a été figé pour permettre la bascule multi-framework).
+  const serverData: AreaChartDatum[] = [
+    { x: "Lun", y: 42 },
+    { x: "Mar", y: 65 },
+    { x: "Mer", y: 30 },
+    { x: "Jeu", y: 85 },
+    { x: "Ven", y: 55 },
+    { x: "Sam", y: 20 },
+    { x: "Dim", y: 15 }
   ];
+
+  const salesData: AreaChartDatum[] = [
+    { x: "Jan", y: 120 },
+    { x: "Fév", y: 150 },
+    { x: "Mar", y: 220 },
+    { x: "Avr", y: 180 },
+    { x: "Mai", y: 270 },
+    { x: "Jui", y: 340 }
+  ];
+
+  const numericData: AreaChartDatum[] = [
+    { x: 0, y: 10 },
+    { x: 5, y: 25 },
+    { x: 10, y: 15 },
+    { x: 15, y: 45 },
+    { x: 20, y: 30 },
+    { x: 25, y: 60 }
+  ];
+
+  // Démos basculées dans le framework actif (arbre NodeSpec neutre).
+  const serverDemo = $derived<NodeSpec[]>([
+    {
+      el: "div",
+      props: { class: "chart-wrapper" },
+      children: [
+        {
+          comp: "AreaChart",
+          props: {
+            data: serverData,
+            tone: "category1",
+            width: 520,
+            height: 260,
+            label: locale.value === "fr" ? "Activité serveur (hebdomadaire)" : "Server activity (weekly)"
+          }
+        }
+      ]
+    }
+  ]);
+
+  const smoothDemo = $derived<NodeSpec[]>([
+    {
+      el: "div",
+      props: { class: "chart-wrapper" },
+      children: [
+        {
+          comp: "AreaChart",
+          props: {
+            data: salesData,
+            tone: "category3",
+            smooth: true,
+            width: 520,
+            height: 260,
+            label: locale.value === "fr" ? "Ventes mensuelles (k$)" : "Monthly sales (k$)"
+          }
+        }
+      ]
+    }
+  ]);
+
+  const numericDemo = $derived<NodeSpec[]>([
+    {
+      el: "div",
+      props: { class: "chart-wrapper" },
+      children: [
+        {
+          comp: "AreaChart",
+          props: {
+            data: numericData,
+            tone: "category5",
+            width: 520,
+            height: 260,
+            label: locale.value === "fr" ? "Axe X numérique (échelle linéaire)" : "Numeric X axis (linear scale)"
+          }
+        }
+      ]
+    }
+  ]);
 </script>
 
 <div class="docs-page">
@@ -110,136 +108,40 @@
   <FrameworkPreview example="areachart" title="Aperçu live" />
 
 
-  <!-- Interactive Playground -->
+  <!-- Exemples (bascule multi-framework) -->
   <section class="docs-section">
-    <h2>
-      {#if locale.value === "fr"}Bac à sable interactif{:else}Interactive Playground{/if}
-    </h2>
+    <h2>{t(locale.value, "examplesTitle")}</h2>
     <p class="section-desc">
       {#if locale.value === "fr"}
-        Expérimentez en temps réel avec les propriétés du composant AreaChart. Modifiez les dimensions, activez le lissage Bézier et changez de thème de couleur sémantique.
+        Quelques configurations typiques de l'AreaChart : séries ordinales, lissage Bézier et axe X numérique. Ces exemples basculent dans le framework actif (Svelte / React / Vue).
       {:else}
-        Experiment in real time with the AreaChart component properties. Modify dimensions, toggle Bezier smoothing, and change semantic color themes.
+        A few typical AreaChart configurations: ordinal series, Bezier smoothing, and a numeric X axis. These examples render in the active framework (Svelte / React / Vue).
       {/if}
     </p>
 
-    <div class="playground-layout">
-      <!-- Chart Render Box -->
-      <div class="playground-render-box">
-        <div class="chart-wrapper" style="max-width: {width}px;">
-          <AreaChart
-            data={activeDataset.data}
-            {width}
-            {height}
-            {tone}
-            {smooth}
-            {label}
-          />
-        </div>
-      </div>
+    <h3 class="docs-demo-title">
+      {locale.value === "fr" ? "Série ordinale" : "Ordinal series"}
+    </h3>
+    <p class="docs-demo-note">
+      {locale.value === "fr" ? "Activité serveur hebdomadaire, axe X par libellés." : "Weekly server activity, label-based X axis."}
+    </p>
+    <FrameworkDemo nodes={serverDemo} label={locale.value === "fr" ? "Activité serveur (hebdomadaire)" : "Server activity (weekly)"} />
 
-      <!-- Controls Panel -->
-      <div class="playground-controls">
-        <h3>{#if locale.value === "fr"}Configuration{:else}Configuration{/if}</h3>
-        
-        <!-- Dataset Selector -->
-        <div class="control-group">
-          <span class="control-label">
-            {#if locale.value === "fr"}Série de données{:else}Data Series{/if}
-          </span>
-          <div class="dataset-buttons">
-            {#each Object.entries(datasets) as [key, ds]}
-              <button
-                type="button"
-                class="dataset-btn"
-                class:active={activeDatasetKey === key}
-                onclick={() => activeDatasetKey = key as keyof typeof datasets}
-              >
-                {locale.value === "fr" ? ds.nameFr : ds.nameEn}
-              </button>
-            {/each}
-          </div>
-        </div>
+    <h3 class="docs-demo-title">
+      {locale.value === "fr" ? "Lissage Bézier" : "Bezier smoothing"}
+    </h3>
+    <p class="docs-demo-note">
+      {locale.value === "fr" ? "`smooth` active la courbe Bézier cubique." : "`smooth` enables the cubic Bezier curve."}
+    </p>
+    <FrameworkDemo nodes={smoothDemo} label={locale.value === "fr" ? "Ventes mensuelles (k$)" : "Monthly sales (k$)"} />
 
-        <div class="control-grid-2col">
-          <!-- Width Slider -->
-          <div class="control-group">
-            <label for="slider-width" class="control-label">
-              {#if locale.value === "fr"}Largeur (px) : {width}{:else}Width (px): {width}{/if}
-            </label>
-            <input
-              id="slider-width"
-              type="range"
-              min="300"
-              max="800"
-              step="10"
-              bind:value={width}
-              class="control-slider"
-            />
-          </div>
-
-          <!-- Height Slider -->
-          <div class="control-group">
-            <label for="slider-height" class="control-label">
-              {#if locale.value === "fr"}Hauteur (px) : {height}{:else}Height (px): {height}{/if}
-            </label>
-            <input
-              id="slider-height"
-              type="range"
-              min="150"
-              max="450"
-              step="10"
-              bind:value={height}
-              class="control-slider"
-            />
-          </div>
-        </div>
-
-        <div class="control-grid-2col">
-          <!-- Tone Selector -->
-          <div class="control-group">
-            <label for="select-tone" class="control-label">
-              {#if locale.value === "fr"}Tonalité (Tone){:else}Tone{/if}
-            </label>
-            <select id="select-tone" bind:value={tone} class="control-select">
-              {#each tones as t}
-                <option value={t}>{t}</option>
-              {/each}
-            </select>
-          </div>
-
-          <!-- Smooth Toggle -->
-          <div class="control-group check-group">
-            <label class="control-label checkbox-label">
-              <input type="checkbox" bind:checked={smooth} class="control-checkbox" />
-              <span>{#if locale.value === "fr"}Lissage Bézier (smooth){:else}Bezier Smoothing (smooth){/if}</span>
-            </label>
-          </div>
-        </div>
-
-        <!-- Label Input -->
-        <div class="control-group">
-          <label for="input-label" class="control-label">
-            {#if locale.value === "fr"}Libellé d'accessibilité (label){:else}Accessibility Label (label){/if}
-          </label>
-          <input
-            id="input-label"
-            type="text"
-            bind:value={label}
-            placeholder="Aria-label du graphique..."
-            class="control-text-input"
-          />
-        </div>
-      </div>
-    </div>
-
-    <!-- Live Code Block -->
-    <div class="playground-code-section">
-      <div class="code-header">
-        <span>{#if locale.value === "fr"}Code Svelte généré{:else}Generated Svelte Code{/if}</span>
-      </div>
-      <pre class="code-pre"><code>{generatedCode}</code></pre>
-    </div>
+    <h3 class="docs-demo-title">
+      {locale.value === "fr" ? "Axe X numérique" : "Numeric X axis"}
+    </h3>
+    <p class="docs-demo-note">
+      {locale.value === "fr" ? "Quand tous les `x` sont numériques, l'axe utilise une échelle linéaire." : "When every `x` is numeric, the axis uses a linear scale."}
+    </p>
+    <FrameworkDemo nodes={numericDemo} label={locale.value === "fr" ? "Axe X numérique (échelle linéaire)" : "Numeric X axis (linear scale)"} />
   </section>
 
   <!-- Component API Details -->
@@ -466,163 +368,17 @@
     max-width: 800px;
   }
 
-  .playground-layout {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    background: var(--st-semantic-surface-default);
-    border: 1px solid var(--st-semantic-border-subtle);
-    border-radius: var(--st-radius-md, 0.5rem);
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  @media (min-width: 1024px) {
-    .playground-layout {
-      grid-template-columns: 1.2fr 1fr;
-    }
-  }
-
-  .playground-render-box {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--st-semantic-surface-sunken, #f8f9fa);
-    border-radius: var(--st-radius-sm, 0.25rem);
-    padding: 2rem;
-    min-height: 320px;
-    border: 1px dashed var(--st-semantic-border-subtle);
-  }
-
-  .chart-wrapper {
-    width: 100%;
-    height: auto;
-  }
-
-  .playground-controls {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-  }
-
-  .playground-controls h3 {
-    margin: 0 0 0.5rem 0;
-    font-size: 1.25rem;
-    border-bottom: 1px solid var(--st-semantic-border-subtle);
-    padding-bottom: 0.5rem;
-  }
-
-  .control-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.375rem;
-  }
-
-  .control-label {
-    font-size: 0.8125rem;
+  .docs-demo-title {
+    font-size: 1rem;
     font-weight: 600;
+    margin: 1.5rem 0 0.25rem 0;
     color: var(--st-semantic-text-primary);
   }
 
-  .dataset-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .dataset-btn {
-    background: var(--st-semantic-surface-default);
-    border: 1px solid var(--st-semantic-border-subtle);
-    color: var(--st-semantic-text-secondary);
-    padding: 0.375rem 0.75rem;
-    border-radius: var(--st-radius-sm, 0.25rem);
-    font-size: 0.75rem;
-    cursor: pointer;
-    transition: all 150ms ease;
-  }
-
-  .dataset-btn:hover {
-    background: var(--st-semantic-surface-sunken);
-    color: var(--st-semantic-text-primary);
-  }
-
-  .dataset-btn.active {
-    background: var(--st-semantic-action-primary, #005fb8);
-    color: var(--st-semantic-text-inverse, #ffffff);
-    border-color: var(--st-semantic-action-primary, #005fb8);
-  }
-
-  .control-grid-2col {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-  }
-
-  .control-slider {
+  /* Rendu dans un composant enfant (SvelteNode) / île : style global requis. */
+  :global(.chart-wrapper) {
     width: 100%;
-    accent-color: var(--st-semantic-action-primary);
-  }
-
-  .control-select {
-    width: 100%;
-    padding: 0.5rem;
-    border-radius: var(--st-radius-sm, 0.25rem);
-    border: 1px solid var(--st-semantic-border-subtle);
-    background: var(--st-semantic-surface-default);
-    color: var(--st-semantic-text-primary);
-    font-size: 0.875rem;
-  }
-
-  .check-group {
-    justify-content: center;
-  }
-
-  .checkbox-label {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    cursor: pointer;
-    font-weight: normal;
-  }
-
-  .control-checkbox {
-    width: 1rem;
-    height: 1rem;
-    accent-color: var(--st-semantic-action-primary);
-  }
-
-  .control-text-input {
-    padding: 0.5rem;
-    border-radius: var(--st-radius-sm, 0.25rem);
-    border: 1px solid var(--st-semantic-border-subtle);
-    background: var(--st-semantic-surface-default);
-    color: var(--st-semantic-text-primary);
-    font-size: 0.875rem;
-  }
-
-  .playground-code-section {
-    background: #1e1e1e;
-    border-radius: var(--st-radius-md, 0.5rem);
-    overflow: hidden;
-    color: #e3e3e3;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 0.875rem;
-    margin-top: 1.5rem;
-  }
-
-  .code-header {
-    background: #2d2d2d;
-    padding: 0.5rem 1rem;
-    font-size: 0.75rem;
-    font-weight: bold;
-    border-bottom: 1px solid #3d3d3d;
-    color: #a0a0a0;
-  }
-
-  .code-pre {
-    margin: 0;
-    padding: 1.25rem;
-    overflow-x: auto;
-    line-height: 1.5;
+    max-width: 560px;
+    margin-top: 0.75rem;
   }
 </style>
