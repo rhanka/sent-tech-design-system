@@ -2546,10 +2546,29 @@ import { FormGroup, Checkbox } from "@sentropic/design-system-vue";
             comp: "FileUploader",
             props: {
               label: "Glisser-déposer ou cliquer pour importer",
+              // Forme compatible avec les 3 moteurs : React/Vue lisent `name`/`size`
+              // au niveau racine ; Svelte lit `file.name`/`file.size`. On fournit
+              // donc les deux (le même fichier, dupliqué) pour une parité stricte.
               items: [
-                { name: "design-tokens.json", status: "complete" },
-                { name: "composants.zip", status: "uploading" },
-                { name: "fichier-invalide.exe", status: "error", error: "Format non supporté" }
+                {
+                  name: "design-tokens.json",
+                  size: 18432,
+                  file: { name: "design-tokens.json", size: 18432 },
+                  status: "complete"
+                },
+                {
+                  name: "composants.zip",
+                  size: 524288,
+                  file: { name: "composants.zip", size: 524288 },
+                  status: "uploading"
+                },
+                {
+                  name: "fichier-invalide.exe",
+                  size: 9216,
+                  file: { name: "fichier-invalide.exe", size: 9216 },
+                  status: "error",
+                  error: "Format non supporté"
+                }
               ]
             }
           }
@@ -2559,16 +2578,16 @@ import { FormGroup, Checkbox } from "@sentropic/design-system-vue";
     code: {
       svelte: `<script>
   import { FileUploader } from "@sentropic/design-system-svelte";
+
+  // Le composant Svelte attend des entrées { file, status } (file: File).
+  const items = [
+    { file: new File([], "design-tokens.json"), status: "complete" },
+    { file: new File([], "composants.zip"), status: "uploading" },
+    { file: new File([], "fichier-invalide.exe"), status: "error", error: "Format non supporté" }
+  ];
 </script>
 
-<FileUploader
-  label="Glisser-déposer ou cliquer pour importer"
-  items={[
-    { name: "design-tokens.json", status: "complete" },
-    { name: "composants.zip", status: "uploading" },
-    { name: "fichier-invalide.exe", status: "error", error: "Format non supporté" }
-  ]}
-/>`,
+<FileUploader label="Glisser-déposer ou cliquer pour importer" {items} />`,
       react: `import { FileUploader } from "@sentropic/design-system-react";
 
 export function Demo() {
@@ -3912,16 +3931,19 @@ import { ChatThread } from "@sentropic/design-system-vue";
         children: [
           {
             comp: "ChatMessage",
-            props: { role: "user", content: "Quelle est la différence entre Badge et Tag ?" }
+            props: { role: "user" },
+            children: ["Quelle est la différence entre Badge et Tag ?"]
           },
           {
             comp: "ChatMessage",
             props: {
               role: "assistant",
-              content: "Badge est statique (indicateur) ; Tag est interactif (filtrable, supprimable).",
               status: "completed",
               timestamp: "14:32"
-            }
+            },
+            children: [
+              "Badge est statique (indicateur) ; Tag est interactif (filtrable, supprimable)."
+            ]
           }
         ]
       }
@@ -3931,13 +3953,11 @@ import { ChatThread } from "@sentropic/design-system-vue";
   import { ChatMessage } from "@sentropic/design-system-svelte";
 </script>
 
-<ChatMessage role="user" content="Quelle est la différence entre Badge et Tag ?" />
-<ChatMessage
-  role="assistant"
-  content="Badge est statique ; Tag est interactif."
-  status="completed"
-  timestamp="14:32"
-/>`,
+<!-- Le composant Svelte rend le texte via le slot children. -->
+<ChatMessage role="user">Quelle est la différence entre Badge et Tag ?</ChatMessage>
+<ChatMessage role="assistant" status="completed" timestamp="14:32">
+  Badge est statique ; Tag est interactif.
+</ChatMessage>`,
       react: `import { ChatMessage } from "@sentropic/design-system-react";
 
 export function Demo() {
@@ -4058,10 +4078,13 @@ import { StreamingMessage } from "@sentropic/design-system-vue";
           {
             comp: "MessageActions",
             props: {
+              // `icon` est un glyphe texte : SvelteNode le convertit en snippet
+              // (le composant Svelte rend `{@render action.icon()}`). React/Vue
+              // ignorent `icon` et rendent `label`.
               actions: [
-                { id: "copy", label: "Copier" },
-                { id: "regen", label: "Régénérer" },
-                { id: "delete", label: "Supprimer", variant: "danger" }
+                { id: "copy", label: "Copier", icon: "⧉" },
+                { id: "regen", label: "Régénérer", icon: "↻" },
+                { id: "delete", label: "Supprimer", variant: "danger", icon: "✕" }
               ],
               visibility: "always"
             }
@@ -4575,26 +4598,22 @@ import { AspectRatio } from "@sentropic/design-system-vue";
   import { Footer } from "@sentropic/design-system-svelte";
 </script>
 
-<Footer
-  brand="Sent Tech"
-  columns={[
-    {
-      title: "Produit",
-      links: [
-        { label: "Composants", href: "/components" },
-        { label: "Tokens", href: "/tokens" }
-      ]
-    },
-    {
-      title: "Entreprise",
-      links: [
-        { label: "À propos", href: "/about" },
-        { label: "Blog", href: "/blog" }
-      ]
-    }
-  ]}
-  copyright="© 2026 Sent Tech. Tous droits réservés."
-/>`,
+<!-- Le Footer Svelte est piloté par des snippets nommés. -->
+<Footer copyright="© 2026 Sent Tech. Tous droits réservés.">
+  {#snippet brand()}Sent Tech{/snippet}
+  {#snippet columns()}
+    <nav>
+      <h2>Produit</h2>
+      <a href="/components">Composants</a>
+      <a href="/tokens">Tokens</a>
+    </nav>
+    <nav>
+      <h2>Entreprise</h2>
+      <a href="/about">À propos</a>
+      <a href="/blog">Blog</a>
+    </nav>
+  {/snippet}
+</Footer>`,
       react: `import { Footer } from "@sentropic/design-system-react";
 
 export function Demo() {
