@@ -1,10 +1,59 @@
 <script lang="ts">
-  import { Badge, Textarea } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
   const fr = (frText: string, enText: string) => (locale.value === "fr" ? frText : enText);
+
+  // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
+  // (toute la page bascule, pas seulement le bloc Aperçu live).
+  const statesDemo: NodeSpec[] = $derived([
+    {
+      el: "div",
+      props: { class: "docs-demo-stack" },
+      children: [
+        { el: "h3", children: [fr("Défaut", "Default")] },
+        {
+          comp: "Textarea",
+          props: {
+            label: fr("Description", "Description"),
+            placeholder: fr("Contexte opérationnel court", "Short operational context")
+          }
+        },
+        { el: "h3", children: [fr("Avec texte d'aide et rows", "With helper text and rows")] },
+        {
+          comp: "Textarea",
+          props: {
+            label: fr("Notes de version", "Release notes"),
+            rows: 4,
+            helperText: fr("Markdown pris en charge.", "Markdown is supported.")
+          }
+        },
+        { el: "h3", children: [fr("Désactivé", "Disabled")] },
+        {
+          comp: "Textarea",
+          props: {
+            label: fr("Description archivée", "Archived description"),
+            value: fr("Lecture seule.", "Read only."),
+            disabled: true
+          }
+        },
+        { el: "h3", children: [fr("Erreur", "Error")] },
+        {
+          comp: "Textarea",
+          props: {
+            label: fr("Retour", "Feedback"),
+            rows: 4,
+            invalid: true,
+            errorText: fr("Un retour est requis avant l'envoi.", "Feedback is required before submission.")
+          }
+        }
+      ]
+    }
+  ]);
 </script>
 
 <div class="docs-page">
@@ -35,25 +84,7 @@
 
   <section class="docs-section">
     <h2>{t(locale.value, "states")}</h2>
-    <div class="docs-example docs-example--stack">
-      <h3>{fr("Défaut", "Default")}</h3>
-      <Textarea label={fr("Description", "Description")} placeholder={fr("Contexte opérationnel court", "Short operational context")} />
-      <h3>{fr("Avec texte d'aide et rows", "With helper text and rows")}</h3>
-      <Textarea
-        label={fr("Notes de version", "Release notes")}
-        rows={4}
-        helperText={fr("Markdown pris en charge.", "Markdown is supported.")}
-      />
-      <h3>{fr("Désactivé", "Disabled")}</h3>
-      <Textarea label={fr("Description archivée", "Archived description")} value={fr("Lecture seule.", "Read only.")} disabled />
-      <h3>{fr("Erreur", "Error")}</h3>
-      <Textarea
-        label={fr("Retour", "Feedback")}
-        rows={4}
-        invalid
-        errorText={fr("Un retour est requis avant l'envoi.", "Feedback is required before submission.")}
-      />
-    </div>
+    <FrameworkDemo nodes={statesDemo} label={t(locale.value, "states")} />
   </section>
 
   <section class="docs-section">

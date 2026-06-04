@@ -1,10 +1,37 @@
 <script lang="ts">
-  import { Badge, Switch } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
   const fr = (frText: string, enText: string) => (locale.value === "fr" ? frText : enText);
+
+  // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
+  // (toute la page bascule, pas seulement le bloc Aperçu live).
+  const statesDemo: NodeSpec[] = $derived([
+    {
+      el: "div",
+      props: { class: "docs-demo-stack" },
+      children: [
+        { el: "h3", children: [fr("Désactivé / activé (off / on)", "Off / on")] },
+        { comp: "Switch", props: { label: fr("Notifications", "Notifications") } },
+        { comp: "Switch", props: { label: fr("Notifications", "Notifications"), checked: true } },
+        { el: "h3", children: [fr("Avec texte d'aide", "With helper text")] },
+        {
+          comp: "Switch",
+          props: {
+            label: fr("Mode sombre", "Dark mode"),
+            helperText: fr("S'applique immédiatement à toute l'interface.", "Applies immediately across the interface.")
+          }
+        },
+        { el: "h3", children: [fr("Désactivé (non interactif)", "Disabled (non-interactive)")] },
+        { comp: "Switch", props: { label: fr("Verrouillé", "Locked"), disabled: true } },
+        { comp: "Switch", props: { label: fr("Verrouillé (on)", "Locked (on)"), checked: true, disabled: true } }
+      ]
+    }
+  ]);
 </script>
 
 <div class="docs-page">
@@ -35,19 +62,7 @@
 
   <section class="docs-section">
     <h2>{t(locale.value, "states")}</h2>
-    <div class="docs-example docs-example--stack">
-      <h3>{fr("Désactivé / activé (off / on)", "Off / on")}</h3>
-      <Switch label={fr("Notifications", "Notifications")} />
-      <Switch label={fr("Notifications", "Notifications")} checked />
-      <h3>{fr("Avec texte d'aide", "With helper text")}</h3>
-      <Switch
-        label={fr("Mode sombre", "Dark mode")}
-        helperText={fr("S'applique immédiatement à toute l'interface.", "Applies immediately across the interface.")}
-      />
-      <h3>{fr("Désactivé (non interactif)", "Disabled (non-interactive)")}</h3>
-      <Switch label={fr("Verrouillé", "Locked")} disabled />
-      <Switch label={fr("Verrouillé (on)", "Locked (on)")} checked disabled />
-    </div>
+    <FrameworkDemo nodes={statesDemo} label={t(locale.value, "states")} />
   </section>
 
   <section class="docs-section">

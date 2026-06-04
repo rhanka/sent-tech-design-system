@@ -1,10 +1,47 @@
 <script lang="ts">
-  import { Badge, Radio } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
   const fr = (frText: string, enText: string) => (locale.value === "fr" ? frText : enText);
+
+  // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
+  // (toute la page bascule, pas seulement le bloc Aperçu live).
+  const groupDemo: NodeSpec[] = $derived([
+    {
+      el: "div",
+      props: { class: "docs-demo-stack" },
+      children: [
+        { comp: "Radio", props: { label: fr("Runtime principal", "Primary runtime"), name: "runtime", value: "primary", checked: true } },
+        { comp: "Radio", props: { label: fr("Runtime secondaire", "Secondary runtime"), name: "runtime", value: "secondary" } },
+        { comp: "Radio", props: { label: fr("Runtime expérimental", "Experimental runtime"), name: "runtime", value: "experimental" } }
+      ]
+    }
+  ]);
+  const statesDemo: NodeSpec[] = $derived([
+    {
+      el: "div",
+      props: { class: "docs-demo-stack" },
+      children: [
+        { el: "h3", children: [fr("Défaut / sélectionné", "Default / selected")] },
+        { comp: "Radio", props: { label: fr("Non sélectionné", "Unselected"), name: "states-a" } },
+        { comp: "Radio", props: { label: fr("Sélectionné", "Selected"), name: "states-a", checked: true } },
+        { el: "h3", children: [fr("Avec texte d'aide", "With helper text")] },
+        {
+          comp: "Radio",
+          props: { label: fr("Plan Équipe", "Team plan"), name: "plan", helperText: fr("Jusqu'à 20 sièges.", "Up to 20 seats.") }
+        },
+        { el: "h3", children: [fr("Désactivé", "Disabled")] },
+        { comp: "Radio", props: { label: fr("Indisponible", "Unavailable"), name: "states-b", disabled: true } },
+        { comp: "Radio", props: { label: fr("Indisponible (sélectionné)", "Unavailable (selected)"), name: "states-b", checked: true, disabled: true } },
+        { el: "h3", children: [fr("Erreur", "Error")] },
+        { comp: "Radio", props: { label: fr("Choix requis", "Choice required"), name: "states-c", invalid: true } }
+      ]
+    }
+  ]);
 </script>
 
 <div class="docs-page">
@@ -36,31 +73,12 @@
   <section class="docs-section">
     <h2>{fr("Groupe", "Group")}</h2>
     <p>{fr("Les radios d'un même name s'excluent mutuellement.", "Radios sharing a name are mutually exclusive.")}</p>
-    <div class="docs-example docs-example--stack">
-      <Radio label={fr("Runtime principal", "Primary runtime")} name="runtime" value="primary" checked />
-      <Radio label={fr("Runtime secondaire", "Secondary runtime")} name="runtime" value="secondary" />
-      <Radio label={fr("Runtime expérimental", "Experimental runtime")} name="runtime" value="experimental" />
-    </div>
+    <FrameworkDemo nodes={groupDemo} label={fr("Groupe", "Group")} />
   </section>
 
   <section class="docs-section">
     <h2>{t(locale.value, "states")}</h2>
-    <div class="docs-example docs-example--stack">
-      <h3>{fr("Défaut / sélectionné", "Default / selected")}</h3>
-      <Radio label={fr("Non sélectionné", "Unselected")} name="states-a" />
-      <Radio label={fr("Sélectionné", "Selected")} name="states-a" checked />
-      <h3>{fr("Avec texte d'aide", "With helper text")}</h3>
-      <Radio
-        label={fr("Plan Équipe", "Team plan")}
-        name="plan"
-        helperText={fr("Jusqu'à 20 sièges.", "Up to 20 seats.")}
-      />
-      <h3>{fr("Désactivé", "Disabled")}</h3>
-      <Radio label={fr("Indisponible", "Unavailable")} name="states-b" disabled />
-      <Radio label={fr("Indisponible (sélectionné)", "Unavailable (selected)")} name="states-b" checked disabled />
-      <h3>{fr("Erreur", "Error")}</h3>
-      <Radio label={fr("Choix requis", "Choice required")} name="states-c" invalid />
-    </div>
+    <FrameworkDemo nodes={statesDemo} label={t(locale.value, "states")} />
   </section>
 
   <section class="docs-section">

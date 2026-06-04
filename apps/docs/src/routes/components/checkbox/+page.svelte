@@ -1,10 +1,47 @@
 <script lang="ts">
-  import { Badge, Checkbox } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
   const fr = (frText: string, enText: string) => (locale.value === "fr" ? frText : enText);
+
+  // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
+  // (toute la page bascule, pas seulement le bloc Aperçu live).
+  const statesDemo: NodeSpec[] = $derived([
+    {
+      el: "div",
+      props: { class: "docs-demo-stack" },
+      children: [
+        { el: "h3", children: [fr("Défaut (décoché)", "Default (unchecked)")] },
+        { comp: "Checkbox", props: { label: fr("Activer les modèles d'espace", "Enable workspace templates") } },
+        { el: "h3", children: [fr("Coché", "Checked")] },
+        { comp: "Checkbox", props: { label: fr("Activer les modèles d'espace", "Enable workspace templates"), checked: true } },
+        { el: "h3", children: [fr("Avec texte d'aide", "With helper text")] },
+        {
+          comp: "Checkbox",
+          props: {
+            label: fr("Recevoir les e-mails produit", "Receive product emails"),
+            helperText: fr("Vous pourrez vous désabonner à tout moment.", "You can unsubscribe at any time.")
+          }
+        },
+        { el: "h3", children: [fr("Désactivé", "Disabled")] },
+        { comp: "Checkbox", props: { label: fr("Verrouillé par la politique", "Locked by policy"), disabled: true } },
+        { comp: "Checkbox", props: { label: fr("Verrouillé (coché)", "Locked (checked)"), checked: true, disabled: true } },
+        { el: "h3", children: [fr("Erreur", "Error")] },
+        {
+          comp: "Checkbox",
+          props: {
+            label: fr("Accepter les conditions", "Accept the terms"),
+            invalid: true,
+            helperText: fr("Vous devez accepter pour continuer.", "You must accept to continue.")
+          }
+        }
+      ]
+    }
+  ]);
 </script>
 
 <div class="docs-page">
@@ -35,26 +72,7 @@
 
   <section class="docs-section">
     <h2>{t(locale.value, "states")}</h2>
-    <div class="docs-example docs-example--stack">
-      <h3>{fr("Défaut (décoché)", "Default (unchecked)")}</h3>
-      <Checkbox label={fr("Activer les modèles d'espace", "Enable workspace templates")} />
-      <h3>{fr("Coché", "Checked")}</h3>
-      <Checkbox label={fr("Activer les modèles d'espace", "Enable workspace templates")} checked />
-      <h3>{fr("Avec texte d'aide", "With helper text")}</h3>
-      <Checkbox
-        label={fr("Recevoir les e-mails produit", "Receive product emails")}
-        helperText={fr("Vous pourrez vous désabonner à tout moment.", "You can unsubscribe at any time.")}
-      />
-      <h3>{fr("Désactivé", "Disabled")}</h3>
-      <Checkbox label={fr("Verrouillé par la politique", "Locked by policy")} disabled />
-      <Checkbox label={fr("Verrouillé (coché)", "Locked (checked)")} checked disabled />
-      <h3>{fr("Erreur", "Error")}</h3>
-      <Checkbox
-        label={fr("Accepter les conditions", "Accept the terms")}
-        invalid
-        helperText={fr("Vous devez accepter pour continuer.", "You must accept to continue.")}
-      />
-    </div>
+    <FrameworkDemo nodes={statesDemo} label={t(locale.value, "states")} />
   </section>
 
   <section class="docs-section">
