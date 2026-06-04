@@ -2552,16 +2552,17 @@ describe("Vue behavioral parity — batch 4", () => {
 describe("Vue behavioral parity — batch 5", () => {
   // --- AreaChart ---
   describe("AreaChart", () => {
-    it("renders figure.st-areaChart with aria-label", () => {
+    it("renders div.st-areaChart with an aria-labelled visual", () => {
       const wrapper = mount(AreaChart, {
-        props: { data: [{ value: 10 }, { value: 20 }] },
+        props: { data: [{ x: 0, y: 10 }, { x: 1, y: 20 }], label: "Area" },
       });
-      expect(wrapper.find("figure.st-areaChart").exists()).toBe(true);
+      expect(wrapper.find("div.st-areaChart").exists()).toBe(true);
+      expect(wrapper.find(".st-areaChart__visual").attributes("aria-label")).toBe("Area");
     });
 
-    it("renders SVG with a polyline and polygon", () => {
+    it("renders SVG with a line path and an area path", () => {
       const wrapper = mount(AreaChart, {
-        props: { data: [{ value: 5 }, { value: 10 }] },
+        props: { data: [{ x: 0, y: 5 }, { x: 1, y: 10 }], label: "A" },
       });
       expect(wrapper.find(".st-areaChart__line").exists()).toBe(true);
       expect(wrapper.find(".st-areaChart__area").exists()).toBe(true);
@@ -2569,16 +2570,25 @@ describe("Vue behavioral parity — batch 5", () => {
 
     it("renders dot circles for each datum", () => {
       const wrapper = mount(AreaChart, {
-        props: { data: [{ value: 1 }, { value: 2 }, { value: 3 }] },
+        props: { data: [{ x: 0, y: 1 }, { x: 1, y: 2 }, { x: 2, y: 3 }], label: "A" },
       });
       expect(wrapper.findAll(".st-areaChart__dot").length).toBe(3);
     });
 
-    it("renders accessible label in visually-hidden span", () => {
+    it("normalises a bare number[] into x/y data values", () => {
       const wrapper = mount(AreaChart, {
-        props: { data: [], label: "My Area Chart" },
+        props: { data: [3, 6, 2], label: "Bare" },
       });
-      expect(wrapper.find(".st-visually-hidden").text()).toBe("My Area Chart");
+      expect(wrapper.findAll(".st-areaChart__dot").length).toBe(3);
+      const items = wrapper.findAll(".st-chartDataList li").map((n) => n.text());
+      expect(items).toEqual(["0: 3", "1: 6", "2: 2"]);
+    });
+
+    it("exposes the label via the data list aria-label", () => {
+      const wrapper = mount(AreaChart, {
+        props: { data: [{ x: 0, y: 1 }], label: "My Area Chart" },
+      });
+      expect(wrapper.find(".st-chartDataList").attributes("aria-label")).toBe("Data values for My Area Chart");
     });
 
     it("has name AreaChart", () => {
@@ -2588,25 +2598,33 @@ describe("Vue behavioral parity — batch 5", () => {
 
   // --- BarChart ---
   describe("BarChart", () => {
-    it("renders figure.st-barChart", () => {
+    it("renders div.st-barChart", () => {
       const wrapper = mount(BarChart, {
-        props: { data: [{ value: 10 }] },
+        props: { data: [{ label: "A", value: 10 }], label: "Bar" },
       });
-      expect(wrapper.find("figure.st-barChart").exists()).toBe(true);
+      expect(wrapper.find("div.st-barChart").exists()).toBe(true);
     });
 
     it("renders one rect per datum", () => {
       const wrapper = mount(BarChart, {
-        props: { data: [{ value: 5 }, { value: 8 }, { value: 3 }] },
+        props: { data: [{ label: "A", value: 5 }, { label: "B", value: 8 }, { label: "C", value: 3 }], label: "Bar" },
       });
       expect(wrapper.findAll(".st-barChart__bar").length).toBe(3);
     });
 
-    it("applies tone class to bars", () => {
+    it("applies tone class to bars and defaults to category1", () => {
       const wrapper = mount(BarChart, {
-        props: { data: [{ value: 10, tone: "category2" }] },
+        props: { data: [{ label: "A", value: 10, tone: "category2" }, { label: "B", value: 4 }], label: "Bar" },
       });
       expect(wrapper.find(".st-barChart__bar--category2").exists()).toBe(true);
+      expect(wrapper.find(".st-barChart__bar--category1").exists()).toBe(true);
+    });
+
+    it("supports horizontal orientation", () => {
+      const wrapper = mount(BarChart, {
+        props: { data: [{ label: "A", value: 4 }], label: "Bar", orientation: "horizontal" },
+      });
+      expect(wrapper.find(".st-barChart__categoryLabel").attributes("text-anchor")).toBe("end");
     });
 
     it("has name BarChart", () => {
@@ -2616,25 +2634,41 @@ describe("Vue behavioral parity — batch 5", () => {
 
   // --- LineChart ---
   describe("LineChart", () => {
-    it("renders figure.st-lineChart", () => {
+    it("renders div.st-lineChart with a tone modifier", () => {
       const wrapper = mount(LineChart, {
-        props: { data: [{ value: 10 }, { value: 20 }] },
+        props: { data: [{ x: 0, y: 10 }, { x: 1, y: 20 }], label: "Line", tone: "category5" },
       });
-      expect(wrapper.find("figure.st-lineChart").exists()).toBe(true);
+      expect(wrapper.find("div.st-lineChart").exists()).toBe(true);
+      expect(wrapper.find(".st-lineChart--category5").exists()).toBe(true);
     });
 
-    it("renders a polyline with no fill", () => {
+    it("renders a line path with no fill", () => {
       const wrapper = mount(LineChart, {
-        props: { data: [{ value: 5 }, { value: 10 }] },
+        props: { data: [{ x: 0, y: 5 }, { x: 1, y: 10 }], label: "Line" },
       });
       expect(wrapper.find(".st-lineChart__line").exists()).toBe(true);
+      expect(wrapper.find(".st-lineChart__line").attributes("fill")).toBe("none");
     });
 
     it("renders dot circles for each datum", () => {
       const wrapper = mount(LineChart, {
-        props: { data: [{ value: 1 }, { value: 2 }] },
+        props: { data: [{ x: 0, y: 1 }, { x: 1, y: 2 }], label: "Line" },
       });
       expect(wrapper.findAll(".st-lineChart__dot").length).toBe(2);
+    });
+
+    it("draws an area path only when area is enabled", () => {
+      const plain = mount(LineChart, { props: { data: [{ x: 0, y: 1 }, { x: 1, y: 3 }], label: "L" } });
+      expect(plain.find(".st-lineChart__area").exists()).toBe(false);
+      const withArea = mount(LineChart, { props: { data: [{ x: 0, y: 1 }, { x: 1, y: 3 }], label: "L", area: true } });
+      expect(withArea.find(".st-lineChart__area").exists()).toBe(true);
+    });
+
+    it("emits cubic beziers when smooth is set", () => {
+      const wrapper = mount(LineChart, {
+        props: { data: [{ x: 0, y: 1 }, { x: 1, y: 4 }, { x: 2, y: 2 }], label: "L", smooth: true },
+      });
+      expect(wrapper.find(".st-lineChart__line").attributes("d")).toContain("C");
     });
 
     it("has name LineChart", () => {
@@ -2700,10 +2734,11 @@ describe("Vue behavioral parity — batch 5", () => {
 
   // --- Sparkline ---
   describe("Sparkline", () => {
-    it("renders figure.st-sparkline with default tone neutral", () => {
+    it("renders span.st-sparkline with default tone neutral and 120x28 viewBox", () => {
       const wrapper = mount(Sparkline, { props: { data: [1, 2, 3] } });
-      expect(wrapper.find("figure.st-sparkline").exists()).toBe(true);
+      expect(wrapper.find("span.st-sparkline").exists()).toBe(true);
       expect(wrapper.find(".st-sparkline--neutral").exists()).toBe(true);
+      expect(wrapper.find("svg").attributes("viewBox")).toBe("0 0 120 28");
     });
 
     it("applies tone modifier", () => {
@@ -2713,9 +2748,19 @@ describe("Vue behavioral parity — batch 5", () => {
       expect(wrapper.find(".st-sparkline--success").exists()).toBe(true);
     });
 
-    it("renders a polyline in SVG", () => {
+    it("renders a line path in SVG with the default stroke width", () => {
       const wrapper = mount(Sparkline, { props: { data: [10, 20, 30] } });
       expect(wrapper.find(".st-sparkline__line").exists()).toBe(true);
+      expect(wrapper.find(".st-sparkline__line").attributes("stroke-width")).toBe("1.5");
+    });
+
+    it("supports custom dimensions, strokeWidth and an optional area fill", () => {
+      const wrapper = mount(Sparkline, {
+        props: { data: [1, 2, 3], width: 200, height: 40, strokeWidth: 3, area: true },
+      });
+      expect(wrapper.find("svg").attributes("viewBox")).toBe("0 0 200 40");
+      expect(wrapper.find(".st-sparkline__line").attributes("stroke-width")).toBe("3");
+      expect(wrapper.find(".st-sparkline__area").exists()).toBe(true);
     });
 
     it("has name Sparkline", () => {

@@ -216,9 +216,9 @@ describe("React public catalog parity", () => {
         <TileGroup items={[{ title: "Design", value: "design" }]} />
         <EmptyState title="No data" action={<Button>Refresh</Button>} />
         <TreeView nodes={[{ id: "root", label: "Root", children: [{ id: "leaf", label: "Leaf" }] }]} />
-        <AreaChart data={[{ x: "Mon", y: 10 }]} />
-        <BarChart data={[{ label: "A", value: 4 }]} />
-        <LineChart data={[{ x: "Mon", y: 10 }]} />
+        <AreaChart data={[{ x: "Mon", y: 10 }]} label="Area chart" />
+        <BarChart data={[{ label: "A", value: 4 }]} label="Bar chart" />
+        <LineChart data={[{ x: "Mon", y: 10 }]} label="Line chart" />
         <DonutChart data={[{ label: "Used", value: 70 }]} />
         <ScatterPlot data={[{ x: 1, y: 2, label: "Point" }]} />
         <StackedBarChart data={[{ label: "Q1", segments: [{ label: "A", value: 2 }] }]} />

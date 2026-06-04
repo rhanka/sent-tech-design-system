@@ -185,18 +185,6 @@ function pct(value: number, min = 0, max = 100): number {
   return clamp(((value - min) / (max - min)) * 100, 0, 100);
 }
 
-function pointsFrom(values: Array<number | { x?: string | number; y?: number; value?: number }>, width: number, height: number): string {
-  const ys = values.map((entry) => (typeof entry === "number" ? entry : entry.y ?? entry.value ?? 0));
-  const max = Math.max(...ys, 1);
-  return ys
-    .map((value, index) => {
-      const x = ys.length === 1 ? width / 2 : (index / (ys.length - 1)) * width;
-      const y = height - (value / max) * height;
-      return `${x},${y}`;
-    })
-    .join(" ");
-}
-
 export type AccordionItem = { id?: string; title: React.ReactNode; content: React.ReactNode; disabled?: boolean };
 export type AccordionProps = React.HTMLAttributes<HTMLDivElement> & {
   items: AccordionItem[];
@@ -271,12 +259,6 @@ export function Alert({ tone = "info", title, message, actions, children, classN
 }
 
 export type ChartDatum = { label?: string; x?: string | number; y?: number; value?: number; tone?: DataTone };
-export type AreaChartDatum = ChartDatum;
-export type AreaChartTone = DataTone;
-export type BarChartDatum = ChartDatum;
-export type BarChartTone = DataTone;
-export type LineChartDatum = ChartDatum;
-export type LineChartTone = DataTone;
 export type DonutChartDatum = ChartDatum;
 export type DonutChartTone = DataTone;
 export type ScatterPlotDatum = { x: number; y: number; label?: string; tone?: DataTone };
@@ -291,64 +273,9 @@ type ChartProps<T> = React.HTMLAttributes<HTMLElement> & {
   width?: number;
   height?: number;
 };
-export type AreaChartProps = ChartProps<AreaChartDatum>;
-export type BarChartProps = ChartProps<BarChartDatum>;
 export type DonutChartProps = ChartProps<DonutChartDatum>;
-export type LineChartProps = ChartProps<LineChartDatum>;
 export type ScatterPlotProps = ChartProps<ScatterPlotDatum>;
 export type StackedBarChartProps = ChartProps<StackedBarDatum>;
-
-function LinearChart({ data, label, width = 320, height = 160, className, type }: ChartProps<ChartDatum> & { type: "areaChart" | "lineChart" }) {
-  const classBase = type === "areaChart" ? "st-areaChart" : "st-lineChart";
-  const points = pointsFrom(data, width, height);
-  const accessibleLabel = label ?? (type === "areaChart" ? "Area chart" : "Line chart");
-  return (
-    <figure className={classNames(classBase, className)} aria-label={accessibleLabel}>
-      <span className="st-visually-hidden">{accessibleLabel}</span>
-      <svg viewBox={`0 0  `} aria-hidden="true">
-        <polyline className={`${classBase}__line`} points={points} fill="none" />
-        {type === "areaChart" ? <polygon className="st-areaChart__area" points={`0,${height} ${points} ${width},${height}`} /> : null}
-        {data.map((datum, index) => (
-          <circle key={index} className={`${classBase}__dot`} cx={points.split(" ")[index]?.split(",")[0]} cy={points.split(" ")[index]?.split(",")[1]} r="4" />
-        ))}
-      </svg>
-    </figure>
-  );
-}
-
-export function AreaChart(props: ChartProps<AreaChartDatum>) {
-  return <LinearChart {...props} type="areaChart" />;
-}
-
-export function LineChart(props: ChartProps<LineChartDatum>) {
-  return <LinearChart {...props} type="lineChart" />;
-}
-
-export function BarChart({ data, label = "Bar chart", width = 320, height = 160, className, ...rest }: ChartProps<BarChartDatum>) {
-  const max = Math.max(...data.map((datum) => datum.value ?? datum.y ?? 0), 1);
-  return (
-    <figure {...rest} className={classNames("st-barChart", className)} aria-label={label}>
-      <span className="st-visually-hidden">{label}</span>
-      <svg viewBox={`0 0  `} aria-hidden="true">
-        {data.map((datum, index) => {
-          const value = datum.value ?? datum.y ?? 0;
-          const barWidth = width / Math.max(data.length, 1) - 8;
-          const barHeight = (value / max) * height;
-          return (
-            <rect
-              key={index}
-              className={classNames("st-barChart__bar", `st-barChart__bar--${datum.tone ?? DATA_TONES[index % DATA_TONES.length]}`)}
-              x={index * (barWidth + 8) + 4}
-              y={height - barHeight}
-              width={barWidth}
-              height={barHeight}
-            />
-          );
-        })}
-      </svg>
-    </figure>
-  );
-}
 
 export function DonutChart({ data, label = "Donut chart", className, ...rest }: ChartProps<DonutChartDatum>) {
   const total = data.reduce((sum, datum) => sum + (datum.value ?? datum.y ?? 0), 0);
@@ -2500,18 +2427,6 @@ export function Slider({ label, size = "md", value, defaultValue, min = 0, max =
       </div>
       <input {...rest} className="st-slider__input" type="range" min={min} max={max} defaultValue={defaultValue} value={value} />
     </div>
-  );
-}
-
-export type SparklineProps = React.HTMLAttributes<HTMLElement> & { data: number[]; label?: string; tone?: "neutral" | "success" | "warning" | "error" };
-export function Sparkline({ data, label = "Sparkline", tone = "neutral", className, ...rest }: SparklineProps) {
-  return (
-    <figure {...rest} className={classNames("st-sparkline", `st-sparkline--${tone}`, className)} aria-label={label}>
-      <span className="st-visually-hidden">{label}</span>
-      <svg viewBox="0 0 120 40" aria-hidden="true">
-        <polyline className="st-sparkline__line" points={pointsFrom(data, 120, 40)} fill="none" />
-      </svg>
-    </figure>
   );
 }
 

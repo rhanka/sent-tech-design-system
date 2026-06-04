@@ -133,7 +133,7 @@ export type { SkipLinkProps } from "./SkipLink.js";
 export { Slider } from "./Slider.js";
 export type { SliderProps } from "./Slider.js";
 export { Sparkline } from "./Sparkline.js";
-export type { SparklineProps } from "./Sparkline.js";
+export type { SparklineProps, SparklineTone } from "./Sparkline.js";
 export { StackedBarChart } from "./StackedBarChart.js";
 export type { StackedBarChartProps, StackedBarDatum, StackedBarSegment, StackedBarTone } from "./StackedBarChart.js";
 export { StreamingMessage } from "./StreamingMessage.js";

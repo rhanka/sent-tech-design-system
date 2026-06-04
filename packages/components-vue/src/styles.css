@@ -206,6 +206,10 @@
     overflow: visible;
   }
 
+  .st-areaChart__visual {
+    display: block;
+  }
+
   .st-areaChart__grid {
     stroke: var(--st-component-areaChart-gridStroke, var(--st-semantic-border-subtle));
     stroke-dasharray: 2 3;
@@ -352,6 +356,22 @@
   .st-barChart svg {
     display: block;
     overflow: visible;
+  }
+
+  .st-barChart__visual {
+    display: block;
+  }
+
+  .st-chartDataList {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
   }
 
   .st-barChart__grid {
@@ -3209,6 +3229,10 @@
   .st-lineChart svg {
     display: block;
     overflow: visible;
+  }
+
+  .st-lineChart__visual {
+    display: block;
   }
 
   .st-lineChart__grid {
