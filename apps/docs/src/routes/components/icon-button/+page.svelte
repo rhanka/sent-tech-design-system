@@ -1,9 +1,31 @@
 <script lang="ts">
-  import { Badge, IconButton } from "@sentropic/design-system-svelte";
-  import { Copy, Pencil, RotateCcw, Trash2 } from "@lucide/svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
+
+  // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
+  // (toute la page bascule, pas seulement le bloc Aperçu live). L'icône passe en
+  // glyphe texte (children) pour rester identique dans les trois frameworks, là
+  // où l'usage réel injecterait une icône Lucide.
+  const variantsDemo: NodeSpec[] = [
+    { comp: "IconButton", props: { "aria-label": "Copier" }, children: ["⧉"] },
+    { comp: "IconButton", props: { variant: "secondary", "aria-label": "Modifier" }, children: ["✎"] },
+    { comp: "IconButton", props: { variant: "ghost", "aria-label": "Rejouer" }, children: ["↺"] },
+    { comp: "IconButton", props: { variant: "danger", "aria-label": "Supprimer" }, children: ["✕"] }
+  ];
+  const sizesDemo: NodeSpec[] = [
+    { comp: "IconButton", props: { size: "sm", "aria-label": "Copier (petit)" }, children: ["⧉"] },
+    { comp: "IconButton", props: { size: "md", "aria-label": "Copier (moyen)" }, children: ["⧉"] },
+    { comp: "IconButton", props: { size: "lg", "aria-label": "Copier (grand)" }, children: ["⧉"] }
+  ];
+  const statesDemo: NodeSpec[] = [
+    { comp: "IconButton", props: { "aria-label": "Désactivé", disabled: true }, children: ["⧉"] },
+    { comp: "IconButton", props: { variant: "secondary", "aria-label": "Modifier désactivé", disabled: true }, children: ["✎"] },
+    { comp: "IconButton", props: { variant: "danger", "aria-label": "Supprimer désactivé", disabled: true }, children: ["✕"] }
+  ];
 </script>
 
 <div class="docs-page">
@@ -20,42 +42,14 @@
 
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
-    <div class="docs-example" aria-label={t(locale.value, "variants")}>
-      <IconButton aria-label="Copier">
-        <Copy size={18} strokeWidth={2} aria-hidden="true" />
-      </IconButton>
-      <IconButton variant="secondary" aria-label="Modifier">
-        <Pencil size={18} strokeWidth={2} aria-hidden="true" />
-      </IconButton>
-      <IconButton variant="ghost" aria-label="Rejouer">
-        <RotateCcw size={18} strokeWidth={2} aria-hidden="true" />
-      </IconButton>
-      <IconButton variant="danger" aria-label="Supprimer">
-        <Trash2 size={18} strokeWidth={2} aria-hidden="true" />
-      </IconButton>
-    </div>
-    <div class="docs-example" aria-label={t(locale.value, "sizes")}>
-      <IconButton size="sm" aria-label="Copier (petit)">
-        <Copy size={16} strokeWidth={2} aria-hidden="true" />
-      </IconButton>
-      <IconButton size="md" aria-label="Copier (moyen)">
-        <Copy size={18} strokeWidth={2} aria-hidden="true" />
-      </IconButton>
-      <IconButton size="lg" aria-label="Copier (grand)">
-        <Copy size={20} strokeWidth={2} aria-hidden="true" />
-      </IconButton>
-    </div>
-    <div class="docs-example" aria-label={t(locale.value, "states")}>
-      <IconButton aria-label="Désactivé" disabled>
-        <Copy size={18} strokeWidth={2} aria-hidden="true" />
-      </IconButton>
-      <IconButton variant="secondary" aria-label="Modifier désactivé" disabled>
-        <Pencil size={18} strokeWidth={2} aria-hidden="true" />
-      </IconButton>
-      <IconButton variant="danger" aria-label="Supprimer désactivé" disabled>
-        <Trash2 size={18} strokeWidth={2} aria-hidden="true" />
-      </IconButton>
-    </div>
+    <FrameworkDemo nodes={variantsDemo} label={t(locale.value, "variants")} />
+    <FrameworkDemo nodes={sizesDemo} label={t(locale.value, "sizes")} />
+    <FrameworkDemo nodes={statesDemo} label={t(locale.value, "states")} />
+    <p class="docs-demo-note">
+      {locale.value === "fr"
+        ? "Les icônes sont représentées ici par des glyphes texte pour rester identiques dans les trois frameworks ; en usage réel, injectez une icône (ex. Lucide) en children."
+        : "Icons are shown here as text glyphs to stay identical across the three frameworks; in real usage, inject an icon (e.g. Lucide) as children."}
+    </p>
   </section>
 
   <section class="docs-section">
