@@ -1,13 +1,26 @@
 <script lang="ts">
-  import { Badge, DisplaySettings } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
-  const initialValues = {
-    fontScale: "normal" as const,
-    contrast: "default" as const,
-    lineSpacing: "normal" as const,
-    reducedMotion: false
-  };
+  // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
+  // (toute la page bascule, pas seulement le bloc « Aperçu live »). Les contrôles
+  // restent interactifs localement ; les valeurs initiales sont figées ici.
+  const presentationDemo: NodeSpec[] = [
+    {
+      comp: "DisplaySettings",
+      props: {
+        title: "Paramètres d'affichage",
+        values: {
+          fontScale: "normal",
+          contrast: "default",
+          lineSpacing: "normal",
+          reducedMotion: false
+        }
+      }
+    }
+  ];
 </script>
 
 <div class="docs-page">
@@ -27,9 +40,7 @@
 
   <section class="docs-section" id="Introduction">
     <h2>Présentation</h2>
-    <div class="docs-example">
-      <DisplaySettings values={initialValues} />
-    </div>
+    <FrameworkDemo nodes={presentationDemo} label="DisplaySettings" />
   </section>
 
   <section class="docs-section" id="API">

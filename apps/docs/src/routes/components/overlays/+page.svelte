@@ -1,17 +1,58 @@
 <script lang="ts">
-  import {
-    Badge,
-    Button,
-    Modal,
-    OverflowMenu,
-    Toast,
-    Tooltip
-  } from "@sentropic/design-system-svelte";
-  import { Archive, Copy, Pencil, Share2, Trash2 } from "@lucide/svelte";
+  import { Badge, Button, Modal } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
+  // Modal s'ouvre au clic et rend un overlay position:fixed plein écran : aucune
+  // représentation neutre encadrée n'a de sens, on garde donc une démo Svelte
+  // interactive (bouton + Modal) pour cette section uniquement.
   let open = $state(false);
+
+  // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
+  // (toute la page bascule, pas seulement le bloc « Aperçu live »).
+  const tooltipDemo: NodeSpec[] = [
+    {
+      comp: "Tooltip",
+      props: { content: "Contextual information" },
+      children: [{ comp: "Button", props: { variant: "secondary" }, children: ["Hover or focus"] }]
+    }
+  ];
+
+  // OverflowMenu (Svelte) lit la shape kind/value/danger pour ses items.
+  const overflowDemo: NodeSpec[] = [
+    {
+      comp: "OverflowMenu",
+      props: {
+        triggerLabel: "Row actions",
+        open: true,
+        placement: "bottom-start",
+        items: [
+          { kind: "group", label: "Edit" },
+          { value: "rename", label: "Rename" },
+          { value: "duplicate", label: "Duplicate" },
+          { kind: "divider" },
+          { kind: "group", label: "Distribute" },
+          { value: "share", label: "Share" },
+          { value: "archive", label: "Archive" },
+          { kind: "divider" },
+          { value: "delete", label: "Delete", danger: true }
+        ]
+      }
+    }
+  ];
+
+  const feedbackDemo: NodeSpec[] = [
+    {
+      el: "div",
+      props: { class: "docs-demo-stack" },
+      children: [
+        { comp: "Toast", props: { tone: "success", title: "Saved", message: "The tenant theme was compiled." } },
+        { comp: "Toast", props: { tone: "error", title: "Failed", message: "The adapter mapping is incomplete." } }
+      ]
+    }
+  ];
 </script>
 
 <div class="docs-page">
@@ -32,44 +73,31 @@
         <p>Modal content remains product-neutral and is supplied by the host application.</p>
       </Modal>
     </div>
+    <p class="docs-demo-note">
+      {locale.value === "fr"
+        ? "Le Modal s’ouvre au clic sur un overlay plein écran (position: fixed) : cette démo reste interactive en Svelte, sans équivalent neutre encadré."
+        : "The Modal opens on click as a full-screen overlay (position: fixed): this demo stays interactive in Svelte, with no framed neutral equivalent."}
+    </p>
   </section>
 
   <section class="docs-section">
     <h2>Tooltip</h2>
-    <div class="docs-example">
-      <Tooltip content="Contextual information">
-        <Button variant="secondary">Hover or focus</Button>
-      </Tooltip>
-    </div>
+    <FrameworkDemo nodes={tooltipDemo} label="Tooltip" />
   </section>
 
   <section class="docs-section">
     <h2>OverflowMenu</h2>
-    <div class="docs-example docs-example--stack">
-      <OverflowMenu
-        triggerLabel="Row actions"
-        placement="bottom-start"
-        items={[
-          { kind: "group", label: "Edit" },
-          { value: "rename", label: "Rename", icon: Pencil },
-          { value: "duplicate", label: "Duplicate", icon: Copy },
-          { kind: "divider" },
-          { kind: "group", label: "Distribute" },
-          { value: "share", label: "Share", icon: Share2 },
-          { value: "archive", label: "Archive", icon: Archive },
-          { kind: "divider" },
-          { value: "delete", label: "Delete", icon: Trash2, danger: true }
-        ]}
-      />
-    </div>
+    <FrameworkDemo nodes={overflowDemo} label="OverflowMenu" />
+    <p class="docs-demo-note">
+      {locale.value === "fr"
+        ? "Panneau ouvert (open) et figé pour la démonstration."
+        : "Panel opened (open) and frozen for the demo."}
+    </p>
   </section>
 
   <section class="docs-section">
     <h2>{t(locale.value, "feedback")}</h2>
-    <div class="docs-example docs-example--stack">
-      <Toast tone="success" title="Saved" message="The tenant theme was compiled." />
-      <Toast tone="error" title="Failed" message="The adapter mapping is incomplete." />
-    </div>
+    <FrameworkDemo nodes={feedbackDemo} label={t(locale.value, "feedback")} />
   </section>
 
   <section class="docs-section">

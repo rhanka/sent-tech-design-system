@@ -1,6 +1,24 @@
 <script lang="ts">
-  import { Badge, MediaContent } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
+
+  // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
+  // (toute la page bascule, pas seulement le bloc « Aperçu live »).
+  const presentationDemo: NodeSpec[] = [
+    {
+      comp: "MediaContent",
+      props: {
+        title: "Exemple vidéo",
+        caption: "Vue d’ensemble d’un écran de travail.",
+        media: "https://picsum.photos/seed/media-content/900/500",
+        mediaAlt: "Aperçu d’un produit",
+        mediaKind: "image",
+        byline: "© Banque d’images exemple"
+      }
+    }
+  ];
 </script>
 
 <div class="docs-page">
@@ -20,16 +38,7 @@
 
   <section class="docs-section" id="Introduction">
     <h2>Présentation</h2>
-    <div class="docs-example">
-      <MediaContent
-        title="Exemple vidéo"
-        caption="Vue d’ensemble d’un écran de travail."
-        media="https://picsum.photos/seed/media-content/900/500"
-        mediaAlt="Aperçu d’un produit"
-        mediaKind="image"
-        byline="© Banque d’images exemple"
-      />
-    </div>
+    <FrameworkDemo nodes={presentationDemo} label="MediaContent" />
   </section>
 
   <section class="docs-section" id="API">

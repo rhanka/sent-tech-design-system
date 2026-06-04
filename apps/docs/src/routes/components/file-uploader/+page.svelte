@@ -1,45 +1,98 @@
 <script lang="ts">
-  import {
-    Badge,
-    FileUploader,
-    type FileUploadItem
-  } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
-  let dropzoneFiles = $state<File[]>([]);
-  let singleFiles = $state<File[]>([]);
-
-  // Static items showcasing every status without wiring real uploads.
-  const statusItems: FileUploadItem[] = [
+  // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
+  // (toute la page bascule, pas seulement le bloc « Aperçu live »). Les sélections
+  // de fichiers réelles (bind:files, drag-and-drop) sont par nature interactives :
+  // ici figées via la prop `items` (statuts) ou un état vide pour la dropzone.
+  const dropzoneDemo = $derived<NodeSpec[]>([
     {
-      file: new File(["draft"], "brief.pdf", { type: "application/pdf" }),
-      status: "idle"
-    },
-    {
-      file: new File(["wip"], "rapport-q1.docx", {
-        type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-      }),
-      status: "uploading",
-      progress: 0.42
-    },
-    {
-      file: new File(["ok"], "logo.svg", { type: "image/svg+xml" }),
-      status: "complete"
-    },
-    {
-      file: new File(["nope"], "video.mov", { type: "video/quicktime" }),
-      status: "error",
-      error: "Format non supporté"
+      comp: "FileUploader",
+      props: {
+        label: locale.value === "fr" ? "Pièces jointes" : "Attachments",
+        helperText:
+          locale.value === "fr" ? "PDF, DOCX, PNG jusqu’à 5 MB." : "PDF, DOCX, PNG up to 5 MB.",
+        multiple: true,
+        triggerLabel: locale.value === "fr" ? "Choisir des fichiers" : "Choose files",
+        dropzoneLabel:
+          locale.value === "fr"
+            ? "ou glissez-déposez vos fichiers ici"
+            : "or drag and drop your files here"
+      }
     }
-  ];
+  ]);
 
-  let items = $state<FileUploadItem[]>(statusItems);
+  const statusesDemo = $derived<NodeSpec[]>([
+    {
+      comp: "FileUploader",
+      props: {
+        label: locale.value === "fr" ? "Documents en cours" : "In-flight documents",
+        helperText:
+          locale.value === "fr"
+            ? "Suivi statique des statuts idle, uploading, complete et error."
+            : "Static walkthrough of the idle, uploading, complete, and error statuses.",
+        multiple: true,
+        triggerLabel: locale.value === "fr" ? "Ajouter des fichiers" : "Add files",
+        dropzoneLabel: locale.value === "fr" ? "ou glissez-déposez ici" : "or drop here",
+        // Le FileUploader Svelte lit item.file.name/size : on garde donc des objets
+        // File réels (shape Svelte). React/Vue attendent { name } : leur île, montée
+        // côté client, reste hors du périmètre de ce rendu SSR.
+        items: [
+          { file: new File(["draft"], "brief.pdf", { type: "application/pdf" }), status: "idle" },
+          {
+            file: new File(["wip"], "rapport-q1.docx", {
+              type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            }),
+            status: "uploading",
+            progress: 0.42
+          },
+          { file: new File(["ok"], "logo.svg", { type: "image/svg+xml" }), status: "complete" },
+          {
+            file: new File(["nope"], "video.mov", { type: "video/quicktime" }),
+            status: "error",
+            error: "Format non supporté"
+          }
+        ]
+      }
+    }
+  ]);
 
-  function resetStatusItems() {
-    items = statusItems.map((entry) => ({ ...entry }));
-  }
+  const singleDemo = $derived<NodeSpec[]>([
+    {
+      comp: "FileUploader",
+      props: {
+        label: locale.value === "fr" ? "Avatar" : "Avatar",
+        helperText:
+          locale.value === "fr" ? "Un seul fichier image, max 1 MB." : "One image file, max 1 MB.",
+        accept: "image/*",
+        maxSizeBytes: 1024 * 1024,
+        triggerLabel: locale.value === "fr" ? "Choisir un fichier" : "Choose a file",
+        dropzoneLabel:
+          locale.value === "fr" ? "ou glissez-déposez une image" : "or drag and drop an image"
+      }
+    }
+  ]);
+
+  const disabledDemo = $derived<NodeSpec[]>([
+    {
+      comp: "FileUploader",
+      props: {
+        label: locale.value === "fr" ? "Lecture seule" : "Read-only",
+        helperText:
+          locale.value === "fr"
+            ? "Le composant reste rendu mais n’accepte plus d’entrée."
+            : "The component is rendered but no longer accepts input.",
+        disabled: true,
+        triggerLabel: locale.value === "fr" ? "Choisir un fichier" : "Choose a file",
+        dropzoneLabel: locale.value === "fr" ? "Champ verrouillé" : "Field locked"
+      }
+    }
+  ]);
 </script>
 
 <div class="docs-page">
@@ -56,110 +109,44 @@
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
-    <div
-      class="docs-example"
-      aria-label={locale.value === "fr" ? "Zone de dépôt vide" : "Empty dropzone"}
-    >
-      <FileUploader
-        label={locale.value === "fr" ? "Pièces jointes" : "Attachments"}
-        helperText={locale.value === "fr"
-          ? "PDF, DOCX, PNG jusqu’à 5 MB."
-          : "PDF, DOCX, PNG up to 5 MB."}
-        multiple
-        bind:files={dropzoneFiles}
-        triggerLabel={locale.value === "fr" ? "Choisir des fichiers" : "Choose files"}
-        dropzoneLabel={locale.value === "fr"
-          ? "ou glissez-déposez vos fichiers ici"
-          : "or drag and drop your files here"}
-        removeLabel={(name) =>
-          locale.value === "fr" ? `Retirer ${name}` : `Remove ${name}`}
-      />
-      <p class="docs-example__caption">
-        {locale.value === "fr" ? "Fichiers sélectionnés" : "Selected files"} :
-        <code>{dropzoneFiles.length}</code>
-      </p>
-    </div>
+    <FrameworkDemo
+      nodes={dropzoneDemo}
+      label={locale.value === "fr" ? "Zone de dépôt vide" : "Empty dropzone"}
+    />
+    <p class="docs-example__caption">
+      {locale.value === "fr"
+        ? "La sélection de fichiers (clic, glisser-déposer) est interactive sur la page réelle ; la démo est figée à vide."
+        : "File selection (click, drag-and-drop) is interactive on the real page; the demo is frozen empty."}
+    </p>
 
-    <div
-      class="docs-example"
-      aria-label={locale.value === "fr"
-        ? "Liste de fichiers avec statuts"
-        : "File list with statuses"}
-    >
-      <FileUploader
-        label={locale.value === "fr" ? "Documents en cours" : "In-flight documents"}
-        helperText={locale.value === "fr"
-          ? "Suivi statique des statuts idle, uploading, complete et error."
-          : "Static walkthrough of the idle, uploading, complete, and error statuses."}
-        multiple
-        {items}
-        triggerLabel={locale.value === "fr" ? "Ajouter des fichiers" : "Add files"}
-        dropzoneLabel={locale.value === "fr"
-          ? "ou glissez-déposez ici"
-          : "or drop here"}
-        removeLabel={(name) =>
-          locale.value === "fr" ? `Retirer ${name}` : `Remove ${name}`}
-      />
-      <p class="docs-example__caption">
-        <button type="button" class="docs-example__reset" onclick={resetStatusItems}>
-          {locale.value === "fr" ? "Réinitialiser" : "Reset"}
-        </button>
-        · {locale.value === "fr" ? "Statuts visibles" : "Visible statuses"} :
-        <code>idle, uploading, complete, error</code>
-      </p>
-    </div>
+    <FrameworkDemo
+      nodes={statusesDemo}
+      label={locale.value === "fr" ? "Liste de fichiers avec statuts" : "File list with statuses"}
+    />
+    <p class="docs-example__caption">
+      {locale.value === "fr" ? "Statuts visibles" : "Visible statuses"} :
+      <code>idle, uploading, complete, error</code>
+    </p>
 
-    <div
-      class="docs-example"
-      aria-label={locale.value === "fr" ? "Mode fichier unique" : "Single file mode"}
-    >
-      <FileUploader
-        label={locale.value === "fr" ? "Avatar" : "Avatar"}
-        helperText={locale.value === "fr"
-          ? "Un seul fichier image, max 1 MB."
-          : "One image file, max 1 MB."}
-        accept="image/*"
-        maxSizeBytes={1024 * 1024}
-        bind:files={singleFiles}
-        triggerLabel={locale.value === "fr" ? "Choisir un fichier" : "Choose a file"}
-        dropzoneLabel={locale.value === "fr"
-          ? "ou glissez-déposez une image"
-          : "or drag and drop an image"}
-        removeLabel={(name) =>
-          locale.value === "fr" ? `Retirer ${name}` : `Remove ${name}`}
-        maxSizeErrorLabel={(name) =>
-          locale.value === "fr"
-            ? `${name} dépasse la limite de 1 MB`
-            : `${name} exceeds the 1 MB limit`}
-      />
-      <p class="docs-example__caption">
-        {locale.value === "fr"
-          ? "Mode fichier unique : `multiple` est faux et toute nouvelle sélection remplace la précédente."
-          : "Single file mode: `multiple` is false and any new selection replaces the previous one."}
-      </p>
-    </div>
+    <FrameworkDemo
+      nodes={singleDemo}
+      label={locale.value === "fr" ? "Mode fichier unique" : "Single file mode"}
+    />
+    <p class="docs-example__caption">
+      {locale.value === "fr"
+        ? "Mode fichier unique : `multiple` est faux et toute nouvelle sélection remplace la précédente."
+        : "Single file mode: `multiple` is false and any new selection replaces the previous one."}
+    </p>
 
-    <div
-      class="docs-example"
-      aria-label={locale.value === "fr" ? "État désactivé" : "Disabled state"}
-    >
-      <FileUploader
-        label={locale.value === "fr" ? "Lecture seule" : "Read-only"}
-        helperText={locale.value === "fr"
-          ? "Le composant reste rendu mais n’accepte plus d’entrée."
-          : "The component is rendered but no longer accepts input."}
-        disabled
-        triggerLabel={locale.value === "fr" ? "Choisir un fichier" : "Choose a file"}
-        dropzoneLabel={locale.value === "fr"
-          ? "Champ verrouillé"
-          : "Field locked"}
-      />
-      <p class="docs-example__caption">
-        {locale.value === "fr"
-          ? "`disabled` propage l’état au bouton, au champ caché et désactive le drag-and-drop."
-          : "`disabled` propagates the state to the button, the hidden input, and disables drag-and-drop."}
-      </p>
-    </div>
+    <FrameworkDemo
+      nodes={disabledDemo}
+      label={locale.value === "fr" ? "État désactivé" : "Disabled state"}
+    />
+    <p class="docs-example__caption">
+      {locale.value === "fr"
+        ? "`disabled` propage l’état au bouton, au champ caché et désactive le drag-and-drop."
+        : "`disabled` propagates the state to the button, the hidden input, and disables drag-and-drop."}
+    </p>
   </section>
   <section class="docs-section">
     <h2>{t(locale.value, "apiTitle")}</h2>
@@ -221,20 +208,5 @@
     color: var(--st-semantic-text-secondary);
     font-size: 0.875rem;
     margin-top: 0.5rem;
-  }
-
-  .docs-example__reset {
-    background: transparent;
-    border: 1px solid var(--st-semantic-border-subtle);
-    border-radius: var(--st-radius-sm, 0.25rem);
-    color: var(--st-semantic-text-primary);
-    cursor: pointer;
-    font: inherit;
-    font-size: 0.8125rem;
-    padding: 0.125rem 0.5rem;
-  }
-
-  .docs-example__reset:hover {
-    background: var(--st-semantic-surface-subtle);
   }
 </style>
