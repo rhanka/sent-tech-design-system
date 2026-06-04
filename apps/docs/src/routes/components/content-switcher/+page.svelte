@@ -1,8 +1,10 @@
 <script lang="ts">
-  import { Badge, ContentSwitcher } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
   const copy = {
     fr: {
@@ -39,28 +41,58 @@
 
   const text = () => copy[locale.value];
 
-  const viewItems = [
+  const viewItems = $derived([
     { value: "list", label: locale.value === "fr" ? "Liste" : "List" },
     { value: "board", label: locale.value === "fr" ? "Tableau" : "Board" },
     { value: "calendar", label: locale.value === "fr" ? "Calendrier" : "Calendar" }
-  ];
+  ]);
 
-  const sizeItems = [
+  const sizeItems = $derived([
     { value: "all", label: locale.value === "fr" ? "Tout" : "All" },
     { value: "mine", label: locale.value === "fr" ? "À moi" : "Mine" }
-  ];
+  ]);
 
-  const stateItems = [
+  const stateItems = $derived([
     { value: "draft", label: locale.value === "fr" ? "Brouillon" : "Draft" },
     { value: "review", label: locale.value === "fr" ? "Revue" : "Review" },
     { value: "archived", label: locale.value === "fr" ? "Archivé" : "Archived", disabled: true }
-  ];
+  ]);
 
-  let view = $state("list");
-  let smView = $state("all");
-  let mdView = $state("all");
-  let lgView = $state("all");
-  let stateView = $state("draft");
+  // Démos en arbre NodeSpec neutre -> rendues dans le framework actif.
+  // État statique : la valeur active est figée (pas de binding live ; note prose).
+  const basicDemo: NodeSpec[] = $derived([
+    {
+      comp: "ContentSwitcher",
+      props: {
+        items: viewItems,
+        value: "list",
+        label: locale.value === "fr" ? "Mode d’affichage" : "View mode"
+      }
+    }
+  ]);
+
+  const sizesDemo: NodeSpec[] = $derived([
+    {
+      el: "div",
+      props: { class: "docs-demo-stack" },
+      children: [
+        { comp: "ContentSwitcher", props: { items: sizeItems, size: "sm", value: "all", label: "sm" } },
+        { comp: "ContentSwitcher", props: { items: sizeItems, size: "md", value: "all", label: "md" } },
+        { comp: "ContentSwitcher", props: { items: sizeItems, size: "lg", value: "all", label: "lg" } }
+      ]
+    }
+  ]);
+
+  const stateDemo: NodeSpec[] = $derived([
+    {
+      comp: "ContentSwitcher",
+      props: {
+        items: stateItems,
+        value: "draft",
+        label: locale.value === "fr" ? "Statut" : "Status"
+      }
+    }
+  ]);
 </script>
 
 <div class="docs-page">
@@ -78,45 +110,14 @@
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
-    <div class="docs-example" aria-label={text().basicLabel}>
-      <ContentSwitcher
-        items={viewItems}
-        bind:value={view}
-        label={locale.value === "fr" ? "Mode d’affichage" : "View mode"}
-      />
-      <p class="docs-demo-note">
-        {text().viewportLabel}: <code>{view}</code>
-      </p>
-    </div>
+    <FrameworkDemo nodes={basicDemo} label={text().basicLabel} />
+    <p class="docs-demo-note">
+      {text().viewportLabel}: <code>list</code>
+    </p>
 
-    <div class="docs-example" aria-label={t(locale.value, "sizes")}>
-      <ContentSwitcher
-        items={sizeItems}
-        size="sm"
-        bind:value={smView}
-        label="sm"
-      />
-      <ContentSwitcher
-        items={sizeItems}
-        size="md"
-        bind:value={mdView}
-        label="md"
-      />
-      <ContentSwitcher
-        items={sizeItems}
-        size="lg"
-        bind:value={lgView}
-        label="lg"
-      />
-    </div>
+    <FrameworkDemo nodes={sizesDemo} label={t(locale.value, "sizes")} />
 
-    <div class="docs-example" aria-label={text().stateLabel}>
-      <ContentSwitcher
-        items={stateItems}
-        bind:value={stateView}
-        label={locale.value === "fr" ? "Statut" : "Status"}
-      />
-    </div>
+    <FrameworkDemo nodes={stateDemo} label={text().stateLabel} />
   </section>
 
   <section class="docs-section">
