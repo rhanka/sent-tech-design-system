@@ -125,7 +125,14 @@ export type { UnorderedListProps, UnorderedListItem, UnorderedListInput } from "
 export { Combobox } from "./Combobox.js";
 export type { ComboboxProps, ComboboxOption, ComboboxSize } from "./Combobox.js";
 export { DataTable } from "./DataTable.js";
-export type { DataTableProps, DataTableColumn, DataTableRow, DataTableSize } from "./DataTable.js";
+export type {
+  DataTableProps,
+  DataTableColumn,
+  DataTableRow,
+  DataTableSize,
+  DataTableSelectMode,
+  DataTableSort,
+} from "./DataTable.js";
 export { DatePicker } from "./DatePicker.js";
 export type { DatePickerProps, DatePickerSize } from "./DatePicker.js";
 export { Menu } from "./Menu.js";
