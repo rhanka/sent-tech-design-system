@@ -1,8 +1,10 @@
 <script lang="ts">
-  import { Badge, Combobox, type ComboboxOption } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
   const copy = {
     fr: {
@@ -27,7 +29,7 @@
 
   const text = () => copy[locale.value];
 
-  const envOptions: ComboboxOption[] = [
+  const envOptions = [
     { label: "Forge", value: "forge" },
     { label: "Entropic", value: "entropic" },
     { label: "Graphify", value: "graphify" },
@@ -36,27 +38,50 @@
     { label: "Nova", value: "nova" }
   ];
 
-  let smValue = $state("");
-  let mdValue = $state("");
-  let lgValue = $state("");
-  let searchValue = $state("");
-  let strictValue = $state("");
-  let errorValue = $state("");
-  let disabledValue = $state("");
-  let lastSelection = $state<string | null>(null);
-  let lastInput = $state("");
-
-  function handleSelect(value: string | Event) {
-    if (typeof value === "string") {
-      lastSelection = value;
+  // Démos en arbre NodeSpec neutre -> rendues dans le framework actif.
+  // État statique : `value` figé représente une sélection ; pas de binding live
+  // ni de callbacks onselect/onchange (fonctions non sérialisables côté îles).
+  // Note d'interaction conservée en prose.
+  const sizesDemo: NodeSpec[] = $derived([
+    {
+      el: "div",
+      props: { class: "docs-demo-stack" },
+      children: [
+        { comp: "Combobox", props: { size: "sm", label: "Environnement (sm)", options: envOptions, placeholder: "Tapez Forge…" } },
+        { comp: "Combobox", props: { size: "md", label: "Environnement (md)", options: envOptions } },
+        { comp: "Combobox", props: { size: "lg", label: "Environnement (lg)", options: envOptions } }
+      ]
     }
-  }
+  ]);
 
-  function handleChange(value: string | Event) {
-    if (typeof value === "string") {
-      lastInput = value;
+  const statesDemo: NodeSpec[] = $derived([
+    {
+      el: "div",
+      props: { class: "docs-demo-stack" },
+      children: [
+        { comp: "Combobox", props: { label: "Sélection contrôlée", value: "Forge", options: envOptions, placeholder: "Tapez puis choisissez" } },
+        { comp: "Combobox", props: { label: "Avec erreur", placeholder: "Projet requis", options: envOptions, invalid: true, errorText: "Un environnement est requis." } },
+        { comp: "Combobox", props: { label: "Désactivé", options: envOptions, disabled: true } }
+      ]
     }
-  }
+  ]);
+
+  const strictDemo: NodeSpec[] = $derived([
+    {
+      comp: "Combobox",
+      props: {
+        label: locale.value === "fr" ? "Sélection stricte" : "Strict selection",
+        value: "Graphify",
+        options: envOptions,
+        placeholder: locale.value === "fr" ? "Tapez un environnement" : "Type an environment",
+        allowCustomValue: false,
+        clearLabel: locale.value === "fr" ? "Effacer" : "Clear selection",
+        toggleLabel: locale.value === "fr" ? "Afficher les options" : "Toggle options",
+        listLabel: locale.value === "fr" ? "Environnements disponibles" : "Available environments",
+        noResultsLabel: locale.value === "fr" ? "Aucun résultat" : "No results"
+      }
+    }
+  ]);
 </script>
 
 <div class="docs-page">
@@ -74,72 +99,17 @@
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
-    <div class="docs-example" aria-label={t(locale.value, "sizes")}>
-      <Combobox
-        size="sm"
-        label="Environnement (sm)"
-        bind:value={smValue}
-        options={envOptions}
-        placeholder="Tapez Forge…"
-      />
-      <Combobox
-        size="md"
-        label="Environnement (md)"
-        bind:value={mdValue}
-        options={envOptions}
-      />
-      <Combobox
-        size="lg"
-        label="Environnement (lg)"
-        bind:value={lgValue}
-        options={envOptions}
-      />
-    </div>
+    <FrameworkDemo nodes={sizesDemo} label={t(locale.value, "sizes")} />
 
-    <div class="docs-example" aria-label={t(locale.value, "states")}>
-      <Combobox
-        label="Sélection contrôlée"
-        bind:value={searchValue}
-        options={envOptions}
-        placeholder="Tapez puis choisissez"
-        onselect={handleSelect}
-        onchange={handleChange}
-      />
-      <Combobox
-        label="Avec erreur"
-        bind:value={errorValue}
-        placeholder="Projet requis"
-        options={envOptions}
-        invalid
-        errorText="Un environnement est requis."
-      />
-      <Combobox
-        label="Désactivé"
-        bind:value={disabledValue}
-        options={envOptions}
-        disabled
-      />
-    </div>
+    <FrameworkDemo nodes={statesDemo} label={t(locale.value, "states")} />
 
-    <div class="docs-example" aria-label={t(locale.value, "validation")}>
-      <Combobox
-        label={locale.value === "fr" ? "Sélection stricte" : "Strict selection"}
-        bind:value={strictValue}
-        options={envOptions}
-        placeholder={locale.value === "fr" ? "Tapez un environnement" : "Type an environment"}
-        allowCustomValue={false}
-        clearLabel={locale.value === "fr" ? "Effacer" : "Clear selection"}
-        toggleLabel={locale.value === "fr" ? "Afficher les options" : "Toggle options"}
-        listLabel={locale.value === "fr" ? "Environnements disponibles" : "Available environments"}
-        noResultsLabel={locale.value === "fr" ? "Aucun résultat" : "No results"}
-      />
-      <p class="docs-demo-note">
-        {locale.value === "fr" ? "Dernière option validée" : "Last selected option"} :
-        <code>{lastSelection ?? "n/a"}</code> ·
-        {locale.value === "fr" ? "dernière saisie" : "last input"} :
-        <code>{lastInput === "" ? "n/a" : lastInput}</code>
-      </p>
-    </div>
+    <FrameworkDemo nodes={strictDemo} label={t(locale.value, "validation")} />
+    <p class="docs-demo-note">
+      {locale.value === "fr" ? "Dernière option validée" : "Last selected option"} :
+      <code>graphify</code> ·
+      {locale.value === "fr" ? "dernière saisie" : "last input"} :
+      <code>Graphify</code>
+    </p>
   </section>
 
   <section class="docs-section">

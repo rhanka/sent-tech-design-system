@@ -1,8 +1,10 @@
 <script lang="ts">
-  import { Badge, SkeletonText } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
   const copy = {
     fr: {
@@ -26,6 +28,36 @@
   } as const;
 
   const text = () => copy[locale.value];
+
+  // Démos en arbre NodeSpec neutre -> rendues dans le framework actif.
+  // Note : width/heading/paragraph sont honorés par le moteur Svelte ; React/Vue
+  // ne supportent que lines/label, donc `lines` reste précis partout.
+  const basicDemo: NodeSpec[] = [{ comp: "SkeletonText", props: { lines: 1 } }];
+
+  const headingDemo: NodeSpec[] = [
+    {
+      el: "div",
+      props: { class: "docs-demo-stack" },
+      children: [
+        { comp: "SkeletonText", props: { lines: 1, heading: true, width: "10rem" } },
+        { comp: "SkeletonText", props: { lines: 1, width: "70%" } },
+        { comp: "SkeletonText", props: { lines: 1, width: "58%" } }
+      ]
+    }
+  ];
+
+  const paragraphDemo: NodeSpec[] = [{ comp: "SkeletonText", props: { lines: 4, paragraph: true } }];
+
+  const customDemo: NodeSpec[] = [
+    {
+      el: "div",
+      props: { class: "docs-demo-stack" },
+      children: [
+        { comp: "SkeletonText", props: { lines: 3, width: "100%" } },
+        { comp: "SkeletonText", props: { lines: 2, width: "85%" } }
+      ]
+    }
+  ];
 </script>
 
 <div class="docs-page">
@@ -45,36 +77,13 @@
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
-    <div
-      class="docs-example"
-      aria-label={text().basic}
-    >
-      <SkeletonText />
-    </div>
+    <FrameworkDemo nodes={basicDemo} label={text().basic} />
 
-    <div
-      class="docs-example"
-      aria-label={text().heading}
-    >
-      <SkeletonText heading width="10rem" />
-      <SkeletonText width="70%" />
-      <SkeletonText width="58%" />
-    </div>
+    <FrameworkDemo nodes={headingDemo} label={text().heading} />
 
-    <div
-      class="docs-example"
-      aria-label={text().paragraph}
-    >
-      <SkeletonText lines={4} paragraph />
-    </div>
+    <FrameworkDemo nodes={paragraphDemo} label={text().paragraph} />
 
-    <div
-      class="docs-example"
-      aria-label={text().custom}
-    >
-      <SkeletonText lines={3} width="100%" />
-      <SkeletonText lines={2} width={locale.value === "fr" ? "85%" : "85%"} />
-    </div>
+    <FrameworkDemo nodes={customDemo} label={text().custom} />
   </section>
 
   <section class="docs-section">

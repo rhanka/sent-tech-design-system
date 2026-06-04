@@ -1,9 +1,10 @@
 <script lang="ts">
-  import { Badge, Accordion } from "@sentropic/design-system-svelte";
-  import type { AccordionItem } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
   const copy = {
     fr: {
@@ -40,7 +41,7 @@
 
   const text = () => copy[locale.value];
 
-  const faqItems: AccordionItem[] = [
+  const faqItems = $derived([
     {
       id: "billing",
       title: locale.value === "fr" ? "Facturation" : "Billing",
@@ -65,9 +66,9 @@
           ? "Le support est joignable par chat en heures ouvrées et par e-mail en continu."
           : "Support is reachable via chat during business hours and email at all times."
     }
-  ];
+  ]);
 
-  const stateItems: AccordionItem[] = [
+  const stateItems = $derived([
     {
       id: "active",
       title: locale.value === "fr" ? "Section active" : "Active section",
@@ -79,13 +80,44 @@
       content: locale.value === "fr" ? "Non accessible." : "Not accessible.",
       disabled: true
     }
-  ];
+  ]);
 
-  let multiOpen = $state<string[]>(["billing", "support"]);
-  let smOpen = $state<string[]>(["billing"]);
-  let mdOpen = $state<string[]>(["billing"]);
-  let lgOpen = $state<string[]>(["billing"]);
-  let stateOpen = $state<string[]>(["active"]);
+  // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif.
+  // Les noms de prop d'ouverture diffèrent par moteur : Svelte attend `open` +
+  // `multiple`, React/Vue `defaultOpenIds` + `allowMultiple`. On passe les deux
+  // pour figer le même état initial dans les trois frameworks (props inconnues
+  // ignorées). État statique : pas de binding live (note conservée en prose).
+  const multipleDemo: NodeSpec[] = $derived([
+    {
+      comp: "Accordion",
+      props: {
+        items: faqItems,
+        multiple: true,
+        allowMultiple: true,
+        open: ["billing", "support"],
+        defaultOpenIds: ["billing", "support"]
+      }
+    }
+  ]);
+
+  const sizesDemo: NodeSpec[] = $derived([
+    {
+      el: "div",
+      props: { class: "docs-demo-stack" },
+      children: [
+        { comp: "Accordion", props: { items: faqItems, size: "sm", open: ["billing"], defaultOpenIds: ["billing"] } },
+        { comp: "Accordion", props: { items: faqItems, size: "md", open: ["billing"], defaultOpenIds: ["billing"] } },
+        { comp: "Accordion", props: { items: faqItems, size: "lg", open: ["billing"], defaultOpenIds: ["billing"] } }
+      ]
+    }
+  ]);
+
+  const stateDemo: NodeSpec[] = $derived([
+    {
+      comp: "Accordion",
+      props: { items: stateItems, align: "start", open: ["active"], defaultOpenIds: ["active"] }
+    }
+  ]);
 </script>
 
 <div class="docs-page">
@@ -112,22 +144,14 @@
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
-    <div class="docs-example" aria-label={text().multipleLabel}>
-      <Accordion items={faqItems} multiple bind:open={multiOpen} />
-      <p class="docs-demo-note">
-        {text().openLabel}: <code>{multiOpen.join(", ") || "N/A"}</code>
-      </p>
-    </div>
+    <FrameworkDemo nodes={multipleDemo} label={text().multipleLabel} />
+    <p class="docs-demo-note">
+      {text().openLabel}: <code>billing, support</code>
+    </p>
 
-    <div class="docs-example" aria-label={t(locale.value, "sizes")}>
-      <Accordion items={faqItems} size="sm" bind:open={smOpen} />
-      <Accordion items={faqItems} size="md" bind:open={mdOpen} />
-      <Accordion items={faqItems} size="lg" bind:open={lgOpen} />
-    </div>
+    <FrameworkDemo nodes={sizesDemo} label={t(locale.value, "sizes")} />
 
-    <div class="docs-example" aria-label={text().stateLabel}>
-      <Accordion items={stateItems} align="start" bind:open={stateOpen} />
-    </div>
+    <FrameworkDemo nodes={stateDemo} label={text().stateLabel} />
   </section>
 
   <section class="docs-section">

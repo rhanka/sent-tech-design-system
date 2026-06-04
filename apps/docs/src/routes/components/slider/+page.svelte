@@ -1,8 +1,10 @@
 <script lang="ts">
-  import { Badge, Slider } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
   const copy = {
     fr: {
@@ -29,24 +31,75 @@
 
   const text = () => copy[locale.value];
 
-  let smValue = $state(15);
-  let mdValue = $state(50);
-  let lgValue = $state(82);
-  let volumeValue = $state(34);
-  let compactValue = $state(2);
-  let lastChange = $state(34);
+  // Démos en arbre NodeSpec neutre -> rendues dans le framework actif.
+  // État statique : valeur figée. Noms de prop par moteur (Svelte `value`,
+  // React/Vue `value`/`defaultValue`/`modelValue`) tous passés pour afficher la
+  // même valeur partout. `valueFormatter`/`showValue` ne sont honorés qu'en
+  // Svelte (fonction non sérialisable côté îles). Pas de binding live (note prose).
+  const sizesDemo: NodeSpec[] = $derived([
+    {
+      el: "div",
+      props: { class: "docs-demo-stack" },
+      children: [
+        { comp: "Slider", props: { label: "Budget (sm)", size: "sm", value: 15, defaultValue: 15, modelValue: 15, min: 0, max: 100 } },
+        { comp: "Slider", props: { label: "Budget (md)", size: "md", value: 50, defaultValue: 50, modelValue: 50, min: 0, max: 100 } },
+        { comp: "Slider", props: { label: "Budget (lg)", size: "lg", value: 82, defaultValue: 82, modelValue: 82, min: 0, max: 100 } }
+      ]
+    }
+  ]);
 
-  function formatPercent(value: number) {
-    return `${value}%`;
-  }
+  const validationDemo: NodeSpec[] = $derived([
+    {
+      el: "div",
+      props: { class: "docs-demo-stack" },
+      children: [
+        { comp: "Slider", props: { label: text().qualityLabel, value: 35, defaultValue: 35, modelValue: 35, min: 0, max: 100, step: 5 } },
+        {
+          comp: "Slider",
+          props: {
+            label: locale.value === "fr" ? "Compact (sans libellé de valeur)" : "Compact (no value badge)",
+            value: 2,
+            defaultValue: 2,
+            modelValue: 2,
+            min: 1,
+            max: 10,
+            step: 1,
+            showValue: false
+          }
+        }
+      ]
+    }
+  ]);
 
-  function formatQuality(value: number) {
-    return `${value}/10`;
-  }
+  const disabledDemo: NodeSpec[] = $derived([
+    {
+      comp: "Slider",
+      props: {
+        label: locale.value === "fr" ? "Cible figée" : "Locked target",
+        value: 50,
+        defaultValue: 50,
+        modelValue: 50,
+        min: 0,
+        max: 100,
+        disabled: true
+      }
+    }
+  ]);
 
-  function handleQualityChange(value: number) {
-    lastChange = value;
-  }
+  const formattedDemo: NodeSpec[] = $derived([
+    {
+      comp: "Slider",
+      props: {
+        label: locale.value === "fr" ? "Niveau qualité" : "Quality level",
+        value: 7,
+        defaultValue: 7,
+        modelValue: 7,
+        min: 0,
+        max: 10,
+        step: 1
+      }
+    }
+  ]);
 </script>
 
 <div class="docs-page">
@@ -64,74 +117,17 @@
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
-    <div class="docs-example" aria-label={t(locale.value, "sizes")}>
-      <Slider
-        label={locale.value === "fr" ? "Budget (sm)" : "Budget (sm)"}
-        size="sm"
-        bind:value={smValue}
-        min={0}
-        max={100}
-      />
-      <Slider
-        label={locale.value === "fr" ? "Budget (md)" : "Budget (md)"}
-        size="md"
-        bind:value={mdValue}
-        min={0}
-        max={100}
-      />
-      <Slider
-        label={locale.value === "fr" ? "Budget (lg)" : "Budget (lg)"}
-        size="lg"
-        bind:value={lgValue}
-        min={0}
-        max={100}
-      />
-    </div>
+    <FrameworkDemo nodes={sizesDemo} label={t(locale.value, "sizes")} />
 
-    <div class="docs-example" aria-label={t(locale.value, "validation")}>
-      <Slider
-        label={text().qualityLabel}
-        bind:value={volumeValue}
-        min={0}
-        max={100}
-        step={5}
-        valueFormatter={formatPercent}
-        onchange={handleQualityChange}
-      />
-      <Slider
-        label={locale.value === "fr" ? "Compact (sans libellé de valeur)" : "Compact (no value badge)"}
-        bind:value={compactValue}
-        min={1}
-        max={10}
-        step={1}
-        showValue={false}
-      />
-      <p class="docs-demo-note">
-        {locale.value === "fr" ? "Valeur reçue via `onchange`" : "`onchange` payload"}
-        : <code>{lastChange}</code>
-      </p>
-    </div>
+    <FrameworkDemo nodes={validationDemo} label={t(locale.value, "validation")} />
+    <p class="docs-demo-note">
+      {locale.value === "fr" ? "Valeur reçue via `onchange`" : "`onchange` payload"}
+      : <code>35</code>
+    </p>
 
-    <div class="docs-example" aria-label={locale.value === "fr" ? "État désactivé" : "Disabled state"}>
-      <Slider
-        label={locale.value === "fr" ? "Cible figée" : "Locked target"}
-        bind:value={mdValue}
-        min={0}
-        max={100}
-        disabled
-      />
-    </div>
+    <FrameworkDemo nodes={disabledDemo} label={locale.value === "fr" ? "État désactivé" : "Disabled state"} />
 
-    <div class="docs-demo-inline" aria-label={locale.value === "fr" ? "Affichage formaté" : "Formatted display"}>
-      <Slider
-        label={locale.value === "fr" ? "Niveau qualité" : "Quality level"}
-        bind:value={volumeValue}
-        min={0}
-        max={10}
-        step={1}
-        valueFormatter={formatQuality}
-      />
-    </div>
+    <FrameworkDemo nodes={formattedDemo} label={locale.value === "fr" ? "Affichage formaté" : "Formatted display"} />
   </section>
 
   <section class="docs-section">
