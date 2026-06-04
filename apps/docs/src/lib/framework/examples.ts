@@ -93,7 +93,13 @@ export type ComponentName =
   | "MediaContent"
   | "Notification"
   | "TableOfContents"
-  | "Transcription";
+  | "Transcription"
+  | "ForceGraph"
+  | "PasswordInput"
+  | "PaginationNav"
+  | "MenuTriggerButton"
+  | "TileGroup"
+  | "Toggletip";
 
 export interface ComponentNodeSpec {
   comp: ComponentName;
@@ -4883,6 +4889,116 @@ const segments = [
 
 <template>
   <Transcription open title="Transcription de l'épisode" :segments="segments" />
+</template>`
+    }
+  },
+  forcegraph: {
+    id: "forcegraph",
+    slug: "force-graph",
+    nodes: [
+      wrap([
+        {
+          comp: "ForceGraph",
+          props: {
+            label: "Ontologie de démo",
+            width: 460,
+            height: 300,
+            nodes: [
+              { id: "auteur", label: "Auteur", shape: "box", tone: "category1" },
+              { id: "oeuvre", label: "Œuvre", shape: "diamond", tone: "category2" },
+              { id: "lieu", label: "Lieu", shape: "triangle", tone: "category3" },
+              { id: "perso", label: "Personnage", shape: "star", tone: "category4" },
+              { id: "indice", label: "Indice", shape: "square", tone: "category5" }
+            ],
+            edges: [
+              { source: "auteur", target: "oeuvre", relation: "a écrit" },
+              { source: "oeuvre", target: "lieu", relation: "se déroule à" },
+              { source: "oeuvre", target: "perso", relation: "présente" },
+              { source: "perso", target: "indice", relation: "laisse" }
+            ],
+            legend: [
+              { label: "Auteur", shape: "box", tone: "category1" },
+              { label: "Œuvre", shape: "diamond", tone: "category2" },
+              { label: "Personnage", shape: "star", tone: "category4" }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { ForceGraph } from "@sentropic/design-system-svelte";
+  const nodes = [
+    { id: "auteur", label: "Auteur", shape: "box", tone: "category1" },
+    { id: "oeuvre", label: "Œuvre", shape: "diamond", tone: "category2" },
+    { id: "perso", label: "Personnage", shape: "star", tone: "category4" }
+  ];
+  const edges = [{ source: "auteur", target: "oeuvre", relation: "a écrit" }];
+</script>
+
+<ForceGraph {nodes} {edges} label="Ontologie de démo" width={460} height={300} />`,
+      react: `import { ForceGraph } from "@sentropic/design-system-react";
+
+const nodes = [
+  { id: "auteur", label: "Auteur", shape: "box", tone: "category1" },
+  { id: "oeuvre", label: "Œuvre", shape: "diamond", tone: "category2" },
+  { id: "perso", label: "Personnage", shape: "star", tone: "category4" }
+];
+const edges = [{ source: "auteur", target: "oeuvre", relation: "a écrit" }];
+
+export function Demo() {
+  return <ForceGraph nodes={nodes} edges={edges} label="Ontologie de démo" width={460} height={300} />;
+}`,
+      vue: `<script setup>
+import { ForceGraph } from "@sentropic/design-system-vue";
+const nodes = [
+  { id: "auteur", label: "Auteur", shape: "box", tone: "category1" },
+  { id: "oeuvre", label: "Œuvre", shape: "diamond", tone: "category2" },
+  { id: "perso", label: "Personnage", shape: "star", tone: "category4" }
+];
+const edges = [{ source: "auteur", target: "oeuvre", relation: "a écrit" }];
+</script>
+
+<template>
+  <ForceGraph :nodes="nodes" :edges="edges" label="Ontologie de démo" :width="460" :height="300" />
+</template>`
+    }
+  },
+  passwordinput: {
+    id: "passwordinput",
+    slug: "password-input",
+    nodes: [
+      wrap([{ comp: "PasswordInput", props: { label: "Mot de passe", placeholder: "••••••••" } }])
+    ],
+    code: {
+      svelte: `<script>
+  import { PasswordInput } from "@sentropic/design-system-svelte";
+  let value = $state("");
+</script>
+
+<PasswordInput label="Mot de passe" placeholder="••••••••" bind:value />`,
+      react: `import { useState } from "react";
+import { PasswordInput } from "@sentropic/design-system-react";
+
+export function Demo() {
+  const [value, setValue] = useState("");
+  return (
+    <PasswordInput
+      label="Mot de passe"
+      placeholder="••••••••"
+      value={value}
+      onChange={(event) => setValue(event.target.value)}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { ref } from "vue";
+import { PasswordInput } from "@sentropic/design-system-vue";
+const value = ref("");
+</script>
+
+<template>
+  <PasswordInput label="Mot de passe" placeholder="••••••••" v-model="value" />
 </template>`
     }
   }

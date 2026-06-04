@@ -1,4 +1,5 @@
 <script lang="ts">
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
   import {
     Badge,
     ForceGraph,
@@ -69,6 +70,8 @@
       <code>prefers-reduced-motion</code>.
     </p>
   </section>
+  <FrameworkPreview example="forcegraph" title="Aperçu live" />
+
 
   <section class="docs-section">
     <h2>Exemple</h2>
