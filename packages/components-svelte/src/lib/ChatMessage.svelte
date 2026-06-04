@@ -12,7 +12,13 @@
     timestamp?: string;
     class?: string;
     avatar?: Snippet;
-    children: Snippet;
+    /**
+     * Message body. Either provide children (canonical) or the `content`
+     * string prop (cross-framework parity with React/Vue). `content` is
+     * rendered only when no children are supplied.
+     */
+    children?: Snippet;
+    content?: string;
     footer?: Snippet;
     actions?: Snippet;
   };
@@ -24,6 +30,7 @@
     class: className,
     avatar,
     children,
+    content,
     footer,
     actions,
     ...rest
@@ -66,7 +73,7 @@
   <div class="st-chatMessage__body">
     <div class="st-chatMessage__bubble">
       <div class="st-chatMessage__content">
-        {@render children()}
+        {#if children}{@render children()}{:else if content}{content}{/if}
       </div>
       {#if isStreaming()}
         <span class="st-chatMessage__pulse" aria-hidden="true"></span>

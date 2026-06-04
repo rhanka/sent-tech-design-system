@@ -9,6 +9,8 @@ export type NumberInputProps = {
   errorText?: unknown;
   size?: NumberInputSize;
   modelValue?: number | string;
+  /** Svelte/React-canonical alias for `modelValue`. */
+  value?: number | string | null;
   disabled?: boolean;
   readonly?: boolean;
   min?: number | string;
@@ -30,6 +32,7 @@ export const NumberInput = defineComponent({
     errorText: { type: [String, Object] as unknown as () => unknown, default: undefined },
     size: { type: String as () => NumberInputSize, default: "md" },
     modelValue: { type: [Number, String], default: undefined },
+    value: { type: [Number, String] as unknown as () => number | string | null, default: undefined },
     disabled: { type: Boolean, default: false },
     readonly: { type: Boolean, default: false },
     min: { type: [Number, String], default: undefined },
@@ -69,7 +72,7 @@ export const NumberInput = defineComponent({
                 class: "st-control st-numberInput__control",
                 type: "number",
                 "aria-invalid": isInvalid ? "true" : undefined,
-                value: props.modelValue,
+                value: props.modelValue ?? props.value ?? undefined,
                 disabled: props.disabled,
                 readonly: props.readonly,
                 min: props.min,

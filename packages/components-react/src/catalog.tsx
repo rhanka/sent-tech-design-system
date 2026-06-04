@@ -191,13 +191,19 @@ export type AccordionProps = React.HTMLAttributes<HTMLDivElement> & {
   openIds?: string[];
   defaultOpenIds?: string[];
   allowMultiple?: boolean;
+  /** Svelte-canonical alias for `defaultOpenIds` (initially open item ids). */
+  open?: string[];
+  /** Svelte-canonical alias for `allowMultiple`. */
+  multiple?: boolean;
   onChange?: (openIds: string[]) => void;
 };
 
-export function Accordion({ items, openIds, defaultOpenIds = [], allowMultiple = true, onChange, className, ...rest }: AccordionProps) {
-  const [open, setOpen] = useControlled(openIds, defaultOpenIds, onChange);
+export function Accordion({ items, openIds, defaultOpenIds, open: openAlias, allowMultiple, multiple, onChange, className, ...rest }: AccordionProps) {
+  const initialOpen = defaultOpenIds ?? openAlias ?? [];
+  const resolvedAllowMultiple = allowMultiple ?? multiple ?? true;
+  const [open, setOpen] = useControlled(openIds, initialOpen, onChange);
   const toggle = (id: string) => {
-    const next = open.includes(id) ? open.filter((value) => value !== id) : allowMultiple ? [...open, id] : [id];
+    const next = open.includes(id) ? open.filter((value) => value !== id) : resolvedAllowMultiple ? [...open, id] : [id];
     setOpen(next);
   };
 
@@ -752,12 +758,39 @@ export function EmptyState({ title, message, action, children, className, ...res
 }
 
 export type FileUploadStatus = "idle" | "uploading" | "complete" | "error";
-export type FileUploadItem = { id?: string; name: string; size?: number; status?: FileUploadStatus; error?: React.ReactNode };
+/**
+ * Accepts both the flat React/Vue shape (`{ name, size }`) and the Svelte
+ * canonical shape (`{ file: { name, size } }`). When `file` is present it takes
+ * precedence so a consumer can pass the exact same item array used in Svelte.
+ */
+export type FileUploadItem = {
+  id?: string;
+  name?: string;
+  size?: number;
+  file?: { name: string; size?: number };
+  status?: FileUploadStatus;
+  error?: React.ReactNode;
+};
 export type FileUploaderProps = React.HTMLAttributes<HTMLDivElement> & {
   label?: React.ReactNode;
   items?: FileUploadItem[];
   disabled?: boolean;
 };
+function formatFileSize(bytes: number | undefined): string {
+  if (typeof bytes !== "number" || !Number.isFinite(bytes) || bytes < 0) return "";
+  if (bytes === 0) return "0 B";
+  const units = ["B", "KB", "MB", "GB", "TB"];
+  const i = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
+  const value = bytes / Math.pow(1024, i);
+  const formatted = value >= 10 || i === 0 ? value.toFixed(0) : value.toFixed(1);
+  return `${formatted} ${units[i]}`;
+}
+function fileItemName(item: FileUploadItem): string | undefined {
+  return item.file?.name ?? item.name;
+}
+function fileItemSize(item: FileUploadItem): number | undefined {
+  return item.file?.size ?? item.size;
+}
 export function FileUploader({ label = "Upload", items = [], disabled = false, className, ...rest }: FileUploaderProps) {
   return (
     <div {...rest} className={classNames("st-fileUploader-field", className)}>
@@ -766,12 +799,18 @@ export function FileUploader({ label = "Upload", items = [], disabled = false, c
         <input className="st-fileUploader__input" type="file" disabled={disabled} aria-label={text(label)} />
       </div>
       <ul className="st-fileUploader__list">
-        {items.map((item, index) => (
-          <li key={item.id ?? item.name ?? index} className={classNames("st-fileUploader__item", item.status && `st-fileUploader__item--${item.status}`)}>
-            <span className="st-fileUploader__itemName st-fileUploader__name">{item.name}</span>
-            {item.error ? <span className="st-fileUploader__itemError">{item.error}</span> : null}
-          </li>
-        ))}
+        {items.map((item, index) => {
+          const name = fileItemName(item);
+          const size = fileItemSize(item);
+          const sizeLabel = formatFileSize(size);
+          return (
+            <li key={item.id ?? name ?? index} className={classNames("st-fileUploader__item", item.status && `st-fileUploader__item--${item.status}`)}>
+              <span className="st-fileUploader__itemName st-fileUploader__name">{name}</span>
+              {sizeLabel ? <span className="st-fileUploader__itemSize">{sizeLabel}</span> : null}
+              {item.error ? <span className="st-fileUploader__itemError">{item.error}</span> : null}
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
@@ -1792,7 +1831,16 @@ export function MenuTriggerButton({ open = false, type = "button", className, ch
 }
 
 export type MessageActionVariant = "default" | "danger";
-export type MessageAction = ActionItem & { variant?: MessageActionVariant };
+/**
+ * `label` (React/Vue) is rendered when present; otherwise `icon` (the
+ * Svelte-canonical content) is rendered. `label` is always used for the
+ * accessible name when provided. At least one of `label`/`icon` should be set.
+ */
+export type MessageAction = Omit<ActionItem, "label"> & {
+  label?: React.ReactNode;
+  icon?: React.ReactNode;
+  variant?: MessageActionVariant;
+};
 export type MessageActionsProps = React.HTMLAttributes<HTMLElement> & {
   actions: MessageAction[];
   visibility?: "always" | "hover";
@@ -1801,8 +1849,15 @@ export function MessageActions({ actions, visibility = "always", className, ...r
   return (
     <nav {...rest} className={classNames("st-messageActions", visibility === "hover" && "st-messageActions--hoverOnly", className)} aria-label="Message actions">
       {actions.map((action, index) => (
-        <button key={action.id ?? index} type="button" className={classNames("st-button st-button--ghost st-button--sm", action.variant === "danger" && "st-button--danger")} disabled={action.disabled} onClick={action.onClick}>
-          {action.label}
+        <button
+          key={action.id ?? index}
+          type="button"
+          className={classNames("st-button st-button--ghost st-button--sm", action.variant === "danger" && "st-button--danger")}
+          disabled={action.disabled}
+          aria-label={action.label == null && action.icon != null ? text(action.id) || undefined : undefined}
+          onClick={action.onClick}
+        >
+          {action.label ?? action.icon}
         </button>
       ))}
     </nav>

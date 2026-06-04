@@ -13,6 +13,10 @@ export type AccordionProps = {
   openIds?: string[];
   defaultOpenIds?: string[];
   allowMultiple?: boolean;
+  /** Svelte-canonical alias for `defaultOpenIds` (initially open item ids). */
+  open?: string[];
+  /** Svelte-canonical alias for `allowMultiple`. */
+  multiple?: boolean;
   class?: string;
 };
 
@@ -25,21 +29,24 @@ export const Accordion = defineComponent({
   props: {
     items: { type: Array as () => AccordionItem[], required: true },
     openIds: { type: Array as () => string[], default: undefined },
-    defaultOpenIds: { type: Array as () => string[], default: () => [] },
-    allowMultiple: { type: Boolean, default: true },
+    defaultOpenIds: { type: Array as () => string[], default: undefined },
+    allowMultiple: { type: Boolean, default: undefined },
+    open: { type: Array as () => string[], default: undefined },
+    multiple: { type: Boolean, default: undefined },
     class: { type: String, default: undefined },
   },
   emits: ["change"],
   setup(props, { emit, attrs }) {
-    const localOpen = ref<string[]>(props.defaultOpenIds ?? []);
+    const localOpen = ref<string[]>(props.defaultOpenIds ?? props.open ?? []);
 
     return () => {
       const open = props.openIds ?? localOpen.value;
+      const allowMultiple = props.allowMultiple ?? props.multiple ?? true;
 
       const toggle = (id: string) => {
         const next = open.includes(id)
           ? open.filter((v) => v !== id)
-          : props.allowMultiple
+          : allowMultiple
             ? [...open, id]
             : [id];
         if (props.openIds === undefined) {
