@@ -1,27 +1,43 @@
 import { defineComponent, h, ref } from "vue";
 import { classNames } from "./classNames.js";
 
+// `value` (Svelte-canonical) is accepted as an alias of `id`; `danger: true`
+// (Svelte-canonical) as an alias of `variant: "danger"`; `kind` as an alias of
+// `type`. Svelte groups are flat (label-only, no nested `items`).
 export type MenuActionItem = {
   id?: string;
+  value?: string;
   label: unknown;
   disabled?: boolean;
   variant?: "default" | "danger";
+  danger?: boolean;
   onClick?: () => void;
 };
-export type MenuDividerItem = { type: "divider"; id?: string };
+export type MenuDividerItem = { type?: "divider"; kind?: "divider"; id?: string };
 export type MenuGroupItem = {
-  type: "group";
+  type?: "group";
+  kind?: "group";
   id?: string;
   label: unknown;
-  items: MenuActionItem[];
+  items?: MenuActionItem[];
 };
 export type MenuItem = MenuActionItem | MenuDividerItem | MenuGroupItem;
 
+function itemKind(item: MenuItem): string | undefined {
+  const tagged = item as { type?: string; kind?: string };
+  return tagged.type ?? tagged.kind;
+}
 function isDivider(item: MenuItem): item is MenuDividerItem {
-  return "type" in item && (item as MenuDividerItem).type === "divider";
+  return itemKind(item) === "divider";
 }
 function isGroup(item: MenuItem): item is MenuGroupItem {
-  return "type" in item && (item as MenuGroupItem).type === "group";
+  return itemKind(item) === "group";
+}
+function isDangerAction(item: MenuActionItem): boolean {
+  return item.variant === "danger" || item.danger === true;
+}
+function actionKey(item: MenuActionItem): string {
+  return item.id ?? item.value ?? String(item.label);
 }
 
 export type MenuProps = {
@@ -89,14 +105,17 @@ export const Menu = defineComponent({
             { key: item.id ?? index, class: "st-menu__group" },
             [
               h("h3", {}, item.label as string),
-              ...item.items.map((child) =>
+              ...(item.items ?? []).map((child) =>
                 h(
                   "button",
                   {
-                    key: child.id ?? String(child.label),
+                    key: actionKey(child),
                     type: "button",
                     role: "menuitem",
-                    class: "st-menu__item",
+                    class: classNames(
+                      "st-menu__item",
+                      isDangerAction(child) && "st-menu__item--danger",
+                    ),
                     disabled: child.disabled,
                     onClick: () => emit("select", child),
                     onKeydown: (event: KeyboardEvent) => handleItemKeyDown(event, child),
@@ -111,13 +130,13 @@ export const Menu = defineComponent({
         return h(
           "button",
           {
-            key: actionItem.id ?? String(actionItem.label) ?? index,
+            key: actionKey(actionItem),
             type: "button",
             role: "menuitem",
             disabled: actionItem.disabled,
             class: classNames(
               "st-menu__item",
-              actionItem.variant === "danger" && "st-menu__item--danger",
+              isDangerAction(actionItem) && "st-menu__item--danger",
             ),
             onClick: () => emit("select", actionItem),
             onKeydown: (event: KeyboardEvent) => handleItemKeyDown(event, actionItem),
