@@ -1,19 +1,32 @@
 <script lang="ts">
-  import { Badge, Transcription } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
-  const segments = [
+  // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
+  // (toute la page bascule, pas seulement le bloc « Aperçu live »).
+  const presentationDemo: NodeSpec[] = [
     {
-      speaker: "Narrateur",
-      startTime: "00:00",
-      endTime: "00:12",
-      text: "Bienvenue dans cette démo de composant Transcription."
-    },
-    {
-      speaker: "Intervenant",
-      startTime: "00:12",
-      endTime: "00:24",
-      text: "Le composant affiche une transcription verticale avec horodatage."
+      comp: "Transcription",
+      props: {
+        title: "Transcription",
+        open: true,
+        segments: [
+          {
+            speaker: "Narrateur",
+            startTime: "00:00",
+            endTime: "00:12",
+            text: "Bienvenue dans cette démo de composant Transcription."
+          },
+          {
+            speaker: "Intervenant",
+            startTime: "00:12",
+            endTime: "00:24",
+            text: "Le composant affiche une transcription verticale avec horodatage."
+          }
+        ]
+      }
     }
   ];
 </script>
@@ -35,9 +48,10 @@
 
   <section class="docs-section" id="Introduction">
     <h2>Présentation</h2>
-    <div class="docs-example">
-      <Transcription title="Transcription" segments={segments} />
-    </div>
+    <FrameworkDemo nodes={presentationDemo} label="Transcription" />
+    <p class="docs-demo-note">
+      L’accordéon est ouvert (<code>open</code>) pour la démonstration.
+    </p>
   </section>
 
   <section class="docs-section" id="API">

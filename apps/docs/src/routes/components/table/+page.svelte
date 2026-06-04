@@ -1,23 +1,34 @@
 <script lang="ts">
-  import { Badge, Table } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
   const fr = (frText: string, enText: string) =>
     locale.value === "fr" ? frText : enText;
 
-  const columns = [
-    { key: "id", label: fr("ID", "ID") },
-    { key: "label", label: fr("Libellé", "Label") },
-    { key: "status", label: fr("Statut", "Status" ) }
-  ];
-
-  const rows = [
-    { id: "UI-01", label: fr("Navigation", "Navigation"), status: fr("Stable", "Stable") },
-    { id: "UI-02", label: fr("Composants", "Components"), status: fr("Stable", "Stable") },
-    { id: "UI-03", label: fr("Tokens", "Tokens"), status: fr("En évolution", "Evolving") }
-  ];
+  // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
+  // (toute la page bascule, pas seulement le bloc « Aperçu live »).
+  const exampleDemo = $derived<NodeSpec[]>([
+    {
+      comp: "Table",
+      props: {
+        caption: fr("Données de composants", "Component data"),
+        columns: [
+          { key: "id", label: fr("ID", "ID") },
+          { key: "label", label: fr("Libellé", "Label") },
+          { key: "status", label: fr("Statut", "Status") }
+        ],
+        rows: [
+          { id: "UI-01", label: fr("Navigation", "Navigation"), status: fr("Stable", "Stable") },
+          { id: "UI-02", label: fr("Composants", "Components"), status: fr("Stable", "Stable") },
+          { id: "UI-03", label: fr("Tokens", "Tokens"), status: fr("En évolution", "Evolving") }
+        ]
+      }
+    }
+  ]);
 </script>
 
 <div class="docs-page">
@@ -48,9 +59,7 @@
 
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
-    <div class="docs-example" aria-label={fr("Exemple de table", "Table example")}>
-      <Table columns={columns} rows={rows} caption={fr("Données de composants", "Component data")} />
-    </div>
+    <FrameworkDemo nodes={exampleDemo} label={fr("Exemple de table", "Table example")} />
   </section>
 
   <section class="docs-section">

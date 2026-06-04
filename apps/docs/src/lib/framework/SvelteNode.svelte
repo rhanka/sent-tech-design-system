@@ -84,7 +84,14 @@
     PasswordInput,
     PaginationNav,
     MenuTriggerButton,
-    Toggletip
+    Toggletip,
+    BackToTop,
+    DisplaySettings,
+    MediaContent,
+    Notification,
+    Transcription,
+    ForceGraph,
+    TileGroup
   } from "@sentropic/design-system-svelte";
   import Self from "./SvelteNode.svelte";
   import type { Component } from "svelte";
@@ -171,7 +178,14 @@
     PasswordInput,
     PaginationNav,
     MenuTriggerButton,
-    Toggletip
+    Toggletip,
+    BackToTop,
+    DisplaySettings,
+    MediaContent,
+    Notification,
+    Transcription,
+    ForceGraph,
+    TileGroup
   } as unknown as Record<ComponentName, Component<Record<string, unknown>>>;
 
   let { node }: { node: NodeSpec } = $props();
