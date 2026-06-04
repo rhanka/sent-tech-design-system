@@ -7,6 +7,8 @@ export type SearchProps = {
   label?: unknown;
   size?: SearchSize;
   modelValue?: string;
+  /** Svelte/React-canonical alias for `modelValue`. */
+  value?: string;
   placeholder?: string;
   disabled?: boolean;
   id?: string;
@@ -24,6 +26,7 @@ export const Search = defineComponent({
     label: { type: [String, Object] as unknown as () => unknown, default: undefined },
     size: { type: String as () => SearchSize, default: "md" },
     modelValue: { type: String, default: undefined },
+    value: { type: String, default: undefined },
     placeholder: { type: String, default: undefined },
     disabled: { type: Boolean, default: false },
     id: { type: String, default: undefined },
@@ -63,7 +66,7 @@ export const Search = defineComponent({
             id: inputId,
             class: "st-search__control st-search__input",
             type: "search",
-            value: props.modelValue,
+            value: props.modelValue ?? props.value,
             placeholder: props.placeholder,
             disabled: props.disabled,
             onInput: (event: Event) => {
