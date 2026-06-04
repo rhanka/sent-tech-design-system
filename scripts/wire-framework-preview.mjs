@@ -47,23 +47,16 @@ for (const slug of slugs) {
     continue;
   }
 
-  // 2a) insertion de l'import
+  // 2a) insertion de l'import — en tête du bloc <script>, robuste aux imports
+  // multi-lignes (insérer après l'ancre locale cassait les imports `import {\n…`).
   let out = src;
-  const localeImport = '  import { locale } from "$lib/locale.svelte";';
-  if (out.includes(localeImport)) {
-    out = out.replace(localeImport, `${localeImport}\n${IMPORT_LINE}`);
-  } else {
-    // fallback : avant </script>, après le dernier import du bloc script
-    const scriptEnd = out.indexOf("</script>");
-    const head = out.slice(0, scriptEnd);
-    const lastImport = head.lastIndexOf("\n  import ");
-    if (lastImport === -1) {
-      skipped.push([slug, "ancrage import introuvable"]);
-      continue;
-    }
-    const eol = head.indexOf("\n", lastImport + 1);
-    out = out.slice(0, eol) + "\n" + IMPORT_LINE + out.slice(eol);
+  const scriptOpen = out.match(/<script[^>]*>\n/);
+  if (!scriptOpen) {
+    skipped.push([slug, "pas de bloc <script>"]);
+    continue;
   }
+  const insAt = scriptOpen.index + scriptOpen[0].length;
+  out = out.slice(0, insAt) + IMPORT_LINE + "\n" + out.slice(insAt);
 
   // 2b) insertion du tag après le </section> du docs-hero
   const tag = `\n  <FrameworkPreview example="${key}" title="Aperçu live" />\n`;
