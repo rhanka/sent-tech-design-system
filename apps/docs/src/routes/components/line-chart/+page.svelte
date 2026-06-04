@@ -1,8 +1,10 @@
 <script lang="ts">
-  import { Badge, LineChart, type LineChartDatum } from "@sentropic/design-system-svelte";
+  import { Badge, type LineChartDatum } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
   const copy = {
     fr: {
@@ -71,6 +73,65 @@
     { x: 20, y: 470 },
     { x: 24, y: 350 }
   ];
+
+  // Démos basculées dans le framework actif (arbre NodeSpec neutre).
+  const simpleDemo = $derived<NodeSpec[]>([
+    {
+      el: "div",
+      props: { class: "chart-wrapper" },
+      children: [
+        {
+          comp: "LineChart",
+          props: {
+            data: weekly,
+            label: locale.value === "fr" ? "Requêtes par jour" : "Requests per day",
+            width: 520,
+            height: 260
+          }
+        }
+      ]
+    }
+  ]);
+
+  const smoothDemo = $derived<NodeSpec[]>([
+    {
+      el: "div",
+      props: { class: "chart-wrapper" },
+      children: [
+        {
+          comp: "LineChart",
+          props: {
+            data: monthlyCost,
+            smooth: true,
+            area: true,
+            tone: "category3",
+            label: locale.value === "fr" ? "Coût mensuel (k$)" : "Monthly cost (k$)",
+            width: 520,
+            height: 260
+          }
+        }
+      ]
+    }
+  ]);
+
+  const numericDemo = $derived<NodeSpec[]>([
+    {
+      el: "div",
+      props: { class: "chart-wrapper" },
+      children: [
+        {
+          comp: "LineChart",
+          props: {
+            data: latency,
+            tone: "category5",
+            label: locale.value === "fr" ? "Latence (ms) sur 24 h" : "Latency (ms) over 24h",
+            width: 520,
+            height: 260
+          }
+        }
+      ]
+    }
+  ]);
 </script>
 
 <div class="docs-page">
@@ -88,48 +149,17 @@
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
-    <div class="docs-example" aria-label={text().simpleTitle}>
-      <h3 class="docs-demo-title">{text().simpleTitle}</h3>
-      <p class="docs-demo-note">{text().simpleDesc}</p>
-      <div class="chart-wrapper">
-        <LineChart
-          data={weekly}
-          label={locale.value === "fr" ? "Requêtes par jour" : "Requests per day"}
-          width={520}
-          height={260}
-        />
-      </div>
-    </div>
+    <h3 class="docs-demo-title">{text().simpleTitle}</h3>
+    <p class="docs-demo-note">{text().simpleDesc}</p>
+    <FrameworkDemo nodes={simpleDemo} label={text().simpleTitle} />
 
-    <div class="docs-example" aria-label={text().smoothTitle}>
-      <h3 class="docs-demo-title">{text().smoothTitle}</h3>
-      <p class="docs-demo-note">{text().smoothDesc}</p>
-      <div class="chart-wrapper">
-        <LineChart
-          data={monthlyCost}
-          smooth
-          area
-          tone="category3"
-          label={locale.value === "fr" ? "Coût mensuel (k$)" : "Monthly cost (k$)"}
-          width={520}
-          height={260}
-        />
-      </div>
-    </div>
+    <h3 class="docs-demo-title">{text().smoothTitle}</h3>
+    <p class="docs-demo-note">{text().smoothDesc}</p>
+    <FrameworkDemo nodes={smoothDemo} label={text().smoothTitle} />
 
-    <div class="docs-example" aria-label={text().numericTitle}>
-      <h3 class="docs-demo-title">{text().numericTitle}</h3>
-      <p class="docs-demo-note">{text().numericDesc}</p>
-      <div class="chart-wrapper">
-        <LineChart
-          data={latency}
-          tone="category5"
-          label={locale.value === "fr" ? "Latence (ms) sur 24 h" : "Latency (ms) over 24h"}
-          width={520}
-          height={260}
-        />
-      </div>
-    </div>
+    <h3 class="docs-demo-title">{text().numericTitle}</h3>
+    <p class="docs-demo-note">{text().numericDesc}</p>
+    <FrameworkDemo nodes={numericDemo} label={text().numericTitle} />
   </section>
 
   <section class="docs-section">
@@ -195,7 +225,8 @@
     color: var(--st-semantic-text-primary);
   }
 
-  .chart-wrapper {
+  /* Rendu dans un composant enfant (SvelteNode) / île : style global requis. */
+  :global(.chart-wrapper) {
     width: 100%;
     max-width: 560px;
     margin-top: 0.75rem;

@@ -1,6 +1,8 @@
 <script lang="ts">
-  import { Badge, StackedBarChart, type StackedBarDatum } from "@sentropic/design-system-svelte";
+  import { Badge, type StackedBarDatum } from "@sentropic/design-system-svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
   const data: StackedBarDatum[] = [
     { label: "Q1", segments: [
@@ -18,6 +20,16 @@
       { label: "Tokens", value: 18 },
       { label: "Docs", value: 11 }
     ]}
+  ];
+
+  const exampleDemo: NodeSpec[] = [
+    {
+      el: "div",
+      props: { class: "docs-stacked-box" },
+      children: [
+        { comp: "StackedBarChart", props: { data, label: "Production par trimestre" } }
+      ]
+    }
   ];
 </script>
 
@@ -39,9 +51,7 @@
 
   <section class="docs-section">
     <h2>Exemple</h2>
-    <div class="docs-stacked-box">
-      <StackedBarChart {data} label="Production par trimestre" />
-    </div>
+    <FrameworkDemo nodes={exampleDemo} label="Production par trimestre" />
   </section>
 
   <section class="docs-section">
@@ -64,5 +74,6 @@
 </div>
 
 <style>
-  .docs-stacked-box { max-width: 32rem; }
+  /* Rendu dans un composant enfant (SvelteNode) / île : style global requis. */
+  :global(.docs-stacked-box) { max-width: 32rem; }
 </style>

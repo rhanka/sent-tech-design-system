@@ -1,12 +1,24 @@
 <script lang="ts">
-  import { Badge, DonutChart, type DonutChartDatum } from "@sentropic/design-system-svelte";
+  import { Badge, type DonutChartDatum } from "@sentropic/design-system-svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
   const data: DonutChartDatum[] = [
     { label: "Composants", value: 62 },
     { label: "Tokens", value: 28 },
     { label: "Thèmes", value: 14 },
     { label: "Contrats", value: 9 }
+  ];
+
+  const exampleDemo: NodeSpec[] = [
+    {
+      el: "div",
+      props: { class: "docs-donut-box" },
+      children: [
+        { comp: "DonutChart", props: { data, label: "Répartition des éléments du DS", centerLabel: "113" } }
+      ]
+    }
   ];
 </script>
 
@@ -29,9 +41,7 @@
 
   <section class="docs-section">
     <h2>Exemple</h2>
-    <div class="docs-donut-box">
-      <DonutChart {data} label="Répartition des éléments du DS" centerLabel="113" />
-    </div>
+    <FrameworkDemo nodes={exampleDemo} label="Répartition des éléments du DS" />
   </section>
 
   <section class="docs-section">
@@ -56,5 +66,6 @@
 </div>
 
 <style>
-  .docs-donut-box { max-width: 16rem; }
+  /* Rendu dans un composant enfant (SvelteNode) / île : style global requis. */
+  :global(.docs-donut-box) { max-width: 16rem; }
 </style>

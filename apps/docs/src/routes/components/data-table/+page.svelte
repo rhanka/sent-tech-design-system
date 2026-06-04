@@ -1,8 +1,10 @@
 <script lang="ts">
-  import { Badge, DataTable, type DataTableColumn, type DataTableRow, type DataTableSort } from "@sentropic/design-system-svelte";
+  import { Badge, type DataTableColumn, type DataTableRow } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
   const copy = {
     fr: {
@@ -59,19 +61,45 @@
     { id: "stream", name: "Streaming", team: "Data", region: "APAC", uptime: 95.05, status: "Degraded" }
   ];
 
-  let selectedIds = $state<string[]>([]);
-  let page = $state(1);
-  let clickedRow = $state<string>("");
-  let sortBy = $state<DataTableSort | null>(null);
+  // Démos basculées dans le framework actif (arbre NodeSpec neutre). Les versions
+  // React/Vue du DataTable ne portent que le sous-ensemble commun (colonnes,
+  // lignes, légende, taille, pagination) ; le tri/la sélection/onRowClick du
+  // Svelte sont donc figés ici pour garantir la parité multi-framework.
+  const basicDemo = $derived<NodeSpec[]>([
+    {
+      comp: "DataTable",
+      props: {
+        columns: dataColumns,
+        rows,
+        caption: text().basicCaption,
+        size: "sm"
+      }
+    },
+    {
+      el: "p",
+      children: [
+        {
+          el: "strong",
+          children: [locale.value === "fr" ? "Format de ligne :" : "Row format:"]
+        },
+        " ",
+        { el: "code", children: ["ID, name, team, region, uptime, status"] }
+      ]
+    }
+  ]);
 
-  function rowLabel(row: DataTableRow) {
-    clickedRow = String(row.name);
-  }
-
-  const selectionCount = $derived(`${selectedIds.length}`);
-  const sortState = $derived(
-    sortBy ? `${sortBy.key} (${sortBy.direction})` : locale.value === "fr" ? "aucun" : "none"
-  );
+  const pagedDemo = $derived<NodeSpec[]>([
+    {
+      comp: "DataTable",
+      props: {
+        caption: text().interactiveCaption,
+        columns: dataColumns,
+        rows,
+        size: "md",
+        pageSize: 3
+      }
+    }
+  ]);
 </script>
 
 <div class="docs-page">
@@ -91,56 +119,22 @@
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
-    <div
-      class="docs-example docs-dataTable-example"
-      aria-label={locale.value === "fr" ? "Tableau de base" : "Basic data table"}
-    >
-      <DataTable
-        columns={dataColumns}
-        rows={rows}
-        caption={text().basicCaption}
-        size="sm"
-      />
-      <p>
-        <strong>{locale.value === "fr" ? "Format de ligne" : "Row format"}:</strong>
-        <code>ID, name, team, region, uptime, status</code>
-      </p>
-    </div>
+    <h3 class="docs-demo-title">{text().basicCaption}</h3>
+    <FrameworkDemo
+      nodes={basicDemo}
+      label={locale.value === "fr" ? "Tableau de base" : "Basic data table"}
+    />
 
-    <div
-        class="docs-example docs-dataTable-example"
-        aria-label={locale.value === "fr" ? "Tableau interactif" : "Interactive data table"}
-    >
-      <DataTable
-        caption={text().interactiveCaption}
-        columns={dataColumns}
-        rows={rows}
-        size="md"
-        selectable="multiple"
-        bind:selectedIds
-        bind:page
-        bind:sortBy
-        pageSize={3}
-        onRowClick={rowLabel}
-        selectAllLabel={locale.value === "fr" ? "Sélectionner toutes les lignes" : "Select all rows"}
-        selectRowLabel={locale.value === "fr" ? "Sélectionner la ligne" : "Select row"}
-        sortAscendingLabel={locale.value === "fr" ? "Tri ascendant" : "Sorted ascending"}
-        sortDescendingLabel={locale.value === "fr" ? "Tri descendant" : "Sorted descending"}
-        sortNoneLabel={locale.value === "fr" ? "Sans tri" : "Not sorted"}
-        previousLabel={locale.value === "fr" ? "Précédent" : "Previous"}
-        nextLabel={locale.value === "fr" ? "Suivant" : "Next"}
-        rangeLabel={({ start, end, total }) =>
-          locale.value === "fr" ? `${start}-${end} sur ${total}` : `${start}-${end} of ${total}`
-        }
-      />
-      <div>
-        <p>
-          {text().clickedPrefix}: <code>{clickedRow || text().noSelection}</code> ·
-          {locale.value === "fr" ? "Tri" : "Sort"}: <code>{sortState}</code> ·
-          {locale.value === "fr" ? "Sélection" : "Selection"}: <code>{selectionCount}</code>
-        </p>
-      </div>
-    </div>
+    <h3 class="docs-demo-title">{text().interactiveCaption}</h3>
+    <FrameworkDemo
+      nodes={pagedDemo}
+      label={locale.value === "fr" ? "Tableau paginé" : "Paged data table"}
+    />
+    <p class="docs-demo-note">
+      {locale.value === "fr"
+        ? "Le tri par en-tête, la sélection multiple et le clic de ligne sont interactifs dans l'implémentation Svelte du DataTable ; cet aperçu est figé sur le sous-ensemble commun aux trois frameworks (colonnes, lignes, légende, taille, pagination)."
+        : "Header sorting, multi-select, and row clicks are interactive in the Svelte DataTable; this preview is frozen to the subset shared by all three frameworks (columns, rows, caption, size, paging)."}
+    </p>
   </section>
 
   <section class="docs-section">
@@ -215,9 +209,16 @@
 </div>
 
 <style>
-  .docs-dataTable-example {
-    align-items: stretch;
-    display: grid;
-    gap: 0.75rem;
+  .docs-demo-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 1.5rem 0 0.25rem 0;
+    color: var(--st-semantic-text-primary);
+  }
+
+  .docs-demo-note {
+    color: var(--st-semantic-text-secondary);
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
   }
 </style>
