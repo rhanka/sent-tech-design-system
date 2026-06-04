@@ -1,16 +1,41 @@
 <script lang="ts">
-  import { Badge, Button } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
   const fr = (frText: string, enText: string) => (locale.value === "fr" ? frText : enText);
 
-  let loading = $state(false);
-  function fakeSubmit() {
-    loading = true;
-    setTimeout(() => (loading = false), 1600);
-  }
+  // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
+  // (toute la page bascule, pas seulement le bloc Aperçu live).
+  const variantsDemo: NodeSpec[] = [
+    { comp: "Button", props: { variant: "primary" }, children: ["Primary"] },
+    { comp: "Button", props: { variant: "secondary" }, children: ["Secondary"] },
+    { comp: "Button", props: { variant: "ghost" }, children: ["Ghost"] },
+    { comp: "Button", props: { variant: "danger" }, children: ["Danger"] }
+  ];
+  const sizesDemo: NodeSpec[] = [
+    { comp: "Button", props: { size: "sm" }, children: ["Small"] },
+    { comp: "Button", props: { size: "md" }, children: ["Medium"] },
+    { comp: "Button", props: { size: "lg" }, children: ["Large"] }
+  ];
+  const disabledDemo: NodeSpec[] = [
+    { comp: "Button", props: { disabled: true }, children: ["Primary disabled"] },
+    { comp: "Button", props: { variant: "secondary", disabled: true }, children: ["Secondary disabled"] },
+    { comp: "Button", props: { variant: "ghost", disabled: true }, children: ["Ghost disabled"] },
+    { comp: "Button", props: { variant: "danger", disabled: true }, children: ["Danger disabled"] }
+  ];
+  const asyncDemo: NodeSpec[] = [
+    { comp: "Button", children: ["Enregistrer"] },
+    { comp: "Button", props: { disabled: true }, children: ["Enregistrement…"] }
+  ];
+  const typesDemo: NodeSpec[] = [
+    { comp: "Button", props: { type: "submit" }, children: ["Submit"] },
+    { comp: "Button", props: { type: "reset", variant: "secondary" }, children: ["Reset"] },
+    { comp: "Button", props: { type: "button", variant: "ghost" }, children: ["Button"] }
+  ];
 </script>
 
 <div class="docs-page">
@@ -49,12 +74,7 @@
         "Four variants rank actions: primary (main action), secondary (supporting action), ghost (low-emphasis action), danger (destructive action)."
       )}
     </p>
-    <div class="docs-example" aria-label={t(locale.value, "variants")}>
-      <Button variant="primary">Primary</Button>
-      <Button variant="secondary">Secondary</Button>
-      <Button variant="ghost">Ghost</Button>
-      <Button variant="danger">Danger</Button>
-    </div>
+    <FrameworkDemo nodes={variantsDemo} label={t(locale.value, "variants")} />
   </section>
 
   <section class="docs-section">
@@ -65,11 +85,7 @@
         "Three sizes: sm (2 rem tall, dense toolbars), md (2.5 rem, default), lg (3 rem, touch targets or hero CTAs)."
       )}
     </p>
-    <div class="docs-example" aria-label={t(locale.value, "sizes")}>
-      <Button size="sm">Small</Button>
-      <Button size="md">Medium</Button>
-      <Button size="lg">Large</Button>
-    </div>
+    <FrameworkDemo nodes={sizesDemo} label={t(locale.value, "sizes")} />
   </section>
 
   <section class="docs-section">
@@ -80,23 +96,14 @@
         "Keyboard focus is always visible (outline or box-shadow depending on theme). The disabled state lowers opacity and blocks the pointer."
       )}
     </p>
-    <div class="docs-example" aria-label={fr("Désactivé par variante", "Disabled per variant")}>
-      <Button disabled>Primary disabled</Button>
-      <Button variant="secondary" disabled>Secondary disabled</Button>
-      <Button variant="ghost" disabled>Ghost disabled</Button>
-      <Button variant="danger" disabled>Danger disabled</Button>
-    </div>
-    <div class="docs-example" aria-label={fr("Action asynchrone", "Async action")}>
-      <Button onclick={fakeSubmit} disabled={loading}>
-        {loading ? fr("Enregistrement…", "Saving…") : fr("Enregistrer", "Save")}
-      </Button>
-      <p class="docs-demo-note">
-        {fr(
-          "Pendant une opération asynchrone, désactivez le bouton et changez son libellé pour signaler l'attente.",
-          "During an async operation, disable the button and change its label to signal the wait."
-        )}
-      </p>
-    </div>
+    <FrameworkDemo nodes={disabledDemo} label={fr("Désactivé par variante", "Disabled per variant")} />
+    <FrameworkDemo nodes={asyncDemo} label={fr("Action asynchrone", "Async action")} />
+    <p class="docs-demo-note">
+      {fr(
+        "Pendant une opération asynchrone, désactivez le bouton et changez son libellé pour signaler l'attente.",
+        "During an async operation, disable the button and change its label to signal the wait."
+      )}
+    </p>
   </section>
 
   <section class="docs-section">
@@ -107,11 +114,7 @@
         "Inside a form, pick the right type: submit sends the form, reset clears it, button has no implicit behavior."
       )}
     </p>
-    <div class="docs-example" aria-label="Form types">
-      <Button type="submit">Submit</Button>
-      <Button type="reset" variant="secondary">Reset</Button>
-      <Button type="button" variant="ghost">Button</Button>
-    </div>
+    <FrameworkDemo nodes={typesDemo} label="Form types" />
   </section>
 
   <section class="docs-section">
