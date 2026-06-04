@@ -28,6 +28,19 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 | WP13 | Portage React | 🟢 | 100% | Package React complet, docs `/react`, workflow de release dédié, 95 tests verts. | Mise à l’échelle/retouches post-release. | Aucun. |
 | WP14 | Chrome documentaire par thème | 🟢 | 100% | Forme du chrome (header/nav/sidebar/logo) adaptée pour DSFR/Carbon/Airbus + vérification fidélité DSFR 90,2% / Carbon 92,7% / Airbus 86,6%. | Ajustements finaux de finesse visuelle selon retours externes. | Validation publique de la fidélité avant clôture définitive. |
 
+## Mise à jour 2026-06-03 — parité multi-framework complète + déploiement réparé
+
+**Parité React/Vue totale : 86/86/86** — tous les composants Svelte sont portés en React et Vue (zéro écart, audit par nom).
+
+- **Publication** : `react@0.3.0` et `vue@0.3.0` sur npm (étapes `0.2.0` = ForceGraph, `0.3.0` = 6 composants). React 107 tests, Vue 421 tests verts ; lock synchronisé.
+- **ForceGraph 0.10.4** porté React + Vue (simulation, zoom/pan, drag, shapes, edge-hover, legend + `GraphLegend` + `nodeShapePath`). Le Svelte 0.10.4 est consommé + vérifié par graphify (PR #90) ; négociation `neg:forcegraph` signée côté DS, en attente contre-signature graphify.
+- **6 composants ajoutés à React+Vue** : BackToTop, DisplaySettings, MediaContent, Notification, TableOfContents, Transcription (props/CSS/a11y, emits dismiss/change, tests dédiés).
+- **Aperçu live multi-framework (A+C)** : `FrameworkPreview` câblé sur **71/90** pages composant — le switch Svelte/React/Vue monte le **vrai runtime** (`createRoot` React / `createApp` Vue) + snippet par framework. Switcher + persistance URL (`?framework=&theme=`) / localStorage. Reste : pages sans exemple (force-graph, overlays, composites).
+- **Thème Airbus publié** `@sentropic/design-system-theme-airbus@0.1.0` (décision de distribution levée par l'utilisateur).
+- **Déploiement GitHub Pages réparé** : le pin docs `svelte@0.10.3` (workspace passé en `0.10.4`) faisait résoudre en CI la 0.10.3 publiée sans `BackToTop` → `vite build` cassé → **tous les déploiements Pages en échec depuis le 03/06 ~01:48**. En local, le workspace symlinké masquait le bug. Pins docs alignés (`svelte` 0.10.4, `react`/`vue` 0.3.0) → déploiement rétabli ; bandeau Vue « bientôt » corrigé (était obsolète).
+
+**Reste** : finaliser l'A+C (exemples pour les pages restantes) ; audit upstream WP7 (~80%) ; theming Phase 2 WP10. Événementiel : sceller `neg:forcegraph` (graphify), trusted publishers OIDC `#10` (navigateur).
+
 ## Suivi Antigravity — reprise header docs 2026-05-24
 
 ### Fait
