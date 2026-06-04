@@ -1,52 +1,66 @@
 <script lang="ts">
-  import {
-    Badge,
-    Menu,
-    MenuPopover,
-    MenuTriggerButton
-  } from "@sentropic/design-system-svelte";
-  import { Archive, Copy, Pencil, Share2, Trash2 } from "@lucide/svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
   const fr = (frText: string, enText: string) => (locale.value === "fr" ? frText : enText);
 
-  let actionsTrigger: HTMLElement | null = $state(null);
-  let actionsOpen = $state(false);
-  let lastAction = $state<string | null>(null);
-
-  let bottomStartTrigger: HTMLElement | null = $state(null);
-  let bottomEndTrigger: HTMLElement | null = $state(null);
-  let topStartTrigger: HTMLElement | null = $state(null);
-  let topEndTrigger: HTMLElement | null = $state(null);
-  let bottomStartOpen = $state(false);
-  let bottomEndOpen = $state(false);
-  let topStartOpen = $state(false);
-  let topEndOpen = $state(false);
-
-  const actionItems = [
-    { kind: "group" as const, label: fr("Édition", "Edit") },
-    { label: fr("Éditer", "Edit"), value: "edit", icon: Pencil },
-    { label: fr("Dupliquer", "Duplicate"), value: "duplicate", icon: Copy },
-    { kind: "divider" as const },
-    { kind: "group" as const, label: fr("Distribuer", "Distribute") },
-    { label: fr("Partager", "Share"), value: "share", icon: Share2 },
-    { label: fr("Archiver", "Archive"), value: "archive", icon: Archive },
-    { kind: "divider" as const },
-    { label: fr("Supprimer", "Delete"), value: "delete", icon: Trash2, danger: true }
-  ];
-
-  function selectAction(value: string) {
-    lastAction = value;
-    actionsOpen = false;
-  }
+  // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
+  // (toute la page bascule, pas seulement le bloc « Aperçu live »). Le panneau est
+  // ancré et ouvert/fermé au clic sur la page réelle ; ici il est figé `open` pour
+  // montrer le contenu et le placement. La prop trigger (HTMLElement) et le suivi de
+  // « dernière action » sont par nature interactifs : non reproduits dans la démo neutre.
+  // MenuPopover (Svelte) ne prend pas de prop `items` : il rend ses `children`.
+  // On y imbrique donc un Menu, dont la shape d'items est celle du composant Svelte
+  // (kind/value/danger) pour un rendu SSR correct.
+  const actionsDemo = $derived<NodeSpec[]>([
+    {
+      comp: "MenuPopover",
+      props: { open: true, placement: "bottom-start", label: fr("Actions", "Actions") },
+      children: [
+        {
+          comp: "Menu",
+          props: {
+            label: fr("Actions", "Actions"),
+            items: [
+              { kind: "group", label: fr("Édition", "Edit") },
+              { value: "edit", label: fr("Éditer", "Edit") },
+              { value: "duplicate", label: fr("Dupliquer", "Duplicate") },
+              { kind: "divider" },
+              { kind: "group", label: fr("Distribuer", "Distribute") },
+              { value: "share", label: fr("Partager", "Share") },
+              { value: "archive", label: fr("Archiver", "Archive") },
+              { kind: "divider" },
+              { value: "delete", label: fr("Supprimer", "Delete"), danger: true }
+            ]
+          }
+        }
+      ]
+    }
+  ]);
 
   const placementItems = [
-    { label: "Option A", value: "a" },
-    { label: "Option B", value: "b" },
-    { label: "Option C", value: "c" }
+    { value: "a", label: "Option A" },
+    { value: "b", label: "Option B" },
+    { value: "c", label: "Option C" }
   ];
+
+  const placementsDemo = $derived<NodeSpec[]>([
+    {
+      el: "div",
+      props: { class: "docs-demo-stack" },
+      children: (["bottom-start", "bottom-end", "top-start", "top-end"] as const).map(
+        (placement) => ({
+          comp: "MenuPopover" as const,
+          props: { open: true, placement, label: placement },
+          children: [{ comp: "Menu" as const, props: { label: placement, items: placementItems } }]
+        })
+      )
+    }
+  ]);
 </script>
 
 <div class="docs-page">
@@ -87,104 +101,21 @@
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
-    <div class="docs-example" aria-label="MenuTriggerButton + MenuPopover + Menu">
-      <div class="docs-mp-anchor" bind:this={actionsTrigger}>
-        <MenuTriggerButton
-          aria-label={fr("Ouvrir le menu d'actions", "Open actions menu")}
-          expanded={actionsOpen}
-          onclick={() => (actionsOpen = !actionsOpen)}
-        />
-      </div>
-      <MenuPopover
-        bind:open={actionsOpen}
-        trigger={actionsTrigger}
-        placement="bottom-start"
-        label={fr("Actions", "Actions")}
-      >
-        <Menu label={fr("Actions", "Actions")} items={actionItems} onselect={selectAction} />
-      </MenuPopover>
-      <p class="docs-demo-note">
-        {fr("Dernière action", "Last action")} : <code>{lastAction ?? fr("Aucune", "None")}</code>
-      </p>
-    </div>
+    <FrameworkDemo nodes={actionsDemo} label="MenuPopover + Menu" />
+    <p class="docs-demo-note">
+      {fr(
+        "Sur la page réelle, MenuTriggerButton ouvre/ferme le panneau ancré et le choix d'une action le referme. La démo le montre figé ouvert.",
+        "On the real page, MenuTriggerButton opens/closes the anchored panel and picking an action closes it. The demo shows it frozen open."
+      )}
+    </p>
 
-    <div class="docs-example docs-mp-placements" aria-label="Placements">
-      <div class="docs-mp-row">
-        <div class="docs-mp-anchor" bind:this={bottomStartTrigger}>
-          <MenuTriggerButton
-            aria-label="bottom-start"
-            expanded={bottomStartOpen}
-            onclick={() => (bottomStartOpen = !bottomStartOpen)}
-          />
-        </div>
-        <MenuPopover
-          bind:open={bottomStartOpen}
-          trigger={bottomStartTrigger}
-          placement="bottom-start"
-          label="bottom-start"
-        >
-          <Menu label="bottom-start" items={placementItems} />
-        </MenuPopover>
-        <code>bottom-start</code>
-      </div>
-
-      <div class="docs-mp-row">
-        <div class="docs-mp-anchor" bind:this={bottomEndTrigger}>
-          <MenuTriggerButton
-            aria-label="bottom-end"
-            expanded={bottomEndOpen}
-            onclick={() => (bottomEndOpen = !bottomEndOpen)}
-          />
-        </div>
-        <MenuPopover
-          bind:open={bottomEndOpen}
-          trigger={bottomEndTrigger}
-          placement="bottom-end"
-          label="bottom-end"
-        >
-          <Menu label="bottom-end" items={placementItems} />
-        </MenuPopover>
-        <code>bottom-end</code>
-      </div>
-
-      <div class="docs-mp-row">
-        <div class="docs-mp-anchor" bind:this={topStartTrigger}>
-          <MenuTriggerButton
-            aria-label="top-start"
-            expanded={topStartOpen}
-            onclick={() => (topStartOpen = !topStartOpen)}
-          />
-        </div>
-        <MenuPopover
-          bind:open={topStartOpen}
-          trigger={topStartTrigger}
-          placement="top-start"
-          label="top-start"
-        >
-          <Menu label="top-start" items={placementItems} />
-        </MenuPopover>
-        <code>top-start</code>
-      </div>
-
-      <div class="docs-mp-row">
-        <div class="docs-mp-anchor" bind:this={topEndTrigger}>
-          <MenuTriggerButton
-            aria-label="top-end"
-            expanded={topEndOpen}
-            onclick={() => (topEndOpen = !topEndOpen)}
-          />
-        </div>
-        <MenuPopover
-          bind:open={topEndOpen}
-          trigger={topEndTrigger}
-          placement="top-end"
-          label="top-end"
-        >
-          <Menu label="top-end" items={placementItems} />
-        </MenuPopover>
-        <code>top-end</code>
-      </div>
-    </div>
+    <FrameworkDemo nodes={placementsDemo} label="Placements" />
+    <p class="docs-demo-note">
+      {fr(
+        "Les quatre placements (bottom-start, bottom-end, top-start, top-end), tous figés ouverts.",
+        "The four placements (bottom-start, bottom-end, top-start, top-end), all frozen open."
+      )}
+    </p>
   </section>
 
   <section class="docs-section">
@@ -268,20 +199,3 @@
     </ul>
   </section>
 </div>
-
-<style>
-  .docs-mp-anchor {
-    display: inline-flex;
-  }
-
-  .docs-mp-placements {
-    display: grid;
-    gap: 1rem;
-  }
-
-  .docs-mp-row {
-    align-items: center;
-    display: flex;
-    gap: 0.75rem;
-  }
-</style>

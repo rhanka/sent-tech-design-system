@@ -1,8 +1,10 @@
 <script lang="ts">
-  import { Badge, ProgressBar } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
   const copy = {
     fr: {
@@ -32,6 +34,63 @@
   } as const;
 
   const text = () => copy[locale.value];
+
+  // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
+  // (toute la page bascule, pas seulement le bloc « Aperçu live »).
+  const statesDemo = $derived<NodeSpec[]>([
+    {
+      el: "div",
+      props: { class: "docs-demo-stack" },
+      children: [
+        { comp: "ProgressBar", props: { label: text().completeLabel, value: 74, max: 100, showValue: true } },
+        {
+          comp: "ProgressBar",
+          props: {
+            label: text().validationLabel,
+            value: 88,
+            max: 100,
+            tone: "success",
+            size: "lg",
+            showValue: true,
+            helperText: locale.value === "fr" ? "Validé par QA" : "Validated by QA"
+          }
+        },
+        { comp: "ProgressBar", props: { label: text().warningLabel, value: 34, max: 100, tone: "warning", size: "sm", showValue: true } },
+        {
+          comp: "ProgressBar",
+          props: {
+            label: text().errorLabel,
+            value: 34,
+            max: 100,
+            tone: "error",
+            valueText: text().errorValueText,
+            helperText: locale.value === "fr" ? "3 tâches bloquantes" : "3 blocking items",
+            showValue: true
+          }
+        }
+      ]
+    }
+  ]);
+
+  const indeterminateDemo = $derived<NodeSpec[]>([
+    {
+      el: "div",
+      props: { class: "docs-demo-stack" },
+      children: [
+        { comp: "ProgressBar", props: { indeterminate: true, label: text().indeterminateLabel, helperText: text().indeterminateHelper } },
+        {
+          comp: "ProgressBar",
+          props: {
+            label: locale.value === "fr" ? "File d’attente vide" : "Empty queue",
+            value: 0,
+            max: 1,
+            tone: "neutral",
+            showValue: false
+          }
+        }
+      ]
+    }
+  ]);
 </script>
 
 <div class="docs-page">
@@ -51,60 +110,11 @@
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
-    <div class="docs-example docs-example--stack" aria-label={t(locale.value, "states")}>
-      <ProgressBar
-        label={text().completeLabel}
-        value={74}
-        max={100}
-        showValue
-      />
-      <ProgressBar
-        label={text().validationLabel}
-        value={88}
-        max={100}
-        tone="success"
-        size="lg"
-        showValue
-        helperText={locale.value === "fr"
-          ? "Validé par QA"
-          : "Validated by QA"}
-      />
-      <ProgressBar
-        label={text().warningLabel}
-        value={34}
-        max={100}
-        tone="warning"
-        size="sm"
-        showValue
-      />
-      <ProgressBar
-        label={text().errorLabel}
-        value={34}
-        max={100}
-        tone="error"
-        valueText={text().errorValueText}
-        helperText={locale.value === "fr" ? "3 tâches bloquantes" : "3 blocking items"}
-        showValue
-      />
-    </div>
-
-    <div
-      class="docs-example"
-      aria-label={locale.value === "fr" ? "État indéterminé" : "Indeterminate state"}
-    >
-      <ProgressBar
-        indeterminate
-        label={text().indeterminateLabel}
-        helperText={text().indeterminateHelper}
-      />
-      <ProgressBar
-        label={locale.value === "fr" ? "File d’attente vide" : "Empty queue"}
-        value={0}
-        max={1}
-        tone="neutral"
-        showValue={false}
-      />
-    </div>
+    <FrameworkDemo nodes={statesDemo} label={t(locale.value, "states")} />
+    <FrameworkDemo
+      nodes={indeterminateDemo}
+      label={locale.value === "fr" ? "État indéterminé" : "Indeterminate state"}
+    />
   </section>
 
   <section class="docs-section">

@@ -1,18 +1,37 @@
 <script lang="ts">
-  import { Badge, Header, SideNav } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
 
   const fr = (frText: string, enText: string) =>
     locale.value === "fr" ? frText : enText;
 
-  const sideNavItems = [
-    { label: fr("Composants", "Components"), href: "/components/button" },
-    { label: fr("Vue d’ensemble", "Overview"), href: "/components/side-nav" },
-    { label: fr("Thèmes", "Themes"), href: "/#themes", active: true },
-    { label: fr("Contrats", "Contracts"), href: "/#contracts" }
-  ];
+  // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
+  // (toute la page bascule, pas seulement le bloc « Aperçu live »).
+  const exampleDemo = $derived<NodeSpec[]>([
+    {
+      el: "div",
+      props: { class: "docs-demo-stack" },
+      children: [
+        { comp: "Header", props: { title: fr("Sentropic", "Sentropic") } },
+        {
+          comp: "SideNav",
+          props: {
+            label: fr("Navigation principale", "Primary navigation"),
+            items: [
+              { label: fr("Composants", "Components"), href: "/components/button" },
+              { label: fr("Vue d’ensemble", "Overview"), href: "/components/side-nav" },
+              { label: fr("Thèmes", "Themes"), href: "/#themes", active: true },
+              { label: fr("Contrats", "Contracts"), href: "/#contracts" }
+            ]
+          }
+        }
+      ]
+    }
+  ]);
 </script>
 
 <div class="docs-page">
@@ -43,10 +62,7 @@
 
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
-    <div class="docs-example" aria-label={fr("Exemple side nav", "SideNav example")}>
-      <Header title={fr("Sentropic", "Sentropic")} />
-      <SideNav items={sideNavItems} label={fr("Navigation principale", "Primary navigation")} />
-    </div>
+    <FrameworkDemo nodes={exampleDemo} label={fr("Exemple side nav", "SideNav example")} />
   </section>
 
   <section class="docs-section">
