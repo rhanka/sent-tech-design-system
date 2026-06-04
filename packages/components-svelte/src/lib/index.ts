@@ -104,8 +104,8 @@ export type {
 } from "./DataTable.svelte";
 export type { DatePickerRange } from "./DatePicker.svelte";
 export type { DonutChartDatum, DonutChartTone } from "./DonutChart.svelte";
-export type { ForceGraphNode, ForceGraphEdge, ForceGraphTone, ForceGraphNodeShape, ForceGraphLegendEntry } from "./ForceGraph.svelte";
-export { nodeShapePath } from "./ForceGraph.svelte";
+export type { ForceGraphNode, ForceGraphEdge, ForceGraphTone, ForceGraphNodeShape, ForceGraphEdgeDash, ForceGraphLegendEntry } from "./ForceGraph.svelte";
+export { nodeShapePath, edgeDashArray } from "./ForceGraph.svelte";
 export type { DropdownOption } from "./Dropdown.svelte";
 export type { HeaderAccount } from "./Header.svelte";
 export { deriveInitials } from "./Header.svelte";

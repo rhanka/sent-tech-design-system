@@ -1,10 +1,10 @@
 <script lang="ts" module>
   // Re-export types so GraphLegend can be used standalone without importing from ForceGraph.
-  export type { ForceGraphLegendEntry, ForceGraphNodeShape, ForceGraphTone } from "./ForceGraph.svelte";
+  export type { ForceGraphLegendEntry, ForceGraphNodeShape, ForceGraphTone, ForceGraphEdgeDash } from "./ForceGraph.svelte";
 </script>
 
 <script lang="ts">
-  import { nodeShapePath } from "./ForceGraph.svelte";
+  import { nodeShapePath, edgeDashArray } from "./ForceGraph.svelte";
   import type { ForceGraphLegendEntry } from "./ForceGraph.svelte";
 
   type GraphLegendProps = {
@@ -28,11 +28,12 @@
     {#each entries as entry}
       {@const swatchPath = entry.shape !== undefined ? nodeShapePath(entry.shape, 7) : null}
       {@const swatchTone = entry.tone ?? "category1"}
+      {@const swatchDash = entry.shape === undefined ? edgeDashArray(entry.dash, entry.weak) : null}
       <li class="st-graphLegend__entry">
         {#if entry.shape !== undefined}
           <svg
             class="st-graphLegend__swatch"
-            viewBox="-8 -8 16 16"
+            viewBox="-13 -13 26 26"
             width="16"
             height="16"
             aria-hidden="true"
@@ -64,6 +65,7 @@
               y2="4"
               class="st-graphLegend__edge"
               class:st-graphLegend__edge--weak={entry.weak}
+              stroke-dasharray={swatchDash}
             />
           </svg>
         {/if}
@@ -136,7 +138,6 @@
 
   .st-graphLegend__edge--weak {
     stroke: var(--st-semantic-border-subtle, #aaa);
-    stroke-dasharray: 3 3;
     opacity: 0.65;
   }
 </style>
