@@ -31,7 +31,6 @@
     buildUpdatedSearch,
     type ThemeId as UrlThemeId
   } from "$lib/url-state";
-  import FrameworkBanner from "$lib/FrameworkBanner.svelte";
   import CompareButton from "$lib/compare/CompareButton.svelte";
   import CompareTriptych from "$lib/compare/CompareTriptych.svelte";
   import ChatWidget from "$lib/chat/ChatWidget.svelte";
@@ -403,7 +402,6 @@
       </div>
     {:else}
       <main class="docs-main" id="main-content">
-        <FrameworkBanner />
         {@render children()}
       </main>
     {/if}
