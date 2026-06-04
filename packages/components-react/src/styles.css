@@ -2375,13 +2375,25 @@
 
   .st-forceGraph__edge--weak {
     stroke: var(--st-semantic-border-subtle);
-    stroke-dasharray: 3 3;
     opacity: 0.5;
   }
 
+  /* Emphasised edge (e.g. reconciliation match): thicker, fully opaque, on top. */
+  .st-forceGraph__edge--emphasis {
+    stroke: var(--st-semantic-border-interactive, var(--st-semantic-border-strong));
+    opacity: 0.95;
+  }
+
+  /* Hover: match the node hover (fully visible) so the edge is never paler
+     than the two nodes it connects. */
   .st-forceGraph__edge--hovered {
-    opacity: 0.9;
+    opacity: 1;
     stroke-width: 2;
+  }
+
+  /* Dimmed by an active selection (edge touches no selected/focused node). */
+  .st-forceGraph__edge--dim {
+    opacity: 0.12;
   }
 
   /* Invisible wide hit target for edge hover */

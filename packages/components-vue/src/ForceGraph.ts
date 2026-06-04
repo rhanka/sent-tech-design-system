@@ -24,7 +24,11 @@ export type ForceGraphNodeShape =
   | "star"
   | "hexagon"
   | "box" | "square"
+  | "roundedbox"
   | "triangle";
+
+/** Stroke dash style for typed edges. */
+export type ForceGraphEdgeDash = "solid" | "dashed" | "dotted" | "long-dash";
 
 export type ForceGraphNode = {
   /** Stable identifier; referenced by edges. */
@@ -60,8 +64,22 @@ export type ForceGraphEdge = {
   /**
    * When true the link renders as a dashed/faded "weak" link. Lets callers
    * map a confidence dimension onto link strength without extra props.
+   * Equivalent to `dash: "dashed"` plus a faded stroke (kept for back-compat).
    */
   weak?: boolean;
+  /**
+   * Typed dash pattern for the stroke. Independent of `weak`.
+   * "solid" = none, "dashed" = "6 4", "dotted" = "1 4", "long-dash" = "12 6".
+   * When omitted, falls back to the `weak` styling.
+   */
+  dash?: ForceGraphEdgeDash;
+  /**
+   * Emphasise the edge (e.g. a reconciliation/match relation) with a thicker,
+   * fully-opaque stroke. Defaults to false.
+   */
+  emphasis?: boolean;
+  /** Explicit stroke width override in px. Takes precedence over `emphasis`. */
+  width?: number;
 };
 
 export type ForceGraphLegendEntry = {
@@ -73,6 +91,11 @@ export type ForceGraphLegendEntry = {
   tone?: ForceGraphTone;
   /** When true, renders as a dashed line (edge legend). */
   weak?: boolean;
+  /**
+   * Typed dash pattern for an edge legend swatch. Independent of `weak`.
+   * When set, the swatch line uses the matching dash-array.
+   */
+  dash?: ForceGraphEdgeDash;
 };
 
 export type ForceGraphProps = {
@@ -87,48 +110,112 @@ export type ForceGraphProps = {
   selectedIds?: string[];
   focusId?: string | null;
   legend?: ForceGraphLegendEntry[];
+  edgeCurve?: number;
   onSelect?: (id: string) => void;
   onOpenEntity?: (id: string) => void;
   onEdgeHover?: (edge: ForceGraphEdge) => void;
   class?: string;
 };
 
+/**
+ * Maps a dash style (or the legacy `weak` flag) to an SVG stroke-dasharray.
+ * Returns null for a solid stroke.
+ */
+export function edgeDashArray(
+  dash: ForceGraphEdgeDash | undefined,
+  weak?: boolean,
+): string | null {
+  const effective: ForceGraphEdgeDash | undefined =
+    dash ?? (weak ? "dashed" : undefined);
+  switch (effective) {
+    case "dashed":
+      return "6 4";
+    case "dotted":
+      return "1 4";
+    case "long-dash":
+      return "12 6";
+    case "solid":
+    default:
+      return null;
+  }
+}
+
 // ---------------------------------------------------------------------------
 // SVG path helpers for the various node shapes.
-// All shapes are centered at (0,0) and sized to inscribe within radius r.
+// All shapes are centered at (0,0). Each shape is scaled so its filled area
+// matches that of the reference circle (π·r²) — this keeps equal-weight nodes
+// visually balanced rather than letting squares/diamonds read as "bigger".
+//
+// Per-shape scale factors (closed-form, area = π·r²):
+//   square / roundedbox : half-side  = (√π)/2 · r        ≈ 0.8862·r
+//   diamond             : half-diag   = √(π/2) · r        ≈ 1.2533·r
+//   triangle (equilat.) : circumradius= √(π/(3√3/4)) · r  ≈ 1.5551·r
+//   hexagon (regular)   : circumradius= √(π/(3√3/2)) · r  ≈ 1.0996·r
+//   star (5-pt, k=0.42) : outer radius= √(π/A₁) · r       ≈ 1.5953·r
+//                          where A₁ is the unit-star area (≈1.2343).
 // ---------------------------------------------------------------------------
+const STAR_INNER_RATIO = 0.42;
+const STAR_AREA_FACTOR = 1.5953498885642274; // √(π / unit-star-area)
+
+// Format a coordinate: 4 dp, snapping floating-point near-zero (e.g. 9e-16)
+// to a clean 0 so paths never contain scientific notation.
+function fmt(n: number): string {
+  const v = Math.abs(n) < 1e-9 ? 0 : n;
+  return Number(v.toFixed(4)).toString();
+}
+
 export function nodeShapePath(shape: ForceGraphNodeShape | undefined, r: number): string | null {
   const s = shape ?? "dot";
   if (s === "dot" || s === "circle") return null; // use <circle>
   if (s === "diamond") {
-    return `M 0 ${-r} L ${r} 0 L 0 ${r} L ${-r} 0 Z`;
+    const d = Math.sqrt(Math.PI / 2) * r; // half-diagonal
+    return `M 0 ${fmt(-d)} L ${fmt(d)} 0 L 0 ${fmt(d)} L ${fmt(-d)} 0 Z`;
   }
   if (s === "star") {
-    const outer = r;
-    const inner = r * 0.42;
+    const outer = STAR_AREA_FACTOR * r;
+    const inner = outer * STAR_INNER_RATIO;
     const pts: string[] = [];
     for (let i = 0; i < 10; i++) {
       const angle = (i * Math.PI) / 5 - Math.PI / 2;
       const rad = i % 2 === 0 ? outer : inner;
-      pts.push(`${rad * Math.cos(angle)},${rad * Math.sin(angle)}`);
+      pts.push(`${fmt(rad * Math.cos(angle))},${fmt(rad * Math.sin(angle))}`);
     }
     return `M ${pts.join(" L ")} Z`;
   }
   if (s === "hexagon") {
+    const R = Math.sqrt(Math.PI / ((3 * Math.sqrt(3)) / 2)) * r; // circumradius
     const pts: string[] = [];
     for (let i = 0; i < 6; i++) {
       const angle = (i * Math.PI) / 3 - Math.PI / 6;
-      pts.push(`${r * Math.cos(angle)},${r * Math.sin(angle)}`);
+      pts.push(`${fmt(R * Math.cos(angle))},${fmt(R * Math.sin(angle))}`);
     }
     return `M ${pts.join(" L ")} Z`;
   }
   if (s === "box" || s === "square") {
-    const hh = r * 0.85;
-    return `M ${-hh} ${-hh} L ${hh} ${-hh} L ${hh} ${hh} L ${-hh} ${hh} Z`;
+    const h = (Math.sqrt(Math.PI) / 2) * r; // half-side, area = (2h)² = π·r²
+    return `M ${fmt(-h)} ${fmt(-h)} L ${fmt(h)} ${fmt(-h)} L ${fmt(h)} ${fmt(h)} L ${fmt(-h)} ${fmt(h)} Z`;
+  }
+  if (s === "roundedbox") {
+    const h = (Math.sqrt(Math.PI) / 2) * r; // same footprint as square
+    const rx = h * 0.6; // ≈ r·0.3 rounding radius (h ≈ 0.886·r)
+    // Rounded rectangle via arcs, clockwise from top edge.
+    return (
+      `M ${fmt(-h + rx)} ${fmt(-h)} ` +
+      `L ${fmt(h - rx)} ${fmt(-h)} A ${fmt(rx)} ${fmt(rx)} 0 0 1 ${fmt(h)} ${fmt(-h + rx)} ` +
+      `L ${fmt(h)} ${fmt(h - rx)} A ${fmt(rx)} ${fmt(rx)} 0 0 1 ${fmt(h - rx)} ${fmt(h)} ` +
+      `L ${fmt(-h + rx)} ${fmt(h)} A ${fmt(rx)} ${fmt(rx)} 0 0 1 ${fmt(-h)} ${fmt(h - rx)} ` +
+      `L ${fmt(-h)} ${fmt(-h + rx)} A ${fmt(rx)} ${fmt(rx)} 0 0 1 ${fmt(-h + rx)} ${fmt(-h)} Z`
+    );
   }
   if (s === "triangle") {
-    const hh = r * 1.1;
-    return `M 0 ${-hh} L ${hh * 0.9} ${hh * 0.6} L ${-hh * 0.9} ${hh * 0.6} Z`;
+    // Equilateral, centred at centroid; circumradius h so apex is up.
+    const h = Math.sqrt(Math.PI / ((3 * Math.sqrt(3)) / 4)) * r;
+    const pts: string[] = [];
+    for (let i = 0; i < 3; i++) {
+      const angle = (i * 2 * Math.PI) / 3 - Math.PI / 2;
+      pts.push(`${fmt(h * Math.cos(angle))},${fmt(h * Math.sin(angle))}`);
+    }
+    return `M ${pts.join(" L ")} Z`;
   }
   return null;
 }
@@ -269,9 +356,14 @@ function runSimulation(
       }
       node.x += node.vx;
       node.y += node.vy;
-      // Keep inside a padded viewport.
-      node.x = Math.max(nodeRadius * 2, Math.min(w - nodeRadius * 2, node.x));
-      node.y = Math.max(nodeRadius * 2, Math.min(h - nodeRadius * 2, node.y));
+      // Soft clamp: allow the layout to overflow the canvas so it keeps a
+      // natural shape (fit-to-content reframes it afterwards). The wide bound
+      // only guards against runaway coordinates, it no longer glues nodes to
+      // the four edges.
+      const padX = w * 0.5 + nodeRadius * 2;
+      const padY = h * 0.5 + nodeRadius * 2;
+      node.x = Math.max(-padX, Math.min(w + padX, node.x));
+      node.y = Math.max(-padY, Math.min(h + padY, node.y));
     }
     temperature *= cooling;
   }
@@ -280,6 +372,12 @@ function runSimulation(
   for (const node of sim) out.set(node.id, { x: node.x, y: node.y });
   return out;
 }
+
+// Curvature offset factor: how far (relative to chord length) the control
+// point bows out at edgeCurve=1. Kept modest so edgeCurve≈0.15 reads "light".
+const CURVE_FACTOR = 0.5;
+// Fit-to-content margin (per side, fraction of the content box).
+const CONTENT_MARGIN = 0.08;
 
 export const ForceGraph = defineComponent({
   name: "ForceGraph",
@@ -295,6 +393,7 @@ export const ForceGraph = defineComponent({
     selectedIds: { type: Array as PropType<string[]>, default: () => [] },
     focusId: { type: String as PropType<string | null>, default: null },
     legend: { type: Array as PropType<ForceGraphLegendEntry[]>, default: undefined },
+    edgeCurve: { type: Number, default: 0.15 },
     onSelect: { type: Function as PropType<(id: string) => void>, default: undefined },
     onOpenEntity: { type: Function as PropType<(id: string) => void>, default: undefined },
     onEdgeHover: { type: Function as PropType<(edge: ForceGraphEdge) => void>, default: undefined },
@@ -406,6 +505,7 @@ export const ForceGraph = defineComponent({
 
     const positionedEdges = computed(() => {
       const nodeById = new Map(props.nodes.map((n) => [n.id, n]));
+      const curve = Math.max(0, props.edgeCurve ?? 0);
       return props.edges
         .map((e, i) => {
           const a = layout.value.get(e.source);
@@ -413,13 +513,39 @@ export const ForceGraph = defineComponent({
           if (!a || !b) return null;
           const srcNode = nodeById.get(e.source);
           const tgtNode = nodeById.get(e.target);
+          const x1 = a.x, y1 = a.y, x2 = b.x, y2 = b.y;
+          // Quadratic control point: midpoint pushed perpendicular to the chord.
+          let path: string | null = null;
+          let cx = (x1 + x2) / 2;
+          let cy = (y1 + y2) / 2;
+          if (curve > 0) {
+            const dx = x2 - x1;
+            const dy = y2 - y1;
+            const dist = Math.sqrt(dx * dx + dy * dy) || 0.0001;
+            const off = curve * dist * CURVE_FACTOR;
+            // Unit perpendicular to the chord.
+            const px = -dy / dist;
+            const py = dx / dist;
+            cx = (x1 + x2) / 2 + px * off;
+            cy = (y1 + y2) / 2 + py * off;
+            path = `M ${x1} ${y1} Q ${cx} ${cy} ${x2} ${y2}`;
+          }
+          const dashArray = edgeDashArray(e.dash, e.weak);
+          const strokeWidth =
+            typeof e.width === "number" ? e.width : e.emphasis ? 2.5 : null;
           return {
             edge: e,
             i,
-            x1: a.x,
-            y1: a.y,
-            x2: b.x,
-            y2: b.y,
+            x1,
+            y1,
+            x2,
+            y2,
+            // Tooltip / label anchor follows the curve apex when curved.
+            midX: cx,
+            midY: cy,
+            path,
+            dashArray,
+            strokeWidth,
             srcLabel: srcNode?.label ?? e.source,
             tgtLabel: tgtNode?.label ?? e.target,
           };
@@ -427,10 +553,98 @@ export const ForceGraph = defineComponent({
         .filter((e): e is NonNullable<typeof e> => e !== null);
     });
 
+    // -------------------------------------------------------------------------
+    // Fit-to-content (Feature 5): compute the real content bounding-box (node
+    // centres ± radius) and frame it with an 8% margin on each side. The base
+    // viewBox is this frame (not the fixed 0,0,w,h), so the graph is centred
+    // and never clipped. Zoom/pan stay relative to this frame.
+    // -------------------------------------------------------------------------
+    const contentBox = computed(() => {
+      const pns = positionedNodes.value;
+      if (pns.length === 0) {
+        return { x: 0, y: 0, w: props.width, h: props.height };
+      }
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      for (const p of pns) {
+        // Worst-case extent for non-circular shapes so the glyph is never clipped.
+        const ext = p.r * 1.7;
+        minX = Math.min(minX, p.x - ext);
+        minY = Math.min(minY, p.y - ext);
+        maxX = Math.max(maxX, p.x + ext);
+        maxY = Math.max(maxY, p.y + ext);
+      }
+      let w = maxX - minX;
+      let h = maxY - minY;
+      // Guard against a degenerate (single node / collinear) box.
+      if (!(w > 0)) {
+        w = props.width;
+        minX = maxX - w / 2;
+      }
+      if (!(h > 0)) {
+        h = props.height;
+        minY = maxY - h / 2;
+      }
+      const mx = w * CONTENT_MARGIN;
+      const my = h * CONTENT_MARGIN;
+      return { x: minX - mx, y: minY - my, w: w + 2 * mx, h: h + 2 * my };
+    });
+
     const hoveredNodeIndex = ref<number | null>(null);
     const hoveredEdgeIndex = ref<number | null>(null);
 
     const selectedSet = computed(() => new Set<string>(props.selectedIds ?? []));
+
+    // Adjacency: id -> set of directly connected node ids. Used to keep the
+    // direct neighbours of selected/focused nodes fully visible (demand 6).
+    const adjacency = computed(() => {
+      const adj = new Map<string, Set<string>>();
+      const add = (a: string, b: string) => {
+        let set = adj.get(a);
+        if (!set) {
+          set = new Set();
+          adj.set(a, set);
+        }
+        set.add(b);
+      };
+      for (const e of props.edges) {
+        add(e.source, e.target);
+        add(e.target, e.source);
+      }
+      return adj;
+    });
+
+    // True when a selection/focus is active — only then do we dim non-related
+    // nodes. The set of "active" ids = selected ∪ focus ∪ all their neighbours.
+    const hasActiveSelection = computed(
+      () => selectedSet.value.size > 0 || (props.focusId ?? null) != null,
+    );
+    const activeAndNeighbours = computed(() => {
+      const active = new Set<string>(selectedSet.value);
+      if (props.focusId != null) active.add(props.focusId);
+      // Expand to direct neighbours so they stay fully visible.
+      const withNeighbours = new Set<string>(active);
+      for (const id of active) {
+        const nb = adjacency.value.get(id);
+        if (nb) for (const n of nb) withNeighbours.add(n);
+      }
+      return withNeighbours;
+    });
+
+    // A node is dimmed by selection when there IS an active selection and the
+    // node is neither selected/focused nor a direct neighbour of one.
+    function isSelectionDimmed(id: string): boolean {
+      if (!hasActiveSelection.value) return false;
+      return !activeAndNeighbours.value.has(id);
+    }
+
+    // An edge stays fully visible when at least one endpoint is in the
+    // selected/focused set (it is a connection of the selection).
+    function isEdgeSelectionDimmed(e: ForceGraphEdge): boolean {
+      if (!hasActiveSelection.value) return false;
+      const srcActive = selectedSet.value.has(e.source) || props.focusId === e.source;
+      const tgtActive = selectedSet.value.has(e.target) || props.focusId === e.target;
+      return !(srcActive || tgtActive);
+    }
 
     function fireSelect(id: string) {
       props.onSelect?.(id);
@@ -457,9 +671,11 @@ export const ForceGraph = defineComponent({
     }
 
     // -------------------------------------------------------------------------
-    // Zoom + pan state.
-    //   vbW = width / zoomScale,  vbH = height / zoomScale
-    //   panX / panY = pan offset in SVG coordinate space
+    // Zoom + pan state (framed by the fit-to-content box, Feature 5). The base
+    // frame is `contentBox` (not 0,0,w,h). Zoom is a scale multiplier and pan
+    // is an offset in SVG coords, both relative to that base frame:
+    //   vbW = baseW / zoomScale,  vbH = baseH / zoomScale
+    //   vbX = baseX + panX,       vbY = baseY + panY
     // -------------------------------------------------------------------------
     const zoomScale = ref(1);
     const panX = ref(0);
@@ -469,10 +685,16 @@ export const ForceGraph = defineComponent({
     let panStart = { x: 0, y: 0, panX: 0, panY: 0 };
     const svgEl = ref<SVGSVGElement | null>(null);
 
-    const vbW = computed(() => props.width / zoomScale.value);
-    const vbH = computed(() => props.height / zoomScale.value);
-    const vbX = computed(() => panX.value);
-    const vbY = computed(() => panY.value);
+    // Base frame dimensions = fit-to-content box.
+    const baseW = computed(() => contentBox.value.w);
+    const baseH = computed(() => contentBox.value.h);
+    const baseX = computed(() => contentBox.value.x);
+    const baseY = computed(() => contentBox.value.y);
+
+    const vbW = computed(() => baseW.value / zoomScale.value);
+    const vbH = computed(() => baseH.value / zoomScale.value);
+    const vbX = computed(() => baseX.value + panX.value);
+    const vbY = computed(() => baseY.value + panY.value);
 
     function resetView() {
       zoomScale.value = 1;
@@ -490,14 +712,17 @@ export const ForceGraph = defineComponent({
       // Anchor zoom around the cursor position in SVG coords.
       if (svgEl.value) {
         const rect = svgEl.value.getBoundingClientRect();
-        const cursorSvgX = panX.value + ((ev.clientX - rect.left) / rect.width) * (props.width / zoomScale.value);
-        const cursorSvgY = panY.value + ((ev.clientY - rect.top) / rect.height) * (props.height / zoomScale.value);
-        const newVbW = props.width / newScale;
-        const newVbH = props.height / newScale;
-        const ratioX = (cursorSvgX - panX.value) / (props.width / zoomScale.value);
-        const ratioY = (cursorSvgY - panY.value) / (props.height / zoomScale.value);
-        panX.value = cursorSvgX - ratioX * newVbW;
-        panY.value = cursorSvgY - ratioY * newVbH;
+        const curW = baseW.value / zoomScale.value;
+        const curH = baseH.value / zoomScale.value;
+        const cursorSvgX = vbX.value + ((ev.clientX - rect.left) / rect.width) * curW;
+        const cursorSvgY = vbY.value + ((ev.clientY - rect.top) / rect.height) * curH;
+        const newVbW = baseW.value / newScale;
+        const newVbH = baseH.value / newScale;
+        const ratioX = (cursorSvgX - vbX.value) / curW;
+        const ratioY = (cursorSvgY - vbY.value) / curH;
+        // New top-left so the cursor anchor stays put, then back out the pan term.
+        panX.value = cursorSvgX - ratioX * newVbW - baseX.value;
+        panY.value = cursorSvgY - ratioY * newVbH - baseY.value;
       }
       zoomScale.value = newScale;
     }
@@ -558,39 +783,66 @@ export const ForceGraph = defineComponent({
       // ---- SVG canvas ----
       const edgeVNodes: VNode[] = [];
       for (const e of positionedEdges.value) {
-        // Invisible wider hit area for edge hover.
+        const onHitEnter = () => {
+          hoveredEdgeIndex.value = e.i;
+          fireEdgeHover(e.edge);
+        };
+        const onHitLeave = () => {
+          hoveredEdgeIndex.value = null;
+        };
+        const edgeClass = classNames(
+          "st-forceGraph__edge",
+          e.edge.weak && "st-forceGraph__edge--weak",
+          e.edge.emphasis && "st-forceGraph__edge--emphasis",
+          hoveredEdgeIndex.value === e.i && "st-forceGraph__edge--hovered",
+          isEdgeSelectionDimmed(e.edge) && "st-forceGraph__edge--dim",
+        );
+        // Invisible wider hit area for edge hover (follows the curve).
         edgeVNodes.push(
-          h("line", {
-            key: `hit-${e.i}`,
-            class: "st-forceGraph__edgeHit",
-            role: "presentation",
-            x1: e.x1,
-            y1: e.y1,
-            x2: e.x2,
-            y2: e.y2,
-            onMouseenter: () => {
-              hoveredEdgeIndex.value = e.i;
-              fireEdgeHover(e.edge);
-            },
-            onMouseleave: () => {
-              hoveredEdgeIndex.value = null;
-            },
-          }),
+          e.path
+            ? h("path", {
+                key: `hit-${e.i}`,
+                class: "st-forceGraph__edgeHit",
+                role: "presentation",
+                d: e.path,
+                fill: "none",
+                onMouseenter: onHitEnter,
+                onMouseleave: onHitLeave,
+              })
+            : h("line", {
+                key: `hit-${e.i}`,
+                class: "st-forceGraph__edgeHit",
+                role: "presentation",
+                x1: e.x1,
+                y1: e.y1,
+                x2: e.x2,
+                y2: e.y2,
+                onMouseenter: onHitEnter,
+                onMouseleave: onHitLeave,
+              }),
         );
         edgeVNodes.push(
-          h("line", {
-            key: `edge-${e.i}`,
-            class: classNames(
-              "st-forceGraph__edge",
-              e.edge.weak && "st-forceGraph__edge--weak",
-              hoveredEdgeIndex.value === e.i && "st-forceGraph__edge--hovered",
-            ),
-            x1: e.x1,
-            y1: e.y1,
-            x2: e.x2,
-            y2: e.y2,
-            "pointer-events": "none",
-          }),
+          e.path
+            ? h("path", {
+                key: `edge-${e.i}`,
+                class: edgeClass,
+                d: e.path,
+                fill: "none",
+                "stroke-dasharray": e.dashArray ?? undefined,
+                "stroke-width": e.strokeWidth ?? undefined,
+                "pointer-events": "none",
+              })
+            : h("line", {
+                key: `edge-${e.i}`,
+                class: edgeClass,
+                x1: e.x1,
+                y1: e.y1,
+                x2: e.x2,
+                y2: e.y2,
+                "stroke-dasharray": e.dashArray ?? undefined,
+                "stroke-width": e.strokeWidth ?? undefined,
+                "pointer-events": "none",
+              }),
         );
       }
 
@@ -635,7 +887,9 @@ export const ForceGraph = defineComponent({
             class: classNames(
               "st-forceGraph__node",
               `st-forceGraph__node--${p.tone}`,
-              hoveredNodeIndex.value !== null && hoveredNodeIndex.value !== p.i && "st-forceGraph__node--dim",
+              ((hoveredNodeIndex.value !== null && hoveredNodeIndex.value !== p.i) ||
+                isSelectionDimmed(p.node.id)) &&
+                "st-forceGraph__node--dim",
               isSelected && "st-forceGraph__node--selected",
               focusId === p.node.id && "st-forceGraph__node--focus",
             ),
@@ -712,8 +966,8 @@ export const ForceGraph = defineComponent({
       if (hei !== null) {
         const e = positionedEdges.value.find((pe) => pe.i === hei);
         if (e) {
-          const midX = (e.x1 + e.x2) / 2;
-          const midY = (e.y1 + e.y2) / 2;
+          const midX = e.midX;
+          const midY = e.midY;
           const tipChildren: VNode[] = [
             h("span", { class: "st-forceGraph__tooltipLabel" }, e.srcLabel),
           ];
@@ -756,13 +1010,15 @@ export const ForceGraph = defineComponent({
         const entries: VNode[] = props.legend.map((entry, idx) => {
           const swatchPath = entry.shape !== undefined ? nodeShapePath(entry.shape, 7) : null;
           const swatchTone = entry.tone ?? "category1";
+          const swatchDash = entry.shape === undefined ? edgeDashArray(entry.dash, entry.weak) : null;
           let swatch: VNode;
           if (entry.shape !== undefined) {
+            // Node shape legend entry (viewBox widened for area-scaled glyphs).
             swatch = h(
               "svg",
               {
                 class: "st-forceGraph__legendSwatch",
-                viewBox: "-8 -8 16 16",
+                viewBox: "-13 -13 26 26",
                 width: "16",
                 height: "16",
                 "aria-hidden": "true",
@@ -799,6 +1055,7 @@ export const ForceGraph = defineComponent({
                     "st-forceGraph__legendEdge",
                     entry.weak && "st-forceGraph__legendEdge--weak",
                   ),
+                  "stroke-dasharray": swatchDash ?? undefined,
                 }),
               ],
             );
