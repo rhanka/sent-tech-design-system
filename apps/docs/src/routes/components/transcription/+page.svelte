@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Badge, Transcription } from "@sentropic/design-system-svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   const segments = [
     {
@@ -29,6 +30,8 @@
       accessible, avec options horodatage et speaker.
     </p>
   </section>
+  <FrameworkPreview example="transcription" title="Aperçu live" />
+
 
   <section class="docs-section" id="Introduction">
     <h2>Présentation</h2>

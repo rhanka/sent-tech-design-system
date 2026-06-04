@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Badge, DisplaySettings } from "@sentropic/design-system-svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   const initialValues = {
     fontScale: "normal" as const,
@@ -21,6 +22,8 @@
       lecture : taille de texte, contraste, interligne et réduction des animations.
     </p>
   </section>
+  <FrameworkPreview example="displaysettings" title="Aperçu live" />
+
 
   <section class="docs-section" id="Introduction">
     <h2>Présentation</h2>

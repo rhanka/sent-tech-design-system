@@ -87,7 +87,13 @@ export type ComponentName =
   | "MenuPopover"
   | "OverflowMenu"
   | "Popover"
-  | "AspectRatio";
+  | "AspectRatio"
+  | "BackToTop"
+  | "DisplaySettings"
+  | "MediaContent"
+  | "Notification"
+  | "TableOfContents"
+  | "Transcription";
 
 export interface ComponentNodeSpec {
   comp: ComponentName;
@@ -125,6 +131,12 @@ export interface FrameworkExample {
 const wrap = (children: NodeSpec[]): NodeSpec => ({
   el: "div",
   props: { class: "fp-row" },
+  children
+});
+
+const stack = (children: NodeSpec[]): NodeSpec => ({
+  el: "div",
+  props: { class: "fp-stack" },
   children
 });
 
@@ -4628,6 +4640,249 @@ import { Footer } from "@sentropic/design-system-vue";
     ]"
     copyright="© 2026 Sent Tech. Tous droits réservés."
   />
+</template>`
+    }
+  },
+  notification: {
+    id: "notification",
+    slug: "notification",
+    nodes: [
+      stack([
+        {
+          comp: "Notification",
+          props: {
+            tone: "success",
+            title: "Modifications enregistrées",
+            message: "Vos préférences ont été mises à jour."
+          }
+        },
+        {
+          comp: "Notification",
+          props: {
+            tone: "warning",
+            title: "Espace presque plein",
+            message: "Il reste 2 Go disponibles sur votre tenant."
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { Notification } from "@sentropic/design-system-svelte";
+</script>
+
+<Notification tone="success" title="Modifications enregistrées" message="Vos préférences ont été mises à jour." />
+<Notification tone="warning" title="Espace presque plein" message="Il reste 2 Go disponibles sur votre tenant." />`,
+      react: `import { Notification } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <Notification tone="success" title="Modifications enregistrées" message="Vos préférences ont été mises à jour." />
+      <Notification tone="warning" title="Espace presque plein" message="Il reste 2 Go disponibles sur votre tenant." />
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { Notification } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Notification tone="success" title="Modifications enregistrées" message="Vos préférences ont été mises à jour." />
+  <Notification tone="warning" title="Espace presque plein" message="Il reste 2 Go disponibles sur votre tenant." />
+</template>`
+    }
+  },
+  displaysettings: {
+    id: "displaysettings",
+    slug: "display-settings",
+    nodes: [
+      wrap([{ comp: "DisplaySettings", props: { title: "Paramètres d'affichage" } }])
+    ],
+    code: {
+      svelte: `<script>
+  import { DisplaySettings } from "@sentropic/design-system-svelte";
+</script>
+
+<DisplaySettings title="Paramètres d'affichage" onChange={(s) => console.log(s)} />`,
+      react: `import { DisplaySettings } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return <DisplaySettings title="Paramètres d'affichage" onChange={(s) => console.log(s)} />;
+}`,
+      vue: `<script setup>
+import { DisplaySettings } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <DisplaySettings title="Paramètres d'affichage" @change="onChange" />
+</template>`
+    }
+  },
+  mediacontent: {
+    id: "mediacontent",
+    slug: "media-content",
+    nodes: [
+      wrap([
+        {
+          comp: "MediaContent",
+          props: {
+            media: "https://picsum.photos/seed/sentforge/640/360",
+            mediaAlt: "Illustration de chantier",
+            title: "Atelier Forge",
+            caption: "Aperçu du chantier livré.",
+            byline: "Crédit : Sent Tech"
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { MediaContent } from "@sentropic/design-system-svelte";
+</script>
+
+<MediaContent
+  media="/forge.jpg"
+  mediaAlt="Illustration de chantier"
+  title="Atelier Forge"
+  caption="Aperçu du chantier livré."
+  byline="Crédit : Sent Tech"
+/>`,
+      react: `import { MediaContent } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <MediaContent
+      media="/forge.jpg"
+      mediaAlt="Illustration de chantier"
+      title="Atelier Forge"
+      caption="Aperçu du chantier livré."
+      byline="Crédit : Sent Tech"
+    />
+  );
+}`,
+      vue: `<script setup>
+import { MediaContent } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <MediaContent
+    media="/forge.jpg"
+    media-alt="Illustration de chantier"
+    title="Atelier Forge"
+    caption="Aperçu du chantier livré."
+    byline="Crédit : Sent Tech"
+  />
+</template>`
+    }
+  },
+  tableofcontents: {
+    id: "tableofcontents",
+    slug: "table-of-contents",
+    nodes: [
+      wrap([
+        {
+          comp: "TableOfContents",
+          props: {
+            title: "Sur cette page",
+            activeId: "usage",
+            items: [
+              { id: "intro", label: "Introduction" },
+              { id: "usage", label: "Utilisation" },
+              { id: "api", label: "API", level: 2 },
+              { id: "a11y", label: "Accessibilité" }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { TableOfContents } from "@sentropic/design-system-svelte";
+  const items = [
+    { id: "intro", label: "Introduction" },
+    { id: "usage", label: "Utilisation" },
+    { id: "api", label: "API", level: 2 },
+    { id: "a11y", label: "Accessibilité" }
+  ];
+</script>
+
+<TableOfContents title="Sur cette page" activeId="usage" {items} />`,
+      react: `import { TableOfContents } from "@sentropic/design-system-react";
+
+const items = [
+  { id: "intro", label: "Introduction" },
+  { id: "usage", label: "Utilisation" },
+  { id: "api", label: "API", level: 2 },
+  { id: "a11y", label: "Accessibilité" }
+];
+
+export function Demo() {
+  return <TableOfContents title="Sur cette page" activeId="usage" items={items} />;
+}`,
+      vue: `<script setup>
+import { TableOfContents } from "@sentropic/design-system-vue";
+const items = [
+  { id: "intro", label: "Introduction" },
+  { id: "usage", label: "Utilisation" },
+  { id: "api", label: "API", level: 2 },
+  { id: "a11y", label: "Accessibilité" }
+];
+</script>
+
+<template>
+  <TableOfContents title="Sur cette page" active-id="usage" :items="items" />
+</template>`
+    }
+  },
+  transcription: {
+    id: "transcription",
+    slug: "transcription",
+    nodes: [
+      wrap([
+        {
+          comp: "Transcription",
+          props: {
+            open: true,
+            title: "Transcription de l'épisode",
+            segments: [
+              { speaker: "Animatrice", startTime: "0:00", endTime: "0:06", text: "Bienvenue dans cet épisode." },
+              { speaker: "Invité", startTime: "0:07", endTime: "0:14", text: "Merci de m'accueillir aujourd'hui." }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { Transcription } from "@sentropic/design-system-svelte";
+  const segments = [
+    { speaker: "Animatrice", startTime: "0:00", endTime: "0:06", text: "Bienvenue dans cet épisode." },
+    { speaker: "Invité", startTime: "0:07", endTime: "0:14", text: "Merci de m'accueillir aujourd'hui." }
+  ];
+</script>
+
+<Transcription open title="Transcription de l'épisode" {segments} />`,
+      react: `import { Transcription } from "@sentropic/design-system-react";
+
+const segments = [
+  { speaker: "Animatrice", startTime: "0:00", endTime: "0:06", text: "Bienvenue dans cet épisode." },
+  { speaker: "Invité", startTime: "0:07", endTime: "0:14", text: "Merci de m'accueillir aujourd'hui." }
+];
+
+export function Demo() {
+  return <Transcription open title="Transcription de l'épisode" segments={segments} />;
+}`,
+      vue: `<script setup>
+import { Transcription } from "@sentropic/design-system-vue";
+const segments = [
+  { speaker: "Animatrice", startTime: "0:00", endTime: "0:06", text: "Bienvenue dans cet épisode." },
+  { speaker: "Invité", startTime: "0:07", endTime: "0:14", text: "Merci de m'accueillir aujourd'hui." }
+];
+</script>
+
+<template>
+  <Transcription open title="Transcription de l'épisode" :segments="segments" />
 </template>`
     }
   }
