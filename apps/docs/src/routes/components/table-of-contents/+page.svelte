@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Badge, TableOfContents } from "@sentropic/design-system-svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   const items = [
     { id: "intro", label: "Intro", level: 1 },
@@ -22,6 +23,8 @@
       niveaux hiérarchiques. Idéal pour guider la navigation verticale des longues pages.
     </p>
   </section>
+  <FrameworkPreview example="tableofcontents" title="Aperçu live" />
+
 
   <section class="docs-section" id="intro">
     <h2>Présentation</h2>
