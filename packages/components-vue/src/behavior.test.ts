@@ -1,5 +1,6 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
+import { h } from "vue";
 import {
   Accordion,
   Alert,
@@ -2461,6 +2462,93 @@ describe("Vue behavioral parity — batch 4", () => {
       expect(wrapper.findAll("tbody tr").length).toBe(2);
     });
 
+    it("renders a sort button and cycles asc -> desc -> none on click", async () => {
+      const onSortChange = vi.fn();
+      const wrapper = mount(DataTable, {
+        props: {
+          columns: [
+            { key: "name", label: "Name", sortable: true },
+            { key: "count", label: "Count", align: "end" },
+          ],
+          rows: [
+            { id: "a", name: "Beta", count: 4 },
+            { id: "b", name: "Alpha", count: 2 },
+          ],
+          onSortChange,
+        },
+      });
+      const names = () => wrapper.findAll("tbody tr td:first-child").map((n) => n.text());
+      expect(names()).toEqual(["Beta", "Alpha"]);
+      const btn = wrapper.find(".st-dataTable__sortBtn");
+      await btn.trigger("click");
+      expect(names()).toEqual(["Alpha", "Beta"]);
+      expect(wrapper.find('th[aria-sort="ascending"]').exists()).toBe(true);
+      expect(onSortChange).toHaveBeenCalledWith({ key: "name", direction: "asc" });
+      await btn.trigger("click");
+      expect(names()).toEqual(["Beta", "Alpha"]);
+      await btn.trigger("click");
+      expect(onSortChange).toHaveBeenLastCalledWith(null);
+    });
+
+    it("supports multiple selection and emits onSelectionChange", async () => {
+      const onSelectionChange = vi.fn();
+      const wrapper = mount(DataTable, {
+        props: {
+          columns: [{ key: "name", label: "Name" }],
+          rows: [
+            { id: "a", name: "Alpha" },
+            { id: "b", name: "Beta" },
+          ],
+          selectable: "multiple",
+          onSelectionChange,
+        },
+      });
+      const boxes = wrapper.findAll('tbody input[type="checkbox"]');
+      expect(boxes.length).toBe(2);
+      await boxes[0].setValue(true);
+      expect(onSelectionChange).toHaveBeenCalledWith(["a"]);
+      expect(wrapper.find(".st-dataTable__row--selected").exists()).toBe(true);
+    });
+
+    it("paginates with a range label and prev/next controls", async () => {
+      const wrapper = mount(DataTable, {
+        props: {
+          columns: [{ key: "name", label: "Name" }],
+          rows: [
+            { id: "a", name: "Alpha" },
+            { id: "b", name: "Beta" },
+            { id: "c", name: "Gamma" },
+          ],
+          pageSize: 2,
+        },
+      });
+      expect(wrapper.find(".st-dataTable__range").text()).toBe("1–2 of 3");
+      expect(wrapper.findAll("tbody tr").length).toBe(2);
+      const buttons = wrapper.findAll(".st-dataTable__pagerBtn");
+      expect((buttons[0].element as HTMLButtonElement).disabled).toBe(true);
+      await buttons[1].trigger("click");
+      expect(wrapper.find(".st-dataTable__range").text()).toBe("3–3 of 3");
+      expect(wrapper.findAll("tbody tr").length).toBe(1);
+    });
+
+    it("renders a custom cell, an empty label and fires onRowClick", async () => {
+      const onRowClick = vi.fn();
+      const empty = mount(DataTable, {
+        props: { columns: [{ key: "name", label: "Name" }], rows: [], emptyLabel: "Nothing here" },
+      });
+      expect(empty.find(".st-dataTable__empty").text()).toBe("Nothing here");
+      const wrapper = mount(DataTable, {
+        props: {
+          columns: [{ key: "name", label: "Name", cell: (row: { name: unknown }) => h("strong", {}, String(row.name)) }],
+          rows: [{ id: "a", name: "Alpha" }],
+          onRowClick,
+        },
+      });
+      expect(wrapper.find("td strong").text()).toBe("Alpha");
+      await wrapper.find(".st-dataTable__row--clickable").trigger("click");
+      expect(onRowClick).toHaveBeenCalledWith({ id: "a", name: "Alpha" });
+    });
+
     it("has name DataTable", () => {
       expect(DataTable.name).toBe("DataTable");
     });
@@ -2678,25 +2766,42 @@ describe("Vue behavioral parity — batch 5", () => {
 
   // --- DonutChart ---
   describe("DonutChart", () => {
-    it("renders figure.st-donutChart", () => {
+    it("renders div.st-donutChart with an aria-labelled visual", () => {
       const wrapper = mount(DonutChart, {
-        props: { data: [{ value: 30 }, { value: 70 }] },
+        props: { label: "Donut", data: [{ label: "A", value: 30 }, { label: "B", value: 70 }] },
       });
-      expect(wrapper.find("figure.st-donutChart").exists()).toBe(true);
+      expect(wrapper.find("div.st-donutChart").exists()).toBe(true);
+      expect(wrapper.find(".st-donutChart__visual").attributes("aria-label")).toBe("Donut");
     });
 
-    it("renders one circle slice per datum", () => {
+    it("renders one ring-slice path per datum with tone classes", () => {
       const wrapper = mount(DonutChart, {
-        props: { data: [{ value: 40 }, { value: 60 }] },
+        props: { label: "L", data: [{ label: "A", value: 40, tone: "category3" }, { label: "B", value: 60 }] },
       });
-      expect(wrapper.findAll(".st-donutChart__slice").length).toBe(2);
+      const slices = wrapper.findAll("path.st-donutChart__slice");
+      expect(slices.length).toBe(2);
+      expect(slices[0].attributes("d")?.startsWith("M")).toBe(true);
+      expect(wrapper.find(".st-donutChart__slice--category3").exists()).toBe(true);
     });
 
-    it("renders center text with total", () => {
+    it("renders center text with the total and an SR data list", () => {
       const wrapper = mount(DonutChart, {
-        props: { data: [{ value: 30 }, { value: 70 }] },
+        props: { label: "L", data: [{ label: "A", value: 30 }, { label: "B", value: 70 }] },
       });
       expect(wrapper.find(".st-donutChart__center").text()).toBe("100");
+      const items = wrapper.findAll(".st-chartDataList li").map((n) => n.text());
+      expect(items).toEqual(["A: 30 (30%)", "B: 70 (70%)"]);
+    });
+
+    it("honours a custom centerLabel and hides it when null", () => {
+      const custom = mount(DonutChart, {
+        props: { label: "L", centerLabel: "42%", data: [{ label: "A", value: 1 }] },
+      });
+      expect(custom.find(".st-donutChart__center").text()).toBe("42%");
+      const hidden = mount(DonutChart, {
+        props: { label: "L", centerLabel: null, data: [{ label: "A", value: 1 }] },
+      });
+      expect(hidden.find(".st-donutChart__center").exists()).toBe(false);
     });
 
     it("has name DonutChart", () => {
@@ -2706,25 +2811,38 @@ describe("Vue behavioral parity — batch 5", () => {
 
   // --- ScatterPlot ---
   describe("ScatterPlot", () => {
-    it("renders figure.st-scatterPlot", () => {
+    it("renders div.st-scatterPlot with axes and an aria-labelled visual", () => {
       const wrapper = mount(ScatterPlot, {
-        props: { data: [{ x: 1, y: 2 }] },
+        props: { label: "Scatter", data: [{ x: 1, y: 2 }] },
       });
-      expect(wrapper.find("figure.st-scatterPlot").exists()).toBe(true);
+      expect(wrapper.find("div.st-scatterPlot").exists()).toBe(true);
+      expect(wrapper.find(".st-scatterPlot__visual").attributes("aria-label")).toBe("Scatter");
+      expect(wrapper.findAll(".st-scatterPlot__axis").length).toBe(2);
     });
 
     it("renders one circle per datum", () => {
       const wrapper = mount(ScatterPlot, {
-        props: { data: [{ x: 1, y: 2 }, { x: 3, y: 4 }, { x: 5, y: 6 }] },
+        props: { label: "L", data: [{ x: 1, y: 2 }, { x: 3, y: 4 }, { x: 5, y: 6 }] },
       });
       expect(wrapper.findAll(".st-scatterPlot__point").length).toBe(3);
     });
 
-    it("applies tone class to points", () => {
+    it("applies tone class to points and honours a custom radius", () => {
       const wrapper = mount(ScatterPlot, {
-        props: { data: [{ x: 1, y: 2, tone: "category3" }] },
+        props: { label: "L", radius: 9, data: [{ x: 1, y: 2, tone: "category3" }] },
       });
       expect(wrapper.find(".st-scatterPlot__point--category3").exists()).toBe(true);
+      expect(wrapper.find(".st-scatterPlot__point").attributes("r")).toBe("9");
+    });
+
+    it("renders axis labels and an SR data list", () => {
+      const wrapper = mount(ScatterPlot, {
+        props: { label: "L", xLabel: "X", yLabel: "Y", data: [{ x: 1, y: 2, label: "P1" }] },
+      });
+      const axisLabels = wrapper.findAll(".st-scatterPlot__axisLabel").map((n) => n.text());
+      expect(axisLabels).toEqual(["X", "Y"]);
+      const items = wrapper.findAll(".st-chartDataList li").map((n) => n.text());
+      expect(items).toEqual(["P1: x 1, y 2"]);
     });
 
     it("has name ScatterPlot", () => {
@@ -2770,23 +2888,26 @@ describe("Vue behavioral parity — batch 5", () => {
 
   // --- StackedBarChart ---
   describe("StackedBarChart", () => {
-    it("renders figure.st-stackedBar", () => {
+    it("renders div.st-stackedBar with an aria-labelled visual", () => {
       const wrapper = mount(StackedBarChart, {
         props: {
+          label: "Sales",
           data: [{ label: "Row 1", segments: [{ label: "A", value: 50 }, { label: "B", value: 50 }] }],
         },
       });
-      expect(wrapper.find("figure.st-stackedBar").exists()).toBe(true);
+      expect(wrapper.find("div.st-stackedBar").exists()).toBe(true);
+      expect(wrapper.find(".st-stackedBar__visual").attributes("aria-label")).toBe("Sales");
     });
 
-    it("renders segment rects", () => {
+    it("renders segment rects with tone classes", () => {
       const wrapper = mount(StackedBarChart, {
         props: {
+          label: "L",
           data: [
             {
               label: "Row 1",
               segments: [
-                { label: "A", value: 60 },
+                { label: "A", value: 60, tone: "category2" },
                 { label: "B", value: 40 },
               ],
             },
@@ -2794,15 +2915,32 @@ describe("Vue behavioral parity — batch 5", () => {
         },
       });
       expect(wrapper.findAll(".st-stackedBar__seg").length).toBe(2);
+      expect(wrapper.find(".st-stackedBar__seg--category2").exists()).toBe(true);
     });
 
-    it("renders category labels", () => {
+    it("renders category labels, a legend and an SR data list", () => {
       const wrapper = mount(StackedBarChart, {
         props: {
-          data: [{ label: "Row A", segments: [{ label: "X", value: 100 }] }],
+          label: "L",
+          data: [{ label: "Row A", segments: [{ label: "X", value: 70 }, { label: "Y", value: 30 }] }],
         },
       });
       expect(wrapper.find(".st-stackedBar__categoryLabel").text()).toBe("Row A");
+      const legend = wrapper.findAll(".st-stackedBar__legendItem").map((n) => n.text().trim());
+      expect(legend).toEqual(["X", "Y"]);
+      const items = wrapper.findAll(".st-chartDataList li").map((n) => n.text());
+      expect(items).toEqual(["Row A, X: 70", "Row A, Y: 30"]);
+    });
+
+    it("can hide the legend via showLegend=false", () => {
+      const wrapper = mount(StackedBarChart, {
+        props: {
+          label: "L",
+          showLegend: false,
+          data: [{ label: "Q1", segments: [{ label: "A", value: 2 }] }],
+        },
+      });
+      expect(wrapper.find(".st-stackedBar__legend").exists()).toBe(false);
     });
 
     it("has name StackedBarChart", () => {

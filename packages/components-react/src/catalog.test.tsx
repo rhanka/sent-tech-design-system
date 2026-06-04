@@ -219,9 +219,9 @@ describe("React public catalog parity", () => {
         <AreaChart data={[{ x: "Mon", y: 10 }]} label="Area chart" />
         <BarChart data={[{ label: "A", value: 4 }]} label="Bar chart" />
         <LineChart data={[{ x: "Mon", y: 10 }]} label="Line chart" />
-        <DonutChart data={[{ label: "Used", value: 70 }]} />
-        <ScatterPlot data={[{ x: 1, y: 2, label: "Point" }]} />
-        <StackedBarChart data={[{ label: "Q1", segments: [{ label: "A", value: 2 }] }]} />
+        <DonutChart data={[{ label: "Used", value: 70 }]} label="Donut chart" />
+        <ScatterPlot data={[{ x: 1, y: 2, label: "Point" }]} label="Scatter chart" />
+        <StackedBarChart data={[{ label: "Q1", segments: [{ label: "A", value: 2 }] }]} label="Stacked chart" />
         <Sparkline data={[1, 2, 3]} />
         <ForceGraph label="Force graph" nodes={[{ id: "a", label: "A" }]} edges={[]} />
         <ChatThread>

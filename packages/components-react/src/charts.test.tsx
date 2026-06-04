@@ -1,7 +1,16 @@
 import React from "react";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render } from "@testing-library/react";
-import { AreaChart, BarChart, LineChart, Sparkline } from "./index.js";
+import {
+  AreaChart,
+  BarChart,
+  DataTable,
+  DonutChart,
+  LineChart,
+  ScatterPlot,
+  Sparkline,
+  StackedBarChart,
+} from "./index.js";
 
 afterEach(() => {
   cleanup();
@@ -117,5 +126,181 @@ describe("Sparkline parity with Svelte", () => {
     expect(container.querySelector(".st-sparkline--success")).toBeTruthy();
     expect(container.querySelector(".st-sparkline__line")?.getAttribute("stroke-width")).toBe("3");
     expect(container.querySelector(".st-sparkline__area")).toBeTruthy();
+  });
+});
+
+describe("DonutChart parity with Svelte", () => {
+  it("draws ring slices with tone classes, a center total and an SR data list", () => {
+    const { container } = render(
+      <DonutChart
+        label="Storage"
+        data={[
+          { label: "Used", value: 70, tone: "category3" },
+          { label: "Free", value: 30 },
+        ]}
+      />,
+    );
+    expect(container.querySelector(".st-donutChart__visual")?.getAttribute("aria-label")).toBe("Storage");
+    expect(container.querySelectorAll(".st-donutChart__slice").length).toBe(2);
+    expect(container.querySelector(".st-donutChart__slice--category3")).toBeTruthy();
+    expect(container.querySelector(".st-donutChart__slice")?.getAttribute("d")?.startsWith("M")).toBe(true);
+    // default centerLabel is the total
+    expect(container.querySelector(".st-donutChart__center")?.textContent).toBe("100");
+    const items = Array.from(container.querySelectorAll(".st-chartDataList li")).map((n) => n.textContent);
+    expect(items).toEqual(["Used: 70 (70%)", "Free: 30 (30%)"]);
+  });
+
+  it("honours a custom centerLabel and hides it when null, and shows a tooltip on hover", () => {
+    const { container, rerender } = render(<DonutChart label="L" centerLabel="42%" data={[{ label: "A", value: 1 }]} />);
+    expect(container.querySelector(".st-donutChart__center")?.textContent).toBe("42%");
+    fireEvent.pointerMove(container.querySelector(".st-donutChart__slice")!);
+    expect(container.querySelector(".st-donutChart__tooltip")).toBeTruthy();
+    rerender(<DonutChart label="L" centerLabel={null} data={[{ label: "A", value: 1 }]} />);
+    expect(container.querySelector(".st-donutChart__center")).toBeNull();
+  });
+});
+
+describe("ScatterPlot parity with Svelte", () => {
+  it("plots points with tone classes, axes, gridlines, tick labels and a data list", () => {
+    const { container } = render(
+      <ScatterPlot
+        label="Scatter"
+        xLabel="X"
+        yLabel="Y"
+        data={[
+          { x: 1, y: 2, label: "P1", tone: "category4" },
+          { x: 3, y: 5 },
+        ]}
+      />,
+    );
+    expect(container.querySelector(".st-scatterPlot__visual")?.getAttribute("aria-label")).toBe("Scatter");
+    expect(container.querySelectorAll(".st-scatterPlot__point").length).toBe(2);
+    expect(container.querySelector(".st-scatterPlot__point--category4")).toBeTruthy();
+    expect(container.querySelectorAll(".st-scatterPlot__axis").length).toBe(2);
+    expect(container.querySelectorAll(".st-scatterPlot__grid").length).toBeGreaterThan(0);
+    const axisLabels = Array.from(container.querySelectorAll(".st-scatterPlot__axisLabel")).map((n) => n.textContent);
+    expect(axisLabels).toEqual(["X", "Y"]);
+    const items = Array.from(container.querySelectorAll(".st-chartDataList li")).map((n) => n.textContent);
+    expect(items).toEqual(["P1: x 1, y 2", "x 3, y 5"]);
+  });
+
+  it("honours a custom radius and viewBox and shows a tooltip on hover", () => {
+    const { container } = render(
+      <ScatterPlot label="S" width={300} height={150} radius={9} data={[{ x: 1, y: 1, label: "Pt" }]} />,
+    );
+    expect(container.querySelector("svg")?.getAttribute("viewBox")).toBe("0 0 300 150");
+    expect(container.querySelector(".st-scatterPlot__point")?.getAttribute("r")).toBe("9");
+    fireEvent.pointerMove(container.querySelector(".st-scatterPlot__point")!);
+    expect(container.querySelector(".st-scatterPlot__tooltip")).toBeTruthy();
+  });
+});
+
+describe("StackedBarChart parity with Svelte", () => {
+  it("stacks segments per bar with tone classes, category labels, a legend and a data list", () => {
+    const { container } = render(
+      <StackedBarChart
+        label="Sales"
+        data={[
+          { label: "Q1", segments: [{ label: "Won", value: 7, tone: "category2" }, { label: "Lost", value: 3 }] },
+          { label: "Q2", segments: [{ label: "Won", value: 5 }, { label: "Lost", value: 5 }] },
+        ]}
+      />,
+    );
+    expect(container.querySelector(".st-stackedBar__visual")?.getAttribute("aria-label")).toBe("Sales");
+    expect(container.querySelectorAll(".st-stackedBar__seg").length).toBe(4);
+    expect(container.querySelector(".st-stackedBar__seg--category2")).toBeTruthy();
+    const cats = Array.from(container.querySelectorAll(".st-stackedBar__categoryLabel")).map((n) => n.textContent);
+    expect(cats).toEqual(["Q1", "Q2"]);
+    // legend derives one entry per unique series label
+    const legend = Array.from(container.querySelectorAll(".st-stackedBar__legendItem")).map((n) => n.textContent?.trim());
+    expect(legend).toEqual(["Won", "Lost"]);
+    const items = Array.from(container.querySelectorAll(".st-chartDataList li")).map((n) => n.textContent);
+    expect(items).toEqual(["Q1, Won: 7", "Q1, Lost: 3", "Q2, Won: 5", "Q2, Lost: 5"]);
+  });
+
+  it("can hide the legend and shows a tooltip on hover", () => {
+    const { container } = render(
+      <StackedBarChart label="S" showLegend={false} data={[{ label: "Q1", segments: [{ label: "A", value: 2 }] }]} />,
+    );
+    expect(container.querySelector(".st-stackedBar__legend")).toBeNull();
+    fireEvent.pointerMove(container.querySelector(".st-stackedBar__seg")!);
+    expect(container.querySelector(".st-stackedBar__tooltip")).toBeTruthy();
+  });
+});
+
+describe("DataTable parity with Svelte", () => {
+  const columns = [
+    { key: "name", label: "Name", sortable: true },
+    { key: "count", label: "Count", align: "end" as const },
+  ];
+  const rows = [
+    { id: "a", name: "Beta", count: 4 },
+    { id: "b", name: "Alpha", count: 2 },
+    { id: "c", name: "Gamma", count: 6 },
+  ];
+
+  it("renders a caption, headers, sortable buttons, aligned cells and rows", () => {
+    const { container } = render(<DataTable columns={columns} rows={rows} caption="People" size="sm" />);
+    expect(container.querySelector(".st-dataTable--sm")).toBeTruthy();
+    expect(container.querySelector("caption")?.textContent).toBe("People");
+    expect(container.querySelector(".st-dataTable__sortBtn")).toBeTruthy();
+    expect(container.querySelectorAll("tbody tr").length).toBe(3);
+    expect(container.querySelector("td.st-dataTable__cell--end")?.textContent).toBe("4");
+  });
+
+  it("sorts rows asc, then desc, then resets on the third header click", () => {
+    const { container } = render(<DataTable columns={columns} rows={rows} />);
+    const sortBtn = container.querySelector(".st-dataTable__sortBtn") as HTMLButtonElement;
+    const names = () => Array.from(container.querySelectorAll("tbody tr td:first-child")).map((n) => n.textContent);
+    expect(names()).toEqual(["Beta", "Alpha", "Gamma"]);
+    fireEvent.click(sortBtn);
+    expect(names()).toEqual(["Alpha", "Beta", "Gamma"]);
+    expect(container.querySelector('th[aria-sort="ascending"]')).toBeTruthy();
+    fireEvent.click(sortBtn);
+    expect(names()).toEqual(["Gamma", "Beta", "Alpha"]);
+    fireEvent.click(sortBtn);
+    expect(names()).toEqual(["Beta", "Alpha", "Gamma"]);
+  });
+
+  it("supports multiple selection with a header select-all and emits onSelectionChange", () => {
+    const onSelectionChange = vi.fn();
+    const { container } = render(
+      <DataTable columns={columns} rows={rows} selectable="multiple" onSelectionChange={onSelectionChange} />,
+    );
+    const boxes = container.querySelectorAll('tbody input[type="checkbox"]');
+    expect(boxes.length).toBe(3);
+    fireEvent.click(boxes[0]);
+    expect(onSelectionChange).toHaveBeenCalledWith(["a"]);
+    expect(container.querySelector(".st-dataTable__row--selected")).toBeTruthy();
+    const selectAll = container.querySelector('thead input[type="checkbox"]') as HTMLInputElement;
+    fireEvent.click(selectAll);
+    expect(onSelectionChange).toHaveBeenLastCalledWith(["a", "b", "c"]);
+  });
+
+  it("paginates with a range label and prev/next controls", () => {
+    const { container } = render(<DataTable columns={columns} rows={rows} pageSize={2} />);
+    expect(container.querySelector(".st-dataTable__range")?.textContent).toBe("1–2 of 3");
+    expect(container.querySelectorAll("tbody tr").length).toBe(2);
+    const [prev, next] = Array.from(container.querySelectorAll(".st-dataTable__pagerBtn")) as HTMLButtonElement[];
+    expect(prev.disabled).toBe(true);
+    fireEvent.click(next);
+    expect(container.querySelector(".st-dataTable__range")?.textContent).toBe("3–3 of 3");
+    expect(container.querySelectorAll("tbody tr").length).toBe(1);
+  });
+
+  it("renders custom cells, an empty label and fires onRowClick", () => {
+    const onRowClick = vi.fn();
+    const { container, rerender } = render(
+      <DataTable
+        columns={[{ key: "name", label: "Name", cell: (row) => <strong>{String(row.name)}</strong> }]}
+        rows={rows}
+        onRowClick={onRowClick}
+      />,
+    );
+    expect(container.querySelector("td strong")?.textContent).toBe("Beta");
+    fireEvent.click(container.querySelector(".st-dataTable__row--clickable")!);
+    expect(onRowClick).toHaveBeenCalledWith(rows[0]);
+    rerender(<DataTable columns={columns} rows={[]} emptyLabel="Nothing here" />);
+    expect(container.querySelector(".st-dataTable__empty")?.textContent).toBe("Nothing here");
   });
 });
