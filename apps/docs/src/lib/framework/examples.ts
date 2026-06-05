@@ -107,7 +107,15 @@ export type ComponentName =
   | "Row"
   | "Col"
   | "Hidden"
-  | "Divider";
+  | "Divider"
+  | "Avatar"
+  | "AvatarGroup"
+  | "ButtonGroup"
+  | "CheckboxGroup"
+  | "RadioGroup"
+  | "Typography"
+  | "Collapsible"
+  | "Stepper";
 
 export interface ComponentNodeSpec {
   comp: ComponentName;
@@ -5682,6 +5690,485 @@ import { Divider } from "@sentropic/design-system-vue";
   <p>Section suivante</p>
   <Divider label="ou" />
   <p>Alternative</p>
+</template>`
+    }
+  },
+  avatar: {
+    id: "avatar",
+    slug: "avatar",
+    nodes: [
+      wrap([
+        { comp: "Avatar", props: { name: "Ada Lovelace", size: "sm" } },
+        { comp: "Avatar", props: { name: "Ada Lovelace", size: "md" } },
+        { comp: "Avatar", props: { name: "Grace Hopper", size: "lg", tone: "category3" } },
+        {
+          comp: "Avatar",
+          props: {
+            name: "Sent Tech",
+            size: "xl",
+            src: "https://i.pravatar.cc/96?img=15"
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { Avatar } from "@sentropic/design-system-svelte";
+</script>
+
+<Avatar name="Ada Lovelace" size="sm" />
+<Avatar name="Ada Lovelace" size="md" />
+<Avatar name="Grace Hopper" size="lg" tone="category3" />
+<Avatar name="Sent Tech" size="xl" src="https://i.pravatar.cc/96?img=15" />`,
+      react: `import { Avatar } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <Avatar name="Ada Lovelace" size="sm" />
+      <Avatar name="Ada Lovelace" size="md" />
+      <Avatar name="Grace Hopper" size="lg" tone="category3" />
+      <Avatar name="Sent Tech" size="xl" src="https://i.pravatar.cc/96?img=15" />
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { Avatar } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Avatar name="Ada Lovelace" size="sm" />
+  <Avatar name="Ada Lovelace" size="md" />
+  <Avatar name="Grace Hopper" size="lg" tone="category3" />
+  <Avatar name="Sent Tech" size="xl" src="https://i.pravatar.cc/96?img=15" />
+</template>`
+    }
+  },
+  "avatar-group": {
+    id: "avatar-group",
+    slug: "avatar-group",
+    nodes: [
+      wrap([
+        {
+          comp: "AvatarGroup",
+          props: { max: 3, total: 6, size: "md" },
+          children: [
+            { comp: "Avatar", props: { name: "Ada Lovelace", tone: "category1" } },
+            { comp: "Avatar", props: { name: "Grace Hopper", tone: "category3" } },
+            { comp: "Avatar", props: { name: "Alan Turing", tone: "category5" } }
+          ]
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { AvatarGroup, Avatar } from "@sentropic/design-system-svelte";
+</script>
+
+<AvatarGroup max={3} total={6}>
+  <Avatar name="Ada Lovelace" tone="category1" />
+  <Avatar name="Grace Hopper" tone="category3" />
+  <Avatar name="Alan Turing" tone="category5" />
+</AvatarGroup>`,
+      react: `import { AvatarGroup, Avatar } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <AvatarGroup max={3} total={6}>
+      <Avatar name="Ada Lovelace" tone="category1" />
+      <Avatar name="Grace Hopper" tone="category3" />
+      <Avatar name="Alan Turing" tone="category5" />
+    </AvatarGroup>
+  );
+}`,
+      vue: `<script setup>
+import { AvatarGroup, Avatar } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <AvatarGroup :max="3" :total="6">
+    <Avatar name="Ada Lovelace" tone="category1" />
+    <Avatar name="Grace Hopper" tone="category3" />
+    <Avatar name="Alan Turing" tone="category5" />
+  </AvatarGroup>
+</template>`
+    }
+  },
+  "button-group": {
+    id: "button-group",
+    slug: "button-group",
+    nodes: [
+      wrap([
+        {
+          comp: "ButtonGroup",
+          props: { attached: true, label: "Alignement" },
+          children: [
+            { comp: "Button", props: { variant: "secondary" }, children: ["Gauche"] },
+            { comp: "Button", props: { variant: "secondary" }, children: ["Centre"] },
+            { comp: "Button", props: { variant: "secondary" }, children: ["Droite"] }
+          ]
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { ButtonGroup, Button } from "@sentropic/design-system-svelte";
+</script>
+
+<ButtonGroup attached label="Alignement">
+  <Button variant="secondary">Gauche</Button>
+  <Button variant="secondary">Centre</Button>
+  <Button variant="secondary">Droite</Button>
+</ButtonGroup>`,
+      react: `import { ButtonGroup, Button } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <ButtonGroup attached label="Alignement">
+      <Button variant="secondary">Gauche</Button>
+      <Button variant="secondary">Centre</Button>
+      <Button variant="secondary">Droite</Button>
+    </ButtonGroup>
+  );
+}`,
+      vue: `<script setup>
+import { ButtonGroup, Button } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <ButtonGroup attached label="Alignement">
+    <Button variant="secondary">Gauche</Button>
+    <Button variant="secondary">Centre</Button>
+    <Button variant="secondary">Droite</Button>
+  </ButtonGroup>
+</template>`
+    }
+  },
+  "checkbox-group": {
+    id: "checkbox-group",
+    slug: "checkbox-group",
+    nodes: [
+      wrap([
+        {
+          comp: "CheckboxGroup",
+          props: {
+            legend: "Notifications",
+            helperText: "Choisissez les canaux à activer.",
+            value: ["email"],
+            options: [
+              { label: "E-mail", value: "email" },
+              { label: "SMS", value: "sms" },
+              { label: "Push", value: "push" }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { CheckboxGroup } from "@sentropic/design-system-svelte";
+
+  let value = ["email"];
+  const options = [
+    { label: "E-mail", value: "email" },
+    { label: "SMS", value: "sms" },
+    { label: "Push", value: "push" }
+  ];
+</script>
+
+<CheckboxGroup
+  legend="Notifications"
+  helperText="Choisissez les canaux à activer."
+  {options}
+  {value}
+  onchange={(next) => (value = next)}
+/>`,
+      react: `import { useState } from "react";
+import { CheckboxGroup } from "@sentropic/design-system-react";
+
+const options = [
+  { label: "E-mail", value: "email" },
+  { label: "SMS", value: "sms" },
+  { label: "Push", value: "push" }
+];
+
+export function Demo() {
+  const [value, setValue] = useState(["email"]);
+  return (
+    <CheckboxGroup
+      legend="Notifications"
+      helperText="Choisissez les canaux à activer."
+      options={options}
+      value={value}
+      onChange={setValue}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { ref } from "vue";
+import { CheckboxGroup } from "@sentropic/design-system-vue";
+
+const value = ref(["email"]);
+const options = [
+  { label: "E-mail", value: "email" },
+  { label: "SMS", value: "sms" },
+  { label: "Push", value: "push" }
+];
+</script>
+
+<template>
+  <CheckboxGroup
+    legend="Notifications"
+    helper-text="Choisissez les canaux à activer."
+    :options="options"
+    :value="value"
+    @change="value = $event"
+  />
+</template>`
+    }
+  },
+  "radio-group": {
+    id: "radio-group",
+    slug: "radio-group",
+    nodes: [
+      wrap([
+        {
+          comp: "RadioGroup",
+          props: {
+            legend: "Forfait",
+            name: "plan",
+            value: "pro",
+            options: [
+              { label: "Découverte", value: "free" },
+              { label: "Pro", value: "pro" },
+              { label: "Entreprise", value: "enterprise" }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { RadioGroup } from "@sentropic/design-system-svelte";
+
+  let value = "pro";
+  const options = [
+    { label: "Découverte", value: "free" },
+    { label: "Pro", value: "pro" },
+    { label: "Entreprise", value: "enterprise" }
+  ];
+</script>
+
+<RadioGroup
+  legend="Forfait"
+  name="plan"
+  {options}
+  {value}
+  onchange={(next) => (value = next)}
+/>`,
+      react: `import { useState } from "react";
+import { RadioGroup } from "@sentropic/design-system-react";
+
+const options = [
+  { label: "Découverte", value: "free" },
+  { label: "Pro", value: "pro" },
+  { label: "Entreprise", value: "enterprise" }
+];
+
+export function Demo() {
+  const [value, setValue] = useState("pro");
+  return (
+    <RadioGroup
+      legend="Forfait"
+      name="plan"
+      options={options}
+      value={value}
+      onChange={setValue}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { ref } from "vue";
+import { RadioGroup } from "@sentropic/design-system-vue";
+
+const value = ref("pro");
+const options = [
+  { label: "Découverte", value: "free" },
+  { label: "Pro", value: "pro" },
+  { label: "Entreprise", value: "enterprise" }
+];
+</script>
+
+<template>
+  <RadioGroup
+    legend="Forfait"
+    name="plan"
+    :options="options"
+    :value="value"
+    @change="value = $event"
+  />
+</template>`
+    }
+  },
+  typography: {
+    id: "typography",
+    slug: "typography",
+    nodes: [
+      stack([
+        { comp: "Typography", props: { variant: "h1" }, children: ["Titre h1"] },
+        { comp: "Typography", props: { variant: "h3" }, children: ["Sous-titre h3"] },
+        {
+          comp: "Typography",
+          props: { variant: "body" },
+          children: ["Paragraphe courant : la base de la lecture, lisible et confortable."]
+        },
+        {
+          comp: "Typography",
+          props: { variant: "caption", tone: "muted" },
+          children: ["Légende discrète · ton atténué"]
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { Typography } from "@sentropic/design-system-svelte";
+</script>
+
+<Typography variant="h1">Titre h1</Typography>
+<Typography variant="h3">Sous-titre h3</Typography>
+<Typography variant="body">Paragraphe courant : la base de la lecture.</Typography>
+<Typography variant="caption" tone="muted">Légende discrète · ton atténué</Typography>`,
+      react: `import { Typography } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <Typography variant="h1">Titre h1</Typography>
+      <Typography variant="h3">Sous-titre h3</Typography>
+      <Typography variant="body">Paragraphe courant : la base de la lecture.</Typography>
+      <Typography variant="caption" tone="muted">Légende discrète · ton atténué</Typography>
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { Typography } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Typography variant="h1">Titre h1</Typography>
+  <Typography variant="h3">Sous-titre h3</Typography>
+  <Typography variant="body">Paragraphe courant : la base de la lecture.</Typography>
+  <Typography variant="caption" tone="muted">Légende discrète · ton atténué</Typography>
+</template>`
+    }
+  },
+  collapsible: {
+    id: "collapsible",
+    slug: "collapsible",
+    nodes: [
+      {
+        comp: "Collapsible",
+        props: { title: "Détails de facturation", open: true },
+        children: [
+          {
+            el: "p",
+            props: { class: "fp-card-text" },
+            children: [
+              "Contenu replié sous un en-tête cliquable. La région est annoncée aux lecteurs d'écran."
+            ]
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { Collapsible } from "@sentropic/design-system-svelte";
+
+  let open = true;
+</script>
+
+<Collapsible title="Détails de facturation" bind:open>
+  <p>Contenu replié sous un en-tête cliquable.</p>
+</Collapsible>`,
+      react: `import { Collapsible } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <Collapsible title="Détails de facturation" defaultOpen>
+      <p>Contenu replié sous un en-tête cliquable.</p>
+    </Collapsible>
+  );
+}`,
+      vue: `<script setup>
+import { ref } from "vue";
+import { Collapsible } from "@sentropic/design-system-vue";
+
+const open = ref(true);
+</script>
+
+<template>
+  <Collapsible title="Détails de facturation" v-model:open="open">
+    <p>Contenu replié sous un en-tête cliquable.</p>
+  </Collapsible>
+</template>`
+    }
+  },
+  stepper: {
+    id: "stepper",
+    slug: "stepper",
+    nodes: [
+      {
+        comp: "Stepper",
+        props: {
+          current: 1,
+          label: "Création du compte",
+          steps: [
+            { label: "Compte", description: "Identité" },
+            { label: "Profil", description: "En cours" },
+            { label: "Préférences" },
+            { label: "Confirmation" }
+          ]
+        }
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { Stepper } from "@sentropic/design-system-svelte";
+
+  const steps = [
+    { label: "Compte", description: "Identité" },
+    { label: "Profil", description: "En cours" },
+    { label: "Préférences" },
+    { label: "Confirmation" }
+  ];
+</script>
+
+<Stepper {steps} current={1} label="Création du compte" />`,
+      react: `import { Stepper } from "@sentropic/design-system-react";
+
+const steps = [
+  { label: "Compte", description: "Identité" },
+  { label: "Profil", description: "En cours" },
+  { label: "Préférences" },
+  { label: "Confirmation" }
+];
+
+export function Demo() {
+  return <Stepper steps={steps} current={1} label="Création du compte" />;
+}`,
+      vue: `<script setup>
+import { Stepper } from "@sentropic/design-system-vue";
+
+const steps = [
+  { label: "Compte", description: "Identité" },
+  { label: "Profil", description: "En cours" },
+  { label: "Préférences" },
+  { label: "Confirmation" }
+];
+</script>
+
+<template>
+  <Stepper :steps="steps" :current="1" label="Création du compte" />
 </template>`
     }
   }
