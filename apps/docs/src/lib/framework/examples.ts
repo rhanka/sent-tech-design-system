@@ -4939,6 +4939,7 @@ const segments = [
             width: 460,
             height: 300,
             edgeCurve: 0.2,
+            repulsion: 1.4,
             nodes: [
               { id: "auteur", label: "Auteur", shape: "box", tone: "category1" },
               { id: "oeuvre", label: "Œuvre", shape: "diamond", tone: "category2" },
@@ -4979,7 +4980,8 @@ const segments = [
   ];
 </script>
 
-<ForceGraph {nodes} {edges} label="Ontologie de démo" width={460} height={300} edgeCurve={0.2} />`,
+<!-- repulsion>1 = plus aéré ; survole un nœud : voisins + arêtes incidentes restent nets -->
+<ForceGraph {nodes} {edges} label="Ontologie de démo" width={460} height={300} edgeCurve={0.2} repulsion={1.4} />`,
       react: `import { ForceGraph } from "@sentropic/design-system-react";
 
 const nodes = [
@@ -4993,7 +4995,7 @@ const edges = [
 ];
 
 export function Demo() {
-  return <ForceGraph nodes={nodes} edges={edges} label="Ontologie de démo" width={460} height={300} edgeCurve={0.2} />;
+  return <ForceGraph nodes={nodes} edges={edges} label="Ontologie de démo" width={460} height={300} edgeCurve={0.2} repulsion={1.4} />;
 }`,
       vue: `<script setup>
 import { ForceGraph } from "@sentropic/design-system-vue";
@@ -5009,7 +5011,7 @@ const edges = [
 </script>
 
 <template>
-  <ForceGraph :nodes="nodes" :edges="edges" label="Ontologie de démo" :width="460" :height="300" :edge-curve="0.2" />
+  <ForceGraph :nodes="nodes" :edges="edges" label="Ontologie de démo" :width="460" :height="300" :edge-curve="0.2" :repulsion="1.4" />
 </template>`
     }
   },
