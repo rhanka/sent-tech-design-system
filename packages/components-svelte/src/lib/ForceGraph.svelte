@@ -249,6 +249,21 @@
      * null when the hover/focus ends. Intended for syncing an external panel.
      */
     onNodeHover?: (node: ForceGraphNode | null) => void;
+    /**
+     * Reconciliation merge animation: when this becomes a new valid
+     * `{ from, into }` (both ids exist in `nodes`), the `from` node animates
+     * toward the position of `into` while fading out (the node and its incident
+     * edges), then `onMergeComplete` fires. Purely visual — the component never
+     * mutates the data; the consumer removes `from` from `nodes` afterwards.
+     * Pass null (the default) for no merge in flight.
+     */
+    mergePair?: { from: string; into: string } | null;
+    /**
+     * Fired once the merge animation for the current `mergePair` completes (or
+     * immediately, on a microtask, under reduced motion / SSR). Receives the
+     * same pair so the consumer can drop `from` from the data.
+     */
+    onMergeComplete?: (pair: { from: string; into: string }) => void;
     class?: string;
   };
 
@@ -270,6 +285,8 @@
     edgeCurve = 0.15,
     repulsion = 1,
     onNodeHover,
+    mergePair = null,
+    onMergeComplete,
     class: className
   }: ForceGraphProps = $props();
 
@@ -549,6 +566,118 @@
       .filter((e): e is NonNullable<typeof e> => e !== null);
   });
 
+  // ---------------------------------------------------------------------------
+  // Merge animation (reconciliation): when `mergePair` becomes a new valid pair,
+  // the `from` node slides toward `into` while fading out (node + incident
+  // edges), then `onMergeComplete` fires. Purely visual — never mutates props.
+  // Driven by a single $state holding per-merge progress (0→1). Under reduced
+  // motion / SSR we skip straight to completion on a microtask.
+  // ---------------------------------------------------------------------------
+  const MERGE_DURATION_MS = 450;
+  // ease-in-out (cubic) for a smooth glide.
+  const easeInOut = (t: number) =>
+    t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+  type MergeState = {
+    from: string;
+    into: string;
+    /** Animation progress, 0..1. */
+    progress: number;
+    /** Pixel delta from the `from` start position to `into`, captured at start. */
+    dx: number;
+    dy: number;
+  } | null;
+
+  let mergeState = $state<MergeState>(null);
+  let mergeRaf: number | null = null;
+  // Identity of the merge currently being animated/handled, so the $effect only
+  // reacts to a genuinely new pair (not to unrelated re-renders).
+  let activeMergeKey: string | null = null;
+
+  function cancelMergeRaf() {
+    if (mergeRaf != null && typeof cancelAnimationFrame === "function") {
+      cancelAnimationFrame(mergeRaf);
+    }
+    mergeRaf = null;
+  }
+
+  $effect(() => {
+    const pair = mergePair;
+    const key = pair ? `${pair.from} ${pair.into}` : null;
+    if (key === activeMergeKey) return; // same (or still null) pair → nothing to do
+    activeMergeKey = key;
+
+    // Tear down any in-flight animation for a previous pair.
+    cancelMergeRaf();
+    mergeState = null;
+
+    if (!pair) return;
+
+    // Validate: both endpoints must currently exist.
+    const fromPos = layout.get(pair.from);
+    const intoPos = layout.get(pair.into);
+    if (!fromPos || !intoPos) return; // invalid pair → no-op, no crash, no callback
+
+    const captured = { from: pair.from, into: pair.into };
+
+    // Reduced motion / SSR: no animation, resolve on a microtask.
+    if (prefersReducedMotion || typeof window === "undefined" || typeof requestAnimationFrame !== "function") {
+      queueMicrotask(() => {
+        // Only fire if this is still the active pair.
+        if (activeMergeKey === key) onMergeComplete?.(captured);
+      });
+      return;
+    }
+
+    const dx = intoPos.x - fromPos.x;
+    const dy = intoPos.y - fromPos.y;
+    mergeState = { from: captured.from, into: captured.into, progress: 0, dx, dy };
+
+    // Anchor the clock to the FIRST frame's own timestamp. rAF timestamps and
+    // performance.now() can use different time origins (notably under jsdom), so
+    // mixing them yields a negative/garbage elapsed time. Using the frame clock
+    // for both start and elapsed keeps the easing monotonic everywhere.
+    let start: number | null = null;
+    const tick = (now: number) => {
+      if (start === null) start = now;
+      const t = Math.min(1, Math.max(0, (now - start) / MERGE_DURATION_MS));
+      if (mergeState) mergeState = { ...mergeState, progress: t };
+      if (t < 1) {
+        mergeRaf = requestAnimationFrame(tick);
+      } else {
+        mergeRaf = null;
+        mergeState = null;
+        onMergeComplete?.(captured);
+      }
+    };
+    mergeRaf = requestAnimationFrame(tick);
+
+    return () => cancelMergeRaf();
+  });
+
+  // Eased progress of the `from` node toward `into`. Null when no merge running.
+  const mergeFromId = $derived(mergeState?.from ?? null);
+  const mergeEased = $derived(mergeState ? easeInOut(mergeState.progress) : 0);
+
+  /** Extra translation applied to the merging node so it glides toward `into`. */
+  function mergeOffset(id: string): { x: number; y: number } {
+    if (!mergeState || mergeState.from !== id) return { x: 0, y: 0 };
+    return { x: mergeState.dx * mergeEased, y: mergeState.dy * mergeEased };
+  }
+
+  /** Opacity for a node while a merge is animating (the `from` node fades out). */
+  function mergeNodeOpacity(id: string): number | null {
+    if (mergeFromId !== id) return null;
+    return 1 - mergeEased;
+  }
+
+  /** Opacity for an edge incident to the merging `from` node (fades out too). */
+  function mergeEdgeOpacity(e: ForceGraphEdge): number | null {
+    if (mergeFromId == null) return null;
+    if (e.source !== mergeFromId && e.target !== mergeFromId) return null;
+    return 1 - mergeEased;
+  }
+
   let hoveredNodeIndex: number | null = $state(null);
   let hoveredEdgeIndex: number | null = $state(null);
 
@@ -779,6 +908,7 @@
             onmouseleave={() => { hoveredEdgeIndex = null; }}
           />
         {/if}
+        {@const mEdgeOpacity = mergeEdgeOpacity(e.edge)}
         {#if e.path}
           <path
             class="st-forceGraph__edge"
@@ -786,10 +916,12 @@
             class:st-forceGraph__edge--emphasis={e.edge.emphasis}
             class:st-forceGraph__edge--hovered={hoveredEdgeIndex === e.i}
             class:st-forceGraph__edge--dim={isEdgeSelectionDimmed(e.edge) || isHoverDimmedEdge(e.edge)}
+            class:st-forceGraph__edge--merging={mEdgeOpacity !== null}
             d={e.path}
             fill="none"
             stroke-dasharray={e.dashArray}
             stroke-width={e.strokeWidth}
+            opacity={mEdgeOpacity}
             pointer-events="none"
           />
         {:else}
@@ -799,12 +931,14 @@
             class:st-forceGraph__edge--emphasis={e.edge.emphasis}
             class:st-forceGraph__edge--hovered={hoveredEdgeIndex === e.i}
             class:st-forceGraph__edge--dim={isEdgeSelectionDimmed(e.edge) || isHoverDimmedEdge(e.edge)}
+            class:st-forceGraph__edge--merging={mEdgeOpacity !== null}
             x1={e.x1}
             y1={e.y1}
             x2={e.x2}
             y2={e.y2}
             stroke-dasharray={e.dashArray}
             stroke-width={e.strokeWidth}
+            opacity={mEdgeOpacity}
             pointer-events="none"
           />
         {/if}
@@ -813,12 +947,16 @@
 
     <g class="st-forceGraph__nodes">
       {#each positionedNodes as p (p.node.id)}
+        {@const mOff = mergeOffset(p.node.id)}
+        {@const mOpacity = mergeNodeOpacity(p.node.id)}
         <g
           class="st-forceGraph__node st-forceGraph__node--{p.tone}"
           class:st-forceGraph__node--dim={isHoverDimmedNode(p.node.id) || isSelectionDimmed(p.node.id)}
           class:st-forceGraph__node--selected={selectedSet.has(p.node.id)}
           class:st-forceGraph__node--focus={focusId === p.node.id}
-          transform="translate({p.x} {p.y})"
+          class:st-forceGraph__node--merging={mergeFromId === p.node.id}
+          opacity={mOpacity}
+          transform="translate({p.x + mOff.x} {p.y + mOff.y})"
         >
           {#if p.shapePath}
             <path
@@ -1021,6 +1159,11 @@
 
   .st-forceGraph__node { transition: opacity 120ms ease; }
   .st-forceGraph__node--dim { opacity: 0.3; }
+
+  /* During a merge the opacity/transform are driven per-frame via rAF, so the
+     CSS transitions are disabled to avoid a lag that would smear the glide. */
+  .st-forceGraph__node--merging,
+  .st-forceGraph__edge--merging { transition: none; }
 
   .st-forceGraph__dot {
     cursor: pointer;

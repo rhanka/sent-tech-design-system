@@ -792,6 +792,95 @@ describe("ForceGraph", () => {
       await expect(fireEvent.mouseEnter(dot)).resolves.toBeTruthy();
     });
   });
+
+  // ---------------------------------------------------------------------------
+  // Round-8 UAT A: mergePair (reconciliation merge animation)
+  // ---------------------------------------------------------------------------
+  describe("mergePair merge animation", () => {
+    it("eventually calls onMergeComplete for a valid pair", async () => {
+      const onMergeComplete = vi.fn();
+      render(ForceGraph, {
+        props: {
+          nodes,
+          edges,
+          label: "Merge",
+          mergePair: { from: "a", into: "b" },
+          onMergeComplete
+        }
+      });
+      // The animation (rAF) or the reduced-motion fast path both resolve; allow
+      // up to ~1s for the rAF glide to finish in the jsdom test environment.
+      await vi.waitFor(() => expect(onMergeComplete).toHaveBeenCalledTimes(1), {
+        timeout: 1500
+      });
+      expect(onMergeComplete.mock.calls[0][0]).toEqual({ from: "a", into: "b" });
+    });
+
+    it("reduced-motion path resolves without an animation delay (microtask)", async () => {
+      // Force the reduced-motion branch: matchMedia → matches true.
+      const original = window.matchMedia;
+      window.matchMedia = (q: string): MediaQueryList => ({
+        matches: true,
+        media: q,
+        onchange: null,
+        addEventListener() {},
+        removeEventListener() {},
+        addListener() {},
+        removeListener() {},
+        dispatchEvent() {
+          return false;
+        }
+      }) as unknown as MediaQueryList;
+      try {
+        const onMergeComplete = vi.fn();
+        render(ForceGraph, {
+          props: {
+            nodes,
+            edges,
+            label: "Merge reduced",
+            mergePair: { from: "a", into: "b" },
+            onMergeComplete
+          }
+        });
+        // Resolves on a microtask — no rAF/timer needed.
+        expect(onMergeComplete).not.toHaveBeenCalled();
+        await Promise.resolve();
+        await vi.waitFor(() => expect(onMergeComplete).toHaveBeenCalledTimes(1), {
+          timeout: 100
+        });
+        expect(onMergeComplete.mock.calls[0][0]).toEqual({ from: "a", into: "b" });
+      } finally {
+        window.matchMedia = original;
+      }
+    });
+
+    it("does not crash and does not call onMergeComplete for an invalid pair", async () => {
+      const onMergeComplete = vi.fn();
+      const { container } = render(ForceGraph, {
+        props: {
+          nodes,
+          edges,
+          label: "Merge invalid",
+          mergePair: { from: "missing", into: "b" },
+          onMergeComplete
+        }
+      });
+      // Renders fine.
+      expect(container.querySelectorAll(".st-forceGraph__node").length).toBe(4);
+      // Give any (erroneous) microtask/timer a chance to fire.
+      await new Promise((r) => setTimeout(r, 30));
+      expect(onMergeComplete).not.toHaveBeenCalled();
+    });
+
+    it("does nothing (no callback) when mergePair is null", async () => {
+      const onMergeComplete = vi.fn();
+      render(ForceGraph, {
+        props: { nodes, edges, label: "No merge", mergePair: null, onMergeComplete }
+      });
+      await new Promise((r) => setTimeout(r, 30));
+      expect(onMergeComplete).not.toHaveBeenCalled();
+    });
+  });
 });
 
 // ---------------------------------------------------------------------------
