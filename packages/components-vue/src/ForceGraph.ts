@@ -126,20 +126,29 @@ export type ForceGraphProps = {
    */
   onNodeHover?: (node: ForceGraphNode | null) => void;
   /**
-   * Reconciliation merge animation: when this becomes a new valid
-   * `{ from, into }` (both ids exist in `nodes`), the `from` node animates
-   * toward the position of `into` while fading out (the node and its incident
-   * edges), then `onMergeComplete` fires. Purely visual — the component never
-   * mutates the data; the consumer removes `from` from `nodes` afterwards.
-   * Pass null (the default) for no merge in flight.
+   * Reconciliation merge animation (CLIENT-ONLY — driven by a `watch`, which
+   * never runs during SSR, so no merge is animated or resolved server-side).
+   *
+   * Pass a `{ id, from, into }` where both `from` and `into` exist in `nodes`:
+   * the `from` node animates toward the position of `into` while fading out (the
+   * node and its incident edges), then `onMergeComplete(pair)` fires exactly
+   * ONCE for that `id`. Purely visual — the component never mutates the data;
+   * the consumer removes `from` from `nodes` after the callback.
+   *
+   * Idempotent on `id`: re-passing the SAME `id` (even with a new identity for
+   * the object) is a no-op — the animation/callback are not replayed. Passing a
+   * NEW `id` (re)plays the merge, even for the same `from`/`into` pair. After
+   * completion the `from` node stays MASKED (hidden) until the consumer removes
+   * it or a new `mergePair` is supplied, so it does not flash back when the prop
+   * returns to null. Pass null (the default) for no merge in flight.
    */
-  mergePair?: { from: string; into: string } | null;
+  mergePair?: { id: string; from: string; into: string } | null;
   /**
    * Fired once the merge animation for the current `mergePair` completes (or
-   * immediately, on a microtask, under reduced motion / SSR). Receives the
-   * same pair so the consumer can drop `from` from the data.
+   * immediately, on a microtask, under reduced motion). Fires at most ONCE per
+   * `id`. Receives the same pair so the consumer can drop `from` from the data.
    */
-  onMergeComplete?: (pair: { from: string; into: string }) => void;
+  onMergeComplete?: (pair: { id: string; from: string; into: string }) => void;
   class?: string;
 };
 
@@ -293,6 +302,27 @@ function mulberry32(seed: number): () => number {
   };
 }
 
+// Stable seed from the SET of node ids (sorted), not from ns.length/es.length.
+// A length-based seed reshuffled the whole layout whenever a node was added or
+// removed (notably after a reconciliation merge), making the graph "jump". A
+// hash over the sorted ids keeps the same topology → same layout, so removing
+// one node leaves the rest essentially in place. (FNV-1a 32-bit over the joined
+// sorted ids; deterministic and order-independent.) PORTED VERBATIM from the
+// Svelte `stableSeed` so the three frameworks produce the SAME layout.
+function stableSeed(ns: ForceGraphNode[]): number {
+  const ids = ns.map((n) => n.id).sort();
+  let h = 0x811c9dc5; // FNV offset basis
+  const joined = ids.join("|");
+  for (let i = 0; i < joined.length; i++) {
+    h ^= joined.charCodeAt(i);
+    h = Math.imul(h, 0x01000193); // FNV prime
+  }
+  // Fold in the count too so wholly different graphs of equal id-hash still
+  // differ, but the dominant term is the (order-independent) id hash.
+  h ^= ns.length;
+  return h >>> 0;
+}
+
 function runSimulation(
   ns: ForceGraphNode[],
   es: ForceGraphEdge[],
@@ -304,7 +334,9 @@ function runSimulation(
 ): Map<string, { x: number; y: number }> {
   const cx = w / 2;
   const cy = h / 2;
-  const rand = mulberry32(ns.length * 2654435761 + es.length);
+  // Seed from the stable id-set hash so adding/removing a node does not
+  // reshuffle the whole layout (same topology → same layout).
+  const rand = mulberry32(stableSeed(ns));
   const idIndex = new Map<string, number>();
   const sim: SimNode[] = ns.map((n, i) => {
     idIndex.set(n.id, i);
@@ -447,20 +479,23 @@ export const ForceGraph = defineComponent({
      */
     onNodeHover: { type: Function as PropType<(node: ForceGraphNode | null) => void>, default: undefined },
     /**
-     * Reconciliation merge animation: a new valid `{ from, into }` glides the
-     * `from` node toward `into` while fading out, then fires `onMergeComplete`.
-     * Purely visual — never mutates the data. Pass null for no merge in flight.
+     * Reconciliation merge animation (CLIENT-ONLY): a new valid `{ id, from,
+     * into }` glides the `from` node toward `into` while fading out, then fires
+     * `onMergeComplete` exactly once per `id`. Idempotent on `id`; the `from`
+     * node stays masked after completion until removed. Pass null for no merge.
      */
     mergePair: {
-      type: Object as PropType<{ from: string; into: string } | null>,
+      type: Object as PropType<{ id: string; from: string; into: string } | null>,
       default: null,
     },
     /**
      * Fired once the merge animation completes (or immediately, on a microtask,
-     * under reduced motion / SSR). Receives the same pair.
+     * under reduced motion). At most ONCE per `id`. Receives the same pair.
      */
     onMergeComplete: {
-      type: Function as PropType<(pair: { from: string; into: string }) => void>,
+      type: Function as PropType<
+        (pair: { id: string; from: string; into: string }) => void
+      >,
       default: undefined,
     },
     class: { type: String, default: undefined },
@@ -470,7 +505,7 @@ export const ForceGraph = defineComponent({
     openEntity: (_id: string) => true,
     edgeHover: (_edge: ForceGraphEdge) => true,
     nodeHover: (_node: ForceGraphNode | null) => true,
-    mergeComplete: (_pair: { from: string; into: string }) => true,
+    mergeComplete: (_pair: { id: string; from: string; into: string }) => true,
   },
   setup(props, { emit, attrs }) {
     // SSR-safe reduced-motion check (window may be undefined during SSR/tests).
@@ -674,6 +709,7 @@ export const ForceGraph = defineComponent({
     // origins under jsdom, which would yield a garbage elapsed time).
     // -------------------------------------------------------------------------
     type MergeState = {
+      id: string;
       from: string;
       into: string;
       /** Animation progress, 0..1. */
@@ -684,6 +720,16 @@ export const ForceGraph = defineComponent({
     } | null;
     const mergeState = ref<MergeState>(null);
     let mergeRaf: number | null = null;
+    // The id currently being (or already) handled, so the watcher only reacts to
+    // a genuinely NEW id. Re-passing the same id (even a fresh object) is a no-op.
+    let handledMergeId: string | null = null;
+    // The id of the `from` node to keep MASKED after a completed merge, until the
+    // consumer drops it from `nodes` (or a new pair arrives). Decouples the mask
+    // from `mergePair` returning to null (otherwise the node would flash back).
+    const maskedFromId = ref<string | null>(null);
+    // Set true on unmount so no queued microtask/frame fires a callback or
+    // touches reactive state after teardown.
+    let disposed = false;
 
     function cancelMergeRaf() {
       if (mergeRaf !== null && typeof cancelAnimationFrame === "function") {
@@ -692,53 +738,81 @@ export const ForceGraph = defineComponent({
       mergeRaf = null;
     }
 
-    function fireMergeComplete(pair: { from: string; into: string }) {
+    function fireMergeComplete(pair: { id: string; from: string; into: string }) {
       // `emit("mergeComplete")` invokes the `onMergeComplete` prop/listener
       // exactly once; calling `props.onMergeComplete` here too would double-fire.
       emit("mergeComplete", pair);
     }
 
-    const mergeKey = computed(() =>
-      props.mergePair ? `${props.mergePair.from} ${props.mergePair.into}` : null,
-    );
+    const mergeId = computed(() => (props.mergePair ? props.mergePair.id : null));
 
     watch(
-      mergeKey,
+      mergeId,
       () => {
+        const pair = props.mergePair;
+        const id = pair ? pair.id : null;
+
+        // Idempotent on id: same id (or still null) means nothing to (re)start.
+        // A new id always (re)plays, even for the same from/into pair.
+        if (id === handledMergeId) return;
+        handledMergeId = id;
+
         // Tear down any in-flight animation for a previous pair.
         cancelMergeRaf();
         mergeState.value = null;
 
-        const pair = props.mergePair;
         if (!pair) return;
+
+        // A genuinely new pair supersedes any lingering mask from a prior merge.
+        maskedFromId.value = null;
 
         // Validate: both endpoints must currently exist.
         const fromPos = layout.value.get(pair.from);
         const intoPos = layout.value.get(pair.into);
         if (!fromPos || !intoPos) return; // invalid pair → no-op, no callback
 
-        const captured = { from: pair.from, into: pair.into };
-        const key = mergeKey.value;
+        const captured = { id: pair.id, from: pair.from, into: pair.into };
 
-        // Reduced motion / SSR: no animation, resolve on a microtask.
+        const complete = () => {
+          // Keep `from` hidden until the consumer removes it (or a new pair).
+          maskedFromId.value = captured.from;
+          fireMergeComplete(captured);
+        };
+
+        // Reduced motion / SSR: no animation, resolve on a microtask. Guarded so
+        // a late microtask after unmount or after a newer id took over is a no-op.
         if (
           prefersReducedMotion ||
           typeof window === "undefined" ||
           typeof requestAnimationFrame !== "function"
         ) {
           queueMicrotask(() => {
-            // Only fire if this is still the active pair.
-            if (mergeKey.value === key) fireMergeComplete(captured);
+            if (disposed || handledMergeId !== id) return;
+            complete();
           });
           return;
         }
 
         const dx = intoPos.x - fromPos.x;
         const dy = intoPos.y - fromPos.y;
-        mergeState.value = { from: captured.from, into: captured.into, progress: 0, dx, dy };
+        mergeState.value = { id: captured.id, from: captured.from, into: captured.into, progress: 0, dx, dy };
 
         let start: number | null = null;
         const tick = (now: number) => {
+          // Bail cleanly if the instance went away or a newer id superseded us.
+          if (disposed || handledMergeId !== id) {
+            mergeRaf = null;
+            return;
+          }
+          // Re-validate both endpoints every frame: if either disappears
+          // mid-flight (e.g. the consumer removed a node), cancel the glide
+          // WITHOUT firing onMergeComplete (no double-tir) and without a
+          // dangling frame.
+          if (!layout.value.has(captured.from) || !layout.value.has(captured.into)) {
+            cancelMergeRaf();
+            mergeState.value = null;
+            return;
+          }
           if (start === null) start = now;
           const t = Math.min(1, Math.max(0, (now - start) / MERGE_DURATION_MS));
           if (mergeState.value) mergeState.value = { ...mergeState.value, progress: t };
@@ -747,7 +821,7 @@ export const ForceGraph = defineComponent({
           } else {
             mergeRaf = null;
             mergeState.value = null;
-            fireMergeComplete(captured);
+            complete();
           }
         };
         mergeRaf = requestAnimationFrame(tick);
@@ -759,6 +833,11 @@ export const ForceGraph = defineComponent({
     const mergeFromId = computed(() => mergeState.value?.from ?? null);
     const mergeEased = computed(() => (mergeState.value ? easeInOut(mergeState.value.progress) : 0));
 
+    /** True when this id is the (post-merge) masked node — render it fully hidden. */
+    function isMasked(id: string): boolean {
+      return maskedFromId.value === id;
+    }
+
     /** Extra translation applied to the merging node so it glides toward `into`. */
     function mergeOffset(id: string): { x: number; y: number } {
       const m = mergeState.value;
@@ -766,18 +845,22 @@ export const ForceGraph = defineComponent({
       return { x: m.dx * mergeEased.value, y: m.dy * mergeEased.value };
     }
 
-    /** Opacity for a node while a merge is animating (the `from` node fades out). */
+    /**
+     * Opacity for a node during/after a merge. The animating `from` fades 1->0;
+     * a masked `from` (merge done, awaiting removal) stays at 0. Others unchanged.
+     */
     function mergeNodeOpacity(id: string): number | undefined {
+      if (isMasked(id)) return 0;
       if (mergeFromId.value !== id) return undefined;
       return 1 - mergeEased.value;
     }
 
-    /** Opacity for an edge incident to the merging `from` node (fades out too). */
+    /** Opacity for an edge incident to the merging/masked `from` node (fades too). */
     function mergeEdgeOpacity(e: ForceGraphEdge): number | undefined {
-      const from = mergeFromId.value;
-      if (from == null) return undefined;
-      if (e.source !== from && e.target !== from) return undefined;
-      return 1 - mergeEased.value;
+      const fromId = mergeFromId.value ?? maskedFromId.value;
+      if (fromId == null) return undefined;
+      if (e.source !== fromId && e.target !== fromId) return undefined;
+      return isMasked(fromId) ? 0 : 1 - mergeEased.value;
     }
 
     // Adjacency: id -> set of directly connected node ids. Used to keep the
@@ -994,6 +1077,7 @@ export const ForceGraph = defineComponent({
     );
 
     onUnmounted(() => {
+      disposed = true;
       if (rafId !== null) {
         cancelAnimationFrame(rafId);
         rafId = null;
@@ -1114,6 +1198,7 @@ export const ForceGraph = defineComponent({
 
         const mOff = mergeOffset(p.node.id);
         const mOpacity = mergeNodeOpacity(p.node.id);
+        const mMasked = isMasked(p.node.id);
         return h(
           "g",
           {
@@ -1125,8 +1210,10 @@ export const ForceGraph = defineComponent({
                 "st-forceGraph__node--dim",
               isSelected && "st-forceGraph__node--selected",
               focusId === p.node.id && "st-forceGraph__node--focus",
-              mergeFromId.value === p.node.id && "st-forceGraph__node--merging",
+              (mergeFromId.value === p.node.id || mMasked) &&
+                "st-forceGraph__node--merging",
             ),
+            "aria-hidden": mMasked ? "true" : undefined,
             opacity: mOpacity,
             transform: `translate(${p.x + mOff.x} ${p.y + mOff.y})`,
             onClick: () => fireSelect(p.node.id),

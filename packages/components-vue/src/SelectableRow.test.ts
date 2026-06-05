@@ -161,6 +161,43 @@ describe("SelectableRow", () => {
     expect(wrapper.find('[data-testid="trail"]').exists()).toBe(true);
   });
 
+  it("does not add the accentBar class by default", () => {
+    const wrapper = track(
+      mount(SelectableRow, {
+        props: { selected: true },
+        slots: { default: () => "Documents" },
+      }),
+    );
+    expect(wrapper.find('[role="option"]').classes()).not.toContain(
+      "st-selectableRow--accentBar",
+    );
+  });
+
+  it("accentBar opt-in adds the accentBar modifier class", () => {
+    const wrapper = track(
+      mount(SelectableRow, {
+        props: { selected: true, accentBar: true },
+        slots: { default: () => "Documents" },
+      }),
+    );
+    expect(wrapper.find('[role="option"]').classes()).toContain(
+      "st-selectableRow--accentBar",
+    );
+  });
+
+  it("standalone role defaults to option but can be overridden", () => {
+    const wrapper = track(
+      mount(SelectableRow, {
+        props: { role: "menuitemradio" },
+        slots: { default: () => "Documents" },
+      }),
+    );
+    const row = wrapper.find('[role="menuitemradio"]');
+    expect(row.exists()).toBe(true);
+    // aria-selected is only emitted for the option role.
+    expect(row.attributes("aria-selected")).toBeUndefined();
+  });
+
   it("has name SelectableRow", () => {
     expect(SelectableRow.name).toBe("SelectableRow");
   });
