@@ -3165,13 +3165,13 @@ describe("Vue behavioral parity — batch 5", () => {
         { source: "b", target: "c" },
       ];
 
-      it("eventually emits mergeComplete and calls onMergeComplete for a valid pair", async () => {
+      it("eventually emits mergeComplete and calls onMergeComplete for a valid pair (id-based)", async () => {
         const onMergeComplete = vi.fn();
         const wrapper = mount(ForceGraph, {
           props: {
             nodes: mergeNodes,
             edges: mergeEdges,
-            mergePair: { from: "a", into: "b" },
+            mergePair: { id: "m1", from: "a", into: "b" },
             onMergeComplete,
           },
         });
@@ -3179,8 +3179,102 @@ describe("Vue behavioral parity — batch 5", () => {
         await vi.waitFor(() => expect(onMergeComplete).toHaveBeenCalledTimes(1), {
           timeout: 1500,
         });
-        expect(onMergeComplete.mock.calls[0][0]).toEqual({ from: "a", into: "b" });
-        expect(wrapper.emitted("mergeComplete")?.[0]?.[0]).toEqual({ from: "a", into: "b" });
+        expect(onMergeComplete.mock.calls[0][0]).toEqual({ id: "m1", from: "a", into: "b" });
+        expect(wrapper.emitted("mergeComplete")?.[0]?.[0]).toEqual({ id: "m1", from: "a", into: "b" });
+      });
+
+      it("is idempotent on id: a new object with the same id does not replay", async () => {
+        const onMergeComplete = vi.fn();
+        const wrapper = mount(ForceGraph, {
+          props: {
+            nodes: mergeNodes,
+            edges: mergeEdges,
+            mergePair: { id: "m1", from: "a", into: "b" },
+            onMergeComplete,
+          },
+        });
+        await vi.waitFor(() => expect(onMergeComplete).toHaveBeenCalledTimes(1), {
+          timeout: 1500,
+        });
+        // Same id, fresh object → no-op.
+        await wrapper.setProps({ mergePair: { id: "m1", from: "a", into: "b" } });
+        await new Promise((r) => setTimeout(r, 60));
+        expect(onMergeComplete).toHaveBeenCalledTimes(1);
+      });
+
+      it("a NEW id replays the merge even for the same from/into", async () => {
+        const onMergeComplete = vi.fn();
+        const wrapper = mount(ForceGraph, {
+          props: {
+            nodes: mergeNodes,
+            edges: mergeEdges,
+            mergePair: { id: "m1", from: "a", into: "b" },
+            onMergeComplete,
+          },
+        });
+        await vi.waitFor(() => expect(onMergeComplete).toHaveBeenCalledTimes(1), {
+          timeout: 1500,
+        });
+        await wrapper.setProps({ mergePair: { id: "m2", from: "a", into: "b" } });
+        await vi.waitFor(() => expect(onMergeComplete).toHaveBeenCalledTimes(2), {
+          timeout: 1500,
+        });
+        expect(onMergeComplete.mock.calls[1][0]).toEqual({ id: "m2", from: "a", into: "b" });
+      });
+
+      it("masks the `from` node after completion until it is removed", async () => {
+        const onMergeComplete = vi.fn();
+        const wrapper = mount(ForceGraph, {
+          props: {
+            nodes: mergeNodes,
+            edges: mergeEdges,
+            mergePair: { id: "m1", from: "a", into: "b" },
+            onMergeComplete,
+          },
+        });
+        await vi.waitFor(() => expect(onMergeComplete).toHaveBeenCalledTimes(1), {
+          timeout: 1500,
+        });
+        await wrapper.vm.$nextTick();
+        // The `from` node group is aria-hidden (masked) after completion.
+        const masked = wrapper
+          .findAll(".st-forceGraph__node")
+          .filter((g) => g.attributes("aria-hidden") === "true");
+        expect(masked.length).toBe(1);
+      });
+
+      it("cancels the in-flight glide (no callback) when `from` is removed mid-merge", async () => {
+        const onMergeComplete = vi.fn();
+        const wrapper = mount(ForceGraph, {
+          props: {
+            nodes: mergeNodes,
+            edges: mergeEdges,
+            mergePair: { id: "m1", from: "a", into: "b" },
+            onMergeComplete,
+          },
+        });
+        // Immediately remove `from` so the next frame re-validation cancels.
+        await wrapper.setProps({
+          nodes: mergeNodes.filter((n) => n.id !== "a"),
+          edges: mergeEdges.filter((e) => e.source !== "a" && e.target !== "a"),
+        });
+        await new Promise((r) => setTimeout(r, 120));
+        expect(onMergeComplete).not.toHaveBeenCalled();
+      });
+
+      it("does not call onMergeComplete after unmount", async () => {
+        const onMergeComplete = vi.fn();
+        const wrapper = mount(ForceGraph, {
+          props: {
+            nodes: mergeNodes,
+            edges: mergeEdges,
+            mergePair: { id: "m1", from: "a", into: "b" },
+            onMergeComplete,
+          },
+        });
+        wrapper.unmount();
+        await new Promise((r) => setTimeout(r, 120));
+        expect(onMergeComplete).not.toHaveBeenCalled();
       });
 
       it("reduced-motion path resolves on a microtask (no animation delay)", async () => {
@@ -3203,14 +3297,14 @@ describe("Vue behavioral parity — batch 5", () => {
             props: {
               nodes: mergeNodes,
               edges: mergeEdges,
-              mergePair: { from: "a", into: "b" },
+              mergePair: { id: "m1", from: "a", into: "b" },
               onMergeComplete,
             },
           });
           await vi.waitFor(() => expect(onMergeComplete).toHaveBeenCalledTimes(1), {
             timeout: 100,
           });
-          expect(onMergeComplete.mock.calls[0][0]).toEqual({ from: "a", into: "b" });
+          expect(onMergeComplete.mock.calls[0][0]).toEqual({ id: "m1", from: "a", into: "b" });
         } finally {
           window.matchMedia = original;
         }
@@ -3222,7 +3316,7 @@ describe("Vue behavioral parity — batch 5", () => {
           props: {
             nodes: mergeNodes,
             edges: mergeEdges,
-            mergePair: { from: "missing", into: "b" },
+            mergePair: { id: "m1", from: "missing", into: "b" },
             onMergeComplete,
           },
         });

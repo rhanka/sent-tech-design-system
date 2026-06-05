@@ -2396,9 +2396,12 @@
   .st-forceGraph__node--dim { opacity: 0.3; }
 
   /* During a merge the opacity/transform are driven per-frame via rAF, so the
-     CSS transitions are disabled to avoid a lag that would smear the glide. */
+     CSS transitions are disabled to avoid a lag that would smear the glide. The
+     fading/masked `from` node is also taken out of hit-testing so the invisible
+     node cannot be hovered, focused or clicked. */
   .st-forceGraph__node--merging,
   .st-forceGraph__edge--merging { transition: none; }
+  .st-forceGraph__node--merging { pointer-events: none; }
 
   .st-forceGraph__dot {
     cursor: pointer;
@@ -8155,10 +8158,11 @@
 }
 
 /* ---------------------------------------------------------------------------
-   SelectableRow — compact, full-width selectable list/rail row. The selected
-   state is truly themed (a tinted surface + accented text + a fine 2px flush
-   accent bar) — deliberately NOT the off-theme "boudin box" (3px inset
-   box-shadow + heavy rounded border) it replaces.
+   SelectableRow — compact, full-width selectable list/rail row. By DEFAULT the
+   selected state is just two calm signals — a tinted surface + accented text —
+   deliberately NOT the off-theme "boudin box" (inset box-shadow + heavy rounded
+   border) it replaces, and NOT a reflow-causing font-weight bump. The fine left
+   accent bar is OPT-IN via the `accentBar` prop / `--accentBar` modifier.
    --------------------------------------------------------------------------- */
 .st-selectableRow {
   align-items: center;
@@ -8169,9 +8173,7 @@
   cursor: pointer;
   display: flex;
   gap: var(--st-spacing-2, 0.5rem);
-  /* Reserve room for the 2px accent bar so text never shifts on selection. */
-  padding: 0.5rem 0.75rem 0.5rem calc(0.75rem - 2px);
-  border-left: 2px solid transparent;
+  padding: 0.5rem 0.75rem;
   position: relative;
   text-align: left;
   transition:
@@ -8179,6 +8181,13 @@
     color var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
   user-select: none;
   width: 100%;
+}
+
+/* Opt-in accent bar: reserve the 2px gutter only when enabled so text never
+   shifts on selection. */
+.st-selectableRow--accentBar {
+  padding-left: calc(0.75rem - 2px);
+  border-left: 2px solid transparent;
 }
 
 .st-selectableRow:hover:not(.st-selectableRow--disabled):not(.st-selectableRow--selected) {
@@ -8189,27 +8198,48 @@
   color: var(--st-semantic-text-primary, #0f172a);
 }
 
+/* Focus ring as an EXTERNAL offset (not inset) so it reads as a focus
+   affordance around the row rather than an inner stroke. */
 .st-selectableRow:focus-visible {
   outline: 2px solid var(--st-semantic-border-interactive, var(--st-semantic-action-primary));
-  outline-offset: -2px;
+  outline-offset: 2px;
 }
 
-/* Selected: tinted surface + accented text + a crisp, flush 2px accent bar.
-   No inset box-shadow, no thick rounded border. */
+/* Selected: two signals by default — tinted surface + accented (contrast-safe)
+   text. The token values carry a flat fallback; the inline color-mix is only a
+   last-resort default when the token is unset. */
 .st-selectableRow--selected {
   background: var(
     --st-component-selectableRow-selectedBackground,
     color-mix(in oklch, var(--st-semantic-action-primary, #2563eb) 12%, transparent)
   );
+  color: var(
+    --st-component-selectableRow-selectedText,
+    color-mix(in oklch, var(--st-semantic-action-primary, #2563eb) 78%, black)
+  );
+}
+
+/* The left accent bar paints only when opt-in AND selected. */
+.st-selectableRow--accentBar.st-selectableRow--selected {
   border-left-color: var(
     --st-component-selectableRow-selectedAccent,
     var(--st-semantic-action-primary, #2563eb)
   );
-  color: var(
-    --st-component-selectableRow-selectedText,
-    var(--st-semantic-action-primary, #1d4ed8)
-  );
-  font-weight: 600;
+}
+
+/* color-mix fallback: engines without color-mix() get a flat tinted surface +
+   a solid accent text from the resolved tokens' plain values. */
+@supports not (color: color-mix(in oklch, red, blue)) {
+  .st-selectableRow--selected {
+    background: var(
+      --st-component-selectableRow-selectedBackground,
+      var(--st-semantic-surface-subtle, #eef2ff)
+    );
+    color: var(
+      --st-component-selectableRow-selectedText,
+      var(--st-semantic-action-primary, #1d4ed8)
+    );
+  }
 }
 
 .st-selectableRow--disabled {
@@ -8236,4 +8266,15 @@
   .st-selectableRow {
     transition: none;
   }
+}
+
+/* ---------------------------------------------------------------------------
+   SelectableList — accessible listbox wrapper owning a roving tabindex for its
+   SelectableRow children (role=listbox → option).
+   --------------------------------------------------------------------------- */
+.st-selectableList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--st-spacing-1, 0.25rem);
+  width: 100%;
 }
