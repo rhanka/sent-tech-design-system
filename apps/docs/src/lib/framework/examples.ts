@@ -115,7 +115,12 @@ export type ComponentName =
   | "RadioGroup"
   | "Typography"
   | "Collapsible"
-  | "Stepper";
+  | "Stepper"
+  | "Rating"
+  | "TimePicker"
+  | "Calendar"
+  | "SlideIndicator"
+  | "Autosave";
 
 export interface ComponentNodeSpec {
   comp: ComponentName;
@@ -6171,6 +6176,187 @@ const steps = [
 
 <template>
   <Stepper :steps="steps" :current="1" label="Création du compte" />
+</template>`
+    }
+  },
+  rating: {
+    id: "rating",
+    slug: "rating",
+    nodes: [
+      wrap([{ comp: "Rating", props: { value: 3, max: 5, label: "Note" } }])
+    ],
+    code: {
+      svelte: `<script>
+  import { Rating } from "@sentropic/design-system-svelte";
+
+  let value = 3;
+</script>
+
+<Rating {value} max={5} label="Note" onChange={(next) => (value = next)} />`,
+      react: `import { useState } from "react";
+import { Rating } from "@sentropic/design-system-react";
+
+export function Demo() {
+  const [value, setValue] = useState(3);
+  return <Rating value={value} max={5} label="Note" onChange={setValue} />;
+}`,
+      vue: `<script setup>
+import { ref } from "vue";
+import { Rating } from "@sentropic/design-system-vue";
+
+const value = ref(3);
+</script>
+
+<template>
+  <Rating :value="value" :max="5" label="Note" @change="value = $event" />
+</template>`
+    }
+  },
+  "time-picker": {
+    id: "time-picker",
+    slug: "time-picker",
+    nodes: [
+      wrap([
+        { comp: "TimePicker", props: { value: "09:30", step: 15, label: "Heure du rendez-vous" } }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { TimePicker } from "@sentropic/design-system-svelte";
+
+  let value = "09:30";
+</script>
+
+<TimePicker
+  {value}
+  step={15}
+  label="Heure du rendez-vous"
+  onChange={(next) => (value = next)}
+/>`,
+      react: `import { useState } from "react";
+import { TimePicker } from "@sentropic/design-system-react";
+
+export function Demo() {
+  const [value, setValue] = useState("09:30");
+  return (
+    <TimePicker
+      value={value}
+      step={15}
+      label="Heure du rendez-vous"
+      onChange={setValue}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { ref } from "vue";
+import { TimePicker } from "@sentropic/design-system-vue";
+
+const value = ref("09:30");
+</script>
+
+<template>
+  <TimePicker
+    :value="value"
+    :step="15"
+    label="Heure du rendez-vous"
+    @change="value = $event"
+  />
+</template>`
+    }
+  },
+  calendar: {
+    id: "calendar",
+    slug: "calendar",
+    nodes: [
+      wrap([
+        { comp: "Calendar", props: { value: "2026-06-12", month: "2026-06" } }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { Calendar } from "@sentropic/design-system-svelte";
+
+  let value = "2026-06-12";
+</script>
+
+<Calendar {value} month="2026-06" onChange={(next) => (value = next)} />`,
+      react: `import { useState } from "react";
+import { Calendar } from "@sentropic/design-system-react";
+
+export function Demo() {
+  const [value, setValue] = useState("2026-06-12");
+  return <Calendar value={value} month="2026-06" onChange={setValue} />;
+}`,
+      vue: `<script setup>
+import { ref } from "vue";
+import { Calendar } from "@sentropic/design-system-vue";
+
+const value = ref("2026-06-12");
+</script>
+
+<template>
+  <Calendar :value="value" month="2026-06" @change="value = $event" />
+</template>`
+    }
+  },
+  "slide-indicator": {
+    id: "slide-indicator",
+    slug: "slide-indicator",
+    nodes: [
+      wrap([{ comp: "SlideIndicator", props: { count: 5, current: 1 } }])
+    ],
+    code: {
+      svelte: `<script>
+  import { SlideIndicator } from "@sentropic/design-system-svelte";
+
+  let current = 1;
+</script>
+
+<SlideIndicator count={5} {current} onChange={(index) => (current = index)} />`,
+      react: `import { useState } from "react";
+import { SlideIndicator } from "@sentropic/design-system-react";
+
+export function Demo() {
+  const [current, setCurrent] = useState(1);
+  return <SlideIndicator count={5} current={current} onChange={setCurrent} />;
+}`,
+      vue: `<script setup>
+import { ref } from "vue";
+import { SlideIndicator } from "@sentropic/design-system-vue";
+
+const current = ref(1);
+</script>
+
+<template>
+  <SlideIndicator :count="5" :current="current" @change="current = $event" />
+</template>`
+    }
+  },
+  autosave: {
+    id: "autosave",
+    slug: "autosave",
+    nodes: [
+      wrap([
+        { comp: "Autosave", props: { status: "saved", lastSaved: "2026-06-04T12:00:00.000Z" } }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { Autosave } from "@sentropic/design-system-svelte";
+</script>
+
+<Autosave status="saved" lastSaved={new Date()} />`,
+      react: `import { Autosave } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return <Autosave status="saved" lastSaved={new Date()} />;
+}`,
+      vue: `<script setup>
+import { Autosave } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Autosave status="saved" :lastSaved="new Date()" />
 </template>`
     }
   }

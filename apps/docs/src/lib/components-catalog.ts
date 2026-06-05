@@ -1087,6 +1087,56 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "Rating",
+    slug: "rating",
+    status: "documented",
+    category: "feedback",
+    description: {
+      fr: "Note par étoiles, lecture seule ou interactive, demi-étoiles.",
+      en: "Star rating, read-only or interactive, with half-stars."
+    }
+  },
+  {
+    name: "TimePicker",
+    slug: "time-picker",
+    status: "documented",
+    category: "form",
+    description: {
+      fr: "Sélection d'une heure parmi des créneaux générés par pas.",
+      en: "Time selection from slots generated at a fixed step."
+    }
+  },
+  {
+    name: "Calendar",
+    slug: "calendar",
+    status: "documented",
+    category: "form",
+    description: {
+      fr: "Calendrier mensuel : date unique ou plage, bornes min/max.",
+      en: "Monthly calendar: single date or range, with min/max bounds."
+    }
+  },
+  {
+    name: "SlideIndicator",
+    slug: "slide-indicator",
+    status: "documented",
+    category: "navigation",
+    description: {
+      fr: "Points ou barres signalant la diapositive courante d'un carrousel.",
+      en: "Dots or bars marking the current slide of a carousel."
+    }
+  },
+  {
+    name: "Autosave",
+    slug: "autosave",
+    status: "documented",
+    category: "feedback",
+    description: {
+      fr: "Indicateur d'enregistrement automatique : en cours, enregistré, échec.",
+      en: "Autosave indicator: saving, saved, or failed states."
+    }
+  },
+  {
     name: "CodeSnippet",
     slug: "code-snippet",
     status: "documented",
