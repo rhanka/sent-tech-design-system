@@ -5,10 +5,10 @@
   "type": "module",
   "dependencies": {
     "@lucide/svelte": "^0.562.0",
-    "@sentropic/design-system-react": "0.7.0",
-    "@sentropic/design-system-svelte": "0.12.0",
+    "@sentropic/design-system-react": "0.8.0",
+    "@sentropic/design-system-svelte": "0.13.0",
     "@sentropic/design-system-themes": "0.10.3",
-    "@sentropic/design-system-vue": "0.7.0",
+    "@sentropic/design-system-vue": "0.8.0",
     "@sentropic/design-system-theme-dsfr": "0.2.2",
     "@sentropic/design-system-theme-carbon": "0.2.2",
     "@sentropic/design-system-theme-airbus": "0.1.0",
