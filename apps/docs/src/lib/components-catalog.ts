@@ -1137,6 +1137,26 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "Portal",
+    slug: "portal",
+    status: "documented",
+    category: "other",
+    description: {
+      fr: "Téléporte son contenu ailleurs dans le DOM (par défaut <body>) ; SSR-safe.",
+      en: "Teleports its content elsewhere in the DOM (defaults to <body>); SSR-safe."
+    }
+  },
+  {
+    name: "Popper",
+    slug: "popper",
+    status: "documented",
+    category: "overlay",
+    description: {
+      fr: "Positionne un panneau flottant près d'une ancre : flip, shift, arrow.",
+      en: "Positions a floating panel next to an anchor: flip, shift, arrow."
+    }
+  },
+  {
     name: "CodeSnippet",
     slug: "code-snippet",
     status: "documented",

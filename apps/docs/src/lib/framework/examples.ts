@@ -120,7 +120,9 @@ export type ComponentName =
   | "TimePicker"
   | "Calendar"
   | "SlideIndicator"
-  | "Autosave";
+  | "Autosave"
+  | "Portal"
+  | "Popper";
 
 export interface ComponentNodeSpec {
   comp: ComponentName;
@@ -6357,6 +6359,133 @@ import { Autosave } from "@sentropic/design-system-vue";
 
 <template>
   <Autosave status="saved" :lastSaved="new Date()" />
+</template>`
+    }
+  },
+  portal: {
+    id: "portal",
+    slug: "portal",
+    nodes: [
+      wrap([
+        {
+          comp: "Portal",
+          props: { disabled: true },
+          children: [
+            { comp: "Badge", props: { tone: "info" }, children: ["Rendu en place"] }
+          ]
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { Portal, Badge } from "@sentropic/design-system-svelte";
+</script>
+
+<!-- Téléporté dans <body> (target par défaut) -->
+<Portal target="body">
+  <div class="toast">Enregistré</div>
+</Portal>
+
+<!-- disabled : rendu en place, sans téléportation -->
+<Portal disabled>
+  <Badge tone="info">Rendu en place</Badge>
+</Portal>`,
+      react: `import { Portal, Badge } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      {/* Téléporté dans <body> (target par défaut) */}
+      <Portal target="body">
+        <div className="toast">Enregistré</div>
+      </Portal>
+
+      {/* disabled : rendu en place, sans téléportation */}
+      <Portal disabled>
+        <Badge tone="info">Rendu en place</Badge>
+      </Portal>
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { Portal, Badge } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <!-- Téléporté dans <body> (target par défaut) -->
+  <Portal target="body">
+    <div class="toast">Enregistré</div>
+  </Portal>
+
+  <!-- disabled : rendu en place, sans téléportation -->
+  <Portal :disabled="true">
+    <Badge tone="info">Rendu en place</Badge>
+  </Portal>
+</template>`
+    }
+  },
+  popper: {
+    id: "popper",
+    slug: "popper",
+    // Sans `anchor` (impossible à exprimer dans un NodeSpec statique), Popper
+    // ne rend rien même avec open=true : aperçu sûr au prérendu.
+    nodes: [
+      wrap([
+        {
+          comp: "Popper",
+          props: { open: true, placement: "bottom" },
+          children: [
+            { comp: "Card", props: {}, children: ["Panneau positionné près de l'ancre"] }
+          ]
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { Popper, Button } from "@sentropic/design-system-svelte";
+
+  let anchor = $state(null);
+  let open = $state(false);
+</script>
+
+<Button bind:el={anchor} onclick={() => (open = !open)}>
+  Ouvrir
+</Button>
+
+<Popper {anchor} {open} placement="bottom" offset={8} arrow>
+  <div class="panel">Panneau flottant</div>
+</Popper>`,
+      react: `import { useRef, useState } from "react";
+import { Popper, Button } from "@sentropic/design-system-react";
+
+export function Demo() {
+  const [anchor, setAnchor] = useState<HTMLButtonElement | null>(null);
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <Button ref={setAnchor} onClick={() => setOpen((v) => !v)}>
+        Ouvrir
+      </Button>
+      <Popper anchor={anchor} open={open} placement="bottom" offset={8} arrow>
+        <div className="panel">Panneau flottant</div>
+      </Popper>
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { ref } from "vue";
+import { Popper, Button } from "@sentropic/design-system-vue";
+
+const anchor = ref(null);
+const open = ref(false);
+</script>
+
+<template>
+  <Button ref="anchor" @click="open = !open">Ouvrir</Button>
+
+  <Popper :anchor="anchor" :open="open" placement="bottom" :offset="8" arrow>
+    <div class="panel">Panneau flottant</div>
+  </Popper>
 </template>`
     }
   }
