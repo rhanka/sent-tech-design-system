@@ -1119,6 +1119,7 @@ function runForceGraphSimulation(
   h: number,
   ticks: number,
   nodeRadius: number,
+  repulsionFactor: number,
 ): Map<string, { x: number; y: number }> {
   const cx = w / 2;
   const cy = h / 2;
@@ -1146,7 +1147,11 @@ function runForceGraphSimulation(
 
   const area = w * h;
   const k = Math.sqrt(area / Math.max(ns.length, 1)); // ideal node distance
-  const repulsion = k * k * 0.9;
+  // Clamp the caller-supplied factor so extreme values can't explode or
+  // collapse the layout. >1 spreads nodes out, <1 packs them tighter; the
+  // fit-to-content viewBox is recomputed afterwards so spacing just fills space.
+  const clampedRepulsion = Math.min(Math.max(repulsionFactor, 0.1), 10);
+  const repulsion = k * k * 0.9 * clampedRepulsion;
   const restLength = k * 0.8;
   const springK = 0.04;
   const gravity = 0.012;
@@ -1279,6 +1284,18 @@ export type ForceGraphProps = React.HTMLAttributes<HTMLElement> & {
    * by `edgeCurve * dist * factor`. Defaults to a light 0.15.
    */
   edgeCurve?: number;
+  /**
+   * Repulsion multiplier controlling how spread out the layout is.
+   * >1 = graphe plus aéré, <1 = plus compact ; multiplie la force de
+   * répulsion sans toucher au fit-to-content. Defaults to 1. Clamped to
+   * [0.1, 10] internally to avoid layout explosions/collapses.
+   */
+  repulsion?: number;
+  /**
+   * Called when the user hovers (or keyboard-focuses) a node, and again with
+   * null when the hover/focus ends. Intended for syncing an external panel.
+   */
+  onNodeHover?: (node: ForceGraphNode | null) => void;
 };
 
 // Curvature offset factor: how far (relative to chord length) the control
@@ -1303,6 +1320,8 @@ export function ForceGraph({
   onEdgeHover,
   legend,
   edgeCurve = 0.15,
+  repulsion = 1,
+  onNodeHover,
   className,
   ...rest
 }: ForceGraphProps) {
@@ -1320,8 +1339,8 @@ export function ForceGraph({
   // honouring the motion preference (no rAF loop, no jitter).
   const layout = React.useMemo(() => {
     const ticks = Math.max(1, Math.round(iterations));
-    return runForceGraphSimulation(nodes, edges, width, height, ticks, nodeRadius);
-  }, [nodes, edges, width, height, iterations, nodeRadius]);
+    return runForceGraphSimulation(nodes, edges, width, height, ticks, nodeRadius, repulsion);
+  }, [nodes, edges, width, height, iterations, nodeRadius, repulsion]);
 
   const positionedNodes = React.useMemo(
     () =>
@@ -1485,6 +1504,37 @@ export function ForceGraph({
     return !(srcActive || tgtActive);
   }
 
+  // ---------------------------------------------------------------------------
+  // Hover-connexe (demand 7): hovering a node fades the rest of the graph the
+  // same way selection does — the hovered node and its direct neighbours stay
+  // full, every other node dims, and only edges incident to the hovered node
+  // keep their opacity. Composes with selection (predicates OR'd together).
+  // ---------------------------------------------------------------------------
+  const hoveredNodeId =
+    hoveredNodeIndex !== null ? (positionedNodes[hoveredNodeIndex]?.node.id ?? null) : null;
+  const hoverActiveSet = React.useMemo(() => {
+    const set = new Set<string>();
+    if (hoveredNodeId == null) return set;
+    set.add(hoveredNodeId);
+    const nb = adjacency.get(hoveredNodeId);
+    if (nb) for (const n of nb) set.add(n);
+    return set;
+  }, [hoveredNodeId, adjacency]);
+
+  // A node is dimmed by hover when a node is hovered and this one is neither
+  // the hovered node nor one of its direct neighbours.
+  function isHoverDimmedNode(id: string): boolean {
+    if (hoveredNodeId == null) return false;
+    return !hoverActiveSet.has(id);
+  }
+
+  // An edge is dimmed by hover when a node is hovered and the edge is not
+  // incident to it (keep only the hovered node's own edges full).
+  function isHoverDimmedEdge(e: ForceGraphEdge): boolean {
+    if (hoveredNodeId == null) return false;
+    return e.source !== hoveredNodeId && e.target !== hoveredNodeId;
+  }
+
   // Keyboard handler for a node element: Space/Enter → onSelect, Enter → onOpenEntity.
   function handleNodeKeydown(id: string, e: React.KeyboardEvent) {
     if (e.key === "Enter" || e.key === " ") {
@@ -1621,7 +1671,8 @@ export function ForceGraph({
               e.edge.weak && "st-forceGraph__edge--weak",
               e.edge.emphasis && "st-forceGraph__edge--emphasis",
               hoveredEdgeIndex === e.i && "st-forceGraph__edge--hovered",
-              isEdgeSelectionDimmed(e.edge) && "st-forceGraph__edge--dim",
+              (isEdgeSelectionDimmed(e.edge) || isHoverDimmedEdge(e.edge)) &&
+                "st-forceGraph__edge--dim",
             );
             return (
               <React.Fragment key={e.i}>
@@ -1683,10 +1734,22 @@ export function ForceGraph({
               role: "button" as const,
               "aria-label": ariaLabel,
               "aria-pressed": pressed,
-              onMouseEnter: () => setHoveredNodeIndex(p.i),
-              onMouseLeave: () => setHoveredNodeIndex(null),
-              onFocus: () => setHoveredNodeIndex(p.i),
-              onBlur: () => setHoveredNodeIndex(null),
+              onMouseEnter: () => {
+                setHoveredNodeIndex(p.i);
+                onNodeHover?.(p.node);
+              },
+              onMouseLeave: () => {
+                setHoveredNodeIndex(null);
+                onNodeHover?.(null);
+              },
+              onFocus: () => {
+                setHoveredNodeIndex(p.i);
+                onNodeHover?.(p.node);
+              },
+              onBlur: () => {
+                setHoveredNodeIndex(null);
+                onNodeHover?.(null);
+              },
               onClick: () => onSelect?.(p.node.id),
               onDoubleClick: () => onOpenEntity?.(p.node.id),
               onKeyDown: (e: React.KeyboardEvent) => handleNodeKeydown(p.node.id, e),
@@ -1697,8 +1760,7 @@ export function ForceGraph({
                 className={classNames(
                   "st-forceGraph__node",
                   `st-forceGraph__node--${p.tone}`,
-                  ((hoveredNodeIndex !== null && hoveredNodeIndex !== p.i) ||
-                    isSelectionDimmed(p.node.id)) &&
+                  (isHoverDimmedNode(p.node.id) || isSelectionDimmed(p.node.id)) &&
                     "st-forceGraph__node--dim",
                   pressed && "st-forceGraph__node--selected",
                   focusId === p.node.id && "st-forceGraph__node--focus",
