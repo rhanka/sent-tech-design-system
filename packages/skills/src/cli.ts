@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { existsSync, readFileSync, writeFileSync, readdirSync, statSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync, readdirSync, statSync, realpathSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import readline from "node:readline/promises";
@@ -1199,7 +1199,22 @@ async function main() {
   await runCommandFromArgs(process.argv.slice(2));
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
+// Run main when invoked as a script. Resolve symlinks on argv[1] so the CLI
+// also runs when launched through its `design`/`sentech-design` bin shim
+// (npm link / global install), whose path differs from the real module path.
+function isInvokedAsScript(): boolean {
+  const entry = process.argv[1];
+  if (!entry) return false;
+  const modulePath = fileURLToPath(import.meta.url);
+  if (entry === modulePath) return true;
+  try {
+    return realpathSync(entry) === modulePath;
+  } catch {
+    return false;
+  }
+}
+
+if (isInvokedAsScript()) {
   main().catch((error: Error) => {
     process.stderr.write(`sentech-design: ${error.message}\n`);
     process.exit(2);
