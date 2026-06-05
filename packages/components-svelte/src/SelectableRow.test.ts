@@ -104,4 +104,27 @@ describe("SelectableRow", () => {
     expect(screen.getByTestId("lead")).toBeTruthy();
     expect(screen.getByTestId("trail")).toBeTruthy();
   });
+
+  it("does NOT add the accent-bar modifier by default (2 signals only)", () => {
+    render(SelectableRow, { props: { selected: true, children: labelChildren } });
+    const row = screen.getByRole("option");
+    expect(row.className).not.toContain("st-selectableRow--accentBar");
+  });
+
+  it("adds the accent-bar modifier when accentBar is opted in", () => {
+    render(SelectableRow, {
+      props: { selected: true, accentBar: true, children: labelChildren }
+    });
+    const row = screen.getByRole("option");
+    expect(row.className).toContain("st-selectableRow--accentBar");
+    expect(row.className).toContain("st-selectableRow--selected");
+  });
+
+  it("honours a custom role for a standalone row", () => {
+    render(SelectableRow, { props: { role: "menuitemcheckbox", children: labelChildren } });
+    const row = screen.getByRole("menuitemcheckbox");
+    expect(row).toBeTruthy();
+    // aria-selected only surfaces for the option role.
+    expect(row.getAttribute("aria-selected")).toBeNull();
+  });
 });
