@@ -4922,23 +4922,27 @@ const segments = [
             label: "Ontologie de démo",
             width: 460,
             height: 300,
+            edgeCurve: 0.2,
             nodes: [
               { id: "auteur", label: "Auteur", shape: "box", tone: "category1" },
               { id: "oeuvre", label: "Œuvre", shape: "diamond", tone: "category2" },
               { id: "lieu", label: "Lieu", shape: "triangle", tone: "category3" },
               { id: "perso", label: "Personnage", shape: "star", tone: "category4" },
-              { id: "indice", label: "Indice", shape: "square", tone: "category5" }
+              { id: "indice", label: "Indice", shape: "square", tone: "category5" },
+              { id: "manuscrit", label: "Manuscrit", shape: "roundedbox", tone: "category6" }
             ],
             edges: [
-              { source: "auteur", target: "oeuvre", relation: "a écrit" },
-              { source: "oeuvre", target: "lieu", relation: "se déroule à" },
+              { source: "auteur", target: "oeuvre", relation: "a écrit", emphasis: true },
+              { source: "oeuvre", target: "lieu", relation: "se déroule à", dash: "dashed" },
               { source: "oeuvre", target: "perso", relation: "présente" },
-              { source: "perso", target: "indice", relation: "laisse" }
+              { source: "perso", target: "indice", relation: "laisse", dash: "dotted" },
+              { source: "oeuvre", target: "manuscrit", relation: "conservé dans", dash: "long-dash" }
             ],
             legend: [
               { label: "Auteur", shape: "box", tone: "category1" },
               { label: "Œuvre", shape: "diamond", tone: "category2" },
-              { label: "Personnage", shape: "star", tone: "category4" }
+              { label: "Manuscrit", shape: "roundedbox", tone: "category6" },
+              { label: "Relation faible", dash: "dashed" }
             ]
           }
         }
@@ -4950,36 +4954,46 @@ const segments = [
   const nodes = [
     { id: "auteur", label: "Auteur", shape: "box", tone: "category1" },
     { id: "oeuvre", label: "Œuvre", shape: "diamond", tone: "category2" },
-    { id: "perso", label: "Personnage", shape: "star", tone: "category4" }
+    { id: "manuscrit", label: "Manuscrit", shape: "roundedbox", tone: "category6" }
   ];
-  const edges = [{ source: "auteur", target: "oeuvre", relation: "a écrit" }];
+  const edges = [
+    // emphasis -> arête en gras (2×) ; dash -> pointillé typé
+    { source: "auteur", target: "oeuvre", relation: "a écrit", emphasis: true },
+    { source: "oeuvre", target: "manuscrit", relation: "conservé dans", dash: "long-dash" }
+  ];
 </script>
 
-<ForceGraph {nodes} {edges} label="Ontologie de démo" width={460} height={300} />`,
+<ForceGraph {nodes} {edges} label="Ontologie de démo" width={460} height={300} edgeCurve={0.2} />`,
       react: `import { ForceGraph } from "@sentropic/design-system-react";
 
 const nodes = [
   { id: "auteur", label: "Auteur", shape: "box", tone: "category1" },
   { id: "oeuvre", label: "Œuvre", shape: "diamond", tone: "category2" },
-  { id: "perso", label: "Personnage", shape: "star", tone: "category4" }
+  { id: "manuscrit", label: "Manuscrit", shape: "roundedbox", tone: "category6" }
 ];
-const edges = [{ source: "auteur", target: "oeuvre", relation: "a écrit" }];
+const edges = [
+  { source: "auteur", target: "oeuvre", relation: "a écrit", emphasis: true },
+  { source: "oeuvre", target: "manuscrit", relation: "conservé dans", dash: "long-dash" }
+];
 
 export function Demo() {
-  return <ForceGraph nodes={nodes} edges={edges} label="Ontologie de démo" width={460} height={300} />;
+  return <ForceGraph nodes={nodes} edges={edges} label="Ontologie de démo" width={460} height={300} edgeCurve={0.2} />;
 }`,
       vue: `<script setup>
 import { ForceGraph } from "@sentropic/design-system-vue";
 const nodes = [
   { id: "auteur", label: "Auteur", shape: "box", tone: "category1" },
   { id: "oeuvre", label: "Œuvre", shape: "diamond", tone: "category2" },
-  { id: "perso", label: "Personnage", shape: "star", tone: "category4" }
+  { id: "manuscrit", label: "Manuscrit", shape: "roundedbox", tone: "category6" }
 ];
-const edges = [{ source: "auteur", target: "oeuvre", relation: "a écrit" }];
+const edges = [
+  { source: "auteur", target: "oeuvre", relation: "a écrit", emphasis: true },
+  { source: "oeuvre", target: "manuscrit", relation: "conservé dans", dash: "long-dash" }
+];
 </script>
 
 <template>
-  <ForceGraph :nodes="nodes" :edges="edges" label="Ontologie de démo" :width="460" :height="300" />
+  <ForceGraph :nodes="nodes" :edges="edges" label="Ontologie de démo" :width="460" :height="300" :edge-curve="0.2" />
 </template>`
     }
   },
