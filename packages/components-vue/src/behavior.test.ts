@@ -3076,6 +3076,79 @@ describe("Vue behavioral parity — batch 5", () => {
       });
     });
 
+    it("accepts a repulsion prop and mounts without throwing", () => {
+      const nodes = [{ id: "a" }, { id: "b" }, { id: "c" }];
+      const edges = [{ source: "a", target: "b" }];
+      expect(() =>
+        mount(ForceGraph, { props: { nodes, edges, repulsion: 4 } }),
+      ).not.toThrow();
+      expect(() =>
+        mount(ForceGraph, { props: { nodes, edges, repulsion: 0.2 } }),
+      ).not.toThrow();
+    });
+
+    it("hover dims non-neighbour nodes/edges but keeps the hovered node, its neighbours and incident edges full", async () => {
+      // a—b, b—c, c—d ; hovering b keeps {b, a, c} full and dims d.
+      // Edges a—b and b—c are incident to b (full) ; c—d is not (dimmed).
+      const wrapper = mount(ForceGraph, {
+        props: {
+          nodes: [
+            { id: "a", label: "Alpha" },
+            { id: "b", label: "Beta" },
+            { id: "c", label: "Gamma" },
+            { id: "d", label: "Delta" },
+          ],
+          edges: [
+            { source: "a", target: "b" },
+            { source: "b", target: "c" },
+            { source: "c", target: "d" },
+          ],
+        },
+      });
+
+      // Nodes render in input order; index 1 = "b".
+      const nodeGroups = wrapper.findAll(".st-forceGraph__node");
+      const bDot = nodeGroups[1].find(".st-forceGraph__dot");
+      await bDot.trigger("mouseenter");
+
+      const dimmedAfterHover = wrapper
+        .findAll(".st-forceGraph__node")
+        .map((g) => g.classes().includes("st-forceGraph__node--dim"));
+      // a, b, c full ; d dimmed.
+      expect(dimmedAfterHover).toEqual([false, false, false, true]);
+
+      const edgesDim = wrapper
+        .findAll(".st-forceGraph__edge")
+        .map((e) => e.classes().includes("st-forceGraph__edge--dim"));
+      // a—b, b—c full ; c—d dimmed.
+      expect(edgesDim).toEqual([false, false, true]);
+
+      await bDot.trigger("mouseleave");
+      const dimmedAfterLeave = wrapper
+        .findAll(".st-forceGraph__node")
+        .map((g) => g.classes().includes("st-forceGraph__node--dim"));
+      expect(dimmedAfterLeave).toEqual([false, false, false, false]);
+    });
+
+    it("emits nodeHover with the node on enter and null on leave", async () => {
+      const wrapper = mount(ForceGraph, {
+        props: {
+          nodes: [
+            { id: "a", label: "Alpha" },
+            { id: "b", label: "Beta" },
+          ],
+          edges: [{ source: "a", target: "b" }],
+        },
+      });
+      const aDot = wrapper.findAll(".st-forceGraph__node")[0].find(".st-forceGraph__dot");
+      await aDot.trigger("mouseenter");
+      await aDot.trigger("mouseleave");
+      const emitted = wrapper.emitted("nodeHover");
+      expect(emitted).toBeTruthy();
+      expect(emitted?.[0]?.[0]).toMatchObject({ id: "a", label: "Alpha" });
+      expect(emitted?.[1]?.[0]).toBeNull();
+    });
+
     it("has name ForceGraph", () => {
       expect(ForceGraph.name).toBe("ForceGraph");
     });
