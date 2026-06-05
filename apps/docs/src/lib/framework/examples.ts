@@ -99,7 +99,15 @@ export type ComponentName =
   | "PaginationNav"
   | "MenuTriggerButton"
   | "TileGroup"
-  | "Toggletip";
+  | "Toggletip"
+  | "Flex"
+  | "Stack"
+  | "Inline"
+  | "Container"
+  | "Row"
+  | "Col"
+  | "Hidden"
+  | "Divider";
 
 export interface ComponentNodeSpec {
   comp: ComponentName;
@@ -5238,6 +5246,442 @@ const open = ref(false);
   <Toggletip v-model:open="open" label="Aide" content="La bulle reste ouverte jusqu'à un nouveau clic ou Escape." trigger-label="Plus d'informations">
     <span>Quota mensuel</span>
   </Toggletip>
+</template>`
+    }
+  },
+  flex: {
+    id: "flex",
+    slug: "flex",
+    nodes: [
+      {
+        comp: "Flex",
+        props: { gap: 4, justify: "between", align: "center" },
+        children: [
+          { comp: "Badge", props: { tone: "info" }, children: ["Étape 1"] },
+          { comp: "Badge", props: { tone: "info" }, children: ["Étape 2"] },
+          { comp: "Badge", props: { tone: "success" }, children: ["Étape 3"] }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { Flex, Badge } from "@sentropic/design-system-svelte";
+</script>
+
+<Flex gap={4} justify="between" align="center">
+  <Badge tone="info">Étape 1</Badge>
+  <Badge tone="info">Étape 2</Badge>
+  <Badge tone="success">Étape 3</Badge>
+</Flex>`,
+      react: `import { Flex, Badge } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <Flex gap={4} justify="between" align="center">
+      <Badge tone="info">Étape 1</Badge>
+      <Badge tone="info">Étape 2</Badge>
+      <Badge tone="success">Étape 3</Badge>
+    </Flex>
+  );
+}`,
+      vue: `<script setup>
+import { Flex, Badge } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Flex :gap="4" justify="between" align="center">
+    <Badge tone="info">Étape 1</Badge>
+    <Badge tone="info">Étape 2</Badge>
+    <Badge tone="success">Étape 3</Badge>
+  </Flex>
+</template>`
+    }
+  },
+  stack: {
+    id: "stack",
+    slug: "stack",
+    nodes: [
+      {
+        comp: "Stack",
+        props: { gap: 3 },
+        children: [
+          { comp: "Card", children: [{ el: "p", props: { class: "fp-card-text" }, children: ["Premier bloc empilé."] }] },
+          { comp: "Card", children: [{ el: "p", props: { class: "fp-card-text" }, children: ["Deuxième bloc, sous le premier."] }] },
+          { comp: "Card", children: [{ el: "p", props: { class: "fp-card-text" }, children: ["Troisième bloc, gap vertical constant."] }] }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { Stack, Card } from "@sentropic/design-system-svelte";
+</script>
+
+<Stack gap={3}>
+  <Card><p>Premier bloc empilé.</p></Card>
+  <Card><p>Deuxième bloc, sous le premier.</p></Card>
+  <Card><p>Troisième bloc, gap vertical constant.</p></Card>
+</Stack>`,
+      react: `import { Stack, Card } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <Stack gap={3}>
+      <Card><p>Premier bloc empilé.</p></Card>
+      <Card><p>Deuxième bloc, sous le premier.</p></Card>
+      <Card><p>Troisième bloc, gap vertical constant.</p></Card>
+    </Stack>
+  );
+}`,
+      vue: `<script setup>
+import { Stack, Card } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Stack :gap="3">
+    <Card><p>Premier bloc empilé.</p></Card>
+    <Card><p>Deuxième bloc, sous le premier.</p></Card>
+    <Card><p>Troisième bloc, gap vertical constant.</p></Card>
+  </Stack>
+</template>`
+    }
+  },
+  inline: {
+    id: "inline",
+    slug: "inline",
+    nodes: [
+      {
+        comp: "Inline",
+        props: { gap: 2 },
+        children: [
+          { comp: "Tag", children: ["svelte"] },
+          { comp: "Tag", children: ["react"] },
+          { comp: "Tag", children: ["vue"] },
+          { comp: "Tag", children: ["tokens"] },
+          { comp: "Tag", children: ["thèmes"] },
+          { comp: "Tag", children: ["accessibilité"] },
+          { comp: "Tag", children: ["white-label"] },
+          { comp: "Tag", children: ["layout"] }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { Inline, Tag } from "@sentropic/design-system-svelte";
+</script>
+
+<Inline gap={2}>
+  <Tag>svelte</Tag>
+  <Tag>react</Tag>
+  <Tag>vue</Tag>
+  <Tag>tokens</Tag>
+  <Tag>thèmes</Tag>
+  <Tag>accessibilité</Tag>
+  <Tag>white-label</Tag>
+  <Tag>layout</Tag>
+</Inline>`,
+      react: `import { Inline, Tag } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <Inline gap={2}>
+      <Tag>svelte</Tag>
+      <Tag>react</Tag>
+      <Tag>vue</Tag>
+      <Tag>tokens</Tag>
+      <Tag>thèmes</Tag>
+      <Tag>accessibilité</Tag>
+      <Tag>white-label</Tag>
+      <Tag>layout</Tag>
+    </Inline>
+  );
+}`,
+      vue: `<script setup>
+import { Inline, Tag } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Inline :gap="2">
+    <Tag>svelte</Tag>
+    <Tag>react</Tag>
+    <Tag>vue</Tag>
+    <Tag>tokens</Tag>
+    <Tag>thèmes</Tag>
+    <Tag>accessibilité</Tag>
+    <Tag>white-label</Tag>
+    <Tag>layout</Tag>
+  </Inline>
+</template>`
+    }
+  },
+  container: {
+    id: "container",
+    slug: "container",
+    nodes: [
+      {
+        comp: "Container",
+        props: { size: "sm" },
+        children: [
+          {
+            comp: "Card",
+            children: [
+              { el: "h3", props: { class: "fp-card-title" }, children: ["Container size=\"sm\""] },
+              { el: "p", props: { class: "fp-card-text" }, children: ["Largeur maximale bornée et centrée, pour garder une longueur de ligne lisible."] }
+            ]
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { Container, Card } from "@sentropic/design-system-svelte";
+</script>
+
+<Container size="sm">
+  <Card>
+    <h3>Container size="sm"</h3>
+    <p>Largeur maximale bornée et centrée, pour garder une longueur de ligne lisible.</p>
+  </Card>
+</Container>`,
+      react: `import { Container, Card } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <Container size="sm">
+      <Card>
+        <h3>Container size="sm"</h3>
+        <p>Largeur maximale bornée et centrée, pour garder une longueur de ligne lisible.</p>
+      </Card>
+    </Container>
+  );
+}`,
+      vue: `<script setup>
+import { Container, Card } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Container size="sm">
+    <Card>
+      <h3>Container size="sm"</h3>
+      <p>Largeur maximale bornée et centrée, pour garder une longueur de ligne lisible.</p>
+    </Card>
+  </Container>
+</template>`
+    }
+  },
+  row: {
+    id: "row",
+    slug: "row",
+    nodes: [
+      {
+        comp: "Row",
+        props: { gutter: 4 },
+        children: [
+          {
+            comp: "Col",
+            props: { span: 4 },
+            children: [{ comp: "Card", children: [{ el: "p", props: { class: "fp-card-text" }, children: ["span=4"] }] }]
+          },
+          {
+            comp: "Col",
+            props: { span: 4 },
+            children: [{ comp: "Card", children: [{ el: "p", props: { class: "fp-card-text" }, children: ["span=4"] }] }]
+          },
+          {
+            comp: "Col",
+            props: { span: 4 },
+            children: [{ comp: "Card", children: [{ el: "p", props: { class: "fp-card-text" }, children: ["span=4"] }] }]
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { Row, Col, Card } from "@sentropic/design-system-svelte";
+</script>
+
+<Row gutter={4}>
+  <Col span={4}><Card><p>span=4</p></Card></Col>
+  <Col span={4}><Card><p>span=4</p></Card></Col>
+  <Col span={4}><Card><p>span=4</p></Card></Col>
+</Row>`,
+      react: `import { Row, Col, Card } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <Row gutter={4}>
+      <Col span={4}><Card><p>span=4</p></Card></Col>
+      <Col span={4}><Card><p>span=4</p></Card></Col>
+      <Col span={4}><Card><p>span=4</p></Card></Col>
+    </Row>
+  );
+}`,
+      vue: `<script setup>
+import { Row, Col, Card } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Row :gutter="4">
+    <Col :span="4"><Card><p>span=4</p></Card></Col>
+    <Col :span="4"><Card><p>span=4</p></Card></Col>
+    <Col :span="4"><Card><p>span=4</p></Card></Col>
+  </Row>
+</template>`
+    }
+  },
+  col: {
+    id: "col",
+    slug: "col",
+    nodes: [
+      {
+        comp: "Row",
+        props: { gutter: 4 },
+        children: [
+          {
+            comp: "Col",
+            props: { span: 8 },
+            children: [{ comp: "Card", children: [{ el: "p", props: { class: "fp-card-text" }, children: ["span=8 — contenu principal"] }] }]
+          },
+          {
+            comp: "Col",
+            props: { span: 4 },
+            children: [{ comp: "Card", children: [{ el: "p", props: { class: "fp-card-text" }, children: ["span=4 — colonne latérale"] }] }]
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { Row, Col, Card } from "@sentropic/design-system-svelte";
+</script>
+
+<Row gutter={4}>
+  <Col span={8}><Card><p>span=8 — contenu principal</p></Card></Col>
+  <Col span={4}><Card><p>span=4 — colonne latérale</p></Card></Col>
+</Row>`,
+      react: `import { Row, Col, Card } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <Row gutter={4}>
+      <Col span={8}><Card><p>span=8 — contenu principal</p></Card></Col>
+      <Col span={4}><Card><p>span=4 — colonne latérale</p></Card></Col>
+    </Row>
+  );
+}`,
+      vue: `<script setup>
+import { Row, Col, Card } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Row :gutter="4">
+    <Col :span="8"><Card><p>span=8 — contenu principal</p></Card></Col>
+    <Col :span="4"><Card><p>span=4 — colonne latérale</p></Card></Col>
+  </Row>
+</template>`
+    }
+  },
+  hidden: {
+    id: "hidden",
+    slug: "hidden",
+    nodes: [
+      {
+        comp: "Inline",
+        props: { gap: 2, align: "center" },
+        children: [
+          { comp: "Hidden", props: { below: "md" }, children: [{ comp: "Badge", props: { tone: "info" }, children: ["Visible ≥ md"] }] },
+          { comp: "Hidden", props: { above: "md" }, children: [{ comp: "Badge", props: { tone: "warning" }, children: ["Visible < md"] }] },
+          { el: "span", props: { class: "fp-card-text" }, children: ["Redimensionnez la fenêtre autour de 768 px."] }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { Hidden, Badge } from "@sentropic/design-system-svelte";
+</script>
+
+<Hidden below="md">
+  <Badge tone="info">Visible ≥ md</Badge>
+</Hidden>
+<Hidden above="md">
+  <Badge tone="warning">Visible &lt; md</Badge>
+</Hidden>`,
+      react: `import { Hidden, Badge } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <Hidden below="md">
+        <Badge tone="info">Visible ≥ md</Badge>
+      </Hidden>
+      <Hidden above="md">
+        <Badge tone="warning">Visible &lt; md</Badge>
+      </Hidden>
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { Hidden, Badge } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Hidden below="md">
+    <Badge tone="info">Visible ≥ md</Badge>
+  </Hidden>
+  <Hidden above="md">
+    <Badge tone="warning">Visible &lt; md</Badge>
+  </Hidden>
+</template>`
+    }
+  },
+  divider: {
+    id: "divider",
+    slug: "divider",
+    nodes: [
+      {
+        comp: "Stack",
+        props: { gap: 3 },
+        children: [
+          { el: "span", props: { class: "fp-card-text" }, children: ["Section précédente"] },
+          { comp: "Divider" },
+          { el: "span", props: { class: "fp-card-text" }, children: ["Section suivante"] },
+          { comp: "Divider", props: { label: "ou" } },
+          { el: "span", props: { class: "fp-card-text" }, children: ["Alternative"] }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { Divider } from "@sentropic/design-system-svelte";
+</script>
+
+<p>Section précédente</p>
+<Divider />
+<p>Section suivante</p>
+<Divider label="ou" />
+<p>Alternative</p>`,
+      react: `import { Divider } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <p>Section précédente</p>
+      <Divider />
+      <p>Section suivante</p>
+      <Divider label="ou" />
+      <p>Alternative</p>
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { Divider } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <p>Section précédente</p>
+  <Divider />
+  <p>Section suivante</p>
+  <Divider label="ou" />
+  <p>Alternative</p>
 </template>`
     }
   }
