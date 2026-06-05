@@ -122,7 +122,9 @@ export type ComponentName =
   | "SlideIndicator"
   | "Autosave"
   | "Portal"
-  | "Popper";
+  | "Popper"
+  | "SelectableRow"
+  | "SelectableList";
 
 export interface ComponentNodeSpec {
   comp: ComponentName;
@@ -6486,6 +6488,139 @@ const open = ref(false);
   <Popper :anchor="anchor" :open="open" placement="bottom" :offset="8" arrow>
     <div class="panel">Panneau flottant</div>
   </Popper>
+</template>`
+    }
+  },
+
+  "selectable-row": {
+    id: "selectable-row",
+    slug: "selectable-row",
+    nodes: [
+      stack([
+        {
+          comp: "SelectableList",
+          props: { label: "Environnement", value: "staging" },
+          children: [
+            { comp: "SelectableRow", props: { value: "prod" }, children: ["Production"] },
+            { comp: "SelectableRow", props: { value: "staging" }, children: ["Staging"] },
+            { comp: "SelectableRow", props: { value: "dev" }, children: ["Développement"] }
+          ]
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { SelectableRow } from "@sentropic/design-system-svelte";
+
+  let selected = true;
+</script>
+
+<SelectableRow bind:selected onselect={(s) => (selected = s)}>
+  {#snippet leading()}<span aria-hidden="true">◆</span>{/snippet}
+  Staging
+  {#snippet trailing()}<span>v2.4</span>{/snippet}
+</SelectableRow>`,
+      react: `import { useState } from "react";
+import { SelectableRow } from "@sentropic/design-system-react";
+
+export function Demo() {
+  const [selected, setSelected] = useState(true);
+  return (
+    <SelectableRow
+      selected={selected}
+      onSelect={setSelected}
+      leading={<span aria-hidden="true">◆</span>}
+      trailing={<span>v2.4</span>}
+    >
+      Staging
+    </SelectableRow>
+  );
+}`,
+      vue: `<script setup>
+import { ref } from "vue";
+import { SelectableRow } from "@sentropic/design-system-vue";
+
+const selected = ref(true);
+</script>
+
+<template>
+  <SelectableRow :selected="selected" @select="selected = $event">
+    <template #leading><span aria-hidden="true">◆</span></template>
+    Staging
+    <template #trailing><span>v2.4</span></template>
+  </SelectableRow>
+</template>`
+    }
+  },
+
+  "selectable-list": {
+    id: "selectable-list",
+    slug: "selectable-list",
+    nodes: [
+      stack([
+        {
+          comp: "SelectableList",
+          props: { label: "Région", value: "ca-qc" },
+          children: [
+            { comp: "SelectableRow", props: { value: "ca-qc" }, children: ["Canada — Québec"] },
+            { comp: "SelectableRow", props: { value: "ca-on" }, children: ["Canada — Ontario"] },
+            { comp: "SelectableRow", props: { value: "us-east" }, children: ["États-Unis — Est"] },
+            { comp: "SelectableRow", props: { value: "eu-west" }, children: ["Europe — Ouest"] }
+          ]
+        },
+        {
+          comp: "SelectableList",
+          props: { label: "Intégrations", multiple: true, value: ["github", "slack"] },
+          children: [
+            { comp: "SelectableRow", props: { value: "github" }, children: ["GitHub"] },
+            { comp: "SelectableRow", props: { value: "slack" }, children: ["Slack"] },
+            { comp: "SelectableRow", props: { value: "jira" }, children: ["Jira"] },
+            { comp: "SelectableRow", props: { value: "figma" }, children: ["Figma"] }
+          ]
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { SelectableList, SelectableRow } from "@sentropic/design-system-svelte";
+
+  let region = "ca-qc";
+</script>
+
+<SelectableList label="Région" value={region} onchange={(v) => (region = v)}>
+  <SelectableRow value="ca-qc">Canada — Québec</SelectableRow>
+  <SelectableRow value="ca-on">Canada — Ontario</SelectableRow>
+  <SelectableRow value="us-east">États-Unis — Est</SelectableRow>
+  <SelectableRow value="eu-west">Europe — Ouest</SelectableRow>
+</SelectableList>`,
+      react: `import { useState } from "react";
+import { SelectableList, SelectableRow } from "@sentropic/design-system-react";
+
+export function Demo() {
+  const [region, setRegion] = useState("ca-qc");
+  return (
+    <SelectableList label="Région" value={region} onChange={setRegion}>
+      <SelectableRow value="ca-qc">Canada — Québec</SelectableRow>
+      <SelectableRow value="ca-on">Canada — Ontario</SelectableRow>
+      <SelectableRow value="us-east">États-Unis — Est</SelectableRow>
+      <SelectableRow value="eu-west">Europe — Ouest</SelectableRow>
+    </SelectableList>
+  );
+}`,
+      vue: `<script setup>
+import { ref } from "vue";
+import { SelectableList, SelectableRow } from "@sentropic/design-system-vue";
+
+const region = ref("ca-qc");
+</script>
+
+<template>
+  <SelectableList label="Région" :value="region" @change="region = $event">
+    <SelectableRow value="ca-qc">Canada — Québec</SelectableRow>
+    <SelectableRow value="ca-on">Canada — Ontario</SelectableRow>
+    <SelectableRow value="us-east">États-Unis — Est</SelectableRow>
+    <SelectableRow value="eu-west">Europe — Ouest</SelectableRow>
+  </SelectableList>
 </template>`
     }
   }
