@@ -40,6 +40,48 @@ export function isNumeric(x: number | string): x is number {
   return typeof x === "number" && Number.isFinite(x);
 }
 
+// Hex (résolus) des tons catégoriels `data-categoryN`, repris du thème.
+// Sert à choisir une couleur de texte contrastée par-dessus un remplissage.
+const CATEGORY_HEX: Record<string, string> = {
+  category1: "#4E79A7",
+  category2: "#F28E2B",
+  category3: "#E15759",
+  category4: "#76B7B2",
+  category5: "#59A14F",
+  category6: "#EDC948",
+  category7: "#B07AA1",
+  category8: "#FF9DA7",
+};
+
+function relativeLuminance(hex: string): number {
+  const m = /^#?([0-9a-f]{6})$/i.exec(hex.trim());
+  if (!m) return 0;
+  const int = parseInt(m[1], 16);
+  const channel = (c: number) => {
+    const s = c / 255;
+    return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+  };
+  const r = channel((int >> 16) & 0xff);
+  const g = channel((int >> 8) & 0xff);
+  const b = channel(int & 0xff);
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+
+/**
+ * Renvoie une couleur de texte (token) contrastée pour un ton catégoriel donné :
+ * texte sombre sur fond clair, texte clair sur fond sombre. Évite le « blanc sur
+ * clair » illisible (WCAG) pour les tons clairs (jaune, pêche, etc.).
+ */
+export function contrastTextVar(tone: string): string {
+  const hex = CATEGORY_HEX[tone];
+  // Inconnu → blanc inverse comme avant (les tons sombres sont majoritaires).
+  if (!hex) return "var(--st-semantic-text-inverse, #fff)";
+  // Seuil ~0.4 : au-delà le fond est clair, on passe au texte primaire sombre.
+  return relativeLuminance(hex) > 0.4
+    ? "var(--st-semantic-text-primary, #0f172a)"
+    : "var(--st-semantic-text-inverse, #fff)";
+}
+
 export function buildLinearPath(pts: { x: number; y: number }[]): string {
   return pts.map((p, i) => `${i === 0 ? "M" : "L"}${p.x.toFixed(2)},${p.y.toFixed(2)}`).join(" ");
 }

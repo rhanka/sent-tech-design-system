@@ -31,8 +31,8 @@ describe("TreemapChart", () => {
       props: { data: flatData, label: "Répartition" }
     });
 
-    // role group + label accessible
-    expect(screen.getByRole("group", { name: "Répartition" })).toBeTruthy();
+    // role img + label accessible (parité Bar/Line/Donut/Funnel)
+    expect(screen.getByRole("img", { name: "Répartition" })).toBeTruthy();
 
     const rects = container.querySelectorAll(".st-treemapChart__rect");
     expect(rects.length).toBe(3);
