@@ -1157,6 +1157,26 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "SelectableRow",
+    slug: "selectable-row",
+    status: "documented",
+    category: "form",
+    description: {
+      fr: "Rangée sélectionnable pleine largeur : surface teintée + texte accentué, slots leading/trailing.",
+      en: "Full-width selectable row: tinted surface + accented text, leading/trailing slots."
+    }
+  },
+  {
+    name: "SelectableList",
+    slug: "selectable-list",
+    status: "documented",
+    category: "form",
+    description: {
+      fr: "Listbox accessible pilotant ses rangées : sélection unique ou multiple, navigation clavier.",
+      en: "Accessible listbox driving its rows: single or multiple selection, keyboard navigation."
+    }
+  },
+  {
     name: "CodeSnippet",
     slug: "code-snippet",
     status: "documented",

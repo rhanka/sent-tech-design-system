@@ -50,6 +50,32 @@
   function handleOpenEntity(id: string) {
     lastOpenedEntity = id;
   }
+
+  // --- Démo fusion (mergePair) ---
+  // Anime la réconciliation de deux nœuds : `from` glisse vers `into` puis est
+  // masqué. Un `id` neuf (re)joue l'animation, même pour la même paire.
+  let mergePair = $state<{ id: string; from: string; into: string } | null>(null);
+  let mergeRun = $state(0);
+  let mergedAway = $state<string | null>(null);
+
+  function playMerge() {
+    mergeRun += 1;
+    mergedAway = null;
+    mergePair = { id: `merge-${mergeRun}`, from: "globex", into: "acme" };
+  }
+
+  function handleMergeComplete(pair: { id: string; from: string; into: string }) {
+    mergedAway = pair.from;
+  }
+
+  // À la complétion, `from` reste masqué ; on retire le nœud des données pour
+  // refléter la fusion côté consommateur.
+  const mergeNodes = $derived(
+    mergedAway ? nodes.filter((n) => n.id !== mergedAway) : nodes
+  );
+  const mergeEdges = $derived(
+    mergedAway ? edges.filter((e) => e.source !== mergedAway && e.target !== mergedAway) : edges
+  );
 </script>
 
 <div class="docs-page">
@@ -123,6 +149,37 @@
   </section>
 
   <section class="docs-section">
+    <h2>Fusion de nœuds (mergePair)</h2>
+    <p>
+      <code>mergePair</code> anime la réconciliation de deux entités : le nœud
+      <code>from</code> glisse vers <code>into</code> (avec ses liens), puis reste
+      <strong>masqué</strong> jusqu'à ce que le consommateur le retire des données.
+      Passer un <code>id</code> neuf (re)joue l'animation ;
+      <code>onMergeComplete(pair)</code> signale la fin (au plus une fois par
+      <code>id</code>, immédiatement sous <code>prefers-reduced-motion</code>).
+    </p>
+    <div class="docs-graph-box">
+      <ForceGraph
+        nodes={mergeNodes}
+        edges={mergeEdges}
+        label="Graphe avec fusion"
+        width={520}
+        height={380}
+        {mergePair}
+        onMergeComplete={handleMergeComplete}
+      />
+    </div>
+    <div class="docs-selection-status" aria-live="polite">
+      <button class="docs-selection-reset" onclick={playMerge}>
+        Fusionner Globex → Acme
+      </button>
+      {#if mergedAway}
+        <span><strong>Fusionné :</strong> {mergedAway} retiré des données après l'animation.</span>
+      {/if}
+    </div>
+  </section>
+
+  <section class="docs-section">
     <h2>API du composant</h2>
     <table class="docs-table">
       <thead>
@@ -140,6 +197,8 @@
         <tr><td><code>focusId</code></td><td><code>string | null</code></td><td><code>null</code></td></tr>
         <tr><td><code>onSelect</code></td><td><code>(id: string) =&gt; void</code></td><td>N/A</td></tr>
         <tr><td><code>onOpenEntity</code></td><td><code>(id: string) =&gt; void</code></td><td>N/A</td></tr>
+        <tr><td><code>mergePair</code></td><td><code>{`{ id, from, into } | null`}</code></td><td><code>null</code></td></tr>
+        <tr><td><code>onMergeComplete</code></td><td><code>(pair) =&gt; void</code></td><td>N/A</td></tr>
       </tbody>
     </table>
     <p class="docs-demo-context">
