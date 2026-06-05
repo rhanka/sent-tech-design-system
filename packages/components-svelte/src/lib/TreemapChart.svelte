@@ -15,6 +15,7 @@
 
 <script lang="ts">
   import ChartDataList from "./ChartDataList.svelte";
+  import { contrastTextForTone } from "./chartContrast";
 
   type TreemapChartProps = {
     /** Données hiérarchiques : 1 ou 2 niveaux. Un nœud avec `children` est subdivisé. */
@@ -54,16 +55,20 @@
     datum: TreemapChartDatum;
     value: number;
     tone: TreemapChartTone;
+    textColor: string;
     rect: Rect;
     parentLabel?: string;
     depth: number;
   };
 
+  /** Valeur d'une feuille : seulement les nombres finis et positifs comptent. */
+  const leafValue = (v: number): number => (Number.isFinite(v) && v > 0 ? v : 0);
+
   const sumValue = (d: TreemapChartDatum): number => {
     if (d.children && d.children.length > 0) {
       return d.children.reduce((s, c) => s + sumValue(c), 0);
     }
-    return Math.max(d.value, 0);
+    return leafValue(d.value);
   };
 
   // Squarified treemap (Bruls, Huizing, van Wijk 2000).
@@ -149,9 +154,12 @@
 
   const cells = $derived.by<Cell[]>(() => {
     if (!data || data.length === 0) return [];
+    // Squarify suppose une entrée triée par valeur décroissante pour produire
+    // des ratios d'aspect corrects.
     const roots = data
       .map((d, i) => ({ datum: d, value: sumValue(d), tone: d.tone ?? TONES[i % TONES.length] }))
-      .filter((n) => n.value > 0);
+      .filter((n) => n.value > 0)
+      .sort((a, b) => b.value - a.value);
     if (roots.length === 0) return [];
 
     const topRects = squarify(
@@ -162,19 +170,23 @@
     const result: Cell[] = [];
     topRects.forEach((tr) => {
       const root = roots.find((r) => r.datum === tr.datum)!;
-      const children = tr.datum.children?.filter((c) => Math.max(c.value, 0) > 0) ?? [];
+      const children = (tr.datum.children ?? [])
+        .filter((c) => leafValue(c.value) > 0)
+        .sort((a, b) => leafValue(b.value) - leafValue(a.value));
       if (children.length > 0) {
         // Niveau 2 : subdiviser l'intérieur du rectangle parent.
         const innerRect = inset(tr.rect, PADDING);
         const childRects = squarify(
-          children.map((c) => ({ datum: c, value: Math.max(c.value, 0) })),
+          children.map((c) => ({ datum: c, value: leafValue(c.value) })),
           innerRect
         );
         childRects.forEach((cr, ci) => {
+          const tone = cr.datum.tone ?? root.tone ?? TONES[ci % TONES.length];
           result.push({
             datum: cr.datum,
             value: cr.value,
-            tone: cr.datum.tone ?? root.tone ?? TONES[ci % TONES.length],
+            tone,
+            textColor: contrastTextForTone(tone),
             rect: inset(cr.rect, PADDING / 2),
             parentLabel: tr.datum.label,
             depth: 1
@@ -185,6 +197,7 @@
           datum: tr.datum,
           value: tr.value,
           tone: root.tone,
+          textColor: contrastTextForTone(root.tone),
           rect: inset(tr.rect, PADDING / 2),
           depth: 0
         });
@@ -212,6 +225,9 @@
   const LABEL_MIN_H = 22;
   const VALUE_MIN_H = 38;
 
+  // Préfixe d'id unique pour les clip-paths (évite les collisions entre instances).
+  const clipPrefix = `st-treemap-clip-${Math.random().toString(36).slice(2, 9)}`;
+
   let hoveredIndex: number | null = $state(null);
 
   function handleVisualPointerMove(event: PointerEvent) {
@@ -230,7 +246,7 @@
 <div class={classes()}>
   <div
     class="st-treemapChart__visual"
-    role="group"
+    role="img"
     aria-label={label}
     onpointermove={handleVisualPointerMove}
     onpointerleave={() => (hoveredIndex = null)}
@@ -243,6 +259,14 @@
       focusable="false"
       aria-hidden="true"
     >
+      <defs>
+        {#each cells as cell, i (cell.parentLabel ? `${cell.parentLabel}/${cell.datum.label}` : cell.datum.label)}
+          <clipPath id="{clipPrefix}-{i}">
+            <rect x={cell.rect.x} y={cell.rect.y} width={cell.rect.w} height={cell.rect.h} rx="2" />
+          </clipPath>
+        {/each}
+      </defs>
+
       {#each cells as cell, i (cell.parentLabel ? `${cell.parentLabel}/${cell.datum.label}` : cell.datum.label)}
         <g class="st-treemapChart__cell" data-chart-index={i}>
           <rect
@@ -256,24 +280,28 @@
             data-chart-index={i}
           />
           {#if showLabels && cell.rect.w >= LABEL_MIN_W && cell.rect.h >= LABEL_MIN_H}
-            <text
-              class="st-treemapChart__label"
-              x={cell.rect.x + 6}
-              y={cell.rect.y + 15}
-              data-chart-index={i}
-            >
-              {cell.datum.label}
-            </text>
-            {#if cell.rect.h >= VALUE_MIN_H}
+            <g clip-path="url(#{clipPrefix}-{i})">
               <text
-                class="st-treemapChart__value"
+                class="st-treemapChart__label"
                 x={cell.rect.x + 6}
-                y={cell.rect.y + 30}
+                y={cell.rect.y + 15}
                 data-chart-index={i}
+                style="fill: {cell.textColor}"
               >
-                {cell.value}
+                {cell.datum.label}
               </text>
-            {/if}
+              {#if cell.rect.h >= VALUE_MIN_H}
+                <text
+                  class="st-treemapChart__value"
+                  x={cell.rect.x + 6}
+                  y={cell.rect.y + 30}
+                  data-chart-index={i}
+                  style="fill: {cell.textColor}"
+                >
+                  {cell.value}
+                </text>
+              {/if}
+            </g>
           {/if}
         </g>
       {/each}
@@ -297,7 +325,7 @@
   {/if}
 
   {#if legend && legendItems.length > 0}
-    <ul class="st-treemapChart__legend">
+    <ul class="st-treemapChart__legend" aria-hidden="true">
       {#each legendItems as item (item.label)}
         <li class="st-treemapChart__legendItem">
           <span
@@ -400,7 +428,7 @@
     color: var(--st-semantic-text-secondary);
     display: inline-flex;
     font-size: 0.75rem;
-    gap: var(--st-spacing-1, 0.35rem);
+    gap: var(--st-spacing-1, 0.25rem);
   }
 
   .st-treemapChart__legendSwatch {

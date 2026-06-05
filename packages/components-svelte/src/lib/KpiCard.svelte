@@ -283,7 +283,7 @@
   }
 
   .st-kpiCard__delta--down {
-    color: var(--st-semantic-feedback-danger, var(--st-semantic-feedback-error));
+    color: var(--st-semantic-feedback-error);
   }
 
   .st-kpiCard__delta--flat {

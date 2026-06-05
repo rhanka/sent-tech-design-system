@@ -72,29 +72,45 @@
   }
 
   // Resolve the floating start/end of each bar, accumulating running totals.
-  // - increase/decrease: bar floats from the previous cumulative to the new one.
-  // - total: bar is grounded at zero and shows the absolute running cumulative.
+  // - increase: bar floats UP by +|value| from the running cumulative.
+  // - decrease: bar floats DOWN by -|value| from the running cumulative.
+  //   The explicit `type` drives the sign — a `decrease` with value 50 or -50
+  //   both subtract 50, so the type is never reclassified from the geometry.
+  // - total: bar anchored to zero, spanning 0 → its own value, and it (re)sets
+  //   the running cumulative. A *starting* total establishes the baseline; a
+  //   *closing* total should equal the accumulated cumulative — if it diverges,
+  //   a dev warning is emitted (the bar still honours the explicit value so the
+  //   author sees the mismatch rather than a silently rewritten figure).
   const computed = $derived.by(() => {
     let cumulative = 0;
+    let seenStep = false;
     return data.map((d) => {
-      const type: WaterfallType = d.type ?? (d.value >= 0 ? "increase" : "decrease");
+      const raw = Number.isFinite(d.value) ? d.value : 0;
+      const type: WaterfallType = d.type ?? (raw >= 0 ? "increase" : "decrease");
       let start: number;
       let end: number;
       let displayValue: number;
       if (type === "total") {
+        if (seenStep && raw !== cumulative) {
+          // eslint-disable-next-line no-console
+          console.warn(
+            `[WaterfallChart] total "${d.label}" = ${raw} ` +
+              `diverges from the running cumulative ${cumulative}.`
+          );
+        }
         start = 0;
-        end = d.value;
-        cumulative = d.value;
-        displayValue = d.value;
+        end = raw;
+        cumulative = raw;
+        displayValue = raw;
       } else {
+        const signed = type === "decrease" ? -Math.abs(raw) : Math.abs(raw);
         start = cumulative;
-        end = cumulative + d.value;
+        end = cumulative + signed;
         cumulative = end;
-        displayValue = d.value;
+        displayValue = signed;
+        seenStep = true;
       }
-      const resolvedType: WaterfallType =
-        type === "total" ? "total" : end >= start ? "increase" : "decrease";
-      return { datum: d, type: resolvedType, start, end, displayValue, cumulative };
+      return { datum: d, type, start, end, displayValue, cumulative };
     });
   });
 
@@ -139,7 +155,8 @@
     });
   });
 
-  // Connector lines join the top edge of each bar to the next, tracing the running total.
+  // Connector lines join the running level reached at the end of bar[i] to the
+  // start of bar[i+1]: from the right edge of bar[i] to the left edge of bar[i+1].
   const connectorLines = $derived.by(() => {
     if (!connectors || bars.length < 2) return [];
     const { domainMin, domainMax, plotHeight } = scales;
@@ -147,7 +164,7 @@
     for (let i = 0; i < computed.length - 1; i++) {
       const level = computed[i].end;
       const y = MARGIN.top + scaleLinear(level, domainMin, domainMax, plotHeight, 0);
-      lines.push({ x1: bars[i].x, x2: bars[i + 1].x + bars[i + 1].width, y });
+      lines.push({ x1: bars[i].x + bars[i].width, x2: bars[i + 1].x, y });
     }
     return lines;
   });
@@ -379,7 +396,7 @@
     fill: var(--st-component-waterfallChart-increaseFill, var(--st-semantic-feedback-success));
   }
   .st-waterfallChart__bar--decrease {
-    fill: var(--st-component-waterfallChart-decreaseFill, var(--st-semantic-feedback-danger));
+    fill: var(--st-component-waterfallChart-decreaseFill, var(--st-semantic-feedback-error));
   }
   .st-waterfallChart__bar--total {
     fill: var(--st-component-waterfallChart-totalFill, var(--st-semantic-data-category1));
@@ -419,7 +436,7 @@
     background: var(--st-component-waterfallChart-increaseFill, var(--st-semantic-feedback-success));
   }
   .st-waterfallChart__legendSwatch--decrease {
-    background: var(--st-component-waterfallChart-decreaseFill, var(--st-semantic-feedback-danger));
+    background: var(--st-component-waterfallChart-decreaseFill, var(--st-semantic-feedback-error));
   }
   .st-waterfallChart__legendSwatch--total {
     background: var(--st-component-waterfallChart-totalFill, var(--st-semantic-data-category1));

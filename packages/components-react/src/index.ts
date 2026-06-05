@@ -32,6 +32,13 @@ export { CodeSnippet } from "./CodeSnippet.js";
 export type { CodeSnippetProps } from "./CodeSnippet.js";
 export { Combobox } from "./Combobox.js";
 export type { ComboboxProps, ComboboxOption } from "./Combobox.js";
+export { ComboChart } from "./ComboChart.js";
+export type {
+  ComboChartProps,
+  ComboChartBarSeries,
+  ComboChartLineSeries,
+  ComboChartTone,
+} from "./ComboChart.js";
 export { ContentSwitcher } from "./ContentSwitcher.js";
 export type { ContentSwitcherProps } from "./ContentSwitcher.js";
 export { CopyButton } from "./CopyButton.js";
@@ -52,6 +59,8 @@ export { FileUploader } from "./FileUploader.js";
 export type { FileUploaderProps, FileUploadItem, FileUploadStatus } from "./FileUploader.js";
 export { Footer } from "./Footer.js";
 export type { FooterProps } from "./Footer.js";
+export { FunnelChart } from "./FunnelChart.js";
+export type { FunnelChartProps, FunnelChartDatum, FunnelChartTone } from "./FunnelChart.js";
 export { ForceGraph, GraphLegend, nodeShapePath, edgeDashArray } from "./ForceGraph.js";
 export type {
   ForceGraphProps,
@@ -67,6 +76,13 @@ export { Form } from "./Form.js";
 export type { FormProps } from "./Form.js";
 export { FormGroup } from "./FormGroup.js";
 export type { FormGroupProps } from "./FormGroup.js";
+export { GaugeChart } from "./GaugeChart.js";
+export type {
+  GaugeChartProps,
+  GaugeChartThreshold,
+  GaugeChartTone,
+  GaugeChartFormat,
+} from "./GaugeChart.js";
 export { Header } from "./Header.js";
 export type { HeaderProps, HeaderAccount } from "./Header.js";
 export { Highlight } from "./Highlight.js";
@@ -75,6 +91,15 @@ export { IconButton } from "./IconButton.js";
 export type { IconButtonProps } from "./IconButton.js";
 export { InlineLoading } from "./InlineLoading.js";
 export type { InlineLoadingProps } from "./InlineLoading.js";
+export { KpiCard } from "./KpiCard.js";
+export type {
+  KpiCardProps,
+  KpiCardSize,
+  KpiCardTrend,
+  KpiCardFormat,
+  KpiCardDeltaFormat,
+  KpiCardTone,
+} from "./KpiCard.js";
 export { LanguageSelector } from "./LanguageSelector.js";
 export type { LanguageSelectorProps, LanguageOption } from "./LanguageSelector.js";
 export { LineChart } from "./LineChart.js";
@@ -163,10 +188,14 @@ export { Toggletip } from "./Toggletip.js";
 export type { ToggletipProps } from "./Toggletip.js";
 export { Tooltip } from "./Tooltip.js";
 export type { TooltipProps } from "./Tooltip.js";
+export { TreemapChart } from "./TreemapChart.js";
+export type { TreemapChartProps, TreemapChartDatum, TreemapChartTone, TreemapTiling } from "./TreemapChart.js";
 export { TreeView } from "./TreeView.js";
 export type { TreeViewProps, TreeNode } from "./TreeView.js";
 export { UnorderedList } from "./UnorderedList.js";
 export type { UnorderedListProps, UnorderedListInput, UnorderedListItem } from "./UnorderedList.js";
+export { WaterfallChart } from "./WaterfallChart.js";
+export type { WaterfallChartProps, WaterfallChartDatum, WaterfallType } from "./WaterfallChart.js";
 export { BackToTop } from "./BackToTop.js";
 export type { BackToTopProps } from "./BackToTop.js";
 export { DisplaySettings } from "./DisplaySettings.js";
