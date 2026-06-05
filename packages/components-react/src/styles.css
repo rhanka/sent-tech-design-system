@@ -7674,3 +7674,452 @@
 .st-stepper__step--current .st-stepper__label {
   color: var(--st-semantic-action-primary);
 }
+
+/* ===========================================================================
+   Specialized components ported from Svelte (Rating / TimePicker / Calendar /
+   SlideIndicator / Autosave). Rules mirror the scoped <style> blocks 1:1.
+   =========================================================================== */
+
+/* --- Rating -------------------------------------------------------------- */
+.st-rating {
+  align-items: center;
+  color: var(--st-semantic-text-secondary);
+  display: inline-flex;
+  gap: var(--st-spacing-1, 0.25rem);
+}
+
+.st-rating__star {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: var(--st-component-control-radius, 0.375rem);
+  color: var(--st-semantic-text-muted);
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  line-height: 0;
+  padding: var(--st-spacing-1, 0.25rem);
+}
+
+.st-rating__star--full,
+.st-rating__star--half {
+  color: var(--st-semantic-feedback-warning, var(--st-semantic-action-primary));
+}
+
+.st-rating__star:hover:not(:disabled) {
+  color: var(--st-semantic-feedback-warning, var(--st-semantic-action-primary));
+}
+
+.st-rating__star:focus-visible {
+  outline: 2px solid var(--st-component-control-focusRing, var(--st-semantic-border-interactive));
+  outline-offset: 2px;
+}
+
+.st-rating__star:disabled {
+  cursor: default;
+}
+
+.st-rating--readonly .st-rating__star {
+  cursor: default;
+}
+
+/* --- TimePicker ---------------------------------------------------------- */
+.st-timepicker {
+  align-items: stretch;
+  background: var(--st-component-control-background, var(--st-semantic-surface-default));
+  border: var(--st-component-control-anatomy-shape-borderWidth, 1px)
+    var(--st-component-control-anatomy-shape-borderStyle, solid)
+    var(--st-component-control-border, var(--st-semantic-border-subtle));
+  border-radius: var(--st-component-control-anatomy-shape-radius, 0.375rem);
+  color: var(--st-component-control-text, var(--st-semantic-text-primary));
+  display: inline-flex;
+  overflow: hidden;
+  transition:
+    border-color var(--st-motion-fast, 120ms) var(--st-motion-easing, ease),
+    box-shadow var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
+  width: 100%;
+}
+
+.st-timepicker--sm {
+  min-height: var(--st-component-control-smHeight, 2rem);
+}
+
+.st-timepicker--md {
+  min-height: var(--st-component-control-mdHeight, 2.5rem);
+}
+
+.st-timepicker--lg {
+  min-height: var(--st-component-control-lgHeight, 3rem);
+}
+
+.st-timepicker:hover:not(:has(input:disabled)) {
+  border-color: var(--st-component-control-hoverBorder, var(--st-semantic-border-strong));
+}
+
+.st-timepicker:focus-within {
+  border-color: var(--st-component-control-focusRing, var(--st-semantic-border-interactive));
+  box-shadow: var(--st-component-control-anatomy-focus-boxShadow,
+    0 0 0 2px var(--st-component-control-focusRing, var(--st-semantic-border-interactive)));
+}
+
+.st-timepicker__control {
+  background: transparent;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  flex: 1 1 auto;
+  font: inherit;
+  min-width: 0;
+  padding: 0 0.75rem;
+  width: 100%;
+}
+
+.st-timepicker__control:focus {
+  outline: none;
+}
+
+.st-timepicker__control::placeholder {
+  color: var(--st-component-control-placeholderText, var(--st-semantic-text-muted));
+}
+
+.st-timepicker__control:disabled {
+  color: var(--st-component-control-disabledText, var(--st-semantic-text-muted));
+  cursor: not-allowed;
+}
+
+.st-timepicker__trigger {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-left: 1px solid var(--st-component-control-border, var(--st-semantic-border-subtle));
+  color: var(--st-semantic-text-secondary);
+  cursor: pointer;
+  display: inline-flex;
+  flex: 0 0 auto;
+  justify-content: center;
+  min-width: 2.25rem;
+  padding: 0 0.5rem;
+}
+
+.st-timepicker__trigger:hover:not(:disabled) {
+  background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle));
+}
+
+.st-timepicker__trigger:focus-visible {
+  outline: 2px solid var(--st-component-control-focusRing, var(--st-semantic-border-interactive));
+  outline-offset: -2px;
+}
+
+.st-timepicker__trigger:disabled {
+  cursor: not-allowed;
+}
+
+.st-timepicker__list {
+  background: var(--st-component-popover-background, var(--st-semantic-surface-raised));
+  border: 1px solid var(--st-component-popover-border, var(--st-semantic-border-subtle));
+  border-radius: var(--st-component-popover-radius, 0.5rem);
+  box-shadow: var(--st-component-popover-shadow, 0 18px 45px rgb(15 23 42 / 0.18));
+  list-style: none;
+  margin: var(--st-spacing-1, 0.25rem) 0 0;
+  max-height: 14rem;
+  overflow-y: auto;
+  padding: var(--st-spacing-1, 0.25rem);
+  position: absolute;
+  top: 100%;
+  width: 100%;
+  z-index: var(--st-component-popover-zIndex, 80);
+}
+
+.st-timepicker__option {
+  background: transparent;
+  border: 0;
+  border-radius: var(--st-component-control-radius, 0.375rem);
+  color: inherit;
+  cursor: pointer;
+  display: block;
+  font: inherit;
+  padding: var(--st-spacing-2, 0.5rem) var(--st-spacing-3, 0.75rem);
+  text-align: left;
+  width: 100%;
+}
+
+.st-timepicker__option:hover {
+  background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle));
+}
+
+.st-timepicker__option:focus-visible {
+  outline: 2px solid var(--st-component-control-focusRing, var(--st-semantic-border-interactive));
+  outline-offset: -2px;
+}
+
+.st-timepicker__option--selected {
+  background: var(--st-component-dropdown-selectedBackground, var(--st-semantic-action-primary));
+  color: var(--st-component-dropdown-selectedText, var(--st-semantic-action-primaryText));
+}
+
+/* --- Calendar ------------------------------------------------------------ */
+.st-calendar {
+  background: var(--st-component-popover-background, var(--st-semantic-surface-raised));
+  border: 1px solid var(--st-component-popover-border, var(--st-semantic-border-subtle));
+  border-radius: var(--st-component-popover-radius, 0.5rem);
+  color: var(--st-component-popover-text, var(--st-semantic-text-primary));
+  display: inline-grid;
+  gap: var(--st-spacing-3, 0.75rem);
+  min-width: 18rem;
+  padding: var(--st-spacing-3, 0.75rem);
+}
+
+.st-calendar__nav {
+  align-items: center;
+  display: grid;
+  gap: var(--st-spacing-2, 0.5rem);
+  grid-template-columns: auto 1fr auto;
+}
+
+.st-calendar__navBtn {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: var(--st-component-control-radius, 0.375rem);
+  color: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  line-height: 0;
+  padding: 0.25rem 0.5rem;
+}
+
+.st-calendar__navBtn:hover {
+  background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle));
+}
+
+.st-calendar__navBtn:focus-visible {
+  outline: 2px solid var(--st-component-control-focusRing, var(--st-semantic-border-interactive));
+  outline-offset: 2px;
+}
+
+.st-calendar__monthLabel {
+  font-weight: 600;
+  text-align: center;
+  text-transform: capitalize;
+}
+
+.st-calendar__grid {
+  display: grid;
+  gap: var(--st-spacing-1, 0.25rem);
+}
+
+.st-calendar__weekdays,
+.st-calendar__days {
+  display: grid;
+  gap: 2px;
+  grid-template-columns: repeat(7, minmax(2rem, 1fr));
+}
+
+.st-calendar__weekday {
+  color: var(--st-semantic-text-secondary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0;
+  text-align: center;
+  text-transform: capitalize;
+}
+
+.st-calendar__day {
+  aspect-ratio: 1 / 1;
+  background: transparent;
+  border: 0;
+  border-radius: var(--st-component-control-radius, 0.375rem);
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.875rem;
+  line-height: 1;
+  min-width: 0;
+  padding: 0;
+  text-align: center;
+}
+
+.st-calendar__day:hover:not(:disabled) {
+  background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle));
+}
+
+.st-calendar__day:focus-visible {
+  outline: 2px solid var(--st-component-control-focusRing, var(--st-semantic-border-interactive));
+  outline-offset: -2px;
+}
+
+.st-calendar__day--outside {
+  color: var(--st-semantic-text-muted);
+}
+
+.st-calendar__day--today {
+  font-weight: 700;
+  box-shadow: inset 0 0 0 1px var(--st-semantic-border-interactive);
+}
+
+.st-calendar__day--inRange {
+  background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle));
+}
+
+.st-calendar__day--selected {
+  background: var(--st-component-dropdown-selectedBackground, var(--st-semantic-action-primary));
+  color: var(--st-component-dropdown-selectedText, var(--st-semantic-action-primaryText));
+}
+
+.st-calendar__day:disabled {
+  color: var(--st-semantic-text-muted);
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* --- SlideIndicator ------------------------------------------------------ */
+.st-slideIndicator {
+  align-items: center;
+  display: inline-flex;
+  gap: var(--st-spacing-2, 0.5rem);
+}
+
+.st-slideIndicator__dot {
+  background: var(--st-semantic-border-strong, var(--st-semantic-text-muted));
+  border: 0;
+  cursor: pointer;
+  opacity: 0.5;
+  padding: 0;
+  transition:
+    opacity var(--st-motion-fast, 120ms) var(--st-motion-easing, ease),
+    background-color var(--st-motion-fast, 120ms) var(--st-motion-easing, ease),
+    width var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
+}
+
+.st-slideIndicator__dot:hover {
+  opacity: 0.8;
+}
+
+.st-slideIndicator__dot:focus-visible {
+  outline: 2px solid var(--st-component-control-focusRing, var(--st-semantic-border-interactive));
+  outline-offset: 2px;
+}
+
+.st-slideIndicator__dot--current {
+  background: var(--st-semantic-action-primary);
+  opacity: 1;
+}
+
+.st-slideIndicator--dots .st-slideIndicator__dot {
+  border-radius: 50%;
+}
+
+.st-slideIndicator--dots.st-slideIndicator--sm .st-slideIndicator__dot {
+  height: 0.375rem;
+  width: 0.375rem;
+}
+
+.st-slideIndicator--dots.st-slideIndicator--md .st-slideIndicator__dot {
+  height: 0.5rem;
+  width: 0.5rem;
+}
+
+.st-slideIndicator--dots.st-slideIndicator--lg .st-slideIndicator__dot {
+  height: 0.75rem;
+  width: 0.75rem;
+}
+
+.st-slideIndicator--bars .st-slideIndicator__dot {
+  border-radius: 999px;
+}
+
+.st-slideIndicator--bars.st-slideIndicator--sm .st-slideIndicator__dot {
+  height: 0.25rem;
+  width: 0.75rem;
+}
+
+.st-slideIndicator--bars.st-slideIndicator--md .st-slideIndicator__dot {
+  height: 0.3125rem;
+  width: 1rem;
+}
+
+.st-slideIndicator--bars.st-slideIndicator--lg .st-slideIndicator__dot {
+  height: 0.375rem;
+  width: 1.25rem;
+}
+
+.st-slideIndicator--bars .st-slideIndicator__dot--current {
+  width: 1.75rem;
+}
+
+.st-slideIndicator--bars.st-slideIndicator--lg .st-slideIndicator__dot--current {
+  width: 2.25rem;
+}
+
+/* --- Autosave ------------------------------------------------------------ */
+.st-autosave {
+  align-items: center;
+  color: var(--st-semantic-text-secondary);
+  display: inline-flex;
+  font-size: 0.875rem;
+  gap: var(--st-spacing-2, 0.5rem);
+}
+
+.st-autosave__icon {
+  align-items: center;
+  display: inline-flex;
+  justify-content: center;
+  line-height: 0;
+}
+
+.st-autosave__spinner {
+  align-items: center;
+  animation: st-autosave-spin 0.9s linear infinite;
+  display: inline-flex;
+  justify-content: center;
+  line-height: 0;
+}
+
+.st-autosave--saving .st-autosave__icon {
+  color: var(--st-semantic-action-primary);
+}
+
+.st-autosave--saved {
+  color: var(--st-semantic-feedback-success);
+}
+
+.st-autosave--error {
+  color: var(--st-semantic-feedback-error);
+}
+
+.st-autosave--idle {
+  color: var(--st-semantic-text-muted);
+}
+
+.st-autosave__time {
+  color: var(--st-semantic-text-muted);
+}
+
+.st-autosave__retry {
+  background: transparent;
+  border: 0;
+  color: var(--st-semantic-feedback-error);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.st-autosave__retry:focus-visible {
+  outline: 2px solid var(--st-component-control-focusRing, var(--st-semantic-border-interactive));
+  outline-offset: 2px;
+}
+
+@keyframes st-autosave-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .st-autosave__spinner {
+    animation: none;
+  }
+}

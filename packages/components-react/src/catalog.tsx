@@ -3111,3 +3111,867 @@ export function UnorderedList({ items, className, ...rest }: UnorderedListProps)
     </ul>
   );
 }
+
+// ===========================================================================
+// Specialized components ported from packages/components-svelte/src/lib.
+// API, classes, ARIA roles and behaviour mirror the Svelte sources 1:1.
+// ===========================================================================
+
+// --- Rating ----------------------------------------------------------------
+export type RatingSize = "sm" | "md" | "lg";
+export type RatingProps = Omit<React.HTMLAttributes<HTMLDivElement>, "className" | "onChange"> & {
+  /** Note courante (0..max). Pas de 1, ou 0.5 si `allowHalf`. */
+  value?: number;
+  /** Nombre d'étoiles. */
+  max?: number;
+  /** Appelé avec la nouvelle note au clic ou au clavier. */
+  onChange?: (value: number) => void;
+  /** Affichage seul : ni clic ni clavier n'émettent. */
+  readonly?: boolean;
+  /** Autorise les demi-étoiles (sélection au demi-point). */
+  allowHalf?: boolean;
+  size?: RatingSize;
+  /** Attribut name (utile dans un formulaire / pour la sémantique radio). */
+  name?: string;
+  /** Étiquette accessible du groupe. */
+  label?: string;
+  className?: string;
+};
+function StarIcon({ size, fill }: { size: number; fill: "currentColor" | "none" }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill={fill}
+      stroke="currentColor"
+      strokeWidth={1.75}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+    </svg>
+  );
+}
+function StarHalfIcon({ size }: { size: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.75}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2v15.77z" fill="currentColor" />
+      <path d="M12 2v15.77l6.18 3.25L17 14.14 22 9.27l-6.91-1.01L12 2z" />
+    </svg>
+  );
+}
+export function Rating({
+  value,
+  max = 5,
+  onChange,
+  readonly = false,
+  allowHalf = false,
+  size = "md",
+  name,
+  label,
+  className,
+  ...rest
+}: RatingProps) {
+  const [current, setCurrent] = useControlled(value, value ?? 0, onChange);
+  const iconSize = size === "sm" ? 16 : size === "lg" ? 28 : 22;
+  const stars = Array.from({ length: max }, (_, i) => i + 1);
+  // L'étoile « focusable » (tabindex 0) suit la valeur ; à 0 c'est la première.
+  const focusedStar = current > 0 ? Math.ceil(current) : 1;
+
+  function fill(star: number): "full" | "half" | "empty" {
+    if (current >= star) return "full";
+    if (allowHalf && current >= star - 0.5) return "half";
+    return "empty";
+  }
+  function commit(next: number) {
+    if (readonly) return;
+    setCurrent(Math.max(0, Math.min(max, next)));
+  }
+  function onStarClick(event: React.MouseEvent<HTMLButtonElement>, star: number) {
+    if (readonly) return;
+    let next = star;
+    if (allowHalf) {
+      const rect = event.currentTarget.getBoundingClientRect();
+      const isLeftHalf = event.clientX - rect.left < rect.width / 2;
+      next = isLeftHalf ? star - 0.5 : star;
+    }
+    // Re-cliquer la valeur déjà sélectionnée remet à zéro.
+    if (next === current) {
+      commit(0);
+      return;
+    }
+    commit(next);
+  }
+  function onKeyDown(event: React.KeyboardEvent<HTMLButtonElement>) {
+    if (readonly) return;
+    const step = allowHalf ? 0.5 : 1;
+    let handled = true;
+    switch (event.key) {
+      case "ArrowRight":
+      case "ArrowUp":
+        commit(Math.min(max, current + step));
+        break;
+      case "ArrowLeft":
+      case "ArrowDown":
+        commit(Math.max(0, current - step));
+        break;
+      case "Home":
+        commit(0);
+        break;
+      case "End":
+        commit(max);
+        break;
+      default:
+        handled = false;
+    }
+    if (handled) event.preventDefault();
+  }
+  return (
+    <div
+      {...rest}
+      className={classNames("st-rating", `st-rating--${size}`, readonly && "st-rating--readonly", className)}
+      role="radiogroup"
+      aria-label={label}
+      aria-readonly={readonly ? "true" : undefined}
+    >
+      {stars.map((star) => {
+        const state = fill(star);
+        return (
+          <button
+            key={star}
+            type="button"
+            className={classNames(
+              "st-rating__star",
+              state === "full" && "st-rating__star--full",
+              state === "half" && "st-rating__star--half",
+            )}
+            role="radio"
+            name={name}
+            aria-checked={Math.ceil(current) === star ? "true" : "false"}
+            aria-label={`${star} / ${max}`}
+            tabIndex={!readonly && star === focusedStar ? 0 : -1}
+            disabled={readonly}
+            onClick={(event) => onStarClick(event, star)}
+            onKeyDown={onKeyDown}
+          >
+            {state === "half" ? (
+              <StarHalfIcon size={iconSize} />
+            ) : (
+              <StarIcon size={iconSize} fill={state === "full" ? "currentColor" : "none"} />
+            )}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+// --- TimePicker ------------------------------------------------------------
+export type TimePickerFormat = "24" | "12";
+export type TimePickerProps = Omit<React.HTMLAttributes<HTMLDivElement>, "className" | "onChange"> & {
+  /** Heure courante au format "HH:mm" (24h, toujours). Vide = non renseigné. */
+  value?: string;
+  /** Appelé avec "HH:mm" lors d'une sélection. */
+  onChange?: (value: string) => void;
+  /** Pas (en minutes) entre deux créneaux générés. */
+  step?: number;
+  /** Borne minimale "HH:mm" (inclusive). */
+  min?: string;
+  /** Borne maximale "HH:mm" (inclusive). */
+  max?: string;
+  /** Affichage 24h (par défaut) ou 12h (AM/PM). La valeur émise reste "HH:mm". */
+  format?: TimePickerFormat;
+  size?: "sm" | "md" | "lg";
+  disabled?: boolean;
+  label?: string;
+  className?: string;
+  id?: string;
+};
+function timeToMinutes(hhmm: string | undefined): number | null {
+  if (!hhmm) return null;
+  const match = /^(\d{1,2}):(\d{2})$/.exec(hhmm);
+  if (!match) return null;
+  const h = Number(match[1]);
+  const m = Number(match[2]);
+  if (h < 0 || h > 23 || m < 0 || m > 59) return null;
+  return h * 60 + m;
+}
+function timeFromMinutes(total: number): string {
+  const h = Math.floor(total / 60);
+  const m = total % 60;
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+}
+export function TimePicker({
+  value,
+  onChange,
+  step = 15,
+  min,
+  max,
+  format = "24",
+  size = "md",
+  disabled = false,
+  label,
+  className,
+  id,
+  ...rest
+}: TimePickerProps) {
+  const reactId = React.useId();
+  const fieldId = id ?? `st-timepicker-${reactId}`;
+  const listId = `${fieldId}-list`;
+  const hostRef = React.useRef<HTMLDivElement>(null);
+  const [open, setOpen] = React.useState(false);
+  const [current, setCurrent] = useControlled(value, value ?? "", onChange);
+
+  function display(hhmm: string): string {
+    if (format === "24") return hhmm;
+    const total = timeToMinutes(hhmm);
+    if (total === null) return hhmm;
+    const h24 = Math.floor(total / 60);
+    const m = total % 60;
+    const period = h24 < 12 ? "AM" : "PM";
+    let h12 = h24 % 12;
+    if (h12 === 0) h12 = 12;
+    return `${String(h12).padStart(2, "0")}:${String(m).padStart(2, "0")} ${period}`;
+  }
+
+  const slots = React.useMemo<string[]>(() => {
+    const safeStep = step > 0 ? step : 15;
+    const lower = timeToMinutes(min) ?? 0;
+    const upper = timeToMinutes(max) ?? 23 * 60 + 59;
+    const result: string[] = [];
+    for (let t = lower; t <= upper; t += safeStep) {
+      result.push(timeFromMinutes(t));
+    }
+    return result;
+  }, [step, min, max]);
+
+  const displayValue = current ? display(current) : "";
+
+  function toggleOpen() {
+    if (disabled) return;
+    setOpen((prev) => !prev);
+  }
+  function pick(slot: string) {
+    setCurrent(slot);
+    setOpen(false);
+  }
+  useOutsideMouseDown(open, hostRef, () => setOpen(false));
+
+  return (
+    <div className={classNames("st-field", className)} ref={hostRef} {...rest}>
+      <div className="st-field__control">
+        {label ? (
+          <label className="st-field__label" htmlFor={fieldId}>
+            {label}
+          </label>
+        ) : null}
+        <span className={classNames("st-timepicker", `st-timepicker--${size}`)}>
+          <input
+            id={fieldId}
+            type="text"
+            readOnly
+            className="st-timepicker__control"
+            value={displayValue}
+            placeholder={format === "24" ? "HH:mm" : "hh:mm AM"}
+            disabled={disabled}
+            role="combobox"
+            aria-haspopup="listbox"
+            aria-controls={listId}
+            aria-expanded={open ? "true" : "false"}
+            onClick={toggleOpen}
+          />
+          <button
+            type="button"
+            className="st-timepicker__trigger"
+            aria-label="Ouvrir la liste des horaires"
+            aria-haspopup="listbox"
+            aria-expanded={open ? "true" : "false"}
+            disabled={disabled}
+            onClick={toggleOpen}
+          >
+            <ClockIcon size={16} />
+          </button>
+        </span>
+      </div>
+      {open ? (
+        <ul
+          id={listId}
+          className="st-timepicker__list"
+          role="listbox"
+          aria-label={label ?? "Horaires"}
+          tabIndex={-1}
+          onKeyDown={(event) => {
+            if (event.key === "Escape") {
+              event.preventDefault();
+              setOpen(false);
+            }
+          }}
+        >
+          {slots.map((slot) => (
+            <li key={slot} role="presentation">
+              <button
+                type="button"
+                className={classNames("st-timepicker__option", slot === current && "st-timepicker__option--selected")}
+                role="option"
+                aria-selected={slot === current ? "true" : "false"}
+                onClick={() => pick(slot)}
+              >
+                {display(slot)}
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+    </div>
+  );
+}
+function ClockIcon({ size }: { size: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="12" r="10" />
+      <polyline points="12 6 12 12 16 14" />
+    </svg>
+  );
+}
+
+// --- Calendar --------------------------------------------------------------
+/**
+ * En mode simple : `string | null` ("YYYY-MM-DD").
+ * En mode plage (`range`) : tuple `[start, end]` où chaque borne est
+ * "YYYY-MM-DD" ou null.
+ */
+export type CalendarValue = string | null | [string | null, string | null];
+export type CalendarProps = Omit<React.HTMLAttributes<HTMLDivElement>, "className" | "onChange"> & {
+  /** Date sélectionnée ("YYYY-MM-DD") ou tuple [start,end] si `range`. */
+  value?: CalendarValue;
+  /** Appelé avec la nouvelle date (ou le tuple en mode plage). */
+  onChange?: (value: CalendarValue) => void;
+  /** Borne minimale "YYYY-MM-DD" (inclusive). */
+  min?: string;
+  /** Borne maximale "YYYY-MM-DD" (inclusive). */
+  max?: string;
+  /** Sélection d'une plage de deux dates. */
+  range?: boolean;
+  /** Premier jour de la semaine : 0 = dimanche, 1 = lundi. */
+  weekStartsOn?: 0 | 1;
+  locale?: string;
+  /** Mois affiché ("YYYY-MM"), contrôlable de l'extérieur. */
+  month?: string;
+  className?: string;
+  previousMonthLabel?: string;
+  nextMonthLabel?: string;
+};
+function calStartOfDay(date: Date): Date {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+function calToISO(date: Date): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+function calParseISO(iso: string | null | undefined): Date | null {
+  if (!iso) return null;
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+  if (!match) return null;
+  const d = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+  return Number.isNaN(d.getTime()) ? null : calStartOfDay(d);
+}
+function calIsSameDay(a: Date | null, b: Date | null): boolean {
+  if (!a || !b) return false;
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+}
+export function Calendar({
+  value,
+  onChange,
+  min,
+  max,
+  range = false,
+  weekStartsOn = 1,
+  locale = "fr-FR",
+  month,
+  className,
+  previousMonthLabel,
+  nextMonthLabel,
+  ...rest
+}: CalendarProps) {
+  const [activeValue, setCurrent] = useControlled<CalendarValue>(value, value ?? null, onChange);
+
+  const isFr = (locale ?? "fr-FR").toLowerCase().startsWith("fr");
+  const resolvedPrevLabel = previousMonthLabel ?? (isFr ? "Mois précédent" : "Previous month");
+  const resolvedNextLabel = nextMonthLabel ?? (isFr ? "Mois suivant" : "Next month");
+
+  const monthFormatter = React.useMemo(
+    () => new Intl.DateTimeFormat(locale, { month: "long", year: "numeric" }),
+    [locale],
+  );
+  const weekdayFormatter = React.useMemo(() => new Intl.DateTimeFormat(locale, { weekday: "short" }), [locale]);
+  const cellFormatter = React.useMemo(
+    () => new Intl.DateTimeFormat(locale, { day: "numeric", month: "long", year: "numeric" }),
+    [locale],
+  );
+
+  const single = range ? null : calParseISO(activeValue as string | null);
+  const rangeStart = range && Array.isArray(activeValue) ? calParseISO(activeValue[0]) : null;
+  const rangeEnd = range && Array.isArray(activeValue) ? calParseISO(activeValue[1]) : null;
+
+  function pickInitialMonth(): Date {
+    const parsed = calParseISO(month ? `${month}-01` : undefined);
+    if (parsed) return parsed;
+    if (!range && single) return single;
+    if (range && rangeStart) return rangeStart;
+    return calStartOfDay(new Date());
+  }
+  const initial = React.useRef(pickInitialMonth());
+  const [viewYear, setViewYear] = React.useState(initial.current.getFullYear());
+  const [viewMonth, setViewMonth] = React.useState(initial.current.getMonth());
+
+  // Resynchronise le mois affiché lorsque la prop `month` change.
+  React.useEffect(() => {
+    const parsed = calParseISO(month ? `${month}-01` : undefined);
+    if (parsed) {
+      setViewYear(parsed.getFullYear());
+      setViewMonth(parsed.getMonth());
+    }
+  }, [month]);
+
+  const today = React.useMemo(() => calStartOfDay(new Date()), []);
+
+  const weekdayLabels = React.useMemo(() => {
+    // 2024-01-07 est un dimanche : on énumère puis on tourne selon weekStartsOn.
+    const sample = new Date(Date.UTC(2024, 0, 7));
+    const labels: string[] = [];
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(sample);
+      d.setUTCDate(sample.getUTCDate() + i);
+      labels.push(weekdayFormatter.format(d));
+    }
+    return [...labels.slice(weekStartsOn), ...labels.slice(0, weekStartsOn)];
+  }, [weekdayFormatter, weekStartsOn]);
+
+  const grid = React.useMemo<Array<{ date: Date; inMonth: boolean }>>(() => {
+    const first = new Date(viewYear, viewMonth, 1);
+    const firstDayIdx = first.getDay();
+    const offset = (firstDayIdx - weekStartsOn + 7) % 7;
+    const start = new Date(viewYear, viewMonth, 1 - offset);
+    const cells: Array<{ date: Date; inMonth: boolean }> = [];
+    for (let i = 0; i < 42; i++) {
+      const d = new Date(start);
+      d.setDate(start.getDate() + i);
+      cells.push({ date: calStartOfDay(d), inMonth: d.getMonth() === viewMonth });
+    }
+    return cells;
+  }, [viewYear, viewMonth, weekStartsOn]);
+
+  const minDate = calParseISO(min);
+  const maxDate = calParseISO(max);
+
+  function isOutOfBounds(date: Date): boolean {
+    const d = calStartOfDay(date).getTime();
+    if (minDate && d < minDate.getTime()) return true;
+    if (maxDate && d > maxDate.getTime()) return true;
+    return false;
+  }
+  function isSelected(date: Date): boolean {
+    if (!range) return calIsSameDay(single, date);
+    return calIsSameDay(rangeStart, date) || calIsSameDay(rangeEnd, date);
+  }
+  function isInRange(date: Date): boolean {
+    if (!range || !rangeStart || !rangeEnd) return false;
+    const d = calStartOfDay(date).getTime();
+    return d > rangeStart.getTime() && d < rangeEnd.getTime();
+  }
+  function previousMonth() {
+    if (viewMonth === 0) {
+      setViewMonth(11);
+      setViewYear((y) => y - 1);
+    } else {
+      setViewMonth((m) => m - 1);
+    }
+  }
+  function nextMonth() {
+    if (viewMonth === 11) {
+      setViewMonth(0);
+      setViewYear((y) => y + 1);
+    } else {
+      setViewMonth((m) => m + 1);
+    }
+  }
+  function pickDate(date: Date) {
+    if (isOutOfBounds(date)) return;
+    const picked = calStartOfDay(date);
+    const iso = calToISO(picked);
+    if (!range) {
+      setCurrent(iso);
+      return;
+    }
+    // Mode plage : (re)démarrage si pas de début, ou si plage déjà complète,
+    // ou si la date est antérieure au début courant.
+    if (!rangeStart || (rangeStart && rangeEnd) || picked.getTime() < rangeStart.getTime()) {
+      setCurrent([iso, null]);
+      return;
+    }
+    setCurrent([calToISO(rangeStart), iso]);
+  }
+  const monthLabel = monthFormatter.format(new Date(viewYear, viewMonth, 1));
+
+  return (
+    <div className={classNames("st-calendar", className)} {...rest}>
+      <div className="st-calendar__nav">
+        <button type="button" className="st-calendar__navBtn" aria-label={resolvedPrevLabel} onClick={previousMonth}>
+          <ChevronLeftIcon size={18} />
+        </button>
+        <span className="st-calendar__monthLabel" aria-live="polite">
+          {monthLabel}
+        </span>
+        <button type="button" className="st-calendar__navBtn" aria-label={resolvedNextLabel} onClick={nextMonth}>
+          <ChevronRightIcon size={18} />
+        </button>
+      </div>
+      <div
+        className="st-calendar__grid"
+        role="grid"
+        tabIndex={-1}
+        aria-label={monthLabel}
+        onKeyDown={(event) => {
+          if (event.key === "PageUp") {
+            event.preventDefault();
+            previousMonth();
+          } else if (event.key === "PageDown") {
+            event.preventDefault();
+            nextMonth();
+          }
+        }}
+      >
+        <div className="st-calendar__weekdays" role="row">
+          {weekdayLabels.map((wd, i) => (
+            <span key={`${wd}-${i}`} className="st-calendar__weekday" role="columnheader">
+              {wd}
+            </span>
+          ))}
+        </div>
+        <div className="st-calendar__days">
+          {grid.map((cell, i) => {
+            const oob = isOutOfBounds(cell.date);
+            const selected = isSelected(cell.date);
+            const inRange = isInRange(cell.date);
+            const isToday = calIsSameDay(cell.date, today);
+            return (
+              <button
+                key={i}
+                type="button"
+                className={classNames(
+                  "st-calendar__day",
+                  !cell.inMonth && "st-calendar__day--outside",
+                  selected && "st-calendar__day--selected",
+                  inRange && "st-calendar__day--inRange",
+                  isToday && "st-calendar__day--today",
+                )}
+                role="gridcell"
+                aria-label={cellFormatter.format(cell.date)}
+                aria-selected={selected ? "true" : "false"}
+                aria-current={isToday ? "date" : undefined}
+                aria-disabled={oob ? "true" : undefined}
+                disabled={oob}
+                onClick={() => pickDate(cell.date)}
+              >
+                {cell.date.getDate()}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+function ChevronLeftIcon({ size }: { size: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <polyline points="15 18 9 12 15 6" />
+    </svg>
+  );
+}
+function ChevronRightIcon({ size }: { size: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <polyline points="9 18 15 12 9 6" />
+    </svg>
+  );
+}
+
+// --- SlideIndicator --------------------------------------------------------
+export type SlideIndicatorVariant = "dots" | "bars";
+export type SlideIndicatorProps = Omit<React.HTMLAttributes<HTMLDivElement>, "className" | "onChange"> & {
+  /** Nombre total de diapositives. */
+  count: number;
+  /** Index de la diapositive courante (0-based). */
+  current?: number;
+  /** Appelé avec l'index ciblé au clic ou au clavier. */
+  onChange?: (index: number) => void;
+  size?: "sm" | "md" | "lg";
+  variant?: SlideIndicatorVariant;
+  /** Préfixe d'étiquette accessible de chaque point ("Diapositive 1"...). */
+  label?: string;
+  className?: string;
+};
+export function SlideIndicator({
+  count,
+  current = 0,
+  onChange,
+  size = "md",
+  variant = "dots",
+  label = "Diapositive",
+  className,
+  ...rest
+}: SlideIndicatorProps) {
+  const items = Array.from({ length: Math.max(0, count) }, (_, i) => i);
+  function select(index: number) {
+    if (index < 0 || index >= count || index === current) return;
+    onChange?.(index);
+  }
+  function onKeyDown(event: React.KeyboardEvent<HTMLButtonElement>, index: number) {
+    let target = index;
+    switch (event.key) {
+      case "ArrowRight":
+      case "ArrowDown":
+        target = Math.min(count - 1, index + 1);
+        break;
+      case "ArrowLeft":
+      case "ArrowUp":
+        target = Math.max(0, index - 1);
+        break;
+      case "Home":
+        target = 0;
+        break;
+      case "End":
+        target = count - 1;
+        break;
+      default:
+        return;
+    }
+    event.preventDefault();
+    select(target);
+  }
+  return (
+    <div
+      {...rest}
+      className={classNames(
+        "st-slideIndicator",
+        `st-slideIndicator--${size}`,
+        `st-slideIndicator--${variant}`,
+        className,
+      )}
+      role="tablist"
+      aria-label={label}
+    >
+      {items.map((index) => (
+        <button
+          key={index}
+          type="button"
+          className={classNames("st-slideIndicator__dot", index === current && "st-slideIndicator__dot--current")}
+          role="tab"
+          aria-selected={index === current ? "true" : "false"}
+          aria-current={index === current ? "true" : undefined}
+          aria-label={`${label} ${index + 1}`}
+          tabIndex={index === current ? 0 : -1}
+          onClick={() => select(index)}
+          onKeyDown={(event) => onKeyDown(event, index)}
+        />
+      ))}
+    </div>
+  );
+}
+
+// --- Autosave --------------------------------------------------------------
+export type AutosaveStatus = "idle" | "saving" | "saved" | "error";
+export type AutosaveLabels = {
+  idle?: string;
+  saving?: string;
+  saved?: string;
+  error?: string;
+};
+export type AutosaveProps = Omit<React.HTMLAttributes<HTMLDivElement>, "className"> & {
+  status?: AutosaveStatus;
+  /** Horodatage de la dernière sauvegarde réussie. */
+  lastSaved?: string | Date;
+  /** Affiche un bouton « Réessayer » sur le statut `error`. */
+  onRetry?: () => void;
+  /** Surcharge des libellés par statut. */
+  labels?: AutosaveLabels;
+  /** Étiquette du bouton de relance. */
+  retryLabel?: string;
+  locale?: string;
+  className?: string;
+};
+export function Autosave({
+  status = "idle",
+  lastSaved,
+  onRetry,
+  labels,
+  retryLabel,
+  locale = "fr-FR",
+  className,
+  ...rest
+}: AutosaveProps) {
+  const isFr = (locale ?? "fr-FR").toLowerCase().startsWith("fr");
+  const DEFAULT_LABELS: Required<AutosaveLabels> = isFr
+    ? {
+        idle: "Modifications enregistrées",
+        saving: "Enregistrement…",
+        saved: "Enregistré",
+        error: "Échec de l'enregistrement",
+      }
+    : {
+        idle: "All changes saved",
+        saving: "Saving…",
+        saved: "Saved",
+        error: "Failed to save",
+      };
+  const resolvedRetryLabel = retryLabel ?? (isFr ? "Réessayer" : "Retry");
+  const statusLabel = labels?.[status] ?? DEFAULT_LABELS[status];
+  const role = status === "error" ? "alert" : "status";
+
+  // Heure relative de la dernière sauvegarde (rendu uniquement sur idle/saved).
+  const relativeTime = (() => {
+    if (!lastSaved) return "";
+    const date = lastSaved instanceof Date ? lastSaved : new Date(lastSaved);
+    if (Number.isNaN(date.getTime())) return "";
+    const diffMs = Date.now() - date.getTime();
+    const diffSec = Math.round(diffMs / 1000);
+    const rtf = new Intl.RelativeTimeFormat(locale, { numeric: "auto" });
+    if (Math.abs(diffSec) < 60) return rtf.format(-diffSec, "second");
+    const diffMin = Math.round(diffSec / 60);
+    if (Math.abs(diffMin) < 60) return rtf.format(-diffMin, "minute");
+    const diffHour = Math.round(diffMin / 60);
+    if (Math.abs(diffHour) < 24) return rtf.format(-diffHour, "hour");
+    const diffDay = Math.round(diffHour / 24);
+    return rtf.format(-diffDay, "day");
+  })();
+  const showRelative = (status === "saved" || status === "idle") && relativeTime !== "";
+
+  return (
+    <div
+      {...rest}
+      className={classNames("st-autosave", `st-autosave--${status}`, className)}
+      role={role}
+      aria-live="polite"
+    >
+      <span className="st-autosave__icon" aria-hidden="true">
+        {status === "saving" ? (
+          <span className="st-autosave__spinner">
+            <LoaderCircleIcon size={16} />
+          </span>
+        ) : status === "saved" ? (
+          <CircleCheckIcon size={16} />
+        ) : status === "error" ? (
+          <CircleAlertIcon size={16} />
+        ) : null}
+      </span>
+      <span className="st-autosave__label">{statusLabel}</span>
+      {showRelative ? <span className="st-autosave__time">{relativeTime}</span> : null}
+      {status === "error" && onRetry ? (
+        <button type="button" className="st-autosave__retry" onClick={() => onRetry?.()}>
+          {resolvedRetryLabel}
+        </button>
+      ) : null}
+    </div>
+  );
+}
+function LoaderCircleIcon({ size }: { size: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+    </svg>
+  );
+}
+function CircleCheckIcon({ size }: { size: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="12" r="10" />
+      <path d="m9 12 2 2 4-4" />
+    </svg>
+  );
+}
+function CircleAlertIcon({ size }: { size: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="12" r="10" />
+      <line x1="12" x2="12" y1="8" y2="12" />
+      <line x1="12" x2="12.01" y1="16" y2="16" />
+    </svg>
+  );
+}
