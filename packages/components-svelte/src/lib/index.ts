@@ -69,6 +69,8 @@ export { default as Pagination } from "./Pagination.svelte";
 export { default as PaginationNav } from "./PaginationNav.svelte";
 export { default as PasswordInput } from "./PasswordInput.svelte";
 export { default as Popover } from "./Popover.svelte";
+export { default as Popper } from "./Popper.svelte";
+export { default as Portal } from "./Portal.svelte";
 export { default as ProgressBar } from "./ProgressBar.svelte";
 export { default as ProgressIndicator } from "./ProgressIndicator.svelte";
 export { default as Quote } from "./Quote.svelte";
@@ -176,3 +178,5 @@ export type {
   TypographyAlign
 } from "./Typography.svelte";
 export type { StepperStep, StepperOrientation } from "./Stepper.svelte";
+export type { PortalProps } from "./Portal.svelte";
+export type { PopperProps, PopperPlacement, PopperStrategy } from "./Popper.svelte";
