@@ -1007,6 +1007,86 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "Avatar",
+    slug: "avatar",
+    status: "documented",
+    category: "other",
+    description: {
+      fr: "Vignette d'identité : initiales colorées ou photo, plusieurs tailles.",
+      en: "Identity badge: colored initials or photo, multiple sizes."
+    }
+  },
+  {
+    name: "AvatarGroup",
+    slug: "avatar-group",
+    status: "documented",
+    category: "other",
+    description: {
+      fr: "Pile d'avatars avec recouvrement et jeton de débordement « +N ».",
+      en: "Overlapping avatar stack with a “+N” overflow token."
+    }
+  },
+  {
+    name: "ButtonGroup",
+    slug: "button-group",
+    status: "documented",
+    category: "action",
+    description: {
+      fr: "Regroupe des boutons, en segments joints ou espacés.",
+      en: "Groups buttons, either attached as segments or spaced."
+    }
+  },
+  {
+    name: "CheckboxGroup",
+    slug: "checkbox-group",
+    status: "documented",
+    category: "form",
+    description: {
+      fr: "Ensemble de cases à cocher avec légende, valeurs multiples.",
+      en: "Set of checkboxes with a legend and multiple values."
+    }
+  },
+  {
+    name: "RadioGroup",
+    slug: "radio-group",
+    status: "documented",
+    category: "form",
+    description: {
+      fr: "Choix exclusif parmi plusieurs options, légende et a11y.",
+      en: "Exclusive choice among options, with legend and a11y."
+    }
+  },
+  {
+    name: "Typography",
+    slug: "typography",
+    status: "documented",
+    category: "other",
+    description: {
+      fr: "Composant de texte : variantes, poids, ton, alignement.",
+      en: "Text component: variants, weight, tone, and alignment."
+    }
+  },
+  {
+    name: "Collapsible",
+    slug: "collapsible",
+    status: "documented",
+    category: "layout",
+    description: {
+      fr: "En-tête cliquable révélant une région de contenu repliable.",
+      en: "Clickable header revealing a collapsible content region."
+    }
+  },
+  {
+    name: "Stepper",
+    slug: "stepper",
+    status: "documented",
+    category: "navigation",
+    description: {
+      fr: "Indicateur d'étapes d'un parcours, horizontal ou vertical.",
+      en: "Step indicator for a flow, horizontal or vertical."
+    }
+  },
+  {
     name: "CodeSnippet",
     slug: "code-snippet",
     status: "documented",
