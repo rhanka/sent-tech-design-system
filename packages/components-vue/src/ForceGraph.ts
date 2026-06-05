@@ -111,9 +111,20 @@ export type ForceGraphProps = {
   focusId?: string | null;
   legend?: ForceGraphLegendEntry[];
   edgeCurve?: number;
+  /**
+   * Repulsion multiplier controlling how spread out the layout is.
+   * >1 = graphe plus aéré, <1 = plus compact. Defaults to 1, clamped to
+   * [0.1, 10] internally. Does not affect the fit-to-content framing.
+   */
+  repulsion?: number;
   onSelect?: (id: string) => void;
   onOpenEntity?: (id: string) => void;
   onEdgeHover?: (edge: ForceGraphEdge) => void;
+  /**
+   * Called when the user hovers (or keyboard-focuses) a node, and again with
+   * null when the hover/focus ends. Intended for syncing an external panel.
+   */
+  onNodeHover?: (node: ForceGraphNode | null) => void;
   class?: string;
 };
 
@@ -274,6 +285,7 @@ function runSimulation(
   h: number,
   ticks: number,
   nodeRadius: number,
+  repulsionFactor: number,
 ): Map<string, { x: number; y: number }> {
   const cx = w / 2;
   const cy = h / 2;
@@ -301,7 +313,11 @@ function runSimulation(
 
   const area = w * h;
   const k = Math.sqrt(area / Math.max(ns.length, 1)); // ideal node distance
-  const repulsion = k * k * 0.9;
+  // Clamp the caller-supplied factor so extreme values can't explode or
+  // collapse the layout. >1 spreads nodes out, <1 packs them tighter; the
+  // fit-to-content viewBox is recomputed afterwards so spacing just fills space.
+  const clampedRepulsion = Math.min(Math.max(repulsionFactor, 0.1), 10);
+  const repulsion = k * k * 0.9 * clampedRepulsion;
   const restLength = k * 0.8;
   const springK = 0.04;
   const gravity = 0.012;
@@ -394,15 +410,28 @@ export const ForceGraph = defineComponent({
     focusId: { type: String as PropType<string | null>, default: null },
     legend: { type: Array as PropType<ForceGraphLegendEntry[]>, default: undefined },
     edgeCurve: { type: Number, default: 0.15 },
+    /**
+     * Repulsion multiplier controlling how spread out the layout is.
+     * >1 = graphe plus aéré, <1 = plus compact ; multiplie la force de
+     * répulsion sans toucher au fit-to-content. Defaults to 1. Clamped to
+     * [0.1, 10] internally to avoid layout explosions/collapses.
+     */
+    repulsion: { type: Number, default: 1 },
     onSelect: { type: Function as PropType<(id: string) => void>, default: undefined },
     onOpenEntity: { type: Function as PropType<(id: string) => void>, default: undefined },
     onEdgeHover: { type: Function as PropType<(edge: ForceGraphEdge) => void>, default: undefined },
+    /**
+     * Called when the user hovers (or keyboard-focuses) a node, and again with
+     * null when the hover/focus ends. Intended for syncing an external panel.
+     */
+    onNodeHover: { type: Function as PropType<(node: ForceGraphNode | null) => void>, default: undefined },
     class: { type: String, default: undefined },
   },
   emits: {
     select: (_id: string) => true,
     openEntity: (_id: string) => true,
     edgeHover: (_edge: ForceGraphEdge) => true,
+    nodeHover: (_node: ForceGraphNode | null) => true,
   },
   setup(props, { emit, attrs }) {
     // SSR-safe reduced-motion check (window may be undefined during SSR/tests).
@@ -437,6 +466,7 @@ export const ForceGraph = defineComponent({
         props.height,
         warmupTicks(ticks),
         props.nodeRadius,
+        props.repulsion,
       );
     }
 
@@ -470,6 +500,7 @@ export const ForceGraph = defineComponent({
           props.height,
           current,
           props.nodeRadius,
+          props.repulsion,
         );
         if (current < ticks) {
           rafId = requestAnimationFrame(tick);
@@ -646,6 +677,42 @@ export const ForceGraph = defineComponent({
       return !(srcActive || tgtActive);
     }
 
+    // -------------------------------------------------------------------------
+    // Hover-connexe (demand 7): hovering a node fades the rest of the graph the
+    // same way selection does — the hovered node and its direct neighbours stay
+    // full, every other node dims, and only edges incident to the hovered node
+    // keep their opacity. Composes with selection (predicates OR'd together).
+    // -------------------------------------------------------------------------
+    const hoveredNodeId = computed<string | null>(() => {
+      const idx = hoveredNodeIndex.value;
+      if (idx == null) return null;
+      return positionedNodes.value[idx]?.node.id ?? null;
+    });
+    const hoverActiveSet = computed(() => {
+      const set = new Set<string>();
+      const id = hoveredNodeId.value;
+      if (id == null) return set;
+      set.add(id);
+      const nb = adjacency.value.get(id);
+      if (nb) for (const n of nb) set.add(n);
+      return set;
+    });
+
+    // A node is dimmed by hover when a node is hovered and this one is neither
+    // the hovered node nor one of its direct neighbours.
+    function isHoverDimmedNode(id: string): boolean {
+      if (hoveredNodeId.value == null) return false;
+      return !hoverActiveSet.value.has(id);
+    }
+
+    // An edge is dimmed by hover when a node is hovered and the edge is not
+    // incident to it (keep only the hovered node's own edges full).
+    function isHoverDimmedEdge(e: ForceGraphEdge): boolean {
+      const id = hoveredNodeId.value;
+      if (id == null) return false;
+      return e.source !== id && e.target !== id;
+    }
+
     function fireSelect(id: string) {
       props.onSelect?.(id);
       emit("select", id);
@@ -657,6 +724,10 @@ export const ForceGraph = defineComponent({
     function fireEdgeHover(edge: ForceGraphEdge) {
       props.onEdgeHover?.(edge);
       emit("edgeHover", edge);
+    }
+    function fireNodeHover(node: ForceGraphNode | null) {
+      props.onNodeHover?.(node);
+      emit("nodeHover", node);
     }
 
     // Keyboard handler for a node: Space/Enter → select, Enter → openEntity.
@@ -760,7 +831,7 @@ export const ForceGraph = defineComponent({
     });
 
     watch(
-      () => [props.nodes, props.edges, props.width, props.height, props.nodeRadius, props.iterations],
+      () => [props.nodes, props.edges, props.width, props.height, props.nodeRadius, props.iterations, props.repulsion],
       () => {
         startLayout();
       },
@@ -795,7 +866,8 @@ export const ForceGraph = defineComponent({
           e.edge.weak && "st-forceGraph__edge--weak",
           e.edge.emphasis && "st-forceGraph__edge--emphasis",
           hoveredEdgeIndex.value === e.i && "st-forceGraph__edge--hovered",
-          isEdgeSelectionDimmed(e.edge) && "st-forceGraph__edge--dim",
+          (isEdgeSelectionDimmed(e.edge) || isHoverDimmedEdge(e.edge)) &&
+            "st-forceGraph__edge--dim",
         );
         // Invisible wider hit area for edge hover (follows the curve).
         edgeVNodes.push(
@@ -858,10 +930,10 @@ export const ForceGraph = defineComponent({
           role: "button",
           "aria-label": ariaLabel,
           "aria-pressed": isSelected ? "true" : "false",
-          onMouseenter: () => { hoveredNodeIndex.value = p.i; },
-          onMouseleave: () => { hoveredNodeIndex.value = null; },
-          onFocus: () => { hoveredNodeIndex.value = p.i; },
-          onBlur: () => { hoveredNodeIndex.value = null; },
+          onMouseenter: () => { hoveredNodeIndex.value = p.i; fireNodeHover(p.node); },
+          onMouseleave: () => { hoveredNodeIndex.value = null; fireNodeHover(null); },
+          onFocus: () => { hoveredNodeIndex.value = p.i; fireNodeHover(p.node); },
+          onBlur: () => { hoveredNodeIndex.value = null; fireNodeHover(null); },
           onKeydown: (ev: KeyboardEvent) => handleNodeKeydown(p.node.id, ev),
         };
 
@@ -887,8 +959,7 @@ export const ForceGraph = defineComponent({
             class: classNames(
               "st-forceGraph__node",
               `st-forceGraph__node--${p.tone}`,
-              ((hoveredNodeIndex.value !== null && hoveredNodeIndex.value !== p.i) ||
-                isSelectionDimmed(p.node.id)) &&
+              (isHoverDimmedNode(p.node.id) || isSelectionDimmed(p.node.id)) &&
                 "st-forceGraph__node--dim",
               isSelected && "st-forceGraph__node--selected",
               focusId === p.node.id && "st-forceGraph__node--focus",
