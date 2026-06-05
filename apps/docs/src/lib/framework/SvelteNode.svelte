@@ -112,7 +112,9 @@
     TimePicker,
     Calendar,
     SlideIndicator,
-    Autosave
+    Autosave,
+    Portal,
+    Popper
   } from "@sentropic/design-system-svelte";
   import Self from "./SvelteNode.svelte";
   import { createRawSnippet, type Component, type Snippet } from "svelte";
@@ -298,7 +300,9 @@
     TimePicker,
     Calendar,
     SlideIndicator,
-    Autosave
+    Autosave,
+    Portal,
+    Popper
   } as unknown as Record<ComponentName, Component<Record<string, unknown>>>;
 
   let { node }: { node: NodeSpec } = $props();
