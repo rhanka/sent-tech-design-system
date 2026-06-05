@@ -25,6 +25,7 @@ export { default as CodeSnippet } from "./CodeSnippet.svelte";
 export { default as Collapsible } from "./Collapsible.svelte";
 export { default as Col } from "./Col.svelte";
 export { default as Combobox } from "./Combobox.svelte";
+export { default as ComboChart } from "./ComboChart.svelte";
 export { default as Container } from "./Container.svelte";
 export { default as ContentSwitcher } from "./ContentSwitcher.svelte";
 export { default as CopyButton } from "./CopyButton.svelte";
@@ -42,6 +43,8 @@ export { default as ForceGraph } from "./ForceGraph.svelte";
 export { default as GraphLegend } from "./GraphLegend.svelte";
 export { default as Form } from "./Form.svelte";
 export { default as FormGroup } from "./FormGroup.svelte";
+export { default as FunnelChart } from "./FunnelChart.svelte";
+export { default as GaugeChart } from "./GaugeChart.svelte";
 export { default as Header } from "./Header.svelte";
 export { default as Hidden } from "./Hidden.svelte";
 export { default as Highlight } from "./Highlight.svelte";
@@ -52,6 +55,7 @@ export { default as IconButton } from "./IconButton.svelte";
 export { default as Inline } from "./Inline.svelte";
 export { default as InlineLoading } from "./InlineLoading.svelte";
 export { default as Input } from "./Input.svelte";
+export { default as KpiCard } from "./KpiCard.svelte";
 export { default as LanguageSelector } from "./LanguageSelector.svelte";
 export { default as LineChart } from "./LineChart.svelte";
 export { default as Link } from "./Link.svelte";
@@ -108,14 +112,40 @@ export { default as Toggletip } from "./Toggletip.svelte";
 export { default as Tooltip } from "./Tooltip.svelte";
 export { default as Typography } from "./Typography.svelte";
 export { default as TableOfContents } from "./TableOfContents.svelte";
+export { default as TreemapChart } from "./TreemapChart.svelte";
 export { default as TreeView } from "./TreeView.svelte";
 export { default as UnorderedList } from "./UnorderedList.svelte";
+export { default as WaterfallChart } from "./WaterfallChart.svelte";
 export type { AccordionItem } from "./Accordion.svelte";
 export type { AreaChartDatum, AreaChartTone } from "./AreaChart.svelte";
 export type { BarChartDatum, BarChartTone } from "./BarChart.svelte";
 export type { ScatterPlotDatum, ScatterPlotTone } from "./ScatterPlot.svelte";
 export type { StackedBarDatum, StackedBarSegment, StackedBarTone } from "./StackedBarChart.svelte";
 export type { LineChartDatum, LineChartTone } from "./LineChart.svelte";
+export type {
+  ComboChartTone,
+  ComboChartBarSeries,
+  ComboChartLineSeries
+} from "./ComboChart.svelte";
+export type {
+  GaugeChartTone,
+  GaugeChartThreshold,
+  GaugeChartFormat
+} from "./GaugeChart.svelte";
+export type { FunnelChartTone, FunnelChartDatum } from "./FunnelChart.svelte";
+export type { WaterfallType, WaterfallChartDatum } from "./WaterfallChart.svelte";
+export type {
+  TreemapChartTone,
+  TreemapChartDatum,
+  TreemapTiling
+} from "./TreemapChart.svelte";
+export type {
+  KpiCardSize,
+  KpiCardTrend,
+  KpiCardFormat,
+  KpiCardDeltaFormat,
+  KpiCardTone
+} from "./KpiCard.svelte";
 export type { BreadcrumbItem } from "./Breadcrumb.svelte";
 export type { ChatMessageRole, ChatMessageStatus } from "./ChatMessage.svelte";
 export type { MessageAction, MessageActionVariant } from "./MessageActions.svelte";
