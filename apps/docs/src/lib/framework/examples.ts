@@ -124,7 +124,13 @@ export type ComponentName =
   | "Portal"
   | "Popper"
   | "SelectableRow"
-  | "SelectableList";
+  | "SelectableList"
+  | "KpiCard"
+  | "ComboChart"
+  | "GaugeChart"
+  | "FunnelChart"
+  | "WaterfallChart"
+  | "TreemapChart";
 
 export interface ComponentNodeSpec {
   comp: ComponentName;
@@ -6621,6 +6627,614 @@ const region = ref("ca-qc");
     <SelectableRow value="us-east">États-Unis — Est</SelectableRow>
     <SelectableRow value="eu-west">Europe — Ouest</SelectableRow>
   </SelectableList>
+</template>`
+    }
+  },
+
+  kpicardbasic: {
+    id: "kpicardbasic",
+    slug: "kpi-card",
+    nodes: [
+      wrap([
+        {
+          comp: "KpiCard",
+          props: {
+            label: "Revenu mensuel",
+            value: 48200,
+            delta: 0.083,
+            deltaFormat: "percent",
+            tone: "category1",
+            sparkline: [32000, 35000, 38000, 42000, 45000, 48200]
+          }
+        },
+        {
+          comp: "KpiCard",
+          props: {
+            label: "Taux de conversion",
+            value: 0.072,
+            format: "percent",
+            delta: -0.005,
+            deltaFormat: "percent",
+            tone: "category3"
+          }
+        },
+        {
+          comp: "KpiCard",
+          props: {
+            label: "Transactions",
+            value: 1240,
+            delta: 94,
+            deltaFormat: "absolute",
+            tone: "category5",
+            sparkline: [900, 980, 1050, 1100, 1180, 1240]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { KpiCard } from "@sentropic/design-system-svelte";
+</script>
+
+<KpiCard
+  label="Revenu mensuel"
+  value={48200}
+  delta={0.083}
+  deltaFormat="percent"
+  tone="category1"
+  sparkline={[32000, 35000, 38000, 42000, 45000, 48200]}
+/>
+<KpiCard
+  label="Taux de conversion"
+  value={0.072}
+  format="percent"
+  delta={-0.005}
+  deltaFormat="percent"
+  tone="category3"
+/>
+<KpiCard
+  label="Transactions"
+  value={1240}
+  delta={94}
+  deltaFormat="absolute"
+  tone="category5"
+  sparkline={[900, 980, 1050, 1100, 1180, 1240]}
+/>`,
+      react: `import { KpiCard } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <KpiCard
+        label="Revenu mensuel"
+        value={48200}
+        delta={0.083}
+        deltaFormat="percent"
+        tone="category1"
+        sparkline={[32000, 35000, 38000, 42000, 45000, 48200]}
+      />
+      <KpiCard
+        label="Taux de conversion"
+        value={0.072}
+        format="percent"
+        delta={-0.005}
+        deltaFormat="percent"
+        tone="category3"
+      />
+      <KpiCard
+        label="Transactions"
+        value={1240}
+        delta={94}
+        deltaFormat="absolute"
+        tone="category5"
+        sparkline={[900, 980, 1050, 1100, 1180, 1240]}
+      />
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { KpiCard } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <KpiCard
+    label="Revenu mensuel"
+    :value="48200"
+    :delta="0.083"
+    deltaFormat="percent"
+    tone="category1"
+    :sparkline="[32000, 35000, 38000, 42000, 45000, 48200]"
+  />
+  <KpiCard
+    label="Taux de conversion"
+    :value="0.072"
+    format="percent"
+    :delta="-0.005"
+    deltaFormat="percent"
+    tone="category3"
+  />
+  <KpiCard
+    label="Transactions"
+    :value="1240"
+    :delta="94"
+    deltaFormat="absolute"
+    tone="category5"
+    :sparkline="[900, 980, 1050, 1100, 1180, 1240]"
+  />
+</template>`
+    }
+  },
+
+  combochart: {
+    id: "combochart",
+    slug: "combo-chart",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "ComboChart",
+            props: {
+              label: "Ventes et marge par trimestre",
+              categories: ["T1", "T2", "T3", "T4"],
+              bars: [
+                { label: "Ventes (k$)", data: [120, 145, 160, 190], tone: "category1" },
+                { label: "Coûts (k$)", data: [80, 95, 105, 120], tone: "category3" }
+              ],
+              lines: [
+                { label: "Marge (%)", data: [33, 34, 34, 37], tone: "category5", smooth: true }
+              ],
+              leftAxisLabel: "k$",
+              rightAxisLabel: "%",
+              legend: true
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { ComboChart } from "@sentropic/design-system-svelte";
+</script>
+
+<ComboChart
+  label="Ventes et marge par trimestre"
+  categories={["T1", "T2", "T3", "T4"]}
+  bars={[
+    { label: "Ventes (k$)", data: [120, 145, 160, 190], tone: "category1" },
+    { label: "Coûts (k$)", data: [80, 95, 105, 120], tone: "category3" }
+  ]}
+  lines={[{ label: "Marge (%)", data: [33, 34, 34, 37], tone: "category5", smooth: true }]}
+  leftAxisLabel="k$"
+  rightAxisLabel="%"
+/>`,
+      react: `import { ComboChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <ComboChart
+      label="Ventes et marge par trimestre"
+      categories={["T1", "T2", "T3", "T4"]}
+      bars={[
+        { label: "Ventes (k$)", data: [120, 145, 160, 190], tone: "category1" },
+        { label: "Coûts (k$)", data: [80, 95, 105, 120], tone: "category3" }
+      ]}
+      lines={[{ label: "Marge (%)", data: [33, 34, 34, 37], tone: "category5", smooth: true }]}
+      leftAxisLabel="k$"
+      rightAxisLabel="%"
+    />
+  );
+}`,
+      vue: `<script setup>
+import { ComboChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <ComboChart
+    label="Ventes et marge par trimestre"
+    :categories="['T1', 'T2', 'T3', 'T4']"
+    :bars="[
+      { label: 'Ventes (k$)', data: [120, 145, 160, 190], tone: 'category1' },
+      { label: 'Coûts (k$)', data: [80, 95, 105, 120], tone: 'category3' }
+    ]"
+    :lines="[{ label: 'Marge (%)', data: [33, 34, 34, 37], tone: 'category5', smooth: true }]"
+    leftAxisLabel="k$"
+    rightAxisLabel="%"
+  />
+</template>`
+    }
+  },
+
+  gaugechart: {
+    id: "gaugechart",
+    slug: "gauge-chart",
+    nodes: [
+      wrap([
+        {
+          comp: "GaugeChart",
+          props: {
+            value: 72,
+            label: "Disponibilité SLA",
+            thresholds: [
+              { value: 0, tone: "error" },
+              { value: 60, tone: "warning" },
+              { value: 80, tone: "success" }
+            ],
+            unit: "%",
+            size: 180
+          }
+        },
+        {
+          comp: "GaugeChart",
+          props: {
+            value: 42,
+            label: "Charge CPU",
+            thresholds: [
+              { value: 0, tone: "success" },
+              { value: 70, tone: "warning" },
+              { value: 90, tone: "error" }
+            ],
+            unit: "%",
+            size: 180
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { GaugeChart } from "@sentropic/design-system-svelte";
+</script>
+
+<GaugeChart
+  value={72}
+  label="Disponibilité SLA"
+  thresholds={[
+    { value: 0, tone: "error" },
+    { value: 60, tone: "warning" },
+    { value: 80, tone: "success" }
+  ]}
+  unit="%"
+/>`,
+      react: `import { GaugeChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <GaugeChart
+      value={72}
+      label="Disponibilité SLA"
+      thresholds={[
+        { value: 0, tone: "error" },
+        { value: 60, tone: "warning" },
+        { value: 80, tone: "success" }
+      ]}
+      unit="%"
+    />
+  );
+}`,
+      vue: `<script setup>
+import { GaugeChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <GaugeChart
+    :value="72"
+    label="Disponibilité SLA"
+    :thresholds="[
+      { value: 0, tone: 'error' },
+      { value: 60, tone: 'warning' },
+      { value: 80, tone: 'success' }
+    ]"
+    unit="%"
+  />
+</template>`
+    }
+  },
+
+  funnelchart: {
+    id: "funnelchart",
+    slug: "funnel-chart",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "FunnelChart",
+            props: {
+              label: "Entonnoir de conversion",
+              data: [
+                { label: "Visiteurs", value: 8400, tone: "category1" },
+                { label: "Prospects", value: 3200, tone: "category2" },
+                { label: "Leads qualifiés", value: 940, tone: "category3" },
+                { label: "Clients", value: 210, tone: "category4" }
+              ],
+              showPercentages: true
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { FunnelChart } from "@sentropic/design-system-svelte";
+</script>
+
+<FunnelChart
+  label="Entonnoir de conversion"
+  data={[
+    { label: "Visiteurs", value: 8400, tone: "category1" },
+    { label: "Prospects", value: 3200, tone: "category2" },
+    { label: "Leads qualifiés", value: 940, tone: "category3" },
+    { label: "Clients", value: 210, tone: "category4" }
+  ]}
+  showPercentages
+/>`,
+      react: `import { FunnelChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <FunnelChart
+      label="Entonnoir de conversion"
+      data={[
+        { label: "Visiteurs", value: 8400, tone: "category1" },
+        { label: "Prospects", value: 3200, tone: "category2" },
+        { label: "Leads qualifiés", value: 940, tone: "category3" },
+        { label: "Clients", value: 210, tone: "category4" }
+      ]}
+      showPercentages
+    />
+  );
+}`,
+      vue: `<script setup>
+import { FunnelChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <FunnelChart
+    label="Entonnoir de conversion"
+    :data="[
+      { label: 'Visiteurs', value: 8400, tone: 'category1' },
+      { label: 'Prospects', value: 3200, tone: 'category2' },
+      { label: 'Leads qualifiés', value: 940, tone: 'category3' },
+      { label: 'Clients', value: 210, tone: 'category4' }
+    ]"
+    :showPercentages="true"
+  />
+</template>`
+    }
+  },
+
+  waterfallchart: {
+    id: "waterfallchart",
+    slug: "waterfall-chart",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "WaterfallChart",
+            props: {
+              label: "Résultat d'exploitation T3",
+              data: [
+                { label: "Début", value: 50000, type: "total" },
+                { label: "Revenus abonnements", value: 32000, type: "increase" },
+                { label: "Revenus services", value: 14500, type: "increase" },
+                { label: "Coûts infra", value: -18000, type: "decrease" },
+                { label: "Salaires", value: -22000, type: "decrease" },
+                { label: "Marketing", value: -8500, type: "decrease" },
+                { label: "Résultat net", value: 48000, type: "total" }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { WaterfallChart } from "@sentropic/design-system-svelte";
+</script>
+
+<WaterfallChart
+  label="Résultat d'exploitation T3"
+  data={[
+    { label: "Début", value: 50000, type: "total" },
+    { label: "Revenus abonnements", value: 32000, type: "increase" },
+    { label: "Revenus services", value: 14500, type: "increase" },
+    { label: "Coûts infra", value: -18000, type: "decrease" },
+    { label: "Salaires", value: -22000, type: "decrease" },
+    { label: "Marketing", value: -8500, type: "decrease" },
+    { label: "Résultat net", value: 48000, type: "total" }
+  ]}
+/>`,
+      react: `import { WaterfallChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <WaterfallChart
+      label="Résultat d'exploitation T3"
+      data={[
+        { label: "Début", value: 50000, type: "total" },
+        { label: "Revenus abonnements", value: 32000, type: "increase" },
+        { label: "Revenus services", value: 14500, type: "increase" },
+        { label: "Coûts infra", value: -18000, type: "decrease" },
+        { label: "Salaires", value: -22000, type: "decrease" },
+        { label: "Marketing", value: -8500, type: "decrease" },
+        { label: "Résultat net", value: 48000, type: "total" }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { WaterfallChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <WaterfallChart
+    label="Résultat d'exploitation T3"
+    :data="[
+      { label: 'Début', value: 50000, type: 'total' },
+      { label: 'Revenus abonnements', value: 32000, type: 'increase' },
+      { label: 'Revenus services', value: 14500, type: 'increase' },
+      { label: 'Coûts infra', value: -18000, type: 'decrease' },
+      { label: 'Salaires', value: -22000, type: 'decrease' },
+      { label: 'Marketing', value: -8500, type: 'decrease' },
+      { label: 'Résultat net', value: 48000, type: 'total' }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  treemapchart: {
+    id: "treemapchart",
+    slug: "treemap-chart",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "TreemapChart",
+            props: {
+              label: "Répartition du budget par département",
+              data: [
+                {
+                  label: "Ingénierie",
+                  value: 0,
+                  tone: "category1",
+                  children: [
+                    { label: "Frontend", value: 42000 },
+                    { label: "Backend", value: 58000 },
+                    { label: "Infra", value: 31000 }
+                  ]
+                },
+                {
+                  label: "Produit",
+                  value: 0,
+                  tone: "category2",
+                  children: [
+                    { label: "Design", value: 27000 },
+                    { label: "PM", value: 22000 }
+                  ]
+                },
+                {
+                  label: "Marketing",
+                  value: 0,
+                  tone: "category3",
+                  children: [
+                    { label: "Growth", value: 18000 },
+                    { label: "Contenu", value: 12000 }
+                  ]
+                }
+              ],
+              showLabels: true
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { TreemapChart } from "@sentropic/design-system-svelte";
+</script>
+
+<TreemapChart
+  label="Répartition du budget par département"
+  data={[
+    {
+      label: "Ingénierie", tone: "category1",
+      children: [
+        { label: "Frontend", value: 42000 },
+        { label: "Backend", value: 58000 },
+        { label: "Infra", value: 31000 }
+      ]
+    },
+    {
+      label: "Produit", tone: "category2",
+      children: [
+        { label: "Design", value: 27000 },
+        { label: "PM", value: 22000 }
+      ]
+    },
+    {
+      label: "Marketing", tone: "category3",
+      children: [
+        { label: "Growth", value: 18000 },
+        { label: "Contenu", value: 12000 }
+      ]
+    }
+  ]}
+  showLabels
+/>`,
+      react: `import { TreemapChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <TreemapChart
+      label="Répartition du budget par département"
+      data={[
+        {
+          label: "Ingénierie", tone: "category1",
+          children: [
+            { label: "Frontend", value: 42000 },
+            { label: "Backend", value: 58000 },
+            { label: "Infra", value: 31000 }
+          ]
+        },
+        {
+          label: "Produit", tone: "category2",
+          children: [
+            { label: "Design", value: 27000 },
+            { label: "PM", value: 22000 }
+          ]
+        },
+        {
+          label: "Marketing", tone: "category3",
+          children: [
+            { label: "Growth", value: 18000 },
+            { label: "Contenu", value: 12000 }
+          ]
+        }
+      ]}
+      showLabels
+    />
+  );
+}`,
+      vue: `<script setup>
+import { TreemapChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <TreemapChart
+    label="Répartition du budget par département"
+    :data="[
+      {
+        label: 'Ingénierie', tone: 'category1',
+        children: [
+          { label: 'Frontend', value: 42000 },
+          { label: 'Backend', value: 58000 },
+          { label: 'Infra', value: 31000 }
+        ]
+      },
+      {
+        label: 'Produit', tone: 'category2',
+        children: [
+          { label: 'Design', value: 27000 },
+          { label: 'PM', value: 22000 }
+        ]
+      },
+      {
+        label: 'Marketing', tone: 'category3',
+        children: [
+          { label: 'Growth', value: 18000 },
+          { label: 'Contenu', value: 12000 }
+        ]
+      }
+    ]"
+    :showLabels="true"
+  />
 </template>`
     }
   }
