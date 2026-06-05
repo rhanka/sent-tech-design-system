@@ -927,6 +927,86 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "Flex",
+    slug: "flex",
+    status: "documented",
+    category: "layout",
+    description: {
+      fr: "Boîte flex : direction, gap, alignement et justification.",
+      en: "Flex box: direction, gap, alignment, and justification."
+    }
+  },
+  {
+    name: "Stack",
+    slug: "stack",
+    status: "documented",
+    category: "layout",
+    description: {
+      fr: "Empilement vertical avec gap homogène (raccourci Flex column).",
+      en: "Vertical stack with uniform gap (Flex column shorthand)."
+    }
+  },
+  {
+    name: "Inline",
+    slug: "inline",
+    status: "documented",
+    category: "layout",
+    description: {
+      fr: "Flux horizontal qui passe à la ligne, gap homogène.",
+      en: "Wrapping horizontal flow with uniform gap."
+    }
+  },
+  {
+    name: "Container",
+    slug: "container",
+    status: "documented",
+    category: "layout",
+    description: {
+      fr: "Conteneur centré à largeur maximale bornée (sm…full).",
+      en: "Centered container with bounded max width (sm…full)."
+    }
+  },
+  {
+    name: "Row",
+    slug: "row",
+    status: "documented",
+    category: "layout",
+    description: {
+      fr: "Ligne d'une grille 12 colonnes, gouttière paramétrable.",
+      en: "Row of a 12-column grid with configurable gutter."
+    }
+  },
+  {
+    name: "Col",
+    slug: "col",
+    status: "documented",
+    category: "layout",
+    description: {
+      fr: "Colonne d'une grille 12 (span, offset, surcharges responsives).",
+      en: "Column of a 12-grid (span, offset, responsive overrides)."
+    }
+  },
+  {
+    name: "Hidden",
+    slug: "hidden",
+    status: "documented",
+    category: "layout",
+    description: {
+      fr: "Masque son contenu au-dessus/en-dessous d'un breakpoint.",
+      en: "Hides its content above/below a breakpoint."
+    }
+  },
+  {
+    name: "Divider",
+    slug: "divider",
+    status: "documented",
+    category: "layout",
+    description: {
+      fr: "Séparateur horizontal/vertical, optionnellement avec libellé.",
+      en: "Horizontal/vertical separator, optionally with a label."
+    }
+  },
+  {
     name: "CodeSnippet",
     slug: "code-snippet",
     status: "documented",

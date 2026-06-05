@@ -91,7 +91,15 @@
     Notification,
     Transcription,
     ForceGraph,
-    TileGroup
+    TileGroup,
+    Flex,
+    Stack,
+    Inline,
+    Container,
+    Row,
+    Col,
+    Hidden,
+    Divider
   } from "@sentropic/design-system-svelte";
   import Self from "./SvelteNode.svelte";
   import { createRawSnippet, type Component, type Snippet } from "svelte";
@@ -256,7 +264,15 @@
     Notification,
     Transcription,
     ForceGraph,
-    TileGroup
+    TileGroup,
+    Flex,
+    Stack,
+    Inline,
+    Container,
+    Row,
+    Col,
+    Hidden,
+    Divider
   } as unknown as Record<ComponentName, Component<Record<string, unknown>>>;
 
   let { node }: { node: NodeSpec } = $props();
