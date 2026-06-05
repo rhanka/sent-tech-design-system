@@ -1296,11 +1296,32 @@ export type ForceGraphProps = React.HTMLAttributes<HTMLElement> & {
    * null when the hover/focus ends. Intended for syncing an external panel.
    */
   onNodeHover?: (node: ForceGraphNode | null) => void;
+  /**
+   * Reconciliation merge animation: when this becomes a new valid
+   * `{ from, into }` (both ids exist in `nodes`), the `from` node animates
+   * toward the position of `into` while fading out (the node and its incident
+   * edges), then `onMergeComplete` fires. Purely visual — the component never
+   * mutates the data; the consumer removes `from` from `nodes` afterwards.
+   * Pass null (the default) for no merge in flight.
+   */
+  mergePair?: { from: string; into: string } | null;
+  /**
+   * Fired once the merge animation for the current `mergePair` completes (or
+   * immediately, on a microtask, under reduced motion / SSR). Receives the
+   * same pair so the consumer can drop `from` from the data.
+   */
+  onMergeComplete?: (pair: { from: string; into: string }) => void;
 };
 
 // Curvature offset factor: how far (relative to chord length) the control
 // point bows out at edgeCurve=1. Kept modest so edgeCurve≈0.15 reads "light".
 const FORCE_GRAPH_CURVE_FACTOR = 0.5;
+// Merge (reconciliation) glide duration.
+const FORCE_GRAPH_MERGE_DURATION_MS = 450;
+// ease-in-out (cubic) for a smooth glide.
+function forceGraphEaseInOut(t: number): number {
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+}
 // Fit-to-content margin (per side, fraction of the content box).
 const FORCE_GRAPH_CONTENT_MARGIN = 0.08;
 
@@ -1322,6 +1343,8 @@ export function ForceGraph({
   edgeCurve = 0.15,
   repulsion = 1,
   onNodeHover,
+  mergePair = null,
+  onMergeComplete,
   className,
   ...rest
 }: ForceGraphProps) {
@@ -1451,6 +1474,114 @@ export function ForceGraph({
 
   const [hoveredNodeIndex, setHoveredNodeIndex] = React.useState<number | null>(null);
   const [hoveredEdgeIndex, setHoveredEdgeIndex] = React.useState<number | null>(null);
+
+  // ---------------------------------------------------------------------------
+  // Merge animation (reconciliation): when `mergePair` becomes a new valid
+  // pair, the `from` node slides toward `into` while fading out (node +
+  // incident edges), then `onMergeComplete` fires. Purely visual — never
+  // mutates props. Under reduced motion / SSR we skip straight to completion on
+  // a microtask. The clock is anchored to the FIRST rAF frame's own timestamp
+  // (rAF timestamps and performance.now() can use different time origins under
+  // jsdom, which would yield a garbage elapsed time).
+  // ---------------------------------------------------------------------------
+  type MergeState = {
+    from: string;
+    into: string;
+    /** Animation progress, 0..1. */
+    progress: number;
+    /** Pixel delta from the `from` start position to `into`, captured at start. */
+    dx: number;
+    dy: number;
+  };
+  const [mergeState, setMergeState] = React.useState<MergeState | null>(null);
+  // Latest layout / callback, read inside the effect without retriggering it.
+  const layoutRef = React.useRef(layout);
+  layoutRef.current = layout;
+  const onMergeCompleteRef = React.useRef(onMergeComplete);
+  onMergeCompleteRef.current = onMergeComplete;
+  const mergeKey = mergePair ? `${mergePair.from} ${mergePair.into}` : null;
+
+  React.useEffect(() => {
+    // Tear down any previous in-flight animation before reacting to a new pair.
+    setMergeState(null);
+    if (!mergePair) return;
+
+    let raf: number | null = null;
+    let cancelled = false;
+
+    // Validate: both endpoints must currently exist.
+    const lay = layoutRef.current;
+    const fromPos = lay.get(mergePair.from);
+    const intoPos = lay.get(mergePair.into);
+    if (!fromPos || !intoPos) return; // invalid pair → no-op, no callback
+
+    const captured = { from: mergePair.from, into: mergePair.into };
+
+    // Reduced motion / SSR: no animation, resolve on a microtask.
+    if (
+      prefersReducedMotion ||
+      typeof window === "undefined" ||
+      typeof requestAnimationFrame !== "function"
+    ) {
+      queueMicrotask(() => {
+        if (!cancelled) onMergeCompleteRef.current?.(captured);
+      });
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    const dx = intoPos.x - fromPos.x;
+    const dy = intoPos.y - fromPos.y;
+    setMergeState({ from: captured.from, into: captured.into, progress: 0, dx, dy });
+
+    let start: number | null = null;
+    const tick = (now: number) => {
+      if (start === null) start = now;
+      const t = Math.min(1, Math.max(0, (now - start) / FORCE_GRAPH_MERGE_DURATION_MS));
+      setMergeState((prev) => (prev ? { ...prev, progress: t } : prev));
+      if (t < 1) {
+        raf = requestAnimationFrame(tick);
+      } else {
+        raf = null;
+        setMergeState(null);
+        if (!cancelled) onMergeCompleteRef.current?.(captured);
+      }
+    };
+    raf = requestAnimationFrame(tick);
+
+    return () => {
+      cancelled = true;
+      if (raf != null && typeof cancelAnimationFrame === "function") {
+        cancelAnimationFrame(raf);
+      }
+    };
+    // Re-run only when the pair identity changes (not on unrelated re-renders).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mergeKey, prefersReducedMotion]);
+
+  // Eased progress of the `from` node toward `into`. 0 when no merge running.
+  const mergeFromId = mergeState?.from ?? null;
+  const mergeEased = mergeState ? forceGraphEaseInOut(mergeState.progress) : 0;
+
+  /** Extra translation applied to the merging node so it glides toward `into`. */
+  function mergeOffset(id: string): { x: number; y: number } {
+    if (!mergeState || mergeState.from !== id) return { x: 0, y: 0 };
+    return { x: mergeState.dx * mergeEased, y: mergeState.dy * mergeEased };
+  }
+
+  /** Opacity for a node while a merge is animating (the `from` node fades out). */
+  function mergeNodeOpacity(id: string): number | undefined {
+    if (mergeFromId !== id) return undefined;
+    return 1 - mergeEased;
+  }
+
+  /** Opacity for an edge incident to the merging `from` node (fades out too). */
+  function mergeEdgeOpacity(e: ForceGraphEdge): number | undefined {
+    if (mergeFromId == null) return undefined;
+    if (e.source !== mergeFromId && e.target !== mergeFromId) return undefined;
+    return 1 - mergeEased;
+  }
 
   const selectedSet = React.useMemo(() => new Set<string>(selectedIds), [selectedIds]);
 
@@ -1666,6 +1797,7 @@ export function ForceGraph({
               onEdgeHover?.(e.edge);
             };
             const onHitLeave = () => setHoveredEdgeIndex(null);
+            const mEdgeOpacity = mergeEdgeOpacity(e.edge);
             const edgeClass = classNames(
               "st-forceGraph__edge",
               e.edge.weak && "st-forceGraph__edge--weak",
@@ -1673,6 +1805,7 @@ export function ForceGraph({
               hoveredEdgeIndex === e.i && "st-forceGraph__edge--hovered",
               (isEdgeSelectionDimmed(e.edge) || isHoverDimmedEdge(e.edge)) &&
                 "st-forceGraph__edge--dim",
+              mEdgeOpacity !== undefined && "st-forceGraph__edge--merging",
             );
             return (
               <React.Fragment key={e.i}>
@@ -1705,6 +1838,7 @@ export function ForceGraph({
                     fill="none"
                     strokeDasharray={e.dashArray ?? undefined}
                     strokeWidth={e.strokeWidth ?? undefined}
+                    opacity={mEdgeOpacity}
                     pointerEvents="none"
                   />
                 ) : (
@@ -1716,6 +1850,7 @@ export function ForceGraph({
                     y2={e.y2}
                     strokeDasharray={e.dashArray ?? undefined}
                     strokeWidth={e.strokeWidth ?? undefined}
+                    opacity={mEdgeOpacity}
                     pointerEvents="none"
                   />
                 )}
@@ -1754,6 +1889,8 @@ export function ForceGraph({
               onDoubleClick: () => onOpenEntity?.(p.node.id),
               onKeyDown: (e: React.KeyboardEvent) => handleNodeKeydown(p.node.id, e),
             };
+            const mOff = mergeOffset(p.node.id);
+            const mOpacity = mergeNodeOpacity(p.node.id);
             return (
               <g
                 key={p.node.id}
@@ -1764,8 +1901,10 @@ export function ForceGraph({
                     "st-forceGraph__node--dim",
                   pressed && "st-forceGraph__node--selected",
                   focusId === p.node.id && "st-forceGraph__node--focus",
+                  mergeFromId === p.node.id && "st-forceGraph__node--merging",
                 )}
-                transform={`translate(${p.x} ${p.y})`}
+                opacity={mOpacity}
+                transform={`translate(${p.x + mOff.x} ${p.y + mOff.y})`}
               >
                 {p.shapePath ? (
                   <path {...shapeProps} d={p.shapePath} />
