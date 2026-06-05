@@ -234,3 +234,14 @@ export { SlideIndicator } from "./SlideIndicator.js";
 export type { SlideIndicatorProps, SlideIndicatorVariant } from "./SlideIndicator.js";
 export { Autosave } from "./Autosave.js";
 export type { AutosaveProps, AutosaveStatus, AutosaveLabels } from "./Autosave.js";
+export { Portal, resolvePortalTarget } from "./Portal.js";
+export type { PortalProps } from "./Portal.js";
+export { Popper, computePosition, splitPlacement, joinPlacement } from "./Popper.js";
+export type {
+  PopperProps,
+  PopperPlacement,
+  PopperStrategy,
+  PopperSide,
+  PopperAlign,
+  Rect,
+} from "./Popper.js";

@@ -8123,3 +8123,45 @@
     animation: none;
   }
 }
+
+.st-portal {
+  display: contents;
+}
+
+.st-popper {
+  z-index: var(--st-component-popover-zIndex, 80);
+}
+
+.st-popper__arrow {
+  position: absolute;
+  width: 0.5rem;
+  height: 0.5rem;
+  background: inherit;
+  border: inherit;
+  transform: rotate(45deg);
+  pointer-events: none;
+}
+
+.st-popper__arrow[data-popper-side="bottom"] {
+  top: -0.25rem;
+  left: 50%;
+  margin-left: -0.25rem;
+}
+
+.st-popper__arrow[data-popper-side="top"] {
+  bottom: -0.25rem;
+  left: 50%;
+  margin-left: -0.25rem;
+}
+
+.st-popper__arrow[data-popper-side="right"] {
+  left: -0.25rem;
+  top: 50%;
+  margin-top: -0.25rem;
+}
+
+.st-popper__arrow[data-popper-side="left"] {
+  right: -0.25rem;
+  top: 50%;
+  margin-top: -0.25rem;
+}
