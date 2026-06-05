@@ -107,7 +107,12 @@
     RadioGroup,
     Typography,
     Collapsible,
-    Stepper
+    Stepper,
+    Rating,
+    TimePicker,
+    Calendar,
+    SlideIndicator,
+    Autosave
   } from "@sentropic/design-system-svelte";
   import Self from "./SvelteNode.svelte";
   import { createRawSnippet, type Component, type Snippet } from "svelte";
@@ -288,7 +293,12 @@
     RadioGroup,
     Typography,
     Collapsible,
-    Stepper
+    Stepper,
+    Rating,
+    TimePicker,
+    Calendar,
+    SlideIndicator,
+    Autosave
   } as unknown as Record<ComponentName, Component<Record<string, unknown>>>;
 
   let { node }: { node: NodeSpec } = $props();
