@@ -1,18 +1,70 @@
 import React from "react";
 import { classNames } from "./classNames.js";
 
+/**
+ * Shared context between {@link SelectableList} and its {@link SelectableRow}
+ * children. The list owns selection + the roving tabindex and exposes the
+ * getters/callbacks the rows read to derive their own `role` / `tabindex` /
+ * `aria-selected`. When a row is used STANDALONE (no provider) the context is
+ * null and the row falls back to its own `role` / `tabindex` / selection state.
+ */
+export type SelectableListContextValue = {
+  /** True when the list manages selection/roving for its rows. */
+  readonly managed: true;
+  /** listbox role for the wrapper → rows are "option". */
+  readonly itemRole: "option";
+  /** Register a row element; returns an unregister callback. */
+  register: (el: HTMLElement, value: string | undefined) => () => void;
+  /** Is the row with this element currently selected? */
+  isSelected: (el: HTMLElement) => boolean;
+  /** Should the row with this element be the roving-tabindex stop (tabindex 0)? */
+  isTabStop: (el: HTMLElement) => boolean;
+  /** Row was activated (click / Space / Enter). The list toggles selection. */
+  activate: (el: HTMLElement) => void;
+  /** Row received focus → becomes the roving tab stop. */
+  focusRow: (el: HTMLElement) => void;
+  /** Arrow / Home / End navigation from a row. */
+  navigate: (el: HTMLElement, key: string) => void;
+};
+
+export const SelectableListContext =
+  React.createContext<SelectableListContextValue | null>(null);
+
+/**
+ * Changing version context, bumped by the list on every selection / focus /
+ * registry change. Rows read it during render so they re-render and recompute
+ * their derived attributes. Kept SEPARATE from {@link SelectableListContext} so
+ * the actions context stays identity-stable (a row's registration effect must
+ * not re-run — and re-register — in a loop).
+ */
+export const SelectableListVersionContext = React.createContext(0);
+
 export type SelectableRowProps = Omit<
   React.HTMLAttributes<HTMLDivElement>,
   "onSelect"
 > & {
-  /** Selected state (controlled). */
+  /**
+   * Selected state. Honoured when the row is used STANDALONE; inside a
+   * {@link SelectableList} the list is the source of truth and drives the
+   * selected styling, so this prop is ignored for managed rows.
+   */
   selected?: boolean;
-  /** Notified on every toggle with the new selected state. */
+  /** Notified on every toggle with the new selected state (standalone rows). */
   onSelect?: (selected: boolean) => void;
   /** Non-interactive when true. */
   disabled?: boolean;
-  /** Optional stable value, surfaced as `data-value` for the consumer. */
+  /** Stable value, surfaced as `data-value` and used by the list for `value`. */
   value?: string;
+  /**
+   * ARIA role for the standalone row. Defaults to "option" so a lone row still
+   * reads as a selectable item. Inside a list the role is forced to "option".
+   */
+  role?: string;
+  /**
+   * Opt-in left accent bar on the selected state. Off by default so the
+   * selected item is a calm tinted surface + accented text (two signals only).
+   */
+  accentBar?: boolean;
   /** Leading content (icon / avatar). */
   leading?: React.ReactNode;
   /** Trailing content (meta / icon). */
@@ -23,10 +75,13 @@ export type SelectableRowProps = Omit<
 };
 
 /**
- * Compact, full-width selectable list/rail row. The selected state is truly
- * themed (a tinted surface + accented text + a fine 2px flush accent bar) —
- * deliberately NOT the off-theme "boudin box" it replaces. role="option" +
- * aria-selected, keyboard-activatable (Enter / Space), inert when disabled.
+ * Compact, full-width selectable list/rail row. By DEFAULT the selected state
+ * is two calm signals — a tinted surface + accented text — deliberately NOT the
+ * off-theme "boudin box" it replaces, and NOT a reflow-causing font-weight
+ * bump. The fine left accent bar is OPT-IN via the `accentBar` prop. Focus is an
+ * EXTERNAL offset outline. role="option" + aria-selected, keyboard-activatable
+ * (Enter / Space), inert when disabled. Inside a {@link SelectableList} the list
+ * (via context) owns selection and the roving tabindex.
  */
 export const SelectableRow = React.forwardRef<HTMLDivElement, SelectableRowProps>(
   (
@@ -35,6 +90,8 @@ export const SelectableRow = React.forwardRef<HTMLDivElement, SelectableRowProps
       onSelect,
       disabled = false,
       value,
+      role = "option",
+      accentBar = false,
       leading,
       trailing,
       children,
@@ -43,8 +100,45 @@ export const SelectableRow = React.forwardRef<HTMLDivElement, SelectableRowProps
     },
     ref,
   ) => {
-    function toggle() {
+    const list = React.useContext(SelectableListContext);
+    // Subscribe to the list's version so this row re-renders (and recomputes
+    // role / tabindex / aria-selected) on every selection / focus / registry
+    // change. The value itself is unused — reading the context is the subscription.
+    React.useContext(SelectableListVersionContext);
+    const innerRef = React.useRef<HTMLDivElement | null>(null);
+
+    // Merge the forwarded ref with our own so the list can register the element.
+    const setRef = React.useCallback(
+      (el: HTMLDivElement | null) => {
+        innerRef.current = el;
+        if (typeof ref === "function") ref(el);
+        else if (ref) ref.current = el;
+      },
+      [ref],
+    );
+
+    // Register with the parent list (if any) so it can order rows for arrow nav
+    // and compute the roving tab stop. Re-registers if value changes.
+    React.useEffect(() => {
+      const el = innerRef.current;
+      if (!list || !el || disabled) return;
+      return list.register(el, value);
+    }, [list, value, disabled]);
+
+    // Subscribe to list re-renders so managed rows recompute selected/tabstop.
+    // The list bumps this version on every selection / focus change.
+    const el = innerRef.current;
+    const isSelected = list && el ? list.isSelected(el) : selected;
+    const effectiveRole = list ? list.itemRole : role;
+    const tabIndex = disabled ? -1 : list && el ? (list.isTabStop(el) ? 0 : -1) : 0;
+
+    function activate() {
       if (disabled) return;
+      const node = innerRef.current;
+      if (list && node) {
+        list.activate(node);
+        return;
+      }
       onSelect?.(!selected);
     }
 
@@ -52,27 +146,51 @@ export const SelectableRow = React.forwardRef<HTMLDivElement, SelectableRowProps
       if (disabled) return;
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
-        toggle();
+        activate();
+        return;
       }
+      // Roving navigation is owned by the list; forward the relevant keys.
+      const node = innerRef.current;
+      if (
+        list &&
+        node &&
+        (e.key === "ArrowDown" ||
+          e.key === "ArrowUp" ||
+          e.key === "ArrowLeft" ||
+          e.key === "ArrowRight" ||
+          e.key === "Home" ||
+          e.key === "End")
+      ) {
+        e.preventDefault();
+        list.navigate(node, e.key);
+      }
+    }
+
+    function handleFocus() {
+      if (disabled) return;
+      const node = innerRef.current;
+      if (list && node) list.focusRow(node);
     }
 
     return (
       <div
         {...rest}
-        ref={ref}
+        ref={setRef}
         className={classNames(
           "st-selectableRow",
-          selected && "st-selectableRow--selected",
+          isSelected && "st-selectableRow--selected",
           disabled && "st-selectableRow--disabled",
+          accentBar && "st-selectableRow--accentBar",
           className,
         )}
-        role="option"
-        aria-selected={selected}
+        role={effectiveRole}
+        aria-selected={effectiveRole === "option" ? isSelected : undefined}
         aria-disabled={disabled ? "true" : undefined}
         data-value={value}
-        tabIndex={disabled ? -1 : 0}
-        onClick={toggle}
+        tabIndex={tabIndex}
+        onClick={activate}
         onKeyDown={handleKeyDown}
+        onFocus={handleFocus}
       >
         {leading != null ? (
           <span className="st-selectableRow__leading">{leading}</span>
