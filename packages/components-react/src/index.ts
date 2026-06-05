@@ -245,5 +245,10 @@ export type {
   PopperAlign,
   Rect,
 } from "./Popper.js";
-export { SelectableRow } from "./SelectableRow.js";
-export type { SelectableRowProps } from "./SelectableRow.js";
+export { SelectableRow, SelectableListContext } from "./SelectableRow.js";
+export type {
+  SelectableRowProps,
+  SelectableListContextValue,
+} from "./SelectableRow.js";
+export { SelectableList } from "./SelectableList.js";
+export type { SelectableListProps } from "./SelectableList.js";

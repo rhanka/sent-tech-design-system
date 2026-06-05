@@ -472,14 +472,14 @@ describe("ForceGraph parity (0.10.4)", () => {
       { source: "b", target: "c" },
     ];
 
-    it("eventually calls onMergeComplete for a valid pair", async () => {
+    it("eventually calls onMergeComplete for a valid pair (id-based)", async () => {
       const onMergeComplete = vi.fn();
       render(
         <ForceGraph
           label="Merge"
           nodes={mergeNodes}
           edges={mergeEdges}
-          mergePair={{ from: "a", into: "b" }}
+          mergePair={{ id: "m1", from: "a", into: "b" }}
           onMergeComplete={onMergeComplete}
         />,
       );
@@ -488,7 +488,140 @@ describe("ForceGraph parity (0.10.4)", () => {
       await vi.waitFor(() => expect(onMergeComplete).toHaveBeenCalledTimes(1), {
         timeout: 1500,
       });
-      expect(onMergeComplete.mock.calls[0][0]).toEqual({ from: "a", into: "b" });
+      expect(onMergeComplete.mock.calls[0][0]).toEqual({
+        id: "m1",
+        from: "a",
+        into: "b",
+      });
+    });
+
+    it("is idempotent on id: a new object with the same id does not replay", async () => {
+      const onMergeComplete = vi.fn();
+      const { rerender } = render(
+        <ForceGraph
+          label="Merge idempotent"
+          nodes={mergeNodes}
+          edges={mergeEdges}
+          mergePair={{ id: "m1", from: "a", into: "b" }}
+          onMergeComplete={onMergeComplete}
+        />,
+      );
+      await vi.waitFor(() => expect(onMergeComplete).toHaveBeenCalledTimes(1), {
+        timeout: 1500,
+      });
+      // Same id, fresh object → no-op.
+      rerender(
+        <ForceGraph
+          label="Merge idempotent"
+          nodes={mergeNodes}
+          edges={mergeEdges}
+          mergePair={{ id: "m1", from: "a", into: "b" }}
+          onMergeComplete={onMergeComplete}
+        />,
+      );
+      await new Promise((r) => setTimeout(r, 60));
+      expect(onMergeComplete).toHaveBeenCalledTimes(1);
+    });
+
+    it("a NEW id replays the merge even for the same from/into", async () => {
+      const onMergeComplete = vi.fn();
+      const { rerender } = render(
+        <ForceGraph
+          label="Merge replay"
+          nodes={mergeNodes}
+          edges={mergeEdges}
+          mergePair={{ id: "m1", from: "a", into: "b" }}
+          onMergeComplete={onMergeComplete}
+        />,
+      );
+      await vi.waitFor(() => expect(onMergeComplete).toHaveBeenCalledTimes(1), {
+        timeout: 1500,
+      });
+      rerender(
+        <ForceGraph
+          label="Merge replay"
+          nodes={mergeNodes}
+          edges={mergeEdges}
+          mergePair={{ id: "m2", from: "a", into: "b" }}
+          onMergeComplete={onMergeComplete}
+        />,
+      );
+      await vi.waitFor(() => expect(onMergeComplete).toHaveBeenCalledTimes(2), {
+        timeout: 1500,
+      });
+      expect(onMergeComplete.mock.calls[1][0]).toEqual({
+        id: "m2",
+        from: "a",
+        into: "b",
+      });
+    });
+
+    it("masks the `from` node after completion until it is removed", async () => {
+      const onMergeComplete = vi.fn();
+      const { container } = render(
+        <ForceGraph
+          label="Merge mask"
+          nodes={mergeNodes}
+          edges={mergeEdges}
+          mergePair={{ id: "m1", from: "a", into: "b" }}
+          onMergeComplete={onMergeComplete}
+        />,
+      );
+      await vi.waitFor(() => expect(onMergeComplete).toHaveBeenCalledTimes(1), {
+        timeout: 1500,
+      });
+      // The `from` node group is aria-hidden (masked) after completion. The mask
+      // is a React state update, so wait for the resulting re-render to flush.
+      await vi.waitFor(
+        () => {
+          const masked = Array.from(
+            container.querySelectorAll(".st-forceGraph__node"),
+          ).filter((g) => g.getAttribute("aria-hidden") === "true");
+          expect(masked.length).toBe(1);
+        },
+        { timeout: 1500 },
+      );
+    });
+
+    it("cancels the in-flight glide (no callback) when `from` is removed mid-merge", async () => {
+      const onMergeComplete = vi.fn();
+      const { rerender } = render(
+        <ForceGraph
+          label="Merge cancel"
+          nodes={mergeNodes}
+          edges={mergeEdges}
+          mergePair={{ id: "m1", from: "a", into: "b" }}
+          onMergeComplete={onMergeComplete}
+        />,
+      );
+      // Immediately remove `from` so the next frame re-validation cancels.
+      rerender(
+        <ForceGraph
+          label="Merge cancel"
+          nodes={mergeNodes.filter((n) => n.id !== "a")}
+          edges={mergeEdges.filter((e) => e.source !== "a" && e.target !== "a")}
+          mergePair={{ id: "m1", from: "a", into: "b" }}
+          onMergeComplete={onMergeComplete}
+        />,
+      );
+      await new Promise((r) => setTimeout(r, 120));
+      expect(onMergeComplete).not.toHaveBeenCalled();
+    });
+
+    it("does not call onMergeComplete after unmount", async () => {
+      const onMergeComplete = vi.fn();
+      const { unmount } = render(
+        <ForceGraph
+          label="Merge unmount"
+          nodes={mergeNodes}
+          edges={mergeEdges}
+          mergePair={{ id: "m1", from: "a", into: "b" }}
+          onMergeComplete={onMergeComplete}
+        />,
+      );
+      unmount();
+      await new Promise((r) => setTimeout(r, 120));
+      expect(onMergeComplete).not.toHaveBeenCalled();
     });
 
     it("reduced-motion path resolves on a microtask (no animation delay)", async () => {
@@ -512,14 +645,21 @@ describe("ForceGraph parity (0.10.4)", () => {
             label="Merge reduced"
             nodes={mergeNodes}
             edges={mergeEdges}
-            mergePair={{ from: "a", into: "b" }}
+            mergePair={{ id: "m1", from: "a", into: "b" }}
             onMergeComplete={onMergeComplete}
           />,
         );
+        // The microtask fires almost immediately; a window well under the 450ms
+        // animation duration still proves it resolved on the fast path (not via
+        // the rAF glide), while tolerating event-loop jitter under full-suite load.
         await vi.waitFor(() => expect(onMergeComplete).toHaveBeenCalledTimes(1), {
-          timeout: 100,
+          timeout: 300,
         });
-        expect(onMergeComplete.mock.calls[0][0]).toEqual({ from: "a", into: "b" });
+        expect(onMergeComplete.mock.calls[0][0]).toEqual({
+          id: "m1",
+          from: "a",
+          into: "b",
+        });
       } finally {
         window.matchMedia = original;
       }
@@ -532,7 +672,7 @@ describe("ForceGraph parity (0.10.4)", () => {
           label="Merge invalid"
           nodes={mergeNodes}
           edges={mergeEdges}
-          mergePair={{ from: "missing", into: "b" }}
+          mergePair={{ id: "m1", from: "missing", into: "b" }}
           onMergeComplete={onMergeComplete}
         />,
       );

@@ -122,4 +122,33 @@ describe("SelectableRow", () => {
     expect(screen.getByTestId("lead")).toBeTruthy();
     expect(screen.getByTestId("trail")).toBeTruthy();
   });
+
+  // Two-signal default: tinted surface + accented text, NO accent bar class.
+  it("does not add the accentBar class by default", () => {
+    render(<SelectableRow selected>Documents</SelectableRow>);
+    expect(screen.getByRole("option").className).not.toContain(
+      "st-selectableRow--accentBar",
+    );
+  });
+
+  it("accentBar opt-in adds the accentBar modifier class", () => {
+    render(
+      <SelectableRow accentBar selected>
+        Documents
+      </SelectableRow>,
+    );
+    expect(screen.getByRole("option").className).toContain(
+      "st-selectableRow--accentBar",
+    );
+  });
+
+  it("standalone role defaults to option but can be overridden", () => {
+    const { rerender } = render(<SelectableRow>Documents</SelectableRow>);
+    expect(screen.getByRole("option")).toBeTruthy();
+    rerender(<SelectableRow role="menuitemradio">Documents</SelectableRow>);
+    const row = screen.getByRole("menuitemradio");
+    expect(row).toBeTruthy();
+    // aria-selected is only emitted for the option role.
+    expect(row.getAttribute("aria-selected")).toBeNull();
+  });
 });
