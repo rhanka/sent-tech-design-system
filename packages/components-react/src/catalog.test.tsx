@@ -368,4 +368,93 @@ describe("ForceGraph parity (0.10.4)", () => {
     expect(container.querySelectorAll(".st-graphLegend__entry").length).toBe(3);
     expect(screen.getByText("Legend").className).toContain("st-graphLegend__title");
   });
+
+  it("accepts a repulsion prop and renders without throwing", () => {
+    const nodes = [
+      { id: "a", label: "Alpha" },
+      { id: "b", label: "Beta" },
+      { id: "c", label: "Gamma" },
+    ];
+    const edges = [{ source: "a", target: "b" }];
+    expect(() =>
+      render(<ForceGraph label="Aéré" nodes={nodes} edges={edges} repulsion={4} />),
+    ).not.toThrow();
+    cleanup();
+    expect(() =>
+      render(<ForceGraph label="Compact" nodes={nodes} edges={edges} repulsion={0.2} />),
+    ).not.toThrow();
+  });
+
+  it("hover dims non-neighbour nodes/edges but keeps the hovered node, its neighbours and incident edges full", () => {
+    // a—b, b—c ; hovering b keeps {b, a, c} full and dims d (non-neighbour).
+    // Edge a—b and b—c are incident to b (full) ; edge c—d is not (dimmed).
+    const { container } = render(
+      <ForceGraph
+        label="Hover connexe"
+        nodes={[
+          { id: "a", label: "Alpha" },
+          { id: "b", label: "Beta" },
+          { id: "c", label: "Gamma" },
+          { id: "d", label: "Delta" },
+        ]}
+        edges={[
+          { source: "a", target: "b" },
+          { source: "b", target: "c" },
+          { source: "c", target: "d" },
+        ]}
+      />,
+    );
+
+    const nodeOf = (label: string) =>
+      (container.querySelector(`[aria-label="${label}"]`) as Element).closest(
+        ".st-forceGraph__node",
+      ) as Element;
+    const bShape = container.querySelector('[aria-label="Beta"]') as Element;
+
+    fireEvent.mouseEnter(bShape);
+
+    // Hovered node + direct neighbours stay full.
+    expect(nodeOf("Beta").classList.contains("st-forceGraph__node--dim")).toBe(false);
+    expect(nodeOf("Alpha").classList.contains("st-forceGraph__node--dim")).toBe(false);
+    expect(nodeOf("Gamma").classList.contains("st-forceGraph__node--dim")).toBe(false);
+    // Non-neighbour dims.
+    expect(nodeOf("Delta").classList.contains("st-forceGraph__node--dim")).toBe(true);
+
+    // Edges: incident to b stay full, the c—d edge dims.
+    const edges = Array.from(container.querySelectorAll(".st-forceGraph__edge"));
+    const dimmedEdges = edges.filter((e) =>
+      e.classList.contains("st-forceGraph__edge--dim"),
+    );
+    expect(edges.length).toBe(3);
+    expect(dimmedEdges.length).toBe(1);
+
+    fireEvent.mouseLeave(bShape);
+    // Hover cleared → nothing dimmed.
+    expect(nodeOf("Delta").classList.contains("st-forceGraph__node--dim")).toBe(false);
+  });
+
+  it("fires onNodeHover with the node on enter and null on leave", () => {
+    const onNodeHover = vi.fn();
+    const { container } = render(
+      <ForceGraph
+        label="Node hover"
+        nodes={[
+          { id: "a", label: "Alpha" },
+          { id: "b", label: "Beta" },
+        ]}
+        edges={[{ source: "a", target: "b" }]}
+        onNodeHover={onNodeHover}
+      />,
+    );
+
+    const aShape = container.querySelector('[aria-label="Alpha"]') as Element;
+    fireEvent.mouseEnter(aShape);
+    expect(onNodeHover).toHaveBeenCalledTimes(1);
+    expect(onNodeHover).toHaveBeenLastCalledWith(
+      expect.objectContaining({ id: "a", label: "Alpha" }),
+    );
+    fireEvent.mouseLeave(aShape);
+    expect(onNodeHover).toHaveBeenCalledTimes(2);
+    expect(onNodeHover).toHaveBeenLastCalledWith(null);
+  });
 });
