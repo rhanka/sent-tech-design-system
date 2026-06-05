@@ -3152,6 +3152,99 @@ describe("Vue behavioral parity — batch 5", () => {
     it("has name ForceGraph", () => {
       expect(ForceGraph.name).toBe("ForceGraph");
     });
+
+    // --- mergePair (reconciliation merge animation) ---
+    describe("mergePair merge animation", () => {
+      const mergeNodes = [
+        { id: "a", label: "Alpha" },
+        { id: "b", label: "Beta" },
+        { id: "c", label: "Gamma" },
+      ];
+      const mergeEdges = [
+        { source: "a", target: "b" },
+        { source: "b", target: "c" },
+      ];
+
+      it("eventually emits mergeComplete and calls onMergeComplete for a valid pair", async () => {
+        const onMergeComplete = vi.fn();
+        const wrapper = mount(ForceGraph, {
+          props: {
+            nodes: mergeNodes,
+            edges: mergeEdges,
+            mergePair: { from: "a", into: "b" },
+            onMergeComplete,
+          },
+        });
+        // The rAF glide (or reduced-motion fast path) resolves; allow up to ~1.5s.
+        await vi.waitFor(() => expect(onMergeComplete).toHaveBeenCalledTimes(1), {
+          timeout: 1500,
+        });
+        expect(onMergeComplete.mock.calls[0][0]).toEqual({ from: "a", into: "b" });
+        expect(wrapper.emitted("mergeComplete")?.[0]?.[0]).toEqual({ from: "a", into: "b" });
+      });
+
+      it("reduced-motion path resolves on a microtask (no animation delay)", async () => {
+        const original = window.matchMedia;
+        window.matchMedia = ((q: string) => ({
+          matches: true,
+          media: q,
+          onchange: null,
+          addEventListener() {},
+          removeEventListener() {},
+          addListener() {},
+          removeListener() {},
+          dispatchEvent() {
+            return false;
+          },
+        })) as typeof window.matchMedia;
+        try {
+          const onMergeComplete = vi.fn();
+          mount(ForceGraph, {
+            props: {
+              nodes: mergeNodes,
+              edges: mergeEdges,
+              mergePair: { from: "a", into: "b" },
+              onMergeComplete,
+            },
+          });
+          await vi.waitFor(() => expect(onMergeComplete).toHaveBeenCalledTimes(1), {
+            timeout: 100,
+          });
+          expect(onMergeComplete.mock.calls[0][0]).toEqual({ from: "a", into: "b" });
+        } finally {
+          window.matchMedia = original;
+        }
+      });
+
+      it("does not crash and never calls onMergeComplete for an invalid pair", async () => {
+        const onMergeComplete = vi.fn();
+        const wrapper = mount(ForceGraph, {
+          props: {
+            nodes: mergeNodes,
+            edges: mergeEdges,
+            mergePair: { from: "missing", into: "b" },
+            onMergeComplete,
+          },
+        });
+        expect(wrapper.findAll(".st-forceGraph__node").length).toBe(3);
+        await new Promise((r) => setTimeout(r, 40));
+        expect(onMergeComplete).not.toHaveBeenCalled();
+      });
+
+      it("does nothing (no callback) when mergePair is null", async () => {
+        const onMergeComplete = vi.fn();
+        mount(ForceGraph, {
+          props: {
+            nodes: mergeNodes,
+            edges: mergeEdges,
+            mergePair: null,
+            onMergeComplete,
+          },
+        });
+        await new Promise((r) => setTimeout(r, 40));
+        expect(onMergeComplete).not.toHaveBeenCalled();
+      });
+    });
   });
 
   // --- nodeShapePath helper ---
