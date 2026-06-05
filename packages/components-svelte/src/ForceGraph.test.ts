@@ -794,30 +794,30 @@ describe("ForceGraph", () => {
   });
 
   // ---------------------------------------------------------------------------
-  // Round-8 UAT A: mergePair (reconciliation merge animation)
+  // Round-8 UAT A + UAT8 revue: mergePair (id-based reconciliation merge anim)
   // ---------------------------------------------------------------------------
   describe("mergePair merge animation", () => {
-    it("eventually calls onMergeComplete for a valid pair", async () => {
+    it("eventually calls onMergeComplete once for a valid pair (with the id)", async () => {
       const onMergeComplete = vi.fn();
       render(ForceGraph, {
         props: {
           nodes,
           edges,
           label: "Merge",
-          mergePair: { from: "a", into: "b" },
+          mergePair: { id: "m1", from: "a", into: "b" },
           onMergeComplete
         }
       });
       // The animation (rAF) or the reduced-motion fast path both resolve; allow
-      // up to ~1s for the rAF glide to finish in the jsdom test environment.
+      // up to ~1.5s for the rAF glide to finish in the jsdom test environment.
       await vi.waitFor(() => expect(onMergeComplete).toHaveBeenCalledTimes(1), {
         timeout: 1500
       });
-      expect(onMergeComplete.mock.calls[0][0]).toEqual({ from: "a", into: "b" });
+      expect(onMergeComplete.mock.calls[0][0]).toEqual({ id: "m1", from: "a", into: "b" });
     });
 
     it("reduced-motion path resolves without an animation delay (microtask)", async () => {
-      // Force the reduced-motion branch: matchMedia → matches true.
+      // Force the reduced-motion branch: matchMedia matches true.
       const original = window.matchMedia;
       window.matchMedia = (q: string): MediaQueryList => ({
         matches: true,
@@ -838,7 +838,7 @@ describe("ForceGraph", () => {
             nodes,
             edges,
             label: "Merge reduced",
-            mergePair: { from: "a", into: "b" },
+            mergePair: { id: "m1", from: "a", into: "b" },
             onMergeComplete
           }
         });
@@ -848,7 +848,7 @@ describe("ForceGraph", () => {
         await vi.waitFor(() => expect(onMergeComplete).toHaveBeenCalledTimes(1), {
           timeout: 100
         });
-        expect(onMergeComplete.mock.calls[0][0]).toEqual({ from: "a", into: "b" });
+        expect(onMergeComplete.mock.calls[0][0]).toEqual({ id: "m1", from: "a", into: "b" });
       } finally {
         window.matchMedia = original;
       }
@@ -861,7 +861,7 @@ describe("ForceGraph", () => {
           nodes,
           edges,
           label: "Merge invalid",
-          mergePair: { from: "missing", into: "b" },
+          mergePair: { id: "m1", from: "missing", into: "b" },
           onMergeComplete
         }
       });
@@ -878,6 +878,155 @@ describe("ForceGraph", () => {
         props: { nodes, edges, label: "No merge", mergePair: null, onMergeComplete }
       });
       await new Promise((r) => setTimeout(r, 30));
+      expect(onMergeComplete).not.toHaveBeenCalled();
+    });
+
+    it("is idempotent on id: re-passing the same id (new object) does not replay", async () => {
+      const onMergeComplete = vi.fn();
+      const { rerender } = render(ForceGraph, {
+        props: {
+          nodes,
+          edges,
+          label: "Idempotent",
+          mergePair: { id: "m1", from: "a", into: "b" },
+          onMergeComplete
+        }
+      });
+      await vi.waitFor(() => expect(onMergeComplete).toHaveBeenCalledTimes(1), {
+        timeout: 1500
+      });
+      // Re-pass a fresh object with the SAME id → must NOT fire again.
+      await rerender({
+        nodes,
+        edges,
+        label: "Idempotent",
+        mergePair: { id: "m1", from: "a", into: "b" },
+        onMergeComplete
+      });
+      await new Promise((r) => setTimeout(r, 60));
+      expect(onMergeComplete).toHaveBeenCalledTimes(1);
+    });
+
+    it("replays for a NEW id (even same from/into) and fires once per id", async () => {
+      const onMergeComplete = vi.fn();
+      const { rerender } = render(ForceGraph, {
+        props: {
+          nodes,
+          edges,
+          label: "Replay",
+          mergePair: { id: "m1", from: "a", into: "b" },
+          onMergeComplete
+        }
+      });
+      await vi.waitFor(() => expect(onMergeComplete).toHaveBeenCalledTimes(1), {
+        timeout: 1500
+      });
+      // New id, same pair → replays.
+      await rerender({
+        nodes,
+        edges,
+        label: "Replay",
+        mergePair: { id: "m2", from: "a", into: "b" },
+        onMergeComplete
+      });
+      await vi.waitFor(() => expect(onMergeComplete).toHaveBeenCalledTimes(2), {
+        timeout: 1500
+      });
+      expect(onMergeComplete.mock.calls[1][0]).toEqual({ id: "m2", from: "a", into: "b" });
+    });
+
+    it("keeps the `from` node masked after completion until it is removed", async () => {
+      const onMergeComplete = vi.fn();
+      const { container } = render(ForceGraph, {
+        props: {
+          nodes,
+          edges,
+          label: "Masked",
+          mergePair: { id: "m1", from: "a", into: "b" },
+          onMergeComplete
+        }
+      });
+      await vi.waitFor(() => expect(onMergeComplete).toHaveBeenCalledTimes(1), {
+        timeout: 1500
+      });
+      // After completion the merged `from` node (a, first in order) is hidden
+      // (opacity 0 + aria-hidden) and stays so — it does not flash back.
+      const nodeEls = Array.from(container.querySelectorAll(".st-forceGraph__node"));
+      const aNode = nodeEls[0];
+      expect(aNode.getAttribute("opacity")).toBe("0");
+      expect(aNode.getAttribute("aria-hidden")).toBe("true");
+    });
+
+    it("changing mergePair to a new id mid-flight cancels cleanly (one callback per id)", async () => {
+      const onMergeComplete = vi.fn();
+      const { rerender } = render(ForceGraph, {
+        props: {
+          nodes,
+          edges,
+          label: "Mid-flight",
+          mergePair: { id: "m1", from: "a", into: "b" },
+          onMergeComplete
+        }
+      });
+      // Immediately swap to a new id before m1 can finish its rAF glide.
+      await rerender({
+        nodes,
+        edges,
+        label: "Mid-flight",
+        mergePair: { id: "m2", from: "c", into: "d" },
+        onMergeComplete
+      });
+      // Let everything settle.
+      await new Promise((r) => setTimeout(r, 700));
+      // m2 must complete; m1 must not have produced a duplicate/extra callback.
+      const ids = onMergeComplete.mock.calls.map((c) => c[0].id);
+      expect(ids).toContain("m2");
+      // No id fires more than once.
+      const counts = ids.reduce<Record<string, number>>((acc, id) => {
+        acc[id] = (acc[id] ?? 0) + 1;
+        return acc;
+      }, {});
+      for (const id of Object.keys(counts)) expect(counts[id]).toBe(1);
+    });
+
+    it("unmounting during the animation does not fire the callback (no leak)", async () => {
+      const onMergeComplete = vi.fn();
+      const { unmount } = render(ForceGraph, {
+        props: {
+          nodes,
+          edges,
+          label: "Unmount",
+          mergePair: { id: "m1", from: "a", into: "b" },
+          onMergeComplete
+        }
+      });
+      // Tear down immediately, before the glide can complete.
+      unmount();
+      await new Promise((r) => setTimeout(r, 700));
+      expect(onMergeComplete).not.toHaveBeenCalled();
+    });
+
+    it("removing `from` before the glide ends cancels without firing (no double-tir)", async () => {
+      const onMergeComplete = vi.fn();
+      const { rerender } = render(ForceGraph, {
+        props: {
+          nodes,
+          edges,
+          label: "From removed",
+          mergePair: { id: "m1", from: "a", into: "b" },
+          onMergeComplete
+        }
+      });
+      // Drop `from` (a) from the data mid-flight (same merge id stays set). The
+      // per-frame revalidation should cancel the glide without firing complete.
+      await rerender({
+        nodes: nodes.filter((n) => n.id !== "a"),
+        edges: edges.filter((e) => e.source !== "a" && e.target !== "a"),
+        label: "From removed",
+        mergePair: { id: "m1", from: "a", into: "b" },
+        onMergeComplete
+      });
+      await new Promise((r) => setTimeout(r, 700));
       expect(onMergeComplete).not.toHaveBeenCalled();
     });
   });
