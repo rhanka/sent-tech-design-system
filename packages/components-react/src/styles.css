@@ -7007,3 +7007,670 @@
   line-height: 1;
   white-space: nowrap;
 }
+
+/* ===========================================================================
+   Avatar — ported from components-svelte/src/lib/Avatar.svelte
+   =========================================================================== */
+.st-avatar {
+  align-items: center;
+  display: inline-flex;
+  flex: 0 0 auto;
+  justify-content: center;
+  overflow: hidden;
+  user-select: none;
+  vertical-align: middle;
+}
+
+.st-avatar--circle {
+  border-radius: 50%;
+}
+
+.st-avatar--square {
+  border-radius: var(--st-radius-sm, 0.375rem);
+}
+
+.st-avatar--sm {
+  font-size: 0.6875rem;
+  height: 1.5rem;
+  width: 1.5rem;
+}
+
+.st-avatar--md {
+  font-size: 0.8125rem;
+  height: 2rem;
+  width: 2rem;
+}
+
+.st-avatar--lg {
+  font-size: 1rem;
+  height: 2.5rem;
+  width: 2.5rem;
+}
+
+.st-avatar--xl {
+  font-size: 1.25rem;
+  height: 3.5rem;
+  width: 3.5rem;
+}
+
+.st-avatar__image {
+  display: block;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  width: 100%;
+}
+
+.st-avatar__initials {
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1;
+}
+
+.st-avatar--category1 {
+  background: color-mix(in srgb, var(--st-semantic-data-category1) 16%, white);
+  color: var(--st-semantic-data-category1);
+}
+.st-avatar--category2 {
+  background: color-mix(in srgb, var(--st-semantic-data-category2) 16%, white);
+  color: var(--st-semantic-data-category2);
+}
+.st-avatar--category3 {
+  background: color-mix(in srgb, var(--st-semantic-data-category3) 16%, white);
+  color: var(--st-semantic-data-category3);
+}
+.st-avatar--category4 {
+  background: color-mix(in srgb, var(--st-semantic-data-category4) 16%, white);
+  color: var(--st-semantic-data-category4);
+}
+.st-avatar--category5 {
+  background: color-mix(in srgb, var(--st-semantic-data-category5) 16%, white);
+  color: var(--st-semantic-data-category5);
+}
+.st-avatar--category6 {
+  background: color-mix(in srgb, var(--st-semantic-data-category6) 16%, white);
+  color: var(--st-semantic-data-category6);
+}
+.st-avatar--category7 {
+  background: color-mix(in srgb, var(--st-semantic-data-category7) 16%, white);
+  color: var(--st-semantic-data-category7);
+}
+.st-avatar--category8 {
+  background: color-mix(in srgb, var(--st-semantic-data-category8) 16%, white);
+  color: var(--st-semantic-data-category8);
+}
+
+.st-avatar--image {
+  background: var(--st-semantic-surface-subtle, #eef2f7);
+}
+
+/* ===========================================================================
+   AvatarGroup — ported from components-svelte/src/lib/AvatarGroup.svelte
+   =========================================================================== */
+.st-avatarGroup {
+  align-items: center;
+  display: inline-flex;
+  flex-direction: row;
+}
+
+.st-avatarGroup > * {
+  box-shadow: 0 0 0 2px var(--st-semantic-surface-default, #ffffff);
+  position: relative;
+}
+
+.st-avatarGroup > * + * {
+  margin-inline-start: -0.5rem;
+}
+
+.st-avatarGroup--sm > * + * {
+  margin-inline-start: -0.375rem;
+}
+
+.st-avatarGroup--lg > * + * {
+  margin-inline-start: -0.625rem;
+}
+
+.st-avatarGroup--xl > * + * {
+  margin-inline-start: -0.875rem;
+}
+
+.st-avatarGroup__overflow {
+  align-items: center;
+  background: var(--st-semantic-surface-subtle, #eef2f7);
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px var(--st-semantic-surface-default, #ffffff);
+  color: var(--st-semantic-text-secondary, #64748b);
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-weight: 700;
+  justify-content: center;
+  margin-inline-start: -0.5rem;
+  position: relative;
+  user-select: none;
+}
+
+.st-avatarGroup--sm .st-avatarGroup__overflow {
+  font-size: 0.6875rem;
+  height: 1.5rem;
+  margin-inline-start: -0.375rem;
+  width: 1.5rem;
+}
+
+.st-avatarGroup--md .st-avatarGroup__overflow {
+  font-size: 0.75rem;
+  height: 2rem;
+  width: 2rem;
+}
+
+.st-avatarGroup--lg .st-avatarGroup__overflow {
+  font-size: 0.875rem;
+  height: 2.5rem;
+  margin-inline-start: -0.625rem;
+  width: 2.5rem;
+}
+
+.st-avatarGroup--xl .st-avatarGroup__overflow {
+  font-size: 1.125rem;
+  height: 3.5rem;
+  margin-inline-start: -0.875rem;
+  width: 3.5rem;
+}
+
+/* ===========================================================================
+   ButtonGroup — ported from components-svelte/src/lib/ButtonGroup.svelte
+   =========================================================================== */
+.st-buttonGroup {
+  align-items: stretch;
+  display: inline-flex;
+}
+
+.st-buttonGroup--horizontal {
+  flex-direction: row;
+}
+
+.st-buttonGroup--vertical {
+  flex-direction: column;
+}
+
+.st-buttonGroup:not(.st-buttonGroup--attached) {
+  gap: var(--st-spacing-2, 0.5rem);
+}
+
+.st-buttonGroup--attached {
+  gap: 0;
+}
+
+.st-buttonGroup--attached.st-buttonGroup--horizontal > * + * {
+  margin-inline-start: -1px;
+}
+
+.st-buttonGroup--attached.st-buttonGroup--vertical > * + * {
+  margin-block-start: -1px;
+}
+
+.st-buttonGroup--attached.st-buttonGroup--horizontal > *:not(:first-child):not(:last-child) {
+  border-radius: 0;
+}
+
+.st-buttonGroup--attached.st-buttonGroup--horizontal > *:first-child {
+  border-end-end-radius: 0;
+  border-start-end-radius: 0;
+}
+
+.st-buttonGroup--attached.st-buttonGroup--horizontal > *:last-child {
+  border-end-start-radius: 0;
+  border-start-start-radius: 0;
+}
+
+.st-buttonGroup--attached.st-buttonGroup--vertical > *:not(:first-child):not(:last-child) {
+  border-radius: 0;
+}
+
+.st-buttonGroup--attached.st-buttonGroup--vertical > *:first-child {
+  border-end-start-radius: 0;
+  border-end-end-radius: 0;
+}
+
+.st-buttonGroup--attached.st-buttonGroup--vertical > *:last-child {
+  border-start-start-radius: 0;
+  border-start-end-radius: 0;
+}
+
+.st-buttonGroup--attached > *:hover,
+.st-buttonGroup--attached > *:focus-visible {
+  z-index: 1;
+}
+
+/* ===========================================================================
+   CheckboxGroup — ported from components-svelte/src/lib/CheckboxGroup.svelte
+   =========================================================================== */
+.st-checkboxGroup {
+  border: 0;
+  margin: 0;
+  min-width: 0;
+  padding: 0;
+}
+
+.st-checkboxGroup__legend {
+  color: var(--st-component-field-labelText, var(--st-semantic-text-primary));
+  font-size: 0.9375rem;
+  font-weight: 650;
+  line-height: 1.3;
+  padding: 0;
+}
+
+.st-checkboxGroup__help {
+  color: var(--st-component-field-helpText, var(--st-semantic-text-secondary));
+  font-size: 0.8125rem;
+  margin: 0.25rem 0 0;
+}
+
+.st-checkboxGroup__options {
+  display: flex;
+  gap: var(--st-spacing-3, 0.75rem);
+  margin-top: var(--st-spacing-2, 0.5rem);
+}
+
+.st-checkboxGroup--vertical .st-checkboxGroup__options {
+  flex-direction: column;
+}
+
+.st-checkboxGroup--horizontal .st-checkboxGroup__options {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+/* ===========================================================================
+   RadioGroup — ported from components-svelte/src/lib/RadioGroup.svelte
+   =========================================================================== */
+.st-radioGroup {
+  border: 0;
+  margin: 0;
+  min-width: 0;
+  padding: 0;
+}
+
+.st-radioGroup__legend {
+  color: var(--st-component-field-labelText, var(--st-semantic-text-primary));
+  font-size: 0.9375rem;
+  font-weight: 650;
+  line-height: 1.3;
+  padding: 0;
+}
+
+.st-radioGroup__help {
+  color: var(--st-component-field-helpText, var(--st-semantic-text-secondary));
+  font-size: 0.8125rem;
+  margin: 0.25rem 0 0;
+}
+
+.st-radioGroup__options {
+  display: flex;
+  gap: var(--st-spacing-3, 0.75rem);
+  margin-top: var(--st-spacing-2, 0.5rem);
+}
+
+.st-radioGroup--vertical .st-radioGroup__options {
+  flex-direction: column;
+}
+
+.st-radioGroup--horizontal .st-radioGroup__options {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+/* ===========================================================================
+   Typography — ported from components-svelte/src/lib/Typography.svelte
+   =========================================================================== */
+.st-typography {
+  color: var(--st-semantic-text-primary);
+  margin: 0;
+}
+
+.st-typography--display {
+  font-size: 2.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.st-typography--h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+}
+
+.st-typography--h2 {
+  font-size: 1.625rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.st-typography--h3 {
+  font-size: 1.375rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+
+.st-typography--h4 {
+  font-size: 1.125rem;
+  font-weight: 650;
+  line-height: 1.3;
+}
+
+.st-typography--h5 {
+  font-size: 1rem;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.st-typography--h6 {
+  font-size: 0.875rem;
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+.st-typography--body {
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.55;
+}
+
+.st-typography--body-sm {
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.st-typography--caption {
+  color: var(--st-semantic-text-secondary);
+  font-size: 0.8125rem;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.st-typography--overline {
+  color: var(--st-semantic-text-secondary);
+  font-size: 0.6875rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+.st-typography--weight-regular {
+  font-weight: 400;
+}
+.st-typography--weight-medium {
+  font-weight: 500;
+}
+.st-typography--weight-semibold {
+  font-weight: 650;
+}
+.st-typography--weight-bold {
+  font-weight: 700;
+}
+
+.st-typography--tone-primary {
+  color: var(--st-semantic-text-primary);
+}
+.st-typography--tone-secondary {
+  color: var(--st-semantic-text-secondary);
+}
+.st-typography--tone-muted {
+  color: var(--st-semantic-text-muted);
+}
+.st-typography--tone-inverse {
+  color: var(--st-semantic-text-inverse);
+}
+.st-typography--tone-link {
+  color: var(--st-semantic-text-link, var(--st-semantic-action-primary));
+}
+
+.st-typography--align-start {
+  text-align: start;
+}
+.st-typography--align-center {
+  text-align: center;
+}
+.st-typography--align-end {
+  text-align: end;
+}
+.st-typography--align-justify {
+  text-align: justify;
+}
+
+.st-typography--truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ===========================================================================
+   Collapsible — ported from components-svelte/src/lib/Collapsible.svelte
+   =========================================================================== */
+.st-collapsible {
+  color: var(--st-semantic-text-primary);
+  width: 100%;
+}
+
+.st-collapsible__trigger {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: var(--st-component-accordion-text, inherit);
+  cursor: pointer;
+  display: flex;
+  font: inherit;
+  font-size: var(--st-component-accordion-fontSize, 0.9375rem);
+  font-weight: var(--st-component-accordion-fontWeight, 650);
+  gap: 0.75rem;
+  justify-content: space-between;
+  line-height: var(--st-component-accordion-lineHeight, 1.3);
+  padding: var(--st-component-accordion-paddingBlock, 0.625rem)
+    var(--st-component-accordion-paddingInline, 0.25rem);
+  text-align: start;
+  transition: background-color var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
+  width: 100%;
+}
+
+.st-collapsible__trigger:hover:not(:disabled) {
+  background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle));
+}
+
+.st-collapsible__trigger:focus-visible {
+  outline: 2px solid var(--st-component-control-focusRing, var(--st-semantic-border-interactive));
+  outline-offset: -2px;
+}
+
+.st-collapsible__trigger:disabled {
+  color: var(--st-semantic-text-muted);
+  cursor: not-allowed;
+}
+
+.st-collapsible__title {
+  flex: 1 1 auto;
+}
+
+.st-collapsible__icon {
+  align-items: center;
+  color: var(--st-semantic-text-secondary);
+  display: inline-flex;
+  flex: 0 0 auto;
+  height: 1.25rem;
+  justify-content: center;
+  transition: transform var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
+  width: 1.25rem;
+}
+
+.st-collapsible--open .st-collapsible__icon {
+  transform: rotate(180deg);
+}
+
+.st-collapsible__region {
+  color: var(--st-semantic-text-secondary);
+  line-height: 1.5;
+  padding: 0 0.25rem 0.625rem;
+}
+
+/* ===========================================================================
+   Stepper — ported from components-svelte/src/lib/Stepper.svelte
+   =========================================================================== */
+.st-stepper {
+  color: var(--st-semantic-text-primary);
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.st-stepper--horizontal {
+  align-items: flex-start;
+  flex-direction: row;
+}
+
+.st-stepper--vertical {
+  flex-direction: column;
+}
+
+.st-stepper__step {
+  display: flex;
+  flex: 1 1 0;
+  gap: var(--st-spacing-2, 0.5rem);
+  min-width: 0;
+  position: relative;
+}
+
+.st-stepper--horizontal .st-stepper__step {
+  align-items: flex-start;
+  flex-direction: column;
+}
+
+.st-stepper--vertical .st-stepper__step {
+  align-items: flex-start;
+  flex: 0 0 auto;
+  flex-direction: row;
+}
+
+.st-stepper__indicator {
+  align-items: center;
+  display: flex;
+  flex: 0 0 auto;
+  justify-content: center;
+  position: relative;
+}
+
+.st-stepper--horizontal .st-stepper__indicator {
+  flex-direction: row;
+  width: 100%;
+}
+
+.st-stepper--vertical .st-stepper__indicator {
+  flex-direction: column;
+  min-height: 3rem;
+}
+
+.st-stepper__circle {
+  align-items: center;
+  background: var(--st-semantic-surface-default);
+  border: 1.5px solid var(--st-semantic-border-strong);
+  border-radius: 50%;
+  color: var(--st-semantic-text-secondary);
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 0.75rem;
+  font-weight: 600;
+  height: 1.5rem;
+  justify-content: center;
+  line-height: 1;
+  width: 1.5rem;
+  z-index: 1;
+}
+
+.st-stepper__circle--button {
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0;
+  transition:
+    background var(--st-motion-fast, 120ms) var(--st-motion-easing, ease),
+    border-color var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
+}
+
+.st-stepper__circle--button:hover {
+  border-color: var(--st-semantic-action-primary);
+}
+
+.st-stepper__circle--button:focus-visible {
+  outline: 2px solid var(--st-semantic-border-interactive, var(--st-semantic-action-primary));
+  outline-offset: 2px;
+}
+
+.st-stepper__index {
+  line-height: 1;
+}
+
+.st-stepper__connector {
+  background: var(--st-semantic-border-subtle);
+  flex: 1 1 auto;
+}
+
+.st-stepper--horizontal .st-stepper__connector {
+  height: 2px;
+  margin-top: calc(0.75rem - 1px);
+}
+
+.st-stepper--vertical .st-stepper__connector {
+  margin-left: calc(0.75rem - 1px);
+  min-height: 1.5rem;
+  width: 2px;
+}
+
+.st-stepper__text {
+  display: grid;
+  gap: 0.125rem;
+  min-width: 0;
+}
+
+.st-stepper--horizontal .st-stepper__text {
+  padding-right: var(--st-spacing-3, 0.75rem);
+  padding-top: var(--st-spacing-2, 0.5rem);
+}
+
+.st-stepper--vertical .st-stepper__text {
+  padding-bottom: var(--st-spacing-3, 0.75rem);
+}
+
+.st-stepper__label {
+  color: var(--st-semantic-text-primary);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.st-stepper__description {
+  color: var(--st-semantic-text-secondary);
+  font-size: 0.8125rem;
+}
+
+.st-stepper__step--complete .st-stepper__circle {
+  background: var(--st-semantic-action-primary);
+  border-color: var(--st-semantic-action-primary);
+  color: var(--st-semantic-action-primaryText);
+}
+
+.st-stepper__step--complete .st-stepper__connector {
+  background: var(--st-semantic-action-primary);
+}
+
+.st-stepper__step--current .st-stepper__circle {
+  border-color: var(--st-semantic-action-primary);
+  color: var(--st-semantic-action-primary);
+}
+
+.st-stepper__step--current .st-stepper__label {
+  color: var(--st-semantic-action-primary);
+}
