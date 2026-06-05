@@ -125,6 +125,21 @@ export type ForceGraphProps = {
    * null when the hover/focus ends. Intended for syncing an external panel.
    */
   onNodeHover?: (node: ForceGraphNode | null) => void;
+  /**
+   * Reconciliation merge animation: when this becomes a new valid
+   * `{ from, into }` (both ids exist in `nodes`), the `from` node animates
+   * toward the position of `into` while fading out (the node and its incident
+   * edges), then `onMergeComplete` fires. Purely visual — the component never
+   * mutates the data; the consumer removes `from` from `nodes` afterwards.
+   * Pass null (the default) for no merge in flight.
+   */
+  mergePair?: { from: string; into: string } | null;
+  /**
+   * Fired once the merge animation for the current `mergePair` completes (or
+   * immediately, on a microtask, under reduced motion / SSR). Receives the
+   * same pair so the consumer can drop `from` from the data.
+   */
+  onMergeComplete?: (pair: { from: string; into: string }) => void;
   class?: string;
 };
 
@@ -394,6 +409,12 @@ function runSimulation(
 const CURVE_FACTOR = 0.5;
 // Fit-to-content margin (per side, fraction of the content box).
 const CONTENT_MARGIN = 0.08;
+// Merge (reconciliation) glide duration.
+const MERGE_DURATION_MS = 450;
+// ease-in-out (cubic) for a smooth glide.
+function easeInOut(t: number): number {
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+}
 
 export const ForceGraph = defineComponent({
   name: "ForceGraph",
@@ -425,6 +446,23 @@ export const ForceGraph = defineComponent({
      * null when the hover/focus ends. Intended for syncing an external panel.
      */
     onNodeHover: { type: Function as PropType<(node: ForceGraphNode | null) => void>, default: undefined },
+    /**
+     * Reconciliation merge animation: a new valid `{ from, into }` glides the
+     * `from` node toward `into` while fading out, then fires `onMergeComplete`.
+     * Purely visual — never mutates the data. Pass null for no merge in flight.
+     */
+    mergePair: {
+      type: Object as PropType<{ from: string; into: string } | null>,
+      default: null,
+    },
+    /**
+     * Fired once the merge animation completes (or immediately, on a microtask,
+     * under reduced motion / SSR). Receives the same pair.
+     */
+    onMergeComplete: {
+      type: Function as PropType<(pair: { from: string; into: string }) => void>,
+      default: undefined,
+    },
     class: { type: String, default: undefined },
   },
   emits: {
@@ -432,6 +470,7 @@ export const ForceGraph = defineComponent({
     openEntity: (_id: string) => true,
     edgeHover: (_edge: ForceGraphEdge) => true,
     nodeHover: (_node: ForceGraphNode | null) => true,
+    mergeComplete: (_pair: { from: string; into: string }) => true,
   },
   setup(props, { emit, attrs }) {
     // SSR-safe reduced-motion check (window may be undefined during SSR/tests).
@@ -624,6 +663,122 @@ export const ForceGraph = defineComponent({
     const hoveredEdgeIndex = ref<number | null>(null);
 
     const selectedSet = computed(() => new Set<string>(props.selectedIds ?? []));
+
+    // -------------------------------------------------------------------------
+    // Merge animation (reconciliation): when `mergePair` becomes a new valid
+    // pair, the `from` node slides toward `into` while fading out (node +
+    // incident edges), then `onMergeComplete` fires. Purely visual — never
+    // mutates props. Under reduced motion / SSR we skip straight to completion
+    // on a microtask. The clock is anchored to the FIRST rAF frame's own
+    // timestamp (rAF timestamps and performance.now() can use different time
+    // origins under jsdom, which would yield a garbage elapsed time).
+    // -------------------------------------------------------------------------
+    type MergeState = {
+      from: string;
+      into: string;
+      /** Animation progress, 0..1. */
+      progress: number;
+      /** Pixel delta from the `from` start position to `into`, captured at start. */
+      dx: number;
+      dy: number;
+    } | null;
+    const mergeState = ref<MergeState>(null);
+    let mergeRaf: number | null = null;
+
+    function cancelMergeRaf() {
+      if (mergeRaf !== null && typeof cancelAnimationFrame === "function") {
+        cancelAnimationFrame(mergeRaf);
+      }
+      mergeRaf = null;
+    }
+
+    function fireMergeComplete(pair: { from: string; into: string }) {
+      // `emit("mergeComplete")` invokes the `onMergeComplete` prop/listener
+      // exactly once; calling `props.onMergeComplete` here too would double-fire.
+      emit("mergeComplete", pair);
+    }
+
+    const mergeKey = computed(() =>
+      props.mergePair ? `${props.mergePair.from} ${props.mergePair.into}` : null,
+    );
+
+    watch(
+      mergeKey,
+      () => {
+        // Tear down any in-flight animation for a previous pair.
+        cancelMergeRaf();
+        mergeState.value = null;
+
+        const pair = props.mergePair;
+        if (!pair) return;
+
+        // Validate: both endpoints must currently exist.
+        const fromPos = layout.value.get(pair.from);
+        const intoPos = layout.value.get(pair.into);
+        if (!fromPos || !intoPos) return; // invalid pair → no-op, no callback
+
+        const captured = { from: pair.from, into: pair.into };
+        const key = mergeKey.value;
+
+        // Reduced motion / SSR: no animation, resolve on a microtask.
+        if (
+          prefersReducedMotion ||
+          typeof window === "undefined" ||
+          typeof requestAnimationFrame !== "function"
+        ) {
+          queueMicrotask(() => {
+            // Only fire if this is still the active pair.
+            if (mergeKey.value === key) fireMergeComplete(captured);
+          });
+          return;
+        }
+
+        const dx = intoPos.x - fromPos.x;
+        const dy = intoPos.y - fromPos.y;
+        mergeState.value = { from: captured.from, into: captured.into, progress: 0, dx, dy };
+
+        let start: number | null = null;
+        const tick = (now: number) => {
+          if (start === null) start = now;
+          const t = Math.min(1, Math.max(0, (now - start) / MERGE_DURATION_MS));
+          if (mergeState.value) mergeState.value = { ...mergeState.value, progress: t };
+          if (t < 1) {
+            mergeRaf = requestAnimationFrame(tick);
+          } else {
+            mergeRaf = null;
+            mergeState.value = null;
+            fireMergeComplete(captured);
+          }
+        };
+        mergeRaf = requestAnimationFrame(tick);
+      },
+      { immediate: true },
+    );
+
+    // Eased progress of the `from` node toward `into`. Null when no merge running.
+    const mergeFromId = computed(() => mergeState.value?.from ?? null);
+    const mergeEased = computed(() => (mergeState.value ? easeInOut(mergeState.value.progress) : 0));
+
+    /** Extra translation applied to the merging node so it glides toward `into`. */
+    function mergeOffset(id: string): { x: number; y: number } {
+      const m = mergeState.value;
+      if (!m || m.from !== id) return { x: 0, y: 0 };
+      return { x: m.dx * mergeEased.value, y: m.dy * mergeEased.value };
+    }
+
+    /** Opacity for a node while a merge is animating (the `from` node fades out). */
+    function mergeNodeOpacity(id: string): number | undefined {
+      if (mergeFromId.value !== id) return undefined;
+      return 1 - mergeEased.value;
+    }
+
+    /** Opacity for an edge incident to the merging `from` node (fades out too). */
+    function mergeEdgeOpacity(e: ForceGraphEdge): number | undefined {
+      const from = mergeFromId.value;
+      if (from == null) return undefined;
+      if (e.source !== from && e.target !== from) return undefined;
+      return 1 - mergeEased.value;
+    }
 
     // Adjacency: id -> set of directly connected node ids. Used to keep the
     // direct neighbours of selected/focused nodes fully visible (demand 6).
@@ -843,6 +998,7 @@ export const ForceGraph = defineComponent({
         cancelAnimationFrame(rafId);
         rafId = null;
       }
+      cancelMergeRaf();
     });
 
     return () => {
@@ -861,6 +1017,7 @@ export const ForceGraph = defineComponent({
         const onHitLeave = () => {
           hoveredEdgeIndex.value = null;
         };
+        const mEdgeOpacity = mergeEdgeOpacity(e.edge);
         const edgeClass = classNames(
           "st-forceGraph__edge",
           e.edge.weak && "st-forceGraph__edge--weak",
@@ -868,6 +1025,7 @@ export const ForceGraph = defineComponent({
           hoveredEdgeIndex.value === e.i && "st-forceGraph__edge--hovered",
           (isEdgeSelectionDimmed(e.edge) || isHoverDimmedEdge(e.edge)) &&
             "st-forceGraph__edge--dim",
+          mEdgeOpacity !== undefined && "st-forceGraph__edge--merging",
         );
         // Invisible wider hit area for edge hover (follows the curve).
         edgeVNodes.push(
@@ -902,6 +1060,7 @@ export const ForceGraph = defineComponent({
                 fill: "none",
                 "stroke-dasharray": e.dashArray ?? undefined,
                 "stroke-width": e.strokeWidth ?? undefined,
+                opacity: mEdgeOpacity,
                 "pointer-events": "none",
               })
             : h("line", {
@@ -913,6 +1072,7 @@ export const ForceGraph = defineComponent({
                 y2: e.y2,
                 "stroke-dasharray": e.dashArray ?? undefined,
                 "stroke-width": e.strokeWidth ?? undefined,
+                opacity: mEdgeOpacity,
                 "pointer-events": "none",
               }),
         );
@@ -952,6 +1112,8 @@ export const ForceGraph = defineComponent({
           );
         }
 
+        const mOff = mergeOffset(p.node.id);
+        const mOpacity = mergeNodeOpacity(p.node.id);
         return h(
           "g",
           {
@@ -963,8 +1125,10 @@ export const ForceGraph = defineComponent({
                 "st-forceGraph__node--dim",
               isSelected && "st-forceGraph__node--selected",
               focusId === p.node.id && "st-forceGraph__node--focus",
+              mergeFromId.value === p.node.id && "st-forceGraph__node--merging",
             ),
-            transform: `translate(${p.x} ${p.y})`,
+            opacity: mOpacity,
+            transform: `translate(${p.x + mOff.x} ${p.y + mOff.y})`,
             onClick: () => fireSelect(p.node.id),
             onDblclick: () => fireOpenEntity(p.node.id),
           },

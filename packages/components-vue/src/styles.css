@@ -2395,6 +2395,11 @@
   .st-forceGraph__node { transition: opacity 120ms ease; }
   .st-forceGraph__node--dim { opacity: 0.3; }
 
+  /* During a merge the opacity/transform are driven per-frame via rAF, so the
+     CSS transitions are disabled to avoid a lag that would smear the glide. */
+  .st-forceGraph__node--merging,
+  .st-forceGraph__edge--merging { transition: none; }
+
   .st-forceGraph__dot {
     cursor: pointer;
     fill-opacity: 0.9;
@@ -8147,4 +8152,88 @@
   right: -0.25rem;
   top: 50%;
   margin-top: -0.25rem;
+}
+
+/* ---------------------------------------------------------------------------
+   SelectableRow — compact, full-width selectable list/rail row. The selected
+   state is truly themed (a tinted surface + accented text + a fine 2px flush
+   accent bar) — deliberately NOT the off-theme "boudin box" (3px inset
+   box-shadow + heavy rounded border) it replaces.
+   --------------------------------------------------------------------------- */
+.st-selectableRow {
+  align-items: center;
+  background: transparent;
+  border-radius: var(--st-radius-sm, 0.25rem);
+  box-sizing: border-box;
+  color: var(--st-semantic-text-secondary, #475569);
+  cursor: pointer;
+  display: flex;
+  gap: var(--st-spacing-2, 0.5rem);
+  /* Reserve room for the 2px accent bar so text never shifts on selection. */
+  padding: 0.5rem 0.75rem 0.5rem calc(0.75rem - 2px);
+  border-left: 2px solid transparent;
+  position: relative;
+  text-align: left;
+  transition:
+    background-color var(--st-motion-fast, 120ms) var(--st-motion-easing, ease),
+    color var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
+  user-select: none;
+  width: 100%;
+}
+
+.st-selectableRow:hover:not(.st-selectableRow--disabled):not(.st-selectableRow--selected) {
+  background: var(
+    --st-component-control-hoverBackground,
+    var(--st-semantic-surface-subtle, #f8fafc)
+  );
+  color: var(--st-semantic-text-primary, #0f172a);
+}
+
+.st-selectableRow:focus-visible {
+  outline: 2px solid var(--st-semantic-border-interactive, var(--st-semantic-action-primary));
+  outline-offset: -2px;
+}
+
+/* Selected: tinted surface + accented text + a crisp, flush 2px accent bar.
+   No inset box-shadow, no thick rounded border. */
+.st-selectableRow--selected {
+  background: var(
+    --st-component-selectableRow-selectedBackground,
+    color-mix(in oklch, var(--st-semantic-action-primary, #2563eb) 12%, transparent)
+  );
+  border-left-color: var(
+    --st-component-selectableRow-selectedAccent,
+    var(--st-semantic-action-primary, #2563eb)
+  );
+  color: var(
+    --st-component-selectableRow-selectedText,
+    var(--st-semantic-action-primary, #1d4ed8)
+  );
+  font-weight: 600;
+}
+
+.st-selectableRow--disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.st-selectableRow__leading,
+.st-selectableRow__trailing {
+  align-items: center;
+  display: inline-flex;
+  flex: 0 0 auto;
+}
+
+.st-selectableRow__content {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .st-selectableRow {
+    transition: none;
+  }
 }
