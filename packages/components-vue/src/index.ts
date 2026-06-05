@@ -261,3 +261,18 @@ export { Collapsible } from "./Collapsible.js";
 export type { CollapsibleProps } from "./Collapsible.js";
 export { Stepper } from "./Stepper.js";
 export type { StepperProps, StepperStep, StepperOrientation } from "./Stepper.js";
+
+export { Rating } from "./Rating.js";
+export type { RatingProps, RatingSize } from "./Rating.js";
+export { TimePicker } from "./TimePicker.js";
+export type { TimePickerProps, TimePickerFormat, TimePickerSize } from "./TimePicker.js";
+export { Calendar } from "./Calendar.js";
+export type { CalendarProps, CalendarValue } from "./Calendar.js";
+export { SlideIndicator } from "./SlideIndicator.js";
+export type {
+  SlideIndicatorProps,
+  SlideIndicatorVariant,
+  SlideIndicatorSize,
+} from "./SlideIndicator.js";
+export { Autosave } from "./Autosave.js";
+export type { AutosaveProps, AutosaveStatus, AutosaveLabels } from "./Autosave.js";
