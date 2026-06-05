@@ -629,6 +629,169 @@ describe("ForceGraph", () => {
       expect(hovered).toBeTruthy();
     });
   });
+
+  // ---------------------------------------------------------------------------
+  // Round-6 demand 6: adjustable repulsion prop
+  // ---------------------------------------------------------------------------
+  describe("repulsion prop", () => {
+    // Read each node centre from its translate() transform.
+    const centres = (container: Element) =>
+      Array.from(container.querySelectorAll(".st-forceGraph__node")).map((g) => {
+        const m = (g.getAttribute("transform") ?? "").match(
+          /translate\(([-\d.]+) ([-\d.]+)\)/
+        );
+        return { x: Number(m?.[1]), y: Number(m?.[2]) };
+      });
+
+    it("renders without error with a high repulsion and accepts the prop", () => {
+      const { container } = render(ForceGraph, {
+        props: { nodes, edges, label: "Aéré", repulsion: 2 }
+      });
+      expect(container.querySelectorAll(".st-forceGraph__node").length).toBe(4);
+      for (const c of centres(container)) {
+        expect(Number.isFinite(c.x)).toBe(true);
+        expect(Number.isFinite(c.y)).toBe(true);
+      }
+    });
+
+    it("spreads nodes further apart at repulsion=2 than at repulsion=0.5", () => {
+      // Mean pairwise distance grows with the repulsion factor (same seed/layout).
+      const meanDist = (container: Element) => {
+        const pts = centres(container);
+        let sum = 0;
+        let count = 0;
+        for (let i = 0; i < pts.length; i++) {
+          for (let j = i + 1; j < pts.length; j++) {
+            sum += Math.hypot(pts[i].x - pts[j].x, pts[i].y - pts[j].y);
+            count++;
+          }
+        }
+        return count ? sum / count : 0;
+      };
+      const compact = render(ForceGraph, {
+        props: { nodes, edges, label: "Compact", repulsion: 0.5 }
+      });
+      const airy = render(ForceGraph, {
+        props: { nodes, edges, label: "Airy", repulsion: 2 }
+      });
+      expect(meanDist(airy.container)).toBeGreaterThan(meanDist(compact.container));
+    });
+
+    it("does not break the fit-to-content viewBox (every node stays framed)", () => {
+      const { container } = render(ForceGraph, {
+        props: { nodes, edges, label: "Fit + repulsion", repulsion: 3, width: 400, height: 300 }
+      });
+      const svg = container.querySelector("svg")!;
+      const [vx, vy, vw, vh] = (svg.getAttribute("viewBox") ?? "").split(/\s+/).map(Number);
+      for (const c of centres(container)) {
+        expect(c.x).toBeGreaterThanOrEqual(vx);
+        expect(c.y).toBeGreaterThanOrEqual(vy);
+        expect(c.x).toBeLessThanOrEqual(vx + vw);
+        expect(c.y).toBeLessThanOrEqual(vy + vh);
+      }
+    });
+
+    it("clamps extreme values without producing non-finite coordinates", () => {
+      const { container } = render(ForceGraph, {
+        props: { nodes, edges, label: "Extreme", repulsion: 9999 }
+      });
+      for (const c of centres(container)) {
+        expect(Number.isFinite(c.x)).toBe(true);
+        expect(Number.isFinite(c.y)).toBe(true);
+      }
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // Round-6 demand 7: hover-connexe (dim non-neighbour nodes AND edges)
+  // ---------------------------------------------------------------------------
+  describe("hover-connexe", () => {
+    // edges: a-b, b-c, c-d. Hovering "b": a and c stay full, d dims; edges a-b
+    // and b-c stay full, c-d dims.
+    const dim = (el: Element) => el.classList.contains("st-forceGraph__node--dim");
+    const edgeDim = (el: Element) => el.classList.contains("st-forceGraph__edge--dim");
+
+    it("dims non-neighbour nodes (not the hovered node nor its neighbours)", async () => {
+      const { container } = render(ForceGraph, {
+        props: { nodes, edges, label: "Hover connexe nodes" }
+      });
+      const [a, b, c, d] = Array.from(container.querySelectorAll(".st-forceGraph__node"));
+      const bDot = b.querySelector(".st-forceGraph__dot")!;
+      await fireEvent.mouseEnter(bDot);
+      expect(dim(b)).toBe(false); // hovered
+      expect(dim(a)).toBe(false); // neighbour
+      expect(dim(c)).toBe(false); // neighbour
+      expect(dim(d)).toBe(true); // not connected
+    });
+
+    it("dims edges not incident to the hovered node", async () => {
+      const { container } = render(ForceGraph, {
+        props: { nodes, edges, label: "Hover connexe edges" }
+      });
+      const b = container.querySelectorAll(".st-forceGraph__node")[1];
+      const bDot = b.querySelector(".st-forceGraph__dot")!;
+      await fireEvent.mouseEnter(bDot);
+      const edgeEls = Array.from(container.querySelectorAll(".st-forceGraph__edge"));
+      // edges order: a-b, b-c, c-d. a-b and b-c are incident to b → not dim.
+      expect(edgeDim(edgeEls[0])).toBe(false); // a-b
+      expect(edgeDim(edgeEls[1])).toBe(false); // b-c
+      expect(edgeDim(edgeEls[2])).toBe(true); // c-d
+    });
+
+    it("removes all dimming once the hover ends", async () => {
+      const { container } = render(ForceGraph, {
+        props: { nodes, edges, label: "Hover clear" }
+      });
+      const b = container.querySelectorAll(".st-forceGraph__node")[1];
+      const bDot = b.querySelector(".st-forceGraph__dot")!;
+      await fireEvent.mouseEnter(bDot);
+      expect(container.querySelectorAll(".st-forceGraph__node--dim").length).toBeGreaterThan(0);
+      await fireEvent.mouseLeave(bDot);
+      expect(container.querySelectorAll(".st-forceGraph__node--dim").length).toBe(0);
+      expect(container.querySelectorAll(".st-forceGraph__edge--dim").length).toBe(0);
+    });
+
+    it("calls onNodeHover with the node on enter and null on leave", async () => {
+      const spy = vi.fn();
+      const { container } = render(ForceGraph, {
+        props: { nodes, edges, label: "Hover cb", onNodeHover: spy }
+      });
+      const b = container.querySelectorAll(".st-forceGraph__node")[1];
+      const bDot = b.querySelector(".st-forceGraph__dot")!;
+      await fireEvent.mouseEnter(bDot);
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy.mock.calls[0][0]).toMatchObject({ id: "b" });
+      await fireEvent.mouseLeave(bDot);
+      expect(spy).toHaveBeenCalledTimes(2);
+      expect(spy.mock.calls[1][0]).toBeNull();
+    });
+
+    it("composes hover with selection (both predicates OR'd)", async () => {
+      // Select "a": by selection, a + neighbour b stay full; c and d dim.
+      // Now hover "c": by hover, c + neighbours b,d stay full; a dims.
+      // The dim class is the OR of both predicates, so:
+      //   - a: selection-full but hover-dim  -> dim
+      //   - d: selection-dim but hover-full   -> dim
+      //   - b: full in both                   -> not dim
+      const { container } = render(ForceGraph, {
+        props: { nodes, edges, label: "Hover + selection", selectedIds: ["a"] }
+      });
+      const [a, b, c, d] = Array.from(container.querySelectorAll(".st-forceGraph__node"));
+      const cDot = c.querySelector(".st-forceGraph__dot")!;
+      await fireEvent.mouseEnter(cDot);
+      expect(dim(b)).toBe(false); // full under both selection and hover
+      expect(dim(a)).toBe(true); // hover-dimmed (not a neighbour of c)
+      expect(dim(d)).toBe(true); // selection-dimmed (not a neighbour of a)
+    });
+
+    it("does not require onNodeHover (optional prop, no error)", async () => {
+      const { container } = render(ForceGraph, {
+        props: { nodes, edges, label: "No hover cb" }
+      });
+      const dot = container.querySelector(".st-forceGraph__dot")!;
+      await expect(fireEvent.mouseEnter(dot)).resolves.toBeTruthy();
+    });
+  });
 });
 
 // ---------------------------------------------------------------------------

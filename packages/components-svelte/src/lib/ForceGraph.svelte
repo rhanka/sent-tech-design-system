@@ -237,6 +237,18 @@
      * by `edgeCurve * dist * factor`. Defaults to a light 0.15.
      */
     edgeCurve?: number;
+    /**
+     * Repulsion multiplier controlling how spread out the layout is.
+     * >1 = graphe plus aéré, <1 = plus compact ; multiplie la force de
+     * répulsion sans toucher au fit-to-content. Defaults to 1. Clamped to
+     * [0.1, 10] internally to avoid layout explosions/collapses.
+     */
+    repulsion?: number;
+    /**
+     * Called when the user hovers (or keyboard-focuses) a node, and again with
+     * null when the hover/focus ends. Intended for syncing an external panel.
+     */
+    onNodeHover?: (node: ForceGraphNode | null) => void;
     class?: string;
   };
 
@@ -256,6 +268,8 @@
     onEdgeHover,
     legend,
     edgeCurve = 0.15,
+    repulsion = 1,
+    onNodeHover,
     class: className
   }: ForceGraphProps = $props();
 
@@ -311,7 +325,8 @@
     es: ForceGraphEdge[],
     w: number,
     h: number,
-    ticks: number
+    ticks: number,
+    repulsionFactor: number
   ): Map<string, { x: number; y: number }> {
     const cx = w / 2;
     const cy = h / 2;
@@ -339,7 +354,11 @@
 
     const area = w * h;
     const k = Math.sqrt(area / Math.max(ns.length, 1)); // ideal node distance
-    const repulsion = k * k * 0.9;
+    // Clamp the caller-supplied factor so extreme values can't explode or
+    // collapse the layout. >1 spreads nodes out, <1 packs them tighter; the
+    // fit-to-content viewBox is recomputed afterwards so spacing just fills space.
+    const clampedRepulsion = Math.min(Math.max(repulsionFactor, 0.1), 10);
+    const repulsion = k * k * 0.9 * clampedRepulsion;
     const restLength = k * 0.8;
     const springK = 0.04;
     const gravity = 0.012;
@@ -426,7 +445,7 @@
   // honouring the motion preference (no rAF loop, no jitter).
   const layout = $derived.by(() => {
     const ticks = Math.max(1, Math.round(iterations));
-    return runSimulation(nodes, edges, width, height, ticks);
+    return runSimulation(nodes, edges, width, height, ticks, repulsion);
   });
 
   const positionedNodes = $derived.by(() =>
@@ -584,6 +603,38 @@
     return !(srcActive || tgtActive);
   }
 
+  // ---------------------------------------------------------------------------
+  // Hover-connexe (demand 7): hovering a node fades the rest of the graph the
+  // same way selection does — the hovered node and its direct neighbours stay
+  // full, every other node dims, and only edges incident to the hovered node
+  // keep their opacity. Composes with selection (predicates OR'd together).
+  // ---------------------------------------------------------------------------
+  const hoveredNodeId = $derived(
+    hoveredNodeIndex != null ? (positionedNodes[hoveredNodeIndex]?.node.id ?? null) : null
+  );
+  const hoverActiveSet = $derived.by(() => {
+    const set = new Set<string>();
+    if (hoveredNodeId == null) return set;
+    set.add(hoveredNodeId);
+    const nb = adjacency.get(hoveredNodeId);
+    if (nb) for (const n of nb) set.add(n);
+    return set;
+  });
+
+  // A node is dimmed by hover when a node is hovered and this one is neither
+  // the hovered node nor one of its direct neighbours.
+  function isHoverDimmedNode(id: string): boolean {
+    if (hoveredNodeId == null) return false;
+    return !hoverActiveSet.has(id);
+  }
+
+  // An edge is dimmed by hover when a node is hovered and the edge is not
+  // incident to it (keep only the hovered node's own edges full).
+  function isHoverDimmedEdge(e: ForceGraphEdge): boolean {
+    if (hoveredNodeId == null) return false;
+    return e.source !== hoveredNodeId && e.target !== hoveredNodeId;
+  }
+
   // Keyboard handler for a node circle: Space/Enter → onSelect, Enter → onOpenEntity.
   function handleNodeKeydown(id: string, e: KeyboardEvent) {
     if (e.key === "Enter" || e.key === " ") {
@@ -734,7 +785,7 @@
             class:st-forceGraph__edge--weak={e.edge.weak}
             class:st-forceGraph__edge--emphasis={e.edge.emphasis}
             class:st-forceGraph__edge--hovered={hoveredEdgeIndex === e.i}
-            class:st-forceGraph__edge--dim={isEdgeSelectionDimmed(e.edge)}
+            class:st-forceGraph__edge--dim={isEdgeSelectionDimmed(e.edge) || isHoverDimmedEdge(e.edge)}
             d={e.path}
             fill="none"
             stroke-dasharray={e.dashArray}
@@ -747,7 +798,7 @@
             class:st-forceGraph__edge--weak={e.edge.weak}
             class:st-forceGraph__edge--emphasis={e.edge.emphasis}
             class:st-forceGraph__edge--hovered={hoveredEdgeIndex === e.i}
-            class:st-forceGraph__edge--dim={isEdgeSelectionDimmed(e.edge)}
+            class:st-forceGraph__edge--dim={isEdgeSelectionDimmed(e.edge) || isHoverDimmedEdge(e.edge)}
             x1={e.x1}
             y1={e.y1}
             x2={e.x2}
@@ -764,7 +815,7 @@
       {#each positionedNodes as p (p.node.id)}
         <g
           class="st-forceGraph__node st-forceGraph__node--{p.tone}"
-          class:st-forceGraph__node--dim={(hoveredNodeIndex !== null && hoveredNodeIndex !== p.i) || isSelectionDimmed(p.node.id)}
+          class:st-forceGraph__node--dim={isHoverDimmedNode(p.node.id) || isSelectionDimmed(p.node.id)}
           class:st-forceGraph__node--selected={selectedSet.has(p.node.id)}
           class:st-forceGraph__node--focus={focusId === p.node.id}
           transform="translate({p.x} {p.y})"
@@ -777,10 +828,10 @@
               role="button"
               aria-label="{p.title}{p.node.group !== undefined ? `: ${p.node.group}` : ''}"
               aria-pressed={selectedSet.has(p.node.id)}
-              onmouseenter={() => (hoveredNodeIndex = p.i)}
-              onmouseleave={() => (hoveredNodeIndex = null)}
-              onfocus={() => (hoveredNodeIndex = p.i)}
-              onblur={() => (hoveredNodeIndex = null)}
+              onmouseenter={() => { hoveredNodeIndex = p.i; onNodeHover?.(p.node); }}
+              onmouseleave={() => { hoveredNodeIndex = null; onNodeHover?.(null); }}
+              onfocus={() => { hoveredNodeIndex = p.i; onNodeHover?.(p.node); }}
+              onblur={() => { hoveredNodeIndex = null; onNodeHover?.(null); }}
               onclick={() => onSelect?.(p.node.id)}
               ondblclick={() => onOpenEntity?.(p.node.id)}
               onkeydown={(e) => handleNodeKeydown(p.node.id, e)}
@@ -793,10 +844,10 @@
               role="button"
               aria-label="{p.title}{p.node.group !== undefined ? `: ${p.node.group}` : ''}"
               aria-pressed={selectedSet.has(p.node.id)}
-              onmouseenter={() => (hoveredNodeIndex = p.i)}
-              onmouseleave={() => (hoveredNodeIndex = null)}
-              onfocus={() => (hoveredNodeIndex = p.i)}
-              onblur={() => (hoveredNodeIndex = null)}
+              onmouseenter={() => { hoveredNodeIndex = p.i; onNodeHover?.(p.node); }}
+              onmouseleave={() => { hoveredNodeIndex = null; onNodeHover?.(null); }}
+              onfocus={() => { hoveredNodeIndex = p.i; onNodeHover?.(p.node); }}
+              onblur={() => { hoveredNodeIndex = null; onNodeHover?.(null); }}
               onclick={() => onSelect?.(p.node.id)}
               ondblclick={() => onOpenEntity?.(p.node.id)}
               onkeydown={(e) => handleNodeKeydown(p.node.id, e)}
