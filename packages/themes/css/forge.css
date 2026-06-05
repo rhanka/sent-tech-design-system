@@ -460,6 +460,9 @@
   --st-component-dropdown-selectedText: hsl(0 0% 100%);
   --st-component-dropdown-radius: 0.375rem;
   --st-component-dropdown-shadow: 0 8px 24px rgb(15 23 42 / 0.12);
+  --st-component-selectableRow-selectedBackground: color-mix(in oklch, var(--st-semantic-action-primary) 12%, transparent);
+  --st-component-selectableRow-selectedAccent: var(--st-semantic-action-primary);
+  --st-component-selectableRow-selectedText: var(--st-semantic-action-primary);
   --st-component-input-background: #ffffff;
   --st-component-input-border: #e2e8f0;
   --st-component-input-focusRing: oklch(50% 0.134 242.749);

@@ -81,6 +81,7 @@ export { default as Row } from "./Row.svelte";
 export { default as ScatterPlot } from "./ScatterPlot.svelte";
 export { default as Search } from "./Search.svelte";
 export { default as Select } from "./Select.svelte";
+export { default as SelectableRow } from "./SelectableRow.svelte";
 export { default as SideNav } from "./SideNav.svelte";
 export { default as SkeletonText } from "./SkeletonText.svelte";
 export { default as SkipLink } from "./SkipLink.svelte";
@@ -146,6 +147,7 @@ export type {
   ProgressIndicatorStatus
 } from "./ProgressIndicator.svelte";
 export type { SideNavItem } from "./SideNav.svelte";
+export type { SelectableRowProps } from "./SelectableRow.svelte";
 export type { StructuredListItem } from "./StructuredList.svelte";
 export type { DisplayFontScale, DisplayContrast, DisplayLineSpacing, DisplaySettingsState } from "./DisplaySettings.svelte";
 export type { TranscriptionSegment } from "./Transcription.svelte";

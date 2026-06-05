@@ -1,0 +1,107 @@
+import { fireEvent, render, screen } from "@testing-library/svelte";
+import { createRawSnippet } from "svelte";
+import { describe, expect, it, vi } from "vitest";
+import SelectableRow from "./lib/SelectableRow.svelte";
+
+const labelChildren = createRawSnippet(() => ({
+  render: () => "<span>Documents</span>"
+}));
+
+describe("SelectableRow", () => {
+  it("renders with role=option and the row class", () => {
+    const { container } = render(SelectableRow, {
+      props: { children: labelChildren }
+    });
+    const row = screen.getByRole("option");
+    expect(row).toBeTruthy();
+    expect(row.className).toContain("st-selectableRow");
+    expect(container.textContent).toContain("Documents");
+  });
+
+  it("selected applies aria-selected=true and the selected class", () => {
+    render(SelectableRow, { props: { selected: true, children: labelChildren } });
+    const row = screen.getByRole("option");
+    expect(row.getAttribute("aria-selected")).toBe("true");
+    expect(row.className).toContain("st-selectableRow--selected");
+  });
+
+  it("is not selected by default (aria-selected=false, no selected class)", () => {
+    render(SelectableRow, { props: { children: labelChildren } });
+    const row = screen.getByRole("option");
+    expect(row.getAttribute("aria-selected")).toBe("false");
+    expect(row.className).not.toContain("st-selectableRow--selected");
+  });
+
+  it("click toggles selection and calls onselect with the new state", async () => {
+    const onselect = vi.fn();
+    render(SelectableRow, { props: { onselect, children: labelChildren } });
+    const row = screen.getByRole("option");
+    await fireEvent.click(row);
+    expect(onselect).toHaveBeenCalledTimes(1);
+    expect(onselect).toHaveBeenLastCalledWith(true);
+    expect(row.getAttribute("aria-selected")).toBe("true");
+    // Toggle back off.
+    await fireEvent.click(row);
+    expect(onselect).toHaveBeenLastCalledWith(false);
+    expect(row.getAttribute("aria-selected")).toBe("false");
+  });
+
+  it("Enter key selects (calls onselect)", async () => {
+    const onselect = vi.fn();
+    render(SelectableRow, { props: { onselect, children: labelChildren } });
+    const row = screen.getByRole("option");
+    await fireEvent.keyDown(row, { key: "Enter" });
+    expect(onselect).toHaveBeenCalledTimes(1);
+    expect(onselect).toHaveBeenLastCalledWith(true);
+  });
+
+  it("Space key selects (calls onselect)", async () => {
+    const onselect = vi.fn();
+    render(SelectableRow, { props: { onselect, children: labelChildren } });
+    const row = screen.getByRole("option");
+    await fireEvent.keyDown(row, { key: " " });
+    expect(onselect).toHaveBeenCalledTimes(1);
+    expect(onselect).toHaveBeenLastCalledWith(true);
+  });
+
+  it("disabled does not emit onselect on click or key, and exposes aria-disabled", async () => {
+    const onselect = vi.fn();
+    render(SelectableRow, {
+      props: { disabled: true, onselect, children: labelChildren }
+    });
+    const row = screen.getByRole("option");
+    expect(row.getAttribute("aria-disabled")).toBe("true");
+    expect(row.getAttribute("tabindex")).toBe("-1");
+    await fireEvent.click(row);
+    await fireEvent.keyDown(row, { key: "Enter" });
+    expect(onselect).not.toHaveBeenCalled();
+  });
+
+  it("is focusable (tabindex 0) when not disabled", () => {
+    render(SelectableRow, { props: { children: labelChildren } });
+    const row = screen.getByRole("option");
+    expect(row.getAttribute("tabindex")).toBe("0");
+  });
+
+  it("exposes value as data-value", () => {
+    render(SelectableRow, { props: { value: "docs", children: labelChildren } });
+    const row = screen.getByRole("option");
+    expect(row.getAttribute("data-value")).toBe("docs");
+  });
+
+  it("renders leading and trailing snippets", () => {
+    const leading = createRawSnippet(() => ({
+      render: () => '<span data-testid="lead">L</span>'
+    }));
+    const trailing = createRawSnippet(() => ({
+      render: () => '<span data-testid="trail">T</span>'
+    }));
+    const { container } = render(SelectableRow, {
+      props: { leading, trailing, children: labelChildren }
+    });
+    expect(container.querySelector(".st-selectableRow__leading")).toBeTruthy();
+    expect(container.querySelector(".st-selectableRow__trailing")).toBeTruthy();
+    expect(screen.getByTestId("lead")).toBeTruthy();
+    expect(screen.getByTestId("trail")).toBeTruthy();
+  });
+});
