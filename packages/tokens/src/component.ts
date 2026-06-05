@@ -378,6 +378,32 @@ interface ToggleInput {
   textColor?: string;         // toggle label text colour; default = semantic.text.primary
 }
 
+// UAT8 (additive) — SelectableRow / SelectableList SELECTED-item primitive. The
+// selected list item reads a tinted surface + an accented text colour + an
+// (opt-in) left accent bar. Every leaf is optional and DEFAULTS to a value
+// derived from the theme's own `action.primary`, so the brand reaches the
+// selected row without per-theme wiring:
+//   - selectedBackground: `action.primary` at 12% over the surface (a calm tint).
+//   - selectedAccent:     `action.primary` (the opt-in left bar colour).
+//   - selectedText:       a DARKER accent — `color-mix(in oklch, primary 78%,
+//     black)`. The plain `action.primary` text only reaches CR ~4.21 (Carbon) /
+//     ~4.91 (Sent Tech) on the 12% tint — sub/at-AA and failing in dark. The 78%
+//     darken lifts EVERY light theme to ≥ 7:1 on the tint (Sent Tech 7.93,
+//     Carbon 7.04, forge 12.3, DSFR 13.5 — verified via WCAG relative luminance),
+//     comfortably past the 4.5 floor and the ~6:1 ideal.
+// The `*Dark` leaves are the dark-mode variants (no light/dark theme split exists
+// yet, but they are emitted so a future dark theme inherits safe values): on a
+// dark tinted surface the text must be LIGHTENED instead of darkened, hence
+// `color-mix(... primary 70%, white)` for the text and a lighter tint mix.
+interface SelectableRowInput {
+  selectedBackground?: string;
+  selectedAccent?: string;
+  selectedText?: string;
+  selectedBackgroundDark?: string;
+  selectedAccentDark?: string;
+  selectedTextDark?: string;
+}
+
 interface FoundationInput {
   radius: { none?: string; sm?: string; md: string; lg: string; pill: string };
   shadow: { subtle: string; medium: string; floating: string };
@@ -419,6 +445,10 @@ interface FoundationInput {
   choice?: ChoiceInput;
   search?: SearchInput;
   toggle?: ToggleInput;
+  // UAT8 (additive): per-theme SelectableRow / SelectableList selected-item
+  // colours. Optional — when omitted (every current theme) the selected item
+  // derives its colours from `action.primary` via the resolver defaults.
+  selectableRow?: SelectableRowInput;
   // F9 (additive): a BUTTON-specific density override. The button shares the
   // control `density` scale with the fields (Input/Select/Textarea/Tabs all read
   // it), so a button-only geometry — e.g. Carbon's tall 48px primary button with
@@ -928,6 +958,46 @@ function toggleOf(semantic: SemanticInput, f: FoundationInput): {
   };
 }
 
+/**
+ * SelectableRow / SelectableList SELECTED-item resolution (UAT8). Resolves the
+ * per-theme selected-item colours into a flat, CSS-ready set both components
+ * consume verbatim. Every leaf DEFAULTS to a value derived from this theme's own
+ * `action.primary`:
+ *   - selectedBackground: a calm 12% tint of the primary over the surface.
+ *   - selectedAccent:     the primary itself (opt-in left accent bar).
+ *   - selectedText:       a DARKER accent (`primary 78% + black`) that clears
+ *     ≥ 7:1 on the tint for every light theme (the plain primary only reaches
+ *     ~4.2–4.9:1, sub/at-AA). Verified via WCAG relative luminance.
+ * The `*Dark` leaves carry dark-mode-safe variants (text LIGHTENED, tint over a
+ * dark surface) so a future dark theme inherits accessible values automatically.
+ * `color-mix(in oklch, …)` keeps the derivation perceptually-uniform; the
+ * components ship a flat fallback + an `@supports` guard for engines without it.
+ */
+function selectableRowOf(semantic: SemanticInput, f: FoundationInput): {
+  selectedBackground: string;
+  selectedAccent: string;
+  selectedText: string;
+  selectedBackgroundDark: string;
+  selectedAccentDark: string;
+  selectedTextDark: string;
+} {
+  const s = f.selectableRow ?? {};
+  const primary = semantic.action.primary;
+  return {
+    selectedBackground:
+      s.selectedBackground || `color-mix(in oklch, ${primary} 12%, transparent)`,
+    selectedAccent: s.selectedAccent || primary,
+    // Darker accent for ≥ 7:1 on the tint (vs ~4.2–4.9:1 for the plain primary).
+    selectedText: s.selectedText || `color-mix(in oklch, ${primary} 78%, black)`,
+    // Dark-mode variants: a slightly stronger tint + a LIGHTENED text so the
+    // accent stays legible on a dark tinted surface.
+    selectedBackgroundDark:
+      s.selectedBackgroundDark || `color-mix(in oklch, ${primary} 22%, transparent)`,
+    selectedAccentDark: s.selectedAccentDark || primary,
+    selectedTextDark: s.selectedTextDark || `color-mix(in oklch, ${primary} 70%, white)`
+  };
+}
+
 function typographyOf(f: FoundationInput, role: "control" | "field" | "label" | "link"): TypographyAnatomy {
   // Widen to TypographyAnatomy so the optional textDecorationHover leaf is
   // readable across all roles (only `link` carries it in the FALLBACK literal).
@@ -1235,6 +1305,10 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
   const choiceResolved = choiceOf(semantic, foundation);
   const searchResolved = searchOf(foundation);
   const toggleResolved = toggleOf(semantic, foundation);
+
+  // UAT8 — SelectableRow / SelectableList selected-item colours (per theme;
+  // derived from action.primary via the resolver defaults).
+  const selectableRowResolved = selectableRowOf(semantic, foundation);
 
   return {
     button: {
@@ -1560,6 +1634,17 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       activeBackground: semantic.surface.subtle,
       activeText: semantic.text.primary,
       width: "16rem"
+    },
+    selectableRow: {
+      // UAT8 — selected list-item colours (tinted surface + accent bar + a
+      // contrast-safe darker text), derived from action.primary per theme.
+      selectedBackground: selectableRowResolved.selectedBackground,
+      selectedAccent: selectableRowResolved.selectedAccent,
+      selectedText: selectableRowResolved.selectedText,
+      // Dark-mode-safe variants (emitted now so a future dark theme inherits them).
+      selectedBackgroundDark: selectableRowResolved.selectedBackgroundDark,
+      selectedAccentDark: selectableRowResolved.selectedAccentDark,
+      selectedTextDark: selectableRowResolved.selectedTextDark
     },
     chat: {
       userBubbleBackground: semantic.action.primary,
