@@ -116,7 +116,13 @@
     Portal,
     Popper,
     SelectableRow,
-    SelectableList
+    SelectableList,
+    KpiCard,
+    ComboChart,
+    GaugeChart,
+    FunnelChart,
+    WaterfallChart,
+    TreemapChart
   } from "@sentropic/design-system-svelte";
   import Self from "./SvelteNode.svelte";
   import { createRawSnippet, type Component, type Snippet } from "svelte";
@@ -306,7 +312,13 @@
     Portal,
     Popper,
     SelectableRow,
-    SelectableList
+    SelectableList,
+    KpiCard,
+    ComboChart,
+    GaugeChart,
+    FunnelChart,
+    WaterfallChart,
+    TreemapChart
   } as unknown as Record<ComponentName, Component<Record<string, unknown>>>;
 
   let { node }: { node: NodeSpec } = $props();
