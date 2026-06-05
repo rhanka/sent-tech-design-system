@@ -917,6 +917,66 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "KpiCard",
+    slug: "kpi-card",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Carte indicateur clé avec valeur, delta, tendance et sparkline optionnelle.",
+      en: "KPI card with value, delta, trend indicator, and optional sparkline."
+    }
+  },
+  {
+    name: "ComboChart",
+    slug: "combo-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Graphique combiné barres + courbes, double axe Y, légende.",
+      en: "Combo chart with bars and lines, dual Y axis, and legend."
+    }
+  },
+  {
+    name: "GaugeChart",
+    slug: "gauge-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Jauge semi-circulaire avec seuils colorés, valeur et unité centrées.",
+      en: "Semi-circular gauge with color thresholds, centered value and unit."
+    }
+  },
+  {
+    name: "FunnelChart",
+    slug: "funnel-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Entonnoir vertical ou horizontal avec pourcentages de conversion par étape.",
+      en: "Vertical or horizontal funnel with per-step conversion percentages."
+    }
+  },
+  {
+    name: "WaterfallChart",
+    slug: "waterfall-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Graphique en cascade (augmentations, diminutions, totaux) avec connecteurs.",
+      en: "Waterfall chart (increases, decreases, totals) with optional connectors."
+    }
+  },
+  {
+    name: "TreemapChart",
+    slug: "treemap-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Carte proportionnelle hiérarchique (squarified), 1 ou 2 niveaux, labels.",
+      en: "Squarified hierarchical treemap, 1 or 2 levels, with optional labels."
+    }
+  },
+  {
     name: "AspectRatio",
     slug: "aspect-ratio",
     status: "documented",
