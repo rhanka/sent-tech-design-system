@@ -62,6 +62,52 @@ export function buildSmoothPath(pts: { x: number; y: number }[]): string {
   return d;
 }
 
+/**
+ * Couleurs effectives de la palette catégorielle `--st-semantic-data-categoryN`
+ * (thème sent-tech). Sert à choisir une couleur de texte lisible PAR FILL pour
+ * les labels posés à l'intérieur d'un segment (Funnel, Treemap) : blanc sur fond
+ * sombre, encre sur fond clair — garantie de contraste WCAG, contrairement à un
+ * `#fff` codé en dur qui échoue sur les tons clairs (jaune/rose/sarcelle).
+ */
+const CATEGORY_HEX: Record<string, string> = {
+  category1: "#4E79A7",
+  category2: "#F28E2B",
+  category3: "#E15759",
+  category4: "#76B7B2",
+  category5: "#59A14F",
+  category6: "#EDC948",
+  category7: "#B07AA1",
+  category8: "#FF9DA7",
+};
+
+function relativeLuminance(hex: string): number {
+  const m = /^#?([0-9a-f]{6})$/i.exec(hex.trim());
+  if (!m) return 0;
+  const int = parseInt(m[1], 16);
+  const channel = (c: number): number => {
+    const s = c / 255;
+    return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+  };
+  const r = channel((int >> 16) & 0xff);
+  const g = channel((int >> 8) & 0xff);
+  const b = channel(int & 0xff);
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+
+/** `true` si le ton catégoriel est clair (texte sombre requis pour le contraste). */
+export function isLightTone(tone: string): boolean {
+  const hex = CATEGORY_HEX[tone];
+  if (!hex) return false;
+  return relativeLuminance(hex) > 0.45;
+}
+
+/** Couleur de texte (token) lisible sur un fond catégoriel donné. */
+export function labelColorForTone(tone: string): string {
+  return isLightTone(tone)
+    ? "var(--st-semantic-text-primary)"
+    : "var(--st-semantic-text-inverse, #fff)";
+}
+
 export function chartDataList(label: string, items: string[]) {
   if (items.length === 0) return null;
   return h(

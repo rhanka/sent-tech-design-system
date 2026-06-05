@@ -120,6 +120,11 @@
     return MARGIN.left + band * (i + 0.5);
   }
 
+  // A point is missing when its category index is absent or non-finite. Missing
+  // bar values render NO bar (not a zero-height baseline artefact); missing line
+  // values break the line into gaps. Values are never silently coerced to 0.
+  const isPresent = (v: number | undefined): v is number => typeof v === "number" && Number.isFinite(v);
+
   const barGroups = $derived.by(() => {
     if (categories.length === 0 || bars.length === 0) return [];
     const { domainMin, domainMax } = leftScale;
@@ -129,24 +134,29 @@
     const zeroY = scaleLinear(0, domainMin, domainMax, plotHeight, 0);
     return categories.map((_, ci) => {
       const groupX = MARGIN.left + band * ci + (band - groupWidth) / 2;
-      const segments = bars.map((series, si) => {
-        const value = series.data[ci] ?? 0;
-        const valueY = scaleLinear(value, domainMin, domainMax, plotHeight, 0);
-        const y = Math.min(valueY, zeroY);
-        const h = Math.abs(zeroY - valueY);
-        return {
-          x: groupX + barWidth * si,
-          y: MARGIN.top + y,
-          width: barWidth,
-          height: Math.max(h, 0.5),
-          cx: groupX + barWidth * (si + 0.5),
-          cy: MARGIN.top + valueY,
-          value,
-          seriesLabel: series.label,
-          category: categories[ci],
-          tone: series.tone ?? `category${(si % 8) + 1}`
-        };
-      });
+      const segments = bars
+        .map((series, si) => {
+          const raw = series.data[ci];
+          if (!isPresent(raw)) return null;
+          const value = raw;
+          const valueY = scaleLinear(value, domainMin, domainMax, plotHeight, 0);
+          const y = Math.min(valueY, zeroY);
+          const h = Math.abs(zeroY - valueY);
+          return {
+            x: groupX + barWidth * si,
+            y: MARGIN.top + y,
+            width: barWidth,
+            height: Math.max(h, 0.5),
+            cx: groupX + barWidth * (si + 0.5),
+            cy: MARGIN.top + valueY,
+            value,
+            seriesLabel: series.label,
+            category: categories[ci],
+            si,
+            tone: series.tone ?? `category${(si % 8) + 1}`
+          };
+        })
+        .filter((seg): seg is NonNullable<typeof seg> => seg !== null);
       return segments;
     });
   });
@@ -543,9 +553,9 @@
   .st-comboChart__legend {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--st-spacing-300, 0.75rem);
+    gap: var(--st-spacing-3, 0.75rem);
     list-style: none;
-    margin: var(--st-spacing-200, 0.5rem) 0 0;
+    margin: var(--st-spacing-2, 0.5rem) 0 0;
     padding: 0;
   }
 
@@ -554,7 +564,7 @@
     color: var(--st-semantic-text-secondary);
     display: inline-flex;
     font-size: 0.75rem;
-    gap: var(--st-spacing-100, 0.25rem);
+    gap: var(--st-spacing-1, 0.25rem);
   }
 
   .st-comboChart__legendSwatch {

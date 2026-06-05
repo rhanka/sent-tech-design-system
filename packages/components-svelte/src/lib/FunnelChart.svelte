@@ -12,6 +12,7 @@
 
 <script lang="ts">
   import ChartDataList from "./ChartDataList.svelte";
+  import { contrastTextForTone } from "./chartContrast";
 
   type FunnelChartProps = {
     data: FunnelChartDatum[];
@@ -45,18 +46,29 @@
   ] as const;
 
   function formatPercent(p: number): string {
-    if (!Number.isFinite(p)) return "—";
+    if (!Number.isFinite(p)) return "0%";
     return `${p % 1 === 0 ? p.toFixed(0) : p.toFixed(1)}%`;
   }
 
   let hoveredIndex: number | null = $state(null);
 
+  /**
+   * Magnitude normalisée d'une étape : un entonnoir ne représente que des
+   * grandeurs positives. Les valeurs non finies ou négatives sont ramenées à 0
+   * (jamais de NaN/Infinity dans la géométrie ou les pourcentages).
+   */
+  function magnitude(v: number): number {
+    return Number.isFinite(v) && v > 0 ? v : 0;
+  }
+
   // Pourcentages calculés par rapport à la première étape ou à la précédente.
+  // Référence nulle → 0% (pas de NaN), première étape ofPrevious → 100%.
   const percents = $derived.by(() => {
-    const first = data[0]?.value ?? 0;
+    const first = magnitude(data[0]?.value ?? 0);
     return data.map((d, i) => {
-      const ref = percentMode === "ofPrevious" ? (data[i - 1]?.value ?? d.value) : first;
-      return ref === 0 ? Number.NaN : (d.value / ref) * 100;
+      const value = magnitude(d.value);
+      const ref = percentMode === "ofPrevious" ? magnitude(data[i - 1]?.value ?? value) : first;
+      return ref === 0 ? 0 : (value / ref) * 100;
     });
   });
 
@@ -64,7 +76,7 @@
   // proportionnelle à sa valeur (relative au max). Les segments se rejoignent.
   const segments = $derived.by(() => {
     if (data.length === 0) return [];
-    const maxValue = Math.max(0, ...data.map((d) => Math.abs(d.value)));
+    const maxValue = Math.max(0, ...data.map((d) => magnitude(d.value)));
     const safeMax = maxValue === 0 ? 1 : maxValue;
     const plotW = Math.max(width - MARGIN.left - MARGIN.right, 1);
     const plotH = Math.max(height - MARGIN.top - MARGIN.bottom, 1);
@@ -74,9 +86,11 @@
       const segH = Math.max(band - GAP, 1);
       const cx = MARGIN.left + plotW / 2;
       return data.map((d, i) => {
-        const topHalf = (Math.abs(d.value) / safeMax) * (plotW / 2);
-        const nextVal = data[i + 1] ? Math.abs(data[i + 1].value) : Math.abs(d.value);
-        const botHalf = (nextVal / safeMax) * (plotW / 2);
+        const tone = d.tone ?? TONES[i % TONES.length];
+        const topHalf = (magnitude(d.value) / safeMax) * (plotW / 2);
+        const nextVal = data[i + 1] ? magnitude(data[i + 1].value) : magnitude(d.value);
+        // Forme strictement décroissante : le bas ne dépasse jamais le haut.
+        const botHalf = Math.min((nextVal / safeMax) * (plotW / 2), topHalf);
         const y0 = MARGIN.top + band * i;
         const y1 = y0 + segH;
         const points = [
@@ -88,7 +102,8 @@
         return {
           points,
           datum: d,
-          tone: d.tone ?? TONES[i % TONES.length],
+          tone,
+          textColor: contrastTextForTone(tone),
           cx,
           cy: (y0 + y1) / 2,
           labelX: cx,
@@ -103,9 +118,10 @@
     const segW = Math.max(band - GAP, 1);
     const cy = MARGIN.top + plotH / 2;
     return data.map((d, i) => {
-      const leftHalf = (Math.abs(d.value) / safeMax) * (plotH / 2);
-      const nextVal = data[i + 1] ? Math.abs(data[i + 1].value) : Math.abs(d.value);
-      const rightHalf = (nextVal / safeMax) * (plotH / 2);
+      const tone = d.tone ?? TONES[i % TONES.length];
+      const leftHalf = (magnitude(d.value) / safeMax) * (plotH / 2);
+      const nextVal = data[i + 1] ? magnitude(data[i + 1].value) : magnitude(d.value);
+      const rightHalf = Math.min((nextVal / safeMax) * (plotH / 2), leftHalf);
       const x0 = MARGIN.left + band * i;
       const x1 = x0 + segW;
       const points = [
@@ -117,7 +133,8 @@
       return {
         points,
         datum: d,
-        tone: d.tone ?? TONES[i % TONES.length],
+        tone,
+        textColor: contrastTextForTone(tone),
         cx: (x0 + x1) / 2,
         cy,
         labelX: (x0 + x1) / 2,
@@ -184,6 +201,7 @@
           y={seg.labelY - 6}
           text-anchor="middle"
           dominant-baseline="middle"
+          style="fill: {seg.textColor}"
         >
           {seg.datum.label}
         </text>
@@ -193,6 +211,7 @@
           y={seg.labelY + 8}
           text-anchor="middle"
           dominant-baseline="middle"
+          style="fill: {seg.textColor}"
         >
           {seg.datum.value}{#if showPercentages}&nbsp;·&nbsp;{formatPercent(seg.percent)}{/if}
         </text>
@@ -217,7 +236,7 @@
   {/if}
 
   {#if legend && legendItems.length > 0}
-    <ul class="st-funnelChart__legend">
+    <ul class="st-funnelChart__legend" aria-hidden="true">
       {#each legendItems as item (item.label)}
         <li class="st-funnelChart__legendItem">
           <span
@@ -302,9 +321,9 @@
   .st-funnelChart__legend {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.75rem;
+    gap: var(--st-spacing-3, 0.75rem);
     list-style: none;
-    margin: 0.5rem 0 0;
+    margin: var(--st-spacing-2, 0.5rem) 0 0;
     padding: 0;
   }
 
@@ -313,7 +332,7 @@
     color: var(--st-semantic-text-secondary);
     display: inline-flex;
     font-size: 0.75rem;
-    gap: 0.35rem;
+    gap: var(--st-spacing-1, 0.25rem);
   }
 
   .st-funnelChart__legendSwatch {

@@ -275,7 +275,7 @@
   }
 
   /* Tons sémantiques de feedback */
-  .st-gaugeChart__band--neutral { stroke: var(--st-semantic-surface-muted, var(--st-semantic-text-secondary)); }
+  .st-gaugeChart__band--neutral { stroke: var(--st-semantic-border-strong, var(--st-semantic-surface-subtle)); }
   .st-gaugeChart__band--info { stroke: var(--st-semantic-feedback-info, var(--st-semantic-action-primary)); }
   .st-gaugeChart__band--success { stroke: var(--st-semantic-feedback-success); }
   .st-gaugeChart__band--warning { stroke: var(--st-semantic-feedback-warning); }

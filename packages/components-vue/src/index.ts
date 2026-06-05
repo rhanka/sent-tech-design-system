@@ -175,6 +175,40 @@ export { Sparkline } from "./Sparkline.js";
 export type { SparklineProps, SparklineTone } from "./Sparkline.js";
 export { StackedBarChart } from "./StackedBarChart.js";
 export type { StackedBarChartProps, StackedBarDatum, StackedBarSegment, StackedBarTone } from "./StackedBarChart.js";
+export { KpiCard } from "./KpiCard.js";
+export type {
+  KpiCardProps,
+  KpiCardSize,
+  KpiCardTrend,
+  KpiCardFormat,
+  KpiCardDeltaFormat,
+  KpiCardTone,
+} from "./KpiCard.js";
+export { ComboChart } from "./ComboChart.js";
+export type {
+  ComboChartProps,
+  ComboChartTone,
+  ComboChartBarSeries,
+  ComboChartLineSeries,
+} from "./ComboChart.js";
+export { GaugeChart } from "./GaugeChart.js";
+export type {
+  GaugeChartProps,
+  GaugeChartTone,
+  GaugeChartThreshold,
+  GaugeChartFormat,
+} from "./GaugeChart.js";
+export { FunnelChart } from "./FunnelChart.js";
+export type { FunnelChartProps, FunnelChartTone, FunnelChartDatum } from "./FunnelChart.js";
+export { WaterfallChart } from "./WaterfallChart.js";
+export type { WaterfallChartProps, WaterfallChartDatum, WaterfallType } from "./WaterfallChart.js";
+export { TreemapChart } from "./TreemapChart.js";
+export type {
+  TreemapChartProps,
+  TreemapChartTone,
+  TreemapChartDatum,
+  TreemapTiling,
+} from "./TreemapChart.js";
 export { ForceGraph, nodeShapePath } from "./ForceGraph.js";
 export type {
   ForceGraphProps,
