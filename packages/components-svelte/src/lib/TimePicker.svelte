@@ -87,24 +87,167 @@
 
   let open = $state(false);
   let hostEl = $state<HTMLDivElement | null>(null);
+  let inputEl = $state<HTMLInputElement | null>(null);
+  let listEl = $state<HTMLUListElement | null>(null);
+
+  /** Index de l'option mise en évidence dans la listbox (-1 = aucune). */
+  let activeIndex = $state(-1);
 
   const displayValue = $derived(value ? display(value) : "");
 
+  /** Id de l'option active, consommé par aria-activedescendant. */
+  const activeDescendant = $derived(
+    open && activeIndex >= 0 ? `${listId}-opt-${activeIndex}` : undefined
+  );
+
+  function openList() {
+    if (disabled) return;
+    open = true;
+    // À l'ouverture : se positionner sur la valeur sélectionnée ou la première option.
+    const idx = value ? slots.indexOf(value) : -1;
+    activeIndex = idx >= 0 ? idx : 0;
+    // Le focus reste sur l'input (pattern aria-activedescendant).
+  }
+
+  function closeList(returnFocus = true) {
+    open = false;
+    activeIndex = -1;
+    if (returnFocus && inputEl) {
+      inputEl.focus();
+    }
+  }
+
   function toggleOpen() {
     if (disabled) return;
-    open = !open;
+    if (open) {
+      closeList(true);
+    } else {
+      openList();
+    }
   }
 
   function pick(slot: string) {
     value = slot;
     onChange?.(slot);
-    open = false;
+    closeList(true);
   }
 
-  function onPanelKeyDown(event: KeyboardEvent) {
-    if (event.key === "Escape" && open) {
-      event.preventDefault();
-      open = false;
+  /** Fait défiler la listbox pour que l'option active soit visible. */
+  function scrollActiveIntoView() {
+    if (!listEl || activeIndex < 0) return;
+    const optEl = listEl.querySelector<HTMLElement>(`#${listId}-opt-${activeIndex}`);
+    if (optEl && typeof optEl.scrollIntoView === "function") {
+      optEl.scrollIntoView({ block: "nearest" });
+    }
+  }
+
+  function onInputKeyDown(event: KeyboardEvent) {
+    if (disabled) return;
+    switch (event.key) {
+      case "ArrowDown": {
+        event.preventDefault();
+        if (!open) {
+          openList();
+        } else {
+          // ArrowDown avec liste déjà ouverte → descendre d'une option.
+          activeIndex = Math.min(activeIndex + 1, slots.length - 1);
+          scrollActiveIntoView();
+        }
+        break;
+      }
+      case "ArrowUp": {
+        event.preventDefault();
+        if (!open) {
+          openList();
+        } else {
+          // ArrowUp avec liste déjà ouverte → remonter d'une option.
+          activeIndex = Math.max(activeIndex - 1, 0);
+          scrollActiveIntoView();
+        }
+        break;
+      }
+      case "Home": {
+        event.preventDefault();
+        if (!open) {
+          openList();
+        } else {
+          activeIndex = 0;
+          scrollActiveIntoView();
+        }
+        break;
+      }
+      case "End": {
+        event.preventDefault();
+        if (!open) {
+          openList();
+        } else {
+          activeIndex = slots.length - 1;
+          scrollActiveIntoView();
+        }
+        break;
+      }
+      case "Enter":
+      case " ": {
+        event.preventDefault();
+        if (!open) {
+          openList();
+        } else {
+          // Enter / Space sur l'input avec liste déjà ouverte → sélectionner l'actif.
+          if (activeIndex >= 0 && activeIndex < slots.length) {
+            pick(slots[activeIndex]);
+          }
+        }
+        break;
+      }
+      case "Escape": {
+        if (open) {
+          event.preventDefault();
+          closeList(true);
+        }
+        break;
+      }
+    }
+  }
+
+  function onListKeyDown(event: KeyboardEvent) {
+    switch (event.key) {
+      case "ArrowDown": {
+        event.preventDefault();
+        activeIndex = Math.min(activeIndex + 1, slots.length - 1);
+        scrollActiveIntoView();
+        break;
+      }
+      case "ArrowUp": {
+        event.preventDefault();
+        activeIndex = Math.max(activeIndex - 1, 0);
+        scrollActiveIntoView();
+        break;
+      }
+      case "Home": {
+        event.preventDefault();
+        activeIndex = 0;
+        scrollActiveIntoView();
+        break;
+      }
+      case "End": {
+        event.preventDefault();
+        activeIndex = slots.length - 1;
+        scrollActiveIntoView();
+        break;
+      }
+      case "Enter":
+      case " ": {
+        event.preventDefault();
+        if (activeIndex >= 0 && activeIndex < slots.length) {
+          pick(slots[activeIndex]);
+        }
+        break;
+      }
+      case "Escape": {
+        event.preventDefault();
+        closeList(true);
+        break;
+      }
     }
   }
 
@@ -112,7 +255,7 @@
     if (!open) return;
     const target = event.target as Node | null;
     if (hostEl && target && !hostEl.contains(target)) {
-      open = false;
+      closeList(false);
     }
   }
 
@@ -129,6 +272,7 @@
     <span class={groupClasses}>
       <input
         id={fieldId}
+        bind:this={inputEl}
         type="text"
         readonly
         class="st-timepicker__control"
@@ -139,7 +283,10 @@
         aria-haspopup="listbox"
         aria-controls={listId}
         aria-expanded={open ? "true" : "false"}
+        aria-activedescendant={activeDescendant}
+        aria-autocomplete="none"
         onclick={toggleOpen}
+        onkeydown={onInputKeyDown}
       />
       <button
         type="button"
@@ -147,6 +294,7 @@
         aria-label="Ouvrir la liste des horaires"
         aria-haspopup="listbox"
         aria-expanded={open ? "true" : "false"}
+        tabindex="-1"
         {disabled}
         onclick={toggleOpen}
       >
@@ -157,24 +305,33 @@
   {#if open}
     <ul
       id={listId}
+      bind:this={listEl}
       class="st-timepicker__list"
       role="listbox"
       aria-label={label ?? "Horaires"}
       tabindex="-1"
-      onkeydown={onPanelKeyDown}
+      onkeydown={onListKeyDown}
     >
-      {#each slots as slot (slot)}
+      {#each slots as slot, i (slot)}
         <li role="presentation">
-          <button
-            type="button"
+          <!-- svelte-ignore a11y_click_events_have_key_events -->
+          <!-- Faux positif : la navigation clavier est gérée par le combobox via
+               aria-activedescendant + onkeydown sur le listbox parent (onListKeyDown).
+               Les options n'ont pas besoin de leur propre gestionnaire keydown. -->
+          <div
+            id="{listId}-opt-{i}"
             class="st-timepicker__option"
             class:st-timepicker__option--selected={slot === value}
+            class:st-timepicker__option--active={i === activeIndex}
             role="option"
             aria-selected={slot === value ? "true" : "false"}
-            onclick={() => pick(slot)}
+            tabindex="-1"
+            onmousedown={(e) => { e.preventDefault(); }}
+            onclick={() => { pick(slot); }}
+            onmouseenter={() => { activeIndex = i; }}
           >
             {display(slot)}
-          </button>
+          </div>
         </li>
       {/each}
     </ul>
@@ -331,5 +488,11 @@
   .st-timepicker__option--selected {
     background: var(--st-component-dropdown-selectedBackground, var(--st-semantic-action-primary));
     color: var(--st-component-dropdown-selectedText, var(--st-semantic-action-primaryText));
+  }
+
+  .st-timepicker__option--active:not(.st-timepicker__option--selected) {
+    background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle));
+    outline: 2px solid var(--st-component-control-focusRing, var(--st-semantic-border-interactive));
+    outline-offset: -2px;
   }
 </style>
