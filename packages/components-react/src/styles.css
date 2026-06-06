@@ -397,24 +397,20 @@
     transition: opacity var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
   }
 
-  .st-barChart__bar:hover,
-  .st-barChart__bar:focus-visible {
+  .st-barChart__bar:hover {
     opacity: 0.82;
   }
 
-  .st-barChart__bar:focus-visible,
-  .st-barChart__bar--interactive:focus-visible {
-    outline: 2px solid var(--st-semantic-border-interactive, var(--st-semantic-action-primary));
-    outline-offset: 1px;
-  }
-
-  /* Non-selected bars are dimmed while a selection is active. */
+  /* Non-selected bars are dimmed while a selection is active. Floor kept high
+     (0.6) so the colour stays distinguishable — opacity is never the sole cue;
+     selection also adds a stroke (shape), and the values stay in the chips +
+     ChartDataList. */
   .st-barChart__bar--dim {
-    opacity: 0.45;
+    opacity: 0.6;
   }
   /* Hover still lifts a dimmed bar so it stays explorable. */
   .st-barChart__bar--dim:hover {
-    opacity: 0.7;
+    opacity: 0.8;
   }
 
   /* Selected bar: full opacity + a contrast-safe accent stroke (two signals,
@@ -435,6 +431,68 @@
   .st-barChart__bar--category6 { fill: var(--st-semantic-data-category6); }
   .st-barChart__bar--category7 { fill: var(--st-semantic-data-category7); }
   .st-barChart__bar--category8 { fill: var(--st-semantic-data-category8); }
+
+  /* Accessible filter chips — keyboard + screen-reader selection surface,
+     rendered outside the aria-hidden SVG. */
+  .st-barChart__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--st-spacing-2, 0.5rem);
+    margin-top: var(--st-spacing-2, 0.5rem);
+  }
+
+  .st-barChart__filterChip {
+    align-items: center;
+    background: var(--st-semantic-surface-subtle, #f8fafc);
+    border: 1px solid var(--st-semantic-border-interactive, #cbd5e1);
+    border-radius: var(--st-radius-pill, 999px);
+    color: var(--st-semantic-text-secondary, #475569);
+    cursor: var(--st-cursor-interactive, pointer);
+    display: inline-flex;
+    font: inherit;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    gap: var(--st-spacing-1, 0.25rem);
+    line-height: 1;
+    padding: 0.3125rem var(--st-spacing-2, 0.5rem);
+    transition:
+      background-color var(--st-motion-fast, 120ms) var(--st-motion-easing, ease),
+      color var(--st-motion-fast, 120ms) var(--st-motion-easing, ease),
+      border-color var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
+  }
+
+  .st-barChart__filterChip:hover {
+    background: var(--st-semantic-surface-hover, #eef2f7);
+  }
+
+  .st-barChart__filterChip:focus-visible {
+    outline: 2px solid var(--st-semantic-border-interactive, var(--st-semantic-action-primary));
+    outline-offset: 2px;
+  }
+
+  /* Selected chip: solid accent fill + matching text — signalled by colour AND
+     by aria-pressed, never by opacity alone. */
+  .st-barChart__filterChip--selected {
+    background: var(--st-semantic-action-primary, #2563eb);
+    border-color: var(--st-semantic-action-primary, #2563eb);
+    color: var(--st-semantic-text-inverse, #fff);
+  }
+
+  /* Colour swatch echoing the bar tone, for quick visual mapping chip-to-bar. */
+  .st-barChart__filterSwatch {
+    border-radius: var(--st-radius-sm, 0.25rem);
+    display: inline-block;
+    height: 0.625rem;
+    width: 0.625rem;
+  }
+  .st-barChart__filterChip--category1 .st-barChart__filterSwatch { background: var(--st-semantic-data-category1); }
+  .st-barChart__filterChip--category2 .st-barChart__filterSwatch { background: var(--st-semantic-data-category2); }
+  .st-barChart__filterChip--category3 .st-barChart__filterSwatch { background: var(--st-semantic-data-category3); }
+  .st-barChart__filterChip--category4 .st-barChart__filterSwatch { background: var(--st-semantic-data-category4); }
+  .st-barChart__filterChip--category5 .st-barChart__filterSwatch { background: var(--st-semantic-data-category5); }
+  .st-barChart__filterChip--category6 .st-barChart__filterSwatch { background: var(--st-semantic-data-category6); }
+  .st-barChart__filterChip--category7 .st-barChart__filterSwatch { background: var(--st-semantic-data-category7); }
+  .st-barChart__filterChip--category8 .st-barChart__filterSwatch { background: var(--st-semantic-data-category8); }
 
   .st-barChart__tooltip {
     background: var(--st-component-barChart-tooltipBackground, var(--st-semantic-surface-inverse));
@@ -462,7 +520,8 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .st-barChart__bar { transition: none; }
+    .st-barChart__bar,
+    .st-barChart__filterChip { transition: none; }
   }
 
 .st-breadcrumb {

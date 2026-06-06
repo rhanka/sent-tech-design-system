@@ -33,9 +33,12 @@
      */
     selectedKeys?: string[];
     /**
-     * Called when a bar is clicked / activated (Enter / Space) with the bar's
-     * key (its `label`). When provided the bars become focusable buttons; when
-     * omitted the chart is purely presentational (no interactivity, unchanged).
+     * Called with the bar's key (its `label`) when the user selects it. When
+     * provided, an ACCESSIBLE row of filter chips (real <button>s) is rendered
+     * OUTSIDE the aria-hidden SVG — that is the keyboard + screen-reader surface.
+     * The SVG bars themselves stay decorative (aria-hidden) and only offer a
+     * mouse click shortcut for sighted pointer users. When omitted the chart is
+     * purely presentational (no interactivity, unchanged).
      */
     onSelect?: (key: string) => void;
     class?: string;
@@ -95,14 +98,6 @@
   const selectedSet = $derived(new Set<string>(selectedKeys));
   const hasSelection = $derived(selectedSet.size > 0);
   const interactive = $derived(typeof onSelect === "function");
-
-  function handleBarKeydown(key: string, e: KeyboardEvent) {
-    if (e.key === "Enter" || e.key === " ") {
-      // preventDefault on Space so it activates rather than scrolling the page.
-      e.preventDefault();
-      onSelect?.(key);
-    }
-  }
 
   const scales = $derived.by(() => {
     const values = data.map((d) => d.value);
@@ -301,12 +296,18 @@
     {/each}
 
     <!-- bars -->
-    <!-- A bar becomes an interactive button only when `onSelect` is provided;
-         the role + tabindex are then dynamic, which the static a11y check cannot
-         verify, hence the targeted ignore (mirrors SelectableRow). -->
+    <!-- The bars live inside an aria-hidden SVG, so they are NEVER an accessible
+         surface. When `onSelect` is provided they only carry a mouse click
+         shortcut (cursor:pointer) for sighted pointer users — keyboard + screen
+         readers use the filter-chip buttons rendered below, outside this SVG. -->
     {#each bars as bar, i (bar.datum.label)}
       {@const isSelected = selectedSet.has(bar.datum.label)}
-      <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+      <!-- The mouse click is a deliberate sighted-pointer-only shortcut on a
+           decorative element inside an aria-hidden SVG; the real keyboard + AT
+           path is the filter-chip <button>s below. No ARIA role/keyboard here
+           on purpose (it would be a lie under aria-hidden). -->
+      <!-- svelte-ignore a11y_no_static_element_interactions -->
+      <!-- svelte-ignore a11y_click_events_have_key_events -->
       <rect
         class="st-barChart__bar st-barChart__bar--{bar.tone}"
         class:st-barChart__bar--selected={isSelected}
@@ -318,16 +319,31 @@
         height={bar.height}
         rx="2"
         data-chart-index={i}
-        role={interactive ? "button" : undefined}
-        tabindex={interactive ? 0 : undefined}
-        aria-pressed={interactive ? isSelected : undefined}
-        aria-label={interactive ? `${bar.datum.label}: ${bar.datum.value}` : undefined}
         onclick={interactive ? () => onSelect?.(bar.datum.label) : undefined}
-        onkeydown={interactive ? (e) => handleBarKeydown(bar.datum.label, e) : undefined}
       />
     {/each}
     </svg>
   </div>
+
+  {#if interactive}
+    <!-- Accessible selection surface — real <button>s OUTSIDE the aria-hidden
+         SVG. This is the keyboard + screen-reader path for filtering. -->
+    <div class="st-barChart__filters" role="group" aria-label={`Filtrer par ${label}`}>
+      {#each bars as bar (bar.datum.label)}
+        {@const isSelected = selectedSet.has(bar.datum.label)}
+        <button
+          type="button"
+          class="st-barChart__filterChip st-barChart__filterChip--{bar.tone}"
+          class:st-barChart__filterChip--selected={isSelected}
+          aria-pressed={isSelected}
+          onclick={() => onSelect?.(bar.datum.label)}
+        >
+          <span class="st-barChart__filterSwatch" aria-hidden="true"></span>
+          {bar.datum.label}: {bar.datum.value}
+        </button>
+      {/each}
+    </div>
+  {/if}
 
   <ChartDataList {label} items={dataValueItems} />
 
@@ -389,19 +405,16 @@
     opacity: 0.82;
   }
 
-  /* Interactive (onSelect provided): the bar is a keyboard-activable button. */
-  .st-barChart__bar--interactive:focus-visible {
-    outline: 2px solid var(--st-semantic-border-interactive, var(--st-semantic-action-primary));
-    outline-offset: 1px;
-  }
-
-  /* Non-selected bars are dimmed while a selection is active. */
+  /* Non-selected bars are dimmed while a selection is active. Floor kept high
+     (0.6) so the colour stays distinguishable — opacity is never the sole cue;
+     selection also adds a stroke (shape), and the values stay in the chips +
+     ChartDataList. */
   .st-barChart__bar--dim {
-    opacity: 0.45;
+    opacity: 0.6;
   }
   /* Hover still lifts a dimmed bar so it stays explorable. */
   .st-barChart__bar--dim:hover {
-    opacity: 0.7;
+    opacity: 0.8;
   }
 
   /* Selected bar: full opacity + a contrast-safe accent stroke (two signals,
@@ -422,6 +435,68 @@
   .st-barChart__bar--category6 { fill: var(--st-semantic-data-category6); }
   .st-barChart__bar--category7 { fill: var(--st-semantic-data-category7); }
   .st-barChart__bar--category8 { fill: var(--st-semantic-data-category8); }
+
+  /* Accessible filter chips — keyboard + screen-reader selection surface,
+     rendered outside the aria-hidden SVG. */
+  .st-barChart__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--st-spacing-2, 0.5rem);
+    margin-top: var(--st-spacing-2, 0.5rem);
+  }
+
+  .st-barChart__filterChip {
+    align-items: center;
+    background: var(--st-semantic-surface-subtle, #f8fafc);
+    border: 1px solid var(--st-semantic-border-interactive, #cbd5e1);
+    border-radius: var(--st-radius-pill, 999px);
+    color: var(--st-semantic-text-secondary, #475569);
+    cursor: var(--st-cursor-interactive, pointer);
+    display: inline-flex;
+    font: inherit;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    gap: var(--st-spacing-1, 0.25rem);
+    line-height: 1;
+    padding: 0.3125rem var(--st-spacing-2, 0.5rem);
+    transition:
+      background-color var(--st-motion-fast, 120ms) var(--st-motion-easing, ease),
+      color var(--st-motion-fast, 120ms) var(--st-motion-easing, ease),
+      border-color var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
+  }
+
+  .st-barChart__filterChip:hover {
+    background: var(--st-semantic-surface-hover, #eef2f7);
+  }
+
+  .st-barChart__filterChip:focus-visible {
+    outline: 2px solid var(--st-semantic-border-interactive, var(--st-semantic-action-primary));
+    outline-offset: 2px;
+  }
+
+  /* Selected chip: solid accent fill + matching text — signalled by colour AND
+     by aria-pressed, never by opacity alone. */
+  .st-barChart__filterChip--selected {
+    background: var(--st-semantic-action-primary, #2563eb);
+    border-color: var(--st-semantic-action-primary, #2563eb);
+    color: var(--st-semantic-text-inverse, #fff);
+  }
+
+  /* Colour swatch echoing the bar tone, for quick visual mapping chip↔bar. */
+  .st-barChart__filterSwatch {
+    border-radius: var(--st-radius-sm, 0.25rem);
+    display: inline-block;
+    height: 0.625rem;
+    width: 0.625rem;
+  }
+  .st-barChart__filterChip--category1 .st-barChart__filterSwatch { background: var(--st-semantic-data-category1); }
+  .st-barChart__filterChip--category2 .st-barChart__filterSwatch { background: var(--st-semantic-data-category2); }
+  .st-barChart__filterChip--category3 .st-barChart__filterSwatch { background: var(--st-semantic-data-category3); }
+  .st-barChart__filterChip--category4 .st-barChart__filterSwatch { background: var(--st-semantic-data-category4); }
+  .st-barChart__filterChip--category5 .st-barChart__filterSwatch { background: var(--st-semantic-data-category5); }
+  .st-barChart__filterChip--category6 .st-barChart__filterSwatch { background: var(--st-semantic-data-category6); }
+  .st-barChart__filterChip--category7 .st-barChart__filterSwatch { background: var(--st-semantic-data-category7); }
+  .st-barChart__filterChip--category8 .st-barChart__filterSwatch { background: var(--st-semantic-data-category8); }
 
   .st-barChart__tooltip {
     background: var(--st-component-barChart-tooltipBackground, var(--st-semantic-surface-inverse));
@@ -449,6 +524,7 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .st-barChart__bar { transition: none; }
+    .st-barChart__bar,
+    .st-barChart__filterChip { transition: none; }
   }
 </style>
