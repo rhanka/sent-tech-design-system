@@ -59,6 +59,91 @@ describe("BarChart parity with Svelte", () => {
   });
 });
 
+describe("BarChart controlled selection", () => {
+  const data = [
+    { label: "A", value: 4 },
+    { label: "B", value: 8 },
+    { label: "C", value: 2 },
+  ];
+
+  it("is purely presentational when onSelect is absent (no regression)", () => {
+    const { container } = render(<BarChart label="Plain" data={data} />);
+    const bars = container.querySelectorAll(".st-barChart__bar");
+    expect(bars.length).toBe(3);
+    bars.forEach((bar) => {
+      expect(bar.getAttribute("role")).toBeNull();
+      expect(bar.getAttribute("tabindex")).toBeNull();
+      expect(bar.getAttribute("aria-pressed")).toBeNull();
+      expect(bar.getAttribute("aria-label")).toBeNull();
+      expect(bar.classList.contains("st-barChart__bar--interactive")).toBe(false);
+    });
+  });
+
+  it("makes each bar an activable button when onSelect is provided", () => {
+    const { container } = render(<BarChart label="Pick" data={data} onSelect={() => {}} />);
+    const bars = container.querySelectorAll(".st-barChart__bar");
+    bars.forEach((bar) => {
+      expect(bar.getAttribute("role")).toBe("button");
+      expect(bar.getAttribute("tabindex")).toBe("0");
+      expect(bar.classList.contains("st-barChart__bar--interactive")).toBe(true);
+    });
+    expect(bars[0].getAttribute("aria-label")).toBe("A: 4");
+    expect(bars[1].getAttribute("aria-label")).toBe("B: 8");
+  });
+
+  it("emits onSelect with the bar key (its label) on click", () => {
+    const onSelect = vi.fn();
+    const { container } = render(<BarChart label="Click" data={data} onSelect={onSelect} />);
+    const bars = container.querySelectorAll(".st-barChart__bar");
+    fireEvent.click(bars[1]);
+    expect(onSelect).toHaveBeenCalledTimes(1);
+    expect(onSelect).toHaveBeenCalledWith("B");
+  });
+
+  it("activates on Enter and on Space (Space prevents default)", () => {
+    const onSelect = vi.fn();
+    const { container } = render(<BarChart label="Keys" data={data} onSelect={onSelect} />);
+    const bar = container.querySelectorAll(".st-barChart__bar")[2];
+
+    fireEvent.keyDown(bar, { key: "Enter" });
+    expect(onSelect).toHaveBeenLastCalledWith("C");
+
+    const notPrevented = fireEvent.keyDown(bar, { key: " " });
+    // fireEvent returns false when a handler called preventDefault().
+    expect(notPrevented).toBe(false);
+    expect(onSelect).toHaveBeenCalledTimes(2);
+    expect(onSelect).toHaveBeenLastCalledWith("C");
+  });
+
+  it("reflects selectedKeys via aria-pressed and the selected class", () => {
+    const { container } = render(
+      <BarChart label="Sel" data={data} onSelect={() => {}} selectedKeys={["B"]} />,
+    );
+    const bars = container.querySelectorAll(".st-barChart__bar");
+    expect(bars[0].getAttribute("aria-pressed")).toBe("false");
+    expect(bars[1].getAttribute("aria-pressed")).toBe("true");
+    expect(bars[1].classList.contains("st-barChart__bar--selected")).toBe(true);
+    expect(bars[0].classList.contains("st-barChart__bar--selected")).toBe(false);
+  });
+
+  it("dims non-selected bars when a selection is active and none when empty", () => {
+    const { container, rerender } = render(
+      <BarChart label="Dim" data={data} onSelect={() => {}} selectedKeys={["B"]} />,
+    );
+    let bars = container.querySelectorAll(".st-barChart__bar");
+    expect(bars[1].classList.contains("st-barChart__bar--dim")).toBe(false);
+    expect(bars[0].classList.contains("st-barChart__bar--dim")).toBe(true);
+    expect(bars[2].classList.contains("st-barChart__bar--dim")).toBe(true);
+
+    rerender(<BarChart label="Dim" data={data} onSelect={() => {}} selectedKeys={[]} />);
+    bars = container.querySelectorAll(".st-barChart__bar");
+    bars.forEach((bar) => {
+      expect(bar.classList.contains("st-barChart__bar--dim")).toBe(false);
+      expect(bar.classList.contains("st-barChart__bar--selected")).toBe(false);
+    });
+  });
+});
+
 describe("LineChart parity with Svelte", () => {
   it("applies tone modifier, draws a line path and dots, and exposes data values", () => {
     const { container } = render(

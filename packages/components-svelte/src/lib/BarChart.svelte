@@ -25,6 +25,19 @@
     height?: number;
     orientation?: "vertical" | "horizontal";
     label: string;
+    /**
+     * Keys of the currently selected bars (a bar's key is its `label`).
+     * CONTROLLED — the parent owns the toggle; the component never stores
+     * selection. When non-empty the selected bars stay full opacity (+ accent)
+     * and the rest dim; when empty every bar is normal. Defaults to [].
+     */
+    selectedKeys?: string[];
+    /**
+     * Called when a bar is clicked / activated (Enter / Space) with the bar's
+     * key (its `label`). When provided the bars become focusable buttons; when
+     * omitted the chart is purely presentational (no interactivity, unchanged).
+     */
+    onSelect?: (key: string) => void;
     class?: string;
   };
 
@@ -34,6 +47,8 @@
     height = 240,
     orientation = "vertical",
     label,
+    selectedKeys = [],
+    onSelect,
     class: className
   }: BarChartProps = $props();
 
@@ -74,6 +89,20 @@
   }
 
   let hoveredIndex: number | null = $state(null);
+
+  // Selection (controlled): fast lookup + "is any bar selected" flag. Only when
+  // something is selected do we dim the non-selected bars.
+  const selectedSet = $derived(new Set<string>(selectedKeys));
+  const hasSelection = $derived(selectedSet.size > 0);
+  const interactive = $derived(typeof onSelect === "function");
+
+  function handleBarKeydown(key: string, e: KeyboardEvent) {
+    if (e.key === "Enter" || e.key === " ") {
+      // preventDefault on Space so it activates rather than scrolling the page.
+      e.preventDefault();
+      onSelect?.(key);
+    }
+  }
 
   const scales = $derived.by(() => {
     const values = data.map((d) => d.value);
@@ -272,15 +301,29 @@
     {/each}
 
     <!-- bars -->
+    <!-- A bar becomes an interactive button only when `onSelect` is provided;
+         the role + tabindex are then dynamic, which the static a11y check cannot
+         verify, hence the targeted ignore (mirrors SelectableRow). -->
     {#each bars as bar, i (bar.datum.label)}
+      {@const isSelected = selectedSet.has(bar.datum.label)}
+      <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
       <rect
         class="st-barChart__bar st-barChart__bar--{bar.tone}"
+        class:st-barChart__bar--selected={isSelected}
+        class:st-barChart__bar--dim={hasSelection && !isSelected}
+        class:st-barChart__bar--interactive={interactive}
         x={bar.x}
         y={bar.y}
         width={bar.width}
         height={bar.height}
         rx="2"
         data-chart-index={i}
+        role={interactive ? "button" : undefined}
+        tabindex={interactive ? 0 : undefined}
+        aria-pressed={interactive ? isSelected : undefined}
+        aria-label={interactive ? `${bar.datum.label}: ${bar.datum.value}` : undefined}
+        onclick={interactive ? () => onSelect?.(bar.datum.label) : undefined}
+        onkeydown={interactive ? (e) => handleBarKeydown(bar.datum.label, e) : undefined}
       />
     {/each}
     </svg>
@@ -339,11 +382,36 @@
 
   .st-barChart__bar {
     cursor: pointer;
-    transition: opacity 120ms ease;
+    transition: opacity var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
   }
 
   .st-barChart__bar:hover {
     opacity: 0.82;
+  }
+
+  /* Interactive (onSelect provided): the bar is a keyboard-activable button. */
+  .st-barChart__bar--interactive:focus-visible {
+    outline: 2px solid var(--st-semantic-border-interactive, var(--st-semantic-action-primary));
+    outline-offset: 1px;
+  }
+
+  /* Non-selected bars are dimmed while a selection is active. */
+  .st-barChart__bar--dim {
+    opacity: 0.45;
+  }
+  /* Hover still lifts a dimmed bar so it stays explorable. */
+  .st-barChart__bar--dim:hover {
+    opacity: 0.7;
+  }
+
+  /* Selected bar: full opacity + a contrast-safe accent stroke (two signals,
+     never a font/size reflow). Outranks the dim rule. */
+  .st-barChart__bar--selected,
+  .st-barChart__bar--selected:hover {
+    opacity: 1;
+    stroke: var(--st-semantic-border-interactive, var(--st-semantic-action-primary));
+    stroke-width: 2;
+    paint-order: stroke;
   }
 
   .st-barChart__bar--category1 { fill: var(--st-semantic-data-category1); }
@@ -378,5 +446,9 @@
 
   .st-barChart__tooltipValue {
     opacity: 0.85;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .st-barChart__bar { transition: none; }
   }
 </style>
