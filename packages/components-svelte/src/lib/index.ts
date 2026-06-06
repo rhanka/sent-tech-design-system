@@ -5,6 +5,8 @@ export { default as ParallelCoordinatesChart } from "./ParallelCoordinatesChart.
 export { default as CandlestickChart } from "./CandlestickChart.svelte";
 export { default as CalendarHeatmapChart } from "./CalendarHeatmapChart.svelte";
 export { default as BumpChart } from "./BumpChart.svelte";
+export { default as LollipopChart } from "./LollipopChart.svelte";
+export { default as ParetoChart } from "./ParetoChart.svelte";
 export { default as Alert } from "./Alert.svelte";
 export { default as AreaChart } from "./AreaChart.svelte";
 export { default as AspectRatio } from "./AspectRatio.svelte";
@@ -162,6 +164,8 @@ export type { ParallelCoordinatesChartTone, ParallelAxis } from "./ParallelCoord
 export type { CandlestickChartDatum } from "./CandlestickChart.svelte";
 export type { CalendarHeatmapChartDatum } from "./CalendarHeatmapChart.svelte";
 export type { BumpChartTone, BumpChartSeries } from "./BumpChart.svelte";
+export type { LollipopChartTone, LollipopChartDatum } from "./LollipopChart.svelte";
+export type { ParetoChartTone, ParetoChartDatum } from "./ParetoChart.svelte";
 export type {
   TreemapChartTone,
   TreemapChartDatum,
