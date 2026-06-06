@@ -1,10 +1,19 @@
 import { defineComponent, h } from "vue";
 import { classNames } from "./classNames.js";
 
+// Compteur module pour générer un id de tiroir stable, déterministe et
+// SSR-safe (pas de crypto). Aligné sur le pattern des 3 fw.
+let appHeaderIdCounter = 0;
+
 export type AppHeaderProps = {
   compact?: boolean;
   menuOpen?: boolean;
   menuLabel?: string;
+  /**
+   * Id du tiroir, partagé entre `aria-controls` (burger) et `id` (drawer).
+   * Auto-généré et stable si non fourni.
+   */
+  drawerId?: string;
   class?: string;
 };
 
@@ -60,11 +69,14 @@ export const AppHeader = defineComponent({
     compact: { type: Boolean, default: false },
     menuOpen: { type: Boolean, default: false },
     menuLabel: { type: String, default: "Menu" },
+    drawerId: { type: String, default: undefined },
     class: { type: String, default: undefined },
   },
   emits: ["menuToggle"],
   setup(props, { slots, emit }) {
     const onToggle = () => emit("menuToggle");
+    // Id stable du tiroir : prop fournie sinon compteur module (SSR-safe).
+    const resolvedDrawerId = props.drawerId ?? `st-appHeader-drawer-${++appHeaderIdCounter}`;
     return () => {
       const bar = h("div", { class: "st-appHeader__bar" }, [
         props.compact
@@ -76,6 +88,7 @@ export const AppHeader = defineComponent({
                   class: "st-appHeader__burgerButton",
                   "aria-label": props.menuLabel,
                   "aria-expanded": props.menuOpen ? "true" : "false",
+                  "aria-controls": resolvedDrawerId,
                   "aria-haspopup": "menu",
                   onClick: onToggle,
                 },
@@ -110,7 +123,7 @@ export const AppHeader = defineComponent({
             "aria-label": props.menuLabel,
             onClick: onToggle,
           }),
-          h("aside", { class: "st-appHeader__drawer" }, slots.drawer()),
+          h("aside", { id: resolvedDrawerId, class: "st-appHeader__drawer" }, slots.drawer()),
         ];
       }
 

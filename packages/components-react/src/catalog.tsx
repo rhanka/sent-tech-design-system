@@ -2254,13 +2254,21 @@ export type AppHeaderProps = {
   menuOpen?: boolean;
   onMenuToggle?: () => void;
   menuLabel?: string;
+  /**
+   * Id du tiroir, partagé entre `aria-controls` (burger) et `id` (drawer).
+   * Auto-généré et stable si non fourni.
+   */
+  drawerId?: string;
   logo?: React.ReactNode;
   nav?: React.ReactNode;
   actions?: React.ReactNode;
   drawer?: React.ReactNode;
   className?: string;
 };
-export function AppHeader({ compact = false, menuOpen = false, onMenuToggle, menuLabel = "Menu", logo, nav, actions, drawer, className }: AppHeaderProps) {
+export function AppHeader({ compact = false, menuOpen = false, onMenuToggle, menuLabel = "Menu", drawerId, logo, nav, actions, drawer, className }: AppHeaderProps) {
+  // Id stable du tiroir : prop fournie sinon useId (SSR-safe, sans crypto).
+  const reactId = React.useId();
+  const resolvedDrawerId = drawerId ?? `st-appHeader-drawer-${reactId}`;
   return (
     <>
       <header className={classNames("st-appHeader", className)}>
@@ -2273,6 +2281,7 @@ export function AppHeader({ compact = false, menuOpen = false, onMenuToggle, men
                 onClick={onMenuToggle}
                 aria-label={menuLabel}
                 aria-expanded={menuOpen}
+                aria-controls={resolvedDrawerId}
                 aria-haspopup="menu"
               >
                 {menuOpen ? <XIcon /> : <MenuIcon />}
@@ -2290,7 +2299,7 @@ export function AppHeader({ compact = false, menuOpen = false, onMenuToggle, men
       {compact && menuOpen && drawer ? (
         <>
           <button type="button" className="st-appHeader__scrim" aria-label={menuLabel} onClick={onMenuToggle} />
-          <aside className="st-appHeader__drawer">{drawer}</aside>
+          <aside id={resolvedDrawerId} className="st-appHeader__drawer">{drawer}</aside>
         </>
       ) : null}
     </>
@@ -2303,13 +2312,18 @@ export type LanguageToggleProps = {
   onLocaleChange?: (locale: LanguageToggleLocale) => void;
   frLabel?: React.ReactNode;
   enLabel?: React.ReactNode;
+  /** Libellé du sélecteur (associé via <label htmlFor> + aria-label). */
   label?: string;
+  /** Id du <select> ; auto-généré et stable si non fourni. */
+  selectId?: string;
   variant?: "select" | "accordion";
   accordionLabel?: React.ReactNode;
   className?: string;
 };
-export function LanguageToggle({ locale = "fr", onLocaleChange, frLabel = "FR", enLabel = "EN", label = "Langue", variant = "select", accordionLabel = "Langue", className }: LanguageToggleProps) {
+export function LanguageToggle({ locale = "fr", onLocaleChange, frLabel = "FR", enLabel = "EN", label = "Langue", selectId, variant = "select", accordionLabel = "Langue", className }: LanguageToggleProps) {
   const [open, setOpen] = React.useState(false);
+  const reactId = React.useId();
+  const resolvedSelectId = selectId ?? `st-languageToggle-${reactId}`;
   if (variant === "accordion") {
     return (
       <div className={classNames("st-languageToggle", className)}>
@@ -2331,15 +2345,19 @@ export function LanguageToggle({ locale = "fr", onLocaleChange, frLabel = "FR", 
     );
   }
   return (
-    <select
-      className={classNames("st-languageToggle__select", className)}
-      value={locale}
-      aria-label={label}
-      onChange={(e) => onLocaleChange?.(e.currentTarget.value as LanguageToggleLocale)}
-    >
-      <option value="fr">{frLabel}</option>
-      <option value="en">{enLabel}</option>
-    </select>
+    <>
+      <label className="st-visually-hidden st-languageToggle__srLabel" htmlFor={resolvedSelectId}>{label}</label>
+      <select
+        id={resolvedSelectId}
+        className={classNames("st-languageToggle__select", className)}
+        value={locale}
+        aria-label={label}
+        onChange={(e) => onLocaleChange?.(e.currentTarget.value as LanguageToggleLocale)}
+      >
+        <option value="fr">{frLabel}</option>
+        <option value="en">{enLabel}</option>
+      </select>
+    </>
   );
 }
 
@@ -2347,6 +2365,13 @@ export type IdentityUser = { displayName: string; email?: string; id?: string };
 export type IdentityMenuProps = {
   user?: IdentityUser | null;
   isAuthenticated?: boolean;
+  /**
+   * État ouvert du dropdown (optionnellement contrôlé). Si fourni, le parent
+   * contrôle ; sinon le composant gère un état interne. Aligné sur les 3 fw.
+   */
+  open?: boolean;
+  /** Notifié à chaque demande de changement d'état ouvert (contrôlé/non-contrôlé). */
+  onOpenChange?: (open: boolean) => void;
   onLogin?: () => void;
   onLogout?: () => void;
   devicesHref?: string;
@@ -2362,20 +2387,46 @@ export function identityInitial(user: IdentityUser | null | undefined): string {
   const source = user?.displayName || user?.email || "U";
   return source.charAt(0).toUpperCase();
 }
-export function IdentityMenu({ user = null, isAuthenticated = false, onLogin, onLogout, devicesHref = "#", settingsHref = "#", loginLabel = "Se connecter", devicesLabel = "Appareils", settingsLabel = "Paramètres", logoutLabel = "Se déconnecter", variant = "dropdown", className }: IdentityMenuProps) {
-  const [open, setOpen] = React.useState(false);
+export function IdentityMenu({ user = null, isAuthenticated = false, open: controlledOpen, onOpenChange, onLogin, onLogout, devicesHref = "#", settingsHref = "#", loginLabel = "Se connecter", devicesLabel = "Appareils", settingsLabel = "Paramètres", logoutLabel = "Se déconnecter", variant = "dropdown", className }: IdentityMenuProps) {
+  // Pattern contrôlé/non-contrôlé, IDENTIQUE aux 3 fw : si `open` est fourni en
+  // prop, le parent contrôle ; sinon un état interne prend le relais. onOpenChange
+  // est toujours notifié.
+  const [open, setOpen] = useControlled(controlledOpen, false, onOpenChange);
   const rootRef = React.useRef<HTMLDivElement>(null);
   const triggerRef = React.useRef<HTMLButtonElement>(null);
+  // Quel item focuser à la prochaine ouverture : "first" (défaut) ou "last".
+  const pendingFocusRef = React.useRef<"first" | "last">("first");
 
+  const getItems = () => Array.from(rootRef.current?.querySelectorAll<HTMLElement>('[role="menuitem"]') ?? []);
+  const focusItem = React.useCallback((index: number) => {
+    const items = Array.from(rootRef.current?.querySelectorAll<HTMLElement>('[role="menuitem"]') ?? []);
+    if (!items.length) return;
+    const len = items.length;
+    items[((index % len) + len) % len]?.focus();
+  }, []);
+
+  // Clic extérieur : ferme ET restaure le focus sur le trigger. (Client-only :
+  // useEffect ne s'exécute jamais en SSR.)
   React.useEffect(() => {
     if (!open) return;
     const onPointerDown = (event: PointerEvent) => {
       const target = event.target as Node | null;
-      if (rootRef.current && target && !rootRef.current.contains(target)) setOpen(false);
+      if (rootRef.current && target && !rootRef.current.contains(target)) {
+        setOpen(false);
+        triggerRef.current?.focus();
+      }
     };
     document.addEventListener("pointerdown", onPointerDown);
     return () => document.removeEventListener("pointerdown", onPointerDown);
-  }, [open]);
+  }, [open, setOpen]);
+
+  // À l'ouverture : focus le 1er item (ou le dernier sur ArrowUp). Client-only.
+  React.useEffect(() => {
+    if (!open) return;
+    const which = pendingFocusRef.current;
+    queueMicrotask(() => focusItem(which === "last" ? -1 : 0));
+    pendingFocusRef.current = "first";
+  }, [open, focusItem]);
 
   if (!(isAuthenticated && user)) {
     return (
@@ -2386,13 +2437,6 @@ export function IdentityMenu({ user = null, isAuthenticated = false, onLogin, on
   }
 
   const displayName = user.displayName || user.email || "User";
-  const getItems = () => Array.from(rootRef.current?.querySelectorAll<HTMLElement>('[role="menuitem"]') ?? []);
-  const focusItem = (index: number) => {
-    const items = getItems();
-    if (!items.length) return;
-    const len = items.length;
-    items[((index % len) + len) % len]?.focus();
-  };
   const closeAndFocusTrigger = () => {
     setOpen(false);
     triggerRef.current?.focus();
@@ -2400,12 +2444,18 @@ export function IdentityMenu({ user = null, isAuthenticated = false, onLogin, on
   const onTriggerKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === "ArrowDown" || event.key === "Enter" || event.key === " ") {
       event.preventDefault();
-      setOpen(true);
-      queueMicrotask(() => focusItem(0));
+      pendingFocusRef.current = "first";
+      if (open) queueMicrotask(() => focusItem(0));
+      else setOpen(true);
     } else if (event.key === "ArrowUp") {
       event.preventDefault();
-      setOpen(true);
-      queueMicrotask(() => focusItem(-1));
+      pendingFocusRef.current = "last";
+      if (open) queueMicrotask(() => focusItem(-1));
+      else setOpen(true);
+    } else if (event.key === "Escape" && open) {
+      // Esc ferme aussi depuis le trigger (global au composant ouvert).
+      event.preventDefault();
+      closeAndFocusTrigger();
     }
   };
   const onMenuKeyDown = (event: React.KeyboardEvent) => {
@@ -2423,10 +2473,27 @@ export function IdentityMenu({ user = null, isAuthenticated = false, onLogin, on
     } else if (event.key === "End") {
       event.preventDefault();
       focusItem(items.length - 1);
+    } else if (event.key === "Tab") {
+      // Piège de focus : Tab/Shift+Tab bouclent DANS le menu.
+      if (!items.length) return;
+      event.preventDefault();
+      focusItem(current + (event.shiftKey ? -1 : 1));
     } else if (event.key === "Escape") {
       event.preventDefault();
       closeAndFocusTrigger();
     }
+  };
+  // Enter/Space activent l'item courant. Sur un <a>, on suit le href via un clic
+  // natif (preventDefault sur Space pour éviter le scroll).
+  const onItemKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      (event.currentTarget as HTMLElement).click();
+    }
+  };
+  const selectAndClose = () => {
+    setOpen(false);
+    triggerRef.current?.focus();
   };
 
   return (
@@ -2438,7 +2505,7 @@ export function IdentityMenu({ user = null, isAuthenticated = false, onLogin, on
         aria-haspopup="menu"
         aria-expanded={open}
         aria-label={`Compte de ${displayName}`}
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => setOpen(!open)}
         onKeyDown={onTriggerKeyDown}
       >
         <span className="st-identityMenu__avatar" aria-hidden="true">{identityInitial(user)}</span>
@@ -2450,14 +2517,14 @@ export function IdentityMenu({ user = null, isAuthenticated = false, onLogin, on
       </button>
       {open ? (
         <div className="st-identityMenu__menu" role="menu" tabIndex={-1} aria-label={`Menu de ${displayName}`} onKeyDown={onMenuKeyDown}>
-          <a href={devicesHref} className="st-identityMenu__item" role="menuitem" tabIndex={-1} onClick={() => setOpen(false)}>
+          <a href={devicesHref} className="st-identityMenu__item" role="menuitem" tabIndex={-1} onClick={selectAndClose} onKeyDown={onItemKeyDown}>
             {devicesLabel}
           </a>
-          <a href={settingsHref} className="st-identityMenu__item" role="menuitem" tabIndex={-1} onClick={() => setOpen(false)}>
+          <a href={settingsHref} className="st-identityMenu__item" role="menuitem" tabIndex={-1} onClick={selectAndClose} onKeyDown={onItemKeyDown}>
             {settingsLabel}
           </a>
           <div className="st-identityMenu__divider" role="separator" aria-hidden="true" />
-          <button type="button" className="st-identityMenu__item st-identityMenu__item--danger" role="menuitem" tabIndex={-1} onClick={() => { setOpen(false); onLogout?.(); }}>
+          <button type="button" className="st-identityMenu__item st-identityMenu__item--danger" role="menuitem" tabIndex={-1} onClick={() => { setOpen(false); triggerRef.current?.focus(); onLogout?.(); }}>
             {logoutLabel}
           </button>
         </div>

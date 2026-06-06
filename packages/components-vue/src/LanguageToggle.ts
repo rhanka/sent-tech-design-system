@@ -1,13 +1,19 @@
 import { defineComponent, h, ref } from "vue";
 import { classNames } from "./classNames.js";
 
+// Compteur module pour un id de <select> stable, déterministe et SSR-safe.
+let languageToggleIdCounter = 0;
+
 export type LanguageToggleLocale = "fr" | "en";
 
 export type LanguageToggleProps = {
   locale?: LanguageToggleLocale;
   frLabel?: string;
   enLabel?: string;
+  /** Libellé du sélecteur (associé via <label for> + aria-label). */
   label?: string;
+  /** Id du <select> ; auto-généré et stable si non fourni. */
+  selectId?: string;
   variant?: "select" | "accordion";
   accordionLabel?: string;
   class?: string;
@@ -43,6 +49,7 @@ export const LanguageToggle = defineComponent({
     frLabel: { type: String, default: "FR" },
     enLabel: { type: String, default: "EN" },
     label: { type: String, default: "Langue" },
+    selectId: { type: String, default: undefined },
     variant: { type: String as () => "select" | "accordion", default: "select" },
     accordionLabel: { type: String, default: "Langue" },
     class: { type: String, default: undefined },
@@ -50,6 +57,7 @@ export const LanguageToggle = defineComponent({
   emits: ["localeChange"],
   setup(props, { emit }) {
     const open = ref(false);
+    const resolvedSelectId = props.selectId ?? `st-languageToggle-${++languageToggleIdCounter}`;
     const choose = (next: LanguageToggleLocale) => emit("localeChange", next);
 
     return () => {
@@ -98,20 +106,31 @@ export const LanguageToggle = defineComponent({
         ]);
       }
 
-      return h(
-        "select",
-        {
-          class: classNames("st-languageToggle__select", props.class),
-          value: props.locale,
-          "aria-label": props.label,
-          onChange: (event: Event) =>
-            choose((event.target as HTMLSelectElement).value as LanguageToggleLocale),
-        },
-        [
-          h("option", { value: "fr" }, props.frLabel),
-          h("option", { value: "en" }, props.enLabel),
-        ],
-      );
+      return [
+        h(
+          "label",
+          {
+            class: "st-visually-hidden st-languageToggle__srLabel",
+            for: resolvedSelectId,
+          },
+          props.label,
+        ),
+        h(
+          "select",
+          {
+            id: resolvedSelectId,
+            class: classNames("st-languageToggle__select", props.class),
+            value: props.locale,
+            "aria-label": props.label,
+            onChange: (event: Event) =>
+              choose((event.target as HTMLSelectElement).value as LanguageToggleLocale),
+          },
+          [
+            h("option", { value: "fr" }, props.frLabel),
+            h("option", { value: "en" }, props.enLabel),
+          ],
+        ),
+      ];
     };
   },
 });

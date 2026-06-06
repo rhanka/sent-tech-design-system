@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
-import { h } from "vue";
+import { h, nextTick } from "vue";
 import { AppHeader, LanguageToggle, IdentityMenu, identityInitial } from "./index.js";
 
 describe("AppHeader", () => {
@@ -45,6 +45,27 @@ describe("AppHeader", () => {
     expect(drawer.text()).toContain("drawer-content");
     expect(wrapper.find("button.st-appHeader__burgerButton").attributes("aria-expanded")).toBe("true");
   });
+
+  it("wires aria-controls (burger) to the drawer id (a11y)", () => {
+    const wrapper = mount(AppHeader, {
+      props: { compact: true, menuOpen: true },
+      slots: { drawer: () => h("nav", "drawer-content") },
+    });
+    const button = wrapper.find("button.st-appHeader__burgerButton");
+    const drawer = wrapper.find(".st-appHeader__drawer");
+    const controls = button.attributes("aria-controls");
+    expect(controls).toBeTruthy();
+    expect(drawer.attributes("id")).toBe(controls);
+  });
+
+  it("honours a provided drawerId on both burger and drawer", () => {
+    const wrapper = mount(AppHeader, {
+      props: { compact: true, menuOpen: true, drawerId: "my-drawer" },
+      slots: { drawer: () => h("nav", "x") },
+    });
+    expect(wrapper.find("button.st-appHeader__burgerButton").attributes("aria-controls")).toBe("my-drawer");
+    expect(wrapper.find(".st-appHeader__drawer").attributes("id")).toBe("my-drawer");
+  });
 });
 
 describe("LanguageToggle", () => {
@@ -72,6 +93,23 @@ describe("LanguageToggle", () => {
     const options = wrapper.findAll(".st-languageToggle__option");
     await options[1].trigger("click");
     expect(wrapper.emitted("localeChange")?.[0]).toEqual(["en"]);
+  });
+
+  it("associates a <label for> with the <select> (a11y)", () => {
+    const wrapper = mount(LanguageToggle, { props: { locale: "fr", label: "Choisir la langue" } });
+    const select = wrapper.find("select.st-languageToggle__select");
+    const label = wrapper.find("label.st-languageToggle__srLabel");
+    const selectId = select.attributes("id");
+    expect(selectId).toBeTruthy();
+    expect(label.exists()).toBe(true);
+    expect(label.attributes("for")).toBe(selectId);
+    expect(label.text()).toBe("Choisir la langue");
+  });
+
+  it("honours a provided selectId on both label and select", () => {
+    const wrapper = mount(LanguageToggle, { props: { locale: "fr", selectId: "lang-sel" } });
+    expect(wrapper.find("select").attributes("id")).toBe("lang-sel");
+    expect(wrapper.find("label.st-languageToggle__srLabel").attributes("for")).toBe("lang-sel");
   });
 });
 
@@ -143,5 +181,97 @@ describe("IdentityMenu", () => {
     expect(trigger.attributes("aria-expanded")).toBe("true");
     await wrapper.find('[role="menu"]').trigger("keydown", { key: "Escape" });
     expect(trigger.attributes("aria-expanded")).toBe("false");
+  });
+
+  it("focuses the first item on open (ArrowDown)", async () => {
+    const wrapper = mount(IdentityMenu, { props: { user, isAuthenticated: true }, attachTo: document.body });
+    await wrapper.find(".st-identityMenu__trigger").trigger("keydown", { key: "ArrowDown" });
+    await nextTick();
+    await nextTick();
+    const items = wrapper.findAll('[role="menuitem"]');
+    expect(document.activeElement).toBe(items[0].element);
+    wrapper.unmount();
+  });
+
+  it.each(["Enter", " "])("activates a link item with %s (Space too)", async (key) => {
+    const wrapper = mount(IdentityMenu, {
+      props: { user, isAuthenticated: true, devicesHref: "/auth/devices" },
+      attachTo: document.body,
+    });
+    await wrapper.find(".st-identityMenu__trigger").trigger("click");
+    const devices = wrapper.find('a[role="menuitem"]');
+    const clicked = vi.fn();
+    devices.element.addEventListener("click", clicked);
+    await devices.trigger("keydown", { key });
+    expect(clicked).toHaveBeenCalledTimes(1);
+    wrapper.unmount();
+  });
+
+  it("traps focus with Tab / Shift+Tab inside the menu", async () => {
+    const wrapper = mount(IdentityMenu, { props: { user, isAuthenticated: true }, attachTo: document.body });
+    await wrapper.find(".st-identityMenu__trigger").trigger("click");
+    const menu = wrapper.find('[role="menu"]');
+    const items = wrapper.findAll('[role="menuitem"]');
+    (items[items.length - 1].element as HTMLElement).focus();
+    await menu.trigger("keydown", { key: "Tab" });
+    expect(document.activeElement).toBe(items[0].element);
+    await menu.trigger("keydown", { key: "Tab", shiftKey: true });
+    expect(document.activeElement).toBe(items[items.length - 1].element);
+    wrapper.unmount();
+  });
+
+  it("closes from the trigger with Escape (global to the open component)", async () => {
+    const wrapper = mount(IdentityMenu, { props: { user, isAuthenticated: true } });
+    const trigger = wrapper.find(".st-identityMenu__trigger");
+    await trigger.trigger("click");
+    expect(trigger.attributes("aria-expanded")).toBe("true");
+    await trigger.trigger("keydown", { key: "Escape" });
+    expect(trigger.attributes("aria-expanded")).toBe("false");
+  });
+
+  it("restores focus to the trigger when closing via Escape", async () => {
+    const wrapper = mount(IdentityMenu, { props: { user, isAuthenticated: true }, attachTo: document.body });
+    const trigger = wrapper.find(".st-identityMenu__trigger");
+    await trigger.trigger("click");
+    await wrapper.find('[role="menu"]').trigger("keydown", { key: "Escape" });
+    expect(document.activeElement).toBe(trigger.element);
+    wrapper.unmount();
+  });
+
+  it("restores focus to the trigger after selecting an item", async () => {
+    const wrapper = mount(IdentityMenu, { props: { user, isAuthenticated: true }, attachTo: document.body });
+    const trigger = wrapper.find(".st-identityMenu__trigger");
+    await trigger.trigger("click");
+    await wrapper.find('a[role="menuitem"]').trigger("click");
+    expect(trigger.attributes("aria-expanded")).toBe("false");
+    expect(document.activeElement).toBe(trigger.element);
+    wrapper.unmount();
+  });
+
+  it("closes on outside click and restores focus to the trigger", async () => {
+    const wrapper = mount(IdentityMenu, { props: { user, isAuthenticated: true }, attachTo: document.body });
+    const trigger = wrapper.find(".st-identityMenu__trigger");
+    await trigger.trigger("click");
+    expect(trigger.attributes("aria-expanded")).toBe("true");
+    document.body.dispatchEvent(new Event("pointerdown", { bubbles: true }));
+    await nextTick();
+    expect(trigger.attributes("aria-expanded")).toBe("false");
+    expect(document.activeElement).toBe(trigger.element);
+    wrapper.unmount();
+  });
+
+  it("supports a controlled open + openChange (controlled/uncontrolled pattern)", async () => {
+    const wrapper = mount(IdentityMenu, { props: { user, isAuthenticated: true, open: false } });
+    const trigger = wrapper.find(".st-identityMenu__trigger");
+    expect(wrapper.find('[role="menu"]').exists()).toBe(false);
+    await trigger.trigger("click");
+    expect(wrapper.emitted("openChange")?.[0]).toEqual([true]);
+    expect(wrapper.emitted("update:open")?.[0]).toEqual([true]);
+  });
+
+  it("reflects a controlled open=true by rendering the menu", () => {
+    const wrapper = mount(IdentityMenu, { props: { user, isAuthenticated: true, open: true } });
+    expect(wrapper.find('[role="menu"]').exists()).toBe(true);
+    expect(wrapper.find(".st-identityMenu__trigger").attributes("aria-expanded")).toBe("true");
   });
 });

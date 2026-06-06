@@ -13,6 +13,11 @@
     onMenuToggle?: () => void;
     /** aria-label du bouton burger. */
     menuLabel?: string;
+    /**
+     * Id du tiroir, partagé entre `aria-controls` (burger) et `id` (drawer).
+     * Auto-généré et stable si non fourni.
+     */
+    drawerId?: string;
     /** Logo (décision actée : logo SENT + sous-titre). */
     logo?: Snippet;
     /** Liens de navigation (rendus dans le <nav> desktop). */
@@ -23,9 +28,17 @@
     drawer?: Snippet;
     class?: string;
   }
+
+  // Compteur module pour générer un id de tiroir stable, déterministe et
+  // SSR-safe (pas de crypto). Aligné sur le pattern des 3 fw.
+  let appHeaderIdCounter = 0;
+  function nextAppHeaderId(): number {
+    return ++appHeaderIdCounter;
+  }
 </script>
 
 <script lang="ts">
+  import { untrack } from "svelte";
   import { Menu, X } from "@lucide/svelte";
 
   let {
@@ -33,12 +46,19 @@
     menuOpen = false,
     onMenuToggle,
     menuLabel = "Menu",
+    drawerId,
     logo,
     nav,
     actions,
     drawer,
     class: className,
   }: AppHeaderProps = $props();
+
+  // Id stable du tiroir : prop fournie sinon compteur module (SSR-safe, sans
+  // crypto). Capturé une seule fois (untrack) : un id stable ne doit pas réagir.
+  const resolvedDrawerId = untrack(
+    () => drawerId ?? `st-appHeader-drawer-${nextAppHeaderId()}`,
+  );
 
   const classes = () => ["st-appHeader", className].filter(Boolean).join(" ");
 </script>
@@ -54,6 +74,7 @@
           onclick={onMenuToggle}
           aria-label={menuLabel}
           aria-expanded={menuOpen}
+          aria-controls={resolvedDrawerId}
           aria-haspopup="menu"
         >
           {#if menuOpen}
@@ -90,7 +111,7 @@
     aria-label={menuLabel}
     onclick={onMenuToggle}
   ></button>
-  <aside class="st-appHeader__drawer">
+  <aside id={resolvedDrawerId} class="st-appHeader__drawer">
     {@render drawer()}
   </aside>
 {/if}
