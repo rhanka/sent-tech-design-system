@@ -977,6 +977,66 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "HeatmapChart",
+    slug: "heatmap-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Matrice colorée pour croiser deux dimensions catégorielles.",
+      en: "Colored matrix for crossing two categorical dimensions."
+    }
+  },
+  {
+    name: "HistogramChart",
+    slug: "histogram-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Histogramme pour afficher des classes explicites ou générées.",
+      en: "Histogram for explicit or generated distribution bins."
+    }
+  },
+  {
+    name: "BoxPlotChart",
+    slug: "box-plot-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Boîtes à moustaches pour comparer des distributions et leurs valeurs atypiques.",
+      en: "Box plots for comparing distributions and outliers."
+    }
+  },
+  {
+    name: "RadarChart",
+    slug: "radar-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Radar polaire pour comparer plusieurs séries sur des axes communs.",
+      en: "Polar radar chart for comparing series across shared axes."
+    }
+  },
+  {
+    name: "SankeyChart",
+    slug: "sankey-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Diagramme de flux pondérés entre nœuds catégoriels.",
+      en: "Weighted flow diagram between categorical nodes."
+    }
+  },
+  {
+    name: "SunburstChart",
+    slug: "sunburst-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Hiérarchie radiale pour explorer les contributions imbriquées.",
+      en: "Radial hierarchy for exploring nested contributions."
+    }
+  },
+  {
     name: "AspectRatio",
     slug: "aspect-ratio",
     status: "documented",

@@ -77,6 +77,12 @@ export type ComponentName =
   | "ScatterPlot"
   | "Sparkline"
   | "StackedBarChart"
+  | "HeatmapChart"
+  | "HistogramChart"
+  | "BoxPlotChart"
+  | "RadarChart"
+  | "SankeyChart"
+  | "SunburstChart"
   | "ChatThread"
   | "ChatMessage"
   | "StreamingMessage"
@@ -3887,6 +3893,414 @@ import { StackedBarChart } from "@sentropic/design-system-vue";
       { label: 'React',  segments: [{ label: 'Formulaires', value: 18 }, { label: 'Navigation', value: 10 }] },
       { label: 'Vue',    segments: [{ label: 'Formulaires', value: 18 }, { label: 'Navigation', value: 10 }] }
     ]"
+  />
+</template>`
+    }
+  },
+
+  heatmapchart: {
+    id: "heatmapchart",
+    slug: "heatmap-chart",
+    nodes: [
+      stack([
+        {
+          comp: "HeatmapChart",
+          props: {
+            label: "Charge par canal et trimestre",
+            legend: true,
+            data: [
+              { x: "Web", y: "Q1", value: 12 },
+              { x: "Web", y: "Q2", value: 30, tone: "category5" },
+              { x: "Sales", y: "Q1", value: 18 },
+              { x: "Sales", y: "Q2", value: 24 }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { HeatmapChart } from "@sentropic/design-system-svelte";
+</script>
+
+<HeatmapChart
+  label="Charge par canal et trimestre"
+  legend
+  data={[
+    { x: "Web", y: "Q1", value: 12 },
+    { x: "Web", y: "Q2", value: 30, tone: "category5" },
+    { x: "Sales", y: "Q1", value: 18 },
+    { x: "Sales", y: "Q2", value: 24 }
+  ]}
+/>`,
+      react: `import { HeatmapChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <HeatmapChart
+      label="Charge par canal et trimestre"
+      legend
+      data={[
+        { x: "Web", y: "Q1", value: 12 },
+        { x: "Web", y: "Q2", value: 30, tone: "category5" },
+        { x: "Sales", y: "Q1", value: 18 },
+        { x: "Sales", y: "Q2", value: 24 }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { HeatmapChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <HeatmapChart
+    label="Charge par canal et trimestre"
+    legend
+    :data="[
+      { x: 'Web', y: 'Q1', value: 12 },
+      { x: 'Web', y: 'Q2', value: 30, tone: 'category5' },
+      { x: 'Sales', y: 'Q1', value: 18 },
+      { x: 'Sales', y: 'Q2', value: 24 }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  histogramchart: {
+    id: "histogramchart",
+    slug: "histogram-chart",
+    nodes: [
+      stack([
+        {
+          comp: "HistogramChart",
+          props: {
+            label: "Tailles de requête",
+            data: [
+              { label: "0-10", value: 4 },
+              { label: "10-20", value: 9, tone: "category6" },
+              { label: "20-30", value: 3 }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { HistogramChart } from "@sentropic/design-system-svelte";
+</script>
+
+<HistogramChart
+  label="Tailles de requête"
+  data={[
+    { label: "0-10", value: 4 },
+    { label: "10-20", value: 9, tone: "category6" },
+    { label: "20-30", value: 3 }
+  ]}
+/>`,
+      react: `import { HistogramChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <HistogramChart
+      label="Tailles de requête"
+      data={[
+        { label: "0-10", value: 4 },
+        { label: "10-20", value: 9, tone: "category6" },
+        { label: "20-30", value: 3 }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { HistogramChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <HistogramChart
+    label="Tailles de requête"
+    :data="[
+      { label: '0-10', value: 4 },
+      { label: '10-20', value: 9, tone: 'category6' },
+      { label: '20-30', value: 3 }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  boxplotchart: {
+    id: "boxplotchart",
+    slug: "box-plot-chart",
+    nodes: [
+      stack([
+        {
+          comp: "BoxPlotChart",
+          props: {
+            label: "Distribution de latence",
+            data: [
+              { label: "API", min: 10, q1: 20, median: 28, q3: 40, max: 60, outliers: [90], tone: "category3" },
+              { label: "Jobs", min: 15, q1: 24, median: 34, q3: 50, max: 80 }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { BoxPlotChart } from "@sentropic/design-system-svelte";
+</script>
+
+<BoxPlotChart
+  label="Distribution de latence"
+  data={[
+    { label: "API", min: 10, q1: 20, median: 28, q3: 40, max: 60, outliers: [90], tone: "category3" },
+    { label: "Jobs", min: 15, q1: 24, median: 34, q3: 50, max: 80 }
+  ]}
+/>`,
+      react: `import { BoxPlotChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <BoxPlotChart
+      label="Distribution de latence"
+      data={[
+        { label: "API", min: 10, q1: 20, median: 28, q3: 40, max: 60, outliers: [90], tone: "category3" },
+        { label: "Jobs", min: 15, q1: 24, median: 34, q3: 50, max: 80 }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { BoxPlotChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <BoxPlotChart
+    label="Distribution de latence"
+    :data="[
+      { label: 'API', min: 10, q1: 20, median: 28, q3: 40, max: 60, outliers: [90], tone: 'category3' },
+      { label: 'Jobs', min: 15, q1: 24, median: 34, q3: 50, max: 80 }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  radarchart: {
+    id: "radarchart",
+    slug: "radar-chart",
+    nodes: [
+      stack([
+        {
+          comp: "RadarChart",
+          props: {
+            label: "Capacités produit",
+            axes: ["Vitesse", "Qualité", "Coût", "Portée"],
+            series: [
+              { label: "Actuel", values: [80, 65, 45, 70] },
+              { label: "Cible", values: [90, 85, 70, 86], tone: "category7" }
+            ],
+            legend: true
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { RadarChart } from "@sentropic/design-system-svelte";
+</script>
+
+<RadarChart
+  label="Capacités produit"
+  axes={["Vitesse", "Qualité", "Coût", "Portée"]}
+  series={[
+    { label: "Actuel", values: [80, 65, 45, 70] },
+    { label: "Cible", values: [90, 85, 70, 86], tone: "category7" }
+  ]}
+  legend
+/>`,
+      react: `import { RadarChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <RadarChart
+      label="Capacités produit"
+      axes={["Vitesse", "Qualité", "Coût", "Portée"]}
+      series={[
+        { label: "Actuel", values: [80, 65, 45, 70] },
+        { label: "Cible", values: [90, 85, 70, 86], tone: "category7" }
+      ]}
+      legend
+    />
+  );
+}`,
+      vue: `<script setup>
+import { RadarChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <RadarChart
+    label="Capacités produit"
+    :axes="['Vitesse', 'Qualité', 'Coût', 'Portée']"
+    :series="[
+      { label: 'Actuel', values: [80, 65, 45, 70] },
+      { label: 'Cible', values: [90, 85, 70, 86], tone: 'category7' }
+    ]"
+    legend
+  />
+</template>`
+    }
+  },
+
+  sankeychart: {
+    id: "sankeychart",
+    slug: "sankey-chart",
+    nodes: [
+      stack([
+        {
+          comp: "SankeyChart",
+          props: {
+            label: "Flux d'acquisition",
+            nodes: [
+              { id: "visit", label: "Visites" },
+              { id: "trial", label: "Essais", tone: "category4" },
+              { id: "paid", label: "Payants" }
+            ],
+            links: [
+              { source: "visit", target: "trial", value: 120 },
+              { source: "trial", target: "paid", value: 48 }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { SankeyChart } from "@sentropic/design-system-svelte";
+</script>
+
+<SankeyChart
+  label="Flux d'acquisition"
+  nodes={[
+    { id: "visit", label: "Visites" },
+    { id: "trial", label: "Essais", tone: "category4" },
+    { id: "paid", label: "Payants" }
+  ]}
+  links={[
+    { source: "visit", target: "trial", value: 120 },
+    { source: "trial", target: "paid", value: 48 }
+  ]}
+/>`,
+      react: `import { SankeyChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <SankeyChart
+      label="Flux d'acquisition"
+      nodes={[
+        { id: "visit", label: "Visites" },
+        { id: "trial", label: "Essais", tone: "category4" },
+        { id: "paid", label: "Payants" }
+      ]}
+      links={[
+        { source: "visit", target: "trial", value: 120 },
+        { source: "trial", target: "paid", value: 48 }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { SankeyChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <SankeyChart
+    label="Flux d'acquisition"
+    :nodes="[
+      { id: 'visit', label: 'Visites' },
+      { id: 'trial', label: 'Essais', tone: 'category4' },
+      { id: 'paid', label: 'Payants' }
+    ]"
+    :links="[
+      { source: 'visit', target: 'trial', value: 120 },
+      { source: 'trial', target: 'paid', value: 48 }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  sunburstchart: {
+    id: "sunburstchart",
+    slug: "sunburst-chart",
+    nodes: [
+      stack([
+        {
+          comp: "SunburstChart",
+          props: {
+            label: "Hiérarchie de revenus",
+            legend: true,
+            data: {
+              label: "Revenus",
+              children: [
+                { label: "Produit", children: [{ label: "Core", value: 40 }, { label: "Addons", value: 20 }] },
+                { label: "Services", value: 30, tone: "category8" }
+              ]
+            }
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { SunburstChart } from "@sentropic/design-system-svelte";
+</script>
+
+<SunburstChart
+  label="Hiérarchie de revenus"
+  legend
+  data={{
+    label: "Revenus",
+    children: [
+      { label: "Produit", children: [{ label: "Core", value: 40 }, { label: "Addons", value: 20 }] },
+      { label: "Services", value: 30, tone: "category8" }
+    ]
+  }}
+/>`,
+      react: `import { SunburstChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <SunburstChart
+      label="Hiérarchie de revenus"
+      legend
+      data={{
+        label: "Revenus",
+        children: [
+          { label: "Produit", children: [{ label: "Core", value: 40 }, { label: "Addons", value: 20 }] },
+          { label: "Services", value: 30, tone: "category8" }
+        ]
+      }}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { SunburstChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <SunburstChart
+    label="Hiérarchie de revenus"
+    legend
+    :data="{
+      label: 'Revenus',
+      children: [
+        { label: 'Produit', children: [{ label: 'Core', value: 40 }, { label: 'Addons', value: 20 }] },
+        { label: 'Services', value: 30, tone: 'category8' }
+      ]
+    }"
   />
 </template>`
     }

@@ -209,6 +209,18 @@ export type {
   TreemapChartDatum,
   TreemapTiling,
 } from "./TreemapChart.js";
+export { HeatmapChart } from "./HeatmapChart.js";
+export type { HeatmapChartProps, HeatmapChartDatum, HeatmapChartTone } from "./HeatmapChart.js";
+export { HistogramChart } from "./HistogramChart.js";
+export type { HistogramChartProps, HistogramChartDatum, HistogramChartBin, HistogramChartTone } from "./HistogramChart.js";
+export { BoxPlotChart } from "./BoxPlotChart.js";
+export type { BoxPlotChartProps, BoxPlotChartDatum, BoxPlotChartTone } from "./BoxPlotChart.js";
+export { RadarChart } from "./RadarChart.js";
+export type { RadarChartProps, RadarChartSeries, RadarChartTone } from "./RadarChart.js";
+export { SankeyChart } from "./SankeyChart.js";
+export type { SankeyChartProps, SankeyChartNode, SankeyChartLink, SankeyChartTone } from "./SankeyChart.js";
+export { SunburstChart } from "./SunburstChart.js";
+export type { SunburstChartProps, SunburstChartDatum, SunburstChartTone } from "./SunburstChart.js";
 export { ForceGraph, nodeShapePath, edgeDashArray } from "./ForceGraph.js";
 export type {
   ForceGraphProps,
