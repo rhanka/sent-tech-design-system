@@ -142,7 +142,10 @@ export type ComponentName =
   | "ParallelCoordinatesChart"
   | "CandlestickChart"
   | "CalendarHeatmapChart"
-  | "BumpChart";
+  | "BumpChart"
+  | "FilterPill"
+  | "FilterBar"
+  | "SelectionChip";
 
 export interface ComponentNodeSpec {
   comp: ComponentName;
@@ -8092,6 +8095,191 @@ import { CalendarHeatmapChart } from "@sentropic/design-system-vue";
       { date: '2025-01-17', value: 11 }
     ]"
   />
+</template>`
+    }
+  },
+
+  filterpill: {
+    id: "filterpill",
+    slug: "filter-pill",
+    nodes: [
+      wrap([
+        {
+          comp: "FilterPill",
+          props: { field: "Pays", operator: "in", value: "France, Italie, Espagne", active: true, removable: true }
+        },
+        {
+          comp: "FilterPill",
+          props: { field: "Statut", value: "Actif", active: false, removable: true }
+        },
+        {
+          comp: "FilterPill",
+          props: { field: "Montant", operator: ">", value: "1 000 €", active: true, removable: false, tone: "success" }
+        },
+        {
+          comp: "FilterPill",
+          props: { field: "Région", value: "Nord", active: true, removable: true, disabled: true }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { FilterPill } from "@sentropic/design-system-svelte";
+</script>
+
+<FilterPill field="Pays" operator="in" value="France, Italie, Espagne" active removable />
+<FilterPill field="Statut" value="Actif" removable />
+<FilterPill field="Montant" operator=">" value="1 000 €" active tone="success" />
+<FilterPill field="Région" value="Nord" active removable disabled />`,
+      react: `import { FilterPill } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <FilterPill field="Pays" operator="in" value="France, Italie, Espagne" active removable />
+      <FilterPill field="Statut" value="Actif" removable />
+      <FilterPill field="Montant" operator=">" value="1 000 €" active tone="success" />
+      <FilterPill field="Région" value="Nord" active removable disabled />
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { FilterPill } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <FilterPill field="Pays" operator="in" value="France, Italie, Espagne" :active="true" :removable="true" />
+  <FilterPill field="Statut" value="Actif" :removable="true" />
+  <FilterPill field="Montant" operator=">" value="1 000 €" :active="true" tone="success" />
+  <FilterPill field="Région" value="Nord" :active="true" :removable="true" disabled />
+</template>`
+    }
+  },
+
+  filterbar: {
+    id: "filterbar",
+    slug: "filter-bar",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "FilterBar",
+            props: { label: "Filtres actifs" },
+            children: [
+              {
+                comp: "FilterPill",
+                props: { field: "Pays", operator: "in", value: "France, Italie", active: true, removable: true }
+              },
+              {
+                comp: "FilterPill",
+                props: { field: "Statut", value: "Actif", active: true, removable: true }
+              },
+              {
+                comp: "FilterPill",
+                props: { field: "Date", operator: ">=", value: "2025-01-01", active: true, removable: true }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { FilterBar, FilterPill } from "@sentropic/design-system-svelte";
+</script>
+
+<FilterBar label="Filtres actifs" onClearAll={() => {}}>
+  <FilterPill field="Pays" operator="in" value="France, Italie" active removable />
+  <FilterPill field="Statut" value="Actif" active removable />
+  <FilterPill field="Date" operator=">=" value="2025-01-01" active removable />
+</FilterBar>`,
+      react: `import { FilterBar, FilterPill } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <FilterBar label="Filtres actifs" onClearAll={() => {}}>
+      <FilterPill field="Pays" operator="in" value="France, Italie" active removable />
+      <FilterPill field="Statut" value="Actif" active removable />
+      <FilterPill field="Date" operator=">=" value="2025-01-01" active removable />
+    </FilterBar>
+  );
+}`,
+      vue: `<script setup>
+import { FilterBar, FilterPill } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <FilterBar label="Filtres actifs" :onClearAll="() => {}">
+    <FilterPill field="Pays" operator="in" value="France, Italie" :active="true" :removable="true" />
+    <FilterPill field="Statut" value="Actif" :active="true" :removable="true" />
+    <FilterPill field="Date" operator=">=" value="2025-01-01" :active="true" :removable="true" />
+  </FilterBar>
+</template>`
+    }
+  },
+
+  selectionchip: {
+    id: "selectionchip",
+    slug: "selection-chip",
+    nodes: [
+      wrap([
+        {
+          comp: "SelectionChip",
+          props: { label: "Sélection", count: 42 }
+        },
+        {
+          comp: "SelectionChip",
+          props: { label: "Catégorie", count: 5, tone: "success" }
+        },
+        {
+          comp: "SelectionChip",
+          props: { label: "Région", count: 3, tone: "info" }
+        },
+        {
+          comp: "SelectionChip",
+          props: { label: "Archivés", tone: "error" }
+        },
+        {
+          comp: "SelectionChip",
+          props: { label: "Verrouillé", count: 7, disabled: true }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { SelectionChip } from "@sentropic/design-system-svelte";
+</script>
+
+<SelectionChip label="Sélection" count={42} />
+<SelectionChip label="Catégorie" count={5} tone="success" />
+<SelectionChip label="Région" count={3} tone="info" />
+<SelectionChip label="Archivés" tone="error" />
+<SelectionChip label="Verrouillé" count={7} disabled />`,
+      react: `import { SelectionChip } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <SelectionChip label="Sélection" count={42} />
+      <SelectionChip label="Catégorie" count={5} tone="success" />
+      <SelectionChip label="Région" count={3} tone="info" />
+      <SelectionChip label="Archivés" tone="error" />
+      <SelectionChip label="Verrouillé" count={7} disabled />
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { SelectionChip } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <SelectionChip label="Sélection" :count="42" />
+  <SelectionChip label="Catégorie" :count="5" tone="success" />
+  <SelectionChip label="Région" :count="3" tone="info" />
+  <SelectionChip label="Archivés" tone="error" />
+  <SelectionChip label="Verrouillé" :count="7" disabled />
 </template>`
     }
   },

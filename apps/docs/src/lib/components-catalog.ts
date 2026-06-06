@@ -1395,6 +1395,36 @@ export const COMPONENTS: ComponentEntry[] = [
       fr: "Classements dans le temps : lignes qui montent et descendent.",
       en: "Rankings over time: rising and falling rank lines."
     }
+  },
+  {
+    name: "FilterPill",
+    slug: "filter-pill",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Pilule de filtre actif : champ, opérateur, valeur et bouton de retrait.",
+      en: "Active filter pill: field, operator, value, and remove button."
+    }
+  },
+  {
+    name: "FilterBar",
+    slug: "filter-bar",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Barre regroupant des FilterPill avec action optionnelle « Tout effacer ».",
+      en: "Bar grouping FilterPill chips with an optional clear-all action."
+    }
+  },
+  {
+    name: "SelectionChip",
+    slug: "selection-chip",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Chip compact affichant une sélection avec compteur et bouton d'effacement.",
+      en: "Compact chip showing a selection with count and optional clear button."
+    }
   }
 ];
 
