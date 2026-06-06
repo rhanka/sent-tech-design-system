@@ -1017,6 +1017,26 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "RoseChart",
+    slug: "rose-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Diagramme polaire de Nightingale : rayon proportionnel à la valeur, secteurs d'angle égal.",
+      en: "Nightingale polar area chart: radius scales with value, equal-angle sectors."
+    }
+  },
+  {
+    name: "ViolinChart",
+    slug: "violin-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Densité de distribution en miroir par catégorie, avec médiane et quartiles.",
+      en: "Mirrored distribution density per category, with median and quartiles."
+    }
+  },
+  {
     name: "LollipopChart",
     slug: "lollipop-chart",
     status: "documented",
