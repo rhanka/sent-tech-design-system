@@ -1067,6 +1067,26 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "ChordDiagram",
+    slug: "chord-diagram",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Diagramme en cordes : flux pondérés entre nœuds répartis sur un cercle.",
+      en: "Chord diagram: weighted flows between nodes laid out on a circle."
+    }
+  },
+  {
+    name: "PackedBubblesChart",
+    slug: "packed-bubbles-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Bulles tassées dont l'aire est proportionnelle à la valeur.",
+      en: "Packed bubbles whose area is proportional to value."
+    }
+  },
+  {
     name: "AspectRatio",
     slug: "aspect-ratio",
     status: "documented",

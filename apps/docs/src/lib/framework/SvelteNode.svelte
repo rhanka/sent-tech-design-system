@@ -142,6 +142,8 @@
     SelectionChip,
     LollipopChart,
     ParetoChart,
+    ChordDiagram,
+    PackedBubblesChart,
     RangeSlider
   } from "@sentropic/design-system-svelte";
   import Self from "./SvelteNode.svelte";
@@ -358,6 +360,8 @@
     SelectionChip,
     LollipopChart,
     ParetoChart,
+    ChordDiagram,
+    PackedBubblesChart,
     RangeSlider
   } as unknown as Record<ComponentName, Component<Record<string, unknown>>>;
 
