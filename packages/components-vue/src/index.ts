@@ -134,7 +134,7 @@ export type {
   DataTableSort,
 } from "./DataTable.js";
 export { DatePicker } from "./DatePicker.js";
-export type { DatePickerProps, DatePickerSize } from "./DatePicker.js";
+export type { DatePickerProps, DatePickerSize, DatePickerRange, DatePickerValue } from "./DatePicker.js";
 export { Menu } from "./Menu.js";
 export type { MenuProps, MenuItem, MenuActionItem, MenuDividerItem, MenuGroupItem } from "./Menu.js";
 export { MenuPopover } from "./MenuPopover.js";

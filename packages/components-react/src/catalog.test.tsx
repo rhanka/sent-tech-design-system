@@ -697,3 +697,77 @@ describe("ForceGraph parity (0.10.4)", () => {
     });
   });
 });
+
+describe("DatePicker controlled contract (Svelte parity)", () => {
+  const openPanel = () => fireEvent.click(screen.getByRole("button", { name: "Open calendar" }));
+  const enabledDay = () =>
+    Array.from(document.querySelectorAll<HTMLButtonElement>(".st-datepicker__day")).find((d) => !d.disabled)!;
+
+  it("exposes a dialog trigger with a11y attributes matching Svelte", () => {
+    render(<DatePicker label="Date" openLabel="Open calendar" />);
+    const trigger = screen.getByRole("button", { name: "Open calendar" });
+    expect(trigger.getAttribute("aria-haspopup")).toBe("dialog");
+    expect(trigger.getAttribute("aria-expanded")).toBe("false");
+    openPanel();
+    expect(trigger.getAttribute("aria-expanded")).toBe("true");
+    const dialog = screen.getByRole("dialog");
+    expect(dialog.className).toContain("st-datepicker__panel");
+    expect(document.querySelector(".st-datepicker__grid[role='grid']")).toBeTruthy();
+    expect(document.querySelector(".st-datepicker__weekday[role='columnheader']")).toBeTruthy();
+    const day = document.querySelector(".st-datepicker__day")!;
+    expect(day.getAttribute("aria-label")).toBeTruthy();
+    expect(day.getAttribute("aria-pressed")).toBe("false");
+  });
+
+  it("calls onChange with a Date in single mode and renders controlled value", () => {
+    const onChange = vi.fn();
+    render(<DatePicker label="Date" openLabel="Open calendar" value={new Date(2026, 4, 31)} onChange={onChange} locale="fr-FR" />);
+    const input = document.querySelector<HTMLInputElement>(".st-datepicker__control")!;
+    expect(input.value).toContain("31");
+    openPanel();
+    fireEvent.click(enabledDay());
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onChange.mock.calls[0][0]).toBeInstanceOf(Date);
+  });
+
+  it("emits a {start,end} payload in range mode (Date objects)", () => {
+    const onChange = vi.fn();
+    render(<DatePicker label="Range" openLabel="Open calendar" mode="range" value={{ start: null, end: null }} onChange={onChange} />);
+    openPanel();
+    const days = Array.from(document.querySelectorAll<HTMLButtonElement>(".st-datepicker__day")).filter((d) => !d.disabled);
+    fireEvent.click(days[5]);
+    const first = onChange.mock.calls[0][0] as { start: Date | null; end: Date | null };
+    expect(first.start).toBeInstanceOf(Date);
+    expect(first.end).toBeNull();
+
+    // Second pick completes the range when the committed start is fed back in (controlled flow).
+    cleanup();
+    onChange.mockClear();
+    render(<DatePicker label="Range" openLabel="Open calendar" mode="range" value={{ start: first.start, end: null }} onChange={onChange} />);
+    openPanel();
+    const days2 = Array.from(document.querySelectorAll<HTMLButtonElement>(".st-datepicker__day")).filter((d) => !d.disabled);
+    fireEvent.click(days2[days2.length - 1]);
+    const second = onChange.mock.calls[0][0] as { start: Date | null; end: Date | null };
+    expect(second.start).toBeInstanceOf(Date);
+    expect(second.end).toBeInstanceOf(Date);
+  });
+
+  it("works uncontrolled with defaultValue fallback", () => {
+    const onChange = vi.fn();
+    render(<DatePicker label="Date" openLabel="Open calendar" onChange={onChange} />);
+    openPanel();
+    fireEvent.click(enabledDay());
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onChange.mock.calls[0][0]).toBeInstanceOf(Date);
+    // Uncontrolled: the input now reflects the local selection.
+    expect(document.querySelector<HTMLInputElement>(".st-datepicker__control")!.value).not.toBe("");
+  });
+
+  it("closes the panel on Escape", () => {
+    render(<DatePicker label="Date" openLabel="Open calendar" />);
+    openPanel();
+    expect(screen.getByRole("dialog")).toBeTruthy();
+    fireEvent.keyDown(screen.getByRole("dialog"), { key: "Escape" });
+    expect(document.querySelector(".st-datepicker__panel")).toBeNull();
+  });
+});
