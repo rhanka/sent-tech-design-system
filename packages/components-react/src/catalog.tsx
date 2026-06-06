@@ -2221,6 +2221,251 @@ export function Header({ brand, title, navigation, navItems, account, sticky = f
   );
 }
 
+// --- Shell : AppHeader / LanguageToggle / IdentityMenu (calque sentropic) ---
+// Icônes lucide reproduites en SVG inline (mêmes paths que @lucide/svelte) pour
+// conserver une parité stricte sans introduire de dépendance lucide-react.
+function MenuIcon({ size = 20 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false" className="st-appHeader__burgerIcon">
+      <path d="M4 5h16" />
+      <path d="M4 12h16" />
+      <path d="M4 19h16" />
+    </svg>
+  );
+}
+function XIcon({ size = 20 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false" className="st-appHeader__burgerIcon">
+      <path d="M18 6 6 18" />
+      <path d="m6 6 12 12" />
+    </svg>
+  );
+}
+function ChevronDownIcon({ size = 16, className }: { size?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false" className={className}>
+      <path d="m6 9 6 6 6-6" />
+    </svg>
+  );
+}
+
+export type AppHeaderProps = {
+  compact?: boolean;
+  menuOpen?: boolean;
+  onMenuToggle?: () => void;
+  menuLabel?: string;
+  logo?: React.ReactNode;
+  nav?: React.ReactNode;
+  actions?: React.ReactNode;
+  drawer?: React.ReactNode;
+  className?: string;
+};
+export function AppHeader({ compact = false, menuOpen = false, onMenuToggle, menuLabel = "Menu", logo, nav, actions, drawer, className }: AppHeaderProps) {
+  return (
+    <>
+      <header className={classNames("st-appHeader", className)}>
+        <div className="st-appHeader__bar">
+          {compact ? (
+            <div className="st-appHeader__burger">
+              <button
+                type="button"
+                className="st-appHeader__burgerButton"
+                onClick={onMenuToggle}
+                aria-label={menuLabel}
+                aria-expanded={menuOpen}
+                aria-haspopup="menu"
+              >
+                {menuOpen ? <XIcon /> : <MenuIcon />}
+              </button>
+            </div>
+          ) : (
+            <nav className="st-appHeader__nav" aria-label="Primary">
+              {nav}
+            </nav>
+          )}
+          {logo ? <div className="st-appHeader__logo">{logo}</div> : null}
+          {!compact ? <div className="st-appHeader__actions">{actions}</div> : null}
+        </div>
+      </header>
+      {compact && menuOpen && drawer ? (
+        <>
+          <button type="button" className="st-appHeader__scrim" aria-label={menuLabel} onClick={onMenuToggle} />
+          <aside className="st-appHeader__drawer">{drawer}</aside>
+        </>
+      ) : null}
+    </>
+  );
+}
+
+export type LanguageToggleLocale = "fr" | "en";
+export type LanguageToggleProps = {
+  locale?: LanguageToggleLocale;
+  onLocaleChange?: (locale: LanguageToggleLocale) => void;
+  frLabel?: React.ReactNode;
+  enLabel?: React.ReactNode;
+  label?: string;
+  variant?: "select" | "accordion";
+  accordionLabel?: React.ReactNode;
+  className?: string;
+};
+export function LanguageToggle({ locale = "fr", onLocaleChange, frLabel = "FR", enLabel = "EN", label = "Langue", variant = "select", accordionLabel = "Langue", className }: LanguageToggleProps) {
+  const [open, setOpen] = React.useState(false);
+  if (variant === "accordion") {
+    return (
+      <div className={classNames("st-languageToggle", className)}>
+        <button type="button" className="st-languageToggle__accordionTrigger" aria-expanded={open} onClick={() => setOpen((v) => !v)}>
+          <span>{accordionLabel}</span>
+          <ChevronDownIcon className={classNames("st-languageToggle__chevron", open && "st-languageToggle__chevron--open")} />
+        </button>
+        {open ? (
+          <div className="st-languageToggle__accordionPanel">
+            <button type="button" className={classNames("st-languageToggle__option", locale === "fr" && "st-languageToggle__option--active")} aria-current={locale === "fr"} onClick={() => onLocaleChange?.("fr")}>
+              {frLabel}
+            </button>
+            <button type="button" className={classNames("st-languageToggle__option", locale === "en" && "st-languageToggle__option--active")} aria-current={locale === "en"} onClick={() => onLocaleChange?.("en")}>
+              {enLabel}
+            </button>
+          </div>
+        ) : null}
+      </div>
+    );
+  }
+  return (
+    <select
+      className={classNames("st-languageToggle__select", className)}
+      value={locale}
+      aria-label={label}
+      onChange={(e) => onLocaleChange?.(e.currentTarget.value as LanguageToggleLocale)}
+    >
+      <option value="fr">{frLabel}</option>
+      <option value="en">{enLabel}</option>
+    </select>
+  );
+}
+
+export type IdentityUser = { displayName: string; email?: string; id?: string };
+export type IdentityMenuProps = {
+  user?: IdentityUser | null;
+  isAuthenticated?: boolean;
+  onLogin?: () => void;
+  onLogout?: () => void;
+  devicesHref?: string;
+  settingsHref?: string;
+  loginLabel?: React.ReactNode;
+  devicesLabel?: React.ReactNode;
+  settingsLabel?: React.ReactNode;
+  logoutLabel?: React.ReactNode;
+  variant?: "dropdown" | "accordion";
+  className?: string;
+};
+export function identityInitial(user: IdentityUser | null | undefined): string {
+  const source = user?.displayName || user?.email || "U";
+  return source.charAt(0).toUpperCase();
+}
+export function IdentityMenu({ user = null, isAuthenticated = false, onLogin, onLogout, devicesHref = "#", settingsHref = "#", loginLabel = "Se connecter", devicesLabel = "Appareils", settingsLabel = "Paramètres", logoutLabel = "Se déconnecter", variant = "dropdown", className }: IdentityMenuProps) {
+  const [open, setOpen] = React.useState(false);
+  const rootRef = React.useRef<HTMLDivElement>(null);
+  const triggerRef = React.useRef<HTMLButtonElement>(null);
+
+  React.useEffect(() => {
+    if (!open) return;
+    const onPointerDown = (event: PointerEvent) => {
+      const target = event.target as Node | null;
+      if (rootRef.current && target && !rootRef.current.contains(target)) setOpen(false);
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => document.removeEventListener("pointerdown", onPointerDown);
+  }, [open]);
+
+  if (!(isAuthenticated && user)) {
+    return (
+      <button type="button" className={classNames("st-identityMenu__login", variant === "accordion" && "st-identityMenu__login--accordion", className)} onClick={() => onLogin?.()}>
+        {loginLabel}
+      </button>
+    );
+  }
+
+  const displayName = user.displayName || user.email || "User";
+  const getItems = () => Array.from(rootRef.current?.querySelectorAll<HTMLElement>('[role="menuitem"]') ?? []);
+  const focusItem = (index: number) => {
+    const items = getItems();
+    if (!items.length) return;
+    const len = items.length;
+    items[((index % len) + len) % len]?.focus();
+  };
+  const closeAndFocusTrigger = () => {
+    setOpen(false);
+    triggerRef.current?.focus();
+  };
+  const onTriggerKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === "ArrowDown" || event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      setOpen(true);
+      queueMicrotask(() => focusItem(0));
+    } else if (event.key === "ArrowUp") {
+      event.preventDefault();
+      setOpen(true);
+      queueMicrotask(() => focusItem(-1));
+    }
+  };
+  const onMenuKeyDown = (event: React.KeyboardEvent) => {
+    const items = getItems();
+    const current = items.indexOf(document.activeElement as HTMLElement);
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      focusItem(current + 1);
+    } else if (event.key === "ArrowUp") {
+      event.preventDefault();
+      focusItem(current - 1);
+    } else if (event.key === "Home") {
+      event.preventDefault();
+      focusItem(0);
+    } else if (event.key === "End") {
+      event.preventDefault();
+      focusItem(items.length - 1);
+    } else if (event.key === "Escape") {
+      event.preventDefault();
+      closeAndFocusTrigger();
+    }
+  };
+
+  return (
+    <div ref={rootRef} className={classNames("st-identityMenu", variant === "accordion" && "st-identityMenu--accordion", className)}>
+      <button
+        type="button"
+        ref={triggerRef}
+        className="st-identityMenu__trigger"
+        aria-haspopup="menu"
+        aria-expanded={open}
+        aria-label={`Compte de ${displayName}`}
+        onClick={() => setOpen((v) => !v)}
+        onKeyDown={onTriggerKeyDown}
+      >
+        <span className="st-identityMenu__avatar" aria-hidden="true">{identityInitial(user)}</span>
+        <span className="st-identityMenu__meta">
+          <span className="st-identityMenu__name">{displayName}</span>
+          {variant === "accordion" && user.email ? <span className="st-identityMenu__email">{user.email}</span> : null}
+        </span>
+        <ChevronDownIcon className={classNames("st-identityMenu__chevron", open && "st-identityMenu__chevron--open")} />
+      </button>
+      {open ? (
+        <div className="st-identityMenu__menu" role="menu" tabIndex={-1} aria-label={`Menu de ${displayName}`} onKeyDown={onMenuKeyDown}>
+          <a href={devicesHref} className="st-identityMenu__item" role="menuitem" tabIndex={-1} onClick={() => setOpen(false)}>
+            {devicesLabel}
+          </a>
+          <a href={settingsHref} className="st-identityMenu__item" role="menuitem" tabIndex={-1} onClick={() => setOpen(false)}>
+            {settingsLabel}
+          </a>
+          <div className="st-identityMenu__divider" role="separator" aria-hidden="true" />
+          <button type="button" className="st-identityMenu__item st-identityMenu__item--danger" role="menuitem" tabIndex={-1} onClick={() => { setOpen(false); onLogout?.(); }}>
+            {logoutLabel}
+          </button>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 export type HighlightTone = Tone;
 export type HighlightProps = React.HTMLAttributes<HTMLElement> & {
   tone?: HighlightTone;
