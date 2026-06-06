@@ -130,7 +130,7 @@ const componentCases: Array<{ name: string; element: React.ReactElement; text?: 
   { name: "ContentSwitcher", element: <ContentSwitcher items={[{ value: "one", label: "One" }]} value="one" />, text: "One" },
   { name: "CopyButton", element: <CopyButton text="copy me" label="Copy label" />, text: "Copy label" },
   { name: "DataTable", element: <DataTable columns={columns} rows={rows} caption="Data caption" />, text: "Alpha" },
-  { name: "DatePicker", element: <DatePicker label="Date label" value="2026-05-31" />, text: "Date label" },
+  { name: "DatePicker", element: <DatePicker label="Date label" value={new Date(2026, 4, 31)} />, text: "Date label" },
   { name: "DonutChart", element: <DonutChart data={chartData} label="Donut label" />, label: "Donut label" },
   { name: "Drawer", element: <Drawer open title="Drawer title">Drawer body</Drawer>, text: "Drawer body" },
   { name: "Dropdown", element: <Dropdown label="Dropdown label" options={[{ value: "one", label: "One" }]} value="one" />, text: "One" },

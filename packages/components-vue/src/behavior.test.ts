@@ -2394,7 +2394,11 @@ describe("Vue behavioral parity — batch 4", () => {
 
   // --- DatePicker ---
   describe("DatePicker", () => {
-    it("renders div.st-datepicker", () => {
+    const openPanel = async (wrapper: ReturnType<typeof mount>) => {
+      await wrapper.find(".st-datepicker__trigger").trigger("click");
+    };
+
+    it("renders span.st-datepicker", () => {
       const wrapper = mount(DatePicker);
       expect(wrapper.find(".st-datepicker").exists()).toBe(true);
     });
@@ -2404,9 +2408,12 @@ describe("Vue behavioral parity — batch 4", () => {
       expect(wrapper.find(".st-datepicker--sm").exists()).toBe(true);
     });
 
-    it("renders a date input", () => {
+    it("renders a readonly text control (no native date input)", () => {
       const wrapper = mount(DatePicker);
-      expect(wrapper.find("input[type=date]").exists()).toBe(true);
+      expect(wrapper.find("input[type=date]").exists()).toBe(false);
+      const input = wrapper.find(".st-datepicker__control");
+      expect(input.attributes("readonly")).toBeDefined();
+      expect(input.attributes("type")).toBe("text");
     });
 
     it("renders label when provided", () => {
@@ -2416,6 +2423,73 @@ describe("Vue behavioral parity — batch 4", () => {
 
     it("has name DatePicker", () => {
       expect(DatePicker.name).toBe("DatePicker");
+    });
+
+    it("opens a dialog panel with grid roles (a11y)", async () => {
+      const wrapper = mount(DatePicker);
+      const trigger = wrapper.find(".st-datepicker__trigger");
+      expect(trigger.attributes("aria-haspopup")).toBe("dialog");
+      expect(trigger.attributes("aria-expanded")).toBe("false");
+      await openPanel(wrapper);
+      expect(trigger.attributes("aria-expanded")).toBe("true");
+      const panel = wrapper.find(".st-datepicker__panel");
+      expect(panel.attributes("role")).toBe("dialog");
+      expect(wrapper.find(".st-datepicker__grid[role=grid]").exists()).toBe(true);
+      expect(wrapper.find(".st-datepicker__weekday[role=columnheader]").exists()).toBe(true);
+      const day = wrapper.find(".st-datepicker__day");
+      expect(day.attributes("aria-label")).toBeTruthy();
+      expect(day.attributes("aria-pressed")).toBe("false");
+    });
+
+    it("emits update:modelValue and change with a Date in single mode", async () => {
+      const wrapper = mount(DatePicker, { props: { modelValue: new Date(2026, 5, 15) } });
+      await openPanel(wrapper);
+      const day = wrapper.findAll(".st-datepicker__day").find((d) => !d.attributes("disabled"));
+      await day!.trigger("click");
+      const emitted = wrapper.emitted("update:modelValue");
+      expect(emitted).toBeTruthy();
+      expect(emitted?.[0][0]).toBeInstanceOf(Date);
+      expect(wrapper.emitted("change")).toBeTruthy();
+      expect(wrapper.emitted("change")?.[0][0]).toBeInstanceOf(Date);
+    });
+
+    it("reflects controlled single value in the input", () => {
+      const wrapper = mount(DatePicker, {
+        props: { modelValue: new Date(2026, 4, 31), locale: "fr-FR" },
+      });
+      expect(wrapper.find(".st-datepicker__control").attributes("value")).toContain("31");
+    });
+
+    it("emits a {start,end} range across two picks", async () => {
+      const wrapper = mount(DatePicker, {
+        props: { mode: "range", modelValue: { start: null, end: null } },
+      });
+      await openPanel(wrapper);
+      const days = wrapper.findAll(".st-datepicker__day").filter((d) => !d.attributes("disabled"));
+      await days[5].trigger("click");
+      const first = wrapper.emitted("update:modelValue")?.[0][0] as { start: Date | null; end: Date | null };
+      expect(first.start).toBeInstanceOf(Date);
+      expect(first.end).toBeNull();
+      // Second pick completes the range (controlled value updated by parent in real use;
+      // here we remount with the committed start to simulate the controlled flow).
+      const wrapper2 = mount(DatePicker, {
+        props: { mode: "range", modelValue: { start: first.start, end: null } },
+      });
+      await openPanel(wrapper2);
+      const days2 = wrapper2.findAll(".st-datepicker__day").filter((d) => !d.attributes("disabled"));
+      await days2[days2.length - 1].trigger("click");
+      const second = wrapper2.emitted("update:modelValue")?.[0][0] as { start: Date | null; end: Date | null };
+      expect(second.start).toBeInstanceOf(Date);
+      expect(second.end).toBeInstanceOf(Date);
+    });
+
+    it("works uncontrolled (no modelValue) and shows the picked date", async () => {
+      const wrapper = mount(DatePicker);
+      await openPanel(wrapper);
+      const day = wrapper.findAll(".st-datepicker__day").find((d) => !d.attributes("disabled"));
+      await day!.trigger("click");
+      expect(wrapper.emitted("update:modelValue")?.[0][0]).toBeInstanceOf(Date);
+      expect(wrapper.find(".st-datepicker__control").attributes("value")).not.toBe("");
     });
   });
 
