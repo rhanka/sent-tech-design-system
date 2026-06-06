@@ -223,6 +223,10 @@ export { SankeyChart } from "./SankeyChart.js";
 export type { SankeyChartProps, SankeyChartNode, SankeyChartLink, SankeyChartTone } from "./SankeyChart.js";
 export { SunburstChart } from "./SunburstChart.js";
 export type { SunburstChartProps, SunburstChartDatum, SunburstChartTone } from "./SunburstChart.js";
+export { RoseChart } from "./RoseChart.js";
+export type { RoseChartProps, RoseChartDatum, RoseChartTone } from "./RoseChart.js";
+export { ViolinChart } from "./ViolinChart.js";
+export type { ViolinChartProps, ViolinChartDatum, ViolinChartTone } from "./ViolinChart.js";
 export { ForceGraph, nodeShapePath, edgeDashArray } from "./ForceGraph.js";
 export type {
   ForceGraphProps,

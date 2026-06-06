@@ -81,8 +81,10 @@ export type ComponentName =
   | "HistogramChart"
   | "BoxPlotChart"
   | "RadarChart"
+  | "RoseChart"
   | "SankeyChart"
   | "SunburstChart"
+  | "ViolinChart"
   | "ChatThread"
   | "ChatMessage"
   | "StreamingMessage"
@@ -4098,6 +4100,130 @@ import { BoxPlotChart } from "@sentropic/design-system-vue";
     :data="[
       { label: 'API', min: 10, q1: 20, median: 28, q3: 40, max: 60, outliers: [90], tone: 'category3' },
       { label: 'Jobs', min: 15, q1: 24, median: 34, q3: 50, max: 80 }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  rosechart: {
+    id: "rosechart",
+    slug: "rose-chart",
+    nodes: [
+      stack([
+        {
+          comp: "RoseChart",
+          props: {
+            label: "Activité par mois",
+            data: [
+              { label: "Jan", value: 40 },
+              { label: "Fév", value: 22, tone: "category5" },
+              { label: "Mar", value: 80 },
+              { label: "Avr", value: 55 }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { RoseChart } from "@sentropic/design-system-svelte";
+</script>
+
+<RoseChart
+  label="Activité par mois"
+  data={[
+    { label: "Jan", value: 40 },
+    { label: "Fév", value: 22, tone: "category5" },
+    { label: "Mar", value: 80 },
+    { label: "Avr", value: 55 }
+  ]}
+/>`,
+      react: `import { RoseChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <RoseChart
+      label="Activité par mois"
+      data={[
+        { label: "Jan", value: 40 },
+        { label: "Fév", value: 22, tone: "category5" },
+        { label: "Mar", value: 80 },
+        { label: "Avr", value: 55 }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { RoseChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <RoseChart
+    label="Activité par mois"
+    :data="[
+      { label: 'Jan', value: 40 },
+      { label: 'Fév', value: 22, tone: 'category5' },
+      { label: 'Mar', value: 80 },
+      { label: 'Avr', value: 55 }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  violinchart: {
+    id: "violinchart",
+    slug: "violin-chart",
+    nodes: [
+      stack([
+        {
+          comp: "ViolinChart",
+          props: {
+            label: "Distribution de latence",
+            data: [
+              { label: "API", values: [10, 12, 14, 18, 20, 22, 28, 30, 31, 33] },
+              { label: "Jobs", values: [5, 8, 9, 11, 12, 15, 18, 40], tone: "category4" }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { ViolinChart } from "@sentropic/design-system-svelte";
+</script>
+
+<ViolinChart
+  label="Distribution de latence"
+  data={[
+    { label: "API", values: [10, 12, 14, 18, 20, 22, 28, 30, 31, 33] },
+    { label: "Jobs", values: [5, 8, 9, 11, 12, 15, 18, 40], tone: "category4" }
+  ]}
+/>`,
+      react: `import { ViolinChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <ViolinChart
+      label="Distribution de latence"
+      data={[
+        { label: "API", values: [10, 12, 14, 18, 20, 22, 28, 30, 31, 33] },
+        { label: "Jobs", values: [5, 8, 9, 11, 12, 15, 18, 40], tone: "category4" }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { ViolinChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <ViolinChart
+    label="Distribution de latence"
+    :data="[
+      { label: 'API', values: [10, 12, 14, 18, 20, 22, 28, 30, 31, 33] },
+      { label: 'Jobs', values: [5, 8, 9, 11, 12, 15, 18, 40], tone: 'category4' }
     ]"
   />
 </template>`

@@ -110,6 +110,7 @@ export { default as Radio } from "./Radio.svelte";
 export { default as RadioGroup } from "./RadioGroup.svelte";
 export { default as RadarChart } from "./RadarChart.svelte";
 export { default as Rating } from "./Rating.svelte";
+export { default as RoseChart } from "./RoseChart.svelte";
 export { default as Row } from "./Row.svelte";
 export { default as ScatterPlot } from "./ScatterPlot.svelte";
 export { default as Search } from "./Search.svelte";
@@ -148,6 +149,7 @@ export { default as TableOfContents } from "./TableOfContents.svelte";
 export { default as TreemapChart } from "./TreemapChart.svelte";
 export { default as TreeView } from "./TreeView.svelte";
 export { default as UnorderedList } from "./UnorderedList.svelte";
+export { default as ViolinChart } from "./ViolinChart.svelte";
 export { default as WaterfallChart } from "./WaterfallChart.svelte";
 export type { AccordionItem } from "./Accordion.svelte";
 export type { AreaChartDatum, AreaChartTone } from "./AreaChart.svelte";
@@ -156,6 +158,7 @@ export type { BoxPlotChartDatum, BoxPlotChartTone } from "./BoxPlotChart.svelte"
 export type { HeatmapChartDatum, HeatmapChartTone } from "./HeatmapChart.svelte";
 export type { HistogramChartDatum, HistogramChartTone } from "./HistogramChart.svelte";
 export type { RadarChartSeries, RadarChartTone } from "./RadarChart.svelte";
+export type { RoseChartDatum, RoseChartTone } from "./RoseChart.svelte";
 export type { SankeyChartLink, SankeyChartNode, SankeyChartTone } from "./SankeyChart.svelte";
 export type { SunburstChartDatum, SunburstChartTone } from "./SunburstChart.svelte";
 export type { ScatterPlotDatum, ScatterPlotTone } from "./ScatterPlot.svelte";
@@ -172,6 +175,7 @@ export type {
   GaugeChartFormat
 } from "./GaugeChart.svelte";
 export type { FunnelChartTone, FunnelChartDatum } from "./FunnelChart.svelte";
+export type { ViolinChartDatum, ViolinChartTone } from "./ViolinChart.svelte";
 export type { WaterfallType, WaterfallChartDatum } from "./WaterfallChart.svelte";
 export type { BulletChartDatum } from "./BulletChart.svelte";
 export type { MarimekkoChartTone, MarimekkoChartSegment, MarimekkoChartDatum } from "./MarimekkoChart.svelte";
