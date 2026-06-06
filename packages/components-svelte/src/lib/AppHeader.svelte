@@ -65,8 +65,23 @@
 
 <header class={classes()}>
   <div class="st-appHeader__bar">
-    <!-- Burger à GAUCHE (calque exact de la source ~L176-191). -->
-    {#if compact}
+    <!-- Logo SENT à GAUCHE (+ sous-titre). -->
+    {#if logo}
+      <div class="st-appHeader__logo">{@render logo()}</div>
+    {/if}
+
+    <!-- Nav desktop (masquée en mode compact). -->
+    {#if !compact}
+      <nav class="st-appHeader__nav" aria-label="Primary">
+        {#if nav}{@render nav()}{/if}
+      </nav>
+
+      <!-- Contrôles de droite (masqués en mode compact). -->
+      <div class="st-appHeader__actions">
+        {#if actions}{@render actions()}{/if}
+      </div>
+    {:else}
+      <!-- Burger à l'extrême DROITE en mode compact. -->
       <div class="st-appHeader__burger">
         <button
           type="button"
@@ -83,22 +98,6 @@
             <Menu class="st-appHeader__burgerIcon" size={20} aria-hidden="true" />
           {/if}
         </button>
-      </div>
-    {:else}
-      <!-- Nav desktop (masquée en mode compact). -->
-      <nav class="st-appHeader__nav" aria-label="Primary">
-        {#if nav}{@render nav()}{/if}
-      </nav>
-    {/if}
-
-    {#if logo}
-      <div class="st-appHeader__logo">{@render logo()}</div>
-    {/if}
-
-    <!-- Contrôles de droite (masqués en mode compact). -->
-    {#if !compact}
-      <div class="st-appHeader__actions">
-        {#if actions}{@render actions()}{/if}
       </div>
     {/if}
   </div>
@@ -152,7 +151,7 @@
     align-items: center;
     display: flex;
     flex: 1 1 auto;
-    justify-content: flex-start;
+    justify-content: flex-end;
   }
 
   .st-appHeader__burgerButton {

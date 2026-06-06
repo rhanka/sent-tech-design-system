@@ -2600,7 +2600,15 @@ export function AppHeader({ compact = false, menuOpen = false, onMenuToggle, men
     <>
       <header className={classNames("st-appHeader", className)}>
         <div className="st-appHeader__bar">
-          {compact ? (
+          {logo ? <div className="st-appHeader__logo">{logo}</div> : null}
+          {!compact ? (
+            <>
+              <nav className="st-appHeader__nav" aria-label="Primary">
+                {nav}
+              </nav>
+              <div className="st-appHeader__actions">{actions}</div>
+            </>
+          ) : (
             <div className="st-appHeader__burger">
               <button
                 type="button"
@@ -2614,13 +2622,7 @@ export function AppHeader({ compact = false, menuOpen = false, onMenuToggle, men
                 {menuOpen ? <XIcon /> : <MenuIcon />}
               </button>
             </div>
-          ) : (
-            <nav className="st-appHeader__nav" aria-label="Primary">
-              {nav}
-            </nav>
           )}
-          {logo ? <div className="st-appHeader__logo">{logo}</div> : null}
-          {!compact ? <div className="st-appHeader__actions">{actions}</div> : null}
         </div>
       </header>
       {compact && menuOpen && drawer ? (
