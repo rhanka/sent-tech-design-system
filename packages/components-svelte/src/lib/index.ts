@@ -118,6 +118,7 @@ export { default as SkeletonText } from "./SkeletonText.svelte";
 export { default as SkipLink } from "./SkipLink.svelte";
 export { default as SlideIndicator } from "./SlideIndicator.svelte";
 export { default as Slider } from "./Slider.svelte";
+export { default as RangeSlider } from "./RangeSlider.svelte";
 export { default as SankeyChart } from "./SankeyChart.svelte";
 export { default as Stack } from "./Stack.svelte";
 export { default as Stepper } from "./Stepper.svelte";
@@ -260,3 +261,4 @@ export type { PopperProps, PopperPlacement, PopperStrategy } from "./Popper.svel
 export type { FilterPillProps, FilterPillTone } from "./FilterPill.svelte";
 export type { FilterBarProps } from "./FilterBar.svelte";
 export type { SelectionChipProps, SelectionChipTone } from "./SelectionChip.svelte";
+export type { RangeSliderProps, RangeSliderSize } from "./RangeSlider.svelte";
