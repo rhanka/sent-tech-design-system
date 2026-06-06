@@ -22,8 +22,8 @@
     "dist"
   ],
   "dependencies": {
-    "@sentropic/design-system-themes": "0.10.3",
-    "@sentropic/design-system-tokens": "0.10.3"
+    "@sentropic/design-system-themes": "0.11.0",
+    "@sentropic/design-system-tokens": "0.11.0"
   },
   "devDependencies": {
     "typescript": "^5.9.3"
