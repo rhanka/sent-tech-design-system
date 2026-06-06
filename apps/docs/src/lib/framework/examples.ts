@@ -147,7 +147,10 @@ export type ComponentName =
   | "DivergentBarChart"
   | "FilterPill"
   | "FilterBar"
-  | "SelectionChip";
+  | "SelectionChip"
+  | "LollipopChart"
+  | "ParetoChart"
+  | "RangeSlider";
 
 export interface ComponentNodeSpec {
   comp: ComponentName;
@@ -8352,6 +8355,189 @@ import { BumpChart } from "@sentropic/design-system-vue";
       { label: 'Angular', ranks: [2, 3, 4, 4], tone: 'category4' }
     ]"
   />
+</template>`
+    }
+  },
+
+  lollipopchart: {
+    id: "lollipopchart",
+    slug: "lollipop-chart",
+    nodes: [
+      stack([
+        {
+          comp: "LollipopChart",
+          props: {
+            label: "Score par équipe",
+            orientation: "vertical",
+            data: [
+              { label: "Design", value: 82, tone: "category1" },
+              { label: "Ingénierie", value: 74, tone: "category2" },
+              { label: "Produit", value: 61, tone: "category3" },
+              { label: "Ventes", value: 48, tone: "category4" }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { LollipopChart } from "@sentropic/design-system-svelte";
+</script>
+
+<LollipopChart
+  label="Score par équipe"
+  orientation="vertical"
+  data={[
+    { label: "Design", value: 82, tone: "category1" },
+    { label: "Ingénierie", value: 74, tone: "category2" },
+    { label: "Produit", value: 61, tone: "category3" },
+    { label: "Ventes", value: 48, tone: "category4" }
+  ]}
+/>`,
+      react: `import { LollipopChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <LollipopChart
+      label="Score par équipe"
+      orientation="vertical"
+      data={[
+        { label: "Design", value: 82, tone: "category1" },
+        { label: "Ingénierie", value: 74, tone: "category2" },
+        { label: "Produit", value: 61, tone: "category3" },
+        { label: "Ventes", value: 48, tone: "category4" }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { LollipopChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <LollipopChart
+    label="Score par équipe"
+    orientation="vertical"
+    :data="[
+      { label: 'Design', value: 82, tone: 'category1' },
+      { label: 'Ingénierie', value: 74, tone: 'category2' },
+      { label: 'Produit', value: 61, tone: 'category3' },
+      { label: 'Ventes', value: 48, tone: 'category4' }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  paretochart: {
+    id: "paretochart",
+    slug: "pareto-chart",
+    nodes: [
+      stack([
+        {
+          comp: "ParetoChart",
+          props: {
+            label: "Causes d'incidents",
+            data: [
+              { label: "Réseau", value: 45, tone: "category1" },
+              { label: "Déploiement", value: 30, tone: "category2" },
+              { label: "Base de données", value: 15, tone: "category3" },
+              { label: "Tiers", value: 7, tone: "category4" },
+              { label: "Autre", value: 3, tone: "category5" }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { ParetoChart } from "@sentropic/design-system-svelte";
+</script>
+
+<ParetoChart
+  label="Causes d'incidents"
+  data={[
+    { label: "Réseau", value: 45, tone: "category1" },
+    { label: "Déploiement", value: 30, tone: "category2" },
+    { label: "Base de données", value: 15, tone: "category3" },
+    { label: "Tiers", value: 7, tone: "category4" },
+    { label: "Autre", value: 3, tone: "category5" }
+  ]}
+/>`,
+      react: `import { ParetoChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <ParetoChart
+      label="Causes d'incidents"
+      data={[
+        { label: "Réseau", value: 45, tone: "category1" },
+        { label: "Déploiement", value: 30, tone: "category2" },
+        { label: "Base de données", value: 15, tone: "category3" },
+        { label: "Tiers", value: 7, tone: "category4" },
+        { label: "Autre", value: 3, tone: "category5" }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { ParetoChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <ParetoChart
+    label="Causes d'incidents"
+    :data="[
+      { label: 'Réseau', value: 45, tone: 'category1' },
+      { label: 'Déploiement', value: 30, tone: 'category2' },
+      { label: 'Base de données', value: 15, tone: 'category3' },
+      { label: 'Tiers', value: 7, tone: 'category4' },
+      { label: 'Autre', value: 3, tone: 'category5' }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  rangeslider: {
+    id: "rangeslider",
+    slug: "range-slider",
+    nodes: [
+      wrap([
+        {
+          comp: "RangeSlider",
+          props: { label: "Plage de prix (€)", defaultValue: [20, 80], min: 0, max: 100 }
+        },
+        {
+          comp: "RangeSlider",
+          props: { label: "Latence (ms)", defaultValue: [100, 400], min: 0, max: 1000, step: 50 }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { RangeSlider } from "@sentropic/design-system-svelte";
+  let range = $state([20, 80]);
+</script>
+
+<RangeSlider label="Plage de prix (€)" bind:value={range} min={0} max={100} />`,
+      react: `import { useState } from "react";
+import { RangeSlider } from "@sentropic/design-system-react";
+
+export function Demo() {
+  const [range, setRange] = useState<[number, number]>([20, 80]);
+  return (
+    <RangeSlider label="Plage de prix (€)" value={range} onChange={setRange} min={0} max={100} />
+  );
+}`,
+      vue: `<script setup>
+import { ref } from "vue";
+import { RangeSlider } from "@sentropic/design-system-vue";
+const range = ref([20, 80]);
+</script>
+
+<template>
+  <RangeSlider label="Plage de prix (€)" v-model="range" :min="0" :max="100" />
 </template>`
     }
   }
