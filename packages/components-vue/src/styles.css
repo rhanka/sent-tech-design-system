@@ -11207,3 +11207,158 @@
     }
   }
 
+
+/* ── ChordDiagram ── */
+.st-chordDiagram {
+  color: var(--st-semantic-text-secondary);
+  display: block;
+  font-family: inherit;
+  max-width: 100%;
+  position: relative;
+  width: 100%;
+}
+
+.st-chordDiagram svg,
+.st-chordDiagram__visual {
+  display: block;
+  overflow: visible;
+}
+
+.st-chordDiagram__ribbon {
+  cursor: pointer;
+  fill-opacity: 0.4;
+  stroke-opacity: 0.55;
+  transition: opacity 120ms ease;
+}
+
+.st-chordDiagram__ribbon:hover {
+  fill-opacity: 0.62;
+}
+
+.st-chordDiagram__ribbon--dim {
+  opacity: 0.18;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .st-chordDiagram__ribbon {
+    transition: none;
+  }
+}
+
+.st-chordDiagram__arc {
+  stroke: var(--st-semantic-surface-default, Canvas);
+  stroke-width: 1;
+}
+
+.st-chordDiagram__arc--category1,
+.st-chordDiagram__ribbon--category1 { fill: var(--st-semantic-data-category1); stroke: var(--st-semantic-data-category1); }
+.st-chordDiagram__arc--category2,
+.st-chordDiagram__ribbon--category2 { fill: var(--st-semantic-data-category2); stroke: var(--st-semantic-data-category2); }
+.st-chordDiagram__arc--category3,
+.st-chordDiagram__ribbon--category3 { fill: var(--st-semantic-data-category3); stroke: var(--st-semantic-data-category3); }
+.st-chordDiagram__arc--category4,
+.st-chordDiagram__ribbon--category4 { fill: var(--st-semantic-data-category4); stroke: var(--st-semantic-data-category4); }
+.st-chordDiagram__arc--category5,
+.st-chordDiagram__ribbon--category5 { fill: var(--st-semantic-data-category5); stroke: var(--st-semantic-data-category5); }
+.st-chordDiagram__arc--category6,
+.st-chordDiagram__ribbon--category6 { fill: var(--st-semantic-data-category6); stroke: var(--st-semantic-data-category6); }
+.st-chordDiagram__arc--category7,
+.st-chordDiagram__ribbon--category7 { fill: var(--st-semantic-data-category7); stroke: var(--st-semantic-data-category7); }
+.st-chordDiagram__arc--category8,
+.st-chordDiagram__ribbon--category8 { fill: var(--st-semantic-data-category8); stroke: var(--st-semantic-data-category8); }
+
+.st-chordDiagram__arcLabel {
+  /* fill calculé par contrastTextForTone() en inline */
+  font-size: 0.7rem;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+.st-chordDiagram__tooltip {
+  background: var(--st-semantic-surface-inverse);
+  border-radius: var(--st-radius-sm, 0.25rem);
+  color: var(--st-semantic-text-inverse);
+  display: inline-flex;
+  flex-direction: column;
+  font-size: 0.75rem;
+  gap: 0.125rem;
+  line-height: 1.2;
+  padding: 0.375rem 0.5rem;
+  pointer-events: none;
+  position: absolute;
+  transform: translate(-50%, -115%);
+  white-space: nowrap;
+  z-index: 1;
+}
+
+.st-chordDiagram__tooltipLabel { font-weight: 600; }
+.st-chordDiagram__tooltipValue { opacity: 0.85; }
+
+/* ── PackedBubblesChart ── */
+.st-packedBubblesChart {
+  color: var(--st-semantic-text-secondary);
+  display: block;
+  font-family: inherit;
+  max-width: 100%;
+  position: relative;
+  width: 100%;
+}
+
+.st-packedBubblesChart svg,
+.st-packedBubblesChart__visual {
+  display: block;
+  overflow: visible;
+}
+
+.st-packedBubblesChart__circle {
+  cursor: pointer;
+  stroke: var(--st-semantic-surface-default, Canvas);
+  stroke-width: 1.5;
+  transition: opacity 120ms ease;
+}
+
+.st-packedBubblesChart__circle--dim {
+  opacity: 0.4;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .st-packedBubblesChart__circle {
+    transition: none;
+  }
+}
+
+.st-packedBubblesChart__circle--category1 { fill: var(--st-semantic-data-category1); }
+.st-packedBubblesChart__circle--category2 { fill: var(--st-semantic-data-category2); }
+.st-packedBubblesChart__circle--category3 { fill: var(--st-semantic-data-category3); }
+.st-packedBubblesChart__circle--category4 { fill: var(--st-semantic-data-category4); }
+.st-packedBubblesChart__circle--category5 { fill: var(--st-semantic-data-category5); }
+.st-packedBubblesChart__circle--category6 { fill: var(--st-semantic-data-category6); }
+.st-packedBubblesChart__circle--category7 { fill: var(--st-semantic-data-category7); }
+.st-packedBubblesChart__circle--category8 { fill: var(--st-semantic-data-category8); }
+
+.st-packedBubblesChart__label {
+  /* fill calculé par contrastTextForTone() en inline */
+  font-size: 0.7rem;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+.st-packedBubblesChart__tooltip {
+  background: var(--st-semantic-surface-inverse);
+  border-radius: var(--st-radius-sm, 0.25rem);
+  color: var(--st-semantic-text-inverse);
+  display: inline-flex;
+  flex-direction: column;
+  font-size: 0.75rem;
+  gap: 0.125rem;
+  line-height: 1.2;
+  padding: 0.375rem 0.5rem;
+  pointer-events: none;
+  position: absolute;
+  transform: translate(-50%, -115%);
+  white-space: nowrap;
+  z-index: 1;
+}
+
+.st-packedBubblesChart__tooltipLabel { font-weight: 600; }
+.st-packedBubblesChart__tooltipValue { opacity: 0.85; }

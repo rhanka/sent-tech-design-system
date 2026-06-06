@@ -150,6 +150,8 @@ export type ComponentName =
   | "SelectionChip"
   | "LollipopChart"
   | "ParetoChart"
+  | "ChordDiagram"
+  | "PackedBubblesChart"
   | "RangeSlider";
 
 export interface ComponentNodeSpec {
@@ -8493,6 +8495,142 @@ import { ParetoChart } from "@sentropic/design-system-vue";
       { label: 'Base de données', value: 15, tone: 'category3' },
       { label: 'Tiers', value: 7, tone: 'category4' },
       { label: 'Autre', value: 3, tone: 'category5' }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  chorddiagram: {
+    id: "chorddiagram",
+    slug: "chord-diagram",
+    nodes: [
+      stack([
+        {
+          comp: "ChordDiagram",
+          props: {
+            label: "Échanges entre régions",
+            data: [
+              { from: "Europe", to: "Asie", value: 24 },
+              { from: "Asie", to: "Amérique", value: 18 },
+              { from: "Amérique", to: "Europe", value: 12 },
+              { from: "Europe", to: "Amérique", value: 9 }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { ChordDiagram } from "@sentropic/design-system-svelte";
+</script>
+
+<ChordDiagram
+  label="Échanges entre régions"
+  data={[
+    { from: "Europe", to: "Asie", value: 24 },
+    { from: "Asie", to: "Amérique", value: 18 },
+    { from: "Amérique", to: "Europe", value: 12 },
+    { from: "Europe", to: "Amérique", value: 9 }
+  ]}
+/>`,
+      react: `import { ChordDiagram } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <ChordDiagram
+      label="Échanges entre régions"
+      data={[
+        { from: "Europe", to: "Asie", value: 24 },
+        { from: "Asie", to: "Amérique", value: 18 },
+        { from: "Amérique", to: "Europe", value: 12 },
+        { from: "Europe", to: "Amérique", value: 9 }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { ChordDiagram } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <ChordDiagram
+    label="Échanges entre régions"
+    :data="[
+      { from: 'Europe', to: 'Asie', value: 24 },
+      { from: 'Asie', to: 'Amérique', value: 18 },
+      { from: 'Amérique', to: 'Europe', value: 12 },
+      { from: 'Europe', to: 'Amérique', value: 9 }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  packedbubbleschart: {
+    id: "packedbubbleschart",
+    slug: "packed-bubbles-chart",
+    nodes: [
+      stack([
+        {
+          comp: "PackedBubblesChart",
+          props: {
+            label: "Langages par usage",
+            data: [
+              { label: "TypeScript", value: 120, tone: "category1" },
+              { label: "Python", value: 80, tone: "category2" },
+              { label: "Rust", value: 45, tone: "category3" },
+              { label: "Go", value: 30, tone: "category4" },
+              { label: "Elixir", value: 14, tone: "category5" }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { PackedBubblesChart } from "@sentropic/design-system-svelte";
+</script>
+
+<PackedBubblesChart
+  label="Langages par usage"
+  data={[
+    { label: "TypeScript", value: 120, tone: "category1" },
+    { label: "Python", value: 80, tone: "category2" },
+    { label: "Rust", value: 45, tone: "category3" },
+    { label: "Go", value: 30, tone: "category4" },
+    { label: "Elixir", value: 14, tone: "category5" }
+  ]}
+/>`,
+      react: `import { PackedBubblesChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <PackedBubblesChart
+      label="Langages par usage"
+      data={[
+        { label: "TypeScript", value: 120, tone: "category1" },
+        { label: "Python", value: 80, tone: "category2" },
+        { label: "Rust", value: 45, tone: "category3" },
+        { label: "Go", value: 30, tone: "category4" },
+        { label: "Elixir", value: 14, tone: "category5" }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { PackedBubblesChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <PackedBubblesChart
+    label="Langages par usage"
+    :data="[
+      { label: 'TypeScript', value: 120, tone: 'category1' },
+      { label: 'Python', value: 80, tone: 'category2' },
+      { label: 'Rust', value: 45, tone: 'category3' },
+      { label: 'Go', value: 30, tone: 'category4' },
+      { label: 'Elixir', value: 14, tone: 'category5' }
     ]"
   />
 </template>`
