@@ -2719,6 +2719,53 @@ describe("Vue behavioral parity — batch 5", () => {
       expect(BarChart.name).toBe("BarChart");
     });
 
+    // --- shared value domain ---
+    const domData = [
+      { label: "A", value: 4 },
+      { label: "B", value: 8 },
+      { label: "C", value: 2 },
+    ];
+    const tickLabels = (wrapper: ReturnType<typeof mount>) =>
+      wrapper.findAll(".st-barChart__tickLabel").map((n) => n.text().trim());
+
+    it("domain: auto-scales to the data range when no domain is given", () => {
+      const wrapper = mount(BarChart, { props: { data: domData, label: "Auto" } });
+      const labels = tickLabels(wrapper);
+      expect(labels).toContain("8");
+      expect(labels).not.toContain("100");
+    });
+
+    it("domain: uses the provided domain for the value axis (shared scale)", () => {
+      const wrapper = mount(BarChart, {
+        props: { data: domData, label: "Domain", domain: [0, 100] },
+      });
+      const labels = tickLabels(wrapper);
+      expect(labels).toContain("100");
+      expect(labels).not.toContain("8");
+    });
+
+    it("domain: shrinks bars when the domain is wider than the data", () => {
+      const auto = mount(BarChart, { props: { data: domData, label: "A" } });
+      const scaled = mount(BarChart, { props: { data: domData, label: "B", domain: [0, 100] } });
+      const autoH = Number(auto.find(".st-barChart__bar").attributes("height"));
+      const scaledH = Number(scaled.find(".st-barChart__bar").attributes("height"));
+      expect(scaledH).toBeLessThan(autoH);
+    });
+
+    it("domain: falls back to auto when the domain is invalid (NaN / unordered)", () => {
+      const nan = mount(BarChart, {
+        props: { data: domData, label: "NaN", domain: [0, Number.NaN] },
+      });
+      expect(tickLabels(nan)).toContain("8");
+      expect(tickLabels(nan)).not.toContain("100");
+
+      const unordered = mount(BarChart, {
+        props: { data: domData, label: "Rev", domain: [100, 0] },
+      });
+      expect(tickLabels(unordered)).toContain("8");
+      expect(tickLabels(unordered)).not.toContain("100");
+    });
+
     // --- controlled selection ---
     const selData = [
       { label: "A", value: 4 },

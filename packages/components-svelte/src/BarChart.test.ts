@@ -123,3 +123,53 @@ describe("BarChart controlled selection", () => {
     }
   });
 });
+
+const tickLabels = (container: HTMLElement) =>
+  Array.from(container.querySelectorAll(".st-barChart__tickLabel")).map((n) =>
+    n.textContent?.trim()
+  );
+
+describe("BarChart shared value domain", () => {
+  it("auto-scales to the data range when no domain is given", () => {
+    const { container } = render(BarChart, { props: { label: "Auto", data } });
+    // Data max is 8 → auto ticks top out at 8, never 100.
+    const labels = tickLabels(container);
+    expect(labels).toContain("8");
+    expect(labels).not.toContain("100");
+  });
+
+  it("uses the provided domain for the value axis (shared scale)", () => {
+    const { container } = render(BarChart, { props: { label: "Domain", data, domain: [0, 100] } });
+    // The fixed domain forces the axis up to 100 regardless of the small data.
+    const labels = tickLabels(container);
+    expect(labels).toContain("100");
+    expect(labels).not.toContain("8");
+  });
+
+  it("shrinks bars when the domain is wider than the data", () => {
+    const { container: auto } = render(BarChart, { props: { label: "A", data } });
+    const { container: scaled } = render(BarChart, {
+      props: { label: "B", data, domain: [0, 100] }
+    });
+    const autoBar = auto.querySelector(".st-barChart__bar") as SVGRectElement;
+    const scaledBar = scaled.querySelector(".st-barChart__bar") as SVGRectElement;
+    // Same datum, wider domain → shorter bar.
+    expect(Number(scaledBar.getAttribute("height"))).toBeLessThan(
+      Number(autoBar.getAttribute("height"))
+    );
+  });
+
+  it("falls back to auto when the domain is invalid (NaN / unordered)", () => {
+    const nan = render(BarChart, {
+      props: { label: "NaN", data, domain: [0, Number.NaN] as [number, number] }
+    });
+    expect(tickLabels(nan.container as HTMLElement)).toContain("8");
+    expect(tickLabels(nan.container as HTMLElement)).not.toContain("100");
+
+    const unordered = render(BarChart, {
+      props: { label: "Rev", data, domain: [100, 0] }
+    });
+    expect(tickLabels(unordered.container as HTMLElement)).toContain("8");
+    expect(tickLabels(unordered.container as HTMLElement)).not.toContain("100");
+  });
+});
