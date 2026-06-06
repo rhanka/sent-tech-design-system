@@ -5,10 +5,17 @@ import {
   buildSmoothPath,
   CHART_MARGIN,
   chartDataList,
+  extendValueDomain,
   formatTick,
   isNumeric,
+  linearRegression,
   niceTicks,
+  overlayDataListItems,
+  overlayToneClass,
   scaleLinear,
+  type ChartBand,
+  type ChartGoalLine,
+  type ChartReferenceLine,
 } from "./chartScale.js";
 
 export type LineChartTone =
@@ -34,6 +41,14 @@ export type LineChartProps = {
   smooth?: boolean;
   area?: boolean;
   label: string;
+  /** Reference lines (default `axis: "y"` → horizontal at `value`). */
+  referenceLines?: ChartReferenceLine[];
+  /** Shaded value-axis bands between `from`..`to`. */
+  bands?: ChartBand[];
+  /** A single goal line, emphasised above the data. */
+  goalLine?: ChartGoalLine;
+  /** Least-squares trend line over the data points. */
+  trend?: boolean;
   class?: string;
 };
 
@@ -49,6 +64,10 @@ export const LineChart = defineComponent({
     smooth: { type: Boolean, default: false },
     area: { type: Boolean, default: false },
     label: { type: String, required: true },
+    referenceLines: { type: Array as () => ChartReferenceLine[], default: undefined },
+    bands: { type: Array as () => ChartBand[], default: undefined },
+    goalLine: { type: Object as () => ChartGoalLine, default: undefined },
+    trend: { type: Boolean, default: false },
     class: { type: String, default: undefined },
   },
   setup(props, { attrs }) {
@@ -75,6 +94,11 @@ export const LineChart = defineComponent({
       const area = props.area ?? false;
       const label = props.label;
       const data = props.data;
+      const referenceLines = props.referenceLines;
+      const bands = props.bands;
+      // A valid goal line needs a finite value; otherwise it is ignored.
+      const goal = props.goalLine && Number.isFinite(props.goalLine.value) ? props.goalLine : null;
+      const trend = props.trend ?? false;
 
       const plotWidth = Math.max(width - MARGIN.left - MARGIN.right, 1);
       const plotHeight = Math.max(height - MARGIN.top - MARGIN.bottom, 1);
@@ -92,12 +116,14 @@ export const LineChart = defineComponent({
       }
 
       let yTicks: number[];
-      const ys = data.map((d) => d.y);
-      if (ys.length === 0) {
+      const ys = data.map((d) => d.y).filter((y) => Number.isFinite(y));
+      if (ys.length === 0 && !referenceLines?.length && !bands?.length && !goal) {
         yTicks = [0];
       } else {
-        const yMin = Math.min(...ys);
-        const yMax = Math.max(...ys);
+        let yMin = ys.length ? Math.min(...ys) : 0;
+        let yMax = ys.length ? Math.max(...ys) : 0;
+        // Fold overlay values into the domain so they never fall outside the plot.
+        [yMin, yMax] = extendValueDomain(yMin, yMax, { referenceLines, bands, goalLine: goal });
         const padded = (yMax - yMin) * 0.08 || Math.max(Math.abs(yMax), 1) * 0.1;
         yTicks = niceTicks(yMin - padded, yMax + padded, 5);
       }
@@ -119,7 +145,67 @@ export const LineChart = defineComponent({
         });
       }
 
-      const dataValueItems = data.map((d) => `${d.x}: ${d.y}`);
+      // --- Analytical overlays -----------------------------------------------
+      const valueToY = (v: number) => MARGIN.top + scaleLinear(v, yDomain.min, yDomain.max, plotHeight, 0);
+      const dataValueToX = (v: number) =>
+        xDomain.kind === "numeric"
+          ? MARGIN.left + scaleLinear(v, xDomain.min, xDomain.max, 0, plotWidth)
+          : null;
+
+      const bandRects = (bands ?? [])
+        .filter((b) => Number.isFinite(b.from) && Number.isFinite(b.to))
+        .map((b, i) => {
+          const y1 = valueToY(b.from);
+          const y2 = valueToY(b.to);
+          return {
+            key: i,
+            x: MARGIN.left,
+            y: Math.min(y1, y2),
+            width: plotWidth,
+            height: Math.max(Math.abs(y2 - y1), 0.5),
+            label: b.label,
+            tone: b.tone,
+          };
+        });
+
+      type Ref = { key: number; axis: "x" | "y"; x1: number; x2: number; y1: number; y2: number; label?: string; tone?: ChartReferenceLine["tone"] };
+      const refLines: Ref[] = [];
+      (referenceLines ?? [])
+        .filter((r) => Number.isFinite(r.value))
+        .forEach((r, i) => {
+          const axis = r.axis ?? "y";
+          if (axis === "x") {
+            const x = dataValueToX(r.value);
+            if (x === null) return;
+            refLines.push({ key: i, axis, x1: x, x2: x, y1: MARGIN.top, y2: MARGIN.top + plotHeight, label: r.label, tone: r.tone });
+          } else {
+            const y = valueToY(r.value);
+            refLines.push({ key: i, axis, x1: MARGIN.left, x2: MARGIN.left + plotWidth, y1: y, y2: y, label: r.label, tone: r.tone });
+          }
+        });
+
+      const goalGeom = goal
+        ? { y: valueToY(goal.value), label: goal.label, value: goal.value }
+        : null;
+
+      const trendModel =
+        trend && xDomain.kind === "numeric"
+          ? linearRegression(data.map((d) => ({ x: d.x as number, y: d.y })))
+          : null;
+      const trendLine =
+        trendModel && xDomain.kind === "numeric"
+          ? {
+              x1: MARGIN.left + scaleLinear(trendModel.minX, xDomain.min, xDomain.max, 0, plotWidth),
+              y1: valueToY(trendModel.slope * trendModel.minX + trendModel.intercept),
+              x2: MARGIN.left + scaleLinear(trendModel.maxX, xDomain.min, xDomain.max, 0, plotWidth),
+              y2: valueToY(trendModel.slope * trendModel.maxX + trendModel.intercept),
+            }
+          : null;
+
+      const dataValueItems = [
+        ...data.map((d) => `${d.x}: ${d.y}`),
+        ...overlayDataListItems({ referenceLines, bands, goalLine: goal, trend: trendModel }),
+      ];
 
       const linePath = points.length === 0 ? "" : smooth ? buildSmoothPath(points) : buildLinearPath(points);
 
@@ -177,11 +263,77 @@ export const LineChart = defineComponent({
         h("circle", { key: p.index, class: "st-lineChart__dot", cx: p.x, cy: p.y, r: "4", "data-chart-index": p.index }),
       );
 
+      // Overlay vnodes — bands + reference lines + trend below the data; the
+      // goal line is rendered above for emphasis.
+      const belowOverlays: ReturnType<typeof h>[] = [];
+      for (const b of bandRects) {
+        belowOverlays.push(
+          h("rect", {
+            key: `band${b.key}`,
+            class: classNames("st-lineChart__band", overlayToneClass("st-lineChart__band", b.tone)),
+            x: b.x,
+            y: b.y,
+            width: b.width,
+            height: b.height,
+          }),
+        );
+        if (b.label) {
+          belowOverlays.push(
+            h("text", { key: `bandL${b.key}`, class: "st-lineChart__overlayLabel", x: b.x + 4, y: b.y + 11 }, b.label),
+          );
+        }
+      }
+      for (const r of refLines) {
+        belowOverlays.push(
+          h("line", {
+            key: `ref${r.key}`,
+            class: classNames("st-lineChart__refLine", overlayToneClass("st-lineChart__refLine", r.tone)),
+            x1: r.x1,
+            x2: r.x2,
+            y1: r.y1,
+            y2: r.y2,
+          }),
+        );
+        if (r.label) {
+          belowOverlays.push(
+            h(
+              "text",
+              {
+                key: `refL${r.key}`,
+                class: "st-lineChart__overlayLabel",
+                x: r.axis === "x" ? r.x1 + 4 : MARGIN.left + plotWidth - 4,
+                y: r.axis === "x" ? MARGIN.top + 11 : r.y1 - 4,
+                "text-anchor": r.axis === "x" ? "start" : "end",
+              },
+              r.label,
+            ),
+          );
+        }
+      }
+      if (trendLine) {
+        belowOverlays.push(
+          h("line", { class: "st-lineChart__trend", x1: trendLine.x1, y1: trendLine.y1, x2: trendLine.x2, y2: trendLine.y2 }),
+        );
+      }
+
+      const goalOverlays: ReturnType<typeof h>[] = [];
+      if (goalGeom) {
+        goalOverlays.push(
+          h("line", { class: "st-lineChart__goalLine", x1: MARGIN.left, x2: MARGIN.left + plotWidth, y1: goalGeom.y, y2: goalGeom.y }),
+          h(
+            "text",
+            { class: "st-lineChart__goalLabel", x: MARGIN.left + plotWidth - 4, y: goalGeom.y - 4, "text-anchor": "end" },
+            goalGeom.label ?? `Objectif ${goalGeom.value}`,
+          ),
+        );
+      }
+
       const svgChildren: ReturnType<typeof h>[] = [
         ...gridChildren,
         h("line", { class: "st-lineChart__axis", x1: MARGIN.left, x2: MARGIN.left, y1: MARGIN.top, y2: height - MARGIN.bottom }),
         h("line", { class: "st-lineChart__axis", x1: MARGIN.left, x2: width - MARGIN.right, y1: height - MARGIN.bottom, y2: height - MARGIN.bottom }),
         ...xLabels,
+        ...belowOverlays,
       ];
       if (area && areaPath) {
         svgChildren.push(h("path", { class: "st-lineChart__area", d: areaPath }));
@@ -191,7 +343,7 @@ export const LineChart = defineComponent({
           h("path", { class: "st-lineChart__line", d: linePath, fill: "none", "stroke-width": "2", "stroke-linecap": "round", "stroke-linejoin": "round" }),
         );
       }
-      svgChildren.push(...dots);
+      svgChildren.push(...dots, ...goalOverlays);
 
       const hoveredPoint = hoveredIndex.value !== null ? points[hoveredIndex.value] : undefined;
 

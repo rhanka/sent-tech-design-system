@@ -173,3 +173,88 @@ describe("BarChart shared value domain", () => {
     expect(tickLabels(unordered.container as HTMLElement)).not.toContain("100");
   });
 });
+
+const listItems = (container: HTMLElement) =>
+  Array.from(container.querySelectorAll(".st-chartDataList li")).map((n) => n.textContent?.trim());
+
+describe("BarChart analytical overlays + error bars", () => {
+  it("renders no overlays/error bars by default (additive — zero regression)", () => {
+    const { container } = render(BarChart, { props: { label: "Plain", data } });
+    expect(container.querySelector(".st-barChart__band")).toBeNull();
+    expect(container.querySelector(".st-barChart__refLine")).toBeNull();
+    expect(container.querySelector(".st-barChart__goalLine")).toBeNull();
+    expect(container.querySelector(".st-barChart__errorBar")).toBeNull();
+    expect(listItems(container)).toEqual(["A: 4", "B: 8", "C: 2"]);
+  });
+
+  it("renders a reference line with a tone class and describes it", () => {
+    const { container } = render(BarChart, {
+      props: { label: "Ref", data, referenceLines: [{ value: 6, label: "Seuil", tone: "error" }] }
+    });
+    const ref = container.querySelector(".st-barChart__refLine");
+    expect(ref).not.toBeNull();
+    expect(ref!.classList.contains("st-barChart__refLine--error")).toBe(true);
+    expect(listItems(container)).toContain("Référence: Seuil = 6");
+  });
+
+  it("renders a band and a goal line, describing both", () => {
+    const { container } = render(BarChart, {
+      props: { label: "BG", data, bands: [{ from: 2, to: 5, label: "Zone" }], goalLine: { value: 7 } }
+    });
+    expect(container.querySelector(".st-barChart__band")).not.toBeNull();
+    expect(container.querySelector(".st-barChart__goalLine")).not.toBeNull();
+    expect(listItems(container)).toContain("Bande: Zone (2–5)");
+    expect(listItems(container)).toContain("Objectif: 7");
+  });
+
+  it("draws bands BELOW the bars and the goal line ABOVE them (document order)", () => {
+    const { container } = render(BarChart, {
+      props: { label: "Order", data, bands: [{ from: 2, to: 5 }], goalLine: { value: 7 } }
+    });
+    const nodes = Array.from(container.querySelectorAll("svg *"));
+    const firstBar = nodes.findIndex((n) => n.classList.contains("st-barChart__bar"));
+    const band = nodes.findIndex((n) => n.classList.contains("st-barChart__band"));
+    const goal = nodes.findIndex((n) => n.classList.contains("st-barChart__goalLine"));
+    expect(band).toBeGreaterThanOrEqual(0);
+    expect(band).toBeLessThan(firstBar);
+    expect(goal).toBeGreaterThan(firstBar);
+  });
+
+  it("renders an error-bar whisker per datum that carries finite extents", () => {
+    const withErrors: BarChartDatum[] = [
+      { label: "A", value: 4, errorLow: 3, errorHigh: 5 },
+      { label: "B", value: 8 },
+      { label: "C", value: 2, errorLow: Number.NaN, errorHigh: Number.NaN }
+    ];
+    const { container } = render(BarChart, { props: { label: "Err", data: withErrors } });
+    // Only A has finite extents → exactly one whisker group.
+    const groups = container.querySelectorAll(".st-barChart__errorBar");
+    expect(groups.length).toBe(1);
+    expect(groups[0].querySelectorAll(".st-barChart__errorCap").length).toBe(2);
+    expect(groups[0].querySelector(".st-barChart__errorStem")).not.toBeNull();
+  });
+
+  it("extends the value domain so a reference beyond the data stays on-plot", () => {
+    const { container } = render(BarChart, {
+      props: { label: "Domain", data, referenceLines: [{ value: 100 }] }
+    });
+    expect(tickLabels(container as HTMLElement)).toContain("100");
+  });
+
+  it("does NOT widen a pinned domain for overlays (small-multiples stay aligned)", () => {
+    const { container } = render(BarChart, {
+      props: { label: "Pinned", data, domain: [0, 10], referenceLines: [{ value: 100 }] }
+    });
+    // Pinned [0,10] is authoritative — the 100 reference must not raise ticks.
+    expect(tickLabels(container as HTMLElement)).not.toContain("100");
+    expect(tickLabels(container as HTMLElement)).toContain("10");
+  });
+
+  it("ignores a non-finite goal value", () => {
+    const { container } = render(BarChart, {
+      props: { label: "NaN", data, goalLine: { value: Number.NaN } }
+    });
+    expect(container.querySelector(".st-barChart__goalLine")).toBeNull();
+    expect(listItems(container)).toEqual(["A: 4", "B: 8", "C: 2"]);
+  });
+});

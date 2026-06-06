@@ -1,6 +1,18 @@
 import { defineComponent, h, ref } from "vue";
 import { classNames } from "./classNames.js";
-import { CHART_MARGIN, chartDataList, formatTick, niceTicks, scaleLinear } from "./chartScale.js";
+import {
+  CHART_MARGIN,
+  chartDataList,
+  extendValueDomain,
+  formatTick,
+  niceTicks,
+  overlayDataListItems,
+  overlayToneClass,
+  scaleLinear,
+  type ChartBand,
+  type ChartGoalLine,
+  type ChartReferenceLine,
+} from "./chartScale.js";
 
 export type BarChartTone =
   | "category1"
@@ -16,6 +28,10 @@ export type BarChartDatum = {
   label: string;
   value: number;
   tone?: BarChartTone;
+  /** Lower error-bar extent (value-axis units). Drawn only when finite. */
+  errorLow?: number;
+  /** Upper error-bar extent (value-axis units). Drawn only when finite. */
+  errorHigh?: number;
 };
 
 export type BarChartProps = {
@@ -47,6 +63,12 @@ export type BarChartProps = {
    * purely presentational (no interactivity, unchanged).
    */
   onSelect?: (key: string) => void;
+  /** Reference lines on the value axis (default `axis: "y"`). */
+  referenceLines?: ChartReferenceLine[];
+  /** Shaded value-axis bands between `from`..`to`. */
+  bands?: ChartBand[];
+  /** A single goal line, emphasised above the bars. */
+  goalLine?: ChartGoalLine;
   class?: string;
 };
 
@@ -63,6 +85,9 @@ export const BarChart = defineComponent({
     domain: { type: Array as unknown as () => [number, number], default: undefined },
     selectedKeys: { type: Array as () => string[], default: () => [] },
     onSelect: { type: Function as unknown as () => (key: string) => void, default: undefined },
+    referenceLines: { type: Array as () => ChartReferenceLine[], default: undefined },
+    bands: { type: Array as () => ChartBand[], default: undefined },
+    goalLine: { type: Object as () => ChartGoalLine, default: undefined },
     class: { type: String, default: undefined },
   },
   setup(props, { attrs }) {
@@ -102,9 +127,28 @@ export const BarChart = defineComponent({
           ? domain
           : null;
 
+      const referenceLines = props.referenceLines;
+      const bands = props.bands;
+      // A finite goal value is required; otherwise the goal line is ignored.
+      const goal = props.goalLine && Number.isFinite(props.goalLine.value) ? props.goalLine : null;
+      // Finite error-bar extents must also stay inside the plot.
+      const errorExtents = data.flatMap((d) =>
+        [d.errorLow, d.errorHigh].filter((v): v is number => v !== undefined && Number.isFinite(v)),
+      );
+
       const values = data.map((d) => d.value);
-      const minRaw = validDomain ? validDomain[0] : Math.min(0, ...values);
-      const maxRaw = validDomain ? validDomain[1] : Math.max(0, ...values);
+      let minRaw = validDomain ? validDomain[0] : Math.min(0, ...values);
+      let maxRaw = validDomain ? validDomain[1] : Math.max(0, ...values);
+      // A pinned domain is authoritative (small-multiples); only the auto domain
+      // is widened to keep finite overlays + error bars on-plot.
+      if (!validDomain) {
+        [minRaw, maxRaw] = extendValueDomain(minRaw, maxRaw, {
+          referenceLines,
+          bands,
+          goalLine: goal,
+          extraValues: errorExtents,
+        });
+      }
       const ticks = niceTicks(minRaw, maxRaw, 5);
       const domainMin = ticks[0];
       const domainMax = ticks[ticks.length - 1];
@@ -167,7 +211,77 @@ export const BarChart = defineComponent({
         }
       }
 
-      const dataValueItems = data.map((d) => `${d.label}: ${d.value}`);
+      // --- Analytical overlays + error bars --------------------------------
+      const isVertical = orientation === "vertical";
+      const valuePos = (v: number) =>
+        isVertical
+          ? MARGIN.top + scaleLinear(v, domainMin, domainMax, plotHeight, 0)
+          : MARGIN.left + scaleLinear(v, domainMin, domainMax, 0, plotWidth);
+      const valueAxisEnd = isVertical ? MARGIN.left + plotWidth : MARGIN.top + plotHeight;
+
+      type BandRect = { key: number; x: number; y: number; width: number; height: number; label?: string; tone?: ChartBand["tone"] };
+      const bandRects: BandRect[] = (bands ?? [])
+        .filter((b) => Number.isFinite(b.from) && Number.isFinite(b.to))
+        .map((b, i) => {
+          const p1 = valuePos(b.from);
+          const p2 = valuePos(b.to);
+          return isVertical
+            ? { key: i, x: MARGIN.left, y: Math.min(p1, p2), width: plotWidth, height: Math.max(Math.abs(p2 - p1), 0.5), label: b.label, tone: b.tone }
+            : { key: i, x: Math.min(p1, p2), y: MARGIN.top, width: Math.max(Math.abs(p2 - p1), 0.5), height: plotHeight, label: b.label, tone: b.tone };
+        });
+
+      type RefLine = { key: number; x1: number; x2: number; y1: number; y2: number; label?: string; tone?: ChartReferenceLine["tone"] };
+      const refLines: RefLine[] = (referenceLines ?? [])
+        .filter((r) => Number.isFinite(r.value))
+        .map((r, i) => {
+          const p = valuePos(r.value);
+          return isVertical
+            ? { key: i, x1: MARGIN.left, x2: MARGIN.left + plotWidth, y1: p, y2: p, label: r.label, tone: r.tone }
+            : { key: i, x1: p, x2: p, y1: MARGIN.top, y2: MARGIN.top + plotHeight, label: r.label, tone: r.tone };
+        });
+
+      const goalGeom = goal ? { p: valuePos(goal.value), label: goal.label, value: goal.value } : null;
+
+      type ErrGeom = {
+        key: string;
+        stem: { x1: number; y1: number; x2: number; y2: number };
+        capLow: { x1: number; y1: number; x2: number; y2: number };
+        capHigh: { x1: number; y1: number; x2: number; y2: number };
+      };
+      const errorBarGeom: ErrGeom[] = [];
+      for (const bar of bars) {
+        const { errorLow, errorHigh } = bar.datum;
+        const hasLow = errorLow !== undefined && Number.isFinite(errorLow);
+        const hasHigh = errorHigh !== undefined && Number.isFinite(errorHigh);
+        if (!hasLow && !hasHigh) continue;
+        const lowV = hasLow ? (errorLow as number) : bar.datum.value;
+        const highV = hasHigh ? (errorHigh as number) : bar.datum.value;
+        const lowP = valuePos(lowV);
+        const highP = valuePos(highV);
+        const cap = 4;
+        if (isVertical) {
+          const cx = bar.x + bar.width / 2;
+          errorBarGeom.push({
+            key: bar.datum.label,
+            stem: { x1: cx, y1: lowP, x2: cx, y2: highP },
+            capLow: { x1: cx - cap, y1: lowP, x2: cx + cap, y2: lowP },
+            capHigh: { x1: cx - cap, y1: highP, x2: cx + cap, y2: highP },
+          });
+        } else {
+          const cy = bar.y + bar.height / 2;
+          errorBarGeom.push({
+            key: bar.datum.label,
+            stem: { x1: lowP, y1: cy, x2: highP, y2: cy },
+            capLow: { x1: lowP, y1: cy - cap, x2: lowP, y2: cy + cap },
+            capHigh: { x1: highP, y1: cy - cap, x2: highP, y2: cy + cap },
+          });
+        }
+      }
+
+      const dataValueItems = [
+        ...data.map((d) => `${d.label}: ${d.value}`),
+        ...overlayDataListItems({ referenceLines, bands, goalLine: goal, trend: null }),
+      ];
 
       const gridChildren: ReturnType<typeof h>[] = [];
       if (orientation === "vertical") {
@@ -235,6 +349,81 @@ export const BarChart = defineComponent({
         });
       });
 
+      // Overlay vnodes — bands + reference lines below the bars; error bars on
+      // top of the bars; the goal line above everything for emphasis.
+      const belowOverlays: ReturnType<typeof h>[] = [];
+      for (const b of bandRects) {
+        belowOverlays.push(
+          h("rect", {
+            key: `band${b.key}`,
+            class: classNames("st-barChart__band", overlayToneClass("st-barChart__band", b.tone)),
+            x: b.x,
+            y: b.y,
+            width: b.width,
+            height: b.height,
+          }),
+        );
+        if (b.label) {
+          belowOverlays.push(
+            h("text", { key: `bandL${b.key}`, class: "st-barChart__overlayLabel", x: b.x + 4, y: b.y + 11 }, b.label),
+          );
+        }
+      }
+      for (const r of refLines) {
+        belowOverlays.push(
+          h("line", {
+            key: `ref${r.key}`,
+            class: classNames("st-barChart__refLine", overlayToneClass("st-barChart__refLine", r.tone)),
+            x1: r.x1,
+            x2: r.x2,
+            y1: r.y1,
+            y2: r.y2,
+          }),
+        );
+        if (r.label) {
+          belowOverlays.push(
+            h(
+              "text",
+              {
+                key: `refL${r.key}`,
+                class: "st-barChart__overlayLabel",
+                x: isVertical ? valueAxisEnd - 4 : r.x1 + 4,
+                y: isVertical ? r.y1 - 4 : MARGIN.top + 11,
+                "text-anchor": isVertical ? "end" : "start",
+              },
+              r.label,
+            ),
+          );
+        }
+      }
+
+      const errorBarNodes = errorBarGeom.map((e) =>
+        h("g", { key: `err${e.key}`, class: "st-barChart__errorBar" }, [
+          h("line", { class: "st-barChart__errorStem", x1: e.stem.x1, y1: e.stem.y1, x2: e.stem.x2, y2: e.stem.y2 }),
+          h("line", { class: "st-barChart__errorCap", x1: e.capLow.x1, y1: e.capLow.y1, x2: e.capLow.x2, y2: e.capLow.y2 }),
+          h("line", { class: "st-barChart__errorCap", x1: e.capHigh.x1, y1: e.capHigh.y1, x2: e.capHigh.x2, y2: e.capHigh.y2 }),
+        ]),
+      );
+
+      const goalOverlays: ReturnType<typeof h>[] = [];
+      if (goalGeom) {
+        goalOverlays.push(
+          isVertical
+            ? h("line", { class: "st-barChart__goalLine", x1: MARGIN.left, x2: MARGIN.left + plotWidth, y1: goalGeom.p, y2: goalGeom.p })
+            : h("line", { class: "st-barChart__goalLine", x1: goalGeom.p, x2: goalGeom.p, y1: MARGIN.top, y2: MARGIN.top + plotHeight }),
+          h(
+            "text",
+            {
+              class: "st-barChart__goalLabel",
+              x: isVertical ? MARGIN.left + plotWidth - 4 : goalGeom.p + 4,
+              y: isVertical ? goalGeom.p - 4 : MARGIN.top + 11,
+              "text-anchor": isVertical ? "end" : "start",
+            },
+            goalGeom.label ?? `Objectif ${goalGeom.value}`,
+          ),
+        );
+      }
+
       // Accessible selection surface — real <button>s OUTSIDE the aria-hidden
       // SVG. This is the keyboard + screen-reader path for filtering.
       const filterGroup = interactive
@@ -293,7 +482,10 @@ export const BarChart = defineComponent({
                 h("line", { class: "st-barChart__axis", x1: MARGIN.left, x2: MARGIN.left, y1: MARGIN.top, y2: height - MARGIN.bottom }),
                 h("line", { class: "st-barChart__axis", x1: MARGIN.left, x2: width - MARGIN.right, y1: height - MARGIN.bottom, y2: height - MARGIN.bottom }),
                 ...categoryLabels,
+                ...belowOverlays,
                 ...barRects,
+                ...errorBarNodes,
+                ...goalOverlays,
               ],
             ),
           ],

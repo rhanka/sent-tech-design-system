@@ -1,6 +1,18 @@
 import React from "react";
 import { classNames } from "./classNames.js";
-import { CHART_MARGIN, ChartDataList, formatTick, niceTicks, scaleLinear } from "./chartScale.js";
+import {
+  CHART_MARGIN,
+  ChartDataList,
+  extendValueDomain,
+  formatTick,
+  niceTicks,
+  overlayDataListItems,
+  overlayToneClass,
+  scaleLinear,
+  type ChartBand,
+  type ChartGoalLine,
+  type ChartReferenceLine,
+} from "./chartScale.js";
 
 export type BarChartTone =
   | "category1"
@@ -16,6 +28,10 @@ export type BarChartDatum = {
   label: string;
   value: number;
   tone?: BarChartTone;
+  /** Lower error-bar extent (value-axis units). Drawn only when finite. */
+  errorLow?: number;
+  /** Upper error-bar extent (value-axis units). Drawn only when finite. */
+  errorHigh?: number;
 };
 
 export type BarChartProps = Omit<React.HTMLAttributes<HTMLDivElement>, "className" | "onSelect"> & {
@@ -47,6 +63,12 @@ export type BarChartProps = Omit<React.HTMLAttributes<HTMLDivElement>, "classNam
    * purely presentational (no interactivity, unchanged).
    */
   onSelect?: (key: string) => void;
+  /** Reference lines on the value axis (default `axis: "y"`). */
+  referenceLines?: ChartReferenceLine[];
+  /** Shaded value-axis bands between `from`..`to`. */
+  bands?: ChartBand[];
+  /** A single goal line, emphasised above the bars. */
+  goalLine?: ChartGoalLine;
   className?: string;
 };
 
@@ -61,6 +83,9 @@ export function BarChart({
   domain,
   selectedKeys = [],
   onSelect,
+  referenceLines,
+  bands,
+  goalLine,
   className,
   ...rest
 }: BarChartProps) {
@@ -79,9 +104,26 @@ export function BarChart({
       ? domain
       : null;
 
+  // A finite goal value is required; otherwise the goal line is ignored.
+  const goal = goalLine && Number.isFinite(goalLine.value) ? goalLine : null;
+  // Finite error-bar extents must also stay inside the plot.
+  const errorExtents = data.flatMap((d) =>
+    [d.errorLow, d.errorHigh].filter((v): v is number => v !== undefined && Number.isFinite(v)),
+  );
+
   const values = data.map((d) => d.value);
-  const minRaw = validDomain ? validDomain[0] : Math.min(0, ...values);
-  const maxRaw = validDomain ? validDomain[1] : Math.max(0, ...values);
+  let minRaw = validDomain ? validDomain[0] : Math.min(0, ...values);
+  let maxRaw = validDomain ? validDomain[1] : Math.max(0, ...values);
+  // A pinned domain is authoritative (small-multiples); only the auto domain is
+  // widened to keep finite overlays + error bars on-plot.
+  if (!validDomain) {
+    [minRaw, maxRaw] = extendValueDomain(minRaw, maxRaw, {
+      referenceLines,
+      bands,
+      goalLine: goal,
+      extraValues: errorExtents,
+    });
+  }
   const ticks = niceTicks(minRaw, maxRaw, 5);
   const domainMin = ticks[0];
   const domainMax = ticks[ticks.length - 1];
@@ -141,7 +183,95 @@ export function BarChart({
     });
   })();
 
-  const dataValueItems = data.map((d) => `${d.label}: ${d.value}`);
+  // --- Analytical overlays + error bars ------------------------------------
+  // The value axis is vertical (y) when orientation === "vertical", else
+  // horizontal (x). `valuePos` maps a value to its pixel coordinate on that
+  // axis; everything else is shared geometry.
+  const isVertical = orientation === "vertical";
+  const valuePos = (v: number) =>
+    isVertical
+      ? MARGIN.top + scaleLinear(v, domainMin, domainMax, plotHeight, 0)
+      : MARGIN.left + scaleLinear(v, domainMin, domainMax, 0, plotWidth);
+  const valueAxisEnd = isVertical ? MARGIN.left + plotWidth : MARGIN.top + plotHeight;
+
+  const bandRects = (bands ?? [])
+    .filter((b) => Number.isFinite(b.from) && Number.isFinite(b.to))
+    .map((b, i) => {
+      const p1 = valuePos(b.from);
+      const p2 = valuePos(b.to);
+      return isVertical
+        ? {
+            key: i,
+            x: MARGIN.left,
+            y: Math.min(p1, p2),
+            width: plotWidth,
+            height: Math.max(Math.abs(p2 - p1), 0.5),
+            label: b.label,
+            tone: b.tone,
+          }
+        : {
+            key: i,
+            x: Math.min(p1, p2),
+            y: MARGIN.top,
+            width: Math.max(Math.abs(p2 - p1), 0.5),
+            height: plotHeight,
+            label: b.label,
+            tone: b.tone,
+          };
+    });
+
+  const refLines = (referenceLines ?? [])
+    .filter((r) => Number.isFinite(r.value))
+    .map((r, i) => {
+      // For a BarChart the value axis carries `axis: "y"` for vertical bars and
+      // `axis: "x"` for horizontal; a reference always tracks the VALUE axis.
+      const p = valuePos(r.value);
+      return isVertical
+        ? { key: i, x1: MARGIN.left, x2: MARGIN.left + plotWidth, y1: p, y2: p, label: r.label, tone: r.tone }
+        : { key: i, x1: p, x2: p, y1: MARGIN.top, y2: MARGIN.top + plotHeight, label: r.label, tone: r.tone };
+    });
+
+  const goalGeom = goal
+    ? isVertical
+      ? { vertical: true as const, p: valuePos(goal.value), label: goal.label, value: goal.value }
+      : { vertical: false as const, p: valuePos(goal.value), label: goal.label, value: goal.value }
+    : null;
+
+  // Error bars: a whisker along the value axis, centred on each bar.
+  const errorBarGeom = bars
+    .map((bar) => {
+      const { errorLow, errorHigh } = bar.datum;
+      const hasLow = errorLow !== undefined && Number.isFinite(errorLow);
+      const hasHigh = errorHigh !== undefined && Number.isFinite(errorHigh);
+      if (!hasLow && !hasHigh) return null;
+      const lowV = hasLow ? (errorLow as number) : bar.datum.value;
+      const highV = hasHigh ? (errorHigh as number) : bar.datum.value;
+      const lowP = valuePos(lowV);
+      const highP = valuePos(highV);
+      const cap = 4;
+      if (isVertical) {
+        const cx = bar.x + bar.width / 2;
+        return {
+          key: bar.datum.label,
+          stem: { x1: cx, x2: cx, y1: lowP, y2: highP },
+          capLow: { x1: cx - cap, x2: cx + cap, y1: lowP, y2: lowP },
+          capHigh: { x1: cx - cap, x2: cx + cap, y1: highP, y2: highP },
+        };
+      }
+      const cy = bar.y + bar.height / 2;
+      return {
+        key: bar.datum.label,
+        stem: { x1: lowP, x2: highP, y1: cy, y2: cy },
+        capLow: { x1: lowP, x2: lowP, y1: cy - cap, y2: cy + cap },
+        capHigh: { x1: highP, x2: highP, y1: cy - cap, y2: cy + cap },
+      };
+    })
+    .filter((e): e is NonNullable<typeof e> => e !== null);
+
+  const dataValueItems = [
+    ...data.map((d) => `${d.label}: ${d.value}`),
+    ...overlayDataListItems({ referenceLines, bands, goalLine: goal, trend: null }),
+  ];
 
   const valueAxisTicks =
     orientation === "vertical"
@@ -253,6 +383,46 @@ export function BarChart({
             ),
           )}
 
+          {/* Analytical overlays — bands + reference lines BELOW the bars. */}
+          {bandRects.map((b) => (
+            <React.Fragment key={`band-${b.key}`}>
+              <rect
+                className={classNames("st-barChart__band", overlayToneClass("st-barChart__band", b.tone))}
+                x={b.x}
+                y={b.y}
+                width={b.width}
+                height={b.height}
+              />
+              {b.label ? (
+                <text className="st-barChart__overlayLabel" x={b.x + 4} y={b.y + 11}>
+                  {b.label}
+                </text>
+              ) : null}
+            </React.Fragment>
+          ))}
+
+          {refLines.map((r) => (
+            <React.Fragment key={`ref-${r.key}`}>
+              <line
+                className={classNames("st-barChart__refLine", overlayToneClass("st-barChart__refLine", r.tone))}
+                x1={r.x1}
+                x2={r.x2}
+                y1={r.y1}
+                y2={r.y2}
+              />
+              {r.label ? (
+                <text
+                  className="st-barChart__overlayLabel"
+                  x={isVertical ? valueAxisEnd - 4 : r.x1 + 4}
+                  y={isVertical ? r.y1 - 4 : MARGIN.top + 11}
+                  textAnchor={isVertical ? "end" : "start"}
+                >
+                  {r.label}
+                </text>
+              ) : null}
+            </React.Fragment>
+          ))}
+
           {/* The bars live inside an aria-hidden SVG, so they are NEVER an
               accessible surface. When `onSelect` is provided they only carry a
               mouse click shortcut (cursor:pointer) for sighted pointer users —
@@ -280,6 +450,46 @@ export function BarChart({
               />
             );
           })}
+
+          {/* Error bars ride on top of their bar (still below the goal line). */}
+          {errorBarGeom.map((e) => (
+            <g key={`err-${e.key}`} className="st-barChart__errorBar">
+              <line className="st-barChart__errorStem" x1={e.stem.x1} y1={e.stem.y1} x2={e.stem.x2} y2={e.stem.y2} />
+              <line className="st-barChart__errorCap" x1={e.capLow.x1} y1={e.capLow.y1} x2={e.capLow.x2} y2={e.capLow.y2} />
+              <line className="st-barChart__errorCap" x1={e.capHigh.x1} y1={e.capHigh.y1} x2={e.capHigh.x2} y2={e.capHigh.y2} />
+            </g>
+          ))}
+
+          {/* Goal line — emphasised, ABOVE the bars. */}
+          {goalGeom ? (
+            <>
+              {goalGeom.vertical ? (
+                <line
+                  className="st-barChart__goalLine"
+                  x1={MARGIN.left}
+                  x2={MARGIN.left + plotWidth}
+                  y1={goalGeom.p}
+                  y2={goalGeom.p}
+                />
+              ) : (
+                <line
+                  className="st-barChart__goalLine"
+                  x1={goalGeom.p}
+                  x2={goalGeom.p}
+                  y1={MARGIN.top}
+                  y2={MARGIN.top + plotHeight}
+                />
+              )}
+              <text
+                className="st-barChart__goalLabel"
+                x={goalGeom.vertical ? MARGIN.left + plotWidth - 4 : goalGeom.p + 4}
+                y={goalGeom.vertical ? goalGeom.p - 4 : MARGIN.top + 11}
+                textAnchor={goalGeom.vertical ? "end" : "start"}
+              >
+                {goalGeom.label ?? `Objectif ${goalGeom.value}`}
+              </text>
+            </>
+          ) : null}
         </svg>
       </div>
 
