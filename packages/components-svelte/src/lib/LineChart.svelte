@@ -13,6 +13,31 @@
     x: number | string;
     y: number;
   };
+
+  /**
+   * Semantic tone for an analytical overlay (reference line / band / goal).
+   * Maps to the feedback token family — markers, not categorical series.
+   */
+  export type ChartOverlayTone = "neutral" | "success" | "warning" | "error" | "info";
+
+  export type ChartReferenceLine = {
+    value: number;
+    label?: string;
+    tone?: ChartOverlayTone;
+    axis?: "x" | "y";
+  };
+
+  export type ChartBand = {
+    from: number;
+    to: number;
+    label?: string;
+    tone?: ChartOverlayTone;
+  };
+
+  export type ChartGoalLine = {
+    value: number;
+    label?: string;
+  };
 </script>
 
 <script lang="ts">
@@ -26,6 +51,14 @@
     smooth?: boolean;
     area?: boolean;
     label: string;
+    /** Reference lines (default `axis: "y"` → horizontal at `value`). */
+    referenceLines?: ChartReferenceLine[];
+    /** Shaded value-axis bands between `from`..`to`. */
+    bands?: ChartBand[];
+    /** A single goal line, emphasised above the data. */
+    goalLine?: ChartGoalLine;
+    /** Least-squares trend line over the data points. */
+    trend?: boolean;
     class?: string;
   };
 
@@ -37,6 +70,10 @@
     smooth = false,
     area = false,
     label,
+    referenceLines,
+    bands,
+    goalLine,
+    trend = false,
     class: className
   }: LineChartProps = $props();
 
@@ -80,6 +117,86 @@
     return typeof x === "number" && Number.isFinite(x);
   }
 
+  // --- Analytical overlay helpers (inline; parity with chartScale) ----------
+  function overlayToneClass(prefix: string, t: ChartOverlayTone | undefined): string {
+    return `${prefix}--${t ?? "neutral"}`;
+  }
+
+  function linearRegression(
+    pts: { x: number; y: number }[]
+  ): { slope: number; intercept: number; minX: number; maxX: number } | null {
+    const finite = pts.filter((p) => Number.isFinite(p.x) && Number.isFinite(p.y));
+    if (finite.length < 2) return null;
+    const n = finite.length;
+    let sx = 0;
+    let sy = 0;
+    let sxx = 0;
+    let sxy = 0;
+    let minX = Infinity;
+    let maxX = -Infinity;
+    for (const p of finite) {
+      sx += p.x;
+      sy += p.y;
+      sxx += p.x * p.x;
+      sxy += p.x * p.y;
+      if (p.x < minX) minX = p.x;
+      if (p.x > maxX) maxX = p.x;
+    }
+    const denom = n * sxx - sx * sx;
+    if (denom === 0) return null;
+    const slope = (n * sxy - sx * sy) / denom;
+    const intercept = (sy - slope * sx) / n;
+    if (!Number.isFinite(slope) || !Number.isFinite(intercept)) return null;
+    return { slope, intercept, minX, maxX };
+  }
+
+  function extendValueDomain(
+    minV: number,
+    maxV: number,
+    refs: ChartReferenceLine[] | undefined,
+    bnds: ChartBand[] | undefined,
+    goal: ChartGoalLine | null
+  ): [number, number] {
+    let lo = minV;
+    let hi = maxV;
+    const fold = (v: number | undefined) => {
+      if (v === undefined || !Number.isFinite(v)) return;
+      if (v < lo) lo = v;
+      if (v > hi) hi = v;
+    };
+    for (const r of refs ?? []) if ((r.axis ?? "y") === "y") fold(r.value);
+    for (const b of bnds ?? []) {
+      fold(b.from);
+      fold(b.to);
+    }
+    if (goal) fold(goal.value);
+    return [lo, hi];
+  }
+
+  function overlayDataListItems(
+    refs: ChartReferenceLine[] | undefined,
+    bnds: ChartBand[] | undefined,
+    goal: ChartGoalLine | null,
+    trendModel: { slope: number } | null
+  ): string[] {
+    const items: string[] = [];
+    for (const r of refs ?? []) {
+      if (!Number.isFinite(r.value)) continue;
+      items.push(r.label ? `Référence: ${r.label} = ${r.value}` : `Référence: ${r.value}`);
+    }
+    for (const b of bnds ?? []) {
+      if (!Number.isFinite(b.from) || !Number.isFinite(b.to)) continue;
+      const lo = Math.min(b.from, b.to);
+      const hi = Math.max(b.from, b.to);
+      items.push(b.label ? `Bande: ${b.label} (${lo}–${hi})` : `Bande: ${lo}–${hi}`);
+    }
+    if (goal && Number.isFinite(goal.value)) {
+      items.push(goal.label ? `Objectif: ${goal.label} = ${goal.value}` : `Objectif: ${goal.value}`);
+    }
+    if (trendModel) items.push(`Tendance: pente ${trendModel.slope.toFixed(2)}`);
+    return items;
+  }
+
   let hoveredIndex: number | null = $state(null);
 
   const plotWidth = $derived(Math.max(width - MARGIN.left - MARGIN.right, 1));
@@ -95,11 +212,16 @@
     return { kind: "ordinal" as const, values: data.map((d) => d.x) };
   });
 
+  // A valid goal line needs a finite value; otherwise it is ignored entirely.
+  const goal = $derived(goalLine && Number.isFinite(goalLine.value) ? goalLine : null);
+
   const yTicks = $derived.by(() => {
-    const ys = data.map((d) => d.y);
-    if (ys.length === 0) return [0];
-    const minRaw = Math.min(...ys);
-    const maxRaw = Math.max(...ys);
+    const ys = data.map((d) => d.y).filter((y) => Number.isFinite(y));
+    if (ys.length === 0 && !referenceLines?.length && !bands?.length && !goal) return [0];
+    let minRaw = ys.length ? Math.min(...ys) : 0;
+    let maxRaw = ys.length ? Math.max(...ys) : 0;
+    // Fold overlay values into the domain so they never fall outside the plot.
+    [minRaw, maxRaw] = extendValueDomain(minRaw, maxRaw, referenceLines, bands, goal);
     const padded = (maxRaw - minRaw) * 0.08 || Math.max(Math.abs(maxRaw), 1) * 0.1;
     return niceTicks(minRaw - padded, maxRaw + padded, 5);
   });
@@ -130,7 +252,72 @@
     });
   });
 
-  const dataValueItems = $derived(data.map((d) => `${d.x}: ${d.y}`));
+  // --- Analytical overlays --------------------------------------------------
+  // All overlays live in the chart's coordinate space, below the data series
+  // (the goal line is the single exception, drawn above for emphasis).
+  const bandRects = $derived(
+    (bands ?? [])
+      .filter((b) => Number.isFinite(b.from) && Number.isFinite(b.to))
+      .map((b, i) => {
+        const y1 = MARGIN.top + scaleLinear(b.from, yDomain.min, yDomain.max, plotHeight, 0);
+        const y2 = MARGIN.top + scaleLinear(b.to, yDomain.min, yDomain.max, plotHeight, 0);
+        return {
+          key: i,
+          x: MARGIN.left,
+          y: Math.min(y1, y2),
+          width: plotWidth,
+          height: Math.max(Math.abs(y2 - y1), 0.5),
+          label: b.label,
+          tone: b.tone
+        };
+      })
+  );
+
+  const refLines = $derived(
+    (referenceLines ?? [])
+      .filter((r) => Number.isFinite(r.value))
+      .map((r, i) => {
+        const axis = r.axis ?? "y";
+        if (axis === "x") {
+          if (xDomain.kind !== "numeric") return null;
+          const x = MARGIN.left + scaleLinear(r.value, xDomain.min, xDomain.max, 0, plotWidth);
+          return { key: i, axis, x1: x, x2: x, y1: MARGIN.top, y2: MARGIN.top + plotHeight, label: r.label, tone: r.tone };
+        }
+        const y = MARGIN.top + scaleLinear(r.value, yDomain.min, yDomain.max, plotHeight, 0);
+        return { key: i, axis, x1: MARGIN.left, x2: MARGIN.left + plotWidth, y1: y, y2: y, label: r.label, tone: r.tone };
+      })
+      .filter((r): r is NonNullable<typeof r> => r !== null)
+  );
+
+  const goalGeom = $derived(
+    goal
+      ? {
+          y: MARGIN.top + scaleLinear(goal.value, yDomain.min, yDomain.max, plotHeight, 0),
+          label: goal.label,
+          value: goal.value
+        }
+      : null
+  );
+
+  const trendModel = $derived(
+    trend && xDomain.kind === "numeric"
+      ? linearRegression(data.map((d) => ({ x: d.x as number, y: d.y })))
+      : null
+  );
+  const trendLine = $derived.by(() => {
+    if (!trendModel || xDomain.kind !== "numeric") return null;
+    return {
+      x1: MARGIN.left + scaleLinear(trendModel.minX, xDomain.min, xDomain.max, 0, plotWidth),
+      y1: MARGIN.top + scaleLinear(trendModel.slope * trendModel.minX + trendModel.intercept, yDomain.min, yDomain.max, plotHeight, 0),
+      x2: MARGIN.left + scaleLinear(trendModel.maxX, xDomain.min, xDomain.max, 0, plotWidth),
+      y2: MARGIN.top + scaleLinear(trendModel.slope * trendModel.maxX + trendModel.intercept, yDomain.min, yDomain.max, plotHeight, 0)
+    };
+  });
+
+  const dataValueItems = $derived([
+    ...data.map((d) => `${d.x}: ${d.y}`),
+    ...overlayDataListItems(referenceLines, bands, goal, trendModel)
+  ]);
 
   function buildLinearPath(pts: { x: number; y: number }[]): string {
     return pts.map((p, i) => `${i === 0 ? "M" : "L"}${p.x.toFixed(2)},${p.y.toFixed(2)}`).join(" ");
@@ -275,6 +462,31 @@
       </text>
     {/each}
 
+    <!-- Analytical overlays — bands + reference lines + trend BELOW the data
+         (markers, not series); the goal line is drawn above for emphasis. -->
+    {#each bandRects as b (b.key)}
+      <rect class={`st-lineChart__band ${overlayToneClass("st-lineChart__band", b.tone)}`} x={b.x} y={b.y} width={b.width} height={b.height} />
+      {#if b.label}
+        <text class="st-lineChart__overlayLabel" x={b.x + 4} y={b.y + 11}>{b.label}</text>
+      {/if}
+    {/each}
+
+    {#each refLines as r (r.key)}
+      <line class={`st-lineChart__refLine ${overlayToneClass("st-lineChart__refLine", r.tone)}`} x1={r.x1} x2={r.x2} y1={r.y1} y2={r.y2} />
+      {#if r.label}
+        <text
+          class="st-lineChart__overlayLabel"
+          x={r.axis === "x" ? r.x1 + 4 : MARGIN.left + plotWidth - 4}
+          y={r.axis === "x" ? MARGIN.top + 11 : r.y1 - 4}
+          text-anchor={r.axis === "x" ? "start" : "end"}
+        >{r.label}</text>
+      {/if}
+    {/each}
+
+    {#if trendLine}
+      <line class="st-lineChart__trend" x1={trendLine.x1} y1={trendLine.y1} x2={trendLine.x2} y2={trendLine.y2} />
+    {/if}
+
     {#if area && areaPath}
       <path class="st-lineChart__area" d={areaPath} />
     {/if}
@@ -298,6 +510,14 @@
         data-chart-index={p.index}
       />
     {/each}
+
+    <!-- Goal line — emphasised, ABOVE the data. -->
+    {#if goalGeom}
+      <line class="st-lineChart__goalLine" x1={MARGIN.left} x2={MARGIN.left + plotWidth} y1={goalGeom.y} y2={goalGeom.y} />
+      <text class="st-lineChart__goalLabel" x={MARGIN.left + plotWidth - 4} y={goalGeom.y - 4} text-anchor="end">
+        {goalGeom.label ?? `Objectif ${goalGeom.value}`}
+      </text>
+    {/if}
     </svg>
   </div>
 
@@ -405,5 +625,53 @@
 
   .st-lineChart__tooltipValue {
     opacity: 0.85;
+  }
+
+  /* --- Analytical overlay layer --------------------------------------------
+     Bands sit BELOW the data via render order; their fill uses color-mix (a
+     semi-transparent tint of the tone token) rather than raw opacity, so the
+     data series drawn on top keeps full contrast. */
+  .st-lineChart__band {
+    fill: color-mix(in srgb, var(--st-overlay-tone, var(--st-semantic-border-strong)) 12%, transparent);
+    stroke: none;
+  }
+  .st-lineChart__band--neutral { --st-overlay-tone: var(--st-semantic-border-strong); }
+  .st-lineChart__band--success { --st-overlay-tone: var(--st-semantic-feedback-success); }
+  .st-lineChart__band--warning { --st-overlay-tone: var(--st-semantic-feedback-warning); }
+  .st-lineChart__band--error { --st-overlay-tone: var(--st-semantic-feedback-error); }
+  .st-lineChart__band--info { --st-overlay-tone: var(--st-semantic-feedback-info); }
+
+  .st-lineChart__refLine {
+    stroke: var(--st-overlay-tone, var(--st-semantic-border-strong));
+    stroke-width: 1;
+    stroke-dasharray: 4 3;
+  }
+  .st-lineChart__refLine--neutral { --st-overlay-tone: var(--st-semantic-border-strong); }
+  .st-lineChart__refLine--success { --st-overlay-tone: var(--st-semantic-feedback-success); }
+  .st-lineChart__refLine--warning { --st-overlay-tone: var(--st-semantic-feedback-warning); }
+  .st-lineChart__refLine--error { --st-overlay-tone: var(--st-semantic-feedback-error); }
+  .st-lineChart__refLine--info { --st-overlay-tone: var(--st-semantic-feedback-info); }
+
+  .st-lineChart__overlayLabel {
+    fill: var(--st-semantic-text-secondary);
+    font-size: 0.625rem;
+  }
+
+  .st-lineChart__trend {
+    stroke: var(--st-semantic-text-secondary);
+    stroke-width: 1.5;
+    stroke-dasharray: 6 4;
+    opacity: 0.85;
+  }
+
+  /* Goal line — drawn ABOVE the data, emphasised (thicker, solid accent). */
+  .st-lineChart__goalLine {
+    stroke: var(--st-semantic-feedback-success);
+    stroke-width: 2.5;
+  }
+  .st-lineChart__goalLabel {
+    fill: var(--st-semantic-feedback-success);
+    font-size: 0.6875rem;
+    font-weight: 600;
   }
 </style>

@@ -104,6 +104,144 @@ export function buildSmoothPath(pts: { x: number; y: number }[]): string {
   return d;
 }
 
+// --- Analytical overlay layer (shared, framework-agnostic) -----------------
+//
+// Optional reference lines, shaded bands, a goal line, a linear-regression
+// trend and error bars. Purely additive: when every overlay prop is absent the
+// helpers below contribute nothing (empty domain extension, empty a11y items).
+
+/**
+ * Semantic tone for an analytical overlay (reference line / band / goal).
+ * Maps to the feedback token family — these are *markers*, not categorical
+ * series, so they reuse the success/warning/error/info semantics. `neutral`
+ * (the default) uses the strong border / secondary text tokens.
+ */
+export type ChartOverlayTone = "neutral" | "success" | "warning" | "error" | "info";
+
+export type ChartReferenceLine = {
+  value: number;
+  label?: string;
+  tone?: ChartOverlayTone;
+  axis?: "x" | "y";
+};
+
+export type ChartBand = {
+  from: number;
+  to: number;
+  label?: string;
+  tone?: ChartOverlayTone;
+};
+
+export type ChartGoalLine = {
+  value: number;
+  label?: string;
+};
+
+/** A tone is valid only when it is one of the known overlay tones. */
+export function overlayToneClass(prefix: string, tone: ChartOverlayTone | undefined): string {
+  const t: ChartOverlayTone = tone ?? "neutral";
+  return `${prefix}--${t}`;
+}
+
+/**
+ * Least-squares linear regression over finite points. Returns the line in DATA
+ * space (`y = slope·x + intercept`) plus the x-range it was fit on, or `null`
+ * when fewer than two finite points exist or the x-values are degenerate.
+ */
+export function linearRegression(
+  pts: ReadonlyArray<{ x: number; y: number }>,
+): { slope: number; intercept: number; minX: number; maxX: number } | null {
+  const finite = pts.filter((p) => Number.isFinite(p.x) && Number.isFinite(p.y));
+  if (finite.length < 2) return null;
+  const n = finite.length;
+  let sx = 0;
+  let sy = 0;
+  let sxx = 0;
+  let sxy = 0;
+  let minX = Infinity;
+  let maxX = -Infinity;
+  for (const p of finite) {
+    sx += p.x;
+    sy += p.y;
+    sxx += p.x * p.x;
+    sxy += p.x * p.y;
+    if (p.x < minX) minX = p.x;
+    if (p.x > maxX) maxX = p.x;
+  }
+  const denom = n * sxx - sx * sx;
+  if (denom === 0) return null;
+  const slope = (n * sxy - sx * sy) / denom;
+  const intercept = (sy - slope * sx) / n;
+  if (!Number.isFinite(slope) || !Number.isFinite(intercept)) return null;
+  return { slope, intercept, minX, maxX };
+}
+
+/**
+ * Extends a value-axis `[min, max]` so finite overlay values stay inside the
+ * plot. Reference lines on the value axis (default `y`), band bounds, the goal
+ * value and finite error-bar extents are all folded in. Non-finite values are
+ * ignored. Returns the original range untouched when no overlay needs it.
+ */
+export function extendValueDomain(
+  min: number,
+  max: number,
+  overlays: {
+    referenceLines?: ReadonlyArray<ChartReferenceLine>;
+    bands?: ReadonlyArray<ChartBand>;
+    goalLine?: ChartGoalLine | null;
+    extraValues?: ReadonlyArray<number>;
+  },
+): [number, number] {
+  let lo = min;
+  let hi = max;
+  const fold = (v: number | undefined) => {
+    if (v === undefined || !Number.isFinite(v)) return;
+    if (v < lo) lo = v;
+    if (v > hi) hi = v;
+  };
+  for (const r of overlays.referenceLines ?? []) {
+    if ((r.axis ?? "y") === "y") fold(r.value);
+  }
+  for (const b of overlays.bands ?? []) {
+    fold(b.from);
+    fold(b.to);
+  }
+  if (overlays.goalLine) fold(overlays.goalLine.value);
+  for (const v of overlays.extraValues ?? []) fold(v);
+  return [lo, hi];
+}
+
+/**
+ * Screen-reader descriptions of the active overlays, appended after the data
+ * values in the ChartDataList. Empty when no overlay is present.
+ */
+export function overlayDataListItems(overlays: {
+  referenceLines?: ReadonlyArray<ChartReferenceLine>;
+  bands?: ReadonlyArray<ChartBand>;
+  goalLine?: ChartGoalLine | null;
+  trend?: { slope: number; intercept: number } | null;
+}): string[] {
+  const items: string[] = [];
+  for (const r of overlays.referenceLines ?? []) {
+    if (!Number.isFinite(r.value)) continue;
+    items.push(r.label ? `Référence: ${r.label} = ${r.value}` : `Référence: ${r.value}`);
+  }
+  for (const b of overlays.bands ?? []) {
+    if (!Number.isFinite(b.from) || !Number.isFinite(b.to)) continue;
+    const lo = Math.min(b.from, b.to);
+    const hi = Math.max(b.from, b.to);
+    items.push(b.label ? `Bande: ${b.label} (${lo}–${hi})` : `Bande: ${lo}–${hi}`);
+  }
+  if (overlays.goalLine && Number.isFinite(overlays.goalLine.value)) {
+    const g = overlays.goalLine;
+    items.push(g.label ? `Objectif: ${g.label} = ${g.value}` : `Objectif: ${g.value}`);
+  }
+  if (overlays.trend) {
+    items.push(`Tendance: pente ${overlays.trend.slope.toFixed(2)}`);
+  }
+  return items;
+}
+
 export type ChartDataListProps = {
   label: string;
   items: string[];

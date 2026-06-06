@@ -13,6 +13,35 @@
     label: string;
     value: number;
     tone?: BarChartTone;
+    /** Lower error-bar extent (value-axis units). Drawn only when finite. */
+    errorLow?: number;
+    /** Upper error-bar extent (value-axis units). Drawn only when finite. */
+    errorHigh?: number;
+  };
+
+  /**
+   * Semantic tone for an analytical overlay (reference line / band / goal).
+   * Maps to the feedback token family — markers, not categorical series.
+   */
+  export type ChartOverlayTone = "neutral" | "success" | "warning" | "error" | "info";
+
+  export type ChartReferenceLine = {
+    value: number;
+    label?: string;
+    tone?: ChartOverlayTone;
+    axis?: "x" | "y";
+  };
+
+  export type ChartBand = {
+    from: number;
+    to: number;
+    label?: string;
+    tone?: ChartOverlayTone;
+  };
+
+  export type ChartGoalLine = {
+    value: number;
+    label?: string;
   };
 </script>
 
@@ -48,6 +77,12 @@
      * purely presentational (no interactivity, unchanged).
      */
     onSelect?: (key: string) => void;
+    /** Reference lines on the value axis (default `axis: "y"`). */
+    referenceLines?: ChartReferenceLine[];
+    /** Shaded value-axis bands between `from`..`to`. */
+    bands?: ChartBand[];
+    /** A single goal line, emphasised above the bars. */
+    goalLine?: ChartGoalLine;
     class?: string;
   };
 
@@ -60,6 +95,9 @@
     domain,
     selectedKeys = [],
     onSelect,
+    referenceLines,
+    bands,
+    goalLine,
     class: className
   }: BarChartProps = $props();
 
@@ -99,6 +137,58 @@
     return v.toFixed(1);
   }
 
+  // --- Analytical overlay helpers (inline; parity with chartScale) ----------
+  function overlayToneClass(prefix: string, t: ChartOverlayTone | undefined): string {
+    return `${prefix}--${t ?? "neutral"}`;
+  }
+
+  function extendValueDomain(
+    minV: number,
+    maxV: number,
+    refs: ChartReferenceLine[] | undefined,
+    bnds: ChartBand[] | undefined,
+    goal: ChartGoalLine | null,
+    extras: number[]
+  ): [number, number] {
+    let lo = minV;
+    let hi = maxV;
+    const fold = (v: number | undefined) => {
+      if (v === undefined || !Number.isFinite(v)) return;
+      if (v < lo) lo = v;
+      if (v > hi) hi = v;
+    };
+    for (const r of refs ?? []) if ((r.axis ?? "y") === "y") fold(r.value);
+    for (const b of bnds ?? []) {
+      fold(b.from);
+      fold(b.to);
+    }
+    if (goal) fold(goal.value);
+    for (const v of extras) fold(v);
+    return [lo, hi];
+  }
+
+  function overlayDataListItems(
+    refs: ChartReferenceLine[] | undefined,
+    bnds: ChartBand[] | undefined,
+    goal: ChartGoalLine | null
+  ): string[] {
+    const items: string[] = [];
+    for (const r of refs ?? []) {
+      if (!Number.isFinite(r.value)) continue;
+      items.push(r.label ? `Référence: ${r.label} = ${r.value}` : `Référence: ${r.value}`);
+    }
+    for (const b of bnds ?? []) {
+      if (!Number.isFinite(b.from) || !Number.isFinite(b.to)) continue;
+      const lo = Math.min(b.from, b.to);
+      const hi = Math.max(b.from, b.to);
+      items.push(b.label ? `Bande: ${b.label} (${lo}–${hi})` : `Bande: ${lo}–${hi}`);
+    }
+    if (goal && Number.isFinite(goal.value)) {
+      items.push(goal.label ? `Objectif: ${goal.label} = ${goal.value}` : `Objectif: ${goal.value}`);
+    }
+    return items;
+  }
+
   let hoveredIndex: number | null = $state(null);
 
   // Selection (controlled): fast lookup + "is any bar selected" flag. Only when
@@ -116,10 +206,21 @@
     return [d0, d1];
   });
 
+  // A finite goal value is required; otherwise the goal line is ignored.
+  const goal = $derived(goalLine && Number.isFinite(goalLine.value) ? goalLine : null);
+
   const scales = $derived.by(() => {
     const values = data.map((d) => d.value);
-    const minRaw = validDomain ? validDomain[0] : Math.min(0, ...values);
-    const maxRaw = validDomain ? validDomain[1] : Math.max(0, ...values);
+    let minRaw = validDomain ? validDomain[0] : Math.min(0, ...values);
+    let maxRaw = validDomain ? validDomain[1] : Math.max(0, ...values);
+    // A pinned domain is authoritative (small-multiples); only the auto domain
+    // is widened to keep finite overlays + error bars on-plot.
+    if (!validDomain) {
+      const errorExtents = data.flatMap((d) =>
+        [d.errorLow, d.errorHigh].filter((v): v is number => v !== undefined && Number.isFinite(v))
+      );
+      [minRaw, maxRaw] = extendValueDomain(minRaw, maxRaw, referenceLines, bands, goal, errorExtents);
+    }
     const ticks = niceTicks(minRaw, maxRaw, 5);
     const domainMin = ticks[0];
     const domainMax = ticks[ticks.length - 1];
@@ -174,7 +275,83 @@
     });
   });
 
-  const dataValueItems = $derived(data.map((d) => `${d.label}: ${d.value}`));
+  // --- Analytical overlays + error bars ------------------------------------
+  const isVertical = $derived(orientation === "vertical");
+  // Map a value to its pixel on the value axis (y for vertical, x for horizontal).
+  const valuePos = $derived((v: number) => {
+    const { domainMin, domainMax, plotWidth, plotHeight } = scales;
+    return isVertical
+      ? MARGIN.top + scaleLinear(v, domainMin, domainMax, plotHeight, 0)
+      : MARGIN.left + scaleLinear(v, domainMin, domainMax, 0, plotWidth);
+  });
+
+  const bandRects = $derived(
+    (bands ?? [])
+      .filter((b) => Number.isFinite(b.from) && Number.isFinite(b.to))
+      .map((b, i) => {
+        const p1 = valuePos(b.from);
+        const p2 = valuePos(b.to);
+        return isVertical
+          ? { key: i, x: MARGIN.left, y: Math.min(p1, p2), width: scales.plotWidth, height: Math.max(Math.abs(p2 - p1), 0.5), label: b.label, tone: b.tone }
+          : { key: i, x: Math.min(p1, p2), y: MARGIN.top, width: Math.max(Math.abs(p2 - p1), 0.5), height: scales.plotHeight, label: b.label, tone: b.tone };
+      })
+  );
+
+  const refLines = $derived(
+    (referenceLines ?? [])
+      .filter((r) => Number.isFinite(r.value))
+      .map((r, i) => {
+        const p = valuePos(r.value);
+        return isVertical
+          ? { key: i, x1: MARGIN.left, x2: MARGIN.left + scales.plotWidth, y1: p, y2: p, label: r.label, tone: r.tone }
+          : { key: i, x1: p, x2: p, y1: MARGIN.top, y2: MARGIN.top + scales.plotHeight, label: r.label, tone: r.tone };
+      })
+  );
+
+  const goalGeom = $derived(goal ? { p: valuePos(goal.value), label: goal.label, value: goal.value } : null);
+
+  const errorBarGeom = $derived.by(() => {
+    const out: {
+      key: string;
+      stem: { x1: number; y1: number; x2: number; y2: number };
+      capLow: { x1: number; y1: number; x2: number; y2: number };
+      capHigh: { x1: number; y1: number; x2: number; y2: number };
+    }[] = [];
+    for (const bar of bars) {
+      const { errorLow, errorHigh } = bar.datum;
+      const hasLow = errorLow !== undefined && Number.isFinite(errorLow);
+      const hasHigh = errorHigh !== undefined && Number.isFinite(errorHigh);
+      if (!hasLow && !hasHigh) continue;
+      const lowV = hasLow ? (errorLow as number) : bar.datum.value;
+      const highV = hasHigh ? (errorHigh as number) : bar.datum.value;
+      const lowP = valuePos(lowV);
+      const highP = valuePos(highV);
+      const cap = 4;
+      if (isVertical) {
+        const cx = bar.x + bar.width / 2;
+        out.push({
+          key: bar.datum.label,
+          stem: { x1: cx, y1: lowP, x2: cx, y2: highP },
+          capLow: { x1: cx - cap, y1: lowP, x2: cx + cap, y2: lowP },
+          capHigh: { x1: cx - cap, y1: highP, x2: cx + cap, y2: highP }
+        });
+      } else {
+        const cy = bar.y + bar.height / 2;
+        out.push({
+          key: bar.datum.label,
+          stem: { x1: lowP, y1: cy, x2: highP, y2: cy },
+          capLow: { x1: lowP, y1: cy - cap, x2: lowP, y2: cy + cap },
+          capHigh: { x1: highP, y1: cy - cap, x2: highP, y2: cy + cap }
+        });
+      }
+    }
+    return out;
+  });
+
+  const dataValueItems = $derived([
+    ...data.map((d) => `${d.label}: ${d.value}`),
+    ...overlayDataListItems(referenceLines, bands, goal)
+  ]);
 
   const valueAxisTicks = $derived.by(() => {
     const { ticks, domainMin, domainMax, plotWidth, plotHeight } = scales;
@@ -312,6 +489,26 @@
       {/if}
     {/each}
 
+    <!-- Analytical overlays — bands + reference lines BELOW the bars. -->
+    {#each bandRects as b (b.key)}
+      <rect class={`st-barChart__band ${overlayToneClass("st-barChart__band", b.tone)}`} x={b.x} y={b.y} width={b.width} height={b.height} />
+      {#if b.label}
+        <text class="st-barChart__overlayLabel" x={b.x + 4} y={b.y + 11}>{b.label}</text>
+      {/if}
+    {/each}
+
+    {#each refLines as r (r.key)}
+      <line class={`st-barChart__refLine ${overlayToneClass("st-barChart__refLine", r.tone)}`} x1={r.x1} x2={r.x2} y1={r.y1} y2={r.y2} />
+      {#if r.label}
+        <text
+          class="st-barChart__overlayLabel"
+          x={isVertical ? MARGIN.left + scales.plotWidth - 4 : r.x1 + 4}
+          y={isVertical ? r.y1 - 4 : MARGIN.top + 11}
+          text-anchor={isVertical ? "end" : "start"}
+        >{r.label}</text>
+      {/if}
+    {/each}
+
     <!-- bars -->
     <!-- The bars live inside an aria-hidden SVG, so they are NEVER an accessible
          surface. When `onSelect` is provided they only carry a mouse click
@@ -339,6 +536,30 @@
         onclick={interactive ? () => onSelect?.(bar.datum.label) : undefined}
       />
     {/each}
+
+    <!-- Error bars ride on top of their bar (still below the goal line). -->
+    {#each errorBarGeom as e (e.key)}
+      <g class="st-barChart__errorBar">
+        <line class="st-barChart__errorStem" x1={e.stem.x1} y1={e.stem.y1} x2={e.stem.x2} y2={e.stem.y2} />
+        <line class="st-barChart__errorCap" x1={e.capLow.x1} y1={e.capLow.y1} x2={e.capLow.x2} y2={e.capLow.y2} />
+        <line class="st-barChart__errorCap" x1={e.capHigh.x1} y1={e.capHigh.y1} x2={e.capHigh.x2} y2={e.capHigh.y2} />
+      </g>
+    {/each}
+
+    <!-- Goal line — emphasised, ABOVE the bars. -->
+    {#if goalGeom}
+      {#if isVertical}
+        <line class="st-barChart__goalLine" x1={MARGIN.left} x2={MARGIN.left + scales.plotWidth} y1={goalGeom.p} y2={goalGeom.p} />
+      {:else}
+        <line class="st-barChart__goalLine" x1={goalGeom.p} x2={goalGeom.p} y1={MARGIN.top} y2={MARGIN.top + scales.plotHeight} />
+      {/if}
+      <text
+        class="st-barChart__goalLabel"
+        x={isVertical ? MARGIN.left + scales.plotWidth - 4 : goalGeom.p + 4}
+        y={isVertical ? goalGeom.p - 4 : MARGIN.top + 11}
+        text-anchor={isVertical ? "end" : "start"}
+      >{goalGeom.label ?? `Objectif ${goalGeom.value}`}</text>
+    {/if}
     </svg>
   </div>
 
@@ -538,6 +759,54 @@
 
   .st-barChart__tooltipValue {
     opacity: 0.85;
+  }
+
+  /* --- Analytical overlay layer --------------------------------------------
+     Bands sit BELOW the bars via render order; fill uses color-mix (a
+     semi-transparent tint of the tone token) instead of raw opacity, so the
+     bars drawn on top keep full contrast. */
+  .st-barChart__band {
+    fill: color-mix(in srgb, var(--st-overlay-tone, var(--st-semantic-border-strong)) 12%, transparent);
+    stroke: none;
+  }
+  .st-barChart__band--neutral { --st-overlay-tone: var(--st-semantic-border-strong); }
+  .st-barChart__band--success { --st-overlay-tone: var(--st-semantic-feedback-success); }
+  .st-barChart__band--warning { --st-overlay-tone: var(--st-semantic-feedback-warning); }
+  .st-barChart__band--error { --st-overlay-tone: var(--st-semantic-feedback-error); }
+  .st-barChart__band--info { --st-overlay-tone: var(--st-semantic-feedback-info); }
+
+  .st-barChart__refLine {
+    stroke: var(--st-overlay-tone, var(--st-semantic-border-strong));
+    stroke-width: 1;
+    stroke-dasharray: 4 3;
+  }
+  .st-barChart__refLine--neutral { --st-overlay-tone: var(--st-semantic-border-strong); }
+  .st-barChart__refLine--success { --st-overlay-tone: var(--st-semantic-feedback-success); }
+  .st-barChart__refLine--warning { --st-overlay-tone: var(--st-semantic-feedback-warning); }
+  .st-barChart__refLine--error { --st-overlay-tone: var(--st-semantic-feedback-error); }
+  .st-barChart__refLine--info { --st-overlay-tone: var(--st-semantic-feedback-info); }
+
+  .st-barChart__overlayLabel {
+    fill: var(--st-semantic-text-secondary);
+    font-size: 0.625rem;
+  }
+
+  /* Error bars — a value-axis whisker centred on each bar. */
+  .st-barChart__errorStem,
+  .st-barChart__errorCap {
+    stroke: var(--st-semantic-text-primary);
+    stroke-width: 1.25;
+  }
+
+  /* Goal line — drawn ABOVE the bars, emphasised (thicker, solid accent). */
+  .st-barChart__goalLine {
+    stroke: var(--st-semantic-feedback-success);
+    stroke-width: 2.5;
+  }
+  .st-barChart__goalLabel {
+    fill: var(--st-semantic-feedback-success);
+    font-size: 0.6875rem;
+    font-weight: 600;
   }
 
   @media (prefers-reduced-motion: reduce) {

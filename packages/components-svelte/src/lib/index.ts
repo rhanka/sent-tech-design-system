@@ -164,6 +164,7 @@ export type { SunburstChartDatum, SunburstChartTone } from "./SunburstChart.svel
 export type { ScatterPlotDatum, ScatterPlotTone } from "./ScatterPlot.svelte";
 export type { StackedBarDatum, StackedBarSegment, StackedBarTone } from "./StackedBarChart.svelte";
 export type { LineChartDatum, LineChartTone } from "./LineChart.svelte";
+export type { ChartOverlayTone, ChartReferenceLine, ChartBand, ChartGoalLine } from "./LineChart.svelte";
 export type {
   ComboChartTone,
   ComboChartBarSeries,
