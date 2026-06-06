@@ -143,6 +143,8 @@ export type ComponentName =
   | "CandlestickChart"
   | "CalendarHeatmapChart"
   | "BumpChart"
+  | "StepLineChart"
+  | "DivergentBarChart"
   | "FilterPill"
   | "FilterBar"
   | "SelectionChip";
