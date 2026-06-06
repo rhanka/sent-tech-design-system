@@ -110,6 +110,8 @@ export { LanguageSelector } from "./LanguageSelector.js";
 export type { LanguageSelectorProps, LanguageOption } from "./LanguageSelector.js";
 export { LineChart } from "./LineChart.js";
 export type { LineChartProps, LineChartDatum, LineChartTone } from "./LineChart.js";
+export { StepLineChart } from "./StepLineChart.js";
+export type { StepLineChartProps, StepLineChartDatum, StepLineChartTone } from "./StepLineChart.js";
 export { Link } from "./Link.js";
 export type { LinkProps } from "./Link.js";
 export { LoadingState } from "./LoadingState.js";

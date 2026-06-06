@@ -72,6 +72,7 @@ export { default as Input } from "./Input.svelte";
 export { default as KpiCard } from "./KpiCard.svelte";
 export { default as LanguageSelector } from "./LanguageSelector.svelte";
 export { default as LineChart } from "./LineChart.svelte";
+export { default as StepLineChart } from "./StepLineChart.svelte";
 export { default as Link } from "./Link.svelte";
 export { default as LoadingState } from "./LoadingState.svelte";
 export { default as Menu } from "./Menu.svelte";
@@ -146,6 +147,7 @@ export type { SunburstChartDatum, SunburstChartTone } from "./SunburstChart.svel
 export type { ScatterPlotDatum, ScatterPlotTone } from "./ScatterPlot.svelte";
 export type { StackedBarDatum, StackedBarSegment, StackedBarTone } from "./StackedBarChart.svelte";
 export type { LineChartDatum, LineChartTone } from "./LineChart.svelte";
+export type { StepLineChartDatum, StepLineChartTone } from "./StepLineChart.svelte";
 export type {
   ComboChartTone,
   ComboChartBarSeries,

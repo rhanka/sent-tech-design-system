@@ -167,6 +167,8 @@ export { BarChart } from "./BarChart.js";
 export type { BarChartProps, BarChartDatum, BarChartTone } from "./BarChart.js";
 export { LineChart } from "./LineChart.js";
 export type { LineChartProps, LineChartDatum, LineChartTone } from "./LineChart.js";
+export { StepLineChart } from "./StepLineChart.js";
+export type { StepLineChartProps, StepLineChartDatum, StepLineChartTone } from "./StepLineChart.js";
 export { DonutChart } from "./DonutChart.js";
 export type { DonutChartProps, DonutChartDatum, DonutChartTone } from "./DonutChart.js";
 export { ScatterPlot } from "./ScatterPlot.js";
