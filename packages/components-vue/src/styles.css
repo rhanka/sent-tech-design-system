@@ -394,7 +394,7 @@
 
   .st-barChart__bar {
     cursor: pointer;
-    transition: opacity 120ms ease;
+    transition: opacity var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
   }
 
   .st-barChart__bar:hover,
@@ -402,9 +402,29 @@
     opacity: 0.82;
   }
 
-  .st-barChart__bar:focus-visible {
-    outline: 2px solid var(--st-semantic-border-interactive);
+  .st-barChart__bar:focus-visible,
+  .st-barChart__bar--interactive:focus-visible {
+    outline: 2px solid var(--st-semantic-border-interactive, var(--st-semantic-action-primary));
     outline-offset: 1px;
+  }
+
+  /* Non-selected bars are dimmed while a selection is active. */
+  .st-barChart__bar--dim {
+    opacity: 0.45;
+  }
+  /* Hover still lifts a dimmed bar so it stays explorable. */
+  .st-barChart__bar--dim:hover {
+    opacity: 0.7;
+  }
+
+  /* Selected bar: full opacity + a contrast-safe accent stroke (two signals,
+     never a font/size reflow). Outranks the dim rule. */
+  .st-barChart__bar--selected,
+  .st-barChart__bar--selected:hover {
+    opacity: 1;
+    stroke: var(--st-semantic-border-interactive, var(--st-semantic-action-primary));
+    stroke-width: 2;
+    paint-order: stroke;
   }
 
   .st-barChart__bar--category1 { fill: var(--st-semantic-data-category1); }
@@ -439,6 +459,10 @@
 
   .st-barChart__tooltipValue {
     opacity: 0.85;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .st-barChart__bar { transition: none; }
   }
 
 .st-breadcrumb {

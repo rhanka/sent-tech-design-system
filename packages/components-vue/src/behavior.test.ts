@@ -2718,6 +2718,92 @@ describe("Vue behavioral parity — batch 5", () => {
     it("has name BarChart", () => {
       expect(BarChart.name).toBe("BarChart");
     });
+
+    // --- controlled selection ---
+    const selData = [
+      { label: "A", value: 4 },
+      { label: "B", value: 8 },
+      { label: "C", value: 2 },
+    ];
+
+    it("selection: purely presentational when onSelect is absent (no regression)", () => {
+      const wrapper = mount(BarChart, { props: { data: selData, label: "Plain" } });
+      const bars = wrapper.findAll(".st-barChart__bar");
+      expect(bars.length).toBe(3);
+      bars.forEach((bar) => {
+        expect(bar.attributes("role")).toBeUndefined();
+        expect(bar.attributes("tabindex")).toBeUndefined();
+        expect(bar.attributes("aria-pressed")).toBeUndefined();
+        expect(bar.attributes("aria-label")).toBeUndefined();
+        expect(bar.classes()).not.toContain("st-barChart__bar--interactive");
+      });
+    });
+
+    it("selection: bars become activable buttons when onSelect is provided", () => {
+      const wrapper = mount(BarChart, {
+        props: { data: selData, label: "Pick", onSelect: () => {} },
+      });
+      const bars = wrapper.findAll(".st-barChart__bar");
+      bars.forEach((bar) => {
+        expect(bar.attributes("role")).toBe("button");
+        expect(bar.attributes("tabindex")).toBe("0");
+        expect(bar.classes()).toContain("st-barChart__bar--interactive");
+      });
+      expect(bars[0].attributes("aria-label")).toBe("A: 4");
+      expect(bars[1].attributes("aria-label")).toBe("B: 8");
+    });
+
+    it("selection: emits onSelect with the bar key (its label) on click", async () => {
+      const onSelect = vi.fn();
+      const wrapper = mount(BarChart, { props: { data: selData, label: "Click", onSelect } });
+      await wrapper.findAll(".st-barChart__bar")[1].trigger("click");
+      expect(onSelect).toHaveBeenCalledTimes(1);
+      expect(onSelect).toHaveBeenCalledWith("B");
+    });
+
+    it("selection: activates on Enter and on Space (Space prevents default)", async () => {
+      const onSelect = vi.fn();
+      const wrapper = mount(BarChart, { props: { data: selData, label: "Keys", onSelect } });
+      const bar = wrapper.findAll(".st-barChart__bar")[2];
+
+      await bar.trigger("keydown", { key: "Enter" });
+      expect(onSelect).toHaveBeenLastCalledWith("C");
+
+      // Dispatch a real event so we can assert preventDefault() was called.
+      const evt = new KeyboardEvent("keydown", { key: " ", cancelable: true, bubbles: true });
+      bar.element.dispatchEvent(evt);
+      expect(evt.defaultPrevented).toBe(true);
+      expect(onSelect).toHaveBeenCalledTimes(2);
+      expect(onSelect).toHaveBeenLastCalledWith("C");
+    });
+
+    it("selection: reflects selectedKeys via aria-pressed and the selected class", () => {
+      const wrapper = mount(BarChart, {
+        props: { data: selData, label: "Sel", onSelect: () => {}, selectedKeys: ["B"] },
+      });
+      const bars = wrapper.findAll(".st-barChart__bar");
+      expect(bars[0].attributes("aria-pressed")).toBe("false");
+      expect(bars[1].attributes("aria-pressed")).toBe("true");
+      expect(bars[1].classes()).toContain("st-barChart__bar--selected");
+      expect(bars[0].classes()).not.toContain("st-barChart__bar--selected");
+    });
+
+    it("selection: dims non-selected bars when active, none when empty", async () => {
+      const wrapper = mount(BarChart, {
+        props: { data: selData, label: "Dim", onSelect: () => {}, selectedKeys: ["B"] },
+      });
+      let bars = wrapper.findAll(".st-barChart__bar");
+      expect(bars[1].classes()).not.toContain("st-barChart__bar--dim");
+      expect(bars[0].classes()).toContain("st-barChart__bar--dim");
+      expect(bars[2].classes()).toContain("st-barChart__bar--dim");
+
+      await wrapper.setProps({ selectedKeys: [] });
+      bars = wrapper.findAll(".st-barChart__bar");
+      bars.forEach((bar) => {
+        expect(bar.classes()).not.toContain("st-barChart__bar--dim");
+        expect(bar.classes()).not.toContain("st-barChart__bar--selected");
+      });
+    });
   });
 
   // --- LineChart ---

@@ -24,6 +24,19 @@ export type BarChartProps = {
   height?: number;
   orientation?: "vertical" | "horizontal";
   label: string;
+  /**
+   * Keys of the currently selected bars (a bar's key is its `label`).
+   * CONTROLLED — the parent owns the toggle; the component never stores
+   * selection. When non-empty the selected bars stay full opacity (+ accent)
+   * and the rest dim; when empty every bar is normal. Defaults to [].
+   */
+  selectedKeys?: string[];
+  /**
+   * Called when a bar is clicked / activated (Enter / Space) with the bar's
+   * key (its `label`). When provided the bars become focusable buttons; when
+   * omitted the chart is purely presentational (no interactivity, unchanged).
+   */
+  onSelect?: (key: string) => void;
   class?: string;
 };
 
@@ -37,6 +50,8 @@ export const BarChart = defineComponent({
     height: { type: Number, default: 240 },
     orientation: { type: String as () => "vertical" | "horizontal", default: "vertical" },
     label: { type: String, required: true },
+    selectedKeys: { type: Array as () => string[], default: () => [] },
+    onSelect: { type: Function as unknown as () => (key: string) => void, default: undefined },
     class: { type: String, default: undefined },
   },
   setup(props, { attrs }) {
@@ -55,12 +70,26 @@ export const BarChart = defineComponent({
       hoveredIndex.value = Number.isInteger(index) ? index : null;
     }
 
+    function handleBarKeydown(key: string, event: KeyboardEvent) {
+      if (event.key === "Enter" || event.key === " ") {
+        // preventDefault on Space so it activates rather than scrolling the page.
+        event.preventDefault();
+        props.onSelect?.(key);
+      }
+    }
+
     return () => {
       const width = props.width ?? 480;
       const height = props.height ?? 240;
       const orientation = props.orientation ?? "vertical";
       const label = props.label;
       const data = props.data;
+
+      // Selection (controlled): fast lookup + "is any bar selected" flag. Only
+      // when something is selected do we dim the non-selected bars.
+      const selectedSet = new Set(props.selectedKeys ?? []);
+      const hasSelection = selectedSet.size > 0;
+      const interactive = typeof props.onSelect === "function";
 
       const values = data.map((d) => d.value);
       const minRaw = Math.min(0, ...values);
@@ -170,18 +199,31 @@ export const BarChart = defineComponent({
             ),
       );
 
-      const barRects = bars.map((bar, i) =>
-        h("rect", {
+      const barRects = bars.map((bar, i) => {
+        const isSelected = selectedSet.has(bar.datum.label);
+        return h("rect", {
           key: `b${bar.datum.label}`,
-          class: classNames("st-barChart__bar", `st-barChart__bar--${bar.tone}`),
+          class: classNames(
+            "st-barChart__bar",
+            `st-barChart__bar--${bar.tone}`,
+            isSelected && "st-barChart__bar--selected",
+            hasSelection && !isSelected && "st-barChart__bar--dim",
+            interactive && "st-barChart__bar--interactive",
+          ),
           x: bar.x,
           y: bar.y,
           width: bar.width,
           height: bar.height,
           rx: "2",
           "data-chart-index": i,
-        }),
-      );
+          role: interactive ? "button" : undefined,
+          tabindex: interactive ? 0 : undefined,
+          "aria-pressed": interactive ? (isSelected ? "true" : "false") : undefined,
+          "aria-label": interactive ? `${bar.datum.label}: ${bar.datum.value}` : undefined,
+          onClick: interactive ? () => props.onSelect?.(bar.datum.label) : undefined,
+          onKeydown: interactive ? (e: KeyboardEvent) => handleBarKeydown(bar.datum.label, e) : undefined,
+        });
+      });
 
       const hoveredBar = hoveredIndex.value !== null ? bars[hoveredIndex.value] : undefined;
 
