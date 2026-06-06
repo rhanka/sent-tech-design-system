@@ -297,6 +297,10 @@ export { SelectableList } from "./SelectableList.js";
 export type { SelectableListProps } from "./SelectableList.js";
 export { BulletChart } from "./BulletChart.js";
 export type { BulletChartProps, BulletChartDatum } from "./BulletChart.js";
+export { LollipopChart } from "./LollipopChart.js";
+export type { LollipopChartProps, LollipopChartDatum, LollipopChartTone } from "./LollipopChart.js";
+export { ParetoChart } from "./ParetoChart.js";
+export type { ParetoChartProps, ParetoChartDatum, ParetoChartTone } from "./ParetoChart.js";
 export { MarimekkoChart } from "./MarimekkoChart.js";
 export type {
   MarimekkoChartProps,

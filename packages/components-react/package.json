@@ -1,6 +1,6 @@
 {
   "name": "@sentropic/design-system-react",
-  "version": "0.18.0",
+  "version": "0.19.0",
   "description": "React components for the Sentropic design system.",
   "type": "module",
   "publishConfig": {
@@ -32,7 +32,7 @@
     "test": "vitest run src"
   },
   "dependencies": {
-    "@sentropic/design-system-themes": "0.10.3"
+    "@sentropic/design-system-themes": "0.11.0"
   },
   "peerDependencies": {
     "react": "^18.3.0 || ^19.0.0",
