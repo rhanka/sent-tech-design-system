@@ -209,7 +209,7 @@ export type {
   TreemapChartDatum,
   TreemapTiling,
 } from "./TreemapChart.js";
-export { ForceGraph, nodeShapePath } from "./ForceGraph.js";
+export { ForceGraph, nodeShapePath, edgeDashArray } from "./ForceGraph.js";
 export type {
   ForceGraphProps,
   ForceGraphNode,
@@ -217,6 +217,7 @@ export type {
   ForceGraphTone,
   ForceGraphNodeShape,
   ForceGraphLegendEntry,
+  ForceGraphEdgeDash,
 } from "./ForceGraph.js";
 export { GraphLegend } from "./GraphLegend.js";
 export type { GraphLegendProps } from "./GraphLegend.js";

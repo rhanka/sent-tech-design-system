@@ -26,23 +26,55 @@ describe("Rating", () => {
     expect(onChange).toHaveBeenCalledWith(0);
   });
 
-  it("is inert when readonly (no onChange, stars disabled)", () => {
+  it("is inert when readonly — renders role=img, no interactive elements", () => {
     const onChange = vi.fn();
-    render(<Rating value={2} readonly onChange={onChange} />);
-    const group = screen.getByRole("radiogroup");
-    expect(group.getAttribute("aria-readonly")).toBe("true");
-    const stars = screen.getAllByRole("radio");
-    expect((stars[0] as HTMLButtonElement).disabled).toBe(true);
-    fireEvent.click(stars[4]);
+    render(<Rating value={2} readonly label="Note" onChange={onChange} />);
+    // role="img" on the container, accessible name includes the value
+    const img = screen.getByRole("img");
+    expect(img).toBeTruthy();
+    expect(img.getAttribute("aria-label")).toContain("2 / 5");
+    // No buttons in readonly mode
+    expect(screen.queryAllByRole("radio")).toHaveLength(0);
+    fireEvent.click(img);
     expect(onChange).not.toHaveBeenCalled();
   });
 
-  it("supports keyboard arrows", () => {
+  it("supports keyboard arrows on radio buttons (moves focus to target)", () => {
     const onChange = vi.fn();
     render(<Rating value={2} onChange={onChange} />);
     const stars = screen.getAllByRole("radio");
     fireEvent.keyDown(stars[1], { key: "ArrowRight" });
     expect(onChange).toHaveBeenCalledWith(3);
+    // Focus should move to star 3 (index 2)
+    expect(document.activeElement).toBe(stars[2]);
+  });
+
+  it("Home goes to star 1 (not 0) in integer mode", () => {
+    const onChange = vi.fn();
+    render(<Rating value={3} onChange={onChange} />);
+    const stars = screen.getAllByRole("radio");
+    fireEvent.keyDown(stars[2], { key: "Home" });
+    expect(onChange).toHaveBeenCalledWith(1);
+    expect(document.activeElement).toBe(stars[0]);
+  });
+
+  it("ArrowLeft stays at 1, does not go below 1 in integer mode", () => {
+    const onChange = vi.fn();
+    render(<Rating value={1} onChange={onChange} />);
+    const stars = screen.getAllByRole("radio");
+    fireEvent.keyDown(stars[0], { key: "ArrowLeft" });
+    expect(onChange).toHaveBeenCalledWith(1);
+    expect(document.activeElement).toBe(stars[0]);
+  });
+
+  it("allowHalf renders a slider with correct ARIA", () => {
+    const onChange = vi.fn();
+    render(<Rating value={2.5} allowHalf label="Note" onChange={onChange} />);
+    const slider = screen.getByRole("slider");
+    expect(slider.getAttribute("aria-valuenow")).toBe("2.5");
+    expect(slider.getAttribute("aria-valuemin")).toBe("0");
+    expect(slider.getAttribute("aria-valuemax")).toBe("5");
+    expect(slider.getAttribute("aria-label")).toBe("Note");
   });
 });
 
@@ -77,6 +109,66 @@ describe("TimePicker", () => {
     expect(option.textContent).toBe("01:00 PM");
     fireEvent.click(option);
     expect(onChange).toHaveBeenCalledWith("13:00");
+  });
+
+  it("ArrowDown opens the list and sets aria-activedescendant", () => {
+    render(<TimePicker step={60} min="08:00" max="10:00" />);
+    const input = screen.getByRole("combobox");
+    expect(input.getAttribute("aria-expanded")).toBe("false");
+    fireEvent.keyDown(input, { key: "ArrowDown" });
+    expect(input.getAttribute("aria-expanded")).toBe("true");
+    expect(input.getAttribute("aria-activedescendant")).toBeTruthy();
+  });
+
+  it("ArrowDown/Up navigates through options and updates aria-activedescendant", () => {
+    render(<TimePicker step={60} min="08:00" max="10:00" />);
+    const input = screen.getByRole("combobox");
+    // Open list
+    fireEvent.keyDown(input, { key: "ArrowDown" });
+    const firstDesc = input.getAttribute("aria-activedescendant");
+    // ArrowDown to next option
+    fireEvent.keyDown(input, { key: "ArrowDown" });
+    const secondDesc = input.getAttribute("aria-activedescendant");
+    expect(firstDesc).not.toBe(secondDesc);
+    // ArrowUp back to first
+    fireEvent.keyDown(input, { key: "ArrowUp" });
+    expect(input.getAttribute("aria-activedescendant")).toBe(firstDesc);
+  });
+
+  it("Home/End jump to first/last option", () => {
+    render(<TimePicker step={60} min="08:00" max="10:00" />);
+    const input = screen.getByRole("combobox");
+    fireEvent.keyDown(input, { key: "ArrowDown" });
+    fireEvent.keyDown(input, { key: "End" });
+    // aria-activedescendant should point to last option (index 2)
+    const listId = input.getAttribute("aria-controls")!;
+    expect(input.getAttribute("aria-activedescendant")).toBe(`${listId}-opt-2`);
+    fireEvent.keyDown(input, { key: "Home" });
+    expect(input.getAttribute("aria-activedescendant")).toBe(`${listId}-opt-0`);
+  });
+
+  it("Enter selects the active option and closes the list", () => {
+    const onChange = vi.fn();
+    render(<TimePicker step={60} min="08:00" max="10:00" onChange={onChange} />);
+    const input = screen.getByRole("combobox");
+    // ArrowDown opens and focuses first option (08:00)
+    fireEvent.keyDown(input, { key: "ArrowDown" });
+    // ArrowDown again to 09:00
+    fireEvent.keyDown(input, { key: "ArrowDown" });
+    fireEvent.keyDown(input, { key: "Enter" });
+    expect(onChange).toHaveBeenCalledWith("09:00");
+    expect(input.getAttribute("aria-expanded")).toBe("false");
+  });
+
+  it("Escape closes the list without selecting", () => {
+    const onChange = vi.fn();
+    render(<TimePicker step={60} min="08:00" max="10:00" onChange={onChange} />);
+    const input = screen.getByRole("combobox");
+    fireEvent.keyDown(input, { key: "ArrowDown" });
+    expect(input.getAttribute("aria-expanded")).toBe("true");
+    fireEvent.keyDown(input, { key: "Escape" });
+    expect(input.getAttribute("aria-expanded")).toBe("false");
+    expect(onChange).not.toHaveBeenCalled();
   });
 });
 
@@ -113,25 +205,108 @@ describe("Calendar", () => {
     fireEvent.click(day10);
     expect(onChange).toHaveBeenCalledWith(["2024-03-10", null]);
   });
+
+  it("grid has role=row wrappers (not display:contents)", () => {
+    render(<Calendar month="2024-03" />);
+    const rows = screen.getAllByRole("row");
+    // 1 header row + 6 week rows = 7
+    expect(rows.length).toBeGreaterThanOrEqual(7);
+  });
+
+  it("roving tabindex: exactly one cell has tabindex=0 (the focus date)", () => {
+    render(<Calendar month="2024-03" />);
+    const cells = screen.getAllByRole("gridcell") as HTMLButtonElement[];
+    const tabbable = cells.filter((c) => c.getAttribute("tabindex") === "0");
+    expect(tabbable).toHaveLength(1);
+    expect(tabbable[0].disabled).toBe(false);
+  });
+
+  it("roving tabindex: disabled cells never have tabindex=0", () => {
+    render(<Calendar month="2024-03" min="2024-03-10" max="2024-03-20" />);
+    const cells = screen.getAllByRole("gridcell") as HTMLButtonElement[];
+    const tabbable = cells.filter((c) => c.getAttribute("tabindex") === "0");
+    expect(tabbable).toHaveLength(1);
+    expect(tabbable[0].disabled).toBe(false);
+  });
+
+  it("ArrowRight moves focus to the next day", () => {
+    render(<Calendar month="2024-03" value="2024-03-10" />);
+    const cells = screen.getAllByRole("gridcell") as HTMLButtonElement[];
+    const inMonth = cells.filter((c) => !c.className.includes("st-calendar__day--outside"));
+    const day10 = inMonth.find((c) => c.textContent === "10")!;
+    day10.focus();
+    fireEvent.keyDown(day10.closest("[role='grid']")!, { key: "ArrowRight" });
+    // After ArrowRight, day 11 should be focused
+    const day11 = inMonth.find((c) => c.textContent === "11")!;
+    expect(day11.getAttribute("tabindex")).toBe("0");
+  });
+
+  it("ArrowDown moves focus 7 days forward", () => {
+    render(<Calendar month="2024-03" value="2024-03-10" />);
+    const cells = screen.getAllByRole("gridcell") as HTMLButtonElement[];
+    const inMonth = cells.filter((c) => !c.className.includes("st-calendar__day--outside"));
+    const day10 = inMonth.find((c) => c.textContent === "10")!;
+    fireEvent.keyDown(day10.closest("[role='grid']")!, { key: "ArrowDown" });
+    const day17 = inMonth.find((c) => c.textContent === "17")!;
+    expect(day17.getAttribute("tabindex")).toBe("0");
+  });
+
+  it("Enter/Space on focused cell selects it", () => {
+    const onChange = vi.fn();
+    render(<Calendar month="2024-03" value="2024-03-10" onChange={onChange} />);
+    const cells = screen.getAllByRole("gridcell") as HTMLButtonElement[];
+    const inMonth = cells.filter((c) => !c.className.includes("st-calendar__day--outside"));
+    const day10 = inMonth.find((c) => c.textContent === "10")!;
+    const grid = day10.closest("[role='grid']")!;
+    day10.focus();
+    fireEvent.keyDown(grid, { key: "Enter" });
+    expect(onChange).toHaveBeenCalledWith("2024-03-10");
+  });
 });
 
 describe("SlideIndicator", () => {
-  it("marks the current tab and emits the clicked index", () => {
+  it("marks the current button with aria-current and emits the clicked index", () => {
     const onChange = vi.fn();
     render(<SlideIndicator count={4} current={1} onChange={onChange} />);
-    const tabs = screen.getAllByRole("tab");
-    expect(tabs).toHaveLength(4);
-    expect(tabs[1].getAttribute("aria-selected")).toBe("true");
-    expect(tabs[1].getAttribute("tabindex")).toBe("0");
-    fireEvent.click(tabs[3]);
+    // role="group" + buttons (not tablist/tabs)
+    expect(screen.getByRole("group")).toBeTruthy();
+    const btns = screen.getAllByRole("button");
+    expect(btns).toHaveLength(4);
+    expect(btns[1].getAttribute("aria-current")).toBe("true");
+    expect(btns[1].getAttribute("tabindex")).toBe("0");
+    expect(btns[0].getAttribute("tabindex")).toBe("-1");
+    fireEvent.click(btns[3]);
     expect(onChange).toHaveBeenCalledWith(3);
   });
 
   it("does not re-emit when clicking the current index", () => {
     const onChange = vi.fn();
     render(<SlideIndicator count={3} current={2} onChange={onChange} />);
-    fireEvent.click(screen.getAllByRole("tab")[2]);
+    fireEvent.click(screen.getAllByRole("button")[2]);
     expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it("ArrowRight moves DOM focus to the next button", () => {
+    const onChange = vi.fn();
+    render(<SlideIndicator count={3} current={0} onChange={onChange} label="Slide" />);
+    const btns = screen.getAllByRole("button");
+    btns[0].focus();
+    fireEvent.keyDown(btns[0], { key: "ArrowRight" });
+    expect(onChange).toHaveBeenCalledWith(1);
+    expect(document.activeElement).toBe(btns[1]);
+  });
+
+  it("Home / End jump to first / last", () => {
+    const onChange = vi.fn();
+    render(<SlideIndicator count={4} current={2} onChange={onChange} label="Slide" />);
+    const btns = screen.getAllByRole("button");
+    btns[2].focus();
+    fireEvent.keyDown(btns[2], { key: "Home" });
+    expect(onChange).toHaveBeenLastCalledWith(0);
+    expect(document.activeElement).toBe(btns[0]);
+    fireEvent.keyDown(btns[0], { key: "End" });
+    expect(onChange).toHaveBeenLastCalledWith(3);
+    expect(document.activeElement).toBe(btns[3]);
   });
 });
 

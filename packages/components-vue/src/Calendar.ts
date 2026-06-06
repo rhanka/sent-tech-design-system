@@ -1,4 +1,4 @@
-import { defineComponent, h, ref, watch } from "vue";
+import { defineComponent, h, nextTick, ref, watch } from "vue";
 import { classNames } from "./classNames.js";
 
 /**
@@ -152,22 +152,222 @@ export const Calendar = defineComponent({
       },
     );
 
-    const previousMonth = () => {
-      if (viewMonth.value === 0) {
-        viewMonth.value = 11;
-        viewYear.value -= 1;
-      } else {
-        viewMonth.value -= 1;
+    // --- Roving tabindex: focusDate ----------------------------------------
+    // INVARIANT : focusDate est toujours dans le mois affiché ET non-disabled.
+    const gridEl = ref<HTMLElement | null>(null);
+
+    function isOutOfBoundsDate(date: Date, minDate: Date | null, maxDate: Date | null): boolean {
+      const d = calStartOfDay(date).getTime();
+      if (minDate && d < minDate.getTime()) return true;
+      if (maxDate && d > maxDate.getTime()) return true;
+      return false;
+    }
+
+    function clampToMonth(
+      preferred: Date,
+      year: number,
+      month: number,
+      minDate: Date | null,
+      maxDate: Date | null,
+    ): Date | null {
+      if (
+        preferred.getFullYear() === year &&
+        preferred.getMonth() === month &&
+        !isOutOfBoundsDate(preferred, minDate, maxDate)
+      ) {
+        return preferred;
       }
+      const lastDay = new Date(year, month + 1, 0).getDate();
+      for (let d = 1; d <= lastDay; d++) {
+        const candidate = calStartOfDay(new Date(year, month, d));
+        if (!isOutOfBoundsDate(candidate, minDate, maxDate)) return candidate;
+      }
+      return null;
+    }
+
+    function computeInitialFocusDate(): Date {
+      const minDate = calParseISO(props.min);
+      const maxDate = calParseISO(props.max);
+      const v = props.value ?? internal.value;
+      const sel = !props.range ? calParseISO(v as string | null) :
+        (Array.isArray(v) ? calParseISO(v[0]) : null);
+      if (sel && sel.getFullYear() === viewYear.value && sel.getMonth() === viewMonth.value && !isOutOfBoundsDate(sel, minDate, maxDate)) {
+        return sel;
+      }
+      const lastDay = new Date(viewYear.value, viewMonth.value + 1, 0).getDate();
+      for (let d = 1; d <= lastDay; d++) {
+        const candidate = calStartOfDay(new Date(viewYear.value, viewMonth.value, d));
+        if (!isOutOfBoundsDate(candidate, minDate, maxDate)) return candidate;
+      }
+      return calStartOfDay(new Date(viewYear.value, viewMonth.value, 1));
+    }
+
+    // Initialisation synchrone (pas onMounted) pour que les tests et le SSR
+    // voient immédiatement la bonne cellule tabbable.
+    const focusDate = ref<Date>(computeInitialFocusDate());
+
+    // Resynchronise focusDate lorsque la prop value change depuis l'extérieur.
+    watch(
+      () => props.value,
+      () => {
+        const minDate = calParseISO(props.min);
+        const maxDate = calParseISO(props.max);
+        const v = props.value ?? internal.value;
+        const sel = !props.range ? calParseISO(v as string | null) :
+          (Array.isArray(v) ? calParseISO(v[0]) : null);
+        if (sel && sel.getFullYear() === viewYear.value && sel.getMonth() === viewMonth.value && !isOutOfBoundsDate(sel, minDate, maxDate)) {
+          focusDate.value = sel;
+        } else {
+          const clamped = clampToMonth(focusDate.value, viewYear.value, viewMonth.value, minDate, maxDate);
+          if (clamped) focusDate.value = clamped;
+        }
+      },
+    );
+
+    // Resynchronise focusDate lorsque le mois affiché change.
+    watch(
+      [viewYear, viewMonth],
+      ([y, m]) => {
+        const minDate = calParseISO(props.min);
+        const maxDate = calParseISO(props.max);
+        if (focusDate.value.getFullYear() !== y || focusDate.value.getMonth() !== m || isOutOfBoundsDate(focusDate.value, minDate, maxDate)) {
+          const clamped = clampToMonth(focusDate.value, y, m, minDate, maxDate);
+          if (clamped) focusDate.value = clamped;
+        }
+      },
+    );
+
+    function focusActiveCell() {
+      if (!gridEl.value) return;
+      const iso = calToISO(focusDate.value);
+      const btn = gridEl.value.querySelector<HTMLElement>(`[data-date="${iso}"]`);
+      btn?.focus();
+    }
+
+    const previousMonth = () => {
+      const minDate = calParseISO(props.min);
+      const maxDate = calParseISO(props.max);
+      const targetMonth = viewMonth.value === 0 ? 11 : viewMonth.value - 1;
+      const targetYear = viewMonth.value === 0 ? viewYear.value - 1 : viewYear.value;
+      viewMonth.value = targetMonth;
+      viewYear.value = targetYear;
+      const clamped = clampToMonth(focusDate.value, targetYear, targetMonth, minDate, maxDate);
+      if (clamped) focusDate.value = clamped;
     };
 
     const nextMonth = () => {
-      if (viewMonth.value === 11) {
-        viewMonth.value = 0;
-        viewYear.value += 1;
-      } else {
-        viewMonth.value += 1;
+      const minDate = calParseISO(props.min);
+      const maxDate = calParseISO(props.max);
+      const targetMonth = viewMonth.value === 11 ? 0 : viewMonth.value + 1;
+      const targetYear = viewMonth.value === 11 ? viewYear.value + 1 : viewYear.value;
+      viewMonth.value = targetMonth;
+      viewYear.value = targetYear;
+      const clamped = clampToMonth(focusDate.value, targetYear, targetMonth, minDate, maxDate);
+      if (clamped) focusDate.value = clamped;
+    };
+
+    function moveFocus(deltaDays: number) {
+      const next = new Date(focusDate.value);
+      next.setDate(next.getDate() + deltaDays);
+      if (next.getFullYear() !== viewYear.value || next.getMonth() !== viewMonth.value) {
+        viewYear.value = next.getFullYear();
+        viewMonth.value = next.getMonth();
       }
+      focusDate.value = calStartOfDay(next);
+      nextTick(focusActiveCell);
+    }
+
+    const onGridKeyDown = (event: KeyboardEvent) => {
+      const minDate = calParseISO(props.min);
+      const maxDate = calParseISO(props.max);
+      switch (event.key) {
+        case "ArrowLeft":
+          event.preventDefault();
+          moveFocus(-1);
+          break;
+        case "ArrowRight":
+          event.preventDefault();
+          moveFocus(1);
+          break;
+        case "ArrowUp":
+          event.preventDefault();
+          moveFocus(-7);
+          break;
+        case "ArrowDown":
+          event.preventDefault();
+          moveFocus(7);
+          break;
+        case "Home": {
+          event.preventDefault();
+          const dayOfWeek = focusDate.value.getDay();
+          const offset = (dayOfWeek - props.weekStartsOn + 7) % 7;
+          moveFocus(-offset);
+          break;
+        }
+        case "End": {
+          event.preventDefault();
+          const dayOfWeek = focusDate.value.getDay();
+          const offset = 6 - ((dayOfWeek - props.weekStartsOn + 7) % 7);
+          moveFocus(offset);
+          break;
+        }
+        case "PageUp": {
+          event.preventDefault();
+          const puDay = focusDate.value.getDate();
+          const puTargetMonth = viewMonth.value === 0 ? 11 : viewMonth.value - 1;
+          const puTargetYear = viewMonth.value === 0 ? viewYear.value - 1 : viewYear.value;
+          const puLastDay = new Date(puTargetYear, puTargetMonth + 1, 0).getDate();
+          focusDate.value = calStartOfDay(new Date(puTargetYear, puTargetMonth, Math.min(puDay, puLastDay)));
+          previousMonth();
+          nextTick(focusActiveCell);
+          break;
+        }
+        case "PageDown": {
+          event.preventDefault();
+          const pdDay = focusDate.value.getDate();
+          const pdTargetMonth = viewMonth.value === 11 ? 0 : viewMonth.value + 1;
+          const pdTargetYear = viewMonth.value === 11 ? viewYear.value + 1 : viewYear.value;
+          const pdLastDay = new Date(pdTargetYear, pdTargetMonth + 1, 0).getDate();
+          focusDate.value = calStartOfDay(new Date(pdTargetYear, pdTargetMonth, Math.min(pdDay, pdLastDay)));
+          nextMonth();
+          nextTick(focusActiveCell);
+          break;
+        }
+        case "Enter":
+        case " ": {
+          event.preventDefault();
+          if (!isOutOfBoundsDate(focusDate.value, minDate, maxDate)) pickDate(focusDate.value);
+          break;
+        }
+      }
+    };
+
+    const pickDate = (date: Date) => {
+      const minDate = calParseISO(props.min);
+      const maxDate = calParseISO(props.max);
+      if (isOutOfBoundsDate(date, minDate, maxDate)) return;
+      const picked = calStartOfDay(date);
+      const iso = calToISO(picked);
+      const v = props.value ?? internal.value;
+      const rangeStart = props.range && Array.isArray(v) ? calParseISO(v[0]) : null;
+      const rangeEnd = props.range && Array.isArray(v) ? calParseISO(v[1]) : null;
+
+      if (!props.range) {
+        commit(iso);
+        return;
+      }
+      if (!rangeStart || (rangeStart && rangeEnd) || picked.getTime() < rangeStart.getTime()) {
+        commit([iso, null]);
+        return;
+      }
+      commit([calToISO(rangeStart), iso]);
+    };
+
+    const commit = (next: CalendarValue) => {
+      if (props.value === undefined) internal.value = next;
+      emit("update:modelValue", next);
+      emit("change", next);
+      props.onChange?.(next);
     };
 
     return () => {
@@ -189,6 +389,9 @@ export const Calendar = defineComponent({
         month: "long",
         year: "numeric",
       });
+
+      const minDate = calParseISO(props.min);
+      const maxDate = calParseISO(props.max);
 
       const single = props.range ? null : calParseISO(activeValue as string | null);
       const rangeStart =
@@ -222,15 +425,9 @@ export const Calendar = defineComponent({
         grid.push({ date: calStartOfDay(d), inMonth: d.getMonth() === viewMonth.value });
       }
 
-      const minDate = calParseISO(props.min);
-      const maxDate = calParseISO(props.max);
+      const isOutOfBounds = (date: Date): boolean =>
+        isOutOfBoundsDate(date, minDate, maxDate);
 
-      const isOutOfBounds = (date: Date): boolean => {
-        const d = calStartOfDay(date).getTime();
-        if (minDate && d < minDate.getTime()) return true;
-        if (maxDate && d > maxDate.getTime()) return true;
-        return false;
-      };
       const isSelected = (date: Date): boolean => {
         if (!props.range) return calIsSameDay(single, date);
         return calIsSameDay(rangeStart, date) || calIsSameDay(rangeEnd, date);
@@ -241,33 +438,50 @@ export const Calendar = defineComponent({
         return d > rangeStart.getTime() && d < rangeEnd.getTime();
       };
 
-      const commit = (next: CalendarValue) => {
-        if (props.value === undefined) internal.value = next;
-        emit("update:modelValue", next);
-        emit("change", next);
-        props.onChange?.(next);
-      };
-
-      const pickDate = (date: Date) => {
-        if (isOutOfBounds(date)) return;
-        const picked = calStartOfDay(date);
-        const iso = calToISO(picked);
-        if (!props.range) {
-          commit(iso);
-          return;
-        }
-        // Mode plage : (re)démarrage si pas de début, ou si plage déjà complète,
-        // ou si la date est antérieure au début courant.
-        if (!rangeStart || (rangeStart && rangeEnd) || picked.getTime() < rangeStart.getTime()) {
-          commit([iso, null]);
-          return;
-        }
-        commit([calToISO(rangeStart), iso]);
-      };
-
       const monthLabel = monthFormatter.format(
         new Date(viewYear.value, viewMonth.value, 1),
       );
+
+      // Construire les 6 semaines avec role="row" (ARIA grid pattern).
+      const weekRows = Array.from({ length: 6 }, (_, rowIdx) => {
+        const cells = grid.slice(rowIdx * 7, rowIdx * 7 + 7).map((cell, colIdx) => {
+          const oob = isOutOfBounds(cell.date);
+          const selected = isSelected(cell.date);
+          const inRange = isInRange(cell.date);
+          const isToday = calIsSameDay(cell.date, today);
+          const isActive = calIsSameDay(cell.date, focusDate.value);
+          return h("button", {
+            key: rowIdx * 7 + colIdx,
+            type: "button",
+            class: classNames(
+              "st-calendar__day",
+              !cell.inMonth && "st-calendar__day--outside",
+              selected && "st-calendar__day--selected",
+              inRange && "st-calendar__day--inRange",
+              isToday && "st-calendar__day--today",
+            ),
+            role: "gridcell",
+            "aria-label": cellFormatter.format(cell.date),
+            "aria-selected": selected ? "true" : "false",
+            "aria-current": isToday ? "date" : undefined,
+            "aria-disabled": oob ? "true" : undefined,
+            disabled: oob,
+            tabindex: isActive && !oob ? 0 : -1,
+            "data-date": calToISO(cell.date),
+            onClick: () => {
+              if (!oob) {
+                focusDate.value = calStartOfDay(cell.date);
+                pickDate(cell.date);
+              }
+            },
+          }, String(cell.date.getDate()));
+        });
+        return h("div", {
+          key: rowIdx,
+          class: "st-calendar__week",
+          role: "row",
+        }, cells);
+      });
 
       return h(
         "div",
@@ -303,19 +517,11 @@ export const Calendar = defineComponent({
           h(
             "div",
             {
+              ref: gridEl,
               class: "st-calendar__grid",
               role: "grid",
-              tabindex: -1,
               "aria-label": monthLabel,
-              onKeydown: (event: KeyboardEvent) => {
-                if (event.key === "PageUp") {
-                  event.preventDefault();
-                  previousMonth();
-                } else if (event.key === "PageDown") {
-                  event.preventDefault();
-                  nextMonth();
-                }
-              },
+              onKeydown: onGridKeyDown,
             },
             [
               h(
@@ -333,38 +539,7 @@ export const Calendar = defineComponent({
                   ),
                 ),
               ),
-              h(
-                "div",
-                { class: "st-calendar__days" },
-                grid.map((cell, i) => {
-                  const oob = isOutOfBounds(cell.date);
-                  const selected = isSelected(cell.date);
-                  const inRange = isInRange(cell.date);
-                  const isToday = calIsSameDay(cell.date, today);
-                  return h(
-                    "button",
-                    {
-                      key: i,
-                      type: "button",
-                      class: classNames(
-                        "st-calendar__day",
-                        !cell.inMonth && "st-calendar__day--outside",
-                        selected && "st-calendar__day--selected",
-                        inRange && "st-calendar__day--inRange",
-                        isToday && "st-calendar__day--today",
-                      ),
-                      role: "gridcell",
-                      "aria-label": cellFormatter.format(cell.date),
-                      "aria-selected": selected ? "true" : "false",
-                      "aria-current": isToday ? "date" : undefined,
-                      "aria-disabled": oob ? "true" : undefined,
-                      disabled: oob,
-                      onClick: () => pickDate(cell.date),
-                    },
-                    String(cell.date.getDate()),
-                  );
-                }),
-              ),
+              h("div", { class: "st-calendar__days" }, weekRows),
             ],
           ),
         ],

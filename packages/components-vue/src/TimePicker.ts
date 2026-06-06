@@ -91,13 +91,17 @@ export const TimePicker = defineComponent({
     const autoId = ref(nextTpId());
     const internal = ref(props.value ?? "");
     const open = ref(false);
+    const activeIndex = ref(-1);
     const hostEl = ref<HTMLDivElement | null>(null);
+    const inputEl = ref<HTMLInputElement | null>(null);
+    const listEl = ref<HTMLUListElement | null>(null);
 
     const onDocumentMouseDown = (event: MouseEvent) => {
       if (!open.value) return;
       const target = event.target as Node | null;
       if (hostEl.value && target && !hostEl.value.contains(target)) {
         open.value = false;
+        activeIndex.value = -1;
       }
     };
 
@@ -120,6 +124,16 @@ export const TimePicker = defineComponent({
       return `${String(h12).padStart(2, "0")}:${String(m).padStart(2, "0")} ${period}`;
     };
 
+    function scrollActiveIntoView(listId: string) {
+      if (!listEl.value || activeIndex.value < 0) return;
+      const optEl = listEl.value.querySelector<HTMLElement>(
+        `#${listId}-opt-${activeIndex.value}`,
+      );
+      if (optEl && typeof optEl.scrollIntoView === "function") {
+        optEl.scrollIntoView({ block: "nearest" });
+      }
+    }
+
     return () => {
       const current = props.value ?? internal.value;
       const fieldId = props.id ?? autoId.value;
@@ -135,17 +149,132 @@ export const TimePicker = defineComponent({
 
       const displayValue = current ? display(current) : "";
 
-      const toggleOpen = () => {
+      const activeDescendant =
+        open.value && activeIndex.value >= 0
+          ? `${listId}-opt-${activeIndex.value}`
+          : undefined;
+
+      function openList() {
         if (props.disabled) return;
-        open.value = !open.value;
-      };
+        open.value = true;
+        const idx = current ? slots.indexOf(current) : -1;
+        activeIndex.value = idx >= 0 ? idx : 0;
+        // Focus reste sur l'input (pattern aria-activedescendant).
+      }
+
+      function closeList(returnFocus = true) {
+        open.value = false;
+        activeIndex.value = -1;
+        if (returnFocus && inputEl.value) inputEl.value.focus();
+      }
+
+      function toggleOpen() {
+        if (props.disabled) return;
+        if (open.value) closeList(true);
+        else openList();
+      }
 
       const pick = (slot: string) => {
         if (props.value === undefined) internal.value = slot;
         emit("update:modelValue", slot);
         emit("change", slot);
         props.onChange?.(slot);
-        open.value = false;
+        closeList(true);
+      };
+
+      const onInputKeyDown = (event: KeyboardEvent) => {
+        if (props.disabled) return;
+        switch (event.key) {
+          case "ArrowDown":
+            event.preventDefault();
+            if (!open.value) {
+              openList();
+            } else {
+              activeIndex.value = Math.min(activeIndex.value + 1, slots.length - 1);
+              scrollActiveIntoView(listId);
+            }
+            break;
+          case "ArrowUp":
+            event.preventDefault();
+            if (!open.value) {
+              openList();
+            } else {
+              activeIndex.value = Math.max(activeIndex.value - 1, 0);
+              scrollActiveIntoView(listId);
+            }
+            break;
+          case "Home":
+            event.preventDefault();
+            if (!open.value) {
+              openList();
+            } else {
+              activeIndex.value = 0;
+              scrollActiveIntoView(listId);
+            }
+            break;
+          case "End":
+            event.preventDefault();
+            if (!open.value) {
+              openList();
+            } else {
+              activeIndex.value = slots.length - 1;
+              scrollActiveIntoView(listId);
+            }
+            break;
+          case "Enter":
+          case " ":
+            event.preventDefault();
+            if (!open.value) {
+              openList();
+            } else {
+              if (activeIndex.value >= 0 && activeIndex.value < slots.length) {
+                pick(slots[activeIndex.value]);
+              }
+            }
+            break;
+          case "Escape":
+            if (open.value) {
+              event.preventDefault();
+              closeList(true);
+            }
+            break;
+        }
+      };
+
+      const onListKeyDown = (event: KeyboardEvent) => {
+        switch (event.key) {
+          case "ArrowDown":
+            event.preventDefault();
+            activeIndex.value = Math.min(activeIndex.value + 1, slots.length - 1);
+            scrollActiveIntoView(listId);
+            break;
+          case "ArrowUp":
+            event.preventDefault();
+            activeIndex.value = Math.max(activeIndex.value - 1, 0);
+            scrollActiveIntoView(listId);
+            break;
+          case "Home":
+            event.preventDefault();
+            activeIndex.value = 0;
+            scrollActiveIntoView(listId);
+            break;
+          case "End":
+            event.preventDefault();
+            activeIndex.value = slots.length - 1;
+            scrollActiveIntoView(listId);
+            break;
+          case "Enter":
+          case " ":
+            event.preventDefault();
+            if (activeIndex.value >= 0 && activeIndex.value < slots.length) {
+              pick(slots[activeIndex.value]);
+            }
+            break;
+          case "Escape":
+            event.preventDefault();
+            closeList(true);
+            break;
+        }
       };
 
       return h(
@@ -165,6 +294,7 @@ export const TimePicker = defineComponent({
               { class: classNames("st-timepicker", `st-timepicker--${props.size}`) },
               [
                 h("input", {
+                  ref: inputEl,
                   id: fieldId,
                   type: "text",
                   readonly: true,
@@ -176,7 +306,11 @@ export const TimePicker = defineComponent({
                   "aria-haspopup": "listbox",
                   "aria-controls": listId,
                   "aria-expanded": open.value ? "true" : "false",
+                  "aria-activedescendant": activeDescendant,
+                  "aria-autocomplete": "none",
+                  tabindex: 0,
                   onClick: toggleOpen,
+                  onKeydown: onInputKeyDown,
                 }),
                 h(
                   "button",
@@ -186,6 +320,7 @@ export const TimePicker = defineComponent({
                     "aria-label": "Ouvrir la liste des horaires",
                     "aria-haspopup": "listbox",
                     "aria-expanded": open.value ? "true" : "false",
+                    tabindex: -1,
                     disabled: props.disabled,
                     onClick: toggleOpen,
                   },
@@ -198,34 +333,30 @@ export const TimePicker = defineComponent({
             ? h(
                 "ul",
                 {
+                  ref: listEl,
                   id: listId,
                   class: "st-timepicker__list",
                   role: "listbox",
                   "aria-label": props.label ?? "Horaires",
                   tabindex: -1,
-                  onKeydown: (event: KeyboardEvent) => {
-                    if (event.key === "Escape") {
-                      event.preventDefault();
-                      open.value = false;
-                    }
-                  },
+                  onKeydown: onListKeyDown,
                 },
-                slots.map((slot) =>
+                slots.map((slot, i) =>
                   h("li", { key: slot, role: "presentation" }, [
-                    h(
-                      "button",
-                      {
-                        type: "button",
-                        class: classNames(
-                          "st-timepicker__option",
-                          slot === current && "st-timepicker__option--selected",
-                        ),
-                        role: "option",
-                        "aria-selected": slot === current ? "true" : "false",
-                        onClick: () => pick(slot),
-                      },
-                      display(slot),
-                    ),
+                    h("div", {
+                      id: `${listId}-opt-${i}`,
+                      class: classNames(
+                        "st-timepicker__option",
+                        slot === current && "st-timepicker__option--selected",
+                        i === activeIndex.value && "st-timepicker__option--active",
+                      ),
+                      role: "option",
+                      "aria-selected": slot === current ? "true" : "false",
+                      tabindex: -1,
+                      onMousedown: (e: MouseEvent) => e.preventDefault(),
+                      onClick: () => pick(slot),
+                      onMouseenter: () => { activeIndex.value = i; },
+                    }, display(slot)),
                   ]),
                 ),
               )

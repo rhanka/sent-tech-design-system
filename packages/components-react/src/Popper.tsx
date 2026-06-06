@@ -44,6 +44,23 @@ export type PopperProps = {
   className?: string;
   /** Notified whenever the resolved placement changes (after flip). */
   onPlacementChange?: (placement: PopperPlacement) => void;
+  /**
+   * (a11y, opt-in) When true, traps keyboard focus inside the panel while it
+   * is open (Tab cycles through focusable children; Shift+Tab cycles backward).
+   * Intended for modal overlays built on top of Popper. Non-modal usage (menus,
+   * tooltips) should leave this false (default) to keep the natural tab order.
+   */
+  trapFocus?: boolean;
+  /**
+   * (a11y) When true (default when open), pressing Escape calls `onClose` so
+   * the consumer can set `open = false`. Set to false to suppress this behavior.
+   */
+  closeOnEscape?: boolean;
+  /**
+   * Called when the panel requests closing (Escape key).
+   * The consumer is responsible for updating `open` in response.
+   */
+  onClose?: () => void;
   children?: React.ReactNode;
 };
 
@@ -156,6 +173,23 @@ export function computePosition(
   return { placement: joinPlacement(side, align), top, left };
 }
 
+const FOCUSABLE_POPPER_SELECTOR = [
+  "a[href]",
+  "button:not([disabled])",
+  "input:not([disabled])",
+  "select:not([disabled])",
+  "textarea:not([disabled])",
+  "[tabindex]:not([tabindex='-1'])",
+  "[contenteditable='true']",
+].join(",");
+
+function getFocusablePopper(container: HTMLElement): HTMLElement[] {
+  if (typeof window === "undefined") return [];
+  return Array.from(
+    container.querySelectorAll<HTMLElement>(FOCUSABLE_POPPER_SELECTOR),
+  ).filter((el) => !el.closest("[disabled]"));
+}
+
 /**
  * Float a panel next to an anchor element. Positioning is recomputed on open,
  * scroll, and resize via `computePosition` (pure geometry shared across
@@ -174,6 +208,9 @@ export function Popper({
   portal = true,
   className,
   onPlacementChange,
+  trapFocus = false,
+  closeOnEscape = true,
+  onClose,
   children,
 }: PopperProps): React.ReactElement | null {
   const panelRef = React.useRef<HTMLDivElement | null>(null);
@@ -186,9 +223,11 @@ export function Popper({
   const [resolvedPlacement, setResolvedPlacement] =
     React.useState<PopperPlacement>(placement);
 
-  // Keep latest callback without re-registering listeners.
+  // Keep latest callbacks without re-registering listeners.
   const onPlacementChangeRef = React.useRef(onPlacementChange);
   onPlacementChangeRef.current = onPlacementChange;
+  const onCloseRef = React.useRef(onClose);
+  onCloseRef.current = onClose;
 
   React.useEffect(() => {
     if (typeof window === "undefined") return;
@@ -251,6 +290,106 @@ export function Popper({
     };
   }, [anchor, open, placement, offset, flip, shift, strategy]);
 
+  // ─── a11y: capture pre-focus element + restore on close (trapFocus only) ───
+  // Use a ref (not state) so writes inside effects don't cause re-runs.
+  const preFocusElRef = React.useRef<HTMLElement | null>(null);
+
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (open && anchor) {
+      if (trapFocus) {
+        preFocusElRef.current = document.activeElement as HTMLElement | null;
+      }
+    } else {
+      // Panel just closed: restore focus only if trapFocus was active.
+      if (
+        trapFocus &&
+        preFocusElRef.current &&
+        typeof preFocusElRef.current.focus === "function" &&
+        document.contains(preFocusElRef.current)
+      ) {
+        preFocusElRef.current.focus();
+      }
+      preFocusElRef.current = null;
+    }
+  }, [open, anchor, trapFocus]);
+
+  // ─── a11y: move focus into the panel on open (trapFocus only) ─────────────
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!open || !trapFocus) return;
+    const panel = panelRef.current;
+    if (!panel) return;
+    const focusable = getFocusablePopper(panel);
+    if (focusable.length > 0) {
+      focusable[0].focus();
+    } else {
+      panel.focus();
+    }
+  }, [open, trapFocus]);
+
+  // ─── a11y: recapture focus that escapes the trap (focusin on document) ─────
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!open || !trapFocus) return;
+
+    function handleFocusIn(e: FocusEvent) {
+      const panel = panelRef.current;
+      if (!panel) return;
+      const target = e.target as Node | null;
+      if (target && !panel.contains(target)) {
+        const focusable = getFocusablePopper(panel);
+        if (focusable.length > 0) {
+          focusable[0].focus();
+        } else {
+          panel.focus();
+        }
+      }
+    }
+
+    document.addEventListener("focusin", handleFocusIn);
+    return () => document.removeEventListener("focusin", handleFocusIn);
+  }, [open, trapFocus]);
+
+  // ─── a11y: Escape on document (closeOnEscape) ─────────────────────────────
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!open || !closeOnEscape) return;
+
+    function handleDocKeydown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        onCloseRef.current?.();
+      }
+    }
+
+    document.addEventListener("keydown", handleDocKeydown);
+    return () => document.removeEventListener("keydown", handleDocKeydown);
+  }, [open, closeOnEscape]);
+
+  /** Keyboard handler attached to the panel for Tab-trap cycling. */
+  function handlePanelKeydown(e: React.KeyboardEvent<HTMLDivElement>) {
+    if (typeof window === "undefined") return;
+    if (e.key !== "Tab" || !trapFocus) return;
+    const panel = panelRef.current;
+    if (!panel) return;
+    const focusable = getFocusablePopper(panel);
+    if (focusable.length === 0) { e.preventDefault(); return; }
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey) {
+      if (document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      }
+    } else {
+      if (document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  }
+
   if (!open || !anchor) return null;
 
   const side = splitPlacement(resolvedPlacement).side;
@@ -266,6 +405,8 @@ export function Popper({
       className={classNames("st-popper", className)}
       data-popper-placement={resolvedPlacement}
       style={panelStyle}
+      tabIndex={trapFocus ? -1 : undefined}
+      onKeyDown={trapFocus ? handlePanelKeydown : undefined}
     >
       {children}
       {arrow ? (

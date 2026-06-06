@@ -1,6 +1,6 @@
 import React from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { cleanup, render } from "@testing-library/react";
+import { cleanup, fireEvent, render } from "@testing-library/react";
 import { Portal, Popper, computePosition } from "./index.js";
 
 afterEach(cleanup);
@@ -160,6 +160,66 @@ describe("Popper", () => {
       </Popper>,
     );
     expect(getBoundingClientRect).not.toHaveBeenCalled();
+  });
+
+  it("trapFocus: moves focus into the panel on open", () => {
+    // Use a real DOM anchor so getBoundingClientRect works acceptably.
+    const anchorEl = document.createElement("button");
+    document.body.appendChild(anchorEl);
+    render(
+      <Popper anchor={anchorEl} open trapFocus portal={false}>
+        <button type="button" data-testid="first-btn">First</button>
+        <button type="button" data-testid="second-btn">Second</button>
+      </Popper>,
+    );
+    // After open with trapFocus, focus should be on the first focusable element.
+    const firstBtn = document.querySelector('[data-testid="first-btn"]') as HTMLElement;
+    expect(document.activeElement).toBe(firstBtn);
+    anchorEl.remove();
+  });
+
+  it("trapFocus: Tab cycles within the panel (last → first)", () => {
+    function Fixture() {
+      const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
+      return (
+        <>
+          <button ref={setAnchorEl} type="button">Trigger</button>
+          <Popper anchor={anchorEl} open trapFocus portal={false}>
+            <button type="button" data-testid="btn-a">A</button>
+            <button type="button" data-testid="btn-b">B</button>
+          </Popper>
+        </>
+      );
+    }
+    render(<Fixture />);
+    const btnB = document.querySelector('[data-testid="btn-b"]') as HTMLElement;
+    const btnA = document.querySelector('[data-testid="btn-a"]') as HTMLElement;
+    btnB.focus();
+    const panel = document.querySelector(".st-popper") as HTMLElement;
+    fireEvent.keyDown(panel, { key: "Tab", shiftKey: false });
+    expect(document.activeElement).toBe(btnA);
+  });
+
+  it("closeOnEscape: calls onClose when Escape is pressed", () => {
+    const onClose = vi.fn();
+    render(
+      <Popper anchor={mockAnchor()} open closeOnEscape onClose={onClose} portal={false}>
+        <button type="button">Action</button>
+      </Popper>,
+    );
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it("closeOnEscape=false: does not call onClose on Escape", () => {
+    const onClose = vi.fn();
+    render(
+      <Popper anchor={mockAnchor()} open closeOnEscape={false} onClose={onClose} portal={false}>
+        <button type="button">Action</button>
+      </Popper>,
+    );
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(onClose).not.toHaveBeenCalled();
   });
 });
 

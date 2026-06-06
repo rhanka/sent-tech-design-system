@@ -13,8 +13,8 @@ export type SelectableListContextValue = {
   readonly managed: true;
   /** listbox role for the wrapper → rows are "option". */
   readonly itemRole: "option";
-  /** Register a row element; returns an unregister callback. */
-  register: (el: HTMLElement, value: string | undefined) => () => void;
+  /** Register a row element; returns an unregister callback. disabled is forwarded so the list can skip it during keyboard navigation. */
+  register: (el: HTMLElement, value: string | undefined, disabled?: boolean) => () => void;
   /** Is the row with this element currently selected? */
   isSelected: (el: HTMLElement) => boolean;
   /** Should the row with this element be the roving-tabindex stop (tabindex 0)? */
@@ -56,8 +56,9 @@ export type SelectableRowProps = Omit<
   /** Stable value, surfaced as `data-value` and used by the list for `value`. */
   value?: string;
   /**
-   * ARIA role for the standalone row. Defaults to "option" so a lone row still
-   * reads as a selectable item. Inside a list the role is forced to "option".
+   * ARIA role for the standalone row. Defaults to "button" for standalone use —
+   * "option" is only valid inside a listbox and would be invalid without one.
+   * Inside a SelectableList the role is always forced to "option".
    */
   role?: string;
   /**
@@ -90,7 +91,7 @@ export const SelectableRow = React.forwardRef<HTMLDivElement, SelectableRowProps
       onSelect,
       disabled = false,
       value,
-      role = "option",
+      role = "button",
       accentBar = false,
       leading,
       trailing,
@@ -118,12 +119,22 @@ export const SelectableRow = React.forwardRef<HTMLDivElement, SelectableRowProps
     );
 
     // Register with the parent list (if any) so it can order rows for arrow nav
-    // and compute the roving tab stop. Re-registers if value changes.
+    // and compute the roving tab stop. Disabled rows are registered too so the
+    // list can skip them during navigation; the list owns the skip logic.
     React.useEffect(() => {
       const el = innerRef.current;
-      if (!list || !el || disabled) return;
-      return list.register(el, value);
+      if (!list || !el) return;
+      return list.register(el, value, disabled);
     }, [list, value, disabled]);
+
+    // A11y edge-case: quand cette row passe à disabled=true ET qu'elle détient
+    // le focus DOM, transférer le focus vers la prochaine row enabled via navigate().
+    React.useEffect(() => {
+      if (!disabled || !list) return;
+      const el = innerRef.current;
+      if (!el || !el.contains(document.activeElement ?? null)) return;
+      list.navigate(el, "ArrowDown");
+    }, [disabled, list]);
 
     // Subscribe to list re-renders so managed rows recompute selected/tabstop.
     // The list bumps this version on every selection / focus change.
@@ -185,6 +196,7 @@ export const SelectableRow = React.forwardRef<HTMLDivElement, SelectableRowProps
         )}
         role={effectiveRole}
         aria-selected={effectiveRole === "option" ? isSelected : undefined}
+        aria-pressed={effectiveRole === "button" ? isSelected : undefined}
         aria-disabled={disabled ? "true" : undefined}
         data-value={value}
         tabIndex={tabIndex}

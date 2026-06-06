@@ -3420,7 +3420,13 @@ export function Rating({
   const iconSize = size === "sm" ? 16 : size === "lg" ? 28 : 22;
   const stars = Array.from({ length: max }, (_, i) => i + 1);
   // L'étoile « focusable » (tabindex 0) suit la valeur ; à 0 c'est la première.
+  // En mode entier, focusedStar est toujours >= 1 (pas de radio "0").
   const focusedStar = current > 0 ? Math.ceil(current) : 1;
+
+  // Refs des boutons radio pour déplacer le focus programmatiquement (mode entier).
+  const radioRefs = React.useRef<Record<number, HTMLButtonElement | null>>({});
+
+  const valueText = `${current} / ${max}`;
 
   function fill(star: number): "full" | "half" | "empty" {
     if (current >= star) return "full";
@@ -3446,9 +3452,44 @@ export function Rating({
     }
     commit(next);
   }
-  function onKeyDown(event: React.KeyboardEvent<HTMLButtonElement>) {
+  function onRadioKeyDown(event: React.KeyboardEvent<HTMLButtonElement>) {
     if (readonly) return;
-    const step = allowHalf ? 0.5 : 1;
+    const step = 1;
+    let handled = true;
+    let next: number | null = null;
+    switch (event.key) {
+      case "ArrowRight":
+      case "ArrowUp":
+        next = Math.min(max, current + step);
+        break;
+      case "ArrowLeft":
+      case "ArrowDown":
+        // En mode entier, ne pas descendre sous 1 (pas de radio "0").
+        next = Math.max(1, current - step);
+        break;
+      case "Home":
+        // Home → première étoile (1), pas 0 (aucun radio "0" n'existe).
+        next = 1;
+        break;
+      case "End":
+        next = max;
+        break;
+      default:
+        handled = false;
+    }
+    if (handled) {
+      event.preventDefault();
+      if (next !== null) {
+        commit(next);
+        // Déplacer le focus DOM vers le radio cible.
+        const targetEl = radioRefs.current[next > 0 ? Math.ceil(next) : 1];
+        if (targetEl) targetEl.focus();
+      }
+    }
+  }
+  function onSliderKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+    if (readonly) return;
+    const step = 0.5;
     let handled = true;
     switch (event.key) {
       case "ArrowRight":
@@ -3470,19 +3511,94 @@ export function Rating({
     }
     if (handled) event.preventDefault();
   }
+
+  // Readonly : rendu non interactif avec role="img" et aria-label global.
+  if (readonly) {
+    return (
+      <div
+        {...rest}
+        className={classNames("st-rating", `st-rating--${size}`, "st-rating--readonly", className)}
+        role="img"
+        aria-label={label ? `${label} : ${valueText}` : valueText}
+      >
+        {stars.map((star) => {
+          const state = fill(star);
+          return (
+            <span
+              key={star}
+              className={classNames(
+                "st-rating__star",
+                state === "full" && "st-rating__star--full",
+                state === "half" && "st-rating__star--half",
+              )}
+              aria-hidden="true"
+            >
+              {state === "half" ? (
+                <StarHalfIcon size={iconSize} />
+              ) : (
+                <StarIcon size={iconSize} fill={state === "full" ? "currentColor" : "none"} />
+              )}
+            </span>
+          );
+        })}
+      </div>
+    );
+  }
+
+  // allowHalf : slider ARIA — valeurs fractionnaires (0.5 step).
+  if (allowHalf) {
+    return (
+      <div
+        {...rest}
+        className={classNames("st-rating", `st-rating--${size}`, className)}
+        role="slider"
+        aria-label={label}
+        aria-valuemin={0}
+        aria-valuemax={max}
+        aria-valuenow={current}
+        aria-valuetext={valueText}
+        tabIndex={0}
+        onKeyDown={onSliderKeyDown}
+      >
+        {stars.map((star) => {
+          const state = fill(star);
+          return (
+            <span
+              key={star}
+              className={classNames(
+                "st-rating__star",
+                state === "full" && "st-rating__star--full",
+                state === "half" && "st-rating__star--half",
+              )}
+              aria-hidden="true"
+              onClick={(event) => onStarClick(event as unknown as React.MouseEvent<HTMLButtonElement>, star)}
+            >
+              {state === "half" ? (
+                <StarHalfIcon size={iconSize} />
+              ) : (
+                <StarIcon size={iconSize} fill={state === "full" ? "currentColor" : "none"} />
+              )}
+            </span>
+          );
+        })}
+      </div>
+    );
+  }
+
+  // Mode entier : radiogroup / radio. aria-checked=true uniquement sur l'étoile == value.
   return (
     <div
       {...rest}
-      className={classNames("st-rating", `st-rating--${size}`, readonly && "st-rating--readonly", className)}
+      className={classNames("st-rating", `st-rating--${size}`, className)}
       role="radiogroup"
       aria-label={label}
-      aria-readonly={readonly ? "true" : undefined}
     >
       {stars.map((star) => {
         const state = fill(star);
         return (
           <button
             key={star}
+            ref={(el) => { radioRefs.current[star] = el; }}
             type="button"
             className={classNames(
               "st-rating__star",
@@ -3491,18 +3607,13 @@ export function Rating({
             )}
             role="radio"
             name={name}
-            aria-checked={Math.ceil(current) === star ? "true" : "false"}
+            aria-checked={current === star ? "true" : "false"}
             aria-label={`${star} / ${max}`}
-            tabIndex={!readonly && star === focusedStar ? 0 : -1}
-            disabled={readonly}
+            tabIndex={star === focusedStar ? 0 : -1}
             onClick={(event) => onStarClick(event, star)}
-            onKeyDown={onKeyDown}
+            onKeyDown={onRadioKeyDown}
           >
-            {state === "half" ? (
-              <StarHalfIcon size={iconSize} />
-            ) : (
-              <StarIcon size={iconSize} fill={state === "full" ? "currentColor" : "none"} />
-            )}
+            <StarIcon size={iconSize} fill={state === "full" ? "currentColor" : "none"} />
           </button>
         );
       })}
@@ -3563,8 +3674,12 @@ export function TimePicker({
   const fieldId = id ?? `st-timepicker-${reactId}`;
   const listId = `${fieldId}-list`;
   const hostRef = React.useRef<HTMLDivElement>(null);
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  const listRef = React.useRef<HTMLUListElement>(null);
   const [open, setOpen] = React.useState(false);
   const [current, setCurrent] = useControlled(value, value ?? "", onChange);
+  /** Index de l'option mise en évidence dans la listbox (-1 = aucune). */
+  const [activeIndex, setActiveIndex] = React.useState(-1);
 
   function display(hhmm: string): string {
     if (format === "24") return hhmm;
@@ -3591,15 +3706,115 @@ export function TimePicker({
 
   const displayValue = current ? display(current) : "";
 
+  /** Id de l'option active, consommé par aria-activedescendant. */
+  const activeDescendant = open && activeIndex >= 0 ? `${listId}-opt-${activeIndex}` : undefined;
+
+  function scrollActiveIntoView(idx: number) {
+    const list = listRef.current;
+    if (!list || idx < 0) return;
+    const optEl = list.querySelector<HTMLElement>(`#${listId}-opt-${idx}`);
+    if (optEl && typeof optEl.scrollIntoView === "function") {
+      optEl.scrollIntoView({ block: "nearest" });
+    }
+  }
+
+  function openList() {
+    if (disabled) return;
+    const idx = current ? slots.indexOf(current) : -1;
+    const initIdx = idx >= 0 ? idx : 0;
+    setActiveIndex(initIdx);
+    setOpen(true);
+    // Le focus reste sur l'input (pattern aria-activedescendant).
+    // Scroll après rendu.
+    setTimeout(() => scrollActiveIntoView(initIdx), 0);
+  }
+
+  function closeList(returnFocus = true) {
+    setOpen(false);
+    setActiveIndex(-1);
+    if (returnFocus && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }
+
   function toggleOpen() {
     if (disabled) return;
-    setOpen((prev) => !prev);
+    if (open) closeList(true);
+    else openList();
   }
+
   function pick(slot: string) {
     setCurrent(slot);
-    setOpen(false);
+    closeList(true);
   }
-  useOutsideMouseDown(open, hostRef, () => setOpen(false));
+
+  useOutsideMouseDown(open, hostRef, () => closeList(false));
+
+  function onInputKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (disabled) return;
+    switch (event.key) {
+      case "ArrowDown": {
+        event.preventDefault();
+        if (!open) {
+          openList();
+        } else {
+          const next = Math.min(activeIndex + 1, slots.length - 1);
+          setActiveIndex(next);
+          scrollActiveIntoView(next);
+        }
+        break;
+      }
+      case "ArrowUp": {
+        event.preventDefault();
+        if (!open) {
+          openList();
+        } else {
+          const next = Math.max(activeIndex - 1, 0);
+          setActiveIndex(next);
+          scrollActiveIntoView(next);
+        }
+        break;
+      }
+      case "Home": {
+        event.preventDefault();
+        if (!open) {
+          openList();
+        } else {
+          setActiveIndex(0);
+          scrollActiveIntoView(0);
+        }
+        break;
+      }
+      case "End": {
+        event.preventDefault();
+        if (!open) {
+          openList();
+        } else {
+          const last = slots.length - 1;
+          setActiveIndex(last);
+          scrollActiveIntoView(last);
+        }
+        break;
+      }
+      case "Enter":
+      case " ": {
+        event.preventDefault();
+        if (!open) {
+          openList();
+        } else if (activeIndex >= 0 && activeIndex < slots.length) {
+          pick(slots[activeIndex]);
+        }
+        break;
+      }
+      case "Escape": {
+        if (open) {
+          event.preventDefault();
+          closeList(true);
+        }
+        break;
+      }
+    }
+  }
 
   return (
     <div className={classNames("st-field", className)} ref={hostRef} {...rest}>
@@ -3611,6 +3826,7 @@ export function TimePicker({
         ) : null}
         <span className={classNames("st-timepicker", `st-timepicker--${size}`)}>
           <input
+            ref={inputRef}
             id={fieldId}
             type="text"
             readOnly
@@ -3622,7 +3838,10 @@ export function TimePicker({
             aria-haspopup="listbox"
             aria-controls={listId}
             aria-expanded={open ? "true" : "false"}
+            aria-activedescendant={activeDescendant}
+            aria-autocomplete="none"
             onClick={toggleOpen}
+            onKeyDown={onInputKeyDown}
           />
           <button
             type="button"
@@ -3630,6 +3849,7 @@ export function TimePicker({
             aria-label="Ouvrir la liste des horaires"
             aria-haspopup="listbox"
             aria-expanded={open ? "true" : "false"}
+            tabIndex={-1}
             disabled={disabled}
             onClick={toggleOpen}
           >
@@ -3639,29 +3859,31 @@ export function TimePicker({
       </div>
       {open ? (
         <ul
+          ref={listRef}
           id={listId}
           className="st-timepicker__list"
           role="listbox"
           aria-label={label ?? "Horaires"}
           tabIndex={-1}
-          onKeyDown={(event) => {
-            if (event.key === "Escape") {
-              event.preventDefault();
-              setOpen(false);
-            }
-          }}
         >
-          {slots.map((slot) => (
+          {slots.map((slot, i) => (
             <li key={slot} role="presentation">
-              <button
-                type="button"
-                className={classNames("st-timepicker__option", slot === current && "st-timepicker__option--selected")}
+              <div
+                id={`${listId}-opt-${i}`}
+                className={classNames(
+                  "st-timepicker__option",
+                  slot === current && "st-timepicker__option--selected",
+                  i === activeIndex && "st-timepicker__option--active",
+                )}
                 role="option"
                 aria-selected={slot === current ? "true" : "false"}
+                tabIndex={-1}
+                onMouseDown={(e) => e.preventDefault()}
                 onClick={() => pick(slot)}
+                onMouseEnter={() => setActiveIndex(i)}
               >
                 {display(slot)}
-              </button>
+              </div>
             </li>
           ))}
         </ul>
@@ -3819,8 +4041,8 @@ export function Calendar({
     return cells;
   }, [viewYear, viewMonth, weekStartsOn]);
 
-  const minDate = calParseISO(min);
-  const maxDate = calParseISO(max);
+  const minDate = React.useMemo(() => calParseISO(min), [min]);
+  const maxDate = React.useMemo(() => calParseISO(max), [max]);
 
   function isOutOfBounds(date: Date): boolean {
     const d = calStartOfDay(date).getTime();
@@ -3837,22 +4059,113 @@ export function Calendar({
     const d = calStartOfDay(date).getTime();
     return d > rangeStart.getTime() && d < rangeEnd.getTime();
   }
+
+  // --- Roving tabindex : date active dans la grille -------------------------
+  // INVARIANT : focusDate est toujours dans le mois affiché ET non-disabled.
+  function calClampToMonth(preferred: Date, y: number, m: number): Date | null {
+    if (
+      preferred.getFullYear() === y &&
+      preferred.getMonth() === m &&
+      !isOutOfBounds(preferred)
+    ) {
+      return preferred;
+    }
+    // Chercher le jour sélectionné dans ce mois en priorité.
+    const sel = !range ? single : rangeStart;
+    if (sel && sel.getFullYear() === y && sel.getMonth() === m && !isOutOfBounds(sel)) {
+      return sel;
+    }
+    const lastDay = new Date(y, m + 1, 0).getDate();
+    for (let dd = 1; dd <= lastDay; dd++) {
+      const candidate = calStartOfDay(new Date(y, m, dd));
+      if (!isOutOfBounds(candidate)) return candidate;
+    }
+    return null;
+  }
+
+  function calInitialFocusDate(): Date {
+    const sel = !range ? single : rangeStart;
+    if (sel && sel.getFullYear() === viewYear && sel.getMonth() === viewMonth && !isOutOfBounds(sel)) {
+      return sel;
+    }
+    const lastDay = new Date(viewYear, viewMonth + 1, 0).getDate();
+    for (let dd = 1; dd <= lastDay; dd++) {
+      const candidate = calStartOfDay(new Date(viewYear, viewMonth, dd));
+      if (!isOutOfBounds(candidate)) return candidate;
+    }
+    return calStartOfDay(new Date(viewYear, viewMonth, 1));
+  }
+
+  const [focusDate, setFocusDate] = React.useState<Date>(calInitialFocusDate);
+  const gridRef = React.useRef<HTMLDivElement>(null);
+
+  // Resynchronise focusDate quand viewYear/viewMonth change.
+  // Utilise une ref pour éviter les dépendances circulaires dans l'effet.
+  const isOutOfBoundsRef = React.useRef(isOutOfBounds);
+  isOutOfBoundsRef.current = isOutOfBounds;
+  const calClampToMonthRef = React.useRef(calClampToMonth);
+  calClampToMonthRef.current = calClampToMonth;
+
+  React.useEffect(() => {
+    setFocusDate((prev) => {
+      const clamped = calClampToMonthRef.current(prev, viewYear, viewMonth);
+      return clamped ?? prev;
+    });
+  }, [viewYear, viewMonth]);
+
+  function focusActiveCell() {
+    const grid = gridRef.current;
+    if (!grid) return;
+    const iso = calToISO(focusDate);
+    const btn = grid.querySelector<HTMLElement>(`[data-date="${iso}"]`);
+    btn?.focus();
+  }
+
+  function moveFocus(deltaDays: number) {
+    const next = calStartOfDay(new Date(focusDate));
+    next.setDate(next.getDate() + deltaDays);
+    let nextYear = viewYear;
+    let nextMonth = viewMonth;
+    if (next.getFullYear() !== viewYear || next.getMonth() !== viewMonth) {
+      nextYear = next.getFullYear();
+      nextMonth = next.getMonth();
+      if (nextMonth > viewMonth || nextYear > viewYear) {
+        // Next month
+        if (viewMonth === 11) {
+          setViewMonth(0);
+          setViewYear((y) => y + 1);
+        } else {
+          setViewMonth((m) => m + 1);
+        }
+      } else {
+        // Previous month
+        if (viewMonth === 0) {
+          setViewMonth(11);
+          setViewYear((y) => y - 1);
+        } else {
+          setViewMonth((m) => m - 1);
+        }
+      }
+    }
+    setFocusDate(next);
+    setTimeout(focusActiveCell, 0);
+  }
+
   function previousMonth() {
-    if (viewMonth === 0) {
-      setViewMonth(11);
-      setViewYear((y) => y - 1);
-    } else {
-      setViewMonth((m) => m - 1);
-    }
+    const targetMonth = viewMonth === 0 ? 11 : viewMonth - 1;
+    const targetYear = viewMonth === 0 ? viewYear - 1 : viewYear;
+    setViewMonth(targetMonth);
+    setViewYear(targetYear);
+    // focusDate will be re-clamped by the viewYear/viewMonth effect
   }
+
   function nextMonth() {
-    if (viewMonth === 11) {
-      setViewMonth(0);
-      setViewYear((y) => y + 1);
-    } else {
-      setViewMonth((m) => m + 1);
-    }
+    const targetMonth = viewMonth === 11 ? 0 : viewMonth + 1;
+    const targetYear = viewMonth === 11 ? viewYear + 1 : viewYear;
+    setViewMonth(targetMonth);
+    setViewYear(targetYear);
   }
+
   function pickDate(date: Date) {
     if (isOutOfBounds(date)) return;
     const picked = calStartOfDay(date);
@@ -3869,6 +4182,72 @@ export function Calendar({
     }
     setCurrent([calToISO(rangeStart), iso]);
   }
+
+  function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+    switch (event.key) {
+      case "ArrowLeft":
+        event.preventDefault();
+        moveFocus(-1);
+        break;
+      case "ArrowRight":
+        event.preventDefault();
+        moveFocus(1);
+        break;
+      case "ArrowUp":
+        event.preventDefault();
+        moveFocus(-7);
+        break;
+      case "ArrowDown":
+        event.preventDefault();
+        moveFocus(7);
+        break;
+      case "Home": {
+        event.preventDefault();
+        const dayOfWeek = focusDate.getDay();
+        const offset = (dayOfWeek - weekStartsOn + 7) % 7;
+        moveFocus(-offset);
+        break;
+      }
+      case "End": {
+        event.preventDefault();
+        const dayOfWeek = focusDate.getDay();
+        const offset = 6 - ((dayOfWeek - weekStartsOn + 7) % 7);
+        moveFocus(offset);
+        break;
+      }
+      case "PageUp": {
+        event.preventDefault();
+        const puDay = focusDate.getDate();
+        const puTargetMonth = viewMonth === 0 ? 11 : viewMonth - 1;
+        const puTargetYear = viewMonth === 0 ? viewYear - 1 : viewYear;
+        const puLastDay = new Date(puTargetYear, puTargetMonth + 1, 0).getDate();
+        const puNext = calStartOfDay(new Date(puTargetYear, puTargetMonth, Math.min(puDay, puLastDay)));
+        setFocusDate(puNext);
+        previousMonth();
+        setTimeout(focusActiveCell, 0);
+        break;
+      }
+      case "PageDown": {
+        event.preventDefault();
+        const pdDay = focusDate.getDate();
+        const pdTargetMonth = viewMonth === 11 ? 0 : viewMonth + 1;
+        const pdTargetYear = viewMonth === 11 ? viewYear + 1 : viewYear;
+        const pdLastDay = new Date(pdTargetYear, pdTargetMonth + 1, 0).getDate();
+        const pdNext = calStartOfDay(new Date(pdTargetYear, pdTargetMonth, Math.min(pdDay, pdLastDay)));
+        setFocusDate(pdNext);
+        nextMonth();
+        setTimeout(focusActiveCell, 0);
+        break;
+      }
+      case "Enter":
+      case " ": {
+        event.preventDefault();
+        if (!isOutOfBounds(focusDate)) pickDate(focusDate);
+        break;
+      }
+    }
+  }
+
   const monthLabel = monthFormatter.format(new Date(viewYear, viewMonth, 1));
 
   return (
@@ -3885,19 +4264,11 @@ export function Calendar({
         </button>
       </div>
       <div
+        ref={gridRef}
         className="st-calendar__grid"
         role="grid"
-        tabIndex={-1}
         aria-label={monthLabel}
-        onKeyDown={(event) => {
-          if (event.key === "PageUp") {
-            event.preventDefault();
-            previousMonth();
-          } else if (event.key === "PageDown") {
-            event.preventDefault();
-            nextMonth();
-          }
-        }}
+        onKeyDown={onKeyDown}
       >
         <div className="st-calendar__weekdays" role="row">
           {weekdayLabels.map((wd, i) => (
@@ -3907,34 +4278,44 @@ export function Calendar({
           ))}
         </div>
         <div className="st-calendar__days">
-          {grid.map((cell, i) => {
-            const oob = isOutOfBounds(cell.date);
-            const selected = isSelected(cell.date);
-            const inRange = isInRange(cell.date);
-            const isToday = calIsSameDay(cell.date, today);
-            return (
-              <button
-                key={i}
-                type="button"
-                className={classNames(
-                  "st-calendar__day",
-                  !cell.inMonth && "st-calendar__day--outside",
-                  selected && "st-calendar__day--selected",
-                  inRange && "st-calendar__day--inRange",
-                  isToday && "st-calendar__day--today",
-                )}
-                role="gridcell"
-                aria-label={cellFormatter.format(cell.date)}
-                aria-selected={selected ? "true" : "false"}
-                aria-current={isToday ? "date" : undefined}
-                aria-disabled={oob ? "true" : undefined}
-                disabled={oob}
-                onClick={() => pickDate(cell.date)}
-              >
-                {cell.date.getDate()}
-              </button>
-            );
-          })}
+          {Array.from({ length: 6 }, (_, rowIdx) => (
+            <div key={rowIdx} className="st-calendar__week" role="row">
+              {grid.slice(rowIdx * 7, rowIdx * 7 + 7).map((cell, colIdx) => {
+                const oob = isOutOfBounds(cell.date);
+                const selected = isSelected(cell.date);
+                const inRange = isInRange(cell.date);
+                const isToday = calIsSameDay(cell.date, today);
+                const isActive = calIsSameDay(cell.date, focusDate);
+                return (
+                  <button
+                    key={rowIdx * 7 + colIdx}
+                    type="button"
+                    className={classNames(
+                      "st-calendar__day",
+                      !cell.inMonth && "st-calendar__day--outside",
+                      selected && "st-calendar__day--selected",
+                      inRange && "st-calendar__day--inRange",
+                      isToday && "st-calendar__day--today",
+                    )}
+                    role="gridcell"
+                    aria-label={cellFormatter.format(cell.date)}
+                    aria-selected={selected ? "true" : "false"}
+                    aria-current={isToday ? "date" : undefined}
+                    aria-disabled={oob ? "true" : undefined}
+                    disabled={oob}
+                    tabIndex={isActive && !oob ? 0 : -1}
+                    data-date={calToISO(cell.date)}
+                    onClick={() => {
+                      setFocusDate(calStartOfDay(cell.date));
+                      pickDate(cell.date);
+                    }}
+                  >
+                    {cell.date.getDate()}
+                  </button>
+                );
+              })}
+            </div>
+          ))}
         </div>
       </div>
     </div>
@@ -4001,6 +4382,9 @@ export function SlideIndicator({
   ...rest
 }: SlideIndicatorProps) {
   const items = Array.from({ length: Math.max(0, count) }, (_, i) => i);
+  // Refs des boutons pour déplacer le focus programmatiquement lors de la navigation clavier.
+  const buttonRefs = React.useRef<Record<number, HTMLButtonElement | null>>({});
+
   function select(index: number) {
     if (index < 0 || index >= count || index === current) return;
     onChange?.(index);
@@ -4026,6 +4410,9 @@ export function SlideIndicator({
         return;
     }
     event.preventDefault();
+    // Déplacer le focus DOM vers le bouton cible (roving tabindex correct).
+    const targetEl = buttonRefs.current[target];
+    if (targetEl) targetEl.focus();
     select(target);
   }
   return (
@@ -4037,16 +4424,15 @@ export function SlideIndicator({
         `st-slideIndicator--${variant}`,
         className,
       )}
-      role="tablist"
+      role="group"
       aria-label={label}
     >
       {items.map((index) => (
         <button
           key={index}
+          ref={(el) => { buttonRefs.current[index] = el; }}
           type="button"
           className={classNames("st-slideIndicator__dot", index === current && "st-slideIndicator__dot--current")}
-          role="tab"
-          aria-selected={index === current ? "true" : "false"}
           aria-current={index === current ? "true" : undefined}
           aria-label={`${label} ${index + 1}`}
           tabIndex={index === current ? 0 : -1}

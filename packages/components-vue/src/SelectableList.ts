@@ -4,6 +4,7 @@ import {
   h,
   provide,
   ref,
+  watch,
   type PropType,
 } from "vue";
 import { classNames } from "./classNames.js";
@@ -37,7 +38,7 @@ export type SelectableListProps = {
   class?: string;
 };
 
-type Entry = { el: HTMLElement; value: string | undefined };
+type Entry = { el: HTMLElement; value: string | undefined; disabled?: boolean };
 
 function toSet(v: string | string[] | null | undefined): Set<string> {
   if (v == null) return new Set();
@@ -60,6 +61,8 @@ function sortByDom(list: Entry[]): Entry[] {
  * `multiple` toggles rows independently. Controlled via `value`/`onChange`,
  * otherwise it keeps its own internal selection. Pilots each child row through
  * provide/inject (role="option" + the computed tabindex / aria-selected).
+ * Disabled rows are registered but skipped during keyboard navigation; if a
+ * disabled row holds focus, focus transfers to the next enabled row.
  */
 export const SelectableList = defineComponent({
   name: "SelectableList",
@@ -93,23 +96,26 @@ export const SelectableList = defineComponent({
     );
 
     // Row registry, ordered by DOM position so arrow nav matches the visual
-    // order regardless of registration timing.
+    // order regardless of registration timing. Disabled rows are included so
+    // the list can skip them during navigation and detect focus transfer.
     const entries = ref<Entry[]>([]);
     // The element holding the roving tab stop (tabindex 0). Null until a row is
-    // focused; until then the FIRST registered row is the default stop.
+    // focused; until then the FIRST enabled row is the default stop.
     const tabStopEl = ref<HTMLElement | null>(null);
 
-    // Bumped on every selection / focus / registry change so child rows (which
-    // read `version`) re-render and recompute role / tabindex / aria-selected.
+    // Bumped on every selection / focus / registry change so child rows
+    // (which read `version`) re-render and recompute role / tabindex / aria-selected.
     const version = ref(0);
     function bump() {
       version.value++;
     }
 
-    function register(el: HTMLElement, rowValue: string | undefined): () => void {
+    // register/unregister called from each row on mount/update/unmount.
+    // Disabled rows are registered with disabled:true so navigate() can skip them.
+    function register(el: HTMLElement, rowValue: string | undefined, rowDisabled = false): () => void {
       entries.value = sortByDom([
         ...entries.value.filter((e) => e.el !== el),
-        { el, value: rowValue },
+        { el, value: rowValue, disabled: rowDisabled },
       ]);
       bump();
       return () => {
@@ -119,10 +125,27 @@ export const SelectableList = defineComponent({
       };
     }
 
-    // Default roving stop = first registered (DOM-ordered) row when none focused.
-    const effectiveTabStop = computed(
-      () => tabStopEl.value ?? entries.value[0]?.el ?? null,
-    );
+    // Default roving stop = first non-disabled DOM-ordered row when none focused,
+    // or when the current tabStopEl has become disabled.
+    const effectiveTabStop = computed((): HTMLElement | null => {
+      if (tabStopEl.value) {
+        const entry = entries.value.find((e) => e.el === tabStopEl.value);
+        if (entry && !entry.disabled) return tabStopEl.value;
+      }
+      return entries.value.find((e) => !e.disabled)?.el ?? null;
+    });
+
+    // Si la row qui détient le focus DOM devient disabled, transférer le focus
+    // vers la nouvelle cible de roving tabindex.
+    watch(effectiveTabStop, (newStop) => {
+      if (!newStop) return;
+      if (tabStopEl.value !== null) {
+        const disabledEntry = entries.value.find((e) => e.el === tabStopEl.value && e.disabled);
+        if (disabledEntry && tabStopEl.value?.contains(document.activeElement ?? null)) {
+          newStop.focus();
+        }
+      }
+    });
 
     function valueOf(el: HTMLElement): string | undefined {
       return entries.value.find((e) => e.el === el)?.value;
@@ -138,7 +161,6 @@ export const SelectableList = defineComponent({
     }
 
     function fireChange(value: string | string[] | null) {
-      // `emit("change")` invokes the `onChange` prop/listener exactly once.
       emit("change", value);
     }
 
@@ -175,13 +197,32 @@ export const SelectableList = defineComponent({
       if (list.length === 0) return;
       const idx = list.findIndex((e) => e.el === el);
       if (idx === -1) return;
-      let targetIdx = idx;
-      if (key === "ArrowDown" || key === "ArrowRight") targetIdx = idx + 1;
-      else if (key === "ArrowUp" || key === "ArrowLeft") targetIdx = idx - 1;
-      else if (key === "Home") targetIdx = 0;
-      else if (key === "End") targetIdx = list.length - 1;
-      // Clamp (no wrap) so Home/End and arrows stay within bounds.
-      targetIdx = Math.max(0, Math.min(list.length - 1, targetIdx));
+
+      let targetIdx: number | null = null;
+
+      if (key === "ArrowDown" || key === "ArrowRight") {
+        // Walk forward, find the next non-disabled entry.
+        for (let i = idx + 1; i < list.length; i++) {
+          if (!list[i].disabled) { targetIdx = i; break; }
+        }
+      } else if (key === "ArrowUp" || key === "ArrowLeft") {
+        // Walk backward, find the previous non-disabled entry.
+        for (let i = idx - 1; i >= 0; i--) {
+          if (!list[i].disabled) { targetIdx = i; break; }
+        }
+      } else if (key === "Home") {
+        for (let i = 0; i < list.length; i++) {
+          if (!list[i].disabled) { targetIdx = i; break; }
+        }
+      } else if (key === "End") {
+        for (let i = list.length - 1; i >= 0; i--) {
+          if (!list[i].disabled) { targetIdx = i; break; }
+        }
+      }
+
+      // If no target found (all remaining disabled, or already at boundary), stay put.
+      if (targetIdx === null) return;
+
       const target = list[targetIdx]?.el;
       if (target) {
         tabStopEl.value = target;
