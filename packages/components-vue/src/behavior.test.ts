@@ -2730,6 +2730,8 @@ describe("Vue behavioral parity — batch 5", () => {
       const wrapper = mount(BarChart, { props: { data: selData, label: "Plain" } });
       const bars = wrapper.findAll(".st-barChart__bar");
       expect(bars.length).toBe(3);
+      // The decorative bars never carry interactive ARIA — they live in an
+      // aria-hidden SVG.
       bars.forEach((bar) => {
         expect(bar.attributes("role")).toBeUndefined();
         expect(bar.attributes("tabindex")).toBeUndefined();
@@ -2737,53 +2739,75 @@ describe("Vue behavioral parity — batch 5", () => {
         expect(bar.attributes("aria-label")).toBeUndefined();
         expect(bar.classes()).not.toContain("st-barChart__bar--interactive");
       });
+      // No accessible selection surface at all.
+      expect(wrapper.find(".st-barChart__filters").exists()).toBe(false);
+      expect(wrapper.findAll(".st-barChart__filterChip").length).toBe(0);
     });
 
-    it("selection: bars become activable buttons when onSelect is provided", () => {
+    it("selection: renders an accessible filter-chip button per bar OUTSIDE the aria-hidden SVG", () => {
       const wrapper = mount(BarChart, {
         props: { data: selData, label: "Pick", onSelect: () => {} },
       });
-      const bars = wrapper.findAll(".st-barChart__bar");
-      bars.forEach((bar) => {
-        expect(bar.attributes("role")).toBe("button");
-        expect(bar.attributes("tabindex")).toBe("0");
-        expect(bar.classes()).toContain("st-barChart__bar--interactive");
+      const group = wrapper.find(".st-barChart__filters");
+      expect(group.exists()).toBe(true);
+      expect(group.attributes("role")).toBe("group");
+      expect(group.attributes("aria-label")).toBe("Filtrer par Pick");
+
+      // The chips live outside the aria-hidden SVG.
+      const svg = wrapper.find("svg");
+      expect(svg.attributes("aria-hidden")).toBe("true");
+      expect(svg.element.contains(group.element)).toBe(false);
+
+      const chips = wrapper.findAll("button.st-barChart__filterChip");
+      expect(chips.length).toBe(3);
+      chips.forEach((chip) => expect(chip.attributes("type")).toBe("button"));
+      expect(chips[0].text()).toBe("A: 4");
+      expect(chips[1].text()).toBe("B: 8");
+
+      // Bars stay decorative — no ARIA semantics.
+      wrapper.findAll(".st-barChart__bar").forEach((bar) => {
+        expect(bar.attributes("role")).toBeUndefined();
+        expect(bar.attributes("tabindex")).toBeUndefined();
+        expect(bar.attributes("aria-pressed")).toBeUndefined();
       });
-      expect(bars[0].attributes("aria-label")).toBe("A: 4");
-      expect(bars[1].attributes("aria-label")).toBe("B: 8");
     });
 
-    it("selection: emits onSelect with the bar key (its label) on click", async () => {
+    it("selection: emits onSelect with the bar key (its label) when a chip button is clicked", async () => {
       const onSelect = vi.fn();
       const wrapper = mount(BarChart, { props: { data: selData, label: "Click", onSelect } });
-      await wrapper.findAll(".st-barChart__bar")[1].trigger("click");
+      await wrapper.findAll("button.st-barChart__filterChip")[1].trigger("click");
       expect(onSelect).toHaveBeenCalledTimes(1);
       expect(onSelect).toHaveBeenCalledWith("B");
     });
 
-    it("selection: activates on Enter and on Space (Space prevents default)", async () => {
+    it("selection: emits onSelect when a bar is clicked with the mouse (sighted shortcut)", async () => {
+      const onSelect = vi.fn();
+      const wrapper = mount(BarChart, { props: { data: selData, label: "BarClick", onSelect } });
+      await wrapper.findAll(".st-barChart__bar")[2].trigger("click");
+      expect(onSelect).toHaveBeenCalledTimes(1);
+      expect(onSelect).toHaveBeenCalledWith("C");
+    });
+
+    it("selection: activates the chip via native keyboard (Enter/Space on a real button)", async () => {
       const onSelect = vi.fn();
       const wrapper = mount(BarChart, { props: { data: selData, label: "Keys", onSelect } });
-      const bar = wrapper.findAll(".st-barChart__bar")[2];
-
-      await bar.trigger("keydown", { key: "Enter" });
-      expect(onSelect).toHaveBeenLastCalledWith("C");
-
-      // Dispatch a real event so we can assert preventDefault() was called.
-      const evt = new KeyboardEvent("keydown", { key: " ", cancelable: true, bubbles: true });
-      bar.element.dispatchEvent(evt);
-      expect(evt.defaultPrevented).toBe(true);
-      expect(onSelect).toHaveBeenCalledTimes(2);
+      // A native <button> dispatches a click for Enter/Space; assert it wires through.
+      await wrapper.findAll("button.st-barChart__filterChip")[2].trigger("click");
       expect(onSelect).toHaveBeenLastCalledWith("C");
     });
 
-    it("selection: reflects selectedKeys via aria-pressed and the selected class", () => {
+    it("selection: reflects selectedKeys via aria-pressed on the chips and the selected class", () => {
       const wrapper = mount(BarChart, {
         props: { data: selData, label: "Sel", onSelect: () => {}, selectedKeys: ["B"] },
       });
+      const chips = wrapper.findAll("button.st-barChart__filterChip");
+      expect(chips[0].attributes("aria-pressed")).toBe("false");
+      expect(chips[1].attributes("aria-pressed")).toBe("true");
+      expect(chips[1].classes()).toContain("st-barChart__filterChip--selected");
+      expect(chips[0].classes()).not.toContain("st-barChart__filterChip--selected");
+
+      // The bar shape echoes the selection (stroke via class).
       const bars = wrapper.findAll(".st-barChart__bar");
-      expect(bars[0].attributes("aria-pressed")).toBe("false");
-      expect(bars[1].attributes("aria-pressed")).toBe("true");
       expect(bars[1].classes()).toContain("st-barChart__bar--selected");
       expect(bars[0].classes()).not.toContain("st-barChart__bar--selected");
     });

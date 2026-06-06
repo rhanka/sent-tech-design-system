@@ -32,9 +32,12 @@ export type BarChartProps = Omit<React.HTMLAttributes<HTMLDivElement>, "classNam
    */
   selectedKeys?: string[];
   /**
-   * Called when a bar is clicked / activated (Enter / Space) with the bar's
-   * key (its `label`). When provided the bars become focusable buttons; when
-   * omitted the chart is purely presentational (no interactivity, unchanged).
+   * Called with the bar's key (its `label`) when the user selects it. When
+   * provided, an ACCESSIBLE row of filter chips (real <button>s) is rendered
+   * OUTSIDE the aria-hidden SVG — that is the keyboard + screen-reader surface.
+   * The SVG bars themselves stay decorative (aria-hidden) and only offer a
+   * mouse click shortcut for sighted pointer users. When omitted the chart is
+   * purely presentational (no interactivity, unchanged).
    */
   onSelect?: (key: string) => void;
   className?: string;
@@ -60,14 +63,6 @@ export function BarChart({
   const selectedSet = React.useMemo(() => new Set(selectedKeys), [selectedKeys]);
   const hasSelection = selectedSet.size > 0;
   const interactive = typeof onSelect === "function";
-
-  function handleBarKeyDown(key: string, e: React.KeyboardEvent) {
-    if (e.key === "Enter" || e.key === " ") {
-      // preventDefault on Space so it activates rather than scrolling the page.
-      e.preventDefault();
-      onSelect?.(key);
-    }
-  }
 
   const values = data.map((d) => d.value);
   const minRaw = Math.min(0, ...values);
@@ -243,6 +238,11 @@ export function BarChart({
             ),
           )}
 
+          {/* The bars live inside an aria-hidden SVG, so they are NEVER an
+              accessible surface. When `onSelect` is provided they only carry a
+              mouse click shortcut (cursor:pointer) for sighted pointer users —
+              keyboard + screen readers use the filter-chip buttons below, which
+              are rendered outside this SVG. */}
           {bars.map((bar, i) => {
             const isSelected = selectedSet.has(bar.datum.label);
             return (
@@ -261,17 +261,36 @@ export function BarChart({
                 height={bar.height}
                 rx="2"
                 data-chart-index={i}
-                role={interactive ? "button" : undefined}
-                tabIndex={interactive ? 0 : undefined}
-                aria-pressed={interactive ? isSelected : undefined}
-                aria-label={interactive ? `${bar.datum.label}: ${bar.datum.value}` : undefined}
                 onClick={interactive ? () => onSelect?.(bar.datum.label) : undefined}
-                onKeyDown={interactive ? (e) => handleBarKeyDown(bar.datum.label, e) : undefined}
               />
             );
           })}
         </svg>
       </div>
+
+      {interactive ? (
+        <div className="st-barChart__filters" role="group" aria-label={`Filtrer par ${label}`}>
+          {bars.map((bar) => {
+            const isSelected = selectedSet.has(bar.datum.label);
+            return (
+              <button
+                key={bar.datum.label}
+                type="button"
+                className={classNames(
+                  "st-barChart__filterChip",
+                  `st-barChart__filterChip--${bar.tone}`,
+                  isSelected && "st-barChart__filterChip--selected",
+                )}
+                aria-pressed={isSelected}
+                onClick={() => onSelect?.(bar.datum.label)}
+              >
+                <span className="st-barChart__filterSwatch" aria-hidden="true" />
+                {`${bar.datum.label}: ${bar.datum.value}`}
+              </button>
+            );
+          })}
+        </div>
+      ) : null}
 
       <ChartDataList label={label} items={dataValueItems} />
 
