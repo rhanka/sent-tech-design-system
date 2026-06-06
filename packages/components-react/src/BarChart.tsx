@@ -18,12 +18,25 @@ export type BarChartDatum = {
   tone?: BarChartTone;
 };
 
-export type BarChartProps = Omit<React.HTMLAttributes<HTMLDivElement>, "className"> & {
+export type BarChartProps = Omit<React.HTMLAttributes<HTMLDivElement>, "className" | "onSelect"> & {
   data: BarChartDatum[];
   width?: number;
   height?: number;
   orientation?: "vertical" | "horizontal";
   label: string;
+  /**
+   * Keys of the currently selected bars (a bar's key is its `label`).
+   * CONTROLLED — the parent owns the toggle; the component never stores
+   * selection. When non-empty the selected bars stay full opacity (+ accent)
+   * and the rest dim; when empty every bar is normal. Defaults to [].
+   */
+  selectedKeys?: string[];
+  /**
+   * Called when a bar is clicked / activated (Enter / Space) with the bar's
+   * key (its `label`). When provided the bars become focusable buttons; when
+   * omitted the chart is purely presentational (no interactivity, unchanged).
+   */
+  onSelect?: (key: string) => void;
   className?: string;
 };
 
@@ -35,10 +48,26 @@ export function BarChart({
   height = 240,
   orientation = "vertical",
   label,
+  selectedKeys = [],
+  onSelect,
   className,
   ...rest
 }: BarChartProps) {
   const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
+
+  // Selection (controlled): fast lookup + "is any bar selected" flag. Only when
+  // something is selected do we dim the non-selected bars.
+  const selectedSet = React.useMemo(() => new Set(selectedKeys), [selectedKeys]);
+  const hasSelection = selectedSet.size > 0;
+  const interactive = typeof onSelect === "function";
+
+  function handleBarKeyDown(key: string, e: React.KeyboardEvent) {
+    if (e.key === "Enter" || e.key === " ") {
+      // preventDefault on Space so it activates rather than scrolling the page.
+      e.preventDefault();
+      onSelect?.(key);
+    }
+  }
 
   const values = data.map((d) => d.value);
   const minRaw = Math.min(0, ...values);
@@ -214,18 +243,33 @@ export function BarChart({
             ),
           )}
 
-          {bars.map((bar, i) => (
-            <rect
-              key={bar.datum.label}
-              className={classNames("st-barChart__bar", `st-barChart__bar--${bar.tone}`)}
-              x={bar.x}
-              y={bar.y}
-              width={bar.width}
-              height={bar.height}
-              rx="2"
-              data-chart-index={i}
-            />
-          ))}
+          {bars.map((bar, i) => {
+            const isSelected = selectedSet.has(bar.datum.label);
+            return (
+              <rect
+                key={bar.datum.label}
+                className={classNames(
+                  "st-barChart__bar",
+                  `st-barChart__bar--${bar.tone}`,
+                  isSelected && "st-barChart__bar--selected",
+                  hasSelection && !isSelected && "st-barChart__bar--dim",
+                  interactive && "st-barChart__bar--interactive",
+                )}
+                x={bar.x}
+                y={bar.y}
+                width={bar.width}
+                height={bar.height}
+                rx="2"
+                data-chart-index={i}
+                role={interactive ? "button" : undefined}
+                tabIndex={interactive ? 0 : undefined}
+                aria-pressed={interactive ? isSelected : undefined}
+                aria-label={interactive ? `${bar.datum.label}: ${bar.datum.value}` : undefined}
+                onClick={interactive ? () => onSelect?.(bar.datum.label) : undefined}
+                onKeyDown={interactive ? (e) => handleBarKeyDown(bar.datum.label, e) : undefined}
+              />
+            );
+          })}
         </svg>
       </div>
 
