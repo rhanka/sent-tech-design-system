@@ -25,6 +25,13 @@ export type BarChartProps = {
   orientation?: "vertical" | "horizontal";
   label: string;
   /**
+   * Fixed value-axis domain `[min, max]`. When provided (and finite), the value
+   * scale uses it instead of the data-derived min/max — letting several
+   * BarCharts in a grid share one scale (small multiples). When absent or
+   * invalid, the scale falls back to the auto data range (unchanged).
+   */
+  domain?: [number, number];
+  /**
    * Keys of the currently selected bars (a bar's key is its `label`).
    * CONTROLLED — the parent owns the toggle; the component never stores
    * selection. When non-empty the selected bars stay full opacity (+ accent)
@@ -53,6 +60,7 @@ export const BarChart = defineComponent({
     height: { type: Number, default: 240 },
     orientation: { type: String as () => "vertical" | "horizontal", default: "vertical" },
     label: { type: String, required: true },
+    domain: { type: Array as unknown as () => [number, number], default: undefined },
     selectedKeys: { type: Array as () => string[], default: () => [] },
     onSelect: { type: Function as unknown as () => (key: string) => void, default: undefined },
     class: { type: String, default: undefined },
@@ -86,9 +94,17 @@ export const BarChart = defineComponent({
       const hasSelection = selectedSet.size > 0;
       const interactive = typeof props.onSelect === "function";
 
+      // A domain is honoured only when both bounds are finite and ordered
+      // (min<max). Otherwise we fall back to the auto data range.
+      const domain = props.domain;
+      const validDomain =
+        domain && Number.isFinite(domain[0]) && Number.isFinite(domain[1]) && domain[0] < domain[1]
+          ? domain
+          : null;
+
       const values = data.map((d) => d.value);
-      const minRaw = Math.min(0, ...values);
-      const maxRaw = Math.max(0, ...values);
+      const minRaw = validDomain ? validDomain[0] : Math.min(0, ...values);
+      const maxRaw = validDomain ? validDomain[1] : Math.max(0, ...values);
       const ticks = niceTicks(minRaw, maxRaw, 5);
       const domainMin = ticks[0];
       const domainMax = ticks[ticks.length - 1];

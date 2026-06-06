@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { mount } from "@vue/test-utils";
-import { Flex, Stack, Inline, Container, Row, Col, Hidden, Divider } from "./index.js";
+import { Flex, Stack, Inline, Container, Row, Col, Grid, Hidden, Divider } from "./index.js";
 
 describe("Layout system (Vue)", () => {
   it("Flex renders flex display, direction and an inline gap token", () => {
@@ -87,6 +87,31 @@ describe("Layout system (Vue)", () => {
     expect(el.style.getPropertyValue("--st-col-md")).toBe(
       "calc(50% - var(--st-row-gutter, 0px) * 0.5)",
     );
+  });
+
+  it("Grid renders grid display with columns and a gap token", () => {
+    const wrapper = mount(Grid, { props: { columns: 3, gap: 4 }, slots: { default: "child" } });
+    const el = wrapper.element as HTMLElement;
+    expect(el.classList.contains("st-grid")).toBe(true);
+    expect(el.style.display).toBe("grid");
+    expect(el.style.gridTemplateColumns).toBe("repeat(3, minmax(0, 1fr))");
+    expect(el.style.gap).toBe("var(--st-spacing-4, 1rem)");
+  });
+
+  it("Grid uses auto-fill when minItemWidth is set (priority over columns)", () => {
+    const wrapper = mount(Grid, {
+      props: { columns: 3, minItemWidth: "12rem" },
+      slots: { default: "x" },
+    });
+    const el = wrapper.element as HTMLElement;
+    expect(el.style.gridTemplateColumns).toBe("repeat(auto-fill, minmax(12rem, 1fr))");
+  });
+
+  it("Grid respects the polymorphic as prop", () => {
+    const wrapper = mount(Grid, { props: { columns: 2, as: "section" }, slots: { default: "x" } });
+    const el = wrapper.element as HTMLElement;
+    expect(el.tagName).toBe("SECTION");
+    expect(el.style.gridTemplateColumns).toBe("repeat(2, minmax(0, 1fr))");
   });
 
   it("Hidden applies the responsive class for below/above breakpoints", () => {

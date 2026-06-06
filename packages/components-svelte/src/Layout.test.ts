@@ -7,6 +7,7 @@ import Inline from "./lib/Inline.svelte";
 import Container from "./lib/Container.svelte";
 import Row from "./lib/Row.svelte";
 import Col from "./lib/Col.svelte";
+import Grid from "./lib/Grid.svelte";
 import Hidden from "./lib/Hidden.svelte";
 import Divider from "./lib/Divider.svelte";
 
@@ -108,6 +109,36 @@ describe("Col", () => {
     });
     const el = container.querySelector(".st-col") as HTMLElement;
     expect(el.style.marginInlineStart).toContain("16.66");
+  });
+});
+
+describe("Grid", () => {
+  it("renders a grid container with columns and a gap token", () => {
+    const { container } = render(Grid, {
+      props: { columns: 3, gap: 4, children: text("a") }
+    });
+    const el = container.querySelector(".st-grid") as HTMLElement;
+    expect(el).toBeTruthy();
+    expect(el.style.display).toBe("grid");
+    expect(el.style.gridTemplateColumns).toBe("repeat(3, minmax(0, 1fr))");
+    expect(el.style.gap).toBe("var(--st-spacing-4, 1rem)");
+  });
+
+  it("uses auto-fill when minItemWidth is provided (priority over columns)", () => {
+    const { container } = render(Grid, {
+      props: { columns: 3, minItemWidth: "12rem", children: text("a") }
+    });
+    const el = container.querySelector(".st-grid") as HTMLElement;
+    expect(el.style.gridTemplateColumns).toBe("repeat(auto-fill, minmax(12rem, 1fr))");
+  });
+
+  it("supports the polymorphic as prop", () => {
+    const { container } = render(Grid, {
+      props: { columns: 2, as: "section", children: text("a") }
+    });
+    const el = container.querySelector("section.st-grid") as HTMLElement;
+    expect(el).toBeTruthy();
+    expect(el.style.gridTemplateColumns).toBe("repeat(2, minmax(0, 1fr))");
   });
 });
 

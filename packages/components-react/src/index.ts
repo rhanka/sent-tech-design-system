@@ -261,6 +261,8 @@ export { Row } from "./Row.js";
 export type { RowProps } from "./Row.js";
 export { Col, spanBasis, offsetMargin } from "./Col.js";
 export type { ColProps, ColSpan } from "./Col.js";
+export { Grid, gridTemplateColumns } from "./Grid.js";
+export type { GridProps } from "./Grid.js";
 export { Hidden } from "./Hidden.js";
 export type { HiddenProps, HiddenBreakpoint } from "./Hidden.js";
 export { Divider } from "./Divider.js";

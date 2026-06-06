@@ -25,6 +25,13 @@ export type BarChartProps = Omit<React.HTMLAttributes<HTMLDivElement>, "classNam
   orientation?: "vertical" | "horizontal";
   label: string;
   /**
+   * Fixed value-axis domain `[min, max]`. When provided (and finite), the value
+   * scale uses it instead of the data-derived min/max — letting several
+   * BarCharts in a grid share one scale (small multiples). When absent or
+   * invalid, the scale falls back to the auto data range (unchanged).
+   */
+  domain?: [number, number];
+  /**
    * Keys of the currently selected bars (a bar's key is its `label`).
    * CONTROLLED — the parent owns the toggle; the component never stores
    * selection. When non-empty the selected bars stay full opacity (+ accent)
@@ -51,6 +58,7 @@ export function BarChart({
   height = 240,
   orientation = "vertical",
   label,
+  domain,
   selectedKeys = [],
   onSelect,
   className,
@@ -64,9 +72,16 @@ export function BarChart({
   const hasSelection = selectedSet.size > 0;
   const interactive = typeof onSelect === "function";
 
+  // A domain is honoured only when both bounds are finite and ordered (min<max).
+  // Otherwise we fall back to the auto data range.
+  const validDomain =
+    domain && Number.isFinite(domain[0]) && Number.isFinite(domain[1]) && domain[0] < domain[1]
+      ? domain
+      : null;
+
   const values = data.map((d) => d.value);
-  const minRaw = Math.min(0, ...values);
-  const maxRaw = Math.max(0, ...values);
+  const minRaw = validDomain ? validDomain[0] : Math.min(0, ...values);
+  const maxRaw = validDomain ? validDomain[1] : Math.max(0, ...values);
   const ticks = niceTicks(minRaw, maxRaw, 5);
   const domainMin = ticks[0];
   const domainMax = ticks[ticks.length - 1];
