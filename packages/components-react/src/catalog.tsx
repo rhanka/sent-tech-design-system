@@ -3100,6 +3100,208 @@ export function Tabs({ items, activeValue, activeId, label = "Tabs", onChange, o
   );
 }
 
+// ---------------------------------------------------------------------------
+// FilterPill, FilterBar, SelectionChip
+// ---------------------------------------------------------------------------
+
+export type FilterPillTone = "neutral" | "success" | "warning" | "error" | "info";
+
+export type FilterPillProps = {
+  /** Nom du champ/dimension affiché à gauche. */
+  field: string;
+  /** Résumé de la valeur sélectionnée, ex "France, Italie" ou "> 100". */
+  value: string;
+  /** Opérateur optionnel affiché entre field et value, ex "=", "in", "entre". */
+  operator?: string;
+  /** Pilule active (aria-pressed). Défaut true. */
+  active?: boolean;
+  /** Affiche le bouton ✕. Défaut true. */
+  removable?: boolean;
+  disabled?: boolean;
+  tone?: FilterPillTone;
+  onClick?: () => void;
+  onRemove?: () => void;
+  className?: string;
+};
+
+export function FilterPill({
+  field,
+  value,
+  operator,
+  active = true,
+  removable = true,
+  disabled = false,
+  tone = "neutral",
+  onClick,
+  onRemove,
+  className,
+}: FilterPillProps) {
+  const bodyRef = React.useRef<HTMLButtonElement>(null);
+  const containerRef = React.useRef<HTMLSpanElement>(null);
+
+  // Fix #5 : transfert de focus quand le corps-bouton focalisé devient disabled.
+  const prevDisabled = React.useRef(disabled);
+  React.useEffect(() => {
+    if (!prevDisabled.current && disabled) {
+      const container = containerRef.current;
+      if (container && container.contains(document.activeElement)) {
+        const focusable = document.querySelectorAll<HTMLElement>(
+          "a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex='-1'])"
+        );
+        let transferred = false;
+        for (const el of Array.from(focusable)) {
+          if (!container.contains(el)) {
+            el.focus();
+            transferred = true;
+            break;
+          }
+        }
+        if (!transferred) (document.body as HTMLElement).focus();
+      }
+    }
+    prevDisabled.current = disabled;
+  }, [disabled]);
+
+  function handleClick() {
+    if (disabled) return;
+    onClick?.();
+  }
+
+  function handleRemove() {
+    if (disabled) return;
+    onRemove?.();
+  }
+
+  // Suppr/Backspace sur le corps-bouton → onRemove (si removable).
+  function handleBodyKeydown(e: React.KeyboardEvent<HTMLButtonElement>) {
+    if (disabled) return;
+    if ((e.key === "Delete" || e.key === "Backspace") && removable) {
+      e.preventDefault();
+      onRemove?.();
+    }
+  }
+
+  const groupClass = classNames(
+    "st-filterPill",
+    `st-filterPill--${tone}`,
+    active ? "st-filterPill--active" : undefined,
+    disabled ? "st-filterPill--disabled" : undefined,
+    className
+  );
+
+  return (
+    <span ref={containerRef} className={groupClass} role="group" aria-label={`Filtre ${field}`}>
+      {onClick ? (
+        <button
+          ref={bodyRef}
+          type="button"
+          className="st-filterPill__body"
+          aria-pressed={active}
+          disabled={disabled || undefined}
+          onClick={handleClick}
+          onKeyDown={handleBodyKeydown}
+        >
+          <span className="st-filterPill__field">{field}</span>
+          {operator ? <span className="st-filterPill__operator" aria-hidden="true">{operator}</span> : null}
+          <span className="st-filterPill__value">{value}</span>
+        </button>
+      ) : (
+        <span className="st-filterPill__body st-filterPill__body--static">
+          <span className="st-filterPill__field">{field}</span>
+          {operator ? <span className="st-filterPill__operator" aria-hidden="true">{operator}</span> : null}
+          <span className="st-filterPill__value">{value}</span>
+        </span>
+      )}
+      {removable ? (
+        <button
+          type="button"
+          className="st-filterPill__remove"
+          aria-label={`Retirer le filtre ${field}`}
+          disabled={disabled || undefined}
+          onClick={handleRemove}
+        >
+          <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      ) : null}
+    </span>
+  );
+}
+
+export type FilterBarProps = {
+  /** Aria-label du groupe de filtres, ex "Filtres actifs". */
+  label: string;
+  /** Callback "tout effacer" — le bouton n'est rendu que si ce callback est fourni. */
+  onClearAll?: () => void;
+  /** Libellé du bouton "tout effacer". Défaut "Tout effacer". */
+  clearAllLabel?: string;
+  children?: React.ReactNode;
+  className?: string;
+};
+
+export function FilterBar({ label, onClearAll, clearAllLabel = "Tout effacer", children, className }: FilterBarProps) {
+  return (
+    <div className={classNames("st-filterBar", className)} role="group" aria-label={label}>
+      <div className="st-filterBar__pills">{children}</div>
+      {onClearAll ? (
+        <button type="button" className="st-filterBar__clearAll" onClick={onClearAll}>
+          {clearAllLabel}
+        </button>
+      ) : null}
+    </div>
+  );
+}
+
+export type SelectionChipTone = "neutral" | "success" | "warning" | "error" | "info";
+
+export type SelectionChipProps = {
+  /** Libellé de la dimension sélectionnée. */
+  label: string;
+  /** Nombre d'éléments sélectionnés — affiché "(N)" si fourni et Number.isFinite. */
+  count?: number;
+  tone?: SelectionChipTone;
+  /** Callback effacement — affiche le bouton ✕ si fourni. */
+  onClear?: () => void;
+  disabled?: boolean;
+  className?: string;
+};
+
+export function SelectionChip({ label, count, tone = "neutral", onClear, disabled = false, className }: SelectionChipProps) {
+  const showCount = count !== undefined && Number.isFinite(count);
+
+  function handleClear(e: React.MouseEvent) {
+    e.stopPropagation();
+    if (disabled) return;
+    onClear?.();
+  }
+
+  return (
+    <span
+      className={classNames("st-selectionChip", `st-selectionChip--${tone}`, disabled && "st-selectionChip--disabled", className)}
+      aria-disabled={disabled ? "true" : undefined}
+    >
+      <span className="st-selectionChip__label">{label}</span>
+      {showCount ? (
+        <span className="st-selectionChip__count" aria-label={`(${count})`}>({count})</span>
+      ) : null}
+      {onClear ? (
+        <button
+          type="button"
+          className="st-selectionChip__clear"
+          aria-label={`Effacer ${label}`}
+          disabled={disabled}
+          onClick={handleClear}
+        >
+          <svg width={11} height={11} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      ) : null}
+    </span>
+  );
+}
+
 export type TagProps = React.HTMLAttributes<HTMLSpanElement> & {
   tone?: Tone;
   size?: "sm" | "md";
