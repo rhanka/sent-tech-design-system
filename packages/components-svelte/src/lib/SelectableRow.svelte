@@ -16,8 +16,8 @@
     readonly managed: true;
     /** listbox role for the wrapper → rows are "option". */
     readonly itemRole: "option";
-    /** Register a row element; returns an unregister callback. */
-    register: (el: HTMLElement, value: string | undefined) => () => void;
+    /** Register a row element; returns an unregister callback. disabled is forwarded so the list can skip it during keyboard navigation. */
+    register: (el: HTMLElement, value: string | undefined, disabled?: boolean) => () => void;
     /** Is the row with this element currently selected? */
     isSelected: (el: HTMLElement) => boolean;
     /** Should the row with this element be the roving-tabindex stop (tabindex 0)? */
@@ -44,8 +44,9 @@
     /** Stable value, surfaced as `data-value` and used by the list for `value`. */
     value?: string;
     /**
-     * ARIA role for the standalone row. Defaults to "option" so a lone row still
-     * reads as a selectable item. Inside a list the role is forced to "option".
+     * ARIA role for the standalone row. Defaults to "button" for standalone use —
+     * "option" is only valid inside a listbox and would be invalid without one.
+     * Inside a SelectableList the role is always forced to "option".
      */
     role?: string;
     /**
@@ -71,7 +72,7 @@
     onselect,
     disabled = false,
     value,
-    role = "option",
+    role = "button",
     accentBar = false,
     leading,
     trailing,
@@ -86,10 +87,23 @@
   let el: HTMLElement | null = $state(null);
 
   // Register with the parent list (if any) so it can order rows for arrow nav
-  // and compute the roving tab stop. The effect re-registers if value changes.
+  // and compute the roving tab stop. Disabled rows are registered too so the
+  // list can skip them during navigation; the list owns the skip logic.
   $effect(() => {
-    if (!list || !el || disabled) return;
-    return list.register(el, value);
+    if (!list || !el) return;
+    return list.register(el, value, disabled);
+  });
+
+  // A11y edge-case : quand cette row passe à disabled=true ET qu'elle détient le
+  // focus DOM, transférer le focus vers la prochaine row enabled via navigate().
+  // On le fait ici (dans SelectableRow) pour avoir accès au focus DOM AVANT que
+  // le cycle unregister/register dans SelectableList ne perturbe l'état.
+  $effect(() => {
+    if (!disabled || !list || !el) return;
+    if (!el.contains(document.activeElement ?? null)) return;
+    // Déléguer via navigate ArrowDown (cherche prochaine row enabled vers l'avant,
+    // puis vers l'arrière si aucune). navigate appelle target.focus() directement.
+    list.navigate(el, "ArrowDown");
   });
 
   // Effective selected state: list-managed rows read the list; standalone rows
@@ -165,6 +179,7 @@
   class={classes}
   role={effectiveRole}
   aria-selected={effectiveRole === "option" ? isSelected : undefined}
+  aria-pressed={effectiveRole === "button" ? isSelected : undefined}
   aria-disabled={disabled ? "true" : undefined}
   data-value={value}
   {tabindex}

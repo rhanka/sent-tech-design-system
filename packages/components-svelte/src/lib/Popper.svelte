@@ -44,6 +44,23 @@
     class?: string;
     /** Notified whenever the resolved placement changes (after flip). */
     onPlacementChange?: (placement: PopperPlacement) => void;
+    /**
+     * (a11y, opt-in) When true, traps keyboard focus inside the panel while it
+     * is open (Tab cycles through focusable children; Shift+Tab cycles backward).
+     * Intended for modal overlays built on top of Popper. Non-modal usage (menus,
+     * tooltips) should leave this false (default) to keep the natural tab order.
+     */
+    trapFocus?: boolean;
+    /**
+     * (a11y) When true (default when open), pressing Escape calls `onClose` so
+     * the consumer can set `open = false`. Set to false to suppress this behavior.
+     */
+    closeOnEscape?: boolean;
+    /**
+     * Called when the panel requests closing (Escape key, or future outside-click).
+     * The consumer is responsible for updating `open` in response.
+     */
+    onClose?: () => void;
     children?: Snippet;
   };
 
@@ -158,6 +175,8 @@
 </script>
 
 <script lang="ts">
+  import { untrack } from "svelte";
+
   let {
     anchor,
     open = false,
@@ -170,6 +189,9 @@
     portal = true,
     class: className,
     onPlacementChange,
+    trapFocus = false,
+    closeOnEscape = true,
+    onClose,
     children
   }: PopperProps = $props();
 
@@ -243,17 +265,152 @@
     };
   });
 
+  // ─── a11y: focus management ────────────────────────────────────────────────
+  // Capture the element that had focus before the panel opened so we can
+  // restore it when the panel closes (only when trapFocus is active).
+  // SSR-safe (guarded by typeof window).
+  // Use a plain variable (not $state) so reads inside the effect are not
+  // tracked and don't cause the effect to re-run on every preFocusEl write.
+  let preFocusEl: HTMLElement | null = null;
+
+  $effect(() => {
+    if (typeof window === "undefined") return;
+    if (open && anchor) {
+      untrack(() => {
+        // Snapshot the active element at open time only when trapFocus is active,
+        // so restoreFocus doesn't steal focus on non-modal usage.
+        if (trapFocus) {
+          preFocusEl = document.activeElement as HTMLElement | null;
+        }
+      });
+    } else {
+      // Panel just closed: restore focus only if trapFocus was active and the
+      // original element is still connected to the DOM.
+      untrack(() => {
+        if (
+          trapFocus &&
+          preFocusEl &&
+          typeof preFocusEl.focus === "function" &&
+          document.contains(preFocusEl)
+        ) {
+          preFocusEl.focus();
+        }
+        preFocusEl = null;
+      });
+    }
+  });
+
+  /** Returns all keyboard-focusable children of `container`. */
+  function getFocusable(container: HTMLElement): HTMLElement[] {
+    if (typeof window === "undefined") return [];
+    return Array.from(
+      container.querySelectorAll<HTMLElement>(
+        'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),' +
+        'textarea:not([disabled]),[tabindex]:not([tabindex="-1"]),[contenteditable="true"]'
+      )
+    ).filter((el) => !el.closest("[disabled]"));
+  }
+
+  // ─── a11y: move focus into the panel on open (trapFocus only) ─────────────
+  $effect(() => {
+    if (typeof window === "undefined") return;
+    if (!open || !trapFocus || !panel) return;
+    // Wait for the panel to be mounted before moving focus.
+    untrack(() => {
+      const focusable = getFocusable(panel!);
+      if (focusable.length > 0) {
+        focusable[0].focus();
+      } else {
+        // If no focusable children, focus the panel itself so Escape works.
+        panel!.focus();
+      }
+    });
+  });
+
+  // ─── a11y: recapture focus that escapes the trap (focusin on document) ─────
+  $effect(() => {
+    if (typeof window === "undefined") return;
+    if (!open || !trapFocus) return;
+
+    function handleFocusIn(e: FocusEvent) {
+      if (!panel) return;
+      const target = e.target as Node | null;
+      // If focus landed outside the panel, bring it back to the first focusable.
+      if (target && !panel.contains(target)) {
+        const focusable = getFocusable(panel);
+        if (focusable.length > 0) {
+          focusable[0].focus();
+        } else {
+          panel.focus();
+        }
+      }
+    }
+
+    document.addEventListener("focusin", handleFocusIn);
+    return () => {
+      document.removeEventListener("focusin", handleFocusIn);
+    };
+  });
+
+  // ─── a11y: Escape on document (closeOnEscape) ─────────────────────────────
+  // Listen on document so the Escape shortcut works even when focus is outside
+  // the panel (e.g. before the first Tab, or in an edge case where focus escaped).
+  $effect(() => {
+    if (typeof window === "undefined") return;
+    if (!open || !closeOnEscape) return;
+
+    function handleDocKeydown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        onClose?.();
+      }
+    }
+
+    document.addEventListener("keydown", handleDocKeydown);
+    return () => {
+      document.removeEventListener("keydown", handleDocKeydown);
+    };
+  });
+
+  /** Keyboard handler attached to the panel for Tab-trap cycling. */
+  function handlePanelKeydown(e: KeyboardEvent) {
+    if (typeof window === "undefined") return;
+
+    // Tab trap: cycle focus within the panel.
+    if (e.key === "Tab" && trapFocus && panel) {
+      const focusable = getFocusable(panel);
+      if (focusable.length === 0) { e.preventDefault(); return; }
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    }
+  }
+
   const panelStyle = () =>
     `position: ${strategy}; top: ${top}px; left: ${left}px;`;
   const panelSide = () => splitPlacement(resolvedPlacement).side;
 </script>
 
 {#snippet floating()}
+  <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+  <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
     bind:this={panel}
     class={className ? `st-popper ${className}` : "st-popper"}
     data-popper-placement={resolvedPlacement}
     style={panelStyle()}
+    tabindex={trapFocus ? -1 : undefined}
+    onkeydown={trapFocus ? handlePanelKeydown : undefined}
   >
     {@render children?.()}
     {#if arrow}

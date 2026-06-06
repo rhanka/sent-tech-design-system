@@ -1,4 +1,4 @@
-import { render } from "@testing-library/svelte";
+import { fireEvent, render } from "@testing-library/svelte";
 import { createRawSnippet, tick } from "svelte";
 import { describe, expect, it, vi } from "vitest";
 import Portal from "./lib/Portal.svelte";
@@ -208,5 +208,188 @@ describe("computePosition (pure geometry)", () => {
     // Panel right edge cannot exceed viewport width.
     expect(r.left + 120).toBeLessThanOrEqual(1000);
     expect(r.left).toBeGreaterThanOrEqual(0);
+  });
+});
+
+// ─── a11y: Popper focus management ─────────────────────────────────────────
+
+describe("Popper — a11y (closeOnEscape / trapFocus / focus-restore)", () => {
+  it("pressing Escape calls onClose when closeOnEscape is true (default)", async () => {
+    const onClose = vi.fn();
+    render(Popper, {
+      props: {
+        anchor: mockAnchor(),
+        open: true,
+        closeOnEscape: true,
+        onClose,
+        children: panelContent
+      }
+    });
+    await tick();
+    const panel = document.querySelector(".st-popper") as HTMLElement;
+    expect(panel).toBeTruthy();
+    await fireEvent.keyDown(panel, { key: "Escape" });
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it("pressing Escape does NOT call onClose when closeOnEscape is false", async () => {
+    const onClose = vi.fn();
+    render(Popper, {
+      props: {
+        anchor: mockAnchor(),
+        open: true,
+        closeOnEscape: false,
+        onClose,
+        children: panelContent
+      }
+    });
+    await tick();
+    const panel = document.querySelector(".st-popper") as HTMLElement;
+    await fireEvent.keyDown(panel, { key: "Escape" });
+    expect(onClose).not.toHaveBeenCalled();
+  });
+
+  it("trapFocus: Tab wraps from last focusable child back to first", async () => {
+    // createRawSnippet requires a single root element — wrap the two buttons.
+    const twoButtons = createRawSnippet(() => ({
+      render: () =>
+        `<div><button data-testid="btn-first">First</button><button data-testid="btn-last">Last</button></div>`
+    }));
+    render(Popper, {
+      props: {
+        anchor: mockAnchor(),
+        open: true,
+        trapFocus: true,
+        children: twoButtons
+      }
+    });
+    await tick();
+    const panel = document.querySelector(".st-popper") as HTMLElement;
+    const last = panel.querySelector<HTMLElement>('[data-testid="btn-last"]')!;
+    const first = panel.querySelector<HTMLElement>('[data-testid="btn-first"]')!;
+    // Focus the last button, then Tab (forward) → should wrap to first.
+    last.focus();
+    await fireEvent.keyDown(panel, { key: "Tab", shiftKey: false });
+    expect(document.activeElement).toBe(first);
+  });
+
+  it("trapFocus: Shift+Tab wraps from first focusable child back to last", async () => {
+    // createRawSnippet requires a single root element — wrap the two buttons.
+    const twoButtons = createRawSnippet(() => ({
+      render: () =>
+        `<div><button data-testid="btn-first">First</button><button data-testid="btn-last">Last</button></div>`
+    }));
+    render(Popper, {
+      props: {
+        anchor: mockAnchor(),
+        open: true,
+        trapFocus: true,
+        children: twoButtons
+      }
+    });
+    await tick();
+    const panel = document.querySelector(".st-popper") as HTMLElement;
+    const first = panel.querySelector<HTMLElement>('[data-testid="btn-first"]')!;
+    const last = panel.querySelector<HTMLElement>('[data-testid="btn-last"]')!;
+    // Focus the first button, then Shift+Tab → should wrap to last.
+    first.focus();
+    await fireEvent.keyDown(panel, { key: "Tab", shiftKey: true });
+    expect(document.activeElement).toBe(last);
+  });
+
+  it("trapFocus: opening the panel moves focus to the first focusable child", async () => {
+    const twoButtons = createRawSnippet(() => ({
+      render: () =>
+        `<div><button data-testid="btn-first">First</button><button data-testid="btn-last">Last</button></div>`
+    }));
+    render(Popper, {
+      props: {
+        anchor: mockAnchor(),
+        open: true,
+        trapFocus: true,
+        children: twoButtons
+      }
+    });
+    await tick();
+    const panel = document.querySelector(".st-popper") as HTMLElement;
+    const first = panel.querySelector<HTMLElement>('[data-testid="btn-first"]')!;
+    expect(document.activeElement).toBe(first);
+  });
+
+  it("trapFocus: focus that escapes the panel is brought back on focusin", async () => {
+    const oneButton = createRawSnippet(() => ({
+      render: () => `<div><button data-testid="btn-inside">Inside</button></div>`
+    }));
+    render(Popper, {
+      props: {
+        anchor: mockAnchor(),
+        open: true,
+        trapFocus: true,
+        children: oneButton
+      }
+    });
+    await tick();
+    // Create an element outside the panel and focus it directly.
+    const outside = document.createElement("button");
+    outside.setAttribute("data-testid", "btn-outside");
+    document.body.appendChild(outside);
+    outside.focus();
+    // Dispatch a focusin event so the document listener has a chance to recapture.
+    outside.dispatchEvent(new FocusEvent("focusin", { bubbles: true }));
+    await tick();
+    const panel = document.querySelector(".st-popper") as HTMLElement;
+    const inside = panel.querySelector<HTMLElement>('[data-testid="btn-inside"]')!;
+    expect(document.activeElement).toBe(inside);
+    outside.remove();
+  });
+
+  it("Escape on document calls onClose when closeOnEscape is true", async () => {
+    const onClose = vi.fn();
+    render(Popper, {
+      props: {
+        anchor: mockAnchor(),
+        open: true,
+        closeOnEscape: true,
+        onClose,
+        children: panelContent
+      }
+    });
+    await tick();
+    // Dispatch Escape directly on document (not the panel).
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+    await tick();
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it("restoreFocus: focus is NOT restored when trapFocus is false (non-modal)", async () => {
+    const trigger = document.createElement("button");
+    trigger.setAttribute("data-testid", "trigger");
+    document.body.appendChild(trigger);
+    trigger.focus();
+
+    const { rerender } = render(Popper, {
+      props: {
+        anchor: mockAnchor(),
+        open: true,
+        trapFocus: false,
+        children: panelContent
+      }
+    });
+    await tick();
+
+    // Move focus somewhere else (simulate user clicking outside).
+    const other = document.createElement("button");
+    document.body.appendChild(other);
+    other.focus();
+    expect(document.activeElement).toBe(other);
+
+    // Close the panel — without trapFocus, focus must NOT jump back to trigger.
+    await rerender({ anchor: mockAnchor(), open: false, trapFocus: false, children: panelContent });
+    await tick();
+    // Focus should still be on 'other', not restored to trigger.
+    expect(document.activeElement).toBe(other);
+
+    trigger.remove();
+    other.remove();
   });
 });

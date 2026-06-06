@@ -173,22 +173,56 @@
     return d > rangeStart.getTime() && d < rangeEnd.getTime();
   }
 
-  function previousMonth() {
-    if (viewMonth === 0) {
-      viewMonth = 11;
-      viewYear -= 1;
-    } else {
-      viewMonth -= 1;
+  /**
+   * Retourne le premier jour activable (non-disabled) du mois `year`/`month`,
+   * en partant de `preferred` si celui-ci est dans le bon mois et non-disabled,
+   * sinon en balayant du 1er au dernier jour du mois.
+   * Renvoie `null` si tous les jours sont disabled (cas extrême).
+   */
+  function clampToMonth(preferred: Date, year: number, month: number): Date | null {
+    // Si preferred est dans le bon mois et non-disabled → on le garde.
+    if (
+      preferred.getFullYear() === year &&
+      preferred.getMonth() === month &&
+      !isOutOfBounds(preferred)
+    ) {
+      return preferred;
     }
+    // Chercher le jour sélectionné dans ce mois en priorité.
+    const sel = !range ? single : rangeStart;
+    if (sel && sel.getFullYear() === year && sel.getMonth() === month && !isOutOfBounds(sel)) {
+      return sel;
+    }
+    // Balayer du 1er au dernier jour du mois.
+    const lastDay = new Date(year, month + 1, 0).getDate();
+    for (let d = 1; d <= lastDay; d++) {
+      const candidate = startOfDay(new Date(year, month, d));
+      if (!isOutOfBounds(candidate)) return candidate;
+    }
+    // Aucun jour activable (mois entièrement hors-bornes) : retourner null pour
+    // signaler l'absence de cellule focusable. Les appelants doivent traiter ce cas.
+    return null;
+  }
+
+  function previousMonth() {
+    const targetMonth = viewMonth === 0 ? 11 : viewMonth - 1;
+    const targetYear = viewMonth === 0 ? viewYear - 1 : viewYear;
+    viewMonth = targetMonth;
+    viewYear = targetYear;
+    const clamped = clampToMonth(focusDate, targetYear, targetMonth);
+    if (clamped) focusDate = clamped;
+    // Si clamped === null, le mois est entièrement hors-bornes : focusDate garde
+    // l'ancienne valeur — aucune cellule ne sera tabindex=0 car toutes sont disabled.
   }
 
   function nextMonth() {
-    if (viewMonth === 11) {
-      viewMonth = 0;
-      viewYear += 1;
-    } else {
-      viewMonth += 1;
-    }
+    const targetMonth = viewMonth === 11 ? 0 : viewMonth + 1;
+    const targetYear = viewMonth === 11 ? viewYear + 1 : viewYear;
+    viewMonth = targetMonth;
+    viewYear = targetYear;
+    const clamped = clampToMonth(focusDate, targetYear, targetMonth);
+    if (clamped) focusDate = clamped;
+    // Si clamped === null, le mois est entièrement hors-bornes : idem.
   }
 
   function pickDate(date: Date) {
@@ -217,13 +251,149 @@
 
   const monthLabel = $derived(monthFormatter.format(new Date(viewYear, viewMonth, 1)));
 
+  // --- Roving tabindex : date active dans la grille -------------------------
+  // La "date active" est celle qui a tabindex=0 ; elle suit la sélection ou
+  // se positionne sur le 1er jour activable du mois affiché en l'absence de sélection.
+  // INVARIANT : focusDate est toujours dans le mois affiché ET non-disabled.
+  function initialFocusDate(): Date {
+    const sel = !range ? single : rangeStart;
+    if (sel && sel.getFullYear() === viewYear && sel.getMonth() === viewMonth && !isOutOfBounds(sel)) {
+      return sel;
+    }
+    // Trouver le premier jour activable du mois.
+    const lastDay = new Date(viewYear, viewMonth + 1, 0).getDate();
+    for (let d = 1; d <= lastDay; d++) {
+      const candidate = startOfDay(new Date(viewYear, viewMonth, d));
+      if (!isOutOfBounds(candidate)) return candidate;
+    }
+    // Mois entièrement hors-bornes : retourner le 1er jour quand même pour
+    // initialiser focusDate, mais aucune cellule ne sera tabindex=0 (toutes disabled).
+    return startOfDay(new Date(viewYear, viewMonth, 1));
+  }
+
+  let focusDate = $state<Date>(initialFocusDate());
+
+  // Resynchronise focusDate quand la prop value change (sélection externe).
+  // Si la nouvelle valeur est dans le mois affiché et non-disabled, on la pointe ;
+  // sinon on re-clamp pour garantir l'invariant.
+  $effect(() => {
+    const sel = !range ? single : rangeStart;
+    if (sel) {
+      if (sel.getFullYear() === viewYear && sel.getMonth() === viewMonth && !isOutOfBounds(sel)) {
+        focusDate = sel;
+      } else {
+        const clamped = clampToMonth(focusDate, viewYear, viewMonth);
+        if (clamped) focusDate = clamped;
+        // Si null (mois entièrement hors-bornes), on ne touche pas focusDate :
+        // le tabindex=0 ne sera posé sur aucune cellule disabled.
+      }
+    }
+  });
+
+  // Resynchronise focusDate quand le mois affiché change via la prop `month`
+  // (l'$effect sur `month` dans le bloc précédent met viewYear/viewMonth à jour,
+  //  mais focusDate peut pointer vers l'ancien mois).
+  $effect(() => {
+    // Dépendances explicites : viewYear + viewMonth.
+    const y = viewYear;
+    const m = viewMonth;
+    if (focusDate.getFullYear() !== y || focusDate.getMonth() !== m || isOutOfBounds(focusDate)) {
+      const clamped = clampToMonth(focusDate, y, m);
+      if (clamped) focusDate = clamped;
+      // Si null (mois entièrement hors-bornes), aucune cellule ne reçoit tabindex=0.
+    }
+  });
+
+  // Résoud l'élément DOM du jour actif et y place le focus.
+  let gridEl = $state<HTMLElement | null>(null);
+
+  function focusActiveCell() {
+    if (!gridEl) return;
+    const iso = toISO(focusDate);
+    const btn = gridEl.querySelector<HTMLElement>(`[data-date="${iso}"]`);
+    btn?.focus();
+  }
+
+  // Déplace focusDate de `deltaDays` jours ; change de mois si nécessaire.
+  function moveFocus(deltaDays: number) {
+    const next = new Date(focusDate);
+    next.setDate(next.getDate() + deltaDays);
+    // Si hors mois affiché, on bascule le mois.
+    if (next.getFullYear() !== viewYear || next.getMonth() !== viewMonth) {
+      viewYear = next.getFullYear();
+      viewMonth = next.getMonth();
+    }
+    focusDate = startOfDay(next);
+    // Focus après rendu.
+    setTimeout(focusActiveCell, 0);
+  }
+
   function onKeyDown(event: KeyboardEvent) {
-    if (event.key === "PageUp") {
-      event.preventDefault();
-      previousMonth();
-    } else if (event.key === "PageDown") {
-      event.preventDefault();
-      nextMonth();
+    switch (event.key) {
+      case "ArrowLeft":
+        event.preventDefault();
+        moveFocus(-1);
+        break;
+      case "ArrowRight":
+        event.preventDefault();
+        moveFocus(1);
+        break;
+      case "ArrowUp":
+        event.preventDefault();
+        moveFocus(-7);
+        break;
+      case "ArrowDown":
+        event.preventDefault();
+        moveFocus(7);
+        break;
+      case "Home": {
+        // Début de la semaine (selon weekStartsOn).
+        event.preventDefault();
+        const dayOfWeek = focusDate.getDay();
+        const offset = (dayOfWeek - weekStartsOn + 7) % 7;
+        moveFocus(-offset);
+        break;
+      }
+      case "End": {
+        // Fin de la semaine.
+        event.preventDefault();
+        const dayOfWeek = focusDate.getDay();
+        const offset = (6 - ((dayOfWeek - weekStartsOn + 7) % 7));
+        moveFocus(offset);
+        break;
+      }
+      case "PageUp": {
+        event.preventDefault();
+        // previousMonth() met à jour viewYear/viewMonth ET clamp focusDate via clampToMonth,
+        // en essayant de conserver le même numéro de jour dans le mois cible.
+        const puDay = focusDate.getDate();
+        const puTargetMonth = viewMonth === 0 ? 11 : viewMonth - 1;
+        const puTargetYear = viewMonth === 0 ? viewYear - 1 : viewYear;
+        // Construit le candidat "même jour" avant d'appeler previousMonth pour que
+        // clampToMonth puisse l'évaluer (il utilise focusDate en argument).
+        const puLastDay = new Date(puTargetYear, puTargetMonth + 1, 0).getDate();
+        focusDate = startOfDay(new Date(puTargetYear, puTargetMonth, Math.min(puDay, puLastDay)));
+        previousMonth();
+        setTimeout(focusActiveCell, 0);
+        break;
+      }
+      case "PageDown": {
+        event.preventDefault();
+        const pdDay = focusDate.getDate();
+        const pdTargetMonth = viewMonth === 11 ? 0 : viewMonth + 1;
+        const pdTargetYear = viewMonth === 11 ? viewYear + 1 : viewYear;
+        const pdLastDay = new Date(pdTargetYear, pdTargetMonth + 1, 0).getDate();
+        focusDate = startOfDay(new Date(pdTargetYear, pdTargetMonth, Math.min(pdDay, pdLastDay)));
+        nextMonth();
+        setTimeout(focusActiveCell, 0);
+        break;
+      }
+      case "Enter":
+      case " ": {
+        event.preventDefault();
+        if (!isOutOfBounds(focusDate)) pickDate(focusDate);
+        break;
+      }
     }
   }
 </script>
@@ -248,12 +418,15 @@
       <ChevronRight size={18} aria-hidden="true" />
     </button>
   </div>
+  <!-- svelte-ignore a11y_interactive_supports_focus -->
+  <!-- Faux positif : le grid utilise le roving tabindex (cellules-enfants portent tabindex),
+       pas un tabindex sur le conteneur — conforme ARIA Grid Pattern. -->
   <div
     class="st-calendar__grid"
     role="grid"
-    tabindex="-1"
     aria-label={monthLabel}
     onkeydown={onKeyDown}
+    bind:this={gridEl}
   >
     <div class="st-calendar__weekdays" role="row">
       {#each weekdayLabels as wd (wd)}
@@ -261,28 +434,38 @@
       {/each}
     </div>
     <div class="st-calendar__days">
-      {#each grid as cell, i (i)}
-        {@const oob = isOutOfBounds(cell.date)}
-        {@const selected = isSelected(cell.date)}
-        {@const inRange = isInRange(cell.date)}
-        {@const isToday = isSameDay(cell.date, today)}
-        <button
-          type="button"
-          class="st-calendar__day"
-          class:st-calendar__day--outside={!cell.inMonth}
-          class:st-calendar__day--selected={selected}
-          class:st-calendar__day--inRange={inRange}
-          class:st-calendar__day--today={isToday}
-          role="gridcell"
-          aria-label={cellFormatter.format(cell.date)}
-          aria-selected={selected ? "true" : "false"}
-          aria-current={isToday ? "date" : undefined}
-          aria-disabled={oob ? "true" : undefined}
-          disabled={oob}
-          onclick={() => pickDate(cell.date)}
-        >
-          {cell.date.getDate()}
-        </button>
+      {#each { length: 6 } as _, rowIdx (rowIdx)}
+        <div class="st-calendar__week" role="row">
+          {#each grid.slice(rowIdx * 7, rowIdx * 7 + 7) as cell, colIdx (rowIdx * 7 + colIdx)}
+            {@const oob = isOutOfBounds(cell.date)}
+            {@const selected = isSelected(cell.date)}
+            {@const inRange = isInRange(cell.date)}
+            {@const isToday = isSameDay(cell.date, today)}
+            {@const isActive = isSameDay(cell.date, focusDate)}
+            <button
+              type="button"
+              class="st-calendar__day"
+              class:st-calendar__day--outside={!cell.inMonth}
+              class:st-calendar__day--selected={selected}
+              class:st-calendar__day--inRange={inRange}
+              class:st-calendar__day--today={isToday}
+              role="gridcell"
+              aria-label={cellFormatter.format(cell.date)}
+              aria-selected={selected ? "true" : "false"}
+              aria-current={isToday ? "date" : undefined}
+              aria-disabled={oob ? "true" : undefined}
+              disabled={oob}
+              tabindex={isActive && !oob ? 0 : -1}
+              data-date={toISO(cell.date)}
+              onclick={() => {
+                focusDate = startOfDay(cell.date);
+                pickDate(cell.date);
+              }}
+            >
+              {cell.date.getDate()}
+            </button>
+          {/each}
+        </div>
       {/each}
     </div>
   </div>
@@ -340,8 +523,20 @@
     gap: var(--st-spacing-1, 0.25rem);
   }
 
-  .st-calendar__weekdays,
+  .st-calendar__weekdays {
+    display: grid;
+    gap: 2px;
+    grid-template-columns: repeat(7, minmax(2rem, 1fr));
+  }
+
   .st-calendar__days {
+    display: grid;
+    gap: 2px;
+  }
+
+  /* role="row" doit être un vrai nœud exposé à l'arbre a11y.
+     display:contents supprime le nœud → on utilise display:grid à la place. */
+  .st-calendar__week {
     display: grid;
     gap: 2px;
     grid-template-columns: repeat(7, minmax(2rem, 1fr));

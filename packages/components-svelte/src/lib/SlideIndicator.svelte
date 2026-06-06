@@ -43,6 +43,9 @@
 
   const items = $derived(Array.from({ length: Math.max(0, count) }, (_, i) => i));
 
+  // Refs des boutons pour déplacer le focus programmatiquement lors de la navigation clavier.
+  let buttonRefs = $state<Record<number, HTMLElement | null>>({});
+
   function select(index: number) {
     if (index < 0 || index >= count || index === current) return;
     onChange?.(index);
@@ -69,21 +72,32 @@
         return;
     }
     event.preventDefault();
+    // Déplacer le focus DOM vers le bouton cible (roving tabindex correct).
+    const targetEl = buttonRefs[target];
+    if (targetEl) targetEl.focus();
     select(target);
   }
 </script>
 
-<div {...rest} class={classes} role="tablist" aria-label={label}>
+<!--
+  Choix de pattern : role="group" + boutons avec aria-current.
+  Justification : un indicateur de carrousel/pagination n'est PAS un tablist — il n'y a pas de
+  tabpanel associé. Utiliser role="tab" sans aria-controls/tabpanel trompe les lecteurs d'écran
+  qui annoncent « onglet X sur N » sans panneau contrôlé.
+  Pattern retenu (ARIA Authoring Practices Guide — Carousel) : role="group" nommé + boutons natifs
+  avec aria-current="true" sur le point courant + roving tabindex.
+  Le SR annonce « Groupe [label] — [label] 1, bouton ; [label] 2, courant, bouton ; … »
+-->
+<div {...rest} class={classes} role="group" aria-label={label}>
   {#each items as index (index)}
     <button
       type="button"
       class="st-slideIndicator__dot"
       class:st-slideIndicator__dot--current={index === current}
-      role="tab"
-      aria-selected={index === current ? "true" : "false"}
       aria-current={index === current ? "true" : undefined}
       aria-label={`${label} ${index + 1}`}
       tabindex={index === current ? 0 : -1}
+      bind:this={buttonRefs[index]}
       onclick={() => select(index)}
       onkeydown={(event) => onKeyDown(event, index)}
     ></button>
