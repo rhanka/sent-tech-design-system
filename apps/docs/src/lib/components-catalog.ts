@@ -671,6 +671,17 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "DivergentBarChart",
+    slug: "divergent-bar-chart",
+    status: "documented",
+    category: "data",
+    groupSlug: "divergent-bar-chart",
+    description: {
+      fr: "Barres divergentes positives/négatives autour d'un axe zéro.",
+      en: "Positive/negative divergent bars around a zero axis."
+    }
+  },
+  {
     name: "LineChart",
     slug: "line-chart",
     status: "documented",

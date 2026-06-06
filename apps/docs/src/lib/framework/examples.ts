@@ -72,6 +72,7 @@ export type ComponentName =
   | "Footer"
   | "AreaChart"
   | "BarChart"
+  | "DivergentBarChart"
   | "LineChart"
   | "DonutChart"
   | "ScatterPlot"
@@ -3546,6 +3547,72 @@ import { BarChart } from "@sentropic/design-system-vue";
       { x: 'Staging', y: 28 },
       { x: 'Dev', y: 45 },
       { x: 'Test', y: 19 }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  divergentbarchart: {
+    id: "divergentbarchart",
+    slug: "divergent-bar-chart",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "DivergentBarChart",
+            props: {
+              label: "Sentiment par équipe",
+              data: [
+                { label: "Support", value: 18 },
+                { label: "Risk", value: -7 },
+                { label: "Neutral", value: 0 }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { DivergentBarChart } from "@sentropic/design-system-svelte";
+</script>
+
+<DivergentBarChart
+  label="Sentiment par équipe"
+  data={[
+    { label: "Support", value: 18 },
+    { label: "Risk", value: -7 },
+    { label: "Neutral", value: 0 }
+  ]}
+/>`,
+      react: `import { DivergentBarChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <DivergentBarChart
+      label="Sentiment par équipe"
+      data={[
+        { label: "Support", value: 18 },
+        { label: "Risk", value: -7 },
+        { label: "Neutral", value: 0 }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { DivergentBarChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <DivergentBarChart
+    label="Sentiment par équipe"
+    :data="[
+      { label: 'Support', value: 18 },
+      { label: 'Risk', value: -7 },
+      { label: 'Neutral', value: 0 }
     ]"
   />
 </template>`

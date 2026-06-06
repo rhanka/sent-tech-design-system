@@ -169,6 +169,8 @@ export { LineChart } from "./LineChart.js";
 export type { LineChartProps, LineChartDatum, LineChartTone } from "./LineChart.js";
 export { DonutChart } from "./DonutChart.js";
 export type { DonutChartProps, DonutChartDatum, DonutChartTone } from "./DonutChart.js";
+export { DivergentBarChart } from "./DivergentBarChart.js";
+export type { DivergentBarChartProps, DivergentBarChartDatum, DivergentBarChartTone } from "./DivergentBarChart.js";
 export { ScatterPlot } from "./ScatterPlot.js";
 export type { ScatterPlotProps, ScatterPlotDatum, ScatterPlotTone } from "./ScatterPlot.js";
 export { Sparkline } from "./Sparkline.js";

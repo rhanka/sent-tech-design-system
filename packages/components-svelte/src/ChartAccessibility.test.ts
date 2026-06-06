@@ -2,6 +2,7 @@ import { render, screen, within } from "@testing-library/svelte";
 import { describe, expect, it } from "vitest";
 import AreaChart from "./lib/AreaChart.svelte";
 import BarChart from "./lib/BarChart.svelte";
+import DivergentBarChart from "./lib/DivergentBarChart.svelte";
 import DonutChart from "./lib/DonutChart.svelte";
 import LineChart from "./lib/LineChart.svelte";
 import ScatterPlot from "./lib/ScatterPlot.svelte";
@@ -36,6 +37,13 @@ const chartCases: ChartCase[] = [
     label: "Donut usage",
     props: { data: [{ label: "Tokens", value: 1 }, { label: "Docs", value: 1 }] },
     expectedItems: ["Tokens: 1 (50%)", "Docs: 1 (50%)"]
+  },
+  {
+    name: "DivergentBarChart",
+    component: DivergentBarChart,
+    label: "Divergent usage",
+    props: { data: [{ label: "Support", value: 18 }, { label: "Risk", value: -7 }] },
+    expectedItems: ["Support: 18", "Risk: -7"]
   },
   {
     name: "LineChart",
