@@ -682,6 +682,17 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "StepLineChart",
+    slug: "step-line-chart",
+    status: "documented",
+    category: "data",
+    groupSlug: "step-line-chart",
+    description: {
+      fr: "Graphique en ligne par paliers pour valeurs qui changent par seuils.",
+      en: "Stepped line chart for values that change at thresholds."
+    }
+  },
+  {
     name: "Sparkline",
     slug: "sparkline",
     status: "documented",

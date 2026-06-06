@@ -4,6 +4,7 @@ import AreaChart from "./lib/AreaChart.svelte";
 import BarChart from "./lib/BarChart.svelte";
 import DonutChart from "./lib/DonutChart.svelte";
 import LineChart from "./lib/LineChart.svelte";
+import StepLineChart from "./lib/StepLineChart.svelte";
 import ScatterPlot from "./lib/ScatterPlot.svelte";
 import StackedBarChart from "./lib/StackedBarChart.svelte";
 
@@ -41,6 +42,13 @@ const chartCases: ChartCase[] = [
     name: "LineChart",
     component: LineChart,
     label: "Line usage",
+    props: { data: [{ x: "Mon", y: 3 }, { x: "Tue", y: 5 }] },
+    expectedItems: ["Mon: 3", "Tue: 5"]
+  },
+  {
+    name: "StepLineChart",
+    component: StepLineChart,
+    label: "Step line usage",
     props: { data: [{ x: "Mon", y: 3 }, { x: "Tue", y: 5 }] },
     expectedItems: ["Mon: 3", "Tue: 5"]
   },

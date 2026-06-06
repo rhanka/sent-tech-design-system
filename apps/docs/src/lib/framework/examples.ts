@@ -73,6 +73,7 @@ export type ComponentName =
   | "AreaChart"
   | "BarChart"
   | "LineChart"
+  | "StepLineChart"
   | "DonutChart"
   | "ScatterPlot"
   | "Sparkline"
@@ -3620,6 +3621,84 @@ import { LineChart } from "@sentropic/design-system-vue";
       { x: '12h', y: 180 },
       { x: '18h', y: 145 },
       { x: '24h', y: 110 }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  steplinechart: {
+    id: "steplinechart",
+    slug: "step-line-chart",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "StepLineChart",
+            props: {
+              label: "Taux de rétention (%)",
+              tone: "category4",
+              data: [
+                { x: "S1", y: 92 },
+                { x: "S2", y: 88 },
+                { x: "S3", y: 91 },
+                { x: "S4", y: 85 },
+                { x: "S5", y: 89 }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { StepLineChart } from "@sentropic/design-system-svelte";
+</script>
+
+<StepLineChart
+  label="Taux de rétention (%)"
+  tone="category4"
+  data={[
+    { x: "S1", y: 92 },
+    { x: "S2", y: 88 },
+    { x: "S3", y: 91 },
+    { x: "S4", y: 85 },
+    { x: "S5", y: 89 }
+  ]}
+/>`,
+      react: `import { StepLineChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <StepLineChart
+      label="Taux de rétention (%)"
+      tone="category4"
+      data={[
+        { x: "S1", y: 92 },
+        { x: "S2", y: 88 },
+        { x: "S3", y: 91 },
+        { x: "S4", y: 85 },
+        { x: "S5", y: 89 }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { StepLineChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <StepLineChart
+    label="Taux de rétention (%)"
+    tone="category4"
+    :data="[
+      { x: 'S1', y: 92 },
+      { x: 'S2', y: 88 },
+      { x: 'S3', y: 91 },
+      { x: 'S4', y: 85 },
+      { x: 'S5', y: 89 }
     ]"
   />
 </template>`
