@@ -26,8 +26,8 @@ export type SelectableListContext = {
   readonly managed: true;
   /** listbox role for the wrapper → rows are "option". */
   readonly itemRole: "option";
-  /** Register a row element; returns an unregister callback. */
-  register: (el: HTMLElement, value: string | undefined) => () => void;
+  /** Register a row element; returns an unregister callback. disabled is forwarded so the list can skip it during keyboard navigation. */
+  register: (el: HTMLElement, value: string | undefined, disabled?: boolean) => () => void;
   /** Is the row with this element currently selected? */
   isSelected: (el: HTMLElement) => boolean;
   /** Should the row with this element be the roving-tabindex stop (tabindex 0)? */
@@ -104,20 +104,29 @@ export const SelectableRow = defineComponent({
     const el = ref<HTMLElement | null>(null);
 
     // Register with the parent list (if any) so it can order rows for arrow nav
-    // and compute the roving tab stop. Registered on mount (when `el` is set) and
-    // re-registered when value / disabled change.
+    // and compute the roving tab stop. Disabled rows are registered too so the
+    // list can skip them during navigation; the list owns the skip logic.
     let unregister: (() => void) | null = null;
     function doRegister() {
       unregister?.();
       unregister = null;
-      if (list && el.value && !props.disabled) {
-        unregister = list.register(el.value, props.value);
+      if (list && el.value) {
+        unregister = list.register(el.value, props.value, props.disabled);
       }
     }
     onMounted(() => doRegister());
     watch(
       () => [props.value, props.disabled] as const,
-      () => doRegister(),
+      ([, newDisabled], [, oldDisabled]) => {
+        // A11y: quand cette row passe à disabled=true ET qu'elle détient le focus DOM,
+        // transférer le focus vers la prochaine row enabled via navigate().
+        if (newDisabled && !oldDisabled && list && el.value) {
+          if (el.value.contains(document.activeElement ?? null)) {
+            list.navigate(el.value, "ArrowDown");
+          }
+        }
+        doRegister();
+      },
     );
     onBeforeUnmount(() => {
       unregister?.();
@@ -203,6 +212,8 @@ export const SelectableRow = defineComponent({
           role: effectiveRole,
           "aria-selected":
             effectiveRole === "option" ? (isSelected ? "true" : "false") : undefined,
+          "aria-pressed":
+            effectiveRole === "button" ? (isSelected ? "true" : "false") : undefined,
           "aria-disabled": props.disabled ? "true" : undefined,
           "data-value": props.value,
           tabindex,

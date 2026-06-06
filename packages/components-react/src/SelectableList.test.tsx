@@ -198,4 +198,36 @@ describe("SelectableList", () => {
     expect(opts[0].getAttribute("tabindex")).toBe("-1");
     expect(opts[1].getAttribute("tabindex")).toBe("0");
   });
+
+  it("ArrowDown skips disabled rows during navigation", () => {
+    render(
+      <SelectableList label="Items">
+        <SelectableRow value="a">Alpha</SelectableRow>
+        <SelectableRow value="b" disabled>Beta</SelectableRow>
+        <SelectableRow value="c">Gamma</SelectableRow>
+      </SelectableList>,
+    );
+    const opts = screen.getAllByRole("option");
+    opts[0].focus();
+    fireEvent.keyDown(opts[0], { key: "ArrowDown" });
+    // Beta is disabled, should jump to Gamma
+    expect(opts[2].getAttribute("tabindex")).toBe("0");
+    expect(document.activeElement).toBe(opts[2]);
+  });
+
+  it("ArrowUp skips disabled rows during navigation", () => {
+    render(
+      <SelectableList label="Items">
+        <SelectableRow value="a">Alpha</SelectableRow>
+        <SelectableRow value="b" disabled>Beta</SelectableRow>
+        <SelectableRow value="c">Gamma</SelectableRow>
+      </SelectableList>,
+    );
+    const opts = screen.getAllByRole("option");
+    opts[2].focus();
+    fireEvent.keyDown(opts[2], { key: "ArrowUp" });
+    // Beta is disabled, should jump to Alpha
+    expect(opts[0].getAttribute("tabindex")).toBe("0");
+    expect(document.activeElement).toBe(opts[0]);
+  });
 });
