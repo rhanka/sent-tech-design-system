@@ -79,6 +79,22 @@ export const AppHeader = defineComponent({
     const resolvedDrawerId = props.drawerId ?? `st-appHeader-drawer-${++appHeaderIdCounter}`;
     return () => {
       const bar = h("div", { class: "st-appHeader__bar" }, [
+        // Logo SENT à GAUCHE (+ sous-titre).
+        slots.logo
+          ? h("div", { class: "st-appHeader__logo" }, slots.logo())
+          : null,
+        // Nav desktop + actions (masqués en mode compact).
+        !props.compact
+          ? h(
+              "nav",
+              { class: "st-appHeader__nav", "aria-label": "Primary" },
+              slots.nav?.(),
+            )
+          : null,
+        !props.compact
+          ? h("div", { class: "st-appHeader__actions" }, slots.actions?.())
+          : null,
+        // Burger à l'extrême DROITE en mode compact.
         props.compact
           ? h("div", { class: "st-appHeader__burger" }, [
               h(
@@ -95,16 +111,6 @@ export const AppHeader = defineComponent({
                 [props.menuOpen ? XIcon() : MenuIcon()],
               ),
             ])
-          : h(
-              "nav",
-              { class: "st-appHeader__nav", "aria-label": "Primary" },
-              slots.nav?.(),
-            ),
-        slots.logo
-          ? h("div", { class: "st-appHeader__logo" }, slots.logo())
-          : null,
-        !props.compact
-          ? h("div", { class: "st-appHeader__actions" }, slots.actions?.())
           : null,
       ]);
 

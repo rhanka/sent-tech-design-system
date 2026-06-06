@@ -20,15 +20,17 @@ describe("AppHeader", () => {
     expect(container.querySelector(".st-appHeader__burger")).toBeNull();
   });
 
-  it("shows the burger on the LEFT (calque) in compact mode and toggles", () => {
+  it("shows the burger on the RIGHT in compact mode and toggles", () => {
     const onMenuToggle = vi.fn();
-    const { container } = render(<AppHeader compact menuLabel="Menu" onMenuToggle={onMenuToggle} />);
+    const { container } = render(<AppHeader compact menuLabel="Menu" logo={<span>SENT</span>} onMenuToggle={onMenuToggle} />);
     const bar = container.querySelector(".st-appHeader__bar") as HTMLElement;
     const burger = container.querySelector(".st-appHeader__burger") as HTMLElement;
     const button = burger.querySelector("button") as HTMLButtonElement;
     expect(button.getAttribute("aria-label")).toBe("Menu");
     expect(button.getAttribute("aria-expanded")).toBe("false");
-    expect(bar.firstElementChild).toBe(burger);
+    // Burger must be the LAST child of the bar (i.e. on the right), logo first.
+    expect(bar.lastElementChild).toBe(burger);
+    expect(bar.firstElementChild).toBe(container.querySelector(".st-appHeader__logo"));
     expect(container.querySelector(".st-appHeader__nav")).toBeNull();
     expect(container.querySelector(".st-appHeader__actions")).toBeNull();
     fireEvent.click(button);

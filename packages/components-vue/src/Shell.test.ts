@@ -19,16 +19,19 @@ describe("AppHeader", () => {
     expect(wrapper.find(".st-appHeader__burger").exists()).toBe(false);
   });
 
-  it("shows the burger on the LEFT (calque) in compact mode and toggles", async () => {
+  it("shows the burger on the RIGHT in compact mode and toggles", async () => {
     const wrapper = mount(AppHeader, {
       props: { compact: true, menuLabel: "Menu" },
+      slots: { logo: () => h("span", "SENT") },
     });
     const bar = wrapper.find(".st-appHeader__bar");
     const burger = wrapper.find(".st-appHeader__burger");
     const button = burger.find("button");
     expect(button.attributes("aria-label")).toBe("Menu");
     expect(button.attributes("aria-expanded")).toBe("false");
-    expect((bar.element.firstElementChild as HTMLElement).classList.contains("st-appHeader__burger")).toBe(true);
+    // Burger must be the LAST child of the bar (i.e. on the right), logo first.
+    expect((bar.element.lastElementChild as HTMLElement).classList.contains("st-appHeader__burger")).toBe(true);
+    expect((bar.element.firstElementChild as HTMLElement).classList.contains("st-appHeader__logo")).toBe(true);
     expect(wrapper.find(".st-appHeader__nav").exists()).toBe(false);
     expect(wrapper.find(".st-appHeader__actions").exists()).toBe(false);
     await button.trigger("click");

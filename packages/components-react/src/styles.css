@@ -10793,7 +10793,7 @@
   align-items: center;
   display: flex;
   flex: 1 1 auto;
-  justify-content: flex-start;
+  justify-content: flex-end;
 }
 
 .st-appHeader__burgerButton {
