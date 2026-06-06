@@ -135,6 +135,8 @@
     CandlestickChart,
     CalendarHeatmapChart,
     BumpChart,
+    StepLineChart,
+    DivergentBarChart,
     FilterPill,
     FilterBar,
     SelectionChip
@@ -346,6 +348,8 @@
     CandlestickChart,
     CalendarHeatmapChart,
     BumpChart,
+    StepLineChart,
+    DivergentBarChart,
     FilterPill,
     FilterBar,
     SelectionChip
