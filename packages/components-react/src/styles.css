@@ -519,6 +519,54 @@
     opacity: 0.85;
   }
 
+  /* --- Analytical overlay layer --------------------------------------------
+     Bands sit BELOW the bars via render order; fill uses color-mix (a
+     semi-transparent tint of the tone token) instead of raw opacity, so the
+     bars drawn on top keep full contrast. */
+  .st-barChart__band {
+    fill: color-mix(in srgb, var(--st-overlay-tone, var(--st-semantic-border-strong)) 12%, transparent);
+    stroke: none;
+  }
+  .st-barChart__band--neutral { --st-overlay-tone: var(--st-semantic-border-strong); }
+  .st-barChart__band--success { --st-overlay-tone: var(--st-semantic-feedback-success); }
+  .st-barChart__band--warning { --st-overlay-tone: var(--st-semantic-feedback-warning); }
+  .st-barChart__band--error { --st-overlay-tone: var(--st-semantic-feedback-error); }
+  .st-barChart__band--info { --st-overlay-tone: var(--st-semantic-feedback-info); }
+
+  .st-barChart__refLine {
+    stroke: var(--st-overlay-tone, var(--st-semantic-border-strong));
+    stroke-width: 1;
+    stroke-dasharray: 4 3;
+  }
+  .st-barChart__refLine--neutral { --st-overlay-tone: var(--st-semantic-border-strong); }
+  .st-barChart__refLine--success { --st-overlay-tone: var(--st-semantic-feedback-success); }
+  .st-barChart__refLine--warning { --st-overlay-tone: var(--st-semantic-feedback-warning); }
+  .st-barChart__refLine--error { --st-overlay-tone: var(--st-semantic-feedback-error); }
+  .st-barChart__refLine--info { --st-overlay-tone: var(--st-semantic-feedback-info); }
+
+  .st-barChart__overlayLabel {
+    fill: var(--st-semantic-text-secondary);
+    font-size: 0.625rem;
+  }
+
+  /* Error bars — a value-axis whisker centred on each bar. */
+  .st-barChart__errorStem,
+  .st-barChart__errorCap {
+    stroke: var(--st-semantic-text-primary);
+    stroke-width: 1.25;
+  }
+
+  /* Goal line — drawn ABOVE the bars, emphasised (thicker, solid accent). */
+  .st-barChart__goalLine {
+    stroke: var(--st-semantic-feedback-success);
+    stroke-width: 2.5;
+  }
+  .st-barChart__goalLabel {
+    fill: var(--st-semantic-feedback-success);
+    font-size: 0.6875rem;
+    font-weight: 600;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .st-barChart__bar,
     .st-barChart__filterChip { transition: none; }
@@ -3405,6 +3453,54 @@
 
   .st-lineChart__tooltipValue {
     opacity: 0.85;
+  }
+
+  /* --- Analytical overlay layer --------------------------------------------
+     Bands sit BELOW the data via render order; their fill uses color-mix (a
+     semi-transparent tint of the tone token) rather than raw opacity, so the
+     data series drawn on top keeps full contrast. */
+  .st-lineChart__band {
+    fill: color-mix(in srgb, var(--st-overlay-tone, var(--st-semantic-border-strong)) 12%, transparent);
+    stroke: none;
+  }
+  .st-lineChart__band--neutral { --st-overlay-tone: var(--st-semantic-border-strong); }
+  .st-lineChart__band--success { --st-overlay-tone: var(--st-semantic-feedback-success); }
+  .st-lineChart__band--warning { --st-overlay-tone: var(--st-semantic-feedback-warning); }
+  .st-lineChart__band--error { --st-overlay-tone: var(--st-semantic-feedback-error); }
+  .st-lineChart__band--info { --st-overlay-tone: var(--st-semantic-feedback-info); }
+
+  .st-lineChart__refLine {
+    stroke: var(--st-overlay-tone, var(--st-semantic-border-strong));
+    stroke-width: 1;
+    stroke-dasharray: 4 3;
+  }
+  .st-lineChart__refLine--neutral { --st-overlay-tone: var(--st-semantic-border-strong); }
+  .st-lineChart__refLine--success { --st-overlay-tone: var(--st-semantic-feedback-success); }
+  .st-lineChart__refLine--warning { --st-overlay-tone: var(--st-semantic-feedback-warning); }
+  .st-lineChart__refLine--error { --st-overlay-tone: var(--st-semantic-feedback-error); }
+  .st-lineChart__refLine--info { --st-overlay-tone: var(--st-semantic-feedback-info); }
+
+  .st-lineChart__overlayLabel {
+    fill: var(--st-semantic-text-secondary);
+    font-size: 0.625rem;
+  }
+
+  .st-lineChart__trend {
+    stroke: var(--st-semantic-text-secondary);
+    stroke-width: 1.5;
+    stroke-dasharray: 6 4;
+    opacity: 0.85;
+  }
+
+  /* Goal line — drawn ABOVE the data, emphasised (thicker, solid accent). */
+  .st-lineChart__goalLine {
+    stroke: var(--st-semantic-feedback-success);
+    stroke-width: 2.5;
+  }
+  .st-lineChart__goalLabel {
+    fill: var(--st-semantic-feedback-success);
+    font-size: 0.6875rem;
+    font-weight: 600;
   }
 
 .st-link {
