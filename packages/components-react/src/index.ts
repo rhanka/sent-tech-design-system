@@ -307,6 +307,10 @@ export { StepLineChart } from "./StepLineChart.js";
 export type { StepLineChartProps, StepLineChartDatum, StepLineChartTone } from "./StepLineChart.js";
 export { DivergentBarChart } from "./DivergentBarChart.js";
 export type { DivergentBarChartProps, DivergentBarChartDatum, DivergentBarChartTone } from "./DivergentBarChart.js";
+export { ChordDiagram } from "./ChordDiagram.js";
+export type { ChordDiagramProps, ChordDiagramFlow, ChordDiagramTone } from "./ChordDiagram.js";
+export { PackedBubblesChart } from "./PackedBubblesChart.js";
+export type { PackedBubblesChartProps, PackedBubblesChartDatum, PackedBubblesChartTone } from "./PackedBubblesChart.js";
 export { MarimekkoChart } from "./MarimekkoChart.js";
 export type {
   MarimekkoChartProps,
