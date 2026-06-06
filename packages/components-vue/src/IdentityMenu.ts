@@ -1,4 +1,4 @@
-import { defineComponent, h, onBeforeUnmount, ref, watch } from "vue";
+import { computed, defineComponent, h, nextTick, onBeforeUnmount, ref, watch } from "vue";
 import { classNames } from "./classNames.js";
 
 export type IdentityUser = {
@@ -10,6 +10,11 @@ export type IdentityUser = {
 export type IdentityMenuProps = {
   user?: IdentityUser | null;
   isAuthenticated?: boolean;
+  /**
+   * État ouvert du dropdown (optionnellement contrôlé). Si fourni, le parent
+   * contrôle ; sinon le composant gère un état interne. Aligné sur les 3 fw.
+   */
+  open?: boolean;
   devicesHref?: string;
   settingsHref?: string;
   loginLabel?: string;
@@ -54,6 +59,8 @@ export const IdentityMenu = defineComponent({
   props: {
     user: { type: Object as () => IdentityUser | null, default: null },
     isAuthenticated: { type: Boolean, default: false },
+    // `default: undefined` permet de distinguer contrôlé / non-contrôlé.
+    open: { type: Boolean, default: undefined },
     devicesHref: { type: String, default: "#" },
     settingsHref: { type: String, default: "#" },
     loginLabel: { type: String, default: "Se connecter" },
@@ -63,22 +70,41 @@ export const IdentityMenu = defineComponent({
     variant: { type: String as () => "dropdown" | "accordion", default: "dropdown" },
     class: { type: String, default: undefined },
   },
-  emits: ["login", "logout"],
+  // `openChange` notifie le parent (pattern contrôlé/non-contrôlé, aligné 3 fw).
+  // `update:open` permet aussi un v-model:open idiomatique côté Vue.
+  emits: ["login", "logout", "openChange", "update:open"],
   setup(props, { emit }) {
-    const open = ref(false);
+    // Pattern contrôlé/non-contrôlé, IDENTIQUE aux 3 fw : si `open` est fourni
+    // en prop, le parent contrôle ; sinon un état interne prend le relais.
+    const internalOpen = ref(false);
+    const isOpen = computed(() => (props.open === undefined ? internalOpen.value : props.open));
+    const setOpen = (next: boolean) => {
+      if (props.open === undefined) internalOpen.value = next;
+      emit("openChange", next);
+      emit("update:open", next);
+    };
+
     const rootEl = ref<HTMLElement | null>(null);
     const triggerEl = ref<HTMLButtonElement | null>(null);
+    // Quel item focuser à la prochaine ouverture : "first" (défaut) ou "last".
+    let pendingFocus: "first" | "last" = "first";
 
     const onPointerDown = (event: PointerEvent) => {
       const target = event.target as Node | null;
-      if (open.value && rootEl.value && target && !rootEl.value.contains(target)) {
-        open.value = false;
+      if (isOpen.value && rootEl.value && target && !rootEl.value.contains(target)) {
+        // Clic extérieur : ferme ET restaure le focus sur le trigger.
+        setOpen(false);
+        triggerEl.value?.focus();
       }
     };
 
-    watch(open, (value) => {
+    watch(isOpen, (value) => {
       if (value) {
         document.addEventListener("pointerdown", onPointerDown);
+        // À l'ouverture : focus le 1er item (ou le dernier sur ArrowUp).
+        const which = pendingFocus;
+        void nextTick(() => focusItem(which === "last" ? -1 : 0));
+        pendingFocus = "first";
       } else {
         document.removeEventListener("pointerdown", onPointerDown);
       }
@@ -96,19 +122,25 @@ export const IdentityMenu = defineComponent({
       items[((index % len) + len) % len]?.focus();
     };
     const closeAndFocusTrigger = () => {
-      open.value = false;
+      setOpen(false);
       triggerEl.value?.focus();
     };
 
     const onTriggerKeyDown = (event: KeyboardEvent) => {
       if (event.key === "ArrowDown" || event.key === "Enter" || event.key === " ") {
         event.preventDefault();
-        open.value = true;
-        queueMicrotask(() => focusItem(0));
+        pendingFocus = "first";
+        if (isOpen.value) void nextTick(() => focusItem(0));
+        else setOpen(true);
       } else if (event.key === "ArrowUp") {
         event.preventDefault();
-        open.value = true;
-        queueMicrotask(() => focusItem(-1));
+        pendingFocus = "last";
+        if (isOpen.value) void nextTick(() => focusItem(-1));
+        else setOpen(true);
+      } else if (event.key === "Escape" && isOpen.value) {
+        // Esc ferme aussi depuis le trigger (global au composant ouvert).
+        event.preventDefault();
+        closeAndFocusTrigger();
       }
     };
     const onMenuKeyDown = (event: KeyboardEvent) => {
@@ -126,10 +158,27 @@ export const IdentityMenu = defineComponent({
       } else if (event.key === "End") {
         event.preventDefault();
         focusItem(items.length - 1);
+      } else if (event.key === "Tab") {
+        // Piège de focus : Tab/Shift+Tab bouclent DANS le menu.
+        if (!items.length) return;
+        event.preventDefault();
+        focusItem(current + (event.shiftKey ? -1 : 1));
       } else if (event.key === "Escape") {
         event.preventDefault();
         closeAndFocusTrigger();
       }
+    };
+    // Enter/Space activent l'item courant. Sur un <a>, on suit le href via un
+    // clic natif (preventDefault sur Space pour éviter le scroll).
+    const onItemKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        (event.currentTarget as HTMLElement).click();
+      }
+    };
+    const selectAndClose = () => {
+      setOpen(false);
+      triggerEl.value?.focus();
     };
 
     return () => {
@@ -170,9 +219,9 @@ export const IdentityMenu = defineComponent({
               ref: triggerEl,
               class: "st-identityMenu__trigger",
               "aria-haspopup": "menu",
-              "aria-expanded": open.value ? "true" : "false",
+              "aria-expanded": isOpen.value ? "true" : "false",
               "aria-label": `Compte de ${displayName}`,
-              onClick: () => (open.value = !open.value),
+              onClick: () => setOpen(!isOpen.value),
               onKeydown: onTriggerKeyDown,
             },
             [
@@ -187,10 +236,10 @@ export const IdentityMenu = defineComponent({
                   ? h("span", { class: "st-identityMenu__email" }, user.email)
                   : null,
               ]),
-              ChevronDownIcon(open.value),
+              ChevronDownIcon(isOpen.value),
             ],
           ),
-          open.value
+          isOpen.value
             ? h(
                 "div",
                 {
@@ -208,7 +257,8 @@ export const IdentityMenu = defineComponent({
                       class: "st-identityMenu__item",
                       role: "menuitem",
                       tabindex: "-1",
-                      onClick: () => (open.value = false),
+                      onClick: selectAndClose,
+                      onKeydown: onItemKeyDown,
                     },
                     props.devicesLabel,
                   ),
@@ -219,7 +269,8 @@ export const IdentityMenu = defineComponent({
                       class: "st-identityMenu__item",
                       role: "menuitem",
                       tabindex: "-1",
-                      onClick: () => (open.value = false),
+                      onClick: selectAndClose,
+                      onKeydown: onItemKeyDown,
                     },
                     props.settingsLabel,
                   ),
@@ -236,7 +287,8 @@ export const IdentityMenu = defineComponent({
                       role: "menuitem",
                       tabindex: "-1",
                       onClick: () => {
-                        open.value = false;
+                        setOpen(false);
+                        triggerEl.value?.focus();
                         emit("logout");
                       },
                     },

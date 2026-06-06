@@ -1,5 +1,5 @@
 import { fireEvent, render } from "@testing-library/svelte";
-import { createRawSnippet } from "svelte";
+import { createRawSnippet, tick } from "svelte";
 import { describe, expect, it, vi } from "vitest";
 import AppHeader from "./lib/AppHeader.svelte";
 import LanguageToggle from "./lib/LanguageToggle.svelte";
@@ -52,6 +52,25 @@ describe("AppHeader", () => {
     expect(drawer.textContent).toContain("drawer-content");
     expect(container.querySelector("button.st-appHeader__burgerButton")?.getAttribute("aria-expanded")).toBe("true");
   });
+
+  it("wires aria-controls (burger) to the drawer id (a11y)", () => {
+    const { container } = render(AppHeader, {
+      props: { compact: true, menuOpen: true, drawer: snippet("drawer-content") },
+    });
+    const button = container.querySelector("button.st-appHeader__burgerButton") as HTMLButtonElement;
+    const drawer = container.querySelector(".st-appHeader__drawer") as HTMLElement;
+    const controls = button.getAttribute("aria-controls");
+    expect(controls).toBeTruthy();
+    expect(drawer.id).toBe(controls);
+  });
+
+  it("honours a provided drawerId on both burger and drawer", () => {
+    const { container } = render(AppHeader, {
+      props: { compact: true, menuOpen: true, drawerId: "my-drawer", drawer: snippet("x") },
+    });
+    expect(container.querySelector("button.st-appHeader__burgerButton")?.getAttribute("aria-controls")).toBe("my-drawer");
+    expect((container.querySelector(".st-appHeader__drawer") as HTMLElement).id).toBe("my-drawer");
+  });
 });
 
 describe("LanguageToggle", () => {
@@ -85,6 +104,26 @@ describe("LanguageToggle", () => {
     await fireEvent.click(container.querySelector(".st-languageToggle__accordionTrigger") as HTMLButtonElement);
     await fireEvent.click(getByText("EN"));
     expect(onLocaleChange).toHaveBeenCalledWith("en");
+  });
+
+  it("associates a <label for> with the <select> (a11y)", () => {
+    const { container } = render(LanguageToggle, {
+      props: { locale: "fr", label: "Choisir la langue" },
+    });
+    const select = container.querySelector("select.st-languageToggle__select") as HTMLSelectElement;
+    const label = container.querySelector("label.st-languageToggle__srLabel") as HTMLLabelElement;
+    expect(select.id).toBeTruthy();
+    expect(label).toBeTruthy();
+    expect(label.getAttribute("for")).toBe(select.id);
+    expect(label.textContent).toBe("Choisir la langue");
+  });
+
+  it("honours a provided selectId on both label and select", () => {
+    const { container } = render(LanguageToggle, {
+      props: { locale: "fr", selectId: "lang-sel" },
+    });
+    expect((container.querySelector("select") as HTMLSelectElement).id).toBe("lang-sel");
+    expect((container.querySelector("label.st-languageToggle__srLabel") as HTMLLabelElement).getAttribute("for")).toBe("lang-sel");
   });
 });
 
@@ -163,5 +202,102 @@ describe("IdentityMenu", () => {
     const menu = container.querySelector('[role="menu"]') as HTMLElement;
     await fireEvent.keyDown(menu, { key: "Escape" });
     expect(trigger.getAttribute("aria-expanded")).toBe("false");
+  });
+
+  it("focuses the first item on open (ArrowDown)", async () => {
+    const { container } = render(IdentityMenu, { props: { user, isAuthenticated: true } });
+    const trigger = container.querySelector(".st-identityMenu__trigger") as HTMLButtonElement;
+    await fireEvent.keyDown(trigger, { key: "ArrowDown" });
+    await tick();
+    // Laisse passer la microtâche qui pose le focus (queueMicrotask).
+    await new Promise<void>((resolve) => queueMicrotask(resolve));
+    const items = Array.from(container.querySelectorAll<HTMLElement>('[role="menuitem"]'));
+    expect(document.activeElement).toBe(items[0]);
+  });
+
+  it.each(["Enter", " "])("activates a link item with %s (Space too)", async (key) => {
+    const { container } = render(IdentityMenu, {
+      props: { user, isAuthenticated: true, devicesHref: "/auth/devices" },
+    });
+    await fireEvent.click(container.querySelector(".st-identityMenu__trigger") as HTMLButtonElement);
+    const devices = container.querySelector('a[role="menuitem"]') as HTMLAnchorElement;
+    const clicked = vi.fn();
+    devices.addEventListener("click", clicked);
+    await fireEvent.keyDown(devices, { key });
+    // Enter ET Space déclenchent un clic natif sur le <a role=menuitem>.
+    expect(clicked).toHaveBeenCalledTimes(1);
+  });
+
+  it("traps focus with Tab / Shift+Tab inside the menu", async () => {
+    const { container } = render(IdentityMenu, { props: { user, isAuthenticated: true } });
+    await fireEvent.click(container.querySelector(".st-identityMenu__trigger") as HTMLButtonElement);
+    const menu = container.querySelector('[role="menu"]') as HTMLElement;
+    const items = Array.from(container.querySelectorAll<HTMLElement>('[role="menuitem"]'));
+    // Focus last item then Tab → wraps to first.
+    items[items.length - 1].focus();
+    await fireEvent.keyDown(menu, { key: "Tab" });
+    expect(document.activeElement).toBe(items[0]);
+    // Shift+Tab from first → wraps to last.
+    await fireEvent.keyDown(menu, { key: "Tab", shiftKey: true });
+    expect(document.activeElement).toBe(items[items.length - 1]);
+  });
+
+  it("closes from the trigger with Escape (global to the open component)", async () => {
+    const { container } = render(IdentityMenu, { props: { user, isAuthenticated: true } });
+    const trigger = container.querySelector(".st-identityMenu__trigger") as HTMLButtonElement;
+    await fireEvent.click(trigger);
+    expect(trigger.getAttribute("aria-expanded")).toBe("true");
+    await fireEvent.keyDown(trigger, { key: "Escape" });
+    expect(trigger.getAttribute("aria-expanded")).toBe("false");
+  });
+
+  it("restores focus to the trigger when closing via Escape", async () => {
+    const { container } = render(IdentityMenu, { props: { user, isAuthenticated: true } });
+    const trigger = container.querySelector(".st-identityMenu__trigger") as HTMLButtonElement;
+    await fireEvent.click(trigger);
+    const menu = container.querySelector('[role="menu"]') as HTMLElement;
+    await fireEvent.keyDown(menu, { key: "Escape" });
+    expect(document.activeElement).toBe(trigger);
+  });
+
+  it("restores focus to the trigger after selecting an item", async () => {
+    const { container } = render(IdentityMenu, { props: { user, isAuthenticated: true } });
+    const trigger = container.querySelector(".st-identityMenu__trigger") as HTMLButtonElement;
+    await fireEvent.click(trigger);
+    const devices = container.querySelector('a[role="menuitem"]') as HTMLAnchorElement;
+    await fireEvent.click(devices);
+    expect(trigger.getAttribute("aria-expanded")).toBe("false");
+    expect(document.activeElement).toBe(trigger);
+  });
+
+  it("closes on outside click and restores focus to the trigger", async () => {
+    const { container } = render(IdentityMenu, { props: { user, isAuthenticated: true } });
+    const trigger = container.querySelector(".st-identityMenu__trigger") as HTMLButtonElement;
+    await fireEvent.click(trigger);
+    expect(trigger.getAttribute("aria-expanded")).toBe("true");
+    await fireEvent.pointerDown(document.body);
+    expect(trigger.getAttribute("aria-expanded")).toBe("false");
+    expect(document.activeElement).toBe(trigger);
+  });
+
+  it("supports a controlled open + onOpenChange (controlled/uncontrolled pattern)", async () => {
+    const onOpenChange = vi.fn();
+    const { container } = render(IdentityMenu, {
+      props: { user, isAuthenticated: true, open: false, onOpenChange },
+    });
+    const trigger = container.querySelector(".st-identityMenu__trigger") as HTMLButtonElement;
+    // Controlled closed → menu absent.
+    expect(container.querySelector('[role="menu"]')).toBeNull();
+    await fireEvent.click(trigger);
+    // Parent is notified; the component does not flip itself while controlled.
+    expect(onOpenChange).toHaveBeenCalledWith(true);
+  });
+
+  it("reflects a controlled open=true by rendering the menu", () => {
+    const { container } = render(IdentityMenu, {
+      props: { user, isAuthenticated: true, open: true },
+    });
+    expect(container.querySelector('[role="menu"]')).toBeTruthy();
+    expect(container.querySelector(".st-identityMenu__trigger")?.getAttribute("aria-expanded")).toBe("true");
   });
 });

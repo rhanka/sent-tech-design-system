@@ -1,6 +1,12 @@
 <script lang="ts" module>
   export type LanguageToggleLocale = "fr" | "en";
 
+  // Compteur module pour un id de <select> stable, déterministe et SSR-safe.
+  let languageToggleIdCounter = 0;
+  function nextLanguageToggleId(): number {
+    return ++languageToggleIdCounter;
+  }
+
   export interface LanguageToggleProps {
     /** Langue courante (contrôlé). */
     locale?: LanguageToggleLocale;
@@ -10,8 +16,10 @@
     frLabel?: string;
     /** Libellé EN (i18n-agnostique : fourni par le parent). */
     enLabel?: string;
-    /** aria-label du sélecteur. */
+    /** Libellé du sélecteur (associé via <label for> + aria-label). */
     label?: string;
+    /** Id du <select> ; auto-généré et stable si non fourni. */
+    selectId?: string;
     /**
      * Variante d'affichage :
      * - `select` (défaut) : le <select> de la source (header desktop).
@@ -25,6 +33,7 @@
 </script>
 
 <script lang="ts">
+  import { untrack } from "svelte";
   import { ChevronDown } from "@lucide/svelte";
 
   let {
@@ -33,10 +42,16 @@
     frLabel = "FR",
     enLabel = "EN",
     label = "Langue",
+    selectId,
     variant = "select",
     accordionLabel = "Langue",
     class: className,
   }: LanguageToggleProps = $props();
+
+  // Capturé une seule fois (untrack) : un id stable ne doit pas réagir.
+  const resolvedSelectId = untrack(
+    () => selectId ?? `st-languageToggle-${nextLanguageToggleId()}`,
+  );
 
   let open = $state(false);
 
@@ -91,7 +106,9 @@
     {/if}
   </div>
 {:else}
+  <label class="st-languageToggle__srLabel" for={resolvedSelectId}>{label}</label>
   <select
+    id={resolvedSelectId}
     class={`st-languageToggle__select${className ? ` ${className}` : ""}`}
     value={locale}
     aria-label={label}
@@ -105,6 +122,19 @@
 <style>
   .st-languageToggle {
     width: 100%;
+  }
+
+  /* Label associé au <select>, masqué visuellement (a11y : <label for>). */
+  .st-languageToggle__srLabel {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
   }
 
   /* Variante <select> — calque du <select> source (header desktop). */
