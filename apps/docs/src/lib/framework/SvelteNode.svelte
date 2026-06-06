@@ -139,7 +139,10 @@
     DivergentBarChart,
     FilterPill,
     FilterBar,
-    SelectionChip
+    SelectionChip,
+    LollipopChart,
+    ParetoChart,
+    RangeSlider
   } from "@sentropic/design-system-svelte";
   import Self from "./SvelteNode.svelte";
   import { createRawSnippet, type Component, type Snippet } from "svelte";
@@ -352,7 +355,10 @@
     DivergentBarChart,
     FilterPill,
     FilterBar,
-    SelectionChip
+    SelectionChip,
+    LollipopChart,
+    ParetoChart,
+    RangeSlider
   } as unknown as Record<ComponentName, Component<Record<string, unknown>>>;
 
   let { node }: { node: NodeSpec } = $props();

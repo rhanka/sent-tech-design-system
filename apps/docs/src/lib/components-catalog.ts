@@ -270,6 +270,16 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "RangeSlider",
+    slug: "range-slider",
+    status: "documented",
+    category: "form",
+    description: {
+      fr: "Curseur à deux poignées pour sélectionner une plage de valeurs.",
+      en: "Two-handle slider for selecting a value range."
+    }
+  },
+  {
     name: "Switch",
     slug: "switch",
     status: "documented",
@@ -1004,6 +1014,26 @@ export const COMPONENTS: ComponentEntry[] = [
     description: {
       fr: "Boîtes à moustaches pour comparer des distributions et leurs valeurs atypiques.",
       en: "Box plots for comparing distributions and outliers."
+    }
+  },
+  {
+    name: "LollipopChart",
+    slug: "lollipop-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Diagramme en sucette : tige fine et pastille pour comparer des valeurs par catégorie.",
+      en: "Lollipop chart: thin stems and dots to compare values across categories."
+    }
+  },
+  {
+    name: "ParetoChart",
+    slug: "pareto-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Barres triées décroissantes avec courbe cumulée en pourcentage (loi de Pareto).",
+      en: "Descending bars with a cumulative percentage curve (Pareto principle)."
     }
   },
   {

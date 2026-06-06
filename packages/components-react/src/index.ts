@@ -168,6 +168,8 @@ export { SkipLink } from "./SkipLink.js";
 export type { SkipLinkProps } from "./SkipLink.js";
 export { Slider } from "./Slider.js";
 export type { SliderProps } from "./Slider.js";
+export { RangeSlider } from "./RangeSlider.js";
+export type { RangeSliderProps, RangeSliderSize } from "./RangeSlider.js";
 export { Sparkline } from "./Sparkline.js";
 export type { SparklineProps, SparklineTone } from "./Sparkline.js";
 export { StackedBarChart } from "./StackedBarChart.js";

@@ -104,6 +104,8 @@ export { SkipLink } from "./SkipLink.js";
 export type { SkipLinkProps } from "./SkipLink.js";
 export { Slider } from "./Slider.js";
 export type { SliderProps, SliderSize } from "./Slider.js";
+export { RangeSlider } from "./RangeSlider.js";
+export type { RangeSliderProps, RangeSliderSize } from "./RangeSlider.js";
 export { StructuredList } from "./StructuredList.js";
 export type { StructuredListProps, StructuredListItem } from "./StructuredList.js";
 export { Switch } from "./Switch.js";
