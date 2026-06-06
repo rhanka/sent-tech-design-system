@@ -60,7 +60,7 @@
 
   // --- Row registry: ordered by DOM position so arrow nav matches the visual
   //     order regardless of registration timing. -------------------------------
-  type Entry = { el: HTMLElement; value: string | undefined };
+  type Entry = { el: HTMLElement; value: string | undefined; disabled?: boolean };
   let entries = $state<Entry[]>([]);
 
   // The element that currently holds the roving tab stop (tabindex 0). Null until
@@ -79,9 +79,14 @@
   // register/unregister are called from each row's $effect. They read AND write
   // `entries`, so the read must be untracked — otherwise the calling effect would
   // subscribe to `entries`, and writing it would re-run the effect forever.
-  function register(el: HTMLElement, rowValue: string | undefined): () => void {
+  // Disabled rows are registered with disabled:true so navigate() can skip them
+  // explicitly, making the skip correct even when disabled state changes mid-session.
+  function register(el: HTMLElement, rowValue: string | undefined, rowDisabled = false): () => void {
     untrack(() => {
-      entries = sortByDom([...entries.filter((e) => e.el !== el), { el, value: rowValue }]);
+      entries = sortByDom([
+        ...entries.filter((e) => e.el !== el),
+        { el, value: rowValue, disabled: rowDisabled }
+      ]);
     });
     return () => {
       untrack(() => {
@@ -91,8 +96,30 @@
     };
   }
 
-  // Default roving stop = first registered (DOM-ordered) row when none focused.
-  const effectiveTabStop = $derived(tabStopEl ?? entries[0]?.el ?? null);
+  // Default roving stop = first non-disabled DOM-ordered row when none focused,
+  // or when the current tabStopEl has become disabled.
+  const effectiveTabStop = $derived.by((): HTMLElement | null => {
+    if (tabStopEl) {
+      const entry = entries.find((e) => e.el === tabStopEl);
+      if (entry && !entry.disabled) return tabStopEl;
+    }
+    return entries.find((e) => !e.disabled)?.el ?? null;
+  });
+
+  // Si la row qui détient le focus DOM devient disabled (in-place, sans unmount),
+  // transférer le focus vers la nouvelle cible de roving tabindex.
+  // Note : le cas du cycle unregister/register est géré dans SelectableRow via
+  // l'$effect sur `disabled` qui appelle navigate() AVANT le cleanup.
+  $effect(() => {
+    const newStop = effectiveTabStop;
+    if (!newStop) return;
+    if (tabStopEl !== null) {
+      const disabledEntry = entries.find((e) => e.el === tabStopEl && e.disabled);
+      if (disabledEntry && tabStopEl.contains(document.activeElement ?? null)) {
+        newStop.focus();
+      }
+    }
+  });
 
   function valueOf(el: HTMLElement): string | undefined {
     return entries.find((e) => e.el === el)?.value;
@@ -137,13 +164,34 @@
     if (entries.length === 0) return;
     const idx = entries.findIndex((e) => e.el === el);
     if (idx === -1) return;
-    let targetIdx = idx;
-    if (key === "ArrowDown" || key === "ArrowRight") targetIdx = idx + 1;
-    else if (key === "ArrowUp" || key === "ArrowLeft") targetIdx = idx - 1;
-    else if (key === "Home") targetIdx = 0;
-    else if (key === "End") targetIdx = entries.length - 1;
-    // Clamp (no wrap) so Home/End and arrows stay within bounds.
-    targetIdx = Math.max(0, Math.min(entries.length - 1, targetIdx));
+
+    let targetIdx: number | null = null;
+
+    if (key === "ArrowDown" || key === "ArrowRight") {
+      // Walk forward from current position, find the next non-disabled entry.
+      for (let i = idx + 1; i < entries.length; i++) {
+        if (!entries[i].disabled) { targetIdx = i; break; }
+      }
+    } else if (key === "ArrowUp" || key === "ArrowLeft") {
+      // Walk backward from current position, find the previous non-disabled entry.
+      for (let i = idx - 1; i >= 0; i--) {
+        if (!entries[i].disabled) { targetIdx = i; break; }
+      }
+    } else if (key === "Home") {
+      // First non-disabled entry.
+      for (let i = 0; i < entries.length; i++) {
+        if (!entries[i].disabled) { targetIdx = i; break; }
+      }
+    } else if (key === "End") {
+      // Last non-disabled entry.
+      for (let i = entries.length - 1; i >= 0; i--) {
+        if (!entries[i].disabled) { targetIdx = i; break; }
+      }
+    }
+
+    // If no target found (all remaining are disabled, or already at boundary), stay put.
+    if (targetIdx === null) return;
+
     const target = entries[targetIdx]?.el;
     if (target) {
       tabStopEl = target;
