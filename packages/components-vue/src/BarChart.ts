@@ -32,9 +32,12 @@ export type BarChartProps = {
    */
   selectedKeys?: string[];
   /**
-   * Called when a bar is clicked / activated (Enter / Space) with the bar's
-   * key (its `label`). When provided the bars become focusable buttons; when
-   * omitted the chart is purely presentational (no interactivity, unchanged).
+   * Called with the bar's key (its `label`) when the user selects it. When
+   * provided, an ACCESSIBLE row of filter chips (real <button>s) is rendered
+   * OUTSIDE the aria-hidden SVG — that is the keyboard + screen-reader surface.
+   * The SVG bars themselves stay decorative (aria-hidden) and only offer a
+   * mouse click shortcut for sighted pointer users. When omitted the chart is
+   * purely presentational (no interactivity, unchanged).
    */
   onSelect?: (key: string) => void;
   class?: string;
@@ -68,14 +71,6 @@ export const BarChart = defineComponent({
       }
       const index = Number(target.getAttribute("data-chart-index"));
       hoveredIndex.value = Number.isInteger(index) ? index : null;
-    }
-
-    function handleBarKeydown(key: string, event: KeyboardEvent) {
-      if (event.key === "Enter" || event.key === " ") {
-        // preventDefault on Space so it activates rather than scrolling the page.
-        event.preventDefault();
-        props.onSelect?.(key);
-      }
     }
 
     return () => {
@@ -199,6 +194,10 @@ export const BarChart = defineComponent({
             ),
       );
 
+      // The bars live inside an aria-hidden SVG, so they are NEVER an accessible
+      // surface. When `onSelect` is provided they only carry a mouse click
+      // shortcut (cursor:pointer) for sighted pointer users — keyboard + screen
+      // readers use the filter-chip buttons rendered below, outside this SVG.
       const barRects = bars.map((bar, i) => {
         const isSelected = selectedSet.has(bar.datum.label);
         return h("rect", {
@@ -216,14 +215,39 @@ export const BarChart = defineComponent({
           height: bar.height,
           rx: "2",
           "data-chart-index": i,
-          role: interactive ? "button" : undefined,
-          tabindex: interactive ? 0 : undefined,
-          "aria-pressed": interactive ? (isSelected ? "true" : "false") : undefined,
-          "aria-label": interactive ? `${bar.datum.label}: ${bar.datum.value}` : undefined,
           onClick: interactive ? () => props.onSelect?.(bar.datum.label) : undefined,
-          onKeydown: interactive ? (e: KeyboardEvent) => handleBarKeydown(bar.datum.label, e) : undefined,
         });
       });
+
+      // Accessible selection surface — real <button>s OUTSIDE the aria-hidden
+      // SVG. This is the keyboard + screen-reader path for filtering.
+      const filterGroup = interactive
+        ? h(
+            "div",
+            { class: "st-barChart__filters", role: "group", "aria-label": `Filtrer par ${label}` },
+            bars.map((bar) => {
+              const isSelected = selectedSet.has(bar.datum.label);
+              return h(
+                "button",
+                {
+                  key: `f${bar.datum.label}`,
+                  type: "button",
+                  class: classNames(
+                    "st-barChart__filterChip",
+                    `st-barChart__filterChip--${bar.tone}`,
+                    isSelected && "st-barChart__filterChip--selected",
+                  ),
+                  "aria-pressed": isSelected ? "true" : "false",
+                  onClick: () => props.onSelect?.(bar.datum.label),
+                },
+                [
+                  h("span", { class: "st-barChart__filterSwatch", "aria-hidden": "true" }),
+                  `${bar.datum.label}: ${bar.datum.value}`,
+                ],
+              );
+            }),
+          )
+        : null;
 
       const hoveredBar = hoveredIndex.value !== null ? bars[hoveredIndex.value] : undefined;
 
@@ -258,6 +282,7 @@ export const BarChart = defineComponent({
             ),
           ],
         ),
+        filterGroup,
         chartDataList(label, dataValueItems),
         hoveredBar
           ? h(
