@@ -10,8 +10,18 @@
     user?: IdentityUser | null;
     /** État d'authentification (contrôlé : aucun état auth interne). */
     isAuthenticated?: boolean;
-    /** État ouvert du dropdown (optionnellement contrôlé). */
+    /**
+     * État ouvert du dropdown (optionnellement contrôlé). Si fourni, le
+     * composant suit la valeur du parent ; sinon il gère un état interne.
+     * Reste $bindable pour l'idiome Svelte.
+     */
     open?: boolean;
+    /**
+     * Notifié à chaque demande de changement d'état ouvert (pattern
+     * contrôlé/non-contrôlé, aligné React/Vue). Le composant met aussi à jour
+     * `open` (bindable) quand il est non contrôlé.
+     */
+    onOpenChange?: (open: boolean) => void;
     /** Notifié au clic « Se connecter ». */
     onLogin?: () => void;
     /** Notifié au clic « Se déconnecter ». */
@@ -50,7 +60,8 @@
   let {
     user = null,
     isAuthenticated = false,
-    open = $bindable(false),
+    open = $bindable(),
+    onOpenChange,
     onLogin,
     onLogout,
     devicesHref = "#",
@@ -65,6 +76,20 @@
 
   let root: HTMLDivElement | undefined = $state();
   let triggerEl: HTMLButtonElement | undefined = $state();
+
+  // Pattern contrôlé/non-contrôlé, IDENTIQUE aux 3 fw : si `open` est fourni en
+  // prop, le parent contrôle ; sinon un état interne prend le relais.
+  let internalOpen = $state(false);
+  const isOpen = $derived(open ?? internalOpen);
+  // Quel item focuser à la prochaine ouverture : "first" (défaut) ou "last"
+  // (ArrowUp depuis le trigger). Lu par l'$effect d'ouverture.
+  let pendingFocus: "first" | "last" = "first";
+
+  function setOpen(next: boolean) {
+    if (open === undefined) internalOpen = next;
+    else open = next; // bindable : reflète aussi côté parent en mode contrôlé
+    onOpenChange?.(next);
+  }
 
   const classes = () => ["st-identityMenu", className].filter(Boolean).join(" ");
   const initial = $derived(identityInitial(user));
@@ -85,25 +110,33 @@
   }
 
   function toggle() {
-    open = !open;
+    setOpen(!isOpen);
   }
 
   function closeAndFocusTrigger() {
-    open = false;
+    setOpen(false);
     triggerEl?.focus();
   }
 
   function onTriggerKeydown(event: KeyboardEvent) {
     if (event.key === "ArrowDown" || event.key === "Enter" || event.key === " ") {
       event.preventDefault();
-      if (!open) open = true;
-      queueMicrotask(() => focusItem(0));
+      pendingFocus = "first";
+      if (!isOpen) setOpen(true);
+      else queueMicrotask(() => focusItem(0));
       return;
     }
     if (event.key === "ArrowUp") {
       event.preventDefault();
-      if (!open) open = true;
-      queueMicrotask(() => focusItem(-1));
+      pendingFocus = "last";
+      if (!isOpen) setOpen(true);
+      else queueMicrotask(() => focusItem(-1));
+      return;
+    }
+    if (event.key === "Escape" && isOpen) {
+      // Esc ferme aussi depuis le trigger (global au composant ouvert).
+      event.preventDefault();
+      closeAndFocusTrigger();
     }
   }
 
@@ -130,21 +163,57 @@
       focusItem(items.length - 1);
       return;
     }
+    if (event.key === "Tab") {
+      // Piège de focus : Tab/Shift+Tab bouclent DANS le menu.
+      if (!items.length) return;
+      event.preventDefault();
+      focusItem(current + (event.shiftKey ? -1 : 1));
+      return;
+    }
     if (event.key === "Escape") {
       event.preventDefault();
       closeAndFocusTrigger();
     }
   }
 
+  // Enter/Space activent l'item courant. Sur un <a>, on suit le href en
+  // déclenchant un clic natif (preventDefault sur Space pour éviter le scroll).
+  function onItemKeydown(event: KeyboardEvent) {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      (event.currentTarget as HTMLElement).click();
+    }
+  }
+
+  function selectAndClose() {
+    setOpen(false);
+    triggerEl?.focus();
+  }
+
   function handleLogout() {
-    open = false;
+    setOpen(false);
+    triggerEl?.focus();
     onLogout?.();
   }
+
+  // À l'ouverture : focus le 1er item (ou le dernier sur ArrowUp). Client-only
+  // (guard typeof document). Restaure `pendingFocus` à "first" ensuite.
+  $effect(() => {
+    if (isOpen && typeof document !== "undefined") {
+      const which = pendingFocus;
+      queueMicrotask(() => focusItem(which === "last" ? -1 : 0));
+      pendingFocus = "first";
+    }
+  });
 </script>
 
 <svelte:window
   onpointerdown={(e) => {
-    if (open && root && e.target instanceof Node && !root.contains(e.target)) open = false;
+    if (isOpen && root && e.target instanceof Node && !root.contains(e.target)) {
+      // Clic extérieur : ferme ET restaure le focus sur le trigger.
+      setOpen(false);
+      triggerEl?.focus();
+    }
   }}
 />
 
@@ -159,7 +228,7 @@
       class="st-identityMenu__trigger"
       bind:this={triggerEl}
       aria-haspopup="menu"
-      aria-expanded={open}
+      aria-expanded={isOpen}
       aria-label={`Compte de ${displayName}`}
       onclick={toggle}
       onkeydown={onTriggerKeydown}
@@ -172,13 +241,13 @@
         {/if}
       </span>
       <ChevronDown
-        class={`st-identityMenu__chevron${open ? " st-identityMenu__chevron--open" : ""}`}
+        class={`st-identityMenu__chevron${isOpen ? " st-identityMenu__chevron--open" : ""}`}
         size={16}
         aria-hidden="true"
       />
     </button>
 
-    {#if open}
+    {#if isOpen}
       <div
         class="st-identityMenu__menu"
         role="menu"
@@ -191,7 +260,8 @@
           class="st-identityMenu__item"
           role="menuitem"
           tabindex="-1"
-          onclick={() => (open = false)}
+          onclick={selectAndClose}
+          onkeydown={onItemKeydown}
         >
           {devicesLabel}
         </a>
@@ -200,7 +270,8 @@
           class="st-identityMenu__item"
           role="menuitem"
           tabindex="-1"
-          onclick={() => (open = false)}
+          onclick={selectAndClose}
+          onkeydown={onItemKeydown}
         >
           {settingsLabel}
         </a>
