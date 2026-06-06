@@ -1397,6 +1397,26 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "StepLineChart",
+    slug: "step-line-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Courbe en paliers : la valeur reste stable jusqu'au prochain seuil.",
+      en: "Step line chart: the value stays flat until the next threshold."
+    }
+  },
+  {
+    name: "DivergentBarChart",
+    slug: "divergent-bar-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Barres divergentes positives, négatives et neutres autour d'un axe zéro.",
+      en: "Divergent bars (positive, negative, neutral) around a shared zero axis."
+    }
+  },
+  {
     name: "FilterPill",
     slug: "filter-pill",
     status: "documented",

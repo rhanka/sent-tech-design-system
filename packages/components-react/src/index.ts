@@ -301,6 +301,10 @@ export { LollipopChart } from "./LollipopChart.js";
 export type { LollipopChartProps, LollipopChartDatum, LollipopChartTone } from "./LollipopChart.js";
 export { ParetoChart } from "./ParetoChart.js";
 export type { ParetoChartProps, ParetoChartDatum, ParetoChartTone } from "./ParetoChart.js";
+export { StepLineChart } from "./StepLineChart.js";
+export type { StepLineChartProps, StepLineChartDatum, StepLineChartTone } from "./StepLineChart.js";
+export { DivergentBarChart } from "./DivergentBarChart.js";
+export type { DivergentBarChartProps, DivergentBarChartDatum, DivergentBarChartTone } from "./DivergentBarChart.js";
 export { MarimekkoChart } from "./MarimekkoChart.js";
 export type {
   MarimekkoChartProps,
