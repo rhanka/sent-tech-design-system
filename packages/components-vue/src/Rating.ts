@@ -91,6 +91,8 @@ export const Rating = defineComponent({
   emits: ["change", "update:modelValue"],
   setup(props, { emit, attrs }) {
     const internal = ref(props.value ?? 0);
+    // Refs des boutons radio pour déplacer le focus programmatiquement (mode entier).
+    const radioRefs = ref<Record<number, HTMLElement | null>>({});
 
     return () => {
       const current = props.value ?? internal.value;
@@ -99,6 +101,8 @@ export const Rating = defineComponent({
       const stars = Array.from({ length: max }, (_, i) => i + 1);
       // L'étoile « focusable » (tabindex 0) suit la valeur ; à 0 c'est la première.
       const focusedStar = current > 0 ? Math.ceil(current) : 1;
+
+      const valueText = `${current} / ${max}`;
 
       const fill = (star: number): "full" | "half" | "empty" => {
         if (current >= star) return "full";
@@ -132,44 +136,164 @@ export const Rating = defineComponent({
         commit(next);
       };
 
-      const onKeyDown = (event: KeyboardEvent) => {
+      // Clavier pour le mode entier (radiogroup) : déplace le focus DOM.
+      const onRadioKeyDown = (event: KeyboardEvent) => {
         if (props.readonly) return;
-        const step = props.allowHalf ? 0.5 : 1;
+        const step = 1;
         let handled = true;
+        let next: number | null = null;
         switch (event.key) {
           case "ArrowRight":
           case "ArrowUp":
-            commit(Math.min(max, current + step));
+            next = Math.min(max, current + step);
             break;
           case "ArrowLeft":
           case "ArrowDown":
-            commit(Math.max(0, current - step));
+            // Ne pas descendre sous 1 (pas de radio "0").
+            next = Math.max(1, current - step);
             break;
           case "Home":
-            commit(0);
+            // Home → première étoile (1), pas 0.
+            next = 1;
             break;
           case "End":
-            commit(max);
+            next = max;
             break;
           default:
             handled = false;
         }
-        if (handled) event.preventDefault();
+        if (handled) {
+          event.preventDefault();
+          if (next !== null) {
+            commit(next);
+            const targetStar = next > 0 ? Math.ceil(next) : 1;
+            const targetEl = radioRefs.value[targetStar];
+            if (targetEl) targetEl.focus();
+          }
+        }
       };
 
+      // Clavier pour le mode slider (allowHalf).
+      const onSliderKeyDown = (event: KeyboardEvent) => {
+        if (props.readonly) return;
+        const step = 0.5;
+        let handled = true;
+        let next: number | null = null;
+        switch (event.key) {
+          case "ArrowRight":
+          case "ArrowUp":
+            next = Math.min(max, current + step);
+            break;
+          case "ArrowLeft":
+          case "ArrowDown":
+            next = Math.max(0, current - step);
+            break;
+          case "Home":
+            next = 0;
+            break;
+          case "End":
+            next = max;
+            break;
+          default:
+            handled = false;
+        }
+        if (handled) {
+          event.preventDefault();
+          if (next !== null) commit(next);
+        }
+      };
+
+      const baseClass = classNames(
+        "st-rating",
+        `st-rating--${props.size}`,
+        props.readonly && "st-rating--readonly",
+        props.class,
+      );
+
+      // --- Mode readonly : role=img sur le conteneur, pas d'éléments interactifs disabled.
+      if (props.readonly) {
+        return h(
+          "div",
+          {
+            ...attrs,
+            class: baseClass,
+            role: "img",
+            "aria-label": props.label ? `${props.label} : ${valueText}` : valueText,
+          },
+          stars.map((star) => {
+            const state = fill(star);
+            return h(
+              "span",
+              {
+                key: star,
+                class: classNames(
+                  "st-rating__star",
+                  state === "full" && "st-rating__star--full",
+                  state === "half" && "st-rating__star--half",
+                ),
+                "aria-hidden": "true",
+              },
+              [
+                state === "half"
+                  ? StarHalfIcon(iconSize)
+                  : StarIcon(iconSize, state === "full" ? "currentColor" : "none"),
+              ],
+            );
+          }),
+        );
+      }
+
+      // --- Mode allowHalf : slider ARIA (valeurs fractionnaires).
+      if (props.allowHalf) {
+        return h(
+          "div",
+          {
+            ...attrs,
+            class: baseClass,
+            role: "slider",
+            "aria-label": props.label,
+            "aria-valuemin": 0,
+            "aria-valuemax": max,
+            "aria-valuenow": current,
+            "aria-valuetext": valueText,
+            tabindex: 0,
+            onKeydown: onSliderKeyDown,
+          },
+          stars.map((star) => {
+            const state = fill(star);
+            return h(
+              "span",
+              {
+                key: star,
+                class: classNames(
+                  "st-rating__star",
+                  state === "full" && "st-rating__star--full",
+                  state === "half" && "st-rating__star--half",
+                ),
+                "aria-hidden": "true",
+                onClick: (event: MouseEvent) => onStarClick(event, star),
+              },
+              [
+                state === "half"
+                  ? StarHalfIcon(iconSize)
+                  : StarIcon(iconSize, state === "full" ? "currentColor" : "none"),
+              ],
+            );
+          }),
+        );
+      }
+
+      // --- Mode entier : radiogroup / radio avec roving tabindex.
+      // onKeydown est aussi sur le conteneur pour capturer les events qui
+      // n'ont pas encore bubblé depuis un radio enfant (tests + edge cases).
       return h(
         "div",
         {
           ...attrs,
-          class: classNames(
-            "st-rating",
-            `st-rating--${props.size}`,
-            props.readonly && "st-rating--readonly",
-            props.class,
-          ),
+          class: baseClass,
           role: "radiogroup",
           "aria-label": props.label,
-          "aria-readonly": props.readonly ? "true" : undefined,
+          onKeydown: onRadioKeyDown,
         },
         stars.map((star) => {
           const state = fill(star);
@@ -177,6 +301,7 @@ export const Rating = defineComponent({
             "button",
             {
               key: star,
+              ref: (el: unknown) => { radioRefs.value[star] = el as HTMLElement | null; },
               type: "button",
               class: classNames(
                 "st-rating__star",
@@ -185,18 +310,13 @@ export const Rating = defineComponent({
               ),
               role: "radio",
               name: props.name,
-              "aria-checked": Math.ceil(current) === star ? "true" : "false",
+              "aria-checked": current === star ? "true" : "false",
               "aria-label": `${star} / ${max}`,
-              tabindex: !props.readonly && star === focusedStar ? 0 : -1,
-              disabled: props.readonly,
+              tabindex: star === focusedStar ? 0 : -1,
               onClick: (event: MouseEvent) => onStarClick(event, star),
-              onKeydown: onKeyDown,
+              onKeydown: onRadioKeyDown,
             },
-            [
-              state === "half"
-                ? StarHalfIcon(iconSize)
-                : StarIcon(iconSize, state === "full" ? "currentColor" : "none"),
-            ],
+            [StarIcon(iconSize, state === "full" ? "currentColor" : "none")],
           );
         }),
       );

@@ -35,7 +35,7 @@ export type SelectableListProps = Omit<
   className?: string;
 };
 
-type Entry = { el: HTMLElement; value: string | undefined };
+type Entry = { el: HTMLElement; value: string | undefined; disabled?: boolean };
 
 function toSet(v: string | string[] | null | undefined): Set<string> {
   if (v == null) return new Set();
@@ -101,9 +101,14 @@ export function SelectableList({
     return controlledRef.current ? toSet(valueRef.current) : internalRef.current;
   }
 
-  // Default roving stop = first registered (DOM-ordered) row when none focused.
+  // Default roving stop = first non-disabled registered (DOM-ordered) row when none focused,
+  // or when the current tabStopEl has become disabled.
   function effectiveTabStop(): HTMLElement | null {
-    return tabStopRef.current ?? entriesRef.current[0]?.el ?? null;
+    if (tabStopRef.current) {
+      const entry = entriesRef.current.find((e) => e.el === tabStopRef.current);
+      if (entry && !entry.disabled) return tabStopRef.current;
+    }
+    return entriesRef.current.find((e) => !e.disabled)?.el ?? null;
   }
 
   function valueOf(el: HTMLElement): string | undefined {
@@ -113,10 +118,10 @@ export function SelectableList({
   // Stable context methods — created ONCE so the context object never changes
   // identity. They read mutable state from refs and bump the version to re-render.
   const context = React.useMemo<SelectableListContextValue>(() => {
-    const register = (el: HTMLElement, rowValue: string | undefined): (() => void) => {
+    const register = (el: HTMLElement, rowValue: string | undefined, rowDisabled = false): (() => void) => {
       entriesRef.current = sortByDom([
         ...entriesRef.current.filter((e) => e.el !== el),
-        { el, value: rowValue },
+        { el, value: rowValue, disabled: rowDisabled },
       ]);
       bump();
       return () => {
@@ -166,13 +171,30 @@ export function SelectableList({
       if (list.length === 0) return;
       const idx = list.findIndex((e) => e.el === el);
       if (idx === -1) return;
-      let targetIdx = idx;
-      if (key === "ArrowDown" || key === "ArrowRight") targetIdx = idx + 1;
-      else if (key === "ArrowUp" || key === "ArrowLeft") targetIdx = idx - 1;
-      else if (key === "Home") targetIdx = 0;
-      else if (key === "End") targetIdx = list.length - 1;
-      // Clamp (no wrap) so Home/End and arrows stay within bounds.
-      targetIdx = Math.max(0, Math.min(list.length - 1, targetIdx));
+
+      let targetIdx: number | null = null;
+
+      if (key === "ArrowDown" || key === "ArrowRight") {
+        // Walk forward, find next non-disabled entry.
+        for (let i = idx + 1; i < list.length; i++) {
+          if (!list[i].disabled) { targetIdx = i; break; }
+        }
+      } else if (key === "ArrowUp" || key === "ArrowLeft") {
+        // Walk backward, find previous non-disabled entry.
+        for (let i = idx - 1; i >= 0; i--) {
+          if (!list[i].disabled) { targetIdx = i; break; }
+        }
+      } else if (key === "Home") {
+        for (let i = 0; i < list.length; i++) {
+          if (!list[i].disabled) { targetIdx = i; break; }
+        }
+      } else if (key === "End") {
+        for (let i = list.length - 1; i >= 0; i--) {
+          if (!list[i].disabled) { targetIdx = i; break; }
+        }
+      }
+
+      if (targetIdx === null) return;
       const target = list[targetIdx]?.el;
       if (target) {
         tabStopRef.current = target;

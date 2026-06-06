@@ -1,4 +1,4 @@
-import { defineComponent, h } from "vue";
+import { defineComponent, h, ref } from "vue";
 import { classNames } from "./classNames.js";
 
 export type SlideIndicatorVariant = "dots" | "bars";
@@ -36,9 +36,12 @@ export const SlideIndicator = defineComponent({
   },
   emits: ["change", "update:modelValue"],
   setup(props, { emit, attrs }) {
+    // Refs des boutons pour déplacer le focus DOM programmatiquement (roving).
+    const buttonRefs = ref<Record<number, HTMLElement | null>>({});
+
     return () => {
       const count = props.count;
-      const current = props.current;
+      const current = props.current ?? 0;
       const items = Array.from({ length: Math.max(0, count) }, (_, i) => i);
 
       const select = (index: number) => {
@@ -69,6 +72,9 @@ export const SlideIndicator = defineComponent({
             return;
         }
         event.preventDefault();
+        // Déplacer le focus DOM vers le bouton cible (roving tabindex correct).
+        const targetEl = buttonRefs.value[target];
+        if (targetEl) targetEl.focus();
         select(target);
       };
 
@@ -82,19 +88,20 @@ export const SlideIndicator = defineComponent({
             `st-slideIndicator--${props.variant}`,
             props.class,
           ),
-          role: "tablist",
+          // role="group" + boutons avec aria-current (pattern ARIA Carousel).
+          // role="tablist"/"tab" serait invalide sans aria-controls/tabpanel associé.
+          role: "group",
           "aria-label": props.label,
         },
         items.map((index) =>
           h("button", {
             key: index,
+            ref: (el: unknown) => { buttonRefs.value[index] = el as HTMLElement | null; },
             type: "button",
             class: classNames(
               "st-slideIndicator__dot",
               index === current && "st-slideIndicator__dot--current",
             ),
-            role: "tab",
-            "aria-selected": index === current ? "true" : "false",
             "aria-current": index === current ? "true" : undefined,
             "aria-label": `${props.label} ${index + 1}`,
             tabindex: index === current ? 0 : -1,
