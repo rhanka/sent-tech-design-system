@@ -48,7 +48,7 @@ export type { CopyButtonProps } from "./CopyButton.js";
 export { DataTable } from "./DataTable.js";
 export type { DataTableProps, DataTableColumn, DataTableRow, DataTableSelectMode, DataTableSort } from "./DataTable.js";
 export { DatePicker } from "./DatePicker.js";
-export type { DatePickerProps, DatePickerRange } from "./DatePicker.js";
+export type { DatePickerProps, DatePickerRange, DatePickerValue } from "./DatePicker.js";
 export { DonutChart } from "./DonutChart.js";
 export type { DonutChartProps, DonutChartDatum, DonutChartTone } from "./DonutChart.js";
 export { Drawer } from "./Drawer.js";
