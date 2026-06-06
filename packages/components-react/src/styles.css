@@ -9433,3 +9433,508 @@
     transition: none;
   }
 }
+
+/* ── BulletChart (lot-3) ── */
+.st-bulletChart {
+  color: var(--st-semantic-text-secondary);
+  display: block;
+  font-family: inherit;
+  position: relative;
+  width: 100%;
+}
+
+.st-bulletChart svg {
+  display: block;
+  overflow: visible;
+}
+
+.st-bulletChart__visual {
+  display: block;
+}
+
+.st-bulletChart__axis {
+  stroke: var(--st-semantic-border-subtle);
+  stroke-width: 1;
+}
+
+.st-bulletChart__baseline {
+  stroke: var(--st-semantic-border-subtle);
+  stroke-width: 1.5;
+}
+
+.st-bulletChart__grid {
+  stroke: var(--st-semantic-border-subtle);
+  stroke-dasharray: 2 3;
+  stroke-width: 1;
+  opacity: 0.6;
+}
+
+.st-bulletChart__range {
+  fill: var(--st-semantic-data-category1);
+}
+
+.st-bulletChart__bar {
+  cursor: pointer;
+  fill: var(--st-semantic-text-secondary);
+  transition: opacity 120ms ease;
+}
+
+.st-bulletChart__bar:hover {
+  opacity: 0.75;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .st-bulletChart__bar {
+    transition: none;
+  }
+}
+
+.st-bulletChart__target {
+  stroke: var(--st-semantic-text-primary, currentColor);
+  stroke-width: 2.5;
+}
+
+.st-bulletChart__tickLabel,
+.st-bulletChart__categoryLabel {
+  fill: var(--st-semantic-text-secondary);
+  font-size: 0.6875rem;
+}
+
+.st-bulletChart__tooltip {
+  background: var(--st-semantic-surface-inverse);
+  border-radius: var(--st-radius-sm, 0.25rem);
+  color: var(--st-semantic-text-inverse);
+  display: inline-flex;
+  flex-direction: column;
+  font-size: 0.75rem;
+  gap: 0.125rem;
+  line-height: 1.2;
+  padding: 0.375rem 0.5rem;
+  pointer-events: none;
+  position: absolute;
+  transform: translate(-50%, calc(-100% - 8px));
+  white-space: nowrap;
+  z-index: 1;
+}
+
+.st-bulletChart__tooltipLabel {
+  font-weight: 600;
+}
+
+.st-bulletChart__tooltipValue {
+  opacity: 0.85;
+}
+
+/* ── MarimekkoChart (lot-3) ── */
+.st-marimekkoChart {
+  color: var(--st-semantic-text-secondary);
+  display: block;
+  font-family: inherit;
+  position: relative;
+  width: 100%;
+}
+
+.st-marimekkoChart svg {
+  display: block;
+  overflow: visible;
+}
+
+.st-marimekkoChart__visual {
+  display: block;
+}
+
+.st-marimekkoChart__axis {
+  stroke: var(--st-semantic-border-subtle);
+  stroke-width: 1;
+}
+
+.st-marimekkoChart__cell {
+  cursor: pointer;
+  stroke: var(--st-semantic-surface-default, Canvas);
+  stroke-width: 1;
+  transition: opacity 120ms ease;
+}
+
+.st-marimekkoChart__cell--dim {
+  opacity: 0.4;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .st-marimekkoChart__cell {
+    transition: none;
+  }
+}
+
+.st-marimekkoChart__cell--category1 { fill: var(--st-semantic-data-category1); }
+.st-marimekkoChart__cell--category2 { fill: var(--st-semantic-data-category2); }
+.st-marimekkoChart__cell--category3 { fill: var(--st-semantic-data-category3); }
+.st-marimekkoChart__cell--category4 { fill: var(--st-semantic-data-category4); }
+.st-marimekkoChart__cell--category5 { fill: var(--st-semantic-data-category5); }
+.st-marimekkoChart__cell--category6 { fill: var(--st-semantic-data-category6); }
+.st-marimekkoChart__cell--category7 { fill: var(--st-semantic-data-category7); }
+.st-marimekkoChart__cell--category8 { fill: var(--st-semantic-data-category8); }
+
+.st-marimekkoChart__cellLabel {
+  font-size: 0.625rem;
+  pointer-events: none;
+}
+
+.st-marimekkoChart__catLabel {
+  fill: var(--st-semantic-text-secondary);
+  font-size: 0.6875rem;
+}
+
+.st-marimekkoChart__tooltip {
+  background: var(--st-semantic-surface-inverse);
+  border-radius: var(--st-radius-sm, 0.25rem);
+  color: var(--st-semantic-text-inverse);
+  display: inline-flex;
+  flex-direction: column;
+  font-size: 0.75rem;
+  gap: 0.125rem;
+  line-height: 1.2;
+  padding: 0.375rem 0.5rem;
+  pointer-events: none;
+  position: absolute;
+  transform: translate(-50%, calc(-100% - 8px));
+  white-space: nowrap;
+  z-index: 1;
+}
+
+.st-marimekkoChart__tooltipLabel {
+  font-weight: 600;
+}
+
+.st-marimekkoChart__tooltipValue {
+  opacity: 0.85;
+}
+
+/* ── CandlestickChart (lot-3) ── */
+.st-candlestickChart {
+  color: var(--st-semantic-text-secondary);
+  display: block;
+  font-family: inherit;
+  position: relative;
+  width: 100%;
+}
+
+.st-candlestickChart svg {
+  display: block;
+  overflow: visible;
+}
+
+.st-candlestickChart__visual {
+  display: block;
+}
+
+.st-candlestickChart__axis {
+  stroke: var(--st-semantic-border-subtle);
+  stroke-width: 1;
+}
+
+.st-candlestickChart__grid {
+  stroke: var(--st-semantic-border-subtle);
+  stroke-dasharray: 2 3;
+  stroke-width: 1;
+  opacity: 0.7;
+}
+
+.st-candlestickChart__wick {
+  stroke-width: 1.5;
+}
+
+.st-candlestickChart__wick--up {
+  stroke: var(--st-semantic-feedback-success);
+}
+
+.st-candlestickChart__wick--down {
+  stroke: var(--st-semantic-feedback-error);
+}
+
+.st-candlestickChart__body {
+  cursor: pointer;
+  transition: opacity 120ms ease;
+}
+
+.st-candlestickChart__body--dim {
+  opacity: 0.4;
+}
+
+.st-candlestickChart__body--up {
+  fill: var(--st-semantic-feedback-success);
+}
+
+.st-candlestickChart__body--down {
+  fill: var(--st-semantic-feedback-error);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .st-candlestickChart__body {
+    transition: none;
+  }
+}
+
+.st-candlestickChart__tickLabel,
+.st-candlestickChart__categoryLabel {
+  fill: var(--st-semantic-text-secondary);
+  font-size: 0.6875rem;
+}
+
+.st-candlestickChart__tooltip {
+  background: var(--st-semantic-surface-inverse);
+  border-radius: var(--st-radius-sm, 0.25rem);
+  color: var(--st-semantic-text-inverse);
+  display: inline-flex;
+  flex-direction: column;
+  font-size: 0.75rem;
+  gap: 0.125rem;
+  line-height: 1.2;
+  padding: 0.375rem 0.5rem;
+  pointer-events: none;
+  position: absolute;
+  transform: translate(-50%, calc(-100% - 8px));
+  white-space: nowrap;
+  z-index: 1;
+}
+
+.st-candlestickChart__tooltipLabel {
+  font-weight: 600;
+}
+
+.st-candlestickChart__tooltipValue {
+  opacity: 0.85;
+}
+
+/* ── CalendarHeatmapChart (lot-3) ── */
+.st-calendarHeatmapChart {
+  color: var(--st-semantic-text-secondary);
+  display: block;
+  font-family: inherit;
+  position: relative;
+  width: 100%;
+}
+
+.st-calendarHeatmapChart svg {
+  display: block;
+  overflow: visible;
+}
+
+.st-calendarHeatmapChart__visual {
+  display: block;
+}
+
+.st-calendarHeatmapChart__dayLabel,
+.st-calendarHeatmapChart__monthLabel {
+  fill: var(--st-semantic-text-secondary);
+  font-size: 0.5625rem;
+}
+
+.st-calendarHeatmapChart__cell {
+  cursor: pointer;
+  stroke: var(--st-semantic-surface-default, Canvas);
+  stroke-width: 1;
+  transition: opacity 120ms ease;
+}
+
+.st-calendarHeatmapChart__cell--empty {
+  fill: var(--st-semantic-border-subtle);
+  opacity: 0.25;
+}
+
+.st-calendarHeatmapChart__cell--dim {
+  opacity: 0.3;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .st-calendarHeatmapChart__cell {
+    transition: none;
+  }
+}
+
+.st-calendarHeatmapChart__cell--category1 { fill: var(--st-semantic-data-category1); }
+.st-calendarHeatmapChart__cell--category2 { fill: var(--st-semantic-data-category2); }
+.st-calendarHeatmapChart__cell--category3 { fill: var(--st-semantic-data-category3); }
+.st-calendarHeatmapChart__cell--category4 { fill: var(--st-semantic-data-category4); }
+.st-calendarHeatmapChart__cell--category5 { fill: var(--st-semantic-data-category5); }
+.st-calendarHeatmapChart__cell--category6 { fill: var(--st-semantic-data-category6); }
+.st-calendarHeatmapChart__cell--category7 { fill: var(--st-semantic-data-category7); }
+.st-calendarHeatmapChart__cell--category8 { fill: var(--st-semantic-data-category8); }
+
+.st-calendarHeatmapChart__tooltip {
+  background: var(--st-semantic-surface-inverse);
+  border-radius: var(--st-radius-sm, 0.25rem);
+  color: var(--st-semantic-text-inverse);
+  display: inline-flex;
+  flex-direction: column;
+  font-size: 0.75rem;
+  gap: 0.125rem;
+  line-height: 1.2;
+  padding: 0.375rem 0.5rem;
+  pointer-events: none;
+  position: absolute;
+  transform: translate(-50%, calc(-100% - 8px));
+  white-space: nowrap;
+  z-index: 1;
+}
+
+.st-calendarHeatmapChart__tooltipLabel {
+  font-weight: 600;
+}
+
+.st-calendarHeatmapChart__tooltipValue {
+  opacity: 0.85;
+}
+
+/* ── ParallelCoordinatesChart (lot-3) ── */
+.st-parallelCoordinatesChart {
+  color: var(--st-semantic-text-secondary);
+  display: block;
+  font-family: inherit;
+  position: relative;
+  width: 100%;
+}
+
+.st-parallelCoordinatesChart svg {
+  display: block;
+  overflow: visible;
+}
+
+.st-parallelCoordinatesChart__visual {
+  display: block;
+}
+
+.st-parallelCoordinatesChart__axis {
+  stroke: var(--st-semantic-border-subtle);
+  stroke-width: 1.5;
+}
+
+.st-parallelCoordinatesChart__axisLabel {
+  fill: var(--st-semantic-text-secondary);
+  font-size: 0.6875rem;
+  font-weight: 600;
+}
+
+.st-parallelCoordinatesChart__tickLabel {
+  fill: var(--st-semantic-text-secondary);
+  font-size: 0.5625rem;
+}
+
+.st-parallelCoordinatesChart__line {
+  cursor: pointer;
+  stroke-width: 1.5;
+  stroke-opacity: 0.65;
+  transition: stroke-opacity 120ms ease, stroke-width 120ms ease;
+}
+
+.st-parallelCoordinatesChart__line--dim {
+  stroke-opacity: 0.12;
+}
+
+.st-parallelCoordinatesChart__line--active {
+  stroke-opacity: 1;
+  stroke-width: 2.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .st-parallelCoordinatesChart__line {
+    transition: none;
+  }
+}
+
+.st-parallelCoordinatesChart__line--category1 { stroke: var(--st-semantic-data-category1); }
+.st-parallelCoordinatesChart__line--category2 { stroke: var(--st-semantic-data-category2); }
+.st-parallelCoordinatesChart__line--category3 { stroke: var(--st-semantic-data-category3); }
+.st-parallelCoordinatesChart__line--category4 { stroke: var(--st-semantic-data-category4); }
+.st-parallelCoordinatesChart__line--category5 { stroke: var(--st-semantic-data-category5); }
+.st-parallelCoordinatesChart__line--category6 { stroke: var(--st-semantic-data-category6); }
+.st-parallelCoordinatesChart__line--category7 { stroke: var(--st-semantic-data-category7); }
+.st-parallelCoordinatesChart__line--category8 { stroke: var(--st-semantic-data-category8); }
+
+/* ── BumpChart (lot-3) ── */
+.st-bumpChart {
+  color: var(--st-semantic-text-secondary);
+  display: block;
+  font-family: inherit;
+  position: relative;
+  width: 100%;
+}
+
+.st-bumpChart svg {
+  display: block;
+  overflow: visible;
+}
+
+.st-bumpChart__visual {
+  display: block;
+}
+
+.st-bumpChart__grid {
+  stroke: var(--st-semantic-border-subtle);
+  stroke-dasharray: 2 3;
+  stroke-width: 1;
+  opacity: 0.5;
+}
+
+.st-bumpChart__rankLabel,
+.st-bumpChart__catLabel,
+.st-bumpChart__seriesLabel {
+  fill: var(--st-semantic-text-secondary);
+  font-size: 0.6875rem;
+}
+
+.st-bumpChart__line {
+  cursor: pointer;
+  stroke-width: 2;
+  stroke-opacity: 0.7;
+  transition: stroke-opacity 120ms ease, stroke-width 120ms ease;
+}
+
+.st-bumpChart__line--dim {
+  stroke-opacity: 0.12;
+}
+
+.st-bumpChart__line--active {
+  stroke-opacity: 1;
+  stroke-width: 3;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .st-bumpChart__line {
+    transition: none;
+  }
+}
+
+.st-bumpChart__dot {
+  cursor: pointer;
+  stroke: var(--st-semantic-surface-default, Canvas);
+  stroke-width: 1.5;
+  transition: r 120ms ease;
+}
+
+.st-bumpChart__dot--dim {
+  opacity: 0.15;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .st-bumpChart__dot {
+    transition: none;
+  }
+}
+
+.st-bumpChart__line--category1 { stroke: var(--st-semantic-data-category1); }
+.st-bumpChart__line--category2 { stroke: var(--st-semantic-data-category2); }
+.st-bumpChart__line--category3 { stroke: var(--st-semantic-data-category3); }
+.st-bumpChart__line--category4 { stroke: var(--st-semantic-data-category4); }
+.st-bumpChart__line--category5 { stroke: var(--st-semantic-data-category5); }
+.st-bumpChart__line--category6 { stroke: var(--st-semantic-data-category6); }
+.st-bumpChart__line--category7 { stroke: var(--st-semantic-data-category7); }
+.st-bumpChart__line--category8 { stroke: var(--st-semantic-data-category8); }
+
+.st-bumpChart__dot--category1 { fill: var(--st-semantic-data-category1); }
+.st-bumpChart__dot--category2 { fill: var(--st-semantic-data-category2); }
+.st-bumpChart__dot--category3 { fill: var(--st-semantic-data-category3); }
+.st-bumpChart__dot--category4 { fill: var(--st-semantic-data-category4); }
+.st-bumpChart__dot--category5 { fill: var(--st-semantic-data-category5); }
+.st-bumpChart__dot--category6 { fill: var(--st-semantic-data-category6); }
+.st-bumpChart__dot--category7 { fill: var(--st-semantic-data-category7); }
+.st-bumpChart__dot--category8 { fill: var(--st-semantic-data-category8); }

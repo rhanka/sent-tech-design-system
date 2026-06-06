@@ -136,7 +136,13 @@ export type ComponentName =
   | "GaugeChart"
   | "FunnelChart"
   | "WaterfallChart"
-  | "TreemapChart";
+  | "TreemapChart"
+  | "BulletChart"
+  | "MarimekkoChart"
+  | "ParallelCoordinatesChart"
+  | "CandlestickChart"
+  | "CalendarHeatmapChart"
+  | "BumpChart";
 
 export interface ComponentNodeSpec {
   comp: ComponentName;
@@ -7648,6 +7654,513 @@ import { TreemapChart } from "@sentropic/design-system-vue";
       }
     ]"
     :showLabels="true"
+  />
+</template>`
+    }
+  },
+
+  bulletchart: {
+    id: "bulletchart",
+    slug: "bullet-chart",
+    nodes: [
+      stack([
+        {
+          comp: "BulletChart",
+          props: {
+            label: "Objectifs trimestriels",
+            data: [
+              { label: "Revenu", value: 82, target: 100, ranges: [50, 80, 110] },
+              { label: "NPS", value: 67, target: 75, ranges: [40, 65, 90] },
+              { label: "Uptime", value: 99.2, target: 99.5, ranges: [95, 99, 100] }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { BulletChart } from "@sentropic/design-system-svelte";
+</script>
+
+<BulletChart
+  label="Objectifs trimestriels"
+  data={[
+    { label: "Revenu", value: 82, target: 100, ranges: [50, 80, 110] },
+    { label: "NPS", value: 67, target: 75, ranges: [40, 65, 90] },
+    { label: "Uptime", value: 99.2, target: 99.5, ranges: [95, 99, 100] }
+  ]}
+/>`,
+      react: `import { BulletChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <BulletChart
+      label="Objectifs trimestriels"
+      data={[
+        { label: "Revenu", value: 82, target: 100, ranges: [50, 80, 110] },
+        { label: "NPS", value: 67, target: 75, ranges: [40, 65, 90] },
+        { label: "Uptime", value: 99.2, target: 99.5, ranges: [95, 99, 100] }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { BulletChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <BulletChart
+    label="Objectifs trimestriels"
+    :data="[
+      { label: 'Revenu', value: 82, target: 100, ranges: [50, 80, 110] },
+      { label: 'NPS', value: 67, target: 75, ranges: [40, 65, 90] },
+      { label: 'Uptime', value: 99.2, target: 99.5, ranges: [95, 99, 100] }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  marimekkoChart: {
+    id: "marimekkoChart",
+    slug: "marimekko-chart",
+    nodes: [
+      stack([
+        {
+          comp: "MarimekkoChart",
+          props: {
+            label: "Parts de marché par segment",
+            data: [
+              {
+                label: "Europe",
+                width: 45,
+                segments: [
+                  { label: "PME", value: 55, tone: "category1" },
+                  { label: "Grands comptes", value: 30, tone: "category2" },
+                  { label: "Startups", value: 15, tone: "category3" }
+                ]
+              },
+              {
+                label: "Amérique",
+                width: 35,
+                segments: [
+                  { label: "PME", value: 40, tone: "category1" },
+                  { label: "Grands comptes", value: 50, tone: "category2" },
+                  { label: "Startups", value: 10, tone: "category3" }
+                ]
+              },
+              {
+                label: "Asie",
+                width: 20,
+                segments: [
+                  { label: "PME", value: 30, tone: "category1" },
+                  { label: "Grands comptes", value: 20, tone: "category2" },
+                  { label: "Startups", value: 50, tone: "category3" }
+                ]
+              }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { MarimekkoChart } from "@sentropic/design-system-svelte";
+</script>
+
+<MarimekkoChart
+  label="Parts de marché par segment"
+  data={[
+    {
+      label: "Europe", width: 45,
+      segments: [
+        { label: "PME", value: 55, tone: "category1" },
+        { label: "Grands comptes", value: 30, tone: "category2" },
+        { label: "Startups", value: 15, tone: "category3" }
+      ]
+    },
+    {
+      label: "Amérique", width: 35,
+      segments: [
+        { label: "PME", value: 40, tone: "category1" },
+        { label: "Grands comptes", value: 50, tone: "category2" },
+        { label: "Startups", value: 10, tone: "category3" }
+      ]
+    }
+  ]}
+/>`,
+      react: `import { MarimekkoChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <MarimekkoChart
+      label="Parts de marché par segment"
+      data={[
+        {
+          label: "Europe", width: 45,
+          segments: [
+            { label: "PME", value: 55, tone: "category1" },
+            { label: "Grands comptes", value: 30, tone: "category2" },
+            { label: "Startups", value: 15, tone: "category3" }
+          ]
+        },
+        {
+          label: "Amérique", width: 35,
+          segments: [
+            { label: "PME", value: 40, tone: "category1" },
+            { label: "Grands comptes", value: 50, tone: "category2" },
+            { label: "Startups", value: 10, tone: "category3" }
+          ]
+        }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { MarimekkoChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <MarimekkoChart
+    label="Parts de marché par segment"
+    :data="[
+      {
+        label: 'Europe', width: 45,
+        segments: [
+          { label: 'PME', value: 55, tone: 'category1' },
+          { label: 'Grands comptes', value: 30, tone: 'category2' },
+          { label: 'Startups', value: 15, tone: 'category3' }
+        ]
+      },
+      {
+        label: 'Amérique', width: 35,
+        segments: [
+          { label: 'PME', value: 40, tone: 'category1' },
+          { label: 'Grands comptes', value: 50, tone: 'category2' },
+          { label: 'Startups', value: 10, tone: 'category3' }
+        ]
+      }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  parallelcoordinateschart: {
+    id: "parallelcoordinateschart",
+    slug: "parallel-coordinates-chart",
+    nodes: [
+      stack([
+        {
+          comp: "ParallelCoordinatesChart",
+          props: {
+            label: "Comparaison de véhicules",
+            axes: [
+              { key: "puissance", label: "Puissance (ch)" },
+              { key: "poids", label: "Poids (kg)" },
+              { key: "conso", label: "Conso (L/100km)" },
+              { key: "prix", label: "Prix (k€)" }
+            ],
+            data: [
+              { puissance: 130, poids: 1200, conso: 6.5, prix: 22 },
+              { puissance: 190, poids: 1580, conso: 8.2, prix: 38 },
+              { puissance: 90, poids: 980, conso: 4.8, prix: 15 }
+            ],
+            tones: ["category1", "category3", "category5"]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { ParallelCoordinatesChart } from "@sentropic/design-system-svelte";
+</script>
+
+<ParallelCoordinatesChart
+  label="Comparaison de véhicules"
+  axes={[
+    { key: "puissance", label: "Puissance (ch)" },
+    { key: "poids", label: "Poids (kg)" },
+    { key: "conso", label: "Conso (L/100km)" },
+    { key: "prix", label: "Prix (k€)" }
+  ]}
+  data={[
+    { puissance: 130, poids: 1200, conso: 6.5, prix: 22 },
+    { puissance: 190, poids: 1580, conso: 8.2, prix: 38 },
+    { puissance: 90, poids: 980, conso: 4.8, prix: 15 }
+  ]}
+  tones={["category1", "category3", "category5"]}
+/>`,
+      react: `import { ParallelCoordinatesChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <ParallelCoordinatesChart
+      label="Comparaison de véhicules"
+      axes={[
+        { key: "puissance", label: "Puissance (ch)" },
+        { key: "poids", label: "Poids (kg)" },
+        { key: "conso", label: "Conso (L/100km)" },
+        { key: "prix", label: "Prix (k€)" }
+      ]}
+      data={[
+        { puissance: 130, poids: 1200, conso: 6.5, prix: 22 },
+        { puissance: 190, poids: 1580, conso: 8.2, prix: 38 },
+        { puissance: 90, poids: 980, conso: 4.8, prix: 15 }
+      ]}
+      tones={["category1", "category3", "category5"]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { ParallelCoordinatesChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <ParallelCoordinatesChart
+    label="Comparaison de véhicules"
+    :axes="[
+      { key: 'puissance', label: 'Puissance (ch)' },
+      { key: 'poids', label: 'Poids (kg)' },
+      { key: 'conso', label: 'Conso (L/100km)' },
+      { key: 'prix', label: 'Prix (k€)' }
+    ]"
+    :data="[
+      { puissance: 130, poids: 1200, conso: 6.5, prix: 22 },
+      { puissance: 190, poids: 1580, conso: 8.2, prix: 38 },
+      { puissance: 90, poids: 980, conso: 4.8, prix: 15 }
+    ]"
+    :tones="['category1', 'category3', 'category5']"
+  />
+</template>`
+    }
+  },
+
+  candlestickchart: {
+    id: "candlestickchart",
+    slug: "candlestick-chart",
+    nodes: [
+      stack([
+        {
+          comp: "CandlestickChart",
+          props: {
+            label: "Cours SENT — semaine",
+            data: [
+              { label: "Lun", open: 142, high: 148, low: 139, close: 146 },
+              { label: "Mar", open: 146, high: 151, low: 144, close: 149 },
+              { label: "Mer", open: 149, high: 152, low: 140, close: 143 },
+              { label: "Jeu", open: 143, high: 147, low: 138, close: 145 },
+              { label: "Ven", open: 145, high: 155, low: 144, close: 153 }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { CandlestickChart } from "@sentropic/design-system-svelte";
+</script>
+
+<CandlestickChart
+  label="Cours SENT — semaine"
+  data={[
+    { label: "Lun", open: 142, high: 148, low: 139, close: 146 },
+    { label: "Mar", open: 146, high: 151, low: 144, close: 149 },
+    { label: "Mer", open: 149, high: 152, low: 140, close: 143 },
+    { label: "Jeu", open: 143, high: 147, low: 138, close: 145 },
+    { label: "Ven", open: 145, high: 155, low: 144, close: 153 }
+  ]}
+/>`,
+      react: `import { CandlestickChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <CandlestickChart
+      label="Cours SENT — semaine"
+      data={[
+        { label: "Lun", open: 142, high: 148, low: 139, close: 146 },
+        { label: "Mar", open: 146, high: 151, low: 144, close: 149 },
+        { label: "Mer", open: 149, high: 152, low: 140, close: 143 },
+        { label: "Jeu", open: 143, high: 147, low: 138, close: 145 },
+        { label: "Ven", open: 145, high: 155, low: 144, close: 153 }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { CandlestickChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <CandlestickChart
+    label="Cours SENT — semaine"
+    :data="[
+      { label: 'Lun', open: 142, high: 148, low: 139, close: 146 },
+      { label: 'Mar', open: 146, high: 151, low: 144, close: 149 },
+      { label: 'Mer', open: 149, high: 152, low: 140, close: 143 },
+      { label: 'Jeu', open: 143, high: 147, low: 138, close: 145 },
+      { label: 'Ven', open: 145, high: 155, low: 144, close: 153 }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  calendarheatmapchart: {
+    id: "calendarheatmapchart",
+    slug: "calendar-heatmap-chart",
+    nodes: [
+      stack([
+        {
+          comp: "CalendarHeatmapChart",
+          props: {
+            label: "Activité de contribution",
+            data: [
+              { date: "2025-01-06", value: 3 },
+              { date: "2025-01-07", value: 8 },
+              { date: "2025-01-08", value: 5 },
+              { date: "2025-01-09", value: 12 },
+              { date: "2025-01-10", value: 2 },
+              { date: "2025-01-13", value: 7 },
+              { date: "2025-01-14", value: 15 },
+              { date: "2025-01-15", value: 9 },
+              { date: "2025-01-16", value: 4 },
+              { date: "2025-01-17", value: 11 }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { CalendarHeatmapChart } from "@sentropic/design-system-svelte";
+</script>
+
+<CalendarHeatmapChart
+  label="Activité de contribution"
+  data={[
+    { date: "2025-01-06", value: 3 },
+    { date: "2025-01-07", value: 8 },
+    { date: "2025-01-08", value: 5 },
+    { date: "2025-01-09", value: 12 },
+    { date: "2025-01-10", value: 2 },
+    { date: "2025-01-13", value: 7 },
+    { date: "2025-01-14", value: 15 },
+    { date: "2025-01-15", value: 9 },
+    { date: "2025-01-16", value: 4 },
+    { date: "2025-01-17", value: 11 }
+  ]}
+/>`,
+      react: `import { CalendarHeatmapChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <CalendarHeatmapChart
+      label="Activité de contribution"
+      data={[
+        { date: "2025-01-06", value: 3 },
+        { date: "2025-01-07", value: 8 },
+        { date: "2025-01-08", value: 5 },
+        { date: "2025-01-09", value: 12 },
+        { date: "2025-01-10", value: 2 },
+        { date: "2025-01-13", value: 7 },
+        { date: "2025-01-14", value: 15 },
+        { date: "2025-01-15", value: 9 },
+        { date: "2025-01-16", value: 4 },
+        { date: "2025-01-17", value: 11 }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { CalendarHeatmapChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <CalendarHeatmapChart
+    label="Activité de contribution"
+    :data="[
+      { date: '2025-01-06', value: 3 },
+      { date: '2025-01-07', value: 8 },
+      { date: '2025-01-08', value: 5 },
+      { date: '2025-01-09', value: 12 },
+      { date: '2025-01-10', value: 2 },
+      { date: '2025-01-13', value: 7 },
+      { date: '2025-01-14', value: 15 },
+      { date: '2025-01-15', value: 9 },
+      { date: '2025-01-16', value: 4 },
+      { date: '2025-01-17', value: 11 }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  bumpchart: {
+    id: "bumpchart",
+    slug: "bump-chart",
+    nodes: [
+      stack([
+        {
+          comp: "BumpChart",
+          props: {
+            label: "Classement des frameworks JS",
+            categories: ["2022", "2023", "2024", "2025"],
+            data: [
+              { label: "React", ranks: [1, 1, 1, 1], tone: "category1" },
+              { label: "Vue", ranks: [3, 2, 2, 2], tone: "category2" },
+              { label: "Svelte", ranks: [5, 4, 3, 3], tone: "category3" },
+              { label: "Angular", ranks: [2, 3, 4, 4], tone: "category4" }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { BumpChart } from "@sentropic/design-system-svelte";
+</script>
+
+<BumpChart
+  label="Classement des frameworks JS"
+  categories={["2022", "2023", "2024", "2025"]}
+  data={[
+    { label: "React", ranks: [1, 1, 1, 1], tone: "category1" },
+    { label: "Vue", ranks: [3, 2, 2, 2], tone: "category2" },
+    { label: "Svelte", ranks: [5, 4, 3, 3], tone: "category3" },
+    { label: "Angular", ranks: [2, 3, 4, 4], tone: "category4" }
+  ]}
+/>`,
+      react: `import { BumpChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <BumpChart
+      label="Classement des frameworks JS"
+      categories={["2022", "2023", "2024", "2025"]}
+      data={[
+        { label: "React", ranks: [1, 1, 1, 1], tone: "category1" },
+        { label: "Vue", ranks: [3, 2, 2, 2], tone: "category2" },
+        { label: "Svelte", ranks: [5, 4, 3, 3], tone: "category3" },
+        { label: "Angular", ranks: [2, 3, 4, 4], tone: "category4" }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { BumpChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <BumpChart
+    label="Classement des frameworks JS"
+    :categories="['2022', '2023', '2024', '2025']"
+    :data="[
+      { label: 'React', ranks: [1, 1, 1, 1], tone: 'category1' },
+      { label: 'Vue', ranks: [3, 2, 2, 2], tone: 'category2' },
+      { label: 'Svelte', ranks: [5, 4, 3, 3], tone: 'category3' },
+      { label: 'Angular', ranks: [2, 3, 4, 4], tone: 'category4' }
+    ]"
   />
 </template>`
     }

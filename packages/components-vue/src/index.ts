@@ -341,3 +341,28 @@ export type {
 } from "./SelectableRow.js";
 export { SelectableList } from "./SelectableList.js";
 export type { SelectableListProps } from "./SelectableList.js";
+export { BulletChart } from "./BulletChart.js";
+export type { BulletChartProps, BulletChartDatum } from "./BulletChart.js";
+export { MarimekkoChart } from "./MarimekkoChart.js";
+export type {
+  MarimekkoChartProps,
+  MarimekkoChartDatum,
+  MarimekkoChartSegment,
+  MarimekkoChartTone,
+} from "./MarimekkoChart.js";
+export { CandlestickChart } from "./CandlestickChart.js";
+export type { CandlestickChartProps, CandlestickChartDatum } from "./CandlestickChart.js";
+export { CalendarHeatmapChart } from "./CalendarHeatmapChart.js";
+export type { CalendarHeatmapChartProps, CalendarHeatmapChartDatum } from "./CalendarHeatmapChart.js";
+export { ParallelCoordinatesChart } from "./ParallelCoordinatesChart.js";
+export type {
+  ParallelCoordinatesChartProps,
+  ParallelCoordinatesChartTone,
+  ParallelAxis,
+} from "./ParallelCoordinatesChart.js";
+export { BumpChart } from "./BumpChart.js";
+export type {
+  BumpChartProps,
+  BumpChartSeries,
+  BumpChartTone,
+} from "./BumpChart.js";

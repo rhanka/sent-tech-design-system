@@ -1335,6 +1335,66 @@ export const COMPONENTS: ComponentEntry[] = [
       fr: "Liste à puces, avec imbrication.",
       en: "Bulleted unordered list, with nesting."
     }
+  },
+  {
+    name: "BulletChart",
+    slug: "bullet-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Bullet graph : mesure vs cible avec bandes qualitatives.",
+      en: "Bullet graph: measure vs target with qualitative range bands."
+    }
+  },
+  {
+    name: "MarimekkoChart",
+    slug: "marimekko-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Matrice Marimekko : largeur de colonne pondérée, segments en hauteur.",
+      en: "Marimekko chart: weighted column width with stacked segments."
+    }
+  },
+  {
+    name: "ParallelCoordinatesChart",
+    slug: "parallel-coordinates-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Axes parallèles pour comparer des enregistrements multidimensionnels.",
+      en: "Parallel coordinates for comparing multi-dimensional records."
+    }
+  },
+  {
+    name: "CandlestickChart",
+    slug: "candlestick-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Bougies OHLC pour visualiser les cours financiers.",
+      en: "OHLC candlestick chart for financial price data."
+    }
+  },
+  {
+    name: "CalendarHeatmapChart",
+    slug: "calendar-heatmap-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Grille calendrier GitHub-style pour visualiser l'activité quotidienne.",
+      en: "GitHub-style calendar grid for visualizing daily activity."
+    }
+  },
+  {
+    name: "BumpChart",
+    slug: "bump-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Classements dans le temps : lignes qui montent et descendent.",
+      en: "Rankings over time: rising and falling rank lines."
+    }
   }
 ];
 
