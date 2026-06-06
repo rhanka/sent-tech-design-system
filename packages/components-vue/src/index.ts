@@ -366,3 +366,9 @@ export type {
   BumpChartSeries,
   BumpChartTone,
 } from "./BumpChart.js";
+export { FilterPill } from "./FilterPill.js";
+export type { FilterPillProps, FilterPillTone } from "./FilterPill.js";
+export { FilterBar } from "./FilterBar.js";
+export type { FilterBarProps } from "./FilterBar.js";
+export { SelectionChip } from "./SelectionChip.js";
+export type { SelectionChipProps, SelectionChipTone } from "./SelectionChip.js";

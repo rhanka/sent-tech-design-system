@@ -134,7 +134,10 @@
     ParallelCoordinatesChart,
     CandlestickChart,
     CalendarHeatmapChart,
-    BumpChart
+    BumpChart,
+    FilterPill,
+    FilterBar,
+    SelectionChip
   } from "@sentropic/design-system-svelte";
   import Self from "./SvelteNode.svelte";
   import { createRawSnippet, type Component, type Snippet } from "svelte";
@@ -342,7 +345,10 @@
     ParallelCoordinatesChart,
     CandlestickChart,
     CalendarHeatmapChart,
-    BumpChart
+    BumpChart,
+    FilterPill,
+    FilterBar,
+    SelectionChip
   } as unknown as Record<ComponentName, Component<Record<string, unknown>>>;
 
   let { node }: { node: NodeSpec } = $props();
