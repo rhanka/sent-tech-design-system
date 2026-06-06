@@ -1,4 +1,10 @@
 export { default as Accordion } from "./Accordion.svelte";
+export { default as AppHeader } from "./AppHeader.svelte";
+export type { AppHeaderProps } from "./AppHeader.svelte";
+export { default as LanguageToggle } from "./LanguageToggle.svelte";
+export type { LanguageToggleProps, LanguageToggleLocale } from "./LanguageToggle.svelte";
+export { default as IdentityMenu, identityInitial } from "./IdentityMenu.svelte";
+export type { IdentityMenuProps, IdentityUser } from "./IdentityMenu.svelte";
 export { default as BulletChart } from "./BulletChart.svelte";
 export { default as MarimekkoChart } from "./MarimekkoChart.svelte";
 export { default as ParallelCoordinatesChart } from "./ParallelCoordinatesChart.svelte";
