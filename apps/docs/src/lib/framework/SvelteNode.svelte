@@ -128,7 +128,13 @@
     GaugeChart,
     FunnelChart,
     WaterfallChart,
-    TreemapChart
+    TreemapChart,
+    BulletChart,
+    MarimekkoChart,
+    ParallelCoordinatesChart,
+    CandlestickChart,
+    CalendarHeatmapChart,
+    BumpChart
   } from "@sentropic/design-system-svelte";
   import Self from "./SvelteNode.svelte";
   import { createRawSnippet, type Component, type Snippet } from "svelte";
@@ -330,7 +336,13 @@
     GaugeChart,
     FunnelChart,
     WaterfallChart,
-    TreemapChart
+    TreemapChart,
+    BulletChart,
+    MarimekkoChart,
+    ParallelCoordinatesChart,
+    CandlestickChart,
+    CalendarHeatmapChart,
+    BumpChart
   } as unknown as Record<ComponentName, Component<Record<string, unknown>>>;
 
   let { node }: { node: NodeSpec } = $props();

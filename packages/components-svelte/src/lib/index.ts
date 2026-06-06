@@ -1,4 +1,10 @@
 export { default as Accordion } from "./Accordion.svelte";
+export { default as BulletChart } from "./BulletChart.svelte";
+export { default as MarimekkoChart } from "./MarimekkoChart.svelte";
+export { default as ParallelCoordinatesChart } from "./ParallelCoordinatesChart.svelte";
+export { default as CandlestickChart } from "./CandlestickChart.svelte";
+export { default as CalendarHeatmapChart } from "./CalendarHeatmapChart.svelte";
+export { default as BumpChart } from "./BumpChart.svelte";
 export { default as Alert } from "./Alert.svelte";
 export { default as AreaChart } from "./AreaChart.svelte";
 export { default as AspectRatio } from "./AspectRatio.svelte";
@@ -146,6 +152,12 @@ export type {
 } from "./GaugeChart.svelte";
 export type { FunnelChartTone, FunnelChartDatum } from "./FunnelChart.svelte";
 export type { WaterfallType, WaterfallChartDatum } from "./WaterfallChart.svelte";
+export type { BulletChartDatum } from "./BulletChart.svelte";
+export type { MarimekkoChartTone, MarimekkoChartSegment, MarimekkoChartDatum } from "./MarimekkoChart.svelte";
+export type { ParallelCoordinatesChartTone, ParallelAxis } from "./ParallelCoordinatesChart.svelte";
+export type { CandlestickChartDatum } from "./CandlestickChart.svelte";
+export type { CalendarHeatmapChartDatum } from "./CalendarHeatmapChart.svelte";
+export type { BumpChartTone, BumpChartSeries } from "./BumpChart.svelte";
 export type {
   TreemapChartTone,
   TreemapChartDatum,
