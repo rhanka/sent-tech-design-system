@@ -51,6 +51,8 @@ export { DatePicker } from "./DatePicker.js";
 export type { DatePickerProps, DatePickerRange } from "./DatePicker.js";
 export { DonutChart } from "./DonutChart.js";
 export type { DonutChartProps, DonutChartDatum, DonutChartTone } from "./DonutChart.js";
+export { DivergentBarChart } from "./DivergentBarChart.js";
+export type { DivergentBarChartProps, DivergentBarChartDatum, DivergentBarChartTone } from "./DivergentBarChart.js";
 export { Drawer } from "./Drawer.js";
 export type { DrawerProps } from "./Drawer.js";
 export { Dropdown } from "./Dropdown.js";
