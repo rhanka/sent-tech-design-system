@@ -73,6 +73,7 @@ export { default as Form } from "./Form.svelte";
 export { default as FormGroup } from "./FormGroup.svelte";
 export { default as FunnelChart } from "./FunnelChart.svelte";
 export { default as GaugeChart } from "./GaugeChart.svelte";
+export { default as GeoMap } from "./GeoMap.svelte";
 export { default as Header } from "./Header.svelte";
 export { default as HeatmapChart } from "./HeatmapChart.svelte";
 export { default as Hidden } from "./Hidden.svelte";
@@ -221,6 +222,25 @@ export type { DataImageFit } from "./DataImage.svelte";
 export type { DonutChartDatum, DonutChartTone } from "./DonutChart.svelte";
 export type { ForceGraphNode, ForceGraphEdge, ForceGraphTone, ForceGraphNodeShape, ForceGraphEdgeDash, ForceGraphLegendEntry } from "./ForceGraph.svelte";
 export { nodeShapePath, edgeDashArray } from "./ForceGraph.svelte";
+export type {
+  GeoMapTone,
+  GeoMapCoordinate,
+  GeoMapBounds,
+  GeoMapProjection,
+  GeoMapGeometryType,
+  GeoMapGeometry,
+  GeoMapFeature,
+  GeoMapPoint,
+  GeoMapFlow,
+  GeoMapGeojsonLayer,
+  GeoMapChoroplethLayer,
+  GeoMapPointsLayer,
+  GeoMapDensityLayer,
+  GeoMapFlowLayer,
+  GeoMapHexbinLayer,
+  GeoMapClusterLayer,
+  GeoMapLayer
+} from "./GeoMap.svelte";
 export type { DropdownOption } from "./Dropdown.svelte";
 export type { HeaderAccount } from "./Header.svelte";
 export { deriveInitials } from "./Header.svelte";

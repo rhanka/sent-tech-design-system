@@ -89,6 +89,27 @@ export type {
   GaugeChartTone,
   GaugeChartFormat,
 } from "./GaugeChart.js";
+export { GeoMap } from "./GeoMap.js";
+export type {
+  GeoMapProps,
+  GeoMapTone,
+  GeoMapCoordinate,
+  GeoMapBounds,
+  GeoMapProjection,
+  GeoMapGeometryType,
+  GeoMapGeometry,
+  GeoMapFeature,
+  GeoMapPoint,
+  GeoMapFlow,
+  GeoMapGeojsonLayer,
+  GeoMapChoroplethLayer,
+  GeoMapPointsLayer,
+  GeoMapDensityLayer,
+  GeoMapFlowLayer,
+  GeoMapHexbinLayer,
+  GeoMapClusterLayer,
+  GeoMapLayer,
+} from "./GeoMap.js";
 export { Header } from "./Header.js";
 export type { HeaderProps, HeaderAccount } from "./Header.js";
 export { HeatmapChart } from "./HeatmapChart.js";
