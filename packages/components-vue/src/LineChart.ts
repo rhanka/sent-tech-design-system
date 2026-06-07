@@ -9,6 +9,7 @@ import {
   extendValueDomain,
   fixedLogTicks,
   fixedTicks,
+  forecastRuns,
   formatTick,
   isNumeric,
   linearRegression,
@@ -24,6 +25,7 @@ import {
   type ChartGoalLine,
   type ChartReferenceLine,
   type ChartScale,
+  type ForecastRun,
 } from "./chartScale.js";
 
 export type LineChartTone =
@@ -39,6 +41,14 @@ export type LineChartTone =
 export type LineChartDatum = {
   x: number | string;
   y: number;
+  /**
+   * Marks the datum as a FORECAST point. Forecast points render with the
+   * dedicated forecast tone and every segment touching a forecast point is
+   * dashed — including the segment between the last actual point and the
+   * first forecast point, so the line stays connected. Absent/false ⇒
+   * rendering unchanged (additive).
+   */
+  forecast?: boolean;
 };
 
 export type LineChartProps = {
@@ -271,19 +281,43 @@ export const LineChart = defineComponent({
             }
           : null;
 
+      // --- Forecast segments --------------------------------------------------
+      // A datum with `forecast: true` renders as a forecast point: its dot
+      // takes the forecast tone and every segment touching a forecast point is
+      // dashed, so the actual→forecast transition stays connected. Without any
+      // forecast datum the single solid path below is identical to before
+      // (additive).
+      const forecastFlags = data.map((d) => d.forecast === true);
+      const hasForecast = forecastFlags.some(Boolean);
+
       const dataValueItems = [
-        ...data.map((d) => `${d.x}: ${d.y}`),
+        ...data.map((d, i) => (forecastFlags[i] ? `${d.x}: ${d.y} (prévision)` : `${d.x}: ${d.y}`)),
         ...overlayDataListItems({ referenceLines, bands, goalLine: goal, trend: trendModel }),
       ];
 
-      const linePath = points.length === 0 ? "" : smooth ? buildSmoothPath(points) : buildLinearPath(points);
+      // Full-series path (area fill always covers the whole series).
+      const fullLinePath = points.length === 0 ? "" : smooth ? buildSmoothPath(points) : buildLinearPath(points);
+
+      // Solid (actual) + dashed (forecast) sub-paths. Without any forecast
+      // datum the solid list is exactly [fullLinePath] — the previous single path.
+      const segmentPath = (run: ForecastRun) => {
+        const seg = points.slice(run.start, run.end + 1);
+        return smooth ? buildSmoothPath(seg) : buildLinearPath(seg);
+      };
+      const runs = hasForecast ? forecastRuns(forecastFlags) : [];
+      const solidPaths = hasForecast
+        ? runs.filter((r) => !r.forecast).map(segmentPath)
+        : fullLinePath
+          ? [fullLinePath]
+          : [];
+      const forecastPaths = runs.filter((r) => r.forecast).map(segmentPath);
 
       let areaPath = "";
       if (area && points.length !== 0) {
         const base = MARGIN.top + plotHeight;
         const first = points[0];
         const last = points[points.length - 1];
-        areaPath = `${linePath} L${last.x.toFixed(2)},${base.toFixed(2)} L${first.x.toFixed(2)},${base.toFixed(2)} Z`;
+        areaPath = `${fullLinePath} L${last.x.toFixed(2)},${base.toFixed(2)} L${first.x.toFixed(2)},${base.toFixed(2)} Z`;
       }
 
       const gridLines = yTicks.map((tick) => ({
@@ -329,7 +363,14 @@ export const LineChart = defineComponent({
       );
 
       const dots = points.map((p) =>
-        h("circle", { key: p.index, class: "st-lineChart__dot", cx: p.x, cy: p.y, r: "4", "data-chart-index": p.index }),
+        h("circle", {
+          key: p.index,
+          class: classNames("st-lineChart__dot", forecastFlags[p.index] && "st-lineChart__dot--forecast"),
+          cx: p.x,
+          cy: p.y,
+          r: "4",
+          "data-chart-index": p.index,
+        }),
       );
 
       // Overlay vnodes — bands + reference lines + trend below the data; the
@@ -407,9 +448,30 @@ export const LineChart = defineComponent({
       if (area && areaPath) {
         svgChildren.push(h("path", { class: "st-lineChart__area", d: areaPath }));
       }
-      if (linePath) {
+      for (const [i, d] of solidPaths.entries()) {
         svgChildren.push(
-          h("path", { class: "st-lineChart__line", d: linePath, fill: "none", "stroke-width": "2", "stroke-linecap": "round", "stroke-linejoin": "round" }),
+          h("path", {
+            key: `line-${i}`,
+            class: "st-lineChart__line",
+            d,
+            fill: "none",
+            "stroke-width": "2",
+            "stroke-linecap": "round",
+            "stroke-linejoin": "round",
+          }),
+        );
+      }
+      for (const [i, d] of forecastPaths.entries()) {
+        svgChildren.push(
+          h("path", {
+            key: `forecast-${i}`,
+            class: "st-lineChart__line st-lineChart__line--forecast",
+            d,
+            fill: "none",
+            "stroke-width": "2",
+            "stroke-linecap": "round",
+            "stroke-linejoin": "round",
+          }),
         );
       }
       svgChildren.push(...dots, ...goalOverlays);

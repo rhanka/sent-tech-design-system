@@ -163,7 +163,7 @@ export type { RadarChartSeries, RadarChartTone } from "./RadarChart.svelte";
 export type { RoseChartDatum, RoseChartTone } from "./RoseChart.svelte";
 export type { SankeyChartLink, SankeyChartNode, SankeyChartTone } from "./SankeyChart.svelte";
 export type { SunburstChartDatum, SunburstChartTone } from "./SunburstChart.svelte";
-export type { ScatterPlotDatum, ScatterPlotTone } from "./ScatterPlot.svelte";
+export type { ScatterPlotDatum, ScatterPlotTone, ScatterPlotCentroid } from "./ScatterPlot.svelte";
 export type { StackedBarDatum, StackedBarSegment, StackedBarTone } from "./StackedBarChart.svelte";
 export type { LineChartDatum, LineChartTone } from "./LineChart.svelte";
 export type { ChartOverlayTone, ChartReferenceLine, ChartBand, ChartGoalLine, ChartScale } from "./LineChart.svelte";

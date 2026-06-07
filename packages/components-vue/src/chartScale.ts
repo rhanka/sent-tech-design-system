@@ -113,6 +113,27 @@ export function buildSmoothPath(pts: { x: number; y: number }[]): string {
   return d;
 }
 
+// --- Forecast segmentation (shared, framework-agnostic) --------------------
+
+/**
+ * Maximal runs of consecutive line segments sharing the same kind; `start` /
+ * `end` are inclusive point indices. A segment between two consecutive points
+ * is a forecast (dashed) segment when EITHER endpoint is a forecast datum, so
+ * the actual→forecast transition stays connected.
+ */
+export type ForecastRun = { start: number; end: number; forecast: boolean };
+
+export function forecastRuns(flags: boolean[]): ForecastRun[] {
+  const runs: ForecastRun[] = [];
+  for (let i = 0; i < flags.length - 1; i++) {
+    const dashed = Boolean(flags[i] || flags[i + 1]);
+    const last = runs[runs.length - 1];
+    if (last && last.forecast === dashed) last.end = i + 1;
+    else runs.push({ start: i, end: i + 1, forecast: dashed });
+  }
+  return runs;
+}
+
 /**
  * Couleurs effectives de la palette catégorielle `--st-semantic-data-categoryN`
  * (thème sent-tech). Sert à choisir une couleur de texte lisible PAR FILL pour

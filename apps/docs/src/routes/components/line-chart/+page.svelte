@@ -181,6 +181,7 @@
         <tr><td><code>bands</code></td><td><code>ChartBand[]</code></td><td><em>{locale.value === "fr" ? "aucune" : "none"}</em></td></tr>
         <tr><td><code>goalLine</code></td><td><code>ChartGoalLine</code></td><td><em>{locale.value === "fr" ? "aucune" : "none"}</em></td></tr>
         <tr><td><code>trend</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
+        <tr><td><code>data[].forecast</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
         <tr><td><code>showLegend</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
         <tr><td><code>width</code></td><td><code>number</code></td><td><code>480</code></td></tr>
         <tr><td><code>height</code></td><td><code>number</code></td><td><code>240</code></td></tr>
@@ -189,7 +190,7 @@
     </table>
 
     <p class="docs-demo-note">
-      <code>LineChartDatum</code> = <code>{`{ x: number | string; y: number }`}</code>
+      <code>LineChartDatum</code> = <code>{`{ x: number | string; y: number; forecast?: boolean }`}</code>
       ·
       <code>LineChartTone</code> = <code>"category1" | … | "category8"</code>.
       {locale.value === "fr"
@@ -200,6 +201,11 @@
       {locale.value === "fr"
         ? "Les overlays sont ajoutés à la liste accessible : lignes de référence, bandes, ligne d’objectif et tendance linéaire."
         : "Overlays are also exposed in the accessible list: reference lines, bands, goal line, and linear trend."}
+    </p>
+    <p class="docs-demo-note">
+      {locale.value === "fr"
+        ? "Chaque point peut porter `forecast: true` : il est alors rendu en prévision — segment(s) pointillé(s) avec le ton prévision dédié, y compris le segment entre le dernier point réel et le premier point de prévision (transition continue). Les valeurs concernées sont annoncées « … (prévision) » dans la liste accessible. Sans point en prévision, le rendu est inchangé."
+        : "Each datum may carry `forecast: true`: it then renders as a forecast — dashed segment(s) in the dedicated forecast tone, including the segment between the last actual point and the first forecast point (continuous transition). Affected values are announced as “… (prévision)” in the accessible list. Without any forecast datum, rendering is unchanged."}
     </p>
   </section>
 
@@ -217,6 +223,7 @@
       <li><code>--st-component-lineChart-gridStroke</code></li>
       <li><code>--st-component-lineChart-axisStroke</code></li>
       <li><code>--st-component-lineChart-labelColor</code></li>
+      <li><code>--st-component-lineChart-forecastStroke</code></li>
       <li><code>--st-component-lineChart-tooltipBackground</code></li>
       <li><code>--st-component-lineChart-tooltipText</code></li>
       <li><code>--st-semantic-border-subtle</code></li>

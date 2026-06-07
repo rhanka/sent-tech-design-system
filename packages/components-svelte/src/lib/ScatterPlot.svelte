@@ -8,6 +8,19 @@
     y: number;
     label?: string;
     tone?: ScatterPlotTone;
+    /**
+     * Per-datum radius, clamped to a sane maximum (32). Non-finite or
+     * negative ⇒ falls back to the global `radius`.
+     */
+    r?: number;
+  };
+
+  /** Cluster centroid marker (ring + cross), drawn above the data points. */
+  export type ScatterPlotCentroid = {
+    x: number;
+    y: number;
+    tone?: ScatterPlotTone;
+    label?: string;
   };
 </script>
 
@@ -21,6 +34,11 @@
     xLabel?: string;
     yLabel?: string;
     radius?: number;
+    /**
+     * Cluster centroid markers (ring + cross), drawn above the points. Their
+     * coordinates are folded into the axis domain. Non-finite x/y are skipped.
+     */
+    centroids?: ScatterPlotCentroid[];
     label: string;
     class?: string;
   };
@@ -32,6 +50,7 @@
     xLabel,
     yLabel,
     radius = 5,
+    centroids,
     label,
     class: className
   }: ScatterPlotProps = $props();
@@ -72,9 +91,20 @@
 
   const TONES = ["category1","category2","category3","category4","category5","category6","category7","category8"] as const;
 
+  // Sane upper bound for a per-datum radius (keeps oversized bubbles inside
+  // the plot); non-finite/negative values fall back to the global radius.
+  const MAX_POINT_RADIUS = 32;
+
+  // Centroids guarded once: non-finite coordinates are skipped entirely.
+  const validCentroids = $derived(
+    (centroids ?? []).filter((c) => Number.isFinite(c.x) && Number.isFinite(c.y))
+  );
+
   const scales = $derived.by(() => {
-    const xs = data.map((d) => d.x);
-    const ys = data.map((d) => d.y);
+    // Centroid coordinates are folded into the domain so markers always sit
+    // inside the plot (and a centroids-only chart still gets a real scale).
+    const xs = [...data.map((d) => d.x), ...validCentroids.map((c) => c.x)].filter(Number.isFinite);
+    const ys = [...data.map((d) => d.y), ...validCentroids.map((c) => c.y)].filter(Number.isFinite);
     const xTicks = niceTicks(Math.min(...xs), Math.max(...xs));
     const yTicks = niceTicks(Math.min(...ys), Math.max(...ys));
     const plotW = Math.max(width - MARGIN.left - MARGIN.right, 1);
@@ -92,14 +122,28 @@
     return data.map((d, i) => ({
       cx: MARGIN.left + scaleLinear(d.x, xMin, xMax, 0, plotW),
       cy: MARGIN.top + scaleLinear(d.y, yMin, yMax, plotH, 0),
+      r: typeof d.r === "number" && Number.isFinite(d.r) && d.r >= 0 ? Math.min(d.r, MAX_POINT_RADIUS) : radius,
       datum: d,
       tone: d.tone ?? TONES[i % TONES.length]
     }));
   });
 
-  const dataValueItems = $derived(
-    data.map((d) => (d.label ? `${d.label}: x ${d.x}, y ${d.y}` : `x ${d.x}, y ${d.y}`))
-  );
+  const centroidMarks = $derived.by(() => {
+    const { xMin, xMax, yMin, yMax, plotW, plotH } = scales;
+    return validCentroids.map((c, i) => ({
+      cx: MARGIN.left + scaleLinear(c.x, xMin, xMax, 0, plotW),
+      cy: MARGIN.top + scaleLinear(c.y, yMin, yMax, plotH, 0),
+      tone: c.tone ?? TONES[i % TONES.length],
+      label: c.label
+    }));
+  });
+
+  const dataValueItems = $derived([
+    ...data.map((d) => (d.label ? `${d.label}: x ${d.x}, y ${d.y}` : `x ${d.x}, y ${d.y}`)),
+    ...validCentroids.map((c) =>
+      c.label ? `Centroïde ${c.label}: (${c.x}, ${c.y})` : `Centroïde: (${c.x}, ${c.y})`
+    )
+  ]);
 
   function handleVisualPointerMove(event: PointerEvent) {
     const target = event.target;
@@ -152,9 +196,18 @@
           class="st-scatterPlot__point st-scatterPlot__point--{p.tone}"
           cx={p.cx}
           cy={p.cy}
-          r={radius}
+          r={p.r}
           data-chart-index={i}
         />
+      {/each}
+
+      <!-- cluster centroids — distinct ring + cross markers, above the points -->
+      {#each centroidMarks as c, i (i)}
+        <g class="st-scatterPlot__centroid st-scatterPlot__centroid--{c.tone}">
+          <circle class="st-scatterPlot__centroidRing" cx={c.cx} cy={c.cy} r="7" />
+          <line class="st-scatterPlot__centroidCross" x1={c.cx - 3.5} x2={c.cx + 3.5} y1={c.cy} y2={c.cy} />
+          <line class="st-scatterPlot__centroidCross" x1={c.cx} x2={c.cx} y1={c.cy - 3.5} y2={c.cy + 3.5} />
+        </g>
       {/each}
     </svg>
   </div>
@@ -187,6 +240,21 @@
   .st-scatterPlot__point--category6 { fill: var(--st-semantic-data-category6); }
   .st-scatterPlot__point--category7 { fill: var(--st-semantic-data-category7); }
   .st-scatterPlot__point--category8 { fill: var(--st-semantic-data-category8); }
+  /* Centroid markers — non-interactive ring + cross, toned via currentColor. */
+  .st-scatterPlot__centroid { pointer-events: none; }
+  .st-scatterPlot__centroidRing { fill: none; stroke: currentColor; stroke-width: 2; }
+  .st-scatterPlot__centroidCross { stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+  .st-scatterPlot__centroid--category1 { color: var(--st-semantic-data-category1); }
+  .st-scatterPlot__centroid--category2 { color: var(--st-semantic-data-category2); }
+  .st-scatterPlot__centroid--category3 { color: var(--st-semantic-data-category3); }
+  .st-scatterPlot__centroid--category4 { color: var(--st-semantic-data-category4); }
+  .st-scatterPlot__centroid--category5 { color: var(--st-semantic-data-category5); }
+  .st-scatterPlot__centroid--category6 { color: var(--st-semantic-data-category6); }
+  .st-scatterPlot__centroid--category7 { color: var(--st-semantic-data-category7); }
+  .st-scatterPlot__centroid--category8 { color: var(--st-semantic-data-category8); }
+  @media (prefers-reduced-motion: reduce) {
+    .st-scatterPlot__point { transition: none; }
+  }
   .st-scatterPlot__tooltip {
     background: var(--st-semantic-surface-inverse); border-radius: var(--st-radius-sm, 0.25rem);
     color: var(--st-semantic-text-inverse); display: inline-flex; flex-direction: column;
