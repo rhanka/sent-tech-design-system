@@ -126,7 +126,7 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 
 ## WP3 — Contrat header cross-site et applications
 
-**Statut global** : 🟢 cote DS ; application Sentropic/NC déléguée à l'utilisateur.
+**Statut global** : 🟢 **FERMÉ (2026-06-07)** — contrat DS livré ET shell consommable publié (`AppHeader`/`LanguageToggle`/`IdentityMenu`, burger à droite, dispo depuis svelte 0.25.1 / react+vue 0.20.1) ; l'IdP câble le shell (stopgap posé), l'app principale migre — les applications restent côté consommateurs.
 
 | Item | Statut | Commits | Notes |
 |---|---|---|---|
@@ -288,7 +288,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 ## WP10 — Theming via le moteur `design` (skills) — **AVANT WP7**
 
-**Statut global** : 🟡 **recalibré (2026-05-27)** — cible retargettée « **parité anatomique contrôlée** » (un thème ≠ que des couleurs). Noyau DSFR/Carbon livré et publié dans la ligne 0.10.x ; thème Airbus public-ready sur `main`, non publié. Reste : rollout Phase 2 + gouvernance des thèmes clients tiers.
+**Statut global** : 🟡 **recalibré (2026-05-27)** — cible retargettée « **parité anatomique contrôlée** » (un thème ≠ que des couleurs). Noyau DSFR/Carbon livré et publié dans la ligne 0.10.x ; thème Airbus public-ready sur `main`, non publié. Reste : rollout Phase 2 + gouvernance des thèmes clients tiers. **DÉCISION OWNER (2026-06-07) : le package thème Airbus ne sera JAMAIS publié en public sur npmjs.org.** Cible = publication PRIVÉE si possible (options : GitHub Packages — registry npm privé adossé au repo/org — ou organisation npm privée payante) ; à câbler quand un besoin client réel le justifie.
 
 **Recadrage (2026-05-27)** : le « 2 thèmes publiés 0.1.0 » ne changeait que **les couleurs** (couche `component` figée + tokens `foundation` débranchés des composants). Retargeté → spec `docs/superpowers/specs/2026-05-27-theme-anatomy-clone-design.md` (revu Codex+Opus). Pilote = Button/Input/Link/Card/Tabs × DSFR+Carbon.
 
@@ -386,7 +386,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 ## WP14 — Chrome documentaire par thème (header + barre latérale fidèles au DS)
 
-**Statut global** : 🟢 implémenté sur `main` — Chrome Carbon + DSFR + Airbus + sent-tech livrés. DSFR et Airbus utilisent des assets SVG versionnés; Carbon utilise désormais le wordmark officiel `carbon-wordmark.svg` dans l'asset `apps/docs/static/chrome/carbon/logo.svg`. L'exécution ex post complète `node tools/compare/fidelity.mjs` est passée (global 89,9% ; DSFR 90,2% ; Carbon 92,7% ; Airbus 86,6%). Validation visuelle publique planifiée en fin de loop.
+**Statut global** : 🟢 implémenté sur `main` — Chrome Carbon + DSFR + Airbus + sent-tech livrés. DSFR et Airbus utilisent des assets SVG versionnés; Carbon utilise désormais le wordmark officiel `carbon-wordmark.svg` dans l'asset `apps/docs/static/chrome/carbon/logo.svg`. L'exécution ex post complète `node tools/compare/fidelity.mjs` est passée (global 89,9% ; DSFR 90,2% ; Carbon 92,7% ; Airbus 86,6%). Validation visuelle publique **ACCEPTÉE par l'owner (2026-06-07)** — fidélité par DS jugée OK. **WP FERMÉ.**
 
 **Problème (signalé par l'utilisateur — déjà demandé)** : aujourd'hui, basculer de thème ne change **que la police / l'anatomie** (tokens). Le **chrome documentaire** (header avec logo, menu de header, menu de barre latérale) reste le nôtre → « **pas crédible** ». Exigence : quand on passe sur un thème d'import, **tout le chrome des docs doit prendre la FORME du site de documentation réel de ce design system** — **logos pixel-perfect**, forme du header, forme du menu de header, forme du menu latéral. On parle de la **FORME** (header / nav / sidebar), pas du contenu de présentation.
 
@@ -423,7 +423,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 ## WP15 — Intégration dataviz BI (DS comme surface de présentation)
 
-**Statut global** : 🟡 ouvert le 2026-06-07 après audit de `../dataviz` v0.4.17. Le repo dataviz est propre et taggé `v0.4.17`, sa roadmap est cochée à 100%, mais la clôture contient des fallbacks SVG de présentation pour les familles analytics et cartographie. C'est incompatible avec la règle dataviz source : "Présentation = design system" et "jamais de présentationnel cuit dans dataviz". `codex:dataviz` a accepté le constat par h2a et poussé `883a670 docs(roadmap): track DS fallback evolution` : v0.4.17 reste une couverture fonctionnelle publiée, pas une clôture DS-final.
+**Statut global** : 🟢 **FERMÉ (2026-06-07)** — toutes les surfaces DS livrées (0.31.0 handoff Embed/DataImage/axes ; 0.32.0 tranche A forecast+cluster ; 0.33.0 GeoMap générique à couches) et **dataviz v0.4.19 publié sans plus aucun fallback présentationnel** (commit fix(wp15), repin DS, CI+Pages vertes). Historique : ouvert le 2026-06-07 après audit de `../dataviz` v0.4.17. Le repo dataviz est propre et taggé `v0.4.17`, sa roadmap est cochée à 100%, mais la clôture contient des fallbacks SVG de présentation pour les familles analytics et cartographie. C'est incompatible avec la règle dataviz source : "Présentation = design system" et "jamais de présentationnel cuit dans dataviz". `codex:dataviz` a accepté le constat par h2a et poussé `883a670 docs(roadmap): track DS fallback evolution` : v0.4.17 reste une couverture fonctionnelle publiée, pas une clôture DS-final.
 
 **Fait côté DS** : commit `4ba3558` poussé sur `main` avec les demandes dataviz déjà reçues : BarChart/LineChart format et axes (`domain`, `scale`, `invertAxis`, `referenceLines`, `bands`, `goalLines`) à parité Svelte/React/Vue, `Embed`/`DataImage`, sélection `TreeView`, docs et tests. Commit `abbf30d` poussé ensuite pour réparer les workflows split publish en construisant le workspace avant `pack:smoke`; CI package/docs verte sauf gate design préexistante.
 
@@ -446,9 +446,9 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 | Fait | Handoff reçu | Intégrer les demandes DS explicites de dataviz | 🟢 | 100% | Format/axes, overlays Bar/Line, `Embed`, `DataImage`, `TreeView` sélection livrés et poussés. |
 | Fait | Publication DS | Sécuriser les workflows de split publish | 🟢 | 100% | Build workspace ajouté avant pack smoke React/Vue/Airbus; CI correspondante verte. |
 | Fait | Audit final dataviz | Vérifier si la roadmap dataviz 100% respecte la règle DS | 🟢 | 100% | Audit local confirmé par `codex:dataviz`; roadmap dataviz corrigée en `883a670` pour distinguer couverture fonctionnelle et évolution DS post-v0.4.17. |
-| A faire | DS analytics | Fermer les écarts non couverts par les charts DS existants | 🟡 | 45% | `ReferenceLineChart`, `TrendLineChart` et `ErrorBarsChart` peuvent être des adaptateurs dataviz vers Line/Bar; reste DS minimal : forecast pointillé, percentile compact avec médiane, `ScatterPlot` radius/size par datum ou `ClusterPlot`. |
-| A faire | DS geo 2D | Exposer les surfaces cartographiques 2D tokenisées | ⚪ | 0% | Choix d'API à faire : `GeoMap` générique à couches ou 7 composants publics; déplacer SVG/classes/couleurs/opacités/projection dans DS; tests Svelte/React/Vue et docs. |
-| Attendu | Clôture dataviz propre | Dataviz ne doit plus contenir de présentation fallback pour ces familles | 🟡 | 10% | Dataviz a acté la dette; reste remplacement des wrappers par les composants DS et release dataviz repinnée sur DS courant. |
+| Fait | DS analytics | Fermer les écarts non couverts par les charts DS existants | 🟢 | 100% | `ReferenceLineChart`, `TrendLineChart` et `ErrorBarsChart` peuvent être des adaptateurs dataviz vers Line/Bar; livré : LineChart forecast?:boolean pointillé + ScatterPlot r/tone par datum + centroids (publié 0.32.0/0.28.0) ; percentile couvert par bands+médiane existants. |
+| Fait | DS geo 2D | Exposer les surfaces cartographiques 2D tokenisées | 🟢 | 100% | `GeoMap` générique à couches livré (7 layers geojson/choropleth/points/density/flow/hexbin/cluster, API calée sur les contrats dataviz, publié 0.33.0/0.29.0) avec tests 3 fw + docs. |
+| Fait | Clôture dataviz propre | Dataviz ne doit plus contenir de présentation fallback pour ces familles | 🟢 | 100% | dataviz v0.4.19 : fallbacks analytics+géo supprimés, wrappers sur surfaces DS, repin 0.33.0/0.29.0, CI npm Publish + Pages vertes. |
 
 **Dépendances** : dataviz-core fournit les modèles rendering-neutral; DS porte uniquement la présentation. **Owner DS** : Codex intégrateur DS. **Parallélisable** : oui, analytics et geo sont deux tracks indépendants; les ports Svelte/React/Vue peuvent ensuite être découpés par framework.
 
