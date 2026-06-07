@@ -76,7 +76,7 @@
         <tr>
           <td><code>allow</code></td>
           <td><code>string</code></td>
-          <td>—</td>
+          <td>non défini</td>
           <td>Politique de permissions (ex. <code>fullscreen</code>).</td>
         </tr>
         <tr>

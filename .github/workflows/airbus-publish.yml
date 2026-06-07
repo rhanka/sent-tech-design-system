@@ -32,6 +32,8 @@ jobs:
         run: |
           npm --workspace @sentropic/design-system-theme-airbus run build
           npm --workspace @sentropic/design-system-theme-airbus test
+      - name: Build workspace for package smoke
+        run: npm run build
       - name: Smoke packed packages
         run: npm run pack:smoke
 
