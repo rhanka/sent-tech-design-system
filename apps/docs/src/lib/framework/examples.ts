@@ -105,6 +105,7 @@ export type ComponentName =
   | "TableOfContents"
   | "Transcription"
   | "ForceGraph"
+  | "GeoMap"
   | "PasswordInput"
   | "PaginationNav"
   | "MenuTriggerButton"
@@ -3775,6 +3776,146 @@ import { ScatterPlot } from "@sentropic/design-system-vue";
       { x: 5, y: 5, label: 'DataTable' },
       { x: 2, y: 8, label: 'Badge' },
       { x: 6, y: 3, label: 'TreeView' }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  geomap: {
+    id: "geomap",
+    slug: "geo-map",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "GeoMap",
+            props: {
+              label: "Bureaux et flux",
+              layers: [
+                {
+                  type: "points",
+                  label: "Bureaux",
+                  points: [
+                    { latitude: 48.85, longitude: 2.35, label: "Paris", value: 12 },
+                    { latitude: 45.5, longitude: -73.55, label: "Montréal", value: 8 },
+                    { latitude: 35.68, longitude: 139.69, label: "Tokyo", value: 5 }
+                  ]
+                },
+                {
+                  type: "flow",
+                  flows: [
+                    {
+                      source: { latitude: 48.85, longitude: 2.35 },
+                      target: { latitude: 45.5, longitude: -73.55 },
+                      value: 7,
+                      label: "Paris → Montréal"
+                    },
+                    {
+                      source: { latitude: 48.85, longitude: 2.35 },
+                      target: { latitude: 35.68, longitude: 139.69 },
+                      value: 3,
+                      label: "Paris → Tokyo"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { GeoMap } from "@sentropic/design-system-svelte";
+</script>
+
+<GeoMap
+  label="Bureaux et flux"
+  layers={[
+    {
+      type: "points",
+      label: "Bureaux",
+      points: [
+        { latitude: 48.85, longitude: 2.35, label: "Paris", value: 12 },
+        { latitude: 45.5, longitude: -73.55, label: "Montréal", value: 8 },
+        { latitude: 35.68, longitude: 139.69, label: "Tokyo", value: 5 }
+      ]
+    },
+    {
+      type: "flow",
+      flows: [
+        {
+          source: { latitude: 48.85, longitude: 2.35 },
+          target: { latitude: 45.5, longitude: -73.55 },
+          value: 7,
+          label: "Paris → Montréal"
+        }
+      ]
+    }
+  ]}
+/>`,
+      react: `import { GeoMap } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <GeoMap
+      label="Bureaux et flux"
+      layers={[
+        {
+          type: "points",
+          label: "Bureaux",
+          points: [
+            { latitude: 48.85, longitude: 2.35, label: "Paris", value: 12 },
+            { latitude: 45.5, longitude: -73.55, label: "Montréal", value: 8 },
+            { latitude: 35.68, longitude: 139.69, label: "Tokyo", value: 5 }
+          ]
+        },
+        {
+          type: "flow",
+          flows: [
+            {
+              source: { latitude: 48.85, longitude: 2.35 },
+              target: { latitude: 45.5, longitude: -73.55 },
+              value: 7,
+              label: "Paris → Montréal"
+            }
+          ]
+        }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { GeoMap } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <GeoMap
+    label="Bureaux et flux"
+    :layers="[
+      {
+        type: 'points',
+        label: 'Bureaux',
+        points: [
+          { latitude: 48.85, longitude: 2.35, label: 'Paris', value: 12 },
+          { latitude: 45.5, longitude: -73.55, label: 'Montréal', value: 8 },
+          { latitude: 35.68, longitude: 139.69, label: 'Tokyo', value: 5 }
+        ]
+      },
+      {
+        type: 'flow',
+        flows: [
+          {
+            source: { latitude: 48.85, longitude: 2.35 },
+            target: { latitude: 45.5, longitude: -73.55 },
+            value: 7,
+            label: 'Paris → Montréal'
+          }
+        ]
+      }
     ]"
   />
 </template>`
