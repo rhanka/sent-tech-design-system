@@ -27,7 +27,7 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 | WP12 | Templates docs / slides ESN | 🟢 | 100% | Typologie + 3 gabarits livrés en source Markdown-first. | Ajouter de nouveaux templates métier si besoin. | Aucun. |
 | WP13 | Portage React | 🟢 | 100% | Package React complet, docs `/react`, workflow de release dédié, 95 tests verts. | Mise à l’échelle/retouches post-release. | Aucun. |
 | WP14 | Chrome documentaire par thème | 🟢 | 100% | Forme du chrome (header/nav/sidebar/logo) adaptée pour DSFR/Carbon/Airbus + vérification fidélité DSFR 90,2% / Carbon 92,7% / Airbus 86,6%. | Ajustements finaux de finesse visuelle selon retours externes. | Validation publique de la fidélité avant clôture définitive. |
-| WP15 | Intégration dataviz BI | 🟡 | 55% | DS a livré format/axes, `Embed`/`DataImage`, sélection `TreeView`; dataviz a accepté que v0.4.17 reste fonctionnel mais non DS-final et a ouvert l'évolution post-release. | Livrer les manques DS analytics minimaux, cadrer la carto 2D, puis valider les remplacements dataviz et le repin DS. | Handoffs dataviz détaillés par surface + validation API DS geo (`GeoMap` générique vs 7 composants). |
+| WP15 | Intégration dataviz BI | 🟢 | 100% | FERMÉ 2026-06-07 : toutes surfaces DS livrées (axes/format, Embed/DataImage, TreeView, forecast LineChart, cluster/centroïdes ScatterPlot, GeoMap générique à couches — svelte 0.33.0/react+vue 0.29.0) ; dataviz v0.4.19 publié sans plus aucun fallback présentationnel, repin DS, CI+Pages vertes. | — | Rien (nouvelles familles BI = nouveau besoin). |
 
 ## Mise à jour 2026-06-03 — parité multi-framework complète + déploiement réparé
 
