@@ -35,6 +35,8 @@ jobs:
           npm --workspace @sentropic/design-system-react run build
           npm --workspace @sentropic/design-system-react run check
           npm --workspace @sentropic/design-system-react run test
+      - name: Build workspace for package smoke
+        run: npm run build
       - name: Smoke packed packages
         run: npm run pack:smoke
 

@@ -34,6 +34,8 @@ jobs:
           npm --workspace @sentropic/design-system-vue run build
           npm --workspace @sentropic/design-system-vue run check
           npm --workspace @sentropic/design-system-vue run test
+      - name: Build workspace for package smoke
+        run: npm run build
       - name: Smoke packed packages
         run: npm run pack:smoke
 
