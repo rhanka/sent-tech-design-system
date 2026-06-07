@@ -73,13 +73,13 @@
         <tr>
           <td><code>width</code> / <code>height</code></td>
           <td><code>number | string</code></td>
-          <td>—</td>
+          <td>non défini</td>
           <td>Dimensions (nombre → px, ou longueur CSS).</td>
         </tr>
         <tr>
           <td><code>radius</code></td>
           <td><code>number | string</code></td>
-          <td>—</td>
+          <td>non défini</td>
           <td>Rayon de bordure (longueur CSS).</td>
         </tr>
         <tr>
