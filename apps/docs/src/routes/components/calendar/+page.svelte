@@ -2,8 +2,7 @@
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import TriRender from "$lib/framework/TriRender.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const fr = $derived(locale.value === "fr");
@@ -42,13 +41,11 @@
     </p>
   </section>
 
-  <FrameworkPreview example="calendar" title={fr ? "Aperçu live" : "Live preview"} />
-
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
-    <FrameworkDemo nodes={singleDemo} label={fr ? "Date unique" : "Single date"} />
-    <FrameworkDemo nodes={rangeDemo} label="range" />
-    <FrameworkDemo nodes={boundedDemo} label="min / max" />
+    <TriRender nodes={singleDemo} label={fr ? "Date unique" : "Single date"} />
+    <TriRender nodes={rangeDemo} label="range" />
+    <TriRender nodes={boundedDemo} label="min / max" />
   </section>
 
   <section class="docs-section">
