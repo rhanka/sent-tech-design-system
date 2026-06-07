@@ -177,7 +177,7 @@ export type { ChartOverlayTone, ChartReferenceLine, ChartBand, ChartGoalLine, Ch
 export { DonutChart } from "./DonutChart.js";
 export type { DonutChartProps, DonutChartDatum, DonutChartTone } from "./DonutChart.js";
 export { ScatterPlot } from "./ScatterPlot.js";
-export type { ScatterPlotProps, ScatterPlotDatum, ScatterPlotTone } from "./ScatterPlot.js";
+export type { ScatterPlotProps, ScatterPlotDatum, ScatterPlotTone, ScatterPlotCentroid } from "./ScatterPlot.js";
 export { Sparkline } from "./Sparkline.js";
 export type { SparklineProps, SparklineTone } from "./Sparkline.js";
 export { StackedBarChart } from "./StackedBarChart.js";

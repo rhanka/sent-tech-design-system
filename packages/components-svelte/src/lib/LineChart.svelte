@@ -12,6 +12,14 @@
   export type LineChartDatum = {
     x: number | string;
     y: number;
+    /**
+     * Marks the datum as a FORECAST point. Forecast points render with the
+     * dedicated forecast tone and every segment touching a forecast point is
+     * dashed — including the segment between the last actual point and the
+     * first forecast point, so the line stays connected. Absent/false ⇒
+     * rendering unchanged (additive).
+     */
+    forecast?: boolean;
   };
 
   /**
@@ -433,8 +441,31 @@
     };
   });
 
+  // --- Forecast segments ------------------------------------------------------
+  // A datum with `forecast: true` renders as a forecast point: its dot takes
+  // the forecast tone and every segment touching a forecast point is dashed,
+  // so the actual→forecast transition stays connected. Without any forecast
+  // datum the single solid path below is identical to before (additive).
+  const forecastFlags = $derived(data.map((d) => d.forecast === true));
+  const hasForecast = $derived(forecastFlags.some(Boolean));
+
+  // Maximal runs of consecutive segments sharing the same (solid/dashed) kind;
+  // `start`/`end` are inclusive point indices. A segment between two
+  // consecutive points is dashed when EITHER endpoint is a forecast datum.
+  type ForecastRun = { start: number; end: number; forecast: boolean };
+  function forecastRuns(flags: boolean[]): ForecastRun[] {
+    const runs: ForecastRun[] = [];
+    for (let i = 0; i < flags.length - 1; i++) {
+      const dashed = Boolean(flags[i] || flags[i + 1]);
+      const last = runs[runs.length - 1];
+      if (last && last.forecast === dashed) last.end = i + 1;
+      else runs.push({ start: i, end: i + 1, forecast: dashed });
+    }
+    return runs;
+  }
+
   const dataValueItems = $derived([
-    ...data.map((d) => `${d.x}: ${d.y}`),
+    ...data.map((d, i) => (forecastFlags[i] ? `${d.x}: ${d.y} (prévision)` : `${d.x}: ${d.y}`)),
     ...overlayDataListItems(referenceLines, bands, goal, trendModel)
   ]);
 
@@ -460,16 +491,30 @@
     return d;
   }
 
-  const linePath = $derived(
+  // Full-series path (area fill always covers the whole series).
+  const fullLinePath = $derived(
     points.length === 0 ? "" : smooth ? buildSmoothPath(points) : buildLinearPath(points)
   );
+
+  // Solid (actual) + dashed (forecast) sub-paths. Without any forecast datum
+  // the solid list is exactly [fullLinePath] — the previous single path.
+  const segmentPath = $derived((run: ForecastRun) => {
+    const seg = points.slice(run.start, run.end + 1);
+    return smooth ? buildSmoothPath(seg) : buildLinearPath(seg);
+  });
+  const runs = $derived(hasForecast ? forecastRuns(forecastFlags) : []);
+  const solidPaths = $derived.by(() => {
+    if (!hasForecast) return fullLinePath ? [fullLinePath] : [];
+    return runs.filter((r) => !r.forecast).map(segmentPath);
+  });
+  const forecastPaths = $derived(runs.filter((r) => r.forecast).map(segmentPath));
 
   const areaPath = $derived.by(() => {
     if (!area || points.length === 0) return "";
     const base = MARGIN.top + plotHeight;
     const first = points[0];
     const last = points[points.length - 1];
-    return `${linePath} L${last.x.toFixed(2)},${base.toFixed(2)} L${first.x.toFixed(2)},${base.toFixed(2)} Z`;
+    return `${fullLinePath} L${last.x.toFixed(2)},${base.toFixed(2)} L${first.x.toFixed(2)},${base.toFixed(2)} Z`;
   });
 
   const gridLines = $derived(
@@ -609,20 +654,32 @@
     {#if area && areaPath}
       <path class="st-lineChart__area" d={areaPath} />
     {/if}
-    {#if linePath}
+    {#each solidPaths as d, i (i)}
       <path
         class="st-lineChart__line"
-        d={linePath}
+        {d}
         fill="none"
         stroke-width="2"
         stroke-linecap="round"
         stroke-linejoin="round"
       />
-    {/if}
+    {/each}
+    {#each forecastPaths as d, i (i)}
+      <path
+        class="st-lineChart__line st-lineChart__line--forecast"
+        {d}
+        fill="none"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    {/each}
 
     {#each points as p (p.index)}
       <circle
-        class="st-lineChart__dot"
+        class={forecastFlags[p.index]
+          ? "st-lineChart__dot st-lineChart__dot--forecast"
+          : "st-lineChart__dot"}
         cx={p.x}
         cy={p.y}
         r="4"
@@ -703,6 +760,13 @@
     stroke: currentColor;
   }
 
+  /* Forecast segment — dashed, dedicated tokenized tone (palette purple),
+     mirrors the dataviz ForecastLineChart fallback (dasharray 5 4). */
+  .st-lineChart__line--forecast {
+    stroke: var(--st-component-lineChart-forecastStroke, var(--st-semantic-data-category7));
+    stroke-dasharray: 5 4;
+  }
+
   .st-lineChart__area {
     fill: currentColor;
     opacity: 0.18;
@@ -719,6 +783,16 @@
 
   .st-lineChart__dot:hover {
     r: 5.5;
+  }
+
+  .st-lineChart__dot--forecast {
+    fill: var(--st-component-lineChart-forecastStroke, var(--st-semantic-data-category7));
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .st-lineChart__dot {
+      transition: none;
+    }
   }
 
   .st-lineChart__tooltip {

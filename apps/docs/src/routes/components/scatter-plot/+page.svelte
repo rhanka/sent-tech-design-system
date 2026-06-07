@@ -58,10 +58,16 @@
         <tr><td><code>xLabel</code> / <code>yLabel</code></td><td><code>string</code></td><td><em>optionnel</em></td></tr>
         <tr><td><code>width</code> / <code>height</code></td><td><code>number</code></td><td><code>480</code> / <code>280</code></td></tr>
         <tr><td><code>radius</code></td><td><code>number</code></td><td><code>5</code></td></tr>
+        <tr><td><code>centroids</code></td><td><code>ScatterPlotCentroid[]</code></td><td><em>optionnel</em></td></tr>
       </tbody>
     </table>
     <p class="docs-demo-context">
-      <code>ScatterPlotDatum</code> = <code>{`{ x, y, label?, tone? }`}</code>.
+      <code>ScatterPlotDatum</code> = <code>{`{ x, y, label?, tone?, r? }`}</code> —
+      <code>r</code> est un rayon par point, borné à 32 (sinon <code>radius</code> global) ;
+      <code>tone</code> est le ton par point (ton de cluster), sinon cycle de la palette.
+      <code>ScatterPlotCentroid</code> = <code>{`{ x, y, tone?, label? }`}</code> : marqueurs de
+      centroïdes (anneau + croix, plus grands que les points) dessinés au-dessus des points,
+      intégrés au domaine des axes et annoncés « Centroïde&nbsp;: (x, y) » dans la liste accessible.
     </p>
   </section>
 </div>
