@@ -17,6 +17,19 @@ export type ScatterPlotDatum = {
   y: number;
   label?: string;
   tone?: ScatterPlotTone;
+  /**
+   * Per-datum radius, clamped to a sane maximum (32). Non-finite or
+   * negative ⇒ falls back to the global `radius`.
+   */
+  r?: number;
+};
+
+/** Cluster centroid marker (ring + cross), drawn above the data points. */
+export type ScatterPlotCentroid = {
+  x: number;
+  y: number;
+  tone?: ScatterPlotTone;
+  label?: string;
 };
 
 export type ScatterPlotProps = Omit<React.HTMLAttributes<HTMLDivElement>, "className"> & {
@@ -26,11 +39,20 @@ export type ScatterPlotProps = Omit<React.HTMLAttributes<HTMLDivElement>, "class
   xLabel?: string;
   yLabel?: string;
   radius?: number;
+  /**
+   * Cluster centroid markers (ring + cross), drawn above the points. Their
+   * coordinates are folded into the axis domain. Non-finite x/y are skipped.
+   */
+  centroids?: ScatterPlotCentroid[];
   label: string;
   className?: string;
 };
 
 const MARGIN = { top: 14, right: 18, bottom: 36, left: 48 } as const;
+
+// Sane upper bound for a per-datum radius (keeps oversized bubbles inside
+// the plot); non-finite/negative values fall back to the global radius.
+const MAX_POINT_RADIUS = 32;
 
 const TONES: ScatterPlotTone[] = [
   "category1",
@@ -50,14 +72,20 @@ export function ScatterPlot({
   xLabel,
   yLabel,
   radius = 5,
+  centroids,
   label,
   className,
   ...rest
 }: ScatterPlotProps) {
   const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
 
-  const xs = data.map((d) => d.x);
-  const ys = data.map((d) => d.y);
+  // Centroids guarded once: non-finite coordinates are skipped entirely.
+  const validCentroids = (centroids ?? []).filter((c) => Number.isFinite(c.x) && Number.isFinite(c.y));
+
+  // Centroid coordinates are folded into the domain so markers always sit
+  // inside the plot (and a centroids-only chart still gets a real scale).
+  const xs = [...data.map((d) => d.x), ...validCentroids.map((c) => c.x)].filter(Number.isFinite);
+  const ys = [...data.map((d) => d.y), ...validCentroids.map((c) => c.y)].filter(Number.isFinite);
   const xTicks = niceTicks(Math.min(...xs), Math.max(...xs));
   const yTicks = niceTicks(Math.min(...ys), Math.max(...ys));
   const plotW = Math.max(width - MARGIN.left - MARGIN.right, 1);
@@ -70,11 +98,24 @@ export function ScatterPlot({
   const points = data.map((d, i) => ({
     cx: MARGIN.left + scaleLinear(d.x, xMin, xMax, 0, plotW),
     cy: MARGIN.top + scaleLinear(d.y, yMin, yMax, plotH, 0),
+    r: typeof d.r === "number" && Number.isFinite(d.r) && d.r >= 0 ? Math.min(d.r, MAX_POINT_RADIUS) : radius,
     datum: d,
     tone: (d.tone ?? TONES[i % TONES.length]) as ScatterPlotTone,
   }));
 
-  const dataValueItems = data.map((d) => (d.label ? `${d.label}: x ${d.x}, y ${d.y}` : `x ${d.x}, y ${d.y}`));
+  const centroidMarks = validCentroids.map((c, i) => ({
+    cx: MARGIN.left + scaleLinear(c.x, xMin, xMax, 0, plotW),
+    cy: MARGIN.top + scaleLinear(c.y, yMin, yMax, plotH, 0),
+    tone: (c.tone ?? TONES[i % TONES.length]) as ScatterPlotTone,
+    label: c.label,
+  }));
+
+  const dataValueItems = [
+    ...data.map((d) => (d.label ? `${d.label}: x ${d.x}, y ${d.y}` : `x ${d.x}, y ${d.y}`)),
+    ...validCentroids.map((c) =>
+      c.label ? `Centroïde ${c.label}: (${c.x}, ${c.y})` : `Centroïde: (${c.x}, ${c.y})`,
+    ),
+  ];
 
   function handleLeave() {
     setHoveredIndex(null);
@@ -166,9 +207,18 @@ export function ScatterPlot({
               className={classNames("st-scatterPlot__point", `st-scatterPlot__point--${p.tone}`)}
               cx={p.cx}
               cy={p.cy}
-              r={radius}
+              r={p.r}
               data-chart-index={i}
             />
+          ))}
+
+          {/* cluster centroids — distinct ring + cross markers, above the points */}
+          {centroidMarks.map((c, i) => (
+            <g key={`c${i}`} className={classNames("st-scatterPlot__centroid", `st-scatterPlot__centroid--${c.tone}`)}>
+              <circle className="st-scatterPlot__centroidRing" cx={c.cx} cy={c.cy} r="7" />
+              <line className="st-scatterPlot__centroidCross" x1={c.cx - 3.5} x2={c.cx + 3.5} y1={c.cy} y2={c.cy} />
+              <line className="st-scatterPlot__centroidCross" x1={c.cx} x2={c.cx} y1={c.cy - 3.5} y2={c.cy + 3.5} />
+            </g>
           ))}
         </svg>
       </div>

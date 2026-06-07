@@ -9,6 +9,7 @@ import {
   extendValueDomain,
   fixedLogTicks,
   fixedTicks,
+  forecastRuns,
   formatTick,
   isNumeric,
   linearRegression,
@@ -24,6 +25,7 @@ import {
   type ChartGoalLine,
   type ChartReferenceLine,
   type ChartScale,
+  type ForecastRun,
 } from "./chartScale.js";
 
 export type LineChartTone =
@@ -39,6 +41,14 @@ export type LineChartTone =
 export type LineChartDatum = {
   x: number | string;
   y: number;
+  /**
+   * Marks the datum as a FORECAST point. Forecast points render with the
+   * dedicated forecast tone and every segment touching a forecast point is
+   * dashed — including the segment between the last actual point and the
+   * first forecast point, so the line stays connected. Absent/false ⇒
+   * rendering unchanged (additive).
+   */
+  forecast?: boolean;
 };
 
 export type LineChartProps = Omit<React.HTMLAttributes<HTMLDivElement>, "className"> & {
@@ -247,19 +257,42 @@ export function LineChart({
         }
       : null;
 
+  // --- Forecast segments ------------------------------------------------------
+  // A datum with `forecast: true` renders as a forecast point: its dot takes
+  // the forecast tone and every segment touching a forecast point is dashed,
+  // so the actual→forecast transition stays connected. Without any forecast
+  // datum the single solid path below is identical to before (additive).
+  const forecastFlags = data.map((d) => d.forecast === true);
+  const hasForecast = forecastFlags.some(Boolean);
+
   const dataValueItems = [
-    ...data.map((d) => `${d.x}: ${d.y}`),
+    ...data.map((d, i) => (forecastFlags[i] ? `${d.x}: ${d.y} (prévision)` : `${d.x}: ${d.y}`)),
     ...overlayDataListItems({ referenceLines, bands, goalLine: goal, trend: trendModel }),
   ];
 
-  const linePath = points.length === 0 ? "" : smooth ? buildSmoothPath(points) : buildLinearPath(points);
+  // Full-series path (area fill always covers the whole series).
+  const fullLinePath = points.length === 0 ? "" : smooth ? buildSmoothPath(points) : buildLinearPath(points);
+
+  // Solid (actual) + dashed (forecast) sub-paths. Without any forecast datum
+  // the solid list is exactly [fullLinePath] — the previous single path.
+  const segmentPath = (run: ForecastRun) => {
+    const seg = points.slice(run.start, run.end + 1);
+    return smooth ? buildSmoothPath(seg) : buildLinearPath(seg);
+  };
+  const runs = hasForecast ? forecastRuns(forecastFlags) : [];
+  const solidPaths = hasForecast
+    ? runs.filter((r) => !r.forecast).map(segmentPath)
+    : fullLinePath
+      ? [fullLinePath]
+      : [];
+  const forecastPaths = runs.filter((r) => r.forecast).map(segmentPath);
 
   const areaPath = (() => {
     if (!area || points.length === 0) return "";
     const base = MARGIN.top + plotHeight;
     const first = points[0];
     const last = points[points.length - 1];
-    return `${linePath} L${last.x.toFixed(2)},${base.toFixed(2)} L${first.x.toFixed(2)},${base.toFixed(2)} Z`;
+    return `${fullLinePath} L${last.x.toFixed(2)},${base.toFixed(2)} L${first.x.toFixed(2)},${base.toFixed(2)} Z`;
   })();
 
   const gridLines = yTicks.map((tick) => ({
@@ -405,19 +438,38 @@ export function LineChart({
           ) : null}
 
           {area && areaPath ? <path className="st-lineChart__area" d={areaPath} /> : null}
-          {linePath ? (
+          {solidPaths.map((d, i) => (
             <path
+              key={`line-${i}`}
               className="st-lineChart__line"
-              d={linePath}
+              d={d}
               fill="none"
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
-          ) : null}
+          ))}
+          {forecastPaths.map((d, i) => (
+            <path
+              key={`forecast-${i}`}
+              className="st-lineChart__line st-lineChart__line--forecast"
+              d={d}
+              fill="none"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          ))}
 
           {points.map((p) => (
-            <circle key={p.index} className="st-lineChart__dot" cx={p.x} cy={p.y} r="4" data-chart-index={p.index} />
+            <circle
+              key={p.index}
+              className={classNames("st-lineChart__dot", forecastFlags[p.index] && "st-lineChart__dot--forecast")}
+              cx={p.x}
+              cy={p.y}
+              r="4"
+              data-chart-index={p.index}
+            />
           ))}
 
           {/* Goal line — emphasised, ABOVE the data. */}

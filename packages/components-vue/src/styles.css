@@ -3427,6 +3427,13 @@
     stroke: currentColor;
   }
 
+  /* Forecast segment — dashed, dedicated tokenized tone (palette purple),
+     mirrors the dataviz ForecastLineChart fallback (dasharray 5 4). */
+  .st-lineChart__line--forecast {
+    stroke: var(--st-component-lineChart-forecastStroke, var(--st-semantic-data-category7));
+    stroke-dasharray: 5 4;
+  }
+
   .st-lineChart__area {
     fill: currentColor;
     opacity: 0.18;
@@ -3449,6 +3456,16 @@
   .st-lineChart__dot:focus-visible {
     outline: 2px solid var(--st-semantic-border-interactive);
     outline-offset: 1px;
+  }
+
+  .st-lineChart__dot--forecast {
+    fill: var(--st-component-lineChart-forecastStroke, var(--st-semantic-data-category7));
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .st-lineChart__dot {
+      transition: none;
+    }
   }
 
   .st-lineChart__tooltip {
@@ -5133,6 +5150,21 @@
   .st-scatterPlot__point--category6 { fill: var(--st-semantic-data-category6); }
   .st-scatterPlot__point--category7 { fill: var(--st-semantic-data-category7); }
   .st-scatterPlot__point--category8 { fill: var(--st-semantic-data-category8); }
+  /* Centroid markers — non-interactive ring + cross, toned via currentColor. */
+  .st-scatterPlot__centroid { pointer-events: none; }
+  .st-scatterPlot__centroidRing { fill: none; stroke: currentColor; stroke-width: 2; }
+  .st-scatterPlot__centroidCross { stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+  .st-scatterPlot__centroid--category1 { color: var(--st-semantic-data-category1); }
+  .st-scatterPlot__centroid--category2 { color: var(--st-semantic-data-category2); }
+  .st-scatterPlot__centroid--category3 { color: var(--st-semantic-data-category3); }
+  .st-scatterPlot__centroid--category4 { color: var(--st-semantic-data-category4); }
+  .st-scatterPlot__centroid--category5 { color: var(--st-semantic-data-category5); }
+  .st-scatterPlot__centroid--category6 { color: var(--st-semantic-data-category6); }
+  .st-scatterPlot__centroid--category7 { color: var(--st-semantic-data-category7); }
+  .st-scatterPlot__centroid--category8 { color: var(--st-semantic-data-category8); }
+  @media (prefers-reduced-motion: reduce) {
+    .st-scatterPlot__point { transition: none; }
+  }
   .st-scatterPlot__tooltip {
     background: var(--st-semantic-surface-inverse); border-radius: var(--st-radius-sm, 0.25rem);
     color: var(--st-semantic-text-inverse); display: inline-flex; flex-direction: column;
