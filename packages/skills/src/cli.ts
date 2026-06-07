@@ -2,11 +2,13 @@
 import { existsSync, readFileSync, writeFileSync, readdirSync, statSync, realpathSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { spawnSync } from "node:child_process";
 import readline from "node:readline/promises";
 import { audit } from "./engine/run.js";
 import { heuristicReview } from "./engine/heuristics.js";
 import { openDom } from "./engine/openDom.js";
-import type { AuditTarget, Finding } from "./types.js";
+import { visualAudit, VisualAuditDependencyError } from "./engine/visualAudit.js";
+import type { AuditTarget, Finding, VisualAuditReport, VisualLocale } from "./types.js";
 
 function resolveTarget(raw: string): AuditTarget {
   if (raw.startsWith("http://") || raw.startsWith("https://")) {
@@ -166,6 +168,7 @@ function printGlobalHelp() {
     `\x1b[1mCOMMANDES\x1b[0m\n` +
     `  \x1b[1m\x1b[32minit\x1b[0m                  Configuration stratégique de marque et extraction de tokens.\n` +
     `  \x1b[1m\x1b[32maudit <target>\x1b[0m        Alias V1 strict de check --tech: AuditReport JSON + code retour contractuel.\n` +
+    `  \x1b[1m\x1b[32maudit:visual [target]\x1b[0m Audit VISUEL headless (Playwright) : overlap, fuite i18n, grilles, screenshots.\n` +
     `  \x1b[1m\x1b[32mbuild <feature>\x1b[0m       Proposition ergonomique amont et génération de code (craft).\n` +
     `  \x1b[1m\x1b[32mcheck <target>\x1b[0m        Diagnostics techniques déterministes et heuristiques humaines.\n` +
     `  \x1b[1m\x1b[32malign <target>\x1b[0m        Calibrage et mise en conformité des Fondations & Système physiques.\n` +
@@ -237,6 +240,35 @@ function printAuditHelp() {
     `\x1b[1mEXEMPLES\x1b[0m\n` +
     `  design audit index.html\n` +
     `  design audit https://example.com\n`
+  );
+}
+
+function printVisualAuditHelp() {
+  process.stderr.write(
+    `\x1b[1m\x1b[36mCommand: design audit:visual [target]\x1b[0m\n` +
+    `Audit VISUEL en Chromium HEADLESS réel (Playwright) sur les pages docs rendues.\n` +
+    `Contrairement à \`design audit\` (statique, JSDOM, sans layout), il calcule les\n` +
+    `rects/styles in-page et détecte des bugs visuels réels, avec screenshots.\n\n` +
+    `\x1b[1mCIBLE\x1b[0m\n` +
+    `  [target]              Dossier de build docs (défaut: apps/docs/build) ou URL http(s).\n` +
+    `                        'docs' ou omis ⇒ build docs local (buildé si absent).\n\n` +
+    `\x1b[1mOPTIONS\x1b[0m\n` +
+    `  --out <dir>           Dossier de sortie (défaut: ./visual-audit-out) : screenshots + JSON.\n` +
+    `  --locale <fr|en>      Locale d'audit (défaut: fr) ; en fr, contrôle la fuite i18n anglaise.\n` +
+    `  --pages <glob>        Filtre des slugs, séparés par des virgules (ex: button,calendar,chart-*).\n` +
+    `  --headful             Lance le navigateur visible (debug) ; headless par défaut.\n` +
+    `  --fail-under <score>  Gate qualité 0-100 sur le score visuel agrégé.\n` +
+    `  -h, --help            Affiche cette aide.\n\n` +
+    `\x1b[1mHEURISTIQUES\x1b[0m\n` +
+    `  visual-text-overlap   Chevauchement de textes lisibles.\n` +
+    `  visual-i18n-leak      Chaîne UI anglaise visible sur page FR (ex: "Copied").\n` +
+    `  visual-control-incoherence / -misaligned   Contrôles de tailles/baselines incohérentes.\n` +
+    `  visual-grid-broken    Cellules de grille superposées (ex: Calendar).\n` +
+    `  visual-overflow / -clipping   Débordement ou contenu coupé.\n\n` +
+    `\x1b[1mEXEMPLES\x1b[0m\n` +
+    `  design audit:visual --pages button,calendar,copy-button\n` +
+    `  design audit:visual apps/docs/build --out ./out --locale fr\n` +
+    `  design audit:visual https://docs.example.com --pages button --fail-under 80\n`
   );
 }
 
@@ -808,6 +840,148 @@ async function handleAudit(args: string[]) {
   process.exit(report.findings.length === 0 ? 0 : 1);
 }
 
+function takeValueOption(args: string[], name: string): { args: string[]; value?: string } {
+  const index = args.indexOf(name);
+  if (index < 0) return { args };
+  const value = args[index + 1];
+  return {
+    args: args.filter((_, argIndex) => argIndex !== index && argIndex !== index + 1),
+    value
+  };
+}
+
+function ensureDocsBuild(buildDir: string): boolean {
+  const compDir = resolve(buildDir, "components");
+  if (existsSync(compDir)) return true;
+  const appsDocs = resolve(buildDir, "..");
+  if (!existsSync(resolve(appsDocs, "package.json"))) return false;
+  process.stderr.write(
+    `\x1b[33m[audit:visual]\x1b[0m Build docs introuvable (${buildDir}). Lancement de \`npm run build\` dans apps/docs…\n`
+  );
+  const res = spawnSync("npm", ["run", "build"], { cwd: appsDocs, stdio: ["ignore", "inherit", "inherit"] });
+  return res.status === 0 && existsSync(compDir);
+}
+
+function visualSummary(report: VisualAuditReport, reportPath: string): string {
+  const counts = { high: 0, medium: 0, low: 0 };
+  for (const page of report.pages) {
+    for (const finding of page.findings) counts[finding.severity]++;
+  }
+  const header =
+    `\x1b[1m\x1b[35m[design audit:visual]\x1b[0m ${report.totalFindings} finding(s) sur ${report.pages.length} page(s) ` +
+    `en ${report.durationMs}ms — high:${counts.high} medium:${counts.medium} low:${counts.low} score:${report.score}/100\n`;
+  const flat = report.pages.flatMap((page) => page.findings.map((finding) => ({ ...finding, slug: page.slug })));
+  const preview = flat
+    .sort((a, b) => severityRank(a) - severityRank(b))
+    .slice(0, 8)
+    .map((finding) => `  [${finding.severity}] ${finding.ruleId} @ ${finding.slug} (${finding.location}) — ${finding.message}`)
+    .join("\n");
+  const browserNote = report.browser.executablePath
+    ? `\x1b[2mnavigateur: Chrome système (${report.browser.executablePath}), headless:${report.browser.headless}\x1b[0m\n`
+    : `\x1b[2mnavigateur: Chromium Playwright, headless:${report.browser.headless}\x1b[0m\n`;
+  return (
+    header +
+    (preview ? `${preview}\n` : "") +
+    browserNote +
+    `\x1b[2mscreenshots: ${report.outDir}\x1b[0m\n` +
+    `\x1b[2mrapport JSON: ${reportPath}\x1b[0m\n`
+  );
+}
+
+async function handleAuditVisual(args: string[]) {
+  if (args.includes("-h") || args.includes("--help")) {
+    printVisualAuditHelp();
+    process.exit(0);
+  }
+
+  const parsedFailUnder = parseFailUnderOption(args);
+  if (parsedFailUnder.error) {
+    process.stderr.write(`\x1b[1m\x1b[31mErreur :\x1b[0m ${parsedFailUnder.error}\n`);
+    process.exit(2);
+  }
+  const failUnder = parsedFailUnder.failUnder;
+  let work = parsedFailUnder.args;
+
+  const headful = work.includes("--headful");
+  work = work.filter((arg) => arg !== "--headful");
+
+  const outOpt = takeValueOption(work, "--out");
+  work = outOpt.args;
+  const localeOpt = takeValueOption(work, "--locale");
+  work = localeOpt.args;
+  const pagesOpt = takeValueOption(work, "--pages");
+  work = pagesOpt.args;
+
+  if (localeOpt.value && localeOpt.value !== "fr" && localeOpt.value !== "en") {
+    process.stderr.write(`\x1b[1m\x1b[31mErreur :\x1b[0m --locale attend 'fr' ou 'en'.\n`);
+    process.exit(2);
+  }
+  const locale: VisualLocale = localeOpt.value === "en" ? "en" : "fr";
+  const outDir = resolve(process.cwd(), outOpt.value ?? "visual-audit-out");
+  const pages = pagesOpt.value
+    ? pagesOpt.value.split(",").map((s) => s.trim()).filter(Boolean)
+    : null;
+
+  const positional = work.find((arg) => !arg.startsWith("-"));
+
+  let siteDir: string | undefined;
+  let baseUrl: string | undefined;
+
+  if (!positional || positional === "docs") {
+    const buildDir = resolve(findProjectRoot(), "apps/docs/build");
+    if (!ensureDocsBuild(buildDir)) {
+      process.stderr.write(
+        `\x1b[1m\x1b[31mErreur :\x1b[0m Build docs indisponible (${buildDir}).\n` +
+        `Lancer \`npm run build\` dans apps/docs, ou passer un dossier/URL en cible.\n`
+      );
+      process.exit(2);
+    }
+    siteDir = buildDir;
+  } else if (/^https?:\/\//.test(positional)) {
+    baseUrl = positional;
+    if (!pages) {
+      process.stderr.write(
+        `\x1b[1m\x1b[31mErreur :\x1b[0m En mode URL, préciser --pages avec la liste des slugs à auditer.\n`
+      );
+      process.exit(2);
+    }
+  } else {
+    const path = resolve(process.cwd(), positional);
+    if (existsSync(path) && statSync(path).isDirectory()) {
+      siteDir = path;
+    } else {
+      process.stderr.write(
+        `\x1b[1m\x1b[31mErreur :\x1b[0m Cible invalide '${positional}' (attendu : dossier de build, URL http(s) ou 'docs').\n`
+      );
+      process.exit(2);
+    }
+  }
+
+  process.stderr.write(
+    `\x1b[1m\x1b[35m[design audit:visual] 🖥️  Audit visuel headless (Chromium) — locale ${locale}…\x1b[0m\n`
+  );
+
+  let report: VisualAuditReport;
+  try {
+    report = await visualAudit({ siteDir, baseUrl, outDir, locale, pages, headful });
+  } catch (error) {
+    if (error instanceof VisualAuditDependencyError) {
+      process.stderr.write(`\x1b[1m\x1b[31mErreur :\x1b[0m ${error.message}\n`);
+      process.exit(2);
+    }
+    process.stderr.write(`\x1b[1m\x1b[31mErreur audit visuel :\x1b[0m ${(error as Error).message}\n`);
+    process.exit(2);
+  }
+
+  const reportPath = resolve(outDir, "visual-audit-report.json");
+  writeFileSync(reportPath, JSON.stringify(report, null, 2), "utf-8");
+  process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
+  process.stderr.write(visualSummary(report, reportPath));
+
+  const clean = report.totalFindings === 0;
+  process.exit(failUnder === undefined ? (clean ? 0 : 1) : report.score >= failUnder ? 0 : 1);
+}
+
 async function handleAlign(args: string[]) {
   if (args.includes("-h") || args.includes("--help")) {
     printAlignHelp();
@@ -1092,6 +1266,9 @@ async function runCommandFromArgs(args: string[]) {
       break;
     case "audit":
       await handleAudit(remainingArgs);
+      break;
+    case "audit:visual":
+      await handleAuditVisual(remainingArgs);
       break;
     case "build":
       await handleBuild(remainingArgs);
