@@ -99,6 +99,8 @@ export type ComponentName =
   | "BackToTop"
   | "DisplaySettings"
   | "MediaContent"
+  | "Embed"
+  | "DataImage"
   | "Notification"
   | "TableOfContents"
   | "Transcription"
@@ -2923,8 +2925,8 @@ import { DataTable } from "@sentropic/design-system-vue";
           {
             comp: "TreeView",
             props: {
-              defaultExpandedIds: ["components", "forms"],
-              selectedId: "button",
+              defaultExpanded: ["components", "forms"],
+              selected: "button",
               nodes: [
                 {
                   id: "components",
@@ -2955,8 +2957,8 @@ import { DataTable } from "@sentropic/design-system-vue";
 </script>
 
 <TreeView
-  defaultExpandedIds={["components", "forms"]}
-  selectedId="button"
+  defaultExpanded={["components", "forms"]}
+  selected="button"
   nodes={[
     {
       id: "components",
@@ -5384,6 +5386,116 @@ import { MediaContent } from "@sentropic/design-system-vue";
     title="Atelier Forge"
     caption="Aperçu du chantier livré."
     byline="Crédit : Sent Tech"
+  />
+</template>`
+    }
+  },
+  embed: {
+    id: "embed",
+    slug: "embed",
+    nodes: [
+      wrap([
+        {
+          comp: "Embed",
+          props: {
+            src: "https://www.openstreetmap.org/export/embed.html?bbox=2.29%2C48.85%2C2.31%2C48.86&layer=mapnik",
+            title: "Carte du quartier",
+            aspectRatio: "16/9"
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { Embed } from "@sentropic/design-system-svelte";
+</script>
+
+<Embed
+  src="https://www.example.com/widget"
+  title="Carte du quartier"
+  aspectRatio="16/9"
+/>`,
+      react: `import { Embed } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <Embed
+      src="https://www.example.com/widget"
+      title="Carte du quartier"
+      aspectRatio="16/9"
+    />
+  );
+}`,
+      vue: `<script setup>
+import { Embed } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Embed
+    src="https://www.example.com/widget"
+    title="Carte du quartier"
+    aspect-ratio="16/9"
+  />
+</template>`
+    }
+  },
+  dataimage: {
+    id: "dataimage",
+    slug: "data-image",
+    nodes: [
+      wrap([
+        {
+          comp: "DataImage",
+          props: {
+            src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 240'%3E%3Crect width='360' height='240' fill='%23eef2f7'/%3E%3Cpath d='M42 174h276L250 91l-54 63-37-43z' fill='%234e79a7'/%3E%3Ccircle cx='108' cy='82' r='24' fill='%23f28e2b'/%3E%3C/svg%3E",
+            alt: "Aperçu de graphique produit",
+            width: 320,
+            height: 200,
+            fit: "cover",
+            radius: 8
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { DataImage } from "@sentropic/design-system-svelte";
+</script>
+
+<DataImage
+  src="/produit.jpg"
+  alt="Aperçu de graphique produit"
+  width={320}
+  height={200}
+  fit="cover"
+  radius={8}
+/>`,
+      react: `import { DataImage } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <DataImage
+      src="/produit.jpg"
+      alt="Aperçu de graphique produit"
+      width={320}
+      height={200}
+      fit="cover"
+      radius={8}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { DataImage } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <DataImage
+    src="/produit.jpg"
+    alt="Aperçu de graphique produit"
+    :width="320"
+    :height="200"
+    fit="cover"
+    :radius="8"
   />
 </template>`
     }
