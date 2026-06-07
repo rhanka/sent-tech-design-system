@@ -10,7 +10,7 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 - ⏸️ Blocked — necessite une decision ou une dependance externe
 - ⚪ Planned — pas demarre
 
-## Synthèse WP2 → WP14
+## Synthèse WP2 → WP15
 
 | WP | Finalité | Statut | Avancement | Fait | A faire | Attente |
 |---|---|---|---:|---|---|---|
@@ -27,6 +27,7 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 | WP12 | Templates docs / slides ESN | 🟢 | 100% | Typologie + 3 gabarits livrés en source Markdown-first. | Ajouter de nouveaux templates métier si besoin. | Aucun. |
 | WP13 | Portage React | 🟢 | 100% | Package React complet, docs `/react`, workflow de release dédié, 95 tests verts. | Mise à l’échelle/retouches post-release. | Aucun. |
 | WP14 | Chrome documentaire par thème | 🟢 | 100% | Forme du chrome (header/nav/sidebar/logo) adaptée pour DSFR/Carbon/Airbus + vérification fidélité DSFR 90,2% / Carbon 92,7% / Airbus 86,6%. | Ajustements finaux de finesse visuelle selon retours externes. | Validation publique de la fidélité avant clôture définitive. |
+| WP15 | Intégration dataviz BI | 🟡 | 45% | DS a livré les demandes dataviz format/axes (`domain`, `scale`, `invertAxis`, overlays), `Embed`/`DataImage` et sélection `TreeView`; CI split publish réparée. | Rapatrier dans le DS les surfaces analytics/cartes que dataviz v0.4.17 a finalisées via SVG fallbacks; réaligner les dépendances dataviz sur DS courant. | Réponse h2a `codex:dataviz` sur handoff/correction des fallbacks + preuves CI/version. |
 
 ## Mise à jour 2026-06-03 — parité multi-framework complète + déploiement réparé
 
@@ -420,15 +421,47 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 **Dépendances** : thème actif (switcher, WP10) ; réf chrome Airbus (WP10/Codex). **Owner** : Claude (docs). **Parallélisable** : oui (apps/docs, hors `packages/components-react/**` et `packages/theme-airbus/**`).
 
+## WP15 — Intégration dataviz BI (DS comme surface de présentation)
+
+**Statut global** : 🟡 ouvert le 2026-06-07 après audit de `../dataviz` v0.4.17. Le repo dataviz est propre et taggé `v0.4.17`, sa roadmap est cochée à 100%, mais la clôture contient des fallbacks SVG de présentation pour les familles analytics et cartographie. C'est incompatible avec la règle dataviz source : "Présentation = design system" et "jamais de présentationnel cuit dans dataviz".
+
+**Fait côté DS** : commit `4ba3558` poussé sur `main` avec les demandes dataviz déjà reçues : BarChart/LineChart format et axes (`domain`, `scale`, `invertAxis`, `referenceLines`, `bands`, `goalLines`) à parité Svelte/React/Vue, `Embed`/`DataImage`, sélection `TreeView`, docs et tests. Commit `abbf30d` poussé ensuite pour réparer les workflows split publish en construisant le workspace avant `pack:smoke`; CI package/docs verte sauf gate design préexistante.
+
+**Constat dataviz v0.4.17** :
+
+| Famille | Etat dataviz | Etat DS | A faire |
+|---|---|---|---|
+| Format/axes BI | Consommation des props DS sur les charts existants | 🟢 DS OK | RAS hors vérification dépendances dataviz. |
+| Embed/DataImage/ObjectLayerPanel | Wrappers dataviz branchés sur DS `Embed`, `DataImage`, `TreeView` | 🟢 DS OK | RAS hors vérification dépendances dataviz. |
+| Analytics overlays | `ReferenceLineChart`, `PercentileBandChart`, `TrendLineChart`, `ForecastLineChart`, `ErrorBarsChart`, `AnalyticsClusterPlot` rendus en SVG dans dataviz Svelte/React/Vue | 🟡 partiel : `LineChart` couvre déjà `referenceLines`, `bands`, `goalLine`, `trend`; `BarChart` couvre overlays + `errorLow`/`errorHigh`; `ScatterPlot` existe mais seulement avec radius global | Remplacer côté dataviz les fallbacks déjà absorbables par Line/Bar; ajouter côté DS seulement forecast, strip percentile compact et cluster/radius par point. |
+| Cartographie | `GeoPointMap`, `ChoroplethMap`, `GeoFlowMap`, `GeoHexbinMap`, `GeoClusterMap`, `GeoDensityMap`, `GeoJsonMap` rendus en SVG dans dataviz Svelte/React/Vue, sans import DS | ⚪ absent | Ajouter soit un `GeoMap` DS générique à couches, soit les 7 composants DS geo 2D tokenisés à parité 3 fw, hors carto 3D assumée hors couverture. |
+| Dépendances dataviz | `dataviz-react`/`dataviz-vue` dépendent encore de DS `0.23.0`, `dataviz-svelte` de DS `0.27.0` | DS courant : React/Vue `0.26.1`, Svelte `0.30.1` | Dataviz doit repinner et republisher après consommation des surfaces DS finales. |
+
+**Preuves locales** : `../dataviz/ROADMAP.md` lignes 10-14 pose la règle DS, lignes 53-54 admettent les fallbacks SVG analytics/geo, ligne 73 affirme pourtant "aucune présentation cuite". Les packages dataviz v0.4.17 exportent ces surfaces et les fichiers React montrent du SVG direct (`ReferenceLineChart.tsx`, `GeoPointMap.tsx`) avec couleurs codées. L'audit geo confirme aussi une palette hex locale dupliquée dans `geoMapLayout.ts` par framework et aucune surface DS équivalente hors charts non cartographiques (`HeatmapChart`, `TreemapChart`, `CalendarHeatmapChart`).
+
+### Suivi WP15
+
+| Vue | Track | Finalité | État | Avancement | Détail |
+|---|---|---|---:|---:|---|
+| Fait | Handoff reçu | Intégrer les demandes DS explicites de dataviz | 🟢 | 100% | Format/axes, overlays Bar/Line, `Embed`, `DataImage`, `TreeView` sélection livrés et poussés. |
+| Fait | Publication DS | Sécuriser les workflows de split publish | 🟢 | 100% | Build workspace ajouté avant pack smoke React/Vue/Airbus; CI correspondante verte. |
+| En cours | Audit final dataviz | Vérifier si la roadmap dataviz 100% respecte la règle DS | 🟡 | 70% | Audit local confirme fallbacks SVG analytics/geo et dépendances DS datées; message h2a envoyé à `codex:dataviz` avec demande de handoff/correction. |
+| A faire | DS analytics | Fermer les écarts non couverts par les charts DS existants | 🟡 | 45% | `ReferenceLineChart`, `TrendLineChart` et `ErrorBarsChart` peuvent être des adaptateurs dataviz vers Line/Bar; reste DS minimal : forecast pointillé, percentile compact avec médiane, `ScatterPlot` radius/size par datum ou `ClusterPlot`. |
+| A faire | DS geo 2D | Exposer les surfaces cartographiques 2D tokenisées | ⚪ | 0% | Choix d'API à faire : `GeoMap` générique à couches ou 7 composants publics; déplacer SVG/classes/couleurs/opacités/projection dans DS; tests Svelte/React/Vue et docs. |
+| Attendu | Clôture dataviz propre | Dataviz ne doit plus contenir de présentation fallback pour ces familles | ⏸️ | 0% | Dépend de la réponse `codex:dataviz`, du remplacement des wrappers par les composants DS et d'une release dataviz repinnée sur DS courant. |
+
+**Dépendances** : dataviz-core fournit les modèles rendering-neutral; DS porte uniquement la présentation. **Owner DS** : Codex intégrateur DS. **Parallélisable** : oui, analytics et geo sont deux tracks indépendants; les ports Svelte/React/Vue peuvent ensuite être découpés par framework.
+
 ## Plan de bataille parallele
 
 A tout instant on peut tenir 3 a 4 agents en parallele sans conflit de fichiers. **Priorité actuelle (révisée 2026-06-01, WP8/WP9/WP11/WP12/WP13 fermés côté repo)** :
 
-1. **WP10 thème Airbus / theming** — garder le package public-ready, compléter uniquement ce qui est vérifiable localement; publication client bloquée par décision version/release.
-2. **WP7 audit DS** — augmenter la couverture upstream si de nouvelles références locales deviennent exploitables; le gate strict 100% est déjà actif.
-3. **WP14 chrome documentaire** — validation visuelle publique en fin de loop; monitorer l'alignement visuel Carbon/DSFR/Airbus avec référence.
-4. **WP2 backlog composants** — ne rouvrir que sur besoin produit concret (composites uniquement, e.g. modèles/pages-types).
-5. **Fond fermé** : WP5 charts, WP8 moteur, WP9 Chat/Agent, WP11 dogfooding, WP12 templates source et WP13 React.
+1. **WP15 dataviz BI** — cadrer puis livrer les surfaces DS analytics/geo manquantes, et faire remplacer les fallbacks dans dataviz.
+2. **WP10 thème Airbus / theming** — garder le package public-ready, compléter uniquement ce qui est vérifiable localement; publication client bloquée par décision version/release.
+3. **WP7 audit DS** — augmenter la couverture upstream si de nouvelles références locales deviennent exploitables; le gate strict 100% est déjà actif.
+4. **WP14 chrome documentaire** — validation visuelle publique en fin de loop; monitorer l'alignement visuel Carbon/DSFR/Airbus avec référence.
+5. **WP2 backlog composants** — ne rouvrir que sur besoin produit concret (composites uniquement, e.g. modèles/pages-types).
+6. **Fond fermé** : WP5 charts, WP8 moteur, WP9 Chat/Agent, WP11 dogfooding, WP12 templates source et WP13 React.
 
 ## Décisions tranchées / gardes restantes
 
