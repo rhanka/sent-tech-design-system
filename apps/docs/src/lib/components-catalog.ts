@@ -959,6 +959,16 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "GeoMap",
+    slug: "geo-map",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Carte 2D générique à couches (GeoJSON, choroplèthe, points, densité, flux, hexbin, clusters), projection équirectangulaire ou Mercator, liste de valeurs accessible.",
+      en: "Generic layered 2D map (GeoJSON, choropleth, points, density, flows, hexbin, clusters), equirectangular or Mercator projection, accessible value list."
+    }
+  },
+  {
     name: "StackedBarChart",
     slug: "stacked-bar-chart",
     status: "documented",
