@@ -27,7 +27,7 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 | WP12 | Templates docs / slides ESN | 🟢 | 100% | Typologie + 3 gabarits livrés en source Markdown-first. | Ajouter de nouveaux templates métier si besoin. | Aucun. |
 | WP13 | Portage React | 🟢 | 100% | Package React complet, docs `/react`, workflow de release dédié, 95 tests verts. | Mise à l’échelle/retouches post-release. | Aucun. |
 | WP14 | Chrome documentaire par thème | 🟢 | 100% | Forme du chrome (header/nav/sidebar/logo) adaptée pour DSFR/Carbon/Airbus + vérification fidélité DSFR 90,2% / Carbon 92,7% / Airbus 86,6%. | Ajustements finaux de finesse visuelle selon retours externes. | Validation publique de la fidélité avant clôture définitive. |
-| WP15 | Intégration dataviz BI | 🟡 | 45% | DS a livré les demandes dataviz format/axes (`domain`, `scale`, `invertAxis`, overlays), `Embed`/`DataImage` et sélection `TreeView`; CI split publish réparée. | Rapatrier dans le DS les surfaces analytics/cartes que dataviz v0.4.17 a finalisées via SVG fallbacks; réaligner les dépendances dataviz sur DS courant. | Réponse h2a `codex:dataviz` sur handoff/correction des fallbacks + preuves CI/version. |
+| WP15 | Intégration dataviz BI | 🟡 | 55% | DS a livré format/axes, `Embed`/`DataImage`, sélection `TreeView`; dataviz a accepté que v0.4.17 reste fonctionnel mais non DS-final et a ouvert l'évolution post-release. | Livrer les manques DS analytics minimaux, cadrer la carto 2D, puis valider les remplacements dataviz et le repin DS. | Handoffs dataviz détaillés par surface + validation API DS geo (`GeoMap` générique vs 7 composants). |
 
 ## Mise à jour 2026-06-03 — parité multi-framework complète + déploiement réparé
 
@@ -423,7 +423,7 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 
 ## WP15 — Intégration dataviz BI (DS comme surface de présentation)
 
-**Statut global** : 🟡 ouvert le 2026-06-07 après audit de `../dataviz` v0.4.17. Le repo dataviz est propre et taggé `v0.4.17`, sa roadmap est cochée à 100%, mais la clôture contient des fallbacks SVG de présentation pour les familles analytics et cartographie. C'est incompatible avec la règle dataviz source : "Présentation = design system" et "jamais de présentationnel cuit dans dataviz".
+**Statut global** : 🟡 ouvert le 2026-06-07 après audit de `../dataviz` v0.4.17. Le repo dataviz est propre et taggé `v0.4.17`, sa roadmap est cochée à 100%, mais la clôture contient des fallbacks SVG de présentation pour les familles analytics et cartographie. C'est incompatible avec la règle dataviz source : "Présentation = design system" et "jamais de présentationnel cuit dans dataviz". `codex:dataviz` a accepté le constat par h2a et poussé `883a670 docs(roadmap): track DS fallback evolution` : v0.4.17 reste une couverture fonctionnelle publiée, pas une clôture DS-final.
 
 **Fait côté DS** : commit `4ba3558` poussé sur `main` avec les demandes dataviz déjà reçues : BarChart/LineChart format et axes (`domain`, `scale`, `invertAxis`, `referenceLines`, `bands`, `goalLines`) à parité Svelte/React/Vue, `Embed`/`DataImage`, sélection `TreeView`, docs et tests. Commit `abbf30d` poussé ensuite pour réparer les workflows split publish en construisant le workspace avant `pack:smoke`; CI package/docs verte sauf gate design préexistante.
 
@@ -445,10 +445,10 @@ Objectif : appliquer les bonnes pratiques de design à NOTRE design system, couv
 |---|---|---|---:|---:|---|
 | Fait | Handoff reçu | Intégrer les demandes DS explicites de dataviz | 🟢 | 100% | Format/axes, overlays Bar/Line, `Embed`, `DataImage`, `TreeView` sélection livrés et poussés. |
 | Fait | Publication DS | Sécuriser les workflows de split publish | 🟢 | 100% | Build workspace ajouté avant pack smoke React/Vue/Airbus; CI correspondante verte. |
-| En cours | Audit final dataviz | Vérifier si la roadmap dataviz 100% respecte la règle DS | 🟡 | 70% | Audit local confirme fallbacks SVG analytics/geo et dépendances DS datées; message h2a envoyé à `codex:dataviz` avec demande de handoff/correction. |
+| Fait | Audit final dataviz | Vérifier si la roadmap dataviz 100% respecte la règle DS | 🟢 | 100% | Audit local confirmé par `codex:dataviz`; roadmap dataviz corrigée en `883a670` pour distinguer couverture fonctionnelle et évolution DS post-v0.4.17. |
 | A faire | DS analytics | Fermer les écarts non couverts par les charts DS existants | 🟡 | 45% | `ReferenceLineChart`, `TrendLineChart` et `ErrorBarsChart` peuvent être des adaptateurs dataviz vers Line/Bar; reste DS minimal : forecast pointillé, percentile compact avec médiane, `ScatterPlot` radius/size par datum ou `ClusterPlot`. |
 | A faire | DS geo 2D | Exposer les surfaces cartographiques 2D tokenisées | ⚪ | 0% | Choix d'API à faire : `GeoMap` générique à couches ou 7 composants publics; déplacer SVG/classes/couleurs/opacités/projection dans DS; tests Svelte/React/Vue et docs. |
-| Attendu | Clôture dataviz propre | Dataviz ne doit plus contenir de présentation fallback pour ces familles | ⏸️ | 0% | Dépend de la réponse `codex:dataviz`, du remplacement des wrappers par les composants DS et d'une release dataviz repinnée sur DS courant. |
+| Attendu | Clôture dataviz propre | Dataviz ne doit plus contenir de présentation fallback pour ces familles | 🟡 | 10% | Dataviz a acté la dette; reste remplacement des wrappers par les composants DS et release dataviz repinnée sur DS courant. |
 
 **Dépendances** : dataviz-core fournit les modèles rendering-neutral; DS porte uniquement la présentation. **Owner DS** : Codex intégrateur DS. **Parallélisable** : oui, analytics et geo sont deux tracks indépendants; les ports Svelte/React/Vue peuvent ensuite être découpés par framework.
 
