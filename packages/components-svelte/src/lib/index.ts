@@ -52,12 +52,14 @@ export { default as ComboChart } from "./ComboChart.svelte";
 export { default as Container } from "./Container.svelte";
 export { default as ContentSwitcher } from "./ContentSwitcher.svelte";
 export { default as CopyButton } from "./CopyButton.svelte";
+export { default as DataImage } from "./DataImage.svelte";
 export { default as DataTable } from "./DataTable.svelte";
 export { default as DatePicker } from "./DatePicker.svelte";
 export { default as Divider } from "./Divider.svelte";
 export { default as DonutChart } from "./DonutChart.svelte";
 export { default as Drawer } from "./Drawer.svelte";
 export { default as Dropdown } from "./Dropdown.svelte";
+export { default as Embed } from "./Embed.svelte";
 export { default as EmptyState } from "./EmptyState.svelte";
 export { default as FileUploader } from "./FileUploader.svelte";
 export { default as FilterBar } from "./FilterBar.svelte";
@@ -164,7 +166,7 @@ export type { SunburstChartDatum, SunburstChartTone } from "./SunburstChart.svel
 export type { ScatterPlotDatum, ScatterPlotTone } from "./ScatterPlot.svelte";
 export type { StackedBarDatum, StackedBarSegment, StackedBarTone } from "./StackedBarChart.svelte";
 export type { LineChartDatum, LineChartTone } from "./LineChart.svelte";
-export type { ChartOverlayTone, ChartReferenceLine, ChartBand, ChartGoalLine } from "./LineChart.svelte";
+export type { ChartOverlayTone, ChartReferenceLine, ChartBand, ChartGoalLine, ChartScale } from "./LineChart.svelte";
 export type {
   ComboChartTone,
   ComboChartBarSeries,
@@ -215,6 +217,7 @@ export type { TimePickerFormat } from "./TimePicker.svelte";
 export type { CalendarValue } from "./Calendar.svelte";
 export type { SlideIndicatorVariant } from "./SlideIndicator.svelte";
 export type { AutosaveStatus, AutosaveLabels } from "./Autosave.svelte";
+export type { DataImageFit } from "./DataImage.svelte";
 export type { DonutChartDatum, DonutChartTone } from "./DonutChart.svelte";
 export type { ForceGraphNode, ForceGraphEdge, ForceGraphTone, ForceGraphNodeShape, ForceGraphEdgeDash, ForceGraphLegendEntry } from "./ForceGraph.svelte";
 export { nodeShapePath, edgeDashArray } from "./ForceGraph.svelte";

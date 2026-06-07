@@ -174,6 +174,14 @@
         <tr><td><code>tone</code></td><td><code>LineChartTone</code></td><td><code>"category1"</code></td></tr>
         <tr><td><code>smooth</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
         <tr><td><code>area</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
+        <tr><td><code>domain</code></td><td><code>[number, number]</code></td><td><em>auto</em></td></tr>
+        <tr><td><code>scale</code></td><td><code>"linear" | "log"</code></td><td><code>"linear"</code></td></tr>
+        <tr><td><code>invertAxis</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
+        <tr><td><code>referenceLines</code></td><td><code>ChartReferenceLine[]</code></td><td><em>{locale.value === "fr" ? "aucune" : "none"}</em></td></tr>
+        <tr><td><code>bands</code></td><td><code>ChartBand[]</code></td><td><em>{locale.value === "fr" ? "aucune" : "none"}</em></td></tr>
+        <tr><td><code>goalLine</code></td><td><code>ChartGoalLine</code></td><td><em>{locale.value === "fr" ? "aucune" : "none"}</em></td></tr>
+        <tr><td><code>trend</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
+        <tr><td><code>showLegend</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
         <tr><td><code>width</code></td><td><code>number</code></td><td><code>480</code></td></tr>
         <tr><td><code>height</code></td><td><code>number</code></td><td><code>240</code></td></tr>
         <tr><td><code>class</code></td><td><code>string</code></td><td><em>{locale.value === "fr" ? "optionnel" : "optional"}</em></td></tr>
@@ -187,6 +195,11 @@
       {locale.value === "fr"
         ? "Si tous les `x` sont numériques, l’axe X devient linéaire ; sinon il est ordinal (réparti uniformément)."
         : "If every `x` is numeric the X axis becomes linear; otherwise it is ordinal (evenly distributed)."}
+    </p>
+    <p class="docs-demo-note">
+      {locale.value === "fr"
+        ? "Les overlays sont ajoutés à la liste accessible : lignes de référence, bandes, ligne d’objectif et tendance linéaire."
+        : "Overlays are also exposed in the accessible list: reference lines, bands, goal line, and linear trend."}
     </p>
   </section>
 

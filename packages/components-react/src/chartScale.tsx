@@ -25,9 +25,60 @@ export function niceTicks(min: number, max: number, target = 5): number[] {
   return ticks;
 }
 
+const uniqueSortedTicks = (values: number[]) =>
+  Array.from(new Set(values.filter(Number.isFinite).map((v) => Number(v.toFixed(10))))).sort((a, b) => a - b);
+
+export function fixedTicks(min: number, max: number, target = 5): number[] {
+  if (!Number.isFinite(min) || !Number.isFinite(max) || min >= max) return niceTicks(min, max, target);
+  return uniqueSortedTicks([min, ...niceTicks(min, max, target).filter((tick) => tick > min && tick < max), max]);
+}
+
 export function scaleLinear(v: number, d0: number, d1: number, r0: number, r1: number): number {
   if (d1 === d0) return r0;
   return r0 + ((v - d0) * (r1 - r0)) / (d1 - d0);
+}
+
+/** Value-axis scale type. `log` requires strictly positive values. */
+export type ChartScale = "linear" | "log";
+
+/** Lowest strictly-positive value among the args; floor for a log domain. */
+export function smallestPositive(...vals: number[]): number {
+  let lo = Infinity;
+  for (const v of vals) if (Number.isFinite(v) && v > 0 && v < lo) lo = v;
+  return Number.isFinite(lo) ? lo : 1;
+}
+
+/** Power-of-ten ("nice") ticks spanning `[min, max]` for a log axis. */
+export function logTicks(min: number, max: number): number[] {
+  const lo = min > 0 ? min : 1;
+  const hi = max > lo ? max : lo * 10;
+  const startExp = Math.floor(Math.log10(lo));
+  const endExp = Math.ceil(Math.log10(hi));
+  const ticks: number[] = [];
+  for (let e = startExp; e <= endExp; e++) ticks.push(Number(Math.pow(10, e).toFixed(10)));
+  return ticks.length ? ticks : [lo];
+}
+
+export function fixedLogTicks(min: number, max: number): number[] {
+  if (!Number.isFinite(min) || !Number.isFinite(max) || min <= 0 || min >= max) return logTicks(min, max);
+  return uniqueSortedTicks([min, ...logTicks(min, max).filter((tick) => tick > min && tick < max), max]);
+}
+
+export function validLinearDomain(domain: [number, number] | undefined): [number, number] | null {
+  return domain && Number.isFinite(domain[0]) && Number.isFinite(domain[1]) && domain[0] < domain[1]
+    ? domain
+    : null;
+}
+
+export function validLogDomain(domain: [number, number] | undefined): [number, number] | null {
+  return domain && Number.isFinite(domain[0]) && Number.isFinite(domain[1]) && domain[0] > 0 && domain[0] < domain[1]
+    ? domain
+    : null;
+}
+
+export function clampFraction(value: number): number {
+  if (!Number.isFinite(value)) return 0;
+  return Math.min(1, Math.max(0, value));
 }
 
 export function formatTick(v: number): string {
@@ -187,6 +238,7 @@ export function extendValueDomain(
   max: number,
   overlays: {
     referenceLines?: ReadonlyArray<ChartReferenceLine>;
+    referenceAxis?: "x" | "y";
     bands?: ReadonlyArray<ChartBand>;
     goalLine?: ChartGoalLine | null;
     extraValues?: ReadonlyArray<number>;
@@ -194,13 +246,14 @@ export function extendValueDomain(
 ): [number, number] {
   let lo = min;
   let hi = max;
+  const referenceAxis = overlays.referenceAxis ?? "y";
   const fold = (v: number | undefined) => {
     if (v === undefined || !Number.isFinite(v)) return;
     if (v < lo) lo = v;
     if (v > hi) hi = v;
   };
   for (const r of overlays.referenceLines ?? []) {
-    if ((r.axis ?? "y") === "y") fold(r.value);
+    if ((r.axis ?? "y") === referenceAxis) fold(r.value);
   }
   for (const b of overlays.bands ?? []) {
     fold(b.from);

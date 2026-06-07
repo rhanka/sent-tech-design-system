@@ -5,17 +5,25 @@ import {
   buildSmoothPath,
   CHART_MARGIN,
   chartDataList,
+  clampFraction,
   extendValueDomain,
+  fixedLogTicks,
+  fixedTicks,
   formatTick,
   isNumeric,
   linearRegression,
+  logTicks,
   niceTicks,
   overlayDataListItems,
   overlayToneClass,
   scaleLinear,
+  smallestPositive,
+  validLinearDomain,
+  validLogDomain,
   type ChartBand,
   type ChartGoalLine,
   type ChartReferenceLine,
+  type ChartScale,
 } from "./chartScale.js";
 
 export type LineChartTone =
@@ -49,6 +57,25 @@ export type LineChartProps = {
   goalLine?: ChartGoalLine;
   /** Least-squares trend line over the data points. */
   trend?: boolean;
+  /**
+   * Fixed value-axis (y) domain `[min, max]`. When provided (and finite,
+   * min<max) the y scale uses it instead of the data-derived range. Invalid or
+   * absent → auto range (unchanged).
+   */
+  domain?: [number, number];
+  /**
+   * Value-axis scale. `"linear"` (default) is unchanged. `"log"` switches the
+   * y axis to base-10 logarithmic — values `<= 0` are ignored for domain/ticks
+   * and clamped to the lowest tick when positioned.
+   */
+  scale?: ChartScale;
+  /** Inverts the value (y) axis. Default false. */
+  invertAxis?: boolean;
+  /**
+   * Toggles the legend if the chart has one. LineChart is single-series and has
+   * no legend surface; accepted for parity and otherwise ignored.
+   */
+  showLegend?: boolean;
   class?: string;
 };
 
@@ -68,6 +95,10 @@ export const LineChart = defineComponent({
     bands: { type: Array as () => ChartBand[], default: undefined },
     goalLine: { type: Object as () => ChartGoalLine, default: undefined },
     trend: { type: Boolean, default: false },
+    domain: { type: Array as unknown as () => [number, number], default: undefined },
+    scale: { type: String as () => ChartScale, default: "linear" },
+    invertAxis: { type: Boolean, default: false },
+    showLegend: { type: Boolean, default: undefined },
     class: { type: String, default: undefined },
   },
   setup(props, { attrs }) {
@@ -115,9 +146,32 @@ export const LineChart = defineComponent({
         xDomain = { kind: "ordinal", values: data.map((d) => d.x) };
       }
 
+      const isLog = props.scale === "log";
+      const invertAxis = props.invertAxis ?? false;
+      const domain = props.domain;
+      const validDomain = isLog ? validLogDomain(domain) : validLinearDomain(domain);
+
       let yTicks: number[];
       const ys = data.map((d) => d.y).filter((y) => Number.isFinite(y));
-      if (ys.length === 0 && !referenceLines?.length && !bands?.length && !goal) {
+      if (isLog) {
+        const posOverlays = [
+          ...(referenceLines ?? []).filter((r) => (r.axis ?? "y") === "y").map((r) => r.value),
+          ...(bands ?? []).flatMap((b) => [b.from, b.to]),
+          ...(goal ? [goal.value] : []),
+        ];
+        let lo: number;
+        let hi: number;
+        if (validDomain) {
+          lo = validDomain[0];
+          hi = validDomain[1];
+        } else {
+          lo = smallestPositive(...ys, ...posOverlays);
+          hi = Math.max(lo, ...ys.filter((y) => y > 0), ...posOverlays.filter((v) => v > 0));
+        }
+        yTicks = validDomain ? fixedLogTicks(lo, hi) : logTicks(lo, hi);
+      } else if (validDomain) {
+        yTicks = fixedTicks(validDomain[0], validDomain[1], 5);
+      } else if (ys.length === 0 && !referenceLines?.length && !bands?.length && !goal) {
         yTicks = [0];
       } else {
         let yMin = ys.length ? Math.min(...ys) : 0;
@@ -128,6 +182,21 @@ export const LineChart = defineComponent({
         yTicks = niceTicks(yMin - padded, yMax + padded, 5);
       }
       const yDomain = yTicks.length === 0 ? { min: 0, max: 1 } : { min: yTicks[0], max: yTicks[yTicks.length - 1] };
+
+      // Maps a y value to a fraction in [0,1] (0 = yDomain.min, 1 = yDomain.max),
+      // honouring log scale + axis inversion. Linear + no invert is unchanged.
+      const valueFraction = (v: number) => {
+        let f: number;
+        if (isLog) {
+          const lo = Math.log10(yDomain.min);
+          const hi = Math.log10(yDomain.max);
+          const clamped = v > 0 ? v : yDomain.min;
+          f = hi === lo ? 0 : (Math.log10(clamped) - lo) / (hi - lo);
+        } else {
+          f = yDomain.max === yDomain.min ? 0 : (v - yDomain.min) / (yDomain.max - yDomain.min);
+        }
+        return clampFraction(invertAxis ? 1 - f : f);
+      };
 
       type Point = { x: number; y: number; datum: LineChartDatum; index: number };
       let points: Point[] = [];
@@ -140,13 +209,13 @@ export const LineChart = defineComponent({
             const denom = Math.max(data.length - 1, 1);
             x = data.length === 1 ? plotWidth / 2 : (i / denom) * plotWidth;
           }
-          const y = scaleLinear(d.y, yDomain.min, yDomain.max, plotHeight, 0);
+          const y = plotHeight * (1 - valueFraction(d.y));
           return { x: MARGIN.left + x, y: MARGIN.top + y, datum: d, index: i };
         });
       }
 
       // --- Analytical overlays -----------------------------------------------
-      const valueToY = (v: number) => MARGIN.top + scaleLinear(v, yDomain.min, yDomain.max, plotHeight, 0);
+      const valueToY = (v: number) => MARGIN.top + plotHeight * (1 - valueFraction(v));
       const dataValueToX = (v: number) =>
         xDomain.kind === "numeric"
           ? MARGIN.left + scaleLinear(v, xDomain.min, xDomain.max, 0, plotWidth)
@@ -219,7 +288,7 @@ export const LineChart = defineComponent({
 
       const gridLines = yTicks.map((tick) => ({
         value: tick,
-        y: MARGIN.top + scaleLinear(tick, yDomain.min, yDomain.max, plotHeight, 0),
+        y: MARGIN.top + plotHeight * (1 - valueFraction(tick)),
       }));
 
       let xTickEntries: { x: number; label: string }[] = [];

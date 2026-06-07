@@ -5,17 +5,25 @@ import {
   buildSmoothPath,
   CHART_MARGIN,
   ChartDataList,
+  clampFraction,
   extendValueDomain,
+  fixedLogTicks,
+  fixedTicks,
   formatTick,
   isNumeric,
   linearRegression,
+  logTicks,
   niceTicks,
   overlayDataListItems,
   overlayToneClass,
   scaleLinear,
+  smallestPositive,
+  validLinearDomain,
+  validLogDomain,
   type ChartBand,
   type ChartGoalLine,
   type ChartReferenceLine,
+  type ChartScale,
 } from "./chartScale.js";
 
 export type LineChartTone =
@@ -49,6 +57,25 @@ export type LineChartProps = Omit<React.HTMLAttributes<HTMLDivElement>, "classNa
   goalLine?: ChartGoalLine;
   /** Least-squares trend line over the data points. */
   trend?: boolean;
+  /**
+   * Fixed value-axis (y) domain `[min, max]`. When provided (and finite,
+   * min<max) the y scale uses it instead of the data-derived range. Invalid or
+   * absent → auto range (unchanged).
+   */
+  domain?: [number, number];
+  /**
+   * Value-axis scale. `"linear"` (default) is unchanged. `"log"` switches the
+   * y axis to base-10 logarithmic — values `<= 0` are ignored for domain/ticks
+   * and clamped to the lowest tick when positioned.
+   */
+  scale?: ChartScale;
+  /** Inverts the value (y) axis. Default false. */
+  invertAxis?: boolean;
+  /**
+   * Toggles the legend if the chart has one. LineChart is single-series and has
+   * no legend surface; accepted for parity and otherwise ignored.
+   */
+  showLegend?: boolean;
   className?: string;
 };
 
@@ -66,6 +93,11 @@ export function LineChart({
   bands,
   goalLine,
   trend = false,
+  domain,
+  scale = "linear",
+  invertAxis = false,
+  // Destructured to keep it off `...rest`; parity no-op (no legend surface).
+  showLegend: _showLegend,
   className,
   ...rest
 }: LineChartProps) {
@@ -87,8 +119,31 @@ export function LineChart({
   // A valid goal line needs a finite value; otherwise it is ignored entirely.
   const goal = goalLine && Number.isFinite(goalLine.value) ? goalLine : null;
 
+  const isLog = scale === "log";
+  // A fixed log domain must be strictly positive; otherwise the scale falls
+  // back to the data-derived positive range.
+  const validDomain = isLog ? validLogDomain(domain) : validLinearDomain(domain);
+
   const yTicks = (() => {
     const ys = data.map((d) => d.y).filter((y) => Number.isFinite(y));
+    if (isLog) {
+      const posOverlays = [
+        ...(referenceLines ?? []).filter((r) => (r.axis ?? "y") === "y").map((r) => r.value),
+        ...(bands ?? []).flatMap((b) => [b.from, b.to]),
+        ...(goal ? [goal.value] : []),
+      ];
+      let lo: number;
+      let hi: number;
+      if (validDomain) {
+        lo = validDomain[0];
+        hi = validDomain[1];
+      } else {
+        lo = smallestPositive(...ys, ...posOverlays);
+        hi = Math.max(lo, ...ys.filter((y) => y > 0), ...posOverlays.filter((v) => v > 0));
+      }
+      return validDomain ? fixedLogTicks(lo, hi) : logTicks(lo, hi);
+    }
+    if (validDomain) return fixedTicks(validDomain[0], validDomain[1], 5);
     if (ys.length === 0 && !referenceLines?.length && !bands?.length && !goal) return [0];
     let minRaw = ys.length ? Math.min(...ys) : 0;
     let maxRaw = ys.length ? Math.max(...ys) : 0;
@@ -104,6 +159,21 @@ export function LineChart({
 
   const yDomain = yTicks.length === 0 ? { min: 0, max: 1 } : { min: yTicks[0], max: yTicks[yTicks.length - 1] };
 
+  // Maps a y value to a fraction in [0,1] (0 = yDomain.min, 1 = yDomain.max),
+  // honouring log scale + axis inversion. Linear + no invert is unchanged.
+  const valueFraction = (v: number) => {
+    let f: number;
+    if (isLog) {
+      const lo = Math.log10(yDomain.min);
+      const hi = Math.log10(yDomain.max);
+      const clamped = v > 0 ? v : yDomain.min;
+      f = hi === lo ? 0 : (Math.log10(clamped) - lo) / (hi - lo);
+    } else {
+      f = yDomain.max === yDomain.min ? 0 : (v - yDomain.min) / (yDomain.max - yDomain.min);
+    }
+    return clampFraction(invertAxis ? 1 - f : f);
+  };
+
   const points = (() => {
     if (data.length === 0) return [] as Array<{ x: number; y: number; datum: LineChartDatum; index: number }>;
     return data.map((d, i) => {
@@ -114,7 +184,7 @@ export function LineChart({
         const denom = Math.max(data.length - 1, 1);
         x = data.length === 1 ? plotWidth / 2 : (i / denom) * plotWidth;
       }
-      const y = scaleLinear(d.y, yDomain.min, yDomain.max, plotHeight, 0);
+      const y = plotHeight * (1 - valueFraction(d.y));
       return { x: MARGIN.left + x, y: MARGIN.top + y, datum: d, index: i };
     });
   })();
@@ -122,7 +192,7 @@ export function LineChart({
   // --- Analytical overlays -------------------------------------------------
   // All overlays live in the chart's coordinate space, below the data series
   // (the goal line is the single exception, drawn above for emphasis).
-  const valueToY = (v: number) => MARGIN.top + scaleLinear(v, yDomain.min, yDomain.max, plotHeight, 0);
+  const valueToY = (v: number) => MARGIN.top + plotHeight * (1 - valueFraction(v));
   const dataValueToX = (v: number) =>
     xDomain.kind === "numeric"
       ? MARGIN.left + scaleLinear(v, xDomain.min, xDomain.max, 0, plotWidth)
@@ -194,7 +264,7 @@ export function LineChart({
 
   const gridLines = yTicks.map((tick) => ({
     value: tick,
-    y: MARGIN.top + scaleLinear(tick, yDomain.min, yDomain.max, plotHeight, 0),
+    y: MARGIN.top + plotHeight * (1 - valueFraction(tick)),
   }));
 
   const xTickEntries = (() => {
