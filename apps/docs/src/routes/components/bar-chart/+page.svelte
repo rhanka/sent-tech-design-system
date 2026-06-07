@@ -164,6 +164,15 @@
         <tr><td><code>data</code></td><td><code>BarChartDatum[]</code></td><td><code>[]</code></td></tr>
         <tr><td><code>label</code></td><td><code>string</code></td><td><em>{locale.value === "fr" ? "requis" : "required"}</em></td></tr>
         <tr><td><code>orientation</code></td><td><code>"vertical" | "horizontal"</code></td><td><code>"vertical"</code></td></tr>
+        <tr><td><code>domain</code></td><td><code>[number, number]</code></td><td><em>auto</em></td></tr>
+        <tr><td><code>scale</code></td><td><code>"linear" | "log"</code></td><td><code>"linear"</code></td></tr>
+        <tr><td><code>invertAxis</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
+        <tr><td><code>referenceLines</code></td><td><code>ChartReferenceLine[]</code></td><td><em>{locale.value === "fr" ? "aucune" : "none"}</em></td></tr>
+        <tr><td><code>bands</code></td><td><code>ChartBand[]</code></td><td><em>{locale.value === "fr" ? "aucune" : "none"}</em></td></tr>
+        <tr><td><code>goalLine</code></td><td><code>ChartGoalLine</code></td><td><em>{locale.value === "fr" ? "aucune" : "none"}</em></td></tr>
+        <tr><td><code>selectedKeys</code></td><td><code>string[]</code></td><td><code>[]</code></td></tr>
+        <tr><td><code>onSelect</code></td><td><code>(key: string) =&gt; void</code></td><td><em>{locale.value === "fr" ? "optionnel" : "optional"}</em></td></tr>
+        <tr><td><code>showLegend</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
         <tr><td><code>width</code></td><td><code>number</code></td><td><code>480</code></td></tr>
         <tr><td><code>height</code></td><td><code>number</code></td><td><code>240</code></td></tr>
         <tr><td><code>class</code></td><td><code>string</code></td><td><em>{locale.value === "fr" ? "optionnel" : "optional"}</em></td></tr>
@@ -177,6 +186,11 @@
       {locale.value === "fr"
         ? "(défaut par barre : `category1`)."
         : "(per-bar default: `category1`)."}
+    </p>
+    <p class="docs-demo-note">
+      {locale.value === "fr"
+        ? "Ajoute `errorLow` / `errorHigh` sur un datum pour dessiner une barre d’erreur. Les overlays utilisent l’axe de valeur : `axis: \"y\"` en vertical, `axis: \"x\"` en horizontal."
+        : "Add `errorLow` / `errorHigh` on a datum to draw an error bar. Overlays track the value axis: `axis: \"y\"` in vertical mode, `axis: \"x\"` in horizontal mode."}
     </p>
   </section>
 

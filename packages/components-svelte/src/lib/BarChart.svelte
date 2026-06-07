@@ -43,6 +43,9 @@
     value: number;
     label?: string;
   };
+
+  /** Value-axis scale type. `log` requires strictly positive values. */
+  export type ChartScale = "linear" | "log";
 </script>
 
 <script lang="ts">
@@ -83,6 +86,21 @@
     bands?: ChartBand[];
     /** A single goal line, emphasised above the bars. */
     goalLine?: ChartGoalLine;
+    /**
+     * Value-axis scale. `"linear"` (default) is unchanged. `"log"` switches the
+     * value axis to a base-10 logarithmic scale — values `<= 0` are ignored for
+     * domain/ticks and clamped to the lowest tick when positioned, since the log
+     * of a non-positive number is undefined.
+     */
+    scale?: ChartScale;
+    /** Inverts the value axis (high values toward the origin). Default false. */
+    invertAxis?: boolean;
+    /**
+     * Toggles the legend if the chart has one. BarChart has no separate legend
+     * surface (its filter chips double as one), so this prop is accepted for
+     * cross-chart parity and otherwise ignored.
+     */
+    showLegend?: boolean;
     class?: string;
   };
 
@@ -98,8 +116,15 @@
     referenceLines,
     bands,
     goalLine,
+    scale = "linear",
+    invertAxis = false,
+    showLegend,
     class: className
   }: BarChartProps = $props();
+
+  // `showLegend` has no dedicated legend surface on BarChart (the filter chips
+  // double as one); it is part of the contract for cross-chart parity and is a
+  // deliberate no-op here. Intentionally destructured-but-unused.
 
   const MARGIN = { top: 12, right: 16, bottom: 32, left: 44 };
 
@@ -126,9 +151,51 @@
     return ticks;
   }
 
-  function scaleLinear(v: number, d0: number, d1: number, r0: number, r1: number) {
-    if (d1 === d0) return r0;
-    return r0 + ((v - d0) * (r1 - r0)) / (d1 - d0);
+  const uniqueSortedTicks = (values: number[]) =>
+    Array.from(new Set(values.filter(Number.isFinite).map((v) => Number(v.toFixed(10))))).sort((a, b) => a - b);
+
+  function fixedTicks(min: number, max: number, target = 5): number[] {
+    if (!Number.isFinite(min) || !Number.isFinite(max) || min >= max) return niceTicks(min, max, target);
+    return uniqueSortedTicks([min, ...niceTicks(min, max, target).filter((tick) => tick > min && tick < max), max]);
+  }
+
+  // Lowest strictly-positive value across the data + finite overlays; used as a
+  // floor for a log domain when the raw min is <= 0.
+  function smallestPositive(...vals: number[]): number {
+    let lo = Infinity;
+    for (const v of vals) if (Number.isFinite(v) && v > 0 && v < lo) lo = v;
+    return Number.isFinite(lo) ? lo : 1;
+  }
+
+  // "Nice" decade ticks for a log axis: powers of ten spanning [min, max].
+  function logTicks(min: number, max: number): number[] {
+    const lo = min > 0 ? min : 1;
+    const hi = max > lo ? max : lo * 10;
+    const startExp = Math.floor(Math.log10(lo));
+    const endExp = Math.ceil(Math.log10(hi));
+    const ticks: number[] = [];
+    for (let e = startExp; e <= endExp; e++) ticks.push(Number(Math.pow(10, e).toFixed(10)));
+    return ticks.length ? ticks : [lo];
+  }
+
+  function fixedLogTicks(min: number, max: number): number[] {
+    if (!Number.isFinite(min) || !Number.isFinite(max) || min <= 0 || min >= max) return logTicks(min, max);
+    return uniqueSortedTicks([min, ...logTicks(min, max).filter((tick) => tick > min && tick < max), max]);
+  }
+
+  function validLinearDomainCandidate(value: [number, number] | undefined): [number, number] | null {
+    return value && Number.isFinite(value[0]) && Number.isFinite(value[1]) && value[0] < value[1] ? value : null;
+  }
+
+  function validLogDomainCandidate(value: [number, number] | undefined): [number, number] | null {
+    return value && Number.isFinite(value[0]) && Number.isFinite(value[1]) && value[0] > 0 && value[0] < value[1]
+      ? value
+      : null;
+  }
+
+  function clampFraction(value: number): number {
+    if (!Number.isFinite(value)) return 0;
+    return Math.min(1, Math.max(0, value));
   }
 
   function formatTick(v: number): string {
@@ -148,7 +215,8 @@
     refs: ChartReferenceLine[] | undefined,
     bnds: ChartBand[] | undefined,
     goal: ChartGoalLine | null,
-    extras: number[]
+    extras: number[],
+    referenceAxis: "x" | "y" = "y"
   ): [number, number] {
     let lo = minV;
     let hi = maxV;
@@ -157,7 +225,7 @@
       if (v < lo) lo = v;
       if (v > hi) hi = v;
     };
-    for (const r of refs ?? []) if ((r.axis ?? "y") === "y") fold(r.value);
+    for (const r of refs ?? []) if ((r.axis ?? "y") === referenceAxis) fold(r.value);
     for (const b of bnds ?? []) {
       fold(b.from);
       fold(b.to);
@@ -197,31 +265,58 @@
   const hasSelection = $derived(selectedSet.size > 0);
   const interactive = $derived(typeof onSelect === "function");
 
+  const isLog = $derived(scale === "log");
+
   // A domain is honoured only when both bounds are finite and ordered (min<max).
   // Otherwise we fall back to the auto data range.
   const validDomain = $derived.by<[number, number] | null>(() => {
-    if (!domain) return null;
-    const [d0, d1] = domain;
-    if (!Number.isFinite(d0) || !Number.isFinite(d1) || d0 >= d1) return null;
-    return [d0, d1];
+    return isLog ? validLogDomainCandidate(domain) : validLinearDomainCandidate(domain);
   });
 
   // A finite goal value is required; otherwise the goal line is ignored.
   const goal = $derived(goalLine && Number.isFinite(goalLine.value) ? goalLine : null);
 
+  const valueAxis = $derived(orientation === "vertical" ? "y" : "x");
+
   const scales = $derived.by(() => {
     const values = data.map((d) => d.value);
-    let minRaw = validDomain ? validDomain[0] : Math.min(0, ...values);
-    let maxRaw = validDomain ? validDomain[1] : Math.max(0, ...values);
+    const errorExtents = data.flatMap((d) =>
+      [d.errorLow, d.errorHigh].filter((v): v is number => v !== undefined && Number.isFinite(v))
+    );
+    let minRaw: number;
+    let maxRaw: number;
+    if (isLog) {
+      // A log axis is undefined for values <= 0; the floor is the smallest
+      // strictly-positive value across the data + finite overlays, the ceil the
+      // largest. The "0 baseline" of a linear axis has no meaning here.
+      const posOverlays = [
+        ...(referenceLines ?? []).filter((r) => (r.axis ?? "y") === valueAxis).map((r) => r.value),
+        ...(bands ?? []).flatMap((b) => [b.from, b.to]),
+        ...(goal ? [goal.value] : []),
+        ...errorExtents
+      ];
+      if (validDomain) {
+        minRaw = validDomain[0];
+        maxRaw = validDomain[1];
+      } else {
+        minRaw = smallestPositive(...values, ...posOverlays);
+        maxRaw = Math.max(minRaw, ...values.filter((v) => v > 0), ...posOverlays.filter((v) => v > 0));
+      }
+      const ticks = validDomain ? fixedLogTicks(minRaw, maxRaw) : logTicks(minRaw, maxRaw);
+      const domainMin = ticks[0];
+      const domainMax = ticks[ticks.length - 1];
+      const plotWidth = Math.max(width - MARGIN.left - MARGIN.right, 1);
+      const plotHeight = Math.max(height - MARGIN.top - MARGIN.bottom, 1);
+      return { ticks, domainMin, domainMax, plotWidth, plotHeight };
+    }
+    minRaw = validDomain ? validDomain[0] : Math.min(0, ...values);
+    maxRaw = validDomain ? validDomain[1] : Math.max(0, ...values);
     // A pinned domain is authoritative (small-multiples); only the auto domain
     // is widened to keep finite overlays + error bars on-plot.
     if (!validDomain) {
-      const errorExtents = data.flatMap((d) =>
-        [d.errorLow, d.errorHigh].filter((v): v is number => v !== undefined && Number.isFinite(v))
-      );
-      [minRaw, maxRaw] = extendValueDomain(minRaw, maxRaw, referenceLines, bands, goal, errorExtents);
+      [minRaw, maxRaw] = extendValueDomain(minRaw, maxRaw, referenceLines, bands, goal, errorExtents, valueAxis);
     }
-    const ticks = niceTicks(minRaw, maxRaw, 5);
+    const ticks = validDomain ? fixedTicks(minRaw, maxRaw, 5) : niceTicks(minRaw, maxRaw, 5);
     const domainMin = ticks[0];
     const domainMax = ticks[ticks.length - 1];
     const plotWidth = Math.max(width - MARGIN.left - MARGIN.right, 1);
@@ -229,15 +324,38 @@
     return { ticks, domainMin, domainMax, plotWidth, plotHeight };
   });
 
+  // Maps a value to a fraction in [0,1] along the value axis (0 = domainMin end,
+  // 1 = domainMax end), honouring log scale and axis inversion. Linear + no
+  // invert reproduces the previous behaviour exactly.
+  const valueFraction = $derived((v: number) => {
+    const { domainMin, domainMax } = scales;
+    let f: number;
+    if (isLog) {
+      const lo = Math.log10(domainMin);
+      const hi = Math.log10(domainMax);
+      const clamped = v > 0 ? v : domainMin; // log undefined for v<=0 → clamp to floor
+      f = hi === lo ? 0 : (Math.log10(clamped) - lo) / (hi - lo);
+    } else {
+      f = domainMax === domainMin ? 0 : (v - domainMin) / (domainMax - domainMin);
+    }
+    return clampFraction(invertAxis ? 1 - f : f);
+  });
+
+  // The value used as the bar baseline. Linear: 0 (or the nearest in-domain
+  // bound). Log: the lowest tick (domainMin), since 0 is off a log axis.
+  const baselineValue = $derived(isLog ? scales.domainMin : Math.min(scales.domainMax, Math.max(scales.domainMin, 0)));
+
   const bars = $derived.by(() => {
-    const { domainMin, domainMax, plotWidth, plotHeight } = scales;
+    const { plotWidth, plotHeight } = scales;
     if (data.length === 0) return [];
     if (orientation === "vertical") {
       const band = plotWidth / data.length;
       const barWidth = band * 0.62;
-      const zeroY = scaleLinear(0, domainMin, domainMax, plotHeight, 0);
+      // Pixel y for a value (fraction 0 → bottom, 1 → top of the plot).
+      const yOf = (v: number) => plotHeight * (1 - valueFraction(v));
+      const zeroY = yOf(baselineValue);
       return data.map((d, i) => {
-        const valueY = scaleLinear(d.value, domainMin, domainMax, plotHeight, 0);
+        const valueY = yOf(d.value);
         const y = Math.min(valueY, zeroY);
         const h = Math.abs(zeroY - valueY);
         const x = MARGIN.left + band * i + (band - barWidth) / 2;
@@ -256,9 +374,11 @@
     // horizontal
     const band = plotHeight / data.length;
     const barHeight = band * 0.62;
-    const zeroX = scaleLinear(0, domainMin, domainMax, 0, plotWidth);
+    // Pixel x for a value (fraction 0 → left, 1 → right of the plot).
+    const xOf = (v: number) => plotWidth * valueFraction(v);
+    const zeroX = xOf(baselineValue);
     return data.map((d, i) => {
-      const valueX = scaleLinear(d.value, domainMin, domainMax, 0, plotWidth);
+      const valueX = xOf(d.value);
       const x = Math.min(valueX, zeroX);
       const w = Math.abs(valueX - zeroX);
       const y = MARGIN.top + band * i + (band - barHeight) / 2;
@@ -277,12 +397,13 @@
 
   // --- Analytical overlays + error bars ------------------------------------
   const isVertical = $derived(orientation === "vertical");
-  // Map a value to its pixel on the value axis (y for vertical, x for horizontal).
+  // Map a value to its pixel on the value axis (y for vertical, x for horizontal),
+  // honouring scale + invert via the shared `valueFraction`.
   const valuePos = $derived((v: number) => {
-    const { domainMin, domainMax, plotWidth, plotHeight } = scales;
+    const { plotWidth, plotHeight } = scales;
     return isVertical
-      ? MARGIN.top + scaleLinear(v, domainMin, domainMax, plotHeight, 0)
-      : MARGIN.left + scaleLinear(v, domainMin, domainMax, 0, plotWidth);
+      ? MARGIN.top + plotHeight * (1 - valueFraction(v))
+      : MARGIN.left + plotWidth * valueFraction(v);
   });
 
   const bandRects = $derived(
@@ -354,13 +475,13 @@
   ]);
 
   const valueAxisTicks = $derived.by(() => {
-    const { ticks, domainMin, domainMax, plotWidth, plotHeight } = scales;
+    const { ticks, plotWidth, plotHeight } = scales;
     if (orientation === "vertical") {
       return ticks.map((tick) => ({
         value: tick,
         x1: MARGIN.left,
         x2: MARGIN.left + plotWidth,
-        y: MARGIN.top + scaleLinear(tick, domainMin, domainMax, plotHeight, 0),
+        y: MARGIN.top + plotHeight * (1 - valueFraction(tick)),
         x: undefined,
         y1: undefined,
         y2: undefined
@@ -368,7 +489,7 @@
     }
     return ticks.map((tick) => ({
       value: tick,
-      x: MARGIN.left + scaleLinear(tick, domainMin, domainMax, 0, plotWidth),
+      x: MARGIN.left + plotWidth * valueFraction(tick),
       y1: MARGIN.top,
       y2: MARGIN.top + plotHeight,
       x1: undefined,

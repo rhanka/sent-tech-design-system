@@ -395,6 +395,17 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "AppHeader",
+    slug: "app-header",
+    status: "documented",
+    category: "navigation",
+    groupSlug: "header",
+    description: {
+      fr: "En-tête applicatif compact avec burger, navigation et zone d’actions.",
+      en: "Compact application header with menu trigger, navigation, and actions."
+    }
+  },
+  {
     name: "Footer",
     slug: "footer",
     status: "documented",
@@ -807,6 +818,26 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "Embed",
+    slug: "embed",
+    status: "documented",
+    category: "other",
+    description: {
+      fr: "Iframe contrôlée avec sandbox strict, ratio et chargement configurable.",
+      en: "Controlled iframe wrapper with strict sandbox, ratio, and loading control."
+    }
+  },
+  {
+    name: "DataImage",
+    slug: "data-image",
+    status: "documented",
+    category: "other",
+    description: {
+      fr: "Image pilotée par props/état (src, alt, object-fit, dimensions, rayon).",
+      en: "Data-driven image controlled by props/state (src, alt, object-fit, sizing, radius)."
+    }
+  },
+  {
     name: "Transcription",
     slug: "transcription",
     status: "documented",
@@ -864,6 +895,17 @@ export const COMPONENTS: ComponentEntry[] = [
     description: {
       fr: "Sélecteur de langue compact (i18n) : langue courante + menu.",
       en: "Compact language switcher (i18n): current locale + menu."
+    }
+  },
+  {
+    name: "LanguageToggle",
+    slug: "language-toggle",
+    status: "documented",
+    category: "navigation",
+    groupSlug: "language-selector",
+    description: {
+      fr: "Bascule de langue contrôlée, en select desktop ou accordéon mobile.",
+      en: "Controlled language toggle, as a desktop select or mobile accordion."
     }
   },
   {
@@ -1124,6 +1166,17 @@ export const COMPONENTS: ComponentEntry[] = [
     description: {
       fr: "Boîte flex : direction, gap, alignement et justification.",
       en: "Flex box: direction, gap, alignment, and justification."
+    }
+  },
+  {
+    name: "Grid",
+    slug: "grid",
+    status: "documented",
+    category: "layout",
+    groupSlug: "container",
+    description: {
+      fr: "Grille CSS simple : colonnes fixes ou auto-fill responsive.",
+      en: "Simple CSS grid: fixed columns or responsive auto-fill."
     }
   },
   {

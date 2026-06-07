@@ -38,6 +38,9 @@
     value: number;
     label?: string;
   };
+
+  /** Value-axis scale type. `log` requires strictly positive values. */
+  export type ChartScale = "linear" | "log";
 </script>
 
 <script lang="ts">
@@ -59,6 +62,25 @@
     goalLine?: ChartGoalLine;
     /** Least-squares trend line over the data points. */
     trend?: boolean;
+    /**
+     * Fixed value-axis (y) domain `[min, max]`. When provided (and finite,
+     * min<max) the y scale uses it instead of the data-derived range — letting
+     * several LineCharts share one scale. Invalid/absent → auto range (unchanged).
+     */
+    domain?: [number, number];
+    /**
+     * Value-axis scale. `"linear"` (default) is unchanged. `"log"` switches the
+     * y axis to base-10 logarithmic — values `<= 0` are ignored for domain/ticks
+     * and clamped to the lowest tick when positioned.
+     */
+    scale?: ChartScale;
+    /** Inverts the value (y) axis. Default false. */
+    invertAxis?: boolean;
+    /**
+     * Toggles the legend if the chart has one. LineChart is single-series and has
+     * no legend surface, so this prop is accepted for parity and otherwise ignored.
+     */
+    showLegend?: boolean;
     class?: string;
   };
 
@@ -74,8 +96,16 @@
     bands,
     goalLine,
     trend = false,
+    domain,
+    scale = "linear",
+    invertAxis = false,
+    showLegend,
     class: className
   }: LineChartProps = $props();
+
+  // LineChart is single-series and has no legend surface; `showLegend` is part
+  // of the contract for cross-chart parity and is a deliberate no-op here.
+  // Intentionally destructured-but-unused.
 
   const MARGIN = { top: 12, right: 16, bottom: 32, left: 44 };
 
@@ -102,9 +132,55 @@
     return ticks;
   }
 
+  const uniqueSortedTicks = (values: number[]) =>
+    Array.from(new Set(values.filter(Number.isFinite).map((v) => Number(v.toFixed(10))))).sort((a, b) => a - b);
+
+  function fixedTicks(min: number, max: number, target = 5): number[] {
+    if (!Number.isFinite(min) || !Number.isFinite(max) || min >= max) return niceTicks(min, max, target);
+    return uniqueSortedTicks([min, ...niceTicks(min, max, target).filter((tick) => tick > min && tick < max), max]);
+  }
+
   function scaleLinear(v: number, d0: number, d1: number, r0: number, r1: number) {
     if (d1 === d0) return r0;
     return r0 + ((v - d0) * (r1 - r0)) / (d1 - d0);
+  }
+
+  // Lowest strictly-positive value among the args; floor for a log domain.
+  function smallestPositive(...vals: number[]): number {
+    let lo = Infinity;
+    for (const v of vals) if (Number.isFinite(v) && v > 0 && v < lo) lo = v;
+    return Number.isFinite(lo) ? lo : 1;
+  }
+
+  // Power-of-ten ticks spanning [min, max] for a log axis.
+  function logTicks(min: number, max: number): number[] {
+    const lo = min > 0 ? min : 1;
+    const hi = max > lo ? max : lo * 10;
+    const startExp = Math.floor(Math.log10(lo));
+    const endExp = Math.ceil(Math.log10(hi));
+    const ticks: number[] = [];
+    for (let e = startExp; e <= endExp; e++) ticks.push(Number(Math.pow(10, e).toFixed(10)));
+    return ticks.length ? ticks : [lo];
+  }
+
+  function fixedLogTicks(min: number, max: number): number[] {
+    if (!Number.isFinite(min) || !Number.isFinite(max) || min <= 0 || min >= max) return logTicks(min, max);
+    return uniqueSortedTicks([min, ...logTicks(min, max).filter((tick) => tick > min && tick < max), max]);
+  }
+
+  function validLinearDomainCandidate(value: [number, number] | undefined): [number, number] | null {
+    return value && Number.isFinite(value[0]) && Number.isFinite(value[1]) && value[0] < value[1] ? value : null;
+  }
+
+  function validLogDomainCandidate(value: [number, number] | undefined): [number, number] | null {
+    return value && Number.isFinite(value[0]) && Number.isFinite(value[1]) && value[0] > 0 && value[0] < value[1]
+      ? value
+      : null;
+  }
+
+  function clampFraction(value: number): number {
+    if (!Number.isFinite(value)) return 0;
+    return Math.min(1, Math.max(0, value));
   }
 
   function formatTick(v: number): string {
@@ -215,8 +291,33 @@
   // A valid goal line needs a finite value; otherwise it is ignored entirely.
   const goal = $derived(goalLine && Number.isFinite(goalLine.value) ? goalLine : null);
 
+  const isLog = $derived(scale === "log");
+
+  // A y domain is honoured only when both bounds are finite and ordered (min<max).
+  const validDomain = $derived.by<[number, number] | null>(() => {
+    return isLog ? validLogDomainCandidate(domain) : validLinearDomainCandidate(domain);
+  });
+
   const yTicks = $derived.by(() => {
     const ys = data.map((d) => d.y).filter((y) => Number.isFinite(y));
+    if (isLog) {
+      const posOverlays = [
+        ...(referenceLines ?? []).filter((r) => (r.axis ?? "y") === "y").map((r) => r.value),
+        ...(bands ?? []).flatMap((b) => [b.from, b.to]),
+        ...(goal ? [goal.value] : [])
+      ];
+      let lo: number;
+      let hi: number;
+      if (validDomain) {
+        lo = validDomain[0];
+        hi = validDomain[1];
+      } else {
+        lo = smallestPositive(...ys, ...posOverlays);
+        hi = Math.max(lo, ...ys.filter((y) => y > 0), ...posOverlays.filter((v) => v > 0));
+      }
+      return validDomain ? fixedLogTicks(lo, hi) : logTicks(lo, hi);
+    }
+    if (validDomain) return fixedTicks(validDomain[0], validDomain[1], 5);
     if (ys.length === 0 && !referenceLines?.length && !bands?.length && !goal) return [0];
     let minRaw = ys.length ? Math.min(...ys) : 0;
     let maxRaw = ys.length ? Math.max(...ys) : 0;
@@ -231,6 +332,24 @@
     return { min: yTicks[0], max: yTicks[yTicks.length - 1] };
   });
 
+  // Maps a y value to a fraction in [0,1] (0 = yDomain.min, 1 = yDomain.max),
+  // honouring log scale + axis inversion. Linear + no invert is unchanged.
+  const valueFraction = $derived((v: number) => {
+    let f: number;
+    if (isLog) {
+      const lo = Math.log10(yDomain.min);
+      const hi = Math.log10(yDomain.max);
+      const clamped = v > 0 ? v : yDomain.min;
+      f = hi === lo ? 0 : (Math.log10(clamped) - lo) / (hi - lo);
+    } else {
+      f = yDomain.max === yDomain.min ? 0 : (v - yDomain.min) / (yDomain.max - yDomain.min);
+    }
+    return clampFraction(invertAxis ? 1 - f : f);
+  });
+
+  // Pixel y for a value (top of plot = fraction 1). Relative to plot, add MARGIN.top.
+  const yPixel = $derived((v: number) => plotHeight * (1 - valueFraction(v)));
+
   const points = $derived.by(() => {
     if (data.length === 0) return [];
     return data.map((d, i) => {
@@ -242,7 +361,7 @@
         const denom = Math.max(data.length - 1, 1);
         x = data.length === 1 ? plotWidth / 2 : (i / denom) * plotWidth;
       }
-      const y = scaleLinear(d.y, yDomain.min, yDomain.max, plotHeight, 0);
+      const y = yPixel(d.y);
       return {
         x: MARGIN.left + x,
         y: MARGIN.top + y,
@@ -259,8 +378,8 @@
     (bands ?? [])
       .filter((b) => Number.isFinite(b.from) && Number.isFinite(b.to))
       .map((b, i) => {
-        const y1 = MARGIN.top + scaleLinear(b.from, yDomain.min, yDomain.max, plotHeight, 0);
-        const y2 = MARGIN.top + scaleLinear(b.to, yDomain.min, yDomain.max, plotHeight, 0);
+        const y1 = MARGIN.top + yPixel(b.from);
+        const y2 = MARGIN.top + yPixel(b.to);
         return {
           key: i,
           x: MARGIN.left,
@@ -283,7 +402,7 @@
           const x = MARGIN.left + scaleLinear(r.value, xDomain.min, xDomain.max, 0, plotWidth);
           return { key: i, axis, x1: x, x2: x, y1: MARGIN.top, y2: MARGIN.top + plotHeight, label: r.label, tone: r.tone };
         }
-        const y = MARGIN.top + scaleLinear(r.value, yDomain.min, yDomain.max, plotHeight, 0);
+        const y = MARGIN.top + yPixel(r.value);
         return { key: i, axis, x1: MARGIN.left, x2: MARGIN.left + plotWidth, y1: y, y2: y, label: r.label, tone: r.tone };
       })
       .filter((r): r is NonNullable<typeof r> => r !== null)
@@ -292,7 +411,7 @@
   const goalGeom = $derived(
     goal
       ? {
-          y: MARGIN.top + scaleLinear(goal.value, yDomain.min, yDomain.max, plotHeight, 0),
+          y: MARGIN.top + yPixel(goal.value),
           label: goal.label,
           value: goal.value
         }
@@ -308,9 +427,9 @@
     if (!trendModel || xDomain.kind !== "numeric") return null;
     return {
       x1: MARGIN.left + scaleLinear(trendModel.minX, xDomain.min, xDomain.max, 0, plotWidth),
-      y1: MARGIN.top + scaleLinear(trendModel.slope * trendModel.minX + trendModel.intercept, yDomain.min, yDomain.max, plotHeight, 0),
+      y1: MARGIN.top + yPixel(trendModel.slope * trendModel.minX + trendModel.intercept),
       x2: MARGIN.left + scaleLinear(trendModel.maxX, xDomain.min, xDomain.max, 0, plotWidth),
-      y2: MARGIN.top + scaleLinear(trendModel.slope * trendModel.maxX + trendModel.intercept, yDomain.min, yDomain.max, plotHeight, 0)
+      y2: MARGIN.top + yPixel(trendModel.slope * trendModel.maxX + trendModel.intercept)
     };
   });
 
@@ -356,7 +475,7 @@
   const gridLines = $derived(
     yTicks.map((tick) => ({
       value: tick,
-      y: MARGIN.top + scaleLinear(tick, yDomain.min, yDomain.max, plotHeight, 0)
+      y: MARGIN.top + yPixel(tick)
     }))
   );
 

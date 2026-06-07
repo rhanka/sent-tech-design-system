@@ -83,9 +83,8 @@
     if (!target) return;
     focusedId = target.node.id;
     queueMicrotask(() => {
-      document
-        .querySelector<HTMLElement>(`[data-tree-id="${CSS.escape(target.node.id)}"]`)
-        ?.focus();
+      const rows = Array.from(document.querySelectorAll<HTMLElement>("[data-tree-id]"));
+      rows.find((row) => row.dataset.treeId === target.node.id)?.focus();
     });
   }
 

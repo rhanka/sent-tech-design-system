@@ -3,15 +3,22 @@ import { classNames } from "./classNames.js";
 import {
   CHART_MARGIN,
   chartDataList,
+  clampFraction,
   extendValueDomain,
+  fixedLogTicks,
+  fixedTicks,
   formatTick,
+  logTicks,
   niceTicks,
   overlayDataListItems,
   overlayToneClass,
-  scaleLinear,
+  smallestPositive,
+  validLinearDomain,
+  validLogDomain,
   type ChartBand,
   type ChartGoalLine,
   type ChartReferenceLine,
+  type ChartScale,
 } from "./chartScale.js";
 
 export type BarChartTone =
@@ -69,6 +76,20 @@ export type BarChartProps = {
   bands?: ChartBand[];
   /** A single goal line, emphasised above the bars. */
   goalLine?: ChartGoalLine;
+  /**
+   * Value-axis scale. `"linear"` (default) is unchanged. `"log"` switches the
+   * value axis to base-10 logarithmic — values `<= 0` are ignored for
+   * domain/ticks and clamped to the lowest tick when positioned.
+   */
+  scale?: ChartScale;
+  /** Inverts the value axis (high values toward the origin). Default false. */
+  invertAxis?: boolean;
+  /**
+   * Toggles the legend if the chart has one. BarChart has no separate legend
+   * surface (its filter chips double as one); accepted for cross-chart parity
+   * and otherwise ignored.
+   */
+  showLegend?: boolean;
   class?: string;
 };
 
@@ -88,6 +109,9 @@ export const BarChart = defineComponent({
     referenceLines: { type: Array as () => ChartReferenceLine[], default: undefined },
     bands: { type: Array as () => ChartBand[], default: undefined },
     goalLine: { type: Object as () => ChartGoalLine, default: undefined },
+    scale: { type: String as () => ChartScale, default: "linear" },
+    invertAxis: { type: Boolean, default: false },
+    showLegend: { type: Boolean, default: undefined },
     class: { type: String, default: undefined },
   },
   setup(props, { attrs }) {
@@ -119,14 +143,6 @@ export const BarChart = defineComponent({
       const hasSelection = selectedSet.size > 0;
       const interactive = typeof props.onSelect === "function";
 
-      // A domain is honoured only when both bounds are finite and ordered
-      // (min<max). Otherwise we fall back to the auto data range.
-      const domain = props.domain;
-      const validDomain =
-        domain && Number.isFinite(domain[0]) && Number.isFinite(domain[1]) && domain[0] < domain[1]
-          ? domain
-          : null;
-
       const referenceLines = props.referenceLines;
       const bands = props.bands;
       // A finite goal value is required; otherwise the goal line is ignored.
@@ -136,24 +152,69 @@ export const BarChart = defineComponent({
         [d.errorLow, d.errorHigh].filter((v): v is number => v !== undefined && Number.isFinite(v)),
       );
 
+      const isLog = props.scale === "log";
+      const domain = props.domain;
+      const validDomain = isLog ? validLogDomain(domain) : validLinearDomain(domain);
+      const valueAxis = orientation === "vertical" ? "y" : "x";
+      const valueReferenceLines = (referenceLines ?? []).filter((r) => (r.axis ?? "y") === valueAxis);
+      const invertAxis = props.invertAxis ?? false;
       const values = data.map((d) => d.value);
-      let minRaw = validDomain ? validDomain[0] : Math.min(0, ...values);
-      let maxRaw = validDomain ? validDomain[1] : Math.max(0, ...values);
-      // A pinned domain is authoritative (small-multiples); only the auto domain
-      // is widened to keep finite overlays + error bars on-plot.
-      if (!validDomain) {
-        [minRaw, maxRaw] = extendValueDomain(minRaw, maxRaw, {
-          referenceLines,
-          bands,
-          goalLine: goal,
-          extraValues: errorExtents,
-        });
+      let ticks: number[];
+      if (isLog) {
+        // A log axis is undefined for values <= 0; floor = smallest strictly-
+        // positive value across data + finite overlays, ceil = the largest.
+        const posOverlays = [
+          ...valueReferenceLines.map((r) => r.value),
+          ...(bands ?? []).flatMap((b) => [b.from, b.to]),
+          ...(goal ? [goal.value] : []),
+          ...errorExtents,
+        ];
+        let lo: number;
+        let hi: number;
+        if (validDomain) {
+          lo = validDomain[0];
+          hi = validDomain[1];
+        } else {
+          lo = smallestPositive(...values, ...posOverlays);
+          hi = Math.max(lo, ...values.filter((v) => v > 0), ...posOverlays.filter((v) => v > 0));
+        }
+        ticks = validDomain ? fixedLogTicks(lo, hi) : logTicks(lo, hi);
+      } else {
+        let minRaw = validDomain ? validDomain[0] : Math.min(0, ...values);
+        let maxRaw = validDomain ? validDomain[1] : Math.max(0, ...values);
+        // A pinned domain is authoritative (small-multiples); only the auto
+        // domain is widened to keep finite overlays + error bars on-plot.
+        if (!validDomain) {
+          [minRaw, maxRaw] = extendValueDomain(minRaw, maxRaw, {
+            referenceLines,
+            referenceAxis: valueAxis,
+            bands,
+            goalLine: goal,
+            extraValues: errorExtents,
+          });
+        }
+        ticks = validDomain ? fixedTicks(minRaw, maxRaw, 5) : niceTicks(minRaw, maxRaw, 5);
       }
-      const ticks = niceTicks(minRaw, maxRaw, 5);
       const domainMin = ticks[0];
       const domainMax = ticks[ticks.length - 1];
       const plotWidth = Math.max(width - MARGIN.left - MARGIN.right, 1);
       const plotHeight = Math.max(height - MARGIN.top - MARGIN.bottom, 1);
+
+      // Maps a value to a fraction in [0,1] along the value axis, honouring log
+      // scale + axis inversion. Linear + no invert reproduces prior behaviour.
+      const valueFraction = (v: number) => {
+        let f: number;
+        if (isLog) {
+          const lo = Math.log10(domainMin);
+          const hi = Math.log10(domainMax);
+          const clamped = v > 0 ? v : domainMin; // log undefined for v<=0 → clamp
+          f = hi === lo ? 0 : (Math.log10(clamped) - lo) / (hi - lo);
+        } else {
+          f = domainMax === domainMin ? 0 : (v - domainMin) / (domainMax - domainMin);
+        }
+        return clampFraction(invertAxis ? 1 - f : f);
+      };
+      const baselineValue = isLog ? domainMin : Math.min(domainMax, Math.max(domainMin, 0));
 
       type Bar = {
         x: number;
@@ -171,9 +232,10 @@ export const BarChart = defineComponent({
         if (orientation === "vertical") {
           const band = plotWidth / data.length;
           const barWidth = band * 0.62;
-          const zeroY = scaleLinear(0, domainMin, domainMax, plotHeight, 0);
+          const yOf = (v: number) => plotHeight * (1 - valueFraction(v));
+          const zeroY = yOf(baselineValue);
           bars = data.map((d, i) => {
-            const valueY = scaleLinear(d.value, domainMin, domainMax, plotHeight, 0);
+            const valueY = yOf(d.value);
             const y = Math.min(valueY, zeroY);
             const hh = Math.abs(zeroY - valueY);
             const x = MARGIN.left + band * i + (band - barWidth) / 2;
@@ -191,9 +253,10 @@ export const BarChart = defineComponent({
         } else {
           const band = plotHeight / data.length;
           const barHeight = band * 0.62;
-          const zeroX = scaleLinear(0, domainMin, domainMax, 0, plotWidth);
+          const xOf = (v: number) => plotWidth * valueFraction(v);
+          const zeroX = xOf(baselineValue);
           bars = data.map((d, i) => {
-            const valueX = scaleLinear(d.value, domainMin, domainMax, 0, plotWidth);
+            const valueX = xOf(d.value);
             const x = Math.min(valueX, zeroX);
             const w = Math.abs(valueX - zeroX);
             const y = MARGIN.top + band * i + (band - barHeight) / 2;
@@ -215,8 +278,8 @@ export const BarChart = defineComponent({
       const isVertical = orientation === "vertical";
       const valuePos = (v: number) =>
         isVertical
-          ? MARGIN.top + scaleLinear(v, domainMin, domainMax, plotHeight, 0)
-          : MARGIN.left + scaleLinear(v, domainMin, domainMax, 0, plotWidth);
+          ? MARGIN.top + plotHeight * (1 - valueFraction(v))
+          : MARGIN.left + plotWidth * valueFraction(v);
       const valueAxisEnd = isVertical ? MARGIN.left + plotWidth : MARGIN.top + plotHeight;
 
       type BandRect = { key: number; x: number; y: number; width: number; height: number; label?: string; tone?: ChartBand["tone"] };
@@ -286,7 +349,7 @@ export const BarChart = defineComponent({
       const gridChildren: ReturnType<typeof h>[] = [];
       if (orientation === "vertical") {
         for (const tick of ticks) {
-          const y = MARGIN.top + scaleLinear(tick, domainMin, domainMax, plotHeight, 0);
+          const y = MARGIN.top + plotHeight * (1 - valueFraction(tick));
           gridChildren.push(
             h("line", { key: `g${tick}`, class: "st-barChart__grid", x1: MARGIN.left, x2: MARGIN.left + plotWidth, y1: y, y2: y }),
             h(
@@ -298,7 +361,7 @@ export const BarChart = defineComponent({
         }
       } else {
         for (const tick of ticks) {
-          const x = MARGIN.left + scaleLinear(tick, domainMin, domainMax, 0, plotWidth);
+          const x = MARGIN.left + plotWidth * valueFraction(tick);
           gridChildren.push(
             h("line", { key: `g${tick}`, class: "st-barChart__grid", x1: x, x2: x, y1: MARGIN.top, y2: MARGIN.top + plotHeight }),
             h(
