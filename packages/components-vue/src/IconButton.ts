@@ -21,7 +21,7 @@ export const IconButton = defineComponent({
     },
     variant: {
       type: String as () => IconButtonVariant,
-      default: "secondary",
+      default: "ghost",
     },
     type: {
       type: String as () => "button" | "submit" | "reset",

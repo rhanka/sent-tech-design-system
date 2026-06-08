@@ -1,4 +1,5 @@
 import { defineComponent, h, ref } from "vue";
+import { Eye, EyeOff } from "lucide-vue-next";
 import { classNames } from "./classNames.js";
 
 export type PasswordInputSize = "sm" | "md" | "lg";
@@ -84,11 +85,13 @@ export const PasswordInput = defineComponent({
                   {
                     type: "button",
                     class: "st-passwordInput__toggle",
+                    "aria-label": shown.value ? "Hide password" : "Show password",
+                    "aria-pressed": shown.value ? "true" : "false",
                     onClick: () => {
                       shown.value = !shown.value;
                     },
                   },
-                  shown.value ? "Hide" : "Show",
+                  h(shown.value ? EyeOff : Eye, { size: 16, strokeWidth: 2, "aria-hidden": "true" }),
                 ),
               ]),
             ],

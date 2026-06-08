@@ -1,4 +1,5 @@
 import React from "react";
+import { Check, ChevronDown, Copy, Eye, EyeOff, Search as SearchIcon, X } from "lucide-react";
 import { classNames } from "./classNames.js";
 
 export type Size = "sm" | "md" | "lg";
@@ -16,7 +17,7 @@ export type DataTone =
 type AnyRecord = Record<string, unknown>;
 // `value` (Svelte-canonical) is accepted as an alias of `id`; `danger: true`
 // (Svelte-canonical) is accepted as an alias of `variant: "danger"`.
-type ActionItem = { id?: string; value?: string; label: React.ReactNode; disabled?: boolean; variant?: "default" | "danger"; danger?: boolean; onClick?: () => void };
+type ActionItem = { id?: string; value?: string; label: React.ReactNode; disabled?: boolean; variant?: "default" | "danger"; danger?: boolean; icon?: React.ReactNode; onClick?: () => void };
 type OptionItem = { value: string; label: React.ReactNode; disabled?: boolean };
 
 // Normalises an action item so the rest of the component only deals with the
@@ -589,6 +590,9 @@ export function CopyButton({ text: copyText, value, label = "Copy", copiedLabel 
         onClick?.(event);
       }}
     >
+      <span className="st-copyButton__icon" aria-hidden="true">
+        {copied ? <Check size={14} strokeWidth={2} aria-hidden="true" /> : <Copy size={14} strokeWidth={2} aria-hidden="true" />}
+      </span>
       <span className="st-copyButton__label">{copied ? copiedLabel : label}</span>
     </button>
   );
@@ -1043,6 +1047,7 @@ export function Dropdown({ label = "Select", options, value, open: controlledOpe
         }}
       >
         <span className="st-dropdown__label">{label}</span>: <span className="st-dropdown__value">{selected?.label ?? placeholder}</span>
+        <ChevronDown className={classNames("st-dropdown__icon", open && "st-dropdown__icon--open")} size={18} strokeWidth={2.25} aria-hidden="true" />
       </button>
       {open ? (
         <div className="st-dropdown__list" role="listbox" aria-label={text(label) || "Options"}>
@@ -2880,7 +2885,7 @@ export type IconButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   size?: Size;
   variant?: "secondary" | "danger" | "ghost";
 };
-export function IconButton({ size = "md", variant = "secondary", type = "button", className, children, ...rest }: IconButtonProps) {
+export function IconButton({ size = "md", variant = "ghost", type = "button", className, children, ...rest }: IconButtonProps) {
   return (
     <button {...rest} type={type} className={classNames("st-iconButton", `st-iconButton--${size}`, `st-iconButton--${variant}`, className)}>
       {children}
@@ -3008,20 +3013,24 @@ export function Menu({ items, dense = false, onSelect, className, role, ...rest 
       {items.map((item, index) => {
         if (isDivider(item)) return <div key={item.id ?? index} className="st-menu__divider" role="separator" />;
         if (isGroup(item)) {
+          // Canon-aligned (Svelte): a group is a flat `div role="presentation"`
+          // label; nested `items` (React-native shape) render as flat siblings.
           return (
-            <section key={item.id ?? index} className="st-menu__group">
-              <h3>{item.label}</h3>
+            <React.Fragment key={item.id ?? index}>
+              <div className="st-menu__group" role="presentation">{item.label}</div>
               {(item.items ?? []).map((child) => (
                 <button key={actionId(child) ?? text(child.label)} type="button" role="menuitem" className={classNames("st-menu__item", isDangerAction(child) && "st-menu__item--danger")} disabled={child.disabled} onClick={() => onSelect?.(child)} onKeyDown={(event) => handleItemKeyDown(event, child)}>
+                  {child.icon ? <span className="st-menu__itemIcon" aria-hidden="true">{child.icon}</span> : null}
                   <span className="st-menu__itemLabel">{child.label}</span>
                 </button>
               ))}
-            </section>
+            </React.Fragment>
           );
         }
         const action = item as MenuActionItem;
         return (
           <button key={actionId(action) ?? text(action.label) ?? index} type="button" role="menuitem" disabled={action.disabled} className={classNames("st-menu__item", isDangerAction(action) && "st-menu__item--danger")} onClick={() => onSelect?.(action)} onKeyDown={(event) => handleItemKeyDown(event, action)}>
+            {action.icon ? <span className="st-menu__itemIcon" aria-hidden="true">{action.icon}</span> : null}
             <span className="st-menu__itemLabel">{action.label}</span>
           </button>
         );
@@ -3143,7 +3152,7 @@ export function Modal({ open = false, title, description, footer, onClose, child
         <div className="st-modal__header">
           {title ? <h2 className="st-modal__title">{title}</h2> : null}
           <button ref={closeRef} type="button" className="st-modal__close" onClick={onClose} aria-label="Close">
-            x
+            <X size={18} strokeWidth={2.25} aria-hidden="true" />
           </button>
         </div>
         {description ? <p className="st-modal__description">{description}</p> : null}
@@ -3365,8 +3374,8 @@ export function PasswordInput({ label, helperText, errorText, size = "md", class
       {(inputId, isInvalid) => (
         <span className="st-passwordInput__control">
           <input {...rest} id={inputId} className="st-control" type={shown ? "text" : "password"} aria-invalid={isInvalid ? "true" : undefined} />
-          <button type="button" className="st-passwordInput__toggle" onClick={() => setShown((next) => !next)}>
-            {shown ? "Hide" : "Show"}
+          <button type="button" className="st-passwordInput__toggle" aria-label={shown ? "Hide password" : "Show password"} aria-pressed={shown ? "true" : "false"} onClick={() => setShown((next) => !next)}>
+            {shown ? <EyeOff size={16} strokeWidth={2} aria-hidden="true" /> : <Eye size={16} strokeWidth={2} aria-hidden="true" />}
           </button>
         </span>
       )}
@@ -3470,17 +3479,18 @@ export function Quote({ author, source, children, className, ...rest }: QuotePro
 export type SearchProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, "size" | "type"> & {
   label?: React.ReactNode;
   size?: Size;
+  clearLabel?: string;
   onClear?: () => void;
 };
-export function Search({ label, size = "md", onClear, className, ...rest }: SearchProps) {
+export function Search({ label, size = "md", clearLabel = "Clear search", onClear, className, ...rest }: SearchProps) {
   const reactId = React.useId();
   const inputId = rest.id ?? `st-search-${reactId}`;
   return (
     <div className={classNames("st-search", `st-search--${size}`, className)}>
       {label ? <label className="st-field__label" htmlFor={inputId}>{label}</label> : null}
-      <span className="st-search__icon" aria-hidden="true">⌕</span>
+      <span className="st-search__icon" aria-hidden="true"><SearchIcon size={16} strokeWidth={2} aria-hidden="true" /></span>
       <input {...rest} id={inputId} className="st-search__control st-search__input" type="search" />
-      {onClear ? <button type="button" className="st-search__clear" onClick={onClear}>Clear</button> : null}
+      {onClear ? <button type="button" className="st-search__clear" aria-label={clearLabel} onClick={onClear}><X size={16} strokeWidth={2} aria-hidden="true" /></button> : null}
     </div>
   );
 }
@@ -3947,13 +3957,14 @@ export type TagProps = React.HTMLAttributes<HTMLSpanElement> & {
   tone?: Tone;
   size?: "sm" | "md";
   disabled?: boolean;
+  dismissLabel?: string;
   onDismiss?: () => void;
 };
-export function Tag({ tone = "neutral", size = "md", disabled = false, onDismiss, className, children, ...rest }: TagProps) {
+export function Tag({ tone = "neutral", size = "md", disabled = false, dismissLabel = "Dismiss", onDismiss, className, children, ...rest }: TagProps) {
   return (
-    <span {...rest} className={classNames("st-tag", `st-tag--${tone}`, `st-tag--${size}`, disabled && "st-tag--disabled", className)}>
+    <span {...rest} className={classNames("st-tag", `st-tag--${tone}`, `st-tag--${size}`, disabled && "st-tag--disabled", className)} aria-disabled={disabled ? "true" : undefined}>
       <span className="st-tag__label">{children}</span>
-      {onDismiss ? <button type="button" className="st-tag__dismiss" onClick={onDismiss}>x</button> : null}
+      {onDismiss ? <button type="button" className="st-tag__dismiss" aria-label={dismissLabel} disabled={disabled} onClick={onDismiss}><X size={14} strokeWidth={2} aria-hidden="true" /></button> : null}
     </span>
   );
 }

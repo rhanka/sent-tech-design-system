@@ -1,4 +1,5 @@
 import { defineComponent, h, ref } from "vue";
+import { Search as SearchIcon, X } from "lucide-vue-next";
 import { classNames } from "./classNames.js";
 
 export type SearchSize = "sm" | "md" | "lg";
@@ -10,6 +11,7 @@ export type SearchProps = {
   /** Svelte/React-canonical alias for `modelValue`. */
   value?: string;
   placeholder?: string;
+  clearLabel?: string;
   disabled?: boolean;
   id?: string;
   class?: string;
@@ -28,6 +30,7 @@ export const Search = defineComponent({
     modelValue: { type: String, default: undefined },
     value: { type: String, default: undefined },
     placeholder: { type: String, default: undefined },
+    clearLabel: { type: String, default: "Clear search" },
     disabled: { type: Boolean, default: false },
     id: { type: String, default: undefined },
     class: { type: String, default: undefined },
@@ -38,6 +41,7 @@ export const Search = defineComponent({
 
     return () => {
       const inputId = props.id ?? autoId.value;
+      const currentValue = props.modelValue ?? props.value ?? "";
 
       return h(
         "div",
@@ -56,17 +60,17 @@ export const Search = defineComponent({
                 props.label as string,
               )
             : null,
-          h("span", {
-            class: "st-search__icon",
-            "aria-hidden": "true",
-            innerHTML: "⌕",
-          }),
+          h(
+            "span",
+            { class: "st-search__icon", "aria-hidden": "true" },
+            h(SearchIcon, { size: 16, strokeWidth: 2, "aria-hidden": "true" }),
+          ),
           h("input", {
             ...attrs,
             id: inputId,
             class: "st-search__control st-search__input",
             type: "search",
-            value: props.modelValue ?? props.value,
+            value: currentValue,
             placeholder: props.placeholder,
             disabled: props.disabled,
             onInput: (event: Event) => {
@@ -80,6 +84,22 @@ export const Search = defineComponent({
               emit("change", event);
             },
           }),
+          currentValue
+            ? h(
+                "button",
+                {
+                  type: "button",
+                  class: "st-search__clear",
+                  "aria-label": props.clearLabel,
+                  disabled: props.disabled,
+                  onClick: () => {
+                    emit("update:modelValue", "");
+                    emit("clear");
+                  },
+                },
+                h(X, { size: 16, strokeWidth: 2, "aria-hidden": "true" }),
+              )
+            : null,
         ],
       );
     };
