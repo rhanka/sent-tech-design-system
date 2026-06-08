@@ -1,8 +1,9 @@
 <script lang="ts">
+  import { getExample } from "$lib/framework/examples";
+  import TriRender from "$lib/framework/TriRender.svelte";
   import { Badge, ChatComposer, MessageStatusBadge } from "@sentropic/design-system-svelte";
   import { Plus, Trash2, Send, Square } from "@lucide/svelte";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   const copy = {
     fr: {
@@ -172,7 +173,7 @@
     </div>
     <p>{text().intro}</p>
   </section>
-  <FrameworkPreview example="chatcomposer" title="Aperçu live" />
+  <TriRender nodes={getExample("chatcomposer")?.nodes ?? []} label="Aperçu live" />
 
 
   <!-- Interactive Playground Section -->

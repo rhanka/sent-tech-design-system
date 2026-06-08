@@ -1,9 +1,10 @@
 <script lang="ts">
+  import { getExample } from "$lib/framework/examples";
+  import TriRender from "$lib/framework/TriRender.svelte";
   import { Badge, Menu } from "@sentropic/design-system-svelte";
   import { Archive, Copy, Pencil, Share2, Trash2 } from "@lucide/svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   const fr = (frText: string, enText: string) => (locale.value === "fr" ? frText : enText);
 
@@ -43,7 +44,7 @@
       )}
     </p>
   </section>
-  <FrameworkPreview example="menu" title="Aperçu live" />
+  <TriRender nodes={getExample("menu")?.nodes ?? []} label="Aperçu live" />
 
 
   <section class="docs-section">

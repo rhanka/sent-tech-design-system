@@ -1,9 +1,9 @@
 <script lang="ts">
+  import { getExample } from "$lib/framework/examples";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import TriRender from "$lib/framework/TriRender.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
@@ -38,13 +38,13 @@
     <p>{t(locale.value, "iconButtonIntro")}</p>
   </section>
 
-  <FrameworkPreview example="iconbutton" title="Aperçu live" />
+  <TriRender nodes={getExample("iconbutton")?.nodes ?? []} label="Aperçu live" />
 
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
-    <FrameworkDemo nodes={variantsDemo} label={t(locale.value, "variants")} />
-    <FrameworkDemo nodes={sizesDemo} label={t(locale.value, "sizes")} />
-    <FrameworkDemo nodes={statesDemo} label={t(locale.value, "states")} />
+    <TriRender nodes={variantsDemo} label={t(locale.value, "variants")} />
+    <TriRender nodes={sizesDemo} label={t(locale.value, "sizes")} />
+    <TriRender nodes={statesDemo} label={t(locale.value, "states")} />
     <p class="docs-demo-note">
       {locale.value === "fr"
         ? "Les icônes sont représentées ici par des glyphes texte pour rester identiques dans les trois frameworks ; en usage réel, injectez une icône (ex. Lucide) en children."

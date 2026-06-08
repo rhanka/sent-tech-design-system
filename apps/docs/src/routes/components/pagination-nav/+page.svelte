@@ -1,9 +1,9 @@
 <script lang="ts">
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import { getExample } from "$lib/framework/examples";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import TriRender from "$lib/framework/TriRender.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
@@ -64,12 +64,12 @@
     </div>
     <p>{t(locale.value, "paginationNavIntro")}</p>
   </section>
-  <FrameworkPreview example="paginationnav" title="Aperçu live" />
+  <TriRender nodes={getExample("paginationnav")?.nodes ?? []} label="Aperçu live" />
 
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
-    <FrameworkDemo
+    <TriRender
       nodes={shortDemo}
       label={locale.value === "fr" ? "Pagination courte" : "Short pagination"}
     />
@@ -78,7 +78,7 @@
       · {locale.value === "fr" ? "« Précédent » désactivé à la borne" : "“Previous” disabled at the boundary"}
     </p>
 
-    <FrameworkDemo
+    <TriRender
       nodes={longDemo}
       label={locale.value === "fr" ? "Pagination longue avec ellipses" : "Long pagination with ellipses"}
     />
@@ -87,7 +87,7 @@
       · {locale.value === "fr" ? "ellipses automatiques aux extrémités" : "automatic ellipses at the ends"}
     </p>
 
-    <FrameworkDemo
+    <TriRender
       nodes={compactDemo}
       label={locale.value === "fr" ? "Bornes désactivées" : "Disabled boundaries"}
     />

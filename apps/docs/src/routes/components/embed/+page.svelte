@@ -1,7 +1,7 @@
 <script lang="ts">
+  import { getExample } from "$lib/framework/examples";
   import { Badge } from "@sentropic/design-system-svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import TriRender from "$lib/framework/TriRender.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   // Démo décrite en arbre NodeSpec neutre -> rendue dans le framework actif.
@@ -30,11 +30,11 @@
       (accessibilité). Idéal pour intégrer carte, vidéo ou widget externe.
     </p>
   </section>
-  <FrameworkPreview example="embed" title="Aperçu live" />
+  <TriRender nodes={getExample("embed")?.nodes ?? []} label="Aperçu live" />
 
   <section class="docs-section" id="Introduction">
     <h2>Présentation</h2>
-    <FrameworkDemo nodes={presentationDemo} label="Embed" />
+    <TriRender nodes={presentationDemo} label="Embed" />
   </section>
 
   <section class="docs-section" id="API">

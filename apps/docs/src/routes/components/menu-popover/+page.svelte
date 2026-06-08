@@ -1,9 +1,9 @@
 <script lang="ts">
+  import { getExample } from "$lib/framework/examples";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import TriRender from "$lib/framework/TriRender.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const fr = (frText: string, enText: string) => (locale.value === "fr" ? frText : enText);
@@ -16,27 +16,37 @@
   // MenuPopover (Svelte) ne prend pas de prop `items` : il rend ses `children`.
   // On y imbrique donc un Menu, dont la shape d'items est celle du composant Svelte
   // (kind/value/danger) pour un rendu SSR correct.
+  // Sans `trigger` (HTMLElement, inexprimable en NodeSpec), le panneau ouvert se
+  // positionnerait en absolu à l'origine du document (et 3 panneaux se
+  // superposeraient en rendu tri-framework). Le wrapper .docs-popover-inline
+  // (CSS global docs) remet le panneau figé dans le flux : démo bornée.
   const actionsDemo = $derived<NodeSpec[]>([
     {
-      comp: "MenuPopover",
-      props: { open: true, placement: "bottom-start", label: fr("Actions", "Actions") },
+      el: "div",
+      props: { class: "docs-popover-inline" },
       children: [
         {
-          comp: "Menu",
-          props: {
-            label: fr("Actions", "Actions"),
-            items: [
-              { kind: "group", label: fr("Édition", "Edit") },
-              { value: "edit", label: fr("Éditer", "Edit") },
-              { value: "duplicate", label: fr("Dupliquer", "Duplicate") },
-              { kind: "divider" },
-              { kind: "group", label: fr("Distribuer", "Distribute") },
-              { value: "share", label: fr("Partager", "Share") },
-              { value: "archive", label: fr("Archiver", "Archive") },
-              { kind: "divider" },
-              { value: "delete", label: fr("Supprimer", "Delete"), danger: true }
-            ]
-          }
+          comp: "MenuPopover",
+          props: { open: true, placement: "bottom-start", label: fr("Actions", "Actions") },
+          children: [
+            {
+              comp: "Menu",
+              props: {
+                label: fr("Actions", "Actions"),
+                items: [
+                  { kind: "group", label: fr("Édition", "Edit") },
+                  { value: "edit", label: fr("Éditer", "Edit") },
+                  { value: "duplicate", label: fr("Dupliquer", "Duplicate") },
+                  { kind: "divider" },
+                  { kind: "group", label: fr("Distribuer", "Distribute") },
+                  { value: "share", label: fr("Partager", "Share") },
+                  { value: "archive", label: fr("Archiver", "Archive") },
+                  { kind: "divider" },
+                  { value: "delete", label: fr("Supprimer", "Delete"), danger: true }
+                ]
+              }
+            }
+          ]
         }
       ]
     }
@@ -48,10 +58,12 @@
     { value: "c", label: "Option C" }
   ];
 
+  // Même bornage que actionsDemo : chaque panneau figé est remis dans le flux,
+  // sinon les transforms des placements top-*/-end le font sortir de la boîte.
   const placementsDemo = $derived<NodeSpec[]>([
     {
       el: "div",
-      props: { class: "docs-demo-stack" },
+      props: { class: "docs-demo-stack docs-popover-inline" },
       children: (["bottom-start", "bottom-end", "top-start", "top-end"] as const).map(
         (placement) => ({
           comp: "MenuPopover" as const,
@@ -77,7 +89,7 @@
       )}
     </p>
   </section>
-  <FrameworkPreview example="menupopover" title="Aperçu live" />
+  <TriRender nodes={getExample("menupopover")?.nodes ?? []} label="Aperçu live" />
 
 
   <section class="docs-section">
@@ -101,7 +113,7 @@
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
-    <FrameworkDemo nodes={actionsDemo} label="MenuPopover + Menu" />
+    <TriRender nodes={actionsDemo} label="MenuPopover + Menu" />
     <p class="docs-demo-note">
       {fr(
         "Sur la page réelle, MenuTriggerButton ouvre/ferme le panneau ancré et le choix d'une action le referme. La démo le montre figé ouvert.",
@@ -109,7 +121,7 @@
       )}
     </p>
 
-    <FrameworkDemo nodes={placementsDemo} label="Placements" />
+    <TriRender nodes={placementsDemo} label="Placements" />
     <p class="docs-demo-note">
       {fr(
         "Les quatre placements (bottom-start, bottom-end, top-start, top-end), tous figés ouverts.",

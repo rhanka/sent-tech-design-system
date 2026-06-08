@@ -2,7 +2,7 @@
   import { Badge, Button, Modal } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import TriRender from "$lib/framework/TriRender.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   // Modal s'ouvre au clic et rend un overlay position:fixed plein écran : aucune
@@ -21,12 +21,13 @@
   ];
 
   // OverflowMenu (Svelte) lit la shape kind/value/danger pour ses items.
+  // Pas de `open: true` : figé ouvert, le panneau absolu déborde de la boîte de
+  // démo (3× en tri-framework). Le déclencheur intégré ouvre le panneau au clic.
   const overflowDemo: NodeSpec[] = [
     {
       comp: "OverflowMenu",
       props: {
         triggerLabel: "Row actions",
-        open: true,
         placement: "bottom-start",
         items: [
           { kind: "group", label: "Edit" },
@@ -82,22 +83,22 @@
 
   <section class="docs-section">
     <h2>Tooltip</h2>
-    <FrameworkDemo nodes={tooltipDemo} label="Tooltip" />
+    <TriRender nodes={tooltipDemo} label="Tooltip" />
   </section>
 
   <section class="docs-section">
     <h2>OverflowMenu</h2>
-    <FrameworkDemo nodes={overflowDemo} label="OverflowMenu" />
+    <TriRender nodes={overflowDemo} label="OverflowMenu" />
     <p class="docs-demo-note">
       {locale.value === "fr"
-        ? "Panneau ouvert (open) et figé pour la démonstration."
-        : "Panel opened (open) and frozen for the demo."}
+        ? "Cliquez le déclencheur (⋯) pour ouvrir le panneau : la démo reste interactive dans les trois frameworks."
+        : "Click the trigger (⋯) to open the panel: the demo stays interactive in all three frameworks."}
     </p>
   </section>
 
   <section class="docs-section">
     <h2>{t(locale.value, "feedback")}</h2>
-    <FrameworkDemo nodes={feedbackDemo} label={t(locale.value, "feedback")} />
+    <TriRender nodes={feedbackDemo} label={t(locale.value, "feedback")} />
   </section>
 
   <section class="docs-section">

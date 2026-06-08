@@ -1,9 +1,9 @@
 <script lang="ts">
+  import { getExample } from "$lib/framework/examples";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import TriRender from "$lib/framework/TriRender.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   // Démos en arbre NodeSpec neutre -> rendues dans le framework actif.
@@ -52,17 +52,17 @@
     </div>
     <p>{t(locale.value, "inlineLoadingIntro")}</p>
   </section>
-  <FrameworkPreview example="inlineloading" title="Aperçu live" />
+  <TriRender nodes={getExample("inlineloading")?.nodes ?? []} label="Aperçu live" />
 
 
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
-    <FrameworkDemo nodes={statesDemo} label={t(locale.value, "states")} />
+    <TriRender nodes={statesDemo} label={t(locale.value, "states")} />
 
-    <FrameworkDemo nodes={noLabelDemo} label="Sans libellé" />
+    <TriRender nodes={noLabelDemo} label="Sans libellé" />
 
-    <FrameworkDemo nodes={transitionDemo} label="Transition de statut" />
+    <TriRender nodes={transitionDemo} label="Transition de statut" />
     <p class="docs-demo-note">
       {locale.value === "fr"
         ? "En usage réel, le `status` change selon l’état de la requête (active → success / error)."

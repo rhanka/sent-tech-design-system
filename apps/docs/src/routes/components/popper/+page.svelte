@@ -1,8 +1,9 @@
 <script lang="ts">
+  import { getExample } from "$lib/framework/examples";
+  import TriRender from "$lib/framework/TriRender.svelte";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   const fr = $derived(locale.value === "fr");
 </script>
@@ -21,7 +22,7 @@
     </p>
   </section>
 
-  <FrameworkPreview example="popper" title={fr ? "Aperçu live" : "Live preview"} />
+  <TriRender nodes={getExample("popper")?.nodes ?? []} label={fr ? "Aperçu live" : "Live preview"} />
 
   <section class="docs-section">
     <h2>{fr ? "Une primitive ancrée" : "An anchored primitive"}</h2>

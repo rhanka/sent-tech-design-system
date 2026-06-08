@@ -1,5 +1,6 @@
 <script lang="ts">
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import { getExample } from "$lib/framework/examples";
+  import TriRender from "$lib/framework/TriRender.svelte";
   import { Badge, TileGroup, type TileGroupItem } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
@@ -25,7 +26,7 @@
       Pour une tuile isolée, voir <code>Tile</code>.
     </p>
   </section>
-  <FrameworkPreview example="tilegroup" title="Aperçu live" />
+  <TriRender nodes={getExample("tilegroup")?.nodes ?? []} label="Aperçu live" />
 
   <section class="docs-section">
     <h2>Exemple</h2>

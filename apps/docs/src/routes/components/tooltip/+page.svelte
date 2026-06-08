@@ -1,9 +1,9 @@
 <script lang="ts">
+  import { getExample } from "$lib/framework/examples";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import TriRender from "$lib/framework/TriRender.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const fr = (frText: string, enText: string) => (locale.value === "fr" ? frText : enText);
@@ -56,7 +56,7 @@
     </p>
   </section>
 
-  <FrameworkPreview example="tooltip" title="Aperçu live" />
+  <TriRender nodes={getExample("tooltip")?.nodes ?? []} label="Aperçu live" />
 
   <section class="docs-section">
     <h2>{fr("Quand l'utiliser", "When to use")}</h2>
@@ -70,13 +70,13 @@
   <section class="docs-section">
     <h2>{fr("Placement", "Placement")}</h2>
     <p>{fr("Le tooltip s'affiche au-dessus (top, défaut) ou en dessous (bottom) du déclencheur.", "The tooltip appears above (top, default) or below (bottom) the trigger.")}</p>
-    <FrameworkDemo nodes={placementDemo} label={fr("Placement", "Placement")} />
+    <TriRender nodes={placementDemo} label={fr("Placement", "Placement")} />
   </section>
 
   <section class="docs-section" id="tooltip-demo">
     <h2>{fr("Déclencheurs", "Triggers")}</h2>
     <p>{fr("Le tooltip apparaît au survol et au focus du déclencheur (clavier inclus).", "The tooltip appears on hover and on focus of the trigger (keyboard included).")}</p>
-    <FrameworkDemo nodes={triggersDemo} label={fr("Déclencheurs", "Triggers")} />
+    <TriRender nodes={triggersDemo} label={fr("Déclencheurs", "Triggers")} />
   </section>
 
   <section class="docs-section">

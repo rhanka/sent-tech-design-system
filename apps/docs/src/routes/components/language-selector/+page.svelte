@@ -1,8 +1,9 @@
 <script lang="ts">
+  import { getExample } from "$lib/framework/examples";
+  import TriRender from "$lib/framework/TriRender.svelte";
   import { Badge, LanguageSelector } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   let lang = $state("fr");
   const options = [
@@ -25,7 +26,7 @@
       fermeture au clic extérieur / <kbd>Échap</kbd>.
     </p>
   </section>
-  <FrameworkPreview example="languageselector" title="Aperçu live" />
+  <TriRender nodes={getExample("languageselector")?.nodes ?? []} label="Aperçu live" />
 
   <section class="docs-section">
     <h2>Démo</h2>

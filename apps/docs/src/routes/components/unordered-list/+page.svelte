@@ -1,6 +1,7 @@
 <script lang="ts">
+  import { getExample } from "$lib/framework/examples";
+  import TriRender from "$lib/framework/TriRender.svelte";
   import { Badge, UnorderedList } from "@sentropic/design-system-svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   const items = [
     "Tokens stables",
@@ -25,7 +26,7 @@
       ou des objets <code>{`{ content, children }`}</code> pour l'imbrication.
     </p>
   </section>
-  <FrameworkPreview example="unorderedlist" title="Aperçu live" />
+  <TriRender nodes={getExample("unorderedlist")?.nodes ?? []} label="Aperçu live" />
 
 
   <section class="docs-section">

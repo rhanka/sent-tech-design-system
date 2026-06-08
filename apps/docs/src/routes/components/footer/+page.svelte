@@ -1,6 +1,7 @@
 <script lang="ts">
+  import { getExample } from "$lib/framework/examples";
+  import TriRender from "$lib/framework/TriRender.svelte";
   import { Badge, Footer, Link } from "@sentropic/design-system-svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 </script>
 
 {#snippet footerBrand()}
@@ -43,7 +44,7 @@
       par le parent. Complète l'app shell (Header + Footer).
     </p>
   </section>
-  <FrameworkPreview example="footer" title="Aperçu live" />
+  <TriRender nodes={getExample("footer")?.nodes ?? []} label="Aperçu live" />
 
 
   <section class="docs-section" id="footer-demo">

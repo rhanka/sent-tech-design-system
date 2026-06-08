@@ -1,7 +1,7 @@
 <script lang="ts">
+  import { getExample } from "$lib/framework/examples";
   import { Badge } from "@sentropic/design-system-svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import TriRender from "$lib/framework/TriRender.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
@@ -33,12 +33,12 @@
       utile pour les blocs éditoriaux enrichis (capture, infographie, illustration, vidéo).
     </p>
   </section>
-  <FrameworkPreview example="mediacontent" title="Aperçu live" />
+  <TriRender nodes={getExample("mediacontent")?.nodes ?? []} label="Aperçu live" />
 
 
   <section class="docs-section" id="Introduction">
     <h2>Présentation</h2>
-    <FrameworkDemo nodes={presentationDemo} label="MediaContent" />
+    <TriRender nodes={presentationDemo} label="MediaContent" />
   </section>
 
   <section class="docs-section" id="API">

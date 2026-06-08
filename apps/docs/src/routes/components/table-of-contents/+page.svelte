@@ -1,7 +1,7 @@
 <script lang="ts">
+  import { getExample } from "$lib/framework/examples";
   import { Badge } from "@sentropic/design-system-svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import TriRender from "$lib/framework/TriRender.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const items = [
@@ -52,17 +52,17 @@
       niveaux hiérarchiques. Idéal pour guider la navigation verticale des longues pages.
     </p>
   </section>
-  <FrameworkPreview example="tableofcontents" title="Aperçu live" />
+  <TriRender nodes={getExample("tableofcontents")?.nodes ?? []} label="Aperçu live" />
 
 
   <section class="docs-section" id="intro">
     <h2>Présentation</h2>
-    <FrameworkDemo nodes={presentationDemo} label="Présentation" />
+    <TriRender nodes={presentationDemo} label="Présentation" />
   </section>
 
   <section class="docs-section" id="usage">
     <h2>Cas d’usage</h2>
-    <FrameworkDemo nodes={usageDemo} label="Cas d’usage" />
+    <TriRender nodes={usageDemo} label="Cas d’usage" />
     <p class="docs-demo-note">
       L’identifiant actif est purement déclaratif (via <code>activeId</code>) dans cette version.
       Les ancres sont générées avec <code>href=&quot;#&lt;id&gt;&quot;</code>.
@@ -71,7 +71,7 @@
 
   <section class="docs-section" id="nested">
     <h2>Hiérarchie</h2>
-    <FrameworkDemo nodes={hierarchyDemo} label="Sommaire hiérarchique" />
+    <TriRender nodes={hierarchyDemo} label="Sommaire hiérarchique" />
     <p class="docs-demo-note">Les niveaux inférieurs gagnent une indentation visuelle.</p>
   </section>
 
