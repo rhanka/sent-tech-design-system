@@ -1,9 +1,8 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const fr = (frText: string, enText: string) => (locale.value === "fr" ? frText : enText);
@@ -59,7 +58,6 @@
     </p>
   </section>
 
-  <FrameworkPreview example="radio" title="Aperçu live" />
 
   <section class="docs-section">
     <h2>{fr("Quand l'utiliser", "When to use")}</h2>
@@ -73,12 +71,12 @@
   <section class="docs-section">
     <h2>{fr("Groupe", "Group")}</h2>
     <p>{fr("Les radios d'un même name s'excluent mutuellement.", "Radios sharing a name are mutually exclusive.")}</p>
-    <FrameworkDemo nodes={groupDemo} label={fr("Groupe", "Group")} />
+    <TabbedExample nodes={groupDemo} title={fr("Groupe", "Group")} />
   </section>
 
   <section class="docs-section">
     <h2>{t(locale.value, "states")}</h2>
-    <FrameworkDemo nodes={statesDemo} label={t(locale.value, "states")} />
+    <TabbedExample nodes={statesDemo} title={t(locale.value, "states")} />
   </section>
 
   <section class="docs-section">

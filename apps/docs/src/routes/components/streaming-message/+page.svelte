@@ -1,7 +1,8 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
+  import { getExample } from "$lib/framework/examples";
   import { Badge, StreamingMessage, type StreamingMessageEvent } from "@sentropic/design-system-svelte";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   const copy = {
     fr: {
@@ -93,7 +94,7 @@
     </div>
     <p>{text().intro}</p>
   </section>
-  <FrameworkPreview example="streamingmessage" title="Aperçu live" />
+  <TabbedExample nodes={getExample("streamingmessage")?.nodes ?? []} />
 
 
   <section class="docs-section">

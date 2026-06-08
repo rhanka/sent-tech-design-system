@@ -1,8 +1,9 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
+  import { getExample } from "$lib/framework/examples";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   const fr = $derived(locale.value === "fr");
 </script>
@@ -21,7 +22,7 @@
     </p>
   </section>
 
-  <FrameworkPreview example="popper" title={fr ? "Aperçu live" : "Live preview"} />
+  <TabbedExample nodes={getExample("popper")?.nodes ?? []} />
 
   <section class="docs-section">
     <h2>{fr ? "Une primitive ancrée" : "An anchored primitive"}</h2>

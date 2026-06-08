@@ -1,8 +1,9 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
+  import { getExample } from "$lib/framework/examples";
   import { Badge, Button, Popover } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   const fr = (frText: string, enText: string) => (locale.value === "fr" ? frText : enText);
 
@@ -26,7 +27,7 @@
       )}
     </p>
   </section>
-  <FrameworkPreview example="popover" title="Aperçu live" />
+  <TabbedExample nodes={getExample("popover")?.nodes ?? []} />
 
 
   <section class="docs-section">

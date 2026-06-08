@@ -1,9 +1,8 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
@@ -42,28 +41,27 @@
     <p>{t(locale.value, "tagIntro")}</p>
   </section>
 
-  <FrameworkPreview example="tag" title="Aperçu live" />
 
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
-    <FrameworkDemo nodes={tonesDemo} label={locale.value === "fr" ? "Tonalités" : "Tones"} />
+    <TabbedExample nodes={tonesDemo} title={locale.value === "fr" ? "Tonalités" : "Tones"} />
     <p class="docs-example__caption">
       {locale.value === "fr"
         ? "Cinq tonalités sémantiques alignées sur les feedback tokens."
         : "Five semantic tones aligned with feedback tokens."}
     </p>
 
-    <FrameworkDemo nodes={sizesDemo} label={locale.value === "fr" ? "Tailles" : "Sizes"} />
+    <TabbedExample nodes={sizesDemo} title={locale.value === "fr" ? "Tailles" : "Sizes"} />
     <p class="docs-example__caption">
       {locale.value === "fr"
         ? "Tailles sm (0.6875rem) et md (0.75rem)."
         : "Sizes sm (0.6875rem) and md (0.75rem)."}
     </p>
 
-    <FrameworkDemo
+    <TabbedExample
       nodes={dismissibleDemo}
-      label={locale.value === "fr" ? "Tags fermables" : "Dismissible tags"}
+      title={locale.value === "fr" ? "Tags fermables" : "Dismissible tags"}
     />
     <p class="docs-example__caption">
       {locale.value === "fr"
@@ -71,9 +69,9 @@
         : "Dismissible tags expose a remove button (X icon) that fires onDismiss. Wire the removal into your application state."}
     </p>
 
-    <FrameworkDemo
+    <TabbedExample
       nodes={disabledDemo}
-      label={locale.value === "fr" ? "État désactivé" : "Disabled state"}
+      title={locale.value === "fr" ? "État désactivé" : "Disabled state"}
     />
     <p class="docs-example__caption">
       {locale.value === "fr"

@@ -1,8 +1,9 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
+  import { getExample } from "$lib/framework/examples";
   import { Badge, ChatMessage, ChatThread, ChatComposer } from "@sentropic/design-system-svelte";
   import { Sparkles, UserRound, Trash2, ShieldAlert, Wrench, RefreshCw } from "@lucide/svelte";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   const copy = {
     fr: {
@@ -267,7 +268,7 @@
     </div>
     <p>{text().intro}</p>
   </section>
-  <FrameworkPreview example="chatthread" title="Aperçu live" />
+  <TabbedExample nodes={getExample("chatthread")?.nodes ?? []} />
 
 
   <!-- Complete Chat Simulator Onboarding Section -->

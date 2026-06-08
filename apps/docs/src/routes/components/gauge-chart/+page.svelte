@@ -1,8 +1,7 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge } from "@sentropic/design-system-svelte";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const demoNodes = $derived<NodeSpec[]>([
@@ -65,7 +64,6 @@
     </p>
   </section>
 
-  <FrameworkPreview example="gaugechart" title={locale.value === "fr" ? "Aperçu live" : "Live preview"} />
 
   <section class="docs-section">
     <h2>{locale.value === "fr" ? "Exemples" : "Examples"}</h2>
@@ -78,9 +76,9 @@
         load (red above 90%).
       {/if}
     </p>
-    <FrameworkDemo
+    <TabbedExample
       nodes={demoNodes}
-      label={locale.value === "fr" ? "Jauges SLA et CPU" : "SLA and CPU gauges"}
+      title={locale.value === "fr" ? "Jauges SLA et CPU" : "SLA and CPU gauges"}
     />
   </section>
 

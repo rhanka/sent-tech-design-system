@@ -1,9 +1,8 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge, type BarChartDatum } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const copy = {
@@ -135,7 +134,6 @@
     </div>
     <p>{text().intro}</p>
   </section>
-  <FrameworkPreview example="barchart" title="Aperçu live" />
 
 
   <section class="docs-section">
@@ -143,15 +141,15 @@
 
     <h3 class="docs-demo-title">{text().verticalTitle}</h3>
     <p class="docs-demo-note">{text().verticalDesc}</p>
-    <FrameworkDemo nodes={verticalDemo} label={text().verticalTitle} />
+    <TabbedExample nodes={verticalDemo} title={text().verticalTitle} />
 
     <h3 class="docs-demo-title">{text().horizontalTitle}</h3>
     <p class="docs-demo-note">{text().horizontalDesc}</p>
-    <FrameworkDemo nodes={horizontalDemo} label={text().horizontalTitle} />
+    <TabbedExample nodes={horizontalDemo} title={text().horizontalTitle} />
 
     <h3 class="docs-demo-title">{text().tonesTitle}</h3>
     <p class="docs-demo-note">{text().tonesDesc}</p>
-    <FrameworkDemo nodes={tonesDemo} label={text().tonesTitle} />
+    <TabbedExample nodes={tonesDemo} title={text().tonesTitle} />
   </section>
 
   <section class="docs-section">

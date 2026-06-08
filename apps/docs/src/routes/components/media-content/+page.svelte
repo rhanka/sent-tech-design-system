@@ -1,7 +1,6 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge } from "@sentropic/design-system-svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
@@ -33,12 +32,11 @@
       utile pour les blocs éditoriaux enrichis (capture, infographie, illustration, vidéo).
     </p>
   </section>
-  <FrameworkPreview example="mediacontent" title="Aperçu live" />
 
 
   <section class="docs-section" id="Introduction">
     <h2>Présentation</h2>
-    <FrameworkDemo nodes={presentationDemo} label="MediaContent" />
+    <TabbedExample nodes={presentationDemo} title="MediaContent" />
   </section>
 
   <section class="docs-section" id="API">

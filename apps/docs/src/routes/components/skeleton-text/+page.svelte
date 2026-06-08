@@ -1,9 +1,8 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const copy = {
@@ -71,19 +70,18 @@
     </div>
     <p>{text().intro}</p>
   </section>
-  <FrameworkPreview example="skeletontext" title="Aperçu live" />
 
 
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
-    <FrameworkDemo nodes={basicDemo} label={text().basic} />
+    <TabbedExample nodes={basicDemo} title={text().basic} />
 
-    <FrameworkDemo nodes={headingDemo} label={text().heading} />
+    <TabbedExample nodes={headingDemo} title={text().heading} />
 
-    <FrameworkDemo nodes={paragraphDemo} label={text().paragraph} />
+    <TabbedExample nodes={paragraphDemo} title={text().paragraph} />
 
-    <FrameworkDemo nodes={customDemo} label={text().custom} />
+    <TabbedExample nodes={customDemo} title={text().custom} />
   </section>
 
   <section class="docs-section">

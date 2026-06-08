@@ -1,8 +1,7 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge } from "@sentropic/design-system-svelte";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const copy = {
@@ -97,14 +96,13 @@
     <p>{text().intro}</p>
   </section>
 
-  <FrameworkPreview example="calendarheatmapchart" title={text().previewTitle} />
 
   <section class="docs-section">
     <h2>{text().examplesTitle}</h2>
 
     <h3 class="docs-demo-title">{text().activityTitle}</h3>
     <p class="docs-demo-note">{text().activityDesc}</p>
-    <FrameworkDemo nodes={activityDemo} label={text().activityTitle} />
+    <TabbedExample nodes={activityDemo} title={text().activityTitle} />
   </section>
 
   <section class="docs-section">

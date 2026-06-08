@@ -1,7 +1,6 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge } from "@sentropic/design-system-svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const items = [
@@ -52,17 +51,16 @@
       niveaux hiérarchiques. Idéal pour guider la navigation verticale des longues pages.
     </p>
   </section>
-  <FrameworkPreview example="tableofcontents" title="Aperçu live" />
 
 
   <section class="docs-section" id="intro">
     <h2>Présentation</h2>
-    <FrameworkDemo nodes={presentationDemo} label="Présentation" />
+    <TabbedExample nodes={presentationDemo} title="Présentation" />
   </section>
 
   <section class="docs-section" id="usage">
     <h2>Cas d’usage</h2>
-    <FrameworkDemo nodes={usageDemo} label="Cas d’usage" />
+    <TabbedExample nodes={usageDemo} title="Cas d’usage" />
     <p class="docs-demo-note">
       L’identifiant actif est purement déclaratif (via <code>activeId</code>) dans cette version.
       Les ancres sont générées avec <code>href=&quot;#&lt;id&gt;&quot;</code>.
@@ -71,7 +69,7 @@
 
   <section class="docs-section" id="nested">
     <h2>Hiérarchie</h2>
-    <FrameworkDemo nodes={hierarchyDemo} label="Sommaire hiérarchique" />
+    <TabbedExample nodes={hierarchyDemo} title="Sommaire hiérarchique" />
     <p class="docs-demo-note">Les niveaux inférieurs gagnent une indentation visuelle.</p>
   </section>
 
