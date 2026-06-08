@@ -40,9 +40,10 @@ communication ("si 90% est foireux, je ne peux pas communiquer sur le design sys
 - [ ] **Lot INP — Input (alignement par le haut)**
   - Symptome: champs avec labels/aide de hauteurs differentes -> doivent etre alignes par le haut pour paraitre naturels.
   - [ ] UAT: groupe d'inputs aligne par le haut, 3 fw.
-- [ ] **Lot TAB — Routing des onglets (bug majeur owner #1)**
+- [x] **Lot TAB — Routing des onglets (bug majeur owner #1)**
   - Demande owner: cliquer un onglet d'exemple doit SYNCHRONISER le framework dans l'argument de route (?framework=) ET basculer TOUS les onglets de la page en meme temps (comme le bouton du haut), sinon incomprehensible.
-  - [ ] UAT: clic onglet -> ?framework= mis a jour + tous les onglets de la page suivent + le switcher du haut reflete l'etat.
+  - Fait: etat unique global (framework.value) route-backed ?framework=, override local supprime (TabbedExample/TabbedLiveExample), init URL->state en untrack (corrige une boucle de feedback qui reinitialisait au defaut apres le clic).
+  - [x] UAT verifie (playwright): clic onglet React -> ?framework=react + les 5 groupes d'onglets de la page basculent en react + switcher header reflete.
 - [ ] **Lot MONKEY — Methode "random monkey" critique**
   - METHODE DECIDEE (deepresearch + DOUBLE opus 4.8-max + codex 5.5-high sur MODELES 2026, 2026-06-08): architecture EN COUCHES, pas un agent VLM monolithique. NB 2026: les VLM actuels (Opus 4.8, Gemini 3.1 Pro, GPT-5.4) LISENT tres bien l'UI (ScreenSpot-Pro Opus 4.8 87,9% ; OCR CharXiv 89,9%) -> "VLM inutile" est OBSOLETE. MAIS ils restent NON fiables comme juge unique de parite/spatial fin: DiffSpot mai 2026 = 40,7% recall sur 1 propriete CSS mutee, <23% tier dur ; spatial 59,9% vs humain 95% ; et SCALER NE CORRIGE PAS (magnitude pixel non correlee a la detection). Consensus opus+codex identique. Pile 3 couches :
     1. PIXEL-DIFF DETERMINISTE (fiable, recall ~100%) = screenshots Playwright (env fige: viewport/fonts/DPR/locale/anim off) + diff pixel/perceptuel (pixelmatch maison ; masques zones volatiles). (a) PARITE cross-fw: diff des 3 onglets svelte/react/vue -> attrape "react/vue fucked" ; (b) REGRESSION: baseline + diff -> attrape Calendar.
