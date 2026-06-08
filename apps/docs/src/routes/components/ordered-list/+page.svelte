@@ -1,6 +1,7 @@
 <script lang="ts">
+  import { getExample } from "$lib/framework/examples";
+  import TriRender from "$lib/framework/TriRender.svelte";
   import { Badge, OrderedList } from "@sentropic/design-system-svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   const steps = [
     "Installer les packages",
@@ -26,7 +27,7 @@
       l'imbrication. Numérotation via compteur CSS (tabular-nums).
     </p>
   </section>
-  <FrameworkPreview example="orderedlist" title="Aperçu live" />
+  <TriRender nodes={getExample("orderedlist")?.nodes ?? []} label="Aperçu live" />
 
 
   <section class="docs-section">

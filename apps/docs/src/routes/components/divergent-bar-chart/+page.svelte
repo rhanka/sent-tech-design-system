@@ -1,8 +1,7 @@
 <script lang="ts">
   import { Badge } from "@sentropic/design-system-svelte";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import TriRender from "$lib/framework/TriRender.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const copy = {
@@ -82,13 +81,12 @@
     <p>{text().intro}</p>
   </section>
 
-  <FrameworkPreview example="divergentbarchart" title={text().previewTitle} />
 
   <section class="docs-section">
     <h2>{text().examplesTitle}</h2>
     <h3 class="docs-demo-title">{text().exampleTitle}</h3>
     <p class="docs-demo-note">{text().exampleDesc}</p>
-    <FrameworkDemo nodes={demoNodes} label={text().exampleTitle} />
+    <TriRender nodes={demoNodes} label={text().exampleTitle} />
   </section>
 
   <section class="docs-section">

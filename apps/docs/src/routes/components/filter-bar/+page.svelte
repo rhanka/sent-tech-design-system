@@ -1,8 +1,8 @@
 <script lang="ts">
+  import { getExample } from "$lib/framework/examples";
   import { Badge } from "@sentropic/design-system-svelte";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import TriRender from "$lib/framework/TriRender.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const copy = {
@@ -90,18 +90,18 @@
     <p>{text().intro}</p>
   </section>
 
-  <FrameworkPreview example="filterbar" title={text().previewTitle} />
+  <TriRender nodes={getExample("filterbar")?.nodes ?? []} label={text().previewTitle} />
 
   <section class="docs-section">
     <h2>{text().examplesTitle}</h2>
 
     <h3 class="docs-demo-title">{text().basicTitle}</h3>
     <p class="docs-demo-note">{text().basicDesc}</p>
-    <FrameworkDemo nodes={basicDemo} label={text().basicTitle} />
+    <TriRender nodes={basicDemo} label={text().basicTitle} />
 
     <h3 class="docs-demo-title">{text().noClearTitle}</h3>
     <p class="docs-demo-note">{text().noClearDesc}</p>
-    <FrameworkDemo nodes={noClearDemo} label={text().noClearTitle} />
+    <TriRender nodes={noClearDemo} label={text().noClearTitle} />
   </section>
 
   <section class="docs-section">

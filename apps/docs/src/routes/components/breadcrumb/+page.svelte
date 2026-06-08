@@ -1,9 +1,9 @@
 <script lang="ts">
+  import { getExample } from "$lib/framework/examples";
   import { Badge, type BreadcrumbItem } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import TriRender from "$lib/framework/TriRender.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const fr = (frText: string, enText: string) => (locale.value === "fr" ? frText : enText);
@@ -51,7 +51,7 @@
     </p>
   </section>
 
-  <FrameworkPreview example="breadcrumb" title="Aperçu live" />
+  <TriRender nodes={getExample("breadcrumb")?.nodes ?? []} label="Aperçu live" />
 
   <section class="docs-section">
     <h2>{fr("Quand l'utiliser", "When to use")}</h2>
@@ -64,7 +64,7 @@
 
   <section class="docs-section">
     <h2>{fr("Exemples", "Examples")}</h2>
-    <FrameworkDemo nodes={examplesDemo} label={fr("Exemples", "Examples")} />
+    <TriRender nodes={examplesDemo} label={fr("Exemples", "Examples")} />
   </section>
 
   <section class="docs-section">

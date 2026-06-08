@@ -1,6 +1,7 @@
 <script lang="ts">
+  import { getExample } from "$lib/framework/examples";
+  import TriRender from "$lib/framework/TriRender.svelte";
   import { Badge, SkipLink } from "@sentropic/design-system-svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 </script>
 
 <div class="docs-page">
@@ -17,7 +18,7 @@
       À placer en tout premier élément focusable du document.
     </p>
   </section>
-  <FrameworkPreview example="skiplink" title="Aperçu live" />
+  <TriRender nodes={getExample("skiplink")?.nodes ?? []} label="Aperçu live" />
 
 
   <section class="docs-section">

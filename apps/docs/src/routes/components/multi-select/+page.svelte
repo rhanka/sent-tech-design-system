@@ -1,9 +1,10 @@
 <script lang="ts">
+  import { getExample } from "$lib/framework/examples";
+  import TriRender from "$lib/framework/TriRender.svelte";
   import { Badge, MultiSelect } from "@sentropic/design-system-svelte";
   import type { MultiSelectOption } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   const copy = {
     fr: {
@@ -102,7 +103,7 @@
     </div>
     <p>{text().intro}</p>
   </section>
-  <FrameworkPreview example="multiselect" title="Aperçu live" />
+  <TriRender nodes={getExample("multiselect")?.nodes ?? []} label="Aperçu live" />
 
 
   <section class="docs-section">

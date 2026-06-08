@@ -1,9 +1,9 @@
 <script lang="ts">
+  import { getExample } from "$lib/framework/examples";
   import { Badge, type LineChartDatum } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import TriRender from "$lib/framework/TriRender.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const copy = {
@@ -143,7 +143,7 @@
     </div>
     <p>{text().intro}</p>
   </section>
-  <FrameworkPreview example="linechart" title="Aperçu live" />
+  <TriRender nodes={getExample("linechart")?.nodes ?? []} label="Aperçu live" />
 
 
   <section class="docs-section">
@@ -151,15 +151,15 @@
 
     <h3 class="docs-demo-title">{text().simpleTitle}</h3>
     <p class="docs-demo-note">{text().simpleDesc}</p>
-    <FrameworkDemo nodes={simpleDemo} label={text().simpleTitle} />
+    <TriRender nodes={simpleDemo} label={text().simpleTitle} />
 
     <h3 class="docs-demo-title">{text().smoothTitle}</h3>
     <p class="docs-demo-note">{text().smoothDesc}</p>
-    <FrameworkDemo nodes={smoothDemo} label={text().smoothTitle} />
+    <TriRender nodes={smoothDemo} label={text().smoothTitle} />
 
     <h3 class="docs-demo-title">{text().numericTitle}</h3>
     <p class="docs-demo-note">{text().numericDesc}</p>
-    <FrameworkDemo nodes={numericDemo} label={text().numericTitle} />
+    <TriRender nodes={numericDemo} label={text().numericTitle} />
   </section>
 
   <section class="docs-section">

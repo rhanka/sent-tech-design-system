@@ -1,9 +1,9 @@
 <script lang="ts">
+  import { getExample } from "$lib/framework/examples";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import TriRender from "$lib/framework/TriRender.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const fr = $derived(locale.value === "fr");
@@ -40,11 +40,11 @@
     </p>
   </section>
 
-  <FrameworkPreview example="container" title={fr ? "Aperçu live" : "Live preview"} />
+  <TriRender nodes={getExample("container")?.nodes ?? []} label={fr ? "Aperçu live" : "Live preview"} />
 
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
-    <FrameworkDemo nodes={sizesDemo} label={fr ? "Tailles sm / md / lg" : "Sizes sm / md / lg"} />
+    <TriRender nodes={sizesDemo} label={fr ? "Tailles sm / md / lg" : "Sizes sm / md / lg"} />
   </section>
 
   <section class="docs-section">

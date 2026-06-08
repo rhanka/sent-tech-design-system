@@ -1,9 +1,9 @@
 <script lang="ts">
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import { getExample } from "$lib/framework/examples";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import TriRender from "$lib/framework/TriRender.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const copy = {
@@ -122,22 +122,22 @@
     </div>
     <p>{text().intro}</p>
   </section>
-  <FrameworkPreview example="toggletip" title="Aperçu live" />
+  <TriRender nodes={getExample("toggletip")?.nodes ?? []} label="Aperçu live" />
 
 
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
-    <FrameworkDemo nodes={labelDemo} label={text().labelLabel} />
+    <TriRender nodes={labelDemo} label={text().labelLabel} />
     <p class="docs-demo-note">
       {locale.value === "fr"
         ? "État fermé par défaut : cliquez le déclencheur pour ouvrir la bulle (open est bindable)."
         : "Closed by default: click the trigger to open the bubble (open is bindable)."}
     </p>
 
-    <FrameworkDemo nodes={placementDemo} label={text().placementLabel} />
+    <TriRender nodes={placementDemo} label={text().placementLabel} />
 
-    <FrameworkDemo nodes={inlineDemo} label={text().inlineLabel} />
+    <TriRender nodes={inlineDemo} label={text().inlineLabel} />
     <p class="docs-demo-note">
       {locale.value === "fr"
         ? "Sans slot children, le déclencheur s’affiche seul (icône « i » en Svelte, texte label en React/Vue)."

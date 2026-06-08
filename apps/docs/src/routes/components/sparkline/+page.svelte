@@ -1,9 +1,9 @@
 <script lang="ts">
+  import { getExample } from "$lib/framework/examples";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import TriRender from "$lib/framework/TriRender.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const copy = {
@@ -224,7 +224,7 @@
     </div>
     <p>{text().intro}</p>
   </section>
-  <FrameworkPreview example="sparkline" title="Aperçu live" />
+  <TriRender nodes={getExample("sparkline")?.nodes ?? []} label="Aperçu live" />
 
 
   <section class="docs-section">
@@ -232,19 +232,19 @@
 
     <h3 class="docs-demo-title">{text().inlineTitle}</h3>
     <p class="docs-demo-note">{text().inlineDesc}</p>
-    <FrameworkDemo nodes={inlineDemo} label={text().inlineTitle} />
+    <TriRender nodes={inlineDemo} label={text().inlineTitle} />
 
     <h3 class="docs-demo-title">{text().tonesTitle}</h3>
     <p class="docs-demo-note">{text().tonesDesc}</p>
-    <FrameworkDemo nodes={tonesDemo} label={text().tonesTitle} />
+    <TriRender nodes={tonesDemo} label={text().tonesTitle} />
 
     <h3 class="docs-demo-title">{text().areaTitle}</h3>
     <p class="docs-demo-note">{text().areaDesc}</p>
-    <FrameworkDemo nodes={areaDemo} label={text().areaTitle} />
+    <TriRender nodes={areaDemo} label={text().areaTitle} />
 
     <h3 class="docs-demo-title">{text().cardsTitle}</h3>
     <p class="docs-demo-note">{text().cardsDesc}</p>
-    <FrameworkDemo nodes={cardsDemo} label={text().cardsTitle} />
+    <TriRender nodes={cardsDemo} label={text().cardsTitle} />
   </section>
 
   <section class="docs-section">
