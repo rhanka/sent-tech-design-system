@@ -1,4 +1,5 @@
 import { defineComponent, h } from "vue";
+import { ChevronLeft, ChevronRight } from "lucide-vue-next";
 import { classNames } from "./classNames.js";
 
 // `pageCount` (Svelte-canonical) is accepted as an alias of `totalPages`.
@@ -35,8 +36,16 @@ export const PaginationNav = defineComponent({
         },
         [
           props.previousHref
-            ? h("a", { href: props.previousHref }, "Previous")
-            : h("button", { type: "button", disabled: page <= 1 }, "Previous"),
+            ? h(
+                "a",
+                { href: props.previousHref, class: "st-paginationNav__nav", "aria-label": "Previous" },
+                [h(ChevronLeft, { size: 16, strokeWidth: 2, "aria-hidden": "true" })],
+              )
+            : h(
+                "button",
+                { type: "button", class: "st-paginationNav__nav", "aria-label": "Previous", disabled: page <= 1 },
+                [h(ChevronLeft, { size: 16, strokeWidth: 2, "aria-hidden": "true" })],
+              ),
           h(
             "ol",
             { class: "st-paginationNav__list" },
@@ -57,8 +66,16 @@ export const PaginationNav = defineComponent({
             ),
           ),
           props.nextHref
-            ? h("a", { href: props.nextHref }, "Next")
-            : h("button", { type: "button", disabled: page >= totalPages }, "Next"),
+            ? h(
+                "a",
+                { href: props.nextHref, class: "st-paginationNav__nav", "aria-label": "Next" },
+                [h(ChevronRight, { size: 16, strokeWidth: 2, "aria-hidden": "true" })],
+              )
+            : h(
+                "button",
+                { type: "button", class: "st-paginationNav__nav", "aria-label": "Next", disabled: page >= totalPages },
+                [h(ChevronRight, { size: 16, strokeWidth: 2, "aria-hidden": "true" })],
+              ),
         ],
       );
     };

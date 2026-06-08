@@ -1,4 +1,5 @@
 import { defineComponent, h, ref } from "vue";
+import { ChevronDown } from "lucide-vue-next";
 import { classNames } from "./classNames.js";
 
 // Compteur module pour un id de <select> stable, déterministe et SSR-safe.
@@ -20,26 +21,14 @@ export type LanguageToggleProps = {
 };
 
 function ChevronDownIcon(open: boolean) {
-  return h(
-    "svg",
-    {
-      width: 16,
-      height: 16,
-      viewBox: "0 0 24 24",
-      fill: "none",
-      stroke: "currentColor",
-      "stroke-width": 2,
-      "stroke-linecap": "round",
-      "stroke-linejoin": "round",
-      "aria-hidden": "true",
-      focusable: "false",
-      class: classNames(
-        "st-languageToggle__chevron",
-        open && "st-languageToggle__chevron--open",
-      ),
-    },
-    [h("path", { d: "m6 9 6 6 6-6" })],
-  );
+  return h(ChevronDown, {
+    size: 16,
+    "aria-hidden": "true",
+    class: classNames(
+      "st-languageToggle__chevron",
+      open && "st-languageToggle__chevron--open",
+    ),
+  });
 }
 
 export const LanguageToggle = defineComponent({

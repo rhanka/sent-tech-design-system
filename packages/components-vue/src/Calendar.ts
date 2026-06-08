@@ -1,4 +1,5 @@
 import { defineComponent, h, nextTick, ref, watch } from "vue";
+import { ChevronLeft, ChevronRight } from "lucide-vue-next";
 import { classNames } from "./classNames.js";
 
 /**
@@ -62,39 +63,11 @@ function calIsSameDay(a: Date | null, b: Date | null): boolean {
 }
 
 function ChevronLeftIcon(size: number) {
-  return h(
-    "svg",
-    {
-      width: size,
-      height: size,
-      viewBox: "0 0 24 24",
-      fill: "none",
-      stroke: "currentColor",
-      "stroke-width": 2,
-      "stroke-linecap": "round",
-      "stroke-linejoin": "round",
-      "aria-hidden": "true",
-    },
-    [h("polyline", { points: "15 18 9 12 15 6" })],
-  );
+  return h(ChevronLeft, { size, "aria-hidden": "true" });
 }
 
 function ChevronRightIcon(size: number) {
-  return h(
-    "svg",
-    {
-      width: size,
-      height: size,
-      viewBox: "0 0 24 24",
-      fill: "none",
-      stroke: "currentColor",
-      "stroke-width": 2,
-      "stroke-linecap": "round",
-      "stroke-linejoin": "round",
-      "aria-hidden": "true",
-    },
-    [h("polyline", { points: "9 18 15 12 9 6" })],
-  );
+  return h(ChevronRight, { size, "aria-hidden": "true" });
 }
 
 export const Calendar = defineComponent({

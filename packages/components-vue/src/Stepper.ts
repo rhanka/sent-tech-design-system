@@ -1,5 +1,6 @@
 import { defineComponent, h } from "vue";
 import type { PropType } from "vue";
+import { Check } from "lucide-vue-next";
 import { classNames } from "./classNames.js";
 
 export interface StepperStep {
@@ -23,22 +24,7 @@ export type StepperProps = {
 };
 
 function CheckIcon() {
-  return h(
-    "svg",
-    {
-      width: 14,
-      height: 14,
-      viewBox: "0 0 24 24",
-      fill: "none",
-      stroke: "currentColor",
-      "stroke-width": 2.5,
-      "stroke-linecap": "round",
-      "stroke-linejoin": "round",
-      focusable: "false",
-      "aria-hidden": "true",
-    },
-    [h("path", { d: "M20 6 9 17l-5-5" })],
-  );
+  return h(Check, { size: 14, strokeWidth: 2.5, "aria-hidden": "true" });
 }
 
 export const Stepper = defineComponent({

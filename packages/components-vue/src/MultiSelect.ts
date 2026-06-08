@@ -1,4 +1,5 @@
 import { defineComponent, h, ref, computed } from "vue";
+import { ChevronDown } from "lucide-vue-next";
 import { classNames } from "./classNames.js";
 
 export type MultiSelectOption = {
@@ -105,6 +106,18 @@ export const MultiSelect = defineComponent({
                       ]),
                     )
                   : [h("span", { class: "st-multiSelect__placeholder" }, "Select")],
+              ),
+              h(
+                "span",
+                { class: "st-multiSelect__caret", "aria-hidden": "true" },
+                [
+                  h(ChevronDown, {
+                    class: classNames("st-multiSelect__caretIcon", open && "st-multiSelect__caretIcon--open"),
+                    size: 18,
+                    strokeWidth: 2.25,
+                    "aria-hidden": "true",
+                  }),
+                ],
               ),
             ],
           ),

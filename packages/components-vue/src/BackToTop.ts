@@ -1,4 +1,5 @@
 import { defineComponent, h, onMounted, onUnmounted, ref } from "vue";
+import { ArrowUp } from "lucide-vue-next";
 import { classNames } from "./classNames.js";
 
 export type BackToTopProps = {
@@ -74,22 +75,7 @@ export const BackToTop = defineComponent({
           h(
             "span",
             { class: "st-backToTop__icon", "aria-hidden": "true" },
-            h(
-              "svg",
-              {
-                xmlns: "http://www.w3.org/2000/svg",
-                width: 16,
-                height: 16,
-                viewBox: "0 0 24 24",
-                fill: "none",
-                stroke: "currentColor",
-                "stroke-width": 2,
-                "stroke-linecap": "round",
-                "stroke-linejoin": "round",
-                "aria-hidden": "true",
-              },
-              [h("path", { d: "m5 12 7-7 7 7" }), h("path", { d: "M12 19V5" })],
-            ),
+            h(ArrowUp, { size: 16 }),
           ),
           h("span", { class: "st-backToTop__label" }, props.label),
         ],

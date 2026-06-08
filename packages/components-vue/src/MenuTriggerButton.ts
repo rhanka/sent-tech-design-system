@@ -1,4 +1,5 @@
 import { defineComponent, h } from "vue";
+import { ChevronDownCircle } from "lucide-vue-next";
 import { classNames } from "./classNames.js";
 
 // `expanded` (Svelte-canonical) is accepted as an alias of `open`.
@@ -32,7 +33,7 @@ export const MenuTriggerButton = defineComponent({
           "aria-expanded": isOpen,
           disabled: props.disabled,
         },
-        slots.default?.(),
+        slots.default?.() ?? h(ChevronDownCircle, { size: 18, strokeWidth: 2, "aria-hidden": "true" }),
       );
     };
   },

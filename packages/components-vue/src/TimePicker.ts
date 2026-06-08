@@ -1,4 +1,5 @@
 import { defineComponent, h, onBeforeUnmount, onMounted, ref } from "vue";
+import { Clock } from "lucide-vue-next";
 import { classNames } from "./classNames.js";
 
 export type TimePickerFormat = "24" | "12";
@@ -48,24 +49,7 @@ function timeFromMinutes(total: number): string {
 }
 
 function ClockIcon(size: number) {
-  return h(
-    "svg",
-    {
-      width: size,
-      height: size,
-      viewBox: "0 0 24 24",
-      fill: "none",
-      stroke: "currentColor",
-      "stroke-width": 2,
-      "stroke-linecap": "round",
-      "stroke-linejoin": "round",
-      "aria-hidden": "true",
-    },
-    [
-      h("circle", { cx: "12", cy: "12", r: "10" }),
-      h("polyline", { points: "12 6 12 12 16 14" }),
-    ],
-  );
+  return h(Clock, { size, "aria-hidden": "true" });
 }
 
 export const TimePicker = defineComponent({
