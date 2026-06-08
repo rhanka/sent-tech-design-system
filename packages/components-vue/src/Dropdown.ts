@@ -1,4 +1,5 @@
 import { defineComponent, h, ref, watch, onUnmounted } from "vue";
+import { ChevronDown } from "lucide-vue-next";
 import { classNames } from "./classNames.js";
 
 export type DropdownOption = {
@@ -90,6 +91,12 @@ export const Dropdown = defineComponent({
               h("span", { class: "st-dropdown__label" }, props.label ?? "Select"),
               ": ",
               h("span", { class: "st-dropdown__value" }, sel ? (sel.label as string) : (props.placeholder ?? "Select")),
+              h(ChevronDown, {
+                class: classNames("st-dropdown__icon", open && "st-dropdown__icon--open"),
+                size: 18,
+                strokeWidth: 2.25,
+                "aria-hidden": "true",
+              }),
             ],
           ),
           open

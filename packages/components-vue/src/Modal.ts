@@ -1,4 +1,5 @@
 import { defineComponent, h, onUnmounted, ref, watch } from "vue";
+import { X } from "lucide-vue-next";
 import { classNames } from "./classNames.js";
 
 export type ModalProps = {
@@ -73,7 +74,7 @@ export const Modal = defineComponent({
                   "aria-label": "Close",
                   onClick: () => emit("close"),
                 },
-                "x",
+                h(X, { size: 18, strokeWidth: 2.25, "aria-hidden": "true" }),
               ),
             ]),
             props.description

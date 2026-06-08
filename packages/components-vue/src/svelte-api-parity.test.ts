@@ -178,7 +178,7 @@ describe("Vue accepts the canonical Svelte API", () => {
           ],
         },
       });
-      expect(wrapper.find(".st-menu__group h3").text()).toBe("Section");
+      expect(wrapper.find(".st-menu__group").text()).toBe("Section");
       expect(wrapper.find(".st-menu__item").text()).toBe("A");
     });
 

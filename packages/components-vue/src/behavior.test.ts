@@ -508,12 +508,12 @@ describe("Vue behavioral parity — batch 2", () => {
 
   // --- IconButton ---
   describe("IconButton", () => {
-    it("renders button.st-iconButton with default size md and variant secondary", () => {
+    it("renders button.st-iconButton with default size md and variant ghost", () => {
       const wrapper = mount(IconButton, { slots: { default: "x" } });
       const btn = wrapper.find("button");
       expect(btn.classes()).toContain("st-iconButton");
       expect(btn.classes()).toContain("st-iconButton--md");
-      expect(btn.classes()).toContain("st-iconButton--secondary");
+      expect(btn.classes()).toContain("st-iconButton--ghost");
     });
 
     it("applies size and variant modifiers", () => {
@@ -652,17 +652,19 @@ describe("Vue behavioral parity — batch 2", () => {
       expect(wrapper.find("input[type=password]").exists()).toBe(true);
     });
 
-    it("renders a toggle button", () => {
+    it("renders a toggle button with the show icon", () => {
       const wrapper = mount(PasswordInput);
       expect(wrapper.find(".st-passwordInput__toggle").exists()).toBe(true);
-      expect(wrapper.find(".st-passwordInput__toggle").text()).toBe("Show");
+      expect(wrapper.find(".st-passwordInput__toggle").attributes("aria-label")).toBe("Show password");
+      // Lucide Eye icon is rendered as an inline svg (no text label).
+      expect(wrapper.find(".st-passwordInput__toggle svg").exists()).toBe(true);
     });
 
-    it("toggles to text type when Show is clicked", async () => {
+    it("toggles to text type when the toggle is clicked", async () => {
       const wrapper = mount(PasswordInput);
       await wrapper.find(".st-passwordInput__toggle").trigger("click");
       expect(wrapper.find("input[type=text]").exists()).toBe(true);
-      expect(wrapper.find(".st-passwordInput__toggle").text()).toBe("Hide");
+      expect(wrapper.find(".st-passwordInput__toggle").attributes("aria-label")).toBe("Hide password");
     });
 
     it("shows error text", () => {
@@ -971,6 +973,31 @@ describe("Vue behavioral parity — batch 2", () => {
     it("renders slot content in st-tag__label", () => {
       const wrapper = mount(Tag, { slots: { default: "MyTag" } });
       expect(wrapper.find(".st-tag__label").text()).toBe("MyTag");
+    });
+
+    it("renders no dismiss button by default", () => {
+      const wrapper = mount(Tag, { slots: { default: "Label" } });
+      expect(wrapper.find(".st-tag__dismiss").exists()).toBe(false);
+    });
+
+    it("renders a dismiss button (X icon + aria-label) when dismissible", () => {
+      const wrapper = mount(Tag, {
+        props: { dismissible: true, dismissLabel: "Remove" },
+        slots: { default: "Label" },
+      });
+      const dismiss = wrapper.find(".st-tag__dismiss");
+      expect(dismiss.exists()).toBe(true);
+      expect(dismiss.attributes("aria-label")).toBe("Remove");
+      expect(dismiss.find("svg").exists()).toBe(true);
+    });
+
+    it("emits dismiss when the dismiss button is clicked", async () => {
+      const wrapper = mount(Tag, {
+        props: { dismissible: true },
+        slots: { default: "Label" },
+      });
+      await wrapper.find(".st-tag__dismiss").trigger("click");
+      expect(wrapper.emitted("dismiss")).toBeTruthy();
     });
 
     it("has name Tag", () => {
@@ -1839,7 +1866,7 @@ describe("Vue behavioral parity — batch 4", () => {
       expect(wrapper.find("[role='separator']").exists()).toBe(true);
     });
 
-    it("renders group with section.st-menu__group", () => {
+    it("renders group as a flat div.st-menu__group (role=presentation) with items as siblings", () => {
       const wrapper = mount(Menu, {
         props: {
           items: [
@@ -1847,7 +1874,22 @@ describe("Vue behavioral parity — batch 4", () => {
           ],
         },
       });
-      expect(wrapper.find(".st-menu__group").exists()).toBe(true);
+      const group = wrapper.find(".st-menu__group");
+      expect(group.exists()).toBe(true);
+      expect(group.element.tagName).toBe("DIV");
+      expect(group.attributes("role")).toBe("presentation");
+      // Nested group items render as flat menuitem siblings (canon-aligned).
+      expect(wrapper.find("[role='menuitem']").text()).toBe("Item");
+    });
+
+    it("renders an item icon in st-menu__itemIcon (Svelte parity)", () => {
+      const Icon = { render: () => h("svg", { class: "demo-menu-icon" }) };
+      const wrapper = mount(Menu, {
+        props: { items: [{ value: "a", label: "A", icon: Icon }] },
+      });
+      const iconSlot = wrapper.find(".st-menu__itemIcon");
+      expect(iconSlot.exists()).toBe(true);
+      expect(iconSlot.find("svg").exists()).toBe(true);
     });
 
     it("applies dense modifier", () => {

@@ -167,6 +167,20 @@ describe("React accepts the canonical Svelte API", () => {
         screen.getByRole("menuitem", { name: "Remove" }).className,
       ).toContain("st-menu__item--danger");
     });
+
+    it("renders an item icon in st-menu__itemIcon (Svelte parity)", () => {
+      render(
+        <Menu
+          items={[
+            { value: "a", label: "A", icon: <svg data-testid="menu-icon" /> },
+          ]}
+        />,
+      );
+      const item = screen.getByRole("menuitem", { name: "A" });
+      const iconSlot = item.querySelector(".st-menu__itemIcon");
+      expect(iconSlot).toBeTruthy();
+      expect(iconSlot?.querySelector("svg")).toBeTruthy();
+    });
   });
 
   describe("OverflowMenu", () => {

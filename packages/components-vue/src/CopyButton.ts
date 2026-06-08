@@ -1,4 +1,5 @@
 import { defineComponent, h, ref } from "vue";
+import { Check, Copy } from "lucide-vue-next";
 import { classNames } from "./classNames.js";
 
 export type CopyButtonSize = "sm" | "md" | "lg";
@@ -44,7 +45,14 @@ export const CopyButton = defineComponent({
             emit("click", event);
           },
         },
-        h("span", { class: "st-copyButton__label" }, copied.value ? props.copiedLabel : props.label),
+        [
+          h(
+            "span",
+            { class: "st-copyButton__icon", "aria-hidden": "true" },
+            h(copied.value ? Check : Copy, { size: 14, strokeWidth: 2, "aria-hidden": "true" }),
+          ),
+          h("span", { class: "st-copyButton__label" }, copied.value ? props.copiedLabel : props.label),
+        ],
       );
   },
 });

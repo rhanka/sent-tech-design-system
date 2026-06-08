@@ -1,4 +1,5 @@
 import { defineComponent, h, ref } from "vue";
+import type { Component } from "vue";
 import { classNames } from "./classNames.js";
 
 // `value` (Svelte-canonical) is accepted as an alias of `id`; `danger: true`
@@ -11,6 +12,8 @@ export type MenuActionItem = {
   disabled?: boolean;
   variant?: "default" | "danger";
   danger?: boolean;
+  /** Optional leading icon component (rendered in `.st-menu__itemIcon`). */
+  icon?: Component;
   onClick?: () => void;
 };
 export type MenuDividerItem = { type?: "divider"; kind?: "divider"; id?: string };
@@ -90,6 +93,33 @@ export const Menu = defineComponent({
       }
     };
 
+    const renderAction = (actionItem: MenuActionItem) =>
+      h(
+        "button",
+        {
+          key: actionKey(actionItem),
+          type: "button",
+          role: "menuitem",
+          disabled: actionItem.disabled,
+          class: classNames(
+            "st-menu__item",
+            isDangerAction(actionItem) && "st-menu__item--danger",
+          ),
+          onClick: () => emit("select", actionItem),
+          onKeydown: (event: KeyboardEvent) => handleItemKeyDown(event, actionItem),
+        },
+        [
+          actionItem.icon
+            ? h(
+                "span",
+                { class: "st-menu__itemIcon", "aria-hidden": "true" },
+                h(actionItem.icon, { size: 16, strokeWidth: 2 }),
+              )
+            : null,
+          h("span", { class: "st-menu__itemLabel" }, actionItem.label as string),
+        ],
+      );
+
     return () => {
       const children = props.items.map((item, index) => {
         if (isDivider(item)) {
@@ -100,49 +130,18 @@ export const Menu = defineComponent({
           });
         }
         if (isGroup(item)) {
-          return h(
-            "section",
-            { key: item.id ?? index, class: "st-menu__group" },
-            [
-              h("h3", {}, item.label as string),
-              ...(item.items ?? []).map((child) =>
-                h(
-                  "button",
-                  {
-                    key: actionKey(child),
-                    type: "button",
-                    role: "menuitem",
-                    class: classNames(
-                      "st-menu__item",
-                      isDangerAction(child) && "st-menu__item--danger",
-                    ),
-                    disabled: child.disabled,
-                    onClick: () => emit("select", child),
-                    onKeydown: (event: KeyboardEvent) => handleItemKeyDown(event, child),
-                  },
-                  h("span", { class: "st-menu__itemLabel" }, child.label as string),
-                ),
-              ),
-            ],
-          );
-        }
-        const actionItem = item as MenuActionItem;
-        return h(
-          "button",
-          {
-            key: actionKey(actionItem),
-            type: "button",
-            role: "menuitem",
-            disabled: actionItem.disabled,
-            class: classNames(
-              "st-menu__item",
-              isDangerAction(actionItem) && "st-menu__item--danger",
+          // Canon-aligned (Svelte): a group is a flat `div role="presentation"`
+          // label; nested `items` (Vue-native shape) render as flat siblings.
+          return [
+            h(
+              "div",
+              { key: item.id ?? index, class: "st-menu__group", role: "presentation" },
+              item.label as string,
             ),
-            onClick: () => emit("select", actionItem),
-            onKeydown: (event: KeyboardEvent) => handleItemKeyDown(event, actionItem),
-          },
-          h("span", { class: "st-menu__itemLabel" }, actionItem.label as string),
-        );
+            ...(item.items ?? []).map((child) => renderAction(child)),
+          ];
+        }
+        return renderAction(item as MenuActionItem);
       });
 
       return h(
