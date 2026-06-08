@@ -33,7 +33,46 @@ describe("plan completion components", () => {
     expect(screen.getByRole("link", { name: "Components" }).getAttribute("href")).toBe(
       "/components"
     );
-    expect(screen.getByText("Disabled").closest("a")?.getAttribute("aria-disabled")).toBe("true");
+    const disabledLink = screen.getByText("Disabled").closest("a");
+    expect(disabledLink?.getAttribute("aria-disabled")).toBe("true");
+    // disabled coupe la navigation : pas de href navigable (canon).
+    expect(disabledLink?.getAttribute("href")).toBeNull();
+  });
+
+  it("maps deprecated boolean shortcuts to variant classes and lets variant win", () => {
+    render(Link, {
+      props: {
+        href: "#",
+        standalone: true,
+        children: createRawSnippet(() => ({ render: () => "<span>Shortcut</span>" }))
+      }
+    });
+    render(Link, {
+      props: {
+        href: "#",
+        variant: "muted",
+        standalone: true,
+        children: createRawSnippet(() => ({ render: () => "<span>Conflict</span>" }))
+      }
+    });
+
+    expect(screen.getByText("Shortcut").closest("a")?.className).toContain("st-link--standalone");
+    const conflict = screen.getByText("Conflict").closest("a");
+    expect(conflict?.className).toContain("st-link--muted");
+    expect(conflict?.className).not.toContain("st-link--standalone");
+  });
+
+  it("external link gets target=_blank rel=noreferrer", () => {
+    render(Link, {
+      props: {
+        href: "https://example.com",
+        external: true,
+        children: createRawSnippet(() => ({ render: () => "<span>Out</span>" }))
+      }
+    });
+    const link = screen.getByText("Out").closest("a");
+    expect(link?.getAttribute("target")).toBe("_blank");
+    expect(link?.getAttribute("rel")).toBe("noreferrer");
   });
 
   it("renders alert tones with appropriate live region semantics", () => {

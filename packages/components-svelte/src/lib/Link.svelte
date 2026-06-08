@@ -5,6 +5,10 @@
   type LinkProps = Omit<HTMLAnchorAttributes, "class" | "href" | "target" | "rel" | "onclick"> & {
     href: string;
     variant?: "inline" | "standalone" | "muted";
+    /** @deprecated Raccourci pour variant="standalone" (parité React/Vue). Utilisez `variant`. */
+    standalone?: boolean;
+    /** @deprecated Raccourci pour variant="muted" (parité React/Vue). Utilisez `variant`. */
+    muted?: boolean;
     disabled?: boolean;
     external?: boolean;
     class?: string;
@@ -17,6 +21,8 @@
   let {
     href,
     variant = "inline",
+    standalone = false,
+    muted = false,
     disabled = false,
     external = false,
     class: className,
@@ -27,8 +33,13 @@
     ...rest
   }: LinkProps = $props();
 
+  // `variant` est canonique ; les booléens standalone/muted sont des raccourcis
+  // dépréciés (parité avec les ports React/Vue). `variant` explicite l'emporte.
+  const effectiveVariant = () =>
+    variant !== "inline" ? variant : standalone ? "standalone" : muted ? "muted" : "inline";
+
   const classes = () =>
-    ["st-link", `st-link--${variant}`, disabled ? "st-link--disabled" : undefined, className]
+    ["st-link", `st-link--${effectiveVariant()}`, disabled ? "st-link--disabled" : undefined, className]
       .filter(Boolean)
       .join(" ");
   const linkTarget = () => target ?? (external ? "_blank" : undefined);
