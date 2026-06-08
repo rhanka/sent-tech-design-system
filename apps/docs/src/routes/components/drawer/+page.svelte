@@ -1,13 +1,10 @@
 <script lang="ts">
-  import { Badge, Button, Drawer } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
+  import TabbedLiveExample from "$lib/framework/TabbedLiveExample.svelte";
 
   const fr = (frText: string, enText: string) => (locale.value === "fr" ? frText : enText);
-
-  let rightOpen = $state(false);
-  let leftOpen = $state(false);
-  let footerOpen = $state(false);
 </script>
 
 <div class="docs-page">
@@ -44,50 +41,9 @@
   </section>
 
   <section class="docs-section">
-    <h2>{fr("Côtés", "Sides")}</h2>
-    <p>{fr("Le panneau s'ancre à droite (défaut) ou à gauche via la prop side.", "The panel anchors to the right (default) or left via the side prop.")}</p>
-    <div class="docs-example docs-example--stack">
-      <Button variant="secondary" onclick={() => (rightOpen = true)}>{fr("Ouvrir à droite", "Open right")}</Button>
-      <Button variant="secondary" onclick={() => (leftOpen = true)}>{fr("Ouvrir à gauche", "Open left")}</Button>
-      <Drawer
-        bind:open={rightOpen}
-        side="right"
-        title={fr("Détails du service", "Service details")}
-        description={fr("Panneau ancré à droite, le défaut.", "Panel anchored to the right, the default.")}
-        closeLabel={fr("Fermer", "Close")}
-      >
-        <p>{fr("Le drawer accueille inspection, configuration et revue côte à côte.", "The drawer hosts inspection, configuration, and side-by-side review.")}</p>
-      </Drawer>
-      <Drawer
-        bind:open={leftOpen}
-        side="left"
-        title={fr("Filtres", "Filters")}
-        description={fr("Panneau ancré à gauche.", "Panel anchored to the left.")}
-        closeLabel={fr("Fermer", "Close")}
-      >
-        <p>{fr("Utilisez le côté gauche pour la navigation ou le filtrage.", "Use the left side for navigation or filtering.")}</p>
-      </Drawer>
-    </div>
-  </section>
-
-  <section class="docs-section">
-    <h2>{fr("Avec pied d'actions", "With action footer")}</h2>
-    <p>{fr("Le snippet footer fixe une rangée d'actions en bas du panneau.", "The footer snippet pins an actions row at the bottom of the panel.")}</p>
-    <div class="docs-example docs-example--stack">
-      <Button onclick={() => (footerOpen = true)}>{fr("Configurer le service", "Configure service")}</Button>
-      <Drawer
-        bind:open={footerOpen}
-        title={fr("Configurer le service", "Configure service")}
-        description={fr("Ajustez les paramètres puis enregistrez.", "Adjust the settings, then save.")}
-        closeLabel={fr("Fermer", "Close")}
-      >
-        <p>{fr("Le corps défile indépendamment de l'en-tête et du pied.", "The body scrolls independently of the header and footer.")}</p>
-        {#snippet footer()}
-          <Button variant="secondary" onclick={() => (footerOpen = false)}>{fr("Annuler", "Cancel")}</Button>
-          <Button onclick={() => (footerOpen = false)}>{fr("Enregistrer", "Save")}</Button>
-        {/snippet}
-      </Drawer>
-    </div>
+    <h2>{fr("Exemple interactif", "Interactive example")}</h2>
+    <p>{fr("Le panneau s'ancre à droite (défaut) ou à gauche — prop side côté Svelte, placement côté React/Vue — et un troisième panneau épingle un pied d'actions en bas. Escape ferme le panneau ; un clic sur le fond aussi. Choisissez l'onglet Svelte, React ou Vue : la démo est la vraie implémentation interactive du framework sélectionné.", "The panel anchors to the right (default) or left — the side prop in Svelte, placement in React/Vue — and a third panel pins an action footer at the bottom. Escape closes the panel; clicking the backdrop also closes it. Pick the Svelte, React, or Vue tab: the demo is the selected framework's real interactive implementation.")}</p>
+    <TabbedLiveExample demo="drawer" title={fr("Démo interactive", "Interactive demo")} />
   </section>
 
   <section class="docs-section">

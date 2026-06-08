@@ -1,12 +1,10 @@
 <script lang="ts">
-  import { Badge, Button, Modal } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
+  import TabbedLiveExample from "$lib/framework/TabbedLiveExample.svelte";
 
   const fr = (frText: string, enText: string) => (locale.value === "fr" ? frText : enText);
-
-  let confirmOpen = $state(false);
-  let footerOpen = $state(false);
 </script>
 
 <div class="docs-page">
@@ -43,41 +41,9 @@
   </section>
 
   <section class="docs-section">
-    <h2>{fr("Exemple: confirmation", "Example: confirmation")}</h2>
-    <p>{fr("Le bouton ouvre un dialogue avec titre, description et corps. Escape ou le bouton de fermeture le referment.", "The button opens a dialog with title, description, and body. Escape or the close button dismiss it.")}</p>
-    <div class="docs-example docs-example--stack">
-      <Button onclick={() => (confirmOpen = true)}>{fr("Ouvrir le dialogue", "Open dialog")}</Button>
-      <Modal
-        open={confirmOpen}
-        title={fr("Confirmer l'action", "Confirm action")}
-        description={fr("Cette action recompile le thème du tenant.", "This action recompiles the tenant theme.")}
-        closeLabel={fr("Fermer", "Close")}
-        onclose={() => (confirmOpen = false)}
-      >
-        <p>{fr("Le contenu du modal reste neutre et fourni par l'application hôte.", "Modal content stays product-neutral and is supplied by the host application.")}</p>
-      </Modal>
-    </div>
-  </section>
-
-  <section class="docs-section">
-    <h2>{fr("Exemple: avec pied d'actions", "Example: with action footer")}</h2>
-    <p>{fr("Le snippet footer accueille les boutons d'action, alignés à droite.", "The footer snippet hosts action buttons, right-aligned.")}</p>
-    <div class="docs-example docs-example--stack">
-      <Button variant="secondary" onclick={() => (footerOpen = true)}>{fr("Ouvrir avec actions", "Open with actions")}</Button>
-      <Modal
-        open={footerOpen}
-        title={fr("Publier le tenant", "Publish tenant")}
-        description={fr("Les changements seront visibles immédiatement.", "Changes will be visible immediately.")}
-        closeLabel={fr("Fermer", "Close")}
-        onclose={() => (footerOpen = false)}
-      >
-        <p>{fr("Vérifiez la configuration avant de publier.", "Review the configuration before publishing.")}</p>
-        {#snippet footer()}
-          <Button variant="secondary" onclick={() => (footerOpen = false)}>{fr("Annuler", "Cancel")}</Button>
-          <Button onclick={() => (footerOpen = false)}>{fr("Publier", "Publish")}</Button>
-        {/snippet}
-      </Modal>
-    </div>
+    <h2>{fr("Exemple interactif", "Interactive example")}</h2>
+    <p>{fr("Le bouton ouvre un dialogue avec titre, description et corps ; une seconde variante ajoute un pied d'actions aligné à droite. Escape ou le bouton de fermeture le referment. Choisissez l'onglet Svelte, React ou Vue : la démo est la vraie implémentation interactive du framework sélectionné.", "The button opens a dialog with title, description, and body; a second variant adds a right-aligned action footer. Escape or the close button dismiss it. Pick the Svelte, React, or Vue tab: the demo is the selected framework's real interactive implementation.")}</p>
+    <TabbedLiveExample demo="modal" title={fr("Démo interactive", "Interactive demo")} />
   </section>
 
   <section class="docs-section">
