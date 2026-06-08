@@ -5,6 +5,7 @@ import {
   ContentSwitcher,
   Dropdown,
   FileUploader,
+  Link,
   Menu,
   MenuTriggerButton,
   MessageActions,
@@ -322,6 +323,67 @@ describe("Vue accepts the canonical Svelte API", () => {
       });
       await wrapper.findAll(".st-contentSwitcher__option")[1].trigger("click");
       expect(wrapper.emitted("change")?.[0]).toEqual(["b"]);
+    });
+  });
+
+  describe("Link", () => {
+    it("accepts the canonical `variant` prop (muted class)", () => {
+      const wrapper = mount(Link, {
+        props: { href: "#", variant: "muted" },
+        slots: { default: "Muted" },
+      });
+      expect(wrapper.find("a").classes()).toContain("st-link--muted");
+    });
+
+    it("still accepts the deprecated boolean shortcuts (standalone/muted)", () => {
+      const wrapper = mount(Link, {
+        props: { href: "#", standalone: true },
+        slots: { default: "Standalone" },
+      });
+      expect(wrapper.find("a").classes()).toContain("st-link--standalone");
+    });
+
+    it("prefers explicit `variant` over the boolean shortcuts", () => {
+      // variant='muted' + standalone -> renders muted (variant wins)
+      const wrapper = mount(Link, {
+        props: { href: "#", variant: "muted", standalone: true },
+        slots: { default: "Conflict" },
+      });
+      const classes = wrapper.find("a").classes();
+      expect(classes).toContain("st-link--muted");
+      expect(classes).not.toContain("st-link--standalone");
+    });
+
+    it("external -> target=_blank rel=noreferrer", () => {
+      const wrapper = mount(Link, {
+        props: { href: "https://example.com", external: true },
+        slots: { default: "Out" },
+      });
+      const a = wrapper.find("a");
+      expect(a.attributes("target")).toBe("_blank");
+      expect(a.attributes("rel")).toBe("noreferrer");
+    });
+
+    it("respects an explicit target/rel over external defaults", () => {
+      const wrapper = mount(Link, {
+        props: { href: "https://example.com", external: true },
+        attrs: { target: "_self", rel: "nofollow" },
+        slots: { default: "Out" },
+      });
+      const a = wrapper.find("a");
+      expect(a.attributes("target")).toBe("_self");
+      expect(a.attributes("rel")).toBe("nofollow");
+    });
+
+    it("disabled -> no navigable href + aria-disabled (navigation cut, canon parity)", () => {
+      const wrapper = mount(Link, {
+        props: { href: "/somewhere", disabled: true },
+        slots: { default: "Disabled" },
+      });
+      const a = wrapper.find("a");
+      // disabled coupe la navigation : href absent (comme le canon Svelte).
+      expect(a.attributes("href")).toBeUndefined();
+      expect(a.attributes("aria-disabled")).toBe("true");
     });
   });
 });
