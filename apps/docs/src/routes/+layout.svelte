@@ -48,12 +48,11 @@
 
   const componentGroups = buildComponentNavGroups();
   const breadcrumbs = $derived(resolveBreadcrumb(page.url.pathname));
-  // Les pages composant rendent désormais leurs démos dans les TROIS frameworks
-  // SIMULTANÉMENT (TriRender) : le sélecteur global ne pilote donc plus leur rendu.
-  // Il ne reste utile que sur la galerie /preview, qui rend un seul framework à la
-  // fois (FrameworkPreview piloté par le switcher). Ailleurs, on le masque.
+  // Le sélecteur de framework n'a d'effet que là où des composants sont rendus
+  // (pages composant + galerie /preview). Ailleurs (home, fondations, tokens,
+  // thèmes, contrats) il ne bascule rien -> on le masque pour ne pas paraître cassé.
   const showFrameworkSwitcher = $derived(
-    page.url.pathname === "/preview"
+    page.url.pathname.startsWith("/components") || page.url.pathname === "/preview"
   );
 
   // Thèmes proposés : le DS Sentropic de référence + les 2 mappings tiers
@@ -527,21 +526,19 @@
             </a>
           {/each}
 
-          {#if showFrameworkSwitcher}
-            <span class="docs-mobile-nav-label">Framework</span>
-            <div class="docs-mobile-locale-switcher docs-mobile-framework-switcher">
-              {#each FRAMEWORKS as option (option.id)}
-                <button
-                  type="button"
-                  class="docs-mobile-locale-btn"
-                  class:active={framework.value === option.id}
-                  onclick={() => { framework.value = option.id; isMobileMenuOpen = false; }}
-                >
-                  {option.label}
-                </button>
-              {/each}
-            </div>
-          {/if}
+          <span class="docs-mobile-nav-label">Framework</span>
+          <div class="docs-mobile-locale-switcher docs-mobile-framework-switcher">
+            {#each FRAMEWORKS as option (option.id)}
+              <button
+                type="button"
+                class="docs-mobile-locale-btn"
+                class:active={framework.value === option.id}
+                onclick={() => { framework.value = option.id; isMobileMenuOpen = false; }}
+              >
+                {option.label}
+              </button>
+            {/each}
+          </div>
 
           <span class="docs-mobile-nav-label">{locale.value === "fr" ? "Thème" : "Theme"}</span>
           <div class="docs-mobile-locale-switcher docs-mobile-theme-switcher">

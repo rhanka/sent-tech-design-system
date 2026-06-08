@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { getExample } from "$lib/framework/examples";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import TriRender from "$lib/framework/TriRender.svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const copy = {
@@ -56,18 +56,18 @@
     <p>{text().intro}</p>
   </section>
 
-  <TriRender nodes={getExample("toggle")?.nodes ?? []} label="Aperçu live" />
+  <FrameworkPreview example="toggle" title="Aperçu live" />
 
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
-    <TriRender nodes={variantsDemo} label={t(locale.value, "variants")} />
+    <FrameworkDemo nodes={variantsDemo} label={t(locale.value, "variants")} />
     <p class="docs-demo-note">
       {locale.value === "fr" ? "Notifications" : "Notifications"} : <code>Off</code>
       · {locale.value === "fr" ? "Mode compact" : "Compact mode"} : <code>On</code>
     </p>
 
-    <TriRender
+    <FrameworkDemo
       nodes={customLabelsDemo}
       label={locale.value === "fr" ? "Libellés personnalisés" : "Custom labels"}
     />

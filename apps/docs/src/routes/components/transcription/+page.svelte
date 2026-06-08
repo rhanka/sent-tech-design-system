@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { getExample } from "$lib/framework/examples";
   import { Badge } from "@sentropic/design-system-svelte";
-  import TriRender from "$lib/framework/TriRender.svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
@@ -43,12 +43,12 @@
       accessible, avec options horodatage et speaker.
     </p>
   </section>
-  <TriRender nodes={getExample("transcription")?.nodes ?? []} label="Aperçu live" />
+  <FrameworkPreview example="transcription" title="Aperçu live" />
 
 
   <section class="docs-section" id="Introduction">
     <h2>Présentation</h2>
-    <TriRender nodes={presentationDemo} label="Transcription" />
+    <FrameworkDemo nodes={presentationDemo} label="Transcription" />
     <p class="docs-demo-note">
       L’accordéon est ouvert (<code>open</code>) pour la démonstration.
     </p>

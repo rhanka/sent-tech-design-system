@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { getExample } from "$lib/framework/examples";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import TriRender from "$lib/framework/TriRender.svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   // Démos en arbre NodeSpec neutre -> rendues dans le framework actif.
@@ -51,13 +51,13 @@
     </div>
     <p>{t(locale.value, "searchIntro")}</p>
   </section>
-  <TriRender nodes={getExample("search")?.nodes ?? []} label="Aperçu live" />
+  <FrameworkPreview example="search" title="Aperçu live" />
 
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
-    <TriRender nodes={sizesDemo} label={t(locale.value, "sizes")} />
-    <TriRender nodes={statesDemo} label={t(locale.value, "states")} />
-    <TriRender nodes={bindingDemo} label="Liaison bidirectionnelle" />
+    <FrameworkDemo nodes={sizesDemo} label={t(locale.value, "sizes")} />
+    <FrameworkDemo nodes={statesDemo} label={t(locale.value, "states")} />
+    <FrameworkDemo nodes={bindingDemo} label="Liaison bidirectionnelle" />
     <p class="docs-demo-note">
       Valeur courante :
       <code>design</code>

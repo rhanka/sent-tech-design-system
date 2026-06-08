@@ -1,7 +1,6 @@
 <script lang="ts">
-  import { getExample } from "$lib/framework/examples";
-  import TriRender from "$lib/framework/TriRender.svelte";
   import { Badge, Highlight } from "@sentropic/design-system-svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 </script>
 
 <div class="docs-page">
@@ -17,7 +16,7 @@
       <code>success</code>, <code>warning</code>, <code>error</code>).
     </p>
   </section>
-  <TriRender nodes={getExample("highlight")?.nodes ?? []} label="Aperçu live" />
+  <FrameworkPreview example="highlight" title="Aperçu live" />
 
 
   <section class="docs-section">

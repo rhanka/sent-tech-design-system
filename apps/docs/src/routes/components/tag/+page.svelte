@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { getExample } from "$lib/framework/examples";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import TriRender from "$lib/framework/TriRender.svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
@@ -42,26 +42,26 @@
     <p>{t(locale.value, "tagIntro")}</p>
   </section>
 
-  <TriRender nodes={getExample("tag")?.nodes ?? []} label="Aperçu live" />
+  <FrameworkPreview example="tag" title="Aperçu live" />
 
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
-    <TriRender nodes={tonesDemo} label={locale.value === "fr" ? "Tonalités" : "Tones"} />
+    <FrameworkDemo nodes={tonesDemo} label={locale.value === "fr" ? "Tonalités" : "Tones"} />
     <p class="docs-example__caption">
       {locale.value === "fr"
         ? "Cinq tonalités sémantiques alignées sur les feedback tokens."
         : "Five semantic tones aligned with feedback tokens."}
     </p>
 
-    <TriRender nodes={sizesDemo} label={locale.value === "fr" ? "Tailles" : "Sizes"} />
+    <FrameworkDemo nodes={sizesDemo} label={locale.value === "fr" ? "Tailles" : "Sizes"} />
     <p class="docs-example__caption">
       {locale.value === "fr"
         ? "Tailles sm (0.6875rem) et md (0.75rem)."
         : "Sizes sm (0.6875rem) and md (0.75rem)."}
     </p>
 
-    <TriRender
+    <FrameworkDemo
       nodes={dismissibleDemo}
       label={locale.value === "fr" ? "Tags fermables" : "Dismissible tags"}
     />
@@ -71,7 +71,7 @@
         : "Dismissible tags expose a remove button (X icon) that fires onDismiss. Wire the removal into your application state."}
     </p>
 
-    <TriRender
+    <FrameworkDemo
       nodes={disabledDemo}
       label={locale.value === "fr" ? "État désactivé" : "Disabled state"}
     />

@@ -1,9 +1,8 @@
 <script lang="ts">
-  import { getExample } from "$lib/framework/examples";
-  import TriRender from "$lib/framework/TriRender.svelte";
   import { Badge, TreeView, type TreeNode } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   let selected = $state("tokens");
   const nodes: TreeNode[] = [
@@ -50,7 +49,7 @@
       Rôles ARIA <code>tree</code>/<code>treeitem</code> + roving tabindex.
     </p>
   </section>
-  <TriRender nodes={getExample("treeview")?.nodes ?? []} label="Aperçu live" />
+  <FrameworkPreview example="treeview" title="Aperçu live" />
 
   <section class="docs-section">
     <h2>Démo</h2>

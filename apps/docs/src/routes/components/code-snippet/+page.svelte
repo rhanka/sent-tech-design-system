@@ -1,7 +1,6 @@
 <script lang="ts">
-  import { getExample } from "$lib/framework/examples";
-  import TriRender from "$lib/framework/TriRender.svelte";
   import { Badge, CodeSnippet } from "@sentropic/design-system-svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   const block = `import { Button } from "@sentropic/design-system-svelte";\n\n<Button variant="primary">Envoyer</Button>`;
 </script>
@@ -18,7 +17,7 @@
       S'appuie sur <code>CopyButton</code> pour la copie.
     </p>
   </section>
-  <TriRender nodes={getExample("codesnippet")?.nodes ?? []} label="Aperçu live" />
+  <FrameworkPreview example="codesnippet" title="Aperçu live" />
 
 
   <section class="docs-section">

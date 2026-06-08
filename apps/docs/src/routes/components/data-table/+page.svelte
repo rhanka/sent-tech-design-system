@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { getExample } from "$lib/framework/examples";
   import { Badge, type DataTableColumn, type DataTableRow } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import TriRender from "$lib/framework/TriRender.svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const copy = {
@@ -113,20 +113,20 @@
     </div>
     <p>{text().intro}</p>
   </section>
-  <TriRender nodes={getExample("datatable")?.nodes ?? []} label="Aperçu live" />
+  <FrameworkPreview example="datatable" title="Aperçu live" />
 
 
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
     <h3 class="docs-demo-title">{text().basicCaption}</h3>
-    <TriRender
+    <FrameworkDemo
       nodes={basicDemo}
       label={locale.value === "fr" ? "Tableau de base" : "Basic data table"}
     />
 
     <h3 class="docs-demo-title">{text().interactiveCaption}</h3>
-    <TriRender
+    <FrameworkDemo
       nodes={pagedDemo}
       label={locale.value === "fr" ? "Tableau paginé" : "Paged data table"}
     />

@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { getExample } from "$lib/framework/examples";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import TriRender from "$lib/framework/TriRender.svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const fr = (frText: string, enText: string) => (locale.value === "fr" ? frText : enText);
@@ -64,7 +64,7 @@
     </p>
   </section>
 
-  <TriRender nodes={getExample("link")?.nodes ?? []} label="Aperçu live" />
+  <FrameworkPreview example="link" title="Aperçu live" />
 
   <section class="docs-section">
     <h2>{fr("Quand l'utiliser", "When to use")}</h2>
@@ -77,12 +77,12 @@
 
   <section class="docs-section">
     <h2>{fr("Variantes", "Variants")}</h2>
-    <TriRender nodes={variantsDemo} label={fr("Variantes", "Variants")} />
+    <FrameworkDemo nodes={variantsDemo} label={fr("Variantes", "Variants")} />
   </section>
 
   <section class="docs-section" id="link-demo">
     <h2>{t(locale.value, "states")}</h2>
-    <TriRender nodes={statesDemo} label={t(locale.value, "states")} />
+    <FrameworkDemo nodes={statesDemo} label={t(locale.value, "states")} />
     <p class="docs-demo-note">{fr("external pose target=\"_blank\" et rel=\"noreferrer\".", "external sets target=\"_blank\" and rel=\"noreferrer\".")}</p>
     <p class="docs-demo-note">{fr("disabled retire le href, pose aria-disabled et bloque le clic.", "disabled removes href, sets aria-disabled, and blocks the click.")}</p>
     <p class="docs-demo-note">{fr("onclick est appelé au clic (et bloqué si disabled) ; câblez-y votre logique.", "onclick fires on click (and is blocked when disabled); wire your logic into it.")}</p>

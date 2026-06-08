@@ -5030,30 +5030,20 @@ import { Menu } from "@sentropic/design-system-vue";
   menupopover: {
     id: "menupopover",
     slug: "menu-popover",
-    // MenuPopover n'a pas de déclencheur intégré : sans `trigger` (HTMLElement,
-    // inexprimable en NodeSpec), le panneau ouvert se positionne en absolu à
-    // l'origine du document et recouvre le chrome. Le wrapper .docs-popover-inline
-    // (CSS global docs) remet le panneau dans le flux pour une démo figée BORNÉE.
     nodes: [
       wrap([
         {
-          el: "div",
-          props: { class: "docs-popover-inline" },
-          children: [
-            {
-              comp: "MenuPopover",
-              props: {
-                open: true,
-                placement: "bottom-start",
-                items: [
-                  { id: "view", label: "Voir les détails" },
-                  { id: "edit", label: "Modifier" },
-                  { type: "divider" },
-                  { id: "archive", label: "Archiver" }
-                ]
-              }
-            }
-          ]
+          comp: "MenuPopover",
+          props: {
+            open: true,
+            placement: "bottom-start",
+            items: [
+              { id: "view", label: "Voir les détails" },
+              { id: "edit", label: "Modifier" },
+              { type: "divider" },
+              { id: "archive", label: "Archiver" }
+            ]
+          }
         }
       ])
     ],
@@ -5110,15 +5100,13 @@ import { MenuPopover } from "@sentropic/design-system-vue";
   overflowmenu: {
     id: "overflowmenu",
     slug: "overflow-menu",
-    // Pas de `open: true` : le déclencheur intégré ouvre le panneau au clic.
-    // Figé ouvert, le panneau (position: absolute) déborde de la boîte de démo
-    // et recouvre le contenu suivant — 3× pire en rendu tri-framework simultané.
     nodes: [
       wrap([
         {
           comp: "OverflowMenu",
           props: {
             label: "⋮",
+            open: true,
             placement: "bottom-start",
             items: [
               { id: "rename", label: "Renommer" },
