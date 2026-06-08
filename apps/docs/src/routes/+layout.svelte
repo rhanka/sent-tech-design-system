@@ -8,7 +8,8 @@
   // sans règles tant que ce stylesheet global (identique entre frameworks) n'est pas chargé.
   import "@sentropic/design-system-react/styles.css";
   import { Boxes, ChevronDown, Github, Globe, Menu, Palette, X } from "@lucide/svelte";
-  import { Header } from "@sentropic/design-system-svelte";
+  import { Header, IdentityMenu } from "@sentropic/design-system-svelte";
+  import { auth } from "$lib/auth/auth.svelte";
   import {
     sentTechTheme,
     compileTheme,
@@ -111,6 +112,15 @@
   let isThemeOpen = $state(false);
   let isFrameworkOpen = $state(false);
   let isMobileMenuOpen = $state(false);
+
+  // ── Identité (OAuth RP, phase 1) ──────────────────────────────────────────
+  // Mappe le store auth (clé d'identité = iss+sub) vers la forme attendue par
+  // l'IdentityMenu du DS (affichage uniquement). L'email n'est que décoratif.
+  const identityUser = $derived(
+    auth.user
+      ? { displayName: auth.user.name ?? auth.user.sub, email: auth.user.email, id: auth.user.sub }
+      : null
+  );
 
   function isActive(href: string): boolean {
     const pathname = page.url.pathname;
@@ -241,6 +251,14 @@
     <CompareButton activeThemeId={activeThemeId} pathname={page.url.pathname} />
 
     {@render langSelector()}
+
+    <!-- Identité (OAuth RP phase 1) : « Se connecter » si anon, sinon nom + menu. -->
+    <IdentityMenu
+      isAuthenticated={auth.status === "authed"}
+      user={identityUser}
+      onLogin={() => auth.login()}
+      onLogout={() => auth.logout()}
+    />
   </nav>
 
   <button
@@ -572,6 +590,15 @@
               English
             </button>
           </div>
+
+          <span class="docs-mobile-nav-label">{locale.value === "fr" ? "Identité" : "Identity"}</span>
+          <IdentityMenu
+            variant="accordion"
+            isAuthenticated={auth.status === "authed"}
+            user={identityUser}
+            onLogin={() => auth.login()}
+            onLogout={() => { auth.logout(); isMobileMenuOpen = false; }}
+          />
         </div>
       </nav>
     {/if}
