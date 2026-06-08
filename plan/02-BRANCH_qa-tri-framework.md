@@ -44,7 +44,11 @@ communication ("si 90% est foireux, je ne peux pas communiquer sur le design sys
   - Demande owner: cliquer un onglet d'exemple doit SYNCHRONISER le framework dans l'argument de route (?framework=) ET basculer TOUS les onglets de la page en meme temps (comme le bouton du haut), sinon incomprehensible.
   - [ ] UAT: clic onglet -> ?framework= mis a jour + tous les onglets de la page suivent + le switcher du haut reflete l'etat.
 - [ ] **Lot MONKEY — Methode "random monkey" critique**
-  - Identifier une methode d'agent qui clique reellement chaque vue quelques minutes en mode critique (ideal: agent RL temps-reel ; dependance externe acceptable ; deepresearch lance).
-  - [ ] UAT: methode monkey definie, outillee, executable par claude:ds-QA, documentee.
+  - METHODE DECIDEE (deepresearch verifie, 2026-06-08): architecture EN COUCHES, pas un agent VLM monolithique. Les VLM frontiers ratent >59% des ecarts visuels fins et <23% sur alignement/layout (DiffSpot, arXiv 2605.29615 ; GPT-4o ~39% Macklon 2501.09236) -> INUTILISABLES comme juge unique. Pile recommandee :
+    1. DETERMINISTE (fiable, reproductible) = screenshots Playwright + diff pixel (pixelmatch/odiff maison ; ou Applitools/Chromatic/Percy externe). Sert a (a) PARITE cross-framework: diff pixel des 3 onglets svelte/react/vue d'un meme exemple -> detecte exactement les "react/vue fucked"/rendus differents ; (b) REGRESSION: baseline + diff (attrape Calendar).
+    2. INTERACTIF: Playwright clique les declencheurs (ouvre dropdowns/menus/calendriers, hover) + screenshot l'ETAT OUVERT (sinon le crop z-index est invisible en statique).
+    3. VLM-COMME-CRITIQUE (claude) sur les diffs flagges + chaque vue, avec les criteres de succes comme oracle + capture "bon etat" en contexte -> classe/explique les bugs de sens (libelles non traduits, tailles non distinctes) en TRIAGE assiste, JAMAIS juge final autonome.
+    - Stack 100% disponible: playwright-core (deja installe) + pixelmatch (petit dep maison) + claude. Pas de dependance RL exotique. RL/monkey classiques = exploration/crash only, faible maturite (a ne pas utiliser comme oracle).
+  - [ ] UAT: harnais en couches outille (cross-fw pixel-diff + open-state + VLM-critique), executable sur 147 pages x 3 fw, documente.
 - [ ] **Lot SYS — Piloter la passe systematique (03-BRANCH, 147 pages)**
   - [ ] UAT: 100% des 147 pages verifiees et conformes aux criteres de succes.
