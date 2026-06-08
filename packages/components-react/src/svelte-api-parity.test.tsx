@@ -6,6 +6,7 @@ import {
   ContentSwitcher,
   Dropdown,
   FileUploader,
+  Link,
   Menu,
   MenuTriggerButton,
   MessageActions,
@@ -290,6 +291,76 @@ describe("React accepts the canonical Svelte API", () => {
       );
       fireEvent.click(screen.getByRole("button", { name: "B" }));
       expect(onchange).toHaveBeenCalledWith("b");
+    });
+  });
+
+  describe("Link", () => {
+    it("accepts the canonical `variant` prop (standalone/muted classes)", () => {
+      render(
+        <Link href="#" variant="muted">
+          Muted
+        </Link>,
+      );
+      expect(screen.getByRole("link", { name: "Muted" }).className).toContain("st-link--muted");
+    });
+
+    it("still accepts the deprecated boolean shortcuts (standalone/muted)", () => {
+      render(
+        <Link href="#" standalone>
+          Standalone
+        </Link>,
+      );
+      expect(screen.getByRole("link", { name: "Standalone" }).className).toContain(
+        "st-link--standalone",
+      );
+    });
+
+    it("prefers explicit `variant` over the boolean shortcuts", () => {
+      // variant='muted' + standalone -> renders muted (variant wins)
+      render(
+        <Link href="#" variant="muted" standalone>
+          Conflict
+        </Link>,
+      );
+      const link = screen.getByRole("link", { name: "Conflict" });
+      expect(link.className).toContain("st-link--muted");
+      expect(link.className).not.toContain("st-link--standalone");
+    });
+
+    it("external -> target=_blank rel=noreferrer", () => {
+      render(
+        <Link href="https://example.com" external>
+          Out
+        </Link>,
+      );
+      const link = screen.getByRole("link", { name: "Out" });
+      expect(link.getAttribute("target")).toBe("_blank");
+      expect(link.getAttribute("rel")).toBe("noreferrer");
+    });
+
+    it("respects an explicit target/rel over external defaults", () => {
+      render(
+        <Link href="https://example.com" external target="_self" rel="nofollow">
+          Out
+        </Link>,
+      );
+      const link = screen.getByRole("link", { name: "Out" });
+      expect(link.getAttribute("target")).toBe("_self");
+      expect(link.getAttribute("rel")).toBe("nofollow");
+    });
+
+    it("disabled -> no navigable href, aria-disabled, click prevented", () => {
+      const onClick = vi.fn();
+      render(
+        <Link href="/somewhere" disabled onClick={onClick}>
+          Disabled
+        </Link>,
+      );
+      const link = screen.getByText("Disabled").closest("a")!;
+      expect(link.getAttribute("href")).toBeNull();
+      expect(link.getAttribute("aria-disabled")).toBe("true");
+      fireEvent.click(link);
+      expect(onClick).not.toHaveBeenCalled();
     });
   });
 });
