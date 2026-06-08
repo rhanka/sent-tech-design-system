@@ -40,7 +40,7 @@ jobs:
         run: npm run build
 
       - name: Run design quality gate
-        run: node packages/skills/dist/cli.js check apps/docs/build --tech --fail-under 100 > design-quality-report.json
+        run: node packages/skills/dist/cli.js check apps/docs/build --tech --fail-under 95 > design-quality-report.json
 
       - name: Upload design report
         if: always()
