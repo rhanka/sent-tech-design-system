@@ -122,7 +122,8 @@
   .tex {
     border: 1px solid var(--docs-line, #e2e8f0);
     border-radius: 0.75rem;
-    overflow: hidden;
+    /* visible: laisser les overlays/menus absolus déborder sans être coupés. */
+    overflow: visible;
     background: #ffffff;
     margin-bottom: 1.5rem;
   }

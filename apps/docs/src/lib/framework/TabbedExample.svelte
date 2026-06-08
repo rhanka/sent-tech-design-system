@@ -146,7 +146,10 @@
   .tex {
     border: 1px solid var(--docs-line, #e2e8f0);
     border-radius: 0.75rem;
-    overflow: hidden;
+    /* visible: les menus/overlays absolus des composants (combobox, dropdown,
+       date-picker, select, menu...) doivent pouvoir déborder du cadre sans être
+       coupés. Le clip du radius est reporté sur les blocs internes qui en ont besoin. */
+    overflow: visible;
     background: #ffffff;
     margin-bottom: 1.5rem;
   }
