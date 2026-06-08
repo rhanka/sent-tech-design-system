@@ -8,8 +8,10 @@
     4. un <details> « Voir le code (<fw>) » dépliable montrant le code de
        l'exemple dans le framework de l'onglet actif.
 
-  L'onglet actif suit par défaut le switcher global (framework.value) ; un clic
-  local sur un onglet pose un override pour comparer sans toucher au global.
+  L'onglet actif EST l'état global unique (framework.value), lui-même reflété
+  dans l'URL `?framework=` (cf. +layout.svelte). Cliquer un onglet bascule donc
+  TOUTES les démos de la page + le switcher du header + la route, en un seul état
+  partagé (pas d'override local divergent).
 
   Rendus :
     • svelte → inline via SvelteNode (aucune île, aucun coût runtime) ;
@@ -32,9 +34,8 @@
 
   const fr = $derived(locale.value === "fr");
 
-  // Override local : null = suit le switcher global ; sinon onglet choisi ici.
-  let override = $state<FrameworkId | null>(null);
-  const active = $derived(override ?? framework.value);
+  // Onglet actif = état global unique (route-backed). Pas de copie locale.
+  const active = $derived(framework.value);
 
   const fwLabel = (id: FrameworkId) =>
     FRAMEWORKS.find((entry) => entry.id === id)?.label ?? id;
@@ -106,7 +107,7 @@
         class:tex__tab--active={active === fw.id}
         data-framework={fw.id}
         aria-selected={active === fw.id}
-        onclick={() => (override = fw.id)}
+        onclick={() => (framework.value = fw.id)}
       >
         <span class="tex__dot" aria-hidden="true"></span>
         {fw.label}

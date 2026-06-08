@@ -10,8 +10,9 @@
     2. barre d'onglets [Svelte | React | Vue] ;
     3. UN SEUL framework monté à la fois (celui de l'onglet actif).
 
-  L'onglet actif suit par défaut le switcher global (framework.value) ; un clic
-  local pose un override pour comparer sans toucher au global.
+  L'onglet actif EST l'état global unique (framework.value), reflété dans l'URL
+  `?framework=` (cf. +layout.svelte) : cliquer un onglet bascule toutes les démos
+  de la page + le switcher du header + la route ensemble (pas d'override local).
 
   Comme un seul framework est monté à la fois, un seul jeu d'overlays/portails
   existe à un instant donné -> aucune superposition de modals/drawers.
@@ -22,7 +23,7 @@
 <script lang="ts">
   import type { Component } from "svelte";
   import { browser } from "$app/environment";
-  import { framework, FRAMEWORKS, type FrameworkId } from "$lib/framework.svelte";
+  import { framework, FRAMEWORKS } from "$lib/framework.svelte";
   import { locale } from "$lib/locale.svelte";
   import type { IslandHandle } from "./react-island";
   import type { LiveDemoKey } from "./live-island";
@@ -40,9 +41,8 @@
   };
   const SvelteDemo = $derived(SVELTE_DEMOS[demo]);
 
-  // Override local : null = suit le switcher global ; sinon onglet choisi ici.
-  let override = $state<FrameworkId | null>(null);
-  const active = $derived(override ?? framework.value);
+  // Onglet actif = état global unique (route-backed). Pas de copie locale.
+  const active = $derived(framework.value);
 
   let islandHost = $state<HTMLDivElement | null>(null);
 
@@ -95,7 +95,7 @@
         class:tex__tab--active={active === fw.id}
         data-framework={fw.id}
         aria-selected={active === fw.id}
-        onclick={() => (override = fw.id)}
+        onclick={() => (framework.value = fw.id)}
       >
         <span class="tex__dot" aria-hidden="true"></span>
         {fw.label}
