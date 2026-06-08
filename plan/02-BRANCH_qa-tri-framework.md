@@ -19,9 +19,10 @@ communication ("si 90% est foireux, je ne peux pas communiquer sur le design sys
 - Outils dispo : `design audit:visual` (headless), à compléter par la méthode "monkey".
 
 ## Plan / Todo (lot-based)
-- [ ] **Lot Z — z-index/crop overlay transversal (QUICK WIN)**
+- [x] **Lot Z — z-index/crop overlay transversal (QUICK WIN)**
   - Symptome: menus deroulants (combobox / date-picker / dropdown ...) coupes ou passant SOUS le contenu/sidebar dans les onglets et exemples.
-  - [ ] UAT: tout menu/overlay s'affiche au-dessus, non coupe, dans tous les onglets et toutes les pages, 3 fw.
+  - Cause racine: `.tex { overflow: hidden }` (TabbedExample.svelte + TabbedLiveExample.svelte) clippait les panneaux absolus. Fix: `overflow: visible`. z-index (80 > sidebar 30) n'etait PAS en cause.
+  - [x] UAT: tout menu/overlay s'affiche au-dessus, non coupe (verifie au screenshot sur combobox ; fix structurel = couvre combobox/dropdown/multiselect/datepicker/select/menu/overflow-menu/popover/search ; sweep complet 3fw dans 03-BRANCH).
 - [ ] **Lot CAL — Calendar regression (grille cassee)**
   - Symptome: numeros de jours superposes/illisibles (img owner) ; "nickel il y a quelques jours" -> regression. Verifier aussi date-picker.
   - [ ] UAT: grille calendrier propre svelte+react+vue, jours alignes, aucune superposition.
