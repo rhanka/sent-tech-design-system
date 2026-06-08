@@ -2,6 +2,7 @@
   import { page } from "$app/state";
   import { browser } from "$app/environment";
   import { replaceState } from "$app/navigation";
+  import { untrack } from "svelte";
   import "../app.css";
   // CSS global des composants (classes .st-*) pour styler les îles React/Vue :
   // le Svelte a ses styles scoped, mais les rendus React/Vue n'ont que les classes
@@ -28,12 +29,18 @@
     type ComponentNavItem
   } from "$lib/docs-navigation";
   import { locale } from "$lib/locale.svelte";
-  import { FRAMEWORKS, framework, FRAMEWORK_STORAGE_KEY } from "$lib/framework.svelte";
+  import {
+    FRAMEWORKS,
+    framework,
+    FRAMEWORK_STORAGE_KEY,
+    DEFAULT_FRAMEWORK
+  } from "$lib/framework.svelte";
   import {
     readUrlParams,
     resolveTheme,
     resolveFramework,
     buildUpdatedSearch,
+    DEFAULT_THEME_ID,
     type ThemeId as UrlThemeId
   } from "$lib/url-state";
   import CompareButton from "$lib/compare/CompareButton.svelte";
@@ -70,11 +77,39 @@
     THEMES.find((theme) => theme.id === activeThemeId) ?? sentTechTheme
   );
 
-  // Restaure le thème : URL > localStorage > défaut (client uniquement ; SSR rend le défaut).
+  // Sync ENTRANTE URL -> state. Réactif à page.url.search ($app/state) pour couvrir :
+  //  • le montage initial (priorité URL > localStorage > défaut) ;
+  //  • la navigation arrière/avant (popstate) qui change l'URL sans re-monter le layout.
+  // L'URL fait autorité : sur un back vers une URL sans param, on retombe sur la
+  // valeur par défaut (param omis = défaut), pas sur localStorage, pour rester aligné
+  // avec ce que l'URL exprime. localStorage ne sert que de repli au tout 1er chargement.
+  let urlStateInitialized = $state(false);
   $effect(() => {
+    if (!browser) return;
+    // Dépendance réactive explicite : tout changement d'URL relit l'état.
+    void page.url.search;
     const { theme: urlTheme, framework: urlFramework } = readUrlParams();
-    activeThemeId = resolveTheme(urlTheme, THEME_STORAGE_KEY);
-    framework.value = resolveFramework(urlFramework, FRAMEWORK_STORAGE_KEY);
+
+    // Lecture/écriture de l'état dans untrack() : cet effet ne doit dépendre QUE de
+    // page.url.search. Sans untrack, lire framework.value/activeThemeId ici les rend
+    // dépendances réactives -> cliquer un onglet (qui change framework.value) re-déclenche
+    // cet effet AVANT que replaceState n'ait écrit l'URL, relit une URL encore vide et
+    // réinitialise au défaut (boucle de feedback : le clic était écrasé en svelte).
+    untrack(() => {
+      if (!urlStateInitialized) {
+        // 1er chargement : URL > localStorage > défaut.
+        activeThemeId = resolveTheme(urlTheme, THEME_STORAGE_KEY);
+        framework.value = resolveFramework(urlFramework, FRAMEWORK_STORAGE_KEY);
+        urlStateInitialized = true;
+        return;
+      }
+      // Navigations ultérieures (back/forward) : l'URL fait autorité.
+      // Param absent => valeur par défaut. On n'écrit que si différent (anti-boucle).
+      const nextTheme = urlTheme ?? DEFAULT_THEME_ID;
+      if (nextTheme !== activeThemeId) activeThemeId = nextTheme;
+      const nextFramework = urlFramework ?? DEFAULT_FRAMEWORK;
+      if (nextFramework !== framework.value) framework.value = nextFramework;
+    });
   });
 
   // Applique le thème actif sur :root via un <style> géré (réactif et fiable),
