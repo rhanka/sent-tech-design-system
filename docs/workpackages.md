@@ -29,6 +29,16 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 | WP14 | Chrome documentaire par thème | 🟢 | 100% | Forme du chrome (header/nav/sidebar/logo) adaptée pour DSFR/Carbon/Airbus + vérification fidélité DSFR 90,2% / Carbon 92,7% / Airbus 86,6%. | Ajustements finaux de finesse visuelle selon retours externes. | Validation publique de la fidélité avant clôture définitive. |
 | WP15 | Intégration dataviz BI | 🟢 | 100% | FERMÉ 2026-06-07 : toutes surfaces DS livrées (axes/format, Embed/DataImage, TreeView, forecast LineChart, cluster/centroïdes ScatterPlot, GeoMap générique à couches — svelte 0.33.0/react+vue 0.29.0) ; dataviz v0.4.19 publié sans plus aucun fallback présentationnel, repin DS, CI+Pages vertes. | — | Rien (nouvelles familles BI = nouveau besoin). |
 
+## Mise à jour 2026-06-07 — docs rendues en tri-framework simultané + CLI audit visuel
+
+**Objectif owner livré** : chaque page composant est désormais rendue **complètement en Svelte + React + Vue en même temps** (les 3 rendus live étiquetés côte à côte), et le widget « Aperçu live » (switcher 1-framework-à-la-fois) est **supprimé** des pages.
+
+- **Composant `TriRender`** (`apps/docs/src/lib/framework/TriRender.svelte`) : rend une liste de `NodeSpec` 3× (Svelte inline + îles React/Vue client-only, démontage propre). Remplace `FrameworkDemo` (supprimé) et `FrameworkPreview` sur les pages (229 `FrameworkDemo` + 136 `FrameworkPreview` migrés). **143 pages** en tri-framework. Switcher global restreint à la galerie `/preview`. Commits `ff017bb` (pilote button/calendar) + `8edc679` (rollout). Build Docs/Pages **vert**, live sur design-system.sent-tech.ca.
+- **Overlays/portails bornés** : menu-popover / overflow-menu / overlays corrigés (panneaux figés qui débordaient → repliés dans le flux ou ouverts au clic) — 13 findings high → 0 à l'audit.
+- **CLI audit visuel** : nouvelle sous-commande `design audit:visual` (`packages/skills`, `05585b1`, skills `0.2.0`) — Chromium **headless** via `playwright-core` + Chrome système (zéro download navigateur), 5 heuristiques (overlap texte, fuite i18n, cohérence/désalignement contrôles, grille cassée, débordement) + screenshots pour double-challenge. Audit du site : **97/100** sans régression. NB : les bugs owner signalés (Calendar cassé, CopyButton « Copied ») **ne se reproduisent plus** dans le build actuel (déjà corrigés).
+
+**Reste (docs)** : 5 pages sans `NodeSpec` encore mono-framework (modal, drawer, data-navigation, plan-completion, `[slug]`) — migration = modéliser leurs démos interactives ; franciser les labels démo « Submit/Reset » (page button) ; affiner l'audit (les ~69 highs `text-overlap` restants sont dans les tables d'API / prose, pré-existants, hors démos TriRender).
+
 ## Mise à jour 2026-06-03 — parité multi-framework complète + déploiement réparé
 
 **Parité React/Vue totale : 86/86/86** — tous les composants Svelte sont portés en React et Vue (zéro écart, audit par nom).
