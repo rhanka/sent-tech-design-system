@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { getExample } from "$lib/framework/examples";
   import { Badge, type BarChartDatum } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import TriRender from "$lib/framework/TriRender.svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const copy = {
@@ -135,7 +135,7 @@
     </div>
     <p>{text().intro}</p>
   </section>
-  <TriRender nodes={getExample("barchart")?.nodes ?? []} label="Aperçu live" />
+  <FrameworkPreview example="barchart" title="Aperçu live" />
 
 
   <section class="docs-section">
@@ -143,15 +143,15 @@
 
     <h3 class="docs-demo-title">{text().verticalTitle}</h3>
     <p class="docs-demo-note">{text().verticalDesc}</p>
-    <TriRender nodes={verticalDemo} label={text().verticalTitle} />
+    <FrameworkDemo nodes={verticalDemo} label={text().verticalTitle} />
 
     <h3 class="docs-demo-title">{text().horizontalTitle}</h3>
     <p class="docs-demo-note">{text().horizontalDesc}</p>
-    <TriRender nodes={horizontalDemo} label={text().horizontalTitle} />
+    <FrameworkDemo nodes={horizontalDemo} label={text().horizontalTitle} />
 
     <h3 class="docs-demo-title">{text().tonesTitle}</h3>
     <p class="docs-demo-note">{text().tonesDesc}</p>
-    <TriRender nodes={tonesDemo} label={text().tonesTitle} />
+    <FrameworkDemo nodes={tonesDemo} label={text().tonesTitle} />
   </section>
 
   <section class="docs-section">

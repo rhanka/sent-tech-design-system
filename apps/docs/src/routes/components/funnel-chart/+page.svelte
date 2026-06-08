@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { getExample } from "$lib/framework/examples";
   import { Badge } from "@sentropic/design-system-svelte";
   import { locale } from "$lib/locale.svelte";
-  import TriRender from "$lib/framework/TriRender.svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const demoNodes = $derived<NodeSpec[]>([
@@ -68,7 +68,7 @@
     </p>
   </section>
 
-  <TriRender nodes={getExample("funnelchart")?.nodes ?? []} label={locale.value === "fr" ? "Aperçu live" : "Live preview"} />
+  <FrameworkPreview example="funnelchart" title={locale.value === "fr" ? "Aperçu live" : "Live preview"} />
 
   <section class="docs-section">
     <h2>{locale.value === "fr" ? "Exemples" : "Examples"}</h2>
@@ -81,7 +81,7 @@
         percentages are relative to the first step (<code>percentMode="ofFirst"</code>).
       {/if}
     </p>
-    <TriRender
+    <FrameworkDemo
       nodes={demoNodes}
       label={locale.value === "fr" ? "Entonnoir de conversion" : "Conversion funnel"}
     />

@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { getExample } from "$lib/framework/examples";
   import { Badge } from "@sentropic/design-system-svelte";
   import { locale } from "$lib/locale.svelte";
-  import TriRender from "$lib/framework/TriRender.svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const copy = {
@@ -113,18 +113,18 @@
     <p>{text().intro}</p>
   </section>
 
-  <TriRender nodes={getExample("radarchart")?.nodes ?? []} label={text().previewTitle} />
+  <FrameworkPreview example="radarchart" title={text().previewTitle} />
 
   <section class="docs-section">
     <h2>{text().examplesTitle}</h2>
 
     <h3 class="docs-demo-title">{text().capabilityTitle}</h3>
     <p class="docs-demo-note">{text().capabilityDesc}</p>
-    <TriRender nodes={capabilityDemo} label={text().capabilityTitle} />
+    <FrameworkDemo nodes={capabilityDemo} label={text().capabilityTitle} />
 
     <h3 class="docs-demo-title">{text().scoreTitle}</h3>
     <p class="docs-demo-note">{text().scoreDesc}</p>
-    <TriRender nodes={scoreDemo} label={text().scoreTitle} />
+    <FrameworkDemo nodes={scoreDemo} label={text().scoreTitle} />
   </section>
 
   <section class="docs-section">

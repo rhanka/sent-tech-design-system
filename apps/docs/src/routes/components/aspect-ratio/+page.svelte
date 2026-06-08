@@ -1,7 +1,6 @@
 <script lang="ts">
-  import { getExample } from "$lib/framework/examples";
-  import TriRender from "$lib/framework/TriRender.svelte";
   import { AspectRatio, Badge } from "@sentropic/design-system-svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 </script>
 
 <div class="docs-page">
@@ -17,7 +16,7 @@
       remplit la boîte.
     </p>
   </section>
-  <TriRender nodes={getExample("aspectratio")?.nodes ?? []} label="Aperçu live" />
+  <FrameworkPreview example="aspectratio" title="Aperçu live" />
 
 
   <section class="docs-section">

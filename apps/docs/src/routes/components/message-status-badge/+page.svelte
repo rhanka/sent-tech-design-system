@@ -1,9 +1,8 @@
 <script lang="ts">
-  import { getExample } from "$lib/framework/examples";
-  import TriRender from "$lib/framework/TriRender.svelte";
   import { MessageStatusBadge, type ChatMessageStatus } from "@sentropic/design-system-svelte";
   import { Badge } from "@sentropic/design-system-svelte";
   import { locale } from "$lib/locale.svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
   import { t } from "$lib/i18n";
 
   const copy = {
@@ -50,7 +49,7 @@
     </div>
     <p>{text().intro}</p>
   </section>
-  <TriRender nodes={getExample("messagestatusbadge")?.nodes ?? []} label="Aperçu live" />
+  <FrameworkPreview example="messagestatusbadge" title="Aperçu live" />
 
 
   <section class="docs-section">

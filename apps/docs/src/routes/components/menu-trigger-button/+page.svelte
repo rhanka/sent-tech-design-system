@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { getExample } from "$lib/framework/examples";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import TriRender from "$lib/framework/TriRender.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
@@ -63,15 +63,15 @@
     </div>
     <p>{t(locale.value, "menuTriggerButtonIntro")}</p>
   </section>
-  <TriRender nodes={getExample("menutriggerbutton")?.nodes ?? []} label="Aperçu live" />
+  <FrameworkPreview example="menutriggerbutton" title="Aperçu live" />
 
 
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
-    <TriRender nodes={defaultDemo} label="Default chevron icon" />
-    <TriRender nodes={customIconDemo} label="Custom icon" />
-    <TriRender nodes={sizesDemo} label={t(locale.value, "sizes")} />
-    <TriRender nodes={statesDemo} label={t(locale.value, "states")} />
+    <FrameworkDemo nodes={defaultDemo} label="Default chevron icon" />
+    <FrameworkDemo nodes={customIconDemo} label="Custom icon" />
+    <FrameworkDemo nodes={sizesDemo} label={t(locale.value, "sizes")} />
+    <FrameworkDemo nodes={statesDemo} label={t(locale.value, "states")} />
     <p class="docs-demo-note">
       {locale.value === "fr"
         ? "L'état ouvert (expanded en Svelte, open en React/Vue) est figé pour la démonstration. Passez une icône en enfant pour remplacer le chevron par défaut."
