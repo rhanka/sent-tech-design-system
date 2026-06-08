@@ -31,9 +31,9 @@
     { comp: "Button", props: { disabled: true }, children: ["Enregistrement…"] }
   ];
   const typesDemo: NodeSpec[] = [
-    { comp: "Button", props: { type: "submit" }, children: ["Submit"] },
-    { comp: "Button", props: { type: "reset", variant: "secondary" }, children: ["Reset"] },
-    { comp: "Button", props: { type: "button", variant: "ghost" }, children: ["Button"] }
+    { comp: "Button", props: { type: "submit" }, children: ["Envoyer"] },
+    { comp: "Button", props: { type: "reset", variant: "secondary" }, children: ["Réinitialiser"] },
+    { comp: "Button", props: { type: "button", variant: "ghost" }, children: ["Bouton"] }
   ];
 </script>
 
