@@ -1,4 +1,5 @@
 import { defineComponent, h } from "vue";
+import { CircleAlert, CircleCheck, LoaderCircle } from "lucide-vue-next";
 import { classNames } from "./classNames.js";
 
 export type InlineLoadingStatus = "active" | "inactive" | "success" | "error";
@@ -32,10 +33,21 @@ export const InlineLoading = defineComponent({
           ),
         },
         [
-          h("span", {
-            class: "st-inlineLoading__spinner",
-            "aria-hidden": "true",
-          }),
+          h(
+            "span",
+            { class: "st-inlineLoading__icon", "aria-hidden": "true" },
+            [
+              props.status === "active"
+                ? h("span", { class: "st-inlineLoading__spinner" }, [
+                    h(LoaderCircle, { size: 16, strokeWidth: 2, "aria-hidden": "true" }),
+                  ])
+                : props.status === "success"
+                  ? h(CircleCheck, { size: 16, strokeWidth: 2, "aria-hidden": "true" })
+                  : props.status === "error"
+                    ? h(CircleAlert, { size: 16, strokeWidth: 2, "aria-hidden": "true" })
+                    : null,
+            ],
+          ),
           h(
             "span",
             { class: "st-inlineLoading__label" },

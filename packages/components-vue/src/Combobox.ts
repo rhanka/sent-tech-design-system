@@ -1,4 +1,5 @@
 import { defineComponent, h, ref, computed } from "vue";
+import { ChevronDown, X } from "lucide-vue-next";
 import { classNames } from "./classNames.js";
 
 export type ComboboxOption = {
@@ -148,6 +149,41 @@ export const Combobox = defineComponent({
               }
             },
           }),
+          selected || inputValue.value
+            ? h(
+                "button",
+                {
+                  type: "button",
+                  class: "st-combobox__clear",
+                  "aria-label": "Clear",
+                  onClick: () => {
+                    inputValue.value = "";
+                    activeIndex.value = -1;
+                    emit("change", "");
+                    emit("update:modelValue", "");
+                  },
+                },
+                [h(X, { size: 16, strokeWidth: 2.25, "aria-hidden": "true" })],
+              )
+            : null,
+          h(
+            "button",
+            {
+              type: "button",
+              class: "st-combobox__toggle",
+              "aria-label": "Toggle options",
+              "aria-expanded": open,
+              onClick: () => setOpen(!open),
+            },
+            [
+              h(ChevronDown, {
+                class: classNames("st-combobox__toggleIcon", open && "st-combobox__toggleIcon--open"),
+                size: 18,
+                strokeWidth: 2.25,
+                "aria-hidden": "true",
+              }),
+            ],
+          ),
           selected
             ? h("span", { class: "st-combobox__value st-visually-hidden" }, String(selected.label))
             : null,

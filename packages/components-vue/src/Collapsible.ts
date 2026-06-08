@@ -1,4 +1,5 @@
 import { defineComponent, h, ref } from "vue";
+import { ChevronDown } from "lucide-vue-next";
 import { classNames } from "./classNames.js";
 
 export type CollapsibleProps = {
@@ -11,25 +12,6 @@ export type CollapsibleProps = {
 };
 
 let collapsibleCounter = 0;
-
-function ChevronDownIcon() {
-  return h(
-    "svg",
-    {
-      width: 18,
-      height: 18,
-      viewBox: "0 0 24 24",
-      fill: "none",
-      stroke: "currentColor",
-      "stroke-width": 2.25,
-      "stroke-linecap": "round",
-      "stroke-linejoin": "round",
-      focusable: "false",
-      "aria-hidden": "true",
-    },
-    [h("path", { d: "m6 9 6 6 6-6" })],
-  );
-}
 
 export const Collapsible = defineComponent({
   name: "Collapsible",
@@ -83,7 +65,7 @@ export const Collapsible = defineComponent({
             h(
               "span",
               { class: "st-collapsible__icon", "aria-hidden": "true" },
-              [ChevronDownIcon()],
+              [h(ChevronDown, { size: 18, strokeWidth: 2.25, "aria-hidden": "true" })],
             ),
           ],
         ),

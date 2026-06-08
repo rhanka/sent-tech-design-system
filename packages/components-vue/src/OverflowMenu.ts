@@ -1,4 +1,5 @@
 import { defineComponent, h, ref, watch, onUnmounted } from "vue";
+import { Ellipsis } from "lucide-vue-next";
 import { classNames } from "./classNames.js";
 import { Menu } from "./Menu.js";
 import type { MenuItem } from "./Menu.js";
@@ -72,10 +73,12 @@ export const OverflowMenu = defineComponent({
             {
               type: "button",
               class: "st-overflowMenu__trigger",
+              "aria-haspopup": "menu",
               "aria-expanded": open,
+              "aria-label": props.label,
               onClick: () => setOpen(!open),
             },
-            props.label,
+            [h(Ellipsis, { size: 18, strokeWidth: 2.25, "aria-hidden": "true" })],
           ),
           open
             ? h(

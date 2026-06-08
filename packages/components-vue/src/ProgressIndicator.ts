@@ -1,4 +1,5 @@
 import { defineComponent, h } from "vue";
+import { Check, X } from "lucide-vue-next";
 import { classNames } from "./classNames.js";
 
 export type ProgressIndicatorStatus =
@@ -59,7 +60,11 @@ export const ProgressIndicator = defineComponent({
               h(
                 "span",
                 { class: "st-progressIndicator__indicator" },
-                item.status === "complete" ? "✓" : String(index + 1),
+                item.status === "complete"
+                  ? h(Check, { size: 14, strokeWidth: 2, "aria-hidden": "true" })
+                  : item.status === "invalid"
+                    ? h(X, { size: 14, strokeWidth: 2, "aria-hidden": "true" })
+                    : String(index + 1),
               ),
               h("span", { class: "st-progressIndicator__text" }, [
                 h(

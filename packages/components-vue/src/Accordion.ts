@@ -1,4 +1,5 @@
 import { defineComponent, h, ref } from "vue";
+import { ChevronDown } from "lucide-vue-next";
 import { classNames } from "./classNames.js";
 
 export type AccordionItem = {
@@ -94,7 +95,7 @@ export const Accordion = defineComponent({
                     h(
                       "span",
                       { class: "st-accordion__icon", "aria-hidden": "true" },
-                      isOpen ? "-" : "+",
+                      [h(ChevronDown, { size: 18, strokeWidth: 2.25, "aria-hidden": "true" })],
                     ),
                   ],
                 ),

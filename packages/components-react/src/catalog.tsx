@@ -1,5 +1,24 @@
 import React from "react";
-import { Check, ChevronDown, Copy, Eye, EyeOff, Search as SearchIcon, X } from "lucide-react";
+import {
+  Check,
+  ChevronDown,
+  ChevronDownCircle,
+  ChevronLeft,
+  ChevronRight,
+  CircleAlert,
+  CircleCheck,
+  Clock,
+  Copy,
+  Ellipsis,
+  Eye,
+  EyeOff,
+  File as FileIcon,
+  LoaderCircle,
+  Search as SearchIcon,
+  Send,
+  Upload,
+  X,
+} from "lucide-react";
 import { classNames } from "./classNames.js";
 
 export type Size = "sm" | "md" | "lg";
@@ -240,7 +259,7 @@ export function Accordion({ items, openIds, defaultOpenIds, open: openAlias, all
               >
                 <span className="st-accordion__title">{item.title}</span>
                 <span className="st-accordion__icon" aria-hidden="true">
-                  {isOpen ? "-" : "+"}
+                  <ChevronDown size={18} strokeWidth={2.25} aria-hidden="true" />
                 </span>
               </button>
             </h3>
@@ -378,6 +397,7 @@ export function ChatComposer({ value = "", placeholder = "Message", submitLabel 
         <div className="st-chatComposer__actions st-chatComposer__actions--left">{children}</div>
         <div className="st-chatComposer__actions st-chatComposer__actions--right">
           <button type="submit" className="st-button st-button--primary st-button--sm">
+            <Send size={16} strokeWidth={2} aria-hidden="true" />
             {submitLabel}
           </button>
         </div>
@@ -507,6 +527,29 @@ export function Combobox({
           }
         }}
       />
+      {(selected || inputValue) ? (
+        <button
+          type="button"
+          className="st-combobox__clear"
+          aria-label="Clear"
+          onClick={() => {
+            setInputValue("");
+            setActiveIndex(-1);
+            onChange?.("");
+          }}
+        >
+          <X size={16} strokeWidth={2.25} aria-hidden="true" />
+        </button>
+      ) : null}
+      <button
+        type="button"
+        className="st-combobox__toggle"
+        aria-label="Toggle options"
+        aria-expanded={open}
+        onClick={() => setOpen(!open)}
+      >
+        <ChevronDown className={classNames("st-combobox__toggleIcon", open && "st-combobox__toggleIcon--open")} size={18} strokeWidth={2.25} aria-hidden="true" />
+      </button>
       {selected ? <span className="st-combobox__value st-visually-hidden">{selected.label}</span> : null}
       {open ? (
         <ul id={listId} className="st-combobox__list" role="listbox" aria-label={text(label) || "Options"}>
@@ -1144,6 +1187,9 @@ export function FileUploader({ label = "Upload", items = [], disabled = false, c
   return (
     <div {...rest} className={classNames("st-fileUploader-field", className)}>
       <div className={classNames("st-fileUploader__dropzone", disabled && "st-fileUploader__dropzone--disabled")}>
+        <span className="st-fileUploader__affordance" aria-hidden="true">
+          <Upload size={18} strokeWidth={2} aria-hidden="true" />
+        </span>
         <span className="st-fileUploader__trigger">{label}</span>
         <input className="st-fileUploader__input" type="file" disabled={disabled} aria-label={text(label)} />
       </div>
@@ -1154,6 +1200,19 @@ export function FileUploader({ label = "Upload", items = [], disabled = false, c
           const sizeLabel = formatFileSize(size);
           return (
             <li key={item.id ?? name ?? index} className={classNames("st-fileUploader__item", item.status && `st-fileUploader__item--${item.status}`)}>
+              <span className="st-fileUploader__itemIcon" aria-hidden="true">
+                {item.status === "uploading" ? (
+                  <span className="st-fileUploader__spinner">
+                    <LoaderCircle size={16} strokeWidth={2} aria-hidden="true" />
+                  </span>
+                ) : item.status === "complete" ? (
+                  <CircleCheck size={16} strokeWidth={2} aria-hidden="true" />
+                ) : item.status === "error" ? (
+                  <CircleAlert size={16} strokeWidth={2} aria-hidden="true" />
+                ) : (
+                  <FileIcon size={16} strokeWidth={2} aria-hidden="true" />
+                )}
+              </span>
               <span className="st-fileUploader__itemName st-fileUploader__name">{name}</span>
               {sizeLabel ? <span className="st-fileUploader__itemSize">{sizeLabel}</span> : null}
               {item.error ? <span className="st-fileUploader__itemError">{item.error}</span> : null}
@@ -2663,7 +2722,7 @@ export function LanguageToggle({ locale = "fr", onLocaleChange, frLabel = "FR", 
       <div className={classNames("st-languageToggle", className)}>
         <button type="button" className="st-languageToggle__accordionTrigger" aria-expanded={open} onClick={() => setOpen((v) => !v)}>
           <span>{accordionLabel}</span>
-          <ChevronDownIcon className={classNames("st-languageToggle__chevron", open && "st-languageToggle__chevron--open")} />
+          <ChevronDown className={classNames("st-languageToggle__chevron", open && "st-languageToggle__chevron--open")} size={16} aria-hidden="true" />
         </button>
         {open ? (
           <div className="st-languageToggle__accordionPanel">
@@ -2900,7 +2959,17 @@ export type InlineLoadingProps = React.HTMLAttributes<HTMLDivElement> & {
 export function InlineLoading({ label = "Loading", status = "active", className, ...rest }: InlineLoadingProps) {
   return (
     <div {...rest} className={classNames("st-inlineLoading", `st-inlineLoading--${status}`, className)}>
-      <span className="st-inlineLoading__spinner" aria-hidden="true" />
+      <span className="st-inlineLoading__icon" aria-hidden="true">
+        {status === "active" ? (
+          <span className="st-inlineLoading__spinner">
+            <LoaderCircle size={16} strokeWidth={2} aria-hidden="true" />
+          </span>
+        ) : status === "success" ? (
+          <CircleCheck size={16} strokeWidth={2} aria-hidden="true" />
+        ) : status === "error" ? (
+          <CircleAlert size={16} strokeWidth={2} aria-hidden="true" />
+        ) : null}
+      </span>
       <span className="st-inlineLoading__label">{label}</span>
     </div>
   );
@@ -3060,7 +3129,7 @@ export function MenuTriggerButton({ open, expanded, type = "button", className, 
   const isOpen = open ?? expanded ?? false;
   return (
     <button {...rest} type={type} className={classNames("st-menuTriggerButton st-button st-button--secondary st-button--sm", className)} aria-expanded={isOpen}>
-      {children}
+      {children ?? <ChevronDownCircle size={18} strokeWidth={2} aria-hidden="true" />}
     </button>
   );
 }
@@ -3209,6 +3278,9 @@ export function MultiSelect({ label, options, value, values, size = "md", open: 
             </span>
           )) : <span className="st-multiSelect__placeholder">Select</span>}
         </span>
+        <span className="st-multiSelect__caret" aria-hidden="true">
+          <ChevronDown className={classNames("st-multiSelect__caretIcon", open && "st-multiSelect__caretIcon--open")} size={18} strokeWidth={2.25} aria-hidden="true" />
+        </span>
       </button>
       {open ? (
         <ul id={listId} className="st-multiSelect__list" role="listbox" aria-label={text(label) || "Options"} aria-multiselectable="true">
@@ -3290,8 +3362,8 @@ export function OverflowMenu({ items, label = "More", open: controlledOpen, dens
   const [open, setOpen] = useControlled(controlledOpen, false);
   return (
     <div {...rest} className={classNames("st-overflowMenu", dense && "st-overflowMenu--dense", className)}>
-      <button type="button" className="st-overflowMenu__trigger" aria-expanded={open} onClick={() => setOpen(!open)}>
-        {label}
+      <button type="button" className="st-overflowMenu__trigger" aria-haspopup="menu" aria-expanded={open} aria-label={text(label)} onClick={() => setOpen(!open)}>
+        <Ellipsis size={18} strokeWidth={2.25} aria-hidden="true" />
       </button>
       {open ? <div className={classNames("st-overflowMenu__list", `st-overflowMenu__list--${placement}`)}><Menu items={items as MenuItem[]} /></div> : null}
     </div>
@@ -3346,7 +3418,15 @@ export function PaginationNav({ page = 1, totalPages, pageCount, previousHref, n
   const pages = totalPages ?? pageCount ?? 1;
   return (
     <nav {...rest} className={classNames("st-paginationNav", className)} aria-label="Pagination navigation">
-      {previousHref ? <a href={previousHref}>Previous</a> : <button type="button" disabled={page <= 1}>Previous</button>}
+      {previousHref ? (
+        <a href={previousHref} className="st-paginationNav__nav" aria-label="Previous">
+          <ChevronLeft size={16} strokeWidth={2} aria-hidden="true" />
+        </a>
+      ) : (
+        <button type="button" className="st-paginationNav__nav" aria-label="Previous" disabled={page <= 1}>
+          <ChevronLeft size={16} strokeWidth={2} aria-hidden="true" />
+        </button>
+      )}
       <ol className="st-paginationNav__list">
         {Array.from({ length: pages }, (_, index) => index + 1).map((item) => (
           <li key={item}>
@@ -3356,7 +3436,15 @@ export function PaginationNav({ page = 1, totalPages, pageCount, previousHref, n
           </li>
         ))}
       </ol>
-      {nextHref ? <a href={nextHref}>Next</a> : <button type="button" disabled={page >= pages}>Next</button>}
+      {nextHref ? (
+        <a href={nextHref} className="st-paginationNav__nav" aria-label="Next">
+          <ChevronRight size={16} strokeWidth={2} aria-hidden="true" />
+        </a>
+      ) : (
+        <button type="button" className="st-paginationNav__nav" aria-label="Next" disabled={page >= pages}>
+          <ChevronRight size={16} strokeWidth={2} aria-hidden="true" />
+        </button>
+      )}
     </nav>
   );
 }
@@ -3447,7 +3535,15 @@ export function ProgressIndicator({ items, orientation = "horizontal", className
     <ol {...rest} className={classNames("st-progressIndicator", `st-progressIndicator--${orientation}`, className)}>
       {items.map((item, index) => (
         <li key={item.id ?? index} className={classNames("st-progressIndicator__step", `st-progressIndicator__step--${item.status ?? "incomplete"}`)}>
-          <span className="st-progressIndicator__indicator">{item.status === "complete" ? "✓" : index + 1}</span>
+          <span className="st-progressIndicator__indicator">
+            {item.status === "complete" ? (
+              <Check size={14} strokeWidth={2} aria-hidden="true" />
+            ) : item.status === "invalid" ? (
+              <X size={14} strokeWidth={2} aria-hidden="true" />
+            ) : (
+              index + 1
+            )}
+          </span>
           <span className="st-progressIndicator__text">
             <span className="st-progressIndicator__label">{item.label}</span>
             {item.description ? <span className="st-progressIndicator__description">{item.description}</span> : null}
@@ -3871,9 +3967,7 @@ export function FilterPill({
           disabled={disabled || undefined}
           onClick={handleRemove}
         >
-          <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
+          <X size={12} strokeWidth={2.5} aria-hidden="true" />
         </button>
       ) : null}
     </span>
@@ -3944,9 +4038,7 @@ export function SelectionChip({ label, count, tone = "neutral", onClear, disable
           disabled={disabled}
           onClick={handleClear}
         >
-          <svg width={11} height={11} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
+          <X size={11} strokeWidth={2.5} aria-hidden="true" />
         </button>
       ) : null}
     </span>
@@ -4857,7 +4949,7 @@ export function TimePicker({
             disabled={disabled}
             onClick={toggleOpen}
           >
-            <ClockIcon size={16} />
+            <Clock size={16} aria-hidden="true" />
           </button>
         </span>
       </div>
@@ -4895,25 +4987,6 @@ export function TimePicker({
     </div>
   );
 }
-function ClockIcon({ size }: { size: number }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <circle cx="12" cy="12" r="10" />
-      <polyline points="12 6 12 12 16 14" />
-    </svg>
-  );
-}
-
 // --- Calendar --------------------------------------------------------------
 /**
  * En mode simple : `string | null` ("YYYY-MM-DD").
@@ -5258,13 +5331,13 @@ export function Calendar({
     <div className={classNames("st-calendar", className)} {...rest}>
       <div className="st-calendar__nav">
         <button type="button" className="st-calendar__navBtn" aria-label={resolvedPrevLabel} onClick={previousMonth}>
-          <ChevronLeftIcon size={18} />
+          <ChevronLeft size={18} aria-hidden="true" />
         </button>
         <span className="st-calendar__monthLabel" aria-live="polite">
           {monthLabel}
         </span>
         <button type="button" className="st-calendar__navBtn" aria-label={resolvedNextLabel} onClick={nextMonth}>
-          <ChevronRightIcon size={18} />
+          <ChevronRight size={18} aria-hidden="true" />
         </button>
       </div>
       <div
@@ -5325,41 +5398,6 @@ export function Calendar({
     </div>
   );
 }
-function ChevronLeftIcon({ size }: { size: number }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <polyline points="15 18 9 12 15 6" />
-    </svg>
-  );
-}
-function ChevronRightIcon({ size }: { size: number }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <polyline points="9 18 15 12 9 6" />
-    </svg>
-  );
-}
-
 // --- SlideIndicator --------------------------------------------------------
 export type SlideIndicatorVariant = "dots" | "bars";
 export type SlideIndicatorProps = Omit<React.HTMLAttributes<HTMLDivElement>, "className" | "onChange"> & {
@@ -5525,12 +5563,12 @@ export function Autosave({
       <span className="st-autosave__icon" aria-hidden="true">
         {status === "saving" ? (
           <span className="st-autosave__spinner">
-            <LoaderCircleIcon size={16} />
+            <LoaderCircle size={16} strokeWidth={2} aria-hidden="true" />
           </span>
         ) : status === "saved" ? (
-          <CircleCheckIcon size={16} />
+          <CircleCheck size={16} strokeWidth={2} aria-hidden="true" />
         ) : status === "error" ? (
-          <CircleAlertIcon size={16} />
+          <CircleAlert size={16} strokeWidth={2} aria-hidden="true" />
         ) : null}
       </span>
       <span className="st-autosave__label">{statusLabel}</span>
@@ -5541,59 +5579,5 @@ export function Autosave({
         </button>
       ) : null}
     </div>
-  );
-}
-function LoaderCircleIcon({ size }: { size: number }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M21 12a9 9 0 1 1-6.219-8.56" />
-    </svg>
-  );
-}
-function CircleCheckIcon({ size }: { size: number }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <circle cx="12" cy="12" r="10" />
-      <path d="m9 12 2 2 4-4" />
-    </svg>
-  );
-}
-function CircleAlertIcon({ size }: { size: number }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <circle cx="12" cy="12" r="10" />
-      <line x1="12" x2="12" y1="8" y2="12" />
-      <line x1="12" x2="12.01" y1="16" y2="16" />
-    </svg>
   );
 }

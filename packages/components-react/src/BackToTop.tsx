@@ -1,4 +1,5 @@
 import React from "react";
+import { ArrowUp } from "lucide-react";
 import { classNames } from "./classNames.js";
 
 export type BackToTopProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "className"> & {
@@ -10,26 +11,6 @@ export type BackToTopProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>,
   smooth?: boolean;
   className?: string;
 };
-
-function ArrowUpIcon(): React.ReactElement {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={16}
-      height={16}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="m5 12 7-7 7 7" />
-      <path d="M12 19V5" />
-    </svg>
-  );
-}
 
 export const BackToTop = React.forwardRef<HTMLButtonElement, BackToTopProps>(
   (
@@ -102,7 +83,7 @@ export const BackToTop = React.forwardRef<HTMLButtonElement, BackToTopProps>(
         disabled={disabled}
       >
         <span className="st-backToTop__icon" aria-hidden="true">
-          <ArrowUpIcon />
+          <ArrowUp size={16} />
         </span>
         <span className="st-backToTop__label">{label}</span>
       </button>

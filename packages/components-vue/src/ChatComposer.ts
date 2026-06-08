@@ -1,4 +1,5 @@
 import { defineComponent, h, ref } from "vue";
+import { Send } from "lucide-vue-next";
 import { classNames } from "./classNames.js";
 
 export type ChatComposerProps = {
@@ -56,7 +57,10 @@ export const ChatComposer = defineComponent({
               h(
                 "button",
                 { type: "submit", class: "st-button st-button--primary st-button--sm" },
-                submitLabel as string,
+                [
+                  h(Send, { size: 16, strokeWidth: 2, "aria-hidden": "true" }),
+                  submitLabel as string,
+                ],
               ),
             ]),
           ]),

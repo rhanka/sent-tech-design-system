@@ -1,5 +1,6 @@
 import { defineComponent, h, ref, watch } from "vue";
 import type { PropType } from "vue";
+import { X } from "lucide-vue-next";
 import { classNames } from "./classNames.js";
 
 export type FilterPillTone = "neutral" | "success" | "warning" | "error" | "info";
@@ -22,26 +23,8 @@ export type FilterPillProps = {
   class?: string;
 };
 
-// Icône X inline (lucide-style)
 function XIcon(size: number) {
-  return h(
-    "svg",
-    {
-      width: size,
-      height: size,
-      viewBox: "0 0 24 24",
-      fill: "none",
-      stroke: "currentColor",
-      "stroke-width": "2.5",
-      "stroke-linecap": "round",
-      "stroke-linejoin": "round",
-      "aria-hidden": "true",
-    },
-    [
-      h("line", { x1: 18, y1: 6, x2: 6, y2: 18 }),
-      h("line", { x1: 6, y1: 6, x2: 18, y2: 18 }),
-    ]
-  );
+  return h(X, { size, strokeWidth: 2.5, "aria-hidden": "true" });
 }
 
 const FOCUSABLE_SELECTOR =
