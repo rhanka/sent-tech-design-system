@@ -1,9 +1,8 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge, type AreaChartDatum } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   // Jeux de données présentés en exemples statiques (le bac à sable interactif
@@ -105,7 +104,6 @@
     </div>
     <p>{t(locale.value, "areaChartIntro")}</p>
   </section>
-  <FrameworkPreview example="areachart" title="Aperçu live" />
 
 
   <!-- Exemples (bascule multi-framework) -->
@@ -125,7 +123,7 @@
     <p class="docs-demo-note">
       {locale.value === "fr" ? "Activité serveur hebdomadaire, axe X par libellés." : "Weekly server activity, label-based X axis."}
     </p>
-    <FrameworkDemo nodes={serverDemo} label={locale.value === "fr" ? "Activité serveur (hebdomadaire)" : "Server activity (weekly)"} />
+    <TabbedExample nodes={serverDemo} title={locale.value === "fr" ? "Activité serveur (hebdomadaire)" : "Server activity (weekly)"} />
 
     <h3 class="docs-demo-title">
       {locale.value === "fr" ? "Lissage Bézier" : "Bezier smoothing"}
@@ -133,7 +131,7 @@
     <p class="docs-demo-note">
       {locale.value === "fr" ? "`smooth` active la courbe Bézier cubique." : "`smooth` enables the cubic Bezier curve."}
     </p>
-    <FrameworkDemo nodes={smoothDemo} label={locale.value === "fr" ? "Ventes mensuelles (k$)" : "Monthly sales (k$)"} />
+    <TabbedExample nodes={smoothDemo} title={locale.value === "fr" ? "Ventes mensuelles (k$)" : "Monthly sales (k$)"} />
 
     <h3 class="docs-demo-title">
       {locale.value === "fr" ? "Axe X numérique" : "Numeric X axis"}
@@ -141,7 +139,7 @@
     <p class="docs-demo-note">
       {locale.value === "fr" ? "Quand tous les `x` sont numériques, l'axe utilise une échelle linéaire." : "When every `x` is numeric, the axis uses a linear scale."}
     </p>
-    <FrameworkDemo nodes={numericDemo} label={locale.value === "fr" ? "Axe X numérique (échelle linéaire)" : "Numeric X axis (linear scale)"} />
+    <TabbedExample nodes={numericDemo} title={locale.value === "fr" ? "Axe X numérique (échelle linéaire)" : "Numeric X axis (linear scale)"} />
   </section>
 
   <!-- Component API Details -->

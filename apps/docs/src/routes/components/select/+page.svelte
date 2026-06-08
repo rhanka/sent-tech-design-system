@@ -1,9 +1,8 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const fr = (frText: string, enText: string) => (locale.value === "fr" ? frText : enText);
@@ -82,7 +81,6 @@
     </p>
   </section>
 
-  <FrameworkPreview example="select" title="Aperçu live" />
 
   <section class="docs-section">
     <h2>{fr("Quand l'utiliser", "When to use")}</h2>
@@ -95,14 +93,14 @@
 
   <section class="docs-section">
     <h2>{t(locale.value, "states")}</h2>
-    <FrameworkDemo nodes={statesDemo} label={t(locale.value, "states")} />
+    <TabbedExample nodes={statesDemo} title={t(locale.value, "states")} />
     <p class="docs-demo-note">{fr("Sélection par défaut", "Default selection")}: <code>forge</code></p>
   </section>
 
   <section class="docs-section">
     <h2>{t(locale.value, "sizes")}</h2>
     <p>{fr("sm (2 rem), md (2,5 rem, défaut), lg (3 rem).", "sm (2 rem), md (2.5 rem, default), lg (3 rem).")}</p>
-    <FrameworkDemo nodes={sizesDemo} label={t(locale.value, "sizes")} />
+    <TabbedExample nodes={sizesDemo} title={t(locale.value, "sizes")} />
   </section>
 
   <section class="docs-section">

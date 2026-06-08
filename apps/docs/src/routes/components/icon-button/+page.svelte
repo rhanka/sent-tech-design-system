@@ -1,9 +1,8 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
@@ -38,13 +37,12 @@
     <p>{t(locale.value, "iconButtonIntro")}</p>
   </section>
 
-  <FrameworkPreview example="iconbutton" title="Aperçu live" />
 
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
-    <FrameworkDemo nodes={variantsDemo} label={t(locale.value, "variants")} />
-    <FrameworkDemo nodes={sizesDemo} label={t(locale.value, "sizes")} />
-    <FrameworkDemo nodes={statesDemo} label={t(locale.value, "states")} />
+    <TabbedExample nodes={variantsDemo} title={t(locale.value, "variants")} />
+    <TabbedExample nodes={sizesDemo} title={t(locale.value, "sizes")} />
+    <TabbedExample nodes={statesDemo} title={t(locale.value, "states")} />
     <p class="docs-demo-note">
       {locale.value === "fr"
         ? "Les icônes sont représentées ici par des glyphes texte pour rester identiques dans les trois frameworks ; en usage réel, injectez une icône (ex. Lucide) en children."

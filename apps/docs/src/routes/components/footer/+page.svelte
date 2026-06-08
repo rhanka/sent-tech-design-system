@@ -1,6 +1,7 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
+  import { getExample } from "$lib/framework/examples";
   import { Badge, Footer, Link } from "@sentropic/design-system-svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 </script>
 
 {#snippet footerBrand()}
@@ -43,7 +44,7 @@
       par le parent. Complète l'app shell (Header + Footer).
     </p>
   </section>
-  <FrameworkPreview example="footer" title="Aperçu live" />
+  <TabbedExample nodes={getExample("footer")?.nodes ?? []} />
 
 
   <section class="docs-section" id="footer-demo">

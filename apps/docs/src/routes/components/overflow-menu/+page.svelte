@@ -1,10 +1,11 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
+  import { getExample } from "$lib/framework/examples";
   import { Badge, OverflowMenu } from "@sentropic/design-system-svelte";
   import type { OverflowMenuItem } from "@sentropic/design-system-svelte";
   import { Pencil, Copy, Share2, Trash2 } from "@lucide/svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   const copy = {
     fr: {
@@ -84,7 +85,7 @@
     </div>
     <p>{text().intro}</p>
   </section>
-  <FrameworkPreview example="overflowmenu" title="Aperçu live" />
+  <TabbedExample nodes={getExample("overflowmenu")?.nodes ?? []} />
 
 
   <section class="docs-section">

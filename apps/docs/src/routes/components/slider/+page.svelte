@@ -1,9 +1,8 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const copy = {
@@ -111,23 +110,22 @@
     </div>
     <p>{text().intro}</p>
   </section>
-  <FrameworkPreview example="slider" title="Aperçu live" />
 
 
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
-    <FrameworkDemo nodes={sizesDemo} label={t(locale.value, "sizes")} />
+    <TabbedExample nodes={sizesDemo} title={t(locale.value, "sizes")} />
 
-    <FrameworkDemo nodes={validationDemo} label={t(locale.value, "validation")} />
+    <TabbedExample nodes={validationDemo} title={t(locale.value, "validation")} />
     <p class="docs-demo-note">
       {locale.value === "fr" ? "Valeur reçue via `onchange`" : "`onchange` payload"}
       : <code>35</code>
     </p>
 
-    <FrameworkDemo nodes={disabledDemo} label={locale.value === "fr" ? "État désactivé" : "Disabled state"} />
+    <TabbedExample nodes={disabledDemo} title={locale.value === "fr" ? "État désactivé" : "Disabled state"} />
 
-    <FrameworkDemo nodes={formattedDemo} label={locale.value === "fr" ? "Affichage formaté" : "Formatted display"} />
+    <TabbedExample nodes={formattedDemo} title={locale.value === "fr" ? "Affichage formaté" : "Formatted display"} />
   </section>
 
   <section class="docs-section">

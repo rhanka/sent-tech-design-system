@@ -2,12 +2,11 @@
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
-  // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
-  // (toute la page bascule, pas seulement le bloc Aperçu live).
+  // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework de
+  // l'onglet actif de chaque exemple (un seul rendu visible à la fois).
   const sizesDemo: NodeSpec[] = [
     { comp: "CopyButton", props: { value: "npm install @sentropic/design-system-svelte", size: "sm", label: "Copier", copiedLabel: "Copié" } },
     { comp: "CopyButton", props: { value: "npm install @sentropic/design-system-svelte", size: "md", label: "Copier", copiedLabel: "Copié" } },
@@ -32,13 +31,12 @@
     </div>
     <p>{t(locale.value, "copyButtonIntro")}</p>
   </section>
-  <FrameworkPreview example="copybutton" title="Aperçu live" />
 
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
-    <FrameworkDemo nodes={sizesDemo} label={t(locale.value, "sizes")} />
-    <FrameworkDemo nodes={valuesDemo} label="Copier différentes valeurs" />
-    <FrameworkDemo nodes={statesDemo} label={t(locale.value, "states")} />
+    <TabbedExample nodes={sizesDemo} title={t(locale.value, "sizes")} />
+    <TabbedExample nodes={valuesDemo} title="Copier différentes valeurs" />
+    <TabbedExample nodes={statesDemo} title={t(locale.value, "states")} />
   </section>
   <section class="docs-section">
     <h2>{t(locale.value, "apiTitle")}</h2>

@@ -1,8 +1,7 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge } from "@sentropic/design-system-svelte";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const copy = {
@@ -106,18 +105,17 @@
     <p>{text().intro}</p>
   </section>
 
-  <FrameworkPreview example="violinchart" title={text().previewTitle} />
 
   <section class="docs-section">
     <h2>{text().examplesTitle}</h2>
 
     <h3 class="docs-demo-title">{text().basicTitle}</h3>
     <p class="docs-demo-note">{text().basicDesc}</p>
-    <FrameworkDemo nodes={basicDemo} label={text().basicTitle} />
+    <TabbedExample nodes={basicDemo} title={text().basicTitle} />
 
     <h3 class="docs-demo-title">{text().quartilesTitle}</h3>
     <p class="docs-demo-note">{text().quartilesDesc}</p>
-    <FrameworkDemo nodes={noQuartilesDemo} label={text().quartilesTitle} />
+    <TabbedExample nodes={noQuartilesDemo} title={text().quartilesTitle} />
   </section>
 
   <section class="docs-section">

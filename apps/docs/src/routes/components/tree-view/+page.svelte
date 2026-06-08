@@ -1,8 +1,9 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
+  import { getExample } from "$lib/framework/examples";
   import { Badge, TreeView, type TreeNode } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   let selected = $state("tokens");
   const nodes: TreeNode[] = [
@@ -49,7 +50,7 @@
       Rôles ARIA <code>tree</code>/<code>treeitem</code> + roving tabindex.
     </p>
   </section>
-  <FrameworkPreview example="treeview" title="Aperçu live" />
+  <TabbedExample nodes={getExample("treeview")?.nodes ?? []} />
 
   <section class="docs-section">
     <h2>Démo</h2>

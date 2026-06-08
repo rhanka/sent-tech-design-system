@@ -1,8 +1,9 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
+  import { getExample } from "$lib/framework/examples";
   import { Badge, LoadingState } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   const fr = (frText: string, enText: string) => (locale.value === "fr" ? frText : enText);
 </script>
@@ -21,7 +22,7 @@
       )}
     </p>
   </section>
-  <FrameworkPreview example="loadingstate" title="Aperçu live" />
+  <TabbedExample nodes={getExample("loadingstate")?.nodes ?? []} />
 
 
   <section class="docs-section">
