@@ -1,0 +1,161 @@
+# Feature: Passe QA systématique tri-framework — page par page
+
+## Objective
+Vérifier CHAQUE page composant du site docs (Svelte / React / Vue) selon les critères de succès
+(voir 02-BRANCH_qa-tri-framework) : pixel-perfect entre les 3 frameworks, aucun bug de z-index/crop,
+centrage/contours/alignement homogènes, aucun bug de sens. Délégué à claude:ds-QA ; conductor = claude:sent-tech-design-system.
+
+## Scope / Guardrails
+- 147 pages composant. 1 Lot = 1 page = vérif Svelte+React+Vue.
+- Statut du Lot : [x] = page vérifiée ET conforme aux 3 critères ; [ ] = à vérifier ou non conforme.
+- Les bugs trouvés sont remontés comme items bug séparés (voir 02-BRANCH) et liés.
+- claude:ds-QA coche au fil de l'eau ; re-import idempotent par claude:sent-tech-design-system.
+
+## Plan / Todo (lot-based)
+- [ ] **Lot accordion — Accordion (svelte+react+vue)**
+- [ ] **Lot alert — Alert (svelte+react+vue)**
+- [ ] **Lot area-chart — Area Chart (svelte+react+vue)**
+- [ ] **Lot aspect-ratio — Aspect Ratio (svelte+react+vue)**
+- [ ] **Lot autosave — Autosave (svelte+react+vue)**
+- [ ] **Lot avatar — Avatar (svelte+react+vue)**
+- [ ] **Lot avatar-group — Avatar Group (svelte+react+vue)**
+- [ ] **Lot back-to-top — Back To Top (svelte+react+vue)**
+- [ ] **Lot badge — Badge (svelte+react+vue)**
+- [ ] **Lot bar-chart — Bar Chart (svelte+react+vue)**
+- [ ] **Lot box-plot-chart — Box Plot Chart (svelte+react+vue)**
+- [ ] **Lot breadcrumb — Breadcrumb (svelte+react+vue)**
+- [ ] **Lot bullet-chart — Bullet Chart (svelte+react+vue)**
+- [ ] **Lot bump-chart — Bump Chart (svelte+react+vue)**
+- [ ] **Lot button — Button (svelte+react+vue)**
+- [ ] **Lot button-group — Button Group (svelte+react+vue)**
+- [ ] **Lot calendar — Calendar (svelte+react+vue)**
+- [ ] **Lot calendar-heatmap-chart — Calendar Heatmap Chart (svelte+react+vue)**
+- [ ] **Lot candlestick-chart — Candlestick Chart (svelte+react+vue)**
+- [ ] **Lot card — Card (svelte+react+vue)**
+- [ ] **Lot chat-composer — Chat Composer (svelte+react+vue)**
+- [ ] **Lot chat-message — Chat Message (svelte+react+vue)**
+- [ ] **Lot chat-thread — Chat Thread (svelte+react+vue)**
+- [ ] **Lot checkbox — Checkbox (svelte+react+vue)**
+- [ ] **Lot checkbox-group — Checkbox Group (svelte+react+vue)**
+- [ ] **Lot chord-diagram — Chord Diagram (svelte+react+vue)**
+- [ ] **Lot code-snippet — Code Snippet (svelte+react+vue)**
+- [ ] **Lot col — Col (svelte+react+vue)**
+- [ ] **Lot collapsible — Collapsible (svelte+react+vue)**
+- [ ] **Lot combo-chart — Combo Chart (svelte+react+vue)**
+- [ ] **Lot combobox — Combobox (svelte+react+vue)**
+- [ ] **Lot container — Container (svelte+react+vue)**
+- [ ] **Lot content-switcher — Content Switcher (svelte+react+vue)**
+- [ ] **Lot copy-button — Copy Button (svelte+react+vue)**
+- [ ] **Lot data-image — Data Image (svelte+react+vue)**
+- [ ] **Lot data-navigation — Data Navigation (svelte+react+vue)**
+- [ ] **Lot data-table — Data Table (svelte+react+vue)**
+- [ ] **Lot date-picker — Date Picker (svelte+react+vue)**
+- [ ] **Lot display-settings — Display Settings (svelte+react+vue)**
+- [ ] **Lot divergent-bar-chart — Divergent Bar Chart (svelte+react+vue)**
+- [ ] **Lot divider — Divider (svelte+react+vue)**
+- [ ] **Lot donut-chart — Donut Chart (svelte+react+vue)**
+- [ ] **Lot drawer — Drawer (svelte+react+vue)**
+- [ ] **Lot dropdown — Dropdown (svelte+react+vue)**
+- [ ] **Lot embed — Embed (svelte+react+vue)**
+- [ ] **Lot empty-state — Empty State (svelte+react+vue)**
+- [ ] **Lot file-uploader — File Uploader (svelte+react+vue)**
+- [ ] **Lot filter-bar — Filter Bar (svelte+react+vue)**
+- [ ] **Lot filter-pill — Filter Pill (svelte+react+vue)**
+- [ ] **Lot flex — Flex (svelte+react+vue)**
+- [ ] **Lot footer — Footer (svelte+react+vue)**
+- [ ] **Lot force-graph — Force Graph (svelte+react+vue)**
+- [ ] **Lot form — Form (svelte+react+vue)**
+- [ ] **Lot form-group — Form Group (svelte+react+vue)**
+- [ ] **Lot forms — Forms (svelte+react+vue)**
+- [ ] **Lot funnel-chart — Funnel Chart (svelte+react+vue)**
+- [ ] **Lot gauge-chart — Gauge Chart (svelte+react+vue)**
+- [ ] **Lot geo-map — Geo Map (svelte+react+vue)**
+- [ ] **Lot header — Header (svelte+react+vue)**
+- [ ] **Lot heatmap-chart — Heatmap Chart (svelte+react+vue)**
+- [ ] **Lot hidden — Hidden (svelte+react+vue)**
+- [ ] **Lot highlight — Highlight (svelte+react+vue)**
+- [ ] **Lot histogram-chart — Histogram Chart (svelte+react+vue)**
+- [ ] **Lot icon-button — Icon Button (svelte+react+vue)**
+- [ ] **Lot inline — Inline (svelte+react+vue)**
+- [ ] **Lot inline-loading — Inline Loading (svelte+react+vue)**
+- [ ] **Lot input — Input (svelte+react+vue)**
+- [ ] **Lot kpi-card — Kpi Card (svelte+react+vue)**
+- [ ] **Lot language-selector — Language Selector (svelte+react+vue)**
+- [ ] **Lot line-chart — Line Chart (svelte+react+vue)**
+- [ ] **Lot link — Link (svelte+react+vue)**
+- [ ] **Lot loading-state — Loading State (svelte+react+vue)**
+- [ ] **Lot lollipop-chart — Lollipop Chart (svelte+react+vue)**
+- [ ] **Lot marimekko-chart — Marimekko Chart (svelte+react+vue)**
+- [ ] **Lot media-content — Media Content (svelte+react+vue)**
+- [ ] **Lot menu — Menu (svelte+react+vue)**
+- [ ] **Lot menu-popover — Menu Popover (svelte+react+vue)**
+- [ ] **Lot menu-trigger-button — Menu Trigger Button (svelte+react+vue)**
+- [ ] **Lot message-actions — Message Actions (svelte+react+vue)**
+- [ ] **Lot message-status-badge — Message Status Badge (svelte+react+vue)**
+- [ ] **Lot modal — Modal (svelte+react+vue)**
+- [ ] **Lot multi-select — Multi Select (svelte+react+vue)**
+- [ ] **Lot notification — Notification (svelte+react+vue)**
+- [ ] **Lot number-input — Number Input (svelte+react+vue)**
+- [ ] **Lot ordered-list — Ordered List (svelte+react+vue)**
+- [ ] **Lot overflow-menu — Overflow Menu (svelte+react+vue)**
+- [ ] **Lot overlays — Overlays (svelte+react+vue)**
+- [ ] **Lot packed-bubbles-chart — Packed Bubbles Chart (svelte+react+vue)**
+- [ ] **Lot pagination — Pagination (svelte+react+vue)**
+- [ ] **Lot pagination-nav — Pagination Nav (svelte+react+vue)**
+- [ ] **Lot parallel-coordinates-chart — Parallel Coordinates Chart (svelte+react+vue)**
+- [ ] **Lot pareto-chart — Pareto Chart (svelte+react+vue)**
+- [ ] **Lot password-input — Password Input (svelte+react+vue)**
+- [ ] **Lot plan-completion — Plan Completion (svelte+react+vue)**
+- [ ] **Lot popover — Popover (svelte+react+vue)**
+- [ ] **Lot popper — Popper (svelte+react+vue)**
+- [ ] **Lot portal — Portal (svelte+react+vue)**
+- [ ] **Lot progress-bar — Progress Bar (svelte+react+vue)**
+- [ ] **Lot progress-indicator — Progress Indicator (svelte+react+vue)**
+- [ ] **Lot quote — Quote (svelte+react+vue)**
+- [ ] **Lot radar-chart — Radar Chart (svelte+react+vue)**
+- [ ] **Lot radio — Radio (svelte+react+vue)**
+- [ ] **Lot radio-group — Radio Group (svelte+react+vue)**
+- [ ] **Lot range-slider — Range Slider (svelte+react+vue)**
+- [ ] **Lot rating — Rating (svelte+react+vue)**
+- [ ] **Lot rose-chart — Rose Chart (svelte+react+vue)**
+- [ ] **Lot row — Row (svelte+react+vue)**
+- [ ] **Lot sankey-chart — Sankey Chart (svelte+react+vue)**
+- [ ] **Lot scatter-plot — Scatter Plot (svelte+react+vue)**
+- [ ] **Lot search — Search (svelte+react+vue)**
+- [ ] **Lot select — Select (svelte+react+vue)**
+- [ ] **Lot selectable-list — Selectable List (svelte+react+vue)**
+- [ ] **Lot selectable-row — Selectable Row (svelte+react+vue)**
+- [ ] **Lot selection-chip — Selection Chip (svelte+react+vue)**
+- [ ] **Lot side-nav — Side Nav (svelte+react+vue)**
+- [ ] **Lot skeleton-text — Skeleton Text (svelte+react+vue)**
+- [ ] **Lot skip-link — Skip Link (svelte+react+vue)**
+- [ ] **Lot slide-indicator — Slide Indicator (svelte+react+vue)**
+- [ ] **Lot slider — Slider (svelte+react+vue)**
+- [ ] **Lot sparkline — Sparkline (svelte+react+vue)**
+- [ ] **Lot stack — Stack (svelte+react+vue)**
+- [ ] **Lot stacked-bar-chart — Stacked Bar Chart (svelte+react+vue)**
+- [ ] **Lot step-line-chart — Step Line Chart (svelte+react+vue)**
+- [ ] **Lot stepper — Stepper (svelte+react+vue)**
+- [ ] **Lot streaming-message — Streaming Message (svelte+react+vue)**
+- [ ] **Lot structured-list — Structured List (svelte+react+vue)**
+- [ ] **Lot sunburst-chart — Sunburst Chart (svelte+react+vue)**
+- [ ] **Lot switch — Switch (svelte+react+vue)**
+- [ ] **Lot table — Table (svelte+react+vue)**
+- [ ] **Lot table-of-contents — Table Of Contents (svelte+react+vue)**
+- [ ] **Lot tabs — Tabs (svelte+react+vue)**
+- [ ] **Lot tag — Tag (svelte+react+vue)**
+- [ ] **Lot textarea — Textarea (svelte+react+vue)**
+- [ ] **Lot tile — Tile (svelte+react+vue)**
+- [ ] **Lot tile-group — Tile Group (svelte+react+vue)**
+- [ ] **Lot time-picker — Time Picker (svelte+react+vue)**
+- [ ] **Lot toast — Toast (svelte+react+vue)**
+- [ ] **Lot toggle — Toggle (svelte+react+vue)**
+- [ ] **Lot toggletip — Toggletip (svelte+react+vue)**
+- [ ] **Lot tooltip — Tooltip (svelte+react+vue)**
+- [ ] **Lot transcription — Transcription (svelte+react+vue)**
+- [ ] **Lot tree-view — Tree View (svelte+react+vue)**
+- [ ] **Lot treemap-chart — Treemap Chart (svelte+react+vue)**
+- [ ] **Lot typography — Typography (svelte+react+vue)**
+- [ ] **Lot unordered-list — Unordered List (svelte+react+vue)**
+- [ ] **Lot violin-chart — Violin Chart (svelte+react+vue)**
+- [ ] **Lot waterfall-chart — Waterfall Chart (svelte+react+vue)**
