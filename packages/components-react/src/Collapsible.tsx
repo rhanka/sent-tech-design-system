@@ -1,4 +1,5 @@
 import React from "react";
+import { ChevronDown } from "lucide-react";
 import { classNames } from "./classNames.js";
 
 export type CollapsibleProps = Omit<React.HTMLAttributes<HTMLDivElement>, "className" | "title"> & {
@@ -40,20 +41,7 @@ export const Collapsible = React.forwardRef<HTMLDivElement, CollapsibleProps>(
         >
           <span className="st-collapsible__title">{title}</span>
           <span className="st-collapsible__icon" aria-hidden="true">
-            <svg
-              width={18}
-              height={18}
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2.25}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              focusable="false"
-              aria-hidden="true"
-            >
-              <path d="m6 9 6 6 6-6" />
-            </svg>
+            <ChevronDown size={18} strokeWidth={2.25} aria-hidden="true" />
           </span>
         </button>
         {open ? (

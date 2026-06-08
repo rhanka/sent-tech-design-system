@@ -1,4 +1,5 @@
 import { defineComponent, h } from "vue";
+import { CircleAlert, CircleCheck, File as FileIcon, LoaderCircle, Upload } from "lucide-vue-next";
 import { classNames } from "./classNames.js";
 
 export type FileUploadStatus = "idle" | "uploading" | "complete" | "error";
@@ -68,6 +69,11 @@ export const FileUploader = defineComponent({
               ),
             },
             [
+              h(
+                "span",
+                { class: "st-fileUploader__affordance", "aria-hidden": "true" },
+                [h(Upload, { size: 18, strokeWidth: 2, "aria-hidden": "true" })],
+              ),
               h("span", { class: "st-fileUploader__trigger" }, props.label),
               h("input", {
                 class: "st-fileUploader__input",
@@ -93,6 +99,21 @@ export const FileUploader = defineComponent({
                   ),
                 },
                 [
+                  h(
+                    "span",
+                    { class: "st-fileUploader__itemIcon", "aria-hidden": "true" },
+                    [
+                      item.status === "uploading"
+                        ? h("span", { class: "st-fileUploader__spinner" }, [
+                            h(LoaderCircle, { size: 16, strokeWidth: 2, "aria-hidden": "true" }),
+                          ])
+                        : item.status === "complete"
+                          ? h(CircleCheck, { size: 16, strokeWidth: 2, "aria-hidden": "true" })
+                          : item.status === "error"
+                            ? h(CircleAlert, { size: 16, strokeWidth: 2, "aria-hidden": "true" })
+                            : h(FileIcon, { size: 16, strokeWidth: 2, "aria-hidden": "true" }),
+                    ],
+                  ),
                   h(
                     "span",
                     { class: "st-fileUploader__itemName st-fileUploader__name" },
