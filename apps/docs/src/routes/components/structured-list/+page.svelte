@@ -1,6 +1,7 @@
 <script lang="ts">
+  import { getExample } from "$lib/framework/examples";
+  import TriRender from "$lib/framework/TriRender.svelte";
   import { Badge, StructuredList, type StructuredListItem } from "@sentropic/design-system-svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   const items: StructuredListItem[] = [
     { key: "Nom", value: "Sentropic Design System" },
@@ -23,7 +24,7 @@
       accepte une chaîne ou un <code>Snippet</code>.
     </p>
   </section>
-  <FrameworkPreview example="structuredlist" title="Aperçu live" />
+  <TriRender nodes={getExample("structuredlist")?.nodes ?? []} label="Aperçu live" />
 
 
   <section class="docs-section">

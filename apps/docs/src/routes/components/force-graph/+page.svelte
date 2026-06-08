@@ -1,5 +1,6 @@
 <script lang="ts">
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import { getExample } from "$lib/framework/examples";
+  import TriRender from "$lib/framework/TriRender.svelte";
   import {
     Badge,
     ForceGraph,
@@ -96,7 +97,7 @@
       <code>prefers-reduced-motion</code>.
     </p>
   </section>
-  <FrameworkPreview example="forcegraph" title="Aperçu live" />
+  <TriRender nodes={getExample("forcegraph")?.nodes ?? []} label="Aperçu live" />
 
 
   <section class="docs-section">
