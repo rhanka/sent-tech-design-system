@@ -1,7 +1,6 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge } from "@sentropic/design-system-svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   // Démo décrite en arbre NodeSpec neutre -> rendue dans le framework actif.
@@ -30,11 +29,10 @@
       (accessibilité). Idéal pour intégrer carte, vidéo ou widget externe.
     </p>
   </section>
-  <FrameworkPreview example="embed" title="Aperçu live" />
 
   <section class="docs-section" id="Introduction">
     <h2>Présentation</h2>
-    <FrameworkDemo nodes={presentationDemo} label="Embed" />
+    <TabbedExample nodes={presentationDemo} title="Embed" />
   </section>
 
   <section class="docs-section" id="API">

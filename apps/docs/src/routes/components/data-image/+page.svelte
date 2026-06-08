@@ -1,7 +1,6 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge } from "@sentropic/design-system-svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   // Démo décrite en arbre NodeSpec neutre -> rendue dans le framework actif.
@@ -33,11 +32,10 @@
       <code>object-fit</code>, dimensions, rayon), en chargement paresseux.
     </p>
   </section>
-  <FrameworkPreview example="dataimage" title="Aperçu live" />
 
   <section class="docs-section" id="Introduction">
     <h2>Présentation</h2>
-    <FrameworkDemo nodes={presentationDemo} label="DataImage" />
+    <TabbedExample nodes={presentationDemo} title="DataImage" />
   </section>
 
   <section class="docs-section" id="API">

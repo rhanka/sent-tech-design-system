@@ -1,8 +1,9 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
+  import { getExample } from "$lib/framework/examples";
   import { Badge, Button, Form, Input } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   const copy = {
     fr: {
@@ -76,7 +77,7 @@
     </div>
     <p>{text().intro}</p>
   </section>
-  <FrameworkPreview example="form" title="Aperçu live" />
+  <TabbedExample nodes={getExample("form")?.nodes ?? []} />
 
 
   <section class="docs-section">

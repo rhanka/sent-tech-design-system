@@ -1,5 +1,6 @@
 <script lang="ts">
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
+  import { getExample } from "$lib/framework/examples";
   import { Badge, TileGroup, type TileGroupItem } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
@@ -25,7 +26,7 @@
       Pour une tuile isolée, voir <code>Tile</code>.
     </p>
   </section>
-  <FrameworkPreview example="tilegroup" title="Aperçu live" />
+  <TabbedExample nodes={getExample("tilegroup")?.nodes ?? []} />
 
   <section class="docs-section">
     <h2>Exemple</h2>

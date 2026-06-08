@@ -1,9 +1,8 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const fr = (frText: string, enText: string) => (locale.value === "fr" ? frText : enText);
@@ -65,7 +64,6 @@
       )}
     </p>
   </section>
-  <FrameworkPreview example="tabs" title="Aperçu live" />
 
 
   <section class="docs-section">
@@ -80,7 +78,7 @@
   <section class="docs-section">
     <h2>{fr("Exemple interactif", "Interactive example")}</h2>
     <p>{fr("Le dernier onglet est désactivé. onchange remonte la valeur sélectionnée.", "The last tab is disabled. onchange reports the selected value.")}</p>
-    <FrameworkDemo nodes={interactiveDemo} label={fr("Sections du projet", "Project sections")} />
+    <TabbedExample nodes={interactiveDemo} title={fr("Sections du projet", "Project sections")} />
     <p class="docs-demo-note">
       {fr(
         "La sélection est interactive dans les trois moteurs ; onchange (Svelte) / onChange (React) / @change (Vue) remonterait la valeur dans une intégration réelle.",
@@ -92,7 +90,7 @@
   <section class="docs-section">
     <h2>{fr("Onglet actif initial", "Initial active tab")}</h2>
     <p>{fr("activeValue fixe l'onglet sélectionné au montage.", "activeValue sets the selected tab on mount.")}</p>
-    <FrameworkDemo nodes={initialDemo} label={fr("Avec onglet initial", "With initial tab")} />
+    <TabbedExample nodes={initialDemo} title={fr("Avec onglet initial", "With initial tab")} />
   </section>
 
   <section class="docs-section">

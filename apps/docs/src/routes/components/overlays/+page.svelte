@@ -1,8 +1,8 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge, Button, Modal } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   // Modal s'ouvre au clic et rend un overlay position:fixed plein écran : aucune
@@ -82,12 +82,12 @@
 
   <section class="docs-section">
     <h2>Tooltip</h2>
-    <FrameworkDemo nodes={tooltipDemo} label="Tooltip" />
+    <TabbedExample nodes={tooltipDemo} title="Tooltip" />
   </section>
 
   <section class="docs-section">
     <h2>OverflowMenu</h2>
-    <FrameworkDemo nodes={overflowDemo} label="OverflowMenu" />
+    <TabbedExample nodes={overflowDemo} title="OverflowMenu" />
     <p class="docs-demo-note">
       {locale.value === "fr"
         ? "Panneau ouvert (open) et figé pour la démonstration."
@@ -97,7 +97,7 @@
 
   <section class="docs-section">
     <h2>{t(locale.value, "feedback")}</h2>
-    <FrameworkDemo nodes={feedbackDemo} label={t(locale.value, "feedback")} />
+    <TabbedExample nodes={feedbackDemo} title={t(locale.value, "feedback")} />
   </section>
 
   <section class="docs-section">

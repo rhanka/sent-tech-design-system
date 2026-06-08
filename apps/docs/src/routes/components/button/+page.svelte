@@ -2,8 +2,7 @@
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const fr = (frText: string, enText: string) => (locale.value === "fr" ? frText : enText);
@@ -54,8 +53,6 @@
     </p>
   </section>
 
-  <FrameworkPreview example="button" title="Aperçu live" />
-
   <section class="docs-section">
     <h2>{fr("Quand l'utiliser", "When to use")}</h2>
     <ul class="docs-list docs-list--plain">
@@ -74,7 +71,7 @@
         "Four variants rank actions: primary (main action), secondary (supporting action), ghost (low-emphasis action), danger (destructive action)."
       )}
     </p>
-    <FrameworkDemo nodes={variantsDemo} label={t(locale.value, "variants")} />
+    <TabbedExample nodes={variantsDemo} title={t(locale.value, "variants")} />
   </section>
 
   <section class="docs-section">
@@ -85,7 +82,7 @@
         "Three sizes: sm (2 rem tall, dense toolbars), md (2.5 rem, default), lg (3 rem, touch targets or hero CTAs)."
       )}
     </p>
-    <FrameworkDemo nodes={sizesDemo} label={t(locale.value, "sizes")} />
+    <TabbedExample nodes={sizesDemo} title={t(locale.value, "sizes")} />
   </section>
 
   <section class="docs-section">
@@ -96,8 +93,8 @@
         "Keyboard focus is always visible (outline or box-shadow depending on theme). The disabled state lowers opacity and blocks the pointer."
       )}
     </p>
-    <FrameworkDemo nodes={disabledDemo} label={fr("Désactivé par variante", "Disabled per variant")} />
-    <FrameworkDemo nodes={asyncDemo} label={fr("Action asynchrone", "Async action")} />
+    <TabbedExample nodes={disabledDemo} title={fr("Désactivé par variante", "Disabled per variant")} />
+    <TabbedExample nodes={asyncDemo} title={fr("Action asynchrone", "Async action")} />
     <p class="docs-demo-note">
       {fr(
         "Pendant une opération asynchrone, désactivez le bouton et changez son libellé pour signaler l'attente.",
@@ -114,7 +111,7 @@
         "Inside a form, pick the right type: submit sends the form, reset clears it, button has no implicit behavior."
       )}
     </p>
-    <FrameworkDemo nodes={typesDemo} label="Form types" />
+    <TabbedExample nodes={typesDemo} title="Form types" />
   </section>
 
   <section class="docs-section">

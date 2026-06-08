@@ -1,9 +1,8 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const copy = {
@@ -105,15 +104,14 @@
     <p>{text().intro}</p>
   </section>
 
-  <FrameworkPreview example="progressbar" title="Aperçu live" />
 
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
-    <FrameworkDemo nodes={statesDemo} label={t(locale.value, "states")} />
-    <FrameworkDemo
+    <TabbedExample nodes={statesDemo} title={t(locale.value, "states")} />
+    <TabbedExample
       nodes={indeterminateDemo}
-      label={locale.value === "fr" ? "État indéterminé" : "Indeterminate state"}
+      title={locale.value === "fr" ? "État indéterminé" : "Indeterminate state"}
     />
   </section>
 

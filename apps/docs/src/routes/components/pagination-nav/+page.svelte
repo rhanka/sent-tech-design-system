@@ -1,9 +1,8 @@
 <script lang="ts">
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
@@ -64,32 +63,31 @@
     </div>
     <p>{t(locale.value, "paginationNavIntro")}</p>
   </section>
-  <FrameworkPreview example="paginationnav" title="Aperçu live" />
 
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
-    <FrameworkDemo
+    <TabbedExample
       nodes={shortDemo}
-      label={locale.value === "fr" ? "Pagination courte" : "Short pagination"}
+      title={locale.value === "fr" ? "Pagination courte" : "Short pagination"}
     />
     <p class="docs-demo-note">
       {locale.value === "fr" ? "Page courante figée" : "Frozen current page"} : <code>1</code>
       · {locale.value === "fr" ? "« Précédent » désactivé à la borne" : "“Previous” disabled at the boundary"}
     </p>
 
-    <FrameworkDemo
+    <TabbedExample
       nodes={longDemo}
-      label={locale.value === "fr" ? "Pagination longue avec ellipses" : "Long pagination with ellipses"}
+      title={locale.value === "fr" ? "Pagination longue avec ellipses" : "Long pagination with ellipses"}
     />
     <p class="docs-demo-note">
       {locale.value === "fr" ? "Page courante figée" : "Frozen current page"} : <code>12</code>
       · {locale.value === "fr" ? "ellipses automatiques aux extrémités" : "automatic ellipses at the ends"}
     </p>
 
-    <FrameworkDemo
+    <TabbedExample
       nodes={compactDemo}
-      label={locale.value === "fr" ? "Bornes désactivées" : "Disabled boundaries"}
+      title={locale.value === "fr" ? "Bornes désactivées" : "Disabled boundaries"}
     />
     <p class="docs-demo-note">
       {locale.value === "fr" ? "Page courante figée" : "Frozen current page"} : <code>1</code>

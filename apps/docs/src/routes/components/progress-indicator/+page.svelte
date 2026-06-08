@@ -1,9 +1,8 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const horizontalSteps = [
@@ -45,20 +44,19 @@
     </div>
     <p>{t(locale.value, "progressIndicatorIntro")}</p>
   </section>
-  <FrameworkPreview example="progressindicator" title="Aperçu live" />
 
 
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
-    <FrameworkDemo
+    <TabbedExample
       nodes={horizontalDemo}
-      label={locale.value === "fr" ? "Orientation horizontale" : "Horizontal orientation"}
+      title={locale.value === "fr" ? "Orientation horizontale" : "Horizontal orientation"}
     />
 
-    <FrameworkDemo
+    <TabbedExample
       nodes={verticalDemo}
-      label={locale.value === "fr" ? "Orientation verticale" : "Vertical orientation"}
+      title={locale.value === "fr" ? "Orientation verticale" : "Vertical orientation"}
     />
   </section>
 

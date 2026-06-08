@@ -1,5 +1,6 @@
 <script lang="ts">
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
+  import { getExample } from "$lib/framework/examples";
   import {
     Badge,
     ForceGraph,
@@ -96,7 +97,7 @@
       <code>prefers-reduced-motion</code>.
     </p>
   </section>
-  <FrameworkPreview example="forcegraph" title="Aperçu live" />
+  <TabbedExample nodes={getExample("forcegraph")?.nodes ?? []} />
 
 
   <section class="docs-section">

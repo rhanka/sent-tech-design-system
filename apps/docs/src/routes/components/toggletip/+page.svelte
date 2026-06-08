@@ -1,9 +1,8 @@
 <script lang="ts">
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const copy = {
@@ -122,22 +121,21 @@
     </div>
     <p>{text().intro}</p>
   </section>
-  <FrameworkPreview example="toggletip" title="Aperçu live" />
 
 
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
-    <FrameworkDemo nodes={labelDemo} label={text().labelLabel} />
+    <TabbedExample nodes={labelDemo} title={text().labelLabel} />
     <p class="docs-demo-note">
       {locale.value === "fr"
         ? "État fermé par défaut : cliquez le déclencheur pour ouvrir la bulle (open est bindable)."
         : "Closed by default: click the trigger to open the bubble (open is bindable)."}
     </p>
 
-    <FrameworkDemo nodes={placementDemo} label={text().placementLabel} />
+    <TabbedExample nodes={placementDemo} title={text().placementLabel} />
 
-    <FrameworkDemo nodes={inlineDemo} label={text().inlineLabel} />
+    <TabbedExample nodes={inlineDemo} title={text().inlineLabel} />
     <p class="docs-demo-note">
       {locale.value === "fr"
         ? "Sans slot children, le déclencheur s’affiche seul (icône « i » en Svelte, texte label en React/Vue)."

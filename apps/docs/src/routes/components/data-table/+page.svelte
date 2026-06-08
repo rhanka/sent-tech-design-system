@@ -1,9 +1,8 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge, type DataTableColumn, type DataTableRow } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const copy = {
@@ -113,22 +112,21 @@
     </div>
     <p>{text().intro}</p>
   </section>
-  <FrameworkPreview example="datatable" title="Aperçu live" />
 
 
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
     <h3 class="docs-demo-title">{text().basicCaption}</h3>
-    <FrameworkDemo
+    <TabbedExample
       nodes={basicDemo}
-      label={locale.value === "fr" ? "Tableau de base" : "Basic data table"}
+      title={locale.value === "fr" ? "Tableau de base" : "Basic data table"}
     />
 
     <h3 class="docs-demo-title">{text().interactiveCaption}</h3>
-    <FrameworkDemo
+    <TabbedExample
       nodes={pagedDemo}
-      label={locale.value === "fr" ? "Tableau paginé" : "Paged data table"}
+      title={locale.value === "fr" ? "Tableau paginé" : "Paged data table"}
     />
     <p class="docs-demo-note">
       {locale.value === "fr"

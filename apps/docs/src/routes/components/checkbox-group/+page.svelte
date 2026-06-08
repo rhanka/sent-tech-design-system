@@ -1,9 +1,8 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const fr = $derived(locale.value === "fr");
@@ -53,12 +52,11 @@
     </p>
   </section>
 
-  <FrameworkPreview example="checkbox-group" title={fr ? "Aperçu live" : "Live preview"} />
 
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
-    <FrameworkDemo nodes={verticalDemo} label={fr ? "Vertical (par défaut)" : "Vertical (default)"} />
-    <FrameworkDemo nodes={horizontalDemo} label={fr ? "orientation=\"horizontal\"" : "orientation=\"horizontal\""} />
+    <TabbedExample nodes={verticalDemo} title={fr ? "Vertical (par défaut)" : "Vertical (default)"} />
+    <TabbedExample nodes={horizontalDemo} title={fr ? "orientation=\"horizontal\"" : "orientation=\"horizontal\""} />
   </section>
 
   <section class="docs-section">

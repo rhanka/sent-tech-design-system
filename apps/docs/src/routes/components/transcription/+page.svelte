@@ -1,7 +1,6 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge } from "@sentropic/design-system-svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
@@ -43,12 +42,11 @@
       accessible, avec options horodatage et speaker.
     </p>
   </section>
-  <FrameworkPreview example="transcription" title="Aperçu live" />
 
 
   <section class="docs-section" id="Introduction">
     <h2>Présentation</h2>
-    <FrameworkDemo nodes={presentationDemo} label="Transcription" />
+    <TabbedExample nodes={presentationDemo} title="Transcription" />
     <p class="docs-demo-note">
       L’accordéon est ouvert (<code>open</code>) pour la démonstration.
     </p>

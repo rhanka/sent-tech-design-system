@@ -1,9 +1,8 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
@@ -104,14 +103,13 @@
     </div>
     <p>{t(locale.value, "fileUploaderIntro")}</p>
   </section>
-  <FrameworkPreview example="fileuploader" title="Aperçu live" />
 
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
-    <FrameworkDemo
+    <TabbedExample
       nodes={dropzoneDemo}
-      label={locale.value === "fr" ? "Zone de dépôt vide" : "Empty dropzone"}
+      title={locale.value === "fr" ? "Zone de dépôt vide" : "Empty dropzone"}
     />
     <p class="docs-example__caption">
       {locale.value === "fr"
@@ -119,18 +117,18 @@
         : "File selection (click, drag-and-drop) is interactive on the real page; the demo is frozen empty."}
     </p>
 
-    <FrameworkDemo
+    <TabbedExample
       nodes={statusesDemo}
-      label={locale.value === "fr" ? "Liste de fichiers avec statuts" : "File list with statuses"}
+      title={locale.value === "fr" ? "Liste de fichiers avec statuts" : "File list with statuses"}
     />
     <p class="docs-example__caption">
       {locale.value === "fr" ? "Statuts visibles" : "Visible statuses"} :
       <code>idle, uploading, complete, error</code>
     </p>
 
-    <FrameworkDemo
+    <TabbedExample
       nodes={singleDemo}
-      label={locale.value === "fr" ? "Mode fichier unique" : "Single file mode"}
+      title={locale.value === "fr" ? "Mode fichier unique" : "Single file mode"}
     />
     <p class="docs-example__caption">
       {locale.value === "fr"
@@ -138,9 +136,9 @@
         : "Single file mode: `multiple` is false and any new selection replaces the previous one."}
     </p>
 
-    <FrameworkDemo
+    <TabbedExample
       nodes={disabledDemo}
-      label={locale.value === "fr" ? "État désactivé" : "Disabled state"}
+      title={locale.value === "fr" ? "État désactivé" : "Disabled state"}
     />
     <p class="docs-example__caption">
       {locale.value === "fr"

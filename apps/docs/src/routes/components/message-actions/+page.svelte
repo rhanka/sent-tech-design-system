@@ -1,8 +1,9 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
+  import { getExample } from "$lib/framework/examples";
   import { Badge, MessageActions, type MessageAction } from "@sentropic/design-system-svelte";
   import { Copy, Pencil, RefreshCw, ThumbsDown, ThumbsUp, Trash2 } from "@lucide/svelte";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   const copy = {
     fr: {
@@ -101,7 +102,7 @@
     </div>
     <p>{text().intro}</p>
   </section>
-  <FrameworkPreview example="messageactions" title="Aperçu live" />
+  <TabbedExample nodes={getExample("messageactions")?.nodes ?? []} />
 
 
   <section class="docs-section">

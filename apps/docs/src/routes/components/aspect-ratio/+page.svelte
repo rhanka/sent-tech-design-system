@@ -1,6 +1,7 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
+  import { getExample } from "$lib/framework/examples";
   import { AspectRatio, Badge } from "@sentropic/design-system-svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 </script>
 
 <div class="docs-page">
@@ -16,7 +17,7 @@
       remplit la boîte.
     </p>
   </section>
-  <FrameworkPreview example="aspectratio" title="Aperçu live" />
+  <TabbedExample nodes={getExample("aspectratio")?.nodes ?? []} />
 
 
   <section class="docs-section">

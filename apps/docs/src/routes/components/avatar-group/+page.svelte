@@ -1,9 +1,8 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const fr = $derived(locale.value === "fr");
@@ -45,12 +44,11 @@
     </p>
   </section>
 
-  <FrameworkPreview example="avatar-group" title={fr ? "Aperçu live" : "Live preview"} />
 
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
-    <FrameworkDemo nodes={overflowDemo} label={fr ? "max=3, total=8" : "max=3, total=8"} />
-    <FrameworkDemo nodes={sizeDemo} label={fr ? "size=\"sm\"" : "size=\"sm\""} />
+    <TabbedExample nodes={overflowDemo} title={fr ? "max=3, total=8" : "max=3, total=8"} />
+    <TabbedExample nodes={sizeDemo} title={fr ? "size=\"sm\"" : "size=\"sm\""} />
   </section>
 
   <section class="docs-section">

@@ -1,8 +1,9 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
+  import { getExample } from "$lib/framework/examples";
   import { Badge, Header, type HeaderAccount } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   // Identités de démonstration pour les deux variantes d'état connecté.
   const accountWithPhoto: HeaderAccount = {
@@ -86,7 +87,7 @@
       <strong>toujours le nom</strong> (jamais un carré sans libellé).
     </p>
   </section>
-  <FrameworkPreview example="header" title="Aperçu live" />
+  <TabbedExample nodes={getExample("header")?.nodes ?? []} />
 
   <section class="docs-section">
     <h2>Header complet</h2>

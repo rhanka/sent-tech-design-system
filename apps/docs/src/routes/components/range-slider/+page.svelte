@@ -1,9 +1,8 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const copy = {
@@ -122,16 +121,15 @@
     </div>
     <p>{text().intro}</p>
   </section>
-  <FrameworkPreview example="rangeslider" title="Aperçu live" />
 
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
-    <FrameworkDemo nodes={sizesDemo} label={t(locale.value, "sizes")} />
+    <TabbedExample nodes={sizesDemo} title={t(locale.value, "sizes")} />
 
-    <FrameworkDemo nodes={steppedDemo} label={locale.value === "fr" ? "Pas personnalisé" : "Custom step"} />
+    <TabbedExample nodes={steppedDemo} title={locale.value === "fr" ? "Pas personnalisé" : "Custom step"} />
 
-    <FrameworkDemo nodes={disabledDemo} label={locale.value === "fr" ? "État désactivé" : "Disabled state"} />
+    <TabbedExample nodes={disabledDemo} title={locale.value === "fr" ? "État désactivé" : "Disabled state"} />
   </section>
 
   <section class="docs-section">

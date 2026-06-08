@@ -1,8 +1,7 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge } from "@sentropic/design-system-svelte";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const copy = {
@@ -113,22 +112,21 @@
     <p>{text().intro}</p>
   </section>
 
-  <FrameworkPreview example="selectionchip" title={text().previewTitle} />
 
   <section class="docs-section">
     <h2>{text().examplesTitle}</h2>
 
     <h3 class="docs-demo-title">{text().tonesTitle}</h3>
     <p class="docs-demo-note">{text().tonesDesc}</p>
-    <FrameworkDemo nodes={tonesDemo} label={text().tonesTitle} />
+    <TabbedExample nodes={tonesDemo} title={text().tonesTitle} />
 
     <h3 class="docs-demo-title">{text().withCountTitle}</h3>
     <p class="docs-demo-note">{text().withCountDesc}</p>
-    <FrameworkDemo nodes={withCountDemo} label={text().withCountTitle} />
+    <TabbedExample nodes={withCountDemo} title={text().withCountTitle} />
 
     <h3 class="docs-demo-title">{text().disabledTitle}</h3>
     <p class="docs-demo-note">{text().disabledDesc}</p>
-    <FrameworkDemo nodes={disabledDemo} label={text().disabledTitle} />
+    <TabbedExample nodes={disabledDemo} title={text().disabledTitle} />
   </section>
 
   <section class="docs-section">

@@ -1,9 +1,8 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
@@ -40,12 +39,11 @@
       état <code>selected</code> bindable).
     </p>
   </section>
-  <FrameworkPreview example="tile" title="Aperçu live" />
 
 
   <section class="docs-section" id="tile">
     <h2>Variantes</h2>
-    <FrameworkDemo nodes={variantsDemo} label="Variantes" />
+    <TabbedExample nodes={variantsDemo} title="Variantes" />
     <p class="docs-demo-note">
       L’état <code>selected</code> est <code>bindable</code> : ici figé pour la
       démonstration (la deuxième tuile sélectionnable est cochée par défaut).

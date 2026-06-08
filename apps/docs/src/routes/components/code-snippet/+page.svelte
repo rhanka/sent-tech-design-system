@@ -1,6 +1,7 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
+  import { getExample } from "$lib/framework/examples";
   import { Badge, CodeSnippet } from "@sentropic/design-system-svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   const block = `import { Button } from "@sentropic/design-system-svelte";\n\n<Button variant="primary">Envoyer</Button>`;
 </script>
@@ -17,7 +18,7 @@
       S'appuie sur <code>CopyButton</code> pour la copie.
     </p>
   </section>
-  <FrameworkPreview example="codesnippet" title="Aperçu live" />
+  <TabbedExample nodes={getExample("codesnippet")?.nodes ?? []} />
 
 
   <section class="docs-section">

@@ -1,8 +1,8 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge } from "@sentropic/design-system-svelte";
   import { locale } from "$lib/locale.svelte";
   import { t } from "$lib/i18n";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
@@ -34,7 +34,7 @@
       Le bouton est positionné en bas à droite et caché tant que la position de
       défilement est inférieure au seuil configuré.
     </p>
-    <FrameworkDemo nodes={presentationDemo} label="BackToTop" />
+    <TabbedExample nodes={presentationDemo} title="BackToTop" />
   </section>
 
   <section class="docs-section" id="Fonctionnement">
@@ -42,7 +42,7 @@
     <p class="docs-field">
       L’exemple suivant montre le composant avec un seuil personnalisé (100 px).
     </p>
-    <FrameworkDemo nodes={fonctionnementDemo} label="BackToTop seuil 100" />
+    <TabbedExample nodes={fonctionnementDemo} title="BackToTop seuil 100" />
     <p class="docs-demo-context">
       Sur la page réelle, faites défiler pour le voir apparaître puis retournez en
       haut en un clic. Le composant est <code>position: fixed</code> : son

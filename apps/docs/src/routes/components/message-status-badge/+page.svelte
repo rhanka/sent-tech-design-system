@@ -1,8 +1,9 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
+  import { getExample } from "$lib/framework/examples";
   import { MessageStatusBadge, type ChatMessageStatus } from "@sentropic/design-system-svelte";
   import { Badge } from "@sentropic/design-system-svelte";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
   import { t } from "$lib/i18n";
 
   const copy = {
@@ -49,7 +50,7 @@
     </div>
     <p>{text().intro}</p>
   </section>
-  <FrameworkPreview example="messagestatusbadge" title="Aperçu live" />
+  <TabbedExample nodes={getExample("messagestatusbadge")?.nodes ?? []} />
 
 
   <section class="docs-section">

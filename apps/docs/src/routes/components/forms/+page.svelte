@@ -1,8 +1,8 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const copy = {
@@ -197,19 +197,19 @@
 
   <section class="docs-section">
     <h2>{text().inputSection}</h2>
-    <FrameworkDemo nodes={inputStatesDemo} label={text().inputSection} />
-    <FrameworkDemo nodes={inputVariantsDemo} label={text().variants} />
+    <TabbedExample nodes={inputStatesDemo} title={text().inputSection} />
+    <TabbedExample nodes={inputVariantsDemo} title={text().variants} />
   </section>
 
   <section class="docs-section">
     <h2>{text().textareaSection}</h2>
-    <FrameworkDemo nodes={textareaDemo} label={text().textareaSection} />
+    <TabbedExample nodes={textareaDemo} title={text().textareaSection} />
   </section>
 
   <section class="docs-section">
     <h2>{text().selectSection}</h2>
-    <FrameworkDemo nodes={selectStatesDemo} label={text().selectSection} />
-    <FrameworkDemo nodes={selectVariantsDemo} label={text().variants} />
+    <TabbedExample nodes={selectStatesDemo} title={text().selectSection} />
+    <TabbedExample nodes={selectVariantsDemo} title={text().variants} />
     <p class="docs-note">
       {text().notePrefix} {text().noDedicatedValid}
     </p>
@@ -217,22 +217,22 @@
 
   <section class="docs-section">
     <h2>{text().checkboxSection}</h2>
-    <FrameworkDemo nodes={checkboxDemo} label={text().checkboxSection} />
+    <TabbedExample nodes={checkboxDemo} title={text().checkboxSection} />
   </section>
 
   <section class="docs-section">
     <h2>{text().radioSection}</h2>
-    <FrameworkDemo nodes={radioDemo} label={text().radioSection} />
+    <TabbedExample nodes={radioDemo} title={text().radioSection} />
   </section>
 
   <section class="docs-section">
     <h2>{text().switchSection}</h2>
-    <FrameworkDemo nodes={switchDemo} label={text().switchSection} />
+    <TabbedExample nodes={switchDemo} title={text().switchSection} />
   </section>
 
   <section class="docs-section">
     <h2>{text().alertSection}</h2>
-    <FrameworkDemo nodes={alertDemo} label={text().alertSection} />
+    <TabbedExample nodes={alertDemo} title={text().alertSection} />
     <p class="docs-note">
       {text().notePrefix} {text().noteAlert}
     </p>
@@ -286,9 +286,9 @@
     margin: 0;
   }
 
-  /* Les sous-titres d'état sont désormais rendus dans .docs-example (markup global
-     porté par FrameworkDemo) : on cible donc en :global. */
-  :global(.docs-page .docs-example h3) {
+  /* Les sous-titres d'état sont rendus dans le wrapper de rendu de TabbedExample
+     (.tex__render, markup global) : on cible donc en :global. */
+  :global(.docs-page .tex__render h3) {
     font-size: 0.9rem;
     margin: 0;
   }

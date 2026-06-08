@@ -1,7 +1,6 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge, type ScatterPlotDatum } from "@sentropic/design-system-svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const data: ScatterPlotDatum[] = [
@@ -38,12 +37,11 @@
       liste accessible des coordonnées hors SVG.
     </p>
   </section>
-  <FrameworkPreview example="scatterplot" title="Aperçu live" />
 
 
   <section class="docs-section">
     <h2>Exemple</h2>
-    <FrameworkDemo nodes={exampleDemo} label="Corrélation démo" />
+    <TabbedExample nodes={exampleDemo} title="Corrélation démo" />
   </section>
 
   <section class="docs-section">

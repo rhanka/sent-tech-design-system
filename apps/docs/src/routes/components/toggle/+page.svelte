@@ -1,9 +1,8 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const copy = {
@@ -56,20 +55,19 @@
     <p>{text().intro}</p>
   </section>
 
-  <FrameworkPreview example="toggle" title="Aperçu live" />
 
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
-    <FrameworkDemo nodes={variantsDemo} label={t(locale.value, "variants")} />
+    <TabbedExample nodes={variantsDemo} title={t(locale.value, "variants")} />
     <p class="docs-demo-note">
       {locale.value === "fr" ? "Notifications" : "Notifications"} : <code>Off</code>
       · {locale.value === "fr" ? "Mode compact" : "Compact mode"} : <code>On</code>
     </p>
 
-    <FrameworkDemo
+    <TabbedExample
       nodes={customLabelsDemo}
-      label={locale.value === "fr" ? "Libellés personnalisés" : "Custom labels"}
+      title={locale.value === "fr" ? "Libellés personnalisés" : "Custom labels"}
     />
     <p class="docs-demo-note">
       {locale.value === "fr" ? "État actuel" : "Current state"} :

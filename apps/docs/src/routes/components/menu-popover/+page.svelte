@@ -1,9 +1,8 @@
 <script lang="ts">
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
-  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const fr = (frText: string, enText: string) => (locale.value === "fr" ? frText : enText);
@@ -77,7 +76,6 @@
       )}
     </p>
   </section>
-  <FrameworkPreview example="menupopover" title="Aperçu live" />
 
 
   <section class="docs-section">
@@ -101,7 +99,7 @@
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
-    <FrameworkDemo nodes={actionsDemo} label="MenuPopover + Menu" />
+    <TabbedExample nodes={actionsDemo} title="MenuPopover + Menu" />
     <p class="docs-demo-note">
       {fr(
         "Sur la page réelle, MenuTriggerButton ouvre/ferme le panneau ancré et le choix d'une action le referme. La démo le montre figé ouvert.",
@@ -109,7 +107,7 @@
       )}
     </p>
 
-    <FrameworkDemo nodes={placementsDemo} label="Placements" />
+    <TabbedExample nodes={placementsDemo} title="Placements" />
     <p class="docs-demo-note">
       {fr(
         "Les quatre placements (bottom-start, bottom-end, top-start, top-end), tous figés ouverts.",
