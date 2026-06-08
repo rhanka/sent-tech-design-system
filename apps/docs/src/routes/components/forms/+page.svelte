@@ -2,7 +2,7 @@
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import TriRender from "$lib/framework/TriRender.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const copy = {
@@ -197,19 +197,19 @@
 
   <section class="docs-section">
     <h2>{text().inputSection}</h2>
-    <TriRender nodes={inputStatesDemo} label={text().inputSection} />
-    <TriRender nodes={inputVariantsDemo} label={text().variants} />
+    <FrameworkDemo nodes={inputStatesDemo} label={text().inputSection} />
+    <FrameworkDemo nodes={inputVariantsDemo} label={text().variants} />
   </section>
 
   <section class="docs-section">
     <h2>{text().textareaSection}</h2>
-    <TriRender nodes={textareaDemo} label={text().textareaSection} />
+    <FrameworkDemo nodes={textareaDemo} label={text().textareaSection} />
   </section>
 
   <section class="docs-section">
     <h2>{text().selectSection}</h2>
-    <TriRender nodes={selectStatesDemo} label={text().selectSection} />
-    <TriRender nodes={selectVariantsDemo} label={text().variants} />
+    <FrameworkDemo nodes={selectStatesDemo} label={text().selectSection} />
+    <FrameworkDemo nodes={selectVariantsDemo} label={text().variants} />
     <p class="docs-note">
       {text().notePrefix} {text().noDedicatedValid}
     </p>
@@ -217,22 +217,22 @@
 
   <section class="docs-section">
     <h2>{text().checkboxSection}</h2>
-    <TriRender nodes={checkboxDemo} label={text().checkboxSection} />
+    <FrameworkDemo nodes={checkboxDemo} label={text().checkboxSection} />
   </section>
 
   <section class="docs-section">
     <h2>{text().radioSection}</h2>
-    <TriRender nodes={radioDemo} label={text().radioSection} />
+    <FrameworkDemo nodes={radioDemo} label={text().radioSection} />
   </section>
 
   <section class="docs-section">
     <h2>{text().switchSection}</h2>
-    <TriRender nodes={switchDemo} label={text().switchSection} />
+    <FrameworkDemo nodes={switchDemo} label={text().switchSection} />
   </section>
 
   <section class="docs-section">
     <h2>{text().alertSection}</h2>
-    <TriRender nodes={alertDemo} label={text().alertSection} />
+    <FrameworkDemo nodes={alertDemo} label={text().alertSection} />
     <p class="docs-note">
       {text().notePrefix} {text().noteAlert}
     </p>
@@ -287,7 +287,7 @@
   }
 
   /* Les sous-titres d'état sont désormais rendus dans .docs-example (markup global
-     porté par TriRender) : on cible donc en :global. */
+     porté par FrameworkDemo) : on cible donc en :global. */
   :global(.docs-page .docs-example h3) {
     font-size: 0.9rem;
     margin: 0;

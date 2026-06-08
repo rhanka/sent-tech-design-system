@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { getExample } from "$lib/framework/examples";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import TriRender from "$lib/framework/TriRender.svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const fr = (frText: string, enText: string) => (locale.value === "fr" ? frText : enText);
@@ -65,7 +65,7 @@
     </p>
   </section>
 
-  <TriRender nodes={getExample("alert")?.nodes ?? []} label="Aperçu live" />
+  <FrameworkPreview example="alert" title="Aperçu live" />
 
   <section class="docs-section">
     <h2>{fr("Quand l'utiliser", "When to use")}</h2>
@@ -79,13 +79,13 @@
   <section class="docs-section">
     <h2>{fr("Tonalités", "Tones")}</h2>
     <p>{fr("Quatre tonalités, marquées par un filet coloré à gauche.", "Four tones, marked by a colored left rule.")}</p>
-    <TriRender nodes={tonesDemo} label={fr("Tonalités", "Tones")} />
+    <FrameworkDemo nodes={tonesDemo} label={fr("Tonalités", "Tones")} />
   </section>
 
   <section class="docs-section">
     <h2>{fr("Avec actions", "With actions")}</h2>
     <p>{fr("La zone actions (snippet) accueille des boutons à droite du message.", "The actions slot (snippet) hosts buttons to the right of the message.")}</p>
-    <TriRender nodes={actionsDemo} label={fr("Avec actions", "With actions")} />
+    <FrameworkDemo nodes={actionsDemo} label={fr("Avec actions", "With actions")} />
     <p class="docs-demo-note">
       {fr(
         "La zone actions est un Snippet dédié (à droite du message). Cette démo neutre rend le bouton via children pour rester identique dans les trois frameworks ; en usage réel, passez-le à la prop actions.",
@@ -97,7 +97,7 @@
   <section class="docs-section">
     <h2>{fr("Titre seul", "Title only")}</h2>
     <p>{fr("Le message est optionnel : un titre suffit pour une alerte courte.", "The message is optional: a title alone works for a short alert.")}</p>
-    <TriRender nodes={titleOnlyDemo} label={fr("Titre seul", "Title only")} />
+    <FrameworkDemo nodes={titleOnlyDemo} label={fr("Titre seul", "Title only")} />
   </section>
 
   <section class="docs-section">

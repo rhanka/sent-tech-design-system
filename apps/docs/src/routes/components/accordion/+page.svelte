@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { getExample } from "$lib/framework/examples";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import TriRender from "$lib/framework/TriRender.svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const copy = {
@@ -129,7 +129,7 @@
     </div>
     <p>{text().intro}</p>
   </section>
-  <TriRender nodes={getExample("accordion")?.nodes ?? []} label="Aperçu live" />
+  <FrameworkPreview example="accordion" title="Aperçu live" />
 
 
   <section class="docs-section">
@@ -144,14 +144,14 @@
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
-    <TriRender nodes={multipleDemo} label={text().multipleLabel} />
+    <FrameworkDemo nodes={multipleDemo} label={text().multipleLabel} />
     <p class="docs-demo-note">
       {text().openLabel}: <code>billing, support</code>
     </p>
 
-    <TriRender nodes={sizesDemo} label={t(locale.value, "sizes")} />
+    <FrameworkDemo nodes={sizesDemo} label={t(locale.value, "sizes")} />
 
-    <TriRender nodes={stateDemo} label={text().stateLabel} />
+    <FrameworkDemo nodes={stateDemo} label={text().stateLabel} />
   </section>
 
   <section class="docs-section">

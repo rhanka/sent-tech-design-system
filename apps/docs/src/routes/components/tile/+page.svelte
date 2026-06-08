@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { getExample } from "$lib/framework/examples";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import TriRender from "$lib/framework/TriRender.svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
@@ -40,12 +40,12 @@
       état <code>selected</code> bindable).
     </p>
   </section>
-  <TriRender nodes={getExample("tile")?.nodes ?? []} label="Aperçu live" />
+  <FrameworkPreview example="tile" title="Aperçu live" />
 
 
   <section class="docs-section" id="tile">
     <h2>Variantes</h2>
-    <TriRender nodes={variantsDemo} label="Variantes" />
+    <FrameworkDemo nodes={variantsDemo} label="Variantes" />
     <p class="docs-demo-note">
       L’état <code>selected</code> est <code>bindable</code> : ici figé pour la
       démonstration (la deuxième tuile sélectionnable est cochée par défaut).

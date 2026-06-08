@@ -1,9 +1,8 @@
 <script lang="ts">
-  import { getExample } from "$lib/framework/examples";
-  import TriRender from "$lib/framework/TriRender.svelte";
   import { Badge, MessageActions, type MessageAction } from "@sentropic/design-system-svelte";
   import { Copy, Pencil, RefreshCw, ThumbsDown, ThumbsUp, Trash2 } from "@lucide/svelte";
   import { locale } from "$lib/locale.svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
 
   const copy = {
     fr: {
@@ -102,7 +101,7 @@
     </div>
     <p>{text().intro}</p>
   </section>
-  <TriRender nodes={getExample("messageactions")?.nodes ?? []} label="Aperçu live" />
+  <FrameworkPreview example="messageactions" title="Aperçu live" />
 
 
   <section class="docs-section">

@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { getExample } from "$lib/framework/examples";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import TriRender from "$lib/framework/TriRender.svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
@@ -104,12 +104,12 @@
     </div>
     <p>{t(locale.value, "fileUploaderIntro")}</p>
   </section>
-  <TriRender nodes={getExample("fileuploader")?.nodes ?? []} label="Aperçu live" />
+  <FrameworkPreview example="fileuploader" title="Aperçu live" />
 
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
 
-    <TriRender
+    <FrameworkDemo
       nodes={dropzoneDemo}
       label={locale.value === "fr" ? "Zone de dépôt vide" : "Empty dropzone"}
     />
@@ -119,7 +119,7 @@
         : "File selection (click, drag-and-drop) is interactive on the real page; the demo is frozen empty."}
     </p>
 
-    <TriRender
+    <FrameworkDemo
       nodes={statusesDemo}
       label={locale.value === "fr" ? "Liste de fichiers avec statuts" : "File list with statuses"}
     />
@@ -128,7 +128,7 @@
       <code>idle, uploading, complete, error</code>
     </p>
 
-    <TriRender
+    <FrameworkDemo
       nodes={singleDemo}
       label={locale.value === "fr" ? "Mode fichier unique" : "Single file mode"}
     />
@@ -138,7 +138,7 @@
         : "Single file mode: `multiple` is false and any new selection replaces the previous one."}
     </p>
 
-    <TriRender
+    <FrameworkDemo
       nodes={disabledDemo}
       label={locale.value === "fr" ? "État désactivé" : "Disabled state"}
     />

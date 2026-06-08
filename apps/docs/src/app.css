@@ -943,20 +943,6 @@ select {
   max-width: 42rem;
 }
 
-/* Démos figées de panneaux flottants SANS déclencheur ancrable (MenuPopover :
-   la prop trigger est un HTMLElement, inexprimable en NodeSpec). Sans ce
-   wrapper, le panneau ouvert se positionne en absolu à l'origine du document
-   et recouvre le chrome — 3× en rendu tri-framework simultané (TriRender).
-   On remet le panneau dans le flux : la démo reste visible ET bornée. */
-.docs-popover-inline {
-  position: relative;
-}
-
-.docs-popover-inline .st-menuPopover {
-  position: static !important;
-  transform: none !important;
-}
-
 .docs-demo-block {
   background: #ffffff;
   border: 1px solid var(--docs-line);

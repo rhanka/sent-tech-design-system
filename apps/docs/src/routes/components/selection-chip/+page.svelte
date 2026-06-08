@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { getExample } from "$lib/framework/examples";
   import { Badge } from "@sentropic/design-system-svelte";
   import { locale } from "$lib/locale.svelte";
-  import TriRender from "$lib/framework/TriRender.svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const copy = {
@@ -113,22 +113,22 @@
     <p>{text().intro}</p>
   </section>
 
-  <TriRender nodes={getExample("selectionchip")?.nodes ?? []} label={text().previewTitle} />
+  <FrameworkPreview example="selectionchip" title={text().previewTitle} />
 
   <section class="docs-section">
     <h2>{text().examplesTitle}</h2>
 
     <h3 class="docs-demo-title">{text().tonesTitle}</h3>
     <p class="docs-demo-note">{text().tonesDesc}</p>
-    <TriRender nodes={tonesDemo} label={text().tonesTitle} />
+    <FrameworkDemo nodes={tonesDemo} label={text().tonesTitle} />
 
     <h3 class="docs-demo-title">{text().withCountTitle}</h3>
     <p class="docs-demo-note">{text().withCountDesc}</p>
-    <TriRender nodes={withCountDemo} label={text().withCountTitle} />
+    <FrameworkDemo nodes={withCountDemo} label={text().withCountTitle} />
 
     <h3 class="docs-demo-title">{text().disabledTitle}</h3>
     <p class="docs-demo-note">{text().disabledDesc}</p>
-    <TriRender nodes={disabledDemo} label={text().disabledTitle} />
+    <FrameworkDemo nodes={disabledDemo} label={text().disabledTitle} />
   </section>
 
   <section class="docs-section">

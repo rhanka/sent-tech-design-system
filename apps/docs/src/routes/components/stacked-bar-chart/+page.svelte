@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { getExample } from "$lib/framework/examples";
   import { Badge, type StackedBarDatum } from "@sentropic/design-system-svelte";
-  import TriRender from "$lib/framework/TriRender.svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const data: StackedBarDatum[] = [
@@ -46,12 +46,12 @@
       survol et liste accessible des segments hors SVG.
     </p>
   </section>
-  <TriRender nodes={getExample("stackedbarchart")?.nodes ?? []} label="Aperçu live" />
+  <FrameworkPreview example="stackedbarchart" title="Aperçu live" />
 
 
   <section class="docs-section">
     <h2>Exemple</h2>
-    <TriRender nodes={exampleDemo} label="Production par trimestre" />
+    <FrameworkDemo nodes={exampleDemo} label="Production par trimestre" />
   </section>
 
   <section class="docs-section">

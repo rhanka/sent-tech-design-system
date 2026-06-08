@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { getExample } from "$lib/framework/examples";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import TriRender from "$lib/framework/TriRender.svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const fr = (frText: string, enText: string) => (locale.value === "fr" ? frText : enText);
@@ -58,7 +58,7 @@
       )}
     </p>
   </section>
-  <TriRender nodes={getExample("dropdown")?.nodes ?? []} label="Aperçu live" />
+  <FrameworkPreview example="dropdown" title="Aperçu live" />
 
 
   <section class="docs-section">
@@ -82,14 +82,14 @@
   <section class="docs-section">
     <h2>{fr("Avec valeur initiale", "With initial value")}</h2>
     <p>{fr("La prop value fixe la sélection de départ ; onselect remonte le choix.", "The value prop sets the initial selection; onselect bubbles the choice up.")}</p>
-    <TriRender nodes={initialDemo} label={fr("Produit", "Product")} />
+    <FrameworkDemo nodes={initialDemo} label={fr("Produit", "Product")} />
     <p class="docs-demo-note">{fr("Sélection initiale figée", "Frozen initial selection")} : <code>forge</code></p>
   </section>
 
   <section class="docs-section">
     <h2>{fr("Placeholder et option désactivée", "Placeholder and disabled option")}</h2>
     <p>{fr("Sans value, le placeholder s'affiche. Une option peut être marquée disabled.", "With no value, the placeholder shows. An option can be marked disabled.")}</p>
-    <TriRender nodes={placeholderDemo} label={fr("Forfait", "Plan")} />
+    <FrameworkDemo nodes={placeholderDemo} label={fr("Forfait", "Plan")} />
     <p class="docs-demo-note">
       {fr(
         "L'option « Entreprise » est disabled et ne peut pas être choisie.",

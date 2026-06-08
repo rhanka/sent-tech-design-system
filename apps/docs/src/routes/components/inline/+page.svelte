@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { getExample } from "$lib/framework/examples";
   import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import TriRender from "$lib/framework/TriRender.svelte";
+  import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
+  import FrameworkDemo from "$lib/framework/FrameworkDemo.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const fr = $derived(locale.value === "fr");
@@ -33,12 +33,12 @@
     </p>
   </section>
 
-  <TriRender nodes={getExample("inline")?.nodes ?? []} label={fr ? "Aperçu live" : "Live preview"} />
+  <FrameworkPreview example="inline" title={fr ? "Aperçu live" : "Live preview"} />
 
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
-    <TriRender nodes={wrapDemo} label={fr ? "Retour à la ligne (wrap)" : "Wrapping flow"} />
-    <TriRender nodes={nowrapDemo} label={fr ? "wrap={false}" : "wrap={false}"} />
+    <FrameworkDemo nodes={wrapDemo} label={fr ? "Retour à la ligne (wrap)" : "Wrapping flow"} />
+    <FrameworkDemo nodes={nowrapDemo} label={fr ? "wrap={false}" : "wrap={false}"} />
   </section>
 
   <section class="docs-section">

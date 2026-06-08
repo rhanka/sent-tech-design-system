@@ -1,8 +1,8 @@
 <!--
   TriRender — rend le MÊME arbre NodeSpec dans les TROIS frameworks à la fois.
 
-  Contrairement à FrameworkPreview (qui rend un seul framework selon le switcher
-  global, encore utilisé par la galerie /preview), TriRender empile trois panneaux visibles
+  Contrairement à FrameworkDemo / FrameworkPreview (qui rendent un seul framework
+  selon le switcher global), TriRender empile trois panneaux visibles
   SIMULTANÉMENT — Svelte, React, Vue — chacun étiqueté. L'audit visuel se fait
   donc sur les trois rendus côte à côte, sans dépendre du switcher.
 
