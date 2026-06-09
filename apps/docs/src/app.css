@@ -288,7 +288,7 @@ select {
 .docs-header-menuButton:hover,
 .docs-header-menuButton:focus-visible,
 .docs-header-menuButton[aria-expanded="true"] {
-  background: #ffffff;
+  background: var(--docs-header-control-hover-bg);
   border-color: var(--docs-accent);
   box-shadow: 0 0 0 2px var(--docs-header-control-ring);
   color: var(--docs-ink);
@@ -641,8 +641,9 @@ select {
 
 .docs-side-link--docs {
   font-size: 0.97rem;
-  min-height: 1.85rem;
-  padding: 0.28rem 0.5rem;
+  /* Cible pointeur min WCAG 2.2 (2.5.8) : 32px en desktop (était 29.6px). */
+  min-height: 2rem;
+  padding: 0.3rem 0.5rem;
   border-left: 3px solid transparent;
   transition: all var(--st-motion-fast, 120ms) ease;
 }
