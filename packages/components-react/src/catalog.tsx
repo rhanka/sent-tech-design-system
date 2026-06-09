@@ -3082,9 +3082,24 @@ export type InlineLoadingProps = React.HTMLAttributes<HTMLDivElement> & {
   label?: React.ReactNode;
   status?: "active" | "inactive" | "success" | "error";
 };
-export function InlineLoading({ label = "Loading", status = "active", className, ...rest }: InlineLoadingProps) {
+const INLINE_LOADING_FALLBACK_LABELS = {
+  active: "Loading",
+  success: "Completed",
+  error: "Error",
+  inactive: "Inactive",
+} as const;
+export function InlineLoading({ label, status = "active", className, "aria-label": ariaLabel, ...rest }: InlineLoadingProps) {
+  // Canon Svelte : le libellé visible n'est rendu que s'il est fourni ; sinon
+  // seul un aria-label de repli assure l'accessibilité (pas de texte visible).
+  const accessibleLabel = ariaLabel ?? (label ? undefined : INLINE_LOADING_FALLBACK_LABELS[status]);
   return (
-    <div {...rest} className={classNames("st-inlineLoading", `st-inlineLoading--${status}`, className)}>
+    <div
+      {...rest}
+      className={classNames("st-inlineLoading", `st-inlineLoading--${status}`, className)}
+      role={status === "error" ? "alert" : "status"}
+      aria-label={accessibleLabel}
+      aria-live="polite"
+    >
       <span className="st-inlineLoading__icon" aria-hidden="true">
         {status === "active" ? (
           <span className="st-inlineLoading__spinner">
@@ -3096,7 +3111,7 @@ export function InlineLoading({ label = "Loading", status = "active", className,
           <CircleAlert size={16} strokeWidth={2} aria-hidden="true" />
         ) : null}
       </span>
-      <span className="st-inlineLoading__label">{label}</span>
+      {label ? <span className="st-inlineLoading__label">{label}</span> : null}
     </div>
   );
 }
@@ -4638,28 +4653,78 @@ export function Textarea({ label, helperText, errorText, invalid, className, ...
 }
 
 export type TileVariant = "static" | "clickable" | "selectable";
-export type TileProps = React.HTMLAttributes<HTMLElement> & {
+export type TileProps = Omit<React.HTMLAttributes<HTMLElement>, "onSelect"> & {
   title?: React.ReactNode;
   description?: React.ReactNode;
   variant?: TileVariant;
+  /** Pour `clickable` : si fourni, rend un `<a>`, sinon un `<button>`. */
+  href?: string;
+  /** Pour `selectable` : état coché. */
   selected?: boolean;
   disabled?: boolean;
+  /** Pour `selectable` : notifié au changement d'état. */
+  onSelect?: (selected: boolean) => void;
 };
-export function Tile({ title, description, variant = "static", selected = false, disabled = false, children, className, ...rest }: TileProps) {
+export function Tile({ title, description, variant = "static", href, selected = false, disabled = false, onSelect, onClick, children, className, ...rest }: TileProps) {
+  const tileClass = classNames(
+    "st-tile",
+    `st-tile--${variant}`,
+    variant === "selectable" && selected && "st-tile--selected",
+    disabled && "st-tile--disabled",
+    className,
+  );
+  const body = (
+    <span className="st-tile__content">
+      {children ?? (
+        <>
+          {title ? <span className="st-tile__title">{title}</span> : null}
+          {description ? <span className="st-tile__description">{description}</span> : null}
+        </>
+      )}
+    </span>
+  );
+
+  if (variant === "clickable" && href) {
+    return (
+      <a {...rest} className={tileClass} href={href} aria-disabled={disabled || undefined} onClick={onClick as React.MouseEventHandler<HTMLAnchorElement>}>
+        {body}
+      </a>
+    );
+  }
+  if (variant === "clickable") {
+    return (
+      <button {...rest} type="button" className={tileClass} disabled={disabled} onClick={onClick as React.MouseEventHandler<HTMLButtonElement>}>
+        {body}
+      </button>
+    );
+  }
+  if (variant === "selectable") {
+    return (
+      <label className={tileClass}>
+        <input
+          type="checkbox"
+          className="st-tile__input"
+          checked={selected}
+          disabled={disabled}
+          onChange={(event) => onSelect?.(event.target.checked)}
+        />
+        {body}
+      </label>
+    );
+  }
   return (
-    <section {...rest} className={classNames("st-tile", `st-tile--${variant}`, selected && "st-tile--selected", disabled && "st-tile--disabled", className)}>
-      <div className="st-tile__content">
-        {title ? <h3 className="st-tile__title">{title}</h3> : null}
-        {description ? <p className="st-tile__description">{description}</p> : null}
-        {children}
-      </div>
-    </section>
+    <div {...rest} className={tileClass} onClick={onClick as React.MouseEventHandler<HTMLDivElement>}>
+      {body}
+    </div>
   );
 }
 
 export interface TileGroupItem {
   value: string;
-  title: React.ReactNode;
+  /** Libellé du tile (canonique Svelte). */
+  label?: React.ReactNode;
+  /** @deprecated Alias de `label` (compat). Utilisez `label`. */
+  title?: React.ReactNode;
   description?: React.ReactNode;
   disabled?: boolean;
 }
@@ -4678,7 +4743,7 @@ export function TileGroup({ legend, items, value, disabled = false, className, .
           <label key={item.value} className={classNames("st-tileGroup__tile", item.value === value && "st-tileGroup__tile--checked", item.disabled && "st-tileGroup__tile--disabled")}>
             <input className="st-tileGroup__input" type="radio" value={item.value} checked={item.value === value} disabled={disabled || item.disabled} readOnly />
             <span className="st-tileGroup__content">
-              <span className="st-tileGroup__label">{item.title}</span>
+              <span className="st-tileGroup__label">{item.label ?? item.title}</span>
               {item.description ? <span className="st-tileGroup__description">{item.description}</span> : null}
             </span>
           </label>

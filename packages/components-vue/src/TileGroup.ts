@@ -3,7 +3,10 @@ import { classNames } from "./classNames.js";
 
 export interface TileGroupItem {
   value: string;
-  title: unknown;
+  /** Libellé du tile (canonique Svelte). */
+  label?: unknown;
+  /** @deprecated Alias de `label` (compat). Utilisez `label`. */
+  title?: unknown;
   description?: unknown;
   disabled?: boolean;
 }
@@ -81,7 +84,7 @@ export const TileGroup = defineComponent({
                     h(
                       "span",
                       { class: "st-tileGroup__label" },
-                      item.title as string,
+                      (item.label ?? item.title) as string,
                     ),
                     item.description
                       ? h(
