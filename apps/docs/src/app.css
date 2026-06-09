@@ -295,6 +295,14 @@ select {
   outline: none;
 }
 
+/* Identité anonyme (contrat header §81) : bouton-icône carré, même hauteur que
+   les pills du socle, pas de texte. Une fois connecté, l'avatar le remplace
+   (IdentityMenu). Doit lire comme un contrôle utilitaire, jamais un CTA plein. */
+.docs-login-trigger {
+  padding: 0;
+  width: var(--docs-header-control-height);
+}
+
 .docs-locale-wrapper {
   position: relative;
   display: inline-block;
