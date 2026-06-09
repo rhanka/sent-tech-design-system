@@ -695,7 +695,7 @@ describe("Vue behavioral parity — batch 2", () => {
     });
 
     it("renders percentage value", () => {
-      const wrapper = mount(ProgressBar, { props: { value: 50 } });
+      const wrapper = mount(ProgressBar, { props: { value: 50, showValue: true } });
       expect(wrapper.find(".st-progressBar__value").text()).toBe("50%");
     });
 
@@ -1955,8 +1955,10 @@ describe("Vue behavioral parity — batch 4", () => {
     it("renders a button with correct classes", () => {
       const wrapper = mount(MenuTriggerButton, { slots: { default: "Menu" } });
       const btn = wrapper.find("button");
-      expect(btn.classes()).toContain("st-menuTriggerButton");
-      expect(btn.classes()).toContain("st-button--secondary");
+      // Canon: MenuTriggerButton renders an IconButton (ghost, md).
+      expect(btn.classes()).toContain("st-iconButton");
+      expect(btn.classes()).toContain("st-iconButton--ghost");
+      expect(btn.attributes("aria-haspopup")).toBe("menu");
     });
 
     it("sets aria-expanded from open prop", () => {
@@ -2430,8 +2432,9 @@ describe("Vue behavioral parity — batch 4", () => {
       });
       await wrapper.find(".st-multiSelect__trigger").trigger("click");
       const options = wrapper.findAll(".st-multiSelect__option");
-      expect(options[0].classes()).toContain("st-multiSelect__option--selected");
-      expect(options[1].classes()).not.toContain("st-multiSelect__option--selected");
+      // Canon marks selection via aria-selected (not a --selected class).
+      expect(options[0].attributes("aria-selected")).toBe("true");
+      expect(options[1].attributes("aria-selected")).toBe("false");
     });
 
     it("has name MultiSelect", () => {
@@ -3727,9 +3730,12 @@ describe("Vue behavioral parity — batch 5", () => {
       expect(wrapper.find(".st-chatMessage--user").exists()).toBe(true);
     });
 
-    it("renders avatar initial", () => {
-      const wrapper = mount(ChatMessage, { props: { role: "user" } });
-      expect(wrapper.find(".st-chatMessage__avatar").text()).toBe("U");
+    it("renders no avatar by default and renders the provided avatar", () => {
+      const bare = mount(ChatMessage, { props: { role: "user" } });
+      // Canon: no avatar element unless an avatar is supplied.
+      expect(bare.find(".st-chatMessage__avatar").exists()).toBe(false);
+      const withAvatar = mount(ChatMessage, { props: { role: "user", avatar: "U" } });
+      expect(withAvatar.find(".st-chatMessage__avatar").text()).toBe("U");
     });
 
     it("renders content", () => {
@@ -3818,9 +3824,12 @@ describe("Vue behavioral parity — batch 5", () => {
 
   // --- MessageActions ---
   describe("MessageActions", () => {
-    it("renders nav.st-messageActions", () => {
+    it("renders a div.st-messageActions group", () => {
       const wrapper = mount(MessageActions, { props: { actions: [] } });
-      expect(wrapper.find("nav.st-messageActions").exists()).toBe(true);
+      // Canon: role="group" container (not a <nav>).
+      const root = wrapper.find("div.st-messageActions");
+      expect(root.exists()).toBe(true);
+      expect(root.attributes("role")).toBe("group");
     });
 
     it("renders action buttons", () => {
@@ -3839,7 +3848,8 @@ describe("Vue behavioral parity — batch 5", () => {
       const wrapper = mount(MessageActions, {
         props: { actions: [{ label: "Remove", variant: "danger" }] },
       });
-      expect(wrapper.find(".st-button--danger").exists()).toBe(true);
+      // Canon: actions are IconButtons; danger maps to st-iconButton--danger.
+      expect(wrapper.find(".st-iconButton--danger").exists()).toBe(true);
     });
 
     it("applies hoverOnly modifier when visibility=hover", () => {

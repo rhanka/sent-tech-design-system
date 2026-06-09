@@ -203,7 +203,7 @@ describe("React behavioral parity", () => {
     expect(checkbox.checked).toBe(false);
     fireEvent.click(checkbox);
     expect(checkbox.checked).toBe(true);
-    expect((screen.getByLabelText("Notify") as HTMLInputElement).getAttribute("aria-checked")).toBe("true");
+    expect((screen.getByRole("switch", { name: "Notify" }) as HTMLInputElement).getAttribute("aria-checked")).toBe("true");
     expect((screen.getByLabelText("Billing") as HTMLInputElement).getAttribute("aria-checked")).toBe("true");
 
     const pageTwo = screen.getByRole("button", { name: "Page 2" });
@@ -270,12 +270,12 @@ describe("React behavioral parity", () => {
     expect(onComboboxChange).toHaveBeenCalledWith("engineering");
     expect((team as HTMLInputElement).value).toBe("Engineering");
 
-    const scopes = screen.getByRole("button", { name: /scopes/i });
+    const scopes = screen.getByRole("group", { name: "Scopes" }).querySelector(".st-multiSelect__trigger") as HTMLButtonElement;
     fireEvent.click(scopes);
     expect(screen.getByRole("listbox", { name: "Scopes" }).getAttribute("aria-multiselectable")).toBe("true");
     fireEvent.click(screen.getByRole("option", { name: "Docs" }));
     expect(onMultiSelectChange).toHaveBeenCalledWith(["docs"]);
-    expect(screen.getByText("Docs").className).toContain("st-multiSelect__tagLabel");
+    expect(screen.getByText("Docs", { selector: ".st-multiSelect__tagLabel" }).className).toContain("st-multiSelect__tagLabel");
   });
 
   it("supports queued toasts and auto-dismisses individual notices", () => {

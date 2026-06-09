@@ -53,7 +53,10 @@ export const ChatThread = defineComponent({
         {
           ...attrs,
           class: classNames("st-chatThread", props.class),
+          role: "log",
           "aria-label": ariaLabel,
+          "aria-live": "polite",
+          "aria-relevant": "additions text",
         },
         [h("div", { class: "st-chatThread__list" }, listContent)],
       );

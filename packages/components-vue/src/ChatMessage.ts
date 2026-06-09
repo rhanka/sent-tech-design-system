@@ -17,7 +17,9 @@ export type ChatMessageProps = {
   status?: ChatMessageStatus;
   content?: unknown;
   timestamp?: unknown;
+  footer?: unknown;
   actions?: unknown;
+  avatar?: unknown;
   class?: string;
 };
 
@@ -25,10 +27,12 @@ export const ChatMessage = defineComponent({
   name: "ChatMessage",
   props: {
     role: { type: String as () => ChatMessageRole, default: "assistant" },
-    status: { type: String as () => ChatMessageStatus, default: undefined },
+    status: { type: String as () => ChatMessageStatus, default: "completed" },
     content: { type: [String, Object] as unknown as () => unknown, default: undefined },
     timestamp: { type: [String, Object] as unknown as () => unknown, default: undefined },
+    footer: { type: [String, Object] as unknown as () => unknown, default: undefined },
     actions: { type: [String, Object] as unknown as () => unknown, default: undefined },
+    avatar: { type: [String, Object] as unknown as () => unknown, default: undefined },
     class: { type: String, default: undefined },
   },
   setup(props, { slots, attrs }) {
@@ -36,12 +40,16 @@ export const ChatMessage = defineComponent({
       const role = props.role ?? "assistant";
       const status = props.status;
       const normalizedStatus =
-        status === "streaming"
+        status === "idle" || status === "streaming"
           ? "processing"
           : status === "error"
             ? "failed"
             : status;
-      const avatar = role[0]?.toUpperCase() ?? "";
+      const isStreaming = normalizedStatus === "processing";
+      const alignment = role === "user" ? "end" : "start";
+      const avatarNode = slots.avatar?.() ?? props.avatar;
+      const footerNode = slots.footer?.() ?? props.footer;
+      const actionsNode = slots.actions?.() ?? props.actions;
       return h(
         "article",
         {
@@ -52,9 +60,15 @@ export const ChatMessage = defineComponent({
             normalizedStatus && `st-chatMessage--${normalizedStatus}`,
             props.class,
           ),
+          "data-role": role,
+          "data-status": normalizedStatus,
+          "data-align": alignment,
+          "aria-live": isStreaming ? "polite" : undefined,
         },
         [
-          h("div", { class: "st-chatMessage__avatar", "aria-hidden": "true" }, avatar),
+          avatarNode
+            ? h("div", { class: "st-chatMessage__avatar", "aria-hidden": "true" }, avatarNode as never)
+            : null,
           h("div", { class: "st-chatMessage__body" }, [
             h("div", { class: "st-chatMessage__bubble" }, [
               h(
@@ -62,16 +76,19 @@ export const ChatMessage = defineComponent({
                 { class: "st-chatMessage__content" },
                 slots.default?.() ?? (props.content as string | undefined),
               ),
+              isStreaming
+                ? h("span", { class: "st-chatMessage__pulse", "aria-hidden": "true" })
+                : null,
             ]),
-            props.timestamp || props.actions
-              ? h("footer", { class: "st-chatMessage__footer" }, [
-                  props.timestamp
-                    ? h("span", { class: "st-chatMessage__timestamp" }, props.timestamp as string)
-                    : null,
-                  props.actions
-                    ? h("span", { class: "st-chatMessage__actions" }, props.actions as string)
-                    : null,
+            footerNode || props.timestamp
+              ? h("div", { class: "st-chatMessage__footer" }, [
+                  footerNode
+                    ? (footerNode as never)
+                    : h("span", { class: "st-chatMessage__timestamp" }, props.timestamp as never),
                 ])
+              : null,
+            actionsNode
+              ? h("div", { class: "st-chatMessage__actions" }, actionsNode as never)
               : null,
           ]),
         ],

@@ -28,15 +28,15 @@ export const MessageActions = defineComponent({
     actions: { type: Array as () => MessageAction[], required: true },
     visibility: {
       type: String as () => "always" | "hover",
-      default: "always",
+      default: "hover",
     },
     class: { type: String, default: undefined },
   },
   setup(props, { attrs }) {
     return () => {
-      const visibility = props.visibility ?? "always";
+      const visibility = props.visibility ?? "hover";
       return h(
-        "nav",
+        "div",
         {
           ...attrs,
           class: classNames(
@@ -44,7 +44,8 @@ export const MessageActions = defineComponent({
             visibility === "hover" && "st-messageActions--hoverOnly",
             props.class,
           ),
-          "aria-label": "Message actions",
+          role: "group",
+          "aria-label": "Actions du message",
         },
         props.actions.map((action, index) =>
           h(
@@ -53,17 +54,18 @@ export const MessageActions = defineComponent({
               key: action.id ?? index,
               type: "button",
               class: classNames(
-                "st-button st-button--ghost st-button--sm",
-                action.variant === "danger" && "st-button--danger",
+                "st-iconButton st-iconButton--sm",
+                action.variant === "danger"
+                  ? "st-iconButton--danger"
+                  : "st-iconButton--ghost",
               ),
               disabled: action.disabled,
               "aria-label":
-                action.label == null && action.icon != null
-                  ? action.id
-                  : undefined,
+                (action.label != null ? String(action.label) : undefined) ??
+                action.id,
               onClick: action.onClick,
             },
-            (action.label ?? action.icon) as string,
+            (action.icon ?? action.label) as string,
           ),
         ),
       );
