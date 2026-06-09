@@ -1042,15 +1042,32 @@ describe("Vue behavioral parity — batch 2", () => {
 
   // --- Tile ---
   describe("Tile", () => {
-    it("renders section.st-tile with default static variant", () => {
+    it("renders div.st-tile with default static variant", () => {
       const wrapper = mount(Tile);
-      expect(wrapper.find("section.st-tile").exists()).toBe(true);
+      // Canon Svelte : variant statique → <div> (pas <section>).
+      expect(wrapper.find("div.st-tile").exists()).toBe(true);
       expect(wrapper.find(".st-tile--static").exists()).toBe(true);
     });
 
-    it("applies selected modifier", () => {
-      const wrapper = mount(Tile, { props: { selected: true } });
+    it("renders a checkbox + selected modifier for selectable variant", () => {
+      const wrapper = mount(Tile, {
+        props: { variant: "selectable", selected: true },
+      });
+      expect(wrapper.find("label.st-tile").exists()).toBe(true);
+      expect(wrapper.find("input.st-tile__input[type=checkbox]").exists()).toBe(true);
       expect(wrapper.find(".st-tile--selected").exists()).toBe(true);
+    });
+
+    it("renders <a> for clickable variant with href", () => {
+      const wrapper = mount(Tile, {
+        props: { variant: "clickable", href: "#go" },
+      });
+      expect(wrapper.find("a.st-tile").attributes("href")).toBe("#go");
+    });
+
+    it("renders <button> for clickable variant without href", () => {
+      const wrapper = mount(Tile, { props: { variant: "clickable" } });
+      expect(wrapper.find("button.st-tile[type=button]").exists()).toBe(true);
     });
 
     it("applies disabled modifier", () => {
@@ -2175,8 +2192,14 @@ describe("Vue behavioral parity — batch 4", () => {
       expect(wrapper.findAll(".st-toast").length).toBe(2);
     });
 
-    it("emits close on close button click", async () => {
+    it("renders no close button without an onClose handler (canon)", () => {
       const wrapper = mount(Toast, { props: { title: "Hello" } });
+      expect(wrapper.find("button").exists()).toBe(false);
+    });
+
+    it("emits close on close button click when onClose is provided", async () => {
+      const onClose = vi.fn();
+      const wrapper = mount(Toast, { props: { title: "Hello", onClose } });
       await wrapper.find("button").trigger("click");
       expect(wrapper.emitted("close")).toBeTruthy();
     });
