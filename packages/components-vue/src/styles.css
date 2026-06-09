@@ -8265,8 +8265,18 @@
   gap: var(--st-spacing-1, 0.25rem);
 }
 
-.st-calendar__weekdays,
+.st-calendar__weekdays {
+  display: grid;
+  gap: 2px;
+  grid-template-columns: repeat(7, minmax(2rem, 1fr));
+}
+
 .st-calendar__days {
+  display: grid;
+  gap: 2px;
+}
+
+.st-calendar__week {
   display: grid;
   gap: 2px;
   grid-template-columns: repeat(7, minmax(2rem, 1fr));

@@ -215,18 +215,20 @@ describe("React accepts the canonical Svelte API", () => {
   });
 
   describe("PaginationNav", () => {
+    // Page buttons render the bare page number as text content (parity with the
+    // Svelte reference) and expose "Page N" via aria-label.
     it("accepts the Svelte `pageCount` alias for `totalPages`", () => {
       render(<PaginationNav page={1} pageCount={3} />);
-      expect(screen.getByText("Page 1")).toBeTruthy();
-      expect(screen.getByText("Page 2")).toBeTruthy();
-      expect(screen.getByText("Page 3")).toBeTruthy();
+      expect(screen.getByRole("button", { name: "Page 1" })).toBeTruthy();
+      expect(screen.getByRole("button", { name: "Page 2" })).toBeTruthy();
+      expect(screen.getByRole("button", { name: "Page 3" })).toBeTruthy();
     });
 
     it("still accepts the React-native `totalPages` prop", () => {
       render(<PaginationNav page={1} totalPages={2} />);
-      expect(screen.getByText("Page 1")).toBeTruthy();
-      expect(screen.getByText("Page 2")).toBeTruthy();
-      expect(screen.queryByText("Page 3")).toBeNull();
+      expect(screen.getByRole("button", { name: "Page 1" })).toBeTruthy();
+      expect(screen.getByRole("button", { name: "Page 2" })).toBeTruthy();
+      expect(screen.queryByRole("button", { name: "Page 3" })).toBeNull();
     });
   });
 
