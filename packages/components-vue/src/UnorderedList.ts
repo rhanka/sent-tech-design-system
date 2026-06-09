@@ -1,7 +1,8 @@
 import { defineComponent, h, type VNodeChild } from "vue";
 import { classNames } from "./classNames.js";
 
-export type UnorderedListItem = { label: unknown; children?: UnorderedListInput[] };
+// Forme item alignée sur le canon Svelte : `content` (+ `label` en alias compat).
+export type UnorderedListItem = { content?: unknown; label?: unknown; children?: UnorderedListInput[] };
 export type UnorderedListInput = unknown;
 
 export type UnorderedListProps = {
@@ -13,7 +14,7 @@ function renderListItem(item: UnorderedListInput, index: number): VNodeChild {
   if (
     typeof item === "object" &&
     item !== null &&
-    "label" in (item as Record<string, unknown>)
+    ("content" in (item as Record<string, unknown>) || "label" in (item as Record<string, unknown>))
   ) {
     const cast = item as UnorderedListItem;
     return h(
@@ -23,7 +24,7 @@ function renderListItem(item: UnorderedListInput, index: number): VNodeChild {
         class: "st-unorderedList__item",
       },
       [
-        String(cast.label ?? ""),
+        String((cast.content ?? cast.label) ?? ""),
         cast.children
           ? h(UnorderedList, { items: cast.children })
           : null,
