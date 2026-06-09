@@ -54,56 +54,27 @@
 </script>
 
 {#if visible}
+  <!-- Utilise les classes globales DS (.st-button) car Button DS est un <button>,
+       pas un <a>. Les styles sont fournis par @sentropic/design-system-react/styles.css
+       déjà chargé dans +layout.svelte. -->
   <a
     href={compareUrl}
-    class="compare-btn"
+    class="st-button st-button--secondary st-button--sm compare-btn-link"
     aria-label="Comparer avec {REFERENCE_THEMES[activeThemeId]?.label ?? activeThemeId}"
   >
-    <span class="compare-btn__icon" aria-hidden="true">⧉</span>
-    <span class="compare-btn__label">Compare</span>
+    <span aria-hidden="true">⧉</span>
+    <span>Compare</span>
   </a>
 {/if}
 
 <style>
-  .compare-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3125rem;
-    padding: 0.25rem 0.625rem;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: #1e40af;
-    background: #eff6ff;
-    border: 1px solid #bfdbfe;
+  /* Seul override local : supprimer la text-decoration héritée du <a> global */
+  .compare-btn-link {
     text-decoration: none;
-    transition: background 0.1s, color 0.1s, border-color 0.1s;
     white-space: nowrap;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .compare-btn {
-      transition: none;
-    }
-  }
-
-  .compare-btn:hover {
-    background: #dbeafe;
-    color: #1e3a8a;
-    border-color: #93c5fd;
-  }
-
-  .compare-btn:focus-visible {
-    outline: 2px solid #3b82f6;
-    outline-offset: 2px;
-  }
-
-  .compare-btn__icon {
-    font-size: 0.875rem;
-    line-height: 1;
-  }
-
-  .compare-btn__label {
-    line-height: 1;
+  .compare-btn-link:hover {
+    text-decoration: none;
   }
 </style>

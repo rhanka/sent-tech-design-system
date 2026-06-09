@@ -121,14 +121,17 @@
 
   .st-control--sm {
     min-height: var(--st-component-control-anatomy-density-sm-controlHeight, var(--st-component-control-smHeight, 2rem));
+    font-size: var(--st-component-control-smFontSize, 0.8125rem);
   }
 
   .st-control--md {
     min-height: var(--st-component-control-anatomy-density-md-controlHeight, var(--st-component-control-mdHeight, 2.5rem));
+    font-size: var(--st-component-control-mdFontSize, 0.875rem);
   }
 
   .st-control--lg {
     min-height: var(--st-component-control-anatomy-density-lg-controlHeight, var(--st-component-control-lgHeight, 3rem));
+    font-size: var(--st-component-control-lgFontSize, 1rem);
   }
 
   .st-control::placeholder {

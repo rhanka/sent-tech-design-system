@@ -238,14 +238,17 @@
 
   .st-multiSelect--sm .st-multiSelect__trigger {
     min-height: var(--st-component-control-smHeight, 2rem);
+    font-size: var(--st-component-control-smFontSize, 0.8125rem);
   }
 
   .st-multiSelect--md .st-multiSelect__trigger {
     min-height: var(--st-component-control-mdHeight, 2.5rem);
+    font-size: var(--st-component-control-mdFontSize, 0.875rem);
   }
 
   .st-multiSelect--lg .st-multiSelect__trigger {
     min-height: var(--st-component-control-lgHeight, 3rem);
+    font-size: var(--st-component-control-lgFontSize, 1rem);
   }
 
   /* Field box = resolved field anatomy (v1.2.0), same as Input. */
