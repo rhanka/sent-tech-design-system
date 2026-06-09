@@ -1,8 +1,8 @@
 <script lang="ts">
   import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { getExample } from "$lib/framework/examples";
-  import { Badge, DatePicker } from "@sentropic/design-system-svelte";
-  import type { DatePickerRange } from "@sentropic/design-system-svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
 
@@ -53,13 +53,48 @@
 
   const text = () => copy[locale.value];
 
-  const today = new Date();
-  const in30Days = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 30);
+  // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
+  // (toute la section bascule en onglets svelte/react/vue, comme les autres
+  // pages composant). État statique : valeurs ISO figées pour la démonstration
+  // tri-framework (les islands coercent string -> Date).
+  const singleDemo: NodeSpec[] = [
+    {
+      comp: "DatePicker",
+      props: {
+        label: "Date de l’événement",
+        helperText: "Sélectionnez un jour.",
+        value: "2026-06-15"
+      }
+    }
+  ];
 
-  let singleDate = $state<Date | null>(new Date());
-  let rangeValue = $state<DatePickerRange>({ start: null, end: null });
-  let boundedDate = $state<Date | null>(null);
-  let errorDate = $state<Date | null>(null);
+  const rangeDemo: NodeSpec[] = [
+    { comp: "DatePicker", props: { label: "Période de réservation", mode: "range" } }
+  ];
+
+  const boundedDemo: NodeSpec[] = [
+    {
+      comp: "DatePicker",
+      props: {
+        label: "Date dans les 30 prochains jours",
+        min: "2026-06-01",
+        max: "2026-06-30",
+        value: "2026-06-15"
+      }
+    }
+  ];
+
+  const errorDemo: NodeSpec[] = [
+    {
+      comp: "DatePicker",
+      props: {
+        label: "Date limite",
+        size: "sm",
+        errorText: "Une date est requise.",
+        invalid: true
+      }
+    }
+  ];
 </script>
 
 <div class="docs-page">
@@ -76,48 +111,10 @@
 
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
-
-    <div class="docs-example docs-demo-block" aria-label={text().singleTitle}>
-      <h3>{text().singleTitle}</h3>
-      <DatePicker
-        label={text().singleLabel}
-        helperText={text().singleHelper}
-        locale={locale.value === "fr" ? "fr-FR" : "en-US"}
-        bind:value={singleDate}
-      />
-    </div>
-
-    <div class="docs-example docs-demo-block" aria-label={text().rangeTitle}>
-      <h3>{text().rangeTitle}</h3>
-      <DatePicker
-        label={text().rangeLabel}
-        mode="range"
-        locale={locale.value === "fr" ? "fr-FR" : "en-US"}
-        bind:value={rangeValue}
-      />
-    </div>
-
-    <div class="docs-example docs-demo-block" aria-label={text().boundedTitle}>
-      <h3>{text().boundedTitle}</h3>
-      <DatePicker
-        label={text().boundedLabel}
-        min={today}
-        max={in30Days}
-        locale={locale.value === "fr" ? "fr-FR" : "en-US"}
-        bind:value={boundedDate}
-      />
-    </div>
-
-    <div class="docs-example docs-demo-block" aria-label={text().errorTitle}>
-      <h3>{text().errorTitle}</h3>
-      <DatePicker
-        label={text().errorLabel}
-        size="sm"
-        errorText={text().errorText}
-        locale={locale.value === "fr" ? "fr-FR" : "en-US"}
-        bind:value={errorDate}
-      />
-    </div>
+    <TabbedExample nodes={singleDemo} title={text().singleTitle} />
+    <TabbedExample nodes={rangeDemo} title={text().rangeTitle} />
+    <TabbedExample nodes={boundedDemo} title={text().boundedTitle} />
+    <TabbedExample nodes={errorDemo} title={text().errorTitle} />
   </section>
 
   <section class="docs-section">

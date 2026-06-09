@@ -3448,11 +3448,83 @@ export type NumberInputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>,
   helperText?: React.ReactNode;
   errorText?: React.ReactNode;
   size?: Size;
+  incrementLabel?: string;
+  decrementLabel?: string;
 };
-export function NumberInput({ label, helperText, errorText, size = "md", className, ...rest }: NumberInputProps) {
+export function NumberInput({
+  label,
+  helperText,
+  errorText,
+  size = "md",
+  className,
+  incrementLabel = "Increment value",
+  decrementLabel = "Decrement value",
+  min,
+  max,
+  step = 1,
+  value,
+  defaultValue,
+  disabled,
+  onChange,
+  ...rest
+}: NumberInputProps) {
+  const numMin = min !== undefined && min !== "" ? Number(min) : undefined;
+  const numMax = max !== undefined && max !== "" ? Number(max) : undefined;
+  const numStep = step !== undefined && step !== "" ? Number(step) : 1;
+  const initial = value ?? defaultValue;
+  const [current, setCurrent] = React.useState<number | null>(
+    initial !== undefined && initial !== null && initial !== "" ? Number(initial) : null,
+  );
+  const controlled = value !== undefined;
+  const numValue = controlled
+    ? value === null || value === "" ? null : Number(value)
+    : current;
+
+  const clamp = (n: number) => {
+    if (numMin !== undefined && n < numMin) return numMin;
+    if (numMax !== undefined && n > numMax) return numMax;
+    return n;
+  };
+  const isAtMin = numValue !== null && numMin !== undefined && numValue <= numMin;
+  const isAtMax = numValue !== null && numMax !== undefined && numValue >= numMax;
+
+  const setValue = (next: number | null) => {
+    if (!controlled) setCurrent(next);
+  };
+  const increment = () => setValue(clamp((numValue ?? numMin ?? 0) + numStep));
+  const decrement = () => setValue(clamp((numValue ?? numMax ?? 0) - numStep));
+
   return (
-    <Field label={label} helperText={helperText} errorText={errorText} className={classNames("st-numberInput", `st-numberInput--${size}`, className)}>
-      {(inputId, isInvalid) => <input {...rest} id={inputId} className="st-control st-numberInput__control" type="number" aria-invalid={isInvalid ? "true" : undefined} />}
+    <Field label={label} helperText={helperText} errorText={errorText} className={className}>
+      {(inputId, isInvalid) => (
+        <span className={classNames("st-numberInput", `st-numberInput--${size}`)}>
+          <input
+            {...rest}
+            id={inputId}
+            className="st-numberInput__control"
+            type="number"
+            value={numValue ?? ""}
+            min={min}
+            max={max}
+            step={step}
+            disabled={disabled}
+            aria-invalid={isInvalid ? "true" : undefined}
+            onChange={(event) => {
+              const raw = event.target.value;
+              setValue(raw === "" ? null : Number.isFinite(Number(raw)) ? Number(raw) : numValue);
+              onChange?.(event);
+            }}
+          />
+          <span className="st-numberInput__buttons">
+            <button type="button" className="st-numberInput__button" aria-label={decrementLabel} disabled={disabled || isAtMin} onClick={decrement}>
+              <span aria-hidden="true">−</span>
+            </button>
+            <button type="button" className="st-numberInput__button" aria-label={incrementLabel} disabled={disabled || isAtMax} onClick={increment}>
+              <span aria-hidden="true">+</span>
+            </button>
+          </span>
+        </span>
+      )}
     </Field>
   );
 }
@@ -3671,10 +3743,10 @@ export type PasswordInputProps = Omit<React.InputHTMLAttributes<HTMLInputElement
 export function PasswordInput({ label, helperText, errorText, size = "md", className, ...rest }: PasswordInputProps) {
   const [shown, setShown] = React.useState(false);
   return (
-    <Field label={label} helperText={helperText} errorText={errorText} className={classNames("st-passwordInput", `st-passwordInput--${size}`, className)}>
+    <Field label={label} helperText={helperText} errorText={errorText} className={className}>
       {(inputId, isInvalid) => (
-        <span className="st-passwordInput__control">
-          <input {...rest} id={inputId} className="st-control" type={shown ? "text" : "password"} aria-invalid={isInvalid ? "true" : undefined} />
+        <span className={classNames("st-passwordInput", `st-passwordInput--${size}`)}>
+          <input {...rest} id={inputId} className="st-passwordInput__control" type={shown ? "text" : "password"} aria-invalid={isInvalid ? "true" : undefined} />
           <button type="button" className="st-passwordInput__toggle" aria-label={shown ? "Hide password" : "Show password"} aria-pressed={shown ? "true" : "false"} onClick={() => setShown((next) => !next)}>
             {shown ? <EyeOff size={16} strokeWidth={2} aria-hidden="true" /> : <Eye size={16} strokeWidth={2} aria-hidden="true" />}
           </button>
@@ -3869,12 +3941,31 @@ export function SideNav({ items, label = "Navigation", className, ...rest }: Sid
   );
 }
 
-export type SkeletonTextProps = React.HTMLAttributes<HTMLDivElement> & { lines?: number; label?: string };
-export function SkeletonText({ lines = 3, label = "Loading", className, ...rest }: SkeletonTextProps) {
+export type SkeletonTextProps = React.HTMLAttributes<HTMLDivElement> & {
+  lines?: number;
+  width?: string;
+  heading?: boolean;
+  paragraph?: boolean;
+};
+export function SkeletonText({ lines = 1, width, heading = false, paragraph = false, className, ...rest }: SkeletonTextProps) {
+  const lineCount = paragraph ? Math.max(lines, 3) : lines;
+  const lineWidth = (index: number): string | undefined => {
+    if (width && index === 0) return width;
+    if (paragraph && index === lineCount - 1) return "60%";
+    return undefined;
+  };
   return (
-    <div {...rest} className={classNames("st-skeleton", className)} aria-label={label}>
-      <span className="st-visually-hidden">{label}</span>
-      {Array.from({ length: lines }, (_, index) => <span key={index} className={classNames("st-skeleton__line", index === 0 && "st-skeleton__line--heading")} />)}
+    <div {...rest} className={classNames("st-skeleton", className)} role="status" aria-label="Loading…" aria-busy="true">
+      {Array.from({ length: lineCount }, (_, index) => {
+        const w = lineWidth(index);
+        return (
+          <span
+            key={index}
+            className={classNames("st-skeleton__line", heading && "st-skeleton__line--heading")}
+            style={w ? { width: w } : undefined}
+          />
+        );
+      })}
     </div>
   );
 }
@@ -3888,19 +3979,85 @@ export function SkipLink({ href = "#main", className, children = "Skip to conten
   );
 }
 
-export type SliderProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, "size" | "type"> & {
+export type SliderProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, "size" | "type" | "onChange"> & {
   label?: React.ReactNode;
   size?: Size;
+  helperText?: React.ReactNode;
+  errorText?: React.ReactNode;
+  invalid?: boolean;
+  showValue?: boolean;
+  valueFormatter?: (value: number) => string;
+  onChange?: (value: number) => void;
 };
-export function Slider({ label, size = "md", value, defaultValue, min = 0, max = 100, className, ...rest }: SliderProps) {
-  const numeric = Number(value ?? defaultValue ?? 0);
+export function Slider({
+  label,
+  size = "md",
+  value,
+  defaultValue,
+  min = 0,
+  max = 100,
+  step = 1,
+  helperText,
+  errorText,
+  invalid = false,
+  showValue = true,
+  valueFormatter,
+  disabled,
+  className,
+  onChange,
+  ...rest
+}: SliderProps) {
+  const numMin = Number(min);
+  const numMax = Number(max);
+  const initial = Number(value ?? defaultValue ?? numMin);
+  const [current, setCurrent] = React.useState(Number.isFinite(initial) ? initial : numMin);
+  const controlled = value !== undefined;
+  const raw = controlled ? Number(value) : current;
+  const safe = !Number.isFinite(raw) ? numMin : raw < numMin ? numMin : raw > numMax ? numMax : raw;
+  const percent = numMax === numMin ? 0 : ((safe - numMin) / (numMax - numMin)) * 100;
+  const formatted = valueFormatter ? valueFormatter(safe) : String(safe);
+  const isInvalid = invalid || Boolean(errorText);
+  const labelText = typeof label === "string" ? label : undefined;
+
   return (
-    <div className={classNames("st-slider", `st-slider--${size}`, className)}>
+    <div className={classNames("st-field", className)}>
       <div className="st-slider__header">
-        {label ? <label className="st-field__label">{label}</label> : null}
-        <span className="st-slider__value">{numeric}</span>
+        {label ? <span className="st-field__label">{label}</span> : null}
+        {showValue ? <output className="st-slider__value" aria-live="polite">{formatted}</output> : null}
       </div>
-      <input {...rest} className="st-slider__input" type="range" min={min} max={max} defaultValue={defaultValue} value={value} />
+      <span className={classNames("st-slider", `st-slider--${size}`)}>
+        <span className="st-slider__bounds" aria-hidden="true">{numMin}</span>
+        <span className="st-slider__track">
+          <span className="st-slider__fill" style={{ ["--st-slider-fill" as string]: `${percent}%` }} />
+          <span className="st-slider__thumb" style={{ left: `${percent}%` }} aria-hidden="true">
+            {showValue ? <span className="st-slider__tooltip">{formatted}</span> : null}
+          </span>
+          <input
+            {...rest}
+            className="st-slider__input"
+            type="range"
+            aria-label={labelText}
+            aria-invalid={isInvalid ? "true" : undefined}
+            value={safe}
+            min={min}
+            max={max}
+            step={step}
+            disabled={disabled}
+            onChange={(event) => {
+              const next = Number(event.target.value);
+              if (Number.isFinite(next)) {
+                if (!controlled) setCurrent(next);
+                onChange?.(next);
+              }
+            }}
+          />
+        </span>
+      </span>
+      {errorText ? (
+        <span className="st-field__error">{errorText}</span>
+      ) : helperText ? (
+        <span className="st-field__help">{helperText}</span>
+      ) : null}
     </div>
   );
 }
@@ -4288,14 +4445,23 @@ export type TagProps = React.HTMLAttributes<HTMLSpanElement> & {
   tone?: Tone;
   size?: "sm" | "md";
   disabled?: boolean;
+  dismissible?: boolean;
   dismissLabel?: string;
-  onDismiss?: () => void;
+  onDismiss?: (event: React.MouseEvent) => void;
 };
-export function Tag({ tone = "neutral", size = "md", disabled = false, dismissLabel = "Dismiss", onDismiss, className, children, ...rest }: TagProps) {
+export function Tag({ tone = "neutral", size = "md", disabled = false, dismissible = false, dismissLabel = "Dismiss", onDismiss, className, children, ...rest }: TagProps) {
+  // Parity with the Svelte reference: the X affordance is driven by
+  // `dismissible` (the docs node specs pass it without an `onDismiss`), and the
+  // handler is suppressed while disabled.
+  const showDismiss = dismissible || typeof onDismiss === "function";
+  const handleDismiss = (event: React.MouseEvent) => {
+    if (disabled) return;
+    onDismiss?.(event);
+  };
   return (
     <span {...rest} className={classNames("st-tag", `st-tag--${tone}`, `st-tag--${size}`, disabled && "st-tag--disabled", className)} aria-disabled={disabled ? "true" : undefined}>
       <span className="st-tag__label">{children}</span>
-      {onDismiss ? <button type="button" className="st-tag__dismiss" aria-label={dismissLabel} disabled={disabled} onClick={onDismiss}><X size={14} strokeWidth={2} aria-hidden="true" /></button> : null}
+      {showDismiss ? <button type="button" className="st-tag__dismiss" aria-label={dismissLabel} disabled={disabled} onClick={handleDismiss}><X size={14} strokeWidth={2} aria-hidden="true" /></button> : null}
     </span>
   );
 }

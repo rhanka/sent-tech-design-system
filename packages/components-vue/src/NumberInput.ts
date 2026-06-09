@@ -16,6 +16,8 @@ export type NumberInputProps = {
   min?: number | string;
   max?: number | string;
   step?: number | string;
+  incrementLabel?: string;
+  decrementLabel?: string;
   class?: string;
 };
 
@@ -38,23 +40,53 @@ export const NumberInput = defineComponent({
     min: { type: [Number, String], default: undefined },
     max: { type: [Number, String], default: undefined },
     step: { type: [Number, String], default: undefined },
+    incrementLabel: { type: String, default: "Increment value" },
+    decrementLabel: { type: String, default: "Decrement value" },
     class: { type: String, default: undefined },
   },
   emits: ["update:modelValue", "change", "input"],
   setup(props, { emit, attrs }) {
     const autoId = ref(nextId());
+    // Internal value, seeded from modelValue/value; used when the consumer does
+    // not control the field (the docs node specs pass an initial `value` only).
+    const seed = props.modelValue ?? props.value;
+    const internal = ref<number | null>(
+      seed !== undefined && seed !== null && seed !== "" ? Number(seed) : null,
+    );
 
     return () => {
       const inputId = autoId.value;
       const isInvalid = Boolean(props.errorText);
+      const controlled = props.modelValue !== undefined;
+      const bound = props.modelValue ?? props.value;
+      const numValue: number | null = controlled
+        ? bound === null || bound === undefined || bound === "" ? null : Number(bound)
+        : internal.value;
+
+      const numMin = props.min !== undefined && props.min !== "" ? Number(props.min) : undefined;
+      const numMax = props.max !== undefined && props.max !== "" ? Number(props.max) : undefined;
+      const numStep = props.step !== undefined && props.step !== "" ? Number(props.step) : 1;
+
+      const clamp = (n: number): number => {
+        if (numMin !== undefined && n < numMin) return numMin;
+        if (numMax !== undefined && n > numMax) return numMax;
+        return n;
+      };
+      const isAtMin = numValue !== null && numMin !== undefined && numValue <= numMin;
+      const isAtMax = numValue !== null && numMax !== undefined && numValue >= numMax;
+
+      const setValue = (next: number | null) => {
+        if (!controlled) internal.value = next;
+        emit("update:modelValue", next);
+      };
+      const increment = () => setValue(clamp((numValue ?? numMin ?? 0) + numStep));
+      const decrement = () => setValue(clamp((numValue ?? numMax ?? 0) - numStep));
 
       return h(
         "div",
         {
           class: classNames(
             "st-field",
-            "st-numberInput",
-            `st-numberInput--${props.size}`,
             props.class,
           ),
         },
@@ -66,29 +98,53 @@ export const NumberInput = defineComponent({
               props.label
                 ? h("span", { class: "st-field__label" }, props.label as string)
                 : null,
-              h("input", {
-                ...attrs,
-                id: inputId,
-                class: "st-control st-numberInput__control",
-                type: "number",
-                "aria-invalid": isInvalid ? "true" : undefined,
-                value: props.modelValue ?? props.value ?? undefined,
-                disabled: props.disabled,
-                readonly: props.readonly,
-                min: props.min,
-                max: props.max,
-                step: props.step,
-                onInput: (event: Event) => {
-                  emit(
-                    "update:modelValue",
-                    (event.target as HTMLInputElement).value,
-                  );
-                  emit("input", event);
-                },
-                onChange: (event: Event) => {
-                  emit("change", event);
-                },
-              }),
+              h("span", { class: classNames("st-numberInput", `st-numberInput--${props.size}`) }, [
+                h("input", {
+                  ...attrs,
+                  id: inputId,
+                  class: "st-numberInput__control",
+                  type: "number",
+                  "aria-invalid": isInvalid ? "true" : undefined,
+                  value: numValue ?? "",
+                  disabled: props.disabled,
+                  readonly: props.readonly,
+                  min: props.min,
+                  max: props.max,
+                  step: props.step,
+                  onInput: (event: Event) => {
+                    const raw = (event.target as HTMLInputElement).value;
+                    setValue(raw === "" ? null : Number.isFinite(Number(raw)) ? Number(raw) : numValue);
+                    emit("input", event);
+                  },
+                  onChange: (event: Event) => {
+                    emit("change", event);
+                  },
+                }),
+                h("span", { class: "st-numberInput__buttons" }, [
+                  h(
+                    "button",
+                    {
+                      type: "button",
+                      class: "st-numberInput__button",
+                      "aria-label": props.decrementLabel,
+                      disabled: props.disabled || isAtMin,
+                      onClick: decrement,
+                    },
+                    h("span", { "aria-hidden": "true" }, "−"),
+                  ),
+                  h(
+                    "button",
+                    {
+                      type: "button",
+                      class: "st-numberInput__button",
+                      "aria-label": props.incrementLabel,
+                      disabled: props.disabled || isAtMax,
+                      onClick: increment,
+                    },
+                    h("span", { "aria-hidden": "true" }, "+"),
+                  ),
+                ]),
+              ]),
             ],
           ),
           props.errorText

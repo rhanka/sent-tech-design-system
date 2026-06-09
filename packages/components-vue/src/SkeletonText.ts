@@ -3,42 +3,50 @@ import { classNames } from "./classNames.js";
 
 export type SkeletonTextProps = {
   lines?: number;
-  label?: string;
+  width?: string;
+  heading?: boolean;
+  paragraph?: boolean;
   class?: string;
 };
 
 export const SkeletonText = defineComponent({
   name: "SkeletonText",
   props: {
-    lines: { type: Number, default: 3 },
-    label: { type: String, default: "Loading" },
+    lines: { type: Number, default: 1 },
+    width: { type: String, default: undefined },
+    heading: { type: Boolean, default: false },
+    paragraph: { type: Boolean, default: false },
     class: { type: String, default: undefined },
   },
   setup(props, { attrs }) {
-    return () =>
-      h(
+    return () => {
+      const lineCount = props.paragraph ? Math.max(props.lines ?? 1, 3) : props.lines ?? 1;
+      const lineWidth = (index: number): string | undefined => {
+        if (props.width && index === 0) return props.width;
+        if (props.paragraph && index === lineCount - 1) return "60%";
+        return undefined;
+      };
+      return h(
         "div",
         {
           ...attrs,
           class: classNames("st-skeleton", props.class),
-          "aria-label": props.label,
+          role: "status",
+          "aria-label": "Loading…",
+          "aria-busy": "true",
         },
-        [
-          h(
-            "span",
-            { class: "st-visually-hidden" },
-            props.label,
-          ),
-          ...Array.from({ length: props.lines ?? 3 }, (_, index) =>
-            h("span", {
-              key: index,
-              class: classNames(
-                "st-skeleton__line",
-                index === 0 && "st-skeleton__line--heading",
-              ),
-            }),
-          ),
-        ],
+        Array.from({ length: lineCount }, (_, index) => {
+          const w = lineWidth(index);
+          return h("span", {
+            key: index,
+            class: classNames(
+              "st-skeleton__line",
+              props.heading && "st-skeleton__line--heading",
+            ),
+            style: w ? `width:${w}` : undefined,
+          });
+        }),
       );
+    };
   },
 });

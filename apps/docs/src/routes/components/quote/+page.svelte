@@ -1,7 +1,24 @@
 <script lang="ts">
   import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { getExample } from "$lib/framework/examples";
-  import { Badge, Quote } from "@sentropic/design-system-svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
+  import { Badge } from "@sentropic/design-system-svelte";
+
+  // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
+  // (les sections basculent en onglets svelte/react/vue, comme les autres pages).
+  const attributionDemo: NodeSpec[] = [
+    {
+      comp: "Quote",
+      props: { author: "Antoine de Saint-Exupéry", source: "Citadelle", cite: "https://fr.wikipedia.org/wiki/Citadelle" },
+      children: [
+        "La perfection est atteinte non pas lorsqu'il n'y a plus rien à ajouter, mais lorsqu'il n'y a plus rien à retirer."
+      ]
+    }
+  ];
+
+  const plainDemo: NodeSpec[] = [
+    { comp: "Quote", children: ["Un bon design system est invisible : on ne voit que le produit."] }
+  ];
 </script>
 
 <div class="docs-page">
@@ -21,15 +38,12 @@
 
   <section class="docs-section">
     <h2>Avec attribution</h2>
-    <Quote author="Antoine de Saint-Exupéry" source="Citadelle" cite="https://fr.wikipedia.org/wiki/Citadelle">
-      La perfection est atteinte non pas lorsqu'il n'y a plus rien à ajouter, mais
-      lorsqu'il n'y a plus rien à retirer.
-    </Quote>
+    <TabbedExample nodes={attributionDemo} />
   </section>
 
   <section class="docs-section">
     <h2>Sans attribution</h2>
-    <Quote>Un bon design system est invisible : on ne voit que le produit.</Quote>
+    <TabbedExample nodes={plainDemo} />
   </section>
 
   <section class="docs-section">

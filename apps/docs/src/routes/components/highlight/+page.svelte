@@ -1,7 +1,39 @@
 <script lang="ts">
   import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { getExample } from "$lib/framework/examples";
-  import { Badge, Highlight } from "@sentropic/design-system-svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
+  import { Badge } from "@sentropic/design-system-svelte";
+
+  // Démo décrite en arbre NodeSpec neutre -> rendue dans le framework actif
+  // (la section bascule en onglets svelte/react/vue, comme les autres pages).
+  const tonalitesDemo: NodeSpec[] = [
+    {
+      el: "div",
+      props: { class: "docs-demo-stack" },
+      children: [
+        {
+          comp: "Highlight",
+          props: { title: "À noter" },
+          children: [{ el: "p", children: ["Encart neutre, accent sur la couleur d'action primaire du thème."] }]
+        },
+        {
+          comp: "Highlight",
+          props: { tone: "info", title: "Information" },
+          children: [{ el: "p", children: ["Contexte utile, non bloquant."] }]
+        },
+        {
+          comp: "Highlight",
+          props: { tone: "warning", title: "Attention" },
+          children: [{ el: "p", children: ["Point de vigilance à signaler."] }]
+        },
+        {
+          comp: "Highlight",
+          props: { tone: "error", title: "Important" },
+          children: [{ el: "p", children: ["Risque ou erreur à corriger."] }]
+        }
+      ]
+    }
+  ];
 </script>
 
 <div class="docs-page">
@@ -22,20 +54,7 @@
 
   <section class="docs-section">
     <h2>Tonalités</h2>
-    <div class="docs-highlight-stack">
-      <Highlight title="À noter">
-        <p>Encart neutre, accent sur la couleur d'action primaire du thème.</p>
-      </Highlight>
-      <Highlight tone="info" title="Information">
-        <p>Contexte utile, non bloquant.</p>
-      </Highlight>
-      <Highlight tone="warning" title="Attention">
-        <p>Point de vigilance à signaler.</p>
-      </Highlight>
-      <Highlight tone="error" title="Important">
-        <p>Risque ou erreur à corriger.</p>
-      </Highlight>
-    </div>
+    <TabbedExample nodes={tonalitesDemo} />
   </section>
 
   <section class="docs-section">
@@ -53,10 +72,3 @@
     </table>
   </section>
 </div>
-
-<style>
-  .docs-highlight-stack {
-    display: grid;
-    gap: 0.75rem;
-  }
-</style>

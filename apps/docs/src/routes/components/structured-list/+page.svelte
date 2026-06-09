@@ -1,7 +1,8 @@
 <script lang="ts">
   import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { getExample } from "$lib/framework/examples";
-  import { Badge, StructuredList, type StructuredListItem } from "@sentropic/design-system-svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
+  import { Badge, type StructuredListItem } from "@sentropic/design-system-svelte";
 
   const items: StructuredListItem[] = [
     { key: "Nom", value: "Sentropic Design System" },
@@ -9,6 +10,9 @@
     { key: "Licence", value: "Propriétaire" },
     { key: "Composants", value: "70+" }
   ];
+
+  // Démo NodeSpec neutre -> rendue dans le framework actif (onglets svelte/react/vue).
+  const exampleDemo: NodeSpec[] = [{ comp: "StructuredList", props: { items } }];
 </script>
 
 <div class="docs-page">
@@ -29,7 +33,7 @@
 
   <section class="docs-section">
     <h2>Exemple</h2>
-    <StructuredList {items} />
+    <TabbedExample nodes={exampleDemo} />
   </section>
 
   <section class="docs-section">
