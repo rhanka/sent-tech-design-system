@@ -3680,15 +3680,21 @@ export function NumberInput({
   );
 }
 
-export type OrderedListItem = { label: React.ReactNode; children?: OrderedListInput[] };
+// Forme item alignée sur le canon Svelte : `content` (+ `label` accepté en alias
+// de compat). Le test reconnaît l'une OU l'autre clé pour ne pas rendre vide.
+export type OrderedListItem = { content?: React.ReactNode; label?: React.ReactNode; children?: OrderedListInput[] };
 export type OrderedListInput = React.ReactNode | OrderedListItem;
 export type OrderedListProps = React.OlHTMLAttributes<HTMLOListElement> & { items: OrderedListInput[] };
 function renderListItem(item: OrderedListInput, index: number, ordered: boolean): React.ReactNode {
-  if (typeof item === "object" && item !== null && "label" in (item as OrderedListItem)) {
+  if (
+    typeof item === "object" &&
+    item !== null &&
+    ("content" in (item as OrderedListItem) || "label" in (item as OrderedListItem))
+  ) {
     const cast = item as OrderedListItem;
     return (
       <li key={index} className={ordered ? "st-orderedList__item" : "st-unorderedList__item"}>
-        {cast.label}
+        {cast.content ?? cast.label}
         {cast.children ? (ordered ? <OrderedList items={cast.children} /> : <UnorderedList items={cast.children} />) : null}
       </li>
     );
@@ -5068,7 +5074,7 @@ export function TreeView({
   );
 }
 
-export type UnorderedListItem = { label: React.ReactNode; children?: UnorderedListInput[] };
+export type UnorderedListItem = { content?: React.ReactNode; label?: React.ReactNode; children?: UnorderedListInput[] };
 export type UnorderedListInput = React.ReactNode | UnorderedListItem;
 export type UnorderedListProps = React.HTMLAttributes<HTMLUListElement> & { items: UnorderedListInput[] };
 export function UnorderedList({ items, className, ...rest }: UnorderedListProps) {
