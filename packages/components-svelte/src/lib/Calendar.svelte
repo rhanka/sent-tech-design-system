@@ -593,6 +593,17 @@
     color: var(--st-component-dropdown-selectedText, var(--st-semantic-action-primaryText));
   }
 
+  /* Jour sélectionné survolé : garder un fond FONCÉ (sinon le :hover générique
+     met surface-subtle clair sous le texte blanc -> texte invisible). Spécificité
+     (0,4,0) > le :hover générique (0,3,0). Bug récurrent de contraste hover. */
+  .st-calendar__day--selected:hover:not(:disabled) {
+    background: var(
+      --st-semantic-action-primaryHover,
+      var(--st-component-dropdown-selectedBackground, var(--st-semantic-action-primary))
+    );
+    color: var(--st-component-dropdown-selectedText, var(--st-semantic-action-primaryText));
+  }
+
   .st-calendar__day:disabled {
     color: var(--st-semantic-text-muted);
     cursor: not-allowed;

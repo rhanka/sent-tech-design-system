@@ -348,31 +348,17 @@
       background-color 320ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  /* Micro border activation line on hover for CLI cards */
-  .docs-cli-card::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, #2563eb, #8b5cf6);
-    opacity: 0;
-    transition: opacity 320ms cubic-bezier(0.16, 1, 0.3, 1);
-  }
+  /* Exergue retirée : pas de liseré dégradé sur carte arrondie (anti-pattern
+     proscrit). Le hover s'exprime par translate + ombre + bordure uniquement. */
 
   .docs-cli-card:hover {
     transform: translateY(-4px) scale(1.02);
     border-color: oklch(0.6 0.18 260 / 20%);
-    box-shadow: 
-      0 20px 25px -5px rgba(37, 99, 235, 0.04), 
+    box-shadow:
+      0 20px 25px -5px rgba(37, 99, 235, 0.04),
       0 10px 10px -5px rgba(37, 99, 235, 0.02),
       0 0 0 1px oklch(0.6 0.18 260 / 10%);
     background-color: oklch(0.99 0.002 250);
-  }
-
-  .docs-cli-card:hover::after {
-    opacity: 1;
   }
 
   .docs-cli-card-head {
