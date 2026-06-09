@@ -375,14 +375,17 @@
 
   .st-timepicker--sm {
     min-height: var(--st-component-control-smHeight, 2rem);
+    font-size: var(--st-component-control-smFontSize, 0.8125rem);
   }
 
   .st-timepicker--md {
     min-height: var(--st-component-control-mdHeight, 2.5rem);
+    font-size: var(--st-component-control-mdFontSize, 0.875rem);
   }
 
   .st-timepicker--lg {
     min-height: var(--st-component-control-lgHeight, 3rem);
+    font-size: var(--st-component-control-lgFontSize, 1rem);
   }
 
   .st-timepicker:hover:not(:has(input:disabled)) {

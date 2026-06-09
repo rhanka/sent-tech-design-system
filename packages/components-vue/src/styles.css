@@ -1226,14 +1226,17 @@
 
   .st-combobox--sm {
     min-height: var(--st-component-control-smHeight, 2rem);
+    font-size: var(--st-component-control-smFontSize, 0.8125rem);
   }
 
   .st-combobox--md {
     min-height: var(--st-component-control-mdHeight, 2.5rem);
+    font-size: var(--st-component-control-mdFontSize, 0.875rem);
   }
 
   .st-combobox--lg {
     min-height: var(--st-component-control-lgHeight, 3rem);
+    font-size: var(--st-component-control-lgFontSize, 1rem);
   }
 
   .st-combobox:hover:not(:has(input:disabled)) {
@@ -1731,14 +1734,17 @@
 
   .st-datepicker--sm {
     min-height: var(--st-component-control-smHeight, 2rem);
+    font-size: var(--st-component-control-smFontSize, 0.8125rem);
   }
 
   .st-datepicker--md {
     min-height: var(--st-component-control-mdHeight, 2.5rem);
+    font-size: var(--st-component-control-mdFontSize, 0.875rem);
   }
 
   .st-datepicker--lg {
     min-height: var(--st-component-control-lgHeight, 3rem);
+    font-size: var(--st-component-control-lgFontSize, 1rem);
   }
 
   .st-datepicker:hover:not(:has(input:disabled)) {
@@ -3247,14 +3253,17 @@
 
   .st-control--sm {
     min-height: var(--st-component-control-anatomy-density-sm-controlHeight, var(--st-component-control-smHeight, 2rem));
+    font-size: var(--st-component-control-smFontSize, 0.8125rem);
   }
 
   .st-control--md {
     min-height: var(--st-component-control-anatomy-density-md-controlHeight, var(--st-component-control-mdHeight, 2.5rem));
+    font-size: var(--st-component-control-mdFontSize, 0.875rem);
   }
 
   .st-control--lg {
     min-height: var(--st-component-control-anatomy-density-lg-controlHeight, var(--st-component-control-lgHeight, 3rem));
+    font-size: var(--st-component-control-lgFontSize, 1rem);
   }
 
   .st-control::placeholder {
@@ -3921,17 +3930,20 @@
 
   .st-multiSelect--sm .st-multiSelect__trigger {
     min-height: var(--st-component-control-smHeight, 2rem);
+    font-size: var(--st-component-control-smFontSize, 0.8125rem);
   }
 
   .st-multiSelect--md .st-multiSelect__trigger {
     min-height: var(--st-component-control-mdHeight, 2.5rem);
+    font-size: var(--st-component-control-mdFontSize, 0.875rem);
   }
 
   .st-multiSelect--lg .st-multiSelect__trigger {
     min-height: var(--st-component-control-lgHeight, 3rem);
+    font-size: var(--st-component-control-lgFontSize, 1rem);
   }
 
-  
+
   .st-multiSelect__trigger {
     align-items: center;
     background: var(--st-component-control-anatomy-field-fillBg, var(--st-component-control-background, var(--st-semantic-surface-default)));
@@ -4187,14 +4199,17 @@
 
   .st-numberInput--sm {
     min-height: var(--st-component-control-smHeight, 2rem);
+    font-size: var(--st-component-control-smFontSize, 0.8125rem);
   }
 
   .st-numberInput--md {
     min-height: var(--st-component-control-mdHeight, 2.5rem);
+    font-size: var(--st-component-control-mdFontSize, 0.875rem);
   }
 
   .st-numberInput--lg {
     min-height: var(--st-component-control-lgHeight, 3rem);
+    font-size: var(--st-component-control-lgFontSize, 1rem);
   }
 
   .st-numberInput:hover:not(:has(input:disabled)) {
@@ -4647,14 +4662,17 @@
 
   .st-passwordInput--sm {
     min-height: var(--st-component-control-smHeight, 2rem);
+    font-size: var(--st-component-control-smFontSize, 0.8125rem);
   }
 
   .st-passwordInput--md {
     min-height: var(--st-component-control-mdHeight, 2.5rem);
+    font-size: var(--st-component-control-mdFontSize, 0.875rem);
   }
 
   .st-passwordInput--lg {
     min-height: var(--st-component-control-lgHeight, 3rem);
+    font-size: var(--st-component-control-lgFontSize, 1rem);
   }
 
   .st-passwordInput:hover:not(:has(input:disabled)) {
@@ -5237,14 +5255,17 @@
 
   .st-search--sm {
     min-height: var(--st-component-control-smHeight, 2rem);
+    font-size: var(--st-component-control-smFontSize, 0.8125rem);
   }
 
   .st-search--md {
     min-height: var(--st-component-control-mdHeight, 2.5rem);
+    font-size: var(--st-component-control-mdFontSize, 0.875rem);
   }
 
   .st-search--lg {
     min-height: var(--st-component-control-lgHeight, 3rem);
+    font-size: var(--st-component-control-lgFontSize, 1rem);
   }
 
   .st-search:hover:not(:has(input:disabled)) {
@@ -5304,18 +5325,17 @@
     align-items: center;
     background: transparent;
     border: 0;
-    border-radius: 50%;
-    color: inherit;
+    border-radius: var(--st-component-control-anatomy-shape-radius, 0.375rem);
+    color: var(--st-semantic-text-secondary);
     cursor: pointer;
     display: inline-flex;
     flex: 0 0 auto;
     font: inherit;
-    font-size: 1.125rem;
     height: 1.5rem;
     justify-content: center;
     line-height: 1;
-    margin-inline-end: 0.375rem;
-    padding: 0;
+    margin-inline-end: 0.25rem;
+    padding: 0 0.25rem;
     transition: background-color var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
     width: 1.5rem;
   }
@@ -5405,14 +5425,17 @@
 
   .st-select--sm {
     min-height: var(--st-component-control-smHeight, 2rem);
+    font-size: var(--st-component-control-smFontSize, 0.8125rem);
   }
 
   .st-select--md {
     min-height: var(--st-component-control-mdHeight, 2.5rem);
+    font-size: var(--st-component-control-mdFontSize, 0.875rem);
   }
 
   .st-select--lg {
     min-height: var(--st-component-control-lgHeight, 3rem);
+    font-size: var(--st-component-control-lgFontSize, 1rem);
   }
 
   .st-select:focus-visible {
@@ -8098,14 +8121,17 @@
 
 .st-timepicker--sm {
   min-height: var(--st-component-control-smHeight, 2rem);
+  font-size: var(--st-component-control-smFontSize, 0.8125rem);
 }
 
 .st-timepicker--md {
   min-height: var(--st-component-control-mdHeight, 2.5rem);
+  font-size: var(--st-component-control-mdFontSize, 0.875rem);
 }
 
 .st-timepicker--lg {
   min-height: var(--st-component-control-lgHeight, 3rem);
+  font-size: var(--st-component-control-lgFontSize, 1rem);
 }
 
 .st-timepicker:hover:not(:has(input:disabled)) {

@@ -29,6 +29,7 @@
   import type { IslandHandle } from "./react-island";
   import { nodeToCode } from "./nodeToCode";
   import SvelteNode from "./SvelteNode.svelte";
+  import { ContentSwitcher } from "@sentropic/design-system-svelte";
 
   let { nodes, title }: { nodes: NodeSpec[]; title?: string } = $props();
 
@@ -98,21 +99,14 @@
     <h3 class="tex__title">{title}</h3>
   {/if}
 
-  <div class="tex__tabs" role="tablist" aria-label={fr ? "Framework" : "Framework"}>
-    {#each FRAMEWORKS as fw (fw.id)}
-      <button
-        type="button"
-        role="tab"
-        class="tex__tab"
-        class:tex__tab--active={active === fw.id}
-        data-framework={fw.id}
-        aria-selected={active === fw.id}
-        onclick={() => (framework.value = fw.id)}
-      >
-        <span class="tex__dot" aria-hidden="true"></span>
-        {fw.label}
-      </button>
-    {/each}
+  <div class="tex__tabs">
+    <ContentSwitcher
+      size="sm"
+      label={fr ? "Framework" : "Framework"}
+      items={FRAMEWORKS.map((fw) => ({ value: fw.id, label: fw.label }))}
+      value={active}
+      onchange={(v) => (framework.value = v as FrameworkId)}
+    />
   </div>
 
   <div class="tex__stage">
@@ -163,51 +157,10 @@
     color: var(--docs-ink, #0f172a);
   }
 
+  /* ContentSwitcher DS porte la barre d'onglets. On ajuste uniquement le padding
+     et l'alignement documentaires. */
   .tex__tabs {
-    display: flex;
-    gap: 0.25rem;
     padding: 0.75rem 1rem 0;
-  }
-
-  .tex__tab {
-    align-items: center;
-    background: transparent;
-    border: 1px solid transparent;
-    border-bottom: none;
-    border-radius: 0.5rem 0.5rem 0 0;
-    color: var(--docs-muted, #475569);
-    cursor: pointer;
-    display: inline-flex;
-    font-size: 0.78rem;
-    font-weight: 600;
-    gap: 0.4rem;
-    letter-spacing: 0.01em;
-    padding: 0.4rem 0.75rem;
-  }
-
-  .tex__tab:hover {
-    color: var(--docs-ink, #0f172a);
-  }
-
-  .tex__tab--active {
-    background: var(--st-semantic-surface-subtle, #f8fafc);
-    border-color: var(--docs-line, #e2e8f0);
-    color: var(--docs-ink, #0f172a);
-  }
-
-  .tex__dot {
-    background: #ff3e00; /* Svelte */
-    border-radius: 50%;
-    height: 0.5rem;
-    width: 0.5rem;
-  }
-
-  .tex__tab[data-framework="react"] .tex__dot {
-    background: #149eca;
-  }
-
-  .tex__tab[data-framework="vue"] .tex__dot {
-    background: #42b883;
   }
 
   .tex__stage {

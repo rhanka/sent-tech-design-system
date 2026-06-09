@@ -136,10 +136,18 @@
   // Synchronise l'URL (theme + framework) via replaceState (pas d'entrée historique).
   // Déclenché à chaque changement de thème ou de framework, après l'init.
   $effect(() => {
-    const newSearch = buildUpdatedSearch(activeThemeId as UrlThemeId, framework.value);
-    const currentSearch = window.location.search;
-    if (newSearch !== currentSearch) {
-      replaceState(page.url.pathname + newSearch, page.state);
+    // Dépendances réactives EXPLICITES et UNIQUES : thème + framework. On ne lit
+    // PAS `page` ici (le replaceState ci-dessous le modifie -> sinon l'effet se
+    // re-déclenche sur sa propre écriture et « consomme » le tracking de
+    // framework.value : depuis le défaut svelte (param omis), le 1er clic vers
+    // react n'écrivait jamais l'URL). pathname via window.location (non réactif),
+    // page.state lu en untrack.
+    const theme = activeThemeId as UrlThemeId;
+    const fw = framework.value;
+    if (!browser) return;
+    const newSearch = buildUpdatedSearch(theme, fw);
+    if (newSearch !== window.location.search) {
+      untrack(() => replaceState(window.location.pathname + newSearch, page.state));
     }
   });
 
@@ -298,7 +306,6 @@
         class="docs-header-control docs-header-menuButton docs-login-trigger"
         onclick={() => auth.login()}
         aria-label={locale.value === "fr" ? "Se connecter" : "Sign in"}
-        title={locale.value === "fr" ? "Se connecter" : "Sign in"}
       >
         <User size={16} strokeWidth={2.1} aria-hidden="true" />
       </button>

@@ -41,36 +41,36 @@
     <h2>{t(locale.value, "overview")}</h2>
     <p>{t(locale.value, "overviewBody")}</p>
     <div class="docs-metric-grid" aria-label="Documentation status">
-      <div class="docs-metric">
+      <Card class="docs-metric">
         <strong>{DOCS_VERSION}</strong>
         <span>{t(locale.value, "metricReleasePublished")}</span>
-      </div>
-      <div class="docs-metric">
+      </Card>
+      <Card class="docs-metric">
         <strong>{total}</strong>
         <span>{t(locale.value, "metricExportedComponents")}</span>
-      </div>
-      <div class="docs-metric">
+      </Card>
+      <Card class="docs-metric">
         <strong>{documented}</strong>
         <span>{t(locale.value, "metricDocumented")}</span>
-      </div>
-      <div class="docs-metric">
+      </Card>
+      <Card class="docs-metric">
         <strong>{pending}</strong>
         <span>{t(locale.value, "metricStubs")}</span>
-      </div>
+      </Card>
     </div>
     <div class="docs-foundation-grid">
-      <div class="docs-foundation-item">
+      <Card class="docs-foundation-item">
         <h3>{t(locale.value, "foundationSemanticTokensTitle")}</h3>
         <span>{t(locale.value, "foundationSemanticTokensBody")}</span>
-      </div>
-      <div class="docs-foundation-item">
+      </Card>
+      <Card class="docs-foundation-item">
         <h3>{t(locale.value, "foundationTenantThemesTitle")}</h3>
         <span>{t(locale.value, "foundationTenantThemesBody")}</span>
-      </div>
-      <div class="docs-foundation-item">
+      </Card>
+      <Card class="docs-foundation-item">
         <h3>{t(locale.value, "foundationSvelteComponentsTitle")}</h3>
         <span>{t(locale.value, "foundationSvelteComponentsBody")}</span>
-      </div>
+      </Card>
     </div>
   </section>
 
@@ -78,7 +78,7 @@
     <h2>{t(locale.value, "cliSectionTitle")}</h2>
     <p>{t(locale.value, "cliSectionIntro")}</p>
     <div class="docs-cli-grid">
-      <div class="docs-cli-card">
+      <Card class="docs-cli-card">
         <div class="docs-cli-card-head">
           <code class="docs-cli-command">design init</code>
           <Badge tone="neutral">Strategic</Badge>
@@ -88,9 +88,9 @@
             ? "Configure le contexte de marque (PRODUCT.md) et fige les tokens existants (DESIGN.md)."
             : "Sets up the strategic brand context (PRODUCT.md) and extracts real tokens (DESIGN.md)."}
         </p>
-      </div>
+      </Card>
 
-      <div class="docs-cli-card">
+      <Card class="docs-cli-card">
         <div class="docs-cli-card-head">
           <code class="docs-cli-command">design build</code>
           <Badge tone="success">Creation</Badge>
@@ -100,9 +100,9 @@
             ? "Zoning et ergonomie amont (--propose), suivi de la génération de code Svelte 5 / CSS (craft)."
             : "Ergonomic zoning and planning (--propose), followed by robust Svelte 5 / CSS code generation (craft)."}
         </p>
-      </div>
+      </Card>
 
-      <div class="docs-cli-card">
+      <Card class="docs-cli-card">
         <div class="docs-cli-card-head">
           <code class="docs-cli-command">design check</code>
           <Badge tone="warning">Diagnostics</Badge>
@@ -112,9 +112,9 @@
             ? "Diagnostics techniques déterministes (--tech) et évaluation qualitative Nielsen par IA (--human)."
             : "Deterministic technical scans (--tech) and advanced Nielsen qualitative UX review by AI (--human)."}
         </p>
-      </div>
+      </Card>
 
-      <div class="docs-cli-card">
+      <Card class="docs-cli-card">
         <div class="docs-cli-card-head">
           <code class="docs-cli-command">design align</code>
           <Badge tone="info">Fondations</Badge>
@@ -124,9 +124,9 @@
             ? "Calibrage physique strict (tones OKLCH, spacing grille, hiérarchie typo, a11y focus/targets 44px, responsive)."
             : "Strict physical calibration (OKLCH tones, grid spacing, typo hierarchy, a11y focus/44px targets, responsive)."}
         </p>
-      </div>
+      </Card>
 
-      <div class="docs-cli-card">
+      <Card class="docs-cli-card">
         <div class="docs-cli-card-head">
           <code class="docs-cli-command">design polish</code>
           <Badge tone="success">Finesse</Badge>
@@ -136,7 +136,7 @@
             ? "Ajustements de finesse créative (motion Svelte, régulation de volume, spark cinétique, charm émotionnel, lucid microcopy, essence DOM)."
             : "Creative finishing (Svelte motion, volume regulation, kinetic spark, emotional charm, lucid microcopy, essence DOM)."}
         </p>
-      </div>
+      </Card>
     </div>
 
     <div class="docs-cli-didactic">
@@ -175,18 +175,18 @@
     <h2>{t(locale.value, "tokensSectionTitle")}</h2>
     <p>{t(locale.value, "tokensSectionIntro")}</p>
     <div class="docs-contract-grid">
-      <div class="docs-contract-item">
+      <Card class="docs-contract-item">
         <h3>{t(locale.value, "contractFoundationTitle")}</h3>
         <span>{t(locale.value, "contractFoundationBody")}</span>
-      </div>
-      <div class="docs-contract-item">
+      </Card>
+      <Card class="docs-contract-item">
         <h3>{t(locale.value, "contractSemanticTitle")}</h3>
         <span>{t(locale.value, "contractSemanticBody")}</span>
-      </div>
-      <div class="docs-contract-item">
+      </Card>
+      <Card class="docs-contract-item">
         <h3>{t(locale.value, "contractComponentTitle")}</h3>
         <span>{t(locale.value, "contractComponentBody")}</span>
-      </div>
+      </Card>
     </div>
   </section>
 
@@ -199,18 +199,18 @@
     <h2>{t(locale.value, "tokenPolicyTitle")}</h2>
     <p>{t(locale.value, "tokenPolicyBody")}</p>
     <div class="docs-contract-grid">
-      <div class="docs-contract-item">
+      <Card class="docs-contract-item">
         <h3>{t(locale.value, "contractProductAppsTitle")}</h3>
         <span>{t(locale.value, "contractProductAppsBody")}</span>
-      </div>
-      <div class="docs-contract-item">
+      </Card>
+      <Card class="docs-contract-item">
         <h3>{t(locale.value, "contractExternalThemesTitle")}</h3>
         <span>{t(locale.value, "contractExternalThemesBody")}</span>
-      </div>
-      <div class="docs-contract-item">
+      </Card>
+      <Card class="docs-contract-item">
         <h3>{t(locale.value, "contractChatUiTitle")}</h3>
         <span>{t(locale.value, "contractChatUiBody")}</span>
-      </div>
+      </Card>
     </div>
   </section>
 </div>
@@ -331,18 +331,14 @@
     margin-bottom: 2rem;
   }
 
-  .docs-cli-card {
-    background: var(--st-semantic-surface-card, #ffffff);
-    border: 1px solid var(--st-semantic-border-subtle, #e2e8f0);
-    border-radius: 0.75rem; /* Harmonized corner radius */
-    padding: 1.5rem;
-    position: relative;
-    overflow: hidden;
+  /* CLI cards : Card DS porte le fond/bordure/radius. On surcharge via :global
+     uniquement les propriétés documentaires spécifiques (layout flex + hover). */
+  :global(.st-card.docs-cli-card) {
     display: flex;
     flex-direction: column;
-    box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.02), 0 2px 4px -1px rgba(15, 23, 42, 0.01), 0 0 0 1px rgba(15, 23, 42, 0.02);
-    transition: 
-      transform 320ms cubic-bezier(0.16, 1, 0.3, 1), 
+    padding: 1.5rem;
+    transition:
+      transform 320ms cubic-bezier(0.16, 1, 0.3, 1),
       box-shadow 320ms cubic-bezier(0.16, 1, 0.3, 1),
       border-color 320ms cubic-bezier(0.16, 1, 0.3, 1),
       background-color 320ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -351,7 +347,7 @@
   /* Exergue retirée : pas de liseré dégradé sur carte arrondie (anti-pattern
      proscrit). Le hover s'exprime par translate + ombre + bordure uniquement. */
 
-  .docs-cli-card:hover {
+  :global(.st-card.docs-cli-card:hover) {
     transform: translateY(-4px) scale(1.02);
     border-color: oklch(0.6 0.18 260 / 20%);
     box-shadow:
@@ -386,7 +382,7 @@
     display: inline-block;
   }
 
-  .docs-cli-card:hover .docs-cli-command {
+  :global(.st-card.docs-cli-card:hover) .docs-cli-command {
     color: #ffffff;
     background-color: var(--st-semantic-text-accent, #2563eb);
     border-color: var(--st-semantic-text-accent, #2563eb);

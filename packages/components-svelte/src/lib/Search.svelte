@@ -143,14 +143,17 @@
 
   .st-search--sm {
     min-height: var(--st-component-control-smHeight, 2rem);
+    font-size: var(--st-component-control-smFontSize, 0.8125rem);
   }
 
   .st-search--md {
     min-height: var(--st-component-control-mdHeight, 2.5rem);
+    font-size: var(--st-component-control-mdFontSize, 0.875rem);
   }
 
   .st-search--lg {
     min-height: var(--st-component-control-lgHeight, 3rem);
+    font-size: var(--st-component-control-lgFontSize, 1rem);
   }
 
   .st-search:hover:not(:has(input:disabled)) {
@@ -210,18 +213,17 @@
     align-items: center;
     background: transparent;
     border: 0;
-    border-radius: 50%;
-    color: inherit;
+    border-radius: var(--st-component-control-anatomy-shape-radius, 0.375rem);
+    color: var(--st-semantic-text-secondary);
     cursor: pointer;
     display: inline-flex;
     flex: 0 0 auto;
     font: inherit;
-    font-size: 1.125rem;
     height: 1.5rem;
     justify-content: center;
     line-height: 1;
-    margin-inline-end: 0.375rem;
-    padding: 0;
+    margin-inline-end: 0.25rem;
+    padding: 0 0.25rem;
     transition: background-color var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
     width: 1.5rem;
   }
