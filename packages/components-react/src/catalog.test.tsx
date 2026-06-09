@@ -121,7 +121,7 @@ describe("React public catalog parity", () => {
     expect(screen.getByLabelText("Bio").className).toContain("st-control");
     expect(screen.getByLabelText("Search").className).toContain("st-search__input");
     expect(screen.getByLabelText("Active").className).toContain("st-choice__input");
-    expect(screen.getByLabelText("Notifications").className).toContain("st-toggle__input");
+    expect(screen.getByRole("switch", { name: "Notifications" }).className).toContain("st-toggle__input");
     expect(screen.getByText("logo.svg").className).toContain("st-fileUploader__name");
   });
 

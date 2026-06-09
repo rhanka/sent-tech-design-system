@@ -163,7 +163,7 @@ const componentCases: Array<{ name: string; element: React.ReactElement; text?: 
   { name: "PaginationNav", element: <PaginationNav page={2} totalPages={4} />, label: "Page 2" },
   { name: "PasswordInput", element: <PasswordInput label="Password label" value="secret" />, text: "Password label" },
   { name: "Popover", element: <Popover content="Popover body" open><button type="button">Popover trigger</button></Popover>, text: "Popover body" },
-  { name: "ProgressBar", element: <ProgressBar label="Progress label" value={60} />, text: "60%" },
+  { name: "ProgressBar", element: <ProgressBar label="Progress label" value={60} showValue />, text: "60%" },
   { name: "ProgressIndicator", element: <ProgressIndicator items={[{ id: "one", label: "Step one", status: "complete" }]} />, text: "Step one" },
   { name: "Quote", element: <Quote author="Grace Hopper">Quote body</Quote>, text: "Quote body" },
   { name: "Radio", element: <Radio label="Radio label" defaultChecked />, text: "Radio label" },

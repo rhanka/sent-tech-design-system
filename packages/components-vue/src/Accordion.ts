@@ -9,6 +9,9 @@ export type AccordionItem = {
   disabled?: boolean;
 };
 
+export type AccordionAlign = "start" | "end";
+export type AccordionSize = "sm" | "md" | "lg";
+
 export type AccordionProps = {
   items: AccordionItem[];
   openIds?: string[];
@@ -18,6 +21,8 @@ export type AccordionProps = {
   open?: string[];
   /** Svelte-canonical alias for `allowMultiple`. */
   multiple?: boolean;
+  align?: AccordionAlign;
+  size?: AccordionSize;
   class?: string;
 };
 
@@ -34,6 +39,8 @@ export const Accordion = defineComponent({
     allowMultiple: { type: Boolean, default: undefined },
     open: { type: Array as () => string[], default: undefined },
     multiple: { type: Boolean, default: undefined },
+    align: { type: String as () => AccordionAlign, default: "end" },
+    size: { type: String as () => AccordionSize, default: "md" },
     class: { type: String, default: undefined },
   },
   emits: ["change"],
@@ -42,7 +49,7 @@ export const Accordion = defineComponent({
 
     return () => {
       const open = props.openIds ?? localOpen.value;
-      const allowMultiple = props.allowMultiple ?? props.multiple ?? true;
+      const allowMultiple = props.allowMultiple ?? props.multiple ?? false;
 
       const toggle = (id: string) => {
         const next = open.includes(id)
@@ -58,14 +65,32 @@ export const Accordion = defineComponent({
 
       return h(
         "div",
-        { ...attrs, class: classNames("st-accordion", props.class) },
+        {
+          ...attrs,
+          class: classNames(
+            "st-accordion",
+            `st-accordion--${props.size}`,
+            `st-accordion--align-${props.align}`,
+            props.class,
+          ),
+        },
         props.items.map((item, index) => {
           const itemId = idFrom(item, index, "accordion");
           const isOpen = open.includes(itemId);
           const triggerId = `st-accordion-trigger-${itemId}`;
           const panelId = `st-accordion-panel-${itemId}`;
+          const titleNode = h(
+            "span",
+            { class: "st-accordion__title" },
+            item.title as string,
+          );
+          const iconNode = h(
+            "span",
+            { class: "st-accordion__icon", "aria-hidden": "true" },
+            [h(ChevronDown, { size: 18, strokeWidth: 2.25, "aria-hidden": "true" })],
+          );
           return h(
-            "section",
+            "div",
             {
               key: itemId,
               class: classNames(
@@ -86,18 +111,9 @@ export const Accordion = defineComponent({
                     "aria-controls": panelId,
                     onClick: () => toggle(itemId),
                   },
-                  [
-                    h(
-                      "span",
-                      { class: "st-accordion__title" },
-                      item.title as string,
-                    ),
-                    h(
-                      "span",
-                      { class: "st-accordion__icon", "aria-hidden": "true" },
-                      [h(ChevronDown, { size: 18, strokeWidth: 2.25, "aria-hidden": "true" })],
-                    ),
-                  ],
+                  props.align === "start"
+                    ? [iconNode, titleNode]
+                    : [titleNode, iconNode],
                 ),
               ]),
               isOpen
