@@ -1,7 +1,24 @@
 <script lang="ts">
   import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { getExample } from "$lib/framework/examples";
-  import { AspectRatio, Badge } from "@sentropic/design-system-svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
+  import { Badge } from "@sentropic/design-system-svelte";
+
+  // Démo NodeSpec neutre -> rendue dans le framework actif (onglets svelte/react/vue).
+  // Styles inlines (les styles scopés de page ne traversent pas l'island).
+  const fillStyle =
+    "align-items:center;background:var(--st-semantic-surface-subtle);border:1px dashed var(--st-semantic-border-subtle);color:var(--st-semantic-text-secondary);display:flex;font-weight:600;justify-content:center;height:100%;width:100%";
+  const examplesDemo: NodeSpec[] = [
+    {
+      el: "div",
+      props: { style: "display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(12rem,1fr))" },
+      children: [
+        { comp: "AspectRatio", props: { ratio: "16/9" }, children: [{ el: "div", props: { style: fillStyle }, children: ["16 / 9"] }] },
+        { comp: "AspectRatio", props: { ratio: "1/1" }, children: [{ el: "div", props: { style: fillStyle }, children: ["1 / 1"] }] },
+        { comp: "AspectRatio", props: { ratio: "4/3" }, children: [{ el: "div", props: { style: fillStyle }, children: ["4 / 3"] }] }
+      ]
+    }
+  ];
 </script>
 
 <div class="docs-page">
@@ -22,11 +39,7 @@
 
   <section class="docs-section">
     <h2>Exemples</h2>
-    <div class="docs-ar-grid">
-      <AspectRatio ratio="16/9"><div class="docs-ar-fill">16 / 9</div></AspectRatio>
-      <AspectRatio ratio="1/1"><div class="docs-ar-fill">1 / 1</div></AspectRatio>
-      <AspectRatio ratio="4/3"><div class="docs-ar-fill">4 / 3</div></AspectRatio>
-    </div>
+    <TabbedExample nodes={examplesDemo} />
   </section>
 
   <section class="docs-section">
@@ -41,16 +54,3 @@
     </table>
   </section>
 </div>
-
-<style>
-  .docs-ar-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); }
-  .docs-ar-fill {
-    align-items: center;
-    background: var(--st-semantic-surface-subtle);
-    border: 1px dashed var(--st-semantic-border-subtle);
-    color: var(--st-semantic-text-secondary);
-    display: flex;
-    font-weight: 600;
-    justify-content: center;
-  }
-</style>

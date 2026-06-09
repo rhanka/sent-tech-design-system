@@ -787,10 +787,15 @@ select {
   margin: 0;
 }
 
-.docs-hero p,
-.docs-section p,
-.docs-content-area p,
-.docs-main p {
+/* La typographie de PROSE docs ne doit pas bleeder dans les APERÇUS de composants
+   (.tex / .docs-example) : en React/Vue (CSS non scopé) ces règles 0,1,1 écrasent
+   sinon les classes st-* (0,1,0) du composant -> divergence vs Svelte (scope hash
+   gagne) = flags DIMS. :where() ajoute 0 spécificité : on garde 0,1,1 sur la prose
+   mais on exclut le contenu des aperçus, laissant les styles du composant s'appliquer. */
+.docs-hero p:not(:where(.tex *, .docs-example *)),
+.docs-section p:not(:where(.tex *, .docs-example *)),
+.docs-content-area p:not(:where(.tex *, .docs-example *)),
+.docs-main p:not(:where(.tex *, .docs-example *)) {
   color: var(--docs-muted);
   font-size: 1rem;
   line-height: 1.65;
@@ -849,14 +854,14 @@ select {
   scroll-margin-top: calc(var(--docs-header-height) + 1rem);
 }
 
-.docs-section h2 {
+.docs-section h2:not(:where(.tex *, .docs-example *)) {
   color: var(--docs-ink);
   font-size: 1.42rem;
   line-height: 1.25;
   margin: 0;
 }
 
-.docs-section h3 {
+.docs-section h3:not(:where(.tex *, .docs-example *)) {
   color: var(--docs-ink);
   font-size: 1rem;
   line-height: 1.3;
