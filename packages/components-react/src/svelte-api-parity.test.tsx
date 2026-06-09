@@ -62,17 +62,18 @@ describe("React accepts the canonical Svelte API", () => {
       expect(screen.getByRole("button", { name: "copy" })).toBeTruthy();
     });
 
-    it("still renders action.label (React-native API)", () => {
+    it("falls back to action.label as content when no icon is set", () => {
       render(<MessageActions actions={[{ id: "copy", label: "Copy" }]} />);
       expect(screen.getByText("Copy")).toBeTruthy();
     });
 
-    it("prefers label over icon when both are present", () => {
+    it("prefers icon over label as content; label is the accessible name (Svelte canon)", () => {
       render(
         <MessageActions actions={[{ id: "copy", label: "Copy", icon: <svg data-testid="i" /> }]} />,
       );
-      expect(screen.getByText("Copy")).toBeTruthy();
-      expect(screen.queryByTestId("i")).toBeNull();
+      // Canon renders the icon; `label` becomes the button's accessible name.
+      expect(screen.getByTestId("i")).toBeTruthy();
+      expect(screen.getByRole("button", { name: "Copy" })).toBeTruthy();
     });
   });
 

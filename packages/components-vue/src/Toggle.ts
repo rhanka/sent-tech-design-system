@@ -5,6 +5,8 @@ export type ToggleSize = "sm" | "md";
 
 export type ToggleProps = {
   label: unknown;
+  labelOn?: string;
+  labelOff?: string;
   helperText?: unknown;
   size?: ToggleSize;
   modelValue?: boolean;
@@ -19,6 +21,8 @@ export const Toggle = defineComponent({
   name: "Toggle",
   props: {
     label: { type: [String, Object] as unknown as () => unknown, required: true },
+    labelOn: { type: String, default: "On" },
+    labelOff: { type: String, default: "Off" },
     helperText: { type: [String, Object] as unknown as () => unknown, default: undefined },
     size: { type: String as () => ToggleSize, default: "md" },
     modelValue: { type: Boolean, default: undefined },
@@ -30,8 +34,9 @@ export const Toggle = defineComponent({
   },
   emits: ["update:modelValue", "change"],
   setup(props, { emit, attrs }) {
-    return () =>
-      h(
+    return () => {
+      const isChecked = props.modelValue ?? props.checked ?? false;
+      return h(
         "label",
         {
           class: classNames(
@@ -41,20 +46,19 @@ export const Toggle = defineComponent({
           ),
         },
         [
+          h(
+            "span",
+            { class: "st-toggle__label" },
+            props.label as string,
+          ),
           h("span", { class: "st-toggle__row" }, [
-            h(
-              "span",
-              { class: "st-toggle__label" },
-              props.label as string,
-            ),
             h("input", {
               ...attrs,
               class: "st-toggle__input",
               type: "checkbox",
               role: "switch",
-              "aria-checked":
-                props.modelValue ?? props.checked ?? undefined,
-              checked: props.modelValue ?? props.checked,
+              "aria-checked": isChecked ? "true" : "false",
+              checked: isChecked,
               disabled: props.disabled,
               name: props.name,
               value: props.value,
@@ -64,9 +68,14 @@ export const Toggle = defineComponent({
                 emit("change", event);
               },
             }),
-            h("span", { class: "st-toggle__track" }, [
+            h("span", { class: "st-toggle__track", "aria-hidden": "true" }, [
               h("span", { class: "st-toggle__thumb" }),
             ]),
+            h(
+              "span",
+              { class: "st-toggle__state", "aria-hidden": "true" },
+              isChecked ? props.labelOn : props.labelOff,
+            ),
           ]),
           props.helperText
             ? h(
@@ -77,5 +86,6 @@ export const Toggle = defineComponent({
             : null,
         ],
       );
+    };
   },
 });

@@ -226,12 +226,14 @@ export type AccordionProps = React.HTMLAttributes<HTMLDivElement> & {
   open?: string[];
   /** Svelte-canonical alias for `allowMultiple`. */
   multiple?: boolean;
+  align?: "start" | "end";
+  size?: "sm" | "md" | "lg";
   onChange?: (openIds: string[]) => void;
 };
 
-export function Accordion({ items, openIds, defaultOpenIds, open: openAlias, allowMultiple, multiple, onChange, className, ...rest }: AccordionProps) {
+export function Accordion({ items, openIds, defaultOpenIds, open: openAlias, allowMultiple, multiple, align = "end", size = "md", onChange, className, ...rest }: AccordionProps) {
   const initialOpen = defaultOpenIds ?? openAlias ?? [];
-  const resolvedAllowMultiple = allowMultiple ?? multiple ?? true;
+  const resolvedAllowMultiple = allowMultiple ?? multiple ?? false;
   const [open, setOpen] = useControlled(openIds, initialOpen, onChange);
   const toggle = (id: string) => {
     const next = open.includes(id) ? open.filter((value) => value !== id) : resolvedAllowMultiple ? [...open, id] : [id];
@@ -239,14 +241,20 @@ export function Accordion({ items, openIds, defaultOpenIds, open: openAlias, all
   };
 
   return (
-    <div {...rest} className={classNames("st-accordion", className)}>
+    <div {...rest} className={classNames("st-accordion", `st-accordion--${size}`, `st-accordion--align-${align}`, className)}>
       {items.map((item, index) => {
         const itemId = idFrom(item, index, "accordion");
         const isOpen = open.includes(itemId);
         const triggerId = `st-accordion-trigger-${itemId}`;
         const panelId = `st-accordion-panel-${itemId}`;
+        const titleNode = <span className="st-accordion__title">{item.title}</span>;
+        const iconNode = (
+          <span className="st-accordion__icon" aria-hidden="true">
+            <ChevronDown size={18} strokeWidth={2.25} aria-hidden="true" />
+          </span>
+        );
         return (
-          <section key={itemId} className={classNames("st-accordion__item", isOpen && "st-accordion__item--open")}>
+          <div key={itemId} className={classNames("st-accordion__item", isOpen && "st-accordion__item--open")}>
             <h3 className="st-accordion__heading">
               <button
                 id={triggerId}
@@ -257,10 +265,17 @@ export function Accordion({ items, openIds, defaultOpenIds, open: openAlias, all
                 aria-controls={panelId}
                 onClick={() => toggle(itemId)}
               >
-                <span className="st-accordion__title">{item.title}</span>
-                <span className="st-accordion__icon" aria-hidden="true">
-                  <ChevronDown size={18} strokeWidth={2.25} aria-hidden="true" />
-                </span>
+                {align === "start" ? (
+                  <>
+                    {iconNode}
+                    {titleNode}
+                  </>
+                ) : (
+                  <>
+                    {titleNode}
+                    {iconNode}
+                  </>
+                )}
               </button>
             </h3>
             {isOpen ? (
@@ -268,7 +283,7 @@ export function Accordion({ items, openIds, defaultOpenIds, open: openAlias, all
                 {node(item.content)}
               </div>
             ) : null}
-          </section>
+          </div>
         );
       })}
     </div>
@@ -333,25 +348,39 @@ export type ChatMessageProps = Omit<React.HTMLAttributes<HTMLElement>, "content"
   status?: ChatMessageStatus;
   content?: React.ReactNode;
   timestamp?: React.ReactNode;
+  footer?: React.ReactNode;
   actions?: React.ReactNode;
+  avatar?: React.ReactNode;
 };
-export function ChatMessage({ role = "assistant", status, content, timestamp, actions, children, className, ...rest }: ChatMessageProps) {
-  const normalizedStatus = status === "streaming" ? "processing" : status === "error" ? "failed" : status;
+export function ChatMessage({ role = "assistant", status = "completed", content, timestamp, footer, actions, avatar, children, className, ...rest }: ChatMessageProps) {
+  const normalizedStatus = status === "idle" || status === "streaming" ? "processing" : status === "error" ? "failed" : status;
+  const isStreaming = normalizedStatus === "processing";
+  const alignment = role === "user" ? "end" : "start";
   return (
-    <article {...rest} className={classNames("st-chatMessage", `st-chatMessage--${role}`, normalizedStatus && `st-chatMessage--${normalizedStatus}`, className)}>
-      <div className="st-chatMessage__avatar" aria-hidden="true">
-        {role[0]?.toUpperCase()}
-      </div>
+    <article
+      {...rest}
+      className={classNames("st-chatMessage", `st-chatMessage--${role}`, normalizedStatus && `st-chatMessage--${normalizedStatus}`, className)}
+      data-role={role}
+      data-status={normalizedStatus}
+      data-align={alignment}
+      aria-live={isStreaming ? "polite" : undefined}
+    >
+      {avatar ? (
+        <div className="st-chatMessage__avatar" aria-hidden="true">
+          {avatar}
+        </div>
+      ) : null}
       <div className="st-chatMessage__body">
         <div className="st-chatMessage__bubble">
           <div className="st-chatMessage__content">{children ?? content}</div>
+          {isStreaming ? <span className="st-chatMessage__pulse" aria-hidden="true" /> : null}
         </div>
-        {timestamp || actions ? (
-          <footer className="st-chatMessage__footer">
-            {timestamp ? <span className="st-chatMessage__timestamp">{timestamp}</span> : null}
-            {actions ? <span className="st-chatMessage__actions">{actions}</span> : null}
-          </footer>
+        {footer || timestamp ? (
+          <div className="st-chatMessage__footer">
+            {footer ?? <span className="st-chatMessage__timestamp">{timestamp}</span>}
+          </div>
         ) : null}
+        {actions ? <div className="st-chatMessage__actions">{actions}</div> : null}
       </div>
     </article>
   );
@@ -363,7 +392,14 @@ export type ChatThreadProps = React.HTMLAttributes<HTMLElement> & {
 };
 export function ChatThread({ messages, emptyLabel = "No messages", children, className, ...rest }: ChatThreadProps) {
   return (
-    <section {...rest} className={classNames("st-chatThread", className)} aria-label={rest["aria-label"] ?? "Chat thread"}>
+    <section
+      {...rest}
+      className={classNames("st-chatThread", className)}
+      role="log"
+      aria-label={rest["aria-label"] ?? "Chat thread"}
+      aria-live="polite"
+      aria-relevant="additions text"
+    >
       <div className="st-chatThread__list">
         {messages?.length ? messages.map((message) => <ChatMessage key={message.id} role={message.role} status={message.status} content={message.content} />) : children ?? <p className="st-chatThread__empty">{emptyLabel}</p>}
       </div>
@@ -396,7 +432,7 @@ export function ChatComposer({ value = "", placeholder = "Message", submitLabel 
       <div className="st-chatComposer__toolbar">
         <div className="st-chatComposer__actions st-chatComposer__actions--left">{children}</div>
         <div className="st-chatComposer__actions st-chatComposer__actions--right">
-          <button type="submit" className="st-button st-button--primary st-button--sm">
+          <button type="submit" className="st-button st-button--primary st-button--md" disabled={draft.trim().length === 0}>
             <Send size={16} strokeWidth={2} aria-hidden="true" />
             {submitLabel}
           </button>
@@ -2651,9 +2687,9 @@ export type FormGroupProps = React.FieldsetHTMLAttributes<HTMLFieldSetElement> &
 export function FormGroup({ legend, helperText, children, className, ...rest }: FormGroupProps) {
   return (
     <fieldset {...rest} className={classNames("st-form-group st-formGroup", className)}>
-      <legend className="st-form-group__legend st-formGroup__legend">{legend}</legend>
-      {helperText ? <p className="st-form-group__help st-formGroup__help">{helperText}</p> : null}
+      {legend ? <legend className="st-form-group__legend st-formGroup__legend">{legend}</legend> : null}
       <div className="st-form-group__body st-formGroup__body">{children}</div>
+      {helperText ? <p className="st-form-group__help st-formGroup__help">{helperText}</p> : null}
     </fieldset>
   );
 }
@@ -3258,11 +3294,22 @@ export function MenuPopover({ trigger, items = [], open = true, placement = "bot
 }
 
 // `expanded` (Svelte-canonical) is accepted as an alias of `open`.
-export type MenuTriggerButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & { open?: boolean; expanded?: boolean };
-export function MenuTriggerButton({ open, expanded, type = "button", className, children, ...rest }: MenuTriggerButtonProps) {
+export type MenuTriggerButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+  open?: boolean;
+  expanded?: boolean;
+  size?: Size;
+  variant?: "ghost" | "secondary";
+};
+export function MenuTriggerButton({ open, expanded, size = "md", variant = "ghost", type = "button", className, children, ...rest }: MenuTriggerButtonProps) {
   const isOpen = open ?? expanded ?? false;
   return (
-    <button {...rest} type={type} className={classNames("st-menuTriggerButton st-button st-button--secondary st-button--sm", className)} aria-expanded={isOpen}>
+    <button
+      {...rest}
+      type={type}
+      className={classNames("st-iconButton", `st-iconButton--${size}`, `st-iconButton--${variant}`, className)}
+      aria-haspopup="menu"
+      aria-expanded={isOpen}
+    >
       {children ?? <ChevronDownCircle size={18} strokeWidth={2} aria-hidden="true" />}
     </button>
   );
@@ -3283,22 +3330,22 @@ export type MessageActionsProps = React.HTMLAttributes<HTMLElement> & {
   actions: MessageAction[];
   visibility?: "always" | "hover";
 };
-export function MessageActions({ actions, visibility = "always", className, ...rest }: MessageActionsProps) {
+export function MessageActions({ actions, visibility = "hover", className, ...rest }: MessageActionsProps) {
   return (
-    <nav {...rest} className={classNames("st-messageActions", visibility === "hover" && "st-messageActions--hoverOnly", className)} aria-label="Message actions">
+    <div {...rest} className={classNames("st-messageActions", visibility === "hover" && "st-messageActions--hoverOnly", className)} role="group" aria-label="Actions du message">
       {actions.map((action, index) => (
         <button
           key={action.id ?? index}
           type="button"
-          className={classNames("st-button st-button--ghost st-button--sm", action.variant === "danger" && "st-button--danger")}
+          className={classNames("st-iconButton", "st-iconButton--sm", action.variant === "danger" ? "st-iconButton--danger" : "st-iconButton--ghost")}
           disabled={action.disabled}
-          aria-label={action.label == null && action.icon != null ? text(action.id) || undefined : undefined}
+          aria-label={text(action.label) || text(action.id) || undefined}
           onClick={action.onClick}
         >
-          {action.label ?? action.icon}
+          {action.icon ?? action.label}
         </button>
       ))}
-    </nav>
+    </div>
   );
 }
 
@@ -3367,77 +3414,166 @@ export function Modal({ open = false, title, description, footer, onClose, child
 }
 
 export interface MultiSelectOption extends OptionItem {}
-export type MultiSelectProps = React.HTMLAttributes<HTMLDivElement> & {
+export type MultiSelectProps = Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> & {
   label?: React.ReactNode;
+  helperText?: React.ReactNode;
+  errorText?: React.ReactNode;
+  invalid?: boolean;
   options: MultiSelectOption[];
   value?: string[];
   values?: string[];
+  /** Svelte-canonical alias for the selected values. */
+  selected?: string[];
   size?: Size;
   open?: boolean;
+  placeholder?: string;
+  searchPlaceholder?: string;
+  noResultsLabel?: string;
+  toggleLabel?: string;
+  removeLabel?: string;
+  listLabel?: string;
+  disabled?: boolean;
   onChange?: (values: string[]) => void;
 };
-export function MultiSelect({ label, options, value, values, size = "md", open: controlledOpen, onChange, className, ...rest }: MultiSelectProps) {
-  const reactId = React.useId();
-  const listId = `st-multiSelect-list-${reactId}`;
+export function MultiSelect({
+  label,
+  helperText,
+  errorText,
+  invalid = false,
+  options,
+  value,
+  values,
+  selected: selectedAlias,
+  size = "md",
+  open: controlledOpen,
+  placeholder = "Select items",
+  searchPlaceholder = "Filter",
+  noResultsLabel = "No results",
+  toggleLabel = "Toggle options",
+  removeLabel = "Remove",
+  listLabel,
+  disabled = false,
+  onChange,
+  className,
+  ...rest
+}: MultiSelectProps) {
   const [open, setOpen] = useControlled(controlledOpen, false);
-  const [selectedValues, setSelectedValues] = useControlled(value ?? values, value ?? values ?? [], onChange);
+  const initialSelected = value ?? values ?? selectedAlias;
+  const [selectedValues, setSelectedValues] = useControlled(initialSelected, initialSelected ?? [], onChange);
+  const [query, setQuery] = React.useState("");
   const selected = new Set(selectedValues);
-  const selectedOptions = options.filter((option) => selected.has(option.value));
+  const selectedOptions = selectedValues
+    .map((entry) => options.find((option) => option.value === entry))
+    .filter((option): option is MultiSelectOption => Boolean(option));
+  const isInvalid = invalid || Boolean(errorText);
+  const filtered = (() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return options;
+    return options.filter((option) => text(option.label).toLowerCase().includes(q));
+  })();
   const toggleOption = (option: MultiSelectOption) => {
     if (option.disabled) return;
     const next = selected.has(option.value)
       ? selectedValues.filter((entry) => entry !== option.value)
       : [...selectedValues, option.value];
     setSelectedValues(next);
-    setOpen(false);
+  };
+  const removeOption = (optionValue: string) => {
+    setSelectedValues(selectedValues.filter((entry) => entry !== optionValue));
   };
 
   return (
-    <div {...rest} className={classNames("st-multiSelect", `st-multiSelect--${size}`, className)}>
+    <div
+      {...rest}
+      className={classNames("st-field", className)}
+      role="group"
+      aria-label={text(label) || undefined}
+      onKeyDown={(event) => {
+        if (event.key === "Escape" && open) {
+          event.preventDefault();
+          setOpen(false);
+        }
+      }}
+    >
       {label ? <span className="st-field__label">{label}</span> : null}
-      <button
-        type="button"
-        className="st-multiSelect__trigger"
-        aria-label={text(label) || "Select options"}
-        aria-haspopup="listbox"
-        aria-expanded={open}
-        aria-controls={listId}
-        onClick={() => setOpen(!open)}
-      >
-        {label ? <span className="st-multiSelect__triggerLabel">{label}</span> : null}
+      {selectedOptions.length > 0 ? (
         <span className="st-multiSelect__tags">
-          {selectedOptions.length ? selectedOptions.map((option) => (
+          {selectedOptions.map((option) => (
             <span key={option.value} className="st-multiSelect__tag">
               <span className="st-multiSelect__tagLabel">{option.label}</span>
+              <button
+                type="button"
+                className="st-multiSelect__tagRemove"
+                aria-label={`${removeLabel} ${text(option.label)}`}
+                disabled={disabled}
+                onClick={() => removeOption(option.value)}
+              >
+                <X size={14} strokeWidth={2.25} aria-hidden="true" />
+              </button>
             </span>
-          )) : <span className="st-multiSelect__placeholder">Select</span>}
-        </span>
-        <span className="st-multiSelect__caret" aria-hidden="true">
-          <ChevronDown className={classNames("st-multiSelect__caretIcon", open && "st-multiSelect__caretIcon--open")} size={18} strokeWidth={2.25} aria-hidden="true" />
-        </span>
-      </button>
-      {open ? (
-        <ul id={listId} className="st-multiSelect__list" role="listbox" aria-label={text(label) || "Options"} aria-multiselectable="true">
-          {options.map((option) => (
-            <li
-              key={option.value}
-              className={classNames("st-multiSelect__option", selected.has(option.value) && "st-multiSelect__option--selected")}
-              role="option"
-              aria-selected={selected.has(option.value)}
-              aria-disabled={option.disabled ? "true" : undefined}
-              tabIndex={option.disabled ? undefined : 0}
-              onClick={() => toggleOption(option)}
-              onKeyDown={(event) => {
-                if (event.key === "Enter" || event.key === " ") {
-                  event.preventDefault();
-                  toggleOption(option);
-                }
-              }}
-            >
-              {option.label}
-            </li>
           ))}
-        </ul>
+        </span>
+      ) : null}
+      <span className={classNames("st-multiSelect", `st-multiSelect--${size}`)} data-invalid={isInvalid ? "true" : undefined}>
+        <button
+          type="button"
+          className="st-multiSelect__trigger"
+          aria-haspopup="listbox"
+          aria-expanded={open}
+          disabled={disabled}
+          onClick={() => setOpen(!open)}
+        >
+          {selectedOptions.length === 0 ? (
+            <span className="st-multiSelect__placeholder">{placeholder}</span>
+          ) : (
+            <span className="st-multiSelect__count">{selectedOptions.length} selected</span>
+          )}
+          <span className="st-multiSelect__caret" aria-hidden="true">
+            <ChevronDown className={classNames("st-multiSelect__caretIcon", open && "st-multiSelect__caretIcon--open")} size={18} strokeWidth={2.25} aria-hidden="true" />
+          </span>
+          <span className="st-visually-hidden">{toggleLabel}</span>
+        </button>
+      </span>
+      {open ? (
+        <div className="st-multiSelect__panel">
+          <input
+            type="search"
+            className="st-multiSelect__search"
+            placeholder={searchPlaceholder}
+            value={query}
+            aria-label={searchPlaceholder}
+            onChange={(event) => setQuery(event.currentTarget.value)}
+          />
+          <div className="st-multiSelect__list" role="listbox" aria-label={text(listLabel) || text(label) || "Options"} aria-multiselectable="true">
+            {filtered.length === 0 ? (
+              <div className="st-multiSelect__empty">{noResultsLabel}</div>
+            ) : (
+              filtered.map((option) => {
+                const isSelected = selected.has(option.value);
+                return (
+                  <button
+                    key={option.value}
+                    className="st-multiSelect__option"
+                    type="button"
+                    role="option"
+                    aria-selected={isSelected}
+                    aria-disabled={option.disabled ? "true" : undefined}
+                    disabled={option.disabled}
+                    onClick={() => toggleOption(option)}
+                  >
+                    <span className="st-multiSelect__check" aria-hidden="true">{isSelected ? "✓" : null}</span>
+                    <span>{option.label}</span>
+                  </button>
+                );
+              })
+            )}
+          </div>
+        </div>
+      ) : null}
+      {errorText ? (
+        <span className="st-field__error">{errorText}</span>
+      ) : helperText ? (
+        <span className="st-field__help">{helperText}</span>
       ) : null}
     </div>
   );
@@ -3785,21 +3921,42 @@ export function Popover({ trigger, content, open: controlledOpen, placement = "b
 
 export type ProgressBarProps = React.HTMLAttributes<HTMLDivElement> & {
   label?: React.ReactNode;
+  helperText?: React.ReactNode;
   value?: number;
   max?: number;
   tone?: Tone;
   size?: Size;
   indeterminate?: boolean;
+  showValue?: boolean;
+  valueText?: string;
 };
-export function ProgressBar({ label, value = 0, max = 100, tone = "neutral", size = "md", indeterminate = false, className, ...rest }: ProgressBarProps) {
-  const percent = pct(value, 0, max);
+export function ProgressBar({ label, helperText, value = 0, max = 100, tone = "neutral", size = "md", indeterminate = false, showValue = false, valueText, className, ...rest }: ProgressBarProps) {
+  const clamped = max <= 0 ? 0 : Math.min(Math.max(value, 0), max);
+  const percent = indeterminate ? 0 : (clamped / max) * 100;
+  const displayValue = valueText ? valueText : indeterminate ? "" : `${Math.round(percent)}%`;
+  const showValueSpan = showValue && !indeterminate;
   return (
     <div {...rest} className={classNames("st-progressBar", className)}>
-      {label ? <div className="st-progressBar__label">{label}</div> : null}
-      <div className={classNames("st-progressBar__track", `st-progressBar__track--${tone}`, `st-progressBar__track--${size}`, indeterminate && "st-progressBar__track--indeterminate")} role="progressbar" aria-valuenow={indeterminate ? undefined : value} aria-valuemin={0} aria-valuemax={max}>
-        <div className="st-progressBar__fill" style={{ width: indeterminate ? undefined : `${percent}%` }} />
+      {label || showValueSpan ? (
+        <div className="st-progressBar__header">
+          {label ? <span className="st-progressBar__label">{label}</span> : null}
+          {showValueSpan ? (
+            <span className="st-progressBar__value" aria-hidden="true">{displayValue}</span>
+          ) : null}
+        </div>
+      ) : null}
+      <div
+        className={classNames("st-progressBar__track", `st-progressBar__track--${size}`, `st-progressBar__track--${tone}`, indeterminate && "st-progressBar__track--indeterminate")}
+        role="progressbar"
+        aria-valuemin={indeterminate ? undefined : 0}
+        aria-valuemax={indeterminate ? undefined : max}
+        aria-valuenow={indeterminate ? undefined : clamped}
+        aria-valuetext={indeterminate ? undefined : displayValue}
+        aria-label={typeof label === "string" ? label : undefined}
+      >
+        <div className="st-progressBar__fill" style={{ ["--st-progressBar-pct" as string]: `${percent}%` }} />
       </div>
-      <span className="st-progressBar__value">{Math.round(percent)}%</span>
+      {helperText ? <span className="st-progressBar__help">{helperText}</span> : null}
     </div>
   );
 }
@@ -4591,16 +4748,20 @@ export function Toast({ tone = "info", title, message, actions, onClose, items, 
 
 export type ToggleProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, "type" | "size"> & {
   label: React.ReactNode;
+  labelOn?: string;
+  labelOff?: string;
   helperText?: React.ReactNode;
   size?: "sm" | "md";
 };
-export function Toggle({ label, helperText, size = "md", className, ...rest }: ToggleProps) {
+export function Toggle({ label, labelOn = "On", labelOff = "Off", helperText, size = "md", className, ...rest }: ToggleProps) {
+  const isChecked = rest.checked ?? rest.defaultChecked ?? false;
   return (
     <label className={classNames("st-toggle", `st-toggle--${size}`, className)}>
+      <span className="st-toggle__label">{label}</span>
       <span className="st-toggle__row">
-        <span className="st-toggle__label">{label}</span>
-        <input {...rest} className="st-toggle__input" type="checkbox" role="switch" aria-checked={rest.checked ?? rest.defaultChecked ?? undefined} />
-        <span className="st-toggle__track"><span className="st-toggle__thumb" /></span>
+        <input {...rest} className="st-toggle__input" type="checkbox" role="switch" aria-checked={isChecked ? "true" : "false"} />
+        <span className="st-toggle__track" aria-hidden="true"><span className="st-toggle__thumb" /></span>
+        <span className="st-toggle__state" aria-hidden="true">{isChecked ? labelOn : labelOff}</span>
       </span>
       {helperText ? <span className="st-toggle__help">{helperText}</span> : null}
     </label>

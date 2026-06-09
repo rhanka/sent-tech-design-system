@@ -11,27 +11,22 @@ export type ProgressBarSize = "sm" | "md" | "lg";
 
 export type ProgressBarProps = {
   label?: unknown;
+  helperText?: string;
   value?: number;
   max?: number;
   tone?: ProgressBarTone;
   size?: ProgressBarSize;
   indeterminate?: boolean;
+  showValue?: boolean;
+  valueText?: string;
   class?: string;
 };
-
-function clamp(value: number, min: number, max: number): number {
-  return Math.min(max, Math.max(min, value));
-}
-
-function pct(value: number, min = 0, max = 100): number {
-  if (max <= min) return 0;
-  return clamp(((value - min) / (max - min)) * 100, 0, 100);
-}
 
 export const ProgressBar = defineComponent({
   name: "ProgressBar",
   props: {
     label: { type: [String, Object] as unknown as () => unknown, default: undefined },
+    helperText: { type: String, default: undefined },
     value: { type: Number, default: 0 },
     max: { type: Number, default: 100 },
     tone: {
@@ -43,11 +38,22 @@ export const ProgressBar = defineComponent({
       default: "md",
     },
     indeterminate: { type: Boolean, default: false },
+    showValue: { type: Boolean, default: false },
+    valueText: { type: String, default: undefined },
     class: { type: String, default: undefined },
   },
   setup(props, { attrs }) {
     return () => {
-      const percent = pct(props.value ?? 0, 0, props.max ?? 100);
+      const max = props.max ?? 100;
+      const value = props.value ?? 0;
+      const clamped = max <= 0 ? 0 : Math.min(Math.max(value, 0), max);
+      const percent = props.indeterminate ? 0 : (clamped / max) * 100;
+      const displayValue = props.valueText
+        ? props.valueText
+        : props.indeterminate
+          ? ""
+          : `${Math.round(percent)}%`;
+      const showValueSpan = props.showValue && !props.indeterminate;
 
       return h(
         "div",
@@ -56,46 +62,51 @@ export const ProgressBar = defineComponent({
           class: classNames("st-progressBar", props.class),
         },
         [
-          props.label
-            ? h(
-                "div",
-                { class: "st-progressBar__label" },
-                props.label as string,
-              )
+          props.label || showValueSpan
+            ? h("div", { class: "st-progressBar__header" }, [
+                props.label
+                  ? h(
+                      "span",
+                      { class: "st-progressBar__label" },
+                      props.label as string,
+                    )
+                  : null,
+                showValueSpan
+                  ? h(
+                      "span",
+                      { class: "st-progressBar__value", "aria-hidden": "true" },
+                      displayValue,
+                    )
+                  : null,
+              ])
             : null,
           h(
             "div",
             {
               class: classNames(
                 "st-progressBar__track",
-                `st-progressBar__track--${props.tone}`,
                 `st-progressBar__track--${props.size}`,
+                `st-progressBar__track--${props.tone}`,
                 props.indeterminate &&
                   "st-progressBar__track--indeterminate",
               ),
               role: "progressbar",
-              "aria-valuenow": props.indeterminate
-                ? undefined
-                : props.value,
-              "aria-valuemin": 0,
-              "aria-valuemax": props.max,
+              "aria-valuemin": props.indeterminate ? undefined : 0,
+              "aria-valuemax": props.indeterminate ? undefined : max,
+              "aria-valuenow": props.indeterminate ? undefined : clamped,
+              "aria-valuetext": props.indeterminate ? undefined : displayValue,
+              "aria-label": typeof props.label === "string" ? props.label : undefined,
             },
             [
               h("div", {
                 class: "st-progressBar__fill",
-                style: {
-                  width: props.indeterminate
-                    ? undefined
-                    : `${percent}%`,
-                },
+                style: { "--st-progressBar-pct": `${percent}%` },
               }),
             ],
           ),
-          h(
-            "span",
-            { class: "st-progressBar__value" },
-            `${Math.round(percent)}%`,
-          ),
+          props.helperText
+            ? h("span", { class: "st-progressBar__help" }, props.helperText)
+            : null,
         ],
       );
     };

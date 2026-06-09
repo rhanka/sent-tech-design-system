@@ -65,11 +65,13 @@ describe("Vue accepts the canonical Svelte API", () => {
       expect(wrapper.find("button").text()).toBe("Copy");
     });
 
-    it("prefers label over icon when both are present", () => {
+    it("prefers icon as content; label is the accessible name (Svelte canon)", () => {
       const wrapper = mount(MessageActions, {
         props: { actions: [{ id: "copy", label: "Copy", icon: "ICON" }] },
       });
-      expect(wrapper.find("button").text()).toBe("Copy");
+      const button = wrapper.find("button");
+      expect(button.text()).toBe("ICON");
+      expect(button.attributes("aria-label")).toBe("Copy");
     });
   });
 

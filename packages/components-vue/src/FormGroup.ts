@@ -23,10 +23,17 @@ export const FormGroup = defineComponent({
           class: classNames("st-form-group st-formGroup", props.class),
         },
         [
+          props.legend
+            ? h(
+                "legend",
+                { class: "st-form-group__legend st-formGroup__legend" },
+                props.legend as string,
+              )
+            : null,
           h(
-            "legend",
-            { class: "st-form-group__legend st-formGroup__legend" },
-            props.legend as string,
+            "div",
+            { class: "st-form-group__body st-formGroup__body" },
+            slots.default?.(),
           ),
           props.helperText
             ? h(
@@ -35,11 +42,6 @@ export const FormGroup = defineComponent({
                 props.helperText as string,
               )
             : null,
-          h(
-            "div",
-            { class: "st-form-group__body st-formGroup__body" },
-            slots.default?.(),
-          ),
         ],
       );
   },

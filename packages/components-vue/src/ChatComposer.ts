@@ -56,7 +56,11 @@ export const ChatComposer = defineComponent({
             h("div", { class: "st-chatComposer__actions st-chatComposer__actions--right" }, [
               h(
                 "button",
-                { type: "submit", class: "st-button st-button--primary st-button--sm" },
+                {
+                  type: "submit",
+                  class: "st-button st-button--primary st-button--md",
+                  disabled: draft.value.trim().length === 0,
+                },
                 [
                   h(Send, { size: 16, strokeWidth: 2, "aria-hidden": "true" }),
                   submitLabel as string,
