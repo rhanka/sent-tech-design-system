@@ -295,12 +295,12 @@
     {:else}
       <button
         type="button"
-        class="docs-header-control docs-header-menuButton docs-locale-trigger docs-login-trigger"
+        class="docs-header-control docs-header-menuButton docs-login-trigger"
         onclick={() => auth.login()}
         aria-label={locale.value === "fr" ? "Se connecter" : "Sign in"}
+        title={locale.value === "fr" ? "Se connecter" : "Sign in"}
       >
-        <User size={14} aria-hidden="true" />
-        <span>{locale.value === "fr" ? "Se connecter" : "Sign in"}</span>
+        <User size={16} strokeWidth={2.1} aria-hidden="true" />
       </button>
     {/if}
   </nav>
@@ -646,7 +646,7 @@
           {:else}
             <button
               type="button"
-              class="docs-header-control docs-header-menuButton docs-locale-trigger docs-login-trigger"
+              class="docs-header-control docs-header-menuButton docs-locale-trigger"
               onclick={() => auth.login()}
               aria-label={locale.value === "fr" ? "Se connecter" : "Sign in"}
             >
