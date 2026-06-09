@@ -3159,7 +3159,9 @@ import { Combobox } from "@sentropic/design-system-vue";
           comp: "MultiSelect",
           props: {
             label: "Frameworks supportés",
+            placeholder: "Sélectionner…",
             values: ["svelte", "react"],
+            selected: ["svelte", "react"],
             options: [
               { value: "svelte", label: "Svelte" },
               { value: "react", label: "React" },
@@ -3177,7 +3179,8 @@ import { Combobox } from "@sentropic/design-system-vue";
 
 <MultiSelect
   label="Frameworks supportés"
-  values={["svelte", "react"]}
+  placeholder="Sélectionner…"
+  selected={["svelte", "react"]}
   options={[
     { value: "svelte", label: "Svelte" },
     { value: "react", label: "React" },
