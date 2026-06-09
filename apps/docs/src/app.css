@@ -1071,7 +1071,9 @@ select {
   background: #ffffff;
   border: 1px solid var(--docs-line);
   border-left-width: 0.25rem;
-  border-radius: 0.5rem;
+  /* Exergue (liseré accent sur un bord) = corners CARRÉS. L'arrondi + le liseré
+     latéral est un anti-pattern proscrit (demandé plusieurs fois par l'owner). */
+  border-radius: 0;
   padding: 1rem 1.1rem;
 }
 
