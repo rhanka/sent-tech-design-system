@@ -14,7 +14,7 @@ centrage/contours/alignement homogènes, aucun bug de sens. Délégué à claude
 ## Plan / Todo (lot-based)
 > Statut ds-QA (2026-06-09) : 120/147 pages COCHEES = parite propre a l'audit:parity (couches 1 pixel + 2 DOM, build pins 0.34 + fix CSS-leak). 27 restantes flaggees = composants de port en cours (batch3/4 conductor) + Lots LIST-NEST/FOOTER-DATA + i18n composant ; a recocher apres batch4. La couche 3 (monkey/clics) reste a passer separement.
 
-- [ ] **Lot accordion — Accordion (svelte+react+vue)**
+- [x] **Lot accordion — Accordion (svelte+react+vue)**
 - [x] **Lot alert — Alert (svelte+react+vue)**
 - [x] **Lot area-chart — Area Chart (svelte+react+vue)**
 - [x] **Lot aspect-ratio — Aspect Ratio (svelte+react+vue)**
@@ -34,8 +34,8 @@ centrage/contours/alignement homogènes, aucun bug de sens. Délégué à claude
 - [x] **Lot calendar-heatmap-chart — Calendar Heatmap Chart (svelte+react+vue)**
 - [x] **Lot candlestick-chart — Candlestick Chart (svelte+react+vue)**
 - [x] **Lot card — Card (svelte+react+vue)**
-- [ ] **Lot chat-composer — Chat Composer (svelte+react+vue)**
-- [ ] **Lot chat-message — Chat Message (svelte+react+vue)**
+- [x] **Lot chat-composer — Chat Composer (svelte+react+vue)**
+- [x] **Lot chat-message — Chat Message (svelte+react+vue)**
 - [ ] **Lot chat-thread — Chat Thread (svelte+react+vue)**
 - [x] **Lot checkbox — Checkbox (svelte+react+vue)**
 - [x] **Lot checkbox-group — Checkbox Group (svelte+react+vue)**
@@ -91,13 +91,13 @@ centrage/contours/alignement homogènes, aucun bug de sens. Délégué à claude
 - [x] **Lot media-content — Media Content (svelte+react+vue)**
 - [ ] **Lot menu — Menu (svelte+react+vue)**
 - [ ] **Lot menu-popover — Menu Popover (svelte+react+vue)**
-- [ ] **Lot menu-trigger-button — Menu Trigger Button (svelte+react+vue)**
-- [ ] **Lot message-actions — Message Actions (svelte+react+vue)**
+- [x] **Lot menu-trigger-button — Menu Trigger Button (svelte+react+vue)**
+- [x] **Lot message-actions — Message Actions (svelte+react+vue)**
 - [x] **Lot message-status-badge — Message Status Badge (svelte+react+vue)**
 - [x] **Lot modal — Modal (svelte+react+vue)**
-- [ ] **Lot multi-select — Multi Select (svelte+react+vue)**
+- [x] **Lot multi-select — Multi Select (svelte+react+vue)**
 - [x] **Lot notification — Notification (svelte+react+vue)**
-- [ ] **Lot number-input — Number Input (svelte+react+vue)**
+- [x] **Lot number-input — Number Input (svelte+react+vue)**
 - [ ] **Lot ordered-list — Ordered List (svelte+react+vue)**
 - [x] **Lot overflow-menu — Overflow Menu (svelte+react+vue)**
 - [ ] **Lot overlays — Overlays (svelte+react+vue)**
