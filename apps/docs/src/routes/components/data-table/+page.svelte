@@ -95,7 +95,9 @@
         columns: dataColumns,
         rows,
         size: "md",
-        pageSize: 3
+        pageSize: 3,
+        previousLabel: locale.value === "fr" ? "Précédent" : "Previous",
+        nextLabel: locale.value === "fr" ? "Suivant" : "Next"
       }
     }
   ]);

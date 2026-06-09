@@ -3,12 +3,19 @@
   import { getExample } from "$lib/framework/examples";
   import type { NodeSpec } from "$lib/framework/examples";
   import { Badge, CodeSnippet } from "@sentropic/design-system-svelte";
+  import { locale } from "$lib/locale.svelte";
 
   const block = `import { Button } from "@sentropic/design-system-svelte";\n\n<Button variant="primary">Envoyer</Button>`;
 
+  const fr = $derived(locale.value === "fr");
+  const copyLabel = $derived(fr ? "Copier" : "Copy");
+  const copiedLabel = $derived(fr ? "Copié" : "Copied");
+
   // Démo NodeSpec neutre -> rendue dans le framework actif (onglets svelte/react/vue).
   // La démo "Inline" reste en Svelte : usage inline dans une phrase, non encadrable.
-  const blocDemo: NodeSpec[] = [{ comp: "CodeSnippet", props: { code: block, language: "svelte" } }];
+  const blocDemo = $derived<NodeSpec[]>([
+    { comp: "CodeSnippet", props: { code: block, language: "svelte", copyLabel, copiedLabel } }
+  ]);
 </script>
 
 <div class="docs-page">
@@ -34,7 +41,7 @@
   <section class="docs-section">
     <h2>Inline</h2>
     <p>
-      Installe via <CodeSnippet code="npm i @sentropic/design-system-svelte" inline /> puis importe.
+      Installe via <CodeSnippet code="npm i @sentropic/design-system-svelte" inline {copyLabel} {copiedLabel} /> puis importe.
     </p>
   </section>
 
