@@ -508,8 +508,31 @@ export async function parityAudit(options: ParityAuditOptions): Promise<ParityAu
           } catch {
             // hydratation/îles lentes : on poursuit, le délai ci-dessous couvre.
           }
-          // Laisse les îles React/Vue se monter ($effect côté client).
-          await page.waitForTimeout(fw === "svelte" ? 350 : 900);
+          // Attendre que le LAYOUT docs soit appliqué avant toute mesure/capture :
+          // sur un render rapide (svelte SSR), un délai trop court capturait un
+          // flash pleine largeur NON stylé (.tex à innerWidth, tailles écrasées)
+          // -> faux DIMS≠ + faux « sizes-not-distinct ». On attend que la colonne
+          // de contenu soit contrainte (.tex plus étroit que le viewport).
+          try {
+            await page.waitForFunction(
+              () => {
+                const tex = document.querySelector(".tex");
+                if (!tex) return false;
+                const w = (tex as HTMLElement).getBoundingClientRect().width;
+                return w > 0 && w < window.innerWidth - 80;
+              },
+              { timeout: 4000 }
+            );
+          } catch {
+            // colonne non détectée (page sans sidebar) : le délai ci-dessous couvre.
+          }
+          try {
+            await page.evaluate(() => (document.fonts ? document.fonts.ready : null));
+          } catch {
+            // fonts API absente : non bloquant.
+          }
+          // Laisse les îles React/Vue se monter ($effect côté client) + settle.
+          await page.waitForTimeout(fw === "svelte" ? 500 : 900);
 
           // Récupère les titres des blocs (depuis svelte, l'ordre est stable).
           if (fw === "svelte") {
