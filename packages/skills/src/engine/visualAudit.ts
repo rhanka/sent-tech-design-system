@@ -427,12 +427,12 @@ async function resolveFile(root: string, urlPath: string): Promise<string | null
   return null;
 }
 
-interface StaticServer {
+export interface StaticServer {
   port: number;
   close: () => Promise<void>;
 }
 
-function startStaticServer(root: string): Promise<StaticServer> {
+export function startStaticServer(root: string): Promise<StaticServer> {
   return new Promise<StaticServer>((resolveP, rejectP) => {
     const server = createServer(async (req, res) => {
       try {
@@ -469,12 +469,12 @@ function startStaticServer(root: string): Promise<StaticServer> {
 // ---------------------------------------------------------------------------
 // Énumération des slugs + filtres glob
 // ---------------------------------------------------------------------------
-function globToRegExp(glob: string): RegExp {
+export function globToRegExp(glob: string): RegExp {
   const esc = glob.replace(/[.+^${}()|[\]\\]/g, "\\$&").replace(/\*/g, ".*").replace(/\?/g, ".");
   return new RegExp(`^${esc}$`);
 }
 
-function matchPages(slugs: string[], patterns: string[] | null): string[] {
+export function matchPages(slugs: string[], patterns: string[] | null): string[] {
   if (!patterns || patterns.length === 0) return slugs;
   const res = patterns.map(globToRegExp);
   return slugs.filter((s) => res.some((r) => r.test(s)));
