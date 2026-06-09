@@ -23,9 +23,12 @@ communication ("si 90% est foireux, je ne peux pas communiquer sur le design sys
   - Symptome: menus deroulants (combobox / date-picker / dropdown ...) coupes ou passant SOUS le contenu/sidebar dans les onglets et exemples.
   - Cause racine: `.tex { overflow: hidden }` (TabbedExample.svelte + TabbedLiveExample.svelte) clippait les panneaux absolus. Fix: `overflow: visible`. z-index (80 > sidebar 30) n'etait PAS en cause.
   - [x] UAT: tout menu/overlay s'affiche au-dessus, non coupe (verifie au screenshot sur combobox ; fix structurel = couvre combobox/dropdown/multiselect/datepicker/select/menu/overflow-menu/popover/search ; sweep complet 3fw dans 03-BRANCH).
-- [ ] **Lot CAL — Calendar regression (grille cassee)**
+- [x] **Lot CAL — Calendar regression (grille cassee)**
   - Symptome: numeros de jours superposes/illisibles (img owner) ; "nickel il y a quelques jours" -> regression. Verifier aussi date-picker.
-  - [ ] UAT: grille calendrier propre svelte+react+vue, jours alignes, aucune superposition.
+  - DIAGNOSTIC ds-QA (2026-06-09, confirme au screenshot /tmp/parity-full/calendar block-0 svelte+react): cause racine = CSS GLOBAL NON SCOPE. `packages/components-react/src/styles.css` (l.8285) ET `packages/components-vue/src/styles.css` (l.8268) declarent `.st-calendar__weekdays,.st-calendar__days{display:grid;repeat(7)}` (ANCIENNE structure) et AUCUNE regle `.st-calendar__week`. Or le DOM courant des 3 fw = `__days > __week(x6) > __day(x7)` (cf Calendar.svelte l.526-543, Vue Calendar.ts l.454/515). La grille 7-col posee sur le CONTENEUR `__days` etale les 6 lignes-semaines en colonnes -> jours ecrases/superposes. Le CSS non scope fuit aussi sur le rendu Svelte (dont le scoped CSS est pourtant correct) -> casse les 3 fw sur la meme page docs. Ce n'est PAS un ecart de parite (les 3 sont cassees), c'est une regression de structure.
+  - FIX PROPOSE (composant -> conductor publie): dans les DEUX styles.css, remplacer la regle combinee par 3 regles alignees sur le canon Svelte: `.st-calendar__weekdays{display:grid;gap:2px;grid-template-columns:repeat(7,minmax(2rem,1fr))}` ; `.st-calendar__days{display:grid;gap:2px}` (SANS columns = pile verticale) ; AJOUTER `.st-calendar__week{display:grid;gap:2px;grid-template-columns:repeat(7,minmax(2rem,1fr))}`.
+  - FIX APPLIQUE+VERIFIE (conductor, diagnostic ds-QA): les 2 styles.css corriges (`.st-calendar__days` sans grille 7col + ajout `.st-calendar__week`). Re-audit parity calendar+date-picker = 0 flag.
+  - [x] UAT: grille calendrier propre svelte+react+vue, jours alignes, aucune superposition (re-audit OK).
 - [ ] **Lot CMB — Combobox (tailles + parite react/vue)**
   - Symptome: tailles sm/md/lg sans difference visible ; menu passe dessous ; layout react/vue casse (label colle a gauche / cropte).
   - [ ] UAT: tailles visuellement distinctes (ou retirees si non pertinentes) ; menu au-dessus ; rendu identique svelte/react/vue.

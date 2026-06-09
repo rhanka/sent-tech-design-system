@@ -1,5 +1,5 @@
 import { defineComponent, h } from "vue";
-import { CircleAlert, CircleCheck, File as FileIcon, LoaderCircle, Upload } from "lucide-vue-next";
+import { CircleAlert, CircleCheck, File as FileIcon, LoaderCircle, Upload, X } from "lucide-vue-next";
 import { classNames } from "./classNames.js";
 
 export type FileUploadStatus = "idle" | "uploading" | "complete" | "error";
@@ -38,106 +38,154 @@ function fileItemSize(item: FileUploadItem): number | undefined {
 
 export type FileUploaderProps = {
   label?: string;
-  items?: FileUploadItem[];
+  helperText?: string;
+  errorText?: string;
+  invalid?: boolean;
+  accept?: string;
+  multiple?: boolean;
   disabled?: boolean;
+  items?: FileUploadItem[];
+  triggerLabel?: string;
+  dropzoneLabel?: string;
+  removeLabel?: (filename: string) => string;
   class?: string;
 };
 
 export const FileUploader = defineComponent({
   name: "FileUploader",
   props: {
-    label: { type: String, default: "Upload" },
-    items: { type: Array as () => FileUploadItem[], default: () => [] },
+    label: { type: String, default: undefined },
+    helperText: { type: String, default: undefined },
+    errorText: { type: String, default: undefined },
+    invalid: { type: Boolean, default: false },
+    accept: { type: String, default: undefined },
+    multiple: { type: Boolean, default: false },
     disabled: { type: Boolean, default: false },
+    items: { type: Array as () => FileUploadItem[], default: () => [] },
+    triggerLabel: { type: String, default: undefined },
+    dropzoneLabel: { type: String, default: "Drag and drop files here" },
+    removeLabel: {
+      type: Function as unknown as () => (filename: string) => string,
+      default: (filename: string) => `Remove ${filename}`,
+    },
     class: { type: String, default: undefined },
   },
   setup(props, { attrs }) {
-    return () =>
-      h(
+    return () => {
+      const isInvalid = props.invalid || Boolean(props.errorText);
+      const effectiveTriggerLabel =
+        props.triggerLabel ?? (props.multiple ? "Choose files" : "Choose file");
+      return h(
         "div",
         {
           ...attrs,
-          class: classNames("st-fileUploader-field", props.class),
+          class: classNames("st-field", "st-fileUploader-field", props.class),
         },
         [
+          props.label
+            ? h("label", { class: "st-field__label" }, props.label)
+            : null,
           h(
             "div",
             {
               class: classNames(
                 "st-fileUploader__dropzone",
+                isInvalid && "st-fileUploader__dropzone--invalid",
                 props.disabled && "st-fileUploader__dropzone--disabled",
               ),
+              role: "presentation",
             },
             [
-              h(
-                "span",
-                { class: "st-fileUploader__affordance", "aria-hidden": "true" },
-                [h(Upload, { size: 18, strokeWidth: 2, "aria-hidden": "true" })],
-              ),
-              h("span", { class: "st-fileUploader__trigger" }, props.label),
               h("input", {
                 class: "st-fileUploader__input",
                 type: "file",
+                accept: props.accept,
+                multiple: props.multiple,
                 disabled: props.disabled,
-                "aria-label": props.label,
+                "aria-invalid": isInvalid ? "true" : undefined,
               }),
+              h("div", { class: "st-fileUploader__content" }, [
+                h(
+                  "span",
+                  { class: "st-fileUploader__affordance", "aria-hidden": "true" },
+                  [h(Upload, { size: 18, strokeWidth: 2, "aria-hidden": "true" })],
+                ),
+                h(
+                  "button",
+                  { type: "button", class: "st-fileUploader__trigger", disabled: props.disabled },
+                  effectiveTriggerLabel,
+                ),
+                h("span", { class: "st-fileUploader__hint" }, props.dropzoneLabel),
+              ]),
             ],
           ),
-          h(
-            "ul",
-            { class: "st-fileUploader__list" },
-            props.items.map((item, index) => {
-              const name = fileItemName(item);
-              const sizeLabel = formatFileSize(fileItemSize(item));
-              return h(
-                "li",
-                {
-                  key: item.id ?? name ?? index,
-                  class: classNames(
-                    "st-fileUploader__item",
-                    item.status && `st-fileUploader__item--${item.status}`,
-                  ),
-                },
-                [
-                  h(
-                    "span",
-                    { class: "st-fileUploader__itemIcon", "aria-hidden": "true" },
+          props.errorText
+            ? h("span", { class: "st-field__error" }, props.errorText)
+            : props.helperText
+              ? h("span", { class: "st-field__help" }, props.helperText)
+              : null,
+          props.items.length > 0
+            ? h(
+                "ul",
+                { class: "st-fileUploader__list" },
+                props.items.map((item, index) => {
+                  const name = fileItemName(item);
+                  const sizeLabel = formatFileSize(fileItemSize(item));
+                  return h(
+                    "li",
+                    {
+                      key: item.id ?? name ?? index,
+                      class: classNames(
+                        "st-fileUploader__item",
+                        item.status && `st-fileUploader__item--${item.status}`,
+                      ),
+                    },
                     [
-                      item.status === "uploading"
-                        ? h("span", { class: "st-fileUploader__spinner" }, [
-                            h(LoaderCircle, { size: 16, strokeWidth: 2, "aria-hidden": "true" }),
-                          ])
-                        : item.status === "complete"
-                          ? h(CircleCheck, { size: 16, strokeWidth: 2, "aria-hidden": "true" })
-                          : item.status === "error"
-                            ? h(CircleAlert, { size: 16, strokeWidth: 2, "aria-hidden": "true" })
-                            : h(FileIcon, { size: 16, strokeWidth: 2, "aria-hidden": "true" }),
+                      h(
+                        "span",
+                        { class: "st-fileUploader__itemIcon", "aria-hidden": "true" },
+                        [
+                          item.status === "uploading"
+                            ? h("span", { class: "st-fileUploader__spinner" }, [
+                                h(LoaderCircle, { size: 16, strokeWidth: 2, "aria-hidden": "true" }),
+                              ])
+                            : item.status === "complete"
+                              ? h(CircleCheck, { size: 16, strokeWidth: 2, "aria-hidden": "true" })
+                              : item.status === "error"
+                                ? h(CircleAlert, { size: 16, strokeWidth: 2, "aria-hidden": "true" })
+                                : h(FileIcon, { size: 16, strokeWidth: 2, "aria-hidden": "true" }),
+                        ],
+                      ),
+                      h("span", { class: "st-fileUploader__itemMeta" }, [
+                        h(
+                          "span",
+                          { class: "st-fileUploader__itemName st-fileUploader__name" },
+                          name,
+                        ),
+                        sizeLabel
+                          ? h("span", { class: "st-fileUploader__itemSize" }, sizeLabel)
+                          : null,
+                        item.status === "error" && item.error
+                          ? h("span", { class: "st-fileUploader__itemError" }, item.error)
+                          : null,
+                      ]),
+                      h(
+                        "button",
+                        {
+                          type: "button",
+                          class: "st-fileUploader__remove",
+                          "aria-label": props.removeLabel(name ?? ""),
+                          disabled: props.disabled,
+                        },
+                        [h(X, { size: 16, strokeWidth: 2, "aria-hidden": "true" })],
+                      ),
                     ],
-                  ),
-                  h(
-                    "span",
-                    { class: "st-fileUploader__itemName st-fileUploader__name" },
-                    name,
-                  ),
-                  sizeLabel
-                    ? h(
-                        "span",
-                        { class: "st-fileUploader__itemSize" },
-                        sizeLabel,
-                      )
-                    : null,
-                  item.error
-                    ? h(
-                        "span",
-                        { class: "st-fileUploader__itemError" },
-                        item.error,
-                      )
-                    : null,
-                ],
-              );
-            }),
-          ),
+                  );
+                }),
+              )
+            : null,
         ],
       );
+    };
   },
 });

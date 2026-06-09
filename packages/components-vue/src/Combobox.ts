@@ -12,13 +12,18 @@ export type ComboboxSize = "sm" | "md" | "lg";
 
 export type ComboboxProps = {
   label?: unknown;
+  helperText?: string;
+  errorText?: string;
+  invalid?: boolean;
   options: ComboboxOption[];
   value?: string;
   size?: ComboboxSize;
   placeholder?: string;
+  disabled?: boolean;
   open?: boolean;
   allowCustomValue?: boolean;
   noResultsLabel?: unknown;
+  listLabel?: string;
   class?: string;
 };
 
@@ -36,13 +41,18 @@ export const Combobox = defineComponent({
   name: "Combobox",
   props: {
     label: { type: [String, Object] as unknown as () => unknown, default: undefined },
+    helperText: { type: String, default: undefined },
+    errorText: { type: String, default: undefined },
+    invalid: { type: Boolean, default: false },
     options: { type: Array as () => ComboboxOption[], required: true },
     value: { type: String, default: undefined },
     size: { type: String as () => ComboboxSize, default: "md" },
     placeholder: { type: String, default: "Select or type" },
+    disabled: { type: Boolean, default: false },
     open: { type: Boolean, default: undefined },
     allowCustomValue: { type: Boolean, default: true },
     noResultsLabel: { type: [String, Object] as unknown as () => unknown, default: "No results" },
+    listLabel: { type: String, default: undefined },
     class: { type: String, default: undefined },
   },
   emits: ["change", "select", "update:open", "update:modelValue"],
@@ -89,21 +99,19 @@ export const Combobox = defineComponent({
       const open = isOpen();
       const selected = props.options.find((opt) => opt.value === props.value);
       const displayValue = selected ? String(selected.label) : inputValue.value;
+      const isInvalid = props.invalid || Boolean(props.errorText);
       const activeDescendant =
         activeIndex.value >= 0 && filtered.value[activeIndex.value]
           ? `${listId.value}-${filtered.value[activeIndex.value].value}`
           : undefined;
 
-      return h(
-        "div",
-        {
-          ...attrs,
-          class: classNames("st-combobox", `st-combobox--${props.size}`, props.class),
-        },
+      // Structure mirrors the Svelte reference: a `st-field` grid wrapping a
+      // `st-field__control` label that stacks the field label above the bordered
+      // `st-combobox` box (input + clear/toggle). List + help/error are siblings.
+      const controlBox = h(
+        "span",
+        { class: classNames("st-combobox", `st-combobox--${props.size}`) },
         [
-          props.label
-            ? h("label", { class: "st-field__label", for: inputId.value }, props.label as string)
-            : null,
           h("input", {
             id: inputId.value,
             class: "st-combobox__control",
@@ -111,10 +119,14 @@ export const Combobox = defineComponent({
             "aria-expanded": open,
             "aria-autocomplete": "list",
             "aria-controls": listId.value,
+            "aria-invalid": isInvalid ? "true" : undefined,
             "aria-activedescendant": activeDescendant,
             placeholder: props.placeholder,
+            disabled: props.disabled,
             value: displayValue,
-            onFocus: () => setOpen(true),
+            onFocus: () => {
+              if (!props.disabled) setOpen(true);
+            },
             onInput: (event: Event) => {
               const val = (event.target as HTMLInputElement).value;
               inputValue.value = val;
@@ -149,13 +161,14 @@ export const Combobox = defineComponent({
               }
             },
           }),
-          selected || inputValue.value
+          displayValue
             ? h(
                 "button",
                 {
                   type: "button",
                   class: "st-combobox__clear",
-                  "aria-label": "Clear",
+                  "aria-label": "Clear selection",
+                  disabled: props.disabled,
                   onClick: () => {
                     inputValue.value = "";
                     activeIndex.value = -1;
@@ -173,6 +186,7 @@ export const Combobox = defineComponent({
               class: "st-combobox__toggle",
               "aria-label": "Toggle options",
               "aria-expanded": open,
+              disabled: props.disabled,
               onClick: () => setOpen(!open),
             },
             [
@@ -184,55 +198,78 @@ export const Combobox = defineComponent({
               }),
             ],
           ),
-          selected
-            ? h("span", { class: "st-combobox__value st-visually-hidden" }, String(selected.label))
-            : null,
-          open
-            ? h(
-                "ul",
-                {
-                  id: listId.value,
-                  class: "st-combobox__list",
-                  role: "listbox",
-                  "aria-label": String(props.label) || "Options",
-                },
-                filtered.value.length
-                  ? filtered.value.map((option, index) =>
-                      h(
-                        "li",
-                        {
-                          key: option.value,
-                          id: `${listId.value}-${option.value}`,
-                          class: classNames(
-                            "st-combobox__option",
-                            index === activeIndex.value && "st-combobox__option--active",
-                            option.value === props.value && "st-combobox__option--selected",
-                          ),
-                          role: "option",
-                          "aria-selected": option.value === props.value,
-                          "aria-disabled": option.disabled ? "true" : undefined,
-                          onMousedown: (event: MouseEvent) => {
-                            event.preventDefault();
-                            selectOption(option);
-                          },
-                        },
-                        String(option.label),
+        ],
+      );
+
+      const list = open
+        ? h(
+            "div",
+            {
+              id: listId.value,
+              class: "st-combobox__list",
+              role: "listbox",
+              "aria-label": props.listLabel ?? (props.label ? String(props.label) : "Options"),
+            },
+            filtered.value.length
+              ? filtered.value.map((option, index) =>
+                  h(
+                    "button",
+                    {
+                      key: option.value,
+                      id: `${listId.value}-${option.value}`,
+                      type: "button",
+                      class: classNames(
+                        "st-combobox__option",
+                        index === activeIndex.value && "st-combobox__option--active",
                       ),
-                    )
-                  : [
-                      h(
-                        "li",
-                        {
-                          class: "st-combobox__empty",
-                          role: "option",
-                          "aria-disabled": "true",
-                          "aria-selected": "false",
-                        },
-                        String(props.noResultsLabel),
-                      ),
-                    ],
-              )
-            : null,
+                      role: "option",
+                      "aria-selected": displayValue === String(option.label) ? "true" : "false",
+                      "aria-disabled": option.disabled ? "true" : undefined,
+                      disabled: option.disabled,
+                      onMousedown: (event: MouseEvent) => {
+                        event.preventDefault();
+                        selectOption(option);
+                      },
+                    },
+                    String(option.label),
+                  ),
+                )
+              : [
+                  h(
+                    "div",
+                    {
+                      class: "st-combobox__empty",
+                      role: "option",
+                      "aria-disabled": "true",
+                      "aria-selected": "false",
+                    },
+                    String(props.noResultsLabel),
+                  ),
+                ],
+          )
+        : null;
+
+      const feedback = props.errorText
+        ? h("span", { class: "st-field__error" }, props.errorText)
+        : props.helperText
+          ? h("span", { class: "st-field__help" }, props.helperText)
+          : null;
+
+      return h(
+        "div",
+        {
+          ...attrs,
+          class: classNames("st-field", props.class),
+        },
+        [
+          h("label", { class: "st-field__control", for: inputId.value }, [
+            props.label
+              ? h("span", { class: "st-field__label" }, props.label as string)
+              : null,
+            controlBox,
+          ]),
+          list,
+          feedback,
         ],
       );
     };

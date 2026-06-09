@@ -444,25 +444,36 @@ export function CodeSnippet({ code, inline = false, className, ...rest }: CodeSn
 export interface ComboboxOption extends OptionItem {}
 export type ComboboxProps = Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> & {
   label?: React.ReactNode;
+  helperText?: React.ReactNode;
+  errorText?: React.ReactNode;
+  invalid?: boolean;
   options: ComboboxOption[];
   value?: string;
   size?: Size;
   placeholder?: string;
+  disabled?: boolean;
   open?: boolean;
   allowCustomValue?: boolean;
   noResultsLabel?: React.ReactNode;
+  /** Accessible name for the options listbox. Defaults to `label`. */
+  listLabel?: string;
   onChange?: (value: string) => void;
   onSelect?: (value: string) => void;
 };
 export function Combobox({
   label,
+  helperText,
+  errorText,
+  invalid = false,
   options,
   value,
   size = "md",
   placeholder = "Select or type",
+  disabled = false,
   open: controlledOpen,
   allowCustomValue = true,
   noResultsLabel = "No results",
+  listLabel,
   onChange,
   onSelect,
   className,
@@ -480,6 +491,7 @@ export function Combobox({
     return !query || text(option.label).toLowerCase().includes(query);
   });
   const selected = options.find((option) => option.value === value);
+  const isInvalid = invalid || Boolean(errorText);
   const selectOption = (option: ComboboxOption) => {
     if (option.disabled) return;
     setInputValue(text(option.label));
@@ -488,92 +500,111 @@ export function Combobox({
     onSelect?.(option.value);
     onChange?.(option.value);
   };
+  const displayValue = selected?.label ? text(selected.label) : inputValue;
+  // Structure mirrors the Svelte reference: a `st-field` grid wrapping a
+  // `st-field__control` label that stacks the field label above the bordered
+  // `st-combobox` box (input + clear/toggle). The popover list and help/error
+  // text are siblings of the control inside `st-field`.
   return (
-    <div {...rest} className={classNames("st-combobox", `st-combobox--${size}`, className)}>
-      {label ? <label className="st-field__label" htmlFor={inputId}>{label}</label> : null}
-      <input
-        id={inputId}
-        className="st-combobox__control"
-        role="combobox"
-        aria-expanded={open}
-        aria-autocomplete="list"
-        aria-controls={listId}
-        aria-activedescendant={activeIndex >= 0 && filtered[activeIndex] ? `${listId}-${filtered[activeIndex].value}` : undefined}
-        placeholder={placeholder}
-        value={selected?.label ? text(selected.label) : inputValue}
-        onFocus={() => setOpen(true)}
-        onChange={(event) => {
-          setInputValue(event.currentTarget.value);
-          setOpen(true);
-          setActiveIndex(-1);
-          if (allowCustomValue) onChange?.(event.currentTarget.value);
-        }}
-        onKeyDown={(event) => {
-          if (event.key === "ArrowDown") {
-            event.preventDefault();
-            setOpen(true);
-            setActiveIndex((index) => moveIndex(index, filtered.length, 1));
-          } else if (event.key === "ArrowUp") {
-            event.preventDefault();
-            setOpen(true);
-            setActiveIndex((index) => moveIndex(index < 0 ? filtered.length : index, filtered.length, -1));
-          } else if (event.key === "Enter" && open && activeIndex >= 0 && filtered[activeIndex]) {
-            event.preventDefault();
-            selectOption(filtered[activeIndex]);
-          } else if (event.key === "Escape" && open) {
-            event.preventDefault();
-            setOpen(false);
-            setActiveIndex(-1);
-          }
-        }}
-      />
-      {(selected || inputValue) ? (
-        <button
-          type="button"
-          className="st-combobox__clear"
-          aria-label="Clear"
-          onClick={() => {
-            setInputValue("");
-            setActiveIndex(-1);
-            onChange?.("");
-          }}
-        >
-          <X size={16} strokeWidth={2.25} aria-hidden="true" />
-        </button>
-      ) : null}
-      <button
-        type="button"
-        className="st-combobox__toggle"
-        aria-label="Toggle options"
-        aria-expanded={open}
-        onClick={() => setOpen(!open)}
-      >
-        <ChevronDown className={classNames("st-combobox__toggleIcon", open && "st-combobox__toggleIcon--open")} size={18} strokeWidth={2.25} aria-hidden="true" />
-      </button>
-      {selected ? <span className="st-combobox__value st-visually-hidden">{selected.label}</span> : null}
+    <div {...rest} className={classNames("st-field", className)}>
+      <label className="st-field__control" htmlFor={inputId}>
+        {label ? <span className="st-field__label">{label}</span> : null}
+        <span className={classNames("st-combobox", `st-combobox--${size}`)}>
+          <input
+            id={inputId}
+            className="st-combobox__control"
+            role="combobox"
+            aria-expanded={open}
+            aria-autocomplete="list"
+            aria-controls={listId}
+            aria-invalid={isInvalid ? "true" : undefined}
+            aria-activedescendant={activeIndex >= 0 && filtered[activeIndex] ? `${listId}-${filtered[activeIndex].value}` : undefined}
+            placeholder={placeholder}
+            disabled={disabled}
+            value={displayValue}
+            onFocus={() => !disabled && setOpen(true)}
+            onChange={(event) => {
+              setInputValue(event.currentTarget.value);
+              setOpen(true);
+              setActiveIndex(-1);
+              if (allowCustomValue) onChange?.(event.currentTarget.value);
+            }}
+            onKeyDown={(event) => {
+              if (event.key === "ArrowDown") {
+                event.preventDefault();
+                setOpen(true);
+                setActiveIndex((index) => moveIndex(index, filtered.length, 1));
+              } else if (event.key === "ArrowUp") {
+                event.preventDefault();
+                setOpen(true);
+                setActiveIndex((index) => moveIndex(index < 0 ? filtered.length : index, filtered.length, -1));
+              } else if (event.key === "Enter" && open && activeIndex >= 0 && filtered[activeIndex]) {
+                event.preventDefault();
+                selectOption(filtered[activeIndex]);
+              } else if (event.key === "Escape" && open) {
+                event.preventDefault();
+                setOpen(false);
+                setActiveIndex(-1);
+              }
+            }}
+          />
+          {displayValue ? (
+            <button
+              type="button"
+              className="st-combobox__clear"
+              aria-label="Clear selection"
+              disabled={disabled}
+              onClick={() => {
+                setInputValue("");
+                setActiveIndex(-1);
+                onChange?.("");
+              }}
+            >
+              <X size={16} strokeWidth={2.25} aria-hidden="true" />
+            </button>
+          ) : null}
+          <button
+            type="button"
+            className="st-combobox__toggle"
+            aria-label="Toggle options"
+            aria-expanded={open}
+            disabled={disabled}
+            onClick={() => setOpen(!open)}
+          >
+            <ChevronDown className={classNames("st-combobox__toggleIcon", open && "st-combobox__toggleIcon--open")} size={18} strokeWidth={2.25} aria-hidden="true" />
+          </button>
+        </span>
+      </label>
       {open ? (
-        <ul id={listId} className="st-combobox__list" role="listbox" aria-label={text(label) || "Options"}>
+        <div id={listId} className="st-combobox__list" role="listbox" aria-label={listLabel ?? text(label) ?? "Options"}>
           {filtered.length ? (
             filtered.map((option, index) => (
-              <li
+              <button
                 key={option.value}
                 id={`${listId}-${option.value}`}
-                className={classNames("st-combobox__option", index === activeIndex && "st-combobox__option--active", option.value === value && "st-combobox__option--selected")}
+                type="button"
+                className={classNames("st-combobox__option", index === activeIndex && "st-combobox__option--active")}
                 role="option"
-                aria-selected={option.value === value}
+                aria-selected={displayValue === text(option.label)}
                 aria-disabled={option.disabled ? "true" : undefined}
+                disabled={option.disabled}
                 onMouseDown={(event) => {
                   event.preventDefault();
                   selectOption(option);
                 }}
               >
                 {option.label}
-              </li>
+              </button>
             ))
           ) : (
-            <li className="st-combobox__empty" role="option" aria-disabled="true" aria-selected="false">{noResultsLabel}</li>
+            <div className="st-combobox__empty" role="option" aria-disabled="true" aria-selected="false">{noResultsLabel}</div>
           )}
-        </ul>
+        </div>
+      ) : null}
+      {errorText ? (
+        <span className="st-field__error">{errorText}</span>
+      ) : helperText ? (
+        <span className="st-field__help">{helperText}</span>
       ) : null}
     </div>
   );
@@ -1165,8 +1196,19 @@ export type FileUploadItem = {
 };
 export type FileUploaderProps = React.HTMLAttributes<HTMLDivElement> & {
   label?: React.ReactNode;
-  items?: FileUploadItem[];
+  helperText?: React.ReactNode;
+  errorText?: React.ReactNode;
+  invalid?: boolean;
+  accept?: string;
+  multiple?: boolean;
   disabled?: boolean;
+  items?: FileUploadItem[];
+  /** Trigger button text. Defaults to "Choose file(s)" based on `multiple`. */
+  triggerLabel?: React.ReactNode;
+  /** Hint shown next to the trigger inside the dropzone. */
+  dropzoneLabel?: React.ReactNode;
+  /** Builds the per-file remove button accessible name. */
+  removeLabel?: (filename: string) => string;
 };
 function formatFileSize(bytes: number | undefined): string {
   if (typeof bytes !== "number" || !Number.isFinite(bytes) || bytes < 0) return "";
@@ -1183,43 +1225,91 @@ function fileItemName(item: FileUploadItem): string | undefined {
 function fileItemSize(item: FileUploadItem): number | undefined {
   return item.file?.size ?? item.size;
 }
-export function FileUploader({ label = "Upload", items = [], disabled = false, className, ...rest }: FileUploaderProps) {
+export function FileUploader({
+  label,
+  helperText,
+  errorText,
+  invalid = false,
+  accept,
+  multiple = false,
+  disabled = false,
+  items = [],
+  triggerLabel,
+  dropzoneLabel = "Drag and drop files here",
+  removeLabel = (filename) => `Remove ${filename}`,
+  className,
+  ...rest
+}: FileUploaderProps) {
+  const isInvalid = invalid || Boolean(errorText);
+  const effectiveTriggerLabel = triggerLabel ?? (multiple ? "Choose files" : "Choose file");
   return (
-    <div {...rest} className={classNames("st-fileUploader-field", className)}>
-      <div className={classNames("st-fileUploader__dropzone", disabled && "st-fileUploader__dropzone--disabled")}>
-        <span className="st-fileUploader__affordance" aria-hidden="true">
-          <Upload size={18} strokeWidth={2} aria-hidden="true" />
-        </span>
-        <span className="st-fileUploader__trigger">{label}</span>
-        <input className="st-fileUploader__input" type="file" disabled={disabled} aria-label={text(label)} />
+    <div {...rest} className={classNames("st-field", "st-fileUploader-field", className)}>
+      {label ? <label className="st-field__label">{label}</label> : null}
+      <div
+        className={classNames(
+          "st-fileUploader__dropzone",
+          isInvalid && "st-fileUploader__dropzone--invalid",
+          disabled && "st-fileUploader__dropzone--disabled",
+        )}
+        role="presentation"
+      >
+        <input
+          className="st-fileUploader__input"
+          type="file"
+          accept={accept}
+          multiple={multiple}
+          disabled={disabled}
+          aria-invalid={isInvalid ? "true" : undefined}
+        />
+        <div className="st-fileUploader__content">
+          <span className="st-fileUploader__affordance" aria-hidden="true">
+            <Upload size={18} strokeWidth={2} aria-hidden="true" />
+          </span>
+          <button type="button" className="st-fileUploader__trigger" disabled={disabled}>
+            {effectiveTriggerLabel}
+          </button>
+          <span className="st-fileUploader__hint">{dropzoneLabel}</span>
+        </div>
       </div>
-      <ul className="st-fileUploader__list">
-        {items.map((item, index) => {
-          const name = fileItemName(item);
-          const size = fileItemSize(item);
-          const sizeLabel = formatFileSize(size);
-          return (
-            <li key={item.id ?? name ?? index} className={classNames("st-fileUploader__item", item.status && `st-fileUploader__item--${item.status}`)}>
-              <span className="st-fileUploader__itemIcon" aria-hidden="true">
-                {item.status === "uploading" ? (
-                  <span className="st-fileUploader__spinner">
-                    <LoaderCircle size={16} strokeWidth={2} aria-hidden="true" />
-                  </span>
-                ) : item.status === "complete" ? (
-                  <CircleCheck size={16} strokeWidth={2} aria-hidden="true" />
-                ) : item.status === "error" ? (
-                  <CircleAlert size={16} strokeWidth={2} aria-hidden="true" />
-                ) : (
-                  <FileIcon size={16} strokeWidth={2} aria-hidden="true" />
-                )}
-              </span>
-              <span className="st-fileUploader__itemName st-fileUploader__name">{name}</span>
-              {sizeLabel ? <span className="st-fileUploader__itemSize">{sizeLabel}</span> : null}
-              {item.error ? <span className="st-fileUploader__itemError">{item.error}</span> : null}
-            </li>
-          );
-        })}
-      </ul>
+      {errorText ? (
+        <span className="st-field__error">{errorText}</span>
+      ) : helperText ? (
+        <span className="st-field__help">{helperText}</span>
+      ) : null}
+      {items.length > 0 ? (
+        <ul className="st-fileUploader__list">
+          {items.map((item, index) => {
+            const name = fileItemName(item);
+            const size = fileItemSize(item);
+            const sizeLabel = formatFileSize(size);
+            return (
+              <li key={item.id ?? name ?? index} className={classNames("st-fileUploader__item", item.status && `st-fileUploader__item--${item.status}`)}>
+                <span className="st-fileUploader__itemIcon" aria-hidden="true">
+                  {item.status === "uploading" ? (
+                    <span className="st-fileUploader__spinner">
+                      <LoaderCircle size={16} strokeWidth={2} aria-hidden="true" />
+                    </span>
+                  ) : item.status === "complete" ? (
+                    <CircleCheck size={16} strokeWidth={2} aria-hidden="true" />
+                  ) : item.status === "error" ? (
+                    <CircleAlert size={16} strokeWidth={2} aria-hidden="true" />
+                  ) : (
+                    <FileIcon size={16} strokeWidth={2} aria-hidden="true" />
+                  )}
+                </span>
+                <span className="st-fileUploader__itemMeta">
+                  <span className="st-fileUploader__itemName st-fileUploader__name">{name}</span>
+                  {sizeLabel ? <span className="st-fileUploader__itemSize">{sizeLabel}</span> : null}
+                  {item.status === "error" && item.error ? <span className="st-fileUploader__itemError">{item.error}</span> : null}
+                </span>
+                <button type="button" className="st-fileUploader__remove" aria-label={removeLabel(text(name))} disabled={disabled}>
+                  <X size={16} strokeWidth={2} aria-hidden="true" />
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      ) : null}
     </div>
   );
 }
@@ -3453,42 +3543,121 @@ export function Pagination({ page, pageSize = 10, totalItems, totalPages, pageCo
 // `pageCount` (Svelte-canonical) is accepted as an alias of `totalPages`.
 export type PaginationNavProps = React.HTMLAttributes<HTMLElement> & {
   page?: number;
-  totalPages?: number;
+  /** Total page count (Svelte-canonical). `totalPages` is accepted as alias. */
   pageCount?: number;
+  totalPages?: number;
+  siblings?: number;
+  label?: string;
+  previousLabel?: string;
+  nextLabel?: string;
   previousHref?: string;
   nextHref?: string;
+  onPageChange?: (page: number) => void;
 };
-export function PaginationNav({ page = 1, totalPages, pageCount, previousHref, nextHref, className, ...rest }: PaginationNavProps) {
-  const pages = totalPages ?? pageCount ?? 1;
+// Mirrors the Svelte reference: first/last anchors, sibling window around the
+// current page, and two collapse points (ellipses) once the total exceeds
+// `siblings * 2 + 5`.
+type PaginationSlot = number | "ellipsis-start" | "ellipsis-end";
+function paginationSlots(page: number, pageCount: number, siblings: number): PaginationSlot[] {
+  const total = Math.max(0, Math.floor(pageCount));
+  if (total <= 0) return [];
+  const current = Math.min(Math.max(1, Math.floor(page)), total);
+  const sib = Math.max(0, Math.floor(siblings));
+  const minSlots = sib * 2 + 5;
+  if (total <= minSlots) {
+    return Array.from({ length: total }, (_, i) => i + 1);
+  }
+  const leftSibling = Math.max(current - sib, 1);
+  const rightSibling = Math.min(current + sib, total);
+  const showLeftEllipsis = leftSibling > 2;
+  const showRightEllipsis = rightSibling < total - 1;
+  const result: PaginationSlot[] = [];
+  if (!showLeftEllipsis && showRightEllipsis) {
+    const leftItemCount = 3 + sib * 2;
+    for (let i = 1; i <= leftItemCount; i += 1) result.push(i);
+    result.push("ellipsis-end");
+    result.push(total);
+  } else if (showLeftEllipsis && !showRightEllipsis) {
+    result.push(1);
+    result.push("ellipsis-start");
+    const rightItemCount = 3 + sib * 2;
+    for (let i = total - rightItemCount + 1; i <= total; i += 1) result.push(i);
+  } else if (showLeftEllipsis && showRightEllipsis) {
+    result.push(1);
+    result.push("ellipsis-start");
+    for (let i = leftSibling; i <= rightSibling; i += 1) result.push(i);
+    result.push("ellipsis-end");
+    result.push(total);
+  } else {
+    for (let i = 1; i <= total; i += 1) result.push(i);
+  }
+  return result;
+}
+export function PaginationNav({
+  page = 1,
+  pageCount,
+  totalPages,
+  siblings = 1,
+  label = "Pagination",
+  previousLabel = "Previous page",
+  nextLabel = "Next page",
+  previousHref,
+  nextHref,
+  onPageChange,
+  className,
+  ...rest
+}: PaginationNavProps) {
+  const pages = pageCount ?? totalPages ?? 1;
+  const slots = paginationSlots(page, pages, siblings);
+  const go = (target: number) => {
+    if (target < 1 || target > pages || target === page) return;
+    onPageChange?.(target);
+  };
   return (
-    <nav {...rest} className={classNames("st-paginationNav", className)} aria-label="Pagination navigation">
-      {previousHref ? (
-        <a href={previousHref} className="st-paginationNav__nav" aria-label="Previous">
-          <ChevronLeft size={16} strokeWidth={2} aria-hidden="true" />
-        </a>
-      ) : (
-        <button type="button" className="st-paginationNav__nav" aria-label="Previous" disabled={page <= 1}>
-          <ChevronLeft size={16} strokeWidth={2} aria-hidden="true" />
-        </button>
-      )}
-      <ol className="st-paginationNav__list">
-        {Array.from({ length: pages }, (_, index) => index + 1).map((item) => (
-          <li key={item}>
-            <button type="button" className={classNames("st-paginationNav__page", item === page && "st-paginationNav__page--active")}>
-              Page {item}
+    <nav {...rest} className={classNames("st-paginationNav", className)} aria-label={label}>
+      <ul className="st-paginationNav__list">
+        <li>
+          {previousHref ? (
+            <a href={previousHref} className="st-paginationNav__nav" aria-label={previousLabel}>
+              <ChevronLeft size={16} strokeWidth={2} aria-hidden="true" />
+            </a>
+          ) : (
+            <button type="button" className="st-paginationNav__nav" aria-label={previousLabel} disabled={page <= 1 || pages <= 0} onClick={() => go(page - 1)}>
+              <ChevronLeft size={16} strokeWidth={2} aria-hidden="true" />
             </button>
+          )}
+        </li>
+        {slots.map((slot, index) => (
+          <li key={typeof slot === "number" ? `p-${slot}` : `${slot}-${index}`}>
+            {slot === "ellipsis-start" || slot === "ellipsis-end" ? (
+              <span className="st-paginationNav__ellipsis" aria-hidden="true">
+                <Ellipsis size={16} strokeWidth={2} aria-hidden="true" />
+              </span>
+            ) : (
+              <button
+                type="button"
+                className={classNames("st-paginationNav__page", slot === page && "st-paginationNav__page--active")}
+                aria-label={`Page ${slot}`}
+                aria-current={slot === page ? "page" : undefined}
+                onClick={() => go(slot)}
+              >
+                {slot}
+              </button>
+            )}
           </li>
         ))}
-      </ol>
-      {nextHref ? (
-        <a href={nextHref} className="st-paginationNav__nav" aria-label="Next">
-          <ChevronRight size={16} strokeWidth={2} aria-hidden="true" />
-        </a>
-      ) : (
-        <button type="button" className="st-paginationNav__nav" aria-label="Next" disabled={page >= pages}>
-          <ChevronRight size={16} strokeWidth={2} aria-hidden="true" />
-        </button>
-      )}
+        <li>
+          {nextHref ? (
+            <a href={nextHref} className="st-paginationNav__nav" aria-label={nextLabel}>
+              <ChevronRight size={16} strokeWidth={2} aria-hidden="true" />
+            </a>
+          ) : (
+            <button type="button" className="st-paginationNav__nav" aria-label={nextLabel} disabled={page >= pages || pages <= 0} onClick={() => go(page + 1)}>
+              <ChevronRight size={16} strokeWidth={2} aria-hidden="true" />
+            </button>
+          )}
+        </li>
+      </ul>
     </nav>
   );
 }
@@ -3563,9 +3732,17 @@ export function ProgressBar({ label, value = 0, max = 100, tone = "neutral", siz
   );
 }
 
-export type ProgressIndicatorStatus = "complete" | "current" | "disabled" | "invalid" | "incomplete";
+export type ProgressIndicatorStatus =
+  | "complete"
+  | "current"
+  | "upcoming"
+  | "disabled"
+  | "invalid"
+  | "incomplete";
 export interface ProgressIndicatorItem {
   id?: string;
+  /** Svelte-canonical alias for the React/Vue `id`. */
+  value?: string;
   label: React.ReactNode;
   description?: React.ReactNode;
   status?: ProgressIndicatorStatus;
@@ -3573,27 +3750,45 @@ export interface ProgressIndicatorItem {
 export type ProgressIndicatorProps = React.OlHTMLAttributes<HTMLOListElement> & {
   items: ProgressIndicatorItem[];
   orientation?: "horizontal" | "vertical";
+  /** Svelte-canonical alias: `vertical` sets `orientation="vertical"`. */
+  vertical?: boolean;
+  /** Accessible name (parity with the Svelte `label`). */
+  label?: string;
 };
-export function ProgressIndicator({ items, orientation = "horizontal", className, ...rest }: ProgressIndicatorProps) {
+export function ProgressIndicator({ items, orientation = "horizontal", vertical, label = "Progress", className, ...rest }: ProgressIndicatorProps) {
+  const resolvedOrientation = vertical ? "vertical" : orientation;
   return (
-    <ol {...rest} className={classNames("st-progressIndicator", `st-progressIndicator--${orientation}`, className)}>
-      {items.map((item, index) => (
-        <li key={item.id ?? index} className={classNames("st-progressIndicator__step", `st-progressIndicator__step--${item.status ?? "incomplete"}`)}>
-          <span className="st-progressIndicator__indicator">
-            {item.status === "complete" ? (
-              <Check size={14} strokeWidth={2} aria-hidden="true" />
-            ) : item.status === "invalid" ? (
-              <X size={14} strokeWidth={2} aria-hidden="true" />
-            ) : (
-              index + 1
-            )}
-          </span>
-          <span className="st-progressIndicator__text">
-            <span className="st-progressIndicator__label">{item.label}</span>
-            {item.description ? <span className="st-progressIndicator__description">{item.description}</span> : null}
-          </span>
-        </li>
-      ))}
+    <ol {...rest} aria-label={label} className={classNames("st-progressIndicator", `st-progressIndicator--${resolvedOrientation}`, className)}>
+      {items.map((item, index) => {
+        const status = item.status ?? "upcoming";
+        const isLast = index === items.length - 1;
+        return (
+          <li
+            key={item.id ?? item.value ?? index}
+            className={classNames("st-progressIndicator__step", `st-progressIndicator__step--${status}`)}
+            aria-current={status === "current" ? "step" : undefined}
+          >
+            <span className="st-progressIndicator__indicator">
+              <span className="st-progressIndicator__circle">
+                {status === "complete" ? (
+                  <Check size={14} strokeWidth={2} aria-hidden="true" />
+                ) : status === "invalid" ? (
+                  <X size={14} strokeWidth={2} aria-hidden="true" />
+                ) : status === "current" ? (
+                  <span className="st-progressIndicator__dot" />
+                ) : (
+                  <span className="st-progressIndicator__index">{index + 1}</span>
+                )}
+              </span>
+              {!isLast ? <span className="st-progressIndicator__connector" /> : null}
+            </span>
+            <span className="st-progressIndicator__text">
+              <span className="st-progressIndicator__label">{item.label}</span>
+              {item.description ? <span className="st-progressIndicator__description">{item.description}</span> : null}
+            </span>
+          </li>
+        );
+      })}
     </ol>
   );
 }
@@ -4296,8 +4491,12 @@ export interface TreeNode {
 export type TreeViewProps = Omit<React.HTMLAttributes<HTMLDivElement>, "onSelect" | "onChange"> & {
   nodes: TreeNode[];
   selectedId?: string;
+  /** Svelte-canonical alias of `selectedId`. */
+  selected?: string;
   expandedIds?: string[];
   defaultExpandedIds?: string[];
+  /** Svelte-canonical alias of `defaultExpandedIds`. */
+  defaultExpanded?: string[];
   /** Accessible name for the tree (parity with the Svelte `label`). */
   label?: string;
   /**
@@ -4335,18 +4534,24 @@ function flattenVisible(nodes: TreeNode[], expanded: Set<string>): TreeFlatNode[
 export function TreeView({
   nodes,
   selectedId,
+  selected,
   expandedIds,
-  defaultExpandedIds = [],
+  defaultExpandedIds,
+  defaultExpanded,
   label = "Arborescence",
   onSelect,
   onChange,
   className,
   ...rest
 }: TreeViewProps) {
+  // Accept the Svelte-canonical prop names (`selected`, `defaultExpanded`) as
+  // aliases — that is what the shared docs node specs pass.
+  const resolvedSelectedId = selectedId ?? selected;
+  const seedExpanded = defaultExpandedIds ?? defaultExpanded ?? [];
   // Expansion: controlled when `expandedIds` is provided, otherwise internal
   // state seeded from `defaultExpandedIds` (parity with the Svelte reference).
   const [internalExpanded, setInternalExpanded] = React.useState<Set<string>>(
-    () => new Set(defaultExpandedIds),
+    () => new Set(seedExpanded),
   );
   const expanded = expandedIds ? new Set(expandedIds) : internalExpanded;
   const expansionControlled = Boolean(expandedIds);
@@ -4434,7 +4639,7 @@ export function TreeView({
   return (
     <div {...rest} ref={rootRef} className={classNames("st-treeView", className)} role="tree" aria-label={label}>
       {visible.map((flat) => {
-        const isSelected = flat.node.id === selectedId;
+        const isSelected = flat.node.id === resolvedSelectedId;
         return (
           <div
             key={flat.node.id}
@@ -4462,9 +4667,7 @@ export function TreeView({
                 flat.expanded && "st-treeView__caret--open",
               )}
               aria-hidden="true"
-            >
-              ›
-            </span>
+            />
             <span className="st-treeView__label">{flat.node.label}</span>
           </div>
         );

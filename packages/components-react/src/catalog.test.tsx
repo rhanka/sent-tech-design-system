@@ -145,7 +145,7 @@ describe("React public catalog parity", () => {
           activeId="react"
         />
         <Pagination page={2} totalPages={5} />
-        <PaginationNav previousHref="/a" nextHref="/c" />
+        <PaginationNav previousHref="/a" nextHref="/c" label="Page navigation" />
         <SideNav items={[{ label: "Foundations", href: "/foundations" }]} />
         <Menu items={[{ label: "Copy" }, { label: "Archive" }]} />
         <MenuTriggerButton>Open</MenuTriggerButton>
