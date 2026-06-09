@@ -1,7 +1,8 @@
 <script lang="ts">
   import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { getExample } from "$lib/framework/examples";
-  import { Badge, OrderedList } from "@sentropic/design-system-svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
+  import { Badge } from "@sentropic/design-system-svelte";
 
   const steps = [
     "Installer les packages",
@@ -12,6 +13,9 @@
     },
     "Consommer les composants"
   ];
+
+  // Démo NodeSpec neutre -> rendue dans le framework actif (onglets svelte/react/vue).
+  const nestedDemo: NodeSpec[] = [{ comp: "OrderedList", props: { items: steps } }];
 </script>
 
 <div class="docs-page">
@@ -32,7 +36,7 @@
 
   <section class="docs-section">
     <h2>Avec imbrication</h2>
-    <OrderedList items={steps} />
+    <TabbedExample nodes={nestedDemo} />
   </section>
 
   <section class="docs-section">

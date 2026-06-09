@@ -5,6 +5,8 @@
   import { locale } from "$lib/locale.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
+  const fr = (frText: string, enText: string) => (locale.value === "fr" ? frText : enText);
+
   // Modal s'ouvre au clic et rend un overlay position:fixed plein écran : aucune
   // représentation neutre encadrée n'a de sens, on garde donc une démo Svelte
   // interactive (bouton + Modal) pour cette section uniquement.
@@ -21,27 +23,27 @@
   ];
 
   // OverflowMenu (Svelte) lit la shape kind/value/danger pour ses items.
-  const overflowDemo: NodeSpec[] = [
+  const overflowDemo: NodeSpec[] = $derived([
     {
       comp: "OverflowMenu",
       props: {
-        triggerLabel: "Row actions",
+        triggerLabel: fr("Actions de ligne", "Row actions"),
         open: true,
         placement: "bottom-start",
         items: [
-          { kind: "group", label: "Edit" },
-          { value: "rename", label: "Rename" },
-          { value: "duplicate", label: "Duplicate" },
+          { kind: "group", label: fr("Modifier", "Edit") },
+          { value: "rename", label: fr("Renommer", "Rename") },
+          { value: "duplicate", label: fr("Dupliquer", "Duplicate") },
           { kind: "divider" },
-          { kind: "group", label: "Distribute" },
-          { value: "share", label: "Share" },
-          { value: "archive", label: "Archive" },
+          { kind: "group", label: fr("Distribuer", "Distribute") },
+          { value: "share", label: fr("Partager", "Share") },
+          { value: "archive", label: fr("Archiver", "Archive") },
           { kind: "divider" },
-          { value: "delete", label: "Delete", danger: true }
+          { value: "delete", label: fr("Supprimer", "Delete"), danger: true }
         ]
       }
     }
-  ];
+  ]);
 
   const feedbackDemo: NodeSpec[] = [
     {

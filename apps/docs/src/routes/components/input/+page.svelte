@@ -1,13 +1,79 @@
 <script lang="ts">
   import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { getExample } from "$lib/framework/examples";
-  import { Badge, Input } from "@sentropic/design-system-svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
 
   const fr = (frText: string, enText: string) => (locale.value === "fr" ? frText : enText);
 
-  let liveValue = $state("");
+  // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
+  // (toute la section bascule en onglets svelte/react/vue, comme password-input).
+  // État statique : la valeur est figée pour la démonstration tri-framework.
+  const statesDemo: NodeSpec[] = $derived([
+    {
+      el: "div",
+      props: { class: "docs-demo-stack" },
+      children: [
+        { comp: "Input", props: { label: fr("Titre du projet", "Project title"), placeholder: "Sent Tech Forge" } },
+        {
+          comp: "Input",
+          props: {
+            label: fr("Identifiant d'espace", "Workspace slug"),
+            placeholder: "forge-playground",
+            helperText: fr("Minuscules, chiffres et tirets uniquement.", "Lowercase letters, digits, and dashes only.")
+          }
+        },
+        { comp: "Input", props: { label: fr("Titre du projet", "Project title"), value: fr("Lecture seule", "Read-only"), disabled: true } },
+        {
+          comp: "Input",
+          props: {
+            label: fr("Adresse e-mail", "Contact email"),
+            value: "user@@domain",
+            invalid: true,
+            errorText: fr("Adresse e-mail invalide.", "Invalid email address.")
+          }
+        }
+      ]
+    }
+  ]);
+
+  const bindingDemo: NodeSpec[] = $derived([
+    {
+      comp: "Input",
+      props: {
+        label: fr("Recherche", "Search"),
+        value: "forge-playground",
+        modelValue: "forge-playground",
+        placeholder: fr("Tapez…", "Type…")
+      }
+    }
+  ]);
+
+  const sizesDemo: NodeSpec[] = [
+    {
+      el: "div",
+      props: { class: "docs-demo-stack" },
+      children: [
+        { comp: "Input", props: { label: "Small", size: "sm", placeholder: "sm" } },
+        { comp: "Input", props: { label: "Medium", size: "md", placeholder: "md" } },
+        { comp: "Input", props: { label: "Large", size: "lg", placeholder: "lg" } }
+      ]
+    }
+  ];
+
+  const typesDemo: NodeSpec[] = $derived([
+    {
+      el: "div",
+      props: { class: "docs-demo-stack" },
+      children: [
+        { comp: "Input", props: { label: "Email", type: "email", placeholder: "user@domain.com", autocomplete: "email" } },
+        { comp: "Input", props: { label: fr("Téléphone", "Phone"), type: "tel", inputmode: "tel", placeholder: "+1 555 010 0101" } },
+        { comp: "Input", props: { label: fr("Quantité", "Quantity"), type: "number", min: 0, max: 99, placeholder: "0" } }
+      ]
+    }
+  ]);
 </script>
 
 <div class="docs-page">
@@ -44,38 +110,23 @@
         "Default, focus (themed ring), filled, disabled, and error. Error is triggered via invalid and/or errorText; errorText then replaces helperText."
       )}
     </p>
-    <div class="docs-example docs-example--stack">
-      <h3>{fr("Défaut", "Default")}</h3>
-      <Input label={fr("Titre du projet", "Project title")} placeholder="Sent Tech Forge" />
-      <h3>{fr("Avec texte d'aide", "With helper text")}</h3>
-      <Input
-        label={fr("Identifiant d'espace", "Workspace slug")}
-        placeholder="forge-playground"
-        helperText={fr("Minuscules, chiffres et tirets uniquement.", "Lowercase letters, digits, and dashes only.")}
-      />
-      <h3>{fr("Saisie liée (bind)", "Bound value (bind)")}</h3>
-      <Input label={fr("Recherche", "Search")} bind:value={liveValue} placeholder={fr("Tapez…", "Type…")} />
-      <p class="docs-demo-note">{fr("Valeur courante", "Current value")}: <code>{liveValue || fr("Aucune", "None")}</code></p>
-      <h3>{fr("Désactivé", "Disabled")}</h3>
-      <Input label={fr("Titre du projet", "Project title")} value={fr("Lecture seule", "Read-only")} disabled />
-      <h3>{fr("Erreur", "Error")}</h3>
-      <Input
-        label={fr("Adresse e-mail", "Contact email")}
-        value="user@@domain"
-        invalid
-        errorText={fr("Adresse e-mail invalide.", "Invalid email address.")}
-      />
-    </div>
+    <TabbedExample
+      nodes={statesDemo}
+      title={fr("Défaut · aide · désactivé · erreur", "Default · helper · disabled · error")}
+    />
+    <TabbedExample nodes={bindingDemo} title={fr("Saisie liée (bind)", "Bound value (bind)")} />
+    <p class="docs-demo-note">
+      {fr(
+        "La valeur est bindable (value en Svelte/React, modelValue en Vue) ; figée ici pour la démonstration tri-framework.",
+        "The value is bindable (value in Svelte/React, modelValue in Vue); frozen here for the tri-framework demo."
+      )}
+    </p>
   </section>
 
   <section class="docs-section">
     <h2>{t(locale.value, "sizes")}</h2>
     <p>{fr("sm (2 rem), md (2,5 rem, défaut), lg (3 rem).", "sm (2 rem), md (2.5 rem, default), lg (3 rem).")}</p>
-    <div class="docs-example docs-example--stack">
-      <Input label="Small" size="sm" placeholder="sm" />
-      <Input label="Medium" size="md" placeholder="md" />
-      <Input label="Large" size="lg" placeholder="lg" />
-    </div>
+    <TabbedExample nodes={sizesDemo} title={t(locale.value, "sizes")} />
   </section>
 
   <section class="docs-section">
@@ -86,11 +137,7 @@
         "All native attributes are spread: pass type, required, autocomplete, inputmode, maxlength, and so on."
       )}
     </p>
-    <div class="docs-example docs-example--stack">
-      <Input label="Email" type="email" placeholder="user@domain.com" autocomplete="email" />
-      <Input label={fr("Téléphone", "Phone")} type="tel" inputmode="tel" placeholder="+1 555 010 0101" />
-      <Input label={fr("Quantité", "Quantity")} type="number" min={0} max={99} placeholder="0" />
-    </div>
+    <TabbedExample nodes={typesDemo} title={fr("Types HTML", "HTML types")} />
   </section>
 
   <section class="docs-section">

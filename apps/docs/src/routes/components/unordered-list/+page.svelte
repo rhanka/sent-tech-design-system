@@ -1,7 +1,8 @@
 <script lang="ts">
   import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { getExample } from "$lib/framework/examples";
-  import { Badge, UnorderedList } from "@sentropic/design-system-svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
+  import { Badge } from "@sentropic/design-system-svelte";
 
   const items = [
     "Tokens stables",
@@ -12,6 +13,9 @@
     },
     "Contrats marque blanche"
   ];
+
+  // Démo NodeSpec neutre -> rendue dans le framework actif (onglets svelte/react/vue).
+  const nestedDemo: NodeSpec[] = [{ comp: "UnorderedList", props: { items } }];
 </script>
 
 <div class="docs-page">
@@ -31,7 +35,7 @@
 
   <section class="docs-section">
     <h2>Avec imbrication</h2>
-    <UnorderedList {items} />
+    <TabbedExample nodes={nestedDemo} />
   </section>
 
   <section class="docs-section">
