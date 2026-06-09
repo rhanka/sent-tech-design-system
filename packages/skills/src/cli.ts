@@ -8,7 +8,8 @@ import { audit } from "./engine/run.js";
 import { heuristicReview } from "./engine/heuristics.js";
 import { openDom } from "./engine/openDom.js";
 import { visualAudit, VisualAuditDependencyError } from "./engine/visualAudit.js";
-import type { AuditTarget, Finding, VisualAuditReport, VisualLocale } from "./types.js";
+import { parityAudit } from "./engine/parityAudit.js";
+import type { AuditTarget, Finding, VisualAuditReport, VisualLocale, ParityAuditReport } from "./types.js";
 
 function resolveTarget(raw: string): AuditTarget {
   if (raw.startsWith("http://") || raw.startsWith("https://")) {
@@ -982,6 +983,195 @@ async function handleAuditVisual(args: string[]) {
   process.exit(failUnder === undefined ? (clean ? 0 : 1) : report.score >= failUnder ? 0 : 1);
 }
 
+function printAuditParityHelp() {
+  process.stderr.write(
+    `\x1b[1m\x1b[36mCommand: design audit:parity <target>\x1b[0m\n` +
+    `Audit de PARITÉ tri-framework (Svelte/React/Vue) en Chromium HEADLESS réel.\n` +
+    `Rend chaque page composant CHIFFRABLE : pour chaque bloc d'exemple .tex, capture\n` +
+    `les 3 rendus (?framework=svelte|react|vue), diffe au pixel (pixelmatch) et produit\n` +
+    `heatmaps + JSON structuré. Couche 2 : assertions DOM/CSS déterministes.\n\n` +
+    `\x1b[1mCIBLE\x1b[0m\n` +
+    `  <target>              Dossier de build docs (défaut: apps/docs/build) ou URL http(s).\n` +
+    `                        'docs' ou omis ⇒ build docs local (buildé si absent).\n\n` +
+    `\x1b[1mOPTIONS\x1b[0m\n` +
+    `  --out <dir>           Dossier de sortie (défaut: ./parity-audit-out) : shots, heatmaps, JSON.\n` +
+    `  --pages <glob>        Filtre des slugs, séparés par des virgules (ex: combobox,calendar,chart-*).\n` +
+    `  --threshold <ratio>   Ratio de pixels différents au-delà duquel un bloc est flaggé (défaut: 0.02).\n` +
+    `  --locale <fr|en>      Locale d'audit (défaut: fr) ; en fr, contrôle la fuite i18n anglaise.\n` +
+    `  --headful             Lance le navigateur visible (debug) ; headless par défaut.\n` +
+    `  --fail-under <score>  Gate qualité 0-100 sur le score de parité agrégé.\n` +
+    `  -h, --help            Affiche cette aide.\n\n` +
+    `\x1b[1mSORTIE (artefacts pour la couche VLM-critique)\x1b[0m\n` +
+    `  <out>/<slug>/block-<i>.<fw>.png            Capture par bloc et par framework.\n` +
+    `  <out>/<slug>/block-<i>.svelte-vs-<fw>.diff.png  Heatmap du diff pixel.\n` +
+    `  <out>/parity-audit-report.json             JSON structuré (parité + DOM) à trier par un agent.\n\n` +
+    `\x1b[1mEXEMPLES\x1b[0m\n` +
+    `  design audit:parity apps/docs/build --pages combobox,button --locale fr --out ./parity\n` +
+    `  design audit:parity --pages calendar,date-picker --threshold 0.03\n`
+  );
+}
+
+function parityCounts(report: ParityAuditReport): { high: number; medium: number; low: number } {
+  const counts = { high: 0, medium: 0, low: 0 };
+  for (const page of report.pages) {
+    for (const finding of page.dom) counts[finding.severity]++;
+  }
+  return counts;
+}
+
+function paritySummary(report: ParityAuditReport, reportPath: string): string {
+  const counts = parityCounts(report);
+  const header =
+    `\x1b[1m\x1b[35m[design audit:parity]\x1b[0m ${report.pages.length} page(s), ${report.totalBlocks} bloc(s) — ` +
+    `parité flaggée:${report.totalFlaggedBlocks} (seuil ${report.threshold}) · DOM high:${counts.high} medium:${counts.medium} low:${counts.low} · ` +
+    `score:${report.parityScore}/100 en ${report.durationMs}ms\n`;
+
+  // Aperçu : blocs flaggés (avec ratios) + premiers findings DOM.
+  const parityLines: string[] = [];
+  for (const page of report.pages) {
+    for (const block of page.blocks) {
+      const svr = block.parity.svelteVsReact;
+      const svv = block.parity.svelteVsVue;
+      const flaggedR = svr && svr.flagged;
+      const flaggedV = svv && svv.flagged;
+      if (!flaggedR && !flaggedV) continue;
+      const label = block.title ? `${page.slug}#${block.index} « ${block.title} »` : `${page.slug}#${block.index}`;
+      const parts: string[] = [];
+      if (svr) parts.push(svr.dimsMismatch ? `react:DIMS≠` : `react:${(svr.ratio * 100).toFixed(1)}%`);
+      if (svv) parts.push(svv.dimsMismatch ? `vue:DIMS≠` : `vue:${(svv.ratio * 100).toFixed(1)}%`);
+      parityLines.push(`  [parity] ${label} — ${parts.join(" ")}`);
+    }
+  }
+  const parityPreview = parityLines.slice(0, 10).join("\n");
+
+  const domFlat = report.pages.flatMap((p) => p.dom.map((f) => ({ ...f, slug: p.slug })));
+  const domPreview = domFlat
+    .sort((a, b) => severityRank(a) - severityRank(b))
+    .slice(0, 8)
+    .map((f) => `  [${f.severity}] ${f.ruleId} @ ${f.slug} (${f.location}) — ${f.message}`)
+    .join("\n");
+
+  const browserNote = report.browser.executablePath
+    ? `\x1b[2mnavigateur: Chrome système (${report.browser.executablePath}), headless:${report.browser.headless}\x1b[0m\n`
+    : `\x1b[2mnavigateur: Chromium Playwright, headless:${report.browser.headless}\x1b[0m\n`;
+
+  return (
+    header +
+    (parityPreview ? `${parityPreview}\n` : "") +
+    (domPreview ? `${domPreview}\n` : "") +
+    browserNote +
+    `\x1b[2martefacts (shots + heatmaps): ${report.outDir}\x1b[0m\n` +
+    `\x1b[2mrapport JSON: ${reportPath}\x1b[0m\n`
+  );
+}
+
+async function handleAuditParity(args: string[]) {
+  if (args.includes("-h") || args.includes("--help")) {
+    printAuditParityHelp();
+    process.exit(0);
+  }
+
+  const parsedFailUnder = parseFailUnderOption(args);
+  if (parsedFailUnder.error) {
+    process.stderr.write(`\x1b[1m\x1b[31mErreur :\x1b[0m ${parsedFailUnder.error}\n`);
+    process.exit(2);
+  }
+  const failUnder = parsedFailUnder.failUnder;
+  let work = parsedFailUnder.args;
+
+  const headful = work.includes("--headful");
+  work = work.filter((arg) => arg !== "--headful");
+
+  const outOpt = takeValueOption(work, "--out");
+  work = outOpt.args;
+  const localeOpt = takeValueOption(work, "--locale");
+  work = localeOpt.args;
+  const pagesOpt = takeValueOption(work, "--pages");
+  work = pagesOpt.args;
+  const thresholdOpt = takeValueOption(work, "--threshold");
+  work = thresholdOpt.args;
+
+  if (localeOpt.value && localeOpt.value !== "fr" && localeOpt.value !== "en") {
+    process.stderr.write(`\x1b[1m\x1b[31mErreur :\x1b[0m --locale attend 'fr' ou 'en'.\n`);
+    process.exit(2);
+  }
+  const locale: VisualLocale = localeOpt.value === "en" ? "en" : "fr";
+
+  let threshold = 0.02;
+  if (thresholdOpt.value !== undefined) {
+    const t = Number(thresholdOpt.value);
+    if (!Number.isFinite(t) || t < 0 || t > 1) {
+      process.stderr.write(`\x1b[1m\x1b[31mErreur :\x1b[0m --threshold attend un ratio entre 0 et 1 (ex: 0.02).\n`);
+      process.exit(2);
+    }
+    threshold = t;
+  }
+
+  const outDir = resolve(process.cwd(), outOpt.value ?? "parity-audit-out");
+  const pages = pagesOpt.value
+    ? pagesOpt.value.split(",").map((s) => s.trim()).filter(Boolean)
+    : null;
+
+  const positional = work.find((arg) => !arg.startsWith("-"));
+
+  let siteDir: string | undefined;
+  let baseUrl: string | undefined;
+
+  if (!positional || positional === "docs") {
+    const buildDir = resolve(findProjectRoot(), "apps/docs/build");
+    if (!ensureDocsBuild(buildDir)) {
+      process.stderr.write(
+        `\x1b[1m\x1b[31mErreur :\x1b[0m Build docs indisponible (${buildDir}).\n` +
+        `Lancer \`npm run build\` dans apps/docs, ou passer un dossier/URL en cible.\n`
+      );
+      process.exit(2);
+    }
+    siteDir = buildDir;
+  } else if (/^https?:\/\//.test(positional)) {
+    baseUrl = positional;
+    if (!pages) {
+      process.stderr.write(
+        `\x1b[1m\x1b[31mErreur :\x1b[0m En mode URL, préciser --pages avec la liste des slugs à auditer.\n`
+      );
+      process.exit(2);
+    }
+  } else {
+    const path = resolve(process.cwd(), positional);
+    if (existsSync(path) && statSync(path).isDirectory()) {
+      siteDir = path;
+    } else {
+      process.stderr.write(
+        `\x1b[1m\x1b[31mErreur :\x1b[0m Cible invalide '${positional}' (attendu : dossier de build, URL http(s) ou 'docs').\n`
+      );
+      process.exit(2);
+    }
+  }
+
+  process.stderr.write(
+    `\x1b[1m\x1b[35m[design audit:parity] 🖥️  Audit de parité tri-framework (Chromium) — locale ${locale}, seuil ${threshold}…\x1b[0m\n`
+  );
+
+  let report: ParityAuditReport;
+  try {
+    report = await parityAudit({ siteDir, baseUrl, outDir, locale, pages, threshold, headful });
+  } catch (error) {
+    if (error instanceof VisualAuditDependencyError) {
+      process.stderr.write(`\x1b[1m\x1b[31mErreur :\x1b[0m ${error.message}\n`);
+      process.exit(2);
+    }
+    process.stderr.write(`\x1b[1m\x1b[31mErreur audit parité :\x1b[0m ${(error as Error).message}\n`);
+    process.exit(2);
+  }
+
+  const reportPath = resolve(outDir, "parity-audit-report.json");
+  writeFileSync(reportPath, JSON.stringify(report, null, 2), "utf-8");
+  process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
+  process.stderr.write(paritySummary(report, reportPath));
+
+  const clean = report.totalFlaggedBlocks === 0 && report.totalDomFindings === 0;
+  process.exit(failUnder === undefined ? (clean ? 0 : 1) : report.parityScore >= failUnder ? 0 : 1);
+}
+
 async function handleAlign(args: string[]) {
   if (args.includes("-h") || args.includes("--help")) {
     printAlignHelp();
@@ -1269,6 +1459,9 @@ async function runCommandFromArgs(args: string[]) {
       break;
     case "audit:visual":
       await handleAuditVisual(remainingArgs);
+      break;
+    case "audit:parity":
+      await handleAuditParity(remainingArgs);
       break;
     case "build":
       await handleBuild(remainingArgs);

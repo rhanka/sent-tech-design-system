@@ -1,6 +1,6 @@
 {
   "name": "@sentropic/design-system-skills",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "type": "module",
   "license": "MIT",
   "publishConfig": {
@@ -32,7 +32,10 @@
   "devDependencies": {
     "@types/jsdom": "^28.0.3",
     "@types/node": "^25.3.0",
+    "@types/pngjs": "^6.0.5",
+    "pixelmatch": "^7.2.0",
     "playwright-core": "^1.60.0",
+    "pngjs": "^7.0.0",
     "typescript": "^5.9.3"
   },
   "scripts": {
