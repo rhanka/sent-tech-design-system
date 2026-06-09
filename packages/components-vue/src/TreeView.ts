@@ -11,8 +11,12 @@ export type TreeNode = {
 export type TreeViewProps = {
   nodes: TreeNode[];
   selectedId?: string;
+  /** Svelte-canonical alias of `selectedId`. */
+  selected?: string;
   expandedIds?: string[];
   defaultExpandedIds?: string[];
+  /** Svelte-canonical alias of `defaultExpandedIds`. */
+  defaultExpanded?: string[];
   /** Accessible name for the tree (parity with the Svelte `label`). */
   label?: string;
   class?: string;
@@ -45,8 +49,10 @@ export const TreeView = defineComponent({
   props: {
     nodes: { type: Array as () => TreeNode[], required: true },
     selectedId: { type: String, default: undefined },
+    selected: { type: String, default: undefined },
     expandedIds: { type: Array as () => string[], default: undefined },
-    defaultExpandedIds: { type: Array as () => string[], default: () => [] },
+    defaultExpandedIds: { type: Array as () => string[], default: undefined },
+    defaultExpanded: { type: Array as () => string[], default: undefined },
     label: { type: String, default: "Arborescence" },
     class: { type: String, default: undefined },
   },
@@ -55,8 +61,10 @@ export const TreeView = defineComponent({
   emits: ["select", "update:selectedId"],
   setup(props, { attrs, emit }) {
     // Expansion: controlled via `expandedIds`, else internal state seeded from
-    // `defaultExpandedIds` (parity with the Svelte reference).
-    const internalExpanded = ref<Set<string>>(new Set(props.defaultExpandedIds ?? []));
+    // `defaultExpandedIds` / `defaultExpanded` (Svelte-canonical alias).
+    const internalExpanded = ref<Set<string>>(
+      new Set(props.defaultExpandedIds ?? props.defaultExpanded ?? []),
+    );
     const focusedId = ref<string | undefined>(undefined);
     const rootRef = ref<HTMLElement | null>(null);
     const instance = getCurrentInstance();
@@ -142,8 +150,9 @@ export const TreeView = defineComponent({
         }
       };
 
+      const resolvedSelectedId = props.selectedId ?? props.selected;
       const rows = visible.map((flat) => {
-        const isSelected = flat.node.id === props.selectedId;
+        const isSelected = flat.node.id === resolvedSelectedId;
         return h(
           "div",
           {
@@ -166,18 +175,14 @@ export const TreeView = defineComponent({
             onFocus: isInteractive ? () => (focusedId.value = flat.node.id) : undefined,
           },
           [
-            h(
-              "span",
-              {
-                class: classNames(
-                  "st-treeView__caret",
-                  !flat.hasChildren && "st-treeView__caret--leaf",
-                  flat.expanded && "st-treeView__caret--open",
-                ),
-                "aria-hidden": "true",
-              },
-              "›",
-            ),
+            h("span", {
+              class: classNames(
+                "st-treeView__caret",
+                !flat.hasChildren && "st-treeView__caret--leaf",
+                flat.expanded && "st-treeView__caret--open",
+              ),
+              "aria-hidden": "true",
+            }),
             h("span", { class: "st-treeView__label" }, flat.node.label as string),
           ],
         );

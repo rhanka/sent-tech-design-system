@@ -1747,7 +1747,11 @@ describe("Vue behavioral parity — batch 3", () => {
 
     it("marks current page as active", () => {
       const wrapper = mount(PaginationNav, { props: { page: 2, totalPages: 3 } });
-      expect(wrapper.find(".st-paginationNav__page--active").text()).toBe("Page 2");
+      // Bare page number as text content, "Page N" exposed via aria-label
+      // (parity with the Svelte reference).
+      const active = wrapper.find(".st-paginationNav__page--active");
+      expect(active.text()).toBe("2");
+      expect(active.attributes("aria-label")).toBe("Page 2");
     });
 
     it("renders anchor when previousHref provided", () => {
