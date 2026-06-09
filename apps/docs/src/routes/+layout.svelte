@@ -8,7 +8,7 @@
   // le Svelte a ses styles scoped, mais les rendus React/Vue n'ont que les classes
   // sans règles tant que ce stylesheet global (identique entre frameworks) n'est pas chargé.
   import "@sentropic/design-system-react/styles.css";
-  import { Boxes, ChevronDown, Github, Globe, Menu, Palette, X } from "@lucide/svelte";
+  import { Boxes, ChevronDown, Github, Globe, Menu, Palette, User, X } from "@lucide/svelte";
   import { Header, IdentityMenu } from "@sentropic/design-system-svelte";
   import { auth } from "$lib/auth/auth.svelte";
   import {
@@ -287,13 +287,22 @@
 
     {@render langSelector()}
 
-    <!-- Identité (OAuth RP phase 1) : « Se connecter » si anon, sinon nom + menu. -->
-    <IdentityMenu
-      isAuthenticated={auth.status === "authed"}
-      user={identityUser}
-      onLogin={() => auth.login()}
-      onLogout={() => auth.logout()}
-    />
+    <!-- Identité (contrat header §3 droite) : en anonyme un CONTRÔLE DU SOCLE
+         (icône User, même densité que thème/langue), pas un bouton plein qui
+         casse l'homogénéité. Connecté -> menu compte (IdentityMenu). -->
+    {#if auth.status === "authed"}
+      <IdentityMenu isAuthenticated={true} user={identityUser} onLogout={() => auth.logout()} />
+    {:else}
+      <button
+        type="button"
+        class="docs-header-control docs-header-menuButton docs-locale-trigger docs-login-trigger"
+        onclick={() => auth.login()}
+        aria-label={locale.value === "fr" ? "Se connecter" : "Sign in"}
+      >
+        <User size={14} aria-hidden="true" />
+        <span>{locale.value === "fr" ? "Se connecter" : "Sign in"}</span>
+      </button>
+    {/if}
   </nav>
 
   <button
@@ -627,13 +636,24 @@
           </div>
 
           <span class="docs-mobile-nav-label">{locale.value === "fr" ? "Identité" : "Identity"}</span>
-          <IdentityMenu
-            variant="accordion"
-            isAuthenticated={auth.status === "authed"}
-            user={identityUser}
-            onLogin={() => auth.login()}
-            onLogout={() => { auth.logout(); isMobileMenuOpen = false; }}
-          />
+          {#if auth.status === "authed"}
+            <IdentityMenu
+              variant="accordion"
+              isAuthenticated={true}
+              user={identityUser}
+              onLogout={() => { auth.logout(); isMobileMenuOpen = false; }}
+            />
+          {:else}
+            <button
+              type="button"
+              class="docs-header-control docs-header-menuButton docs-locale-trigger docs-login-trigger"
+              onclick={() => auth.login()}
+              aria-label={locale.value === "fr" ? "Se connecter" : "Sign in"}
+            >
+              <User size={16} aria-hidden="true" />
+              <span>{locale.value === "fr" ? "Se connecter" : "Sign in"}</span>
+            </button>
+          {/if}
         </div>
       </nav>
     {/if}
