@@ -46,8 +46,6 @@ export const PasswordInput = defineComponent({
         {
           class: classNames(
             "st-field",
-            "st-passwordInput",
-            `st-passwordInput--${props.size}`,
             props.class,
           ),
         },
@@ -59,11 +57,11 @@ export const PasswordInput = defineComponent({
               props.label
                 ? h("span", { class: "st-field__label" }, props.label as string)
                 : null,
-              h("span", { class: "st-passwordInput__control" }, [
+              h("span", { class: classNames("st-passwordInput", `st-passwordInput--${props.size}`) }, [
                 h("input", {
                   ...attrs,
                   id: inputId,
-                  class: "st-control",
+                  class: "st-passwordInput__control",
                   type: shown.value ? "text" : "password",
                   "aria-invalid": isInvalid ? "true" : undefined,
                   value: props.modelValue,

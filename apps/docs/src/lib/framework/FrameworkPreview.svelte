@@ -196,7 +196,9 @@
 
   /* Les exemples « pile » (Alert, …) posent un wrapper .fp-stack interne. */
   .fp__stage :global(.fp-row) {
-    align-items: center;
+    /* Top-align (Lot INP) : voir TabbedExample — center decalait les champs
+       courts vers le bas dans une rangee de hauteurs inegales. */
+    align-items: flex-start;
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;

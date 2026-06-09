@@ -865,7 +865,8 @@ describe("Vue behavioral parity — batch 2", () => {
     it("renders div.st-skeleton with skeleton lines", () => {
       const wrapper = mount(SkeletonText);
       expect(wrapper.find(".st-skeleton").exists()).toBe(true);
-      expect(wrapper.findAll(".st-skeleton__line").length).toBe(3);
+      // Canon (Svelte) default is a single line.
+      expect(wrapper.findAll(".st-skeleton__line").length).toBe(1);
     });
 
     it("renders specified number of lines", () => {
@@ -873,11 +874,11 @@ describe("Vue behavioral parity — batch 2", () => {
       expect(wrapper.findAll(".st-skeleton__line").length).toBe(5);
     });
 
-    it("marks first line as heading", () => {
-      const wrapper = mount(SkeletonText, { props: { lines: 2 } });
+    it("marks every line as heading when heading is set", () => {
+      const wrapper = mount(SkeletonText, { props: { lines: 2, heading: true } });
       const lines = wrapper.findAll(".st-skeleton__line");
       expect(lines[0].classes()).toContain("st-skeleton__line--heading");
-      expect(lines[1].classes()).not.toContain("st-skeleton__line--heading");
+      expect(lines[1].classes()).toContain("st-skeleton__line--heading");
     });
 
     it("has name SkeletonText", () => {

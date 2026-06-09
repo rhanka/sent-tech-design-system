@@ -1,7 +1,8 @@
 <script lang="ts">
   import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { getExample } from "$lib/framework/examples";
-  import { MessageStatusBadge, type ChatMessageStatus } from "@sentropic/design-system-svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
+  import { type ChatMessageStatus } from "@sentropic/design-system-svelte";
   import { Badge } from "@sentropic/design-system-svelte";
   import { locale } from "$lib/locale.svelte";
   import { t } from "$lib/i18n";
@@ -39,6 +40,28 @@
     "completed",
     "failed"
   ] as const satisfies ReadonlyArray<ChatMessageStatus>;
+
+  // Démos NodeSpec neutres -> rendues dans le framework actif (onglets svelte/react/vue).
+  const statusDemo: NodeSpec[] = [
+    {
+      el: "div",
+      props: { class: "fp-row" },
+      children: statuses.map((status) => ({ comp: "MessageStatusBadge", props: { status } }))
+    }
+  ];
+
+  const overridesDemo: NodeSpec[] = [
+    {
+      el: "div",
+      props: { class: "fp-row" },
+      children: [
+        { comp: "MessageStatusBadge", props: { status: "pending", tone: "neutral" } },
+        { comp: "MessageStatusBadge", props: { status: "completed", tone: "info" } },
+        { comp: "MessageStatusBadge", props: { status: "failed", tone: "error" } },
+        { comp: "MessageStatusBadge", props: { status: "processing", tone: "success" } }
+      ]
+    }
+  ];
 </script>
 
 <div class="docs-page">
@@ -55,21 +78,12 @@
 
   <section class="docs-section">
     <h2>{text().title}</h2>
-    <div class="docs-example docs-example--stack docs-messageStatusGrid">
-      {#each statuses as status}
-        <MessageStatusBadge {status} />
-      {/each}
-    </div>
+    <TabbedExample nodes={statusDemo} />
   </section>
 
   <section class="docs-section">
     <h2>{text().neutralTitle}</h2>
-    <div class="docs-example docs-example--stack docs-messageStatusGrid">
-      <MessageStatusBadge status="pending" tone="neutral" />
-      <MessageStatusBadge status="completed" tone="info" />
-      <MessageStatusBadge status="failed" tone="error" />
-      <MessageStatusBadge status="processing" tone="success" />
-    </div>
+    <TabbedExample nodes={overridesDemo} />
   </section>
 
   <section class="docs-section">
@@ -110,11 +124,3 @@
     </ul>
   </section>
 </div>
-
-<style>
-  .docs-messageStatusGrid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-</style>

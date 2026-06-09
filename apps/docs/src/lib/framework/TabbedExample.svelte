@@ -223,7 +223,10 @@
   }
 
   .tex__stage :global(.fp-row) {
-    align-items: center;
+    /* Top-align: dans une rangée de champs de hauteurs inegales (label seul vs
+       label+aide vs label+erreur), center decalait le champ court vers le bas.
+       flex-start aligne les controles par le haut (Lot INP). */
+    align-items: flex-start;
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
