@@ -880,12 +880,10 @@ select {
   grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
 }
 
+/* Card DS porte le fond/bordure/radius. On ne redéfinit que le layout interne. */
 .docs-metric,
 .docs-foundation-item,
 .docs-contract-item {
-  background: #ffffff;
-  border: 1px solid var(--docs-line);
-  border-radius: 0.5rem;
   display: grid;
   gap: 0.65rem;
   padding: 1.35rem;
