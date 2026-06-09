@@ -339,6 +339,20 @@ function decode(buffer: Buffer): Shot {
   return { buffer, width: png.width, height: png.height, data: png.data };
 }
 
+// Recadre les données RGBA d'un Shot sur sa région haut-gauche cw×ch (les
+// rendus .tex__render sont alignés haut-gauche en flex, donc la région partagée
+// est comparable). Évite de flagger un simple jitter de hauteur d'île async.
+function cropData(shot: Shot, cw: number, ch: number): Buffer {
+  const src = shot.data as unknown as Buffer;
+  if (shot.width === cw && shot.height === ch) return src;
+  const out = Buffer.alloc(cw * ch * 4);
+  for (let y = 0; y < ch; y++) {
+    const srcOff = y * shot.width * 4;
+    src.copy(out, y * cw * 4, srcOff, srcOff + cw * 4);
+  }
+  return out;
+}
+
 function comparePair(
   a: Shot | null,
   b: Shot | null,
@@ -347,8 +361,16 @@ function comparePair(
   pixelThreshold: number
 ): ParityComparison | null {
   if (!a || !b) return null;
-  // Dimensions différentes = écart de parité d'office (pas de diff pixel).
-  if (a.width !== b.width || a.height !== b.height) {
+  // Tolérance dimensionnelle : les îles React/Vue montent en async et leur
+  // hauteur peut varier de quelques px run-à-run (reflow), ce qui flaggait des
+  // faux DIMS≠ non-déterministes. On ne traite comme « layout différent » qu'un
+  // écart RÉEL (largeur > 3px, ou hauteur > max(12px, 6%)). En deçà, on diffe au
+  // pixel la région commune (haut-gauche) — un vrai écart visuel ressort alors
+  // via le ratio, pas via un mismatch de dimension fragile.
+  const dw = Math.abs(a.width - b.width);
+  const dh = Math.abs(a.height - b.height);
+  const hTol = Math.max(12, Math.round(Math.min(a.height, b.height) * 0.06));
+  if (dw > 3 || dh > hTol) {
     return {
       ratio: 1,
       diffPixels: a.width * a.height,
@@ -358,9 +380,12 @@ function comparePair(
       dimsMismatch: { a: { w: a.width, h: a.height }, b: { w: b.width, h: b.height } }
     };
   }
-  const { width, height } = a;
+  const width = Math.min(a.width, b.width);
+  const height = Math.min(a.height, b.height);
+  const aData = cropData(a, width, height);
+  const bData = cropData(b, width, height);
   const diff = new PNG({ width, height });
-  const diffPixels = pixelmatch(a.data, b.data, diff.data, width, height, {
+  const diffPixels = pixelmatch(aData, bData, diff.data, width, height, {
     threshold: pixelThreshold,
     includeAA: false,
     alpha: 0.4

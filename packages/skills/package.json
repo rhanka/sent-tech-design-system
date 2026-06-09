@@ -1,6 +1,6 @@
 {
   "name": "@sentropic/design-system-skills",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "type": "module",
   "license": "MIT",
   "publishConfig": {
