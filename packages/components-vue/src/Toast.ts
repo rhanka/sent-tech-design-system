@@ -1,4 +1,4 @@
-import { defineComponent, h, onMounted, onUnmounted } from "vue";
+import { defineComponent, getCurrentInstance, h, onMounted, onUnmounted } from "vue";
 import { classNames } from "./classNames.js";
 
 export type ToastTone = "info" | "success" | "warning" | "error";
@@ -34,6 +34,18 @@ export const Toast = defineComponent({
   },
   emits: ["close", "dismiss"],
   setup(props, { emit, slots, attrs }) {
+    const instance = getCurrentInstance();
+    // Canon Svelte/React : pas de bouton de fermeture sauf si un gestionnaire
+    // est branché (onClose pour un toast unique, onDismiss pour une file).
+    // Avec `emits` déclaré, les écouteurs ne transitent pas par `attrs` ; on lit
+    // donc les props du vnode (source fiable des écouteurs passés au composant).
+    const hasListener = (name: "onClose" | "onDismiss") => {
+      const fromAttrs = (attrs as Record<string, unknown>)[name];
+      const fromVnode = instance?.vnode.props?.[name];
+      return typeof fromAttrs === "function" || typeof fromVnode === "function";
+    };
+    const hasClose = () => hasListener("onClose");
+    const hasDismiss = () => hasListener("onDismiss");
     let timer: ReturnType<typeof setTimeout> | null = null;
 
     const startAutoDismiss = () => {
@@ -80,15 +92,17 @@ export const Toast = defineComponent({
                 item.actions
                   ? h("div", { class: "st-toast__actions" }, item.actions as unknown as string)
                   : null,
-                h(
-                  "button",
-                  {
-                    type: "button",
-                    "aria-label": `Dismiss ${String(item.title)}`,
-                    onClick: () => emit("dismiss", item.id),
-                  },
-                  "Close",
-                ),
+                hasDismiss()
+                  ? h(
+                      "button",
+                      {
+                        type: "button",
+                        "aria-label": `Dismiss ${String(item.title)}`,
+                        onClick: () => emit("dismiss", item.id),
+                      },
+                      "Close",
+                    )
+                  : null,
               ],
             ),
           ),
@@ -112,14 +126,16 @@ export const Toast = defineComponent({
           slots.actions
             ? h("div", { class: "st-toast__actions" }, slots.actions())
             : null,
-          h(
-            "button",
-            {
-              type: "button",
-              onClick: () => emit("close"),
-            },
-            "Close",
-          ),
+          hasClose()
+            ? h(
+                "button",
+                {
+                  type: "button",
+                  onClick: () => emit("close"),
+                },
+                "Close",
+              )
+            : null,
         ],
       );
     };
