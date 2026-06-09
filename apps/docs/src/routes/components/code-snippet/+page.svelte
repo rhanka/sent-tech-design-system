@@ -1,9 +1,14 @@
 <script lang="ts">
   import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { getExample } from "$lib/framework/examples";
+  import type { NodeSpec } from "$lib/framework/examples";
   import { Badge, CodeSnippet } from "@sentropic/design-system-svelte";
 
   const block = `import { Button } from "@sentropic/design-system-svelte";\n\n<Button variant="primary">Envoyer</Button>`;
+
+  // Démo NodeSpec neutre -> rendue dans le framework actif (onglets svelte/react/vue).
+  // La démo "Inline" reste en Svelte : usage inline dans une phrase, non encadrable.
+  const blocDemo: NodeSpec[] = [{ comp: "CodeSnippet", props: { code: block, language: "svelte" } }];
 </script>
 
 <div class="docs-page">
@@ -23,7 +28,7 @@
 
   <section class="docs-section">
     <h2>Bloc</h2>
-    <CodeSnippet code={block} language="svelte" />
+    <TabbedExample nodes={blocDemo} />
   </section>
 
   <section class="docs-section">
