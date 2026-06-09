@@ -10,15 +10,22 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 - ⏸️ Blocked — necessite une decision ou une dependance externe
 - ⚪ Planned — pas demarre
 
-## Synthèse WP2 → WP15
+## Synthèse WP1 → WP17 — SOURCE DE VÉRITÉ
+
+> Ménage 2026-06-08 : numérotation **continue WP1→WP17**, statuts **honnêtes**. Les anciens « 100 % »
+> de WP1/WP2/WP6 sur la **qualité visuelle** sont démentis par la QA owner (6/7 composants buggy) →
+> la qualité « communicable » est portée par **WP16**. Les livrables récents (onglets, parité, Link,
+> OAuth, audit) sont **rattachés à leur WP** (plus de codes LIV-/COORD-). Suivi fin dans `/track`
+> (`plan/01` = ces WP ; `plan/02` = bugs QA ; `plan/03` = 147 pages).
 
 | WP | Finalité | Statut | Avancement | Fait | A faire | Attente |
 |---|---|---|---:|---|---|---|
-| WP2 | Site docs UX | 🟢 | 100% | Header, sidebar et docs publics finalisés ; inventaire des exports vérifié ; retest navigateur overlays/plan-completion consigné. | — | Validation visuelle publique finale (surtout si nouveaux composants ou captures utiles). |
+| WP1 | Primitives Svelte (DS Core) | 🟡 | 95% | 12 primitives Lucide livrées (IconButton, Menu, CopyButton, FileUploader…). | Re-QA : bugs trouvés (FileUploader hover/parité, Combobox tailles) → WP16. | Conformité pixel-perfect. |
+| WP2 | Site docs (UX, layout, header/footer) | 🟡 | 90% | Refonte layout onglets tri-framework route-backed (143 pages), « Aperçu live » retiré, login OAuth câblé, header contractuel. | Bugs docs (onglets absents des Exemples DatePicker…) + footer (10 %) + passe QA 147 pages. | Validation visuelle complète. |
 | WP3 | Contrat header cross-site et applications | 🟢 | 100% | Contrat headers public partagé + appliqué sur docs ; inventaire de cohérence mis à jour. | Aucune action DS restante. | Application côté Sentropic/NC côté user en attente. |
 | WP4 | Chat-UI primitives | 🟢 | 100% | 6 primitives chat publiées (API + doc dédiée + démos). | Enrichissement hors périmètre initial. | Rien. |
 | WP5 | Graphics / Charts primitives | 🟢 | 100% | Sparkline + 6 graphiques livrés et documentés. | Option V2 : Heatmap, ChartLegend, ChartTooltip si besoin produit. | Besoin produit pour V2. |
-| WP6 | Fix-plan bugs visuels/comportementaux | 🟢 | 100% | Bugs critiques traités, retests navigateur et traces disponibles (`known-issues-and-fixes.md`). | — | Surveiller nouveaux regressions via CI et retests visuels. |
+| WP6 | Fix-plan bugs visuels (phase 1) | 🟠 | ~50% ROUVERT | Bugs critiques V1 traités. **Démenti par la QA owner** : régressions (Calendar) + 6/7 composants buggy. | Le fix-plan actif est désormais **WP16**. | Zéro bug visuel. |
 | WP7 | Audit DS large (37 refs, 5 clusters) | 🟡 | 80% | Consolidation V1/V2 et matrice de traçabilité WP7→WP8 achevées ; règle/ tests 27 actifs. | Etendre les findings des références encore partiellement couvertes (hors P0/P1/P2). | Validation externe de couverture 100% + référentiel final. |
 | WP8 | Moteur `design` + skill multi-harness | 🟢 | 100% | 5 verbes livrés (dont V1 réel), skill publiée npm, 81 tests verts, CI de qualite. | Maintenir la documentation des verbes expérimentaux. | Aucun blocage connu. |
 | WP9 | Surface Chat / Agent | 🟢 | 100% | Topic dédié, reasoning et demos ajoutés, composants alignés. | Ajustements de portée produit. | Aucun (ouverture sur nouveaux besoins uniquement). |
@@ -28,6 +35,8 @@ Doc vivant qui consolide les tracks en cours, leur état d'avancement et les axe
 | WP13 | Portage React | 🟢 | 100% | Package React complet, docs `/react`, workflow de release dédié, 95 tests verts. | Mise à l’échelle/retouches post-release. | Aucun. |
 | WP14 | Chrome documentaire par thème | 🟢 | 100% | Forme du chrome (header/nav/sidebar/logo) adaptée pour DSFR/Carbon/Airbus + vérification fidélité DSFR 90,2% / Carbon 92,7% / Airbus 86,6%. | Ajustements finaux de finesse visuelle selon retours externes. | Validation publique de la fidélité avant clôture définitive. |
 | WP15 | Intégration dataviz BI | 🟢 | 100% | FERMÉ 2026-06-07 : toutes surfaces DS livrées (axes/format, Embed/DataImage, TreeView, forecast LineChart, cluster/centroïdes ScatterPlot, GeoMap générique à couches — svelte 0.33.0/react+vue 0.29.0) ; dataviz v0.4.19 publié sans plus aucun fallback présentationnel, repin DS, CI+Pages vertes. | — | Rien (nouvelles familles BI = nouveau besoin). |
+| WP16 | QA pixel-perfect tri-framework | 🔴 | ~8% ACTIF | 2/8 bugs owner corrigés+vérifiés (z-index/crop, onglets route-backed) ; harnais `audit:parity` (pixel-diff + assertions DOM) en construction. | 6 bugs owner restants + passe **147 pages × 3 fw** (déléguée à claude:ds-QA). | **≥90 % conforme = condition de communication publique.** |
+| WP17 | Plateforme feedback docs (login + chat + cerclage + soumission bug) | 🟡 | 25% | Login OAuth/OIDC PKCE câblé (LIVE localhost), double-revue sécurité. | Phases 2-4 : chat feedback, app cerclage (diag), chatbot graphify, outil soumission bug agent-à-agent. | Test 2FA owner → bascule client prod IdP. |
 
 ## Mise à jour 2026-06-07 — docs rendues en tri-framework simultané + CLI audit visuel
 
