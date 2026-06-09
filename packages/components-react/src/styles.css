@@ -8350,6 +8350,16 @@
   color: var(--st-component-dropdown-selectedText, var(--st-semantic-action-primaryText));
 }
 
+/* Jour sélectionné survolé : garder un fond foncé sinon texte blanc sur fond
+   clair (hover générique) -> invisible. Spécificité (0,4,0) > :hover (0,3,0). */
+.st-calendar__day--selected:hover:not(:disabled) {
+  background: var(
+    --st-semantic-action-primaryHover,
+    var(--st-component-dropdown-selectedBackground, var(--st-semantic-action-primary))
+  );
+  color: var(--st-component-dropdown-selectedText, var(--st-semantic-action-primaryText));
+}
+
 .st-calendar__day:disabled {
   color: var(--st-semantic-text-muted);
   cursor: not-allowed;
