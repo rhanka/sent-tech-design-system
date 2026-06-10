@@ -1580,6 +1580,16 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "StreamgraphChart",
+    slug: "streamgraph-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Streamgraph (themeriver) : aires empilées et lissées sur une ligne de base centrée « wiggle », pour des séries temporelles.",
+      en: "Streamgraph (themeriver): stacked smoothed areas on a centred \"wiggle\" baseline, for time-series data."
+    }
+  },
+  {
     name: "CalendarHeatmapChart",
     slug: "calendar-heatmap-chart",
     status: "documented",

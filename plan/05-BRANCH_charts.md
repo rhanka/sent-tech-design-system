@@ -17,7 +17,7 @@ Statut dans les sous-bullets (PAS dans les titres → import idempotent).
   - columnrange, arearange, dumbbell, bellcurve, errorbar, ohlc, hollow-candlestick, streamgraph,
     dependencywheel, organization (org-chart), xrange/Gantt, timeline. Maximise valeur BI/finance/réseau/planning.
   - Fait : columnrange ✓, arearange ✓, dumbbell ✓, errorbar ✓, bellcurve ✓, ohlc ✓,
-    hollow-candlestick ✓. Reste : streamgraph, dependencywheel, organization, xrange/Gantt, timeline.
+    hollow-candlestick ✓, streamgraph ✓. Reste : dependencywheel, organization, xrange/Gantt, timeline.
 - [ ] **Lot CHART-RANGES — core ranges & variantes**
   - columnrange, arearange, areasplinerange, dumbbell, columnpyramid, variablepie, polygon. Effort faible (axes existants).
 - [ ] **Lot CHART-STATS — statistique**
