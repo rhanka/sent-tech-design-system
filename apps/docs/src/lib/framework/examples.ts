@@ -151,6 +151,7 @@ export type ComponentName =
   | "ParallelCoordinatesChart"
   | "CandlestickChart"
   | "OHLCChart"
+  | "HollowCandlestickChart"
   | "CalendarHeatmapChart"
   | "BumpChart"
   | "StepLineChart"
@@ -8755,6 +8756,76 @@ import { OHLCChart } from "@sentropic/design-system-vue";
       { label: 'Mer', open: 149, high: 152, low: 140, close: 143 },
       { label: 'Jeu', open: 143, high: 147, low: 138, close: 145 },
       { label: 'Ven', open: 145, high: 155, low: 144, close: 153 }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  hollowcandlestickchart: {
+    id: "hollowcandlestickchart",
+    slug: "hollow-candlestick-chart",
+    nodes: [
+      stack([
+        {
+          comp: "HollowCandlestickChart",
+          props: {
+            label: "Cours SENT — semaine",
+            data: [
+              { label: "Lun", open: 142, high: 148, low: 139, close: 146 },
+              { label: "Mar", open: 146, high: 151, low: 144, close: 143 },
+              { label: "Mer", open: 143, high: 152, low: 140, close: 150 },
+              { label: "Jeu", open: 150, high: 153, low: 145, close: 147 },
+              { label: "Ven", open: 147, high: 155, low: 146, close: 153 }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { HollowCandlestickChart } from "@sentropic/design-system-svelte";
+</script>
+
+<HollowCandlestickChart
+  label="Cours SENT — semaine"
+  data={[
+    { label: "Lun", open: 142, high: 148, low: 139, close: 146 },
+    { label: "Mar", open: 146, high: 151, low: 144, close: 143 },
+    { label: "Mer", open: 143, high: 152, low: 140, close: 150 },
+    { label: "Jeu", open: 150, high: 153, low: 145, close: 147 },
+    { label: "Ven", open: 147, high: 155, low: 146, close: 153 }
+  ]}
+/>`,
+      react: `import { HollowCandlestickChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <HollowCandlestickChart
+      label="Cours SENT — semaine"
+      data={[
+        { label: "Lun", open: 142, high: 148, low: 139, close: 146 },
+        { label: "Mar", open: 146, high: 151, low: 144, close: 143 },
+        { label: "Mer", open: 143, high: 152, low: 140, close: 150 },
+        { label: "Jeu", open: 150, high: 153, low: 145, close: 147 },
+        { label: "Ven", open: 147, high: 155, low: 146, close: 153 }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { HollowCandlestickChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <HollowCandlestickChart
+    label="Cours SENT — semaine"
+    :data="[
+      { label: 'Lun', open: 142, high: 148, low: 139, close: 146 },
+      { label: 'Mar', open: 146, high: 151, low: 144, close: 143 },
+      { label: 'Mer', open: 143, high: 152, low: 140, close: 150 },
+      { label: 'Jeu', open: 150, high: 153, low: 145, close: 147 },
+      { label: 'Ven', open: 147, high: 155, low: 146, close: 153 }
     ]"
   />
 </template>`

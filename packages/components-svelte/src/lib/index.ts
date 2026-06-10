@@ -10,6 +10,7 @@ export { default as MarimekkoChart } from "./MarimekkoChart.svelte";
 export { default as ParallelCoordinatesChart } from "./ParallelCoordinatesChart.svelte";
 export { default as CandlestickChart } from "./CandlestickChart.svelte";
 export { default as OHLCChart } from "./OHLCChart.svelte";
+export { default as HollowCandlestickChart } from "./HollowCandlestickChart.svelte";
 export { default as CalendarHeatmapChart } from "./CalendarHeatmapChart.svelte";
 export { default as BumpChart } from "./BumpChart.svelte";
 export { default as LollipopChart } from "./LollipopChart.svelte";
@@ -196,6 +197,7 @@ export type { MarimekkoChartTone, MarimekkoChartSegment, MarimekkoChartDatum } f
 export type { ParallelCoordinatesChartTone, ParallelAxis } from "./ParallelCoordinatesChart.svelte";
 export type { CandlestickChartDatum } from "./CandlestickChart.svelte";
 export type { OHLCChartDatum } from "./OHLCChart.svelte";
+export type { HollowCandlestickChartDatum } from "./HollowCandlestickChart.svelte";
 export type { CalendarHeatmapChartDatum } from "./CalendarHeatmapChart.svelte";
 export type { BumpChartTone, BumpChartSeries } from "./BumpChart.svelte";
 export type { LollipopChartTone, LollipopChartDatum } from "./LollipopChart.svelte";
