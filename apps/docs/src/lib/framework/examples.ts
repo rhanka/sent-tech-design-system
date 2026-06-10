@@ -154,6 +154,7 @@ export type ComponentName =
   | "FilterBar"
   | "SelectionChip"
   | "LollipopChart"
+  | "ColumnRangeChart"
   | "ParetoChart"
   | "ChordDiagram"
   | "PackedBubblesChart"
@@ -8808,6 +8809,76 @@ import { LollipopChart } from "@sentropic/design-system-vue";
       { label: 'Ingénierie', value: 74, tone: 'category2' },
       { label: 'Produit', value: 61, tone: 'category3' },
       { label: 'Ventes', value: 48, tone: 'category4' }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  columnrangechart: {
+    id: "columnrangechart",
+    slug: "column-range-chart",
+    nodes: [
+      stack([
+        {
+          comp: "ColumnRangeChart",
+          props: {
+            label: "Températures min/max par mois",
+            orientation: "vertical",
+            data: [
+              { category: "Jan", low: -4, high: 3, tone: "category1" },
+              { category: "Avr", low: 5, high: 16, tone: "category2" },
+              { category: "Juil", low: 15, high: 28, tone: "category3" },
+              { category: "Oct", low: 7, high: 18, tone: "category4" }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { ColumnRangeChart } from "@sentropic/design-system-svelte";
+</script>
+
+<ColumnRangeChart
+  label="Températures min/max par mois"
+  orientation="vertical"
+  data={[
+    { category: "Jan", low: -4, high: 3, tone: "category1" },
+    { category: "Avr", low: 5, high: 16, tone: "category2" },
+    { category: "Juil", low: 15, high: 28, tone: "category3" },
+    { category: "Oct", low: 7, high: 18, tone: "category4" }
+  ]}
+/>`,
+      react: `import { ColumnRangeChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <ColumnRangeChart
+      label="Températures min/max par mois"
+      orientation="vertical"
+      data={[
+        { category: "Jan", low: -4, high: 3, tone: "category1" },
+        { category: "Avr", low: 5, high: 16, tone: "category2" },
+        { category: "Juil", low: 15, high: 28, tone: "category3" },
+        { category: "Oct", low: 7, high: 18, tone: "category4" }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { ColumnRangeChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <ColumnRangeChart
+    label="Températures min/max par mois"
+    orientation="vertical"
+    :data="[
+      { category: 'Jan', low: -4, high: 3, tone: 'category1' },
+      { category: 'Avr', low: 5, high: 16, tone: 'category2' },
+      { category: 'Juil', low: 15, high: 28, tone: 'category3' },
+      { category: 'Oct', low: 7, high: 18, tone: 'category4' }
     ]"
   />
 </template>`

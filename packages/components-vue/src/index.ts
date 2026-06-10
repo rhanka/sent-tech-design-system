@@ -379,6 +379,8 @@ export { BulletChart } from "./BulletChart.js";
 export type { BulletChartProps, BulletChartDatum } from "./BulletChart.js";
 export { LollipopChart } from "./LollipopChart.js";
 export type { LollipopChartProps, LollipopChartDatum, LollipopChartTone } from "./LollipopChart.js";
+export { ColumnRangeChart } from "./ColumnRangeChart.js";
+export type { ColumnRangeChartProps, ColumnRangeChartDatum, ColumnRangeChartTone } from "./ColumnRangeChart.js";
 export { ParetoChart } from "./ParetoChart.js";
 export type { ParetoChartProps, ParetoChartDatum, ParetoChartTone } from "./ParetoChart.js";
 export { StepLineChart } from "./StepLineChart.js";

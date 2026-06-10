@@ -5,6 +5,11 @@ import { describe, expect, it, beforeEach, vi } from "vitest";
 // les chemins de persistance (sinon, en SSR, ils seraient ignorés).
 vi.mock("$app/environment", () => ({ browser: true }));
 
+// Ces tests re-importent les modules à chaque cas (vi.resetModules en beforeEach),
+// ce qui peut dépasser le timeout par défaut (5s) sous charge CI -> flaky.
+// Timeout généreux pour stabiliser (notamment le svelte NPM Publish qui lance ces tests).
+vi.setConfig({ testTimeout: 20000, hookTimeout: 20000 });
+
 function installMemoryStorage() {
   const store = new Map<string, string>();
   const mock = {

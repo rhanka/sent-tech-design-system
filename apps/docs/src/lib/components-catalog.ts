@@ -1099,6 +1099,16 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "ColumnRangeChart",
+    slug: "column-range-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Barres d'intervalle bas/haut par catégorie (ex. températures min/max, fourchettes de prix).",
+      en: "Low/high range bars per category (e.g. min/max temperatures, price ranges)."
+    }
+  },
+  {
     name: "ParetoChart",
     slug: "pareto-chart",
     status: "documented",
