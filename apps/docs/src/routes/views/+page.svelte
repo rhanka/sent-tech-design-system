@@ -30,9 +30,49 @@
       nameFr: "App Shell",
       domain: "App Shell",
       domainFr: "App Shell",
-      status: "soon",
-      description: "Header + side navigation + main content area — the base of all application layouts.",
-      descriptionFr: "Header + navigation latérale + zone principale — le socle de toutes les vues."
+      status: "available",
+      description: "Header + side nav + breadcrumb + content area (title + cards) + footer — the skeleton reused by every view.",
+      descriptionFr: "Header + nav latérale + fil d'Ariane + zone de contenu (titre + cartes) + footer — le squelette réutilisé par toutes les vues."
+    },
+    {
+      slug: "settings",
+      name: "Settings / Admin",
+      nameFr: "Paramètres / Administration",
+      domain: "App Shell",
+      domainFr: "App Shell",
+      status: "available",
+      description: "Sub-section side nav + category tabs + form/form-group (select, input, toggle, switch) + a save bar — the master-detail admin pattern.",
+      descriptionFr: "SideNav de sous-sections + onglets de catégories + form/form-group (select, input, toggle, switch) + barre d'enregistrement — le patron admin master-détail."
+    },
+    {
+      slug: "facture",
+      name: "Customer Invoice",
+      nameFr: "Facture client",
+      domain: "Accounting (Odoo)",
+      domainFr: "Comptabilité (Odoo)",
+      status: "available",
+      description: "Breadcrumb + invoice header (number + status badge + actions) + structured fields + line-items table + a totals list — an object-page declination.",
+      descriptionFr: "Fil d'Ariane + en-tête (n° + badge de statut + actions) + champs structurés + table des lignes + liste des totaux — une déclinaison de la page objet."
+    },
+    {
+      slug: "pipeline-crm",
+      name: "CRM Pipeline",
+      nameFr: "Pipeline CRM",
+      domain: "CRM / Sales (Odoo)",
+      domainFr: "CRM / Ventes (Odoo)",
+      status: "available",
+      description: "Columns per stage (New/Qualified/Proposal/Won) of opportunity cards (amount + avatar + probability bar) — a kanban declination.",
+      descriptionFr: "Colonnes par étape (Nouveau/Qualifié/Proposition/Gagné) de cartes d'opportunités (montant + avatar + barre de probabilité) — une déclinaison du kanban."
+    },
+    {
+      slug: "file-tickets",
+      name: "Ticket Queue",
+      nameFr: "File de tickets",
+      domain: "Helpdesk (Odoo)",
+      domainFr: "Helpdesk (Odoo)",
+      status: "available",
+      description: "Search + filter bar + a paginated tickets table (subject, priority, SLA, assignee, status) + an agents legend — a list-report declination.",
+      descriptionFr: "Recherche + barre de filtres + table de tickets paginée (sujet, priorité, SLA, assigné, statut) + légende des agents — une déclinaison de la liste rapport."
     },
     {
       slug: "list-report",
