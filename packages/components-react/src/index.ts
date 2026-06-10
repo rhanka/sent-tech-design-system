@@ -360,6 +360,8 @@ export type {
 } from "./MarimekkoChart.js";
 export { CandlestickChart } from "./CandlestickChart.js";
 export type { CandlestickChartProps, CandlestickChartDatum } from "./CandlestickChart.js";
+export { OHLCChart } from "./OHLCChart.js";
+export type { OHLCChartProps, OHLCChartDatum } from "./OHLCChart.js";
 export { CalendarHeatmapChart } from "./CalendarHeatmapChart.js";
 export type { CalendarHeatmapChartProps, CalendarHeatmapChartDatum } from "./CalendarHeatmapChart.js";
 export { ParallelCoordinatesChart } from "./ParallelCoordinatesChart.js";

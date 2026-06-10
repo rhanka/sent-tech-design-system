@@ -10313,6 +10313,97 @@
   opacity: 0.85;
 }
 
+/* ── OHLCChart ── */
+.st-ohlcChart {
+  color: var(--st-semantic-text-secondary);
+  display: block;
+  font-family: inherit;
+  position: relative;
+  width: 100%;
+}
+
+.st-ohlcChart svg {
+  display: block;
+  overflow: visible;
+}
+
+.st-ohlcChart__visual {
+  display: block;
+}
+
+.st-ohlcChart__axis {
+  stroke: var(--st-semantic-border-subtle);
+  stroke-width: 1;
+}
+
+.st-ohlcChart__grid {
+  stroke: var(--st-semantic-border-subtle);
+  stroke-dasharray: 2 3;
+  stroke-width: 1;
+  opacity: 0.7;
+}
+
+.st-ohlcChart__bar {
+  cursor: pointer;
+  transition: opacity 120ms ease;
+}
+
+.st-ohlcChart__bar--dim {
+  opacity: 0.4;
+}
+
+.st-ohlcChart__range,
+.st-ohlcChart__open,
+.st-ohlcChart__close {
+  stroke-width: 1.75;
+  stroke-linecap: round;
+}
+
+.st-ohlcChart__bar--up :is(.st-ohlcChart__range, .st-ohlcChart__open, .st-ohlcChart__close) {
+  stroke: var(--st-semantic-feedback-success);
+}
+
+.st-ohlcChart__bar--down :is(.st-ohlcChart__range, .st-ohlcChart__open, .st-ohlcChart__close) {
+  stroke: var(--st-semantic-feedback-error);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .st-ohlcChart__bar {
+    transition: none;
+  }
+}
+
+.st-ohlcChart__tickLabel,
+.st-ohlcChart__categoryLabel {
+  fill: var(--st-semantic-text-secondary);
+  font-size: 0.6875rem;
+}
+
+.st-ohlcChart__tooltip {
+  background: var(--st-semantic-surface-inverse);
+  border-radius: var(--st-radius-sm, 0.25rem);
+  color: var(--st-semantic-text-inverse);
+  display: inline-flex;
+  flex-direction: column;
+  font-size: 0.75rem;
+  gap: 0.125rem;
+  line-height: 1.2;
+  padding: 0.375rem 0.5rem;
+  pointer-events: none;
+  position: absolute;
+  transform: translate(-50%, calc(-100% - 8px));
+  white-space: nowrap;
+  z-index: 1;
+}
+
+.st-ohlcChart__tooltipLabel {
+  font-weight: 600;
+}
+
+.st-ohlcChart__tooltipValue {
+  opacity: 0.85;
+}
+
 /* ── CalendarHeatmapChart (lot-3) ── */
 .st-calendarHeatmapChart {
   color: var(--st-semantic-text-secondary);
