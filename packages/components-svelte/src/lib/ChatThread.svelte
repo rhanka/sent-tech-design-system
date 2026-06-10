@@ -1,10 +1,28 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
   import type { HTMLAttributes } from "svelte/elements";
+  import ChatMessage, {
+    type ChatMessageRole,
+    type ChatMessageStatus
+  } from "./ChatMessage.svelte";
+
+  export type ChatThreadMessage = {
+    id: string;
+    role?: ChatMessageRole;
+    content: string;
+    status?: ChatMessageStatus;
+  };
 
   type ChatThreadProps = Omit<HTMLAttributes<HTMLElement>, "class" | "aria-label"> & {
     label: string;
     autoScroll?: boolean;
+    /**
+     * Data-driven messages (cross-framework parity with React/Vue). When
+     * provided, each entry is rendered internally as a `ChatMessage`. The
+     * canonical `children` slot still works; `messages` takes precedence when
+     * both are supplied.
+     */
+    messages?: ChatThreadMessage[];
     class?: string;
     children?: Snippet;
     emptyState?: Snippet;
@@ -13,11 +31,14 @@
   let {
     label,
     autoScroll = true,
+    messages,
     class: className,
     children,
     emptyState,
     ...rest
   }: ChatThreadProps = $props();
+
+  const hasMessages = () => Array.isArray(messages) && messages.length > 0;
 
   let scrollEl: HTMLElement | undefined = $state();
   let listEl: HTMLElement | undefined = $state();
@@ -70,7 +91,17 @@
   aria-relevant="additions text"
 >
   <div bind:this={listEl} class="st-chatThread__list">
-    {@render children?.()}
+    {#if hasMessages()}
+      {#each messages! as message (message.id)}
+        <ChatMessage
+          role={message.role ?? "assistant"}
+          status={message.status}
+          content={message.content}
+        />
+      {/each}
+    {:else}
+      {@render children?.()}
+    {/if}
   </div>
   {#if emptyState && !hasChildren}
     <div class="st-chatThread__empty">
