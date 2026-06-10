@@ -8,14 +8,16 @@
   // le Svelte a ses styles scoped, mais les rendus React/Vue n'ont que les classes
   // sans règles tant que ce stylesheet global (identique entre frameworks) n'est pas chargé.
   import "@sentropic/design-system-react/styles.css";
-  import { Boxes, ChevronDown, Github, Globe, Menu, Palette, User, X } from "@lucide/svelte";
+  import { Boxes, ChevronDown, Github, Globe, Menu, Moon, Palette, Sun, User, X } from "@lucide/svelte";
   import { Header, IdentityMenu } from "@sentropic/design-system-svelte";
   import { auth } from "$lib/auth/auth.svelte";
   import {
     sentTechTheme,
     compileTheme,
+    compileThemeWithModes,
     type TenantTheme
   } from "@sentropic/design-system-themes";
+  import { colorMode, type ColorMode } from "$lib/color-mode.svelte";
   import { dsfrTheme } from "@sentropic/design-system-theme-dsfr";
   import { carbonTheme } from "@sentropic/design-system-theme-carbon";
   import { airbusTheme } from "@sentropic/design-system-theme-airbus";
@@ -71,8 +73,9 @@
   const THEMES: TenantTheme[] = [sentTechTheme, dsfrTheme, carbonTheme, airbusTheme];
   const THEME_STORAGE_KEY = "st-docs-theme";
   // Balise <style> du thème de base, injectée en SSR pour le premier rendu.
+  // Utilise compileThemeWithModes pour émettre 3 blocs (light + auto dark + explicit dark).
   // (Construite dans le script pour éviter un littéral <style> dans le markup.)
-  const baseThemeStyle = `<style data-st-base-theme>${compileTheme(sentTechTheme, { selector: ":root" })}</style>`;
+  const baseThemeStyle = `<style data-st-base-theme>${compileThemeWithModes(sentTechTheme, { selector: ":root" })}</style>`;
 
   let activeThemeId = $state(sentTechTheme.id);
   const activeTheme = $derived(
@@ -114,8 +117,14 @@
     });
   });
 
+  // Init du mode couleur (restaure localStorage, applique data-color-mode).
+  // Exécuté une seule fois côté client.
+  $effect(() => {
+    colorMode.init();
+  });
+
   // Applique le thème actif sur :root via un <style> géré (réactif et fiable),
-  // et persiste le choix.
+  // et persiste le choix. Utilise compileThemeWithModes pour émettre 3 blocs.
   $effect(() => {
     const STYLE_ID = "st-docs-active-theme";
     let el = document.getElementById(STYLE_ID) as HTMLStyleElement | null;
@@ -124,7 +133,7 @@
       el.id = STYLE_ID;
       document.head.appendChild(el);
     }
-    el.textContent = compileTheme(activeTheme, { selector: ":root" });
+    el.textContent = compileThemeWithModes(activeTheme, { selector: ":root" });
     document.documentElement.setAttribute("data-st-theme", activeThemeId);
     localStorage.setItem(THEME_STORAGE_KEY, activeThemeId);
   });
@@ -297,6 +306,8 @@
     <!-- Bouton Compare — client-only, visible ssi thème d'import + page composant -->
     <CompareButton activeThemeId={activeThemeId} pathname={page.url.pathname} />
 
+    {@render colorModeToggle()}
+
     {@render langSelector()}
 
     <!-- Identité (contrat header §3 droite) : en anonyme un CONTRÔLE DU SOCLE
@@ -399,6 +410,41 @@
       </div>
     {/if}
   </div>
+{/snippet}
+
+<!-- ── Snippet partagé : toggle de mode couleur (clair/sombre/auto) ──── -->
+{#snippet colorModeToggle()}
+  <button
+    type="button"
+    class="docs-header-control docs-header-menuButton docs-header-iconLink docs-color-mode-toggle"
+    onclick={() => {
+      const next: ColorMode = colorMode.value === "light" ? "dark" : colorMode.value === "dark" ? "auto" : "light";
+      colorMode.value = next;
+    }}
+    aria-label={
+      colorMode.value === "light"
+        ? (locale.value === "fr" ? "Mode sombre" : "Dark mode")
+        : colorMode.value === "dark"
+          ? (locale.value === "fr" ? "Mode auto (système)" : "Auto mode (system)")
+          : (locale.value === "fr" ? "Mode clair" : "Light mode")
+    }
+    title={
+      colorMode.value === "light"
+        ? (locale.value === "fr" ? "Actuellement : clair — passer au sombre" : "Currently: light — switch to dark")
+        : colorMode.value === "dark"
+          ? (locale.value === "fr" ? "Actuellement : sombre — passer à auto" : "Currently: dark — switch to auto")
+          : (locale.value === "fr" ? "Actuellement : auto — passer au clair" : "Currently: auto — switch to light")
+    }
+  >
+    {#if colorMode.value === "dark"}
+      <Moon size={16} strokeWidth={2} aria-hidden="true" />
+    {:else if colorMode.value === "light"}
+      <Sun size={16} strokeWidth={2} aria-hidden="true" />
+    {:else}
+      <!-- auto: icône mi-soleil mi-lune (on utilise Sun avec un style différencié) -->
+      <Sun size={16} strokeWidth={1.5} aria-hidden="true" style="opacity: 0.65;" />
+    {/if}
+  </button>
 {/snippet}
 
 <!-- ── Snippet partagé : sélecteur de langue ─────────────────────────── -->
@@ -610,6 +656,20 @@
                 onclick={() => { framework.value = option.id; isMobileMenuOpen = false; }}
               >
                 {option.label}
+              </button>
+            {/each}
+          </div>
+
+          <span class="docs-mobile-nav-label">{locale.value === "fr" ? "Mode couleur" : "Color mode"}</span>
+          <div class="docs-mobile-locale-switcher docs-mobile-color-mode-switcher">
+            {#each (["light", "dark", "auto"] as ColorMode[]) as mode (mode)}
+              <button
+                type="button"
+                class="docs-mobile-locale-btn"
+                class:active={colorMode.value === mode}
+                onclick={() => { colorMode.value = mode; }}
+              >
+                {mode === "light" ? (locale.value === "fr" ? "Clair" : "Light") : mode === "dark" ? (locale.value === "fr" ? "Sombre" : "Dark") : "Auto"}
               </button>
             {/each}
           </div>
