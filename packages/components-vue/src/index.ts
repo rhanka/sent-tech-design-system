@@ -412,6 +412,13 @@ export { OHLCChart } from "./OHLCChart.js";
 export type { OHLCChartProps, OHLCChartDatum } from "./OHLCChart.js";
 export { HollowCandlestickChart } from "./HollowCandlestickChart.js";
 export type { HollowCandlestickChartProps, HollowCandlestickChartDatum } from "./HollowCandlestickChart.js";
+export { StreamgraphChart } from "./StreamgraphChart.js";
+export type {
+  StreamgraphChartProps,
+  StreamgraphChartDatum,
+  StreamgraphChartSeriesValue,
+  StreamgraphChartTone,
+} from "./StreamgraphChart.js";
 export { CalendarHeatmapChart } from "./CalendarHeatmapChart.js";
 export type { CalendarHeatmapChartProps, CalendarHeatmapChartDatum } from "./CalendarHeatmapChart.js";
 export { ParallelCoordinatesChart } from "./ParallelCoordinatesChart.js";

@@ -11,6 +11,7 @@ export { default as ParallelCoordinatesChart } from "./ParallelCoordinatesChart.
 export { default as CandlestickChart } from "./CandlestickChart.svelte";
 export { default as OHLCChart } from "./OHLCChart.svelte";
 export { default as HollowCandlestickChart } from "./HollowCandlestickChart.svelte";
+export { default as StreamgraphChart } from "./StreamgraphChart.svelte";
 export { default as CalendarHeatmapChart } from "./CalendarHeatmapChart.svelte";
 export { default as BumpChart } from "./BumpChart.svelte";
 export { default as LollipopChart } from "./LollipopChart.svelte";
@@ -198,6 +199,7 @@ export type { ParallelCoordinatesChartTone, ParallelAxis } from "./ParallelCoord
 export type { CandlestickChartDatum } from "./CandlestickChart.svelte";
 export type { OHLCChartDatum } from "./OHLCChart.svelte";
 export type { HollowCandlestickChartDatum } from "./HollowCandlestickChart.svelte";
+export type { StreamgraphChartDatum, StreamgraphChartSeriesValue, StreamgraphChartTone } from "./StreamgraphChart.svelte";
 export type { CalendarHeatmapChartDatum } from "./CalendarHeatmapChart.svelte";
 export type { BumpChartTone, BumpChartSeries } from "./BumpChart.svelte";
 export type { LollipopChartTone, LollipopChartDatum } from "./LollipopChart.svelte";
