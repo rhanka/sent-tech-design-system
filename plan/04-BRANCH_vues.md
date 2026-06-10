@@ -16,18 +16,18 @@ Statut dans les sous-bullets (PAS dans les titres de lot → import idempotent).
   tableau vient après.
 
 ## Plan / Todo (lot-based)
-- [ ] **Lot VUES-INFRA — ViewSpec + table de résolution composants**
+- [x] **Lot VUES-INFRA — ViewSpec + table de résolution composants**
   - Étendre NodeSpec en ViewSpec (layout/regions/data). Compléter la table de composants de
     examples.ts/nodeToCode.ts (~70 → tous les composables : FilterBar, KpiCard, Stepper, Drawer,
     SelectableList, Calendar, GaugeChart, BulletChart…) dans les 3 packages. Borné/mécanique.
 - [ ] **Lot VUES-LAYOUTS — 6 gabarits de layout**
   - `app-shell`, `list-report`, `object-page`, `kanban`, `master-detail`, `dashboard`, `wizard`
     (fonctions data→NodeSpec). C'est ce qui rend les 50+ écrans dérivés quasi gratuits.
-- [ ] **Lot VUES-SECTION — section docs /views + nav**
+- [x] **Lot VUES-SECTION — section docs /views + nav**
   - Routes `/views` (index grille) + `/views/<slug>`, entrée nav « Vues » à côté de « Composants »,
     rendu tri-framework + code par fw + composants liés + variantes (loading/empty/error/dense) +
     rendu sous thème (Airbus/Carbon/DSFR).
-- [ ] **Lot VUES-MVP — 14 écrans prioritaires**
+- [x] **Lot VUES-MVP — 14 écrans prioritaires**
   - App shell, List Report, Object Page, Kanban, Data Explorer, Dashboard exécutif, Master-detail,
     Wizard, Import/mapping, Login, Settings, Facture Odoo, Pipeline CRM, File de tickets.
 - [ ] **Lot VUES-COMPONENTS — composants-écrans réutilisables exportés**
