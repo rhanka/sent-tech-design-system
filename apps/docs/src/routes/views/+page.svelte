@@ -70,9 +70,19 @@
       nameFr: "Explorateur de données",
       domain: "Analytics / BI",
       domainFr: "Analytics / BI",
-      status: "soon",
-      description: "Pivot table + multi-chart layout — the BI showcase for the 36 chart components.",
-      descriptionFr: "Tableau croisé dynamique + multi-graphiques — la vitrine BI des 36 composants graphiques."
+      status: "available",
+      description: "Pivot table + bar chart side by side + filter bar + content switcher + a configuration drawer — the BI pivot showcase.",
+      descriptionFr: "Tableau croisé + graphique en barres côte à côte + barre de filtres + bascule table/graphique + volet de configuration — la vitrine BI pivot."
+    },
+    {
+      slug: "import-mapping",
+      name: "Data Import / Mapping",
+      nameFr: "Import / mappage de données",
+      domain: "Import / Data",
+      domainFr: "Import / Données",
+      status: "available",
+      description: "Stepper + file uploader + preview table + column→field select mapping + validation alert — the BI tool import flow.",
+      descriptionFr: "Stepper + import de fichier + table d'aperçu + mappage colonne→champ + alerte de validation — le flux d'import des outils BI."
     },
     {
       slug: "master-detail",
@@ -80,9 +90,9 @@
       nameFr: "Maître-détail",
       domain: "App Shell",
       domainFr: "App Shell",
-      status: "soon",
-      description: "Split-panel list + detail — the Fiori master-detail / split-view pattern.",
-      descriptionFr: "Volet liste + détail côte à côte — le patron Fiori split-view."
+      status: "available",
+      description: "Selectable list on the left + detail panel (structured fields, KPI cards, mini table) on the right — the Fiori split-view pattern.",
+      descriptionFr: "Liste sélectionnable à gauche + panneau détail (champs, KpiCard, mini table) à droite — le patron Fiori split-view."
     },
     {
       slug: "wizard",
@@ -90,9 +100,19 @@
       nameFr: "Assistant multi-étapes",
       domain: "App Shell",
       domainFr: "App Shell",
-      status: "soon",
-      description: "Stepper + form steps + navigation — covers onboarding, import and setup flows.",
-      descriptionFr: "Stepper + étapes formulaire + navigation — couvre onboarding, import et configuration."
+      status: "available",
+      description: "Stepper + the current step's form/form-group + a previous/next button group + a structured-list summary — onboarding and setup flows.",
+      descriptionFr: "Stepper + formulaire de l'étape courante + boutons Précédent/Suivant + récapitulatif structuré — onboarding et configuration."
+    },
+    {
+      slug: "login",
+      name: "Login / Auth",
+      nameFr: "Connexion / Auth",
+      domain: "Authentication",
+      domainFr: "Authentification",
+      status: "available",
+      description: "Centered card + form with email input, password input, remember-me checkbox, button, error alert and links — the universal quick-win.",
+      descriptionFr: "Carte centrée + formulaire avec e-mail, mot de passe, case « se souvenir », bouton, alerte d'erreur et liens — le quick-win universel."
     }
   ];
 
