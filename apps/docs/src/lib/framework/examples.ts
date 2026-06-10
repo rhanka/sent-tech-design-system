@@ -157,7 +157,8 @@ export type ComponentName =
   | "ParetoChart"
   | "ChordDiagram"
   | "PackedBubblesChart"
-  | "RangeSlider";
+  | "RangeSlider"
+  | "Drawer";
 
 export interface ComponentNodeSpec {
   comp: ComponentName;

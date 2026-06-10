@@ -149,7 +149,8 @@
     ParetoChart,
     ChordDiagram,
     PackedBubblesChart,
-    RangeSlider
+    RangeSlider,
+    Drawer
   } from "@sentropic/design-system-svelte";
   import Self from "./SvelteNode.svelte";
   import { createRawSnippet, type Component, type Snippet } from "svelte";
@@ -372,7 +373,8 @@
     ParetoChart,
     ChordDiagram,
     PackedBubblesChart,
-    RangeSlider
+    RangeSlider,
+    Drawer
   } as unknown as Record<ComponentName, Component<Record<string, unknown>>>;
 
   let { node }: { node: NodeSpec } = $props();
