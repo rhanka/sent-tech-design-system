@@ -274,17 +274,17 @@
 
   .st-combobox--sm {
     min-height: var(--st-component-control-smHeight, 2rem);
-    font-size: var(--st-component-control-smFontSize, 0.8125rem);
+    font-size: 0.8125rem;
   }
 
   .st-combobox--md {
     min-height: var(--st-component-control-mdHeight, 2.5rem);
-    font-size: var(--st-component-control-mdFontSize, 0.875rem);
+    font-size: 0.875rem;
   }
 
   .st-combobox--lg {
     min-height: var(--st-component-control-lgHeight, 3rem);
-    font-size: var(--st-component-control-lgFontSize, 1rem);
+    font-size: 1rem;
   }
 
   .st-combobox:hover:not(:has(input:disabled)) {

@@ -8,12 +8,9 @@
     componentHref,
     groupByCategory
   } from "$lib/components-catalog";
-  import { DOCS_VERSION } from "$lib/docs-navigation";
-
   const groups = groupByCategory(COMPONENTS);
   const total = COMPONENTS.length;
   const documented = COMPONENTS.filter((c) => c.status === "documented").length;
-  const pending = total - documented;
 
   const summary = $derived(
     locale.value === "fr"
@@ -40,24 +37,6 @@
   <section class="docs-section" id="foundations">
     <h2>{t(locale.value, "overview")}</h2>
     <p>{t(locale.value, "overviewBody")}</p>
-    <div class="docs-metric-grid" aria-label="Documentation status">
-      <Card class="docs-metric">
-        <strong>{DOCS_VERSION}</strong>
-        <span>{t(locale.value, "metricReleasePublished")}</span>
-      </Card>
-      <Card class="docs-metric">
-        <strong>{total}</strong>
-        <span>{t(locale.value, "metricExportedComponents")}</span>
-      </Card>
-      <Card class="docs-metric">
-        <strong>{documented}</strong>
-        <span>{t(locale.value, "metricDocumented")}</span>
-      </Card>
-      <Card class="docs-metric">
-        <strong>{pending}</strong>
-        <span>{t(locale.value, "metricStubs")}</span>
-      </Card>
-    </div>
     <div class="docs-foundation-grid">
       <Card class="docs-foundation-item">
         <h3>{t(locale.value, "foundationSemanticTokensTitle")}</h3>
