@@ -152,6 +152,7 @@ export type ComponentName =
   | "CandlestickChart"
   | "OHLCChart"
   | "HollowCandlestickChart"
+  | "StreamgraphChart"
   | "CalendarHeatmapChart"
   | "BumpChart"
   | "StepLineChart"
@@ -8826,6 +8827,80 @@ import { HollowCandlestickChart } from "@sentropic/design-system-vue";
       { label: 'Mer', open: 143, high: 152, low: 140, close: 150 },
       { label: 'Jeu', open: 150, high: 153, low: 145, close: 147 },
       { label: 'Ven', open: 147, high: 155, low: 146, close: 153 }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  streamgraphchart: {
+    id: "streamgraphchart",
+    slug: "streamgraph-chart",
+    nodes: [
+      stack([
+        {
+          comp: "StreamgraphChart",
+          props: {
+            label: "Trafic par canal — 2025",
+            data: [
+              { category: "Jan", values: [ { label: "Direct", value: 32 }, { label: "Référé", value: 18 }, { label: "Social", value: 12 }, { label: "Email", value: 8 } ] },
+              { category: "Fév", values: [ { label: "Direct", value: 35 }, { label: "Référé", value: 22 }, { label: "Social", value: 16 }, { label: "Email", value: 10 } ] },
+              { category: "Mar", values: [ { label: "Direct", value: 30 }, { label: "Référé", value: 28 }, { label: "Social", value: 24 }, { label: "Email", value: 9 } ] },
+              { category: "Avr", values: [ { label: "Direct", value: 38 }, { label: "Référé", value: 25 }, { label: "Social", value: 30 }, { label: "Email", value: 14 } ] },
+              { category: "Mai", values: [ { label: "Direct", value: 42 }, { label: "Référé", value: 20 }, { label: "Social", value: 26 }, { label: "Email", value: 18 } ] },
+              { category: "Juin", values: [ { label: "Direct", value: 40 }, { label: "Référé", value: 30 }, { label: "Social", value: 34 }, { label: "Email", value: 16 } ] }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { StreamgraphChart } from "@sentropic/design-system-svelte";
+</script>
+
+<StreamgraphChart
+  label="Trafic par canal — 2025"
+  data={[
+    { category: "Jan", values: [{ label: "Direct", value: 32 }, { label: "Référé", value: 18 }, { label: "Social", value: 12 }, { label: "Email", value: 8 }] },
+    { category: "Fév", values: [{ label: "Direct", value: 35 }, { label: "Référé", value: 22 }, { label: "Social", value: 16 }, { label: "Email", value: 10 }] },
+    { category: "Mar", values: [{ label: "Direct", value: 30 }, { label: "Référé", value: 28 }, { label: "Social", value: 24 }, { label: "Email", value: 9 }] },
+    { category: "Avr", values: [{ label: "Direct", value: 38 }, { label: "Référé", value: 25 }, { label: "Social", value: 30 }, { label: "Email", value: 14 }] },
+    { category: "Mai", values: [{ label: "Direct", value: 42 }, { label: "Référé", value: 20 }, { label: "Social", value: 26 }, { label: "Email", value: 18 }] },
+    { category: "Juin", values: [{ label: "Direct", value: 40 }, { label: "Référé", value: 30 }, { label: "Social", value: 34 }, { label: "Email", value: 16 }] }
+  ]}
+/>`,
+      react: `import { StreamgraphChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <StreamgraphChart
+      label="Trafic par canal — 2025"
+      data={[
+        { category: "Jan", values: [{ label: "Direct", value: 32 }, { label: "Référé", value: 18 }, { label: "Social", value: 12 }, { label: "Email", value: 8 }] },
+        { category: "Fév", values: [{ label: "Direct", value: 35 }, { label: "Référé", value: 22 }, { label: "Social", value: 16 }, { label: "Email", value: 10 }] },
+        { category: "Mar", values: [{ label: "Direct", value: 30 }, { label: "Référé", value: 28 }, { label: "Social", value: 24 }, { label: "Email", value: 9 }] },
+        { category: "Avr", values: [{ label: "Direct", value: 38 }, { label: "Référé", value: 25 }, { label: "Social", value: 30 }, { label: "Email", value: 14 }] },
+        { category: "Mai", values: [{ label: "Direct", value: 42 }, { label: "Référé", value: 20 }, { label: "Social", value: 26 }, { label: "Email", value: 18 }] },
+        { category: "Juin", values: [{ label: "Direct", value: 40 }, { label: "Référé", value: 30 }, { label: "Social", value: 34 }, { label: "Email", value: 16 }] }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { StreamgraphChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <StreamgraphChart
+    label="Trafic par canal — 2025"
+    :data="[
+      { category: 'Jan', values: [{ label: 'Direct', value: 32 }, { label: 'Référé', value: 18 }, { label: 'Social', value: 12 }, { label: 'Email', value: 8 }] },
+      { category: 'Fév', values: [{ label: 'Direct', value: 35 }, { label: 'Référé', value: 22 }, { label: 'Social', value: 16 }, { label: 'Email', value: 10 }] },
+      { category: 'Mar', values: [{ label: 'Direct', value: 30 }, { label: 'Référé', value: 28 }, { label: 'Social', value: 24 }, { label: 'Email', value: 9 }] },
+      { category: 'Avr', values: [{ label: 'Direct', value: 38 }, { label: 'Référé', value: 25 }, { label: 'Social', value: 30 }, { label: 'Email', value: 14 }] },
+      { category: 'Mai', values: [{ label: 'Direct', value: 42 }, { label: 'Référé', value: 20 }, { label: 'Social', value: 26 }, { label: 'Email', value: 18 }] },
+      { category: 'Juin', values: [{ label: 'Direct', value: 40 }, { label: 'Référé', value: 30 }, { label: 'Social', value: 34 }, { label: 'Email', value: 16 }] }
     ]"
   />
 </template>`
