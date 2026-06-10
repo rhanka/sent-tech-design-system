@@ -8,14 +8,14 @@ LIV-/COORD-). NB: les "100%" historiques de WP1/WP2/WP6 sur la QUALITE visuelle 
 owner (6/7 composants buggy) → portée par WP16. Détail bugs: `02-BRANCH` ; 147 pages: `03-BRANCH`.
 
 ## Scope / Guardrails
-- Versions publiées: svelte 0.34.0 / react 0.32.0 / vue 0.32.0 / tokens+themes 0.11.0 / skills 0.2.0 / dataviz v0.4.19.
+- Versions publiées: svelte 0.34.3 / react 0.36.4 / vue 0.36.4 / tokens+themes 0.11.0 (tag) / theme-carbon+dsfr 0.2.2 / skills 0.3.2 / dataviz v0.4.19.
 - Coordination rattachée: dataviz→WP15, OAuth/IdP→WP17, chat-ui→WP4/WP9, ds-QA→WP16.
 
 ## Plan / Todo (lot-based)
-- [ ] **Lot WP1 — Primitives Svelte (DS Core) (95%)**
-  - 12 primitives Lucide livrées. Re-QA: bugs QA (FileUploader hover/parité, Combobox tailles, CopyButton) → WP16.
-- [ ] **Lot WP2 — Site docs : UX, layout, header/footer (90%)**
-  - Fait: refonte layout onglets tri-framework route-backed (143 pages), "Aperçu live" retiré, header contractuel. Reste: bugs docs (onglets absents Exemples DatePicker), footer (10%), passe QA 147 pages (WP16).
+- [ ] **Lot WP1 — Primitives Svelte (DS Core) (98%)**
+  - 12 primitives Lucide livrées. 2026-06-10: taille→police sm/md/lg (littéraux 13/14/16px), calendar hover lisible (3 fw), OrderedList/UnorderedList items imbriqués réglés (React/Vue acceptaient `label`, canon = `content`), search sobre. Reste: easing ease-out, dark mode (WP10).
+- [ ] **Lot WP2 — Site docs : UX, layout, header/footer (96%)**
+  - Fait: layout onglets tri-framework route-backed, "Aperçu live" retiré, header contractuel (bouton-icône login). 2026-06-10 (benchmark frontend-design): sidebar mobile en drawer, ramp typo `--docs-text-*`, homepage dégénérifiée, neutres→tokens, skip-link, chrome 100% DS (cartes→Card, onglets→ContentSwitcher). Reste: footer data-form, dark mode.
 - [x] **Lot WP3 — Contrat header cross-site (100%, fermé)**
 - [x] **Lot WP4 — Primitives Chat-UI (100%)**
 - [x] **Lot WP5 — Graphiques / Charts (100% feature ; parité 3 fw à re-vérifier en WP16)**
@@ -34,7 +34,7 @@ owner (6/7 composants buggy) → portée par WP16. Détail bugs: `02-BRANCH` ; 1
   - Inclut récents: parité icônes lucide (27 composants, 0.31.0) + API Link unifiée variant+external+disabled (svelte 0.34/react+vue 0.32).
 - [x] **Lot WP14 — Chrome documentaire par thème (100%)**
 - [x] **Lot WP15 — Intégration dataviz BI (100%, fermé v0.4.19 ; GG codex:dataviz)**
-- [ ] **Lot WP16 — QA pixel-perfect tri-framework (~8%, ACTIF, BLOQUANT pour la com)**
-  - 2/8 bugs owner corrigés+vérifiés (z-index/crop, onglets route-backed). Harnais audit:parity en construction. Reste: 6 bugs owner + 147 pages × 3 fw (délégué à claude:ds-QA). Détail 02/03-BRANCH.
+- [ ] **Lot WP16 — QA pixel-perfect tri-framework (~95%)**
+  - 2026-06-10: parité **98/100** (était 71). Harnais audit:parity FIABILISÉ (fix capture svelte = attend le layout ; tolérance dimensionnelle = absorbe le jitter d'îles ; skills 0.3.2). Bugs owner réglés+vérifiés: z-index/crop, onglets route-backed, OrderedList/UnorderedList imbriqués, fuites i18n (data-table pager, code-snippet), calendar hover. Benchmark frontend-design livré (67/100, findings traités). Reste: ~5 résiduels (chat-thread/streaming-message = divergence API messages-vs-composition à arbitrer ; popover/menu-popover positionnement ; force-graph non-déterministe) + couche 3 "monkey".
 - [ ] **Lot WP17 — Plateforme feedback docs : login + chat + cerclage + soumission bug (25%)**
   - Fait: login OAuth/OIDC PKCE câblé (LIVE localhost), double-revue sécurité opus+codex. Reste: phases 2-4 (chat feedback, app cerclage diag, chatbot graphify, soumission bug agent-à-agent). Attente: test 2FA owner → bascule client prod IdP (claude:sentropic:cbf32fe0800b).
