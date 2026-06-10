@@ -60,7 +60,9 @@
   // (pages composant + galerie /preview). Ailleurs (home, fondations, tokens,
   // thèmes, contrats) il ne bascule rien -> on le masque pour ne pas paraître cassé.
   const showFrameworkSwitcher = $derived(
-    page.url.pathname.startsWith("/components") || page.url.pathname === "/preview"
+    page.url.pathname.startsWith("/components") ||
+    page.url.pathname === "/preview" ||
+    page.url.pathname.startsWith("/views")
   );
 
   // Thèmes proposés : le DS Sentropic de référence + les 2 mappings tiers

@@ -33,6 +33,7 @@ export interface ComponentNavGroup {
 export const DOCS_TOP_NAV: DocsNavItem[] = [
   { label: "Fondations", href: "/#foundations" },
   { label: "Composants", href: "/#components" },
+  { label: "Vues", href: "/views" },
   { label: "Aperçu", href: "/preview" },
   { label: "Tokens", href: "/#tokens" },
   { label: "Thèmes", href: "/#themes" },
@@ -93,6 +94,25 @@ export function resolveBreadcrumb(pathname: string): DocsNavItem[] {
         label: component?.name ?? "Composant",
         href: pathname
       }
+    ];
+  }
+
+  if (pathname === "/views") {
+    return [
+      { label: "Catalogue", href: "/" },
+      { label: "Vues", href: "/views" }
+    ];
+  }
+
+  if (pathname.startsWith("/views/")) {
+    const slug = pathname.split("/").filter(Boolean).at(-1);
+    const VIEW_LABELS: Record<string, string> = {
+      dashboard: "Dashboard exécutif"
+    };
+    return [
+      { label: "Catalogue", href: "/" },
+      { label: "Vues", href: "/views" },
+      { label: VIEW_LABELS[slug ?? ""] ?? slug ?? "Vue", href: pathname }
     ];
   }
 
