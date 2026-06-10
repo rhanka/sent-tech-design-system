@@ -16,7 +16,7 @@ Statut dans les sous-bullets (PAS dans les titres → import idempotent).
 - [ ] **Lot CHART-MVP — 12 charts prioritaires**
   - columnrange, arearange, dumbbell, bellcurve, errorbar, ohlc, hollow-candlestick, streamgraph,
     dependencywheel, organization (org-chart), xrange/Gantt, timeline. Maximise valeur BI/finance/réseau/planning.
-  - Fait : columnrange ✓, arearange ✓, dumbbell ✓, errorbar ✓. Reste : bellcurve,
+  - Fait : columnrange ✓, arearange ✓, dumbbell ✓, errorbar ✓, bellcurve ✓. Reste :
     ohlc, hollow-candlestick, streamgraph, dependencywheel, organization, xrange/Gantt, timeline.
 - [ ] **Lot CHART-RANGES — core ranges & variantes**
   - columnrange, arearange, areasplinerange, dumbbell, columnpyramid, variablepie, polygon. Effort faible (axes existants).
