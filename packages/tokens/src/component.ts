@@ -1462,9 +1462,6 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       smHeight: "2rem",
       mdHeight: "2.5rem",
       lgHeight: "3rem",
-      smFontSize: "0.8125rem",
-      mdFontSize: "0.875rem",
-      lgFontSize: "1rem",
       anatomy: inputAnatomy
     },
     selection: {
