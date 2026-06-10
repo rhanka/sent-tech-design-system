@@ -240,6 +240,8 @@ export { Tooltip } from "./Tooltip.js";
 export type { TooltipProps } from "./Tooltip.js";
 export { TreemapChart } from "./TreemapChart.js";
 export type { TreemapChartProps, TreemapChartDatum, TreemapChartTone, TreemapTiling } from "./TreemapChart.js";
+export { OrganizationChart } from "./OrganizationChart.js";
+export type { OrganizationChartProps, OrganizationChartNode, OrganizationChartTone } from "./OrganizationChart.js";
 export { TreeView } from "./TreeView.js";
 export type { TreeViewProps, TreeNode } from "./TreeView.js";
 export { UnorderedList } from "./UnorderedList.js";
@@ -349,6 +351,8 @@ export { DivergentBarChart } from "./DivergentBarChart.js";
 export type { DivergentBarChartProps, DivergentBarChartDatum, DivergentBarChartTone } from "./DivergentBarChart.js";
 export { ChordDiagram } from "./ChordDiagram.js";
 export type { ChordDiagramProps, ChordDiagramFlow, ChordDiagramTone } from "./ChordDiagram.js";
+export { DependencyWheelChart } from "./DependencyWheelChart.js";
+export type { DependencyWheelChartProps, DependencyWheelChartLink, DependencyWheelChartTone } from "./DependencyWheelChart.js";
 export { PackedBubblesChart } from "./PackedBubblesChart.js";
 export type { PackedBubblesChartProps, PackedBubblesChartDatum, PackedBubblesChartTone } from "./PackedBubblesChart.js";
 export { MarimekkoChart } from "./MarimekkoChart.js";
@@ -364,6 +368,10 @@ export { OHLCChart } from "./OHLCChart.js";
 export type { OHLCChartProps, OHLCChartDatum } from "./OHLCChart.js";
 export { HollowCandlestickChart } from "./HollowCandlestickChart.js";
 export type { HollowCandlestickChartProps, HollowCandlestickChartDatum } from "./HollowCandlestickChart.js";
+export { TimelineChart } from "./TimelineChart.js";
+export type { TimelineChartProps, TimelineChartEvent, TimelineChartTone } from "./TimelineChart.js";
+export { GanttChart } from "./GanttChart.js";
+export type { GanttChartProps, GanttChartTask } from "./GanttChart.js";
 export { StreamgraphChart } from "./StreamgraphChart.js";
 export type {
   StreamgraphChartProps,

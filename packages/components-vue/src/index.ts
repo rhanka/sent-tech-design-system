@@ -245,6 +245,12 @@ export type {
   TreemapChartDatum,
   TreemapTiling,
 } from "./TreemapChart.js";
+export { OrganizationChart } from "./OrganizationChart.js";
+export type {
+  OrganizationChartProps,
+  OrganizationChartTone,
+  OrganizationChartNode,
+} from "./OrganizationChart.js";
 export { HeatmapChart } from "./HeatmapChart.js";
 export type { HeatmapChartProps, HeatmapChartDatum, HeatmapChartTone } from "./HeatmapChart.js";
 export { HistogramChart } from "./HistogramChart.js";
@@ -397,6 +403,8 @@ export { DivergentBarChart } from "./DivergentBarChart.js";
 export type { DivergentBarChartProps, DivergentBarChartDatum, DivergentBarChartTone } from "./DivergentBarChart.js";
 export { ChordDiagram } from "./ChordDiagram.js";
 export type { ChordDiagramProps, ChordDiagramFlow, ChordDiagramTone } from "./ChordDiagram.js";
+export { DependencyWheelChart } from "./DependencyWheelChart.js";
+export type { DependencyWheelChartProps, DependencyWheelChartLink, DependencyWheelChartTone } from "./DependencyWheelChart.js";
 export { PackedBubblesChart } from "./PackedBubblesChart.js";
 export type { PackedBubblesChartProps, PackedBubblesChartDatum, PackedBubblesChartTone } from "./PackedBubblesChart.js";
 export { MarimekkoChart } from "./MarimekkoChart.js";
@@ -412,6 +420,10 @@ export { OHLCChart } from "./OHLCChart.js";
 export type { OHLCChartProps, OHLCChartDatum } from "./OHLCChart.js";
 export { HollowCandlestickChart } from "./HollowCandlestickChart.js";
 export type { HollowCandlestickChartProps, HollowCandlestickChartDatum } from "./HollowCandlestickChart.js";
+export { TimelineChart } from "./TimelineChart.js";
+export type { TimelineChartProps, TimelineChartEvent, TimelineChartTone } from "./TimelineChart.js";
+export { GanttChart } from "./GanttChart.js";
+export type { GanttChartProps, GanttChartTask } from "./GanttChart.js";
 export { StreamgraphChart } from "./StreamgraphChart.js";
 export type {
   StreamgraphChartProps,

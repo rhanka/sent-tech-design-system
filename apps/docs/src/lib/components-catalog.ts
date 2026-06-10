@@ -1039,6 +1039,16 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "OrganizationChart",
+    slug: "organization-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Organigramme hiérarchique : une boîte par nœud disposée par niveau, enfants centrés sous le parent, connecteurs orthogonaux.",
+      en: "Hierarchical org chart: one box per node laid out by level, children centred under the parent, with orthogonal connectors."
+    }
+  },
+  {
     name: "HeatmapChart",
     slug: "heatmap-chart",
     status: "documented",
@@ -1196,6 +1206,16 @@ export const COMPONENTS: ComponentEntry[] = [
     description: {
       fr: "Diagramme en cordes : flux pondérés entre nœuds répartis sur un cercle.",
       en: "Chord diagram: weighted flows between nodes laid out on a circle."
+    }
+  },
+  {
+    name: "DependencyWheelChart",
+    slug: "dependency-wheel-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Roue de dépendances : nœuds sur un cercle, rubans pondérés colorés par source.",
+      en: "Dependency wheel: nodes on a circle, weighted ribbons coloured by source."
     }
   },
   {
@@ -1577,6 +1597,26 @@ export const COMPONENTS: ComponentEntry[] = [
     description: {
       fr: "Chandeliers creux : couleur selon la clôture vs la précédente, corps creux si haussier et plein si baissier.",
       en: "Hollow candlesticks: colour by close vs previous close, hollow body when bullish and filled when bearish."
+    }
+  },
+  {
+    name: "TimelineChart",
+    slug: "timeline-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Frise chronologique : événements positionnés sur un axe horizontal gradué, marqueurs catégoriels et libellés alternés au-dessus/dessous.",
+      en: "Timeline: events positioned on a graduated horizontal axis, categorical markers and labels alternated above/below."
+    }
+  },
+  {
+    name: "GanttChart",
+    slug: "gantt-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Diagramme de Gantt : une ligne par tâche, barre horizontale start→end sur un axe temporel, couleur par catégorie.",
+      en: "Gantt chart: one row per task, a horizontal start→end bar on a time axis, colour by category."
     }
   },
   {

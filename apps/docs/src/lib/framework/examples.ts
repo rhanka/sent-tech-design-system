@@ -146,12 +146,15 @@ export type ComponentName =
   | "FunnelChart"
   | "WaterfallChart"
   | "TreemapChart"
+  | "OrganizationChart"
   | "BulletChart"
   | "MarimekkoChart"
   | "ParallelCoordinatesChart"
   | "CandlestickChart"
   | "OHLCChart"
   | "HollowCandlestickChart"
+  | "TimelineChart"
+  | "GanttChart"
   | "StreamgraphChart"
   | "CalendarHeatmapChart"
   | "BumpChart"
@@ -164,6 +167,7 @@ export type ComponentName =
   | "ColumnRangeChart"
   | "ParetoChart"
   | "ChordDiagram"
+  | "DependencyWheelChart"
   | "PackedBubblesChart"
   | "RangeSlider"
   | "Drawer";
@@ -8346,6 +8350,88 @@ import { TreemapChart } from "@sentropic/design-system-vue";
     }
   },
 
+  organizationchart: {
+    id: "organizationchart",
+    slug: "organization-chart",
+    nodes: [
+      stack([
+        {
+          comp: "OrganizationChart",
+          props: {
+            label: "Organigramme de l'entreprise",
+            data: [
+              { id: "ceo", label: "Direction" },
+              { id: "eng", parentId: "ceo", label: "Ingénierie" },
+              { id: "sales", parentId: "ceo", label: "Ventes" },
+              { id: "ops", parentId: "ceo", label: "Opérations" },
+              { id: "fe", parentId: "eng", label: "Frontend" },
+              { id: "be", parentId: "eng", label: "Backend" },
+              { id: "amer", parentId: "sales", label: "Amériques" },
+              { id: "emea", parentId: "sales", label: "EMEA" }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { OrganizationChart } from "@sentropic/design-system-svelte";
+</script>
+
+<OrganizationChart
+  label="Organigramme de l'entreprise"
+  data={[
+    { id: "ceo", label: "Direction" },
+    { id: "eng", parentId: "ceo", label: "Ingénierie" },
+    { id: "sales", parentId: "ceo", label: "Ventes" },
+    { id: "ops", parentId: "ceo", label: "Opérations" },
+    { id: "fe", parentId: "eng", label: "Frontend" },
+    { id: "be", parentId: "eng", label: "Backend" },
+    { id: "amer", parentId: "sales", label: "Amériques" },
+    { id: "emea", parentId: "sales", label: "EMEA" }
+  ]}
+/>`,
+      react: `import { OrganizationChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <OrganizationChart
+      label="Organigramme de l'entreprise"
+      data={[
+        { id: "ceo", label: "Direction" },
+        { id: "eng", parentId: "ceo", label: "Ingénierie" },
+        { id: "sales", parentId: "ceo", label: "Ventes" },
+        { id: "ops", parentId: "ceo", label: "Opérations" },
+        { id: "fe", parentId: "eng", label: "Frontend" },
+        { id: "be", parentId: "eng", label: "Backend" },
+        { id: "amer", parentId: "sales", label: "Amériques" },
+        { id: "emea", parentId: "sales", label: "EMEA" }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { OrganizationChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <OrganizationChart
+    label="Organigramme de l'entreprise"
+    :data="[
+      { id: 'ceo', label: 'Direction' },
+      { id: 'eng', parentId: 'ceo', label: 'Ingénierie' },
+      { id: 'sales', parentId: 'ceo', label: 'Ventes' },
+      { id: 'ops', parentId: 'ceo', label: 'Opérations' },
+      { id: 'fe', parentId: 'eng', label: 'Frontend' },
+      { id: 'be', parentId: 'eng', label: 'Backend' },
+      { id: 'amer', parentId: 'sales', label: 'Amériques' },
+      { id: 'emea', parentId: 'sales', label: 'EMEA' }
+    ]"
+  />
+</template>`
+    }
+  },
+
   bulletchart: {
     id: "bulletchart",
     slug: "bullet-chart",
@@ -8827,6 +8913,146 @@ import { HollowCandlestickChart } from "@sentropic/design-system-vue";
       { label: 'Mer', open: 143, high: 152, low: 140, close: 150 },
       { label: 'Jeu', open: 150, high: 153, low: 145, close: 147 },
       { label: 'Ven', open: 147, high: 155, low: 146, close: 153 }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  timelinechart: {
+    id: "timelinechart",
+    slug: "timeline-chart",
+    nodes: [
+      stack([
+        {
+          comp: "TimelineChart",
+          props: {
+            label: "Histoire de SENT",
+            data: [
+              { position: 2018, label: "Fondation", description: "Création de SENT à Montréal." },
+              { position: 2020, label: "Série A", description: "Levée de 5 M$." },
+              { position: 2021, label: "Lancement v1" },
+              { position: 2022, label: "Expansion EU", description: "Ouverture du bureau de Paris." },
+              { position: 2024, label: "Série B", description: "Levée de 22 M$." }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { TimelineChart } from "@sentropic/design-system-svelte";
+</script>
+
+<TimelineChart
+  label="Histoire de SENT"
+  data={[
+    { position: 2018, label: "Fondation", description: "Création de SENT à Montréal." },
+    { position: 2020, label: "Série A", description: "Levée de 5 M$." },
+    { position: 2021, label: "Lancement v1" },
+    { position: 2022, label: "Expansion EU", description: "Ouverture du bureau de Paris." },
+    { position: 2024, label: "Série B", description: "Levée de 22 M$." }
+  ]}
+/>`,
+      react: `import { TimelineChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <TimelineChart
+      label="Histoire de SENT"
+      data={[
+        { position: 2018, label: "Fondation", description: "Création de SENT à Montréal." },
+        { position: 2020, label: "Série A", description: "Levée de 5 M$." },
+        { position: 2021, label: "Lancement v1" },
+        { position: 2022, label: "Expansion EU", description: "Ouverture du bureau de Paris." },
+        { position: 2024, label: "Série B", description: "Levée de 22 M$." }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { TimelineChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <TimelineChart
+    label="Histoire de SENT"
+    :data="[
+      { position: 2018, label: 'Fondation', description: 'Création de SENT à Montréal.' },
+      { position: 2020, label: 'Série A', description: 'Levée de 5 M$.' },
+      { position: 2021, label: 'Lancement v1' },
+      { position: 2022, label: 'Expansion EU', description: 'Ouverture du bureau de Paris.' },
+      { position: 2024, label: 'Série B', description: 'Levée de 22 M$.' }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  ganttchart: {
+    id: "ganttchart",
+    slug: "gantt-chart",
+    nodes: [
+      stack([
+        {
+          comp: "GanttChart",
+          props: {
+            label: "Planning projet — semaines",
+            marker: 10,
+            data: [
+              { task: "Cadrage", start: 0, end: 3, category: "Étude" },
+              { task: "Conception", start: 3, end: 8, category: "Étude" },
+              { task: "Développement", start: 6, end: 16, category: "Build" },
+              { task: "Recette", start: 14, end: 20, category: "Build" }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { GanttChart } from "@sentropic/design-system-svelte";
+</script>
+
+<GanttChart
+  label="Planning projet — semaines"
+  marker={10}
+  data={[
+    { task: "Cadrage", start: 0, end: 3, category: "Étude" },
+    { task: "Conception", start: 3, end: 8, category: "Étude" },
+    { task: "Développement", start: 6, end: 16, category: "Build" },
+    { task: "Recette", start: 14, end: 20, category: "Build" }
+  ]}
+/>`,
+      react: `import { GanttChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <GanttChart
+      label="Planning projet — semaines"
+      marker={10}
+      data={[
+        { task: "Cadrage", start: 0, end: 3, category: "Étude" },
+        { task: "Conception", start: 3, end: 8, category: "Étude" },
+        { task: "Développement", start: 6, end: 16, category: "Build" },
+        { task: "Recette", start: 14, end: 20, category: "Build" }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { GanttChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <GanttChart
+    label="Planning projet — semaines"
+    :marker="10"
+    :data="[
+      { task: 'Cadrage', start: 0, end: 3, category: 'Étude' },
+      { task: 'Conception', start: 3, end: 8, category: 'Étude' },
+      { task: 'Développement', start: 6, end: 16, category: 'Build' },
+      { task: 'Recette', start: 14, end: 20, category: 'Build' }
     ]"
   />
 </template>`
@@ -9522,6 +9748,72 @@ import { ChordDiagram } from "@sentropic/design-system-vue";
       { from: 'Asie', to: 'Amérique', value: 18 },
       { from: 'Amérique', to: 'Europe', value: 12 },
       { from: 'Europe', to: 'Amérique', value: 9 }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  dependencywheelchart: {
+    id: "dependencywheelchart",
+    slug: "dependency-wheel-chart",
+    nodes: [
+      stack([
+        {
+          comp: "DependencyWheelChart",
+          props: {
+            label: "Dépendances de modules",
+            data: [
+              { from: "ui", to: "core", weight: 8 },
+              { from: "api", to: "core", weight: 5 },
+              { from: "core", to: "utils", weight: 3 },
+              { from: "api", to: "utils", weight: 2 }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { DependencyWheelChart } from "@sentropic/design-system-svelte";
+</script>
+
+<DependencyWheelChart
+  label="Dépendances de modules"
+  data={[
+    { from: "ui", to: "core", weight: 8 },
+    { from: "api", to: "core", weight: 5 },
+    { from: "core", to: "utils", weight: 3 },
+    { from: "api", to: "utils", weight: 2 }
+  ]}
+/>`,
+      react: `import { DependencyWheelChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <DependencyWheelChart
+      label="Dépendances de modules"
+      data={[
+        { from: "ui", to: "core", weight: 8 },
+        { from: "api", to: "core", weight: 5 },
+        { from: "core", to: "utils", weight: 3 },
+        { from: "api", to: "utils", weight: 2 }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { DependencyWheelChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <DependencyWheelChart
+    label="Dépendances de modules"
+    :data="[
+      { from: 'ui', to: 'core', weight: 8 },
+      { from: 'api', to: 'core', weight: 5 },
+      { from: 'core', to: 'utils', weight: 3 },
+      { from: 'api', to: 'utils', weight: 2 }
     ]"
   />
 </template>`
