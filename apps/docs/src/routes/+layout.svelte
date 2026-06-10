@@ -155,6 +155,7 @@
   let isThemeOpen = $state(false);
   let isFrameworkOpen = $state(false);
   let isMobileMenuOpen = $state(false);
+  let isSidebarOpen = $state(false);
 
   // ── Identité (OAuth RP, phase 1) ──────────────────────────────────────────
   // Mappe le store auth (clé d'identité = iss+sub) vers la forme attendue par
@@ -255,6 +256,7 @@
     isThemeOpen = false;
     isFrameworkOpen = false;
     isMobileMenuOpen = false;
+    isSidebarOpen = false;
   }
 }} />
 
@@ -554,6 +556,7 @@
 
 {:else}
   <!-- ── Chrome sent-tech par défaut (SSR + thème sent-tech) ── -->
+  <a class="docs-skip-link" href="#main-content">Aller au contenu</a>
   <div class="docs-shell" data-st-theme={activeThemeId}>
     <!-- Barre du haut : composant Header complet et porté (logo + navigation + actions). -->
     <Header
@@ -667,7 +670,20 @@
 
 
     <div class="docs-body">
-      <aside class="docs-sidebar">
+      <!-- Déclencheur "Sommaire" visible uniquement sur mobile (≤ 768px) -->
+      <div class="docs-sidebar-mobile-trigger-wrap">
+        <button
+          type="button"
+          class="docs-sidebar-mobile-trigger"
+          onclick={() => (isSidebarOpen = !isSidebarOpen)}
+          aria-expanded={isSidebarOpen}
+          aria-controls="docs-sidebar"
+        >
+          <span>{isSidebarOpen ? "▲" : "▼"}</span>
+          <span>{isSidebarOpen ? "Masquer le sommaire" : "Sommaire / Table des matières"}</span>
+        </button>
+      </div>
+      <aside class="docs-sidebar" id="docs-sidebar" class:docs-sidebar--open={isSidebarOpen}>
         <nav class="docs-side-nav" aria-label="Navigation de la documentation">
           <section class="docs-side-section" aria-labelledby="docs-foundations-heading">
             <h2 id="docs-foundations-heading">Documentation</h2>
