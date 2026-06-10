@@ -11890,3 +11890,99 @@
 @media (prefers-reduced-motion: reduce) {
   .st-columnRangeChart__bar { transition: none; }
 }
+
+.st-areaRangeChart {
+  color: var(--st-semantic-data-category1);
+  display: block;
+  font-family: inherit;
+  position: relative;
+  width: 100%;
+}
+
+.st-areaRangeChart--category1 { color: var(--st-semantic-data-category1); }
+.st-areaRangeChart--category2 { color: var(--st-semantic-data-category2); }
+.st-areaRangeChart--category3 { color: var(--st-semantic-data-category3); }
+.st-areaRangeChart--category4 { color: var(--st-semantic-data-category4); }
+.st-areaRangeChart--category5 { color: var(--st-semantic-data-category5); }
+.st-areaRangeChart--category6 { color: var(--st-semantic-data-category6); }
+.st-areaRangeChart--category7 { color: var(--st-semantic-data-category7); }
+.st-areaRangeChart--category8 { color: var(--st-semantic-data-category8); }
+
+.st-areaRangeChart svg {
+  display: block;
+  overflow: visible;
+}
+
+.st-areaRangeChart__visual {
+  display: block;
+}
+
+.st-areaRangeChart__grid {
+  stroke: var(--st-component-areaRangeChart-gridStroke, var(--st-semantic-border-subtle));
+  stroke-dasharray: 2 3;
+  stroke-width: 1;
+  opacity: 0.7;
+}
+
+.st-areaRangeChart__axis {
+  stroke: var(--st-component-areaRangeChart-axisStroke, var(--st-semantic-border-subtle));
+  stroke-width: 1;
+}
+
+.st-areaRangeChart__tickLabel {
+  fill: var(--st-component-areaRangeChart-labelColor, var(--st-semantic-text-secondary));
+  font-size: 0.6875rem;
+}
+
+.st-areaRangeChart__line {
+  stroke: currentColor;
+}
+
+.st-areaRangeChart__line--low {
+  opacity: 0.7;
+}
+
+.st-areaRangeChart__area {
+  stroke: none;
+}
+
+.st-areaRangeChart__dot {
+  fill: currentColor;
+  stroke: var(--st-semantic-surface-default);
+  stroke-width: 1.5;
+  cursor: pointer;
+  transition: r 120ms ease;
+}
+
+.st-areaRangeChart__dot:hover {
+  r: 5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .st-areaRangeChart__dot { transition: none; }
+}
+
+.st-areaRangeChart__tooltip {
+  background: var(--st-component-areaRangeChart-tooltipBackground, var(--st-semantic-surface-inverse));
+  border-radius: var(--st-radius-sm, 0.25rem);
+  color: var(--st-component-areaRangeChart-tooltipText, var(--st-semantic-text-inverse));
+  display: inline-flex;
+  flex-direction: column;
+  font-size: 0.75rem;
+  gap: 0.125rem;
+  line-height: 1.2;
+  padding: 0.375rem 0.5rem;
+  pointer-events: none;
+  position: absolute;
+  transform: translate(-50%, calc(-100% - 8px));
+  white-space: nowrap;
+  z-index: 1;
+}
+
+.st-areaRangeChart__tooltipLabel {
+  font-weight: 600;
+}
+
+.st-areaRangeChart__tooltipValue {
+  opacity: 0.85;
+}

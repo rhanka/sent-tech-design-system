@@ -1109,6 +1109,16 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "AreaRangeChart",
+    slug: "area-range-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Bande remplie entre une série basse et une série haute le long d'un axe X (ex. fourchette de température jour par jour, min/max boursier).",
+      en: "Filled band between a low and a high series along an X axis (e.g. daily temperature range, stock min/max)."
+    }
+  },
+  {
     name: "ParetoChart",
     slug: "pareto-chart",
     status: "documented",

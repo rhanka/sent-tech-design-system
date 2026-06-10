@@ -169,6 +169,8 @@ export { TreeView } from "./TreeView.js";
 export type { TreeViewProps, TreeNode } from "./TreeView.js";
 export { AreaChart } from "./AreaChart.js";
 export type { AreaChartProps, AreaChartDatum, AreaChartTone } from "./AreaChart.js";
+export { AreaRangeChart } from "./AreaRangeChart.js";
+export type { AreaRangeChartProps, AreaRangeChartDatum, AreaRangeChartTone } from "./AreaRangeChart.js";
 export { BarChart } from "./BarChart.js";
 export type { BarChartProps, BarChartDatum, BarChartTone } from "./BarChart.js";
 export { LineChart } from "./LineChart.js";
