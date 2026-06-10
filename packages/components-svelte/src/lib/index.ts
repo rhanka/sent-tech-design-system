@@ -11,6 +11,8 @@ export { default as ParallelCoordinatesChart } from "./ParallelCoordinatesChart.
 export { default as CandlestickChart } from "./CandlestickChart.svelte";
 export { default as OHLCChart } from "./OHLCChart.svelte";
 export { default as HollowCandlestickChart } from "./HollowCandlestickChart.svelte";
+export { default as TimelineChart } from "./TimelineChart.svelte";
+export { default as GanttChart } from "./GanttChart.svelte";
 export { default as StreamgraphChart } from "./StreamgraphChart.svelte";
 export { default as CalendarHeatmapChart } from "./CalendarHeatmapChart.svelte";
 export { default as BumpChart } from "./BumpChart.svelte";
@@ -23,6 +25,8 @@ export { default as DivergentBarChart } from "./DivergentBarChart.svelte";
 export type { DivergentBarChartTone, DivergentBarChartDatum } from "./DivergentBarChart.svelte";
 export { default as ChordDiagram } from "./ChordDiagram.svelte";
 export type { ChordDiagramTone, ChordDiagramFlow } from "./ChordDiagram.svelte";
+export { default as DependencyWheelChart } from "./DependencyWheelChart.svelte";
+export type { DependencyWheelChartTone, DependencyWheelChartLink } from "./DependencyWheelChart.svelte";
 export { default as PackedBubblesChart } from "./PackedBubblesChart.svelte";
 export type { PackedBubblesChartTone, PackedBubblesChartDatum } from "./PackedBubblesChart.svelte";
 export { default as Alert } from "./Alert.svelte";
@@ -158,6 +162,7 @@ export { default as Tooltip } from "./Tooltip.svelte";
 export { default as Typography } from "./Typography.svelte";
 export { default as TableOfContents } from "./TableOfContents.svelte";
 export { default as TreemapChart } from "./TreemapChart.svelte";
+export { default as OrganizationChart } from "./OrganizationChart.svelte";
 export { default as TreeView } from "./TreeView.svelte";
 export { default as UnorderedList } from "./UnorderedList.svelte";
 export { default as ViolinChart } from "./ViolinChart.svelte";
@@ -199,6 +204,8 @@ export type { ParallelCoordinatesChartTone, ParallelAxis } from "./ParallelCoord
 export type { CandlestickChartDatum } from "./CandlestickChart.svelte";
 export type { OHLCChartDatum } from "./OHLCChart.svelte";
 export type { HollowCandlestickChartDatum } from "./HollowCandlestickChart.svelte";
+export type { TimelineChartTone, TimelineChartEvent } from "./TimelineChart.svelte";
+export type { GanttChartTask } from "./GanttChart.svelte";
 export type { StreamgraphChartDatum, StreamgraphChartSeriesValue, StreamgraphChartTone } from "./StreamgraphChart.svelte";
 export type { CalendarHeatmapChartDatum } from "./CalendarHeatmapChart.svelte";
 export type { BumpChartTone, BumpChartSeries } from "./BumpChart.svelte";
@@ -210,6 +217,7 @@ export type {
   TreemapChartDatum,
   TreemapTiling
 } from "./TreemapChart.svelte";
+export type { OrganizationChartTone, OrganizationChartNode } from "./OrganizationChart.svelte";
 export type {
   KpiCardSize,
   KpiCardTrend,
