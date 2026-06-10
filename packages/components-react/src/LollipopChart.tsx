@@ -35,7 +35,7 @@ export type LollipopChartProps = Omit<React.HTMLAttributes<HTMLDivElement>, "cla
   className?: string;
 };
 
-const MARGIN = { top: 12, right: 16, bottom: 32, left: 44 };
+const MARGIN = { top: 24, right: 16, bottom: 32, left: 44 };
 const DOT_RADIUS = 5;
 
 export function LollipopChart({

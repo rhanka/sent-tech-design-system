@@ -65,7 +65,7 @@ export const foundation = {
     fast: "120ms",
     normal: "180ms",
     slow: "280ms",
-    easing: "cubic-bezier(0.4, 0, 0.2, 1)"
+    easing: "cubic-bezier(0.16, 1, 0.3, 1)"
   },
   z: {
     header: 50,
@@ -169,7 +169,7 @@ export const foundation = {
   transition: {
     property: "background-color, border-color, color, box-shadow, outline-color",
     duration: "120ms",
-    easing: "cubic-bezier(0.4, 0, 0.2, 1)"
+    easing: "cubic-bezier(0.16, 1, 0.3, 1)"
   },
   // Pointer affordance roles.
   cursor: {

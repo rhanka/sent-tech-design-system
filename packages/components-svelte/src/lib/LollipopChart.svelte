@@ -61,7 +61,7 @@
     class: className
   }: LollipopChartProps = $props();
 
-  const MARGIN = { top: 12, right: 16, bottom: 32, left: 44 };
+  const MARGIN = { top: 24, right: 16, bottom: 32, left: 44 };
   const DOT_RADIUS = 5;
 
   function niceTicks(min: number, max: number, target = 5): number[] {
