@@ -75,9 +75,27 @@ export async function mountVueLiveDemo(
   const app = Vue.createApp(Demo as never);
   app.mount(container);
 
+  // Teardown défensif et idempotent : même garde-fou que vue-island.ts.
+  // L'hôte est partagé entre îles ; l'île entrante peut vider le DOM avant la
+  // fin de `app.unmount()`, ce qui ferait planter le parcours de teardown Vue
+  // (`reading 'nextSibling'` en dev, `reading '$set'` sur le build minifié). On
+  // garantit un seul unmount, on lâche la référence, et on absorbe un teardown
+  // sur un hôte déjà nettoyé.
+  let appRef: ReturnType<typeof Vue.createApp> | null = app;
+  let disposed = false;
+
   return {
     unmount() {
-      app.unmount();
+      if (disposed) return;
+      disposed = true;
+      const current = appRef;
+      appRef = null;
+      if (!current) return;
+      try {
+        current.unmount();
+      } catch {
+        // Hôte déjà nettoyé par l'île entrante : sans danger.
+      }
     }
   };
 }
