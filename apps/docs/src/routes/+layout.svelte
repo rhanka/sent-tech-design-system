@@ -13,10 +13,9 @@
   import { auth } from "$lib/auth/auth.svelte";
   import {
     sentTechTheme,
-    compileTheme,
-    compileThemeWithModes,
     type TenantTheme
   } from "@sentropic/design-system-themes";
+  import { compileThemeModes } from "$lib/compile-modes";
   import { colorMode, type ColorMode } from "$lib/color-mode.svelte";
   import { dsfrTheme } from "@sentropic/design-system-theme-dsfr";
   import { carbonTheme } from "@sentropic/design-system-theme-carbon";
@@ -75,7 +74,7 @@
   // Balise <style> du thème de base, injectée en SSR pour le premier rendu.
   // Utilise compileThemeWithModes pour émettre 3 blocs (light + auto dark + explicit dark).
   // (Construite dans le script pour éviter un littéral <style> dans le markup.)
-  const baseThemeStyle = `<style data-st-base-theme>${compileThemeWithModes(sentTechTheme, { selector: ":root" })}</style>`;
+  const baseThemeStyle = `<style data-st-base-theme>${compileThemeModes(sentTechTheme, { selector: ":root" })}</style>`;
 
   let activeThemeId = $state(sentTechTheme.id);
   const activeTheme = $derived(
@@ -133,7 +132,7 @@
       el.id = STYLE_ID;
       document.head.appendChild(el);
     }
-    el.textContent = compileThemeWithModes(activeTheme, { selector: ":root" });
+    el.textContent = compileThemeModes(activeTheme, { selector: ":root" });
     document.documentElement.setAttribute("data-st-theme", activeThemeId);
     localStorage.setItem(THEME_STORAGE_KEY, activeThemeId);
   });
