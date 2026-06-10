@@ -1129,6 +1129,16 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "ErrorBarChart",
+    slug: "error-bar-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Pour chaque catégorie, un marqueur au point central (moyenne) et une moustache de la borne basse à la borne haute avec un capuchon à chaque extrémité (intervalle d'incertitude / de confiance).",
+      en: "Per category, a marker at the central value (mean) and a whisker from the low to the high bound capped at each end (uncertainty / confidence interval)."
+    }
+  },
+  {
     name: "ParetoChart",
     slug: "pareto-chart",
     status: "documented",

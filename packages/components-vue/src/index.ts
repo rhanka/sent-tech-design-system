@@ -173,6 +173,8 @@ export { AreaRangeChart } from "./AreaRangeChart.js";
 export type { AreaRangeChartProps, AreaRangeChartDatum, AreaRangeChartTone } from "./AreaRangeChart.js";
 export { DumbbellChart } from "./DumbbellChart.js";
 export type { DumbbellChartProps, DumbbellChartDatum, DumbbellChartTone } from "./DumbbellChart.js";
+export { ErrorBarChart } from "./ErrorBarChart.js";
+export type { ErrorBarChartProps, ErrorBarChartDatum, ErrorBarChartTone } from "./ErrorBarChart.js";
 export { BarChart } from "./BarChart.js";
 export type { BarChartProps, BarChartDatum, BarChartTone } from "./BarChart.js";
 export { LineChart } from "./LineChart.js";

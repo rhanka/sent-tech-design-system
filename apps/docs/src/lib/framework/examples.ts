@@ -73,6 +73,7 @@ export type ComponentName =
   | "AreaChart"
   | "AreaRangeChart"
   | "DumbbellChart"
+  | "ErrorBarChart"
   | "BarChart"
   | "LineChart"
   | "DonutChart"
@@ -3569,6 +3570,80 @@ import { AreaRangeChart } from "@sentropic/design-system-vue";
       { x: 'Mer', low: 11, high: 22 },
       { x: 'Jeu', low: 10, high: 20 },
       { x: 'Ven', low: 7, high: 16 }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  errorbarchart: {
+    id: "errorbarchart",
+    slug: "error-bar-chart",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "ErrorBarChart",
+            props: {
+              label: "Temps de réponse moyen par région (± écart-type)",
+              tone: "category2",
+              data: [
+                { category: "Amérique N.", value: 142, low: 118, high: 171 },
+                { category: "Europe", value: 96, low: 81, high: 118 },
+                { category: "Asie", value: 188, low: 152, high: 224 },
+                { category: "Océanie", value: 210, low: 174, high: 251 }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { ErrorBarChart } from "@sentropic/design-system-svelte";
+</script>
+
+<ErrorBarChart
+  label="Temps de réponse moyen par région (± écart-type)"
+  tone="category2"
+  data={[
+    { category: "Amérique N.", value: 142, low: 118, high: 171 },
+    { category: "Europe", value: 96, low: 81, high: 118 },
+    { category: "Asie", value: 188, low: 152, high: 224 },
+    { category: "Océanie", value: 210, low: 174, high: 251 }
+  ]}
+/>`,
+      react: `import { ErrorBarChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <ErrorBarChart
+      label="Temps de réponse moyen par région (± écart-type)"
+      tone="category2"
+      data={[
+        { category: "Amérique N.", value: 142, low: 118, high: 171 },
+        { category: "Europe", value: 96, low: 81, high: 118 },
+        { category: "Asie", value: 188, low: 152, high: 224 },
+        { category: "Océanie", value: 210, low: 174, high: 251 }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { ErrorBarChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <ErrorBarChart
+    label="Temps de réponse moyen par région (± écart-type)"
+    tone="category2"
+    :data="[
+      { category: 'Amérique N.', value: 142, low: 118, high: 171 },
+      { category: 'Europe', value: 96, low: 81, high: 118 },
+      { category: 'Asie', value: 188, low: 152, high: 224 },
+      { category: 'Océanie', value: 210, low: 174, high: 251 }
     ]"
   />
 </template>`
