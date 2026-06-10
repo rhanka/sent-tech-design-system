@@ -40,9 +40,9 @@
       nameFr: "Liste rapport",
       domain: "App Shell",
       domainFr: "App Shell",
-      status: "soon",
-      description: "Filter bar + paginated data table — covers 20+ Odoo list views.",
-      descriptionFr: "Barre de filtres + table paginée — couvre 20+ vues liste Odoo."
+      status: "available",
+      description: "Header + side nav + search + filter bar + paginated sortable table — the pattern of 20+ Odoo list views.",
+      descriptionFr: "Header + nav latérale + recherche + barre de filtres + table paginée triable — le patron de 20+ vues liste Odoo."
     },
     {
       slug: "object-page",
@@ -50,9 +50,9 @@
       nameFr: "Page objet",
       domain: "App Shell",
       domainFr: "App Shell",
-      status: "soon",
-      description: "Breadcrumb + sections + actions — the Fiori Object Page pattern for detail views.",
-      descriptionFr: "Fil d'Ariane + sections + actions — le patron Fiori Object Page pour les fiches."
+      status: "available",
+      description: "Breadcrumb + entity header + tabs + KPI row + structured fields + related table — the pattern of all detail views.",
+      descriptionFr: "Fil d'Ariane + en-tête d'entité + onglets + rangée KPI + champs structurés + table liée — le patron de toutes les fiches."
     },
     {
       slug: "kanban",
@@ -60,9 +60,9 @@
       nameFr: "Tableau Kanban",
       domain: "CRM / Sales",
       domainFr: "CRM / Ventes",
-      status: "soon",
-      description: "Columns of cards with drag-and-drop — the signature Odoo CRM pipeline view.",
-      descriptionFr: "Colonnes de cartes avec glisser-déposer — la vue pipeline CRM Odoo emblématique."
+      status: "available",
+      description: "Columns of cards with badge, avatar and progress — the signature Odoo CRM pipeline view.",
+      descriptionFr: "Colonnes de cartes avec badge, avatar et progression — la vue pipeline CRM Odoo emblématique."
     },
     {
       slug: "data-explorer",
