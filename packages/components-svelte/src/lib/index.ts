@@ -12,6 +12,7 @@ export { default as CandlestickChart } from "./CandlestickChart.svelte";
 export { default as CalendarHeatmapChart } from "./CalendarHeatmapChart.svelte";
 export { default as BumpChart } from "./BumpChart.svelte";
 export { default as LollipopChart } from "./LollipopChart.svelte";
+export { default as ColumnRangeChart } from "./ColumnRangeChart.svelte";
 export { default as ParetoChart } from "./ParetoChart.svelte";
 export { default as StepLineChart } from "./StepLineChart.svelte";
 export type { StepLineChartTone, StepLineChartDatum } from "./StepLineChart.svelte";
@@ -188,6 +189,7 @@ export type { CandlestickChartDatum } from "./CandlestickChart.svelte";
 export type { CalendarHeatmapChartDatum } from "./CalendarHeatmapChart.svelte";
 export type { BumpChartTone, BumpChartSeries } from "./BumpChart.svelte";
 export type { LollipopChartTone, LollipopChartDatum } from "./LollipopChart.svelte";
+export type { ColumnRangeChartTone, ColumnRangeChartDatum } from "./ColumnRangeChart.svelte";
 export type { ParetoChartTone, ParetoChartDatum } from "./ParetoChart.svelte";
 export type {
   TreemapChartTone,
