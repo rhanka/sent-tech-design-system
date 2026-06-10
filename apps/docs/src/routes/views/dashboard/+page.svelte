@@ -201,7 +201,7 @@
             {
               comp: "DataTable",
               props: {
-                columns: TABLE_COLUMNS.map((c) => ({ key: c.key, header: c.header(), align: c.align })),
+                columns: TABLE_COLUMNS.map((c) => ({ key: c.key, label: c.header(), align: c.align })),
                 rows: TABLE_ROWS.map((r) => ({ ...r, statut: r.statut })),
                 size: "sm"
               }
