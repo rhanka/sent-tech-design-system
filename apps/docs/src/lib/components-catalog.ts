@@ -1560,6 +1560,16 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "OHLCChart",
+    slug: "ohlc-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Bâtons OHLC : barre verticale low→high, tick gauche à l'ouverture, tick droite à la clôture.",
+      en: "OHLC bars: a vertical low→high bar with a left open tick and a right close tick."
+    }
+  },
+  {
     name: "CalendarHeatmapChart",
     slug: "calendar-heatmap-chart",
     status: "documented",

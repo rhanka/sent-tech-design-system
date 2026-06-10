@@ -150,6 +150,7 @@ export type ComponentName =
   | "MarimekkoChart"
   | "ParallelCoordinatesChart"
   | "CandlestickChart"
+  | "OHLCChart"
   | "CalendarHeatmapChart"
   | "BumpChart"
   | "StepLineChart"
@@ -8677,6 +8678,76 @@ import { CandlestickChart } from "@sentropic/design-system-vue";
 
 <template>
   <CandlestickChart
+    label="Cours SENT — semaine"
+    :data="[
+      { label: 'Lun', open: 142, high: 148, low: 139, close: 146 },
+      { label: 'Mar', open: 146, high: 151, low: 144, close: 149 },
+      { label: 'Mer', open: 149, high: 152, low: 140, close: 143 },
+      { label: 'Jeu', open: 143, high: 147, low: 138, close: 145 },
+      { label: 'Ven', open: 145, high: 155, low: 144, close: 153 }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  ohlcchart: {
+    id: "ohlcchart",
+    slug: "ohlc-chart",
+    nodes: [
+      stack([
+        {
+          comp: "OHLCChart",
+          props: {
+            label: "Cours SENT — semaine",
+            data: [
+              { label: "Lun", open: 142, high: 148, low: 139, close: 146 },
+              { label: "Mar", open: 146, high: 151, low: 144, close: 149 },
+              { label: "Mer", open: 149, high: 152, low: 140, close: 143 },
+              { label: "Jeu", open: 143, high: 147, low: 138, close: 145 },
+              { label: "Ven", open: 145, high: 155, low: 144, close: 153 }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { OHLCChart } from "@sentropic/design-system-svelte";
+</script>
+
+<OHLCChart
+  label="Cours SENT — semaine"
+  data={[
+    { label: "Lun", open: 142, high: 148, low: 139, close: 146 },
+    { label: "Mar", open: 146, high: 151, low: 144, close: 149 },
+    { label: "Mer", open: 149, high: 152, low: 140, close: 143 },
+    { label: "Jeu", open: 143, high: 147, low: 138, close: 145 },
+    { label: "Ven", open: 145, high: 155, low: 144, close: 153 }
+  ]}
+/>`,
+      react: `import { OHLCChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <OHLCChart
+      label="Cours SENT — semaine"
+      data={[
+        { label: "Lun", open: 142, high: 148, low: 139, close: 146 },
+        { label: "Mar", open: 146, high: 151, low: 144, close: 149 },
+        { label: "Mer", open: 149, high: 152, low: 140, close: 143 },
+        { label: "Jeu", open: 143, high: 147, low: 138, close: 145 },
+        { label: "Ven", open: 145, high: 155, low: 144, close: 153 }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { OHLCChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <OHLCChart
     label="Cours SENT — semaine"
     :data="[
       { label: 'Lun', open: 142, high: 148, low: 139, close: 146 },
