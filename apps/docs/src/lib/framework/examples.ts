@@ -71,6 +71,7 @@ export type ComponentName =
   | "Dropdown"
   | "Footer"
   | "AreaChart"
+  | "AreaRangeChart"
   | "BarChart"
   | "LineChart"
   | "DonutChart"
@@ -3493,6 +3494,80 @@ import { AreaChart } from "@sentropic/design-system-vue";
       { x: 'Mar', y: 55 },
       { x: 'Avr', y: 80 },
       { x: 'Mai', y: 72 }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  arearangechart: {
+    id: "arearangechart",
+    slug: "area-range-chart",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "AreaRangeChart",
+            props: {
+              label: "Fourchette de température par jour",
+              data: [
+                { x: "Lun", low: 8, high: 17 },
+                { x: "Mar", low: 9, high: 19 },
+                { x: "Mer", low: 11, high: 22 },
+                { x: "Jeu", low: 10, high: 20 },
+                { x: "Ven", low: 7, high: 16 }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { AreaRangeChart } from "@sentropic/design-system-svelte";
+</script>
+
+<AreaRangeChart
+  label="Fourchette de température par jour"
+  data={[
+    { x: "Lun", low: 8, high: 17 },
+    { x: "Mar", low: 9, high: 19 },
+    { x: "Mer", low: 11, high: 22 },
+    { x: "Jeu", low: 10, high: 20 },
+    { x: "Ven", low: 7, high: 16 }
+  ]}
+/>`,
+      react: `import { AreaRangeChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <AreaRangeChart
+      label="Fourchette de température par jour"
+      data={[
+        { x: "Lun", low: 8, high: 17 },
+        { x: "Mar", low: 9, high: 19 },
+        { x: "Mer", low: 11, high: 22 },
+        { x: "Jeu", low: 10, high: 20 },
+        { x: "Ven", low: 7, high: 16 }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { AreaRangeChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <AreaRangeChart
+    label="Fourchette de température par jour"
+    :data="[
+      { x: 'Lun', low: 8, high: 17 },
+      { x: 'Mar', low: 9, high: 19 },
+      { x: 'Mer', low: 11, high: 22 },
+      { x: 'Jeu', low: 10, high: 20 },
+      { x: 'Ven', low: 7, high: 16 }
     ]"
   />
 </template>`

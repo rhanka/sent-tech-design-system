@@ -14,6 +14,8 @@ export { Alert } from "./Alert.js";
 export type { AlertProps } from "./Alert.js";
 export { AreaChart } from "./AreaChart.js";
 export type { AreaChartProps, AreaChartDatum, AreaChartTone } from "./AreaChart.js";
+export { AreaRangeChart } from "./AreaRangeChart.js";
+export type { AreaRangeChartProps, AreaRangeChartDatum, AreaRangeChartTone } from "./AreaRangeChart.js";
 export { AspectRatio } from "./AspectRatio.js";
 export type { AspectRatioProps } from "./AspectRatio.js";
 export { BarChart } from "./BarChart.js";
