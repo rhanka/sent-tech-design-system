@@ -74,6 +74,7 @@ export type ComponentName =
   | "AreaRangeChart"
   | "DumbbellChart"
   | "ErrorBarChart"
+  | "BellCurveChart"
   | "BarChart"
   | "LineChart"
   | "DonutChart"
@@ -3645,6 +3646,62 @@ import { ErrorBarChart } from "@sentropic/design-system-vue";
       { category: 'Asie', value: 188, low: 152, high: 224 },
       { category: 'Océanie', value: 210, low: 174, high: 251 }
     ]"
+  />
+</template>`
+    }
+  },
+
+  bellcurvechart: {
+    id: "bellcurvechart",
+    slug: "bell-curve-chart",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "BellCurveChart",
+            props: {
+              label: "Distribution des scores d'examen",
+              tone: "category1",
+              data: [
+                62, 68, 71, 73, 74, 75, 76, 77, 78, 79, 80, 80, 81, 82, 83, 84, 85, 86, 88, 91
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { BellCurveChart } from "@sentropic/design-system-svelte";
+</script>
+
+<BellCurveChart
+  label="Distribution des scores d'examen"
+  tone="category1"
+  data={[62, 68, 71, 73, 74, 75, 76, 77, 78, 79, 80, 80, 81, 82, 83, 84, 85, 86, 88, 91]}
+/>`,
+      react: `import { BellCurveChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <BellCurveChart
+      label="Distribution des scores d'examen"
+      tone="category1"
+      data={[62, 68, 71, 73, 74, 75, 76, 77, 78, 79, 80, 80, 81, 82, 83, 84, 85, 86, 88, 91]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { BellCurveChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <BellCurveChart
+    label="Distribution des scores d'examen"
+    tone="category1"
+    :data="[62, 68, 71, 73, 74, 75, 76, 77, 78, 79, 80, 80, 81, 82, 83, 84, 85, 86, 88, 91]"
   />
 </template>`
     }

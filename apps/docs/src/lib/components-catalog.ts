@@ -1139,6 +1139,16 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "BellCurveChart",
+    slug: "bell-curve-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "À partir d'un échantillon de nombres bruts, calcule la moyenne μ et l'écart-type σ puis trace la densité de la loi normale (courbe en cloche) avec repères à μ et μ±σ, μ±2σ.",
+      en: "From a raw sample of numbers, computes the mean μ and standard deviation σ then draws the normal-distribution density (bell curve) with markers at μ and μ±σ, μ±2σ."
+    }
+  },
+  {
     name: "ParetoChart",
     slug: "pareto-chart",
     status: "documented",
