@@ -25,6 +25,7 @@ export type { PackedBubblesChartTone, PackedBubblesChartDatum } from "./PackedBu
 export { default as Alert } from "./Alert.svelte";
 export { default as AreaChart } from "./AreaChart.svelte";
 export { default as AreaRangeChart } from "./AreaRangeChart.svelte";
+export { default as DumbbellChart } from "./DumbbellChart.svelte";
 export { default as AspectRatio } from "./AspectRatio.svelte";
 export { default as Autosave } from "./Autosave.svelte";
 export { default as Avatar } from "./Avatar.svelte";
@@ -159,6 +160,7 @@ export { default as WaterfallChart } from "./WaterfallChart.svelte";
 export type { AccordionItem } from "./Accordion.svelte";
 export type { AreaChartDatum, AreaChartTone } from "./AreaChart.svelte";
 export type { AreaRangeChartDatum, AreaRangeChartTone } from "./AreaRangeChart.svelte";
+export type { DumbbellChartDatum, DumbbellChartTone } from "./DumbbellChart.svelte";
 export type { BarChartDatum, BarChartTone } from "./BarChart.svelte";
 export type { BoxPlotChartDatum, BoxPlotChartTone } from "./BoxPlotChart.svelte";
 export type { HeatmapChartDatum, HeatmapChartTone } from "./HeatmapChart.svelte";

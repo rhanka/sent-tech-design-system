@@ -72,6 +72,7 @@ export type ComponentName =
   | "Footer"
   | "AreaChart"
   | "AreaRangeChart"
+  | "DumbbellChart"
   | "BarChart"
   | "LineChart"
   | "DonutChart"
@@ -3568,6 +3569,88 @@ import { AreaRangeChart } from "@sentropic/design-system-vue";
       { x: 'Mer', low: 11, high: 22 },
       { x: 'Jeu', low: 10, high: 20 },
       { x: 'Ven', low: 7, high: 16 }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  dumbbellchart: {
+    id: "dumbbellchart",
+    slug: "dumbbell-chart",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "DumbbellChart",
+            props: {
+              label: "Écart de salaire médian par service",
+              lowLabel: "2019",
+              highLabel: "2024",
+              data: [
+                { category: "Ingénierie", low: 62, high: 78 },
+                { category: "Design", low: 54, high: 69 },
+                { category: "Marketing", low: 48, high: 58 },
+                { category: "Support", low: 41, high: 49 },
+                { category: "Ventes", low: 50, high: 72 }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { DumbbellChart } from "@sentropic/design-system-svelte";
+</script>
+
+<DumbbellChart
+  label="Écart de salaire médian par service"
+  lowLabel="2019"
+  highLabel="2024"
+  data={[
+    { category: "Ingénierie", low: 62, high: 78 },
+    { category: "Design", low: 54, high: 69 },
+    { category: "Marketing", low: 48, high: 58 },
+    { category: "Support", low: 41, high: 49 },
+    { category: "Ventes", low: 50, high: 72 }
+  ]}
+/>`,
+      react: `import { DumbbellChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <DumbbellChart
+      label="Écart de salaire médian par service"
+      lowLabel="2019"
+      highLabel="2024"
+      data={[
+        { category: "Ingénierie", low: 62, high: 78 },
+        { category: "Design", low: 54, high: 69 },
+        { category: "Marketing", low: 48, high: 58 },
+        { category: "Support", low: 41, high: 49 },
+        { category: "Ventes", low: 50, high: 72 }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { DumbbellChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <DumbbellChart
+    label="Écart de salaire médian par service"
+    low-label="2019"
+    high-label="2024"
+    :data="[
+      { category: 'Ingénierie', low: 62, high: 78 },
+      { category: 'Design', low: 54, high: 69 },
+      { category: 'Marketing', low: 48, high: 58 },
+      { category: 'Support', low: 41, high: 49 },
+      { category: 'Ventes', low: 50, high: 72 }
     ]"
   />
 </template>`

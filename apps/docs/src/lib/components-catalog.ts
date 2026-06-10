@@ -1119,6 +1119,16 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "DumbbellChart",
+    slug: "dumbbell-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Pour chaque catégorie, une ligne reliant une valeur basse à une valeur haute, avec un cercle teinté à chaque extrémité (ex. avant/après, min/max).",
+      en: "Per category, a line connecting a low to a high value with a coloured dot at each end (e.g. before/after, min/max)."
+    }
+  },
+  {
     name: "ParetoChart",
     slug: "pareto-chart",
     status: "documented",
