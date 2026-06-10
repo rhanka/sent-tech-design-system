@@ -30,14 +30,12 @@ import { vitePreprocess } from "@sveltejs/vite-plugin-svelte";
 // l'exécution. `img-src https:` couvre un éventuel avatar (claim picture).
 // ─────────────────────────────────────────────────────────────────────────────
 
-const BUILD_DIR = process.env.DOCS_BUILD_DIR ?? "build";
-
 export default {
   preprocess: vitePreprocess(),
   kit: {
     adapter: adapter({
-      pages: BUILD_DIR,
-      assets: BUILD_DIR,
+      pages: "build",
+      assets: "build",
       fallback: "404.html",
       precompress: false,
       strict: true
