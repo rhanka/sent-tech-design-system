@@ -66,6 +66,22 @@
     %sveltekit.head%
   </head>
   <body data-sveltekit-preload-data="hover">
+    <!--
+      Script anti-FOUC : restaure data-color-mode sur <html> AVANT que le
+      navigateur ne peigne la page, pour éviter un flash blanc→sombre au
+      chargement initial lorsque l'utilisateur a choisi le mode sombre.
+      Exécuté en bloquant-rendu (pas defer/async) intentionnellement.
+    -->
+    <script>
+      (function () {
+        try {
+          var mode = localStorage.getItem("st-docs-color-mode");
+          if (mode === "dark" || mode === "light") {
+            document.documentElement.setAttribute("data-color-mode", mode);
+          }
+        } catch (e) { /* accès localStorage impossible (iframe, SSR, etc.) */ }
+      })();
+    </script>
     <div style="display: contents">%sveltekit.body%</div>
   </body>
 </html>

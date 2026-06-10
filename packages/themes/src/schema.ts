@@ -7,6 +7,13 @@ export interface TenantTheme {
   label: string;
   mode: ThemeMode;
   tokens: TokenTree;
+  /** Optional dark-mode token overrides (semantic + component layers).
+   *  When present, `compileThemeWithModes` emits 3 CSS blocks:
+   *  - `:root` (light)
+   *  - `@media (prefers-color-scheme: dark) :root:not([data-color-mode="light"])` (auto)
+   *  - `:root[data-color-mode="dark"]` (explicit toggle)
+   *  When absent, `compileThemeWithModes` falls back to a single `:root` block. */
+  tokensDark?: TokenTree;
 }
 
 export function assertTenantTheme(input: unknown): asserts input is TenantTheme {
