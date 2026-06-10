@@ -1570,6 +1570,16 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "HollowCandlestickChart",
+    slug: "hollow-candlestick-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Chandeliers creux : couleur selon la clôture vs la précédente, corps creux si haussier et plein si baissier.",
+      en: "Hollow candlesticks: colour by close vs previous close, hollow body when bullish and filled when bearish."
+    }
+  },
+  {
     name: "CalendarHeatmapChart",
     slug: "calendar-heatmap-chart",
     status: "documented",
