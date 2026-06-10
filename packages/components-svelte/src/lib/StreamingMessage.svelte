@@ -34,6 +34,18 @@
 
   export type StreamingMessageMode = "live" | "passive";
 
+  /**
+   * Simple data-driven event shape (cross-framework parity with React/Vue
+   * ports). Distinguished from the rich event-stream shape by the absence of a
+   * `type` discriminant.
+   */
+  export type StreamingMessageSimpleEvent = {
+    id: string;
+    label: string;
+    text?: string;
+    status?: ChatMessageStatus;
+  };
+
   type ToolCallState = {
     toolCallId: string;
     toolName: string;
@@ -48,8 +60,14 @@
     status?: ChatMessageStatus;
     streamId?: string;
     initialEvents?: StreamingMessageEvent[];
-    events?: StreamingMessageEvent[];
+    events?: StreamingMessageEvent[] | StreamingMessageSimpleEvent[];
     finalContent?: string;
+    /**
+     * Plain message body (cross-framework parity with React/Vue ports). When
+     * provided, it is used as the rendered content (equivalent to
+     * `finalContent`). The canonical event-stream API still works.
+     */
+    text?: string;
     mode?: StreamingMessageMode;
     placeholder?: string;
     showTrail?: boolean;
@@ -65,6 +83,7 @@
     initialEvents = [],
     events = [],
     finalContent,
+    text,
     mode = "live",
     placeholder = "Streaming en cours…",
     showTrail = true,
@@ -76,10 +95,25 @@
 
   const classes = () => ["st-streamingMessage", className].filter(Boolean).join(" ");
 
-  const mergedEvents = () => [...initialEvents, ...events];
+  // A simple event lacks the `type` discriminant of the rich stream shape.
+  const isSimpleEvent = (
+    event: StreamingMessageEvent | StreamingMessageSimpleEvent
+  ): event is StreamingMessageSimpleEvent =>
+    event != null && typeof event === "object" && !("type" in event);
+
+  const simpleEvents = (): StreamingMessageSimpleEvent[] =>
+    (events as Array<StreamingMessageEvent | StreamingMessageSimpleEvent>).filter(isSimpleEvent);
+
+  const richEvents = (): StreamingMessageEvent[] =>
+    (events as Array<StreamingMessageEvent | StreamingMessageSimpleEvent>).filter(
+      (event): event is StreamingMessageEvent => !isSimpleEvent(event)
+    );
+
+  const mergedEvents = () => [...initialEvents, ...richEvents()];
 
   const resolvedContent = () => {
     if (finalContent) return finalContent;
+    if (text) return text;
     return mergedEvents()
       .filter((event) => event.type === "message.delta")
       .map((event) => event.delta)
@@ -241,6 +275,14 @@
         {/if}
       </ul>
     </details>
+  {/if}
+
+  {#if simpleEvents().length > 0}
+    <ul class="st-streamingMessage__trailList">
+      {#each simpleEvents() as event (event.id)}
+        <li>{event.label}</li>
+      {/each}
+    </ul>
   {/if}
 </ChatMessage>
 
