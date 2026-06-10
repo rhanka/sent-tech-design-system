@@ -16,6 +16,8 @@ export { AreaChart } from "./AreaChart.js";
 export type { AreaChartProps, AreaChartDatum, AreaChartTone } from "./AreaChart.js";
 export { AreaRangeChart } from "./AreaRangeChart.js";
 export type { AreaRangeChartProps, AreaRangeChartDatum, AreaRangeChartTone } from "./AreaRangeChart.js";
+export { DumbbellChart } from "./DumbbellChart.js";
+export type { DumbbellChartProps, DumbbellChartDatum, DumbbellChartTone } from "./DumbbellChart.js";
 export { AspectRatio } from "./AspectRatio.js";
 export type { AspectRatioProps } from "./AspectRatio.js";
 export { BarChart } from "./BarChart.js";
