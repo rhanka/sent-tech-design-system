@@ -17,6 +17,7 @@ function renderListItem(item: UnorderedListInput, index: number): VNodeChild {
     ("content" in (item as Record<string, unknown>) || "label" in (item as Record<string, unknown>))
   ) {
     const cast = item as UnorderedListItem;
+    const hasChildren = Array.isArray(cast.children) && cast.children.length > 0;
     return h(
       "li",
       {
@@ -25,8 +26,14 @@ function renderListItem(item: UnorderedListInput, index: number): VNodeChild {
       },
       [
         String((cast.content ?? cast.label) ?? ""),
-        cast.children
-          ? h(UnorderedList, { items: cast.children })
+        hasChildren
+          ? h(
+              "ul",
+              { class: "st-unorderedList st-unorderedList--nested" },
+              (cast.children as UnorderedListInput[]).map((child, childIndex) =>
+                renderListItem(child, childIndex),
+              ),
+            )
           : null,
       ],
     );
