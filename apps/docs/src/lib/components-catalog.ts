@@ -1039,6 +1039,16 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "WordCloudChart",
+    slug: "word-cloud-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Nuage de mots : taille de police ∝ poids, placement déterministe en spirale d'Archimède sans chevauchement.",
+      en: "Word cloud: font size ∝ weight, deterministic Archimedean-spiral placement with no overlap."
+    }
+  },
+  {
     name: "OrganizationChart",
     slug: "organization-chart",
     status: "documented",
@@ -1099,6 +1109,16 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "ItemChart",
+    slug: "item-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Graphe « parlement » / hémicycle : sièges en rangées concentriques, blocs contigus par groupe, taille lue à la longueur de l'arc.",
+      en: "Parliament / hemicycle chart: seats in concentric rows, contiguous blocks per group, size read from arc length."
+    }
+  },
+  {
     name: "VariablePieChart",
     slug: "variable-pie-chart",
     status: "documented",
@@ -1106,6 +1126,16 @@ export const COMPONENTS: ComponentEntry[] = [
     description: {
       fr: "Camembert à rayon variable : l'angle de chaque part ∝ value, le rayon ∝ une 2e métrique z mappée entre rayon min et max.",
       en: "Variable-radius pie: each slice's angle scales with value, its radius with a 2nd metric z mapped between a min and max radius."
+    }
+  },
+  {
+    name: "VennChart",
+    slug: "venn-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Diagramme de Venn / Euler : 2 ou 3 ensembles en cercles superposés, intersections étiquetées ; rayon ∝ √(taille de l'ensemble).",
+      en: "Venn / Euler diagram: 2 or 3 sets as overlapping circles with labeled intersections; radius scales with √(set size)."
     }
   },
   {
@@ -1657,6 +1687,16 @@ export const COMPONENTS: ComponentEntry[] = [
     description: {
       fr: "Bâtons OHLC : barre verticale low→high, tick gauche à l'ouverture, tick droite à la clôture.",
       en: "OHLC bars: a vertical low→high bar with a left open tick and a right close tick."
+    }
+  },
+  {
+    name: "HLCChart",
+    slug: "hlc-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Bâtons HLC : barre verticale low→high, tick droite à la clôture (variante d'OHLC sans tick d'ouverture).",
+      en: "HLC bars: a vertical low→high bar with a right close tick (an OHLC variant without an open tick)."
     }
   },
   {
