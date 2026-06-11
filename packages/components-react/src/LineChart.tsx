@@ -33,6 +33,7 @@ import {
   resolveAnnotations,
   type ChartAnnotation,
 } from "./chartAnnotations.js";
+import { formatDataLabel, normalizeDataLabels, type DataLabelsProp } from "./chartDataLabels.js";
 
 export type LineChartTone =
   | "category1"
@@ -81,6 +82,14 @@ export type LineChartProps = Omit<React.HTMLAttributes<HTMLDivElement>, "classNa
    */
   annotations?: ChartAnnotation[];
   /**
+   * Per-point value labels. `false`/absent (default) → none. `true` → each
+   * point's value with the chart's numeric formatter. Object → `format(value)`
+   * and/or a `position` override. Default position is `top` (above the point).
+   * Labels are `aria-hidden` — the values already live in the accessible
+   * ChartDataList.
+   */
+  dataLabels?: DataLabelsProp;
+  /**
    * Fixed value-axis (y) domain `[min, max]`. When provided (and finite,
    * min<max) the y scale uses it instead of the data-derived range. Invalid or
    * absent → auto range (unchanged).
@@ -117,6 +126,7 @@ export function LineChart({
   goalLine,
   trend = false,
   annotations,
+  dataLabels,
   domain,
   scale = "linear",
   invertAxis = false,
@@ -306,6 +316,18 @@ export function LineChart({
   });
   const annotationRegions = resolvedAnnotations.filter((a) => a.kind === "region");
   const annotationAbove = resolvedAnnotations.filter((a) => a.kind !== "region");
+
+  // --- Data labels ----------------------------------------------------------
+  // One value label per point. Default `top`: just above the dot. `center`
+  // sits on the dot. aria-hidden (values are in the ChartDataList already).
+  const dataLabelOpts = normalizeDataLabels(dataLabels);
+  const dataLabelItems = dataLabelOpts.enabled
+    ? points.map((p) => {
+        const text = formatDataLabel(p.datum.y, dataLabelOpts, formatTick);
+        const center = dataLabelOpts.position === "center" || dataLabelOpts.position === "inside";
+        return { key: p.index, x: p.x, y: center ? p.y : p.y - 8, text, baseline: (center ? "middle" : "auto") as "middle" | "auto" };
+      })
+    : [];
 
   // --- Forecast segments ------------------------------------------------------
   // A datum with `forecast: true` renders as a forecast point: its dot takes
@@ -613,6 +635,24 @@ export function LineChart({
                   </text>
                 );
               })}
+            </g>
+          ) : null}
+
+          {/* Data labels — one value per point, drawn on top. aria-hidden. */}
+          {dataLabelItems.length > 0 ? (
+            <g className="st-lineChart__dataLabels" aria-hidden="true">
+              {dataLabelItems.map((d) => (
+                <text
+                  key={d.key}
+                  className="st-lineChart__dataLabel"
+                  x={d.x}
+                  y={d.y}
+                  textAnchor="middle"
+                  dominantBaseline={d.baseline}
+                >
+                  {d.text}
+                </text>
+              ))}
             </g>
           ) : null}
         </svg>

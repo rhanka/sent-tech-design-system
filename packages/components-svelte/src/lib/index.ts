@@ -229,6 +229,7 @@ export type { StackedBarDatum, StackedBarSegment, StackedBarTone } from "./Stack
 export type { LineChartDatum, LineChartTone } from "./LineChart.svelte";
 export type { ChartOverlayTone, ChartReferenceLine, ChartBand, ChartGoalLine, ChartScale } from "./LineChart.svelte";
 export type { ChartAnnotation, ChartAnnotationMarker } from "./chartAnnotations.js";
+export type { DataLabelsProp, DataLabelsOptions, DataLabelPosition } from "./chartDataLabels.js";
 export type {
   ComboChartTone,
   ComboChartBarSeries,

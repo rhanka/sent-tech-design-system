@@ -16,6 +16,7 @@ import {
   resolveAnnotations,
   type ChartAnnotation,
 } from "./chartAnnotations.js";
+import { formatDataLabel, normalizeDataLabels, type DataLabelsProp } from "./chartDataLabels.js";
 
 export type AreaChartTone =
   | "category1"
@@ -45,6 +46,14 @@ export type AreaChartProps = Omit<React.HTMLAttributes<HTMLDivElement>, "classNa
    * the area, every other kind above it. Additive: absent ⇒ unchanged.
    */
   annotations?: ChartAnnotation[];
+  /**
+   * Per-point value labels. `false`/absent (default) → none. `true` → each
+   * point's value with the chart's numeric formatter. Object → `format(value)`
+   * and/or a `position` override. Default position is `top` (above the point).
+   * Labels are `aria-hidden` — the values already live in the accessible
+   * ChartDataList.
+   */
+  dataLabels?: DataLabelsProp;
   className?: string;
 };
 
@@ -58,6 +67,7 @@ export function AreaChart({
   smooth = false,
   label,
   annotations,
+  dataLabels,
   className,
   ...rest
 }: AreaChartProps) {
@@ -141,6 +151,18 @@ export function AreaChart({
   });
   const annotationRegions = resolvedAnnotations.filter((a) => a.kind === "region");
   const annotationAbove = resolvedAnnotations.filter((a) => a.kind !== "region");
+
+  // --- Data labels ----------------------------------------------------------
+  // One value label per point. Default `top`: just above the dot. `center` sits
+  // on the dot. aria-hidden (values are in the ChartDataList already).
+  const dataLabelOpts = normalizeDataLabels(dataLabels);
+  const dataLabelItems = dataLabelOpts.enabled
+    ? points.map((p) => {
+        const text = formatDataLabel(p.datum.y, dataLabelOpts, formatTick);
+        const center = dataLabelOpts.position === "center" || dataLabelOpts.position === "inside";
+        return { key: p.index, x: p.x, y: center ? p.y : p.y - 8, text, baseline: (center ? "middle" : "auto") as "middle" | "auto" };
+      })
+    : [];
 
   const dataValueItems = [
     ...normalizedData.map((d) => `${d.x}: ${d.y}`),
@@ -340,6 +362,24 @@ export function AreaChart({
                   </text>
                 );
               })}
+            </g>
+          ) : null}
+
+          {/* Data labels — one value per point, drawn on top. aria-hidden. */}
+          {dataLabelItems.length > 0 ? (
+            <g className="st-areaChart__dataLabels" aria-hidden="true">
+              {dataLabelItems.map((d) => (
+                <text
+                  key={d.key}
+                  className="st-areaChart__dataLabel"
+                  x={d.x}
+                  y={d.y}
+                  textAnchor="middle"
+                  dominantBaseline={d.baseline}
+                >
+                  {d.text}
+                </text>
+              ))}
             </g>
           ) : null}
         </svg>
