@@ -186,7 +186,8 @@ export type ComponentName =
   | "ArcDiagramChart"
   | "PackedBubblesChart"
   | "RangeSlider"
-  | "Drawer";
+  | "Drawer"
+  | "ErrorSummary";
 
 export interface ComponentNodeSpec {
   comp: ComponentName;
@@ -1667,6 +1668,69 @@ import { Highlight } from "@sentropic/design-system-vue";
   <Highlight tone="success" title="Bonne pratique">
     Déclarez vos dépendances dans peerDependencies.
   </Highlight>
+</template>`
+    }
+  },
+
+  errorsummary: {
+    id: "errorsummary",
+    slug: "error-summary",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "ErrorSummary",
+            props: {
+              heading: "Il y a un problème",
+              errors: [
+                { href: "#nom", text: "Saisissez votre nom" },
+                { href: "#courriel", text: "Courriel invalide" },
+                { href: "#date", text: "La date doit être dans le futur" }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { ErrorSummary } from "@sentropic/design-system-svelte";
+</script>
+
+<ErrorSummary
+  heading="Il y a un problème"
+  errors={[
+    { href: "#nom", text: "Saisissez votre nom" },
+    { href: "#courriel", text: "Courriel invalide" }
+  ]}
+/>`,
+      react: `import { ErrorSummary } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <ErrorSummary
+      heading="Il y a un problème"
+      errors={[
+        { href: "#nom", text: "Saisissez votre nom" },
+        { href: "#courriel", text: "Courriel invalide" }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { ErrorSummary } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <ErrorSummary
+    heading="Il y a un problème"
+    :errors="[
+      { href: '#nom', text: 'Saisissez votre nom' },
+      { href: '#courriel', text: 'Courriel invalide' }
+    ]"
+  />
 </template>`
     }
   },

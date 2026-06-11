@@ -89,6 +89,7 @@ export { default as Drawer } from "./Drawer.svelte";
 export { default as Dropdown } from "./Dropdown.svelte";
 export { default as Embed } from "./Embed.svelte";
 export { default as EmptyState } from "./EmptyState.svelte";
+export { default as ErrorSummary } from "./ErrorSummary.svelte";
 export { default as FileUploader } from "./FileUploader.svelte";
 export { default as FilterBar } from "./FilterBar.svelte";
 export { default as FilterPill } from "./FilterPill.svelte";
