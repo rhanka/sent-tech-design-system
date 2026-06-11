@@ -72,6 +72,10 @@ export type ComponentName =
   | "Footer"
   | "AreaChart"
   | "AreaRangeChart"
+  | "AreaSplineRangeChart"
+  | "ColumnPyramidChart"
+  | "PolygonChart"
+  | "TileMapChart"
   | "DumbbellChart"
   | "ErrorBarChart"
   | "BellCurveChart"
@@ -3582,6 +3586,314 @@ import { AreaRangeChart } from "@sentropic/design-system-vue";
       { x: 'Mer', low: 11, high: 22 },
       { x: 'Jeu', low: 10, high: 20 },
       { x: 'Ven', low: 7, high: 16 }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  areasplinerangechart: {
+    id: "areasplinerangechart",
+    slug: "area-spline-range-chart",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "AreaSplineRangeChart",
+            props: {
+              label: "Fourchette de température par jour (lissée)",
+              data: [
+                { x: "Lun", low: 8, high: 17 },
+                { x: "Mar", low: 9, high: 19 },
+                { x: "Mer", low: 11, high: 22 },
+                { x: "Jeu", low: 10, high: 20 },
+                { x: "Ven", low: 7, high: 16 },
+                { x: "Sam", low: 6, high: 14 },
+                { x: "Dim", low: 9, high: 18 }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { AreaSplineRangeChart } from "@sentropic/design-system-svelte";
+</script>
+
+<AreaSplineRangeChart
+  label="Fourchette de température par jour (lissée)"
+  data={[
+    { x: "Lun", low: 8, high: 17 },
+    { x: "Mar", low: 9, high: 19 },
+    { x: "Mer", low: 11, high: 22 },
+    { x: "Jeu", low: 10, high: 20 },
+    { x: "Ven", low: 7, high: 16 },
+    { x: "Sam", low: 6, high: 14 },
+    { x: "Dim", low: 9, high: 18 }
+  ]}
+/>`,
+      react: `import { AreaSplineRangeChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <AreaSplineRangeChart
+      label="Fourchette de température par jour (lissée)"
+      data={[
+        { x: "Lun", low: 8, high: 17 },
+        { x: "Mar", low: 9, high: 19 },
+        { x: "Mer", low: 11, high: 22 },
+        { x: "Jeu", low: 10, high: 20 },
+        { x: "Ven", low: 7, high: 16 },
+        { x: "Sam", low: 6, high: 14 },
+        { x: "Dim", low: 9, high: 18 }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { AreaSplineRangeChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <AreaSplineRangeChart
+    label="Fourchette de température par jour (lissée)"
+    :data="[
+      { x: 'Lun', low: 8, high: 17 },
+      { x: 'Mar', low: 9, high: 19 },
+      { x: 'Mer', low: 11, high: 22 },
+      { x: 'Jeu', low: 10, high: 20 },
+      { x: 'Ven', low: 7, high: 16 },
+      { x: 'Sam', low: 6, high: 14 },
+      { x: 'Dim', low: 9, high: 18 }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  columnpyramidchart: {
+    id: "columnpyramidchart",
+    slug: "column-pyramid-chart",
+    nodes: [
+      stack([
+        {
+          comp: "ColumnPyramidChart",
+          props: {
+            label: "Revenu par trimestre",
+            data: [
+              { category: "T1", value: 42, tone: "category1" },
+              { category: "T2", value: 58, tone: "category1" },
+              { category: "T3", value: 73, tone: "category1" },
+              { category: "T4", value: 64, tone: "category1" }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { ColumnPyramidChart } from "@sentropic/design-system-svelte";
+</script>
+
+<ColumnPyramidChart
+  label="Revenu par trimestre"
+  data={[
+    { category: "T1", value: 42, tone: "category1" },
+    { category: "T2", value: 58, tone: "category1" },
+    { category: "T3", value: 73, tone: "category1" },
+    { category: "T4", value: 64, tone: "category1" }
+  ]}
+/>`,
+      react: `import { ColumnPyramidChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <ColumnPyramidChart
+      label="Revenu par trimestre"
+      data={[
+        { category: "T1", value: 42, tone: "category1" },
+        { category: "T2", value: 58, tone: "category1" },
+        { category: "T3", value: 73, tone: "category1" },
+        { category: "T4", value: 64, tone: "category1" }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { ColumnPyramidChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <ColumnPyramidChart
+    label="Revenu par trimestre"
+    :data="[
+      { category: 'T1', value: 42, tone: 'category1' },
+      { category: 'T2', value: 58, tone: 'category1' },
+      { category: 'T3', value: 73, tone: 'category1' },
+      { category: 'T4', value: 64, tone: 'category1' }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  polygonchart: {
+    id: "polygonchart",
+    slug: "polygon-chart",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "PolygonChart",
+            props: {
+              label: "Zone de couverture",
+              tone: "category2",
+              data: [
+                { x: 2, y: 1 },
+                { x: 6, y: 2 },
+                { x: 8, y: 6 },
+                { x: 5, y: 8 },
+                { x: 1, y: 5 }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { PolygonChart } from "@sentropic/design-system-svelte";
+</script>
+
+<PolygonChart
+  label="Zone de couverture"
+  tone="category2"
+  data={[
+    { x: 2, y: 1 },
+    { x: 6, y: 2 },
+    { x: 8, y: 6 },
+    { x: 5, y: 8 },
+    { x: 1, y: 5 }
+  ]}
+/>`,
+      react: `import { PolygonChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <PolygonChart
+      label="Zone de couverture"
+      tone="category2"
+      data={[
+        { x: 2, y: 1 },
+        { x: 6, y: 2 },
+        { x: 8, y: 6 },
+        { x: 5, y: 8 },
+        { x: 1, y: 5 }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { PolygonChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <PolygonChart
+    label="Zone de couverture"
+    tone="category2"
+    :data="[
+      { x: 2, y: 1 },
+      { x: 6, y: 2 },
+      { x: 8, y: 6 },
+      { x: 5, y: 8 },
+      { x: 1, y: 5 }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  tilemapchart: {
+    id: "tilemapchart",
+    slug: "tile-map-chart",
+    nodes: [
+      stack([
+        {
+          comp: "TileMapChart",
+          props: {
+            label: "Indice par province",
+            data: [
+              { label: "BC", col: 0, row: 1, value: 42 },
+              { label: "AB", col: 1, row: 1, value: 58 },
+              { label: "SK", col: 2, row: 1, value: 35 },
+              { label: "MB", col: 3, row: 1, value: 49 },
+              { label: "ON", col: 4, row: 1, value: 88 },
+              { label: "QC", col: 5, row: 1, value: 76 },
+              { label: "NB", col: 6, row: 1, value: 31 },
+              { label: "NS", col: 6, row: 2, value: 40 }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { TileMapChart } from "@sentropic/design-system-svelte";
+</script>
+
+<TileMapChart
+  label="Indice par province"
+  data={[
+    { label: "BC", col: 0, row: 1, value: 42 },
+    { label: "AB", col: 1, row: 1, value: 58 },
+    { label: "SK", col: 2, row: 1, value: 35 },
+    { label: "MB", col: 3, row: 1, value: 49 },
+    { label: "ON", col: 4, row: 1, value: 88 },
+    { label: "QC", col: 5, row: 1, value: 76 },
+    { label: "NB", col: 6, row: 1, value: 31 },
+    { label: "NS", col: 6, row: 2, value: 40 }
+  ]}
+/>`,
+      react: `import { TileMapChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <TileMapChart
+      label="Indice par province"
+      data={[
+        { label: "BC", col: 0, row: 1, value: 42 },
+        { label: "AB", col: 1, row: 1, value: 58 },
+        { label: "SK", col: 2, row: 1, value: 35 },
+        { label: "MB", col: 3, row: 1, value: 49 },
+        { label: "ON", col: 4, row: 1, value: 88 },
+        { label: "QC", col: 5, row: 1, value: 76 },
+        { label: "NB", col: 6, row: 1, value: 31 },
+        { label: "NS", col: 6, row: 2, value: 40 }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { TileMapChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <TileMapChart
+    label="Indice par province"
+    :data="[
+      { label: 'BC', col: 0, row: 1, value: 42 },
+      { label: 'AB', col: 1, row: 1, value: 58 },
+      { label: 'SK', col: 2, row: 1, value: 35 },
+      { label: 'MB', col: 3, row: 1, value: 49 },
+      { label: 'ON', col: 4, row: 1, value: 88 },
+      { label: 'QC', col: 5, row: 1, value: 76 },
+      { label: 'NB', col: 6, row: 1, value: 31 },
+      { label: 'NS', col: 6, row: 2, value: 40 }
     ]"
   />
 </template>`
