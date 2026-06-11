@@ -59,6 +59,31 @@ describe("AppHeader", () => {
     expect(container.querySelector("button.st-appHeader__burgerButton")?.getAttribute("aria-controls")).toBe("my-drawer");
     expect((container.querySelector(".st-appHeader__drawer") as HTMLElement).id).toBe("my-drawer");
   });
+
+  it("renders the canonical brand block (logo + name + product) from props", () => {
+    const { container } = render(
+      <AppHeader brandName="Sentropic" productName="dataviz" logoSrc="/SENT-logo-squared.svg" brandHref="/home" />,
+    );
+    const brand = container.querySelector("a.st-appHeader__brand") as HTMLAnchorElement;
+    expect(brand).toBeTruthy();
+    expect(brand.getAttribute("href")).toBe("/home");
+    expect(brand.getAttribute("aria-label")).toBe("Sentropic dataviz");
+    expect((container.querySelector("img.st-appHeader__brandMark") as HTMLImageElement).getAttribute("src")).toBe("/SENT-logo-squared.svg");
+    expect(container.querySelector(".st-appHeader__brandName")?.textContent).toBe("Sentropic");
+    expect(container.querySelector(".st-appHeader__brandProduct")?.textContent).toBe("dataviz");
+  });
+
+  it("prefers the logo node over the default brand block when both are supplied", () => {
+    const { container } = render(<AppHeader logo={<span>CUSTOM</span>} brandName="Sentropic" logoSrc="/x.svg" />);
+    expect(container.querySelector(".st-appHeader__logo")?.textContent).toContain("CUSTOM");
+    expect(container.querySelector(".st-appHeader__brand")).toBeNull();
+  });
+
+  it("omits the default brand entirely when no brand props are provided", () => {
+    const { container } = render(<AppHeader nav={<a href="/">n</a>} />);
+    expect(container.querySelector(".st-appHeader__brand")).toBeNull();
+    expect(container.querySelector(".st-appHeader__logo")).toBeNull();
+  });
 });
 
 describe("LanguageToggle", () => {

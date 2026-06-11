@@ -69,6 +69,39 @@ describe("AppHeader", () => {
     expect(wrapper.find("button.st-appHeader__burgerButton").attributes("aria-controls")).toBe("my-drawer");
     expect(wrapper.find(".st-appHeader__drawer").attributes("id")).toBe("my-drawer");
   });
+
+  it("renders the canonical brand block (logo + name + product) from props", () => {
+    const wrapper = mount(AppHeader, {
+      props: {
+        brandName: "Sentropic",
+        productName: "dataviz",
+        logoSrc: "/SENT-logo-squared.svg",
+        brandHref: "/home",
+      },
+    });
+    const brand = wrapper.find("a.st-appHeader__brand");
+    expect(brand.exists()).toBe(true);
+    expect(brand.attributes("href")).toBe("/home");
+    expect(brand.attributes("aria-label")).toBe("Sentropic dataviz");
+    expect(wrapper.find("img.st-appHeader__brandMark").attributes("src")).toBe("/SENT-logo-squared.svg");
+    expect(wrapper.find(".st-appHeader__brandName").text()).toBe("Sentropic");
+    expect(wrapper.find(".st-appHeader__brandProduct").text()).toBe("dataviz");
+  });
+
+  it("prefers the logo slot over the default brand block when both are supplied", () => {
+    const wrapper = mount(AppHeader, {
+      props: { brandName: "Sentropic", logoSrc: "/x.svg" },
+      slots: { logo: () => h("span", "CUSTOM") },
+    });
+    expect(wrapper.find(".st-appHeader__logo").text()).toContain("CUSTOM");
+    expect(wrapper.find(".st-appHeader__brand").exists()).toBe(false);
+  });
+
+  it("omits the default brand entirely when no brand props are provided", () => {
+    const wrapper = mount(AppHeader, { slots: { nav: () => h("a", { href: "/" }, "n") } });
+    expect(wrapper.find(".st-appHeader__brand").exists()).toBe(false);
+    expect(wrapper.find(".st-appHeader__logo").exists()).toBe(false);
+  });
 });
 
 describe("LanguageToggle", () => {

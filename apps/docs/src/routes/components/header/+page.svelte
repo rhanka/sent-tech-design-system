@@ -1,7 +1,7 @@
 <script lang="ts">
   import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { getExample } from "$lib/framework/examples";
-  import { Badge, Header, type HeaderAccount } from "@sentropic/design-system-svelte";
+  import { Badge, Header, AppHeader, type HeaderAccount } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
 
@@ -22,6 +22,17 @@
   // État ouvert/fermé du menu compte (contrôlé par la page, comme le ferait un parent réel).
   let photoMenuOpen = $state(false);
   let initialsMenuOpen = $state(false);
+
+  // Exemple de consommation AppHeader (marque par props + classes utilitaires publiées).
+  const appHeaderUsageSnippet = `<AppHeader
+  brandName="Sentropic"
+  productName="dataviz"
+  logoSrc="/SENT-logo-squared.svg"
+  brandHref="/"
+  nav={topNav}        <!-- <a class="st-appHeader__navLink" aria-current="page"> -->
+  actions={controls}  <!-- <button class="st-appHeader__control"> ... -->
+  {compact} menuOpen={open} onMenuToggle={toggle} drawer={mobileNav}
+/>`;
 </script>
 
 {#snippet brand()}
@@ -50,6 +61,22 @@
   <button type="button" class="header-icon-btn" aria-label="Notifications">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 0 1-3.46 0" />
+    </svg>
+  </button>
+{/snippet}
+
+{#snippet appHeaderNav()}
+  <a class="st-appHeader__navLink" href="/components/header" aria-current="page">Charts</a>
+  <a class="st-appHeader__navLink" href="/components/header">Dashboards</a>
+  <a class="st-appHeader__navLink" href="/components/header">Grilles</a>
+  <a class="st-appHeader__navLink" href="/components/header">Guides</a>
+{/snippet}
+
+{#snippet appHeaderActions()}
+  <button type="button" class="st-appHeader__control" aria-haspopup="true">Thème · Sentropic</button>
+  <button type="button" class="st-appHeader__control" aria-label="Mode sombre">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
     </svg>
   </button>
 {/snippet}
@@ -204,6 +231,60 @@
         <code>accountMenuOpen</code> est vrai ; l'état d'ouverture est contrôlé par le parent.
       </li>
     </ul>
+  </section>
+  <section class="docs-section">
+    <h2>AppHeader — chrome de site réutilisable</h2>
+    <p>
+      <code>AppHeader</code> est l'en-tête « tenant » du socle (burger à droite en compact,
+      tiroir intégré). Il porte désormais la <strong>marque canonique paramétrable</strong>
+      (logo carré + nom + sous-titre produit) et publie deux classes utilitaires — sans qu'un
+      consommateur ait à dupliquer le CSS de la doc : un site externe (ex. <code>dataviz.sent-tech.ca</code>)
+      obtient le même rendu que ce site en passant uniquement ses libellés.
+    </p>
+    <article class="docs-demo-block">
+      <h3>Marque par props (aucun CSS d'application)</h3>
+      <p class="docs-demo-context">
+        Fournir <code>brandName</code>, <code>productName</code> et <code>logoSrc</code> rend le
+        bloc marque officiel (logo + « Sentropic » + sous-titre produit). Les liens de nav portent
+        <code>st-appHeader__navLink</code> (pill soulignée + état actif via
+        <code>aria-current="page"</code>) ; les contrôles utilitaires portent
+        <code>st-appHeader__control</code> (pill thème / langue / icône).
+      </p>
+      <AppHeader
+        brandName="Sentropic"
+        productName="dataviz"
+        logoSrc="/SENT-logo-squared.svg"
+        brandHref="/"
+        nav={appHeaderNav}
+        actions={appHeaderActions}
+      />
+    </article>
+    <h3>API ajoutée (marque)</h3>
+    <table class="docs-table">
+      <thead>
+        <tr><th>Prop</th><th>Type</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>brandName</code></td><td><code>string</code></td><td>Nom de marque (ex. « Sentropic »). Affiché en gras.</td></tr>
+        <tr><td><code>productName</code></td><td><code>string</code></td><td>Sous-titre produit sous le nom (ex. « Design System », « dataviz »).</td></tr>
+        <tr><td><code>logoSrc</code></td><td><code>string</code></td><td>Source de l'image du logo carré (32×32).</td></tr>
+        <tr><td><code>logoAlt</code></td><td><code>string</code></td><td>Texte alternatif du logo (décoratif par défaut, <code>aria-hidden</code>).</td></tr>
+        <tr><td><code>brandHref</code></td><td><code>string</code></td><td>Cible du lien de marque. Défaut : <code>/</code>.</td></tr>
+        <tr><td><code>brandLabel</code></td><td><code>string</code></td><td><code>aria-label</code> du lien (sinon dérivé de <code>brandName</code> + <code>productName</code>).</td></tr>
+      </tbody>
+    </table>
+    <p>
+      Le snippet <code>logo</code> reste prioritaire si fourni : la marque par props ne s'active
+      que lorsqu'aucun <code>logo</code> n'est passé et qu'au moins une de ces props est présente
+      (rétro-compatible).
+    </p>
+    <h3>Consommation tri-framework (parité stricte)</h3>
+    <p>
+      L'API est identique en Svelte (props + snippets <code>nav</code>/<code>actions</code>/<code>drawer</code>),
+      React (props + nœuds <code>nav</code>/<code>actions</code>) et Vue (props + slots). Côté
+      <code>dataviz.sent-tech.ca</code> (Svelte), l'en-tête se réduit à :
+    </p>
+    <pre class="docs-codeblock"><code>{appHeaderUsageSnippet}</code></pre>
   </section>
   <section class="docs-section">
     <h2>Accessibilité</h2>
@@ -478,6 +559,24 @@
   .header-menu-item:focus-visible {
     background: var(--st-semantic-surface-subtle, #f1f5f9);
     outline: none;
+  }
+
+  .docs-codeblock {
+    background: var(--st-semantic-surface-subtle, #f8fafc);
+    border: 1px solid var(--docs-line);
+    border-radius: 0.5rem;
+    color: var(--docs-ink);
+    font-size: 0.82rem;
+    line-height: 1.55;
+    margin: 0.75rem 0 0;
+    overflow-x: auto;
+    padding: 0.9rem 1rem;
+  }
+
+  .docs-codeblock code {
+    background: transparent;
+    font-family: var(--st-font-mono, ui-monospace, monospace);
+    white-space: pre;
   }
 
   .docs-list {

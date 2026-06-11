@@ -14,6 +14,22 @@ export type AppHeaderProps = {
    * Auto-généré et stable si non fourni.
    */
   drawerId?: string;
+  /**
+   * Marque structurée (décision actée : logo SENT + sous-titre). Rend le bloc
+   * canonique « logo carré + nom + sous-titre produit ». Si le slot `logo` est
+   * fourni, il a priorité (contrôle total).
+   */
+  brandName?: string;
+  /** Sous-titre produit affiché sous le nom (ex. « Design System », « dataviz »). */
+  productName?: string;
+  /** Source de l'image du logo carré (ex. `/SENT-logo-squared.svg`). */
+  logoSrc?: string;
+  /** Texte alternatif du logo (décoratif par défaut). */
+  logoAlt?: string;
+  /** Cible du lien de la marque. Défaut : `/`. */
+  brandHref?: string;
+  /** aria-label du lien de marque (sinon dérivé de `brandName` + `productName`). */
+  brandLabel?: string;
   class?: string;
 };
 
@@ -70,6 +86,12 @@ export const AppHeader = defineComponent({
     menuOpen: { type: Boolean, default: false },
     menuLabel: { type: String, default: "Menu" },
     drawerId: { type: String, default: undefined },
+    brandName: { type: String, default: undefined },
+    productName: { type: String, default: undefined },
+    logoSrc: { type: String, default: undefined },
+    logoAlt: { type: String, default: "" },
+    brandHref: { type: String, default: "/" },
+    brandLabel: { type: String, default: undefined },
     class: { type: String, default: undefined },
   },
   emits: ["menuToggle"],
@@ -78,11 +100,44 @@ export const AppHeader = defineComponent({
     // Id stable du tiroir : prop fournie sinon compteur module (SSR-safe).
     const resolvedDrawerId = props.drawerId ?? `st-appHeader-drawer-${++appHeaderIdCounter}`;
     return () => {
+      const hasDefaultBrand =
+        !slots.logo && Boolean(props.brandName || props.productName || props.logoSrc);
+      const resolvedBrandLabel =
+        props.brandLabel ?? [props.brandName, props.productName].filter(Boolean).join(" ");
       const bar = h("div", { class: "st-appHeader__bar" }, [
         // Logo SENT à GAUCHE (+ sous-titre).
         slots.logo
           ? h("div", { class: "st-appHeader__logo" }, slots.logo())
-          : null,
+          : hasDefaultBrand
+            ? h(
+                "a",
+                {
+                  class: "st-appHeader__brand",
+                  href: props.brandHref,
+                  "aria-label": resolvedBrandLabel || undefined,
+                },
+                [
+                  props.logoSrc
+                    ? h("img", {
+                        class: "st-appHeader__brandMark",
+                        src: props.logoSrc,
+                        alt: props.logoAlt,
+                        "aria-hidden": props.logoAlt ? undefined : "true",
+                      })
+                    : null,
+                  props.brandName || props.productName
+                    ? h("span", { class: "st-appHeader__brandCopy" }, [
+                        props.brandName
+                          ? h("span", { class: "st-appHeader__brandName" }, props.brandName)
+                          : null,
+                        props.productName
+                          ? h("span", { class: "st-appHeader__brandProduct" }, props.productName)
+                          : null,
+                      ])
+                    : null,
+                ],
+              )
+            : null,
         // Nav desktop + actions (masqués en mode compact).
         !props.compact
           ? h(
