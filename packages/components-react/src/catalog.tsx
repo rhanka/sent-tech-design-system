@@ -3722,10 +3722,23 @@ function renderListItem(item: OrderedListInput, index: number, ordered: boolean)
     ("content" in (item as OrderedListItem) || "label" in (item as OrderedListItem))
   ) {
     const cast = item as OrderedListItem;
+    const hasChildren = Array.isArray(cast.children) && cast.children.length > 0;
     return (
       <li key={index} className={ordered ? "st-orderedList__item" : "st-unorderedList__item"}>
         {cast.content ?? cast.label}
-        {cast.children ? (ordered ? <OrderedList items={cast.children} /> : <UnorderedList items={cast.children} />) : null}
+        {hasChildren
+          ? ordered
+            ? (
+              <ol className="st-orderedList st-orderedList--nested">
+                {cast.children!.map((child, childIndex) => renderListItem(child, childIndex, true))}
+              </ol>
+            )
+            : (
+              <ul className="st-unorderedList st-unorderedList--nested">
+                {cast.children!.map((child, childIndex) => renderListItem(child, childIndex, false))}
+              </ul>
+            )
+          : null}
       </li>
     );
   }
@@ -3737,7 +3750,7 @@ function renderListItem(item: OrderedListInput, index: number, ordered: boolean)
 }
 export function OrderedList({ items, className, ...rest }: OrderedListProps) {
   return (
-    <ol {...rest} className={classNames("st-orderedList st-ol", className)}>
+    <ol {...rest} className={classNames("st-orderedList", className)}>
       {items.map((item, index) => renderListItem(item, index, true))}
     </ol>
   );

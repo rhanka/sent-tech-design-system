@@ -5,6 +5,8 @@ import AspectRatio from "./lib/AspectRatio.svelte";
 import Breadcrumb from "./lib/Breadcrumb.svelte";
 import ContentSwitcher from "./lib/ContentSwitcher.svelte";
 import DataTable from "./lib/DataTable.svelte";
+import Footer from "./lib/Footer.svelte";
+import OrderedList from "./lib/OrderedList.svelte";
 import Pagination from "./lib/Pagination.svelte";
 import PaginationNav from "./lib/PaginationNav.svelte";
 import ProgressIndicator from "./lib/ProgressIndicator.svelte";
@@ -348,8 +350,42 @@ describe("data and navigation components", () => {
     expect(directItems).toHaveLength(2);
     const nested = directItems[1].querySelector("ul");
     expect(nested).toBeTruthy();
+    expect(nested?.classList.contains("st-unorderedList")).toBe(true);
+    expect(nested?.classList.contains("st-unorderedList--nested")).toBe(true);
     expect(nested?.querySelectorAll("li")).toHaveLength(2);
     expect(screen.getByText("Tokens")).toBeTruthy();
     expect(screen.getByText("Themes")).toBeTruthy();
+  });
+
+  it("OrderedList renders nested children with the --nested modifier", () => {
+    const { container } = render(OrderedList, {
+      props: {
+        items: [
+          { content: "Step" },
+          {
+            content: "Group",
+            children: [{ content: "Sub A" }, { content: "Sub B" }]
+          }
+        ]
+      }
+    });
+    const root = container.querySelector("ol.st-orderedList") as HTMLOListElement;
+    expect(root).toBeTruthy();
+    const directItems = Array.from(root.children).filter((c) => c.tagName === "LI");
+    expect(directItems).toHaveLength(2);
+    const nested = directItems[1].querySelector("ol");
+    expect(nested).toBeTruthy();
+    expect(nested?.classList.contains("st-orderedList")).toBe(true);
+    expect(nested?.classList.contains("st-orderedList--nested")).toBe(true);
+    expect(nested?.querySelectorAll("li")).toHaveLength(2);
+  });
+
+  it("Footer forwards arbitrary HTML attributes (data-*) onto <footer>", () => {
+    const { container } = render(Footer, {
+      props: { copyright: "© 2026", "data-form": "newsletter" } as Record<string, unknown>
+    });
+    const footer = container.querySelector("footer.st-footer") as HTMLElement;
+    expect(footer).toBeTruthy();
+    expect(footer.getAttribute("data-form")).toBe("newsletter");
   });
 });

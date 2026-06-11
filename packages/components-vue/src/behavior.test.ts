@@ -1431,6 +1431,14 @@ describe("Vue behavioral parity — batch 3", () => {
       expect(wrapper.find(".st-footer__copyright").text()).toBe("© 2025");
     });
 
+    it("forwards arbitrary HTML attributes (data-*) onto footer", () => {
+      const wrapper = mount(Footer, {
+        props: { copyright: "© 2026" },
+        attrs: { "data-form": "newsletter" },
+      });
+      expect(wrapper.find("footer.st-footer").attributes("data-form")).toBe("newsletter");
+    });
+
     it("has name Footer", () => {
       expect(Footer.name).toBe("Footer");
     });
@@ -1622,6 +1630,21 @@ describe("Vue behavioral parity — batch 3", () => {
       expect(wrapper.find("ol").exists()).toBe(true);
     });
 
+    it("renders nested children with the --nested modifier", () => {
+      const wrapper = mount(OrderedList, {
+        props: {
+          items: [
+            "Step",
+            { content: "Group", children: ["Sub A", "Sub B"] },
+          ],
+        },
+      });
+      const nested = wrapper.find("ol.st-orderedList--nested");
+      expect(nested.exists()).toBe(true);
+      expect(nested.classes()).toContain("st-orderedList");
+      expect(nested.findAll(".st-orderedList__item").length).toBe(2);
+    });
+
     it("has name OrderedList", () => {
       expect(OrderedList.name).toBe("OrderedList");
     });
@@ -1637,6 +1660,21 @@ describe("Vue behavioral parity — batch 3", () => {
     it("renders items as li.st-unorderedList__item", () => {
       const wrapper = mount(UnorderedList, { props: { items: ["X", "Y"] } });
       expect(wrapper.findAll(".st-unorderedList__item").length).toBe(2);
+    });
+
+    it("renders nested children with the --nested modifier", () => {
+      const wrapper = mount(UnorderedList, {
+        props: {
+          items: [
+            "Forge",
+            { content: "Sentropic", children: ["Tokens", "Themes"] },
+          ],
+        },
+      });
+      const nested = wrapper.find("ul.st-unorderedList--nested");
+      expect(nested.exists()).toBe(true);
+      expect(nested.classes()).toContain("st-unorderedList");
+      expect(nested.findAll(".st-unorderedList__item").length).toBe(2);
     });
 
     it("has name UnorderedList", () => {

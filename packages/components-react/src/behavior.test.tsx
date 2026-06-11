@@ -278,6 +278,23 @@ describe("React behavioral parity", () => {
     expect(screen.getByText("Docs", { selector: ".st-multiSelect__tagLabel" }).className).toContain("st-multiSelect__tagLabel");
   });
 
+  it("applies the combobox size modifier on the field box (default md)", () => {
+    const { container: defaultBox } = render(
+      <Combobox label="Default" options={[{ value: "a", label: "A" }]} />,
+    );
+    expect(defaultBox.querySelector(".st-combobox.st-combobox--md")).toBeTruthy();
+    cleanup();
+    const { container: smallBox } = render(
+      <Combobox label="Small" options={[{ value: "a", label: "A" }]} size="sm" />,
+    );
+    expect(smallBox.querySelector(".st-combobox.st-combobox--sm")).toBeTruthy();
+    cleanup();
+    const { container: largeBox } = render(
+      <Combobox label="Large" options={[{ value: "a", label: "A" }]} size="lg" />,
+    );
+    expect(largeBox.querySelector(".st-combobox.st-combobox--lg")).toBeTruthy();
+  });
+
   it("supports queued toasts and auto-dismisses individual notices", () => {
     vi.useFakeTimers();
     const onDismiss = vi.fn();

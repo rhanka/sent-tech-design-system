@@ -257,6 +257,48 @@ describe("React public catalog parity", () => {
     expect(onClick).toHaveBeenCalledTimes(1);
     expect(screen.getByRole("button", { name: "Copy" }).className).toContain("st-copyButton");
   });
+
+  it("renders nested ordered list children with the --nested modifier", () => {
+    const { container } = render(
+      <OrderedList
+        items={[
+          "Step",
+          { content: "Group", children: ["Sub A", "Sub B"] },
+        ]}
+      />,
+    );
+    const root = container.querySelector("ol.st-orderedList") as HTMLOListElement;
+    expect(root).toBeTruthy();
+    expect(root.className).toBe("st-orderedList");
+    const nested = root.querySelector("ol.st-orderedList--nested") as HTMLOListElement;
+    expect(nested).toBeTruthy();
+    expect(nested.classList.contains("st-orderedList")).toBe(true);
+    expect(nested.querySelectorAll("li.st-orderedList__item").length).toBe(2);
+  });
+
+  it("renders nested unordered list children with the --nested modifier", () => {
+    const { container } = render(
+      <UnorderedList
+        items={[
+          "Forge",
+          { content: "Sentropic", children: ["Tokens", "Themes"] },
+        ]}
+      />,
+    );
+    const root = container.querySelector("ul.st-unorderedList") as HTMLUListElement;
+    expect(root).toBeTruthy();
+    const nested = root.querySelector("ul.st-unorderedList--nested") as HTMLUListElement;
+    expect(nested).toBeTruthy();
+    expect(nested.classList.contains("st-unorderedList")).toBe(true);
+    expect(nested.querySelectorAll("li.st-unorderedList__item").length).toBe(2);
+  });
+
+  it("Footer forwards arbitrary HTML attributes (data-*) onto <footer>", () => {
+    const { container } = render(<Footer copyright="© 2026" data-form="newsletter" />);
+    const footer = container.querySelector("footer.st-footer") as HTMLElement;
+    expect(footer).toBeTruthy();
+    expect(footer.getAttribute("data-form")).toBe("newsletter");
+  });
 });
 
 describe("ForceGraph parity (0.10.4)", () => {
