@@ -23,15 +23,21 @@ Statut dans les sous-bullets (PAS dans les titres → import idempotent).
     tilemap. → 20 charts WP19 au total. Restent : hlc, item, wordcloud, venn/euler + maps + niche.
 - [x] **Lot CHART-RANGES — core ranges & variantes**
   - columnrange, arearange, areasplinerange, dumbbell, columnpyramid, variablepie, polygon. Effort faible (axes existants). ✓ 7/7 livrés.
-- [ ] **Lot CHART-STATS — statistique**
+- [x] **Lot CHART-STATS — statistique** ✓ bellcurve, errorbar livrés/publiés.
   - bellcurve, errorbar (complètent BoxPlot/Histogram/Violin).
-- [ ] **Lot CHART-FINANCE — financier**
+- [x] **Lot CHART-FINANCE — financier** ✓ ohlc, hlc, hollowcandlestick, heikinashi livrés/publiés.
   - ohlc/hlc, hollowcandlestick, heikinashi (réutilisent CandlestickChart). renko/pointandfigure/flags = différé.
-- [ ] **Lot CHART-NETWORK — réseau/flux**
+- [x] **Lot CHART-NETWORK — réseau/flux** ✓ streamgraph, dependencywheel, arcdiagram, organization, treegraph livrés/publiés.
   - streamgraph, dependencywheel, arcdiagram, organization, treegraph (voisins Sankey/Chord/ForceGraph).
-- [ ] **Lot CHART-PLANNING — planning & spécialisés**
+- [x] **Lot CHART-PLANNING — planning & spécialisés** ✓ gantt, timeline, item, wordcloud, venn, tilemap livrés/publiés.
   - xrange/Gantt (priorité projet), timeline, item (parlement), wordcloud, venn/euler, tilemap.
 - [ ] **Lot CHART-MAPS — surcouches GeoMap**
   - mapline, mappoint, mapbubble, flowmap, geoheatmap, tiledwebmap (fond OSM tuilé).
 - [ ] **Lot CHART-NICHE — différable**
   - windbarb, vector, contour, pictorial, variwide, pyramid, renko, pointandfigure, flags, 3D.
+- [ ] **Lot CHART-DATAVIZ-FR — « classe Highcharts » (demande dataviz, tri-fw, props sur charts existants)**
+  - FR-1 annotations ✓ (point/label/line/region/shape sur Line/Area/Bar, publié 0.34.23/0.36.24).
+    FR-2 data labels ✓ (dataLabels sur Bar/Line/Area/Donut/Stacked, publié 0.34.24/0.36.25).
+    FR-3 crosshair contrôlé ✓ (hoverKey/onHoverKeyChange, publié 0.34.25/0.36.26).
+    FR-4 légende interactive (hiddenSeries) — EN COURS (agent). FR-5 a11y datapoint-nav — à suivre.
+    Lot 2 FR-1/2 (extension Scatter/OHLC/etc.) à suivre.
