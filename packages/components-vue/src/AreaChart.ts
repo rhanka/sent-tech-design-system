@@ -17,6 +17,7 @@ import {
   type ChartAnnotation,
 } from "./chartAnnotations.js";
 import { formatDataLabel, normalizeDataLabels, type DataLabelsProp } from "./chartDataLabels.js";
+import { keyForX, resolveActiveIndex } from "./chartCrosshair.js";
 
 export type AreaChartTone =
   | "category1"
@@ -54,6 +55,20 @@ export type AreaChartProps = {
    * ChartDataList.
    */
   dataLabels?: DataLabelsProp;
+  /**
+   * CONTROLLED synchronised hover key (FR-3). A datum's key is `String(x)`. When
+   * provided (string or null), the crosshair + tooltip track this key instead of
+   * the chart's internal pointer hover (null ⇒ nothing shown), letting a parent
+   * share one hover channel across several aligned charts. Absent (`undefined`)
+   * keeps the legacy uncontrolled behaviour.
+   */
+  hoverKey?: string | null;
+  /**
+   * Emitted when the user hovers a datum (its key) or leaves the plot (`null`).
+   * Always fired on pointer move/leave — even while CONTROLLED — so dataviz can
+   * keep the shared hover channel in sync.
+   */
+  onHoverKeyChange?: (key: string | null) => void;
   class?: string;
 };
 
@@ -72,24 +87,13 @@ export const AreaChart = defineComponent({
     label: { type: String, required: true },
     annotations: { type: Array as () => ChartAnnotation[], default: undefined },
     dataLabels: { type: [Boolean, Object] as unknown as () => DataLabelsProp, default: undefined },
+    hoverKey: { type: String as unknown as () => string | null, default: undefined },
+    onHoverKeyChange: { type: Function as unknown as () => (key: string | null) => void, default: undefined },
     class: { type: String, default: undefined },
   },
   setup(props, { attrs }) {
     const hoveredIndex = ref<number | null>(null);
     const gradientId = `st-areachart-gradient-${(gradientCounter++).toString(36)}-${Math.random().toString(36).substring(2, 9)}`;
-
-    function handleLeave() {
-      hoveredIndex.value = null;
-    }
-    function handleVisualPointerMove(event: PointerEvent) {
-      const target = event.target;
-      if (!(target instanceof Element)) {
-        hoveredIndex.value = null;
-        return;
-      }
-      const index = Number(target.getAttribute("data-chart-index"));
-      hoveredIndex.value = Number.isInteger(index) ? index : null;
-    }
 
     return () => {
       const width = props.width ?? 480;
@@ -379,7 +383,51 @@ export const AreaChart = defineComponent({
         svgChildren.push(dataLabelGroup);
       }
 
-      const hoveredPoint = hoveredIndex.value !== null ? points[hoveredIndex.value] : undefined;
+      // Stable key per datum (FR-3): `String(x)` of the normalised datum (a bare
+      // number becomes its index). Resolves a controlled `hoverKey` to an index
+      // and feeds `onHoverKeyChange` from pointer events.
+      const hoverKeys = normalizedData.map((d) => keyForX(d.x));
+      const emitHoverKey = (index: number | null) => {
+        props.onHoverKeyChange?.(index == null ? null : hoverKeys[index] ?? null);
+      };
+      const handleLeave = () => {
+        hoveredIndex.value = null;
+        emitHoverKey(null);
+      };
+      const handleVisualPointerMove = (event: PointerEvent) => {
+        const target = event.target;
+        if (!(target instanceof Element)) {
+          hoveredIndex.value = null;
+          emitHoverKey(null);
+          return;
+        }
+        const raw = Number(target.getAttribute("data-chart-index"));
+        const index = Number.isInteger(raw) ? raw : null;
+        hoveredIndex.value = index;
+        emitHoverKey(index);
+      };
+
+      // Index whose crosshair/tooltip is DISPLAYED: the controlled `hoverKey`
+      // when provided (resolved against `hoverKeys`), else the pointer index.
+      const activeIndex = resolveActiveIndex(props.hoverKey, hoveredIndex.value, hoverKeys);
+      const hoveredPoint = activeIndex >= 0 ? points[activeIndex] : undefined;
+
+      // Crosshair vnodes (FR-3) — tokenised vertical line + marker at the active
+      // key. Decorative (aria-hidden). Appended last so it sits on top.
+      if (hoveredPoint) {
+        svgChildren.push(
+          h("g", { class: "st-areaChart__crosshair", "aria-hidden": "true" }, [
+            h("line", {
+              class: "st-areaChart__crosshairLine",
+              x1: hoveredPoint.x,
+              x2: hoveredPoint.x,
+              y1: MARGIN.top,
+              y2: MARGIN.top + plotHeight,
+            }),
+            h("circle", { class: "st-areaChart__crosshairMarker", cx: hoveredPoint.x, cy: hoveredPoint.y, r: "5" }),
+          ]),
+        );
+      }
 
       return h("div", { ...attrs, class: classNames("st-areaChart", `st-areaChart--${tone}`, props.class) }, [
         h(

@@ -18,6 +18,9 @@
       annotationsTitle: "Annotations",
       annotationsDesc:
         "`annotations` superpose des repères exprimés dans l’espace des données : `region` (bande remplie, derrière la série), `line` (repère d’axe), `point`, `label` (texte) et `shape` (polygone). Chaque repère est ajouté à la liste accessible (« Annotation : … »).",
+      hoverKeyTitle: "Curseur synchronisé (contrôlé)",
+      hoverKeyDesc:
+        "`hoverKey` (la clé d’un point = `String(x)`) pilote le curseur (ligne verticale pointillée + marqueur) et l’infobulle depuis le parent : ici `hoverKey=\"Mer\"`. Le parent partage ainsi un même canal de survol entre plusieurs graphiques alignés. `onHoverKeyChange(key | null)` est émis à chaque survol/sortie — même en mode contrôlé. Sans `hoverKey` (`undefined`), le survol interne reprend la main (rétro-compatible).",
       usageTitle: "Notes d’usage",
       usageNote1:
         "`label` est obligatoire : il alimente l’`aria-label` du conteneur (`role=\"img\"`). Les couples `x : y` sont exposés dans une liste accessible hors SVG, sans multiplier les arrêts de tabulation.",
@@ -38,6 +41,9 @@
       annotationsTitle: "Annotations",
       annotationsDesc:
         "`annotations` overlays markers expressed in data space: `region` (filled band, behind the series), `line` (axis guide), `point`, `label` (text), and `shape` (polygon). Each marker is also added to the accessible list (“Annotation: …”).",
+      hoverKeyTitle: "Synchronised crosshair (controlled)",
+      hoverKeyDesc:
+        "`hoverKey` (a point's key = `String(x)`) drives the crosshair (dashed vertical line + marker) and the tooltip from the parent: here `hoverKey=\"Mer\"`. The parent can thus share one hover channel across several aligned charts. `onHoverKeyChange(key | null)` fires on every hover/leave — even while controlled. Without `hoverKey` (`undefined`), the internal hover takes over (backward compatible).",
       usageTitle: "Usage notes",
       usageNote1:
         "`label` is required: it feeds the container `aria-label` (`role=\"img\"`). The `x: y` pairs are exposed in an accessible list outside the SVG, without adding a tab stop for every point.",
@@ -185,6 +191,28 @@
       ]
     }
   ]);
+
+  // Controlled crosshair (FR-3): `hoverKey` pins the crosshair + tooltip to a
+  // key so a parent can share one hover channel across aligned charts.
+  const hoverKeyDemo = $derived<NodeSpec[]>([
+    {
+      el: "div",
+      props: { class: "chart-wrapper" },
+      children: [
+        {
+          comp: "LineChart",
+          props: {
+            data: weekly,
+            tone: "category2",
+            label: locale.value === "fr" ? "Requêtes (curseur contrôlé)" : "Requests (controlled crosshair)",
+            width: 520,
+            height: 260,
+            hoverKey: "Mer"
+          }
+        }
+      ]
+    }
+  ]);
 </script>
 
 <div class="docs-page">
@@ -216,6 +244,10 @@
     <h3 class="docs-demo-title">{text().annotationsTitle}</h3>
     <p class="docs-demo-note">{text().annotationsDesc}</p>
     <TabbedExample nodes={annotationsDemo} title={text().annotationsTitle} />
+
+    <h3 class="docs-demo-title">{text().hoverKeyTitle}</h3>
+    <p class="docs-demo-note">{text().hoverKeyDesc}</p>
+    <TabbedExample nodes={hoverKeyDemo} title={text().hoverKeyTitle} />
   </section>
 
   <section class="docs-section">
@@ -238,6 +270,8 @@
         <tr><td><code>goalLine</code></td><td><code>ChartGoalLine</code></td><td><em>{locale.value === "fr" ? "aucune" : "none"}</em></td></tr>
         <tr><td><code>trend</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
         <tr><td><code>annotations</code></td><td><code>ChartAnnotation[]</code></td><td><em>{locale.value === "fr" ? "aucune" : "none"}</em></td></tr>
+        <tr><td><code>hoverKey</code></td><td><code>{`string | null`}</code></td><td><em>{locale.value === "fr" ? "non contrôlé" : "uncontrolled"}</em></td></tr>
+        <tr><td><code>onHoverKeyChange</code></td><td><code>{`(key: string | null) => void`}</code></td><td><em>—</em></td></tr>
         <tr><td><code>data[].forecast</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
         <tr><td><code>showLegend</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
         <tr><td><code>width</code></td><td><code>number</code></td><td><code>480</code></td></tr>

@@ -27,6 +27,7 @@ import {
   type ChartAnnotation,
 } from "./chartAnnotations.js";
 import { formatDataLabel, normalizeDataLabels, type DataLabelsProp } from "./chartDataLabels.js";
+import { resolveActiveIndex } from "./chartCrosshair.js";
 
 export type BarChartTone =
   | "category1"
@@ -113,6 +114,20 @@ export type BarChartProps = {
    * and otherwise ignored.
    */
   showLegend?: boolean;
+  /**
+   * CONTROLLED synchronised hover key (FR-3). A bar's key is its `label`. When
+   * provided (string or null), the crosshair + tooltip track this key instead of
+   * the chart's internal pointer hover (null ⇒ nothing shown), letting a parent
+   * share one hover channel across several aligned charts. Absent (`undefined`)
+   * keeps the legacy uncontrolled behaviour. Independent of `selectedKeys`.
+   */
+  hoverKey?: string | null;
+  /**
+   * Emitted when the user hovers a bar (its `label`) or leaves the plot (`null`).
+   * Always fired on pointer move/leave — even while CONTROLLED — so dataviz can
+   * keep the shared hover channel in sync.
+   */
+  onHoverKeyChange?: (key: string | null) => void;
   class?: string;
 };
 
@@ -137,23 +152,12 @@ export const BarChart = defineComponent({
     scale: { type: String as () => ChartScale, default: "linear" },
     invertAxis: { type: Boolean, default: false },
     showLegend: { type: Boolean, default: undefined },
+    hoverKey: { type: String as unknown as () => string | null, default: undefined },
+    onHoverKeyChange: { type: Function as unknown as () => (key: string | null) => void, default: undefined },
     class: { type: String, default: undefined },
   },
   setup(props, { attrs }) {
     const hoveredIndex = ref<number | null>(null);
-
-    function handleLeave() {
-      hoveredIndex.value = null;
-    }
-    function handleVisualPointerMove(event: PointerEvent) {
-      const target = event.target;
-      if (!(target instanceof Element)) {
-        hoveredIndex.value = null;
-        return;
-      }
-      const index = Number(target.getAttribute("data-chart-index"));
-      hoveredIndex.value = Number.isInteger(index) ? index : null;
-    }
 
     return () => {
       const width = props.width ?? 480;
@@ -711,7 +715,60 @@ export const BarChart = defineComponent({
           )
         : null;
 
-      const hoveredBar = hoveredIndex.value !== null ? bars[hoveredIndex.value] : undefined;
+      // Stable key per bar (FR-3): its `label`. Resolves a controlled `hoverKey`
+      // to an index and feeds `onHoverKeyChange` from pointer events.
+      const hoverKeys = bars.map((b) => b.datum.label);
+      const emitHoverKey = (index: number | null) => {
+        props.onHoverKeyChange?.(index == null ? null : hoverKeys[index] ?? null);
+      };
+      const handleLeave = () => {
+        hoveredIndex.value = null;
+        emitHoverKey(null);
+      };
+      const handleVisualPointerMove = (event: PointerEvent) => {
+        const target = event.target;
+        if (!(target instanceof Element)) {
+          hoveredIndex.value = null;
+          emitHoverKey(null);
+          return;
+        }
+        const raw = Number(target.getAttribute("data-chart-index"));
+        const index = Number.isInteger(raw) ? raw : null;
+        hoveredIndex.value = index;
+        emitHoverKey(index);
+      };
+
+      // Index whose crosshair/tooltip is DISPLAYED: the controlled `hoverKey`
+      // when provided (resolved against `hoverKeys`), else the pointer index.
+      const activeIndex = resolveActiveIndex(props.hoverKey, hoveredIndex.value, hoverKeys);
+      const hoveredBar = activeIndex >= 0 ? bars[activeIndex] : undefined;
+
+      // Crosshair vnode (FR-3) — a tokenised dashed line on the CATEGORY axis at
+      // the active bar: vertical (vertical bars) / horizontal (horizontal bars).
+      // Decorative (aria-hidden).
+      const crosshairGroup = hoveredBar
+        ? h(
+            "g",
+            { class: "st-barChart__crosshair", "aria-hidden": "true" },
+            [
+              isVertical
+                ? h("line", {
+                    class: "st-barChart__crosshairLine",
+                    x1: hoveredBar.cx,
+                    x2: hoveredBar.cx,
+                    y1: MARGIN.top,
+                    y2: MARGIN.top + plotHeight,
+                  })
+                : h("line", {
+                    class: "st-barChart__crosshairLine",
+                    x1: MARGIN.left,
+                    x2: MARGIN.left + plotWidth,
+                    y1: hoveredBar.cy,
+                    y2: hoveredBar.cy,
+                  }),
+            ],
+          )
+        : null;
 
       return h("div", { ...attrs, class: classNames("st-barChart", props.class) }, [
         h(
@@ -746,6 +803,7 @@ export const BarChart = defineComponent({
                 ...goalOverlays,
                 ...(annotationAboveGroup ? [annotationAboveGroup] : []),
                 ...(dataLabelGroup ? [dataLabelGroup] : []),
+                ...(crosshairGroup ? [crosshairGroup] : []),
               ],
             ),
           ],
