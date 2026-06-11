@@ -281,7 +281,7 @@ function printAlignHelp() {
     `  --tones               Calibrage de la palette chromatique (OKLCH, contrastes WCAG).\n` +
     `  --spacing             Alignement de la grille et des paddings (multiples de 4px/8px).\n` +
     `  --typo                Réécrit les piles de polices brutes publiées vers leurs tokens \`var(--st-font-*)\`.\n` +
-    `  --a11y                Garantie d'accessibilité (touch targets, focus, navigabilité).\n` +
+    `  --a11y                Accessibilité : touch targets 44px + injecte un \`:focus-visible\` tokenisé si \`outline:none\`.\n` +
     `  --responsive          Fluidité et adaptabilité mobile/desktop.\n` +
     `  -h, --help            Affiche cette aide.\n\n` +
     `\x1b[1mEXEMPLES\x1b[0m\n` +
@@ -1213,6 +1213,46 @@ function alignFontFamilyTokens(content: string): { content: string; fixes: numbe
   return { content: next, fixes };
 }
 
+/**
+ * Détecte la suppression d'outline (`outline: none | 0 | 0px`) sans règle
+ * `:focus-visible` tokenisée, et injecte un focus ring global tokenisé pour
+ * rétablir l'affordance clavier (miroir de la règle de check `focus-visible-ring`).
+ *
+ * Déterministe et idempotent : si une règle `:focus-visible` référençant un
+ * token `var(--st-…)` existe déjà (outline / box-shadow / border-color), le
+ * contenu est laissé intact. Sinon, une règle est injectée juste avant
+ * `</style>` (ou ajoutée en fin de contenu si aucune balise `<style>`).
+ * Retourne le nombre de réécritures (0 ou 1) pour le compteur de modifications.
+ */
+function alignFocusVisibleRing(content: string): { content: string; fixes: number } {
+  // Suppression d'outline détectée hors d'une règle :focus-visible ?
+  const outlineRemoved = /outline\s*:\s*(?:none|0|0px)\s*(?:!important)?\s*[;}]/i.test(content);
+  if (!outlineRemoved) return { content, fixes: 0 };
+
+  // Une règle :focus-visible tokenisée existe-t-elle déjà ? (idempotence)
+  const focusVisibleBlockRe = /:focus-visible[^{]*\{([^}]*)\}/gi;
+  let block: RegExpExecArray | null;
+  while ((block = focusVisibleBlockRe.exec(content)) !== null) {
+    const decls = block[1];
+    if (/(?:outline|box-shadow|border-color)\s*:[^;}]*var\(\s*--st-/i.test(decls)) {
+      return { content, fixes: 0 };
+    }
+  }
+
+  // Règle de focus ring tokenisée, avec repli littéral si le token est absent.
+  const ring =
+    `\n:focus-visible {\n` +
+    `  outline: 2px solid var(--st-semantic-focus-ring, #0043ce);\n` +
+    `  outline-offset: 2px;\n` +
+    `}\n`;
+
+  const next = /<\/style>/i.test(content)
+    ? content.replace(/<\/style>/i, `${ring}</style>`)
+    : content + ring;
+
+  return { content: next, fixes: 1 };
+}
+
 async function handleAlign(args: string[]) {
   if (args.includes("-h") || args.includes("--help")) {
     printAlignHelp();
@@ -1313,6 +1353,16 @@ async function handleAlign(args: string[]) {
         }
       } else {
         process.stderr.write(`  \x1b[32m✔ Accessibilité (a11y) :\x1b[0m Cibles tactiles de 44x44px, navigabilité clavier et focus visibles garantis.\n`);
+      }
+
+      // Auto-alignement focus ring : si un outline est supprimé sans règle
+      // :focus-visible tokenisée, injecte un focus ring `var(--st-semantic-focus-ring)`.
+      const { content: focusContent, fixes: focusFixes } = alignFocusVisibleRing(fileContent);
+      if (focusFixes > 0) {
+        modificationsCount += focusFixes;
+        fileContent = focusContent;
+        writeFileSync(filePath, fileContent, "utf-8");
+        process.stderr.write(`  \x1b[32m✔ Auto-alignement Focus :\x1b[0m règle \`:focus-visible\` tokenisée injectée (outline supprimé sans affordance clavier).\n`);
       }
     } else {
       process.stderr.write(`  \x1b[32m✔ Accessibilité (a11y) :\x1b[0m Touch targets de 44x44px, navigabilité clavier et focus visibles garantis.\n`);
