@@ -33,6 +33,15 @@
     leftAxisLabel?: string;
     rightAxisLabel?: string;
     legend?: boolean;
+    /**
+     * Interactive legend (FR-4). Ids/labels of bar/line series hidden from the
+     * render (controlled by the parent; default = all visible). Hidden series
+     * are omitted and their legend item is shown "off" (`aria-pressed`).
+     * Undefined → legacy non-interactive legend, unless `onToggleSeries` is set.
+     */
+    hiddenSeries?: string[];
+    /** Emitted on click / Enter / Space on a legend item. */
+    onToggleSeries?: (seriesId: string) => void;
     width?: number;
     height?: number;
     label: string;
@@ -46,11 +55,17 @@
     leftAxisLabel,
     rightAxisLabel,
     legend = true,
+    hiddenSeries,
+    onToggleSeries,
     width = 480,
     height = 240,
     label,
     class: className
   }: ComboChartProps = $props();
+
+  // Interactive legend is active as soon as the parent wires either prop.
+  const legendInteractive = $derived(onToggleSeries !== undefined || hiddenSeries !== undefined);
+  const hiddenSet = $derived(new Set(hiddenSeries ?? []));
 
   const MARGIN = { top: 12, right: 52, bottom: 32, left: 52 };
 
@@ -92,8 +107,9 @@
   const plotHeight = $derived(Math.max(height - MARGIN.top - MARGIN.bottom, 1));
 
   // Left axis (bars): include zero in the domain so bars rest on a baseline.
+  // Hidden series are excluded so the axis rescales to what is visible.
   const leftScale = $derived.by(() => {
-    const values = bars.flatMap((s) => s.data);
+    const values = bars.filter((s) => !hiddenSet.has(s.label)).flatMap((s) => s.data);
     const minRaw = Math.min(0, ...(values.length ? values : [0]));
     const maxRaw = Math.max(0, ...(values.length ? values : [0]));
     const ticks = niceTicks(minRaw, maxRaw, 5);
@@ -102,7 +118,7 @@
 
   // Right axis (lines): padded domain like LineChart.
   const rightScale = $derived.by(() => {
-    const values = lines.flatMap((s) => s.data);
+    const values = lines.filter((s) => !hiddenSet.has(s.label)).flatMap((s) => s.data);
     if (values.length === 0) {
       const ticks = niceTicks(0, 1, 5);
       return { ticks, domainMin: ticks[0], domainMax: ticks[ticks.length - 1] };
@@ -136,6 +152,7 @@
       const groupX = MARGIN.left + band * ci + (band - groupWidth) / 2;
       const segments = bars
         .map((series, si) => {
+          if (hiddenSet.has(series.label)) return null;
           const raw = series.data[ci];
           if (!isPresent(raw)) return null;
           const value = raw;
@@ -203,6 +220,7 @@
         path,
         points,
         seriesLabel: series.label,
+        hidden: hiddenSet.has(series.label),
         tone: series.tone ?? `category${((bars.length + li) % 8) + 1}`
       };
     });
@@ -240,12 +258,12 @@
   ]);
 
   const dataValueItems = $derived([
-    ...bars.flatMap((s) =>
-      categories.map((c, ci) => `${s.label}, ${c}: ${s.data[ci] ?? 0}`)
-    ),
-    ...lines.flatMap((s) =>
-      categories.map((c, ci) => `${s.label}, ${c}: ${s.data[ci] ?? 0}`)
-    )
+    ...bars
+      .filter((s) => !hiddenSet.has(s.label))
+      .flatMap((s) => categories.map((c, ci) => `${s.label}, ${c}: ${s.data[ci] ?? 0}`)),
+    ...lines
+      .filter((s) => !hiddenSet.has(s.label))
+      .flatMap((s) => categories.map((c, ci) => `${s.label}, ${c}: ${s.data[ci] ?? 0}`))
   ]);
 
   type Hover =
@@ -404,25 +422,27 @@
 
       <!-- lines -->
       {#each lineSeries as series, li (li)}
-        <path
-          class="st-comboChart__line st-comboChart__line--{series.tone}"
-          d={series.path}
-          fill="none"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-        {#each series.points as p, pi (pi)}
-          <circle
-            class="st-comboChart__dot st-comboChart__dot--{series.tone}"
-            cx={p.x}
-            cy={p.y}
-            r="4"
-            data-chart-kind="line"
-            data-chart-a={li}
-            data-chart-b={pi}
+        {#if !series.hidden}
+          <path
+            class="st-comboChart__line st-comboChart__line--{series.tone}"
+            d={series.path}
+            fill="none"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
           />
-        {/each}
+          {#each series.points as p, pi (pi)}
+            <circle
+              class="st-comboChart__dot st-comboChart__dot--{series.tone}"
+              cx={p.x}
+              cy={p.y}
+              r="4"
+              data-chart-kind="line"
+              data-chart-a={li}
+              data-chart-b={pi}
+            />
+          {/each}
+        {/if}
       {/each}
     </svg>
   </div>
@@ -430,13 +450,28 @@
   <ChartDataList {label} items={dataValueItems} />
 
   {#if legend && legendItems.length > 0}
-    <ul class="st-comboChart__legend" aria-hidden="true">
+    <ul class="st-comboChart__legend" aria-hidden={legendInteractive ? undefined : "true"}>
       {#each legendItems as item (item.key)}
-        <li class="st-comboChart__legendItem">
-          <span
-            class="st-comboChart__legendSwatch st-comboChart__legendSwatch--{item.kind} st-comboChart__legendSwatch--{item.tone}"
-          ></span>
-          {item.label}
+        {@const off = hiddenSet.has(item.label)}
+        <li class="st-comboChart__legendItem" class:st-comboChart__legendItem--off={legendInteractive && off}>
+          {#if legendInteractive}
+            <button
+              type="button"
+              class="st-comboChart__legendButton"
+              aria-pressed={off}
+              onclick={() => onToggleSeries?.(item.label)}
+            >
+              <span
+                class="st-comboChart__legendSwatch st-comboChart__legendSwatch--{item.kind} st-comboChart__legendSwatch--{item.tone}"
+              ></span>
+              {item.label}
+            </button>
+          {:else}
+            <span
+              class="st-comboChart__legendSwatch st-comboChart__legendSwatch--{item.kind} st-comboChart__legendSwatch--{item.tone}"
+            ></span>
+            {item.label}
+          {/if}
         </li>
       {/each}
     </ul>
@@ -565,6 +600,28 @@
     display: inline-flex;
     font-size: 0.75rem;
     gap: var(--st-spacing-1, 0.25rem);
+  }
+
+  .st-comboChart__legendItem--off {
+    opacity: 0.45;
+  }
+
+  .st-comboChart__legendButton {
+    align-items: center;
+    background: none;
+    border: 0;
+    border-radius: var(--st-radius-sm, 0.25rem);
+    color: inherit;
+    cursor: pointer;
+    display: inline-flex;
+    font: inherit;
+    gap: var(--st-spacing-1, 0.25rem);
+    padding: 0.125rem 0.25rem;
+  }
+
+  .st-comboChart__legendButton:focus-visible {
+    outline: 2px solid var(--st-semantic-border-interactive);
+    outline-offset: 2px;
   }
 
   .st-comboChart__legendSwatch {

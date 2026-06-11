@@ -38,6 +38,16 @@ export type StackedBarChartProps = Omit<React.HTMLAttributes<HTMLDivElement>, "c
    * values already live in the accessible ChartDataList.
    */
   dataLabels?: DataLabelsProp;
+  /**
+   * Interactive legend (FR-4). Ids/labels of series hidden from the render
+   * (controlled by the parent; default = all visible). Each segment whose
+   * `label` ∈ `hiddenSeries` is omitted and its legend item is shown "off"
+   * (`aria-pressed`). Undefined → legacy non-interactive legend, unless
+   * `onToggleSeries` is provided.
+   */
+  hiddenSeries?: string[];
+  /** Emitted on click / Enter / Space on a legend item. */
+  onToggleSeries?: (seriesId: string) => void;
   className?: string;
 };
 
@@ -77,10 +87,16 @@ export function StackedBarChart({
   label,
   showLegend = true,
   dataLabels,
+  hiddenSeries,
+  onToggleSeries,
   className,
   ...rest
 }: StackedBarChartProps) {
   const [hovered, setHovered] = React.useState<{ bar: number; seg: number } | null>(null);
+
+  // Interactive legend is active as soon as the parent wires either prop.
+  const legendInteractive = onToggleSeries !== undefined || hiddenSeries !== undefined;
+  const hiddenSet = new Set(hiddenSeries ?? []);
 
   // Légende : tones par label de série (ordre de la 1re barre).
   const legend = (() => {
@@ -93,7 +109,9 @@ export function StackedBarChart({
     return [...seen.entries()].map(([seriesLabel, tone]) => ({ seriesLabel, tone }));
   })();
 
-  const totals = data.map((b) => b.segments.reduce((s, x) => s + Math.max(x.value, 0), 0));
+  const totals = data.map((b) =>
+    b.segments.reduce((s, x) => (hiddenSet.has(x.label) ? s : s + Math.max(x.value, 0)), 0),
+  );
   const ticks = niceTicks(0, Math.max(0, ...totals));
   const domainMax = ticks[ticks.length - 1];
   const plotW = Math.max(width - MARGIN.left - MARGIN.right, 1);
@@ -106,27 +124,34 @@ export function StackedBarChart({
     return data.map((bar, bi) => {
       const x = MARGIN.left + band * bi + (band - barWidth) / 2;
       let acc = 0;
-      const segs = bar.segments.map((seg, si) => {
-        const v = Math.max(seg.value, 0);
-        const yTop = MARGIN.top + scaleLinear(acc + v, 0, domainMax, plotH, 0);
-        const yBottom = MARGIN.top + scaleLinear(acc, 0, domainMax, plotH, 0);
-        acc += v;
-        return {
-          x,
-          y: yTop,
-          width: barWidth,
-          height: Math.max(yBottom - yTop, 0),
-          seg,
-          tone: seg.tone ?? TONES[si % TONES.length],
-          cx: x + barWidth / 2,
-          cy: yTop + (yBottom - yTop) / 2,
-        };
-      });
+      // Tone is bound to the original segment index so it stays stable when a
+      // series is toggled off; hidden segments are dropped before stacking.
+      const segs = bar.segments
+        .map((seg, si) => ({ seg, tone: seg.tone ?? TONES[si % TONES.length] }))
+        .filter(({ seg }) => !hiddenSet.has(seg.label))
+        .map(({ seg, tone }) => {
+          const v = Math.max(seg.value, 0);
+          const yTop = MARGIN.top + scaleLinear(acc + v, 0, domainMax, plotH, 0);
+          const yBottom = MARGIN.top + scaleLinear(acc, 0, domainMax, plotH, 0);
+          acc += v;
+          return {
+            x,
+            y: yTop,
+            width: barWidth,
+            height: Math.max(yBottom - yTop, 0),
+            seg,
+            tone,
+            cx: x + barWidth / 2,
+            cy: yTop + (yBottom - yTop) / 2,
+          };
+        });
       return { x, band, label: bar.label, segs, cxLabel: MARGIN.left + band * (bi + 0.5) };
     });
   })();
 
-  const dataValueItems = data.flatMap((bar) => bar.segments.map((seg) => `${bar.label}, ${seg.label}: ${seg.value}`));
+  const dataValueItems = data.flatMap((bar) =>
+    bar.segments.filter((seg) => !hiddenSet.has(seg.label)).map((seg) => `${bar.label}, ${seg.label}: ${seg.value}`),
+  );
 
   // --- Data labels ----------------------------------------------------------
   // One value label centred in each segment (default `center`). Segments shorter
@@ -264,15 +289,38 @@ export function StackedBarChart({
 
       {showLegend && legend.length > 0 ? (
         <ul className="st-stackedBar__legend">
-          {legend.map((item) => (
-            <li key={item.seriesLabel} className="st-stackedBar__legendItem">
-              <span
-                className={classNames("st-stackedBar__legendSwatch", `st-stackedBar__legendSwatch--${item.tone}`)}
-                aria-hidden="true"
-              />
-              {item.seriesLabel}
-            </li>
-          ))}
+          {legend.map((item) => {
+            const off = hiddenSet.has(item.seriesLabel);
+            return (
+              <li
+                key={item.seriesLabel}
+                className={classNames("st-stackedBar__legendItem", legendInteractive && off && "st-stackedBar__legendItem--off")}
+              >
+                {legendInteractive ? (
+                  <button
+                    type="button"
+                    className="st-stackedBar__legendButton"
+                    aria-pressed={off}
+                    onClick={() => onToggleSeries?.(item.seriesLabel)}
+                  >
+                    <span
+                      className={classNames("st-stackedBar__legendSwatch", `st-stackedBar__legendSwatch--${item.tone}`)}
+                      aria-hidden="true"
+                    />
+                    {item.seriesLabel}
+                  </button>
+                ) : (
+                  <>
+                    <span
+                      className={classNames("st-stackedBar__legendSwatch", `st-stackedBar__legendSwatch--${item.tone}`)}
+                      aria-hidden="true"
+                    />
+                    {item.seriesLabel}
+                  </>
+                )}
+              </li>
+            );
+          })}
         </ul>
       ) : null}
     </div>

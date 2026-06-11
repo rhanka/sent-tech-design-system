@@ -30,6 +30,27 @@
       ]
     }
   ];
+
+  // FR-4 — légende interactive : la série « Docs » est masquée (hiddenSeries) et
+  // la légende devient cliquable (boutons aria-pressed). L'état est CONTRÔLÉ par
+  // le parent ; onToggleSeries émet l'id de la série au clic/clavier.
+  const interactiveDemo: NodeSpec[] = [
+    {
+      el: "div",
+      props: { class: "docs-stacked-box" },
+      children: [
+        {
+          comp: "StackedBarChart",
+          props: {
+            data,
+            label: "Production par trimestre (Docs masquée)",
+            hiddenSeries: ["Docs"],
+            onToggleSeries: (id: string) => console.log("toggle", id)
+          }
+        }
+      ]
+    }
+  ];
 </script>
 
 <div class="docs-page">
@@ -53,6 +74,19 @@
   </section>
 
   <section class="docs-section">
+    <h2>Légende interactive (toggle de série)</h2>
+    <p>
+      Renseignez <code>hiddenSeries</code> (ids/labels des séries masquées, contrôlé
+      par le parent) et <code>onToggleSeries</code> pour rendre la légende cliquable.
+      Les items deviennent des boutons accessibles (clic, <kbd>Entrée</kbd>/<kbd>Espace</kbd>,
+      focus visible) avec <code>aria-pressed</code> ; les séries masquées disparaissent
+      du rendu et de la liste accessible, et leur item est stylé « éteint ». Ici la
+      série « Docs » est masquée par défaut.
+    </p>
+    <TabbedExample nodes={interactiveDemo} title="Légende interactive" />
+  </section>
+
+  <section class="docs-section">
     <h2>API du composant</h2>
     <table class="docs-table">
       <thead>
@@ -62,6 +96,8 @@
         <tr><td><code>data</code></td><td><code>StackedBarDatum[]</code></td><td>requis</td></tr>
         <tr><td><code>label</code></td><td><code>string</code></td><td>requis (a11y)</td></tr>
         <tr><td><code>showLegend</code></td><td><code>boolean</code></td><td><code>true</code></td></tr>
+        <tr><td><code>hiddenSeries</code></td><td><code>string[]</code></td><td><code>undefined</code> (tout visible)</td></tr>
+        <tr><td><code>onToggleSeries</code></td><td><code>(seriesId: string) =&gt; void</code></td><td><code>undefined</code></td></tr>
         <tr><td><code>width</code> / <code>height</code></td><td><code>number</code></td><td><code>480</code> / <code>260</code></td></tr>
       </tbody>
     </table>
