@@ -164,6 +164,7 @@ export type { LanguageSelectorProps, LanguageOption } from "./LanguageSelector.j
 export { LineChart } from "./LineChart.js";
 export type { LineChartProps, LineChartDatum, LineChartTone } from "./LineChart.js";
 export type { ChartOverlayTone, ChartReferenceLine, ChartBand, ChartGoalLine, ChartScale } from "./chartScale.js";
+export type { ChartAnnotation, ChartAnnotationMarker } from "./chartAnnotations.js";
 export { Link } from "./Link.js";
 export type { LinkProps } from "./Link.js";
 export { LoadingState } from "./LoadingState.js";

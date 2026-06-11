@@ -20,6 +20,12 @@ import {
   type ChartReferenceLine,
   type ChartScale,
 } from "./chartScale.js";
+import {
+  annotationDataListItems,
+  polygonPoints,
+  resolveAnnotations,
+  type ChartAnnotation,
+} from "./chartAnnotations.js";
 
 export type BarChartTone =
   | "category1"
@@ -77,6 +83,14 @@ export type BarChartProps = Omit<React.HTMLAttributes<HTMLDivElement>, "classNam
   /** A single goal line, emphasised above the bars. */
   goalLine?: ChartGoalLine;
   /**
+   * Annotation overlay in DATA space. The x coordinate is CATEGORICAL — it
+   * matches a bar by its `label` (centre of band) and is ignored otherwise; the
+   * y coordinate (and `value`/`from`/`to`) are value-axis numbers. Regions
+   * render behind the bars, every other kind above. Additive: absent ⇒
+   * unchanged.
+   */
+  annotations?: ChartAnnotation[];
+  /**
    * Value-axis scale. `"linear"` (default) is unchanged. `"log"` switches the
    * value axis to base-10 logarithmic — values `<= 0` are ignored for
    * domain/ticks and clamped to the lowest tick when positioned.
@@ -107,6 +121,7 @@ export function BarChart({
   referenceLines,
   bands,
   goalLine,
+  annotations,
   scale = "linear",
   invertAxis = false,
   // Destructured to keep it off `...rest` (the wrapper div); parity no-op since
@@ -336,9 +351,60 @@ export function BarChart({
     })
     .filter((e): e is NonNullable<typeof e> => e !== null);
 
+  // --- Annotation overlay ---------------------------------------------------
+  // The x coordinate is CATEGORICAL (a bar `label` → centre of band); the y
+  // coordinate is a value-axis number. For a HORIZONTAL chart the value axis is
+  // x and the category axis is y, so the data-space (x=category, y=value)
+  // convention is transposed onto the pixel axes: the resolver's `xScale` maps
+  // the value, `yScale` the category, and each annotation's `axis`/coords are
+  // swapped so a value reference (`axis: "y"`) still spans the full plot.
+  const categoryPixel = (v: number | string): number | null => {
+    const bar = bars.find((b) => b.datum.label === String(v));
+    if (!bar) return null;
+    return isVertical ? bar.cx - MARGIN.left : bar.cy - MARGIN.top;
+  };
+  const valuePixelRel = (v: number): number | null => {
+    if (!Number.isFinite(v)) return null;
+    return valuePos(v) - (isVertical ? MARGIN.top : MARGIN.left);
+  };
+  const transposeAnnotations = (list: ChartAnnotation[] | undefined): ChartAnnotation[] | undefined => {
+    if (!list || isVertical) return list;
+    // Horizontal: swap the data-space x/y (and the region/line axis) so the
+    // generic resolver — which always emits xScale→x-pixel, yScale→y-pixel —
+    // lands the value on the x axis and the category on the y axis.
+    return list.map((a): ChartAnnotation => {
+      switch (a.kind) {
+        case "line":
+          return { ...a, axis: a.axis === "x" ? "y" : "x" };
+        case "region":
+          return { ...a, axis: a.axis === "x" ? "y" : "x" };
+        case "point":
+          return { ...a, x: a.y, y: typeof a.x === "number" ? a.x : NaN } as ChartAnnotation;
+        case "label":
+          return { ...a, x: a.y, y: typeof a.x === "number" ? a.x : NaN } as ChartAnnotation;
+        case "shape":
+          return { ...a, points: a.points.map((p) => ({ x: p.y, y: typeof p.x === "number" ? p.x : NaN })) };
+      }
+    });
+  };
+  const annXScale = (v: number | string): number | null =>
+    isVertical ? categoryPixel(v) : typeof v === "number" ? valuePixelRel(v) : null;
+  const annYScale = (v: number): number | null => (isVertical ? valuePixelRel(v) : categoryPixel(v));
+  const resolvedAnnotations = resolveAnnotations(transposeAnnotations(annotations), {
+    xScale: annXScale,
+    yScale: annYScale,
+    plotLeft: MARGIN.left,
+    plotTop: MARGIN.top,
+    plotWidth,
+    plotHeight,
+  });
+  const annotationRegions = resolvedAnnotations.filter((a) => a.kind === "region");
+  const annotationAbove = resolvedAnnotations.filter((a) => a.kind !== "region");
+
   const dataValueItems = [
     ...data.map((d) => `${d.label}: ${d.value}`),
     ...overlayDataListItems({ referenceLines, bands, goalLine: goal, trend: null }),
+    ...annotationDataListItems(annotations),
   ];
 
   const valueAxisTicks =
@@ -491,6 +557,24 @@ export function BarChart({
             </React.Fragment>
           ))}
 
+          {/* Annotation regions sit BEHIND the bars (filled bands). */}
+          {annotationRegions.length > 0 ? (
+            <g className="st-barChart__annotations st-barChart__annotations--behind">
+              {annotationRegions.map((a) =>
+                a.kind === "region" ? (
+                  <React.Fragment key={`ann-region-${a.key}`}>
+                    <rect className="st-barChart__annotationRegion" x={a.x} y={a.y} width={a.width} height={a.height} />
+                    {a.label ? (
+                      <text className="st-barChart__annotationLabel" x={a.x + 4} y={a.y + 11}>
+                        {a.label}
+                      </text>
+                    ) : null}
+                  </React.Fragment>
+                ) : null,
+              )}
+            </g>
+          ) : null}
+
           {/* The bars live inside an aria-hidden SVG, so they are NEVER an
               accessible surface. When `onSelect` is provided they only carry a
               mouse click shortcut (cursor:pointer) for sighted pointer users —
@@ -557,6 +641,60 @@ export function BarChart({
                 {goalGeom.label ?? `Objectif ${goalGeom.value}`}
               </text>
             </>
+          ) : null}
+
+          {/* Annotations ABOVE the bars: lines, shapes, points, labels. */}
+          {annotationAbove.length > 0 ? (
+            <g className="st-barChart__annotations st-barChart__annotations--above">
+              {annotationAbove.map((a) => {
+                if (a.kind === "line") {
+                  return (
+                    <React.Fragment key={`ann-line-${a.key}`}>
+                      <line className="st-barChart__annotationLine" x1={a.x1} y1={a.y1} x2={a.x2} y2={a.y2} />
+                      {a.label ? (
+                        <text
+                          className="st-barChart__annotationLabel"
+                          x={a.axis === "x" ? a.x1 + 4 : MARGIN.left + plotWidth - 4}
+                          y={a.axis === "x" ? MARGIN.top + 11 : a.y1 - 4}
+                          textAnchor={a.axis === "x" ? "start" : "end"}
+                        >
+                          {a.label}
+                        </text>
+                      ) : null}
+                    </React.Fragment>
+                  );
+                }
+                if (a.kind === "shape") {
+                  return (
+                    <React.Fragment key={`ann-shape-${a.key}`}>
+                      <polygon className="st-barChart__annotationShape" points={polygonPoints(a.points)} />
+                      {a.label ? (
+                        <text className="st-barChart__annotationLabel" x={a.labelX} y={a.labelY} textAnchor="middle">
+                          {a.label}
+                        </text>
+                      ) : null}
+                    </React.Fragment>
+                  );
+                }
+                if (a.kind === "point") {
+                  return (
+                    <React.Fragment key={`ann-point-${a.key}`}>
+                      <circle className="st-barChart__annotationPoint" cx={a.x} cy={a.y} r="4.5" />
+                      {a.label ? (
+                        <text className="st-barChart__annotationLabel" x={a.x} y={a.y - 8} textAnchor="middle">
+                          {a.label}
+                        </text>
+                      ) : null}
+                    </React.Fragment>
+                  );
+                }
+                return (
+                  <text key={`ann-label-${a.key}`} className="st-barChart__annotationText" x={a.x} y={a.y} textAnchor={a.anchor}>
+                    {a.text}
+                  </text>
+                );
+              })}
+            </g>
           ) : null}
         </svg>
       </div>

@@ -17,6 +17,12 @@
 
 <script lang="ts">
   import ChartDataList from "./ChartDataList.svelte";
+  import {
+    resolveAnnotations,
+    annotationDataListItems,
+    polygonPoints,
+    type ChartAnnotation
+  } from "./chartAnnotations.js";
 
   type AreaChartProps = {
     data: (number | AreaChartDatum)[];
@@ -25,6 +31,12 @@
     tone?: AreaChartTone;
     smooth?: boolean;
     label: string;
+    /**
+     * Annotation overlay in DATA space (points, labels, axis lines, regions,
+     * polygons), resolved to pixels via the chart scales. Regions render behind
+     * the area, every other kind above it. Additive: absent ⇒ unchanged.
+     */
+    annotations?: ChartAnnotation[];
     class?: string;
   };
 
@@ -35,6 +47,7 @@
     tone = "category1",
     smooth = false,
     label,
+    annotations,
     class: className
   }: AreaChartProps = $props();
 
@@ -87,7 +100,10 @@
     });
   });
 
-  const dataValueItems = $derived(normalizedData.map((d) => `${d.x}: ${d.y}`));
+  const dataValueItems = $derived([
+    ...normalizedData.map((d) => `${d.x}: ${d.y}`),
+    ...annotationDataListItems(annotations)
+  ]);
 
   let hoveredIndex: number | null = $state(null);
 
@@ -138,6 +154,37 @@
       };
     });
   });
+
+  // --- Annotation overlay ---------------------------------------------------
+  // `xScale` honours the ordinal/numeric x domain; `yScale` mirrors the point
+  // y mapping. Out-of-domain coordinates yield `null` → the resolver drops them.
+  const annotationXScale = $derived((v: number | string): number | null => {
+    if (xDomain.kind === "numeric") {
+      if (typeof v !== "number" || !Number.isFinite(v)) return null;
+      if (v < xDomain.min || v > xDomain.max) return null;
+      return scaleLinear(v, xDomain.min, xDomain.max, 0, plotWidth);
+    }
+    const i = normalizedData.findIndex((d) => d.x === v);
+    if (i < 0) return null;
+    const denom = Math.max(normalizedData.length - 1, 1);
+    return normalizedData.length === 1 ? plotWidth / 2 : (i / denom) * plotWidth;
+  });
+  const annotationYScale = $derived((v: number): number | null => {
+    if (!Number.isFinite(v) || v < yDomain.min || v > yDomain.max) return null;
+    return scaleLinear(v, yDomain.min, yDomain.max, plotHeight, 0);
+  });
+  const resolvedAnnotations = $derived(
+    resolveAnnotations(annotations, {
+      xScale: annotationXScale,
+      yScale: annotationYScale,
+      plotLeft: MARGIN.left,
+      plotTop: MARGIN.top,
+      plotWidth,
+      plotHeight
+    })
+  );
+  const annotationRegions = $derived(resolvedAnnotations.filter((a) => a.kind === "region"));
+  const annotationAbove = $derived(resolvedAnnotations.filter((a) => a.kind !== "region"));
 
   function buildLinearPath(pts: { x: number; y: number }[]): string {
     return pts.map((p, i) => `${i === 0 ? "M" : "L"}${p.x.toFixed(2)},${p.y.toFixed(2)}`).join(" ");
@@ -294,6 +341,20 @@
       </text>
     {/each}
 
+    <!-- Annotation regions sit BEHIND the area. -->
+    {#if annotationRegions.length > 0}
+      <g class="st-areaChart__annotations st-areaChart__annotations--behind">
+        {#each annotationRegions as a (a.key)}
+          {#if a.kind === "region"}
+            <rect class="st-areaChart__annotationRegion" x={a.x} y={a.y} width={a.width} height={a.height} />
+            {#if a.label}
+              <text class="st-areaChart__annotationLabel" x={a.x + 4} y={a.y + 11}>{a.label}</text>
+            {/if}
+          {/if}
+        {/each}
+      </g>
+    {/if}
+
     {#if areaPath}
       <path class="st-areaChart__area" d={areaPath} fill="url(#{gradientId})" />
     {/if}
@@ -317,6 +378,37 @@
         data-chart-index={p.index}
       />
     {/each}
+
+    <!-- Annotations ABOVE the area: lines, shapes, points, labels. -->
+    {#if annotationAbove.length > 0}
+      <g class="st-areaChart__annotations st-areaChart__annotations--above">
+        {#each annotationAbove as a (a.key)}
+          {#if a.kind === "line"}
+            <line class="st-areaChart__annotationLine" x1={a.x1} y1={a.y1} x2={a.x2} y2={a.y2} />
+            {#if a.label}
+              <text
+                class="st-areaChart__annotationLabel"
+                x={a.axis === "x" ? a.x1 + 4 : MARGIN.left + plotWidth - 4}
+                y={a.axis === "x" ? MARGIN.top + 11 : a.y1 - 4}
+                text-anchor={a.axis === "x" ? "start" : "end"}
+              >{a.label}</text>
+            {/if}
+          {:else if a.kind === "shape"}
+            <polygon class="st-areaChart__annotationShape" points={polygonPoints(a.points)} />
+            {#if a.label}
+              <text class="st-areaChart__annotationLabel" x={a.labelX} y={a.labelY} text-anchor="middle">{a.label}</text>
+            {/if}
+          {:else if a.kind === "point"}
+            <circle class="st-areaChart__annotationPoint" cx={a.x} cy={a.y} r="4.5" />
+            {#if a.label}
+              <text class="st-areaChart__annotationLabel" x={a.x} y={a.y - 8} text-anchor="middle">{a.label}</text>
+            {/if}
+          {:else}
+            <text class="st-areaChart__annotationText" x={a.x} y={a.y} text-anchor={a.anchor}>{a.text}</text>
+          {/if}
+        {/each}
+      </g>
+    {/if}
     </svg>
   </div>
 
@@ -428,5 +520,33 @@
 
   .st-areaChart__tooltipValue {
     opacity: 0.85;
+  }
+
+  /* --- Annotation layer ----------------------------------------------------
+     Regions render BEHIND the area; lines/shapes/points/labels render ABOVE. */
+  .st-areaChart__annotationRegion {
+    fill: color-mix(in srgb, var(--st-semantic-feedback-info) 12%, transparent);
+    stroke: none;
+  }
+  .st-areaChart__annotationLine {
+    stroke: var(--st-semantic-feedback-info);
+    stroke-width: 1.5;
+    stroke-dasharray: 4 3;
+  }
+  .st-areaChart__annotationShape {
+    fill: color-mix(in srgb, var(--st-semantic-feedback-info) 14%, transparent);
+    stroke: var(--st-semantic-feedback-info);
+    stroke-width: 1.5;
+  }
+  .st-areaChart__annotationPoint {
+    fill: var(--st-semantic-feedback-info);
+    stroke: var(--st-semantic-surface-default);
+    stroke-width: 1.5;
+  }
+  .st-areaChart__annotationLabel,
+  .st-areaChart__annotationText {
+    fill: var(--st-semantic-text-primary);
+    font-size: 0.625rem;
+    font-weight: 600;
   }
 </style>

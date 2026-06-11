@@ -27,6 +27,12 @@ import {
   type ChartScale,
   type ForecastRun,
 } from "./chartScale.js";
+import {
+  annotationDataListItems,
+  polygonPoints,
+  resolveAnnotations,
+  type ChartAnnotation,
+} from "./chartAnnotations.js";
 
 export type LineChartTone =
   | "category1"
@@ -68,6 +74,13 @@ export type LineChartProps = {
   /** Least-squares trend line over the data points. */
   trend?: boolean;
   /**
+   * Annotation overlay in DATA space (points, labels, axis lines, regions,
+   * polygons). Resolved to pixels via the chart's scales and drawn in a
+   * dedicated `<g class="st-lineChart__annotations">` — regions behind the
+   * series, every other kind above it. Additive: absent ⇒ unchanged.
+   */
+  annotations?: ChartAnnotation[];
+  /**
    * Fixed value-axis (y) domain `[min, max]`. When provided (and finite,
    * min<max) the y scale uses it instead of the data-derived range. Invalid or
    * absent → auto range (unchanged).
@@ -105,6 +118,7 @@ export const LineChart = defineComponent({
     bands: { type: Array as () => ChartBand[], default: undefined },
     goalLine: { type: Object as () => ChartGoalLine, default: undefined },
     trend: { type: Boolean, default: false },
+    annotations: { type: Array as () => ChartAnnotation[], default: undefined },
     domain: { type: Array as unknown as () => [number, number], default: undefined },
     scale: { type: String as () => ChartScale, default: "linear" },
     invertAxis: { type: Boolean, default: false },
@@ -281,6 +295,42 @@ export const LineChart = defineComponent({
             }
           : null;
 
+      // --- Annotation overlay -------------------------------------------------
+      // Data-space annotations resolved to absolute pixels via the chart scales.
+      // `xScale` honours the ordinal/numeric x domain (a category matches by
+      // equality, a numeric value must sit inside the domain); `yScale` reuses
+      // the value fraction. Out-of-domain coordinates yield `null` → the
+      // resolver drops them, so an annotation never escapes the plot.
+      const ordinalIndex = (v: number | string) => {
+        if (xDomain.kind !== "ordinal") return null;
+        const i = data.findIndex((d) => d.x === v);
+        if (i < 0) return null;
+        const denom = Math.max(data.length - 1, 1);
+        return data.length === 1 ? plotWidth / 2 : (i / denom) * plotWidth;
+      };
+      const annotationXScale = (v: number | string): number | null => {
+        if (xDomain.kind === "numeric") {
+          if (typeof v !== "number" || !Number.isFinite(v)) return null;
+          if (v < xDomain.min || v > xDomain.max) return null;
+          return scaleLinear(v, xDomain.min, xDomain.max, 0, plotWidth);
+        }
+        return ordinalIndex(v);
+      };
+      const annotationYScale = (v: number): number | null => {
+        if (!Number.isFinite(v)) return null;
+        return plotHeight * (1 - valueFraction(v));
+      };
+      const resolvedAnnotations = resolveAnnotations(props.annotations, {
+        xScale: annotationXScale,
+        yScale: annotationYScale,
+        plotLeft: MARGIN.left,
+        plotTop: MARGIN.top,
+        plotWidth,
+        plotHeight,
+      });
+      const annotationRegions = resolvedAnnotations.filter((a) => a.kind === "region");
+      const annotationAbove = resolvedAnnotations.filter((a) => a.kind !== "region");
+
       // --- Forecast segments --------------------------------------------------
       // A datum with `forecast: true` renders as a forecast point: its dot
       // takes the forecast tone and every segment touching a forecast point is
@@ -293,6 +343,7 @@ export const LineChart = defineComponent({
       const dataValueItems = [
         ...data.map((d, i) => (forecastFlags[i] ? `${d.x}: ${d.y} (prévision)` : `${d.x}: ${d.y}`)),
         ...overlayDataListItems({ referenceLines, bands, goalLine: goal, trend: trendModel }),
+        ...annotationDataListItems(props.annotations),
       ];
 
       // Full-series path (area fill always covers the whole series).
@@ -438,6 +489,84 @@ export const LineChart = defineComponent({
         );
       }
 
+      // Annotation regions sit BEHIND the series (filled bands).
+      const annotationRegionGroup =
+        annotationRegions.length > 0
+          ? h(
+              "g",
+              { class: "st-lineChart__annotations st-lineChart__annotations--behind" },
+              annotationRegions.flatMap((a) => {
+                if (a.kind !== "region") return [];
+                const nodes: ReturnType<typeof h>[] = [
+                  h("rect", { key: `ann-region-${a.key}`, class: "st-lineChart__annotationRegion", x: a.x, y: a.y, width: a.width, height: a.height }),
+                ];
+                if (a.label) {
+                  nodes.push(
+                    h("text", { key: `ann-region-label-${a.key}`, class: "st-lineChart__annotationLabel", x: a.x + 4, y: a.y + 11 }, a.label),
+                  );
+                }
+                return nodes;
+              }),
+            )
+          : null;
+
+      // Annotations ABOVE the series: lines, shapes, points, labels.
+      const annotationAboveGroup =
+        annotationAbove.length > 0
+          ? h(
+              "g",
+              { class: "st-lineChart__annotations st-lineChart__annotations--above" },
+              annotationAbove.flatMap((a) => {
+                if (a.kind === "line") {
+                  const nodes: ReturnType<typeof h>[] = [
+                    h("line", { key: `ann-line-${a.key}`, class: "st-lineChart__annotationLine", x1: a.x1, y1: a.y1, x2: a.x2, y2: a.y2 }),
+                  ];
+                  if (a.label) {
+                    nodes.push(
+                      h(
+                        "text",
+                        {
+                          key: `ann-line-label-${a.key}`,
+                          class: "st-lineChart__annotationLabel",
+                          x: a.axis === "x" ? a.x1 + 4 : MARGIN.left + plotWidth - 4,
+                          y: a.axis === "x" ? MARGIN.top + 11 : a.y1 - 4,
+                          "text-anchor": a.axis === "x" ? "start" : "end",
+                        },
+                        a.label,
+                      ),
+                    );
+                  }
+                  return nodes;
+                }
+                if (a.kind === "shape") {
+                  const nodes: ReturnType<typeof h>[] = [
+                    h("polygon", { key: `ann-shape-${a.key}`, class: "st-lineChart__annotationShape", points: polygonPoints(a.points) }),
+                  ];
+                  if (a.label) {
+                    nodes.push(
+                      h("text", { key: `ann-shape-label-${a.key}`, class: "st-lineChart__annotationLabel", x: a.labelX, y: a.labelY, "text-anchor": "middle" }, a.label),
+                    );
+                  }
+                  return nodes;
+                }
+                if (a.kind === "point") {
+                  const nodes: ReturnType<typeof h>[] = [
+                    h("circle", { key: `ann-point-${a.key}`, class: "st-lineChart__annotationPoint", cx: a.x, cy: a.y, r: "4.5" }),
+                  ];
+                  if (a.label) {
+                    nodes.push(
+                      h("text", { key: `ann-point-label-${a.key}`, class: "st-lineChart__annotationLabel", x: a.x, y: a.y - 8, "text-anchor": "middle" }, a.label),
+                    );
+                  }
+                  return nodes;
+                }
+                return [
+                  h("text", { key: `ann-label-${a.key}`, class: "st-lineChart__annotationText", x: a.x, y: a.y, "text-anchor": a.anchor }, a.text),
+                ];
+              }),
+            )
+          : null;
+
       const svgChildren: ReturnType<typeof h>[] = [
         ...gridChildren,
         h("line", { class: "st-lineChart__axis", x1: MARGIN.left, x2: MARGIN.left, y1: MARGIN.top, y2: height - MARGIN.bottom }),
@@ -445,6 +574,9 @@ export const LineChart = defineComponent({
         ...xLabels,
         ...belowOverlays,
       ];
+      if (annotationRegionGroup) {
+        svgChildren.push(annotationRegionGroup);
+      }
       if (area && areaPath) {
         svgChildren.push(h("path", { class: "st-lineChart__area", d: areaPath }));
       }
@@ -475,6 +607,9 @@ export const LineChart = defineComponent({
         );
       }
       svgChildren.push(...dots, ...goalOverlays);
+      if (annotationAboveGroup) {
+        svgChildren.push(annotationAboveGroup);
+      }
 
       const hoveredPoint = hoveredIndex.value !== null ? points[hoveredIndex.value] : undefined;
 

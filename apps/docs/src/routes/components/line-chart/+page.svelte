@@ -15,6 +15,9 @@
       smoothDesc: "`smooth` active la courbe Bézier ; `area` remplit sous la ligne.",
       numericTitle: "Axe X numérique",
       numericDesc: "Quand tous les `x` sont des nombres, l’axe utilise une échelle linéaire et n’affiche qu’une sélection de graduations.",
+      annotationsTitle: "Annotations",
+      annotationsDesc:
+        "`annotations` superpose des repères exprimés dans l’espace des données : `region` (bande remplie, derrière la série), `line` (repère d’axe), `point`, `label` (texte) et `shape` (polygone). Chaque repère est ajouté à la liste accessible (« Annotation : … »).",
       usageTitle: "Notes d’usage",
       usageNote1:
         "`label` est obligatoire : il alimente l’`aria-label` du conteneur (`role=\"img\"`). Les couples `x : y` sont exposés dans une liste accessible hors SVG, sans multiplier les arrêts de tabulation.",
@@ -32,6 +35,9 @@
       smoothDesc: "`smooth` enables the Bezier curve; `area` fills below the line.",
       numericTitle: "Numeric X axis",
       numericDesc: "When every `x` is a number, the axis uses a linear scale and renders only a subset of ticks.",
+      annotationsTitle: "Annotations",
+      annotationsDesc:
+        "`annotations` overlays markers expressed in data space: `region` (filled band, behind the series), `line` (axis guide), `point`, `label` (text), and `shape` (polygon). Each marker is also added to the accessible list (“Annotation: …”).",
       usageTitle: "Usage notes",
       usageNote1:
         "`label` is required: it feeds the container `aria-label` (`role=\"img\"`). The `x: y` pairs are exposed in an accessible list outside the SVG, without adding a tab stop for every point.",
@@ -131,6 +137,54 @@
       ]
     }
   ]);
+
+  // Repères dans l'espace des données : bande, repère d'axe, point + label.
+  const annotationsDemo = $derived<NodeSpec[]>([
+    {
+      el: "div",
+      props: { class: "chart-wrapper" },
+      children: [
+        {
+          comp: "LineChart",
+          props: {
+            data: latency,
+            tone: "category1",
+            label: locale.value === "fr" ? "Latence (ms) annotée" : "Annotated latency (ms)",
+            width: 520,
+            height: 260,
+            annotations: [
+              {
+                kind: "region",
+                axis: "y",
+                from: 450,
+                to: 520,
+                label: locale.value === "fr" ? "Hors SLA" : "Out of SLA"
+              },
+              {
+                kind: "line",
+                axis: "y",
+                value: 450,
+                label: "SLA"
+              },
+              {
+                kind: "point",
+                x: 16,
+                y: 510,
+                label: locale.value === "fr" ? "Pic" : "Peak"
+              },
+              {
+                kind: "label",
+                x: 4,
+                y: 290,
+                text: locale.value === "fr" ? "Creux" : "Trough",
+                anchor: "middle"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]);
 </script>
 
 <div class="docs-page">
@@ -158,6 +212,10 @@
     <h3 class="docs-demo-title">{text().numericTitle}</h3>
     <p class="docs-demo-note">{text().numericDesc}</p>
     <TabbedExample nodes={numericDemo} title={text().numericTitle} />
+
+    <h3 class="docs-demo-title">{text().annotationsTitle}</h3>
+    <p class="docs-demo-note">{text().annotationsDesc}</p>
+    <TabbedExample nodes={annotationsDemo} title={text().annotationsTitle} />
   </section>
 
   <section class="docs-section">
@@ -179,6 +237,7 @@
         <tr><td><code>bands</code></td><td><code>ChartBand[]</code></td><td><em>{locale.value === "fr" ? "aucune" : "none"}</em></td></tr>
         <tr><td><code>goalLine</code></td><td><code>ChartGoalLine</code></td><td><em>{locale.value === "fr" ? "aucune" : "none"}</em></td></tr>
         <tr><td><code>trend</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
+        <tr><td><code>annotations</code></td><td><code>ChartAnnotation[]</code></td><td><em>{locale.value === "fr" ? "aucune" : "none"}</em></td></tr>
         <tr><td><code>data[].forecast</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
         <tr><td><code>showLegend</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
         <tr><td><code>width</code></td><td><code>number</code></td><td><code>480</code></td></tr>

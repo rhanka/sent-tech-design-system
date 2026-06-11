@@ -10,6 +10,12 @@ import {
   niceTicks,
   scaleLinear,
 } from "./chartScale.js";
+import {
+  annotationDataListItems,
+  polygonPoints,
+  resolveAnnotations,
+  type ChartAnnotation,
+} from "./chartAnnotations.js";
 
 export type AreaChartTone =
   | "category1"
@@ -33,6 +39,12 @@ export type AreaChartProps = Omit<React.HTMLAttributes<HTMLDivElement>, "classNa
   tone?: AreaChartTone;
   smooth?: boolean;
   label: string;
+  /**
+   * Annotation overlay in DATA space (points, labels, axis lines, regions,
+   * polygons), resolved to pixels via the chart scales. Regions render behind
+   * the area, every other kind above it. Additive: absent ⇒ unchanged.
+   */
+  annotations?: ChartAnnotation[];
   className?: string;
 };
 
@@ -45,6 +57,7 @@ export function AreaChart({
   tone = "category1",
   smooth = false,
   label,
+  annotations,
   className,
   ...rest
 }: AreaChartProps) {
@@ -58,8 +71,6 @@ export function AreaChart({
   const normalizedData: AreaChartDatum[] = data.map((d, i) =>
     typeof d === "number" ? ({ x: i, y: d } as AreaChartDatum) : d,
   );
-
-  const dataValueItems = normalizedData.map((d) => `${d.x}: ${d.y}`);
 
   const xDomain = (() => {
     if (normalizedData.length === 0) return { kind: "ordinal" as const, values: [] as (number | string)[] };
@@ -97,6 +108,44 @@ export function AreaChart({
       return { x: MARGIN.left + x, y: MARGIN.top + y, datum: d, index: i };
     });
   })();
+
+  // --- Annotation overlay ---------------------------------------------------
+  // `xScale` honours the ordinal/numeric x domain; `yScale` mirrors the point
+  // y mapping. Out-of-domain coordinates yield `null` → the resolver drops them.
+  const ordinalIndex = (v: number | string) => {
+    if (xDomain.kind !== "ordinal") return null;
+    const i = normalizedData.findIndex((d) => d.x === v);
+    if (i < 0) return null;
+    const denom = Math.max(normalizedData.length - 1, 1);
+    return normalizedData.length === 1 ? plotWidth / 2 : (i / denom) * plotWidth;
+  };
+  const annotationXScale = (v: number | string): number | null => {
+    if (xDomain.kind === "numeric") {
+      if (typeof v !== "number" || !Number.isFinite(v)) return null;
+      if (v < xDomain.min || v > xDomain.max) return null;
+      return scaleLinear(v, xDomain.min, xDomain.max, 0, plotWidth);
+    }
+    return ordinalIndex(v);
+  };
+  const annotationYScale = (v: number): number | null => {
+    if (!Number.isFinite(v) || v < yDomain.min || v > yDomain.max) return null;
+    return scaleLinear(v, yDomain.min, yDomain.max, plotHeight, 0);
+  };
+  const resolvedAnnotations = resolveAnnotations(annotations, {
+    xScale: annotationXScale,
+    yScale: annotationYScale,
+    plotLeft: MARGIN.left,
+    plotTop: MARGIN.top,
+    plotWidth,
+    plotHeight,
+  });
+  const annotationRegions = resolvedAnnotations.filter((a) => a.kind === "region");
+  const annotationAbove = resolvedAnnotations.filter((a) => a.kind !== "region");
+
+  const dataValueItems = [
+    ...normalizedData.map((d) => `${d.x}: ${d.y}`),
+    ...annotationDataListItems(annotations),
+  ];
 
   const linePath = points.length === 0 ? "" : smooth ? buildSmoothPath(points) : buildLinearPath(points);
 
@@ -206,6 +255,24 @@ export function AreaChart({
             </text>
           ))}
 
+          {/* Annotation regions sit BEHIND the area. */}
+          {annotationRegions.length > 0 ? (
+            <g className="st-areaChart__annotations st-areaChart__annotations--behind">
+              {annotationRegions.map((a) =>
+                a.kind === "region" ? (
+                  <React.Fragment key={`ann-region-${a.key}`}>
+                    <rect className="st-areaChart__annotationRegion" x={a.x} y={a.y} width={a.width} height={a.height} />
+                    {a.label ? (
+                      <text className="st-areaChart__annotationLabel" x={a.x + 4} y={a.y + 11}>
+                        {a.label}
+                      </text>
+                    ) : null}
+                  </React.Fragment>
+                ) : null,
+              )}
+            </g>
+          ) : null}
+
           {areaPath ? <path className="st-areaChart__area" d={areaPath} fill={`url(#${gradientId})`} /> : null}
           {linePath ? (
             <path
@@ -221,6 +288,60 @@ export function AreaChart({
           {points.map((p) => (
             <circle key={p.index} className="st-areaChart__dot" cx={p.x} cy={p.y} r="4" data-chart-index={p.index} />
           ))}
+
+          {/* Annotations ABOVE the area: lines, shapes, points, labels. */}
+          {annotationAbove.length > 0 ? (
+            <g className="st-areaChart__annotations st-areaChart__annotations--above">
+              {annotationAbove.map((a) => {
+                if (a.kind === "line") {
+                  return (
+                    <React.Fragment key={`ann-line-${a.key}`}>
+                      <line className="st-areaChart__annotationLine" x1={a.x1} y1={a.y1} x2={a.x2} y2={a.y2} />
+                      {a.label ? (
+                        <text
+                          className="st-areaChart__annotationLabel"
+                          x={a.axis === "x" ? a.x1 + 4 : MARGIN.left + plotWidth - 4}
+                          y={a.axis === "x" ? MARGIN.top + 11 : a.y1 - 4}
+                          textAnchor={a.axis === "x" ? "start" : "end"}
+                        >
+                          {a.label}
+                        </text>
+                      ) : null}
+                    </React.Fragment>
+                  );
+                }
+                if (a.kind === "shape") {
+                  return (
+                    <React.Fragment key={`ann-shape-${a.key}`}>
+                      <polygon className="st-areaChart__annotationShape" points={polygonPoints(a.points)} />
+                      {a.label ? (
+                        <text className="st-areaChart__annotationLabel" x={a.labelX} y={a.labelY} textAnchor="middle">
+                          {a.label}
+                        </text>
+                      ) : null}
+                    </React.Fragment>
+                  );
+                }
+                if (a.kind === "point") {
+                  return (
+                    <React.Fragment key={`ann-point-${a.key}`}>
+                      <circle className="st-areaChart__annotationPoint" cx={a.x} cy={a.y} r="4.5" />
+                      {a.label ? (
+                        <text className="st-areaChart__annotationLabel" x={a.x} y={a.y - 8} textAnchor="middle">
+                          {a.label}
+                        </text>
+                      ) : null}
+                    </React.Fragment>
+                  );
+                }
+                return (
+                  <text key={`ann-label-${a.key}`} className="st-areaChart__annotationText" x={a.x} y={a.y} textAnchor={a.anchor}>
+                    {a.text}
+                  </text>
+                );
+              })}
+            </g>
+          ) : null}
         </svg>
       </div>
 
