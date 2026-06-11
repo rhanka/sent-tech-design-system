@@ -259,7 +259,7 @@
   .st-tileMapChart__legendSwatch--category8 { fill: var(--st-semantic-data-category8); background: var(--st-semantic-data-category8); }
 
   .st-tileMapChart__tileLabel {
-    fill: var(--st-semantic-text-inverse, #fff);
+    fill: var(--st-semantic-text-inverse);
     font-size: 0.6875rem;
     font-weight: 600;
   }

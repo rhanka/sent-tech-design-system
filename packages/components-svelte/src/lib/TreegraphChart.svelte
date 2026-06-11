@@ -255,12 +255,12 @@
   }
 
   .st-treegraphChart__link {
-    stroke: var(--st-semantic-border-default, #cbd5e1);
+    stroke: var(--st-semantic-border-default);
     stroke-width: 1.5;
   }
 
   .st-treegraphChart__dot {
-    stroke: var(--st-semantic-surface-default, #fff);
+    stroke: var(--st-semantic-surface-default);
     stroke-width: 1.5;
   }
 
@@ -274,7 +274,7 @@
   .st-treegraphChart__dot--category8 { fill: var(--st-semantic-data-category8); }
 
   .st-treegraphChart__label {
-    fill: var(--st-semantic-text-primary, #1e293b);
+    fill: var(--st-semantic-text-primary);
     font-weight: 600;
     pointer-events: none;
   }
