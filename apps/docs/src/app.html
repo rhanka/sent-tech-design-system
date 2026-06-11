@@ -67,10 +67,12 @@
   </head>
   <body data-sveltekit-preload-data="hover">
     <!--
-      Script anti-FOUC : restaure data-color-mode sur <html> AVANT que le
-      navigateur ne peigne la page, pour éviter un flash blanc→sombre au
-      chargement initial lorsque l'utilisateur a choisi le mode sombre.
-      Exécuté en bloquant-rendu (pas defer/async) intentionnellement.
+      Script anti-FOUC : restaure data-color-mode + data-st-theme + data-st-framework
+      sur <html> AVANT que le navigateur ne peigne la page, pour éviter un flash
+      (blanc→sombre, ou thème par défaut→thème choisi) au chargement initial.
+      Lit les MÊMES clés localStorage que les stores (color-mode.svelte.ts,
+      +layout.svelte THEME_STORAGE_KEY, framework.svelte.ts). Exécuté en
+      bloquant-rendu (pas defer/async) intentionnellement.
     -->
     <script>
       (function () {
@@ -78,6 +80,16 @@
           var mode = localStorage.getItem("st-docs-color-mode");
           if (mode === "dark" || mode === "light") {
             document.documentElement.setAttribute("data-color-mode", mode);
+          }
+          // Thème : data-st-theme pilote le chrome + les variables :root du thème.
+          var theme = localStorage.getItem("st-docs-theme");
+          if (theme === "sent-tech" || theme === "dsfr" || theme === "carbon" || theme === "airbus" || theme === "canada") {
+            document.documentElement.setAttribute("data-st-theme", theme);
+          }
+          // Framework : data-st-framework pilote l'affichage des îles svelte/react/vue.
+          var fw = localStorage.getItem("docs-framework");
+          if (fw === "svelte" || fw === "react" || fw === "vue") {
+            document.documentElement.setAttribute("data-st-framework", fw);
           }
         } catch (e) { /* accès localStorage impossible (iframe, SSR, etc.) */ }
       })();
