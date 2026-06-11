@@ -2776,21 +2776,51 @@ export type AppHeaderProps = {
    * Auto-généré et stable si non fourni.
    */
   drawerId?: string;
+  /**
+   * Marque structurée (décision actée : logo SENT + sous-titre). Rend le bloc
+   * canonique « logo carré + nom + sous-titre produit ». Si `logo` est fourni,
+   * il a priorité (contrôle total).
+   */
+  brandName?: string;
+  /** Sous-titre produit affiché sous le nom (ex. « Design System », « dataviz »). */
+  productName?: string;
+  /** Source de l'image du logo carré (ex. `/SENT-logo-squared.svg`). */
+  logoSrc?: string;
+  /** Texte alternatif du logo (décoratif par défaut). */
+  logoAlt?: string;
+  /** Cible du lien de la marque. Défaut : `/`. */
+  brandHref?: string;
+  /** aria-label du lien de marque (sinon dérivé de `brandName` + `productName`). */
+  brandLabel?: string;
   logo?: React.ReactNode;
   nav?: React.ReactNode;
   actions?: React.ReactNode;
   drawer?: React.ReactNode;
   className?: string;
 };
-export function AppHeader({ compact = false, menuOpen = false, onMenuToggle, menuLabel = "Menu", drawerId, logo, nav, actions, drawer, className }: AppHeaderProps) {
+export function AppHeader({ compact = false, menuOpen = false, onMenuToggle, menuLabel = "Menu", drawerId, brandName, productName, logoSrc, logoAlt = "", brandHref = "/", brandLabel, logo, nav, actions, drawer, className }: AppHeaderProps) {
   // Id stable du tiroir : prop fournie sinon useId (SSR-safe, sans crypto).
   const reactId = React.useId();
   const resolvedDrawerId = drawerId ?? `st-appHeader-drawer-${reactId}`;
+  const hasDefaultBrand = !logo && Boolean(brandName || productName || logoSrc);
+  const resolvedBrandLabel = brandLabel ?? [brandName, productName].filter(Boolean).join(" ");
   return (
     <>
       <header className={classNames("st-appHeader", className)}>
         <div className="st-appHeader__bar">
-          {logo ? <div className="st-appHeader__logo">{logo}</div> : null}
+          {logo ? (
+            <div className="st-appHeader__logo">{logo}</div>
+          ) : hasDefaultBrand ? (
+            <a className="st-appHeader__brand" href={brandHref} aria-label={resolvedBrandLabel || undefined}>
+              {logoSrc ? <img className="st-appHeader__brandMark" src={logoSrc} alt={logoAlt} aria-hidden={logoAlt ? undefined : true} /> : null}
+              {brandName || productName ? (
+                <span className="st-appHeader__brandCopy">
+                  {brandName ? <span className="st-appHeader__brandName">{brandName}</span> : null}
+                  {productName ? <span className="st-appHeader__brandProduct">{productName}</span> : null}
+                </span>
+              ) : null}
+            </a>
+          ) : null}
           {!compact ? (
             <>
               <nav className="st-appHeader__nav" aria-label="Primary">
