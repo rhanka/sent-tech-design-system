@@ -2218,6 +2218,38 @@
     justify-content: center;
   }
 
+.st-error-summary {
+    background: var(--st-semantic-surface-default);
+    border: 2px solid var(--st-semantic-feedback-error);
+    border-radius: var(--st-radius-md, 0.25rem);
+    color: var(--st-semantic-text-primary);
+    padding: var(--st-spacing-4, 1rem);
+  }
+
+  .st-error-summary__heading {
+    font-size: 1.125rem;
+    font-weight: 700;
+    margin: 0 0 var(--st-spacing-2, 0.5rem);
+  }
+
+  .st-error-summary__list {
+    display: grid;
+    gap: var(--st-spacing-1, 0.25rem);
+    margin: 0;
+    padding-left: var(--st-spacing-4, 1rem);
+  }
+
+  .st-error-summary__link {
+    color: var(--st-semantic-feedback-error);
+    font-weight: 600;
+    text-decoration: underline;
+  }
+
+  .st-error-summary__link:hover,
+  .st-error-summary__link:focus-visible {
+    text-decoration: none;
+  }
+
 .st-fileUploader-field {
     display: grid;
     gap: var(--st-component-field-gap, 0.5rem);

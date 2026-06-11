@@ -604,6 +604,17 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "ErrorSummary",
+    slug: "error-summary",
+    status: "documented",
+    category: "feedback",
+    groupSlug: "error-summary",
+    description: {
+      fr: "Liste agrégée des erreurs d’un formulaire, chaque entrée reliée au champ fautif.",
+      en: "Aggregated list of a form's errors, each entry linked to the offending field."
+    }
+  },
+  {
     name: "InlineLoading",
     slug: "inline-loading",
     status: "documented",
