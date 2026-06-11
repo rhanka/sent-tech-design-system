@@ -10,6 +10,7 @@ export { default as MarimekkoChart } from "./MarimekkoChart.svelte";
 export { default as ParallelCoordinatesChart } from "./ParallelCoordinatesChart.svelte";
 export { default as CandlestickChart } from "./CandlestickChart.svelte";
 export { default as OHLCChart } from "./OHLCChart.svelte";
+export { default as HLCChart } from "./HLCChart.svelte";
 export { default as HollowCandlestickChart } from "./HollowCandlestickChart.svelte";
 export { default as HeikinAshiChart } from "./HeikinAshiChart.svelte";
 export { default as TimelineChart } from "./TimelineChart.svelte";
@@ -133,7 +134,9 @@ export { default as RadioGroup } from "./RadioGroup.svelte";
 export { default as RadarChart } from "./RadarChart.svelte";
 export { default as Rating } from "./Rating.svelte";
 export { default as RoseChart } from "./RoseChart.svelte";
+export { default as ItemChart } from "./ItemChart.svelte";
 export { default as VariablePieChart } from "./VariablePieChart.svelte";
+export { default as VennChart } from "./VennChart.svelte";
 export { default as Row } from "./Row.svelte";
 export { default as ScatterPlot } from "./ScatterPlot.svelte";
 export { default as Search } from "./Search.svelte";
@@ -170,6 +173,7 @@ export { default as Tooltip } from "./Tooltip.svelte";
 export { default as Typography } from "./Typography.svelte";
 export { default as TableOfContents } from "./TableOfContents.svelte";
 export { default as TreemapChart } from "./TreemapChart.svelte";
+export { default as WordCloudChart } from "./WordCloudChart.svelte";
 export { default as OrganizationChart } from "./OrganizationChart.svelte";
 export { default as TreegraphChart } from "./TreegraphChart.svelte";
 export { default as TreeView } from "./TreeView.svelte";
@@ -192,7 +196,9 @@ export type { HeatmapChartDatum, HeatmapChartTone } from "./HeatmapChart.svelte"
 export type { HistogramChartDatum, HistogramChartTone } from "./HistogramChart.svelte";
 export type { RadarChartSeries, RadarChartTone } from "./RadarChart.svelte";
 export type { RoseChartDatum, RoseChartTone } from "./RoseChart.svelte";
+export type { ItemChartDatum, ItemChartTone } from "./ItemChart.svelte";
 export type { VariablePieChartDatum, VariablePieChartTone } from "./VariablePieChart.svelte";
+export type { VennChartArea, VennChartProps, VennChartTone } from "./VennChart.svelte";
 export type { SankeyChartLink, SankeyChartNode, SankeyChartTone } from "./SankeyChart.svelte";
 export type { SunburstChartDatum, SunburstChartTone } from "./SunburstChart.svelte";
 export type { ScatterPlotDatum, ScatterPlotTone, ScatterPlotCentroid } from "./ScatterPlot.svelte";
@@ -217,6 +223,7 @@ export type { MarimekkoChartTone, MarimekkoChartSegment, MarimekkoChartDatum } f
 export type { ParallelCoordinatesChartTone, ParallelAxis } from "./ParallelCoordinatesChart.svelte";
 export type { CandlestickChartDatum } from "./CandlestickChart.svelte";
 export type { OHLCChartDatum } from "./OHLCChart.svelte";
+export type { HLCChartDatum } from "./HLCChart.svelte";
 export type { HollowCandlestickChartDatum } from "./HollowCandlestickChart.svelte";
 export type { HeikinAshiChartDatum } from "./HeikinAshiChart.svelte";
 export type { TimelineChartTone, TimelineChartEvent } from "./TimelineChart.svelte";
@@ -232,6 +239,10 @@ export type {
   TreemapChartDatum,
   TreemapTiling
 } from "./TreemapChart.svelte";
+export type {
+  WordCloudChartTone,
+  WordCloudChartWord
+} from "./WordCloudChart.svelte";
 export type { OrganizationChartTone, OrganizationChartNode } from "./OrganizationChart.svelte";
 export type { TreegraphChartTone, TreegraphChartNode } from "./TreegraphChart.svelte";
 export type {

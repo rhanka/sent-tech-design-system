@@ -90,7 +90,9 @@ export type ComponentName =
   | "BoxPlotChart"
   | "RadarChart"
   | "RoseChart"
+  | "ItemChart"
   | "VariablePieChart"
+  | "VennChart"
   | "SankeyChart"
   | "SunburstChart"
   | "ViolinChart"
@@ -151,6 +153,7 @@ export type ComponentName =
   | "FunnelChart"
   | "WaterfallChart"
   | "TreemapChart"
+  | "WordCloudChart"
   | "OrganizationChart"
   | "TreegraphChart"
   | "BulletChart"
@@ -158,6 +161,7 @@ export type ComponentName =
   | "ParallelCoordinatesChart"
   | "CandlestickChart"
   | "OHLCChart"
+  | "HLCChart"
   | "HollowCandlestickChart"
   | "HeikinAshiChart"
   | "TimelineChart"
@@ -4933,6 +4937,72 @@ import { RoseChart } from "@sentropic/design-system-vue";
     }
   },
 
+  itemchart: {
+    id: "itemchart",
+    slug: "item-chart",
+    nodes: [
+      stack([
+        {
+          comp: "ItemChart",
+          props: {
+            label: "Sièges par groupe",
+            data: [
+              { label: "Gauche", value: 40 },
+              { label: "Centre", value: 22, tone: "category5" },
+              { label: "Droite", value: 80 },
+              { label: "Indép.", value: 12 }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { ItemChart } from "@sentropic/design-system-svelte";
+</script>
+
+<ItemChart
+  label="Sièges par groupe"
+  data={[
+    { label: "Gauche", value: 40 },
+    { label: "Centre", value: 22, tone: "category5" },
+    { label: "Droite", value: 80 },
+    { label: "Indép.", value: 12 }
+  ]}
+/>`,
+      react: `import { ItemChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <ItemChart
+      label="Sièges par groupe"
+      data={[
+        { label: "Gauche", value: 40 },
+        { label: "Centre", value: 22, tone: "category5" },
+        { label: "Droite", value: 80 },
+        { label: "Indép.", value: 12 }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { ItemChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <ItemChart
+    label="Sièges par groupe"
+    :data="[
+      { label: 'Gauche', value: 40 },
+      { label: 'Centre', value: 22, tone: 'category5' },
+      { label: 'Droite', value: 80 },
+      { label: 'Indép.', value: 12 }
+    ]"
+  />
+</template>`
+    }
+  },
+
   variablepiechart: {
     id: "variablepiechart",
     slug: "variable-pie-chart",
@@ -5122,6 +5192,72 @@ import { RadarChart } from "@sentropic/design-system-vue";
       { label: 'Cible', values: [90, 85, 70, 86], tone: 'category7' }
     ]"
     legend
+  />
+</template>`
+    }
+  },
+
+  vennchart: {
+    id: "vennchart",
+    slug: "venn-chart",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "VennChart",
+            props: {
+              label: "Abonnés par canal",
+              data: [
+                { sets: ["Courriel"], value: 120 },
+                { sets: ["Mobile"], value: 80 },
+                { sets: ["Courriel", "Mobile"], value: 35 }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { VennChart } from "@sentropic/design-system-svelte";
+</script>
+
+<VennChart
+  label="Abonnés par canal"
+  data={[
+    { sets: ["Courriel"], value: 120 },
+    { sets: ["Mobile"], value: 80 },
+    { sets: ["Courriel", "Mobile"], value: 35 }
+  ]}
+/>`,
+      react: `import { VennChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <VennChart
+      label="Abonnés par canal"
+      data={[
+        { sets: ["Courriel"], value: 120 },
+        { sets: ["Mobile"], value: 80 },
+        { sets: ["Courriel", "Mobile"], value: 35 }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { VennChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <VennChart
+    label="Abonnés par canal"
+    :data="[
+      { sets: ['Courriel'], value: 120 },
+      { sets: ['Mobile'], value: 80 },
+      { sets: ['Courriel', 'Mobile'], value: 35 }
+    ]"
   />
 </template>`
     }
@@ -8736,6 +8872,93 @@ import { TreemapChart } from "@sentropic/design-system-vue";
     }
   },
 
+  wordcloudchart: {
+    id: "wordcloudchart",
+    slug: "word-cloud-chart",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "WordCloudChart",
+            props: {
+              label: "Thèmes les plus cités dans les retours",
+              data: [
+                { text: "performance", weight: 96 },
+                { text: "accessibilité", weight: 78 },
+                { text: "design", weight: 64 },
+                { text: "tokens", weight: 52 },
+                { text: "thème", weight: 44 },
+                { text: "svelte", weight: 38 },
+                { text: "react", weight: 36 },
+                { text: "vue", weight: 34 },
+                { text: "docs", weight: 28 },
+                { text: "charts", weight: 24 },
+                { text: "a11y", weight: 18 },
+                { text: "i18n", weight: 12 }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { WordCloudChart } from "@sentropic/design-system-svelte";
+</script>
+
+<WordCloudChart
+  label="Thèmes les plus cités dans les retours"
+  data={[
+    { text: "performance", weight: 96 },
+    { text: "accessibilité", weight: 78 },
+    { text: "design", weight: 64 },
+    { text: "tokens", weight: 52 },
+    { text: "svelte", weight: 38 },
+    { text: "react", weight: 36 },
+    { text: "vue", weight: 34 }
+  ]}
+/>`,
+      react: `import { WordCloudChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <WordCloudChart
+      label="Thèmes les plus cités dans les retours"
+      data={[
+        { text: "performance", weight: 96 },
+        { text: "accessibilité", weight: 78 },
+        { text: "design", weight: 64 },
+        { text: "tokens", weight: 52 },
+        { text: "svelte", weight: 38 },
+        { text: "react", weight: 36 },
+        { text: "vue", weight: 34 }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { WordCloudChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <WordCloudChart
+    label="Thèmes les plus cités dans les retours"
+    :data="[
+      { text: 'performance', weight: 96 },
+      { text: 'accessibilité', weight: 78 },
+      { text: 'design', weight: 64 },
+      { text: 'tokens', weight: 52 },
+      { text: 'svelte', weight: 38 },
+      { text: 'react', weight: 36 },
+      { text: 'vue', weight: 34 }
+    ]"
+  />
+</template>`
+    }
+  },
+
   organizationchart: {
     id: "organizationchart",
     slug: "organization-chart",
@@ -9311,6 +9534,76 @@ import { OHLCChart } from "@sentropic/design-system-vue";
       { label: 'Mer', open: 149, high: 152, low: 140, close: 143 },
       { label: 'Jeu', open: 143, high: 147, low: 138, close: 145 },
       { label: 'Ven', open: 145, high: 155, low: 144, close: 153 }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  hlcchart: {
+    id: "hlcchart",
+    slug: "hlc-chart",
+    nodes: [
+      stack([
+        {
+          comp: "HLCChart",
+          props: {
+            label: "Cours SENT — semaine",
+            data: [
+              { label: "Lun", high: 148, low: 139, close: 146 },
+              { label: "Mar", high: 151, low: 144, close: 149 },
+              { label: "Mer", high: 152, low: 140, close: 143 },
+              { label: "Jeu", high: 147, low: 138, close: 145 },
+              { label: "Ven", high: 155, low: 144, close: 153 }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { HLCChart } from "@sentropic/design-system-svelte";
+</script>
+
+<HLCChart
+  label="Cours SENT — semaine"
+  data={[
+    { label: "Lun", high: 148, low: 139, close: 146 },
+    { label: "Mar", high: 151, low: 144, close: 149 },
+    { label: "Mer", high: 152, low: 140, close: 143 },
+    { label: "Jeu", high: 147, low: 138, close: 145 },
+    { label: "Ven", high: 155, low: 144, close: 153 }
+  ]}
+/>`,
+      react: `import { HLCChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <HLCChart
+      label="Cours SENT — semaine"
+      data={[
+        { label: "Lun", high: 148, low: 139, close: 146 },
+        { label: "Mar", high: 151, low: 144, close: 149 },
+        { label: "Mer", high: 152, low: 140, close: 143 },
+        { label: "Jeu", high: 147, low: 138, close: 145 },
+        { label: "Ven", high: 155, low: 144, close: 153 }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { HLCChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <HLCChart
+    label="Cours SENT — semaine"
+    :data="[
+      { label: 'Lun', high: 148, low: 139, close: 146 },
+      { label: 'Mar', high: 151, low: 144, close: 149 },
+      { label: 'Mer', high: 152, low: 140, close: 143 },
+      { label: 'Jeu', high: 147, low: 138, close: 145 },
+      { label: 'Ven', high: 155, low: 144, close: 153 }
     ]"
   />
 </template>`
