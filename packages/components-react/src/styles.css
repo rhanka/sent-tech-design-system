@@ -319,6 +319,21 @@
     font-weight: 600;
   }
 
+  /* --- Crosshair layer (FR-3) ----------------------------------------------
+     A tokenised dashed vertical line at the active (hovered/controlled) key,
+     plus an emphasised marker on the point. Decorative (aria-hidden). */
+  .st-areaChart__crosshairLine {
+    stroke: var(--st-semantic-border-strong);
+    stroke-width: 1;
+    stroke-dasharray: 3 3;
+    opacity: 0.7;
+  }
+  .st-areaChart__crosshairMarker {
+    fill: currentColor;
+    stroke: var(--st-semantic-surface-default);
+    stroke-width: 2;
+  }
+
 .st-aspectRatio {
     display: block;
     overflow: hidden;
@@ -667,6 +682,16 @@
     fill: var(--st-semantic-text-primary);
     font-size: 0.6875rem;
     font-weight: 600;
+  }
+
+  /* --- Crosshair layer (FR-3) ----------------------------------------------
+     A tokenised dashed line on the CATEGORY axis at the active (hovered/
+     controlled) bar. Decorative (aria-hidden). */
+  .st-barChart__crosshairLine {
+    stroke: var(--st-semantic-border-strong);
+    stroke-width: 1;
+    stroke-dasharray: 3 3;
+    opacity: 0.7;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -3704,6 +3729,21 @@
     fill: var(--st-semantic-text-primary);
     font-size: 0.6875rem;
     font-weight: 600;
+  }
+
+  /* --- Crosshair layer (FR-3) ----------------------------------------------
+     A tokenised dashed vertical line at the active (hovered/controlled) key,
+     plus an emphasised marker on the point. Decorative (aria-hidden). */
+  .st-lineChart__crosshairLine {
+    stroke: var(--st-semantic-border-strong);
+    stroke-width: 1;
+    stroke-dasharray: 3 3;
+    opacity: 0.7;
+  }
+  .st-lineChart__crosshairMarker {
+    fill: currentColor;
+    stroke: var(--st-semantic-surface-default);
+    stroke-width: 2;
   }
 
 .st-link {

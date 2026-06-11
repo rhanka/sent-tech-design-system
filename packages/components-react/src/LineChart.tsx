@@ -34,6 +34,7 @@ import {
   type ChartAnnotation,
 } from "./chartAnnotations.js";
 import { formatDataLabel, normalizeDataLabels, type DataLabelsProp } from "./chartDataLabels.js";
+import { keyForX, resolveActiveIndex } from "./chartCrosshair.js";
 
 export type LineChartTone =
   | "category1"
@@ -108,6 +109,20 @@ export type LineChartProps = Omit<React.HTMLAttributes<HTMLDivElement>, "classNa
    * no legend surface; accepted for parity and otherwise ignored.
    */
   showLegend?: boolean;
+  /**
+   * CONTROLLED synchronised hover key (FR-3). A datum's key is `String(x)`. When
+   * provided (string or null), the crosshair + tooltip track this key instead of
+   * the chart's internal pointer hover (null ⇒ nothing shown), letting a parent
+   * share one hover channel across several aligned charts. Absent (`undefined`)
+   * keeps the legacy uncontrolled behaviour.
+   */
+  hoverKey?: string | null;
+  /**
+   * Emitted when the user hovers a datum (its key) or leaves the plot (`null`).
+   * Always fired on pointer move/leave — even while CONTROLLED — so dataviz can
+   * keep the shared hover channel in sync.
+   */
+  onHoverKeyChange?: (key: string | null) => void;
   className?: string;
 };
 
@@ -132,6 +147,8 @@ export function LineChart({
   invertAxis = false,
   // Destructured to keep it off `...rest`; parity no-op (no legend surface).
   showLegend: _showLegend,
+  hoverKey,
+  onHoverKeyChange,
   className,
   ...rest
 }: LineChartProps) {
@@ -391,20 +408,34 @@ export function LineChart({
     return entries;
   })();
 
+  // Stable key per datum (FR-3): `String(x)`. Used both to resolve a controlled
+  // `hoverKey` to an index and to emit `onHoverKeyChange` from pointer events.
+  const hoverKeys = data.map((d) => keyForX(d.x));
+
+  function emitHoverKey(index: number | null) {
+    onHoverKeyChange?.(index == null ? null : hoverKeys[index] ?? null);
+  }
   function handleLeave() {
     setHoveredIndex(null);
+    emitHoverKey(null);
   }
   function handleVisualPointerMove(event: React.PointerEvent) {
     const target = event.target;
     if (!(target instanceof Element)) {
       setHoveredIndex(null);
+      emitHoverKey(null);
       return;
     }
-    const index = Number(target.getAttribute("data-chart-index"));
-    setHoveredIndex(Number.isInteger(index) ? index : null);
+    const raw = Number(target.getAttribute("data-chart-index"));
+    const index = Number.isInteger(raw) ? raw : null;
+    setHoveredIndex(index);
+    emitHoverKey(index);
   }
 
-  const hoveredPoint = hoveredIndex !== null ? points[hoveredIndex] : undefined;
+  // Index whose crosshair/tooltip is DISPLAYED: the controlled `hoverKey` when
+  // provided (resolved against `hoverKeys`), else the internal pointer index.
+  const activeIndex = resolveActiveIndex(hoverKey, hoveredIndex, hoverKeys);
+  const hoveredPoint = activeIndex >= 0 ? points[activeIndex] : undefined;
 
   return (
     <div {...rest} className={classNames("st-lineChart", `st-lineChart--${tone}`, className)}>
@@ -653,6 +684,21 @@ export function LineChart({
                   {d.text}
                 </text>
               ))}
+            </g>
+          ) : null}
+
+          {/* Crosshair (FR-3) — a tokenised vertical line + marker at the active
+              key. Decorative (aria-hidden); the value is in the tooltip + list. */}
+          {hoveredPoint ? (
+            <g className="st-lineChart__crosshair" aria-hidden="true">
+              <line
+                className="st-lineChart__crosshairLine"
+                x1={hoveredPoint.x}
+                x2={hoveredPoint.x}
+                y1={MARGIN.top}
+                y2={MARGIN.top + plotHeight}
+              />
+              <circle className="st-lineChart__crosshairMarker" cx={hoveredPoint.x} cy={hoveredPoint.y} r="5" />
             </g>
           ) : null}
         </svg>

@@ -27,6 +27,7 @@ import {
   type ChartAnnotation,
 } from "./chartAnnotations.js";
 import { formatDataLabel, normalizeDataLabels, type DataLabelsProp } from "./chartDataLabels.js";
+import { resolveActiveIndex } from "./chartCrosshair.js";
 
 export type BarChartTone =
   | "category1"
@@ -113,6 +114,20 @@ export type BarChartProps = Omit<React.HTMLAttributes<HTMLDivElement>, "classNam
    * and otherwise ignored.
    */
   showLegend?: boolean;
+  /**
+   * CONTROLLED synchronised hover key (FR-3). A bar's key is its `label`. When
+   * provided (string or null), the crosshair + tooltip track this key instead of
+   * the chart's internal pointer hover (null ⇒ nothing shown), letting a parent
+   * share one hover channel across several aligned charts. Absent (`undefined`)
+   * keeps the legacy uncontrolled behaviour. Independent of `selectedKeys`.
+   */
+  hoverKey?: string | null;
+  /**
+   * Emitted when the user hovers a bar (its `label`) or leaves the plot (`null`).
+   * Always fired on pointer move/leave — even while CONTROLLED — so dataviz can
+   * keep the shared hover channel in sync.
+   */
+  onHoverKeyChange?: (key: string | null) => void;
   className?: string;
 };
 
@@ -137,6 +152,8 @@ export function BarChart({
   // Destructured to keep it off `...rest` (the wrapper div); parity no-op since
   // BarChart has no dedicated legend surface.
   showLegend: _showLegend,
+  hoverKey,
+  onHoverKeyChange,
   className,
   ...rest
 }: BarChartProps) {
@@ -454,20 +471,34 @@ export function BarChart({
           y2: MARGIN.top + plotHeight,
         }));
 
+  // Stable key per bar (FR-3): its `label`. Used to resolve a controlled
+  // `hoverKey` to an index and to emit `onHoverKeyChange` from pointer events.
+  const hoverKeys = bars.map((b) => b.datum.label);
+
+  function emitHoverKey(index: number | null) {
+    onHoverKeyChange?.(index == null ? null : hoverKeys[index] ?? null);
+  }
   function handleLeave() {
     setHoveredIndex(null);
+    emitHoverKey(null);
   }
   function handleVisualPointerMove(event: React.PointerEvent) {
     const target = event.target;
     if (!(target instanceof Element)) {
       setHoveredIndex(null);
+      emitHoverKey(null);
       return;
     }
-    const index = Number(target.getAttribute("data-chart-index"));
-    setHoveredIndex(Number.isInteger(index) ? index : null);
+    const raw = Number(target.getAttribute("data-chart-index"));
+    const index = Number.isInteger(raw) ? raw : null;
+    setHoveredIndex(index);
+    emitHoverKey(index);
   }
 
-  const hoveredBar = hoveredIndex !== null ? bars[hoveredIndex] : undefined;
+  // Index whose crosshair/tooltip is DISPLAYED: the controlled `hoverKey` when
+  // provided (resolved against `hoverKeys`), else the internal pointer index.
+  const activeIndex = resolveActiveIndex(hoverKey, hoveredIndex, hoverKeys);
+  const hoveredBar = activeIndex >= 0 ? bars[activeIndex] : undefined;
 
   return (
     <div {...rest} className={classNames("st-barChart", className)}>
@@ -744,6 +775,31 @@ export function BarChart({
                   {d.text}
                 </text>
               ))}
+            </g>
+          ) : null}
+
+          {/* Crosshair (FR-3) — a tokenised dashed line on the CATEGORY axis at
+              the active bar: vertical (vertical bars) / horizontal (horizontal
+              bars). Decorative (aria-hidden); the value is in the tooltip + list. */}
+          {hoveredBar ? (
+            <g className="st-barChart__crosshair" aria-hidden="true">
+              {isVertical ? (
+                <line
+                  className="st-barChart__crosshairLine"
+                  x1={hoveredBar.cx}
+                  x2={hoveredBar.cx}
+                  y1={MARGIN.top}
+                  y2={MARGIN.top + plotHeight}
+                />
+              ) : (
+                <line
+                  className="st-barChart__crosshairLine"
+                  x1={MARGIN.left}
+                  x2={MARGIN.left + plotWidth}
+                  y1={hoveredBar.cy}
+                  y2={hoveredBar.cy}
+                />
+              )}
             </g>
           ) : null}
         </svg>
