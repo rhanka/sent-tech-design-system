@@ -56,6 +56,7 @@ export type ComponentName =
   | "StructuredList"
   | "SkipLink"
   | "Header"
+  | "AppChrome"
   | "SideNav"
   | "Form"
   | "FormGroup"
@@ -148,6 +149,9 @@ export type ComponentName =
   | "SelectableRow"
   | "SelectableList"
   | "KpiCard"
+  | "ConfigItemCard"
+  | "FieldCard"
+  | "ScoreCard"
   | "ComboChart"
   | "GaugeChart"
   | "FunnelChart"
@@ -8394,6 +8398,227 @@ import { KpiCard } from "@sentropic/design-system-vue";
     tone="category5"
     :sparkline="[900, 980, 1050, 1100, 1180, 1240]"
   />
+</template>`
+    }
+  },
+
+  configitemcardbasic: {
+    id: "configitemcardbasic",
+    slug: "config-item-card",
+    nodes: [
+      stack([
+        {
+          comp: "ConfigItemCard",
+          props: {
+            item: {
+              id: "1",
+              name: "Agent de tri",
+              key: "triage-agent",
+              description: "Classe les demandes entrantes par priorité.",
+              sourceLevel: "code",
+              parentId: null
+            },
+            onCopy: () => {}
+          }
+        },
+        {
+          comp: "ConfigItemCard",
+          props: {
+            item: {
+              id: "2",
+              name: "Agent de tri (copie)",
+              key: "triage-agent",
+              description: "Variante personnalisée d'un défaut système.",
+              sourceLevel: "user",
+              parentId: "1"
+            },
+            onEdit: () => {},
+            onReset: () => {}
+          }
+        },
+        {
+          comp: "ConfigItemCard",
+          props: {
+            item: {
+              id: "3",
+              name: "Workflow maison",
+              key: "custom-workflow",
+              description: "Créé par l'utilisateur, modifiable et supprimable.",
+              sourceLevel: "user",
+              parentId: null
+            },
+            onEdit: () => {},
+            onDelete: () => {}
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { ConfigItemCard } from "@sentropic/design-system-svelte";
+</script>
+
+<ConfigItemCard
+  item={{ id: "1", name: "Agent de tri", key: "triage-agent", description: "Classe les demandes entrantes.", sourceLevel: "code", parentId: null }}
+  onCopy={(id) => console.log("copy", id)}
+/>
+<ConfigItemCard
+  item={{ id: "3", name: "Workflow maison", key: "custom-workflow", description: "Créé par l'utilisateur.", sourceLevel: "user", parentId: null }}
+  onEdit={(id) => console.log("edit", id)}
+  onDelete={(id) => console.log("delete", id)}
+/>`,
+      react: `import { ConfigItemCard } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <ConfigItemCard
+        item={{ id: "1", name: "Agent de tri", key: "triage-agent", description: "Classe les demandes entrantes.", sourceLevel: "code", parentId: null }}
+        onCopy={(id) => console.log("copy", id)}
+      />
+      <ConfigItemCard
+        item={{ id: "3", name: "Workflow maison", key: "custom-workflow", description: "Créé par l'utilisateur.", sourceLevel: "user", parentId: null }}
+        onEdit={(id) => console.log("edit", id)}
+        onDelete={(id) => console.log("delete", id)}
+      />
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { ConfigItemCard } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <ConfigItemCard
+    :item="{ id: '1', name: 'Agent de tri', key: 'triage-agent', description: 'Classe les demandes entrantes.', sourceLevel: 'code', parentId: null }"
+    :onCopy="(id) => console.log('copy', id)"
+  />
+  <ConfigItemCard
+    :item="{ id: '3', name: 'Workflow maison', key: 'custom-workflow', description: 'Créé par l\\'utilisateur.', sourceLevel: 'user', parentId: null }"
+    :onEdit="(id) => console.log('edit', id)"
+    :onDelete="(id) => console.log('delete', id)"
+  />
+</template>`
+    }
+  },
+
+  fieldcardbasic: {
+    id: "fieldcardbasic",
+    slug: "field-card",
+    nodes: [
+      wrap([
+        {
+          comp: "FieldCard",
+          props: { label: "Coordonnées" },
+          children: [{ el: "p", props: {}, children: ["12 rue des Lilas, Montréal"] }]
+        },
+        {
+          comp: "FieldCard",
+          props: { label: "Notes", variant: "plain", commentCount: 3, onOpenComments: () => {} },
+          children: [{ el: "p", props: {}, children: ["À relire avant validation."] }]
+        },
+        {
+          comp: "FieldCard",
+          props: { label: "Priorité", variant: "accent", tone: "category3" },
+          children: [{ el: "p", props: {}, children: ["Élevée — échéance proche."] }]
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { FieldCard } from "@sentropic/design-system-svelte";
+</script>
+
+<FieldCard label="Coordonnées">
+  <p>12 rue des Lilas, Montréal</p>
+</FieldCard>
+<FieldCard label="Notes" variant="plain" commentCount={3} onOpenComments={() => {}}>
+  <p>À relire avant validation.</p>
+</FieldCard>
+<FieldCard label="Priorité" variant="accent" tone="category3">
+  <p>Élevée — échéance proche.</p>
+</FieldCard>`,
+      react: `import { FieldCard } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <FieldCard label="Coordonnées">
+        <p>12 rue des Lilas, Montréal</p>
+      </FieldCard>
+      <FieldCard label="Notes" variant="plain" commentCount={3} onOpenComments={() => {}}>
+        <p>À relire avant validation.</p>
+      </FieldCard>
+      <FieldCard label="Priorité" variant="accent" tone="category3">
+        <p>Élevée — échéance proche.</p>
+      </FieldCard>
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { FieldCard } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <FieldCard label="Coordonnées">
+    <p>12 rue des Lilas, Montréal</p>
+  </FieldCard>
+  <FieldCard label="Notes" variant="plain" :comment-count="3" :on-open-comments="() => {}">
+    <p>À relire avant validation.</p>
+  </FieldCard>
+  <FieldCard label="Priorité" variant="accent" tone="category3">
+    <p>Élevée — échéance proche.</p>
+  </FieldCard>
+</template>`
+    }
+  },
+
+  scorecardbasic: {
+    id: "scorecardbasic",
+    slug: "score-card",
+    nodes: [
+      wrap([
+        {
+          comp: "ScoreCard",
+          props: { title: "Valeur métier", score: 4.2, stars: 4, type: "value" }
+        },
+        {
+          comp: "ScoreCard",
+          props: { title: "Complexité", score: 2.5, stars: 3, type: "complexity" }
+        },
+        {
+          comp: "ScoreCard",
+          props: { title: "Maturité", score: 7, stars: 7, max: 10, unit: "pts", type: "value" }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { ScoreCard } from "@sentropic/design-system-svelte";
+</script>
+
+<ScoreCard title="Valeur métier" score={4.2} stars={4} type="value" />
+<ScoreCard title="Complexité" score={2.5} stars={3} type="complexity" />
+<ScoreCard title="Maturité" score={7} stars={7} max={10} unit="pts" type="value" />`,
+      react: `import { ScoreCard } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <ScoreCard title="Valeur métier" score={4.2} stars={4} type="value" />
+      <ScoreCard title="Complexité" score={2.5} stars={3} type="complexity" />
+      <ScoreCard title="Maturité" score={7} stars={7} max={10} unit="pts" type="value" />
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { ScoreCard } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <ScoreCard title="Valeur métier" :score="4.2" :stars="4" type="value" />
+  <ScoreCard title="Complexité" :score="2.5" :stars="3" type="complexity" />
+  <ScoreCard title="Maturité" :score="7" :stars="7" :max="10" unit="pts" type="value" />
 </template>`
     }
   },

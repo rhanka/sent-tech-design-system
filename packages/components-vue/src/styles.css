@@ -14090,3 +14090,539 @@
 
 .st-vennChart__tooltipLabel { font-weight: 600; }
 .st-vennChart__tooltipValue { opacity: 0.85; }
+
+
+/* ---------------------------------------------------------------------------
+   ConfigItemCard — carte d'item de configuration (agents, workflows, gabarits)
+   avec badge de provenance et actions Copier / Éditer / Réinitialiser / Supprimer.
+   --------------------------------------------------------------------------- */
+.st-configItemCard {
+  background: var(--st-component-card-background, var(--st-semantic-surface-raised));
+  border-width: var(--st-component-card-anatomy-shape-borderWidth, 1px);
+  border-style: var(--st-component-card-anatomy-shape-borderStyle, solid);
+  border-color: var(--st-component-card-border, var(--st-semantic-border-subtle));
+  border-radius: var(--st-component-card-anatomy-shape-radius, 0.5rem);
+  color: var(--st-semantic-text-primary);
+  display: flex;
+  flex-direction: column;
+  gap: var(--st-spacing-1, 0.25rem);
+  padding: var(--st-spacing-4, 1rem);
+}
+
+.st-configItemCard__header {
+  align-items: center;
+  display: flex;
+  gap: var(--st-spacing-2, 0.5rem);
+  justify-content: space-between;
+}
+
+.st-configItemCard__name {
+  color: var(--st-semantic-text-primary);
+  font-weight: 600;
+}
+
+.st-configItemCard__badge {
+  align-items: center;
+  border-radius: 9999px;
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  gap: var(--st-spacing-1, 0.25rem);
+  line-height: 1;
+  padding: 0.1875rem var(--st-spacing-2, 0.5rem);
+}
+
+.st-configItemCard__badge--system {
+  background: var(--st-semantic-surface-subtle);
+  color: var(--st-semantic-text-secondary);
+}
+
+.st-configItemCard__badge--custom {
+  background: var(--st-semantic-feedback-info);
+  color: var(--st-semantic-text-inverse);
+}
+
+.st-configItemCard__badgeIcon {
+  display: block;
+  flex: 0 0 auto;
+}
+
+.st-configItemCard__key {
+  color: var(--st-semantic-text-muted);
+  font-size: 0.75rem;
+}
+
+.st-configItemCard__description {
+  color: var(--st-semantic-text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.4;
+  margin: var(--st-spacing-1, 0.25rem) 0 0;
+}
+
+.st-configItemCard__actions {
+  display: flex;
+  gap: var(--st-spacing-1, 0.25rem);
+  margin-top: var(--st-spacing-3, 0.75rem);
+}
+
+.st-configItemCard__action {
+  align-items: center;
+  background: transparent;
+  border: none;
+  border-radius: var(--st-radius-sm, 0.25rem);
+  color: var(--st-semantic-text-muted);
+  cursor: var(--st-cursor-interactive, pointer);
+  display: inline-flex;
+  justify-content: center;
+  padding: var(--st-spacing-1, 0.25rem);
+  transition: color var(--st-motion-fast, 120ms) var(--st-motion-easing, ease),
+    background-color var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
+}
+
+.st-configItemCard__action:hover:not(:disabled) {
+  background: var(--st-semantic-surface-hover);
+  color: var(--st-semantic-text-primary);
+}
+
+.st-configItemCard__action--warning:hover:not(:disabled) {
+  color: var(--st-semantic-feedback-warning);
+}
+
+.st-configItemCard__action--danger:hover:not(:disabled) {
+  color: var(--st-semantic-feedback-error);
+}
+
+.st-configItemCard__action:focus-visible {
+  outline: 2px solid var(--st-semantic-border-interactive);
+  outline-offset: 2px;
+}
+
+.st-configItemCard__action:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* ---------------------------------------------------------------------------
+   FieldCard — carte de groupe de champs avec en-tête titré, pastille de
+   commentaires et variantes plain / bordered / accent (liseré catégoriel).
+   --------------------------------------------------------------------------- */
+.st-fieldCard {
+  background: var(--st-component-card-background, var(--st-semantic-surface-raised));
+  border-width: var(--st-component-card-anatomy-shape-borderWidth, 1px);
+  border-style: var(--st-component-card-anatomy-shape-borderStyle, solid);
+  border-color: var(--st-component-card-border, var(--st-semantic-border-subtle));
+  border-radius: var(--st-component-card-anatomy-shape-radius, 0.5rem);
+  color: var(--st-semantic-text-primary);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: var(--st-spacing-4, 1rem);
+}
+
+.st-fieldCard--accent {
+  border-inline-start-width: var(--st-spacing-1, 0.25rem);
+  border-radius: 0;
+}
+
+.st-fieldCard__header {
+  align-items: center;
+  display: flex;
+  gap: var(--st-spacing-2, 0.5rem);
+  justify-content: space-between;
+}
+
+.st-fieldCard--bordered .st-fieldCard__header {
+  border-bottom: 1px solid var(--st-semantic-border-subtle);
+  margin-bottom: var(--st-spacing-3, 0.75rem);
+  padding-bottom: var(--st-spacing-3, 0.75rem);
+}
+
+.st-fieldCard__label {
+  color: var(--st-semantic-text-primary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 0;
+}
+
+.st-fieldCard--bordered .st-fieldCard__label {
+  font-size: 1rem;
+}
+
+.st-fieldCard__comments {
+  align-items: center;
+  background: transparent;
+  border: none;
+  border-radius: var(--st-radius-sm, 0.25rem);
+  color: var(--st-semantic-text-muted);
+  cursor: var(--st-cursor-interactive, pointer);
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 0.75rem;
+  gap: 0.1875rem;
+  line-height: 1;
+  padding: 0.125rem var(--st-spacing-1, 0.25rem);
+}
+
+.st-fieldCard__comments--static {
+  cursor: default;
+}
+
+.st-fieldCard__comments:hover:not(.st-fieldCard__comments--static) {
+  color: var(--st-semantic-text-primary);
+}
+
+.st-fieldCard__comments:focus-visible {
+  outline: 2px solid var(--st-semantic-border-interactive);
+  outline-offset: 2px;
+}
+
+.st-fieldCard__body {
+  color: var(--st-semantic-text-primary);
+  flex: 1 1 auto;
+}
+
+.st-fieldCard--plain .st-fieldCard__body,
+.st-fieldCard--accent .st-fieldCard__body {
+  margin-top: var(--st-spacing-2, 0.5rem);
+}
+
+.st-fieldCard--category1 {
+  border-inline-start-color: var(--st-semantic-data-category1);
+}
+.st-fieldCard--category2 {
+  border-inline-start-color: var(--st-semantic-data-category2);
+}
+.st-fieldCard--category3 {
+  border-inline-start-color: var(--st-semantic-data-category3);
+}
+.st-fieldCard--category4 {
+  border-inline-start-color: var(--st-semantic-data-category4);
+}
+.st-fieldCard--category5 {
+  border-inline-start-color: var(--st-semantic-data-category5);
+}
+.st-fieldCard--category6 {
+  border-inline-start-color: var(--st-semantic-data-category6);
+}
+.st-fieldCard--category7 {
+  border-inline-start-color: var(--st-semantic-data-category7);
+}
+.st-fieldCard--category8 {
+  border-inline-start-color: var(--st-semantic-data-category8);
+}
+
+/* ---------------------------------------------------------------------------
+   ScoreCard — carte de score avec notation symbolique (étoiles = value,
+   croix = complexity) et score chiffré.
+   --------------------------------------------------------------------------- */
+.st-scoreCard {
+  background: var(--st-component-card-background, var(--st-semantic-surface-raised));
+  border-width: var(--st-component-card-anatomy-shape-borderWidth, 1px);
+  border-style: var(--st-component-card-anatomy-shape-borderStyle, solid);
+  border-color: var(--st-component-card-border, var(--st-semantic-border-subtle));
+  border-radius: var(--st-component-card-anatomy-shape-radius, 0.5rem);
+  box-shadow: var(--st-component-card-shadow, 0 1px 2px rgb(15 23 42 / 0.08));
+  color: var(--st-semantic-text-primary);
+  display: flex;
+  flex-direction: column;
+  gap: var(--st-spacing-2, 0.5rem);
+  padding: var(--st-spacing-4, 1rem);
+}
+
+.st-scoreCard--sm {
+  gap: var(--st-spacing-1, 0.25rem);
+  padding: var(--st-spacing-3, 0.75rem);
+}
+
+.st-scoreCard--lg {
+  gap: var(--st-spacing-3, 0.75rem);
+  padding: var(--st-spacing-6, 1.5rem);
+}
+
+.st-scoreCard__title {
+  color: var(--st-semantic-text-primary);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 0;
+}
+
+.st-scoreCard__row {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--st-spacing-3, 0.75rem);
+}
+
+.st-scoreCard__symbols {
+  display: inline-flex;
+  gap: 0.125rem;
+}
+
+.st-scoreCard__symbol {
+  display: block;
+  flex: 0 0 auto;
+}
+
+.st-scoreCard--sm .st-scoreCard__symbol {
+  height: 16px;
+  width: 16px;
+}
+
+.st-scoreCard--lg .st-scoreCard__symbol {
+  height: 24px;
+  width: 24px;
+}
+
+.st-scoreCard__symbol--off {
+  color: var(--st-semantic-border-default);
+}
+
+.st-scoreCard--value .st-scoreCard__symbol--on {
+  color: var(--st-semantic-feedback-warning);
+}
+
+.st-scoreCard--complexity .st-scoreCard__symbol--on {
+  color: var(--st-semantic-text-secondary);
+}
+
+.st-scoreCard__score {
+  font-size: 1.0625rem;
+  font-weight: 700;
+}
+
+.st-scoreCard--value .st-scoreCard__score {
+  color: var(--st-semantic-feedback-success);
+}
+
+.st-scoreCard--complexity .st-scoreCard__score {
+  color: var(--st-semantic-feedback-warning);
+}
+
+/* --- AppChrome : coque docs assemblée (compose AppHeader) --- */
+.st-appChrome {
+  width: 100%;
+}
+
+.st-appChrome__header .st-appHeader__bar {
+  max-width: none;
+}
+
+.st-appChrome__brand {
+  align-items: center;
+  color: var(--st-semantic-text-primary);
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: var(--st-spacing-3, 0.75rem);
+  min-width: 0;
+  text-decoration: none;
+}
+
+.st-appChrome__brandMark {
+  aspect-ratio: 1;
+  display: inline-block;
+  flex: 0 0 auto;
+  height: 2rem;
+  object-fit: contain;
+  width: 2rem;
+}
+
+.st-appChrome__brandCopy {
+  display: grid;
+  gap: 0.08rem;
+  line-height: 1;
+  min-width: 0;
+}
+
+.st-appChrome__brandName {
+  color: var(--st-semantic-text-primary);
+  font-size: 1rem;
+  font-weight: 760;
+}
+
+.st-appChrome__brandProduct {
+  color: var(--st-semantic-text-secondary);
+  font-size: 0.75rem;
+  font-weight: 650;
+}
+
+.st-appChrome__utilityNav {
+  align-items: center;
+  display: flex;
+  gap: var(--st-spacing-2, 0.5rem);
+}
+
+.st-appChrome__menuWrap {
+  display: inline-block;
+  position: relative;
+}
+
+.st-appChrome__control {
+  font-size: 0.75rem;
+}
+
+.st-appChrome__iconControl {
+  justify-content: center;
+  padding: 0;
+  width: 2.25rem;
+}
+
+.st-appChrome__chevron {
+  transition: transform var(--st-motion-fast, 120ms) ease;
+}
+
+.st-appChrome__chevron.is-rotated {
+  transform: rotate(180deg);
+}
+
+.st-appChrome__menu {
+  background: var(--st-semantic-surface-raised, var(--st-semantic-surface-default));
+  border: 1px solid var(--st-semantic-border-subtle);
+  border-radius: var(--st-radius-sm, 0.375rem);
+  box-shadow: var(--st-shadow-medium, 0 8px 24px rgb(15 23 42 / 0.08));
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 8.5rem;
+  padding: 0.25rem;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: var(--st-zindex-overlay, 80);
+}
+
+.st-appChrome__menuItem {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: var(--st-radius-xs, 0.25rem);
+  color: var(--st-semantic-text-secondary);
+  cursor: pointer;
+  display: flex;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 550;
+  gap: 0.45rem;
+  padding: 0.35rem 0.65rem;
+  text-align: left;
+  width: 100%;
+  transition: background-color var(--st-motion-fast, 120ms) ease,
+    color var(--st-motion-fast, 120ms) ease;
+}
+
+.st-appChrome__menuItem:hover {
+  background: var(--st-semantic-surface-subtle);
+  color: var(--st-semantic-text-primary);
+}
+
+.st-appChrome__menuItem.is-active {
+  color: var(--st-semantic-text-link);
+  font-weight: 650;
+}
+
+.st-appChrome__check {
+  align-items: center;
+  display: inline-flex;
+  font-size: 0.75rem;
+  justify-content: center;
+  width: 0.75rem;
+}
+
+.st-appChrome__burgerTrigger {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: var(--st-radius-xs, 0.25rem);
+  color: var(--st-semantic-text-secondary);
+  cursor: pointer;
+  display: none;
+  height: 2.25rem;
+  justify-content: center;
+  width: 2.25rem;
+}
+
+.st-appChrome__burgerTrigger:hover {
+  background: var(--st-semantic-surface-subtle);
+  color: var(--st-semantic-text-primary);
+}
+
+.st-appChrome__drawer {
+  background: var(--st-semantic-surface-default);
+  border-bottom: 1px solid var(--st-semantic-border-subtle);
+  box-shadow: var(--st-shadow-medium, 0 10px 20px rgb(15 23 42 / 0.05));
+  display: none;
+  flex-direction: column;
+  gap: var(--st-spacing-5, 1.25rem);
+  padding: var(--st-spacing-5, 1.25rem);
+}
+
+.st-appChrome__drawerSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--st-spacing-2, 0.5rem);
+}
+
+.st-appChrome__drawerLabel {
+  color: var(--st-semantic-text-secondary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.st-appChrome__drawerLink {
+  align-items: center;
+  border-bottom: 1px solid var(--st-semantic-border-subtle);
+  color: var(--st-semantic-text-primary);
+  display: inline-flex;
+  font-size: 1rem;
+  font-weight: 650;
+  gap: 0.45rem;
+  padding: 0.45rem 0;
+  text-decoration: none;
+}
+
+.st-appChrome__drawerLink[aria-current="page"],
+.st-appChrome__drawerLink:hover {
+  color: var(--st-semantic-text-link);
+}
+
+.st-appChrome__drawerSwitcher {
+  display: flex;
+  gap: var(--st-spacing-2, 0.5rem);
+}
+
+.st-appChrome__drawerBtn {
+  background: var(--st-semantic-surface-subtle);
+  border: 1px solid var(--st-semantic-border-subtle);
+  border-radius: var(--st-radius-xs, 0.25rem);
+  color: var(--st-semantic-text-secondary);
+  cursor: pointer;
+  flex: 1;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 650;
+  padding: 0.45rem;
+}
+
+.st-appChrome__drawerBtn.is-active {
+  background: var(--st-semantic-border-interactive);
+  border-color: var(--st-semantic-border-interactive);
+  color: var(--st-semantic-text-on-emphasis, var(--st-semantic-surface-default));
+}
+
+@media (max-width: 768px) {
+  .st-appChrome__utilityNav {
+    display: none;
+  }
+
+  .st-appChrome__burgerTrigger {
+    display: inline-flex;
+  }
+
+  .st-appChrome__drawer {
+    display: flex;
+  }
+}
