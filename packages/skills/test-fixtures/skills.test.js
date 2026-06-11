@@ -257,6 +257,54 @@ test("cli align tones rewrites common bare hex colors to published theme tokens"
   }
 });
 
+test("cli align typo rewrites raw font stacks to published font tokens", async () => {
+  const tempDir = mkdtempSync(join(tmpdir(), "sent-tech-typo-"));
+  const targetPath = join(tempDir, "sample.html");
+  writeFileSync(
+    targetPath,
+    "<style>" +
+      ".title{font-family:Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif}" +
+      ".body{font-family:Inter, system-ui, sans-serif}" +
+      ".code{font-family:'SFMono-Regular', Consolas, 'Liberation Mono', monospace}" +
+      ".kept{font-family:var(--st-font-sans)}" +
+    "</style>",
+    "utf-8"
+  );
+
+  try {
+    const result = await runCliCommand(["align", targetPath, "--typo"]);
+
+    assert.strictEqual(result.status, 0);
+    const aligned = readFileSync(targetPath, "utf-8");
+    // Raw sans/display/mono stacks become the published tokens.
+    assert.match(aligned, /\.title\{font-family:var\(--st-font-sans\)\}/);
+    assert.match(aligned, /\.body\{font-family:var\(--st-font-display\)\}/);
+    assert.match(aligned, /\.code\{font-family:var\(--st-font-mono\)\}/);
+    // Already-tokenized declarations are left untouched (idempotent).
+    assert.match(aligned, /\.kept\{font-family:var\(--st-font-sans\)\}/);
+    // No raw font names linger.
+    assert.doesNotMatch(aligned, /Inter,/);
+    assert.doesNotMatch(aligned, /SFMono-Regular/);
+  } finally {
+    rmSync(tempDir, { recursive: true, force: true });
+  }
+});
+
+test("cli align typo is idempotent when fonts are already tokenized", async () => {
+  const tempDir = mkdtempSync(join(tmpdir(), "sent-tech-typo-idem-"));
+  const targetPath = join(tempDir, "sample.html");
+  const original = "<style>.a{font-family:var(--st-font-sans)}.b{font-family:var(--st-typography-heading-fontFamily)}</style>";
+  writeFileSync(targetPath, original, "utf-8");
+
+  try {
+    const result = await runCliCommand(["align", targetPath, "--typo"]);
+    assert.strictEqual(result.status, 0);
+    assert.strictEqual(readFileSync(targetPath, "utf-8"), original);
+  } finally {
+    rmSync(tempDir, { recursive: true, force: true });
+  }
+});
+
 test("cli init command in non-interactive mode creates PRODUCT.md", async () => {
   
   // Trouver la racine du projet
