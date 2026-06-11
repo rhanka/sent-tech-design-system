@@ -77,6 +77,8 @@ export { Embed } from "./Embed.js";
 export type { EmbedProps } from "./Embed.js";
 export { EmptyState } from "./EmptyState.js";
 export type { EmptyStateProps } from "./EmptyState.js";
+export { ErrorSummary } from "./ErrorSummary.js";
+export type { ErrorSummaryProps, ErrorSummaryItem } from "./ErrorSummary.js";
 export { FileUploader } from "./FileUploader.js";
 export type { FileUploaderProps, FileUploadItem, FileUploadStatus } from "./FileUploader.js";
 export { Footer } from "./Footer.js";
