@@ -412,6 +412,66 @@ test("cli align a11y focus ring leaves files without outline removal untouched",
   }
 });
 
+test("cli align responsive injects a missing viewport meta into a page with a head", async () => {
+  const tempDir = mkdtempSync(join(tmpdir(), "sent-tech-responsive-"));
+  const targetPath = join(tempDir, "page.html");
+  writeFileSync(
+    targetPath,
+    "<html><head><title>Page</title></head><body><main>OK</main></body></html>",
+    "utf-8"
+  );
+
+  try {
+    const result = await runCliCommand(["align", targetPath, "--responsive"]);
+    assert.strictEqual(result.status, 0);
+    const aligned = readFileSync(targetPath, "utf-8");
+    // A standard responsive viewport meta is injected inside the head.
+    assert.match(
+      aligned,
+      /<meta name="viewport" content="width=device-width, initial-scale=1">/
+    );
+    // It lands inside the head (before </head>), not after </body>.
+    assert.ok(aligned.indexOf('name="viewport"') < aligned.indexOf("</head>"));
+    // Exactly one viewport meta exists.
+    assert.strictEqual((aligned.match(/name=["']viewport["']/gi) || []).length, 1);
+  } finally {
+    rmSync(tempDir, { recursive: true, force: true });
+  }
+});
+
+test("cli align responsive is idempotent when a viewport meta already exists", async () => {
+  const tempDir = mkdtempSync(join(tmpdir(), "sent-tech-responsive-idem-"));
+  const targetPath = join(tempDir, "page.html");
+  // Existing meta with odd casing/spacing — must be detected and left intact.
+  const original =
+    "<html><head><META  NAME = 'viewport' content='width=device-width'></head><body>x</body></html>";
+  writeFileSync(targetPath, original, "utf-8");
+
+  try {
+    const result = await runCliCommand(["align", targetPath, "--responsive"]);
+    assert.strictEqual(result.status, 0);
+    assert.strictEqual(readFileSync(targetPath, "utf-8"), original);
+  } finally {
+    rmSync(tempDir, { recursive: true, force: true });
+  }
+});
+
+test("cli align responsive leaves files without a head untouched", async () => {
+  const tempDir = mkdtempSync(join(tmpdir(), "sent-tech-responsive-noop-"));
+  const targetPath = join(tempDir, "fragment.html");
+  // No <head>: a CSS/markup fragment is not a page → stays informative, no write.
+  const original = "<style>.x{color:red}</style><div>fragment</div>";
+  writeFileSync(targetPath, original, "utf-8");
+
+  try {
+    const result = await runCliCommand(["align", targetPath, "--responsive"]);
+    assert.strictEqual(result.status, 0);
+    assert.strictEqual(readFileSync(targetPath, "utf-8"), original);
+  } finally {
+    rmSync(tempDir, { recursive: true, force: true });
+  }
+});
+
 test("cli init command in non-interactive mode creates PRODUCT.md", async () => {
   
   // Trouver la racine du projet
