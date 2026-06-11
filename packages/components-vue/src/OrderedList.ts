@@ -10,6 +10,18 @@ export type OrderedListProps = {
   class?: string;
 };
 
+function renderNested(children: OrderedListInput[], ordered: boolean): VNodeChild {
+  return h(
+    ordered ? "ol" : "ul",
+    {
+      class: ordered
+        ? "st-orderedList st-orderedList--nested"
+        : "st-unorderedList st-unorderedList--nested",
+    },
+    children.map((child, index) => renderListItem(child, index, ordered)),
+  );
+}
+
 function renderListItem(item: OrderedListInput, index: number, ordered: boolean): VNodeChild {
   if (
     typeof item === "object" &&
@@ -17,6 +29,7 @@ function renderListItem(item: OrderedListInput, index: number, ordered: boolean)
     ("content" in (item as Record<string, unknown>) || "label" in (item as Record<string, unknown>))
   ) {
     const cast = item as OrderedListItem;
+    const hasChildren = Array.isArray(cast.children) && cast.children.length > 0;
     return h(
       "li",
       {
@@ -25,11 +38,7 @@ function renderListItem(item: OrderedListInput, index: number, ordered: boolean)
       },
       [
         String((cast.content ?? cast.label) ?? ""),
-        cast.children
-          ? ordered
-            ? h(OrderedList, { items: cast.children })
-            : h(UnorderedListHelper, { items: cast.children })
-          : null,
+        hasChildren ? renderNested(cast.children as OrderedListInput[], ordered) : null,
       ],
     );
   }
@@ -55,29 +64,9 @@ export const OrderedList = defineComponent({
         "ol",
         {
           ...attrs,
-          class: classNames("st-orderedList st-ol", props.class),
+          class: classNames("st-orderedList", props.class),
         },
         props.items.map((item, index) => renderListItem(item, index, true)) as VNodeChild[],
-      );
-  },
-});
-
-// Internal helper to avoid circular import issues
-const UnorderedListHelper = defineComponent({
-  name: "UnorderedList",
-  props: {
-    items: { type: Array as () => OrderedListInput[], required: true },
-    class: { type: String, default: undefined },
-  },
-  setup(props, { attrs }) {
-    return () =>
-      h(
-        "ul",
-        {
-          ...attrs,
-          class: classNames("st-unorderedList", props.class),
-        },
-        props.items.map((item, index) => renderListItem(item, index, false)) as VNodeChild[],
       );
   },
 });
