@@ -50,6 +50,12 @@
 
 <script lang="ts">
   import ChartDataList from "./ChartDataList.svelte";
+  import {
+    resolveAnnotations,
+    annotationDataListItems,
+    polygonPoints,
+    type ChartAnnotation
+  } from "./chartAnnotations.js";
 
   type BarChartProps = {
     data: BarChartDatum[];
@@ -87,6 +93,14 @@
     /** A single goal line, emphasised above the bars. */
     goalLine?: ChartGoalLine;
     /**
+     * Annotation overlay in DATA space. The x coordinate is CATEGORICAL — it
+     * matches a bar by its `label` (centre of band) and is ignored otherwise; the
+     * y coordinate (and `value`/`from`/`to`) are value-axis numbers. Regions
+     * render behind the bars, every other kind above. Additive: absent ⇒
+     * unchanged.
+     */
+    annotations?: ChartAnnotation[];
+    /**
      * Value-axis scale. `"linear"` (default) is unchanged. `"log"` switches the
      * value axis to a base-10 logarithmic scale — values `<= 0` are ignored for
      * domain/ticks and clamped to the lowest tick when positioned, since the log
@@ -116,6 +130,7 @@
     referenceLines,
     bands,
     goalLine,
+    annotations,
     scale = "linear",
     invertAxis = false,
     showLegend,
@@ -469,9 +484,63 @@
     return out;
   });
 
+  // --- Annotation overlay ---------------------------------------------------
+  // The x coordinate is CATEGORICAL (a bar `label` → centre of band); the y
+  // coordinate is a value-axis number. For a HORIZONTAL chart the value axis is
+  // x and the category axis is y, so the data-space (x=category, y=value)
+  // convention is transposed onto the pixel axes: the resolver's `xScale` maps
+  // the value, `yScale` the category, and each annotation's `axis`/coords are
+  // swapped so a value reference (`axis: "y"`) still spans the full plot.
+  const categoryPixel = $derived((v: number | string): number | null => {
+    const bar = bars.find((b) => b.datum.label === String(v));
+    if (!bar) return null;
+    return isVertical ? bar.cx - MARGIN.left : bar.cy - MARGIN.top;
+  });
+  const valuePixelRel = $derived((v: number): number | null => {
+    if (!Number.isFinite(v)) return null;
+    return valuePos(v) - (isVertical ? MARGIN.top : MARGIN.left);
+  });
+  const transposeAnnotations = $derived((list: ChartAnnotation[] | undefined): ChartAnnotation[] | undefined => {
+    if (!list || isVertical) return list;
+    // Horizontal: swap the data-space x/y (and the region/line axis) so the
+    // generic resolver — which always emits xScale→x-pixel, yScale→y-pixel —
+    // lands the value on the x axis and the category on the y axis.
+    return list.map((a): ChartAnnotation => {
+      switch (a.kind) {
+        case "line":
+          return { ...a, axis: a.axis === "x" ? "y" : "x" };
+        case "region":
+          return { ...a, axis: a.axis === "x" ? "y" : "x" };
+        case "point":
+          return { ...a, x: a.y, y: typeof a.x === "number" ? a.x : NaN } as ChartAnnotation;
+        case "label":
+          return { ...a, x: a.y, y: typeof a.x === "number" ? a.x : NaN } as ChartAnnotation;
+        case "shape":
+          return { ...a, points: a.points.map((p) => ({ x: p.y, y: typeof p.x === "number" ? p.x : NaN })) };
+      }
+    });
+  });
+  const annXScale = $derived((v: number | string): number | null =>
+    isVertical ? categoryPixel(v) : typeof v === "number" ? valuePixelRel(v) : null
+  );
+  const annYScale = $derived((v: number): number | null => (isVertical ? valuePixelRel(v) : categoryPixel(v)));
+  const resolvedAnnotations = $derived(
+    resolveAnnotations(transposeAnnotations(annotations), {
+      xScale: annXScale,
+      yScale: annYScale,
+      plotLeft: MARGIN.left,
+      plotTop: MARGIN.top,
+      plotWidth: scales.plotWidth,
+      plotHeight: scales.plotHeight
+    })
+  );
+  const annotationRegions = $derived(resolvedAnnotations.filter((a) => a.kind === "region"));
+  const annotationAbove = $derived(resolvedAnnotations.filter((a) => a.kind !== "region"));
+
   const dataValueItems = $derived([
     ...data.map((d) => `${d.label}: ${d.value}`),
-    ...overlayDataListItems(referenceLines, bands, goal)
+    ...overlayDataListItems(referenceLines, bands, goal),
+    ...annotationDataListItems(annotations)
   ]);
 
   const valueAxisTicks = $derived.by(() => {
@@ -630,6 +699,20 @@
       {/if}
     {/each}
 
+    <!-- Annotation regions sit BEHIND the bars (filled bands). -->
+    {#if annotationRegions.length > 0}
+      <g class="st-barChart__annotations st-barChart__annotations--behind">
+        {#each annotationRegions as a (a.key)}
+          {#if a.kind === "region"}
+            <rect class="st-barChart__annotationRegion" x={a.x} y={a.y} width={a.width} height={a.height} />
+            {#if a.label}
+              <text class="st-barChart__annotationLabel" x={a.x + 4} y={a.y + 11}>{a.label}</text>
+            {/if}
+          {/if}
+        {/each}
+      </g>
+    {/if}
+
     <!-- bars -->
     <!-- The bars live inside an aria-hidden SVG, so they are NEVER an accessible
          surface. When `onSelect` is provided they only carry a mouse click
@@ -680,6 +763,37 @@
         y={isVertical ? goalGeom.p - 4 : MARGIN.top + 11}
         text-anchor={isVertical ? "end" : "start"}
       >{goalGeom.label ?? `Objectif ${goalGeom.value}`}</text>
+    {/if}
+
+    <!-- Annotations ABOVE the bars: lines, shapes, points, labels. -->
+    {#if annotationAbove.length > 0}
+      <g class="st-barChart__annotations st-barChart__annotations--above">
+        {#each annotationAbove as a (a.key)}
+          {#if a.kind === "line"}
+            <line class="st-barChart__annotationLine" x1={a.x1} y1={a.y1} x2={a.x2} y2={a.y2} />
+            {#if a.label}
+              <text
+                class="st-barChart__annotationLabel"
+                x={a.axis === "x" ? a.x1 + 4 : MARGIN.left + scales.plotWidth - 4}
+                y={a.axis === "x" ? MARGIN.top + 11 : a.y1 - 4}
+                text-anchor={a.axis === "x" ? "start" : "end"}
+              >{a.label}</text>
+            {/if}
+          {:else if a.kind === "shape"}
+            <polygon class="st-barChart__annotationShape" points={polygonPoints(a.points)} />
+            {#if a.label}
+              <text class="st-barChart__annotationLabel" x={a.labelX} y={a.labelY} text-anchor="middle">{a.label}</text>
+            {/if}
+          {:else if a.kind === "point"}
+            <circle class="st-barChart__annotationPoint" cx={a.x} cy={a.y} r="4.5" />
+            {#if a.label}
+              <text class="st-barChart__annotationLabel" x={a.x} y={a.y - 8} text-anchor="middle">{a.label}</text>
+            {/if}
+          {:else}
+            <text class="st-barChart__annotationText" x={a.x} y={a.y} text-anchor={a.anchor}>{a.text}</text>
+          {/if}
+        {/each}
+      </g>
     {/if}
     </svg>
   </div>
@@ -933,5 +1047,33 @@
   @media (prefers-reduced-motion: reduce) {
     .st-barChart__bar,
     .st-barChart__filterChip { transition: none; }
+  }
+
+  /* --- Annotation layer ----------------------------------------------------
+     Regions render BEHIND the bars; lines/shapes/points/labels render ABOVE. */
+  .st-barChart__annotationRegion {
+    fill: color-mix(in srgb, var(--st-semantic-feedback-info) 12%, transparent);
+    stroke: none;
+  }
+  .st-barChart__annotationLine {
+    stroke: var(--st-semantic-feedback-info);
+    stroke-width: 1.5;
+    stroke-dasharray: 4 3;
+  }
+  .st-barChart__annotationShape {
+    fill: color-mix(in srgb, var(--st-semantic-feedback-info) 14%, transparent);
+    stroke: var(--st-semantic-feedback-info);
+    stroke-width: 1.5;
+  }
+  .st-barChart__annotationPoint {
+    fill: var(--st-semantic-feedback-info);
+    stroke: var(--st-semantic-surface-default);
+    stroke-width: 1.5;
+  }
+  .st-barChart__annotationLabel,
+  .st-barChart__annotationText {
+    fill: var(--st-semantic-text-primary);
+    font-size: 0.625rem;
+    font-weight: 600;
   }
 </style>

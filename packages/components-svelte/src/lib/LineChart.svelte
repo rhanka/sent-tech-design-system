@@ -53,6 +53,12 @@
 
 <script lang="ts">
   import ChartDataList from "./ChartDataList.svelte";
+  import {
+    resolveAnnotations,
+    annotationDataListItems,
+    polygonPoints,
+    type ChartAnnotation
+  } from "./chartAnnotations.js";
 
   type LineChartProps = {
     data: LineChartDatum[];
@@ -70,6 +76,13 @@
     goalLine?: ChartGoalLine;
     /** Least-squares trend line over the data points. */
     trend?: boolean;
+    /**
+     * Annotation overlay in DATA space (points, labels, axis lines, regions,
+     * polygons). Resolved to pixels via the chart's scales and drawn in a
+     * dedicated `<g class="st-lineChart__annotations">` — regions behind the
+     * series, every other kind above it. Additive: absent ⇒ unchanged.
+     */
+    annotations?: ChartAnnotation[];
     /**
      * Fixed value-axis (y) domain `[min, max]`. When provided (and finite,
      * min<max) the y scale uses it instead of the data-derived range — letting
@@ -104,6 +117,7 @@
     bands,
     goalLine,
     trend = false,
+    annotations,
     domain,
     scale = "linear",
     invertAxis = false,
@@ -441,6 +455,40 @@
     };
   });
 
+  // --- Annotation overlay ---------------------------------------------------
+  // Data-space annotations resolved to absolute pixels via the chart scales.
+  // `xScale` honours the ordinal/numeric x domain (a category matches by
+  // equality, a numeric value must sit inside the domain); `yScale` reuses the
+  // value fraction. Out-of-domain coordinates yield `null` → the resolver drops
+  // them, so an annotation never escapes the plot.
+  const annotationXScale = $derived((v: number | string): number | null => {
+    if (xDomain.kind === "numeric") {
+      if (typeof v !== "number" || !Number.isFinite(v)) return null;
+      if (v < xDomain.min || v > xDomain.max) return null;
+      return scaleLinear(v, xDomain.min, xDomain.max, 0, plotWidth);
+    }
+    const i = data.findIndex((d) => d.x === v);
+    if (i < 0) return null;
+    const denom = Math.max(data.length - 1, 1);
+    return data.length === 1 ? plotWidth / 2 : (i / denom) * plotWidth;
+  });
+  const annotationYScale = $derived((v: number): number | null => {
+    if (!Number.isFinite(v)) return null;
+    return plotHeight * (1 - valueFraction(v));
+  });
+  const resolvedAnnotations = $derived(
+    resolveAnnotations(annotations, {
+      xScale: annotationXScale,
+      yScale: annotationYScale,
+      plotLeft: MARGIN.left,
+      plotTop: MARGIN.top,
+      plotWidth,
+      plotHeight
+    })
+  );
+  const annotationRegions = $derived(resolvedAnnotations.filter((a) => a.kind === "region"));
+  const annotationAbove = $derived(resolvedAnnotations.filter((a) => a.kind !== "region"));
+
   // --- Forecast segments ------------------------------------------------------
   // A datum with `forecast: true` renders as a forecast point: its dot takes
   // the forecast tone and every segment touching a forecast point is dashed,
@@ -466,7 +514,8 @@
 
   const dataValueItems = $derived([
     ...data.map((d, i) => (forecastFlags[i] ? `${d.x}: ${d.y} (prévision)` : `${d.x}: ${d.y}`)),
-    ...overlayDataListItems(referenceLines, bands, goal, trendModel)
+    ...overlayDataListItems(referenceLines, bands, goal, trendModel),
+    ...annotationDataListItems(annotations)
   ]);
 
   function buildLinearPath(pts: { x: number; y: number }[]): string {
@@ -651,6 +700,20 @@
       <line class="st-lineChart__trend" x1={trendLine.x1} y1={trendLine.y1} x2={trendLine.x2} y2={trendLine.y2} />
     {/if}
 
+    <!-- Annotation regions sit BEHIND the series (filled bands). -->
+    {#if annotationRegions.length > 0}
+      <g class="st-lineChart__annotations st-lineChart__annotations--behind">
+        {#each annotationRegions as a (a.key)}
+          {#if a.kind === "region"}
+            <rect class="st-lineChart__annotationRegion" x={a.x} y={a.y} width={a.width} height={a.height} />
+            {#if a.label}
+              <text class="st-lineChart__annotationLabel" x={a.x + 4} y={a.y + 11}>{a.label}</text>
+            {/if}
+          {/if}
+        {/each}
+      </g>
+    {/if}
+
     {#if area && areaPath}
       <path class="st-lineChart__area" d={areaPath} />
     {/if}
@@ -693,6 +756,37 @@
       <text class="st-lineChart__goalLabel" x={MARGIN.left + plotWidth - 4} y={goalGeom.y - 4} text-anchor="end">
         {goalGeom.label ?? `Objectif ${goalGeom.value}`}
       </text>
+    {/if}
+
+    <!-- Annotations ABOVE the series: lines, shapes, points, labels. -->
+    {#if annotationAbove.length > 0}
+      <g class="st-lineChart__annotations st-lineChart__annotations--above">
+        {#each annotationAbove as a (a.key)}
+          {#if a.kind === "line"}
+            <line class="st-lineChart__annotationLine" x1={a.x1} y1={a.y1} x2={a.x2} y2={a.y2} />
+            {#if a.label}
+              <text
+                class="st-lineChart__annotationLabel"
+                x={a.axis === "x" ? a.x1 + 4 : MARGIN.left + plotWidth - 4}
+                y={a.axis === "x" ? MARGIN.top + 11 : a.y1 - 4}
+                text-anchor={a.axis === "x" ? "start" : "end"}
+              >{a.label}</text>
+            {/if}
+          {:else if a.kind === "shape"}
+            <polygon class="st-lineChart__annotationShape" points={polygonPoints(a.points)} />
+            {#if a.label}
+              <text class="st-lineChart__annotationLabel" x={a.labelX} y={a.labelY} text-anchor="middle">{a.label}</text>
+            {/if}
+          {:else if a.kind === "point"}
+            <circle class="st-lineChart__annotationPoint" cx={a.x} cy={a.y} r="4.5" />
+            {#if a.label}
+              <text class="st-lineChart__annotationLabel" x={a.x} y={a.y - 8} text-anchor="middle">{a.label}</text>
+            {/if}
+          {:else}
+            <text class="st-lineChart__annotationText" x={a.x} y={a.y} text-anchor={a.anchor}>{a.text}</text>
+          {/if}
+        {/each}
+      </g>
     {/if}
     </svg>
   </div>
@@ -865,6 +959,34 @@
   .st-lineChart__goalLabel {
     fill: var(--st-semantic-feedback-success);
     font-size: 0.6875rem;
+    font-weight: 600;
+  }
+
+  /* --- Annotation layer ----------------------------------------------------
+     Regions render BEHIND the series; lines/shapes/points/labels render ABOVE. */
+  .st-lineChart__annotationRegion {
+    fill: color-mix(in srgb, var(--st-semantic-feedback-info) 12%, transparent);
+    stroke: none;
+  }
+  .st-lineChart__annotationLine {
+    stroke: var(--st-semantic-feedback-info);
+    stroke-width: 1.5;
+    stroke-dasharray: 4 3;
+  }
+  .st-lineChart__annotationShape {
+    fill: color-mix(in srgb, var(--st-semantic-feedback-info) 14%, transparent);
+    stroke: var(--st-semantic-feedback-info);
+    stroke-width: 1.5;
+  }
+  .st-lineChart__annotationPoint {
+    fill: var(--st-semantic-feedback-info);
+    stroke: var(--st-semantic-surface-default);
+    stroke-width: 1.5;
+  }
+  .st-lineChart__annotationLabel,
+  .st-lineChart__annotationText {
+    fill: var(--st-semantic-text-primary);
+    font-size: 0.625rem;
     font-weight: 600;
   }
 </style>

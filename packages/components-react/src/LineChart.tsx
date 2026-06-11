@@ -27,6 +27,12 @@ import {
   type ChartScale,
   type ForecastRun,
 } from "./chartScale.js";
+import {
+  annotationDataListItems,
+  polygonPoints,
+  resolveAnnotations,
+  type ChartAnnotation,
+} from "./chartAnnotations.js";
 
 export type LineChartTone =
   | "category1"
@@ -68,6 +74,13 @@ export type LineChartProps = Omit<React.HTMLAttributes<HTMLDivElement>, "classNa
   /** Least-squares trend line over the data points. */
   trend?: boolean;
   /**
+   * Annotation overlay in DATA space (points, labels, axis lines, regions,
+   * polygons). Resolved to pixels via the chart's scales and drawn in a
+   * dedicated `<g class="st-lineChart__annotations">` — regions behind the
+   * series, every other kind above it. Additive: absent ⇒ unchanged.
+   */
+  annotations?: ChartAnnotation[];
+  /**
    * Fixed value-axis (y) domain `[min, max]`. When provided (and finite,
    * min<max) the y scale uses it instead of the data-derived range. Invalid or
    * absent → auto range (unchanged).
@@ -103,6 +116,7 @@ export function LineChart({
   bands,
   goalLine,
   trend = false,
+  annotations,
   domain,
   scale = "linear",
   invertAxis = false,
@@ -257,6 +271,42 @@ export function LineChart({
         }
       : null;
 
+  // --- Annotation overlay ---------------------------------------------------
+  // Data-space annotations resolved to absolute pixels via the chart scales.
+  // `xScale` honours the ordinal/numeric x domain (a category matches by
+  // equality, a numeric value must sit inside the domain); `yScale` reuses the
+  // value fraction. Out-of-domain coordinates yield `null` → the resolver drops
+  // them, so an annotation never escapes the plot.
+  const ordinalIndex = (v: number | string) => {
+    if (xDomain.kind !== "ordinal") return null;
+    const i = data.findIndex((d) => d.x === v);
+    if (i < 0) return null;
+    const denom = Math.max(data.length - 1, 1);
+    return data.length === 1 ? plotWidth / 2 : (i / denom) * plotWidth;
+  };
+  const annotationXScale = (v: number | string): number | null => {
+    if (xDomain.kind === "numeric") {
+      if (typeof v !== "number" || !Number.isFinite(v)) return null;
+      if (v < xDomain.min || v > xDomain.max) return null;
+      return scaleLinear(v, xDomain.min, xDomain.max, 0, plotWidth);
+    }
+    return ordinalIndex(v);
+  };
+  const annotationYScale = (v: number): number | null => {
+    if (!Number.isFinite(v)) return null;
+    return plotHeight * (1 - valueFraction(v));
+  };
+  const resolvedAnnotations = resolveAnnotations(annotations, {
+    xScale: annotationXScale,
+    yScale: annotationYScale,
+    plotLeft: MARGIN.left,
+    plotTop: MARGIN.top,
+    plotWidth,
+    plotHeight,
+  });
+  const annotationRegions = resolvedAnnotations.filter((a) => a.kind === "region");
+  const annotationAbove = resolvedAnnotations.filter((a) => a.kind !== "region");
+
   // --- Forecast segments ------------------------------------------------------
   // A datum with `forecast: true` renders as a forecast point: its dot takes
   // the forecast tone and every segment touching a forecast point is dashed,
@@ -268,6 +318,7 @@ export function LineChart({
   const dataValueItems = [
     ...data.map((d, i) => (forecastFlags[i] ? `${d.x}: ${d.y} (prévision)` : `${d.x}: ${d.y}`)),
     ...overlayDataListItems({ referenceLines, bands, goalLine: goal, trend: trendModel }),
+    ...annotationDataListItems(annotations),
   ];
 
   // Full-series path (area fill always covers the whole series).
@@ -437,6 +488,24 @@ export function LineChart({
             />
           ) : null}
 
+          {/* Annotation regions sit BEHIND the series (filled bands). */}
+          {annotationRegions.length > 0 ? (
+            <g className="st-lineChart__annotations st-lineChart__annotations--behind">
+              {annotationRegions.map((a) =>
+                a.kind === "region" ? (
+                  <React.Fragment key={`ann-region-${a.key}`}>
+                    <rect className="st-lineChart__annotationRegion" x={a.x} y={a.y} width={a.width} height={a.height} />
+                    {a.label ? (
+                      <text className="st-lineChart__annotationLabel" x={a.x + 4} y={a.y + 11}>
+                        {a.label}
+                      </text>
+                    ) : null}
+                  </React.Fragment>
+                ) : null,
+              )}
+            </g>
+          ) : null}
+
           {area && areaPath ? <path className="st-lineChart__area" d={areaPath} /> : null}
           {solidPaths.map((d, i) => (
             <path
@@ -491,6 +560,60 @@ export function LineChart({
                 {goalGeom.label ?? `Objectif ${goalGeom.value}`}
               </text>
             </>
+          ) : null}
+
+          {/* Annotations ABOVE the series: lines, shapes, points, labels. */}
+          {annotationAbove.length > 0 ? (
+            <g className="st-lineChart__annotations st-lineChart__annotations--above">
+              {annotationAbove.map((a) => {
+                if (a.kind === "line") {
+                  return (
+                    <React.Fragment key={`ann-line-${a.key}`}>
+                      <line className="st-lineChart__annotationLine" x1={a.x1} y1={a.y1} x2={a.x2} y2={a.y2} />
+                      {a.label ? (
+                        <text
+                          className="st-lineChart__annotationLabel"
+                          x={a.axis === "x" ? a.x1 + 4 : MARGIN.left + plotWidth - 4}
+                          y={a.axis === "x" ? MARGIN.top + 11 : a.y1 - 4}
+                          textAnchor={a.axis === "x" ? "start" : "end"}
+                        >
+                          {a.label}
+                        </text>
+                      ) : null}
+                    </React.Fragment>
+                  );
+                }
+                if (a.kind === "shape") {
+                  return (
+                    <React.Fragment key={`ann-shape-${a.key}`}>
+                      <polygon className="st-lineChart__annotationShape" points={polygonPoints(a.points)} />
+                      {a.label ? (
+                        <text className="st-lineChart__annotationLabel" x={a.labelX} y={a.labelY} textAnchor="middle">
+                          {a.label}
+                        </text>
+                      ) : null}
+                    </React.Fragment>
+                  );
+                }
+                if (a.kind === "point") {
+                  return (
+                    <React.Fragment key={`ann-point-${a.key}`}>
+                      <circle className="st-lineChart__annotationPoint" cx={a.x} cy={a.y} r="4.5" />
+                      {a.label ? (
+                        <text className="st-lineChart__annotationLabel" x={a.x} y={a.y - 8} textAnchor="middle">
+                          {a.label}
+                        </text>
+                      ) : null}
+                    </React.Fragment>
+                  );
+                }
+                return (
+                  <text key={`ann-label-${a.key}`} className="st-lineChart__annotationText" x={a.x} y={a.y} textAnchor={a.anchor}>
+                    {a.text}
+                  </text>
+                );
+              })}
+            </g>
           ) : null}
         </svg>
       </div>

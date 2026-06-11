@@ -284,6 +284,34 @@
     opacity: 0.85;
   }
 
+  /* --- Annotation layer ----------------------------------------------------
+     Regions render BEHIND the area; lines/shapes/points/labels render ABOVE. */
+  .st-areaChart__annotationRegion {
+    fill: color-mix(in srgb, var(--st-semantic-feedback-info) 12%, transparent);
+    stroke: none;
+  }
+  .st-areaChart__annotationLine {
+    stroke: var(--st-semantic-feedback-info);
+    stroke-width: 1.5;
+    stroke-dasharray: 4 3;
+  }
+  .st-areaChart__annotationShape {
+    fill: color-mix(in srgb, var(--st-semantic-feedback-info) 14%, transparent);
+    stroke: var(--st-semantic-feedback-info);
+    stroke-width: 1.5;
+  }
+  .st-areaChart__annotationPoint {
+    fill: var(--st-semantic-feedback-info);
+    stroke: var(--st-semantic-surface-default);
+    stroke-width: 1.5;
+  }
+  .st-areaChart__annotationLabel,
+  .st-areaChart__annotationText {
+    fill: var(--st-semantic-text-primary);
+    font-size: 0.625rem;
+    font-weight: 600;
+  }
+
 .st-aspectRatio {
     display: block;
     overflow: hidden;
@@ -596,6 +624,34 @@
   .st-barChart__goalLabel {
     fill: var(--st-semantic-feedback-success);
     font-size: 0.6875rem;
+    font-weight: 600;
+  }
+
+  /* --- Annotation layer ----------------------------------------------------
+     Regions render BEHIND the bars; lines/shapes/points/labels render ABOVE. */
+  .st-barChart__annotationRegion {
+    fill: color-mix(in srgb, var(--st-semantic-feedback-info) 12%, transparent);
+    stroke: none;
+  }
+  .st-barChart__annotationLine {
+    stroke: var(--st-semantic-feedback-info);
+    stroke-width: 1.5;
+    stroke-dasharray: 4 3;
+  }
+  .st-barChart__annotationShape {
+    fill: color-mix(in srgb, var(--st-semantic-feedback-info) 14%, transparent);
+    stroke: var(--st-semantic-feedback-info);
+    stroke-width: 1.5;
+  }
+  .st-barChart__annotationPoint {
+    fill: var(--st-semantic-feedback-info);
+    stroke: var(--st-semantic-surface-default);
+    stroke-width: 1.5;
+  }
+  .st-barChart__annotationLabel,
+  .st-barChart__annotationText {
+    fill: var(--st-semantic-text-primary);
+    font-size: 0.625rem;
     font-weight: 600;
   }
 
@@ -3579,6 +3635,35 @@
   .st-lineChart__goalLabel {
     fill: var(--st-semantic-feedback-success);
     font-size: 0.6875rem;
+    font-weight: 600;
+  }
+
+  /* --- Annotation layer ----------------------------------------------------
+     Regions render BEHIND the series (color-mix tint, never raw opacity so the
+     data keeps contrast); lines/shapes/points/labels render ABOVE. */
+  .st-lineChart__annotationRegion {
+    fill: color-mix(in srgb, var(--st-semantic-feedback-info) 12%, transparent);
+    stroke: none;
+  }
+  .st-lineChart__annotationLine {
+    stroke: var(--st-semantic-feedback-info);
+    stroke-width: 1.5;
+    stroke-dasharray: 4 3;
+  }
+  .st-lineChart__annotationShape {
+    fill: color-mix(in srgb, var(--st-semantic-feedback-info) 14%, transparent);
+    stroke: var(--st-semantic-feedback-info);
+    stroke-width: 1.5;
+  }
+  .st-lineChart__annotationPoint {
+    fill: var(--st-semantic-feedback-info);
+    stroke: var(--st-semantic-surface-default);
+    stroke-width: 1.5;
+  }
+  .st-lineChart__annotationLabel,
+  .st-lineChart__annotationText {
+    fill: var(--st-semantic-text-primary);
+    font-size: 0.625rem;
     font-weight: 600;
   }
 
