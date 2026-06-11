@@ -39,6 +39,15 @@ export type ComboChartProps = Omit<React.HTMLAttributes<HTMLDivElement>, "classN
   leftAxisLabel?: string;
   rightAxisLabel?: string;
   legend?: boolean;
+  /**
+   * Interactive legend (FR-4). Ids/labels of bar/line series hidden from the
+   * render (controlled by the parent; default = all visible). Hidden series
+   * are omitted and their legend item is shown "off" (`aria-pressed`).
+   * Undefined → legacy non-interactive legend, unless `onToggleSeries` is set.
+   */
+  hiddenSeries?: string[];
+  /** Emitted on click / Enter / Space on a legend item. */
+  onToggleSeries?: (seriesId: string) => void;
   width?: number;
   height?: number;
   label: string;
@@ -59,6 +68,8 @@ export function ComboChart({
   leftAxisLabel,
   rightAxisLabel,
   legend = true,
+  hiddenSeries,
+  onToggleSeries,
   width = 480,
   height = 240,
   label,
@@ -67,12 +78,17 @@ export function ComboChart({
 }: ComboChartProps) {
   const [hovered, setHovered] = React.useState<Hover>(null);
 
+  // Interactive legend is active as soon as the parent wires either prop.
+  const legendInteractive = onToggleSeries !== undefined || hiddenSeries !== undefined;
+  const hiddenSet = new Set(hiddenSeries ?? []);
+
   const plotWidth = Math.max(width - MARGIN.left - MARGIN.right, 1);
   const plotHeight = Math.max(height - MARGIN.top - MARGIN.bottom, 1);
 
   // Left axis (bars): include zero in the domain so bars rest on a baseline.
+  // Hidden series are excluded so the axis rescales to what is visible.
   const leftScale = (() => {
-    const values = bars.flatMap((s) => s.data);
+    const values = bars.filter((s) => !hiddenSet.has(s.label)).flatMap((s) => s.data);
     const minRaw = Math.min(0, ...(values.length ? values : [0]));
     const maxRaw = Math.max(0, ...(values.length ? values : [0]));
     const ticks = niceTicks(minRaw, maxRaw, 5);
@@ -81,7 +97,7 @@ export function ComboChart({
 
   // Right axis (lines): padded domain like LineChart.
   const rightScale = (() => {
-    const values = lines.flatMap((s) => s.data);
+    const values = lines.filter((s) => !hiddenSet.has(s.label)).flatMap((s) => s.data);
     if (values.length === 0) {
       const ticks = niceTicks(0, 1, 5);
       return { ticks, domainMin: ticks[0], domainMax: ticks[ticks.length - 1] };
@@ -123,6 +139,7 @@ export function ComboChart({
     return categories.map((_, ci) => {
       const groupX = MARGIN.left + band * ci + (band - groupWidth) / 2;
       const segments = bars.flatMap((series, si) => {
+        if (hiddenSet.has(series.label)) return [];
         const raw = series.data[ci];
         // Donnée manquante/non finie → pas de barre (jamais une fausse barre à 0).
         if (raw == null || !Number.isFinite(raw)) return [];
@@ -155,6 +172,7 @@ export function ComboChart({
         path: string;
         points: Array<{ x: number; y: number; value: number; category: string; index: number }>;
         seriesLabel: string;
+        hidden: boolean;
         tone: string;
       }>;
     const { domainMin, domainMax } = rightScale;
@@ -194,6 +212,7 @@ export function ComboChart({
         path,
         points,
         seriesLabel: series.label,
+        hidden: hiddenSet.has(series.label),
         tone: series.tone ?? `category${((bars.length + li) % 8) + 1}`,
       };
     });
@@ -233,7 +252,9 @@ export function ComboChart({
       const raw = s.data[ci];
       return raw == null || !Number.isFinite(raw) ? [] : [`${s.label}, ${c}: ${raw}`];
     });
-  const dataValueItems = [...bars.flatMap(seriesItems), ...lines.flatMap(seriesItems)];
+  const visibleSeriesItems = (s: { label: string; data: number[] }) =>
+    hiddenSet.has(s.label) ? [] : seriesItems(s);
+  const dataValueItems = [...bars.flatMap(visibleSeriesItems), ...lines.flatMap(visibleSeriesItems)];
 
   function handleLeave() {
     setHovered(null);
@@ -387,45 +408,70 @@ export function ComboChart({
           )}
 
           {/* lines */}
-          {lineSeries.map((series, li) => (
-            <React.Fragment key={li}>
-              <path
-                className={`st-comboChart__line st-comboChart__line--${series.tone}`}
-                d={series.path}
-                fill="none"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              {series.points.map((p, pi) => (
-                <circle
-                  key={pi}
-                  className={`st-comboChart__dot st-comboChart__dot--${series.tone}`}
-                  cx={p.x}
-                  cy={p.y}
-                  r="4"
-                  data-chart-kind="line"
-                  data-chart-a={li}
-                  data-chart-b={pi}
+          {lineSeries.map((series, li) =>
+            series.hidden ? null : (
+              <React.Fragment key={li}>
+                <path
+                  className={`st-comboChart__line st-comboChart__line--${series.tone}`}
+                  d={series.path}
+                  fill="none"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
-              ))}
-            </React.Fragment>
-          ))}
+                {series.points.map((p, pi) => (
+                  <circle
+                    key={pi}
+                    className={`st-comboChart__dot st-comboChart__dot--${series.tone}`}
+                    cx={p.x}
+                    cy={p.y}
+                    r="4"
+                    data-chart-kind="line"
+                    data-chart-a={li}
+                    data-chart-b={pi}
+                  />
+                ))}
+              </React.Fragment>
+            ),
+          )}
         </svg>
       </div>
 
       <ChartDataList label={label} items={dataValueItems} />
 
       {legend && legendItems.length > 0 ? (
-        <ul className="st-comboChart__legend" aria-hidden="true">
-          {legendItems.map((item) => (
-            <li key={item.key} className="st-comboChart__legendItem">
+        <ul className="st-comboChart__legend" aria-hidden={legendInteractive ? undefined : "true"}>
+          {legendItems.map((item) => {
+            const off = hiddenSet.has(item.label);
+            const swatch = (
               <span
                 className={`st-comboChart__legendSwatch st-comboChart__legendSwatch--${item.kind} st-comboChart__legendSwatch--${item.tone}`}
               />
-              {item.label}
-            </li>
-          ))}
+            );
+            return (
+              <li
+                key={item.key}
+                className={classNames("st-comboChart__legendItem", legendInteractive && off && "st-comboChart__legendItem--off")}
+              >
+                {legendInteractive ? (
+                  <button
+                    type="button"
+                    className="st-comboChart__legendButton"
+                    aria-pressed={off}
+                    onClick={() => onToggleSeries?.(item.label)}
+                  >
+                    {swatch}
+                    {item.label}
+                  </button>
+                ) : (
+                  <>
+                    {swatch}
+                    {item.label}
+                  </>
+                )}
+              </li>
+            );
+          })}
         </ul>
       ) : null}
 
