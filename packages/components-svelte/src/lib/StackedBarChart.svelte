@@ -33,6 +33,16 @@
      * values already live in the accessible ChartDataList.
      */
     dataLabels?: DataLabelsProp;
+    /**
+     * Interactive legend (FR-4). Ids/labels of series hidden from the render
+     * (controlled by the parent; default = all visible). Each segment whose
+     * `label` ∈ `hiddenSeries` is omitted and its legend item is shown "off"
+     * (`aria-pressed`). Undefined → legacy non-interactive legend, unless
+     * `onToggleSeries` is provided.
+     */
+    hiddenSeries?: string[];
+    /** Emitted on click / Enter / Space on a legend item. */
+    onToggleSeries?: (seriesId: string) => void;
     class?: string;
   };
 
@@ -43,8 +53,14 @@
     label,
     showLegend = true,
     dataLabels,
+    hiddenSeries,
+    onToggleSeries,
     class: className
   }: StackedBarChartProps = $props();
+
+  // Interactive legend is active as soon as the parent wires either prop.
+  const legendInteractive = $derived(onToggleSeries !== undefined || hiddenSeries !== undefined);
+  const hiddenSet = $derived(new Set(hiddenSeries ?? []));
 
   const MARGIN = { top: 14, right: 16, bottom: 34, left: 44 };
   const TONES = ["category1","category2","category3","category4","category5","category6","category7","category8"] as const;
@@ -81,7 +97,9 @@
   let hovered: { bar: number; seg: number } | null = $state(null);
 
   const scales = $derived.by(() => {
-    const totals = data.map((b) => b.segments.reduce((s, x) => s + Math.max(x.value, 0), 0));
+    const totals = data.map((b) =>
+      b.segments.reduce((s, x) => (hiddenSet.has(x.label) ? s : s + Math.max(x.value, 0)), 0)
+    );
     const ticks = niceTicks(0, Math.max(0, ...totals));
     return {
       ticks, domainMax: ticks[ticks.length - 1],
@@ -98,23 +116,32 @@
     return data.map((bar, bi) => {
       const x = MARGIN.left + band * bi + (band - barWidth) / 2;
       let acc = 0;
-      const segs = bar.segments.map((seg, si) => {
-        const v = Math.max(seg.value, 0);
-        const yTop = MARGIN.top + scaleLinear(acc + v, 0, domainMax, plotH, 0);
-        const yBottom = MARGIN.top + scaleLinear(acc, 0, domainMax, plotH, 0);
-        acc += v;
-        return {
-          x, y: yTop, width: barWidth, height: Math.max(yBottom - yTop, 0),
-          seg, tone: seg.tone ?? TONES[si % TONES.length],
-          cx: x + barWidth / 2, cy: yTop + (yBottom - yTop) / 2
-        };
-      });
+      // Tone is bound to the original segment index so it stays stable when a
+      // series is toggled off; hidden segments are dropped before stacking.
+      const segs = bar.segments
+        .map((seg, si) => ({ seg, tone: seg.tone ?? TONES[si % TONES.length] }))
+        .filter(({ seg }) => !hiddenSet.has(seg.label))
+        .map(({ seg, tone }) => {
+          const v = Math.max(seg.value, 0);
+          const yTop = MARGIN.top + scaleLinear(acc + v, 0, domainMax, plotH, 0);
+          const yBottom = MARGIN.top + scaleLinear(acc, 0, domainMax, plotH, 0);
+          acc += v;
+          return {
+            x, y: yTop, width: barWidth, height: Math.max(yBottom - yTop, 0),
+            seg, tone,
+            cx: x + barWidth / 2, cy: yTop + (yBottom - yTop) / 2
+          };
+        });
       return { x, band, label: bar.label, segs, cxLabel: MARGIN.left + band * (bi + 0.5) };
     });
   });
 
   const dataValueItems = $derived(
-    data.flatMap((bar) => bar.segments.map((seg) => `${bar.label}, ${seg.label}: ${seg.value}`))
+    data.flatMap((bar) =>
+      bar.segments
+        .filter((seg) => !hiddenSet.has(seg.label))
+        .map((seg) => `${bar.label}, ${seg.label}: ${seg.value}`)
+    )
   );
 
   // --- Data labels ----------------------------------------------------------
@@ -206,9 +233,22 @@
   {#if showLegend && legend.length > 0}
     <ul class="st-stackedBar__legend">
       {#each legend as item (item.seriesLabel)}
-        <li class="st-stackedBar__legendItem">
-          <span class="st-stackedBar__legendSwatch st-stackedBar__legendSwatch--{item.tone}" aria-hidden="true"></span>
-          {item.seriesLabel}
+        {@const off = hiddenSet.has(item.seriesLabel)}
+        <li class="st-stackedBar__legendItem" class:st-stackedBar__legendItem--off={legendInteractive && off}>
+          {#if legendInteractive}
+            <button
+              type="button"
+              class="st-stackedBar__legendButton"
+              aria-pressed={off}
+              onclick={() => onToggleSeries?.(item.seriesLabel)}
+            >
+              <span class="st-stackedBar__legendSwatch st-stackedBar__legendSwatch--{item.tone}" aria-hidden="true"></span>
+              {item.seriesLabel}
+            </button>
+          {:else}
+            <span class="st-stackedBar__legendSwatch st-stackedBar__legendSwatch--{item.tone}" aria-hidden="true"></span>
+            {item.seriesLabel}
+          {/if}
         </li>
       {/each}
     </ul>
@@ -243,6 +283,12 @@
   .st-stackedBar__tooltipValue { opacity: 0.85; }
   .st-stackedBar__legend { display: flex; flex-wrap: wrap; gap: 0.75rem; list-style: none; margin: 0.5rem 0 0; padding: 0; }
   .st-stackedBar__legendItem { align-items: center; color: var(--st-semantic-text-secondary); display: inline-flex; font-size: 0.75rem; gap: 0.35rem; }
+  .st-stackedBar__legendItem--off { opacity: 0.45; }
+  .st-stackedBar__legendButton {
+    align-items: center; background: none; border: 0; border-radius: var(--st-radius-sm, 0.25rem);
+    color: inherit; cursor: pointer; display: inline-flex; font: inherit; gap: 0.35rem; padding: 0.125rem 0.25rem;
+  }
+  .st-stackedBar__legendButton:focus-visible { outline: 2px solid var(--st-semantic-border-interactive); outline-offset: 2px; }
   .st-stackedBar__legendSwatch { border-radius: 2px; height: 0.7rem; width: 0.7rem; }
   .st-stackedBar__legendSwatch--category1 { background: var(--st-semantic-data-category1); }
   .st-stackedBar__legendSwatch--category2 { background: var(--st-semantic-data-category2); }
