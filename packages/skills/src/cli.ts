@@ -27,6 +27,36 @@ interface DirectoryTarget {
   value: string;
 }
 
+// Couleurs hexa brutes publiées → token sémantique canonique. Source unique
+// partagée par `align --tones` (calibrage) et `build --promote` (promotion),
+// pour garantir un comportement déterministe identique des deux côtés.
+const HEX_TOKEN_REPLACEMENTS: readonly [RegExp, string][] = [
+  [/#0043ce/gi, "var(--st-semantic-action-primary)"],
+  [/#f8fafc/gi, "var(--st-semantic-surface-subtle)"],
+  [/#e2e8f0/gi, "var(--st-semantic-border-subtle)"],
+  [/#0f172a/gi, "var(--st-semantic-text-primary)"],
+  [/#334155/gi, "var(--st-semantic-text-secondary)"],
+  [/#64748b/gi, "var(--st-semantic-text-muted)"]
+];
+
+/**
+ * Remplace les codes hexa bruts publiés par leurs tokens sémantiques `--st-*`.
+ * Déterministe et idempotent (les `var(--…)` déjà tokenisés ne contiennent plus
+ * de hex à matcher). Retourne le nombre de remplacements pour le compteur.
+ */
+function promoteHexColors(content: string): { content: string; fixes: number } {
+  let next = content;
+  let fixes = 0;
+  for (const [regex, replacement] of HEX_TOKEN_REPLACEMENTS) {
+    const matches = next.match(regex);
+    if (matches) {
+      fixes += matches.length;
+      next = next.replace(regex, replacement);
+    }
+  }
+  return { content: next, fixes };
+}
+
 interface TechnicalCheckReport {
   target: AuditTarget | DirectoryTarget;
   pages: number;
@@ -201,15 +231,17 @@ function printBuildHelp() {
     `\x1b[1m\x1b[36mCommand: design build <feature>\x1b[0m\n` +
     `Génère un squelette Svelte 5 déterministe; les passes créatives restent agentiques.\n\n` +
     `\x1b[1mOPTIONS\x1b[0m\n` +
+    `  --promote <fichier>   Auto-fix déterministe : promeut les couleurs hexa brutes et les piles\n` +
+    `                        de polices publiées d'un fichier local vers leurs tokens \`--st-*\`.\n` +
+    `                        Idempotent ; retourne 0 (2 si la cible n'est pas un fichier).\n` +
     `  --propose             Expérimental agentique : pas d'artefact CLI, retourne 2.\n` +
-    `  --promote             Expérimental agentique : pas d'artefact CLI, retourne 2.\n` +
     `  --global              Expérimental agentique : pas d'artefact CLI, retourne 2.\n` +
     `  -h, --help            Affiche cette aide.\n\n` +
     `\x1b[1mCOMPORTEMENT PAR DÉFAUT\x1b[0m\n` +
     `  Génération complète de code Svelte 5 / CSS pour la feature ('craft').\n\n` +
     `\x1b[1mEXEMPLES\x1b[0m\n` +
     `  design build profile-card\n` +
-    `  design build header --propose\n`
+    `  design build src/lib/Widget.svelte --promote\n`
   );
 }
 
@@ -696,15 +728,58 @@ async function handleBuild(args: string[]) {
   const isPromote = args.includes("--promote");
   const isGlobal = args.includes("--global");
 
-  // --propose / --promote / --global : passes créatives non déterministes,
-  // pilotées par l'agent. Pas de faux succès tant qu'elles ne produisent pas
-  // d'artefact réel en CLI.
-  if (isPropose || isPromote || isGlobal) {
-    const which = isPropose ? "--propose" : isPromote ? "--promote" : "--global";
+  // --promote : auto-fix déterministe et borné. Promeut les valeurs brutes
+  // (couleurs hexa + piles de polices publiées) d'un fichier de composant local
+  // vers leurs tokens `--st-*`, en réutilisant la logique de `align --tones` /
+  // `--typo`. Rapporte ce qui a été promu et sort 0 (artefact réel).
+  if (isPromote) {
+    const promoteTargetRaw = args.find((arg) => !arg.startsWith("-"));
+    const target = promoteTargetRaw ? resolveTarget(promoteTargetRaw) : undefined;
+    if (!target || target.kind !== "file" || !existsSync(target.value)) {
+      process.stderr.write(
+        `\x1b[1m\x1b[31mErreur :\x1b[0m \`build --promote\` attend un fichier de composant local à promouvoir.\n` +
+        `Exemple : design build src/lib/Widget.svelte --promote\n`
+      );
+      process.exit(2);
+    }
+
+    const filePath = target.value;
+    const original = readFileSync(filePath, "utf-8");
+
+    const hex = promoteHexColors(original);
+    const typo = alignFontFamilyTokens(hex.content);
+    const finalContent = typo.content;
+    const colorFixes = hex.fixes;
+    const fontFixes = typo.fixes;
+    const total = colorFixes + fontFixes;
+
+    process.stderr.write(
+      `\x1b[1m\x1b[35m[design build --promote] 🎯 Promotion des valeurs brutes vers les tokens \`--st-*\`…\x1b[0m\n`
+    );
+
+    if (finalContent !== original) {
+      writeFileSync(filePath, finalContent, "utf-8");
+      process.stderr.write(
+        `\x1b[1m\x1b[32m✔ Promotion réussie !\x1b[0m ${total} valeur(s) brute(s) promue(s) dans \x1b[2m${filePath}\x1b[0m ` +
+        `(couleurs:${colorFixes} polices:${fontFixes}).\n`
+      );
+    } else {
+      process.stderr.write(
+        `\x1b[1m\x1b[32m✔ Déjà tokenisé !\x1b[0m Aucune valeur brute promouvable détectée dans \x1b[2m${filePath}\x1b[0m.\n`
+      );
+    }
+    process.exit(0);
+  }
+
+  // --propose / --global : passes créatives non déterministes, pilotées par
+  // l'agent. Pas de faux succès tant qu'elles ne produisent pas d'artefact réel.
+  if (isPropose || isGlobal) {
+    const which = isPropose ? "--propose" : "--global";
     process.stderr.write(
       `\x1b[33m[design build ${which}]\x1b[0m Passe expérimentale pilotée par l'agent : ` +
       `aucun artefact déterministe produit en CLI pour l'instant.\n` +
-      `Utilise \`design build <feature>\` (craft) pour générer un squelette de composant réel.\n`
+      `Utilise \`design build <feature>\` (craft) pour générer un squelette de composant réel,\n` +
+      `ou \`design build <fichier> --promote\` pour promouvoir les valeurs brutes en tokens.\n`
     );
     process.exit(2);
   }
@@ -1296,24 +1371,8 @@ async function handleAlign(args: string[]) {
   if (isTones || !anyFlag) {
     if (isLocalFile && fileContent) {
       // Auto-correction des couleurs hexa brutes vers les variables CSS du thème
-      const hexReplacements: [RegExp, string][] = [
-        [/#0043ce/gi, "var(--st-semantic-action-primary)"],
-        [/#f8fafc/gi, "var(--st-semantic-surface-subtle)"],
-        [/#e2e8f0/gi, "var(--st-semantic-border-subtle)"],
-        [/#0f172a/gi, "var(--st-semantic-text-primary)"],
-        [/#334155/gi, "var(--st-semantic-text-secondary)"],
-        [/#64748b/gi, "var(--st-semantic-text-muted)"]
-      ];
-
-      let newContent = fileContent;
-      let fileModCount = 0;
-      for (const [regex, replacement] of hexReplacements) {
-        const matches = newContent.match(regex);
-        if (matches) {
-          fileModCount += matches.length;
-          newContent = newContent.replace(regex, replacement);
-        }
-      }
+      // (logique partagée avec `build --promote` via `promoteHexColors`).
+      const { content: newContent, fixes: fileModCount } = promoteHexColors(fileContent);
 
       if (newContent !== fileContent) {
         modificationsCount += fileModCount;
