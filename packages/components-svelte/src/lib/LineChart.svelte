@@ -60,6 +60,7 @@
     type ChartAnnotation
   } from "./chartAnnotations.js";
   import { formatDataLabel, normalizeDataLabels, type DataLabelsProp } from "./chartDataLabels.js";
+  import { keyForX, resolveActiveIndex } from "./chartCrosshair.js";
 
   type LineChartProps = {
     data: LineChartDatum[];
@@ -111,6 +112,20 @@
      * no legend surface, so this prop is accepted for parity and otherwise ignored.
      */
     showLegend?: boolean;
+    /**
+     * CONTROLLED synchronised hover key (FR-3). A datum's key is `String(x)`. When
+     * provided (string or null), the crosshair + tooltip track this key instead of
+     * the chart's internal pointer hover (null ⇒ nothing shown), letting a parent
+     * share one hover channel across several aligned charts. Absent (`undefined`)
+     * keeps the legacy uncontrolled behaviour.
+     */
+    hoverKey?: string | null;
+    /**
+     * Emitted when the user hovers a datum (its key) or leaves the plot (`null`).
+     * Always fired on pointer move/leave — even while CONTROLLED — so dataviz can
+     * keep the shared hover channel in sync.
+     */
+    onHoverKeyChange?: (key: string | null) => void;
     class?: string;
   };
 
@@ -132,6 +147,8 @@
     scale = "linear",
     invertAxis = false,
     showLegend,
+    hoverKey,
+    onHoverKeyChange,
     class: className
   }: LineChartProps = $props();
 
@@ -617,18 +634,32 @@
     return entries;
   });
 
+  // Stable key per datum (FR-3): `String(x)`. Resolves a controlled `hoverKey`
+  // to an index and feeds `onHoverKeyChange` from pointer events.
+  const hoverKeys = $derived(data.map((d) => keyForX(d.x)));
+  function emitHoverKey(index: number | null) {
+    onHoverKeyChange?.(index == null ? null : hoverKeys[index] ?? null);
+  }
   function handleLeave() {
     hoveredIndex = null;
+    emitHoverKey(null);
   }
   function handleVisualPointerMove(event: PointerEvent) {
     const target = event.target;
     if (!(target instanceof Element)) {
       hoveredIndex = null;
+      emitHoverKey(null);
       return;
     }
-    const index = Number(target.getAttribute("data-chart-index"));
-    hoveredIndex = Number.isInteger(index) ? index : null;
+    const raw = Number(target.getAttribute("data-chart-index"));
+    const index = Number.isInteger(raw) ? raw : null;
+    hoveredIndex = index;
+    emitHoverKey(index);
   }
+
+  // Index whose crosshair/tooltip is DISPLAYED: the controlled `hoverKey` when
+  // provided (resolved against `hoverKeys`), else the internal pointer index.
+  const activeIndex = $derived(resolveActiveIndex(hoverKey, hoveredIndex, hoverKeys));
 
   const classes = () =>
     ["st-lineChart", `st-lineChart--${tone}`, className].filter(Boolean).join(" ");
@@ -820,13 +851,23 @@
         {/each}
       </g>
     {/if}
+
+    <!-- Crosshair (FR-3) — a tokenised vertical line + marker at the active key.
+         Decorative (aria-hidden); the value is in the tooltip + ChartDataList. -->
+    {#if activeIndex >= 0 && points[activeIndex]}
+      {@const cp = points[activeIndex]}
+      <g class="st-lineChart__crosshair" aria-hidden="true">
+        <line class="st-lineChart__crosshairLine" x1={cp.x} x2={cp.x} y1={MARGIN.top} y2={MARGIN.top + plotHeight} />
+        <circle class="st-lineChart__crosshairMarker" cx={cp.x} cy={cp.y} r="5" />
+      </g>
+    {/if}
     </svg>
   </div>
 
   <ChartDataList {label} items={dataValueItems} />
 
-  {#if hoveredIndex !== null && points[hoveredIndex]}
-    {@const p = points[hoveredIndex]}
+  {#if activeIndex >= 0 && points[activeIndex]}
+    {@const p = points[activeIndex]}
     <div
       class="st-lineChart__tooltip"
       role="presentation"
@@ -1027,5 +1068,20 @@
     fill: var(--st-semantic-text-primary);
     font-size: 0.6875rem;
     font-weight: 600;
+  }
+
+  /* --- Crosshair layer (FR-3) ----------------------------------------------
+     A tokenised dashed vertical line at the active (hovered/controlled) key,
+     plus an emphasised marker on the point. Decorative (aria-hidden). */
+  .st-lineChart__crosshairLine {
+    stroke: var(--st-semantic-border-strong);
+    stroke-width: 1;
+    stroke-dasharray: 3 3;
+    opacity: 0.7;
+  }
+  .st-lineChart__crosshairMarker {
+    fill: currentColor;
+    stroke: var(--st-semantic-surface-default);
+    stroke-width: 2;
   }
 </style>

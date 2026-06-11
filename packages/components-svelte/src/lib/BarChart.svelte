@@ -57,6 +57,7 @@
     type ChartAnnotation
   } from "./chartAnnotations.js";
   import { formatDataLabel, normalizeDataLabels, type DataLabelsProp } from "./chartDataLabels.js";
+  import { resolveActiveIndex } from "./chartCrosshair.js";
 
   type BarChartProps = {
     data: BarChartDatum[];
@@ -124,6 +125,20 @@
      * cross-chart parity and otherwise ignored.
      */
     showLegend?: boolean;
+    /**
+     * CONTROLLED synchronised hover key (FR-3). A bar's key is its `label`. When
+     * provided (string or null), the crosshair + tooltip track this key instead of
+     * the chart's internal pointer hover (null ⇒ nothing shown), letting a parent
+     * share one hover channel across several aligned charts. Absent (`undefined`)
+     * keeps the legacy uncontrolled behaviour. Independent of `selectedKeys`.
+     */
+    hoverKey?: string | null;
+    /**
+     * Emitted when the user hovers a bar (its `label`) or leaves the plot (`null`).
+     * Always fired on pointer move/leave — even while CONTROLLED — so dataviz can
+     * keep the shared hover channel in sync.
+     */
+    onHoverKeyChange?: (key: string | null) => void;
     class?: string;
   };
 
@@ -144,6 +159,8 @@
     scale = "linear",
     invertAxis = false,
     showLegend,
+    hoverKey,
+    onHoverKeyChange,
     class: className
   }: BarChartProps = $props();
 
@@ -599,18 +616,32 @@
     }));
   });
 
+  // Stable key per bar (FR-3): its `label`. Resolves a controlled `hoverKey` to
+  // an index and feeds `onHoverKeyChange` from pointer events.
+  const hoverKeys = $derived(bars.map((b) => b.datum.label));
+  function emitHoverKey(index: number | null) {
+    onHoverKeyChange?.(index == null ? null : hoverKeys[index] ?? null);
+  }
   function handleLeave() {
     hoveredIndex = null;
+    emitHoverKey(null);
   }
   function handleVisualPointerMove(event: PointerEvent) {
     const target = event.target;
     if (!(target instanceof Element)) {
       hoveredIndex = null;
+      emitHoverKey(null);
       return;
     }
-    const index = Number(target.getAttribute("data-chart-index"));
-    hoveredIndex = Number.isInteger(index) ? index : null;
+    const raw = Number(target.getAttribute("data-chart-index"));
+    const index = Number.isInteger(raw) ? raw : null;
+    hoveredIndex = index;
+    emitHoverKey(index);
   }
+
+  // Index whose crosshair/tooltip is DISPLAYED: the controlled `hoverKey` when
+  // provided (resolved against `hoverKeys`), else the internal pointer index.
+  const activeIndex = $derived(resolveActiveIndex(hoverKey, hoveredIndex, hoverKeys));
 
   const classes = () => ["st-barChart", className].filter(Boolean).join(" ");
 </script>
@@ -836,6 +867,20 @@
         {/each}
       </g>
     {/if}
+
+    <!-- Crosshair (FR-3) — a tokenised dashed line on the CATEGORY axis at the
+         active bar: vertical (vertical bars) / horizontal (horizontal bars).
+         Decorative (aria-hidden); the value is in the tooltip + ChartDataList. -->
+    {#if activeIndex >= 0 && bars[activeIndex]}
+      {@const cb = bars[activeIndex]}
+      <g class="st-barChart__crosshair" aria-hidden="true">
+        {#if isVertical}
+          <line class="st-barChart__crosshairLine" x1={cb.cx} x2={cb.cx} y1={MARGIN.top} y2={MARGIN.top + scales.plotHeight} />
+        {:else}
+          <line class="st-barChart__crosshairLine" x1={MARGIN.left} x2={MARGIN.left + scales.plotWidth} y1={cb.cy} y2={cb.cy} />
+        {/if}
+      </g>
+    {/if}
     </svg>
   </div>
 
@@ -861,8 +906,8 @@
 
   <ChartDataList {label} items={dataValueItems} />
 
-  {#if hoveredIndex !== null && bars[hoveredIndex]}
-    {@const bar = bars[hoveredIndex]}
+  {#if activeIndex >= 0 && bars[activeIndex]}
+    {@const bar = bars[activeIndex]}
     <div
       class="st-barChart__tooltip"
       role="presentation"
@@ -1123,5 +1168,15 @@
     fill: var(--st-semantic-text-primary);
     font-size: 0.6875rem;
     font-weight: 600;
+  }
+
+  /* --- Crosshair layer (FR-3) ----------------------------------------------
+     A tokenised dashed line on the CATEGORY axis at the active (hovered/
+     controlled) bar. Decorative (aria-hidden). */
+  .st-barChart__crosshairLine {
+    stroke: var(--st-semantic-border-strong);
+    stroke-width: 1;
+    stroke-dasharray: 3 3;
+    opacity: 0.7;
   }
 </style>
