@@ -4,7 +4,8 @@ Liste vivante des bugs visuels et comportementaux signalés sur le design system
 
 ## À corriger
 
-(rien d'ouvert pour l'instant — les trois bugs du 2026-05-22 sont passés en « Corrigés » ci-dessous)
+### Site docs — thème ET framework oubliés à la navigation/clic thème (signalé 2026-06-11)
+Sur le site docs, quand on **clique un thème** ou qu'on **change de composant** (navigation), le **thème sélectionné est oublié** ET le **framework actif (svelte/react/vue) aussi** → retour au défaut. Pourtant la persistance localStorage existe (`+layout.svelte` `THEME_STORAGE_KEY`, `framework.svelte.ts` `FRAMEWORK_STORAGE_KEY`, `color-mode.svelte.ts`). Cause probable : la restauration depuis localStorage n'est pas (ré)appliquée à chaque navigation SvelteKit (state ré-initialisé au défaut au mount, ou flash SSR/hydratation, ou un reset partagé thème↔framework). **Attendu** : thème + framework + color-mode persistés et restaurés de façon stable à travers toute navigation et au reload, sans flash. Fix + test de non-régression (url-state/persistence). [agent lancé 2026-06-11]
 
 ## Retest navigateur 2026-06-01
 
