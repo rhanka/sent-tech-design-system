@@ -20,6 +20,7 @@
   import { dsfrTheme } from "@sentropic/design-system-theme-dsfr";
   import { carbonTheme } from "@sentropic/design-system-theme-carbon";
   import { airbusTheme } from "@sentropic/design-system-theme-airbus";
+  import { canadaTheme } from "@sentropic/design-system-theme-canada";
   import {
     DOCS_FOUNDATION_NAV,
     DOCS_TOP_NAV,
@@ -51,6 +52,7 @@
   import ChromeCarbon from "$lib/chrome/ChromeCarbon.svelte";
   import ChromeDsfr from "$lib/chrome/ChromeDsfr.svelte";
   import ChromeAirbus from "$lib/chrome/ChromeAirbus.svelte";
+  import ChromeCanada from "$lib/chrome/ChromeCanada.svelte";
 
 
   let { children } = $props();
@@ -69,7 +71,7 @@
   // Thèmes proposés : le DS Sentropic de référence + les 2 mappings tiers
   // (DSFR/Carbon) + le thème client Airbus (port d'anatomie).
   // (forge/entropic sont des tenants de démo internes — exclus du sélecteur.)
-  const THEMES: TenantTheme[] = [sentTechTheme, dsfrTheme, carbonTheme, airbusTheme];
+  const THEMES: TenantTheme[] = [sentTechTheme, dsfrTheme, carbonTheme, airbusTheme, canadaTheme];
   const THEME_STORAGE_KEY = "st-docs-theme";
   // Balise <style> du thème de base, injectée en SSR pour le premier rendu.
   // Utilise compileThemeWithModes pour émettre 3 blocs (light + auto dark + explicit dark).
@@ -245,7 +247,7 @@
   // Les chromes Carbon/DSFR/Airbus encapsulent leur propre header + sidebar.
   // Le chrome sent-tech utilise le Header du composant DS + la sidebar existante.
   const useCustomChrome = $derived(
-    browser && (activeThemeId === "carbon" || activeThemeId === "dsfr" || activeThemeId === "airbus")
+    browser && (activeThemeId === "carbon" || activeThemeId === "dsfr" || activeThemeId === "airbus" || activeThemeId === "canada")
   );
 </script>
 
@@ -599,6 +601,25 @@
         {@render pageContent()}
       {/snippet}
     </ChromeAirbus>
+  </div>
+
+{:else if useCustomChrome && activeThemeId === "canada"}
+  <div data-st-theme={activeThemeId}>
+    <ChromeCanada
+      activeThemeId={activeThemeId}
+      isThemeOpen={isThemeOpen}
+      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      themeSwitcher={themeSelector}
+      frameworkSwitcher={frameworkSelector}
+      localeSwitcher={langSelector}
+      compareButton={sharedCompareButton}
+      mobileMenuOpen={isMobileMenuOpen}
+      onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
+    >
+      {#snippet children()}
+        {@render pageContent()}
+      {/snippet}
+    </ChromeCanada>
   </div>
 
 {:else}
