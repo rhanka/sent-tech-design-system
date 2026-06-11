@@ -9,6 +9,7 @@ import { REFERENCE_THEMES_LOCAL, mergeReferenceThemesOverlay } from "./local-ove
 
 const DSFR_CDN = "https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.14.4/dist";
 const CARBON_CDN = "https://cdn.jsdelivr.net/npm/carbon-components@10.58.15";
+const GCDS_CDN = "https://cdn.jsdelivr.net/npm/@cdssnc/gcds-components@0.47.0/dist/gcds";
 
 export const REFERENCE_THEMES = {
   dsfr: {
@@ -33,6 +34,18 @@ export const REFERENCE_THEMES = {
       `<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>` +
       `<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&display=swap">`,
     brandFont: "'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif",
+    lang: "en",
+  },
+  canada: {
+    label: "GC Design System (Canada)",
+    cssUrl: `${GCDS_CDN}/gcds.css`,
+    // Lato (headings) + Noto Sans (body) via Google Fonts — GCDS ne sert pas la
+    // police elle-même, sans quoi la référence retombe sur un fallback système.
+    fontLinks:
+      `<link rel="preconnect" href="https://fonts.googleapis.com">` +
+      `<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>` +
+      `<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Noto+Sans:wght@400;600;700&display=swap">`,
+    brandFont: "'Noto Sans', system-ui, sans-serif",
     lang: "en",
   },
 };
