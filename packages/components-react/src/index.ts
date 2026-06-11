@@ -147,6 +147,16 @@ export type {
   KpiCardDeltaFormat,
   KpiCardTone,
 } from "./KpiCard.js";
+export { ConfigItemCard } from "./ConfigItemCard.js";
+export type {
+  ConfigItemCardProps,
+  ConfigItem,
+  ConfigItemSourceLevel,
+} from "./ConfigItemCard.js";
+export { FieldCard } from "./FieldCard.js";
+export type { FieldCardProps, FieldCardVariant, FieldCardTone } from "./FieldCard.js";
+export { ScoreCard } from "./ScoreCard.js";
+export type { ScoreCardProps, ScoreCardType, ScoreCardSize } from "./ScoreCard.js";
 export { LanguageSelector } from "./LanguageSelector.js";
 export type { LanguageSelectorProps, LanguageOption } from "./LanguageSelector.js";
 export { LineChart } from "./LineChart.js";
@@ -425,6 +435,14 @@ export { SelectionChip } from "./SelectionChip.js";
 export type { SelectionChipProps, SelectionChipTone } from "./SelectionChip.js";
 export { AppHeader } from "./AppHeader.js";
 export type { AppHeaderProps } from "./AppHeader.js";
+export { AppChrome } from "./AppChrome.js";
+export type {
+  AppChromeProps,
+  AppChromeNavItem,
+  AppChromeThemeOption,
+  AppChromeColorMode,
+  AppChromeLocale
+} from "./AppChrome.js";
 export { LanguageToggle } from "./LanguageToggle.js";
 export type { LanguageToggleProps, LanguageToggleLocale } from "./LanguageToggle.js";
 export { IdentityMenu, identityInitial } from "./IdentityMenu.js";

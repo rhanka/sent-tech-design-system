@@ -1,6 +1,14 @@
 export { default as Accordion } from "./Accordion.svelte";
 export { default as AppHeader } from "./AppHeader.svelte";
 export type { AppHeaderProps } from "./AppHeader.svelte";
+export { default as AppChrome } from "./AppChrome.svelte";
+export type {
+  AppChromeProps,
+  AppChromeNavItem,
+  AppChromeThemeOption,
+  AppChromeColorMode,
+  AppChromeLocale
+} from "./AppChrome.svelte";
 export { default as LanguageToggle } from "./LanguageToggle.svelte";
 export type { LanguageToggleProps, LanguageToggleLocale } from "./LanguageToggle.svelte";
 export { default as IdentityMenu, identityInitial } from "./IdentityMenu.svelte";
@@ -107,6 +115,20 @@ export { default as Inline } from "./Inline.svelte";
 export { default as InlineLoading } from "./InlineLoading.svelte";
 export { default as Input } from "./Input.svelte";
 export { default as KpiCard } from "./KpiCard.svelte";
+export { default as ConfigItemCard } from "./ConfigItemCard.svelte";
+export type {
+  ConfigItemCardProps,
+  ConfigItem,
+  ConfigItemSourceLevel
+} from "./ConfigItemCard.svelte";
+export { default as FieldCard } from "./FieldCard.svelte";
+export type {
+  FieldCardProps,
+  FieldCardVariant,
+  FieldCardTone
+} from "./FieldCard.svelte";
+export { default as ScoreCard } from "./ScoreCard.svelte";
+export type { ScoreCardProps, ScoreCardType, ScoreCardSize } from "./ScoreCard.svelte";
 export { default as LanguageSelector } from "./LanguageSelector.svelte";
 export { default as LineChart } from "./LineChart.svelte";
 export { default as Link } from "./Link.svelte";

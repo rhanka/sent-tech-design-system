@@ -406,6 +406,17 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "AppChrome",
+    slug: "app-chrome",
+    status: "documented",
+    category: "navigation",
+    groupSlug: "header",
+    description: {
+      fr: "Coque de navigation complète et paramétrable : marque, nav, contrôles (thème, mode couleur, langue, GitHub, identité) et tiroir mobile.",
+      en: "Full, parameterized navigation shell: brand, nav, controls (theme, color mode, language, GitHub, identity) and mobile drawer."
+    }
+  },
+  {
     name: "Footer",
     slug: "footer",
     status: "documented",
@@ -775,6 +786,36 @@ export const COMPONENTS: ComponentEntry[] = [
     description: {
       fr: "Conteneur surface avec bordure et padding.",
       en: "Surface container with border and padding."
+    }
+  },
+  {
+    name: "ConfigItemCard",
+    slug: "config-item-card",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Carte d'item de configuration : nom, clé, description, badge de provenance et actions selon la provenance.",
+      en: "Configuration item card: name, key, description, provenance badge and provenance-aware actions."
+    }
+  },
+  {
+    name: "FieldCard",
+    slug: "field-card",
+    status: "documented",
+    category: "layout",
+    description: {
+      fr: "Carte de groupe de champs : en-tête titré, pastille de commentaires optionnelle, variantes bordered / plain / accent.",
+      en: "Field group card: titled header, optional comment pill, bordered / plain / accent variants."
+    }
+  },
+  {
+    name: "ScoreCard",
+    slug: "score-card",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Carte de score : titre, notation symbolique (étoiles / croix) et score chiffré, types value et complexity.",
+      en: "Score card: title, symbolic rating (stars / crosses) and numeric score, value and complexity types."
     }
   },
   {
