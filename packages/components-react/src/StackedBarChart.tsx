@@ -1,6 +1,7 @@
 import React from "react";
 import { classNames } from "./classNames.js";
 import { ChartDataList, formatTick, niceTicks, scaleLinear } from "./chartScale.js";
+import { formatDataLabel, normalizeDataLabels, type DataLabelsProp } from "./chartDataLabels.js";
 
 export type StackedBarTone =
   | "category1"
@@ -29,10 +30,21 @@ export type StackedBarChartProps = Omit<React.HTMLAttributes<HTMLDivElement>, "c
   height?: number;
   label: string;
   showLegend?: boolean;
+  /**
+   * Per-segment value labels. `false`/absent (default) → none. `true` → each
+   * segment's value with the chart's numeric formatter. Object → `format(value)`
+   * and/or a `position` override (default `center` of the segment). Segments too
+   * short to host a legible label are skipped. Labels are `aria-hidden` — the
+   * values already live in the accessible ChartDataList.
+   */
+  dataLabels?: DataLabelsProp;
   className?: string;
 };
 
 const MARGIN = { top: 14, right: 16, bottom: 34, left: 44 } as const;
+
+// A segment must be at least this tall (px) to host a legible label.
+const DATA_LABEL_MIN_SEG_PX = 14;
 
 const TONES: StackedBarTone[] = [
   "category1",
@@ -64,6 +76,7 @@ export function StackedBarChart({
   height = 260,
   label,
   showLegend = true,
+  dataLabels,
   className,
   ...rest
 }: StackedBarChartProps) {
@@ -114,6 +127,24 @@ export function StackedBarChart({
   })();
 
   const dataValueItems = data.flatMap((bar) => bar.segments.map((seg) => `${bar.label}, ${seg.label}: ${seg.value}`));
+
+  // --- Data labels ----------------------------------------------------------
+  // One value label centred in each segment (default `center`). Segments shorter
+  // than DATA_LABEL_MIN_SEG_PX are skipped so labels stay legible. aria-hidden
+  // (values are in the ChartDataList already).
+  const dataLabelOpts = normalizeDataLabels(dataLabels);
+  const dataLabelItems = dataLabelOpts.enabled
+    ? bars.flatMap((bar) =>
+        bar.segs
+          .filter((s) => s.height >= DATA_LABEL_MIN_SEG_PX)
+          .map((s) => ({
+            key: `${bar.label}-${s.seg.label}`,
+            x: s.cx,
+            y: s.cy,
+            text: formatDataLabel(s.seg.value, dataLabelOpts, formatTick),
+          })),
+      )
+    : [];
 
   function handleLeave() {
     setHovered(null);
@@ -197,6 +228,24 @@ export function StackedBarChart({
               ))}
             </React.Fragment>
           ))}
+
+          {/* Data labels — one value per segment, drawn on top. aria-hidden. */}
+          {dataLabelItems.length > 0 ? (
+            <g className="st-stackedBar__dataLabels" aria-hidden="true">
+              {dataLabelItems.map((d) => (
+                <text
+                  key={d.key}
+                  className="st-stackedBar__dataLabel"
+                  x={d.x}
+                  y={d.y}
+                  textAnchor="middle"
+                  dominantBaseline="central"
+                >
+                  {d.text}
+                </text>
+              ))}
+            </g>
+          ) : null}
         </svg>
       </div>
 

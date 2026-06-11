@@ -312,6 +312,13 @@
     font-weight: 600;
   }
 
+  /* Data labels — per-point value, drawn on top. Token-only colour. */
+  .st-areaChart__dataLabel {
+    fill: var(--st-semantic-text-primary);
+    font-size: 0.6875rem;
+    font-weight: 600;
+  }
+
 .st-aspectRatio {
     display: block;
     overflow: hidden;
@@ -652,6 +659,13 @@
   .st-barChart__annotationText {
     fill: var(--st-semantic-text-primary);
     font-size: 0.625rem;
+    font-weight: 600;
+  }
+
+  /* Data labels — per-bar value, drawn on top. Token-only colour. */
+  .st-barChart__dataLabel {
+    fill: var(--st-semantic-text-primary);
+    font-size: 0.6875rem;
     font-weight: 600;
   }
 
@@ -2058,6 +2072,13 @@
     fill: var(--st-semantic-text-primary);
     font-size: 1.25rem;
     font-weight: 650;
+  }
+
+  /* Data labels — per-slice value, centred in the arc. Token-only colour. */
+  .st-donutChart__dataLabel {
+    fill: var(--st-semantic-text-inverse);
+    font-size: 0.6875rem;
+    font-weight: 600;
   }
 
   .st-donutChart__tooltip {
@@ -3664,6 +3685,13 @@
   .st-lineChart__annotationText {
     fill: var(--st-semantic-text-primary);
     font-size: 0.625rem;
+    font-weight: 600;
+  }
+
+  /* Data labels — per-point value, drawn on top. Token-only colour. */
+  .st-lineChart__dataLabel {
+    fill: var(--st-semantic-text-primary);
+    font-size: 0.6875rem;
     font-weight: 600;
   }
 
@@ -6003,6 +6031,8 @@
   .st-stackedBar__seg--category6 { fill: var(--st-semantic-data-category6); }
   .st-stackedBar__seg--category7 { fill: var(--st-semantic-data-category7); }
   .st-stackedBar__seg--category8 { fill: var(--st-semantic-data-category8); }
+  /* Data labels — per-segment value, centred. Token-only colour. */
+  .st-stackedBar__dataLabel { fill: var(--st-semantic-text-inverse); font-size: 0.6875rem; font-weight: 600; }
   .st-stackedBar__tooltip {
     background: var(--st-semantic-surface-inverse); border-radius: var(--st-radius-sm, 0.25rem);
     color: var(--st-semantic-text-inverse); display: inline-flex; flex-direction: column; font-size: 0.75rem;

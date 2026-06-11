@@ -15,6 +15,9 @@
       horizontalDesc: "Pratique quand les libellés de catégorie sont longs.",
       tonesTitle: "Tons par barre",
       tonesDesc: "Chaque barre peut porter son propre `tone` (`category1` à `category8`).",
+      dataLabelsTitle: "Étiquettes de valeur",
+      dataLabelsDesc:
+        "`dataLabels` affiche la valeur sur chaque barre. `true` utilise le formatage par défaut ; un objet accepte `format` (ex. un formateur Intl) et `position` (`outside` par défaut, `inside`/`center` au milieu). Les étiquettes sont `aria-hidden` : les valeurs restent dans la liste accessible.",
       usageTitle: "Notes d’usage",
       usageNote1:
         "`label` est obligatoire : il alimente l’`aria-label` du conteneur (`role=\"img\"`). Les valeurs détaillées sont exposées dans une liste accessible hors SVG, sans multiplier les arrêts de tabulation.",
@@ -32,6 +35,9 @@
       horizontalDesc: "Useful when category labels are long.",
       tonesTitle: "Per-bar tones",
       tonesDesc: "Each bar can carry its own `tone` (`category1` to `category8`).",
+      dataLabelsTitle: "Value labels",
+      dataLabelsDesc:
+        "`dataLabels` prints the value on each bar. `true` uses the default formatter; an object accepts `format` (e.g. an Intl formatter) and `position` (`outside` by default, `inside`/`center` to centre). Labels are `aria-hidden` — the values stay in the accessible list.",
       usageTitle: "Usage notes",
       usageNote1:
         "`label` is required: it feeds the container `aria-label` (`role=\"img\"`). Detailed values are exposed in an accessible list outside the SVG, without adding a tab stop for every bar.",
@@ -123,6 +129,25 @@
       ]
     }
   ]);
+
+  const dataLabelsDemo = $derived<NodeSpec[]>([
+    {
+      el: "div",
+      props: { class: "chart-wrapper" },
+      children: [
+        {
+          comp: "BarChart",
+          props: {
+            data: weekly,
+            label: locale.value === "fr" ? "Tokens consommés par jour" : "Tokens consumed per day",
+            dataLabels: true,
+            width: 520,
+            height: 260
+          }
+        }
+      ]
+    }
+  ]);
 </script>
 
 <div class="docs-page">
@@ -150,6 +175,10 @@
     <h3 class="docs-demo-title">{text().tonesTitle}</h3>
     <p class="docs-demo-note">{text().tonesDesc}</p>
     <TabbedExample nodes={tonesDemo} title={text().tonesTitle} />
+
+    <h3 class="docs-demo-title">{text().dataLabelsTitle}</h3>
+    <p class="docs-demo-note">{text().dataLabelsDesc}</p>
+    <TabbedExample nodes={dataLabelsDemo} title={text().dataLabelsTitle} />
   </section>
 
   <section class="docs-section">
@@ -168,6 +197,7 @@
         <tr><td><code>referenceLines</code></td><td><code>ChartReferenceLine[]</code></td><td><em>{locale.value === "fr" ? "aucune" : "none"}</em></td></tr>
         <tr><td><code>bands</code></td><td><code>ChartBand[]</code></td><td><em>{locale.value === "fr" ? "aucune" : "none"}</em></td></tr>
         <tr><td><code>goalLine</code></td><td><code>ChartGoalLine</code></td><td><em>{locale.value === "fr" ? "aucune" : "none"}</em></td></tr>
+        <tr><td><code>dataLabels</code></td><td><code>{`boolean | { format?; position? }`}</code></td><td><em>{locale.value === "fr" ? "aucune" : "none"}</em></td></tr>
         <tr><td><code>selectedKeys</code></td><td><code>string[]</code></td><td><code>[]</code></td></tr>
         <tr><td><code>onSelect</code></td><td><code>(key: string) =&gt; void</code></td><td><em>{locale.value === "fr" ? "optionnel" : "optional"}</em></td></tr>
         <tr><td><code>showLegend</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>

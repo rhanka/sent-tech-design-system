@@ -59,6 +59,7 @@
     polygonPoints,
     type ChartAnnotation
   } from "./chartAnnotations.js";
+  import { formatDataLabel, normalizeDataLabels, type DataLabelsProp } from "./chartDataLabels.js";
 
   type LineChartProps = {
     data: LineChartDatum[];
@@ -83,6 +84,14 @@
      * series, every other kind above it. Additive: absent ⇒ unchanged.
      */
     annotations?: ChartAnnotation[];
+    /**
+     * Per-point value labels. `false`/absent (default) → none. `true` → each
+     * point's value with the chart's numeric formatter. Object → `format(value)`
+     * and/or a `position` override. Default position is `top` (above the point).
+     * Labels are `aria-hidden` — the values already live in the accessible
+     * ChartDataList.
+     */
+    dataLabels?: DataLabelsProp;
     /**
      * Fixed value-axis (y) domain `[min, max]`. When provided (and finite,
      * min<max) the y scale uses it instead of the data-derived range — letting
@@ -118,6 +127,7 @@
     goalLine,
     trend = false,
     annotations,
+    dataLabels,
     domain,
     scale = "linear",
     invertAxis = false,
@@ -489,6 +499,19 @@
   const annotationRegions = $derived(resolvedAnnotations.filter((a) => a.kind === "region"));
   const annotationAbove = $derived(resolvedAnnotations.filter((a) => a.kind !== "region"));
 
+  // --- Data labels ----------------------------------------------------------
+  // One value label per point. Default `top`: just above the dot. `center` sits
+  // on the dot. aria-hidden (values are in the ChartDataList already).
+  const dataLabelOpts = $derived(normalizeDataLabels(dataLabels));
+  const dataLabelItems = $derived.by(() => {
+    if (!dataLabelOpts.enabled) return [] as { key: number; x: number; y: number; text: string; baseline: string }[];
+    return points.map((p) => {
+      const text = formatDataLabel(p.datum.y, dataLabelOpts, formatTick);
+      const center = dataLabelOpts.position === "center" || dataLabelOpts.position === "inside";
+      return { key: p.index, x: p.x, y: center ? p.y : p.y - 8, text, baseline: center ? "middle" : "auto" };
+    });
+  });
+
   // --- Forecast segments ------------------------------------------------------
   // A datum with `forecast: true` renders as a forecast point: its dot takes
   // the forecast tone and every segment touching a forecast point is dashed,
@@ -788,6 +811,15 @@
         {/each}
       </g>
     {/if}
+
+    <!-- Data labels — one value per point, drawn on top. aria-hidden. -->
+    {#if dataLabelItems.length > 0}
+      <g class="st-lineChart__dataLabels" aria-hidden="true">
+        {#each dataLabelItems as d (d.key)}
+          <text class="st-lineChart__dataLabel" x={d.x} y={d.y} text-anchor="middle" dominant-baseline={d.baseline}>{d.text}</text>
+        {/each}
+      </g>
+    {/if}
     </svg>
   </div>
 
@@ -987,6 +1019,13 @@
   .st-lineChart__annotationText {
     fill: var(--st-semantic-text-primary);
     font-size: 0.625rem;
+    font-weight: 600;
+  }
+
+  /* Data labels — per-point value, drawn on top. Token-only colour. */
+  .st-lineChart__dataLabel {
+    fill: var(--st-semantic-text-primary);
+    font-size: 0.6875rem;
     font-weight: 600;
   }
 </style>

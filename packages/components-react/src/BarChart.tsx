@@ -26,6 +26,7 @@ import {
   resolveAnnotations,
   type ChartAnnotation,
 } from "./chartAnnotations.js";
+import { formatDataLabel, normalizeDataLabels, type DataLabelsProp } from "./chartDataLabels.js";
 
 export type BarChartTone =
   | "category1"
@@ -91,6 +92,14 @@ export type BarChartProps = Omit<React.HTMLAttributes<HTMLDivElement>, "classNam
    */
   annotations?: ChartAnnotation[];
   /**
+   * Per-bar value labels. `false`/absent (default) → none. `true` → each bar's
+   * value with the chart's numeric formatter. Object → `format(value)` and/or a
+   * `position` override. Default position is `outside` (above the bar in
+   * vertical mode, past the bar end in horizontal mode). Labels are
+   * `aria-hidden` — the values already live in the accessible ChartDataList.
+   */
+  dataLabels?: DataLabelsProp;
+  /**
    * Value-axis scale. `"linear"` (default) is unchanged. `"log"` switches the
    * value axis to base-10 logarithmic — values `<= 0` are ignored for
    * domain/ticks and clamped to the lowest tick when positioned.
@@ -122,6 +131,7 @@ export function BarChart({
   bands,
   goalLine,
   annotations,
+  dataLabels,
   scale = "linear",
   invertAxis = false,
   // Destructured to keep it off `...rest` (the wrapper div); parity no-op since
@@ -400,6 +410,28 @@ export function BarChart({
   });
   const annotationRegions = resolvedAnnotations.filter((a) => a.kind === "region");
   const annotationAbove = resolvedAnnotations.filter((a) => a.kind !== "region");
+
+  // --- Data labels ----------------------------------------------------------
+  // One value label per bar, placed at the bar's value end. Default `outside`:
+  // above the bar (vertical) / past the bar end (horizontal). `inside`/`center`
+  // sit at the bar's mid-length. Labels are aria-hidden (values are in the
+  // ChartDataList already).
+  const dataLabelOpts = normalizeDataLabels(dataLabels);
+  const dataLabelItems = dataLabelOpts.enabled
+    ? bars.map((bar) => {
+        const text = formatDataLabel(bar.datum.value, dataLabelOpts, formatTick);
+        const pos = dataLabelOpts.position ?? "outside";
+        const inside = pos === "inside" || pos === "center";
+        if (isVertical) {
+          const x = bar.cx;
+          const y = inside ? (bar.y + bar.height / 2) : (bar.cy - 6);
+          return { key: bar.datum.label, x, y, text, anchor: "middle" as const, baseline: (inside ? "middle" : "auto") as "middle" | "auto" };
+        }
+        const y = bar.cy;
+        const x = inside ? (bar.x + bar.width / 2) : (bar.cx + 4);
+        return { key: bar.datum.label, x, y, text, anchor: inside ? ("middle" as const) : ("start" as const), baseline: "middle" as const };
+      })
+    : [];
 
   const dataValueItems = [
     ...data.map((d) => `${d.label}: ${d.value}`),
@@ -694,6 +726,24 @@ export function BarChart({
                   </text>
                 );
               })}
+            </g>
+          ) : null}
+
+          {/* Data labels — one value per bar, drawn on top. aria-hidden. */}
+          {dataLabelItems.length > 0 ? (
+            <g className="st-barChart__dataLabels" aria-hidden="true">
+              {dataLabelItems.map((d) => (
+                <text
+                  key={d.key}
+                  className="st-barChart__dataLabel"
+                  x={d.x}
+                  y={d.y}
+                  textAnchor={d.anchor}
+                  dominantBaseline={d.baseline}
+                >
+                  {d.text}
+                </text>
+              ))}
             </g>
           ) : null}
         </svg>
