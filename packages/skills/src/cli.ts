@@ -314,7 +314,7 @@ function printAlignHelp() {
     `  --spacing             Alignement de la grille et des paddings (multiples de 4px/8px).\n` +
     `  --typo                Réécrit les piles de polices brutes publiées vers leurs tokens \`var(--st-font-*)\`.\n` +
     `  --a11y                Accessibilité : touch targets 44px + injecte un \`:focus-visible\` tokenisé si \`outline:none\`.\n` +
-    `  --responsive          Fluidité et adaptabilité mobile/desktop.\n` +
+    `  --responsive          Adaptabilité mobile/desktop : injecte la balise \`<meta viewport>\` responsive si absente d'un \`<head>\`.\n` +
     `  -h, --help            Affiche cette aide.\n\n` +
     `\x1b[1mEXEMPLES\x1b[0m\n` +
     `  design align login-form.html --tones --spacing\n` +
@@ -1328,6 +1328,37 @@ function alignFocusVisibleRing(content: string): { content: string; fixes: numbe
   return { content: next, fixes: 1 };
 }
 
+/**
+ * Injecte une balise `<meta name="viewport" content="width=device-width,
+ * initial-scale=1">` manquante dans une page disposant d'un `<head>`, pour
+ * garantir l'adaptabilité mobile/desktop (miroir constructif de la règle
+ * `viewport-zoom`).
+ *
+ * Auto-fix le plus borné de `--responsive` : déterministe et idempotent. Si une
+ * `<meta name="viewport">` existe déjà (quelle que soit la casse, les espaces ou
+ * le type de guillemets), le contenu est laissé intact. Si la page n'a pas de
+ * `<head>` (fragment CSS/markup), aucune écriture n'est faite — la passe reste
+ * informative. La balise est insérée juste avant `</head>`, en réutilisant
+ * l'indentation de cette balise fermante.
+ * Retourne le nombre de réécritures (0 ou 1) pour le compteur de modifications.
+ */
+function alignViewportMeta(content: string): { content: string; fixes: number } {
+  // Pas de <head> → pas une page : reste informatif (no-op).
+  if (!/<\/head\s*>/i.test(content)) return { content, fixes: 0 };
+
+  // Une <meta name="viewport"> existe-t-elle déjà ? (idempotence, casse/espaces/quotes libres)
+  if (/<meta\b[^>]*\bname\s*=\s*["']?\s*viewport\s*["']?/i.test(content)) {
+    return { content, fixes: 0 };
+  }
+
+  const meta = `<meta name="viewport" content="width=device-width, initial-scale=1">`;
+  // Insère juste avant </head>, en reprenant l'indentation de la balise fermante.
+  const next = content.replace(/([ \t]*)<\/head\s*>/i, (_m, indent: string) =>
+    `${indent}  ${meta}\n${indent}</head>`
+  );
+  return { content: next, fixes: 1 };
+}
+
 async function handleAlign(args: string[]) {
   if (args.includes("-h") || args.includes("--help")) {
     printAlignHelp();
@@ -1480,6 +1511,16 @@ async function handleAlign(args: string[]) {
   }
   if (isResponsive || !anyFlag) {
     if (isLocalFile && fileContent) {
+      // Auto-alignement Responsive (borné) : injecte la balise viewport
+      // responsive manquante si la page a un <head> (idempotent, miroir de la
+      // règle `viewport-zoom`). Les media queries restent une passe informative.
+      const { content: viewportContent, fixes: viewportFixes } = alignViewportMeta(fileContent);
+      if (viewportFixes > 0) {
+        modificationsCount += viewportFixes;
+        fileContent = viewportContent;
+        writeFileSync(filePath, fileContent, "utf-8");
+        process.stderr.write(`  \x1b[32m✔ Auto-alignement Responsive :\x1b[0m balise \`<meta name="viewport">\` responsive injectée (manquante dans le \`<head>\`).\n`);
+      }
       const mediaCount = (fileContent.match(/@media/gi) || []).length;
       process.stderr.write(`  \x1b[2m• Responsiveness :\x1b[0m ${mediaCount} media query(ies) détectée(s) — passe informative (pas d'auto-fix déterministe).\n`);
     } else {
