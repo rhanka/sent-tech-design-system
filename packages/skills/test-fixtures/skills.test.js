@@ -176,9 +176,62 @@ test("design build scaffolds a real Svelte 5 component file", async () => {
 
     const propose = await runCliCommand(["build", "Foo", "--propose"]);
     assert.strictEqual(propose.status, 2, "--propose must be honest (no false success)");
+
+    const global = await runCliCommand(["build", "Foo", "--global"]);
+    assert.strictEqual(global.status, 2, "--global must be honest (no false success)");
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
+});
+
+test("design build --promote rewrites raw colors and font stacks to published --st-* tokens", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "sent-tech-promote-"));
+  const file = join(dir, "Widget.svelte");
+  writeFileSync(
+    file,
+    "<style>" +
+      ".panel{color:#0043ce;background:#f8fafc;border-color:#e2e8f0}" +
+      ".copy{color:#0f172a;font-family:Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif}" +
+      ".code{font-family:'SFMono-Regular', Consolas, 'Liberation Mono', monospace}" +
+      ".kept{color:var(--st-semantic-text-primary)}" +
+    "</style>",
+    "utf-8"
+  );
+  try {
+    const result = await runCliCommand(["build", file, "--promote"]);
+    // A real artifact is produced: exit 0 (no longer the exit-2 stub).
+    assert.strictEqual(result.status, 0, "--promote must succeed when it promotes raw values");
+    const promoted = readFileSync(file, "utf-8");
+    // Raw hex colors become semantic tokens.
+    assert.match(promoted, /\.panel\{color:var\(--st-semantic-action-primary\)/);
+    assert.match(promoted, /background:var\(--st-semantic-surface-subtle\)/);
+    assert.match(promoted, /border-color:var\(--st-semantic-border-subtle\)/);
+    assert.match(promoted, /\.copy\{color:var\(--st-semantic-text-primary\)/);
+    // Raw font stacks become font tokens.
+    assert.match(promoted, /font-family:var\(--st-font-sans\)/);
+    assert.match(promoted, /\.code\{font-family:var\(--st-font-mono\)\}/);
+    // Already-tokenized declarations are untouched.
+    assert.match(promoted, /\.kept\{color:var\(--st-semantic-text-primary\)\}/);
+    // No raw values linger.
+    assert.doesNotMatch(promoted, /#0043ce/i);
+    assert.doesNotMatch(promoted, /SFMono-Regular/);
+    // Report mentions the promotions on stderr.
+    assert.match(result.stderr, /promu|promot/i);
+
+    // Idempotent: a second run promotes nothing but still succeeds (exit 0).
+    const before = readFileSync(file, "utf-8");
+    const second = await runCliCommand(["build", file, "--promote"]);
+    assert.strictEqual(second.status, 0, "--promote must stay exit 0 when already tokenized");
+    assert.strictEqual(readFileSync(file, "utf-8"), before, "idempotent: no further changes");
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("design build --promote refuses a non-file target with exit 2", async () => {
+  const inline = await runCliCommand(["build", "<div>color:#0043ce</div>", "--promote"]);
+  assert.strictEqual(inline.status, 2, "--promote needs a local file target");
+  assert.match(inline.stderr, /fichier/i);
 });
 
 test("design polish --motion / --essence are deterministic and honest", async () => {
