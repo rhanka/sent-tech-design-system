@@ -36,6 +36,10 @@ Statut dans les sous-bullets (PAS dans les titres de lot → import idempotent).
 - [ ] **Lot VUES-IMPORT — viewtemplater + cartes Sentropic**
   - Importer la structure ViewTemplateCatalog/Renderer + ViewSpec depuis ~/src/sentropic, et les
     cartes (ConfigItemCard/FieldCard/ScoreCard) comme composants/exemples.
+  - Fait : cartes ConfigItemCard/FieldCard/ScoreCard ✓ + AppChrome (chrome de site réutilisable
+    dataviz : header marque/nav + contrôles thème/color-mode/langue/github/identité) ✓ — publiés
+    svelte 0.34.21 / react+vue 0.36.21, réponse h2a à claude:dataviz. Reste : ViewTemplateCatalog/
+    Renderer (composant connecté → réenvelopper présentationnel) + ViewSpec.
 - [ ] **Lot VUES-CATALOG — backlog 100 écrans (8 domaines)**
   - App-shell(18) · Analytics/BI(18) · CRM(13) · ERP/Stock(12) · Compta(11) · RH(9) ·
     Projet/Helpdesk(9) · Manufacturing(7) · transverses(3). Déclinaison par swap de données sur
