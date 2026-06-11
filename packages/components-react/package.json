@@ -1,6 +1,6 @@
 {
   "name": "@sentropic/design-system-react",
-  "version": "0.36.18",
+  "version": "0.36.19",
   "description": "React components for the Sentropic design system.",
   "type": "module",
   "publishConfig": {

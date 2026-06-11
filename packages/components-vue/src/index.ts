@@ -253,6 +253,12 @@ export type {
   TreemapChartDatum,
   TreemapTiling,
 } from "./TreemapChart.js";
+export { WordCloudChart } from "./WordCloudChart.js";
+export type {
+  WordCloudChartProps,
+  WordCloudChartWord,
+  WordCloudChartTone,
+} from "./WordCloudChart.js";
 export { OrganizationChart } from "./OrganizationChart.js";
 export type {
   OrganizationChartProps,
@@ -279,8 +285,12 @@ export { SunburstChart } from "./SunburstChart.js";
 export type { SunburstChartProps, SunburstChartDatum, SunburstChartTone } from "./SunburstChart.js";
 export { RoseChart } from "./RoseChart.js";
 export type { RoseChartProps, RoseChartDatum, RoseChartTone } from "./RoseChart.js";
+export { ItemChart } from "./ItemChart.js";
+export type { ItemChartProps, ItemChartDatum, ItemChartTone } from "./ItemChart.js";
 export { VariablePieChart } from "./VariablePieChart.js";
 export type { VariablePieChartProps, VariablePieChartDatum, VariablePieChartTone } from "./VariablePieChart.js";
+export { VennChart } from "./VennChart.js";
+export type { VennChartProps, VennChartArea, VennChartTone } from "./VennChart.js";
 export { ViolinChart } from "./ViolinChart.js";
 export type { ViolinChartProps, ViolinChartDatum, ViolinChartTone } from "./ViolinChart.js";
 export { ForceGraph, nodeShapePath, edgeDashArray } from "./ForceGraph.js";
@@ -436,6 +446,8 @@ export { CandlestickChart } from "./CandlestickChart.js";
 export type { CandlestickChartProps, CandlestickChartDatum } from "./CandlestickChart.js";
 export { OHLCChart } from "./OHLCChart.js";
 export type { OHLCChartProps, OHLCChartDatum } from "./OHLCChart.js";
+export { HLCChart } from "./HLCChart.js";
+export type { HLCChartProps, HLCChartDatum } from "./HLCChart.js";
 export { HollowCandlestickChart } from "./HollowCandlestickChart.js";
 export type { HollowCandlestickChartProps, HollowCandlestickChartDatum } from "./HollowCandlestickChart.js";
 export { HeikinAshiChart } from "./HeikinAshiChart.js";
