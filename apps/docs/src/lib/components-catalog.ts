@@ -1149,6 +1149,46 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "AreaSplineRangeChart",
+    slug: "area-spline-range-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Variante spline d'AreaRange : bande remplie entre une série basse et une série haute le long d'un axe X, contours toujours lissés (ex. fourchette de température, intervalle de confiance).",
+      en: "Spline variant of AreaRange: filled band between a low and a high series along an X axis, always-smoothed contours (e.g. temperature range, confidence interval)."
+    }
+  },
+  {
+    name: "ColumnPyramidChart",
+    slug: "column-pyramid-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Colonnes pyramidales : chaque catégorie est un triangle, base sur l'axe X et sommet à la hauteur de la valeur.",
+      en: "Pyramid columns: each category is a triangle, base on the X axis and apex at the value height."
+    }
+  },
+  {
+    name: "PolygonChart",
+    slug: "polygon-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Polygone fermé rempli reliant des points x/y dans l'ordre fourni (zones/clusters), contour + sommets, axes numériques.",
+      en: "Closed filled polygon connecting x/y points in order (zones/clusters), outline + vertices, numeric axes."
+    }
+  },
+  {
+    name: "TileMapChart",
+    slug: "tile-map-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Carte en tuiles (cartogramme « tilemap ») : grille de cellules carrées posées à des coordonnées (col, row) explicites, colorées par valeur sur une échelle séquentielle.",
+      en: "Tile map (\"tilemap\" cartogram): grid of square cells placed at explicit (col, row) coordinates, colored by value on a sequential scale."
+    }
+  },
+  {
     name: "DumbbellChart",
     slug: "dumbbell-chart",
     status: "documented",
