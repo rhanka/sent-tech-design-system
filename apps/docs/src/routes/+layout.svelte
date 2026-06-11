@@ -34,15 +34,15 @@
   import {
     FRAMEWORKS,
     framework,
-    FRAMEWORK_STORAGE_KEY,
-    DEFAULT_FRAMEWORK
+    FRAMEWORK_STORAGE_KEY
   } from "$lib/framework.svelte";
   import {
     readUrlParams,
     resolveTheme,
     resolveFramework,
+    reconcileTheme,
+    reconcileFramework,
     buildUpdatedSearch,
-    DEFAULT_THEME_ID,
     type ThemeId as UrlThemeId
   } from "$lib/url-state";
   import CompareButton from "$lib/compare/CompareButton.svelte";
@@ -85,10 +85,16 @@
 
   // Sync ENTRANTE URL -> state. Réactif à page.url.search ($app/state) pour couvrir :
   //  • le montage initial (priorité URL > localStorage > défaut) ;
-  //  • la navigation arrière/avant (popstate) qui change l'URL sans re-monter le layout.
-  // L'URL fait autorité : sur un back vers une URL sans param, on retombe sur la
-  // valeur par défaut (param omis = défaut), pas sur localStorage, pour rester aligné
-  // avec ce que l'URL exprime. localStorage ne sert que de repli au tout 1er chargement.
+  //  • la navigation interne (clic sidebar/top-nav) et back/forward (popstate),
+  //    qui changent l'URL sans re-monter le layout (layout persistant en SvelteKit).
+  //
+  // Règle d'autorité : un param d'URL fait autorité UNIQUEMENT lorsqu'il est
+  // présent (deep-link, partage, back/forward vers une URL qui le porte). Quand il
+  // est ABSENT (cas des liens internes `/components/...` qui ne portent pas les
+  // params), on CONSERVE l'état courant — déjà persisté en localStorage. Sans cela,
+  // chaque navigation interne réinitialisait thème + framework au défaut (bug
+  // signalé : thème/framework « oubliés » à la nav). L'effet de sync sortante
+  // ré-ajoute ensuite les params à l'URL via replaceState.
   let urlStateInitialized = $state(false);
   $effect(() => {
     if (!browser) return;
@@ -109,11 +115,11 @@
         urlStateInitialized = true;
         return;
       }
-      // Navigations ultérieures (back/forward) : l'URL fait autorité.
-      // Param absent => valeur par défaut. On n'écrit que si différent (anti-boucle).
-      const nextTheme = urlTheme ?? DEFAULT_THEME_ID;
+      // Navigations ultérieures : param présent => autorité URL ; absent => on
+      // conserve l'état courant (persistance). On n'écrit que si différent (anti-boucle).
+      const nextTheme = reconcileTheme(urlTheme, activeThemeId as UrlThemeId);
       if (nextTheme !== activeThemeId) activeThemeId = nextTheme;
-      const nextFramework = urlFramework ?? DEFAULT_FRAMEWORK;
+      const nextFramework = reconcileFramework(urlFramework, framework.value);
       if (nextFramework !== framework.value) framework.value = nextFramework;
     });
   });
@@ -146,16 +152,18 @@
   });
 
   // Synchronise l'URL (theme + framework) via replaceState (pas d'entrée historique).
-  // Déclenché à chaque changement de thème ou de framework, après l'init.
+  // Déclenché à chaque changement de thème/framework ET à chaque navigation de page,
+  // pour que la nouvelle URL reflète toujours l'état persisté (deep-link cohérent).
   $effect(() => {
-    // Dépendances réactives EXPLICITES et UNIQUES : thème + framework. On ne lit
-    // PAS `page` ici (le replaceState ci-dessous le modifie -> sinon l'effet se
-    // re-déclenche sur sa propre écriture et « consomme » le tracking de
-    // framework.value : depuis le défaut svelte (param omis), le 1er clic vers
-    // react n'écrivait jamais l'URL). pathname via window.location (non réactif),
-    // page.state lu en untrack.
+    // Dépendances réactives EXPLICITES : thème + framework + pathname. On track
+    // `page.url.pathname` (PAS `.search`) : replaceState ci-dessous ne modifie que
+    // la `search`, jamais le pathname, donc aucune boucle de feedback — alors que
+    // tracker `.search` re-déclencherait l'effet sur sa propre écriture (et
+    // « consommerait » le tracking de framework.value : depuis le défaut svelte,
+    // le 1er clic vers react n'écrivait jamais l'URL). page.state lu en untrack.
     const theme = activeThemeId as UrlThemeId;
     const fw = framework.value;
+    void page.url.pathname;
     if (!browser) return;
     const newSearch = buildUpdatedSearch(theme, fw);
     if (newSearch !== window.location.search) {
