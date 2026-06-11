@@ -305,6 +305,60 @@ test("cli align typo is idempotent when fonts are already tokenized", async () =
   }
 });
 
+test("cli align a11y injects a tokenized :focus-visible ring when outline is removed", async () => {
+  const tempDir = mkdtempSync(join(tmpdir(), "sent-tech-a11y-focus-"));
+  const targetPath = join(tempDir, "sample.html");
+  writeFileSync(
+    targetPath,
+    "<style>.btn{outline:none}a{outline:0}</style><button class=\"btn\">OK</button>",
+    "utf-8"
+  );
+
+  try {
+    const result = await runCliCommand(["align", targetPath, "--a11y"]);
+    assert.strictEqual(result.status, 0);
+    const aligned = readFileSync(targetPath, "utf-8");
+    // A tokenized :focus-visible rule is injected referencing the focus token.
+    assert.match(aligned, /:focus-visible/);
+    assert.match(aligned, /var\(--st-semantic-focus-ring/);
+    // The auto-fixed file no longer trips the focus-visible-ring rule.
+    assert.ok(!(await ruleIds(aligned)).includes("focus-visible-ring"));
+  } finally {
+    rmSync(tempDir, { recursive: true, force: true });
+  }
+});
+
+test("cli align a11y focus ring is idempotent when a tokenized :focus-visible already exists", async () => {
+  const tempDir = mkdtempSync(join(tmpdir(), "sent-tech-a11y-focus-idem-"));
+  const targetPath = join(tempDir, "sample.html");
+  const original =
+    "<style>.btn{outline:none}.btn:focus-visible{outline:2px solid var(--st-semantic-focus-ring)}</style>";
+  writeFileSync(targetPath, original, "utf-8");
+
+  try {
+    const result = await runCliCommand(["align", targetPath, "--a11y"]);
+    assert.strictEqual(result.status, 0);
+    assert.strictEqual(readFileSync(targetPath, "utf-8"), original);
+  } finally {
+    rmSync(tempDir, { recursive: true, force: true });
+  }
+});
+
+test("cli align a11y focus ring leaves files without outline removal untouched", async () => {
+  const tempDir = mkdtempSync(join(tmpdir(), "sent-tech-a11y-focus-noop-"));
+  const targetPath = join(tempDir, "sample.html");
+  const original = "<style>.btn{color:var(--st-semantic-text-primary)}</style>";
+  writeFileSync(targetPath, original, "utf-8");
+
+  try {
+    const result = await runCliCommand(["align", targetPath, "--a11y"]);
+    assert.strictEqual(result.status, 0);
+    assert.strictEqual(readFileSync(targetPath, "utf-8"), original);
+  } finally {
+    rmSync(tempDir, { recursive: true, force: true });
+  }
+});
+
 test("cli init command in non-interactive mode creates PRODUCT.md", async () => {
   
   // Trouver la racine du projet
