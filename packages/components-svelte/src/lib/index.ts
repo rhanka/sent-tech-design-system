@@ -11,6 +11,7 @@ export { default as ParallelCoordinatesChart } from "./ParallelCoordinatesChart.
 export { default as CandlestickChart } from "./CandlestickChart.svelte";
 export { default as OHLCChart } from "./OHLCChart.svelte";
 export { default as HollowCandlestickChart } from "./HollowCandlestickChart.svelte";
+export { default as HeikinAshiChart } from "./HeikinAshiChart.svelte";
 export { default as TimelineChart } from "./TimelineChart.svelte";
 export { default as GanttChart } from "./GanttChart.svelte";
 export { default as StreamgraphChart } from "./StreamgraphChart.svelte";
@@ -27,6 +28,8 @@ export { default as ChordDiagram } from "./ChordDiagram.svelte";
 export type { ChordDiagramTone, ChordDiagramFlow } from "./ChordDiagram.svelte";
 export { default as DependencyWheelChart } from "./DependencyWheelChart.svelte";
 export type { DependencyWheelChartTone, DependencyWheelChartLink } from "./DependencyWheelChart.svelte";
+export { default as ArcDiagramChart } from "./ArcDiagramChart.svelte";
+export type { ArcDiagramChartTone, ArcDiagramChartLink } from "./ArcDiagramChart.svelte";
 export { default as PackedBubblesChart } from "./PackedBubblesChart.svelte";
 export type { PackedBubblesChartTone, PackedBubblesChartDatum } from "./PackedBubblesChart.svelte";
 export { default as Alert } from "./Alert.svelte";
@@ -126,6 +129,7 @@ export { default as RadioGroup } from "./RadioGroup.svelte";
 export { default as RadarChart } from "./RadarChart.svelte";
 export { default as Rating } from "./Rating.svelte";
 export { default as RoseChart } from "./RoseChart.svelte";
+export { default as VariablePieChart } from "./VariablePieChart.svelte";
 export { default as Row } from "./Row.svelte";
 export { default as ScatterPlot } from "./ScatterPlot.svelte";
 export { default as Search } from "./Search.svelte";
@@ -163,6 +167,7 @@ export { default as Typography } from "./Typography.svelte";
 export { default as TableOfContents } from "./TableOfContents.svelte";
 export { default as TreemapChart } from "./TreemapChart.svelte";
 export { default as OrganizationChart } from "./OrganizationChart.svelte";
+export { default as TreegraphChart } from "./TreegraphChart.svelte";
 export { default as TreeView } from "./TreeView.svelte";
 export { default as UnorderedList } from "./UnorderedList.svelte";
 export { default as ViolinChart } from "./ViolinChart.svelte";
@@ -179,6 +184,7 @@ export type { HeatmapChartDatum, HeatmapChartTone } from "./HeatmapChart.svelte"
 export type { HistogramChartDatum, HistogramChartTone } from "./HistogramChart.svelte";
 export type { RadarChartSeries, RadarChartTone } from "./RadarChart.svelte";
 export type { RoseChartDatum, RoseChartTone } from "./RoseChart.svelte";
+export type { VariablePieChartDatum, VariablePieChartTone } from "./VariablePieChart.svelte";
 export type { SankeyChartLink, SankeyChartNode, SankeyChartTone } from "./SankeyChart.svelte";
 export type { SunburstChartDatum, SunburstChartTone } from "./SunburstChart.svelte";
 export type { ScatterPlotDatum, ScatterPlotTone, ScatterPlotCentroid } from "./ScatterPlot.svelte";
@@ -204,6 +210,7 @@ export type { ParallelCoordinatesChartTone, ParallelAxis } from "./ParallelCoord
 export type { CandlestickChartDatum } from "./CandlestickChart.svelte";
 export type { OHLCChartDatum } from "./OHLCChart.svelte";
 export type { HollowCandlestickChartDatum } from "./HollowCandlestickChart.svelte";
+export type { HeikinAshiChartDatum } from "./HeikinAshiChart.svelte";
 export type { TimelineChartTone, TimelineChartEvent } from "./TimelineChart.svelte";
 export type { GanttChartTask } from "./GanttChart.svelte";
 export type { StreamgraphChartDatum, StreamgraphChartSeriesValue, StreamgraphChartTone } from "./StreamgraphChart.svelte";
@@ -218,6 +225,7 @@ export type {
   TreemapTiling
 } from "./TreemapChart.svelte";
 export type { OrganizationChartTone, OrganizationChartNode } from "./OrganizationChart.svelte";
+export type { TreegraphChartTone, TreegraphChartNode } from "./TreegraphChart.svelte";
 export type {
   KpiCardSize,
   KpiCardTrend,

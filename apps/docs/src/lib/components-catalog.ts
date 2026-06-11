@@ -1049,6 +1049,16 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "TreegraphChart",
+    slug: "treegraph-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Arbre/dendrogramme horizontal (gauche→droite) : nœuds circulaires hiérarchiques par profondeur, liens en courbes de Bézier, feuilles réparties verticalement.",
+      en: "Horizontal tree/dendrogram (left→right): circular hierarchical nodes by depth, Bézier-curve links, leaves spread vertically."
+    }
+  },
+  {
     name: "HeatmapChart",
     slug: "heatmap-chart",
     status: "documented",
@@ -1086,6 +1096,16 @@ export const COMPONENTS: ComponentEntry[] = [
     description: {
       fr: "Diagramme polaire de Nightingale : rayon proportionnel à la valeur, secteurs d'angle égal.",
       en: "Nightingale polar area chart: radius scales with value, equal-angle sectors."
+    }
+  },
+  {
+    name: "VariablePieChart",
+    slug: "variable-pie-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Camembert à rayon variable : l'angle de chaque part ∝ value, le rayon ∝ une 2e métrique z mappée entre rayon min et max.",
+      en: "Variable-radius pie: each slice's angle scales with value, its radius with a 2nd metric z mapped between a min and max radius."
     }
   },
   {
@@ -1216,6 +1236,16 @@ export const COMPONENTS: ComponentEntry[] = [
     description: {
       fr: "Roue de dépendances : nœuds sur un cercle, rubans pondérés colorés par source.",
       en: "Dependency wheel: nodes on a circle, weighted ribbons coloured by source."
+    }
+  },
+  {
+    name: "ArcDiagramChart",
+    slug: "arc-diagram-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Diagramme en arcs : nœuds alignés sur un axe, arcs pondérés colorés par source.",
+      en: "Arc diagram: nodes on an axis, weighted arcs coloured by source."
     }
   },
   {
@@ -1597,6 +1627,16 @@ export const COMPONENTS: ComponentEntry[] = [
     description: {
       fr: "Chandeliers creux : couleur selon la clôture vs la précédente, corps creux si haussier et plein si baissier.",
       en: "Hollow candlesticks: colour by close vs previous close, hollow body when bullish and filled when bearish."
+    }
+  },
+  {
+    name: "HeikinAshiChart",
+    slug: "heikin-ashi-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Chandeliers Heikin-Ashi : OHLC lissé par moyennes successives pour faire ressortir la tendance.",
+      en: "Heikin-Ashi candlesticks: OHLC smoothed by successive averages to surface the trend."
     }
   },
   {

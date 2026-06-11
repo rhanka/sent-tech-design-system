@@ -18,6 +18,9 @@ Statut dans les sous-bullets (PAS dans les titres → import idempotent).
     dependencywheel, organization (org-chart), xrange/Gantt, timeline. Maximise valeur BI/finance/réseau/planning.
   - Fait : 12/12 ✓ — columnrange, arearange, dumbbell, errorbar, bellcurve, ohlc, hollow-candlestick,
     streamgraph, dependencywheel, organization, gantt (xrange), timeline. MVP charts complet.
+  - Secondaires livrés (vague 2) : heikinashi (finance), arcdiagram + treegraph (réseau/hiérarchie),
+    variablepie (ranges). → 16 charts WP19 au total. Restent : areasplinerange, hlc, columnpyramid,
+    polygon, item, wordcloud, venn/euler, tilemap + maps + niche.
 - [ ] **Lot CHART-RANGES — core ranges & variantes**
   - columnrange, arearange, areasplinerange, dumbbell, columnpyramid, variablepie, polygon. Effort faible (axes existants).
 - [ ] **Lot CHART-STATS — statistique**
