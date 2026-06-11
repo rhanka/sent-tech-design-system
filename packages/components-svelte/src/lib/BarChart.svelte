@@ -56,6 +56,7 @@
     polygonPoints,
     type ChartAnnotation
   } from "./chartAnnotations.js";
+  import { formatDataLabel, normalizeDataLabels, type DataLabelsProp } from "./chartDataLabels.js";
 
   type BarChartProps = {
     data: BarChartDatum[];
@@ -101,6 +102,14 @@
      */
     annotations?: ChartAnnotation[];
     /**
+     * Per-bar value labels. `false`/absent (default) → none. `true` → each bar's
+     * value with the chart's numeric formatter. Object → `format(value)` and/or
+     * a `position` override. Default position is `outside` (above the bar in
+     * vertical mode, past the bar end in horizontal mode). Labels are
+     * `aria-hidden` — the values already live in the accessible ChartDataList.
+     */
+    dataLabels?: DataLabelsProp;
+    /**
      * Value-axis scale. `"linear"` (default) is unchanged. `"log"` switches the
      * value axis to a base-10 logarithmic scale — values `<= 0` are ignored for
      * domain/ticks and clamped to the lowest tick when positioned, since the log
@@ -131,6 +140,7 @@
     bands,
     goalLine,
     annotations,
+    dataLabels,
     scale = "linear",
     invertAxis = false,
     showLegend,
@@ -537,6 +547,28 @@
   const annotationRegions = $derived(resolvedAnnotations.filter((a) => a.kind === "region"));
   const annotationAbove = $derived(resolvedAnnotations.filter((a) => a.kind !== "region"));
 
+  // --- Data labels ----------------------------------------------------------
+  // One value label per bar, placed at the bar's value end. Default `outside`:
+  // above the bar (vertical) / past the bar end (horizontal). `inside`/`center`
+  // sit at the bar's mid-length. aria-hidden (values are in the ChartDataList).
+  const dataLabelOpts = $derived(normalizeDataLabels(dataLabels));
+  const dataLabelItems = $derived.by(() => {
+    if (!dataLabelOpts.enabled) return [] as { key: string; x: number; y: number; text: string; anchor: "start" | "middle" | "end"; baseline: string }[];
+    return bars.map((bar) => {
+      const text = formatDataLabel(bar.datum.value, dataLabelOpts, formatTick);
+      const pos = dataLabelOpts.position ?? "outside";
+      const inside = pos === "inside" || pos === "center";
+      if (isVertical) {
+        const x = bar.cx;
+        const y = inside ? bar.y + bar.height / 2 : bar.cy - 6;
+        return { key: bar.datum.label, x, y, text, anchor: "middle" as const, baseline: inside ? "middle" : "auto" };
+      }
+      const y = bar.cy;
+      const x = inside ? bar.x + bar.width / 2 : bar.cx + 4;
+      return { key: bar.datum.label, x, y, text, anchor: inside ? ("middle" as const) : ("start" as const), baseline: "middle" };
+    });
+  });
+
   const dataValueItems = $derived([
     ...data.map((d) => `${d.label}: ${d.value}`),
     ...overlayDataListItems(referenceLines, bands, goal),
@@ -792,6 +824,15 @@
           {:else}
             <text class="st-barChart__annotationText" x={a.x} y={a.y} text-anchor={a.anchor}>{a.text}</text>
           {/if}
+        {/each}
+      </g>
+    {/if}
+
+    <!-- Data labels — one value per bar, drawn on top. aria-hidden. -->
+    {#if dataLabelItems.length > 0}
+      <g class="st-barChart__dataLabels" aria-hidden="true">
+        {#each dataLabelItems as d (d.key)}
+          <text class="st-barChart__dataLabel" x={d.x} y={d.y} text-anchor={d.anchor} dominant-baseline={d.baseline}>{d.text}</text>
         {/each}
       </g>
     {/if}
@@ -1074,6 +1115,13 @@
   .st-barChart__annotationText {
     fill: var(--st-semantic-text-primary);
     font-size: 0.625rem;
+    font-weight: 600;
+  }
+
+  /* Data labels — per-bar value, drawn on top. Token-only colour. */
+  .st-barChart__dataLabel {
+    fill: var(--st-semantic-text-primary);
+    font-size: 0.6875rem;
     font-weight: 600;
   }
 </style>

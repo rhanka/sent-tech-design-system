@@ -12,6 +12,7 @@
 
 <script lang="ts">
   import ChartDataList from "./ChartDataList.svelte";
+  import { formatDataLabel, normalizeDataLabels, type DataLabelsProp } from "./chartDataLabels.js";
 
   type DonutChartProps = {
     data: DonutChartDatum[];
@@ -21,6 +22,14 @@
     thickness?: number;
     /** Texte au centre (sinon le total). null pour masquer. */
     centerLabel?: string | null;
+    /**
+     * Per-slice value labels. `false`/absent (default) → none. `true` → each
+     * slice's value with the default formatter. Object → `format(value)` and/or a
+     * `position` override (default `center` of the arc). Slices too thin to fit a
+     * legible label are skipped. Labels are `aria-hidden` — the values already
+     * live in the accessible ChartDataList.
+     */
+    dataLabels?: DataLabelsProp;
     label: string;
     class?: string;
   };
@@ -30,6 +39,7 @@
     size = 220,
     thickness = 34,
     centerLabel,
+    dataLabels,
     label,
     class: className
   }: DonutChartProps = $props();
@@ -39,11 +49,14 @@
     "category5", "category6", "category7", "category8"
   ];
 
+  // A slice must span at least this many degrees to host a legible label.
+  const DATA_LABEL_MIN_DEG = 18;
+
   let hoveredIndex: number | null = $state(null);
 
   const slices = $derived.by(() => {
     const total = data.reduce((sum, d) => sum + Math.max(d.value, 0), 0);
-    if (total <= 0) return { total: 0, items: [] as Array<{ d: DonutChartDatum; path: string; tone: DonutChartTone; pct: number }> };
+    if (total <= 0) return { total: 0, items: [] as Array<{ d: DonutChartDatum; path: string; tone: DonutChartTone; pct: number; spanDeg: number; labelX: number; labelY: number }> };
     const cx = size / 2;
     const cy = size / 2;
     const rOuter = size / 2 - 2;
@@ -64,7 +77,11 @@
       const [x1i, y1i] = polar(rInner, a1);
       const [x0i, y0i] = polar(rInner, a0);
       const path = `M ${x0o} ${y0o} A ${rOuter} ${rOuter} 0 ${large} 1 ${x1o} ${y1o} L ${x1i} ${y1i} A ${rInner} ${rInner} 0 ${large} 0 ${x0i} ${y0i} Z`;
-      return { d, path, tone: d.tone ?? TONES[i % TONES.length], pct: frac * 100 };
+      // Label anchor: centre of the arc (mid-angle, mid-radius of the ring).
+      const aMid = (a0 + a1) / 2;
+      const rMid = (rOuter + rInner) / 2;
+      const [labelX, labelY] = polar(rMid, aMid);
+      return { d, path, tone: d.tone ?? TONES[i % TONES.length], pct: frac * 100, spanDeg: (span * 180) / Math.PI, labelX, labelY };
     });
     return { total, items };
   });
@@ -73,6 +90,24 @@
   const fmtPct = (p: number) => `${p.toFixed(p < 10 ? 1 : 0)}%`;
   const dataValueItems = $derived(
     slices.items.map((slice) => `${slice.d.label}: ${slice.d.value} (${fmtPct(slice.pct)})`)
+  );
+
+  // --- Data labels ----------------------------------------------------------
+  // One value label centred in each arc (default `center`). Slices thinner than
+  // DATA_LABEL_MIN_DEG are skipped so labels stay legible. aria-hidden (values
+  // are in the ChartDataList already).
+  const dataLabelOpts = $derived(normalizeDataLabels(dataLabels));
+  const dataLabelItems = $derived(
+    dataLabelOpts.enabled
+      ? slices.items
+          .filter((slice) => slice.spanDeg >= DATA_LABEL_MIN_DEG)
+          .map((slice) => ({
+            key: slice.d.label,
+            x: slice.labelX,
+            y: slice.labelY,
+            text: formatDataLabel(slice.d.value, dataLabelOpts, (v) => String(v))
+          }))
+      : []
   );
 
   function handleVisualPointerMove(event: PointerEvent) {
@@ -108,6 +143,14 @@
           <text class="st-donutChart__center" x={size / 2} y={size / 2} text-anchor="middle" dominant-baseline="central">
             {centerLabel ?? slices.total}
           </text>
+        {/if}
+        <!-- Data labels — one value per slice, centred in the arc. aria-hidden. -->
+        {#if dataLabelItems.length > 0}
+          <g class="st-donutChart__dataLabels" aria-hidden="true">
+            {#each dataLabelItems as d (d.key)}
+              <text class="st-donutChart__dataLabel" x={d.x} y={d.y} text-anchor="middle" dominant-baseline="central">{d.text}</text>
+            {/each}
+          </g>
         {/if}
       {/if}
     </svg>
@@ -158,6 +201,13 @@
     fill: var(--st-semantic-text-primary);
     font-size: 1.25rem;
     font-weight: 650;
+  }
+
+  /* Data labels — per-slice value, centred in the arc. Token-only colour. */
+  .st-donutChart__dataLabel {
+    fill: var(--st-semantic-text-inverse);
+    font-size: 0.6875rem;
+    font-weight: 600;
   }
 
   .st-donutChart__tooltip {

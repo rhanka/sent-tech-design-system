@@ -33,6 +33,7 @@ import {
   resolveAnnotations,
   type ChartAnnotation,
 } from "./chartAnnotations.js";
+import { formatDataLabel, normalizeDataLabels, type DataLabelsProp } from "./chartDataLabels.js";
 
 export type LineChartTone =
   | "category1"
@@ -81,6 +82,14 @@ export type LineChartProps = {
    */
   annotations?: ChartAnnotation[];
   /**
+   * Per-point value labels. `false`/absent (default) → none. `true` → each
+   * point's value with the chart's numeric formatter. Object → `format(value)`
+   * and/or a `position` override. Default position is `top` (above the point).
+   * Labels are `aria-hidden` — the values already live in the accessible
+   * ChartDataList.
+   */
+  dataLabels?: DataLabelsProp;
+  /**
    * Fixed value-axis (y) domain `[min, max]`. When provided (and finite,
    * min<max) the y scale uses it instead of the data-derived range. Invalid or
    * absent → auto range (unchanged).
@@ -119,6 +128,7 @@ export const LineChart = defineComponent({
     goalLine: { type: Object as () => ChartGoalLine, default: undefined },
     trend: { type: Boolean, default: false },
     annotations: { type: Array as () => ChartAnnotation[], default: undefined },
+    dataLabels: { type: [Boolean, Object] as unknown as () => DataLabelsProp, default: undefined },
     domain: { type: Array as unknown as () => [number, number], default: undefined },
     scale: { type: String as () => ChartScale, default: "linear" },
     invertAxis: { type: Boolean, default: false },
@@ -330,6 +340,19 @@ export const LineChart = defineComponent({
       });
       const annotationRegions = resolvedAnnotations.filter((a) => a.kind === "region");
       const annotationAbove = resolvedAnnotations.filter((a) => a.kind !== "region");
+
+      // --- Data labels ------------------------------------------------------
+      // One value label per point. Default `top`: just above the dot. `center`
+      // sits on the dot. aria-hidden (values are in the ChartDataList already).
+      const dataLabelOpts = normalizeDataLabels(props.dataLabels);
+      type DataLabelItem = { key: number; x: number; y: number; text: string; baseline: string };
+      const dataLabelItems: DataLabelItem[] = dataLabelOpts.enabled
+        ? points.map((p) => {
+            const text = formatDataLabel(p.datum.y, dataLabelOpts, formatTick);
+            const center = dataLabelOpts.position === "center" || dataLabelOpts.position === "inside";
+            return { key: p.index, x: p.x, y: center ? p.y : p.y - 8, text, baseline: center ? "middle" : "auto" };
+          })
+        : [];
 
       // --- Forecast segments --------------------------------------------------
       // A datum with `forecast: true` renders as a forecast point: its dot
@@ -567,6 +590,22 @@ export const LineChart = defineComponent({
             )
           : null;
 
+      // Data labels — one value per point, drawn on top. aria-hidden.
+      const dataLabelGroup =
+        dataLabelItems.length > 0
+          ? h(
+              "g",
+              { class: "st-lineChart__dataLabels", "aria-hidden": "true" },
+              dataLabelItems.map((d) =>
+                h(
+                  "text",
+                  { key: `dl-${d.key}`, class: "st-lineChart__dataLabel", x: d.x, y: d.y, "text-anchor": "middle", "dominant-baseline": d.baseline },
+                  d.text,
+                ),
+              ),
+            )
+          : null;
+
       const svgChildren: ReturnType<typeof h>[] = [
         ...gridChildren,
         h("line", { class: "st-lineChart__axis", x1: MARGIN.left, x2: MARGIN.left, y1: MARGIN.top, y2: height - MARGIN.bottom }),
@@ -609,6 +648,9 @@ export const LineChart = defineComponent({
       svgChildren.push(...dots, ...goalOverlays);
       if (annotationAboveGroup) {
         svgChildren.push(annotationAboveGroup);
+      }
+      if (dataLabelGroup) {
+        svgChildren.push(dataLabelGroup);
       }
 
       const hoveredPoint = hoveredIndex.value !== null ? points[hoveredIndex.value] : undefined;

@@ -1,6 +1,7 @@
 import { defineComponent, h, ref } from "vue";
 import { classNames } from "./classNames.js";
 import { chartDataList } from "./chartScale.js";
+import { formatDataLabel, normalizeDataLabels, type DataLabelsProp } from "./chartDataLabels.js";
 
 export type DonutChartTone =
   | "category1"
@@ -23,6 +24,14 @@ export type DonutChartProps = {
   size?: number;
   thickness?: number;
   centerLabel?: string | null;
+  /**
+   * Per-slice value labels. `false`/absent (default) → none. `true` → each slice's
+   * value with the default formatter. Object → `format(value)` and/or a `position`
+   * override (default `center` of the arc). Slices too thin to fit a legible label
+   * are skipped. Labels are `aria-hidden` — the values already live in the
+   * accessible ChartDataList.
+   */
+  dataLabels?: DataLabelsProp;
   label: string;
   class?: string;
 };
@@ -40,7 +49,18 @@ const TONES: DonutChartTone[] = [
 
 const fmtPct = (p: number) => `${p.toFixed(p < 10 ? 1 : 0)}%`;
 
-type Slice = { d: DonutChartDatum; path: string; tone: DonutChartTone; pct: number };
+// A slice must span at least this many degrees to host a legible label.
+const DATA_LABEL_MIN_DEG = 18;
+
+type Slice = {
+  d: DonutChartDatum;
+  path: string;
+  tone: DonutChartTone;
+  pct: number;
+  spanDeg: number;
+  labelX: number;
+  labelY: number;
+};
 
 export const DonutChart = defineComponent({
   name: "DonutChart",
@@ -49,6 +69,7 @@ export const DonutChart = defineComponent({
     size: { type: Number, default: 220 },
     thickness: { type: Number, default: 34 },
     centerLabel: { type: [String, null] as unknown as () => string | null, default: undefined },
+    dataLabels: { type: [Boolean, Object] as unknown as () => DataLabelsProp, default: undefined },
     label: { type: String, required: true },
     class: { type: String, default: undefined },
   },
@@ -97,11 +118,31 @@ export const DonutChart = defineComponent({
           const [x1i, y1i] = polar(rInner, a1);
           const [x0i, y0i] = polar(rInner, a0);
           const path = `M ${x0o} ${y0o} A ${rOuter} ${rOuter} 0 ${large} 1 ${x1o} ${y1o} L ${x1i} ${y1i} A ${rInner} ${rInner} 0 ${large} 0 ${x0i} ${y0i} Z`;
-          return { d, path, tone: d.tone ?? TONES[i % TONES.length], pct: frac * 100 };
+          // Label anchor: centre of the arc (mid-angle, mid-radius of the ring).
+          const aMid = (a0 + a1) / 2;
+          const rMid = (rOuter + rInner) / 2;
+          const [labelX, labelY] = polar(rMid, aMid);
+          return { d, path, tone: d.tone ?? TONES[i % TONES.length], pct: frac * 100, spanDeg: (span * 180) / Math.PI, labelX, labelY };
         });
       }
 
       const dataValueItems = items.map((slice) => `${slice.d.label}: ${slice.d.value} (${fmtPct(slice.pct)})`);
+
+      // --- Data labels ----------------------------------------------------------
+      // One value label centred in each arc (default `center`). Slices thinner than
+      // DATA_LABEL_MIN_DEG are skipped so labels stay legible. aria-hidden (values
+      // are in the ChartDataList already).
+      const dataLabelOpts = normalizeDataLabels(props.dataLabels);
+      const dataLabelItems = dataLabelOpts.enabled
+        ? items
+            .filter((slice) => slice.spanDeg >= DATA_LABEL_MIN_DEG)
+            .map((slice) => ({
+              key: slice.d.label,
+              x: slice.labelX,
+              y: slice.labelY,
+              text: formatDataLabel(slice.d.value, dataLabelOpts, (v) => String(v)),
+            }))
+        : [];
 
       const svgChildren: ReturnType<typeof h>[] = [];
       if (total > 0) {
@@ -132,6 +173,29 @@ export const DonutChart = defineComponent({
                 "dominant-baseline": "central",
               },
               String(centerLabel ?? total),
+            ),
+          );
+        }
+        // Data labels — one value per slice, centred in the arc. aria-hidden.
+        if (dataLabelItems.length > 0) {
+          svgChildren.push(
+            h(
+              "g",
+              { class: "st-donutChart__dataLabels", "aria-hidden": "true" },
+              dataLabelItems.map((d) =>
+                h(
+                  "text",
+                  {
+                    key: `dl-${d.key}`,
+                    class: "st-donutChart__dataLabel",
+                    x: d.x,
+                    y: d.y,
+                    "text-anchor": "middle",
+                    "dominant-baseline": "central",
+                  },
+                  d.text,
+                ),
+              ),
             ),
           );
         }

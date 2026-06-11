@@ -16,6 +16,7 @@ import {
   resolveAnnotations,
   type ChartAnnotation,
 } from "./chartAnnotations.js";
+import { formatDataLabel, normalizeDataLabels, type DataLabelsProp } from "./chartDataLabels.js";
 
 export type AreaChartTone =
   | "category1"
@@ -45,6 +46,14 @@ export type AreaChartProps = {
    * the area, every other kind above it. Additive: absent ⇒ unchanged.
    */
   annotations?: ChartAnnotation[];
+  /**
+   * Per-point value labels. `false`/absent (default) → none. `true` → each
+   * point's value with the chart's numeric formatter. Object → `format(value)`
+   * and/or a `position` override. Default position is `top` (above the point).
+   * Labels are `aria-hidden` — the values already live in the accessible
+   * ChartDataList.
+   */
+  dataLabels?: DataLabelsProp;
   class?: string;
 };
 
@@ -62,6 +71,7 @@ export const AreaChart = defineComponent({
     smooth: { type: Boolean, default: false },
     label: { type: String, required: true },
     annotations: { type: Array as () => ChartAnnotation[], default: undefined },
+    dataLabels: { type: [Boolean, Object] as unknown as () => DataLabelsProp, default: undefined },
     class: { type: String, default: undefined },
   },
   setup(props, { attrs }) {
@@ -174,6 +184,19 @@ export const AreaChart = defineComponent({
       });
       const annotationRegions = resolvedAnnotations.filter((a) => a.kind === "region");
       const annotationAbove = resolvedAnnotations.filter((a) => a.kind !== "region");
+
+      // --- Data labels ------------------------------------------------------
+      // One value label per point. Default `top`: just above the dot. `center`
+      // sits on the dot. aria-hidden (values are in the ChartDataList already).
+      const dataLabelOpts = normalizeDataLabels(props.dataLabels);
+      type DataLabelItem = { key: number; x: number; y: number; text: string; baseline: string };
+      const dataLabelItems: DataLabelItem[] = dataLabelOpts.enabled
+        ? points.map((p) => {
+            const text = formatDataLabel(p.datum.y, dataLabelOpts, formatTick);
+            const center = dataLabelOpts.position === "center" || dataLabelOpts.position === "inside";
+            return { key: p.index, x: p.x, y: center ? p.y : p.y - 8, text, baseline: center ? "middle" : "auto" };
+          })
+        : [];
 
       const linePath = points.length === 0 ? "" : smooth ? buildSmoothPath(points) : buildLinearPath(points);
 
@@ -309,6 +332,22 @@ export const AreaChart = defineComponent({
             )
           : null;
 
+      // Data labels — one value per point, drawn on top. aria-hidden.
+      const dataLabelGroup =
+        dataLabelItems.length > 0
+          ? h(
+              "g",
+              { class: "st-areaChart__dataLabels", "aria-hidden": "true" },
+              dataLabelItems.map((d) =>
+                h(
+                  "text",
+                  { key: `dl-${d.key}`, class: "st-areaChart__dataLabel", x: d.x, y: d.y, "text-anchor": "middle", "dominant-baseline": d.baseline },
+                  d.text,
+                ),
+              ),
+            )
+          : null;
+
       const svgChildren: ReturnType<typeof h>[] = [
         h("defs", {}, [
           h("linearGradient", { id: gradientId, x1: "0", y1: "0", x2: "0", y2: "1" }, [
@@ -335,6 +374,9 @@ export const AreaChart = defineComponent({
       svgChildren.push(...dots);
       if (annotationAboveGroup) {
         svgChildren.push(annotationAboveGroup);
+      }
+      if (dataLabelGroup) {
+        svgChildren.push(dataLabelGroup);
       }
 
       const hoveredPoint = hoveredIndex.value !== null ? points[hoveredIndex.value] : undefined;

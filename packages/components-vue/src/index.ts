@@ -193,6 +193,7 @@ export { LineChart } from "./LineChart.js";
 export type { LineChartProps, LineChartDatum, LineChartTone } from "./LineChart.js";
 export type { ChartOverlayTone, ChartReferenceLine, ChartBand, ChartGoalLine, ChartScale } from "./chartScale.js";
 export type { ChartAnnotation, ChartAnnotationMarker } from "./chartAnnotations.js";
+export type { DataLabelsProp, DataLabelsOptions, DataLabelPosition } from "./chartDataLabels.js";
 export { DonutChart } from "./DonutChart.js";
 export type { DonutChartProps, DonutChartDatum, DonutChartTone } from "./DonutChart.js";
 export { ScatterPlot } from "./ScatterPlot.js";

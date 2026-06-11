@@ -26,6 +26,7 @@ import {
   resolveAnnotations,
   type ChartAnnotation,
 } from "./chartAnnotations.js";
+import { formatDataLabel, normalizeDataLabels, type DataLabelsProp } from "./chartDataLabels.js";
 
 export type BarChartTone =
   | "category1"
@@ -91,6 +92,14 @@ export type BarChartProps = {
    */
   annotations?: ChartAnnotation[];
   /**
+   * Per-bar value labels. `false`/absent (default) → none. `true` → each bar's
+   * value with the chart's numeric formatter. Object → `format(value)` and/or a
+   * `position` override. Default position is `outside` (above the bar in
+   * vertical mode, past the bar end in horizontal mode). Labels are
+   * `aria-hidden` — the values already live in the accessible ChartDataList.
+   */
+  dataLabels?: DataLabelsProp;
+  /**
    * Value-axis scale. `"linear"` (default) is unchanged. `"log"` switches the
    * value axis to base-10 logarithmic — values `<= 0` are ignored for
    * domain/ticks and clamped to the lowest tick when positioned.
@@ -124,6 +133,7 @@ export const BarChart = defineComponent({
     bands: { type: Array as () => ChartBand[], default: undefined },
     goalLine: { type: Object as () => ChartGoalLine, default: undefined },
     annotations: { type: Array as () => ChartAnnotation[], default: undefined },
+    dataLabels: { type: [Boolean, Object] as unknown as () => DataLabelsProp, default: undefined },
     scale: { type: String as () => ChartScale, default: "linear" },
     invertAxis: { type: Boolean, default: false },
     showLegend: { type: Boolean, default: undefined },
@@ -407,6 +417,29 @@ export const BarChart = defineComponent({
       const annotationRegions = resolvedAnnotations.filter((a) => a.kind === "region");
       const annotationAbove = resolvedAnnotations.filter((a) => a.kind !== "region");
 
+      // --- Data labels ------------------------------------------------------
+      // One value label per bar, placed at the bar's value end. Default
+      // `outside`: above the bar (vertical) / past the bar end (horizontal).
+      // `inside`/`center` sit at the bar's mid-length. aria-hidden (values are
+      // in the ChartDataList already).
+      const dataLabelOpts = normalizeDataLabels(props.dataLabels);
+      type DataLabelItem = { key: string; x: number; y: number; text: string; anchor: "start" | "middle" | "end"; baseline: string };
+      const dataLabelItems: DataLabelItem[] = dataLabelOpts.enabled
+        ? bars.map((bar) => {
+            const text = formatDataLabel(bar.datum.value, dataLabelOpts, formatTick);
+            const pos = dataLabelOpts.position ?? "outside";
+            const inside = pos === "inside" || pos === "center";
+            if (isVertical) {
+              const x = bar.cx;
+              const y = inside ? bar.y + bar.height / 2 : bar.cy - 6;
+              return { key: bar.datum.label, x, y, text, anchor: "middle", baseline: inside ? "middle" : "auto" };
+            }
+            const y = bar.cy;
+            const x = inside ? bar.x + bar.width / 2 : bar.cx + 4;
+            return { key: bar.datum.label, x, y, text, anchor: inside ? "middle" : "start", baseline: "middle" };
+          })
+        : [];
+
       const dataValueItems = [
         ...data.map((d) => `${d.label}: ${d.value}`),
         ...overlayDataListItems({ referenceLines, bands, goalLine: goal, trend: null }),
@@ -632,6 +665,22 @@ export const BarChart = defineComponent({
             )
           : null;
 
+      // Data labels — one value per bar, drawn on top. aria-hidden.
+      const dataLabelGroup =
+        dataLabelItems.length > 0
+          ? h(
+              "g",
+              { class: "st-barChart__dataLabels", "aria-hidden": "true" },
+              dataLabelItems.map((d) =>
+                h(
+                  "text",
+                  { key: `dl-${d.key}`, class: "st-barChart__dataLabel", x: d.x, y: d.y, "text-anchor": d.anchor, "dominant-baseline": d.baseline },
+                  d.text,
+                ),
+              ),
+            )
+          : null;
+
       // Accessible selection surface — real <button>s OUTSIDE the aria-hidden
       // SVG. This is the keyboard + screen-reader path for filtering.
       const filterGroup = interactive
@@ -696,6 +745,7 @@ export const BarChart = defineComponent({
                 ...errorBarNodes,
                 ...goalOverlays,
                 ...(annotationAboveGroup ? [annotationAboveGroup] : []),
+                ...(dataLabelGroup ? [dataLabelGroup] : []),
               ],
             ),
           ],

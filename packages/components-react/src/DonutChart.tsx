@@ -1,6 +1,7 @@
 import React from "react";
 import { classNames } from "./classNames.js";
 import { ChartDataList } from "./chartScale.js";
+import { formatDataLabel, normalizeDataLabels, type DataLabelsProp } from "./chartDataLabels.js";
 
 export type DonutChartTone =
   | "category1"
@@ -26,6 +27,14 @@ export type DonutChartProps = Omit<React.HTMLAttributes<HTMLDivElement>, "classN
   thickness?: number;
   /** Texte au centre (sinon le total). null pour masquer. */
   centerLabel?: string | null;
+  /**
+   * Per-slice value labels. `false`/absent (default) → none. `true` → each
+   * slice's value with the default formatter. Object → `format(value)` and/or a
+   * `position` override (default `center` of the arc). Slices too thin to fit a
+   * legible label are skipped. Labels are `aria-hidden` — the values already
+   * live in the accessible ChartDataList.
+   */
+  dataLabels?: DataLabelsProp;
   label: string;
   className?: string;
 };
@@ -43,13 +52,25 @@ const TONES: DonutChartTone[] = [
 
 const fmtPct = (p: number) => `${p.toFixed(p < 10 ? 1 : 0)}%`;
 
-type Slice = { d: DonutChartDatum; path: string; tone: DonutChartTone; pct: number };
+// A slice must span at least this many degrees to host a legible label.
+const DATA_LABEL_MIN_DEG = 18;
+
+type Slice = {
+  d: DonutChartDatum;
+  path: string;
+  tone: DonutChartTone;
+  pct: number;
+  spanDeg: number;
+  labelX: number;
+  labelY: number;
+};
 
 export function DonutChart({
   data,
   size = 220,
   thickness = 34,
   centerLabel,
+  dataLabels,
   label,
   className,
   ...rest
@@ -79,10 +100,30 @@ export function DonutChart({
       const [x1i, y1i] = polar(rInner, a1);
       const [x0i, y0i] = polar(rInner, a0);
       const path = `M ${x0o} ${y0o} A ${rOuter} ${rOuter} 0 ${large} 1 ${x1o} ${y1o} L ${x1i} ${y1i} A ${rInner} ${rInner} 0 ${large} 0 ${x0i} ${y0i} Z`;
-      return { d, path, tone: d.tone ?? TONES[i % TONES.length], pct: frac * 100 };
+      // Label anchor: centre of the arc (mid-angle, mid-radius of the ring).
+      const aMid = (a0 + a1) / 2;
+      const rMid = (rOuter + rInner) / 2;
+      const [labelX, labelY] = polar(rMid, aMid);
+      return { d, path, tone: d.tone ?? TONES[i % TONES.length], pct: frac * 100, spanDeg: (span * 180) / Math.PI, labelX, labelY };
     });
     return { total, items };
   })();
+
+  // --- Data labels ----------------------------------------------------------
+  // One value label centred in each arc (default `center`). Slices thinner than
+  // DATA_LABEL_MIN_DEG are skipped so labels stay legible. aria-hidden (values
+  // are in the ChartDataList already).
+  const dataLabelOpts = normalizeDataLabels(dataLabels);
+  const dataLabelItems = dataLabelOpts.enabled
+    ? slices.items
+        .filter((slice) => slice.spanDeg >= DATA_LABEL_MIN_DEG)
+        .map((slice) => ({
+          key: slice.d.label,
+          x: slice.labelX,
+          y: slice.labelY,
+          text: formatDataLabel(slice.d.value, dataLabelOpts, (v) => String(v)),
+        }))
+    : [];
 
   const dataValueItems = slices.items.map((slice) => `${slice.d.label}: ${slice.d.value} (${fmtPct(slice.pct)})`);
 
@@ -135,6 +176,23 @@ export function DonutChart({
                 >
                   {centerLabel ?? slices.total}
                 </text>
+              ) : null}
+              {/* Data labels — one value per slice, centred in the arc. aria-hidden. */}
+              {dataLabelItems.length > 0 ? (
+                <g className="st-donutChart__dataLabels" aria-hidden="true">
+                  {dataLabelItems.map((d) => (
+                    <text
+                      key={d.key}
+                      className="st-donutChart__dataLabel"
+                      x={d.x}
+                      y={d.y}
+                      textAnchor="middle"
+                      dominantBaseline="central"
+                    >
+                      {d.text}
+                    </text>
+                  ))}
+                </g>
               ) : null}
             </>
           ) : null}

@@ -17,6 +17,7 @@
 
 <script lang="ts">
   import ChartDataList from "./ChartDataList.svelte";
+  import { formatDataLabel, normalizeDataLabels, type DataLabelsProp } from "./chartDataLabels.js";
 
   type StackedBarChartProps = {
     data: StackedBarDatum[];
@@ -24,6 +25,14 @@
     height?: number;
     label: string;
     showLegend?: boolean;
+    /**
+     * Per-segment value labels. `false`/absent (default) → none. `true` → each
+     * segment's value with the chart's numeric formatter. Object → `format(value)`
+     * and/or a `position` override (default `center` of the segment). Segments too
+     * short to host a legible label are skipped. Labels are `aria-hidden` — the
+     * values already live in the accessible ChartDataList.
+     */
+    dataLabels?: DataLabelsProp;
     class?: string;
   };
 
@@ -33,11 +42,15 @@
     height = 260,
     label,
     showLegend = true,
+    dataLabels,
     class: className
   }: StackedBarChartProps = $props();
 
   const MARGIN = { top: 14, right: 16, bottom: 34, left: 44 };
   const TONES = ["category1","category2","category3","category4","category5","category6","category7","category8"] as const;
+
+  // A segment must be at least this tall (px) to host a legible label.
+  const DATA_LABEL_MIN_SEG_PX = 14;
 
   function niceTicks(min: number, max: number, target = 5): number[] {
     if (!Number.isFinite(min) || !Number.isFinite(max) || min === max) return [Number.isFinite(max) ? max : 0];
@@ -104,6 +117,26 @@
     data.flatMap((bar) => bar.segments.map((seg) => `${bar.label}, ${seg.label}: ${seg.value}`))
   );
 
+  // --- Data labels ----------------------------------------------------------
+  // One value label centred in each segment (default `center`). Segments shorter
+  // than DATA_LABEL_MIN_SEG_PX are skipped so labels stay legible. aria-hidden
+  // (values are in the ChartDataList already).
+  const dataLabelOpts = $derived(normalizeDataLabels(dataLabels));
+  const dataLabelItems = $derived(
+    dataLabelOpts.enabled
+      ? bars.flatMap((bar) =>
+          bar.segs
+            .filter((s) => s.height >= DATA_LABEL_MIN_SEG_PX)
+            .map((s) => ({
+              key: `${bar.label}-${s.seg.label}`,
+              x: s.cx,
+              y: s.cy,
+              text: formatDataLabel(s.seg.value, dataLabelOpts, fmt)
+            }))
+        )
+      : []
+  );
+
   function handleVisualPointerMove(event: PointerEvent) {
     const target = event.target;
     if (!(target instanceof Element)) {
@@ -148,6 +181,15 @@
           />
         {/each}
       {/each}
+
+      <!-- Data labels — one value per segment, drawn on top. aria-hidden. -->
+      {#if dataLabelItems.length > 0}
+        <g class="st-stackedBar__dataLabels" aria-hidden="true">
+          {#each dataLabelItems as d (d.key)}
+            <text class="st-stackedBar__dataLabel" x={d.x} y={d.y} text-anchor="middle" dominant-baseline="central">{d.text}</text>
+          {/each}
+        </g>
+      {/if}
     </svg>
   </div>
 
@@ -189,6 +231,8 @@
   .st-stackedBar__seg--category6 { fill: var(--st-semantic-data-category6); }
   .st-stackedBar__seg--category7 { fill: var(--st-semantic-data-category7); }
   .st-stackedBar__seg--category8 { fill: var(--st-semantic-data-category8); }
+  /* Data labels — per-segment value, centred. Token-only colour. */
+  .st-stackedBar__dataLabel { fill: var(--st-semantic-text-inverse); font-size: 0.6875rem; font-weight: 600; }
   .st-stackedBar__tooltip {
     background: var(--st-semantic-surface-inverse); border-radius: var(--st-radius-sm, 0.25rem);
     color: var(--st-semantic-text-inverse); display: inline-flex; flex-direction: column; font-size: 0.75rem;
