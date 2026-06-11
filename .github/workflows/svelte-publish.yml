@@ -1,0 +1,117 @@
+name: Svelte Publish
+
+# Publication du package Svelte (@sentropic/design-system-svelte), sur sa propre
+# ligne de version, indépendante des packages DS coeur (tokens/themes) et des thèmes.
+# Déclenchée par un tag `svelte-v<version>`.
+#
+# Publication via npm Trusted Publishing (OIDC). Le trusted publisher attendu
+# côté npm est : rhanka/sent-tech-design-system + svelte-publish.yml.
+# (Évite le lockstep du workflow npm-publish.yml qui publie tokens+themes+svelte
+#  ensemble sur tag v* — tokens/themes restent figés et bloquent ce job.)
+
+on:
+  push:
+    branches: ["main"]
+    tags: ["svelte-v*"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+      - run: npm ci
+      - name: Build Svelte dependencies
+        run: |
+          npm --workspace @sentropic/design-system-tokens run build
+          npm --workspace @sentropic/design-system-themes run build
+      - name: Verify Svelte package
+        run: |
+          npm --workspace @sentropic/design-system-svelte run build
+          npm --workspace @sentropic/design-system-svelte run check
+          npm --workspace @sentropic/design-system-svelte run test
+      - name: Build workspace for package smoke
+        run: npm run build
+      - name: Smoke packed packages
+        run: npm run pack:smoke
+
+  release-guard:
+    needs: verify
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/svelte-v')
+    env:
+      RELEASE_BRANCH: ${{ github.event.repository.default_branch }}
+      TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify tag is merged into default branch
+        run: |
+          git fetch origin "${RELEASE_BRANCH}:refs/remotes/origin/${RELEASE_BRANCH}"
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" "origin/${RELEASE_BRANCH}"; then
+            echo "::error::Refusing to publish ${TAG}: ${GITHUB_SHA} is not merged into origin/${RELEASE_BRANCH}."
+            exit 1
+          fi
+      - name: Verify Svelte version matches tag
+        run: |
+          EXPECTED="${TAG#svelte-v}"
+          ACTUAL=$(node -p "require('./packages/components-svelte/package.json').version")
+          if [ "$EXPECTED" != "$ACTUAL" ]; then
+            echo "::error::Tag ${TAG} expects ${EXPECTED} but packages/components-svelte is ${ACTUAL}."
+            exit 1
+          fi
+          echo "Svelte package version matches ${EXPECTED}"
+
+  publish:
+    needs: release-guard
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/svelte-v')
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+      - name: Upgrade npm
+        run: npm install -g npm@11.6.2
+      - name: Install and build
+        run: |
+          npm ci
+          npm --workspace @sentropic/design-system-tokens run build
+          npm --workspace @sentropic/design-system-themes run build
+          npm --workspace @sentropic/design-system-svelte run build
+      - name: Publish Svelte package
+        run: npm publish --workspace @sentropic/design-system-svelte --access public
+
+  post-publish-check:
+    needs: publish
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/svelte-v')
+    env:
+      TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Wait for npm propagation
+        run: |
+          VERSION="${TAG#svelte-v}"
+          for attempt in {1..20}; do
+            if npm view "@sentropic/design-system-svelte@${VERSION}" version --silent > /dev/null 2>&1; then
+              echo "@sentropic/design-system-svelte@${VERSION} is available from npm."
+              exit 0
+            fi
+            echo "Waiting for npm propagation, attempt ${attempt}/20..."
+            sleep 15
+          done
+          echo "::error::Timed out waiting for npm propagation."
+          exit 1
