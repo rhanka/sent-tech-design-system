@@ -251,6 +251,12 @@ export type {
   OrganizationChartTone,
   OrganizationChartNode,
 } from "./OrganizationChart.js";
+export { TreegraphChart } from "./TreegraphChart.js";
+export type {
+  TreegraphChartProps,
+  TreegraphChartNode,
+  TreegraphChartTone,
+} from "./TreegraphChart.js";
 export { HeatmapChart } from "./HeatmapChart.js";
 export type { HeatmapChartProps, HeatmapChartDatum, HeatmapChartTone } from "./HeatmapChart.js";
 export { HistogramChart } from "./HistogramChart.js";
@@ -265,6 +271,8 @@ export { SunburstChart } from "./SunburstChart.js";
 export type { SunburstChartProps, SunburstChartDatum, SunburstChartTone } from "./SunburstChart.js";
 export { RoseChart } from "./RoseChart.js";
 export type { RoseChartProps, RoseChartDatum, RoseChartTone } from "./RoseChart.js";
+export { VariablePieChart } from "./VariablePieChart.js";
+export type { VariablePieChartProps, VariablePieChartDatum, VariablePieChartTone } from "./VariablePieChart.js";
 export { ViolinChart } from "./ViolinChart.js";
 export type { ViolinChartProps, ViolinChartDatum, ViolinChartTone } from "./ViolinChart.js";
 export { ForceGraph, nodeShapePath, edgeDashArray } from "./ForceGraph.js";
@@ -405,6 +413,8 @@ export { ChordDiagram } from "./ChordDiagram.js";
 export type { ChordDiagramProps, ChordDiagramFlow, ChordDiagramTone } from "./ChordDiagram.js";
 export { DependencyWheelChart } from "./DependencyWheelChart.js";
 export type { DependencyWheelChartProps, DependencyWheelChartLink, DependencyWheelChartTone } from "./DependencyWheelChart.js";
+export { ArcDiagramChart } from "./ArcDiagramChart.js";
+export type { ArcDiagramChartProps, ArcDiagramChartLink, ArcDiagramChartTone } from "./ArcDiagramChart.js";
 export { PackedBubblesChart } from "./PackedBubblesChart.js";
 export type { PackedBubblesChartProps, PackedBubblesChartDatum, PackedBubblesChartTone } from "./PackedBubblesChart.js";
 export { MarimekkoChart } from "./MarimekkoChart.js";
@@ -420,6 +430,8 @@ export { OHLCChart } from "./OHLCChart.js";
 export type { OHLCChartProps, OHLCChartDatum } from "./OHLCChart.js";
 export { HollowCandlestickChart } from "./HollowCandlestickChart.js";
 export type { HollowCandlestickChartProps, HollowCandlestickChartDatum } from "./HollowCandlestickChart.js";
+export { HeikinAshiChart } from "./HeikinAshiChart.js";
+export type { HeikinAshiChartProps, HeikinAshiChartDatum } from "./HeikinAshiChart.js";
 export { TimelineChart } from "./TimelineChart.js";
 export type { TimelineChartProps, TimelineChartEvent, TimelineChartTone } from "./TimelineChart.js";
 export { GanttChart } from "./GanttChart.js";

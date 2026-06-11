@@ -86,6 +86,7 @@ export type ComponentName =
   | "BoxPlotChart"
   | "RadarChart"
   | "RoseChart"
+  | "VariablePieChart"
   | "SankeyChart"
   | "SunburstChart"
   | "ViolinChart"
@@ -147,12 +148,14 @@ export type ComponentName =
   | "WaterfallChart"
   | "TreemapChart"
   | "OrganizationChart"
+  | "TreegraphChart"
   | "BulletChart"
   | "MarimekkoChart"
   | "ParallelCoordinatesChart"
   | "CandlestickChart"
   | "OHLCChart"
   | "HollowCandlestickChart"
+  | "HeikinAshiChart"
   | "TimelineChart"
   | "GanttChart"
   | "StreamgraphChart"
@@ -168,6 +171,7 @@ export type ComponentName =
   | "ParetoChart"
   | "ChordDiagram"
   | "DependencyWheelChart"
+  | "ArcDiagramChart"
   | "PackedBubblesChart"
   | "RangeSlider"
   | "Drawer";
@@ -4617,6 +4621,76 @@ import { RoseChart } from "@sentropic/design-system-vue";
     }
   },
 
+  variablepiechart: {
+    id: "variablepiechart",
+    slug: "variable-pie-chart",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "VariablePieChart",
+            props: {
+              label: "Part de marché et croissance",
+              data: [
+                { label: "Cloud", value: 40, z: 12 },
+                { label: "Mobile", value: 25, z: 30 },
+                { label: "Bureau", value: 20, z: 6 },
+                { label: "IoT", value: 15, z: 48 }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { VariablePieChart } from "@sentropic/design-system-svelte";
+</script>
+
+<VariablePieChart
+  label="Part de marché et croissance"
+  data={[
+    { label: "Cloud", value: 40, z: 12 },
+    { label: "Mobile", value: 25, z: 30 },
+    { label: "Bureau", value: 20, z: 6 },
+    { label: "IoT", value: 15, z: 48 }
+  ]}
+/>`,
+      react: `import { VariablePieChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <VariablePieChart
+      label="Part de marché et croissance"
+      data={[
+        { label: "Cloud", value: 40, z: 12 },
+        { label: "Mobile", value: 25, z: 30 },
+        { label: "Bureau", value: 20, z: 6 },
+        { label: "IoT", value: 15, z: 48 }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { VariablePieChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <VariablePieChart
+    label="Part de marché et croissance"
+    :data="[
+      { label: 'Cloud', value: 40, z: 12 },
+      { label: 'Mobile', value: 25, z: 30 },
+      { label: 'Bureau', value: 20, z: 6 },
+      { label: 'IoT', value: 15, z: 48 }
+    ]"
+  />
+</template>`
+    }
+  },
+
   violinchart: {
     id: "violinchart",
     slug: "violin-chart",
@@ -8432,6 +8506,88 @@ import { OrganizationChart } from "@sentropic/design-system-vue";
     }
   },
 
+  treegraphchart: {
+    id: "treegraphchart",
+    slug: "treegraph-chart",
+    nodes: [
+      stack([
+        {
+          comp: "TreegraphChart",
+          props: {
+            label: "Arborescence des fichiers du projet",
+            data: [
+              { id: "src", label: "src" },
+              { id: "comp", parentId: "src", label: "composants" },
+              { id: "lib", parentId: "src", label: "lib" },
+              { id: "routes", parentId: "src", label: "routes" },
+              { id: "button", parentId: "comp", label: "Button" },
+              { id: "card", parentId: "comp", label: "Card" },
+              { id: "utils", parentId: "lib", label: "utils" },
+              { id: "home", parentId: "routes", label: "home" }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { TreegraphChart } from "@sentropic/design-system-svelte";
+</script>
+
+<TreegraphChart
+  label="Arborescence des fichiers du projet"
+  data={[
+    { id: "src", label: "src" },
+    { id: "comp", parentId: "src", label: "composants" },
+    { id: "lib", parentId: "src", label: "lib" },
+    { id: "routes", parentId: "src", label: "routes" },
+    { id: "button", parentId: "comp", label: "Button" },
+    { id: "card", parentId: "comp", label: "Card" },
+    { id: "utils", parentId: "lib", label: "utils" },
+    { id: "home", parentId: "routes", label: "home" }
+  ]}
+/>`,
+      react: `import { TreegraphChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <TreegraphChart
+      label="Arborescence des fichiers du projet"
+      data={[
+        { id: "src", label: "src" },
+        { id: "comp", parentId: "src", label: "composants" },
+        { id: "lib", parentId: "src", label: "lib" },
+        { id: "routes", parentId: "src", label: "routes" },
+        { id: "button", parentId: "comp", label: "Button" },
+        { id: "card", parentId: "comp", label: "Card" },
+        { id: "utils", parentId: "lib", label: "utils" },
+        { id: "home", parentId: "routes", label: "home" }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { TreegraphChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <TreegraphChart
+    label="Arborescence des fichiers du projet"
+    :data="[
+      { id: 'src', label: 'src' },
+      { id: 'comp', parentId: 'src', label: 'composants' },
+      { id: 'lib', parentId: 'src', label: 'lib' },
+      { id: 'routes', parentId: 'src', label: 'routes' },
+      { id: 'button', parentId: 'comp', label: 'Button' },
+      { id: 'card', parentId: 'comp', label: 'Card' },
+      { id: 'utils', parentId: 'lib', label: 'utils' },
+      { id: 'home', parentId: 'routes', label: 'home' }
+    ]"
+  />
+</template>`
+    }
+  },
+
   bulletchart: {
     id: "bulletchart",
     slug: "bullet-chart",
@@ -8913,6 +9069,76 @@ import { HollowCandlestickChart } from "@sentropic/design-system-vue";
       { label: 'Mer', open: 143, high: 152, low: 140, close: 150 },
       { label: 'Jeu', open: 150, high: 153, low: 145, close: 147 },
       { label: 'Ven', open: 147, high: 155, low: 146, close: 153 }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  heikinashichart: {
+    id: "heikinashichart",
+    slug: "heikin-ashi-chart",
+    nodes: [
+      stack([
+        {
+          comp: "HeikinAshiChart",
+          props: {
+            label: "Cours SENT — semaine (Heikin-Ashi)",
+            data: [
+              { label: "Lun", open: 142, high: 148, low: 139, close: 146 },
+              { label: "Mar", open: 146, high: 151, low: 144, close: 149 },
+              { label: "Mer", open: 149, high: 152, low: 140, close: 143 },
+              { label: "Jeu", open: 143, high: 147, low: 138, close: 145 },
+              { label: "Ven", open: 145, high: 155, low: 144, close: 153 }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { HeikinAshiChart } from "@sentropic/design-system-svelte";
+</script>
+
+<HeikinAshiChart
+  label="Cours SENT — semaine (Heikin-Ashi)"
+  data={[
+    { label: "Lun", open: 142, high: 148, low: 139, close: 146 },
+    { label: "Mar", open: 146, high: 151, low: 144, close: 149 },
+    { label: "Mer", open: 149, high: 152, low: 140, close: 143 },
+    { label: "Jeu", open: 143, high: 147, low: 138, close: 145 },
+    { label: "Ven", open: 145, high: 155, low: 144, close: 153 }
+  ]}
+/>`,
+      react: `import { HeikinAshiChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <HeikinAshiChart
+      label="Cours SENT — semaine (Heikin-Ashi)"
+      data={[
+        { label: "Lun", open: 142, high: 148, low: 139, close: 146 },
+        { label: "Mar", open: 146, high: 151, low: 144, close: 149 },
+        { label: "Mer", open: 149, high: 152, low: 140, close: 143 },
+        { label: "Jeu", open: 143, high: 147, low: 138, close: 145 },
+        { label: "Ven", open: 145, high: 155, low: 144, close: 153 }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { HeikinAshiChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <HeikinAshiChart
+    label="Cours SENT — semaine (Heikin-Ashi)"
+    :data="[
+      { label: 'Lun', open: 142, high: 148, low: 139, close: 146 },
+      { label: 'Mar', open: 146, high: 151, low: 144, close: 149 },
+      { label: 'Mer', open: 149, high: 152, low: 140, close: 143 },
+      { label: 'Jeu', open: 143, high: 147, low: 138, close: 145 },
+      { label: 'Ven', open: 145, high: 155, low: 144, close: 153 }
     ]"
   />
 </template>`
@@ -9809,6 +10035,72 @@ import { DependencyWheelChart } from "@sentropic/design-system-vue";
 <template>
   <DependencyWheelChart
     label="Dépendances de modules"
+    :data="[
+      { from: 'ui', to: 'core', weight: 8 },
+      { from: 'api', to: 'core', weight: 5 },
+      { from: 'core', to: 'utils', weight: 3 },
+      { from: 'api', to: 'utils', weight: 2 }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  arcdiagramchart: {
+    id: "arcdiagramchart",
+    slug: "arc-diagram-chart",
+    nodes: [
+      stack([
+        {
+          comp: "ArcDiagramChart",
+          props: {
+            label: "Réseau de modules",
+            data: [
+              { from: "ui", to: "core", weight: 8 },
+              { from: "api", to: "core", weight: 5 },
+              { from: "core", to: "utils", weight: 3 },
+              { from: "api", to: "utils", weight: 2 }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { ArcDiagramChart } from "@sentropic/design-system-svelte";
+</script>
+
+<ArcDiagramChart
+  label="Réseau de modules"
+  data={[
+    { from: "ui", to: "core", weight: 8 },
+    { from: "api", to: "core", weight: 5 },
+    { from: "core", to: "utils", weight: 3 },
+    { from: "api", to: "utils", weight: 2 }
+  ]}
+/>`,
+      react: `import { ArcDiagramChart } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <ArcDiagramChart
+      label="Réseau de modules"
+      data={[
+        { from: "ui", to: "core", weight: 8 },
+        { from: "api", to: "core", weight: 5 },
+        { from: "core", to: "utils", weight: 3 },
+        { from: "api", to: "utils", weight: 2 }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { ArcDiagramChart } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <ArcDiagramChart
+    label="Réseau de modules"
     :data="[
       { from: 'ui', to: 'core', weight: 8 },
       { from: 'api', to: 'core', weight: 5 },
