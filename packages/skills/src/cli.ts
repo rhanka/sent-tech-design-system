@@ -280,7 +280,7 @@ function printAlignHelp() {
     `\x1b[1mOPTIONS\x1b[0m\n` +
     `  --tones               Calibrage de la palette chromatique (OKLCH, contrastes WCAG).\n` +
     `  --spacing             Alignement de la grille et des paddings (multiples de 4px/8px).\n` +
-    `  --typo                Ajustement de l'échelle typographique et de la hiérarchie.\n` +
+    `  --typo                Réécrit les piles de polices brutes publiées vers leurs tokens \`var(--st-font-*)\`.\n` +
     `  --a11y                Garantie d'accessibilité (touch targets, focus, navigabilité).\n` +
     `  --responsive          Fluidité et adaptabilité mobile/desktop.\n` +
     `  -h, --help            Affiche cette aide.\n\n` +
@@ -1172,6 +1172,47 @@ async function handleAuditParity(args: string[]) {
   process.exit(failUnder === undefined ? (clean ? 0 : 1) : report.parityScore >= failUnder ? 0 : 1);
 }
 
+/** Normalise une valeur de font-family pour comparaison robuste (casse, quotes, espaces). */
+function normalizeFontStack(value: string): string {
+  return value
+    .replace(/['"]/g, "")
+    .split(",")
+    .map((part) => part.trim().toLowerCase())
+    .filter(Boolean)
+    .join(", ");
+}
+
+// Piles de polices publiées (packages/tokens/src/foundation.ts) → token canonique.
+// Comparées après normalisation, donc insensibles aux quotes/casse/espaces.
+const PUBLISHED_FONT_STACKS: { token: string; normalized: string }[] = [
+  { token: "--st-font-sans", normalized: normalizeFontStack("Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif") },
+  { token: "--st-font-display", normalized: normalizeFontStack("Inter, system-ui, sans-serif") },
+  { token: "--st-font-mono", normalized: normalizeFontStack("'SFMono-Regular', Consolas, 'Liberation Mono', monospace") }
+];
+
+/**
+ * Réécrit les déclarations `font-family` dont la pile correspond à une pile
+ * publiée vers son token `var(--st-font-*)`. Idempotent (les valeurs déjà
+ * tokenisées via `var(--…)` ne sont jamais touchées). Retourne le nombre de
+ * réécritures pour le compteur de modifications.
+ */
+function alignFontFamilyTokens(content: string): { content: string; fixes: number } {
+  let fixes = 0;
+  const declRe = /(font-family\s*:\s*)([^;}{]+)/gi;
+  const next = content.replace(declRe, (match, prefix: string, rawValue: string) => {
+    // Ne jamais retoucher une valeur déjà exprimée par token.
+    if (/var\(\s*--/.test(rawValue)) return match;
+    const normalized = normalizeFontStack(rawValue);
+    const hit = PUBLISHED_FONT_STACKS.find((stack) => stack.normalized === normalized);
+    if (!hit) return match;
+    fixes++;
+    // Préserve un espace de fin éventuel pour ne pas coller au `;`/`}`.
+    const trailing = rawValue.match(/\s+$/)?.[0] ?? "";
+    return `${prefix}var(${hit.token})${trailing}`;
+  });
+  return { content: next, fixes };
+}
+
 async function handleAlign(args: string[]) {
   if (args.includes("-h") || args.includes("--help")) {
     printAlignHelp();
@@ -1307,11 +1348,21 @@ async function handleAlign(args: string[]) {
   }
   if (isTypo || !anyFlag) {
     if (isLocalFile && fileContent) {
+      // Auto-alignement Typo : réécrit les piles de polices brutes publiées
+      // (--st-font-sans/display/mono) vers leurs tokens, à l'image de --tones
+      // pour les couleurs. Les piles non reconnues restent une passe informative.
+      const { content: typoContent, fixes: typoFixes } = alignFontFamilyTokens(fileContent);
+      if (typoFixes > 0) {
+        modificationsCount += typoFixes;
+        fileContent = typoContent;
+        writeFileSync(filePath, fileContent, "utf-8");
+        process.stderr.write(`  \x1b[32m✔ Auto-alignement Typographie :\x1b[0m ${typoFixes} pile(s) de police brute(s) réécrite(s) en token \`var(--st-font-*)\`.\n`);
+      }
       const fontFamilies = fileContent.match(/font-family\s*:[^;}{]+/gi) || [];
       const offToken = fontFamilies.filter((decl) => !/var\(--/.test(decl)).length;
       if (offToken > 0) {
-        process.stderr.write(`  \x1b[33m• Typographie :\x1b[0m ${offToken} déclaration(s) \`font-family\` hors token — envisager \`var(--st-…-fontFamily)\` (passe informative).\n`);
-      } else {
+        process.stderr.write(`  \x1b[33m• Typographie :\x1b[0m ${offToken} déclaration(s) \`font-family\` hors token (pile non reconnue) — envisager \`var(--st-…-fontFamily)\` (passe informative).\n`);
+      } else if (typoFixes === 0) {
         process.stderr.write(`  \x1b[32m✔ Typographie :\x1b[0m familles de police déjà tokenisées (ou absentes).\n`);
       }
     } else {
