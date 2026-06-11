@@ -4,8 +4,7 @@ Liste vivante des bugs visuels et comportementaux signalés sur le design system
 
 ## À corriger
 
-### Site docs — thème ET framework oubliés à la navigation/clic thème (signalé 2026-06-11)
-Sur le site docs, quand on **clique un thème** ou qu'on **change de composant** (navigation), le **thème sélectionné est oublié** ET le **framework actif (svelte/react/vue) aussi** → retour au défaut. Pourtant la persistance localStorage existe (`+layout.svelte` `THEME_STORAGE_KEY`, `framework.svelte.ts` `FRAMEWORK_STORAGE_KEY`, `color-mode.svelte.ts`). Cause probable : la restauration depuis localStorage n'est pas (ré)appliquée à chaque navigation SvelteKit (state ré-initialisé au défaut au mount, ou flash SSR/hydratation, ou un reset partagé thème↔framework). **Attendu** : thème + framework + color-mode persistés et restaurés de façon stable à travers toute navigation et au reload, sans flash. Fix + test de non-régression (url-state/persistence). [agent lancé 2026-06-11]
+_(rien en attente)_
 
 ## Retest navigateur 2026-06-01
 
@@ -27,6 +26,10 @@ Smoke Chrome headless sur `apps/docs/build` :
 3. **Outside-click et Escape obligatoires** sur tout composant flottant (menu, popover, drawer non-modal). Doit faire partie du contrat de chaque overlay.
 
 ## Corrigés
+
+### Site docs — thème ET framework oubliés à la navigation/clic thème (corrigé 2026-06-11, fix prêt en attente de commit)
+- **Cause racine** : les liens de navigation internes (sidebar / top-nav) sont des `href` statiques SANS query params (`/components/button`). En SvelteKit le layout est persistant (pas de re-montage), donc après une navigation `page.url.search` devient vide. L'effet de sync entrante de `+layout.svelte` appliquait la règle « param d'URL absent ⇒ valeur par défaut » (`urlTheme ?? DEFAULT_THEME_ID`, `urlFramework ?? DEFAULT_FRAMEWORK`), ce qui réinitialisait thème + framework au défaut à chaque navigation interne. (Correct pour back/forward, faux pour la nav interne qui ne porte jamais les params.) Le color-mode, géré par son propre store + script anti-FOUC, n'était pas réinitialisé, mais le re-bascule du chrome au retour `sent-tech` donnait l'impression d'un flash.
+- **Fix** : règle d'autorité corrigée — un param d'URL fait autorité UNIQUEMENT lorsqu'il est présent (deep-link, partage, back/forward) ; absent, on CONSERVE l'état courant (déjà persisté en localStorage). Logique extraite en fonctions pures testables `reconcileTheme`/`reconcileFramework` (`url-state.ts`). L'effet de sync sortante dépend désormais aussi de `page.url.pathname` (et non `.search`, pour éviter la boucle de feedback) afin que l'URL de la nouvelle page reflète toujours l'état. Anti-FOUC renforcé dans `app.html` : restauration précoce de `data-st-theme` et `data-st-framework` (en plus de `data-color-mode`). Test de non-régression ajouté (`url-state.test.ts`) : nav interne conserve l'état, reload relit localStorage, deep-link l'emporte.
 
 ### Toast et Alert — barre gauche colorée + container arrondi (corrigé 2026-05-22, `a85a379`)
 - **Cause** : `border-radius` non nul combiné à `border-left` coloré sur le container racine de Toast et Alert.

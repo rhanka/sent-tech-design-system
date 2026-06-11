@@ -57,6 +57,31 @@ export function resolveFramework(
   return DEFAULT_FRAMEWORK;
 }
 
+// ── Réconciliation lors d'une navigation (état déjà initialisé) ───────────────
+//
+// Pourquoi : les liens de navigation internes (sidebar, top-nav) sont des `href`
+// statiques SANS query params (`/components/button`). En SvelteKit le layout est
+// PERSISTANT (pas de re-montage), donc après une navigation `page.url.search`
+// devient "" (vide). Si on traitait « param absent => défaut », chaque clic de
+// navigation RÉINITIALISERAIT thème + framework au défaut (le bug signalé).
+//
+// Règle correcte : le param d'URL fait autorité UNIQUEMENT quand il est présent
+// (deep-link, partage, back/forward vers une URL qui le porte). Quand il est
+// absent, on CONSERVE l'état courant (déjà persisté en localStorage) — la nav
+// interne ne doit jamais effacer le choix de l'utilisateur. L'effet de sync
+// sortante ré-ajoute ensuite les params à l'URL via replaceState.
+
+export function reconcileTheme(urlValue: ThemeId | null, current: ThemeId): ThemeId {
+  return urlValue !== null ? urlValue : current;
+}
+
+export function reconcileFramework(
+  urlValue: FrameworkId | null,
+  current: FrameworkId
+): FrameworkId {
+  return urlValue !== null ? urlValue : current;
+}
+
 // ── Calcul de l'URL mise à jour (sans effet de bord) ─────────────────────────
 
 /**

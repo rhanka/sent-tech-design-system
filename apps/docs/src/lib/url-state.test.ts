@@ -20,6 +20,8 @@ import {
   readUrlParams,
   resolveTheme,
   resolveFramework,
+  reconcileTheme,
+  reconcileFramework,
   buildUpdatedSearch,
   DEFAULT_THEME_ID
 } from "./url-state";
@@ -133,6 +135,81 @@ describe("url-state helpers", () => {
       expect(result).toContain("compare=1");
       expect(result).toContain("scenario=button-default");
       expect(result).toContain("theme=dsfr");
+    });
+  });
+
+  // ── Réconciliation à la navigation : régression « thème/framework oubliés ».
+  // Un lien de navigation interne (sidebar/top-nav) est un href STATIQUE sans
+  // query param. Après navigation, l'URL n'a plus ?theme/?framework. La règle
+  // doit alors CONSERVER l'état courant (param absent => on garde), pas retomber
+  // au défaut. Si l'URL porte le param (deep-link, back/forward), il fait autorité.
+  describe("reconcileTheme / reconcileFramework (navigation persists state)", () => {
+    it("keeps the current theme when the URL param is absent (internal nav)", () => {
+      expect(reconcileTheme(null, "dsfr")).toBe("dsfr");
+      expect(reconcileTheme(null, "carbon")).toBe("carbon");
+    });
+
+    it("keeps the current framework when the URL param is absent (internal nav)", () => {
+      expect(reconcileFramework(null, "react")).toBe("react");
+      expect(reconcileFramework(null, "vue")).toBe("vue");
+    });
+
+    it("lets the URL param win when present (deep-link / back-forward)", () => {
+      expect(reconcileTheme("airbus", "dsfr")).toBe("airbus");
+      expect(reconcileFramework("vue", "react")).toBe("vue");
+    });
+
+    it("never falls back to default on internal navigation", () => {
+      // Le bug d'origine : nextTheme = urlTheme ?? DEFAULT => réinit au défaut.
+      // Garantie : un thème/framework non-défaut survit à une nav sans params.
+      expect(reconcileTheme(null, "carbon")).not.toBe(DEFAULT_THEME_ID);
+      expect(reconcileFramework(null, "vue")).not.toBe(DEFAULT_FRAMEWORK);
+    });
+  });
+
+  // ── Bout-en-bout simulé : choix utilisateur -> persistance -> nav -> reload.
+  // Reproduit le cycle de vie sans monter le layout : on persiste via les mêmes
+  // clés que les stores, on simule une navigation interne (URL vidée de ses
+  // params) puis un reload (localStorage relu au montage initial).
+  describe("end-to-end: theme + framework survive navigation and reload", () => {
+    it("survives an internal navigation that clears the URL params", () => {
+      // 1) L'utilisateur a choisi carbon + react ; l'état est persisté.
+      store["st-docs-theme"] = "carbon";
+      store[FRAMEWORK_STORAGE_KEY] = "react";
+      let currentTheme = "carbon" as const;
+      let currentFramework = "react" as const;
+
+      // 2) Navigation interne -> l'URL ne porte AUCUN param.
+      mockSearch.current = "";
+      const { theme: urlTheme, framework: urlFramework } = readUrlParams();
+      expect(urlTheme).toBeNull();
+      expect(urlFramework).toBeNull();
+
+      // 3) Réconciliation : l'état doit être CONSERVÉ (pas de retour au défaut).
+      const nextTheme = reconcileTheme(urlTheme, currentTheme);
+      const nextFramework = reconcileFramework(urlFramework, currentFramework);
+      expect(nextTheme).toBe("carbon");
+      expect(nextFramework).toBe("react");
+    });
+
+    it("restores theme + framework from localStorage on reload (fresh mount, empty URL)", () => {
+      // L'utilisateur avait choisi dsfr + vue.
+      store["st-docs-theme"] = "dsfr";
+      store[FRAMEWORK_STORAGE_KEY] = "vue";
+      // Reload : montage initial, URL vide -> priorité URL > localStorage > défaut.
+      mockSearch.current = "";
+      const { theme: urlTheme, framework: urlFramework } = readUrlParams();
+      expect(resolveTheme(urlTheme, "st-docs-theme")).toBe("dsfr");
+      expect(resolveFramework(urlFramework, FRAMEWORK_STORAGE_KEY)).toBe("vue");
+    });
+
+    it("a deep-link URL still wins over a stale localStorage on reload", () => {
+      store["st-docs-theme"] = "dsfr";
+      store[FRAMEWORK_STORAGE_KEY] = "vue";
+      mockSearch.current = "?theme=carbon&framework=react";
+      const { theme: urlTheme, framework: urlFramework } = readUrlParams();
+      expect(resolveTheme(urlTheme, "st-docs-theme")).toBe("carbon");
+      expect(resolveFramework(urlFramework, FRAMEWORK_STORAGE_KEY)).toBe("react");
     });
   });
 });
