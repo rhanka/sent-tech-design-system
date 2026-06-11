@@ -228,6 +228,7 @@ export type { ScatterPlotDatum, ScatterPlotTone, ScatterPlotCentroid } from "./S
 export type { StackedBarDatum, StackedBarSegment, StackedBarTone } from "./StackedBarChart.svelte";
 export type { LineChartDatum, LineChartTone } from "./LineChart.svelte";
 export type { ChartOverlayTone, ChartReferenceLine, ChartBand, ChartGoalLine, ChartScale } from "./LineChart.svelte";
+export type { ChartAnnotation, ChartAnnotationMarker } from "./chartAnnotations.js";
 export type {
   ComboChartTone,
   ComboChartBarSeries,

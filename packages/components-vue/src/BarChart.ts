@@ -20,6 +20,12 @@ import {
   type ChartReferenceLine,
   type ChartScale,
 } from "./chartScale.js";
+import {
+  annotationDataListItems,
+  polygonPoints,
+  resolveAnnotations,
+  type ChartAnnotation,
+} from "./chartAnnotations.js";
 
 export type BarChartTone =
   | "category1"
@@ -77,6 +83,14 @@ export type BarChartProps = {
   /** A single goal line, emphasised above the bars. */
   goalLine?: ChartGoalLine;
   /**
+   * Annotation overlay in DATA space. The x coordinate is CATEGORICAL — it
+   * matches a bar by its `label` (centre of band) and is ignored otherwise; the
+   * y coordinate (and `value`/`from`/`to`) are value-axis numbers. Regions
+   * render behind the bars, every other kind above. Additive: absent ⇒
+   * unchanged.
+   */
+  annotations?: ChartAnnotation[];
+  /**
    * Value-axis scale. `"linear"` (default) is unchanged. `"log"` switches the
    * value axis to base-10 logarithmic — values `<= 0` are ignored for
    * domain/ticks and clamped to the lowest tick when positioned.
@@ -109,6 +123,7 @@ export const BarChart = defineComponent({
     referenceLines: { type: Array as () => ChartReferenceLine[], default: undefined },
     bands: { type: Array as () => ChartBand[], default: undefined },
     goalLine: { type: Object as () => ChartGoalLine, default: undefined },
+    annotations: { type: Array as () => ChartAnnotation[], default: undefined },
     scale: { type: String as () => ChartScale, default: "linear" },
     invertAxis: { type: Boolean, default: false },
     showLegend: { type: Boolean, default: undefined },
@@ -341,9 +356,61 @@ export const BarChart = defineComponent({
         }
       }
 
+      // --- Annotation overlay -------------------------------------------------
+      // The x coordinate is CATEGORICAL (a bar `label` → centre of band); the y
+      // coordinate is a value-axis number. For a HORIZONTAL chart the value axis
+      // is x and the category axis is y, so the data-space (x=category, y=value)
+      // convention is transposed onto the pixel axes: the resolver's `xScale`
+      // maps the value, `yScale` the category, and each annotation's
+      // `axis`/coords are swapped so a value reference (`axis: "y"`) still spans
+      // the full plot.
+      const categoryPixel = (v: number | string): number | null => {
+        const bar = bars.find((b) => b.datum.label === String(v));
+        if (!bar) return null;
+        return isVertical ? bar.cx - MARGIN.left : bar.cy - MARGIN.top;
+      };
+      const valuePixelRel = (v: number): number | null => {
+        if (!Number.isFinite(v)) return null;
+        return valuePos(v) - (isVertical ? MARGIN.top : MARGIN.left);
+      };
+      const transposeAnnotations = (list: ChartAnnotation[] | undefined): ChartAnnotation[] | undefined => {
+        if (!list || isVertical) return list;
+        // Horizontal: swap the data-space x/y (and the region/line axis) so the
+        // generic resolver — which always emits xScale→x-pixel, yScale→y-pixel —
+        // lands the value on the x axis and the category on the y axis.
+        return list.map((a): ChartAnnotation => {
+          switch (a.kind) {
+            case "line":
+              return { ...a, axis: a.axis === "x" ? "y" : "x" };
+            case "region":
+              return { ...a, axis: a.axis === "x" ? "y" : "x" };
+            case "point":
+              return { ...a, x: a.y, y: typeof a.x === "number" ? a.x : NaN } as ChartAnnotation;
+            case "label":
+              return { ...a, x: a.y, y: typeof a.x === "number" ? a.x : NaN } as ChartAnnotation;
+            case "shape":
+              return { ...a, points: a.points.map((p) => ({ x: p.y, y: typeof p.x === "number" ? p.x : NaN })) };
+          }
+        });
+      };
+      const annXScale = (v: number | string): number | null =>
+        isVertical ? categoryPixel(v) : typeof v === "number" ? valuePixelRel(v) : null;
+      const annYScale = (v: number): number | null => (isVertical ? valuePixelRel(v) : categoryPixel(v));
+      const resolvedAnnotations = resolveAnnotations(transposeAnnotations(props.annotations), {
+        xScale: annXScale,
+        yScale: annYScale,
+        plotLeft: MARGIN.left,
+        plotTop: MARGIN.top,
+        plotWidth,
+        plotHeight,
+      });
+      const annotationRegions = resolvedAnnotations.filter((a) => a.kind === "region");
+      const annotationAbove = resolvedAnnotations.filter((a) => a.kind !== "region");
+
       const dataValueItems = [
         ...data.map((d) => `${d.label}: ${d.value}`),
         ...overlayDataListItems({ referenceLines, bands, goalLine: goal, trend: null }),
+        ...annotationDataListItems(props.annotations),
       ];
 
       const gridChildren: ReturnType<typeof h>[] = [];
@@ -487,6 +554,84 @@ export const BarChart = defineComponent({
         );
       }
 
+      // Annotation regions sit BEHIND the bars (filled bands).
+      const annotationRegionGroup =
+        annotationRegions.length > 0
+          ? h(
+              "g",
+              { class: "st-barChart__annotations st-barChart__annotations--behind" },
+              annotationRegions.flatMap((a) => {
+                if (a.kind !== "region") return [];
+                const nodes: ReturnType<typeof h>[] = [
+                  h("rect", { key: `ann-region-${a.key}`, class: "st-barChart__annotationRegion", x: a.x, y: a.y, width: a.width, height: a.height }),
+                ];
+                if (a.label) {
+                  nodes.push(
+                    h("text", { key: `ann-region-label-${a.key}`, class: "st-barChart__annotationLabel", x: a.x + 4, y: a.y + 11 }, a.label),
+                  );
+                }
+                return nodes;
+              }),
+            )
+          : null;
+
+      // Annotations ABOVE the bars: lines, shapes, points, labels.
+      const annotationAboveGroup =
+        annotationAbove.length > 0
+          ? h(
+              "g",
+              { class: "st-barChart__annotations st-barChart__annotations--above" },
+              annotationAbove.flatMap((a) => {
+                if (a.kind === "line") {
+                  const nodes: ReturnType<typeof h>[] = [
+                    h("line", { key: `ann-line-${a.key}`, class: "st-barChart__annotationLine", x1: a.x1, y1: a.y1, x2: a.x2, y2: a.y2 }),
+                  ];
+                  if (a.label) {
+                    nodes.push(
+                      h(
+                        "text",
+                        {
+                          key: `ann-line-label-${a.key}`,
+                          class: "st-barChart__annotationLabel",
+                          x: a.axis === "x" ? a.x1 + 4 : MARGIN.left + plotWidth - 4,
+                          y: a.axis === "x" ? MARGIN.top + 11 : a.y1 - 4,
+                          "text-anchor": a.axis === "x" ? "start" : "end",
+                        },
+                        a.label,
+                      ),
+                    );
+                  }
+                  return nodes;
+                }
+                if (a.kind === "shape") {
+                  const nodes: ReturnType<typeof h>[] = [
+                    h("polygon", { key: `ann-shape-${a.key}`, class: "st-barChart__annotationShape", points: polygonPoints(a.points) }),
+                  ];
+                  if (a.label) {
+                    nodes.push(
+                      h("text", { key: `ann-shape-label-${a.key}`, class: "st-barChart__annotationLabel", x: a.labelX, y: a.labelY, "text-anchor": "middle" }, a.label),
+                    );
+                  }
+                  return nodes;
+                }
+                if (a.kind === "point") {
+                  const nodes: ReturnType<typeof h>[] = [
+                    h("circle", { key: `ann-point-${a.key}`, class: "st-barChart__annotationPoint", cx: a.x, cy: a.y, r: "4.5" }),
+                  ];
+                  if (a.label) {
+                    nodes.push(
+                      h("text", { key: `ann-point-label-${a.key}`, class: "st-barChart__annotationLabel", x: a.x, y: a.y - 8, "text-anchor": "middle" }, a.label),
+                    );
+                  }
+                  return nodes;
+                }
+                return [
+                  h("text", { key: `ann-label-${a.key}`, class: "st-barChart__annotationText", x: a.x, y: a.y, "text-anchor": a.anchor }, a.text),
+                ];
+              }),
+            )
+          : null;
+
       // Accessible selection surface — real <button>s OUTSIDE the aria-hidden
       // SVG. This is the keyboard + screen-reader path for filtering.
       const filterGroup = interactive
@@ -546,9 +691,11 @@ export const BarChart = defineComponent({
                 h("line", { class: "st-barChart__axis", x1: MARGIN.left, x2: width - MARGIN.right, y1: height - MARGIN.bottom, y2: height - MARGIN.bottom }),
                 ...categoryLabels,
                 ...belowOverlays,
+                ...(annotationRegionGroup ? [annotationRegionGroup] : []),
                 ...barRects,
                 ...errorBarNodes,
                 ...goalOverlays,
+                ...(annotationAboveGroup ? [annotationAboveGroup] : []),
               ],
             ),
           ],
