@@ -57,14 +57,14 @@ Hors scope du livrable minimal ; voir lot optionnel **QC-DARK**.
 
 ## Plan / Todo (lot-based)
 
-- [ ] **Lot QC-INVENTORY — inventaire + mapping composants SDG**
+- [x] **Lot QC-INVENTORY — inventaire + mapping composants SDG**
   - Énumérer `src/sdg/components/*` du repo `Quebecca/qc_trousse_sdg`
     (`gh api repos/Quebecca/qc_trousse_sdg/git/trees/main?recursive=1 --jq '.tree[].path' | grep components/`).
   - Produire `docs/quebec-sdg-mapping.md` : tableau `# | composant SDG | rôle | équivalent DS | statut (✅ couvert / ⛔ gap / ➖ chrome)`.
   - Lister les **gaps réels** (composants SDG sans équivalent DS) → entrée du lot QC-COMPLETE.
   - Vérif : `wc -l docs/quebec-sdg-mapping.md` ; relire les `⛔`.
 
-- [ ] **Lot QC-COMPLETE — complétion DS (gaps SDG)**
+- [x] **Lot QC-COMPLETE — complétion DS (gaps SDG)**
   - Pour chaque gap : livrer le composant **tri-framework** (Svelte + React + Vue) + page docs + entrée catalogue + tests.
   - Fichiers (pattern, par composant `Xxx`) :
     - `packages/components-svelte/src/Xxx.svelte` + `Xxx.test.ts` + export `index.ts`
@@ -75,7 +75,7 @@ Hors scope du livrable minimal ; voir lot optionnel **QC-DARK**.
   - Vérif : `npm --workspace packages/components-{svelte,react,vue} test` (tous verts) ; catalogue == exports Svelte.
   - NB : si l'inventaire ne révèle **aucun** gap (probable, SDG ⊂ DS), ce lot est *no-op* → cocher avec note « 0 gap ».
 
-- [ ] **Lot QC-THEME — package theme-quebec**
+- [x] **Lot QC-THEME — package theme-quebec**
   - Créer `packages/theme-quebec/` : `package.json`, `tsconfig.json`, `MAPPING.md`, `src/index.ts`, `src/index.test.ts`.
   - `package.json` = clone de `packages/theme-canada/package.json` avec :
     - `"name": "@sentropic/design-system-theme-quebec"`, `"version": "0.1.0"`,
@@ -137,7 +137,7 @@ Hors scope du livrable minimal ; voir lot optionnel **QC-DARK**.
   - `MAPPING.md` = sources SDG + tableau couleurs + notes « à confirmer ».
   - Vérif : `npm --workspace packages/theme-quebec test` (3/3) ; `npm --workspace packages/theme-quebec run build` (exit 0).
 
-- [ ] **Lot QC-CHROME — chrome documentaire ChromeQuebec.svelte**
+- [x] **Lot QC-CHROME — chrome documentaire ChromeQuebec.svelte**
   - Télécharger l'asset officiel :
     `gh api repos/Quebecca/qc_trousse_sdg/contents/public/img/QUEBEC_couleur.svg --jq '.content' | base64 -d > apps/docs/static/chrome/quebec/signature.svg`
     (+ une variante blanche pour le footer si besoin).
@@ -151,7 +151,7 @@ Hors scope du livrable minimal ; voir lot optionnel **QC-DARK**.
     - Préfixe de classe dédié `qc-*` (`qc-shell`, `qc-header`, `qc-sidebar`, `qc-sidebar-footer`, `qc-nav`, `qc-breadcrumb`).
   - Vérif : rendu sans rail-gauche-arrondi ; signature pixel-perfect depuis l'asset officiel.
 
-- [ ] **Lot QC-DOCS — intégration app docs (diffs exacts)**
+- [x] **Lot QC-DOCS — intégration app docs (diffs exacts)**
   - `apps/docs/package.json` :
     - ajouter `"@sentropic/design-system-theme-quebec": "0.1.0"` dans `dependencies` (ordre alpha, après `-canada`) ;
     - ajouter `&& npm --workspace packages/theme-quebec run build` dans **`predev`** ET **`prebuild`** (après `theme-canada`).
@@ -172,7 +172,7 @@ Hors scope du livrable minimal ; voir lot optionnel **QC-DARK**.
       brandFont: "'Open Sans', system-ui, sans-serif", lang: "fr" }`.
   - Vérif : `npm --workspace apps/docs run check` (svelte-check 0 erreur) ; sélecteur affiche « Gouvernement du Québec ».
 
-- [ ] **Lot QC-CONTRACT — tests de contrat docs (mettre à jour, sinon ils cassent)**
+- [x] **Lot QC-CONTRACT — tests de contrat docs (mettre à jour, sinon ils cassent)**
   - `apps/docs/src/lib/compare/reference-themes.test.ts` :
     `expect(Object.keys(REFERENCE_THEMES).sort()).toEqual(["canada", "carbon", "dsfr", "quebec"]);`
   - `apps/docs/src/lib/header-contract.test.ts` :
@@ -183,7 +183,7 @@ Hors scope du livrable minimal ; voir lot optionnel **QC-DARK**.
     - assertions structure : `qc-shell`, `qc-header`, `qc-sidebar`, signature officielle, `frameworkSwitcher`, `qc-sidebar-footer`.
   - Vérif : `npm --workspace apps/docs test` (tous verts, dont `reference-themes.test` + `header-contract.test`).
 
-- [ ] **Lot QC-VERIFY — gate CI complète + livraison**
+- [x] **Lot QC-VERIFY — gate CI complète + livraison**
   - Créer `.github/workflows/quebec-publish.yml` = clone de `canada-publish.yml`, `canada`→`quebec` partout
     (tag `quebec-v*`, package `@sentropic/design-system-theme-quebec`, name « Quebec Theme Publish »).
   - Bumper les pins/lockfile si des composants ont changé (QC-COMPLETE) ; `npm install` pour regénérer le lockfile.
@@ -198,7 +198,7 @@ Hors scope du livrable minimal ; voir lot optionnel **QC-DARK**.
   - Cocher les lots `[x]` dans ce fichier ; commit `docs(plan): WP21 thème Québec livré` ; **push main** ; CI verte.
   - Trusted publisher npm OIDC pour `@sentropic/design-system-theme-quebec` à câbler avant le 1er tag (utilisateur = 2FA).
 
-- [ ] **Lot QC-AUDIT — audit de parité tri-framework**
+- [x] **Lot QC-AUDIT — audit de parité tri-framework**
   - Sweep headless `?framework={svelte|react|vue}&theme=quebec` sur les pages composant ;
     vérifier `--st-semantic-action-primary === #095797` identique sur les 3 frameworks.
   - Produire `docs/quebec-parity-audit.md` (verdict + tableau) ; commit `docs(quebec): audit de parité tri-framework`.
