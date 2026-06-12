@@ -1,7 +1,7 @@
 <script lang="ts">
   import { page } from "$app/state";
   import { browser } from "$app/environment";
-  import { replaceState } from "$app/navigation";
+  import { replaceState, afterNavigate } from "$app/navigation";
   import { untrack } from "svelte";
   import "../app.css";
   // CSS global des composants (classes .st-*) pour styler les îles React/Vue :
@@ -21,6 +21,7 @@
   import { carbonTheme } from "@sentropic/design-system-theme-carbon";
   import { airbusTheme } from "@sentropic/design-system-theme-airbus";
   import { canadaTheme } from "@sentropic/design-system-theme-canada";
+  import { quebecTheme } from "@sentropic/design-system-theme-quebec";
   import {
     DOCS_FOUNDATION_NAV,
     DOCS_TOP_NAV,
@@ -53,6 +54,7 @@
   import ChromeDsfr from "$lib/chrome/ChromeDsfr.svelte";
   import ChromeAirbus from "$lib/chrome/ChromeAirbus.svelte";
   import ChromeCanada from "$lib/chrome/ChromeCanada.svelte";
+  import ChromeQuebec from "$lib/chrome/ChromeQuebec.svelte";
 
 
   let { children } = $props();
@@ -71,31 +73,49 @@
   // Thèmes proposés : le DS Sentropic de référence + les 2 mappings tiers
   // (DSFR/Carbon) + le thème client Airbus (port d'anatomie).
   // (forge/entropic sont des tenants de démo internes — exclus du sélecteur.)
-  const THEMES: TenantTheme[] = [sentTechTheme, dsfrTheme, carbonTheme, airbusTheme, canadaTheme];
+  const THEMES: TenantTheme[] = [sentTechTheme, dsfrTheme, carbonTheme, airbusTheme, canadaTheme, quebecTheme];
   const THEME_STORAGE_KEY = "st-docs-theme";
   // Balise <style> du thème de base, injectée en SSR pour le premier rendu.
   // Utilise compileThemeWithModes pour émettre 3 blocs (light + auto dark + explicit dark).
   // (Construite dans le script pour éviter un littéral <style> dans le markup.)
   const baseThemeStyle = `<style data-st-base-theme>${compileThemeModes(sentTechTheme, { selector: ":root" })}</style>`;
 
-  let activeThemeId = $state(sentTechTheme.id);
+  // Amorce SYNCHRONE depuis l'URL (source de vérité) côté client. Le script
+  // anti-FOUC de app.html a déjà réécrit l'URL (?theme/?framework) depuis
+  // localStorage AVANT l'hydratation : readUrlParams() voit donc l'état réel dès
+  // l'init. En initialisant activeThemeId à cette valeur, le TOUT PREMIER rendu
+  // client choisit directement le bon chrome par-thème — plus de bascule de chrome
+  // post-hydratation (fin de la course : Airbus/DSFR/… ratait son chrome ~1 fois
+  // sur N). En SSR (prerender, pas de window) on retombe sur le thème par défaut.
+  const initialTheme = browser
+    ? resolveTheme(readUrlParams().theme, THEME_STORAGE_KEY)
+    : sentTechTheme.id;
+  if (browser) {
+    framework.value = resolveFramework(readUrlParams().framework, FRAMEWORK_STORAGE_KEY);
+  }
+
+  let activeThemeId = $state(initialTheme);
   const activeTheme = $derived(
     THEMES.find((theme) => theme.id === activeThemeId) ?? sentTechTheme
   );
 
-  // Sync ENTRANTE URL -> state. Réactif à page.url.search ($app/state) pour couvrir :
-  //  • le montage initial (priorité URL > localStorage > défaut) ;
-  //  • la navigation interne (clic sidebar/top-nav) et back/forward (popstate),
-  //    qui changent l'URL sans re-monter le layout (layout persistant en SvelteKit).
+  // ═══ URL = SOURCE DE VÉRITÉ pour thème + framework ═══════════════════════
+  // L'URL fait foi ; le store MIROIR l'URL (jamais l'inverse). localStorage ne
+  // sert qu'à AMORCER le tout premier chargement : le script anti-FOUC de
+  // app.html lit localStorage et RÉÉCRIT l'URL (?theme/?framework) AVANT
+  // l'hydratation, de sorte que page.url porte déjà l'état au montage. Le store
+  // est amorcé SYNCHRONEMENT ci-dessus (initialTheme / framework.value), donc le
+  // chrome par-thème est choisi dès le 1er rendu client — fin de la course
+  // d'hydratation (Airbus/DSFR/… ne « rate » plus son chrome).
   //
-  // Règle d'autorité : un param d'URL fait autorité UNIQUEMENT lorsqu'il est
-  // présent (deep-link, partage, back/forward vers une URL qui le porte). Quand il
-  // est ABSENT (cas des liens internes `/components/...` qui ne portent pas les
-  // params), on CONSERVE l'état courant — déjà persisté en localStorage. Sans cela,
-  // chaque navigation interne réinitialisait thème + framework au défaut (bug
-  // signalé : thème/framework « oubliés » à la nav). L'effet de sync sortante
-  // ré-ajoute ensuite les params à l'URL via replaceState.
-  let urlStateInitialized = $state(false);
+  // Sync ENTRANTE (URL -> store), réactive à page.url.search, pour le RUNTIME :
+  //  • deep-link / partage / back-forward : le param présent fait autorité ;
+  //  • nav interne « nue » (lien sans param) : on CONSERVE l'état courant le
+  //    temps que `afterNavigate` ré-inscrive le param dans l'URL (pas de flash).
+  // Amorcé à `browser` : le store est déjà initialisé depuis l'URL au montage,
+  // donc dès le 1er passage on emprunte la branche de réconciliation (jamais de
+  // ré-init au défaut).
+  let urlStateInitialized = $state(browser);
   $effect(() => {
     if (!browser) return;
     // Dépendance réactive explicite : tout changement d'URL relit l'état.
@@ -105,23 +125,33 @@
     // Lecture/écriture de l'état dans untrack() : cet effet ne doit dépendre QUE de
     // page.url.search. Sans untrack, lire framework.value/activeThemeId ici les rend
     // dépendances réactives -> cliquer un onglet (qui change framework.value) re-déclenche
-    // cet effet AVANT que replaceState n'ait écrit l'URL, relit une URL encore vide et
-    // réinitialise au défaut (boucle de feedback : le clic était écrasé en svelte).
+    // cet effet AVANT que la sync sortante n'ait écrit l'URL, relit une URL encore vide
+    // et réinitialise au défaut (boucle de feedback : le clic était écrasé en svelte).
     untrack(() => {
-      if (!urlStateInitialized) {
-        // 1er chargement : URL > localStorage > défaut.
-        activeThemeId = resolveTheme(urlTheme, THEME_STORAGE_KEY);
-        framework.value = resolveFramework(urlFramework, FRAMEWORK_STORAGE_KEY);
-        urlStateInitialized = true;
-        return;
-      }
-      // Navigations ultérieures : param présent => autorité URL ; absent => on
-      // conserve l'état courant (persistance). On n'écrit que si différent (anti-boucle).
+      // Param présent => autorité URL ; absent => on conserve l'état courant
+      // (afterNavigate ré-estampille). On n'écrit que si différent (anti-boucle).
       const nextTheme = reconcileTheme(urlTheme, activeThemeId as UrlThemeId);
       if (nextTheme !== activeThemeId) activeThemeId = nextTheme;
       const nextFramework = reconcileFramework(urlFramework, framework.value);
       if (nextFramework !== framework.value) framework.value = nextFramework;
     });
+  });
+
+  // Sync SORTANTE à la navigation (store -> URL). Les liens de nav internes
+  // (sidebar/top-nav) sont des href STATIQUES sans param : après navigation,
+  // l'URL les perd. `afterNavigate` ré-inscrit alors thème + framework courants
+  // dans la nouvelle URL (replaceState, pas d'entrée historique), pour que l'URL
+  // reste la source de vérité, partageable et deep-linkable. Garde `browser`.
+  afterNavigate(() => {
+    if (!browser) return;
+    // Le store est amorcé SYNCHRONEMENT depuis l'URL au montage : sur la
+    // navigation initiale, buildUpdatedSearch reproduit la search courante => no-op
+    // (aucun risque d'écraser le ?theme/?framework du deep-link). Sur une nav
+    // interne « nue », il ré-inscrit l'état courant dans la nouvelle URL.
+    const newSearch = buildUpdatedSearch(activeThemeId as UrlThemeId, framework.value);
+    if (newSearch !== window.location.search) {
+      replaceState(window.location.pathname + newSearch, page.state);
+    }
   });
 
   // Init du mode couleur (restaure localStorage, applique data-color-mode).
@@ -151,19 +181,17 @@
     framework.persist();
   });
 
-  // Synchronise l'URL (theme + framework) via replaceState (pas d'entrée historique).
-  // Déclenché à chaque changement de thème/framework ET à chaque navigation de page,
-  // pour que la nouvelle URL reflète toujours l'état persisté (deep-link cohérent).
+  // Sync SORTANTE au CHANGEMENT de thème/framework (store -> URL) : un clic sur
+  // un sélecteur ne navigue pas, donc afterNavigate ne se déclenche pas — cet
+  // effet ré-inscrit l'état dans l'URL via replaceState (pas d'entrée historique).
+  // Dépendances réactives EXPLICITES : thème + framework UNIQUEMENT (PAS l'URL,
+  // dont l'écriture est gérée par afterNavigate) ; tracker page.url.search ici
+  // re-déclencherait l'effet sur sa propre écriture et « consommerait » le
+  // tracking de framework.value (depuis le défaut svelte, le 1er clic vers react
+  // n'écrivait jamais l'URL). page.state lu en untrack.
   $effect(() => {
-    // Dépendances réactives EXPLICITES : thème + framework + pathname. On track
-    // `page.url.pathname` (PAS `.search`) : replaceState ci-dessous ne modifie que
-    // la `search`, jamais le pathname, donc aucune boucle de feedback — alors que
-    // tracker `.search` re-déclencherait l'effet sur sa propre écriture (et
-    // « consommerait » le tracking de framework.value : depuis le défaut svelte,
-    // le 1er clic vers react n'écrivait jamais l'URL). page.state lu en untrack.
     const theme = activeThemeId as UrlThemeId;
     const fw = framework.value;
-    void page.url.pathname;
     if (!browser) return;
     const newSearch = buildUpdatedSearch(theme, fw);
     if (newSearch !== window.location.search) {
@@ -255,7 +283,7 @@
   // Les chromes Carbon/DSFR/Airbus encapsulent leur propre header + sidebar.
   // Le chrome sent-tech utilise le Header du composant DS + la sidebar existante.
   const useCustomChrome = $derived(
-    browser && (activeThemeId === "carbon" || activeThemeId === "dsfr" || activeThemeId === "airbus" || activeThemeId === "canada")
+    browser && (activeThemeId === "carbon" || activeThemeId === "dsfr" || activeThemeId === "airbus" || activeThemeId === "canada" || activeThemeId === "quebec")
   );
 </script>
 
@@ -628,6 +656,25 @@
         {@render pageContent()}
       {/snippet}
     </ChromeCanada>
+  </div>
+
+{:else if useCustomChrome && activeThemeId === "quebec"}
+  <div data-st-theme={activeThemeId}>
+    <ChromeQuebec
+      activeThemeId={activeThemeId}
+      isThemeOpen={isThemeOpen}
+      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      themeSwitcher={themeSelector}
+      frameworkSwitcher={frameworkSelector}
+      localeSwitcher={langSelector}
+      compareButton={sharedCompareButton}
+      mobileMenuOpen={isMobileMenuOpen}
+      onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
+    >
+      {#snippet children()}
+        {@render pageContent()}
+      {/snippet}
+    </ChromeQuebec>
   </div>
 
 {:else}
