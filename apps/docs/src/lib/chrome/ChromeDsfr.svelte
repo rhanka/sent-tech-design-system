@@ -1,5 +1,5 @@
 <!--
-  Chrome documentaire DSFR — Système de Design de l'État (France)
+  Chrome documentaire DSFR : Système de Design de l'État (France)
   Forme fidèle à systeme-de-design.gouv.fr :
   - Header : fond BLANC, bloc logo RF (3 lignes + devise) + titre « Système de Design de l'État »
     à droite : « Être tenu informé » + pastille version + grande barre de recherche
@@ -73,7 +73,7 @@
   }
 </script>
 
-<!-- Marianne chargée globalement dans app.html (CDN DSFR @font-face) — pas de svelte:head redondant -->
+<!-- Marianne chargée globalement dans app.html (CDN DSFR @font-face) : pas de svelte:head redondant -->
 
 <div class="dsfr-shell">
   <!-- ── HEADER DSFR ── -->
@@ -82,7 +82,7 @@
       <div class="dsfr-header__inner">
         <!-- Gauche : logo RF + titre -->
         <div class="dsfr-header__brand">
-          <a href="/" class="dsfr-header__brand-link" aria-label="Accueil — Système de Design de l'État">
+          <a href="/" class="dsfr-header__brand-link" aria-label="Accueil : Système de Design de l'État">
             <!-- Bloc-marque DSFR officiel (dimensions exactes du .fr-logo de
                  systeme-de-design.gouv.fr) : drapeau+Marianne au-dessus de
                  RÉPUBLIQUE FRANÇAISE, puis devise « Liberté Égalité Fraternité ». -->
@@ -321,7 +321,7 @@
     text-decoration: none;
   }
 
-  /* Bloc-marque DSFR — dimensions exactes du .fr-logo officiel :
+  /* Bloc-marque DSFR : dimensions exactes du .fr-logo officiel :
      drapeau+Marianne (33×12) + RÉPUBLIQUE FRANÇAISE (12,6px) + devise. */
   .dsfr-logo {
     display: flex;

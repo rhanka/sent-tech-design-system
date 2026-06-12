@@ -66,7 +66,7 @@
         <tr><td><code>title</code></td><td><code>string</code></td><td><em>{fr ? "requis" : "required"}</em></td></tr>
         <tr><td><code>open</code></td><td><code>boolean</code> ({fr ? "bindable" : "bindable"})</td><td><code>false</code></td></tr>
         <tr><td><code>disabled</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
-        <tr><td><code>onToggle</code></td><td><code>(open: boolean) =&gt; void</code></td><td><em>—</em></td></tr>
+        <tr><td><code>onToggle</code></td><td><code>(open: boolean) =&gt; void</code></td><td><em>–</em></td></tr>
       </tbody>
     </table>
     <p>{fr ? "Svelte/Vue utilisent bind:open / v-model:open ; React utilise defaultOpen. Le déclencheur porte aria-expanded et aria-controls." : "Svelte/Vue use bind:open / v-model:open; React uses defaultOpen. The trigger carries aria-expanded and aria-controls."}</p>

@@ -29,8 +29,8 @@
       title: () => (fr ? "Nouveau" : "New"),
       badgeTone: "neutral",
       cards: [
-        { title: "Airbus — Refonte ERP", amount: "120 000 €", owner: "Marie Lefebvre", tone: "category1", probability: 10 },
-        { title: "Orange — Portail self-care", amount: "65 000 €", owner: "Karim Benali", tone: "category2", probability: 15 }
+        { title: "Airbus : Refonte ERP", amount: "120 000 €", owner: "Marie Lefebvre", tone: "category1", probability: 10 },
+        { title: "Orange : Portail self-care", amount: "65 000 €", owner: "Karim Benali", tone: "category2", probability: 15 }
       ]
     },
     {
@@ -38,8 +38,8 @@
       title: () => (fr ? "Qualifié" : "Qualified"),
       badgeTone: "info",
       cards: [
-        { title: "Safran — Migration cloud", amount: "210 000 €", owner: "Sophie Durand", tone: "category3", probability: 35 },
-        { title: "Thales — Dashboard BI", amount: "48 000 €", owner: "Léa Moreau", tone: "category4", probability: 40 }
+        { title: "Safran : Migration cloud", amount: "210 000 €", owner: "Sophie Durand", tone: "category3", probability: 35 },
+        { title: "Thales : Dashboard BI", amount: "48 000 €", owner: "Léa Moreau", tone: "category4", probability: 40 }
       ]
     },
     {
@@ -47,8 +47,8 @@
       title: () => (fr ? "Proposition" : "Proposal"),
       badgeTone: "warning",
       cards: [
-        { title: "Société Générale — App mobile", amount: "175 000 €", owner: "Marie Lefebvre", tone: "category1", probability: 65 },
-        { title: "Capgemini — Audit DS", amount: "32 000 €", owner: "Tom Girard", tone: "category5", probability: 60 }
+        { title: "Société Générale : App mobile", amount: "175 000 €", owner: "Marie Lefebvre", tone: "category1", probability: 65 },
+        { title: "Capgemini : Audit DS", amount: "32 000 €", owner: "Tom Girard", tone: "category5", probability: 60 }
       ]
     },
     {
@@ -56,7 +56,7 @@
       title: () => (fr ? "Gagné" : "Won"),
       badgeTone: "success",
       cards: [
-        { title: "Dassault — Design tokens", amount: "54 000 €", owner: "Sophie Durand", tone: "category3", probability: 100 }
+        { title: "Dassault : Design tokens", amount: "54 000 €", owner: "Sophie Durand", tone: "category3", probability: 100 }
       ]
     }
   ];
@@ -161,7 +161,7 @@
     </p>
     <TabbedExample
       nodes={demoNodes}
-      title={fr ? "Pipeline CRM — opportunités (données mock)" : "CRM Pipeline — opportunities (mock data)"}
+      title={fr ? "Pipeline CRM : opportunités (données mock)" : "CRM Pipeline : opportunities (mock data)"}
     />
   </section>
 

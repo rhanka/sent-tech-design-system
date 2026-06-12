@@ -85,7 +85,7 @@
       </tbody>
     </table>
     <p class="docs-demo-context">
-      <code>ScatterPlotDatum</code> = <code>{`{ x, y, label?, tone?, r? }`}</code> —
+      <code>ScatterPlotDatum</code> = <code>{`{ x, y, label?, tone?, r? }`}</code> :
       <code>r</code> est un rayon par point, borné à 32 (sinon <code>radius</code> global) ;
       <code>tone</code> est le ton par point (ton de cluster), sinon cycle de la palette.
       <code>ScatterPlotCentroid</code> = <code>{`{ x, y, tone?, label? }`}</code> : marqueurs de

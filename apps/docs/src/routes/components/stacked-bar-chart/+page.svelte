@@ -31,7 +31,7 @@
     }
   ];
 
-  // FR-4 — légende interactive : la série « Docs » est masquée (hiddenSeries) et
+  // FR-4 : légende interactive : la série « Docs » est masquée (hiddenSeries) et
   // la légende devient cliquable (boutons aria-pressed). L'état est CONTRÔLÉ par
   // le parent ; onToggleSeries émet l'id de la série au clic/clavier.
   const interactiveDemo: NodeSpec[] = [

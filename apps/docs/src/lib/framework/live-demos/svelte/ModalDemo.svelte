@@ -1,5 +1,5 @@
 <!--
-  Démo Svelte interactive du Modal — rendue inline par TabbedLiveExample (aucune
+  Démo Svelte interactive du Modal : rendue inline par TabbedLiveExample (aucune
   île). Reproduit les deux exemples de la page Modal : dialogue simple +
   dialogue avec pied d'actions. État local, fermeture Escape/bouton via onclose.
 -->

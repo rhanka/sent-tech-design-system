@@ -21,8 +21,8 @@
       domain: "Analytics / BI",
       domainFr: "Analytics / BI",
       status: "available",
-      description: "KPI cards, line/bar/donut charts, and a top-N data table — the go-to pattern for business reporting.",
-      descriptionFr: "Cartes KPI, graphiques ligne/barres/donut et table Top N — le patron de référence pour le reporting métier."
+      description: "KPI cards, line/bar/donut charts, and a top-N data table : the go-to pattern for business reporting.",
+      descriptionFr: "Cartes KPI, graphiques ligne/barres/donut et table Top N : le patron de référence pour le reporting métier."
     },
     {
       slug: "app-shell",
@@ -31,8 +31,8 @@
       domain: "App Shell",
       domainFr: "App Shell",
       status: "available",
-      description: "Header + side nav + breadcrumb + content area (title + cards) + footer — the skeleton reused by every view.",
-      descriptionFr: "Header + nav latérale + fil d'Ariane + zone de contenu (titre + cartes) + footer — le squelette réutilisé par toutes les vues."
+      description: "Header + side nav + breadcrumb + content area (title + cards) + footer : the skeleton reused by every view.",
+      descriptionFr: "Header + nav latérale + fil d'Ariane + zone de contenu (titre + cartes) + footer : le squelette réutilisé par toutes les vues."
     },
     {
       slug: "settings",
@@ -41,8 +41,8 @@
       domain: "App Shell",
       domainFr: "App Shell",
       status: "available",
-      description: "Sub-section side nav + category tabs + form/form-group (select, input, toggle, switch) + a save bar — the master-detail admin pattern.",
-      descriptionFr: "SideNav de sous-sections + onglets de catégories + form/form-group (select, input, toggle, switch) + barre d'enregistrement — le patron admin master-détail."
+      description: "Sub-section side nav + category tabs + form/form-group (select, input, toggle, switch) + a save bar : the master-detail admin pattern.",
+      descriptionFr: "SideNav de sous-sections + onglets de catégories + form/form-group (select, input, toggle, switch) + barre d'enregistrement : le patron admin master-détail."
     },
     {
       slug: "facture",
@@ -51,8 +51,8 @@
       domain: "Accounting (Odoo)",
       domainFr: "Comptabilité (Odoo)",
       status: "available",
-      description: "Breadcrumb + invoice header (number + status badge + actions) + structured fields + line-items table + a totals list — an object-page declination.",
-      descriptionFr: "Fil d'Ariane + en-tête (n° + badge de statut + actions) + champs structurés + table des lignes + liste des totaux — une déclinaison de la page objet."
+      description: "Breadcrumb + invoice header (number + status badge + actions) + structured fields + line-items table + a totals list : an object-page declination.",
+      descriptionFr: "Fil d'Ariane + en-tête (n° + badge de statut + actions) + champs structurés + table des lignes + liste des totaux : une déclinaison de la page objet."
     },
     {
       slug: "pipeline-crm",
@@ -61,8 +61,8 @@
       domain: "CRM / Sales (Odoo)",
       domainFr: "CRM / Ventes (Odoo)",
       status: "available",
-      description: "Columns per stage (New/Qualified/Proposal/Won) of opportunity cards (amount + avatar + probability bar) — a kanban declination.",
-      descriptionFr: "Colonnes par étape (Nouveau/Qualifié/Proposition/Gagné) de cartes d'opportunités (montant + avatar + barre de probabilité) — une déclinaison du kanban."
+      description: "Columns per stage (New/Qualified/Proposal/Won) of opportunity cards (amount + avatar + probability bar) : a kanban declination.",
+      descriptionFr: "Colonnes par étape (Nouveau/Qualifié/Proposition/Gagné) de cartes d'opportunités (montant + avatar + barre de probabilité) : une déclinaison du kanban."
     },
     {
       slug: "file-tickets",
@@ -71,8 +71,8 @@
       domain: "Helpdesk (Odoo)",
       domainFr: "Helpdesk (Odoo)",
       status: "available",
-      description: "Search + filter bar + a paginated tickets table (subject, priority, SLA, assignee, status) + an agents legend — a list-report declination.",
-      descriptionFr: "Recherche + barre de filtres + table de tickets paginée (sujet, priorité, SLA, assigné, statut) + légende des agents — une déclinaison de la liste rapport."
+      description: "Search + filter bar + a paginated tickets table (subject, priority, SLA, assignee, status) + an agents legend : a list-report declination.",
+      descriptionFr: "Recherche + barre de filtres + table de tickets paginée (sujet, priorité, SLA, assigné, statut) + légende des agents : une déclinaison de la liste rapport."
     },
     {
       slug: "list-report",
@@ -81,8 +81,8 @@
       domain: "App Shell",
       domainFr: "App Shell",
       status: "available",
-      description: "Header + side nav + search + filter bar + paginated sortable table — the pattern of 20+ Odoo list views.",
-      descriptionFr: "Header + nav latérale + recherche + barre de filtres + table paginée triable — le patron de 20+ vues liste Odoo."
+      description: "Header + side nav + search + filter bar + paginated sortable table : the pattern of 20+ Odoo list views.",
+      descriptionFr: "Header + nav latérale + recherche + barre de filtres + table paginée triable : le patron de 20+ vues liste Odoo."
     },
     {
       slug: "object-page",
@@ -91,8 +91,8 @@
       domain: "App Shell",
       domainFr: "App Shell",
       status: "available",
-      description: "Breadcrumb + entity header + tabs + KPI row + structured fields + related table — the pattern of all detail views.",
-      descriptionFr: "Fil d'Ariane + en-tête d'entité + onglets + rangée KPI + champs structurés + table liée — le patron de toutes les fiches."
+      description: "Breadcrumb + entity header + tabs + KPI row + structured fields + related table : the pattern of all detail views.",
+      descriptionFr: "Fil d'Ariane + en-tête d'entité + onglets + rangée KPI + champs structurés + table liée : le patron de toutes les fiches."
     },
     {
       slug: "kanban",
@@ -101,8 +101,8 @@
       domain: "CRM / Sales",
       domainFr: "CRM / Ventes",
       status: "available",
-      description: "Columns of cards with badge, avatar and progress — the signature Odoo CRM pipeline view.",
-      descriptionFr: "Colonnes de cartes avec badge, avatar et progression — la vue pipeline CRM Odoo emblématique."
+      description: "Columns of cards with badge, avatar and progress : the signature Odoo CRM pipeline view.",
+      descriptionFr: "Colonnes de cartes avec badge, avatar et progression : la vue pipeline CRM Odoo emblématique."
     },
     {
       slug: "data-explorer",
@@ -111,8 +111,8 @@
       domain: "Analytics / BI",
       domainFr: "Analytics / BI",
       status: "available",
-      description: "Pivot table + bar chart side by side + filter bar + content switcher + a configuration drawer — the BI pivot showcase.",
-      descriptionFr: "Tableau croisé + graphique en barres côte à côte + barre de filtres + bascule table/graphique + volet de configuration — la vitrine BI pivot."
+      description: "Pivot table + bar chart side by side + filter bar + content switcher + a configuration drawer : the BI pivot showcase.",
+      descriptionFr: "Tableau croisé + graphique en barres côte à côte + barre de filtres + bascule table/graphique + volet de configuration : la vitrine BI pivot."
     },
     {
       slug: "import-mapping",
@@ -121,8 +121,8 @@
       domain: "Import / Data",
       domainFr: "Import / Données",
       status: "available",
-      description: "Stepper + file uploader + preview table + column→field select mapping + validation alert — the BI tool import flow.",
-      descriptionFr: "Stepper + import de fichier + table d'aperçu + mappage colonne→champ + alerte de validation — le flux d'import des outils BI."
+      description: "Stepper + file uploader + preview table + column→field select mapping + validation alert : the BI tool import flow.",
+      descriptionFr: "Stepper + import de fichier + table d'aperçu + mappage colonne→champ + alerte de validation : le flux d'import des outils BI."
     },
     {
       slug: "master-detail",
@@ -131,8 +131,8 @@
       domain: "App Shell",
       domainFr: "App Shell",
       status: "available",
-      description: "Selectable list on the left + detail panel (structured fields, KPI cards, mini table) on the right — the Fiori split-view pattern.",
-      descriptionFr: "Liste sélectionnable à gauche + panneau détail (champs, KpiCard, mini table) à droite — le patron Fiori split-view."
+      description: "Selectable list on the left + detail panel (structured fields, KPI cards, mini table) on the right : the Fiori split-view pattern.",
+      descriptionFr: "Liste sélectionnable à gauche + panneau détail (champs, KpiCard, mini table) à droite : le patron Fiori split-view."
     },
     {
       slug: "wizard",
@@ -141,8 +141,8 @@
       domain: "App Shell",
       domainFr: "App Shell",
       status: "available",
-      description: "Stepper + the current step's form/form-group + a previous/next button group + a structured-list summary — onboarding and setup flows.",
-      descriptionFr: "Stepper + formulaire de l'étape courante + boutons Précédent/Suivant + récapitulatif structuré — onboarding et configuration."
+      description: "Stepper + the current step's form/form-group + a previous/next button group + a structured-list summary : onboarding and setup flows.",
+      descriptionFr: "Stepper + formulaire de l'étape courante + boutons Précédent/Suivant + récapitulatif structuré : onboarding et configuration."
     },
     {
       slug: "login",
@@ -151,8 +151,8 @@
       domain: "Authentication",
       domainFr: "Authentification",
       status: "available",
-      description: "Centered card + form with email input, password input, remember-me checkbox, button, error alert and links — the universal quick-win.",
-      descriptionFr: "Carte centrée + formulaire avec e-mail, mot de passe, case « se souvenir », bouton, alerte d'erreur et liens — le quick-win universel."
+      description: "Centered card + form with email input, password input, remember-me checkbox, button, error alert and links : the universal quick-win.",
+      descriptionFr: "Carte centrée + formulaire avec e-mail, mot de passe, case « se souvenir », bouton, alerte d'erreur et liens : le quick-win universel."
     }
   ];
 

@@ -12,10 +12,10 @@
       comp: "SelectableList",
       props: { label: fr ? "Région" : "Region", value: "ca-qc" },
       children: [
-        { comp: "SelectableRow", props: { value: "ca-qc" }, children: ["Canada — Québec"] },
-        { comp: "SelectableRow", props: { value: "ca-on" }, children: ["Canada — Ontario"] },
-        { comp: "SelectableRow", props: { value: "us-east" }, children: [fr ? "États-Unis — Est" : "United States — East"] },
-        { comp: "SelectableRow", props: { value: "eu-west" }, children: [fr ? "Europe — Ouest" : "Europe — West"] }
+        { comp: "SelectableRow", props: { value: "ca-qc" }, children: ["Canada, Québec"] },
+        { comp: "SelectableRow", props: { value: "ca-on" }, children: ["Canada, Ontario"] },
+        { comp: "SelectableRow", props: { value: "us-east" }, children: [fr ? "États-Unis, Est" : "United States, East"] },
+        { comp: "SelectableRow", props: { value: "eu-west" }, children: [fr ? "Europe, Ouest" : "Europe, West"] }
       ]
     }
   ];
@@ -62,11 +62,11 @@
         <tr><th>Prop</th><th>Type</th><th>Default</th></tr>
       </thead>
       <tbody>
-        <tr><td><code>label</code></td><td><code>string</code></td><td><em>—</em></td></tr>
-        <tr><td><code>labelledby</code></td><td><code>string</code></td><td><em>—</em></td></tr>
+        <tr><td><code>label</code></td><td><code>string</code></td><td><em>–</em></td></tr>
+        <tr><td><code>labelledby</code></td><td><code>string</code></td><td><em>–</em></td></tr>
         <tr><td><code>multiple</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
-        <tr><td><code>value</code></td><td><code>string | string[] | null</code></td><td><em>—</em></td></tr>
-        <tr><td><code>onchange</code> / <code>onChange</code></td><td><code>(value: string | string[] | null) =&gt; void</code></td><td><em>—</em></td></tr>
+        <tr><td><code>value</code></td><td><code>string | string[] | null</code></td><td><em>–</em></td></tr>
+        <tr><td><code>onchange</code> / <code>onChange</code></td><td><code>(value: string | string[] | null) =&gt; void</code></td><td><em>–</em></td></tr>
       </tbody>
     </table>
     <p>{fr

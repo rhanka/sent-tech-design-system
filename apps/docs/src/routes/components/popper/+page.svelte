@@ -40,7 +40,7 @@
         <tr><th>Prop</th><th>Type</th><th>Default</th></tr>
       </thead>
       <tbody>
-        <tr><td><code>anchor</code></td><td><code>HTMLElement | null</code></td><td><em>—</em></td></tr>
+        <tr><td><code>anchor</code></td><td><code>HTMLElement | null</code></td><td><em>–</em></td></tr>
         <tr><td><code>open</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
         <tr><td><code>placement</code></td><td><code>"top" | "bottom" | "left" | "right" | "*-start" | "*-end"</code></td><td><code>"bottom"</code></td></tr>
         <tr><td><code>offset</code></td><td><code>number</code></td><td><code>8</code></td></tr>
@@ -49,7 +49,7 @@
         <tr><td><code>arrow</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
         <tr><td><code>strategy</code></td><td><code>"absolute" | "fixed"</code></td><td><code>"absolute"</code></td></tr>
         <tr><td><code>portal</code></td><td><code>boolean</code></td><td><code>true</code></td></tr>
-        <tr><td><code>onPlacementChange</code></td><td><code>(placement) =&gt; void</code></td><td><em>—</em></td></tr>
+        <tr><td><code>onPlacementChange</code></td><td><code>(placement) =&gt; void</code></td><td><em>–</em></td></tr>
       </tbody>
     </table>
     <p>

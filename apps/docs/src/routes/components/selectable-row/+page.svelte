@@ -56,8 +56,8 @@
     </div>
     <p>
       {fr
-        ? "Rangée sélectionnable pleine largeur. L'état sélectionné est thémé par deux signaux calmes — surface teintée et texte accentué (contraste ~8,8:1) — au lieu d'une boîte hors-thème. La barre d'accent gauche est optionnelle. role=\"option\" + aria-selected, activable au clavier (Entrée / Espace). Dans une SelectableList, la liste pilote la sélection et le roving tabindex."
-        : "Full-width selectable row. The selected state is themed with two calm signals — a tinted surface and accented text (~8.8:1 contrast) — instead of an off-theme box. The left accent bar is opt-in. role=\"option\" + aria-selected, keyboard-activatable (Enter / Space). Inside a SelectableList, the list owns selection and the roving tabindex."}
+        ? "Rangée sélectionnable pleine largeur. L'état sélectionné est thémé par deux signaux calmes, surface teintée et texte accentué (contraste ~8,8:1), au lieu d'une boîte hors-thème. La barre d'accent gauche est optionnelle. role=\"option\" + aria-selected, activable au clavier (Entrée / Espace). Dans une SelectableList, la liste pilote la sélection et le roving tabindex."
+        : "Full-width selectable row. The selected state is themed with two calm signals, a tinted surface and accented text (~8.8:1 contrast), instead of an off-theme box. The left accent bar is opt-in. role=\"option\" + aria-selected, keyboard-activatable (Enter / Space). Inside a SelectableList, the list owns selection and the roving tabindex."}
     </p>
   </section>
 
@@ -77,12 +77,12 @@
       </thead>
       <tbody>
         <tr><td><code>selected</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
-        <tr><td><code>onselect</code> / <code>onSelect</code></td><td><code>(selected: boolean) =&gt; void</code></td><td><em>—</em></td></tr>
+        <tr><td><code>onselect</code> / <code>onSelect</code></td><td><code>(selected: boolean) =&gt; void</code></td><td><em>–</em></td></tr>
         <tr><td><code>disabled</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
-        <tr><td><code>value</code></td><td><code>string</code></td><td><em>—</em></td></tr>
+        <tr><td><code>value</code></td><td><code>string</code></td><td><em>–</em></td></tr>
         <tr><td><code>accentBar</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
         <tr><td><code>role</code></td><td><code>string</code></td><td><code>"option"</code></td></tr>
-        <tr><td><code>leading</code> / <code>trailing</code></td><td><code>{fr ? "slot / nœud" : "slot / node"}</code></td><td><em>—</em></td></tr>
+        <tr><td><code>leading</code> / <code>trailing</code></td><td><code>{fr ? "slot / nœud" : "slot / node"}</code></td><td><em>–</em></td></tr>
       </tbody>
     </table>
     <p>{fr

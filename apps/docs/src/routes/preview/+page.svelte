@@ -19,7 +19,7 @@
 </script>
 
 <svelte:head>
-  <title>{fr ? "Aperçu multi-framework" : "Multi-framework preview"} — Sentropic Design System</title>
+  <title>{fr ? "Aperçu multi-framework" : "Multi-framework preview"} : Sentropic Design System</title>
 </svelte:head>
 
 <section class="preview-intro">

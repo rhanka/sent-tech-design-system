@@ -58,7 +58,7 @@
       <tbody>
         <tr><td><code>count</code></td><td><code>number</code></td><td><em>{fr ? "requis" : "required"}</em></td></tr>
         <tr><td><code>current</code></td><td><code>number</code> ({fr ? "index 0-based" : "0-based index"})</td><td><code>0</code></td></tr>
-        <tr><td><code>onChange</code></td><td><code>(index: number) =&gt; void</code></td><td><em>—</em></td></tr>
+        <tr><td><code>onChange</code></td><td><code>(index: number) =&gt; void</code></td><td><em>–</em></td></tr>
         <tr><td><code>size</code></td><td><code>"sm" | "md" | "lg"</code></td><td><code>"md"</code></td></tr>
         <tr><td><code>variant</code></td><td><code>"dots" | "bars"</code></td><td><code>"dots"</code></td></tr>
         <tr><td><code>label</code></td><td><code>string</code></td><td><code>"Diapositive"</code></td></tr>

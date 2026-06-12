@@ -1,5 +1,5 @@
 <!--
-  Démo Svelte interactive du Drawer — rendue inline par TabbedLiveExample (aucune
+  Démo Svelte interactive du Drawer : rendue inline par TabbedLiveExample (aucune
   île). Reproduit les exemples de la page Drawer : panneau droite, panneau gauche
   (prop side), et panneau avec pied d'actions. État local, bind:open.
 -->

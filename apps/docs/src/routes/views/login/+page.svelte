@@ -129,7 +129,7 @@
     </p>
     <TabbedExample
       nodes={demoNodes}
-      title={fr ? "Connexion — carte centrée (données mock)" : "Login — centered card (mock data)"}
+      title={fr ? "Connexion : carte centrée (données mock)" : "Login : centered card (mock data)"}
     />
   </section>
 

@@ -46,9 +46,9 @@
         <tr><th>Prop</th><th>Type</th><th>Default</th></tr>
       </thead>
       <tbody>
-        <tr><td><code>gap</code></td><td><code>number</code> ({fr ? "pas 0–12" : "step 0–12"})</td><td><em>—</em></td></tr>
-        <tr><td><code>align</code></td><td><code>"start" | "center" | "end" | "stretch" | "baseline"</code></td><td><em>—</em></td></tr>
-        <tr><td><code>justify</code></td><td><code>"start" | "center" | "end" | "between" | "around" | "evenly"</code></td><td><em>—</em></td></tr>
+        <tr><td><code>gap</code></td><td><code>number</code> ({fr ? "pas 0–12" : "step 0–12"})</td><td><em>–</em></td></tr>
+        <tr><td><code>align</code></td><td><code>"start" | "center" | "end" | "stretch" | "baseline"</code></td><td><em>–</em></td></tr>
+        <tr><td><code>justify</code></td><td><code>"start" | "center" | "end" | "between" | "around" | "evenly"</code></td><td><em>–</em></td></tr>
         <tr><td><code>wrap</code></td><td><code>boolean</code></td><td><code>true</code></td></tr>
         <tr><td><code>as</code></td><td><code>string</code></td><td><code>"div"</code></td></tr>
       </tbody>

@@ -44,8 +44,8 @@
           props: {
             label:
               locale.value === "fr"
-                ? "Ventes et marge — étiquettes, annotation et navigation clavier"
-                : "Sales and margin — labels, annotation and keyboard nav",
+                ? "Ventes et marge : étiquettes, annotation et navigation clavier"
+                : "Sales and margin: labels, annotation and keyboard nav",
             categories: ["T1", "T2", "T3", "T4"],
             bars: [
               { label: locale.value === "fr" ? "Ventes (k$)" : "Sales (k$)", data: [120, 145, 160, 190], tone: "category1" }
@@ -174,13 +174,13 @@
         <tr>
           <td><code>leftAxisLabel</code></td>
           <td><code>string</code></td>
-          <td>—</td>
+          <td>–</td>
           <td>{locale.value === "fr" ? "Label de l'axe Y gauche (barres)." : "Left Y axis label (bars)."}</td>
         </tr>
         <tr>
           <td><code>rightAxisLabel</code></td>
           <td><code>string</code></td>
-          <td>—</td>
+          <td>–</td>
           <td>{locale.value === "fr" ? "Label de l'axe Y droit (courbes)." : "Right Y axis label (lines)."}</td>
         </tr>
         <tr>
@@ -192,19 +192,19 @@
         <tr>
           <td><code>hiddenSeries</code></td>
           <td><code>string[]</code></td>
-          <td>—</td>
+          <td>–</td>
           <td>{locale.value === "fr" ? "Séries masquées (légende interactive, contrôlée)." : "Hidden series (controlled interactive legend)."}</td>
         </tr>
         <tr>
           <td><code>onToggleSeries</code></td>
           <td><code>{`(id) => void`}</code></td>
-          <td>—</td>
+          <td>–</td>
           <td>{locale.value === "fr" ? "Émis au clic / Entrée / Espace sur un item de légende." : "Emitted on click / Enter / Space on a legend item."}</td>
         </tr>
         <tr>
           <td><code>annotations</code></td>
           <td><code>ChartAnnotation[]</code></td>
-          <td>—</td>
+          <td>–</td>
           <td>{locale.value === "fr" ? "Couche d'annotations (région/ligne/point/label/forme). x catégoriel, y sur l'axe gauche." : "Annotation layer (region/line/point/label/shape). Categorical x, left-axis y."}</td>
         </tr>
         <tr>
@@ -216,13 +216,13 @@
         <tr>
           <td><code>hoverKey</code> / <code>onHoverKeyChange</code></td>
           <td><code>string | null</code> / <code>{`(key) => void`}</code></td>
-          <td>—</td>
+          <td>–</td>
           <td>{locale.value === "fr" ? "Crosshair contrôlé sur la catégorie (canal de survol partagé)." : "Controlled crosshair on the category (shared hover channel)."}</td>
         </tr>
         <tr>
           <td><code>keyboardNav</code> / <code>onSelectKey</code></td>
           <td><code>boolean</code> / <code>{`(key | null) => void`}</code></td>
-          <td>—</td>
+          <td>–</td>
           <td>{locale.value === "fr" ? "Navigation clavier des catégories (roving tabindex)." : "Keyboard navigation of categories (roving tabindex)."}</td>
         </tr>
         <tr>

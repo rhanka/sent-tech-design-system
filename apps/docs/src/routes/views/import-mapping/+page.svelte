@@ -26,11 +26,11 @@
     { id: "1", c1: "Airbus Group", c2: "m.lefebvre@airbus.example", c3: "FR", c4: "1240000" },
     { id: "2", c1: "Safran SA", c2: "contact@safran.example", c3: "FR", c4: "880000" },
     { id: "3", c1: "Orange SA", c2: "b2b@orange.example", c3: "FR", c4: "650000" },
-    { id: "4", c1: "Atos SE", c2: "—", c3: "FR", c4: "" }
+    { id: "4", c1: "Atos SE", c2: ":", c3: "FR", c4: "" }
   ];
 
   const FIELD_OPTIONS = [
-    { value: "", label: fr ? "— Ignorer —" : "— Ignore —" },
+    { value: "", label: fr ? ": Ignorer :" : ": Ignore :" },
     { value: "name", label: fr ? "Nom du compte" : "Account name" },
     { value: "email", label: fr ? "Email de contact" : "Contact email" },
     { value: "country", label: fr ? "Pays" : "Country" },
@@ -60,7 +60,7 @@
             steps: STEPS
           }
         },
-        // Étape 1 — Source : FileUploader
+        // Étape 1 : Source : FileUploader
         {
           el: "div",
           props: { class: "im-section" },
@@ -83,7 +83,7 @@
             }
           ]
         },
-        // Étape 2 — Mappage colonne → champ (Select par ligne)
+        // Étape 2 : Mappage colonne → champ (Select par ligne)
         {
           el: "div",
           props: { class: "im-section" },
@@ -113,7 +113,7 @@
             }
           ]
         },
-        // Étape 3 — Revue : aperçu + alerte de validation
+        // Étape 3 : Revue : aperçu + alerte de validation
         {
           el: "div",
           props: { class: "im-section" },
@@ -195,7 +195,7 @@
     </p>
     <TabbedExample
       nodes={demoNodes}
-      title={fr ? "Import / mappage — flux CSV (données mock)" : "Import / mapping — CSV flow (mock data)"}
+      title={fr ? "Import / mappage : flux CSV (données mock)" : "Import / mapping : CSV flow (mock data)"}
     />
   </section>
 

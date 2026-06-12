@@ -57,10 +57,10 @@
       </thead>
       <tbody>
         <tr><td><code>status</code></td><td><code>"idle" | "saving" | "saved" | "error"</code></td><td><code>"idle"</code></td></tr>
-        <tr><td><code>lastSaved</code></td><td><code>string | Date</code></td><td><em>—</em></td></tr>
-        <tr><td><code>onRetry</code></td><td><code>() =&gt; void</code></td><td><em>—</em></td></tr>
-        <tr><td><code>labels</code></td><td><code>{`{ idle?, saving?, saved?, error? }`}</code></td><td><em>—</em></td></tr>
-        <tr><td><code>retryLabel</code></td><td><code>string</code></td><td><em>—</em></td></tr>
+        <tr><td><code>lastSaved</code></td><td><code>string | Date</code></td><td><em>–</em></td></tr>
+        <tr><td><code>onRetry</code></td><td><code>() =&gt; void</code></td><td><em>–</em></td></tr>
+        <tr><td><code>labels</code></td><td><code>{`{ idle?, saving?, saved?, error? }`}</code></td><td><em>–</em></td></tr>
+        <tr><td><code>retryLabel</code></td><td><code>string</code></td><td><em>–</em></td></tr>
         <tr><td><code>locale</code></td><td><code>string</code></td><td><code>"fr-FR"</code></td></tr>
       </tbody>
     </table>

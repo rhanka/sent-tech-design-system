@@ -51,8 +51,8 @@
         <tr><th>Prop</th><th>Type</th><th>Default</th></tr>
       </thead>
       <tbody>
-        <tr><td><code>below</code></td><td><code>"sm" | "md" | "lg" | "xl"</code></td><td><em>—</em></td></tr>
-        <tr><td><code>above</code></td><td><code>"sm" | "md" | "lg" | "xl"</code></td><td><em>—</em></td></tr>
+        <tr><td><code>below</code></td><td><code>"sm" | "md" | "lg" | "xl"</code></td><td><em>–</em></td></tr>
+        <tr><td><code>above</code></td><td><code>"sm" | "md" | "lg" | "xl"</code></td><td><em>–</em></td></tr>
         <tr><td><code>as</code></td><td><code>string</code></td><td><code>"div"</code></td></tr>
       </tbody>
     </table>

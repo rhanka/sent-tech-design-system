@@ -13,7 +13,7 @@
       examplesTitle: "Exemples",
       basicTitle: "Deux métriques par part",
       basicDesc:
-        "L'angle reflète la part de marché (value) ; le rayon reflète la croissance (z) — une part large mais courte vend beaucoup sans croître.",
+        "L'angle reflète la part de marché (value) ; le rayon reflète la croissance (z) : une part large mais courte vend beaucoup sans croître.",
       radiusTitle: "Rayon proportionnel à z",
       radiusDesc:
         "À angle égal, la part dont z est le plus grand pousse jusqu'au rayon maximum ; la plus petite reste au rayon minimum.",
@@ -37,7 +37,7 @@
       examplesTitle: "Examples",
       basicTitle: "Two metrics per slice",
       basicDesc:
-        "The angle reflects market share (value); the radius reflects growth (z) — a wide but short slice sells a lot without growing.",
+        "The angle reflects market share (value); the radius reflects growth (z) : a wide but short slice sells a lot without growing.",
       radiusTitle: "Radius scales with z",
       radiusDesc:
         "At equal angle, the slice with the largest z reaches the maximum radius; the smallest stays at the minimum radius.",
