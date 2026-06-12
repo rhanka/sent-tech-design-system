@@ -8,6 +8,15 @@ import {
   niceTicks,
   scaleLinear,
 } from "./chartScale.js";
+import {
+  annotationDataListItems,
+  polygonPoints,
+  resolveAnnotations,
+  type ChartAnnotation,
+} from "./chartAnnotations.js";
+import { formatDataLabel, normalizeDataLabels, type DataLabelsProp } from "./chartDataLabels.js";
+import { keyForX, resolveActiveIndex } from "./chartCrosshair.js";
+import { datapointAriaLabel, datapointNavAction, rovingTabIndex } from "./chartKeyboardNav.js";
 
 export type ComboChartTone =
   | "category1"
@@ -48,6 +57,52 @@ export type ComboChartProps = Omit<React.HTMLAttributes<HTMLDivElement>, "classN
   hiddenSeries?: string[];
   /** Emitted on click / Enter / Space on a legend item. */
   onToggleSeries?: (seriesId: string) => void;
+  /**
+   * Annotation overlay in DATA space. The x coordinate is CATEGORICAL — it
+   * matches a category by equality (band centre) and is ignored otherwise; the
+   * y coordinate (and `value`/`from`/`to`) are LEFT (bar) value-axis numbers.
+   * Regions render behind the bars, every other kind above. Additive: absent ⇒
+   * unchanged.
+   */
+  annotations?: ChartAnnotation[];
+  /**
+   * Per-datum value labels on BOTH the bars and the line points. `false`/absent
+   * (default) → none. `true` → each value with the chart's numeric formatter.
+   * Object → `format(value)` and/or a `position` override. Bars default to
+   * `outside` (above the bar), line points to `top` (above the dot). Labels are
+   * `aria-hidden` — the values already live in the accessible ChartDataList.
+   */
+  dataLabels?: DataLabelsProp;
+  /**
+   * CONTROLLED synchronised hover key (FR-3). The key is the CATEGORY string.
+   * When provided (string or null), the crosshair tracks this key instead of the
+   * chart's internal pointer hover (null ⇒ nothing shown), letting a parent share
+   * one hover channel across several aligned charts. Absent (`undefined`) keeps
+   * the legacy uncontrolled behaviour.
+   */
+  hoverKey?: string | null;
+  /**
+   * Emitted when the user hovers a bar/point (its CATEGORY) or leaves the plot
+   * (`null`). Always fired on pointer move/leave — even while CONTROLLED — so
+   * dataviz can keep the shared hover channel in sync.
+   */
+  onHoverKeyChange?: (key: string | null) => void;
+  /**
+   * FR-5 — keyboard navigation of the data points (roving tabindex). When `true`
+   * (or implied by wiring `onSelectKey`), a thin focusable overlay is rendered
+   * over the CATEGORY bands: the chart owns ONE tab stop, ←/↑/→/↓ move the focus
+   * between categories (data order), Home/End jump to first/last, Enter/Space
+   * select the focused category (`onSelectKey`), Escape leaves the navigation.
+   * Each focused band announces its category + value summary. Absent ⇒ no
+   * overlay, rendering unchanged.
+   */
+  keyboardNav?: boolean;
+  /**
+   * Emitted when the user selects the focused category via Enter/Space, or `null`
+   * when the navigation is left via Escape. Wiring it also turns the keyboard
+   * navigation on.
+   */
+  onSelectKey?: (key: string | null) => void;
   width?: number;
   height?: number;
   label: string;
@@ -70,6 +125,12 @@ export function ComboChart({
   legend = true,
   hiddenSeries,
   onToggleSeries,
+  annotations,
+  dataLabels,
+  hoverKey,
+  onHoverKeyChange,
+  keyboardNav,
+  onSelectKey,
   width = 480,
   height = 240,
   label,
@@ -77,6 +138,9 @@ export function ComboChart({
   ...rest
 }: ComboChartProps) {
   const [hovered, setHovered] = React.useState<Hover>(null);
+  // FR-5 — roving keyboard focus over the category bands (separate from hover).
+  const [focusedIndex, setFocusedIndex] = React.useState<number>(-1);
+  const datapointRefs = React.useRef<Array<SVGRectElement | null>>([]);
 
   // Interactive legend is active as soon as the parent wires either prop.
   const legendInteractive = onToggleSeries !== undefined || hiddenSeries !== undefined;
@@ -254,15 +318,99 @@ export function ComboChart({
     });
   const visibleSeriesItems = (s: { label: string; data: number[] }) =>
     hiddenSet.has(s.label) ? [] : seriesItems(s);
-  const dataValueItems = [...bars.flatMap(visibleSeriesItems), ...lines.flatMap(visibleSeriesItems)];
+  const dataValueItems = [
+    ...bars.flatMap(visibleSeriesItems),
+    ...lines.flatMap(visibleSeriesItems),
+    ...annotationDataListItems(annotations),
+  ];
 
+  // --- Annotation overlay ---------------------------------------------------
+  // Data-space annotations resolved to absolute pixels. `xScale` matches a
+  // category by equality → its band centre (relative to the plot); `yScale`
+  // maps a LEFT (bar) value-axis number. Out-of-domain coords yield `null` →
+  // the resolver drops them, so an annotation never escapes the plot.
+  const categoryPixel = (v: number | string): number | null => {
+    const i = categories.indexOf(String(v));
+    if (i < 0) return null;
+    return bandCenter(i) - MARGIN.left;
+  };
+  const leftValuePixel = (v: number): number | null => {
+    if (!Number.isFinite(v)) return null;
+    return scaleLinear(v, leftScale.domainMin, leftScale.domainMax, plotHeight, 0);
+  };
+  const resolvedAnnotations = resolveAnnotations(annotations, {
+    xScale: categoryPixel,
+    yScale: leftValuePixel,
+    plotLeft: MARGIN.left,
+    plotTop: MARGIN.top,
+    plotWidth,
+    plotHeight,
+  });
+  const annotationRegions = resolvedAnnotations.filter((a) => a.kind === "region");
+  const annotationAbove = resolvedAnnotations.filter((a) => a.kind !== "region");
+
+  // --- Data labels ----------------------------------------------------------
+  // One value label per visible bar (outside: above the bar) and per visible
+  // line point (top: above the dot). aria-hidden (values live in the data list).
+  const dataLabelOpts = normalizeDataLabels(dataLabels);
+  const barDataLabelItems = dataLabelOpts.enabled
+    ? barGroups.flatMap((group, gi) =>
+        group.map((seg, si) => {
+          const text = formatDataLabel(seg.value, dataLabelOpts, formatTick);
+          const inside = dataLabelOpts.position === "inside" || dataLabelOpts.position === "center";
+          return {
+            key: `bar-${gi}-${si}`,
+            x: seg.cx,
+            y: inside ? seg.y + seg.height / 2 : seg.cy - 6,
+            text,
+            baseline: (inside ? "middle" : "auto") as "middle" | "auto",
+          };
+        }),
+      )
+    : [];
+  const lineDataLabelItems = dataLabelOpts.enabled
+    ? lineSeries.flatMap((series, li) =>
+        series.hidden
+          ? []
+          : series.points.map((p, pi) => {
+              const text = formatDataLabel(p.value, dataLabelOpts, formatTick);
+              const center = dataLabelOpts.position === "center" || dataLabelOpts.position === "inside";
+              return { key: `line-${li}-${pi}`, x: p.x, y: center ? p.y : p.y - 8, text, baseline: (center ? "middle" : "auto") as "middle" | "auto" };
+            }),
+      )
+    : [];
+
+  // --- Crosshair + keyboard nav keys (FR-3 / FR-5) --------------------------
+  // The shared datum is the CATEGORY: its key is the category string, its x the
+  // band centre. Crosshair = a vertical line at that x; keyboard nav = one
+  // focusable full-height column per category.
+  const hoverKeys = categories.map((c) => keyForX(c));
+  // Compact value summary per category for the a11y label (every visible series).
+  const categorySummary = (ci: number): string => {
+    const parts = [
+      ...bars.filter((s) => !hiddenSet.has(s.label)),
+      ...lines.filter((s) => !hiddenSet.has(s.label)),
+    ]
+      .map((s) => {
+        const raw = s.data[ci];
+        return raw == null || !Number.isFinite(raw) ? null : `${s.label}: ${raw}`;
+      })
+      .filter((v): v is string => v !== null);
+    return parts.join(", ");
+  };
+
+  function emitHoverKey(index: number | null) {
+    onHoverKeyChange?.(index == null ? null : hoverKeys[index] ?? null);
+  }
   function handleLeave() {
     setHovered(null);
+    emitHoverKey(null);
   }
   function handleVisualPointerMove(event: React.PointerEvent) {
     const target = event.target;
     if (!(target instanceof Element)) {
       setHovered(null);
+      emitHoverKey(null);
       return;
     }
     const kind = target.getAttribute("data-chart-kind");
@@ -270,10 +418,46 @@ export function ComboChart({
     const b = Number(target.getAttribute("data-chart-b"));
     if (kind === "bar" && Number.isInteger(a) && Number.isInteger(b)) {
       setHovered({ kind: "bar", gi: a, si: b });
+      emitHoverKey(a); // gi === category index
     } else if (kind === "line" && Number.isInteger(a) && Number.isInteger(b)) {
       setHovered({ kind: "line", li: a, pi: b });
+      emitHoverKey(b); // pi === category index
     } else {
       setHovered(null);
+      emitHoverKey(null);
+    }
+  }
+
+  // Category index whose crosshair is DISPLAYED: the controlled `hoverKey` when
+  // provided (resolved against the category keys), else the internal pointer
+  // category (derived from the hovered bar/line datum).
+  const internalCategoryIndex =
+    hovered == null ? null : hovered.kind === "bar" ? hovered.gi : hovered.pi;
+  const activeCategoryIndex = resolveActiveIndex(hoverKey, internalCategoryIndex, hoverKeys);
+  const crosshairX = activeCategoryIndex >= 0 ? bandCenter(activeCategoryIndex) : null;
+
+  // --- Keyboard navigation (FR-5) ------------------------------------------
+  // Active when wired explicitly (`keyboardNav`) or implicitly (`onSelectKey`).
+  // One focusable transparent column per category carries the roving tab stop.
+  const navEnabled = (keyboardNav === true || onSelectKey !== undefined) && categories.length > 0;
+  function focusDatum(index: number) {
+    setFocusedIndex(index);
+    datapointRefs.current[index]?.focus();
+    emitHoverKey(index);
+  }
+  function handleDatapointKeyDown(event: React.KeyboardEvent, index: number) {
+    const action = datapointNavAction(event.key, index, categories.length);
+    if (!action) return;
+    event.preventDefault();
+    if (action.kind === "move") {
+      focusDatum(action.index);
+    } else if (action.kind === "select") {
+      onSelectKey?.(hoverKeys[index] ?? null);
+    } else {
+      setFocusedIndex(-1);
+      emitHoverKey(null);
+      onSelectKey?.(null);
+      (event.currentTarget as SVGElement).blur();
     }
   }
 
@@ -389,6 +573,24 @@ export function ComboChart({
             </text>
           ))}
 
+          {/* Annotation regions sit BEHIND the bars (filled bands). */}
+          {annotationRegions.length > 0 ? (
+            <g className="st-comboChart__annotations st-comboChart__annotations--behind">
+              {annotationRegions.map((a) =>
+                a.kind === "region" ? (
+                  <React.Fragment key={`ann-region-${a.key}`}>
+                    <rect className="st-comboChart__annotationRegion" x={a.x} y={a.y} width={a.width} height={a.height} />
+                    {a.label ? (
+                      <text className="st-comboChart__annotationLabel" x={a.x + 4} y={a.y + 11}>
+                        {a.label}
+                      </text>
+                    ) : null}
+                  </React.Fragment>
+                ) : null,
+              )}
+            </g>
+          ) : null}
+
           {/* bars */}
           {barGroups.map((group, gi) =>
             group.map((seg, si) => (
@@ -434,7 +636,147 @@ export function ComboChart({
               </React.Fragment>
             ),
           )}
+
+          {/* Annotations ABOVE the bars/lines: lines, shapes, points, labels. */}
+          {annotationAbove.length > 0 ? (
+            <g className="st-comboChart__annotations st-comboChart__annotations--above">
+              {annotationAbove.map((a) => {
+                if (a.kind === "line") {
+                  return (
+                    <React.Fragment key={`ann-line-${a.key}`}>
+                      <line className="st-comboChart__annotationLine" x1={a.x1} y1={a.y1} x2={a.x2} y2={a.y2} />
+                      {a.label ? (
+                        <text
+                          className="st-comboChart__annotationLabel"
+                          x={a.axis === "x" ? a.x1 + 4 : MARGIN.left + plotWidth - 4}
+                          y={a.axis === "x" ? MARGIN.top + 11 : a.y1 - 4}
+                          textAnchor={a.axis === "x" ? "start" : "end"}
+                        >
+                          {a.label}
+                        </text>
+                      ) : null}
+                    </React.Fragment>
+                  );
+                }
+                if (a.kind === "shape") {
+                  return (
+                    <React.Fragment key={`ann-shape-${a.key}`}>
+                      <polygon className="st-comboChart__annotationShape" points={polygonPoints(a.points)} />
+                      {a.label ? (
+                        <text className="st-comboChart__annotationLabel" x={a.labelX} y={a.labelY} textAnchor="middle">
+                          {a.label}
+                        </text>
+                      ) : null}
+                    </React.Fragment>
+                  );
+                }
+                if (a.kind === "point") {
+                  return (
+                    <React.Fragment key={`ann-point-${a.key}`}>
+                      <circle className="st-comboChart__annotationPoint" cx={a.x} cy={a.y} r="4.5" />
+                      {a.label ? (
+                        <text className="st-comboChart__annotationLabel" x={a.x} y={a.y - 8} textAnchor="middle">
+                          {a.label}
+                        </text>
+                      ) : null}
+                    </React.Fragment>
+                  );
+                }
+                return (
+                  <text key={`ann-label-${a.key}`} className="st-comboChart__annotationText" x={a.x} y={a.y} textAnchor={a.anchor}>
+                    {a.text}
+                  </text>
+                );
+              })}
+            </g>
+          ) : null}
+
+          {/* Data labels — one value per bar + per line point, on top. aria-hidden. */}
+          {barDataLabelItems.length + lineDataLabelItems.length > 0 ? (
+            <g className="st-comboChart__dataLabels" aria-hidden="true">
+              {barDataLabelItems.map((d) => (
+                <text
+                  key={d.key}
+                  className="st-comboChart__dataLabel"
+                  x={d.x}
+                  y={d.y}
+                  textAnchor="middle"
+                  dominantBaseline={d.baseline}
+                >
+                  {d.text}
+                </text>
+              ))}
+              {lineDataLabelItems.map((d) => (
+                <text
+                  key={d.key}
+                  className="st-comboChart__dataLabel"
+                  x={d.x}
+                  y={d.y}
+                  textAnchor="middle"
+                  dominantBaseline={d.baseline}
+                >
+                  {d.text}
+                </text>
+              ))}
+            </g>
+          ) : null}
+
+          {/* Crosshair (FR-3) — a tokenised dashed line on the CATEGORY axis at
+              the active (hovered/controlled) category. Decorative (aria-hidden);
+              the value is in the tooltip + list. */}
+          {crosshairX !== null ? (
+            <g className="st-comboChart__crosshair" aria-hidden="true">
+              <line
+                className="st-comboChart__crosshairLine"
+                x1={crosshairX}
+                x2={crosshairX}
+                y1={MARGIN.top}
+                y2={MARGIN.top + plotHeight}
+              />
+            </g>
+          ) : null}
         </svg>
+
+        {/* Keyboard navigation overlay (FR-5) — a focusable, transparent hit
+            layer of one column per category. NOT aria-hidden: it is the
+            accessible roving cursor. Each column announces its category + value
+            summary; the focus ring is tokenised via CSS. */}
+        {navEnabled ? (
+          <svg
+            className="st-comboChart__navLayer"
+            viewBox={`0 0 ${width} ${height}`}
+            preserveAspectRatio="xMidYMid meet"
+            width="100%"
+            height="100%"
+            role="group"
+            aria-label={`${label} — points de données`}
+          >
+            {categories.map((category, ci) => {
+              const band = plotWidth / Math.max(categories.length, 1);
+              return (
+                <rect
+                  key={ci}
+                  ref={(el) => {
+                    datapointRefs.current[ci] = el;
+                  }}
+                  className="st-comboChart__navDatum"
+                  x={MARGIN.left + band * ci}
+                  y={MARGIN.top}
+                  width={band}
+                  height={plotHeight}
+                  role="img"
+                  tabIndex={rovingTabIndex(ci, focusedIndex, categories.length)}
+                  aria-label={datapointAriaLabel(category, categorySummary(ci))}
+                  onKeyDown={(event) => handleDatapointKeyDown(event, ci)}
+                  onFocus={() => {
+                    setFocusedIndex(ci);
+                    emitHoverKey(ci);
+                  }}
+                />
+              );
+            })}
+          </svg>
+        ) : null}
       </div>
 
       <ChartDataList label={label} items={dataValueItems} />

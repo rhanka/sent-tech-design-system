@@ -25,6 +25,15 @@
 
 <script lang="ts">
   import ChartDataList from "./ChartDataList.svelte";
+  import {
+    resolveAnnotations,
+    annotationDataListItems,
+    polygonPoints,
+    type ChartAnnotation
+  } from "./chartAnnotations.js";
+  import { formatDataLabel, normalizeDataLabels, type DataLabelsProp } from "./chartDataLabels.js";
+  import { keyForX, resolveActiveIndex } from "./chartCrosshair.js";
+  import { datapointAriaLabel, datapointNavAction, rovingTabIndex } from "./chartKeyboardNav.js";
 
   type ComboChartProps = {
     categories: string[];
@@ -42,6 +51,38 @@
     hiddenSeries?: string[];
     /** Emitted on click / Enter / Space on a legend item. */
     onToggleSeries?: (seriesId: string) => void;
+    /**
+     * Annotation overlay in DATA space. The x coordinate is CATEGORICAL — it
+     * matches a category by equality (band centre); the y coordinate (and
+     * `value`/`from`/`to`) are LEFT (bar) value-axis numbers. Regions render
+     * behind the bars, every other kind above. Additive: absent ⇒ unchanged.
+     */
+    annotations?: ChartAnnotation[];
+    /**
+     * Per-datum value labels on BOTH the bars and the line points. `false`/absent
+     * (default) → none. `true` → each value with the chart's numeric formatter.
+     * Object → `format(value)` and/or a `position` override. Labels are
+     * `aria-hidden` — the values already live in the accessible ChartDataList.
+     */
+    dataLabels?: DataLabelsProp;
+    /**
+     * CONTROLLED synchronised hover key (FR-3). The key is the CATEGORY string.
+     * When provided (string or null), the crosshair tracks this key instead of
+     * the chart's internal pointer hover (null ⇒ nothing shown). Absent keeps
+     * the legacy uncontrolled behaviour.
+     */
+    hoverKey?: string | null;
+    /** Emitted when the user hovers a bar/point (its CATEGORY) or leaves (`null`). */
+    onHoverKeyChange?: (key: string | null) => void;
+    /**
+     * FR-5 — keyboard navigation of the categories (roving tabindex). When `true`
+     * (or implied by wiring `onSelectKey`), a focusable overlay of one column per
+     * category is rendered: one tab stop, arrows move, Home/End jump, Enter/Space
+     * select, Escape leaves. Absent ⇒ no overlay, rendering unchanged.
+     */
+    keyboardNav?: boolean;
+    /** Emitted on Enter/Space (category) or `null` on Escape. */
+    onSelectKey?: (key: string | null) => void;
     width?: number;
     height?: number;
     label: string;
@@ -57,11 +98,20 @@
     legend = true,
     hiddenSeries,
     onToggleSeries,
+    annotations,
+    dataLabels,
+    hoverKey,
+    onHoverKeyChange,
+    keyboardNav,
+    onSelectKey,
     width = 480,
     height = 240,
     label,
     class: className
   }: ComboChartProps = $props();
+
+  let focusedIndex: number = $state(-1);
+  let datapointRefs: Array<SVGRectElement | null> = [];
 
   // Interactive legend is active as soon as the parent wires either prop.
   const legendInteractive = $derived(onToggleSeries !== undefined || hiddenSeries !== undefined);
@@ -263,8 +313,84 @@
       .flatMap((s) => categories.map((c, ci) => `${s.label}, ${c}: ${s.data[ci] ?? 0}`)),
     ...lines
       .filter((s) => !hiddenSet.has(s.label))
-      .flatMap((s) => categories.map((c, ci) => `${s.label}, ${c}: ${s.data[ci] ?? 0}`))
+      .flatMap((s) => categories.map((c, ci) => `${s.label}, ${c}: ${s.data[ci] ?? 0}`)),
+    ...annotationDataListItems(annotations)
   ]);
+
+  // --- Annotation overlay ---------------------------------------------------
+  // `xScale` matches a category by equality → its band centre (relative to the
+  // plot); `yScale` maps a LEFT (bar) value-axis number. Out-of-domain coords
+  // yield null → dropped, so an annotation never escapes the plot.
+  const resolvedAnnotations = $derived(
+    resolveAnnotations(annotations, {
+      xScale: (v: number | string) => {
+        const i = categories.indexOf(String(v));
+        return i < 0 ? null : bandCenter(i) - MARGIN.left;
+      },
+      yScale: (v: number) =>
+        Number.isFinite(v) ? scaleLinear(v, leftScale.domainMin, leftScale.domainMax, plotHeight, 0) : null,
+      plotLeft: MARGIN.left,
+      plotTop: MARGIN.top,
+      plotWidth,
+      plotHeight
+    })
+  );
+  const annotationRegions = $derived(resolvedAnnotations.filter((a) => a.kind === "region"));
+  const annotationAbove = $derived(resolvedAnnotations.filter((a) => a.kind !== "region"));
+
+  // --- Data labels ----------------------------------------------------------
+  // One value label per visible bar (outside) + per visible line point (top).
+  const dataLabelOpts = $derived(normalizeDataLabels(dataLabels));
+  const barDataLabelItems = $derived(
+    dataLabelOpts.enabled
+      ? barGroups.flatMap((group, gi) =>
+          group.map((seg, si) => {
+            const inside = dataLabelOpts.position === "inside" || dataLabelOpts.position === "center";
+            return {
+              key: `bar-${gi}-${si}`,
+              x: seg.cx,
+              y: inside ? seg.y + seg.height / 2 : seg.cy - 6,
+              text: formatDataLabel(seg.value, dataLabelOpts, formatTick),
+              baseline: (inside ? "middle" : "auto") as "middle" | "auto"
+            };
+          })
+        )
+      : []
+  );
+  const lineDataLabelItems = $derived(
+    dataLabelOpts.enabled
+      ? lineSeries.flatMap((series, li) =>
+          series.hidden
+            ? []
+            : series.points.map((p, pi) => {
+                const center =
+                  dataLabelOpts.position === "center" || dataLabelOpts.position === "inside";
+                return {
+                  key: `line-${li}-${pi}`,
+                  x: p.x,
+                  y: center ? p.y : p.y - 8,
+                  text: formatDataLabel(p.value, dataLabelOpts, formatTick),
+                  baseline: (center ? "middle" : "auto") as "middle" | "auto"
+                };
+              })
+        )
+      : []
+  );
+
+  // --- Crosshair + keyboard nav keys (FR-3 / FR-5) --------------------------
+  // The shared datum is the CATEGORY: its key is the category string.
+  const hoverKeys = $derived(categories.map((c) => keyForX(c)));
+  const categorySummary = (ci: number): string =>
+    [
+      ...bars.filter((s) => !hiddenSet.has(s.label)),
+      ...lines.filter((s) => !hiddenSet.has(s.label))
+    ]
+      .map((s) => {
+        const raw = s.data[ci];
+        return raw == null || !Number.isFinite(raw) ? null : `${s.label}: ${raw}`;
+      })
+      .filter((v): v is string => v !== null)
+      .join(", ");
 
   type Hover =
     | { kind: "bar"; gi: number; si: number }
@@ -272,13 +398,18 @@
     | null;
   let hovered: Hover = $state(null);
 
+  function emitHoverKey(index: number | null) {
+    onHoverKeyChange?.(index == null ? null : hoverKeys[index] ?? null);
+  }
   function handleLeave() {
     hovered = null;
+    emitHoverKey(null);
   }
   function handleVisualPointerMove(event: PointerEvent) {
     const target = event.target;
     if (!(target instanceof Element)) {
       hovered = null;
+      emitHoverKey(null);
       return;
     }
     const kind = target.getAttribute("data-chart-kind");
@@ -286,10 +417,50 @@
     const b = Number(target.getAttribute("data-chart-b"));
     if (kind === "bar" && Number.isInteger(a) && Number.isInteger(b)) {
       hovered = { kind: "bar", gi: a, si: b };
+      emitHoverKey(a); // gi === category index
     } else if (kind === "line" && Number.isInteger(a) && Number.isInteger(b)) {
       hovered = { kind: "line", li: a, pi: b };
+      emitHoverKey(b); // pi === category index
     } else {
       hovered = null;
+      emitHoverKey(null);
+    }
+  }
+
+  // Category index whose crosshair is DISPLAYED: the controlled `hoverKey` when
+  // provided (resolved against the category keys), else the internal pointer
+  // category (derived from the hovered bar/line datum).
+  const internalCategoryIndex = $derived(
+    hovered == null ? null : hovered.kind === "bar" ? hovered.gi : hovered.pi
+  );
+  const activeCategoryIndex = $derived(
+    resolveActiveIndex(hoverKey, internalCategoryIndex, hoverKeys)
+  );
+  const crosshairX = $derived(activeCategoryIndex >= 0 ? bandCenter(activeCategoryIndex) : null);
+
+  // --- Keyboard navigation (FR-5) ------------------------------------------
+  // One focusable transparent column per category carries the roving tab stop.
+  const navEnabled = $derived(
+    (keyboardNav === true || onSelectKey !== undefined) && categories.length > 0
+  );
+  function focusDatum(index: number) {
+    focusedIndex = index;
+    datapointRefs[index]?.focus();
+    emitHoverKey(index);
+  }
+  function handleDatapointKeyDown(event: KeyboardEvent, index: number) {
+    const action = datapointNavAction(event.key, index, categories.length);
+    if (!action) return;
+    event.preventDefault();
+    if (action.kind === "move") {
+      focusDatum(action.index);
+    } else if (action.kind === "select") {
+      onSelectKey?.(hoverKeys[index] ?? null);
+    } else {
+      focusedIndex = -1;
+      emitHoverKey(null);
+      onSelectKey?.(null);
+      (event.currentTarget as SVGElement).blur();
     }
   }
 
@@ -403,6 +574,20 @@
         </text>
       {/each}
 
+      <!-- Annotation regions sit BEHIND the bars (filled bands). -->
+      {#if annotationRegions.length > 0}
+        <g class="st-comboChart__annotations st-comboChart__annotations--behind">
+          {#each annotationRegions as a (a.key)}
+            {#if a.kind === "region"}
+              <rect class="st-comboChart__annotationRegion" x={a.x} y={a.y} width={a.width} height={a.height} />
+              {#if a.label}
+                <text class="st-comboChart__annotationLabel" x={a.x + 4} y={a.y + 11}>{a.label}</text>
+              {/if}
+            {/if}
+          {/each}
+        </g>
+      {/if}
+
       <!-- bars -->
       {#each barGroups as group, gi (gi)}
         {#each group as seg, si (si)}
@@ -444,7 +629,93 @@
           {/each}
         {/if}
       {/each}
+
+      <!-- Annotations ABOVE the bars/lines: lines, shapes, points, labels. -->
+      {#if annotationAbove.length > 0}
+        <g class="st-comboChart__annotations st-comboChart__annotations--above">
+          {#each annotationAbove as a (a.key)}
+            {#if a.kind === "line"}
+              <line class="st-comboChart__annotationLine" x1={a.x1} y1={a.y1} x2={a.x2} y2={a.y2} />
+              {#if a.label}
+                <text
+                  class="st-comboChart__annotationLabel"
+                  x={a.axis === "x" ? a.x1 + 4 : MARGIN.left + plotWidth - 4}
+                  y={a.axis === "x" ? MARGIN.top + 11 : a.y1 - 4}
+                  text-anchor={a.axis === "x" ? "start" : "end"}
+                >
+                  {a.label}
+                </text>
+              {/if}
+            {:else if a.kind === "shape"}
+              <polygon class="st-comboChart__annotationShape" points={polygonPoints(a.points)} />
+              {#if a.label}
+                <text class="st-comboChart__annotationLabel" x={a.labelX} y={a.labelY} text-anchor="middle">{a.label}</text>
+              {/if}
+            {:else if a.kind === "point"}
+              <circle class="st-comboChart__annotationPoint" cx={a.x} cy={a.y} r="4.5" />
+              {#if a.label}
+                <text class="st-comboChart__annotationLabel" x={a.x} y={a.y - 8} text-anchor="middle">{a.label}</text>
+              {/if}
+            {:else if a.kind === "label"}
+              <text class="st-comboChart__annotationText" x={a.x} y={a.y} text-anchor={a.anchor}>{a.text}</text>
+            {/if}
+          {/each}
+        </g>
+      {/if}
+
+      <!-- Data labels — one value per bar + per line point, on top. aria-hidden. -->
+      {#if barDataLabelItems.length + lineDataLabelItems.length > 0}
+        <g class="st-comboChart__dataLabels" aria-hidden="true">
+          {#each barDataLabelItems as d (d.key)}
+            <text class="st-comboChart__dataLabel" x={d.x} y={d.y} text-anchor="middle" dominant-baseline={d.baseline}>{d.text}</text>
+          {/each}
+          {#each lineDataLabelItems as d (d.key)}
+            <text class="st-comboChart__dataLabel" x={d.x} y={d.y} text-anchor="middle" dominant-baseline={d.baseline}>{d.text}</text>
+          {/each}
+        </g>
+      {/if}
+
+      <!-- Crosshair (FR-3) — a tokenised dashed line on the CATEGORY axis at the
+           active category. Decorative (aria-hidden). -->
+      {#if crosshairX !== null}
+        <g class="st-comboChart__crosshair" aria-hidden="true">
+          <line class="st-comboChart__crosshairLine" x1={crosshairX} x2={crosshairX} y1={MARGIN.top} y2={MARGIN.top + plotHeight} />
+        </g>
+      {/if}
     </svg>
+
+    <!-- Keyboard navigation overlay (FR-5) — a focusable, transparent column per
+         category. NOT aria-hidden: the accessible roving cursor. -->
+    {#if navEnabled}
+      <svg
+        class="st-comboChart__navLayer"
+        viewBox="0 0 {width} {height}"
+        preserveAspectRatio="xMidYMid meet"
+        width="100%"
+        height="100%"
+        role="group"
+        aria-label="{label} — points de données"
+      >
+        {#each categories as category, ci (ci)}
+          <rect
+            bind:this={datapointRefs[ci]}
+            class="st-comboChart__navDatum"
+            x={MARGIN.left + (plotWidth / Math.max(categories.length, 1)) * ci}
+            y={MARGIN.top}
+            width={plotWidth / Math.max(categories.length, 1)}
+            height={plotHeight}
+            role="img"
+            tabindex={rovingTabIndex(ci, focusedIndex, categories.length)}
+            aria-label={datapointAriaLabel(category, categorySummary(ci))}
+            onkeydown={(event) => handleDatapointKeyDown(event, ci)}
+            onfocus={() => {
+              focusedIndex = ci;
+              emitHoverKey(ci);
+            }}
+          />
+        {/each}
+      </svg>
+    {/if}
   </div>
 
   <ChartDataList {label} items={dataValueItems} />
@@ -577,6 +848,66 @@
   .st-comboChart__dot--category6 { fill: var(--st-semantic-data-category6); }
   .st-comboChart__dot--category7 { fill: var(--st-semantic-data-category7); }
   .st-comboChart__dot--category8 { fill: var(--st-semantic-data-category8); }
+
+  /* --- Annotation layer ----------------------------------------------------
+     Regions render BEHIND the bars; lines/shapes/points/labels render ABOVE. */
+  .st-comboChart__annotationRegion {
+    fill: color-mix(in srgb, var(--st-semantic-feedback-info) 12%, transparent);
+    stroke: none;
+  }
+  .st-comboChart__annotationLine {
+    stroke: var(--st-semantic-feedback-info);
+    stroke-width: 1.5;
+    stroke-dasharray: 4 3;
+  }
+  .st-comboChart__annotationShape {
+    fill: color-mix(in srgb, var(--st-semantic-feedback-info) 14%, transparent);
+    stroke: var(--st-semantic-feedback-info);
+    stroke-width: 1.5;
+  }
+  .st-comboChart__annotationPoint {
+    fill: var(--st-semantic-feedback-info);
+    stroke: var(--st-semantic-surface-default);
+    stroke-width: 1.5;
+  }
+  .st-comboChart__annotationLabel,
+  .st-comboChart__annotationText {
+    fill: var(--st-semantic-text-primary);
+    font-size: 0.625rem;
+    font-weight: 600;
+  }
+
+  /* Data labels — per-bar + per-point value, drawn on top. Token-only colour. */
+  .st-comboChart__dataLabel {
+    fill: var(--st-semantic-text-primary);
+    font-size: 0.6875rem;
+    font-weight: 600;
+  }
+
+  /* --- Crosshair layer (FR-3) ----------------------------------------------
+     A tokenised dashed line on the CATEGORY axis at the active category. */
+  .st-comboChart__crosshairLine {
+    stroke: var(--st-semantic-border-strong);
+    stroke-width: 1;
+    stroke-dasharray: 3 3;
+    opacity: 0.7;
+  }
+
+  /* --- Keyboard navigation layer (FR-5) ------------------------------------
+     A focusable, transparent overlay of one column per category. */
+  .st-comboChart__navLayer {
+    inset: 0;
+    position: absolute;
+  }
+  .st-comboChart__navDatum {
+    fill: transparent;
+    outline: none;
+  }
+  .st-comboChart__navDatum:focus-visible {
+    fill: color-mix(in srgb, var(--st-semantic-border-interactive) 12%, transparent);
+    outline: 2px solid var(--st-semantic-border-interactive);
+    outline-offset: 1px;
+  }
 
   @media (prefers-reduced-motion: reduce) {
     .st-comboChart__bar,

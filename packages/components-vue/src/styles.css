@@ -9151,6 +9151,68 @@
 .st-comboChart__dot--category7 { fill: var(--st-semantic-data-category7); }
 .st-comboChart__dot--category8 { fill: var(--st-semantic-data-category8); }
 
+/* --- Annotation layer ------------------------------------------------------
+   Regions render BEHIND the bars; lines/shapes/points/labels render ABOVE. */
+.st-comboChart__annotationRegion {
+  fill: color-mix(in srgb, var(--st-semantic-feedback-info) 12%, transparent);
+  stroke: none;
+}
+.st-comboChart__annotationLine {
+  stroke: var(--st-semantic-feedback-info);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 3;
+}
+.st-comboChart__annotationShape {
+  fill: color-mix(in srgb, var(--st-semantic-feedback-info) 14%, transparent);
+  stroke: var(--st-semantic-feedback-info);
+  stroke-width: 1.5;
+}
+.st-comboChart__annotationPoint {
+  fill: var(--st-semantic-feedback-info);
+  stroke: var(--st-semantic-surface-default);
+  stroke-width: 1.5;
+}
+.st-comboChart__annotationLabel,
+.st-comboChart__annotationText {
+  fill: var(--st-semantic-text-primary);
+  font-size: 0.625rem;
+  font-weight: 600;
+}
+
+/* Data labels — per-bar + per-point value, drawn on top. Token-only colour. */
+.st-comboChart__dataLabel {
+  fill: var(--st-semantic-text-primary);
+  font-size: 0.6875rem;
+  font-weight: 600;
+}
+
+/* --- Crosshair layer (FR-3) ------------------------------------------------
+   A tokenised dashed line on the CATEGORY axis at the active (hovered/
+   controlled) category. Decorative (aria-hidden). */
+.st-comboChart__crosshairLine {
+  stroke: var(--st-semantic-border-strong);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+  opacity: 0.7;
+}
+
+/* --- Keyboard navigation layer (FR-5) -------------------------------------
+   A focusable, transparent overlay of one column per category. Carries the
+   roving tab stop; the focus ring is tokenised (border-interactive). */
+.st-comboChart__navLayer {
+  inset: 0;
+  position: absolute;
+}
+.st-comboChart__navDatum {
+  fill: transparent;
+  outline: none;
+}
+.st-comboChart__navDatum:focus-visible {
+  fill: color-mix(in srgb, var(--st-semantic-border-interactive) 12%, transparent);
+  outline: 2px solid var(--st-semantic-border-interactive);
+  outline-offset: 1px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .st-comboChart__bar,
   .st-comboChart__dot {
