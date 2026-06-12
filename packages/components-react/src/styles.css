@@ -10630,6 +10630,7 @@
 
 .st-candlestickChart__visual {
   display: block;
+  position: relative;
 }
 
 .st-candlestickChart__axis {
@@ -10671,6 +10672,65 @@
 
 .st-candlestickChart__body--down {
   fill: var(--st-semantic-feedback-error);
+}
+
+/* --- Annotation layer ------------------------------------------------------
+   Regions render BEHIND the candles; lines/shapes/points/labels render ABOVE. */
+.st-candlestickChart__annotationRegion {
+  fill: color-mix(in srgb, var(--st-semantic-feedback-info) 12%, transparent);
+  stroke: none;
+}
+.st-candlestickChart__annotationLine {
+  stroke: var(--st-semantic-feedback-info);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 3;
+}
+.st-candlestickChart__annotationShape {
+  fill: color-mix(in srgb, var(--st-semantic-feedback-info) 14%, transparent);
+  stroke: var(--st-semantic-feedback-info);
+  stroke-width: 1.5;
+}
+.st-candlestickChart__annotationPoint {
+  fill: var(--st-semantic-feedback-info);
+  stroke: var(--st-semantic-surface-default);
+  stroke-width: 1.5;
+}
+.st-candlestickChart__annotationLabel,
+.st-candlestickChart__annotationText {
+  fill: var(--st-semantic-text-primary);
+  font-size: 0.625rem;
+  font-weight: 600;
+}
+
+/* Data labels — per-candle close value, drawn on top. Token-only colour. */
+.st-candlestickChart__dataLabel {
+  fill: var(--st-semantic-text-primary);
+  font-size: 0.6875rem;
+  font-weight: 600;
+}
+
+/* Crosshair (FR-3) — a tokenised dashed vertical line at the active candle. */
+.st-candlestickChart__crosshairLine {
+  stroke: var(--st-semantic-border-strong);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+  opacity: 0.7;
+}
+
+/* Keyboard navigation layer (FR-5) — a focusable, transparent overlay of one
+   hit-rect per candle. Carries the roving tab stop; the focus ring is tokenised. */
+.st-candlestickChart__navLayer {
+  inset: 0;
+  position: absolute;
+}
+.st-candlestickChart__navDatum {
+  fill: transparent;
+  outline: none;
+}
+.st-candlestickChart__navDatum:focus-visible {
+  fill: color-mix(in srgb, var(--st-semantic-border-interactive) 12%, transparent);
+  outline: 2px solid var(--st-semantic-border-interactive);
+  outline-offset: 1px;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -10726,6 +10786,7 @@
 
 .st-ohlcChart__visual {
   display: block;
+  position: relative;
 }
 
 .st-ohlcChart__axis {
@@ -10762,6 +10823,65 @@
 
 .st-ohlcChart__bar--down :is(.st-ohlcChart__range, .st-ohlcChart__open, .st-ohlcChart__close) {
   stroke: var(--st-semantic-feedback-error);
+}
+
+/* --- Annotation layer ------------------------------------------------------
+   Regions render BEHIND the bars; lines/shapes/points/labels render ABOVE. */
+.st-ohlcChart__annotationRegion {
+  fill: color-mix(in srgb, var(--st-semantic-feedback-info) 12%, transparent);
+  stroke: none;
+}
+.st-ohlcChart__annotationLine {
+  stroke: var(--st-semantic-feedback-info);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 3;
+}
+.st-ohlcChart__annotationShape {
+  fill: color-mix(in srgb, var(--st-semantic-feedback-info) 14%, transparent);
+  stroke: var(--st-semantic-feedback-info);
+  stroke-width: 1.5;
+}
+.st-ohlcChart__annotationPoint {
+  fill: var(--st-semantic-feedback-info);
+  stroke: var(--st-semantic-surface-default);
+  stroke-width: 1.5;
+}
+.st-ohlcChart__annotationLabel,
+.st-ohlcChart__annotationText {
+  fill: var(--st-semantic-text-primary);
+  font-size: 0.625rem;
+  font-weight: 600;
+}
+
+/* Data labels — per-bar close value, drawn on top. Token-only colour. */
+.st-ohlcChart__dataLabel {
+  fill: var(--st-semantic-text-primary);
+  font-size: 0.6875rem;
+  font-weight: 600;
+}
+
+/* Crosshair (FR-3) — a tokenised dashed vertical line at the active bar. */
+.st-ohlcChart__crosshairLine {
+  stroke: var(--st-semantic-border-strong);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+  opacity: 0.7;
+}
+
+/* Keyboard navigation layer (FR-5) — a focusable, transparent overlay of one
+   hit-rect per bar. Carries the roving tab stop; the focus ring is tokenised. */
+.st-ohlcChart__navLayer {
+  inset: 0;
+  position: absolute;
+}
+.st-ohlcChart__navDatum {
+  fill: transparent;
+  outline: none;
+}
+.st-ohlcChart__navDatum:focus-visible {
+  fill: color-mix(in srgb, var(--st-semantic-border-interactive) 12%, transparent);
+  outline: 2px solid var(--st-semantic-border-interactive);
+  outline-offset: 1px;
 }
 
 @media (prefers-reduced-motion: reduce) {
