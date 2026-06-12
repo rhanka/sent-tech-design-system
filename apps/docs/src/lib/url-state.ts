@@ -5,8 +5,8 @@ import type { FrameworkId } from "./framework.svelte";
 import { FRAMEWORKS, DEFAULT_FRAMEWORK } from "./framework.svelte";
 
 // ── Thèmes valides ────────────────────────────────────────────────────────────
-export type ThemeId = "sent-tech" | "dsfr" | "carbon" | "airbus" | "canada";
-export const VALID_THEME_IDS: readonly ThemeId[] = ["sent-tech", "dsfr", "carbon", "airbus", "canada"];
+export type ThemeId = "sent-tech" | "dsfr" | "carbon" | "airbus" | "canada" | "quebec";
+export const VALID_THEME_IDS: readonly ThemeId[] = ["sent-tech", "dsfr", "carbon", "airbus", "canada", "quebec"];
 export const DEFAULT_THEME_ID: ThemeId = "sent-tech";
 
 function isThemeId(value: string | null): value is ThemeId {
@@ -57,19 +57,21 @@ export function resolveFramework(
   return DEFAULT_FRAMEWORK;
 }
 
-// ── Réconciliation lors d'une navigation (état déjà initialisé) ───────────────
+// ── Réconciliation URL -> store (URL = SOURCE DE VÉRITÉ) ──────────────────────
 //
-// Pourquoi : les liens de navigation internes (sidebar, top-nav) sont des `href`
-// statiques SANS query params (`/components/button`). En SvelteKit le layout est
-// PERSISTANT (pas de re-montage), donc après une navigation `page.url.search`
-// devient "" (vide). Si on traitait « param absent => défaut », chaque clic de
-// navigation RÉINITIALISERAIT thème + framework au défaut (le bug signalé).
+// Architecture : le thème (couleur) ET le framework vivent dans l'URL. L'URL fait
+// foi ; le store MIROIR l'URL (jamais l'inverse). localStorage ne sert qu'à
+// AMORCER le tout premier chargement (URL sans param) — l'amorce est faite par le
+// script anti-FOUC de app.html qui réécrit l'URL AVANT l'hydratation, puis par
+// `afterNavigate` qui ré-inscrit l'état courant dans l'URL après chaque navigation
+// interne. Ainsi page.url porte toujours ?theme/?framework.
 //
-// Règle correcte : le param d'URL fait autorité UNIQUEMENT quand il est présent
-// (deep-link, partage, back/forward vers une URL qui le porte). Quand il est
-// absent, on CONSERVE l'état courant (déjà persisté en localStorage) — la nav
-// interne ne doit jamais effacer le choix de l'utilisateur. L'effet de sync
-// sortante ré-ajoute ensuite les params à l'URL via replaceState.
+// Règle : le param d'URL fait autorité dès qu'il est PRÉSENT (deep-link, partage,
+// back/forward, ou URL ré-estampillée par afterNavigate). Quand il est ABSENT
+// (instant fugace entre un clic de lien interne « nu » et la ré-estampille
+// afterNavigate), on CONSERVE l'état courant pour éviter tout flash au défaut ;
+// la ré-estampille remet aussitôt le param dans l'URL. Le store ne diverge donc
+// jamais durablement de l'URL.
 
 export function reconcileTheme(urlValue: ThemeId | null, current: ThemeId): ThemeId {
   return urlValue !== null ? urlValue : current;

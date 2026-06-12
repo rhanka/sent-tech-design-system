@@ -190,6 +190,26 @@ describe("url-state helpers", () => {
       const nextFramework = reconcileFramework(urlFramework, currentFramework);
       expect(nextTheme).toBe("carbon");
       expect(nextFramework).toBe("react");
+
+      // 4) Ré-estampille (afterNavigate, store -> URL) : l'URL REDEVIENT la
+      //    source de vérité. Après une nav « nue », buildUpdatedSearch ré-inscrit
+      //    l'état courant dans la search => l'URL porte de nouveau ?theme/?framework,
+      //    donc partageable et deep-linkable (le store ne diverge jamais de l'URL).
+      const restamped = buildUpdatedSearch(nextTheme, nextFramework);
+      expect(restamped).toContain("theme=carbon");
+      expect(restamped).toContain("framework=react");
+    });
+
+    it("re-stamps the URL as the source of truth after a theme/framework change", () => {
+      // Un clic de sélecteur ne navigue pas : la sync sortante écrit l'URL.
+      // Partir d'une URL au défaut (vide) -> choisir airbus + vue.
+      mockSearch.current = "";
+      const search = buildUpdatedSearch("airbus", "vue");
+      expect(search).toContain("theme=airbus");
+      expect(search).toContain("framework=vue");
+      // Et un retour au défaut nettoie l'URL (source de vérité = défaut implicite).
+      mockSearch.current = search;
+      expect(buildUpdatedSearch("sent-tech", "svelte")).toBe("");
     });
 
     it("restores theme + framework from localStorage on reload (fresh mount, empty URL)", () => {

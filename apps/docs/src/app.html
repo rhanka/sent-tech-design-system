@@ -91,6 +91,26 @@
           if (fw === "svelte" || fw === "react" || fw === "vue") {
             document.documentElement.setAttribute("data-st-framework", fw);
           }
+          // ── URL = source de vérité ────────────────────────────────────────
+          // Au TOUT PREMIER chargement (URL sans param), on AMORCE l'URL depuis
+          // localStorage AVANT l'hydratation SvelteKit. Ainsi page.url porte déjà
+          // ?theme/?framework et le chrome est choisi de façon DÉTERMINISTE
+          // (plus de course d'hydratation : SSR rend le chrome par défaut, mais
+          // le client lit le même page.url que celui réécrit ici). Si un param
+          // est DÉJÀ présent dans l'URL (deep-link/partage), il fait foi : on n'y
+          // touche pas. localStorage ne sert qu'à cette amorce.
+          var params = new URLSearchParams(location.search);
+          var changed = false;
+          if (!params.has("theme") && theme && theme !== "sent-tech") {
+            params.set("theme", theme); changed = true;
+          }
+          if (!params.has("framework") && fw && fw !== "svelte") {
+            params.set("framework", fw); changed = true;
+          }
+          if (changed) {
+            var qs = params.toString();
+            history.replaceState(history.state, "", location.pathname + (qs ? "?" + qs : "") + location.hash);
+          }
         } catch (e) { /* accès localStorage impossible (iframe, SSR, etc.) */ }
       })();
     </script>

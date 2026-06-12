@@ -427,7 +427,13 @@
     outline: none;
   }
 
-  /* Overrides switchers thème/langue dans header NAVY Airbus */
+  /* Overrides switchers framework/thème/langue dans header NAVY Airbus.
+     Les TROIS wrappers (framework + thème + langue) reçoivent le même centrage
+     vertical : sans `.docs-framework-wrapper`, le sélecteur de framework était
+     décentré dans le header 4rem (parité incohérente avec thème/langue). Tous
+     restent `position: relative` (base app.css) → le menu déroulant absolu
+     s'ancre correctement et reste cliquable. */
+  .abus-header__actions :global(.docs-framework-wrapper),
   .abus-header__actions :global(.docs-theme-wrapper),
   .abus-header__actions :global(.docs-locale-wrapper) {
     height: 100%;
