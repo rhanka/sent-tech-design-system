@@ -13,6 +13,8 @@
       examplesTitle: "Exemples",
       weekTitle: "Semaine de trading",
       weekDesc: "Cinq bâtons quotidiens. La barre verticale couvre high et low ; le tick gauche marque open, le tick droite marque close.",
+      combinedTitle: "Annotations, étiquettes et navigation clavier",
+      combinedDesc: "Une ligne de résistance et une zone de prix (annotations), l'étiquette close au-dessus de chaque bâton (dataLabels) et la navigation clavier des bâtons (←/→, Entrée). Le crosshair se pilote via hoverKey/onHoverKeyChange.",
       apiTitle: "API du composant",
       defaultLabel: "Par défaut",
       required: "requis",
@@ -33,6 +35,8 @@
       examplesTitle: "Examples",
       weekTitle: "Trading week",
       weekDesc: "Five daily bars. The vertical bar spans high and low; the left tick marks open, the right tick marks close.",
+      combinedTitle: "Annotations, data labels and keyboard navigation",
+      combinedDesc: "A resistance line and a price zone (annotations), the close label above each bar (dataLabels) and keyboard navigation of the bars (←/→, Enter). The crosshair is driven through hoverKey/onHoverKeyChange.",
       apiTitle: "Component API",
       defaultLabel: "Default",
       required: "required",
@@ -72,6 +76,28 @@
       ]
     }
   ]);
+
+  const combinedDemo = $derived<NodeSpec[]>([
+    {
+      el: "div",
+      props: { class: "chart-wrapper" },
+      children: [
+        {
+          comp: "OHLCChart",
+          props: {
+            label: locale.value === "fr" ? "Cours SENT — analyse" : "SENT stock — analysis",
+            data: weekData,
+            dataLabels: true,
+            keyboardNav: true,
+            annotations: [
+              { kind: "line", axis: "y", value: 151, label: locale.value === "fr" ? "Résistance" : "Resistance" },
+              { kind: "region", axis: "y", from: 138, to: 142, label: locale.value === "fr" ? "Support" : "Support" }
+            ]
+          }
+        }
+      ]
+    }
+  ]);
 </script>
 
 <div class="docs-page">
@@ -91,6 +117,10 @@
     <h3 class="docs-demo-title">{text().weekTitle}</h3>
     <p class="docs-demo-note">{text().weekDesc}</p>
     <TabbedExample nodes={weekDemo} title={text().weekTitle} />
+
+    <h3 class="docs-demo-title">{text().combinedTitle}</h3>
+    <p class="docs-demo-note">{text().combinedDesc}</p>
+    <TabbedExample nodes={combinedDemo} title={text().combinedTitle} />
   </section>
 
   <section class="docs-section">
@@ -104,6 +134,12 @@
         <tr><td><code>label</code></td><td><code>string</code></td><td><em>{text().required}</em></td></tr>
         <tr><td><code>width</code></td><td><code>number</code></td><td><code>480</code></td></tr>
         <tr><td><code>height</code></td><td><code>number</code></td><td><code>240</code></td></tr>
+        <tr><td><code>annotations</code></td><td><code>ChartAnnotation[]</code></td><td><em>{text().optional}</em></td></tr>
+        <tr><td><code>dataLabels</code></td><td><code>{`boolean | { format?, position? }`}</code></td><td><code>false</code></td></tr>
+        <tr><td><code>hoverKey</code></td><td><code>{`string | null`}</code></td><td><em>{text().optional}</em></td></tr>
+        <tr><td><code>onHoverKeyChange</code></td><td><code>{`(key: string | null) => void`}</code></td><td><em>{text().optional}</em></td></tr>
+        <tr><td><code>keyboardNav</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
+        <tr><td><code>onSelectKey</code></td><td><code>{`(key: string | null) => void`}</code></td><td><em>{text().optional}</em></td></tr>
         <tr><td><code>class</code></td><td><code>string</code></td><td><em>{text().optional}</em></td></tr>
       </tbody>
     </table>
@@ -128,8 +164,13 @@
     <ul class="docs-token-list">
       <li><code>--st-semantic-feedback-success</code></li>
       <li><code>--st-semantic-feedback-error</code></li>
+      <li><code>--st-semantic-feedback-info</code></li>
       <li><code>--st-semantic-border-subtle</code></li>
+      <li><code>--st-semantic-border-strong</code></li>
+      <li><code>--st-semantic-border-interactive</code></li>
+      <li><code>--st-semantic-text-primary</code></li>
       <li><code>--st-semantic-text-secondary</code></li>
+      <li><code>--st-semantic-surface-default</code></li>
       <li><code>--st-semantic-surface-inverse</code></li>
       <li><code>--st-semantic-text-inverse</code></li>
       <li><code>--st-radius-sm</code></li>

@@ -1,6 +1,15 @@
 import { defineComponent, h, ref } from "vue";
 import { classNames } from "./classNames.js";
 import { chartDataList } from "./chartScale.js";
+import {
+  annotationDataListItems,
+  polygonPoints,
+  resolveAnnotations,
+  type ChartAnnotation,
+} from "./chartAnnotations.js";
+import { formatDataLabel, normalizeDataLabels, type DataLabelsProp } from "./chartDataLabels.js";
+import { resolveActiveIndex } from "./chartCrosshair.js";
+import { datapointAriaLabel, datapointNavAction, rovingTabIndex } from "./chartKeyboardNav.js";
 
 export type CandlestickChartDatum = {
   label: string;
@@ -15,6 +24,12 @@ export type CandlestickChartProps = {
   label: string;
   width?: number;
   height?: number;
+  annotations?: ChartAnnotation[];
+  dataLabels?: DataLabelsProp;
+  hoverKey?: string | null;
+  onHoverKeyChange?: (key: string | null) => void;
+  keyboardNav?: boolean;
+  onSelectKey?: (key: string | null) => void;
   class?: string;
 };
 
@@ -61,21 +76,19 @@ export const CandlestickChart = defineComponent({
     label: { type: String, required: true },
     width: { type: Number, default: 480 },
     height: { type: Number, default: 240 },
+    annotations: { type: Array as () => ChartAnnotation[], default: undefined },
+    dataLabels: { type: [Boolean, Object] as unknown as () => DataLabelsProp, default: undefined },
+    hoverKey: { type: String as unknown as () => string | null, default: undefined },
+    onHoverKeyChange: { type: Function as unknown as () => (key: string | null) => void, default: undefined },
+    keyboardNav: { type: Boolean, default: undefined },
+    onSelectKey: { type: Function as unknown as () => (key: string | null) => void, default: undefined },
     class: { type: String, default: undefined },
   },
   setup(props, { attrs }) {
     const hoveredIndex = ref<number | null>(null);
-
-    function handleLeave() {
-      hoveredIndex.value = null;
-    }
-
-    function handlePointerMove(event: PointerEvent) {
-      const target = event.target;
-      if (!(target instanceof Element)) { hoveredIndex.value = null; return; }
-      const idx = Number(target.getAttribute("data-chart-index"));
-      hoveredIndex.value = Number.isInteger(idx) ? idx : null;
-    }
+    // FR-5 — roving keyboard focus over the data points (separate from hover).
+    const focusedIndex = ref<number>(-1);
+    const datapointRefs: Array<SVGRectElement | null> = [];
 
     return () => {
       const data = props.data ?? [];
@@ -149,9 +162,102 @@ export const CandlestickChart = defineComponent({
         };
       });
 
-      const dataValueItems = validData.map(
-        (d) => `${d.label}: O ${d.open} H ${d.high} L ${d.low} C ${d.close}`
-      );
+      // --- Annotation overlay -------------------------------------------------
+      // The x coordinate is CATEGORICAL (a candle `label` → centre of band); the
+      // y coordinate is a price-axis number. Regions render behind the candles,
+      // every other kind above. The resolver maps each x via `xScale` (category
+      // → pixel) and each y via `yScale` (price → pixel), relative to the plot.
+      const priceY = (v: number): number | null => {
+        if (!Number.isFinite(v)) return null;
+        return scaleLinear(v, domainMin, domainMax, plotHeight, 0);
+      };
+      const categoryPixel = (v: number | string): number | null => {
+        const candle = candles.find((c) => c.datum.label === String(v));
+        if (!candle) return null;
+        return candle.centerX - MARGIN.left;
+      };
+      const resolvedAnnotations = resolveAnnotations(props.annotations, {
+        xScale: (v) => categoryPixel(v),
+        yScale: (v) => priceY(v),
+        plotLeft: MARGIN.left,
+        plotTop: MARGIN.top,
+        plotWidth,
+        plotHeight,
+      });
+      const annotationRegions = resolvedAnnotations.filter((a) => a.kind === "region");
+      const annotationAbove = resolvedAnnotations.filter((a) => a.kind !== "region");
+
+      // --- Data labels ------------------------------------------------------
+      // One `close` value label per candle, placed just above it. aria-hidden.
+      const dataLabelOpts = normalizeDataLabels(props.dataLabels);
+      type DataLabelItem = { key: string; x: number; y: number; text: string };
+      const dataLabelItems: DataLabelItem[] = dataLabelOpts.enabled
+        ? candles.map((candle) => ({
+            key: candle.datum.label,
+            x: candle.centerX,
+            y: candle.wickHighY - 6,
+            text: formatDataLabel(candle.datum.close, dataLabelOpts, formatTick),
+          }))
+        : [];
+
+      const dataValueItems = [
+        ...validData.map((d) => `${d.label}: O ${d.open} H ${d.high} L ${d.low} C ${d.close}`),
+        ...annotationDataListItems(props.annotations),
+      ];
+
+      // Stable key per candle (FR-3): its `label`. Resolves a controlled
+      // `hoverKey` to an index and feeds `onHoverKeyChange` from pointer events.
+      const hoverKeys = candles.map((c) => c.datum.label);
+      const emitHoverKey = (index: number | null) => {
+        props.onHoverKeyChange?.(index == null ? null : hoverKeys[index] ?? null);
+      };
+      const handleLeave = () => {
+        hoveredIndex.value = null;
+        emitHoverKey(null);
+      };
+      const handlePointerMove = (event: PointerEvent) => {
+        const target = event.target;
+        if (!(target instanceof Element)) {
+          hoveredIndex.value = null;
+          emitHoverKey(null);
+          return;
+        }
+        const raw = Number(target.getAttribute("data-chart-index"));
+        const index = Number.isInteger(raw) ? raw : null;
+        hoveredIndex.value = index;
+        emitHoverKey(index);
+      };
+
+      // Index whose crosshair/tooltip is DISPLAYED: the controlled `hoverKey`
+      // when provided (resolved against `hoverKeys`), else the pointer index.
+      const activeIndex = resolveActiveIndex(props.hoverKey, hoveredIndex.value, hoverKeys);
+      const hoveredCandle = activeIndex >= 0 ? candles[activeIndex] : undefined;
+
+      // --- Keyboard navigation (FR-5) --------------------------------------
+      // Active when wired explicitly (`keyboardNav`) or implicitly (`onSelectKey`).
+      const navEnabled = (props.keyboardNav === true || props.onSelectKey !== undefined) && candles.length > 0;
+      const focusDatum = (index: number) => {
+        focusedIndex.value = index;
+        datapointRefs[index]?.focus();
+        emitHoverKey(index);
+      };
+      const handleDatapointKeyDown = (event: KeyboardEvent, index: number) => {
+        const action = datapointNavAction(event.key, index, candles.length);
+        if (!action) return;
+        event.preventDefault();
+        if (action.kind === "move") {
+          focusDatum(action.index);
+        } else if (action.kind === "select") {
+          props.onSelectKey?.(candles[index].datum.label);
+        } else {
+          focusedIndex.value = -1;
+          emitHoverKey(null);
+          props.onSelectKey?.(null);
+          (event.currentTarget as SVGElement).blur();
+        }
+      };
+      const ohlcAriaLabel = (d: CandlestickChartDatum): string =>
+        datapointAriaLabel(d.label, `O ${d.open} H ${d.high} L ${d.low} C ${d.close}`);
 
       const svgChildren: ReturnType<typeof h>[] = [];
 
@@ -165,6 +271,26 @@ export const CandlestickChart = defineComponent({
       // axes
       svgChildren.push(h("line", { class: "st-candlestickChart__axis", x1: MARGIN.left, x2: MARGIN.left, y1: MARGIN.top, y2: height - MARGIN.bottom }));
       svgChildren.push(h("line", { class: "st-candlestickChart__axis", x1: MARGIN.left, x2: width - MARGIN.right, y1: height - MARGIN.bottom, y2: height - MARGIN.bottom }));
+
+      // Annotation regions sit BEHIND the candles (filled bands).
+      if (annotationRegions.length > 0) {
+        svgChildren.push(
+          h(
+            "g",
+            { class: "st-candlestickChart__annotations st-candlestickChart__annotations--behind" },
+            annotationRegions.flatMap((a) => {
+              if (a.kind !== "region") return [];
+              const nodes: ReturnType<typeof h>[] = [
+                h("rect", { key: `ann-region-${a.key}`, class: "st-candlestickChart__annotationRegion", x: a.x, y: a.y, width: a.width, height: a.height }),
+              ];
+              if (a.label) {
+                nodes.push(h("text", { key: `ann-region-label-${a.key}`, class: "st-candlestickChart__annotationLabel", x: a.x + 4, y: a.y + 11 }, a.label));
+              }
+              return nodes;
+            }),
+          ),
+        );
+      }
 
       // FIX: composite key to avoid duplicates
       for (const c of candles) {
@@ -199,7 +325,123 @@ export const CandlestickChart = defineComponent({
         }, c.datum.label));
       }
 
-      const hoveredCandle = hoveredIndex.value !== null ? candles[hoveredIndex.value] : undefined;
+      // Annotations ABOVE the candles: lines, shapes, points, labels.
+      if (annotationAbove.length > 0) {
+        svgChildren.push(
+          h(
+            "g",
+            { class: "st-candlestickChart__annotations st-candlestickChart__annotations--above" },
+            annotationAbove.flatMap((a) => {
+              if (a.kind === "line") {
+                const nodes: ReturnType<typeof h>[] = [
+                  h("line", { key: `ann-line-${a.key}`, class: "st-candlestickChart__annotationLine", x1: a.x1, y1: a.y1, x2: a.x2, y2: a.y2 }),
+                ];
+                if (a.label) {
+                  nodes.push(
+                    h(
+                      "text",
+                      {
+                        key: `ann-line-label-${a.key}`,
+                        class: "st-candlestickChart__annotationLabel",
+                        x: a.axis === "x" ? a.x1 + 4 : MARGIN.left + plotWidth - 4,
+                        y: a.axis === "x" ? MARGIN.top + 11 : a.y1 - 4,
+                        "text-anchor": a.axis === "x" ? "start" : "end",
+                      },
+                      a.label,
+                    ),
+                  );
+                }
+                return nodes;
+              }
+              if (a.kind === "shape") {
+                const nodes: ReturnType<typeof h>[] = [
+                  h("polygon", { key: `ann-shape-${a.key}`, class: "st-candlestickChart__annotationShape", points: polygonPoints(a.points) }),
+                ];
+                if (a.label) {
+                  nodes.push(h("text", { key: `ann-shape-label-${a.key}`, class: "st-candlestickChart__annotationLabel", x: a.labelX, y: a.labelY, "text-anchor": "middle" }, a.label));
+                }
+                return nodes;
+              }
+              if (a.kind === "point") {
+                const nodes: ReturnType<typeof h>[] = [
+                  h("circle", { key: `ann-point-${a.key}`, class: "st-candlestickChart__annotationPoint", cx: a.x, cy: a.y, r: "4.5" }),
+                ];
+                if (a.label) {
+                  nodes.push(h("text", { key: `ann-point-label-${a.key}`, class: "st-candlestickChart__annotationLabel", x: a.x, y: a.y - 8, "text-anchor": "middle" }, a.label));
+                }
+                return nodes;
+              }
+              return [
+                h("text", { key: `ann-label-${a.key}`, class: "st-candlestickChart__annotationText", x: a.x, y: a.y, "text-anchor": a.anchor }, a.text),
+              ];
+            }),
+          ),
+        );
+      }
+
+      // Data labels — one close value per candle, drawn on top. aria-hidden.
+      if (dataLabelItems.length > 0) {
+        svgChildren.push(
+          h(
+            "g",
+            { class: "st-candlestickChart__dataLabels", "aria-hidden": "true" },
+            dataLabelItems.map((d) =>
+              h("text", { key: `dl-${d.key}`, class: "st-candlestickChart__dataLabel", x: d.x, y: d.y, "text-anchor": "middle", "dominant-baseline": "auto" }, d.text),
+            ),
+          ),
+        );
+      }
+
+      // Crosshair (FR-3) — a tokenised dashed vertical line at the active candle.
+      if (hoveredCandle) {
+        svgChildren.push(
+          h("g", { class: "st-candlestickChart__crosshair", "aria-hidden": "true" }, [
+            h("line", {
+              class: "st-candlestickChart__crosshairLine",
+              x1: hoveredCandle.centerX, x2: hoveredCandle.centerX,
+              y1: MARGIN.top, y2: MARGIN.top + plotHeight,
+            }),
+          ]),
+        );
+      }
+
+      // Keyboard navigation overlay (FR-5) — a focusable, transparent hit layer
+      // over the candles. NOT aria-hidden: the accessible roving cursor.
+      const navLayer = navEnabled
+        ? h(
+            "svg",
+            {
+              class: "st-candlestickChart__navLayer",
+              viewBox: `0 0 ${width} ${height}`,
+              preserveAspectRatio: "xMidYMid meet",
+              width: "100%",
+              height: "100%",
+              role: "group",
+              "aria-label": `${label} — points de données`,
+            },
+            candles.map((candle, i) =>
+              h("rect", {
+                key: `nav${i}-${candle.datum.label}`,
+                ref: ((el: Element | null) => {
+                  datapointRefs[i] = el as SVGRectElement | null;
+                }) as never,
+                class: "st-candlestickChart__navDatum",
+                x: candle.centerX - band / 2,
+                y: MARGIN.top,
+                width: band,
+                height: plotHeight,
+                role: "img",
+                tabindex: rovingTabIndex(i, focusedIndex.value, candles.length),
+                "aria-label": ohlcAriaLabel(candle.datum),
+                onKeydown: (event: KeyboardEvent) => handleDatapointKeyDown(event, i),
+                onFocus: () => {
+                  focusedIndex.value = i;
+                  emitHoverKey(i);
+                },
+              }),
+            ),
+          )
+        : null;
 
       const children: (ReturnType<typeof h> | null)[] = [
         h("div", {
@@ -215,6 +457,7 @@ export const CandlestickChart = defineComponent({
             width: "100%", height: "100%",
             focusable: "false", "aria-hidden": "true",
           }, svgChildren),
+          ...(navLayer ? [navLayer] : []),
         ]),
         chartDataList(label, dataValueItems),
       ];

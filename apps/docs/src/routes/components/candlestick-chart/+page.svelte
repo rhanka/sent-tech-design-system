@@ -14,6 +14,8 @@
       examplesTitle: "Exemples",
       weekTitle: "Semaine de trading",
       weekDesc: "Cinq bougies quotidiennes. Les bâtons (mèches) indiquent high et low ; les corps indiquent open et close.",
+      combinedTitle: "Annotations, étiquettes et navigation clavier",
+      combinedDesc: "Une ligne de résistance et une zone de prix (annotations), l'étiquette close au-dessus de chaque bougie (dataLabels) et la navigation clavier des bougies (←/→, Entrée). Le crosshair se pilote via hoverKey/onHoverKeyChange.",
       apiTitle: "API du composant",
       defaultLabel: "Par défaut",
       required: "requis",
@@ -35,6 +37,8 @@
       examplesTitle: "Examples",
       weekTitle: "Trading week",
       weekDesc: "Five daily candles. Wicks show high and low; bodies show open and close.",
+      combinedTitle: "Annotations, data labels and keyboard navigation",
+      combinedDesc: "A resistance line and a price zone (annotations), the close label above each candle (dataLabels) and keyboard navigation of the candles (←/→, Enter). The crosshair is driven through hoverKey/onHoverKeyChange.",
       apiTitle: "Component API",
       defaultLabel: "Default",
       required: "required",
@@ -69,6 +73,28 @@
           props: {
             label: locale.value === "fr" ? "Cours SENT — semaine" : "SENT stock — week",
             data: weekData
+          }
+        }
+      ]
+    }
+  ]);
+
+  const combinedDemo = $derived<NodeSpec[]>([
+    {
+      el: "div",
+      props: { class: "chart-wrapper" },
+      children: [
+        {
+          comp: "CandlestickChart",
+          props: {
+            label: locale.value === "fr" ? "Cours SENT — analyse" : "SENT stock — analysis",
+            data: weekData,
+            dataLabels: true,
+            keyboardNav: true,
+            annotations: [
+              { kind: "line", axis: "y", value: 151, label: locale.value === "fr" ? "Résistance" : "Resistance" },
+              { kind: "region", axis: "y", from: 138, to: 142, label: locale.value === "fr" ? "Support" : "Support" }
+            ]
           }
         }
       ]
