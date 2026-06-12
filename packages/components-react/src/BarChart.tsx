@@ -28,6 +28,7 @@ import {
 } from "./chartAnnotations.js";
 import { formatDataLabel, normalizeDataLabels, type DataLabelsProp } from "./chartDataLabels.js";
 import { resolveActiveIndex } from "./chartCrosshair.js";
+import { datapointAriaLabel, datapointNavAction, rovingTabIndex } from "./chartKeyboardNav.js";
 
 export type BarChartTone =
   | "category1"
@@ -128,6 +129,21 @@ export type BarChartProps = Omit<React.HTMLAttributes<HTMLDivElement>, "classNam
    * keep the shared hover channel in sync.
    */
   onHoverKeyChange?: (key: string | null) => void;
+  /**
+   * FR-5 — keyboard navigation of the data points (roving tabindex). When `true`
+   * (or implied by wiring `onSelectKey`), a thin focusable overlay is rendered
+   * over the bars: the chart owns ONE tab stop, ←/↑/→/↓ move the focus between
+   * bars (data order), Home/End jump to the first/last, Enter/Space select the
+   * focused bar (`onSelectKey`), Escape leaves the navigation. Each focused bar
+   * announces its `label` + value. Absent ⇒ no overlay, rendering unchanged.
+   */
+  keyboardNav?: boolean;
+  /**
+   * Emitted when the user selects the focused bar via Enter/Space (its `label`),
+   * or `null` when the navigation is left via Escape. Wiring it also turns the
+   * keyboard navigation on. Independent of `onSelect`/`selectedKeys`.
+   */
+  onSelectKey?: (key: string | null) => void;
   className?: string;
 };
 
@@ -154,10 +170,15 @@ export function BarChart({
   showLegend: _showLegend,
   hoverKey,
   onHoverKeyChange,
+  keyboardNav,
+  onSelectKey,
   className,
   ...rest
 }: BarChartProps) {
   const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
+  // FR-5 — roving keyboard focus over the data points (separate from hover).
+  const [focusedIndex, setFocusedIndex] = React.useState<number>(-1);
+  const datapointRefs = React.useRef<Array<SVGRectElement | null>>([]);
 
   // Selection (controlled): fast lookup + "is any bar selected" flag. Only when
   // something is selected do we dim the non-selected bars.
@@ -500,6 +521,34 @@ export function BarChart({
   const activeIndex = resolveActiveIndex(hoverKey, hoveredIndex, hoverKeys);
   const hoveredBar = activeIndex >= 0 ? bars[activeIndex] : undefined;
 
+  // --- Keyboard navigation (FR-5) ------------------------------------------
+  // Active when wired explicitly (`keyboardNav`) or implicitly (`onSelectKey`).
+  // Renders a focusable overlay (one transparent hit-rect per bar) carrying a
+  // single roving tab stop. Arrow/Home/End move focus, Enter/Space select,
+  // Escape leaves. Focus also feeds the shared hover channel (FR-3 synergy).
+  const navEnabled = (keyboardNav === true || onSelectKey !== undefined) && bars.length > 0;
+  function focusDatum(index: number) {
+    setFocusedIndex(index);
+    datapointRefs.current[index]?.focus();
+    emitHoverKey(index);
+  }
+  function handleDatapointKeyDown(event: React.KeyboardEvent, index: number) {
+    const action = datapointNavAction(event.key, index, bars.length);
+    if (!action) return;
+    event.preventDefault();
+    if (action.kind === "move") {
+      focusDatum(action.index);
+    } else if (action.kind === "select") {
+      onSelectKey?.(bars[index].datum.label);
+    } else {
+      // Escape — leave the navigation: clear focus + hover channel.
+      setFocusedIndex(-1);
+      emitHoverKey(null);
+      onSelectKey?.(null);
+      (event.currentTarget as SVGElement).blur();
+    }
+  }
+
   return (
     <div {...rest} className={classNames("st-barChart", className)}>
       <div
@@ -803,6 +852,44 @@ export function BarChart({
             </g>
           ) : null}
         </svg>
+
+        {/* Keyboard navigation overlay (FR-5) — a focusable, transparent hit
+            layer over the bars. NOT aria-hidden: it is the accessible roving
+            cursor. Each rect announces its category + value; the focus ring is
+            tokenised via CSS. Absent unless keyboard nav is enabled. */}
+        {navEnabled ? (
+          <svg
+            className="st-barChart__navLayer"
+            viewBox={`0 0 ${width} ${height}`}
+            preserveAspectRatio="xMidYMid meet"
+            width="100%"
+            height="100%"
+            role="group"
+            aria-label={`${label} — points de données`}
+          >
+            {bars.map((bar, i) => (
+              <rect
+                key={bar.datum.label}
+                ref={(el) => {
+                  datapointRefs.current[i] = el;
+                }}
+                className="st-barChart__navDatum"
+                x={bar.x}
+                y={bar.y}
+                width={bar.width}
+                height={bar.height}
+                role="img"
+                tabIndex={rovingTabIndex(i, focusedIndex, bars.length)}
+                aria-label={datapointAriaLabel(bar.datum.label, bar.datum.value)}
+                onKeyDown={(event) => handleDatapointKeyDown(event, i)}
+                onFocus={() => {
+                  setFocusedIndex(i);
+                  emitHoverKey(i);
+                }}
+              />
+            ))}
+          </svg>
+        ) : null}
       </div>
 
       {interactive ? (

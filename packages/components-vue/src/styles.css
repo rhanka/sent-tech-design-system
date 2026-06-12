@@ -208,6 +208,7 @@
 
   .st-areaChart__visual {
     display: block;
+    position: relative;
   }
 
   .st-areaChart__grid {
@@ -334,6 +335,23 @@
     stroke-width: 2;
   }
 
+  /* --- Keyboard navigation layer (FR-5) ------------------------------------
+     A focusable, transparent overlay of one hit-rect per point. Carries the
+     roving tab stop; the focus ring is tokenised (border-interactive). */
+  .st-areaChart__navLayer {
+    inset: 0;
+    position: absolute;
+  }
+  .st-areaChart__navDatum {
+    fill: transparent;
+    outline: none;
+  }
+  .st-areaChart__navDatum:focus-visible {
+    fill: color-mix(in srgb, var(--st-semantic-border-interactive) 12%, transparent);
+    outline: 2px solid var(--st-semantic-border-interactive);
+    outline-offset: 1px;
+  }
+
 .st-aspectRatio {
     display: block;
     overflow: hidden;
@@ -442,6 +460,7 @@
 
   .st-barChart__visual {
     display: block;
+    position: relative;
   }
 
   .st-chartDataList {
@@ -692,6 +711,23 @@
     stroke-width: 1;
     stroke-dasharray: 3 3;
     opacity: 0.7;
+  }
+
+  /* --- Keyboard navigation layer (FR-5) ------------------------------------
+     A focusable, transparent overlay of one hit-rect per bar. Carries the
+     roving tab stop; the focus ring is tokenised (border-interactive). */
+  .st-barChart__navLayer {
+    inset: 0;
+    position: absolute;
+  }
+  .st-barChart__navDatum {
+    fill: transparent;
+    outline: none;
+  }
+  .st-barChart__navDatum:focus-visible {
+    fill: color-mix(in srgb, var(--st-semantic-border-interactive) 12%, transparent);
+    outline: 2px solid var(--st-semantic-border-interactive);
+    outline-offset: 1px;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -3547,6 +3583,7 @@
 
   .st-lineChart__visual {
     display: block;
+    position: relative;
   }
 
   .st-lineChart__grid {
@@ -3733,6 +3770,23 @@
     fill: currentColor;
     stroke: var(--st-semantic-surface-default);
     stroke-width: 2;
+  }
+
+  /* --- Keyboard navigation layer (FR-5) ------------------------------------
+     A focusable, transparent overlay of one hit-rect per point. Carries the
+     roving tab stop; the focus ring is tokenised (border-interactive). */
+  .st-lineChart__navLayer {
+    inset: 0;
+    position: absolute;
+  }
+  .st-lineChart__navDatum {
+    fill: transparent;
+    outline: none;
+  }
+  .st-lineChart__navDatum:focus-visible {
+    fill: color-mix(in srgb, var(--st-semantic-border-interactive) 12%, transparent);
+    outline: 2px solid var(--st-semantic-border-interactive);
+    outline-offset: 1px;
   }
 
 .st-link {
