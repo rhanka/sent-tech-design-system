@@ -18,6 +18,7 @@ import {
 } from "./chartAnnotations.js";
 import { formatDataLabel, normalizeDataLabels, type DataLabelsProp } from "./chartDataLabels.js";
 import { keyForX, resolveActiveIndex } from "./chartCrosshair.js";
+import { datapointAriaLabel, datapointNavAction, rovingTabIndex } from "./chartKeyboardNav.js";
 
 export type AreaChartTone =
   | "category1"
@@ -69,6 +70,21 @@ export type AreaChartProps = Omit<React.HTMLAttributes<HTMLDivElement>, "classNa
    * keep the shared hover channel in sync.
    */
   onHoverKeyChange?: (key: string | null) => void;
+  /**
+   * FR-5 — keyboard navigation of the data points (roving tabindex). When `true`
+   * (or implied by wiring `onSelectKey`), a thin focusable overlay is rendered
+   * over the points: the chart owns ONE tab stop, ←/↑/→/↓ move the focus between
+   * points (data order), Home/End jump to the first/last, Enter/Space select the
+   * focused point (`onSelectKey`), Escape leaves the navigation. Each focused
+   * point announces its `x` + value. Absent ⇒ no overlay, rendering unchanged.
+   */
+  keyboardNav?: boolean;
+  /**
+   * Emitted when the user selects the focused point via Enter/Space (its key,
+   * `String(x)`), or `null` when the navigation is left via Escape. Wiring it
+   * also turns the keyboard navigation on.
+   */
+  onSelectKey?: (key: string | null) => void;
   className?: string;
 };
 
@@ -85,12 +101,17 @@ export function AreaChart({
   dataLabels,
   hoverKey,
   onHoverKeyChange,
+  keyboardNav,
+  onSelectKey,
   className,
   ...rest
 }: AreaChartProps) {
   const reactId = React.useId();
   const gradientId = `st-areachart-gradient-${reactId.replace(/:/g, "")}`;
   const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
+  // FR-5 — roving keyboard focus over the data points (separate from hover).
+  const [focusedIndex, setFocusedIndex] = React.useState<number>(-1);
+  const datapointRefs = React.useRef<Array<SVGRectElement | null>>([]);
 
   const plotWidth = Math.max(width - MARGIN.left - MARGIN.right, 1);
   const plotHeight = Math.max(height - MARGIN.top - MARGIN.bottom, 1);
@@ -248,6 +269,35 @@ export function AreaChart({
   // provided (resolved against `hoverKeys`), else the internal pointer index.
   const activeIndex = resolveActiveIndex(hoverKey, hoveredIndex, hoverKeys);
   const hoveredPoint = activeIndex >= 0 ? points[activeIndex] : undefined;
+
+  // --- Keyboard navigation (FR-5) ------------------------------------------
+  // Active when wired explicitly (`keyboardNav`) or implicitly (`onSelectKey`).
+  // Renders a focusable overlay (one transparent hit-rect per point) carrying a
+  // single roving tab stop. Arrow/Home/End move focus, Enter/Space select,
+  // Escape leaves. Focus also feeds the shared hover channel (FR-3 synergy).
+  const navEnabled = (keyboardNav === true || onSelectKey !== undefined) && points.length > 0;
+  // Comfortable square hit area centred on each dot.
+  const NAV_HIT = 18;
+  function focusDatum(index: number) {
+    setFocusedIndex(index);
+    datapointRefs.current[index]?.focus();
+    emitHoverKey(index);
+  }
+  function handleDatapointKeyDown(event: React.KeyboardEvent, index: number) {
+    const action = datapointNavAction(event.key, index, points.length);
+    if (!action) return;
+    event.preventDefault();
+    if (action.kind === "move") {
+      focusDatum(action.index);
+    } else if (action.kind === "select") {
+      onSelectKey?.(hoverKeys[index] ?? null);
+    } else {
+      setFocusedIndex(-1);
+      emitHoverKey(null);
+      onSelectKey?.(null);
+      (event.currentTarget as SVGElement).blur();
+    }
+  }
 
   return (
     <div {...rest} className={classNames("st-areaChart", `st-areaChart--${tone}`, className)}>
@@ -430,6 +480,45 @@ export function AreaChart({
             </g>
           ) : null}
         </svg>
+
+        {/* Keyboard navigation overlay (FR-5) — a focusable, transparent hit
+            layer over the points. NOT aria-hidden: it is the accessible roving
+            cursor. Each rect announces its category + value; the focus ring is
+            tokenised via CSS. Absent unless keyboard nav is enabled. */}
+        {navEnabled ? (
+          <svg
+            className="st-areaChart__navLayer"
+            viewBox={`0 0 ${width} ${height}`}
+            preserveAspectRatio="xMidYMid meet"
+            width="100%"
+            height="100%"
+            role="group"
+            aria-label={`${label} — points de données`}
+          >
+            {points.map((p, i) => (
+              <rect
+                key={p.index}
+                ref={(el) => {
+                  datapointRefs.current[i] = el;
+                }}
+                className="st-areaChart__navDatum"
+                x={p.x - NAV_HIT / 2}
+                y={p.y - NAV_HIT / 2}
+                width={NAV_HIT}
+                height={NAV_HIT}
+                rx="3"
+                role="img"
+                tabIndex={rovingTabIndex(i, focusedIndex, points.length)}
+                aria-label={datapointAriaLabel(p.datum.x, p.datum.y)}
+                onKeyDown={(event) => handleDatapointKeyDown(event, i)}
+                onFocus={() => {
+                  setFocusedIndex(i);
+                  emitHoverKey(i);
+                }}
+              />
+            ))}
+          </svg>
+        ) : null}
       </div>
 
       <ChartDataList label={label} items={dataValueItems} />
