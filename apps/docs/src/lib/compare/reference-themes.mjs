@@ -10,6 +10,7 @@ import { REFERENCE_THEMES_LOCAL, mergeReferenceThemesOverlay } from "./local-ove
 const DSFR_CDN = "https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.14.4/dist";
 const CARBON_CDN = "https://cdn.jsdelivr.net/npm/carbon-components@10.58.15";
 const GCDS_CDN = "https://cdn.jsdelivr.net/npm/@cdssnc/gcds-components@0.47.0/dist/gcds";
+const QC_SDG_CDN = "https://cdn.jsdelivr.net/gh/Quebecca/qc_trousse_sdg@1.5.2/dist/css";
 
 export const REFERENCE_THEMES = {
   dsfr: {
@@ -47,6 +48,18 @@ export const REFERENCE_THEMES = {
       `<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Noto+Sans:wght@400;600;700&display=swap">`,
     brandFont: "'Noto Sans', system-ui, sans-serif",
     lang: "en",
+  },
+  quebec: {
+    label: "Système de design gouvernemental (Québec)",
+    cssUrl: `${QC_SDG_CDN}/qc-sdg.min.css`,
+    // Open Sans (titres + corps) via Google Fonts — le SDG ne sert pas la police
+    // lui-même, sans quoi la référence retombe sur un fallback système.
+    fontLinks:
+      `<link rel="preconnect" href="https://fonts.googleapis.com">` +
+      `<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>` +
+      `<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap">`,
+    brandFont: "'Open Sans', system-ui, sans-serif",
+    lang: "fr",
   },
 };
 
