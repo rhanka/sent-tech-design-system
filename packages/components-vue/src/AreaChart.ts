@@ -18,6 +18,7 @@ import {
 } from "./chartAnnotations.js";
 import { formatDataLabel, normalizeDataLabels, type DataLabelsProp } from "./chartDataLabels.js";
 import { keyForX, resolveActiveIndex } from "./chartCrosshair.js";
+import { datapointAriaLabel, datapointNavAction, rovingTabIndex } from "./chartKeyboardNav.js";
 
 export type AreaChartTone =
   | "category1"
@@ -69,6 +70,21 @@ export type AreaChartProps = {
    * keep the shared hover channel in sync.
    */
   onHoverKeyChange?: (key: string | null) => void;
+  /**
+   * FR-5 — keyboard navigation of the data points (roving tabindex). When `true`
+   * (or implied by wiring `onSelectKey`), a thin focusable overlay is rendered
+   * over the points: the chart owns ONE tab stop, ←/↑/→/↓ move the focus between
+   * points (data order), Home/End jump to the first/last, Enter/Space select the
+   * focused point (`onSelectKey`), Escape leaves the navigation. Each focused
+   * point announces its `x` + value. Absent ⇒ no overlay, rendering unchanged.
+   */
+  keyboardNav?: boolean;
+  /**
+   * Emitted when the user selects the focused point via Enter/Space (its key,
+   * `String(x)`), or `null` when the navigation is left via Escape. Wiring it
+   * also turns the keyboard navigation on.
+   */
+  onSelectKey?: (key: string | null) => void;
   class?: string;
 };
 
@@ -89,10 +105,15 @@ export const AreaChart = defineComponent({
     dataLabels: { type: [Boolean, Object] as unknown as () => DataLabelsProp, default: undefined },
     hoverKey: { type: String as unknown as () => string | null, default: undefined },
     onHoverKeyChange: { type: Function as unknown as () => (key: string | null) => void, default: undefined },
+    keyboardNav: { type: Boolean, default: undefined },
+    onSelectKey: { type: Function as unknown as () => (key: string | null) => void, default: undefined },
     class: { type: String, default: undefined },
   },
   setup(props, { attrs }) {
     const hoveredIndex = ref<number | null>(null);
+    // FR-5 — roving keyboard focus over the data points (separate from hover).
+    const focusedIndex = ref<number>(-1);
+    const datapointRefs: Array<SVGRectElement | null> = [];
     const gradientId = `st-areachart-gradient-${(gradientCounter++).toString(36)}-${Math.random().toString(36).substring(2, 9)}`;
 
     return () => {
@@ -412,6 +433,71 @@ export const AreaChart = defineComponent({
       const activeIndex = resolveActiveIndex(props.hoverKey, hoveredIndex.value, hoverKeys);
       const hoveredPoint = activeIndex >= 0 ? points[activeIndex] : undefined;
 
+      // --- Keyboard navigation (FR-5) --------------------------------------
+      // Active when wired explicitly (`keyboardNav`) or implicitly (`onSelectKey`).
+      // Renders a focusable overlay (one transparent hit-rect per point) carrying
+      // a single roving tab stop. Arrow/Home/End move focus, Enter/Space select,
+      // Escape leaves. Focus also feeds the shared hover channel (FR-3 synergy).
+      const navEnabled = (props.keyboardNav === true || props.onSelectKey !== undefined) && points.length > 0;
+      // Comfortable square hit area centred on each dot.
+      const NAV_HIT = 18;
+      const focusDatum = (index: number) => {
+        focusedIndex.value = index;
+        datapointRefs[index]?.focus();
+        emitHoverKey(index);
+      };
+      const handleDatapointKeyDown = (event: KeyboardEvent, index: number) => {
+        const action = datapointNavAction(event.key, index, points.length);
+        if (!action) return;
+        event.preventDefault();
+        if (action.kind === "move") {
+          focusDatum(action.index);
+        } else if (action.kind === "select") {
+          props.onSelectKey?.(hoverKeys[index] ?? null);
+        } else {
+          focusedIndex.value = -1;
+          emitHoverKey(null);
+          props.onSelectKey?.(null);
+          (event.currentTarget as SVGElement).blur();
+        }
+      };
+      const navLayer = navEnabled
+        ? h(
+            "svg",
+            {
+              class: "st-areaChart__navLayer",
+              viewBox: `0 0 ${width} ${height}`,
+              preserveAspectRatio: "xMidYMid meet",
+              width: "100%",
+              height: "100%",
+              role: "group",
+              "aria-label": `${label} — points de données`,
+            },
+            points.map((p, i) =>
+              h("rect", {
+                key: p.index,
+                ref: ((el: Element | null) => {
+                  datapointRefs[i] = el as SVGRectElement | null;
+                }) as never,
+                class: "st-areaChart__navDatum",
+                x: p.x - NAV_HIT / 2,
+                y: p.y - NAV_HIT / 2,
+                width: NAV_HIT,
+                height: NAV_HIT,
+                rx: "3",
+                role: "img",
+                tabindex: rovingTabIndex(i, focusedIndex.value, points.length),
+                "aria-label": datapointAriaLabel(p.datum.x, p.datum.y),
+                onKeydown: (event: KeyboardEvent) => handleDatapointKeyDown(event, i),
+                onFocus: () => {
+                  focusedIndex.value = i;
+                  emitHoverKey(i);
+                },
+              }),
+            ),
+          )
+        : null;
+
       // Crosshair vnodes (FR-3) — tokenised vertical line + marker at the active
       // key. Decorative (aria-hidden). Appended last so it sits on top.
       if (hoveredPoint) {
@@ -452,6 +538,11 @@ export const AreaChart = defineComponent({
               },
               svgChildren,
             ),
+            // Keyboard navigation overlay (FR-5) — a focusable, transparent hit
+            // layer over the points. NOT aria-hidden: it is the accessible roving
+            // cursor. Each rect announces its category + value; the focus ring is
+            // tokenised via CSS. Absent unless keyboard nav is enabled.
+            ...(navLayer ? [navLayer] : []),
           ],
         ),
         chartDataList(label, dataValueItems),
