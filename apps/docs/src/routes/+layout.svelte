@@ -149,6 +149,8 @@
   // reste la source de vérité, partageable et deep-linkable. Garde `browser`.
   afterNavigate(() => {
     if (!browser) return;
+    // Toute navigation (ex. clic sur un résultat de recherche) ferme la palette.
+    searchOpen = false;
     // Le store est amorcé SYNCHRONEMENT depuis l'URL au montage : sur la
     // navigation initiale, buildUpdatedSearch reproduit la search courante => no-op
     // (aucun risque d'écraser le ?theme/?framework du deep-link). Sur une nav
