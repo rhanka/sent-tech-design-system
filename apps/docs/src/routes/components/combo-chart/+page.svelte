@@ -31,6 +31,44 @@
       ]
     }
   ]);
+
+  // Étiquettes de valeur (barres + courbe), couche d'annotations sur l'axe
+  // catégoriel commun, et navigation clavier des points (roving tabindex).
+  const richNodes = $derived<NodeSpec[]>([
+    {
+      el: "div",
+      props: { class: "chart-wrapper" },
+      children: [
+        {
+          comp: "ComboChart",
+          props: {
+            label:
+              locale.value === "fr"
+                ? "Ventes et marge — étiquettes, annotation et navigation clavier"
+                : "Sales and margin — labels, annotation and keyboard nav",
+            categories: ["T1", "T2", "T3", "T4"],
+            bars: [
+              { label: locale.value === "fr" ? "Ventes (k$)" : "Sales (k$)", data: [120, 145, 160, 190], tone: "category1" }
+            ],
+            lines: [
+              { label: locale.value === "fr" ? "Marge (%)" : "Margin (%)", data: [33, 34, 34, 37], tone: "category5", smooth: true }
+            ],
+            dataLabels: true,
+            annotations: [
+              { kind: "region", axis: "y", from: 150, to: 200, label: locale.value === "fr" ? "Objectif" : "Target" },
+              { kind: "point", x: "T4", y: 190, label: locale.value === "fr" ? "Record" : "Peak" }
+            ],
+            keyboardNav: true,
+            leftAxisLabel: "k$",
+            rightAxisLabel: "%",
+            legend: true,
+            width: 520,
+            height: 280
+          }
+        }
+      ]
+    }
+  ]);
 </script>
 
 <div class="docs-page">
@@ -70,6 +108,30 @@
     <TabbedExample
       nodes={demoNodes}
       title={locale.value === "fr" ? "Ventes et marge par trimestre" : "Sales and margin by quarter"}
+    />
+  </section>
+
+  <section class="docs-section">
+    <h2>{locale.value === "fr" ? "Étiquettes, annotations et navigation clavier" : "Labels, annotations and keyboard nav"}</h2>
+    <p class="section-desc">
+      {#if locale.value === "fr"}
+        <code>dataLabels</code> imprime la valeur sur chaque barre <em>et</em> chaque point de courbe.
+        <code>annotations</code> superpose une couche en espace données (région sur l'axe gauche, point
+        sur une catégorie). <code>keyboardNav</code> ajoute un curseur clavier (roving tabindex) : une
+        seule tabulation, flèches pour naviguer entre catégories, Entrée/Espace pour sélectionner,
+        Échap pour sortir. <code>hoverKey</code>/<code>onHoverKeyChange</code> partagent le crosshair
+        entre plusieurs graphiques alignés.
+      {:else}
+        <code>dataLabels</code> prints the value on every bar <em>and</em> every line point.
+        <code>annotations</code> overlays a data-space layer (a left-axis region, a per-category point).
+        <code>keyboardNav</code> adds a keyboard cursor (roving tabindex): one tab stop, arrows move
+        between categories, Enter/Space select, Escape leaves. <code>hoverKey</code>/<code>onHoverKeyChange</code>
+        share the crosshair across several aligned charts.
+      {/if}
+    </p>
+    <TabbedExample
+      nodes={richNodes}
+      title={locale.value === "fr" ? "Étiquettes, annotation et navigation clavier" : "Labels, annotation and keyboard nav"}
     />
   </section>
 
@@ -126,6 +188,42 @@
           <td><code>boolean</code></td>
           <td><code>true</code></td>
           <td>{locale.value === "fr" ? "Affiche la légende des séries." : "Show the series legend."}</td>
+        </tr>
+        <tr>
+          <td><code>hiddenSeries</code></td>
+          <td><code>string[]</code></td>
+          <td>—</td>
+          <td>{locale.value === "fr" ? "Séries masquées (légende interactive, contrôlée)." : "Hidden series (controlled interactive legend)."}</td>
+        </tr>
+        <tr>
+          <td><code>onToggleSeries</code></td>
+          <td><code>{`(id) => void`}</code></td>
+          <td>—</td>
+          <td>{locale.value === "fr" ? "Émis au clic / Entrée / Espace sur un item de légende." : "Emitted on click / Enter / Space on a legend item."}</td>
+        </tr>
+        <tr>
+          <td><code>annotations</code></td>
+          <td><code>ChartAnnotation[]</code></td>
+          <td>—</td>
+          <td>{locale.value === "fr" ? "Couche d'annotations (région/ligne/point/label/forme). x catégoriel, y sur l'axe gauche." : "Annotation layer (region/line/point/label/shape). Categorical x, left-axis y."}</td>
+        </tr>
+        <tr>
+          <td><code>dataLabels</code></td>
+          <td><code>{`boolean | { format?; position? }`}</code></td>
+          <td><em>{locale.value === "fr" ? "aucune" : "none"}</em></td>
+          <td>{locale.value === "fr" ? "Valeur sur chaque barre et chaque point de courbe (aria-hidden)." : "Value on each bar and line point (aria-hidden)."}</td>
+        </tr>
+        <tr>
+          <td><code>hoverKey</code> / <code>onHoverKeyChange</code></td>
+          <td><code>string | null</code> / <code>{`(key) => void`}</code></td>
+          <td>—</td>
+          <td>{locale.value === "fr" ? "Crosshair contrôlé sur la catégorie (canal de survol partagé)." : "Controlled crosshair on the category (shared hover channel)."}</td>
+        </tr>
+        <tr>
+          <td><code>keyboardNav</code> / <code>onSelectKey</code></td>
+          <td><code>boolean</code> / <code>{`(key | null) => void`}</code></td>
+          <td>—</td>
+          <td>{locale.value === "fr" ? "Navigation clavier des catégories (roving tabindex)." : "Keyboard navigation of categories (roving tabindex)."}</td>
         </tr>
         <tr>
           <td><code>width</code></td>
