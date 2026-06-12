@@ -11,7 +11,7 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
   import { page } from "$app/state";
-  import { ChevronDown, Github, Menu, Search, X } from "@lucide/svelte";
+  import { ChevronDown, Github, Menu, X } from "@lucide/svelte";
   import {
     DOCS_FOUNDATION_NAV,
     DOCS_TOP_NAV,
@@ -27,6 +27,7 @@
     activeThemeId: string;
     isThemeOpen: boolean;
     onThemeToggle: () => void;
+    searchTrigger?: Snippet;
     themeSwitcher: Snippet;
     frameworkSwitcher: Snippet;
     localeSwitcher: Snippet;
@@ -37,6 +38,7 @@
 
   let {
     children,
+    searchTrigger,
     themeSwitcher,
     frameworkSwitcher,
     localeSwitcher,
@@ -117,21 +119,13 @@
             {@render themeSwitcher()}
             {@render localeSwitcher()}
           </div>
-          <!-- Grande barre de recherche DSFR -->
+          <!-- Grande barre de recherche DSFR : déclenche la palette docs (Read
+               the Docs). L'enveloppe .dsfr-search garde le gabarit ; le bouton
+               searchTrigger est stylisé à l'aspect du champ de recherche DSFR. -->
           <div class="dsfr-search" role="search">
-            <label class="dsfr-search__label" for="dsfr-search-input">Rechercher</label>
-            <div class="dsfr-search__group">
-              <input
-                type="search"
-                id="dsfr-search-input"
-                class="dsfr-search__input"
-                placeholder="Rechercher…"
-                aria-label="Rechercher dans la documentation"
-              />
-              <button type="button" class="dsfr-search__btn" aria-label="Lancer la recherche">
-                <Search size={16} strokeWidth={2} aria-hidden="true" />
-              </button>
-            </div>
+            {#if searchTrigger}
+              {@render searchTrigger()}
+            {/if}
           </div>
         </div>
 
@@ -412,61 +406,36 @@
     max-width: 28rem;
   }
 
-  .dsfr-search__label {
-    clip: rect(0 0 0 0);
-    clip-path: inset(50%);
-    height: 1px;
-    overflow: hidden;
-    position: absolute;
-    white-space: nowrap;
-    width: 1px;
-  }
-
-  .dsfr-search__group {
-    display: flex;
-    height: 2.5rem;
-  }
-
-  .dsfr-search__input {
+  /* Le trigger de palette docs prend l'aspect du champ de recherche DSFR :
+     champ blanc à angles vifs, plein largeur, accent bleu République au focus. */
+  .dsfr-search :global(.docs-search-trigger) {
     background: var(--dsfr-white);
-    border: 1px solid #3a3a3a;
-    border-right: none;
+    border: 1px solid var(--dsfr-black);
     border-radius: 0;
     color: var(--dsfr-black);
-    flex: 1;
     font-family: inherit;
-    font-size: 0.875rem;
-    outline: none;
-    padding: 0 0.75rem;
+    height: 2.5rem;
+    justify-content: flex-start;
+    width: 100%;
   }
 
-  .dsfr-search__input::placeholder {
-    color: var(--dsfr-gray-50);
-  }
-
-  .dsfr-search__input:focus {
+  .dsfr-search :global(.docs-search-trigger:hover),
+  .dsfr-search :global(.docs-search-trigger:focus-visible) {
+    background: var(--dsfr-gray-100);
     border-color: var(--dsfr-blue);
+    color: var(--dsfr-blue);
     outline: 2px solid var(--dsfr-blue);
     outline-offset: -2px;
   }
 
-  .dsfr-search__btn {
-    align-items: center;
-    background: var(--dsfr-blue);
-    border: none;
-    color: var(--dsfr-white);
-    cursor: pointer;
-    display: inline-flex;
-    height: 100%;
-    justify-content: center;
-    padding: 0 1rem;
-    transition: background 120ms ease;
+  .dsfr-search :global(.docs-search-trigger__label) {
+    color: var(--dsfr-gray-50);
   }
 
-  .dsfr-search__btn:hover,
-  .dsfr-search__btn:focus-visible {
-    background: var(--dsfr-blue-hover);
-    outline: none;
+  .dsfr-search :global(.docs-search-trigger__kbd) {
+    border-color: var(--dsfr-black);
+    border-radius: 0;
+    color: var(--dsfr-gray-50);
   }
 
   /* Burger mobile */
@@ -752,7 +721,6 @@
   @media (prefers-reduced-motion: reduce) {
     .dsfr-nav__link,
     .dsfr-side-link,
-    .dsfr-search__btn,
     .dsfr-side-group :global(.dsfr-side-group__icon) {
       transition: none;
     }

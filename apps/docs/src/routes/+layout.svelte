@@ -618,6 +618,7 @@
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
       onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      searchTrigger={searchTrigger}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
@@ -637,6 +638,7 @@
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
       onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      searchTrigger={searchTrigger}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
@@ -656,6 +658,7 @@
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
       onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      searchTrigger={searchTrigger}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
@@ -675,6 +678,7 @@
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
       onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      searchTrigger={searchTrigger}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
@@ -694,6 +698,7 @@
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
       onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      searchTrigger={searchTrigger}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
