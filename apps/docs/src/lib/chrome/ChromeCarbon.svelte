@@ -9,7 +9,7 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
   import { page } from "$app/state";
-  import { ChevronDown, ExternalLink, Github, Grid3x3, Menu, Search, X } from "@lucide/svelte";
+  import { ChevronDown, ExternalLink, Github, Grid3x3, Menu, X } from "@lucide/svelte";
   import {
     DOCS_FOUNDATION_NAV,
     DOCS_TOP_NAV,
@@ -23,6 +23,7 @@
     activeThemeId: string;
     isThemeOpen: boolean;
     onThemeToggle: () => void;
+    searchTrigger?: Snippet;
     themeSwitcher: Snippet;
     frameworkSwitcher: Snippet;
     localeSwitcher: Snippet;
@@ -35,6 +36,7 @@
     children,
     isThemeOpen,
     onThemeToggle,
+    searchTrigger,
     themeSwitcher,
     frameworkSwitcher,
     localeSwitcher,
@@ -96,21 +98,11 @@
     </nav>
 
     <div class="cbn-header__actions">
+      {#if searchTrigger}{@render searchTrigger()}{/if}
       {@render compareButton()}
       {@render frameworkSwitcher()}
       {@render themeSwitcher()}
       {@render localeSwitcher()}
-
-      <a
-        class="cbn-header__icon-btn"
-        href="https://www.carbondesignsystem.com/search/"
-        target="_blank"
-        rel="noreferrer"
-        aria-label="Rechercher sur Carbon Design System"
-        title="Rechercher"
-      >
-        <Search size={16} strokeWidth={1.8} aria-hidden="true" />
-      </a>
 
       <a
         class="cbn-header__icon-btn"
@@ -352,6 +344,33 @@
     outline: none;
   }
 
+  /* Barre de recherche (Read the Docs) au style Carbon : champ sombre encadré */
+  .cbn-header__actions :global(.docs-search-trigger) {
+    align-self: center;
+    background: var(--cbn-gray-90);
+    border: 1px solid var(--cbn-gray-80);
+    border-radius: 0;
+    color: var(--cbn-gray-30);
+    gap: 0.5rem;
+    height: 2rem;
+    margin-right: 0.5rem;
+    min-width: 11rem;
+    padding: 0 0.625rem;
+  }
+
+  .cbn-header__actions :global(.docs-search-trigger:hover),
+  .cbn-header__actions :global(.docs-search-trigger:focus-visible) {
+    background: var(--cbn-gray-80);
+    border-color: var(--cbn-blue-60);
+    color: var(--cbn-white);
+  }
+
+  .cbn-header__actions :global(.docs-search-trigger__kbd) {
+    background: var(--cbn-gray-80);
+    border-color: var(--cbn-gray-70);
+    color: var(--cbn-gray-30);
+  }
+
   .cbn-header__actions :global(.docs-locale-menu) {
     background: var(--cbn-gray-90);
     border: none;
@@ -570,6 +589,20 @@
   /* ── Responsive ── */
   @media (max-width: 768px) {
     .cbn-header__nav {
+      display: none;
+    }
+
+    .cbn-header__actions :global(.docs-search-trigger) {
+      flex: 0 0 2rem;
+      justify-content: center;
+      margin-right: 0;
+      min-width: 0;
+      padding: 0;
+      width: 2rem;
+    }
+
+    .cbn-header__actions :global(.docs-search-trigger__label),
+    .cbn-header__actions :global(.docs-search-trigger__kbd) {
       display: none;
     }
 
