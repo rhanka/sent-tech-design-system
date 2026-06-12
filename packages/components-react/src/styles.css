@@ -1691,6 +1691,45 @@
     text-align: end;
   }
 
+  /* Conditional formatting (« classe Power-BI ») — décoration sémantique de
+     cellule/carte. Le fond teinté réutilise le pattern accessible de Badge/Tag
+     (color-mix 14% sur token feedback) ; le texte garde le token plein. Le fond
+     n'est jamais la seule indication : icône + texte SR accompagnent l'intent. */
+  .st-cell__content {
+    align-items: center;
+    display: inline-flex;
+    gap: 0.375rem;
+  }
+
+  .st-cell__icon {
+    flex: 0 0 auto;
+  }
+
+  .st-cell--intent-positive {
+    background: color-mix(in srgb, var(--st-semantic-feedback-success) 14%, white);
+    color: var(--st-semantic-feedback-success);
+  }
+
+  .st-cell--intent-negative {
+    background: color-mix(in srgb, var(--st-semantic-feedback-error) 14%, white);
+    color: var(--st-semantic-feedback-error);
+  }
+
+  .st-cell--intent-warning {
+    background: color-mix(in srgb, var(--st-semantic-feedback-warning) 14%, white);
+    color: var(--st-semantic-feedback-warning);
+  }
+
+  .st-cell--intent-info {
+    background: color-mix(in srgb, var(--st-semantic-feedback-info) 14%, white);
+    color: var(--st-semantic-feedback-info);
+  }
+
+  .st-cell--intent-neutral {
+    background: var(--st-semantic-surface-subtle);
+    color: var(--st-semantic-text-secondary);
+  }
+
   .st-dataTable__select {
     width: 2.5rem;
   }
@@ -9069,6 +9108,20 @@
   flex-wrap: wrap;
   gap: var(--st-spacing-1, 0.25rem);
   margin: 0;
+}
+
+/* Conditional formatting sur KpiCard : fond teinté pleine carte + icône alignée
+   sur la valeur. Le fond hérite de .st-cell--intent-* (token feedback). */
+.st-kpiCard.st-cell {
+  padding: var(--st-spacing-4, 1rem);
+}
+
+.st-kpiCard.st-cell .st-kpiCard__value {
+  align-items: center;
+}
+
+.st-kpiCard.st-cell .st-kpiCard__number {
+  color: inherit;
 }
 
 .st-kpiCard__number {

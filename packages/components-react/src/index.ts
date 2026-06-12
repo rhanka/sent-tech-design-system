@@ -65,6 +65,7 @@ export { DataImage } from "./DataImage.js";
 export type { DataImageProps, DataImageFit } from "./DataImage.js";
 export { DataTable } from "./DataTable.js";
 export type { DataTableProps, DataTableColumn, DataTableRow, DataTableSelectMode, DataTableSort } from "./DataTable.js";
+export type { CellDecoration, CellDecorationIntent } from "./cellDecoration.js";
 export { DatePicker } from "./DatePicker.js";
 export type { DatePickerProps, DatePickerRange, DatePickerValue } from "./DatePicker.js";
 export { DonutChart } from "./DonutChart.js";
