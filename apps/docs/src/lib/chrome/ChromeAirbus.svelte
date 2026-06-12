@@ -8,7 +8,7 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
   import { page } from "$app/state";
-  import { Bell, ChevronDown, CircleQuestionMark, Github, Menu, Search, X } from "@lucide/svelte";
+  import { Bell, ChevronDown, CircleQuestionMark, Github, Menu, X } from "@lucide/svelte";
   import {
     DOCS_FOUNDATION_NAV,
     DOCS_TOP_NAV,
@@ -24,6 +24,7 @@
     activeThemeId: string;
     isThemeOpen: boolean;
     onThemeToggle: () => void;
+    searchTrigger?: Snippet;
     themeSwitcher: Snippet;
     frameworkSwitcher: Snippet;
     localeSwitcher: Snippet;
@@ -34,6 +35,7 @@
 
   let {
     children,
+    searchTrigger,
     themeSwitcher,
     frameworkSwitcher,
     localeSwitcher,
@@ -106,15 +108,8 @@
 
       <!-- Droite : icônes + bouton Contact + switchers docs -->
       <div class="abus-header__actions">
-        <!-- Icône Recherche -->
-        <a
-          class="abus-header__icon-btn"
-          href="/components/search"
-          aria-label="Rechercher"
-          title="Rechercher"
-        >
-          <Search size={16} strokeWidth={1.8} aria-hidden="true" />
-        </a>
+        <!-- Barre de recherche docs (Read the Docs) : ouvre la palette -->
+        {#if searchTrigger}{@render searchTrigger()}{/if}
         <!-- Icône Notifications -->
         <a
           class="abus-header__icon-btn"
@@ -404,7 +399,7 @@
     outline: none;
   }
 
-  /* Bouton Contact — fond blanc, texte navy */
+  /* Bouton Contact : fond blanc, texte navy */
   .abus-header__contact-btn {
     background: var(--abus-white);
     border: none;
@@ -456,6 +451,27 @@
     border-color: rgba(255, 255, 255, 0.5);
     color: var(--abus-white);
     box-shadow: none;
+  }
+
+  /* Barre de recherche docs : champ translucide visible sur le bandeau navy */
+  .abus-header__actions :global(.docs-search-trigger) {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+    height: 2.25rem;
+    margin-right: 0.25rem;
+    min-width: 12rem;
+  }
+
+  .abus-header__actions :global(.docs-search-trigger:hover),
+  .abus-header__actions :global(.docs-search-trigger:focus-visible) {
+    background: rgba(255, 255, 255, 0.16);
+    border-color: rgba(255, 255, 255, 0.6);
+    color: var(--abus-white);
+  }
+
+  .abus-header__actions :global(.docs-search-trigger__kbd) {
+    border-color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.85);
   }
 
   .abus-header__actions :global(.docs-locale-menu) {
@@ -697,6 +713,20 @@
 
     .abus-header__icon-btn,
     .abus-header__contact-btn {
+      display: none;
+    }
+
+    .abus-header__actions :global(.docs-search-trigger) {
+      flex: 0 0 2.25rem;
+      justify-content: center;
+      margin-right: 0;
+      min-width: 0;
+      padding-inline: 0;
+      width: 2.25rem;
+    }
+
+    .abus-header__actions :global(.docs-search-trigger__label),
+    .abus-header__actions :global(.docs-search-trigger__kbd) {
       display: none;
     }
 

@@ -13,7 +13,7 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
   import { page } from "$app/state";
-  import { ChevronDown, Github, Menu, Search, X } from "@lucide/svelte";
+  import { ChevronDown, Github, Menu, X } from "@lucide/svelte";
   import {
     DOCS_FOUNDATION_NAV,
     DOCS_TOP_NAV,
@@ -29,6 +29,7 @@
     activeThemeId: string;
     isThemeOpen: boolean;
     onThemeToggle: () => void;
+    searchTrigger?: Snippet;
     themeSwitcher: Snippet;
     frameworkSwitcher: Snippet;
     localeSwitcher: Snippet;
@@ -39,6 +40,7 @@
 
   let {
     children,
+    searchTrigger,
     themeSwitcher,
     frameworkSwitcher,
     localeSwitcher,
@@ -113,20 +115,13 @@
             {@render themeSwitcher()}
             {@render localeSwitcher()}
           </div>
+          <!-- Barre de recherche SDG : déclenche la palette docs (Read the Docs).
+               L'enveloppe .qc-search garde le gabarit ; le bouton searchTrigger
+               est stylisé pour prendre l'aspect du champ de recherche SDG. -->
           <div class="qc-search" role="search">
-            <label class="qc-search__label" for="qc-search-input">Rechercher / Search</label>
-            <div class="qc-search__group">
-              <input
-                type="search"
-                id="qc-search-input"
-                class="qc-search__input"
-                placeholder="Rechercher dans le système de design…"
-                aria-label="Rechercher dans le système de design"
-              />
-              <button type="button" class="qc-search__btn" aria-label="Rechercher">
-                <Search size={16} strokeWidth={2} aria-hidden="true" />
-              </button>
-            </div>
+            {#if searchTrigger}
+              {@render searchTrigger()}
+            {/if}
           </div>
         </div>
 
@@ -374,62 +369,35 @@
     max-width: 26rem;
   }
 
-  .qc-search__label {
-    clip: rect(0 0 0 0);
-    clip-path: inset(50%);
-    height: 1px;
-    overflow: hidden;
-    position: absolute;
-    white-space: nowrap;
-    width: 1px;
-  }
-
-  .qc-search__group {
-    display: flex;
-    height: 2.5rem;
-  }
-
-  .qc-search__input {
+  /* Le trigger de palette docs prend l'aspect du champ de recherche SDG :
+     champ blanc bordé, plein largeur, accent bleu PIV au survol/focus. */
+  .qc-search :global(.docs-search-trigger) {
     background: var(--qc-white);
     border: 1px solid var(--qc-grey-400);
-    border-right: none;
-    border-radius: 4px 0 0 4px;
+    border-radius: 4px;
     color: var(--qc-text-primary);
-    flex: 1;
     font-family: inherit;
-    font-size: 0.875rem;
-    outline: none;
-    padding: 0 0.75rem;
+    height: 2.5rem;
+    justify-content: flex-start;
+    width: 100%;
   }
 
-  .qc-search__input::placeholder {
-    color: var(--qc-grey-600);
-  }
-
-  .qc-search__input:focus {
+  .qc-search :global(.docs-search-trigger:hover),
+  .qc-search :global(.docs-search-trigger:focus-visible) {
+    background: var(--qc-white);
     border-color: var(--qc-blue-piv);
+    color: var(--qc-text-primary);
     outline: 2px solid var(--qc-blue-regular);
     outline-offset: 1px;
   }
 
-  .qc-search__btn {
-    align-items: center;
-    background: var(--qc-blue-piv);
-    border: none;
-    border-radius: 0 4px 4px 0;
-    color: var(--qc-white);
-    cursor: pointer;
-    display: inline-flex;
-    height: 100%;
-    justify-content: center;
-    padding: 0 1rem;
-    transition: background 120ms ease;
+  .qc-search :global(.docs-search-trigger__label) {
+    color: var(--qc-grey-600);
   }
 
-  .qc-search__btn:hover,
-  .qc-search__btn:focus-visible {
-    background: var(--qc-blue-medium);
-    outline: none;
+  .qc-search :global(.docs-search-trigger__kbd) {
+    border-color: var(--qc-grey-400);
+    color: var(--qc-grey-600);
   }
 
   /* Burger mobile */
@@ -756,7 +724,6 @@
   @media (prefers-reduced-motion: reduce) {
     .qc-nav__link,
     .qc-side-link,
-    .qc-search__btn,
     .qc-side-group :global(.qc-side-group__icon) {
       transition: none;
     }
