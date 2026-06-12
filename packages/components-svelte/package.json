@@ -1,6 +1,6 @@
 {
   "name": "@sentropic/design-system-svelte",
-  "version": "0.34.30",
+  "version": "0.34.31",
   "type": "module",
   "publishConfig": {
     "access": "public"
