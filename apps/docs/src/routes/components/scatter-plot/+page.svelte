@@ -1,6 +1,7 @@
 <script lang="ts">
   import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge, type ScatterPlotDatum } from "@sentropic/design-system-svelte";
+  import type { ChartAnnotation } from "@sentropic/design-system-svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   const data: ScatterPlotDatum[] = [
@@ -13,12 +14,32 @@
     { x: 7, y: 5.5, label: "G", tone: "category4" }
   ];
 
+  // Combine les capacités « classe Highcharts » : annotations (repère + zone),
+  // étiquettes de points, crosshair croisé contrôlé et navigation clavier.
+  const annotations: ChartAnnotation[] = [
+    { kind: "region", axis: "y", from: 4, to: 6, label: "Cible" },
+    { kind: "line", axis: "x", value: 4, label: "Médiane" },
+    { kind: "point", x: 6, y: 6.1, label: "Pic" }
+  ];
+
   const exampleDemo: NodeSpec[] = [
     {
       el: "div",
       props: { class: "docs-scatter-box" },
       children: [
-        { comp: "ScatterPlot", props: { data, label: "Corrélation démo", xLabel: "Effort", yLabel: "Valeur" } }
+        {
+          comp: "ScatterPlot",
+          props: {
+            data,
+            label: "Corrélation démo",
+            xLabel: "Effort",
+            yLabel: "Valeur",
+            annotations,
+            dataLabels: true,
+            hoverKey: "D",
+            keyboardNav: true
+          }
+        }
       ]
     }
   ];
@@ -57,6 +78,10 @@
         <tr><td><code>width</code> / <code>height</code></td><td><code>number</code></td><td><code>480</code> / <code>280</code></td></tr>
         <tr><td><code>radius</code></td><td><code>number</code></td><td><code>5</code></td></tr>
         <tr><td><code>centroids</code></td><td><code>ScatterPlotCentroid[]</code></td><td><em>optionnel</em></td></tr>
+        <tr><td><code>annotations</code></td><td><code>ChartAnnotation[]</code></td><td><em>optionnel</em></td></tr>
+        <tr><td><code>dataLabels</code></td><td><code>boolean | &#123; format?, position? &#125;</code></td><td><code>false</code></td></tr>
+        <tr><td><code>hoverKey</code> / <code>onHoverKeyChange</code></td><td><code>string | null</code> / <code>(key) =&gt; void</code></td><td><em>optionnel</em></td></tr>
+        <tr><td><code>keyboardNav</code> / <code>onSelectKey</code></td><td><code>boolean</code> / <code>(key) =&gt; void</code></td><td><em>optionnel</em></td></tr>
       </tbody>
     </table>
     <p class="docs-demo-context">

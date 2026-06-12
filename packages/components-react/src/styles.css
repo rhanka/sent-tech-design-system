@@ -5442,6 +5442,75 @@
   .st-scatterPlot__tooltipLabel { font-weight: 600; }
   .st-scatterPlot__tooltipValue { opacity: 0.85; }
 
+  /* --- Annotation layer ----------------------------------------------------
+     Regions render BEHIND the points (color-mix tint, never raw opacity so the
+     data keeps contrast); lines/shapes/points/labels render ABOVE. */
+  .st-scatterPlot__annotationRegion {
+    fill: color-mix(in srgb, var(--st-semantic-feedback-info) 12%, transparent);
+    stroke: none;
+  }
+  .st-scatterPlot__annotationLine {
+    stroke: var(--st-semantic-feedback-info);
+    stroke-width: 1.5;
+    stroke-dasharray: 4 3;
+  }
+  .st-scatterPlot__annotationShape {
+    fill: color-mix(in srgb, var(--st-semantic-feedback-info) 14%, transparent);
+    stroke: var(--st-semantic-feedback-info);
+    stroke-width: 1.5;
+  }
+  .st-scatterPlot__annotationPoint {
+    fill: var(--st-semantic-feedback-info);
+    stroke: var(--st-semantic-surface-default);
+    stroke-width: 1.5;
+  }
+  .st-scatterPlot__annotationLabel,
+  .st-scatterPlot__annotationText {
+    fill: var(--st-semantic-text-primary);
+    font-size: 0.625rem;
+    font-weight: 600;
+  }
+
+  /* Data labels — per-point value/label, drawn on top. Token-only colour. */
+  .st-scatterPlot__dataLabel {
+    fill: var(--st-semantic-text-primary);
+    font-size: 0.6875rem;
+    font-weight: 600;
+  }
+
+  /* --- Crosshair layer (FR-3) ----------------------------------------------
+     A tokenised dashed CROSSED pair (vertical + horizontal) at the active
+     (hovered/controlled) key, plus an emphasised marker on the point.
+     Decorative (aria-hidden). */
+  .st-scatterPlot__crosshairLine {
+    stroke: var(--st-semantic-border-strong);
+    stroke-width: 1;
+    stroke-dasharray: 3 3;
+    opacity: 0.7;
+  }
+  .st-scatterPlot__crosshairMarker {
+    fill: currentColor;
+    stroke: var(--st-semantic-surface-default);
+    stroke-width: 2;
+  }
+
+  /* --- Keyboard navigation layer (FR-5) ------------------------------------
+     A focusable, transparent overlay of one hit-rect per point. Carries the
+     roving tab stop; the focus ring is tokenised (border-interactive). */
+  .st-scatterPlot__navLayer {
+    inset: 0;
+    position: absolute;
+  }
+  .st-scatterPlot__navDatum {
+    fill: transparent;
+    outline: none;
+  }
+  .st-scatterPlot__navDatum:focus-visible {
+    fill: color-mix(in srgb, var(--st-semantic-border-interactive) 12%, transparent);
+    outline: 2px solid var(--st-semantic-border-interactive);
+    outline-offset: 1px;
+  }
+
 .st-field {
     color: var(--st-component-field-labelText, var(--st-semantic-text-primary));
     display: grid;
