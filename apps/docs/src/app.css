@@ -259,6 +259,80 @@ select {
   text-decoration: none;
 }
 
+/* ── Barre de recherche du header (Read the Docs) ───────────────────── */
+.docs-search-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--st-spacing-2);
+  min-width: 11rem;
+  justify-content: flex-start;
+  padding-inline: var(--st-spacing-3);
+  color: var(--docs-ink-muted, var(--st-semantic-text-secondary));
+}
+.docs-search-trigger__label {
+  flex: 1;
+  text-align: start;
+  font-size: var(--st-font-size-sm);
+}
+.docs-search-trigger__kbd {
+  font: inherit;
+  font-size: 0.7rem;
+  line-height: 1;
+  padding: 0.1rem var(--st-spacing-1);
+  border: 1px solid var(--docs-border, var(--st-semantic-border-subtle));
+  border-radius: var(--st-radius-sm);
+  color: var(--docs-ink-muted, var(--st-semantic-text-secondary));
+}
+@media (max-width: 60rem) {
+  .docs-search-trigger {
+    min-width: 0;
+  }
+  .docs-search-trigger__label,
+  .docs-search-trigger__kbd {
+    display: none;
+  }
+}
+
+/* ── Overlay palette de recherche ──────────────────────────────────── */
+.docs-search-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 8vh var(--st-spacing-4) var(--st-spacing-4);
+  background: color-mix(in srgb, var(--st-semantic-surface-default) 35%, transparent);
+  backdrop-filter: blur(4px);
+}
+.docs-search-overlay__panel {
+  position: relative;
+  width: 100%;
+  max-width: 44rem;
+  background: var(--st-semantic-surface-raised, var(--st-semantic-surface-default));
+  border: 1px solid var(--st-semantic-border-subtle);
+  border-radius: var(--st-radius-lg);
+  box-shadow: var(--st-shadow-lg);
+  padding: var(--st-spacing-6);
+}
+.docs-search-overlay__close {
+  position: absolute;
+  top: var(--st-spacing-3);
+  inset-inline-end: var(--st-spacing-3);
+  display: inline-flex;
+  padding: var(--st-spacing-1);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--st-semantic-text-secondary);
+  border-radius: var(--st-radius-sm);
+}
+.docs-search-overlay__close:hover,
+.docs-search-overlay__close:focus-visible {
+  color: var(--st-semantic-text-primary);
+  background: var(--st-semantic-surface-hover);
+}
+
 .docs-top-nav a[aria-current="page"] {
   background: transparent;
   color: var(--docs-ink);
