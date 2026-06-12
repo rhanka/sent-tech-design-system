@@ -140,3 +140,15 @@ describe("AppChrome — mobile burger + tiroir", () => {
     expect(onMobileMenuToggle).toHaveBeenCalledTimes(1);
   });
 });
+
+describe("AppChrome — extraSelectors", () => {
+  it("renders extraSelectors content in the utility nav", () => {
+    const { container } = render(<AppChrome extraSelectors={<span>extra-ctrl</span>} />);
+    expect(container.querySelector(".st-appChrome__extraSelectors")?.textContent).toContain("extra-ctrl");
+  });
+
+  it("does not render extraSelectors div when not provided", () => {
+    const { container } = render(<AppChrome />);
+    expect(container.querySelector(".st-appChrome__extraSelectors")).toBeNull();
+  });
+});

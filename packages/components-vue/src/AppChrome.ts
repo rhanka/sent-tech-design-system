@@ -121,14 +121,27 @@ function GithubIcon() {
     h("path", { d: "M9 18c-4.51 2-5-2-7-2" }),
   ]);
 }
-function BoxesIcon() {
-  return svgIcon(20, 2, [
-    h("path", { d: "M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z" }),
-    h("path", { d: "m7 16.5-4.74-2.85M7 16.5l5-3M7 16.5v5.17" }),
-    h("path", { d: "M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 10.5l-5 3Z" }),
-    h("path", { d: "m17 16.5-5-3M17 16.5l4.74-2.85M17 16.5v5.17M7.97 4.42A2 2 0 0 0 7 6.13v4.37l5 3 5-3V6.13a2 2 0 0 0-.97-1.71l-3-1.8a2 2 0 0 0-2.06 0l-3 1.8Z" }),
-    h("path", { d: "M12 8 7.26 5.15M12 8l4.74-2.85M12 8v5.5" }),
-  ]);
+function MenuIcon() {
+  return h(
+    "svg",
+    {
+      width: 20,
+      height: 20,
+      viewBox: "0 0 24 24",
+      fill: "none",
+      stroke: "currentColor",
+      "stroke-width": 2,
+      "stroke-linecap": "round",
+      "stroke-linejoin": "round",
+      "aria-hidden": "true",
+      focusable: "false",
+    },
+    [
+      h("line", { x1: 4, x2: 20, y1: 6, y2: 6 }),
+      h("line", { x1: 4, x2: 20, y1: 12, y2: 12 }),
+      h("line", { x1: 4, x2: 20, y1: 18, y2: 18 }),
+    ],
+  );
 }
 
 export const AppChrome = defineComponent({
@@ -200,6 +213,8 @@ export const AppChrome = defineComponent({
       const showLocaleSelector = props.locale !== undefined;
       const showGithub = Boolean(props.githubHref);
       const identitySlot = slots.identity;
+      // Note : extraSelectors est un slot Vue, pas une prop.
+      const extraSelectorsSlot = slots.extraSelectors;
 
       const colorModeAriaLabel =
         props.colorMode === "light"
@@ -373,6 +388,7 @@ export const AppChrome = defineComponent({
           : null,
 
         identitySlot ? h("div", { class: "st-appChrome__identity" }, identitySlot()) : null,
+        extraSelectorsSlot ? h("div", { class: "st-appChrome__extraSelectors" }, extraSelectorsSlot()) : null,
       ]);
 
       const actions = [
@@ -387,7 +403,7 @@ export const AppChrome = defineComponent({
             "aria-controls": drawerId,
             "aria-label": props.menuLabel,
           },
-          [BoxesIcon()],
+          [MenuIcon()],
         ),
       ];
 
