@@ -1,5 +1,13 @@
 import { defineComponent, h, ref, type VNodeChild } from "vue";
 import { classNames } from "./classNames.js";
+import {
+  type CellDecoration,
+  cellDecorationClass,
+  cellDecorationLabel,
+  renderCellDecorationIcon,
+} from "./cellDecoration.js";
+
+export type { CellDecoration, CellDecorationIntent } from "./cellDecoration.js";
 
 export interface DataTableColumn<R extends DataTableRow = DataTableRow> {
   key: string;
@@ -8,6 +16,11 @@ export interface DataTableColumn<R extends DataTableRow = DataTableRow> {
   align?: "start" | "center" | "end";
   width?: string;
   cell?: (row: R, column: DataTableColumn<R>) => VNodeChild;
+  /**
+   * Conditional formatting (confort) : décoration sémantique calculée par
+   * cellule. Si une `decorations` map est aussi fournie, la map gagne.
+   */
+  cellDecoration?: (row: R, value: unknown, colId: string) => CellDecoration | null;
 }
 
 export interface DataTableRow {
@@ -26,6 +39,11 @@ export interface DataTableSort {
 export type DataTableProps = {
   columns: DataTableColumn[];
   rows: DataTableRow[];
+  /**
+   * Conditional formatting : décorations sémantiques par cellule, indexées
+   * `rowId` → `colId` → décoration. Prioritaire sur `column.cellDecoration`.
+   */
+  decorations?: Record<string, Record<string, CellDecoration>>;
   caption?: VNodeChild;
   size?: DataTableSize;
   selectable?: DataTableSelectMode;
@@ -55,6 +73,10 @@ export const DataTable = defineComponent({
   props: {
     columns: { type: Array as () => DataTableColumn[], required: true },
     rows: { type: Array as () => DataTableRow[], required: true },
+    decorations: {
+      type: Object as () => Record<string, Record<string, CellDecoration>>,
+      default: undefined,
+    },
     caption: { type: null as unknown as () => VNodeChild, default: undefined },
     size: { type: String as () => DataTableSize, default: "md" },
     selectable: { type: String as () => DataTableSelectMode, default: "none" },
@@ -201,6 +223,17 @@ export const DataTable = defineComponent({
         return undefined;
       }
 
+      const decorationsMap = props.decorations;
+      function resolveDecoration(row: DataTableRow, column: DataTableColumn): CellDecoration | null {
+        // La map `decorations` gagne sur le callback `column.cellDecoration`.
+        const fromMap = decorationsMap?.[row.id]?.[column.key];
+        if (fromMap) return fromMap;
+        if (column.cellDecoration) {
+          return column.cellDecoration(row, row[column.key], column.key) ?? null;
+        }
+        return null;
+      }
+
       function goToPage(target: number) {
         if (target >= 1 && target <= pageCount && target !== safePage) {
           commitPage(target);
@@ -310,11 +343,33 @@ export const DataTable = defineComponent({
             );
           }
           for (const column of columns) {
+            const decoration = resolveDecoration(row, column);
+            const content = column.cell ? [column.cell(row, column)] : String(row[column.key] ?? "");
             rowCells.push(
               h(
                 "td",
-                { key: column.key, class: alignClass(column.align) },
-                column.cell ? [column.cell(row, column)] : String(row[column.key] ?? ""),
+                {
+                  key: column.key,
+                  class: classNames(
+                    alignClass(column.align),
+                    decoration && "st-cell",
+                    decoration && cellDecorationClass(decoration.intent),
+                  ),
+                  title: decoration ? cellDecorationLabel[decoration.intent] : undefined,
+                },
+                decoration
+                  ? [
+                      h("span", { class: "st-cell__content" }, [
+                        renderCellDecorationIcon(decoration.icon),
+                        h("span", {}, content),
+                        h(
+                          "span",
+                          { class: "st-visually-hidden" },
+                          cellDecorationLabel[decoration.intent],
+                        ),
+                      ]),
+                    ]
+                  : content,
               ),
             );
           }

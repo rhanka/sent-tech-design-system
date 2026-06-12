@@ -1,5 +1,8 @@
 <script lang="ts" module>
   import type { Snippet } from "svelte";
+  import type { CellDecoration } from "./cellDecoration.js";
+
+  export type { CellDecoration, CellDecorationIntent } from "./cellDecoration.js";
 
   export interface DataTableColumn<R = DataTableRow> {
     key: string;
@@ -8,6 +11,11 @@
     align?: "start" | "center" | "end";
     width?: string;
     cell?: Snippet<[R, DataTableColumn<R>]>;
+    /**
+     * Conditional formatting (confort) : décoration sémantique calculée par
+     * cellule. Si une `decorations` map est aussi fournie, la map gagne.
+     */
+    cellDecoration?: (row: R, value: unknown, colId: string) => CellDecoration | null;
   }
 
   export interface DataTableRow {
@@ -25,10 +33,17 @@
 
 <script lang="ts">
   import type { HTMLTableAttributes } from "svelte/elements";
+  import { cellDecorationClass, cellDecorationLabel } from "./cellDecoration.js";
+  import CellDecorationIcon from "./CellDecorationIcon.svelte";
 
   type DataTableProps = Omit<HTMLTableAttributes, "class"> & {
     columns: DataTableColumn[];
     rows: DataTableRow[];
+    /**
+     * Conditional formatting : décorations sémantiques par cellule, indexées
+     * `rowId` → `colId` → décoration. Prioritaire sur `column.cellDecoration`.
+     */
+    decorations?: Record<string, Record<string, CellDecoration>>;
     caption?: string;
     size?: "sm" | "md" | "lg";
     selectable?: DataTableSelectMode;
@@ -53,6 +68,7 @@
   let {
     columns,
     rows,
+    decorations,
     caption,
     size = "md",
     selectable = "none",
@@ -191,6 +207,28 @@
     return String(row[key] ?? "");
   }
 
+  function resolveDecoration(row: DataTableRow, column: DataTableColumn): CellDecoration | null {
+    // La map `decorations` gagne sur le callback `column.cellDecoration`.
+    const fromMap = decorations?.[row.id]?.[column.key];
+    if (fromMap) return fromMap;
+    if (column.cellDecoration) {
+      return column.cellDecoration(row, row[column.key], column.key) ?? null;
+    }
+    return null;
+  }
+
+  function cellClass(column: DataTableColumn, decoration: CellDecoration | null) {
+    return (
+      [
+        alignClass(column.align),
+        decoration && "st-cell",
+        decoration && cellDecorationClass(decoration.intent),
+      ]
+        .filter(Boolean)
+        .join(" ") || undefined
+    );
+  }
+
   function goToPage(target: number) {
     if (target >= 1 && target <= pageCount && target !== safePage) {
       page = target;
@@ -302,8 +340,24 @@
               </td>
             {/if}
             {#each columns as column (column.key)}
-              <td class={[alignClass(column.align)].filter(Boolean).join(" ") || undefined}>
-                {#if column.cell}
+              {@const decoration = resolveDecoration(row, column)}
+              <td
+                class={cellClass(column, decoration)}
+                title={decoration ? cellDecorationLabel[decoration.intent] : undefined}
+              >
+                {#if decoration}
+                  <span class="st-cell__content">
+                    <CellDecorationIcon icon={decoration.icon} />
+                    <span>
+                      {#if column.cell}
+                        {@render column.cell(row, column)}
+                      {:else}
+                        {cellValue(row, column.key)}
+                      {/if}
+                    </span>
+                    <span class="st-visually-hidden">{cellDecorationLabel[decoration.intent]}</span>
+                  </span>
+                {:else if column.cell}
                   {@render column.cell(row, column)}
                 {:else}
                   {cellValue(row, column.key)}
@@ -424,6 +478,41 @@
 
   .st-dataTable__cell--end {
     text-align: end;
+  }
+
+  /* Conditional formatting (« classe Power-BI ») — décoration sémantique de
+     cellule. Le fond teinté réutilise le pattern accessible de Badge/Tag
+     (color-mix 14% sur token feedback) ; le texte garde le token plein. Le fond
+     n'est jamais la seule indication : icône + texte SR accompagnent l'intent. */
+  .st-cell__content {
+    align-items: center;
+    display: inline-flex;
+    gap: 0.375rem;
+  }
+
+  .st-cell--intent-positive {
+    background: color-mix(in srgb, var(--st-semantic-feedback-success) 14%, white);
+    color: var(--st-semantic-feedback-success);
+  }
+
+  .st-cell--intent-negative {
+    background: color-mix(in srgb, var(--st-semantic-feedback-error) 14%, white);
+    color: var(--st-semantic-feedback-error);
+  }
+
+  .st-cell--intent-warning {
+    background: color-mix(in srgb, var(--st-semantic-feedback-warning) 14%, white);
+    color: var(--st-semantic-feedback-warning);
+  }
+
+  .st-cell--intent-info {
+    background: color-mix(in srgb, var(--st-semantic-feedback-info) 14%, white);
+    color: var(--st-semantic-feedback-info);
+  }
+
+  .st-cell--intent-neutral {
+    background: var(--st-semantic-surface-subtle);
+    color: var(--st-semantic-text-secondary);
   }
 
   .st-dataTable__select {

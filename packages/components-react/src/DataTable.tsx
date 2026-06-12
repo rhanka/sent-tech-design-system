@@ -1,5 +1,13 @@
 import React from "react";
 import { classNames } from "./classNames.js";
+import {
+  type CellDecoration,
+  cellDecorationClass,
+  cellDecorationLabel,
+  CellDecorationIcon,
+} from "./cellDecoration.js";
+
+export type { CellDecoration, CellDecorationIntent } from "./cellDecoration.js";
 
 export interface DataTableColumn<R extends DataTableRow = DataTableRow> {
   key: string;
@@ -8,6 +16,11 @@ export interface DataTableColumn<R extends DataTableRow = DataTableRow> {
   align?: "start" | "center" | "end";
   width?: string;
   cell?: (row: R, column: DataTableColumn<R>) => React.ReactNode;
+  /**
+   * Conditional formatting (confort) : décoration sémantique calculée par
+   * cellule. Si une `decorations` map est aussi fournie, la map gagne.
+   */
+  cellDecoration?: (row: R, value: unknown, colId: string) => CellDecoration | null;
 }
 
 export interface DataTableRow {
@@ -28,6 +41,11 @@ export type DataTableProps<R extends DataTableRow = DataTableRow> = Omit<
 > & {
   columns: Array<DataTableColumn<R>>;
   rows: R[];
+  /**
+   * Conditional formatting : décorations sémantiques par cellule, indexées
+   * `rowId` → `colId` → décoration. Prioritaire sur `column.cellDecoration`.
+   */
+  decorations?: Record<string, Record<string, CellDecoration>>;
   caption?: React.ReactNode;
   size?: "sm" | "md" | "lg";
   selectable?: DataTableSelectMode;
@@ -77,6 +95,7 @@ export function DataTable<R extends DataTableRow = DataTableRow>({
   emptyLabel = "No data",
   onRowClick,
   className,
+  decorations,
   ...rest
 }: DataTableProps<R>) {
   const [selectedIdsState, setSelectedIdsState] = React.useState<string[]>(selectedIdsProp ?? []);
@@ -198,6 +217,16 @@ export function DataTable<R extends DataTableRow = DataTableRow>({
     return String(row[key] ?? "");
   }
 
+  function resolveDecoration(row: R, column: DataTableColumn<R>): CellDecoration | null {
+    // La map `decorations` gagne sur le callback `column.cellDecoration`.
+    const fromMap = decorations?.[row.id]?.[column.key];
+    if (fromMap) return fromMap;
+    if (column.cellDecoration) {
+      return column.cellDecoration(row, row[column.key], column.key) ?? null;
+    }
+    return null;
+  }
+
   function goToPage(target: number) {
     if (target >= 1 && target <= pageCount && target !== safePage) {
       commitPage(target);
@@ -310,11 +339,36 @@ export function DataTable<R extends DataTableRow = DataTableRow>({
                       </label>
                     </td>
                   ) : null}
-                  {columns.map((column) => (
-                    <td key={column.key} className={alignClass(column.align)}>
-                      {column.cell ? column.cell(row, column) : cellValue(row, column.key)}
-                    </td>
-                  ))}
+                  {columns.map((column) => {
+                    const decoration = resolveDecoration(row, column);
+                    return (
+                      <td
+                        key={column.key}
+                        className={classNames(
+                          alignClass(column.align),
+                          decoration && "st-cell",
+                          decoration && cellDecorationClass(decoration.intent),
+                        )}
+                        title={decoration ? cellDecorationLabel[decoration.intent] : undefined}
+                      >
+                        {decoration ? (
+                          <span className="st-cell__content">
+                            <CellDecorationIcon icon={decoration.icon} />
+                            <span>
+                              {column.cell ? column.cell(row, column) : cellValue(row, column.key)}
+                            </span>
+                            <span className="st-visually-hidden">
+                              {cellDecorationLabel[decoration.intent]}
+                            </span>
+                          </span>
+                        ) : column.cell ? (
+                          column.cell(row, column)
+                        ) : (
+                          cellValue(row, column.key)
+                        )}
+                      </td>
+                    );
+                  })}
                 </tr>
               );
             })

@@ -101,6 +101,30 @@
       }
     }
   ]);
+
+  // Conditional formatting (« classe Power-BI ») : décorations sémantiques par
+  // cellule (rowId → colId → { intent, icon }). Le moteur de règles vit côté
+  // dataviz-core ; ici on fournit la sortie déjà calculée. Le DS résout l'intent
+  // en token feedback (fond teinté accessible) + icône lucide.
+  const conditionalDecorations = {
+    "api-search": { uptime: { intent: "positive", icon: "trending-up" } },
+    "chat-core": { uptime: { intent: "warning", icon: "triangle-alert" }, status: { intent: "warning" } },
+    stream: { uptime: { intent: "negative", icon: "trending-down" }, status: { intent: "negative" } },
+    billing: { uptime: { intent: "info", icon: "info" } }
+  } as const;
+
+  const conditionalDemo = $derived<NodeSpec[]>([
+    {
+      comp: "DataTable",
+      props: {
+        caption: locale.value === "fr" ? "Mise en forme conditionnelle" : "Conditional formatting",
+        columns: dataColumns,
+        rows,
+        size: "sm",
+        decorations: conditionalDecorations
+      }
+    }
+  ]);
 </script>
 
 <div class="docs-page">
@@ -135,6 +159,19 @@
         ? "Le tri par en-tête, la sélection multiple et le clic de ligne sont interactifs dans l'implémentation Svelte du DataTable ; cet aperçu est figé sur le sous-ensemble commun aux trois frameworks (colonnes, lignes, légende, taille, pagination)."
         : "Header sorting, multi-select, and row clicks are interactive in the Svelte DataTable; this preview is frozen to the subset shared by all three frameworks (columns, rows, caption, size, paging)."}
     </p>
+
+    <h3 class="docs-demo-title">
+      {locale.value === "fr" ? "Mise en forme conditionnelle" : "Conditional formatting"}
+    </h3>
+    <TabbedExample
+      nodes={conditionalDemo}
+      title={locale.value === "fr" ? "Décorations sémantiques" : "Semantic decorations"}
+    />
+    <p class="docs-demo-note">
+      {locale.value === "fr"
+        ? "La prop `decorations` (rowId → colId → { intent, icon }) applique un fond teinté accessible issu des tokens feedback (mêmes que Badge / Alert) et une icône lucide. L'intention n'est jamais signalée par la seule couleur : un texte lecteur d'écran et un `title` décrivent l'intent. Le moteur de règles (seuils, comparaisons) vit côté dataviz-core ; le DS ne fait que rendre la sortie."
+        : "The `decorations` prop (rowId → colId → { intent, icon }) applies an accessible tinted background from the feedback tokens (same as Badge / Alert) plus a lucide icon. Intent is never conveyed by color alone: screen-reader text and a `title` describe it. The rules engine (thresholds, comparisons) lives in dataviz-core; the DS only renders its output."}
+    </p>
   </section>
 
   <section class="docs-section">
@@ -146,6 +183,7 @@
       <tbody>
         <tr><td><code>columns</code></td><td><code>DataTableColumn[]</code></td><td><em>requis</em></td></tr>
         <tr><td><code>rows</code></td><td><code>DataTableRow[]</code></td><td><em>requis</em></td></tr>
+        <tr><td><code>decorations</code></td><td><code>Record&lt;string, Record&lt;string, CellDecoration&gt;&gt;</code></td><td><em>optionnel</em></td></tr>
         <tr><td><code>caption</code></td><td><code>string</code></td><td><em>optionnel</em></td></tr>
         <tr><td><code>size</code></td><td><code>"sm" | "md" | "lg"</code></td><td><code>"md"</code></td></tr>
         <tr><td><code>selectable</code></td><td><code>"none" | "single" | "multiple"</code></td><td><code>"none"</code></td></tr>
