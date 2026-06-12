@@ -61,7 +61,7 @@
       </thead>
       <tbody>
         <tr><td><code>name</code></td><td><code>string</code></td><td><em>{fr ? "requis" : "required"}</em></td></tr>
-        <tr><td><code>src</code></td><td><code>string</code></td><td><em>—</em></td></tr>
+        <tr><td><code>src</code></td><td><code>string</code></td><td><em>–</em></td></tr>
         <tr><td><code>alt</code></td><td><code>string</code></td><td><code>name</code></td></tr>
         <tr><td><code>size</code></td><td><code>"sm" | "md" | "lg" | "xl"</code></td><td><code>"md"</code></td></tr>
         <tr><td><code>shape</code></td><td><code>"circle" | "square"</code></td><td><code>"circle"</code></td></tr>

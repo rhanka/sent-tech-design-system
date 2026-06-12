@@ -37,7 +37,7 @@
       tonesDesc: "Each bar can carry its own `tone` (`category1` to `category8`).",
       dataLabelsTitle: "Value labels",
       dataLabelsDesc:
-        "`dataLabels` prints the value on each bar. `true` uses the default formatter; an object accepts `format` (e.g. an Intl formatter) and `position` (`outside` by default, `inside`/`center` to centre). Labels are `aria-hidden` — the values stay in the accessible list.",
+        "`dataLabels` prints the value on each bar. `true` uses the default formatter; an object accepts `format` (e.g. an Intl formatter) and `position` (`outside` by default, `inside`/`center` to centre). Labels are `aria-hidden`: the values stay in the accessible list.",
       usageTitle: "Usage notes",
       usageNote1:
         "`label` is required: it feeds the container `aria-label` (`role=\"img\"`). Detailed values are exposed in an accessible list outside the SVG, without adding a tab stop for every bar.",

@@ -136,7 +136,7 @@
         <tr>
           <td><code>format</code></td>
           <td><code>(value: number) =&gt; string</code></td>
-          <td>—</td>
+          <td>–</td>
           <td>{locale.value === "fr" ? "Fonction de formatage personnalisée des valeurs." : "Custom value formatting function."}</td>
         </tr>
         <tr>
@@ -155,8 +155,8 @@
     </table>
     <p class="docs-demo-note">
       {locale.value === "fr"
-        ? "WaterfallChartDatum = { label: string; value: number; type?: 'increase' | 'decrease' | 'total' } — type déduit du signe si absent"
-        : "WaterfallChartDatum = { label: string; value: number; type?: 'increase' | 'decrease' | 'total' } — type inferred from sign if absent"}
+        ? "WaterfallChartDatum = { label: string; value: number; type?: 'increase' | 'decrease' | 'total' } : type déduit du signe si absent"
+        : "WaterfallChartDatum = { label: string; value: number; type?: 'increase' | 'decrease' | 'total' } : type inferred from sign if absent"}
     </p>
   </section>
 

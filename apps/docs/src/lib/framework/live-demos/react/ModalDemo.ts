@@ -1,4 +1,4 @@
-// Démo React interactive du Modal — état local (ouvert/fermé) géré dans le
+// Démo React interactive du Modal : état local (ouvert/fermé) géré dans le
 // composant, déclenchée par un bouton. Écrite en createElement (pas de JSX) pour
 // rester cohérente avec react-island et ne demander aucun transform JSX.
 //

@@ -31,8 +31,8 @@
       title: () => (fr ? "Qualification" : "Qualification"),
       badgeTone: "neutral",
       cards: [
-        { title: "Airbus — Refonte ERP", amount: "120 000 €", owner: "Marie Lefebvre", tone: "category1", priority: () => (fr ? "Haute" : "High"), priorityTone: "error", progress: 20 },
-        { title: "Orange — Portail self-care", amount: "65 000 €", owner: "Karim Benali", tone: "category2", priority: () => (fr ? "Moyenne" : "Medium"), priorityTone: "warning", progress: 15 }
+        { title: "Airbus : Refonte ERP", amount: "120 000 €", owner: "Marie Lefebvre", tone: "category1", priority: () => (fr ? "Haute" : "High"), priorityTone: "error", progress: 20 },
+        { title: "Orange : Portail self-care", amount: "65 000 €", owner: "Karim Benali", tone: "category2", priority: () => (fr ? "Moyenne" : "Medium"), priorityTone: "warning", progress: 15 }
       ]
     },
     {
@@ -40,9 +40,9 @@
       title: () => (fr ? "Proposition" : "Proposal"),
       badgeTone: "info",
       cards: [
-        { title: "Safran — Migration cloud", amount: "210 000 €", owner: "Sophie Durand", tone: "category3", priority: () => (fr ? "Haute" : "High"), priorityTone: "error", progress: 55 },
-        { title: "Thales — Dashboard BI", amount: "48 000 €", owner: "Léa Moreau", tone: "category4", priority: () => (fr ? "Basse" : "Low"), priorityTone: "info", progress: 40 },
-        { title: "Capgemini — Audit DS", amount: "32 000 €", owner: "Tom Girard", tone: "category5", priority: () => (fr ? "Moyenne" : "Medium"), priorityTone: "warning", progress: 50 }
+        { title: "Safran : Migration cloud", amount: "210 000 €", owner: "Sophie Durand", tone: "category3", priority: () => (fr ? "Haute" : "High"), priorityTone: "error", progress: 55 },
+        { title: "Thales : Dashboard BI", amount: "48 000 €", owner: "Léa Moreau", tone: "category4", priority: () => (fr ? "Basse" : "Low"), priorityTone: "info", progress: 40 },
+        { title: "Capgemini : Audit DS", amount: "32 000 €", owner: "Tom Girard", tone: "category5", priority: () => (fr ? "Moyenne" : "Medium"), priorityTone: "warning", progress: 50 }
       ]
     },
     {
@@ -50,8 +50,8 @@
       title: () => (fr ? "Négociation" : "Negotiation"),
       badgeTone: "success",
       cards: [
-        { title: "Société Générale — App mobile", amount: "175 000 €", owner: "Marie Lefebvre", tone: "category1", priority: () => (fr ? "Haute" : "High"), priorityTone: "error", progress: 80 },
-        { title: "Dassault — Design tokens", amount: "54 000 €", owner: "Sophie Durand", tone: "category3", priority: () => (fr ? "Moyenne" : "Medium"), priorityTone: "warning", progress: 70 }
+        { title: "Société Générale : App mobile", amount: "175 000 €", owner: "Marie Lefebvre", tone: "category1", priority: () => (fr ? "Haute" : "High"), priorityTone: "error", progress: 80 },
+        { title: "Dassault : Design tokens", amount: "54 000 €", owner: "Sophie Durand", tone: "category3", priority: () => (fr ? "Moyenne" : "Medium"), priorityTone: "warning", progress: 70 }
       ]
     }
   ];
@@ -158,7 +158,7 @@
     </p>
     <TabbedExample
       nodes={demoNodes}
-      title={fr ? "Tableau Kanban — pipeline CRM (données mock)" : "Kanban Board — CRM pipeline (mock data)"}
+      title={fr ? "Tableau Kanban : pipeline CRM (données mock)" : "Kanban Board : CRM pipeline (mock data)"}
     />
   </section>
 

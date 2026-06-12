@@ -5,7 +5,7 @@ import { compileTheme, type TenantTheme } from "@sentropic/design-system-themes"
  * dark explicite via [data-color-mode="dark"]), en n'utilisant QUE `compileTheme`
  * (export publié du package themes). Le dark vient de `theme.tokensDark` (ajouté
  * au niveau themes). On évite ainsi de dépendre d'un export themes non encore
- * publié (themes est tag-publié) — ce que le check CT du docs résolvait depuis le
+ * publié (themes est tag-publié) : ce que le check CT du docs résolvait depuis le
  * registre, sans le nouvel export.
  */
 export function compileThemeModes(

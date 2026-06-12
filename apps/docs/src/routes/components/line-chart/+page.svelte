@@ -20,7 +20,7 @@
         "`annotations` superpose des repères exprimés dans l’espace des données : `region` (bande remplie, derrière la série), `line` (repère d’axe), `point`, `label` (texte) et `shape` (polygone). Chaque repère est ajouté à la liste accessible (« Annotation : … »).",
       hoverKeyTitle: "Curseur synchronisé (contrôlé)",
       hoverKeyDesc:
-        "`hoverKey` (la clé d’un point = `String(x)`) pilote le curseur (ligne verticale pointillée + marqueur) et l’infobulle depuis le parent : ici `hoverKey=\"Mer\"`. Le parent partage ainsi un même canal de survol entre plusieurs graphiques alignés. `onHoverKeyChange(key | null)` est émis à chaque survol/sortie — même en mode contrôlé. Sans `hoverKey` (`undefined`), le survol interne reprend la main (rétro-compatible).",
+        "`hoverKey` (la clé d’un point = `String(x)`) pilote le curseur (ligne verticale pointillée + marqueur) et l’infobulle depuis le parent : ici `hoverKey=\"Mer\"`. Le parent partage ainsi un même canal de survol entre plusieurs graphiques alignés. `onHoverKeyChange(key | null)` est émis à chaque survol/sortie, même en mode contrôlé. Sans `hoverKey` (`undefined`), le survol interne reprend la main (rétro-compatible).",
       usageTitle: "Notes d’usage",
       usageNote1:
         "`label` est obligatoire : il alimente l’`aria-label` du conteneur (`role=\"img\"`). Les couples `x : y` sont exposés dans une liste accessible hors SVG, sans multiplier les arrêts de tabulation.",
@@ -43,7 +43,7 @@
         "`annotations` overlays markers expressed in data space: `region` (filled band, behind the series), `line` (axis guide), `point`, `label` (text), and `shape` (polygon). Each marker is also added to the accessible list (“Annotation: …”).",
       hoverKeyTitle: "Synchronised crosshair (controlled)",
       hoverKeyDesc:
-        "`hoverKey` (a point's key = `String(x)`) drives the crosshair (dashed vertical line + marker) and the tooltip from the parent: here `hoverKey=\"Mer\"`. The parent can thus share one hover channel across several aligned charts. `onHoverKeyChange(key | null)` fires on every hover/leave — even while controlled. Without `hoverKey` (`undefined`), the internal hover takes over (backward compatible).",
+        "`hoverKey` (a point's key = `String(x)`) drives the crosshair (dashed vertical line + marker) and the tooltip from the parent: here `hoverKey=\"Mer\"`. The parent can thus share one hover channel across several aligned charts. `onHoverKeyChange(key | null)` fires on every hover/leave, even while controlled. Without `hoverKey` (`undefined`), the internal hover takes over (backward compatible).",
       usageTitle: "Usage notes",
       usageNote1:
         "`label` is required: it feeds the container `aria-label` (`role=\"img\"`). The `x: y` pairs are exposed in an accessible list outside the SVG, without adding a tab stop for every point.",
@@ -271,7 +271,7 @@
         <tr><td><code>trend</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
         <tr><td><code>annotations</code></td><td><code>ChartAnnotation[]</code></td><td><em>{locale.value === "fr" ? "aucune" : "none"}</em></td></tr>
         <tr><td><code>hoverKey</code></td><td><code>{`string | null`}</code></td><td><em>{locale.value === "fr" ? "non contrôlé" : "uncontrolled"}</em></td></tr>
-        <tr><td><code>onHoverKeyChange</code></td><td><code>{`(key: string | null) => void`}</code></td><td><em>—</em></td></tr>
+        <tr><td><code>onHoverKeyChange</code></td><td><code>{`(key: string | null) => void`}</code></td><td><em>–</em></td></tr>
         <tr><td><code>data[].forecast</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
         <tr><td><code>showLegend</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
         <tr><td><code>width</code></td><td><code>number</code></td><td><code>480</code></td></tr>
@@ -295,8 +295,8 @@
     </p>
     <p class="docs-demo-note">
       {locale.value === "fr"
-        ? "Chaque point peut porter `forecast: true` : il est alors rendu en prévision — segment(s) pointillé(s) avec le ton prévision dédié, y compris le segment entre le dernier point réel et le premier point de prévision (transition continue). Les valeurs concernées sont annoncées « … (prévision) » dans la liste accessible. Sans point en prévision, le rendu est inchangé."
-        : "Each datum may carry `forecast: true`: it then renders as a forecast — dashed segment(s) in the dedicated forecast tone, including the segment between the last actual point and the first forecast point (continuous transition). Affected values are announced as “… (prévision)” in the accessible list. Without any forecast datum, rendering is unchanged."}
+        ? "Chaque point peut porter `forecast: true` : il est alors rendu en prévision : segment(s) pointillé(s) avec le ton prévision dédié, y compris le segment entre le dernier point réel et le premier point de prévision (transition continue). Les valeurs concernées sont annoncées « … (prévision) » dans la liste accessible. Sans point en prévision, le rendu est inchangé."
+        : "Each datum may carry `forecast: true`: it then renders as a forecast: dashed segment(s) in the dedicated forecast tone, including the segment between the last actual point and the first forecast point (continuous transition). Affected values are announced as “… (prévision)” in the accessible list. Without any forecast datum, rendering is unchanged."}
     </p>
   </section>
 

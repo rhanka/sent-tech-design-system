@@ -47,7 +47,7 @@
             {
               el: "p",
               props: { class: "field-demo-text" },
-              children: [locale.value === "fr" ? "Élevée — échéance proche." : "High — deadline soon."]
+              children: [locale.value === "fr" ? "Élevée : échéance proche." : "High: deadline soon."]
             }
           ]
         }
@@ -122,7 +122,7 @@
         <tr>
           <td><code>tone</code></td>
           <td><code>FieldCardTone</code></td>
-          <td>—</td>
+          <td>–</td>
           <td>{locale.value === "fr" ? "Couleur catégorielle du liseré (variante accent, category1…8)." : "Categorical accent color (accent variant, category1…8)."}</td>
         </tr>
         <tr>
@@ -134,7 +134,7 @@
         <tr>
           <td><code>onOpenComments</code></td>
           <td><code>() =&gt; void</code></td>
-          <td>—</td>
+          <td>–</td>
           <td>{locale.value === "fr" ? "Rend la pastille interactive et ouvre le fil." : "Makes the pill interactive and opens the thread."}</td>
         </tr>
       </tbody>

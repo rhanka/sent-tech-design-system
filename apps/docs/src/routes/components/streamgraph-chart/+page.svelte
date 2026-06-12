@@ -22,7 +22,7 @@
         "`label` alimente le conteneur `role=\"img\"`. Une liste accessible hors SVG résume le total de chaque série et le total global. Le streamgraph n'a pas d'axe Y numérique absolu : seul l'axe X (catégories temporelles) est gradué.",
       usageTitle: "Notes d'usage",
       usageNote:
-        "Réservez le streamgraph aux séries empilées dont la somme évolue dans le temps (volumes, parts de marché). Les valeurs non finies ou négatives sont ramenées à 0 — un streamgraph n'empile que des grandeurs ≥ 0. `smooth` (true par défaut) lisse les aires ; passez `false` pour des transitions linéaires.",
+        "Réservez le streamgraph aux séries empilées dont la somme évolue dans le temps (volumes, parts de marché). Les valeurs non finies ou négatives sont ramenées à 0 : un streamgraph n'empile que des grandeurs ≥ 0. `smooth` (true par défaut) lisse les aires ; passez `false` pour des transitions linéaires.",
       tokensTitle: "Tokens"
     },
     en: {
@@ -42,7 +42,7 @@
         "`label` feeds the `role=\"img\"` container. An accessible list outside the SVG summarises each series total and the grand total. A streamgraph has no absolute numeric Y axis: only the X axis (time categories) is labelled.",
       usageTitle: "Usage notes",
       usageNote:
-        "Reserve the streamgraph for stacked series whose total evolves over time (volumes, market share). Non-finite or negative values are clamped to 0 — a streamgraph only stacks magnitudes ≥ 0. `smooth` (true by default) smooths the areas; pass `false` for linear transitions.",
+        "Reserve the streamgraph for stacked series whose total evolves over time (volumes, market share). Non-finite or negative values are clamped to 0 : a streamgraph only stacks magnitudes ≥ 0. `smooth` (true by default) smooths the areas; pass `false` for linear transitions.",
       tokensTitle: "Tokens"
     }
   } as const;
@@ -66,7 +66,7 @@
         {
           comp: "StreamgraphChart",
           props: {
-            label: locale.value === "fr" ? "Trafic par canal — 2025" : "Traffic by channel — 2025",
+            label: locale.value === "fr" ? "Trafic par canal : 2025" : "Traffic by channel : 2025",
             data: trafficData
           }
         }

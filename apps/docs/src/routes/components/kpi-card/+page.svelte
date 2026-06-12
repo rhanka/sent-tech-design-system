@@ -176,7 +176,7 @@
         <tr>
           <td><code>delta</code></td>
           <td><code>number</code></td>
-          <td>—</td>
+          <td>–</td>
           <td>{locale.value === "fr" ? "Variation par rapport à la période précédente." : "Variation vs previous period."}</td>
         </tr>
         <tr>
@@ -188,7 +188,7 @@
         <tr>
           <td><code>trend</code></td>
           <td><code>"up" | "down" | "flat"</code></td>
-          <td>—</td>
+          <td>–</td>
           <td>{locale.value === "fr" ? "Tendance explicite (déduite du signe delta si absente)." : "Explicit trend (inferred from delta sign if absent)."}</td>
         </tr>
         <tr>
@@ -200,7 +200,7 @@
         <tr>
           <td><code>unit</code></td>
           <td><code>string</code></td>
-          <td>—</td>
+          <td>–</td>
           <td>{locale.value === "fr" ? "Suffixe d'unité (ex. ms, €/mois)." : "Unit suffix (e.g. ms, €/month)."}</td>
         </tr>
         <tr>
@@ -212,7 +212,7 @@
         <tr>
           <td><code>sparkline</code></td>
           <td><code>number[]</code></td>
-          <td>—</td>
+          <td>–</td>
           <td>{locale.value === "fr" ? "Série de valeurs pour le mini-graphique." : "Data series for the inline sparkline."}</td>
         </tr>
         <tr>
@@ -224,13 +224,13 @@
         <tr>
           <td><code>tone</code></td>
           <td><code>KpiCardTone</code></td>
-          <td>—</td>
+          <td>–</td>
           <td>{locale.value === "fr" ? "Couleur catégorielle pour l'accent de bordure gauche (category1…8)." : "Categorical color for the left-border accent (category1…8)."}</td>
         </tr>
         <tr>
           <td><code>decoration</code></td>
           <td><code>CellDecoration</code></td>
-          <td>—</td>
+          <td>–</td>
           <td>{locale.value === "fr" ? "Mise en forme conditionnelle : { intent, icon } → fond teinté accessible (token feedback) + icône lucide. Intent exposé dans l'aria-label." : "Conditional formatting: { intent, icon } → accessible tinted background (feedback token) + lucide icon. Intent surfaced in the aria-label."}</td>
         </tr>
       </tbody>

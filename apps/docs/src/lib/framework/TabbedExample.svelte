@@ -1,5 +1,5 @@
 <!--
-  TabbedExample — un exemple documentaire « par onglet de framework ».
+  TabbedExample : un exemple documentaire « par onglet de framework ».
 
   Layout choisi par l'owner (pas d'empilement des 3 rendus) :
     1. titre optionnel ;

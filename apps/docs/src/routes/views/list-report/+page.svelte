@@ -127,7 +127,7 @@
                     {
                       comp: "DataTable",
                       props: {
-                        caption: fr ? "Liste des factures — mai/juin 2026" : "Invoice list — May/June 2026",
+                        caption: fr ? "Liste des factures : mai/juin 2026" : "Invoice list : May/June 2026",
                         columns: COLUMNS.map((c) => ({ key: c.key, label: c.label(), sortable: c.sortable, align: c.align })),
                         rows: ROWS.map((r) => ({ ...r, statut: r.statut() })),
                         sortable: true,
@@ -209,7 +209,7 @@
     </p>
     <TabbedExample
       nodes={demoNodes}
-      title={fr ? "Liste rapport — factures (données mock)" : "List Report — invoices (mock data)"}
+      title={fr ? "Liste rapport : factures (données mock)" : "List Report : invoices (mock data)"}
     />
   </section>
 

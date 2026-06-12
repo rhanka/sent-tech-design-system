@@ -63,7 +63,7 @@
       <tbody>
         <tr><td><code>span</code></td><td><code>number | "auto"</code></td><td><code>"auto"</code></td></tr>
         <tr><td><code>offset</code></td><td><code>number</code> (0–11)</td><td><code>0</code></td></tr>
-        <tr><td><code>sm</code> / <code>md</code> / <code>lg</code></td><td><code>number | "auto"</code></td><td><em>—</em></td></tr>
+        <tr><td><code>sm</code> / <code>md</code> / <code>lg</code></td><td><code>number | "auto"</code></td><td><em>–</em></td></tr>
         <tr><td><code>as</code></td><td><code>string</code></td><td><code>"div"</code></td></tr>
       </tbody>
     </table>

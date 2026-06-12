@@ -96,7 +96,7 @@
                 {
                   el: "p",
                   props: { class: "as-page-lead" },
-                  children: [fr ? "Zone de contenu de la page — remplacée par chaque vue spécifique." : "Page content area — replaced by each specific view."]
+                  children: [fr ? "Zone de contenu de la page, remplacée par chaque vue spécifique." : "Page content area, replaced by each specific view."]
                 },
                 {
                   el: "div",
@@ -168,7 +168,7 @@
     </p>
     <TabbedExample
       nodes={demoNodes}
-      title={fr ? "App Shell — squelette applicatif (données mock)" : "App Shell — application skeleton (mock data)"}
+      title={fr ? "App Shell : squelette applicatif (données mock)" : "App Shell: application skeleton (mock data)"}
     />
   </section>
 

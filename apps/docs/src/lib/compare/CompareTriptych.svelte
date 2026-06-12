@@ -1,5 +1,5 @@
 <script lang="ts">
-  // CompareTriptych.svelte — vue triptyque compare (Lot 2).
+  // CompareTriptych.svelte : vue triptyque compare (Lot 2).
   // Trois panneaux : (a) notre composant live, (b) iframe officielle CDN visuelle,
   // (c) rail de gaps lus du registre.
   //
@@ -252,7 +252,7 @@
     border-color: #fca5a5;
   }
 
-  /* Triptyque — 3 colonnes : notre live | officiel | rail */
+  /* Triptyque : 3 colonnes : notre live | officiel | rail */
   .ctrip__panels {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 20rem;

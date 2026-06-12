@@ -79,12 +79,12 @@
     <p>
       {#if locale.value === "fr"}
         Carte d'item de configuration (agents, workflows, gabarits de vue) : affiche un nom, une clé,
-        une description et un badge de provenance (Système / Personnalisé). Les actions disponibles
-        — Copier, Éditer, Réinitialiser, Supprimer — dépendent de la provenance de l'item.
+        une description et un badge de provenance (Système / Personnalisé). Les actions disponibles,
+        Copier, Éditer, Réinitialiser, Supprimer, dépendent de la provenance de l'item.
       {:else}
         Configuration item card (agents, workflows, view templates): shows a name, a key, a
-        description and a provenance badge (System / Customized). The available actions — Copy, Edit,
-        Reset, Delete — depend on the item's provenance.
+        description and a provenance badge (System / Customized). The available actions, Copy, Edit,
+        Reset, Delete, depend on the item's provenance.
       {/if}
     </p>
   </section>
@@ -133,25 +133,25 @@
         <tr>
           <td><code>onCopy</code></td>
           <td><code>(id: string) =&gt; void</code></td>
-          <td>—</td>
+          <td>–</td>
           <td>{locale.value === "fr" ? "Action Copier (items système uniquement)." : "Copy action (system items only)."}</td>
         </tr>
         <tr>
           <td><code>onEdit</code></td>
           <td><code>(id: string) =&gt; void</code></td>
-          <td>—</td>
+          <td>–</td>
           <td>{locale.value === "fr" ? "Action Éditer (items copiés ou créés)." : "Edit action (copied or created items)."}</td>
         </tr>
         <tr>
           <td><code>onReset</code></td>
           <td><code>(id: string) =&gt; void</code></td>
-          <td>—</td>
+          <td>–</td>
           <td>{locale.value === "fr" ? "Action Réinitialiser (items copiés uniquement)." : "Reset action (copied items only)."}</td>
         </tr>
         <tr>
           <td><code>onDelete</code></td>
           <td><code>(id: string) =&gt; void</code></td>
-          <td>—</td>
+          <td>–</td>
           <td>{locale.value === "fr" ? "Action Supprimer (items créés uniquement)." : "Delete action (created items only)."}</td>
         </tr>
         <tr>

@@ -233,11 +233,11 @@
     </ul>
   </section>
   <section class="docs-section">
-    <h2>AppHeader — chrome de site réutilisable</h2>
+    <h2>AppHeader : chrome de site réutilisable</h2>
     <p>
       <code>AppHeader</code> est l'en-tête « tenant » du socle (burger à droite en compact,
       tiroir intégré). Il porte désormais la <strong>marque canonique paramétrable</strong>
-      (logo carré + nom + sous-titre produit) et publie deux classes utilitaires — sans qu'un
+      (logo carré + nom + sous-titre produit) et publie deux classes utilitaires : sans qu'un
       consommateur ait à dupliquer le CSS de la doc : un site externe (ex. <code>dataviz.sent-tech.ca</code>)
       obtient le même rendu que ce site en passant uniquement ses libellés.
     </p>

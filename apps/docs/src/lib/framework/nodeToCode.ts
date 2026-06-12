@@ -1,4 +1,4 @@
-// nodeToCode — sérialise un arbre NodeSpec en extrait de code lisible pour un
+// nodeToCode : sérialise un arbre NodeSpec en extrait de code lisible pour un
 // framework donné (Svelte / React / Vue).
 //
 // Best-effort : sert à alimenter le bloc « Voir le code » dépliable de

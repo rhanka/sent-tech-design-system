@@ -72,7 +72,7 @@
   let sidebarOpen = $state(true);
 </script>
 
-<!-- IBM Plex Sans chargée globalement dans app.html — pas de svelte:head redondant -->
+<!-- IBM Plex Sans chargée globalement dans app.html : pas de svelte:head redondant -->
 
 <div class="cbn-shell">
   <!-- ── HEADER Carbon ────────────────────────────────────────────────── -->

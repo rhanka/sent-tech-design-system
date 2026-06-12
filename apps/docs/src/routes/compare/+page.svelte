@@ -1,21 +1,21 @@
 <script lang="ts">
-  // Fidelity bench (spec §5) — banc réservé aux THÈMES IMPORTÉS : pour chacun,
+  // Fidelity bench (spec §5) : banc réservé aux THÈMES IMPORTÉS : pour chacun,
   // NOTRE composant mappé À CÔTÉ du VRAI composant officiel (CSS + markup
   // d'origine, isolés en iframe). Sent Tech (notre marque) n'a pas de pendant
   // externe → exclu de ce banc. Langue cohérente par DS (DSFR=FR, Carbon=EN).
   // Hors nav.
   //
-  // G5 — couverture élargie : au-delà des 7 composants de base, on compare un
+  // G5 : couverture élargie : au-delà des 7 composants de base, on compare un
   // maximum de variants/états (Button secondaire/désactivé, Input erreur/
   // désactivé) et de nouveaux composants (Checkbox, Radio, Toggle, Tag, Badge,
-  // Alert, Accordion, Breadcrumb, Pagination, Search, Quote, Highlight) — pour
+  // Alert, Accordion, Breadcrumb, Pagination, Search, Quote, Highlight) : pour
   // chacun le vrai markup officiel DSFR/Carbon dans la langue du thème. Quand un
   // composant n'a pas d'équivalent officiel pour un thème (ex. Quote/Highlight =
   // DSFR seulement ; Badge = DSFR seulement), on ne fabrique PAS de fausse paire.
   //
-  // G4 — banc propre : grille à colonnes fixes, mêmes gouttières/padding des deux
+  // G4 : banc propre : grille à colonnes fixes, mêmes gouttières/padding des deux
   // côtés, contenu aligné sur la même origine, iframes calées en haut.
-  // NB : import par espace de noms (et non destructuré) — un bug d'élision
+  // NB : import par espace de noms (et non destructuré) : un bug d'élision
   // d'import de Vite/Rollup laissait tomber le DERNIER composant destructuré
   // (`Highlight`) à la compilation SSR (`ReferenceError: Highlight is not
   // defined` au prerender). L'accès via `Ds.Highlight` est immunisé : aucun
@@ -173,7 +173,7 @@
       quoteAuthor: "Author", quoteSource: "Source",
       highlightTitle: "Note", highlightBody: "Carbon has no editorial highlight component."
     },
-    // Airbus utilise l'anglais — libellés identiques à Carbon.
+    // Airbus utilise l'anglais : libellés identiques à Carbon.
     airbus: {
       primary: "Primary", secondary: "Secondary", disabled: "Disabled",
       email: "Email", helper: "Helper text", placeholder: "name@example.org",
@@ -212,8 +212,8 @@
     }
   };
 
-  // F2 / C8 — CDN (pinés) + polices de marque chargées RÉELLEMENT des deux côtés
-  // du banc, dérivés de ALL_REF_THEMES (source unique — même source que l'oracle).
+  // F2 / C8 : CDN (pinés) + polices de marque chargées RÉELLEMENT des deux côtés
+  // du banc, dérivés de ALL_REF_THEMES (source unique : même source que l'oracle).
   const CDN: Record<string, string> = Object.fromEntries(
     Object.entries(ALL_REF_THEMES).map(([id, t]) => [id, t.cssUrl])
   );
@@ -240,13 +240,13 @@
       `@font-face{font-display:swap;font-family:Marianne;font-style:${style ?? "normal"};font-weight:${weight};src:url("${MARIANNE_CDN}/${file}.woff2") format("woff2"),url("${MARIANNE_CDN}/${file}.woff") format("woff")}`
   ).join("");
 
-  // F1 — banc apples-to-apples : largeur de rendu commune aux DEUX côtés.
+  // F1 : banc apples-to-apples : largeur de rendu commune aux DEUX côtés.
   // Les champs pleine largeur (Input/Textarea/Select/Search) remplissent
   // exactement BENCH_WIDTH des deux côtés ; les composants à largeur intrinsèque
   // (Button/Link/Tabs/Tag…) disposent du même contexte de largeur ; la carte est
   // rendue dans le même contexte de 18rem que la référence officielle.
-  const BENCH_WIDTH = 320; // px — largeur de contenu identique des deux côtés
-  const IFRAME_PAD = 14; // px — padding du <body> de l'iframe (cf. refDoc)
+  const BENCH_WIDTH = 320; // px : largeur de contenu identique des deux côtés
+  const IFRAME_PAD = 14; // px : padding du <body> de l'iframe (cf. refDoc)
 
   // ---------------------------------------------------------------------------
   // Catalogue du banc dérivé du manifest.
@@ -262,7 +262,7 @@
     card?: boolean;
   };
 
-  // Ordre canonique des clés — préserve exactement l'ordre historique dsfr/carbon,
+  // Ordre canonique des clés : préserve exactement l'ordre historique dsfr/carbon,
   // puis ajoute les clés exclusives à d'autres thèmes à la fin.
   const CANONICAL_ORDER = [
     "Button", "ButtonDisabled",
@@ -329,7 +329,7 @@
     card: CARD_KEYS.has(key),
   }));
 
-  // Markup officiel de référence pour (thème, clé) — extrait du manifest.
+  // Markup officiel de référence pour (thème, clé) : extrait du manifest.
   function refMarkupFor(themeId: string, key: string): string {
     return (MANIFEST[themeId]?.[key] as { refMarkup?: string } | undefined)?.refMarkup ?? "";
   }
@@ -360,7 +360,7 @@
 </script>
 
 <svelte:head>
-  <!-- F2 — polices de marque chargées RÉELLEMENT de NOTRE côté aussi.
+  <!-- F2 : polices de marque chargées RÉELLEMENT de NOTRE côté aussi.
        Marianne (DSFR) : @font-face servis par le CDN (URLs absolues), sans
        injecter le reset global de dsfr.min.css. IBM Plex Sans (Carbon) :
        Google Fonts. Sans cela, notre côté retombait sur un fallback alors
@@ -506,9 +506,9 @@
     background: var(--st-semantic-surface-default, #fff);
     color: var(--st-semantic-text-primary, #0f172a);
   }
-  /* F2 — la chaîne `font-family` de marque du thème s'applique à TOUT le scope
+  /* F2 : la chaîne `font-family` de marque du thème s'applique à TOUT le scope
      (comme dans le DS réel) : Link/Card, qui n'imposent pas leur propre famille,
-     héritent ainsi de Marianne / IBM Plex Sans — identique au <body> de marque
+     héritent ainsi de Marianne / IBM Plex Sans : identique au <body> de marque
      de l'iframe de référence, plus de fallback system-ui asymétrique. */
   .cmp-scope--dsfr,
   .cmp-scope--carbon,
@@ -527,7 +527,7 @@
     font-weight: 500;
     color: #64748b;
   }
-  /* G4 — grille propre : 3 colonnes fixes (libellé · nous · réf). Les deux
+  /* G4 : grille propre : 3 colonnes fixes (libellé · nous · réf). Les deux
      cellules de comparaison ont EXACTEMENT la même largeur (1fr/1fr) et la même
      origine de contenu. `align-items:stretch` → boîtes de même hauteur. */
   .cmp-row {
@@ -557,7 +557,7 @@
     min-width: 0;
   }
   .cmp-cell--ref { background: #fbfcfe; }
-  /* G4 — corps de cellule : MÊME origine des deux côtés. Le contenu démarre en
+  /* G4 : corps de cellule : MÊME origine des deux côtés. Le contenu démarre en
      haut-gauche (flex-start/flex-start) de façon identique à l'iframe, qui rend
      son markup à partir de son coin haut-gauche → libellés et boîtes alignés. */
   .cmp-cell__body {
@@ -573,7 +573,7 @@
   .cmp-cell__body--ref {
     align-items: flex-start;
   }
-  /* F1 — banc apples-to-apples : les champs pleine largeur remplissent
+  /* F1 : banc apples-to-apples : les champs pleine largeur remplissent
      exactement BENCH_WIDTH (320px), identique à la zone de contenu de
      l'iframe de référence (largeur iframe − 2×14px de padding). */
   .cmp-cell__body--field {

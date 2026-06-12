@@ -72,10 +72,10 @@
         <tr><td><code>legend</code></td><td><code>string</code></td><td><em>{fr ? "requis" : "required"}</em></td></tr>
         <tr><td><code>name</code></td><td><code>string</code></td><td><em>{fr ? "requis" : "required"}</em></td></tr>
         <tr><td><code>options</code></td><td><code>{`{ label, value, disabled?, helperText? }[]`}</code></td><td><code>[]</code></td></tr>
-        <tr><td><code>value</code></td><td><code>string</code></td><td><em>—</em></td></tr>
-        <tr><td><code>onchange</code> / <code>onChange</code></td><td><code>(value: string) =&gt; void</code></td><td><em>—</em></td></tr>
+        <tr><td><code>value</code></td><td><code>string</code></td><td><em>–</em></td></tr>
+        <tr><td><code>onchange</code> / <code>onChange</code></td><td><code>(value: string) =&gt; void</code></td><td><em>–</em></td></tr>
         <tr><td><code>orientation</code></td><td><code>"vertical" | "horizontal"</code></td><td><code>"vertical"</code></td></tr>
-        <tr><td><code>helperText</code></td><td><code>string</code></td><td><em>—</em></td></tr>
+        <tr><td><code>helperText</code></td><td><code>string</code></td><td><em>–</em></td></tr>
         <tr><td><code>disabled</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
       </tbody>
     </table>

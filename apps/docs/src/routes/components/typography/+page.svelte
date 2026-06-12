@@ -63,9 +63,9 @@
       <tbody>
         <tr><td><code>variant</code></td><td><code>"display" | "h1"…"h6" | "body" | "body-sm" | "caption" | "overline"</code></td><td><code>"body"</code></td></tr>
         <tr><td><code>as</code></td><td><code>string</code></td><td><em>{fr ? "déduit de la variante" : "derived from variant"}</em></td></tr>
-        <tr><td><code>weight</code></td><td><code>"regular" | "medium" | "semibold" | "bold"</code></td><td><em>—</em></td></tr>
-        <tr><td><code>tone</code></td><td><code>"primary" | "secondary" | "muted" | "inverse" | "link"</code></td><td><em>—</em></td></tr>
-        <tr><td><code>align</code></td><td><code>"start" | "center" | "end" | "justify"</code></td><td><em>—</em></td></tr>
+        <tr><td><code>weight</code></td><td><code>"regular" | "medium" | "semibold" | "bold"</code></td><td><em>–</em></td></tr>
+        <tr><td><code>tone</code></td><td><code>"primary" | "secondary" | "muted" | "inverse" | "link"</code></td><td><em>–</em></td></tr>
+        <tr><td><code>align</code></td><td><code>"start" | "center" | "end" | "justify"</code></td><td><em>–</em></td></tr>
         <tr><td><code>truncate</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
       </tbody>
     </table>

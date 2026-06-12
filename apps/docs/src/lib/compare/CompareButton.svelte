@@ -1,5 +1,5 @@
 <script lang="ts">
-  // CompareButton.svelte — bouton « Compare » dans l'en-tête.
+  // CompareButton.svelte : bouton « Compare » dans l'en-tête.
   // AFFICHÉ SEULEMENT si :
   //   1. Le thème actif a une entrée dans REFERENCE_THEMES (thème d'import).
   //   2. La page courante est une page de composant (/components/<slug>).

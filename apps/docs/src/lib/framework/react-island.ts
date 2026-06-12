@@ -68,7 +68,7 @@ export async function mountReactIsland(
 
 // React utilise `className` au lieu de `class` sur les éléments natifs, et
 // exige un OBJET pour `style` (un string déclenche une erreur de rendu qui fait
-// planter toute l'île — d'où les rendus React vides). On convertit donc une
+// planter toute l'île : d'où les rendus React vides). On convertit donc une
 // chaîne CSS (`"a:b;c:d"`, partagée telle quelle avec Svelte/Vue) en objet de
 // style React (camelCase) avant de la transmettre.
 function mapElementProps(props: Record<string, unknown>): Record<string, unknown> {

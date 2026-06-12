@@ -58,8 +58,8 @@
         <tr><th>Prop</th><th>Type</th><th>Default</th></tr>
       </thead>
       <tbody>
-        <tr><td><code>max</code></td><td><code>number</code></td><td><em>—</em></td></tr>
-        <tr><td><code>total</code></td><td><code>number</code></td><td><em>—</em></td></tr>
+        <tr><td><code>max</code></td><td><code>number</code></td><td><em>–</em></td></tr>
+        <tr><td><code>total</code></td><td><code>number</code></td><td><em>–</em></td></tr>
         <tr><td><code>size</code></td><td><code>"sm" | "md" | "lg" | "xl"</code></td><td><code>"md"</code></td></tr>
       </tbody>
     </table>

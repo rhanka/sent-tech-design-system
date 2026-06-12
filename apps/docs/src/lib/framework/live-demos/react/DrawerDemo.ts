@@ -1,4 +1,4 @@
-// Démo React interactive du Drawer — trois panneaux indépendants (droite,
+// Démo React interactive du Drawer : trois panneaux indépendants (droite,
 // gauche, et un avec pied d'actions), état local par panneau, déclenchés par des
 // boutons. createElement (pas de JSX) pour rester cohérent avec react-island.
 //

@@ -1,4 +1,4 @@
-// Route de callback OAuth — NE DOIT PAS être prérendue ni rendue côté serveur.
+// Route de callback OAuth : NE DOIT PAS être prérendue ni rendue côté serveur.
 //
 // Le site docs est exporté en statique (adapter-static, fallback 404.html).
 // Cette route reçoit `?code&state` de l'IdP et exécute du code 100% navigateur

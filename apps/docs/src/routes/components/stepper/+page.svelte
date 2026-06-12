@@ -71,7 +71,7 @@
         <tr><td><code>current</code></td><td><code>number</code> ({fr ? "index 0-based" : "0-based index"})</td><td><code>0</code></td></tr>
         <tr><td><code>orientation</code></td><td><code>"horizontal" | "vertical"</code></td><td><code>"horizontal"</code></td></tr>
         <tr><td><code>clickable</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
-        <tr><td><code>onStepClick</code></td><td><code>(index: number) =&gt; void</code></td><td><em>—</em></td></tr>
+        <tr><td><code>onStepClick</code></td><td><code>(index: number) =&gt; void</code></td><td><em>–</em></td></tr>
         <tr><td><code>label</code></td><td><code>string</code></td><td><code>"Progression"</code></td></tr>
       </tbody>
     </table>

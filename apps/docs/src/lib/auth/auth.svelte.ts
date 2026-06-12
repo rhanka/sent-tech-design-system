@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// Store d'authentification OAuth/OIDC (RP — Relying Party), phase 1 : login +
+// Store d'authentification OAuth/OIDC (RP : Relying Party), phase 1 : login +
 // affichage d'identité. PAS de proxy d'API ; le backend (app principale) reste
 // l'autorité. Ce site docs ne fait qu'obtenir et valider une identité.
 //
@@ -34,13 +34,13 @@ import {
 export type AuthStatus = "anon" | "authenticating" | "authed";
 
 export interface AuthUser {
-  /** Émetteur (issuer) — première moitié de la clé de compte. */
+  /** Émetteur (issuer) : première moitié de la clé de compte. */
   iss: string;
-  /** Sujet (subject) — seconde moitié de la clé de compte stable. */
+  /** Sujet (subject) : seconde moitié de la clé de compte stable. */
   sub: string;
   /** Nom affichable (claim `name`, sinon fallback sur `sub`). Décoratif. */
   name?: string;
-  /** Email — DÉCORATIF uniquement, jamais une clé d'identité. */
+  /** Email : DÉCORATIF uniquement, jamais une clé d'identité. */
   email?: string;
   /** Avatar éventuel (claim `picture`). */
   picture?: string;

@@ -48,7 +48,7 @@
       el: "div",
       props: { class: "md-shell" },
       children: [
-        // Volet gauche — liste sélectionnable
+        // Volet gauche : liste sélectionnable
         {
           el: "aside",
           props: { class: "md-master" },
@@ -74,7 +74,7 @@
             }
           ]
         },
-        // Volet droit — détail
+        // Volet droit : détail
         {
           el: "main",
           props: { class: "md-detail" },
@@ -183,7 +183,7 @@
     </p>
     <TabbedExample
       nodes={demoNodes}
-      title={fr ? "Maître-détail — clients (données mock)" : "Master-Detail — customers (mock data)"}
+      title={fr ? "Maître-détail : clients (données mock)" : "Master-Detail : customers (mock data)"}
     />
   </section>
 

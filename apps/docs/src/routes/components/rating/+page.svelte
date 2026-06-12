@@ -58,11 +58,11 @@
       <tbody>
         <tr><td><code>value</code></td><td><code>number</code></td><td><code>0</code></td></tr>
         <tr><td><code>max</code></td><td><code>number</code></td><td><code>5</code></td></tr>
-        <tr><td><code>onChange</code></td><td><code>(value: number) =&gt; void</code></td><td><em>—</em></td></tr>
+        <tr><td><code>onChange</code></td><td><code>(value: number) =&gt; void</code></td><td><em>–</em></td></tr>
         <tr><td><code>readonly</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
         <tr><td><code>allowHalf</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
         <tr><td><code>size</code></td><td><code>"sm" | "md" | "lg"</code></td><td><code>"md"</code></td></tr>
-        <tr><td><code>label</code></td><td><code>string</code></td><td><em>—</em></td></tr>
+        <tr><td><code>label</code></td><td><code>string</code></td><td><em>–</em></td></tr>
       </tbody>
     </table>
     <p>{fr ? "Recliquer l'étoile déjà sélectionnée remet la note à zéro. Le groupe expose un rôle accessible étiqueté par label." : "Clicking the already-selected star resets to zero. The group exposes an accessible role labelled by label."}</p>

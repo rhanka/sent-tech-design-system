@@ -10,13 +10,13 @@
       badge: "Documenté",
       previewTitle: "Aperçu live",
       intro:
-        "RoseChart (rose de Nightingale / polar area) répartit les catégories en secteurs d'angle ÉGAL et fait varier le RAYON selon la valeur — c'est le rayon qui porte l'information, pas l'angle, ce qui le distingue d'un camembert.",
+        "RoseChart (rose de Nightingale / polar area) répartit les catégories en secteurs d'angle ÉGAL et fait varier le RAYON selon la valeur : c'est le rayon qui porte l'information, pas l'angle, ce qui le distingue d'un camembert.",
       examplesTitle: "Exemples",
       basicTitle: "Rose mensuelle",
       basicDesc: "Une catégorie par secteur ; le rayon (et donc l'aire) reflète la valeur.",
       scaleTitle: "Échelle de l'aire",
       scaleDesc:
-        "Le rayon vaut sqrt(value / maxValue) × R, donc l'AIRE du secteur est proportionnelle à la valeur — une lecture honnête perceptuellement.",
+        "Le rayon vaut sqrt(value / maxValue) × R, donc l'AIRE du secteur est proportionnelle à la valeur : une lecture honnête perceptuellement.",
       apiTitle: "API du composant",
       defaultLabel: "Par défaut",
       required: "requis",
@@ -34,13 +34,13 @@
       badge: "Documented",
       previewTitle: "Live preview",
       intro:
-        "RoseChart (Nightingale / polar area) splits categories into EQUAL-angle sectors and varies the RADIUS by value — the radius carries the information, not the angle, which is what sets it apart from a pie chart.",
+        "RoseChart (Nightingale / polar area) splits categories into EQUAL-angle sectors and varies the RADIUS by value: the radius carries the information, not the angle, which is what sets it apart from a pie chart.",
       examplesTitle: "Examples",
       basicTitle: "Monthly rose",
       basicDesc: "One category per sector; the radius (and therefore the area) reflects the value.",
       scaleTitle: "Area scaling",
       scaleDesc:
-        "The radius is sqrt(value / maxValue) × R, so the sector AREA is proportional to the value — a perceptually honest reading.",
+        "The radius is sqrt(value / maxValue) × R, so the sector AREA is proportional to the value: a perceptually honest reading.",
       apiTitle: "Component API",
       defaultLabel: "Default",
       required: "required",

@@ -31,7 +31,7 @@
   ];
 
   const LINE_ROWS = $derived([
-    { id: "1", designation: fr ? "Licence Design System — abonnement annuel" : "Design System license — annual", qte: "10", pu: "1 200 €", total: "12 000 €" },
+    { id: "1", designation: fr ? "Licence Design System : abonnement annuel" : "Design System license : annual", qte: "10", pu: "1 200 €", total: "12 000 €" },
     { id: "2", designation: fr ? "Atelier de conception (jours)" : "Design workshop (days)", qte: "8", pu: "1 500 €", total: "12 000 €" },
     { id: "3", designation: fr ? "Audit d'accessibilité" : "Accessibility audit", qte: "1", pu: "9 800 €", total: "9 800 €" },
     { id: "4", designation: fr ? "Support premium (trimestre)" : "Premium support (quarter)", qte: "1", pu: "8 500 €", total: "8 500 €" }
@@ -169,7 +169,7 @@
     </p>
     <TabbedExample
       nodes={demoNodes}
-      title={fr ? "Facture client — INV/2026/0142 (données mock)" : "Customer Invoice — INV/2026/0142 (mock data)"}
+      title={fr ? "Facture client : INV/2026/0142 (données mock)" : "Customer Invoice : INV/2026/0142 (mock data)"}
     />
   </section>
 

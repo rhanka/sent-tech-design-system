@@ -71,7 +71,7 @@
         {
           comp: "CandlestickChart",
           props: {
-            label: locale.value === "fr" ? "Cours SENT — semaine" : "SENT stock — week",
+            label: locale.value === "fr" ? "Cours SENT : semaine" : "SENT stock: week",
             data: weekData
           }
         }
@@ -87,7 +87,7 @@
         {
           comp: "CandlestickChart",
           props: {
-            label: locale.value === "fr" ? "Cours SENT — analyse" : "SENT stock — analysis",
+            label: locale.value === "fr" ? "Cours SENT : analyse" : "SENT stock: analysis",
             data: weekData,
             dataLabels: true,
             keyboardNav: true,

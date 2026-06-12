@@ -1,5 +1,5 @@
 <script lang="ts">
-  // GapRail.svelte — rail droit du triptyque compare.
+  // GapRail.svelte : rail droit du triptyque compare.
   // Affiche les écarts (Δ) lus UNIQUEMENT du registre compare-gaps.json.
   // INVARIANT : aucune mesure de style côté navigateur. Tous les Δ viennent du JSON.
   // Les notes/valeurs sont rendues en interpolation texte (jamais {@html}).
@@ -109,7 +109,7 @@
         </div>
       {/if}
 
-      <!-- Lot 3 — bouton désactivé/placeholder, hors périmètre Lot 2 -->
+      <!-- Lot 3 : bouton désactivé/placeholder, hors périmètre Lot 2 -->
       <button
         type="button"
         class="gap-rail__report-btn"

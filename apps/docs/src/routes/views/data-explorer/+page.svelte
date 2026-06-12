@@ -115,7 +115,7 @@
               el: "div",
               props: { class: "de-panel" },
               children: [
-                { el: "h3", props: { class: "de-panel-title" }, children: [fr ? "Tableau croisé — CA par région × trimestre" : "Pivot — revenue by region × quarter"] },
+                { el: "h3", props: { class: "de-panel-title" }, children: [fr ? "Tableau croisé : CA par région × trimestre" : "Pivot: revenue by region × quarter"] },
                 {
                   comp: "DataTable",
                   props: {
@@ -145,7 +145,7 @@
             }
           ]
         },
-        // Volet de configuration (Drawer) — panneau latéral pivot
+        // Volet de configuration (Drawer) : panneau latéral pivot
         {
           comp: "Drawer",
           props: {
@@ -246,7 +246,7 @@
     </p>
     <TabbedExample
       nodes={demoNodes}
-      title={fr ? "Explorateur de données — pivot ventes (données mock)" : "Data Explorer — sales pivot (mock data)"}
+      title={fr ? "Explorateur de données : pivot ventes (données mock)" : "Data Explorer : sales pivot (mock data)"}
     />
   </section>
 

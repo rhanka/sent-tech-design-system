@@ -1,4 +1,4 @@
-// Démo Vue interactive du Modal — composant à fonction de rendu (defineComponent
+// Démo Vue interactive du Modal : composant à fonction de rendu (defineComponent
 // + h), état local via ref, déclenché par un bouton. Aucun SFC : cohérent avec
 // vue-island. Le Modal Vue émet `close`, expose un slot `default` (corps) et un
 // slot `footer`.

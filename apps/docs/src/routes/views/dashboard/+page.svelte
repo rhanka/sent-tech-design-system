@@ -196,7 +196,7 @@
             {
               el: "h3",
               props: { class: "dash-section-title" },
-              children: [locale.value === "fr" ? "Top 5 clients — Revenu juin 2026" : "Top 5 clients — June 2026 revenue"]
+              children: [locale.value === "fr" ? "Top 5 clients : revenu juin 2026" : "Top 5 clients: June 2026 revenue"]
             },
             {
               comp: "DataTable",
@@ -259,7 +259,7 @@
     </p>
     <TabbedExample
       nodes={demoNodes}
-      title={locale.value === "fr" ? "Dashboard exécutif — données mock" : "Executive Dashboard — mock data"}
+      title={locale.value === "fr" ? "Dashboard exécutif : données mock" : "Executive Dashboard: mock data"}
     />
   </section>
 

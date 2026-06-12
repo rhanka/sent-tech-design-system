@@ -115,13 +115,13 @@
         <tr>
           <td><code>thresholds</code></td>
           <td><code>GaugeChartThreshold[]</code></td>
-          <td>—</td>
+          <td>–</td>
           <td>{locale.value === "fr" ? "Bandes colorées triées par value croissante." : "Color bands sorted by ascending value."}</td>
         </tr>
         <tr>
           <td><code>label</code></td>
           <td><code>string</code></td>
-          <td>—</td>
+          <td>–</td>
           <td>{locale.value === "fr" ? "Description de la jauge (a11y + texte sous valeur)." : "Gauge description (a11y + sub-value text)."}</td>
         </tr>
         <tr>
@@ -133,7 +133,7 @@
         <tr>
           <td><code>unit</code></td>
           <td><code>string</code></td>
-          <td>—</td>
+          <td>–</td>
           <td>{locale.value === "fr" ? "Suffixe d'unité (ignoré pour format percent)." : "Unit suffix (ignored for percent format)."}</td>
         </tr>
         <tr>
@@ -164,8 +164,8 @@
     </table>
     <p class="docs-demo-note">
       {locale.value === "fr"
-        ? "GaugeChartThreshold = { value: number; tone: GaugeChartTone } — tone ∈ neutral | info | success | warning | error | category1…8"
-        : "GaugeChartThreshold = { value: number; tone: GaugeChartTone } — tone ∈ neutral | info | success | warning | error | category1…8"}
+        ? "GaugeChartThreshold = { value: number; tone: GaugeChartTone } : tone ∈ neutral | info | success | warning | error | category1…8"
+        : "GaugeChartThreshold = { value: number; tone: GaugeChartTone } : tone ∈ neutral | info | success | warning | error | category1…8"}
     </p>
   </section>
 

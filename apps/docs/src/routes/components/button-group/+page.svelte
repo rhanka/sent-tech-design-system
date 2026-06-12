@@ -60,9 +60,9 @@
       <tbody>
         <tr><td><code>orientation</code></td><td><code>"horizontal" | "vertical"</code></td><td><code>"horizontal"</code></td></tr>
         <tr><td><code>attached</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
-        <tr><td><code>gap</code></td><td><code>number</code> ({fr ? "pas 0–12, ignoré si attached" : "step 0–12, ignored when attached"})</td><td><em>—</em></td></tr>
+        <tr><td><code>gap</code></td><td><code>number</code> ({fr ? "pas 0–12, ignoré si attached" : "step 0–12, ignored when attached"})</td><td><em>–</em></td></tr>
         <tr><td><code>size</code></td><td><code>"sm" | "md" | "lg"</code></td><td><code>"md"</code></td></tr>
-        <tr><td><code>label</code></td><td><code>string</code></td><td><em>—</em></td></tr>
+        <tr><td><code>label</code></td><td><code>string</code></td><td><em>–</em></td></tr>
       </tbody>
     </table>
     <p>{fr ? "En mode attached, seuls les coins extrêmes sont arrondis. Le gap suit l'échelle d'espacement." : "When attached, only the outer corners are rounded. The gap follows the spacing scale."}</p>

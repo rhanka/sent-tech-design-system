@@ -6,7 +6,7 @@
 // une variable d'environnement PUBLIQUE.
 //
 // On lit `import.meta.env.PUBLIC_CHAT_ENDPOINT` (remplacé statiquement par Vite,
-// rend `undefined` si absente — SANS erreur de build). C'est l'équivalent souple
+// rend `undefined` si absente : SANS erreur de build). C'est l'équivalent souple
 // de `$env/static/public` : ce dernier LÈVE une erreur de build si la variable
 // n'est pas déclarée/définie, ce qui casserait le mode « non configuré » par
 // défaut voulu ici. Pour basculer sur l'import strict une fois l'endpoint figé :

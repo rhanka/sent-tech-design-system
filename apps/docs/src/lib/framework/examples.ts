@@ -705,9 +705,9 @@ import { Tag } from "@sentropic/design-system-vue";
             label: "Région",
             helperText: "Choisissez la région la plus proche.",
             options: [
-              { value: "ca-qc", label: "Canada — Québec" },
-              { value: "ca-on", label: "Canada — Ontario" },
-              { value: "us-east", label: "États-Unis — Est" }
+              { value: "ca-qc", label: "Canada, Québec" },
+              { value: "ca-on", label: "Canada, Ontario" },
+              { value: "us-east", label: "États-Unis, Est" }
             ]
           }
         }
@@ -730,9 +730,9 @@ import { Tag } from "@sentropic/design-system-vue";
   label="Région"
   helperText="Choisissez la région la plus proche."
   options={[
-    { value: "ca-qc", label: "Canada — Québec" },
-    { value: "ca-on", label: "Canada — Ontario" },
-    { value: "us-east", label: "États-Unis — Est" }
+    { value: "ca-qc", label: "Canada, Québec" },
+    { value: "ca-on", label: "Canada, Ontario" },
+    { value: "us-east", label: "États-Unis, Est" }
   ]}
 />`,
       react: `import { Select } from "@sentropic/design-system-react";
@@ -752,9 +752,9 @@ export function Demo() {
         label="Région"
         helperText="Choisissez la région la plus proche."
         options={[
-          { value: "ca-qc", label: "Canada — Québec" },
-          { value: "ca-on", label: "Canada — Ontario" },
-          { value: "us-east", label: "États-Unis — Est" }
+          { value: "ca-qc", label: "Canada, Québec" },
+          { value: "ca-on", label: "Canada, Ontario" },
+          { value: "us-east", label: "États-Unis, Est" }
         ]}
       />
     </>
@@ -777,9 +777,9 @@ import { Select } from "@sentropic/design-system-vue";
     label="Région"
     helperText="Choisissez la région la plus proche."
     :options="[
-      { value: 'ca-qc', label: 'Canada — Québec' },
-      { value: 'ca-on', label: 'Canada — Ontario' },
-      { value: 'us-east', label: 'États-Unis — Est' }
+      { value: 'ca-qc', label: 'Canada, Québec' },
+      { value: 'ca-on', label: 'Canada, Ontario' },
+      { value: 'us-east', label: 'États-Unis, Est' }
     ]"
   />
 </template>`
@@ -3159,9 +3159,9 @@ import { TreeView } from "@sentropic/design-system-vue";
             placeholder: "Choisir une région…",
             value: "ca-qc",
             options: [
-              { value: "ca-qc", label: "Canada — Québec" },
-              { value: "ca-on", label: "Canada — Ontario" },
-              { value: "us-east", label: "États-Unis — Est" }
+              { value: "ca-qc", label: "Canada, Québec" },
+              { value: "ca-on", label: "Canada, Ontario" },
+              { value: "us-east", label: "États-Unis, Est" }
             ]
           }
         }
@@ -3185,9 +3185,9 @@ import { TreeView } from "@sentropic/design-system-vue";
   label="Région"
   value="ca-qc"
   options={[
-    { value: "ca-qc", label: "Canada — Québec" },
-    { value: "ca-on", label: "Canada — Ontario" },
-    { value: "us-east", label: "États-Unis — Est" }
+    { value: "ca-qc", label: "Canada, Québec" },
+    { value: "ca-on", label: "Canada, Ontario" },
+    { value: "us-east", label: "États-Unis, Est" }
   ]}
 />`,
       react: `import { Combobox } from "@sentropic/design-system-react";
@@ -3208,9 +3208,9 @@ export function Demo() {
         label="Région"
         value="ca-qc"
         options={[
-          { value: "ca-qc", label: "Canada — Québec" },
-          { value: "ca-on", label: "Canada — Ontario" },
-          { value: "us-east", label: "États-Unis — Est" }
+          { value: "ca-qc", label: "Canada, Québec" },
+          { value: "ca-on", label: "Canada, Ontario" },
+          { value: "us-east", label: "États-Unis, Est" }
         ]}
       />
     </>
@@ -3234,9 +3234,9 @@ import { Combobox } from "@sentropic/design-system-vue";
     label="Région"
     value="ca-qc"
     :options="[
-      { value: 'ca-qc', label: 'Canada — Québec' },
-      { value: 'ca-on', label: 'Canada — Ontario' },
-      { value: 'us-east', label: 'États-Unis — Est' }
+      { value: 'ca-qc', label: 'Canada, Québec' },
+      { value: 'ca-on', label: 'Canada, Ontario' },
+      { value: 'us-east', label: 'États-Unis, Est' }
     ]"
   />
 </template>`
@@ -7265,12 +7265,12 @@ import { Row, Col, Card } from "@sentropic/design-system-vue";
           {
             comp: "Col",
             props: { span: 8 },
-            children: [{ comp: "Card", children: [{ el: "p", props: { class: "fp-card-text" }, children: ["span=8 — contenu principal"] }] }]
+            children: [{ comp: "Card", children: [{ el: "p", props: { class: "fp-card-text" }, children: ["span=8 : contenu principal"] }] }]
           },
           {
             comp: "Col",
             props: { span: 4 },
-            children: [{ comp: "Card", children: [{ el: "p", props: { class: "fp-card-text" }, children: ["span=4 — colonne latérale"] }] }]
+            children: [{ comp: "Card", children: [{ el: "p", props: { class: "fp-card-text" }, children: ["span=4 : colonne latérale"] }] }]
           }
         ]
       }
@@ -7281,16 +7281,16 @@ import { Row, Col, Card } from "@sentropic/design-system-vue";
 </script>
 
 <Row gutter={4}>
-  <Col span={8}><Card><p>span=8 — contenu principal</p></Card></Col>
-  <Col span={4}><Card><p>span=4 — colonne latérale</p></Card></Col>
+  <Col span={8}><Card><p>span=8 : contenu principal</p></Card></Col>
+  <Col span={4}><Card><p>span=4 : colonne latérale</p></Card></Col>
 </Row>`,
       react: `import { Row, Col, Card } from "@sentropic/design-system-react";
 
 export function Demo() {
   return (
     <Row gutter={4}>
-      <Col span={8}><Card><p>span=8 — contenu principal</p></Card></Col>
-      <Col span={4}><Card><p>span=4 — colonne latérale</p></Card></Col>
+      <Col span={8}><Card><p>span=8 : contenu principal</p></Card></Col>
+      <Col span={4}><Card><p>span=4 : colonne latérale</p></Card></Col>
     </Row>
   );
 }`,
@@ -7300,8 +7300,8 @@ import { Row, Col, Card } from "@sentropic/design-system-vue";
 
 <template>
   <Row :gutter="4">
-    <Col :span="8"><Card><p>span=8 — contenu principal</p></Card></Col>
-    <Col :span="4"><Card><p>span=4 — colonne latérale</p></Card></Col>
+    <Col :span="8"><Card><p>span=8 : contenu principal</p></Card></Col>
+    <Col :span="4"><Card><p>span=4 : colonne latérale</p></Card></Col>
   </Row>
 </template>`
     }
@@ -8269,10 +8269,10 @@ const selected = ref(true);
           comp: "SelectableList",
           props: { label: "Région", value: "ca-qc" },
           children: [
-            { comp: "SelectableRow", props: { value: "ca-qc" }, children: ["Canada — Québec"] },
-            { comp: "SelectableRow", props: { value: "ca-on" }, children: ["Canada — Ontario"] },
-            { comp: "SelectableRow", props: { value: "us-east" }, children: ["États-Unis — Est"] },
-            { comp: "SelectableRow", props: { value: "eu-west" }, children: ["Europe — Ouest"] }
+            { comp: "SelectableRow", props: { value: "ca-qc" }, children: ["Canada, Québec"] },
+            { comp: "SelectableRow", props: { value: "ca-on" }, children: ["Canada, Ontario"] },
+            { comp: "SelectableRow", props: { value: "us-east" }, children: ["États-Unis, Est"] },
+            { comp: "SelectableRow", props: { value: "eu-west" }, children: ["Europe, Ouest"] }
           ]
         },
         {
@@ -8295,10 +8295,10 @@ const selected = ref(true);
 </script>
 
 <SelectableList label="Région" value={region} onchange={(v) => (region = v)}>
-  <SelectableRow value="ca-qc">Canada — Québec</SelectableRow>
-  <SelectableRow value="ca-on">Canada — Ontario</SelectableRow>
-  <SelectableRow value="us-east">États-Unis — Est</SelectableRow>
-  <SelectableRow value="eu-west">Europe — Ouest</SelectableRow>
+  <SelectableRow value="ca-qc">Canada, Québec</SelectableRow>
+  <SelectableRow value="ca-on">Canada, Ontario</SelectableRow>
+  <SelectableRow value="us-east">États-Unis, Est</SelectableRow>
+  <SelectableRow value="eu-west">Europe, Ouest</SelectableRow>
 </SelectableList>`,
       react: `import { useState } from "react";
 import { SelectableList, SelectableRow } from "@sentropic/design-system-react";
@@ -8307,10 +8307,10 @@ export function Demo() {
   const [region, setRegion] = useState("ca-qc");
   return (
     <SelectableList label="Région" value={region} onChange={setRegion}>
-      <SelectableRow value="ca-qc">Canada — Québec</SelectableRow>
-      <SelectableRow value="ca-on">Canada — Ontario</SelectableRow>
-      <SelectableRow value="us-east">États-Unis — Est</SelectableRow>
-      <SelectableRow value="eu-west">Europe — Ouest</SelectableRow>
+      <SelectableRow value="ca-qc">Canada, Québec</SelectableRow>
+      <SelectableRow value="ca-on">Canada, Ontario</SelectableRow>
+      <SelectableRow value="us-east">États-Unis, Est</SelectableRow>
+      <SelectableRow value="eu-west">Europe, Ouest</SelectableRow>
     </SelectableList>
   );
 }`,
@@ -8323,10 +8323,10 @@ const region = ref("ca-qc");
 
 <template>
   <SelectableList label="Région" :value="region" @change="region = $event">
-    <SelectableRow value="ca-qc">Canada — Québec</SelectableRow>
-    <SelectableRow value="ca-on">Canada — Ontario</SelectableRow>
-    <SelectableRow value="us-east">États-Unis — Est</SelectableRow>
-    <SelectableRow value="eu-west">Europe — Ouest</SelectableRow>
+    <SelectableRow value="ca-qc">Canada, Québec</SelectableRow>
+    <SelectableRow value="ca-on">Canada, Ontario</SelectableRow>
+    <SelectableRow value="us-east">États-Unis, Est</SelectableRow>
+    <SelectableRow value="eu-west">Europe, Ouest</SelectableRow>
   </SelectableList>
 </template>`
     }
@@ -8584,7 +8584,7 @@ import { ConfigItemCard } from "@sentropic/design-system-vue";
         {
           comp: "FieldCard",
           props: { label: "Priorité", variant: "accent", tone: "category3" },
-          children: [{ el: "p", props: {}, children: ["Élevée — échéance proche."] }]
+          children: [{ el: "p", props: {}, children: ["Élevée : échéance proche."] }]
         }
       ])
     ],
@@ -8600,7 +8600,7 @@ import { ConfigItemCard } from "@sentropic/design-system-vue";
   <p>À relire avant validation.</p>
 </FieldCard>
 <FieldCard label="Priorité" variant="accent" tone="category3">
-  <p>Élevée — échéance proche.</p>
+  <p>Élevée : échéance proche.</p>
 </FieldCard>`,
       react: `import { FieldCard } from "@sentropic/design-system-react";
 
@@ -8614,7 +8614,7 @@ export function Demo() {
         <p>À relire avant validation.</p>
       </FieldCard>
       <FieldCard label="Priorité" variant="accent" tone="category3">
-        <p>Élevée — échéance proche.</p>
+        <p>Élevée : échéance proche.</p>
       </FieldCard>
     </>
   );
@@ -8631,7 +8631,7 @@ import { FieldCard } from "@sentropic/design-system-vue";
     <p>À relire avant validation.</p>
   </FieldCard>
   <FieldCard label="Priorité" variant="accent" tone="category3">
-    <p>Élevée — échéance proche.</p>
+    <p>Élevée : échéance proche.</p>
   </FieldCard>
 </template>`
     }
@@ -9697,7 +9697,7 @@ import { ParallelCoordinatesChart } from "@sentropic/design-system-vue";
         {
           comp: "CandlestickChart",
           props: {
-            label: "Cours SENT — semaine",
+            label: "Cours SENT : semaine",
             data: [
               { label: "Lun", open: 142, high: 148, low: 139, close: 146 },
               { label: "Mar", open: 146, high: 151, low: 144, close: 149 },
@@ -9715,7 +9715,7 @@ import { ParallelCoordinatesChart } from "@sentropic/design-system-vue";
 </script>
 
 <CandlestickChart
-  label="Cours SENT — semaine"
+  label="Cours SENT : semaine"
   data={[
     { label: "Lun", open: 142, high: 148, low: 139, close: 146 },
     { label: "Mar", open: 146, high: 151, low: 144, close: 149 },
@@ -9729,7 +9729,7 @@ import { ParallelCoordinatesChart } from "@sentropic/design-system-vue";
 export function Demo() {
   return (
     <CandlestickChart
-      label="Cours SENT — semaine"
+      label="Cours SENT : semaine"
       data={[
         { label: "Lun", open: 142, high: 148, low: 139, close: 146 },
         { label: "Mar", open: 146, high: 151, low: 144, close: 149 },
@@ -9746,7 +9746,7 @@ import { CandlestickChart } from "@sentropic/design-system-vue";
 
 <template>
   <CandlestickChart
-    label="Cours SENT — semaine"
+    label="Cours SENT : semaine"
     :data="[
       { label: 'Lun', open: 142, high: 148, low: 139, close: 146 },
       { label: 'Mar', open: 146, high: 151, low: 144, close: 149 },
@@ -9767,7 +9767,7 @@ import { CandlestickChart } from "@sentropic/design-system-vue";
         {
           comp: "OHLCChart",
           props: {
-            label: "Cours SENT — semaine",
+            label: "Cours SENT : semaine",
             data: [
               { label: "Lun", open: 142, high: 148, low: 139, close: 146 },
               { label: "Mar", open: 146, high: 151, low: 144, close: 149 },
@@ -9785,7 +9785,7 @@ import { CandlestickChart } from "@sentropic/design-system-vue";
 </script>
 
 <OHLCChart
-  label="Cours SENT — semaine"
+  label="Cours SENT : semaine"
   data={[
     { label: "Lun", open: 142, high: 148, low: 139, close: 146 },
     { label: "Mar", open: 146, high: 151, low: 144, close: 149 },
@@ -9799,7 +9799,7 @@ import { CandlestickChart } from "@sentropic/design-system-vue";
 export function Demo() {
   return (
     <OHLCChart
-      label="Cours SENT — semaine"
+      label="Cours SENT : semaine"
       data={[
         { label: "Lun", open: 142, high: 148, low: 139, close: 146 },
         { label: "Mar", open: 146, high: 151, low: 144, close: 149 },
@@ -9816,7 +9816,7 @@ import { OHLCChart } from "@sentropic/design-system-vue";
 
 <template>
   <OHLCChart
-    label="Cours SENT — semaine"
+    label="Cours SENT : semaine"
     :data="[
       { label: 'Lun', open: 142, high: 148, low: 139, close: 146 },
       { label: 'Mar', open: 146, high: 151, low: 144, close: 149 },
@@ -9837,7 +9837,7 @@ import { OHLCChart } from "@sentropic/design-system-vue";
         {
           comp: "HLCChart",
           props: {
-            label: "Cours SENT — semaine",
+            label: "Cours SENT : semaine",
             data: [
               { label: "Lun", high: 148, low: 139, close: 146 },
               { label: "Mar", high: 151, low: 144, close: 149 },
@@ -9855,7 +9855,7 @@ import { OHLCChart } from "@sentropic/design-system-vue";
 </script>
 
 <HLCChart
-  label="Cours SENT — semaine"
+  label="Cours SENT : semaine"
   data={[
     { label: "Lun", high: 148, low: 139, close: 146 },
     { label: "Mar", high: 151, low: 144, close: 149 },
@@ -9869,7 +9869,7 @@ import { OHLCChart } from "@sentropic/design-system-vue";
 export function Demo() {
   return (
     <HLCChart
-      label="Cours SENT — semaine"
+      label="Cours SENT : semaine"
       data={[
         { label: "Lun", high: 148, low: 139, close: 146 },
         { label: "Mar", high: 151, low: 144, close: 149 },
@@ -9886,7 +9886,7 @@ import { HLCChart } from "@sentropic/design-system-vue";
 
 <template>
   <HLCChart
-    label="Cours SENT — semaine"
+    label="Cours SENT : semaine"
     :data="[
       { label: 'Lun', high: 148, low: 139, close: 146 },
       { label: 'Mar', high: 151, low: 144, close: 149 },
@@ -9907,7 +9907,7 @@ import { HLCChart } from "@sentropic/design-system-vue";
         {
           comp: "HollowCandlestickChart",
           props: {
-            label: "Cours SENT — semaine",
+            label: "Cours SENT : semaine",
             data: [
               { label: "Lun", open: 142, high: 148, low: 139, close: 146 },
               { label: "Mar", open: 146, high: 151, low: 144, close: 143 },
@@ -9925,7 +9925,7 @@ import { HLCChart } from "@sentropic/design-system-vue";
 </script>
 
 <HollowCandlestickChart
-  label="Cours SENT — semaine"
+  label="Cours SENT : semaine"
   data={[
     { label: "Lun", open: 142, high: 148, low: 139, close: 146 },
     { label: "Mar", open: 146, high: 151, low: 144, close: 143 },
@@ -9939,7 +9939,7 @@ import { HLCChart } from "@sentropic/design-system-vue";
 export function Demo() {
   return (
     <HollowCandlestickChart
-      label="Cours SENT — semaine"
+      label="Cours SENT : semaine"
       data={[
         { label: "Lun", open: 142, high: 148, low: 139, close: 146 },
         { label: "Mar", open: 146, high: 151, low: 144, close: 143 },
@@ -9956,7 +9956,7 @@ import { HollowCandlestickChart } from "@sentropic/design-system-vue";
 
 <template>
   <HollowCandlestickChart
-    label="Cours SENT — semaine"
+    label="Cours SENT : semaine"
     :data="[
       { label: 'Lun', open: 142, high: 148, low: 139, close: 146 },
       { label: 'Mar', open: 146, high: 151, low: 144, close: 143 },
@@ -9977,7 +9977,7 @@ import { HollowCandlestickChart } from "@sentropic/design-system-vue";
         {
           comp: "HeikinAshiChart",
           props: {
-            label: "Cours SENT — semaine (Heikin-Ashi)",
+            label: "Cours SENT : semaine (Heikin-Ashi)",
             data: [
               { label: "Lun", open: 142, high: 148, low: 139, close: 146 },
               { label: "Mar", open: 146, high: 151, low: 144, close: 149 },
@@ -9995,7 +9995,7 @@ import { HollowCandlestickChart } from "@sentropic/design-system-vue";
 </script>
 
 <HeikinAshiChart
-  label="Cours SENT — semaine (Heikin-Ashi)"
+  label="Cours SENT : semaine (Heikin-Ashi)"
   data={[
     { label: "Lun", open: 142, high: 148, low: 139, close: 146 },
     { label: "Mar", open: 146, high: 151, low: 144, close: 149 },
@@ -10009,7 +10009,7 @@ import { HollowCandlestickChart } from "@sentropic/design-system-vue";
 export function Demo() {
   return (
     <HeikinAshiChart
-      label="Cours SENT — semaine (Heikin-Ashi)"
+      label="Cours SENT : semaine (Heikin-Ashi)"
       data={[
         { label: "Lun", open: 142, high: 148, low: 139, close: 146 },
         { label: "Mar", open: 146, high: 151, low: 144, close: 149 },
@@ -10026,7 +10026,7 @@ import { HeikinAshiChart } from "@sentropic/design-system-vue";
 
 <template>
   <HeikinAshiChart
-    label="Cours SENT — semaine (Heikin-Ashi)"
+    label="Cours SENT : semaine (Heikin-Ashi)"
     :data="[
       { label: 'Lun', open: 142, high: 148, low: 139, close: 146 },
       { label: 'Mar', open: 146, high: 151, low: 144, close: 149 },
@@ -10117,7 +10117,7 @@ import { TimelineChart } from "@sentropic/design-system-vue";
         {
           comp: "GanttChart",
           props: {
-            label: "Planning projet — semaines",
+            label: "Planning projet : semaines",
             marker: 10,
             data: [
               { task: "Cadrage", start: 0, end: 3, category: "Étude" },
@@ -10135,7 +10135,7 @@ import { TimelineChart } from "@sentropic/design-system-vue";
 </script>
 
 <GanttChart
-  label="Planning projet — semaines"
+  label="Planning projet : semaines"
   marker={10}
   data={[
     { task: "Cadrage", start: 0, end: 3, category: "Étude" },
@@ -10149,7 +10149,7 @@ import { TimelineChart } from "@sentropic/design-system-vue";
 export function Demo() {
   return (
     <GanttChart
-      label="Planning projet — semaines"
+      label="Planning projet : semaines"
       marker={10}
       data={[
         { task: "Cadrage", start: 0, end: 3, category: "Étude" },
@@ -10166,7 +10166,7 @@ import { GanttChart } from "@sentropic/design-system-vue";
 
 <template>
   <GanttChart
-    label="Planning projet — semaines"
+    label="Planning projet : semaines"
     :marker="10"
     :data="[
       { task: 'Cadrage', start: 0, end: 3, category: 'Étude' },
@@ -10187,7 +10187,7 @@ import { GanttChart } from "@sentropic/design-system-vue";
         {
           comp: "StreamgraphChart",
           props: {
-            label: "Trafic par canal — 2025",
+            label: "Trafic par canal : 2025",
             data: [
               { category: "Jan", values: [ { label: "Direct", value: 32 }, { label: "Référé", value: 18 }, { label: "Social", value: 12 }, { label: "Email", value: 8 } ] },
               { category: "Fév", values: [ { label: "Direct", value: 35 }, { label: "Référé", value: 22 }, { label: "Social", value: 16 }, { label: "Email", value: 10 } ] },
@@ -10206,7 +10206,7 @@ import { GanttChart } from "@sentropic/design-system-vue";
 </script>
 
 <StreamgraphChart
-  label="Trafic par canal — 2025"
+  label="Trafic par canal : 2025"
   data={[
     { category: "Jan", values: [{ label: "Direct", value: 32 }, { label: "Référé", value: 18 }, { label: "Social", value: 12 }, { label: "Email", value: 8 }] },
     { category: "Fév", values: [{ label: "Direct", value: 35 }, { label: "Référé", value: 22 }, { label: "Social", value: 16 }, { label: "Email", value: 10 }] },
@@ -10221,7 +10221,7 @@ import { GanttChart } from "@sentropic/design-system-vue";
 export function Demo() {
   return (
     <StreamgraphChart
-      label="Trafic par canal — 2025"
+      label="Trafic par canal : 2025"
       data={[
         { category: "Jan", values: [{ label: "Direct", value: 32 }, { label: "Référé", value: 18 }, { label: "Social", value: 12 }, { label: "Email", value: 8 }] },
         { category: "Fév", values: [{ label: "Direct", value: 35 }, { label: "Référé", value: 22 }, { label: "Social", value: 16 }, { label: "Email", value: 10 }] },
@@ -10239,7 +10239,7 @@ import { StreamgraphChart } from "@sentropic/design-system-vue";
 
 <template>
   <StreamgraphChart
-    label="Trafic par canal — 2025"
+    label="Trafic par canal : 2025"
     :data="[
       { category: 'Jan', values: [{ label: 'Direct', value: 32 }, { label: 'Référé', value: 18 }, { label: 'Social', value: 12 }, { label: 'Email', value: 8 }] },
       { category: 'Fév', values: [{ label: 'Direct', value: 35 }, { label: 'Référé', value: 22 }, { label: 'Social', value: 16 }, { label: 'Email', value: 10 }] },

@@ -1,10 +1,10 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// OAuth/OIDC — primitives PURES (sans runes, sans jose, sans état).
+// OAuth/OIDC : primitives PURES (sans runes, sans jose, sans état).
 //
 // Ce module ne contient que des fonctions déterministes / cryptographiques
 // testables unitairement : configuration de l'IdP, PKCE S256, génération
 // d'aléa (state/nonce/verifier), construction de l'URL d'autorisation.
-// L'état de session (tokens, profil) vit dans `auth.svelte.ts` — JAMAIS ici.
+// L'état de session (tokens, profil) vit dans `auth.svelte.ts` : JAMAIS ici.
 //
 // Paramètres IdP vérifiés (Sent Tech) :
 //   discovery : https://auth.sent-tech.ca/.well-known/openid-configuration

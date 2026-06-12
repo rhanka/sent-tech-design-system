@@ -83,7 +83,7 @@
         {
           comp: "BulletChart",
           props: {
-            label: locale.value === "fr" ? "Objectifs — vertical" : "Targets — vertical",
+            label: locale.value === "fr" ? "Objectifs : vertical" : "Targets: vertical",
             orientation: "vertical",
             data: [
               { label: "Revenu", value: 82, target: 100, ranges: [50, 80, 110] },

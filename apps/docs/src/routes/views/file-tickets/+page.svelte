@@ -104,7 +104,7 @@
             {
               comp: "DataTable",
               props: {
-                caption: fr ? "Tickets ouverts — support niveau 1" : "Open tickets — level-1 support",
+                caption: fr ? "Tickets ouverts : support niveau 1" : "Open tickets : level-1 support",
                 columns: COLUMNS.map((c) => ({ key: c.key, label: c.label(), sortable: c.sortable })),
                 rows: ROWS,
                 sortable: true,
@@ -162,7 +162,7 @@
     </p>
     <TabbedExample
       nodes={demoNodes}
-      title={fr ? "File de tickets — support niveau 1 (données mock)" : "Ticket Queue — level-1 support (mock data)"}
+      title={fr ? "File de tickets : support niveau 1 (données mock)" : "Ticket Queue : level-1 support (mock data)"}
     />
   </section>
 

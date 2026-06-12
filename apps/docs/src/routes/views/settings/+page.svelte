@@ -43,7 +43,7 @@
       el: "div",
       props: { class: "st-shell" },
       children: [
-        // Volet gauche — sous-sections de réglages
+        // Volet gauche : sous-sections de réglages
         {
           el: "aside",
           props: { class: "st-aside" },
@@ -57,7 +57,7 @@
             }
           ]
         },
-        // Volet droit — panneau de réglages
+        // Volet droit : panneau de réglages
         {
           el: "main",
           props: { class: "st-main" },
@@ -192,7 +192,7 @@
     </p>
     <TabbedExample
       nodes={demoNodes}
-      title={fr ? "Paramètres — espace de travail (données mock)" : "Settings — workspace (mock data)"}
+      title={fr ? "Paramètres : espace de travail (données mock)" : "Settings : workspace (mock data)"}
     />
   </section>
 

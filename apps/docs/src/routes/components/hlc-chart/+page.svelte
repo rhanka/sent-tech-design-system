@@ -65,7 +65,7 @@
         {
           comp: "HLCChart",
           props: {
-            label: locale.value === "fr" ? "Cours SENT — semaine" : "SENT stock — week",
+            label: locale.value === "fr" ? "Cours SENT : semaine" : "SENT stock : week",
             data: weekData
           }
         }

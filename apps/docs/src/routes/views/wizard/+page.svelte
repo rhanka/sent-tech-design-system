@@ -17,14 +17,14 @@
 
   const RECAP = $derived([
     { key: fr ? "Organisation" : "Organization", value: "Sent Tech" },
-    { key: fr ? "Région" : "Region", value: "Canada — Québec" },
+    { key: fr ? "Région" : "Region", value: "Canada : Québec" },
     { key: fr ? "Plan" : "Plan", value: "Pro" }
   ]);
 
   const REGION_OPTIONS = [
-    { value: "ca-qc", label: "Canada — Québec" },
-    { value: "ca-on", label: "Canada — Ontario" },
-    { value: "eu-fr", label: fr ? "Europe — France" : "Europe — France" }
+    { value: "ca-qc", label: "Canada : Québec" },
+    { value: "ca-on", label: "Canada : Ontario" },
+    { value: "eu-fr", label: fr ? "Europe : France" : "Europe : France" }
   ];
 
   const VISIBILITY_OPTIONS = [
@@ -53,7 +53,7 @@
           el: "div",
           props: { class: "wz-body" },
           children: [
-            // Étape courante — formulaire
+            // Étape courante : formulaire
             {
               el: "div",
               props: { class: "wz-step" },
@@ -169,7 +169,7 @@
     </p>
     <TabbedExample
       nodes={demoNodes}
-      title={fr ? "Assistant multi-étapes — création de projet (données mock)" : "Multi-step Wizard — project setup (mock data)"}
+      title={fr ? "Assistant multi-étapes : création de projet (données mock)" : "Multi-step Wizard : project setup (mock data)"}
     />
   </section>
 

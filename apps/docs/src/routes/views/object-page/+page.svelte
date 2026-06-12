@@ -191,7 +191,7 @@
     </p>
     <TabbedExample
       nodes={demoNodes}
-      title={fr ? "Page objet — fiche client (données mock)" : "Object Page — customer detail (mock data)"}
+      title={fr ? "Page objet : fiche client (données mock)" : "Object Page : customer detail (mock data)"}
     />
   </section>
 

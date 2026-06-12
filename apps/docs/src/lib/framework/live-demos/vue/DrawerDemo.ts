@@ -1,4 +1,4 @@
-// Démo Vue interactive du Drawer — composant à fonction de rendu (defineComponent
+// Démo Vue interactive du Drawer : composant à fonction de rendu (defineComponent
 // + h), trois panneaux indépendants (droite, gauche, pied d'actions), état local
 // via ref. Le Drawer Vue émet `close`, expose `default` (corps) et `footer`, et
 // s'ancre via `placement`.

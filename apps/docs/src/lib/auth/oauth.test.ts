@@ -23,7 +23,7 @@ describe("base64UrlEncode", () => {
 });
 
 describe("PKCE S256", () => {
-  it("derives challenge = base64url(SHA-256(verifier)) — known RFC 7636 vector", async () => {
+  it("derives challenge = base64url(SHA-256(verifier)) : known RFC 7636 vector", async () => {
     // Vecteur de l'annexe B du RFC 7636.
     const verifier = "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk";
     const challenge = await deriveCodeChallenge(verifier);

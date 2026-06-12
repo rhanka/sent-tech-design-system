@@ -4,7 +4,7 @@
 // Single source of truth for the compare bench + oracle: theme → key →
 // {component, scenario, state, ourSelector, refSelector, refMarkup, lang, note?}.
 // Replaces the duplicated maps in fidelity.mjs and the REF object in
-// compare/+page.svelte (correction C6 — kills the row-index `--component` bug).
+// compare/+page.svelte (correction C6 : kills the row-index `--component` bug).
 //
 // Migration rules applied to each key:
 // - component = parent component (ButtonDisabled→Button, InputError/InputDisabled→Input)
@@ -69,7 +69,7 @@ export const COMPARE_MANIFEST = {
       component: "Checkbox", scenario: "default", state: "rest",
       ourSelector: ".st-choice__label", refSelector: ".fr-checkbox-group label", lang: "fr",
       refMarkup: `<div class="fr-checkbox-group"><input type="checkbox" id="dcb" name="dcb"><label class="fr-label" for="dcb">J'accepte les conditions<span class="fr-hint-text">Texte d'aide</span></label></div>`,
-      note: "Le contrôle visuel DSFR est dessiné en `::before` sur le label (non mesurable). On compare le LABEL (`.fr-checkbox-group label`) — la typo/couleur réellement peintes.",
+      note: "Le contrôle visuel DSFR est dessiné en `::before` sur le label (non mesurable). On compare le LABEL (`.fr-checkbox-group label`) : la typo/couleur réellement peintes.",
     },
     Radio: {
       component: "Radio", scenario: "default", state: "rest",
@@ -81,7 +81,7 @@ export const COMPARE_MANIFEST = {
       component: "Toggle", scenario: "default", state: "rest",
       ourSelector: ".st-toggle__track", refSelector: ".fr-toggle__label", lang: "fr",
       refMarkup: `<div class="fr-toggle"><input type="checkbox" class="fr-toggle__input" id="dtg" checked><label class="fr-toggle__label" for="dtg" data-fr-checked-label="Activé" data-fr-unchecked-label="Désactivé">Activer les notifications</label></div>`,
-      note: "L'interrupteur DSFR est dessiné en `::before/::after` sur le label. On compare le label (`.fr-toggle__label`) — typo/couleur comparables.",
+      note: "L'interrupteur DSFR est dessiné en `::before/::after` sur le label. On compare le label (`.fr-toggle__label`) : typo/couleur comparables.",
     },
     Switch: {
       component: "Switch", scenario: "default", state: "rest",
@@ -191,13 +191,13 @@ export const COMPARE_MANIFEST = {
       component: "Checkbox", scenario: "default", state: "rest",
       ourSelector: ".st-choice__label", refSelector: ".bx--checkbox-label-text", lang: "en",
       refMarkup: `<fieldset class="bx--fieldset"><div class="bx--form-item bx--checkbox-wrapper"><input type="checkbox" class="bx--checkbox" id="ccb" checked><label for="ccb" class="bx--checkbox-label"><span class="bx--checkbox-label-text">I accept the terms</span></label></div></fieldset>`,
-      note: "Carbon checkbox control is a `::before` on the label. Measuring the label text (`.bx--checkbox-label-text`) — the comparable typography/colour.",
+      note: "Carbon checkbox control is a `::before` on the label. Measuring the label text (`.bx--checkbox-label-text`) : the comparable typography/colour.",
     },
     Radio: {
       component: "Radio", scenario: "default", state: "rest",
       ourSelector: ".st-choice__label", refSelector: ".bx--radio-button__label-text", lang: "en",
       refMarkup: `<fieldset class="bx--fieldset"><div class="bx--radio-button-group bx--radio-button-group--vertical"><div class="bx--radio-button-wrapper"><input type="radio" class="bx--radio-button" id="crb" name="crb" checked><label for="crb" class="bx--radio-button__label"><span class="bx--radio-button__appearance"></span><span class="bx--radio-button__label-text">Option A</span></label></div></div></fieldset>`,
-      note: "Carbon radio control is `.bx--radio-button__appearance` (a circle). Measuring the label text (`.bx--radio-button__label-text`) — comparable typography/colour.",
+      note: "Carbon radio control is `.bx--radio-button__appearance` (a circle). Measuring the label text (`.bx--radio-button__label-text`) : comparable typography/colour.",
     },
     Toggle: {
       component: "Toggle", scenario: "default", state: "rest",
@@ -246,7 +246,7 @@ export const COMPARE_MANIFEST = {
       ourSelector: `.st-tabs__tab[aria-selected="true"]`,
       refSelector: ".bx--tabs__nav-item--selected .bx--tabs__nav-link", lang: "en",
       refMarkup: `<nav class="bx--tabs"><ul class="bx--tabs__nav" role="tablist"><li class="bx--tabs__nav-item bx--tabs__nav-item--selected" role="tab"><a class="bx--tabs__nav-link" href="#">Active</a></li><li class="bx--tabs__nav-item" role="tab"><a class="bx--tabs__nav-link" href="#">Second</a></li></ul></nav>`,
-      note: "Spec selector `.bx--tabs__nav-item--selected` is the `<li>` wrapper (0×0 box). Measuring its inner `.bx--tabs__nav-link` — the actual styled tab.",
+      note: "Spec selector `.bx--tabs__nav-item--selected` is the `<li>` wrapper (0×0 box). Measuring its inner `.bx--tabs__nav-link` : the actual styled tab.",
     },
   },
 };
