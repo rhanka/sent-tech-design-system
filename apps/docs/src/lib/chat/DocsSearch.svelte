@@ -152,10 +152,13 @@
     gap: var(--st-spacing-3, 0.75rem);
     width: 100%;
   }
-  /* Le composant Search du DS plafonne à 28rem ; en palette de recherche on
-     veut une barre pleine largeur. */
-  .docs-search :global(.st-search) {
+  /* Le composant Search du DS plafonne à 28rem via son wrapper .st-field ;
+     en palette de recherche on veut une barre pleine largeur. */
+  .docs-search :global(.st-field) {
     max-width: none;
+    width: 100%;
+  }
+  .docs-search :global(.st-search) {
     width: 100%;
   }
 
