@@ -55,9 +55,14 @@
   import ChromeAirbus from "$lib/chrome/ChromeAirbus.svelte";
   import ChromeCanada from "$lib/chrome/ChromeCanada.svelte";
   import ChromeQuebec from "$lib/chrome/ChromeQuebec.svelte";
+  import DocsSearch from "$lib/chat/DocsSearch.svelte";
+  import { Search as SearchIcon } from "@lucide/svelte";
 
 
   let { children } = $props();
+
+  // Palette de recherche (Read the Docs) : barre dans le header -> overlay DocsSearch.
+  let searchOpen = $state(false);
 
   const componentGroups = buildComponentNavGroups();
   const breadcrumbs = $derived(resolveBreadcrumb(page.url.pathname));
@@ -305,6 +310,14 @@
     isFrameworkOpen = false;
     isMobileMenuOpen = false;
     isSidebarOpen = false;
+    searchOpen = false;
+  }
+  // "/" ouvre la palette de recherche (sauf si on tape déjà dans un champ).
+  const el = e.target as HTMLElement | null;
+  const typing = !!el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable);
+  if (e.key === "/" && !typing && !searchOpen) {
+    e.preventDefault();
+    searchOpen = true;
   }
 }} />
 
@@ -334,9 +347,9 @@
 
 {#snippet docsUtilityNav()}
   <nav class="docs-utility-nav" aria-label="Liens utiles">
-    {#if showFrameworkSwitcher}
-      {@render frameworkSelector()}
-    {/if}
+    {@render searchTrigger()}
+
+    {@render frameworkSelector()}
 
     {@render themeSelector()}
 
@@ -376,6 +389,21 @@
     {:else}
       <Menu size={20} />
     {/if}
+  </button>
+{/snippet}
+
+<!-- ── Snippet partagé : barre de recherche (Read the Docs) ───────────── -->
+{#snippet searchTrigger()}
+  <button
+    type="button"
+    class="docs-header-control docs-search-trigger"
+    onclick={() => (searchOpen = true)}
+    aria-label={locale.value === "fr" ? "Rechercher dans la documentation" : "Search the documentation"}
+    aria-haspopup="dialog"
+  >
+    <SearchIcon size={16} strokeWidth={2.1} aria-hidden="true" />
+    <span class="docs-search-trigger__label">{locale.value === "fr" ? "Rechercher…" : "Search…"}</span>
+    <kbd class="docs-search-trigger__kbd">/</kbd>
   </button>
 {/snippet}
 
@@ -891,6 +919,32 @@
       </aside>
 
       {@render pageContent()}
+    </div>
+  </div>
+{/if}
+
+<!-- Palette de recherche (Read the Docs) : overlay DocsSearch, ouvert depuis la
+     barre du header ou la touche « / ». Fermé par le bouton, le backdrop ou Échap. -->
+{#if searchOpen}
+  <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
+  <div
+    class="docs-search-overlay"
+    role="dialog"
+    tabindex="-1"
+    aria-modal="true"
+    aria-label={locale.value === "fr" ? "Recherche de la documentation" : "Documentation search"}
+    onclick={(e) => { if (e.target === e.currentTarget) searchOpen = false; }}
+  >
+    <div class="docs-search-overlay__panel">
+      <button
+        type="button"
+        class="docs-search-overlay__close"
+        onclick={() => (searchOpen = false)}
+        aria-label={locale.value === "fr" ? "Fermer la recherche" : "Close search"}
+      >
+        <X size={18} aria-hidden="true" />
+      </button>
+      <DocsSearch />
     </div>
   </div>
 {/if}
