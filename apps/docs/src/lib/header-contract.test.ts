@@ -76,8 +76,8 @@ describe("docs header alignment contract", () => {
     expect(airbusChromeSource).toContain("frameworkSwitcher");
   });
 
-  it("includes the imported tenants (Airbus, Canada) in the theme picker", () => {
-    expect(layoutSource).toContain('const THEMES: TenantTheme[] = [sentTechTheme, dsfrTheme, carbonTheme, airbusTheme, canadaTheme]');
+  it("includes the imported tenants (Airbus, Canada, Québec) in the theme picker", () => {
+    expect(layoutSource).toContain('const THEMES: TenantTheme[] = [sentTechTheme, dsfrTheme, carbonTheme, airbusTheme, canadaTheme, quebecTheme]');
   });
 
   it("does not render fake auth access in the public docs header", () => {
@@ -98,11 +98,12 @@ describe("docs header alignment contract", () => {
 describe("docs themed chrome contract", () => {
   it("wires dedicated chrome shells for mapped import themes", () => {
     expect(layoutSource).toContain('const useCustomChrome = $derived(');
-    expect(layoutSource).toContain('browser && (activeThemeId === "carbon" || activeThemeId === "dsfr" || activeThemeId === "airbus" || activeThemeId === "canada")');
+    expect(layoutSource).toContain('browser && (activeThemeId === "carbon" || activeThemeId === "dsfr" || activeThemeId === "airbus" || activeThemeId === "canada" || activeThemeId === "quebec")');
     expect(layoutSource).toContain("<ChromeCarbon");
     expect(layoutSource).toContain("<ChromeDsfr");
     expect(layoutSource).toContain("<ChromeAirbus");
     expect(layoutSource).toContain("<ChromeCanada");
+    expect(layoutSource).toContain("<ChromeQuebec");
   });
 
   it("keeps sent-tech shell as default chrome contract", () => {

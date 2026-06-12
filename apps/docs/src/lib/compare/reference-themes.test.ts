@@ -4,7 +4,7 @@ import { REFERENCE_THEMES } from "./reference-themes.mjs";
 
 describe("REFERENCE_THEMES", () => {
   it("covers the import themes", () => {
-    expect(Object.keys(REFERENCE_THEMES).sort()).toEqual(["canada", "carbon", "dsfr"]);
+    expect(Object.keys(REFERENCE_THEMES).sort()).toEqual(["canada", "carbon", "dsfr", "quebec"]);
   });
   it("pins every CDN URL to a version (no floating latest)", () => {
     for (const t of Object.values(REFERENCE_THEMES)) {
