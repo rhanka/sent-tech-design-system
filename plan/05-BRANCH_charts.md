@@ -39,5 +39,7 @@ Statut dans les sous-bullets (PAS dans les titres → import idempotent).
   - FR-1 annotations ✓ (point/label/line/region/shape sur Line/Area/Bar, publié 0.34.23/0.36.24).
     FR-2 data labels ✓ (dataLabels sur Bar/Line/Area/Donut/Stacked, publié 0.34.24/0.36.25).
     FR-3 crosshair contrôlé ✓ (hoverKey/onHoverKeyChange, publié 0.34.25/0.36.26).
-    FR-4 légende interactive (hiddenSeries) — EN COURS (agent). FR-5 a11y datapoint-nav — à suivre.
-    Lot 2 FR-1/2 (extension Scatter/OHLC/etc.) à suivre.
+    FR-4 légende interactive ✓ (hiddenSeries/onToggleSeries sur StackedBar/Combo, publié 0.34.26/0.36.27).
+    FR-5 a11y datapoint-nav ✓ (roving tabindex + sélection clavier sur Bar/Line/Area, publié 0.34.27/0.36.28).
+    → FR-1..5 COMPLETS et publiés. Reste lot 2 = étendre ces 5 props aux autres charts à séries
+    (Scatter, OHLC/Candle, Combo, etc.) selon priorités dataviz.
