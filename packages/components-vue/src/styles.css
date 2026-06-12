@@ -11590,7 +11590,7 @@
 .st-appHeader__navLink[aria-current="page"] {
   border-bottom-color: var(--st-semantic-border-interactive);
   color: var(--st-semantic-text-primary);
-  font-weight: 650;
+  font-weight: 700;
 }
 
 .st-appHeader__control {
@@ -14669,11 +14669,18 @@
 
 /* --- AppChrome : coque docs assemblée (compose AppHeader) --- */
 .st-appChrome {
+  position: sticky;
+  top: 0;
   width: 100%;
+  z-index: 30;
 }
 
 .st-appChrome__header .st-appHeader__bar {
+  background: color-mix(in srgb, var(--st-semantic-surface-default) 96%, transparent);
+  backdrop-filter: blur(8px);
+  height: 5rem;
   max-width: none;
+  padding: 0 var(--st-spacing-6, 1.5rem);
 }
 
 .st-appChrome__brand {
@@ -14717,7 +14724,7 @@
 .st-appChrome__utilityNav {
   align-items: center;
   display: flex;
-  gap: var(--st-spacing-2, 0.5rem);
+  gap: var(--st-spacing-1, 0.25rem);
 }
 
 .st-appChrome__menuWrap {
@@ -14812,6 +14819,12 @@
 .st-appChrome__burgerTrigger:hover {
   background: var(--st-semantic-surface-subtle);
   color: var(--st-semantic-text-primary);
+}
+
+.st-appChrome__extraSelectors {
+  align-items: center;
+  display: flex;
+  gap: var(--st-spacing-1, 0.25rem);
 }
 
 .st-appChrome__drawer {

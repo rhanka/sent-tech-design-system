@@ -75,6 +75,10 @@
     /** Zone identité à droite (IdentityMenu, bouton connexion, …). */
     identity?: Snippet;
 
+    // ── Contrôles additionnels ─────────────────────────────────────────────────
+    /** Contrôles additionnels dans la zone utilitaire. */
+    extraSelectors?: Snippet;
+
     // ── Mobile ─────────────────────────────────────────────────────────────────
     /** État ouvert du tiroir mobile (contrôlé). */
     mobileMenuOpen?: boolean;
@@ -95,10 +99,10 @@
 <script lang="ts">
   import { untrack } from "svelte";
   import {
-    Boxes,
     ChevronDown,
     Github,
     Globe,
+    Menu,
     Moon,
     Palette,
     Sun,
@@ -127,6 +131,7 @@
     githubHref,
     githubLabel = "GitHub",
     identity,
+    extraSelectors,
     mobileMenuOpen = false,
     onMobileMenuToggle,
     menuLabel = "Menu",
@@ -320,6 +325,7 @@
     {#if showLocaleSelector}{@render localeSelector()}{/if}
     {#if showGithub}{@render githubLink()}{/if}
     {#if identity}<div class="st-appChrome__identity">{@render identity()}</div>{/if}
+    {#if extraSelectors}<div class="st-appChrome__extraSelectors">{@render extraSelectors()}</div>{/if}
   </div>
 {/snippet}
 
@@ -334,7 +340,7 @@
     aria-controls={drawerId}
     aria-label={menuLabel}
   >
-    <Boxes size={20} aria-hidden="true" />
+    <Menu size={20} aria-hidden="true" />
   </button>
 {/snippet}
 
@@ -434,11 +440,18 @@
      react/vue : la source de vérité du CSS est le bloc publié (styles.css).
      Ce <style> scoped ne fait que rendre la démo Svelte autonome. */
   .st-appChrome {
+    position: sticky;
+    top: 0;
     width: 100%;
+    z-index: 30;
   }
 
   :global(.st-appChrome__header .st-appHeader__bar) {
+    background: color-mix(in srgb, var(--st-semantic-surface-default) 96%, transparent);
+    backdrop-filter: blur(8px);
+    height: 5rem;
     max-width: none;
+    padding: 0 var(--st-spacing-6, 1.5rem);
   }
 
   .st-appChrome__brand {
@@ -482,7 +495,7 @@
   .st-appChrome__utilityNav {
     align-items: center;
     display: flex;
-    gap: var(--st-spacing-2, 0.5rem);
+    gap: var(--st-spacing-1, 0.25rem);
   }
 
   .st-appChrome__menuWrap {
@@ -577,6 +590,12 @@
   .st-appChrome__burgerTrigger:hover {
     background: var(--st-semantic-surface-subtle);
     color: var(--st-semantic-text-primary);
+  }
+
+  .st-appChrome__extraSelectors {
+    align-items: center;
+    display: flex;
+    gap: var(--st-spacing-1, 0.25rem);
   }
 
   .st-appChrome__drawer {

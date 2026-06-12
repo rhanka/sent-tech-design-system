@@ -61,7 +61,11 @@
         githubHref="https://github.com/rhanka/sent-tech-design-system"
         mobileMenuOpen={demoMenuOpen}
         onMobileMenuToggle={() => (demoMenuOpen = !demoMenuOpen)}
-      />
+      >
+        {#snippet extraSelectors()}
+          <span style="font-size: 0.75rem; padding: 0.2rem 0.5rem; background: var(--st-semantic-surface-subtle); border-radius: var(--st-radius-xs, 0.25rem); color: var(--st-semantic-text-secondary);">v2.0</span>
+        {/snippet}
+      </AppChrome>
     </div>
     <p class="docs-appChrome-state">
       {fr ? "État courant" : "Current state"} — {fr ? "thème" : "theme"}: <code>{demoTheme}</code>,
@@ -93,6 +97,7 @@
         <tr><td><code>locale</code> / <code>onLocaleChange</code></td><td><code>{`"fr"|"en" / (l) => void`}</code></td><td><em>—</em></td></tr>
         <tr><td><code>githubHref</code></td><td><code>string</code></td><td><em>—</em></td></tr>
         <tr><td><code>identity</code></td><td><code>Snippet | ReactNode | slot</code></td><td><em>—</em></td></tr>
+        <tr><td><code>extraSelectors</code></td><td><code>Snippet | ReactNode | slot</code></td><td><em>—</em></td></tr>
         <tr><td><code>mobileMenuOpen</code> / <code>onMobileMenuToggle</code></td><td><code>{`boolean / () => void`}</code></td><td><code>false</code></td></tr>
       </tbody>
     </table>

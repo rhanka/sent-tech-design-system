@@ -46,6 +46,8 @@ export interface AppChromeProps {
   githubLabel?: string;
   // Identité
   identity?: React.ReactNode;
+  // Contrôles additionnels
+  extraSelectors?: React.ReactNode;
   // Mobile
   mobileMenuOpen?: boolean;
   onMobileMenuToggle?: () => void;
@@ -105,14 +107,12 @@ function GithubIcon({ size = 16 }: { size?: number }) {
     </svg>
   );
 }
-function BoxesIcon({ size = 20 }: { size?: number }) {
+function MenuIcon({ size = 20 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
-      <path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z" />
-      <path d="m7 16.5-4.74-2.85M7 16.5l5-3M7 16.5v5.17" />
-      <path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 10.5l-5 3Z" />
-      <path d="m17 16.5-5-3M17 16.5l4.74-2.85M17 16.5v5.17M7.97 4.42A2 2 0 0 0 7 6.13v4.37l5 3 5-3V6.13a2 2 0 0 0-.97-1.71l-3-1.8a2 2 0 0 0-2.06 0l-3 1.8Z" />
-      <path d="M12 8 7.26 5.15M12 8l4.74-2.85M12 8v5.5" />
+      <line x1="4" x2="20" y1="6" y2="6" />
+      <line x1="4" x2="20" y1="12" y2="12" />
+      <line x1="4" x2="20" y1="18" y2="18" />
     </svg>
   );
 }
@@ -141,6 +141,7 @@ export function AppChrome({
   githubHref,
   githubLabel = "GitHub",
   identity,
+  extraSelectors,
   mobileMenuOpen = false,
   onMobileMenuToggle,
   menuLabel = "Menu",
@@ -311,6 +312,7 @@ export function AppChrome({
       ) : null}
 
       {identity ? <div className="st-appChrome__identity">{identity}</div> : null}
+      {extraSelectors ? <div className="st-appChrome__extraSelectors">{extraSelectors}</div> : null}
     </div>
   );
 
@@ -325,7 +327,7 @@ export function AppChrome({
         aria-controls={drawerId}
         aria-label={menuLabel}
       >
-        <BoxesIcon />
+        <MenuIcon />
       </button>
     </>
   );

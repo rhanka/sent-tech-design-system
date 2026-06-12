@@ -133,3 +133,15 @@ describe("AppChrome — mobile burger + tiroir", () => {
     expect(onMobileMenuToggle).toHaveBeenCalledTimes(1);
   });
 });
+
+describe("AppChrome — extraSelectors", () => {
+  it("renders extraSelectors slot content in the utility nav", () => {
+    const wrapper = mount(AppChrome, { slots: { extraSelectors: () => h("span", "extra-ctrl") } });
+    expect(wrapper.find(".st-appChrome__extraSelectors").text()).toContain("extra-ctrl");
+  });
+
+  it("does not render extraSelectors div when not provided", () => {
+    const wrapper = mount(AppChrome);
+    expect(wrapper.find(".st-appChrome__extraSelectors").exists()).toBe(false);
+  });
+});
