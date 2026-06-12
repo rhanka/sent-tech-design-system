@@ -61,7 +61,7 @@
       <tbody>
         <tr><td><code>orientation</code></td><td><code>"horizontal" | "vertical"</code></td><td><code>"horizontal"</code></td></tr>
         <tr><td><code>variant</code></td><td><code>"solid" | "dashed"</code></td><td><code>"solid"</code></td></tr>
-        <tr><td><code>spacing</code></td><td><code>number</code> ({fr ? "pas 0–12" : "step 0–12"})</td><td><em>—</em></td></tr>
+        <tr><td><code>spacing</code></td><td><code>number</code> ({fr ? "pas 0–12" : "step 0–12"})</td><td><em>–</em></td></tr>
         <tr><td><code>label</code></td><td><code>string</code></td><td><em>{fr ? "horizontal seulement" : "horizontal only"}</em></td></tr>
       </tbody>
     </table>

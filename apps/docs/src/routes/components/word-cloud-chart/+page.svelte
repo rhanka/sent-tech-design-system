@@ -51,14 +51,14 @@
     <p>
       {#if locale.value === "fr"}
         Nuage de mots : la taille de police de chaque mot est proportionnelle à son poids.
-        Le placement est entièrement déterministe — les mots sont triés par poids décroissant
+        Le placement est entièrement déterministe : les mots sont triés par poids décroissant
         puis positionnés depuis le centre le long d'une spirale d'Archimède, en évitant tout
         chevauchement par boîtes englobantes. Couleurs issues de la palette catégorielle du
         thème, tooltip au survol et liste de valeurs accessible. Les mots qui ne rentrent pas
         sont omis et signalés dans la liste de valeurs.
       {:else}
         Word cloud: each word's font size is proportional to its weight. Placement is fully
-        deterministic — words are sorted by descending weight then positioned from the center
+        deterministic : words are sorted by descending weight then positioned from the center
         along an Archimedean spiral, avoiding overlap via bounding boxes. Colors come from the
         theme's categorical palette, with a hover tooltip and accessible value list. Words that
         do not fit are omitted and flagged in the value list.

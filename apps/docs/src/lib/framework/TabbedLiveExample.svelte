@@ -1,5 +1,5 @@
 <!--
-  TabbedLiveExample — variante INTERACTIVE de TabbedExample.
+  TabbedLiveExample : variante INTERACTIVE de TabbedExample.
 
   Certaines démos (Modal, Drawer, …) sont interactives : un bouton déclencheur
   ouvre un overlay. Elles ne s'expriment pas en NodeSpec déclaratif ; on les

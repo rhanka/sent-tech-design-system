@@ -63,14 +63,14 @@
       </thead>
       <tbody>
         <tr><td><code>value</code></td><td><code>string</code> ("HH:mm")</td><td><code>""</code></td></tr>
-        <tr><td><code>onChange</code></td><td><code>(value: string) =&gt; void</code></td><td><em>—</em></td></tr>
+        <tr><td><code>onChange</code></td><td><code>(value: string) =&gt; void</code></td><td><em>–</em></td></tr>
         <tr><td><code>step</code></td><td><code>number</code> ({fr ? "minutes" : "minutes"})</td><td><code>15</code></td></tr>
-        <tr><td><code>min</code></td><td><code>string</code> ("HH:mm")</td><td><em>—</em></td></tr>
-        <tr><td><code>max</code></td><td><code>string</code> ("HH:mm")</td><td><em>—</em></td></tr>
+        <tr><td><code>min</code></td><td><code>string</code> ("HH:mm")</td><td><em>–</em></td></tr>
+        <tr><td><code>max</code></td><td><code>string</code> ("HH:mm")</td><td><em>–</em></td></tr>
         <tr><td><code>format</code></td><td><code>"24" | "12"</code></td><td><code>"24"</code></td></tr>
         <tr><td><code>size</code></td><td><code>"sm" | "md" | "lg"</code></td><td><code>"md"</code></td></tr>
         <tr><td><code>disabled</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
-        <tr><td><code>label</code></td><td><code>string</code></td><td><em>—</em></td></tr>
+        <tr><td><code>label</code></td><td><code>string</code></td><td><em>–</em></td></tr>
       </tbody>
     </table>
     <p>{fr ? "Les créneaux sont générés entre min et max selon step. Quel que soit le format d'affichage, onChange reçoit \"HH:mm\" sur 24 heures." : "Slots are generated between min and max by step. Regardless of display format, onChange receives 24h \"HH:mm\"."}</p>

@@ -5,7 +5,7 @@
 // vides sont créés par scripts/ensure-compare-local-overlays.mjs avant chaque
 // build/dev (predev + prebuild dans apps/docs/package.json).
 //
-// Stratégie retenue — import STATIQUE sur des stubs garantis :
+// Stratégie retenue : import STATIQUE sur des stubs garantis :
 //   + Vite/SSR/prerender ne voit jamais un module absent → pas de build cassé.
 //   + Sans overlay réel, COMPARE_MANIFEST_LOCAL = {} et REFERENCE_THEMES_LOCAL = {}
 //     → comportement strictement identique à aujourd'hui.

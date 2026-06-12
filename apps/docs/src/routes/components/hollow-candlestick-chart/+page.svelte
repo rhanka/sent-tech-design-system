@@ -9,7 +9,7 @@
       kicker: "Composant · Données",
       badge: "Documenté",
       intro:
-        "HollowCandlestickChart visualise des données OHLC (Open / High / Low / Close) sous forme de chandeliers creux (convention hollow candlestick). La couleur du trait suit la clôture par rapport à la clôture précédente — verte si elle monte, rouge si elle descend. Le corps est creux quand la bougie est haussière (close ≥ open) et plein quand elle est baissière (close < open).",
+        "HollowCandlestickChart visualise des données OHLC (Open / High / Low / Close) sous forme de chandeliers creux (convention hollow candlestick). La couleur du trait suit la clôture par rapport à la clôture précédente : verte si elle monte, rouge si elle descend. Le corps est creux quand la bougie est haussière (close ≥ open) et plein quand elle est baissière (close < open).",
       examplesTitle: "Exemples",
       weekTitle: "Semaine de trading",
       weekDesc: "Cinq bougies quotidiennes. La mèche couvre high et low ; le corps relie open et close, creux ou plein selon le sens de la bougie.",
@@ -29,7 +29,7 @@
       kicker: "Component · Data",
       badge: "Documented",
       intro:
-        "HollowCandlestickChart visualises OHLC (Open / High / Low / Close) data as hollow candlesticks. The outline colour follows the close versus the previous close — green when it rises, red when it falls. The body is hollow when the candle is bullish (close ≥ open) and filled when it is bearish (close < open).",
+        "HollowCandlestickChart visualises OHLC (Open / High / Low / Close) data as hollow candlesticks. The outline colour follows the close versus the previous close: green when it rises, red when it falls. The body is hollow when the candle is bullish (close ≥ open) and filled when it is bearish (close < open).",
       examplesTitle: "Examples",
       weekTitle: "Trading week",
       weekDesc: "Five daily candles. The wick spans high and low; the body links open and close, hollow or filled depending on the candle direction.",
@@ -65,7 +65,7 @@
         {
           comp: "HollowCandlestickChart",
           props: {
-            label: locale.value === "fr" ? "Cours SENT — semaine" : "SENT stock — week",
+            label: locale.value === "fr" ? "Cours SENT : semaine" : "SENT stock: week",
             data: weekData
           }
         }

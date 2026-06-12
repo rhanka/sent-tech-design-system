@@ -149,8 +149,8 @@
     </table>
     <p class="docs-demo-note">
       {locale.value === "fr"
-        ? "FunnelChartDatum = { label: string; value: number; tone?: FunnelChartTone } — tone ∈ category1…8"
-        : "FunnelChartDatum = { label: string; value: number; tone?: FunnelChartTone } — tone ∈ category1…8"}
+        ? "FunnelChartDatum = { label: string; value: number; tone?: FunnelChartTone } : tone ∈ category1…8"
+        : "FunnelChartDatum = { label: string; value: number; tone?: FunnelChartTone } : tone ∈ category1…8"}
     </p>
   </section>
 

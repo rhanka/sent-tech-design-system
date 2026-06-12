@@ -1,5 +1,5 @@
 /**
- * color-mode.svelte.ts — store de mode de couleur (clair / sombre / auto).
+ * color-mode.svelte.ts : store de mode de couleur (clair / sombre / auto).
  *
  * - `auto` : suit `prefers-color-scheme` (l'OS / le navigateur décide).
  *   → retire l'attribut `data-color-mode` sur `<html>`.
@@ -37,7 +37,7 @@ function applyMode(mode: ColorMode): void {
 function createColorModeStore() {
   let _value = $state<ColorMode>("auto");
 
-  // Initialisation côté client — lit localStorage, applique immédiatement.
+  // Initialisation côté client : lit localStorage, applique immédiatement.
   function init() {
     if (!browser) return;
     _value = readStorage();

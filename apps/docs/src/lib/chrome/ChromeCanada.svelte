@@ -1,5 +1,5 @@
 <!--
-  Chrome documentaire Gouvernement du Canada — GC Design System (design-system.canada.ca)
+  Chrome documentaire Gouvernement du Canada : GC Design System (design-system.canada.ca)
   Forme fidèle à canada.ca / GCDS :
   - Header : fond BLANC, signature FIP officielle (drapeau + « Government of Canada /
     Gouvernement du Canada ») à gauche ; outils + barre de recherche à droite
@@ -90,7 +90,7 @@
       <div class="gc-header__inner">
         <!-- Gauche : signature FIP officielle -->
         <div class="gc-header__brand">
-          <a href="/" class="gc-header__brand-link" aria-label="Accueil — GC Design System">
+          <a href="/" class="gc-header__brand-link" aria-label="Accueil : GC Design System">
             <img
               src="/chrome/canada/sig-en.svg"
               alt="Government of Canada / Gouvernement du Canada"

@@ -58,8 +58,8 @@
       <tbody>
         <tr><td><code>target</code></td><td><code>string | HTMLElement</code></td><td><code>"body"</code></td></tr>
         <tr><td><code>disabled</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
-        <tr><td><code>class</code></td><td><code>string</code></td><td><em>—</em></td></tr>
-        <tr><td><code>children</code></td><td><code>Snippet | ReactNode | slot</code></td><td><em>—</em></td></tr>
+        <tr><td><code>class</code></td><td><code>string</code></td><td><em>–</em></td></tr>
+        <tr><td><code>children</code></td><td><code>Snippet | ReactNode | slot</code></td><td><em>–</em></td></tr>
       </tbody>
     </table>
     <p>

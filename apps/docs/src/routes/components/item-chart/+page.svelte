@@ -9,7 +9,7 @@
       kicker: "Composant · Données",
       badge: "Documenté",
       intro:
-        "ItemChart (graphe « parlement » / hémicycle) répartit la somme des sièges en plusieurs rangées concentriques formant un demi-anneau. Chaque groupe occupe un bloc de pastilles CONTIGUËS coloré par ton catégoriel — on lit sa part à la longueur de l'arc occupé, comme une répartition de sièges.",
+        "ItemChart (graphe « parlement » / hémicycle) répartit la somme des sièges en plusieurs rangées concentriques formant un demi-anneau. Chaque groupe occupe un bloc de pastilles CONTIGUËS coloré par ton catégoriel : on lit sa part à la longueur de l'arc occupé, comme une répartition de sièges.",
       examplesTitle: "Exemples",
       basicTitle: "Composition d'une assemblée",
       basicDesc: "Une pastille par siège ; chaque groupe forme un bloc contigu coloré par ton.",
@@ -32,7 +32,7 @@
       kicker: "Component · Data",
       badge: "Documented",
       intro:
-        "ItemChart (parliament / hemicycle chart) lays the total number of seats out across several concentric rows forming a half-ring. Each group takes a CONTIGUOUS block of dots colored by categorical tone — you read its share from the length of the arc it occupies, like a seat allocation.",
+        "ItemChart (parliament / hemicycle chart) lays the total number of seats out across several concentric rows forming a half-ring. Each group takes a CONTIGUOUS block of dots colored by categorical tone: you read its share from the length of the arc it occupies, like a seat allocation.",
       examplesTitle: "Examples",
       basicTitle: "Assembly composition",
       basicDesc: "One dot per seat; each group forms a contiguous block colored by tone.",

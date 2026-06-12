@@ -57,12 +57,12 @@
       </thead>
       <tbody>
         <tr><td><code>value</code></td><td><code>string | null | [string | null, string | null]</code></td><td><code>null</code></td></tr>
-        <tr><td><code>onChange</code></td><td><code>(value: CalendarValue) =&gt; void</code></td><td><em>—</em></td></tr>
-        <tr><td><code>min</code></td><td><code>string</code> ("YYYY-MM-DD")</td><td><em>—</em></td></tr>
-        <tr><td><code>max</code></td><td><code>string</code> ("YYYY-MM-DD")</td><td><em>—</em></td></tr>
+        <tr><td><code>onChange</code></td><td><code>(value: CalendarValue) =&gt; void</code></td><td><em>–</em></td></tr>
+        <tr><td><code>min</code></td><td><code>string</code> ("YYYY-MM-DD")</td><td><em>–</em></td></tr>
+        <tr><td><code>max</code></td><td><code>string</code> ("YYYY-MM-DD")</td><td><em>–</em></td></tr>
         <tr><td><code>range</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
         <tr><td><code>weekStartsOn</code></td><td><code>0 | 1</code></td><td><code>1</code></td></tr>
-        <tr><td><code>month</code></td><td><code>string</code> ("YYYY-MM")</td><td><em>—</em></td></tr>
+        <tr><td><code>month</code></td><td><code>string</code> ("YYYY-MM")</td><td><em>–</em></td></tr>
         <tr><td><code>locale</code></td><td><code>string</code></td><td><code>"fr-FR"</code></td></tr>
       </tbody>
     </table>

@@ -68,7 +68,7 @@ export function listScenarios(themeId: string, component: string): string[] {
 
 /**
  * Liste les écarts du registre pour un (theme, component, scenario).
- * INVARIANT : aucune mesure navigateur — lecture seule du JSON statique.
+ * INVARIANT : aucune mesure navigateur : lecture seule du JSON statique.
  */
 export function listGaps(
   themeId: string,

@@ -72,7 +72,7 @@ export async function mountVueIsland(
   //     `app.unmount()` sur la même app) ;
   //   • on n'appelle `app.unmount()` qu'une fois, puis on lâche la référence ;
   //   • le try/catch absorbe un teardown qui marcherait sur un DOM déjà retiré
-  //     par l'île entrante — le rendu reste correct, la console reste propre.
+  //     par l'île entrante : le rendu reste correct, la console reste propre.
   let appRef: ReturnType<typeof createApp> | null = app;
   let disposed = false;
 

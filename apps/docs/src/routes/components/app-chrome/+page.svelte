@@ -37,8 +37,8 @@
     </div>
     <p>
       {fr
-        ? "Coque de navigation complète — la barre du haut assemblée de design-system.sent-tech.ca, publiée comme un composant unique et paramétrable. Elle compose AppHeader et ajoute les contrôles utilitaires (sélecteur de thème, bascule clair/sombre, sélecteur de langue, lien GitHub, zone identité) plus le burger et le tiroir mobile. Entièrement CONTRÔLÉE : on passe le produit, la nav, le titre et l'état + callbacks des contrôles ; aucune logique de routage ni de persistance n'est embarquée."
-        : "Full navigation shell — the assembled top bar of design-system.sent-tech.ca, published as a single parameterized component. It composes AppHeader and adds the utility controls (theme selector, light/dark toggle, language selector, GitHub link, identity zone) plus the mobile burger and drawer. Fully CONTROLLED: you pass product, nav, title and the controls' state + callbacks; no routing or persistence logic is embedded."}
+        ? "Coque de navigation complète : la barre du haut assemblée de design-system.sent-tech.ca, publiée comme un composant unique et paramétrable. Elle compose AppHeader et ajoute les contrôles utilitaires (sélecteur de thème, bascule clair/sombre, sélecteur de langue, lien GitHub, zone identité) plus le burger et le tiroir mobile. Entièrement CONTRÔLÉE : on passe le produit, la nav, le titre et l'état + callbacks des contrôles ; aucune logique de routage ni de persistance n'est embarquée."
+        : "Full navigation shell: the assembled top bar of design-system.sent-tech.ca, published as a single parameterized component. It composes AppHeader and adds the utility controls (theme selector, light/dark toggle, language selector, GitHub link, identity zone) plus the mobile burger and drawer. Fully CONTROLLED: you pass product, nav, title and the controls' state + callbacks; no routing or persistence logic is embedded."}
     </p>
   </section>
 
@@ -68,7 +68,7 @@
       </AppChrome>
     </div>
     <p class="docs-appChrome-state">
-      {fr ? "État courant" : "Current state"} — {fr ? "thème" : "theme"}: <code>{demoTheme}</code>,
+      {fr ? "État courant" : "Current state"}, {fr ? "thème" : "theme"}: <code>{demoTheme}</code>,
       {fr ? "mode couleur" : "color mode"}: <code>{demoColorMode}</code>,
       {fr ? "langue" : "locale"}: <code>{demoLocale}</code>
     </p>
@@ -87,17 +87,17 @@
       </thead>
       <tbody>
         <tr><td><code>brandName</code></td><td><code>string</code></td><td><code>"Sentropic"</code></td></tr>
-        <tr><td><code>productName</code></td><td><code>string</code></td><td><em>—</em></td></tr>
-        <tr><td><code>logoSrc</code></td><td><code>string</code></td><td><em>—</em></td></tr>
+        <tr><td><code>productName</code></td><td><code>string</code></td><td><em>–</em></td></tr>
+        <tr><td><code>logoSrc</code></td><td><code>string</code></td><td><em>–</em></td></tr>
         <tr><td><code>brandHref</code></td><td><code>string</code></td><td><code>"/"</code></td></tr>
         <tr><td><code>nav</code></td><td><code>{`{ label, href, active? }[]`}</code></td><td><code>[]</code></td></tr>
         <tr><td><code>themes</code></td><td><code>{`{ id, label }[]`}</code></td><td><code>[]</code></td></tr>
-        <tr><td><code>theme</code> / <code>onThemeChange</code></td><td><code>{`string / (id) => void`}</code></td><td><em>—</em></td></tr>
-        <tr><td><code>colorMode</code> / <code>onColorModeChange</code></td><td><code>{`"light"|"dark"|"auto" / (m) => void`}</code></td><td><em>—</em></td></tr>
-        <tr><td><code>locale</code> / <code>onLocaleChange</code></td><td><code>{`"fr"|"en" / (l) => void`}</code></td><td><em>—</em></td></tr>
-        <tr><td><code>githubHref</code></td><td><code>string</code></td><td><em>—</em></td></tr>
-        <tr><td><code>identity</code></td><td><code>Snippet | ReactNode | slot</code></td><td><em>—</em></td></tr>
-        <tr><td><code>extraSelectors</code></td><td><code>Snippet | ReactNode | slot</code></td><td><em>—</em></td></tr>
+        <tr><td><code>theme</code> / <code>onThemeChange</code></td><td><code>{`string / (id) => void`}</code></td><td><em>–</em></td></tr>
+        <tr><td><code>colorMode</code> / <code>onColorModeChange</code></td><td><code>{`"light"|"dark"|"auto" / (m) => void`}</code></td><td><em>–</em></td></tr>
+        <tr><td><code>locale</code> / <code>onLocaleChange</code></td><td><code>{`"fr"|"en" / (l) => void`}</code></td><td><em>–</em></td></tr>
+        <tr><td><code>githubHref</code></td><td><code>string</code></td><td><em>–</em></td></tr>
+        <tr><td><code>identity</code></td><td><code>Snippet | ReactNode | slot</code></td><td><em>–</em></td></tr>
+        <tr><td><code>extraSelectors</code></td><td><code>Snippet | ReactNode | slot</code></td><td><em>–</em></td></tr>
         <tr><td><code>mobileMenuOpen</code> / <code>onMobileMenuToggle</code></td><td><code>{`boolean / () => void`}</code></td><td><code>false</code></td></tr>
       </tbody>
     </table>

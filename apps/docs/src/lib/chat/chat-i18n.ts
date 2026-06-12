@@ -34,7 +34,7 @@ const fr: ChatCopy = {
     n > 1 ? `${n} messages restants` : `${n} message restant`,
   remainingNone: "Limite d'essai atteinte",
   thinking: "Réflexion…",
-  demoNotice: "Démo locale — endpoint non configuré.",
+  demoNotice: "Démo locale : endpoint non configuré.",
   demoReply:
     "Réponse de démonstration (aucun endpoint configuré). Une fois PUBLIC_CHAT_ENDPOINT défini, vos questions seront envoyées au modèle.",
   ctaTitle: "Continuez en vous connectant",
@@ -56,7 +56,7 @@ const en: ChatCopy = {
   remaining: (n) => (n > 1 ? `${n} messages left` : `${n} message left`),
   remainingNone: "Free trial limit reached",
   thinking: "Thinking…",
-  demoNotice: "Local demo — endpoint not configured.",
+  demoNotice: "Local demo: endpoint not configured.",
   demoReply:
     "Demo reply (no endpoint configured). Once PUBLIC_CHAT_ENDPOINT is set, your questions will be sent to the model.",
   ctaTitle: "Sign in to continue",

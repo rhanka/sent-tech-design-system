@@ -57,7 +57,7 @@
       </tbody>
     </table>
     <p class="docs-demo-context">
-      <code>PolygonChartPoint</code> = <code>{`{ x, y }`}</code> — les points sont reliés dans
+      <code>PolygonChartPoint</code> = <code>{`{ x, y }`}</code> : les points sont reliés dans
       l'ordre fourni puis le contour est fermé (dernier → premier). Les coordonnées non
       finies sont filtrées ; le polygone n'est tracé qu'à partir de deux points valides.
     </p>

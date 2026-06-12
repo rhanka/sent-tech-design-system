@@ -1,6 +1,6 @@
 // apps/docs/src/lib/compare/registry.mjs
 // Pure, dependency-free helpers shared by the docs app (Vite) AND the oracle
-// (tools/compare/fidelity.mjs, plain Node ESM). NO imports — keep it portable.
+// (tools/compare/fidelity.mjs, plain Node ESM). NO imports : keep it portable.
 
 /** Stable gap identity: theme/component/scenario/state/property. */
 export function gapKey({ theme, component, scenario, state, property }) {

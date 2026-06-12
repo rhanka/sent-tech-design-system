@@ -65,7 +65,7 @@
         {
           comp: "HeikinAshiChart",
           props: {
-            label: locale.value === "fr" ? "Cours SENT — semaine (Heikin-Ashi)" : "SENT stock — week (Heikin-Ashi)",
+            label: locale.value === "fr" ? "Cours SENT : semaine (Heikin-Ashi)" : "SENT stock : week (Heikin-Ashi)",
             data: weekData
           }
         }

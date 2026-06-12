@@ -91,7 +91,7 @@
 
 
   <section class="docs-section">
-    <h2>Exemple — couches choroplèthe, hexbin + clusters, densité</h2>
+    <h2>Exemple : couches choroplèthe, hexbin + clusters, densité</h2>
     <TabbedExample nodes={exampleDemo} title="Cartes démo" />
   </section>
 

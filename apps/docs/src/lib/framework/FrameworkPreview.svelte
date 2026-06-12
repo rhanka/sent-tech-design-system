@@ -1,7 +1,7 @@
 <!--
-  FrameworkPreview — aperçu « live » multi-frameworks (A + C).
+  FrameworkPreview : aperçu « live » multi-frameworks (A + C).
 
-  C — rendu en place : selon framework.value, l'aperçu rend le composant avec le
+  C : rendu en place : selon framework.value, l'aperçu rend le composant avec le
       VRAI package du framework choisi.
         • svelte → rendu inline via SvelteNode (composants Svelte du DS).
         • react  → île montée via createRoot (@sentropic/design-system-react).
@@ -11,7 +11,7 @@
       build adapter-static reste statique. Démontage/remontage propre à chaque
       changement de framework.
 
-  A — snippet par framework : le code d'usage affiché correspond au framework
+  A : snippet par framework : le code d'usage affiché correspond au framework
       actif (Svelte / React / Vue), depuis le registre d'exemples.
 -->
 <script lang="ts">
@@ -196,7 +196,7 @@
 
   /* Les exemples « pile » (Alert, …) posent un wrapper .fp-stack interne. */
   .fp__stage :global(.fp-row) {
-    /* Top-align (Lot INP) : voir TabbedExample — center decalait les champs
+    /* Top-align (Lot INP) : voir TabbedExample : center decalait les champs
        courts vers le bas dans une rangee de hauteurs inegales. */
     align-items: flex-start;
     display: flex;

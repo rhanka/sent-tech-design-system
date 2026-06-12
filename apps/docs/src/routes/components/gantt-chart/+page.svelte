@@ -9,7 +9,7 @@
       kicker: "Composant · Données",
       badge: "Documenté",
       intro:
-        "GanttChart visualise un planning : une ligne par tâche, une barre horizontale couvrant `start → end` sur un axe temporel commun (positions numériques — jours, semaines ou index). La couleur suit la catégorie de chaque tâche (jusqu'à huit teintes) ou reste unie. Un marqueur vertical optionnel matérialise « aujourd'hui ».",
+        "GanttChart visualise un planning : une ligne par tâche, une barre horizontale couvrant `start → end` sur un axe temporel commun (positions numériques : jours, semaines ou index). La couleur suit la catégorie de chaque tâche (jusqu'à huit teintes) ou reste unie. Un marqueur vertical optionnel matérialise « aujourd'hui ».",
       examplesTitle: "Exemples",
       planTitle: "Planning de projet",
       planDesc: "Quatre tâches réparties en deux lots (Étude, Build). Chaque barre démarre à son `start` et s'étend jusqu'à `end` ; le trait pointillé rouge repère le jour courant.",
@@ -29,7 +29,7 @@
       kicker: "Component · Data",
       badge: "Documented",
       intro:
-        "GanttChart visualises a schedule: one row per task, a horizontal bar spanning `start → end` on a shared time axis (numeric positions — days, weeks or index). Colour follows each task's category (up to eight hues) or stays uniform. An optional vertical marker pins \"today\".",
+        "GanttChart visualises a schedule: one row per task, a horizontal bar spanning `start → end` on a shared time axis (numeric positions: days, weeks or index). Colour follows each task's category (up to eight hues) or stays uniform. An optional vertical marker pins \"today\".",
       examplesTitle: "Examples",
       planTitle: "Project schedule",
       planDesc: "Four tasks across two work packages (Study, Build). Each bar starts at its `start` and extends to `end`; the dashed red line marks the current day.",
@@ -64,7 +64,7 @@
         {
           comp: "GanttChart",
           props: {
-            label: locale.value === "fr" ? "Planning projet — semaines" : "Project schedule — weeks",
+            label: locale.value === "fr" ? "Planning projet : semaines" : "Project schedule: weeks",
             data: planData,
             marker: 10
           }
