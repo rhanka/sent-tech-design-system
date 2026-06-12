@@ -141,6 +141,7 @@ export type {
   DataTableSelectMode,
   DataTableSort,
 } from "./DataTable.js";
+export type { CellDecoration, CellDecorationIntent } from "./cellDecoration.js";
 export { DatePicker } from "./DatePicker.js";
 export type { DatePickerProps, DatePickerSize, DatePickerRange, DatePickerValue } from "./DatePicker.js";
 export { Menu } from "./Menu.js";

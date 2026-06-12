@@ -1,6 +1,14 @@
 import React from "react";
 import { classNames } from "./classNames.js";
 import { Sparkline } from "./Sparkline.js";
+import {
+  type CellDecoration,
+  cellDecorationClass,
+  cellDecorationLabel,
+  CellDecorationIcon,
+} from "./cellDecoration.js";
+
+export type { CellDecoration, CellDecorationIntent } from "./cellDecoration.js";
 
 export type KpiCardSize = "sm" | "md" | "lg";
 export type KpiCardTrend = "up" | "down" | "flat";
@@ -51,6 +59,11 @@ export type KpiCardProps = Omit<React.HTMLAttributes<HTMLElement>, "className"> 
   size?: KpiCardSize;
   /** Couleur catégorielle pour l'accent (pastille discrète près de l'étiquette). */
   tone?: KpiCardTone;
+  /**
+   * Conditional formatting : décoration sémantique de la carte (intent → token
+   * feedback en fond teinté accessible + icône lucide optionnelle).
+   */
+  decoration?: CellDecoration;
   className?: string;
 };
 
@@ -67,6 +80,7 @@ export function KpiCard({
   sparkline,
   size = "md",
   tone,
+  decoration,
   className,
   ...rest
 }: KpiCardProps) {
@@ -135,6 +149,7 @@ export function KpiCard({
     formattedValue,
     unit,
     formattedDelta && `${formattedDelta} ${trendLabel ?? ""}`.trim(),
+    decoration && cellDecorationLabel[decoration.intent],
   ]
     .filter(Boolean)
     .join(", ");
@@ -147,6 +162,8 @@ export function KpiCard({
         `st-kpiCard--${size}`,
         tone && `st-kpiCard--${tone}`,
         tone && "st-kpiCard--toned",
+        decoration && "st-cell",
+        decoration && cellDecorationClass(decoration.intent),
         className,
       )}
       role="group"
@@ -158,6 +175,7 @@ export function KpiCard({
       </p>
 
       <p className="st-kpiCard__value">
+        {decoration ? <CellDecorationIcon icon={decoration.icon} /> : null}
         <span className="st-kpiCard__number">{formattedValue}</span>
         {unit ? <span className="st-kpiCard__unit">{unit}</span> : null}
       </p>

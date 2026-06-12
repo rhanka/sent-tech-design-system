@@ -288,6 +288,7 @@ export type {
   DataTableSelectMode,
   DataTableSort
 } from "./DataTable.svelte";
+export type { CellDecoration, CellDecorationIntent } from "./cellDecoration.js";
 export type { DatePickerRange } from "./DatePicker.svelte";
 export type { RatingSize } from "./Rating.svelte";
 export type { TimePickerFormat } from "./TimePicker.svelte";

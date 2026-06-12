@@ -396,7 +396,7 @@
     | { kind: "bar"; gi: number; si: number }
     | { kind: "line"; li: number; pi: number }
     | null;
-  let hovered: Hover = $state(null);
+  let hovered = $state<Hover>(null);
 
   function emitHoverKey(index: number | null) {
     onHoverKeyChange?.(index == null ? null : hoverKeys[index] ?? null);

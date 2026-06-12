@@ -12,11 +12,19 @@
     | "category6"
     | "category7"
     | "category8";
+
+  export type { CellDecoration, CellDecorationIntent } from "./cellDecoration.js";
 </script>
 
 <script lang="ts">
   import type { HTMLAttributes } from "svelte/elements";
   import Sparkline from "./Sparkline.svelte";
+  import {
+    type CellDecoration,
+    cellDecorationClass,
+    cellDecorationLabel,
+  } from "./cellDecoration.js";
+  import CellDecorationIcon from "./CellDecorationIcon.svelte";
 
   type KpiCardProps = Omit<HTMLAttributes<HTMLElement>, "class"> & {
     /** Valeur principale affichée en grand. */
@@ -42,6 +50,11 @@
     size?: KpiCardSize;
     /** Couleur catégorielle pour l'accent (bordure de gauche). */
     tone?: KpiCardTone;
+    /**
+     * Conditional formatting : décoration sémantique de la carte (intent → token
+     * feedback en fond teinté accessible + icône lucide optionnelle).
+     */
+    decoration?: CellDecoration;
     class?: string;
   };
 
@@ -58,6 +71,7 @@
     sparkline,
     size = "md",
     tone,
+    decoration,
     class: className,
     ...rest
   }: KpiCardProps = $props();
@@ -116,7 +130,13 @@
   );
 
   const ariaLabel = $derived(
-    [label, formattedValue, unit, formattedDelta && `${formattedDelta} ${trendLabel ?? ""}`.trim()]
+    [
+      label,
+      formattedValue,
+      unit,
+      formattedDelta && `${formattedDelta} ${trendLabel ?? ""}`.trim(),
+      decoration && cellDecorationLabel[decoration.intent]
+    ]
       .filter(Boolean)
       .join(", ")
   );
@@ -127,6 +147,8 @@
       `st-kpiCard--${size}`,
       tone && `st-kpiCard--${tone}`,
       tone && "st-kpiCard--toned",
+      decoration && "st-cell",
+      decoration && cellDecorationClass(decoration.intent),
       className
     ]
       .filter(Boolean)
@@ -138,6 +160,9 @@
   <p class="st-kpiCard__label">{label}</p>
 
   <p class="st-kpiCard__value">
+    {#if decoration}
+      <CellDecorationIcon icon={decoration.icon} />
+    {/if}
     <span class="st-kpiCard__number">{formattedValue}</span>
     {#if unit}
       <span class="st-kpiCard__unit">{unit}</span>
@@ -233,6 +258,46 @@
     flex-wrap: wrap;
     gap: var(--st-spacing-1, 0.25rem);
     margin: 0;
+  }
+
+  /* Conditional formatting (« classe Power-BI ») : fond teinté accessible
+     (color-mix 14% sur token feedback, comme Badge/Tag) + icône alignée sur la
+     valeur. Le fond n'est jamais la seule indication (icône + texte SR). */
+  .st-kpiCard.st-cell {
+    padding: var(--st-spacing-4, 1rem);
+  }
+
+  .st-kpiCard.st-cell .st-kpiCard__value {
+    align-items: center;
+  }
+
+  .st-kpiCard.st-cell .st-kpiCard__number {
+    color: inherit;
+  }
+
+  .st-cell--intent-positive {
+    background: color-mix(in srgb, var(--st-semantic-feedback-success) 14%, white);
+    color: var(--st-semantic-feedback-success);
+  }
+
+  .st-cell--intent-negative {
+    background: color-mix(in srgb, var(--st-semantic-feedback-error) 14%, white);
+    color: var(--st-semantic-feedback-error);
+  }
+
+  .st-cell--intent-warning {
+    background: color-mix(in srgb, var(--st-semantic-feedback-warning) 14%, white);
+    color: var(--st-semantic-feedback-warning);
+  }
+
+  .st-cell--intent-info {
+    background: color-mix(in srgb, var(--st-semantic-feedback-info) 14%, white);
+    color: var(--st-semantic-feedback-info);
+  }
+
+  .st-cell--intent-neutral {
+    background: var(--st-semantic-surface-subtle);
+    color: var(--st-semantic-text-secondary);
   }
 
   .st-kpiCard__number {

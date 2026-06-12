@@ -1,6 +1,14 @@
 import { defineComponent, h } from "vue";
 import { classNames } from "./classNames.js";
 import { Sparkline } from "./Sparkline.js";
+import {
+  type CellDecoration,
+  cellDecorationClass,
+  cellDecorationLabel,
+  renderCellDecorationIcon,
+} from "./cellDecoration.js";
+
+export type { CellDecoration, CellDecorationIntent } from "./cellDecoration.js";
 
 export type KpiCardSize = "sm" | "md" | "lg";
 export type KpiCardTrend = "up" | "down" | "flat";
@@ -38,6 +46,11 @@ export type KpiCardProps = {
   sparkline?: number[];
   size?: KpiCardSize;
   tone?: KpiCardTone;
+  /**
+   * Conditional formatting : décoration sémantique de la carte (intent → token
+   * feedback en fond teinté accessible + icône lucide optionnelle).
+   */
+  decoration?: CellDecoration;
   class?: string;
 };
 
@@ -56,6 +69,7 @@ export const KpiCard = defineComponent({
     sparkline: { type: Array as () => number[], default: undefined },
     size: { type: String as () => KpiCardSize, default: "md" },
     tone: { type: String as () => KpiCardTone, default: undefined },
+    decoration: { type: Object as () => CellDecoration, default: undefined },
     class: { type: String, default: undefined },
   },
   setup(props, { attrs }) {
@@ -71,6 +85,7 @@ export const KpiCard = defineComponent({
       const sparkline = props.sparkline;
       const size = props.size ?? "md";
       const tone = props.tone;
+      const decoration = props.decoration;
 
       const resolvedTrend: KpiCardTrend | undefined =
         props.trend ?? (delta == null ? undefined : delta > 0 ? "up" : delta < 0 ? "down" : "flat");
@@ -137,6 +152,7 @@ export const KpiCard = defineComponent({
         formattedValue,
         ariaUnit,
         formattedDelta && `${formattedDelta} ${trendLabel ?? ""}`.trim(),
+        decoration && cellDecorationLabel[decoration.intent],
       ]
         .filter(Boolean)
         .join(", ");
@@ -146,12 +162,17 @@ export const KpiCard = defineComponent({
         `st-kpiCard--${size}`,
         tone && `st-kpiCard--${tone}`,
         tone && "st-kpiCard--toned",
+        decoration && "st-cell",
+        decoration && cellDecorationClass(decoration.intent),
         props.class,
       );
 
-      const valueChildren: ReturnType<typeof h>[] = [
-        h("span", { class: "st-kpiCard__number" }, formattedValue),
-      ];
+      const valueChildren: ReturnType<typeof h>[] = [];
+      if (decoration) {
+        const icon = renderCellDecorationIcon(decoration.icon);
+        if (icon) valueChildren.push(icon);
+      }
+      valueChildren.push(h("span", { class: "st-kpiCard__number" }, formattedValue));
       if (unit) {
         valueChildren.push(h("span", { class: "st-kpiCard__unit" }, unit));
       }

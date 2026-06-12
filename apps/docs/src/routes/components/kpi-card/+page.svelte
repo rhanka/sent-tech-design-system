@@ -45,6 +45,47 @@
       ]
     }
   ]);
+
+  // Conditional formatting (« classe Power-BI ») : la prop `decoration`
+  // ({ intent, icon }) teinte la carte avec un token feedback accessible et rend
+  // une icône lucide. Le moteur de seuils vit côté dataviz-core ; le DS rend.
+  const conditionalNodes = $derived<NodeSpec[]>([
+    {
+      el: "div",
+      props: { class: "kpi-demo-row" },
+      children: [
+        {
+          comp: "KpiCard",
+          props: {
+            label: locale.value === "fr" ? "Marge brute" : "Gross margin",
+            value: 0.412,
+            format: "percent",
+            delta: 0.031,
+            decoration: { intent: "positive", icon: "trending-up" }
+          }
+        },
+        {
+          comp: "KpiCard",
+          props: {
+            label: locale.value === "fr" ? "Taux d'erreur" : "Error rate",
+            value: 0.038,
+            format: "percent",
+            delta: 0.012,
+            decoration: { intent: "negative", icon: "trending-down" }
+          }
+        },
+        {
+          comp: "KpiCard",
+          props: {
+            label: locale.value === "fr" ? "Latence p95" : "p95 latency",
+            value: 480,
+            unit: "ms",
+            decoration: { intent: "warning", icon: "triangle-alert" }
+          }
+        }
+      ]
+    }
+  ]);
 </script>
 
 <div class="docs-page">
@@ -84,6 +125,27 @@
     <TabbedExample
       nodes={demoNodes}
       title={locale.value === "fr" ? "Indicateurs de performance" : "Performance indicators"}
+    />
+
+    <h3 class="docs-demo-title">
+      {locale.value === "fr" ? "Mise en forme conditionnelle" : "Conditional formatting"}
+    </h3>
+    <p class="section-desc">
+      {#if locale.value === "fr"}
+        La prop <code>decoration</code> (<code>&#123; intent, icon &#125;</code>) teinte la carte avec
+        un token feedback accessible (mêmes que Badge / Alert) et rend une icône lucide. L'intention
+        est aussi exposée dans l'<code>aria-label</code> : la couleur n'est jamais la seule indication.
+        Le moteur de seuils vit côté dataviz-core ; le DS ne fait que rendre la sortie.
+      {:else}
+        The <code>decoration</code> prop (<code>&#123; intent, icon &#125;</code>) tints the card with an
+        accessible feedback token (same as Badge / Alert) and renders a lucide icon. The intent is also
+        exposed in the <code>aria-label</code>: color is never the only signal. The thresholds engine
+        lives in dataviz-core; the DS only renders its output.
+      {/if}
+    </p>
+    <TabbedExample
+      nodes={conditionalNodes}
+      title={locale.value === "fr" ? "Cartes décorées" : "Decorated cards"}
     />
   </section>
 
@@ -164,6 +226,12 @@
           <td><code>KpiCardTone</code></td>
           <td>—</td>
           <td>{locale.value === "fr" ? "Couleur catégorielle pour l'accent de bordure gauche (category1…8)." : "Categorical color for the left-border accent (category1…8)."}</td>
+        </tr>
+        <tr>
+          <td><code>decoration</code></td>
+          <td><code>CellDecoration</code></td>
+          <td>—</td>
+          <td>{locale.value === "fr" ? "Mise en forme conditionnelle : { intent, icon } → fond teinté accessible (token feedback) + icône lucide. Intent exposé dans l'aria-label." : "Conditional formatting: { intent, icon } → accessible tinted background (feedback token) + lucide icon. Intent surfaced in the aria-label."}</td>
         </tr>
       </tbody>
     </table>
