@@ -94,16 +94,18 @@
         {#each results as result (result.doc.id)}
           <li class="docs-search-result">
             <a class="docs-search-result-link" href={result.doc.url}>
-              <span class="docs-search-result-title">
-                {result.doc.title[locale.value]}
+              <span class="docs-search-result-meta">
+                <span class="docs-search-result-title">
+                  {result.doc.title[locale.value]}
+                </span>
+                <Badge tone="neutral">{text.kindLabels[result.doc.kind]}</Badge>
               </span>
-              <Badge tone="neutral">{text.kindLabels[result.doc.kind]}</Badge>
+              {#if result.doc.excerpt[locale.value]}
+                <span class="docs-search-result-excerpt">
+                  {result.doc.excerpt[locale.value]}
+                </span>
+              {/if}
             </a>
-            {#if result.doc.excerpt[locale.value]}
-              <p class="docs-search-result-excerpt">
-                {result.doc.excerpt[locale.value]}
-              </p>
-            {/if}
           </li>
         {/each}
       </ul>
@@ -174,16 +176,22 @@
   .docs-search-result {
     border: 1px solid var(--st-semantic-border-subtle, #e2e8f0);
     border-radius: var(--st-radius-md, 0.5rem);
-    padding: var(--st-spacing-2, 0.5rem) var(--st-spacing-3, 0.75rem);
+    overflow: hidden;
+    padding: 0;
   }
 
   .docs-search-result-link {
-    align-items: center;
     color: var(--st-semantic-text-primary);
     display: flex;
+    flex-direction: column;
     gap: var(--st-spacing-2, 0.5rem);
-    justify-content: space-between;
+    padding: var(--st-spacing-2, 0.5rem) var(--st-spacing-3, 0.75rem);
     text-decoration: none;
+  }
+
+  .docs-search-result-link:hover,
+  .docs-search-result-link:focus-visible {
+    background: var(--st-semantic-surface-subtle, #f8fafc);
   }
 
   .docs-search-result-link:hover .docs-search-result-title {
@@ -193,6 +201,13 @@
   .docs-search-result-link:focus-visible {
     outline: 2px solid var(--st-semantic-border-interactive, #2563eb);
     outline-offset: 2px;
+  }
+
+  .docs-search-result-meta {
+    align-items: center;
+    display: flex;
+    gap: var(--st-spacing-2, 0.5rem);
+    justify-content: space-between;
   }
 
   .docs-search-result-title {

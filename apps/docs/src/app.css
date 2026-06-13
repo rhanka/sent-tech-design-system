@@ -319,6 +319,7 @@ select {
   position: absolute;
   top: var(--st-spacing-3);
   inset-inline-end: var(--st-spacing-3);
+  z-index: 1;
   display: inline-flex;
   padding: var(--st-spacing-1);
   background: transparent;

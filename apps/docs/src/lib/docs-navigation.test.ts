@@ -6,7 +6,9 @@ import {
   DOCS_FOUNDATION_NAV,
   DOCS_TOP_NAV,
   DOCS_VERSION,
+  buildFoundationNav,
   buildComponentNavGroups,
+  buildTopNav,
   resolveBreadcrumb
 } from "./docs-navigation";
 
@@ -45,6 +47,48 @@ describe("docs navigation model", () => {
     ]);
   });
 
+  it("localizes top and side navigation labels", () => {
+    expect(buildTopNav("en").map((item) => item.label)).toEqual([
+      "Foundations",
+      "Components",
+      "Views",
+      "Preview",
+      "Tokens",
+      "Themes",
+      "Contracts"
+    ]);
+
+    expect(buildFoundationNav("fr").map((item) => item.label)).toEqual([
+      "Vue d'ensemble",
+      "Fondations",
+      "Tokens",
+      "Thèmes"
+    ]);
+    expect(buildFoundationNav("en").map((item) => item.label)).toEqual([
+      "Overview",
+      "Foundations",
+      "Tokens",
+      "Themes"
+    ]);
+  });
+
+  it("keeps the vertical foundation menu focused on page sections", () => {
+    expect(buildFoundationNav("fr").map((item) => item.href)).toEqual([
+      "/",
+      "/#foundations",
+      "/#tokens",
+      "/#themes"
+    ]);
+    expect(buildFoundationNav("fr").some((item) => item.href === "/preview")).toBe(false);
+    expect(buildFoundationNav("fr").some((item) => item.href === "/#contracts")).toBe(false);
+    expect(DOCS_FOUNDATION_NAV.map((item) => item.label)).toEqual([
+      "Vue d'ensemble",
+      "Fondations",
+      "Tokens",
+      "Thèmes"
+    ]);
+  });
+
   it("drops the dedicated React surface in favour of the framework switcher", () => {
     const reactRoute = fileURLToPath(new URL("../routes/react/+page.svelte", import.meta.url));
 
@@ -61,6 +105,15 @@ describe("docs navigation model", () => {
     expect(groups.length).toBeGreaterThan(0);
     expect(items).toHaveLength(COMPONENTS.length);
     expect(items.every((item) => item.href.startsWith("/components/"))).toBe(true);
+  });
+
+  it("localizes component group labels and breadcrumbs", () => {
+    expect(buildComponentNavGroups("en").map((group) => group.label)).toContain("Forms");
+    expect(buildComponentNavGroups("fr").map((group) => group.label)).toContain("Formulaires");
+    expect(resolveBreadcrumb("/preview", "en").map((item) => item.label)).toEqual([
+      "Catalog",
+      "Preview"
+    ]);
   });
 
   it("resolves breadcrumbs for the catalogue and component pages", () => {
