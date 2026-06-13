@@ -12,6 +12,7 @@
     "@sentropic/design-system-theme-carbon": "0.2.2",
     "@sentropic/design-system-theme-dsfr": "0.2.2",
     "@sentropic/design-system-theme-quebec": "0.1.0",
+    "@sentropic/design-system-theme-ssense": "0.1.0",
     "@sentropic/design-system-themes": "0.11.0",
     "@sentropic/design-system-vue": "0.36.33",
     "@sveltejs/adapter-static": "^3.0.10",
@@ -30,9 +31,9 @@
     "vitest": "^4.1.5"
   },
   "scripts": {
-    "predev": "node ../../scripts/ensure-compare-local-overlays.mjs && (cd ../.. && npm --workspace packages/components-svelte run build && npm --workspace packages/components-react run build && npm --workspace packages/components-vue run build && npm --workspace packages/theme-dsfr run build && npm --workspace packages/theme-carbon run build && npm --workspace packages/theme-airbus run build && npm --workspace packages/theme-canada run build && npm --workspace packages/theme-quebec run build)",
+    "predev": "node ../../scripts/ensure-compare-local-overlays.mjs && (cd ../.. && npm --workspace packages/components-svelte run build && npm --workspace packages/components-react run build && npm --workspace packages/components-vue run build && npm --workspace packages/theme-dsfr run build && npm --workspace packages/theme-carbon run build && npm --workspace packages/theme-airbus run build && npm --workspace packages/theme-canada run build && npm --workspace packages/theme-quebec run build && npm --workspace packages/theme-ssense run build)",
     "dev": "vite dev",
-    "prebuild": "node ../../scripts/ensure-compare-local-overlays.mjs && (cd ../.. && npm --workspace packages/components-svelte run build && npm --workspace packages/components-react run build && npm --workspace packages/components-vue run build && npm --workspace packages/theme-dsfr run build && npm --workspace packages/theme-carbon run build && npm --workspace packages/theme-airbus run build && npm --workspace packages/theme-canada run build && npm --workspace packages/theme-quebec run build)",
+    "prebuild": "node ../../scripts/ensure-compare-local-overlays.mjs && (cd ../.. && npm --workspace packages/components-svelte run build && npm --workspace packages/components-react run build && npm --workspace packages/components-vue run build && npm --workspace packages/theme-dsfr run build && npm --workspace packages/theme-carbon run build && npm --workspace packages/theme-airbus run build && npm --workspace packages/theme-canada run build && npm --workspace packages/theme-quebec run build && npm --workspace packages/theme-ssense run build)",
     "build": "vite build",
     "check": "svelte-kit sync && svelte-check --tsconfig tsconfig.json",
     "test": "vitest run src --passWithNoTests"
