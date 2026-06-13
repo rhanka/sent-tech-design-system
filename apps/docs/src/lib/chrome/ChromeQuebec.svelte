@@ -13,23 +13,24 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
   import { page } from "$app/state";
-  import { ChevronDown, Github, Menu, X } from "@lucide/svelte";
+  import { ChevronDown, Github, Menu, Search as SearchIcon, X } from "@lucide/svelte";
   import {
-    DOCS_FOUNDATION_NAV,
-    DOCS_TOP_NAV,
     DOCS_UTILITY_NAV,
     DOCS_VERSION,
+    buildFoundationNav,
     buildComponentNavGroups,
+    buildTopNav,
     resolveBreadcrumb,
     type ComponentNavItem
   } from "$lib/docs-navigation";
+  import { locale } from "$lib/locale.svelte";
 
   type Props = {
     children: Snippet;
     activeThemeId: string;
     isThemeOpen: boolean;
     onThemeToggle: () => void;
-    searchTrigger?: Snippet;
+    onSearchOpen: () => void;
     themeSwitcher: Snippet;
     frameworkSwitcher: Snippet;
     localeSwitcher: Snippet;
@@ -40,7 +41,7 @@
 
   let {
     children,
-    searchTrigger,
+    onSearchOpen,
     themeSwitcher,
     frameworkSwitcher,
     localeSwitcher,
@@ -49,8 +50,10 @@
     onMobileMenuToggle,
   }: Props = $props();
 
-  const componentGroups = buildComponentNavGroups();
-  const breadcrumbs = $derived(resolveBreadcrumb(page.url.pathname));
+  const topNavItems = $derived(buildTopNav(locale.value));
+  const foundationNavItems = $derived(buildFoundationNav(locale.value));
+  const componentGroups = $derived(buildComponentNavGroups(locale.value));
+  const breadcrumbs = $derived(resolveBreadcrumb(page.url.pathname, locale.value));
 
   function isActive(href: string): boolean {
     const pathname = page.url.pathname;
@@ -74,6 +77,12 @@
 
   function isGroupOpen(items: ComponentNavItem[]): boolean {
     return items.some((item) => isComponentActive(item));
+  }
+
+  function handleSearchKeydown(event: KeyboardEvent) {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    onSearchOpen();
   }
 </script>
 
@@ -115,13 +124,34 @@
             {@render themeSwitcher()}
             {@render localeSwitcher()}
           </div>
-          <!-- Barre de recherche SDG : déclenche la palette docs (Read the Docs).
-               L'enveloppe .qc-search garde le gabarit ; le bouton searchTrigger
-               est stylisé pour prendre l'aspect du champ de recherche SDG. -->
+          <!-- Barre de recherche SDG : champ natif + bouton, branché sur la palette docs. -->
           <div class="qc-search" role="search">
-            {#if searchTrigger}
-              {@render searchTrigger()}
-            {/if}
+            <label class="qc-search__label" for="qc-search-input">
+              {locale.value === "fr" ? "Rechercher" : "Search"}
+            </label>
+            <div class="qc-search__group">
+              <input
+                id="qc-search-input"
+                class="qc-search__input"
+                type="search"
+                readonly
+                placeholder={locale.value === "fr" ? "Rechercher…" : "Search…"}
+                aria-label={locale.value === "fr" ? "Rechercher dans la documentation" : "Search the documentation"}
+                aria-haspopup="dialog"
+                onclick={onSearchOpen}
+                onkeydown={handleSearchKeydown}
+              />
+              <kbd class="qc-search__kbd" aria-hidden="true">/</kbd>
+              <button
+                type="button"
+                class="qc-search__btn"
+                aria-label={locale.value === "fr" ? "Lancer la recherche" : "Open search"}
+                aria-haspopup="dialog"
+                onclick={onSearchOpen}
+              >
+                <SearchIcon size={16} strokeWidth={2} aria-hidden="true" />
+              </button>
+            </div>
           </div>
         </div>
 
@@ -146,7 +176,7 @@
     <nav class="qc-nav" aria-label="Navigation principale">
       <div class="qc-nav__inner">
         <ul class="qc-nav__list">
-          {#each DOCS_TOP_NAV as item (item.href)}
+          {#each topNavItems as item (item.href)}
             <li class="qc-nav__item">
               <a
                 class="qc-nav__link"
@@ -168,7 +198,7 @@
     <aside class="qc-sidebar" aria-label="Navigation de la documentation">
       <nav class="qc-side-nav" aria-label="Sommaire">
         <ul class="qc-side-list">
-          {#each DOCS_FOUNDATION_NAV as item (item.href)}
+          {#each foundationNavItems as item (item.href)}
             <li>
               <a
                 class="qc-side-link"
@@ -246,7 +276,7 @@
   <footer class="qc-footer" aria-label="Pied de page du Gouvernement du Québec">
     <div class="qc-footer__inner">
       <nav class="qc-footer__nav" aria-label="Liens du pied de page">
-        {#each DOCS_TOP_NAV as item (item.href)}
+        {#each topNavItems as item (item.href)}
           <a class="qc-footer__link" href={item.href}>{item.label}</a>
         {/each}
       </nav>
@@ -369,21 +399,43 @@
     max-width: 26rem;
   }
 
-  /* Le trigger de palette docs prend l'aspect du champ de recherche SDG :
-     champ blanc bordé, plein largeur, accent bleu PIV au survol/focus. */
-  .qc-search :global(.docs-search-trigger) {
-    background: var(--qc-white);
-    border: 1px solid var(--qc-grey-400);
-    border-radius: 4px;
-    color: var(--qc-text-primary);
-    font-family: inherit;
-    height: 2.5rem;
-    justify-content: flex-start;
+  .qc-search__label {
+    clip: rect(0 0 0 0);
+    border: 0;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+
+  .qc-search__group {
+    display: flex;
+    position: relative;
     width: 100%;
   }
 
-  .qc-search :global(.docs-search-trigger:hover),
-  .qc-search :global(.docs-search-trigger:focus-visible) {
+  .qc-search__input {
+    background: var(--qc-white);
+    border: 1px solid var(--qc-grey-400);
+    border-right: 0;
+    border-radius: 4px;
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+    color: var(--qc-text-primary);
+    cursor: pointer;
+    flex: 1 1 auto;
+    font-family: inherit;
+    font-size: 0.875rem;
+    height: 2.5rem;
+    min-width: 0;
+    padding: 0 2.125rem 0 0.75rem;
+  }
+
+  .qc-search__input:hover,
+  .qc-search__input:focus-visible {
     background: var(--qc-white);
     border-color: var(--qc-blue-piv);
     color: var(--qc-text-primary);
@@ -391,13 +443,47 @@
     outline-offset: 1px;
   }
 
-  .qc-search :global(.docs-search-trigger__label) {
+  .qc-search__input::placeholder {
     color: var(--qc-grey-600);
   }
 
-  .qc-search :global(.docs-search-trigger__kbd) {
+  .qc-search__kbd {
+    align-items: center;
+    border: 1px solid var(--qc-grey-400);
     border-color: var(--qc-grey-400);
     color: var(--qc-grey-600);
+    display: inline-flex;
+    font-size: 0.75rem;
+    height: 1.25rem;
+    justify-content: center;
+    position: absolute;
+    right: 3rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1.25rem;
+  }
+
+  .qc-search__btn {
+    align-items: center;
+    background: var(--qc-blue-piv);
+    border: 1px solid var(--qc-blue-piv);
+    border-radius: 0 4px 4px 0;
+    color: var(--qc-white);
+    cursor: pointer;
+    display: inline-flex;
+    flex: 0 0 2.5rem;
+    height: 2.5rem;
+    justify-content: center;
+    padding: 0;
+    transition: background 120ms ease, border-color 120ms ease;
+  }
+
+  .qc-search__btn:hover,
+  .qc-search__btn:focus-visible {
+    background: var(--qc-blue-medium);
+    border-color: var(--qc-blue-medium);
+    outline: 2px solid var(--qc-blue-regular);
+    outline-offset: 1px;
   }
 
   /* Burger mobile */
@@ -539,15 +625,17 @@
   }
 
   .qc-side-link {
+    align-items: center;
     border-left: 4px solid transparent;
+    box-sizing: border-box;
     color: var(--qc-text-primary);
-    display: block;
+    display: flex;
     font-size: 0.875rem;
+    line-height: 1.35;
     min-height: 2.75rem;
     padding: 0.5rem 1rem 0.5rem calc(1rem - 4px);
     text-decoration: none;
     transition: background 120ms ease, border-color 120ms ease;
-    line-height: 1.4;
   }
 
   .qc-side-link:hover,

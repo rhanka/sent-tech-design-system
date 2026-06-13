@@ -62,9 +62,9 @@ const copy = {
     examplesTitle: "Exemples",
     apiTitle: "API",
     tokensTitle: "Tokens utilisés",
-    tokenPolicyTitle: "Contrat marque blanche",
+    tokenPolicyTitle: "Contrats",
     tokenPolicyBody:
-      "Les composants ne consomment que des variables sémantiques et component tokens afin de pouvoir adapter un tenant ou un design system externe sans réécrire les composants.",
+      "Le contrat marque blanche repose sur des variables sémantiques et component tokens afin de pouvoir adapter un tenant ou un design system externe sans réécrire les composants.",
     variants: "Variantes",
     sizes: "Tailles",
     states: "États",
@@ -176,9 +176,9 @@ const copy = {
     examplesTitle: "Examples",
     apiTitle: "API",
     tokensTitle: "Used tokens",
-    tokenPolicyTitle: "White-label contract",
+    tokenPolicyTitle: "Contracts",
     tokenPolicyBody:
-      "Components only consume semantic variables and component tokens, so a tenant or external design system can be adapted without rewriting components.",
+      "The white-label contract relies on semantic variables and component tokens, so a tenant or external design system can be adapted without rewriting components.",
     variants: "Variants",
     sizes: "Sizes",
     states: "States",

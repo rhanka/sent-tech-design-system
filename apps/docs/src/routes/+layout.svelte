@@ -2,7 +2,7 @@
   import { page } from "$app/state";
   import { browser } from "$app/environment";
   import { replaceState, afterNavigate } from "$app/navigation";
-  import { untrack } from "svelte";
+  import { tick, untrack } from "svelte";
   import "../app.css";
   // CSS global des composants (classes .st-*) pour styler les îles React/Vue :
   // le Svelte a ses styles scoped, mais les rendus React/Vue n'ont que les classes
@@ -23,11 +23,11 @@
   import { canadaTheme } from "@sentropic/design-system-theme-canada";
   import { quebecTheme } from "@sentropic/design-system-theme-quebec";
   import {
-    DOCS_FOUNDATION_NAV,
-    DOCS_TOP_NAV,
     DOCS_UTILITY_NAV,
     DOCS_VERSION,
+    buildFoundationNav,
     buildComponentNavGroups,
+    buildTopNav,
     resolveBreadcrumb,
     type ComponentNavItem
   } from "$lib/docs-navigation";
@@ -63,9 +63,12 @@
 
   // Palette de recherche (Read the Docs) : barre dans le header -> overlay DocsSearch.
   let searchOpen = $state(false);
+  let searchOverlayPanel = $state<HTMLDivElement | null>(null);
 
-  const componentGroups = buildComponentNavGroups();
-  const breadcrumbs = $derived(resolveBreadcrumb(page.url.pathname));
+  const topNavItems = $derived(buildTopNav(locale.value));
+  const foundationNavItems = $derived(buildFoundationNav(locale.value));
+  const componentGroups = $derived(buildComponentNavGroups(locale.value));
+  const breadcrumbs = $derived(resolveBreadcrumb(page.url.pathname, locale.value));
   // Le sélecteur de framework n'a d'effet que là où des composants sont rendus
   // (pages composant + galerie /preview). Ailleurs (home, fondations, tokens,
   // thèmes, contrats) il ne bascule rien -> on le masque pour ne pas paraître cassé.
@@ -261,6 +264,22 @@
     return items.some((item) => isComponentActive(item));
   }
 
+  function openSearch() {
+    searchOpen = true;
+  }
+
+  async function focusSearchInput() {
+    await tick();
+    searchOverlayPanel
+      ?.querySelector<HTMLInputElement>(".docs-search input[type='search']")
+      ?.focus();
+  }
+
+  $effect(() => {
+    if (!browser || !searchOpen) return;
+    void focusSearchInput();
+  });
+
   // ── Mode compare (Lot 2) ─────────────────────────────────────────────────
   // Toute la logique compare est CLIENT-ONLY : les query params ne sont pas
   // présents au SSR (prerender=true → page canonique sans params).
@@ -319,7 +338,7 @@
   const typing = !!el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable);
   if (e.key === "/" && !typing && !searchOpen) {
     e.preventDefault();
-    searchOpen = true;
+    openSearch();
   }
 }} />
 
@@ -339,7 +358,7 @@
 
 {#snippet docsTopNav()}
   <nav class="docs-top-nav" aria-label="Documentation principale">
-    {#each DOCS_TOP_NAV as item (item.href)}
+    {#each topNavItems as item (item.href)}
       <a href={item.href} aria-current={isActive(item.href) ? "page" : undefined}>
         {item.label}
       </a>
@@ -399,7 +418,7 @@
   <button
     type="button"
     class="docs-header-control docs-search-trigger"
-    onclick={() => (searchOpen = true)}
+    onclick={openSearch}
     aria-label={locale.value === "fr" ? "Rechercher dans la documentation" : "Search the documentation"}
     aria-haspopup="dialog"
   >
@@ -618,7 +637,7 @@
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
       onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
-      searchTrigger={searchTrigger}
+      onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
@@ -638,7 +657,7 @@
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
       onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
-      searchTrigger={searchTrigger}
+      onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
@@ -658,7 +677,7 @@
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
       onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
-      searchTrigger={searchTrigger}
+      onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
@@ -678,7 +697,7 @@
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
       onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
-      searchTrigger={searchTrigger}
+      onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
@@ -698,7 +717,7 @@
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
       onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
-      searchTrigger={searchTrigger}
+      onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
@@ -728,8 +747,8 @@
     {#if isMobileMenuOpen}
       <nav class="docs-mobile-nav" aria-label="Menu mobile">
         <div class="docs-mobile-nav-section">
-          <span class="docs-mobile-nav-label">Navigation</span>
-          {#each DOCS_TOP_NAV as item (item.href)}
+          <span class="docs-mobile-nav-label">{locale.value === "fr" ? "Navigation" : "Navigation"}</span>
+          {#each topNavItems as item (item.href)}
             <a
               href={item.href}
               onclick={() => (isMobileMenuOpen = false)}
@@ -743,7 +762,7 @@
           {/each}
         </div>
         <div class="docs-mobile-nav-section">
-          <span class="docs-mobile-nav-label">Liens utiles</span>
+          <span class="docs-mobile-nav-label">{locale.value === "fr" ? "Liens utiles" : "Useful links"}</span>
           <span class="docs-header-control docs-version docs-mobile-version">{DOCS_VERSION}</span>
           {#each DOCS_UTILITY_NAV as item (item.href)}
             <a
@@ -756,7 +775,7 @@
             </a>
           {/each}
 
-          <span class="docs-mobile-nav-label">Framework</span>
+          <span class="docs-mobile-nav-label">{locale.value === "fr" ? "Framework" : "Framework"}</span>
           <div class="docs-mobile-locale-switcher docs-mobile-framework-switcher">
             {#each FRAMEWORKS as option (option.id)}
               <button
@@ -852,15 +871,15 @@
           aria-controls="docs-sidebar"
         >
           <span>{isSidebarOpen ? "▲" : "▼"}</span>
-          <span>{isSidebarOpen ? "Masquer le sommaire" : "Sommaire / Table des matières"}</span>
+          <span>{isSidebarOpen ? (locale.value === "fr" ? "Masquer le sommaire" : "Hide table of contents") : (locale.value === "fr" ? "Sommaire / Table des matières" : "Table of contents")}</span>
         </button>
       </div>
       <aside class="docs-sidebar" id="docs-sidebar" class:docs-sidebar--open={isSidebarOpen}>
         <nav class="docs-side-nav" aria-label="Navigation de la documentation">
           <section class="docs-side-section" aria-labelledby="docs-foundations-heading">
-            <h2 id="docs-foundations-heading">Documentation</h2>
+            <h2 id="docs-foundations-heading">{locale.value === "fr" ? "Documentation" : "Documentation"}</h2>
             <ul>
-              {#each DOCS_FOUNDATION_NAV as item (item.href)}
+              {#each foundationNavItems as item (item.href)}
                 <li>
                   <a
                     class="docs-side-link docs-side-link--docs"
@@ -875,7 +894,7 @@
           </section>
 
           <section class="docs-side-section" aria-labelledby="docs-components-heading">
-            <h2 id="docs-components-heading">Composants</h2>
+            <h2 id="docs-components-heading">{locale.value === "fr" ? "Composants" : "Components"}</h2>
             {#each componentGroups as group (group.label)}
               <details class="docs-side-group" open={isGroupOpen(group.items)}>
                 <summary>
@@ -942,7 +961,7 @@
     aria-label={locale.value === "fr" ? "Recherche de la documentation" : "Documentation search"}
     onclick={(e) => { if (e.target === e.currentTarget) searchOpen = false; }}
   >
-    <div class="docs-search-overlay__panel">
+    <div class="docs-search-overlay__panel" bind:this={searchOverlayPanel}>
       <button
         type="button"
         class="docs-search-overlay__close"

@@ -1,6 +1,6 @@
 <!--
   Chrome documentaire Airbus Design System
-  Header : fond NAVY (#00205b), logo Airbus blanc + séparateur + titre app | tabs actif accent-haut | icônes | bouton Contact.
+  Header : fond NAVY (#00205b), logo Airbus blanc + séparateur + titre app | tabs actif accent-haut | recherche | icônes.
   Sidebar : items simples, item actif surbrillance bleu Airbus + barre accent.
   Typo : Arial/Helvetica Neue (fallback typo propriétaire Airbus).
   Logo : /chrome/airbus/logo-white.svg (wordmark Airbus blanc, copie privée locale).
@@ -8,23 +8,24 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
   import { page } from "$app/state";
-  import { Bell, ChevronDown, CircleQuestionMark, Github, Menu, X } from "@lucide/svelte";
+  import { Bell, ChevronDown, CircleQuestionMark, Github, Menu, Search as SearchIcon, X } from "@lucide/svelte";
   import {
-    DOCS_FOUNDATION_NAV,
-    DOCS_TOP_NAV,
     DOCS_UTILITY_NAV,
     DOCS_VERSION,
+    buildFoundationNav,
     buildComponentNavGroups,
+    buildTopNav,
     resolveBreadcrumb,
     type ComponentNavItem
   } from "$lib/docs-navigation";
+  import { locale } from "$lib/locale.svelte";
 
   type Props = {
     children: Snippet;
     activeThemeId: string;
     isThemeOpen: boolean;
     onThemeToggle: () => void;
-    searchTrigger?: Snippet;
+    onSearchOpen: () => void;
     themeSwitcher: Snippet;
     frameworkSwitcher: Snippet;
     localeSwitcher: Snippet;
@@ -35,7 +36,7 @@
 
   let {
     children,
-    searchTrigger,
+    onSearchOpen,
     themeSwitcher,
     frameworkSwitcher,
     localeSwitcher,
@@ -44,8 +45,10 @@
     onMobileMenuToggle,
   }: Props = $props();
 
-  const componentGroups = buildComponentNavGroups();
-  const breadcrumbs = $derived(resolveBreadcrumb(page.url.pathname));
+  const topNavItems = $derived(buildTopNav(locale.value));
+  const foundationNavItems = $derived(buildFoundationNav(locale.value));
+  const componentGroups = $derived(buildComponentNavGroups(locale.value));
+  const breadcrumbs = $derived(resolveBreadcrumb(page.url.pathname, locale.value));
 
   function isActive(href: string): boolean {
     const pathname = page.url.pathname;
@@ -69,6 +72,12 @@
 
   function isGroupOpen(items: ComponentNavItem[]): boolean {
     return items.some((item) => isComponentActive(item));
+  }
+
+  function handleSearchKeydown(event: KeyboardEvent) {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    onSearchOpen();
   }
 </script>
 
@@ -97,7 +106,7 @@
 
       <!-- Centre : onglets de navigation (Tab Label), actif = fond bleu clair + accent haut) -->
       <nav class="abus-header__tabs" aria-label="Navigation principale">
-        {#each DOCS_TOP_NAV.slice(0, 6) as item (item.href)}
+        {#each topNavItems.slice(0, 6) as item (item.href)}
           <a
             class="abus-header__tab"
             href={item.href}
@@ -106,10 +115,36 @@
         {/each}
       </nav>
 
-      <!-- Droite : icônes + bouton Contact + switchers docs -->
+      <!-- Droite : recherche + icônes + switchers docs -->
       <div class="abus-header__actions">
-        <!-- Barre de recherche docs (Read the Docs) : ouvre la palette -->
-        {#if searchTrigger}{@render searchTrigger()}{/if}
+        <!-- SearchInput Airbus compact : ouvre la palette docs. -->
+        <div class="abus-header__search" role="search">
+          <label class="abus-header__search-label" for="abus-header-search-input">
+            {locale.value === "fr" ? "Rechercher" : "Search"}
+          </label>
+          <div class="abus-header__search-group">
+            <input
+              id="abus-header-search-input"
+              class="abus-header__search-input"
+              type="search"
+              readonly
+              placeholder={locale.value === "fr" ? "Rechercher…" : "Search…"}
+              aria-label={locale.value === "fr" ? "Rechercher dans la documentation" : "Search the documentation"}
+              aria-haspopup="dialog"
+              onclick={onSearchOpen}
+              onkeydown={handleSearchKeydown}
+            />
+            <button
+              type="button"
+              class="abus-header__search-btn"
+              aria-label={locale.value === "fr" ? "Lancer la recherche" : "Open search"}
+              aria-haspopup="dialog"
+              onclick={onSearchOpen}
+            >
+              <SearchIcon size={16} strokeWidth={1.8} aria-hidden="true" />
+            </button>
+          </div>
+        </div>
         <!-- Icône Notifications -->
         <a
           class="abus-header__icon-btn"
@@ -127,13 +162,6 @@
           title="Aide"
         >
           <CircleQuestionMark size={16} strokeWidth={1.8} aria-hidden="true" />
-        </a>
-        <!-- Bouton Contact (blanc, texte navy) -->
-        <a
-          href="mailto:contact@airbus.com?subject=Contact%20documentation%20design%20system"
-          class="abus-header__contact-btn"
-        >
-          Contact
         </a>
         <!-- Switchers framework / thème / langue (outils docs) -->
         {@render compareButton()}
@@ -164,7 +192,7 @@
     <aside class="abus-sidebar" aria-label="Navigation de la documentation">
       <nav class="abus-side-nav" aria-label="Sommaire">
         <ul class="abus-side-list">
-          {#each DOCS_FOUNDATION_NAV as item (item.href)}
+          {#each foundationNavItems as item (item.href)}
             <li>
               <a
                 class="abus-side-link"
@@ -399,29 +427,6 @@
     outline: none;
   }
 
-  /* Bouton Contact : fond blanc, texte navy */
-  .abus-header__contact-btn {
-    background: var(--abus-white);
-    border: none;
-    border-radius: 3px;
-    color: var(--abus-navy);
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 0.8125rem;
-    font-weight: 600;
-    height: 2rem;
-    padding: 0 0.875rem;
-    text-decoration: none;
-    transition: background 120ms ease, color 120ms ease;
-    white-space: nowrap;
-  }
-
-  .abus-header__contact-btn:hover,
-  .abus-header__contact-btn:focus-visible {
-    background: #e8edf5;
-    outline: none;
-  }
-
   /* Overrides switchers framework/thème/langue dans header NAVY Airbus.
      Les TROIS wrappers (framework + thème + langue) reçoivent le même centrage
      vertical : sans `.docs-framework-wrapper`, le sélecteur de framework était
@@ -453,25 +458,75 @@
     box-shadow: none;
   }
 
-  /* Barre de recherche docs : champ translucide visible sur le bandeau navy */
-  .abus-header__actions :global(.docs-search-trigger) {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.3);
-    height: 2.25rem;
-    margin-right: 0.25rem;
-    min-width: 12rem;
+  /* SearchInput Airbus compact, visible sur le bandeau navy. */
+  .abus-header__search {
+    width: clamp(9rem, 14vw, 13rem);
   }
 
-  .abus-header__actions :global(.docs-search-trigger:hover),
-  .abus-header__actions :global(.docs-search-trigger:focus-visible) {
+  .abus-header__search-label {
+    clip: rect(0 0 0 0);
+    border: 0;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+
+  .abus-header__search-group {
+    display: flex;
+    width: 100%;
+  }
+
+  .abus-header__search-input {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px 0 0 4px;
+    border-right: 0;
+    color: var(--abus-white);
+    cursor: pointer;
+    flex: 1 1 auto;
+    font: inherit;
+    font-size: 0.8125rem;
+    height: 2.25rem;
+    min-width: 0;
+    padding: 0 0.75rem;
+  }
+
+  .abus-header__search-input::placeholder {
+    color: rgba(255, 255, 255, 0.72);
+  }
+
+  .abus-header__search-input:hover,
+  .abus-header__search-input:focus-visible {
     background: rgba(255, 255, 255, 0.16);
     border-color: rgba(255, 255, 255, 0.6);
     color: var(--abus-white);
+    outline: none;
   }
 
-  .abus-header__actions :global(.docs-search-trigger__kbd) {
-    border-color: rgba(255, 255, 255, 0.4);
-    color: rgba(255, 255, 255, 0.85);
+  .abus-header__search-btn {
+    align-items: center;
+    background: rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 0 4px 4px 0;
+    color: var(--abus-white);
+    cursor: pointer;
+    display: inline-flex;
+    flex: 0 0 2.25rem;
+    height: 2.25rem;
+    justify-content: center;
+    padding: 0;
+    transition: background 120ms ease, border-color 120ms ease;
+  }
+
+  .abus-header__search-btn:hover,
+  .abus-header__search-btn:focus-visible {
+    background: rgba(255, 255, 255, 0.28);
+    border-color: rgba(255, 255, 255, 0.6);
+    outline: none;
   }
 
   .abus-header__actions :global(.docs-locale-menu) {
@@ -711,22 +766,15 @@
       display: none;
     }
 
-    .abus-header__icon-btn,
-    .abus-header__contact-btn {
+    .abus-header__icon-btn {
       display: none;
     }
 
-    .abus-header__actions :global(.docs-search-trigger) {
-      flex: 0 0 2.25rem;
-      justify-content: center;
-      margin-right: 0;
-      min-width: 0;
-      padding-inline: 0;
+    .abus-header__search {
       width: 2.25rem;
     }
 
-    .abus-header__actions :global(.docs-search-trigger__label),
-    .abus-header__actions :global(.docs-search-trigger__kbd) {
+    .abus-header__search-input {
       display: none;
     }
 
@@ -740,7 +788,7 @@
   @media (prefers-reduced-motion: reduce) {
     .abus-header__tab,
     .abus-header__icon-btn,
-    .abus-header__contact-btn,
+    .abus-header__search-btn,
     .abus-side-link,
     .abus-side-group :global(.abus-side-group__icon) {
       transition: none;

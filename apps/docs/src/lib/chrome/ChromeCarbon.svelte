@@ -9,21 +9,22 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
   import { page } from "$app/state";
-  import { ChevronDown, ExternalLink, Github, Grid3x3, Menu, X } from "@lucide/svelte";
+  import { ChevronDown, ExternalLink, Github, Grid3x3, Menu, Search as SearchIcon, X } from "@lucide/svelte";
   import {
-    DOCS_FOUNDATION_NAV,
-    DOCS_TOP_NAV,
     DOCS_VERSION,
+    buildFoundationNav,
     buildComponentNavGroups,
+    buildTopNav,
     type ComponentNavItem
   } from "$lib/docs-navigation";
+  import { locale } from "$lib/locale.svelte";
 
   type Props = {
     children: Snippet;
     activeThemeId: string;
     isThemeOpen: boolean;
     onThemeToggle: () => void;
-    searchTrigger?: Snippet;
+    onSearchOpen: () => void;
     themeSwitcher: Snippet;
     frameworkSwitcher: Snippet;
     localeSwitcher: Snippet;
@@ -36,7 +37,7 @@
     children,
     isThemeOpen,
     onThemeToggle,
-    searchTrigger,
+    onSearchOpen,
     themeSwitcher,
     frameworkSwitcher,
     localeSwitcher,
@@ -45,7 +46,9 @@
     onMobileMenuToggle,
   }: Props = $props();
 
-  const componentGroups = buildComponentNavGroups();
+  const topNavItems = $derived(buildTopNav(locale.value));
+  const foundationNavItems = $derived(buildFoundationNav(locale.value));
+  const componentGroups = $derived(buildComponentNavGroups(locale.value));
 
   function isActive(href: string): boolean {
     const pathname = page.url.pathname;
@@ -88,7 +91,7 @@
 
     <!-- Nav principale masquée sur mobile -->
     <nav class="cbn-header__nav" aria-label="Navigation principale">
-      {#each DOCS_TOP_NAV.slice(0, 5) as item (item.href)}
+      {#each topNavItems.slice(0, 5) as item (item.href)}
         <a
           class="cbn-header__nav-link"
           href={item.href}
@@ -98,7 +101,15 @@
     </nav>
 
     <div class="cbn-header__actions">
-      {#if searchTrigger}{@render searchTrigger()}{/if}
+      <button
+        type="button"
+        class="cbn-header__search-btn"
+        aria-label={locale.value === "fr" ? "Rechercher dans la documentation" : "Search the documentation"}
+        aria-haspopup="dialog"
+        onclick={onSearchOpen}
+      >
+        <SearchIcon size={16} strokeWidth={1.8} aria-hidden="true" />
+      </button>
       {@render compareButton()}
       {@render frameworkSwitcher()}
       {@render themeSwitcher()}
@@ -139,7 +150,7 @@
       <nav class="cbn-side-nav" aria-label="Documentation Carbon">
         <ul class="cbn-side-list">
           <!-- Section Docs -->
-          {#each DOCS_FOUNDATION_NAV as item (item.href)}
+          {#each foundationNavItems as item (item.href)}
             <li>
               <a
                 class="cbn-side-link"
@@ -344,33 +355,6 @@
     outline: none;
   }
 
-  /* Barre de recherche (Read the Docs) au style Carbon : champ sombre encadré */
-  .cbn-header__actions :global(.docs-search-trigger) {
-    align-self: center;
-    background: var(--cbn-gray-90);
-    border: 1px solid var(--cbn-gray-80);
-    border-radius: 0;
-    color: var(--cbn-gray-30);
-    gap: 0.5rem;
-    height: 2rem;
-    margin-right: 0.5rem;
-    min-width: 11rem;
-    padding: 0 0.625rem;
-  }
-
-  .cbn-header__actions :global(.docs-search-trigger:hover),
-  .cbn-header__actions :global(.docs-search-trigger:focus-visible) {
-    background: var(--cbn-gray-80);
-    border-color: var(--cbn-blue-60);
-    color: var(--cbn-white);
-  }
-
-  .cbn-header__actions :global(.docs-search-trigger__kbd) {
-    background: var(--cbn-gray-80);
-    border-color: var(--cbn-gray-70);
-    color: var(--cbn-gray-30);
-  }
-
   .cbn-header__actions :global(.docs-locale-menu) {
     background: var(--cbn-gray-90);
     border: none;
@@ -391,6 +375,7 @@
     color: var(--cbn-white);
   }
 
+  .cbn-header__search-btn,
   .cbn-header__icon-btn {
     align-items: center;
     background: transparent;
@@ -406,6 +391,8 @@
     width: var(--cbn-header-height);
   }
 
+  .cbn-header__search-btn:hover,
+  .cbn-header__search-btn:focus-visible,
   .cbn-header__icon-btn:hover,
   .cbn-header__icon-btn:focus-visible {
     background: var(--cbn-hover-bg);
@@ -589,20 +576,6 @@
   /* ── Responsive ── */
   @media (max-width: 768px) {
     .cbn-header__nav {
-      display: none;
-    }
-
-    .cbn-header__actions :global(.docs-search-trigger) {
-      flex: 0 0 2rem;
-      justify-content: center;
-      margin-right: 0;
-      min-width: 0;
-      padding: 0;
-      width: 2rem;
-    }
-
-    .cbn-header__actions :global(.docs-search-trigger__label),
-    .cbn-header__actions :global(.docs-search-trigger__kbd) {
       display: none;
     }
 

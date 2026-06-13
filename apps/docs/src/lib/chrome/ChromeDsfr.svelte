@@ -11,23 +11,24 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
   import { page } from "$app/state";
-  import { ChevronDown, Github, Menu, X } from "@lucide/svelte";
+  import { ChevronDown, Github, Menu, Search as SearchIcon, X } from "@lucide/svelte";
   import {
-    DOCS_FOUNDATION_NAV,
-    DOCS_TOP_NAV,
     DOCS_UTILITY_NAV,
     DOCS_VERSION,
+    buildFoundationNav,
     buildComponentNavGroups,
+    buildTopNav,
     resolveBreadcrumb,
     type ComponentNavItem
   } from "$lib/docs-navigation";
+  import { locale } from "$lib/locale.svelte";
 
   type Props = {
     children: Snippet;
     activeThemeId: string;
     isThemeOpen: boolean;
     onThemeToggle: () => void;
-    searchTrigger?: Snippet;
+    onSearchOpen: () => void;
     themeSwitcher: Snippet;
     frameworkSwitcher: Snippet;
     localeSwitcher: Snippet;
@@ -38,7 +39,7 @@
 
   let {
     children,
-    searchTrigger,
+    onSearchOpen,
     themeSwitcher,
     frameworkSwitcher,
     localeSwitcher,
@@ -47,8 +48,10 @@
     onMobileMenuToggle,
   }: Props = $props();
 
-  const componentGroups = buildComponentNavGroups();
-  const breadcrumbs = $derived(resolveBreadcrumb(page.url.pathname));
+  const topNavItems = $derived(buildTopNav(locale.value));
+  const foundationNavItems = $derived(buildFoundationNav(locale.value));
+  const componentGroups = $derived(buildComponentNavGroups(locale.value));
+  const breadcrumbs = $derived(resolveBreadcrumb(page.url.pathname, locale.value));
 
   function isActive(href: string): boolean {
     const pathname = page.url.pathname;
@@ -72,6 +75,12 @@
 
   function isGroupOpen(items: ComponentNavItem[]): boolean {
     return items.some((item) => isComponentActive(item));
+  }
+
+  function handleSearchKeydown(event: KeyboardEvent) {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    onSearchOpen();
   }
 </script>
 
@@ -119,13 +128,35 @@
             {@render themeSwitcher()}
             {@render localeSwitcher()}
           </div>
-          <!-- Grande barre de recherche DSFR : déclenche la palette docs (Read
-               the Docs). L'enveloppe .dsfr-search garde le gabarit ; le bouton
-               searchTrigger est stylisé à l'aspect du champ de recherche DSFR. -->
+          <!-- Grande barre de recherche DSFR : champ natif + bouton, branché sur
+               la palette docs. -->
           <div class="dsfr-search" role="search">
-            {#if searchTrigger}
-              {@render searchTrigger()}
-            {/if}
+            <label class="dsfr-search__label" for="dsfr-search-input">
+              {locale.value === "fr" ? "Rechercher" : "Search"}
+            </label>
+            <div class="dsfr-search__group">
+              <input
+                id="dsfr-search-input"
+                class="dsfr-search__input"
+                type="search"
+                readonly
+                placeholder={locale.value === "fr" ? "Rechercher…" : "Search…"}
+                aria-label={locale.value === "fr" ? "Rechercher dans la documentation" : "Search the documentation"}
+                aria-haspopup="dialog"
+                onclick={onSearchOpen}
+                onkeydown={handleSearchKeydown}
+              />
+              <kbd class="dsfr-search__kbd" aria-hidden="true">/</kbd>
+              <button
+                type="button"
+                class="dsfr-search__btn"
+                aria-label={locale.value === "fr" ? "Lancer la recherche" : "Open search"}
+                aria-haspopup="dialog"
+                onclick={onSearchOpen}
+              >
+                <SearchIcon size={16} strokeWidth={2} aria-hidden="true" />
+              </button>
+            </div>
           </div>
         </div>
 
@@ -150,7 +181,7 @@
     <nav class="dsfr-nav" aria-label="Navigation principale">
       <div class="dsfr-nav__inner">
         <ul class="dsfr-nav__list">
-          {#each DOCS_TOP_NAV as item (item.href)}
+          {#each topNavItems as item (item.href)}
             <li class="dsfr-nav__item">
               <a
                 class="dsfr-nav__link"
@@ -176,7 +207,7 @@
     <aside class="dsfr-sidebar" aria-label="Navigation de la documentation">
       <nav class="dsfr-side-nav" aria-label="Sommaire">
         <ul class="dsfr-side-list">
-          {#each DOCS_FOUNDATION_NAV as item (item.href)}
+          {#each foundationNavItems as item (item.href)}
             <li>
               <a
                 class="dsfr-side-link"
@@ -406,21 +437,41 @@
     max-width: 28rem;
   }
 
-  /* Le trigger de palette docs prend l'aspect du champ de recherche DSFR :
-     champ blanc à angles vifs, plein largeur, accent bleu République au focus. */
-  .dsfr-search :global(.docs-search-trigger) {
-    background: var(--dsfr-white);
-    border: 1px solid var(--dsfr-black);
-    border-radius: 0;
-    color: var(--dsfr-black);
-    font-family: inherit;
-    height: 2.5rem;
-    justify-content: flex-start;
+  .dsfr-search__label {
+    clip: rect(0 0 0 0);
+    border: 0;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+
+  .dsfr-search__group {
+    display: flex;
+    position: relative;
     width: 100%;
   }
 
-  .dsfr-search :global(.docs-search-trigger:hover),
-  .dsfr-search :global(.docs-search-trigger:focus-visible) {
+  .dsfr-search__input {
+    background: var(--dsfr-white);
+    border: 1px solid var(--dsfr-black);
+    border-right: 0;
+    border-radius: 0;
+    color: var(--dsfr-black);
+    cursor: pointer;
+    flex: 1 1 auto;
+    font-family: inherit;
+    font-size: 0.875rem;
+    height: 2.5rem;
+    min-width: 0;
+    padding: 0 2.125rem 0 0.75rem;
+  }
+
+  .dsfr-search__input:hover,
+  .dsfr-search__input:focus-visible {
     background: var(--dsfr-gray-100);
     border-color: var(--dsfr-blue);
     color: var(--dsfr-blue);
@@ -428,14 +479,47 @@
     outline-offset: -2px;
   }
 
-  .dsfr-search :global(.docs-search-trigger__label) {
+  .dsfr-search__input::placeholder {
     color: var(--dsfr-gray-50);
   }
 
-  .dsfr-search :global(.docs-search-trigger__kbd) {
-    border-color: var(--dsfr-black);
+  .dsfr-search__kbd {
+    align-items: center;
+    border: 1px solid var(--dsfr-black);
     border-radius: 0;
     color: var(--dsfr-gray-50);
+    display: inline-flex;
+    font-size: 0.75rem;
+    height: 1.25rem;
+    justify-content: center;
+    position: absolute;
+    right: 3rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1.25rem;
+  }
+
+  .dsfr-search__btn {
+    align-items: center;
+    background: var(--dsfr-blue);
+    border: 1px solid var(--dsfr-blue);
+    border-radius: 0;
+    color: var(--dsfr-white);
+    cursor: pointer;
+    display: inline-flex;
+    flex: 0 0 2.5rem;
+    height: 2.5rem;
+    justify-content: center;
+    padding: 0;
+    transition: background 120ms ease, border-color 120ms ease;
+  }
+
+  .dsfr-search__btn:hover,
+  .dsfr-search__btn:focus-visible {
+    background: var(--dsfr-blue-hover);
+    border-color: var(--dsfr-blue-hover);
+    outline: 2px solid var(--dsfr-blue-hover);
+    outline-offset: 1px;
   }
 
   /* Burger mobile */
@@ -579,15 +663,17 @@
   }
 
   .dsfr-side-link {
+    align-items: center;
     border-left: 4px solid transparent;
+    box-sizing: border-box;
     color: var(--dsfr-black);
-    display: block;
+    display: flex;
     font-size: 0.875rem;
+    line-height: 1.35;
     min-height: 2.75rem;
     padding: 0.5rem 1rem 0.5rem calc(1rem - 4px);
     text-decoration: none;
     transition: background 120ms ease, border-color 120ms ease;
-    line-height: 1.4;
   }
 
   .dsfr-side-link:hover,
