@@ -19,11 +19,13 @@ Smoke Chrome headless sur `apps/docs/build` :
 | `/components/plan-completion` | Desktop 1440×1000 | Popover visible; Drawer ouvre, backdrop `fixed` z-index 100, fermeture Escape. | OK |
 | `/components/plan-completion` | Mobile 390×844 | Même parcours Popover + Drawer. | OK |
 
-## Principes DS à formaliser (déclenchés par les bugs ci-dessous)
+## Principes DS formalisés (déclenchés par les bugs ci-dessous)
 
-1. **Pas de rail gauche + container arrondi** — déjà documenté en mémoire de session ; à inscrire dans la doc principes formelle.
-2. **Hiérarchie z-index explicite** — drawer/modal > menu/popover > toast > content. À documenter dans le contrat tokens.
-3. **Outside-click et Escape obligatoires** sur tout composant flottant (menu, popover, drawer non-modal). Doit faire partie du contrat de chaque overlay.
+Tous formalisés dans `docs/principles/` (2026-06-12) :
+
+1. **Pas de rail gauche + container arrondi** — `docs/principles/spatial.md`.
+2. **Hiérarchie z-index explicite** — drawer/modal > menu/popover > toast > content — `docs/principles/layering.md`.
+3. **Outside-click et Escape obligatoires** sur tout composant flottant — `docs/principles/interaction.md`.
 
 ## Corrigés
 

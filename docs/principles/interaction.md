@@ -4,3 +4,4 @@
 - Motion uniquement quand elle sert la compréhension (progression, attente, transitions de contexte).
 - `reduced-motion` actif par défaut dans les composants qui animent.
 - Les labels d’état/action doivent être textuels et lisibles sans iconographie seule.
+- Tout composant flottant (menu, popover, drawer non-modal, palette) doit se fermer au clic extérieur ET à la touche Échap : c'est une obligation du contrat de chaque overlay, pas une option.
