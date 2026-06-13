@@ -67,6 +67,13 @@ Sentropic/chat-ui and the design system should exchange these artifacts before c
 - `semantic.status.completed`
 - `semantic.status.failed`
 
+The primitive control surfaces below are also stable and theme-tested (every
+theme emits them, guarded by the theme-canada / theme-carbon suites). Chat UI
+input/composer affordances consume them directly; ratified for chat use:
+
+- `component.control.hoverBackground`
+- `component.control.disabledBackground`
+
 ## Event Contract
 
 ```ts
