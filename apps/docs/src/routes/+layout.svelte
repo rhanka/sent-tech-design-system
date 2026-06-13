@@ -83,6 +83,16 @@
   // (forge/entropic sont des tenants de démo internes — exclus du sélecteur.)
   const THEMES: TenantTheme[] = [sentTechTheme, dsfrTheme, carbonTheme, airbusTheme, canadaTheme, quebecTheme];
   const THEME_STORAGE_KEY = "st-docs-theme";
+  // ── Mode démo (anonymisation pour visiteurs externes) ─────────────────────
+  // Les thèmes "tiers" (clones de marques privées : Carbon/IBM, Airbus, …) sont
+  // CACHÉS du sélecteur public ; on les révèle en "mode démo", basculé via
+  // Ctrl+Shift+X et persisté en localStorage. Les DS publics/gouvernementaux et
+  // nos thèmes propres restent visibles (thirdParty non défini).
+  const DEMO_MODE_STORAGE_KEY = "st-docs-demo-mode";
+  // Thèmes tiers (clones de marques privées) masqués du sélecteur public, révélés
+  // en mode démo. Ajouter ici l'id de chaque nouveau thème de société privée.
+  const HIDDEN_THEME_IDS = new Set<string>(["carbon", "airbus"]);
+  let demoMode = $state(browser ? localStorage.getItem(DEMO_MODE_STORAGE_KEY) === "true" : false);
   // Balise <style> du thème de base, injectée en SSR pour le premier rendu.
   // Utilise compileThemeWithModes pour émettre 3 blocs (light + auto dark + explicit dark).
   // (Construite dans le script pour éviter un littéral <style> dans le markup.)
@@ -95,9 +105,13 @@
   // client choisit directement le bon chrome par-thème — plus de bascule de chrome
   // post-hydratation (fin de la course : Airbus/DSFR/… ratait son chrome ~1 fois
   // sur N). En SSR (prerender, pas de window) on retombe sur le thème par défaut.
-  const initialTheme = browser
+  const rawInitialTheme = browser
     ? resolveTheme(readUrlParams().theme, THEME_STORAGE_KEY)
     : sentTechTheme.id;
+  // Anonymisation : un thème tiers deep-linké (?theme=carbon) est ignoré hors
+  // mode démo — on retombe sur le thème par défaut au premier rendu.
+  const initialTheme =
+    !demoMode && HIDDEN_THEME_IDS.has(rawInitialTheme) ? sentTechTheme.id : rawInitialTheme;
   if (browser) {
     framework.value = resolveFramework(readUrlParams().framework, FRAMEWORK_STORAGE_KEY);
   }
@@ -106,6 +120,16 @@
   const activeTheme = $derived(
     THEMES.find((theme) => theme.id === activeThemeId) ?? sentTechTheme
   );
+  // Sélecteur public : masque les thèmes tiers hors mode démo (réactif au flag).
+  const visibleThemes = $derived(THEMES.filter((theme) => !HIDDEN_THEME_IDS.has(theme.id) || demoMode));
+  // Garde runtime : si on quitte le mode démo alors qu'un thème tiers est actif,
+  // on revient au thème par défaut (anonymisation affichage + URL).
+  $effect(() => {
+    if (!browser) return;
+    if (!demoMode && HIDDEN_THEME_IDS.has(activeThemeId)) {
+      activeThemeId = sentTechTheme.id;
+    }
+  });
 
   // ═══ URL = SOURCE DE VÉRITÉ pour thème + framework ═══════════════════════
   // L'URL fait foi ; le store MIROIR l'URL (jamais l'inverse). localStorage ne
@@ -340,6 +364,12 @@
     e.preventDefault();
     openSearch();
   }
+  // Ctrl+Shift+X : bascule le mode démo (révèle/masque les thèmes tiers privés).
+  if (e.ctrlKey && e.shiftKey && e.code === "KeyX") {
+    e.preventDefault();
+    demoMode = !demoMode;
+    if (browser) localStorage.setItem(DEMO_MODE_STORAGE_KEY, demoMode ? "true" : "false");
+  }
 }} />
 
 <svelte:head>
@@ -446,7 +476,7 @@
 
     {#if isThemeOpen}
       <div class="docs-locale-menu" role="menu">
-        {#each THEMES as theme (theme.id)}
+        {#each visibleThemes as theme (theme.id)}
           <button
             type="button"
             class="docs-locale-item"
@@ -805,7 +835,7 @@
 
           <span class="docs-mobile-nav-label">{locale.value === "fr" ? "Thème" : "Theme"}</span>
           <div class="docs-mobile-locale-switcher docs-mobile-theme-switcher">
-            {#each THEMES as theme (theme.id)}
+            {#each visibleThemes as theme (theme.id)}
               <button
                 type="button"
                 class="docs-mobile-locale-btn"
