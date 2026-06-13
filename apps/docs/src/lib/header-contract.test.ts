@@ -90,7 +90,7 @@ describe("docs header alignment contract", () => {
   });
 
   it("includes the imported tenants (Airbus, Canada, Québec) in the theme picker", () => {
-    expect(layoutSource).toContain('const THEMES: TenantTheme[] = [sentTechTheme, dsfrTheme, carbonTheme, airbusTheme, canadaTheme, quebecTheme, ssenseTheme]');
+    expect(layoutSource).toContain('const THEMES: TenantTheme[] = [sentTechTheme, dsfrTheme, carbonTheme, airbusTheme, canadaTheme, quebecTheme, ssenseTheme, lightspeedTheme, desjardinsTheme]');
   });
 
   it("does not render fake auth access in the public docs header", () => {

@@ -23,6 +23,8 @@
   import { canadaTheme } from "@sentropic/design-system-theme-canada";
   import { quebecTheme } from "@sentropic/design-system-theme-quebec";
   import { ssenseTheme } from "@sentropic/design-system-theme-ssense";
+  import { lightspeedTheme } from "@sentropic/design-system-theme-lightspeed";
+  import { desjardinsTheme } from "@sentropic/design-system-theme-desjardins";
   import {
     DOCS_UTILITY_NAV,
     DOCS_VERSION,
@@ -82,7 +84,7 @@
   // Thèmes proposés : le DS Sentropic de référence + les 2 mappings tiers
   // (DSFR/Carbon) + le thème client Airbus (port d'anatomie).
   // (forge/entropic sont des tenants de démo internes — exclus du sélecteur.)
-  const THEMES: TenantTheme[] = [sentTechTheme, dsfrTheme, carbonTheme, airbusTheme, canadaTheme, quebecTheme, ssenseTheme];
+  const THEMES: TenantTheme[] = [sentTechTheme, dsfrTheme, carbonTheme, airbusTheme, canadaTheme, quebecTheme, ssenseTheme, lightspeedTheme, desjardinsTheme];
   const THEME_STORAGE_KEY = "st-docs-theme";
   // ── Mode démo (anonymisation pour visiteurs externes) ─────────────────────
   // Les thèmes "tiers" (clones de marques privées : Carbon/IBM, Airbus, …) sont
@@ -92,7 +94,7 @@
   const DEMO_MODE_STORAGE_KEY = "st-docs-demo-mode";
   // Thèmes tiers (clones de marques privées) masqués du sélecteur public, révélés
   // en mode démo. Ajouter ici l'id de chaque nouveau thème de société privée.
-  const HIDDEN_THEME_IDS = new Set<string>(["carbon", "airbus", "ssense"]);
+  const HIDDEN_THEME_IDS = new Set<string>(["carbon", "airbus", "ssense", "lightspeed", "desjardins"]);
   let demoMode = $state(browser ? localStorage.getItem(DEMO_MODE_STORAGE_KEY) === "true" : false);
   // Balise <style> du thème de base, injectée en SSR pour le premier rendu.
   // Utilise compileThemeWithModes pour émettre 3 blocs (light + auto dark + explicit dark).
