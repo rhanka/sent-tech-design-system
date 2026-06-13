@@ -15,10 +15,23 @@ const dsfrChromeSource = readFileSync(
   resolve(docsRoot, "src/lib/chrome/ChromeDsfr.svelte"),
   "utf8"
 );
+const canadaChromeSource = readFileSync(
+  resolve(docsRoot, "src/lib/chrome/ChromeCanada.svelte"),
+  "utf8"
+);
+const quebecChromeSource = readFileSync(
+  resolve(docsRoot, "src/lib/chrome/ChromeQuebec.svelte"),
+  "utf8"
+);
 const airbusChromeSource = readFileSync(
   resolve(docsRoot, "src/lib/chrome/ChromeAirbus.svelte"),
   "utf8"
 );
+
+function cssRule(source: string, selector: string): string {
+  const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return source.match(new RegExp(`${escaped}\\s*\\{([\\s\\S]*?)\\}`))?.[1] ?? "";
+}
 
 describe("docs header alignment contract", () => {
   it("uses the square SENT mark with the Sentropic service title", () => {
@@ -116,7 +129,8 @@ describe("docs themed chrome contract", () => {
     expect(carbonChromeSource).toContain('class="cbn-header__brand-name">Carbon Design System');
     expect(carbonChromeSource).toContain("class=\"cbn-header\"");
     expect(carbonChromeSource).toContain("class=\"cbn-sidebar\"");
-    expect(carbonChromeSource).toContain('href="https://www.carbondesignsystem.com/search/"');
+    expect(carbonChromeSource).toContain('class="cbn-header__search-btn"');
+    expect(carbonChromeSource).not.toContain('href="https://www.carbondesignsystem.com/search/"');
     expect(carbonChromeSource).toContain('href="https://www.ibm.com/design/"');
     expect(carbonChromeSource).not.toContain('Wire-up réel en attente');
   });
@@ -135,9 +149,51 @@ describe("docs themed chrome contract", () => {
     expect(airbusChromeSource).toContain("class=\"abus-header\"");
     expect(airbusChromeSource).toContain("class=\"abus-sidebar\"");
     expect(airbusChromeSource).toContain("class=\"abus-breadcrumb\"");
-    expect(airbusChromeSource).toContain('href="/components/search"');
+    expect(airbusChromeSource).toContain('class="abus-header__search-input"');
+    expect(airbusChromeSource).toContain('class="abus-header__search-btn"');
     expect(airbusChromeSource).toContain('href="/components/notification"');
     expect(airbusChromeSource).toContain('href="/components/overlays"');
-    expect(airbusChromeSource).toContain('mailto:contact@airbus.com?subject=Contact%20documentation%20design%20system');
+    expect(airbusChromeSource).not.toContain('abus-header__contact-btn');
+    expect(airbusChromeSource).not.toContain('mailto:contact@airbus.com?subject=Contact%20documentation%20design%20system');
+  });
+
+  it("opens the docs search palette from native themed search controls", () => {
+    expect(layoutSource).toContain("function openSearch()");
+    expect(layoutSource).toContain("function focusSearchInput()");
+    expect(layoutSource).toContain("bind:this={searchOverlayPanel}");
+    expect(layoutSource).toContain("onSearchOpen={openSearch}");
+
+    for (const source of [
+      carbonChromeSource,
+      dsfrChromeSource,
+      canadaChromeSource,
+      quebecChromeSource,
+      airbusChromeSource
+    ]) {
+      expect(source).toContain("onSearchOpen");
+      expect(source).toContain("onclick={onSearchOpen}");
+      expect(source).not.toContain("searchTrigger");
+      expect(source).not.toContain(":global(.docs-search-trigger)");
+    }
+
+    expect(dsfrChromeSource).toContain('class="dsfr-search__input"');
+    expect(dsfrChromeSource).toContain('class="dsfr-search__btn"');
+    expect(canadaChromeSource).toContain('class="gc-search__input"');
+    expect(canadaChromeSource).toContain('class="gc-search__btn"');
+    expect(quebecChromeSource).toContain('class="qc-search__input"');
+    expect(quebecChromeSource).toContain('class="qc-search__btn"');
+  });
+
+  it("keeps active side-nav labels vertically centered in DSFR, Canada and Quebec", () => {
+    for (const [source, selector] of [
+      [dsfrChromeSource, ".dsfr-side-link"],
+      [canadaChromeSource, ".gc-side-link"],
+      [quebecChromeSource, ".qc-side-link"]
+    ] as const) {
+      const rule = cssRule(source, selector);
+      expect(rule).toContain("align-items: center;");
+      expect(rule).toContain("display: flex;");
+      expect(rule).toContain("box-sizing: border-box;");
+    }
   });
 });
