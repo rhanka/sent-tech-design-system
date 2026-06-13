@@ -42,10 +42,10 @@
     "@sentropic/design-system-theme-carbon": "0.2.2",
     "@sentropic/design-system-theme-dsfr": "0.2.2",
     "@sveltejs/package": "^2.5.0",
-    "@sveltejs/vite-plugin-svelte": "^6.2.4",
+    "@sveltejs/vite-plugin-svelte": "^7.1.2",
     "@testing-library/svelte": "^5.2.8",
     "svelte": "^5.53.2",
-    "vite": "^7.3.1",
+    "vite": "^8.0.16",
     "vitest": "^4.0.15",
     "@sentropic/design-system-themes": "0.11.0"
   }
