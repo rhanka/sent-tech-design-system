@@ -33,10 +33,20 @@ CGI = 11e en parallèle (scrape Drive). Hex = directionnel ; le build agent MESU
 | 5 | Cirque du Soleil | cirque-du-soleil | spectacle · MTL HQ | cirquedusoleil.com | DARK, or #dca85d sur noir, Cds Sans | ✅ main cb2b222 |
 | 6 | Ubisoft | ubisoft | jeu vidéo · MTL studio | ubisoft.com | DARK, bleu #006ef5 sur noir, Ubisoft Sans | ✅ main 73c2660 |
 | 7 | Bombardier | bombardier | aéro · MTL HQ | bombardier.com | petrol-teal #003e51 + or, champs carrés | ✅ main 73c2660 |
-| 8 | CAE | cae | simulation/aéro · MTL HQ | cae.com | navy #06103D + bleu #2969F2, Red Hat Display | build inline (lot 5) |
-| 9 | SAQ | saq | détail (vin) · QC | saq.com | coral #fc4d30 + burgundy #7e003f, Maax | build inline (lot 5) |
-| 10 | STM | stm | transport public · MTL | stm.info | bleu transit #009ee0 + greys | build inline (lot 6) |
-| 11 | CGI | cgi | conseil TI · MTL HQ | cgi.com (web; Drive down) | VIOLET #5236ab + rouge #e41937, Source Sans Pro/Nunito | build inline (lot 6) |
+| 8 | CAE | cae | simulation/aéro · MTL HQ | cae.com | navy #06103D + bleu #2969F2, Red Hat Display | ✅ main df62cf9 |
+| 9 | SAQ | saq | détail (vin) · QC | saq.com | coral #fc4d30 + burgundy #7e003f, Maax | ✅ main df62cf9 |
+| 10 | STM | stm | transport public · MTL | stm.info | bleu transit #009ee0 + greys | ✅ main df62cf9 |
+| 11 | CGI | cgi | conseil TI · MTL HQ | cgi.com (web; Drive down) | VIOLET #5236ab + rouge #e41937, Source Sans Pro/Nunito | ✅ main df62cf9 |
+
+## Extension (objectif max SLOC utile) — lot 7
+| 12 | Nuvei | nuvei | fintech/paiements · MTL HQ | nuvei.com | indigo #160850 + cyan #0C98D4, Inter Tight | build (lot 7) |
+| 13 | Coveo | coveo | AI-search SaaS · QC | coveo.com | rouge #d2271b + bleu, police Gibson | build (lot 7) |
+| 14 | Circle K | circle-k | dépanneurs (Couche-Tard) · MTL HQ | circlek.com | rouge #DA291C + ink | build (lot 7) |
+| 15 | Aldo | aldo | mode/chaussures · MTL HQ | aldoshoes.com | noir + JAUNE #ffef71 signature | build (lot 7) |
+Remplaçant prêt si besoin : Mirego (mirego.com — noir/crème, font Almirego).
+
+## ✅ RUN — 11 thèmes core live sur main (+ extension lot 7 en cours)
+Pushes : ssense (b71c46b) · lightspeed+desjardins (9688b3c) · national-bank+cirque (cb2b222) · ubisoft+bombardier (73c2660) · cae+saq+cgi+stm (df62cf9). + mode démo Ctrl+Shift+X (toutes les sociétés privées cachées hors démo) + SOP `.ds-scrap/SOP-theme-clone.md` + skill CLI `ds-theme-clone`. Tous gate-verts, valeurs mesurées sur CSS live. Build prod docs (Pages) en cours de vérification.
 
 Note CGI : identité moderne **violet-led** (#5236ab dominant 252×), rouge #e41937 en accent héritage. Drive jamais revenu → scrape web cgi.com (riche, suffisant).
 
