@@ -1061,6 +1061,26 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "SolidGaugeChart",
+    slug: "solid-gauge-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Anneau de progression plein : arc rempli proportionnel à la valeur, teinté par seuils, valeur centrale.",
+      en: "Solid progress ring: filled arc proportional to value, threshold-tinted, with centered value."
+    }
+  },
+  {
+    name: "StateTimelineChart",
+    slug: "state-timeline-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Bandes d'états discrets dans le temps : une ligne par série, segments contigus colorés par état.",
+      en: "Discrete state bands over time: one lane per series, contiguous segments colored by state."
+    }
+  },
+  {
     name: "FunnelChart",
     slug: "funnel-chart",
     status: "documented",

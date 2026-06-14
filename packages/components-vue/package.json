@@ -1,6 +1,6 @@
 {
   "name": "@sentropic/design-system-vue",
-  "version": "0.36.33",
+  "version": "0.36.34",
   "description": "Vue 3 components for the Sentropic design system.",
   "type": "module",
   "publishConfig": {

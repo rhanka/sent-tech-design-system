@@ -102,6 +102,8 @@ export { default as Form } from "./Form.svelte";
 export { default as FormGroup } from "./FormGroup.svelte";
 export { default as FunnelChart } from "./FunnelChart.svelte";
 export { default as GaugeChart } from "./GaugeChart.svelte";
+export { default as SolidGaugeChart } from "./SolidGaugeChart.svelte";
+export { default as StateTimelineChart } from "./StateTimelineChart.svelte";
 export { default as GeoMap } from "./GeoMap.svelte";
 export { default as Header } from "./Header.svelte";
 export { default as HeatmapChart } from "./HeatmapChart.svelte";
@@ -240,6 +242,16 @@ export type {
   GaugeChartThreshold,
   GaugeChartFormat
 } from "./GaugeChart.svelte";
+export type {
+  SolidGaugeTone,
+  SolidGaugeThreshold,
+  SolidGaugeFormat
+} from "./SolidGaugeChart.svelte";
+export type {
+  StateTimelineTone,
+  StateTimelineSegment,
+  StateTimelineSeries
+} from "./StateTimelineChart.svelte";
 export type { FunnelChartTone, FunnelChartDatum } from "./FunnelChart.svelte";
 export type { ViolinChartDatum, ViolinChartTone } from "./ViolinChart.svelte";
 export type { WaterfallType, WaterfallChartDatum } from "./WaterfallChart.svelte";

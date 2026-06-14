@@ -108,6 +108,20 @@ export type {
   GaugeChartTone,
   GaugeChartFormat,
 } from "./GaugeChart.js";
+export { SolidGaugeChart } from "./SolidGaugeChart.js";
+export type {
+  SolidGaugeChartProps,
+  SolidGaugeThreshold,
+  SolidGaugeTone,
+  SolidGaugeFormat,
+} from "./SolidGaugeChart.js";
+export { StateTimelineChart } from "./StateTimelineChart.js";
+export type {
+  StateTimelineChartProps,
+  StateTimelineSegment,
+  StateTimelineSeries,
+  StateTimelineTone,
+} from "./StateTimelineChart.js";
 export { GeoMap } from "./GeoMap.js";
 export type {
   GeoMapProps,

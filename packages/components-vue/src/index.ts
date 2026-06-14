@@ -236,6 +236,20 @@ export type {
   GaugeChartThreshold,
   GaugeChartFormat,
 } from "./GaugeChart.js";
+export { SolidGaugeChart } from "./SolidGaugeChart.js";
+export type {
+  SolidGaugeChartProps,
+  SolidGaugeTone,
+  SolidGaugeThreshold,
+  SolidGaugeFormat,
+} from "./SolidGaugeChart.js";
+export { StateTimelineChart } from "./StateTimelineChart.js";
+export type {
+  StateTimelineChartProps,
+  StateTimelineTone,
+  StateTimelineSegment,
+  StateTimelineSeries,
+} from "./StateTimelineChart.js";
 export { GeoMap } from "./GeoMap.js";
 export type {
   GeoMapProps,
