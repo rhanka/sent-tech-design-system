@@ -86,12 +86,6 @@
   function isGroupOpen(items: ComponentNavItem[]): boolean {
     return items.some((item) => isComponentActive(item));
   }
-
-  function handleSearchKeydown(event: KeyboardEvent) {
-    if (event.key !== "Enter" && event.key !== " ") return;
-    event.preventDefault();
-    onSearchOpen();
-  }
 </script>
 
 <svelte:head>
@@ -121,7 +115,7 @@
           </a>
         </div>
 
-        <!-- Centre : nav horizontale -->
+        <!-- Centre : nav horizontale + loupe de recherche -->
         <nav class="cgi-nav" aria-label="Navigation principale">
           <ul class="cgi-nav__list">
             {#each topNavItems as item (item.href)}
@@ -136,40 +130,21 @@
               </li>
             {/each}
           </ul>
+
+          <!-- Loupe de recherche CGI : bouton compact (pas de champ), branché sur la palette docs. -->
+          <button
+            type="button"
+            class="cgi-search-btn"
+            aria-label={locale.value === "fr" ? "Rechercher dans la documentation" : "Search the documentation"}
+            aria-haspopup="dialog"
+            onclick={onSearchOpen}
+          >
+            <SearchIcon size={18} strokeWidth={2} aria-hidden="true" />
+          </button>
         </nav>
 
-        <!-- Droite : outils + recherche + CTA violet -->
+        <!-- Droite : barre utilitaire (switchers + comparateur) façon CGI -->
         <div class="cgi-header__tools">
-          <!-- Barre de recherche CGI : champ natif + bouton, branché sur la palette docs. -->
-          <div class="cgi-search" role="search">
-            <label class="cgi-search__label" for="cgi-search-input">
-              {locale.value === "fr" ? "Rechercher" : "Search"}
-            </label>
-            <div class="cgi-search__group">
-              <input
-                id="cgi-search-input"
-                class="cgi-search__input"
-                type="search"
-                readonly
-                placeholder={locale.value === "fr" ? "Rechercher…" : "Search…"}
-                aria-label={locale.value === "fr" ? "Rechercher dans la documentation" : "Search the documentation"}
-                aria-haspopup="dialog"
-                onclick={onSearchOpen}
-                onkeydown={handleSearchKeydown}
-              />
-              <kbd class="cgi-search__kbd" aria-hidden="true">/</kbd>
-              <button
-                type="button"
-                class="cgi-search__btn"
-                aria-label={locale.value === "fr" ? "Lancer la recherche" : "Open search"}
-                aria-haspopup="dialog"
-                onclick={onSearchOpen}
-              >
-                <SearchIcon size={16} strokeWidth={2} aria-hidden="true" />
-              </button>
-            </div>
-          </div>
-
           <!-- Switchers docs (framework / thème / langue) + comparateur -->
           <div class="cgi-header__tools-links">
             {@render compareButton()}
@@ -371,19 +346,49 @@
     height: 30px;
   }
 
-  /* ── Nav horizontale (centre) ── */
+  /* ── Nav horizontale (centre) + loupe ── */
   .cgi-nav {
+    align-items: center;
+    display: flex;
     flex: 1 1 auto;
-    overflow-x: auto;
+    gap: 0.5rem;
+    min-width: 0;
   }
 
   .cgi-nav__list {
     align-items: center;
     display: flex;
-    gap: 0.25rem;
+    gap: 0.375rem;
     list-style: none;
     margin: 0;
+    min-width: 0;
+    overflow-x: auto;
     padding: 0;
+  }
+
+  /* Loupe de recherche compacte (pas de champ) : carré 4px, hover lavande/violet. */
+  .cgi-search-btn {
+    align-items: center;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--cgi-radius);
+    color: var(--cgi-ink);
+    cursor: pointer;
+    display: inline-flex;
+    flex: 0 0 auto;
+    height: 2.5rem;
+    justify-content: center;
+    padding: 0;
+    transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+    width: 2.5rem;
+  }
+
+  .cgi-search-btn:hover,
+  .cgi-search-btn:focus-visible {
+    background: var(--cgi-lavender);
+    border-color: var(--cgi-purple);
+    color: var(--cgi-purple);
+    outline: none;
   }
 
   .cgi-nav__item {
@@ -426,12 +431,23 @@
     gap: 0.75rem;
   }
 
+  /* Barre utilitaire CGI : groupes séparés par de fins traits verticaux
+     ("… | 🌐 | FR"). Chaque snippet rend un wrapper direct, on insère le
+     diviseur avant chaque groupe sauf le premier. */
   .cgi-header__tools-links {
     align-items: center;
     display: flex;
-    gap: 0.5rem;
+    gap: 0;
     flex-wrap: wrap;
     justify-content: flex-end;
+  }
+
+  .cgi-header__tools-links :global(> *) {
+    padding: 0 0.625rem;
+  }
+
+  .cgi-header__tools-links :global(> * + *) {
+    border-left: 1px solid var(--cgi-border);
   }
 
   /* Overrides switchers dans header CGI (champs clairs, bord gris 1px). */
@@ -449,98 +465,6 @@
     border-color: var(--cgi-purple);
     color: var(--cgi-purple);
     box-shadow: none;
-  }
-
-  /* Barre de recherche CGI (bord gris 1px, conteneur 4px). */
-  .cgi-search {
-    width: clamp(11rem, 18vw, 18rem);
-  }
-
-  .cgi-search__label {
-    clip: rect(0 0 0 0);
-    border: 0;
-    height: 1px;
-    margin: -1px;
-    overflow: hidden;
-    padding: 0;
-    position: absolute;
-    white-space: nowrap;
-    width: 1px;
-  }
-
-  .cgi-search__group {
-    display: flex;
-    position: relative;
-    width: 100%;
-  }
-
-  .cgi-search__input {
-    background: var(--cgi-white);
-    border: 1px solid var(--cgi-border);
-    border-right: 0;
-    border-radius: var(--cgi-radius);
-    border-bottom-right-radius: 0;
-    border-top-right-radius: 0;
-    color: var(--cgi-ink);
-    cursor: pointer;
-    flex: 1 1 auto;
-    font-family: inherit;
-    font-size: 0.875rem;
-    height: 2.5rem;
-    min-width: 0;
-    padding: 0 2.125rem 0 0.75rem;
-  }
-
-  .cgi-search__input:hover,
-  .cgi-search__input:focus-visible {
-    background: var(--cgi-white);
-    border-color: var(--cgi-purple);
-    color: var(--cgi-ink);
-    outline: 2px solid var(--cgi-purple);
-    outline-offset: 1px;
-  }
-
-  .cgi-search__input::placeholder {
-    color: var(--cgi-grey);
-  }
-
-  .cgi-search__kbd {
-    align-items: center;
-    border: 1px solid var(--cgi-border);
-    border-radius: 4px;
-    color: var(--cgi-grey);
-    display: inline-flex;
-    font-size: 0.75rem;
-    height: 1.25rem;
-    justify-content: center;
-    position: absolute;
-    right: 3rem;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 1.25rem;
-  }
-
-  .cgi-search__btn {
-    align-items: center;
-    background: var(--cgi-purple);
-    border: 1px solid var(--cgi-purple);
-    border-radius: 0 var(--cgi-radius) var(--cgi-radius) 0;
-    color: var(--cgi-white);
-    cursor: pointer;
-    display: inline-flex;
-    flex: 0 0 2.5rem;
-    height: 2.5rem;
-    justify-content: center;
-    padding: 0;
-    transition: background 120ms ease, border-color 120ms ease;
-  }
-
-  .cgi-search__btn:hover,
-  .cgi-search__btn:focus-visible {
-    background: var(--cgi-purple-deep);
-    border-color: var(--cgi-purple-deep);
-    outline: 2px solid var(--cgi-purple);
-    outline-offset: 1px;
   }
 
   /* CTA pilule violette (radius 30px). */
@@ -854,7 +778,7 @@
   @media (prefers-reduced-motion: reduce) {
     .cgi-nav__link,
     .cgi-cta,
-    .cgi-search__btn,
+    .cgi-search-btn,
     .cgi-side-link,
     .cgi-side-group :global(.cgi-side-group__icon) {
       transition: none;
