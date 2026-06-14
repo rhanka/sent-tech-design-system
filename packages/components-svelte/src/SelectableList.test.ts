@@ -304,6 +304,52 @@ describe("SelectableList — focus transfer quand une row devient disabled", () 
   });
 });
 
+// --- Perf: register() is O(1), the DOM sort is deferred (issue #26) ----------
+describe("SelectableList — register() perf (no O(n²) sort storm)", () => {
+  it("mounts a large list without a per-row DOM-order sort storm", () => {
+    // The old register() sorted the whole registry on every mount → O(n)
+    // compareDocumentPosition calls per row → O(n²) for the list. We now append
+    // in insertion order (O(1)) and sort LAZILY. Spy on compareDocumentPosition
+    // and assert the mount stays well under the old O(n²) explosion.
+    const spy = vi.spyOn(Element.prototype, "compareDocumentPosition");
+    const n = 200;
+    const big = Array.from({ length: n }, (_, i) => ({
+      value: `v${i}`,
+      label: `Row ${i}`
+    }));
+    try {
+      const { container } = render(SelectableListFixture, { props: { items: big } });
+      expect(rows(container).length).toBe(n);
+      // Old behaviour: ~n sorts of growing size ⇒ on the order of n²/2 ≈ 20000
+      // comparisons. The deferred path sorts at most a small constant number of
+      // times; a generous ceiling of n*4 still proves the quadratic storm is gone.
+      expect(spy.mock.calls.length).toBeLessThan(n * 4);
+    } finally {
+      spy.mockRestore();
+    }
+  });
+
+  it("keeps roving tabindex + arrow nav correct after the deferred sort (registration order ≠ DOM order is reconciled)", async () => {
+    const big = Array.from({ length: 8 }, (_, i) => ({
+      value: `v${i}`,
+      label: `Row ${i}`
+    }));
+    const { container } = render(SelectableListFixture, { props: { items: big } });
+    const r = rows(container);
+    // First row is the default roving stop even though the sort was deferred.
+    expect(r[0].getAttribute("tabindex")).toBe("0");
+    expect(r[1].getAttribute("tabindex")).toBe("-1");
+    // Arrow nav forces the lazy sort and still lands in visual order.
+    r[0].focus();
+    await fireEvent.keyDown(r[0], { key: "ArrowDown" });
+    expect(document.activeElement).toBe(r[1]);
+    await fireEvent.keyDown(r[1], { key: "End" });
+    expect(document.activeElement).toBe(r[7]);
+    await fireEvent.keyDown(r[7], { key: "Home" });
+    expect(document.activeElement).toBe(r[0]);
+  });
+});
+
 describe("SelectableRow standalone", () => {
   it("a11y invariant: role par défaut est 'button' (pas 'option') hors listbox", () => {
     const { container } = render(SelectableRow, { props: {} });
