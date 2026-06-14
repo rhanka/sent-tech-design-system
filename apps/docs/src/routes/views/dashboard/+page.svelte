@@ -237,23 +237,23 @@
       {#if locale.value === "fr"}
         Vue préfabriquée : 4 indicateurs KPI en rangée, graphique linéaire de tendance,
         graphique en barres par segment, donut de répartition, et table Top N. Un seul
-        <code>NodeSpec</code> → rendu identique en Svelte, React et Vue.
+        <code>NodeSpec</code> → rendu identique en Svelte, React, Vue et Angular.
       {:else}
         Prefabricated view: 4 KPI indicators in a row, trend line chart, bar chart by segment,
         acquisition donut, and a Top-N data table. One <code>NodeSpec</code> → identical
-        render in Svelte, React, and Vue.
+        render in Svelte, React, Vue, and Angular.
       {/if}
     </p>
   </section>
 
   <section class="docs-section">
-    <h2>{locale.value === "fr" ? "Rendu tri-framework" : "Tri-framework render"}</h2>
+    <h2>{locale.value === "fr" ? "Rendu multi-framework" : "Multi-framework render"}</h2>
     <p class="section-desc">
       {#if locale.value === "fr"}
-        Utilisez les onglets pour basculer entre Svelte, React et Vue. Le rendu et le
+        Utilisez les onglets pour basculer entre Svelte, React, Vue et Angular. Le rendu et le
         code copié reflètent le framework sélectionné globalement.
       {:else}
-        Use the tabs to switch between Svelte, React, and Vue. The render and copied code
+        Use the tabs to switch between Svelte, React, Vue, and Angular. The render and copied code
         reflect the globally selected framework.
       {/if}
     </p>
@@ -306,7 +306,7 @@
     font-size: 0.95rem;
   }
 
-  /* ── Styles globaux du layout dashboard (propagés dans les îles React/Vue) */
+  /* ── Styles globaux du layout dashboard (propagés dans les îles React/Vue/Angular) */
   :global(.dash-layout) {
     display: flex;
     flex-direction: column;

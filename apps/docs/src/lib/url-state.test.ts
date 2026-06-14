@@ -51,13 +51,18 @@ describe("url-state helpers", () => {
       expect(readUrlParams().framework).toBe("react");
     });
 
+    it("reads Angular as a valid framework from the URL", () => {
+      mockSearch.current = "?framework=angular";
+      expect(readUrlParams().framework).toBe("angular");
+    });
+
     it("rejects an invalid theme (returns null)", () => {
       mockSearch.current = "?theme=evil";
       expect(readUrlParams().theme).toBeNull();
     });
 
     it("rejects an invalid framework (returns null)", () => {
-      mockSearch.current = "?framework=angular";
+      mockSearch.current = "?framework=ember";
       expect(readUrlParams().framework).toBeNull();
     });
 
@@ -115,6 +120,11 @@ describe("url-state helpers", () => {
     it("adds ?framework= for a non-default framework", () => {
       mockSearch.current = "";
       expect(buildUpdatedSearch("sent-tech", "react")).toBe("?framework=react");
+    });
+
+    it("adds ?framework=angular for Angular", () => {
+      mockSearch.current = "";
+      expect(buildUpdatedSearch("sent-tech", "angular")).toBe("?framework=angular");
     });
 
     it("adds both params when both are non-default", () => {

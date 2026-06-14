@@ -172,7 +172,7 @@
         <code>Tabs</code> de catégories, <code>Form</code>/<code>FormGroup</code>
         (<code>Select</code>, <code>Input</code>, <code>Toggle</code>, <code>Switch</code>) et une
         barre d'enregistrement (<code>ButtonGroup</code>). Un seul <code>NodeSpec</code> → rendu
-        identique en Svelte, React et Vue.
+        identique en Svelte, React, Vue et Angular.
       {:else}
         The master-detail admin pattern: a sub-section <code>SideNav</code> on the left, category
         <code>Tabs</code>, a <code>Form</code>/<code>FormGroup</code> (<code>Select</code>,
@@ -184,11 +184,11 @@
   </section>
 
   <section class="docs-section">
-    <h2>{fr ? "Rendu tri-framework" : "Tri-framework render"}</h2>
+    <h2>{fr ? "Rendu multi-framework" : "Multi-framework render"}</h2>
     <p class="section-desc">
       {fr
-        ? "Utilisez les onglets pour basculer entre Svelte, React et Vue. Le rendu et le code copié reflètent le framework sélectionné."
-        : "Use the tabs to switch between Svelte, React, and Vue. The render and copied code reflect the selected framework."}
+        ? "Utilisez les onglets pour basculer entre Svelte, React, Vue et Angular. Le rendu et le code copié reflètent le framework sélectionné."
+        : "Use the tabs to switch between Svelte, React, Vue, and Angular. The render and copied code reflect the selected framework."}
     </p>
     <TabbedExample
       nodes={demoNodes}
@@ -225,7 +225,7 @@
     font-size: 0.95rem;
   }
 
-  /* ── Layout Settings (global → propagé dans les îles React/Vue) ─────────── */
+  /* ── Layout Settings (global → propagé dans les îles React/Vue/Angular) ─────────── */
   :global(.st-shell) {
     display: grid;
     grid-template-columns: 240px 1fr;

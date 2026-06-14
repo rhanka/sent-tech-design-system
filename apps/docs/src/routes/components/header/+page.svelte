@@ -278,7 +278,7 @@
       que lorsqu'aucun <code>logo</code> n'est passé et qu'au moins une de ces props est présente
       (rétro-compatible).
     </p>
-    <h3>Consommation tri-framework (parité stricte)</h3>
+    <h3>Consommation multi-framework (parité stricte)</h3>
     <p>
       L'API est identique en Svelte (props + snippets <code>nav</code>/<code>actions</code>/<code>drawer</code>),
       React (props + nœuds <code>nav</code>/<code>actions</code>) et Vue (props + slots). Côté
