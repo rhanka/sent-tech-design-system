@@ -74,6 +74,9 @@
   import ChromeDesjardins from "$lib/chrome/ChromeDesjardins.svelte";
   import ChromeSsense from "$lib/chrome/ChromeSsense.svelte";
   import ChromeUbisoft from "$lib/chrome/ChromeUbisoft.svelte";
+  import ChromeCirqueDuSoleil from "$lib/chrome/ChromeCirqueDuSoleil.svelte";
+  import ChromeCgi from "$lib/chrome/ChromeCgi.svelte";
+  import ChromeNationalBank from "$lib/chrome/ChromeNationalBank.svelte";
   import DocsSearch from "$lib/chat/DocsSearch.svelte";
   import { Search as SearchIcon } from "@lucide/svelte";
 
@@ -352,7 +355,7 @@
   // Les chromes Carbon/DSFR/Airbus encapsulent leur propre header + sidebar.
   // Le chrome sent-tech utilise le Header du composant DS + la sidebar existante.
   const useCustomChrome = $derived(
-    browser && (activeThemeId === "carbon" || activeThemeId === "dsfr" || activeThemeId === "airbus" || activeThemeId === "canada" || activeThemeId === "quebec" || activeThemeId === "lightspeed" || activeThemeId === "desjardins" || activeThemeId === "ssense" || activeThemeId === "ubisoft")
+    browser && (activeThemeId === "carbon" || activeThemeId === "dsfr" || activeThemeId === "airbus" || activeThemeId === "canada" || activeThemeId === "quebec" || activeThemeId === "lightspeed" || activeThemeId === "desjardins" || activeThemeId === "ssense" || activeThemeId === "ubisoft" || activeThemeId === "cirque-du-soleil" || activeThemeId === "cgi" || activeThemeId === "national-bank")
   );
 </script>
 
@@ -858,6 +861,66 @@
         {@render pageContent()}
       {/snippet}
     </ChromeUbisoft>
+  </div>
+
+{:else if useCustomChrome && activeThemeId === "cirque-du-soleil"}
+  <div data-st-theme={activeThemeId}>
+    <ChromeCirqueDuSoleil
+      activeThemeId={activeThemeId}
+      isThemeOpen={isThemeOpen}
+      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onSearchOpen={openSearch}
+      themeSwitcher={themeSelector}
+      frameworkSwitcher={frameworkSelector}
+      localeSwitcher={langSelector}
+      compareButton={sharedCompareButton}
+      mobileMenuOpen={isMobileMenuOpen}
+      onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
+    >
+      {#snippet children()}
+        {@render pageContent()}
+      {/snippet}
+    </ChromeCirqueDuSoleil>
+  </div>
+
+{:else if useCustomChrome && activeThemeId === "cgi"}
+  <div data-st-theme={activeThemeId}>
+    <ChromeCgi
+      activeThemeId={activeThemeId}
+      isThemeOpen={isThemeOpen}
+      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onSearchOpen={openSearch}
+      themeSwitcher={themeSelector}
+      frameworkSwitcher={frameworkSelector}
+      localeSwitcher={langSelector}
+      compareButton={sharedCompareButton}
+      mobileMenuOpen={isMobileMenuOpen}
+      onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
+    >
+      {#snippet children()}
+        {@render pageContent()}
+      {/snippet}
+    </ChromeCgi>
+  </div>
+
+{:else if useCustomChrome && activeThemeId === "national-bank"}
+  <div data-st-theme={activeThemeId}>
+    <ChromeNationalBank
+      activeThemeId={activeThemeId}
+      isThemeOpen={isThemeOpen}
+      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onSearchOpen={openSearch}
+      themeSwitcher={themeSelector}
+      frameworkSwitcher={frameworkSelector}
+      localeSwitcher={langSelector}
+      compareButton={sharedCompareButton}
+      mobileMenuOpen={isMobileMenuOpen}
+      onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
+    >
+      {#snippet children()}
+        {@render pageContent()}
+      {/snippet}
+    </ChromeNationalBank>
   </div>
 
 {:else}
