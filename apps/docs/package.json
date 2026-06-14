@@ -8,6 +8,7 @@
     "@sentropic/design-system-react": "0.36.33",
     "@sentropic/design-system-svelte": "0.34.32",
     "@sentropic/design-system-theme-airbus": "0.1.0",
+    "@sentropic/design-system-theme-bombardier": "0.1.0",
     "@sentropic/design-system-theme-canada": "0.1.0",
     "@sentropic/design-system-theme-carbon": "0.2.2",
     "@sentropic/design-system-theme-dsfr": "0.2.2",
@@ -17,6 +18,7 @@
     "@sentropic/design-system-theme-national-bank": "0.1.0",
     "@sentropic/design-system-theme-quebec": "0.1.0",
     "@sentropic/design-system-theme-ssense": "0.1.0",
+    "@sentropic/design-system-theme-ubisoft": "0.1.0",
     "@sentropic/design-system-themes": "0.11.0",
     "@sentropic/design-system-vue": "0.36.33",
     "@sveltejs/adapter-static": "^3.0.10",
@@ -35,9 +37,9 @@
     "vitest": "^4.1.5"
   },
   "scripts": {
-    "predev": "node ../../scripts/ensure-compare-local-overlays.mjs && (cd ../.. && npm --workspace packages/components-svelte run build && npm --workspace packages/components-react run build && npm --workspace packages/components-vue run build && npm --workspace packages/theme-dsfr run build && npm --workspace packages/theme-carbon run build && npm --workspace packages/theme-airbus run build && npm --workspace packages/theme-canada run build && npm --workspace packages/theme-quebec run build && npm --workspace packages/theme-ssense run build && npm --workspace packages/theme-lightspeed run build && npm --workspace packages/theme-desjardins run build && npm --workspace packages/theme-national-bank run build && npm --workspace packages/theme-cirque-du-soleil run build)",
+    "predev": "node ../../scripts/ensure-compare-local-overlays.mjs && (cd ../.. && npm --workspace packages/components-svelte run build && npm --workspace packages/components-react run build && npm --workspace packages/components-vue run build && npm --workspace packages/theme-dsfr run build && npm --workspace packages/theme-carbon run build && npm --workspace packages/theme-airbus run build && npm --workspace packages/theme-canada run build && npm --workspace packages/theme-quebec run build && npm --workspace packages/theme-ssense run build && npm --workspace packages/theme-lightspeed run build && npm --workspace packages/theme-desjardins run build && npm --workspace packages/theme-national-bank run build && npm --workspace packages/theme-cirque-du-soleil run build && npm --workspace packages/theme-ubisoft run build && npm --workspace packages/theme-bombardier run build)",
     "dev": "vite dev",
-    "prebuild": "node ../../scripts/ensure-compare-local-overlays.mjs && (cd ../.. && npm --workspace packages/components-svelte run build && npm --workspace packages/components-react run build && npm --workspace packages/components-vue run build && npm --workspace packages/theme-dsfr run build && npm --workspace packages/theme-carbon run build && npm --workspace packages/theme-airbus run build && npm --workspace packages/theme-canada run build && npm --workspace packages/theme-quebec run build && npm --workspace packages/theme-ssense run build && npm --workspace packages/theme-lightspeed run build && npm --workspace packages/theme-desjardins run build && npm --workspace packages/theme-national-bank run build && npm --workspace packages/theme-cirque-du-soleil run build)",
+    "prebuild": "node ../../scripts/ensure-compare-local-overlays.mjs && (cd ../.. && npm --workspace packages/components-svelte run build && npm --workspace packages/components-react run build && npm --workspace packages/components-vue run build && npm --workspace packages/theme-dsfr run build && npm --workspace packages/theme-carbon run build && npm --workspace packages/theme-airbus run build && npm --workspace packages/theme-canada run build && npm --workspace packages/theme-quebec run build && npm --workspace packages/theme-ssense run build && npm --workspace packages/theme-lightspeed run build && npm --workspace packages/theme-desjardins run build && npm --workspace packages/theme-national-bank run build && npm --workspace packages/theme-cirque-du-soleil run build && npm --workspace packages/theme-ubisoft run build && npm --workspace packages/theme-bombardier run build)",
     "build": "vite build",
     "check": "svelte-kit sync && svelte-check --tsconfig tsconfig.json",
     "test": "vitest run src --passWithNoTests"
