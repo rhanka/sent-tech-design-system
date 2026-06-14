@@ -84,12 +84,6 @@
   function isGroupOpen(items: ComponentNavItem[]): boolean {
     return items.some((item) => isComponentActive(item));
   }
-
-  function handleSearchKeydown(event: KeyboardEvent) {
-    if (event.key !== "Enter" && event.key !== " ") return;
-    event.preventDefault();
-    onSearchOpen();
-  }
 </script>
 
 <svelte:head>
@@ -139,35 +133,16 @@
 
         <!-- Droite : outils + recherche + CTA pilule contour -->
         <div class="bba-header__tools">
-          <!-- Barre de recherche Bombardier : champ CARRÉ (radius 0) + bouton, branché sur la palette docs. -->
-          <div class="bba-search" role="search">
-            <label class="bba-search__label" for="bba-search-input">
-              {locale.value === "fr" ? "Rechercher" : "Search"}
-            </label>
-            <div class="bba-search__group">
-              <input
-                id="bba-search-input"
-                class="bba-search__input"
-                type="search"
-                readonly
-                placeholder={locale.value === "fr" ? "Rechercher…" : "Search…"}
-                aria-label={locale.value === "fr" ? "Rechercher dans la documentation" : "Search the documentation"}
-                aria-haspopup="dialog"
-                onclick={onSearchOpen}
-                onkeydown={handleSearchKeydown}
-              />
-              <kbd class="bba-search__kbd" aria-hidden="true">/</kbd>
-              <button
-                type="button"
-                class="bba-search__btn"
-                aria-label={locale.value === "fr" ? "Lancer la recherche" : "Open search"}
-                aria-haspopup="dialog"
-                onclick={onSearchOpen}
-              >
-                <SearchIcon size={16} strokeWidth={2} aria-hidden="true" />
-              </button>
-            </div>
-          </div>
+          <!-- Recherche Bombardier : bouton loupe CARRÉ or compact (palette docs). -->
+          <button
+            type="button"
+            class="bba-search__btn"
+            aria-label={locale.value === "fr" ? "Rechercher" : "Search"}
+            aria-haspopup="dialog"
+            onclick={onSearchOpen}
+          >
+            <SearchIcon size={18} strokeWidth={2} aria-hidden="true" />
+          </button>
 
           <!-- Switchers docs (framework / thème / langue) + comparateur -->
           <div class="bba-header__tools-links">
@@ -450,75 +425,7 @@
     box-shadow: none;
   }
 
-  /* Barre de recherche Bombardier (champ CARRÉ, radius 0). */
-  .bba-search {
-    width: clamp(11rem, 18vw, 18rem);
-  }
-
-  .bba-search__label {
-    clip: rect(0 0 0 0);
-    border: 0;
-    height: 1px;
-    margin: -1px;
-    overflow: hidden;
-    padding: 0;
-    position: absolute;
-    white-space: nowrap;
-    width: 1px;
-  }
-
-  .bba-search__group {
-    display: flex;
-    position: relative;
-    width: 100%;
-  }
-
-  /* Champ CARRÉ (radius 0) sur header teal. */
-  .bba-search__input {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.28);
-    border-right: 0;
-    border-radius: 0;
-    color: var(--bba-white);
-    cursor: pointer;
-    flex: 1 1 auto;
-    font-family: inherit;
-    font-size: 0.875rem;
-    height: 2.5rem;
-    min-width: 0;
-    padding: 0 2.125rem 0 0.75rem;
-  }
-
-  .bba-search__input:hover,
-  .bba-search__input:focus-visible {
-    background: rgba(255, 255, 255, 0.14);
-    border-color: var(--bba-gold);
-    color: var(--bba-white);
-    outline: 2px solid var(--bba-gold);
-    outline-offset: -2px;
-  }
-
-  .bba-search__input::placeholder {
-    color: rgba(255, 255, 255, 0.62);
-  }
-
-  .bba-search__kbd {
-    align-items: center;
-    border: 1px solid rgba(255, 255, 255, 0.28);
-    border-radius: 0;
-    color: rgba(255, 255, 255, 0.72);
-    display: inline-flex;
-    font-size: 0.75rem;
-    height: 1.25rem;
-    justify-content: center;
-    position: absolute;
-    right: 3rem;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 1.25rem;
-  }
-
-  /* Bouton recherche CARRÉ or. */
+  /* Recherche Bombardier : bouton loupe CARRÉ or compact (radius 0). */
   .bba-search__btn {
     align-items: center;
     background: var(--bba-gold);
@@ -527,7 +434,8 @@
     color: var(--bba-teal-hover);
     cursor: pointer;
     display: inline-flex;
-    flex: 0 0 2.5rem;
+    flex: 0 0 auto;
+    width: 2.5rem;
     height: 2.5rem;
     justify-content: center;
     padding: 0;
