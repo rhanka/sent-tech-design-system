@@ -77,8 +77,16 @@
   import ChromeCirqueDuSoleil from "$lib/chrome/ChromeCirqueDuSoleil.svelte";
   import ChromeCgi from "$lib/chrome/ChromeCgi.svelte";
   import ChromeNationalBank from "$lib/chrome/ChromeNationalBank.svelte";
+  import ChromeBombardier from "$lib/chrome/ChromeBombardier.svelte";
+  import ChromeSaq from "$lib/chrome/ChromeSaq.svelte";
+  import ChromeNuvei from "$lib/chrome/ChromeNuvei.svelte";
+  import ChromeCoveo from "$lib/chrome/ChromeCoveo.svelte";
   import DocsSearch from "$lib/chat/DocsSearch.svelte";
   import { Search as SearchIcon } from "@lucide/svelte";
+  // Bascule A/B du header unique « app-shell » (?shell=v2) : wrapper SSR-safe
+  // (import dynamique du Web Component au montage) + contrat siteConfig.
+  import AppShell from "@sentropic/app-shell/svelte";
+  import type { SiteConfig } from "@sentropic/app-shell/site-config";
 
 
   let { children } = $props();
@@ -354,9 +362,61 @@
   // bascule réactivement.
   // Les chromes Carbon/DSFR/Airbus encapsulent leur propre header + sidebar.
   // Le chrome sent-tech utilise le Header du composant DS + la sidebar existante.
+
+  // ── Bascule A/B « app-shell » (?shell=v2) ─────────────────────────────────
+  // Flag d'URL réversible : `?shell=v2` rend le NOUVEAU header partagé
+  // (<sentropic-app-shell>) À LA PLACE du header actuel, en CONSERVANT le corps
+  // (sidebar + contenu + palette de recherche). Sans le flag, RIEN ne change.
+  // Quand actif, on force la branche « chrome sent-tech » (les chromes tiers sont
+  // court-circuités) puis on substitue le <Header> par <AppShell>. SSR-safe :
+  // le wrapper importe le Web Component dynamiquement au montage. browser-gardé
+  // pour rester aligné sur le défaut prérendu (zéro flash de header au SSR).
+  const shellV2 = $derived(browser && page.url.searchParams.get("shell") === "v2");
+
   const useCustomChrome = $derived(
-    browser && (activeThemeId === "carbon" || activeThemeId === "dsfr" || activeThemeId === "airbus" || activeThemeId === "canada" || activeThemeId === "quebec" || activeThemeId === "lightspeed" || activeThemeId === "desjardins" || activeThemeId === "ssense" || activeThemeId === "ubisoft" || activeThemeId === "cirque-du-soleil" || activeThemeId === "cgi" || activeThemeId === "national-bank")
+    !shellV2 && browser && (activeThemeId === "carbon" || activeThemeId === "dsfr" || activeThemeId === "airbus" || activeThemeId === "canada" || activeThemeId === "quebec" || activeThemeId === "lightspeed" || activeThemeId === "desjardins" || activeThemeId === "ssense" || activeThemeId === "ubisoft" || activeThemeId === "cirque-du-soleil" || activeThemeId === "cgi" || activeThemeId === "national-bank" || activeThemeId === "bombardier" || activeThemeId === "saq" || activeThemeId === "nuvei" || activeThemeId === "coveo")
   );
+
+  // siteConfig du shell, câblé au mécanisme EXISTANT du layout (thème
+  // `activeThemeId`, framework store, locale store, mode couleur, palette de
+  // recherche, identité OAuth). Réutilise le contrat de la page d'aperçu A/B.
+  const shellConfig = $derived<SiteConfig>({
+    schemaVersion: 1,
+    brand: { name: "Sentropic", productName: "Design System", logoSrc: "/SENT-logo-squared.svg", href: "/" },
+    nav: topNavItems.map((i) => ({ label: i.label, href: i.href })),
+    activePath: page.url.pathname,
+    search: {
+      enabled: true,
+      mode: "callback",
+      placeholder: locale.value === "fr" ? "Rechercher…" : "Search…",
+      onSearch: () => openSearch(),
+    },
+    frameworkSwitcher: showFrameworkSwitcher
+      ? {
+          enabled: true,
+          current: framework.value,
+          available: FRAMEWORKS.map((f) => ({ id: f.id, label: f.label })),
+          mode: "callback",
+          onChange: (id) => (framework.value = id as typeof framework.value),
+        }
+      : undefined,
+    theming: {
+      themes: visibleThemes.map((t) => ({ id: t.id, label: t.label })),
+      theme: activeThemeId,
+      colorMode: colorMode.value,
+      onThemeChange: (id) => (activeThemeId = id),
+      onColorModeChange: (mode) => (colorMode.value = mode),
+      themeLabel: locale.value === "fr" ? "Changer le thème" : "Change theme",
+    },
+    locale: {
+      current: locale.value,
+      available: [{ code: "fr", label: "Français" }, { code: "en", label: "English" }],
+      onChange: (code) => (locale.value = code as "fr" | "en"),
+    },
+    identity: auth.status === "authed"
+      ? { state: "authenticated", label: identityUser?.displayName, onSignOut: () => auth.logout() }
+      : { state: "anonymous", onSignIn: () => auth.login() },
+  });
 </script>
 
 <svelte:window onclick={(e) => {
@@ -923,18 +983,104 @@
     </ChromeNationalBank>
   </div>
 
+{:else if useCustomChrome && activeThemeId === "bombardier"}
+  <div data-st-theme={activeThemeId}>
+    <ChromeBombardier
+      activeThemeId={activeThemeId}
+      isThemeOpen={isThemeOpen}
+      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onSearchOpen={openSearch}
+      themeSwitcher={themeSelector}
+      frameworkSwitcher={frameworkSelector}
+      localeSwitcher={langSelector}
+      compareButton={sharedCompareButton}
+      mobileMenuOpen={isMobileMenuOpen}
+      onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
+    >
+      {#snippet children()}
+        {@render pageContent()}
+      {/snippet}
+    </ChromeBombardier>
+  </div>
+
+{:else if useCustomChrome && activeThemeId === "saq"}
+  <div data-st-theme={activeThemeId}>
+    <ChromeSaq
+      activeThemeId={activeThemeId}
+      isThemeOpen={isThemeOpen}
+      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onSearchOpen={openSearch}
+      themeSwitcher={themeSelector}
+      frameworkSwitcher={frameworkSelector}
+      localeSwitcher={langSelector}
+      compareButton={sharedCompareButton}
+      mobileMenuOpen={isMobileMenuOpen}
+      onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
+    >
+      {#snippet children()}
+        {@render pageContent()}
+      {/snippet}
+    </ChromeSaq>
+  </div>
+
+{:else if useCustomChrome && activeThemeId === "nuvei"}
+  <div data-st-theme={activeThemeId}>
+    <ChromeNuvei
+      activeThemeId={activeThemeId}
+      isThemeOpen={isThemeOpen}
+      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onSearchOpen={openSearch}
+      themeSwitcher={themeSelector}
+      frameworkSwitcher={frameworkSelector}
+      localeSwitcher={langSelector}
+      compareButton={sharedCompareButton}
+      mobileMenuOpen={isMobileMenuOpen}
+      onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
+    >
+      {#snippet children()}
+        {@render pageContent()}
+      {/snippet}
+    </ChromeNuvei>
+  </div>
+
+{:else if useCustomChrome && activeThemeId === "coveo"}
+  <div data-st-theme={activeThemeId}>
+    <ChromeCoveo
+      activeThemeId={activeThemeId}
+      isThemeOpen={isThemeOpen}
+      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onSearchOpen={openSearch}
+      themeSwitcher={themeSelector}
+      frameworkSwitcher={frameworkSelector}
+      localeSwitcher={langSelector}
+      compareButton={sharedCompareButton}
+      mobileMenuOpen={isMobileMenuOpen}
+      onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
+    >
+      {#snippet children()}
+        {@render pageContent()}
+      {/snippet}
+    </ChromeCoveo>
+  </div>
+
 {:else}
   <!-- ── Chrome sent-tech par défaut (SSR + thème sent-tech) ── -->
   <a class="docs-skip-link" href="#main-content">Aller au contenu</a>
   <div class="docs-shell" data-st-theme={activeThemeId}>
-    <!-- Barre du haut : composant Header complet et porté (logo + navigation + actions). -->
-    <Header
-      class="docs-header"
-      label="En-tête de la documentation Sentropic"
-      logo={docsBrand}
-      navigation={docsTopNav}
-      actions={docsUtilityNav}
-    />
+    {#if shellV2}
+      <!-- Bascule A/B : NOUVEAU header unique <sentropic-app-shell> à la place du
+           Header actuel. Le corps (sidebar + contenu + palette) reste identique. -->
+      <AppShell config={shellConfig} />
+    {:else}
+      <!-- Barre du haut : composant Header complet et porté (logo + navigation + actions). -->
+      <Header
+        class="docs-header"
+        label="En-tête de la documentation Sentropic"
+        logo={docsBrand}
+        navigation={docsTopNav}
+        actions={docsUtilityNav}
+      />
+    {/if}
 
     {#if isMobileMenuOpen}
       <nav class="docs-mobile-nav" aria-label="Menu mobile">
