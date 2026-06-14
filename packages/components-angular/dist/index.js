@@ -89,6 +89,8 @@ export { GaugeChart } from "./GaugeChart.js";
 export { SolidGaugeChart } from "./SolidGaugeChart.js";
 export { StateTimelineChart } from "./StateTimelineChart.js";
 export { StatusHistoryChart } from "./StatusHistoryChart.js";
+export { EventFeedPanel } from "./EventFeedPanel.js";
+export { VectorFieldChart } from "./VectorFieldChart.js";
 export { WaffleChart } from "./WaffleChart.js";
 export { RibbonChart } from "./RibbonChart.js";
 export { AnomalySwimLaneChart } from "./AnomalySwimLaneChart.js";

@@ -129,6 +129,10 @@ export type {
   StatusHistorySeries,
   StatusHistoryTone,
 } from "./StatusHistoryChart.js";
+export { EventFeedPanel } from "./EventFeedPanel.js";
+export type { EventFeedPanelProps, EventFeedPanelEvent, EventFeedPanelSeverity } from "./EventFeedPanel.js";
+export { VectorFieldChart } from "./VectorFieldChart.js";
+export type { VectorFieldChartProps, VectorFieldChartDatum, VectorFieldChartTone } from "./VectorFieldChart.js";
 export { WaffleChart } from "./WaffleChart.js";
 export type {
   WaffleChartProps,
