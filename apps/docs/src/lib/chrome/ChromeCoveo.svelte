@@ -82,12 +82,6 @@
   function isGroupOpen(items: ComponentNavItem[]): boolean {
     return items.some((item) => isComponentActive(item));
   }
-
-  function handleSearchKeydown(event: KeyboardEvent) {
-    if (event.key !== "Enter" && event.key !== " ") return;
-    event.preventDefault();
-    onSearchOpen();
-  }
 </script>
 
 <svelte:head>
@@ -137,35 +131,16 @@
 
         <!-- Droite : recherche + outils + CTA rouge corail -->
         <div class="cvo-header__tools">
-          <!-- Barre de recherche Coveo : champ natif + bouton, branché sur la palette docs. -->
-          <div class="cvo-search" role="search">
-            <label class="cvo-search__label" for="cvo-search-input">
-              {locale.value === "fr" ? "Rechercher" : "Search"}
-            </label>
-            <div class="cvo-search__group">
-              <input
-                id="cvo-search-input"
-                class="cvo-search__input"
-                type="search"
-                readonly
-                placeholder={locale.value === "fr" ? "Rechercher…" : "Search…"}
-                aria-label={locale.value === "fr" ? "Rechercher dans la documentation" : "Search the documentation"}
-                aria-haspopup="dialog"
-                onclick={onSearchOpen}
-                onkeydown={handleSearchKeydown}
-              />
-              <kbd class="cvo-search__kbd" aria-hidden="true">/</kbd>
-              <button
-                type="button"
-                class="cvo-search__btn"
-                aria-label={locale.value === "fr" ? "Lancer la recherche" : "Open search"}
-                aria-haspopup="dialog"
-                onclick={onSearchOpen}
-              >
-                <SearchIcon size={16} strokeWidth={2} aria-hidden="true" />
-              </button>
-            </div>
-          </div>
+          <!-- Recherche Coveo : bouton loupe rouge corail compact (palette docs). -->
+          <button
+            type="button"
+            class="cvo-search__btn"
+            aria-label={locale.value === "fr" ? "Rechercher" : "Search"}
+            aria-haspopup="dialog"
+            onclick={onSearchOpen}
+          >
+            <SearchIcon size={18} strokeWidth={2} aria-hidden="true" />
+          </button>
 
           <!-- Switchers docs (framework / thème / langue) + comparateur -->
           <div class="cvo-header__tools-links">
@@ -447,84 +422,17 @@
     box-shadow: none;
   }
 
-  /* Barre de recherche Coveo (bordure 1px, conteneur 6px, focus bleu). */
-  .cvo-search {
-    width: clamp(11rem, 18vw, 18rem);
-  }
-
-  .cvo-search__label {
-    clip: rect(0 0 0 0);
-    border: 0;
-    height: 1px;
-    margin: -1px;
-    overflow: hidden;
-    padding: 0;
-    position: absolute;
-    white-space: nowrap;
-    width: 1px;
-  }
-
-  .cvo-search__group {
-    display: flex;
-    position: relative;
-    width: 100%;
-  }
-
-  .cvo-search__input {
-    background: var(--cvo-white);
-    border: 1px solid var(--cvo-border-strong);
-    border-right: 0;
-    border-radius: var(--cvo-radius);
-    border-bottom-right-radius: 0;
-    border-top-right-radius: 0;
-    color: var(--cvo-ink);
-    cursor: pointer;
-    flex: 1 1 auto;
-    font-family: inherit;
-    font-size: 0.875rem;
-    height: 2.5rem;
-    min-width: 0;
-    padding: 0 2.125rem 0 0.75rem;
-  }
-
-  .cvo-search__input:hover,
-  .cvo-search__input:focus-visible {
-    background: var(--cvo-white);
-    border-color: var(--cvo-blue);
-    color: var(--cvo-ink);
-    outline: 2px solid var(--cvo-blue);
-    outline-offset: 1px;
-  }
-
-  .cvo-search__input::placeholder {
-    color: var(--cvo-grey);
-  }
-
-  .cvo-search__kbd {
-    align-items: center;
-    border: 1px solid var(--cvo-border-strong);
-    border-radius: 4px;
-    color: var(--cvo-grey);
-    display: inline-flex;
-    font-size: 0.75rem;
-    height: 1.25rem;
-    justify-content: center;
-    position: absolute;
-    right: 3rem;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 1.25rem;
-  }
-
+  /* Recherche Coveo : bouton loupe rouge corail compact (radius 6px, focus bleu). */
   .cvo-search__btn {
     align-items: center;
     background: var(--cvo-red);
     border: 1px solid var(--cvo-red);
-    border-radius: 0 var(--cvo-radius) var(--cvo-radius) 0;
+    border-radius: var(--cvo-radius);
     color: var(--cvo-white);
     cursor: pointer;
     display: inline-flex;
-    flex: 0 0 2.5rem;
+    flex: 0 0 auto;
+    width: 2.5rem;
     height: 2.5rem;
     justify-content: center;
     padding: 0;
