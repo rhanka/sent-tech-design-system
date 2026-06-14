@@ -7,6 +7,7 @@
   "exports": {
     ".": "./src/sentropic-app-shell.js",
     "./svelte": "./src/svelte/AppShell.svelte",
+    "./identity-button": "./src/svelte/IdentityButton.svelte",
     "./site-config": "./src/site-config.ts"
   },
   "files": [
