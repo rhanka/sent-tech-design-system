@@ -1101,6 +1101,26 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "RibbonChart",
+    slug: "ribbon-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Rang empilé à rubans dans le temps : barres triées par valeur et rubans lissés reliant chaque catégorie d'une période à l'autre.",
+      en: "Stacked ribbon ranking over time: bars sorted by value with smoothed ribbons linking each category between periods."
+    }
+  },
+  {
+    name: "AnomalySwimLaneChart",
+    slug: "anomaly-swim-lane-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Heatmap temps × job : la couleur encode un score d'anomalie continu (gradient d'intensité).",
+      en: "Time × job heatmap: color encodes a continuous anomaly score (intensity gradient)."
+    }
+  },
+  {
     name: "FunnelChart",
     slug: "funnel-chart",
     status: "documented",

@@ -106,6 +106,8 @@ export { default as SolidGaugeChart } from "./SolidGaugeChart.svelte";
 export { default as StateTimelineChart } from "./StateTimelineChart.svelte";
 export { default as StatusHistoryChart } from "./StatusHistoryChart.svelte";
 export { default as WaffleChart } from "./WaffleChart.svelte";
+export { default as RibbonChart } from "./RibbonChart.svelte";
+export { default as AnomalySwimLaneChart } from "./AnomalySwimLaneChart.svelte";
 export { default as GeoMap } from "./GeoMap.svelte";
 export { default as Header } from "./Header.svelte";
 export { default as HeatmapChart } from "./HeatmapChart.svelte";
@@ -263,6 +265,15 @@ export type {
   WaffleTone,
   WaffleChartDatum
 } from "./WaffleChart.svelte";
+export type {
+  RibbonChartTone,
+  RibbonChartDatum
+} from "./RibbonChart.svelte";
+export type {
+  AnomalySwimLaneTone,
+  AnomalySwimLaneBucket,
+  AnomalySwimLaneSeries
+} from "./AnomalySwimLaneChart.svelte";
 export type { FunnelChartTone, FunnelChartDatum } from "./FunnelChart.svelte";
 export type { ViolinChartDatum, ViolinChartTone } from "./ViolinChart.svelte";
 export type { WaterfallType, WaterfallChartDatum } from "./WaterfallChart.svelte";

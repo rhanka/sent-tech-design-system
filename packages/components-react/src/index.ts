@@ -135,6 +135,19 @@ export type {
   WaffleChartDatum,
   WaffleTone,
 } from "./WaffleChart.js";
+export { RibbonChart } from "./RibbonChart.js";
+export type {
+  RibbonChartProps,
+  RibbonChartDatum,
+  RibbonChartTone,
+} from "./RibbonChart.js";
+export { AnomalySwimLaneChart } from "./AnomalySwimLaneChart.js";
+export type {
+  AnomalySwimLaneChartProps,
+  AnomalySwimLaneBucket,
+  AnomalySwimLaneSeries,
+  AnomalySwimLaneTone,
+} from "./AnomalySwimLaneChart.js";
 export { GeoMap } from "./GeoMap.js";
 export type {
   GeoMapProps,
