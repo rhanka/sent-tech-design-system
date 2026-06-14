@@ -309,6 +309,15 @@ interface BadgeInput {
   minHeight?: string;       // min box height; default "0" (no floor, current)
   infoBackground?: string;  // INFO tone fill; default = the per-tone feedback mix
   infoText?: string;        // INFO tone text; default = semantic.feedback.info
+  // Studio-P3 (additive) — the OPT-IN `circle` shape + `sm` density variants only.
+  // The base `pill` + `md` badge reads the leaves above and is byte-identical;
+  // these scope `.st-badge--circle` / `.st-badge--sm`. Every leaf is optional and
+  // DEFAULTS to the base literal baked into the component CSS, so a theme that
+  // emits nothing renders the variants identically (no theme emits these today).
+  circleSize?: string;      // `--circle` round diameter (min-width + min-height); default "1.25rem"
+  circleRadius?: string;    // `--circle` corner radius; default "50%"
+  circlePadding?: string;   // `--circle` equal inline/block padding; default "0.125rem"
+  smFontSize?: string;      // `--sm` font-size; default "0.6875rem" (Tag sm scale)
 }
 
 // F10+ (additive, cluster P-D) — Choice (Checkbox / Radio) LABEL typography
