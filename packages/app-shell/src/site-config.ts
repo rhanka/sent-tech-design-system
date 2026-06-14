@@ -15,6 +15,12 @@
 // « URL = source de vérité thème+framework » et « DS contrôlé/présentationnel ».
 // ─────────────────────────────────────────────────────────────────────────────
 
+/** Version de schéma du contrat `SiteConfig`. **STABLE / FIGÉ v1** : évolution
+ *  UNIQUEMENT additive (nouvelles clés optionnelles) — aucune suppression/rename de
+ *  clé existante sans bump majeur. Les consommateurs (geo, dataviz, docs…) peuvent
+ *  construire contre v1 sans crainte de rupture. Skew toléré (cf. en-tête). */
+export const SITE_CONFIG_SCHEMA_VERSION = 1 as const;
+
 /** Deux modes pour toute action navigable : `callback` (SPA riche) ou `navigate`
  *  (lien `href`, marche en HTML pur / site vitrine sans JS applicatif). */
 export type ActionMode = "callback" | "navigate";
