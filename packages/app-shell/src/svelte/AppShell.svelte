@@ -111,7 +111,7 @@
     {#if config.identity}
       <IdentityButton
         mode="icon"
-        state={config.identity.state}
+        authState={config.identity.state}
         user={config.identity.user ?? null}
         signInLabel={config.identity.label ?? "Se connecter"}
         onSignIn={() => config.identity?.onSignIn?.()}

@@ -1,11 +1,6 @@
-<script lang="ts">
-  // IdentityButton — composant d'identite DS multi-modes (incubation app-shell).
-  // Dedup l'ancien split (IconButton+user pour l'anonyme / IdentityMenu pour
-  // l'authentifie) en UN composant a modes. Compose les composants DS
-  // (IconButton / Button / MenuPopover / Menu) — zero primitive nouvelle.
-  import { IconButton, Button, MenuPopover, Menu } from "@sentropic/design-system-svelte";
-  import { User } from "@lucide/svelte";
-
+<script module lang="ts">
+  // Types exportes — en Svelte 5 les exports de module vont dans <script module>
+  // (le <script> d'instance ne sert qu'aux props/runes).
   export type IdentityState = "anonymous" | "authenticated";
   export type IdentityMode = "icon" | "button" | "menu";
   export type IdentityTone = "default" | "onColor";
@@ -18,9 +13,18 @@
     href?: string;
     onClick?: () => void;
   }
+</script>
+
+<script lang="ts">
+  // IdentityButton — composant d'identite DS multi-modes (incubation app-shell).
+  // Dedup l'ancien split (IconButton+user pour l'anonyme / IdentityMenu pour
+  // l'authentifie) en UN composant a modes. Compose les composants DS
+  // (IconButton / Button / MenuPopover / Menu) — zero primitive nouvelle.
+  import { IconButton, Button, MenuPopover, Menu } from "@sentropic/design-system-svelte";
+  import { User } from "@lucide/svelte";
 
   let {
-    state = "anonymous",
+    authState = "anonymous",
     user = null,
     mode = "icon",
     tone = "default",
@@ -30,7 +34,7 @@
     onSignOut,
     menu = [],
   }: {
-    state?: IdentityState;
+    authState?: IdentityState;
     user?: IdentityUser | null;
     mode?: IdentityMode;
     tone?: IdentityTone;
@@ -49,7 +53,7 @@
       ? user.name.trim().split(/\s+/).map((w) => w[0]).slice(0, 2).join("").toUpperCase()
       : "",
   );
-  const authed = $derived(state === "authenticated");
+  const authed = $derived(authState === "authenticated");
   // Items du menu compte (mode "menu" ou clic sur l'avatar authentifie).
   const menuItems = $derived([
     ...menu.map((e) => ({ label: e.label, value: e.href ?? e.label })),
