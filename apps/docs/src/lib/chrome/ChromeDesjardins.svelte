@@ -111,15 +111,13 @@
         <!-- Gauche : logo officiel Desjardins (monochrome blanc → posé sur tuile verte) -->
         <div class="dsj-header__brand">
           <a href="/" class="dsj-header__brand-link" aria-label="Accueil : Desjardins Design System">
-            <span class="dsj-logo-tile">
-              <img
-                src="/chrome/desjardins/logo.svg"
-                alt="Desjardins"
-                class="dsj-logo"
-                width="151"
-                height="31"
-              />
-            </span>
+            <img
+              src="/chrome/desjardins/logo.svg"
+              alt="Desjardins"
+              class="dsj-logo"
+              width="151"
+              height="31"
+            />
           </a>
         </div>
 
@@ -142,35 +140,16 @@
 
         <!-- Droite : outils + recherche -->
         <div class="dsj-header__tools">
-          <!-- Barre de recherche Desjardins : champ natif + bouton, branché sur la palette docs. -->
-          <div class="dsj-search" role="search">
-            <label class="dsj-search__label" for="dsj-search-input">
-              {locale.value === "fr" ? "Rechercher" : "Search"}
-            </label>
-            <div class="dsj-search__group">
-              <input
-                id="dsj-search-input"
-                class="dsj-search__input"
-                type="search"
-                readonly
-                placeholder={locale.value === "fr" ? "Rechercher…" : "Search…"}
-                aria-label={locale.value === "fr" ? "Rechercher dans la documentation" : "Search the documentation"}
-                aria-haspopup="dialog"
-                onclick={onSearchOpen}
-                onkeydown={handleSearchKeydown}
-              />
-              <kbd class="dsj-search__kbd" aria-hidden="true">/</kbd>
-              <button
-                type="button"
-                class="dsj-search__btn"
-                aria-label={locale.value === "fr" ? "Lancer la recherche" : "Open search"}
-                aria-haspopup="dialog"
-                onclick={onSearchOpen}
-              >
-                <SearchIcon size={16} strokeWidth={2} aria-hidden="true" />
-              </button>
-            </div>
-          </div>
+          <!-- Recherche Desjardins : bouton loupe blanc compact (palette docs). -->
+          <button
+            type="button"
+            class="dsj-search__btn"
+            aria-label={locale.value === "fr" ? "Rechercher" : "Search"}
+            aria-haspopup="dialog"
+            onclick={onSearchOpen}
+          >
+            <SearchIcon size={18} strokeWidth={2} aria-hidden="true" />
+          </button>
 
           <!-- Switchers docs (framework / thème / langue) + comparateur -->
           <div class="dsj-header__tools-links">
@@ -335,8 +314,8 @@
   }
 
   .dsj-header {
-    background: var(--dsj-white);
-    border-bottom: 1px solid var(--dsj-border);
+    background: var(--dsj-green);
+    border-bottom: 1px solid var(--dsj-green-dark);
   }
 
   .dsj-header__inner {
@@ -403,7 +382,7 @@
   .dsj-nav__link {
     align-items: center;
     border-bottom: 3px solid transparent;
-    color: var(--dsj-ink);
+    color: var(--dsj-white);
     display: inline-flex;
     font-size: 0.9375rem;
     font-weight: 600;
@@ -417,14 +396,14 @@
 
   .dsj-nav__link:hover,
   .dsj-nav__link:focus-visible {
-    background: var(--dsj-grey-50);
-    color: var(--dsj-green);
+    background: rgba(255, 255, 255, 0.14);
+    color: var(--dsj-white);
     outline: none;
   }
 
   .dsj-nav__link[aria-current="page"] {
-    border-bottom-color: var(--dsj-green);
-    color: var(--dsj-green-dark);
+    border-bottom-color: var(--dsj-white);
+    color: var(--dsj-white);
     font-weight: 700;
   }
 
@@ -446,10 +425,10 @@
 
   /* Overrides switchers dans header Desjardins (champs blancs, bordure forte). */
   .dsj-header__tools-links :global(.docs-header-control) {
-    background: var(--dsj-white);
-    border-color: var(--dsj-border-strong);
+    background: transparent;
+    border-color: rgba(255, 255, 255, 0.5);
     border-radius: var(--dsj-radius);
-    color: var(--dsj-ink);
+    color: var(--dsj-white);
     font-family: inherit;
   }
 
@@ -461,84 +440,17 @@
     box-shadow: none;
   }
 
-  /* Barre de recherche Desjardins (bordure forte, conteneur 4px, bouton vert). */
-  .dsj-search {
-    width: clamp(11rem, 18vw, 18rem);
-  }
-
-  .dsj-search__label {
-    clip: rect(0 0 0 0);
-    border: 0;
-    height: 1px;
-    margin: -1px;
-    overflow: hidden;
-    padding: 0;
-    position: absolute;
-    white-space: nowrap;
-    width: 1px;
-  }
-
-  .dsj-search__group {
-    display: flex;
-    position: relative;
-    width: 100%;
-  }
-
-  .dsj-search__input {
-    background: var(--dsj-white);
-    border: 1px solid var(--dsj-border-strong);
-    border-right: 0;
-    border-radius: var(--dsj-radius);
-    border-bottom-right-radius: 0;
-    border-top-right-radius: 0;
-    color: var(--dsj-ink);
-    cursor: pointer;
-    flex: 1 1 auto;
-    font-family: inherit;
-    font-size: 0.875rem;
-    height: 2.5rem;
-    min-width: 0;
-    padding: 0 2.125rem 0 0.75rem;
-  }
-
-  .dsj-search__input:hover,
-  .dsj-search__input:focus-visible {
-    background: var(--dsj-white);
-    border-color: var(--dsj-green);
-    color: var(--dsj-ink);
-    outline: 2px solid var(--dsj-focus);
-    outline-offset: 1px;
-  }
-
-  .dsj-search__input::placeholder {
-    color: var(--dsj-grey-text2);
-  }
-
-  .dsj-search__kbd {
-    align-items: center;
-    border: 1px solid var(--dsj-border-strong);
-    border-radius: 4px;
-    color: var(--dsj-grey-text2);
-    display: inline-flex;
-    font-size: 0.75rem;
-    height: 1.25rem;
-    justify-content: center;
-    position: absolute;
-    right: 3rem;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 1.25rem;
-  }
-
+  /* Recherche Desjardins : bouton loupe blanc compact (sur la barre verte). */
   .dsj-search__btn {
     align-items: center;
-    background: var(--dsj-green);
-    border: 1px solid var(--dsj-green);
-    border-radius: 0 var(--dsj-radius) var(--dsj-radius) 0;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: var(--dsj-radius);
     color: var(--dsj-white);
     cursor: pointer;
     display: inline-flex;
-    flex: 0 0 2.5rem;
+    flex: 0 0 auto;
+    width: 2.5rem;
     height: 2.5rem;
     justify-content: center;
     padding: 0;
@@ -547,9 +459,9 @@
 
   .dsj-search__btn:hover,
   .dsj-search__btn:focus-visible {
-    background: var(--dsj-green-hover);
-    border-color: var(--dsj-green-hover);
-    outline: 2px solid var(--dsj-focus);
+    background: rgba(255, 255, 255, 0.16);
+    border-color: var(--dsj-white);
+    outline: 2px solid var(--dsj-white);
     outline-offset: 1px;
   }
 
@@ -559,7 +471,7 @@
     align-items: center;
     background: transparent;
     border: none;
-    color: var(--dsj-ink);
+    color: var(--dsj-white);
     cursor: pointer;
     justify-content: center;
     min-height: 2.75rem;
