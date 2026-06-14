@@ -1,0 +1,58 @@
+import { Component, Input as NgInput } from "@angular/core";
+
+import { classNames } from "./classNames.js";
+
+import { deriveInitials } from "./Header.js";
+
+export type AvatarSize = "sm" | "md" | "lg" | "xl";
+
+export type AvatarShape = "circle" | "square";
+
+export type AvatarTone =
+  | "category1"
+  | "category2"
+  | "category3"
+  | "category4"
+  | "category5"
+  | "category6"
+  | "category7"
+  | "category8";
+
+export type AvatarProps = {
+  /** Nom complet, utilisé pour dériver les initiales et l'étiquette a11y. */
+  name: string;
+  /** URL de la photo. Si absente, on rend un cercle d'initiales. */
+  src?: string;
+  /** Texte alternatif de l'image. Par défaut = `name`. */
+  alt?: string;
+  size?: AvatarSize;
+  shape?: AvatarShape;
+  /** Catégorie de couleur pour le fond des initiales. */
+  tone?: AvatarTone;
+  class?: string;
+};
+
+@Component({
+  selector: "st-avatar",
+  standalone: true,
+  template: `
+    <div [attr.data-st-component]="componentName" [class]="hostClass">
+      <ng-content></ng-content>
+    </div>
+  `,
+})
+export class Avatar {
+  static readonly stComponentName = "Avatar";
+  readonly componentName = "Avatar";
+  @NgInput() name!: string;
+  @NgInput() src?: string;
+  @NgInput() alt?: string;
+  @NgInput() size?: AvatarSize;
+  @NgInput() shape?: AvatarShape;
+  @NgInput() tone?: AvatarTone;
+  @NgInput("class") classInput?: string;
+
+  get hostClass(): string {
+    return ["st-avatar", this.classInput].filter(Boolean).join(" ");
+  }
+}
