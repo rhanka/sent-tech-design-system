@@ -42,9 +42,11 @@
     DOCS_VERSION,
     buildFoundationNav,
     buildComponentNavGroups,
+    buildViewsNav,
     buildTopNav,
     resolveBreadcrumb,
-    type ComponentNavItem
+    type ComponentNavItem,
+    type ViewNavItem
   } from "$lib/docs-navigation";
   import { locale } from "$lib/locale.svelte";
   import {
@@ -102,6 +104,7 @@
   const topNavItems = $derived(buildTopNav(locale.value));
   const foundationNavItems = $derived(buildFoundationNav(locale.value));
   const componentGroups = $derived(buildComponentNavGroups(locale.value));
+  const viewsGroups = $derived(buildViewsNav(locale.value));
   const breadcrumbs = $derived(resolveBreadcrumb(page.url.pathname, locale.value));
   // Le sélecteur de framework n'a d'effet que là où des composants sont rendus
   // (pages composant + galerie /preview). Ailleurs (home, fondations, tokens,
@@ -320,6 +323,14 @@
 
   function isGroupOpen(items: ComponentNavItem[]): boolean {
     return items.some((item) => isComponentActive(item));
+  }
+
+  function isViewActive(item: ViewNavItem): boolean {
+    return page.url.pathname === `/views/${item.slug}`;
+  }
+
+  function isViewGroupOpen(items: ViewNavItem[]): boolean {
+    return items.some((item) => isViewActive(item));
   }
 
   function openSearch() {
@@ -1298,7 +1309,15 @@
       <aside class="docs-sidebar" id="docs-sidebar" class:docs-sidebar--open={isSidebarOpen}>
         <nav class="docs-side-nav" aria-label="Navigation de la documentation">
           <section class="docs-side-section" aria-labelledby="docs-foundations-heading">
-            <h2 id="docs-foundations-heading">{locale.value === "fr" ? "Documentation" : "Documentation"}</h2>
+            <h2 id="docs-foundations-heading">
+              <a
+                class="docs-side-section-link"
+                href="/"
+                aria-current={page.url.pathname === "/" || page.url.pathname === "/preview" ? "page" : undefined}
+              >
+                {locale.value === "fr" ? "Documentation" : "Documentation"}
+              </a>
+            </h2>
             <ul>
               {#each foundationNavItems as item (item.href)}
                 <li>
@@ -1315,7 +1334,15 @@
           </section>
 
           <section class="docs-side-section" aria-labelledby="docs-components-heading">
-            <h2 id="docs-components-heading">{locale.value === "fr" ? "Composants" : "Components"}</h2>
+            <h2 id="docs-components-heading">
+              <a
+                class="docs-side-section-link"
+                href="/#components"
+                aria-current={isActive("/#components") ? "page" : undefined}
+              >
+                {locale.value === "fr" ? "Composants" : "Components"}
+              </a>
+            </h2>
             {#each componentGroups as group (group.label)}
               <details class="docs-side-group" open={isGroupOpen(group.items)}>
                 <summary>
@@ -1335,6 +1362,39 @@
                           class="docs-side-status"
                           aria-hidden="true"
                         ></span>
+                        <span>{item.label}</span>
+                      </a>
+                    </li>
+                  {/each}
+                </ul>
+              </details>
+            {/each}
+          </section>
+
+          <section class="docs-side-section" aria-labelledby="docs-views-heading">
+            <h2 id="docs-views-heading">
+              <a
+                class="docs-side-section-link"
+                href="/views"
+                aria-current={isActive("/views") ? "page" : undefined}
+              >
+                {locale.value === "fr" ? "Vues" : "Views"}
+              </a>
+            </h2>
+            {#each viewsGroups as group (group.label)}
+              <details class="docs-side-group" open={isViewGroupOpen(group.items)}>
+                <summary>
+                  <ChevronDown class="docs-side-group-icon" size={16} strokeWidth={2.25} aria-hidden="true" />
+                  <span>{group.label}</span>
+                </summary>
+                <ul>
+                  {#each group.items as item (item.slug)}
+                    <li>
+                      <a
+                        class="docs-side-link docs-side-link--view"
+                        href={item.href}
+                        aria-current={isViewActive(item) ? "page" : undefined}
+                      >
                         <span>{item.label}</span>
                       </a>
                     </li>

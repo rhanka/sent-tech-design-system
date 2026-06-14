@@ -6,7 +6,7 @@
 
   const fr = $derived(locale.value === "fr");
 
-  // ── Données mock neutres (pipeline CRM Odoo-like) ─────────────────────────
+  // ── Données mock neutres (pipeline CRM) ───────────────────────────────────
 
   type Opp = {
     title: string;
@@ -132,19 +132,19 @@
 
 <div class="docs-page">
   <section class="docs-hero">
-    <p class="docs-hero-kicker">{fr ? "Vue · CRM (Odoo)" : "View · CRM (Odoo)"}</p>
+    <p class="docs-hero-kicker">{fr ? "Vue · CRM" : "View · CRM"}</p>
     <div class="docs-hero-title">
       <h1>{fr ? "Pipeline CRM" : "CRM Pipeline"}</h1>
       <Badge tone="success">{fr ? "Disponible" : "Available"}</Badge>
     </div>
     <p>
       {#if fr}
-        Déclinaison du patron Kanban pour le pipeline commercial Odoo : une colonne par étape
+        Déclinaison du patron Kanban pour le pipeline commercial : une colonne par étape
         (Nouveau / Qualifié / Proposition / Gagné) de cartes d'opportunités. Chaque carte combine
         <code>Card</code> + montant + <code>ProgressBar</code> de probabilité + <code>Avatar</code>
         du responsable. Un seul <code>NodeSpec</code> → rendu identique en Svelte, React et Vue.
       {:else}
-        A declination of the Kanban pattern for the Odoo sales pipeline: one column per stage
+        A declination of the Kanban pattern for the sales pipeline: one column per stage
         (New / Qualified / Proposal / Won) of opportunity cards. Each card combines
         <code>Card</code> + amount + a probability <code>ProgressBar</code> + the owner's
         <code>Avatar</code>. One <code>NodeSpec</code> → identical render in Svelte, React, and Vue.
