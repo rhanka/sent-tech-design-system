@@ -111,8 +111,9 @@ describe("docs header alignment contract", () => {
 describe("docs themed chrome contract", () => {
   it("wires dedicated chrome shells for mapped import themes", () => {
     expect(layoutSource).toContain('const useCustomChrome = $derived(');
-    expect(layoutSource).toContain('browser && (activeThemeId === "carbon" || activeThemeId === "dsfr" || activeThemeId === "airbus" || activeThemeId === "canada" || activeThemeId === "quebec")');
+    expect(layoutSource).toContain('browser && (activeThemeId === "carbon" || activeThemeId === "dsfr" || activeThemeId === "airbus" || activeThemeId === "canada" || activeThemeId === "quebec" || activeThemeId === "lightspeed")');
     expect(layoutSource).toContain("<ChromeCarbon");
+    expect(layoutSource).toContain("<ChromeLightspeed");
     expect(layoutSource).toContain("<ChromeDsfr");
     expect(layoutSource).toContain("<ChromeAirbus");
     expect(layoutSource).toContain("<ChromeCanada");

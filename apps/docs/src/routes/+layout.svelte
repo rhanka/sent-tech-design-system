@@ -70,6 +70,7 @@
   import ChromeAirbus from "$lib/chrome/ChromeAirbus.svelte";
   import ChromeCanada from "$lib/chrome/ChromeCanada.svelte";
   import ChromeQuebec from "$lib/chrome/ChromeQuebec.svelte";
+  import ChromeLightspeed from "$lib/chrome/ChromeLightspeed.svelte";
   import DocsSearch from "$lib/chat/DocsSearch.svelte";
   import { Search as SearchIcon } from "@lucide/svelte";
 
@@ -348,7 +349,7 @@
   // Les chromes Carbon/DSFR/Airbus encapsulent leur propre header + sidebar.
   // Le chrome sent-tech utilise le Header du composant DS + la sidebar existante.
   const useCustomChrome = $derived(
-    browser && (activeThemeId === "carbon" || activeThemeId === "dsfr" || activeThemeId === "airbus" || activeThemeId === "canada" || activeThemeId === "quebec")
+    browser && (activeThemeId === "carbon" || activeThemeId === "dsfr" || activeThemeId === "airbus" || activeThemeId === "canada" || activeThemeId === "quebec" || activeThemeId === "lightspeed")
   );
 </script>
 
@@ -774,6 +775,26 @@
         {@render pageContent()}
       {/snippet}
     </ChromeQuebec>
+  </div>
+
+{:else if useCustomChrome && activeThemeId === "lightspeed"}
+  <div data-st-theme={activeThemeId}>
+    <ChromeLightspeed
+      activeThemeId={activeThemeId}
+      isThemeOpen={isThemeOpen}
+      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onSearchOpen={openSearch}
+      themeSwitcher={themeSelector}
+      frameworkSwitcher={frameworkSelector}
+      localeSwitcher={langSelector}
+      compareButton={sharedCompareButton}
+      mobileMenuOpen={isMobileMenuOpen}
+      onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
+    >
+      {#snippet children()}
+        {@render pageContent()}
+      {/snippet}
+    </ChromeLightspeed>
   </div>
 
 {:else}
