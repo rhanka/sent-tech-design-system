@@ -3,19 +3,15 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Prototype go/no-go — sentropic-app-shell</title>
+    <title>Prototype — sentropic-app-shell (config-driven)</title>
     <style>
-      /* Les tokens --st-* sont déclarés au :root de l'HÔTE (comme un thème DS).
-         Le Web Component (Shadow DOM) doit les hériter et se recolorer SANS
-         changer de structure quand on bascule de thème. */
       :root[data-theme="sent-tech"] {
         --st-semantic-surface-default: #ffffff;
         --st-semantic-text-primary: #0f172a;
         --st-semantic-text-secondary: #475569;
         --st-semantic-border-subtle: #e2e8f0;
         --st-font-sans: Inter, system-ui, sans-serif;
-        --st-spacing-4: 1rem;
-        --st-spacing-6: 1.5rem;
+        --st-spacing-4: 1rem; --st-spacing-6: 1.5rem;
         --st-shadow-lg: 0 10px 40px rgba(15, 23, 42, 0.18);
       }
       :root[data-theme="carbon"] {
@@ -24,42 +20,55 @@
         --st-semantic-text-secondary: #a8a8a8;
         --st-semantic-border-subtle: #393939;
         --st-font-sans: "IBM Plex Sans", system-ui, sans-serif;
-        --st-spacing-4: 1rem;
-        --st-spacing-6: 1.5rem;
+        --st-spacing-4: 1rem; --st-spacing-6: 1.5rem;
         --st-shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.5);
       }
-      body {
-        margin: 0;
-        background: var(--st-semantic-surface-default);
-        color: var(--st-semantic-text-primary);
-      }
+      body { margin: 0; background: var(--st-semantic-surface-default); color: var(--st-semantic-text-primary); }
       .content { padding: 2rem; min-height: 200vh; }
-      .ztest {
-        position: relative;
-        z-index: 9999;
-        margin-top: 2rem;
-        padding: 1rem;
-        background: hotpink;
-        color: #000;
-        font-weight: 700;
-      }
-      button { font: inherit; padding: 0.5rem 0.75rem; cursor: pointer; }
+      .ztest { position: relative; z-index: 9999; margin-top: 2rem; padding: 1rem; background: hotpink; color: #000; font-weight: 700; }
     </style>
     <script type="module" src="./sentropic-app-shell.js"></script>
   </head>
   <body>
     <sentropic-app-shell></sentropic-app-shell>
     <div class="content">
-      <button
-        id="toggle-theme"
-        onclick="document.documentElement.dataset.theme = document.documentElement.dataset.theme === 'carbon' ? 'sent-tech' : 'carbon'"
-      >
-        Basculer le thème (sent-tech ⇄ carbon)
-      </button>
-      <p>Contenu de page. La structure du header ne doit pas bouger au changement de thème.</p>
-      <div class="ztest" id="ztest">
-        Élément avec z-index: 9999 — la palette (popover top-layer) doit passer AU-DESSUS.
-      </div>
+      <p>Le header est piloté par <code>siteConfig</code>. Bascule le thème via SON sélecteur :
+        le shell signale <code>onThemeChange</code>, l'hôte applique <code>data-theme</code> au <code>:root</code>.
+        La structure ne bouge pas, seuls les tokens recolorent.</p>
+      <div class="ztest" id="ztest">z-index: 9999 — la palette (popover top-layer) passe au-dessus.</div>
     </div>
+    <script type="module">
+      const el = document.querySelector("sentropic-app-shell");
+      customElements.whenDefined("sentropic-app-shell").then(() => {
+        el.config = {
+          schemaVersion: 1,
+          brand: { name: "Sentropic", productName: "dataviz", href: "/" },
+          nav: [
+            { label: "Charts", href: "/charts", active: true },
+            { label: "Dashboards", href: "/dashboards" },
+            { label: "Grilles", href: "/grids" },
+          ],
+          search: { enabled: true, mode: "callback", placeholder: "Rechercher…", onSearch: (q) => console.log("search", q) },
+          frameworkSwitcher: {
+            enabled: true, current: "svelte",
+            available: [{ id: "svelte", label: "Svelte" }, { id: "react", label: "React" }, { id: "vue", label: "Vue" }],
+            mode: "callback", onChange: (id) => console.log("fw", id),
+          },
+          theming: {
+            themes: [{ id: "sent-tech", label: "Sent Tech" }, { id: "carbon", label: "Carbon" }],
+            theme: "sent-tech",
+            colorMode: "light",
+            onThemeChange: (id) => { document.documentElement.dataset.theme = id; el.config = { ...el.config, theming: { ...el.config.theming, theme: id } }; },
+            onColorModeChange: (m) => { el.config = { ...el.config, theming: { ...el.config.theming, colorMode: m } }; },
+          },
+          locale: {
+            current: "fr",
+            available: [{ code: "fr", label: "Français" }, { code: "en", label: "English" }],
+            onChange: (code) => { el.config = { ...el.config, locale: { ...el.config.locale, current: code } }; },
+          },
+          identity: { state: "anonymous", onSignIn: () => console.log("signin") },
+        };
+      });
+    </script>
   </body>
 </html>
