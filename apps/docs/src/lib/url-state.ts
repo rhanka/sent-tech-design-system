@@ -5,8 +5,8 @@ import type { FrameworkId } from "./framework.svelte";
 import { FRAMEWORKS, DEFAULT_FRAMEWORK } from "./framework.svelte";
 
 // ── Thèmes valides ────────────────────────────────────────────────────────────
-export type ThemeId = "sent-tech" | "dsfr" | "carbon" | "airbus" | "canada" | "quebec" | "ssense" | "lightspeed" | "desjardins" | "national-bank" | "cirque-du-soleil" | "ubisoft" | "bombardier";
-export const VALID_THEME_IDS: readonly ThemeId[] = ["sent-tech", "dsfr", "carbon", "airbus", "canada", "quebec", "ssense", "lightspeed", "desjardins", "national-bank", "cirque-du-soleil", "ubisoft", "bombardier"];
+export type ThemeId = "sent-tech" | "dsfr" | "carbon" | "airbus" | "canada" | "quebec" | "ssense" | "lightspeed" | "desjardins" | "national-bank" | "cirque-du-soleil" | "ubisoft" | "bombardier" | "cae" | "saq" | "cgi" | "stm";
+export const VALID_THEME_IDS: readonly ThemeId[] = ["sent-tech", "dsfr", "carbon", "airbus", "canada", "quebec", "ssense", "lightspeed", "desjardins", "national-bank", "cirque-du-soleil", "ubisoft", "bombardier", "cae", "saq", "cgi", "stm"];
 export const DEFAULT_THEME_ID: ThemeId = "sent-tech";
 
 function isThemeId(value: string | null): value is ThemeId {
