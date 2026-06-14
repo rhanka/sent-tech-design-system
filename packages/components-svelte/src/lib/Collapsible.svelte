@@ -7,7 +7,22 @@
     /** État ouvert (bindable). */
     open?: boolean;
     title: string;
+    /**
+     * Density of the trigger — `"md"` (default) is the current render. `"sm"`
+     * de-emphasizes the trigger (smaller font/weight/padding) for NESTED /
+     * level-2 collapsibles; `"lg"` enlarges it. Additive: with `size` unset the
+     * trigger renders byte-identically to before.
+     */
+    size?: "sm" | "md" | "lg";
     disabled?: boolean;
+    /**
+     * Trailing content rendered inside the trigger, BETWEEN the title and the
+     * chevron (e.g. a count Badge, a status Tag, a glyph). The chevron stays the
+     * rightmost affordance. If the trailing content carries information SR users
+     * need as part of the trigger name, set `aria-label` on the Collapsible via
+     * `...rest` (e.g. `aria-label="Entities, 128 items"`).
+     */
+    trailing?: Snippet;
     onToggle?: (open: boolean) => void;
     class?: string;
     children?: Snippet;
@@ -16,7 +31,9 @@
   let {
     open = $bindable(false),
     title,
+    size = "md",
     disabled = false,
+    trailing,
     onToggle,
     class: className,
     children,
@@ -26,7 +43,14 @@
   const uid = `st-collapsible-${Math.random().toString(36).slice(2, 9)}`;
 
   const classes = $derived(
-    ["st-collapsible", open ? "st-collapsible--open" : null, className].filter(Boolean).join(" ")
+    [
+      "st-collapsible",
+      `st-collapsible--${size}`,
+      open ? "st-collapsible--open" : null,
+      className
+    ]
+      .filter(Boolean)
+      .join(" ")
   );
 
   function toggle() {
@@ -47,6 +71,9 @@
     onclick={toggle}
   >
     <span class="st-collapsible__title">{title}</span>
+    {#if trailing}
+      <span class="st-collapsible__trailing">{@render trailing()}</span>
+    {/if}
     <span class="st-collapsible__icon" aria-hidden="true">
       <ChevronDown size={18} strokeWidth={2.25} />
     </span>
@@ -103,8 +130,35 @@
     cursor: not-allowed;
   }
 
+  /* Density variants (additive). `md` is the UNTOUCHED base `.st-collapsible__trigger`
+     above — no `--md` rule exists, so a `size="md"` (or unset) trigger renders
+     byte-identically. `--sm` de-emphasizes for nesting; `--lg` enlarges. Every
+     leaf falls back to a base literal so a theme that emits no
+     `--st-component-collapsible-*` renders these variants identically. */
+  .st-collapsible--sm .st-collapsible__trigger {
+    font-size: var(--st-component-collapsible-sm-fontSize, 0.875rem);
+    font-weight: var(--st-component-collapsible-sm-fontWeight, 500);
+    padding: var(--st-component-collapsible-sm-paddingBlock, 0.4rem)
+      var(--st-component-collapsible-sm-paddingInline, 0.25rem);
+  }
+
+  .st-collapsible--lg .st-collapsible__trigger {
+    font-size: var(--st-component-collapsible-lg-fontSize, 1rem);
+    padding: var(--st-component-collapsible-lg-paddingBlock, 0.875rem)
+      var(--st-component-collapsible-lg-paddingInline, 0.25rem);
+  }
+
   .st-collapsible__title {
     flex: 1 1 auto;
+  }
+
+  /* Trigger trailing slot (additive). Holds a count badge / status / glyph
+     between the title and the chevron; never grows, so the chevron stays the
+     rightmost affordance and the title keeps `flex: 1 1 auto`. */
+  .st-collapsible__trailing {
+    align-items: center;
+    display: inline-flex;
+    flex: 0 0 auto;
   }
 
   .st-collapsible__icon {
