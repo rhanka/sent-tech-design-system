@@ -109,6 +109,8 @@ export { default as EventFeedPanel } from "./EventFeedPanel.svelte";
 export { default as VectorFieldChart } from "./VectorFieldChart.svelte";
 export { default as ContourChart } from "./ContourChart.svelte";
 export { default as WindBarbChart } from "./WindBarbChart.svelte";
+export { default as RenkoChart } from "./RenkoChart.svelte";
+export { default as PointAndFigureChart } from "./PointAndFigureChart.svelte";
 export { default as WaffleChart } from "./WaffleChart.svelte";
 export { default as RibbonChart } from "./RibbonChart.svelte";
 export { default as AnomalySwimLaneChart } from "./AnomalySwimLaneChart.svelte";
@@ -285,6 +287,14 @@ export type {
   WindBarbChartTone,
   WindBarbChartDatum
 } from "./WindBarbChart.svelte";
+export type {
+  RenkoChartDirection,
+  RenkoChartDatum
+} from "./RenkoChart.svelte";
+export type {
+  PointAndFigureChartMark,
+  PointAndFigureChartDatum
+} from "./PointAndFigureChart.svelte";
 export type {
   WaffleTone,
   WaffleChartDatum

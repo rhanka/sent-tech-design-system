@@ -1131,6 +1131,26 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "RenkoChart",
+    slug: "renko-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Briques Renko : à partir d'une série de prix, empile des briques d'une taille fixe (boxSize) en ignorant le temps régulier.",
+      en: "Renko bricks: from a price series, stacks fixed-size bricks (boxSize) while ignoring regular time."
+    }
+  },
+  {
+    name: "PointAndFigureChart",
+    slug: "point-and-figure-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Point & Figure : colonnes de X (hausse) et de O (baisse) selon le mouvement de prix (boxSize + reversal).",
+      en: "Point & Figure: columns of X (up) and O (down) following the price movement (boxSize + reversal)."
+    }
+  },
+  {
     name: "WaffleChart",
     slug: "waffle-chart",
     status: "documented",

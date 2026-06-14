@@ -161,6 +161,8 @@ export type ComponentName =
   | "VectorFieldChart"
   | "ContourChart"
   | "WindBarbChart"
+  | "RenkoChart"
+  | "PointAndFigureChart"
   | "WaffleChart"
   | "RibbonChart"
   | "AnomalySwimLaneChart"
