@@ -1141,6 +1141,26 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "DecompositionTreeChart",
+    slug: "decomposition-tree-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Arbre de décomposition hiérarchique : une mesure totale éclatée niveau par niveau en colonnes de barres reliées au parent.",
+      en: "Hierarchical decomposition tree: a total measure broken down level by level into columns of bars linked to their parent."
+    }
+  },
+  {
+    name: "Density2DChart",
+    slug: "density-2d-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Densité 2D binned sur axes numériques : points (x,y) agrégés en cellules dont la couleur encode la densité.",
+      en: "Binned 2D density on numeric axes: (x,y) points aggregated into cells whose color encodes density."
+    }
+  },
+  {
     name: "FunnelChart",
     slug: "funnel-chart",
     status: "documented",

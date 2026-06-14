@@ -162,6 +162,8 @@ export type ComponentName =
   | "AnomalySwimLaneChart"
   | "FlamegraphChart"
   | "TraceWaterfallChart"
+  | "DecompositionTreeChart"
+  | "Density2DChart"
   | "FunnelChart"
   | "WaterfallChart"
   | "TreemapChart"
