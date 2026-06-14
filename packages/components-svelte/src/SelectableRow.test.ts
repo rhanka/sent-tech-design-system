@@ -153,3 +153,62 @@ describe("SelectableRow", () => {
     expect(row.getAttribute("aria-pressed")).toBeNull();
   });
 });
+
+// --- caption slot (Studio-P3, additive) -------------------------------------
+describe("SelectableRow — caption", () => {
+  const caption = createRawSnippet(() => ({
+    render: () => '<span data-testid="cap">Person · born 1854</span>'
+  }));
+
+  it("byte-identity: WITHOUT a caption the content stays single-line (no stack, no caption node)", () => {
+    const { container } = render(SelectableRow, { props: { children: labelChildren } });
+    const row = container.querySelector(".st-selectableRow") as HTMLElement;
+    // No caption → no modifier class, no caption/label/stacked nodes; the original
+    // single-line `.st-selectableRow__content` carries the children verbatim.
+    expect(row.className).not.toContain("st-selectableRow--hasCaption");
+    expect(container.querySelector(".st-selectableRow__caption")).toBeNull();
+    expect(container.querySelector(".st-selectableRow__label")).toBeNull();
+    expect(container.querySelector(".st-selectableRow__content--stacked")).toBeNull();
+    const content = container.querySelector(".st-selectableRow__content") as HTMLElement;
+    expect(content).toBeTruthy();
+    expect(content.textContent).toContain("Documents");
+  });
+
+  it("renders the caption UNDER children in .st-selectableRow__caption with the --hasCaption modifier", () => {
+    const { container } = render(SelectableRow, {
+      props: { children: labelChildren, caption }
+    });
+    const row = container.querySelector(".st-selectableRow") as HTMLElement;
+    expect(row.className).toContain("st-selectableRow--hasCaption");
+    // The content column stacks the primary label over the muted caption.
+    const stacked = container.querySelector(
+      ".st-selectableRow__content--stacked"
+    ) as HTMLElement;
+    expect(stacked).toBeTruthy();
+    const label = container.querySelector(".st-selectableRow__label") as HTMLElement;
+    const cap = container.querySelector(".st-selectableRow__caption") as HTMLElement;
+    expect(label).toBeTruthy();
+    expect(cap).toBeTruthy();
+    expect(label.textContent).toContain("Documents");
+    expect(screen.getByTestId("cap")).toBeTruthy();
+    // Caption is rendered AFTER the label inside the stacked column.
+    const order = Array.from(stacked.children).map((c) => c.className.split(/\s+/)[0]);
+    expect(order).toEqual(["st-selectableRow__label", "st-selectableRow__caption"]);
+  });
+
+  it("caption joins the accessible name and keeps a single tab stop (selection/disabled unchanged)", async () => {
+    const onselect = vi.fn();
+    const { container } = render(SelectableRow, {
+      props: { children: labelChildren, caption, onselect }
+    });
+    const row = screen.getByRole("button");
+    // Caption is inside the row element → part of its accessible name.
+    expect(row.textContent).toContain("Person · born 1854");
+    // Single tab stop preserved; selection still works with a caption present.
+    expect(row.getAttribute("tabindex")).toBe("0");
+    await fireEvent.click(row);
+    expect(onselect).toHaveBeenLastCalledWith(true);
+    expect(row.getAttribute("aria-pressed")).toBe("true");
+    expect(container.querySelectorAll(".st-selectableRow").length).toBe(1);
+  });
+});
