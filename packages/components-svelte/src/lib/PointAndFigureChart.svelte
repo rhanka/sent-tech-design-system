@@ -118,7 +118,8 @@
   const pnfColumns = $derived.by(() => {
     const box = effectiveBox;
     const cols: { mark: PointAndFigureChartMark; low: number; high: number }[] = [];
-    if (validData.length === 0 || box <= 0) return cols;
+    if (validData.length === 0 || box <= 0)
+      return [] as { mark: PointAndFigureChartMark; low: number; high: number; priceLow: number; priceHigh: number }[];
 
     const closes = validData.map((d) => d.close);
     const baseMin = Math.min(...closes);
