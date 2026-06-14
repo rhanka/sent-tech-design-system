@@ -265,6 +265,10 @@ export { ContourChart } from "./ContourChart.js";
 export type { ContourChartProps, ContourChartDatum, ContourChartTone } from "./ContourChart.js";
 export { WindBarbChart } from "./WindBarbChart.js";
 export type { WindBarbChartProps, WindBarbChartDatum, WindBarbChartTone } from "./WindBarbChart.js";
+export { RenkoChart } from "./RenkoChart.js";
+export type { RenkoChartProps, RenkoChartDatum, RenkoChartDirection } from "./RenkoChart.js";
+export { PointAndFigureChart } from "./PointAndFigureChart.js";
+export type { PointAndFigureChartProps, PointAndFigureChartDatum, PointAndFigureChartMark } from "./PointAndFigureChart.js";
 export { WaffleChart } from "./WaffleChart.js";
 export type {
   WaffleChartProps,
