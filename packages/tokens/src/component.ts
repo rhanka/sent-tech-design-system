@@ -428,6 +428,14 @@ interface SelectableRowInput {
   selectedBackgroundDark?: string;
   selectedAccentDark?: string;
   selectedTextDark?: string;
+  // Studio-P3 (additive) — the OPT-IN `caption` second line only. Rows without a
+  // caption are unaffected (byte-identical). Every leaf is optional and DEFAULTS
+  // to the base literal baked into the component CSS, so a theme that emits
+  // nothing renders the caption identically (no theme emits these today). The
+  // caption colour defaults to the muted text role.
+  captionFontSize?: string; // caption font-size; default "0.75rem" (12px)
+  captionColor?: string;    // caption text colour; default = semantic.text.muted
+  captionGap?: string;      // vertical gap label↔caption; default "0.125rem" (2px)
 }
 
 interface FoundationInput {

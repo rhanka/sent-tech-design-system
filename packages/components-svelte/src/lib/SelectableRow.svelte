@@ -60,6 +60,16 @@
     trailing?: Snippet;
     /** Main content. */
     children?: Snippet;
+    /**
+     * Optional secondary line (the "legend") rendered MUTED and smaller UNDER
+     * `children`. When present the content column stacks vertically (a
+     * `--hasCaption` modifier); when absent the row stays single-line and
+     * byte-identical. The caption joins the row's accessible name by default (the
+     * SR reads "label, caption"); wrap it `aria-hidden` if it is purely
+     * decorative. MUST NOT contain interactive controls — a row is a single tab
+     * stop.
+     */
+    caption?: Snippet;
     class?: string;
   };
 </script>
@@ -77,6 +87,7 @@
     leading,
     trailing,
     children,
+    caption,
     class: className
   }: SelectableRowProps = $props();
 
@@ -125,6 +136,7 @@
       isSelected ? "st-selectableRow--selected" : null,
       disabled ? "st-selectableRow--disabled" : null,
       accentBar ? "st-selectableRow--accentBar" : null,
+      caption ? "st-selectableRow--hasCaption" : null,
       className
     ]
       .filter(Boolean)
@@ -190,7 +202,17 @@
   {#if leading}
     <span class="st-selectableRow__leading">{@render leading()}</span>
   {/if}
-  <span class="st-selectableRow__content">{@render children?.()}</span>
+  {#if caption}
+    <!-- Caption present: the content column stacks the primary label over a muted
+         second line. Both lines truncate independently (each min-width:0 + ellipsis)
+         so a long caption never pushes the row width. -->
+    <span class="st-selectableRow__content st-selectableRow__content--stacked">
+      <span class="st-selectableRow__label">{@render children?.()}</span>
+      <span class="st-selectableRow__caption">{@render caption()}</span>
+    </span>
+  {:else}
+    <span class="st-selectableRow__content">{@render children?.()}</span>
+  {/if}
   {#if trailing}
     <span class="st-selectableRow__trailing">{@render trailing()}</span>
   {/if}
@@ -298,6 +320,36 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  /* Caption variant (additive). Rows WITHOUT a caption keep the single-line
+     `.st-selectableRow__content` above byte-identically (no `--stacked` rule
+     applies). `--stacked` overlays a vertical column: the primary `__label` keeps
+     its own single-line ellipsis, and the muted `__caption` truncates
+     independently so a long legend never pushes the row width. Every leaf falls
+     back to a base literal so a theme that emits no
+     `--st-component-selectableRow-caption*` renders the caption identically. */
+  .st-selectableRow__content--stacked {
+    display: flex;
+    flex-direction: column;
+    /* The column stack drops the inline ellipsis/nowrap (each line truncates on
+       its own child); keep min-width:0 so the column can shrink and ellipsize. */
+    overflow: visible;
+    white-space: normal;
+    gap: var(--st-component-selectableRow-captionGap, 0.125rem);
+  }
+
+  .st-selectableRow__label,
+  .st-selectableRow__caption {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .st-selectableRow__caption {
+    color: var(--st-component-selectableRow-captionColor, var(--st-semantic-text-muted));
+    font-size: var(--st-component-selectableRow-captionFontSize, 0.75rem);
   }
 
   @media (prefers-reduced-motion: reduce) {
