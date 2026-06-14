@@ -154,6 +154,8 @@ export type ComponentName =
   | "ScoreCard"
   | "ComboChart"
   | "GaugeChart"
+  | "SolidGaugeChart"
+  | "StateTimelineChart"
   | "FunnelChart"
   | "WaterfallChart"
   | "TreemapChart"
