@@ -80,12 +80,6 @@
   function isGroupOpen(items: ComponentNavItem[]): boolean {
     return items.some((item) => isComponentActive(item));
   }
-
-  function handleSearchKeydown(event: KeyboardEvent) {
-    if (event.key !== "Enter" && event.key !== " ") return;
-    event.preventDefault();
-    onSearchOpen();
-  }
 </script>
 
 <svelte:head>
@@ -135,35 +129,16 @@
 
         <!-- Droite : outils + recherche + CTA pilule rouge -->
         <div class="ls-header__tools">
-          <!-- Barre de recherche Lightspeed : champ natif + bouton, branché sur la palette docs. -->
-          <div class="ls-search" role="search">
-            <label class="ls-search__label" for="ls-search-input">
-              {locale.value === "fr" ? "Rechercher" : "Search"}
-            </label>
-            <div class="ls-search__group">
-              <input
-                id="ls-search-input"
-                class="ls-search__input"
-                type="search"
-                readonly
-                placeholder={locale.value === "fr" ? "Rechercher…" : "Search…"}
-                aria-label={locale.value === "fr" ? "Rechercher dans la documentation" : "Search the documentation"}
-                aria-haspopup="dialog"
-                onclick={onSearchOpen}
-                onkeydown={handleSearchKeydown}
-              />
-              <kbd class="ls-search__kbd" aria-hidden="true">/</kbd>
-              <button
-                type="button"
-                class="ls-search__btn"
-                aria-label={locale.value === "fr" ? "Lancer la recherche" : "Open search"}
-                aria-haspopup="dialog"
-                onclick={onSearchOpen}
-              >
-                <SearchIcon size={16} strokeWidth={2} aria-hidden="true" />
-              </button>
-            </div>
-          </div>
+          <!-- Recherche Lightspeed : bouton loupe compact (palette docs). -->
+          <button
+            type="button"
+            class="ls-search__btn"
+            aria-label={locale.value === "fr" ? "Rechercher" : "Search"}
+            aria-haspopup="dialog"
+            onclick={onSearchOpen}
+          >
+            <SearchIcon size={18} strokeWidth={2} aria-hidden="true" />
+          </button>
 
           <!-- Switchers docs (framework / thème / langue) + comparateur -->
           <div class="ls-header__tools-links">
@@ -441,96 +416,29 @@
     box-shadow: none;
   }
 
-  /* Barre de recherche Lightspeed (anneau gris 1px, conteneur 6px). */
-  .ls-search {
-    width: clamp(11rem, 18vw, 18rem);
-  }
-
-  .ls-search__label {
-    clip: rect(0 0 0 0);
-    border: 0;
-    height: 1px;
-    margin: -1px;
-    overflow: hidden;
-    padding: 0;
-    position: absolute;
-    white-space: nowrap;
-    width: 1px;
-  }
-
-  .ls-search__group {
-    display: flex;
-    position: relative;
-    width: 100%;
-  }
-
-  .ls-search__input {
-    background: var(--ls-white);
-    border: 1px solid var(--ls-border-strong);
-    border-right: 0;
-    border-radius: var(--ls-radius);
-    border-bottom-right-radius: 0;
-    border-top-right-radius: 0;
-    color: var(--ls-charcoal);
-    cursor: pointer;
-    flex: 1 1 auto;
-    font-family: inherit;
-    font-size: 0.875rem;
-    height: 2.5rem;
-    min-width: 0;
-    padding: 0 2.125rem 0 0.75rem;
-  }
-
-  .ls-search__input:hover,
-  .ls-search__input:focus-visible {
-    background: var(--ls-white);
-    border-color: var(--ls-red);
-    color: var(--ls-charcoal);
-    outline: 2px solid var(--ls-red);
-    outline-offset: 1px;
-  }
-
-  .ls-search__input::placeholder {
-    color: var(--ls-grey);
-  }
-
-  .ls-search__kbd {
-    align-items: center;
-    border: 1px solid var(--ls-border-strong);
-    border-radius: 4px;
-    color: var(--ls-grey);
-    display: inline-flex;
-    font-size: 0.75rem;
-    height: 1.25rem;
-    justify-content: center;
-    position: absolute;
-    right: 3rem;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 1.25rem;
-  }
-
+  /* Recherche Lightspeed : bouton loupe carré compact (anneau gris 1px, conteneur 6px). */
   .ls-search__btn {
     align-items: center;
-    background: var(--ls-red);
-    border: 1px solid var(--ls-red);
-    border-radius: 0 var(--ls-radius) var(--ls-radius) 0;
-    color: var(--ls-white);
+    background: var(--ls-white);
+    border: 1px solid var(--ls-border-strong);
+    border-radius: var(--ls-radius);
+    color: var(--ls-charcoal);
     cursor: pointer;
     display: inline-flex;
-    flex: 0 0 2.5rem;
+    flex: 0 0 auto;
+    width: 2.5rem;
     height: 2.5rem;
     justify-content: center;
     padding: 0;
-    transition: background 120ms ease, border-color 120ms ease;
+    transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
   }
 
   .ls-search__btn:hover,
   .ls-search__btn:focus-visible {
-    background: var(--ls-red-hover);
-    border-color: var(--ls-red-hover);
-    outline: 2px solid var(--ls-red);
-    outline-offset: 1px;
+    background: var(--ls-subtle);
+    border-color: var(--ls-red);
+    color: var(--ls-red);
+    outline: none;
   }
 
   /* CTA pilule rouge (radius 999px). */

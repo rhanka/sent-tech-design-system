@@ -84,12 +84,6 @@
   function isGroupOpen(items: ComponentNavItem[]): boolean {
     return items.some((item) => isComponentActive(item));
   }
-
-  function handleSearchKeydown(event: KeyboardEvent) {
-    if (event.key !== "Enter" && event.key !== " ") return;
-    event.preventDefault();
-    onSearchOpen();
-  }
 </script>
 
 <svelte:head>
@@ -139,35 +133,16 @@
 
         <!-- Droite : outils + recherche + CTA bleu -->
         <div class="ubi-header__tools">
-          <!-- Barre de recherche Ubisoft : champ natif + bouton, branché sur la palette docs. -->
-          <div class="ubi-search" role="search">
-            <label class="ubi-search__label" for="ubi-search-input">
-              {locale.value === "fr" ? "Rechercher" : "Search"}
-            </label>
-            <div class="ubi-search__group">
-              <input
-                id="ubi-search-input"
-                class="ubi-search__input"
-                type="search"
-                readonly
-                placeholder={locale.value === "fr" ? "Rechercher…" : "Search…"}
-                aria-label={locale.value === "fr" ? "Rechercher dans la documentation" : "Search the documentation"}
-                aria-haspopup="dialog"
-                onclick={onSearchOpen}
-                onkeydown={handleSearchKeydown}
-              />
-              <kbd class="ubi-search__kbd" aria-hidden="true">/</kbd>
-              <button
-                type="button"
-                class="ubi-search__btn"
-                aria-label={locale.value === "fr" ? "Lancer la recherche" : "Open search"}
-                aria-haspopup="dialog"
-                onclick={onSearchOpen}
-              >
-                <SearchIcon size={16} strokeWidth={2} aria-hidden="true" />
-              </button>
-            </div>
-          </div>
+          <!-- Recherche Ubisoft : bouton loupe compact (champ sombre surélevé, palette docs). -->
+          <button
+            type="button"
+            class="ubi-search__btn"
+            aria-label={locale.value === "fr" ? "Rechercher" : "Search"}
+            aria-haspopup="dialog"
+            onclick={onSearchOpen}
+          >
+            <SearchIcon size={18} strokeWidth={2} aria-hidden="true" />
+          </button>
 
           <!-- Switchers docs (framework / thème / langue) + comparateur -->
           <div class="ubi-header__tools-links">
@@ -448,96 +423,29 @@
     box-shadow: none;
   }
 
-  /* Barre de recherche Ubisoft (champ sombre surélevé, conteneur 8px). */
-  .ubi-search {
-    width: clamp(11rem, 18vw, 18rem);
-  }
-
-  .ubi-search__label {
-    clip: rect(0 0 0 0);
-    border: 0;
-    height: 1px;
-    margin: -1px;
-    overflow: hidden;
-    padding: 0;
-    position: absolute;
-    white-space: nowrap;
-    width: 1px;
-  }
-
-  .ubi-search__group {
-    display: flex;
-    position: relative;
-    width: 100%;
-  }
-
-  .ubi-search__input {
-    background: var(--ubi-raised);
-    border: 1px solid var(--ubi-border);
-    border-right: 0;
-    border-radius: var(--ubi-radius);
-    border-bottom-right-radius: 0;
-    border-top-right-radius: 0;
-    color: var(--ubi-heading);
-    cursor: pointer;
-    flex: 1 1 auto;
-    font-family: inherit;
-    font-size: 0.875rem;
-    height: 2.5rem;
-    min-width: 0;
-    padding: 0 2.125rem 0 0.75rem;
-  }
-
-  .ubi-search__input:hover,
-  .ubi-search__input:focus-visible {
-    background: var(--ubi-raised);
-    border-color: var(--ubi-blue);
-    color: var(--ubi-heading);
-    outline: 2px solid var(--ubi-blue);
-    outline-offset: 1px;
-  }
-
-  .ubi-search__input::placeholder {
-    color: var(--ubi-grey);
-  }
-
-  .ubi-search__kbd {
-    align-items: center;
-    border: 1px solid var(--ubi-border);
-    border-radius: 4px;
-    color: var(--ubi-grey);
-    display: inline-flex;
-    font-size: 0.75rem;
-    height: 1.25rem;
-    justify-content: center;
-    position: absolute;
-    right: 3rem;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 1.25rem;
-  }
-
+  /* Recherche Ubisoft : bouton loupe carré compact (champ sombre surélevé, conteneur 8px). */
   .ubi-search__btn {
     align-items: center;
-    background: var(--ubi-blue);
-    border: 1px solid var(--ubi-blue);
-    border-radius: 0 var(--ubi-radius) var(--ubi-radius) 0;
-    color: var(--ubi-white);
+    background: var(--ubi-raised);
+    border: 1px solid var(--ubi-border);
+    border-radius: var(--ubi-radius);
+    color: var(--ubi-heading);
     cursor: pointer;
     display: inline-flex;
-    flex: 0 0 2.5rem;
+    flex: 0 0 auto;
+    width: 2.5rem;
     height: 2.5rem;
     justify-content: center;
     padding: 0;
-    transition: background 120ms ease, border-color 120ms ease;
+    transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
   }
 
   .ubi-search__btn:hover,
   .ubi-search__btn:focus-visible {
-    background: var(--ubi-blue-hover);
-    border-color: var(--ubi-blue-hover);
-    outline: 2px solid var(--ubi-blue);
-    outline-offset: 1px;
+    background: var(--ubi-raised);
+    border-color: var(--ubi-blue);
+    color: var(--ubi-blue-hover);
+    outline: none;
   }
 
   /* CTA bleu (signature interactive Ubisoft). */

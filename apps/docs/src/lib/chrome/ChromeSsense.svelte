@@ -82,12 +82,6 @@
   function isGroupOpen(items: ComponentNavItem[]): boolean {
     return items.some((item) => isComponentActive(item));
   }
-
-  function handleSearchKeydown(event: KeyboardEvent) {
-    if (event.key !== "Enter" && event.key !== " ") return;
-    event.preventDefault();
-    onSearchOpen();
-  }
 </script>
 
 <div class="ssn-shell">
@@ -121,35 +115,16 @@
 
         <!-- Droite : recherche + outils + CTA carré noir -->
         <div class="ssn-header__tools">
-          <!-- Barre de recherche SSENSE : boîte carrée à liseré noir, branchée sur la palette docs. -->
-          <div class="ssn-search" role="search">
-            <label class="ssn-search__label" for="ssn-search-input">
-              {locale.value === "fr" ? "Rechercher" : "Search"}
-            </label>
-            <div class="ssn-search__group">
-              <input
-                id="ssn-search-input"
-                class="ssn-search__input"
-                type="search"
-                readonly
-                placeholder={locale.value === "fr" ? "Rechercher…" : "Search…"}
-                aria-label={locale.value === "fr" ? "Rechercher dans la documentation" : "Search the documentation"}
-                aria-haspopup="dialog"
-                onclick={onSearchOpen}
-                onkeydown={handleSearchKeydown}
-              />
-              <kbd class="ssn-search__kbd" aria-hidden="true">/</kbd>
-              <button
-                type="button"
-                class="ssn-search__btn"
-                aria-label={locale.value === "fr" ? "Lancer la recherche" : "Open search"}
-                aria-haspopup="dialog"
-                onclick={onSearchOpen}
-              >
-                <SearchIcon size={16} strokeWidth={2} aria-hidden="true" />
-              </button>
-            </div>
-          </div>
+          <!-- Recherche SSENSE : bouton loupe carré compact (liseré noir, palette docs). -->
+          <button
+            type="button"
+            class="ssn-search__btn"
+            aria-label={locale.value === "fr" ? "Rechercher" : "Search"}
+            aria-haspopup="dialog"
+            onclick={onSearchOpen}
+          >
+            <SearchIcon size={18} strokeWidth={2} aria-hidden="true" />
+          </button>
 
           <!-- Switchers docs (framework / thème / langue) + comparateur -->
           <div class="ssn-header__tools-links">
@@ -431,83 +406,17 @@
     box-shadow: none;
   }
 
-  /* Barre de recherche SSENSE (boîte carrée à liseré noir). */
-  .ssn-search {
-    width: clamp(11rem, 18vw, 18rem);
-  }
-
-  .ssn-search__label {
-    clip: rect(0 0 0 0);
-    border: 0;
-    height: 1px;
-    margin: -1px;
-    overflow: hidden;
-    padding: 0;
-    position: absolute;
-    white-space: nowrap;
-    width: 1px;
-  }
-
-  .ssn-search__group {
-    display: flex;
-    position: relative;
-    width: 100%;
-  }
-
-  .ssn-search__input {
-    background: var(--ssn-white);
-    border: 1px solid var(--ssn-ink);
-    border-right: 0;
-    border-radius: 0;
-    color: var(--ssn-ink);
-    cursor: pointer;
-    flex: 1 1 auto;
-    font-family: inherit;
-    font-size: 0.8125rem;
-    height: 2.5rem;
-    letter-spacing: 0.04em;
-    min-width: 0;
-    padding: 0 2.125rem 0 0.75rem;
-  }
-
-  .ssn-search__input:hover,
-  .ssn-search__input:focus-visible {
-    background: var(--ssn-white);
-    border-color: var(--ssn-ink);
-    color: var(--ssn-ink);
-    outline: 2px solid var(--ssn-ink);
-    outline-offset: 1px;
-  }
-
-  .ssn-search__input::placeholder {
-    color: var(--ssn-grey-soft);
-  }
-
-  .ssn-search__kbd {
-    align-items: center;
-    border: 1px solid var(--ssn-grey-soft);
-    border-radius: 0;
-    color: var(--ssn-grey);
-    display: inline-flex;
-    font-size: 0.75rem;
-    height: 1.25rem;
-    justify-content: center;
-    position: absolute;
-    right: 3rem;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 1.25rem;
-  }
-
+  /* Recherche SSENSE : bouton loupe carré compact (liseré noir 1px, radius 0). */
   .ssn-search__btn {
     align-items: center;
-    background: var(--ssn-ink);
+    background: var(--ssn-white);
     border: 1px solid var(--ssn-ink);
     border-radius: 0;
-    color: var(--ssn-white);
+    color: var(--ssn-ink);
     cursor: pointer;
     display: inline-flex;
-    flex: 0 0 2.5rem;
+    flex: 0 0 auto;
+    width: 2.5rem;
     height: 2.5rem;
     justify-content: center;
     padding: 0;
@@ -516,11 +425,10 @@
 
   .ssn-search__btn:hover,
   .ssn-search__btn:focus-visible {
-    background: var(--ssn-white);
+    background: var(--ssn-ink);
     border-color: var(--ssn-ink);
-    color: var(--ssn-ink);
-    outline: 2px solid var(--ssn-ink);
-    outline-offset: 1px;
+    color: var(--ssn-white);
+    outline: none;
   }
 
   /* CTA carré noir plein (radius 0) : signature SSENSE. */

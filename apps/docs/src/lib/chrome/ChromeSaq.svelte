@@ -83,12 +83,6 @@
   function isGroupOpen(items: ComponentNavItem[]): boolean {
     return items.some((item) => isComponentActive(item));
   }
-
-  function handleSearchKeydown(event: KeyboardEvent) {
-    if (event.key !== "Enter" && event.key !== " ") return;
-    event.preventDefault();
-    onSearchOpen();
-  }
 </script>
 
 <svelte:head>
@@ -133,35 +127,16 @@
 
         <!-- Droite : outils + recherche + CTA coral -->
         <div class="saq-header__tools">
-          <!-- Barre de recherche SAQ : champ natif + bouton, branché sur la palette docs. -->
-          <div class="saq-search" role="search">
-            <label class="saq-search__label" for="saq-search-input">
-              {locale.value === "fr" ? "Rechercher" : "Search"}
-            </label>
-            <div class="saq-search__group">
-              <input
-                id="saq-search-input"
-                class="saq-search__input"
-                type="search"
-                readonly
-                placeholder={locale.value === "fr" ? "Rechercher…" : "Search…"}
-                aria-label={locale.value === "fr" ? "Rechercher dans la documentation" : "Search the documentation"}
-                aria-haspopup="dialog"
-                onclick={onSearchOpen}
-                onkeydown={handleSearchKeydown}
-              />
-              <kbd class="saq-search__kbd" aria-hidden="true">/</kbd>
-              <button
-                type="button"
-                class="saq-search__btn"
-                aria-label={locale.value === "fr" ? "Lancer la recherche" : "Open search"}
-                aria-haspopup="dialog"
-                onclick={onSearchOpen}
-              >
-                <SearchIcon size={16} strokeWidth={2} aria-hidden="true" />
-              </button>
-            </div>
-          </div>
+          <!-- Recherche SAQ : bouton loupe coral compact (palette docs). -->
+          <button
+            type="button"
+            class="saq-search__btn"
+            aria-label={locale.value === "fr" ? "Rechercher" : "Search"}
+            aria-haspopup="dialog"
+            onclick={onSearchOpen}
+          >
+            <SearchIcon size={18} strokeWidth={2} aria-hidden="true" />
+          </button>
 
           <!-- Switchers docs (framework / thème / langue) + comparateur -->
           <div class="saq-header__tools-links">
@@ -443,84 +418,17 @@
     box-shadow: none;
   }
 
-  /* Barre de recherche SAQ (bordure 1px, conteneur carré 8px). */
-  .saq-search {
-    width: clamp(11rem, 18vw, 18rem);
-  }
-
-  .saq-search__label {
-    clip: rect(0 0 0 0);
-    border: 0;
-    height: 1px;
-    margin: -1px;
-    overflow: hidden;
-    padding: 0;
-    position: absolute;
-    white-space: nowrap;
-    width: 1px;
-  }
-
-  .saq-search__group {
-    display: flex;
-    position: relative;
-    width: 100%;
-  }
-
-  .saq-search__input {
-    background: var(--saq-white);
-    border: 1px solid var(--saq-border-strong);
-    border-right: 0;
-    border-radius: var(--saq-radius);
-    border-bottom-right-radius: 0;
-    border-top-right-radius: 0;
-    color: var(--saq-ink);
-    cursor: pointer;
-    flex: 1 1 auto;
-    font-family: inherit;
-    font-size: 0.875rem;
-    height: 2.5rem;
-    min-width: 0;
-    padding: 0 2.125rem 0 0.75rem;
-  }
-
-  .saq-search__input:hover,
-  .saq-search__input:focus-visible {
-    background: var(--saq-white);
-    border-color: var(--saq-coral);
-    color: var(--saq-ink);
-    outline: 2px solid var(--saq-coral);
-    outline-offset: 1px;
-  }
-
-  .saq-search__input::placeholder {
-    color: var(--saq-secondary);
-  }
-
-  .saq-search__kbd {
-    align-items: center;
-    border: 1px solid var(--saq-border-strong);
-    border-radius: 4px;
-    color: var(--saq-secondary);
-    display: inline-flex;
-    font-size: 0.75rem;
-    height: 1.25rem;
-    justify-content: center;
-    position: absolute;
-    right: 3rem;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 1.25rem;
-  }
-
+  /* Recherche SAQ : bouton loupe coral compact (radius 8px). */
   .saq-search__btn {
     align-items: center;
     background: var(--saq-coral);
     border: 1px solid var(--saq-coral);
-    border-radius: 0 var(--saq-radius) var(--saq-radius) 0;
+    border-radius: var(--saq-radius);
     color: var(--saq-white);
     cursor: pointer;
     display: inline-flex;
-    flex: 0 0 2.5rem;
+    flex: 0 0 auto;
+    width: 2.5rem;
     height: 2.5rem;
     justify-content: center;
     padding: 0;

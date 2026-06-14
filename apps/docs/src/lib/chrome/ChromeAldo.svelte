@@ -81,12 +81,6 @@
   function isGroupOpen(items: ComponentNavItem[]): boolean {
     return items.some((item) => isComponentActive(item));
   }
-
-  function handleSearchKeydown(event: KeyboardEvent) {
-    if (event.key !== "Enter" && event.key !== " ") return;
-    event.preventDefault();
-    onSearchOpen();
-  }
 </script>
 
 <div class="ald-shell">
@@ -118,35 +112,16 @@
             {@render themeSwitcher()}
             {@render localeSwitcher()}
           </div>
-          <!-- Barre de recherche ALDO : champ blanc carré + bouton noir, branché sur la palette docs. -->
-          <div class="ald-search" role="search">
-            <label class="ald-search__label" for="ald-search-input">
-              {locale.value === "fr" ? "Rechercher" : "Search"}
-            </label>
-            <div class="ald-search__group">
-              <input
-                id="ald-search-input"
-                class="ald-search__input"
-                type="search"
-                readonly
-                placeholder={locale.value === "fr" ? "Rechercher…" : "Search…"}
-                aria-label={locale.value === "fr" ? "Rechercher dans la documentation" : "Search the documentation"}
-                aria-haspopup="dialog"
-                onclick={onSearchOpen}
-                onkeydown={handleSearchKeydown}
-              />
-              <kbd class="ald-search__kbd" aria-hidden="true">/</kbd>
-              <button
-                type="button"
-                class="ald-search__btn"
-                aria-label={locale.value === "fr" ? "Lancer la recherche" : "Open search"}
-                aria-haspopup="dialog"
-                onclick={onSearchOpen}
-              >
-                <SearchIcon size={16} strokeWidth={2} aria-hidden="true" />
-              </button>
-            </div>
-          </div>
+          <!-- Recherche ALDO : bouton loupe noir carré compact, branché sur la palette docs. -->
+          <button
+            type="button"
+            class="ald-search__btn"
+            aria-label={locale.value === "fr" ? "Rechercher" : "Search"}
+            aria-haspopup="dialog"
+            onclick={onSearchOpen}
+          >
+            <SearchIcon size={18} strokeWidth={2} aria-hidden="true" />
+          </button>
         </div>
 
         <!-- Burger mobile -->
@@ -392,85 +367,17 @@
     box-shadow: none;
   }
 
-  /* Barre de recherche ALDO (champ blanc carré, bouton noir plein). */
-  .ald-search {
-    width: 100%;
-    max-width: 26rem;
-  }
-
-  .ald-search__label {
-    clip: rect(0 0 0 0);
-    border: 0;
-    height: 1px;
-    margin: -1px;
-    overflow: hidden;
-    padding: 0;
-    position: absolute;
-    white-space: nowrap;
-    width: 1px;
-  }
-
-  .ald-search__group {
-    display: flex;
-    position: relative;
-    width: 100%;
-  }
-
-  .ald-search__input {
-    background: var(--ald-white);
-    border: 1px solid var(--ald-border);
-    border-right: 0;
-    border-radius: var(--ald-radius);
-    border-bottom-right-radius: 0;
-    border-top-right-radius: 0;
-    color: var(--ald-text);
-    cursor: pointer;
-    flex: 1 1 auto;
-    font-family: inherit;
-    font-size: 0.875rem;
-    height: 2.5rem;
-    min-width: 0;
-    padding: 0 2.125rem 0 0.75rem;
-  }
-
-  .ald-search__input:hover,
-  .ald-search__input:focus-visible {
-    background: var(--ald-white);
-    border-color: var(--ald-ink);
-    color: var(--ald-text);
-    outline: 2px solid var(--ald-ink);
-    outline-offset: 1px;
-  }
-
-  .ald-search__input::placeholder {
-    color: var(--ald-text2);
-  }
-
-  .ald-search__kbd {
-    align-items: center;
-    border: 1px solid var(--ald-border);
-    border-radius: var(--ald-radius);
-    color: var(--ald-text2);
-    display: inline-flex;
-    font-size: 0.75rem;
-    height: 1.25rem;
-    justify-content: center;
-    position: absolute;
-    right: 3rem;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 1.25rem;
-  }
-
+  /* Recherche ALDO : bouton loupe noir carré compact (coins quasi carrés). */
   .ald-search__btn {
     align-items: center;
     background: var(--ald-ink);
     border: 1px solid var(--ald-ink);
-    border-radius: 0 var(--ald-radius) var(--ald-radius) 0;
+    border-radius: var(--ald-radius);
     color: var(--ald-white);
     cursor: pointer;
     display: inline-flex;
-    flex: 0 0 2.5rem;
+    flex: 0 0 auto;
+    width: 2.5rem;
     height: 2.5rem;
     justify-content: center;
     padding: 0;
