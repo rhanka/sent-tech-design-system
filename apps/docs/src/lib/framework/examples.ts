@@ -158,6 +158,8 @@ export type ComponentName =
   | "StateTimelineChart"
   | "StatusHistoryChart"
   | "WaffleChart"
+  | "RibbonChart"
+  | "AnomalySwimLaneChart"
   | "FunnelChart"
   | "WaterfallChart"
   | "TreemapChart"
