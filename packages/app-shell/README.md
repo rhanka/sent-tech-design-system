@@ -1,9 +1,12 @@
-# Prototype go/no-go — `<sentropic-app-shell>` (Web Component)
+# `@sentropic/app-shell` — `<sentropic-app-shell>` (Web Component)
 
-Prototype **jetable, hors CI** (`prototypes/` n'est pas dans les workspaces `packages/*`+`apps/*`).
-Valide la faisabilité d'un **app-shell unique** porté par le DS, consommé à l'identique par
-tous les sites (docs, dataviz, geo, sentropic, cv, nc, sent-tech.ca, graphify, annotation…),
-**stable au changement de thème** et **pixel-perfect par construction** (une seule implémentation).
+App-shell **unique** porté par le DS, consommé à l'identique par tous les sites (docs, dataviz,
+geo, sentropic, cv, nc, sent-tech.ca, graphify, annotation…), **stable au changement de thème**
+et **pixel-perfect par construction** (une seule implémentation).
+
+> **Statut : INCUBATION** (`"private": true`, **aucun script** `build`/`test`/`check` → sauté par
+> le `verify` partagé, donc zéro risque pour les publishes des autres packages ; non publié npm).
+> JS pur (pas de build). `demo/index.html` se sert en HTTP local pour les vérifs visuelles.
 
 ## Décision d'architecture (consensus 2× Opus 4.8)
 
