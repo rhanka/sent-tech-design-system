@@ -1091,6 +1091,26 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "EventFeedPanel",
+    slug: "event-feed-panel",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Flux d'événements datés et scrollable : items triés par date, pastille de sévérité, horodatage et message.",
+      en: "Scrollable dated event feed: items sorted by time, severity badge, timestamp and message."
+    }
+  },
+  {
+    name: "VectorFieldChart",
+    slug: "vector-field-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Champ de vecteurs : grille de flèches dont la longueur encode la magnitude et l'orientation la direction.",
+      en: "Vector field: grid of arrows whose length encodes magnitude and orientation encodes direction."
+    }
+  },
+  {
     name: "WaffleChart",
     slug: "waffle-chart",
     status: "documented",

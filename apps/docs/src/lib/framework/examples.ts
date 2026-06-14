@@ -157,6 +157,8 @@ export type ComponentName =
   | "SolidGaugeChart"
   | "StateTimelineChart"
   | "StatusHistoryChart"
+  | "EventFeedPanel"
+  | "VectorFieldChart"
   | "WaffleChart"
   | "RibbonChart"
   | "AnomalySwimLaneChart"
