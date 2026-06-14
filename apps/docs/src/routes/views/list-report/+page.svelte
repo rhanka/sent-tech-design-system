@@ -6,7 +6,7 @@
 
   const fr = $derived(locale.value === "fr");
 
-  // ── Données mock neutres (factures Odoo-like) ─────────────────────────────
+  // ── Données mock neutres (factures) ───────────────────────────────────────
 
   const NAV_ITEMS = [
     { label: () => (fr ? "Tableau de bord" : "Dashboard"), href: "#" },
@@ -190,11 +190,11 @@
         Patron de toutes les listes métier (factures, articles, tickets…). Header + navigation
         latérale + barre de recherche + barre de filtres (<code>FilterPill</code>) + table paginée
         triable + menu d'actions par ligne. Un seul <code>NodeSpec</code> → rendu identique en
-        Svelte, React et Vue. Débloque 20+ écrans liste Odoo par simple échange de colonnes/données.
+        Svelte, React et Vue. Débloque 20+ écrans liste de gestion par simple échange de colonnes/données.
       {:else}
         The pattern for every business list (invoices, items, tickets…). Header + side navigation +
         search + filter bar (<code>FilterPill</code>) + sortable paginated table + per-row action menu.
-        One <code>NodeSpec</code> → identical render in Svelte, React, and Vue. Unlocks 20+ Odoo list
+        One <code>NodeSpec</code> → identical render in Svelte, React, and Vue. Unlocks 20+ business list
         views by swapping columns/data.
       {/if}
     </p>

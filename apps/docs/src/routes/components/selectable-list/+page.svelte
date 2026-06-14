@@ -23,12 +23,12 @@
   const multipleDemo: NodeSpec[] = [
     {
       comp: "SelectableList",
-      props: { label: fr ? "Intégrations" : "Integrations", multiple: true, value: ["github", "slack"] },
+      props: { label: fr ? "Canaux" : "Channels", multiple: true, value: ["email", "chat"] },
       children: [
-        { comp: "SelectableRow", props: { value: "github" }, children: ["GitHub"] },
-        { comp: "SelectableRow", props: { value: "slack" }, children: ["Slack"] },
-        { comp: "SelectableRow", props: { value: "jira" }, children: ["Jira"] },
-        { comp: "SelectableRow", props: { value: "figma" }, children: ["Figma"] }
+        { comp: "SelectableRow", props: { value: "email" }, children: [fr ? "Courriel" : "Email"] },
+        { comp: "SelectableRow", props: { value: "chat" }, children: ["Chat"] },
+        { comp: "SelectableRow", props: { value: "tickets" }, children: ["Tickets"] },
+        { comp: "SelectableRow", props: { value: "calendar" }, children: [fr ? "Calendrier" : "Calendar"] }
       ]
     }
   ];

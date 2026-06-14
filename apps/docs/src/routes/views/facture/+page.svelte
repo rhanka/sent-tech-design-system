@@ -6,7 +6,7 @@
 
   const fr = $derived(locale.value === "fr");
 
-  // ── Données mock neutres (fiche facture Odoo-like) ────────────────────────
+  // ── Données mock neutres (fiche facture) ──────────────────────────────────
 
   const BREADCRUMB_ITEMS = $derived([
     { label: fr ? "Comptabilité" : "Accounting", href: "#" },
@@ -138,20 +138,20 @@
 
 <div class="docs-page">
   <section class="docs-hero">
-    <p class="docs-hero-kicker">{fr ? "Vue · Comptabilité (Odoo)" : "View · Accounting (Odoo)"}</p>
+    <p class="docs-hero-kicker">{fr ? "Vue · Comptabilité" : "View · Accounting"}</p>
     <div class="docs-hero-title">
       <h1>{fr ? "Facture client" : "Customer Invoice"}</h1>
       <Badge tone="success">{fr ? "Disponible" : "Available"}</Badge>
     </div>
     <p>
       {#if fr}
-        Déclinaison du patron page objet pour une fiche facture Odoo : <code>Breadcrumb</code> +
+        Déclinaison du patron page objet pour une fiche facture : <code>Breadcrumb</code> +
         en-tête (n° de facture + <code>Badge</code> de statut + <code>Button</code> d'actions) +
         <code>StructuredList</code> (client, dates, conditions) + <code>DataTable</code> des lignes
         + <code>StructuredList</code> des totaux (HT / TVA / TTC). Un seul <code>NodeSpec</code> →
         rendu identique en Svelte, React et Vue.
       {:else}
-        A declination of the object-page pattern for an Odoo invoice: <code>Breadcrumb</code> +
+        A declination of the object-page pattern for an invoice: <code>Breadcrumb</code> +
         header (invoice number + status <code>Badge</code> + action <code>Button</code>s) +
         <code>StructuredList</code> (customer, dates, terms) + <code>DataTable</code> of lines +
         a totals <code>StructuredList</code> (subtotal / VAT / total). One <code>NodeSpec</code> →

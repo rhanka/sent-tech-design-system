@@ -135,13 +135,13 @@
     </div>
     <p>
       {#if fr}
-        Signature Odoo : board en colonnes de cartes (pipeline CRM, tâches projet…). Chaque carte
+        Patron emblématique : board en colonnes de cartes (pipeline CRM, tâches projet…). Chaque carte
         combine <code>Card</code> + <code>Badge</code> de priorité + <code>ProgressBar</code>
         d'avancement + <code>Avatar</code> du responsable. Un seul <code>NodeSpec</code> → rendu
         identique en Svelte, React et Vue. Débloque les boards tâches, recrutement, OF… par échange
         de colonnes/cartes.
       {:else}
-        The signature Odoo view: columns of cards (CRM pipeline, project tasks…). Each card combines
+        The signature board view: columns of cards (CRM pipeline, project tasks…). Each card combines
         <code>Card</code> + priority <code>Badge</code> + progress <code>ProgressBar</code> + owner
         <code>Avatar</code>. One <code>NodeSpec</code> → identical render in Svelte, React, and Vue.
         Unlocks task, recruiting, and manufacturing boards by swapping columns/cards.

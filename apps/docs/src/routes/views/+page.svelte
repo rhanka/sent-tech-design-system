@@ -48,8 +48,8 @@
       slug: "facture",
       name: "Customer Invoice",
       nameFr: "Facture client",
-      domain: "Accounting (Odoo)",
-      domainFr: "Comptabilité (Odoo)",
+      domain: "Finance / Accounting",
+      domainFr: "Finance / Comptabilité",
       status: "available",
       description: "Breadcrumb + invoice header (number + status badge + actions) + structured fields + line-items table + a totals list : an object-page declination.",
       descriptionFr: "Fil d'Ariane + en-tête (n° + badge de statut + actions) + champs structurés + table des lignes + liste des totaux : une déclinaison de la page objet."
@@ -58,8 +58,8 @@
       slug: "pipeline-crm",
       name: "CRM Pipeline",
       nameFr: "Pipeline CRM",
-      domain: "CRM / Sales (Odoo)",
-      domainFr: "CRM / Ventes (Odoo)",
+      domain: "CRM / Sales",
+      domainFr: "CRM / Ventes",
       status: "available",
       description: "Columns per stage (New/Qualified/Proposal/Won) of opportunity cards (amount + avatar + probability bar) : a kanban declination.",
       descriptionFr: "Colonnes par étape (Nouveau/Qualifié/Proposition/Gagné) de cartes d'opportunités (montant + avatar + barre de probabilité) : une déclinaison du kanban."
@@ -68,8 +68,8 @@
       slug: "file-tickets",
       name: "Ticket Queue",
       nameFr: "File de tickets",
-      domain: "Helpdesk (Odoo)",
-      domainFr: "Helpdesk (Odoo)",
+      domain: "Support / Helpdesk",
+      domainFr: "Support / Helpdesk",
       status: "available",
       description: "Search + filter bar + a paginated tickets table (subject, priority, SLA, assignee, status) + an agents legend : a list-report declination.",
       descriptionFr: "Recherche + barre de filtres + table de tickets paginée (sujet, priorité, SLA, assigné, statut) + légende des agents : une déclinaison de la liste rapport."
@@ -81,8 +81,8 @@
       domain: "App Shell",
       domainFr: "App Shell",
       status: "available",
-      description: "Header + side nav + search + filter bar + paginated sortable table : the pattern of 20+ Odoo list views.",
-      descriptionFr: "Header + nav latérale + recherche + barre de filtres + table paginée triable : le patron de 20+ vues liste Odoo."
+      description: "Header + side nav + search + filter bar + paginated sortable table : the pattern of typical business list views.",
+      descriptionFr: "Header + nav latérale + recherche + barre de filtres + table paginée triable : le patron des vues liste de gestion."
     },
     {
       slug: "object-page",
@@ -101,8 +101,8 @@
       domain: "CRM / Sales",
       domainFr: "CRM / Ventes",
       status: "available",
-      description: "Columns of cards with badge, avatar and progress : the signature Odoo CRM pipeline view.",
-      descriptionFr: "Colonnes de cartes avec badge, avatar et progression : la vue pipeline CRM Odoo emblématique."
+      description: "Columns of cards with badge, avatar and progress : the signature CRM pipeline view.",
+      descriptionFr: "Colonnes de cartes avec badge, avatar et progression : la vue pipeline CRM emblématique."
     },
     {
       slug: "data-explorer",
