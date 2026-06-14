@@ -189,6 +189,7 @@
     ArcDiagramChart,
     PackedBubblesChart,
     RangeSlider,
+    Modal,
     Drawer
   } from "@sentropic/design-system-svelte";
   import Self from "./SvelteNode.svelte";
@@ -452,6 +453,7 @@
     ArcDiagramChart,
     PackedBubblesChart,
     RangeSlider,
+    Modal,
     Drawer
   } as unknown as Record<ComponentName, Component<Record<string, unknown>>>;
 

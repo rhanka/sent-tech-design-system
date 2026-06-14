@@ -148,17 +148,17 @@
         A declination of the list-report pattern for the helpdesk: a <code>Search</code> bar + a
         filter bar (<code>FilterPill</code>) + a paginated <code>DataTable</code> of tickets
         (subject, priority, SLA, assignee, status) + an agents legend (<code>AvatarGroup</code>).
-        One <code>NodeSpec</code> → identical render in Svelte, React, and Vue.
+        One <code>NodeSpec</code> → identical render in Svelte, React, Vue, and Angular.
       {/if}
     </p>
   </section>
 
   <section class="docs-section">
-    <h2>{fr ? "Rendu tri-framework" : "Tri-framework render"}</h2>
+    <h2>{fr ? "Rendu multi-framework" : "Multi-framework render"}</h2>
     <p class="section-desc">
       {fr
-        ? "Utilisez les onglets pour basculer entre Svelte, React et Vue. Le rendu et le code copié reflètent le framework sélectionné."
-        : "Use the tabs to switch between Svelte, React, and Vue. The render and copied code reflect the selected framework."}
+        ? "Utilisez les onglets pour basculer entre Svelte, React, Vue et Angular. Le rendu et le code copié reflètent le framework sélectionné."
+        : "Use the tabs to switch between Svelte, React, Vue, and Angular. The render and copied code reflect the selected framework."}
     </p>
     <TabbedExample
       nodes={demoNodes}
@@ -195,7 +195,7 @@
     font-size: 0.95rem;
   }
 
-  /* ── Layout File de tickets (global → propagé dans les îles React/Vue) ──── */
+  /* ── Layout File de tickets (global → propagé dans les îles React/Vue/Angular) ──── */
   :global(.ft-shell) {
     display: flex;
     flex-direction: column;

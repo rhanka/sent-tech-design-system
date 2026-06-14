@@ -149,23 +149,23 @@
         en-tête (n° de facture + <code>Badge</code> de statut + <code>Button</code> d'actions) +
         <code>StructuredList</code> (client, dates, conditions) + <code>DataTable</code> des lignes
         + <code>StructuredList</code> des totaux (HT / TVA / TTC). Un seul <code>NodeSpec</code> →
-        rendu identique en Svelte, React et Vue.
+        rendu identique en Svelte, React, Vue et Angular.
       {:else}
         A declination of the object-page pattern for an invoice: <code>Breadcrumb</code> +
         header (invoice number + status <code>Badge</code> + action <code>Button</code>s) +
         <code>StructuredList</code> (customer, dates, terms) + <code>DataTable</code> of lines +
         a totals <code>StructuredList</code> (subtotal / VAT / total). One <code>NodeSpec</code> →
-        identical render in Svelte, React, and Vue.
+        identical render in Svelte, React, Vue, and Angular.
       {/if}
     </p>
   </section>
 
   <section class="docs-section">
-    <h2>{fr ? "Rendu tri-framework" : "Tri-framework render"}</h2>
+    <h2>{fr ? "Rendu multi-framework" : "Multi-framework render"}</h2>
     <p class="section-desc">
       {fr
-        ? "Utilisez les onglets pour basculer entre Svelte, React et Vue. Le rendu et le code copié reflètent le framework sélectionné."
-        : "Use the tabs to switch between Svelte, React, and Vue. The render and copied code reflect the selected framework."}
+        ? "Utilisez les onglets pour basculer entre Svelte, React, Vue et Angular. Le rendu et le code copié reflètent le framework sélectionné."
+        : "Use the tabs to switch between Svelte, React, Vue, and Angular. The render and copied code reflect the selected framework."}
     </p>
     <TabbedExample
       nodes={demoNodes}
@@ -202,7 +202,7 @@
     font-size: 0.95rem;
   }
 
-  /* ── Layout Facture (global → propagé dans les îles React/Vue) ──────────── */
+  /* ── Layout Facture (global → propagé dans les îles React/Vue/Angular) ──────────── */
   :global(.fc-shell) {
     display: flex;
     flex-direction: column;

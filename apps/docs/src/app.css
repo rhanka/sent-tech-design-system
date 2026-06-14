@@ -908,7 +908,7 @@ select {
 }
 
 /* La typographie de PROSE docs ne doit pas bleeder dans les APERÇUS de composants
-   (.tex / .docs-example) : en React/Vue (CSS non scopé) ces règles 0,1,1 écrasent
+   (.tex / .docs-example) : en React/Vue/Angular (CSS non scopé) ces règles 0,1,1 écrasent
    sinon les classes st-* (0,1,0) du composant -> divergence vs Svelte (scope hash
    gagne) = flags DIMS. :where() ajoute 0 spécificité : on garde 0,1,1 sur la prose
    mais on exclut le contenu des aperçus, laissant les styles du composant s'appliquer. */

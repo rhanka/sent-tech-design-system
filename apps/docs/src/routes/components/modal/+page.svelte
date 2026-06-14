@@ -42,7 +42,7 @@
 
   <section class="docs-section">
     <h2>{fr("Exemple interactif", "Interactive example")}</h2>
-    <p>{fr("Le bouton ouvre un dialogue avec titre, description et corps ; une seconde variante ajoute un pied d'actions aligné à droite. Escape ou le bouton de fermeture le referment. Choisissez l'onglet Svelte, React ou Vue : la démo est la vraie implémentation interactive du framework sélectionné.", "The button opens a dialog with title, description, and body; a second variant adds a right-aligned action footer. Escape or the close button dismiss it. Pick the Svelte, React, or Vue tab: the demo is the selected framework's real interactive implementation.")}</p>
+    <p>{fr("Le bouton ouvre un dialogue avec titre, description et corps ; une seconde variante ajoute un pied d'actions aligné à droite. Escape ou le bouton de fermeture le referment. Choisissez l'onglet Svelte, React, Vue ou Angular : la démo est la vraie implémentation interactive du framework sélectionné.", "The button opens a dialog with title, description, and body; a second variant adds a right-aligned action footer. Escape or the close button dismiss it. Pick the Svelte, React, Vue, or Angular tab: the demo is the selected framework's real interactive implementation.")}</p>
     <TabbedLiveExample demo="modal" title={fr("Démo interactive", "Interactive demo")} />
   </section>
 

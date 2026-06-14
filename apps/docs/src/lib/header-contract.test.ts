@@ -5,6 +5,7 @@ import { describe, expect, it } from "vitest";
 const docsRoot = resolve(__dirname, "../..");
 const layoutSource = readFileSync(resolve(docsRoot, "src/routes/+layout.svelte"), "utf8");
 const navigationSource = readFileSync(resolve(docsRoot, "src/lib/docs-navigation.ts"), "utf8");
+const frameworkSource = readFileSync(resolve(docsRoot, "src/lib/framework.svelte.ts"), "utf8");
 const appCss = readFileSync(resolve(docsRoot, "src/app.css"), "utf8");
 const appHtml = readFileSync(resolve(docsRoot, "src/app.html"), "utf8");
 const carbonChromeSource = readFileSync(
@@ -64,6 +65,11 @@ describe("docs header alignment contract", () => {
     expect(layoutSource).not.toContain("sent-tech.ca");
     expect(navigationSource).not.toContain("sent-tech.ca");
     expect(navigationSource).toContain('label: "GitHub"');
+  });
+
+  it("offers Angular in the shared framework selector and initial URL bootstrap", () => {
+    expect(frameworkSource).toContain('{ id: "angular", label: "Angular" }');
+    expect(appHtml).toContain('fw === "angular"');
   });
 
   it("moves the version + GitHub link to the bottom of the left sidebar", () => {

@@ -74,7 +74,7 @@
     </p>
     <p>
       {fr
-        ? "dataviz.sent-tech.ca obtient un chrome byte-identique en ne fournissant que product=\"dataviz\", sa nav, le titre et l'état/callbacks des contrôles. Le markup, les classes (st-appChrome*) et les tokens sont identiques entre Svelte, React et Vue."
+        ? "dataviz.sent-tech.ca obtient un chrome byte-identique en ne fournissant que product=\"dataviz\", sa nav, le titre et l'état/callbacks des contrôles. Le markup, les classes (st-appChrome*) et les tokens sont identiques entre Svelte, React, Vue et Angular."
         : "dataviz.sent-tech.ca gets a byte-identical chrome by supplying only product=\"dataviz\", its nav, the title and the controls' state/callbacks. The markup, classes (st-appChrome*) and tokens are identical across Svelte, React and Vue."}
     </p>
   </section>

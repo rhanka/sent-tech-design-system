@@ -190,22 +190,22 @@
         Patron de toutes les listes métier (factures, articles, tickets…). Header + navigation
         latérale + barre de recherche + barre de filtres (<code>FilterPill</code>) + table paginée
         triable + menu d'actions par ligne. Un seul <code>NodeSpec</code> → rendu identique en
-        Svelte, React et Vue. Débloque 20+ écrans liste de gestion par simple échange de colonnes/données.
+        Svelte, React, Vue et Angular. Débloque 20+ écrans liste de gestion par simple échange de colonnes/données.
       {:else}
         The pattern for every business list (invoices, items, tickets…). Header + side navigation +
         search + filter bar (<code>FilterPill</code>) + sortable paginated table + per-row action menu.
-        One <code>NodeSpec</code> → identical render in Svelte, React, and Vue. Unlocks 20+ business list
+        One <code>NodeSpec</code> → identical render in Svelte, React, Vue, and Angular. Unlocks 20+ business list
         views by swapping columns/data.
       {/if}
     </p>
   </section>
 
   <section class="docs-section">
-    <h2>{fr ? "Rendu tri-framework" : "Tri-framework render"}</h2>
+    <h2>{fr ? "Rendu multi-framework" : "Multi-framework render"}</h2>
     <p class="section-desc">
       {fr
-        ? "Utilisez les onglets pour basculer entre Svelte, React et Vue. Le rendu et le code copié reflètent le framework sélectionné."
-        : "Use the tabs to switch between Svelte, React, and Vue. The render and copied code reflect the selected framework."}
+        ? "Utilisez les onglets pour basculer entre Svelte, React, Vue et Angular. Le rendu et le code copié reflètent le framework sélectionné."
+        : "Use the tabs to switch between Svelte, React, Vue, and Angular. The render and copied code reflect the selected framework."}
     </p>
     <TabbedExample
       nodes={demoNodes}
@@ -242,7 +242,7 @@
     font-size: 0.95rem;
   }
 
-  /* ── Layout List Report (global → propagé dans les îles React/Vue) ──────── */
+  /* ── Layout List Report (global → propagé dans les îles React/Vue/Angular) ──────── */
   :global(.lr-shell) {
     display: flex;
     flex-direction: column;

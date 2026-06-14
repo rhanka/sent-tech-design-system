@@ -1,8 +1,8 @@
 // Registre déclaratif des exemples « live » multi-frameworks.
 //
 // Un exemple est décrit une seule fois sous forme d'arbre de nœuds neutres
-// (NodeSpec). Trois moteurs de rendu (Svelte inline, React via createRoot, Vue
-// via createApp) consomment ce même arbre, garantissant une parité stricte
+// (NodeSpec). Les moteurs de rendu (Svelte inline, React/Vue/Angular via îles)
+// consomment ce même arbre, garantissant une parité stricte
 // entre les frameworks sans dupliquer la structure.
 //
 // - `comp` référence un composant du design system (Button, Input, …) résolu
@@ -13,7 +13,7 @@
 // Les snippets de code par framework sont stockés tels quels : ils servent de
 // documentation « copier-coller » et n'ont pas besoin d'être générés.
 
-export type FrameworkId = "svelte" | "react" | "vue";
+export type FrameworkId = "svelte" | "react" | "vue" | "angular";
 
 /** Nom d'un composant du design system, commun aux trois packages. */
 export type ComponentName =
@@ -196,6 +196,7 @@ export type ComponentName =
   | "ArcDiagramChart"
   | "PackedBubblesChart"
   | "RangeSlider"
+  | "Modal"
   | "Drawer"
   | "ErrorSummary";
 
@@ -226,10 +227,10 @@ export interface FrameworkExample {
   id: string;
   /** Composant documentaire associé (slug de route). */
   slug: string;
-  /** Arbre de rendu partagé par les trois frameworks. */
+  /** Arbre de rendu partagé par les frameworks. */
   nodes: NodeSpec[];
-  /** Snippets d'usage, un par framework. */
-  code: Record<FrameworkId, string>;
+  /** Snippets d'usage manuscrits. Angular peut etre genere depuis nodes. */
+  code: Record<Exclude<FrameworkId, "angular">, string> & Partial<Record<"angular", string>>;
 }
 
 const wrap = (children: NodeSpec[]): NodeSpec => ({

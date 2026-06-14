@@ -294,7 +294,7 @@
   }
 
   /* Les démos sont rendues dans des composants enfants (SvelteNode) ou des îles
-     React/Vue : leurs styles doivent être globaux pour traverser la frontière. */
+     React/Vue/Angular : leurs styles doivent être globaux pour traverser la frontière. */
   :global(.inline-demo) {
     line-height: 2.2;
     color: var(--st-semantic-text-primary);

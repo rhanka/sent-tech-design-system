@@ -10,7 +10,7 @@
 
   // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
   // (toute la section bascule en onglets svelte/react/vue, comme password-input).
-  // État statique : la valeur est figée pour la démonstration tri-framework.
+  // État statique : la valeur est figée pour la démonstration multi-framework.
   const statesDemo: NodeSpec[] = $derived([
     {
       el: "div",
@@ -117,8 +117,8 @@
     <TabbedExample nodes={bindingDemo} title={fr("Saisie liée (bind)", "Bound value (bind)")} />
     <p class="docs-demo-note">
       {fr(
-        "La valeur est bindable (value en Svelte/React, modelValue en Vue) ; figée ici pour la démonstration tri-framework.",
-        "The value is bindable (value in Svelte/React, modelValue in Vue); frozen here for the tri-framework demo."
+        "La valeur est bindable (value en Svelte/React, modelValue en Vue) ; figée ici pour la démonstration multi-framework.",
+        "The value is bindable (value in Svelte/React, modelValue in Vue); frozen here for the multi-framework demo."
       )}
     </p>
   </section>

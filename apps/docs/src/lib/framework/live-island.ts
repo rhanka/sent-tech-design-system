@@ -99,3 +99,53 @@ export async function mountVueLiveDemo(
     }
   };
 }
+
+export async function mountAngularLiveDemo(
+  container: HTMLElement,
+  key: LiveDemoKey,
+  fr: boolean
+): Promise<IslandHandle> {
+  const { mountAngularIsland } = await import("./angular-island.js");
+  let current: IslandHandle | null = null;
+  let disposed = false;
+
+  if (key === "modal") {
+    const state = { confirmOpen: false, footerOpen: false };
+    const render = async () => {
+      current?.unmount();
+      current = null;
+      if (disposed) return;
+      const { createModalDemoNodes } = await import("./live-demos/angular/ModalDemo.js");
+      current = await mountAngularIsland(container, createModalDemoNodes(fr, state, setState));
+    };
+    const setState = (next: Partial<typeof state>) => {
+      Object.assign(state, next);
+      void render();
+    };
+
+    await render();
+  } else {
+    const state = { rightOpen: false, leftOpen: false, footerOpen: false };
+    const render = async () => {
+      current?.unmount();
+      current = null;
+      if (disposed) return;
+      const { createDrawerDemoNodes } = await import("./live-demos/angular/DrawerDemo.js");
+      current = await mountAngularIsland(container, createDrawerDemoNodes(fr, state, setState));
+    };
+    const setState = (next: Partial<typeof state>) => {
+      Object.assign(state, next);
+      void render();
+    };
+
+    await render();
+  }
+
+  return {
+    unmount() {
+      disposed = true;
+      current?.unmount();
+      current = null;
+    }
+  };
+}

@@ -227,22 +227,22 @@
         <code>ContentSwitcher</code> (tableau / graphique) + tableau croisé (<code>DataTable</code>)
         et <code>BarChart</code> côte à côte + volet de configuration (<code>Drawer</code>) avec
         <code>Select</code> de dimension, mesure et agrégation. Un seul <code>NodeSpec</code> →
-        rendu identique en Svelte, React et Vue.
+        rendu identique en Svelte, React, Vue et Angular.
       {:else}
         Pivot BI showcase: search + filter bar + <code>ContentSwitcher</code> toggle
         (table / chart) + a pivot <code>DataTable</code> and a <code>BarChart</code> side by side +
         a configuration <code>Drawer</code> with dimension, measure and aggregation
-        <code>Select</code>s. One <code>NodeSpec</code> → identical render in Svelte, React, and Vue.
+        <code>Select</code>s. One <code>NodeSpec</code> → identical render in Svelte, React, Vue, and Angular.
       {/if}
     </p>
   </section>
 
   <section class="docs-section">
-    <h2>{fr ? "Rendu tri-framework" : "Tri-framework render"}</h2>
+    <h2>{fr ? "Rendu multi-framework" : "Multi-framework render"}</h2>
     <p class="section-desc">
       {fr
-        ? "Utilisez les onglets pour basculer entre Svelte, React et Vue. Le rendu et le code copié reflètent le framework sélectionné."
-        : "Use the tabs to switch between Svelte, React, and Vue. The render and copied code reflect the selected framework."}
+        ? "Utilisez les onglets pour basculer entre Svelte, React, Vue et Angular. Le rendu et le code copié reflètent le framework sélectionné."
+        : "Use the tabs to switch between Svelte, React, Vue, and Angular. The render and copied code reflect the selected framework."}
     </p>
     <TabbedExample
       nodes={demoNodes}
@@ -279,7 +279,7 @@
     font-size: 0.95rem;
   }
 
-  /* ── Layout Data Explorer (global → propagé dans les îles React/Vue) ────── */
+  /* ── Layout Data Explorer (global → propagé dans les îles React/Vue/Angular) ────── */
   :global(.de-shell) {
     display: flex;
     flex-direction: column;

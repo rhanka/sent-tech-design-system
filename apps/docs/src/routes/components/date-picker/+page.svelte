@@ -56,7 +56,7 @@
   // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
   // (toute la section bascule en onglets svelte/react/vue, comme les autres
   // pages composant). État statique : valeurs ISO figées pour la démonstration
-  // tri-framework (les islands coercent string -> Date).
+  // multi-framework (les islands coercent string -> Date).
   const singleDemo: NodeSpec[] = [
     {
       comp: "DatePicker",

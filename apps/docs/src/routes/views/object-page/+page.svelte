@@ -172,7 +172,7 @@
         Patron de toutes les fiches (client, produit, facture…). Fil d'Ariane + en-tête d'entité
         (titre + <code>Badge</code> de statut + actions) + onglets + rangée de <code>KpiCard</code>
         + liste structurée des champs + table de lignes liées. Un seul <code>NodeSpec</code> →
-        rendu identique en Svelte, React et Vue.
+        rendu identique en Svelte, React, Vue et Angular.
       {:else}
         The pattern for every detail view (customer, product, invoice…). Breadcrumb + entity header
         (title + status <code>Badge</code> + actions) + tabs + <code>KpiCard</code> row + structured
@@ -183,11 +183,11 @@
   </section>
 
   <section class="docs-section">
-    <h2>{fr ? "Rendu tri-framework" : "Tri-framework render"}</h2>
+    <h2>{fr ? "Rendu multi-framework" : "Multi-framework render"}</h2>
     <p class="section-desc">
       {fr
-        ? "Utilisez les onglets pour basculer entre Svelte, React et Vue. Le rendu et le code copié reflètent le framework sélectionné."
-        : "Use the tabs to switch between Svelte, React, and Vue. The render and copied code reflect the selected framework."}
+        ? "Utilisez les onglets pour basculer entre Svelte, React, Vue et Angular. Le rendu et le code copié reflètent le framework sélectionné."
+        : "Use the tabs to switch between Svelte, React, Vue, and Angular. The render and copied code reflect the selected framework."}
     </p>
     <TabbedExample
       nodes={demoNodes}
@@ -224,7 +224,7 @@
     font-size: 0.95rem;
   }
 
-  /* ── Layout Object Page (global → propagé dans les îles React/Vue) ──────── */
+  /* ── Layout Object Page (global → propagé dans les îles React/Vue/Angular) ──────── */
   :global(.op-shell) {
     display: flex;
     flex-direction: column;
