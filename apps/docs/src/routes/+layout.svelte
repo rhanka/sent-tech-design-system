@@ -71,6 +71,9 @@
   import ChromeCanada from "$lib/chrome/ChromeCanada.svelte";
   import ChromeQuebec from "$lib/chrome/ChromeQuebec.svelte";
   import ChromeLightspeed from "$lib/chrome/ChromeLightspeed.svelte";
+  import ChromeDesjardins from "$lib/chrome/ChromeDesjardins.svelte";
+  import ChromeSsense from "$lib/chrome/ChromeSsense.svelte";
+  import ChromeUbisoft from "$lib/chrome/ChromeUbisoft.svelte";
   import DocsSearch from "$lib/chat/DocsSearch.svelte";
   import { Search as SearchIcon } from "@lucide/svelte";
 
@@ -349,7 +352,7 @@
   // Les chromes Carbon/DSFR/Airbus encapsulent leur propre header + sidebar.
   // Le chrome sent-tech utilise le Header du composant DS + la sidebar existante.
   const useCustomChrome = $derived(
-    browser && (activeThemeId === "carbon" || activeThemeId === "dsfr" || activeThemeId === "airbus" || activeThemeId === "canada" || activeThemeId === "quebec" || activeThemeId === "lightspeed")
+    browser && (activeThemeId === "carbon" || activeThemeId === "dsfr" || activeThemeId === "airbus" || activeThemeId === "canada" || activeThemeId === "quebec" || activeThemeId === "lightspeed" || activeThemeId === "desjardins" || activeThemeId === "ssense" || activeThemeId === "ubisoft")
   );
 </script>
 
@@ -795,6 +798,66 @@
         {@render pageContent()}
       {/snippet}
     </ChromeLightspeed>
+  </div>
+
+{:else if useCustomChrome && activeThemeId === "desjardins"}
+  <div data-st-theme={activeThemeId}>
+    <ChromeDesjardins
+      activeThemeId={activeThemeId}
+      isThemeOpen={isThemeOpen}
+      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onSearchOpen={openSearch}
+      themeSwitcher={themeSelector}
+      frameworkSwitcher={frameworkSelector}
+      localeSwitcher={langSelector}
+      compareButton={sharedCompareButton}
+      mobileMenuOpen={isMobileMenuOpen}
+      onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
+    >
+      {#snippet children()}
+        {@render pageContent()}
+      {/snippet}
+    </ChromeDesjardins>
+  </div>
+
+{:else if useCustomChrome && activeThemeId === "ssense"}
+  <div data-st-theme={activeThemeId}>
+    <ChromeSsense
+      activeThemeId={activeThemeId}
+      isThemeOpen={isThemeOpen}
+      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onSearchOpen={openSearch}
+      themeSwitcher={themeSelector}
+      frameworkSwitcher={frameworkSelector}
+      localeSwitcher={langSelector}
+      compareButton={sharedCompareButton}
+      mobileMenuOpen={isMobileMenuOpen}
+      onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
+    >
+      {#snippet children()}
+        {@render pageContent()}
+      {/snippet}
+    </ChromeSsense>
+  </div>
+
+{:else if useCustomChrome && activeThemeId === "ubisoft"}
+  <div data-st-theme={activeThemeId}>
+    <ChromeUbisoft
+      activeThemeId={activeThemeId}
+      isThemeOpen={isThemeOpen}
+      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onSearchOpen={openSearch}
+      themeSwitcher={themeSelector}
+      frameworkSwitcher={frameworkSelector}
+      localeSwitcher={langSelector}
+      compareButton={sharedCompareButton}
+      mobileMenuOpen={isMobileMenuOpen}
+      onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
+    >
+      {#snippet children()}
+        {@render pageContent()}
+      {/snippet}
+    </ChromeUbisoft>
   </div>
 
 {:else}
