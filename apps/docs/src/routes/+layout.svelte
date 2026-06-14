@@ -395,15 +395,14 @@
       placeholder: locale.value === "fr" ? "Rechercher…" : "Search…",
       onSearch: () => openSearch(),
     },
-    frameworkSwitcher: showFrameworkSwitcher
-      ? {
-          enabled: true,
-          current: framework.value,
-          available: FRAMEWORKS.map((f) => ({ id: f.id, label: f.label })),
-          mode: "callback",
-          onChange: (id) => (framework.value = id as typeof framework.value),
-        }
-      : undefined,
+    frameworkSwitcher: {
+      // ISO réf : le header de référence affiche le switcher framework INCONDITIONNELLEMENT.
+      enabled: true,
+      current: framework.value,
+      available: FRAMEWORKS.map((f) => ({ id: f.id, label: f.label })),
+      mode: "callback",
+      onChange: (id) => (framework.value = id as typeof framework.value),
+    },
     theming: {
       themes: visibleThemes.map((t) => ({ id: t.id, label: t.label })),
       theme: activeThemeId,
