@@ -8,6 +8,7 @@ import {
   DOCS_VERSION,
   buildFoundationNav,
   buildComponentNavGroups,
+  buildViewsNav,
   buildTopNav,
   resolveBreadcrumb
 } from "./docs-navigation";
@@ -34,59 +35,81 @@ describe("docs navigation model", () => {
     expect(COMPONENTS.every((component) => component.status === "documented")).toBe(true);
   });
 
-  it("exposes the high-level documentation tracks used by the top nav", () => {
+  it("reduces the top nav to a single aligned first level (Documentation/Composants/Vues)", () => {
     expect(DOCS_VERSION).toMatch(/^v\d+\.\d+\.\d+$/);
     expect(DOCS_TOP_NAV.map((item) => item.label)).toEqual([
-      "Fondations",
+      "Documentation",
       "Composants",
-      "Vues",
-      "Aperçu",
-      "Tokens",
-      "Thèmes",
-      "Contrats"
+      "Vues"
     ]);
+    expect(DOCS_TOP_NAV.map((item) => item.href)).toEqual(["/", "/#components", "/views"]);
   });
 
   it("localizes top and side navigation labels", () => {
     expect(buildTopNav("en").map((item) => item.label)).toEqual([
-      "Foundations",
+      "Documentation",
       "Components",
-      "Views",
-      "Preview",
-      "Tokens",
-      "Themes",
-      "Contracts"
+      "Views"
     ]);
 
     expect(buildFoundationNav("fr").map((item) => item.label)).toEqual([
       "Vue d'ensemble",
       "Fondations",
       "Tokens",
-      "Thèmes"
+      "Thèmes",
+      "Contrats",
+      "Aperçu multi-framework"
     ]);
     expect(buildFoundationNav("en").map((item) => item.label)).toEqual([
       "Overview",
       "Foundations",
       "Tokens",
-      "Themes"
+      "Themes",
+      "Contracts",
+      "Multi-framework preview"
     ]);
   });
 
-  it("keeps the vertical foundation menu focused on page sections", () => {
+  it("keeps previously top-level entries reachable under the Documentation track", () => {
     expect(buildFoundationNav("fr").map((item) => item.href)).toEqual([
       "/",
       "/#foundations",
       "/#tokens",
-      "/#themes"
+      "/#themes",
+      "/#contracts",
+      "/preview"
     ]);
-    expect(buildFoundationNav("fr").some((item) => item.href === "/preview")).toBe(false);
-    expect(buildFoundationNav("fr").some((item) => item.href === "/#contracts")).toBe(false);
+    // Contrats + Aperçu, jadis top-level, sont désormais sous Documentation —
+    // aucun lien orphelin après la réduction du premier niveau à 3 pistes.
+    expect(buildFoundationNav("fr").some((item) => item.href === "/preview")).toBe(true);
+    expect(buildFoundationNav("fr").some((item) => item.href === "/#contracts")).toBe(true);
     expect(DOCS_FOUNDATION_NAV.map((item) => item.label)).toEqual([
       "Vue d'ensemble",
       "Fondations",
       "Tokens",
-      "Thèmes"
+      "Thèmes",
+      "Contrats",
+      "Aperçu multi-framework"
     ]);
+  });
+
+  it("groups the views gallery by business domain, free of product citations", () => {
+    const groups = buildViewsNav("fr");
+    expect(groups.map((group) => group.label)).toEqual([
+      "CRM & Ventes",
+      "ERP & Gestion",
+      "Support",
+      "Dashboards & BI",
+      "Fondations d'application"
+    ]);
+
+    const items = groups.flatMap((group) => group.items);
+    expect(items.length).toBeGreaterThan(0);
+    expect(items.every((item) => item.href === `/views/${item.slug}`)).toBe(true);
+
+    // Aucune marque/produit dans les libellés de vues (fr + en).
+    const haystack = JSON.stringify(buildViewsNav("fr")) + JSON.stringify(buildViewsNav("en"));
+    expect(/odoo|jira|salesforce|hubspot/i.test(haystack)).toBe(false);
   });
 
   it("drops the dedicated React surface in favour of the framework switcher", () => {

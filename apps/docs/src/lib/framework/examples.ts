@@ -8277,12 +8277,12 @@ const selected = ref(true);
         },
         {
           comp: "SelectableList",
-          props: { label: "Intégrations", multiple: true, value: ["github", "slack"] },
+          props: { label: "Canaux", multiple: true, value: ["email", "chat"] },
           children: [
-            { comp: "SelectableRow", props: { value: "github" }, children: ["GitHub"] },
-            { comp: "SelectableRow", props: { value: "slack" }, children: ["Slack"] },
-            { comp: "SelectableRow", props: { value: "jira" }, children: ["Jira"] },
-            { comp: "SelectableRow", props: { value: "figma" }, children: ["Figma"] }
+            { comp: "SelectableRow", props: { value: "email" }, children: ["Courriel"] },
+            { comp: "SelectableRow", props: { value: "chat" }, children: ["Chat"] },
+            { comp: "SelectableRow", props: { value: "tickets" }, children: ["Tickets"] },
+            { comp: "SelectableRow", props: { value: "calendar" }, children: ["Calendrier"] }
           ]
         }
       ])

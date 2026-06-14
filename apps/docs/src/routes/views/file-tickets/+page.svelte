@@ -132,7 +132,7 @@
 
 <div class="docs-page">
   <section class="docs-hero">
-    <p class="docs-hero-kicker">{fr ? "Vue · Helpdesk (Odoo)" : "View · Helpdesk (Odoo)"}</p>
+    <p class="docs-hero-kicker">{fr ? "Vue · Helpdesk" : "View · Helpdesk"}</p>
     <div class="docs-hero-title">
       <h1>{fr ? "File de tickets" : "Ticket Queue"}</h1>
       <Badge tone="success">{fr ? "Disponible" : "Available"}</Badge>
