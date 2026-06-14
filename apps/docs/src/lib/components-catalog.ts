@@ -1121,6 +1121,26 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "FlamegraphChart",
+    slug: "flamegraph-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Pile d'appels « icicle » empilée : largeur ∝ valeur, hiérarchie récursive posée niveau par niveau.",
+      en: "Stacked icicle call stack: width ∝ value, recursive hierarchy laid out level by level."
+    }
+  },
+  {
+    name: "TraceWaterfallChart",
+    slug: "trace-waterfall-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Trace de spans distribués : barres start → durée sur l'axe temps, ordonnées et indentées par hiérarchie.",
+      en: "Distributed span trace: start → duration bars on the time axis, ordered and indented by hierarchy."
+    }
+  },
+  {
     name: "FunnelChart",
     slug: "funnel-chart",
     status: "documented",

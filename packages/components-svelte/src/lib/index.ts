@@ -108,6 +108,8 @@ export { default as StatusHistoryChart } from "./StatusHistoryChart.svelte";
 export { default as WaffleChart } from "./WaffleChart.svelte";
 export { default as RibbonChart } from "./RibbonChart.svelte";
 export { default as AnomalySwimLaneChart } from "./AnomalySwimLaneChart.svelte";
+export { default as FlamegraphChart } from "./FlamegraphChart.svelte";
+export { default as TraceWaterfallChart } from "./TraceWaterfallChart.svelte";
 export { default as GeoMap } from "./GeoMap.svelte";
 export { default as Header } from "./Header.svelte";
 export { default as HeatmapChart } from "./HeatmapChart.svelte";
@@ -274,6 +276,8 @@ export type {
   AnomalySwimLaneBucket,
   AnomalySwimLaneSeries
 } from "./AnomalySwimLaneChart.svelte";
+export type { FlamegraphNode } from "./FlamegraphChart.svelte";
+export type { TraceSpan } from "./TraceWaterfallChart.svelte";
 export type { FunnelChartTone, FunnelChartDatum } from "./FunnelChart.svelte";
 export type { ViolinChartDatum, ViolinChartTone } from "./ViolinChart.svelte";
 export type { WaterfallType, WaterfallChartDatum } from "./WaterfallChart.svelte";

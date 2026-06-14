@@ -276,6 +276,10 @@ export type {
   AnomalySwimLaneBucket,
   AnomalySwimLaneSeries,
 } from "./AnomalySwimLaneChart.js";
+export { FlamegraphChart } from "./FlamegraphChart.js";
+export type { FlamegraphChartProps, FlamegraphNode } from "./FlamegraphChart.js";
+export { TraceWaterfallChart } from "./TraceWaterfallChart.js";
+export type { TraceWaterfallChartProps, TraceSpan } from "./TraceWaterfallChart.js";
 export { GeoMap } from "./GeoMap.js";
 export type {
   GeoMapProps,
