@@ -5,7 +5,8 @@
   // (--st-component-control-*) → pixel-cohérent avec le header de référence, et les
   // menus sont ceux du DS (fonctionnels). Piloté par `siteConfig`.
   import { Header, Button, IconButton, MenuPopover, Menu } from "@sentropic/design-system-svelte";
-  import { Boxes, ChevronDown, Globe, Moon, Palette, Search as SearchIcon, Sun, User } from "@lucide/svelte";
+  import { Boxes, ChevronDown, Globe, Moon, Palette, Search as SearchIcon, Sun } from "@lucide/svelte";
+  import IdentityButton from "./IdentityButton.svelte";
   import type { SiteConfig } from "../site-config";
 
   let { config }: { config: SiteConfig } = $props();
@@ -108,15 +109,15 @@
     {/if}
 
     {#if config.identity}
-      <!-- ISO réf : icône user (IconButton DS). À terme = composant DS IdentityButton (cf. proposition). -->
-      <IconButton
-        size="sm"
-        variant="ghost"
-        aria-label={config.identity.state === "authenticated" ? (config.identity.label ?? "Compte") : (config.identity.label ?? "Se connecter")}
-        onclick={() => config.identity?.state === "authenticated" ? undefined : config.identity?.onSignIn?.()}
-      >
-        <User size={16} strokeWidth={2.1} aria-hidden="true" />
-      </IconButton>
+      <IdentityButton
+        mode="icon"
+        state={config.identity.state}
+        user={config.identity.user ?? null}
+        signInLabel={config.identity.label ?? "Se connecter"}
+        onSignIn={() => config.identity?.onSignIn?.()}
+        onSignOut={() => config.identity?.onSignOut?.()}
+        menu={config.identity.menu ?? []}
+      />
     {/if}
   </div>
 {/snippet}
