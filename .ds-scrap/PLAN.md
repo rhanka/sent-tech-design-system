@@ -39,10 +39,14 @@ CGI = 11e en parallèle (scrape Drive). Hex = directionnel ; le build agent MESU
 | 11 | CGI | cgi | conseil TI · MTL HQ | cgi.com (web; Drive down) | VIOLET #5236ab + rouge #e41937, Source Sans Pro/Nunito | ✅ main df62cf9 |
 
 ## Extension (objectif max SLOC utile) — lot 7
-| 12 | Nuvei | nuvei | fintech/paiements · MTL HQ | nuvei.com | indigo #160850 + cyan #0C98D4, Inter Tight | build (lot 7) |
-| 13 | Coveo | coveo | AI-search SaaS · QC | coveo.com | rouge #d2271b + bleu, police Gibson | build (lot 7) |
-| 14 | Circle K | circle-k | dépanneurs (Couche-Tard) · MTL HQ | circlek.com | rouge #DA291C + ink | build (lot 7) |
-| 15 | Aldo | aldo | mode/chaussures · MTL HQ | aldoshoes.com | noir + JAUNE #ffef71 signature | build (lot 7) |
+| 12 | Nuvei | nuvei | fintech/paiements · MTL HQ | nuvei.com | indigo #160850 + cyan #0C98D4, Inter Tight | ✅ main aeda7f8 |
+| 13 | Coveo | coveo | AI-search SaaS · QC | coveo.com | rouge #d2271b + bleu, police Gibson | ✅ main aeda7f8 |
+| 14 | Circle K | circle-k | dépanneurs (Couche-Tard) · MTL HQ | circlek.com | rouge #DA291C + ink | ✅ main aeda7f8 |
+| 15 | Aldo | aldo | mode/chaussures · MTL HQ | aldoshoes.com | noir + JAUNE #ffef71 signature | ✅ main aeda7f8 |
+
+## Phase chrome (header+logo+boutons par marque) — DEMANDE UTILISATEUR
+Pattern : `Chrome<Marque>.svelte` (calqué sur ChromeCanada) + logo officiel `static/chrome/<id>/` + câblage (import + useCustomChrome + branche rendu + header-contract test).
+Chromes faits ✅ : lightspeed (bc6aea1), desjardins+ssense+ubisoft (bcb1fcf). Restent : cirque, cgi, national-bank, bombardier, cae, saq, stm, nuvei, coveo, circle-k, aldo. Rollout solo/×3, le rate-limit tue les spawns ×3+ sous charge → préfetch logos par curl quand possible.
 Remplaçant prêt si besoin : Mirego (mirego.com — noir/crème, font Almirego).
 
 ## ✅ RUN — 11 thèmes core live sur main (+ extension lot 7 en cours)
