@@ -105,6 +105,8 @@ export { default as GaugeChart } from "./GaugeChart.svelte";
 export { default as SolidGaugeChart } from "./SolidGaugeChart.svelte";
 export { default as StateTimelineChart } from "./StateTimelineChart.svelte";
 export { default as StatusHistoryChart } from "./StatusHistoryChart.svelte";
+export { default as EventFeedPanel } from "./EventFeedPanel.svelte";
+export { default as VectorFieldChart } from "./VectorFieldChart.svelte";
 export { default as WaffleChart } from "./WaffleChart.svelte";
 export { default as RibbonChart } from "./RibbonChart.svelte";
 export { default as AnomalySwimLaneChart } from "./AnomalySwimLaneChart.svelte";
@@ -265,6 +267,14 @@ export type {
   StatusHistoryBucket,
   StatusHistorySeries
 } from "./StatusHistoryChart.svelte";
+export type {
+  EventFeedPanelSeverity,
+  EventFeedPanelEvent
+} from "./EventFeedPanel.svelte";
+export type {
+  VectorFieldChartTone,
+  VectorFieldChartDatum
+} from "./VectorFieldChart.svelte";
 export type {
   WaffleTone,
   WaffleChartDatum
