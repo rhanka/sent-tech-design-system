@@ -1,18 +1,25 @@
 <script lang="ts">
   // Wrapper svelte FIN du noyau <sentropic-app-shell> : zéro markup, zéro CSS.
-  // Il ne fait que (1) enregistrer le custom element (import à effet de bord) et
-  // (2) passer le siteConfig par PROPRIÉTÉ DOM (supporte les callbacks). Tout le
-  // rendu/comportement vit dans le noyau unique => aucune surface de dérive ici.
-  import "../sentropic-app-shell.js";
+  // SSR-safe : le noyau (un custom element, `class extends HTMLElement`) n'existe
+  // qu'au navigateur — on l'importe DYNAMIQUEMENT dans onMount, jamais au module
+  // (sinon le prérendu SvelteKit/Node planterait). En SSR la balise rend vide ;
+  // à l'hydratation, le noyau s'enregistre et reçoit `config` par propriété DOM.
+  import { onMount } from "svelte";
   import type { SiteConfig } from "../site-config";
 
   let { config }: { config: SiteConfig } = $props();
 
   let el = $state<HTMLElement | null>(null);
+  let ready = $state(false);
 
-  // Réassigne la propriété `config` à chaque changement (le noyau re-render).
+  onMount(async () => {
+    await import("../sentropic-app-shell.js"); // enregistrement browser-only
+    ready = true;
+  });
+
+  // Réassigne `config` dès que le noyau est prêt et à chaque changement.
   $effect(() => {
-    if (el) (el as unknown as { config: SiteConfig }).config = config;
+    if (ready && el) (el as unknown as { config: SiteConfig }).config = config;
   });
 </script>
 
