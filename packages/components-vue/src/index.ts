@@ -280,6 +280,15 @@ export { FlamegraphChart } from "./FlamegraphChart.js";
 export type { FlamegraphChartProps, FlamegraphNode } from "./FlamegraphChart.js";
 export { TraceWaterfallChart } from "./TraceWaterfallChart.js";
 export type { TraceWaterfallChartProps, TraceSpan } from "./TraceWaterfallChart.js";
+export { DecompositionTreeChart } from "./DecompositionTreeChart.js";
+export type {
+  DecompositionTreeChartProps,
+  DecompositionTreeNode,
+  DecompositionTreeLevel,
+  DecompositionTreeData,
+} from "./DecompositionTreeChart.js";
+export { Density2DChart } from "./Density2DChart.js";
+export type { Density2DChartProps, Density2DTone, Density2DPoint } from "./Density2DChart.js";
 export { GeoMap } from "./GeoMap.js";
 export type {
   GeoMapProps,
