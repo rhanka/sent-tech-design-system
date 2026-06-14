@@ -1081,6 +1081,26 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "StatusHistoryChart",
+    slug: "status-history-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Grille temps × entité : chaque cellule encode un statut discret par bucket temporel.",
+      en: "Time × entity grid: each cell encodes a discrete status per time bucket."
+    }
+  },
+  {
+    name: "WaffleChart",
+    slug: "waffle-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Grille N×M de cellules : la proportion de cellules colorées encode la part de chaque catégorie.",
+      en: "N×M cell grid: the share of colored cells encodes each category's proportion."
+    }
+  },
+  {
     name: "FunnelChart",
     slug: "funnel-chart",
     status: "documented",

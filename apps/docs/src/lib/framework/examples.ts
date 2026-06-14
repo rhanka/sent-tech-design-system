@@ -156,6 +156,8 @@ export type ComponentName =
   | "GaugeChart"
   | "SolidGaugeChart"
   | "StateTimelineChart"
+  | "StatusHistoryChart"
+  | "WaffleChart"
   | "FunnelChart"
   | "WaterfallChart"
   | "TreemapChart"

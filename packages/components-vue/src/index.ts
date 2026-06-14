@@ -250,6 +250,19 @@ export type {
   StateTimelineSegment,
   StateTimelineSeries,
 } from "./StateTimelineChart.js";
+export { StatusHistoryChart } from "./StatusHistoryChart.js";
+export type {
+  StatusHistoryChartProps,
+  StatusHistoryTone,
+  StatusHistoryBucket,
+  StatusHistorySeries,
+} from "./StatusHistoryChart.js";
+export { WaffleChart } from "./WaffleChart.js";
+export type {
+  WaffleChartProps,
+  WaffleTone,
+  WaffleChartDatum,
+} from "./WaffleChart.js";
 export { GeoMap } from "./GeoMap.js";
 export type {
   GeoMapProps,
