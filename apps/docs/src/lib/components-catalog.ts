@@ -1111,6 +1111,26 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "ContourChart",
+    slug: "contour-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Contour topographique : grille 2D peinte en bandes de couleur par paliers de valeur (échelle data category1…8).",
+      en: "Topographic contour: 2D grid painted as colour bands by value levels (data category1…8 scale)."
+    }
+  },
+  {
+    name: "WindBarbChart",
+    slug: "wind-barb-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Barbes de vent : une barbe par point le long d'un axe temporel, hampe orientée et barbules encodant la vitesse.",
+      en: "Wind barbs: one barb per point along a time axis, oriented shaft and feathers encoding the speed."
+    }
+  },
+  {
     name: "WaffleChart",
     slug: "waffle-chart",
     status: "documented",

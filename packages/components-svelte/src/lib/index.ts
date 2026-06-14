@@ -107,6 +107,8 @@ export { default as StateTimelineChart } from "./StateTimelineChart.svelte";
 export { default as StatusHistoryChart } from "./StatusHistoryChart.svelte";
 export { default as EventFeedPanel } from "./EventFeedPanel.svelte";
 export { default as VectorFieldChart } from "./VectorFieldChart.svelte";
+export { default as ContourChart } from "./ContourChart.svelte";
+export { default as WindBarbChart } from "./WindBarbChart.svelte";
 export { default as WaffleChart } from "./WaffleChart.svelte";
 export { default as RibbonChart } from "./RibbonChart.svelte";
 export { default as AnomalySwimLaneChart } from "./AnomalySwimLaneChart.svelte";
@@ -275,6 +277,14 @@ export type {
   VectorFieldChartTone,
   VectorFieldChartDatum
 } from "./VectorFieldChart.svelte";
+export type {
+  ContourChartTone,
+  ContourChartDatum
+} from "./ContourChart.svelte";
+export type {
+  WindBarbChartTone,
+  WindBarbChartDatum
+} from "./WindBarbChart.svelte";
 export type {
   WaffleTone,
   WaffleChartDatum
