@@ -176,22 +176,22 @@
         Le flux d'import des outils BI (PowerBI, Qlik, Tableau) : <code>Stepper</code>
         (Source → Mappage → Revue → Import) + <code>FileUploader</code> + <code>DataTable</code>
         d'aperçu + <code>Select</code> de mappage colonne → champ + <code>Alert</code> de
-        validation. Un seul <code>NodeSpec</code> → rendu identique en Svelte, React et Vue.
+        validation. Un seul <code>NodeSpec</code> → rendu identique en Svelte, React, Vue et Angular.
       {:else}
         The import flow of BI tools (PowerBI, Qlik, Tableau): <code>Stepper</code>
         (Source → Mapping → Review → Import) + <code>FileUploader</code> + preview
         <code>DataTable</code> + column→field <code>Select</code> mapping + validation
-        <code>Alert</code>. One <code>NodeSpec</code> → identical render in Svelte, React, and Vue.
+        <code>Alert</code>. One <code>NodeSpec</code> → identical render in Svelte, React, Vue, and Angular.
       {/if}
     </p>
   </section>
 
   <section class="docs-section">
-    <h2>{fr ? "Rendu tri-framework" : "Tri-framework render"}</h2>
+    <h2>{fr ? "Rendu multi-framework" : "Multi-framework render"}</h2>
     <p class="section-desc">
       {fr
-        ? "Utilisez les onglets pour basculer entre Svelte, React et Vue. Le rendu et le code copié reflètent le framework sélectionné."
-        : "Use the tabs to switch between Svelte, React, and Vue. The render and copied code reflect the selected framework."}
+        ? "Utilisez les onglets pour basculer entre Svelte, React, Vue et Angular. Le rendu et le code copié reflètent le framework sélectionné."
+        : "Use the tabs to switch between Svelte, React, Vue, and Angular. The render and copied code reflect the selected framework."}
     </p>
     <TabbedExample
       nodes={demoNodes}
@@ -228,7 +228,7 @@
     font-size: 0.95rem;
   }
 
-  /* ── Layout Import / mapping (global → propagé dans les îles React/Vue) ─── */
+  /* ── Layout Import / mapping (global → propagé dans les îles React/Vue/Angular) ─── */
   :global(.im-shell) {
     display: flex;
     flex-direction: column;

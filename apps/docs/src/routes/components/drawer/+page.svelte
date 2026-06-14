@@ -42,7 +42,7 @@
 
   <section class="docs-section">
     <h2>{fr("Exemple interactif", "Interactive example")}</h2>
-    <p>{fr("Le panneau s'ancre à droite (défaut) ou à gauche, prop side côté Svelte, placement côté React/Vue, et un troisième panneau épingle un pied d'actions en bas. Escape ferme le panneau ; un clic sur le fond aussi. Choisissez l'onglet Svelte, React ou Vue : la démo est la vraie implémentation interactive du framework sélectionné.", "The panel anchors to the right (default) or left, the side prop in Svelte, placement in React/Vue, and a third panel pins an action footer at the bottom. Escape closes the panel; clicking the backdrop also closes it. Pick the Svelte, React, or Vue tab: the demo is the selected framework's real interactive implementation.")}</p>
+    <p>{fr("Le panneau s'ancre à droite (défaut) ou à gauche, prop side côté Svelte, placement côté React/Vue/Angular, et un troisième panneau épingle un pied d'actions en bas. Escape ferme le panneau ; un clic sur le fond aussi. Choisissez l'onglet Svelte, React, Vue ou Angular : la démo est la vraie implémentation interactive du framework sélectionné.", "The panel anchors to the right (default) or left, the side prop in Svelte, placement in React/Vue/Angular, and a third panel pins an action footer at the bottom. Escape closes the panel; clicking the backdrop also closes it. Pick the Svelte, React, Vue, or Angular tab: the demo is the selected framework's real interactive implementation.")}</p>
     <TabbedLiveExample demo="drawer" title={fr("Démo interactive", "Interactive demo")} />
   </section>
 

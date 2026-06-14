@@ -1,10 +1,10 @@
 // nodeToCode : sérialise un arbre NodeSpec en extrait de code lisible pour un
-// framework donné (Svelte / React / Vue).
+// framework donné (Svelte / React / Vue / Angular).
 //
 // Best-effort : sert à alimenter le bloc « Voir le code » dépliable de
 // TabbedExample. Le but est un rendu propre et copiable, pas un AST exact.
-//   • Svelte / Vue   → <Button variant="primary">Primary</Button>
-//   • React          → <Button variant="primary">Primary</Button> (class → className)
+//   • Svelte / Vue / Angular → <Button variant="primary">Primary</Button>
+//   • React                  → <Button variant="primary">Primary</Button> (class → className)
 // Gère les props string / boolean / number / objet, et les enfants chaîne ou
 // NodeSpec récursifs. Les wrappers de mise en page internes (div.fp-row /
 // div.fp-stack) sont dépliés pour ne montrer que les éléments utiles.
@@ -28,7 +28,7 @@ function quote(value: string): string {
 /** Sérialise un objet/array en littéral JS lisible pour le framework. */
 function jsonish(value: unknown, fw: FrameworkId): string {
   const json = JSON.stringify(value);
-  if (fw === "vue") {
+  if (fw === "vue" || fw === "angular") {
     // L'expression vit dans :prop="…" (guillemets doubles) → quotes simples dedans.
     return json.replace(/"/g, "'");
   }
@@ -44,14 +44,17 @@ function formatProp(key: string, value: unknown, fw: FrameworkId): string | null
     return `${name}=${quote(value)}`;
   }
   if (typeof value === "boolean") {
+    if (fw === "angular") return `[${name}]="${value ? "true" : "false"}"`;
     if (value) return name; // raccourci booléen vrai (disabled, invalid, …)
     return fw === "vue" ? `:${name}="false"` : `${name}={false}`;
   }
   if (typeof value === "number") {
+    if (fw === "angular") return `[${name}]="${value}"`;
     return fw === "vue" ? `:${name}="${value}"` : `${name}={${value}}`;
   }
   // objet / array
   const literal = jsonish(value, fw);
+  if (fw === "angular") return `[${name}]="${literal}"`;
   return fw === "vue" ? `:${name}="${literal}"` : `${name}={${literal}}`;
 }
 

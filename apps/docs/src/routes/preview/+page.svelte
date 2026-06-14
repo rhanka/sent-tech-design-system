@@ -1,20 +1,21 @@
 <!--
   Aperçu multi-framework (A + C).
   Galerie qui rend chaque exemple avec le VRAI package du framework sélectionné
-  dans le header (Svelte / React / Vue). Bascule en place via le sélecteur de
-  framework : svelte = rendu inline, react/vue = îles montées côté client.
+  dans le header (Svelte / React / Vue / Angular). Bascule en place via le
+  sélecteur de framework : svelte = rendu inline, les autres frameworks sont
+  montés côté client.
 -->
 <script lang="ts">
   import FrameworkPreview from "$lib/framework/FrameworkPreview.svelte";
   import { EXAMPLES } from "$lib/framework/examples";
-  import { framework } from "$lib/framework.svelte";
+  import { FRAMEWORKS, framework } from "$lib/framework.svelte";
   import { locale } from "$lib/locale.svelte";
 
   const fr = $derived(locale.value === "fr");
   const ids = Object.keys(EXAMPLES);
   const title = (id: string) => id.charAt(0).toUpperCase() + id.slice(1);
   const activeLabel = $derived(
-    framework.value === "react" ? "React" : framework.value === "vue" ? "Vue" : "Svelte"
+    FRAMEWORKS.find((entry) => entry.id === framework.value)?.label ?? "Svelte"
   );
 </script>
 
@@ -28,14 +29,15 @@
     {#if fr}
       Chaque aperçu ci-dessous est rendu avec le <strong>vrai package</strong> du
       framework actif (<strong>{activeLabel}</strong>). Utilisez le sélecteur
-      <em>Svelte / React / Vue</em> dans l'en-tête : le rendu bascule en place
-      (Svelte inline, React/Vue montés côté client) et le snippet de code suit.
+      <em>Svelte / React / Vue / Angular</em> dans l'en-tête : le rendu bascule
+      en place (Svelte inline, autres frameworks montés côté client) et le
+      snippet de code suit.
     {:else}
       Each preview below renders with the <strong>real package</strong> of the
       active framework (<strong>{activeLabel}</strong>). Use the
-      <em>Svelte / React / Vue</em> selector in the header: the preview switches
-      in place (Svelte inline, React/Vue mounted client-side) and the code
-      snippet follows.
+      <em>Svelte / React / Vue / Angular</em> selector in the header: the preview
+      switches in place (Svelte inline, other frameworks mounted client-side) and
+      the code snippet follows.
     {/if}
   </p>
 </section>

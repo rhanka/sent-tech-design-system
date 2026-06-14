@@ -2,7 +2,7 @@
 // Mêmes mécaniques que locale.svelte.ts : un singleton réactif Svelte 5 ($state),
 // lisible/écrivable depuis le layout, les chromes tiers et les pages composant.
 
-export type FrameworkId = "svelte" | "react" | "vue";
+export type FrameworkId = "svelte" | "react" | "vue" | "angular";
 
 export interface FrameworkOption {
   id: FrameworkId;
@@ -12,14 +12,15 @@ export interface FrameworkOption {
 export const FRAMEWORKS: FrameworkOption[] = [
   { id: "svelte", label: "Svelte" },
   { id: "react", label: "React" },
-  { id: "vue", label: "Vue" }
+  { id: "vue", label: "Vue" },
+  { id: "angular", label: "Angular" }
 ];
 
 export const FRAMEWORK_STORAGE_KEY = "docs-framework";
 export const DEFAULT_FRAMEWORK: FrameworkId = "svelte";
 
 function isFrameworkId(value: string | null): value is FrameworkId {
-  return value === "svelte" || value === "react" || value === "vue";
+  return FRAMEWORKS.some((entry) => entry.id === value);
 }
 
 class FrameworkStore {

@@ -148,23 +148,23 @@
       {#if fr}
         Le squelette réutilisé par toutes les vues : <code>Header</code> + <code>SideNav</code>
         + <code>Breadcrumb</code> + zone de contenu (titre + <code>Card</code>) + <code>Footer</code>.
-        Un seul <code>NodeSpec</code> → rendu identique en Svelte, React et Vue. Toutes les autres
+        Un seul <code>NodeSpec</code> → rendu identique en Svelte, React, Vue et Angular. Toutes les autres
         vues s'insèrent dans la zone de contenu.
       {:else}
         The skeleton reused by every view: <code>Header</code> + <code>SideNav</code>
         + <code>Breadcrumb</code> + content area (title + <code>Card</code>) + <code>Footer</code>.
-        One <code>NodeSpec</code> → identical render in Svelte, React, and Vue. Every other view
+        One <code>NodeSpec</code> → identical render in Svelte, React, Vue, and Angular. Every other view
         slots into the content area.
       {/if}
     </p>
   </section>
 
   <section class="docs-section">
-    <h2>{fr ? "Rendu tri-framework" : "Tri-framework render"}</h2>
+    <h2>{fr ? "Rendu multi-framework" : "Multi-framework render"}</h2>
     <p class="section-desc">
       {fr
-        ? "Utilisez les onglets pour basculer entre Svelte, React et Vue. Le rendu et le code copié reflètent le framework sélectionné."
-        : "Use the tabs to switch between Svelte, React, and Vue. The render and copied code reflect the selected framework."}
+        ? "Utilisez les onglets pour basculer entre Svelte, React, Vue et Angular. Le rendu et le code copié reflètent le framework sélectionné."
+        : "Use the tabs to switch between Svelte, React, Vue, and Angular. The render and copied code reflect the selected framework."}
     </p>
     <TabbedExample
       nodes={demoNodes}
@@ -201,7 +201,7 @@
     font-size: 0.95rem;
   }
 
-  /* ── Layout App Shell (global → propagé dans les îles React/Vue) ────────── */
+  /* ── Layout App Shell (global → propagé dans les îles React/Vue/Angular) ────────── */
   :global(.as-shell) {
     display: flex;
     flex-direction: column;

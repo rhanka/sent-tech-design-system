@@ -3,7 +3,7 @@
 
   Layout choisi par l'owner (pas d'empilement des 3 rendus) :
     1. titre optionnel ;
-    2. barre d'onglets [Svelte | React | Vue] ;
+    2. barre d'onglets [Svelte | React | Vue | Angular] ;
     3. UN SEUL rendu affiché à la fois (celui de l'onglet actif) ;
     4. un <details> « Voir le code (<fw>) » dépliable montrant le code de
        l'exemple dans le framework de l'onglet actif.
@@ -16,8 +16,9 @@
   Rendus :
     • svelte → inline via SvelteNode (aucune île, aucun coût runtime) ;
     • react  → île montée via react-island (createRoot) ;
-    • vue    → île montée via vue-island (createApp).
-  Les îles React/Vue sont strictement client (import dynamique, garde browser,
+    • vue    → île montée via vue-island (createApp) ;
+    • angular → île montée via angular-island (createApplication/createComponent).
+  Les îles non-Svelte sont strictement client (import dynamique, garde browser,
   montage en $effect) ; une seule île est montée à la fois et démontée proprement
   au changement d'onglet.
 -->
@@ -43,7 +44,7 @@
 
   let islandHost = $state<HTMLDivElement | null>(null);
 
-  // Montage/démontage des îles React/Vue, piloté par l'onglet actif.
+  // Montage/démontage des îles non-Svelte, piloté par l'onglet actif.
   $effect(() => {
     const fw = active;
     const host = islandHost;
@@ -63,6 +64,10 @@
         const { mountVueIsland } = await import("./vue-island");
         if (disposed) return;
         handle = await mountVueIsland(host, ns);
+      } else if (fw === "angular") {
+        const { mountAngularIsland } = await import("./angular-island");
+        if (disposed) return;
+        handle = await mountAngularIsland(host, ns);
       }
       if (disposed) handle?.unmount();
     };
@@ -117,7 +122,7 @@
         {/each}
       </div>
     {:else}
-      <!-- Hôte d'île React/Vue : rempli côté client uniquement. -->
+      <!-- Hôte d'île non-Svelte : rempli côté client uniquement. -->
       <div class="tex__render" bind:this={islandHost}></div>
     {/if}
   </div>
@@ -203,6 +208,16 @@
     color: var(--docs-muted, #475569);
     font-size: 0.9rem;
     margin: 0;
+  }
+
+  .tex__stage :global(.angular-island-unavailable) {
+    background: var(--st-semantic-surface-subtle, #f8fafc);
+    border: 1px dashed var(--docs-line, #e2e8f0);
+    border-radius: 0.5rem;
+    color: var(--docs-muted, #475569);
+    font-size: 0.85rem;
+    padding: 0.75rem 0.9rem;
+    width: 100%;
   }
 
   .tex__code {

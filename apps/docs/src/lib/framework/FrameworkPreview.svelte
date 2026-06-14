@@ -6,18 +6,21 @@
         • svelte → rendu inline via SvelteNode (composants Svelte du DS).
         • react  → île montée via createRoot (@sentropic/design-system-react).
         • vue    → île montée via createApp (@sentropic/design-system-vue).
-      Les îles React/Vue sont strictement client (import dynamique, garde
+        • angular → île montée via createApplication/createComponent
+          (@sentropic/design-system-angular).
+      Les îles non-Svelte sont strictement client (import dynamique, garde
       `browser`, montage en $effect) afin que le prerender reste vide et que le
       build adapter-static reste statique. Démontage/remontage propre à chaque
       changement de framework.
 
   A : snippet par framework : le code d'usage affiché correspond au framework
-      actif (Svelte / React / Vue), depuis le registre d'exemples.
+      actif (Svelte / React / Vue / Angular), depuis le registre d'exemples.
 -->
 <script lang="ts">
   import { browser } from "$app/environment";
-  import { framework, type FrameworkId } from "$lib/framework.svelte";
+  import { FRAMEWORKS, framework, type FrameworkId } from "$lib/framework.svelte";
   import { locale } from "$lib/locale.svelte";
+  import { exampleCode, frameworkPackage } from "./example-code";
   import { getExample } from "./examples";
   import type { IslandHandle } from "./react-island";
   import SvelteNode from "./SvelteNode.svelte";
@@ -31,7 +34,7 @@
   let islandHost = $state<HTMLDivElement | null>(null);
   let copied = $state(false);
 
-  // Montage/démontage des îles React/Vue, piloté réactivement par le framework.
+  // Montage/démontage des îles non-Svelte, piloté réactivement par le framework.
   $effect(() => {
     // Lectures réactives explicites (framework + exemple + hôte DOM).
     const fw = active;
@@ -53,6 +56,10 @@
         const { mountVueIsland } = await import("./vue-island");
         if (disposed) return;
         handle = await mountVueIsland(host, ex.nodes);
+      } else if (fw === "angular") {
+        const { mountAngularIsland } = await import("./angular-island");
+        if (disposed) return;
+        handle = await mountAngularIsland(host, ex.nodes);
       }
       if (disposed) handle?.unmount();
     };
@@ -66,7 +73,7 @@
     };
   });
 
-  const code = $derived(example ? example.code[active as FrameworkId] : "");
+  const code = $derived(example ? exampleCode(example, active as FrameworkId) : "");
 
   async function copyCode() {
     if (!browser || !code) return;
@@ -80,15 +87,9 @@
   }
 
   const implLabel = $derived(
-    active === "react" ? "React" : active === "vue" ? "Vue" : "Svelte"
+    FRAMEWORKS.find((entry) => entry.id === active)?.label ?? "Svelte"
   );
-  const pkg = $derived(
-    active === "react"
-      ? "@sentropic/design-system-react"
-      : active === "vue"
-        ? "@sentropic/design-system-vue"
-        : "@sentropic/design-system-svelte"
-  );
+  const pkg = $derived(frameworkPackage(active as FrameworkId));
 </script>
 
 {#if example}
@@ -109,7 +110,7 @@
           {/each}
         </div>
       {:else}
-        <!-- Hôte des îles React/Vue : rempli côté client uniquement. -->
+        <!-- Hôte des îles non-Svelte : rempli côté client uniquement. -->
         <div class="fp__island" bind:this={islandHost}></div>
       {/if}
     </div>
@@ -182,6 +183,10 @@
     background: #42b883;
   }
 
+  .fp__impl[data-framework="angular"] .fp__impl-dot {
+    background: #dd0031;
+  }
+
   .fp__stage {
     padding: 1.5rem;
   }
@@ -222,6 +227,16 @@
     color: var(--docs-muted, #475569);
     font-size: 0.9rem;
     margin: 0;
+  }
+
+  .fp__stage :global(.angular-island-unavailable) {
+    background: var(--st-semantic-surface-subtle, #f8fafc);
+    border: 1px dashed var(--docs-line, #e2e8f0);
+    border-radius: 0.5rem;
+    color: var(--docs-muted, #475569);
+    font-size: 0.85rem;
+    padding: 0.75rem 0.9rem;
+    width: 100%;
   }
 
   .fp__code {

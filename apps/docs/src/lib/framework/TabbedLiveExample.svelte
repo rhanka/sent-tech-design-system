@@ -3,11 +3,11 @@
 
   Certaines démos (Modal, Drawer, …) sont interactives : un bouton déclencheur
   ouvre un overlay. Elles ne s'expriment pas en NodeSpec déclaratif ; on les
-  écrit donc PAR FRAMEWORK (Svelte inline, React via île, Vue via île).
+  écrit donc PAR FRAMEWORK (Svelte inline, React/Vue/Angular via île).
 
   Même UX d'onglets que TabbedExample :
     1. titre optionnel ;
-    2. barre d'onglets [Svelte | React | Vue] ;
+    2. barre d'onglets [Svelte | React | Vue | Angular] ;
     3. UN SEUL framework monté à la fois (celui de l'onglet actif).
 
   L'onglet actif EST l'état global unique (framework.value), reflété dans l'URL
@@ -17,7 +17,7 @@
   Comme un seul framework est monté à la fois, un seul jeu d'overlays/portails
   existe à un instant donné -> aucune superposition de modals/drawers.
 
-  Les îles React/Vue sont strictement client (import dynamique, garde browser,
+  Les îles non-Svelte sont strictement client (import dynamique, garde browser,
   montage en $effect) ; démontage propre au changement d'onglet.
 -->
 <script lang="ts">
@@ -47,7 +47,7 @@
 
   let islandHost = $state<HTMLDivElement | null>(null);
 
-  // Montage/démontage des îles React/Vue, piloté par l'onglet actif + la locale.
+  // Montage/démontage des îles non-Svelte, piloté par l'onglet actif + la locale.
   $effect(() => {
     const fw = active;
     const host = islandHost;
@@ -68,6 +68,10 @@
         const { mountVueLiveDemo } = await import("./live-island");
         if (disposed) return;
         handle = await mountVueLiveDemo(host, key, isFr);
+      } else if (fw === "angular") {
+        const { mountAngularLiveDemo } = await import("./live-island");
+        if (disposed) return;
+        handle = await mountAngularLiveDemo(host, key, isFr);
       }
       if (disposed) handle?.unmount();
     };
@@ -106,7 +110,7 @@
         </div>
       {/key}
     {:else}
-      <!-- Hôte d'île React/Vue : rempli côté client uniquement. -->
+      <!-- Hôte d'île non-Svelte : rempli côté client uniquement. -->
       <div class="tex__render" bind:this={islandHost}></div>
     {/if}
   </div>
@@ -148,12 +152,22 @@
     gap: 0.75rem;
   }
 
-  /* Rangée de boutons déclencheurs, partagée par les démos Svelte/React/Vue. */
+  /* Rangée de boutons déclencheurs, partagée par les démos Svelte/React/Vue/Angular. */
   .tex__stage :global(.ld-row) {
     align-items: center;
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
+    width: 100%;
+  }
+
+  .tex__stage :global(.angular-island-unavailable) {
+    background: var(--st-semantic-surface-subtle, #f8fafc);
+    border: 1px dashed var(--docs-line, #e2e8f0);
+    border-radius: 0.5rem;
+    color: var(--docs-muted, #475569);
+    font-size: 0.85rem;
+    padding: 0.75rem 0.9rem;
     width: 100%;
   }
 </style>

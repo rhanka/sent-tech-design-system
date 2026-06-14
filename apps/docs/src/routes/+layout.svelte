@@ -4,8 +4,8 @@
   import { replaceState, afterNavigate } from "$app/navigation";
   import { tick, untrack } from "svelte";
   import "../app.css";
-  // CSS global des composants (classes .st-*) pour styler les îles React/Vue :
-  // le Svelte a ses styles scoped, mais les rendus React/Vue n'ont que les classes
+  // CSS global des composants (classes .st-*) pour styler les îles React/Vue/Angular :
+  // le Svelte a ses styles scoped, mais les rendus React/Vue/Angular n'ont que les classes
   // sans règles tant que ce stylesheet global (identique entre frameworks) n'est pas chargé.
   import "@sentropic/design-system-react/styles.css";
   import { Boxes, ChevronDown, Github, Globe, Menu, Moon, Palette, Sun, User, X } from "@lucide/svelte";
@@ -589,7 +589,7 @@
   </div>
 {/snippet}
 
-<!-- ── Snippet partagé : sélecteur de framework (Svelte/React/Vue) ────── -->
+<!-- ── Snippet partagé : sélecteur de framework (Svelte/React/Vue/Angular) ────── -->
 {#snippet frameworkSelector()}
   <div class="docs-framework-wrapper">
     <button

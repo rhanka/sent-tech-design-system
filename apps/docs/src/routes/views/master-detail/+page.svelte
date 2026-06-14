@@ -164,22 +164,22 @@
         Patron Fiori split-view : <code>SelectableList</code> à gauche (lignes
         <code>SelectableRow</code> sélectionnables) et panneau détail à droite
         (<code>StructuredList</code> + rangée de <code>KpiCard</code> + mini <code>DataTable</code>).
-        Un seul <code>NodeSpec</code> → rendu identique en Svelte, React et Vue.
+        Un seul <code>NodeSpec</code> → rendu identique en Svelte, React, Vue et Angular.
       {:else}
         Fiori split-view pattern: <code>SelectableList</code> on the left (selectable
         <code>SelectableRow</code> items) and a detail panel on the right
         (<code>StructuredList</code> + <code>KpiCard</code> row + mini <code>DataTable</code>).
-        One <code>NodeSpec</code> → identical render in Svelte, React, and Vue.
+        One <code>NodeSpec</code> → identical render in Svelte, React, Vue, and Angular.
       {/if}
     </p>
   </section>
 
   <section class="docs-section">
-    <h2>{fr ? "Rendu tri-framework" : "Tri-framework render"}</h2>
+    <h2>{fr ? "Rendu multi-framework" : "Multi-framework render"}</h2>
     <p class="section-desc">
       {fr
-        ? "Utilisez les onglets pour basculer entre Svelte, React et Vue. Le rendu et le code copié reflètent le framework sélectionné."
-        : "Use the tabs to switch between Svelte, React, and Vue. The render and copied code reflect the selected framework."}
+        ? "Utilisez les onglets pour basculer entre Svelte, React, Vue et Angular. Le rendu et le code copié reflètent le framework sélectionné."
+        : "Use the tabs to switch between Svelte, React, Vue, and Angular. The render and copied code reflect the selected framework."}
     </p>
     <TabbedExample
       nodes={demoNodes}
@@ -216,7 +216,7 @@
     font-size: 0.95rem;
   }
 
-  /* ── Layout Master-Detail (global → propagé dans les îles React/Vue) ────── */
+  /* ── Layout Master-Detail (global → propagé dans les îles React/Vue/Angular) ────── */
   :global(.md-shell) {
     display: grid;
     grid-template-columns: 280px 1fr;
