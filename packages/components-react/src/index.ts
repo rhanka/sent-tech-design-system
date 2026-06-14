@@ -122,6 +122,19 @@ export type {
   StateTimelineSeries,
   StateTimelineTone,
 } from "./StateTimelineChart.js";
+export { StatusHistoryChart } from "./StatusHistoryChart.js";
+export type {
+  StatusHistoryChartProps,
+  StatusHistoryBucket,
+  StatusHistorySeries,
+  StatusHistoryTone,
+} from "./StatusHistoryChart.js";
+export { WaffleChart } from "./WaffleChart.js";
+export type {
+  WaffleChartProps,
+  WaffleChartDatum,
+  WaffleTone,
+} from "./WaffleChart.js";
 export { GeoMap } from "./GeoMap.js";
 export type {
   GeoMapProps,
