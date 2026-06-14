@@ -5,6 +5,7 @@
   "type": "module",
   "dependencies": {
     "@lucide/svelte": "^0.562.0",
+    "@sentropic/app-shell": "*",
     "@sentropic/design-system-react": "0.36.33",
     "@sentropic/design-system-svelte": "0.34.32",
     "@sentropic/design-system-theme-airbus": "0.1.0",
