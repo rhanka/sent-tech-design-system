@@ -159,6 +159,8 @@ export type ComponentName =
   | "StatusHistoryChart"
   | "EventFeedPanel"
   | "VectorFieldChart"
+  | "ContourChart"
+  | "WindBarbChart"
   | "WaffleChart"
   | "RibbonChart"
   | "AnomalySwimLaneChart"
