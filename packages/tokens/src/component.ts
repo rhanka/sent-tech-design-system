@@ -241,6 +241,23 @@ interface AccordionInput {
   lineHeight?: string;       // trigger line-height; default "normal" (current render)
 }
 
+// Studio-P3 (additive) — per-theme Collapsible DENSITY-VARIANT typography. The
+// `md` (default) trigger reads the existing `--st-component-accordion-*` leaves
+// and is byte-identical; these leaves only scope the OPT-IN `sm`/`lg` density
+// variants (`.st-collapsible--sm` / `--lg`). Every leaf is optional and DEFAULTS
+// to the current base literal baked into the component CSS, so a theme that emits
+// nothing renders the variants identically (no theme emits these today). The
+// `trailing` slot needs no token (it only renders its child).
+interface CollapsibleInput {
+  smFontSize?: string;       // `--sm` trigger font-size; default "0.875rem" (14px)
+  smFontWeight?: string;     // `--sm` trigger font-weight; default "500"
+  smPaddingBlock?: string;   // `--sm` trigger vertical padding; default "0.4rem"
+  smPaddingInline?: string;  // `--sm` trigger horizontal padding; default "0.25rem"
+  lgFontSize?: string;       // `--lg` trigger font-size; default "1rem" (16px)
+  lgPaddingBlock?: string;   // `--lg` trigger vertical padding; default "0.875rem"
+  lgPaddingInline?: string;  // `--lg` trigger horizontal padding; default "0.25rem"
+}
+
 // F10+ (additive, cluster P-C) — Tag primitive. Every leaf is optional and
 // DEFAULTS to the current base render of the NEUTRAL `.st-tag` (a pill: radius
 // 999px, padding 4px block / 10px inline at md, font-size 12px, weight 600,
@@ -435,6 +452,11 @@ interface FoundationInput {
   // (base) both keep the current render via the resolver defaults.
   alert?: AlertInput;
   accordion?: AccordionInput;
+  // Studio-P3 (additive): per-theme Collapsible density-variant (sm/lg)
+  // typography. Optional — when omitted (every current theme) the sm/lg variants
+  // read the base literals baked into the component CSS, so they render
+  // identically. The default `md` trigger is unchanged (reads accordion leaves).
+  collapsible?: CollapsibleInput;
   // P-C (additive): per-theme Tag / Badge anatomy. Optional — when omitted
   // (base) both keep the current render via the resolver defaults.
   tag?: TagInput;
