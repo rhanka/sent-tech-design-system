@@ -1,0 +1,54 @@
+import * as i0 from "@angular/core";
+export type MultiSelectOption = {
+    value: string;
+    label: unknown;
+    disabled?: boolean;
+};
+export type MultiSelectSize = "sm" | "md" | "lg";
+export type MultiSelectProps = {
+    label?: unknown;
+    helperText?: unknown;
+    errorText?: unknown;
+    invalid?: boolean;
+    options: MultiSelectOption[];
+    value?: string[];
+    values?: string[];
+    /** Svelte-canonical alias for the selected values. */
+    selected?: string[];
+    size?: MultiSelectSize;
+    open?: boolean;
+    placeholder?: string;
+    searchPlaceholder?: string;
+    noResultsLabel?: string;
+    toggleLabel?: string;
+    removeLabel?: string;
+    listLabel?: string;
+    disabled?: boolean;
+    class?: string;
+};
+export declare class MultiSelect {
+    static readonly stComponentName = "MultiSelect";
+    readonly componentName = "MultiSelect";
+    label?: unknown;
+    helperText?: unknown;
+    errorText?: unknown;
+    invalid?: boolean;
+    options: MultiSelectOption[];
+    value?: string[];
+    values?: string[];
+    selected?: string[];
+    size?: MultiSelectSize;
+    open?: boolean;
+    placeholder?: string;
+    searchPlaceholder?: string;
+    noResultsLabel?: string;
+    toggleLabel?: string;
+    removeLabel?: string;
+    listLabel?: string;
+    disabled?: boolean;
+    classInput?: string;
+    get hostClass(): string;
+    static ɵfac: i0.ɵɵFactoryDeclaration<MultiSelect, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<MultiSelect, "st-multi-select", never, { "label": { "alias": "label"; "required": false; }; "helperText": { "alias": "helperText"; "required": false; }; "errorText": { "alias": "errorText"; "required": false; }; "invalid": { "alias": "invalid"; "required": false; }; "options": { "alias": "options"; "required": false; }; "value": { "alias": "value"; "required": false; }; "values": { "alias": "values"; "required": false; }; "selected": { "alias": "selected"; "required": false; }; "size": { "alias": "size"; "required": false; }; "open": { "alias": "open"; "required": false; }; "placeholder": { "alias": "placeholder"; "required": false; }; "searchPlaceholder": { "alias": "searchPlaceholder"; "required": false; }; "noResultsLabel": { "alias": "noResultsLabel"; "required": false; }; "toggleLabel": { "alias": "toggleLabel"; "required": false; }; "removeLabel": { "alias": "removeLabel"; "required": false; }; "listLabel": { "alias": "listLabel"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+}
+//# sourceMappingURL=MultiSelect.d.ts.map
