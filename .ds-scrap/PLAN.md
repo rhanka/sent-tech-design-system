@@ -26,17 +26,19 @@ Le flag `thirdParty` sur `TenantTheme` casse le build des consommateurs épingl�
 CGI = 11e en parallèle (scrape Drive). Hex = directionnel ; le build agent MESURE l'exact sur le CSS live.
 | # | Société | theme-id | Secteur · MTL | Source scrape | Signature | État |
 |---|---------|----------|----------------|---------------|-----------|------|
-| 1 | SSENSE | ssense | luxe e-comm · MTL HQ | ssense.com | noir/blanc ultra-minimal, Helvetica-like, carré | todo |
-| 2 | Lightspeed | lightspeed | commerce SaaS · MTL HQ | lightspeedhq.com | rouge vif, moderne, arrondi léger | todo |
-| 3 | Desjardins | desjardins | finance coop · QC | desjardins.com | vert iconique ~#00874E | todo |
-| 4 | Banque Nationale | national-bank | banque · MTL HQ | bnc.ca / nbc.ca | rouge corporate | todo |
-| 5 | Cirque du Soleil | cirque-du-soleil | spectacle · MTL HQ | cirquedusoleil.com | noir + jaune soleil, théâtral | todo |
-| 6 | Ubisoft | ubisoft | jeu vidéo · MTL studio | ubisoft.com | noir/blanc minimal, le swirl | todo |
-| 7 | Bombardier | bombardier | aéro · MTL HQ | bombardier.com | bleu marine | todo |
-| 8 | CAE | cae | simulation/aéro · MTL HQ | cae.com | bleu | todo |
-| 9 | SAQ | saq | détail (vin) · QC | saq.com | bordeaux/raisin | todo |
-| 10 | STM | stm | transport public · MTL | stm.info | bleu transit #009EE0 + vert | todo |
-| 11 | CGI | cgi | conseil TI · MTL HQ | Drive + cgi.com | rouge CGI | scrape en cours |
+| 1 | SSENSE | ssense | luxe e-comm · MTL HQ | ssense.com | noir/blanc ultra-minimal, Helvetica-like, carré | ✅ main b71c46b |
+| 2 | Lightspeed | lightspeed | commerce SaaS · MTL HQ | lightspeedhq.com | rouge #e81c1c, pill+6px, ring noir | ✅ main 9688b3c |
+| 3 | Desjardins | desjardins | finance coop · QC | desjardins.com | vert #00874e, focus bleu, Desjardins Sans | ✅ main 9688b3c |
+| 4 | Banque Nationale | national-bank | banque · MTL HQ | bnc.ca / nbc.ca | rouge #e41c23, marine #00314d, Gilroy | ✅ main cb2b222 |
+| 5 | Cirque du Soleil | cirque-du-soleil | spectacle · MTL HQ | cirquedusoleil.com | DARK, or #dca85d sur noir, Cds Sans | ✅ main cb2b222 |
+| 6 | Ubisoft | ubisoft | jeu vidéo · MTL studio | ubisoft.com | DARK, bleu #006ef5 sur noir, Ubisoft Sans | ✅ main 73c2660 |
+| 7 | Bombardier | bombardier | aéro · MTL HQ | bombardier.com | petrol-teal #003e51 + or, champs carrés | ✅ main 73c2660 |
+| 8 | CAE | cae | simulation/aéro · MTL HQ | cae.com | navy #06103D + bleu #2969F2, Red Hat Display | build inline (lot 5) |
+| 9 | SAQ | saq | détail (vin) · QC | saq.com | coral #fc4d30 + burgundy #7e003f, Maax | build inline (lot 5) |
+| 10 | STM | stm | transport public · MTL | stm.info | bleu transit #009ee0 + greys | build inline (lot 6) |
+| 11 | CGI | cgi | conseil TI · MTL HQ | cgi.com (web; Drive down) | VIOLET #5236ab + rouge #e41937, Source Sans Pro/Nunito | build inline (lot 6) |
+
+Note CGI : identité moderne **violet-led** (#5236ab dominant 252×), rouge #e41937 en accent héritage. Drive jamais revenu → scrape web cgi.com (riche, suffisant).
 
 Remplaçants si une source est faible : Nuvei (nuvei.com), Coveo (coveo.com), Aldo (aldoshoes.com), Moment Factory (momentfactory.com), Couche-Tard/Circle K (circlek.com).
 
