@@ -20,8 +20,8 @@ const STYLE = `
   .brand .name { font-weight:760; font-size:1rem; }
   .brand .product { font-weight:650; font-size:.75rem; color: var(--st-semantic-text-secondary, #475569); }
   nav.main { display:flex; align-items:center; gap: var(--st-spacing-1, .25rem); margin-left: var(--st-spacing-6, 1.5rem); }
-  nav.main a { color: var(--st-semantic-text-secondary, #475569); text-decoration:none; font-size:.875rem; line-height:1; padding:.38rem .75rem; display:inline-flex; align-items:center; gap:.35rem; }
-  nav.main a[aria-current="page"] { color: var(--st-semantic-text-primary, #0f172a); font-weight:650; }
+  nav.main a { color: var(--st-semantic-text-secondary, #475569); text-decoration:none; font-size:.875rem; line-height:1; padding:.38rem .75rem; display:inline-flex; align-items:center; gap:.35rem; border-bottom:2px solid transparent; }
+  nav.main a[aria-current="page"] { color: var(--st-semantic-text-primary, #0f172a); font-weight:650; border-bottom-color: var(--st-semantic-border-subtle, #e2e8f0); }
   .spacer { flex:1; }
   .actions { display:flex; align-items:center; gap:.5rem; }
   .control { height:2.25rem; display:inline-flex; align-items:center; gap:.375rem; padding:0 .75rem;
