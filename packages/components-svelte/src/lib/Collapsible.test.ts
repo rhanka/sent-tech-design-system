@@ -5,6 +5,12 @@ import Collapsible from "./Collapsible.svelte";
 
 const snippet = (html: string) => createRawSnippet(() => ({ render: () => `<span>${html}</span>` }));
 
+// Svelte scopes component styles by appending a per-component hash class (e.g.
+// "svelte-pav3x3") to every styled element's class list. Compare against the
+// SEMANTIC class only (the first token) so the assertions are stable across
+// builds and read the structural class, not the scope hash.
+const structuralClass = (el: Element) => el.className.split(/\s+/)[0];
+
 describe("Collapsible — base (byte-identity)", () => {
   it("renders the default trigger with no trailing span and the md density class", () => {
     const { container } = render(Collapsible, { props: { title: "Entities" } });
@@ -18,7 +24,7 @@ describe("Collapsible — base (byte-identity)", () => {
     expect(container.querySelector(".st-collapsible__title")?.textContent).toBe("Entities");
     // Trigger order is preserved: only the title span then the chevron.
     const trigger = container.querySelector(".st-collapsible__trigger") as HTMLElement;
-    const spans = Array.from(trigger.children).map((c) => c.className);
+    const spans = Array.from(trigger.children).map(structuralClass);
     expect(spans).toEqual(["st-collapsible__title", "st-collapsible__icon"]);
   });
 });
@@ -51,7 +57,7 @@ describe("Collapsible — trailing slot", () => {
     expect(trailing?.textContent).toContain("128");
     // Order inside the trigger: title, trailing, chevron (chevron stays last).
     const trigger = container.querySelector(".st-collapsible__trigger") as HTMLElement;
-    const order = Array.from(trigger.children).map((c) => c.className);
+    const order = Array.from(trigger.children).map(structuralClass);
     expect(order).toEqual([
       "st-collapsible__title",
       "st-collapsible__trailing",
