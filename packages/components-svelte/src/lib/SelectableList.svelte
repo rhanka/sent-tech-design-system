@@ -58,8 +58,11 @@
   let internal = $state<Set<string>>(new Set());
   const selectedValues = $derived(controlled ? toSet(value) : internal);
 
-  // --- Row registry: ordered by DOM position so arrow nav matches the visual
-  //     order regardless of registration timing. -------------------------------
+  // --- Row registry. Rows are stored in INSERTION order (registration is O(1));
+  //     the DOM-ordered view is computed LAZILY (see `orderedEntries`) and only
+  //     when a consumer actually needs visual order (arrow nav / roving tab stop).
+  //     Sorting eagerly on every register() was O(n) per mount → O(n²) for the
+  //     whole list (issue #26); deferring it makes a large list mount in O(n).
   type Entry = { el: HTMLElement; value: string | undefined; disabled?: boolean };
   let entries = $state<Entry[]>([]);
 
@@ -76,17 +79,28 @@
     });
   }
 
+  // DOM-ordered view of the registry. Memoised by `$derived.by` so the O(n log n)
+  // `compareDocumentPosition` sort runs at most ONCE per registry change (a batch
+  // of mounts in the same tick collapses into a single recompute), not once per
+  // register() call. ORDER-dependent readers (`navigate`, `effectiveTabStop`'s
+  // "first enabled row") read THIS so visual order is correct regardless of
+  // registration timing; order-INDEPENDENT lookups (`valueOf`/`isSelected`,
+  // disabled-membership) read the raw `entries`. register() itself stays O(1).
+  const orderedEntries = $derived.by(() => sortByDom(entries));
+
   // register/unregister are called from each row's $effect. They read AND write
   // `entries`, so the read must be untracked — otherwise the calling effect would
   // subscribe to `entries`, and writing it would re-run the effect forever.
-  // Disabled rows are registered with disabled:true so navigate() can skip them
-  // explicitly, making the skip correct even when disabled state changes mid-session.
+  // register() APPENDS in insertion order (O(1)); the DOM sort is deferred to the
+  // lazy `orderedEntries`. Disabled rows are registered with disabled:true so
+  // navigate() can skip them explicitly, making the skip correct even when the
+  // disabled state changes mid-session.
   function register(el: HTMLElement, rowValue: string | undefined, rowDisabled = false): () => void {
     untrack(() => {
-      entries = sortByDom([
+      entries = [
         ...entries.filter((e) => e.el !== el),
         { el, value: rowValue, disabled: rowDisabled }
-      ]);
+      ];
     });
     return () => {
       untrack(() => {
@@ -103,7 +117,8 @@
       const entry = entries.find((e) => e.el === tabStopEl);
       if (entry && !entry.disabled) return tabStopEl;
     }
-    return entries.find((e) => !e.disabled)?.el ?? null;
+    // "First enabled row" must be in DOM order, so read the ordered view.
+    return orderedEntries.find((e) => !e.disabled)?.el ?? null;
   });
 
   // Si la row qui détient le focus DOM devient disabled (in-place, sans unmount),
@@ -161,38 +176,42 @@
   }
 
   function navigate(el: HTMLElement, key: string) {
-    if (entries.length === 0) return;
-    const idx = entries.findIndex((e) => e.el === el);
+    // Keyboard navigation walks rows in VISUAL (DOM) order, so read the lazily
+    // sorted view here. This is the first point the deferred sort is forced — the
+    // O(n²) register-time sort storm is gone, the sort runs once on demand.
+    const ordered = orderedEntries;
+    if (ordered.length === 0) return;
+    const idx = ordered.findIndex((e) => e.el === el);
     if (idx === -1) return;
 
     let targetIdx: number | null = null;
 
     if (key === "ArrowDown" || key === "ArrowRight") {
       // Walk forward from current position, find the next non-disabled entry.
-      for (let i = idx + 1; i < entries.length; i++) {
-        if (!entries[i].disabled) { targetIdx = i; break; }
+      for (let i = idx + 1; i < ordered.length; i++) {
+        if (!ordered[i].disabled) { targetIdx = i; break; }
       }
     } else if (key === "ArrowUp" || key === "ArrowLeft") {
       // Walk backward from current position, find the previous non-disabled entry.
       for (let i = idx - 1; i >= 0; i--) {
-        if (!entries[i].disabled) { targetIdx = i; break; }
+        if (!ordered[i].disabled) { targetIdx = i; break; }
       }
     } else if (key === "Home") {
       // First non-disabled entry.
-      for (let i = 0; i < entries.length; i++) {
-        if (!entries[i].disabled) { targetIdx = i; break; }
+      for (let i = 0; i < ordered.length; i++) {
+        if (!ordered[i].disabled) { targetIdx = i; break; }
       }
     } else if (key === "End") {
       // Last non-disabled entry.
-      for (let i = entries.length - 1; i >= 0; i--) {
-        if (!entries[i].disabled) { targetIdx = i; break; }
+      for (let i = ordered.length - 1; i >= 0; i--) {
+        if (!ordered[i].disabled) { targetIdx = i; break; }
       }
     }
 
     // If no target found (all remaining are disabled, or already at boundary), stay put.
     if (targetIdx === null) return;
 
-    const target = entries[targetIdx]?.el;
+    const target = ordered[targetIdx]?.el;
     if (target) {
       tabStopEl = target;
       target.focus();
