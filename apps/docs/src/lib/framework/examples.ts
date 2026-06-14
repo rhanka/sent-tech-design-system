@@ -160,6 +160,8 @@ export type ComponentName =
   | "WaffleChart"
   | "RibbonChart"
   | "AnomalySwimLaneChart"
+  | "FlamegraphChart"
+  | "TraceWaterfallChart"
   | "FunnelChart"
   | "WaterfallChart"
   | "TreemapChart"
