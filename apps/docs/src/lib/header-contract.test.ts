@@ -111,7 +111,7 @@ describe("docs header alignment contract", () => {
 describe("docs themed chrome contract", () => {
   it("wires dedicated chrome shells for mapped import themes", () => {
     expect(layoutSource).toContain('const useCustomChrome = $derived(');
-    expect(layoutSource).toContain('browser && (activeThemeId === "carbon" || activeThemeId === "dsfr" || activeThemeId === "airbus" || activeThemeId === "canada" || activeThemeId === "quebec" || activeThemeId === "lightspeed" || activeThemeId === "desjardins" || activeThemeId === "ssense" || activeThemeId === "ubisoft" || activeThemeId === "cirque-du-soleil" || activeThemeId === "cgi" || activeThemeId === "national-bank")');
+    expect(layoutSource).toContain('browser && (activeThemeId === "carbon" || activeThemeId === "dsfr" || activeThemeId === "airbus" || activeThemeId === "canada" || activeThemeId === "quebec" || activeThemeId === "lightspeed" || activeThemeId === "desjardins" || activeThemeId === "ssense" || activeThemeId === "ubisoft" || activeThemeId === "cirque-du-soleil" || activeThemeId === "cgi" || activeThemeId === "national-bank" || activeThemeId === "bombardier" || activeThemeId === "saq" || activeThemeId === "nuvei" || activeThemeId === "coveo")');
     expect(layoutSource).toContain("<ChromeCarbon");
     expect(layoutSource).toContain("<ChromeLightspeed");
     expect(layoutSource).toContain("<ChromeDesjardins");
@@ -120,6 +120,10 @@ describe("docs themed chrome contract", () => {
     expect(layoutSource).toContain("<ChromeCirqueDuSoleil");
     expect(layoutSource).toContain("<ChromeCgi");
     expect(layoutSource).toContain("<ChromeNationalBank");
+    expect(layoutSource).toContain("<ChromeBombardier");
+    expect(layoutSource).toContain("<ChromeSaq");
+    expect(layoutSource).toContain("<ChromeNuvei");
+    expect(layoutSource).toContain("<ChromeCoveo");
     expect(layoutSource).toContain("<ChromeDsfr");
     expect(layoutSource).toContain("<ChromeAirbus");
     expect(layoutSource).toContain("<ChromeCanada");
