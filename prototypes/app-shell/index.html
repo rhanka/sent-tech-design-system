@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="fr" data-theme="sent-tech">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Prototype go/no-go — sentropic-app-shell</title>
+    <style>
+      /* Les tokens --st-* sont déclarés au :root de l'HÔTE (comme un thème DS).
+         Le Web Component (Shadow DOM) doit les hériter et se recolorer SANS
+         changer de structure quand on bascule de thème. */
+      :root[data-theme="sent-tech"] {
+        --st-semantic-surface-default: #ffffff;
+        --st-semantic-text-primary: #0f172a;
+        --st-semantic-text-secondary: #475569;
+        --st-semantic-border-subtle: #e2e8f0;
+        --st-font-sans: Inter, system-ui, sans-serif;
+        --st-spacing-4: 1rem;
+        --st-spacing-6: 1.5rem;
+        --st-shadow-lg: 0 10px 40px rgba(15, 23, 42, 0.18);
+      }
+      :root[data-theme="carbon"] {
+        --st-semantic-surface-default: #161616;
+        --st-semantic-text-primary: #f4f4f4;
+        --st-semantic-text-secondary: #a8a8a8;
+        --st-semantic-border-subtle: #393939;
+        --st-font-sans: "IBM Plex Sans", system-ui, sans-serif;
+        --st-spacing-4: 1rem;
+        --st-spacing-6: 1.5rem;
+        --st-shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.5);
+      }
+      body {
+        margin: 0;
+        background: var(--st-semantic-surface-default);
+        color: var(--st-semantic-text-primary);
+      }
+      .content { padding: 2rem; min-height: 200vh; }
+      .ztest {
+        position: relative;
+        z-index: 9999;
+        margin-top: 2rem;
+        padding: 1rem;
+        background: hotpink;
+        color: #000;
+        font-weight: 700;
+      }
+      button { font: inherit; padding: 0.5rem 0.75rem; cursor: pointer; }
+    </style>
+    <script type="module" src="./sentropic-app-shell.js"></script>
+  </head>
+  <body>
+    <sentropic-app-shell></sentropic-app-shell>
+    <div class="content">
+      <button
+        id="toggle-theme"
+        onclick="document.documentElement.dataset.theme = document.documentElement.dataset.theme === 'carbon' ? 'sent-tech' : 'carbon'"
+      >
+        Basculer le thème (sent-tech ⇄ carbon)
+      </button>
+      <p>Contenu de page. La structure du header ne doit pas bouger au changement de thème.</p>
+      <div class="ztest" id="ztest">
+        Élément avec z-index: 9999 — la palette (popover top-layer) doit passer AU-DESSUS.
+      </div>
+    </div>
+  </body>
+</html>
