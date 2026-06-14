@@ -128,10 +128,27 @@
   /* Hauteur de barre alignée sur la référence docs (80px) : le Header DS lit
      `--st-component-header-height` (défaut 3.5rem) ; on le porte à 5rem + padding 1.5rem. */
   :global(.st-shell.st-header) { --st-component-header-height: 5rem; padding-inline: var(--st-spacing-6, 1.5rem); }
-  /* ISO réf : contrôles en texte secondaire / poids 650 ; switchers 12px (search reste 14px). */
-  :global(.st-shell .st-button) { color: var(--st-semantic-text-secondary); font-weight: 650; }
-  :global(.st-shell .st-button.st-shell__switch) { font-size: 12px; }
-  :global(.st-shell .st-button svg) { flex-shrink: 0; }
+  /* Style UNIQUE « bouton de contrôle » token-driven, applique a TOUS les controles
+     du header (search, switchers, mode couleur, login) — fini les 3 styles divergents
+     (gris secondary / ghost transparent / foncé). Fond blanc (control-background),
+     bordure subtle, texte secondaire, 12px/650, 36px ; hover = control-hoverBackground. */
+  :global(.st-shell .st-button),
+  :global(.st-shell .st-iconButton) {
+    background: var(--st-component-control-background, var(--st-semantic-surface-default, #ffffff));
+    border: 1px solid var(--st-component-control-border, var(--st-semantic-border-subtle, #e2e8f0));
+    color: var(--st-semantic-text-secondary);
+    font-weight: 650;
+    font-size: 12px;
+    height: 2.25rem;
+    border-radius: var(--st-radius-md, 0.375rem);
+  }
+  :global(.st-shell .st-iconButton) { width: 2.25rem; padding: 0; }
+  :global(.st-shell .st-button:hover),
+  :global(.st-shell .st-iconButton:hover) {
+    background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle, #f1f5f9));
+  }
+  :global(.st-shell .st-button svg),
+  :global(.st-shell .st-iconButton svg) { flex-shrink: 0; }
   .st-shell__brand { align-items: center; color: var(--st-semantic-text-primary); display: inline-flex; flex: 0 0 auto; gap: var(--st-spacing-3, 0.75rem); text-decoration: none; }
   .st-shell__brandMark { width: 2rem; height: 2rem; }
   .st-shell__brandCopy { display: flex; flex-direction: column; gap: 0.08rem; line-height: 1; }
