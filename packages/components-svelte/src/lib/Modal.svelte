@@ -10,6 +10,12 @@
     description?: string;
     closeLabel?: string;
     class?: string;
+    /** Ferme sur clic du fond + Échap (défaut true). `false` = modale « statique »
+     *  (étape obligatoire, wizard) que seul un bouton explicite peut fermer. */
+    dismissible?: boolean;
+    /** Override d'empilement (z-index du fond) — pour superposer une modale au-dessus
+     *  d'un tiroir/une autre modale. Défaut = token `--st-component-overlay-zIndex`. */
+    zIndex?: number;
     children?: Snippet;
     footer?: Snippet;
     onclose?: () => void;
@@ -21,6 +27,8 @@
     description,
     closeLabel = "Close",
     class: className,
+    dismissible = true,
+    zIndex,
     children,
     footer,
     onclose,
@@ -50,6 +58,12 @@
   function requestClose() {
     onclose?.();
     tick().then(() => previousFocus?.focus());
+  }
+
+  function onBackdropClick(event: MouseEvent) {
+    if (dismissible && event.target === event.currentTarget) {
+      requestClose();
+    }
   }
 
   function trapFocus(event: KeyboardEvent) {
@@ -84,6 +98,7 @@
   function onWindowKeydown(event: KeyboardEvent) {
     if (!open) return;
     if (event.key === "Escape") {
+      if (!dismissible) return;
       event.preventDefault();
       requestClose();
       return;
@@ -95,7 +110,12 @@
 <svelte:window onkeydown={onWindowKeydown} />
 
 {#if open}
-  <div class="st-modal__backdrop">
+  <div
+    class="st-modal__backdrop"
+    onclick={onBackdropClick}
+    role="presentation"
+    style={zIndex != null ? `z-index:${zIndex}` : undefined}
+  >
     <section
       {...rest}
       bind:this={dialog}

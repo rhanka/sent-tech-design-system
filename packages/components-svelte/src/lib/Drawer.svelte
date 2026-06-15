@@ -6,7 +6,7 @@
     open?: boolean;
     title: string;
     description?: string;
-    side?: "left" | "right";
+    side?: "left" | "right" | "bottom";
     closeLabel?: string;
     class?: string;
     children?: Snippet;
@@ -107,6 +107,21 @@
     border-right-style: solid;
     border-right-width: 1px;
     left: 0;
+  }
+
+  /* Tiroir ancré en bas (G2) : pleine largeur, hauteur auto plafonnée. Override
+     des assises horizontales du tiroir gauche/droite (largeur fixe + top:0). */
+  .st-drawer--bottom {
+    border-top-style: solid;
+    border-top-width: 1px;
+    bottom: 0;
+    height: auto;
+    left: 0;
+    max-height: min(90vh, var(--st-component-drawer-height, 24rem));
+    max-width: 100vw;
+    right: 0;
+    top: auto;
+    width: 100%;
   }
 
   .st-drawer__header {
