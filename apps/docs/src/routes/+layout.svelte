@@ -116,6 +116,9 @@
   import ChromeEllio from "$lib/chrome/ChromeEllio.svelte";
   import ChromeLionElectric from "$lib/chrome/ChromeLionElectric.svelte";
   import ChromeVideotron from "$lib/chrome/ChromeVideotron.svelte";
+  import ChromeFrankAndOak from "$lib/chrome/ChromeFrankAndOak.svelte";
+  import ChromeSidLee from "$lib/chrome/ChromeSidLee.svelte";
+  import ChromeWorkleap from "$lib/chrome/ChromeWorkleap.svelte";
   import DocsSearch from "$lib/chat/DocsSearch.svelte";
   import { Search as SearchIcon } from "@lucide/svelte";
   // Bascule A/B du header unique « app-shell » (?shell=v2) : wrapper SSR-safe
@@ -418,7 +421,7 @@
   const shellV2 = $derived(browser && page.url.searchParams.get("shell") === "v2");
 
   const useCustomChrome = $derived(
-    !shellV2 && browser && (activeThemeId === "carbon" || activeThemeId === "dsfr" || activeThemeId === "airbus" || activeThemeId === "canada" || activeThemeId === "quebec" || activeThemeId === "lightspeed" || activeThemeId === "desjardins" || activeThemeId === "ssense" || activeThemeId === "ubisoft" || activeThemeId === "cirque-du-soleil" || activeThemeId === "cgi" || activeThemeId === "national-bank" || activeThemeId === "bombardier" || activeThemeId === "saq" || activeThemeId === "nuvei" || activeThemeId === "coveo" || activeThemeId === "cae" || activeThemeId === "stm" || activeThemeId === "circle-k" || activeThemeId === "aldo" || activeThemeId === "brp" || activeThemeId === "air-canada" || activeThemeId === "metro" || activeThemeId === "hopper" || activeThemeId === "cascades" || activeThemeId === "dialogue" || activeThemeId === "moment-factory" || activeThemeId === "genetec" || activeThemeId === "saputo" || activeThemeId === "mirego" || activeThemeId === "ellio" || activeThemeId === "lion-electric" || activeThemeId === "videotron")
+    !shellV2 && browser && (activeThemeId === "carbon" || activeThemeId === "dsfr" || activeThemeId === "airbus" || activeThemeId === "canada" || activeThemeId === "quebec" || activeThemeId === "lightspeed" || activeThemeId === "desjardins" || activeThemeId === "ssense" || activeThemeId === "ubisoft" || activeThemeId === "cirque-du-soleil" || activeThemeId === "cgi" || activeThemeId === "national-bank" || activeThemeId === "bombardier" || activeThemeId === "saq" || activeThemeId === "nuvei" || activeThemeId === "coveo" || activeThemeId === "cae" || activeThemeId === "stm" || activeThemeId === "circle-k" || activeThemeId === "aldo" || activeThemeId === "brp" || activeThemeId === "air-canada" || activeThemeId === "metro" || activeThemeId === "hopper" || activeThemeId === "cascades" || activeThemeId === "dialogue" || activeThemeId === "moment-factory" || activeThemeId === "genetec" || activeThemeId === "saputo" || activeThemeId === "mirego" || activeThemeId === "ellio" || activeThemeId === "lion-electric" || activeThemeId === "videotron" || activeThemeId === "frank-and-oak" || activeThemeId === "sid-lee" || activeThemeId === "workleap")
   );
 
   // siteConfig du shell, câblé au mécanisme EXISTANT du layout (thème
@@ -1444,6 +1447,66 @@
         {@render pageContent()}
       {/snippet}
     </ChromeVideotron>
+  </div>
+
+{:else if useCustomChrome && activeThemeId === "frank-and-oak"}
+  <div data-st-theme={activeThemeId}>
+    <ChromeFrankAndOak
+      activeThemeId={activeThemeId}
+      isThemeOpen={isThemeOpen}
+      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onSearchOpen={openSearch}
+      themeSwitcher={themeSelector}
+      frameworkSwitcher={frameworkSelector}
+      localeSwitcher={langSelector}
+      compareButton={sharedCompareButton}
+      mobileMenuOpen={isMobileMenuOpen}
+      onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
+    >
+      {#snippet children()}
+        {@render pageContent()}
+      {/snippet}
+    </ChromeFrankAndOak>
+  </div>
+
+{:else if useCustomChrome && activeThemeId === "sid-lee"}
+  <div data-st-theme={activeThemeId}>
+    <ChromeSidLee
+      activeThemeId={activeThemeId}
+      isThemeOpen={isThemeOpen}
+      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onSearchOpen={openSearch}
+      themeSwitcher={themeSelector}
+      frameworkSwitcher={frameworkSelector}
+      localeSwitcher={langSelector}
+      compareButton={sharedCompareButton}
+      mobileMenuOpen={isMobileMenuOpen}
+      onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
+    >
+      {#snippet children()}
+        {@render pageContent()}
+      {/snippet}
+    </ChromeSidLee>
+  </div>
+
+{:else if useCustomChrome && activeThemeId === "workleap"}
+  <div data-st-theme={activeThemeId}>
+    <ChromeWorkleap
+      activeThemeId={activeThemeId}
+      isThemeOpen={isThemeOpen}
+      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onSearchOpen={openSearch}
+      themeSwitcher={themeSelector}
+      frameworkSwitcher={frameworkSelector}
+      localeSwitcher={langSelector}
+      compareButton={sharedCompareButton}
+      mobileMenuOpen={isMobileMenuOpen}
+      onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
+    >
+      {#snippet children()}
+        {@render pageContent()}
+      {/snippet}
+    </ChromeWorkleap>
   </div>
 
 {:else}
