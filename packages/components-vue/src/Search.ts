@@ -13,6 +13,8 @@ export type SearchProps = {
   placeholder?: string;
   clearLabel?: string;
   disabled?: boolean;
+  /** Lift the field max-width cap so it fills a narrow drawer/rail (width 100%). */
+  fluid?: boolean;
   id?: string;
   class?: string;
 };
@@ -32,6 +34,7 @@ export const Search = defineComponent({
     placeholder: { type: String, default: undefined },
     clearLabel: { type: String, default: "Clear search" },
     disabled: { type: Boolean, default: false },
+    fluid: { type: Boolean, default: false },
     id: { type: String, default: undefined },
     class: { type: String, default: undefined },
   },
@@ -49,6 +52,7 @@ export const Search = defineComponent({
           class: classNames(
             "st-search",
             `st-search--${props.size}`,
+            props.fluid ? "st-search--fluid" : undefined,
             props.class,
           ),
         },

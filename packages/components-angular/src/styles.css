@@ -17088,3 +17088,175 @@
   font-size: 0.875rem;
   line-height: 1.4;
 }
+
+/* ===========================================================================
+   Wave 1 NavSystem — Overline, StatusDot, NavActionStack + Checkbox/Search ext.
+   Token-only (P-C : anatomie par thème). Aucun hex littéral.
+   =========================================================================== */
+
+/* --- Overline ------------------------------------------------------------ */
+.st-overline {
+  color: var(--st-component-overline-color, var(--st-semantic-text-secondary, inherit));
+  display: var(--st-component-overline-display, inline-block);
+  font-family: inherit;
+  font-size: var(--st-component-overline-fontSize, 0.6875rem);
+  font-weight: var(--st-component-overline-fontWeight, 600);
+  letter-spacing: var(--st-component-overline-letterSpacing, 0.04em);
+  line-height: var(--st-component-overline-lineHeight, 1.3);
+  margin: 0;
+  text-transform: var(--st-component-overline-textTransform, uppercase);
+}
+
+/* --- StatusDot ----------------------------------------------------------- */
+.st-statusDot {
+  align-items: center;
+  color: var(--st-semantic-text-primary, inherit);
+  display: inline-flex;
+  font-family: inherit;
+  gap: var(--st-spacing-2, 0.5rem);
+  line-height: 1;
+  vertical-align: middle;
+}
+
+.st-statusDot__dot {
+  border-radius: var(--st-radius-full, 50%);
+  box-sizing: border-box;
+  display: inline-block;
+  flex: none;
+}
+
+/* Tone background + matching `color` so `currentColor` in the pulse keyframe
+   follows the dot. */
+.st-statusDot__dot--neutral {
+  background-color: var(--st-component-statusDot-neutral, var(--st-semantic-text-secondary));
+  color: var(--st-component-statusDot-neutral, var(--st-semantic-text-secondary));
+}
+.st-statusDot__dot--info {
+  background-color: var(--st-component-statusDot-info, var(--st-semantic-feedback-info));
+  color: var(--st-component-statusDot-info, var(--st-semantic-feedback-info));
+}
+.st-statusDot__dot--success {
+  background-color: var(--st-component-statusDot-success, var(--st-semantic-feedback-success));
+  color: var(--st-component-statusDot-success, var(--st-semantic-feedback-success));
+}
+.st-statusDot__dot--warning {
+  background-color: var(--st-component-statusDot-warning, var(--st-semantic-feedback-warning));
+  color: var(--st-component-statusDot-warning, var(--st-semantic-feedback-warning));
+}
+.st-statusDot__dot--error {
+  background-color: var(--st-component-statusDot-error, var(--st-semantic-feedback-error));
+  color: var(--st-component-statusDot-error, var(--st-semantic-feedback-error));
+}
+
+.st-statusDot__label {
+  color: var(--st-semantic-text-primary, inherit);
+  font-size: var(--st-component-statusDot-labelFontSize, 0.8125rem);
+  font-weight: var(--st-component-statusDot-labelFontWeight, 500);
+}
+
+/* Halo « live » : box-shadow animé. currentColor = la couleur du point. */
+.st-statusDot__dot--pulse {
+  animation: st-statusDot-pulse 1.6s ease-out infinite;
+}
+
+@keyframes st-statusDot-pulse {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, currentColor 55%, transparent);
+  }
+  70% {
+    box-shadow: 0 0 0 var(--st-component-statusDot-pulseSpread, 0.375rem)
+      color-mix(in srgb, currentColor 0%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, currentColor 0%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .st-statusDot__dot--pulse {
+    animation: none;
+  }
+}
+
+/* --- NavActionStack ------------------------------------------------------ */
+.st-navActionStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--st-spacing-4, 1rem);
+  inline-size: 100%;
+}
+
+.st-navActionStack__actions {
+  display: flex;
+  gap: var(--st-spacing-2, 0.5rem);
+}
+
+.st-navActionStack--vertical .st-navActionStack__actions {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.st-navActionStack--horizontal .st-navActionStack__actions {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* Pleine largeur en pile verticale ; largeur naturelle en rangée. */
+.st-navActionStack--vertical .st-navActionStack__item {
+  inline-size: 100%;
+}
+
+.st-navActionStack__danger {
+  display: flex;
+  flex-direction: column;
+  gap: var(--st-spacing-2, 0.5rem);
+}
+
+.st-navActionStack__dangerLabel {
+  color: var(--st-component-overline-color, var(--st-semantic-text-secondary, inherit));
+  display: inline-block;
+  font-size: var(--st-component-overline-fontSize, 0.6875rem);
+  font-weight: var(--st-component-overline-fontWeight, 600);
+  letter-spacing: var(--st-component-overline-letterSpacing, 0.04em);
+  line-height: var(--st-component-overline-lineHeight, 1.3);
+  text-transform: var(--st-component-overline-textTransform, uppercase);
+}
+
+/* La zone sensible est pleine largeur quelle que soit l'orientation. */
+.st-navActionStack .st-navActionStack__dangerAction {
+  inline-size: 100%;
+}
+
+/* --- Checkbox extensions (description + trailing) ------------------------- */
+/* SIGNAL filter row: input + content + trailing count, content fills, trailing
+   pushed to the row end. Top-aligned so the box rides the first text line when a
+   secondary description wraps below the label. */
+.st-choice:has(.st-choice__trailing) {
+  align-items: start;
+  grid-template-columns: auto 1fr auto;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.st-choice__trailing {
+  align-items: center;
+  align-self: start;
+  display: inline-flex;
+  flex: 0 0 auto;
+  justify-content: flex-end;
+}
+
+/* Secondary muted description under the label (SIGNAL filter hint). */
+.st-choice__description {
+  color: var(--st-semantic-text-secondary);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+/* --- Search extension (fluid) -------------------------------------------- */
+/* Fluid mode: lift the width cap so the field fills a narrow drawer/rail. */
+.st-search--fluid {
+  max-width: none;
+  width: 100%;
+}
