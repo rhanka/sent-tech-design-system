@@ -198,6 +198,8 @@ export { ColorSwatch } from "./ColorSwatch.js";
 export type { ColorSwatchShape, ColorSwatchProps } from "./ColorSwatch.js";
 export { ColorScaleBar } from "./ColorScaleBar.js";
 export type { ColorScaleBarOrientation, ColorScaleBarProps } from "./ColorScaleBar.js";
+export { Timeline } from "./Timeline.js";
+export type { TimelineTone, TimelineOrientation, TimelineItem, TimelineProps } from "./Timeline.js";
 export { RibbonChart } from "./RibbonChart.js";
 export type { RibbonChartTone, RibbonChartDatum, RibbonChartProps } from "./RibbonChart.js";
 export { AnomalySwimLaneChart } from "./AnomalySwimLaneChart.js";
