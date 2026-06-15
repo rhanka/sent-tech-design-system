@@ -166,6 +166,7 @@ export type ComponentName =
   | "WaffleChart"
   | "ColorSwatch"
   | "ColorScaleBar"
+  | "Timeline"
   | "RibbonChart"
   | "AnomalySwimLaneChart"
   | "FlamegraphChart"

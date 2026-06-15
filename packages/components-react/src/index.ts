@@ -151,6 +151,8 @@ export { ColorSwatch } from "./ColorSwatch.js";
 export type { ColorSwatchProps, ColorSwatchShape } from "./ColorSwatch.js";
 export { ColorScaleBar } from "./ColorScaleBar.js";
 export type { ColorScaleBarProps, ColorScaleBarOrientation } from "./ColorScaleBar.js";
+export { Timeline } from "./Timeline.js";
+export type { TimelineProps, TimelineItem, TimelineTone, TimelineOrientation } from "./Timeline.js";
 export { RibbonChart } from "./RibbonChart.js";
 export type {
   RibbonChartProps,
