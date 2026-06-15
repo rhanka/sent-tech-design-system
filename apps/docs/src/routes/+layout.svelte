@@ -38,6 +38,11 @@
   import { circleKTheme } from "@sentropic/design-system-theme-circle-k";
   import { aldoTheme } from "@sentropic/design-system-theme-aldo";
   import { brpTheme } from "@sentropic/design-system-theme-brp";
+  import { miregoTheme } from "@sentropic/design-system-theme-mirego";
+  import { ellioTheme } from "@sentropic/design-system-theme-ellio";
+  import { airCanadaTheme } from "@sentropic/design-system-theme-air-canada";
+  import { cascadesTheme } from "@sentropic/design-system-theme-cascades";
+  import { hopperTheme } from "@sentropic/design-system-theme-hopper";
   import {
     DOCS_UTILITY_NAV,
     DOCS_VERSION,
@@ -120,7 +125,7 @@
   // Thèmes proposés : le DS Sentropic de référence + les 2 mappings tiers
   // (DSFR/Carbon) + le thème client Airbus (port d'anatomie).
   // (forge/entropic sont des tenants de démo internes — exclus du sélecteur.)
-  const THEMES: TenantTheme[] = [sentTechTheme, dsfrTheme, carbonTheme, airbusTheme, canadaTheme, quebecTheme, ssenseTheme, lightspeedTheme, desjardinsTheme, nationalBankTheme, cirqueDuSoleilTheme, ubisoftTheme, bombardierTheme, caeTheme, saqTheme, cgiTheme, stmTheme, nuveiTheme, coveoTheme, circleKTheme, aldoTheme, brpTheme];
+  const THEMES: TenantTheme[] = [sentTechTheme, dsfrTheme, carbonTheme, airbusTheme, canadaTheme, quebecTheme, ssenseTheme, lightspeedTheme, desjardinsTheme, nationalBankTheme, cirqueDuSoleilTheme, ubisoftTheme, bombardierTheme, caeTheme, saqTheme, cgiTheme, stmTheme, nuveiTheme, coveoTheme, circleKTheme, aldoTheme, brpTheme, miregoTheme, ellioTheme, airCanadaTheme, cascadesTheme, hopperTheme];
   const THEME_STORAGE_KEY = "st-docs-theme";
   // ── Mode démo (anonymisation pour visiteurs externes) ─────────────────────
   // Les thèmes "tiers" (clones de marques privées : Carbon/IBM, Airbus, …) sont
@@ -130,7 +135,7 @@
   const DEMO_MODE_STORAGE_KEY = "st-docs-demo-mode";
   // Thèmes tiers (clones de marques privées) masqués du sélecteur public, révélés
   // en mode démo. Ajouter ici l'id de chaque nouveau thème de société privée.
-  const HIDDEN_THEME_IDS = new Set<string>(["carbon", "airbus", "ssense", "lightspeed", "desjardins", "national-bank", "cirque-du-soleil", "ubisoft", "bombardier", "cae", "saq", "cgi", "stm", "nuvei", "coveo", "circle-k", "aldo", "brp"]);
+  const HIDDEN_THEME_IDS = new Set<string>(["carbon", "airbus", "ssense", "lightspeed", "desjardins", "national-bank", "cirque-du-soleil", "ubisoft", "bombardier", "cae", "saq", "cgi", "stm", "nuvei", "coveo", "circle-k", "aldo", "brp", "mirego", "ellio", "air-canada", "cascades", "hopper"]);
   let demoMode = $state(browser ? localStorage.getItem(DEMO_MODE_STORAGE_KEY) === "true" : false);
   // Balise <style> du thème de base, injectée en SSR pour le premier rendu.
   // Utilise compileThemeWithModes pour émettre 3 blocs (light + auto dark + explicit dark).
