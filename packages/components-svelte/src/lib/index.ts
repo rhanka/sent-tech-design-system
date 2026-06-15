@@ -112,6 +112,8 @@ export { default as WindBarbChart } from "./WindBarbChart.svelte";
 export { default as RenkoChart } from "./RenkoChart.svelte";
 export { default as PointAndFigureChart } from "./PointAndFigureChart.svelte";
 export { default as WaffleChart } from "./WaffleChart.svelte";
+export { default as ColorSwatch } from "./ColorSwatch.svelte";
+export { default as ColorScaleBar } from "./ColorScaleBar.svelte";
 export { default as RibbonChart } from "./RibbonChart.svelte";
 export { default as AnomalySwimLaneChart } from "./AnomalySwimLaneChart.svelte";
 export { default as FlamegraphChart } from "./FlamegraphChart.svelte";
@@ -299,6 +301,8 @@ export type {
   WaffleTone,
   WaffleChartDatum
 } from "./WaffleChart.svelte";
+export type { ColorSwatchShape } from "./ColorSwatch.svelte";
+export type { ColorScaleBarOrientation } from "./ColorScaleBar.svelte";
 export type {
   RibbonChartTone,
   RibbonChartDatum

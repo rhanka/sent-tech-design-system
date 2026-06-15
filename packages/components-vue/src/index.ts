@@ -275,6 +275,10 @@ export type {
   WaffleTone,
   WaffleChartDatum,
 } from "./WaffleChart.js";
+export { ColorSwatch } from "./ColorSwatch.js";
+export type { ColorSwatchProps, ColorSwatchShape } from "./ColorSwatch.js";
+export { ColorScaleBar } from "./ColorScaleBar.js";
+export type { ColorScaleBarProps, ColorScaleBarOrientation } from "./ColorScaleBar.js";
 export { RibbonChart } from "./RibbonChart.js";
 export type {
   RibbonChartProps,

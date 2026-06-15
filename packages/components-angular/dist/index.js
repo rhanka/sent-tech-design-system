@@ -96,6 +96,8 @@ export { WindBarbChart } from "./WindBarbChart.js";
 export { RenkoChart } from "./RenkoChart.js";
 export { PointAndFigureChart } from "./PointAndFigureChart.js";
 export { WaffleChart } from "./WaffleChart.js";
+export { ColorSwatch } from "./ColorSwatch.js";
+export { ColorScaleBar } from "./ColorScaleBar.js";
 export { RibbonChart } from "./RibbonChart.js";
 export { AnomalySwimLaneChart } from "./AnomalySwimLaneChart.js";
 export { FlamegraphChart } from "./FlamegraphChart.js";

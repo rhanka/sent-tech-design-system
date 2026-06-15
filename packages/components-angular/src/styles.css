@@ -16860,3 +16860,95 @@
     transition: none;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   ColorSwatch — affiche UNE couleur arbitraire (hex/rgb/oklch/token) sous forme
+   de pastille. La couleur passée en prop est rendue via un background inline
+   (raison d'être du composant) ; le style propre ci-dessous reste token-only.
+   --------------------------------------------------------------------------- */
+.st-colorSwatch {
+  align-items: center;
+  color: var(--st-semantic-text-secondary, inherit);
+  display: inline-flex;
+  font-family: inherit;
+  gap: var(--st-spacing-2, 0.5rem);
+  line-height: 1;
+  vertical-align: middle;
+}
+
+.st-colorSwatch__chip {
+  border: var(--st-border-width-thin, 1px) solid
+    var(--st-semantic-border-subtle, var(--st-semantic-border-strong, rgba(0, 0, 0, 0.12)));
+  border-radius: var(--st-radius-sm, 0.25rem);
+  box-sizing: border-box;
+  display: inline-block;
+  flex: none;
+}
+
+.st-colorSwatch--circle .st-colorSwatch__chip {
+  border-radius: var(--st-radius-full, 999px);
+}
+
+.st-colorSwatch--pill .st-colorSwatch__chip {
+  border-radius: var(--st-radius-pill, var(--st-radius-full, 999px));
+}
+
+.st-colorSwatch__label {
+  color: var(--st-semantic-text-primary, inherit);
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------------------------------------------------------------------------
+   ColorScaleBar — échelle de couleur continue (gradient) à partir de stops
+   arbitraires. Le gradient est rendu via un background inline (raison d'être) ;
+   le style propre ci-dessous reste token-only.
+   --------------------------------------------------------------------------- */
+.st-colorScaleBar {
+  color: var(--st-semantic-text-secondary, inherit);
+  display: inline-flex;
+  flex-direction: column;
+  font-family: inherit;
+  gap: var(--st-spacing-1, 0.25rem);
+}
+
+.st-colorScaleBar__label {
+  color: var(--st-semantic-text-primary, inherit);
+  font-size: 0.875rem;
+  line-height: 1.2;
+}
+
+.st-colorScaleBar__track {
+  align-items: center;
+  display: inline-flex;
+  gap: var(--st-spacing-2, 0.5rem);
+}
+
+.st-colorScaleBar--vertical .st-colorScaleBar__track {
+  flex-direction: column;
+}
+
+.st-colorScaleBar__bar {
+  border: var(--st-border-width-thin, 1px) solid
+    var(--st-semantic-border-subtle, var(--st-semantic-border-strong, rgba(0, 0, 0, 0.12)));
+  border-radius: var(--st-radius-sm, 0.25rem);
+  box-sizing: border-box;
+}
+
+.st-colorScaleBar--horizontal .st-colorScaleBar__bar {
+  height: var(--st-colorScaleBar-thickness, 0.75rem);
+  width: var(--st-colorScaleBar-length, 12rem);
+}
+
+.st-colorScaleBar--vertical .st-colorScaleBar__bar {
+  height: var(--st-colorScaleBar-length, 12rem);
+  width: var(--st-colorScaleBar-thickness, 0.75rem);
+}
+
+.st-colorScaleBar__end {
+  color: var(--st-semantic-text-secondary, inherit);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  white-space: nowrap;
+}
