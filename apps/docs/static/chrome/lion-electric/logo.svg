@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Lion Electric (thelionelectric.com) horizontal logo — faithful vector
+  recreation of the brand's official mark. The live site ships only a PNG
+  (LION_New_Logo_Horizontal-scaled.png, no SVG), so this is a measured-clone
+  vector: an electric-blue (#4164FF, the brand --e-global-color-accent) ringed
+  emblem with the lightning bolt, followed by the bold "LION" wordmark in the
+  same electric blue.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 96" role="img" aria-label="Lion Electric" fill="none">
+  <!-- Emblem: ringed circle + lightning bolt -->
+  <circle cx="48" cy="48" r="38" stroke="#4164ff" stroke-width="7"/>
+  <path d="M54 16 L30 52 H46 L42 80 L70 40 H52 Z" fill="#4164ff"/>
+  <!-- Wordmark: LION -->
+  <g fill="#4164ff">
+    <!-- L -->
+    <path d="M108 20 H125 V60 H150 V76 H108 Z"/>
+    <!-- I -->
+    <path d="M160 20 H177 V76 H160 Z"/>
+    <!-- O -->
+    <path d="M214 18 C231 18 244 31 244 48 C244 65 231 78 214 78 C197 78 184 65 184 48 C184 31 197 18 214 18 Z M214 35 C207 35 201 41 201 48 C201 55 207 61 214 61 C221 61 227 55 227 48 C227 41 221 35 214 35 Z"/>
+    <!-- N -->
+    <path d="M256 20 H272 L299 52 V20 H315 V76 H299 L272 44 V76 H256 Z"/>
+  </g>
+</svg>
