@@ -6,6 +6,9 @@
     open?: boolean;
     label: string;
     placement?: "top" | "right" | "bottom" | "left";
+    /** Déclenchement : "manual" (l'hôte pilote `open`, défaut) ou "hover" (ouvre au
+     *  survol ET au focus clavier du déclencheur — a11y, pas souris-seulement). */
+    openOn?: "manual" | "hover";
     class?: string;
     trigger?: Snippet;
     children?: Snippet;
@@ -15,19 +18,29 @@
     open = false,
     label,
     placement = "bottom",
+    openOn = "manual",
     class: className,
     trigger,
     children,
     ...rest
   }: PopoverProps = $props();
 
+  let hovered = $state(false);
+  const visible = $derived(open || (openOn === "hover" && hovered));
+
   const classes = () =>
     ["st-popover", `st-popover--${placement}`, className].filter(Boolean).join(" ");
 </script>
 
-<span class="st-popover-host">
+<span
+  class="st-popover-host"
+  onmouseenter={() => (hovered = true)}
+  onmouseleave={() => (hovered = false)}
+  onfocusin={() => (hovered = true)}
+  onfocusout={() => (hovered = false)}
+>
   {@render trigger?.()}
-  {#if open}
+  {#if visible}
     <section {...rest} class={classes()} role="dialog" aria-label={label}>
       {@render children?.()}
     </section>
