@@ -2060,6 +2060,36 @@ export const COMPONENTS: ComponentEntry[] = [
       fr: "Chip compact affichant une sélection avec compteur et bouton d'effacement.",
       en: "Compact chip showing a selection with count and optional clear button."
     }
+  },
+  {
+    name: "Overline",
+    slug: "overline",
+    status: "documented",
+    category: "other",
+    description: {
+      fr: "Étiquette de section discrète en petites capitales (libellé de groupe au-dessus d'un bloc).",
+      en: "Discreet small-caps section label (group heading above a block)."
+    }
+  },
+  {
+    name: "StatusDot",
+    slug: "status-dot",
+    status: "documented",
+    category: "feedback",
+    description: {
+      fr: "Pastille de statut colorée par tonalité (ou couleur arbitraire), halo « live » optionnel et libellé optionnel.",
+      en: "Status dot colored by tone (or arbitrary color), optional “live” halo and optional label."
+    }
+  },
+  {
+    name: "NavActionStack",
+    slug: "nav-action-stack",
+    status: "documented",
+    category: "navigation",
+    description: {
+      fr: "Pile d'actions avec hiérarchie encodée dans le type (une seule primaire) et zone sensible destructrice isolée.",
+      en: "Action stack with hierarchy encoded in the type (a single primary) and an isolated destructive danger zone."
+    }
   }
 ];
 

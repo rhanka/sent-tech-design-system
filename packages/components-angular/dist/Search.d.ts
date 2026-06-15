@@ -8,6 +8,8 @@ export type SearchProps = {
     value?: string;
     placeholder?: string;
     clearLabel?: string;
+    /** Lift the field max-width cap so it fills a narrow drawer/rail (width 100%). */
+    fluid?: boolean;
     disabled?: boolean;
     id?: string;
     class?: string;
@@ -21,11 +23,12 @@ export declare class Search {
     value?: string;
     placeholder?: string;
     clearLabel?: string;
+    fluid?: boolean;
     disabled?: boolean;
     id?: string;
     classInput?: string;
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<Search, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<Search, "st-search", never, { "label": { "alias": "label"; "required": false; }; "size": { "alias": "size"; "required": false; }; "modelValue": { "alias": "modelValue"; "required": false; }; "value": { "alias": "value"; "required": false; }; "placeholder": { "alias": "placeholder"; "required": false; }; "clearLabel": { "alias": "clearLabel"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "id": { "alias": "id"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<Search, "st-search", never, { "label": { "alias": "label"; "required": false; }; "size": { "alias": "size"; "required": false; }; "modelValue": { "alias": "modelValue"; "required": false; }; "value": { "alias": "value"; "required": false; }; "placeholder": { "alias": "placeholder"; "required": false; }; "clearLabel": { "alias": "clearLabel"; "required": false; }; "fluid": { "alias": "fluid"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "id": { "alias": "id"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
 }
 //# sourceMappingURL=Search.d.ts.map

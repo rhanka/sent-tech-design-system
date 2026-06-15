@@ -1,23 +1,56 @@
 <script lang="ts">
+  import type { Snippet } from "svelte";
   import type { HTMLInputAttributes } from "svelte/elements";
 
   type CheckboxProps = Omit<HTMLInputAttributes, "class" | "type"> & {
     label: string;
     helperText?: string;
+    /** Secondary muted description line under the label (e.g. a filter hint). */
+    description?: string;
+    /** Trailing slot pushed to the row end (e.g. a count Badge). */
+    trailing?: Snippet;
     invalid?: boolean;
     class?: string;
   };
 
-  let { label, helperText, invalid = false, class: className, ...rest }: CheckboxProps = $props();
-  const classes = () => ["st-choice", "st-choice--checkbox", className].filter(Boolean).join(" ");
+  let {
+    label,
+    helperText,
+    description,
+    trailing,
+    invalid = false,
+    class: className,
+    ...rest
+  }: CheckboxProps = $props();
+
+  const uid = $props.id();
+  const descriptionId = `${uid}-description`;
+  // Merge our description id with any consumer-provided aria-describedby so we
+  // never clobber an existing one.
+  const describedBy = () => {
+    if (!description) return rest["aria-describedby"];
+    return [rest["aria-describedby"], descriptionId].filter(Boolean).join(" ");
+  };
+  const classes = () =>
+    ["st-choice", "st-choice--checkbox", description ? "st-choice--described" : null, className]
+      .filter(Boolean)
+      .join(" ");
 </script>
 
 <label class={classes()}>
-  <input {...rest} class="st-choice__input" type="checkbox" aria-invalid={invalid ? "true" : undefined} />
+  <input
+    {...rest}
+    class="st-choice__input"
+    type="checkbox"
+    aria-invalid={invalid ? "true" : undefined}
+    aria-describedby={describedBy()}
+  />
   <span class="st-choice__content">
     <span class="st-choice__label">{label}</span>
+    {#if description}<span class="st-choice__description" id={descriptionId}>{description}</span>{/if}
     {#if helperText}<span class="st-choice__help">{helperText}</span>{/if}
   </span>
+  {#if trailing}<span class="st-choice__trailing">{@render trailing()}</span>{/if}
 </label>
 
 <style>
@@ -28,6 +61,24 @@
     display: inline-grid;
     gap: 0.625rem;
     grid-template-columns: auto 1fr;
+  }
+
+  /* SIGNAL filter row: input + content + trailing count, content fills, trailing
+     pushed to the row end. Top-aligned so the box rides the first text line when a
+     secondary description wraps below the label. */
+  .st-choice:has(.st-choice__trailing) {
+    align-items: start;
+    grid-template-columns: auto 1fr auto;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .st-choice__trailing {
+    align-items: center;
+    align-self: start;
+    display: inline-flex;
+    flex: 0 0 auto;
+    justify-content: flex-end;
   }
 
   .st-choice__input {
@@ -84,5 +135,12 @@
   .st-choice__help {
     color: var(--st-component-field-helpText, var(--st-semantic-text-secondary));
     font-size: 0.8125rem;
+  }
+
+  /* Secondary muted description under the label (SIGNAL filter hint). */
+  .st-choice__description {
+    color: var(--st-semantic-text-secondary);
+    font-size: 0.8125rem;
+    line-height: 1.4;
   }
 </style>

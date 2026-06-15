@@ -10,6 +10,7 @@ export class Search {
     value;
     placeholder;
     clearLabel;
+    fluid;
     disabled;
     id;
     classInput;
@@ -17,7 +18,7 @@ export class Search {
         return ["st-search", this.classInput].filter(Boolean).join(" ");
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Search, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: Search, isStandalone: true, selector: "st-search", inputs: { label: "label", size: "size", modelValue: "modelValue", value: "value", placeholder: "placeholder", clearLabel: "clearLabel", disabled: "disabled", id: "id", classInput: ["class", "classInput"] }, ngImport: i0, template: `
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: Search, isStandalone: true, selector: "st-search", inputs: { label: "label", size: "size", modelValue: "modelValue", value: "value", placeholder: "placeholder", clearLabel: "clearLabel", fluid: "fluid", disabled: "disabled", id: "id", classInput: ["class", "classInput"] }, ngImport: i0, template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
       <ng-content></ng-content>
     </div>
@@ -45,6 +46,8 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
             }], placeholder: [{
                 type: NgInput
             }], clearLabel: [{
+                type: NgInput
+            }], fluid: [{
                 type: NgInput
             }], disabled: [{
                 type: NgInput

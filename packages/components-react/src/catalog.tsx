@@ -445,18 +445,44 @@ export function ChatComposer({ value = "", placeholder = "Message", submitLabel 
 export type ChoiceProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, "type"> & {
   label: React.ReactNode;
   helperText?: React.ReactNode;
+  /** Secondary muted description line under the label (e.g. a filter hint). */
+  description?: React.ReactNode;
+  /** Trailing slot pushed to the row end (e.g. a count Badge). */
+  trailing?: React.ReactNode;
   invalid?: boolean;
 };
 export type CheckboxProps = ChoiceProps;
 export type RadioProps = ChoiceProps;
-function Choice({ type, label, helperText, invalid = false, className, ...rest }: ChoiceProps & { type: "checkbox" | "radio" }) {
+function Choice({ type, label, helperText, description, trailing, invalid = false, className, ...rest }: ChoiceProps & { type: "checkbox" | "radio" }) {
+  const reactId = React.useId();
+  const descriptionId = `${reactId}-description`;
+  // Merge our description id with any consumer-provided aria-describedby so we
+  // never clobber an existing one.
+  const describedBy = description
+    ? [rest["aria-describedby"], descriptionId].filter(Boolean).join(" ")
+    : rest["aria-describedby"];
   return (
-    <label className={classNames("st-choice", `st-choice--${type}`, className)}>
-      <input {...rest} className="st-choice__input" type={type} aria-invalid={invalid ? "true" : undefined} />
+    <label
+      className={classNames(
+        "st-choice",
+        `st-choice--${type}`,
+        description ? "st-choice--described" : null,
+        className,
+      )}
+    >
+      <input
+        {...rest}
+        className="st-choice__input"
+        type={type}
+        aria-invalid={invalid ? "true" : undefined}
+        aria-describedby={describedBy}
+      />
       <span className="st-choice__content">
         <span className="st-choice__label">{label}</span>
+        {description ? <span className="st-choice__description" id={descriptionId}>{description}</span> : null}
         {helperText ? <span className="st-choice__help">{helperText}</span> : null}
       </span>
+      {trailing ? <span className="st-choice__trailing">{trailing}</span> : null}
     </label>
   );
 }
@@ -4137,12 +4163,14 @@ export type SearchProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, "siz
   size?: Size;
   clearLabel?: string;
   onClear?: () => void;
+  /** Lift the field max-width cap so it fills a narrow drawer/rail (width 100%). */
+  fluid?: boolean;
 };
-export function Search({ label, size = "md", clearLabel = "Clear search", onClear, className, ...rest }: SearchProps) {
+export function Search({ label, size = "md", clearLabel = "Clear search", onClear, fluid = false, className, ...rest }: SearchProps) {
   const reactId = React.useId();
   const inputId = rest.id ?? `st-search-${reactId}`;
   return (
-    <div className={classNames("st-search", `st-search--${size}`, className)}>
+    <div className={classNames("st-search", `st-search--${size}`, fluid ? "st-search--fluid" : null, className)}>
       {label ? <label className="st-field__label" htmlFor={inputId}>{label}</label> : null}
       <span className="st-search__icon" aria-hidden="true"><SearchIcon size={16} strokeWidth={2} aria-hidden="true" /></span>
       <input {...rest} id={inputId} className="st-search__control st-search__input" type="search" />

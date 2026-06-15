@@ -1,0 +1,33 @@
+import { Component, Input as NgInput } from "@angular/core";
+
+import { classNames } from "./classNames.js";
+
+/** Balise rendue. `span`/`div` = inline/bloc neutre ; `h2`/`h3` quand l'overline
+ * sert d'en-tête de région (sémantique de titre). */
+export type OverlineAs = "span" | "div" | "h2" | "h3";
+
+export type OverlineProps = {
+  /** Balise : `span` (défaut) inline, `div` bloc, `h2`/`h3` pour un en-tête de région. */
+  as?: OverlineAs;
+  class?: string;
+};
+
+@Component({
+  selector: "st-overline",
+  standalone: true,
+  template: `
+    <div [attr.data-st-component]="componentName" [class]="hostClass">
+      <ng-content></ng-content>
+    </div>
+  `,
+})
+export class Overline {
+  static readonly stComponentName = "Overline";
+  readonly componentName = "Overline";
+  @NgInput() as?: OverlineAs;
+  @NgInput("class") classInput?: string;
+
+  get hostClass(): string {
+    return classNames("st-overline", this.classInput);
+  }
+}

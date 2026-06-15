@@ -12,6 +12,8 @@ export type SearchProps = {
   value?: string;
   placeholder?: string;
   clearLabel?: string;
+  /** Lift the field max-width cap so it fills a narrow drawer/rail (width 100%). */
+  fluid?: boolean;
   disabled?: boolean;
   id?: string;
   class?: string;
@@ -35,6 +37,7 @@ export class Search {
   @NgInput() value?: string;
   @NgInput() placeholder?: string;
   @NgInput() clearLabel?: string;
+  @NgInput() fluid?: boolean;
   @NgInput() disabled?: boolean;
   @NgInput() id?: string;
   @NgInput("class") classInput?: string;
