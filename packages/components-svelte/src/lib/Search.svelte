@@ -11,6 +11,8 @@
     value?: string;
     placeholder?: string;
     clearLabel?: string;
+    /** Lift the field max-width cap so it fills a narrow drawer/rail (width 100%). */
+    fluid?: boolean;
     class?: string;
   };
 
@@ -23,12 +25,14 @@
     value = $bindable(""),
     placeholder = "Search",
     clearLabel = "Clear search",
+    fluid = false,
     disabled,
     class: className,
     ...rest
   }: SearchProps = $props();
 
-  const fieldClasses = () => ["st-field", className].filter(Boolean).join(" ");
+  const fieldClasses = () =>
+    ["st-field", fluid ? "st-search--fluid" : null, className].filter(Boolean).join(" ");
   const groupClasses = () => ["st-search", `st-search--${size}`].join(" ");
   const isInvalid = () => invalid || Boolean(errorText);
 
@@ -79,6 +83,12 @@
     display: grid;
     gap: var(--st-component-field-gap, 0.5rem);
     max-width: var(--st-component-field-maxWidth, 28rem);
+  }
+
+  /* Fluid mode: lift the width cap so the field fills a narrow drawer/rail. */
+  .st-field.st-search--fluid {
+    max-width: none;
+    width: 100%;
   }
 
   .st-field__control {

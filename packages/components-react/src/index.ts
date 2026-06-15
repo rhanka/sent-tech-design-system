@@ -523,3 +523,15 @@ export { LanguageToggle } from "./LanguageToggle.js";
 export type { LanguageToggleProps, LanguageToggleLocale } from "./LanguageToggle.js";
 export { IdentityMenu, identityInitial } from "./IdentityMenu.js";
 export type { IdentityMenuProps, IdentityUser } from "./IdentityMenu.js";
+export { Overline } from "./Overline.js";
+export type { OverlineProps, OverlineAs } from "./Overline.js";
+export { StatusDot } from "./StatusDot.js";
+export type { StatusDotProps, StatusDotTone } from "./StatusDot.js";
+export { NavActionStack } from "./NavActionStack.js";
+export type {
+  NavActionStackProps,
+  NavAction,
+  NavActionKind,
+  NavActionDangerZone,
+  NavActionStackOrientation,
+} from "./NavActionStack.js";
