@@ -96,7 +96,7 @@ describe("docs header alignment contract", () => {
   });
 
   it("includes the imported tenants (Airbus, Canada, Québec) in the theme picker", () => {
-    expect(layoutSource).toContain('const THEMES: TenantTheme[] = [sentTechTheme, dsfrTheme, carbonTheme, airbusTheme, canadaTheme, quebecTheme, ssenseTheme, lightspeedTheme, desjardinsTheme, nationalBankTheme, cirqueDuSoleilTheme, ubisoftTheme, bombardierTheme, caeTheme, saqTheme, cgiTheme, stmTheme, nuveiTheme, coveoTheme, circleKTheme, aldoTheme]');
+    expect(layoutSource).toContain('const THEMES: TenantTheme[] = [sentTechTheme, dsfrTheme, carbonTheme, airbusTheme, canadaTheme, quebecTheme, ssenseTheme, lightspeedTheme, desjardinsTheme, nationalBankTheme, cirqueDuSoleilTheme, ubisoftTheme, bombardierTheme, caeTheme, saqTheme, cgiTheme, stmTheme, nuveiTheme, coveoTheme, circleKTheme, aldoTheme, brpTheme]');
   });
 
   it("does not render fake auth access in the public docs header", () => {
@@ -117,7 +117,7 @@ describe("docs header alignment contract", () => {
 describe("docs themed chrome contract", () => {
   it("wires dedicated chrome shells for mapped import themes", () => {
     expect(layoutSource).toContain('const useCustomChrome = $derived(');
-    expect(layoutSource).toContain('browser && (activeThemeId === "carbon" || activeThemeId === "dsfr" || activeThemeId === "airbus" || activeThemeId === "canada" || activeThemeId === "quebec" || activeThemeId === "lightspeed" || activeThemeId === "desjardins" || activeThemeId === "ssense" || activeThemeId === "ubisoft" || activeThemeId === "cirque-du-soleil" || activeThemeId === "cgi" || activeThemeId === "national-bank" || activeThemeId === "bombardier" || activeThemeId === "saq" || activeThemeId === "nuvei" || activeThemeId === "coveo" || activeThemeId === "cae" || activeThemeId === "stm" || activeThemeId === "circle-k" || activeThemeId === "aldo")');
+    expect(layoutSource).toContain('browser && (activeThemeId === "carbon" || activeThemeId === "dsfr" || activeThemeId === "airbus" || activeThemeId === "canada" || activeThemeId === "quebec" || activeThemeId === "lightspeed" || activeThemeId === "desjardins" || activeThemeId === "ssense" || activeThemeId === "ubisoft" || activeThemeId === "cirque-du-soleil" || activeThemeId === "cgi" || activeThemeId === "national-bank" || activeThemeId === "bombardier" || activeThemeId === "saq" || activeThemeId === "nuvei" || activeThemeId === "coveo" || activeThemeId === "cae" || activeThemeId === "stm" || activeThemeId === "circle-k" || activeThemeId === "aldo" || activeThemeId === "brp")');
     expect(layoutSource).toContain("<ChromeCarbon");
     expect(layoutSource).toContain("<ChromeLightspeed");
     expect(layoutSource).toContain("<ChromeDesjardins");
@@ -134,6 +134,7 @@ describe("docs themed chrome contract", () => {
     expect(layoutSource).toContain("<ChromeStm");
     expect(layoutSource).toContain("<ChromeCircleK");
     expect(layoutSource).toContain("<ChromeAldo");
+    expect(layoutSource).toContain("<ChromeBrp");
     expect(layoutSource).toContain("<ChromeDsfr");
     expect(layoutSource).toContain("<ChromeAirbus");
     expect(layoutSource).toContain("<ChromeCanada");
