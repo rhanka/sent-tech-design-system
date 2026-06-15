@@ -30,10 +30,16 @@
   let panel: HTMLDivElement | undefined = $state();
   let top = $state(0);
   let left = $state(0);
+  let maxHeight = $state(0);
   let alignmentRight = $state(false);
   let alignmentCenter = $state(false);
 
   const GAP = 4;
+  // Marge anti-débordement entre le panneau et le bord du viewport.
+  const VIEWPORT_MARGIN = 8;
+  // Plancher de hauteur : sous ce seuil on garde une fenêtre scrollable utilisable
+  // plutôt qu'un menu écrasé (cas rare d'un déclencheur collé au bord).
+  const MIN_HEIGHT = 160;
 
   function computePosition() {
     if (!trigger) return;
@@ -52,8 +58,17 @@
       // We don't know the panel height yet on first frame; position the panel's
       // bottom edge above the trigger using transform.
       top = rect.top + window.scrollY - GAP;
+      // Espace réellement disponible AU-DESSUS du déclencheur (le panneau est
+      // remonté de 100% de sa hauteur), borné pour rester dans le viewport.
+      maxHeight = Math.max(rect.top - GAP - VIEWPORT_MARGIN, MIN_HEIGHT);
     } else {
       top = rect.bottom + window.scrollY + GAP;
+      // Espace réellement disponible SOUS le déclencheur : c'est ce qui manquait —
+      // `max-height: 100vh` ignorait l'offset du panneau et débordait par le bas.
+      maxHeight = Math.max(
+        window.innerHeight - rect.bottom - GAP - VIEWPORT_MARGIN,
+        MIN_HEIGHT
+      );
     }
 
     if (resolvedAlign === "end") {
@@ -124,7 +139,7 @@
     class={classes()}
     role="dialog"
     aria-label={label}
-    style={`top: ${top}px; left: ${left}px;`}
+    style={`top: ${top}px; left: ${left}px;${maxHeight ? ` max-height: ${maxHeight}px;` : ""}`}
   >
     {@render children?.()}
   </div>
