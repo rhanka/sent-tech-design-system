@@ -37,6 +37,7 @@
   import { coveoTheme } from "@sentropic/design-system-theme-coveo";
   import { circleKTheme } from "@sentropic/design-system-theme-circle-k";
   import { aldoTheme } from "@sentropic/design-system-theme-aldo";
+  import { brpTheme } from "@sentropic/design-system-theme-brp";
   import {
     DOCS_UTILITY_NAV,
     DOCS_VERSION,
@@ -87,6 +88,7 @@
   import ChromeStm from "$lib/chrome/ChromeStm.svelte";
   import ChromeCircleK from "$lib/chrome/ChromeCircleK.svelte";
   import ChromeAldo from "$lib/chrome/ChromeAldo.svelte";
+  import ChromeBrp from "$lib/chrome/ChromeBrp.svelte";
   import DocsSearch from "$lib/chat/DocsSearch.svelte";
   import { Search as SearchIcon } from "@lucide/svelte";
   // Bascule A/B du header unique « app-shell » (?shell=v2) : wrapper SSR-safe
@@ -118,7 +120,7 @@
   // Thèmes proposés : le DS Sentropic de référence + les 2 mappings tiers
   // (DSFR/Carbon) + le thème client Airbus (port d'anatomie).
   // (forge/entropic sont des tenants de démo internes — exclus du sélecteur.)
-  const THEMES: TenantTheme[] = [sentTechTheme, dsfrTheme, carbonTheme, airbusTheme, canadaTheme, quebecTheme, ssenseTheme, lightspeedTheme, desjardinsTheme, nationalBankTheme, cirqueDuSoleilTheme, ubisoftTheme, bombardierTheme, caeTheme, saqTheme, cgiTheme, stmTheme, nuveiTheme, coveoTheme, circleKTheme, aldoTheme];
+  const THEMES: TenantTheme[] = [sentTechTheme, dsfrTheme, carbonTheme, airbusTheme, canadaTheme, quebecTheme, ssenseTheme, lightspeedTheme, desjardinsTheme, nationalBankTheme, cirqueDuSoleilTheme, ubisoftTheme, bombardierTheme, caeTheme, saqTheme, cgiTheme, stmTheme, nuveiTheme, coveoTheme, circleKTheme, aldoTheme, brpTheme];
   const THEME_STORAGE_KEY = "st-docs-theme";
   // ── Mode démo (anonymisation pour visiteurs externes) ─────────────────────
   // Les thèmes "tiers" (clones de marques privées : Carbon/IBM, Airbus, …) sont
@@ -128,7 +130,7 @@
   const DEMO_MODE_STORAGE_KEY = "st-docs-demo-mode";
   // Thèmes tiers (clones de marques privées) masqués du sélecteur public, révélés
   // en mode démo. Ajouter ici l'id de chaque nouveau thème de société privée.
-  const HIDDEN_THEME_IDS = new Set<string>(["carbon", "airbus", "ssense", "lightspeed", "desjardins", "national-bank", "cirque-du-soleil", "ubisoft", "bombardier", "cae", "saq", "cgi", "stm", "nuvei", "coveo", "circle-k", "aldo"]);
+  const HIDDEN_THEME_IDS = new Set<string>(["carbon", "airbus", "ssense", "lightspeed", "desjardins", "national-bank", "cirque-du-soleil", "ubisoft", "bombardier", "cae", "saq", "cgi", "stm", "nuvei", "coveo", "circle-k", "aldo", "brp"]);
   let demoMode = $state(browser ? localStorage.getItem(DEMO_MODE_STORAGE_KEY) === "true" : false);
   // Balise <style> du thème de base, injectée en SSR pour le premier rendu.
   // Utilise compileThemeWithModes pour émettre 3 blocs (light + auto dark + explicit dark).
@@ -389,7 +391,7 @@
   const shellV2 = $derived(browser && page.url.searchParams.get("shell") === "v2");
 
   const useCustomChrome = $derived(
-    !shellV2 && browser && (activeThemeId === "carbon" || activeThemeId === "dsfr" || activeThemeId === "airbus" || activeThemeId === "canada" || activeThemeId === "quebec" || activeThemeId === "lightspeed" || activeThemeId === "desjardins" || activeThemeId === "ssense" || activeThemeId === "ubisoft" || activeThemeId === "cirque-du-soleil" || activeThemeId === "cgi" || activeThemeId === "national-bank" || activeThemeId === "bombardier" || activeThemeId === "saq" || activeThemeId === "nuvei" || activeThemeId === "coveo" || activeThemeId === "cae" || activeThemeId === "stm" || activeThemeId === "circle-k" || activeThemeId === "aldo")
+    !shellV2 && browser && (activeThemeId === "carbon" || activeThemeId === "dsfr" || activeThemeId === "airbus" || activeThemeId === "canada" || activeThemeId === "quebec" || activeThemeId === "lightspeed" || activeThemeId === "desjardins" || activeThemeId === "ssense" || activeThemeId === "ubisoft" || activeThemeId === "cirque-du-soleil" || activeThemeId === "cgi" || activeThemeId === "national-bank" || activeThemeId === "bombardier" || activeThemeId === "saq" || activeThemeId === "nuvei" || activeThemeId === "coveo" || activeThemeId === "cae" || activeThemeId === "stm" || activeThemeId === "circle-k" || activeThemeId === "aldo" || activeThemeId === "brp")
   );
 
   // siteConfig du shell, câblé au mécanisme EXISTANT du layout (thème
@@ -1157,6 +1159,26 @@
     </ChromeAldo>
   </div>
 
+{:else if useCustomChrome && activeThemeId === "brp"}
+  <div data-st-theme={activeThemeId}>
+    <ChromeBrp
+      activeThemeId={activeThemeId}
+      isThemeOpen={isThemeOpen}
+      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onSearchOpen={openSearch}
+      themeSwitcher={themeSelector}
+      frameworkSwitcher={frameworkSelector}
+      localeSwitcher={langSelector}
+      compareButton={sharedCompareButton}
+      mobileMenuOpen={isMobileMenuOpen}
+      onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
+    >
+      {#snippet children()}
+        {@render pageContent()}
+      {/snippet}
+    </ChromeBrp>
+  </div>
+
 {:else}
   <!-- ── Chrome sent-tech par défaut (SSR + thème sent-tech) ── -->
   <a class="docs-skip-link" href="#main-content">Aller au contenu</a>
@@ -1313,7 +1335,7 @@
               <a
                 class="docs-side-section-link"
                 href="/"
-                aria-current={page.url.pathname === "/" || page.url.pathname === "/preview" ? "page" : undefined}
+                aria-current={page.url.pathname === "/" ? "page" : undefined}
               >
                 {locale.value === "fr" ? "Documentation" : "Documentation"}
               </a>
@@ -1337,8 +1359,8 @@
             <h2 id="docs-components-heading">
               <a
                 class="docs-side-section-link"
-                href="/#components"
-                aria-current={isActive("/#components") ? "page" : undefined}
+                href="/components"
+                aria-current={isActive("/components") ? "page" : undefined}
               >
                 {locale.value === "fr" ? "Composants" : "Components"}
               </a>
