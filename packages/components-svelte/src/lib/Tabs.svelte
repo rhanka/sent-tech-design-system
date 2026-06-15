@@ -1,8 +1,11 @@
 <script lang="ts" module>
+  import type { Snippet } from "svelte";
+
   export interface TabItem {
     value: string;
     label: string;
-    content: string;
+    /** Contenu du panneau : texte simple OU un Snippet (composant/markup riche). */
+    content: string | Snippet;
     disabled?: boolean;
   }
 </script>
@@ -33,6 +36,7 @@
   );
   const classes = () => ["st-tabs", className].filter(Boolean).join(" ");
   const activeItem = () => items.find((item) => item.value === current) ?? items[0];
+  const panelContent = $derived(activeItem()?.content);
 
   function select(value: string): void {
     selected = value;
@@ -57,7 +61,11 @@
     {/each}
   </div>
   <div class="st-tabs__panel" role="tabpanel">
-    {activeItem()?.content}
+    {#if typeof panelContent === "function"}
+      {@render panelContent()}
+    {:else}
+      {panelContent}
+    {/if}
   </div>
 </section>
 
