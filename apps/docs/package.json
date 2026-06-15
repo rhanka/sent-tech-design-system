@@ -11,7 +11,7 @@
     "@lucide/svelte": "^0.562.0",
     "@sentropic/app-shell": "*",
     "@sentropic/design-system-react": "0.36.41",
-    "@sentropic/design-system-svelte": "0.34.42",
+    "@sentropic/design-system-svelte": "0.34.43",
     "@sentropic/design-system-theme-airbus": "0.1.0",
     "@sentropic/design-system-theme-aldo": "0.1.0",
     "@sentropic/design-system-theme-bombardier": "0.1.0",
