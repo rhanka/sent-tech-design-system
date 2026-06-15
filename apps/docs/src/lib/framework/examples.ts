@@ -164,6 +164,8 @@ export type ComponentName =
   | "RenkoChart"
   | "PointAndFigureChart"
   | "WaffleChart"
+  | "ColorSwatch"
+  | "ColorScaleBar"
   | "RibbonChart"
   | "AnomalySwimLaneChart"
   | "FlamegraphChart"

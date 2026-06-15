@@ -1161,6 +1161,26 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "ColorSwatch",
+    slug: "color-swatch",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Pastille d'une couleur arbitraire (hex/rgb/oklch/token) avec libellé optionnel : brique d'une palette ou d'une légende.",
+      en: "Swatch of an arbitrary color (hex/rgb/oklch/token) with an optional label: a palette or legend building block."
+    }
+  },
+  {
+    name: "ColorScaleBar",
+    slug: "color-scale-bar",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Échelle de couleur continue (gradient) à partir de stops arbitraires, avec libellés d'extrémités min/max.",
+      en: "Continuous color scale (gradient) from arbitrary stops, with optional min/max end labels."
+    }
+  },
+  {
     name: "RibbonChart",
     slug: "ribbon-chart",
     status: "documented",
