@@ -1181,6 +1181,16 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "Timeline",
+    slug: "timeline",
+    status: "documented",
+    category: "feedback",
+    description: {
+      fr: "Liste verticale/horizontale d'événements datés : ligne de connexion, pastilles de statut, titre, méta (date) et description par item.",
+      en: "Vertical/horizontal list of dated events: a connecting line, status dots, title, meta (date) and description per item."
+    }
+  },
+  {
     name: "RibbonChart",
     slug: "ribbon-chart",
     status: "documented",
