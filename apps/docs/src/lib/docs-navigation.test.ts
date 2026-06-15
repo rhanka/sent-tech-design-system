@@ -42,7 +42,7 @@ describe("docs navigation model", () => {
       "Composants",
       "Vues"
     ]);
-    expect(DOCS_TOP_NAV.map((item) => item.href)).toEqual(["/", "/#components", "/views"]);
+    expect(DOCS_TOP_NAV.map((item) => item.href)).toEqual(["/", "/components", "/views"]);
   });
 
   it("localizes top and side navigation labels", () => {
@@ -56,40 +56,31 @@ describe("docs navigation model", () => {
       "Vue d'ensemble",
       "Fondations",
       "Tokens",
-      "Thèmes",
-      "Contrats",
-      "Aperçu multi-framework"
+      "Thèmes"
     ]);
     expect(buildFoundationNav("en").map((item) => item.label)).toEqual([
       "Overview",
       "Foundations",
       "Tokens",
-      "Themes",
-      "Contracts",
-      "Multi-framework preview"
+      "Themes"
     ]);
   });
 
-  it("keeps previously top-level entries reachable under the Documentation track", () => {
+  it("keeps the Documentation sub-nav to page sections (Contrats fusionné dans Thèmes, Aperçu hors menu)", () => {
     expect(buildFoundationNav("fr").map((item) => item.href)).toEqual([
       "/",
       "/#foundations",
       "/#tokens",
-      "/#themes",
-      "/#contracts",
-      "/preview"
+      "/#themes"
     ]);
-    // Contrats + Aperçu, jadis top-level, sont désormais sous Documentation —
-    // aucun lien orphelin après la réduction du premier niveau à 3 pistes.
-    expect(buildFoundationNav("fr").some((item) => item.href === "/preview")).toBe(true);
-    expect(buildFoundationNav("fr").some((item) => item.href === "/#contracts")).toBe(true);
+    // Aperçu multi-framework + Contrats retirés du menu latéral (demande user).
+    expect(buildFoundationNav("fr").some((item) => item.href === "/preview")).toBe(false);
+    expect(buildFoundationNav("fr").some((item) => item.href === "/#contracts")).toBe(false);
     expect(DOCS_FOUNDATION_NAV.map((item) => item.label)).toEqual([
       "Vue d'ensemble",
       "Fondations",
       "Tokens",
-      "Thèmes",
-      "Contrats",
-      "Aperçu multi-framework"
+      "Thèmes"
     ]);
   });
 

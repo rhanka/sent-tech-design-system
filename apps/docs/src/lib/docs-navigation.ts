@@ -51,7 +51,7 @@ interface DocsNavDefinition {
 // Composants ouvre le catalogue ; Vues ouvre la galerie de patrons par domaine.
 const DOCS_TOP_NAV_DEFINITIONS: DocsNavDefinition[] = [
   { label: { fr: "Documentation", en: "Documentation" }, href: "/" },
-  { label: { fr: "Composants", en: "Components" }, href: "/#components" },
+  { label: { fr: "Composants", en: "Components" }, href: "/components" },
   { label: { fr: "Vues", en: "Views" }, href: "/views" }
 ];
 
@@ -63,16 +63,14 @@ export const DOCS_UTILITY_NAV: DocsNavItem[] = [
   }
 ];
 
-// Sous-nav de la piste « Documentation » : sections de la page d'accueil +
-// l'aperçu multi-framework. Tout ce qui était jadis top-level (Contrats, Aperçu)
-// reste accessible ici — premier niveau réduit à 3 pistes sans rien orpheliner.
+// Sous-nav de la piste « Documentation » : sections de la page d'accueil.
+// Contrats fusionné dans Thèmes ; l'aperçu multi-framework n'est plus dans le menu
+// latéral (chaque page composant rend déjà les frameworks).
 const DOCS_FOUNDATION_NAV_DEFINITIONS: DocsNavDefinition[] = [
   { label: { fr: "Vue d'ensemble", en: "Overview" }, href: "/" },
   { label: { fr: "Fondations", en: "Foundations" }, href: "/#foundations" },
   { label: { fr: "Tokens", en: "Tokens" }, href: "/#tokens" },
-  { label: { fr: "Thèmes", en: "Themes" }, href: "/#themes" },
-  { label: { fr: "Contrats", en: "Contracts" }, href: "/#contracts" },
-  { label: { fr: "Aperçu multi-framework", en: "Multi-framework preview" }, href: "/preview" }
+  { label: { fr: "Thèmes", en: "Themes" }, href: "/#themes" }
 ];
 
 function localizeNavItems(items: DocsNavDefinition[], locale: Locale): DocsNavItem[] {
@@ -200,6 +198,13 @@ export function resolveBreadcrumb(pathname: string, locale: Locale = "fr"): Docs
     ];
   }
 
+  if (pathname === "/components") {
+    return [
+      { label: ROOT_LABEL[locale], href: "/" },
+      { label: COMPONENTS_LABEL[locale], href: "/components" }
+    ];
+  }
+
   if (pathname.startsWith("/components/")) {
     const slug = pathname.split("/").filter(Boolean).at(-1);
     const component = COMPONENTS.find(
@@ -208,7 +213,7 @@ export function resolveBreadcrumb(pathname: string, locale: Locale = "fr"): Docs
 
     return [
       { label: ROOT_LABEL[locale], href: "/" },
-      { label: COMPONENTS_LABEL[locale], href: "/#components" },
+      { label: COMPONENTS_LABEL[locale], href: "/components" },
       {
         label: component?.name ?? COMPONENT_FALLBACK_LABEL[locale],
         href: pathname
