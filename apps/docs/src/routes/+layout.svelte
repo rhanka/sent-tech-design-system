@@ -78,6 +78,11 @@
   import { airTransatTheme } from "@sentropic/design-system-theme-air-transat";
   import { birksTheme } from "@sentropic/design-system-theme-birks";
   import { lufaFarmsTheme } from "@sentropic/design-system-theme-lufa-farms";
+  import { hydroQuebecTheme } from "@sentropic/design-system-theme-hydro-quebec";
+  import { energirTheme } from "@sentropic/design-system-theme-energir";
+  import { agropurTheme } from "@sentropic/design-system-theme-agropur";
+  import { vanHoutteTheme } from "@sentropic/design-system-theme-van-houtte";
+  import { dynamiteTheme } from "@sentropic/design-system-theme-dynamite";
   import {
     DOCS_UTILITY_NAV,
     DOCS_VERSION,
@@ -190,7 +195,7 @@
   // Thèmes proposés : le DS Sentropic de référence + les 2 mappings tiers
   // (DSFR/Carbon) + le thème client Airbus (port d'anatomie).
   // (forge/entropic sont des tenants de démo internes — exclus du sélecteur.)
-  const THEMES: TenantTheme[] = [sentTechTheme, dsfrTheme, carbonTheme, airbusTheme, canadaTheme, quebecTheme, ssenseTheme, lightspeedTheme, desjardinsTheme, nationalBankTheme, cirqueDuSoleilTheme, ubisoftTheme, bombardierTheme, caeTheme, saqTheme, cgiTheme, stmTheme, nuveiTheme, coveoTheme, circleKTheme, aldoTheme, brpTheme, miregoTheme, ellioTheme, airCanadaTheme, cascadesTheme, hopperTheme, dialogueTheme, momentFactoryTheme, lionElectricTheme, genetecTheme, videotronTheme, saputoTheme, metroTheme, workleapTheme, frankAndOakTheme, sidLeeTheme, simonsTheme, laVieEnRoseTheme, dollaramaTheme, bellTheme, behaviourInteractiveTheme, ronaTheme, gameloftTheme, cossetteTheme, eidosMontrealTheme, stingrayTheme, lg2Theme, sonderTheme, plusgradeTheme, gildanTheme, quebecorTheme, cogecoTheme, iaTheme, laurentianBankTheme, jeanCoutuTheme, reitmansTheme, stHubertTheme, benevaTheme, airTransatTheme, birksTheme, lufaFarmsTheme];
+  const THEMES: TenantTheme[] = [sentTechTheme, dsfrTheme, carbonTheme, airbusTheme, canadaTheme, quebecTheme, ssenseTheme, lightspeedTheme, desjardinsTheme, nationalBankTheme, cirqueDuSoleilTheme, ubisoftTheme, bombardierTheme, caeTheme, saqTheme, cgiTheme, stmTheme, nuveiTheme, coveoTheme, circleKTheme, aldoTheme, brpTheme, miregoTheme, ellioTheme, airCanadaTheme, cascadesTheme, hopperTheme, dialogueTheme, momentFactoryTheme, lionElectricTheme, genetecTheme, videotronTheme, saputoTheme, metroTheme, workleapTheme, frankAndOakTheme, sidLeeTheme, simonsTheme, laVieEnRoseTheme, dollaramaTheme, bellTheme, behaviourInteractiveTheme, ronaTheme, gameloftTheme, cossetteTheme, eidosMontrealTheme, stingrayTheme, lg2Theme, sonderTheme, plusgradeTheme, gildanTheme, quebecorTheme, cogecoTheme, iaTheme, laurentianBankTheme, jeanCoutuTheme, reitmansTheme, stHubertTheme, benevaTheme, airTransatTheme, birksTheme, lufaFarmsTheme, hydroQuebecTheme, energirTheme, agropurTheme, vanHoutteTheme, dynamiteTheme];
   const THEME_STORAGE_KEY = "st-docs-theme";
   // ── Mode démo (anonymisation pour visiteurs externes) ─────────────────────
   // Les thèmes "tiers" (clones de marques privées : Carbon/IBM, Airbus, …) sont
@@ -200,7 +205,7 @@
   const DEMO_MODE_STORAGE_KEY = "st-docs-demo-mode";
   // Thèmes tiers (clones de marques privées) masqués du sélecteur public, révélés
   // en mode démo. Ajouter ici l'id de chaque nouveau thème de société privée.
-  const HIDDEN_THEME_IDS = new Set<string>(["carbon", "airbus", "ssense", "lightspeed", "desjardins", "national-bank", "cirque-du-soleil", "ubisoft", "bombardier", "cae", "saq", "cgi", "stm", "nuvei", "coveo", "circle-k", "aldo", "brp", "mirego", "ellio", "air-canada", "cascades", "hopper", "dialogue", "moment-factory", "lion-electric", "genetec", "videotron", "saputo", "metro", "workleap", "frank-and-oak", "sid-lee", "simons", "la-vie-en-rose", "dollarama", "bell", "behaviour-interactive", "rona", "gameloft", "cossette", "eidos-montreal", "stingray", "lg2", "sonder", "plusgrade", "gildan", "quebecor", "cogeco", "ia", "laurentian-bank", "jean-coutu", "reitmans", "st-hubert", "beneva", "air-transat", "birks", "lufa-farms"]);
+  const HIDDEN_THEME_IDS = new Set<string>(["carbon", "airbus", "ssense", "lightspeed", "desjardins", "national-bank", "cirque-du-soleil", "ubisoft", "bombardier", "cae", "saq", "cgi", "stm", "nuvei", "coveo", "circle-k", "aldo", "brp", "mirego", "ellio", "air-canada", "cascades", "hopper", "dialogue", "moment-factory", "lion-electric", "genetec", "videotron", "saputo", "metro", "workleap", "frank-and-oak", "sid-lee", "simons", "la-vie-en-rose", "dollarama", "bell", "behaviour-interactive", "rona", "gameloft", "cossette", "eidos-montreal", "stingray", "lg2", "sonder", "plusgrade", "gildan", "quebecor", "cogeco", "ia", "laurentian-bank", "jean-coutu", "reitmans", "st-hubert", "beneva", "air-transat", "birks", "lufa-farms", "hydro-quebec", "energir", "agropur", "van-houtte", "dynamite"]);
   let demoMode = $state(browser ? localStorage.getItem(DEMO_MODE_STORAGE_KEY) === "true" : false);
   // Balise <style> du thème de base, injectée en SSR pour le premier rendu.
   // Utilise compileThemeWithModes pour émettre 3 blocs (light + auto dark + explicit dark).
