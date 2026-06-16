@@ -207,6 +207,19 @@ export { default as Table } from "./Table.svelte";
 export { default as Tabs } from "./Tabs.svelte";
 export { default as Tag } from "./Tag.svelte";
 export { default as ThemeProvider } from "./ThemeProvider.svelte";
+// App-shell : composant de chrome applicatif (compose Header/Menu/Button du DS).
+// Ex-paquet @sentropic/app-shell, replié ici — c'est un composant comme un autre ;
+// seul son contrat `SiteConfig` (data) est agnostique et réexporté ci-dessous.
+export { default as AppShell } from "./AppShell.svelte";
+export { default as IdentityButton } from "./IdentityButton.svelte";
+export type {
+  SiteConfig,
+  NavItem,
+  ThemeOption,
+  ColorMode,
+  ActionMode
+} from "./site-config";
+export { SITE_CONFIG_SCHEMA_VERSION, SHELL_TOKEN_CONTRACT } from "./site-config";
 export { default as Textarea } from "./Textarea.svelte";
 export { default as TimePicker } from "./TimePicker.svelte";
 export { default as Tile } from "./Tile.svelte";

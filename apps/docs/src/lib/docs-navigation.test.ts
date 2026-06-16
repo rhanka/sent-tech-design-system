@@ -25,9 +25,16 @@ describe("docs navigation model", () => {
     const exportedComponents = [...indexSource.matchAll(/export \{ default as (\w+) \}/g)]
       .map((match) => match[1])
       // ThemeProvider = primitive infra ; GraphLegend = compagnon de ForceGraph
-      // (légende du graphe, documentée avec le composant graphe), pas une brique
-      // catalogue autonome.
-      .filter((name) => name !== "ThemeProvider" && name !== "GraphLegend")
+      // (légende du graphe, documentée avec le composant graphe) ; AppShell +
+      // IdentityButton = chrome applicatif infra (ex-paquet app-shell), pas des
+      // briques catalogue autonomes.
+      .filter(
+        (name) =>
+          name !== "ThemeProvider" &&
+          name !== "GraphLegend" &&
+          name !== "AppShell" &&
+          name !== "IdentityButton"
+      )
       .sort();
     const catalogComponents = COMPONENTS.map((component) => component.name).sort();
 

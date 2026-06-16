@@ -4,10 +4,14 @@
   // identité = DS IdentityMenu ; barre = DS Header. Le look vient donc des tokens DS
   // (--st-component-control-*) → pixel-cohérent avec le header de référence, et les
   // menus sont ceux du DS (fonctionnels). Piloté par `siteConfig`.
-  import { Header, Button, IconButton, MenuPopover, Menu } from "@sentropic/design-system-svelte";
+  import Header from "./Header.svelte";
+  import Button from "./Button.svelte";
+  import IconButton from "./IconButton.svelte";
+  import MenuPopover from "./MenuPopover.svelte";
+  import Menu from "./Menu.svelte";
   import { Boxes, ChevronDown, Globe, Moon, Palette, Search as SearchIcon, Sun } from "@lucide/svelte";
   import IdentityButton from "./IdentityButton.svelte";
-  import type { SiteConfig } from "../site-config";
+  import type { SiteConfig } from "./site-config";
 
   let { config }: { config: SiteConfig } = $props();
 
@@ -75,7 +79,7 @@
           <Boxes size={14} aria-hidden="true" /><span>{fwLabel}</span><ChevronDown size={14} aria-hidden="true" />
         </Button>
       </span>
-      <MenuPopover bind:open={fwOpen} trigger={fwEl} placement="bottom-end">
+      <MenuPopover bind:open={fwOpen} trigger={fwEl} placement="bottom-end" label="Framework">
         <Menu label="Framework" items={fwItems} onselect={(v) => { config.frameworkSwitcher?.onChange?.(v); fwOpen = false; }} />
       </MenuPopover>
     {/if}
@@ -86,7 +90,7 @@
           <Palette size={14} aria-hidden="true" /><span>{themeLabel}</span><ChevronDown size={14} aria-hidden="true" />
         </Button>
       </span>
-      <MenuPopover bind:open={themeOpen} trigger={themeEl} placement="bottom-end">
+      <MenuPopover bind:open={themeOpen} trigger={themeEl} placement="bottom-end" label={t.themeLabel ?? "Thème"}>
         <Menu label={t.themeLabel ?? "Thème"} items={themeItems} onselect={(v) => { t.onThemeChange?.(v); themeOpen = false; }} />
       </MenuPopover>
     {/if}
@@ -103,7 +107,7 @@
           <Globe size={14} aria-hidden="true" /><span>{(config.locale.current ?? "").toUpperCase()}</span><ChevronDown size={14} aria-hidden="true" />
         </Button>
       </span>
-      <MenuPopover bind:open={localeOpen} trigger={localeEl} placement="bottom-end">
+      <MenuPopover bind:open={localeOpen} trigger={localeEl} placement="bottom-end" label={config.locale.label ?? "Langue"}>
         <Menu label={config.locale.label ?? "Langue"} items={localeItems} onselect={(v) => { config.locale?.onChange?.(v); localeOpen = false; }} />
       </MenuPopover>
     {/if}

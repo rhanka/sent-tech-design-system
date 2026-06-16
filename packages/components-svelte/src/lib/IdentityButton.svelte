@@ -20,7 +20,10 @@
   // Dedup l'ancien split (IconButton+user pour l'anonyme / IdentityMenu pour
   // l'authentifie) en UN composant a modes. Compose les composants DS
   // (IconButton / Button / MenuPopover / Menu) — zero primitive nouvelle.
-  import { IconButton, Button, MenuPopover, Menu } from "@sentropic/design-system-svelte";
+  import IconButton from "./IconButton.svelte";
+  import Button from "./Button.svelte";
+  import MenuPopover from "./MenuPopover.svelte";
+  import Menu from "./Menu.svelte";
   import { User } from "@lucide/svelte";
 
   let {
@@ -91,7 +94,7 @@
       </IconButton>
     </span>
     {#if menuItems.length}
-      <MenuPopover bind:open trigger={triggerEl} placement="bottom-end">
+      <MenuPopover bind:open trigger={triggerEl} placement="bottom-end" label={accountLabel}>
         <Menu label={accountLabel} items={menuItems} onselect={onMenuSelect} />
       </MenuPopover>
     {/if}
