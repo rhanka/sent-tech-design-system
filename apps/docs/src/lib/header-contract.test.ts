@@ -117,7 +117,7 @@ describe("docs header alignment contract", () => {
 describe("docs themed chrome contract", () => {
   it("wires dedicated chrome shells for mapped import themes", () => {
     expect(layoutSource).toContain('const useCustomChrome = $derived(');
-    expect(layoutSource).toContain('browser && (activeThemeId === "carbon" || activeThemeId === "dsfr" || activeThemeId === "airbus" || activeThemeId === "canada" || activeThemeId === "quebec" || activeThemeId === "lightspeed" || activeThemeId === "desjardins" || activeThemeId === "ssense" || activeThemeId === "ubisoft" || activeThemeId === "cirque-du-soleil" || activeThemeId === "cgi" || activeThemeId === "national-bank" || activeThemeId === "bombardier" || activeThemeId === "saq" || activeThemeId === "nuvei" || activeThemeId === "coveo" || activeThemeId === "cae" || activeThemeId === "stm" || activeThemeId === "circle-k" || activeThemeId === "aldo" || activeThemeId === "brp" || activeThemeId === "air-canada" || activeThemeId === "metro" || activeThemeId === "hopper" || activeThemeId === "cascades" || activeThemeId === "dialogue" || activeThemeId === "moment-factory" || activeThemeId === "genetec" || activeThemeId === "saputo" || activeThemeId === "mirego" || activeThemeId === "ellio" || activeThemeId === "lion-electric" || activeThemeId === "videotron" || activeThemeId === "frank-and-oak" || activeThemeId === "sid-lee" || activeThemeId === "workleap")');
+    expect(layoutSource).toContain('browser && (activeThemeId === "carbon" || activeThemeId === "dsfr" || activeThemeId === "airbus" || activeThemeId === "canada" || activeThemeId === "quebec" || activeThemeId === "lightspeed" || activeThemeId === "desjardins" || activeThemeId === "ssense" || activeThemeId === "ubisoft" || activeThemeId === "cirque-du-soleil" || activeThemeId === "cgi" || activeThemeId === "national-bank" || activeThemeId === "bombardier" || activeThemeId === "saq" || activeThemeId === "nuvei" || activeThemeId === "coveo" || activeThemeId === "cae" || activeThemeId === "stm" || activeThemeId === "circle-k" || activeThemeId === "aldo" || activeThemeId === "brp" || activeThemeId === "air-canada" || activeThemeId === "metro" || activeThemeId === "hopper" || activeThemeId === "cascades" || activeThemeId === "dialogue" || activeThemeId === "moment-factory" || activeThemeId === "genetec" || activeThemeId === "saputo" || activeThemeId === "mirego" || activeThemeId === "ellio" || activeThemeId === "lion-electric" || activeThemeId === "videotron" || activeThemeId === "frank-and-oak" || activeThemeId === "sid-lee" || activeThemeId === "workleap" || activeThemeId === "simons" || activeThemeId === "la-vie-en-rose" || activeThemeId === "dollarama" || activeThemeId === "bell" || activeThemeId === "behaviour-interactive")');
     expect(layoutSource).toContain("<ChromeCarbon");
     expect(layoutSource).toContain("<ChromeLightspeed");
     expect(layoutSource).toContain("<ChromeDesjardins");
@@ -150,6 +150,11 @@ describe("docs themed chrome contract", () => {
     expect(layoutSource).toContain("<ChromeFrankAndOak");
     expect(layoutSource).toContain("<ChromeSidLee");
     expect(layoutSource).toContain("<ChromeWorkleap");
+    expect(layoutSource).toContain("<ChromeSimons");
+    expect(layoutSource).toContain("<ChromeLaVieEnRose");
+    expect(layoutSource).toContain("<ChromeDollarama");
+    expect(layoutSource).toContain("<ChromeBell");
+    expect(layoutSource).toContain("<ChromeBehaviourInteractive");
     expect(layoutSource).toContain("<ChromeDsfr");
     expect(layoutSource).toContain("<ChromeAirbus");
     expect(layoutSource).toContain("<ChromeCanada");
