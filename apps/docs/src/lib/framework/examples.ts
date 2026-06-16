@@ -169,6 +169,8 @@ export type ComponentName =
   | "Overline"
   | "StatusDot"
   | "NavActionStack"
+  | "NavItem"
+  | "NavSection"
   | "Timeline"
   | "RibbonChart"
   | "AnomalySwimLaneChart"
@@ -11138,6 +11140,140 @@ const range = ref([20, 80]);
 
 <template>
   <RangeSlider label="Plage de prix (€)" v-model="range" :min="0" :max="100" />
+</template>`
+    }
+  },
+
+  "nav-item": {
+    id: "nav-item",
+    slug: "nav-item",
+    nodes: [
+      stack([
+        {
+          comp: "NavItem",
+          props: {
+            title: "Communauté Atlas",
+            caption: "12 signaux actifs",
+            swatch: { tone: "success" },
+            count: 12,
+            depth: 0,
+            status: "success"
+          }
+        },
+        {
+          comp: "NavItem",
+          props: {
+            title: "Zone industrielle",
+            caption: "Potentiel élevé",
+            swatch: { color: "#2563eb", shape: "circle" },
+            count: 3,
+            depth: 1
+          }
+        },
+        {
+          comp: "NavItem",
+          props: {
+            title: "HTTP 403 — accès refusé",
+            depth: 2,
+            status: "error",
+            count: 7
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { NavItem } from "@sentropic/design-system-svelte";
+</script>
+
+<NavItem title="Communauté Atlas" caption="12 signaux actifs" swatch={{ tone: "success" }} count={12} status="success" />
+<NavItem title="Zone industrielle" caption="Potentiel élevé" swatch={{ color: "#2563eb", shape: "circle" }} count={3} depth={1} />
+<NavItem title="HTTP 403 — accès refusé" depth={2} status="error" count={7} />`,
+      react: `import { NavItem } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <NavItem title="Communauté Atlas" caption="12 signaux actifs" swatch={{ tone: "success" }} count={12} status="success" />
+      <NavItem title="Zone industrielle" caption="Potentiel élevé" swatch={{ color: "#2563eb", shape: "circle" }} count={3} depth={1} />
+      <NavItem title="HTTP 403 — accès refusé" depth={2} status="error" count={7} />
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { NavItem } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <NavItem title="Communauté Atlas" caption="12 signaux actifs" :swatch="{ tone: 'success' }" :count="12" status="success" />
+  <NavItem title="Zone industrielle" caption="Potentiel élevé" :swatch="{ color: '#2563eb', shape: 'circle' }" :count="3" :depth="1" />
+  <NavItem title="HTTP 403 — accès refusé" :depth="2" status="error" :count="7" />
+</template>`
+    }
+  },
+
+  "nav-section": {
+    id: "nav-section",
+    slug: "nav-section",
+    nodes: [
+      stack([
+        {
+          comp: "NavSection",
+          props: { label: "Communautés", count: 3 },
+          children: [
+            {
+              comp: "NavItem",
+              props: { title: "Atlas", swatch: { tone: "success" }, count: 12 }
+            },
+            {
+              comp: "NavItem",
+              props: { title: "Borealis", swatch: { tone: "info" }, count: 5 }
+            },
+            {
+              comp: "NavItem",
+              props: { title: "Cygnus", swatch: { tone: "warning" }, count: 1 }
+            }
+          ]
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { NavSection, NavItem, Button } from "@sentropic/design-system-svelte";
+</script>
+
+<NavSection label="Communautés" count={3}>
+  {#snippet action()}
+    <Button variant="ghost" size="sm">+ Ajouter</Button>
+  {/snippet}
+  <NavItem title="Atlas" swatch={{ tone: "success" }} count={12} />
+  <NavItem title="Borealis" swatch={{ tone: "info" }} count={5} />
+  <NavItem title="Cygnus" swatch={{ tone: "warning" }} count={1} />
+</NavSection>`,
+      react: `import { NavSection, NavItem, Button } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <NavSection label="Communautés" count={3} action={<Button variant="ghost" size="sm">+ Ajouter</Button>}>
+      <NavItem title="Atlas" swatch={{ tone: "success" }} count={12} />
+      <NavItem title="Borealis" swatch={{ tone: "info" }} count={5} />
+      <NavItem title="Cygnus" swatch={{ tone: "warning" }} count={1} />
+    </NavSection>
+  );
+}`,
+      vue: `<script setup>
+import { NavSection, NavItem, Button } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <NavSection label="Communautés" :count="3">
+    <template #action>
+      <Button variant="ghost" size="sm">+ Ajouter</Button>
+    </template>
+    <NavItem title="Atlas" :swatch="{ tone: 'success' }" :count="12" />
+    <NavItem title="Borealis" :swatch="{ tone: 'info' }" :count="5" />
+    <NavItem title="Cygnus" :swatch="{ tone: 'warning' }" :count="1" />
+  </NavSection>
 </template>`
     }
   }

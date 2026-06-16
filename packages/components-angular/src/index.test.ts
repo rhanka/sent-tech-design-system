@@ -8,7 +8,12 @@ import * as angular from "../dist/index.js";
 const svelteIndex = readFileSync(resolve("../components-svelte/src/lib/index.ts"), "utf8");
 const componentNames = [
   ...svelteIndex.matchAll(/export \{ default as (\w+)(?:,| \})/g),
-].map((match) => match[1]);
+]
+  .map((match) => match[1])
+  // AppShell + IdentityButton = chrome applicatif svelte-only (ex-paquet app-shell,
+  // replié dans design-system-svelte) ; pas de port Angular (parité différée tant
+  // qu'aucun consommateur non-svelte ne le demande).
+  .filter((name) => name !== "AppShell" && name !== "IdentityButton");
 
 describe("Angular public surface", () => {
   it.each(componentNames)("exports standalone %s component", (name) => {

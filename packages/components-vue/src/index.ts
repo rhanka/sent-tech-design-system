@@ -5,7 +5,7 @@ export type { AccordionProps, AccordionItem } from "./Accordion.js";
 export { Alert } from "./Alert.js";
 export type { AlertProps, AlertTone } from "./Alert.js";
 export { Badge } from "./Badge.js";
-export type { BadgeProps, BadgeTone } from "./Badge.js";
+export type { BadgeProps, BadgeTone, BadgeShape, BadgeSize } from "./Badge.js";
 export { Breadcrumb } from "./Breadcrumb.js";
 export type { BreadcrumbProps, BreadcrumbItem } from "./Breadcrumb.js";
 export { Button } from "./Button.js";
@@ -595,3 +595,15 @@ export type {
   NavActionDangerZone,
   NavActionStackOrientation,
 } from "./NavActionStack.js";
+export { NavItem } from "./NavItem.js";
+export type {
+  NavItemProps,
+  NavItemDepth,
+  NavItemStatus,
+  NavItemSwatch,
+} from "./NavItem.js";
+export { NavSection } from "./NavSection.js";
+export type {
+  NavSectionProps,
+  NavSectionHeadingLevel,
+} from "./NavSection.js";

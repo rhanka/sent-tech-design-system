@@ -2,17 +2,29 @@ import React from "react";
 import { ChevronDown } from "lucide-react";
 import { classNames } from "./classNames.js";
 
-export type CollapsibleProps = Omit<React.HTMLAttributes<HTMLDivElement>, "className" | "title"> & {
+export type CollapsibleProps = Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "className" | "title" | "onToggle"
+> & {
   /** État ouvert (contrôlable). */
   open?: boolean;
   title: string;
   disabled?: boolean;
+  /**
+   * Trailing content rendered inside the trigger, BETWEEN the title and the
+   * chevron (e.g. a count Badge, a status Tag, a glyph). The chevron stays the
+   * rightmost affordance. If the trailing content carries information SR users
+   * need as part of the trigger name, set `aria-label` on the Collapsible via
+   * `...rest`. Additive: with `trailing` unset the trigger renders
+   * byte-identically to before.
+   */
+  trailing?: React.ReactNode;
   onToggle?: (open: boolean) => void;
   className?: string;
 };
 
 export const Collapsible = React.forwardRef<HTMLDivElement, CollapsibleProps>(
-  ({ open: openProp, title, disabled = false, onToggle, className, children, ...rest }, ref) => {
+  ({ open: openProp, title, disabled = false, trailing, onToggle, className, children, ...rest }, ref) => {
     const reactId = React.useId();
     const uid = `st-collapsible-${reactId}`;
     const isControlled = openProp !== undefined;
@@ -40,6 +52,9 @@ export const Collapsible = React.forwardRef<HTMLDivElement, CollapsibleProps>(
           onClick={toggle}
         >
           <span className="st-collapsible__title">{title}</span>
+          {trailing != null ? (
+            <span className="st-collapsible__trailing">{trailing}</span>
+          ) : null}
           <span className="st-collapsible__icon" aria-hidden="true">
             <ChevronDown size={18} strokeWidth={2.25} aria-hidden="true" />
           </span>
