@@ -25,13 +25,13 @@ export const SITE_CONFIG_SCHEMA_VERSION = 1 as const;
  *  (lien `href`, marche en HTML pur / site vitrine sans JS applicatif). */
 export type ActionMode = "callback" | "navigate";
 
-export interface NavItem {
+export interface SiteNavItem {
   label: string;
   href: string;
   /** Marqué actif (souligné, aria-current=page). Sinon dérivé de `activePath`. */
   active?: boolean;
   /** Sous-navigation optionnelle. */
-  children?: NavItem[];
+  children?: SiteNavItem[];
 }
 
 export interface ThemeOption {
@@ -55,7 +55,7 @@ export interface SiteConfig {
   };
 
   // ── Navigation principale ────────────────────────────────────────────────────
-  nav?: NavItem[];
+  nav?: SiteNavItem[];
   /** Chemin courant : calcule `active` si non fourni explicitement par item. */
   activePath?: string;
   navLabel?: string;

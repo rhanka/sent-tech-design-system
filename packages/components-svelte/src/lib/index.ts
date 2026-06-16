@@ -117,6 +117,8 @@ export { default as ColorScaleBar } from "./ColorScaleBar.svelte";
 export { default as Overline } from "./Overline.svelte";
 export { default as StatusDot } from "./StatusDot.svelte";
 export { default as NavActionStack } from "./NavActionStack.svelte";
+export { default as NavItem } from "./NavItem.svelte";
+export { default as NavSection } from "./NavSection.svelte";
 export { default as Timeline } from "./Timeline.svelte";
 export { default as RibbonChart } from "./RibbonChart.svelte";
 export { default as AnomalySwimLaneChart } from "./AnomalySwimLaneChart.svelte";
@@ -214,7 +216,7 @@ export { default as AppShell } from "./AppShell.svelte";
 export { default as IdentityButton } from "./IdentityButton.svelte";
 export type {
   SiteConfig,
-  NavItem,
+  SiteNavItem,
   ThemeOption,
   ColorMode,
   ActionMode
@@ -328,6 +330,8 @@ export type {
   NavActionDangerZone,
   NavActionStackOrientation
 } from "./NavActionStack.svelte";
+export type { NavItemDepth, NavItemStatus, NavItemSwatch, NavItemProps } from "./NavItem.svelte";
+export type { NavSectionHeadingLevel } from "./NavSection.svelte";
 export type { TimelineItem, TimelineTone, TimelineOrientation } from "./Timeline.svelte";
 export type {
   RibbonChartTone,
