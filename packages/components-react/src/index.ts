@@ -1,5 +1,5 @@
 export { Badge } from "./Badge.js";
-export type { BadgeProps, BadgeTone } from "./Badge.js";
+export type { BadgeProps, BadgeTone, BadgeShape, BadgeSize } from "./Badge.js";
 export { Button } from "./Button.js";
 export type { ButtonProps, ButtonSize, ButtonVariant } from "./Button.js";
 export { Card } from "./Card.js";
@@ -535,3 +535,12 @@ export type {
   NavActionDangerZone,
   NavActionStackOrientation,
 } from "./NavActionStack.js";
+export { NavItem } from "./NavItem.js";
+export type {
+  NavItemProps,
+  NavItemDepth,
+  NavItemStatus,
+  NavItemSwatch,
+} from "./NavItem.js";
+export { NavSection } from "./NavSection.js";
+export type { NavSectionProps, NavSectionHeadingLevel } from "./NavSection.js";

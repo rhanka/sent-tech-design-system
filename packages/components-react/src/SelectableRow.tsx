@@ -72,6 +72,16 @@ export type SelectableRowProps = Omit<
   trailing?: React.ReactNode;
   /** Main content. */
   children?: React.ReactNode;
+  /**
+   * Optional secondary line (the "legend") rendered MUTED and smaller UNDER
+   * `children`. When present the content column stacks vertically (a
+   * `--hasCaption` modifier); when absent the row stays single-line and
+   * byte-identical. The caption joins the row's accessible name by default (the
+   * SR reads "label, caption"); wrap it `aria-hidden` if it is purely
+   * decorative. MUST NOT contain interactive controls — a row is a single tab
+   * stop.
+   */
+  caption?: React.ReactNode;
   className?: string;
 };
 
@@ -96,6 +106,7 @@ export const SelectableRow = React.forwardRef<HTMLDivElement, SelectableRowProps
       leading,
       trailing,
       children,
+      caption,
       className,
       ...rest
     },
@@ -192,6 +203,7 @@ export const SelectableRow = React.forwardRef<HTMLDivElement, SelectableRowProps
           isSelected && "st-selectableRow--selected",
           disabled && "st-selectableRow--disabled",
           accentBar && "st-selectableRow--accentBar",
+          caption != null && "st-selectableRow--hasCaption",
           className,
         )}
         role={effectiveRole}
@@ -207,7 +219,17 @@ export const SelectableRow = React.forwardRef<HTMLDivElement, SelectableRowProps
         {leading != null ? (
           <span className="st-selectableRow__leading">{leading}</span>
         ) : null}
-        <span className="st-selectableRow__content">{children}</span>
+        {caption != null ? (
+          // Caption present: the content column stacks the primary label over a
+          // muted second line. Both lines truncate independently (each
+          // min-width:0 + ellipsis) so a long caption never pushes the row width.
+          <span className="st-selectableRow__content st-selectableRow__content--stacked">
+            <span className="st-selectableRow__label">{children}</span>
+            <span className="st-selectableRow__caption">{caption}</span>
+          </span>
+        ) : (
+          <span className="st-selectableRow__content">{children}</span>
+        )}
         {trailing != null ? (
           <span className="st-selectableRow__trailing">{trailing}</span>
         ) : null}

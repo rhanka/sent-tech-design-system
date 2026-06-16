@@ -512,6 +512,26 @@ export const COMPONENTS: ComponentEntry[] = [
       en: "Tabs with tablist/tab/tabpanel."
     }
   },
+  {
+    name: "NavItem",
+    slug: "nav-item",
+    status: "documented",
+    category: "navigation",
+    description: {
+      fr: "Rangée de navigation canonique : tête (pastille couleur ou ton), titre, caption muette, bulle de compte, profondeur typographique et statut sémantique.",
+      en: "Canonical navigation row: leading (color swatch or tone), title, muted caption, count bubble, typographic depth, and semantic status."
+    }
+  },
+  {
+    name: "NavSection",
+    slug: "nav-section",
+    status: "documented",
+    category: "navigation",
+    description: {
+      fr: "En-tête de groupe d'un rail/drawer : libellé small-caps, compteur, action de section et mode repliable (disclosure).",
+      en: "Group header for a rail/drawer: small-caps label, count, section action, and a collapsible (disclosure) mode."
+    }
+  },
 
   // Overlays
   {

@@ -102,6 +102,8 @@ export { Timeline } from "./Timeline.js";
 export { Overline } from "./Overline.js";
 export { StatusDot } from "./StatusDot.js";
 export { NavActionStack } from "./NavActionStack.js";
+export { NavItem } from "./NavItem.js";
+export { NavSection } from "./NavSection.js";
 export { RibbonChart } from "./RibbonChart.js";
 export { AnomalySwimLaneChart } from "./AnomalySwimLaneChart.js";
 export { FlamegraphChart } from "./FlamegraphChart.js";

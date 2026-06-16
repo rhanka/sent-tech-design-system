@@ -445,6 +445,31 @@
     color: var(--st-component-badge-infoText, var(--st-semantic-feedback-info));
   }
 
+  /* Shape variants (additive). `pill` is the UNTOUCHED base `.st-badge` above —
+     no `--pill` rule exists, so a `shape="pill"` (or unset) badge renders
+     byte-identically. `--circle` overlays an equal-sided round bubble: equal
+     min-width/min-height, equal inline/block padding, centered, tabular-nums for
+     stable digit width. 3+ digit content degrades to a rounded-rect (the box
+     grows past the diameter, never clips). Every leaf falls back to a base
+     literal so a theme that emits no `--st-component-badge-circle-*` renders the
+     variant identically. */
+  .st-badge--circle {
+    border-radius: var(--st-component-badge-circle-radius, 50%);
+    box-sizing: border-box;
+    font-variant-numeric: tabular-nums;
+    justify-content: center;
+    min-width: var(--st-component-badge-circle-size, 1.25rem);
+    min-height: var(--st-component-badge-circle-size, 1.25rem);
+    padding: var(--st-component-badge-circle-padding, 0.125rem);
+    text-align: center;
+  }
+
+  /* Density variant (additive). `md` is the UNTOUCHED base font-size; `--sm`
+     reuses the Tag `sm` scale for cross-house consistency. */
+  .st-badge--sm {
+    font-size: var(--st-component-badge-sm-fontSize, 0.6875rem);
+  }
+
 .st-barChart {
     color: var(--st-semantic-text-secondary);
     display: block;
@@ -8226,6 +8251,15 @@
   flex: 1 1 auto;
 }
 
+/* Trigger trailing slot (additive). Holds a count badge / status / glyph
+   between the title and the chevron; never grows, so the chevron stays the
+   rightmost affordance and the title keeps `flex: 1 1 auto`. */
+.st-collapsible__trailing {
+  align-items: center;
+  display: inline-flex;
+  flex: 0 0 auto;
+}
+
 .st-collapsible__icon {
   align-items: center;
   color: var(--st-semantic-text-secondary);
@@ -9023,6 +9057,34 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* Caption variant (additive). Rows WITHOUT a caption keep the single-line
+   `.st-selectableRow__content` above byte-identically (no `--stacked` rule
+   applies). `--stacked` overlays a vertical column: the primary `__label` keeps
+   its own single-line ellipsis, and the muted `__caption` truncates
+   independently so a long legend never pushes the row width. Every leaf falls
+   back to a base literal so a theme that emits no
+   `--st-component-selectableRow-caption*` renders the caption identically. */
+.st-selectableRow__content--stacked {
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+  white-space: normal;
+  gap: var(--st-component-selectableRow-captionGap, 0.125rem);
+}
+
+.st-selectableRow__label,
+.st-selectableRow__caption {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.st-selectableRow__caption {
+  color: var(--st-component-selectableRow-captionColor, var(--st-semantic-text-muted));
+  font-size: var(--st-component-selectableRow-captionFontSize, 0.75rem);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -17210,4 +17272,121 @@
 .st-search.st-search--fluid {
   max-width: none;
   width: 100%;
+}
+
+/* ===========================================================================
+   NavItem — anatomie de rangée canonique du système de navigation (vague 2).
+   Composé sur SelectableRow + ColorSwatch/StatusDot + Badge. Token-only, aucun
+   hex en dur ; chaque var retombe sur un littéral de base.
+   =========================================================================== */
+.st-navItem {
+  display: block;
+  inline-size: 100%;
+}
+
+/* Indentation de PROFONDEUR : décale la rangée SelectableRow (sa tête comprise)
+   par un padding inline-start ADDITIF à son padding de base (0.75rem). La var
+   --st-navItem-indent est posée sur le wrapper et héritée par cascade. */
+.st-navItem .st-selectableRow {
+  padding-inline-start: calc(0.75rem + var(--st-navItem-indent, 0rem));
+}
+
+/* Échelle typographique : la graisse ET la taille DÉCROISSENT avec la
+   profondeur, pour que la hiérarchie se lise sans relief de couleur. Chaque
+   token retombe sur un littéral → thème silencieux = byte-identique. */
+.st-navItem--depth0 .st-navItem__title {
+  font-size: var(--st-component-navItem-depth0-fontSize, 0.875rem);
+  font-weight: var(--st-component-navItem-depth0-fontWeight, 600);
+}
+.st-navItem--depth1 .st-navItem__title {
+  font-size: var(--st-component-navItem-depth1-fontSize, 0.8125rem);
+  font-weight: var(--st-component-navItem-depth1-fontWeight, 500);
+}
+.st-navItem--depth2 .st-navItem__title {
+  font-size: var(--st-component-navItem-depth2-fontSize, 0.8125rem);
+  font-weight: var(--st-component-navItem-depth2-fontWeight, 400);
+}
+/* L3 — muted : même métrique que L2, couleur atténuée. */
+.st-navItem--depth3 .st-navItem__title {
+  font-size: var(--st-component-navItem-depth3-fontSize, 0.8125rem);
+  font-weight: var(--st-component-navItem-depth3-fontWeight, 400);
+  color: var(--st-component-navItem-depth3-color, var(--st-semantic-text-muted));
+}
+
+.st-navItem__title {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.st-navItem__caption {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Ton sémantique de la RANGÉE : teinte le titre par le feedback correspondant.
+   Un « HTTP 403 » error devient rouge sémantique réel. */
+.st-navItem--status-info .st-navItem__title {
+  color: var(--st-component-navItem-status-info, var(--st-semantic-feedback-info));
+}
+.st-navItem--status-success .st-navItem__title {
+  color: var(--st-component-navItem-status-success, var(--st-semantic-feedback-success));
+}
+.st-navItem--status-warning .st-navItem__title {
+  color: var(--st-component-navItem-status-warning, var(--st-semantic-feedback-warning));
+}
+.st-navItem--status-error .st-navItem__title {
+  color: var(--st-component-navItem-status-error, var(--st-semantic-feedback-error));
+}
+
+/* Séparateur token-only : une fine règle pleine largeur après la rangée. */
+.st-navItem__divider {
+  border: 0;
+  border-top: var(--st-border-width-thin, 1px) solid
+    var(--st-component-navItem-dividerColor, var(--st-semantic-border-subtle, rgba(0, 0, 0, 0.08)));
+  margin-block: var(--st-component-navItem-dividerGap, 0.375rem);
+}
+
+/* ===========================================================================
+   NavSection — en-tête de groupe d'un rail / drawer. Composé sur Overline +
+   Collapsible + Badge. Token-only scopé.
+   =========================================================================== */
+.st-navSection {
+  inline-size: 100%;
+}
+
+.st-navSection__header {
+  align-items: baseline;
+  display: flex;
+  gap: var(--st-spacing-2, 0.5rem);
+  justify-content: space-between;
+  padding-block: var(--st-component-navSection-headerPaddingBlock, 0.375rem);
+}
+
+/* Le libellé et son compteur forment un bloc ; le Badge circle s'aligne au
+   centre vertical du texte small-caps. */
+.st-navSection .st-navSection__label {
+  align-items: center;
+  display: inline-flex;
+  gap: var(--st-spacing-2, 0.5rem);
+}
+
+.st-navSection .st-navSection__count {
+  flex: 0 0 auto;
+}
+
+/* Foyer de l'action de section : ancré à droite, ne grandit pas. */
+.st-navSection__action {
+  align-items: center;
+  display: inline-flex;
+  flex: 0 0 auto;
+}
+
+.st-navSection__body {
+  display: block;
 }

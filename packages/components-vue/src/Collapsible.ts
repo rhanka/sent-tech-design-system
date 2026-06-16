@@ -62,6 +62,12 @@ export const Collapsible = defineComponent({
           },
           [
             h("span", { class: "st-collapsible__title" }, props.title),
+            // Trailing content rendered BETWEEN the title and the chevron (e.g. a
+            // count Badge). The chevron stays the rightmost affordance. If it
+            // carries SR-relevant info, set `aria-label` on the Collapsible.
+            slots.trailing
+              ? h("span", { class: "st-collapsible__trailing" }, slots.trailing())
+              : null,
             h(
               "span",
               { class: "st-collapsible__icon", "aria-hidden": "true" },

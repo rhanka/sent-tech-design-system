@@ -192,7 +192,24 @@ export const SelectableRow = defineComponent({
       if (slots.leading) {
         children.push(h("span", { class: "st-selectableRow__leading" }, slots.leading()));
       }
-      children.push(h("span", { class: "st-selectableRow__content" }, slots.default?.()));
+      if (slots.caption) {
+        // Caption present: the content column stacks the primary label over a
+        // muted second line. Both lines truncate independently so a long caption
+        // never pushes the row width. Additive — rows without a caption keep the
+        // single-line `__content` byte-identically.
+        children.push(
+          h(
+            "span",
+            { class: "st-selectableRow__content st-selectableRow__content--stacked" },
+            [
+              h("span", { class: "st-selectableRow__label" }, slots.default?.()),
+              h("span", { class: "st-selectableRow__caption" }, slots.caption()),
+            ],
+          ),
+        );
+      } else {
+        children.push(h("span", { class: "st-selectableRow__content" }, slots.default?.()));
+      }
       if (slots.trailing) {
         children.push(h("span", { class: "st-selectableRow__trailing" }, slots.trailing()));
       }
@@ -207,6 +224,7 @@ export const SelectableRow = defineComponent({
             isSelected && "st-selectableRow--selected",
             props.disabled && "st-selectableRow--disabled",
             props.accentBar && "st-selectableRow--accentBar",
+            slots.caption && "st-selectableRow--hasCaption",
             props.class,
           ),
           role: effectiveRole,
