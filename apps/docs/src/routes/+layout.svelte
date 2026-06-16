@@ -153,8 +153,8 @@
   import { Search as SearchIcon } from "@lucide/svelte";
   // Bascule A/B du header unique « app-shell » (?shell=v2) : wrapper SSR-safe
   // (import dynamique du Web Component au montage) + contrat siteConfig.
-  import AppShell from "@sentropic/app-shell/svelte";
-  import type { SiteConfig } from "@sentropic/app-shell/site-config";
+  import { AppShell } from "@sentropic/design-system-svelte";
+  import type { SiteConfig } from "@sentropic/design-system-svelte";
 
 
   let { children } = $props();

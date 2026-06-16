@@ -5,8 +5,8 @@
   // Le sélecteur de thème du shell est autonome ici (CSS du thème injecté scopé à
   // `.app-shell-preview` via compileThemeModes), pour démontrer la theme-stability
   // sur les thèmes PUBLICS uniquement (pas de clone de marque privée).
-  import AppShell from "@sentropic/app-shell/svelte";
-  import type { SiteConfig } from "@sentropic/app-shell/site-config";
+  import { AppShell } from "@sentropic/design-system-svelte";
+  import type { SiteConfig } from "@sentropic/design-system-svelte";
   import { compileThemeModes } from "$lib/compile-modes";
   import { sentTechTheme, type TenantTheme } from "@sentropic/design-system-themes";
   import { dsfrTheme } from "@sentropic/design-system-theme-dsfr";
