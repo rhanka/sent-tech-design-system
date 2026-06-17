@@ -168,10 +168,12 @@ describe("NavItem", () => {
     expect(row(wrapper.element as HTMLElement)?.getAttribute("data-value")).toBe("entities");
   });
 
-  it("href renders the row with role=link (navigation intent)", () => {
+  it("href renders the row as a native anchor", () => {
     const wrapper = mount(NavItem, { props: { title: "Docs", href: "/docs" } });
     const r = row(wrapper.element as HTMLElement);
-    expect(r?.getAttribute("role")).toBe("link");
+    expect(r?.tagName).toBe("A");
+    expect(r?.getAttribute("href")).toBe("/docs");
+    expect(r?.getAttribute("role")).toBeNull();
   });
 
   it("leading slot takes priority over swatch", () => {
