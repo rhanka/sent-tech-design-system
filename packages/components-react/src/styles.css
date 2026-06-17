@@ -17462,8 +17462,8 @@
   position: relative;
 }
 
-.st-appShell--workspace:has(.st-appShell__utilityPanel):not([data-utility-side]),
-.st-appShell--workspace:has(.st-appShell__utilityPanel)[data-utility-side="right"] {
+.st-appShell--workspace:has(.st-appShell__utilityPanel)[data-utility-mode="reserve"]:not([data-utility-side]),
+.st-appShell--workspace:has(.st-appShell__utilityPanel)[data-utility-mode="reserve"][data-utility-side="right"] {
   grid-template-areas:
     "top top top top top"
     "rail nav main context utility"
@@ -17472,7 +17472,7 @@
   grid-template-rows: auto minmax(0, 1fr) auto;
 }
 
-.st-appShell--workspace:has(.st-appShell__utilityPanel)[data-utility-side="left"] {
+.st-appShell--workspace:has(.st-appShell__utilityPanel)[data-utility-mode="reserve"][data-utility-side="left"] {
   grid-template-areas:
     "top top top top top"
     "rail nav utility main context"
@@ -17481,7 +17481,7 @@
   grid-template-rows: auto minmax(0, 1fr) auto;
 }
 
-.st-appShell--workspace:has(.st-appShell__utilityPanel)[data-utility-side="bottom"] {
+.st-appShell--workspace:has(.st-appShell__utilityPanel)[data-utility-mode="reserve"][data-utility-side="bottom"] {
   grid-template-areas:
     "top top top top"
     "rail nav main context"
