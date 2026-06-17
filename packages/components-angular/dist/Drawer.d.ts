@@ -1,5 +1,5 @@
 import * as i0 from "@angular/core";
-export type DrawerPlacement = "left" | "right";
+export type DrawerPlacement = "left" | "right" | "bottom";
 export type DrawerProps = {
     open?: boolean;
     title?: string;

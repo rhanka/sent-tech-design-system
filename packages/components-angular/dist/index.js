@@ -1,6 +1,12 @@
 export { Accordion } from "./Accordion.js";
 export { AppHeader } from "./AppHeader.js";
 export { AppChrome } from "./AppChrome.js";
+export { AppShell } from "./AppShell.js";
+export { NavShell } from "./NavShell.js";
+export { NavRail } from "./NavRail.js";
+export { NavDrawer } from "./NavDrawer.js";
+export { ContextPanel } from "./ContextPanel.js";
+export { UtilityPanel } from "./UtilityPanel.js";
 export { LanguageToggle } from "./LanguageToggle.js";
 export { IdentityMenu } from "./IdentityMenu.js";
 export { BulletChart } from "./BulletChart.js";
