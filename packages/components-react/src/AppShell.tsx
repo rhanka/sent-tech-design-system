@@ -52,7 +52,7 @@ export function AppShell({
   return (
     <div
       {...rest}
-      className={classNames("st-appShell", className)}
+      className={classNames("st-appShell st-appShell--workspace", className)}
       data-st-app-shell-variant="workspace"
       data-utility-mode={utilityMode}
       data-utility-side={utilitySide}
