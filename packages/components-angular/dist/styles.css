@@ -17456,6 +17456,35 @@
   grid-template-areas:
     "top top top top"
     "rail nav main context"
+    "bottom bottom bottom bottom";
+  grid-template-columns: auto minmax(0, var(--st-component-navShell-width, 18rem)) minmax(0, 1fr) minmax(0, var(--st-component-contextPanel-width, 20rem));
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  position: relative;
+}
+
+.st-appShell--workspace:has(.st-appShell__utilityPanel):not([data-utility-side]),
+.st-appShell--workspace:has(.st-appShell__utilityPanel)[data-utility-side="right"] {
+  grid-template-areas:
+    "top top top top top"
+    "rail nav main context utility"
+    "bottom bottom bottom bottom bottom";
+  grid-template-columns: auto minmax(0, var(--st-component-navShell-width, 18rem)) minmax(0, 1fr) minmax(0, var(--st-component-contextPanel-width, 20rem)) minmax(0, var(--st-component-utilityPanel-width, 24rem));
+  grid-template-rows: auto minmax(0, 1fr) auto;
+}
+
+.st-appShell--workspace:has(.st-appShell__utilityPanel)[data-utility-side="left"] {
+  grid-template-areas:
+    "top top top top top"
+    "rail nav utility main context"
+    "bottom bottom bottom bottom bottom";
+  grid-template-columns: auto minmax(0, var(--st-component-navShell-width, 18rem)) minmax(0, var(--st-component-utilityPanel-width, 24rem)) minmax(0, 1fr) minmax(0, var(--st-component-contextPanel-width, 20rem));
+  grid-template-rows: auto minmax(0, 1fr) auto;
+}
+
+.st-appShell--workspace:has(.st-appShell__utilityPanel)[data-utility-side="bottom"] {
+  grid-template-areas:
+    "top top top top"
+    "rail nav main context"
     "rail nav utility utility"
     "bottom bottom bottom bottom";
   grid-template-columns: auto minmax(0, var(--st-component-navShell-width, 18rem)) minmax(0, 1fr) minmax(0, var(--st-component-contextPanel-width, 20rem));
@@ -17467,8 +17496,46 @@
 .st-appShell__navigationPanel { grid-area: nav; min-block-size: 0; overflow: hidden; }
 .st-appShell__main { grid-area: main; min-block-size: 0; min-inline-size: 0; overflow: auto; }
 .st-appShell__contextPanel { grid-area: context; min-block-size: 0; overflow: hidden; }
-.st-appShell__utilityPanel { grid-area: utility; min-block-size: 0; overflow: hidden; }
+.st-appShell__utilityPanel { grid-area: utility; inline-size: 100%; min-block-size: 0; overflow: hidden; }
 .st-appShell__bottomPanel { grid-area: bottom; }
+
+.st-appShell[data-utility-mode="overlay"] .st-appShell__utilityPanel,
+.st-appShell[data-utility-mode="floating"] .st-appShell__utilityPanel {
+  box-shadow: var(--st-component-appShell-utilityShadow, 0 18px 45px rgb(15 23 42 / 0.18));
+  max-block-size: 100%;
+  position: absolute;
+  z-index: var(--st-component-appShell-utility-zIndex, 40);
+}
+
+.st-appShell[data-utility-mode="overlay"][data-utility-side="right"] .st-appShell__utilityPanel,
+.st-appShell[data-utility-mode="floating"][data-utility-side="right"] .st-appShell__utilityPanel {
+  block-size: 100%;
+  inline-size: min(100%, var(--st-component-utilityPanel-width, 24rem));
+  inset-block: 0;
+  inset-inline-end: 0;
+}
+
+.st-appShell[data-utility-mode="overlay"][data-utility-side="left"] .st-appShell__utilityPanel,
+.st-appShell[data-utility-mode="floating"][data-utility-side="left"] .st-appShell__utilityPanel {
+  block-size: 100%;
+  inline-size: min(100%, var(--st-component-utilityPanel-width, 24rem));
+  inset-block: 0;
+  inset-inline-start: 0;
+}
+
+.st-appShell[data-utility-mode="overlay"][data-utility-side="bottom"] .st-appShell__utilityPanel,
+.st-appShell[data-utility-mode="floating"][data-utility-side="bottom"] .st-appShell__utilityPanel {
+  block-size: var(--st-component-appShell-utilityBottomHeight, min(40%, 20rem));
+  inline-size: auto;
+  inset-block-end: 0;
+  inset-inline: 0;
+}
+
+.st-appShell[data-utility-mode="floating"] .st-appShell__utilityPanel {
+  border: 1px solid var(--st-component-appShell-border, var(--st-semantic-border-subtle));
+  border-radius: var(--st-radius-lg, 0.75rem);
+  margin: var(--st-spacing-4, 1rem);
+}
 
 .st-navRail {
   align-items: stretch;

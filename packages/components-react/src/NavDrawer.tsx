@@ -1,2 +1,8 @@
-export { NavShell as NavDrawer } from "./NavShell.js";
-export type { NavShellProps as NavDrawerProps } from "./NavShell.js";
+import React from "react";
+import { NavShell, type NavShellProps } from "./NavShell.js";
+
+export type NavDrawerProps = Omit<NavShellProps, "variant">;
+
+export function NavDrawer(props: NavDrawerProps) {
+  return <NavShell {...props} variant="drawer" />;
+}

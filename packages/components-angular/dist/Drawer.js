@@ -10,12 +10,28 @@ export class Drawer {
     placement;
     classInput;
     get hostClass() {
-        return ["st-drawer", this.classInput].filter(Boolean).join(" ");
+        return classNames("st-drawer", `st-drawer--${this.placement ?? "right"}`, this.open ? "st-drawer--open" : null, this.classInput);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Drawer, deps: [], target: i0.ɵɵFactoryTarget.Component });
     static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: Drawer, isStandalone: true, selector: "st-drawer", inputs: { open: "open", title: "title", description: "description", placement: "placement", classInput: ["class", "classInput"] }, ngImport: i0, template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+    <div class="st-drawer__backdrop" [attr.hidden]="open ? null : ''" role="presentation">
+      <aside
+        [attr.data-st-component]="componentName"
+        role="dialog"
+        [attr.aria-modal]="open ? 'true' : null"
+        [attr.aria-label]="title"
+        [class]="hostClass"
+      >
+        <header class="st-drawer__header" [attr.hidden]="title || description ? null : ''">
+          <div>
+            <h2 class="st-drawer__title">{{ title }}</h2>
+            <p class="st-drawer__description" [attr.hidden]="description ? null : ''">{{ description }}</p>
+          </div>
+        </header>
+        <div class="st-drawer__body">
+          <ng-content></ng-content>
+        </div>
+      </aside>
     </div>
   `, isInline: true });
 }
@@ -25,8 +41,24 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     selector: "st-drawer",
                     standalone: true,
                     template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+    <div class="st-drawer__backdrop" [attr.hidden]="open ? null : ''" role="presentation">
+      <aside
+        [attr.data-st-component]="componentName"
+        role="dialog"
+        [attr.aria-modal]="open ? 'true' : null"
+        [attr.aria-label]="title"
+        [class]="hostClass"
+      >
+        <header class="st-drawer__header" [attr.hidden]="title || description ? null : ''">
+          <div>
+            <h2 class="st-drawer__title">{{ title }}</h2>
+            <p class="st-drawer__description" [attr.hidden]="description ? null : ''">{{ description }}</p>
+          </div>
+        </header>
+        <div class="st-drawer__body">
+          <ng-content></ng-content>
+        </div>
+      </aside>
     </div>
   `,
                 }]
