@@ -192,6 +192,16 @@ export { default as SelectableRow } from "./SelectableRow.svelte";
 export { default as SelectionChip } from "./SelectionChip.svelte";
 export { default as SelectableList } from "./SelectableList.svelte";
 export { default as SideNav } from "./SideNav.svelte";
+export { default as NavShell } from "./NavShell.svelte";
+export type { NavShellSide, NavShellVariant } from "./NavShell.svelte";
+export { default as NavRail } from "./NavRail.svelte";
+export type { NavRailItem, NavRailProps } from "./NavRail.svelte";
+export { default as NavDrawer } from "./NavDrawer.svelte";
+export type { NavDrawerProps } from "./NavDrawer.svelte";
+export { default as ContextPanel } from "./ContextPanel.svelte";
+export type { ContextPanelProps } from "./ContextPanel.svelte";
+export { default as UtilityPanel } from "./UtilityPanel.svelte";
+export type { UtilityPanelMode, UtilityPanelProps, UtilityPanelSide } from "./UtilityPanel.svelte";
 export { default as SkeletonText } from "./SkeletonText.svelte";
 export { default as SkipLink } from "./SkipLink.svelte";
 export { default as SlideIndicator } from "./SlideIndicator.svelte";
@@ -213,6 +223,7 @@ export { default as ThemeProvider } from "./ThemeProvider.svelte";
 // Ex-paquet @sentropic/app-shell, replié ici — c'est un composant comme un autre ;
 // seul son contrat `SiteConfig` (data) est agnostique et réexporté ci-dessous.
 export { default as AppShell } from "./AppShell.svelte";
+export type { AppShellProps, AppShellUtilityMode, AppShellUtilitySide, AppShellVariant } from "./AppShell.svelte";
 export { default as IdentityButton } from "./IdentityButton.svelte";
 export type {
   SiteConfig,

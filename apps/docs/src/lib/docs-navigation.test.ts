@@ -33,6 +33,11 @@ describe("docs navigation model", () => {
           name !== "ThemeProvider" &&
           name !== "GraphLegend" &&
           name !== "AppShell" &&
+          name !== "NavShell" &&
+          name !== "NavRail" &&
+          name !== "NavDrawer" &&
+          name !== "ContextPanel" &&
+          name !== "UtilityPanel" &&
           name !== "IdentityButton"
       )
       .sort();

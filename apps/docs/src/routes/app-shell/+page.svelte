@@ -5,7 +5,7 @@
   // Le sélecteur de thème du shell est autonome ici (CSS du thème injecté scopé à
   // `.app-shell-preview` via compileThemeModes), pour démontrer la theme-stability
   // sur les thèmes PUBLICS uniquement (pas de clone de marque privée).
-  import { AppShell } from "@sentropic/design-system-svelte";
+  import { AppShell, ContextPanel, NavRail, NavShell, UtilityPanel } from "@sentropic/design-system-svelte";
   import type { SiteConfig } from "@sentropic/design-system-svelte";
   import { compileThemeModes } from "$lib/compile-modes";
   import { sentTechTheme, type TenantTheme } from "@sentropic/design-system-themes";
@@ -55,6 +55,12 @@
     },
     identity: { state: "anonymous", onSignIn: () => console.log("[app-shell preview] sign in") },
   });
+
+  const railItems = $derived([
+    { id: "map", label: fr ? "Carte" : "Map", active: true, badge: 2 },
+    { id: "search", label: fr ? "Recherche" : "Search" },
+    { id: "alerts", label: fr ? "Alertes" : "Alerts", badge: 8 },
+  ]);
 </script>
 
 <svelte:head>
@@ -76,6 +82,52 @@
   <div class="app-shell-preview" data-st-theme={activeThemeId}>
     <AppShell {config} />
   </div>
+
+  <section class="app-shell-page__workspace">
+    <h2>{fr ? "Vague 3 : shell applicatif" : "Wave 3: workspace shell"}</h2>
+    <p>
+      {fr
+        ? "Même nom AppShell, variante workspace : rail primaire, panneau de navigation, zone principale, panneau de contexte et panneau utilitaire pour chat/outils."
+        : "Same AppShell name, workspace variant: primary rail, navigation panel, main region, context panel, and utility panel for chat/tools."}
+    </p>
+    <div class="app-shell-workspace">
+      <AppShell
+        variant="workspace"
+        utilityMode="reserve"
+        navigationLabel={fr ? "Filtres et navigation" : "Filters and navigation"}
+        contextLabel={fr ? "Détail sélectionné" : "Selected detail"}
+        utilityLabel={fr ? "Assistant" : "Assistant"}
+      >
+        {#snippet topChrome()}
+          <div class="app-shell-workspace__top">{fr ? "Radar immobilier · exploration" : "Real estate radar · exploration"}</div>
+        {/snippet}
+        {#snippet primaryRail()}
+          <NavRail items={railItems} activeItemId="map" />
+        {/snippet}
+        {#snippet navigationPanel()}
+          <NavShell title={fr ? "Secteurs" : "Areas"} subtitle={fr ? "Recherche, filtres, couches" : "Search, filters, layers"}>
+            <div class="app-shell-workspace__stack">
+              <strong>{fr ? "Filtres actifs" : "Active filters"}</strong>
+              <span>{fr ? "Prix, zonage, opportunité" : "Price, zoning, opportunity"}</span>
+            </div>
+          </NavShell>
+        {/snippet}
+        {#snippet main()}
+          <div class="app-shell-workspace__canvas">{fr ? "Carte / graphe / canvas principal" : "Map / graph / main canvas"}</div>
+        {/snippet}
+        {#snippet contextPanel()}
+          <ContextPanel title={fr ? "Lot sélectionné" : "Selected lot"} subtitle="Mile End">
+            <p>{fr ? "Panneau de détail contextuel, aligné sur la sélection." : "Context detail panel aligned with selection state."}</p>
+          </ContextPanel>
+        {/snippet}
+        {#snippet utilityPanel()}
+          <UtilityPanel title={fr ? "Assistant" : "Assistant"}>
+            <div class="app-shell-workspace__chat">{fr ? "ChatDock / outils / recherche globale" : "ChatDock / tools / global search"}</div>
+          </UtilityPanel>
+        {/snippet}
+      </AppShell>
+    </div>
+  </section>
 </section>
 
 <style>
@@ -83,4 +135,12 @@
   .app-shell-page__intro h1 { margin: 0 0 var(--st-spacing-2, 0.5rem); color: var(--st-semantic-text-primary); font-size: var(--st-font-size-2xl, 1.75rem); }
   .app-shell-page__intro p { margin: 0; color: var(--st-semantic-text-secondary); max-width: 52rem; }
   .app-shell-preview { border: 1px solid var(--st-semantic-border-subtle, #e2e8f0); border-radius: var(--st-radius-lg, 0.75rem); overflow: hidden; background: var(--st-semantic-surface-default); }
+  .app-shell-page__workspace { display: flex; flex-direction: column; gap: var(--st-spacing-3, 0.75rem); }
+  .app-shell-page__workspace h2 { margin: 0; color: var(--st-semantic-text-primary); }
+  .app-shell-page__workspace p { margin: 0; color: var(--st-semantic-text-secondary); max-width: 52rem; }
+  .app-shell-workspace { border: 1px solid var(--st-semantic-border-subtle, #e2e8f0); border-radius: var(--st-radius-lg, 0.75rem); block-size: 32rem; overflow: hidden; background: var(--st-semantic-surface-default); }
+  .app-shell-workspace__top { font-weight: 700; padding: var(--st-spacing-4, 1rem); }
+  .app-shell-workspace__stack { display: flex; flex-direction: column; gap: var(--st-spacing-2, 0.5rem); }
+  .app-shell-workspace__canvas { align-items: center; block-size: 100%; color: var(--st-semantic-text-secondary); display: flex; justify-content: center; }
+  .app-shell-workspace__chat { padding: var(--st-spacing-4, 1rem); color: var(--st-semantic-text-secondary); }
 </style>
