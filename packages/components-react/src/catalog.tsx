@@ -1081,7 +1081,7 @@ export type DrawerProps = React.HTMLAttributes<HTMLElement> & {
   title?: React.ReactNode;
   description?: React.ReactNode;
   footer?: React.ReactNode;
-  placement?: "left" | "right";
+  placement?: "left" | "right" | "bottom";
   onClose?: () => void;
 };
 export function Drawer({ open = false, title, description, footer, placement = "right", onClose, children, className, ...rest }: DrawerProps) {

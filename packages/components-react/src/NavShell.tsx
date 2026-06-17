@@ -34,7 +34,7 @@ export function NavShell({ variant = "rail", title, subtitle, back = false, back
   );
 
   if (variant === "drawer") {
-    return <Drawer open={open} title={String(title ?? label ?? "Navigation")} placement={side === "bottom" ? "right" : side} footer={footer} className={classNames("st-navShell st-navShell--drawer", className)}>{content}</Drawer>;
+    return <Drawer open={open} title={String(title ?? label ?? "Navigation")} placement={side} footer={footer} className={classNames("st-navShell st-navShell--drawer", className)}>{content}</Drawer>;
   }
 
   return (

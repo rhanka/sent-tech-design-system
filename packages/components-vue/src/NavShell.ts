@@ -43,7 +43,7 @@ export const NavShell = defineComponent({
       h("div", { class: "st-navShell__body" }, slots.default?.()),
     ];
     return () => props.variant === "drawer"
-      ? h(Drawer, { open: props.open, title: props.title ?? props.label ?? "Navigation", placement: props.side === "bottom" ? "right" : props.side, class: classNames("st-navShell st-navShell--drawer", props.class), onClose: () => emit("close") }, { default: content, footer: slots.footer })
+      ? h(Drawer, { open: props.open, title: props.title ?? props.label ?? "Navigation", placement: props.side, class: classNames("st-navShell st-navShell--drawer", props.class), onClose: () => emit("close") }, { default: content, footer: slots.footer })
       : h("aside", { ...attrs, class: classNames("st-navShell st-navShell--rail", props.class), "aria-label": props.label ?? props.title }, [...content(), slots.footer ? h("footer", { class: "st-navShell__footer" }, slots.footer()) : null]);
   },
 });
