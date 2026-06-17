@@ -2,7 +2,7 @@ import { Component, Input as NgInput } from "@angular/core";
 
 import { classNames } from "./classNames.js";
 
-export type DrawerPlacement = "left" | "right";
+export type DrawerPlacement = "left" | "right" | "bottom";
 
 export type DrawerProps = {
   open?: boolean;

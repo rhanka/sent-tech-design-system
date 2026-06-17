@@ -417,6 +417,33 @@
     text-transform: var(--st-component-badge-textTransform, none);
   }
 
+  /* Shape variants (additive). `pill` is the UNTOUCHED base `.st-badge` above — no
+     `--pill` rule exists, so a `shape="pill"` (or unset) badge renders
+     byte-identically. `--circle` overlays an equal-sided round bubble ON TOP of
+     the base rules: equal min-width/min-height, equal inline/block padding,
+     centered, tabular-nums for stable digit width. 3+ digit content degrades to a
+     rounded-rect (the box grows past the diameter, never clips), so large counts
+     stay legible. Every leaf falls back to a base literal so a theme that emits no
+     `--st-component-badge-circle-*` renders the variant identically. */
+  .st-badge--circle {
+    border-radius: var(--st-component-badge-circle-radius, 50%);
+    box-sizing: border-box;
+    font-variant-numeric: tabular-nums;
+    justify-content: center;
+    min-width: var(--st-component-badge-circle-size, 1.25rem);
+    min-height: var(--st-component-badge-circle-size, 1.25rem);
+    /* Equal inline/block padding keeps 1–2 digits round; the inline padding lets
+       3+ digits grow the box into a rounded-rect instead of clipping. */
+    padding: var(--st-component-badge-circle-padding, 0.125rem);
+    text-align: center;
+  }
+
+  /* Density variant (additive). `md` is the UNTOUCHED base font-size; `--sm`
+     reuses the Tag `sm` scale for cross-house consistency. */
+  .st-badge--sm {
+    font-size: var(--st-component-badge-sm-fontSize, 0.6875rem);
+  }
+
   .st-badge--neutral {
     background: var(--st-semantic-surface-subtle);
     color: var(--st-semantic-text-secondary);
@@ -443,31 +470,6 @@
       color-mix(in srgb, var(--st-semantic-feedback-info) 14%, white)
     );
     color: var(--st-component-badge-infoText, var(--st-semantic-feedback-info));
-  }
-
-  /* Shape variants (additive). `pill` is the UNTOUCHED base `.st-badge` above —
-     no `--pill` rule exists, so a `shape="pill"` (or unset) badge renders
-     byte-identically. `--circle` overlays an equal-sided round bubble: equal
-     min-width/min-height, equal inline/block padding, centered, tabular-nums for
-     stable digit width. 3+ digit content degrades to a rounded-rect (the box
-     grows past the diameter, never clips). Every leaf falls back to a base
-     literal so a theme that emits no `--st-component-badge-circle-*` renders the
-     variant identically. */
-  .st-badge--circle {
-    border-radius: var(--st-component-badge-circle-radius, 50%);
-    box-sizing: border-box;
-    font-variant-numeric: tabular-nums;
-    justify-content: center;
-    min-width: var(--st-component-badge-circle-size, 1.25rem);
-    min-height: var(--st-component-badge-circle-size, 1.25rem);
-    padding: var(--st-component-badge-circle-padding, 0.125rem);
-    text-align: center;
-  }
-
-  /* Density variant (additive). `md` is the UNTOUCHED base font-size; `--sm`
-     reuses the Tag `sm` scale for cross-house consistency. */
-  .st-badge--sm {
-    font-size: var(--st-component-badge-sm-fontSize, 0.6875rem);
   }
 
 .st-barChart {
@@ -2778,13 +2780,25 @@
 
   .st-forceGraph__edge--weak {
     stroke: var(--st-semantic-border-subtle);
-    stroke-dasharray: 3 3;
     opacity: 0.5;
   }
 
+  /* Emphasised edge (e.g. reconciliation match): thicker, fully opaque, on top. */
+  .st-forceGraph__edge--emphasis {
+    stroke: var(--st-semantic-border-interactive, var(--st-semantic-border-strong));
+    opacity: 0.95;
+  }
+
+  /* Hover: match the node hover (fully visible) so the edge is never paler
+     than the two nodes it connects. */
   .st-forceGraph__edge--hovered {
-    opacity: 0.9;
+    opacity: 1;
     stroke-width: 2;
+  }
+
+  /* Dimmed by an active selection (edge touches no selected/focused node). */
+  .st-forceGraph__edge--dim {
+    opacity: 0.12;
   }
 
   /* Invisible wide hit target for edge hover */
@@ -2970,8 +2984,7 @@
     .st-forceGraph__resetBtn { transition: none; }
   }
 
-  /* GraphLegend standalone component */
-  .st-graphLegend {
+.st-graphLegend {
     background: var(--st-semantic-surface-overlay, rgba(0,0,0,0.45));
     border-radius: var(--st-radius-sm, 0.25rem);
     color: var(--st-semantic-text-inverse);
@@ -7573,7 +7586,14 @@
   gap: 0.5rem;
 }
 
-/* Layout system — Flex / Stack / Inline / Container / Row / Col / Hidden / Divider */
+
+/* ==========================================================================
+   Layout system (Flex / Stack / Inline / Container / Row / Col / Hidden /
+   Divider) — ported from components-svelte scoped styles. Dynamic values
+   (gap / align / justify / span / offset) are applied inline via style props.
+   ========================================================================== */
+
+/* Flex / Stack / Inline */
 .st-flex {
   box-sizing: border-box;
   min-width: 0;
@@ -7762,7 +7782,6 @@
   line-height: 1;
   white-space: nowrap;
 }
-
 
 /* ===========================================================================
    Avatar — ported from components-svelte/src/lib/Avatar.svelte
@@ -9069,6 +9088,8 @@
 .st-selectableRow__content--stacked {
   display: flex;
   flex-direction: column;
+  /* The column stack drops the inline ellipsis/nowrap (each line truncates on
+     its own child); keep min-width:0 so the column can shrink and ellipsize. */
   overflow: visible;
   white-space: normal;
   gap: var(--st-component-selectableRow-captionGap, 0.125rem);
@@ -9105,7 +9126,7 @@
 }
 
 /* ---------------------------------------------------------------------------
-   KpiCard — single metric card with optional delta + sparkline.
+   KpiCard — indicateur chiffré avec delta, tendance et sparkline optionnels.
    --------------------------------------------------------------------------- */
 .st-kpiCard {
   background: var(--st-component-card-background, var(--st-semantic-surface-raised));
@@ -9131,26 +9152,15 @@
   padding: var(--st-spacing-6, 1.5rem);
 }
 
-/* Accent catégoriel : pastille inline discrète devant l'étiquette.
-   (Pas de liseré gauche sur un conteneur arrondi — anti-pattern proscrit.) */
 .st-kpiCard__label {
   align-items: center;
   color: var(--st-semantic-text-secondary);
   display: flex;
   font-size: 0.8125rem;
   font-weight: 500;
-  gap: var(--st-spacing-2, 0.5rem);
+  gap: var(--st-spacing-1, 0.25rem);
   line-height: 1.25;
   margin: 0;
-}
-
-.st-kpiCard__swatch {
-  background: var(--st-kpiCard-accent, var(--st-semantic-data-category1));
-  border-radius: var(--st-radius-full, 9999px);
-  display: inline-block;
-  flex: 0 0 auto;
-  height: 0.5rem;
-  width: 0.5rem;
 }
 
 .st-kpiCard--lg .st-kpiCard__label {
@@ -9235,17 +9245,44 @@
   color: var(--st-semantic-text-secondary);
 }
 
-.st-kpiCard--category1 { --st-kpiCard-accent: var(--st-semantic-data-category1); }
-.st-kpiCard--category2 { --st-kpiCard-accent: var(--st-semantic-data-category2); }
-.st-kpiCard--category3 { --st-kpiCard-accent: var(--st-semantic-data-category3); }
-.st-kpiCard--category4 { --st-kpiCard-accent: var(--st-semantic-data-category4); }
-.st-kpiCard--category5 { --st-kpiCard-accent: var(--st-semantic-data-category5); }
-.st-kpiCard--category6 { --st-kpiCard-accent: var(--st-semantic-data-category6); }
-.st-kpiCard--category7 { --st-kpiCard-accent: var(--st-semantic-data-category7); }
-.st-kpiCard--category8 { --st-kpiCard-accent: var(--st-semantic-data-category8); }
+/* Accent catégoriel discret : pastille inline près de l'étiquette
+   (remplace l'ancien liseré gauche, anti-pattern sur conteneur arrondi). */
+.st-kpiCard__swatch {
+  background: var(--st-semantic-border-subtle);
+  border-radius: 50%;
+  display: inline-block;
+  flex: 0 0 auto;
+  height: 0.5rem;
+  width: 0.5rem;
+}
+
+.st-kpiCard--category1 .st-kpiCard__swatch {
+  background: var(--st-semantic-data-category1);
+}
+.st-kpiCard--category2 .st-kpiCard__swatch {
+  background: var(--st-semantic-data-category2);
+}
+.st-kpiCard--category3 .st-kpiCard__swatch {
+  background: var(--st-semantic-data-category3);
+}
+.st-kpiCard--category4 .st-kpiCard__swatch {
+  background: var(--st-semantic-data-category4);
+}
+.st-kpiCard--category5 .st-kpiCard__swatch {
+  background: var(--st-semantic-data-category5);
+}
+.st-kpiCard--category6 .st-kpiCard__swatch {
+  background: var(--st-semantic-data-category6);
+}
+.st-kpiCard--category7 .st-kpiCard__swatch {
+  background: var(--st-semantic-data-category7);
+}
+.st-kpiCard--category8 .st-kpiCard__swatch {
+  background: var(--st-semantic-data-category8);
+}
 
 /* ---------------------------------------------------------------------------
-   ComboChart — grouped bars on a left axis + lines on a right axis.
+   ComboChart — barres groupées (axe gauche) + lignes (axe droit).
    --------------------------------------------------------------------------- */
 .st-comboChart {
   color: var(--st-semantic-text-secondary);
@@ -9495,7 +9532,7 @@
 }
 
 /* ---------------------------------------------------------------------------
-   GaugeChart — radial meter with optional threshold bands and a needle.
+   GaugeChart — jauge en arc avec bandes de seuils, aiguille et valeur centrale.
    --------------------------------------------------------------------------- */
 .st-gaugeChart {
   color: var(--st-semantic-text-secondary);
@@ -9548,12 +9585,14 @@
   font-weight: 500;
 }
 
-.st-gaugeChart__band--neutral { stroke: var(--st-semantic-surface-subtle, var(--st-semantic-border-subtle)); }
+/* Tons sémantiques de feedback */
+.st-gaugeChart__band--neutral { stroke: var(--st-semantic-border-strong, var(--st-semantic-surface-subtle)); }
 .st-gaugeChart__band--info { stroke: var(--st-semantic-feedback-info, var(--st-semantic-action-primary)); }
 .st-gaugeChart__band--success { stroke: var(--st-semantic-feedback-success); }
 .st-gaugeChart__band--warning { stroke: var(--st-semantic-feedback-warning); }
 .st-gaugeChart__band--error { stroke: var(--st-semantic-feedback-error); }
 
+/* Tons catégoriels data */
 .st-gaugeChart__band--category1 { stroke: var(--st-semantic-data-category1); }
 .st-gaugeChart__band--category2 { stroke: var(--st-semantic-data-category2); }
 .st-gaugeChart__band--category3 { stroke: var(--st-semantic-data-category3); }
@@ -10221,7 +10260,7 @@
 }
 
 /* ---------------------------------------------------------------------------
-   FunnelChart — decreasing trapezoid stages, vertical or horizontal.
+   FunnelChart — entonnoir de trapèzes décroissants (vertical/horizontal).
    --------------------------------------------------------------------------- */
 .st-funnelChart {
   color: var(--st-semantic-text-secondary);
@@ -10257,15 +10296,15 @@
 .st-funnelChart__segment--category7 { fill: var(--st-semantic-data-category7); }
 .st-funnelChart__segment--category8 { fill: var(--st-semantic-data-category8); }
 
-/* Couleur de texte fixée inline par le composant selon la luminance du fill
-   (contraste WCAG garanti) ; ces règles ne portent que la typo. */
 .st-funnelChart__label {
+  fill: var(--st-component-funnelChart-labelColor, var(--st-semantic-text-inverse));
   font-size: 0.75rem;
   font-weight: 600;
   pointer-events: none;
 }
 
 .st-funnelChart__value {
+  fill: var(--st-component-funnelChart-valueColor, var(--st-semantic-text-inverse));
   font-size: 0.6875rem;
   pointer-events: none;
 }
@@ -10329,7 +10368,7 @@
 }
 
 /* ---------------------------------------------------------------------------
-   WaterfallChart — floating bars tracing a running cumulative total.
+   WaterfallChart — barres flottantes cumulatives (hausse/baisse/total).
    --------------------------------------------------------------------------- */
 .st-waterfallChart {
   color: var(--st-semantic-text-secondary);
@@ -10463,7 +10502,7 @@
 }
 
 /* ---------------------------------------------------------------------------
-   TreemapChart — squarified hierarchical rectangles (1 or 2 levels).
+   TreemapChart — pavage squarified hiérarchique (1 ou 2 niveaux).
    --------------------------------------------------------------------------- */
 .st-treemapChart {
   color: var(--st-semantic-text-secondary);
@@ -10505,15 +10544,15 @@
 .st-treemapChart__rect--category7 { fill: var(--st-semantic-data-category7); }
 .st-treemapChart__rect--category8 { fill: var(--st-semantic-data-category8); }
 
-/* Couleur de texte fixée inline par le composant selon la luminance du fill
-   (contraste WCAG garanti) ; ces règles ne portent que la typo. */
 .st-treemapChart__label {
+  fill: var(--st-component-treemapChart-labelColor, #fff);
   font-size: 0.75rem;
   font-weight: 600;
   pointer-events: none;
 }
 
 .st-treemapChart__value {
+  fill: var(--st-component-treemapChart-valueColor, #fff);
   font-size: 0.6875rem;
   opacity: 0.85;
   pointer-events: none;
@@ -10571,6 +10610,8 @@
 .st-treemapChart__legendSwatch--category7 { background: var(--st-semantic-data-category7); }
 .st-treemapChart__legendSwatch--category8 { background: var(--st-semantic-data-category8); }
 
+/* ── Lot 2 : Heatmap / Sankey / BoxPlot / Histogram / Radar / Sunburst ── */
+
 .st-heatmapChart,
 .st-histogramChart,
 .st-boxPlotChart,
@@ -10580,71 +10621,171 @@
   color: var(--st-semantic-text-secondary);
   display: block;
   font-family: inherit;
+  max-width: 100%;
   position: relative;
   width: 100%;
 }
 
 .st-heatmapChart svg,
-.st-histogramChart svg,
-.st-boxPlotChart svg,
-.st-radarChart svg,
-.st-sankeyChart svg,
-.st-sunburstChart svg,
 .st-heatmapChart__visual,
+.st-histogramChart svg,
 .st-histogramChart__visual,
+.st-boxPlotChart svg,
 .st-boxPlotChart__visual,
+.st-radarChart svg,
 .st-radarChart__visual,
+.st-sankeyChart svg,
 .st-sankeyChart__visual,
+.st-sunburstChart svg,
 .st-sunburstChart__visual {
   display: block;
   overflow: visible;
 }
 
+/* ── Axis labels ── */
 .st-heatmapChart__axisLabel,
-.st-histogramChart__tickLabel,
-.st-histogramChart__categoryLabel,
-.st-boxPlotChart__tickLabel,
-.st-boxPlotChart__categoryLabel,
+.st-histogramChart__label,
+.st-boxPlotChart__label,
 .st-radarChart__axisLabel,
-.st-radarChart__maxLabel,
 .st-sankeyChart__nodeLabel {
   fill: var(--st-semantic-text-secondary);
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
 }
 
-.st-histogramChart__grid,
-.st-boxPlotChart__grid,
-.st-radarChart__grid {
-  stroke: var(--st-semantic-border-subtle);
-  stroke-dasharray: 2 3;
-  stroke-width: 1;
-  opacity: 0.7;
-}
-
+/* ── Axes / grids ── */
 .st-histogramChart__axis,
-.st-boxPlotChart__axis,
+.st-boxPlotChart__axis {
+  stroke: var(--st-semantic-border-subtle);
+  stroke-width: 1;
+}
+
+.st-radarChart__ring,
 .st-radarChart__axis {
   stroke: var(--st-semantic-border-subtle);
   stroke-width: 1;
 }
 
-.st-heatmapChart__cell,
-.st-histogramChart__bar,
-.st-boxPlotChart__box,
-.st-sankeyChart__node,
+.st-radarChart__ring {
+  fill: none;
+}
+
+/* ── Heatmap ── */
+.st-heatmapChart__plot {
+  fill: none;
+  stroke: var(--st-semantic-border-subtle);
+  stroke-width: 1;
+}
+
+.st-heatmapChart__cell {
+  cursor: pointer;
+  stroke: var(--st-semantic-surface-default, Canvas);
+  stroke-width: 1;
+  transition: opacity 120ms ease;
+}
+
+.st-heatmapChart__cell--dim {
+  opacity: 0.45;
+}
+
+/* ── Histogram ── */
+.st-histogramChart__bar {
+  cursor: pointer;
+  transition: opacity 120ms ease;
+}
+
+.st-histogramChart__bar--dim {
+  opacity: 0.45;
+}
+
+/* ── BoxPlot ── */
+.st-boxPlotChart__axis,
+.st-boxPlotChart__whisker,
+.st-boxPlotChart__whiskerCap {
+  stroke: var(--st-semantic-border-subtle);
+  stroke-width: 1;
+}
+
+.st-boxPlotChart__median {
+  stroke: var(--st-semantic-text-primary);
+  stroke-width: 2;
+}
+
+.st-boxPlotChart__box {
+  cursor: pointer;
+  fill-opacity: 0.72;
+  stroke: var(--st-semantic-surface-default, Canvas);
+  stroke-width: 1;
+  transition: opacity 120ms ease;
+}
+
+.st-boxPlotChart__box--dim {
+  opacity: 0.45;
+}
+
+.st-boxPlotChart__outlier {
+  fill: var(--st-semantic-surface-default, Canvas);
+  stroke: var(--st-semantic-text-secondary);
+  stroke-width: 1.5;
+}
+
+/* ── Radar ── */
+.st-radarChart__polygon {
+  cursor: pointer;
+  fill-opacity: 0.16;
+  stroke-width: 2;
+  transition: opacity 120ms ease;
+}
+
+.st-radarChart__polygon--dim {
+  opacity: 0.35;
+}
+
+.st-radarChart__point {
+  stroke: var(--st-semantic-surface-default, Canvas);
+  stroke-width: 1;
+}
+
+/* ── Sankey ── */
+.st-sankeyChart__node {
+  stroke: var(--st-semantic-surface-default, Canvas);
+  stroke-width: 1;
+}
+
+.st-sankeyChart__link {
+  cursor: pointer;
+  fill: none;
+  opacity: 0.38;
+  stroke-linecap: round;
+  transition: opacity 120ms ease;
+}
+
+.st-sankeyChart__link:hover {
+  opacity: 0.62;
+}
+
+.st-sankeyChart__link--dim {
+  opacity: 0.16;
+}
+
+/* ── Sunburst ── */
 .st-sunburstChart__arc {
   cursor: pointer;
-  transition: opacity var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
+  stroke: var(--st-semantic-surface-default, Canvas);
+  stroke-width: 1;
+  transition: opacity 120ms ease;
 }
 
-.st-heatmapChart__cell:hover,
-.st-histogramChart__bar:hover,
-.st-boxPlotChart__box:hover,
-.st-sankeyChart__node:hover,
-.st-sunburstChart__arc:hover {
-  opacity: 0.82;
+.st-sunburstChart__arc--dim {
+  opacity: 0.4;
 }
 
+.st-sunburstChart__label {
+  font-size: 0.68rem;
+  font-weight: 650;
+  pointer-events: none;
+}
+
+/* ── Category fills — cells / bars / boxes / nodes / arcs ── */
 .st-heatmapChart__cell--category1,
 .st-histogramChart__bar--category1,
 .st-boxPlotChart__box--category1,
@@ -10686,67 +10827,33 @@
 .st-sankeyChart__node--category8,
 .st-sunburstChart__arc--category8 { fill: var(--st-semantic-data-category8); }
 
-.st-boxPlotChart__box {
-  fill-opacity: 0.22;
-  stroke: currentColor;
-  stroke-width: 1.5;
-}
+/* ── Radar polygon + point (fill + stroke) ── */
+.st-radarChart__polygon--category1,
+.st-radarChart__point--category1,
+.st-radarChart__legendSwatch--category1 { fill: var(--st-semantic-data-category1); stroke: var(--st-semantic-data-category1); background: var(--st-semantic-data-category1); }
+.st-radarChart__polygon--category2,
+.st-radarChart__point--category2,
+.st-radarChart__legendSwatch--category2 { fill: var(--st-semantic-data-category2); stroke: var(--st-semantic-data-category2); background: var(--st-semantic-data-category2); }
+.st-radarChart__polygon--category3,
+.st-radarChart__point--category3,
+.st-radarChart__legendSwatch--category3 { fill: var(--st-semantic-data-category3); stroke: var(--st-semantic-data-category3); background: var(--st-semantic-data-category3); }
+.st-radarChart__polygon--category4,
+.st-radarChart__point--category4,
+.st-radarChart__legendSwatch--category4 { fill: var(--st-semantic-data-category4); stroke: var(--st-semantic-data-category4); background: var(--st-semantic-data-category4); }
+.st-radarChart__polygon--category5,
+.st-radarChart__point--category5,
+.st-radarChart__legendSwatch--category5 { fill: var(--st-semantic-data-category5); stroke: var(--st-semantic-data-category5); background: var(--st-semantic-data-category5); }
+.st-radarChart__polygon--category6,
+.st-radarChart__point--category6,
+.st-radarChart__legendSwatch--category6 { fill: var(--st-semantic-data-category6); stroke: var(--st-semantic-data-category6); background: var(--st-semantic-data-category6); }
+.st-radarChart__polygon--category7,
+.st-radarChart__point--category7,
+.st-radarChart__legendSwatch--category7 { fill: var(--st-semantic-data-category7); stroke: var(--st-semantic-data-category7); background: var(--st-semantic-data-category7); }
+.st-radarChart__polygon--category8,
+.st-radarChart__point--category8,
+.st-radarChart__legendSwatch--category8 { fill: var(--st-semantic-data-category8); stroke: var(--st-semantic-data-category8); background: var(--st-semantic-data-category8); }
 
-.st-boxPlotChart__whisker,
-.st-boxPlotChart__whiskerCap,
-.st-boxPlotChart__median {
-  stroke: var(--st-semantic-text-secondary);
-  stroke-width: 1.5;
-}
-
-.st-boxPlotChart__median {
-  stroke: var(--st-semantic-text-primary);
-  stroke-width: 2;
-}
-
-.st-boxPlotChart__outlier {
-  fill: var(--st-semantic-surface-default);
-  stroke: var(--st-semantic-text-secondary);
-  stroke-width: 1.5;
-}
-
-.st-radarChart__grid {
-  fill: none;
-}
-
-.st-radarChart__polygon {
-  cursor: pointer;
-  fill: currentColor;
-  fill-opacity: 0.16;
-  stroke: currentColor;
-  stroke-width: 2;
-  transition: fill-opacity var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
-}
-
-.st-radarChart__polygon:hover {
-  fill-opacity: 0.24;
-}
-
-.st-radarChart__polygon--category1 { color: var(--st-semantic-data-category1); }
-.st-radarChart__polygon--category2 { color: var(--st-semantic-data-category2); }
-.st-radarChart__polygon--category3 { color: var(--st-semantic-data-category3); }
-.st-radarChart__polygon--category4 { color: var(--st-semantic-data-category4); }
-.st-radarChart__polygon--category5 { color: var(--st-semantic-data-category5); }
-.st-radarChart__polygon--category6 { color: var(--st-semantic-data-category6); }
-.st-radarChart__polygon--category7 { color: var(--st-semantic-data-category7); }
-.st-radarChart__polygon--category8 { color: var(--st-semantic-data-category8); }
-
-.st-sankeyChart__link {
-  opacity: 0.34;
-  pointer-events: stroke;
-  stroke-linecap: round;
-  transition: opacity var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
-}
-
-.st-sankeyChart__link:hover {
-  opacity: 0.58;
-}
-
+/* ── Sankey links (stroke seulement) ── */
 .st-sankeyChart__link--category1 { stroke: var(--st-semantic-data-category1); }
 .st-sankeyChart__link--category2 { stroke: var(--st-semantic-data-category2); }
 .st-sankeyChart__link--category3 { stroke: var(--st-semantic-data-category3); }
@@ -10756,127 +10863,7 @@
 .st-sankeyChart__link--category7 { stroke: var(--st-semantic-data-category7); }
 .st-sankeyChart__link--category8 { stroke: var(--st-semantic-data-category8); }
 
-.st-heatmapChart__tooltip,
-.st-histogramChart__tooltip,
-.st-boxPlotChart__tooltip,
-.st-radarChart__tooltip,
-.st-sankeyChart__tooltip,
-.st-sunburstChart__tooltip {
-  background: var(--st-semantic-surface-inverse);
-  border-radius: var(--st-radius-sm, 0.25rem);
-  color: var(--st-semantic-text-inverse);
-  display: inline-flex;
-  flex-direction: column;
-  font-size: 0.75rem;
-  gap: 0.125rem;
-  line-height: 1.2;
-  padding: 0.375rem 0.5rem;
-  pointer-events: none;
-  position: absolute;
-  transform: translate(-50%, calc(-100% - 8px));
-  white-space: nowrap;
-  z-index: 1;
-}
-
-.st-heatmapChart__tooltipLabel,
-.st-histogramChart__tooltipLabel,
-.st-boxPlotChart__tooltipLabel,
-.st-radarChart__tooltipLabel,
-.st-sankeyChart__tooltipLabel,
-.st-sunburstChart__tooltipLabel {
-  font-weight: 600;
-}
-
-.st-heatmapChart__tooltipValue,
-.st-histogramChart__tooltipValue,
-.st-boxPlotChart__tooltipValue,
-.st-radarChart__tooltipValue,
-.st-sankeyChart__tooltipValue,
-.st-sunburstChart__tooltipValue {
-  opacity: 0.85;
-}
-
-.st-heatmapChart__legend,
-.st-radarChart__legend,
-.st-sunburstChart__legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--st-spacing-3, 0.75rem);
-  list-style: none;
-  margin: var(--st-spacing-2, 0.5rem) 0 0;
-  padding: 0;
-}
-
-.st-heatmapChart__legendItem,
-.st-radarChart__legendItem,
-.st-sunburstChart__legendItem {
-  align-items: center;
-  color: var(--st-semantic-text-secondary);
-  display: inline-flex;
-  font-size: 0.75rem;
-  gap: var(--st-spacing-1, 0.35rem);
-}
-
-.st-heatmapChart__legendSwatch,
-.st-radarChart__legendSwatch,
-.st-sunburstChart__legendSwatch {
-  border-radius: 2px;
-  height: 0.7rem;
-  width: 0.7rem;
-}
-
-.st-heatmapChart__legendSwatch--category1,
-.st-radarChart__legendSwatch--category1,
-.st-sunburstChart__legendSwatch--category1 { background: var(--st-semantic-data-category1); }
-.st-heatmapChart__legendSwatch--category2,
-.st-radarChart__legendSwatch--category2,
-.st-sunburstChart__legendSwatch--category2 { background: var(--st-semantic-data-category2); }
-.st-heatmapChart__legendSwatch--category3,
-.st-radarChart__legendSwatch--category3,
-.st-sunburstChart__legendSwatch--category3 { background: var(--st-semantic-data-category3); }
-.st-heatmapChart__legendSwatch--category4,
-.st-radarChart__legendSwatch--category4,
-.st-sunburstChart__legendSwatch--category4 { background: var(--st-semantic-data-category4); }
-.st-heatmapChart__legendSwatch--category5,
-.st-radarChart__legendSwatch--category5,
-.st-sunburstChart__legendSwatch--category5 { background: var(--st-semantic-data-category5); }
-.st-heatmapChart__legendSwatch--category6,
-.st-radarChart__legendSwatch--category6,
-.st-sunburstChart__legendSwatch--category6 { background: var(--st-semantic-data-category6); }
-.st-heatmapChart__legendSwatch--category7,
-.st-radarChart__legendSwatch--category7,
-.st-sunburstChart__legendSwatch--category7 { background: var(--st-semantic-data-category7); }
-.st-heatmapChart__legendSwatch--category8,
-.st-radarChart__legendSwatch--category8,
-.st-sunburstChart__legendSwatch--category8 { background: var(--st-semantic-data-category8); }
-
-@media (prefers-reduced-motion: reduce) {
-  .st-heatmapChart__cell,
-  .st-histogramChart__bar,
-  .st-boxPlotChart__box,
-  .st-radarChart__polygon,
-  .st-sankeyChart__node,
-  .st-sankeyChart__link,
-  .st-sunburstChart__arc {
-    transition: none;
-  }
-}
-
-/* ---- Bi-charts lot 2 – styles canoniques alignés sur Svelte ---- */
-
-/* sankeyChart: le lien est un stroke, pas un fill */
-.st-sankeyChart__link {
-  fill: none;
-}
-
-/* Heatmap: bordure du plot */
-.st-heatmapChart__plot {
-  fill: none;
-  stroke: var(--st-semantic-border-subtle);
-  stroke-width: 1;
-}
-
-/* Heatmap: légende gradient Low→High */
+/* ── Heatmap legend (gradient ramp) ── */
 .st-heatmapChart__legend {
   align-items: center;
   display: flex;
@@ -10900,70 +10887,128 @@
   font-size: 0.75rem;
 }
 
-/* Dim states (hover-based opacity) */
-.st-heatmapChart__cell--dim,
-.st-histogramChart__bar--dim,
-.st-boxPlotChart__box--dim,
-.st-radarChart__polygon--dim,
-.st-sunburstChart__arc--dim {
-  opacity: 0.45;
+.st-heatmapChart__legendSwatch--category1 { background: var(--st-semantic-data-category1); }
+.st-heatmapChart__legendSwatch--category2 { background: var(--st-semantic-data-category2); }
+.st-heatmapChart__legendSwatch--category3 { background: var(--st-semantic-data-category3); }
+.st-heatmapChart__legendSwatch--category4 { background: var(--st-semantic-data-category4); }
+.st-heatmapChart__legendSwatch--category5 { background: var(--st-semantic-data-category5); }
+.st-heatmapChart__legendSwatch--category6 { background: var(--st-semantic-data-category6); }
+.st-heatmapChart__legendSwatch--category7 { background: var(--st-semantic-data-category7); }
+.st-heatmapChart__legendSwatch--category8 { background: var(--st-semantic-data-category8); }
+
+/* ── Radar legend ── */
+.st-radarChart__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--st-spacing-2, 0.5rem) var(--st-spacing-4, 1rem);
+  list-style: none;
+  margin: var(--st-spacing-2, 0.5rem) 0 0;
+  padding: 0;
 }
 
-.st-sankeyChart__link--dim {
-  opacity: 0.16;
-}
-
-/* BoxPlot: x-axis label below each box */
-.st-boxPlotChart__label {
-  fill: var(--st-semantic-text-secondary);
+.st-radarChart__legendItem {
+  align-items: center;
+  color: var(--st-semantic-text-secondary);
+  display: inline-flex;
   font-size: 0.75rem;
+  gap: var(--st-spacing-2, 0.5rem);
 }
 
-/* BoxPlot: fill-opacity canonical value */
-.st-boxPlotChart__box {
-  fill-opacity: 0.72;
+.st-radarChart__legendSwatch {
+  display: inline-block;
+  height: 0.625rem;
+  width: 0.625rem;
 }
 
-/* BoxPlot: whisker/cap strokes */
-.st-boxPlotChart__whisker,
-.st-boxPlotChart__whiskerCap {
-  stroke: var(--st-semantic-border-subtle);
-  stroke-width: 1;
+/* ── Sunburst legend ── */
+.st-sunburstChart__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--st-spacing-2, 0.5rem) var(--st-spacing-4, 1rem);
+  list-style: none;
+  margin: var(--st-spacing-2, 0.5rem) 0 0;
+  padding: 0;
 }
 
-/* RadarChart: ring (polygon grid) */
-.st-radarChart__ring {
-  fill: none;
-  stroke: var(--st-semantic-border-subtle);
-  stroke-width: 1;
+.st-sunburstChart__legendItem {
+  align-items: center;
+  color: var(--st-semantic-text-secondary);
+  display: inline-flex;
+  font-size: 0.75rem;
+  gap: var(--st-spacing-2, 0.5rem);
 }
 
-/* RadarChart: axis spokes */
-.st-radarChart__axis {
-  stroke: var(--st-semantic-border-subtle);
-  stroke-width: 1;
+.st-sunburstChart__legendSwatch {
+  display: inline-block;
+  height: 0.625rem;
+  width: 0.625rem;
 }
 
-/* RadarChart: data points */
-.st-radarChart__point {
-  stroke: var(--st-semantic-surface-default, Canvas);
-  stroke-width: 1;
-}
+.st-sunburstChart__legendSwatch--category1 { background: var(--st-semantic-data-category1); }
+.st-sunburstChart__legendSwatch--category2 { background: var(--st-semantic-data-category2); }
+.st-sunburstChart__legendSwatch--category3 { background: var(--st-semantic-data-category3); }
+.st-sunburstChart__legendSwatch--category4 { background: var(--st-semantic-data-category4); }
+.st-sunburstChart__legendSwatch--category5 { background: var(--st-semantic-data-category5); }
+.st-sunburstChart__legendSwatch--category6 { background: var(--st-semantic-data-category6); }
+.st-sunburstChart__legendSwatch--category7 { background: var(--st-semantic-data-category7); }
+.st-sunburstChart__legendSwatch--category8 { background: var(--st-semantic-data-category8); }
 
-.st-radarChart__point--category1 { fill: var(--st-semantic-data-category1); }
-.st-radarChart__point--category2 { fill: var(--st-semantic-data-category2); }
-.st-radarChart__point--category3 { fill: var(--st-semantic-data-category3); }
-.st-radarChart__point--category4 { fill: var(--st-semantic-data-category4); }
-.st-radarChart__point--category5 { fill: var(--st-semantic-data-category5); }
-.st-radarChart__point--category6 { fill: var(--st-semantic-data-category6); }
-.st-radarChart__point--category7 { fill: var(--st-semantic-data-category7); }
-.st-radarChart__point--category8 { fill: var(--st-semantic-data-category8); }
-
-/* SunburstChart: arc label (fill set inline by contrastTextForTone) */
-.st-sunburstChart__label {
-  font-size: 0.68rem;
-  font-weight: 650;
+/* ── Tooltips communs ── */
+.st-heatmapChart__tooltip,
+.st-histogramChart__tooltip,
+.st-boxPlotChart__tooltip,
+.st-radarChart__tooltip,
+.st-sankeyChart__tooltip,
+.st-sunburstChart__tooltip {
+  background: var(--st-semantic-surface-inverse);
+  border-radius: var(--st-radius-sm, 0.25rem);
+  color: var(--st-semantic-text-inverse);
+  display: inline-flex;
+  flex-direction: column;
+  font-size: 0.75rem;
+  gap: 0.125rem;
+  line-height: 1.2;
+  padding: 0.375rem 0.5rem;
   pointer-events: none;
+  position: absolute;
+  transform: translate(-50%, -115%);
+  white-space: nowrap;
+  z-index: 1;
+}
+
+.st-radarChart__tooltip {
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.st-heatmapChart__tooltipLabel,
+.st-histogramChart__tooltipLabel,
+.st-boxPlotChart__tooltipLabel,
+.st-radarChart__tooltipLabel,
+.st-sankeyChart__tooltipLabel,
+.st-sunburstChart__tooltipLabel {
+  font-weight: 600;
+}
+
+.st-heatmapChart__tooltipValue,
+.st-histogramChart__tooltipValue,
+.st-boxPlotChart__tooltipValue,
+.st-sankeyChart__tooltipValue,
+.st-sunburstChart__tooltipValue {
+  opacity: 0.85;
+}
+
+/* ── reduced-motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .st-heatmapChart__cell,
+  .st-histogramChart__bar,
+  .st-boxPlotChart__box,
+  .st-radarChart__polygon,
+  .st-sankeyChart__link,
+  .st-sunburstChart__arc {
+    transition: none;
+  }
 }
 
 /* ── BulletChart (lot-3) ── */
@@ -11055,6 +11100,203 @@
 
 .st-bulletChart__tooltipValue {
   opacity: 0.85;
+}
+
+/* ── LollipopChart ── */
+.st-lollipopChart {
+  color: var(--st-semantic-text-secondary);
+  display: block;
+  font-family: inherit;
+  position: relative;
+  width: 100%;
+}
+
+.st-lollipopChart svg {
+  display: block;
+  overflow: visible;
+}
+
+.st-lollipopChart__visual {
+  display: block;
+}
+
+.st-lollipopChart__grid {
+  stroke: var(--st-component-lollipopChart-gridStroke, var(--st-semantic-border-subtle));
+  stroke-dasharray: 2 3;
+  stroke-width: 1;
+  opacity: 0.7;
+}
+
+.st-lollipopChart__axis {
+  stroke: var(--st-component-lollipopChart-axisStroke, var(--st-semantic-border-subtle));
+  stroke-width: 1;
+}
+
+.st-lollipopChart__tickLabel,
+.st-lollipopChart__categoryLabel {
+  fill: var(--st-component-lollipopChart-labelColor, var(--st-semantic-text-secondary));
+  font-size: 0.6875rem;
+}
+
+.st-lollipopChart__valueLabel {
+  font-size: 0.625rem;
+  font-weight: 600;
+}
+
+.st-lollipopChart__stem {
+  stroke: var(--st-semantic-border-interactive, var(--st-semantic-border-subtle));
+  stroke-width: 1.5;
+}
+
+.st-lollipopChart__dot {
+  cursor: pointer;
+  transition: opacity var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
+}
+
+.st-lollipopChart__dot:hover {
+  opacity: 0.82;
+}
+
+.st-lollipopChart__dot--category1 { fill: var(--st-semantic-data-category1); }
+.st-lollipopChart__dot--category2 { fill: var(--st-semantic-data-category2); }
+.st-lollipopChart__dot--category3 { fill: var(--st-semantic-data-category3); }
+.st-lollipopChart__dot--category4 { fill: var(--st-semantic-data-category4); }
+.st-lollipopChart__dot--category5 { fill: var(--st-semantic-data-category5); }
+.st-lollipopChart__dot--category6 { fill: var(--st-semantic-data-category6); }
+.st-lollipopChart__dot--category7 { fill: var(--st-semantic-data-category7); }
+.st-lollipopChart__dot--category8 { fill: var(--st-semantic-data-category8); }
+
+.st-lollipopChart__tooltip {
+  background: var(--st-component-lollipopChart-tooltipBackground, var(--st-semantic-surface-inverse));
+  border-radius: var(--st-radius-sm, 0.25rem);
+  color: var(--st-component-lollipopChart-tooltipText, var(--st-semantic-text-inverse));
+  display: inline-flex;
+  flex-direction: column;
+  font-size: 0.75rem;
+  gap: 0.125rem;
+  line-height: 1.2;
+  padding: 0.375rem 0.5rem;
+  pointer-events: none;
+  position: absolute;
+  transform: translate(-50%, calc(-100% - 8px));
+  white-space: nowrap;
+  z-index: 1;
+}
+
+.st-lollipopChart__tooltipLabel {
+  font-weight: 600;
+}
+
+.st-lollipopChart__tooltipValue {
+  opacity: 0.85;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .st-lollipopChart__dot {
+    transition: none;
+  }
+}
+
+/* ── ParetoChart ── */
+.st-paretoChart {
+  color: var(--st-semantic-text-secondary);
+  display: block;
+  font-family: inherit;
+  position: relative;
+  width: 100%;
+}
+
+.st-paretoChart svg {
+  display: block;
+  overflow: visible;
+}
+
+.st-paretoChart__visual {
+  display: block;
+}
+
+.st-paretoChart__grid {
+  stroke: var(--st-component-paretoChart-gridStroke, var(--st-semantic-border-subtle));
+  stroke-dasharray: 2 3;
+  stroke-width: 1;
+  opacity: 0.7;
+}
+
+.st-paretoChart__axis {
+  stroke: var(--st-component-paretoChart-axisStroke, var(--st-semantic-border-subtle));
+  stroke-width: 1;
+}
+
+.st-paretoChart__tickLabel,
+.st-paretoChart__categoryLabel,
+.st-paretoChart__percentLabel {
+  fill: var(--st-component-paretoChart-labelColor, var(--st-semantic-text-secondary));
+  font-size: 0.6875rem;
+}
+
+.st-paretoChart__bar {
+  cursor: pointer;
+  transition: opacity var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
+}
+
+.st-paretoChart__bar:hover {
+  opacity: 0.82;
+}
+
+.st-paretoChart__bar--category1 { fill: var(--st-semantic-data-category1); }
+.st-paretoChart__bar--category2 { fill: var(--st-semantic-data-category2); }
+.st-paretoChart__bar--category3 { fill: var(--st-semantic-data-category3); }
+.st-paretoChart__bar--category4 { fill: var(--st-semantic-data-category4); }
+.st-paretoChart__bar--category5 { fill: var(--st-semantic-data-category5); }
+.st-paretoChart__bar--category6 { fill: var(--st-semantic-data-category6); }
+.st-paretoChart__bar--category7 { fill: var(--st-semantic-data-category7); }
+.st-paretoChart__bar--category8 { fill: var(--st-semantic-data-category8); }
+
+.st-paretoChart__cumLine {
+  stroke: var(--st-semantic-action-primary, var(--st-semantic-border-interactive));
+  stroke-width: 2;
+}
+
+.st-paretoChart__cumDot {
+  cursor: pointer;
+  fill: var(--st-semantic-action-primary, var(--st-semantic-border-interactive));
+  transition: opacity var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
+}
+
+.st-paretoChart__cumDot:hover {
+  opacity: 0.82;
+}
+
+.st-paretoChart__tooltip {
+  background: var(--st-component-paretoChart-tooltipBackground, var(--st-semantic-surface-inverse));
+  border-radius: var(--st-radius-sm, 0.25rem);
+  color: var(--st-component-paretoChart-tooltipText, var(--st-semantic-text-inverse));
+  display: inline-flex;
+  flex-direction: column;
+  font-size: 0.75rem;
+  gap: 0.125rem;
+  line-height: 1.2;
+  padding: 0.375rem 0.5rem;
+  pointer-events: none;
+  position: absolute;
+  transform: translate(-50%, calc(-100% - 8px));
+  white-space: nowrap;
+  z-index: 1;
+}
+
+.st-paretoChart__tooltipLabel {
+  font-weight: 600;
+}
+
+.st-paretoChart__tooltipValue {
+  opacity: 0.85;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .st-paretoChart__bar,
+  .st-paretoChart__cumDot {
+    transition: none;
+  }
 }
 
 /* ── MarimekkoChart (lot-3) ── */
@@ -12263,203 +12505,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .st-selectionChip__clear { transition: none; }
-}
-
-/* ── LollipopChart ── */
-.st-lollipopChart {
-  color: var(--st-semantic-text-secondary);
-  display: block;
-  font-family: inherit;
-  position: relative;
-  width: 100%;
-}
-
-.st-lollipopChart svg {
-  display: block;
-  overflow: visible;
-}
-
-.st-lollipopChart__visual {
-  display: block;
-}
-
-.st-lollipopChart__grid {
-  stroke: var(--st-component-lollipopChart-gridStroke, var(--st-semantic-border-subtle));
-  stroke-dasharray: 2 3;
-  stroke-width: 1;
-  opacity: 0.7;
-}
-
-.st-lollipopChart__axis {
-  stroke: var(--st-component-lollipopChart-axisStroke, var(--st-semantic-border-subtle));
-  stroke-width: 1;
-}
-
-.st-lollipopChart__tickLabel,
-.st-lollipopChart__categoryLabel {
-  fill: var(--st-component-lollipopChart-labelColor, var(--st-semantic-text-secondary));
-  font-size: 0.6875rem;
-}
-
-.st-lollipopChart__valueLabel {
-  font-size: 0.625rem;
-  font-weight: 600;
-}
-
-.st-lollipopChart__stem {
-  stroke: var(--st-semantic-border-interactive, var(--st-semantic-border-subtle));
-  stroke-width: 1.5;
-}
-
-.st-lollipopChart__dot {
-  cursor: pointer;
-  transition: opacity var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
-}
-
-.st-lollipopChart__dot:hover {
-  opacity: 0.82;
-}
-
-.st-lollipopChart__dot--category1 { fill: var(--st-semantic-data-category1); }
-.st-lollipopChart__dot--category2 { fill: var(--st-semantic-data-category2); }
-.st-lollipopChart__dot--category3 { fill: var(--st-semantic-data-category3); }
-.st-lollipopChart__dot--category4 { fill: var(--st-semantic-data-category4); }
-.st-lollipopChart__dot--category5 { fill: var(--st-semantic-data-category5); }
-.st-lollipopChart__dot--category6 { fill: var(--st-semantic-data-category6); }
-.st-lollipopChart__dot--category7 { fill: var(--st-semantic-data-category7); }
-.st-lollipopChart__dot--category8 { fill: var(--st-semantic-data-category8); }
-
-.st-lollipopChart__tooltip {
-  background: var(--st-component-lollipopChart-tooltipBackground, var(--st-semantic-surface-inverse));
-  border-radius: var(--st-radius-sm, 0.25rem);
-  color: var(--st-component-lollipopChart-tooltipText, var(--st-semantic-text-inverse));
-  display: inline-flex;
-  flex-direction: column;
-  font-size: 0.75rem;
-  gap: 0.125rem;
-  line-height: 1.2;
-  padding: 0.375rem 0.5rem;
-  pointer-events: none;
-  position: absolute;
-  transform: translate(-50%, calc(-100% - 8px));
-  white-space: nowrap;
-  z-index: 1;
-}
-
-.st-lollipopChart__tooltipLabel {
-  font-weight: 600;
-}
-
-.st-lollipopChart__tooltipValue {
-  opacity: 0.85;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .st-lollipopChart__dot {
-    transition: none;
-  }
-}
-
-/* ── ParetoChart ── */
-.st-paretoChart {
-  color: var(--st-semantic-text-secondary);
-  display: block;
-  font-family: inherit;
-  position: relative;
-  width: 100%;
-}
-
-.st-paretoChart svg {
-  display: block;
-  overflow: visible;
-}
-
-.st-paretoChart__visual {
-  display: block;
-}
-
-.st-paretoChart__grid {
-  stroke: var(--st-component-paretoChart-gridStroke, var(--st-semantic-border-subtle));
-  stroke-dasharray: 2 3;
-  stroke-width: 1;
-  opacity: 0.7;
-}
-
-.st-paretoChart__axis {
-  stroke: var(--st-component-paretoChart-axisStroke, var(--st-semantic-border-subtle));
-  stroke-width: 1;
-}
-
-.st-paretoChart__tickLabel,
-.st-paretoChart__categoryLabel,
-.st-paretoChart__percentLabel {
-  fill: var(--st-component-paretoChart-labelColor, var(--st-semantic-text-secondary));
-  font-size: 0.6875rem;
-}
-
-.st-paretoChart__bar {
-  cursor: pointer;
-  transition: opacity var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
-}
-
-.st-paretoChart__bar:hover {
-  opacity: 0.82;
-}
-
-.st-paretoChart__bar--category1 { fill: var(--st-semantic-data-category1); }
-.st-paretoChart__bar--category2 { fill: var(--st-semantic-data-category2); }
-.st-paretoChart__bar--category3 { fill: var(--st-semantic-data-category3); }
-.st-paretoChart__bar--category4 { fill: var(--st-semantic-data-category4); }
-.st-paretoChart__bar--category5 { fill: var(--st-semantic-data-category5); }
-.st-paretoChart__bar--category6 { fill: var(--st-semantic-data-category6); }
-.st-paretoChart__bar--category7 { fill: var(--st-semantic-data-category7); }
-.st-paretoChart__bar--category8 { fill: var(--st-semantic-data-category8); }
-
-.st-paretoChart__cumLine {
-  stroke: var(--st-semantic-action-primary, var(--st-semantic-border-interactive));
-  stroke-width: 2;
-}
-
-.st-paretoChart__cumDot {
-  cursor: pointer;
-  fill: var(--st-semantic-action-primary, var(--st-semantic-border-interactive));
-  transition: opacity var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
-}
-
-.st-paretoChart__cumDot:hover {
-  opacity: 0.82;
-}
-
-.st-paretoChart__tooltip {
-  background: var(--st-component-paretoChart-tooltipBackground, var(--st-semantic-surface-inverse));
-  border-radius: var(--st-radius-sm, 0.25rem);
-  color: var(--st-component-paretoChart-tooltipText, var(--st-semantic-text-inverse));
-  display: inline-flex;
-  flex-direction: column;
-  font-size: 0.75rem;
-  gap: 0.125rem;
-  line-height: 1.2;
-  padding: 0.375rem 0.5rem;
-  pointer-events: none;
-  position: absolute;
-  transform: translate(-50%, calc(-100% - 8px));
-  white-space: nowrap;
-  z-index: 1;
-}
-
-.st-paretoChart__tooltipLabel {
-  font-weight: 600;
-}
-
-.st-paretoChart__tooltipValue {
-  opacity: 0.85;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .st-paretoChart__bar,
-  .st-paretoChart__cumDot {
-    transition: none;
-  }
 }
 
 /* --- Shell : AppHeader / LanguageToggle / IdentityMenu (calque sentropic) --- */
@@ -17110,13 +17155,12 @@
   line-height: 1.4;
 }
 
-/* ============================================================================
-   NavSystem wave 1 — Vue parity (Overline, StatusDot, NavActionStack) +
-   Checkbox (description/trailing) & Search (fluid) extensions.
-   Token-only, AUCUN hex en dur — chaque var retombe sur le littéral de base.
-   ========================================================================== */
+/* ===========================================================================
+   Wave 1 NavSystem — Overline, StatusDot, NavActionStack + Checkbox/Search ext.
+   Token-only (P-C : anatomie par thème). Aucun hex littéral.
+   =========================================================================== */
 
-/* Overline — étiquette de section discrète en small-caps. */
+/* --- Overline ------------------------------------------------------------ */
 .st-overline {
   color: var(--st-component-overline-color, var(--st-semantic-text-secondary, inherit));
   display: var(--st-component-overline-display, inline-block);
@@ -17129,7 +17173,7 @@
   text-transform: var(--st-component-overline-textTransform, uppercase);
 }
 
-/* StatusDot — pastille de statut (point coloré + label optionnel). */
+/* --- StatusDot ----------------------------------------------------------- */
 .st-statusDot {
   align-items: center;
   color: var(--st-semantic-text-primary, inherit);
@@ -17147,6 +17191,8 @@
   flex: none;
 }
 
+/* Tone background + matching `color` so `currentColor` in the pulse keyframe
+   follows the dot. */
 .st-statusDot__dot--neutral {
   background-color: var(--st-component-statusDot-neutral, var(--st-semantic-text-secondary));
   color: var(--st-component-statusDot-neutral, var(--st-semantic-text-secondary));
@@ -17198,7 +17244,7 @@
   }
 }
 
-/* NavActionStack — pile d'actions hiérarchisées + zone sensible. */
+/* --- NavActionStack ------------------------------------------------------ */
 .st-navActionStack {
   display: flex;
   flex-direction: column;
@@ -17222,6 +17268,7 @@
   align-items: center;
 }
 
+/* Pleine largeur en pile verticale ; largeur naturelle en rangée. */
 .st-navActionStack--vertical .st-navActionStack__item {
   inline-size: 100%;
 }
@@ -17242,11 +17289,15 @@
   text-transform: var(--st-component-overline-textTransform, uppercase);
 }
 
+/* La zone sensible est pleine largeur quelle que soit l'orientation. */
 .st-navActionStack .st-navActionStack__dangerAction {
   inline-size: 100%;
 }
 
-/* Checkbox extension — secondary muted description + trailing slot. */
+/* --- Checkbox extensions (description + trailing) ------------------------- */
+/* SIGNAL filter row: input + content + trailing count, content fills, trailing
+   pushed to the row end. Top-aligned so the box rides the first text line when a
+   secondary description wraps below the label. */
 .st-choice:has(.st-choice__trailing) {
   align-items: start;
   grid-template-columns: auto 1fr auto;
@@ -17262,38 +17313,39 @@
   justify-content: flex-end;
 }
 
+/* Secondary muted description under the label (SIGNAL filter hint). */
 .st-choice__description {
   color: var(--st-semantic-text-secondary);
   font-size: 0.8125rem;
   line-height: 1.4;
 }
 
-/* Search extension — fluid lifts the field width cap. */
-.st-search.st-search--fluid {
+/* --- Search extension (fluid) -------------------------------------------- */
+/* Fluid mode: lift the width cap so the field fills a narrow drawer/rail. */
+.st-search--fluid {
   max-width: none;
   width: 100%;
 }
 
 /* ===========================================================================
-   NavItem — anatomie de rangée canonique du système de navigation (vague 2).
-   Composé sur SelectableRow + ColorSwatch/StatusDot + Badge. Token-only, aucun
-   hex en dur ; chaque var retombe sur un littéral de base.
+   NavItem — canonical nav-row anatomy (wave 2). Composes SelectableRow +
+   ColorSwatch / StatusDot (head) + Badge (count). Token-only, no raw hex.
    =========================================================================== */
 .st-navItem {
   display: block;
   inline-size: 100%;
 }
 
-/* Indentation de PROFONDEUR : décale la rangée SelectableRow (sa tête comprise)
-   par un padding inline-start ADDITIF à son padding de base (0.75rem). La var
-   --st-navItem-indent est posée sur le wrapper et héritée par cascade. */
+/* Depth INDENTATION: offset the composed SelectableRow (its head included) by an
+   inline-start padding ADDITIVE to its base padding (0.75rem). The
+   --st-navItem-indent var is set on the wrapper and inherited by the row. */
 .st-navItem .st-selectableRow {
   padding-inline-start: calc(0.75rem + var(--st-navItem-indent, 0rem));
 }
 
-/* Échelle typographique : la graisse ET la taille DÉCROISSENT avec la
-   profondeur, pour que la hiérarchie se lise sans relief de couleur. Chaque
-   token retombe sur un littéral → thème silencieux = byte-identique. */
+/* Typographic scale: weight AND size DECREASE with depth so the hierarchy reads
+   without a colour cue. Each token falls back to a literal → a silent theme
+   renders byte-identically. */
 .st-navItem--depth0 .st-navItem__title {
   font-size: var(--st-component-navItem-depth0-fontSize, 0.875rem);
   font-weight: var(--st-component-navItem-depth0-fontWeight, 600);
@@ -17306,7 +17358,7 @@
   font-size: var(--st-component-navItem-depth2-fontSize, 0.8125rem);
   font-weight: var(--st-component-navItem-depth2-fontWeight, 400);
 }
-/* L3 — muted : même métrique que L2, couleur atténuée. */
+/* L3 — muted: same metric as L2, dimmed colour. */
 .st-navItem--depth3 .st-navItem__title {
   font-size: var(--st-component-navItem-depth3-fontSize, 0.8125rem);
   font-weight: var(--st-component-navItem-depth3-fontWeight, 400);
@@ -17329,8 +17381,9 @@
   white-space: nowrap;
 }
 
-/* Ton sémantique de la RANGÉE : teinte le titre par le feedback correspondant.
-   Un « HTTP 403 » error devient rouge sémantique réel. */
+/* Semantic ROW status: tints the title with the matching feedback. A "HTTP 403"
+   error becomes a real semantic red. Each tone falls back to its
+   --st-semantic-feedback-* token. */
 .st-navItem--status-info .st-navItem__title {
   color: var(--st-component-navItem-status-info, var(--st-semantic-feedback-info));
 }
@@ -17344,7 +17397,7 @@
   color: var(--st-component-navItem-status-error, var(--st-semantic-feedback-error));
 }
 
-/* Séparateur token-only : une fine règle pleine largeur après la rangée. */
+/* Token-only divider: a fine full-width rule after the row. */
 .st-navItem__divider {
   border: 0;
   border-top: var(--st-border-width-thin, 1px) solid
@@ -17353,8 +17406,8 @@
 }
 
 /* ===========================================================================
-   NavSection — en-tête de groupe d'un rail / drawer. Composé sur Overline +
-   Collapsible + Badge. Token-only scopé.
+   NavSection — group header of a rail / drawer. Composes Overline (label),
+   Badge (count), Collapsible (disclosure). Token-only scoped.
    =========================================================================== */
 .st-navSection {
   inline-size: 100%;
@@ -17368,8 +17421,8 @@
   padding-block: var(--st-component-navSection-headerPaddingBlock, 0.375rem);
 }
 
-/* Le libellé et son compteur forment un bloc ; le Badge circle s'aligne au
-   centre vertical du texte small-caps. */
+/* The label and its count form one block; the circle Badge aligns to the
+   vertical centre of the small-caps text. */
 .st-navSection .st-navSection__label {
   align-items: center;
   display: inline-flex;
@@ -17380,7 +17433,7 @@
   flex: 0 0 auto;
 }
 
-/* Foyer de l'action de section : ancré à droite, ne grandit pas. */
+/* Section-action focus: anchored right, does not grow. */
 .st-navSection__action {
   align-items: center;
   display: inline-flex;
@@ -17389,4 +17442,276 @@
 
 .st-navSection__body {
   display: block;
+}
+
+/* NavSystem wave 3 primitives */
+.st-appShell {
+  background: var(--st-component-appShell-surface, var(--st-semantic-surface-default));
+  color: var(--st-semantic-text-primary);
+  min-block-size: 100vh;
+}
+
+.st-appShell--workspace {
+  display: grid;
+  grid-template-areas:
+    "top top top top"
+    "rail nav main context"
+    "rail nav utility utility"
+    "bottom bottom bottom bottom";
+  grid-template-columns: auto minmax(0, var(--st-component-navShell-width, 18rem)) minmax(0, 1fr) minmax(0, var(--st-component-contextPanel-width, 20rem));
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+}
+
+.st-appShell__topChrome { grid-area: top; }
+.st-appShell__primaryRail { grid-area: rail; min-block-size: 0; }
+.st-appShell__navigationPanel { grid-area: nav; min-block-size: 0; overflow: hidden; }
+.st-appShell__main { grid-area: main; min-block-size: 0; min-inline-size: 0; overflow: auto; }
+.st-appShell__contextPanel { grid-area: context; min-block-size: 0; overflow: hidden; }
+.st-appShell__utilityPanel { grid-area: utility; min-block-size: 0; overflow: hidden; }
+.st-appShell__bottomPanel { grid-area: bottom; }
+
+.st-navRail {
+  align-items: stretch;
+  background: var(--st-component-navRail-surface, var(--st-semantic-surface-raised));
+  color: var(--st-semantic-text-primary);
+  display: grid;
+  grid-template-rows: 1fr auto;
+  block-size: 100%;
+  inline-size: var(--st-component-navRail-width, 4.5rem);
+  padding: var(--st-spacing-2, 0.5rem);
+}
+
+.st-navRail__items,
+.st-navRail__footer {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--st-spacing-2, 0.5rem);
+}
+
+.st-navRail__items {
+  min-block-size: 0;
+  overflow-y: auto;
+}
+
+.st-navRail__item {
+  align-items: center;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--st-radius-md, 0.375rem);
+  color: var(--st-semantic-text-secondary);
+  cursor: pointer;
+  display: inline-flex;
+  flex-direction: column;
+  font: inherit;
+  gap: var(--st-spacing-1, 0.25rem);
+  inline-size: 100%;
+  min-block-size: 3.25rem;
+  padding: var(--st-spacing-2, 0.5rem);
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+}
+
+.st-navRail__item:hover,
+.st-navRail__item--active {
+  background: var(--st-component-navRail-activeBackground, var(--st-semantic-surface-subtle));
+  color: var(--st-semantic-text-primary);
+}
+
+.st-navRail__item--active {
+  border-color: var(--st-component-navRail-activeBorder, var(--st-semantic-border-strong));
+}
+
+.st-navRail__item:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.st-navRail__label {
+  font-size: 0.6875rem;
+  font-weight: 650;
+  line-height: 1.1;
+}
+
+.st-navRail__badge {
+  background: var(--st-component-navRail-badgeBackground, var(--st-semantic-surface-inverse));
+  border-radius: 999px;
+  color: var(--st-semantic-text-inverse);
+  font-size: 0.625rem;
+  line-height: 1;
+  padding: 0.125rem 0.3rem;
+  position: absolute;
+  right: 0.25rem;
+  top: 0.25rem;
+}
+
+.st-navShell {
+  background: var(--st-component-navShell-surface, var(--st-semantic-surface-raised));
+  border-inline-end: 1px solid var(--st-component-navShell-border, var(--st-semantic-border-subtle));
+  color: var(--st-semantic-text-primary);
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  min-block-size: 0;
+}
+
+.st-navShell--drawer {
+  border-inline-end: 0;
+}
+
+.st-navShell__header {
+  align-items: start;
+  border-block-end: 1px solid var(--st-component-navShell-border, var(--st-semantic-border-subtle));
+  display: flex;
+  gap: var(--st-spacing-2, 0.5rem);
+  padding: var(--st-spacing-4, 1rem);
+}
+
+.st-navShell__back {
+  align-items: center;
+  background: transparent;
+  border: 1px solid var(--st-semantic-border-subtle);
+  border-radius: 999px;
+  color: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  block-size: 2rem;
+  inline-size: 2rem;
+  justify-content: center;
+}
+
+.st-navShell__heading {
+  display: grid;
+  gap: var(--st-spacing-1, 0.25rem);
+}
+
+.st-navShell__title,
+.st-navShell__subtitle {
+  margin: 0;
+}
+
+.st-navShell__title {
+  font-weight: 700;
+}
+
+.st-navShell__subtitle {
+  color: var(--st-semantic-text-secondary);
+  font-size: 0.875rem;
+}
+
+.st-navShell__search {
+  border-block-end: 1px solid var(--st-component-navShell-border, var(--st-semantic-border-subtle));
+  padding: var(--st-spacing-3, 0.75rem) var(--st-spacing-4, 1rem);
+}
+
+.st-navShell__body {
+  min-block-size: 0;
+  overflow: auto;
+  padding: var(--st-spacing-3, 0.75rem);
+}
+
+.st-navShell__footer {
+  border-block-start: 1px solid var(--st-component-navShell-border, var(--st-semantic-border-subtle));
+  padding: var(--st-spacing-3, 0.75rem) var(--st-spacing-4, 1rem);
+}
+
+.st-contextPanel,
+.st-utilityPanel {
+  background: var(--st-component-panel-surface, var(--st-semantic-surface-raised));
+  color: var(--st-semantic-text-primary);
+  display: grid;
+  min-block-size: 0;
+}
+
+.st-contextPanel {
+  border-inline-start: 1px solid var(--st-component-panel-border, var(--st-semantic-border-subtle));
+  grid-template-rows: auto minmax(0, 1fr) auto;
+}
+
+.st-utilityPanel {
+  border-block-start: 1px solid var(--st-component-panel-border, var(--st-semantic-border-subtle));
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+.st-contextPanel--left {
+  border-inline-start: 0;
+  border-inline-end: 1px solid var(--st-component-panel-border, var(--st-semantic-border-subtle));
+}
+
+.st-contextPanel__header,
+.st-utilityPanel__header {
+  align-items: center;
+  border-block-end: 1px solid var(--st-component-panel-border, var(--st-semantic-border-subtle));
+  display: flex;
+  gap: var(--st-spacing-3, 0.75rem);
+  justify-content: space-between;
+  padding: var(--st-spacing-3, 0.75rem) var(--st-spacing-4, 1rem);
+}
+
+.st-contextPanel__title,
+.st-utilityPanel__title {
+  font-weight: 700;
+  margin: 0;
+}
+
+.st-contextPanel__body,
+.st-utilityPanel__body {
+  min-block-size: 0;
+  overflow: auto;
+  padding: var(--st-spacing-4, 1rem);
+}
+
+.st-contextPanel__footer {
+  border-block-start: 1px solid var(--st-component-panel-border, var(--st-semantic-border-subtle));
+  padding: var(--st-spacing-3, 0.75rem) var(--st-spacing-4, 1rem);
+}
+
+.st-drawer--bottom {
+  align-items: end;
+  justify-content: stretch;
+}
+
+.st-drawer--bottom .st-drawer__panel {
+  block-size: min(70vh, var(--st-component-drawer-bottomHeight, 42rem));
+  inline-size: 100%;
+  max-inline-size: none;
+}
+
+@media (max-width: 900px) {
+  .st-appShell--workspace {
+    grid-template-areas:
+      "top"
+      "rail"
+      "nav"
+      "main"
+      "context"
+      "utility"
+      "bottom";
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto auto minmax(0, 1fr) auto auto auto;
+  }
+
+  .st-navRail {
+    block-size: auto;
+    inline-size: 100%;
+  }
+
+  .st-navRail__items,
+  .st-navRail__footer {
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .st-navRail__item {
+    inline-size: auto;
+    min-inline-size: 4rem;
+  }
+
+  .st-navShell,
+  .st-contextPanel {
+    border-inline-end: 0;
+    border-inline-start: 0;
+    border-block-end: 1px solid var(--st-component-panel-border, var(--st-semantic-border-subtle));
+  }
 }

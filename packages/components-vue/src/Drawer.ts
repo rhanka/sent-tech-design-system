@@ -1,7 +1,7 @@
 import { defineComponent, h, onMounted, onUnmounted, ref, watch } from "vue";
 import { classNames } from "./classNames.js";
 
-export type DrawerPlacement = "left" | "right";
+export type DrawerPlacement = "left" | "right" | "bottom";
 
 export type DrawerProps = {
   open?: boolean;
