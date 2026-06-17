@@ -140,8 +140,8 @@ export function NavItem({
         selected={internalSelected}
         onSelect={handleSelect}
         value={value}
+        href={href}
         disabled={disabled}
-        role={href ? "link" : undefined}
         caption={
           caption != null ? (
             <span className="st-navItem__caption">{caption}</span>

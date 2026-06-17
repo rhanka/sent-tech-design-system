@@ -69,10 +69,8 @@
   //
   // a11y : NavItem N'INTRODUIT AUCUN interactif dans la rangée — pastille, badge
   // et caption sont décoratifs/textuels. Le href passe par l'ancre native de
-  // SelectableRow… mais SelectableRow rend un <div role=button/option> : pour un
-  // lien réel on enveloppe via la tête. Ici `href` est exposé comme intention de
-  // navigation transmise au consommateur (onselect) — la rangée reste UN seul
-  // tab stop, conforme au rôle « option » dérivé du conteneur.
+  // SelectableRow en standalone ; dans une SelectableList, la liste garde son
+  // rôle option/roving-tabindex. La rangée reste UN seul tab stop.
   import SelectableRow from "./SelectableRow.svelte";
   import ColorSwatch from "./ColorSwatch.svelte";
   import StatusDot from "./StatusDot.svelte";
@@ -147,8 +145,8 @@
   <SelectableRow
     bind:selected
     {value}
+    {href}
     {disabled}
-    role={href ? "link" : undefined}
     caption={caption ? captionSnippet : undefined}
   >
     {#snippet leading()}

@@ -50,9 +50,14 @@ export type NavItemProps = {
   selector: "st-nav-item",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    <a
+      [attr.data-st-component]="componentName"
+      [attr.href]="disabled ? null : href"
+      [attr.aria-disabled]="disabled ? 'true' : null"
+      [class]="hostClass"
+    >
       <ng-content></ng-content>
-    </div>
+    </a>
   `,
 })
 export class NavItem {

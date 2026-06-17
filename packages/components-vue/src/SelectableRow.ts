@@ -57,6 +57,8 @@ export type SelectableRowProps = {
   disabled?: boolean;
   /** Stable value, surfaced as `data-value` and used by the list for `value`. */
   value?: string;
+  /** Native link target. When set on a standalone row, the row renders as an anchor. */
+  href?: string;
   /**
    * ARIA role for the standalone row. Defaults to "option" so a lone row still
    * reads as a selectable item. Inside a list the role is forced to "option".
@@ -90,6 +92,7 @@ export const SelectableRow = defineComponent({
     },
     disabled: { type: Boolean, default: false },
     value: { type: String, default: undefined },
+    href: { type: String, default: undefined },
     role: { type: String, default: "option" },
     accentBar: { type: Boolean, default: false },
     class: { type: String, default: undefined },
@@ -133,8 +136,12 @@ export const SelectableRow = defineComponent({
       unregister = null;
     });
 
-    function activate() {
-      if (props.disabled) return;
+    function activate(e?: MouseEvent) {
+      if (props.disabled) {
+        e?.preventDefault();
+        e?.stopPropagation();
+        return;
+      }
       if (list && el.value) {
         list.activate(el.value);
         return;
@@ -146,6 +153,7 @@ export const SelectableRow = defineComponent({
 
     function handleKeydown(e: KeyboardEvent) {
       if (props.disabled) return;
+      if (props.href && !list) return;
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
         activate();
@@ -179,7 +187,7 @@ export const SelectableRow = defineComponent({
 
       const node = el.value;
       const isSelected = list && node ? list.isSelected(node) : props.selected;
-      const effectiveRole = list ? list.itemRole : props.role;
+      const effectiveRole = list ? list.itemRole : props.href ? undefined : props.role;
       const tabindex = props.disabled
         ? -1
         : list && node
@@ -215,10 +223,11 @@ export const SelectableRow = defineComponent({
       }
 
       return h(
-        "div",
+        props.href ? "a" : "div",
         {
           ...attrs,
           ref: el,
+          href: props.href && !props.disabled ? props.href : undefined,
           class: classNames(
             "st-selectableRow",
             isSelected && "st-selectableRow--selected",
