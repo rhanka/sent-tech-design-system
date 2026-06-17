@@ -33,7 +33,7 @@ export const AppShell = defineComponent({
       if (props.variant === "site") {
         return h("div", { ...attrs, class: classNames("st-appShell st-appShell--site", props.class), "data-st-app-shell-variant": "site" }, slots.default?.());
       }
-      return h("div", { ...attrs, class: classNames("st-appShell", props.class), "data-st-app-shell-variant": "workspace", "data-utility-mode": props.utilityMode, "data-utility-side": props.utilitySide }, [
+      return h("div", { ...attrs, class: classNames("st-appShell st-appShell--workspace", props.class), "data-st-app-shell-variant": "workspace", "data-utility-mode": props.utilityMode, "data-utility-side": props.utilitySide }, [
         slots.topChrome ? h("div", { class: "st-appShell__topChrome" }, slots.topChrome()) : null,
         h("div", { class: "st-appShell__body" }, [
           slots.primaryRail ? h("aside", { class: "st-appShell__primaryRail", "aria-label": "Primary rail" }, slots.primaryRail()) : null,
