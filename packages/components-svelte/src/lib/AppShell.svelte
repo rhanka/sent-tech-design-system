@@ -62,12 +62,12 @@
   }: AppShellProps = $props();
 
   const mode = $derived(variant ?? (config ? "site" : "workspace"));
-  const siteConfig = $derived(config ?? ({ brand: { name: "Sentropic" }, nav: [] } as SiteConfig));
+  const siteConfig = $derived(config ?? ({ brand: { name: "Sentropic" }, nav: [], theming: { themes: [], theme: "" } } as SiteConfig));
   const brand = $derived(siteConfig.brand ?? { name: "Sentropic" });
   const nav = $derived(Array.isArray(siteConfig.nav) ? siteConfig.nav : []);
   const t = $derived(siteConfig.theming ?? { themes: [], theme: "" });
   const siteClasses = $derived(["st-shell", className].filter(Boolean).join(" "));
-  const workspaceClasses = $derived(["st-appShell", className].filter(Boolean).join(" "));
+  const workspaceClasses = $derived(["st-appShell", "st-appShell--workspace", className].filter(Boolean).join(" "));
 
   const isActive = (item: { href: string; active?: boolean }) =>
     item.active != null

@@ -37,6 +37,6 @@ export class AppShell {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-appShell", this.classInput].filter(Boolean).join(" ");
+    return ["st-appShell", `st-appShell--${this.variant}`, this.classInput].filter(Boolean).join(" ");
   }
 }
