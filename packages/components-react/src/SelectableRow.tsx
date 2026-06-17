@@ -40,7 +40,7 @@ export const SelectableListContext =
 export const SelectableListVersionContext = React.createContext(0);
 
 export type SelectableRowProps = Omit<
-  React.HTMLAttributes<HTMLDivElement>,
+  React.HTMLAttributes<HTMLElement>,
   "onSelect"
 > & {
   /**
@@ -55,6 +55,8 @@ export type SelectableRowProps = Omit<
   disabled?: boolean;
   /** Stable value, surfaced as `data-value` and used by the list for `value`. */
   value?: string;
+  /** Native link target. When set on a standalone row, the row renders as an anchor. */
+  href?: string;
   /**
    * ARIA role for the standalone row. Defaults to "button" for standalone use —
    * "option" is only valid inside a listbox and would be invalid without one.
@@ -94,13 +96,14 @@ export type SelectableRowProps = Omit<
  * (Enter / Space), inert when disabled. Inside a {@link SelectableList} the list
  * (via context) owns selection and the roving tabindex.
  */
-export const SelectableRow = React.forwardRef<HTMLDivElement, SelectableRowProps>(
+export const SelectableRow = React.forwardRef<HTMLElement, SelectableRowProps>(
   (
     {
       selected = false,
       onSelect,
       disabled = false,
       value,
+      href,
       role = "button",
       accentBar = false,
       leading,
@@ -117,11 +120,11 @@ export const SelectableRow = React.forwardRef<HTMLDivElement, SelectableRowProps
     // role / tabindex / aria-selected) on every selection / focus / registry
     // change. The value itself is unused — reading the context is the subscription.
     React.useContext(SelectableListVersionContext);
-    const innerRef = React.useRef<HTMLDivElement | null>(null);
+    const innerRef = React.useRef<HTMLElement | null>(null);
 
     // Merge the forwarded ref with our own so the list can register the element.
     const setRef = React.useCallback(
-      (el: HTMLDivElement | null) => {
+      (el: HTMLElement | null) => {
         innerRef.current = el;
         if (typeof ref === "function") ref(el);
         else if (ref) ref.current = el;
@@ -151,11 +154,15 @@ export const SelectableRow = React.forwardRef<HTMLDivElement, SelectableRowProps
     // The list bumps this version on every selection / focus change.
     const el = innerRef.current;
     const isSelected = list && el ? list.isSelected(el) : selected;
-    const effectiveRole = list ? list.itemRole : role;
+    const effectiveRole = list ? list.itemRole : href ? undefined : role;
     const tabIndex = disabled ? -1 : list && el ? (list.isTabStop(el) ? 0 : -1) : 0;
 
-    function activate() {
-      if (disabled) return;
+    function activate(e?: React.MouseEvent<HTMLElement>) {
+      if (disabled) {
+        e?.preventDefault();
+        e?.stopPropagation();
+        return;
+      }
       const node = innerRef.current;
       if (list && node) {
         list.activate(node);
@@ -164,8 +171,9 @@ export const SelectableRow = React.forwardRef<HTMLDivElement, SelectableRowProps
       onSelect?.(!selected);
     }
 
-    function handleKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+    function handleKeyDown(e: React.KeyboardEvent<HTMLElement>) {
       if (disabled) return;
+      if (href && !list) return;
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
         activate();
@@ -194,28 +202,31 @@ export const SelectableRow = React.forwardRef<HTMLDivElement, SelectableRowProps
       if (list && node) list.focusRow(node);
     }
 
-    return (
-      <div
-        {...rest}
-        ref={setRef}
-        className={classNames(
+    return React.createElement(
+      href ? "a" : "div",
+      {
+        ...rest,
+        ref: setRef,
+        href: href && !disabled ? href : undefined,
+        className: classNames(
           "st-selectableRow",
           isSelected && "st-selectableRow--selected",
           disabled && "st-selectableRow--disabled",
           accentBar && "st-selectableRow--accentBar",
           caption != null && "st-selectableRow--hasCaption",
           className,
-        )}
-        role={effectiveRole}
-        aria-selected={effectiveRole === "option" ? isSelected : undefined}
-        aria-pressed={effectiveRole === "button" ? isSelected : undefined}
-        aria-disabled={disabled ? "true" : undefined}
-        data-value={value}
-        tabIndex={tabIndex}
-        onClick={activate}
-        onKeyDown={handleKeyDown}
-        onFocus={handleFocus}
-      >
+        ),
+        role: effectiveRole,
+        "aria-selected": effectiveRole === "option" ? isSelected : undefined,
+        "aria-pressed": effectiveRole === "button" ? isSelected : undefined,
+        "aria-disabled": disabled ? "true" : undefined,
+        "data-value": value,
+        tabIndex,
+        onClick: activate,
+        onKeyDown: handleKeyDown,
+        onFocus: handleFocus,
+      },
+      <>
         {leading != null ? (
           <span className="st-selectableRow__leading">{leading}</span>
         ) : null}
@@ -233,7 +244,7 @@ export const SelectableRow = React.forwardRef<HTMLDivElement, SelectableRowProps
         {trailing != null ? (
           <span className="st-selectableRow__trailing">{trailing}</span>
         ) : null}
-      </div>
+      </>,
     );
   },
 );

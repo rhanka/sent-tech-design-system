@@ -43,6 +43,8 @@
     disabled?: boolean;
     /** Stable value, surfaced as `data-value` and used by the list for `value`. */
     value?: string;
+    /** Native link target. When set on a standalone row, the row renders as an anchor. */
+    href?: string;
     /**
      * ARIA role for the standalone row. Defaults to "button" for standalone use —
      * "option" is only valid inside a listbox and would be invalid without one.
@@ -82,6 +84,7 @@
     onselect,
     disabled = false,
     value,
+    href,
     role = "button",
     accentBar = false,
     leading,
@@ -122,7 +125,8 @@
   const isSelected = $derived(list && el ? list.isSelected(el) : selected);
 
   // Effective role: a managed row is always an "option" inside the listbox.
-  const effectiveRole = $derived(list ? list.itemRole : role);
+  const effectiveRole = $derived(list ? list.itemRole : href ? undefined : role);
+  const rowTag = $derived(href ? "a" : "div");
 
   // Roving tabindex: in a list, exactly one enabled row is the tab stop (0), the
   // rest are -1. Standalone enabled rows are always tabbable (0). Disabled = -1.
@@ -143,8 +147,12 @@
       .join(" ")
   );
 
-  function activate() {
-    if (disabled) return;
+  function activate(event?: MouseEvent) {
+    if (disabled) {
+      event?.preventDefault();
+      event?.stopPropagation();
+      return;
+    }
     if (list && el) {
       list.activate(el);
       return;
@@ -155,6 +163,7 @@
 
   function handleKeydown(e: KeyboardEvent) {
     if (disabled) return;
+    if (href && !list) return;
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
       activate();
@@ -186,9 +195,11 @@
      tabindex is correct; the role is dynamic, which the static a11y check cannot
      verify, hence the targeted ignore. -->
 <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-<div
+<svelte:element
+  this={rowTag}
   bind:this={el}
   class={classes}
+  href={href && !disabled ? href : undefined}
   role={effectiveRole}
   aria-selected={effectiveRole === "option" ? isSelected : undefined}
   aria-pressed={effectiveRole === "button" ? isSelected : undefined}
@@ -216,7 +227,7 @@
   {#if trailing}
     <span class="st-selectableRow__trailing">{@render trailing()}</span>
   {/if}
-</div>
+</svelte:element>
 
 <style>
   /* Compact, full-width selectable list/rail row. By DEFAULT the selected state

@@ -23,9 +23,14 @@ export class NavItem {
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: NavItem, deps: [], target: i0.ɵɵFactoryTarget.Component });
     static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: NavItem, isStandalone: true, selector: "st-nav-item", inputs: { value: "value", title: "title", caption: "caption", depth: "depth", swatch: "swatch", count: "count", status: "status", selected: "selected", disabled: "disabled", href: "href", divider: "divider", classInput: ["class", "classInput"] }, ngImport: i0, template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    <a
+      [attr.data-st-component]="componentName"
+      [attr.href]="disabled ? null : href"
+      [attr.aria-disabled]="disabled ? 'true' : null"
+      [class]="hostClass"
+    >
       <ng-content></ng-content>
-    </div>
+    </a>
   `, isInline: true });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: NavItem, decorators: [{
@@ -34,9 +39,14 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     selector: "st-nav-item",
                     standalone: true,
                     template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    <a
+      [attr.data-st-component]="componentName"
+      [attr.href]="disabled ? null : href"
+      [attr.aria-disabled]="disabled ? 'true' : null"
+      [class]="hostClass"
+    >
       <ng-content></ng-content>
-    </div>
+    </a>
   `,
                 }]
         }], propDecorators: { value: [{

@@ -183,8 +183,8 @@ export const NavItem = defineComponent({
           {
             selected: internalSelected.value,
             value: props.value,
+            href: props.href,
             disabled: props.disabled,
-            role: props.href ? "link" : undefined,
             onSelect: handleSelect,
           },
           rowSlots,

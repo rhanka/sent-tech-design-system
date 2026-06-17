@@ -1,5 +1,6 @@
 import { Component, Input as NgInput } from "@angular/core";
 import type { NavShellSide } from "./NavShell.js";
+import { Drawer } from "./Drawer.js";
 
 export type NavDrawerProps = {
   title?: string;
@@ -12,10 +13,11 @@ export type NavDrawerProps = {
 @Component({
   selector: "st-nav-drawer",
   standalone: true,
+  imports: [Drawer],
   template: `
-    <aside [attr.data-st-component]="componentName" [attr.aria-label]="label || title" [class]="hostClass">
+    <st-drawer [open]="open" [title]="title || label || 'Navigation'" [placement]="side" [class]="hostClass">
       <ng-content></ng-content>
-    </aside>
+    </st-drawer>
   `,
 })
 export class NavDrawer {
@@ -28,6 +30,6 @@ export class NavDrawer {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-navShell", "st-navShell--drawer", `st-navShell--${this.side}`, this.open ? "st-navShell--open" : undefined, this.classInput].filter(Boolean).join(" ");
+    return ["st-navDrawer", "st-navShell", "st-navShell--drawer", this.classInput].filter(Boolean).join(" ");
   }
 }

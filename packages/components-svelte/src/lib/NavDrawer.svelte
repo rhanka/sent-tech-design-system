@@ -1,9 +1,8 @@
 <script lang="ts" module>
   import type { Snippet } from "svelte";
-  import type { NavShellSide, NavShellVariant } from "./NavShell.svelte";
+  import type { NavShellSide } from "./NavShell.svelte";
 
   export interface NavDrawerProps {
-    variant?: NavShellVariant;
     title?: string;
     subtitle?: string;
     label?: string;
@@ -20,7 +19,6 @@
   import NavShell from "./NavShell.svelte";
 
   let {
-    variant = "rail",
     title,
     subtitle,
     label,
@@ -35,7 +33,7 @@
 
 <NavShell
   bind:open
-  {variant}
+  variant="drawer"
   {title}
   {subtitle}
   {label}
