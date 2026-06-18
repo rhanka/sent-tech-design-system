@@ -14,8 +14,8 @@
       examplesTitle: "Exemples",
       matrixTitle: "Matrice catégorielle",
       matrixDesc: "Canaux en colonnes, trimestres en lignes, avec une cellule mise en évidence par ton.",
-      legendTitle: "Avec légende",
-      legendDesc: "`legend` affiche la lecture tonale quand la page ne fournit pas déjà une légende externe.",
+      legendTitle: "Rampe séquentielle",
+      legendDesc: "`scale=\"sequential\"` transforme la matrice en rampe d'intensité mono-teinte pilotée par les variables `--st-heatmapChart-ramp-*`.",
       apiTitle: "API du composant",
       defaultLabel: "Par défaut",
       required: "requis",
@@ -37,8 +37,8 @@
       examplesTitle: "Examples",
       matrixTitle: "Categorical matrix",
       matrixDesc: "Channels as columns, quarters as rows, with one cell highlighted by tone.",
-      legendTitle: "With legend",
-      legendDesc: "`legend` renders tonal guidance when the page does not already provide an external legend.",
+      legendTitle: "Sequential ramp",
+      legendDesc: "`scale=\"sequential\"` turns the matrix into a single-hue intensity ramp driven by the `--st-heatmapChart-ramp-*` variables.",
       apiTitle: "Component API",
       defaultLabel: "Default",
       required: "required",
@@ -99,6 +99,7 @@
           props: {
             label: locale.value === "fr" ? "Risque par système" : "Risk by system",
             data: riskData,
+            scale: "sequential",
             legend: true
           }
         }
@@ -139,6 +140,7 @@
       <tbody>
         <tr><td><code>data</code></td><td><code>HeatmapChartDatum[]</code></td><td><em>{text().required}</em></td></tr>
         <tr><td><code>label</code></td><td><code>string</code></td><td><em>{text().required}</em></td></tr>
+        <tr><td><code>scale</code></td><td><code>"categorical" | "sequential"</code></td><td><code>"categorical"</code></td></tr>
         <tr><td><code>legend</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
         <tr><td><code>width</code></td><td><code>number</code></td><td><code>480</code></td></tr>
         <tr><td><code>height</code></td><td><code>number</code></td><td><code>300</code></td></tr>
@@ -149,7 +151,7 @@
     <p class="docs-demo-note">
       <code>HeatmapChartDatum</code> = <code>{`{ x: string; y: string; value: number; tone?: HeatmapChartTone }`}</code>
       ·
-      <code>HeatmapChartTone</code> = <code>"category1" | ... | "category8"</code>.
+      <code>HeatmapChartTone</code> = <code>"category1" | ... | "category8"</code> ({locale.value === "fr" ? "utilisé en mode catégoriel" : "used in categorical mode"}).
     </p>
   </section>
 
@@ -167,6 +169,7 @@
     <h2>{text().tokensTitle}</h2>
     <ul class="docs-token-list">
       <li><code>--st-semantic-data-category1</code> ... <code>--st-semantic-data-category8</code></li>
+      <li><code>--st-heatmapChart-ramp-1</code> ... <code>--st-heatmapChart-ramp-8</code></li>
       <li><code>--st-semantic-border-subtle</code></li>
       <li><code>--st-semantic-text-secondary</code></li>
       <li><code>--st-semantic-surface-inverse</code></li>

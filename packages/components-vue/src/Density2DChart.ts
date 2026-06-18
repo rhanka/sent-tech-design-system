@@ -12,6 +12,8 @@ export type Density2DTone =
   | "category7"
   | "category8";
 
+export type Density2DChartScale = "categorical" | "sequential";
+
 export type Density2DPoint = {
   x: number;
   y: number;
@@ -21,6 +23,7 @@ export type Density2DPoint = {
 export type Density2DChartProps = {
   data: Density2DPoint[];
   bins?: number;
+  scale?: Density2DChartScale;
   label?: string;
   width?: number;
   height?: number;
@@ -39,6 +42,10 @@ const TONES: Density2DTone[] = [
   "category7",
   "category8",
 ];
+
+function normalizedScale(value: Density2DChartScale | undefined): Density2DChartScale {
+  return value === "categorical" ? "categorical" : "sequential";
+}
 
 // Continuous scale: density normalised 0..max → category1..8 (shared with
 // HeatmapChart). max ≤ 0 or non-finite density → category1 (floor intensity).
@@ -102,6 +109,7 @@ export const Density2DChart = defineComponent({
   props: {
     data: { type: Array as () => Density2DPoint[], default: () => [] },
     bins: { type: Number, default: 12 },
+    scale: { type: String as () => Density2DChartScale, default: "sequential" },
     label: { type: String, default: undefined },
     width: { type: Number, default: undefined },
     height: { type: Number, default: 320 },
@@ -129,6 +137,7 @@ export const Density2DChart = defineComponent({
       const label = props.label;
       const height = props.height ?? 320;
       const resolvedWidth = props.width ?? props.size ?? 640;
+      const resolvedScale = normalizedScale(props.scale);
 
       const plotWidth = Math.max(resolvedWidth - MARGIN.left - MARGIN.right, 1);
       const plotHeight = Math.max(height - MARGIN.top - MARGIN.bottom, 1);
@@ -367,7 +376,7 @@ export const Density2DChart = defineComponent({
 
       return h(
         "div",
-        { ...attrs, class: classNames("st-density2DChart", props.class) },
+        { ...attrs, class: classNames("st-density2DChart", `st-density2DChart--${resolvedScale}`, props.class) },
         children,
       );
     };

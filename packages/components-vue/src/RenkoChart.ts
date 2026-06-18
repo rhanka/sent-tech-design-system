@@ -67,19 +67,48 @@ export const RenkoChart = defineComponent({
               : 1
             : 1;
 
-      // Briques Renko : une par franchissement de `box` ; inversion = 2×box.
+      // Briques Renko : une par franchissement de `box` ; inversion = 2×box
+      // avec une première brique du nouveau sens décalée d'un cran.
       const bricks: { bottom: number; top: number; direction: RenkoChartDirection }[] = [];
       if (validData.length > 0 && effectiveBox > 0) {
         let base = validData[0].close;
+        let direction: RenkoChartDirection | null = null;
         for (let i = 1; i < validData.length; i++) {
           const price = validData[i].close;
-          while (price >= base + effectiveBox) {
-            bricks.push({ bottom: base, top: base + effectiveBox, direction: "up" });
-            base += effectiveBox;
+
+          if (direction !== "down") {
+            while (price >= base + effectiveBox) {
+              bricks.push({ bottom: base, top: base + effectiveBox, direction: "up" });
+              base += effectiveBox;
+              direction = "up";
+            }
           }
+
+          if (direction === "up") {
+            if (price <= base - 2 * effectiveBox) {
+              base -= effectiveBox;
+              do {
+                bricks.push({ bottom: base - effectiveBox, top: base, direction: "down" });
+                base -= effectiveBox;
+                direction = "down";
+              } while (price <= base - effectiveBox);
+            }
+            continue;
+          }
+
           while (price <= base - effectiveBox) {
             bricks.push({ bottom: base - effectiveBox, top: base, direction: "down" });
             base -= effectiveBox;
+            direction = "down";
+          }
+
+          if (direction === "down" && price >= base + 2 * effectiveBox) {
+            base += effectiveBox;
+            do {
+              bricks.push({ bottom: base, top: base + effectiveBox, direction: "up" });
+              base += effectiveBox;
+              direction = "up";
+            } while (price >= base + effectiveBox);
           }
         }
       }

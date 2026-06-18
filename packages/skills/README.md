@@ -129,6 +129,11 @@ Ou `kind: "url"` / `kind: "html"` pour un bloc HTML brut.
 - `auto-fit-card-grid` — détecte les grilles auto-fit de cartes répétitives hors token de layout.
 - `focus-visible-ring` — signale la suppression d'outline sans focus-visible tokenisé.
 - `viewport-zoom` — signale les métas viewport bloquant/réduisant excessivement le zoom page.
+- `navsystem-one-primary-action` — signale plus d'une action primaire explicite dans une même surface NavSystem.
+- `navsystem-no-interactive-in-option` — signale un contrôle interactif imbriqué dans une option/listbox.
+- `navsystem-color-state-only` — signale un marqueur couleur/état sans libellé d'état explicite.
+- `navsystem-depth-hierarchy` — signale une profondeur rail/drawer/panel/menu au-delà du contrat statique.
+- `navsystem-search-fill-affordance` — signale une recherche de drawer/panel sans affordance de remplissage explicite.
 
 ## Architecture
 
@@ -138,5 +143,5 @@ Ou `kind: "url"` / `kind: "html"` pour un bloc HTML brut.
 
 ## Notes
 
-- Cette version expose 27 règles déterministes, chacune reliée à un principe `design` et à un finding WP7.
+- Cette version expose 32 règles déterministes, chacune reliée à un principe `design` et à un finding WP7/WP23.
   L’enrichissement vers ~`30-35` règles reste géré via WP7/8.

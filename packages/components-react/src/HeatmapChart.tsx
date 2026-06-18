@@ -12,6 +12,8 @@ export type HeatmapChartTone =
   | "category7"
   | "category8";
 
+export type HeatmapChartScale = "categorical" | "sequential";
+
 export type HeatmapChartDatum = {
   x: string;
   y: string;
@@ -23,6 +25,7 @@ export type HeatmapChartProps = Omit<React.HTMLAttributes<HTMLDivElement>, "clas
   data: HeatmapChartDatum[];
   width?: number;
   height?: number;
+  scale?: HeatmapChartScale;
   legend?: boolean;
   label: string;
   className?: string;
@@ -52,6 +55,10 @@ function uniqueInOrder(values: string[]): string[] {
   return out;
 }
 
+function normalizedScale(value: HeatmapChartScale | undefined): HeatmapChartScale {
+  return value === "sequential" ? "sequential" : "categorical";
+}
+
 function toneForValue(value: number, min: number, max: number): HeatmapChartTone {
   if (!Number.isFinite(value) || max <= min) return "category1";
   const index = Math.max(0, Math.min(TONES.length - 1, Math.floor(((value - min) / (max - min)) * TONES.length)));
@@ -62,12 +69,14 @@ export function HeatmapChart({
   data,
   width = 480,
   height = 300,
+  scale = "categorical",
   legend = false,
   label,
   className,
   ...rest
 }: HeatmapChartProps) {
   const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
+  const resolvedScale = normalizedScale(scale);
 
   const xLabels = uniqueInOrder(data.map((d) => d.x));
   const yLabels = uniqueInOrder(data.map((d) => d.y));
@@ -76,7 +85,6 @@ export function HeatmapChart({
   const cellWidth = xLabels.length > 0 ? plotWidth / xLabels.length : plotWidth;
   const cellHeight = yLabels.length > 0 ? plotHeight / yLabels.length : plotHeight;
 
-  // Fix: filtrer NaN avant min/max
   const finiteValues = data.map((d) => d.value).filter(Number.isFinite);
   const minValue = finiteValues.length > 0 ? Math.min(...finiteValues) : 0;
   const maxValue = finiteValues.length > 0 ? Math.max(...finiteValues) : 1;
@@ -89,7 +97,7 @@ export function HeatmapChart({
     return {
       datum,
       index,
-      tone: datum.tone ?? toneForValue(datum.value, minValue, maxValue),
+      tone: resolvedScale === "sequential" ? toneForValue(datum.value, minValue, maxValue) : datum.tone ?? toneForValue(datum.value, minValue, maxValue),
       x,
       y,
       width: Math.max(cellWidth - 2, 1),
@@ -119,7 +127,7 @@ export function HeatmapChart({
   const hoveredCell = hoveredIndex !== null ? cells[hoveredIndex] : undefined;
 
   return (
-    <div {...rest} className={classNames("st-heatmapChart", className)}>
+    <div {...rest} className={classNames("st-heatmapChart", `st-heatmapChart--${resolvedScale}`, className)}>
       <div
         className="st-heatmapChart__visual"
         role="img"

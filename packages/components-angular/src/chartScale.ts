@@ -118,24 +118,63 @@ export function linearRegression(points: ReadonlyArray<{ x: number; y: number }>
 export function extendValueDomain(
   min: number,
   max: number,
-  options: { referenceLines?: ChartReferenceLine[]; bands?: ChartBand[]; goalLine?: ChartGoalLine | null },
+  options: {
+    referenceLines?: ReadonlyArray<ChartReferenceLine>;
+    referenceAxis?: "x" | "y";
+    bands?: ReadonlyArray<ChartBand>;
+    goalLine?: ChartGoalLine | null;
+    extraValues?: ReadonlyArray<number>;
+  },
 ): [number, number] {
-  const values = [
-    min,
-    max,
-    ...(options.referenceLines ?? []).filter((line) => (line.axis ?? "y") === "y").map((line) => line.value),
-    ...(options.bands ?? []).flatMap((band) => [band.from, band.to]),
-    ...(options.goalLine ? [options.goalLine.value] : []),
-  ].filter(Number.isFinite);
-  return [Math.min(...values), Math.max(...values)];
+  let lo = min;
+  let hi = max;
+  const referenceAxis = options.referenceAxis ?? "y";
+  const fold = (value: number | undefined) => {
+    if (value === undefined || !Number.isFinite(value)) return;
+    if (value < lo) lo = value;
+    if (value > hi) hi = value;
+  };
+  for (const line of options.referenceLines ?? []) {
+    if ((line.axis ?? "y") === referenceAxis) fold(line.value);
+  }
+  for (const band of options.bands ?? []) {
+    fold(band.from);
+    fold(band.to);
+  }
+  if (options.goalLine) fold(options.goalLine.value);
+  for (const value of options.extraValues ?? []) fold(value);
+  return [lo, hi];
 }
 
 export function chartDataList(label: string, items: string[]): string {
   return [label, ...items].filter(Boolean).join("\n");
 }
 
-export function overlayDataListItems(): string[] {
-  return [];
+export function overlayDataListItems(overlays: {
+  referenceLines?: ReadonlyArray<ChartReferenceLine>;
+  bands?: ReadonlyArray<ChartBand>;
+  goalLine?: ChartGoalLine | null;
+  trend?: { slope: number; intercept: number } | null;
+}): string[] {
+  const items: string[] = [];
+  for (const line of overlays.referenceLines ?? []) {
+    if (!Number.isFinite(line.value)) continue;
+    items.push(line.label ? `Référence: ${line.label} = ${line.value}` : `Référence: ${line.value}`);
+  }
+  for (const band of overlays.bands ?? []) {
+    if (!Number.isFinite(band.from) || !Number.isFinite(band.to)) continue;
+    const lo = Math.min(band.from, band.to);
+    const hi = Math.max(band.from, band.to);
+    items.push(band.label ? `Bande: ${band.label} (${lo}–${hi})` : `Bande: ${lo}–${hi}`);
+  }
+  if (overlays.goalLine && Number.isFinite(overlays.goalLine.value)) {
+    const goal = overlays.goalLine;
+    items.push(goal.label ? `Objectif: ${goal.label} = ${goal.value}` : `Objectif: ${goal.value}`);
+  }
+  if (overlays.trend) {
+    items.push(`Tendance: pente ${overlays.trend.slope.toFixed(2)}`);
+  }
+  return items;
 }
 
 export function isLightTone(): boolean {

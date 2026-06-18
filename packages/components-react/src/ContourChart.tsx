@@ -12,6 +12,8 @@ export type ContourChartTone =
   | "category7"
   | "category8";
 
+export type ContourChartScale = "categorical" | "sequential";
+
 export type ContourChartDatum = {
   x: number;
   y: number;
@@ -22,6 +24,7 @@ export type ContourChartDatum = {
 export type ContourChartProps = Omit<React.HTMLAttributes<HTMLDivElement>, "className"> & {
   data: ContourChartDatum[];
   levels?: number;
+  scale?: ContourChartScale;
   label?: string;
   width?: number;
   height?: number;
@@ -42,9 +45,14 @@ const TONES: ContourChartTone[] = [
   "category8",
 ];
 
+function normalizedScale(value: ContourChartScale | undefined): ContourChartScale {
+  return value === "categorical" ? "categorical" : "sequential";
+}
+
 export function ContourChart({
   data,
   levels = 6,
+  scale = "sequential",
   label,
   width = 640,
   height = 320,
@@ -53,6 +61,7 @@ export function ContourChart({
   ...rest
 }: ContourChartProps) {
   const [hoveredKey, setHoveredKey] = React.useState<string | null>(null);
+  const resolvedScale = normalizedScale(scale);
 
   // Points valides : coordonnées finies, valeur finie.
   const validData = data.filter(
@@ -66,21 +75,27 @@ export function ContourChart({
   const valueMin = vals.length ? Math.min(...vals) : 0;
   const valueMax = vals.length ? Math.max(...vals) : 0;
 
-  // Palier (0..levelCount-1) puis ton catégoriel : valeur normalisée 0..1 → bande.
-  function bandOf(value: number): { band: number; tone: ContourChartTone } {
-    const ratio = valueMax > valueMin ? (value - valueMin) / (valueMax - valueMin) : 0;
-    const band = Math.max(0, Math.min(levelCount - 1, Math.floor(ratio * levelCount)));
+  function toneForBand(band: number): ContourChartTone {
     const toneIndex = Math.max(
       0,
       Math.min(TONES.length - 1, Math.floor((band / Math.max(levelCount - 1, 1)) * (TONES.length - 1))),
     );
-    return { band, tone: TONES[toneIndex] };
+    return TONES[toneIndex];
+  }
+
+  // Palier (0..levelCount-1) puis ton catégoriel : valeur normalisée 0..1 → bande.
+  function bandOf(value: number): { band: number; tone: ContourChartTone } {
+    const ratio = valueMax > valueMin ? (value - valueMin) / (valueMax - valueMin) : 0;
+    const band = Math.max(0, Math.min(levelCount - 1, Math.floor(ratio * levelCount)));
+    return { band, tone: toneForBand(band) };
   }
 
   const xs = validData.map((d) => d.x);
   const ys = validData.map((d) => d.y);
   const xValues = Array.from(new Set(xs)).sort((a, b) => a - b);
   const yValues = Array.from(new Set(ys)).sort((a, b) => a - b);
+  const xIndexByValue = new Map(xValues.map((value, index) => [value, index]));
+  const yIndexByValue = new Map(yValues.map((value, index) => [value, index]));
   const xTicks = niceTicks(Math.min(...xs), Math.max(...xs));
   const yTicks = niceTicks(Math.min(...ys), Math.max(...ys));
   const plotW = Math.max(width - MARGIN.left - MARGIN.right, 1);
@@ -100,10 +115,13 @@ export function ContourChart({
     const right = MARGIN.left + scaleLinear(d.x + dx / 2, xMin, xMax, 0, plotW);
     const top = MARGIN.top + scaleLinear(d.y + dy / 2, yMin, yMax, plotH, 0);
     const bottom = MARGIN.top + scaleLinear(d.y - dy / 2, yMin, yMax, plotH, 0);
-    const { tone } = bandOf(d.value);
+    const { band, tone } = bandOf(d.value);
     return {
       key: `${i}`,
       datum: d,
+      band,
+      col: xIndexByValue.get(d.x) ?? 0,
+      row: yIndexByValue.get(d.y) ?? 0,
       x: Math.min(left, right),
       y: Math.min(top, bottom),
       width: Math.abs(right - left),
@@ -114,14 +132,36 @@ export function ContourChart({
     };
   });
 
+  const cellByGridKey = new Map(cells.map((cell) => [`${cell.col}:${cell.row}`, cell] as const));
+  const contourSegments = cells.flatMap((cell) => {
+    const segments = [];
+    const right = cellByGridKey.get(`${cell.col + 1}:${cell.row}`);
+    if (right && right.band !== cell.band) {
+      segments.push({
+        key: `${cell.key}:right`,
+        x1: cell.x + cell.width,
+        y1: cell.y,
+        x2: cell.x + cell.width,
+        y2: cell.y + cell.height,
+      });
+    }
+    const upper = cellByGridKey.get(`${cell.col}:${cell.row + 1}`);
+    if (upper && upper.band !== cell.band) {
+      segments.push({
+        key: `${cell.key}:top`,
+        x1: cell.x,
+        y1: cell.y,
+        x2: cell.x + cell.width,
+        y2: cell.y,
+      });
+    }
+    return segments;
+  });
+
   const dataValueItems = validData.map((d) => `x ${d.x}, y ${d.y} · ${formatTick(d.value)}`);
 
   const legendItems = Array.from({ length: levelCount }, (_, band) => {
-    const toneIndex = Math.max(
-      0,
-      Math.min(TONES.length - 1, Math.floor((band / Math.max(levelCount - 1, 1)) * (TONES.length - 1))),
-    );
-    return { band, tone: TONES[toneIndex] };
+    return { band, tone: toneForBand(band) };
   });
   const hasLegend = validData.length > 0;
 
@@ -137,7 +177,7 @@ export function ContourChart({
   const hoveredCell = hoveredKey === null ? null : cells.find((c) => c.key === hoveredKey) ?? null;
 
   return (
-    <div {...rest} className={classNames("st-contourChart", className)}>
+    <div {...rest} className={classNames("st-contourChart", `st-contourChart--${resolvedScale}`, className)}>
       <div
         className="st-contourChart__visual"
         role="img"
@@ -166,6 +206,16 @@ export function ContourChart({
               width={cell.width}
               height={cell.height}
               data-chart-key={cell.key}
+            />
+          ))}
+          {contourSegments.map((segment) => (
+            <line
+              key={segment.key}
+              className="st-contourChart__isoline"
+              x1={segment.x1}
+              y1={segment.y1}
+              x2={segment.x2}
+              y2={segment.y2}
             />
           ))}
 

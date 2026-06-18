@@ -7,9 +7,12 @@ export type CalendarHeatmapChartDatum = {
   value: number;
 };
 
+export type CalendarHeatmapChartScale = "categorical" | "sequential";
+
 export type CalendarHeatmapChartProps = Omit<React.HTMLAttributes<HTMLDivElement>, "className"> & {
   data: CalendarHeatmapChartDatum[];
   label: string;
+  scale?: CalendarHeatmapChartScale;
   width?: number;
   height?: number;
   className?: string;
@@ -20,6 +23,10 @@ const TONES = [
   "category5", "category6", "category7", "category8",
 ] as const;
 type Tone = typeof TONES[number];
+
+function normalizedScale(value: CalendarHeatmapChartScale | undefined): CalendarHeatmapChartScale {
+  return value === "categorical" ? "categorical" : "sequential";
+}
 
 const MARGIN = { top: 24, right: 8, bottom: 8, left: 24 };
 const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -53,12 +60,14 @@ function daysDiff(tsA: number, tsB: number): number {
 export function CalendarHeatmapChart({
   data = [],
   label,
+  scale = "sequential",
   width = 480,
   height = 140,
   className,
   ...rest
 }: CalendarHeatmapChartProps) {
   const [hoveredDate, setHoveredDate] = React.useState<string | null>(null);
+  const resolvedScale = normalizedScale(scale);
 
   const plotWidth = Math.max(width - MARGIN.left - MARGIN.right, 1);
   const plotHeight = Math.max(height - MARGIN.top - MARGIN.bottom, 1);
@@ -179,7 +188,7 @@ export function CalendarHeatmapChart({
   }
 
   return (
-    <div {...rest} className={classNames("st-calendarHeatmapChart", className)}>
+    <div {...rest} className={classNames("st-calendarHeatmapChart", `st-calendarHeatmapChart--${resolvedScale}`, className)}>
       <div
         className="st-calendarHeatmapChart__visual"
         role="img"

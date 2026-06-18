@@ -26,6 +26,11 @@ import { autoFitCardGridRule } from "./autoFitCardGridRule.js";
 import { focusVisibleRingRule } from "./focusVisibleRingRule.js";
 import { viewportZoomRule } from "./viewportZoomRule.js";
 import { darkModeRule } from "./darkModeRule.js";
+import { navSystemPrimaryActionRule } from "./navSystemPrimaryActionRule.js";
+import { navSystemOptionInteractiveRule } from "./navSystemOptionInteractiveRule.js";
+import { navSystemColorStateRule } from "./navSystemColorStateRule.js";
+import { navSystemDepthHierarchyRule } from "./navSystemDepthHierarchyRule.js";
+import { navSystemSearchFillRule } from "./navSystemSearchFillRule.js";
 
 export const defaultRules: Rule[] = [
   singleFontRule,
@@ -54,7 +59,12 @@ export const defaultRules: Rule[] = [
   autoFitCardGridRule,
   focusVisibleRingRule,
   viewportZoomRule,
-  darkModeRule
+  darkModeRule,
+  navSystemPrimaryActionRule,
+  navSystemOptionInteractiveRule,
+  navSystemColorStateRule,
+  navSystemDepthHierarchyRule,
+  navSystemSearchFillRule
 ];
 
 export {
@@ -84,5 +94,10 @@ export {
   autoFitCardGridRule,
   focusVisibleRingRule,
   viewportZoomRule,
-  darkModeRule
+  darkModeRule,
+  navSystemPrimaryActionRule,
+  navSystemOptionInteractiveRule,
+  navSystemColorStateRule,
+  navSystemDepthHierarchyRule,
+  navSystemSearchFillRule
 };

@@ -134,7 +134,7 @@ export type { EventFeedPanelProps, EventFeedPanelEvent, EventFeedPanelSeverity }
 export { VectorFieldChart } from "./VectorFieldChart.js";
 export type { VectorFieldChartProps, VectorFieldChartDatum, VectorFieldChartTone } from "./VectorFieldChart.js";
 export { ContourChart } from "./ContourChart.js";
-export type { ContourChartProps, ContourChartDatum, ContourChartTone } from "./ContourChart.js";
+export type { ContourChartProps, ContourChartDatum, ContourChartTone, ContourChartScale } from "./ContourChart.js";
 export { WindBarbChart } from "./WindBarbChart.js";
 export type { WindBarbChartProps, WindBarbChartDatum, WindBarbChartTone } from "./WindBarbChart.js";
 export { RenkoChart } from "./RenkoChart.js";
@@ -165,6 +165,7 @@ export type {
   AnomalySwimLaneBucket,
   AnomalySwimLaneSeries,
   AnomalySwimLaneTone,
+  AnomalySwimLaneChartScale,
 } from "./AnomalySwimLaneChart.js";
 export { FlamegraphChart } from "./FlamegraphChart.js";
 export type { FlamegraphChartProps, FlamegraphNode } from "./FlamegraphChart.js";
@@ -178,7 +179,7 @@ export type {
   DecompositionTreeData,
 } from "./DecompositionTreeChart.js";
 export { Density2DChart } from "./Density2DChart.js";
-export type { Density2DChartProps, Density2DTone, Density2DPoint } from "./Density2DChart.js";
+export type { Density2DChartProps, Density2DTone, Density2DPoint, Density2DChartScale } from "./Density2DChart.js";
 export { GeoMap } from "./GeoMap.js";
 export type {
   GeoMapProps,
@@ -202,8 +203,10 @@ export type {
 } from "./GeoMap.js";
 export { Header } from "./Header.js";
 export type { HeaderProps, HeaderAccount } from "./Header.js";
+export { DashboardGrid } from "./DashboardGrid.js";
+export type { DashboardGridProps, DashboardGridTile } from "./DashboardGrid.js";
 export { HeatmapChart } from "./HeatmapChart.js";
-export type { HeatmapChartProps, HeatmapChartDatum, HeatmapChartTone } from "./HeatmapChart.js";
+export type { HeatmapChartProps, HeatmapChartDatum, HeatmapChartScale, HeatmapChartTone } from "./HeatmapChart.js";
 export { Highlight } from "./Highlight.js";
 export type { HighlightProps, HighlightTone } from "./Highlight.js";
 export { HistogramChart } from "./HistogramChart.js";
@@ -502,7 +505,7 @@ export type {
   StreamgraphChartTone,
 } from "./StreamgraphChart.js";
 export { CalendarHeatmapChart } from "./CalendarHeatmapChart.js";
-export type { CalendarHeatmapChartProps, CalendarHeatmapChartDatum } from "./CalendarHeatmapChart.js";
+export type { CalendarHeatmapChartProps, CalendarHeatmapChartDatum, CalendarHeatmapChartScale } from "./CalendarHeatmapChart.js";
 export { ParallelCoordinatesChart } from "./ParallelCoordinatesChart.js";
 export type {
   ParallelCoordinatesChartProps,
