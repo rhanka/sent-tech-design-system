@@ -1136,8 +1136,8 @@ export const COMPONENTS: ComponentEntry[] = [
     status: "documented",
     category: "data",
     description: {
-      fr: "Contour topographique : grille 2D peinte en bandes de couleur par paliers de valeur (échelle data category1…8).",
-      en: "Topographic contour: 2D grid painted as colour bands by value levels (data category1…8 scale)."
+      fr: "Contour topographique : grille 2D peinte en bandes de couleur avec isolignes aux ruptures de niveau (échelle data category1…8).",
+      en: "Topographic contour: 2D grid painted as colour bands with isolines at level boundaries (data category1…8 scale)."
     }
   },
   {
@@ -1328,6 +1328,16 @@ export const COMPONENTS: ComponentEntry[] = [
     description: {
       fr: "Arbre/dendrogramme horizontal (gauche→droite) : nœuds circulaires hiérarchiques par profondeur, liens en courbes de Bézier, feuilles réparties verticalement.",
       en: "Horizontal tree/dendrogram (left→right): circular hierarchical nodes by depth, Bézier-curve links, leaves spread vertically."
+    }
+  },
+  {
+    name: "DashboardGrid",
+    slug: "dashboard-grid",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Canvas de tuiles analytiques positionnées par grille, avec mode édition accessible.",
+      en: "Analytics tile canvas positioned by grid coordinates, with accessible edit mode."
     }
   },
   {

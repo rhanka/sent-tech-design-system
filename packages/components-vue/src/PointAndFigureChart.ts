@@ -76,15 +76,22 @@ export const PointAndFigureChart = defineComponent({
       const rawCols: { mark: PointAndFigureChartMark; low: number; high: number }[] = [];
       if (validData.length > 0 && effectiveBox > 0) {
         const boxIndex = (price: number) => Math.floor((price - baseMin) / effectiveBox + 1e-9);
+        const firstBoxIndex = boxIndex(closes[0]);
         let mark: PointAndFigureChartMark | null = null;
-        let low = 0;
-        let high = 0;
-        for (let i = 0; i < closes.length; i++) {
+        let low = firstBoxIndex;
+        let high = firstBoxIndex;
+        for (let i = 1; i < closes.length; i++) {
           const idx = boxIndex(closes[i]);
           if (mark === null) {
-            mark = "x";
-            low = idx;
-            high = idx;
+            if (idx >= firstBoxIndex + 1) {
+              mark = "x";
+              low = firstBoxIndex;
+              high = idx;
+            } else if (idx <= firstBoxIndex - 1) {
+              mark = "o";
+              low = idx;
+              high = firstBoxIndex;
+            }
             continue;
           }
           if (mark === "x") {
