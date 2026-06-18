@@ -26,9 +26,11 @@
     DOCS_VERSION,
     buildFoundationNav,
     buildComponentNavGroups,
+    buildViewsNav,
     buildTopNav,
     resolveBreadcrumb,
-    type ComponentNavItem
+    type ComponentNavItem,
+    type ViewNavItem
   } from "$lib/docs-navigation";
   import { locale } from "$lib/locale.svelte";
 
@@ -42,6 +44,7 @@
     frameworkSwitcher: Snippet;
     localeSwitcher: Snippet;
     compareButton: Snippet;
+    colorModeToggle: Snippet;
     mobileMenuOpen: boolean;
     onMobileMenuToggle: () => void;
   };
@@ -53,6 +56,7 @@
     frameworkSwitcher,
     localeSwitcher,
     compareButton,
+    colorModeToggle,
     mobileMenuOpen,
     onMobileMenuToggle,
   }: Props = $props();
@@ -60,6 +64,7 @@
   const topNavItems = $derived(buildTopNav(locale.value));
   const foundationNavItems = $derived(buildFoundationNav(locale.value));
   const componentGroups = $derived(buildComponentNavGroups(locale.value));
+  const viewsGroups = $derived(buildViewsNav(locale.value));
   const breadcrumbs = $derived(resolveBreadcrumb(page.url.pathname, locale.value));
 
   function isActive(href: string): boolean {
@@ -84,6 +89,14 @@
 
   function isGroupOpen(items: ComponentNavItem[]): boolean {
     return items.some((item) => isComponentActive(item));
+  }
+
+  function isViewActive(item: ViewNavItem): boolean {
+    return page.url.pathname === `/views/${item.slug}`;
+  }
+
+  function isViewGroupOpen(items: ViewNavItem[]): boolean {
+    return items.some((item) => isViewActive(item));
   }
 </script>
 
@@ -140,13 +153,9 @@
             {@render compareButton()}
             {@render frameworkSwitcher()}
             {@render themeSwitcher()}
+            {@render colorModeToggle()}
             {@render localeSwitcher()}
           </div>
-
-          <!-- CTA bleu royal : signature corporate Gildan -->
-          <a class="gil-cta" href="/#components">
-            {locale.value === "fr" ? "Commencer" : "Get started"}
-          </a>
         </div>
 
         <!-- Burger mobile -->
@@ -202,6 +211,38 @@
                       >{item.label}</a>
                     </li>
                   {/each}
+
+          <li class="gil-side-divider" role="separator"></li>
+
+          <li>
+            <a
+              class="gil-side-link"
+              href="/views"
+              aria-current={isActive("/views") ? "page" : undefined}
+            >{locale.value === "fr" ? "Vues" : "Views"}</a>
+          </li>
+
+          {#each viewsGroups as group (group.label)}
+            <li>
+              <details class="gil-side-group" open={isViewGroupOpen(group.items)}>
+                <summary class="gil-side-group__summary">
+                  <ChevronDown class="gil-side-group__icon" size={14} strokeWidth={2} aria-hidden="true" />
+                  <span>{group.label}</span>
+                </summary>
+                <ul class="gil-side-sublist">
+                  {#each group.items as item (item.slug)}
+                    <li>
+                      <a
+                        class="gil-side-link gil-side-link--sub"
+                        href={item.href}
+                        aria-current={isViewActive(item) ? "page" : undefined}
+                      >{item.label}</a>
+                    </li>
+                  {/each}
+                </ul>
+              </details>
+            </li>
+          {/each}
                 </ul>
               </details>
             </li>
