@@ -12,6 +12,8 @@ export type HeatmapChartTone =
   | "category7"
   | "category8";
 
+export type HeatmapChartScale = "categorical" | "sequential";
+
 export type HeatmapChartDatum = {
   x: string;
   y: string;
@@ -23,6 +25,7 @@ export type HeatmapChartProps = {
   data: HeatmapChartDatum[];
   width?: number;
   height?: number;
+  scale?: HeatmapChartScale;
   legend?: boolean;
   label: string;
   class?: string;
@@ -52,6 +55,10 @@ function uniqueInOrder(values: string[]): string[] {
   return out;
 }
 
+function normalizedScale(value: HeatmapChartScale | undefined): HeatmapChartScale {
+  return value === "sequential" ? "sequential" : "categorical";
+}
+
 function toneForValue(value: number, min: number, max: number): HeatmapChartTone {
   if (!Number.isFinite(value) || max <= min) return "category1";
   const index = Math.max(0, Math.min(TONES.length - 1, Math.floor(((value - min) / (max - min)) * TONES.length)));
@@ -64,6 +71,7 @@ export const HeatmapChart = defineComponent({
     data: { type: Array as () => HeatmapChartDatum[], required: true },
     width: { type: Number, default: 480 },
     height: { type: Number, default: 300 },
+    scale: { type: String as () => HeatmapChartScale, default: "categorical" },
     legend: { type: Boolean, default: false },
     label: { type: String, required: true },
     class: { type: String, default: undefined },
@@ -91,6 +99,7 @@ export const HeatmapChart = defineComponent({
       const height = props.height ?? 300;
       const legend = props.legend ?? false;
       const label = props.label;
+      const resolvedScale = normalizedScale(props.scale);
 
       const xLabels = uniqueInOrder(data.map((d) => d.x));
       const yLabels = uniqueInOrder(data.map((d) => d.y));
@@ -107,7 +116,7 @@ export const HeatmapChart = defineComponent({
         const yIndex = Math.max(0, yLabels.indexOf(d.y));
         return {
           datum: d,
-          tone: d.tone ?? toneForValue(d.value, min, max),
+          tone: resolvedScale === "sequential" ? toneForValue(d.value, min, max) : d.tone ?? toneForValue(d.value, min, max),
           x: MARGIN.left + xIndex * cellWidth,
           y: MARGIN.top + yIndex * cellHeight,
           cellWidth,
@@ -247,7 +256,7 @@ export const HeatmapChart = defineComponent({
         );
       }
 
-      return h("div", { ...attrs, class: classNames("st-heatmapChart", props.class) }, children);
+      return h("div", { ...attrs, class: classNames("st-heatmapChart", `st-heatmapChart--${resolvedScale}`, props.class) }, children);
     };
   },
 });

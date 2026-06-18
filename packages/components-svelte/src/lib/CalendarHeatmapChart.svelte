@@ -16,6 +16,8 @@
     date: string;
     value: number;
   };
+
+  export type CalendarHeatmapChartScale = "categorical" | "sequential";
 </script>
 
 <script lang="ts">
@@ -29,6 +31,7 @@
   type CalendarHeatmapChartProps = {
     data: CalendarHeatmapChartDatum[];
     label: string;
+    scale?: CalendarHeatmapChartScale;
     width?: number;
     height?: number;
     class?: string;
@@ -37,6 +40,7 @@
   let {
     data = [],
     label,
+    scale = "sequential",
     width = 480,
     height = 140,
     class: className
@@ -74,6 +78,12 @@
   function daysDiff(tsA: number, tsB: number): number {
     return Math.round((tsB - tsA) / 86400000);
   }
+
+  function normalizedScale(value: CalendarHeatmapChartScale | undefined): CalendarHeatmapChartScale {
+    return value === "categorical" ? "categorical" : "sequential";
+  }
+
+  const resolvedScale = $derived(normalizedScale(scale));
 
   // Group data by week and day-of-week
   const grid = $derived.by(() => {
@@ -187,7 +197,7 @@
     hoveredDate = target.getAttribute("data-chart-date") ?? null;
   }
 
-  const classes = () => ["st-calendarHeatmapChart", className].filter(Boolean).join(" ");
+  const classes = () => ["st-calendarHeatmapChart", `st-calendarHeatmapChart--${resolvedScale}`, className].filter(Boolean).join(" ");
 </script>
 
 <div class={classes()}>
