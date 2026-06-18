@@ -58,12 +58,22 @@ export declare function linearRegression(points: ReadonlyArray<{
     maxX: number;
 } | null;
 export declare function extendValueDomain(min: number, max: number, options: {
-    referenceLines?: ChartReferenceLine[];
-    bands?: ChartBand[];
+    referenceLines?: ReadonlyArray<ChartReferenceLine>;
+    referenceAxis?: "x" | "y";
+    bands?: ReadonlyArray<ChartBand>;
     goalLine?: ChartGoalLine | null;
+    extraValues?: ReadonlyArray<number>;
 }): [number, number];
 export declare function chartDataList(label: string, items: string[]): string;
-export declare function overlayDataListItems(): string[];
+export declare function overlayDataListItems(overlays: {
+    referenceLines?: ReadonlyArray<ChartReferenceLine>;
+    bands?: ReadonlyArray<ChartBand>;
+    goalLine?: ChartGoalLine | null;
+    trend?: {
+        slope: number;
+        intercept: number;
+    } | null;
+}): string[];
 export declare function isLightTone(): boolean;
 export declare function labelColorForTone(): string;
 //# sourceMappingURL=chartScale.d.ts.map
