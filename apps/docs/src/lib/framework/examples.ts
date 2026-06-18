@@ -10134,6 +10134,76 @@ import { TimelineChart } from "@sentropic/design-system-vue";
     }
   },
 
+  eventfeedpanel: {
+    id: "eventfeedpanel",
+    slug: "event-feed-panel",
+    nodes: [
+      stack([
+        {
+          comp: "EventFeedPanel",
+          props: {
+            label: "Flux d'événements plateforme",
+            maxHeight: 220,
+            data: [
+              { at: 1_718_759_460_000, type: "alert", severity: "error", message: "P99 latency > 1.2s sur api-gateway" },
+              { at: 1_718_759_160_000, type: "deploy", severity: "info", message: "Déploiement production v4.18.2 terminé" },
+              { at: 1_718_758_920_000, type: "autoscale", severity: "success", message: "Pool workers étendu de 6 à 10 replicas" },
+              { at: 1_718_758_620_000, type: "warn", severity: "warning", message: "File de retry au-dessus du baseline sur eu-west-1" }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { EventFeedPanel } from "@sentropic/design-system-svelte";
+</script>
+
+<EventFeedPanel
+  label="Flux d'événements plateforme"
+  maxHeight={220}
+  data={[
+    { at: 1718759460000, type: "alert", severity: "error", message: "P99 latency > 1.2s sur api-gateway" },
+    { at: 1718759160000, type: "deploy", severity: "info", message: "Déploiement production v4.18.2 terminé" },
+    { at: 1718758920000, type: "autoscale", severity: "success", message: "Pool workers étendu de 6 à 10 replicas" },
+    { at: 1718758620000, type: "warn", severity: "warning", message: "File de retry au-dessus du baseline sur eu-west-1" }
+  ]}
+/>`,
+      react: `import { EventFeedPanel } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <EventFeedPanel
+      label="Flux d'événements plateforme"
+      maxHeight={220}
+      data={[
+        { at: 1718759460000, type: "alert", severity: "error", message: "P99 latency > 1.2s sur api-gateway" },
+        { at: 1718759160000, type: "deploy", severity: "info", message: "Déploiement production v4.18.2 terminé" },
+        { at: 1718758920000, type: "autoscale", severity: "success", message: "Pool workers étendu de 6 à 10 replicas" },
+        { at: 1718758620000, type: "warn", severity: "warning", message: "File de retry au-dessus du baseline sur eu-west-1" }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { EventFeedPanel } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <EventFeedPanel
+    label="Flux d'événements plateforme"
+    :maxHeight="220"
+    :data="[
+      { at: 1718759460000, type: 'alert', severity: 'error', message: 'P99 latency > 1.2s sur api-gateway' },
+      { at: 1718759160000, type: 'deploy', severity: 'info', message: 'Déploiement production v4.18.2 terminé' },
+      { at: 1718758920000, type: 'autoscale', severity: 'success', message: 'Pool workers étendu de 6 à 10 replicas' },
+      { at: 1718758620000, type: 'warn', severity: 'warning', message: 'File de retry au-dessus du baseline sur eu-west-1' }
+    ]"
+  />
+</template>`
+    }
+  },
+
   ganttchart: {
     id: "ganttchart",
     slug: "gantt-chart",

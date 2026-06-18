@@ -640,12 +640,68 @@ test("rule underline-hardcoded-border: champ avec box-shadow inset → pas de fi
   assert.ok(!(await ruleIds('<input style="box-shadow:inset 0 -2px #161616">')).includes("underline-hardcoded-border"));
 });
 
-test("ruleset WP8: 27 règles actives avec traçabilité WP7", () => {
-  assert.strictEqual(defaultRules.length, 27);
+test("ruleset WP8/WP23: 32 règles actives avec traçabilité WP7/WP23", () => {
+  assert.strictEqual(defaultRules.length, 32);
   for (const rule of defaultRules) {
     assert.ok(rule.principle, `${rule.id} should expose a design principle`);
     assert.ok(rule.wp7Finding, `${rule.id} should expose its WP7 finding source`);
   }
+});
+
+test("rule navsystem-one-primary-action: deux actions primaires dans une surface -> finding", async () => {
+  const html =
+    "<section data-st-surface='detail-panel'>" +
+    "<button data-variant='primary'>Sauver</button>" +
+    "<button class='st-button--primary'>Publier</button>" +
+    "</section>";
+  assert.ok((await ruleIds(html)).includes("navsystem-one-primary-action"));
+});
+
+test("rule navsystem-one-primary-action: une action primaire par surface -> pas de finding", async () => {
+  const html =
+    "<section data-st-surface='detail-panel'><button data-variant='primary'>Sauver</button></section>" +
+    "<aside data-st-surface='utility-panel'><button class='st-button--primary'>Lancer</button></aside>";
+  assert.ok(!(await ruleIds(html)).includes("navsystem-one-primary-action"));
+});
+
+test("rule navsystem-no-interactive-in-option: controle imbrique dans option -> finding", async () => {
+  const html = "<div role='listbox'><div role='option'>Lot 42 <button>Ouvrir</button></div></div>";
+  assert.ok((await ruleIds(html)).includes("navsystem-no-interactive-in-option"));
+});
+
+test("rule navsystem-no-interactive-in-option: option focusable sans controle imbrique -> pas de finding", async () => {
+  const html = "<div role='listbox'><div role='option' tabindex='0'>Lot 42</div></div>";
+  assert.ok(!(await ruleIds(html)).includes("navsystem-no-interactive-in-option"));
+});
+
+test("rule navsystem-color-state-only: marqueur couleur sans libelle d'etat -> finding", async () => {
+  const html = "<nav><span class='status-dot success' style='background:var(--st-semantic-feedback-success)'></span></nav>";
+  assert.ok((await ruleIds(html)).includes("navsystem-color-state-only"));
+});
+
+test("rule navsystem-color-state-only: marqueur couleur avec libelle -> pas de finding", async () => {
+  const html = "<nav><span class='status-dot success' aria-label='Actif' style='background:var(--st-semantic-feedback-success)'></span></nav>";
+  assert.ok(!(await ruleIds(html)).includes("navsystem-color-state-only"));
+});
+
+test("rule navsystem-depth-hierarchy: rail imbrique au-dela du niveau 1 -> finding", async () => {
+  const html = "<nav class='st-rail'><ul><li>A<ul><li>B</li></ul></li></ul></nav>";
+  assert.ok((await ruleIds(html)).includes("navsystem-depth-hierarchy"));
+});
+
+test("rule navsystem-depth-hierarchy: drawer a profondeur 2 -> pas de finding", async () => {
+  const html = "<aside class='st-drawer'><ul><li>A<ul><li>B</li></ul></li></ul></aside>";
+  assert.ok(!(await ruleIds(html)).includes("navsystem-depth-hierarchy"));
+});
+
+test("rule navsystem-search-fill-affordance: recherche panel non remplissante -> finding", async () => {
+  const html = "<aside class='st-panel'><input type='search' aria-label='Filtrer'></aside>";
+  assert.ok((await ruleIds(html)).includes("navsystem-search-fill-affordance"));
+});
+
+test("rule navsystem-search-fill-affordance: recherche drawer full width -> pas de finding", async () => {
+  const html = "<aside class='st-drawer'><input type='search' aria-label='Filtrer' style='width:100%'></aside>";
+  assert.ok(!(await ruleIds(html)).includes("navsystem-search-fill-affordance"));
 });
 
 test("rule missing-dark-mode: absence de media query dark-mode → finding", async () => {

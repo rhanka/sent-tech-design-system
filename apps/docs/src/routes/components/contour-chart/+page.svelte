@@ -50,14 +50,14 @@
       {#if locale.value === "fr"}
         Contour topographique (façon Highcharts « contour »). Chaque cellule d'une grille 2D
         régulière est peinte d'une bande de couleur selon sa <code>value</code> normalisée, découpée
-        en <code>levels</code> paliers sur l'échelle data category1…8. Axes X/Y gradués par
-        graduations « jolies » automatiques, légende des paliers et liste accessible des points hors
-        SVG.
+        en <code>levels</code> paliers sur l'échelle data category1…8, avec des isolignes dessinées
+        sur les ruptures de niveau. Axes X/Y gradués par graduations « jolies » automatiques, légende
+        des paliers et liste accessible des points hors SVG.
       {:else}
         Topographic contour (Highcharts "contour" style). Each cell of a regular 2D grid is painted
         with a colour band based on its normalized <code>value</code>, split into <code>levels</code>
-        steps on the data category1…8 scale. Graduated X/Y axes with automatic "nice" ticks, a level
-        legend and an accessible point list outside the SVG.
+        steps on the data category1…8 scale, with isolines drawn at level boundaries. Graduated X/Y
+        axes with automatic "nice" ticks, a level legend and an accessible point list outside the SVG.
       {/if}
     </p>
   </section>
@@ -68,10 +68,11 @@
     <p class="section-desc">
       {#if locale.value === "fr"}
         Grille 12×8 : un relief radial dont la valeur décroît avec la distance au centre — les paliers
-        les plus hauts passent au ton data le plus chaud.
+        les plus hauts passent au ton data le plus chaud et les isolignes suivent les ruptures de
+        bande.
       {:else}
         12×8 grid: a radial relief whose value decreases with distance from the center — the highest
-        levels shift to the warmest data tone.
+        levels shift to the warmest data tone and isolines follow band boundaries.
       {/if}
     </p>
     <TabbedExample
@@ -123,6 +124,12 @@
           <td>{locale.value === "fr" ? "Hauteur du viewBox SVG." : "SVG viewBox height."}</td>
         </tr>
         <tr>
+          <td><code>size</code></td>
+          <td><code>number</code></td>
+          <td>–</td>
+          <td>{locale.value === "fr" ? "Réservé pour la parité d’API ; non utilisé dans ce rendu." : "Reserved for API parity; unused by this renderer."}</td>
+        </tr>
+        <tr>
           <td><code>class</code></td>
           <td><code>string</code></td>
           <td>–</td>
@@ -154,6 +161,14 @@
         <tr>
           <td><code>--st-semantic-data-category1…8</code></td>
           <td>{locale.value === "fr" ? "Couleur des bandes par palier de valeur." : "Band color per value level."}</td>
+        </tr>
+        <tr>
+          <td><code>--st-semantic-border-strong</code></td>
+          <td>{locale.value === "fr" ? "Couleur des isolignes aux ruptures de niveau." : "Isoline color at level boundaries."}</td>
+        </tr>
+        <tr>
+          <td><code>--st-semantic-surface-default</code></td>
+          <td>{locale.value === "fr" ? "Séparation discrète entre cellules adjacentes." : "Subtle separation between adjacent cells."}</td>
         </tr>
         <tr>
           <td><code>--st-semantic-text-secondary</code></td>

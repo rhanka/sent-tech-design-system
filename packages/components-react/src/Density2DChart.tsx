@@ -12,6 +12,8 @@ export type Density2DTone =
   | "category7"
   | "category8";
 
+export type Density2DChartScale = "categorical" | "sequential";
+
 export type Density2DPoint = {
   x: number;
   y: number;
@@ -21,6 +23,7 @@ export type Density2DPoint = {
 export type Density2DChartProps = Omit<React.HTMLAttributes<HTMLDivElement>, "className"> & {
   data: Density2DPoint[];
   bins?: number;
+  scale?: Density2DChartScale;
   label?: string;
   width?: number;
   height?: number;
@@ -39,6 +42,10 @@ const TONES: Density2DTone[] = [
   "category7",
   "category8",
 ];
+
+function normalizedScale(value: Density2DChartScale | undefined): Density2DChartScale {
+  return value === "categorical" ? "categorical" : "sequential";
+}
 
 // Continuous scale: density normalised 0..max → category1..8 (shared with
 // HeatmapChart). max ≤ 0 or non-finite density → category1 (floor intensity).
@@ -100,6 +107,7 @@ type Bin = {
 export function Density2DChart({
   data = [],
   bins = 12,
+  scale = "sequential",
   label,
   width,
   height = 320,
@@ -108,6 +116,7 @@ export function Density2DChart({
   ...rest
 }: Density2DChartProps) {
   const [hoveredKey, setHoveredKey] = React.useState<string | null>(null);
+  const resolvedScale = normalizedScale(scale);
 
   const resolvedWidth = width ?? size ?? 640;
   const plotWidth = Math.max(resolvedWidth - MARGIN.left - MARGIN.right, 1);
@@ -204,7 +213,7 @@ export function Density2DChart({
   const hoveredCell = hoveredKey !== null ? binCells.find((b) => b.key === hoveredKey) ?? null : null;
 
   return (
-    <div {...rest} className={classNames("st-density2DChart", className)}>
+    <div {...rest} className={classNames("st-density2DChart", `st-density2DChart--${resolvedScale}`, className)}>
       <div
         className="st-density2DChart__visual"
         role="img"

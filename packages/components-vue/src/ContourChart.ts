@@ -12,6 +12,8 @@ export type ContourChartTone =
   | "category7"
   | "category8";
 
+export type ContourChartScale = "categorical" | "sequential";
+
 export type ContourChartDatum = {
   x: number;
   y: number;
@@ -22,6 +24,7 @@ export type ContourChartDatum = {
 export type ContourChartProps = {
   data: ContourChartDatum[];
   levels?: number;
+  scale?: ContourChartScale;
   label?: string;
   width?: number;
   height?: number;
@@ -42,11 +45,16 @@ const TONES: ContourChartTone[] = [
   "category8",
 ];
 
+function normalizedScale(value: ContourChartScale | undefined): ContourChartScale {
+  return value === "categorical" ? "categorical" : "sequential";
+}
+
 export const ContourChart = defineComponent({
   name: "ContourChart",
   props: {
     data: { type: Array as () => ContourChartDatum[], default: () => [] },
     levels: { type: Number, default: 6 },
+    scale: { type: String as () => ContourChartScale, default: "sequential" },
     label: { type: String, default: undefined },
     width: { type: Number, default: 640 },
     height: { type: Number, default: 320 },
@@ -71,6 +79,7 @@ export const ContourChart = defineComponent({
       const width = props.width ?? 640;
       const height = props.height ?? 320;
       const levels = props.levels ?? 6;
+      const resolvedScale = normalizedScale(props.scale);
 
       // Points valides : coordonnées finies, valeur finie.
       const validData = data.filter(
@@ -102,6 +111,8 @@ export const ContourChart = defineComponent({
       const ys = validData.map((d) => d.y);
       const xValues = Array.from(new Set(xs)).sort((a, b) => a - b);
       const yValues = Array.from(new Set(ys)).sort((a, b) => a - b);
+      const xIndexByValue = new Map(xValues.map((value, index) => [value, index]));
+      const yIndexByValue = new Map(yValues.map((value, index) => [value, index]));
       const xTicks = niceTicks(Math.min(...xs), Math.max(...xs));
       const yTicks = niceTicks(Math.min(...ys), Math.max(...ys));
       const plotW = Math.max(width - MARGIN.left - MARGIN.right, 1);
@@ -120,10 +131,13 @@ export const ContourChart = defineComponent({
         const right = MARGIN.left + scaleLinear(d.x + dx / 2, xMin, xMax, 0, plotW);
         const top = MARGIN.top + scaleLinear(d.y + dy / 2, yMin, yMax, plotH, 0);
         const bottom = MARGIN.top + scaleLinear(d.y - dy / 2, yMin, yMax, plotH, 0);
-        const { tone } = bandOf(d.value);
+        const { band, tone } = bandOf(d.value);
         return {
           key: `${i}`,
           datum: d,
+          band,
+          col: xIndexByValue.get(d.x) ?? 0,
+          row: yIndexByValue.get(d.y) ?? 0,
           x: Math.min(left, right),
           y: Math.min(top, bottom),
           width: Math.abs(right - left),
@@ -132,6 +146,32 @@ export const ContourChart = defineComponent({
           cy: (top + bottom) / 2,
           tone,
         };
+      });
+
+      const cellByGridKey = new Map(cells.map((cell) => [`${cell.col}:${cell.row}`, cell] as const));
+      const contourSegments = cells.flatMap((cell) => {
+        const segments = [];
+        const right = cellByGridKey.get(`${cell.col + 1}:${cell.row}`);
+        if (right && right.band !== cell.band) {
+          segments.push({
+            key: `${cell.key}:right`,
+            x1: cell.x + cell.width,
+            y1: cell.y,
+            x2: cell.x + cell.width,
+            y2: cell.y + cell.height,
+          });
+        }
+        const upper = cellByGridKey.get(`${cell.col}:${cell.row + 1}`);
+        if (upper && upper.band !== cell.band) {
+          segments.push({
+            key: `${cell.key}:top`,
+            x1: cell.x,
+            y1: cell.y,
+            x2: cell.x + cell.width,
+            y2: cell.y,
+          });
+        }
+        return segments;
       });
 
       const dataValueItems = validData.map((d) => `x ${d.x}, y ${d.y} · ${formatTick(d.value)}`);
@@ -158,6 +198,19 @@ export const ContourChart = defineComponent({
             width: cell.width,
             height: cell.height,
             "data-chart-key": cell.key,
+          }),
+        );
+      });
+
+      contourSegments.forEach((segment) => {
+        svgChildren.push(
+          h("line", {
+            key: segment.key,
+            class: "st-contourChart__isoline",
+            x1: segment.x1,
+            y1: segment.y1,
+            x2: segment.x2,
+            y2: segment.y2,
           }),
         );
       });
@@ -261,7 +314,7 @@ export const ContourChart = defineComponent({
         );
       }
 
-      return h("div", { ...attrs, class: classNames("st-contourChart", props.class) }, children);
+      return h("div", { ...attrs, class: classNames("st-contourChart", `st-contourChart--${resolvedScale}`, props.class) }, children);
     };
   },
 });

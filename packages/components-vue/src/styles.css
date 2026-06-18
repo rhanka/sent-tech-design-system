@@ -16588,13 +16588,21 @@
 
 .st-contourChart__cell {
   cursor: pointer;
-  stroke: var(--st-semantic-surface-default, Canvas);
+  stroke: var(--st-semantic-surface-default);
   stroke-width: 0.5;
   transition: opacity 120ms ease;
 }
 
 .st-contourChart__cell--dim {
   opacity: 0.35;
+}
+
+.st-contourChart__isoline {
+  pointer-events: none;
+  stroke: var(--st-semantic-border-strong);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.5;
 }
 
 .st-contourChart__cell--category1 { fill: var(--st-semantic-data-category1); }
@@ -17782,3 +17790,44 @@
     border-block-end: 1px solid var(--st-component-panel-border, var(--st-semantic-border-subtle));
   }
 }
+
+/* ── WP20 : Heatmap sequential ramp + DashboardGrid ── */
+.st-heatmapChart {
+  --st-heatmapChart-ramp-base: var(--st-semantic-data-category1);
+  --st-heatmapChart-ramp-1: color-mix(in srgb, var(--st-semantic-surface-default, Canvas) 86%, var(--st-heatmapChart-ramp-base) 14%);
+  --st-heatmapChart-ramp-2: color-mix(in srgb, var(--st-semantic-surface-default, Canvas) 74%, var(--st-heatmapChart-ramp-base) 26%);
+  --st-heatmapChart-ramp-3: color-mix(in srgb, var(--st-semantic-surface-default, Canvas) 62%, var(--st-heatmapChart-ramp-base) 38%);
+  --st-heatmapChart-ramp-4: color-mix(in srgb, var(--st-semantic-surface-default, Canvas) 50%, var(--st-heatmapChart-ramp-base) 50%);
+  --st-heatmapChart-ramp-5: color-mix(in srgb, var(--st-semantic-surface-default, Canvas) 38%, var(--st-heatmapChart-ramp-base) 62%);
+  --st-heatmapChart-ramp-6: color-mix(in srgb, var(--st-semantic-surface-default, Canvas) 26%, var(--st-heatmapChart-ramp-base) 74%);
+  --st-heatmapChart-ramp-7: color-mix(in srgb, var(--st-semantic-surface-default, Canvas) 14%, var(--st-heatmapChart-ramp-base) 86%);
+  --st-heatmapChart-ramp-8: var(--st-heatmapChart-ramp-base);
+}
+
+.st-heatmapChart--sequential .st-heatmapChart__cell--category1,
+.st-heatmapChart--sequential .st-heatmapChart__legendSwatch--category1 { fill: var(--st-heatmapChart-ramp-1); background: var(--st-heatmapChart-ramp-1); }
+.st-heatmapChart--sequential .st-heatmapChart__cell--category2,
+.st-heatmapChart--sequential .st-heatmapChart__legendSwatch--category2 { fill: var(--st-heatmapChart-ramp-2); background: var(--st-heatmapChart-ramp-2); }
+.st-heatmapChart--sequential .st-heatmapChart__cell--category3,
+.st-heatmapChart--sequential .st-heatmapChart__legendSwatch--category3 { fill: var(--st-heatmapChart-ramp-3); background: var(--st-heatmapChart-ramp-3); }
+.st-heatmapChart--sequential .st-heatmapChart__cell--category4,
+.st-heatmapChart--sequential .st-heatmapChart__legendSwatch--category4 { fill: var(--st-heatmapChart-ramp-4); background: var(--st-heatmapChart-ramp-4); }
+.st-heatmapChart--sequential .st-heatmapChart__cell--category5,
+.st-heatmapChart--sequential .st-heatmapChart__legendSwatch--category5 { fill: var(--st-heatmapChart-ramp-5); background: var(--st-heatmapChart-ramp-5); }
+.st-heatmapChart--sequential .st-heatmapChart__cell--category6,
+.st-heatmapChart--sequential .st-heatmapChart__legendSwatch--category6 { fill: var(--st-heatmapChart-ramp-6); background: var(--st-heatmapChart-ramp-6); }
+.st-heatmapChart--sequential .st-heatmapChart__cell--category7,
+.st-heatmapChart--sequential .st-heatmapChart__legendSwatch--category7 { fill: var(--st-heatmapChart-ramp-7); background: var(--st-heatmapChart-ramp-7); }
+.st-heatmapChart--sequential .st-heatmapChart__cell--category8,
+.st-heatmapChart--sequential .st-heatmapChart__legendSwatch--category8 { fill: var(--st-heatmapChart-ramp-8); background: var(--st-heatmapChart-ramp-8); }
+
+.st-dashboardGrid { --st-component-dashboardGrid-tile-background: var(--st-semantic-surface-default); --st-component-dashboardGrid-tile-border-color: var(--st-semantic-border-subtle); --st-component-dashboardGrid-tile-border-width: var(--st-component-card-anatomy-shape-borderWidth); --st-component-dashboardGrid-tile-radius: var(--st-radius-lg); --st-component-dashboardGrid-tile-shadow: var(--st-shadow-sm); --st-component-dashboardGrid-title-fontSize: var(--st-component-field-labelTypography-size); --st-component-dashboardGrid-title-fontWeight: var(--st-component-field-labelTypography-weight); --st-component-dashboardGrid-title-letterSpacing: var(--st-component-field-labelTypography-letterSpacing); --st-component-dashboardGrid-value-fontSize: var(--st-component-button-anatomy-density-lg-fontSize); --st-component-dashboardGrid-value-fontWeight: var(--st-component-button-anatomy-typography-weight); --st-component-dashboardGrid-value-lineHeight: var(--st-component-field-labelTypography-lineHeight); --st-component-dashboardGrid-description-fontSize: var(--st-component-field-labelTypography-size); --st-component-dashboardGrid-control-fontSize: var(--st-component-button-anatomy-density-sm-fontSize); --st-component-dashboardGrid-control-fontWeight: var(--st-component-button-anatomy-typography-weight); --st-component-dashboardGrid-control-size: var(--st-component-button-anatomy-density-sm-controlHeight); --st-component-dashboardGrid-control-paddingInline: var(--st-spacing-2); --st-component-dashboardGrid-control-focusWidth: var(--st-component-card-anatomy-shape-borderWidth); display: grid; gap: var(--st-dashboardGrid-gap); grid-auto-rows: var(--st-dashboardGrid-row-height); grid-template-columns: repeat(var(--st-dashboardGrid-columns), minmax(0, 1fr)); width: 100%; }
+.st-dashboardGrid__tile { background: var(--st-component-dashboardGrid-tile-background); border: var(--st-component-dashboardGrid-tile-border-width) solid var(--st-component-dashboardGrid-tile-border-color); border-radius: var(--st-component-dashboardGrid-tile-radius); box-shadow: var(--st-component-dashboardGrid-tile-shadow); color: var(--st-semantic-text-primary); min-width: 0; overflow: hidden; padding: var(--st-spacing-4); position: relative; }
+.st-dashboardGrid--editable .st-dashboardGrid__tile { outline: var(--st-component-dashboardGrid-tile-border-width) dashed var(--st-semantic-border-strong); outline-offset: calc(-1 * var(--st-spacing-2)); }
+.st-dashboardGrid__content { display: grid; gap: var(--st-spacing-2); }
+.st-dashboardGrid__title { color: var(--st-semantic-text-secondary); font-size: var(--st-component-dashboardGrid-title-fontSize); font-weight: var(--st-component-dashboardGrid-title-fontWeight); letter-spacing: var(--st-component-dashboardGrid-title-letterSpacing); margin: 0; text-transform: uppercase; }
+.st-dashboardGrid__value { color: var(--st-semantic-text-primary); font-size: var(--st-component-dashboardGrid-value-fontSize); font-weight: var(--st-component-dashboardGrid-value-fontWeight); line-height: var(--st-component-dashboardGrid-value-lineHeight); margin: 0; }
+.st-dashboardGrid__description { color: var(--st-semantic-text-secondary); font-size: var(--st-component-dashboardGrid-description-fontSize); margin: 0; }
+.st-dashboardGrid__controls { align-items: center; bottom: var(--st-spacing-2); display: flex; flex-wrap: wrap; gap: var(--st-spacing-1); position: absolute; right: var(--st-spacing-2); }
+.st-dashboardGrid__controls button { align-items: center; background: var(--st-semantic-surface-raised); border: var(--st-component-dashboardGrid-tile-border-width) solid var(--st-semantic-border-subtle); border-radius: var(--st-radius-sm); color: var(--st-semantic-text-primary); cursor: pointer; display: inline-flex; font: inherit; font-size: var(--st-component-dashboardGrid-control-fontSize); font-weight: var(--st-component-dashboardGrid-control-fontWeight); justify-content: center; min-height: var(--st-component-dashboardGrid-control-size); min-width: var(--st-component-dashboardGrid-control-size); padding: 0 var(--st-component-dashboardGrid-control-paddingInline); }
+.st-dashboardGrid__controls button:focus-visible { outline: var(--st-component-dashboardGrid-control-focusWidth) solid var(--st-semantic-border-interactive); outline-offset: var(--st-component-control-anatomy-focus-offset); }

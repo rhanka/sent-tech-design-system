@@ -23,6 +23,8 @@
     | "category1" | "category2" | "category3" | "category4"
     | "category5" | "category6" | "category7" | "category8";
 
+  export type AnomalySwimLaneChartScale = "categorical" | "sequential";
+
   export type AnomalySwimLaneBucket = {
     at: number;
     score: number;
@@ -40,6 +42,7 @@
   type AnomalySwimLaneChartProps = {
     data: AnomalySwimLaneSeries[];
     max?: number;
+    scale?: AnomalySwimLaneChartScale;
     label?: string;
     width?: number;
     height?: number;
@@ -50,6 +53,7 @@
   let {
     data = [],
     max,
+    scale = "sequential",
     label,
     width,
     height = 300,
@@ -73,6 +77,10 @@
     return TONES[index];
   }
 
+  function normalizedScale(value: AnomalySwimLaneChartScale | undefined): AnomalySwimLaneChartScale {
+    return value === "categorical" ? "categorical" : "sequential";
+  }
+
   // Tronque une étiquette à la largeur de la marge gauche (approx. par char).
   function ellipsize(text: string, maxChars: number): string {
     if (text.length <= maxChars) return text;
@@ -87,6 +95,7 @@
   }
 
   let hoveredKey: string | null = $state(null);
+  const resolvedScale = $derived(normalizedScale(scale));
 
   const plotWidth = $derived(Math.max(resolvedWidth - MARGIN.left - MARGIN.right, 1));
   const plotHeight = $derived(Math.max(height - MARGIN.top - MARGIN.bottom, 1));
@@ -190,7 +199,7 @@
     return null;
   });
 
-  const classes = () => ["st-anomalySwimLaneChart", className].filter(Boolean).join(" ");
+  const classes = () => ["st-anomalySwimLaneChart", `st-anomalySwimLaneChart--${resolvedScale}`, className].filter(Boolean).join(" ");
 </script>
 
 <div class={classes()}>

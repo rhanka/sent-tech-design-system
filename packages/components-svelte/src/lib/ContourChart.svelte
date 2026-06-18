@@ -27,30 +27,34 @@
     | "category1" | "category2" | "category3" | "category4"
     | "category5" | "category6" | "category7" | "category8";
 
+  export type ContourChartScale = "categorical" | "sequential";
+
   export type ContourChartDatum = {
     x: number;
     y: number;
     /** Valeur scalaire de la cellule : pilote la bande de couleur. */
     value: number;
   };
-</script>
 
-<script lang="ts">
-  import ChartDataList from "./ChartDataList.svelte";
-
-  type ContourChartProps = {
+  export type ContourChartProps = {
     data: ContourChartDatum[];
     levels?: number;
+    scale?: ContourChartScale;
     label?: string;
     width?: number;
     height?: number;
     size?: number;
     class?: string;
   };
+</script>
+
+<script lang="ts">
+  import ChartDataList from "./ChartDataList.svelte";
 
   let {
     data = [],
     levels = 6,
+    scale = "sequential",
     label,
     width = 640,
     height = 320,
@@ -90,12 +94,17 @@
     return r0 + ((v - d0) * (r1 - r0)) / (d1 - d0);
   }
 
+  function normalizedScale(value: ContourChartScale | undefined): ContourChartScale {
+    return value === "categorical" ? "categorical" : "sequential";
+  }
+
   function fmt(v: number): string {
     if (Math.abs(v) >= 1000) return `${(v / 1000).toFixed(v % 1000 === 0 ? 0 : 1)}k`;
     return Number.isInteger(v) ? String(v) : v.toFixed(1);
   }
 
   let hoveredKey: string | null = $state(null);
+  const resolvedScale = $derived(normalizedScale(scale));
 
   // Points valides : coordonnées finies, valeur finie.
   const validData = $derived(
@@ -120,13 +129,17 @@
     return { min, max };
   });
 
+  function toneForBand(band: number): ContourChartTone {
+    const toneIndex = Math.max(0, Math.min(TONES.length - 1, Math.floor((band / Math.max(levelCount - 1, 1)) * (TONES.length - 1))));
+    return TONES[toneIndex];
+  }
+
   // Palier (0..levelCount-1) puis ton catégoriel : valeur normalisée 0..1 → bande.
   function bandOf(value: number): { band: number; tone: ContourChartTone } {
     const { min, max } = valueRange;
     const ratio = max > min ? (value - min) / (max - min) : 0;
     const band = Math.max(0, Math.min(levelCount - 1, Math.floor(ratio * levelCount)));
-    const toneIndex = Math.max(0, Math.min(TONES.length - 1, Math.floor((band / Math.max(levelCount - 1, 1)) * (TONES.length - 1))));
-    return { band, tone: TONES[toneIndex] };
+    return { band, tone: toneForBand(band) };
   }
 
   const scales = $derived.by(() => {
@@ -157,17 +170,22 @@
 
   // Une bande rectangulaire par cellule de grille, peinte selon sa value.
   const cells = $derived.by(() => {
-    const { xMin, xMax, yMin, yMax, plotW, plotH } = scales;
+    const { xMin, xMax, yMin, yMax, plotW, plotH, xValues, yValues } = scales;
     const { dx, dy } = cellSpan;
+    const xIndexByValue = new Map(xValues.map((value, index) => [value, index]));
+    const yIndexByValue = new Map(yValues.map((value, index) => [value, index]));
     return validData.map((d, i) => {
       const left = MARGIN.left + scaleLinear(d.x - dx / 2, xMin, xMax, 0, plotW);
       const right = MARGIN.left + scaleLinear(d.x + dx / 2, xMin, xMax, 0, plotW);
       const top = MARGIN.top + scaleLinear(d.y + dy / 2, yMin, yMax, plotH, 0);
       const bottom = MARGIN.top + scaleLinear(d.y - dy / 2, yMin, yMax, plotH, 0);
-      const { tone } = bandOf(d.value);
+      const { band, tone } = bandOf(d.value);
       return {
         key: `${i}`,
         datum: d,
+        band,
+        col: xIndexByValue.get(d.x) ?? 0,
+        row: yIndexByValue.get(d.y) ?? 0,
         x: Math.min(left, right),
         y: Math.min(top, bottom),
         width: Math.abs(right - left),
@@ -179,14 +197,41 @@
     });
   });
 
+  const contourSegments = $derived.by(() => {
+    const byGrid = new Map(cells.map((cell) => [`${cell.col}:${cell.row}`, cell]));
+    const segments = [];
+    for (const cell of cells) {
+      const right = byGrid.get(`${cell.col + 1}:${cell.row}`);
+      if (right && right.band !== cell.band) {
+        segments.push({
+          key: `${cell.key}:right`,
+          x1: cell.x + cell.width,
+          y1: cell.y,
+          x2: cell.x + cell.width,
+          y2: cell.y + cell.height
+        });
+      }
+      const upper = byGrid.get(`${cell.col}:${cell.row + 1}`);
+      if (upper && upper.band !== cell.band) {
+        segments.push({
+          key: `${cell.key}:top`,
+          x1: cell.x,
+          y1: cell.y,
+          x2: cell.x + cell.width,
+          y2: cell.y
+        });
+      }
+    }
+    return segments;
+  });
+
   const dataValueItems = $derived(
     validData.map((d) => `x ${d.x}, y ${d.y} · ${fmt(d.value)}`)
   );
 
   const legendItems = $derived(
     Array.from({ length: levelCount }, (_, band) => {
-      const toneIndex = Math.max(0, Math.min(TONES.length - 1, Math.floor((band / Math.max(levelCount - 1, 1)) * (TONES.length - 1))));
-      return { band, tone: TONES[toneIndex] };
+      return { band, tone: toneForBand(band) };
     })
   );
   const hasLegend = $derived(validData.length > 0);
@@ -205,7 +250,7 @@
     return cells.find((c) => c.key === hoveredKey) ?? null;
   });
 
-  const classes = () => ["st-contourChart", className].filter(Boolean).join(" ");
+  const classes = () => ["st-contourChart", `st-contourChart--${resolvedScale}`, className].filter(Boolean).join(" ");
 </script>
 
 <div class={classes()}>
@@ -234,6 +279,16 @@
           width={cell.width}
           height={cell.height}
           data-chart-key={cell.key}
+        />
+      {/each}
+
+      {#each contourSegments as segment (segment.key)}
+        <line
+          class="st-contourChart__isoline"
+          x1={segment.x1}
+          y1={segment.y1}
+          x2={segment.x2}
+          y2={segment.y2}
         />
       {/each}
 
@@ -319,13 +374,21 @@
 
   .st-contourChart__cell {
     cursor: pointer;
-    stroke: var(--st-semantic-surface-default, Canvas);
+    stroke: var(--st-semantic-surface-default);
     stroke-width: 0.5;
     transition: opacity 120ms ease;
   }
 
   .st-contourChart__cell--dim {
     opacity: 0.35;
+  }
+
+  .st-contourChart__isoline {
+    pointer-events: none;
+    stroke: var(--st-semantic-border-strong);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.5;
   }
 
   .st-contourChart__cell--category1 { fill: var(--st-semantic-data-category1); }
