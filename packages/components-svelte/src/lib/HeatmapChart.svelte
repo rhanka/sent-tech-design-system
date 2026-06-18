@@ -1,12 +1,13 @@
 <script lang="ts" module>
   /**
-   * HeatmapChart - API canonique (référence Svelte, React/Vue doivent s'aligner)
+   * HeatmapChart - API canonique (référence Svelte, React/Vue/Angular doivent s'aligner)
    *
    * Props obligatoires :
    *   data   HeatmapChartDatum[]  - tableau {x, y, value, tone?}
    *   label  string               - aria-label du graphique
    *
    * Props optionnelles :
+   *   scale   "categorical" | "sequential" (défaut categorical)
    *   legend  boolean  (défaut false) - affiche le gradient Low→High
    *   width   number   (défaut 480)   - largeur du viewBox en px
    *   height  number   (défaut 300)   - hauteur du viewBox en px
@@ -25,6 +26,8 @@
     | "category7"
     | "category8";
 
+  export type HeatmapChartScale = "categorical" | "sequential";
+
   export type HeatmapChartDatum = {
     x: string;
     y: string;
@@ -39,6 +42,7 @@
   type HeatmapChartProps = {
     data: HeatmapChartDatum[];
     label: string;
+    scale?: HeatmapChartScale;
     legend?: boolean;
     width?: number;
     height?: number;
@@ -48,6 +52,7 @@
   let {
     data,
     label,
+    scale = "categorical",
     legend = false,
     width = 480,
     height = 300,
@@ -78,6 +83,10 @@
     return out;
   }
 
+  function normalizedScale(value: HeatmapChartScale | undefined): HeatmapChartScale {
+    return value === "sequential" ? "sequential" : "categorical";
+  }
+
   function toneForValue(value: number, min: number, max: number): HeatmapChartTone {
     if (!Number.isFinite(value) || max <= min) return "category1";
     const index = Math.max(0, Math.min(TONES.length - 1, Math.floor(((value - min) / (max - min)) * TONES.length)));
@@ -86,6 +95,7 @@
 
   let hoveredIndex: number | null = $state(null);
 
+  const resolvedScale = $derived(normalizedScale(scale));
   const xLabels = $derived(uniqueInOrder(data.map((d) => d.x)));
   const yLabels = $derived(uniqueInOrder(data.map((d) => d.y)));
   const plotWidth = $derived(Math.max(width - MARGIN.left - MARGIN.right, 1));
@@ -104,7 +114,7 @@
       return {
         datum,
         index,
-        tone: datum.tone ?? toneForValue(datum.value, min, max),
+        tone: resolvedScale === "sequential" ? toneForValue(datum.value, min, max) : datum.tone ?? toneForValue(datum.value, min, max),
         x: MARGIN.left + xIndex * cellWidth,
         y: MARGIN.top + yIndex * cellHeight,
         width: Math.max(cellWidth - 2, 1),
@@ -134,7 +144,7 @@
     hoveredIndex = Number.isInteger(index) ? index : null;
   }
 
-  const classes = () => ["st-heatmapChart", className].filter(Boolean).join(" ");
+  const classes = () => ["st-heatmapChart", `st-heatmapChart--${resolvedScale}`, className].filter(Boolean).join(" ");
 </script>
 
 <div class={classes()}>
@@ -228,6 +238,15 @@
 
 <style>
   .st-heatmapChart {
+    --st-heatmapChart-ramp-base: var(--st-semantic-data-category1);
+    --st-heatmapChart-ramp-1: color-mix(in srgb, var(--st-semantic-surface-default, Canvas) 86%, var(--st-heatmapChart-ramp-base) 14%);
+    --st-heatmapChart-ramp-2: color-mix(in srgb, var(--st-semantic-surface-default, Canvas) 74%, var(--st-heatmapChart-ramp-base) 26%);
+    --st-heatmapChart-ramp-3: color-mix(in srgb, var(--st-semantic-surface-default, Canvas) 62%, var(--st-heatmapChart-ramp-base) 38%);
+    --st-heatmapChart-ramp-4: color-mix(in srgb, var(--st-semantic-surface-default, Canvas) 50%, var(--st-heatmapChart-ramp-base) 50%);
+    --st-heatmapChart-ramp-5: color-mix(in srgb, var(--st-semantic-surface-default, Canvas) 38%, var(--st-heatmapChart-ramp-base) 62%);
+    --st-heatmapChart-ramp-6: color-mix(in srgb, var(--st-semantic-surface-default, Canvas) 26%, var(--st-heatmapChart-ramp-base) 74%);
+    --st-heatmapChart-ramp-7: color-mix(in srgb, var(--st-semantic-surface-default, Canvas) 14%, var(--st-heatmapChart-ramp-base) 86%);
+    --st-heatmapChart-ramp-8: var(--st-heatmapChart-ramp-base);
     color: var(--st-semantic-text-secondary);
     display: block;
     font-family: inherit;
@@ -286,6 +305,23 @@
   .st-heatmapChart__legendSwatch--category7 { fill: var(--st-semantic-data-category7); background: var(--st-semantic-data-category7); }
   .st-heatmapChart__cell--category8,
   .st-heatmapChart__legendSwatch--category8 { fill: var(--st-semantic-data-category8); background: var(--st-semantic-data-category8); }
+
+  .st-heatmapChart--sequential .st-heatmapChart__cell--category1,
+  .st-heatmapChart--sequential .st-heatmapChart__legendSwatch--category1 { fill: var(--st-heatmapChart-ramp-1); background: var(--st-heatmapChart-ramp-1); }
+  .st-heatmapChart--sequential .st-heatmapChart__cell--category2,
+  .st-heatmapChart--sequential .st-heatmapChart__legendSwatch--category2 { fill: var(--st-heatmapChart-ramp-2); background: var(--st-heatmapChart-ramp-2); }
+  .st-heatmapChart--sequential .st-heatmapChart__cell--category3,
+  .st-heatmapChart--sequential .st-heatmapChart__legendSwatch--category3 { fill: var(--st-heatmapChart-ramp-3); background: var(--st-heatmapChart-ramp-3); }
+  .st-heatmapChart--sequential .st-heatmapChart__cell--category4,
+  .st-heatmapChart--sequential .st-heatmapChart__legendSwatch--category4 { fill: var(--st-heatmapChart-ramp-4); background: var(--st-heatmapChart-ramp-4); }
+  .st-heatmapChart--sequential .st-heatmapChart__cell--category5,
+  .st-heatmapChart--sequential .st-heatmapChart__legendSwatch--category5 { fill: var(--st-heatmapChart-ramp-5); background: var(--st-heatmapChart-ramp-5); }
+  .st-heatmapChart--sequential .st-heatmapChart__cell--category6,
+  .st-heatmapChart--sequential .st-heatmapChart__legendSwatch--category6 { fill: var(--st-heatmapChart-ramp-6); background: var(--st-heatmapChart-ramp-6); }
+  .st-heatmapChart--sequential .st-heatmapChart__cell--category7,
+  .st-heatmapChart--sequential .st-heatmapChart__legendSwatch--category7 { fill: var(--st-heatmapChart-ramp-7); background: var(--st-heatmapChart-ramp-7); }
+  .st-heatmapChart--sequential .st-heatmapChart__cell--category8,
+  .st-heatmapChart--sequential .st-heatmapChart__legendSwatch--category8 { fill: var(--st-heatmapChart-ramp-8); background: var(--st-heatmapChart-ramp-8); }
 
   .st-heatmapChart__legend {
     align-items: center;

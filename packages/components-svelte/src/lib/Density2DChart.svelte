@@ -23,6 +23,8 @@
     | "category1" | "category2" | "category3" | "category4"
     | "category5" | "category6" | "category7" | "category8";
 
+  export type Density2DChartScale = "categorical" | "sequential";
+
   export type Density2DPoint = {
     x: number;
     y: number;
@@ -36,6 +38,7 @@
   type Density2DChartProps = {
     data: Density2DPoint[];
     bins?: number;
+    scale?: Density2DChartScale;
     label?: string;
     width?: number;
     height?: number;
@@ -46,6 +49,7 @@
   let {
     data = [],
     bins = 12,
+    scale = "sequential",
     label,
     width,
     height = 320,
@@ -67,6 +71,10 @@
     const ratio = Math.max(0, Math.min(1, density / densityMax));
     const index = Math.max(0, Math.min(TONES.length - 1, Math.floor(ratio * TONES.length)));
     return TONES[index];
+  }
+
+  function normalizedScale(value: Density2DChartScale | undefined): Density2DChartScale {
+    return value === "categorical" ? "categorical" : "sequential";
   }
 
   function niceTicks(min: number, max: number, target = 5): number[] {
@@ -100,6 +108,7 @@
   }
 
   let hoveredKey: string | null = $state(null);
+  const resolvedScale = $derived(normalizedScale(scale));
 
   const plotWidth = $derived(Math.max(resolvedWidth - MARGIN.left - MARGIN.right, 1));
   const plotHeight = $derived(Math.max(height - MARGIN.top - MARGIN.bottom, 1));
@@ -246,7 +255,7 @@
     return binCells.find((b) => b.key === hoveredKey) ?? null;
   });
 
-  const classes = () => ["st-density2DChart", className].filter(Boolean).join(" ");
+  const classes = () => ["st-density2DChart", `st-density2DChart--${resolvedScale}`, className].filter(Boolean).join(" ");
 </script>
 
 <div class={classes()}>
