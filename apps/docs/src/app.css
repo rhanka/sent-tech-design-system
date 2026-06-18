@@ -400,8 +400,24 @@ select {
 
 .docs-theme-trigger {
   font-size: var(--docs-text-xs);
-  min-width: 6.5rem;
+  min-width: 8.5rem;
   padding: 0 0.65rem;
+}
+
+.docs-theme-trigger-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.docs-theme-trigger-id,
+.docs-theme-item-id {
+  color: var(--docs-muted, #64748b);
+  font-size: 0.68rem;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .docs-framework-trigger {
@@ -463,6 +479,14 @@ select {
   transition:
     background-color var(--st-motion-fast, 120ms) ease,
     color var(--st-motion-fast, 120ms) ease;
+}
+
+.docs-theme-item-copy {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+  min-width: 0;
 }
 
 .docs-locale-item:hover {
