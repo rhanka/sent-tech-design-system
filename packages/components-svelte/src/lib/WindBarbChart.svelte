@@ -35,12 +35,8 @@
     /** Direction (d'où vient le vent) en DEGRÉS (0° = Nord). */
     direction: number;
   };
-</script>
 
-<script lang="ts">
-  import ChartDataList from "./ChartDataList.svelte";
-
-  type WindBarbChartProps = {
+  export type WindBarbChartProps = {
     data: WindBarbChartDatum[];
     label?: string;
     width?: number;
@@ -48,6 +44,10 @@
     size?: number;
     class?: string;
   };
+</script>
+
+<script lang="ts">
+  import ChartDataList from "./ChartDataList.svelte";
 
   let {
     data = [],

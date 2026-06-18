@@ -30,12 +30,8 @@
     /** Prix de clôture : pilote la formation des briques. */
     close: number;
   };
-</script>
 
-<script lang="ts">
-  import ChartDataList from "./ChartDataList.svelte";
-
-  type RenkoChartProps = {
+  export type RenkoChartProps = {
     data: RenkoChartDatum[];
     boxSize?: number;
     label?: string;
@@ -44,6 +40,10 @@
     size?: number;
     class?: string;
   };
+</script>
+
+<script lang="ts">
+  import ChartDataList from "./ChartDataList.svelte";
 
   let {
     data = [],
@@ -107,31 +107,58 @@
 
   // Construit les briques Renko. Chaque brique couvre [bottom, top] (hauteur
   // boxSize) ; on en émet une à chaque franchissement de `box`. L'inversion
-  // exige 2×box (la première brique d'un nouveau sens repart d'un cran décalé).
+  // exige 2×box : la première brique du nouveau sens repart un cran au-delà de
+  // la dernière brique du sens précédent.
   const bricks = $derived.by(() => {
     const box = effectiveBox;
     const out: { bottom: number; top: number; direction: RenkoChartDirection }[] = [];
     if (validData.length === 0 || box <= 0) return out;
 
-    // Niveau de référence : la base de la dernière brique posée.
+    // Niveau de référence : extrémité de la dernière brique posée.
     let base = validData[0].close;
     let direction: RenkoChartDirection | null = null;
 
     for (let i = 1; i < validData.length; i++) {
       const price = validData[i].close;
-      // Briques haussières tant que le prix monte d'au moins un `box`.
-      while (price >= base + box) {
-        out.push({ bottom: base, top: base + box, direction: "up" });
-        base += box;
-        direction = "up";
+
+      if (direction !== "down") {
+        // Briques haussières tant que le prix monte d'au moins un `box`.
+        while (price >= base + box) {
+          out.push({ bottom: base, top: base + box, direction: "up" });
+          base += box;
+          direction = "up";
+        }
       }
+
+      if (direction === "up") {
+        // Inversion haussière -> baissière : il faut franchir 2×box.
+        if (price <= base - 2 * box) {
+          base -= box;
+          do {
+            out.push({ bottom: base - box, top: base, direction: "down" });
+            base -= box;
+            direction = "down";
+          } while (price <= base - box);
+        }
+        continue;
+      }
+
       // Briques baissières tant que le prix descend d'au moins un `box`.
       while (price <= base - box) {
         out.push({ bottom: base - box, top: base, direction: "down" });
         base -= box;
         direction = "down";
       }
-      void direction;
+
+      if (direction === "down" && price >= base + 2 * box) {
+        // Inversion baissière -> haussière : il faut franchir 2×box.
+        base += box;
+        do {
+          out.push({ bottom: base, top: base + box, direction: "up" });
+          base += box;
+          direction = "up";
+        } while (price >= base + box);
+      }
     }
     return out;
   });

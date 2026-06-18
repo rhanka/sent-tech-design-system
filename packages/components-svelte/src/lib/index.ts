@@ -82,6 +82,7 @@ export { default as ContentSwitcher } from "./ContentSwitcher.svelte";
 export { default as CopyButton } from "./CopyButton.svelte";
 export { default as DataImage } from "./DataImage.svelte";
 export { default as DataTable } from "./DataTable.svelte";
+export { default as DashboardGrid } from "./DashboardGrid.svelte";
 export { default as DatePicker } from "./DatePicker.svelte";
 export { default as Divider } from "./Divider.svelte";
 export { default as DonutChart } from "./DonutChart.svelte";
@@ -263,7 +264,8 @@ export type { ErrorBarChartDatum, ErrorBarChartTone } from "./ErrorBarChart.svel
 export type { BellCurveChartTone } from "./BellCurveChart.svelte";
 export type { BarChartDatum, BarChartTone } from "./BarChart.svelte";
 export type { BoxPlotChartDatum, BoxPlotChartTone } from "./BoxPlotChart.svelte";
-export type { HeatmapChartDatum, HeatmapChartTone } from "./HeatmapChart.svelte";
+export type { HeatmapChartDatum, HeatmapChartScale, HeatmapChartTone } from "./HeatmapChart.svelte";
+export type { DashboardGridProps, DashboardGridTile } from "./DashboardGrid.svelte";
 export type { HistogramChartDatum, HistogramChartTone } from "./HistogramChart.svelte";
 export type { RadarChartSeries, RadarChartTone } from "./RadarChart.svelte";
 export type { RoseChartDatum, RoseChartTone } from "./RoseChart.svelte";
@@ -304,26 +306,33 @@ export type {
   StatusHistorySeries
 } from "./StatusHistoryChart.svelte";
 export type {
+  EventFeedPanelProps,
   EventFeedPanelSeverity,
   EventFeedPanelEvent
 } from "./EventFeedPanel.svelte";
 export type {
+  VectorFieldChartProps,
   VectorFieldChartTone,
   VectorFieldChartDatum
 } from "./VectorFieldChart.svelte";
 export type {
+  ContourChartProps,
   ContourChartTone,
-  ContourChartDatum
+  ContourChartDatum,
+  ContourChartScale
 } from "./ContourChart.svelte";
 export type {
+  WindBarbChartProps,
   WindBarbChartTone,
   WindBarbChartDatum
 } from "./WindBarbChart.svelte";
 export type {
+  RenkoChartProps,
   RenkoChartDirection,
   RenkoChartDatum
 } from "./RenkoChart.svelte";
 export type {
+  PointAndFigureChartProps,
   PointAndFigureChartMark,
   PointAndFigureChartDatum
 } from "./PointAndFigureChart.svelte";
@@ -351,7 +360,8 @@ export type {
 export type {
   AnomalySwimLaneTone,
   AnomalySwimLaneBucket,
-  AnomalySwimLaneSeries
+  AnomalySwimLaneSeries,
+  AnomalySwimLaneChartScale
 } from "./AnomalySwimLaneChart.svelte";
 export type { FlamegraphNode } from "./FlamegraphChart.svelte";
 export type { TraceSpan } from "./TraceWaterfallChart.svelte";
@@ -360,7 +370,7 @@ export type {
   DecompositionTreeLevel,
   DecompositionTreeData
 } from "./DecompositionTreeChart.svelte";
-export type { Density2DTone, Density2DPoint } from "./Density2DChart.svelte";
+export type { Density2DTone, Density2DPoint, Density2DChartScale } from "./Density2DChart.svelte";
 export type { FunnelChartTone, FunnelChartDatum } from "./FunnelChart.svelte";
 export type { ViolinChartDatum, ViolinChartTone } from "./ViolinChart.svelte";
 export type { WaterfallType, WaterfallChartDatum } from "./WaterfallChart.svelte";
@@ -375,7 +385,7 @@ export type { HeikinAshiChartDatum } from "./HeikinAshiChart.svelte";
 export type { TimelineChartTone, TimelineChartEvent } from "./TimelineChart.svelte";
 export type { GanttChartTask } from "./GanttChart.svelte";
 export type { StreamgraphChartDatum, StreamgraphChartSeriesValue, StreamgraphChartTone } from "./StreamgraphChart.svelte";
-export type { CalendarHeatmapChartDatum } from "./CalendarHeatmapChart.svelte";
+export type { CalendarHeatmapChartDatum, CalendarHeatmapChartScale } from "./CalendarHeatmapChart.svelte";
 export type { BumpChartTone, BumpChartSeries } from "./BumpChart.svelte";
 export type { LollipopChartTone, LollipopChartDatum } from "./LollipopChart.svelte";
 export type { ColumnRangeChartTone, ColumnRangeChartDatum } from "./ColumnRangeChart.svelte";

@@ -39,17 +39,17 @@
     /** Message principal affiché. */
     message: string;
   };
-</script>
 
-<script lang="ts">
-  type EventFeedPanelProps = {
+  export type EventFeedPanelProps = {
     data: EventFeedPanelEvent[];
     label?: string;
     maxHeight?: number;
     height?: number;
     class?: string;
   };
+</script>
 
+<script lang="ts">
   let {
     data = [],
     label,

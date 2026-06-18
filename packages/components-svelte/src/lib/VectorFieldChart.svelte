@@ -33,12 +33,8 @@
     /** Direction en DEGRÉS (0° = +X, sens trigonométrique). */
     direction: number;
   };
-</script>
 
-<script lang="ts">
-  import ChartDataList from "./ChartDataList.svelte";
-
-  type VectorFieldChartProps = {
+  export type VectorFieldChartProps = {
     data: VectorFieldChartDatum[];
     label?: string;
     width?: number;
@@ -46,6 +42,10 @@
     size?: number;
     class?: string;
   };
+</script>
+
+<script lang="ts">
+  import ChartDataList from "./ChartDataList.svelte";
 
   let {
     data = [],

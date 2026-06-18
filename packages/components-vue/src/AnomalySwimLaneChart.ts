@@ -12,6 +12,8 @@ export type AnomalySwimLaneTone =
   | "category7"
   | "category8";
 
+export type AnomalySwimLaneChartScale = "categorical" | "sequential";
+
 export type AnomalySwimLaneBucket = {
   at: number;
   score: number;
@@ -25,6 +27,7 @@ export type AnomalySwimLaneSeries = {
 export type AnomalySwimLaneChartProps = {
   data: AnomalySwimLaneSeries[];
   max?: number;
+  scale?: AnomalySwimLaneChartScale;
   label?: string;
   width?: number;
   height?: number;
@@ -43,6 +46,10 @@ const TONES: AnomalySwimLaneTone[] = [
   "category7",
   "category8",
 ];
+
+function normalizedScale(value: AnomalySwimLaneChartScale | undefined): AnomalySwimLaneChartScale {
+  return value === "categorical" ? "categorical" : "sequential";
+}
 
 // Continuous scale: score intensity normalised 0..max → category1..8 (shared
 // with HeatmapChart). max ≤ 0 or non-finite score → category1 (floor intensity).
@@ -71,6 +78,7 @@ export const AnomalySwimLaneChart = defineComponent({
   props: {
     data: { type: Array as () => AnomalySwimLaneSeries[], default: () => [] },
     max: { type: Number, default: undefined },
+    scale: { type: String as () => AnomalySwimLaneChartScale, default: "sequential" },
     label: { type: String, default: undefined },
     width: { type: Number, default: undefined },
     height: { type: Number, default: 300 },
@@ -98,6 +106,7 @@ export const AnomalySwimLaneChart = defineComponent({
       const label = props.label;
       const height = props.height ?? 300;
       const resolvedWidth = props.width ?? props.size ?? 520;
+      const resolvedScale = normalizedScale(props.scale);
 
       const plotWidth = Math.max(resolvedWidth - MARGIN.left - MARGIN.right, 1);
       const plotHeight = Math.max(height - MARGIN.top - MARGIN.bottom, 1);
@@ -332,7 +341,7 @@ export const AnomalySwimLaneChart = defineComponent({
         );
       }
 
-      return h("div", { ...attrs, class: classNames("st-anomalySwimLaneChart", props.class) }, children);
+      return h("div", { ...attrs, class: classNames("st-anomalySwimLaneChart", `st-anomalySwimLaneChart--${resolvedScale}`, props.class) }, children);
     };
   },
 });

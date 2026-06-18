@@ -86,6 +86,11 @@
       les couches (avec marge) sauf si <code>bounds</code> est fourni. Les tons
       utilisent la palette data-vis (intensités via <code>color-mix</code>) et
       chaque couche est résumée dans la liste de valeurs accessible hors SVG.
+      Cette surface couvre fonctionnellement les surcouches Highcharts Maps
+      <code>mapline</code>, <code>mappoint</code>, <code>mapbubble</code>,
+      <code>flowmap</code> et <code>geoheatmap</code>. Le cas
+      <code>tiledwebmap</code> reste hors scope : pas de provider ni de fond
+      tuilé/raster embarqué.
     </p>
   </section>
 
@@ -93,6 +98,23 @@
   <section class="docs-section">
     <h2>Exemple : couches choroplèthe, hexbin + clusters, densité</h2>
     <TabbedExample nodes={exampleDemo} title="Cartes démo" />
+  </section>
+
+  <section class="docs-section">
+    <h2>Correspondance avec Highcharts Maps</h2>
+    <table class="docs-table">
+      <thead>
+        <tr><th>Type Highcharts</th><th>Couche GeoMap</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>mapline</code></td><td><code>geojson</code></td><td>Utiliser des géométries <code>LineString</code> ou <code>MultiLineString</code>.</td></tr>
+        <tr><td><code>mappoint</code></td><td><code>points</code> ou <code>geojson</code></td><td><code>points</code> pour des marqueurs pilotés par données ; <code>geojson</code> si la source est déjà en <code>Point</code>/<code>MultiPoint</code>.</td></tr>
+        <tr><td><code>mapbubble</code></td><td><code>points</code></td><td>Rayon drivé par <code>value</code> via <code>minRadius</code>/<code>maxRadius</code>, ou fixé par <code>r</code>.</td></tr>
+        <tr><td><code>flowmap</code></td><td><code>flow</code></td><td>Arcs source → cible avec épaisseur proportionnelle à <code>value</code>.</td></tr>
+        <tr><td><code>geoheatmap</code></td><td><code>density</code> ou <code>hexbin</code></td><td><code>density</code> pour une nappe continue par poids ; <code>hexbin</code> pour une agrégation par cellules.</td></tr>
+        <tr><td><code>tiledwebmap</code></td><td><em>non couvert</em></td><td><code>GeoMap</code> reste un rendu SVG pur : aucun provider, aucune URL de tuiles, aucun fond raster.</td></tr>
+      </tbody>
+    </table>
   </section>
 
   <section class="docs-section">

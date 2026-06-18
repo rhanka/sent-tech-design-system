@@ -12,6 +12,8 @@ export type AnomalySwimLaneTone =
   | "category7"
   | "category8";
 
+export type AnomalySwimLaneChartScale = "categorical" | "sequential";
+
 export type AnomalySwimLaneBucket = {
   at: number;
   score: number;
@@ -25,6 +27,7 @@ export type AnomalySwimLaneSeries = {
 export type AnomalySwimLaneChartProps = Omit<React.HTMLAttributes<HTMLDivElement>, "className"> & {
   data: AnomalySwimLaneSeries[];
   max?: number;
+  scale?: AnomalySwimLaneChartScale;
   label?: string;
   width?: number;
   height?: number;
@@ -43,6 +46,10 @@ const TONES: AnomalySwimLaneTone[] = [
   "category7",
   "category8",
 ];
+
+function normalizedScale(value: AnomalySwimLaneChartScale | undefined): AnomalySwimLaneChartScale {
+  return value === "categorical" ? "categorical" : "sequential";
+}
 
 // Continuous scale: score intensity normalised 0..max → category1..8 (shared
 // with HeatmapChart). max ≤ 0 or non-finite score → category1 (floor intensity).
@@ -69,6 +76,7 @@ function formatTick(v: number): string {
 export function AnomalySwimLaneChart({
   data = [],
   max,
+  scale = "sequential",
   label,
   width,
   height = 300,
@@ -77,6 +85,7 @@ export function AnomalySwimLaneChart({
   ...rest
 }: AnomalySwimLaneChartProps) {
   const [hoveredKey, setHoveredKey] = React.useState<string | null>(null);
+  const resolvedScale = normalizedScale(scale);
 
   const resolvedWidth = width ?? size ?? 520;
   const plotWidth = Math.max(resolvedWidth - MARGIN.left - MARGIN.right, 1);
@@ -190,7 +199,7 @@ export function AnomalySwimLaneChart({
   }
 
   return (
-    <div {...rest} className={classNames("st-anomalySwimLaneChart", className)}>
+    <div {...rest} className={classNames("st-anomalySwimLaneChart", `st-anomalySwimLaneChart--${resolvedScale}`, className)}>
       <div
         className="st-anomalySwimLaneChart__visual"
         role="img"

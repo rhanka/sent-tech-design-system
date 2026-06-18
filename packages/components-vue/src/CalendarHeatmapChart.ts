@@ -7,9 +7,12 @@ export type CalendarHeatmapChartDatum = {
   value: number;
 };
 
+export type CalendarHeatmapChartScale = "categorical" | "sequential";
+
 export type CalendarHeatmapChartProps = {
   data: CalendarHeatmapChartDatum[];
   label: string;
+  scale?: CalendarHeatmapChartScale;
   width?: number;
   height?: number;
   class?: string;
@@ -20,6 +23,10 @@ const TONES = [
   "category5", "category6", "category7", "category8",
 ] as const;
 type Tone = typeof TONES[number];
+
+function normalizedScale(value: CalendarHeatmapChartScale | undefined): CalendarHeatmapChartScale {
+  return value === "categorical" ? "categorical" : "sequential";
+}
 
 const MARGIN = { top: 24, right: 8, bottom: 8, left: 24 };
 const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -55,6 +62,7 @@ export const CalendarHeatmapChart = defineComponent({
   props: {
     data: { type: Array as () => CalendarHeatmapChartDatum[], default: () => [] },
     label: { type: String, required: true },
+    scale: { type: String as () => CalendarHeatmapChartScale, default: "sequential" },
     width: { type: Number, default: 480 },
     height: { type: Number, default: 140 },
     class: { type: String, default: undefined },
@@ -75,6 +83,7 @@ export const CalendarHeatmapChart = defineComponent({
     return () => {
       const data = props.data ?? [];
       const label = props.label;
+      const resolvedScale = normalizedScale(props.scale);
       const width = props.width ?? 480;
       const height = props.height ?? 140;
 
@@ -259,7 +268,7 @@ export const CalendarHeatmapChart = defineComponent({
         ]));
       }
 
-      return h("div", { ...attrs, class: classNames("st-calendarHeatmapChart", props.class) }, children);
+      return h("div", { ...attrs, class: classNames("st-calendarHeatmapChart", `st-calendarHeatmapChart--${resolvedScale}`, props.class) }, children);
     };
   },
 });

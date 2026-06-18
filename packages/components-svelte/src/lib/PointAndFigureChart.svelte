@@ -30,12 +30,8 @@
     /** Prix de clôture : pilote la formation des colonnes. */
     close: number;
   };
-</script>
 
-<script lang="ts">
-  import ChartDataList from "./ChartDataList.svelte";
-
-  type PointAndFigureChartProps = {
+  export type PointAndFigureChartProps = {
     data: PointAndFigureChartDatum[];
     boxSize?: number;
     reversal?: number;
@@ -45,6 +41,10 @@
     size?: number;
     class?: string;
   };
+</script>
+
+<script lang="ts">
+  import ChartDataList from "./ChartDataList.svelte";
 
   let {
     data = [],
@@ -126,16 +126,23 @@
     // Indice de case (entier) d'un prix : quantifié sur la grille de `box`.
     const boxIndex = (price: number) => Math.floor((price - baseMin) / box + 1e-9);
 
+    const firstBoxIndex = boxIndex(closes[0]);
     let mark: PointAndFigureChartMark | null = null;
-    let low = 0;
-    let high = 0;
+    let low = firstBoxIndex;
+    let high = firstBoxIndex;
 
-    for (let i = 0; i < closes.length; i++) {
+    for (let i = 1; i < closes.length; i++) {
       const idx = boxIndex(closes[i]);
       if (mark === null) {
-        mark = "x";
-        low = idx;
-        high = idx;
+        if (idx >= firstBoxIndex + 1) {
+          mark = "x";
+          low = firstBoxIndex;
+          high = idx;
+        } else if (idx <= firstBoxIndex - 1) {
+          mark = "o";
+          low = idx;
+          high = firstBoxIndex;
+        }
         continue;
       }
       if (mark === "x") {

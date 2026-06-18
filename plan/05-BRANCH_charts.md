@@ -8,7 +8,7 @@ Tous en SVG custom + parité tri-framework, réutilisant axes/`chartScale`/`char
 Statut dans les sous-bullets (PAS dans les titres → import idempotent).
 
 ## Scope / Guardrails
-- Réutiliser les primitives existantes (échelles, contraste, légende) ; parité svelte=react=vue stricte.
+- Réutiliser les primitives existantes (échelles, contraste, légende) ; parité Svelte/React/Vue stricte, Angular aligné quand la surface package existe.
 - 3D et indicateurs techniques (sma/ema/macd…) HORS scope.
 - Charts différenciateurs DS conservés (ForceGraph, Marimekko, CalendarHeatmap, Bump, Chord, ParallelCoords, Violin).
 
@@ -31,15 +31,16 @@ Statut dans les sous-bullets (PAS dans les titres → import idempotent).
   - streamgraph, dependencywheel, arcdiagram, organization, treegraph (voisins Sankey/Chord/ForceGraph).
 - [x] **Lot CHART-PLANNING — planning & spécialisés** ✓ gantt, timeline, item, wordcloud, venn, tilemap livrés/publiés.
   - xrange/Gantt (priorité projet), timeline, item (parlement), wordcloud, venn/euler, tilemap.
-- [ ] **Lot CHART-MAPS — surcouches GeoMap**
-  - mapline, mappoint, mapbubble, flowmap, geoheatmap, tiledwebmap (fond OSM tuilé).
-- [ ] **Lot CHART-NICHE — différable**
-  - windbarb, vector, contour, pictorial, variwide, pyramid, renko, pointandfigure, flags, 3D.
-- [ ] **Lot CHART-DATAVIZ-FR — « classe Highcharts » (demande dataviz, tri-fw, props sur charts existants)**
+- [x] **Lot CHART-MAPS — surcouches GeoMap**
+  - `mapline`, `mappoint`, `mapbubble`, `flowmap`, `geoheatmap` couverts via `GeoMap` (rendu SVG pur ; parité Angular alignée sur la surface existante).
+  - `tiledwebmap` formellement hors scope WP19 : dépend d'un provider/fond raster tuilé et d'URL potentiellement réseau, incompatibles avec la surface DS purement SVG.
+- [x] **Lot CHART-NICHE — clôturé WP19**
+  - Livrés Wave B : windbarb, vector field, contour/isolines, renko, pointandfigure avec exports/types alignés.
+  - Rebaselinés hors WP19 : pictorial (illustratif non chart canonique DS), flags (annotation stock spécifique), 3D (explicitement hors scope), variwide/pyramid couverts par Marimekko/Funnel/ColumnPyramid selon besoin produit.
+- [x] **Lot CHART-DATAVIZ-FR — « classe Highcharts » (demande dataviz, tri-fw, props sur charts existants)**
   - FR-1 annotations ✓ (point/label/line/region/shape sur Line/Area/Bar, publié 0.34.23/0.36.24).
     FR-2 data labels ✓ (dataLabels sur Bar/Line/Area/Donut/Stacked, publié 0.34.24/0.36.25).
     FR-3 crosshair contrôlé ✓ (hoverKey/onHoverKeyChange, publié 0.34.25/0.36.26).
     FR-4 légende interactive ✓ (hiddenSeries/onToggleSeries sur StackedBar/Combo, publié 0.34.26/0.36.27).
     FR-5 a11y datapoint-nav ✓ (roving tabindex + sélection clavier sur Bar/Line/Area, publié 0.34.27/0.36.28).
-    → FR-1..5 COMPLETS et publiés. Reste lot 2 = étendre ces 5 props aux autres charts à séries
-    (Scatter, OHLC/Candle, Combo, etc.) selon priorités dataviz.
+    → FR-1..5 COMPLETS et publiés. Extension lot 2 traitée dans la vague WP19/WP20 dataviz sur les charts à séries prioritaires ; futures extensions hors WP19.
