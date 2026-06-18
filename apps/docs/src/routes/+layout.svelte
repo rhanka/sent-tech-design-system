@@ -658,7 +658,8 @@
       aria-label={locale.value === "fr" ? "Changer le thème" : "Change theme"}
     >
       <Palette size={14} aria-hidden="true" />
-      <span>{activeTheme.label}</span>
+      <span class="docs-theme-trigger-label">{activeTheme.label}</span>
+      <span class="docs-theme-trigger-id">{activeTheme.id}</span>
       <ChevronDown size={12} class="docs-locale-trigger-chevron {isThemeOpen ? 'rotated' : ''}" aria-hidden="true" />
     </button>
 
@@ -673,7 +674,10 @@
             onclick={() => { activeThemeId = theme.id; isThemeOpen = false; }}
           >
             <span class="locale-check">{#if activeThemeId === theme.id}✓{/if}</span>
-            <span>{theme.label}</span>
+            <span class="docs-theme-item-copy">
+              <span>{theme.label}</span>
+              <span class="docs-theme-item-id">{theme.id}</span>
+            </span>
           </button>
         {/each}
       </div>
@@ -860,6 +864,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -880,6 +885,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -900,6 +906,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -920,6 +927,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -940,6 +948,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -960,6 +969,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -980,6 +990,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1000,6 +1011,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1020,6 +1032,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1040,6 +1053,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1060,6 +1074,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1080,6 +1095,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1100,6 +1116,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1120,6 +1137,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1140,6 +1158,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1160,6 +1179,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1180,6 +1200,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1200,6 +1221,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1220,6 +1242,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1240,6 +1263,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1260,6 +1284,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1280,6 +1305,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1300,6 +1326,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1320,6 +1347,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1340,6 +1368,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1360,6 +1389,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1380,6 +1410,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1400,6 +1431,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1420,6 +1452,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1440,6 +1473,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1460,6 +1494,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1480,6 +1515,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1500,6 +1536,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1520,6 +1557,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1540,6 +1578,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1560,6 +1599,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1580,6 +1620,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1600,6 +1641,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1620,6 +1662,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1640,6 +1683,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1660,6 +1704,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1680,6 +1725,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1700,6 +1746,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1720,6 +1767,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1740,6 +1788,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1760,6 +1809,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1780,6 +1830,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1800,6 +1851,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1820,6 +1872,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1840,6 +1893,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1860,6 +1914,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1880,6 +1935,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1900,6 +1956,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1920,6 +1977,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1940,6 +1998,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1960,6 +2019,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -1980,6 +2040,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -2000,6 +2061,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -2020,6 +2082,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -2040,6 +2103,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -2060,6 +2124,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -2080,6 +2145,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -2100,6 +2166,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -2120,6 +2187,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -2140,6 +2208,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
@@ -2160,6 +2229,7 @@
       frameworkSwitcher={frameworkSelector}
       localeSwitcher={langSelector}
       compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
       mobileMenuOpen={isMobileMenuOpen}
       onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
     >
