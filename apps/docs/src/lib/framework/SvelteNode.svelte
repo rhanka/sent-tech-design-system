@@ -269,7 +269,7 @@
       );
     }
 
-    // Footer : `brand` (chaîne) et `columns` (données) → snippets Svelte.
+    // Footer : `brand` (chaîne), `columns` et `legalLinks` (données) → snippets Svelte.
     if (comp === "Footer") {
       if (typeof out.brand === "string") {
         out.brand = htmlSnippet(escapeHtml(out.brand));
@@ -277,6 +277,20 @@
       if (Array.isArray(out.columns)) {
         out.columns = htmlSnippet(columnsHtml(out.columns as FooterColumn[]));
       }
+      if (Array.isArray(out.legalLinks)) {
+        const links = (out.legalLinks as Array<{ label: string; href: string }>)
+          .map((l) => `<a href="${escapeHtml(l.href)}">${escapeHtml(l.label)}</a>`)
+          .join("");
+        out.legal = htmlSnippet(links);
+        delete out.legalLinks;
+      }
+    }
+
+    // DatePicker : `value`, `min`, `max` peuvent être des chaînes ISO → Date.
+    if (comp === "DatePicker") {
+      if (typeof out.value === "string") out.value = new Date(out.value);
+      if (typeof out.min === "string") out.min = new Date(out.min);
+      if (typeof out.max === "string") out.max = new Date(out.max);
     }
 
     return out;
