@@ -273,6 +273,10 @@
      * `id`. Receives the same pair so the consumer can drop `from` from the data.
      */
     onMergeComplete?: (pair: { id: string; from: string; into: string }) => void;
+    /** Accessible label for the reset-view button (shown when zoomed/panned). */
+    resetViewLabel?: string;
+    /** Accessible label for the legend overlay. */
+    legendLabel?: string;
     class?: string;
   };
 
@@ -296,6 +300,8 @@
     onNodeHover,
     mergePair = null,
     onMergeComplete,
+    resetViewLabel = "Reset view",
+    legendLabel = "Graph legend",
     class: className
   }: ForceGraphProps = $props();
 
@@ -1051,7 +1057,7 @@
         >
           {#if p.shapePath}
             <path
-              class="st-forceGraph__dot"
+              class="st-forceGraph__shape st-forceGraph__dot"
               d={p.shapePath}
               tabindex="0"
               role="button"
@@ -1134,7 +1140,7 @@
     <button
       class="st-forceGraph__resetBtn"
       type="button"
-      aria-label="Reset view"
+      aria-label={resetViewLabel}
       onclick={resetView}
     >
       ↺
@@ -1143,7 +1149,7 @@
 
   <!-- Legend overlay -->
   {#if legend && legend.length > 0}
-    <div class="st-forceGraph__legend" aria-label="Graph legend">
+    <div class="st-forceGraph__legend" aria-label={legendLabel}>
       {#each legend as entry}
         {@const swatchPath = entry.shape !== undefined ? nodeShapePath(entry.shape, 7) : null}
         {@const swatchTone = entry.tone ?? "category1"}

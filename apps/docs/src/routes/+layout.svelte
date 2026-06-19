@@ -114,6 +114,7 @@
   import CompareButton from "$lib/compare/CompareButton.svelte";
   import CompareTriptych from "$lib/compare/CompareTriptych.svelte";
   import ChatWidget from "$lib/chat/ChatWidget.svelte";
+  import ChatFeedback from "$lib/feedback/ChatFeedback.svelte";
   // Chromes thématisés — importés conditionnellement côté client uniquement.
   import ChromeCarbon from "$lib/chrome/ChromeCarbon.svelte";
   import ChromeDsfr from "$lib/chrome/ChromeDsfr.svelte";
@@ -2586,3 +2587,7 @@
 <!-- Widget de chat « light-auth » — persistant sur toutes les routes/thèmes.
      Client-only (rendu gardé par `browser`), positionné en fixed bottom-right. -->
 <ChatWidget />
+
+<!-- Chat Feedback (WP17) — bouton « Feedback » persistant sur chaque page.
+     Skeleton frontend (state local, console.log), empilé au-dessus du ChatWidget. -->
+<ChatFeedback />
