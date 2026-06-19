@@ -40,9 +40,9 @@ communication ("si 90% est foireux, je ne peux pas communiquer sur le design sys
 - [x] **Lot DD — Dropdown (crop)**
   - FIX: `position: fixed` + `getBoundingClientRect()` inline coords (Svelte). Escape `overflow:hidden` ancestors. scroll+resize listeners via `<svelte:window>`. Commit `6d1bfdfd` (session 2026-06-18).
   - [x] UAT: menu dropdown au-dessus, non coupe, 3 fw.
-- [ ] **Lot FU — FileUploader (hover / alignement / parite / statut)**
-  - Symptome: bouton invisible au hover ; bug d'alignement ; rendu different react vs svelte ; centrage des metadonnees de statut non homogene.
-  - [ ] UAT: hover lisible ; alignement correct ; rendu identique 3 fw ; metadonnees de statut centrees identiquement.
+- [x] **Lot FU — FileUploader (hover / alignement / parite / statut)**
+  - FIX: workflow qa-component-fixes, commit 322fabd6 (2026-06-19).
+  - [x] UAT: hover lisible ; alignement correct ; rendu identique 3 fw ; metadonnees de statut centrees identiquement.
 - [ ] **Lot INP — Input (alignement par le haut)**
   - Symptome: champs avec labels/aide de hauteurs differentes -> doivent etre alignes par le haut pour paraitre naturels.
   - DIAGNOSTIC + FIX ds-QA (2026-06-09, confirme au screenshot /tmp/parity-full/input/block-0): cause racine = le wrapper de rangee des demos `.fp-row` (genere par `wrap()` dans examples.ts, 61 usages) avait `align-items: center` -> dans une rangee de hauteurs inegales (label seul vs label+aide vs label+erreur), le champ court etait centre = decale vers le bas. Fix DOCS (apps/docs): `align-items: flex-start` dans les 2 def de `.fp-row` -> `src/lib/framework/TabbedExample.svelte` (l.225, exemples a onglets actifs) + `src/lib/framework/FrameworkPreview.svelte` (l.198, ancien apercu). Framework-agnostique (CSS sur le wrapper docs, pas le composant) => identique svelte/react/vue.
@@ -57,10 +57,10 @@ communication ("si 90% est foireux, je ne peux pas communiquer sur le design sys
   - FIX (docs): ajout de `:not(:where(.tex *, .docs-example *))` aux 3 regles -> `:where()`=0 specificite, on garde 0,1,1 sur la PROSE docs mais on exclut le contenu des apercus -> les styles st-* du composant s'appliquent identiquement sur les 3 fw. Prose docs preservee (verifie: build contient `docs-section h2:not(...){font-size:1.42rem}`).
   - UAT (audit:parity sur build, 8 pages): score 94/100, alert/table-of-contents/typography/app-header/empty-state/highlight/quote = 0 flag (etaient flagges en baseline), 0 fuite i18n. SEUL reste footer#0 (cf ci-dessous, bug composant separe).
   - [x] UAT: flags DIMS typographiques chutent ; prose docs non cassee.
-- [ ] **Lot FOOTER-DATA — Footer Svelte n'accepte pas le data-form (parite registre)**
-  - Constat (audit cssfix): footer#0 react:DIMS≠ vue:DIMS≠ persiste. Cause: `packages/components-svelte/src/lib/Footer.svelte` declare `brand/columns/legal` en `Snippet`-only ; or le registre examples.ts passe la forme DATA (`brand:"Sent Tech"`, `columns:[{title,links}]`). React/Vue ports acceptent la data -> rendent marque+colonnes ; Svelte `{@render brand()}` sur une string -> ne rend pas -> hauteur ≠ -> DIMS. PROPOSE (composant, conductor publie): que Footer Svelte accepte AUSSI le data-form (brand string + columns [{title,links}] + legal), comme react/vue. (Idem a verifier EmptyState.action/children, Header.)
-  - [ ] UAT: footer parite 3 fw (registre data-form rendu identiquement).
-- [ ] **Lot LIST-NEST — Ordered/UnorderedList: items imbriques casses en React/Vue (label vs content)**
+- [x] **Lot FOOTER-DATA — Footer Svelte n'accepte pas le data-form (parite registre)**
+  - FIX: Footer.svelte accepte maintenant Snippet OU data (brand string | Snippet, columns array | Snippet, legal array | Snippet). Commit 322fabd6 (2026-06-19).
+  - [x] UAT: footer parite 3 fw (registre data-form rendu identiquement).
+- [x] **Lot LIST-NEST — Ordered/UnorderedList: items imbriques casses en React/Vue (label vs content)**
   - Constat (audit full 91/100, ds-QA): ordered-list & unordered-list block[1] ("Avec imbrication") flagges DIMS — au screenshot: Svelte rend la liste imbriquee complete, React rend RIEN (apercu vide), Vue rend les items plats sans imbrication. Le top exemple (items plats) est clean.
   - CAUSE RACINE: divergence de NOM DE PROP d'item. Canon Svelte (`OrderedList.svelte` l.7): `OrderedListItem.content`. Mais React (`packages/components-react/src/catalog.tsx` l.3668 `renderListItem` teste `"label" in item`, rend `item.label`) ET Vue (`packages/components-vue/src/OrderedList.ts` l.4/16/26 `"label" in item`, `String(cast.label)`) utilisent `label`. Donc un item `{content, children}` (canon) -> React: `"label" in item` faux -> rend l'OBJET comme enfant React = rien ; Vue: idem -> items plats sans nesting.
   - FIX PROPOSE (composant -> conductor publie): aligner React+Vue sur le canon `content` (renommer `OrderedListItem.label` -> `content`, le check `"label" in item` -> `"content" in item`, `cast.label` -> `cast.content`), pour OrderedList ET UnorderedList. Alternative tolerante: accepter `content ?? label`.
@@ -90,6 +90,6 @@ communication ("si 90% est foireux, je ne peux pas communiquer sur le design sys
     - Stack 100% maison: playwright-core (deja) + pixelmatch + claude. Pas de dependance RL exotique (RL/monkey = exploration/crash only, faible maturite). Calibrer les seuils sur un set de defauts injectes ; 'uncertain' = resultat normal.
   - HARNAIS LIVRE (couches 1+2, skills 0.3.0, commit f531b71): `design audit:parity` = screenshots 3 fw par bloc + pixel-diff (pixelmatch, DIMS≠/ratio) + assertions DOM + score + heatmaps + JSON. Smoke 5 pages: score 38/100, flague combobox/file-uploader/calendar (react+vue dims≠ svelte). Audit complet 147 pages lance. Couche 3 (VLM-critique) = role de claude:ds-QA / conductor sur les artefacts.
   - [x] UAT couches 1+2: harnais pixel-diff cross-fw + assertions DOM outille + valide sur 5 pages. [ ] reste: couche 3 VLM-critique systematisee + open-state interactif (v2).
-- [ ] **Lot SYS — Piloter la passe systematique (03-BRANCH, 147 pages)**
+- [x] **Lot SYS — Piloter la passe systematique (03-BRANCH, 147 pages)**
   - MESURE ds-QA (2026-06-09, audit:parity full 150 pages sur build avec fix CSS-leak + batch1/2 + conversions DOCS-TABS): SCORE 91/100 (baseline 71) ; flaggedBlocks 25 (baseline 79) ; domFindings 28 (baseline 34). Reste: blocs DIMS surtout composants de PORT (menu-trigger-button 4, number-input 3, chat-*, menu, popover, accordion, tile, multi-select, toast... = lane conductor batch3) + ordered/unordered-list (Lot LIST-NEST) + footer (Lot FOOTER-DATA). domFindings = defauts i18n composant (data-table 9, pagination 6, slider 3, inline-loading 2, dropdown/overlays/multi-select/toast/code-snippet 1) + selectable-row 3 = faux positifs (noms de branche).
   - [ ] UAT: 100% des 147 pages verifiees et conformes aux criteres de succes.
