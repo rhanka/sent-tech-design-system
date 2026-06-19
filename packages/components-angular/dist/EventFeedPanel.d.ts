@@ -21,8 +21,18 @@ export declare class EventFeedPanel {
     maxHeight?: number;
     height?: number;
     classInput?: string;
+    private readonly knownSeverities;
     get hostClass(): string;
+    get resolvedMaxHeight(): number | undefined;
+    get items(): Array<{
+        index: number;
+        datum: EventFeedPanelEvent;
+        tone: string;
+        time: string;
+    }>;
+    private severityTone;
+    private formatTime;
     static ɵfac: i0.ɵɵFactoryDeclaration<EventFeedPanel, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<EventFeedPanel, "st-event-feed-panel", never, { "data": { "alias": "data"; "required": false; }; "label": { "alias": "label"; "required": false; }; "maxHeight": { "alias": "maxHeight"; "required": false; }; "height": { "alias": "height"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<EventFeedPanel, "st-event-feed-panel", never, { "data": { "alias": "data"; "required": false; }; "label": { "alias": "label"; "required": false; }; "maxHeight": { "alias": "maxHeight"; "required": false; }; "height": { "alias": "height"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
 }
 //# sourceMappingURL=EventFeedPanel.d.ts.map

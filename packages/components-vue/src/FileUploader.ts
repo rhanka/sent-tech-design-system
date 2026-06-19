@@ -1,4 +1,4 @@
-import { defineComponent, h } from "vue";
+import { defineComponent, h, ref } from "vue";
 import { CircleAlert, CircleCheck, File as FileIcon, LoaderCircle, Upload, X } from "lucide-vue-next";
 import { classNames } from "./classNames.js";
 
@@ -15,6 +15,7 @@ export type FileUploadItem = {
   size?: number;
   file?: { name: string; size?: number };
   status?: FileUploadStatus;
+  progress?: number;
   error?: string;
 };
 
@@ -49,6 +50,7 @@ export type FileUploaderProps = {
   triggerLabel?: string;
   dropzoneLabel?: string;
   removeLabel?: (filename: string) => string;
+  onRemoveItem?: (index: number) => void;
   class?: string;
 };
 
@@ -70,10 +72,39 @@ export const FileUploader = defineComponent({
       type: Function as unknown as () => (filename: string) => string,
       default: (filename: string) => `Remove ${filename}`,
     },
+    onRemoveItem: {
+      type: Function as unknown as () => (index: number) => void,
+      default: undefined,
+    },
     class: { type: String, default: undefined },
   },
   setup(props, { attrs }) {
     const generatedId = `st-file-uploader-${Math.random().toString(36).slice(2, 9)}`;
+    const inputRef = ref<HTMLInputElement | null>(null);
+    const isDragOver = ref(false);
+
+    function openPicker() {
+      if (props.disabled) return;
+      inputRef.value?.click();
+    }
+
+    function onDragOver(e: DragEvent) {
+      if (props.disabled) return;
+      e.preventDefault();
+      isDragOver.value = true;
+    }
+
+    function onDragLeave(e: DragEvent) {
+      e.preventDefault();
+      isDragOver.value = false;
+    }
+
+    function onDrop(e: DragEvent) {
+      if (props.disabled) return;
+      e.preventDefault();
+      isDragOver.value = false;
+    }
+
     return () => {
       const inputId = props.id ?? generatedId;
       const isInvalid = props.invalid || Boolean(props.errorText);
@@ -94,13 +125,19 @@ export const FileUploader = defineComponent({
             {
               class: classNames(
                 "st-fileUploader__dropzone",
+                isDragOver.value && "st-fileUploader__dropzone--dragover",
                 isInvalid && "st-fileUploader__dropzone--invalid",
                 props.disabled && "st-fileUploader__dropzone--disabled",
               ),
               role: "presentation",
+              onDragover: onDragOver,
+              onDragenter: onDragOver,
+              onDragleave: onDragLeave,
+              onDrop: onDrop,
             },
             [
               h("input", {
+                ref: inputRef,
                 id: inputId,
                 class: "st-fileUploader__input",
                 type: "file",
@@ -117,7 +154,12 @@ export const FileUploader = defineComponent({
                 ),
                 h(
                   "button",
-                  { type: "button", class: "st-fileUploader__trigger", disabled: props.disabled },
+                  {
+                    type: "button",
+                    class: "st-fileUploader__trigger",
+                    disabled: props.disabled,
+                    onClick: openPicker,
+                  },
                   effectiveTriggerLabel,
                 ),
                 h("span", { class: "st-fileUploader__hint" }, props.dropzoneLabel),
@@ -179,8 +221,9 @@ export const FileUploader = defineComponent({
                         {
                           type: "button",
                           class: "st-fileUploader__remove",
-                          "aria-label": props.removeLabel(name || "file"),
+                          "aria-label": props.removeLabel(name ?? ""),
                           disabled: props.disabled,
+                          onClick: () => props.onRemoveItem?.(index),
                         },
                         [h(X, { size: 16, strokeWidth: 2, "aria-hidden": "true" })],
                       ),

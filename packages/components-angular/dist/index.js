@@ -118,6 +118,7 @@ export { DecompositionTreeChart } from "./DecompositionTreeChart.js";
 export { Density2DChart } from "./Density2DChart.js";
 export { GeoMap } from "./GeoMap.js";
 export { Header } from "./Header.js";
+export { DashboardGrid } from "./DashboardGrid.js";
 export { HeatmapChart } from "./HeatmapChart.js";
 export { Hidden } from "./Hidden.js";
 export { Highlight } from "./Highlight.js";
