@@ -142,31 +142,73 @@ interface ViewNavGroupDefinition {
 // libellés de fil d'Ariane.
 const DOCS_VIEWS_NAV_DEFINITIONS: ViewNavGroupDefinition[] = [
   {
-    label: { fr: "CRM & Ventes", en: "CRM & Sales" },
+    label: { fr: "Analytics & BI", en: "Analytics & BI" },
     views: [
-      { slug: "pipeline-crm", label: { fr: "Pipeline CRM", en: "CRM Pipeline" } },
-      { slug: "kanban", label: { fr: "Tableau Kanban", en: "Kanban Board" } }
+      { slug: "dashboard", label: { fr: "Dashboard exécutif", en: "Executive Dashboard" } },
+      { slug: "analytics-overview", label: { fr: "Vue d'ensemble analytique", en: "Analytics Overview" } },
+      { slug: "data-explorer", label: { fr: "Explorateur de données", en: "Data Explorer" } },
+      { slug: "cohort-heatmap", label: { fr: "Cohortes & heatmap", en: "Cohort Heatmap" } },
+      { slug: "conversion-funnel", label: { fr: "Entonnoir de conversion", en: "Conversion Funnel" } },
+      { slug: "correlation-scatter", label: { fr: "Corrélation scatter", en: "Correlation Scatter" } },
+      { slug: "import-mapping", label: { fr: "Import / mappage", en: "Data Import / Mapping" } }
     ]
   },
   {
-    label: { fr: "ERP & Gestion", en: "ERP & Operations" },
+    label: { fr: "CRM & Ventes", en: "CRM & Sales" },
+    views: [
+      { slug: "pipeline-crm", label: { fr: "Pipeline CRM", en: "CRM Pipeline" } },
+      { slug: "kanban", label: { fr: "Tableau Kanban", en: "Kanban Board" } },
+      { slug: "contacts-directory", label: { fr: "Annuaire contacts", en: "Contact Directory" } },
+      { slug: "opportunity-detail", label: { fr: "Fiche opportunité", en: "Opportunity Detail" } },
+      { slug: "quote-tracker", label: { fr: "Suivi des devis", en: "Quote Tracker" } },
+      { slug: "lead-scoring", label: { fr: "Scoring des leads", en: "Lead Scoring" } }
+    ]
+  },
+  {
+    label: { fr: "ERP & Stock", en: "ERP & Inventory" },
     views: [
       { slug: "facture", label: { fr: "Facture client", en: "Customer Invoice" } },
       { slug: "object-page", label: { fr: "Page objet", en: "Object Page" } },
       { slug: "list-report", label: { fr: "Liste rapport", en: "List Report" } },
-      { slug: "master-detail", label: { fr: "Maître-détail", en: "Master-Detail" } }
+      { slug: "master-detail", label: { fr: "Maître-détail", en: "Master-Detail" } },
+      { slug: "stock-overview", label: { fr: "Vue stock", en: "Stock Overview" } },
+      { slug: "purchase-order", label: { fr: "Commandes fournisseurs", en: "Purchase Orders" } },
+      { slug: "goods-receipt", label: { fr: "Réceptions de marchandises", en: "Goods Receipt" } },
+      { slug: "warehouse-transfer", label: { fr: "Transferts entrepôt", en: "Warehouse Transfer" } },
+      { slug: "routing-builder", label: { fr: "Gammes de fabrication", en: "Routing Builder" } }
     ]
   },
   {
-    label: { fr: "Support", en: "Support" },
-    views: [{ slug: "file-tickets", label: { fr: "File de tickets", en: "Ticket Queue" } }]
+    label: { fr: "Comptabilité", en: "Accounting" },
+    views: [
+      { slug: "balance-comptable", label: { fr: "Balance comptable", en: "Trial Balance" } },
+      { slug: "factures-fournisseurs", label: { fr: "Factures fournisseurs", en: "Supplier Invoices" } },
+      { slug: "rapprochement-bancaire", label: { fr: "Rapprochement bancaire", en: "Bank Reconciliation" } },
+      { slug: "run-paiements", label: { fr: "Runs de paiement", en: "Payment Runs" } }
+    ]
   },
   {
-    label: { fr: "Dashboards & BI", en: "Dashboards & BI" },
+    label: { fr: "RH", en: "HR" },
     views: [
-      { slug: "dashboard", label: { fr: "Dashboard exécutif", en: "Executive Dashboard" } },
-      { slug: "data-explorer", label: { fr: "Explorateur de données", en: "Data Explorer" } },
-      { slug: "import-mapping", label: { fr: "Import / mappage", en: "Data Import / Mapping" } }
+      { slug: "employee-directory", label: { fr: "Annuaire employés", en: "Employee Directory" } },
+      { slug: "employee-profile", label: { fr: "Fiche employé", en: "Employee Profile" } },
+      { slug: "leave-attendance", label: { fr: "Congés & présences", en: "Leave & Attendance" } }
+    ]
+  },
+  {
+    label: { fr: "Projet & Support", en: "Project & Support" },
+    views: [
+      { slug: "file-tickets", label: { fr: "File de tickets", en: "Ticket Queue" } },
+      { slug: "sprint-backlog", label: { fr: "Backlog de sprint", en: "Sprint Backlog" } },
+      { slug: "roadmap-timeline", label: { fr: "Roadmap timeline", en: "Roadmap Timeline" } },
+      { slug: "sla-monitor", label: { fr: "Monitoring SLA", en: "SLA Monitor" } }
+    ]
+  },
+  {
+    label: { fr: "Production", en: "Manufacturing" },
+    views: [
+      { slug: "work-order-board", label: { fr: "Tableau des OF", en: "Work Order Board" } },
+      { slug: "quality-inspection", label: { fr: "Contrôle qualité", en: "Quality Inspection" } }
     ]
   },
   {
@@ -175,7 +217,9 @@ const DOCS_VIEWS_NAV_DEFINITIONS: ViewNavGroupDefinition[] = [
       { slug: "app-shell", label: { fr: "App Shell", en: "App Shell" } },
       { slug: "login", label: { fr: "Connexion", en: "Sign-in" } },
       { slug: "settings", label: { fr: "Paramètres", en: "Settings" } },
-      { slug: "wizard", label: { fr: "Assistant", en: "Wizard" } }
+      { slug: "wizard", label: { fr: "Assistant", en: "Wizard" } },
+      { slug: "notification-center", label: { fr: "Centre de notifications", en: "Notification Center" } },
+      { slug: "user-preferences", label: { fr: "Préférences utilisateur", en: "User Preferences" } }
     ]
   }
 ];
