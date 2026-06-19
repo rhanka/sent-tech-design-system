@@ -2,18 +2,23 @@
   import type { Snippet } from "svelte";
   import type { HTMLAttributes } from "svelte/elements";
 
+  type LinkItem = { label: string; href: string };
+  type ColumnItem = { title?: string; links: LinkItem[] };
+
   type FooterProps = Omit<HTMLAttributes<HTMLElement>, "class"> & {
     /** Texte de copyright (bas de pied de page). */
     copyright?: string;
     /** aria-label de la région contentinfo. */
     label?: string;
     class?: string;
-    /** Marque / logo (zone de tête, à gauche). */
-    brand?: Snippet;
-    /** Colonnes de liens (zone de tête). */
-    columns?: Snippet;
-    /** Liens légaux (barre du bas, à droite du copyright). */
-    legal?: Snippet;
+    /** Marque / logo : Snippet OU chaîne de texte. */
+    brand?: Snippet | string;
+    /** Colonnes de liens : Snippet OU tableau de données. */
+    columns?: Snippet | ColumnItem[];
+    /** Liens légaux : Snippet OU tableau de données. */
+    legal?: Snippet | LinkItem[];
+    /** Alias data-driven pour les liens légaux (parité React). */
+    legalLinks?: LinkItem[];
     /** Contenu libre additionnel sous la barre du bas. */
     children?: Snippet;
   };
@@ -25,23 +30,50 @@
     brand,
     columns,
     legal,
+    legalLinks,
     children,
     ...rest
   }: FooterProps = $props();
 
+  const isSnippet = (v: unknown): v is Snippet => typeof v === "function";
+
+  // Résoudre la zone légale : prop `legal` OU prop `legalLinks`
+  const resolvedLegal = $derived(legal ?? legalLinks);
+
   const classes = () => ["st-footer", className].filter(Boolean).join(" ");
   const hasTop = () => Boolean(brand || columns);
-  const hasBottom = () => Boolean(copyright || legal);
+  const hasBottom = () => Boolean(copyright || resolvedLegal);
 </script>
 
 <footer {...rest} class={classes()} aria-label={label}>
   {#if hasTop()}
     <div class="st-footer__top">
       {#if brand}
-        <div class="st-footer__brand">{@render brand()}</div>
+        <div class="st-footer__brand">
+          {#if isSnippet(brand)}
+            {@render brand()}
+          {:else}
+            {brand}
+          {/if}
+        </div>
       {/if}
       {#if columns}
-        <div class="st-footer__columns">{@render columns()}</div>
+        <div class="st-footer__columns">
+          {#if isSnippet(columns)}
+            {@render columns()}
+          {:else if Array.isArray(columns)}
+            {#each columns as col}
+              <nav>
+                {#if col.title}<h2 class="st-footer__col-title">{col.title}</h2>{/if}
+                <ul class="st-footer__col-links">
+                  {#each col.links as link}
+                    <li><a href={link.href}>{link.label}</a></li>
+                  {/each}
+                </ul>
+              </nav>
+            {/each}
+          {/if}
+        </div>
       {/if}
     </div>
   {/if}
@@ -51,9 +83,15 @@
       {#if copyright}
         <span class="st-footer__copyright">{copyright}</span>
       {/if}
-      {#if legal}
+      {#if resolvedLegal}
         <nav class="st-footer__legal" aria-label="Liens légaux">
-          {@render legal()}
+          {#if isSnippet(resolvedLegal)}
+            {@render resolvedLegal()}
+          {:else if Array.isArray(resolvedLegal)}
+            {#each resolvedLegal as link}
+              <a href={link.href}>{link.label}</a>
+            {/each}
+          {/if}
         </nav>
       {/if}
     </div>
@@ -120,5 +158,31 @@
     flex-wrap: wrap;
     gap: var(--st-spacing-4, 1rem);
     font-size: 0.8125rem;
+  }
+
+  .st-footer__col-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin: 0 0 var(--st-spacing-2, 0.5rem);
+    color: var(--st-semantic-text-primary);
+  }
+
+  .st-footer__col-links {
+    display: flex;
+    flex-direction: column;
+    gap: var(--st-spacing-2, 0.5rem);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .st-footer__col-links a {
+    color: inherit;
+    font-size: 0.875rem;
+    text-decoration: none;
+  }
+
+  .st-footer__col-links a:hover {
+    text-decoration: underline;
   }
 </style>
