@@ -163,6 +163,276 @@
       status: "available",
       description: "ConfigItemCard grid of ViewSpec templates organized by domain — copy, edit, reset, delete. Shows the ViewSpec format and the ConfigItemCard/FieldCard/ScoreCard patterns.",
       descriptionFr: "Grille ConfigItemCard de gabarits ViewSpec par domaine — copier, éditer, réinitialiser, supprimer. Illustre le format ViewSpec et les patterns ConfigItemCard/FieldCard/ScoreCard."
+    },
+    {
+      slug: "analytics-overview",
+      name: "Analytics Overview",
+      nameFr: "Vue d'ensemble analytique",
+      domain: "Analytics / BI",
+      domainFr: "Analytics / BI",
+      status: "available",
+      description: "Executive dashboard: a band of KPI cards with deltas, area trend charts, a pie breakdown and a ranked top-N table. Period and segment filters in the header. For daily tracking of business indicators.",
+      descriptionFr: "Tableau de bord exécutif : bandeau de cartes KPI avec variation, courbes de tendance sur l'aire, répartition en camembert et table top-N classée. Filtres de période et de segment en tête. Pour le suivi quotidien des indicateurs business."
+    },
+    {
+      slug: "cohort-heatmap",
+      name: "Cohort Retention",
+      nameFr: "Rétention par cohorte",
+      domain: "Analytics / BI",
+      domainFr: "Analytics / BI",
+      status: "available",
+      description: "Retention analysis as a heatmap-style grid: each row is an acquisition cohort, each column a follow-up period, and cell intensity encodes the retention rate. Measure and granularity selectors, summary cards and threshold badges. For measuring loyalty over time.",
+      descriptionFr: "Analyse de rétention en grille type heatmap : chaque ligne est une cohorte d'acquisition, chaque colonne une période de suivi, l'intensité de la cellule traduit le taux de rétention. Sélecteurs de mesure et de granularité, cartes de synthèse et badges de seuil. Pour mesurer la fidélisation dans le temps."
+    },
+    {
+      slug: "conversion-funnel",
+      name: "Conversion Funnel",
+      nameFr: "Entonnoir de conversion",
+      domain: "Analytics / BI",
+      domainFr: "Analytics / BI",
+      status: "available",
+      description: "Step-by-step funnel visualization built on descending bars, with pass-through and drop-off rates shown between each stage. Overall conversion KPI cards, segment filters and a per-step detail table. For diagnosing losses along the user journey.",
+      descriptionFr: "Visualisation d'entonnoir étape par étape construite sur des barres décroissantes, avec taux de passage et taux de chute affichés entre chaque palier. Cartes KPI de conversion globale, filtres de segment et table de détail par étape. Pour diagnostiquer les pertes du parcours utilisateur."
+    },
+    {
+      slug: "correlation-scatter",
+      name: "Correlation Analysis",
+      nameFr: "Analyse de corrélation",
+      domain: "Analytics / BI",
+      domainFr: "Analytics / BI",
+      status: "available",
+      description: "Exploration of the relationship between two metrics via a scatter plot, with X and Y axis selectors, a color dimension and a date range. Correlation score cards, advanced filters and an outliers table. For spotting links between indicators.",
+      descriptionFr: "Exploration de la relation entre deux métriques via un nuage de points (scatter), avec sélecteurs d'axes X et Y, dimension de couleur et plage de dates. Cartes de score de corrélation, filtres avancés et table des points aberrants. Pour repérer les liens entre indicateurs."
+    },
+    {
+      slug: "contacts-directory",
+      name: "Contacts Directory",
+      nameFr: "Annuaire des contacts",
+      domain: "CRM",
+      domainFr: "CRM",
+      status: "available",
+      description: "Filterable contacts repository with search, segments and a dense table. Avatar, role and linked account on each row, with quick edit actions.",
+      descriptionFr: "Repertoire filtrable des contacts avec recherche, segments et table dense. Avatar, role et compte rattache pour chaque ligne, avec actions rapides d'edition."
+    },
+    {
+      slug: "opportunity-detail",
+      name: "Opportunity Detail",
+      nameFr: "Fiche opportunite",
+      domain: "CRM",
+      domainFr: "CRM",
+      status: "available",
+      description: "360 view of an opportunity: sales stage, weighted amount, contacts and activities. Progress stepper, deal KPIs and quote/history tabs.",
+      descriptionFr: "Vue 360 d'une opportunite : etape du cycle, montant pondere, contacts et activites. Stepper de progression, KPI de deal et onglets devis/historique."
+    },
+    {
+      slug: "quote-tracker",
+      name: "Quote Tracker",
+      nameFr: "Suivi des devis",
+      domain: "CRM",
+      domainFr: "CRM",
+      status: "available",
+      description: "Quote tracking by status (sent, accepted, expired) with totals and acceptance rate. Period filters, expiry alerts and an amount-bearing table.",
+      descriptionFr: "Suivi des devis par statut (envoye, accepte, expire) avec totaux et taux d'acceptation. Filtres par periode, alertes d'echeance et table avec montants."
+    },
+    {
+      slug: "lead-scoring",
+      name: "Lead Scoring",
+      nameFr: "Scoring des leads",
+      domain: "CRM",
+      domainFr: "CRM",
+      status: "available",
+      description: "Lead qualification by score: score card, source breakdown and a prioritized list. Combines ScoreCard, pie breakdown and a hot-leads table.",
+      descriptionFr: "Qualification des leads par score : carte de score, repartition par source et liste priorisee. Combine ScoreCard, repartition camembert et table des leads chauds."
+    },
+    {
+      slug: "stock-overview",
+      name: "Stock Overview",
+      nameFr: "Vue d'ensemble du stock",
+      domain: "ERP / Stock",
+      domainFr: "ERP / Stock",
+      status: "available",
+      description: "KPI cards (stock value, stockouts, turnover rate) + trend chart + warehouse pie breakdown + below-threshold items table. To monitor overall inventory health at a glance.",
+      descriptionFr: "Cartes KPI (valeur du stock, ruptures, taux de rotation) + courbe d'évolution + camembert par entrepôt + table des articles sous seuil. Pour piloter la santé globale des stocks d'un coup d'oeil."
+    },
+    {
+      slug: "purchase-order",
+      name: "Purchase Order",
+      nameFr: "Ordre d'achat",
+      domain: "ERP / Stock",
+      domainFr: "ERP / Stock",
+      status: "available",
+      description: "Purchase order creation form: supplier picker, delivery date, editable line items with quantities and prices, totals. Combines header cards and an entry grid to place an order with a supplier.",
+      descriptionFr: "Formulaire de création d'ordre d'achat : sélection fournisseur, date de livraison, lignes d'articles éditables avec quantités et prix, totaux. Combine entêtes en cartes et grille de saisie pour passer commande à un fournisseur."
+    },
+    {
+      slug: "goods-receipt",
+      name: "Goods Receipt",
+      nameFr: "Réception de marchandises",
+      domain: "ERP / Stock",
+      domainFr: "ERP / Stock",
+      status: "available",
+      description: "Stepped receiving wizard: purchase order recall, received vs expected quantity check, discrepancy alerting, delivery note upload. To record the physical arrival of items into a warehouse.",
+      descriptionFr: "Assistant de réception en étapes : rappel de l'ordre d'achat, contrôle des quantités reçues vs attendues, signalement d'écarts par alerte, dépôt du bon de livraison. Pour enregistrer l'entrée physique des articles en entrepôt."
+    },
+    {
+      slug: "warehouse-transfer",
+      name: "Warehouse Transfer",
+      nameFr: "Transfert entre entrepôts",
+      domain: "ERP / Stock",
+      domainFr: "ERP / Stock",
+      status: "available",
+      description: "Inter-warehouse transfer management: source/destination selection, basket of items to move with stock levels, status flow in tabs (picking, shipping, receiving) and history. To orchestrate stock movements between sites.",
+      descriptionFr: "Gestion des transferts entre entrepôts : sélection origine/destination, panier d'articles à déplacer avec niveaux de stock, fil d'avancement par onglets (préparation, expédition, réception) et historique. Pour orchestrer les mouvements inter-sites."
+    },
+    {
+      slug: "balance-comptable",
+      name: "Trial Balance",
+      nameFr: "Balance comptable",
+      domain: "Accounting",
+      domainFr: "Comptabilité",
+      status: "available",
+      description: "Trial balance grid by account with debit/credit totals, period filters and export. For reviewing the balance before period close.",
+      descriptionFr: "Grille de la balance générale par compte avec totaux débit/crédit, filtres par période et export. Pour la revue de la balance avant clôture."
+    },
+    {
+      slug: "factures-fournisseurs",
+      name: "Supplier Invoices",
+      nameFr: "Factures fournisseurs",
+      domain: "Accounting",
+      domainFr: "Comptabilité",
+      status: "available",
+      description: "Filterable supplier invoice list with approval status, due dates and document upload. For processing and approving payables.",
+      descriptionFr: "Liste filtrable des factures fournisseurs avec statut de validation, échéances et téléversement de pièces. Pour le traitement et l'approbation des factures à payer."
+    },
+    {
+      slug: "run-paiements",
+      name: "Payment Run",
+      nameFr: "Lot de paiements",
+      domain: "Accounting",
+      domainFr: "Comptabilité",
+      status: "available",
+      description: "Step-by-step wizard to prepare a payment batch: invoice selection, bank account choice, validation and execution. For scheduling supplier payouts.",
+      descriptionFr: "Assistant pas-à-pas pour préparer un lot de paiements : sélection des factures, choix du compte bancaire, validation et exécution. Pour ordonnancer les règlements fournisseurs."
+    },
+    {
+      slug: "rapprochement-bancaire",
+      name: "Bank Reconciliation",
+      nameFr: "Rapprochement bancaire",
+      domain: "Accounting",
+      domainFr: "Comptabilité",
+      status: "available",
+      description: "Two-pane view matching bank statement lines against ledger entries, with match suggestions and residual balance. For clearing and reconciling transactions.",
+      descriptionFr: "Vue en deux volets confrontant les lignes du relevé bancaire aux écritures comptables, avec suggestions de correspondance et solde résiduel. Pour lettrer et rapprocher les opérations."
+    },
+    {
+      slug: "employee-directory",
+      name: "Employee Directory",
+      nameFr: "Annuaire des employes",
+      domain: "HR",
+      domainFr: "RH",
+      status: "available",
+      description: "Filterable employee list: search, department and status filters, dense table with avatar, status badge and pagination. For browsing and qualifying headcount.",
+      descriptionFr: "Liste filtrable des employes : recherche, filtres par departement et statut, table dense avec avatar, badge de statut et pagination. Pour parcourir et qualifier l'effectif."
+    },
+    {
+      slug: "employee-profile",
+      name: "Employee Profile",
+      nameFr: "Fiche employe",
+      domain: "HR",
+      domainFr: "RH",
+      status: "available",
+      description: "Detailed employee record: avatar and identity header, KPI cards (tenure, leave balance), Information / Contract / Documents tabs with fields and history. For viewing and editing an individual file.",
+      descriptionFr: "Fiche detaillee d'un employe : en-tete avatar et identite, cartes KPI (anciennete, solde de conges), onglets Informations / Contrat / Documents avec champs et historique. Pour consulter et editer un dossier individuel."
+    },
+    {
+      slug: "leave-attendance",
+      name: "Leave & Attendance",
+      nameFr: "Conges et presences",
+      domain: "HR",
+      domainFr: "RH",
+      status: "available",
+      description: "Leave and attendance tracking: balance and presence-rate KPIs, distribution and trend charts, request approval table with status badges and a date-range picker. For managing absences and approvals.",
+      descriptionFr: "Suivi des conges et presences : KPI de solde et taux de presence, graphiques de repartition et tendance, table des demandes a valider avec badges de statut et selecteur de periode. Pour piloter absences et approbations."
+    },
+    {
+      slug: "sprint-backlog",
+      name: "Sprint Backlog",
+      nameFr: "Backlog de sprint",
+      domain: "Project",
+      domainFr: "Projet",
+      status: "available",
+      description: "Prioritized list of sprint stories with team capacity, point estimates and burn-down progress. Header with sprint selector and capacity bar, followed by an ordered, draggable table of stories with status and priority badges.",
+      descriptionFr: "Liste priorisee des stories du sprint avec capacite d'equipe, estimation en points et progression. En-tete avec selecteur de sprint et barre de capacite, suivie d'un tableau de stories ordonnancees et glissables avec badges de statut et de priorite."
+    },
+    {
+      slug: "roadmap-timeline",
+      name: "Roadmap Timeline",
+      nameFr: "Feuille de route",
+      domain: "Project",
+      domainFr: "Projet",
+      status: "available",
+      description: "Timeline view of epics and milestones by quarter with team and status filters. Milestone stepper at the top, epic cards with progress bars, and a cumulative velocity chart.",
+      descriptionFr: "Vue chronologique des epics et jalons par trimestre avec filtres d'equipe et de statut. Stepper de jalons en tete, cartes d'epics avec barres d'avancement et graphique de velocite cumulee."
+    },
+    {
+      slug: "sla-monitor",
+      name: "SLA Monitor",
+      nameFr: "Suivi des SLA",
+      domain: "Project",
+      domainFr: "Projet",
+      status: "available",
+      description: "Ticket SLA compliance dashboard: on-time KPIs, breakdown by severity, and a data grid of at-risk or breached tickets. Alerts for imminent breaches with queue and priority filters.",
+      descriptionFr: "Tableau de bord de conformite SLA des tickets : KPI de respect des delais, repartition par severite et grille des tickets a risque ou en depassement. Alertes pour les violations imminentes et filtres par file et priorite."
+    },
+    {
+      slug: "work-order-board",
+      name: "Work Orders",
+      nameFr: "Ordres de fabrication",
+      domain: "Manufacturing",
+      domainFr: "Production",
+      status: "available",
+      description: "Filterable list of work orders with progress, status and priority. Shop-floor KPIs on top, filters by line and period, dense table with progress bars. For managing the daily production backlog.",
+      descriptionFr: "Liste filtrable des ordres de fabrication avec avancement, statut et priorite. KPI d'atelier en tete, filtres par ligne et periode, table dense avec barres de progression. Pour piloter le carnet de production au quotidien."
+    },
+    {
+      slug: "routing-builder",
+      name: "Routing Builder",
+      nameFr: "Gamme operatoire",
+      domain: "Manufacturing",
+      domainFr: "Production",
+      status: "available",
+      description: "Routing editor for an item: operation sequence as an ordered list, work center, time and tooling per step. Header / operations / bill-of-materials tabs, editable configuration cards. For defining the manufacturing process.",
+      descriptionFr: "Editeur de gamme operatoire pour un article : sequence d'operations en liste ordonnee, poste de charge, temps et outillage par etape. Onglets entete / operations / nomenclature, fiches de configuration editables. Pour definir le processus de fabrication."
+    },
+    {
+      slug: "quality-inspection",
+      name: "Quality Inspection",
+      nameFr: "Controle qualite",
+      domain: "Manufacturing",
+      domainFr: "Production",
+      status: "available",
+      description: "Multi-step quality control record: batch selection, measurement entry, pass / fail verdict and certificate attachment. Conformity score, defect breakdown and non-conformance alert. For signing off quality at the end of an operation.",
+      descriptionFr: "Releve de controle qualite en plusieurs etapes : selection du lot, saisie des mesures, verdict conforme / non-conforme et piece jointe du certificat. Score de conformite, repartition des defauts et alerte de non-conformite. Pour valider la qualite en fin d'operation."
+    },
+    {
+      slug: "notification-center",
+      name: "Notification Center",
+      nameFr: "Centre de notifications",
+      domain: "Transversal",
+      domainFr: "Transversal",
+      status: "available",
+      description: "Unified inbox: category tabs, notification list with avatar and status badge, filters and bulk actions (mark all as read). For centralizing alerts, mentions and system events.",
+      descriptionFr: "Inbox unifiee : onglets par categorie, liste de notifications avec avatar et badge de statut, filtres et actions groupees (tout marquer comme lu). Pour centraliser alertes, mentions et evenements systeme."
+    },
+    {
+      slug: "user-preferences",
+      name: "User Preferences",
+      nameFr: "Preferences utilisateur",
+      domain: "Transversal",
+      domainFr: "Transversal",
+      status: "available",
+      description: "Preferences page: profile card with avatar, language/timezone/format settings via selects, per-category notification channels and configuration cards. For personalizing account and notifications.",
+      descriptionFr: "Page de preferences : carte profil avec avatar, reglages langue/fuseau/format via selects, canaux de notification par categorie et fiches de configuration. Pour personnaliser compte et notifications."
     }
   ];
 
