@@ -125,7 +125,7 @@
 
     <TabbedExample nodes={disabledDemo} title={locale.value === "fr" ? "État désactivé" : "Disabled state"} />
 
-    <TabbedExample nodes={formattedDemo} title={locale.value === "fr" ? "Affichage formaté" : "Formatted display"} />
+    <TabbedExample nodes={formattedDemo} title={locale.value === "fr" ? "Plage personnalisée" : "Custom range"} />
   </section>
 
   <section class="docs-section">

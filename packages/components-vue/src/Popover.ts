@@ -5,6 +5,7 @@ export type PopoverPlacement = "top" | "right" | "bottom" | "left";
 
 export type PopoverProps = {
   content?: string;
+  label?: string;
   open?: boolean;
   placement?: PopoverPlacement;
   class?: string;
@@ -14,6 +15,7 @@ export const Popover = defineComponent({
   name: "Popover",
   props: {
     content: { type: String, default: undefined },
+    label: { type: String, default: undefined },
     open: { type: Boolean, default: undefined },
     placement: { type: String as () => PopoverPlacement, default: "bottom" },
     class: { type: String, default: undefined },
@@ -75,11 +77,11 @@ export const Popover = defineComponent({
           slots.trigger?.() ?? slots.default?.(),
           open
             ? h(
-                "span",
+                "section",
                 {
                   class: classNames("st-popover", `st-popover--${props.placement}`),
                   role: "dialog",
-                  "aria-label": props.content || "Popover",
+                  "aria-label": props.label ?? props.content ?? "Popover",
                 },
                 props.content ?? slots.content?.(),
               )

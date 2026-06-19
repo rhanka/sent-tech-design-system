@@ -105,7 +105,7 @@ export const Dropdown = defineComponent({
                 {
                   class: "st-dropdown__list",
                   role: "listbox",
-                  "aria-label": props.label || "Options",
+                  "aria-label": props.label,
                 },
                 props.options.map((option) =>
                   h(
@@ -116,6 +116,7 @@ export const Dropdown = defineComponent({
                       role: "option",
                       class: "st-dropdown__option",
                       disabled: option.disabled,
+                      "aria-disabled": option.disabled ? "true" : undefined,
                       "aria-selected": option.value === (props.value ?? localValue.value),
                       onClick: () => selectOption(option),
                     },
