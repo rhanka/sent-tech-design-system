@@ -24,6 +24,8 @@ export type ComboboxProps = {
   allowCustomValue?: boolean;
   noResultsLabel?: unknown;
   listLabel?: string;
+  clearLabel?: string;
+  toggleLabel?: string;
   class?: string;
 };
 
@@ -53,6 +55,8 @@ export const Combobox = defineComponent({
     allowCustomValue: { type: Boolean, default: true },
     noResultsLabel: { type: [String, Object] as unknown as () => unknown, default: "No results" },
     listLabel: { type: String, default: undefined },
+    clearLabel: { type: String, default: "Clear selection" },
+    toggleLabel: { type: String, default: "Toggle options" },
     class: { type: String, default: undefined },
   },
   emits: ["change", "select", "update:open", "update:modelValue"],
@@ -167,7 +171,7 @@ export const Combobox = defineComponent({
                 {
                   type: "button",
                   class: "st-combobox__clear",
-                  "aria-label": "Clear selection",
+                  "aria-label": props.clearLabel,
                   disabled: props.disabled,
                   onClick: () => {
                     inputValue.value = "";
@@ -184,7 +188,7 @@ export const Combobox = defineComponent({
             {
               type: "button",
               class: "st-combobox__toggle",
-              "aria-label": "Toggle options",
+              "aria-label": props.toggleLabel,
               "aria-expanded": open,
               disabled: props.disabled,
               onClick: () => setOpen(!open),

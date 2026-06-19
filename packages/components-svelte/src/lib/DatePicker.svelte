@@ -303,33 +303,34 @@
 </script>
 
 <div class={fieldClasses()} bind:this={hostEl} {...rest}>
-  <label class="st-field__control" for={fieldId}>
-    {#if label}<span class="st-field__label">{label}</span>{/if}
-    <span class={groupClasses()}>
-      <input
-        id={fieldId}
-        type="text"
-        readonly
-        class="st-datepicker__control"
-        value={formattedValue()}
-        placeholder={resolvedPlaceholder}
-        {disabled}
-        aria-invalid={isInvalid() ? "true" : undefined}
-        onclick={toggleOpen}
-      />
-      <button
-        type="button"
-        class="st-datepicker__trigger"
-        aria-label={resolvedOpenLabel}
-        aria-haspopup="dialog"
-        aria-expanded={open ? "true" : "false"}
-        {disabled}
-        onclick={toggleOpen}
-      >
-        <span aria-hidden="true">📅</span>
-      </button>
-    </span>
-  </label>
+  <div class="st-field__anchor">
+    <label class="st-field__control" for={fieldId}>
+      {#if label}<span class="st-field__label">{label}</span>{/if}
+      <span class={groupClasses()}>
+        <input
+          id={fieldId}
+          type="text"
+          readonly
+          class="st-datepicker__control"
+          value={formattedValue()}
+          placeholder={resolvedPlaceholder}
+          {disabled}
+          aria-invalid={isInvalid() ? "true" : undefined}
+          onclick={toggleOpen}
+        />
+        <button
+          type="button"
+          class="st-datepicker__trigger"
+          aria-label={resolvedOpenLabel}
+          aria-haspopup="dialog"
+          aria-expanded={open ? "true" : "false"}
+          {disabled}
+          onclick={toggleOpen}
+        >
+          <span aria-hidden="true">📅</span>
+        </button>
+      </span>
+    </label>
   {#if open}
     <div
       class="st-datepicker__panel"
@@ -397,6 +398,7 @@
       </div>
     </div>
   {/if}
+  </div>
   {#if errorText}
     <span class="st-field__error">{errorText}</span>
   {:else if helperText}
@@ -405,12 +407,15 @@
 </div>
 
 <style>
+  .st-field__anchor {
+    position: relative;
+  }
+
   .st-field {
     color: var(--st-component-field-labelText, var(--st-semantic-text-primary));
     display: grid;
     gap: var(--st-component-field-gap, 0.5rem);
     max-width: var(--st-component-field-maxWidth, 28rem);
-    position: relative;
   }
 
   .st-field__control {
