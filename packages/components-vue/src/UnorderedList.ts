@@ -7,6 +7,7 @@ export type UnorderedListInput = unknown;
 
 export type UnorderedListProps = {
   items: UnorderedListInput[];
+  nested?: boolean;
   class?: string;
 };
 
@@ -25,16 +26,16 @@ function renderListItem(item: UnorderedListInput, index: number): VNodeChild {
         class: "st-unorderedList__item",
       },
       [
-        String((cast.content ?? cast.label) ?? ""),
-        hasChildren
-          ? h(
+        ((cast.content ?? cast.label) ?? "") as VNodeChild,
+        ...(hasChildren
+          ? [h(
               "ul",
               { class: "st-unorderedList st-unorderedList--nested" },
               (cast.children as UnorderedListInput[]).map((child, childIndex) =>
                 renderListItem(child, childIndex),
               ),
-            )
-          : null,
+            )]
+          : []),
       ],
     );
   }
@@ -44,7 +45,7 @@ function renderListItem(item: UnorderedListInput, index: number): VNodeChild {
       key: index,
       class: "st-unorderedList__item",
     },
-    String(item ?? ""),
+    [item ?? ""] as import("vue").VNodeArrayChildren,
   );
 }
 
@@ -52,6 +53,7 @@ export const UnorderedList = defineComponent({
   name: "UnorderedList",
   props: {
     items: { type: Array as () => UnorderedListInput[], required: true },
+    nested: { type: Boolean, default: false },
     class: { type: String, default: undefined },
   },
   setup(props, { attrs }) {
@@ -60,7 +62,7 @@ export const UnorderedList = defineComponent({
         "ul",
         {
           ...attrs,
-          class: classNames("st-unorderedList", props.class),
+          class: classNames("st-unorderedList", props.nested ? "st-unorderedList--nested" : undefined, props.class),
         },
         props.items.map((item, index) => renderListItem(item, index)) as VNodeChild[],
       );
