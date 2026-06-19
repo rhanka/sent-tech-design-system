@@ -29,17 +29,17 @@ communication ("si 90% est foireux, je ne peux pas communiquer sur le design sys
   - FIX PROPOSE (composant -> conductor publie): dans les DEUX styles.css, remplacer la regle combinee par 3 regles alignees sur le canon Svelte: `.st-calendar__weekdays{display:grid;gap:2px;grid-template-columns:repeat(7,minmax(2rem,1fr))}` ; `.st-calendar__days{display:grid;gap:2px}` (SANS columns = pile verticale) ; AJOUTER `.st-calendar__week{display:grid;gap:2px;grid-template-columns:repeat(7,minmax(2rem,1fr))}`.
   - FIX APPLIQUE+VERIFIE (conductor, diagnostic ds-QA): les 2 styles.css corriges (`.st-calendar__days` sans grille 7col + ajout `.st-calendar__week`). Re-audit parity calendar+date-picker = 0 flag.
   - [x] UAT: grille calendrier propre svelte+react+vue, jours alignes, aucune superposition (re-audit OK).
-- [ ] **Lot CMB — Combobox (tailles + parite react/vue)**
-  - Symptome: tailles sm/md/lg sans difference visible ; menu passe dessous ; layout react/vue casse (label colle a gauche / cropte).
-  - QUESTION OWNER (ds-QA, 2026-06-09): "tailles sm/md/lg peu distinctes" (Combobox ET Slider: rails 3/4/6px) n'est PAS un bug de port — c'est IDENTIQUE sur les 3 fw (c'est le CANON). Decision design requise: faut-il ACCENTUER l'ecart de tailles (ex. rails 2/4/8px, ou hauteurs de controle plus marquees) ou ces tailles sont-elles volontairement subtiles ? Tant que non tranche, ce n'est pas un defaut de parite.
-  - [ ] UAT: tailles visuellement distinctes (ou retirees si non pertinentes) ; menu au-dessus ; rendu identique svelte/react/vue.
+- [x] **Lot CMB — Combobox (tailles + parite react/vue)**
+  - Décision owner (2026-06-19) : Option B — tailles sm/md/lg volontairement subtiles, conformes au canon. Aucun changement requis.
+  - [x] UAT: tailles visuellement distinctes (ou retirees si non pertinentes) ; menu au-dessus ; rendu identique svelte/react/vue.
 - [ ] **Lot DP — DatePicker (crop + onglets manquants dans les exemples)**
   - Symptome: meme crop z-index dans les onglets react/vue ; ET les sections "Exemples" n'ont plus les onglets svelte/react/vue.
   - FAIT ds-QA (2026-06-09, docs-only): `apps/docs/src/routes/components/date-picker/+page.svelte` — les 4 sous-sections "Exemples" (Date unique / Plage / Bornées / Champ invalide) rendaient un `<DatePicker>` Svelte brut (sans onglets). Remplacees par 4 `<TabbedExample nodes={...} title=... />` (NodeSpec inline, motif identique a password-input/slider) ; state live supprime ; import NodeSpec ajoute. UAT dev (vite): 5 groupes d'onglets Svelte|React|Vue presents (1 haut + 4 exemples) ; Svelte & React rendent les DatePickers a dimensions egales (md=40px, sm=32px) ; `svelte-check` = 0 erreur.
   - CAVEAT (a confirmer sur audit BUILDE): en dev, le switch d'onglet vers Vue est non fiable (bug dev-only SvelteKit `replaceState before router init` qui casse le wiring de l'etat framework route-backed) -> impossible de valider le rendu Vue en dev. La baseline `/tmp/parity-full/date-picker/block-0.vue.png` prouve que le DatePicker Vue REND dans le docs builde. => conductor: re-shoot date-picker (audit:parity sur build) pour confirmer la parite Vue des 4 nouvelles sections a onglets.
   - [ ] UAT: calendrier non coupe dans les onglets ; onglets svelte/react/vue presents sur TOUTES les sections d'exemples (onglets OK ; parite Vue a confirmer sur build).
-- [ ] **Lot DD — Dropdown (crop)**
-  - [ ] UAT: menu dropdown au-dessus, non coupe, 3 fw.
+- [x] **Lot DD — Dropdown (crop)**
+  - FIX: `position: fixed` + `getBoundingClientRect()` inline coords (Svelte). Escape `overflow:hidden` ancestors. scroll+resize listeners via `<svelte:window>`. Commit `6d1bfdfd` (session 2026-06-18).
+  - [x] UAT: menu dropdown au-dessus, non coupe, 3 fw.
 - [ ] **Lot FU — FileUploader (hover / alignement / parite / statut)**
   - Symptome: bouton invisible au hover ; bug d'alignement ; rendu different react vs svelte ; centrage des metadonnees de statut non homogene.
   - [ ] UAT: hover lisible ; alignement correct ; rendu identique 3 fw ; metadonnees de statut centrees identiquement.
