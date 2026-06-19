@@ -46,13 +46,15 @@ interface DocsNavDefinition {
   external?: boolean;
 }
 
-// Premier niveau UNIQUE et aligné (barre horizontale = sidebar) : 3 pistes.
+// Premier niveau UNIQUE et aligné (barre horizontale = sidebar) : 4 pistes.
 // Documentation regroupe fondations/tokens/thèmes/contrats/aperçu (sous-nav) ;
-// Composants ouvre le catalogue ; Vues ouvre la galerie de patrons par domaine.
+// Composants ouvre le catalogue ; Vues ouvre la galerie de patrons par domaine ;
+// Gabarits ouvre la galerie de mises en page.
 const DOCS_TOP_NAV_DEFINITIONS: DocsNavDefinition[] = [
   { label: { fr: "Documentation", en: "Documentation" }, href: "/" },
   { label: { fr: "Composants", en: "Components" }, href: "/components" },
-  { label: { fr: "Vues", en: "Views" }, href: "/views" }
+  { label: { fr: "Vues", en: "Views" }, href: "/views" },
+  { label: { fr: "Gabarits", en: "Layouts" }, href: "/layouts" }
 ];
 
 export const DOCS_UTILITY_NAV: DocsNavItem[] = [
@@ -101,6 +103,27 @@ const COMPONENTS_LABEL: Record<Locale, string> = { fr: "Composants", en: "Compon
 const COMPONENT_FALLBACK_LABEL: Record<Locale, string> = { fr: "Composant", en: "Component" };
 const VIEWS_LABEL: Record<Locale, string> = { fr: "Vues", en: "Views" };
 const VIEW_FALLBACK_LABEL: Record<Locale, string> = { fr: "Vue", en: "View" };
+const LAYOUTS_LABEL: Record<Locale, string> = { fr: "Gabarits", en: "Layouts" };
+const LAYOUT_FALLBACK_LABEL: Record<Locale, string> = { fr: "Gabarit", en: "Layout" };
+
+export interface LayoutNavItem extends DocsNavItem {
+  slug: string;
+}
+
+export interface LayoutNavGroup {
+  label: string;
+  items: LayoutNavItem[];
+}
+
+interface LayoutNavDefinition {
+  slug: string;
+  label: Record<Locale, string>;
+}
+
+interface LayoutNavGroupDefinition {
+  label: Record<Locale, string>;
+  layouts: LayoutNavDefinition[];
+}
 
 interface ViewNavDefinition {
   slug: string;
@@ -155,6 +178,60 @@ const DOCS_VIEWS_NAV_DEFINITIONS: ViewNavGroupDefinition[] = [
     ]
   }
 ];
+
+// Gabarits de mise en page groupés par type d'application.
+// Source unique : alimente la sous-nav latérale « Gabarits » ET les libellés de fil d'Ariane.
+const DOCS_LAYOUTS_NAV_DEFINITIONS: LayoutNavGroupDefinition[] = [
+  {
+    label: { fr: "Workspace applicatif", en: "Application workspace" },
+    layouts: [
+      { slug: "sidebar-content", label: { fr: "Sidebar + contenu", en: "Sidebar + content" } },
+      { slug: "rail-nav-panel", label: { fr: "Rail + panneau de navigation", en: "Rail + nav panel" } },
+      { slug: "dashboard-3-panels", label: { fr: "Dashboard 3 panneaux", en: "3-panel dashboard" } }
+    ]
+  },
+  {
+    label: { fr: "Analytique & opérationnel", en: "Analytics & operational" },
+    layouts: [
+      { slug: "analytics-grid", label: { fr: "Grille analytique", en: "Analytics grid" } },
+      { slug: "list-event-feed", label: { fr: "Liste + flux d'événements", en: "List + event feed" } }
+    ]
+  },
+  {
+    label: { fr: "Site public", en: "Public site" },
+    layouts: [
+      { slug: "marketing-fullwidth", label: { fr: "Site marketing pleine largeur", en: "Full-width marketing site" } }
+    ]
+  },
+  {
+    label: { fr: "Écrans applicatifs", en: "Application screens" },
+    layouts: [
+      { slug: "login", label: { fr: "Connexion", en: "Login" } },
+      { slug: "dashboard", label: { fr: "Tableau de bord", en: "Dashboard" } },
+      { slug: "settings", label: { fr: "Paramètres", en: "Settings" } },
+      { slug: "profile", label: { fr: "Profil", en: "Profile" } },
+      { slug: "not-found", label: { fr: "Page introuvable (404)", en: "Not found (404)" } }
+    ]
+  }
+];
+
+// Libellés de fil d'Ariane pour les gabarits.
+const LAYOUT_LABELS: Record<string, Record<Locale, string>> = Object.fromEntries(
+  DOCS_LAYOUTS_NAV_DEFINITIONS.flatMap((group) =>
+    group.layouts.map((layout) => [layout.slug, layout.label] as const)
+  )
+);
+
+export function buildLayoutsNav(locale: Locale = "fr"): LayoutNavGroup[] {
+  return DOCS_LAYOUTS_NAV_DEFINITIONS.map((group) => ({
+    label: group.label[locale],
+    items: group.layouts.map((layout) => ({
+      label: layout.label[locale],
+      href: `/layouts/${layout.slug}`,
+      slug: layout.slug
+    }))
+  }));
+}
 
 // Libellés de fil d'Ariane dérivés de la même source que la sous-nav.
 const VIEW_LABELS: Record<string, Record<Locale, string>> = Object.fromEntries(
@@ -235,6 +312,25 @@ export function resolveBreadcrumb(pathname: string, locale: Locale = "fr"): Docs
       { label: VIEWS_LABEL[locale], href: "/views" },
       {
         label: VIEW_LABELS[slug ?? ""]?.[locale] ?? slug ?? VIEW_FALLBACK_LABEL[locale],
+        href: pathname
+      }
+    ];
+  }
+
+  if (pathname === "/layouts") {
+    return [
+      { label: ROOT_LABEL[locale], href: "/" },
+      { label: LAYOUTS_LABEL[locale], href: "/layouts" }
+    ];
+  }
+
+  if (pathname.startsWith("/layouts/")) {
+    const slug = pathname.split("/").filter(Boolean).at(-1);
+    return [
+      { label: ROOT_LABEL[locale], href: "/" },
+      { label: LAYOUTS_LABEL[locale], href: "/layouts" },
+      {
+        label: LAYOUT_LABELS[slug ?? ""]?.[locale] ?? slug ?? LAYOUT_FALLBACK_LABEL[locale],
         href: pathname
       }
     ];
