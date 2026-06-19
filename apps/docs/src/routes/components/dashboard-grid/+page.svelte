@@ -1,7 +1,8 @@
 <script lang="ts">
-  import { Badge, DashboardGrid } from "@sentropic/design-system-svelte";
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { locale } from "$lib/locale.svelte";
-  import type { DashboardGridTile } from "@sentropic/design-system-svelte";
+  import { EXAMPLES } from "$lib/framework/examples";
 
   const copy = {
     fr: {
@@ -34,15 +35,8 @@
 
   const text = () => copy[locale.value];
 
-  const initialTiles: DashboardGridTile[] = [
-    { id: "revenue", x: 0, y: 0, w: 4, h: 2, title: "Revenue", value: "$1.8M", description: "+12% vs previous period" },
-    { id: "conversion", x: 4, y: 0, w: 4, h: 2, title: "Conversion", value: "8.4%", description: "Qualified funnel" },
-    { id: "latency", x: 8, y: 0, w: 4, h: 2, title: "Latency", value: "124 ms", description: "P95 API response" },
-    { id: "pipeline", x: 0, y: 2, w: 8, h: 2, title: "Pipeline", value: "47 deals", description: "Open opportunities" },
-    { id: "risk", x: 8, y: 2, w: 4, h: 2, title: "Risk", value: "Low", description: "No critical alerts" }
-  ];
-
-  let editableTiles = $state<DashboardGridTile[]>(initialTiles);
+  const staticNodes = EXAMPLES.dashboardgridstatic.nodes;
+  const editNodes = EXAMPLES.dashboardgridedit.nodes;
 </script>
 
 <div class="docs-page">
@@ -57,16 +51,12 @@
 
   <section class="docs-section">
     <h2>{text().staticTitle}</h2>
-    <div class="docs-dashboard-demo">
-      <DashboardGrid tiles={initialTiles} label={text().staticTitle} />
-    </div>
+    <TabbedExample nodes={staticNodes} title={text().staticTitle} />
   </section>
 
   <section class="docs-section">
     <h2>{text().editTitle}</h2>
-    <div class="docs-dashboard-demo">
-      <DashboardGrid tiles={editableTiles} editable label={text().editTitle} onLayout={(tiles) => (editableTiles = tiles)} />
-    </div>
+    <TabbedExample nodes={editNodes} title={text().editTitle} />
   </section>
 
   <section class="docs-section">
@@ -93,11 +83,3 @@
     <p class="docs-demo-note">{text().notes}</p>
   </section>
 </div>
-
-<style>
-  .docs-dashboard-demo {
-    border: 1px solid var(--st-semantic-border-subtle);
-    border-radius: var(--st-radius-xl, 1rem);
-    padding: var(--st-spacing-4, 1rem);
-  }
-</style>
