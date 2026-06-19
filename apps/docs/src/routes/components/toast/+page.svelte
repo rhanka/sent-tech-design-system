@@ -1,7 +1,7 @@
 <script lang="ts">
   import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { getExample } from "$lib/framework/examples";
-  import { Badge, Button, Toast } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
 
@@ -46,37 +46,19 @@
   <section class="docs-section">
     <h2>{fr("Tonalités", "Tones")}</h2>
     <p>{fr("Quatre tonalités sémantiques ; le filet de gauche en prend la couleur.", "Four semantic tones; the left rule takes their color.")}</p>
-    <div class="docs-example docs-example--stack">
-      <Toast tone="info" title={fr("Synchronisation lancée", "Sync started")} message={fr("La synchronisation du tenant est en cours.", "The tenant sync is running.")} />
-      <Toast tone="success" title={fr("Enregistré", "Saved")} message={fr("Le thème du tenant a été compilé.", "The tenant theme was compiled.")} />
-      <Toast tone="warning" title={fr("Quota proche", "Quota near limit")} message={fr("Il reste 10 % de l'espace alloué.", "10% of allotted space remains.")} />
-      <Toast tone="error" title={fr("Échec", "Failed")} message={fr("Le mappage de l'adaptateur est incomplet.", "The adapter mapping is incomplete.")} />
-    </div>
+    <TabbedExample nodes={getExample("toast-tones")?.nodes ?? []} title={fr("Tonalités", "Tones")} />
   </section>
 
   <section class="docs-section">
     <h2>{fr("Avec actions", "With actions")}</h2>
     <p>{fr("Le snippet actions accueille un bouton court (annuler, réessayer) aligné à droite.", "The actions snippet hosts a short button (undo, retry) right-aligned.")}</p>
-    <div class="docs-example docs-example--stack">
-      <Toast tone="success" title={fr("Élément supprimé", "Item deleted")} message={fr("L'élément a été retiré de la liste.", "The item was removed from the list.")}>
-        {#snippet actions()}
-          <Button variant="ghost">{fr("Annuler", "Undo")}</Button>
-        {/snippet}
-      </Toast>
-      <Toast tone="error" title={fr("Envoi échoué", "Send failed")} message={fr("La connexion a été interrompue.", "The connection was interrupted.")}>
-        {#snippet actions()}
-          <Button variant="ghost">{fr("Réessayer", "Retry")}</Button>
-        {/snippet}
-      </Toast>
-    </div>
+    <TabbedExample nodes={getExample("toast-actions")?.nodes ?? []} title={fr("Avec actions", "With actions")} />
   </section>
 
   <section class="docs-section">
     <h2>{fr("Titre seul", "Title only")}</h2>
     <p>{fr("Le message est optionnel : un titre seul suffit pour une confirmation minimale.", "The message is optional: a title alone suffices for a minimal confirmation.")}</p>
-    <div class="docs-example docs-example--stack">
-      <Toast tone="success" title={fr("Copié dans le presse-papier", "Copied to clipboard")} />
-    </div>
+    <TabbedExample nodes={getExample("toast-title-only")?.nodes ?? []} title={fr("Titre seul", "Title only")} />
   </section>
 
   <section class="docs-section">

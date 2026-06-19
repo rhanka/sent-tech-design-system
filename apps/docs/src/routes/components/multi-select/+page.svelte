@@ -1,8 +1,8 @@
 <script lang="ts">
   import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { getExample } from "$lib/framework/examples";
-  import { Badge, MultiSelect } from "@sentropic/design-system-svelte";
-  import type { MultiSelectOption } from "@sentropic/design-system-svelte";
+  import type { NodeSpec } from "$lib/framework/examples";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
 
@@ -63,7 +63,9 @@
 
   const text = () => copy[locale.value];
 
-  const teamOptions: MultiSelectOption[] = [
+  const fr = (frText: string, enText: string) => (locale.value === "fr" ? frText : enText);
+
+  const teamOptions = [
     { label: "Avery", value: "avery" },
     { label: "Bao", value: "bao" },
     { label: "Chiara", value: "chiara" },
@@ -71,27 +73,84 @@
     { label: "Esme", value: "esme" }
   ];
 
-  const stackOptions: MultiSelectOption[] = [
+  const stackOptions = [
     { label: "Svelte", value: "svelte" },
     { label: "TypeScript", value: "ts" },
     { label: "Vite", value: "vite" },
     { label: "Legacy jQuery", value: "jquery", disabled: true }
   ];
 
-  const regionOptions: MultiSelectOption[] = [
+  const regionOptions = [
     { label: "Montréal (ca-mtl)", value: "ca-mtl" },
     { label: "Paris (eu-par)", value: "eu-par" },
     { label: "Singapore (ap-sgp)", value: "ap-sgp" }
   ];
 
-  let team = $state<string[]>([]);
-  let stack = $state<string[]>(["svelte", "ts"]);
-  let regions = $state<string[]>([]);
-  let lastTeamChange = $state<string[]>([]);
+  const basicDemo: NodeSpec[] = $derived([
+    {
+      comp: "MultiSelect",
+      props: {
+        label: fr("Membres de l’équipe", "Team members"),
+        helperText: fr("Filtrez puis cochez les personnes.", "Filter then check people."),
+        options: teamOptions,
+        selected: [],
+        placeholder: fr("Sélectionner…", "Select…"),
+        searchPlaceholder: fr("Filtrer", "Filter"),
+        noResultsLabel: fr("Aucun résultat", "No results"),
+        toggleLabel: fr("Afficher les options", "Toggle options"),
+        removeLabel: fr("Retirer", "Remove")
+      }
+    }
+  ]);
 
-  function handleTeamChange(next: string[]) {
-    lastTeamChange = next;
-  }
+  const preselectedDemo: NodeSpec[] = $derived([
+    {
+      comp: "MultiSelect",
+      props: {
+        label: fr("Stack technique", "Tech stack"),
+        options: stackOptions,
+        selected: ["svelte", "ts"],
+        placeholder: fr("Sélectionner…", "Select…"),
+        searchPlaceholder: fr("Filtrer", "Filter"),
+        noResultsLabel: fr("Aucun résultat", "No results"),
+        toggleLabel: fr("Afficher les options", "Toggle options"),
+        removeLabel: fr("Retirer", "Remove")
+      }
+    }
+  ]);
+
+  const errorDemo: NodeSpec[] = $derived([
+    {
+      comp: "MultiSelect",
+      props: {
+        label: fr("Régions de déploiement", "Deployment regions"),
+        size: "sm",
+        options: regionOptions,
+        selected: [],
+        errorText: fr("Sélectionnez au moins une région.", "Select at least one region."),
+        placeholder: fr("Sélectionner…", "Select…"),
+        searchPlaceholder: fr("Filtrer", "Filter"),
+        noResultsLabel: fr("Aucun résultat", "No results"),
+        toggleLabel: fr("Afficher les options", "Toggle options"),
+        removeLabel: fr("Retirer", "Remove")
+      }
+    }
+  ]);
+
+  const disabledDemo: NodeSpec[] = $derived([
+    {
+      comp: "MultiSelect",
+      props: {
+        label: fr("Permissions (verrouillé)", "Permissions (locked)"),
+        options: regionOptions,
+        selected: ["eu-par"],
+        disabled: true,
+        placeholder: fr("Sélectionner…", "Select…"),
+        toggleLabel: fr("Afficher les options", "Toggle options"),
+        removeLabel: fr("Retirer", "Remove")
+      }
+    }
+  ]);
 </script>
 
 <div class="docs-page">
@@ -108,69 +167,10 @@
 
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
-
-    <div class="docs-example docs-demo-block" aria-label={text().basicTitle}>
-      <h3>{text().basicTitle}</h3>
-      <MultiSelect
-        label={text().teamLabel}
-        helperText={text().teamHelper}
-        options={teamOptions}
-        bind:selected={team}
-        onchange={handleTeamChange}
-        placeholder={text().placeholder}
-        searchPlaceholder={text().searchPlaceholder}
-        noResultsLabel={text().noResults}
-        toggleLabel={text().toggle}
-        removeLabel={text().remove}
-      />
-      <p class="docs-demo-note">
-        {locale.value === "fr" ? "Dernier `onchange`" : "Last `onchange`"}
-        : <code>{JSON.stringify(lastTeamChange)}</code>
-      </p>
-    </div>
-
-    <div class="docs-example docs-demo-block" aria-label={text().preselectedTitle}>
-      <h3>{text().preselectedTitle}</h3>
-      <MultiSelect
-        label={text().stackLabel}
-        options={stackOptions}
-        bind:selected={stack}
-        placeholder={text().placeholder}
-        searchPlaceholder={text().searchPlaceholder}
-        noResultsLabel={text().noResults}
-        toggleLabel={text().toggle}
-        removeLabel={text().remove}
-      />
-    </div>
-
-    <div class="docs-example docs-demo-block" aria-label={text().errorTitle}>
-      <h3>{text().errorTitle}</h3>
-      <MultiSelect
-        label={text().regionLabel}
-        size="sm"
-        options={regionOptions}
-        bind:selected={regions}
-        errorText={text().regionError}
-        placeholder={text().placeholder}
-        searchPlaceholder={text().searchPlaceholder}
-        noResultsLabel={text().noResults}
-        toggleLabel={text().toggle}
-        removeLabel={text().remove}
-      />
-    </div>
-
-    <div class="docs-example docs-demo-block" aria-label={text().disabledTitle}>
-      <h3>{text().disabledTitle}</h3>
-      <MultiSelect
-        label={text().lockedLabel}
-        options={regionOptions}
-        selected={["eu-par"]}
-        disabled
-        placeholder={text().placeholder}
-        toggleLabel={text().toggle}
-        removeLabel={text().remove}
-      />
-    </div>
+    <TabbedExample nodes={basicDemo} title={text().basicTitle} />
+    <TabbedExample nodes={preselectedDemo} title={text().preselectedTitle} />
+    <TabbedExample nodes={errorDemo} title={text().errorTitle} />
+    <TabbedExample nodes={disabledDemo} title={text().disabledTitle} />
   </section>
 
   <section class="docs-section">

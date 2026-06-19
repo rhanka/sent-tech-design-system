@@ -1,8 +1,7 @@
 <script lang="ts">
   import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { getExample } from "$lib/framework/examples";
-  import { Badge, MessageActions, type MessageAction } from "@sentropic/design-system-svelte";
-  import { Copy, Pencil, RefreshCw, ThumbsDown, ThumbsUp, Trash2 } from "@lucide/svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { locale } from "$lib/locale.svelte";
 
   const copy = {
@@ -13,16 +12,7 @@
       hoverTitle: "Actions en hover",
       alwaysTitle: "Actions always-visible",
       overflowTitle: "Overflow",
-      lastActionLabel: "Dernière action",
-      noAction: "Aucune",
-      actionsTitle: "API",
-      statuses: ["copy", "edit", "regen", "like", "dislike", "delete"],
-      actionCopy: "Copier",
-      actionEdit: "Éditer",
-      actionRegen: "Relancer",
-      actionLike: "J’aime",
-      actionDislike: "Je n’aime pas",
-      actionDelete: "Supprimer"
+      actionsTitle: "API"
     },
     en: {
       kicker: "Component · Chat",
@@ -31,67 +21,12 @@
       hoverTitle: "Hover-only actions",
       alwaysTitle: "Always-visible actions",
       overflowTitle: "Overflow",
-      lastActionLabel: "Last action",
-      noAction: "None",
-      actionsTitle: "API",
-      statuses: ["copy", "edit", "regen", "like", "dislike", "delete"],
-      actionCopy: "Copy",
-      actionEdit: "Edit",
-      actionRegen: "Regenerate",
-      actionLike: "Like",
-      actionDislike: "Dislike",
-      actionDelete: "Delete"
+      actionsTitle: "API"
     }
   } as const;
 
   const text = () => copy[locale.value];
-
-  let lastAction = $state<string>(text().noAction);
-
-  function mark(label: string) {
-    lastAction = label;
-  }
-
-  const hoverActions: MessageAction[] = [
-    { id: "copy", label: text().actionCopy, icon: iconCopy, onClick: () => mark(text().actionCopy), variant: "default" },
-    { id: "edit", label: text().actionEdit, icon: iconEdit, onClick: () => mark(text().actionEdit), variant: "default" },
-    { id: "regen", label: text().actionRegen, icon: iconRegen, onClick: () => mark(text().actionRegen), variant: "default" }
-  ];
-
-  const alwaysActions: MessageAction[] = [
-    { id: "like", label: text().actionLike, icon: iconLike, onClick: () => mark(text().actionLike), variant: "default" },
-    { id: "dislike", label: text().actionDislike, icon: iconDislike, onClick: () => mark(text().actionDislike), variant: "default" },
-    { id: "delete", label: text().actionDelete, icon: iconDelete, onClick: () => mark(text().actionDelete), variant: "danger" }
-  ];
 </script>
-
-{#snippet iconCopy()}
-  <Copy size={14} strokeWidth={2.2} aria-hidden="true" />
-{/snippet}
-
-{#snippet iconEdit()}
-  <Pencil size={14} strokeWidth={2.2} aria-hidden="true" />
-{/snippet}
-
-{#snippet iconRegen()}
-  <RefreshCw size={14} strokeWidth={2.2} aria-hidden="true" />
-{/snippet}
-
-{#snippet iconLike()}
-  <ThumbsUp size={14} strokeWidth={2.2} aria-hidden="true" />
-{/snippet}
-
-{#snippet iconDislike()}
-  <ThumbsDown size={14} strokeWidth={2.2} aria-hidden="true" />
-{/snippet}
-
-{#snippet iconDelete()}
-  <Trash2 size={14} strokeWidth={2.2} aria-hidden="true" />
-{/snippet}
-
-{#snippet overflowIcon()}
-  <span>⋮</span>
-{/snippet}
 
 <div class="docs-page">
   <section class="docs-hero">
@@ -107,24 +42,17 @@
 
   <section class="docs-section">
     <h2>{text().hoverTitle}</h2>
-    <div class="docs-example docs-example--stack">
-      <MessageActions actions={hoverActions} />
-      <p>{text().lastActionLabel}: <strong>{lastAction}</strong></p>
-    </div>
+    <TabbedExample nodes={getExample("messageactions-hover")?.nodes ?? []} code={getExample("messageactions-hover")?.code} />
   </section>
 
   <section class="docs-section">
     <h2>{text().alwaysTitle}</h2>
-    <div class="docs-example docs-example--stack">
-      <MessageActions visibility="always" actions={alwaysActions} />
-    </div>
+    <TabbedExample nodes={getExample("messageactions-always")?.nodes ?? []} code={getExample("messageactions-always")?.code} />
   </section>
 
   <section class="docs-section">
     <h2>{text().overflowTitle}</h2>
-    <div class="docs-example docs-example--stack">
-      <MessageActions actions={hoverActions} overflow={overflowIcon} />
-    </div>
+    <TabbedExample nodes={getExample("messageactions-overflow")?.nodes ?? []} code={getExample("messageactions-overflow")?.code} />
   </section>
 
   <section class="docs-section">

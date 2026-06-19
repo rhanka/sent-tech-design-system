@@ -1,16 +1,11 @@
 <script lang="ts">
   import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { getExample } from "$lib/framework/examples";
-  import { Badge, Button, Popover } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
 
   const fr = (frText: string, enText: string) => (locale.value === "fr" ? frText : enText);
-
-  let bottomOpen = $state(false);
-  let topOpen = $state(false);
-  let rightOpen = $state(false);
-  let leftOpen = $state(false);
 </script>
 
 <div class="docs-page">
@@ -51,32 +46,7 @@
   <section class="docs-section">
     <h2>{fr("Placement", "Placement")}</h2>
     <p>{fr("Le panneau s'ancre au-dessus, en dessous, à gauche ou à droite du déclencheur via placement.", "The panel anchors above, below, left, or right of the trigger via placement.")}</p>
-    <div class="docs-example docs-example--stack">
-      <Popover open={bottomOpen} label={fr("Détail bas", "Bottom detail")} placement="bottom">
-        {#snippet trigger()}
-          <Button variant="secondary" onclick={() => (bottomOpen = !bottomOpen)}>{fr("Bas (défaut)", "Bottom (default)")}</Button>
-        {/snippet}
-        <p>{fr("Le contenu apparaît sous le déclencheur.", "Content appears below the trigger.")}</p>
-      </Popover>
-      <Popover open={topOpen} label={fr("Détail haut", "Top detail")} placement="top">
-        {#snippet trigger()}
-          <Button variant="secondary" onclick={() => (topOpen = !topOpen)}>{fr("Haut", "Top")}</Button>
-        {/snippet}
-        <p>{fr("Le contenu apparaît au-dessus du déclencheur.", "Content appears above the trigger.")}</p>
-      </Popover>
-      <Popover open={rightOpen} label={fr("Détail droite", "Right detail")} placement="right">
-        {#snippet trigger()}
-          <Button variant="secondary" onclick={() => (rightOpen = !rightOpen)}>{fr("Droite", "Right")}</Button>
-        {/snippet}
-        <p>{fr("Le contenu apparaît à droite du déclencheur.", "Content appears to the right of the trigger.")}</p>
-      </Popover>
-      <Popover open={leftOpen} label={fr("Détail gauche", "Left detail")} placement="left">
-        {#snippet trigger()}
-          <Button variant="secondary" onclick={() => (leftOpen = !leftOpen)}>{fr("Gauche", "Left")}</Button>
-        {/snippet}
-        <p>{fr("Le contenu apparaît à gauche du déclencheur.", "Content appears to the left of the trigger.")}</p>
-      </Popover>
-    </div>
+    <TabbedExample nodes={getExample("popover-placement")?.nodes ?? []} title={fr("Placement", "Placement")} />
   </section>
 
   <section class="docs-section">

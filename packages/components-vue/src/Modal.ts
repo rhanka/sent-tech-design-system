@@ -7,6 +7,7 @@ export type ModalProps = {
   title?: string;
   description?: string;
   class?: string;
+  closeLabel?: string;
 };
 
 export const Modal = defineComponent({
@@ -16,6 +17,7 @@ export const Modal = defineComponent({
     title: { type: String, default: undefined },
     description: { type: String, default: undefined },
     class: { type: String, default: undefined },
+    closeLabel: { type: String, default: "Close" },
   },
   emits: ["close"],
   setup(props, { emit, slots, attrs }) {
@@ -71,7 +73,7 @@ export const Modal = defineComponent({
                 {
                   type: "button",
                   class: "st-modal__close",
-                  "aria-label": "Close",
+                  "aria-label": props.closeLabel,
                   onClick: () => emit("close"),
                 },
                 h(X, { size: 18, strokeWidth: 2.25, "aria-hidden": "true" }),
