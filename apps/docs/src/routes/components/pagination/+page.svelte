@@ -1,14 +1,11 @@
 <script lang="ts">
   import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { getExample } from "$lib/framework/examples";
-  import { Badge, Pagination } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
 
   const fr = (frText: string, enText: string) => (locale.value === "fr" ? frText : enText);
-
-  let page = $state(3);
-  let firstPage = $state(1);
 </script>
 
 <div class="docs-page">
@@ -40,31 +37,13 @@
   <section class="docs-section">
     <h2>{fr("Exemple interactif", "Interactive example")}</h2>
     <p>{fr("onpagechange remonte la page demandée ; le parent contrôle l'état.", "onpagechange reports the requested page; the parent controls state.")}</p>
-    <div class="docs-example docs-example--stack">
-      <Pagination
-        {page}
-        pageCount={6}
-        previousLabel={fr("Précédent", "Previous")}
-        nextLabel={fr("Suivant", "Next")}
-        onpagechange={(target) => (page = target)}
-      />
-      <p class="docs-demo-note">{fr("Page courante", "Current page")}: <code>{page}</code> / 6</p>
-    </div>
+    <TabbedExample nodes={getExample("pagination-interactive")?.nodes ?? []} code={getExample("pagination-interactive")?.code} />
   </section>
 
   <section class="docs-section">
     <h2>{t(locale.value, "states")}</h2>
     <p>{fr("Sur la première page, « Précédent » est désactivé ; sur la dernière, « Suivant ».", "On the first page, \"Previous\" is disabled; on the last, \"Next\".")}</p>
-    <div class="docs-example docs-example--stack">
-      <h3>{fr("Première page (Précédent désactivé)", "First page (Previous disabled)")}</h3>
-      <Pagination
-        page={firstPage}
-        pageCount={4}
-        previousLabel={fr("Précédent", "Previous")}
-        nextLabel={fr("Suivant", "Next")}
-        onpagechange={(target) => (firstPage = target)}
-      />
-    </div>
+    <TabbedExample nodes={getExample("pagination-states")?.nodes ?? []} code={getExample("pagination-states")?.code} />
   </section>
 
   <section class="docs-section">

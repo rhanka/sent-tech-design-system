@@ -7,6 +7,7 @@ export type SkeletonTextProps = {
   heading?: boolean;
   paragraph?: boolean;
   class?: string;
+  loadingLabel?: string;
 };
 
 export const SkeletonText = defineComponent({
@@ -17,6 +18,7 @@ export const SkeletonText = defineComponent({
     heading: { type: Boolean, default: false },
     paragraph: { type: Boolean, default: false },
     class: { type: String, default: undefined },
+    loadingLabel: { type: String, default: "Loading…" },
   },
   setup(props, { attrs }) {
     return () => {
@@ -32,7 +34,7 @@ export const SkeletonText = defineComponent({
           ...attrs,
           class: classNames("st-skeleton", props.class),
           role: "status",
-          "aria-label": "Loading…",
+          "aria-label": props.loadingLabel,
           "aria-busy": "true",
         },
         Array.from({ length: lineCount }, (_, index) => {

@@ -1,31 +1,13 @@
 <script lang="ts">
-  import { Badge, AppChrome } from "@sentropic/design-system-svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
+  import TabbedExample from "$lib/framework/TabbedExample.svelte";
+  import { getExample } from "$lib/framework/examples";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
 
   const fr = $derived(locale.value === "fr");
 
-  // Démo « live » entièrement contrôlée : la page pilote l'état des contrôles
-  // et reçoit les callbacks, exactement comme le ferait dataviz.sent-tech.ca.
-  const themes = [
-    { id: "sent-tech", label: "Sentropic" },
-    { id: "forge", label: "Forge" },
-    { id: "entropic", label: "Entropic" },
-    { id: "carbon", label: "Carbon" },
-    { id: "dsfr", label: "DSFR" },
-    { id: "airbus", label: "Airbus" }
-  ];
-
-  let demoTheme = $state("sent-tech");
-  let demoColorMode = $state<"light" | "dark" | "auto">("light");
-  let demoLocale = $state<"fr" | "en">("fr");
-  let demoMenuOpen = $state(false);
-
-  const demoNav = $derived([
-    { label: fr ? "Vues" : "Views", href: "#views", active: true },
-    { label: fr ? "Données" : "Data", href: "#data" },
-    { label: fr ? "Réglages" : "Settings", href: "#settings" }
-  ]);
+  const appChromeExample = getExample("appchrome");
 </script>
 
 <div class="docs-page">
@@ -44,34 +26,10 @@
 
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
-    <div class="docs-appChrome-demo">
-      <AppChrome
-        brandName="Sentropic"
-        productName="dataviz"
-        logoSrc="/SENT-logo-squared.svg"
-        brandHref="#"
-        nav={demoNav}
-        themes={themes}
-        theme={demoTheme}
-        onThemeChange={(id) => (demoTheme = id)}
-        colorMode={demoColorMode}
-        onColorModeChange={(mode) => (demoColorMode = mode)}
-        locale={demoLocale}
-        onLocaleChange={(value) => (demoLocale = value)}
-        githubHref="https://github.com/rhanka/sent-tech-design-system"
-        mobileMenuOpen={demoMenuOpen}
-        onMobileMenuToggle={() => (demoMenuOpen = !demoMenuOpen)}
-      >
-        {#snippet extraSelectors()}
-          <span style="font-size: 0.75rem; padding: 0.2rem 0.5rem; background: var(--st-semantic-surface-subtle); border-radius: var(--st-radius-xs, 0.25rem); color: var(--st-semantic-text-secondary);">v2.0</span>
-        {/snippet}
-      </AppChrome>
-    </div>
-    <p class="docs-appChrome-state">
-      {fr ? "État courant" : "Current state"}, {fr ? "thème" : "theme"}: <code>{demoTheme}</code>,
-      {fr ? "mode couleur" : "color mode"}: <code>{demoColorMode}</code>,
-      {fr ? "langue" : "locale"}: <code>{demoLocale}</code>
-    </p>
+    <TabbedExample
+      nodes={appChromeExample?.nodes ?? []}
+      title={fr ? "Coque applicative complète" : "Full application shell"}
+    />
     <p>
       {fr
         ? "dataviz.sent-tech.ca obtient un chrome byte-identique en ne fournissant que product=\"dataviz\", sa nav, le titre et l'état/callbacks des contrôles. Le markup, les classes (st-appChrome*) et les tokens sont identiques entre Svelte, React, Vue et Angular."
@@ -118,15 +76,3 @@
   </section>
 </div>
 
-<style>
-  .docs-appChrome-demo {
-    border: 1px solid var(--st-semantic-border-subtle, #e2e8f0);
-    border-radius: var(--st-radius-md, 0.5rem);
-    overflow: hidden;
-  }
-
-  .docs-appChrome-state {
-    color: var(--st-semantic-text-secondary, #475569);
-    font-size: 0.875rem;
-  }
-</style>
