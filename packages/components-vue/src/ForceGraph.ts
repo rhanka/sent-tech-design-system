@@ -149,6 +149,8 @@ export type ForceGraphProps = {
    * `id`. Receives the same pair so the consumer can drop `from` from the data.
    */
   onMergeComplete?: (pair: { id: string; from: string; into: string }) => void;
+  /** Accessible label for the "reset view" button (i18n). */
+  resetViewLabel?: string;
   class?: string;
 };
 
@@ -498,6 +500,8 @@ export const ForceGraph = defineComponent({
       >,
       default: undefined,
     },
+    /** Accessible label for the "reset view" button (i18n). */
+    resetViewLabel: { type: String, default: "Reset view" },
     class: { type: String, default: undefined },
   },
   emits: {
@@ -1319,7 +1323,7 @@ export const ForceGraph = defineComponent({
             {
               class: "st-forceGraph__resetBtn",
               type: "button",
-              "aria-label": "Reset view",
+              "aria-label": props.resetViewLabel,
               onClick: resetView,
             },
             "↺",
