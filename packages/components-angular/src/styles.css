@@ -16588,7 +16588,7 @@
 
 .st-contourChart__cell {
   cursor: pointer;
-  stroke: var(--st-semantic-surface-default, Canvas);
+  stroke: var(--st-semantic-surface-default);
   stroke-width: 0.5;
   transition: opacity 120ms ease;
 }
@@ -17821,9 +17821,48 @@
 .st-heatmapChart--sequential .st-heatmapChart__cell--category8,
 .st-heatmapChart--sequential .st-heatmapChart__legendSwatch--category8 { fill: var(--st-heatmapChart-ramp-8); background: var(--st-heatmapChart-ramp-8); }
 
-.st-dashboardGrid { --st-component-dashboardGrid-tile-background: var(--st-semantic-surface-default); --st-component-dashboardGrid-tile-border-color: var(--st-semantic-border-subtle); --st-component-dashboardGrid-tile-border-width: var(--st-component-card-anatomy-shape-borderWidth); --st-component-dashboardGrid-tile-radius: var(--st-radius-lg); --st-component-dashboardGrid-tile-shadow: var(--st-shadow-sm); --st-component-dashboardGrid-title-fontSize: var(--st-component-field-labelTypography-size); --st-component-dashboardGrid-title-fontWeight: var(--st-component-field-labelTypography-weight); --st-component-dashboardGrid-title-letterSpacing: var(--st-component-field-labelTypography-letterSpacing); --st-component-dashboardGrid-value-fontSize: var(--st-component-button-anatomy-density-lg-fontSize); --st-component-dashboardGrid-value-fontWeight: var(--st-component-button-anatomy-typography-weight); --st-component-dashboardGrid-value-lineHeight: var(--st-component-field-labelTypography-lineHeight); --st-component-dashboardGrid-description-fontSize: var(--st-component-field-labelTypography-size); --st-component-dashboardGrid-control-fontSize: var(--st-component-button-anatomy-density-sm-fontSize); --st-component-dashboardGrid-control-fontWeight: var(--st-component-button-anatomy-typography-weight); --st-component-dashboardGrid-control-size: var(--st-component-button-anatomy-density-sm-controlHeight); --st-component-dashboardGrid-control-paddingInline: var(--st-spacing-2); --st-component-dashboardGrid-control-focusWidth: var(--st-component-card-anatomy-shape-borderWidth); display: grid; gap: var(--st-dashboardGrid-gap); grid-auto-rows: var(--st-dashboardGrid-row-height); grid-template-columns: repeat(var(--st-dashboardGrid-columns), minmax(0, 1fr)); width: 100%; }
-.st-dashboardGrid__tile { background: var(--st-component-dashboardGrid-tile-background); border: var(--st-component-dashboardGrid-tile-border-width) solid var(--st-component-dashboardGrid-tile-border-color); border-radius: var(--st-component-dashboardGrid-tile-radius); box-shadow: var(--st-component-dashboardGrid-tile-shadow); color: var(--st-semantic-text-primary); min-width: 0; overflow: hidden; padding: var(--st-spacing-4); position: relative; }
-.st-dashboardGrid--editable .st-dashboardGrid__tile { outline: var(--st-component-dashboardGrid-tile-border-width) dashed var(--st-semantic-border-strong); outline-offset: calc(-1 * var(--st-spacing-2)); }
+.st-dashboardGrid {
+  --st-component-dashboardGrid-tile-background: var(--st-semantic-surface-default);
+  --st-component-dashboardGrid-tile-border-color: var(--st-semantic-border-subtle);
+  --st-component-dashboardGrid-tile-border-width: var(--st-component-card-anatomy-shape-borderWidth);
+  --st-component-dashboardGrid-tile-radius: var(--st-radius-lg);
+  --st-component-dashboardGrid-tile-shadow: var(--st-shadow-sm);
+  --st-component-dashboardGrid-title-fontSize: var(--st-component-field-labelTypography-size);
+  --st-component-dashboardGrid-title-fontWeight: var(--st-component-field-labelTypography-weight);
+  --st-component-dashboardGrid-title-letterSpacing: var(--st-component-field-labelTypography-letterSpacing);
+  --st-component-dashboardGrid-value-fontSize: var(--st-component-button-anatomy-density-lg-fontSize);
+  --st-component-dashboardGrid-value-fontWeight: var(--st-component-button-anatomy-typography-weight);
+  --st-component-dashboardGrid-value-lineHeight: var(--st-component-field-labelTypography-lineHeight);
+  --st-component-dashboardGrid-description-fontSize: var(--st-component-field-labelTypography-size);
+  --st-component-dashboardGrid-control-fontSize: var(--st-component-button-anatomy-density-sm-fontSize);
+  --st-component-dashboardGrid-control-fontWeight: var(--st-component-button-anatomy-typography-weight);
+  --st-component-dashboardGrid-control-size: var(--st-component-button-anatomy-density-sm-controlHeight);
+  --st-component-dashboardGrid-control-paddingInline: var(--st-spacing-2);
+  --st-component-dashboardGrid-control-focusWidth: var(--st-component-card-anatomy-shape-borderWidth);
+  display: grid;
+  gap: var(--st-dashboardGrid-gap);
+  grid-auto-rows: var(--st-dashboardGrid-row-height);
+  grid-template-columns: repeat(var(--st-dashboardGrid-columns), minmax(0, 1fr));
+  width: 100%;
+}
+
+.st-dashboardGrid__tile {
+  background: var(--st-component-dashboardGrid-tile-background);
+  border: var(--st-component-dashboardGrid-tile-border-width) solid var(--st-component-dashboardGrid-tile-border-color);
+  border-radius: var(--st-component-dashboardGrid-tile-radius);
+  box-shadow: var(--st-component-dashboardGrid-tile-shadow);
+  color: var(--st-semantic-text-primary);
+  min-width: 0;
+  overflow: hidden;
+  padding: var(--st-spacing-4);
+  position: relative;
+}
+
+.st-dashboardGrid--editable .st-dashboardGrid__tile {
+  outline: var(--st-component-dashboardGrid-tile-border-width) dashed var(--st-semantic-border-strong);
+  outline-offset: calc(-1 * var(--st-spacing-2));
+}
+
 .st-dashboardGrid__content { display: grid; gap: var(--st-spacing-2); }
 .st-dashboardGrid__title { color: var(--st-semantic-text-secondary); font-size: var(--st-component-dashboardGrid-title-fontSize); font-weight: var(--st-component-dashboardGrid-title-fontWeight); letter-spacing: var(--st-component-dashboardGrid-title-letterSpacing); margin: 0; text-transform: uppercase; }
 .st-dashboardGrid__value { color: var(--st-semantic-text-primary); font-size: var(--st-component-dashboardGrid-value-fontSize); font-weight: var(--st-component-dashboardGrid-value-fontWeight); line-height: var(--st-component-dashboardGrid-value-lineHeight); margin: 0; }
