@@ -519,6 +519,8 @@ export type ComboboxProps = Omit<React.HTMLAttributes<HTMLDivElement>, "onChange
   noResultsLabel?: React.ReactNode;
   /** Accessible name for the options listbox. Defaults to `label`. */
   listLabel?: string;
+  clearLabel?: string;
+  toggleLabel?: string;
   onChange?: (value: string) => void;
   onSelect?: (value: string) => void;
 };
@@ -536,6 +538,8 @@ export function Combobox({
   allowCustomValue = true,
   noResultsLabel = "No results",
   listLabel,
+  clearLabel = "Clear selection",
+  toggleLabel = "Toggle options",
   onChange,
   onSelect,
   className,
@@ -614,7 +618,7 @@ export function Combobox({
             <button
               type="button"
               className="st-combobox__clear"
-              aria-label="Clear selection"
+              aria-label={clearLabel}
               disabled={disabled}
               onClick={() => {
                 setInputValue("");
@@ -628,7 +632,7 @@ export function Combobox({
           <button
             type="button"
             className="st-combobox__toggle"
-            aria-label="Toggle options"
+            aria-label={toggleLabel}
             aria-expanded={open}
             disabled={disabled}
             onClick={() => setOpen(!open)}
@@ -1408,28 +1412,46 @@ export type FooterProps = React.HTMLAttributes<HTMLElement> & {
   brand?: React.ReactNode;
   columns?: Array<{ title?: React.ReactNode; links: Array<{ label: React.ReactNode; href: string }> }>;
   links?: Array<{ label: React.ReactNode; href: string }>;
+  legalLinks?: Array<{ label: React.ReactNode; href: string }>;
   copyright?: React.ReactNode;
 };
-export function Footer({ brand, columns, links, copyright, className, ...rest }: FooterProps) {
+export function Footer({ brand, columns, links, legalLinks, copyright, className, ...rest }: FooterProps) {
   const groups = columns ?? (links ? [{ links }] : []);
+  const hasTop = brand || groups.length > 0;
+  const hasBottom = copyright || (legalLinks && legalLinks.length > 0);
   return (
     <footer {...rest} className={classNames("st-footer", className)}>
-      <div className="st-footer__top">
-        {brand ? <div className="st-footer__brand">{brand}</div> : null}
-        <div className="st-footer__columns">
-          {groups.map((group, index) => (
-            <nav key={index}>
-              {group.title ? <h2>{group.title}</h2> : null}
-              {group.links.map((link) => (
+      {hasTop ? (
+        <div className="st-footer__top">
+          {brand ? <div className="st-footer__brand">{brand}</div> : null}
+          <div className="st-footer__columns">
+            {groups.map((group, index) => (
+              <nav key={index}>
+                {group.title ? <h2>{group.title}</h2> : null}
+                {group.links.map((link) => (
+                  <a key={link.href} href={link.href}>
+                    {link.label}
+                  </a>
+                ))}
+              </nav>
+            ))}
+          </div>
+        </div>
+      ) : null}
+      {hasBottom ? (
+        <div className="st-footer__bottom">
+          {copyright ? <span className="st-footer__copyright">{copyright}</span> : null}
+          {legalLinks && legalLinks.length > 0 ? (
+            <nav className="st-footer__legal" aria-label="Legal links">
+              {legalLinks.map((link) => (
                 <a key={link.href} href={link.href}>
                   {link.label}
                 </a>
               ))}
             </nav>
-          ))}
+          ) : null}
         </div>
-      </div>
-      {copyright ? <div className="st-footer__copyright">{copyright}</div> : null}
+      ) : null}
     </footer>
   );
 }
@@ -3993,15 +4015,17 @@ export type PasswordInputProps = Omit<React.InputHTMLAttributes<HTMLInputElement
   helperText?: React.ReactNode;
   errorText?: React.ReactNode;
   size?: Size;
+  showLabel?: string;
+  hideLabel?: string;
 };
-export function PasswordInput({ label, helperText, errorText, size = "md", className, ...rest }: PasswordInputProps) {
+export function PasswordInput({ label, helperText, errorText, size = "md", showLabel = "Show password", hideLabel = "Hide password", className, ...rest }: PasswordInputProps) {
   const [shown, setShown] = React.useState(false);
   return (
     <Field label={label} helperText={helperText} errorText={errorText} className={className}>
       {(inputId, isInvalid) => (
         <span className={classNames("st-passwordInput", `st-passwordInput--${size}`)}>
           <input {...rest} id={inputId} className="st-passwordInput__control" type={shown ? "text" : "password"} aria-invalid={isInvalid ? "true" : undefined} />
-          <button type="button" className="st-passwordInput__toggle" aria-label={shown ? "Hide password" : "Show password"} aria-pressed={shown ? "true" : "false"} onClick={() => setShown((next) => !next)}>
+          <button type="button" className="st-passwordInput__toggle" aria-label={shown ? hideLabel : showLabel} aria-pressed={shown ? "true" : "false"} onClick={() => setShown((next) => !next)}>
             {shown ? <EyeOff size={16} strokeWidth={2} aria-hidden="true" /> : <Eye size={16} strokeWidth={2} aria-hidden="true" />}
           </button>
         </span>
