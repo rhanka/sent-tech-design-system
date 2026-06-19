@@ -33,12 +33,6 @@ export const Pagination = defineComponent({
         (props.totalItems
           ? Math.max(1, Math.ceil(props.totalItems / (props.pageSize ?? 10)))
           : props.page);
-      const start = props.totalItems
-        ? (props.page - 1) * (props.pageSize ?? 10) + 1
-        : props.page;
-      const end = props.totalItems
-        ? Math.min(props.page * (props.pageSize ?? 10), props.totalItems)
-        : props.page;
       const visiblePages = Array.from({ length: pages }, (_, index) => index + 1);
 
       return h(
@@ -58,32 +52,21 @@ export const Pagination = defineComponent({
             },
             props.previousLabel,
           ),
-          h(
-            "span",
-            { class: "st-pagination__page--active" },
-            props.totalItems
-              ? `${start}-${end} of ${props.totalItems}`
-              : `Page ${props.page} of ${pages}`,
-          ),
-          h(
-            "span",
-            { class: "st-pagination__pages" },
-            visiblePages.map((pageNumber) =>
-              h(
-                "button",
-                {
-                  key: pageNumber,
-                  type: "button",
-                  class: classNames(
-                    "st-pagination__page",
-                    pageNumber === props.page && "st-pagination__page--active",
-                  ),
-                  "aria-label": `Page ${pageNumber}`,
-                  "aria-current": pageNumber === props.page ? "page" : undefined,
-                  onClick: () => emit("pageChange", pageNumber),
-                },
-                String(pageNumber),
-              ),
+          ...visiblePages.map((pageNumber) =>
+            h(
+              "button",
+              {
+                key: pageNumber,
+                type: "button",
+                class: classNames(
+                  "st-pagination__page",
+                  pageNumber === props.page && "st-pagination__page--active",
+                ),
+                "aria-label": `Page ${pageNumber}`,
+                "aria-current": pageNumber === props.page ? "page" : undefined,
+                onClick: () => emit("pageChange", pageNumber),
+              },
+              String(pageNumber),
             ),
           ),
           h(

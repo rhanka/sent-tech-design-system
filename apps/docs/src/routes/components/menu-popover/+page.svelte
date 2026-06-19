@@ -106,6 +106,12 @@
         "On the real page, MenuTriggerButton opens/closes the anchored panel and picking an action closes it. The demo shows it frozen open."
       )}
     </p>
+    <p class="docs-demo-note">
+      {fr(
+        "Note de parité : le composant Svelte est canonique et porte toute la logique interactive (positionnement absolu via getBoundingClientRect, recalcul au scroll/resize, fermeture au clic extérieur et sur Escape). Les rendus React et Vue sont une variante présentationnelle statique : ils rendent le déclencheur dans le panneau, exposent une prop items et le rôle dialog + aria-label, mais n'implémentent pas le positionnement ni les props align/closeOnOutside/closeOnEscape.",
+        "Parity note: the Svelte component is canonical and carries all interactive logic (absolute positioning via getBoundingClientRect, recompute on scroll/resize, outside-click and Escape close). The React and Vue renders are a static presentational variant: they render the trigger inside the panel, expose an items prop and the dialog role + aria-label, but do not implement positioning nor the align/closeOnOutside/closeOnEscape props."
+      )}
+    </p>
 
     <TabbedExample nodes={placementsDemo} title="Placements" />
     <p class="docs-demo-note">

@@ -81,7 +81,7 @@
         <tr><td><code>disabled</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
         <tr><td><code>value</code></td><td><code>string</code></td><td><em>–</em></td></tr>
         <tr><td><code>accentBar</code></td><td><code>boolean</code></td><td><code>false</code></td></tr>
-        <tr><td><code>role</code></td><td><code>string</code></td><td><code>"option"</code></td></tr>
+        <tr><td><code>role</code></td><td><code>string</code></td><td><code>"button"</code></td></tr>
         <tr><td><code>leading</code> / <code>trailing</code></td><td><code>{fr ? "slot / nœud" : "slot / node"}</code></td><td><em>–</em></td></tr>
       </tbody>
     </table>

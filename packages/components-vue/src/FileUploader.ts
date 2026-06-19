@@ -37,6 +37,7 @@ function fileItemSize(item: FileUploadItem): number | undefined {
 }
 
 export type FileUploaderProps = {
+  id?: string;
   label?: string;
   helperText?: string;
   errorText?: string;
@@ -54,6 +55,7 @@ export type FileUploaderProps = {
 export const FileUploader = defineComponent({
   name: "FileUploader",
   props: {
+    id: { type: String, default: undefined },
     label: { type: String, default: undefined },
     helperText: { type: String, default: undefined },
     errorText: { type: String, default: undefined },
@@ -71,7 +73,9 @@ export const FileUploader = defineComponent({
     class: { type: String, default: undefined },
   },
   setup(props, { attrs }) {
+    const generatedId = `st-file-uploader-${Math.random().toString(36).slice(2, 9)}`;
     return () => {
+      const inputId = props.id ?? generatedId;
       const isInvalid = props.invalid || Boolean(props.errorText);
       const effectiveTriggerLabel =
         props.triggerLabel ?? (props.multiple ? "Choose files" : "Choose file");
@@ -83,7 +87,7 @@ export const FileUploader = defineComponent({
         },
         [
           props.label
-            ? h("label", { class: "st-field__label" }, props.label)
+            ? h("label", { class: "st-field__label", for: inputId }, props.label)
             : null,
           h(
             "div",
@@ -97,6 +101,7 @@ export const FileUploader = defineComponent({
             },
             [
               h("input", {
+                id: inputId,
                 class: "st-fileUploader__input",
                 type: "file",
                 accept: props.accept,
@@ -174,7 +179,7 @@ export const FileUploader = defineComponent({
                         {
                           type: "button",
                           class: "st-fileUploader__remove",
-                          "aria-label": props.removeLabel(name ?? ""),
+                          "aria-label": props.removeLabel(name || "file"),
                           disabled: props.disabled,
                         },
                         [h(X, { size: 16, strokeWidth: 2, "aria-hidden": "true" })],

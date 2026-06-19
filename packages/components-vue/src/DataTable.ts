@@ -62,6 +62,7 @@ export type DataTableProps = {
   sortNoneLabel?: string;
   previousLabel?: string;
   nextLabel?: string;
+  paginationLabel?: string;
   rangeLabel?: (range: { start: number; end: number; total: number }) => string;
   emptyLabel?: string;
   onRowClick?: (row: DataTableRow) => void;
@@ -95,6 +96,7 @@ export const DataTable = defineComponent({
     sortNoneLabel: { type: String, default: "Not sorted" },
     previousLabel: { type: String, default: "Previous" },
     nextLabel: { type: String, default: "Next" },
+    paginationLabel: { type: String, default: "Pagination" },
     rangeLabel: {
       type: Function as unknown as () => (range: { start: number; end: number; total: number }) => string,
       default: ({ start, end, total }: { start: number; end: number; total: number }) => `${start}–${end} of ${total}`,
@@ -405,7 +407,7 @@ export const DataTable = defineComponent({
         wrapChildren.push(
           h("div", { class: "st-dataTable__footer" }, [
             h("span", { class: "st-dataTable__range", "aria-live": "polite" }, props.rangeLabel(range)),
-            h("nav", { class: "st-dataTable__pager", "aria-label": "Pagination" }, [
+            h("nav", { class: "st-dataTable__pager", "aria-label": props.paginationLabel }, [
               h(
                 "button",
                 {

@@ -85,7 +85,7 @@
     aria-expanded={expanded}
     onclick={() => (expanded = !expanded)}
   >
-    <span>{label}: {selectedLabel()}</span>
+    <span class="st-dropdown__label">{label}</span>: <span class="st-dropdown__value">{selectedLabel()}</span>
     <ChevronDown
       class={`st-dropdown__icon ${expanded ? "st-dropdown__icon--open" : ""}`}
       size={18}
