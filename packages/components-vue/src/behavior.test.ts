@@ -2192,9 +2192,9 @@ describe("Vue behavioral parity — batch 4", () => {
 
   // --- Toast ---
   describe("Toast", () => {
-    it("renders aside.st-toast with default tone info", () => {
+    it("renders section.st-toast with default tone info", () => {
       const wrapper = mount(Toast, { props: { title: "Notice" } });
-      expect(wrapper.find("aside.st-toast").exists()).toBe(true);
+      expect(wrapper.find("section.st-toast").exists()).toBe(true);
       expect(wrapper.find(".st-toast--info").exists()).toBe(true);
     });
 
