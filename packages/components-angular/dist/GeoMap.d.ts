@@ -113,6 +113,62 @@ export type GeoMapProps = {
     label: string;
     class?: string;
 };
+type FeatureMark = {
+    key: string;
+    d: string;
+    tone: GeoMapTone;
+    line: boolean;
+    text: string;
+};
+type RegionMark = {
+    key: string;
+    d: string;
+    tone: GeoMapTone;
+    mix: string | null;
+    text: string;
+};
+type CircleMark = {
+    key: string;
+    cx: number;
+    cy: number;
+    r: number;
+    tone: GeoMapTone;
+    mix: string | null;
+    text: string;
+};
+type FlowMark = {
+    key: string;
+    d: string;
+    strokeWidth: number;
+    tone: GeoMapTone;
+    text: string;
+};
+type HexMark = {
+    key: string;
+    points: string;
+    tone: GeoMapTone;
+    mix: string;
+    text: string;
+};
+type ClusterMark = {
+    key: string;
+    cx: number;
+    cy: number;
+    r: number;
+    tone: GeoMapTone;
+    text: string;
+};
+type RenderLayer = {
+    key: string;
+    type: GeoMapLayer["type"];
+    summary: string;
+    features: FeatureMark[];
+    regions: RegionMark[];
+    circles: CircleMark[];
+    flows: FlowMark[];
+    hexes: HexMark[];
+    clusters: ClusterMark[];
+};
 export declare class GeoMap {
     static readonly stComponentName = "GeoMap";
     readonly componentName = "GeoMap";
@@ -124,7 +180,25 @@ export declare class GeoMap {
     label: string;
     classInput?: string;
     get hostClass(): string;
+    get resolvedWidth(): number;
+    get resolvedHeight(): number;
+    get resolvedProjection(): GeoMapProjection;
+    get viewBox(): string;
+    get renderedLayers(): RenderLayer[];
+    get dataValueItems(): string[];
+    trackByKey(_index: number, item: {
+        key: string;
+    }): string;
+    layerClass(layer: RenderLayer): string;
+    featureClass(feature: FeatureMark): string;
+    regionClass(region: RegionMark): string;
+    pointClass(mark: CircleMark): string;
+    densityClass(mark: CircleMark): string;
+    flowClass(mark: FlowMark): string;
+    hexClass(mark: HexMark): string;
+    clusterClass(mark: ClusterMark): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<GeoMap, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<GeoMap, "st-geo-map", never, { "layers": { "alias": "layers"; "required": false; }; "width": { "alias": "width"; "required": false; }; "height": { "alias": "height"; "required": false; }; "projection": { "alias": "projection"; "required": false; }; "bounds": { "alias": "bounds"; "required": false; }; "label": { "alias": "label"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<GeoMap, "st-geo-map", never, { "layers": { "alias": "layers"; "required": false; }; "width": { "alias": "width"; "required": false; }; "height": { "alias": "height"; "required": false; }; "projection": { "alias": "projection"; "required": false; }; "bounds": { "alias": "bounds"; "required": false; }; "label": { "alias": "label"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
 }
+export {};
 //# sourceMappingURL=GeoMap.d.ts.map
