@@ -24,7 +24,11 @@
       emptyText: "En attente d’événement de stream…",
       finalText: "Résumé final prêt.",
       events: "Events suivis",
-      showTrail: "Trail visible (mode live)"
+      showTrail: "Trail visible (mode live)",
+      api1: "Cible d’entrée : <code>role</code> vaut <code>assistant</code> par défaut.",
+      api2: "<code>streamId</code> + <code>events</code> / <code>initialEvents</code> composent la source.",
+      api3: "<code>mode=\"live\"</code> montre les détails d’événements quand ils sont présents.",
+      api4: "<code>mode=\"passive\"</code> expose surtout le contenu final."
     },
     en: {
       kicker: "Component · Chat",
@@ -45,7 +49,11 @@
       emptyText: "Waiting for stream events…",
       finalText: "Final summary ready.",
       events: "Tracked events",
-      showTrail: "Trail visible in live mode"
+      showTrail: "Trail visible in live mode",
+      api1: "Input target: <code>role</code> defaults to <code>assistant</code>.",
+      api2: "<code>streamId</code> + <code>events</code> / <code>initialEvents</code> compose the source.",
+      api3: "<code>mode=\"live\"</code> shows event details when present.",
+      api4: "<code>mode=\"passive\"</code> mostly exposes the final content."
     }
   } as const;
 
@@ -177,10 +185,10 @@
   <section class="docs-section">
     <h2>{text().statusTitle}</h2>
     <ul class="docs-token-list">
-      <li>Input target: <code>role</code> defaults to <code>assistant</code>.</li>
-      <li><code>streamId</code> + <code>events</code> / <code>initialEvents</code> compose la source.</li>
-      <li><code>mode=&quot;live&quot;</code> montre les détails d’événements quand présents.</li>
-      <li><code>mode=&quot;passive&quot;</code> expose surtout le contenu final.</li>
+      <li>{@html text().api1}</li>
+      <li>{@html text().api2}</li>
+      <li>{@html text().api3}</li>
+      <li>{@html text().api4}</li>
     </ul>
   </section>
 </div>

@@ -84,6 +84,7 @@
     <ul class="docs-list docs-list--plain">
       <li>{fr("Hôte (.st-popover-host) : enveloppe inline positionnée en relatif, contient le déclencheur.", "Host (.st-popover-host): inline wrapper positioned relatively, holds the trigger.")}</li>
       <li>{fr("Déclencheur : fourni via le snippet trigger ; à vous de basculer open au clic.", "Trigger: supplied via the trigger snippet; you toggle open on click.")}</li>
+      <li>{fr("Ouverture : en React/Vue, un clic sur l'hôte ouvre le panneau ; en Svelte, l'ouverture est entièrement contrôlée (câblez onclick sur votre déclencheur pour basculer open).", "Opening: in React/Vue, a click on the host opens the panel; in Svelte, opening is fully controlled (wire onclick on your trigger to toggle open).")}</li>
       <li>{fr("Panneau (.st-popover, role=\"dialog\") : surface flottante, min 16 rem de large, positionnée selon placement.", "Panel (.st-popover, role=\"dialog\"): floating surface, min 16 rem wide, positioned per placement.")}</li>
     </ul>
   </section>
@@ -95,6 +96,7 @@
       <li>{fr("Le déclencheur doit être un élément focusable (bouton) qui bascule l'état open.", "The trigger must be a focusable element (button) that toggles the open state.")}</li>
       <li>{fr("Ajoutez aria-haspopup=\"dialog\" et aria-expanded sur le déclencheur côté hôte.", "Add aria-haspopup=\"dialog\" and aria-expanded on the trigger in the host app.")}</li>
       <li>{fr("Pour une fermeture sur Escape ou clic extérieur intégrée, voir MenuPopover.", "For built-in Escape or outside-click close, see MenuPopover.")}</li>
+      <li>{fr("openOn=\"hover\" (ouverture au survol et au focus clavier) est spécifique à Svelte.", "openOn=\"hover\" (open on hover and keyboard focus) is Svelte-only.")}</li>
     </ul>
   </section>
 

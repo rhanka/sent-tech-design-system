@@ -1211,7 +1211,7 @@ import { ProgressBar } from "@sentropic/design-system-vue";
         el: "div",
         props: { class: "fp-stack" },
         children: [
-          { comp: "Pagination", props: { page: 3, totalItems: 120, pageSize: 10 } }
+          { comp: "Pagination", props: { page: 3, pageCount: 12 } }
         ]
       }
     ],
@@ -1221,13 +1221,13 @@ import { ProgressBar } from "@sentropic/design-system-vue";
   let page = 3;
 </script>
 
-<Pagination {page} totalItems={120} pageSize={10} onPageChange={(p) => page = p} />`,
+<Pagination {page} pageCount={12} onpagechange={(p) => page = p} />`,
       react: `import { useState } from "react";
 import { Pagination } from "@sentropic/design-system-react";
 
 export function Demo() {
   const [page, setPage] = useState(3);
-  return <Pagination page={page} totalItems={120} pageSize={10} onPageChange={setPage} />;
+  return <Pagination page={page} pageCount={12} onPageChange={setPage} />;
 }`,
       vue: `<script setup>
 import { ref } from "vue";
@@ -1236,7 +1236,7 @@ const page = ref(3);
 </script>
 
 <template>
-  <Pagination :page="page" :totalItems="120" :pageSize="10" @pageChange="p => page = p" />
+  <Pagination :page="page" :pageCount="12" @pageChange="p => page = p" />
 </template>`
     }
   },
@@ -5519,6 +5519,8 @@ import { SunburstChart } from "@sentropic/design-system-vue";
           {
             comp: "ChatThread",
             props: {
+              label: "Fil de discussion",
+              "aria-label": "Fil de discussion",
               messages: [
                 { id: "1", role: "user", content: "Comment puis-je installer le design system ?" },
                 { id: "2", role: "assistant", content: "Lancez `npm install @sentropic/design-system-react` puis importez vos composants.", status: "completed" },
@@ -5954,31 +5956,46 @@ import { Menu } from "@sentropic/design-system-vue";
           props: {
             open: true,
             placement: "bottom-start",
-            items: [
-              { id: "view", label: "Voir les détails" },
-              { id: "edit", label: "Modifier" },
-              { type: "divider" },
-              { id: "archive", label: "Archiver" }
-            ]
-          }
+            label: "Actions"
+          },
+          children: [
+            {
+              comp: "Menu",
+              props: {
+                label: "Actions",
+                items: [
+                  { value: "view", label: "Voir les détails" },
+                  { value: "edit", label: "Modifier" },
+                  { kind: "divider" },
+                  { value: "archive", label: "Archiver" }
+                ]
+              }
+            }
+          ]
         }
       ])
     ],
     code: {
       svelte: `<script>
-  import { MenuPopover } from "@sentropic/design-system-svelte";
+  import { MenuPopover, MenuTriggerButton, Menu } from "@sentropic/design-system-svelte";
+
+  let trigger = $state<HTMLElement | null>(null);
+  let open = $state(false);
 </script>
 
-<MenuPopover
-  open={true}
-  placement="bottom-start"
-  items={[
-    { id: "view", label: "Voir les détails" },
-    { id: "edit", label: "Modifier" },
-    { type: "divider" },
-    { id: "archive", label: "Archiver" }
-  ]}
-/>`,
+<MenuTriggerButton bind:el={trigger} {open} onclick={() => (open = !open)} />
+
+<MenuPopover bind:open {trigger} placement="bottom-start" label="Actions">
+  <Menu
+    label="Actions"
+    items={[
+      { value: "view", label: "Voir les détails" },
+      { value: "edit", label: "Modifier" },
+      { kind: "divider" },
+      { value: "archive", label: "Archiver" }
+    ]}
+  />
+</MenuPopover>`,
       react: `import { MenuPopover } from "@sentropic/design-system-react";
 
 export function Demo() {
@@ -5986,11 +6003,12 @@ export function Demo() {
     <MenuPopover
       open={true}
       placement="bottom-start"
+      label="Actions"
       items={[
-        { id: "view", label: "Voir les détails" },
-        { id: "edit", label: "Modifier" },
-        { type: "divider" },
-        { id: "archive", label: "Archiver" }
+        { value: "view", label: "Voir les détails" },
+        { value: "edit", label: "Modifier" },
+        { kind: "divider" },
+        { value: "archive", label: "Archiver" }
       ]}
     />
   );
@@ -6003,11 +6021,12 @@ import { MenuPopover } from "@sentropic/design-system-vue";
   <MenuPopover
     :open="true"
     placement="bottom-start"
+    label="Actions"
     :items="[
-      { id: 'view', label: 'Voir les détails' },
-      { id: 'edit', label: 'Modifier' },
-      { type: 'divider' },
-      { id: 'archive', label: 'Archiver' }
+      { value: 'view', label: 'Voir les détails' },
+      { value: 'edit', label: 'Modifier' },
+      { kind: 'divider' },
+      { value: 'archive', label: 'Archiver' }
     ]"
   />
 </template>`

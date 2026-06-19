@@ -19,10 +19,13 @@ export type ToastProps = {
   autoDismiss?: boolean;
   duration?: number;
   class?: string;
+  closeLabel?: string;
+  dismissLabel?: (title: unknown) => string;
 };
 
 export const Toast = defineComponent({
   name: "Toast",
+  inheritAttrs: false,
   props: {
     tone: { type: String as () => ToastTone, default: "info" },
     title: { type: [String, Object] as unknown as () => unknown, default: undefined },
@@ -31,6 +34,8 @@ export const Toast = defineComponent({
     autoDismiss: { type: Boolean, default: false },
     duration: { type: Number, default: 5000 },
     class: { type: String, default: undefined },
+    closeLabel: { type: String, default: "Close" },
+    dismissLabel: { type: Function as unknown as () => (title: unknown) => string, default: (title: unknown) => `Dismiss ${String(title)}` },
   },
   emits: ["close", "dismiss"],
   setup(props, { emit, slots, attrs }) {
@@ -46,6 +51,7 @@ export const Toast = defineComponent({
     };
     const hasClose = () => hasListener("onClose");
     const hasDismiss = () => hasListener("onDismiss");
+    const roleFor = (t: string) => (t === "error" ? "alert" : "status");
     let timer: ReturnType<typeof setTimeout> | null = null;
 
     const startAutoDismiss = () => {
@@ -76,11 +82,11 @@ export const Toast = defineComponent({
           },
           props.items.map((item) =>
             h(
-              "aside",
+              "section",
               {
                 key: item.id,
                 class: classNames("st-toast", `st-toast--${item.tone ?? "info"}`),
-                role: "status",
+                role: roleFor(item.tone ?? "info"),
               },
               [
                 h("div", { class: "st-toast__content" }, [
@@ -97,10 +103,10 @@ export const Toast = defineComponent({
                       "button",
                       {
                         type: "button",
-                        "aria-label": `Dismiss ${String(item.title)}`,
+                        "aria-label": props.dismissLabel(item.title),
                         onClick: () => emit("dismiss", item.id),
                       },
-                      "Close",
+                      props.closeLabel,
                     )
                   : null,
               ],
@@ -110,11 +116,11 @@ export const Toast = defineComponent({
       }
 
       return h(
-        "aside",
+        "section",
         {
           ...attrs,
           class: classNames("st-toast", `st-toast--${props.tone}`, props.class),
-          role: "status",
+          role: roleFor(props.tone),
         },
         [
           h("div", { class: "st-toast__content" }, [
@@ -133,7 +139,7 @@ export const Toast = defineComponent({
                   type: "button",
                   onClick: () => emit("close"),
                 },
-                "Close",
+                props.closeLabel,
               )
             : null,
         ],
