@@ -30,12 +30,22 @@
   }: DropdownProps = $props();
 
   let host: HTMLDivElement | undefined = $state();
+  let buttonEl: HTMLButtonElement | undefined = $state();
   let expanded = $state(false);
   let currentValue = $state<string | undefined>(undefined);
   let syncedOpen = $state<boolean | undefined>(undefined);
   let syncedValue = $state<string | undefined>(undefined);
+  let listPos = $state({ top: 0, left: 0, width: 0 });
+
   const classes = () => ["st-dropdown", className].filter(Boolean).join(" ");
   const selectedLabel = () => options.find((option) => option.value === currentValue)?.label ?? placeholder;
+
+  function updateListPos() {
+    if (!buttonEl) return;
+    const r = buttonEl.getBoundingClientRect();
+    listPos = { top: r.bottom + 4, left: r.left, width: r.width };
+  }
+
   const selectOption = (option: DropdownOption) => {
     if (option.disabled) return;
     currentValue = option.value;
@@ -60,6 +70,14 @@
     if (host && target && !host.contains(target)) close();
   }
 
+  function onWindowScroll() {
+    if (expanded) updateListPos();
+  }
+
+  function onWindowResize() {
+    if (expanded) updateListPos();
+  }
+
   $effect(() => {
     if (syncedOpen !== open) {
       expanded = open;
@@ -73,17 +91,22 @@
       syncedValue = value;
     }
   });
+
+  $effect(() => {
+    if (expanded) updateListPos();
+  });
 </script>
 
-<svelte:window onkeydown={onWindowKeydown} onpointerdown={onWindowPointerDown} />
+<svelte:window onkeydown={onWindowKeydown} onpointerdown={onWindowPointerDown} onscroll={onWindowScroll} onresize={onWindowResize} />
 
 <div {...rest} bind:this={host} class={classes()}>
   <button
+    bind:this={buttonEl}
     class="st-dropdown__button"
     type="button"
     aria-haspopup="listbox"
     aria-expanded={expanded}
-    onclick={() => (expanded = !expanded)}
+    onclick={() => { expanded = !expanded; if (expanded) updateListPos(); }}
   >
     <span class="st-dropdown__label">{label}</span>: <span class="st-dropdown__value">{selectedLabel()}</span>
     <ChevronDown
@@ -94,7 +117,12 @@
     />
   </button>
   {#if expanded}
-    <div class="st-dropdown__list" role="listbox" aria-label={label}>
+    <div
+      class="st-dropdown__list"
+      role="listbox"
+      aria-label={label}
+      style="top:{listPos.top}px;left:{listPos.left}px;min-width:{listPos.width}px"
+    >
       {#each options as option (option.value)}
         <button
           class="st-dropdown__option"
@@ -154,12 +182,8 @@
     border-radius: var(--st-component-dropdown-radius, 0.375rem);
     box-shadow: var(--st-component-dropdown-shadow, 0 8px 24px rgb(15 23 42 / 0.14));
     display: grid;
-    left: 0;
-    margin-top: var(--st-spacing-1, 0.25rem);
-    min-width: 100%;
     overflow: hidden;
-    position: absolute;
-    top: 100%;
+    position: fixed;
     z-index: var(--st-component-popover-zIndex, 80);
   }
 
