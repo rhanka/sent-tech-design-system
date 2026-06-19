@@ -9,6 +9,8 @@ export type MenuPopoverProps = {
   items?: MenuItem[];
   open?: boolean;
   placement?: MenuPopoverPlacement;
+  /** Accessible name for the panel (Svelte-canonical: applied as aria-label on role="dialog"). */
+  label?: string;
   class?: string;
 };
 
@@ -20,6 +22,7 @@ export const MenuPopover = defineComponent({
     items: { type: Array as () => MenuItem[], default: () => [] },
     open: { type: Boolean, default: true },
     placement: { type: String as () => MenuPopoverPlacement, default: "bottom-start" },
+    label: { type: String, default: undefined },
     class: { type: String, default: undefined },
   },
   setup(props, { slots, attrs }) {
@@ -28,6 +31,8 @@ export const MenuPopover = defineComponent({
         "div",
         {
           ...attrs,
+          role: "dialog",
+          "aria-label": props.label,
           class: classNames(
             "st-menuPopover",
             `st-menuPopover--${props.placement}`,

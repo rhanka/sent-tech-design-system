@@ -41,8 +41,8 @@
   }
 </script>
 
-<ol {...rest} class={classes()}>
-  {#each items as raw, index (index)}
+{#snippet renderItems(list: OrderedListInput[])}
+  {#each list as raw, index (index)}
     {@const item = normalize(raw)}
     <li class="st-orderedList__item">
       {#if isSnippet(item.content)}
@@ -52,20 +52,15 @@
       {/if}
       {#if item.children && item.children.length > 0}
         <ol class="st-orderedList st-orderedList--nested">
-          {#each item.children as childRaw, childIndex (childIndex)}
-            {@const child = normalize(childRaw)}
-            <li class="st-orderedList__item">
-              {#if isSnippet(child.content)}
-                {@render child.content()}
-              {:else}
-                {child.content}
-              {/if}
-            </li>
-          {/each}
+          {@render renderItems(item.children)}
         </ol>
       {/if}
     </li>
   {/each}
+{/snippet}
+
+<ol {...rest} class={classes()}>
+  {@render renderItems(items)}
 </ol>
 
 <style>

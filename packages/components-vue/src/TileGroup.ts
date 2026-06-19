@@ -1,4 +1,4 @@
-import { defineComponent, h } from "vue";
+import { defineComponent, getCurrentInstance, h } from "vue";
 import { classNames } from "./classNames.js";
 
 export interface TileGroupItem {
@@ -13,8 +13,10 @@ export interface TileGroupItem {
 
 export type TileGroupProps = {
   legend?: unknown;
+  legendHidden?: boolean;
   items: TileGroupItem[];
   value?: string;
+  name?: string;
   disabled?: boolean;
   class?: string;
 };
@@ -23,13 +25,17 @@ export const TileGroup = defineComponent({
   name: "TileGroup",
   props: {
     legend: { type: [String, Object] as unknown as () => unknown, default: undefined },
+    legendHidden: { type: Boolean, default: false },
     items: { type: Array as () => TileGroupItem[], required: true },
     value: { type: String, default: undefined },
+    name: { type: String, default: undefined },
     disabled: { type: Boolean, default: false },
     class: { type: String, default: undefined },
   },
   emits: ["update:modelValue", "change"],
   setup(props, { emit, attrs }) {
+    const instance = getCurrentInstance();
+    const groupName = () => props.name ?? `st-tileGroup-${instance?.uid}`;
     return () =>
       h(
         "fieldset",
@@ -45,7 +51,12 @@ export const TileGroup = defineComponent({
           props.legend
             ? h(
                 "legend",
-                { class: "st-tileGroup__legend" },
+                {
+                  class: classNames(
+                    "st-tileGroup__legend",
+                    props.legendHidden && "st-tileGroup__legend--hidden",
+                  ),
+                },
                 props.legend as string,
               )
             : null,
@@ -68,10 +79,10 @@ export const TileGroup = defineComponent({
                   h("input", {
                     class: "st-tileGroup__input",
                     type: "radio",
+                    name: groupName(),
                     value: item.value,
                     checked: item.value === props.value,
                     disabled: props.disabled || item.disabled,
-                    readonly: true,
                     onChange: (event: Event) => {
                       emit(
                         "update:modelValue",

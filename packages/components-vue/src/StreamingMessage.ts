@@ -14,6 +14,7 @@ export type StreamingMessageProps = {
   text?: unknown;
   events?: StreamingMessageEvent[];
   mode?: StreamingMessageMode;
+  placeholder?: unknown;
   class?: string;
 };
 
@@ -23,6 +24,7 @@ export const StreamingMessage = defineComponent({
     text: { type: [String, Object] as unknown as () => unknown, default: undefined },
     events: { type: Array as () => StreamingMessageEvent[], default: () => [] },
     mode: { type: String as () => StreamingMessageMode, default: "live" },
+    placeholder: { type: [String, Object] as unknown as () => unknown, default: "Streaming en cours…" },
     class: { type: String, default: undefined },
   },
   setup(props, { attrs }) {
@@ -36,12 +38,23 @@ export const StreamingMessage = defineComponent({
           class: classNames("st-streamingMessage", `st-streamingMessage--${mode}`, props.class),
         },
         [
-          h("div", { class: "st-streamingMessage__text" }, props.text as string | undefined),
-          h(
-            "ul",
-            { class: "st-streamingMessage__trailList" },
-            events.map((event) => h("li", { key: event.id }, event.label as string)),
-          ),
+          ((): ReturnType<typeof h> => {
+            const isEmpty = props.text == null || props.text === "";
+            return h(
+              "p",
+              { class: classNames("st-streamingMessage__text", isEmpty && "st-streamingMessage__text--muted") },
+              (isEmpty ? props.placeholder : props.text) as string | undefined,
+            );
+          })(),
+          ...(events.length > 0
+            ? [
+                h(
+                  "ul",
+                  { class: "st-streamingMessage__trailList" },
+                  events.map((event) => h("li", { key: event.id }, event.label as string)),
+                ),
+              ]
+            : []),
         ],
       );
     };

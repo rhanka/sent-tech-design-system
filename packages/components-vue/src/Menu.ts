@@ -101,6 +101,7 @@ export const Menu = defineComponent({
           type: "button",
           role: "menuitem",
           disabled: actionItem.disabled,
+          "aria-disabled": actionItem.disabled ? "true" : undefined,
           class: classNames(
             "st-menu__item",
             isDangerAction(actionItem) && "st-menu__item--danger",
@@ -127,6 +128,7 @@ export const Menu = defineComponent({
             key: item.id ?? index,
             class: "st-menu__divider",
             role: "separator",
+            "aria-hidden": "true",
           });
         }
         if (isGroup(item)) {

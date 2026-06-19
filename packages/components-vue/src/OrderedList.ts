@@ -7,6 +7,7 @@ export type OrderedListInput = unknown;
 
 export type OrderedListProps = {
   items: OrderedListInput[];
+  nested?: boolean;
   class?: string;
 };
 
@@ -37,8 +38,8 @@ function renderListItem(item: OrderedListInput, index: number, ordered: boolean)
         class: ordered ? "st-orderedList__item" : "st-unorderedList__item",
       },
       [
-        String((cast.content ?? cast.label) ?? ""),
-        hasChildren ? renderNested(cast.children as OrderedListInput[], ordered) : null,
+        (cast.content ?? cast.label) as VNodeChild,
+        ...(hasChildren ? [renderNested(cast.children as OrderedListInput[], ordered)] : []),
       ],
     );
   }
@@ -48,7 +49,7 @@ function renderListItem(item: OrderedListInput, index: number, ordered: boolean)
       key: index,
       class: ordered ? "st-orderedList__item" : "st-unorderedList__item",
     },
-    String(item ?? ""),
+    [item] as import("vue").VNodeArrayChildren,
   );
 }
 
@@ -56,6 +57,7 @@ export const OrderedList = defineComponent({
   name: "OrderedList",
   props: {
     items: { type: Array as () => OrderedListInput[], required: true },
+    nested: { type: Boolean, default: false },
     class: { type: String, default: undefined },
   },
   setup(props, { attrs }) {
@@ -64,7 +66,7 @@ export const OrderedList = defineComponent({
         "ol",
         {
           ...attrs,
-          class: classNames("st-orderedList", props.class),
+          class: classNames("st-orderedList", props.nested && "st-orderedList--nested", props.class),
         },
         props.items.map((item, index) => renderListItem(item, index, true)) as VNodeChild[],
       );
