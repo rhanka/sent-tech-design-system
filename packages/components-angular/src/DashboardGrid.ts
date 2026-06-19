@@ -1,5 +1,6 @@
 import { NgFor, NgIf } from "@angular/common";
-import { Component, EventEmitter, Input as NgInput, OnChanges, Output as NgOutput, SimpleChanges } from "@angular/core";
+import { Component, EventEmitter, Input as NgInput, Output as NgOutput } from "@angular/core";
+import type { OnChanges, SimpleChanges } from "@angular/core";
 
 import { classNames } from "./classNames.js";
 
