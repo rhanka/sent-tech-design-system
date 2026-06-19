@@ -502,6 +502,8 @@ export const ForceGraph = defineComponent({
     },
     /** Accessible label for the "reset view" button (i18n). */
     resetViewLabel: { type: String, default: "Reset view" },
+    /** Accessible label for the legend overlay (i18n). */
+    legendLabel: { type: String, default: "Graph legend" },
     class: { type: String, default: undefined },
   },
   emits: {
@@ -1394,17 +1396,21 @@ export const ForceGraph = defineComponent({
         children.push(
           h(
             "div",
-            { class: "st-forceGraph__legend", "aria-label": "Graph legend" },
+            { class: "st-forceGraph__legend", "aria-label": props.legendLabel },
             entries,
           ),
         );
       }
 
       return h(
-        "figure",
+        "div",
         {
           ...attrs,
-          class: classNames("st-forceGraph", props.class),
+          class: classNames(
+            "st-forceGraph",
+            prefersReducedMotion && "st-forceGraph--static",
+            props.class,
+          ),
           role: "img",
           "aria-label": label,
         },
