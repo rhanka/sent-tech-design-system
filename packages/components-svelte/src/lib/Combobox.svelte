@@ -56,6 +56,8 @@
   let expanded = $state(false);
   let activeIndex = $state(-1);
 
+  const inputId = $derived((rest as { id?: string }).id ?? `st-combobox-${Math.random().toString(36).slice(2, 9)}`);
+
   const fieldClasses = () => ["st-field", className].filter(Boolean).join(" ");
   const groupClasses = () => ["st-combobox", `st-combobox--${size}`].join(" ");
   const isInvalid = () => invalid || Boolean(errorText);
@@ -137,6 +139,7 @@
     <span class={groupClasses()}>
       <input
         {...rest}
+        id={inputId}
         type="text"
         class="st-combobox__control"
         role="combobox"
