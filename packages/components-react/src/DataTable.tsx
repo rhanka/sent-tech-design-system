@@ -64,6 +64,7 @@ export type DataTableProps<R extends DataTableRow = DataTableRow> = Omit<
   sortNoneLabel?: string;
   previousLabel?: string;
   nextLabel?: string;
+  paginationLabel?: string;
   rangeLabel?: (range: { start: number; end: number; total: number }) => string;
   emptyLabel?: string;
   onRowClick?: (row: R) => void;
@@ -91,6 +92,7 @@ export function DataTable<R extends DataTableRow = DataTableRow>({
   sortNoneLabel = "Not sorted",
   previousLabel = "Previous",
   nextLabel = "Next",
+  paginationLabel = "Pagination",
   rangeLabel = ({ start, end, total }) => `${start}–${end} of ${total}`,
   emptyLabel = "No data",
   onRowClick,
@@ -380,7 +382,7 @@ export function DataTable<R extends DataTableRow = DataTableRow>({
           <span className="st-dataTable__range" aria-live="polite">
             {rangeLabel(range)}
           </span>
-          <nav className="st-dataTable__pager" aria-label="Pagination">
+          <nav className="st-dataTable__pager" aria-label={paginationLabel}>
             <button
               type="button"
               className="st-dataTable__pagerBtn"

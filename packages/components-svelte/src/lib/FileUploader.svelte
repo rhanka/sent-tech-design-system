@@ -236,7 +236,7 @@
             {/if}
           </span>
           <span class="st-fileUploader__itemMeta">
-            <span class="st-fileUploader__itemName">{item.file.name}</span>
+            <span class="st-fileUploader__itemName st-fileUploader__name">{item.file.name}</span>
             <span class="st-fileUploader__itemSize">{formatSize(item.file.size)}</span>
             {#if item.status === "error" && item.error}
               <span class="st-fileUploader__itemError">{item.error}</span>
@@ -274,7 +274,7 @@
             {/if}
           </span>
           <span class="st-fileUploader__itemMeta">
-            <span class="st-fileUploader__itemName">{file.name}</span>
+            <span class="st-fileUploader__itemName st-fileUploader__name">{file.name}</span>
             <span class="st-fileUploader__itemSize">{formatSize(file.size)}</span>
             {#if itemError}
               <span class="st-fileUploader__itemError">{itemError}</span>

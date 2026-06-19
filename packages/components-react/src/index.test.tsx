@@ -159,7 +159,7 @@ const componentCases: Array<{ name: string; element: React.ReactElement; text?: 
   { name: "NumberInput", element: <NumberInput label="Number label" value={3} />, text: "Number label" },
   { name: "OrderedList", element: <OrderedList items={["First item"]} />, text: "First item" },
   { name: "OverflowMenu", element: <OverflowMenu open label="More" items={[{ id: "archive", label: "Archive item" }]} />, text: "Archive item" },
-  { name: "Pagination", element: <Pagination page={2} pageSize={10} totalItems={40} />, text: "11-20 of 40" },
+  { name: "Pagination", element: <Pagination page={2} pageSize={10} totalItems={40} />, label: "Page 2" },
   { name: "PaginationNav", element: <PaginationNav page={2} totalPages={4} />, label: "Page 2" },
   { name: "PasswordInput", element: <PasswordInput label="Password label" value="secret" />, text: "Password label" },
   { name: "Popover", element: <Popover content="Popover body" open><button type="button">Popover trigger</button></Popover>, text: "Popover body" },

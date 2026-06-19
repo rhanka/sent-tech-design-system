@@ -59,6 +59,7 @@
     sortNoneLabel?: string;
     previousLabel?: string;
     nextLabel?: string;
+    paginationLabel?: string;
     rangeLabel?: (range: { start: number; end: number; total: number }) => string;
     emptyLabel?: string;
     onRowClick?: (row: DataTableRow) => void;
@@ -84,6 +85,7 @@
     sortNoneLabel = "Not sorted",
     previousLabel = "Previous",
     nextLabel = "Next",
+    paginationLabel = "Pagination",
     rangeLabel = ({ start, end, total }) => `${start}–${end} of ${total}`,
     emptyLabel = "No data",
     onRowClick,
@@ -372,7 +374,7 @@
   {#if pageSize && pageSize > 0}
     <div class="st-dataTable__footer">
       <span class="st-dataTable__range" aria-live="polite">{rangeLabel(range)}</span>
-      <nav class="st-dataTable__pager" aria-label="Pagination">
+      <nav class="st-dataTable__pager" aria-label={paginationLabel}>
         <button
           type="button"
           class="st-dataTable__pagerBtn"

@@ -387,22 +387,42 @@ export function ChatMessage({ role = "assistant", status = "completed", content,
 }
 
 export type ChatThreadProps = React.HTMLAttributes<HTMLElement> & {
+  label?: string;
+  autoScroll?: boolean;
   messages?: Array<{ id: string; role?: ChatMessageRole; content: React.ReactNode; status?: ChatMessageStatus }>;
   emptyLabel?: React.ReactNode;
+  emptyState?: React.ReactNode;
 };
-export function ChatThread({ messages, emptyLabel = "No messages", children, className, ...rest }: ChatThreadProps) {
+export function ChatThread({ label, autoScroll = true, messages, emptyLabel, emptyState, children, className, ...rest }: ChatThreadProps) {
+  const sectionRef = React.useRef<HTMLElement>(null);
+  React.useEffect(() => {
+    if (!autoScroll) return;
+    const node = sectionRef.current;
+    if (!node) return;
+    const scrollToBottom = () => {
+      node.scrollTop = node.scrollHeight;
+    };
+    scrollToBottom();
+    const observer = new MutationObserver(scrollToBottom);
+    observer.observe(node, { childList: true, subtree: true, characterData: true });
+    return () => observer.disconnect();
+  }, [autoScroll, messages, children]);
+  const hasContent = Boolean(messages?.length) || Boolean(children);
+  const empty = emptyState ?? emptyLabel;
   return (
     <section
       {...rest}
+      ref={sectionRef}
       className={classNames("st-chatThread", className)}
       role="log"
-      aria-label={rest["aria-label"] ?? "Chat thread"}
+      aria-label={label ?? rest["aria-label"] ?? "Chat thread"}
       aria-live="polite"
       aria-relevant="additions text"
     >
       <div className="st-chatThread__list">
-        {messages?.length ? messages.map((message) => <ChatMessage key={message.id} role={message.role} status={message.status} content={message.content} />) : children ?? <p className="st-chatThread__empty">{emptyLabel}</p>}
+        {messages?.length ? messages.map((message) => <ChatMessage key={message.id} role={message.role} status={message.status} content={message.content} />) : children}
       </div>
+      {!hasContent && empty != null ? <div className="st-chatThread__empty">{empty}</div> : null}
     </section>
   );
 }
@@ -493,13 +513,42 @@ export function Radio(props: ChoiceProps) {
   return <Choice {...props} type="radio" />;
 }
 
-export type CodeSnippetProps = React.HTMLAttributes<HTMLPreElement> & { code: string; inline?: boolean };
-export function CodeSnippet({ code, inline = false, className, ...rest }: CodeSnippetProps) {
-  const Tag = inline ? "code" : "pre";
+export type CodeSnippetProps = React.HTMLAttributes<HTMLPreElement> & {
+  code: string;
+  language?: string;
+  inline?: boolean;
+  copyable?: boolean;
+  copyLabel?: string;
+  copiedLabel?: string;
+};
+export function CodeSnippet({
+  code,
+  language,
+  inline = false,
+  copyable = true,
+  copyLabel = "Copy",
+  copiedLabel = "Copied",
+  className,
+  ...rest
+}: CodeSnippetProps) {
+  if (inline) {
+    return (
+      <code {...(rest as AnyRecord)} className={classNames("st-codeSnippet--inline", className)} data-language={language}>
+        {code}
+      </code>
+    );
+  }
   return (
-    <Tag {...(rest as AnyRecord)} className={classNames("st-codeSnippet", inline && "st-codeSnippet--inline", className)}>
-      <code className="st-codeSnippet__code">{code}</code>
-    </Tag>
+    <div className="st-codeSnippet__wrapper">
+      <pre {...(rest as AnyRecord)} className={classNames("st-codeSnippet", className)} data-language={language}>
+        <code className="st-codeSnippet__code">{code}</code>
+      </pre>
+      {copyable ? (
+        <span className="st-codeSnippet__copy">
+          <CopyButton value={code} size="sm" label={copyLabel} copiedLabel={copiedLabel} />
+        </span>
+      ) : null}
+    </div>
   );
 }
 
@@ -1190,7 +1239,7 @@ export function Dropdown({ label = "Select", options, value, open: controlledOpe
         <ChevronDown className={classNames("st-dropdown__icon", open && "st-dropdown__icon--open")} size={18} strokeWidth={2.25} aria-hidden="true" />
       </button>
       {open ? (
-        <div className="st-dropdown__list" role="listbox" aria-label={text(label) || "Options"}>
+        <div className="st-dropdown__list" role="listbox" aria-label={text(label)}>
           {options.map((option, index) => (
             <button
               key={option.value}
@@ -1201,6 +1250,7 @@ export function Dropdown({ label = "Select", options, value, open: controlledOpe
               role="option"
               className="st-dropdown__option"
               disabled={option.disabled}
+              aria-disabled={option.disabled ? "true" : undefined}
               aria-selected={option.value === current}
               onClick={() => selectOption(option)}
               onKeyDown={(event) => {
@@ -1289,6 +1339,8 @@ export type FileUploadItem = {
   error?: React.ReactNode;
 };
 export type FileUploaderProps = React.HTMLAttributes<HTMLDivElement> & {
+  /** Field id. Wires the <label> (htmlFor) to the <input> (id). Auto-generated when omitted. */
+  id?: string;
   label?: React.ReactNode;
   helperText?: React.ReactNode;
   errorText?: React.ReactNode;
@@ -1320,6 +1372,7 @@ function fileItemSize(item: FileUploadItem): number | undefined {
   return item.file?.size ?? item.size;
 }
 export function FileUploader({
+  id,
   label,
   helperText,
   errorText,
@@ -1334,11 +1387,13 @@ export function FileUploader({
   className,
   ...rest
 }: FileUploaderProps) {
+  const reactId = React.useId();
+  const inputId = id ?? reactId;
   const isInvalid = invalid || Boolean(errorText);
   const effectiveTriggerLabel = triggerLabel ?? (multiple ? "Choose files" : "Choose file");
   return (
     <div {...rest} className={classNames("st-field", "st-fileUploader-field", className)}>
-      {label ? <label className="st-field__label">{label}</label> : null}
+      {label ? <label className="st-field__label" htmlFor={inputId}>{label}</label> : null}
       <div
         className={classNames(
           "st-fileUploader__dropzone",
@@ -1348,6 +1403,7 @@ export function FileUploader({
         role="presentation"
       >
         <input
+          id={inputId}
           className="st-fileUploader__input"
           type="file"
           accept={accept}
@@ -1396,7 +1452,7 @@ export function FileUploader({
                   {sizeLabel ? <span className="st-fileUploader__itemSize">{sizeLabel}</span> : null}
                   {item.status === "error" && item.error ? <span className="st-fileUploader__itemError">{item.error}</span> : null}
                 </span>
-                <button type="button" className="st-fileUploader__remove" aria-label={removeLabel(text(name))} disabled={disabled}>
+                <button type="button" className="st-fileUploader__remove" aria-label={removeLabel(text(name) || "file")} disabled={disabled}>
                   <X size={16} strokeWidth={2} aria-hidden="true" />
                 </button>
               </li>
@@ -3371,7 +3427,7 @@ export function Menu({ items, dense = false, onSelect, className, role, ...rest 
   return (
     <div {...rest} ref={rootRef} className={classNames("st-menu", dense && "st-menu--dense", className)} role={role ?? "menu"}>
       {items.map((item, index) => {
-        if (isDivider(item)) return <div key={item.id ?? index} className="st-menu__divider" role="separator" />;
+        if (isDivider(item)) return <div key={item.id ?? index} className="st-menu__divider" role="separator" aria-hidden="true" />;
         if (isGroup(item)) {
           // Canon-aligned (Svelte): a group is a flat `div role="presentation"`
           // label; nested `items` (React-native shape) render as flat siblings.
@@ -3379,7 +3435,7 @@ export function Menu({ items, dense = false, onSelect, className, role, ...rest 
             <React.Fragment key={item.id ?? index}>
               <div className="st-menu__group" role="presentation">{item.label}</div>
               {(item.items ?? []).map((child) => (
-                <button key={actionId(child) ?? text(child.label)} type="button" role="menuitem" className={classNames("st-menu__item", isDangerAction(child) && "st-menu__item--danger")} disabled={child.disabled} onClick={() => onSelect?.(child)} onKeyDown={(event) => handleItemKeyDown(event, child)}>
+                <button key={actionId(child) ?? text(child.label)} type="button" role="menuitem" className={classNames("st-menu__item", isDangerAction(child) && "st-menu__item--danger")} disabled={child.disabled} aria-disabled={child.disabled ? "true" : undefined} onClick={() => onSelect?.(child)} onKeyDown={(event) => handleItemKeyDown(event, child)}>
                   {child.icon ? <span className="st-menu__itemIcon" aria-hidden="true">{child.icon}</span> : null}
                   <span className="st-menu__itemLabel">{child.label}</span>
                 </button>
@@ -3389,7 +3445,7 @@ export function Menu({ items, dense = false, onSelect, className, role, ...rest 
         }
         const action = item as MenuActionItem;
         return (
-          <button key={actionId(action) ?? text(action.label) ?? index} type="button" role="menuitem" disabled={action.disabled} className={classNames("st-menu__item", isDangerAction(action) && "st-menu__item--danger")} onClick={() => onSelect?.(action)} onKeyDown={(event) => handleItemKeyDown(event, action)}>
+          <button key={actionId(action) ?? text(action.label) ?? index} type="button" role="menuitem" disabled={action.disabled} aria-disabled={action.disabled ? "true" : undefined} className={classNames("st-menu__item", isDangerAction(action) && "st-menu__item--danger")} onClick={() => onSelect?.(action)} onKeyDown={(event) => handleItemKeyDown(event, action)}>
             {action.icon ? <span className="st-menu__itemIcon" aria-hidden="true">{action.icon}</span> : null}
             <span className="st-menu__itemLabel">{action.label}</span>
           </button>
@@ -3404,10 +3460,12 @@ export type MenuPopoverProps = React.HTMLAttributes<HTMLDivElement> & {
   items?: MenuItem[];
   open?: boolean;
   placement?: "top-start" | "top-end" | "bottom-start" | "bottom-end";
+  /** Accessible name for the panel (Svelte-canonical: applied as aria-label on role="dialog"). */
+  label?: string;
 };
-export function MenuPopover({ trigger, items = [], open = true, placement = "bottom-start", children, className, ...rest }: MenuPopoverProps) {
+export function MenuPopover({ trigger, items = [], open = true, placement = "bottom-start", label, children, className, ...rest }: MenuPopoverProps) {
   return (
-    <div {...rest} className={classNames("st-menuPopover", `st-menuPopover--${placement}`, className)}>
+    <div {...rest} className={classNames("st-menuPopover", `st-menuPopover--${placement}`, className)} role="dialog" aria-label={label}>
       {trigger}
       {open ? <div className="st-menuPopover__content">{items.length ? <Menu items={items} role="presentation" /> : children}</div> : null}
     </div>
@@ -3790,7 +3848,7 @@ export function NumberInput({
 // de compat). Le test reconnaît l'une OU l'autre clé pour ne pas rendre vide.
 export type OrderedListItem = { content?: React.ReactNode; label?: React.ReactNode; children?: OrderedListInput[] };
 export type OrderedListInput = React.ReactNode | OrderedListItem;
-export type OrderedListProps = React.OlHTMLAttributes<HTMLOListElement> & { items: OrderedListInput[] };
+export type OrderedListProps = React.OlHTMLAttributes<HTMLOListElement> & { items: OrderedListInput[]; nested?: boolean };
 function renderListItem(item: OrderedListInput, index: number, ordered: boolean): React.ReactNode {
   if (
     typeof item === "object" &&
@@ -3824,9 +3882,9 @@ function renderListItem(item: OrderedListInput, index: number, ordered: boolean)
     </li>
   );
 }
-export function OrderedList({ items, className, ...rest }: OrderedListProps) {
+export function OrderedList({ items, nested = false, className, ...rest }: OrderedListProps) {
   return (
-    <ol {...rest} className={classNames("st-orderedList", className)}>
+    <ol {...rest} className={classNames("st-orderedList", nested && "st-orderedList--nested", className)}>
       {items.map((item, index) => renderListItem(item, index, true))}
     </ol>
   );
@@ -3858,32 +3916,29 @@ export type PaginationProps = React.HTMLAttributes<HTMLElement> & {
   totalItems?: number;
   totalPages?: number;
   pageCount?: number;
+  previousLabel?: string;
+  nextLabel?: string;
   onPageChange?: (page: number) => void;
 };
-export function Pagination({ page, pageSize = 10, totalItems, totalPages, pageCount, onPageChange, className, ...rest }: PaginationProps) {
+export function Pagination({ page, pageSize = 10, totalItems, totalPages, pageCount, previousLabel = "Previous", nextLabel = "Next", onPageChange, className, ...rest }: PaginationProps) {
   const pages = pageCount ?? totalPages ?? (totalItems ? Math.max(1, Math.ceil(totalItems / pageSize)) : page);
-  const start = totalItems ? (page - 1) * pageSize + 1 : page;
-  const end = totalItems ? Math.min(page * pageSize, totalItems) : page;
   const visiblePages = Array.from({ length: pages }, (_, index) => index + 1);
   return (
     <nav {...rest} className={classNames("st-pagination", className)} aria-label="Pagination">
-      <button type="button" disabled={page <= 1} onClick={() => onPageChange?.(page - 1)}>Previous</button>
-      <span className="st-pagination__page--active">{totalItems ? `${start}-${end} of ${totalItems}` : `Page ${page} of ${pages}`}</span>
-      <span className="st-pagination__pages">
-        {visiblePages.map((pageNumber) => (
-          <button
-            key={pageNumber}
-            type="button"
-            className={classNames("st-pagination__page", pageNumber === page && "st-pagination__page--active")}
-            aria-label={`Page ${pageNumber}`}
-            aria-current={pageNumber === page ? "page" : undefined}
-            onClick={() => onPageChange?.(pageNumber)}
-          >
-            {pageNumber}
-          </button>
-        ))}
-      </span>
-      <button type="button" disabled={page >= pages} onClick={() => onPageChange?.(page + 1)}>Next</button>
+      <button type="button" disabled={page <= 1} onClick={() => onPageChange?.(page - 1)}>{previousLabel}</button>
+      {visiblePages.map((pageNumber) => (
+        <button
+          key={pageNumber}
+          type="button"
+          className={classNames("st-pagination__page", pageNumber === page && "st-pagination__page--active")}
+          aria-label={`Page ${pageNumber}`}
+          aria-current={pageNumber === page ? "page" : undefined}
+          onClick={() => onPageChange?.(pageNumber)}
+        >
+          {pageNumber}
+        </button>
+      ))}
+      <button type="button" disabled={page >= pages} onClick={() => onPageChange?.(page + 1)}>{nextLabel}</button>
     </nav>
   );
 }
@@ -4038,14 +4093,15 @@ export type PopoverProps = Omit<React.HTMLAttributes<HTMLElement>, "content"> & 
   trigger?: React.ReactNode;
   content?: React.ReactNode;
   open?: boolean;
+  label?: string;
   placement?: "top" | "right" | "bottom" | "left";
 };
-export function Popover({ trigger, content, open: controlledOpen, placement = "bottom", children, className, ...rest }: PopoverProps) {
+export function Popover({ trigger, content, open: controlledOpen, label: labelProp, placement = "bottom", children, className, ...rest }: PopoverProps) {
   const hostRef = React.useRef<HTMLSpanElement>(null);
   const [open, setOpen] = useControlled(controlledOpen, false);
   const triggerNode = trigger ?? children;
   const contentNode = content ?? (trigger ? children : null);
-  const label = text(React.isValidElement(triggerNode) ? (triggerNode.props as { children?: React.ReactNode }).children : triggerNode) || "Popover";
+  const label = labelProp ?? (text(React.isValidElement(triggerNode) ? (triggerNode.props as { children?: React.ReactNode }).children : triggerNode) || "Popover");
   useOutsideMouseDown(open, hostRef, () => setOpen(false));
   useEscape(open, () => setOpen(false));
 
@@ -4053,9 +4109,9 @@ export function Popover({ trigger, content, open: controlledOpen, placement = "b
     <span {...rest} ref={hostRef} className={classNames("st-popover-host", className)} onClick={() => setOpen(true)}>
       {triggerNode}
       {open ? (
-        <span className={classNames("st-popover", `st-popover--${placement}`)} role="dialog" aria-label={label}>
+        <section className={classNames("st-popover", `st-popover--${placement}`)} role="dialog" aria-label={label}>
           {contentNode}
-        </span>
+        </section>
       ) : null}
     </span>
   );
@@ -4369,14 +4425,18 @@ export type StreamingMessageProps = React.HTMLAttributes<HTMLElement> & {
   text?: React.ReactNode;
   events?: StreamingMessageEvent[];
   mode?: StreamingMessageMode;
+  placeholder?: React.ReactNode;
 };
-export function StreamingMessage({ text: messageText, events = [], mode = "live", className, ...rest }: StreamingMessageProps) {
+export function StreamingMessage({ text: messageText, events = [], mode = "live", placeholder = "Streaming en cours…", className, ...rest }: StreamingMessageProps) {
+  const isEmpty = messageText == null || messageText === "";
   return (
     <section {...rest} className={classNames("st-streamingMessage", `st-streamingMessage--${mode}`, className)}>
-      <div className="st-streamingMessage__text">{messageText}</div>
-      <ul className="st-streamingMessage__trailList">
-        {events.map((event) => <li key={event.id}>{event.label}</li>)}
-      </ul>
+      <p className={classNames("st-streamingMessage__text", isEmpty && "st-streamingMessage__text--muted")}>{isEmpty ? placeholder : messageText}</p>
+      {events.length > 0 ? (
+        <ul className="st-streamingMessage__trailList">
+          {events.map((event) => <li key={event.id}>{event.label}</li>)}
+        </ul>
+      ) : null}
     </section>
   );
 }
@@ -4857,20 +4917,25 @@ export interface TileGroupItem {
   description?: React.ReactNode;
   disabled?: boolean;
 }
-export type TileGroupProps = React.HTMLAttributes<HTMLFieldSetElement> & {
+export type TileGroupProps = Omit<React.HTMLAttributes<HTMLFieldSetElement>, "onChange"> & {
   legend?: React.ReactNode;
+  legendHidden?: boolean;
   items: TileGroupItem[];
   value?: string;
+  name?: string;
   disabled?: boolean;
+  onChange?: (value: string) => void;
 };
-export function TileGroup({ legend, items, value, disabled = false, className, ...rest }: TileGroupProps) {
+export function TileGroup({ legend, legendHidden = false, items, value, name, disabled = false, onChange, className, ...rest }: TileGroupProps) {
+  const reactId = React.useId();
+  const groupName = name ?? `st-tileGroup-${reactId}`;
   return (
     <fieldset {...rest} className={classNames("st-tileGroup", disabled && "st-tileGroup--disabled", className)}>
-      {legend ? <legend className="st-tileGroup__legend">{legend}</legend> : null}
+      {legend ? <legend className={classNames("st-tileGroup__legend", legendHidden && "st-tileGroup__legend--hidden")}>{legend}</legend> : null}
       <div className="st-tileGroup__items">
         {items.map((item) => (
           <label key={item.value} className={classNames("st-tileGroup__tile", item.value === value && "st-tileGroup__tile--checked", item.disabled && "st-tileGroup__tile--disabled")}>
-            <input className="st-tileGroup__input" type="radio" value={item.value} checked={item.value === value} disabled={disabled || item.disabled} readOnly />
+            <input className="st-tileGroup__input" type="radio" name={groupName} value={item.value} checked={item.value === value} disabled={disabled || item.disabled} onChange={() => onChange?.(item.value)} />
             <span className="st-tileGroup__content">
               <span className="st-tileGroup__label">{item.label ?? item.title}</span>
               {item.description ? <span className="st-tileGroup__description">{item.description}</span> : null}
@@ -4899,44 +4964,48 @@ export type ToastProps = React.HTMLAttributes<HTMLElement> & {
   autoDismiss?: boolean;
   duration?: number;
   onDismiss?: (id: string) => void;
+  closeLabel?: React.ReactNode;
+  dismissLabel?: (title: React.ReactNode) => string;
 };
-export function Toast({ tone = "info", title, message, actions, onClose, items, autoDismiss = false, duration = 5000, onDismiss, children, className, ...rest }: ToastProps) {
+export function Toast({ tone = "info", title, message, actions, onClose, items, autoDismiss = false, duration = 5000, onDismiss, closeLabel = "Close", dismissLabel = (t) => `Dismiss ${text(t)}`, children, className, ...rest }: ToastProps) {
   React.useEffect(() => {
     if (!autoDismiss || !items?.length || !onDismiss) return;
     const timeout = window.setTimeout(() => onDismiss(items[0].id), duration);
     return () => window.clearTimeout(timeout);
   }, [autoDismiss, duration, items, onDismiss]);
 
+  const roleFor = (t: string) => (t === "error" ? "alert" : "status");
+
   if (items?.length) {
     return (
       <div {...rest} className={classNames("st-toastQueue", className)}>
         {items.map((item) => (
-          <aside key={item.id} className={classNames("st-toast", `st-toast--${item.tone ?? "info"}`)} role="status">
+          <section key={item.id} className={classNames("st-toast", `st-toast--${item.tone ?? "info"}`)} role={roleFor(item.tone ?? "info")}>
             <div className="st-toast__content">
               <h2 className="st-toast__title">{item.title}</h2>
               {item.message ? <p className="st-toast__message">{item.message}</p> : null}
             </div>
             {item.actions ? <div className="st-toast__actions">{item.actions}</div> : null}
             {onDismiss ? (
-              <button type="button" onClick={() => onDismiss(item.id)} aria-label={`Dismiss ${text(item.title)}`}>
-                Close
+              <button type="button" onClick={() => onDismiss(item.id)} aria-label={dismissLabel(item.title)}>
+                {closeLabel}
               </button>
             ) : null}
-          </aside>
+          </section>
         ))}
       </div>
     );
   }
 
   return (
-    <aside {...rest} className={classNames("st-toast", `st-toast--${tone}`, className)} role="status">
+    <section {...rest} className={classNames("st-toast", `st-toast--${tone}`, className)} role={roleFor(tone)}>
       <div className="st-toast__content">
         <h2 className="st-toast__title">{title}</h2>
         {message ? <p className="st-toast__message">{message}</p> : children}
       </div>
       {actions ? <div className="st-toast__actions">{actions}</div> : null}
-      {onClose ? <button type="button" onClick={onClose}>Close</button> : null}
-    </aside>
+      {onClose ? <button type="button" onClick={onClose}>{closeLabel}</button> : null}
+    </section>
   );
 }
 
@@ -5199,10 +5268,10 @@ export function TreeView({
 
 export type UnorderedListItem = { content?: React.ReactNode; label?: React.ReactNode; children?: UnorderedListInput[] };
 export type UnorderedListInput = React.ReactNode | UnorderedListItem;
-export type UnorderedListProps = React.HTMLAttributes<HTMLUListElement> & { items: UnorderedListInput[] };
-export function UnorderedList({ items, className, ...rest }: UnorderedListProps) {
+export type UnorderedListProps = React.HTMLAttributes<HTMLUListElement> & { items: UnorderedListInput[]; nested?: boolean };
+export function UnorderedList({ items, nested, className, ...rest }: UnorderedListProps) {
   return (
-    <ul {...rest} className={classNames("st-unorderedList", className)}>
+    <ul {...rest} className={classNames("st-unorderedList", nested && "st-unorderedList--nested", className)}>
       {items.map((item, index) => renderListItem(item, index, false))}
     </ul>
   );

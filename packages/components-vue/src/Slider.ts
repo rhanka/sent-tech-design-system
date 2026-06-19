@@ -17,6 +17,7 @@ export type SliderProps = {
   invalid?: boolean;
   showValue?: boolean;
   valueFormatter?: (value: number) => string;
+  disabled?: boolean;
   class?: string;
 };
 
@@ -36,6 +37,7 @@ export const Slider = defineComponent({
     invalid: { type: Boolean, default: false },
     showValue: { type: Boolean, default: true },
     valueFormatter: { type: Function as unknown as () => (value: number) => string, default: undefined },
+    disabled: { type: Boolean, default: false },
     class: { type: String, default: undefined },
   },
   emits: ["update:modelValue", "change"],
@@ -99,6 +101,7 @@ export const Slider = defineComponent({
                 min: props.min,
                 max: props.max,
                 step: props.step,
+                disabled: props.disabled,
                 onInput: (event: Event) => {
                   const val = Number((event.target as HTMLInputElement).value);
                   if (Number.isFinite(val)) {

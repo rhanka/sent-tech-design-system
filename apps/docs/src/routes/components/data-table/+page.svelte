@@ -188,20 +188,30 @@
         <tr><td><code>size</code></td><td><code>"sm" | "md" | "lg"</code></td><td><code>"md"</code></td></tr>
         <tr><td><code>selectable</code></td><td><code>"none" | "single" | "multiple"</code></td><td><code>"none"</code></td></tr>
         <tr><td><code>selectedIds</code></td><td><code>string[]</code> (<code>$bindable</code>)</td><td><code>[]</code></td></tr>
+        <tr><td><code>onSelectionChange</code></td><td><code>(ids: string[]) =&gt; void</code> (React / Vue)</td><td><em>optionnel</em></td></tr>
         <tr><td><code>sortable</code></td><td><code>boolean</code></td><td><code>true</code></td></tr>
         <tr><td><code>sortBy</code></td><td><code>DataTableSort | null</code> (<code>$bindable</code>)</td><td><code>null</code></td></tr>
+        <tr><td><code>onSortChange</code></td><td><code>(sortBy: DataTableSort | null) =&gt; void</code> (React / Vue)</td><td><em>optionnel</em></td></tr>
         <tr><td><code>pageSize</code></td><td><code>number</code></td><td><em>désactivé</em></td></tr>
         <tr><td><code>page</code></td><td><code>number</code> (<code>$bindable</code>)</td><td><code>1</code></td></tr>
+        <tr><td><code>onPageChange</code></td><td><code>(page: number) =&gt; void</code> (React / Vue)</td><td><em>optionnel</em></td></tr>
         <tr><td><code>onRowClick</code></td><td><code>(row: DataTableRow) => void</code></td><td><em>optionnel</em></td></tr>
         <tr><td><code>selectAllLabel</code></td><td><code>string</code></td><td><code>"Select all rows"</code></td></tr>
         <tr><td><code>selectRowLabel</code></td><td><code>string</code></td><td><code>"Select row"</code></td></tr>
         <tr><td><code>previousLabel</code></td><td><code>string</code></td><td><code>"Previous"</code></td></tr>
         <tr><td><code>nextLabel</code></td><td><code>string</code></td><td><code>"Next"</code></td></tr>
+        <tr><td><code>paginationLabel</code></td><td><code>string</code></td><td><code>"Pagination"</code></td></tr>
         <tr><td><code>rangeLabel</code></td><td><code>(range: &#123; start: number; end: number; total: number &#125;) =&gt; string</code></td><td><code>(&#123; start, end, total &#125;) =&gt; "start-end of total"</code></td></tr>
         <tr><td><code>emptyLabel</code></td><td><code>string</code></td><td><code>"No data"</code></td></tr>
         <tr><td><code>class</code></td><td><code>string</code></td><td><em>optionnel</em></td></tr>
       </tbody>
     </table>
+    <p>
+      Pour piloter l’état depuis le parent : Svelte utilise des props <code>$bindable</code>
+      (<code>selectedIds</code>, <code>sortBy</code>, <code>page</code>), tandis que React et Vue
+      utilisent le couple prop contrôlée + callback
+      (<code>onSelectionChange</code>, <code>onSortChange</code>, <code>onPageChange</code>).
+    </p>
     <p>
       Les cellules sont triables par défaut si <code>sortable</code> reste vrai; une
       colonne triable bascule <code>ascending</code> → <code>descending</code> → sans

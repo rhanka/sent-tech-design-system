@@ -93,6 +93,7 @@
 
   function clear() {
     value = "";
+    activeIndex = -1;
     onchange?.("");
   }
 
@@ -131,7 +132,7 @@
 </script>
 
 <div class={fieldClasses()}>
-  <label class="st-field__control">
+  <label class="st-field__control" for={inputId}>
     {#if label}<span class="st-field__label">{label}</span>{/if}
     <span class={groupClasses()}>
       <input

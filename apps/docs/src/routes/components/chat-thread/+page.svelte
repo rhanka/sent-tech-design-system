@@ -36,7 +36,13 @@
       a11yLabel: "Journal de discussion",
       apiProp1: "Propriété",
       apiProp2: "Type",
-      apiProp3: "Description"
+      apiProp3: "Description",
+      resetWelcomeBtn: "Réinitialiser",
+      controlsHeading: "Commandes & Événements",
+      eventInjectionLabel: "Injection d'Événements",
+      threadActionsLabel: "Actions sur le Fil",
+      resetConversationBtn: "Réinitialiser la conversation",
+      typicalStructureLabel: "Structure de thread typique"
     },
     en: {
       kicker: "Component · Chat",
@@ -68,7 +74,13 @@
       a11yLabel: "Conversation log",
       apiProp1: "Property",
       apiProp2: "Type",
-      apiProp3: "Description"
+      apiProp3: "Description",
+      resetWelcomeBtn: "Reset welcome",
+      controlsHeading: "Commands & Events",
+      eventInjectionLabel: "Event Injection",
+      threadActionsLabel: "Thread Actions",
+      resetConversationBtn: "Reset conversation",
+      typicalStructureLabel: "Typical thread structure"
     }
   } as const;
 
@@ -254,7 +266,7 @@
     <p>{text().emptyIllustrationDesc}</p>
     <button type="button" class="docs-reset-btn" onclick={resetThread}>
       <RefreshCw size={12} />
-      <span>Reset welcome</span>
+      <span>{text().resetWelcomeBtn}</span>
     </button>
   </div>
 {/snippet}
@@ -313,7 +325,7 @@
 
       <!-- Controls Side Panel -->
       <div class="playground-controls">
-        <h3>Commandes & Événements</h3>
+        <h3>{text().controlsHeading}</h3>
 
         <!-- AutoScroll toggle -->
         <div class="control-group check-group-override">
@@ -327,7 +339,7 @@
 
         <!-- Simulation Injection buttons -->
         <div class="control-group">
-          <span class="control-label">Injection d'Événements</span>
+          <span class="control-label">{text().eventInjectionLabel}</span>
           <p class="control-help-text">Simulez des retours asynchrones d'infrastructure ou de traitement au milieu du thread.</p>
           <div class="btn-stack">
             <button type="button" class="injection-btn secondary-btn" onclick={injectSystemLog}>
@@ -345,7 +357,7 @@
 
         <!-- Actions Panel -->
         <div class="control-group">
-          <span class="control-label">Actions sur le Fil</span>
+          <span class="control-label">{text().threadActionsLabel}</span>
           <div class="btn-stack">
             <button type="button" class="injection-btn danger-btn" onclick={clearThread}>
               <Trash2 size={14} />
@@ -353,7 +365,7 @@
             </button>
             <button type="button" class="injection-btn default-btn" onclick={resetThread}>
               <RefreshCw size={14} />
-              <span>Réinitialiser la conversation</span>
+              <span>{text().resetConversationBtn}</span>
             </button>
           </div>
         </div>
@@ -363,7 +375,7 @@
     <!-- Code Block -->
     <div class="playground-code-section">
       <div class="code-header">
-        <span>Structure de thread typique</span>
+        <span>{text().typicalStructureLabel}</span>
       </div>
       <pre class="code-pre"><code>{`<script lang="ts">
   import { ChatThread, ChatMessage, ChatComposer } from "@sentropic/design-system-svelte";
