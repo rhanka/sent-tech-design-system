@@ -70,6 +70,7 @@ export const DOCS_UTILITY_NAV: DocsNavItem[] = [
 // latéral (chaque page composant rend déjà les frameworks).
 const DOCS_FOUNDATION_NAV_DEFINITIONS: DocsNavDefinition[] = [
   { label: { fr: "Vue d'ensemble", en: "Overview" }, href: "/" },
+  { label: { fr: "Démarrage rapide", en: "Getting started" }, href: "/getting-started" },
   { label: { fr: "Fondations", en: "Foundations" }, href: "/#foundations" },
   { label: { fr: "Tokens", en: "Tokens" }, href: "/#tokens" },
   { label: { fr: "Thèmes", en: "Themes" }, href: "/#themes" }

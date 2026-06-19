@@ -1209,3 +1209,7 @@
 {"aggregate": "item", "aggregateId": "01KVWP00000000000000000330", "at": "2026-06-19T04:05:18.000Z", "by": "machine:claude-sonnet-4-6", "id": "01KVWP00000000000000000330_done2", "payload": {"to": "done"}, "prov": {"auth": "machine", "proposed": true, "transport": "mcp"}, "type": "realization.transition"}
 {"aggregate": "item", "aggregateId": "01KVWP00000000000000000140", "at": "2026-06-19T10:46:14.000Z", "by": "machine:claude-sonnet-4-6", "payload": {"to": "done"}, "type": "realization.transition"}
 {"aggregate": "item", "aggregateId": "01KVWP00000000000000000281", "at": "2026-06-19T10:50:36.000Z", "by": "machine:claude-sonnet-4-6", "payload": {"to": "done"}, "type": "realization.transition"}
+{"aggregate": "item", "aggregateId": "01KTMW6G2WDK7EGZ15FFPWWVHJ", "at": "2026-06-19T10:55:28.000Z", "by": "machine:claude-sonnet-4-6", "payload": {"to": "done"}, "type": "realization.transition"}
+{"aggregate": "item", "aggregateId": "01KTQR2YGGGYPH2JVN8ZVRHS2P", "at": "2026-06-19T10:55:28.000Z", "by": "machine:claude-sonnet-4-6", "payload": {"to": "done"}, "type": "realization.transition"}
+{"aggregate": "item", "aggregateId": "01KTQR2YN272CT9NJWF05Z01QC", "at": "2026-06-19T10:55:28.000Z", "by": "machine:claude-sonnet-4-6", "payload": {"to": "done"}, "type": "realization.transition"}
+{"aggregate": "item", "aggregateId": "01KTQR2YYHB5016WY665RXGF6G", "at": "2026-06-19T10:55:28.000Z", "by": "machine:claude-sonnet-4-6", "payload": {"to": "done"}, "type": "realization.transition"}
