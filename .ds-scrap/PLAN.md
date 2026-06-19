@@ -46,7 +46,10 @@ CGI = 11e en parallèle (scrape Drive). Hex = directionnel ; le build agent MESU
 
 ## Phase chrome (header+logo+boutons par marque) — DEMANDE UTILISATEUR
 Pattern : `Chrome<Marque>.svelte` (calqué sur ChromeCanada) + logo officiel `static/chrome/<id>/` + câblage (import + useCustomChrome + branche rendu + header-contract test).
-Chromes faits ✅ : lightspeed (bc6aea1), desjardins+ssense+ubisoft (bcb1fcf). Restent : cirque, cgi, national-bank, bombardier, cae, saq, stm, nuvei, coveo, circle-k, aldo. Rollout solo/×3, le rate-limit tue les spawns ×3+ sous charge → préfetch logos par curl quand possible.
+### ✅ ROLLOUT CHROME COMPLET — 15/15 chromes de marque
+- lightspeed (bc6aea1) · desjardins+ssense+ubisoft (bcb1fcf) · cirque+cgi+national-bank (1e1c8b7) · bombardier+saq+nuvei+coveo (446d27b) · cae+stm+circle-k+aldo (2324b89).
+- Tous : header + nav + sidebar + footer de la marque (calqués ChromeCanada) + **logo officiel** (Wikimedia / site officiel / wordmark typographique fidèle ; CAE = PNG officiel, aucun dessin à la main) + câblage useCustomChrome + branche + header-contract.test. svelte-check 0 erreur à chaque lot.
+- Méthode rollout : agents solo/×3-4 (logo prefetch curl quand possible), ds-scrap câble en série. Le rate-limit tue les spawns ×3+ sous forte charge → fallback solo.
 Remplaçant prêt si besoin : Mirego (mirego.com — noir/crème, font Almirego).
 
 ## ✅ RUN — 11 thèmes core live sur main (+ extension lot 7 en cours)
