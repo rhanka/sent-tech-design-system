@@ -3292,11 +3292,13 @@ describe("Vue behavioral parity — batch 5", () => {
 
   // --- ForceGraph ---
   describe("ForceGraph", () => {
-    it("renders figure.st-forceGraph", () => {
+    it("renders div.st-forceGraph with role img", () => {
       const wrapper = mount(ForceGraph, {
         props: { nodes: [{ id: "a", label: "A" }], edges: [] },
       });
-      expect(wrapper.find("figure.st-forceGraph").exists()).toBe(true);
+      const root = wrapper.find("div.st-forceGraph");
+      expect(root.exists()).toBe(true);
+      expect(root.attributes("role")).toBe("img");
     });
 
     it("renders node circles", () => {

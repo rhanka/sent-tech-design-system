@@ -20,6 +20,8 @@ export type AppShellProps = React.HTMLAttributes<HTMLDivElement> & {
   utilityLabel?: string;
   utilityMode?: AppShellUtilityMode;
   utilitySide?: AppShellUtilitySide;
+  primaryRailLabel?: string;
+  bottomPanelLabel?: string;
 };
 
 export function AppShell({
@@ -37,6 +39,8 @@ export function AppShell({
   utilityLabel = "Utility panel",
   utilityMode = "reserve",
   utilitySide = "right",
+  primaryRailLabel = "Primary rail",
+  bottomPanelLabel = "Workspace tools",
   className,
   children,
   ...rest
@@ -59,13 +63,13 @@ export function AppShell({
     >
       {topChrome ? <div className="st-appShell__topChrome">{topChrome}</div> : null}
       <div className="st-appShell__body">
-        {primaryRail ? <aside className="st-appShell__primaryRail" aria-label="Primary rail">{primaryRail}</aside> : null}
+        {primaryRail ? <aside className="st-appShell__primaryRail" aria-label={primaryRailLabel}>{primaryRail}</aside> : null}
         {navigationPanel ? <aside className="st-appShell__navigationPanel" aria-label={navigationLabel}>{navigationPanel}</aside> : null}
         <main className="st-appShell__main" id={mainId}>{main ?? children}</main>
         {contextPanel ? <aside className="st-appShell__contextPanel" aria-label={contextLabel}>{contextPanel}</aside> : null}
         {utilityPanel ? <aside className="st-appShell__utilityPanel" aria-label={utilityLabel}>{utilityPanel}</aside> : null}
       </div>
-      {bottomPanel ? <section className="st-appShell__bottomPanel" aria-label="Workspace tools">{bottomPanel}</section> : null}
+      {bottomPanel ? <section className="st-appShell__bottomPanel" aria-label={bottomPanelLabel}>{bottomPanel}</section> : null}
     </div>
   );
 }
