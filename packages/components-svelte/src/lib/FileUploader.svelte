@@ -407,7 +407,7 @@
   }
 
   .st-fileUploader__trigger:hover:not(:disabled) {
-    background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle));
+    background: var(--st-component-button-anatomy-states-hover-bg, var(--st-semantic-action-primary));
   }
 
   .st-fileUploader__trigger:focus-visible {

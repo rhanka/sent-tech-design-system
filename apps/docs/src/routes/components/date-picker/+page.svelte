@@ -54,47 +54,47 @@
   const text = () => copy[locale.value];
 
   // Démos décrites en arbre NodeSpec neutre -> rendues dans le framework actif
-  // (toute la section bascule en onglets svelte/react/vue, comme les autres
-  // pages composant). État statique : valeurs ISO figées pour la démonstration
-  // multi-framework (les islands coercent string -> Date).
-  const singleDemo: NodeSpec[] = [
+  // Démos réactives au changement de locale : les labels basculent fr/en.
+  // Les valeurs ISO restent des chaînes (les islands coercent string -> Date ;
+  // SvelteNode.adaptProps fait de même côté Svelte depuis la correction WP16).
+  const singleDemo: NodeSpec[] = $derived([
     {
       comp: "DatePicker",
       props: {
-        label: "Date de l’événement",
-        helperText: "Sélectionnez un jour.",
+        label: text().singleLabel,
+        helperText: text().singleHelper,
         value: "2026-06-15"
       }
     }
-  ];
+  ]);
 
-  const rangeDemo: NodeSpec[] = [
-    { comp: "DatePicker", props: { label: "Période de réservation", mode: "range" } }
-  ];
+  const rangeDemo: NodeSpec[] = $derived([
+    { comp: "DatePicker", props: { label: text().rangeLabel, mode: "range" } }
+  ]);
 
-  const boundedDemo: NodeSpec[] = [
+  const boundedDemo: NodeSpec[] = $derived([
     {
       comp: "DatePicker",
       props: {
-        label: "Date dans les 30 prochains jours",
+        label: text().boundedLabel,
         min: "2026-06-01",
         max: "2026-06-30",
         value: "2026-06-15"
       }
     }
-  ];
+  ]);
 
-  const errorDemo: NodeSpec[] = [
+  const errorDemo: NodeSpec[] = $derived([
     {
       comp: "DatePicker",
       props: {
-        label: "Date limite",
+        label: text().errorLabel,
         size: "sm",
-        errorText: "Une date est requise.",
+        errorText: text().errorText,
         invalid: true
       }
     }
-  ];
+  ]);
 </script>
 
 <div class="docs-page">

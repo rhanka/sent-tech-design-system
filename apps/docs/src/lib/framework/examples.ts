@@ -6209,35 +6209,33 @@ import { AspectRatio } from "@sentropic/design-system-vue";
     slug: "footer",
     nodes: [
       {
-        el: "div",
-        props: { class: "fp-stack" },
-        children: [
-          {
-            comp: "Footer",
-            props: {
-              brand: "Sent Tech",
-              columns: [
-                {
-                  title: "Produit",
-                  links: [
-                    { label: "Composants", href: "/components" },
-                    { label: "Tokens", href: "/tokens" },
-                    { label: "Documentation", href: "/docs" }
-                  ]
-                },
-                {
-                  title: "Entreprise",
-                  links: [
-                    { label: "À propos", href: "/about" },
-                    { label: "Blog", href: "/blog" },
-                    { label: "Contact", href: "/contact" }
-                  ]
-                }
-              ],
-              copyright: "© 2026 Sent Tech. Tous droits réservés."
+        comp: "Footer",
+        props: {
+          brand: "Sent Tech",
+          columns: [
+            {
+              title: "Produit",
+              links: [
+                { label: "Composants", href: "/components" },
+                { label: "Tokens", href: "/tokens" },
+                { label: "Documentation", href: "/docs" }
+              ]
+            },
+            {
+              title: "Entreprise",
+              links: [
+                { label: "À propos", href: "/about" },
+                { label: "Blog", href: "/blog" },
+                { label: "Contact", href: "/contact" }
+              ]
             }
-          }
-        ]
+          ],
+          legalLinks: [
+            { label: "Mentions légales", href: "#footer-demo" },
+            { label: "Confidentialité", href: "#footer-demo" }
+          ],
+          copyright: "© 2026 Sent Tech. Tous droits réservés."
+        }
       }
     ],
     code: {
@@ -6259,6 +6257,10 @@ import { AspectRatio } from "@sentropic/design-system-vue";
       <a href="/about">À propos</a>
       <a href="/blog">Blog</a>
     </nav>
+  {/snippet}
+  {#snippet legal()}
+    <a href="#">Mentions légales</a>
+    <a href="#">Confidentialité</a>
   {/snippet}
 </Footer>`,
       react: `import { Footer } from "@sentropic/design-system-react";
@@ -6282,6 +6284,10 @@ export function Demo() {
             { label: "Blog", href: "/blog" }
           ]
         }
+      ]}
+      legalLinks={[
+        { label: "Mentions légales", href: "#" },
+        { label: "Confidentialité", href: "#" }
       ]}
       copyright="© 2026 Sent Tech. Tous droits réservés."
     />
@@ -6310,8 +6316,43 @@ import { Footer } from "@sentropic/design-system-vue";
         ]
       }
     ]"
+    :legal-links="[
+      { label: 'Mentions légales', href: '#' },
+      { label: 'Confidentialité', href: '#' }
+    ]"
     copyright="© 2026 Sent Tech. Tous droits réservés."
   />
+</template>`
+    }
+  },
+  footerMinimal: {
+    id: "footerMinimal",
+    slug: "footer",
+    nodes: [
+      {
+        comp: "Footer",
+        props: {
+          copyright: "© 2026 Sent Tech."
+        }
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { Footer } from "@sentropic/design-system-svelte";
+</script>
+
+<Footer copyright="© 2026 Sent Tech." />`,
+      react: `import { Footer } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return <Footer copyright="© 2026 Sent Tech." />;
+}`,
+      vue: `<script setup>
+import { Footer } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Footer copyright="© 2026 Sent Tech." />
 </template>`
     }
   },
