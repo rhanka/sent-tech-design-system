@@ -153,6 +153,16 @@
       status: "available",
       description: "Centered card + form with email input, password input, remember-me checkbox, button, error alert and links : the universal quick-win.",
       descriptionFr: "Carte centrée + formulaire avec e-mail, mot de passe, case « se souvenir », bouton, alerte d'erreur et liens : le quick-win universel."
+    },
+    {
+      slug: "viewtemplater",
+      name: "View template catalog",
+      nameFr: "Catalogue de gabarits de vue",
+      domain: "Configuration",
+      domainFr: "Configuration",
+      status: "available",
+      description: "ConfigItemCard grid of ViewSpec templates organized by domain — copy, edit, reset, delete. Shows the ViewSpec format and the ConfigItemCard/FieldCard/ScoreCard patterns.",
+      descriptionFr: "Grille ConfigItemCard de gabarits ViewSpec par domaine — copier, éditer, réinitialiser, supprimer. Illustre le format ViewSpec et les patterns ConfigItemCard/FieldCard/ScoreCard."
     }
   ];
 
