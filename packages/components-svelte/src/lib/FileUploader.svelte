@@ -407,7 +407,10 @@
   }
 
   .st-fileUploader__trigger:hover:not(:disabled) {
-    background: var(--st-component-button-anatomy-states-hover-bg, var(--st-semantic-action-primary));
+    background: var(
+      --st-component-button-anatomy-states-hover-bg,
+      color-mix(in srgb, var(--st-semantic-action-primary) 85%, black)
+    );
   }
 
   .st-fileUploader__trigger:focus-visible {
@@ -491,6 +494,7 @@
 
   .st-fileUploader__itemMeta {
     display: grid;
+    flex: 1 1 0;
     gap: 0.125rem;
     min-width: 0;
   }

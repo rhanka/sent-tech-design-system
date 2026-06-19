@@ -2,7 +2,7 @@ import { defineComponent, h, type VNodeChild } from "vue";
 import { classNames } from "./classNames.js";
 
 // Forme item alignée sur le canon Svelte : `content` (+ `label` en alias compat).
-export type OrderedListItem = { content?: unknown; label?: unknown; children?: OrderedListInput[] };
+export type OrderedListItem = { content?: unknown; children?: OrderedListInput[] };
 export type OrderedListInput = unknown;
 
 export type OrderedListProps = {
@@ -27,7 +27,7 @@ function renderListItem(item: OrderedListInput, index: number, ordered: boolean)
   if (
     typeof item === "object" &&
     item !== null &&
-    ("content" in (item as Record<string, unknown>) || "label" in (item as Record<string, unknown>))
+    "content" in (item as Record<string, unknown>)
   ) {
     const cast = item as OrderedListItem;
     const hasChildren = Array.isArray(cast.children) && cast.children.length > 0;
@@ -38,7 +38,7 @@ function renderListItem(item: OrderedListInput, index: number, ordered: boolean)
         class: ordered ? "st-orderedList__item" : "st-unorderedList__item",
       },
       [
-        (cast.content ?? cast.label) as VNodeChild,
+        cast.content as VNodeChild,
         ...(hasChildren ? [renderNested(cast.children as OrderedListInput[], ordered)] : []),
       ],
     );

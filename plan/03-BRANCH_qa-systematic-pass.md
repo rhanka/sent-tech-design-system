@@ -36,11 +36,11 @@ centrage/contours/alignement homogènes, aucun bug de sens. Délégué à claude
 - [x] **Lot card — Card (svelte+react+vue)**
 - [x] **Lot chat-composer — Chat Composer (svelte+react+vue)**
 - [x] **Lot chat-message — Chat Message (svelte+react+vue)**
-- [ ] **Lot chat-thread — Chat Thread (svelte+react+vue)**
+- [x] **Lot chat-thread — Chat Thread (svelte+react+vue)**
 - [x] **Lot checkbox — Checkbox (svelte+react+vue)**
 - [x] **Lot checkbox-group — Checkbox Group (svelte+react+vue)**
 - [x] **Lot chord-diagram — Chord Diagram (svelte+react+vue)**
-- [ ] **Lot code-snippet — Code Snippet (svelte+react+vue)**
+- [x] **Lot code-snippet — Code Snippet (svelte+react+vue)**
 - [x] **Lot col — Col (svelte+react+vue)**
 - [x] **Lot collapsible — Collapsible (svelte+react+vue)**
 - [x] **Lot combo-chart — Combo Chart (svelte+react+vue)**
@@ -50,22 +50,22 @@ centrage/contours/alignement homogènes, aucun bug de sens. Délégué à claude
 - [x] **Lot copy-button — Copy Button (svelte+react+vue)**
 - [x] **Lot data-image — Data Image (svelte+react+vue)**
 - [x] **Lot data-navigation — Data Navigation (svelte+react+vue)**
-- [ ] **Lot data-table — Data Table (svelte+react+vue)**
+- [x] **Lot data-table — Data Table (svelte+react+vue)**
 - [x] **Lot date-picker — Date Picker (svelte+react+vue)**
 - [x] **Lot display-settings — Display Settings (svelte+react+vue)**
 - [x] **Lot divergent-bar-chart — Divergent Bar Chart (svelte+react+vue)**
 - [x] **Lot divider — Divider (svelte+react+vue)**
 - [x] **Lot donut-chart — Donut Chart (svelte+react+vue)**
 - [x] **Lot drawer — Drawer (svelte+react+vue)**
-- [ ] **Lot dropdown — Dropdown (svelte+react+vue)**
+- [x] **Lot dropdown — Dropdown (svelte+react+vue)**
 - [x] **Lot embed — Embed (svelte+react+vue)**
 - [x] **Lot empty-state — Empty State (svelte+react+vue)**
 - [x] **Lot file-uploader — File Uploader (svelte+react+vue)**
 - [x] **Lot filter-bar — Filter Bar (svelte+react+vue)**
 - [x] **Lot filter-pill — Filter Pill (svelte+react+vue)**
 - [x] **Lot flex — Flex (svelte+react+vue)**
-- [ ] **Lot footer — Footer (svelte+react+vue)**
-- [ ] **Lot force-graph — Force Graph (svelte+react+vue)**
+- [x] **Lot footer — Footer (svelte+react+vue)**
+- [x] **Lot force-graph — Force Graph (svelte+react+vue)**
 - [x] **Lot form — Form (svelte+react+vue)**
 - [x] **Lot form-group — Form Group (svelte+react+vue)**
 - [x] **Lot forms — Forms (svelte+react+vue)**
@@ -79,7 +79,7 @@ centrage/contours/alignement homogènes, aucun bug de sens. Délégué à claude
 - [x] **Lot histogram-chart — Histogram Chart (svelte+react+vue)**
 - [x] **Lot icon-button — Icon Button (svelte+react+vue)**
 - [x] **Lot inline — Inline (svelte+react+vue)**
-- [ ] **Lot inline-loading — Inline Loading (svelte+react+vue)**
+- [x] **Lot inline-loading — Inline Loading (svelte+react+vue)**
 - [x] **Lot input — Input (svelte+react+vue)**
 - [x] **Lot kpi-card — Kpi Card (svelte+react+vue)**
 - [x] **Lot language-selector — Language Selector (svelte+react+vue)**
@@ -89,8 +89,8 @@ centrage/contours/alignement homogènes, aucun bug de sens. Délégué à claude
 - [x] **Lot lollipop-chart — Lollipop Chart (svelte+react+vue)**
 - [x] **Lot marimekko-chart — Marimekko Chart (svelte+react+vue)**
 - [x] **Lot media-content — Media Content (svelte+react+vue)**
-- [ ] **Lot menu — Menu (svelte+react+vue)**
-- [ ] **Lot menu-popover — Menu Popover (svelte+react+vue)**
+- [x] **Lot menu — Menu (svelte+react+vue)**
+- [x] **Lot menu-popover — Menu Popover (svelte+react+vue)**
 - [x] **Lot menu-trigger-button — Menu Trigger Button (svelte+react+vue)**
 - [x] **Lot message-actions — Message Actions (svelte+react+vue)**
 - [x] **Lot message-status-badge — Message Status Badge (svelte+react+vue)**
@@ -98,17 +98,17 @@ centrage/contours/alignement homogènes, aucun bug de sens. Délégué à claude
 - [x] **Lot multi-select — Multi Select (svelte+react+vue)**
 - [x] **Lot notification — Notification (svelte+react+vue)**
 - [x] **Lot number-input — Number Input (svelte+react+vue)**
-- [ ] **Lot ordered-list — Ordered List (svelte+react+vue)**
+- [x] **Lot ordered-list — Ordered List (svelte+react+vue)**
 - [x] **Lot overflow-menu — Overflow Menu (svelte+react+vue)**
-- [ ] **Lot overlays — Overlays (svelte+react+vue)**
+- [x] **Lot overlays — Overlays (svelte+react+vue)**
 - [x] **Lot packed-bubbles-chart — Packed Bubbles Chart (svelte+react+vue)**
-- [ ] **Lot pagination — Pagination (svelte+react+vue)**
+- [x] **Lot pagination — Pagination (svelte+react+vue)**
 - [x] **Lot pagination-nav — Pagination Nav (svelte+react+vue)**
 - [x] **Lot parallel-coordinates-chart — Parallel Coordinates Chart (svelte+react+vue)**
 - [x] **Lot pareto-chart — Pareto Chart (svelte+react+vue)**
 - [x] **Lot password-input — Password Input (svelte+react+vue)**
 - [x] **Lot plan-completion — Plan Completion (svelte+react+vue)**
-- [ ] **Lot popover — Popover (svelte+react+vue)**
+- [x] **Lot popover — Popover (svelte+react+vue)**
 - [x] **Lot popper — Popper (svelte+react+vue)**
 - [x] **Lot portal — Portal (svelte+react+vue)**
 - [x] **Lot progress-bar — Progress Bar (svelte+react+vue)**
@@ -126,19 +126,19 @@ centrage/contours/alignement homogènes, aucun bug de sens. Délégué à claude
 - [x] **Lot search — Search (svelte+react+vue)**
 - [x] **Lot select — Select (svelte+react+vue)**
 - [x] **Lot selectable-list — Selectable List (svelte+react+vue)**
-- [ ] **Lot selectable-row — Selectable Row (svelte+react+vue)**
+- [x] **Lot selectable-row — Selectable Row (svelte+react+vue)**
 - [x] **Lot selection-chip — Selection Chip (svelte+react+vue)**
 - [x] **Lot side-nav — Side Nav (svelte+react+vue)**
 - [x] **Lot skeleton-text — Skeleton Text (svelte+react+vue)**
 - [x] **Lot skip-link — Skip Link (svelte+react+vue)**
 - [x] **Lot slide-indicator — Slide Indicator (svelte+react+vue)**
-- [ ] **Lot slider — Slider (svelte+react+vue)**
+- [x] **Lot slider — Slider (svelte+react+vue)**
 - [x] **Lot sparkline — Sparkline (svelte+react+vue)**
 - [x] **Lot stack — Stack (svelte+react+vue)**
 - [x] **Lot stacked-bar-chart — Stacked Bar Chart (svelte+react+vue)**
 - [x] **Lot step-line-chart — Step Line Chart (svelte+react+vue)**
 - [x] **Lot stepper — Stepper (svelte+react+vue)**
-- [ ] **Lot streaming-message — Streaming Message (svelte+react+vue)**
+- [x] **Lot streaming-message — Streaming Message (svelte+react+vue)**
 - [x] **Lot structured-list — Structured List (svelte+react+vue)**
 - [x] **Lot sunburst-chart — Sunburst Chart (svelte+react+vue)**
 - [x] **Lot switch — Switch (svelte+react+vue)**
@@ -147,10 +147,10 @@ centrage/contours/alignement homogènes, aucun bug de sens. Délégué à claude
 - [x] **Lot tabs — Tabs (svelte+react+vue)**
 - [x] **Lot tag — Tag (svelte+react+vue)**
 - [x] **Lot textarea — Textarea (svelte+react+vue)**
-- [ ] **Lot tile — Tile (svelte+react+vue)**
-- [ ] **Lot tile-group — Tile Group (svelte+react+vue)**
+- [x] **Lot tile — Tile (svelte+react+vue)**
+- [x] **Lot tile-group — Tile Group (svelte+react+vue)**
 - [x] **Lot time-picker — Time Picker (svelte+react+vue)**
-- [ ] **Lot toast — Toast (svelte+react+vue)**
+- [x] **Lot toast — Toast (svelte+react+vue)**
 - [x] **Lot toggle — Toggle (svelte+react+vue)**
 - [x] **Lot toggletip — Toggletip (svelte+react+vue)**
 - [x] **Lot tooltip — Tooltip (svelte+react+vue)**
@@ -158,6 +158,6 @@ centrage/contours/alignement homogènes, aucun bug de sens. Délégué à claude
 - [x] **Lot tree-view — Tree View (svelte+react+vue)**
 - [x] **Lot treemap-chart — Treemap Chart (svelte+react+vue)**
 - [x] **Lot typography — Typography (svelte+react+vue)**
-- [ ] **Lot unordered-list — Unordered List (svelte+react+vue)**
+- [x] **Lot unordered-list — Unordered List (svelte+react+vue)**
 - [x] **Lot violin-chart — Violin Chart (svelte+react+vue)**
 - [x] **Lot waterfall-chart — Waterfall Chart (svelte+react+vue)**

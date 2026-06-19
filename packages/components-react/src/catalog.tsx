@@ -1337,6 +1337,7 @@ export type FileUploadItem = {
   size?: number;
   file?: { name: string; size?: number };
   status?: FileUploadStatus;
+  progress?: number;
   error?: React.ReactNode;
 };
 export type FileUploaderProps = React.HTMLAttributes<HTMLDivElement> & {
@@ -1356,6 +1357,8 @@ export type FileUploaderProps = React.HTMLAttributes<HTMLDivElement> & {
   dropzoneLabel?: React.ReactNode;
   /** Builds the per-file remove button accessible name. */
   removeLabel?: (filename: string) => string;
+  /** Called when the remove button is clicked for a given item index. */
+  onRemoveItem?: (index: number) => void;
 };
 function formatFileSize(bytes: number | undefined): string {
   if (typeof bytes !== "number" || !Number.isFinite(bytes) || bytes < 0) return "";
@@ -1385,6 +1388,7 @@ export function FileUploader({
   triggerLabel,
   dropzoneLabel = "Drag and drop files here",
   removeLabel = (filename) => `Remove ${filename}`,
+  onRemoveItem,
   className,
   ...rest
 }: FileUploaderProps) {
@@ -1392,18 +1396,49 @@ export function FileUploader({
   const inputId = id ?? reactId;
   const isInvalid = invalid || Boolean(errorText);
   const effectiveTriggerLabel = triggerLabel ?? (multiple ? "Choose files" : "Choose file");
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  const [isDragOver, setIsDragOver] = React.useState(false);
+
+  function openPicker() {
+    if (disabled) return;
+    inputRef.current?.click();
+  }
+
+  function onDragOver(e: React.DragEvent<HTMLDivElement>) {
+    if (disabled) return;
+    e.preventDefault();
+    setIsDragOver(true);
+  }
+
+  function onDragLeave(e: React.DragEvent<HTMLDivElement>) {
+    e.preventDefault();
+    setIsDragOver(false);
+  }
+
+  function onDrop(e: React.DragEvent<HTMLDivElement>) {
+    if (disabled) return;
+    e.preventDefault();
+    setIsDragOver(false);
+  }
+
   return (
     <div {...rest} className={classNames("st-field", "st-fileUploader-field", className)}>
       {label ? <label className="st-field__label" htmlFor={inputId}>{label}</label> : null}
       <div
         className={classNames(
           "st-fileUploader__dropzone",
+          isDragOver && "st-fileUploader__dropzone--dragover",
           isInvalid && "st-fileUploader__dropzone--invalid",
           disabled && "st-fileUploader__dropzone--disabled",
         )}
         role="presentation"
+        onDragOver={onDragOver}
+        onDragEnter={onDragOver}
+        onDragLeave={onDragLeave}
+        onDrop={onDrop}
       >
         <input
+          ref={inputRef}
           id={inputId}
           className="st-fileUploader__input"
           type="file"
@@ -1416,7 +1451,7 @@ export function FileUploader({
           <span className="st-fileUploader__affordance" aria-hidden="true">
             <Upload size={18} strokeWidth={2} aria-hidden="true" />
           </span>
-          <button type="button" className="st-fileUploader__trigger" disabled={disabled}>
+          <button type="button" className="st-fileUploader__trigger" disabled={disabled} onClick={openPicker}>
             {effectiveTriggerLabel}
           </button>
           <span className="st-fileUploader__hint">{dropzoneLabel}</span>
@@ -1453,7 +1488,7 @@ export function FileUploader({
                   {sizeLabel ? <span className="st-fileUploader__itemSize">{sizeLabel}</span> : null}
                   {item.status === "error" && item.error ? <span className="st-fileUploader__itemError">{item.error}</span> : null}
                 </span>
-                <button type="button" className="st-fileUploader__remove" aria-label={removeLabel(text(name) || "file")} disabled={disabled}>
+                <button type="button" className="st-fileUploader__remove" aria-label={removeLabel(name ?? "")} disabled={disabled} onClick={() => onRemoveItem?.(index)}>
                   <X size={16} strokeWidth={2} aria-hidden="true" />
                 </button>
               </li>
@@ -3857,20 +3892,20 @@ export function NumberInput({
 
 // Forme item alignée sur le canon Svelte : `content` (+ `label` accepté en alias
 // de compat). Le test reconnaît l'une OU l'autre clé pour ne pas rendre vide.
-export type OrderedListItem = { content?: React.ReactNode; label?: React.ReactNode; children?: OrderedListInput[] };
+export type OrderedListItem = { content?: React.ReactNode; children?: OrderedListInput[] };
 export type OrderedListInput = React.ReactNode | OrderedListItem;
 export type OrderedListProps = React.OlHTMLAttributes<HTMLOListElement> & { items: OrderedListInput[]; nested?: boolean };
 function renderListItem(item: OrderedListInput, index: number, ordered: boolean): React.ReactNode {
   if (
     typeof item === "object" &&
     item !== null &&
-    ("content" in (item as OrderedListItem) || "label" in (item as OrderedListItem))
+    "content" in (item as OrderedListItem)
   ) {
     const cast = item as OrderedListItem;
     const hasChildren = Array.isArray(cast.children) && cast.children.length > 0;
     return (
       <li key={index} className={ordered ? "st-orderedList__item" : "st-unorderedList__item"}>
-        {cast.content ?? cast.label}
+        {cast.content}
         {hasChildren
           ? ordered
             ? (
@@ -5278,7 +5313,7 @@ export function TreeView({
   );
 }
 
-export type UnorderedListItem = { content?: React.ReactNode; label?: React.ReactNode; children?: UnorderedListInput[] };
+export type UnorderedListItem = { content?: React.ReactNode; children?: UnorderedListInput[] };
 export type UnorderedListInput = React.ReactNode | UnorderedListItem;
 export type UnorderedListProps = React.HTMLAttributes<HTMLUListElement> & { items: UnorderedListInput[]; nested?: boolean };
 export function UnorderedList({ items, nested, className, ...rest }: UnorderedListProps) {

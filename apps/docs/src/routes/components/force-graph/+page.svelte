@@ -1,12 +1,66 @@
 <script lang="ts">
   import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { getExample } from "$lib/framework/examples";
+  import { locale } from "$lib/locale.svelte";
   import {
     Badge,
     ForceGraph,
     type ForceGraphNode,
     type ForceGraphEdge
   } from "@sentropic/design-system-svelte";
+
+  const copy = {
+    fr: {
+      kicker: "Composant · Données",
+      intro:
+        "Graphe à force dirigée pour visualiser une ontologie (nœuds + liens). La simulation de force est autonome (aucune dépendance type d3 ajoutée au paquet) : répulsion entre nœuds, ressorts sur les liens, gravité douce vers le centre, refroidissement progressif. Nœuds colorés par group/tone (palette data-vis), focusables au clavier, tooltip au survol/focus, liens faibles en pointillé. Le layout est déterministe (graine fixe) et figé sous prefers-reduced-motion.",
+      exampleTitle: "Exemple",
+      selectionTitle: "Sélection de nœuds",
+      selectionDesc:
+        "Cliquez ou appuyez sur Espace / Entrée sur un nœud pour le sélectionner (highlight). Double-clic ou Entrée active onOpenEntity. La position des nœuds reste stable, la simulation n'est pas relancée.",
+      mergeTitle: "Fusion de nœuds (mergePair)",
+      mergeDesc:
+        "mergePair anime la réconciliation de deux entités : le nœud from glisse vers into (avec ses liens), puis reste masqué jusqu'à ce que le consommateur le retire des données. Passer un id neuf (re)joue l'animation ; onMergeComplete(pair) signale la fin (au plus une fois par id, immédiatement sous prefers-reduced-motion).",
+      apiTitle: "API du composant",
+      noneSelected: "Aucun nœud sélectionné: cliquez sur un nœud.",
+      selected: "Sélectionné",
+      selectedPlural: "Sélectionnés",
+      focus: "Focus",
+      opened: "Entité ouverte",
+      reset: "Réinitialiser la sélection",
+      mergeBtn: "Fusionner Globex → Acme",
+      merged: "Fusionné",
+      mergedSuffix: "retiré des données après l'animation.",
+      defaultLabel: "Par défaut",
+      required: "requis"
+    },
+    en: {
+      kicker: "Component · Data",
+      intro:
+        "Force-directed graph to visualize an ontology (nodes + edges). The force simulation is self-contained (no d3 dependency added to the package): node repulsion, link springs, soft gravity toward center, progressive cooling. Nodes colored by group/tone (data-vis palette), keyboard-focusable, tooltip on hover/focus, weak links as dashed lines. Layout is deterministic (fixed seed) and frozen under prefers-reduced-motion.",
+      exampleTitle: "Example",
+      selectionTitle: "Node selection",
+      selectionDesc:
+        "Click or press Space / Enter on a node to select it (highlight). Double-click or Enter triggers onOpenEntity. Node positions remain stable — the simulation is not restarted.",
+      mergeTitle: "Node merge (mergePair)",
+      mergeDesc:
+        "mergePair animates the reconciliation of two entities: the from node slides toward into (with its edges), then stays hidden until the consumer removes it from the data. Passing a new id replays the animation; onMergeComplete(pair) fires once per id (immediately under prefers-reduced-motion).",
+      apiTitle: "Component API",
+      noneSelected: "No node selected — click a node.",
+      selected: "Selected",
+      selectedPlural: "Selected",
+      focus: "Focus",
+      opened: "Opened entity",
+      reset: "Reset selection",
+      mergeBtn: "Merge Globex → Acme",
+      merged: "Merged",
+      mergedSuffix: "removed from data after the animation.",
+      defaultLabel: "Default",
+      required: "required"
+    }
+  } as const;
+
+  const text = () => copy[locale.value];
 
   // Petit graphe d'ontologie de démo : trois groupes (communautés).
   const nodes: ForceGraphNode[] = [
@@ -81,40 +135,22 @@
 
 <div class="docs-page">
   <section class="docs-hero">
-    <p class="docs-hero-kicker">Composant · Données</p>
+    <p class="docs-hero-kicker">{text().kicker}</p>
     <div class="docs-hero-title">
       <h1>ForceGraph</h1>
       <Badge tone="neutral">Documenté</Badge>
     </div>
-    <p>
-      Graphe à force dirigée pour visualiser une ontologie (nœuds + liens). La
-      simulation de force est <strong>autonome</strong> (aucune dépendance type
-      d3 ajoutée au paquet) : répulsion entre nœuds, ressorts sur les liens,
-      gravité douce vers le centre, refroidissement progressif. Nœuds colorés
-      par <code>group</code>/<code>tone</code> (palette data-vis), focusables au
-      clavier, tooltip au survol/focus, liens faibles en pointillé. Le layout
-      est déterministe (graine fixe) et figé sous
-      <code>prefers-reduced-motion</code>.
-    </p>
-  </section>
-  <TabbedExample nodes={getExample("forcegraph")?.nodes ?? []} />
-
-
-  <section class="docs-section">
-    <h2>Exemple</h2>
-    <div class="docs-graph-box">
-      <ForceGraph {nodes} {edges} label="Ontologie de démo" width={520} height={380} />
-    </div>
+    <p>{text().intro}</p>
   </section>
 
   <section class="docs-section">
-    <h2>Sélection de nœuds</h2>
-    <p>
-      Cliquez ou appuyez sur <kbd>Espace</kbd> / <kbd>Entrée</kbd> sur un nœud
-      pour le sélectionner (highlight). Double-clic ou <kbd>Entrée</kbd> active
-      <code>onOpenEntity</code>. La position des nœuds reste stable, la
-      simulation n'est <em>pas</em> relancée.
-    </p>
+    <h2>{text().exampleTitle}</h2>
+    <TabbedExample nodes={getExample("forcegraph")?.nodes ?? []} />
+  </section>
+
+  <section class="docs-section">
+    <h2>{text().selectionTitle}</h2>
+    <p>{text().selectionDesc}</p>
     <div class="docs-graph-box">
       <ForceGraph
         {nodes}
@@ -130,35 +166,28 @@
     </div>
     <div class="docs-selection-status" aria-live="polite">
       {#if selectedIds.length === 0}
-        <span class="docs-selection-hint">Aucun nœud sélectionné: cliquez sur un nœud.</span>
+        <span class="docs-selection-hint">{text().noneSelected}</span>
       {:else}
         <span>
-          <strong>Sélectionné{selectedIds.length > 1 ? 's' : ''} :</strong>
+          <strong>{selectedIds.length > 1 ? text().selectedPlural : text().selected} :</strong>
           {selectedIds.join(', ')}
         </span>
         {#if focusId}
-          <span><strong>Focus :</strong> {focusId}</span>
+          <span><strong>{text().focus} :</strong> {focusId}</span>
         {/if}
         {#if lastOpenedEntity}
-          <span><strong>Entité ouverte :</strong> {lastOpenedEntity}</span>
+          <span><strong>{text().opened} :</strong> {lastOpenedEntity}</span>
         {/if}
         <button class="docs-selection-reset" onclick={() => { selectedIds = []; focusId = null; lastOpenedEntity = null; }}>
-          Réinitialiser la sélection
+          {text().reset}
         </button>
       {/if}
     </div>
   </section>
 
   <section class="docs-section">
-    <h2>Fusion de nœuds (mergePair)</h2>
-    <p>
-      <code>mergePair</code> anime la réconciliation de deux entités : le nœud
-      <code>from</code> glisse vers <code>into</code> (avec ses liens), puis reste
-      <strong>masqué</strong> jusqu'à ce que le consommateur le retire des données.
-      Passer un <code>id</code> neuf (re)joue l'animation ;
-      <code>onMergeComplete(pair)</code> signale la fin (au plus une fois par
-      <code>id</code>, immédiatement sous <code>prefers-reduced-motion</code>).
-    </p>
+    <h2>{text().mergeTitle}</h2>
+    <p>{text().mergeDesc}</p>
     <div class="docs-graph-box">
       <ForceGraph
         nodes={mergeNodes}
@@ -172,16 +201,16 @@
     </div>
     <div class="docs-selection-status" aria-live="polite">
       <button class="docs-selection-reset" onclick={playMerge}>
-        Fusionner Globex → Acme
+        {text().mergeBtn}
       </button>
       {#if mergedAway}
-        <span><strong>Fusionné :</strong> {mergedAway} retiré des données après l'animation.</span>
+        <span><strong>{text().merged} :</strong> {mergedAway} {text().mergedSuffix}</span>
       {/if}
     </div>
   </section>
 
   <section class="docs-section">
-    <h2>API du composant</h2>
+    <h2>{text().apiTitle}</h2>
     <table class="docs-table">
       <thead>
         <tr><th>Prop</th><th>Type</th><th>Par défaut</th></tr>
