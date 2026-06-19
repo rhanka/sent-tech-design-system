@@ -212,7 +212,8 @@ export type ComponentName =
   | "RangeSlider"
   | "Modal"
   | "Drawer"
-  | "ErrorSummary";
+  | "ErrorSummary"
+  | "DashboardGrid";
 
 export interface ComponentNodeSpec {
   comp: ComponentName;
@@ -1237,6 +1238,133 @@ const page = ref(3);
 
 <template>
   <Pagination :page="page" :pageCount="12" @pageChange="p => page = p" />
+</template>`
+    }
+  },
+
+  "pagination-interactive": {
+    id: "pagination-interactive",
+    slug: "pagination",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          { comp: "Pagination", props: { page: 3, pageCount: 6, previousLabel: "Précédent", nextLabel: "Suivant" } }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { Pagination } from "@sentropic/design-system-svelte";
+  let page = $state(3);
+</script>
+
+<Pagination
+  {page}
+  pageCount={6}
+  previousLabel="Précédent"
+  nextLabel="Suivant"
+  onpagechange={(target) => (page = target)}
+/>
+<p>Page courante : <code>{page}</code> / 6</p>`,
+      react: `import { useState } from "react";
+import { Pagination } from "@sentropic/design-system-react";
+
+export function Demo() {
+  const [page, setPage] = useState(3);
+  return (
+    <>
+      <Pagination
+        page={page}
+        pageCount={6}
+        previousLabel="Précédent"
+        nextLabel="Suivant"
+        onPageChange={setPage}
+      />
+      <p>Page courante : <code>{page}</code> / 6</p>
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { ref } from "vue";
+import { Pagination } from "@sentropic/design-system-vue";
+const page = ref(3);
+</script>
+
+<template>
+  <Pagination
+    :page="page"
+    :pageCount="6"
+    previousLabel="Précédent"
+    nextLabel="Suivant"
+    @pageChange="p => page = p"
+  />
+  <p>Page courante : <code>{{ page }}</code> / 6</p>
+</template>`
+    }
+  },
+
+  "pagination-states": {
+    id: "pagination-states",
+    slug: "pagination",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          { el: "h3", props: {}, children: ["Première page (Précédent désactivé)"] },
+          { comp: "Pagination", props: { page: 1, pageCount: 4, previousLabel: "Précédent", nextLabel: "Suivant" } }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { Pagination } from "@sentropic/design-system-svelte";
+  let firstPage = $state(1);
+</script>
+
+<h3>Première page (Précédent désactivé)</h3>
+<Pagination
+  page={firstPage}
+  pageCount={4}
+  previousLabel="Précédent"
+  nextLabel="Suivant"
+  onpagechange={(target) => (firstPage = target)}
+/>`,
+      react: `import { useState } from "react";
+import { Pagination } from "@sentropic/design-system-react";
+
+export function Demo() {
+  const [firstPage, setFirstPage] = useState(1);
+  return (
+    <>
+      <h3>Première page (Précédent désactivé)</h3>
+      <Pagination
+        page={firstPage}
+        pageCount={4}
+        previousLabel="Précédent"
+        nextLabel="Suivant"
+        onPageChange={setFirstPage}
+      />
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { ref } from "vue";
+import { Pagination } from "@sentropic/design-system-vue";
+const firstPage = ref(1);
+</script>
+
+<template>
+  <h3>Première page (Précédent désactivé)</h3>
+  <Pagination
+    :page="firstPage"
+    :pageCount="4"
+    previousLabel="Précédent"
+    nextLabel="Suivant"
+    @pageChange="p => firstPage = p"
+  />
 </template>`
     }
   },
@@ -3434,6 +3562,132 @@ import { Toast } from "@sentropic/design-system-vue";
   <Toast tone="success" title="Déploiement réussi" message="La version v1.4.2 est en production." />
   <Toast tone="error" title="Erreur de déploiement" message="Impossible de contacter le serveur." />
   <Toast tone="info" title="Synchronisation en cours" message="Les modifications seront disponibles dans quelques instants." />
+</template>`
+    }
+  },
+
+  "toast-tones": {
+    id: "toast-tones",
+    slug: "toast",
+    nodes: [
+      stack([
+        { comp: "Toast", props: { tone: "info", title: "Synchronisation lancée", message: "La synchronisation du tenant est en cours." } },
+        { comp: "Toast", props: { tone: "success", title: "Enregistré", message: "Le thème du tenant a été compilé." } },
+        { comp: "Toast", props: { tone: "warning", title: "Quota proche", message: "Il reste 10 % de l'espace alloué." } },
+        { comp: "Toast", props: { tone: "error", title: "Échec", message: "Le mappage de l'adaptateur est incomplet." } }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { Toast } from "@sentropic/design-system-svelte";
+</script>
+
+<Toast tone="info" title="Synchronisation lancée" message="La synchronisation du tenant est en cours." />
+<Toast tone="success" title="Enregistré" message="Le thème du tenant a été compilé." />
+<Toast tone="warning" title="Quota proche" message="Il reste 10 % de l'espace alloué." />
+<Toast tone="error" title="Échec" message="Le mappage de l'adaptateur est incomplet." />`,
+      react: `import { Toast } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <Toast tone="info" title="Synchronisation lancée" message="La synchronisation du tenant est en cours." />
+      <Toast tone="success" title="Enregistré" message="Le thème du tenant a été compilé." />
+      <Toast tone="warning" title="Quota proche" message="Il reste 10 % de l'espace alloué." />
+      <Toast tone="error" title="Échec" message="Le mappage de l'adaptateur est incomplet." />
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { Toast } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Toast tone="info" title="Synchronisation lancée" message="La synchronisation du tenant est en cours." />
+  <Toast tone="success" title="Enregistré" message="Le thème du tenant a été compilé." />
+  <Toast tone="warning" title="Quota proche" message="Il reste 10 % de l'espace alloué." />
+  <Toast tone="error" title="Échec" message="Le mappage de l'adaptateur est incomplet." />
+</template>`
+    }
+  },
+
+  "toast-actions": {
+    id: "toast-actions",
+    slug: "toast",
+    nodes: [
+      stack([
+        { comp: "Toast", props: { tone: "success", title: "Élément supprimé", message: "L'élément a été retiré de la liste." } },
+        { comp: "Toast", props: { tone: "error", title: "Envoi échoué", message: "La connexion a été interrompue." } }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { Button, Toast } from "@sentropic/design-system-svelte";
+</script>
+
+<Toast tone="success" title="Élément supprimé" message="L'élément a été retiré de la liste.">
+  {#snippet actions()}
+    <Button variant="ghost">Annuler</Button>
+  {/snippet}
+</Toast>
+
+<Toast tone="error" title="Envoi échoué" message="La connexion a été interrompue.">
+  {#snippet actions()}
+    <Button variant="ghost">Réessayer</Button>
+  {/snippet}
+</Toast>`,
+      react: `import { Button, Toast } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return (
+    <>
+      <Toast tone="success" title="Élément supprimé" message="L'élément a été retiré de la liste."
+        actions={<Button variant="ghost">Annuler</Button>} />
+      <Toast tone="error" title="Envoi échoué" message="La connexion a été interrompue."
+        actions={<Button variant="ghost">Réessayer</Button>} />
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { Button, Toast } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Toast tone="success" title="Élément supprimé" message="L'élément a été retiré de la liste.">
+    <template #actions><Button variant="ghost">Annuler</Button></template>
+  </Toast>
+  <Toast tone="error" title="Envoi échoué" message="La connexion a été interrompue.">
+    <template #actions><Button variant="ghost">Réessayer</Button></template>
+  </Toast>
+</template>`
+    }
+  },
+
+  "toast-title-only": {
+    id: "toast-title-only",
+    slug: "toast",
+    nodes: [
+      stack([
+        { comp: "Toast", props: { tone: "success", title: "Copié dans le presse-papier" } }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { Toast } from "@sentropic/design-system-svelte";
+</script>
+
+<Toast tone="success" title="Copié dans le presse-papier" />`,
+      react: `import { Toast } from "@sentropic/design-system-react";
+
+export function Demo() {
+  return <Toast tone="success" title="Copié dans le presse-papier" />;
+}`,
+      vue: `<script setup>
+import { Toast } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <Toast tone="success" title="Copié dans le presse-papier" />
 </template>`
     }
   },
@@ -5716,6 +5970,378 @@ import { StreamingMessage } from "@sentropic/design-system-vue";
     }
   },
 
+  "streamingmessage-live": {
+    id: "streamingmessage-live",
+    slug: "streaming-message",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "StreamingMessage",
+            props: {
+              role: "assistant",
+              streamId: "msg-live-demo",
+              status: "processing",
+              mode: "live",
+              placeholder: "En attente d'événement de stream…",
+              showTrail: true,
+              initialEvents: [
+                { type: "tool.started", toolCallId: "tool_search_01", toolName: "search-files", messageId: "m-1" },
+                { type: "message.delta", messageId: "m-1", delta: "Je vérifie la demande..." },
+                { type: "permission.requested", toolCallId: "tool_search_01", choices: ["allow once", "allow always", "deny"], messageId: "m-1" },
+                { type: "tool.completed", toolCallId: "tool_search_01", status: "success", toolName: "search-files", messageId: "m-1" },
+                { type: "message.delta", messageId: "m-1", delta: "Le résumé est disponible." }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { StreamingMessage } from "@sentropic/design-system-svelte";
+
+  const liveEvents = [
+    { type: "tool.started", toolCallId: "tool_search_01", toolName: "search-files", messageId: "m-1" },
+    { type: "message.delta", messageId: "m-1", delta: "Je vérifie la demande..." },
+    { type: "permission.requested", toolCallId: "tool_search_01", choices: ["allow once", "allow always", "deny"], messageId: "m-1" },
+    { type: "tool.completed", toolCallId: "tool_search_01", status: "success", toolName: "search-files", messageId: "m-1" },
+    { type: "message.delta", messageId: "m-1", delta: "Le résumé est disponible." }
+  ];
+<\/script>
+
+<StreamingMessage
+  role="assistant"
+  streamId="msg-live-demo"
+  status="processing"
+  mode="live"
+  placeholder="En attente d'événement de stream…"
+  initialEvents={liveEvents}
+  showTrail
+/>`,
+      react: `import { StreamingMessage } from "@sentropic/design-system-react";
+
+const liveEvents = [
+  { type: "tool.started", toolCallId: "tool_search_01", toolName: "search-files", messageId: "m-1" },
+  { type: "message.delta", messageId: "m-1", delta: "Je vérifie la demande..." },
+  { type: "permission.requested", toolCallId: "tool_search_01", choices: ["allow once", "allow always", "deny"], messageId: "m-1" },
+  { type: "tool.completed", toolCallId: "tool_search_01", status: "success", toolName: "search-files", messageId: "m-1" },
+  { type: "message.delta", messageId: "m-1", delta: "Le résumé est disponible." }
+];
+
+export function Demo() {
+  return (
+    <StreamingMessage
+      role="assistant"
+      streamId="msg-live-demo"
+      status="processing"
+      mode="live"
+      placeholder="En attente d'événement de stream…"
+      initialEvents={liveEvents}
+      showTrail
+    />
+  );
+}`,
+      vue: `<script setup>
+import { StreamingMessage } from "@sentropic/design-system-vue";
+
+const liveEvents = [
+  { type: "tool.started", toolCallId: "tool_search_01", toolName: "search-files", messageId: "m-1" },
+  { type: "message.delta", messageId: "m-1", delta: "Je vérifie la demande..." },
+  { type: "permission.requested", toolCallId: "tool_search_01", choices: ["allow once", "allow always", "deny"], messageId: "m-1" },
+  { type: "tool.completed", toolCallId: "tool_search_01", status: "success", toolName: "search-files", messageId: "m-1" },
+  { type: "message.delta", messageId: "m-1", delta: "Le résumé est disponible." }
+];
+<\/script>
+
+<template>
+  <StreamingMessage
+    role="assistant"
+    stream-id="msg-live-demo"
+    status="processing"
+    mode="live"
+    placeholder="En attente d'événement de stream…"
+    :initial-events="liveEvents"
+    show-trail
+  />
+</template>`
+    }
+  },
+
+  "streamingmessage-reasoning": {
+    id: "streamingmessage-reasoning",
+    slug: "streaming-message",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "StreamingMessage",
+            props: {
+              role: "assistant",
+              streamId: "msg-reasoning-demo",
+              status: "completed",
+              mode: "live",
+              showTrail: true,
+              initialEvents: [
+                { type: "reasoning.delta", messageId: "m-4", delta: "L'utilisateur demande la météo. " },
+                { type: "reasoning.delta", messageId: "m-4", delta: "Je vérifie la ville, puis j'appelle l'outil météo." },
+                { type: "reasoning.completed", messageId: "m-4" },
+                { type: "tool.started", toolCallId: "tool_weather_01", toolName: "get-weather", messageId: "m-4" },
+                { type: "permission.requested", toolCallId: "tool_weather_01", choices: ["autoriser une fois", "refuser"], messageId: "m-4" },
+                { type: "tool.completed", toolCallId: "tool_weather_01", status: "success", toolName: "get-weather", messageId: "m-4" },
+                { type: "message.delta", messageId: "m-4", delta: "Il fera 18°C et ensoleillé." }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { StreamingMessage } from "@sentropic/design-system-svelte";
+
+  const reasoningEvents = [
+    { type: "reasoning.delta", messageId: "m-4", delta: "L'utilisateur demande la météo. " },
+    { type: "reasoning.delta", messageId: "m-4", delta: "Je vérifie la ville, puis j'appelle l'outil météo." },
+    { type: "reasoning.completed", messageId: "m-4" },
+    { type: "tool.started", toolCallId: "tool_weather_01", toolName: "get-weather", messageId: "m-4" },
+    { type: "permission.requested", toolCallId: "tool_weather_01", choices: ["autoriser une fois", "refuser"], messageId: "m-4" },
+    { type: "tool.completed", toolCallId: "tool_weather_01", status: "success", toolName: "get-weather", messageId: "m-4" },
+    { type: "message.delta", messageId: "m-4", delta: "Il fera 18°C et ensoleillé." }
+  ];
+<\/script>
+
+<StreamingMessage
+  role="assistant"
+  streamId="msg-reasoning-demo"
+  status="completed"
+  mode="live"
+  initialEvents={reasoningEvents}
+  showTrail
+/>`,
+      react: `import { StreamingMessage } from "@sentropic/design-system-react";
+
+const reasoningEvents = [
+  { type: "reasoning.delta", messageId: "m-4", delta: "L'utilisateur demande la météo. " },
+  { type: "reasoning.delta", messageId: "m-4", delta: "Je vérifie la ville, puis j'appelle l'outil météo." },
+  { type: "reasoning.completed", messageId: "m-4" },
+  { type: "tool.started", toolCallId: "tool_weather_01", toolName: "get-weather", messageId: "m-4" },
+  { type: "permission.requested", toolCallId: "tool_weather_01", choices: ["autoriser une fois", "refuser"], messageId: "m-4" },
+  { type: "tool.completed", toolCallId: "tool_weather_01", status: "success", toolName: "get-weather", messageId: "m-4" },
+  { type: "message.delta", messageId: "m-4", delta: "Il fera 18°C et ensoleillé." }
+];
+
+export function Demo() {
+  return (
+    <StreamingMessage
+      role="assistant"
+      streamId="msg-reasoning-demo"
+      status="completed"
+      mode="live"
+      initialEvents={reasoningEvents}
+      showTrail
+    />
+  );
+}`,
+      vue: `<script setup>
+import { StreamingMessage } from "@sentropic/design-system-vue";
+
+const reasoningEvents = [
+  { type: "reasoning.delta", messageId: "m-4", delta: "L'utilisateur demande la météo. " },
+  { type: "reasoning.delta", messageId: "m-4", delta: "Je vérifie la ville, puis j'appelle l'outil météo." },
+  { type: "reasoning.completed", messageId: "m-4" },
+  { type: "tool.started", toolCallId: "tool_weather_01", toolName: "get-weather", messageId: "m-4" },
+  { type: "permission.requested", toolCallId: "tool_weather_01", choices: ["autoriser une fois", "refuser"], messageId: "m-4" },
+  { type: "tool.completed", toolCallId: "tool_weather_01", status: "success", toolName: "get-weather", messageId: "m-4" },
+  { type: "message.delta", messageId: "m-4", delta: "Il fera 18°C et ensoleillé." }
+];
+<\/script>
+
+<template>
+  <StreamingMessage
+    role="assistant"
+    stream-id="msg-reasoning-demo"
+    status="completed"
+    mode="live"
+    :initial-events="reasoningEvents"
+    show-trail
+  />
+</template>`
+    }
+  },
+
+  "streamingmessage-passive": {
+    id: "streamingmessage-passive",
+    slug: "streaming-message",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "StreamingMessage",
+            props: {
+              role: "assistant",
+              streamId: "msg-passive-demo",
+              status: "completed",
+              mode: "passive",
+              finalContent: "Résumé final prêt.",
+              events: [
+                { type: "message.delta", messageId: "m-2", delta: "Premier passage validé. " },
+                { type: "message.completed", messageId: "m-2" }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { StreamingMessage } from "@sentropic/design-system-svelte";
+
+  const completedEvents = [
+    { type: "message.delta", messageId: "m-2", delta: "Premier passage validé. " },
+    { type: "message.completed", messageId: "m-2" }
+  ];
+<\/script>
+
+<StreamingMessage
+  role="assistant"
+  streamId="msg-passive-demo"
+  status="completed"
+  mode="passive"
+  finalContent="Résumé final prêt."
+  events={completedEvents}
+/>`,
+      react: `import { StreamingMessage } from "@sentropic/design-system-react";
+
+const completedEvents = [
+  { type: "message.delta", messageId: "m-2", delta: "Premier passage validé. " },
+  { type: "message.completed", messageId: "m-2" }
+];
+
+export function Demo() {
+  return (
+    <StreamingMessage
+      role="assistant"
+      streamId="msg-passive-demo"
+      status="completed"
+      mode="passive"
+      finalContent="Résumé final prêt."
+      events={completedEvents}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { StreamingMessage } from "@sentropic/design-system-vue";
+
+const completedEvents = [
+  { type: "message.delta", messageId: "m-2", delta: "Premier passage validé. " },
+  { type: "message.completed", messageId: "m-2" }
+];
+<\/script>
+
+<template>
+  <StreamingMessage
+    role="assistant"
+    stream-id="msg-passive-demo"
+    status="completed"
+    mode="passive"
+    final-content="Résumé final prêt."
+    :events="completedEvents"
+  />
+</template>`
+    }
+  },
+
+  "streamingmessage-detail": {
+    id: "streamingmessage-detail",
+    slug: "streaming-message",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "StreamingMessage",
+            props: {
+              role: "assistant",
+              streamId: "msg-checkpoint-demo",
+              status: "processing",
+              finalContent: "Checkpoint demandé pour valider la prochaine étape.",
+              showTrail: true,
+              events: [
+                { type: "checkpoint.requested", checkpointId: "cp-1", label: "point de contrôle", messageId: "m-3" },
+                { type: "message.delta", messageId: "m-3", delta: "Action de validation prise en compte." }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { StreamingMessage } from "@sentropic/design-system-svelte";
+
+  const checkpointEvents = [
+    { type: "checkpoint.requested", checkpointId: "cp-1", label: "point de contrôle", messageId: "m-3" },
+    { type: "message.delta", messageId: "m-3", delta: "Action de validation prise en compte." }
+  ];
+<\/script>
+
+<StreamingMessage
+  role="assistant"
+  streamId="msg-checkpoint-demo"
+  status="processing"
+  finalContent="Checkpoint demandé pour valider la prochaine étape."
+  events={checkpointEvents}
+  showTrail
+/>`,
+      react: `import { StreamingMessage } from "@sentropic/design-system-react";
+
+const checkpointEvents = [
+  { type: "checkpoint.requested", checkpointId: "cp-1", label: "point de contrôle", messageId: "m-3" },
+  { type: "message.delta", messageId: "m-3", delta: "Action de validation prise en compte." }
+];
+
+export function Demo() {
+  return (
+    <StreamingMessage
+      role="assistant"
+      streamId="msg-checkpoint-demo"
+      status="processing"
+      finalContent="Checkpoint demandé pour valider la prochaine étape."
+      events={checkpointEvents}
+      showTrail
+    />
+  );
+}`,
+      vue: `<script setup>
+import { StreamingMessage } from "@sentropic/design-system-vue";
+
+const checkpointEvents = [
+  { type: "checkpoint.requested", checkpointId: "cp-1", label: "point de contrôle", messageId: "m-3" },
+  { type: "message.delta", messageId: "m-3", delta: "Action de validation prise en compte." }
+];
+<\/script>
+
+<template>
+  <StreamingMessage
+    role="assistant"
+    stream-id="msg-checkpoint-demo"
+    status="processing"
+    final-content="Checkpoint demandé pour valider la prochaine étape."
+    :events="checkpointEvents"
+    show-trail
+  />
+</template>`
+    }
+  },
+
   messageactions: {
     id: "messageactions",
     slug: "message-actions",
@@ -5781,6 +6407,209 @@ import { MessageActions } from "@sentropic/design-system-vue";
     ]"
     visibility="always"
   />
+</template>`
+    }
+  },
+
+  "messageactions-hover": {
+    id: "messageactions-hover",
+    slug: "message-actions",
+    nodes: [
+      stack([
+        {
+          comp: "MessageActions",
+          props: {
+            actions: [
+              { id: "copy", label: "Copier", icon: "⧉" },
+              { id: "edit", label: "Éditer", icon: "✎" },
+              { id: "regen", label: "Régénérer", icon: "↻" }
+            ],
+            visibility: "hover"
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { MessageActions } from "@sentropic/design-system-svelte";
+  import { Copy, Pencil, RefreshCw } from "@lucide/svelte";
+</script>
+
+<MessageActions
+  actions={[
+    { id: "copy", label: "Copier", icon: iconCopy },
+    { id: "edit", label: "Éditer", icon: iconEdit },
+    { id: "regen", label: "Régénérer", icon: iconRegen }
+  ]}
+/>
+
+{#snippet iconCopy()}<Copy size={14} strokeWidth={2.2} />{/snippet}
+{#snippet iconEdit()}<Pencil size={14} strokeWidth={2.2} />{/snippet}
+{#snippet iconRegen()}<RefreshCw size={14} strokeWidth={2.2} />{/snippet}`,
+      react: `import { MessageActions } from "@sentropic/design-system-react";
+import { Copy, Pencil, RefreshCw } from "lucide-react";
+
+export function Demo() {
+  return (
+    <MessageActions
+      actions={[
+        { id: "copy", label: "Copier", icon: <Copy size={14} strokeWidth={2.2} /> },
+        { id: "edit", label: "Éditer", icon: <Pencil size={14} strokeWidth={2.2} /> },
+        { id: "regen", label: "Régénérer", icon: <RefreshCw size={14} strokeWidth={2.2} /> }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { MessageActions } from "@sentropic/design-system-vue";
+import { Copy, Pencil, RefreshCw } from "lucide-vue-next";
+</script>
+
+<template>
+  <MessageActions
+    :actions="[
+      { id: 'copy', label: 'Copier' },
+      { id: 'edit', label: 'Éditer' },
+      { id: 'regen', label: 'Régénérer' }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  "messageactions-always": {
+    id: "messageactions-always",
+    slug: "message-actions",
+    nodes: [
+      stack([
+        {
+          comp: "MessageActions",
+          props: {
+            actions: [
+              { id: "like", label: "J'aime", icon: "👍" },
+              { id: "dislike", label: "Je n'aime pas", icon: "👎" },
+              { id: "delete", label: "Supprimer", variant: "danger", icon: "✕" }
+            ],
+            visibility: "always"
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { MessageActions } from "@sentropic/design-system-svelte";
+  import { ThumbsUp, ThumbsDown, Trash2 } from "@lucide/svelte";
+</script>
+
+<MessageActions
+  visibility="always"
+  actions={[
+    { id: "like", label: "J'aime", icon: iconLike },
+    { id: "dislike", label: "Je n'aime pas", icon: iconDislike },
+    { id: "delete", label: "Supprimer", variant: "danger", icon: iconDelete }
+  ]}
+/>
+
+{#snippet iconLike()}<ThumbsUp size={14} strokeWidth={2.2} />{/snippet}
+{#snippet iconDislike()}<ThumbsDown size={14} strokeWidth={2.2} />{/snippet}
+{#snippet iconDelete()}<Trash2 size={14} strokeWidth={2.2} />{/snippet}`,
+      react: `import { MessageActions } from "@sentropic/design-system-react";
+import { ThumbsUp, ThumbsDown, Trash2 } from "lucide-react";
+
+export function Demo() {
+  return (
+    <MessageActions
+      visibility="always"
+      actions={[
+        { id: "like", label: "J'aime", icon: <ThumbsUp size={14} strokeWidth={2.2} /> },
+        { id: "dislike", label: "Je n'aime pas", icon: <ThumbsDown size={14} strokeWidth={2.2} /> },
+        { id: "delete", label: "Supprimer", variant: "danger", icon: <Trash2 size={14} strokeWidth={2.2} /> }
+      ]}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { MessageActions } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <MessageActions
+    visibility="always"
+    :actions="[
+      { id: 'like', label: 'J\\'aime' },
+      { id: 'dislike', label: 'Je n\\'aime pas' },
+      { id: 'delete', label: 'Supprimer', variant: 'danger' }
+    ]"
+  />
+</template>`
+    }
+  },
+
+  "messageactions-overflow": {
+    id: "messageactions-overflow",
+    slug: "message-actions",
+    nodes: [
+      stack([
+        {
+          comp: "MessageActions",
+          props: {
+            actions: [
+              { id: "copy", label: "Copier", icon: "⧉" },
+              { id: "edit", label: "Éditer", icon: "✎" },
+              { id: "regen", label: "Régénérer", icon: "↻" }
+            ]
+          }
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { MessageActions } from "@sentropic/design-system-svelte";
+  import { Copy, Pencil, RefreshCw } from "@lucide/svelte";
+</script>
+
+<MessageActions
+  actions={[
+    { id: "copy", label: "Copier", icon: iconCopy },
+    { id: "edit", label: "Éditer", icon: iconEdit },
+    { id: "regen", label: "Régénérer", icon: iconRegen }
+  ]}
+  overflow={overflowIcon}
+/>
+
+{#snippet iconCopy()}<Copy size={14} strokeWidth={2.2} />{/snippet}
+{#snippet iconEdit()}<Pencil size={14} strokeWidth={2.2} />{/snippet}
+{#snippet iconRegen()}<RefreshCw size={14} strokeWidth={2.2} />{/snippet}
+{#snippet overflowIcon()}<span>⋮</span>{/snippet}`,
+      react: `import { MessageActions } from "@sentropic/design-system-react";
+import { Copy, Pencil, RefreshCw } from "lucide-react";
+
+export function Demo() {
+  return (
+    <MessageActions
+      actions={[
+        { id: "copy", label: "Copier", icon: <Copy size={14} strokeWidth={2.2} /> },
+        { id: "edit", label: "Éditer", icon: <Pencil size={14} strokeWidth={2.2} /> },
+        { id: "regen", label: "Régénérer", icon: <RefreshCw size={14} strokeWidth={2.2} /> }
+      ]}
+      overflow={<span>⋮</span>}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { MessageActions } from "@sentropic/design-system-vue";
+</script>
+
+<template>
+  <MessageActions
+    :actions="[
+      { id: 'copy', label: 'Copier' },
+      { id: 'edit', label: 'Éditer' },
+      { id: 'regen', label: 'Régénérer' }
+    ]"
+  >
+    <template #overflow><span>⋮</span></template>
+  </MessageActions>
 </template>`
     }
   },
@@ -5942,6 +6771,196 @@ import { Menu } from "@sentropic/design-system-vue";
       { id: 'delete', label: 'Supprimer', variant: 'danger' }
     ]"
   />
+</template>`
+    }
+  },
+
+  "menu-groups": {
+    id: "menu-groups",
+    slug: "menu",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "Menu",
+            props: {
+              label: "Actions",
+              items: [
+                { kind: "group", label: "\u00c9dition" },
+                { label: "\u00c9diter", value: "edit" },
+                { label: "Dupliquer", value: "duplicate" },
+                { kind: "divider" },
+                { kind: "group", label: "Distribuer" },
+                { label: "Partager", value: "share" },
+                { label: "Archiver", value: "archive" },
+                { kind: "divider" },
+                { label: "Supprimer", value: "delete", danger: true }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { Menu } from "@sentropic/design-system-svelte";
+  import { Pencil, Copy, Share2, Archive, Trash2 } from "@lucide/svelte";
+
+  let lastAction = $state("N/A");
+
+  const items = [
+    { kind: "group", label: "\u00c9dition" },
+    { label: "\u00c9diter", value: "edit", icon: Pencil },
+    { label: "Dupliquer", value: "duplicate", icon: Copy },
+    { kind: "divider" },
+    { kind: "group", label: "Distribuer" },
+    { label: "Partager", value: "share", icon: Share2 },
+    { label: "Archiver", value: "archive", icon: Archive },
+    { kind: "divider" },
+    { label: "Supprimer", value: "delete", icon: Trash2, danger: true }
+  ];
+</script>
+
+<Menu label="Actions" {items} onselect={(v) => (lastAction = v)} />
+<p>Derni\u00e8re action : <code>{lastAction}</code></p>`,
+      react: `import { useState } from "react";
+import { Menu } from "@sentropic/design-system-react";
+import { Pencil, Copy, Share2, Archive, Trash2 } from "lucide-react";
+
+const items = [
+  { kind: "group", label: "\u00c9dition" },
+  { label: "\u00c9diter", value: "edit", icon: Pencil },
+  { label: "Dupliquer", value: "duplicate", icon: Copy },
+  { kind: "divider" },
+  { kind: "group", label: "Distribuer" },
+  { label: "Partager", value: "share", icon: Share2 },
+  { label: "Archiver", value: "archive", icon: Archive },
+  { kind: "divider" },
+  { label: "Supprimer", value: "delete", icon: Trash2, danger: true }
+];
+
+export function Demo() {
+  const [lastAction, setLastAction] = useState("N/A");
+  return (
+    <>
+      <Menu label="Actions" items={items} onselect={setLastAction} />
+      <p>Derni\u00e8re action : <code>{lastAction}</code></p>
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { ref } from "vue";
+import { Menu } from "@sentropic/design-system-vue";
+import { Pencil, Copy, Share2, Archive, Trash2 } from "lucide-vue-next";
+
+const lastAction = ref("N/A");
+
+const items = [
+  { kind: "group", label: "\u00c9dition" },
+  { label: "\u00c9diter", value: "edit", icon: Pencil },
+  { label: "Dupliquer", value: "duplicate", icon: Copy },
+  { kind: "divider" },
+  { kind: "group", label: "Distribuer" },
+  { label: "Partager", value: "share", icon: Share2 },
+  { label: "Archiver", value: "archive", icon: Archive },
+  { kind: "divider" },
+  { label: "Supprimer", value: "delete", icon: Trash2, danger: true }
+];
+</script>
+
+<template>
+  <Menu label="Actions" :items="items" @select="lastAction = $event" />
+  <p>Derni\u00e8re action : <code>{{ lastAction }}</code></p>
+</template>`
+    }
+  },
+
+  "menu-states": {
+    id: "menu-states",
+    slug: "menu",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-row" },
+        children: [
+          {
+            comp: "Menu",
+            props: {
+              label: "\u00c9tats",
+              items: [
+                { label: "Action normale", value: "normal" },
+                { label: "Action d\u00e9sactiv\u00e9e", value: "disabled", disabled: true },
+                { kind: "divider" },
+                { label: "Action destructive", value: "destroy", danger: true }
+              ]
+            }
+          },
+          {
+            comp: "Menu",
+            props: {
+              label: "Dense",
+              dense: true,
+              items: [
+                { label: "Action normale", value: "normal" },
+                { label: "Action d\u00e9sactiv\u00e9e", value: "disabled", disabled: true },
+                { kind: "divider" },
+                { label: "Action destructive", value: "destroy", danger: true }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { Menu } from "@sentropic/design-system-svelte";
+  import { Pencil, Copy, Trash2 } from "@lucide/svelte";
+
+  const items = [
+    { label: "Action normale", value: "normal", icon: Pencil },
+    { label: "Action d\u00e9sactiv\u00e9e", value: "disabled", icon: Copy, disabled: true },
+    { kind: "divider" },
+    { label: "Action destructive", value: "destroy", icon: Trash2, danger: true }
+  ];
+</script>
+
+<Menu label="\u00c9tats" {items} />
+<Menu label="Dense" {items} dense />`,
+      react: `import { Menu } from "@sentropic/design-system-react";
+import { Pencil, Copy, Trash2 } from "lucide-react";
+
+const items = [
+  { label: "Action normale", value: "normal", icon: Pencil },
+  { label: "Action d\u00e9sactiv\u00e9e", value: "disabled", icon: Copy, disabled: true },
+  { kind: "divider" },
+  { label: "Action destructive", value: "destroy", icon: Trash2, danger: true }
+];
+
+export function Demo() {
+  return (
+    <>
+      <Menu label="\u00c9tats" items={items} />
+      <Menu label="Dense" items={items} dense />
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { Menu } from "@sentropic/design-system-vue";
+import { Pencil, Copy, Trash2 } from "lucide-vue-next";
+
+const items = [
+  { label: "Action normale", value: "normal", icon: Pencil },
+  { label: "Action d\u00e9sactiv\u00e9e", value: "disabled", icon: Copy, disabled: true },
+  { kind: "divider" },
+  { label: "Action destructive", value: "destroy", icon: Trash2, danger: true }
+];
+</script>
+
+<template>
+  <Menu label="\u00c9tats" :items="items" />
+  <Menu label="Dense" :items="items" dense />
 </template>`
     }
   },
@@ -6145,6 +7164,145 @@ import { Popover, Button } from "@sentropic/design-system-vue";
 <template>
   <Popover content="Cliquez pour copier l'identifiant." placement="bottom" :open="true">
     <Button variant="secondary">Info</Button>
+  </Popover>
+</template>`
+    }
+  },
+
+  "popover-placement": {
+    id: "popover-placement",
+    slug: "popover",
+    nodes: [
+      wrap([
+        {
+          comp: "Popover",
+          props: { open: true, placement: "bottom", label: "Détail bas" },
+          children: [
+            { comp: "Button", props: { variant: "secondary" }, children: ["Bas (défaut)"] }
+          ]
+        },
+        {
+          comp: "Popover",
+          props: { open: true, placement: "top", label: "Détail haut" },
+          children: [
+            { comp: "Button", props: { variant: "secondary" }, children: ["Haut"] }
+          ]
+        },
+        {
+          comp: "Popover",
+          props: { open: true, placement: "right", label: "Détail droite" },
+          children: [
+            { comp: "Button", props: { variant: "secondary" }, children: ["Droite"] }
+          ]
+        },
+        {
+          comp: "Popover",
+          props: { open: true, placement: "left", label: "Détail gauche" },
+          children: [
+            { comp: "Button", props: { variant: "secondary" }, children: ["Gauche"] }
+          ]
+        }
+      ])
+    ],
+    code: {
+      svelte: `<script>
+  import { Popover, Button } from "@sentropic/design-system-svelte";
+
+  let bottomOpen = $state(false);
+  let topOpen = $state(false);
+  let rightOpen = $state(false);
+  let leftOpen = $state(false);
+</script>
+
+<Popover open={bottomOpen} label="Bottom detail" placement="bottom">
+  {#snippet trigger()}
+    <Button variant="secondary" onclick={() => (bottomOpen = !bottomOpen)}>Bottom (default)</Button>
+  {/snippet}
+  <p>Content appears below the trigger.</p>
+</Popover>
+
+<Popover open={topOpen} label="Top detail" placement="top">
+  {#snippet trigger()}
+    <Button variant="secondary" onclick={() => (topOpen = !topOpen)}>Top</Button>
+  {/snippet}
+  <p>Content appears above the trigger.</p>
+</Popover>
+
+<Popover open={rightOpen} label="Right detail" placement="right">
+  {#snippet trigger()}
+    <Button variant="secondary" onclick={() => (rightOpen = !rightOpen)}>Right</Button>
+  {/snippet}
+  <p>Content appears to the right of the trigger.</p>
+</Popover>
+
+<Popover open={leftOpen} label="Left detail" placement="left">
+  {#snippet trigger()}
+    <Button variant="secondary" onclick={() => (leftOpen = !leftOpen)}>Left</Button>
+  {/snippet}
+  <p>Content appears to the left of the trigger.</p>
+</Popover>`,
+      react: `import { useState } from "react";
+import { Popover, Button } from "@sentropic/design-system-react";
+
+export function Demo() {
+  const [bottomOpen, setBottomOpen] = useState(false);
+  const [topOpen, setTopOpen] = useState(false);
+  const [rightOpen, setRightOpen] = useState(false);
+  const [leftOpen, setLeftOpen] = useState(false);
+
+  return (
+    <>
+      <Popover open={bottomOpen} label="Bottom detail" placement="bottom">
+        <Button variant="secondary" onClick={() => setBottomOpen(o => !o)}>Bottom (default)</Button>
+        <p>Content appears below the trigger.</p>
+      </Popover>
+
+      <Popover open={topOpen} label="Top detail" placement="top">
+        <Button variant="secondary" onClick={() => setTopOpen(o => !o)}>Top</Button>
+        <p>Content appears above the trigger.</p>
+      </Popover>
+
+      <Popover open={rightOpen} label="Right detail" placement="right">
+        <Button variant="secondary" onClick={() => setRightOpen(o => !o)}>Right</Button>
+        <p>Content appears to the right of the trigger.</p>
+      </Popover>
+
+      <Popover open={leftOpen} label="Left detail" placement="left">
+        <Button variant="secondary" onClick={() => setLeftOpen(o => !o)}>Left</Button>
+        <p>Content appears to the left of the trigger.</p>
+      </Popover>
+    </>
+  );
+}`,
+      vue: `<script setup>
+import { ref } from "vue";
+import { Popover, Button } from "@sentropic/design-system-vue";
+
+const bottomOpen = ref(false);
+const topOpen = ref(false);
+const rightOpen = ref(false);
+const leftOpen = ref(false);
+</script>
+
+<template>
+  <Popover :open="bottomOpen" label="Bottom detail" placement="bottom">
+    <Button variant="secondary" @click="bottomOpen = !bottomOpen">Bottom (default)</Button>
+    <p>Content appears below the trigger.</p>
+  </Popover>
+
+  <Popover :open="topOpen" label="Top detail" placement="top">
+    <Button variant="secondary" @click="topOpen = !topOpen">Top</Button>
+    <p>Content appears above the trigger.</p>
+  </Popover>
+
+  <Popover :open="rightOpen" label="Right detail" placement="right">
+    <Button variant="secondary" @click="rightOpen = !rightOpen">Right</Button>
+    <p>Content appears to the right of the trigger.</p>
+  </Popover>
+
+  <Popover :open="leftOpen" label="Left detail" placement="left">
+    <Button variant="secondary" @click="leftOpen = !leftOpen">Left</Button>
+    <p>Content appears to the left of the trigger.</p>
   </Popover>
 </template>`
     }
@@ -11405,6 +12563,357 @@ import { NavSection, NavItem, Button } from "@sentropic/design-system-vue";
     <NavItem title="Cygnus" :swatch="{ tone: 'warning' }" :count="1" />
   </NavSection>
 </template>`
+    }
+  },
+
+  appchrome: {
+    id: "appchrome",
+    slug: "app-chrome",
+    nodes: [
+      {
+        comp: "AppChrome",
+        props: {
+          brandName: "Sentropic",
+          productName: "dataviz",
+          logoSrc: "/SENT-logo-squared.svg",
+          brandHref: "#",
+          nav: [
+            { label: "Vues", href: "#views", active: true },
+            { label: "Données", href: "#data" },
+            { label: "Réglages", href: "#settings" }
+          ],
+          themes: [
+            { id: "sent-tech", label: "Sentropic" },
+            { id: "forge", label: "Forge" },
+            { id: "carbon", label: "Carbon" }
+          ],
+          theme: "sent-tech",
+          colorMode: "light",
+          locale: "fr",
+          githubHref: "https://github.com/rhanka/sent-tech-design-system",
+          mobileMenuOpen: false
+        }
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { AppChrome } from "@sentropic/design-system-svelte";
+
+  const themes = [
+    { id: "sent-tech", label: "Sentropic" },
+    { id: "forge", label: "Forge" },
+    { id: "carbon", label: "Carbon" }
+  ];
+  const nav = [
+    { label: "Vues", href: "#views", active: true },
+    { label: "Données", href: "#data" },
+    { label: "Réglages", href: "#settings" }
+  ];
+
+  let theme = $state("sent-tech");
+  let colorMode = $state("light");
+  let locale = $state("fr");
+  let mobileMenuOpen = $state(false);
+</script>
+
+<AppChrome
+  brandName="Sentropic"
+  productName="dataviz"
+  logoSrc="/SENT-logo-squared.svg"
+  brandHref="#"
+  {nav}
+  {themes}
+  {theme}
+  onThemeChange={(id) => (theme = id)}
+  {colorMode}
+  onColorModeChange={(mode) => (colorMode = mode)}
+  {locale}
+  onLocaleChange={(value) => (locale = value)}
+  githubHref="https://github.com/rhanka/sent-tech-design-system"
+  {mobileMenuOpen}
+  onMobileMenuToggle={() => (mobileMenuOpen = !mobileMenuOpen)}
+/>`,
+      react: `import { useState } from "react";
+import { AppChrome } from "@sentropic/design-system-react";
+
+const themes = [
+  { id: "sent-tech", label: "Sentropic" },
+  { id: "forge", label: "Forge" },
+  { id: "carbon", label: "Carbon" }
+];
+const nav = [
+  { label: "Vues", href: "#views", active: true },
+  { label: "Données", href: "#data" },
+  { label: "Réglages", href: "#settings" }
+];
+
+export function Demo() {
+  const [theme, setTheme] = useState("sent-tech");
+  const [colorMode, setColorMode] = useState("light");
+  const [locale, setLocale] = useState("fr");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  return (
+    <AppChrome
+      brandName="Sentropic"
+      productName="dataviz"
+      logoSrc="/SENT-logo-squared.svg"
+      brandHref="#"
+      nav={nav}
+      themes={themes}
+      theme={theme}
+      onThemeChange={setTheme}
+      colorMode={colorMode}
+      onColorModeChange={setColorMode}
+      locale={locale}
+      onLocaleChange={setLocale}
+      githubHref="https://github.com/rhanka/sent-tech-design-system"
+      mobileMenuOpen={mobileMenuOpen}
+      onMobileMenuToggle={() => setMobileMenuOpen((o) => !o)}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { ref } from "vue";
+import { AppChrome } from "@sentropic/design-system-vue";
+
+const themes = [
+  { id: "sent-tech", label: "Sentropic" },
+  { id: "forge", label: "Forge" },
+  { id: "carbon", label: "Carbon" }
+];
+const nav = [
+  { label: "Vues", href: "#views", active: true },
+  { label: "Données", href: "#data" },
+  { label: "Réglages", href: "#settings" }
+];
+
+const theme = ref("sent-tech");
+const colorMode = ref("light");
+const locale = ref("fr");
+const mobileMenuOpen = ref(false);
+</script>
+
+<template>
+  <AppChrome
+    brandName="Sentropic"
+    productName="dataviz"
+    logoSrc="/SENT-logo-squared.svg"
+    brandHref="#"
+    :nav="nav"
+    :themes="themes"
+    :theme="theme"
+    @themeChange="(id) => (theme = id)"
+    :colorMode="colorMode"
+    @colorModeChange="(mode) => (colorMode = mode)"
+    :locale="locale"
+    @localeChange="(value) => (locale = value)"
+    githubHref="https://github.com/rhanka/sent-tech-design-system"
+    :mobileMenuOpen="mobileMenuOpen"
+    @mobileMenuToggle="() => (mobileMenuOpen = !mobileMenuOpen)"
+  />
+</template>`
+    }
+  },
+
+  dashboardgridstatic: {
+    id: "dashboardgridstatic",
+    slug: "dashboard-grid",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "DashboardGrid",
+            props: {
+              label: "Static grid",
+              tiles: [
+                { id: "revenue", x: 0, y: 0, w: 4, h: 2, title: "Revenue", value: "$1.8M", description: "+12% vs previous period" },
+                { id: "conversion", x: 4, y: 0, w: 4, h: 2, title: "Conversion", value: "8.4%", description: "Qualified funnel" },
+                { id: "latency", x: 8, y: 0, w: 4, h: 2, title: "Latency", value: "124 ms", description: "P95 API response" },
+                { id: "pipeline", x: 0, y: 2, w: 8, h: 2, title: "Pipeline", value: "47 deals", description: "Open opportunities" },
+                { id: "risk", x: 8, y: 2, w: 4, h: 2, title: "Risk", value: "Low", description: "No critical alerts" }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { DashboardGrid } from "@sentropic/design-system-svelte";
+
+  const tiles = [
+    { id: "revenue",    x: 0, y: 0, w: 4, h: 2, title: "Revenue",    value: "$1.8M",    description: "+12% vs previous period" },
+    { id: "conversion", x: 4, y: 0, w: 4, h: 2, title: "Conversion", value: "8.4%",     description: "Qualified funnel" },
+    { id: "latency",    x: 8, y: 0, w: 4, h: 2, title: "Latency",    value: "124 ms",   description: "P95 API response" },
+    { id: "pipeline",   x: 0, y: 2, w: 8, h: 2, title: "Pipeline",   value: "47 deals", description: "Open opportunities" },
+    { id: "risk",       x: 8, y: 2, w: 4, h: 2, title: "Risk",       value: "Low",      description: "No critical alerts" }
+  ];
+</script>
+
+<DashboardGrid {tiles} label="Static grid" />`,
+      react: `import { DashboardGrid } from "@sentropic/design-system-react";
+
+const tiles = [
+  { id: "revenue",    x: 0, y: 0, w: 4, h: 2, title: "Revenue",    value: "$1.8M",    description: "+12% vs previous period" },
+  { id: "conversion", x: 4, y: 0, w: 4, h: 2, title: "Conversion", value: "8.4%",     description: "Qualified funnel" },
+  { id: "latency",    x: 8, y: 0, w: 4, h: 2, title: "Latency",    value: "124 ms",   description: "P95 API response" },
+  { id: "pipeline",   x: 0, y: 2, w: 8, h: 2, title: "Pipeline",   value: "47 deals", description: "Open opportunities" },
+  { id: "risk",       x: 8, y: 2, w: 4, h: 2, title: "Risk",       value: "Low",      description: "No critical alerts" }
+];
+
+export function Demo() {
+  return <DashboardGrid tiles={tiles} label="Static grid" />;
+}`,
+      vue: `<script setup>
+import { DashboardGrid } from "@sentropic/design-system-vue";
+
+const tiles = [
+  { id: "revenue",    x: 0, y: 0, w: 4, h: 2, title: "Revenue",    value: "$1.8M",    description: "+12% vs previous period" },
+  { id: "conversion", x: 4, y: 0, w: 4, h: 2, title: "Conversion", value: "8.4%",     description: "Qualified funnel" },
+  { id: "latency",    x: 8, y: 0, w: 4, h: 2, title: "Latency",    value: "124 ms",   description: "P95 API response" },
+  { id: "pipeline",   x: 0, y: 2, w: 8, h: 2, title: "Pipeline",   value: "47 deals", description: "Open opportunities" },
+  { id: "risk",       x: 8, y: 2, w: 4, h: 2, title: "Risk",       value: "Low",      description: "No critical alerts" }
+];
+</script>
+
+<template>
+  <DashboardGrid :tiles="tiles" label="Static grid" />
+</template>`,
+      angular: `import { Component } from "@angular/core";
+import { DashboardGridModule } from "@sentropic/design-system-angular";
+
+@Component({
+  selector: "app-demo",
+  standalone: true,
+  imports: [DashboardGridModule],
+  template: \`<st-dashboard-grid [tiles]="tiles" label="Static grid" />\`
+})
+export class DemoComponent {
+  tiles = [
+    { id: "revenue",    x: 0, y: 0, w: 4, h: 2, title: "Revenue",    value: "$1.8M",    description: "+12% vs previous period" },
+    { id: "conversion", x: 4, y: 0, w: 4, h: 2, title: "Conversion", value: "8.4%",     description: "Qualified funnel" },
+    { id: "latency",    x: 8, y: 0, w: 4, h: 2, title: "Latency",    value: "124 ms",   description: "P95 API response" },
+    { id: "pipeline",   x: 0, y: 2, w: 8, h: 2, title: "Pipeline",   value: "47 deals", description: "Open opportunities" },
+    { id: "risk",       x: 8, y: 2, w: 4, h: 2, title: "Risk",       value: "Low",      description: "No critical alerts" }
+  ];
+}`
+    }
+  },
+
+  dashboardgridedit: {
+    id: "dashboardgridedit",
+    slug: "dashboard-grid",
+    nodes: [
+      {
+        el: "div",
+        props: { class: "fp-stack" },
+        children: [
+          {
+            comp: "DashboardGrid",
+            props: {
+              label: "Edit mode",
+              editable: true,
+              tiles: [
+                { id: "revenue", x: 0, y: 0, w: 4, h: 2, title: "Revenue", value: "$1.8M", description: "+12% vs previous period" },
+                { id: "conversion", x: 4, y: 0, w: 4, h: 2, title: "Conversion", value: "8.4%", description: "Qualified funnel" },
+                { id: "latency", x: 8, y: 0, w: 4, h: 2, title: "Latency", value: "124 ms", description: "P95 API response" },
+                { id: "pipeline", x: 0, y: 2, w: 8, h: 2, title: "Pipeline", value: "47 deals", description: "Open opportunities" },
+                { id: "risk", x: 8, y: 2, w: 4, h: 2, title: "Risk", value: "Low", description: "No critical alerts" }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    code: {
+      svelte: `<script>
+  import { DashboardGrid } from "@sentropic/design-system-svelte";
+  import type { DashboardGridTile } from "@sentropic/design-system-svelte";
+
+  const initialTiles: DashboardGridTile[] = [
+    { id: "revenue",    x: 0, y: 0, w: 4, h: 2, title: "Revenue",    value: "$1.8M",    description: "+12% vs previous period" },
+    { id: "conversion", x: 4, y: 0, w: 4, h: 2, title: "Conversion", value: "8.4%",     description: "Qualified funnel" },
+    { id: "latency",    x: 8, y: 0, w: 4, h: 2, title: "Latency",    value: "124 ms",   description: "P95 API response" },
+    { id: "pipeline",   x: 0, y: 2, w: 8, h: 2, title: "Pipeline",   value: "47 deals", description: "Open opportunities" },
+    { id: "risk",       x: 8, y: 2, w: 4, h: 2, title: "Risk",       value: "Low",      description: "No critical alerts" }
+  ];
+
+  let tiles = $state<DashboardGridTile[]>(initialTiles);
+</script>
+
+<DashboardGrid {tiles} editable label="Edit mode" onLayout={(updated) => (tiles = updated)} />`,
+      react: `import { useState } from "react";
+import { DashboardGrid } from "@sentropic/design-system-react";
+import type { DashboardGridTile } from "@sentropic/design-system-react";
+
+const initialTiles: DashboardGridTile[] = [
+  { id: "revenue",    x: 0, y: 0, w: 4, h: 2, title: "Revenue",    value: "$1.8M",    description: "+12% vs previous period" },
+  { id: "conversion", x: 4, y: 0, w: 4, h: 2, title: "Conversion", value: "8.4%",     description: "Qualified funnel" },
+  { id: "latency",    x: 8, y: 0, w: 4, h: 2, title: "Latency",    value: "124 ms",   description: "P95 API response" },
+  { id: "pipeline",   x: 0, y: 2, w: 8, h: 2, title: "Pipeline",   value: "47 deals", description: "Open opportunities" },
+  { id: "risk",       x: 8, y: 2, w: 4, h: 2, title: "Risk",       value: "Low",      description: "No critical alerts" }
+];
+
+export function Demo() {
+  const [tiles, setTiles] = useState(initialTiles);
+  return (
+    <DashboardGrid
+      tiles={tiles}
+      editable
+      label="Edit mode"
+      onLayout={setTiles}
+    />
+  );
+}`,
+      vue: `<script setup>
+import { ref } from "vue";
+import { DashboardGrid } from "@sentropic/design-system-vue";
+
+const tiles = ref([
+  { id: "revenue",    x: 0, y: 0, w: 4, h: 2, title: "Revenue",    value: "$1.8M",    description: "+12% vs previous period" },
+  { id: "conversion", x: 4, y: 0, w: 4, h: 2, title: "Conversion", value: "8.4%",     description: "Qualified funnel" },
+  { id: "latency",    x: 8, y: 0, w: 4, h: 2, title: "Latency",    value: "124 ms",   description: "P95 API response" },
+  { id: "pipeline",   x: 0, y: 2, w: 8, h: 2, title: "Pipeline",   value: "47 deals", description: "Open opportunities" },
+  { id: "risk",       x: 8, y: 2, w: 4, h: 2, title: "Risk",       value: "Low",      description: "No critical alerts" }
+]);
+</script>
+
+<template>
+  <DashboardGrid
+    :tiles="tiles"
+    editable
+    label="Edit mode"
+    @layout="(updated) => (tiles = updated)"
+  />
+</template>`,
+      angular: `import { Component, signal } from "@angular/core";
+import { DashboardGridModule } from "@sentropic/design-system-angular";
+
+@Component({
+  selector: "app-demo",
+  standalone: true,
+  imports: [DashboardGridModule],
+  template: \`
+    <st-dashboard-grid
+      [tiles]="tiles()"
+      [editable]="true"
+      label="Edit mode"
+      (layout)="tiles.set($event)"
+    />
+  \`
+})
+export class DemoComponent {
+  tiles = signal([
+    { id: "revenue",    x: 0, y: 0, w: 4, h: 2, title: "Revenue",    value: "$1.8M",    description: "+12% vs previous period" },
+    { id: "conversion", x: 4, y: 0, w: 4, h: 2, title: "Conversion", value: "8.4%",     description: "Qualified funnel" },
+    { id: "latency",    x: 8, y: 0, w: 4, h: 2, title: "Latency",    value: "124 ms",   description: "P95 API response" },
+    { id: "pipeline",   x: 0, y: 2, w: 8, h: 2, title: "Pipeline",   value: "47 deals", description: "Open opportunities" },
+    { id: "risk",       x: 8, y: 2, w: 4, h: 2, title: "Risk",       value: "Low",      description: "No critical alerts" }
+  ]);
+}`
     }
   }
 };

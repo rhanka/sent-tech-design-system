@@ -1,33 +1,11 @@
 <script lang="ts">
   import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { getExample } from "$lib/framework/examples";
-  import { Badge, Menu } from "@sentropic/design-system-svelte";
-  import { Archive, Copy, Pencil, Share2, Trash2 } from "@lucide/svelte";
+  import { Badge } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
 
   const fr = (frText: string, enText: string) => (locale.value === "fr" ? frText : enText);
-
-  let lastAction = $state("N/A");
-
-  const actionItems = [
-    { kind: "group" as const, label: fr("Édition", "Edit") },
-    { label: fr("Éditer", "Edit"), value: "edit", icon: Pencil },
-    { label: fr("Dupliquer", "Duplicate"), value: "duplicate", icon: Copy },
-    { kind: "divider" as const },
-    { kind: "group" as const, label: fr("Distribuer", "Distribute") },
-    { label: fr("Partager", "Share"), value: "share", icon: Share2 },
-    { label: fr("Archiver", "Archive"), value: "archive", icon: Archive },
-    { kind: "divider" as const },
-    { label: fr("Supprimer", "Delete"), value: "delete", icon: Trash2, danger: true }
-  ];
-
-  const stateItems = [
-    { label: fr("Action normale", "Normal action"), value: "normal", icon: Pencil },
-    { label: fr("Action désactivée", "Disabled action"), value: "disabled", icon: Copy, disabled: true },
-    { kind: "divider" as const },
-    { label: fr("Action destructive", "Destructive action"), value: "destroy", icon: Trash2, danger: true }
-  ];
 </script>
 
 <div class="docs-page">
@@ -68,19 +46,13 @@
   <section class="docs-section">
     <h2>{fr("Groupes, séparateurs et item destructif", "Groups, dividers, and destructive item")}</h2>
     <p>{fr("Les items group titrent des sections, divider les sépare, et danger colore une action destructive.", "Group items title sections, dividers separate them, and danger tints a destructive action.")}</p>
-    <div class="docs-example docs-example--stack">
-      <Menu label={fr("Actions", "Actions")} items={actionItems} onselect={(value) => (lastAction = value)} />
-      <p class="docs-demo-note">{fr("Dernière action", "Last action")} : <code>{lastAction}</code></p>
-    </div>
+    <TabbedExample nodes={getExample("menu-groups")?.nodes ?? []} title={fr("Groupes, séparateurs et item destructif", "Groups, dividers, and destructive item")} />
   </section>
 
   <section class="docs-section">
     <h2>{fr("États des items et densité", "Item states and density")}</h2>
     <p>{fr("Un item peut être désactivé (non sélectionnable) ou destructif. La prop dense réduit la hauteur des items.", "An item can be disabled (not selectable) or destructive. The dense prop reduces item height.")}</p>
-    <div class="docs-example docs-example--stack">
-      <Menu label={fr("États", "States")} items={stateItems} />
-      <Menu label={fr("Dense", "Dense")} items={stateItems} dense />
-    </div>
+    <TabbedExample nodes={getExample("menu-states")?.nodes ?? []} title={fr("États des items et densité", "Item states and density")} />
   </section>
 
   <section class="docs-section">

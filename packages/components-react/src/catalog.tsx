@@ -1136,8 +1136,9 @@ export type DrawerProps = React.HTMLAttributes<HTMLElement> & {
   footer?: React.ReactNode;
   placement?: "left" | "right" | "bottom";
   onClose?: () => void;
+  closeLabel?: string;
 };
-export function Drawer({ open = false, title, description, footer, placement = "right", onClose, children, className, ...rest }: DrawerProps) {
+export function Drawer({ open = false, title, description, footer, placement = "right", onClose, closeLabel = "Close", children, className, ...rest }: DrawerProps) {
   const panelRef = React.useRef<HTMLElement>(null);
   const closeRef = React.useRef<HTMLButtonElement>(null);
   useBodyScrollLock(open);
@@ -1173,7 +1174,7 @@ export function Drawer({ open = false, title, description, footer, placement = "
       >
         <div className="st-drawer__header">
           {title ? <h2 className="st-drawer__title">{title}</h2> : null}
-          <button ref={closeRef} type="button" className="st-drawer__close" onClick={onClose} aria-label="Close">
+          <button ref={closeRef} type="button" className="st-drawer__close" onClick={onClose} aria-label={closeLabel}>
             x
           </button>
         </div>
@@ -1470,8 +1471,9 @@ export type FooterProps = React.HTMLAttributes<HTMLElement> & {
   links?: Array<{ label: React.ReactNode; href: string }>;
   legalLinks?: Array<{ label: React.ReactNode; href: string }>;
   copyright?: React.ReactNode;
+  legalNavLabel?: string;
 };
-export function Footer({ brand, columns, links, legalLinks, copyright, className, ...rest }: FooterProps) {
+export function Footer({ brand, columns, links, legalLinks, copyright, legalNavLabel = "Legal links", className, ...rest }: FooterProps) {
   const groups = columns ?? (links ? [{ links }] : []);
   const hasTop = brand || groups.length > 0;
   const hasBottom = copyright || (legalLinks && legalLinks.length > 0);
@@ -1498,7 +1500,7 @@ export function Footer({ brand, columns, links, legalLinks, copyright, className
         <div className="st-footer__bottom">
           {copyright ? <span className="st-footer__copyright">{copyright}</span> : null}
           {legalLinks && legalLinks.length > 0 ? (
-            <nav className="st-footer__legal" aria-label="Legal links">
+            <nav className="st-footer__legal" aria-label={legalNavLabel}>
               {legalLinks.map((link) => (
                 <a key={link.href} href={link.href}>
                   {link.label}
@@ -1992,6 +1994,10 @@ export type ForceGraphProps = React.HTMLAttributes<HTMLElement> & {
    * `id`. Receives the same pair so the consumer can drop `from` from the data.
    */
   onMergeComplete?: (pair: { id: string; from: string; into: string }) => void;
+  /** Accessible label for the reset-view button (shown when zoomed/panned). */
+  resetViewLabel?: string;
+  /** Accessible label for the legend overlay. */
+  legendLabel?: string;
 };
 
 // Curvature offset factor: how far (relative to chord length) the control
@@ -2026,6 +2032,8 @@ export function ForceGraph({
   onNodeHover,
   mergePair = null,
   onMergeComplete,
+  resetViewLabel = "Reset view",
+  legendLabel = "Graph legend",
   className,
   ...rest
 }: ForceGraphProps) {
@@ -2706,14 +2714,14 @@ export function ForceGraph({
 
       {/* Reset view button (only shown when zoomed/panned) */}
       {isZoomed ? (
-        <button className="st-forceGraph__resetBtn" type="button" aria-label="Reset view" onClick={resetView}>
+        <button className="st-forceGraph__resetBtn" type="button" aria-label={resetViewLabel} onClick={resetView}>
           ↺
         </button>
       ) : null}
 
       {/* Legend overlay */}
       {legend && legend.length > 0 ? (
-        <div className="st-forceGraph__legend" aria-label="Graph legend">
+        <div className="st-forceGraph__legend" aria-label={legendLabel}>
           {legend.map((entry, idx) => {
             const swatchPath = entry.shape !== undefined ? nodeShapePath(entry.shape, 7) : null;
             const swatchTone = entry.tone ?? "category1";
@@ -2903,6 +2911,8 @@ export type AppHeaderProps = {
   menuOpen?: boolean;
   onMenuToggle?: () => void;
   menuLabel?: string;
+  /** aria-label for the primary nav element. */
+  navLabel?: string;
   /**
    * Id du tiroir, partagé entre `aria-controls` (burger) et `id` (drawer).
    * Auto-généré et stable si non fourni.
@@ -2930,7 +2940,7 @@ export type AppHeaderProps = {
   drawer?: React.ReactNode;
   className?: string;
 };
-export function AppHeader({ compact = false, menuOpen = false, onMenuToggle, menuLabel = "Menu", drawerId, brandName, productName, logoSrc, logoAlt = "", brandHref = "/", brandLabel, logo, nav, actions, drawer, className }: AppHeaderProps) {
+export function AppHeader({ compact = false, menuOpen = false, onMenuToggle, menuLabel = "Menu", navLabel = "Primary", drawerId, brandName, productName, logoSrc, logoAlt = "", brandHref = "/", brandLabel, logo, nav, actions, drawer, className }: AppHeaderProps) {
   // Id stable du tiroir : prop fournie sinon useId (SSR-safe, sans crypto).
   const reactId = React.useId();
   const resolvedDrawerId = drawerId ?? `st-appHeader-drawer-${reactId}`;
@@ -2955,7 +2965,7 @@ export function AppHeader({ compact = false, menuOpen = false, onMenuToggle, men
           ) : null}
           {!compact ? (
             <>
-              <nav className="st-appHeader__nav" aria-label="Primary">
+              <nav className="st-appHeader__nav" aria-label={navLabel}>
                 {nav}
               </nav>
               <div className="st-appHeader__actions">{actions}</div>
@@ -3369,11 +3379,11 @@ export type LoadingStateProps = React.HTMLAttributes<HTMLElement> & {
   title?: React.ReactNode;
   variant?: "spinner" | "skeleton";
 };
-export function LoadingState({ label, title, variant = "spinner", className, ...rest }: LoadingStateProps) {
+export function LoadingState({ label = "Loading", title, variant = "spinner", className, ...rest }: LoadingStateProps) {
   return (
     <section {...rest} className={classNames("st-loading", `st-loading--${variant}`, className)} aria-live="polite">
       <span className="st-loading__spinner" aria-hidden="true" />
-      <span className="st-loading__label">{label ?? title ?? "Loading"}</span>
+      <span className="st-loading__label">{label ?? title}</span>
     </section>
   );
 }
@@ -3551,8 +3561,9 @@ export type ModalProps = React.HTMLAttributes<HTMLElement> & {
   description?: React.ReactNode;
   footer?: React.ReactNode;
   onClose?: () => void;
+  closeLabel?: string;
 };
-export function Modal({ open = false, title, description, footer, onClose, children, className, ...rest }: ModalProps) {
+export function Modal({ open = false, title, description, footer, onClose, closeLabel = "Close", children, className, ...rest }: ModalProps) {
   const dialogRef = React.useRef<HTMLElement>(null);
   const closeRef = React.useRef<HTMLButtonElement>(null);
   useBodyScrollLock(open);
@@ -3580,7 +3591,7 @@ export function Modal({ open = false, title, description, footer, onClose, child
       >
         <div className="st-modal__header">
           {title ? <h2 className="st-modal__title">{title}</h2> : null}
-          <button ref={closeRef} type="button" className="st-modal__close" onClick={onClose} aria-label="Close">
+          <button ref={closeRef} type="button" className="st-modal__close" onClick={onClose} aria-label={closeLabel}>
             <X size={18} strokeWidth={2.25} aria-hidden="true" />
           </button>
         </div>
@@ -4303,8 +4314,9 @@ export type SkeletonTextProps = React.HTMLAttributes<HTMLDivElement> & {
   width?: string;
   heading?: boolean;
   paragraph?: boolean;
+  loadingLabel?: string;
 };
-export function SkeletonText({ lines = 1, width, heading = false, paragraph = false, className, ...rest }: SkeletonTextProps) {
+export function SkeletonText({ lines = 1, width, heading = false, paragraph = false, loadingLabel = "Loading…", className, ...rest }: SkeletonTextProps) {
   const lineCount = paragraph ? Math.max(lines, 3) : lines;
   const lineWidth = (index: number): string | undefined => {
     if (width && index === 0) return width;
@@ -4312,7 +4324,7 @@ export function SkeletonText({ lines = 1, width, heading = false, paragraph = fa
     return undefined;
   };
   return (
-    <div {...rest} className={classNames("st-skeleton", className)} role="status" aria-label="Loading…" aria-busy="true">
+    <div {...rest} className={classNames("st-skeleton", className)} role="status" aria-label={loadingLabel} aria-busy="true">
       {Array.from({ length: lineCount }, (_, index) => {
         const w = lineWidth(index);
         return (

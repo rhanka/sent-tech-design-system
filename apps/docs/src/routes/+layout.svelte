@@ -89,10 +89,12 @@
     buildFoundationNav,
     buildComponentNavGroups,
     buildViewsNav,
+    buildLayoutsNav,
     buildTopNav,
     resolveBreadcrumb,
     type ComponentNavItem,
-    type ViewNavItem
+    type ViewNavItem,
+    type LayoutNavItem
   } from "$lib/docs-navigation";
   import { locale } from "$lib/locale.svelte";
   import {
@@ -197,6 +199,7 @@
   const foundationNavItems = $derived(buildFoundationNav(locale.value));
   const componentGroups = $derived(buildComponentNavGroups(locale.value));
   const viewsGroups = $derived(buildViewsNav(locale.value));
+  const layoutsGroups = $derived(buildLayoutsNav(locale.value));
   const breadcrumbs = $derived(resolveBreadcrumb(page.url.pathname, locale.value));
   // Le sélecteur de framework n'a d'effet que là où des composants sont rendus
   // (pages composant + galerie /preview). Ailleurs (home, fondations, tokens,
@@ -204,7 +207,8 @@
   const showFrameworkSwitcher = $derived(
     page.url.pathname.startsWith("/components") ||
     page.url.pathname === "/preview" ||
-    page.url.pathname.startsWith("/views")
+    page.url.pathname.startsWith("/views") ||
+    page.url.pathname.startsWith("/layouts")
   );
 
   // Thèmes proposés : le DS Sentropic de référence + les 2 mappings tiers
@@ -423,6 +427,14 @@
 
   function isViewGroupOpen(items: ViewNavItem[]): boolean {
     return items.some((item) => isViewActive(item));
+  }
+
+  function isLayoutActive(item: LayoutNavItem): boolean {
+    return page.url.pathname === `/layouts/${item.slug}`;
+  }
+
+  function isLayoutGroupOpen(items: LayoutNavItem[]): boolean {
+    return items.some((item) => isLayoutActive(item));
   }
 
   function openSearch() {
@@ -2476,6 +2488,39 @@
                         class="docs-side-link docs-side-link--view"
                         href={item.href}
                         aria-current={isViewActive(item) ? "page" : undefined}
+                      >
+                        <span>{item.label}</span>
+                      </a>
+                    </li>
+                  {/each}
+                </ul>
+              </details>
+            {/each}
+          </section>
+
+          <section class="docs-side-section" aria-labelledby="docs-layouts-heading">
+            <h2 id="docs-layouts-heading">
+              <a
+                class="docs-side-section-link"
+                href="/layouts"
+                aria-current={isActive("/layouts") ? "page" : undefined}
+              >
+                {locale.value === "fr" ? "Gabarits" : "Layouts"}
+              </a>
+            </h2>
+            {#each layoutsGroups as group (group.label)}
+              <details class="docs-side-group" open={isLayoutGroupOpen(group.items)}>
+                <summary>
+                  <ChevronDown class="docs-side-group-icon" size={16} strokeWidth={2.25} aria-hidden="true" />
+                  <span>{group.label}</span>
+                </summary>
+                <ul>
+                  {#each group.items as item (item.slug)}
+                    <li>
+                      <a
+                        class="docs-side-link docs-side-link--view"
+                        href={item.href}
+                        aria-current={isLayoutActive(item) ? "page" : undefined}
                       >
                         <span>{item.label}</span>
                       </a>

@@ -9,6 +9,7 @@ export type DrawerProps = {
   description?: string;
   placement?: DrawerPlacement;
   class?: string;
+  closeLabel?: string;
 };
 
 export const Drawer = defineComponent({
@@ -19,6 +20,7 @@ export const Drawer = defineComponent({
     description: { type: String, default: undefined },
     placement: { type: String as () => DrawerPlacement, default: "right" },
     class: { type: String, default: undefined },
+    closeLabel: { type: String, default: "Close" },
   },
   emits: ["close"],
   setup(props, { emit, slots, attrs }) {
@@ -87,7 +89,7 @@ export const Drawer = defineComponent({
                 {
                   type: "button",
                   class: "st-drawer__close",
-                  "aria-label": "Close",
+                  "aria-label": props.closeLabel,
                   onClick: () => emit("close"),
                 },
                 "x",
