@@ -12,6 +12,8 @@ export type PasswordInputProps = {
   modelValue?: string;
   disabled?: boolean;
   placeholder?: string;
+  showLabel?: string;
+  hideLabel?: string;
   class?: string;
 };
 
@@ -30,6 +32,8 @@ export const PasswordInput = defineComponent({
     modelValue: { type: String, default: undefined },
     disabled: { type: Boolean, default: false },
     placeholder: { type: String, default: undefined },
+    showLabel: { type: String, default: "Show password" },
+    hideLabel: { type: String, default: "Hide password" },
     class: { type: String, default: undefined },
   },
   emits: ["update:modelValue", "change", "input"],
@@ -83,7 +87,7 @@ export const PasswordInput = defineComponent({
                   {
                     type: "button",
                     class: "st-passwordInput__toggle",
-                    "aria-label": shown.value ? "Hide password" : "Show password",
+                    "aria-label": shown.value ? props.hideLabel : props.showLabel,
                     "aria-pressed": shown.value ? "true" : "false",
                     onClick: () => {
                       shown.value = !shown.value;

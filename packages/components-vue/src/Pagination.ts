@@ -7,6 +7,8 @@ export type PaginationProps = {
   totalItems?: number;
   totalPages?: number;
   pageCount?: number;
+  previousLabel?: string;
+  nextLabel?: string;
   class?: string;
 };
 
@@ -18,6 +20,8 @@ export const Pagination = defineComponent({
     totalItems: { type: Number, default: undefined },
     totalPages: { type: Number, default: undefined },
     pageCount: { type: Number, default: undefined },
+    previousLabel: { type: String, default: "Previous" },
+    nextLabel: { type: String, default: "Next" },
     class: { type: String, default: undefined },
   },
   emits: ["pageChange"],
@@ -52,7 +56,7 @@ export const Pagination = defineComponent({
               disabled: props.page <= 1,
               onClick: () => emit("pageChange", props.page - 1),
             },
-            "Previous",
+            props.previousLabel,
           ),
           h(
             "span",
@@ -89,7 +93,7 @@ export const Pagination = defineComponent({
               disabled: props.page >= pages,
               onClick: () => emit("pageChange", props.page + 1),
             },
-            "Next",
+            props.nextLabel,
           ),
         ],
       );
