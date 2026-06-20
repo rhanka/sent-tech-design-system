@@ -3769,7 +3769,7 @@ export function MultiSelect({
           {selectedOptions.length === 0 ? (
             <span className="st-multiSelect__placeholder">{resolvedPlaceholder}</span>
           ) : (
-            <span className="st-multiSelect__count">{selectedOptions.length} selected</span>
+            <span className="st-multiSelect__count">{selectedOptions.length} {isFr ? "sélectionné(s)" : "selected"}</span>
           )}
           <span className="st-multiSelect__caret" aria-hidden="true">
             <ChevronDown className={classNames("st-multiSelect__caretIcon", open && "st-multiSelect__caretIcon--open")} size={18} strokeWidth={2.25} aria-hidden="true" />
