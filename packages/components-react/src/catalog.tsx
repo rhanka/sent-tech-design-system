@@ -3296,16 +3296,18 @@ export function IconButton({ size = "md", variant = "ghost", type = "button", cl
 export type InlineLoadingProps = React.HTMLAttributes<HTMLDivElement> & {
   label?: React.ReactNode;
   status?: "active" | "inactive" | "success" | "error";
+  locale?: string;
 };
-const INLINE_LOADING_FALLBACK_LABELS = {
-  active: "Loading",
-  success: "Completed",
-  error: "Error",
-  inactive: "Inactive",
-} as const;
-export function InlineLoading({ label, status = "active", className, "aria-label": ariaLabel, ...rest }: InlineLoadingProps) {
+export function InlineLoading({ label, status = "active", locale = "fr-FR", className, "aria-label": ariaLabel, ...rest }: InlineLoadingProps) {
   // Canon Svelte : le libellé visible n'est rendu que s'il est fourni ; sinon
   // seul un aria-label de repli assure l'accessibilité (pas de texte visible).
+  const isFr = (locale ?? "fr-FR").toLowerCase().startsWith("fr");
+  const INLINE_LOADING_FALLBACK_LABELS = {
+    active: isFr ? "Chargement" : "Loading",
+    success: isFr ? "Terminé" : "Completed",
+    error: isFr ? "Erreur" : "Error",
+    inactive: isFr ? "Inactif" : "Inactive",
+  } as const;
   const accessibleLabel = ariaLabel ?? (label ? undefined : INLINE_LOADING_FALLBACK_LABELS[status]);
   return (
     <div

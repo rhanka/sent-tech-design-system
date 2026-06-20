@@ -56,7 +56,7 @@ describe("data and navigation components", () => {
   });
 
   it("renders pagination with current page and disabled previous", () => {
-    render(Pagination, { props: { page: 1, pageCount: 3 } });
+    render(Pagination, { props: { page: 1, pageCount: 3, locale: "en-US" } });
     expect(screen.getByRole("button", { name: "Previous" })).toHaveProperty("disabled", true);
     expect(screen.getByRole("button", { name: "Page 1" }).getAttribute("aria-current")).toBe(
       "page"
@@ -167,6 +167,7 @@ describe("data and navigation components", () => {
     render(DataTable, {
       props: {
         pageSize: 2,
+        locale: "en-US",
         columns: [{ key: "name", label: "Name", sortable: false }],
         rows: [
           { id: "a", name: "Alpha" },

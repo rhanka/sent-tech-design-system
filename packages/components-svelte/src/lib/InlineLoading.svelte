@@ -5,23 +5,26 @@
   type InlineLoadingProps = Omit<HTMLAttributes<HTMLDivElement>, "class"> & {
     label?: string;
     status?: "active" | "success" | "error" | "inactive";
+    locale?: string;
     class?: string;
   };
-
-  const FALLBACK_LABELS = {
-    active: "Loading",
-    success: "Completed",
-    error: "Error",
-    inactive: "Inactive"
-  } as const;
 
   let {
     label,
     status = "active",
+    locale = "fr-FR",
     class: className,
     "aria-label": ariaLabel,
     ...rest
   }: InlineLoadingProps = $props();
+
+  const isFr = $derived(locale.toLowerCase().startsWith("fr"));
+  const FALLBACK_LABELS = $derived({
+    active: isFr ? "Chargement" : "Loading",
+    success: isFr ? "Terminé" : "Completed",
+    error: isFr ? "Erreur" : "Error",
+    inactive: isFr ? "Inactif" : "Inactive",
+  });
 
   const classes = () =>
     ["st-inlineLoading", `st-inlineLoading--${status}`, className].filter(Boolean).join(" ");

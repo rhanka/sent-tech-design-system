@@ -9,6 +9,7 @@ export type NotificationProps = {
   message?: string;
   dismissible?: boolean;
   dismissLabel?: string;
+  locale?: string;
   class?: string;
 };
 
@@ -19,12 +20,15 @@ export const Notification = defineComponent({
     title: { type: String, required: true },
     message: { type: String, default: undefined },
     dismissible: { type: Boolean, default: false },
-    dismissLabel: { type: String, default: "Dismiss" },
+    dismissLabel: { type: String, default: undefined },
+    locale: { type: String, default: "fr-FR" },
     class: { type: String, default: undefined },
   },
   emits: ["dismiss"],
   setup(props, { emit, slots, attrs }) {
     return () => {
+      const isFr = (props.locale ?? "fr-FR").toLowerCase().startsWith("fr");
+      const resolvedDismissLabel = props.dismissLabel ?? (isFr ? "Fermer" : "Dismiss");
       const role = props.tone === "error" ? "alert" : "status";
       return h(
         "section",
@@ -47,8 +51,8 @@ export const Notification = defineComponent({
                   {
                     type: "button",
                     class: "st-notification__close",
-                    "aria-label": props.dismissLabel,
-                    title: props.dismissLabel,
+                    "aria-label": resolvedDismissLabel,
+                    title: resolvedDismissLabel,
                     onClick: () => emit("dismiss"),
                   },
                   "×",

@@ -62,6 +62,7 @@ export type DataTableProps<R extends DataTableRow = DataTableRow> = Omit<
   sortAscendingLabel?: string;
   sortDescendingLabel?: string;
   sortNoneLabel?: string;
+  locale?: string;
   previousLabel?: string;
   nextLabel?: string;
   paginationLabel?: string;
@@ -85,13 +86,14 @@ export function DataTable<R extends DataTableRow = DataTableRow>({
   pageSize,
   page: pageProp,
   onPageChange,
+  locale = "fr-FR",
   selectAllLabel = "Select all rows",
   selectRowLabel = "Select row",
   sortAscendingLabel = "Sorted ascending",
   sortDescendingLabel = "Sorted descending",
   sortNoneLabel = "Not sorted",
-  previousLabel = "Previous",
-  nextLabel = "Next",
+  previousLabel,
+  nextLabel,
   paginationLabel = "Pagination",
   rangeLabel = ({ start, end, total }) => `${start}–${end} of ${total}`,
   emptyLabel = "No data",
@@ -120,6 +122,10 @@ export function DataTable<R extends DataTableRow = DataTableRow>({
     if (pageProp === undefined) setPageState(next);
     onPageChange?.(next);
   };
+
+  const isFr = (locale ?? "fr-FR").toLowerCase().startsWith("fr");
+  const resolvedPreviousLabel = previousLabel ?? (isFr ? "Précédent" : "Previous");
+  const resolvedNextLabel = nextLabel ?? (isFr ? "Suivant" : "Next");
 
   const classes = classNames("st-dataTable", `st-dataTable--${size}`, className);
 
@@ -389,7 +395,7 @@ export function DataTable<R extends DataTableRow = DataTableRow>({
               disabled={safePage <= 1}
               onClick={() => goToPage(safePage - 1)}
             >
-              {previousLabel}
+              {resolvedPreviousLabel}
             </button>
             <span className="st-dataTable__pagerStatus" aria-live="polite">
               {safePage} / {pageCount}
@@ -400,7 +406,7 @@ export function DataTable<R extends DataTableRow = DataTableRow>({
               disabled={safePage >= pageCount}
               onClick={() => goToPage(safePage + 1)}
             >
-              {nextLabel}
+              {resolvedNextLabel}
             </button>
           </nav>
         </div>

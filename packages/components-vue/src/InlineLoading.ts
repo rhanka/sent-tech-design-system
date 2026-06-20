@@ -7,14 +7,8 @@ export type InlineLoadingStatus = "active" | "inactive" | "success" | "error";
 export type InlineLoadingProps = {
   label?: unknown;
   status?: InlineLoadingStatus;
+  locale?: string;
   class?: string;
-};
-
-const FALLBACK_LABELS: Record<InlineLoadingStatus, string> = {
-  active: "Loading",
-  success: "Completed",
-  error: "Error",
-  inactive: "Inactive",
 };
 
 export const InlineLoading = defineComponent({
@@ -25,6 +19,7 @@ export const InlineLoading = defineComponent({
       type: String as () => InlineLoadingStatus,
       default: "active",
     },
+    locale: { type: String, default: "fr-FR" },
     class: { type: String, default: undefined },
   },
   setup(props, { attrs }) {
@@ -32,6 +27,13 @@ export const InlineLoading = defineComponent({
       // Canon Svelte : le libellé visible n'est rendu que s'il est fourni ;
       // sinon un aria-label de repli porte l'accessibilité (aucun texte anglais
       // visible sur une page localisée).
+      const isFr = (props.locale ?? "fr-FR").toLowerCase().startsWith("fr");
+      const FALLBACK_LABELS: Record<InlineLoadingStatus, string> = {
+        active: isFr ? "Chargement" : "Loading",
+        success: isFr ? "Terminé" : "Completed",
+        error: isFr ? "Erreur" : "Error",
+        inactive: isFr ? "Inactif" : "Inactive",
+      };
       const ariaLabel =
         (attrs["aria-label"] as string | undefined) ??
         (props.label ? undefined : FALLBACK_LABELS[props.status]);
