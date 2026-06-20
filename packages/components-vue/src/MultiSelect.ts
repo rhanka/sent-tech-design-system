@@ -174,7 +174,7 @@ export const MultiSelect = defineComponent({
                 [
                   selectedOptions.length === 0
                     ? h("span", { class: "st-multiSelect__placeholder" }, resolvedPlaceholder)
-                    : h("span", { class: "st-multiSelect__count" }, `${selectedOptions.length} selected`),
+                    : h("span", { class: "st-multiSelect__count" }, `${selectedOptions.length} ${isFr ? "sélectionné(s)" : "selected"}`),
                   h("span", { class: "st-multiSelect__caret", "aria-hidden": "true" }, [
                     h(ChevronDown, {
                       class: classNames("st-multiSelect__caretIcon", open && "st-multiSelect__caretIcon--open"),
