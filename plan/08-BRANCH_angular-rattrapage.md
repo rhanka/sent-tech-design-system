@@ -56,7 +56,8 @@ La surface exportée Angular (217 symbols) est en parité complète avec React (
 
 ### LOT 0 — Hotfix CSS (bloquant pour le gate)
 
-- [ ] **Lot CSS-SYNC** — `styles.css` : copier le fichier React dans Angular (`cp packages/components-react/src/styles.css packages/components-angular/src/styles.css`) → test `styles.test.ts` passe
+- [x] **Lot CSS-SYNC** — `styles.css` : copier le fichier React dans Angular (`cp packages/components-react/src/styles.css packages/components-angular/src/styles.css`) → test `styles.test.ts` passe
+  - FAIT (2026-06-19): styles.css synchronisé + 6 composants-écrans Angular créés (ListReportPage/ObjectPage/KanbanBoard/MasterDetail/Dashboard/Wizard). Gate 224 tests 0 failure.
 
 ### LOT 1 — Composants UI de base (interactivité fréquente)
 
