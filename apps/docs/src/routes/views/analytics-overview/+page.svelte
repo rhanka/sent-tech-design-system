@@ -6,26 +6,26 @@
 
   const fr = $derived(locale.value === "fr");
 
-  const AREA_DATA = [
+  const AREA_DATA = $derived([
     { x: "Jan", y: 152000 }, { x: fr ? "Fév" : "Feb", y: 165000 },
     { x: "Mar", y: 178000 }, { x: fr ? "Avr" : "Apr", y: 192000 },
     { x: fr ? "Mai" : "May", y: 204000 }, { x: fr ? "Juin" : "Jun", y: 218600 }
-  ];
+  ]);
 
-  const PIE_DATA = [
+  const PIE_DATA = $derived([
     { label: fr ? "Organique" : "Organic", value: 44, tone: "category1" as const },
     { label: fr ? "Publicité" : "Paid Ads", value: 29, tone: "category2" as const },
     { label: fr ? "Référencement" : "Referral", value: 16, tone: "category3" as const },
     { label: "Direct", value: 11, tone: "category4" as const }
-  ];
+  ]);
 
-  const TABLE_ROWS = [
+  const TABLE_ROWS = $derived([
     { id: "1", segment: fr ? "Entreprise" : "Enterprise", sessions: "31 204", revenue: "98 400 €", conversion: "4,8 %" },
     { id: "2", segment: fr ? "PME" : "SMB", sessions: "27 650", revenue: "67 200 €", conversion: "3,6 %" },
     { id: "3", segment: "Startup", sessions: "14 310", revenue: "31 000 €", conversion: "3,1 %" },
     { id: "4", segment: fr ? "Particulier" : "Consumer", sessions: "9 870", revenue: "14 800 €", conversion: "2,2 %" },
     { id: "5", segment: fr ? "Secteur public" : "Public Sector", sessions: "1 286", revenue: "7 200 €", conversion: "1,9 %" }
-  ];
+  ]);
 
   const DS_COMPONENTS = [
     { name: "KpiCard", slug: "kpi-card" }, { name: "AreaChart", slug: "area-chart" },

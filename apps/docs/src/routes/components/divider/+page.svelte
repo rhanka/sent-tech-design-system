@@ -7,7 +7,7 @@
 
   const fr = $derived(locale.value === "fr");
 
-  const labelDemo: NodeSpec[] = [
+  const labelDemo = $derived<NodeSpec[]>([
     {
       comp: "Stack",
       props: { gap: 2 },
@@ -17,8 +17,8 @@
         { el: "span", props: { class: "fp-card-text" }, children: [fr ? "Connexion par SSO" : "Sign in with SSO"] }
       ]
     }
-  ];
-  const dashedDemo: NodeSpec[] = [
+  ]);
+  const dashedDemo = $derived<NodeSpec[]>([
     {
       comp: "Stack",
       props: { gap: 2 },
@@ -28,7 +28,7 @@
         { el: "span", props: { class: "fp-card-text" }, children: [fr ? "Après" : "After"] }
       ]
     }
-  ];
+  ]);
 </script>
 
 <div class="docs-page">

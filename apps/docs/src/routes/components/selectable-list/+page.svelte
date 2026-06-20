@@ -7,7 +7,7 @@
 
   const fr = $derived(locale.value === "fr");
 
-  const singleDemo: NodeSpec[] = [
+  const singleDemo = $derived<NodeSpec[]>([
     {
       comp: "SelectableList",
       props: { label: fr ? "Région" : "Region", value: "ca-qc" },
@@ -18,9 +18,9 @@
         { comp: "SelectableRow", props: { value: "eu-west" }, children: [fr ? "Europe, Ouest" : "Europe, West"] }
       ]
     }
-  ];
+  ]);
 
-  const multipleDemo: NodeSpec[] = [
+  const multipleDemo = $derived<NodeSpec[]>([
     {
       comp: "SelectableList",
       props: { label: fr ? "Canaux" : "Channels", multiple: true, value: ["email", "chat"] },
@@ -31,7 +31,7 @@
         { comp: "SelectableRow", props: { value: "calendar" }, children: [fr ? "Calendrier" : "Calendar"] }
       ]
     }
-  ];
+  ]);
 </script>
 
 <div class="docs-page">
