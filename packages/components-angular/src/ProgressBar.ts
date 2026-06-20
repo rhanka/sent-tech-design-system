@@ -48,6 +48,6 @@ export class ProgressBar {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-progressBar", this.classInput].filter(Boolean).join(" ");
+    return classNames("st-progressBar", this.classInput);
   }
 }
