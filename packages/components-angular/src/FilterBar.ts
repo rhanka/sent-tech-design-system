@@ -16,20 +16,43 @@ export type FilterBarProps = {
   selector: "st-filter-bar",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+    <div
+      [attr.data-st-component]="componentName"
+      [class]="hostClass"
+      role="group"
+      [attr.aria-label]="label"
+    >
+      <div class="st-filterBar__pills">
+        <ng-content></ng-content>
+      </div>
+      @if (hasClearAll) {
+        <button
+          type="button"
+          class="st-filterBar__clearAll"
+          (click)="triggerClearAll()"
+        >{{ clearAllLabel || 'Tout effacer' }}</button>
+      }
     </div>
   `,
 })
 export class FilterBar {
   static readonly stComponentName = "FilterBar";
   readonly componentName = "FilterBar";
+
   @NgInput() label!: string;
   @NgInput() onClearAll?: () => void;
   @NgInput() clearAllLabel?: string;
   @NgInput("class") classInput?: string;
 
+  get hasClearAll(): boolean {
+    return typeof this.onClearAll === "function";
+  }
+
   get hostClass(): string {
-    return ["st-filterBar", this.classInput].filter(Boolean).join(" ");
+    return classNames("st-filterBar", this.classInput);
+  }
+
+  triggerClearAll(): void {
+    this.onClearAll?.();
   }
 }

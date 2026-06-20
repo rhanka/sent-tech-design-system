@@ -1,4 +1,4 @@
-import { Component, Input as NgInput } from "@angular/core";
+import { Component, EventEmitter, Input as NgInput, Output } from "@angular/core";
 
 import { classNames } from "./classNames.js";
 
@@ -26,14 +26,51 @@ export type FilterPillProps = {
   selector: "st-filter-pill",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
-    </div>
+    <span
+      [attr.data-st-component]="componentName"
+      [class]="hostClass"
+      role="group"
+      [attr.aria-label]="'Filtre ' + field"
+    >
+      @if (hasClick) {
+        <button
+          type="button"
+          class="st-filterPill__body"
+          [attr.aria-pressed]="active !== false ? 'true' : 'false'"
+          [disabled]="disabled"
+          (click)="handleClick()"
+        >
+          <span class="st-filterPill__field">{{ field }}</span>
+          @if (operator) {
+            <span class="st-filterPill__operator" aria-hidden="true">{{ operator }}</span>
+          }
+          <span class="st-filterPill__value">{{ value }}</span>
+        </button>
+      } @else {
+        <span class="st-filterPill__body st-filterPill__body--static">
+          <span class="st-filterPill__field">{{ field }}</span>
+          @if (operator) {
+            <span class="st-filterPill__operator" aria-hidden="true">{{ operator }}</span>
+          }
+          <span class="st-filterPill__value">{{ value }}</span>
+        </span>
+      }
+      @if (removable !== false) {
+        <button
+          type="button"
+          class="st-filterPill__remove"
+          [attr.aria-label]="'Retirer le filtre ' + field"
+          [disabled]="disabled"
+          (click)="handleRemove()"
+        >&#x2715;</button>
+      }
+    </span>
   `,
 })
 export class FilterPill {
   static readonly stComponentName = "FilterPill";
   readonly componentName = "FilterPill";
+
   @NgInput() field!: string;
   @NgInput() value!: string;
   @NgInput() operator?: string;
@@ -45,7 +82,30 @@ export class FilterPill {
   @NgInput() onRemove?: () => void;
   @NgInput("class") classInput?: string;
 
+  @Output() readonly remove = new EventEmitter<void>();
+
+  get hasClick(): boolean {
+    return typeof this.onClick === "function";
+  }
+
   get hostClass(): string {
-    return ["st-filterPill", this.classInput].filter(Boolean).join(" ");
+    return classNames(
+      "st-filterPill",
+      this.tone && `st-filterPill--${this.tone}`,
+      this.active !== false ? "st-filterPill--active" : undefined,
+      this.disabled ? "st-filterPill--disabled" : undefined,
+      this.classInput,
+    );
+  }
+
+  handleClick(): void {
+    if (this.disabled) return;
+    this.onClick?.();
+  }
+
+  handleRemove(): void {
+    if (this.disabled) return;
+    this.onRemove?.();
+    this.remove.emit();
   }
 }

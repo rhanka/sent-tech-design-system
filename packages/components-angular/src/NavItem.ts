@@ -37,6 +37,8 @@ export type NavItemProps = {
   status?: NavItemStatus;
   /** Sélection (honorée en standalone ; la liste prime si encadrée). */
   selected?: boolean;
+  /** État actif (alias de selected pour compatibilité). */
+  active?: boolean;
   /** Non-interactif. */
   disabled?: boolean;
   /** Rend la rangée comme un lien (ancre) — anatomie identique. */
@@ -71,6 +73,7 @@ export class NavItem {
   @NgInput() count?: number;
   @NgInput() status?: NavItemStatus;
   @NgInput() selected?: boolean;
+  @NgInput() active?: boolean;
   @NgInput() disabled?: boolean;
   @NgInput() href?: string;
   @NgInput() divider?: boolean;
@@ -83,6 +86,7 @@ export class NavItem {
       "st-navItem",
       `st-navItem--depth${depth}`,
       status !== "neutral" ? `st-navItem--status-${status}` : null,
+      (this.active || this.selected) ? "st-navItem--active" : null,
       this.classInput,
     );
   }
