@@ -144,7 +144,7 @@ export const MultiSelect = defineComponent({
                       {
                         type: "button",
                         class: "st-multiSelect__tagRemove",
-                        "aria-label": `${props.removeLabel} ${String(option.label)}`,
+                        "aria-label": `${resolvedRemoveLabel} ${String(option.label)}`,
                         disabled: props.disabled,
                         onClick: () => removeOption(option.value),
                       },
@@ -173,7 +173,7 @@ export const MultiSelect = defineComponent({
                 },
                 [
                   selectedOptions.length === 0
-                    ? h("span", { class: "st-multiSelect__placeholder" }, props.placeholder)
+                    ? h("span", { class: "st-multiSelect__placeholder" }, resolvedPlaceholder)
                     : h("span", { class: "st-multiSelect__count" }, `${selectedOptions.length} selected`),
                   h("span", { class: "st-multiSelect__caret", "aria-hidden": "true" }, [
                     h(ChevronDown, {
@@ -183,7 +183,7 @@ export const MultiSelect = defineComponent({
                       "aria-hidden": "true",
                     }),
                   ]),
-                  h("span", { class: "st-visually-hidden" }, props.toggleLabel),
+                  h("span", { class: "st-visually-hidden" }, resolvedToggleLabel),
                 ],
               ),
             ],
@@ -193,9 +193,9 @@ export const MultiSelect = defineComponent({
                 h("input", {
                   type: "search",
                   class: "st-multiSelect__search",
-                  placeholder: props.searchPlaceholder,
+                  placeholder: resolvedSearchPlaceholder,
                   value: query.value,
-                  "aria-label": props.searchPlaceholder,
+                  "aria-label": resolvedSearchPlaceholder,
                   onInput: (event: Event) => {
                     query.value = (event.currentTarget as HTMLInputElement).value;
                   },
@@ -209,7 +209,7 @@ export const MultiSelect = defineComponent({
                     "aria-multiselectable": "true",
                   },
                   filtered.value.length === 0
-                    ? [h("div", { class: "st-multiSelect__empty" }, props.noResultsLabel)]
+                    ? [h("div", { class: "st-multiSelect__empty" }, resolvedNoResultsLabel)]
                     : filtered.value.map((option) => {
                         const isSelected = selectedSet.has(option.value);
                         return h(
