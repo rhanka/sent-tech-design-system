@@ -129,7 +129,7 @@
       </thead>
       <tbody>
         <tr><td>KpiCard</td><td>sparkline</td><td>number[]</td><td>{fr ? "Points du mini-graphe tendance" : "Sparkline trend points"}</td></tr>
-        <tr><td>KpiCard</td><td>format</td><td>string</td><td>{fr ? `"percent" pour afficher en %" : "\"percent\" to display as %"`}</td></tr>
+        <tr><td>KpiCard</td><td>format</td><td>string</td><td>{fr ? '"percent" pour afficher en %' : '"percent" to display as %'}</td></tr>
         <tr><td>AreaChart</td><td>data</td><td>{'{ x, y }[]'}</td><td>{fr ? "Série temporelle mensuelle" : "Monthly time series"}</td></tr>
         <tr><td>PieChart</td><td>data</td><td>{'{ label, value, tone }[]'}</td><td>{fr ? "Tranches d'absence par type" : "Absence slices by type"}</td></tr>
         <tr><td>Table</td><td>columns</td><td>Column[]</td><td>{fr ? "Colonnes (key, label, align)" : "Columns (key, label, align)"}</td></tr>
