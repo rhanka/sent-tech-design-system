@@ -1,0 +1,20 @@
+{
+  "projectId": "7e9e4d5c-07c9-464a-93a3-2ffee952fb3b",
+  "pkg": "@sentropic/design-system-react",
+  "globalName": "SentropicDS",
+  "shape": "package",
+  "buildCmd": "npm --workspace packages/components-react run build",
+  "cssEntry": "dist/styles.css",
+  "tokensPkg": "@sentropic/design-system-themes",
+  "runtimeFontPrefixes": ["Inter"],
+  "provider": {
+    "component": "ThemeProvider"
+  },
+  "readmeHeader": ".design-sync/conventions.md",
+  "overrides": {
+    "Header": { "cardMode": "column" },
+    "Input": { "cardMode": "column" },
+    "Notification": { "cardMode": "column" },
+    "Textarea": { "cardMode": "column" }
+  }
+}
