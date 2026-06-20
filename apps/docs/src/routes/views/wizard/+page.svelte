@@ -21,17 +21,17 @@
     { key: fr ? "Plan" : "Plan", value: "Pro" }
   ]);
 
-  const REGION_OPTIONS = [
+  const REGION_OPTIONS = $derived([
     { value: "ca-qc", label: "Canada : Québec" },
     { value: "ca-on", label: "Canada : Ontario" },
     { value: "eu-fr", label: fr ? "Europe : France" : "Europe : France" }
-  ];
+  ]);
 
-  const VISIBILITY_OPTIONS = [
+  const VISIBILITY_OPTIONS = $derived([
     { value: "private", label: fr ? "Privé" : "Private" },
     { value: "internal", label: fr ? "Interne" : "Internal" },
     { value: "public", label: fr ? "Public" : "Public" }
-  ];
+  ]);
 
   // ── NodeSpec ──────────────────────────────────────────────────────────────
 

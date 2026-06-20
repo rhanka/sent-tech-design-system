@@ -7,7 +7,7 @@
 
   const fr = $derived(locale.value === "fr");
 
-  const horizontalDemo: NodeSpec[] = [
+  const horizontalDemo = $derived<NodeSpec[]>([
     {
       comp: "Stepper",
       props: {
@@ -20,8 +20,8 @@
         ]
       }
     }
-  ];
-  const verticalDemo: NodeSpec[] = [
+  ]);
+  const verticalDemo = $derived<NodeSpec[]>([
     {
       comp: "Stepper",
       props: {
@@ -36,7 +36,7 @@
         ]
       }
     }
-  ];
+  ]);
 </script>
 
 <div class="docs-page">
