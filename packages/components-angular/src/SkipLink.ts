@@ -11,9 +11,9 @@ export type SkipLinkProps = {
   selector: "st-skip-link",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
-    </div>
+    <a [href]="href || '#main-content'" [attr.data-st-component]="componentName" [class]="hostClass">
+      <ng-content>Aller au contenu principal</ng-content>
+    </a>
   `,
 })
 export class SkipLink {
@@ -23,6 +23,6 @@ export class SkipLink {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-skipLink", this.classInput].filter(Boolean).join(" ");
+    return classNames("st-skipLink", this.classInput);
   }
 }

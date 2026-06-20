@@ -22,9 +22,14 @@ export type StatusDotProps = {
   selector: "st-status-dot",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
-    </div>
+    <span [attr.data-st-component]="componentName" [class]="hostClass">
+      <span class="st-statusDot__dot"
+        [style.background-color]="color || null"
+        [style.width.px]="size ?? 8"
+        [style.height.px]="size ?? 8"
+        aria-hidden="true"></span>
+      @if (label) { <span class="st-statusDot__label">{{ label }}</span> }
+    </span>
   `,
 })
 export class StatusDot {
@@ -38,6 +43,11 @@ export class StatusDot {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return classNames("st-statusDot", this.classInput);
+    return classNames(
+      "st-statusDot",
+      this.tone && `st-statusDot--${this.tone}`,
+      this.pulse && "st-statusDot--pulse",
+      this.classInput,
+    );
   }
 }

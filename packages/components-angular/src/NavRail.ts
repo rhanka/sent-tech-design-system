@@ -21,6 +21,23 @@ export type NavRailProps = {
   standalone: true,
   template: `
     <nav [attr.data-st-component]="componentName" [attr.aria-label]="label" [class]="hostClass">
+      @if (items && items.length) {
+        <ul class="st-navRail__list">
+          @for (item of items; track item.id) {
+            <li class="st-navRail__item">
+              <a [href]="item.href || '#'"
+                class="st-navRail__link"
+                [class.st-navRail__link--active]="item.active || item.id === activeItemId"
+                [class.st-navRail__link--disabled]="item.disabled"
+                [attr.aria-current]="(item.active || item.id === activeItemId) ? 'page' : null"
+                [attr.aria-disabled]="item.disabled || null">
+                <span class="st-navRail__label">{{ item.label }}</span>
+                @if (item.badge) { <span class="st-navRail__badge">{{ item.badge }}</span> }
+              </a>
+            </li>
+          }
+        </ul>
+      }
       <ng-content></ng-content>
     </nav>
   `,

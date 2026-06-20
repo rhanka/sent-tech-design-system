@@ -1,4 +1,5 @@
 import { Component, Input as NgInput } from "@angular/core";
+import { NgStyle } from "@angular/common";
 
 import { classNames } from "./classNames.js";
 
@@ -21,9 +22,12 @@ export type DividerProps = {
 @Component({
   selector: "st-divider",
   standalone: true,
+  imports: [NgStyle],
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+    <div [attr.data-st-component]="componentName" [class]="hostClass" [ngStyle]="spacingStyle">
+      @if (label) {
+        <span class="st-divider__label">{{ label }}</span>
+      }
     </div>
   `,
 })
@@ -39,9 +43,14 @@ export class Divider {
   get hostClass(): string {
     return classNames(
       "st-divider",
-      this.orientation && `st-divider--${this.orientation}`,
+      `st-divider--${this.orientation ?? 'horizontal'}`,
       this.variant && `st-divider--${this.variant}`,
       this.classInput,
     );
+  }
+
+  get spacingStyle(): Record<string, string | undefined> {
+    const margin = this.spacing != null ? spacingToken(this.spacing) : undefined;
+    return { margin };
   }
 }

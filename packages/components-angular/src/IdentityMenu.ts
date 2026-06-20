@@ -36,7 +36,29 @@ export function identityInitial(user: IdentityUser | null | undefined): string {
   standalone: true,
   template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+      @if (isAuthenticated && user) {
+        <button type="button" class="st-identityMenu__trigger" (click)="toggleOpen()">
+          <span class="st-identityMenu__initial">{{ initial }}</span>
+          <span class="st-identityMenu__name">{{ user.displayName }}</span>
+        </button>
+        @if (localOpen) {
+          <div class="st-identityMenu__panel">
+            @if (user.email) { <p class="st-identityMenu__email">{{ user.email }}</p> }
+            @if (settingsHref) {
+              <a [href]="settingsHref" class="st-identityMenu__item">{{ settingsLabel || 'Paramètres' }}</a>
+            }
+            @if (devicesHref) {
+              <a [href]="devicesHref" class="st-identityMenu__item">{{ devicesLabel || 'Appareils' }}</a>
+            }
+            <ng-content></ng-content>
+          </div>
+        }
+      } @else {
+        <ng-content></ng-content>
+        @if (!isAuthenticated) {
+          <a href="#" class="st-identityMenu__login">{{ loginLabel || 'Connexion' }}</a>
+        }
+      }
     </div>
   `,
 })
@@ -54,6 +76,16 @@ export class IdentityMenu {
   @NgInput() logoutLabel?: string;
   @NgInput() variant?: "dropdown" | "accordion";
   @NgInput("class") classInput?: string;
+
+  localOpen = false;
+
+  toggleOpen(): void {
+    this.localOpen = !this.localOpen;
+  }
+
+  get initial(): string {
+    return identityInitial(this.user);
+  }
 
   get hostClass(): string {
     return ["st-identityMenu", this.classInput].filter(Boolean).join(" ");

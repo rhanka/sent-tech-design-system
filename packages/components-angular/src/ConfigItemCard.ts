@@ -32,7 +32,27 @@ export type ConfigItemCardProps = {
   standalone: true,
   template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+      <div class="st-configItemCard__header">
+        <span class="st-configItemCard__name">{{ item?.name }}</span>
+        @if (item?.key) { <code class="st-configItemCard__key">{{ item.key }}</code> }
+      </div>
+      @if (item?.description) {
+        <p class="st-configItemCard__description">{{ item.description }}</p>
+      }
+      <div class="st-configItemCard__actions">
+        @if (hasCopy && !disabled) {
+          <button type="button" class="st-configItemCard__action" (click)="onCopy && onCopy(item.id)">Copier</button>
+        }
+        @if (onEdit && !disabled) {
+          <button type="button" class="st-configItemCard__action" (click)="onEdit(item.id)">Modifier</button>
+        }
+        @if (onReset && !disabled) {
+          <button type="button" class="st-configItemCard__action st-configItemCard__action--danger" (click)="onReset(item.id)">Réinitialiser</button>
+        }
+        @if (onDelete && !disabled) {
+          <button type="button" class="st-configItemCard__action st-configItemCard__action--danger" (click)="onDelete(item.id)">Supprimer</button>
+        }
+      </div>
     </div>
   `,
 })
@@ -49,6 +69,10 @@ export class ConfigItemCard {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-configItemCard", this.classInput].filter(Boolean).join(" ");
+    return classNames(
+      "st-configItemCard",
+      this.disabled && "st-configItemCard--disabled",
+      this.classInput,
+    );
   }
 }

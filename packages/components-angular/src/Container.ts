@@ -30,6 +30,11 @@ export class Container {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-container", this.classInput].filter(Boolean).join(" ");
+    return classNames(
+      "st-container",
+      this.size && `st-container--${this.size}`,
+      this.padding && "st-container--padding",
+      this.classInput,
+    );
   }
 }

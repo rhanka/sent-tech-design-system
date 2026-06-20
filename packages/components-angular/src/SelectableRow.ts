@@ -64,8 +64,15 @@ export type SelectableRowProps = {
   selector: "st-selectable-row",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+    <div [attr.data-st-component]="componentName" [class]="hostClass"
+      [attr.role]="role || 'option'"
+      [attr.aria-selected]="selected"
+      [attr.aria-disabled]="disabled"
+      (click)="handleClick()">
+      @if (accentBar) { <span class="st-selectableRow__bar" aria-hidden="true"></span> }
+      <div class="st-selectableRow__content">
+        <ng-content></ng-content>
+      </div>
     </div>
   `,
 })
@@ -79,6 +86,12 @@ export class SelectableRow {
   @NgInput() role?: string;
   @NgInput() accentBar?: boolean;
   @NgInput("class") classInput?: string;
+
+  handleClick(): void {
+    if (!this.disabled && this.onSelect) {
+      this.onSelect(!this.selected);
+    }
+  }
 
   get hostClass(): string {
     return classNames(

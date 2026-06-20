@@ -36,7 +36,11 @@ export type SelectableListProps = {
   selector: "st-selectable-list",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    <div [attr.data-st-component]="componentName" [class]="hostClass"
+      role="listbox"
+      [attr.aria-label]="label"
+      [attr.aria-labelledby]="labelledby"
+      [attr.aria-multiselectable]="multiple">
       <ng-content></ng-content>
     </div>
   `,
@@ -52,6 +56,6 @@ export class SelectableList {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-selectableList", this.classInput].filter(Boolean).join(" ");
+    return classNames("st-selectableList", this.classInput);
   }
 }
