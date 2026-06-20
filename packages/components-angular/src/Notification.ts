@@ -10,6 +10,7 @@ export type NotificationProps = {
   message?: string;
   dismissible?: boolean;
   dismissLabel?: string;
+  locale?: string;
   class?: string;
 };
 
@@ -37,8 +38,8 @@ export type NotificationProps = {
           <button
             type="button"
             class="st-notification__close"
-            [attr.aria-label]="dismissLabel || 'Dismiss'"
-            [attr.title]="dismissLabel || 'Dismiss'"
+            [attr.aria-label]="resolvedDismissLabel"
+            [attr.title]="resolvedDismissLabel"
             (click)="dismiss.emit()"
           >&#xD7;</button>
         }
@@ -55,7 +56,13 @@ export class Notification {
   @NgInput() message?: string;
   @NgInput() dismissible?: boolean;
   @NgInput() dismissLabel?: string;
+  @NgInput() locale?: string;
   @NgInput("class") classInput?: string;
+
+  get resolvedDismissLabel(): string {
+    const isFr = (this.locale ?? "fr-FR").toLowerCase().startsWith("fr");
+    return this.dismissLabel ?? (isFr ? "Fermer" : "Dismiss");
+  }
 
   @Output() readonly dismiss = new EventEmitter<void>();
 
