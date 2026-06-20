@@ -16,9 +16,13 @@ export type ColorSwatchProps = {
   selector: "st-color-swatch",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
-    </div>
+    <span [attr.data-st-component]="componentName" [class]="hostClass" [attr.aria-label]="label || color" role="img">
+      <span class="st-colorSwatch__preview"
+        [style.background-color]="color"
+        [style.width.px]="size ?? 24"
+        [style.height.px]="size ?? 24"></span>
+      @if (label) { <span class="st-colorSwatch__label">{{ label }}</span> }
+    </span>
   `,
 })
 export class ColorSwatch {

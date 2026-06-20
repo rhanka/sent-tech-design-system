@@ -28,7 +28,7 @@ export type MessageActionsProps = {
   selector: "st-message-actions",
   standalone: true,
   template: `
-    <div class="st-messageActions" [class]="hostClass">
+    <div [attr.data-st-component]="componentName" [class]="hostClass" role="toolbar">
       <ng-content></ng-content>
     </div>
   `,

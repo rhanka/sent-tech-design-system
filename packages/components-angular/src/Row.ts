@@ -1,4 +1,5 @@
 import { Component, Input as NgInput } from "@angular/core";
+import { NgStyle } from "@angular/common";
 
 import { classNames } from "./classNames.js";
 
@@ -19,8 +20,9 @@ export type RowProps = {
 @Component({
   selector: "st-row",
   standalone: true,
+  imports: [NgStyle],
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    <div [attr.data-st-component]="componentName" [class]="hostClass" [ngStyle]="inlineStyles">
       <ng-content></ng-content>
     </div>
   `,
@@ -37,5 +39,17 @@ export class Row {
 
   get hostClass(): string {
     return ["st-row", this.classInput].filter(Boolean).join(" ");
+  }
+
+  get inlineStyles(): Record<string, string | undefined> {
+    const gutter = this.gutter ? `var(--st-spacing-${this.gutter}, ${this.gutter * 0.25}rem)` : undefined;
+    return {
+      display: 'flex',
+      flexDirection: 'row',
+      flexWrap: this.wrap !== false ? 'wrap' : 'nowrap',
+      gap: gutter,
+      alignItems: this.align ? alignValue(this.align) : undefined,
+      justifyContent: this.justify ? justifyValue(this.justify) : undefined,
+    };
   }
 }

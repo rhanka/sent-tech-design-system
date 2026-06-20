@@ -1,4 +1,5 @@
 import { Component, Input as NgInput } from "@angular/core";
+import { NgStyle } from "@angular/common";
 
 import { classNames } from "./classNames.js";
 
@@ -36,8 +37,9 @@ export function offsetMargin(offset: number | undefined): string | undefined {
 @Component({
   selector: "st-col",
   standalone: true,
+  imports: [NgStyle],
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    <div [attr.data-st-component]="componentName" [class]="hostClass" [ngStyle]="inlineStyles">
       <ng-content></ng-content>
     </div>
   `,
@@ -55,5 +57,14 @@ export class Col {
 
   get hostClass(): string {
     return ["st-col", this.classInput].filter(Boolean).join(" ");
+  }
+
+  get inlineStyles(): Record<string, string | undefined> {
+    return {
+      flexBasis: spanBasis(this.span),
+      flexGrow: '0',
+      flexShrink: '0',
+      marginInlineStart: offsetMargin(this.offset),
+    };
   }
 }

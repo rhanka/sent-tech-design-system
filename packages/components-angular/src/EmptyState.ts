@@ -13,7 +13,12 @@ export type EmptyStateProps = {
   selector: "st-empty-state",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    <div [attr.data-st-component]="componentName" [class]="hostClass" role="status">
+      <div class="st-emptyState__body">
+        <p class="st-emptyState__title">{{ title }}</p>
+        @if (message) { <p class="st-emptyState__message">{{ message }}</p> }
+        @if (action) { <div class="st-emptyState__action">{{ action }}</div> }
+      </div>
       <ng-content></ng-content>
     </div>
   `,

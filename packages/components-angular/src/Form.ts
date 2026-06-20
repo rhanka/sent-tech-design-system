@@ -14,9 +14,14 @@ export type FormProps = {
   selector: "st-form",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    <form [attr.data-st-component]="componentName" [class]="hostClass">
+      @if (status && status !== 'idle') {
+        <div class="st-form__status" [attr.data-status]="status">
+          @if (message) { <p class="st-form__message">{{ message }}</p> }
+        </div>
+      }
       <ng-content></ng-content>
-    </div>
+    </form>
   `,
 })
 export class Form {
@@ -27,6 +32,10 @@ export class Form {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-form", this.classInput].filter(Boolean).join(" ");
+    return classNames(
+      "st-form",
+      this.status && `st-form--${this.status}`,
+      this.classInput,
+    );
   }
 }

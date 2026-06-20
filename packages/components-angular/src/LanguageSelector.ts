@@ -19,7 +19,11 @@ export type LanguageSelectorProps = {
   standalone: true,
   template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+      <select class="st-languageSelector__select" [value]="value" (change)="onChange($event)">
+        @for (opt of options; track opt.value) {
+          <option [value]="opt.value" [selected]="opt.value === value">{{ opt.label }}</option>
+        }
+      </select>
     </div>
   `,
 })
@@ -31,7 +35,9 @@ export class LanguageSelector {
   @NgInput() open?: boolean;
   @NgInput("class") classInput?: string;
 
+  onChange(_event: Event): void {}
+
   get hostClass(): string {
-    return ["st-languageSelector", this.classInput].filter(Boolean).join(" ");
+    return classNames("st-languageSelector", this.classInput);
   }
 }

@@ -31,6 +31,11 @@ export class Hidden {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-hidden", this.classInput].filter(Boolean).join(" ");
+    return classNames(
+      "st-hidden",
+      this.below && `st-hidden--below-${this.below}`,
+      this.above && `st-hidden--above-${this.above}`,
+      this.classInput,
+    );
   }
 }

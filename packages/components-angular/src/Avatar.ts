@@ -36,8 +36,12 @@ export type AvatarProps = {
   selector: "st-avatar",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+    <div [attr.data-st-component]="componentName" [class]="hostClass" [attr.aria-label]="name" role="img">
+      @if (src) {
+        <img class="st-avatar__image" [src]="src" [alt]="alt || name" aria-hidden="false" />
+      } @else {
+        <span class="st-avatar__initials" aria-hidden="true">{{ initials }}</span>
+      }
     </div>
   `,
 })
@@ -60,5 +64,9 @@ export class Avatar {
       this.src ? "st-avatar--image" : `st-avatar--${this.tone ?? "category1"}`,
       this.classInput,
     );
+  }
+
+  get initials(): string {
+    return deriveInitials(this.name);
   }
 }

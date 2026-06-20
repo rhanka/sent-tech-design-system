@@ -22,7 +22,12 @@ export type LanguageToggleProps = {
   standalone: true,
   template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+      <button type="button" class="st-languageToggle__btn"
+        [class.st-languageToggle__btn--active]="locale === 'fr'"
+        [attr.aria-pressed]="locale === 'fr'">{{ frLabel || 'FR' }}</button>
+      <button type="button" class="st-languageToggle__btn"
+        [class.st-languageToggle__btn--active]="locale === 'en'"
+        [attr.aria-pressed]="locale === 'en'">{{ enLabel || 'EN' }}</button>
     </div>
   `,
 })
@@ -39,6 +44,6 @@ export class LanguageToggle {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-languageToggle", this.classInput].filter(Boolean).join(" ");
+    return classNames("st-languageToggle", this.classInput);
   }
 }

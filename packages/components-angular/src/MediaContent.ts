@@ -23,9 +23,25 @@ export type MediaContentProps = {
   selector: "st-media-content",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    <figure [attr.data-st-component]="componentName" [class]="hostClass">
+      @if (title) { <div class="st-mediaContent__title">{{ title }}</div> }
+      @if (media && mediaKind === 'video') {
+        <video class="st-mediaContent__video" [src]="media" [controls]="mediaControls" [attr.aspect-ratio]="aspectRatio">
+          @if (mediaCaptions) {
+            <track kind="subtitles" [src]="mediaCaptions" [srclang]="mediaCaptionsLang || 'fr'" [label]="mediaCaptionsLabel || 'Sous-titres'" />
+          }
+        </video>
+      } @else if (media) {
+        <img class="st-mediaContent__img" [src]="media" [alt]="mediaAlt || ''" />
+      }
+      @if (caption || byline) {
+        <figcaption class="st-mediaContent__caption">
+          @if (caption) { <span>{{ caption }}</span> }
+          @if (byline) { <cite class="st-mediaContent__byline">{{ byline }}</cite> }
+        </figcaption>
+      }
       <ng-content></ng-content>
-    </div>
+    </figure>
   `,
 })
 export class MediaContent {
@@ -45,6 +61,6 @@ export class MediaContent {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-mediaContent", this.classInput].filter(Boolean).join(" ");
+    return classNames("st-mediaContent", this.classInput);
   }
 }
