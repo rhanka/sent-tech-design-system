@@ -7,12 +7,12 @@
 
   const fr = $derived(locale.value === "fr");
 
-  const MILESTONES: StepperStep[] = [
+  const MILESTONES = $derived<StepperStep[]>([
     { label: fr ? "Q1 2025 — Cadrage" : "Q1 2025 — Scoping", description: fr ? "Vision & périmètre validés" : "Vision & scope signed off" },
     { label: fr ? "Q2 2025 — Fondations" : "Q2 2025 — Foundations", description: fr ? "Design system v1 · API core" : "Design system v1 · Core API" },
     { label: fr ? "Q3 2025 — Bêta" : "Q3 2025 — Beta", description: fr ? "Pilote 3 clients internes" : "3 internal client pilots" },
     { label: fr ? "Q4 2025 — GA" : "Q4 2025 — GA", description: fr ? "Disponibilité générale" : "General availability" }
-  ];
+  ]);
 
   type Epic = {
     title: () => string;
@@ -22,7 +22,7 @@
     quarter: string;
   };
 
-  const EPICS: Epic[] = [
+  const EPICS = $derived<Epic[]>([
     { title: () => (fr ? "Design tokens & thèmes" : "Design tokens & themes"), team: () => (fr ? "Design" : "Design"), status: "done", progress: 100, quarter: "Q1" },
     { title: () => (fr ? "Composants core (36 UI)" : "Core components (36 UI)"), team: () => (fr ? "Ingénierie" : "Engineering"), status: "done", progress: 100, quarter: "Q1" },
     { title: () => (fr ? "Portail documentation" : "Documentation portal"), team: () => (fr ? "Ingénierie" : "Engineering"), status: "in-progress", progress: 72, quarter: "Q2" },
@@ -30,7 +30,7 @@
     { title: () => (fr ? "Accessibilité WCAG 2.2 AA" : "Accessibility WCAG 2.2 AA"), team: () => (fr ? "QA" : "QA"), status: "in-progress", progress: 40, quarter: "Q3" },
     { title: () => (fr ? "SDK Angular" : "Angular SDK"), team: () => (fr ? "Ingénierie" : "Engineering"), status: "planned", progress: 10, quarter: "Q3" },
     { title: () => (fr ? "Publication npm publique" : "Public npm publish"), team: () => (fr ? "DevRel" : "DevRel"), status: "planned", progress: 0, quarter: "Q4" }
-  ];
+  ]);
 
   const VELOCITY_DATA = [0, 18, 42, 68, 94, 120, 138, 155, 168, 182, 195, 208];
 

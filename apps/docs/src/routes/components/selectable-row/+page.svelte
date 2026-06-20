@@ -10,7 +10,7 @@
   // Rangées dans une SelectableList : la sélection thémée (surface teintée +
   // texte accentué, contraste ~8,8:1) est pilotée par la liste. Parité stricte
   // des 3 moteurs (leading/trailing slot-only en Vue : montrés dans le code).
-  const selectedDemo: NodeSpec[] = [
+  const selectedDemo = $derived<NodeSpec[]>([
     {
       comp: "SelectableList",
       props: { label: fr ? "Environnement" : "Environment", value: "staging" },
@@ -20,9 +20,9 @@
         { comp: "SelectableRow", props: { value: "dev" }, children: [fr ? "Développement" : "Development"] }
       ]
     }
-  ];
+  ]);
 
-  const accentBarDemo: NodeSpec[] = [
+  const accentBarDemo = $derived<NodeSpec[]>([
     {
       comp: "SelectableList",
       props: { label: fr ? "Branche déployée" : "Deployed branch", value: "main" },
@@ -32,9 +32,9 @@
         { comp: "SelectableRow", props: { value: "edge", accentBar: true }, children: ["edge"] }
       ]
     }
-  ];
+  ]);
 
-  const disabledDemo: NodeSpec[] = [
+  const disabledDemo = $derived<NodeSpec[]>([
     {
       comp: "SelectableList",
       props: { label: fr ? "Offres" : "Plans", value: "pro" },
@@ -44,7 +44,7 @@
         { comp: "SelectableRow", props: { value: "enterprise", disabled: true }, children: [fr ? "Entreprise (nous contacter)" : "Enterprise (contact us)"] }
       ]
     }
-  ];
+  ]);
 </script>
 
 <div class="docs-page">

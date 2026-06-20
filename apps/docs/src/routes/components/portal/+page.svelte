@@ -9,7 +9,7 @@
 
   // Démo sûre : `disabled` rend le contenu en place (aucune téléportation),
   // donc rien ne dépend de mesures DOM au prérendu.
-  const inlineDemo: NodeSpec[] = [
+  const inlineDemo = $derived<NodeSpec[]>([
     {
       comp: "Portal",
       props: { disabled: true },
@@ -21,7 +21,7 @@
         }
       ]
     }
-  ];
+  ]);
 </script>
 
 <div class="docs-page">
