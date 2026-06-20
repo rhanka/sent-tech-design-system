@@ -8,6 +8,7 @@
     message?: string;
     dismissible?: boolean;
     dismissLabel?: string;
+    locale?: string;
     onDismiss?: () => void;
     class?: string;
     actions?: Snippet;
@@ -19,13 +20,17 @@
     title,
     message,
     dismissible = false,
-    dismissLabel = "Dismiss",
+    dismissLabel,
+    locale = "fr-FR",
     onDismiss,
     class: className,
     actions,
     children,
     ...rest
   }: NotificationProps = $props();
+
+  const isFr = $derived(locale.toLowerCase().startsWith("fr"));
+  const resolvedDismissLabel = $derived(dismissLabel ?? (isFr ? "Fermer" : "Dismiss"));
 
   const classes = () =>
     ["st-notification", `st-notification--${tone}`, className].filter(Boolean).join(" ");
@@ -54,8 +59,8 @@
       <button
         type="button"
         class="st-notification__close"
-        aria-label={dismissLabel}
-        title={dismissLabel}
+        aria-label={resolvedDismissLabel}
+        title={resolvedDismissLabel}
         onclick={onDismissClick}
       >
         ×
