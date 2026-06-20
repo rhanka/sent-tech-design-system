@@ -6465,3 +6465,530 @@ export function Autosave({
     </div>
   );
 }
+
+// --- ListReportPage --------------------------------------------------------
+export type ListReportPageNavItem = { label: string; href: string; active?: boolean };
+export type ListReportPageColumn = { key: string; label: string };
+export type ListReportPageRow = { id: string; [key: string]: unknown };
+export type ListReportPageAction = { id: string; label: string };
+export type ListReportPageFilter = { field: string; operator: string; value: string };
+export type ListReportPageProps = Omit<React.HTMLAttributes<HTMLDivElement>, "className"> & {
+  appTitle?: string;
+  navItems?: ListReportPageNavItem[];
+  pageTitle: string;
+  primaryAction?: string;
+  secondaryAction?: string;
+  searchPlaceholder?: string;
+  columns: ListReportPageColumn[];
+  rows?: ListReportPageRow[];
+  rowActions?: ListReportPageAction[];
+  onprimaryaction?: () => void;
+  onsearch?: (q: string) => void;
+  className?: string;
+};
+export function ListReportPage({
+  appTitle,
+  navItems = [],
+  pageTitle,
+  primaryAction,
+  secondaryAction,
+  searchPlaceholder = "Search…",
+  columns,
+  rows = [],
+  rowActions = [],
+  onprimaryaction,
+  onsearch,
+  className,
+  ...rest
+}: ListReportPageProps) {
+  return (
+    <div {...rest} className={classNames("st-lrp", className)}>
+      <div className="st-lrp__body">
+        <aside className="st-lrp__aside">
+          {appTitle ? <div className="st-lrp__app-title">{appTitle}</div> : null}
+          <nav className="st-sidenav">
+            {navItems.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                className={classNames("st-sidenav__item", item.active ? "st-sidenav__item--active" : undefined)}
+              >
+                {item.label}
+              </a>
+            ))}
+          </nav>
+        </aside>
+        <main className="st-lrp__main">
+          <div className="st-lrp__titlebar">
+            <h1 className="st-lrp__title">{pageTitle}</h1>
+            <div className="st-lrp__actions">
+              {secondaryAction ? (
+                <button type="button" className="st-button st-button--secondary">
+                  {secondaryAction}
+                </button>
+              ) : null}
+              {primaryAction ? (
+                <button
+                  type="button"
+                  className="st-button st-button--primary"
+                  onClick={() => onprimaryaction?.()}
+                >
+                  {primaryAction}
+                </button>
+              ) : null}
+            </div>
+          </div>
+          <div className="st-lrp__toolbar">
+            <input
+              type="search"
+              className="st-lrp__search"
+              placeholder={searchPlaceholder}
+              onChange={(e) => onsearch?.((e.target as HTMLInputElement).value)}
+            />
+          </div>
+          <table className="st-lrp__table">
+            <thead>
+              <tr>
+                {columns.map((col) => (
+                  <th key={col.key} className="st-lrp__th">
+                    {col.label}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row) => (
+                <tr key={row.id}>
+                  {columns.map((col) => (
+                    <td key={col.key} className="st-lrp__td">
+                      {String(row[col.key] ?? "")}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </main>
+      </div>
+    </div>
+  );
+}
+
+// --- ObjectPage ------------------------------------------------------------
+export type ObjectPageBreadcrumbItem = { label: string; href?: string };
+export type ObjectPageKpi = { label: string; value: string; delta?: string };
+export type ObjectPageField = { key: string; value: string };
+export type ObjectPageColumn = { key: string; label: string };
+export type ObjectPageRow = { id: string; [key: string]: unknown };
+export type ObjectPageProps = Omit<React.HTMLAttributes<HTMLDivElement>, "className"> & {
+  breadcrumb?: ObjectPageBreadcrumbItem[];
+  entityTitle: string;
+  entityStatus?: { label: string; tone?: string };
+  primaryAction?: string;
+  secondaryAction?: string;
+  kpis?: ObjectPageKpi[];
+  fieldsTitle?: string;
+  fields?: ObjectPageField[];
+  relatedTitle?: string;
+  relatedColumns?: ObjectPageColumn[];
+  relatedRows?: ObjectPageRow[];
+  className?: string;
+};
+export function ObjectPage({
+  breadcrumb = [],
+  entityTitle,
+  entityStatus,
+  primaryAction,
+  secondaryAction,
+  kpis = [],
+  fieldsTitle,
+  fields = [],
+  relatedTitle,
+  relatedColumns = [],
+  relatedRows = [],
+  className,
+  ...rest
+}: ObjectPageProps) {
+  return (
+    <div {...rest} className={classNames("st-op", className)}>
+      <header className="st-op__header">
+        {breadcrumb.length > 0 ? (
+          <nav className="st-breadcrumb">
+            {breadcrumb.map((item, i) =>
+              item.href ? (
+                <a key={i} href={item.href} className="st-breadcrumb__item">
+                  {item.label}
+                </a>
+              ) : (
+                <span key={i} className="st-breadcrumb__item">
+                  {item.label}
+                </span>
+              ),
+            )}
+          </nav>
+        ) : null}
+        <div className="st-op__title-row">
+          <h1 className="st-op__title">{entityTitle}</h1>
+          {entityStatus ? (
+            <span className={classNames("st-badge", entityStatus.tone ? `st-badge--${entityStatus.tone}` : undefined)}>
+              {entityStatus.label}
+            </span>
+          ) : null}
+        </div>
+        <div className="st-op__header-actions">
+          {secondaryAction ? (
+            <button type="button" className="st-button st-button--secondary">
+              {secondaryAction}
+            </button>
+          ) : null}
+          {primaryAction ? (
+            <button type="button" className="st-button st-button--primary">
+              {primaryAction}
+            </button>
+          ) : null}
+        </div>
+      </header>
+      {kpis.length > 0 ? (
+        <div className="st-op__kpi-row">
+          {kpis.map((kpi, i) => (
+            <div key={i} className="st-kpi-card">
+              <span className="st-kpi-card__label">{kpi.label}</span>
+              <span className="st-kpi-card__value">{kpi.value}</span>
+              {kpi.delta ? <span className="st-kpi-card__delta">{kpi.delta}</span> : null}
+            </div>
+          ))}
+        </div>
+      ) : null}
+      {fields.length > 0 ? (
+        <section className="st-op__fields">
+          {fieldsTitle ? <h2 className="st-op__section-title">{fieldsTitle}</h2> : null}
+          <dl className="st-op__field-list">
+            {fields.map((f) => (
+              <React.Fragment key={f.key}>
+                <dt>{f.key}</dt>
+                <dd>{f.value}</dd>
+              </React.Fragment>
+            ))}
+          </dl>
+        </section>
+      ) : null}
+      {relatedRows.length > 0 ? (
+        <section className="st-op__related">
+          {relatedTitle ? <h2 className="st-op__section-title">{relatedTitle}</h2> : null}
+          <table className="st-table">
+            <thead>
+              <tr>
+                {relatedColumns.map((col) => (
+                  <th key={col.key}>{col.label}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {relatedRows.map((row) => (
+                <tr key={row.id}>
+                  {relatedColumns.map((col) => (
+                    <td key={col.key}>{String(row[col.key] ?? "")}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+      ) : null}
+    </div>
+  );
+}
+
+// --- KanbanBoard -----------------------------------------------------------
+export type KanbanBoardCard = {
+  id: string;
+  title: string;
+  subtitle?: string;
+  owner?: string;
+  badgeLabel?: string;
+  badgeTone?: string;
+};
+export type KanbanBoardColumn = { label: string; cards: KanbanBoardCard[] };
+export type KanbanBoardProps = Omit<React.HTMLAttributes<HTMLDivElement>, "className"> & {
+  columns: KanbanBoardColumn[];
+  className?: string;
+};
+export function KanbanBoard({ columns, className, ...rest }: KanbanBoardProps) {
+  return (
+    <div {...rest} className={classNames("st-kb", className)}>
+      <div className="st-kb__board">
+        {columns.map((col, ci) => (
+          <div key={ci} className="st-kb__column">
+            <div className="st-kb__column-head">
+              <span className="st-kb__column-label">{col.label}</span>
+              <span className="st-kb__column-count">{col.cards.length}</span>
+            </div>
+            <div className="st-kb__column-body">
+              {col.cards.map((card) => (
+                <div key={card.id} className="st-kb__card">
+                  <div className="st-kb__card-header">
+                    <span className="st-kb__card-title">{card.title}</span>
+                    {card.badgeLabel ? (
+                      <span
+                        className={classNames(
+                          "st-badge",
+                          card.badgeTone ? `st-badge--${card.badgeTone}` : undefined,
+                        )}
+                      >
+                        {card.badgeLabel}
+                      </span>
+                    ) : null}
+                  </div>
+                  {card.subtitle ? <p className="st-kb__card-subtitle">{card.subtitle}</p> : null}
+                  {card.owner ? <span className="st-kb__card-owner">{card.owner}</span> : null}
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// --- MasterDetail ----------------------------------------------------------
+export type MasterDetailNavItem = { label: string; href: string; active?: boolean };
+export type MasterDetailItem = {
+  id: string;
+  primary: string;
+  secondary?: string;
+  statusLabel?: string;
+  active?: boolean;
+};
+export type MasterDetailField = { key: string; value: string };
+export type MasterDetailProps = Omit<React.HTMLAttributes<HTMLDivElement>, "className"> & {
+  listTitle: string;
+  searchPlaceholder?: string;
+  listItems?: MasterDetailItem[];
+  detailTitle: string;
+  detailStatus?: { label: string; tone?: string };
+  detailActions?: string[];
+  detailFields?: MasterDetailField[];
+  className?: string;
+};
+export function MasterDetail({
+  listTitle,
+  searchPlaceholder = "Search…",
+  listItems = [],
+  detailTitle,
+  detailStatus,
+  detailActions = [],
+  detailFields = [],
+  className,
+  children,
+  ...rest
+}: MasterDetailProps) {
+  return (
+    <div {...rest} className={classNames("st-md", className)}>
+      <div className="st-md__split">
+        <aside className="st-md__list">
+          <div className="st-md__list-header">
+            <h2 className="st-md__list-title">{listTitle}</h2>
+            <input type="search" className="st-md__search" placeholder={searchPlaceholder} />
+          </div>
+          <ul className="st-md__list-items">
+            {listItems.map((item) => (
+              <li
+                key={item.id}
+                className={classNames("st-md__list-item", item.active ? "st-md__list-item--active" : undefined)}
+              >
+                <span className="st-md__item-primary">{item.primary}</span>
+                {item.secondary ? <span className="st-md__item-secondary">{item.secondary}</span> : null}
+                {item.statusLabel ? <span className="st-md__item-status">{item.statusLabel}</span> : null}
+              </li>
+            ))}
+          </ul>
+        </aside>
+        <main className="st-md__detail">
+          <div className="st-md__detail-header">
+            <h1 className="st-md__detail-title">{detailTitle}</h1>
+            {detailStatus ? (
+              <span
+                className={classNames(
+                  "st-badge",
+                  detailStatus.tone ? `st-badge--${detailStatus.tone}` : undefined,
+                )}
+              >
+                {detailStatus.label}
+              </span>
+            ) : null}
+            {detailActions.length > 0 ? (
+              <div className="st-md__detail-actions">
+                {detailActions.map((action, i) => (
+                  <button key={i} type="button" className="st-button st-button--secondary">
+                    {action}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+          </div>
+          {detailFields.length > 0 ? (
+            <dl className="st-md__detail-fields">
+              {detailFields.map((f) => (
+                <React.Fragment key={f.key}>
+                  <dt>{f.key}</dt>
+                  <dd>{f.value}</dd>
+                </React.Fragment>
+              ))}
+            </dl>
+          ) : null}
+          {children ? <div className="st-md__detail-content">{children}</div> : null}
+        </main>
+      </div>
+    </div>
+  );
+}
+
+// --- Dashboard -------------------------------------------------------------
+export type DashboardNavItem = { label: string; href: string; active?: boolean };
+export type DashboardKpi = { label: string; value: string; delta?: string };
+export type DashboardProps = Omit<React.HTMLAttributes<HTMLDivElement>, "className"> & {
+  appTitle?: string;
+  pageTitle: string;
+  navItems?: DashboardNavItem[];
+  kpis?: DashboardKpi[];
+  children?: React.ReactNode;
+  className?: string;
+};
+export function Dashboard({
+  appTitle,
+  pageTitle,
+  navItems = [],
+  kpis = [],
+  children,
+  className,
+  ...rest
+}: DashboardProps) {
+  return (
+    <div {...rest} className={classNames("st-dashboard", className)}>
+      <div className="st-dashboard__layout">
+        <aside className="st-dashboard__aside">
+          {appTitle ? <div className="st-dashboard__app-title">{appTitle}</div> : null}
+          <nav className="st-sidenav">
+            {navItems.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                className={classNames("st-sidenav__item", item.active ? "st-sidenav__item--active" : undefined)}
+              >
+                {item.label}
+              </a>
+            ))}
+          </nav>
+        </aside>
+        <main className="st-dashboard__main">
+          <div className="st-dashboard__titlebar">
+            <h1 className="st-dashboard__title">{pageTitle}</h1>
+          </div>
+          {kpis.length > 0 ? (
+            <div className="st-dashboard__kpi-row">
+              {kpis.map((kpi, i) => (
+                <div key={i} className="st-kpi-card">
+                  <span className="st-kpi-card__label">{kpi.label}</span>
+                  <span className="st-kpi-card__value">{kpi.value}</span>
+                  {kpi.delta ? <span className="st-kpi-card__delta">{kpi.delta}</span> : null}
+                </div>
+              ))}
+            </div>
+          ) : null}
+          <div className="st-dashboard__content">{children}</div>
+        </main>
+      </div>
+    </div>
+  );
+}
+
+// --- Wizard ----------------------------------------------------------------
+export type WizardStep = { label: string; description?: string };
+export type WizardProps = Omit<React.HTMLAttributes<HTMLDivElement>, "className"> & {
+  stepperLabel?: string;
+  steps: WizardStep[];
+  currentStep?: number;
+  stepTitle?: string;
+  cancelLabel?: string;
+  backLabel?: string;
+  nextLabel?: string;
+  finishLabel?: string;
+  isLast?: boolean;
+  children?: React.ReactNode;
+  oncancel?: () => void;
+  onback?: () => void;
+  onnext?: () => void;
+  onfinish?: () => void;
+  className?: string;
+};
+export function Wizard({
+  stepperLabel = "Progress",
+  steps,
+  currentStep = 0,
+  stepTitle,
+  cancelLabel = "Cancel",
+  backLabel = "Back",
+  nextLabel = "Next",
+  finishLabel = "Finish",
+  isLast = false,
+  children,
+  oncancel,
+  onback,
+  onnext,
+  onfinish,
+  className,
+  ...rest
+}: WizardProps) {
+  return (
+    <div {...rest} className={classNames("st-wz", className)}>
+      <div className="st-wz__stepper">
+        <p className="st-wz__stepper-label">{stepperLabel}</p>
+        <ol className="st-stepper" aria-label={stepperLabel}>
+          {steps.map((step, i) => (
+            <li
+              key={i}
+              className={classNames(
+                "st-stepper__item",
+                i < currentStep
+                  ? "st-stepper__item--complete"
+                  : i === currentStep
+                    ? "st-stepper__item--current"
+                    : undefined,
+              )}
+            >
+              <span className="st-stepper__index">{i + 1}</span>
+              <span className="st-stepper__label">{step.label}</span>
+              {step.description ? <span className="st-stepper__description">{step.description}</span> : null}
+            </li>
+          ))}
+        </ol>
+      </div>
+      <div className="st-wz__body">
+        {stepTitle ? <h3 className="st-wz__step-title">{stepTitle}</h3> : null}
+        <div className="st-wz__content">{children}</div>
+      </div>
+      <div className="st-wz__footer">
+        <button type="button" className="st-button st-button--ghost" onClick={() => oncancel?.()}>
+          {cancelLabel}
+        </button>
+        <div className="st-wz__footer-actions">
+          {currentStep > 0 ? (
+            <button type="button" className="st-button st-button--secondary" onClick={() => onback?.()}>
+              {backLabel}
+            </button>
+          ) : null}
+          {isLast ? (
+            <button type="button" className="st-button st-button--primary" onClick={() => onfinish?.()}>
+              {finishLabel}
+            </button>
+          ) : (
+            <button type="button" className="st-button st-button--primary" onClick={() => onnext?.()}>
+              {nextLabel}
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
