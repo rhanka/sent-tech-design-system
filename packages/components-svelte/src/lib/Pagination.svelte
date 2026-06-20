@@ -4,6 +4,7 @@
   type PaginationProps = Omit<HTMLAttributes<HTMLElement>, "class"> & {
     page: number;
     pageCount: number;
+    locale?: string;
     previousLabel?: string;
     nextLabel?: string;
     class?: string;
@@ -13,12 +14,17 @@
   let {
     page,
     pageCount,
-    previousLabel = "Previous",
-    nextLabel = "Next",
+    locale = "fr-FR",
+    previousLabel,
+    nextLabel,
     class: className,
     onpagechange,
     ...rest
   }: PaginationProps = $props();
+
+  const isFr = $derived(locale.toLowerCase().startsWith("fr"));
+  const resolvedPreviousLabel = $derived(previousLabel ?? (isFr ? "Précédent" : "Previous"));
+  const resolvedNextLabel = $derived(nextLabel ?? (isFr ? "Suivant" : "Next"));
 
   const classes = () => ["st-pagination", className].filter(Boolean).join(" ");
   const pages = () => Array.from({ length: pageCount }, (_, index) => index + 1);
@@ -28,7 +34,7 @@
 </script>
 
 <nav {...rest} class={classes()} aria-label="Pagination">
-  <button type="button" disabled={page <= 1} onclick={() => go(page - 1)}>{previousLabel}</button>
+  <button type="button" disabled={page <= 1} onclick={() => go(page - 1)}>{resolvedPreviousLabel}</button>
   {#each pages() as item}
     <button
       type="button"
@@ -40,7 +46,7 @@
       {item}
     </button>
   {/each}
-  <button type="button" disabled={page >= pageCount} onclick={() => go(page + 1)}>{nextLabel}</button>
+  <button type="button" disabled={page >= pageCount} onclick={() => go(page + 1)}>{resolvedNextLabel}</button>
 </nav>
 
 <style>
