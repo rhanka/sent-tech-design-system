@@ -45,6 +45,25 @@ export type NavActionStackProps = {
   standalone: true,
   template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
+      @if (label) { <p class="st-navActionStack__label">{{ label }}</p> }
+      @if (actions && actions.length) {
+        <ul class="st-navActionStack__list">
+          @for (action of actions; track action.label) {
+            <li class="st-navActionStack__item">
+              <a [href]="action.href || '#'" class="st-navActionStack__link"
+                [class.st-navActionStack__link--disabled]="action.disabled"
+                (click)="action.onClick && action.onClick()">{{ action.label }}</a>
+            </li>
+          }
+        </ul>
+      }
+      @if (dangerZone) {
+        <div class="st-navActionStack__danger">
+          @if (dangerLabel) { <p class="st-navActionStack__dangerLabel">{{ dangerLabel }}</p> }
+          <a [href]="dangerZone.href || '#'" class="st-navActionStack__dangerLink"
+            (click)="dangerZone.onClick && dangerZone.onClick()">{{ dangerZone.label }}</a>
+        </div>
+      }
       <ng-content></ng-content>
     </div>
   `,

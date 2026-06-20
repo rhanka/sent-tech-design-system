@@ -19,9 +19,17 @@ export type StructuredListProps = {
   selector: "st-structured-list",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    <dl [attr.data-st-component]="componentName" [class]="hostClass">
+      @for (item of items; track $index) {
+        <div class="st-structuredList__row">
+          @if (item.term ?? item.label) {
+            <dt class="st-structuredList__term">{{ item.term ?? item.label }}</dt>
+          }
+          <dd class="st-structuredList__description">{{ item.description ?? item.value }}</dd>
+        </div>
+      }
       <ng-content></ng-content>
-    </div>
+    </dl>
   `,
 })
 export class StructuredList {

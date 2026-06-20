@@ -22,6 +22,18 @@ export type ScoreCardProps = {
   standalone: true,
   template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
+      <div class="st-scoreCard__header">
+        <span class="st-scoreCard__title">{{ title }}</span>
+      </div>
+      <div class="st-scoreCard__score">
+        <span class="st-scoreCard__value">{{ score }}</span>
+        @if (unit) { <span class="st-scoreCard__unit">{{ unit }}</span> }
+      </div>
+      <div class="st-scoreCard__stars" [attr.aria-label]="stars + ' étoiles sur ' + (max ?? 5)">
+        @for (i of starsArray; track $index) {
+          <span class="st-scoreCard__star" [class.st-scoreCard__star--filled]="$index < stars">★</span>
+        }
+      </div>
       <ng-content></ng-content>
     </div>
   `,
@@ -38,7 +50,11 @@ export class ScoreCard {
   @NgInput() size?: ScoreCardSize;
   @NgInput("class") classInput?: string;
 
+  get starsArray(): number[] {
+    return Array.from({ length: this.max ?? 5 }, (_, i) => i);
+  }
+
   get hostClass(): string {
-    return ["st-scoreCard", this.classInput].filter(Boolean).join(" ");
+    return classNames("st-scoreCard", this.size && `st-scoreCard--${this.size}`, this.classInput);
   }
 }

@@ -12,9 +12,17 @@ export type QuoteProps = {
   selector: "st-quote",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
-    </div>
+    <blockquote [attr.data-st-component]="componentName" [class]="hostClass">
+      <div class="st-quote__body">
+        <ng-content></ng-content>
+      </div>
+      @if (author) {
+        <footer class="st-quote__footer">
+          <cite class="st-quote__author">{{ author }}</cite>
+          @if (source) { <span class="st-quote__source"> — {{ source }}</span> }
+        </footer>
+      }
+    </blockquote>
   `,
 })
 export class Quote {
@@ -25,6 +33,6 @@ export class Quote {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-quote", this.classInput].filter(Boolean).join(" ");
+    return classNames("st-quote", this.classInput);
   }
 }

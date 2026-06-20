@@ -16,9 +16,9 @@ export type OverlineProps = {
   selector: "st-overline",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    <span [attr.data-st-component]="componentName" [class]="hostClass">
       <ng-content></ng-content>
-    </div>
+    </span>
   `,
 })
 export class Overline {

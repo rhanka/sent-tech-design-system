@@ -12,9 +12,14 @@ export type CodeSnippetProps = {
   selector: "st-code-snippet",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
-    </div>
+    @if (inline) {
+      <code [attr.data-st-component]="componentName" [class]="hostClass">{{ code }}</code>
+    } @else {
+      <div [attr.data-st-component]="componentName" [class]="hostClass">
+        <pre class="st-codeSnippet__pre"><code class="st-codeSnippet__code">{{ code }}</code></pre>
+        <ng-content></ng-content>
+      </div>
+    }
   `,
 })
 export class CodeSnippet {
@@ -25,6 +30,10 @@ export class CodeSnippet {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-codeSnippet", this.classInput].filter(Boolean).join(" ");
+    return classNames(
+      "st-codeSnippet",
+      this.inline && "st-codeSnippet--inline",
+      this.classInput,
+    );
   }
 }

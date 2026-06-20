@@ -16,9 +16,12 @@ export type OrderedListProps = {
   selector: "st-ordered-list",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    <ol [attr.data-st-component]="componentName" [class]="hostClass">
+      @for (item of items; track $index) {
+        <li class="st-orderedList__item">{{ item }}</li>
+      }
       <ng-content></ng-content>
-    </div>
+    </ol>
   `,
 })
 export class OrderedList {
@@ -28,6 +31,6 @@ export class OrderedList {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-orderedList", this.classInput].filter(Boolean).join(" ");
+    return classNames("st-orderedList", this.classInput);
   }
 }

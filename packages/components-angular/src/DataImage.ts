@@ -29,7 +29,14 @@ export type DataImageProps = {
   standalone: true,
   template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+      <img class="st-dataImage__img"
+        [src]="src" [alt]="alt"
+        [attr.width]="width ?? null"
+        [attr.height]="height ?? null"
+        [attr.loading]="loading ?? null"
+        [attr.decoding]="decoding ?? null"
+        [style.object-fit]="fit ?? null"
+        [style.border-radius]="radius ?? null" />
     </div>
   `,
 })
@@ -47,6 +54,10 @@ export class DataImage {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-dataImage", this.classInput].filter(Boolean).join(" ");
+    return classNames(
+      "st-dataImage",
+      this.fit && `st-dataImage--${this.fit}`,
+      this.classInput,
+    );
   }
 }
