@@ -193,6 +193,7 @@ describe("overlay and feedback components", () => {
         tone: "error",
         title: "Upload failed",
         dismissible: true,
+        locale: "en-US",
         onDismiss
       }
     });
@@ -222,7 +223,7 @@ describe("overlay and feedback components", () => {
   });
 
   it("InlineLoading exposes a fallback label when no visible label is provided", () => {
-    render(InlineLoading, { props: { status: "active" } });
+    render(InlineLoading, { props: { status: "active", locale: "en-US" } });
     expect(screen.getByRole("status", { name: "Loading" })).toBeTruthy();
   });
 
