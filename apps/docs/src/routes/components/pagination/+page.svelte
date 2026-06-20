@@ -37,13 +37,13 @@
   <section class="docs-section">
     <h2>{fr("Exemple interactif", "Interactive example")}</h2>
     <p>{fr("onpagechange remonte la page demandée ; le parent contrôle l'état.", "onpagechange reports the requested page; the parent controls state.")}</p>
-    <TabbedExample nodes={getExample("pagination-interactive")?.nodes ?? []} code={getExample("pagination-interactive")?.code} />
+    <TabbedExample nodes={getExample("pagination-interactive")?.nodes ?? []} />
   </section>
 
   <section class="docs-section">
     <h2>{t(locale.value, "states")}</h2>
     <p>{fr("Sur la première page, « Précédent » est désactivé ; sur la dernière, « Suivant ».", "On the first page, \"Previous\" is disabled; on the last, \"Next\".")}</p>
-    <TabbedExample nodes={getExample("pagination-states")?.nodes ?? []} code={getExample("pagination-states")?.code} />
+    <TabbedExample nodes={getExample("pagination-states")?.nodes ?? []} />
   </section>
 
   <section class="docs-section">

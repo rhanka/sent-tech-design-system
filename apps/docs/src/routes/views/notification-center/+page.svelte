@@ -14,7 +14,7 @@
     label: () => string; labelTone: BadgeTone;
     msg: () => string; time: string; read: boolean;
   }[] = [
-    { id: "1", name: "Marie Lefebvre", tone: "category1", label: () => (fr ? "Mention" : "Mention"), labelTone: "info", msg: () => (fr ? "Vous a mentionné dans « Refonte ERP Airbus »" : "Mentioned you in "Airbus ERP Overhaul""), time: "09:42", read: false },
+    { id: "1", name: "Marie Lefebvre", tone: "category1", label: () => (fr ? "Mention" : "Mention"), labelTone: "info", msg: () => (fr ? "Vous a mentionné dans « Refonte ERP Airbus »" : "Mentioned you in «Airbus ERP Overhaul»"), time: "09:42", read: false },
     { id: "2", name: "Système", tone: "category3", label: () => (fr ? "Alerte" : "Alert"), labelTone: "error", msg: () => (fr ? "Échec du job d'import de données (lot #2847)" : "Data import job failed (batch #2847)"), time: "09:15", read: false },
     { id: "3", name: "Karim Benali", tone: "category2", label: () => (fr ? "Approbation" : "Approval"), labelTone: "warning", msg: () => (fr ? "En attente de votre validation pour le devis #4412" : "Awaiting your approval on quote #4412"), time: "08:57", read: false },
     { id: "4", name: "Sophie Durand", tone: "category4", label: () => (fr ? "Commentaire" : "Comment"), labelTone: "neutral", msg: () => (fr ? "A répondu à votre commentaire sur la migration Safran" : "Replied to your comment on Safran migration"), time: "08:30", read: true },
