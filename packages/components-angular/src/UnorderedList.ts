@@ -16,9 +16,12 @@ export type UnorderedListProps = {
   selector: "st-unordered-list",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    <ul [attr.data-st-component]="componentName" [class]="hostClass">
+      @for (item of items; track $index) {
+        <li class="st-unorderedList__item">{{ item }}</li>
+      }
       <ng-content></ng-content>
-    </div>
+    </ul>
   `,
 })
 export class UnorderedList {
@@ -28,6 +31,6 @@ export class UnorderedList {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-unorderedList", this.classInput].filter(Boolean).join(" ");
+    return classNames("st-unorderedList", this.classInput);
   }
 }
