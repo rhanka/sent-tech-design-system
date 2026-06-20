@@ -31,6 +31,10 @@ export class Alert {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-alert", this.classInput].filter(Boolean).join(" ");
+    return classNames(
+      "st-alert",
+      this.tone && `st-alert--${this.tone}`,
+      this.classInput,
+    );
   }
 }
