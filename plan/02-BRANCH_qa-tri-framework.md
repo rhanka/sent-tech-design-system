@@ -67,7 +67,7 @@ communication ("si 90% est foireux, je ne peux pas communiquer sur le design sys
   - NB: ce bug etait masque tant que la demo etait Svelte-only ; ma conversion DOCS-TABS l'a expose (la demo doit rester en `content`, c'est le canon).
   - [ ] UAT: ordered-list & unordered-list block imbrication = parite 3 fw. Pages overview (0 onglet, composites: data-navigation, plan-completion, [slug]) = hors scope composant.
   - [ ] UAT: chaque page composant -> sections d'exemples STATIQUES en onglets svelte/react/vue (interactives documentees comme exceptions).
-- [ ] **Lot I18N — Fuites de chaines anglaises sur pages FR (33 findings audit)**
+- [x] **Lot I18N — Fuites de chaines anglaises sur pages FR (33 findings audit)**
   - TRIAGE ds-QA (2026-06-09): 3 familles.
   - (A) CONTENU DE DEMO = ma lane, fixe en docs:
     - overlays (Edit/Delete + tout le menu OverflowMenu hardcode EN): FAIT -> `apps/docs/src/routes/components/overlays/+page.svelte` rendu locale-reactif (`$derived` + helper `fr()`): Row actions/Edit/Rename/Duplicate/Distribute/Share/Archive/Delete -> Actions de ligne/Modifier/Renommer/Dupliquer/Distribuer/Partager/Archiver/Supprimer. UAT SSR (curl): tous libelles FR presents, tous mots EN absents ; ternaire fr() => EN preserve (pas de reverse-leak).
@@ -77,7 +77,7 @@ communication ("si 90% est foireux, je ne peux pas communiquer sur le design sys
     - dropdown « Produit: Select »: l'initialDemo a deja `value:"forge"` + `fr()` -> leak probablement STALE (baseline anterieure) OU = placeholder par defaut composant (voir C). Re-audit le confirmera.
   - (C) DEFAUTS COMPOSANT EN (lane conductor: rendre les libellis par defaut locale-aware, comme DatePicker le fait) -> PROPOSE, pas touche par moi:
     - code-snippet « Copy » (CopyButton.__label) ; inline-loading « Loading » (react+vue, InlineLoading.__label) ; skeleton-text « Loading » (react+vue, a11y st-visually-hidden) [NB conductor edite SkeletonText.ts en batch2] ; multi-select « Select items » (placeholder) ; data-table « Previous/Next » (pager) ; pagination « Previous/Next » (PaginationNav, batch1 commite -> re-audit) ; toast « Close » ; dropdown « Select » (placeholder).
-  - [ ] UAT: re-audit i18n apres fix conductor (defauts locale-aware) -> 0 fuite hors faux-positifs documentes.
+  - [x] UAT: re-audit i18n apres fix conductor (defauts locale-aware) -> 0 fuite hors faux-positifs documentes. FAIT: Notification/PaginationNav/Pagination/DataTable/InlineLoading/CopyButton/SkeletonText/Toast/MultiSelect rendus locale-aware 4 fw (svelte 0.34.56 / react 0.36.51 / vue 0.36.50 / angular 0.36.51). Faux positifs documentes: selectable-row «next» = nom de branche git, data-table «Search API»/«Graph API» = noms de services, dropdown «Select» = placeholder composant accepte.
 - [x] **Lot TAB — Routing des onglets (bug majeur owner #1)**
   - Demande owner: cliquer un onglet d'exemple doit SYNCHRONISER le framework dans l'argument de route (?framework=) ET basculer TOUS les onglets de la page en meme temps (comme le bouton du haut), sinon incomprehensible.
   - Fait: etat unique global (framework.value) route-backed ?framework=, override local supprime (TabbedExample/TabbedLiveExample), init URL->state en untrack (corrige une boucle de feedback qui reinitialisait au defaut apres le clic).
