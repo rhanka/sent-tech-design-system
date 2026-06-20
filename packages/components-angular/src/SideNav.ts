@@ -19,19 +19,37 @@ export type SideNavProps = {
   selector: "st-side-nav",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    <nav
+      [attr.data-st-component]="componentName"
+      [class]="hostClass"
+      [attr.aria-label]="label ?? 'Navigation'"
+    >
+      @for (item of items; track item.href) {
+        <a
+          [href]="item.href"
+          [class]="linkClass(item)"
+        >{{ item.label }}</a>
+      }
       <ng-content></ng-content>
-    </div>
+    </nav>
   `,
 })
 export class SideNav {
   static readonly stComponentName = "SideNav";
   readonly componentName = "SideNav";
+
   @NgInput() items!: SideNavItem[];
   @NgInput() label?: string;
   @NgInput("class") classInput?: string;
 
+  linkClass(item: SideNavItem): string {
+    return classNames(
+      "st-sidenav__link st-sideNav__link",
+      item.active && "st-sidenav__link--active st-sideNav__link--active",
+    );
+  }
+
   get hostClass(): string {
-    return ["st-sideNav", this.classInput].filter(Boolean).join(" ");
+    return classNames("st-sidenav st-sideNav", this.classInput);
   }
 }
