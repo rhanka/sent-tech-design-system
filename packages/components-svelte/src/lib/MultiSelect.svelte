@@ -18,6 +18,7 @@
     size?: "sm" | "md" | "lg";
     options: MultiSelectOption[];
     selected?: string[];
+    locale?: string;
     placeholder?: string;
     searchPlaceholder?: string;
     noResultsLabel?: string;
@@ -37,17 +38,25 @@
     size = "md",
     options,
     selected = $bindable([]),
-    placeholder = "Select items",
-    searchPlaceholder = "Filter",
-    noResultsLabel = "No results",
-    toggleLabel = "Toggle options",
-    removeLabel = "Remove",
+    locale = "fr-FR",
+    placeholder,
+    searchPlaceholder,
+    noResultsLabel,
+    toggleLabel,
+    removeLabel,
     listLabel,
     disabled = false,
     class: className,
     onchange,
     ...rest
   }: MultiSelectProps = $props();
+
+  const isFr = $derived(locale.toLowerCase().startsWith("fr"));
+  const resolvedPlaceholder = $derived(placeholder ?? (isFr ? "Sélectionner des éléments" : "Select items"));
+  const resolvedSearchPlaceholder = $derived(searchPlaceholder ?? (isFr ? "Filtrer" : "Filter"));
+  const resolvedNoResultsLabel = $derived(noResultsLabel ?? (isFr ? "Aucun résultat" : "No results"));
+  const resolvedToggleLabel = $derived(toggleLabel ?? (isFr ? "Afficher les options" : "Toggle options"));
+  const resolvedRemoveLabel = $derived(removeLabel ?? (isFr ? "Supprimer" : "Remove"));
 
   let expanded = $state(false);
   let query = $state("");
@@ -112,7 +121,7 @@
           <button
             type="button"
             class="st-multiSelect__tagRemove"
-            aria-label={`${removeLabel} ${option.label}`}
+            aria-label={`${resolvedRemoveLabel} ${option.label}`}
             {disabled}
             onclick={() => removeOption(option.value)}
           >
@@ -132,7 +141,7 @@
       onclick={toggleOpen}
     >
       {#if selectedOptions.length === 0}
-        <span class="st-multiSelect__placeholder">{placeholder}</span>
+        <span class="st-multiSelect__placeholder">{resolvedPlaceholder}</span>
       {:else}
         <span class="st-multiSelect__count">{selectedOptions.length} selected</span>
       {/if}
@@ -143,7 +152,7 @@
           strokeWidth={2.25}
         />
       </span>
-      <span class="st-visually-hidden">{toggleLabel}</span>
+      <span class="st-visually-hidden">{resolvedToggleLabel}</span>
     </button>
   </span>
   {#if expanded}
@@ -151,13 +160,13 @@
       <input
         type="search"
         class="st-multiSelect__search"
-        placeholder={searchPlaceholder}
+        placeholder={resolvedSearchPlaceholder}
         bind:value={query}
-        aria-label={searchPlaceholder}
+        aria-label={resolvedSearchPlaceholder}
       />
       <div class="st-multiSelect__list" role="listbox" aria-label={listLabel ?? label ?? "Options"} aria-multiselectable="true">
         {#if filtered.length === 0}
-          <div class="st-multiSelect__empty">{noResultsLabel}</div>
+          <div class="st-multiSelect__empty">{resolvedNoResultsLabel}</div>
         {:else}
           {#each filtered as option (option.value)}
             {@const isSelected = selected.includes(option.value)}

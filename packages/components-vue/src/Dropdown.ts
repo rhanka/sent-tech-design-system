@@ -15,6 +15,7 @@ export type DropdownProps = {
   options: DropdownOption[];
   value?: string;
   open?: boolean;
+  locale?: string;
   placeholder?: string;
   onSelect?: (value: string) => void;
   class?: string;
@@ -23,11 +24,12 @@ export type DropdownProps = {
 export const Dropdown = defineComponent({
   name: "Dropdown",
   props: {
-    label: { type: String, default: "Select" },
+    label: { type: String, default: undefined },
     options: { type: Array as () => DropdownOption[], required: true },
     value: { type: String, default: undefined },
     open: { type: Boolean, default: undefined },
-    placeholder: { type: String, default: "Select" },
+    locale: { type: String, default: "fr-FR" },
+    placeholder: { type: String, default: undefined },
     onSelect: { type: Function as unknown as () => (value: string) => void, default: undefined },
     class: { type: String, default: undefined },
   },
@@ -68,6 +70,9 @@ export const Dropdown = defineComponent({
     onUnmounted(() => document.removeEventListener("mousedown", onMouseDown));
 
     return () => {
+      const isFr = (props.locale ?? "fr-FR").toLowerCase().startsWith("fr");
+      const resolvedLabel = props.label ?? (isFr ? "Sélectionner" : "Select");
+      const resolvedPlaceholder = props.placeholder ?? (isFr ? "Sélectionner" : "Select");
       const open = isOpen();
       const sel = selected();
 
@@ -88,9 +93,9 @@ export const Dropdown = defineComponent({
               onClick: () => setOpen(!open),
             },
             [
-              h("span", { class: "st-dropdown__label" }, props.label ?? "Select"),
+              h("span", { class: "st-dropdown__label" }, resolvedLabel),
               ": ",
-              h("span", { class: "st-dropdown__value" }, sel ? (sel.label as string) : (props.placeholder ?? "Select")),
+              h("span", { class: "st-dropdown__value" }, sel ? (sel.label as string) : resolvedPlaceholder),
               h(ChevronDown, {
                 class: classNames("st-dropdown__icon", open && "st-dropdown__icon--open"),
                 size: 18,
@@ -105,7 +110,7 @@ export const Dropdown = defineComponent({
                 {
                   class: "st-dropdown__list",
                   role: "listbox",
-                  "aria-label": props.label,
+                  "aria-label": resolvedLabel,
                 },
                 props.options.map((option) =>
                   h(

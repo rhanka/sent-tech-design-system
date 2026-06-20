@@ -6,6 +6,7 @@
     page: number;
     pageCount: number;
     siblings?: number;
+    locale?: string;
     label?: string;
     previousLabel?: string;
     nextLabel?: string;
@@ -17,13 +18,18 @@
     page = $bindable(1),
     pageCount,
     siblings = 1,
+    locale = "fr-FR",
     label = "Pagination",
-    previousLabel = "Previous page",
-    nextLabel = "Next page",
+    previousLabel,
+    nextLabel,
     class: className,
     onPageChange,
     ...rest
   }: PaginationNavProps = $props();
+
+  const isFr = $derived(locale.toLowerCase().startsWith("fr"));
+  const resolvedPreviousLabel = $derived(previousLabel ?? (isFr ? "Page précédente" : "Previous page"));
+  const resolvedNextLabel = $derived(nextLabel ?? (isFr ? "Page suivante" : "Next page"));
 
   type Slot = number | "ellipsis-start" | "ellipsis-end";
 
@@ -86,7 +92,7 @@
       <button
         type="button"
         class="st-paginationNav__nav"
-        aria-label={previousLabel}
+        aria-label={resolvedPreviousLabel}
         disabled={page <= 1 || pageCount <= 0}
         onclick={() => go(page - 1)}
       >
@@ -117,7 +123,7 @@
       <button
         type="button"
         class="st-paginationNav__nav"
-        aria-label={nextLabel}
+        aria-label={resolvedNextLabel}
         disabled={page >= pageCount || pageCount <= 0}
         onclick={() => go(page + 1)}
       >

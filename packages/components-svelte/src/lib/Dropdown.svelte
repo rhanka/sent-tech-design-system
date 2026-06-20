@@ -12,6 +12,7 @@
     label: string;
     options: DropdownOption[];
     value?: string;
+    locale?: string;
     placeholder?: string;
     open?: boolean;
     class?: string;
@@ -22,12 +23,16 @@
     label,
     options,
     value,
-    placeholder = "Select",
+    locale = "fr-FR",
+    placeholder,
     open = false,
     class: className,
     onselect,
     ...rest
   }: DropdownProps = $props();
+
+  const isFr = $derived(locale.toLowerCase().startsWith("fr"));
+  const resolvedPlaceholder = $derived(placeholder ?? (isFr ? "Sélectionner" : "Select"));
 
   let host: HTMLDivElement | undefined = $state();
   let buttonEl: HTMLButtonElement | undefined = $state();
@@ -38,7 +43,7 @@
   let listPos = $state({ top: 0, left: 0, width: 0 });
 
   const classes = () => ["st-dropdown", className].filter(Boolean).join(" ");
-  const selectedLabel = () => options.find((option) => option.value === currentValue)?.label ?? placeholder;
+  const selectedLabel = () => options.find((option) => option.value === currentValue)?.label ?? resolvedPlaceholder;
 
   function updateListPos() {
     if (!buttonEl) return;
