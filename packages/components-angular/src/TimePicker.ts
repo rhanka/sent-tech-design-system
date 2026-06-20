@@ -1,4 +1,4 @@
-import { Component, Input as NgInput } from "@angular/core";
+import { Component, EventEmitter, Input as NgInput, Output } from "@angular/core";
 
 import { classNames } from "./classNames.js";
 
@@ -6,41 +6,62 @@ export type TimePickerFormat = "24" | "12";
 
 export type TimePickerSize = "sm" | "md" | "lg";
 
-// In addition to the Vue-native `@change` emit, an `onChange` callback prop
-// (parity with React/Svelte) is accepted and fired on selection.
 export type TimePickerProps = {
-  /** Heure courante au format "HH:mm" (24h, toujours). Vide = non renseigné. */
   value?: string;
-  /** Appelé avec "HH:mm" lors d'une sélection. */
+  modelValue?: string;
   onChange?: (value: string) => void;
-  /** Pas (en minutes) entre deux créneaux générés. */
   step?: number;
-  /** Borne minimale "HH:mm" (inclusive). */
   min?: string;
-  /** Borne maximale "HH:mm" (inclusive). */
   max?: string;
-  /** Affichage 24h (par défaut) ou 12h (AM/PM). La valeur émise reste "HH:mm". */
   format?: TimePickerFormat;
   size?: TimePickerSize;
   disabled?: boolean;
   label?: string;
+  placeholder?: string;
+  invalid?: boolean;
+  errorText?: string;
   class?: string;
   id?: string;
 };
+
+let _tpCounter = 0;
 
 @Component({
   selector: "st-time-picker",
   standalone: true,
   template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+      @if (label) {
+        <label class="st-field__label" [attr.for]="fieldId">{{ label }}</label>
+      }
+      <input
+        type="time"
+        class="st-timePicker"
+        [id]="fieldId"
+        [value]="currentValue"
+        [attr.min]="min ?? null"
+        [attr.max]="max ?? null"
+        [disabled]="disabled ?? false"
+        (input)="onInput($event)"
+      />
+      @if (errorText && invalid) {
+        <span class="st-field__error">{{ errorText }}</span>
+      }
     </div>
   `,
 })
 export class TimePicker {
   static readonly stComponentName = "TimePicker";
   readonly componentName = "TimePicker";
+  readonly fieldId: string;
+
+  constructor() {
+    _tpCounter++;
+    this.fieldId = "st-time-picker-" + _tpCounter;
+  }
+
   @NgInput() value?: string;
+  @NgInput() modelValue?: string;
   @NgInput() onChange?: (value: string) => void;
   @NgInput() step?: number;
   @NgInput() min?: string;
@@ -49,10 +70,30 @@ export class TimePicker {
   @NgInput() size?: TimePickerSize;
   @NgInput() disabled?: boolean;
   @NgInput() label?: string;
+  @NgInput() placeholder?: string;
+  @NgInput() invalid?: boolean;
+  @NgInput() errorText?: string;
   @NgInput("class") classInput?: string;
   @NgInput() id?: string;
 
+  @Output() readonly modelValueChange = new EventEmitter<string>();
+
+  get currentValue(): string {
+    return this.modelValue ?? this.value ?? "";
+  }
+
   get hostClass(): string {
-    return ["st-timePicker", this.classInput].filter(Boolean).join(" ");
+    return classNames(
+      "st-field",
+      this.size ? `st-field--${this.size}` : undefined,
+      this.invalid ? "st-field--invalid" : undefined,
+      this.classInput,
+    );
+  }
+
+  onInput(e: Event): void {
+    const val = (e.target as HTMLInputElement).value;
+    this.modelValueChange.emit(val);
+    this.onChange?.(val);
   }
 }
