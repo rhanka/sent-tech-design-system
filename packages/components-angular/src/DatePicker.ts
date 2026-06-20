@@ -1,14 +1,11 @@
-import { Component, Input as NgInput } from "@angular/core";
+import { Component, EventEmitter, Input as NgInput, Output } from "@angular/core";
 
 import { classNames } from "./classNames.js";
 
 export type DatePickerSize = "sm" | "md" | "lg";
 
-// Range value shape mirrors the Svelte canonical contract: both bounds are
-// `Date | null` (`null` = not yet picked).
 export type DatePickerRange = { start: Date | null; end: Date | null };
 
-// Canonical value type, identical to the Svelte DatePicker.
 export type DatePickerValue = Date | DatePickerRange | null;
 
 export type DatePickerProps = {
@@ -18,10 +15,10 @@ export type DatePickerProps = {
   invalid?: boolean;
   disabled?: boolean;
   mode?: "single" | "range";
-  /** `v-model` value (`Date | {start,end} | null`). */
   modelValue?: DatePickerValue;
-  min?: Date;
-  max?: Date;
+  value?: string;
+  min?: string;
+  max?: string;
   locale?: string;
   placeholder?: string;
   size?: DatePickerSize;
@@ -33,18 +30,42 @@ export type DatePickerProps = {
   class?: string;
 };
 
+let _dpCounter = 0;
+
 @Component({
   selector: "st-date-picker",
   standalone: true,
   template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+      @if (label) {
+        <label class="st-field__label" [attr.for]="fieldId">{{ label }}</label>
+      }
+      <input
+        type="date"
+        class="st-datePicker"
+        [id]="fieldId"
+        [value]="currentValue"
+        [attr.min]="min ?? null"
+        [attr.max]="max ?? null"
+        [disabled]="disabled ?? false"
+        (input)="onInput($event)"
+      />
+      @if (errorText && invalid) {
+        <span class="st-field__error">{{ errorText }}</span>
+      }
     </div>
   `,
 })
 export class DatePicker {
   static readonly stComponentName = "DatePicker";
   readonly componentName = "DatePicker";
+  readonly fieldId: string;
+
+  constructor() {
+    _dpCounter++;
+    this.fieldId = "st-date-picker-" + _dpCounter;
+  }
+
   @NgInput() label?: unknown;
   @NgInput() helperText?: unknown;
   @NgInput() errorText?: unknown;
@@ -52,8 +73,9 @@ export class DatePicker {
   @NgInput() disabled?: boolean;
   @NgInput() mode?: "single" | "range";
   @NgInput() modelValue?: DatePickerValue;
-  @NgInput() min?: Date;
-  @NgInput() max?: Date;
+  @NgInput() value?: string;
+  @NgInput() min?: string;
+  @NgInput() max?: string;
   @NgInput() locale?: string;
   @NgInput() placeholder?: string;
   @NgInput() size?: DatePickerSize;
@@ -64,7 +86,23 @@ export class DatePicker {
   @NgInput() todayLabel?: string;
   @NgInput("class") classInput?: string;
 
+  @Output() readonly modelValueChange = new EventEmitter<string>();
+
+  get currentValue(): string {
+    if (typeof this.value === "string") return this.value;
+    return "";
+  }
+
   get hostClass(): string {
-    return ["st-datePicker", this.classInput].filter(Boolean).join(" ");
+    return classNames(
+      "st-field",
+      this.size ? `st-field--${this.size}` : undefined,
+      this.invalid ? "st-field--invalid" : undefined,
+      this.classInput,
+    );
+  }
+
+  onInput(e: Event): void {
+    this.modelValueChange.emit((e.target as HTMLInputElement).value);
   }
 }

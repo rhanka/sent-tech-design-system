@@ -1,15 +1,12 @@
-import { Component, Input as NgInput } from "@angular/core";
+import { Component, EventEmitter, Input as NgInput, Output } from "@angular/core";
 
 import { classNames } from "./classNames.js";
 
 export type RangeSliderSize = "sm" | "md" | "lg";
 
 export type RangeSliderProps = {
-  /** Valeur contrôlée via v-model [poignée basse, poignée haute]. */
   modelValue?: [number, number];
-  /** Alias contrôlé sans v-model. */
   value?: [number, number];
-  /** Valeur initiale en mode non-contrôlé. Défaut [min, max]. */
   defaultValue?: [number, number];
   min?: number;
   max?: number;
@@ -32,13 +29,38 @@ export type RangeSliderProps = {
   standalone: true,
   template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+      @if (label) {
+        <label class="st-field__label">{{ label }}</label>
+      }
+      <div class="st-rangeSlider">
+        <input
+          type="range"
+          class="st-rangeSlider__thumb st-rangeSlider__thumb--low"
+          [min]="min ?? 0"
+          [max]="high"
+          [step]="step ?? 1"
+          [value]="low"
+          [disabled]="disabled ?? false"
+          (input)="onLow($event)"
+        />
+        <input
+          type="range"
+          class="st-rangeSlider__thumb st-rangeSlider__thumb--high"
+          [min]="low"
+          [max]="max ?? 100"
+          [step]="step ?? 1"
+          [value]="high"
+          [disabled]="disabled ?? false"
+          (input)="onHigh($event)"
+        />
+      </div>
     </div>
   `,
 })
 export class RangeSlider {
   static readonly stComponentName = "RangeSlider";
   readonly componentName = "RangeSlider";
+
   @NgInput() modelValue?: [number, number];
   @NgInput() value?: [number, number];
   @NgInput() defaultValue?: [number, number];
@@ -57,7 +79,34 @@ export class RangeSlider {
   @NgInput() ariaLabelMax?: string;
   @NgInput("class") classInput?: string;
 
+  @Output() readonly valueChange = new EventEmitter<[number, number]>();
+
+  get currentValue(): [number, number] {
+    return this.modelValue ?? this.value ?? [this.min ?? 0, this.max ?? 100];
+  }
+
+  get low(): number {
+    return this.currentValue[0];
+  }
+
+  get high(): number {
+    return this.currentValue[1];
+  }
+
   get hostClass(): string {
-    return ["st-rangeSlider", this.classInput].filter(Boolean).join(" ");
+    return classNames(
+      "st-field",
+      this.size ? `st-field--${this.size}` : undefined,
+      this.invalid ? "st-field--invalid" : undefined,
+      this.classInput,
+    );
+  }
+
+  onLow(e: Event): void {
+    this.valueChange.emit([Number((e.target as HTMLInputElement).value), this.high]);
+  }
+
+  onHigh(e: Event): void {
+    this.valueChange.emit([this.low, Number((e.target as HTMLInputElement).value)]);
   }
 }
