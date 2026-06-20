@@ -52,6 +52,7 @@
     sortBy?: DataTableSort | null;
     pageSize?: number;
     page?: number;
+    locale?: string;
     selectAllLabel?: string;
     selectRowLabel?: string;
     sortAscendingLabel?: string;
@@ -78,13 +79,14 @@
     sortBy = $bindable<DataTableSort | null>(null),
     pageSize,
     page = $bindable(1),
+    locale = "fr-FR",
     selectAllLabel = "Select all rows",
     selectRowLabel = "Select row",
     sortAscendingLabel = "Sorted ascending",
     sortDescendingLabel = "Sorted descending",
     sortNoneLabel = "Not sorted",
-    previousLabel = "Previous",
-    nextLabel = "Next",
+    previousLabel,
+    nextLabel,
     paginationLabel = "Pagination",
     rangeLabel = ({ start, end, total }) => `${start}–${end} of ${total}`,
     emptyLabel = "No data",
@@ -92,6 +94,10 @@
     class: className,
     ...rest
   }: DataTableProps = $props();
+
+  const isFr = $derived(locale.toLowerCase().startsWith("fr"));
+  const resolvedPreviousLabel = $derived(previousLabel ?? (isFr ? "Précédent" : "Previous"));
+  const resolvedNextLabel = $derived(nextLabel ?? (isFr ? "Suivant" : "Next"));
 
   const classes = () =>
     ["st-dataTable", `st-dataTable--${size}`, className].filter(Boolean).join(" ");
@@ -381,7 +387,7 @@
           disabled={safePage <= 1}
           onclick={() => goToPage(safePage - 1)}
         >
-          {previousLabel}
+          {resolvedPreviousLabel}
         </button>
         <span class="st-dataTable__pagerStatus" aria-live="polite">
           {safePage} / {pageCount}
@@ -392,7 +398,7 @@
           disabled={safePage >= pageCount}
           onclick={() => goToPage(safePage + 1)}
         >
-          {nextLabel}
+          {resolvedNextLabel}
         </button>
       </nav>
     </div>
