@@ -6,6 +6,8 @@
     width?: string;
     heading?: boolean;
     paragraph?: boolean;
+    locale?: string;
+    loadingLabel?: string;
     class?: string;
   };
 
@@ -14,9 +16,14 @@
     width,
     heading = false,
     paragraph = false,
+    locale = "fr-FR",
+    loadingLabel,
     class: className,
     ...rest
   }: SkeletonTextProps = $props();
+
+  const isFr = $derived(locale.toLowerCase().startsWith("fr"));
+  const resolvedLoadingLabel = $derived(loadingLabel ?? (isFr ? "Chargement…" : "Loading…"));
 
   const wrapperClasses = () => ["st-skeleton", className].filter(Boolean).join(" ");
   const lineClasses = () =>
@@ -30,7 +37,7 @@
   }
 </script>
 
-<div {...rest} class={wrapperClasses()} role="status" aria-label="Loading…" aria-busy="true">
+<div {...rest} class={wrapperClasses()} role="status" aria-label={resolvedLoadingLabel} aria-busy="true">
   {#each Array.from({ length: lineCount() }) as _, i (i)}
     <span class={lineClasses()} style={lineWidth(i, lineCount()) ? `width:${lineWidth(i, lineCount())}` : undefined}></span>
   {/each}
