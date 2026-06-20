@@ -7,7 +7,7 @@
 
   const fr = $derived(locale.value === "fr");
 
-  const verticalDemo: NodeSpec[] = [
+  const verticalDemo = $derived<NodeSpec[]>([
     {
       comp: "CheckboxGroup",
       props: {
@@ -20,8 +20,8 @@
         ]
       }
     }
-  ];
-  const horizontalDemo: NodeSpec[] = [
+  ]);
+  const horizontalDemo = $derived<NodeSpec[]>([
     {
       comp: "CheckboxGroup",
       props: {
@@ -35,7 +35,7 @@
         ]
       }
     }
-  ];
+  ]);
 </script>
 
 <div class="docs-page">

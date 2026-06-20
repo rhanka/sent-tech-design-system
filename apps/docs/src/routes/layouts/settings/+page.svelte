@@ -25,7 +25,8 @@
   ]);
 
   let theme = $state("auto");
-  let language = $state(fr ? "fr" : "en");
+  // Initialisation avec la locale courante (locale.value est une string stable à l'init)
+  let language = $state(locale.value);
   let emailNotifs = $state(true);
   let compactMode = $state(false);
   let density = $state(60);

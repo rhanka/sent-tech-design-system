@@ -7,7 +7,7 @@
 
   const fr = $derived(locale.value === "fr");
 
-  const openDemo: NodeSpec[] = [
+  const openDemo = $derived<NodeSpec[]>([
     {
       comp: "Collapsible",
       props: { title: fr ? "Conditions générales" : "Terms & conditions", open: true },
@@ -19,8 +19,8 @@
         }
       ]
     }
-  ];
-  const disabledDemo: NodeSpec[] = [
+  ]);
+  const disabledDemo = $derived<NodeSpec[]>([
     {
       comp: "Collapsible",
       props: { title: fr ? "Section verrouillée" : "Locked section", disabled: true },
@@ -32,7 +32,7 @@
         }
       ]
     }
-  ];
+  ]);
 </script>
 
 <div class="docs-page">

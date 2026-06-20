@@ -24,7 +24,7 @@
   };
 
   // Catalogue mock — 8 domaines × quelques gabarits chacun
-  const TEMPLATES: ViewSpec[] = [
+  const TEMPLATES = $derived<ViewSpec[]>([
     // Analytics / BI
     { id: "tpl-dash-exec", name: fr ? "Dashboard exécutif" : "Executive Dashboard", objectType: "dashboard", description: fr ? "KPI, graphiques ligne/barres/donut, top-N" : "KPIs, line/bar/donut charts, top-N table", sourceLevel: "code" },
     { id: "tpl-dash-ops",  name: fr ? "Dashboard opérationnel" : "Ops Dashboard", objectType: "dashboard", description: fr ? "Métriques temps réel, alertes, file de tickets" : "Real-time metrics, alerts, ticket queue", sourceLevel: "code" },
@@ -46,7 +46,7 @@
     // Copies utilisateur (exemples)
     { id: "tpl-dash-exec-copy", name: fr ? "Mon dashboard BI" : "My BI Dashboard", objectType: "dashboard", description: fr ? "Copie personnalisée du dashboard exécutif" : "Customized copy of executive dashboard", sourceLevel: "user", parentId: "tpl-dash-exec" },
     { id: "tpl-crm-custom",     name: fr ? "CRM Sectoriel" : "Sector CRM", objectType: "detail", description: fr ? "Gabarit CRM adapté au secteur public" : "CRM template adapted for public sector", sourceLevel: "user" },
-  ];
+  ]);
 
   const DOMAIN_LABELS: Record<string, { fr: string; en: string }> = {
     dashboard: { fr: "Analytics / BI", en: "Analytics / BI" },

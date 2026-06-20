@@ -8,51 +8,51 @@
 
   // ── Données mock neutres (pivot ventes par région × trimestre) ────────────
 
-  const TABLE_COLUMNS = [
+  const TABLE_COLUMNS = $derived([
     { key: "region", label: () => (fr ? "Région" : "Region"), sortable: true },
     { key: "t1", label: () => "T1", sortable: true, align: "end" as const },
     { key: "t2", label: () => "T2", sortable: true, align: "end" as const },
     { key: "t3", label: () => "T3", sortable: true, align: "end" as const },
     { key: "t4", label: () => "T4", sortable: true, align: "end" as const },
     { key: "total", label: () => "Total", sortable: true, align: "end" as const }
-  ];
+  ]);
 
-  const TABLE_ROWS = [
+  const TABLE_ROWS = $derived([
     { id: "1", region: fr ? "Europe" : "Europe", t1: "320 k€", t2: "358 k€", t3: "372 k€", t4: "410 k€", total: "1 460 k€" },
     { id: "2", region: fr ? "Amérique du Nord" : "North America", t1: "280 k€", t2: "295 k€", t3: "310 k€", t4: "342 k€", total: "1 227 k€" },
     { id: "3", region: fr ? "Asie-Pacifique" : "Asia-Pacific", t1: "180 k€", t2: "204 k€", t3: "228 k€", t4: "256 k€", total: "868 k€" },
     { id: "4", region: fr ? "Moyen-Orient" : "Middle East", t1: "95 k€", t2: "102 k€", t3: "118 k€", t4: "131 k€", total: "446 k€" },
     { id: "5", region: fr ? "Amérique latine" : "Latin America", t1: "72 k€", t2: "81 k€", t3: "88 k€", t4: "97 k€", total: "338 k€" }
-  ];
+  ]);
 
-  const BAR_DATA = [
+  const BAR_DATA = $derived([
     { x: fr ? "Europe" : "Europe", y: 1460 },
     { x: fr ? "Am. du Nord" : "N. America", y: 1227 },
     { x: fr ? "Asie-Pac." : "Asia-Pac.", y: 868 },
     { x: fr ? "Moy.-Orient" : "Mid. East", y: 446 },
     { x: fr ? "Am. latine" : "Lat. America", y: 338 }
-  ];
+  ]);
 
-  const DIM_OPTIONS = [
+  const DIM_OPTIONS = $derived([
     { value: "region", label: fr ? "Région" : "Region" },
     { value: "product", label: fr ? "Produit" : "Product" },
     { value: "channel", label: fr ? "Canal" : "Channel" },
     { value: "rep", label: fr ? "Commercial" : "Sales rep" }
-  ];
+  ]);
 
-  const MEASURE_OPTIONS = [
+  const MEASURE_OPTIONS = $derived([
     { value: "revenue", label: fr ? "Chiffre d'affaires" : "Revenue" },
     { value: "margin", label: fr ? "Marge" : "Margin" },
     { value: "units", label: fr ? "Unités vendues" : "Units sold" },
     { value: "orders", label: fr ? "Commandes" : "Orders" }
-  ];
+  ]);
 
-  const AGG_OPTIONS = [
+  const AGG_OPTIONS = $derived([
     { value: "sum", label: fr ? "Somme" : "Sum" },
     { value: "avg", label: fr ? "Moyenne" : "Average" },
     { value: "min", label: "Min" },
     { value: "max", label: "Max" }
-  ];
+  ]);
 
   // ── NodeSpec ──────────────────────────────────────────────────────────────
 

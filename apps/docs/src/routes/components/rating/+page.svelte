@@ -7,24 +7,24 @@
 
   const fr = $derived(locale.value === "fr");
 
-  const interactiveDemo: NodeSpec[] = [
+  const interactiveDemo = $derived<NodeSpec[]>([
     {
       comp: "Rating",
       props: { value: 3, max: 5, label: fr ? "Note du produit" : "Product rating" }
     }
-  ];
-  const halfDemo: NodeSpec[] = [
+  ]);
+  const halfDemo = $derived<NodeSpec[]>([
     {
       comp: "Rating",
       props: { value: 3.5, max: 5, allowHalf: true, label: fr ? "Avis" : "Review" }
     }
-  ];
-  const readonlyDemo: NodeSpec[] = [
+  ]);
+  const readonlyDemo = $derived<NodeSpec[]>([
     {
       comp: "Rating",
       props: { value: 4, max: 5, readonly: true, size: "sm", label: fr ? "Moyenne" : "Average" }
     }
-  ];
+  ]);
 </script>
 
 <div class="docs-page">
