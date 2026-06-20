@@ -1,4 +1,4 @@
-import { Component, Input as NgInput } from "@angular/core";
+import { Component, EventEmitter, Input as NgInput, Output } from "@angular/core";
 
 import { classNames } from "./classNames.js";
 
@@ -6,6 +6,7 @@ export type MultiSelectOption = {
   value: string;
   label: unknown;
   disabled?: boolean;
+  group?: string;
 };
 
 export type MultiSelectSize = "sm" | "md" | "lg";
@@ -18,7 +19,6 @@ export type MultiSelectProps = {
   options: MultiSelectOption[];
   value?: string[];
   values?: string[];
-  /** Svelte-canonical alias for the selected values. */
   selected?: string[];
   size?: MultiSelectSize;
   open?: boolean;
@@ -37,19 +37,51 @@ export type MultiSelectProps = {
   standalone: true,
   template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+      @if (label) {
+        <label class="st-field__label">{{ label }}</label>
+      }
+      <div
+        class="st-multiSelect__trigger"
+        (click)="!disabled && toggleOpen()"
+      >
+        {{ selectedLabel }}
+      </div>
+      @if (isOpen) {
+        <div class="st-multiSelect__dropdown">
+          <ul class="st-multiSelect__list">
+            @for (opt of options ?? []; track opt.value) {
+              <li
+                class="st-multiSelect__option"
+                [class.st-multiSelect__option--selected]="isSelected(opt.value)"
+                (click)="toggle(opt.value)"
+              >
+                <input
+                  type="checkbox"
+                  [checked]="isSelected(opt.value)"
+                  [disabled]="opt.disabled ?? false"
+                  tabindex="-1"
+                />
+                {{ opt.label }}
+              </li>
+            }
+          </ul>
+        </div>
+      }
     </div>
   `,
 })
 export class MultiSelect {
   static readonly stComponentName = "MultiSelect";
   readonly componentName = "MultiSelect";
+
+  isOpen = false;
+
   @NgInput() label?: unknown;
   @NgInput() helperText?: unknown;
   @NgInput() errorText?: unknown;
   @NgInput() invalid?: boolean;
-  @NgInput() options!: MultiSelectOption[];
-  @NgInput() value?: string[];
+  @NgInput() options: MultiSelectOption[] = [];
+  @NgInput() value: string[] = [];
   @NgInput() values?: string[];
   @NgInput() selected?: string[];
   @NgInput() size?: MultiSelectSize;
@@ -63,7 +95,34 @@ export class MultiSelect {
   @NgInput() disabled?: boolean;
   @NgInput("class") classInput?: string;
 
+  @Output() readonly valueChange = new EventEmitter<string[]>();
+
   get hostClass(): string {
-    return ["st-multiSelect", this.classInput].filter(Boolean).join(" ");
+    return classNames("st-multiSelect", this.classInput);
+  }
+
+  get currentValue(): string[] {
+    return this.value ?? this.values ?? this.selected ?? [];
+  }
+
+  get selectedLabel(): string {
+    return this.currentValue.length
+      ? this.currentValue.join(", ")
+      : (this.placeholder ?? "—");
+  }
+
+  isSelected(v: string): boolean {
+    return this.currentValue.includes(v);
+  }
+
+  toggleOpen(): void {
+    this.isOpen = !this.isOpen;
+  }
+
+  toggle(v: string): void {
+    const next = this.isSelected(v)
+      ? this.currentValue.filter((x) => x !== v)
+      : [...this.currentValue, v];
+    this.valueChange.emit(next);
   }
 }
