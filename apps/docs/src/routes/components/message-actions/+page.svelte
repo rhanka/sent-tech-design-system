@@ -42,17 +42,17 @@
 
   <section class="docs-section">
     <h2>{text().hoverTitle}</h2>
-    <TabbedExample nodes={getExample("messageactions-hover")?.nodes ?? []} code={getExample("messageactions-hover")?.code} />
+    <TabbedExample nodes={getExample("messageactions-hover")?.nodes ?? []} />
   </section>
 
   <section class="docs-section">
     <h2>{text().alwaysTitle}</h2>
-    <TabbedExample nodes={getExample("messageactions-always")?.nodes ?? []} code={getExample("messageactions-always")?.code} />
+    <TabbedExample nodes={getExample("messageactions-always")?.nodes ?? []} />
   </section>
 
   <section class="docs-section">
     <h2>{text().overflowTitle}</h2>
-    <TabbedExample nodes={getExample("messageactions-overflow")?.nodes ?? []} code={getExample("messageactions-overflow")?.code} />
+    <TabbedExample nodes={getExample("messageactions-overflow")?.nodes ?? []} />
   </section>
 
   <section class="docs-section">
