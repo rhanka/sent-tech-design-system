@@ -213,7 +213,10 @@ export type ComponentName =
   | "Modal"
   | "Drawer"
   | "ErrorSummary"
-  | "DashboardGrid";
+  | "DashboardGrid"
+  | "DataGrid"
+  | "PieChart"
+  | "Progress";
 
 export interface ComponentNodeSpec {
   comp: ComponentName;

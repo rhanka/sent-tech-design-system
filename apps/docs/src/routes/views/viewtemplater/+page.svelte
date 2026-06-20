@@ -6,7 +6,7 @@
   const fr = $derived(locale.value === "fr");
 
   // ViewSpec — spécification d'un gabarit de vue (format MVP)
-  export type ViewSpecObjectType =
+  type ViewSpecObjectType =
     | "dashboard"
     | "container"
     | "detail"
@@ -14,7 +14,7 @@
     | "kanban"
     | "list-report";
 
-  export type ViewSpec = {
+  type ViewSpec = {
     id: string;
     name: string;
     objectType: ViewSpecObjectType;
