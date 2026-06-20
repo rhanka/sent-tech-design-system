@@ -20,9 +20,12 @@ Statut dans les sous-bullets (PAS dans les titres de lot → import idempotent).
   - Étendre NodeSpec en ViewSpec (layout/regions/data). Compléter la table de composants de
     examples.ts/nodeToCode.ts (~70 → tous les composables : FilterBar, KpiCard, Stepper, Drawer,
     SelectableList, Calendar, GaugeChart, BulletChart…) dans les 3 packages. Borné/mécanique.
-- [ ] **Lot VUES-LAYOUTS — 6 gabarits de layout**
+- [x] **Lot VUES-LAYOUTS — 6 gabarits de layout**
   - `app-shell`, `list-report`, `object-page`, `kanban`, `master-detail`, `dashboard`, `wizard`
     (fonctions data→NodeSpec). C'est ce qui rend les 50+ écrans dérivés quasi gratuits.
+  - FAIT (2026-06-19): `apps/docs/src/lib/viewLayouts.ts` — 7 fonctions typées (configs
+    pré-localisées → NodeSpec[]). CSS partagé `.vl-*` dans app.css. 0 erreur svelte-check.
+    ComponentName étendu (DataGrid, PieChart, Progress). Commit 395d6307.
 - [x] **Lot VUES-SECTION — section docs /views + nav**
   - Routes `/views` (index grille) + `/views/<slug>`, entrée nav « Vues » à côté de « Composants »,
     rendu tri-framework + code par fw + composants liés + variantes (loading/empty/error/dense) +
@@ -30,9 +33,11 @@ Statut dans les sous-bullets (PAS dans les titres de lot → import idempotent).
 - [x] **Lot VUES-MVP — 14 écrans prioritaires**
   - App shell, List Report, Object Page, Kanban, Data Explorer, Dashboard exécutif, Master-detail,
     Wizard, Import/mapping, Login, Settings, Facture Odoo, Pipeline CRM, File de tickets.
-- [ ] **Lot VUES-COMPONENTS — composants-écrans réutilisables exportés**
+- [x] **Lot VUES-COMPONENTS — composants-écrans réutilisables exportés**
   - Patrons exportés (ListReportPage, ObjectPage, KanbanBoard, MasterDetail, Wizard, AppShell,
     Dashboard) + ~12 autres réutilisés. 3 fw, parité.
+  - FAIT (2026-06-19): 6 composants Svelte (~1097 lignes) + React catalog (+527 lignes) + 6 Vue .ts
+    (+628 lignes). tsc 0 erreur, svelte-check 0 erreur. Exportés depuis les 3 index packages.
 - [x] **Lot VUES-IMPORT — viewtemplater + cartes Sentropic**
   - Importer la structure ViewTemplateCatalog/Renderer + ViewSpec depuis ~/src/sentropic, et les
     cartes (ConfigItemCard/FieldCard/ScoreCard) comme composants/exemples.
