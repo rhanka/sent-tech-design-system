@@ -28,7 +28,17 @@ export type FieldCardProps = {
   standalone: true,
   template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+      <div class="st-fieldCard__header">
+        <span class="st-fieldCard__label">{{ label }}</span>
+        @if (commentCount !== undefined && commentCount > 0) {
+          <button type="button" class="st-fieldCard__comments" (click)="onOpenComments && onOpenComments()">
+            {{ commentCount }}
+          </button>
+        }
+      </div>
+      <div class="st-fieldCard__body">
+        <ng-content></ng-content>
+      </div>
     </div>
   `,
 })
@@ -43,6 +53,11 @@ export class FieldCard {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-fieldCard", this.classInput].filter(Boolean).join(" ");
+    return classNames(
+      "st-fieldCard",
+      this.variant && `st-fieldCard--${this.variant}`,
+      this.tone && `st-fieldCard--${this.tone}`,
+      this.classInput,
+    );
   }
 }

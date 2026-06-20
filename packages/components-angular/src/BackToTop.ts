@@ -17,7 +17,12 @@ export type BackToTopProps = {
   standalone: true,
   template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+      <button type="button" class="st-backToTop__button" [disabled]="disabled" (click)="scrollToTop()" [attr.aria-label]="label || 'Retour en haut'">
+        <svg class="st-backToTop__icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="18 15 12 9 6 15"/>
+        </svg>
+        @if (label) { <span class="st-backToTop__label">{{ label }}</span> }
+      </button>
     </div>
   `,
 })
@@ -33,6 +38,17 @@ export class BackToTop {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-backToTop", this.classInput].filter(Boolean).join(" ");
+    return classNames("st-backToTop", this.classInput);
+  }
+
+  scrollToTop(): void {
+    if (typeof window !== "undefined") {
+      const el = this.targetId ? document.getElementById(this.targetId) : null;
+      if (el) {
+        el.scrollIntoView({ behavior: this.smooth !== false ? "smooth" : "auto" });
+      } else {
+        window.scrollTo({ top: 0, behavior: this.smooth !== false ? "smooth" : "auto" });
+      }
+    }
   }
 }

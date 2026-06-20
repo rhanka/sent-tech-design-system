@@ -15,7 +15,17 @@ export type ErrorSummaryProps = {
   selector: "st-error-summary",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    <div [attr.data-st-component]="componentName" [class]="hostClass" role="alert">
+      @if (heading) { <h2 class="st-errorSummary__heading">{{ heading }}</h2> }
+      @if (errors && errors.length) {
+        <ul class="st-errorSummary__list">
+          @for (err of errors; track err.href) {
+            <li class="st-errorSummary__item">
+              <a [href]="err.href" class="st-errorSummary__link">{{ err.text }}</a>
+            </li>
+          }
+        </ul>
+      }
       <ng-content></ng-content>
     </div>
   `,
@@ -28,6 +38,6 @@ export class ErrorSummary {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-errorSummary", this.classInput].filter(Boolean).join(" ");
+    return classNames("st-errorSummary", this.classInput);
   }
 }
