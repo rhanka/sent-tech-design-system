@@ -4372,9 +4372,12 @@ export type SkeletonTextProps = React.HTMLAttributes<HTMLDivElement> & {
   width?: string;
   heading?: boolean;
   paragraph?: boolean;
+  locale?: string;
   loadingLabel?: string;
 };
-export function SkeletonText({ lines = 1, width, heading = false, paragraph = false, loadingLabel = "Loading…", className, ...rest }: SkeletonTextProps) {
+export function SkeletonText({ lines = 1, width, heading = false, paragraph = false, locale = "fr-FR", loadingLabel, className, ...rest }: SkeletonTextProps) {
+  const isFr = locale.toLowerCase().startsWith("fr");
+  const resolvedLoadingLabel = loadingLabel ?? (isFr ? "Chargement…" : "Loading…");
   const lineCount = paragraph ? Math.max(lines, 3) : lines;
   const lineWidth = (index: number): string | undefined => {
     if (width && index === 0) return width;
@@ -4382,7 +4385,7 @@ export function SkeletonText({ lines = 1, width, heading = false, paragraph = fa
     return undefined;
   };
   return (
-    <div {...rest} className={classNames("st-skeleton", className)} role="status" aria-label={loadingLabel} aria-busy="true">
+    <div {...rest} className={classNames("st-skeleton", className)} role="status" aria-label={resolvedLoadingLabel} aria-busy="true">
       {Array.from({ length: lineCount }, (_, index) => {
         const w = lineWidth(index);
         return (
@@ -5034,10 +5037,14 @@ export type ToastProps = React.HTMLAttributes<HTMLElement> & {
   autoDismiss?: boolean;
   duration?: number;
   onDismiss?: (id: string) => void;
+  locale?: string;
   closeLabel?: React.ReactNode;
   dismissLabel?: (title: React.ReactNode) => string;
 };
-export function Toast({ tone = "info", title, message, actions, onClose, items, autoDismiss = false, duration = 5000, onDismiss, closeLabel = "Close", dismissLabel = (t) => `Dismiss ${text(t)}`, children, className, ...rest }: ToastProps) {
+export function Toast({ tone = "info", title, message, actions, onClose, items, autoDismiss = false, duration = 5000, onDismiss, locale = "fr-FR", closeLabel, dismissLabel, children, className, ...rest }: ToastProps) {
+  const isFr = locale.toLowerCase().startsWith("fr");
+  const resolvedCloseLabel = closeLabel ?? (isFr ? "Fermer" : "Close");
+  const resolvedDismissLabel = dismissLabel ?? ((t) => isFr ? `Fermer ${text(t)}` : `Dismiss ${text(t)}`);
   React.useEffect(() => {
     if (!autoDismiss || !items?.length || !onDismiss) return;
     const timeout = window.setTimeout(() => onDismiss(items[0].id), duration);
@@ -5057,8 +5064,8 @@ export function Toast({ tone = "info", title, message, actions, onClose, items, 
             </div>
             {item.actions ? <div className="st-toast__actions">{item.actions}</div> : null}
             {onDismiss ? (
-              <button type="button" onClick={() => onDismiss(item.id)} aria-label={dismissLabel(item.title)}>
-                {closeLabel}
+              <button type="button" onClick={() => onDismiss(item.id)} aria-label={resolvedDismissLabel(item.title)}>
+                {resolvedCloseLabel}
               </button>
             ) : null}
           </section>
@@ -5074,7 +5081,7 @@ export function Toast({ tone = "info", title, message, actions, onClose, items, 
         {message ? <p className="st-toast__message">{message}</p> : children}
       </div>
       {actions ? <div className="st-toast__actions">{actions}</div> : null}
-      {onClose ? <button type="button" onClick={onClose}>{closeLabel}</button> : null}
+      {onClose ? <button type="button" onClick={onClose}>{resolvedCloseLabel}</button> : null}
     </section>
   );
 }

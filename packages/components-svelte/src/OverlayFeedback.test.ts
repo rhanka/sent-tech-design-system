@@ -233,7 +233,7 @@ describe("overlay and feedback components", () => {
   });
 
   it("SkeletonText renders the requested number of lines as a busy status", () => {
-    const { container } = render(SkeletonText, { props: { lines: 3 } });
+    const { container } = render(SkeletonText, { props: { lines: 3, locale: "en-US" } });
     const node = screen.getByRole("status", { name: "Loading…" });
     expect(node.getAttribute("aria-busy")).toBe("true");
     expect(container.querySelectorAll(".st-skeleton__line").length).toBe(3);
