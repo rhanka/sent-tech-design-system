@@ -7,24 +7,24 @@
 
   const fr = $derived(locale.value === "fr");
 
-  const dotsDemo: NodeSpec[] = [
+  const dotsDemo = $derived<NodeSpec[]>([
     {
       comp: "SlideIndicator",
       props: { count: 5, current: 1, label: fr ? "Diapositive" : "Slide" }
     }
-  ];
-  const barsDemo: NodeSpec[] = [
+  ]);
+  const barsDemo = $derived<NodeSpec[]>([
     {
       comp: "SlideIndicator",
       props: { count: 4, current: 2, variant: "bars", label: fr ? "Diapositive" : "Slide" }
     }
-  ];
-  const sizeDemo: NodeSpec[] = [
+  ]);
+  const sizeDemo = $derived<NodeSpec[]>([
     {
       comp: "SlideIndicator",
       props: { count: 6, current: 0, size: "lg", label: fr ? "Diapositive" : "Slide" }
     }
-  ];
+  ]);
 </script>
 
 <div class="docs-page">

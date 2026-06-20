@@ -7,13 +7,13 @@
 
   const fr = $derived(locale.value === "fr");
 
-  const baseDemo: NodeSpec[] = [
+  const baseDemo = $derived<NodeSpec[]>([
     {
       comp: "TimePicker",
       props: { value: "09:30", step: 15, label: fr ? "Heure du rendez-vous" : "Appointment time" }
     }
-  ];
-  const boundedDemo: NodeSpec[] = [
+  ]);
+  const boundedDemo = $derived<NodeSpec[]>([
     {
       comp: "TimePicker",
       props: {
@@ -24,13 +24,13 @@
         label: fr ? "Créneau" : "Slot"
       }
     }
-  ];
-  const twelveDemo: NodeSpec[] = [
+  ]);
+  const twelveDemo = $derived<NodeSpec[]>([
     {
       comp: "TimePicker",
       props: { value: "13:45", step: 15, format: "12", label: fr ? "Format 12h" : "12h format" }
     }
-  ];
+  ]);
 </script>
 
 <div class="docs-page">

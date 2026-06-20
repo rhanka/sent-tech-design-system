@@ -7,7 +7,7 @@
 
   const fr = $derived(locale.value === "fr");
 
-  const scaleDemo: NodeSpec[] = [
+  const scaleDemo = $derived<NodeSpec[]>([
     {
       el: "div",
       props: { class: "fp-stack" },
@@ -18,8 +18,8 @@
         { comp: "Typography", props: { variant: "overline", tone: "muted" }, children: ["OVERLINE"] }
       ]
     }
-  ];
-  const toneDemo: NodeSpec[] = [
+  ]);
+  const toneDemo = $derived<NodeSpec[]>([
     {
       el: "div",
       props: { class: "fp-stack" },
@@ -30,7 +30,7 @@
         { comp: "Typography", props: { variant: "body", align: "end" }, children: [fr ? "Aligné à droite" : "End aligned"] }
       ]
     }
-  ];
+  ]);
 </script>
 
 <div class="docs-page">

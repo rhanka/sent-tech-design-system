@@ -29,13 +29,13 @@
     { id: "4", c1: "Atos SE", c2: ":", c3: "FR", c4: "" }
   ];
 
-  const FIELD_OPTIONS = [
+  const FIELD_OPTIONS = $derived([
     { value: "", label: fr ? ": Ignorer :" : ": Ignore :" },
     { value: "name", label: fr ? "Nom du compte" : "Account name" },
     { value: "email", label: fr ? "Email de contact" : "Contact email" },
     { value: "country", label: fr ? "Pays" : "Country" },
     { value: "revenue", label: fr ? "Chiffre d'affaires" : "Revenue" }
-  ];
+  ]);
 
   const MAPPINGS = $derived([
     { source: "company_name", field: "name" },
