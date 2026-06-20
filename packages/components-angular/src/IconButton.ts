@@ -33,6 +33,11 @@ export class IconButton {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-iconButton", this.classInput].filter(Boolean).join(" ");
+    return classNames(
+      "st-iconButton",
+      this.size && `st-iconButton--${this.size}`,
+      this.variant && `st-iconButton--${this.variant}`,
+      this.classInput,
+    );
   }
 }
