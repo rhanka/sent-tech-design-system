@@ -1,4 +1,4 @@
-import { Component, Input as NgInput } from "@angular/core";
+import { Component, EventEmitter, Input as NgInput, Output } from "@angular/core";
 
 import { classNames } from "./classNames.js";
 
@@ -8,8 +8,6 @@ export type DropdownOption = {
   disabled?: boolean;
 };
 
-// In addition to the Vue-native `@select` emit, an `onSelect` callback prop
-// (React/Svelte parity) is accepted; both fire on selection.
 export type DropdownProps = {
   label?: string;
   options: DropdownOption[];
@@ -24,23 +22,74 @@ export type DropdownProps = {
   selector: "st-dropdown",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+    <div
+      [attr.data-st-component]="componentName"
+      [class]="hostClass"
+    >
+      <button
+        type="button"
+        class="st-dropdown__button"
+        aria-haspopup="listbox"
+        [attr.aria-expanded]="localOpen"
+        (click)="localOpen = !localOpen"
+      >
+        <span class="st-dropdown__label">{{ label ?? 'Select' }}</span>
+        : <span class="st-dropdown__value">{{ selectedLabel }}</span>
+      </button>
+      @if (localOpen) {
+        <div
+          class="st-dropdown__list"
+          role="listbox"
+          [attr.aria-label]="label"
+        >
+          @for (option of options; track option.value) {
+            <button
+              type="button"
+              role="option"
+              class="st-dropdown__option"
+              [disabled]="option.disabled"
+              [attr.aria-disabled]="option.disabled ? 'true' : null"
+              [attr.aria-selected]="option.value === (value ?? localValue)"
+              (click)="selectOption(option)"
+            >{{ option.label }}</button>
+          }
+        </div>
+      }
     </div>
   `,
 })
 export class Dropdown {
   static readonly stComponentName = "Dropdown";
   readonly componentName = "Dropdown";
+
   @NgInput() label?: string;
-  @NgInput() options!: DropdownOption[];
+  @NgInput() options: DropdownOption[] = [];
   @NgInput() value?: string;
   @NgInput() open?: boolean;
   @NgInput() placeholder?: string;
   @NgInput() onSelect?: (value: string) => void;
   @NgInput("class") classInput?: string;
 
+  @Output() readonly select = new EventEmitter<string>();
+
+  localOpen = false;
+  localValue = "";
+
+  get selectedLabel(): string {
+    const val = this.value ?? this.localValue;
+    const opt = this.options.find((o) => o.value === val);
+    return opt ? String(opt.label) : (this.placeholder ?? "Select");
+  }
+
   get hostClass(): string {
-    return ["st-dropdown", this.classInput].filter(Boolean).join(" ");
+    return classNames("st-dropdown", this.classInput);
+  }
+
+  selectOption(option: DropdownOption): void {
+    if (option.disabled) return;
+    this.localValue = option.value;
+    this.localOpen = false;
+    this.select.emit(option.value);
+    this.onSelect?.(option.value);
   }
 }

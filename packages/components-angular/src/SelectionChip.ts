@@ -1,4 +1,4 @@
-import { Component, Input as NgInput } from "@angular/core";
+import { Component, EventEmitter, Input as NgInput, Output } from "@angular/core";
 
 import { classNames } from "./classNames.js";
 
@@ -20,14 +20,33 @@ export type SelectionChipProps = {
   selector: "st-selection-chip",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
-    </div>
+    <span
+      [attr.data-st-component]="componentName"
+      [class]="hostClass"
+      [attr.aria-disabled]="disabled ? 'true' : null"
+    >
+      <span class="st-selectionChip__label">{{ label }}</span>
+      @if (showCount) {
+        <span class="st-selectionChip__count" [attr.aria-label]="'(' + count + ')'">
+          ({{ count }})
+        </span>
+      }
+      @if (hasClear) {
+        <button
+          type="button"
+          class="st-selectionChip__clear"
+          [attr.aria-label]="'Effacer ' + label"
+          [disabled]="disabled"
+          (click)="handleClear($event)"
+        >&#x2715;</button>
+      }
+    </span>
   `,
 })
 export class SelectionChip {
   static readonly stComponentName = "SelectionChip";
   readonly componentName = "SelectionChip";
+
   @NgInput() label!: string;
   @NgInput() count?: number;
   @NgInput() tone?: SelectionChipTone;
@@ -35,7 +54,29 @@ export class SelectionChip {
   @NgInput() disabled?: boolean;
   @NgInput("class") classInput?: string;
 
+  @Output() readonly clear = new EventEmitter<void>();
+
+  get showCount(): boolean {
+    return this.count !== undefined && Number.isFinite(this.count);
+  }
+
+  get hasClear(): boolean {
+    return typeof this.onClear === "function";
+  }
+
   get hostClass(): string {
-    return ["st-selectionChip", this.classInput].filter(Boolean).join(" ");
+    return classNames(
+      "st-selectionChip",
+      this.tone && `st-selectionChip--${this.tone}`,
+      this.disabled ? "st-selectionChip--disabled" : undefined,
+      this.classInput,
+    );
+  }
+
+  handleClear(event: MouseEvent): void {
+    event.stopPropagation();
+    if (this.disabled) return;
+    this.onClear?.();
+    this.clear.emit();
   }
 }
