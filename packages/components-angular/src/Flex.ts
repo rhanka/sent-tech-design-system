@@ -1,4 +1,5 @@
 import { Component, Input as NgInput } from "@angular/core";
+import { NgStyle } from "@angular/common";
 
 import { classNames } from "./classNames.js";
 
@@ -71,8 +72,9 @@ export function justifyValue(justify: FlexJustify | undefined): string | undefin
 @Component({
   selector: "st-flex",
   standalone: true,
+  imports: [NgStyle],
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    <div [attr.data-st-component]="componentName" [class]="hostClass" [ngStyle]="inlineStyles">
       <ng-content></ng-content>
     </div>
   `,
@@ -90,6 +92,17 @@ export class Flex {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-flex", this.classInput].filter(Boolean).join(" ");
+    return classNames("st-flex", this.classInput);
+  }
+
+  get inlineStyles(): Record<string, string | undefined> {
+    return {
+      display: this.inline ? "inline-flex" : "flex",
+      flexDirection: this.direction,
+      flexWrap: this.wrap ? "wrap" : "nowrap",
+      alignItems: alignValue(this.align),
+      justifyContent: justifyValue(this.justify),
+      gap: spacingToken(this.gap),
+    };
   }
 }

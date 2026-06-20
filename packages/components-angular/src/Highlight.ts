@@ -32,6 +32,10 @@ export class Highlight {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-highlight", this.classInput].filter(Boolean).join(" ");
+    return classNames(
+      "st-highlight",
+      this.tone && `st-highlight--${this.tone}`,
+      this.classInput,
+    );
   }
 }

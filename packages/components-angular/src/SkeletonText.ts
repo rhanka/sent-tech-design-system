@@ -29,6 +29,6 @@ export class SkeletonText {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-skeletonText", this.classInput].filter(Boolean).join(" ");
+    return classNames("st-skeleton", this.classInput);
   }
 }
