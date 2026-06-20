@@ -7,6 +7,7 @@ export type CopyButtonSize = "sm" | "md" | "lg";
 export type CopyButtonProps = {
   text?: string;
   value?: string;
+  locale?: string;
   label?: string;
   copiedLabel?: string;
   size?: CopyButtonSize;
@@ -18,8 +19,9 @@ export const CopyButton = defineComponent({
   props: {
     text: { type: String, default: undefined },
     value: { type: String, default: undefined },
-    label: { type: String, default: "Copy" },
-    copiedLabel: { type: String, default: "Copied" },
+    locale: { type: String, default: "fr-FR" },
+    label: { type: String, default: undefined },
+    copiedLabel: { type: String, default: undefined },
     size: { type: String as () => CopyButtonSize, default: "md" },
     class: { type: String, default: undefined },
   },
@@ -27,8 +29,12 @@ export const CopyButton = defineComponent({
   setup(props, { emit, attrs }) {
     const copied = ref(false);
 
-    return () =>
-      h(
+    return () => {
+      const isFr = (props.locale ?? "fr-FR").toLowerCase().startsWith("fr");
+      const resolvedLabel = props.label ?? (isFr ? "Copier" : "Copy");
+      const resolvedCopiedLabel = props.copiedLabel ?? (isFr ? "Copié" : "Copied");
+
+      return h(
         "button",
         {
           ...attrs,
@@ -51,8 +57,9 @@ export const CopyButton = defineComponent({
             { class: "st-copyButton__icon", "aria-hidden": "true" },
             h(copied.value ? Check : Copy, { size: 14, strokeWidth: 2, "aria-hidden": "true" }),
           ),
-          h("span", { class: "st-copyButton__label" }, copied.value ? props.copiedLabel : props.label),
+          h("span", { class: "st-copyButton__label" }, copied.value ? resolvedCopiedLabel : resolvedLabel),
         ],
       );
+    };
   },
 });

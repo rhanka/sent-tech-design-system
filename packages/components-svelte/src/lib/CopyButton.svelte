@@ -4,6 +4,7 @@
 
   type CopyButtonProps = Omit<HTMLButtonAttributes, "class" | "type"> & {
     value: string;
+    locale?: string;
     label?: string;
     copiedLabel?: string;
     feedbackTimeoutMs?: number;
@@ -15,8 +16,9 @@
 
   let {
     value,
-    label = "Copy",
-    copiedLabel = "Copied",
+    locale = "fr-FR",
+    label,
+    copiedLabel,
     feedbackTimeoutMs = 1500,
     size = "md",
     onCopied,
@@ -25,6 +27,10 @@
     class: className,
     ...rest
   }: CopyButtonProps = $props();
+
+  const isFr = $derived(locale.toLowerCase().startsWith("fr"));
+  const resolvedLabel = $derived(label ?? (isFr ? "Copier" : "Copy"));
+  const resolvedCopiedLabel = $derived(copiedLabel ?? (isFr ? "Copié" : "Copied"));
 
   let copied = $state(false);
   let timeoutId: ReturnType<typeof setTimeout> | undefined;
@@ -65,7 +71,7 @@
       <Copy size={14} strokeWidth={2} aria-hidden="true" />
     {/if}
   </span>
-  <span class="st-copyButton__label">{copied ? copiedLabel : label}</span>
+  <span class="st-copyButton__label">{copied ? resolvedCopiedLabel : resolvedLabel}</span>
 </button>
 
 <style>
