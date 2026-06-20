@@ -16,8 +16,21 @@ export type AlertProps = {
   selector: "st-alert",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+    <div [attr.data-st-component]="componentName" [class]="hostClass" role="alert">
+      <div class="st-alert__content">
+        @if (title) {
+          <p class="st-alert__title">{{ title }}</p>
+        }
+        @if (message) {
+          <p class="st-alert__message">{{ message }}</p>
+        }
+        <ng-content></ng-content>
+      </div>
+      @if (actions) {
+        <div class="st-alert__actions">
+          <ng-content select="[slot='actions']"></ng-content>
+        </div>
+      }
     </div>
   `,
 })

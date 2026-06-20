@@ -64,6 +64,20 @@ export type KpiCardProps = {
   standalone: true,
   template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
+      <div class="st-kpiCard__header">
+        <span class="st-kpiCard__label">{{ label }}</span>
+      </div>
+      <div class="st-kpiCard__body">
+        <span class="st-kpiCard__value">{{ formattedValue }}</span>
+        @if (unit) {
+          <span class="st-kpiCard__unit">{{ unit }}</span>
+        }
+      </div>
+      @if (delta !== undefined && isFiniteDelta) {
+        <div [class]="deltaClass">
+          <span class="st-kpiCard__deltaValue">{{ formattedDelta }}</span>
+        </div>
+      }
       <ng-content></ng-content>
     </div>
   `,
@@ -94,5 +108,56 @@ export class KpiCard {
       this.tone && "st-kpiCard--toned",
       this.classInput,
     );
+  }
+
+  get resolvedLocale(): string {
+    return this.locale ?? "fr-FR";
+  }
+
+  get formattedValue(): string {
+    if (typeof this.value !== "number") return String(this.value ?? "");
+    if (this.format === "currency") {
+      return new Intl.NumberFormat(this.resolvedLocale, {
+        style: "currency",
+        currency: this.currency ?? "CAD",
+      }).format(this.value);
+    }
+    if (this.format === "percent") {
+      return new Intl.NumberFormat(this.resolvedLocale, {
+        style: "percent",
+        maximumFractionDigits: 1,
+      }).format(this.value);
+    }
+    return new Intl.NumberFormat(this.resolvedLocale).format(this.value);
+  }
+
+  get isFiniteDelta(): boolean {
+    return this.delta !== undefined && Number.isFinite(this.delta);
+  }
+
+  get formattedDelta(): string {
+    if (!this.isFiniteDelta || this.delta === undefined) return "";
+    if (this.deltaFormat === "absolute") {
+      const sign = this.delta >= 0 ? "+" : "";
+      return sign + new Intl.NumberFormat(this.resolvedLocale).format(this.delta);
+    }
+    const sign = this.delta >= 0 ? "+" : "";
+    return sign + new Intl.NumberFormat(this.resolvedLocale, {
+      style: "percent",
+      maximumFractionDigits: 1,
+    }).format(this.delta);
+  }
+
+  get resolvedTrend(): KpiCardTrend {
+    if (this.trend) return this.trend;
+    if (this.isFiniteDelta && this.delta !== undefined) {
+      if (this.delta > 0) return "up";
+      if (this.delta < 0) return "down";
+    }
+    return "flat";
+  }
+
+  get deltaClass(): string {
+    return classNames("st-kpiCard__delta", `st-kpiCard__delta--${this.resolvedTrend}`);
   }
 }
