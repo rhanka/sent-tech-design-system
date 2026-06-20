@@ -1,4 +1,4 @@
-import { Component, Input as NgInput } from "@angular/core";
+import { Component, EventEmitter, Input as NgInput, Output } from "@angular/core";
 
 import { classNames } from "./classNames.js";
 
@@ -22,18 +22,44 @@ export type TabsProps = {
   class?: string;
 };
 
+let _tabCounter = 0;
+
 @Component({
   selector: "st-tabs",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
-    </div>
+    <section [attr.data-st-component]="componentName" [class]="hostClass">
+      <div class="st-tabs__list" role="tablist" [attr.aria-label]="label ?? 'Tabs'">
+        @for (item of items; track tabId(item, $index)) {
+          <button
+            type="button"
+            role="tab"
+            [id]="uid + '-tab-' + tabId(item, $index)"
+            [class]="tabClass(item, $index)"
+            [attr.aria-selected]="isActive(item, $index)"
+            [attr.aria-controls]="uid + '-panel-' + tabId(item, $index)"
+            [attr.tabindex]="isActive(item, $index) ? 0 : -1"
+            [disabled]="item.disabled"
+            (click)="select(item, $index)"
+          >{{ item.label }}</button>
+        }
+      </div>
+      <div
+        [id]="uid + '-panel-' + activeTabId"
+        class="st-tabs__panel"
+        role="tabpanel"
+        [attr.aria-labelledby]="uid + '-tab-' + activeTabId"
+      >{{ activeContent }}<ng-content></ng-content></div>
+    </section>
   `,
 })
 export class Tabs {
   static readonly stComponentName = "Tabs";
   readonly componentName = "Tabs";
+
+  readonly uid = `st-tabs-${++_tabCounter}`;
+  private localCurrent = "";
+
   @NgInput() items!: TabItem[];
   @NgInput() activeValue?: string;
   @NgInput() activeId?: string;
@@ -41,7 +67,57 @@ export class Tabs {
   @NgInput() onchange?: (value: string) => void;
   @NgInput("class") classInput?: string;
 
+  @Output() readonly change = new EventEmitter<string>();
+
+  ngOnInit(): void {
+    if (!this.localCurrent) {
+      const first = this.items?.find((item) => !item.disabled) ?? this.items?.[0];
+      if (first) {
+        this.localCurrent = this.tabId(first, this.items.indexOf(first));
+      }
+    }
+  }
+
+  tabId(item: TabItem, index: number): string {
+    return item.id ?? item.value ?? `tab-${index}`;
+  }
+
+  get current(): string {
+    return this.activeValue ?? this.activeId ?? this.localCurrent;
+  }
+
+  get activeTabId(): string {
+    const idx = Math.max(0, this.items?.findIndex((item, i) => this.tabId(item, i) === this.current) ?? 0);
+    return this.tabId(this.items?.[idx] ?? this.items?.[0], idx);
+  }
+
+  get activeContent(): unknown {
+    const idx = Math.max(0, this.items?.findIndex((item, i) => this.tabId(item, i) === this.current) ?? 0);
+    return this.items?.[idx]?.content ?? "";
+  }
+
+  isActive(item: TabItem, index: number): boolean {
+    return this.tabId(item, index) === this.current;
+  }
+
+  tabClass(item: TabItem, index: number): string {
+    return classNames(
+      "st-tabs__tab",
+      this.isActive(item, index) && "st-tabs__tab--active",
+    );
+  }
+
+  select(item: TabItem, index: number): void {
+    if (item.disabled) return;
+    const val = this.tabId(item, index);
+    if (this.activeValue === undefined && this.activeId === undefined) {
+      this.localCurrent = val;
+    }
+    this.change.emit(val);
+    this.onchange?.(val);
+  }
+
   get hostClass(): string {
-    return ["st-tabs", this.classInput].filter(Boolean).join(" ");
+    return classNames("st-tabs", this.classInput);
   }
 }

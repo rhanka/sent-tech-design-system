@@ -29,6 +29,10 @@ export class LoadingState {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-loadingState", this.classInput].filter(Boolean).join(" ");
+    return classNames(
+      "st-loading",
+      `st-loading--${this.variant ?? "spinner"}`,
+      this.classInput,
+    );
   }
 }
