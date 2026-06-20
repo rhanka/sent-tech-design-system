@@ -37,6 +37,11 @@ export class Divider {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-divider", this.classInput].filter(Boolean).join(" ");
+    return classNames(
+      "st-divider",
+      this.orientation && `st-divider--${this.orientation}`,
+      this.variant && `st-divider--${this.variant}`,
+      this.classInput,
+    );
   }
 }

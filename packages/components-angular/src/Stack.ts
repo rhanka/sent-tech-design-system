@@ -1,8 +1,9 @@
 import { Component, Input as NgInput } from "@angular/core";
+import { NgStyle } from "@angular/common";
 
 import { classNames } from "./classNames.js";
 
-import { Flex } from "./Flex.js";
+import { spacingToken, alignValue, justifyValue } from "./Flex.js";
 
 import type { FlexAlign, FlexJustify } from "./Flex.js";
 
@@ -18,8 +19,9 @@ export type StackProps = {
 @Component({
   selector: "st-stack",
   standalone: true,
+  imports: [NgStyle],
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    <div [attr.data-st-component]="componentName" [class]="hostClass" [ngStyle]="inlineStyles">
       <ng-content></ng-content>
     </div>
   `,
@@ -34,6 +36,17 @@ export class Stack {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-stack", this.classInput].filter(Boolean).join(" ");
+    return classNames("st-stack", this.classInput);
+  }
+
+  get inlineStyles(): Record<string, string | undefined> {
+    return {
+      display: "flex",
+      flexDirection: "column",
+      flexWrap: "nowrap",
+      alignItems: alignValue(this.align),
+      justifyContent: justifyValue(this.justify),
+      gap: spacingToken(this.gap),
+    };
   }
 }
