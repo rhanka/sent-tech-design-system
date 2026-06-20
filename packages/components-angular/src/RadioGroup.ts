@@ -1,8 +1,6 @@
-import { Component, Input as NgInput } from "@angular/core";
+import { Component, EventEmitter, Input as NgInput, Output } from "@angular/core";
 
 import { classNames } from "./classNames.js";
-
-import { Radio } from "./Radio.js";
 
 export interface RadioGroupOption {
   label: string;
@@ -12,16 +10,14 @@ export interface RadioGroupOption {
 }
 
 export type RadioGroupProps = {
-  legend: string;
-  /** Valeur sélectionnée (contrôlée). */
+  legend?: string;
+  label?: string;
   value?: string;
   onChange?: (value: string) => void;
   orientation?: "vertical" | "horizontal";
-  /** Nom partagé garantissant l'exclusivité radio. Requis. */
-  name: string;
+  name?: string;
   options?: RadioGroupOption[];
   helperText?: string;
-  /** Désactive le groupe entier. */
   disabled?: boolean;
   class?: string;
 };
@@ -30,25 +26,55 @@ export type RadioGroupProps = {
   selector: "st-radio-group",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
-    </div>
+    <fieldset [attr.data-st-component]="componentName" [class]="hostClass">
+      @if (label ?? legend) {
+        <legend class="st-radioGroup__legend">{{ label ?? legend }}</legend>
+      }
+      <div class="st-radioGroup__list">
+        @for (opt of options ?? []; track opt.value) {
+          <label class="st-radioGroup__option">
+            <input
+              type="radio"
+              [name]="name"
+              [value]="opt.value"
+              [checked]="opt.value === value"
+              [disabled]="opt.disabled ?? false"
+              (change)="onChangeHandler(opt.value)"
+            />
+            <span>{{ opt.label }}</span>
+          </label>
+        }
+      </div>
+    </fieldset>
   `,
 })
 export class RadioGroup {
   static readonly stComponentName = "RadioGroup";
   readonly componentName = "RadioGroup";
-  @NgInput() legend!: string;
+
+  @NgInput() label?: string;
+  @NgInput() legend?: string;
   @NgInput() value?: string;
   @NgInput() onChange?: (value: string) => void;
   @NgInput() orientation?: "vertical" | "horizontal";
-  @NgInput() name!: string;
+  @NgInput() name?: string;
   @NgInput() options?: RadioGroupOption[];
   @NgInput() helperText?: string;
   @NgInput() disabled?: boolean;
   @NgInput("class") classInput?: string;
 
+  @Output() readonly valueChange = new EventEmitter<string>();
+
   get hostClass(): string {
-    return ["st-radioGroup", this.classInput].filter(Boolean).join(" ");
+    return classNames(
+      "st-radioGroup",
+      this.orientation ? `st-radioGroup--${this.orientation}` : undefined,
+      this.classInput,
+    );
+  }
+
+  onChangeHandler(v: string): void {
+    this.valueChange.emit(v);
+    this.onChange?.(v);
   }
 }
