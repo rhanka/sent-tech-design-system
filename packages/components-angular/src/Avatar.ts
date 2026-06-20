@@ -53,6 +53,12 @@ export class Avatar {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-avatar", this.classInput].filter(Boolean).join(" ");
+    return classNames(
+      "st-avatar",
+      `st-avatar--${this.size ?? "md"}`,
+      `st-avatar--${this.shape ?? "circle"}`,
+      this.src ? "st-avatar--image" : `st-avatar--${this.tone ?? "category1"}`,
+      this.classInput,
+    );
   }
 }

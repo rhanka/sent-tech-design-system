@@ -37,6 +37,12 @@ export class Tile {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-tile", this.classInput].filter(Boolean).join(" ");
+    return classNames(
+      "st-tile",
+      `st-tile--${this.variant ?? "static"}`,
+      this.variant === "selectable" && this.selected && "st-tile--selected",
+      this.disabled && "st-tile--disabled",
+      this.classInput,
+    );
   }
 }

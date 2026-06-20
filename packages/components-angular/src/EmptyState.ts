@@ -27,6 +27,6 @@ export class EmptyState {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-emptyState", this.classInput].filter(Boolean).join(" ");
+    return classNames("st-empty-state", "st-emptyState", this.classInput);
   }
 }

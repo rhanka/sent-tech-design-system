@@ -32,6 +32,10 @@ export class StructuredList {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-structuredList", this.classInput].filter(Boolean).join(" ");
+    return classNames(
+      "st-structuredList",
+      this.bordered && "st-structuredList--bordered",
+      this.classInput,
+    );
   }
 }
