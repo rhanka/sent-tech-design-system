@@ -52,7 +52,34 @@ export type AppChromeProps = {
   standalone: true,
   template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+      <header class="st-appChrome__header">
+        <a class="st-appChrome__brand" [href]="brandHref ?? '/'" [attr.aria-label]="brandLabel ?? brandName ?? 'Accueil'">
+          @if (logoSrc) {
+            <img class="st-appChrome__logo" [src]="logoSrc" [alt]="logoAlt ?? brandName ?? ''" />
+          }
+          @if (brandName) {
+            <span class="st-appChrome__brandName">{{ brandName }}</span>
+          }
+          @if (productName) {
+            <span class="st-appChrome__productName">{{ productName }}</span>
+          }
+        </a>
+        @if (nav && nav.length > 0) {
+          <nav class="st-appChrome__nav" [attr.aria-label]="navLabel ?? 'Navigation principale'">
+            @for (item of nav; track item.href) {
+              <a
+                [href]="item.href"
+                class="st-appChrome__navLink"
+                [class.st-appChrome__navLink--active]="item.active"
+                [attr.aria-current]="item.active ? 'page' : null"
+              >{{ item.label }}</a>
+            }
+          </nav>
+        }
+      </header>
+      <main class="st-appChrome__main">
+        <ng-content></ng-content>
+      </main>
     </div>
   `,
 })
