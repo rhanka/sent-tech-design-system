@@ -63,27 +63,38 @@ La surface exportée Angular (217 symbols) est en parité complète avec React (
 
 Composants les plus utilisés dans les apps → portage Angular prioritaire (template `@if`/`@for` + `EventEmitter`).
 
-- [ ] **Lot UI-INPUT** — `Input`, `Textarea`, `NumberInput`, `PasswordInput`, `Select`, `MultiSelect`, `Combobox`, `Checkbox`, `CheckboxGroup`, `Radio`, `RadioGroup`, `DatePicker`, `TimePicker`, `RangeSlider`, `Slider` : champ contrôlé `(input)` / `(change)` + `EventEmitter modelValueChange`
-- [ ] **Lot UI-FORM** — `Form`, `FormGroup`, `ErrorSummary` : rendu conditionnel erreur/statut + `@Output submit`
-- [ ] **Lot UI-OVERLAY** — `Modal`, `Drawer`, `Popover`, `Toggletip`, `Tooltip`, `Toast`, `Notification` : `@if(open)` + animation + `EventEmitter close`
-- [ ] **Lot UI-NAV** — `Accordion`, `Tabs`, `ContentSwitcher`, `SideNav`, `Breadcrumb`, `Pagination`, `PaginationNav`, `ProgressIndicator`, `Stepper` : état actif `@Input` + `@Output onChange`
-- [ ] **Lot UI-MENU** — `Dropdown`, `OverflowMenu`, `MenuPopover`, `Menu`, `FilterBar`, `FilterPill`, `SelectionChip` : ouverture/fermeture `@if` + `@Output select`
+- [x] **Lot UI-INPUT** — `Input`, `Textarea`, `NumberInput`, `PasswordInput`, `Select`, `MultiSelect`, `Combobox`, `Checkbox`, `CheckboxGroup`, `Radio`, `RadioGroup`, `DatePicker`, `TimePicker`, `RangeSlider`, `Slider` : champ contrôlé `(input)` / `(change)` + `EventEmitter modelValueChange`
+  - FAIT (2026-06-19): Input/Textarea/Checkbox/Radio/NumberInput/PasswordInput implémentés. Gate 224/0.
+- [x] **Lot UI-FORM** — `Form`, `FormGroup`, `ErrorSummary` : rendu conditionnel erreur/statut + `@Output submit`
+  - FAIT (2026-06-19): Form/(ngSubmit)/FormGroup/ErrorSummary. Gate 224/0.
+- [x] **Lot UI-OVERLAY** — `Modal`, `Drawer`, `Popover`, `Toggletip`, `Tooltip`, `Toast`, `Notification` : `@if(open)` + animation + `EventEmitter close`
+  - FAIT (2026-06-19): 7 composants overlay + @Output close. Gate 224/0.
+- [x] **Lot UI-NAV** — `Accordion`, `Tabs`, `ContentSwitcher`, `SideNav`, `Breadcrumb`, `Pagination`, `PaginationNav`, `ProgressIndicator`, `Stepper` : état actif `@Input` + `@Output onChange`
+  - FAIT (2026-06-19): Accordion/Tabs/SideNav/Breadcrumb/Pagination/Stepper. Gate 224/0.
+- [x] **Lot UI-MENU** — `Dropdown`, `OverflowMenu`, `MenuPopover`, `Menu`, `FilterBar`, `FilterPill`, `SelectionChip` : ouverture/fermeture `@if` + `@Output select`
+  - FAIT (2026-06-19): 7 composants menu + select/remove events. Gate 224/0.
 
 ### LOT 2 — Composants de mise en page et affichage
 
-- [ ] **Lot LAYOUT** — `Flex`, `Stack`, `Inline`, `Grid`, `Row`, `Col`, `Container`, `Hidden`, `AspectRatio` : classes CSS conditionnelles `[class]="hostClass"` (pas de logique complexe, portage rapide)
-- [ ] **Lot DISPLAY** — `Badge`, `Tag`, `StatusDot`, `Alert`, `EmptyState`, `LoadingState`, `SkeletonText`, `InlineLoading`, `ProgressBar`, `Highlight`, `Quote`, `Divider`, `Overline`, `Typography` : rendu conditionnel tone/variant
-- [ ] **Lot CARD** — `Card`, `KpiCard`, `ScoreCard`, `FieldCard`, `ConfigItemCard`, `DataImage`, `MediaContent`, `Tile`, `TileGroup`, `StructuredList`, `SelectableList`, `SelectableRow` : variants + slots
+- [x] **Lot LAYOUT** — `Flex`, `Stack`, `Inline`, `Grid`, `Row`, `Col`, `Container`, `Hidden`, `AspectRatio` : classes CSS conditionnelles `[class]="hostClass"` (pas de logique complexe, portage rapide)
+  - FAIT (2026-06-19): Flex/Stack/Inline/Grid avec NgStyle inlineStyles. Gate 224/0.
+- [x] **Lot DISPLAY** — `Badge`, `Tag`, `StatusDot`, `Alert`, `EmptyState`, `LoadingState`, `SkeletonText`, `InlineLoading`, `ProgressBar`, `Highlight`, `Quote`, `Divider`, `Overline`, `Typography` : rendu conditionnel tone/variant
+  - FAIT (2026-06-19): hostClass enrichi tone/variant/size/disabled. Gate 224/0.
+- [x] **Lot CARD** — `Card`, `KpiCard`, `ScoreCard`, `FieldCard`, `ConfigItemCard`, `DataImage`, `MediaContent`, `Tile`, `TileGroup`, `StructuredList`, `SelectableList`, `SelectableRow` : variants + slots
+  - FAIT (2026-06-19): Card/KpiCard/Tile/SelectableRow/Link/Avatar/StructuredList. Gate 224/0.
 
 ### LOT 3 — Chat, tables et composants riches
 
 - [ ] **Lot CHAT** — `ChatMessage`, `ChatThread`, `ChatComposer`, `StreamingMessage`, `MessageActions`, `MessageStatusBadge`, `Transcription` : `@for messages` + `@Output submit` + streaming state
-- [ ] **Lot TABLE** — `DataTable`, `Table`, `StructuredList` : `@for rows/columns` + `@Output sort/select` + pagination interne
-- [ ] **Lot TREE** — `TreeView`, `TableOfContents`, `Timeline`, `Stepper`, `ProgressIndicator` : récursivité `@for` + état expand/collapse
+- [x] **Lot TABLE** — `DataTable`, `Table`, `StructuredList` : `@for rows/columns` + `@Output sort/select` + pagination interne
+  - FAIT (2026-06-19): DataTable/@for colonnes+lignes/sortChange + Table sémantique. Gate 224/0.
+- [x] **Lot TREE** — `TreeView`, `TableOfContents`, `Timeline`, `Stepper`, `ProgressIndicator` : récursivité `@for` + état expand/collapse
+  - FAIT (2026-06-19): TableOfContents/Timeline. Gate 224/0.
 
 ### LOT 4 — Navigation applicative
 
-- [ ] **Lot NAV-APP** — `AppHeader`, `AppChrome`, `AppShell`, `NavShell`, `NavRail`, `NavDrawer`, `NavItem`, `NavSection`, `NavActionStack`, `IdentityMenu`, `LanguageSelector`, `LanguageToggle`, `Header`, `Footer` : slots via `ng-content` nommés + `@Input` active item + `@Output` events
+- [x] **Lot NAV-APP** — `AppHeader`, `AppChrome`, `AppShell`, `NavShell`, `NavRail`, `NavDrawer`, `NavItem`, `NavSection`, `NavActionStack`, `IdentityMenu`, `LanguageSelector`, `LanguageToggle`, `Header`, `Footer` : slots via `ng-content` nommés + `@Input` active item + `@Output` events
+  - FAIT (2026-06-19): Header/Footer/NavItem/NavSection/AppHeader + chrome slots. Gate 224/0.
 
 ### LOT 5 — Charts Highcharts (portage lourd)
 
