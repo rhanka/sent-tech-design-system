@@ -1,4 +1,4 @@
-import { defineComponent, getCurrentInstance, h, onMounted, onUnmounted } from "vue";
+import { computed, defineComponent, getCurrentInstance, h, onMounted, onUnmounted } from "vue";
 import { classNames } from "./classNames.js";
 
 export type ToastTone = "info" | "success" | "warning" | "error";
@@ -19,6 +19,7 @@ export type ToastProps = {
   autoDismiss?: boolean;
   duration?: number;
   class?: string;
+  locale?: string;
   closeLabel?: string;
   dismissLabel?: (title: unknown) => string;
 };
@@ -34,12 +35,16 @@ export const Toast = defineComponent({
     autoDismiss: { type: Boolean, default: false },
     duration: { type: Number, default: 5000 },
     class: { type: String, default: undefined },
-    closeLabel: { type: String, default: "Close" },
-    dismissLabel: { type: Function as unknown as () => (title: unknown) => string, default: (title: unknown) => `Dismiss ${String(title)}` },
+    locale: { type: String, default: "fr-FR" },
+    closeLabel: { type: String, default: undefined },
+    dismissLabel: { type: Function as unknown as () => (title: unknown) => string, default: undefined },
   },
   emits: ["close", "dismiss"],
   setup(props, { emit, slots, attrs }) {
     const instance = getCurrentInstance();
+    const isFr = computed(() => (props.locale ?? "fr-FR").toLowerCase().startsWith("fr"));
+    const resolvedCloseLabel = computed(() => props.closeLabel ?? (isFr.value ? "Fermer" : "Close"));
+    const resolvedDismissLabel = computed(() => props.dismissLabel ?? ((title: unknown) => isFr.value ? `Fermer ${String(title)}` : `Dismiss ${String(title)}`));
     // Canon Svelte/React : pas de bouton de fermeture sauf si un gestionnaire
     // est branché (onClose pour un toast unique, onDismiss pour une file).
     // Avec `emits` déclaré, les écouteurs ne transitent pas par `attrs` ; on lit
@@ -103,10 +108,10 @@ export const Toast = defineComponent({
                       "button",
                       {
                         type: "button",
-                        "aria-label": props.dismissLabel(item.title),
+                        "aria-label": resolvedDismissLabel.value(item.title),
                         onClick: () => emit("dismiss", item.id),
                       },
-                      props.closeLabel,
+                      resolvedCloseLabel.value,
                     )
                   : null,
               ],
@@ -139,7 +144,7 @@ export const Toast = defineComponent({
                   type: "button",
                   onClick: () => emit("close"),
                 },
-                props.closeLabel,
+                resolvedCloseLabel.value,
               )
             : null,
         ],

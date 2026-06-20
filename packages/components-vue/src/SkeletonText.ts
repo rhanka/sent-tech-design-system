@@ -1,4 +1,4 @@
-import { defineComponent, h } from "vue";
+import { computed, defineComponent, h } from "vue";
 import { classNames } from "./classNames.js";
 
 export type SkeletonTextProps = {
@@ -6,8 +6,9 @@ export type SkeletonTextProps = {
   width?: string;
   heading?: boolean;
   paragraph?: boolean;
-  class?: string;
+  locale?: string;
   loadingLabel?: string;
+  class?: string;
 };
 
 export const SkeletonText = defineComponent({
@@ -17,10 +18,13 @@ export const SkeletonText = defineComponent({
     width: { type: String, default: undefined },
     heading: { type: Boolean, default: false },
     paragraph: { type: Boolean, default: false },
+    locale: { type: String, default: "fr-FR" },
+    loadingLabel: { type: String, default: undefined },
     class: { type: String, default: undefined },
-    loadingLabel: { type: String, default: "Loading…" },
   },
   setup(props, { attrs }) {
+    const isFr = computed(() => (props.locale ?? "fr-FR").toLowerCase().startsWith("fr"));
+    const resolvedLoadingLabel = computed(() => props.loadingLabel ?? (isFr.value ? "Chargement…" : "Loading…"));
     return () => {
       const lineCount = props.paragraph ? Math.max(props.lines ?? 1, 3) : props.lines ?? 1;
       const lineWidth = (index: number): string | undefined => {
@@ -34,7 +38,7 @@ export const SkeletonText = defineComponent({
           ...attrs,
           class: classNames("st-skeleton", props.class),
           role: "status",
-          "aria-label": props.loadingLabel,
+          "aria-label": resolvedLoadingLabel.value,
           "aria-busy": "true",
         },
         Array.from({ length: lineCount }, (_, index) => {

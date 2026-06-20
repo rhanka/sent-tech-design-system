@@ -171,7 +171,7 @@ const componentCases: Array<{ name: string; element: React.ReactElement; text?: 
   { name: "Search", element: <Search label="Search label" value="query" />, text: "Search label" },
   { name: "Select", element: <Select label="Select label" value="one"><option value="one">One</option></Select>, text: "Select label" },
   { name: "SideNav", element: <SideNav items={[{ label: "Side item", href: "/side", active: true }]} />, text: "Side item" },
-  { name: "SkeletonText", element: <SkeletonText lines={2} />, label: "Loading…" },
+  { name: "SkeletonText", element: <SkeletonText lines={2} locale="en-US" />, label: "Loading…" },
   { name: "SkipLink", element: <SkipLink href="#main">Skip target</SkipLink>, text: "Skip target" },
   { name: "Slider", element: <Slider label="Slider label" value={40} />, label: "Slider label" },
   { name: "Sparkline", element: <Sparkline data={[1, 3, 2]} label="Sparkline label" />, label: "Sparkline label" },
