@@ -762,11 +762,15 @@ export function ContentSwitcher({ items, value, activeId, onChange, onchange, si
 export type CopyButtonProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "value"> & {
   text?: string;
   value?: string;
+  locale?: string;
   label?: React.ReactNode;
   copiedLabel?: React.ReactNode;
   size?: Size;
 };
-export function CopyButton({ text: copyText, value, label = "Copy", copiedLabel = "Copied", size = "md", className, onClick, ...rest }: CopyButtonProps) {
+export function CopyButton({ text: copyText, value, locale = "fr-FR", label, copiedLabel, size = "md", className, onClick, ...rest }: CopyButtonProps) {
+  const isFr = (locale ?? "fr-FR").toLowerCase().startsWith("fr");
+  const resolvedLabel = label ?? (isFr ? "Copier" : "Copy");
+  const resolvedCopiedLabel = copiedLabel ?? (isFr ? "Copié" : "Copied");
   const [copied, setCopied] = React.useState(false);
   return (
     <button
@@ -782,7 +786,7 @@ export function CopyButton({ text: copyText, value, label = "Copy", copiedLabel 
       <span className="st-copyButton__icon" aria-hidden="true">
         {copied ? <Check size={14} strokeWidth={2} aria-hidden="true" /> : <Copy size={14} strokeWidth={2} aria-hidden="true" />}
       </span>
-      <span className="st-copyButton__label">{copied ? copiedLabel : label}</span>
+      <span className="st-copyButton__label">{copied ? resolvedCopiedLabel : resolvedLabel}</span>
     </button>
   );
 }
@@ -1193,11 +1197,15 @@ export type DropdownProps = Omit<React.HTMLAttributes<HTMLDivElement>, "onSelect
   options: DropdownOption[];
   value?: string;
   open?: boolean;
+  locale?: string;
   placeholder?: React.ReactNode;
   onSelect?: (value: string) => void;
   onselect?: (value: string) => void;
 };
-export function Dropdown({ label = "Select", options, value, open: controlledOpen, placeholder = "Select", onSelect, onselect, className, ...rest }: DropdownProps) {
+export function Dropdown({ label, options, value, open: controlledOpen, locale = "fr-FR", placeholder, onSelect, onselect, className, ...rest }: DropdownProps) {
+  const isFr = (locale ?? "fr-FR").toLowerCase().startsWith("fr");
+  const resolvedLabel = label ?? (isFr ? "Sélectionner" : "Select");
+  const resolvedPlaceholder = placeholder ?? (isFr ? "Sélectionner" : "Select");
   const handleSelect = onSelect ?? onselect;
   const hostRef = React.useRef<HTMLDivElement>(null);
   const itemRefs = React.useRef<Array<HTMLButtonElement | null>>([]);
@@ -1236,11 +1244,11 @@ export function Dropdown({ label = "Select", options, value, open: controlledOpe
           }
         }}
       >
-        <span className="st-dropdown__label">{label}</span>: <span className="st-dropdown__value">{selected?.label ?? placeholder}</span>
+        <span className="st-dropdown__label">{resolvedLabel}</span>: <span className="st-dropdown__value">{selected?.label ?? resolvedPlaceholder}</span>
         <ChevronDown className={classNames("st-dropdown__icon", open && "st-dropdown__icon--open")} size={18} strokeWidth={2.25} aria-hidden="true" />
       </button>
       {open ? (
-        <div className="st-dropdown__list" role="listbox" aria-label={text(label)}>
+        <div className="st-dropdown__list" role="listbox" aria-label={text(resolvedLabel)}>
           {options.map((option, index) => (
             <button
               key={option.value}
@@ -3651,6 +3659,7 @@ export type MultiSelectProps = Omit<React.HTMLAttributes<HTMLDivElement>, "onCha
   selected?: string[];
   size?: Size;
   open?: boolean;
+  locale?: string;
   placeholder?: string;
   searchPlaceholder?: string;
   noResultsLabel?: string;
@@ -3671,17 +3680,24 @@ export function MultiSelect({
   selected: selectedAlias,
   size = "md",
   open: controlledOpen,
-  placeholder = "Select items",
-  searchPlaceholder = "Filter",
-  noResultsLabel = "No results",
-  toggleLabel = "Toggle options",
-  removeLabel = "Remove",
+  locale = "fr-FR",
+  placeholder,
+  searchPlaceholder,
+  noResultsLabel,
+  toggleLabel,
+  removeLabel,
   listLabel,
   disabled = false,
   onChange,
   className,
   ...rest
 }: MultiSelectProps) {
+  const isFr = (locale ?? "fr-FR").toLowerCase().startsWith("fr");
+  const resolvedPlaceholder = placeholder ?? (isFr ? "Sélectionner des éléments" : "Select items");
+  const resolvedSearchPlaceholder = searchPlaceholder ?? (isFr ? "Filtrer" : "Filter");
+  const resolvedNoResultsLabel = noResultsLabel ?? (isFr ? "Aucun résultat" : "No results");
+  const resolvedToggleLabel = toggleLabel ?? (isFr ? "Afficher les options" : "Toggle options");
+  const resolvedRemoveLabel = removeLabel ?? (isFr ? "Supprimer" : "Remove");
   const [open, setOpen] = useControlled(controlledOpen, false);
   const initialSelected = value ?? values ?? selectedAlias;
   const [selectedValues, setSelectedValues] = useControlled(initialSelected, initialSelected ?? [], onChange);
@@ -3729,7 +3745,7 @@ export function MultiSelect({
               <button
                 type="button"
                 className="st-multiSelect__tagRemove"
-                aria-label={`${removeLabel} ${text(option.label)}`}
+                aria-label={`${resolvedRemoveLabel} ${text(option.label)}`}
                 disabled={disabled}
                 onClick={() => removeOption(option.value)}
               >
@@ -3749,14 +3765,14 @@ export function MultiSelect({
           onClick={() => setOpen(!open)}
         >
           {selectedOptions.length === 0 ? (
-            <span className="st-multiSelect__placeholder">{placeholder}</span>
+            <span className="st-multiSelect__placeholder">{resolvedPlaceholder}</span>
           ) : (
             <span className="st-multiSelect__count">{selectedOptions.length} selected</span>
           )}
           <span className="st-multiSelect__caret" aria-hidden="true">
             <ChevronDown className={classNames("st-multiSelect__caretIcon", open && "st-multiSelect__caretIcon--open")} size={18} strokeWidth={2.25} aria-hidden="true" />
           </span>
-          <span className="st-visually-hidden">{toggleLabel}</span>
+          <span className="st-visually-hidden">{resolvedToggleLabel}</span>
         </button>
       </span>
       {open ? (
@@ -3764,14 +3780,14 @@ export function MultiSelect({
           <input
             type="search"
             className="st-multiSelect__search"
-            placeholder={searchPlaceholder}
+            placeholder={resolvedSearchPlaceholder}
             value={query}
-            aria-label={searchPlaceholder}
+            aria-label={resolvedSearchPlaceholder}
             onChange={(event) => setQuery(event.currentTarget.value)}
           />
           <div className="st-multiSelect__list" role="listbox" aria-label={text(listLabel) || text(label) || "Options"} aria-multiselectable="true">
             {filtered.length === 0 ? (
-              <div className="st-multiSelect__empty">{noResultsLabel}</div>
+              <div className="st-multiSelect__empty">{resolvedNoResultsLabel}</div>
             ) : (
               filtered.map((option) => {
                 const isSelected = selected.has(option.value);
@@ -3996,6 +4012,7 @@ export type PaginationNavProps = React.HTMLAttributes<HTMLElement> & {
   pageCount?: number;
   totalPages?: number;
   siblings?: number;
+  locale?: string;
   label?: string;
   previousLabel?: string;
   nextLabel?: string;
@@ -4047,15 +4064,19 @@ export function PaginationNav({
   pageCount,
   totalPages,
   siblings = 1,
+  locale = "fr-FR",
   label = "Pagination",
-  previousLabel = "Previous page",
-  nextLabel = "Next page",
+  previousLabel,
+  nextLabel,
   previousHref,
   nextHref,
   onPageChange,
   className,
   ...rest
 }: PaginationNavProps) {
+  const isFr = (locale ?? "fr-FR").toLowerCase().startsWith("fr");
+  const resolvedPreviousLabel = previousLabel ?? (isFr ? "Page précédente" : "Previous page");
+  const resolvedNextLabel = nextLabel ?? (isFr ? "Page suivante" : "Next page");
   const pages = pageCount ?? totalPages ?? 1;
   const slots = paginationSlots(page, pages, siblings);
   const go = (target: number) => {
@@ -4067,11 +4088,11 @@ export function PaginationNav({
       <ul className="st-paginationNav__list">
         <li>
           {previousHref ? (
-            <a href={previousHref} className="st-paginationNav__nav" aria-label={previousLabel}>
+            <a href={previousHref} className="st-paginationNav__nav" aria-label={resolvedPreviousLabel}>
               <ChevronLeft size={16} strokeWidth={2} aria-hidden="true" />
             </a>
           ) : (
-            <button type="button" className="st-paginationNav__nav" aria-label={previousLabel} disabled={page <= 1 || pages <= 0} onClick={() => go(page - 1)}>
+            <button type="button" className="st-paginationNav__nav" aria-label={resolvedPreviousLabel} disabled={page <= 1 || pages <= 0} onClick={() => go(page - 1)}>
               <ChevronLeft size={16} strokeWidth={2} aria-hidden="true" />
             </button>
           )}
@@ -4097,11 +4118,11 @@ export function PaginationNav({
         ))}
         <li>
           {nextHref ? (
-            <a href={nextHref} className="st-paginationNav__nav" aria-label={nextLabel}>
+            <a href={nextHref} className="st-paginationNav__nav" aria-label={resolvedNextLabel}>
               <ChevronRight size={16} strokeWidth={2} aria-hidden="true" />
             </a>
           ) : (
-            <button type="button" className="st-paginationNav__nav" aria-label={nextLabel} disabled={page >= pages || pages <= 0} onClick={() => go(page + 1)}>
+            <button type="button" className="st-paginationNav__nav" aria-label={resolvedNextLabel} disabled={page >= pages || pages <= 0} onClick={() => go(page + 1)}>
               <ChevronRight size={16} strokeWidth={2} aria-hidden="true" />
             </button>
           )}
