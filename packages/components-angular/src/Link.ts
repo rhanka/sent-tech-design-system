@@ -36,7 +36,19 @@ export class Link {
   @NgInput() external?: boolean;
   @NgInput("class") classInput?: string;
 
+  get effectiveVariant(): string {
+    if (this.variant && this.variant !== "inline") return this.variant;
+    if (this.standalone) return "standalone";
+    if (this.muted) return "muted";
+    return this.variant ?? "inline";
+  }
+
   get hostClass(): string {
-    return ["st-link", this.classInput].filter(Boolean).join(" ");
+    return classNames(
+      "st-link",
+      `st-link--${this.effectiveVariant}`,
+      this.disabled && "st-link--disabled",
+      this.classInput,
+    );
   }
 }
