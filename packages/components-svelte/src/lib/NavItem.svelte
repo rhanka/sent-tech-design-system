@@ -87,8 +87,8 @@
     selected = $bindable(false),
     disabled = false,
     href,
-    leading,
-    trailing,
+    leading: leadingProp,
+    trailing: trailingProp,
     divider = false,
     class: className
   }: NavItemProps = $props();
@@ -150,8 +150,8 @@
     caption={caption ? captionSnippet : undefined}
   >
     {#snippet leading()}
-      {#if leading}
-        {@render leading()}
+      {#if leadingProp}
+        {@render leadingProp()}
       {:else if swatch}
         <!-- Tête : ColorSwatch pour une couleur arbitraire, sinon StatusDot pour
              un ton sémantique. Décoratif → aria géré par la primitive. -->
@@ -168,8 +168,8 @@
     {/snippet}
 
     {#snippet trailing()}
-      {#if trailing}
-        {@render trailing()}
+      {#if trailingProp}
+        {@render trailingProp()}
       {:else if count != null}
         <!-- Queue : bulle de compte. Badge shape="circle" size="sm" (tabular-nums),
              ton sémantique aligné sur le `status` de la rangée. aria-label explicite. -->

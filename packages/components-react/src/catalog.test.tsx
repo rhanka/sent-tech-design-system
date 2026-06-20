@@ -249,7 +249,7 @@ describe("React public catalog parity", () => {
     render(
       <>
         <IconButton aria-label="Refresh" onClick={onClick}>R</IconButton>
-        <CopyButton value="abc" />
+        <CopyButton value="abc" locale="en-US" />
       </>,
     );
 

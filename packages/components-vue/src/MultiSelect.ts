@@ -22,6 +22,7 @@ export type MultiSelectProps = {
   selected?: string[];
   size?: MultiSelectSize;
   open?: boolean;
+  locale?: string;
   placeholder?: string;
   searchPlaceholder?: string;
   noResultsLabel?: string;
@@ -45,11 +46,12 @@ export const MultiSelect = defineComponent({
     selected: { type: Array as () => string[], default: undefined },
     size: { type: String as () => MultiSelectSize, default: "md" },
     open: { type: Boolean, default: undefined },
-    placeholder: { type: String, default: "Select items" },
-    searchPlaceholder: { type: String, default: "Filter" },
-    noResultsLabel: { type: String, default: "No results" },
-    toggleLabel: { type: String, default: "Toggle options" },
-    removeLabel: { type: String, default: "Remove" },
+    locale: { type: String, default: "fr-FR" },
+    placeholder: { type: String, default: undefined },
+    searchPlaceholder: { type: String, default: undefined },
+    noResultsLabel: { type: String, default: undefined },
+    toggleLabel: { type: String, default: undefined },
+    removeLabel: { type: String, default: undefined },
     listLabel: { type: String, default: undefined },
     disabled: { type: Boolean, default: false },
     class: { type: String, default: undefined },
@@ -99,6 +101,12 @@ export const MultiSelect = defineComponent({
     });
 
     return () => {
+      const isFr = (props.locale ?? "fr-FR").toLowerCase().startsWith("fr");
+      const resolvedPlaceholder = props.placeholder ?? (isFr ? "Sélectionner des éléments" : "Select items");
+      const resolvedSearchPlaceholder = props.searchPlaceholder ?? (isFr ? "Filtrer" : "Filter");
+      const resolvedNoResultsLabel = props.noResultsLabel ?? (isFr ? "Aucun résultat" : "No results");
+      const resolvedToggleLabel = props.toggleLabel ?? (isFr ? "Afficher les options" : "Toggle options");
+      const resolvedRemoveLabel = props.removeLabel ?? (isFr ? "Supprimer" : "Remove");
       const open = isOpen();
       const selectedSet = new Set(getSelected());
       const selectedOptions = getSelected()
