@@ -1,4 +1,4 @@
-import { Component, Input as NgInput } from "@angular/core";
+import { Component, EventEmitter, Input as NgInput, Output } from "@angular/core";
 
 import { classNames } from "./classNames.js";
 
@@ -17,6 +17,7 @@ export type SliderProps = {
   errorText?: string;
   invalid?: boolean;
   showValue?: boolean;
+  disabled?: boolean;
   valueFormatter?: (value: number) => string;
   class?: string;
 };
@@ -26,13 +27,31 @@ export type SliderProps = {
   standalone: true,
   template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+      @if (label) {
+        <label class="st-field__label">
+          {{ label }}
+          @if (showValue) {
+            : {{ currentValue }}
+          }
+        </label>
+      }
+      <input
+        type="range"
+        class="st-slider"
+        [min]="min ?? 0"
+        [max]="max ?? 100"
+        [step]="step ?? 1"
+        [value]="currentValue"
+        [disabled]="disabled ?? false"
+        (input)="onInput($event)"
+      />
     </div>
   `,
 })
 export class Slider {
   static readonly stComponentName = "Slider";
   readonly componentName = "Slider";
+
   @NgInput() label?: string;
   @NgInput() size?: SliderSize;
   @NgInput() value?: number;
@@ -45,10 +64,26 @@ export class Slider {
   @NgInput() errorText?: string;
   @NgInput() invalid?: boolean;
   @NgInput() showValue?: boolean;
+  @NgInput() disabled?: boolean;
   @NgInput() valueFormatter?: (value: number) => string;
   @NgInput("class") classInput?: string;
 
+  @Output() readonly modelValueChange = new EventEmitter<number>();
+
+  get currentValue(): number {
+    return this.modelValue ?? this.value ?? this.min ?? 0;
+  }
+
   get hostClass(): string {
-    return ["st-slider", this.classInput].filter(Boolean).join(" ");
+    return classNames(
+      "st-field",
+      this.size ? `st-field--${this.size}` : undefined,
+      this.invalid ? "st-field--invalid" : undefined,
+      this.classInput,
+    );
+  }
+
+  onInput(e: Event): void {
+    this.modelValueChange.emit(Number((e.target as HTMLInputElement).value));
   }
 }
