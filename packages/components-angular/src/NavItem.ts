@@ -56,9 +56,18 @@ export type NavItemProps = {
       [attr.data-st-component]="componentName"
       [attr.href]="disabled ? null : href"
       [attr.aria-disabled]="disabled ? 'true' : null"
+      [attr.aria-current]="(active || selected) ? 'page' : null"
       [class]="hostClass"
     >
-      <ng-content></ng-content>
+      <span class="st-navItem__body">
+        <span class="st-navItem__title">{{ title }}<ng-content></ng-content></span>
+        @if (caption) {
+          <span class="st-navItem__caption">{{ caption }}</span>
+        }
+      </span>
+      @if (count !== undefined) {
+        <span class="st-navItem__count" aria-label="{{ count }}">{{ count }}</span>
+      }
     </a>
   `,
 })
