@@ -23,6 +23,10 @@ export class Card {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-card", this.classInput].filter(Boolean).join(" ");
+    return classNames(
+      "st-card",
+      this.interactive && "st-card--interactive",
+      this.classInput,
+    );
   }
 }
