@@ -85,7 +85,8 @@ Composants les plus utilisés dans les apps → portage Angular prioritaire (tem
 
 ### LOT 3 — Chat, tables et composants riches
 
-- [ ] **Lot CHAT** — `ChatMessage`, `ChatThread`, `ChatComposer`, `StreamingMessage`, `MessageActions`, `MessageStatusBadge`, `Transcription` : `@for messages` + `@Output submit` + streaming state
+- [x] **Lot CHAT** — `ChatMessage`, `ChatThread`, `ChatComposer`, `StreamingMessage`, `MessageActions`, `MessageStatusBadge`, `Transcription` : `@for messages` + `@Output submit` + streaming state
+  - FAIT (2026-06-19): 7 composants chat avec @for/@if, EventEmitter, streaming state. Gate 224/0.
 - [x] **Lot TABLE** — `DataTable`, `Table`, `StructuredList` : `@for rows/columns` + `@Output sort/select` + pagination interne
   - FAIT (2026-06-19): DataTable/@for colonnes+lignes/sortChange + Table sémantique. Gate 224/0.
 - [x] **Lot TREE** — `TreeView`, `TableOfContents`, `Timeline`, `Stepper`, `ProgressIndicator` : récursivité `@for` + état expand/collapse

@@ -239,7 +239,7 @@ describe("data and navigation components", () => {
   });
 
   it("PaginationNav renders ellipses, current page marker and previous/next bounds", () => {
-    render(PaginationNav, { props: { page: 6, pageCount: 20, siblings: 1 } });
+    render(PaginationNav, { props: { page: 6, pageCount: 20, siblings: 1, locale: "en-US" } });
 
     const nav = screen.getByRole("navigation", { name: "Pagination" });
     expect(nav).toBeTruthy();
@@ -264,6 +264,7 @@ describe("data and navigation components", () => {
       props: {
         page: 1,
         pageCount: 5,
+        locale: "en-US",
         onPageChange: (next: number) => {
           latest = next;
         }
