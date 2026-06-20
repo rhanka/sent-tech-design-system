@@ -10,6 +10,7 @@ export type MessageStatusBadgeProps = {
   status: ChatMessageStatus;
   tone?: MessageStatusBadgeTone;
   labels?: Partial<Record<ChatMessageStatus, unknown>>;
+  label?: string;
   class?: string;
 };
 
@@ -17,20 +18,24 @@ export type MessageStatusBadgeProps = {
   selector: "st-message-status-badge",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
-    </div>
+    <span class="st-messageStatusBadge" [class]="hostClass">{{ label }}</span>
   `,
 })
 export class MessageStatusBadge {
   static readonly stComponentName = "MessageStatusBadge";
   readonly componentName = "MessageStatusBadge";
+
   @NgInput() status!: ChatMessageStatus;
   @NgInput() tone?: MessageStatusBadgeTone;
   @NgInput() labels?: Partial<Record<ChatMessageStatus, unknown>>;
+  @NgInput() label?: string;
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-messageStatusBadge", this.classInput].filter(Boolean).join(" ");
+    return classNames(
+      "st-messageStatusBadge",
+      this.status ? `st-messageStatusBadge--${this.status}` : undefined,
+      this.classInput,
+    );
   }
 }

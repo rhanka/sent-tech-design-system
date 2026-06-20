@@ -2,8 +2,6 @@ import { Component, Input as NgInput } from "@angular/core";
 
 import { classNames } from "./classNames.js";
 
-import { ChatMessage } from "./ChatMessage.js";
-
 import type { ChatMessageRole, ChatMessageStatus } from "./ChatMessage.js";
 
 export type ChatThreadProps = {
@@ -14,6 +12,8 @@ export type ChatThreadProps = {
     status?: ChatMessageStatus;
   }>;
   emptyLabel?: unknown;
+  label?: string;
+  autoScroll?: boolean;
   class?: string;
 };
 
@@ -21,14 +21,17 @@ export type ChatThreadProps = {
   selector: "st-chat-thread",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+    <div class="st-chatThread" [class]="hostClass" role="log" aria-live="polite">
+      <div class="st-chatThread__messages">
+        <ng-content></ng-content>
+      </div>
     </div>
   `,
 })
 export class ChatThread {
   static readonly stComponentName = "ChatThread";
   readonly componentName = "ChatThread";
+
   @NgInput() messages?: Array<{
     id: string;
     role?: ChatMessageRole;
@@ -36,9 +39,11 @@ export class ChatThread {
     status?: ChatMessageStatus;
   }>;
   @NgInput() emptyLabel?: unknown;
+  @NgInput() label?: string;
+  @NgInput() autoScroll?: boolean;
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-chatThread", this.classInput].filter(Boolean).join(" ");
+    return classNames("st-chatThread", this.classInput);
   }
 }
