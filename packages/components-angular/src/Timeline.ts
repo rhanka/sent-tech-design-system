@@ -11,6 +11,10 @@ export type TimelineItem = {
   meta?: string;
   description?: string;
   tone?: TimelineTone;
+  date?: string;
+  label?: string;
+  status?: string;
+  icon?: string;
 };
 
 export type TimelineProps = {
@@ -23,9 +27,20 @@ export type TimelineProps = {
   selector: "st-timeline",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
-    </div>
+    <ol [attr.data-st-component]="componentName" [class]="hostClass">
+      @for(item of items; track item.title ?? item.label){
+        <li class="st-timeline__item">
+          <div class="st-timeline__connector"></div>
+          <div class="st-timeline__content">
+            <span class="st-timeline__date">{{item.date ?? item.meta}}</span>
+            <span class="st-timeline__label">{{item.label ?? item.title}}</span>
+            @if(item.description){
+              <p class="st-timeline__desc">{{item.description}}</p>
+            }
+          </div>
+        </li>
+      }
+    </ol>
   `,
 })
 export class Timeline {

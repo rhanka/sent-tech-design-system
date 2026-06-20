@@ -34,9 +34,12 @@ export type AppHeaderProps = {
   selector: "st-app-header",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    <header [attr.data-st-component]="componentName" [class]="hostClass">
+      <ng-content select="[slot=logo]"></ng-content>
+      <ng-content select="[slot=navigation]"></ng-content>
+      <ng-content select="[slot=actions]"></ng-content>
       <ng-content></ng-content>
-    </div>
+    </header>
   `,
 })
 export class AppHeader {
@@ -55,6 +58,6 @@ export class AppHeader {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-appHeader", this.classInput].filter(Boolean).join(" ");
+    return classNames("st-appHeader", this.compact && "st-appHeader--compact", this.classInput);
   }
 }

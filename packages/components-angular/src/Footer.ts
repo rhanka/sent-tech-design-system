@@ -11,6 +11,7 @@ export type FooterProps = {
   columns?: FooterColumn[];
   links?: FooterLink[];
   copyright?: unknown;
+  label?: string;
   class?: string;
 };
 
@@ -18,9 +19,12 @@ export type FooterProps = {
   selector: "st-footer",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    <footer [attr.data-st-component]="componentName" [class]="hostClass" [attr.aria-label]="label ?? 'Pied de page'">
       <ng-content></ng-content>
-    </div>
+      @if(copyright){
+        <p class="st-footer__copyright">{{copyright}}</p>
+      }
+    </footer>
   `,
 })
 export class Footer {
@@ -30,9 +34,10 @@ export class Footer {
   @NgInput() columns?: FooterColumn[];
   @NgInput() links?: FooterLink[];
   @NgInput() copyright?: unknown;
+  @NgInput() label?: string;
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-footer", this.classInput].filter(Boolean).join(" ");
+    return classNames("st-footer", this.classInput);
   }
 }
