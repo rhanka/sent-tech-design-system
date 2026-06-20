@@ -42,7 +42,7 @@
               el: "nav",
               props: { class: "rnp-rail", "aria-label": fr ? "Modules" : "Modules" },
               children: RAIL_ITEMS.map((item) => ({
-                el: "button",
+                el: "button" as const,
                 props: {
                   class: `rnp-rail-item${item.active ? " rnp-rail-item--active" : ""}`,
                   type: "button",
@@ -50,9 +50,9 @@
                   "aria-pressed": item.active ? "true" : "false"
                 },
                 children: [
-                  { el: "span", props: { class: "rnp-rail-label" }, children: [item.label] },
+                  { el: "span" as const, props: { class: "rnp-rail-label" }, children: [item.label] },
                   ...(item.badge
-                    ? [{ el: "span", props: { class: "rnp-rail-badge" }, children: [String(item.badge)] }]
+                    ? [{ el: "span" as const, props: { class: "rnp-rail-badge" }, children: [String(item.badge)] }]
                     : [])
                 ]
               }))

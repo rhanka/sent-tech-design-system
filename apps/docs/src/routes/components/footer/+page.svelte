@@ -21,13 +21,11 @@
   <TabbedExample
     nodes={getExample("footer")?.nodes ?? []}
     title="Exemple complet"
-    code={getExample("footer")?.code}
   />
 
   <TabbedExample
     nodes={getExample("footerMinimal")?.nodes ?? []}
     title="Minimal (copyright seul)"
-    code={getExample("footerMinimal")?.code}
   />
 
   <section class="docs-section">
