@@ -19,8 +19,9 @@ export type HighlightProps = {
   selector: "st-highlight",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+    <div [attr.data-st-component]="componentName" [class]="hostClass" role="note">
+      @if (title) { <strong class="st-highlight__title">{{ title }}</strong> }
+      <div class="st-highlight__body"><ng-content></ng-content></div>
     </div>
   `,
 })

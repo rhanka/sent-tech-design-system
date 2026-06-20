@@ -12,9 +12,11 @@ export type FormGroupProps = {
   selector: "st-form-group",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    <fieldset [attr.data-st-component]="componentName" [class]="hostClass">
+      @if (legend) { <legend class="st-formGroup__legend">{{ legend }}</legend> }
       <ng-content></ng-content>
-    </div>
+      @if (helperText) { <p class="st-formGroup__helper">{{ helperText }}</p> }
+    </fieldset>
   `,
 })
 export class FormGroup {
@@ -25,6 +27,6 @@ export class FormGroup {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-formGroup", this.classInput].filter(Boolean).join(" ");
+    return classNames("st-formGroup", this.classInput);
   }
 }
