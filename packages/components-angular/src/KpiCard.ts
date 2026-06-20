@@ -87,6 +87,12 @@ export class KpiCard {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-kpiCard", this.classInput].filter(Boolean).join(" ");
+    return classNames(
+      "st-kpiCard",
+      `st-kpiCard--${this.size ?? "md"}`,
+      this.tone && `st-kpiCard--${this.tone}`,
+      this.tone && "st-kpiCard--toned",
+      this.classInput,
+    );
   }
 }

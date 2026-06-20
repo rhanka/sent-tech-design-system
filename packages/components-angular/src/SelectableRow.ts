@@ -81,6 +81,12 @@ export class SelectableRow {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-selectableRow", this.classInput].filter(Boolean).join(" ");
+    return classNames(
+      "st-selectableRow",
+      this.selected && "st-selectableRow--selected",
+      this.disabled && "st-selectableRow--disabled",
+      this.accentBar && "st-selectableRow--accentBar",
+      this.classInput,
+    );
   }
 }
