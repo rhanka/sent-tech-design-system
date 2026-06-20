@@ -13,6 +13,8 @@ export type HeaderProps = {
   navItems?: HeaderNavItem[];
   account?: HeaderAccount;
   sticky?: boolean;
+  label?: string;
+  compact?: boolean;
   class?: string;
 };
 
@@ -30,9 +32,14 @@ export function deriveInitials(name?: string): string {
   selector: "st-header",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
-    </div>
+    <header [attr.data-st-component]="componentName" [class]="hostClass" [attr.aria-label]="label">
+      <div class="st-header__body">
+        <ng-content select="[slot=logo]"></ng-content>
+        <ng-content select="[slot=navigation]"></ng-content>
+        <ng-content select="[slot=actions]"></ng-content>
+        <ng-content></ng-content>
+      </div>
+    </header>
   `,
 })
 export class Header {
@@ -44,9 +51,11 @@ export class Header {
   @NgInput() navItems?: HeaderNavItem[];
   @NgInput() account?: HeaderAccount;
   @NgInput() sticky?: boolean;
+  @NgInput() label?: string;
+  @NgInput() compact = false;
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-header", this.classInput].filter(Boolean).join(" ");
+    return classNames("st-header", this.compact && "st-header--compact", this.sticky && "st-header--sticky", this.classInput);
   }
 }
