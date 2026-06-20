@@ -17,6 +17,8 @@ export type StreamingMessageProps = {
   text?: unknown;
   events?: StreamingMessageEvent[];
   mode?: StreamingMessageMode;
+  streaming?: boolean;
+  content?: string;
   class?: string;
 };
 
@@ -24,20 +26,32 @@ export type StreamingMessageProps = {
   selector: "st-streaming-message",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+    <div class="st-streamingMessage" [class]="hostClass">
+      <div class="st-streamingMessage__content">
+        <ng-content></ng-content>
+      </div>
+      @if (streaming) {
+        <span class="st-streamingMessage__cursor" aria-hidden="true"></span>
+      }
     </div>
   `,
 })
 export class StreamingMessage {
   static readonly stComponentName = "StreamingMessage";
   readonly componentName = "StreamingMessage";
+
+  @NgInput() streaming = false;
+  @NgInput() content?: string;
   @NgInput() text?: unknown;
   @NgInput() events?: StreamingMessageEvent[];
   @NgInput() mode?: StreamingMessageMode;
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-streamingMessage", this.classInput].filter(Boolean).join(" ");
+    return classNames(
+      "st-streamingMessage",
+      this.streaming ? "st-streamingMessage--streaming" : undefined,
+      this.classInput,
+    );
   }
 }

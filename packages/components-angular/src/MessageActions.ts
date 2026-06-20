@@ -28,7 +28,7 @@ export type MessageActionsProps = {
   selector: "st-message-actions",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    <div class="st-messageActions" [class]="hostClass">
       <ng-content></ng-content>
     </div>
   `,
@@ -36,11 +36,16 @@ export type MessageActionsProps = {
 export class MessageActions {
   static readonly stComponentName = "MessageActions";
   readonly componentName = "MessageActions";
+
   @NgInput() actions!: MessageAction[];
   @NgInput() visibility?: "always" | "hover";
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-messageActions", this.classInput].filter(Boolean).join(" ");
+    return classNames(
+      "st-messageActions",
+      this.visibility === "hover" ? "st-messageActions--hover" : undefined,
+      this.classInput,
+    );
   }
 }
