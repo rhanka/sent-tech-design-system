@@ -55,6 +55,7 @@ export type DataTableProps = {
   pageSize?: number;
   page?: number;
   onPageChange?: (page: number) => void;
+  locale?: string;
   selectAllLabel?: string;
   selectRowLabel?: string;
   sortAscendingLabel?: string;
@@ -89,13 +90,14 @@ export const DataTable = defineComponent({
     pageSize: { type: Number, default: undefined },
     page: { type: Number, default: undefined },
     onPageChange: { type: Function as unknown as () => (page: number) => void, default: undefined },
+    locale: { type: String, default: "fr-FR" },
     selectAllLabel: { type: String, default: "Select all rows" },
     selectRowLabel: { type: String, default: "Select row" },
     sortAscendingLabel: { type: String, default: "Sorted ascending" },
     sortDescendingLabel: { type: String, default: "Sorted descending" },
     sortNoneLabel: { type: String, default: "Not sorted" },
-    previousLabel: { type: String, default: "Previous" },
-    nextLabel: { type: String, default: "Next" },
+    previousLabel: { type: String, default: undefined },
+    nextLabel: { type: String, default: undefined },
     paginationLabel: { type: String, default: "Pagination" },
     rangeLabel: {
       type: Function as unknown as () => (range: { start: number; end: number; total: number }) => string,
@@ -124,6 +126,10 @@ export const DataTable = defineComponent({
     }
 
     return () => {
+      const isFr = (props.locale ?? "fr-FR").toLowerCase().startsWith("fr");
+      const resolvedPreviousLabel = props.previousLabel ?? (isFr ? "Précédent" : "Previous");
+      const resolvedNextLabel = props.nextLabel ?? (isFr ? "Suivant" : "Next");
+
       const columns = props.columns;
       const rows = props.rows;
       const size = props.size ?? "md";
@@ -416,7 +422,7 @@ export const DataTable = defineComponent({
                   disabled: safePage <= 1,
                   onClick: () => goToPage(safePage - 1),
                 },
-                props.previousLabel,
+                resolvedPreviousLabel,
               ),
               h("span", { class: "st-dataTable__pagerStatus", "aria-live": "polite" }, `${safePage} / ${pageCount}`),
               h(
@@ -427,7 +433,7 @@ export const DataTable = defineComponent({
                   disabled: safePage >= pageCount,
                   onClick: () => goToPage(safePage + 1),
                 },
-                props.nextLabel,
+                resolvedNextLabel,
               ),
             ]),
           ]),

@@ -7,6 +7,7 @@ export type NotificationProps = Omit<React.HTMLAttributes<HTMLElement>, "classNa
   message?: string;
   dismissible?: boolean;
   dismissLabel?: string;
+  locale?: string;
   onDismiss?: () => void;
   className?: string;
   actions?: React.ReactNode;
@@ -20,7 +21,8 @@ export const Notification = React.forwardRef<HTMLElement, NotificationProps>(
       title,
       message,
       dismissible = false,
-      dismissLabel = "Dismiss",
+      dismissLabel,
+      locale = "fr-FR",
       onDismiss,
       className,
       actions,
@@ -29,6 +31,8 @@ export const Notification = React.forwardRef<HTMLElement, NotificationProps>(
     },
     ref,
   ) => {
+    const isFr = (locale ?? "fr-FR").toLowerCase().startsWith("fr");
+    const resolvedDismissLabel = dismissLabel ?? (isFr ? "Fermer" : "Dismiss");
     const canDismiss = dismissible && typeof onDismiss === "function";
     const role = tone === "error" ? "alert" : "status";
 
@@ -50,8 +54,8 @@ export const Notification = React.forwardRef<HTMLElement, NotificationProps>(
             <button
               type="button"
               className="st-notification__close"
-              aria-label={dismissLabel}
-              title={dismissLabel}
+              aria-label={resolvedDismissLabel}
+              title={resolvedDismissLabel}
               onClick={() => onDismiss?.()}
             >
               ×
