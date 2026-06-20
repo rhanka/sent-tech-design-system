@@ -29,14 +29,19 @@ export type ChatMessageProps = {
   selector: "st-chat-message",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
-    </div>
+    <article [class]="hostClass" [attr.data-role]="role ?? 'assistant'" [attr.data-status]="normalizedStatus">
+      <div class="st-chatMessage__body">
+        <div class="st-chatMessage__content">
+          <ng-content></ng-content>
+        </div>
+      </div>
+    </article>
   `,
 })
 export class ChatMessage {
   static readonly stComponentName = "ChatMessage";
   readonly componentName = "ChatMessage";
+
   @NgInput() role?: ChatMessageRole;
   @NgInput() status?: ChatMessageStatus;
   @NgInput() content?: unknown;
@@ -46,7 +51,20 @@ export class ChatMessage {
   @NgInput() avatar?: unknown;
   @NgInput("class") classInput?: string;
 
+  get normalizedStatus(): string | undefined {
+    const status = this.status;
+    if (status === "idle" || status === "streaming") return "processing";
+    if (status === "error") return "failed";
+    return status;
+  }
+
   get hostClass(): string {
-    return ["st-chatMessage", this.classInput].filter(Boolean).join(" ");
+    const role = this.role ?? "assistant";
+    return classNames(
+      "st-chatMessage",
+      `st-chatMessage--${role}`,
+      this.normalizedStatus ? `st-chatMessage--${this.normalizedStatus}` : undefined,
+      this.classInput,
+    );
   }
 }
