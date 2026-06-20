@@ -143,7 +143,7 @@
       {#if selectedOptions.length === 0}
         <span class="st-multiSelect__placeholder">{resolvedPlaceholder}</span>
       {:else}
-        <span class="st-multiSelect__count">{selectedOptions.length} selected</span>
+        <span class="st-multiSelect__count">{selectedOptions.length} {isFr ? "sélectionné(s)" : "selected"}</span>
       {/if}
       <span class="st-multiSelect__caret" aria-hidden="true">
         <ChevronDown
