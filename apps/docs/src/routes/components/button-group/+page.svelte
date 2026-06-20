@@ -7,7 +7,7 @@
 
   const fr = $derived(locale.value === "fr");
 
-  const attachedDemo: NodeSpec[] = [
+  const attachedDemo = $derived<NodeSpec[]>([
     {
       comp: "ButtonGroup",
       props: { attached: true, label: fr ? "Vue" : "View" },
@@ -17,8 +17,8 @@
         { comp: "Button", props: { variant: "secondary" }, children: [fr ? "Mois" : "Month"] }
       ]
     }
-  ];
-  const spacedDemo: NodeSpec[] = [
+  ]);
+  const spacedDemo = $derived<NodeSpec[]>([
     {
       comp: "ButtonGroup",
       props: { gap: 2, label: "Actions" },
@@ -27,7 +27,7 @@
         { comp: "Button", props: { variant: "primary" }, children: [fr ? "Enregistrer" : "Save"] }
       ]
     }
-  ];
+  ]);
 </script>
 
 <div class="docs-page">

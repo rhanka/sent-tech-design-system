@@ -7,24 +7,24 @@
 
   const fr = $derived(locale.value === "fr");
 
-  const savedDemo: NodeSpec[] = [
+  const savedDemo = $derived<NodeSpec[]>([
     {
       comp: "Autosave",
       props: { status: "saved", lastSaved: "2026-06-04T12:00:00.000Z", locale: fr ? "fr-FR" : "en-US" }
     }
-  ];
-  const savingDemo: NodeSpec[] = [
+  ]);
+  const savingDemo = $derived<NodeSpec[]>([
     {
       comp: "Autosave",
       props: { status: "saving", locale: fr ? "fr-FR" : "en-US" }
     }
-  ];
-  const errorDemo: NodeSpec[] = [
+  ]);
+  const errorDemo = $derived<NodeSpec[]>([
     {
       comp: "Autosave",
       props: { status: "error", locale: fr ? "fr-FR" : "en-US" }
     }
-  ];
+  ]);
 </script>
 
 <div class="docs-page">

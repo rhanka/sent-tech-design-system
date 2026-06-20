@@ -226,7 +226,10 @@
   // Thèmes tiers (clones de marques privées) masqués du sélecteur public, révélés
   // en mode démo. Ajouter ici l'id de chaque nouveau thème de société privée.
   const HIDDEN_THEME_IDS = new Set<string>(["carbon", "airbus", "ssense", "lightspeed", "desjardins", "national-bank", "cirque-du-soleil", "ubisoft", "bombardier", "cae", "saq", "cgi", "stm", "nuvei", "coveo", "circle-k", "aldo", "brp", "mirego", "ellio", "air-canada", "cascades", "hopper", "dialogue", "moment-factory", "lion-electric", "genetec", "videotron", "saputo", "metro", "workleap", "frank-and-oak", "sid-lee", "simons", "la-vie-en-rose", "dollarama", "bell", "behaviour-interactive", "rona", "gameloft", "cossette", "eidos-montreal", "stingray", "lg2", "sonder", "plusgrade", "gildan", "quebecor", "cogeco", "ia", "laurentian-bank", "jean-coutu", "reitmans", "st-hubert", "beneva", "air-transat", "birks", "lufa-farms", "hydro-quebec", "energir", "agropur", "van-houtte", "dynamite"]);
-  let demoMode = $state(browser ? localStorage.getItem(DEMO_MODE_STORAGE_KEY) === "true" : false);
+  // Lire la valeur initiale de demoMode AVANT de créer les $state pour éviter
+  // state_referenced_locally (on ne peut pas référencer un $state dans l'init d'un autre $state).
+  const initialDemoMode = browser ? localStorage.getItem(DEMO_MODE_STORAGE_KEY) === "true" : false;
+  let demoMode = $state(initialDemoMode);
   // Balise <style> du thème de base, injectée en SSR pour le premier rendu.
   // Utilise compileThemeWithModes pour émettre 3 blocs (light + auto dark + explicit dark).
   // (Construite dans le script pour éviter un littéral <style> dans le markup.)
@@ -242,15 +245,16 @@
   const rawInitialTheme = browser
     ? resolveTheme(readUrlParams().theme, THEME_STORAGE_KEY)
     : sentTechTheme.id;
-  // Anonymisation : un thème tiers deep-linké (?theme=carbon) est ignoré hors
-  // mode démo — on retombe sur le thème par défaut au premier rendu.
-  const initialTheme =
-    !demoMode && HIDDEN_THEME_IDS.has(rawInitialTheme) ? sentTechTheme.id : rawInitialTheme;
   if (browser) {
     framework.value = resolveFramework(readUrlParams().framework, FRAMEWORK_STORAGE_KEY);
   }
 
-  let activeThemeId = $state(initialTheme);
+  // Anonymisation : un thème tiers deep-linké (?theme=carbon) est ignoré hors
+  // mode démo — on retombe sur le thème par défaut au premier rendu.
+  // Utilise initialDemoMode (valeur scalaire) pour éviter state_referenced_locally.
+  let activeThemeId = $state(
+    !initialDemoMode && HIDDEN_THEME_IDS.has(rawInitialTheme) ? sentTechTheme.id : rawInitialTheme
+  );
   const activeTheme = $derived(
     THEMES.find((theme) => theme.id === activeThemeId) ?? sentTechTheme
   );
