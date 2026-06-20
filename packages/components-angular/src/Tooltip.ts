@@ -10,23 +10,44 @@ export type TooltipProps = {
   class?: string;
 };
 
+let _tooltipCounter = 0;
+function nextTooltipId(): string {
+  return `st-tooltip-${++_tooltipCounter}`;
+}
+
 @Component({
   selector: "st-tooltip",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
-    </div>
+    <span
+      [attr.data-st-component]="componentName"
+      [class]="hostClass"
+    >
+      <span class="st-tooltip__trigger">
+        <ng-content></ng-content>
+      </span>
+      <span
+        [id]="tooltipId"
+        class="st-tooltip__content"
+        role="tooltip"
+      >{{ content }}</span>
+    </span>
   `,
 })
 export class Tooltip {
   static readonly stComponentName = "Tooltip";
   readonly componentName = "Tooltip";
+  readonly tooltipId = nextTooltipId();
+
   @NgInput() content!: unknown;
   @NgInput() placement?: TooltipPlacement;
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-tooltip", this.classInput].filter(Boolean).join(" ");
+    return classNames(
+      "st-tooltip",
+      `st-tooltip--${this.placement ?? "top"}`,
+      this.classInput,
+    );
   }
 }

@@ -16,21 +16,46 @@ export type ToggletipProps = {
   selector: "st-toggletip",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
-    </div>
+    <span
+      [attr.data-st-component]="componentName"
+      [class]="hostClass"
+    >
+      <button
+        type="button"
+        class="st-toggletip__trigger"
+        [attr.aria-expanded]="localOpen"
+        (click)="toggle()"
+      >{{ label }}</button>
+      @if (localOpen) {
+        <span class="st-toggletip__bubble" role="status">
+          <span class="st-toggletip__content">{{ content }}</span>
+        </span>
+      }
+    </span>
   `,
 })
 export class Toggletip {
   static readonly stComponentName = "Toggletip";
   readonly componentName = "Toggletip";
+
   @NgInput() label!: unknown;
   @NgInput() content?: unknown;
   @NgInput() open?: boolean;
   @NgInput() placement?: ToggletipPlacement;
   @NgInput("class") classInput?: string;
 
+  localOpen = false;
+
   get hostClass(): string {
-    return ["st-toggletip", this.classInput].filter(Boolean).join(" ");
+    return classNames(
+      "st-toggletip",
+      `st-toggletip--${this.placement ?? "top"}`,
+      this.classInput,
+    );
+  }
+
+  toggle(): void {
+    if (this.open !== undefined) return;
+    this.localOpen = !this.localOpen;
   }
 }

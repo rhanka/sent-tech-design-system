@@ -26,9 +26,9 @@ export type NavSectionProps = {
   selector: "st-nav-section",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    <section [attr.data-st-component]="componentName" [class]="hostClass">
       <ng-content></ng-content>
-    </div>
+    </section>
   `,
 })
 export class NavSection {
