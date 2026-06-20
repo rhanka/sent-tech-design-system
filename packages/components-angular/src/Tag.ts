@@ -1,4 +1,4 @@
-import { Component, Input as NgInput } from "@angular/core";
+import { Component, EventEmitter, Input as NgInput, Output } from "@angular/core";
 
 import { classNames } from "./classNames.js";
 
@@ -27,7 +27,16 @@ export type TagProps = {
   standalone: true,
   template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+      <span class="st-tag__label"><ng-content></ng-content></span>
+      @if (dismissible) {
+        <button
+          type="button"
+          class="st-tag__dismiss"
+          [attr.aria-label]="dismissLabel ?? 'Supprimer'"
+          [disabled]="disabled ?? false"
+          (click)="handleDismiss($event)"
+        >&#x2715;</button>
+      }
     </div>
   `,
 })
@@ -42,13 +51,21 @@ export class Tag {
   @NgInput() onDismiss?: (event: MouseEvent) => void;
   @NgInput("class") classInput?: string;
 
+  @Output() readonly dismiss = new EventEmitter<MouseEvent>();
+
   get hostClass(): string {
     return classNames(
       "st-tag",
       this.tone && `st-tag--${this.tone}`,
       this.size && `st-tag--${this.size}`,
       this.disabled && "st-tag--disabled",
+      this.dismissible && "st-tag--dismissible",
       this.classInput,
     );
+  }
+
+  handleDismiss(event: MouseEvent): void {
+    this.onDismiss?.(event);
+    this.dismiss.emit(event);
   }
 }

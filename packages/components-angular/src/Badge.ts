@@ -12,6 +12,8 @@ export type BadgeProps = {
   tone?: BadgeTone;
   shape?: BadgeShape;
   size?: BadgeSize;
+  /** Texte affiché dans le badge. Si absent, utilise ng-content. */
+  label?: unknown;
   class?: string;
 };
 
@@ -20,7 +22,11 @@ export type BadgeProps = {
   standalone: true,
   template: `
     <span [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+      @if (label !== undefined) {
+        {{ label }}
+      } @else {
+        <ng-content></ng-content>
+      }
     </span>
   `,
 })
@@ -30,6 +36,7 @@ export class Badge {
   @NgInput() tone?: BadgeTone;
   @NgInput() shape?: BadgeShape;
   @NgInput() size?: BadgeSize;
+  @NgInput() label?: unknown;
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {

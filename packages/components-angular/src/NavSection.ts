@@ -27,7 +27,15 @@ export type NavSectionProps = {
   standalone: true,
   template: `
     <section [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+      <div class="st-navSection__header">
+        <span class="st-navSection__label">{{ label }}</span>
+        @if (count !== undefined) {
+          <span class="st-navSection__count">{{ count }}</span>
+        }
+      </div>
+      <div class="st-navSection__content">
+        <ng-content></ng-content>
+      </div>
     </section>
   `,
 })
