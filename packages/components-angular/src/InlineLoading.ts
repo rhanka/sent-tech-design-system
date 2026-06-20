@@ -27,6 +27,10 @@ export class InlineLoading {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-inlineLoading", this.classInput].filter(Boolean).join(" ");
+    return classNames(
+      "st-inlineLoading",
+      this.status && `st-inlineLoading--${this.status}`,
+      this.classInput,
+    );
   }
 }

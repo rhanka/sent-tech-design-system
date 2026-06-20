@@ -43,6 +43,12 @@ export class Tag {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return ["st-tag", this.classInput].filter(Boolean).join(" ");
+    return classNames(
+      "st-tag",
+      this.tone && `st-tag--${this.tone}`,
+      this.size && `st-tag--${this.size}`,
+      this.disabled && "st-tag--disabled",
+      this.classInput,
+    );
   }
 }
