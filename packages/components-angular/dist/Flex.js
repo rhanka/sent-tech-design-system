@@ -1,4 +1,5 @@
 import { Component, Input as NgInput } from "@angular/core";
+import { NgStyle } from "@angular/common";
 import { classNames } from "./classNames.js";
 import * as i0 from "@angular/core";
 const SPACING_FALLBACK = {
@@ -57,22 +58,33 @@ export class Flex {
     as;
     classInput;
     get hostClass() {
-        return ["st-flex", this.classInput].filter(Boolean).join(" ");
+        return classNames("st-flex", this.classInput);
+    }
+    get inlineStyles() {
+        return {
+            display: this.inline ? "inline-flex" : "flex",
+            flexDirection: this.direction,
+            flexWrap: this.wrap ? "wrap" : "nowrap",
+            alignItems: alignValue(this.align),
+            justifyContent: justifyValue(this.justify),
+            gap: spacingToken(this.gap),
+        };
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Flex, deps: [], target: i0.ɵɵFactoryTarget.Component });
     static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: Flex, isStandalone: true, selector: "st-flex", inputs: { direction: "direction", gap: "gap", align: "align", justify: "justify", wrap: "wrap", inline: "inline", as: "as", classInput: ["class", "classInput"] }, ngImport: i0, template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    <div [attr.data-st-component]="componentName" [class]="hostClass" [ngStyle]="inlineStyles">
       <ng-content></ng-content>
     </div>
-  `, isInline: true });
+  `, isInline: true, dependencies: [{ kind: "directive", type: NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Flex, decorators: [{
             type: Component,
             args: [{
                     selector: "st-flex",
                     standalone: true,
+                    imports: [NgStyle],
                     template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    <div [attr.data-st-component]="componentName" [class]="hostClass" [ngStyle]="inlineStyles">
       <ng-content></ng-content>
     </div>
   `,

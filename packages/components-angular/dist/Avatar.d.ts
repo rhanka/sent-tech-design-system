@@ -26,7 +26,8 @@ export declare class Avatar {
     tone?: AvatarTone;
     classInput?: string;
     get hostClass(): string;
+    get initials(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<Avatar, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<Avatar, "st-avatar", never, { "name": { "alias": "name"; "required": false; }; "src": { "alias": "src"; "required": false; }; "alt": { "alias": "alt"; "required": false; }; "size": { "alias": "size"; "required": false; }; "shape": { "alias": "shape"; "required": false; }; "tone": { "alias": "tone"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<Avatar, "st-avatar", never, { "name": { "alias": "name"; "required": false; }; "src": { "alias": "src"; "required": false; }; "alt": { "alias": "alt"; "required": false; }; "size": { "alias": "size"; "required": false; }; "shape": { "alias": "shape"; "required": false; }; "tone": { "alias": "tone"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
 }
 //# sourceMappingURL=Avatar.d.ts.map

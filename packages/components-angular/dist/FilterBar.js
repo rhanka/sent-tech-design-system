@@ -8,13 +8,33 @@ export class FilterBar {
     onClearAll;
     clearAllLabel;
     classInput;
+    get hasClearAll() {
+        return typeof this.onClearAll === "function";
+    }
     get hostClass() {
-        return ["st-filterBar", this.classInput].filter(Boolean).join(" ");
+        return classNames("st-filterBar", this.classInput);
+    }
+    triggerClearAll() {
+        this.onClearAll?.();
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: FilterBar, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: FilterBar, isStandalone: true, selector: "st-filter-bar", inputs: { label: "label", onClearAll: "onClearAll", clearAllLabel: "clearAllLabel", classInput: ["class", "classInput"] }, ngImport: i0, template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: FilterBar, isStandalone: true, selector: "st-filter-bar", inputs: { label: "label", onClearAll: "onClearAll", clearAllLabel: "clearAllLabel", classInput: ["class", "classInput"] }, ngImport: i0, template: `
+    <div
+      [attr.data-st-component]="componentName"
+      [class]="hostClass"
+      role="group"
+      [attr.aria-label]="label"
+    >
+      <div class="st-filterBar__pills">
+        <ng-content></ng-content>
+      </div>
+      @if (hasClearAll) {
+        <button
+          type="button"
+          class="st-filterBar__clearAll"
+          (click)="triggerClearAll()"
+        >{{ clearAllLabel || 'Tout effacer' }}</button>
+      }
     </div>
   `, isInline: true });
 }
@@ -24,8 +44,22 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     selector: "st-filter-bar",
                     standalone: true,
                     template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+    <div
+      [attr.data-st-component]="componentName"
+      [class]="hostClass"
+      role="group"
+      [attr.aria-label]="label"
+    >
+      <div class="st-filterBar__pills">
+        <ng-content></ng-content>
+      </div>
+      @if (hasClearAll) {
+        <button
+          type="button"
+          class="st-filterBar__clearAll"
+          (click)="triggerClearAll()"
+        >{{ clearAllLabel || 'Tout effacer' }}</button>
+      }
     </div>
   `,
                 }]

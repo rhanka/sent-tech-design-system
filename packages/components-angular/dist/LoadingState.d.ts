@@ -15,6 +15,6 @@ export declare class LoadingState {
     classInput?: string;
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<LoadingState, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<LoadingState, "st-loading-state", never, { "label": { "alias": "label"; "required": false; }; "title": { "alias": "title"; "required": false; }; "variant": { "alias": "variant"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<LoadingState, "st-loading-state", never, { "label": { "alias": "label"; "required": false; }; "title": { "alias": "title"; "required": false; }; "variant": { "alias": "variant"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
 }
 //# sourceMappingURL=LoadingState.d.ts.map

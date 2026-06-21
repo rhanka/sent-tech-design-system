@@ -15,7 +15,7 @@ export class ProgressBar {
     valueText;
     classInput;
     get hostClass() {
-        return ["st-progressBar", this.classInput].filter(Boolean).join(" ");
+        return classNames("st-progressBar", this.classInput);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: ProgressBar, deps: [], target: i0.ɵɵFactoryTarget.Component });
     static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: ProgressBar, isStandalone: true, selector: "st-progress-bar", inputs: { label: "label", helperText: "helperText", value: "value", max: "max", tone: "tone", size: "size", indeterminate: "indeterminate", showValue: "showValue", valueText: "valueText", classInput: ["class", "classInput"] }, ngImport: i0, template: `

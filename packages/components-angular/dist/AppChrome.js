@@ -33,9 +33,36 @@ export class AppChrome {
         return ["st-appChrome", this.classInput].filter(Boolean).join(" ");
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: AppChrome, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: AppChrome, isStandalone: true, selector: "st-app-chrome", inputs: { brandName: "brandName", productName: "productName", logoSrc: "logoSrc", logoAlt: "logoAlt", brandHref: "brandHref", brandLabel: "brandLabel", nav: "nav", navLabel: "navLabel", themes: "themes", theme: "theme", onThemeChange: "onThemeChange", themeLabel: "themeLabel", colorMode: "colorMode", onColorModeChange: "onColorModeChange", colorModeLabels: "colorModeLabels", locale: "locale", onLocaleChange: "onLocaleChange", localeLabel: "localeLabel", githubHref: "githubHref", githubLabel: "githubLabel", mobileMenuOpen: "mobileMenuOpen", onMobileMenuToggle: "onMobileMenuToggle", menuLabel: "menuLabel", classInput: ["class", "classInput"] }, ngImport: i0, template: `
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: AppChrome, isStandalone: true, selector: "st-app-chrome", inputs: { brandName: "brandName", productName: "productName", logoSrc: "logoSrc", logoAlt: "logoAlt", brandHref: "brandHref", brandLabel: "brandLabel", nav: "nav", navLabel: "navLabel", themes: "themes", theme: "theme", onThemeChange: "onThemeChange", themeLabel: "themeLabel", colorMode: "colorMode", onColorModeChange: "onColorModeChange", colorModeLabels: "colorModeLabels", locale: "locale", onLocaleChange: "onLocaleChange", localeLabel: "localeLabel", githubHref: "githubHref", githubLabel: "githubLabel", mobileMenuOpen: "mobileMenuOpen", onMobileMenuToggle: "onMobileMenuToggle", menuLabel: "menuLabel", classInput: ["class", "classInput"] }, ngImport: i0, template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+      <header class="st-appChrome__header">
+        <a class="st-appChrome__brand" [href]="brandHref ?? '/'" [attr.aria-label]="brandLabel ?? brandName ?? 'Accueil'">
+          @if (logoSrc) {
+            <img class="st-appChrome__logo" [src]="logoSrc" [alt]="logoAlt ?? brandName ?? ''" />
+          }
+          @if (brandName) {
+            <span class="st-appChrome__brandName">{{ brandName }}</span>
+          }
+          @if (productName) {
+            <span class="st-appChrome__productName">{{ productName }}</span>
+          }
+        </a>
+        @if (nav && nav.length > 0) {
+          <nav class="st-appChrome__nav" [attr.aria-label]="navLabel ?? 'Navigation principale'">
+            @for (item of nav; track item.href) {
+              <a
+                [href]="item.href"
+                class="st-appChrome__navLink"
+                [class.st-appChrome__navLink--active]="item.active"
+                [attr.aria-current]="item.active ? 'page' : null"
+              >{{ item.label }}</a>
+            }
+          </nav>
+        }
+      </header>
+      <main class="st-appChrome__main">
+        <ng-content></ng-content>
+      </main>
     </div>
   `, isInline: true });
 }
@@ -46,7 +73,34 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     standalone: true,
                     template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+      <header class="st-appChrome__header">
+        <a class="st-appChrome__brand" [href]="brandHref ?? '/'" [attr.aria-label]="brandLabel ?? brandName ?? 'Accueil'">
+          @if (logoSrc) {
+            <img class="st-appChrome__logo" [src]="logoSrc" [alt]="logoAlt ?? brandName ?? ''" />
+          }
+          @if (brandName) {
+            <span class="st-appChrome__brandName">{{ brandName }}</span>
+          }
+          @if (productName) {
+            <span class="st-appChrome__productName">{{ productName }}</span>
+          }
+        </a>
+        @if (nav && nav.length > 0) {
+          <nav class="st-appChrome__nav" [attr.aria-label]="navLabel ?? 'Navigation principale'">
+            @for (item of nav; track item.href) {
+              <a
+                [href]="item.href"
+                class="st-appChrome__navLink"
+                [class.st-appChrome__navLink--active]="item.active"
+                [attr.aria-current]="item.active ? 'page' : null"
+              >{{ item.label }}</a>
+            }
+          </nav>
+        }
+      </header>
+      <main class="st-appChrome__main">
+        <ng-content></ng-content>
+      </main>
     </div>
   `,
                 }]

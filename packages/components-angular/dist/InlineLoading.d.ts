@@ -13,6 +13,6 @@ export declare class InlineLoading {
     classInput?: string;
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<InlineLoading, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<InlineLoading, "st-inline-loading", never, { "label": { "alias": "label"; "required": false; }; "status": { "alias": "status"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<InlineLoading, "st-inline-loading", never, { "label": { "alias": "label"; "required": false; }; "status": { "alias": "status"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
 }
 //# sourceMappingURL=InlineLoading.d.ts.map

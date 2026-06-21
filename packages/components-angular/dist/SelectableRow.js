@@ -14,13 +14,25 @@ export class SelectableRow {
     role;
     accentBar;
     classInput;
+    handleClick() {
+        if (!this.disabled && this.onSelect) {
+            this.onSelect(!this.selected);
+        }
+    }
     get hostClass() {
-        return ["st-selectableRow", this.classInput].filter(Boolean).join(" ");
+        return classNames("st-selectableRow", this.selected && "st-selectableRow--selected", this.disabled && "st-selectableRow--disabled", this.accentBar && "st-selectableRow--accentBar", this.classInput);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: SelectableRow, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: SelectableRow, isStandalone: true, selector: "st-selectable-row", inputs: { selected: "selected", onSelect: "onSelect", disabled: "disabled", value: "value", role: "role", accentBar: "accentBar", classInput: ["class", "classInput"] }, ngImport: i0, template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: SelectableRow, isStandalone: true, selector: "st-selectable-row", inputs: { selected: "selected", onSelect: "onSelect", disabled: "disabled", value: "value", role: "role", accentBar: "accentBar", classInput: ["class", "classInput"] }, ngImport: i0, template: `
+    <div [attr.data-st-component]="componentName" [class]="hostClass"
+      [attr.role]="role || 'option'"
+      [attr.aria-selected]="selected"
+      [attr.aria-disabled]="disabled"
+      (click)="handleClick()">
+      @if (accentBar) { <span class="st-selectableRow__bar" aria-hidden="true"></span> }
+      <div class="st-selectableRow__content">
+        <ng-content></ng-content>
+      </div>
     </div>
   `, isInline: true });
 }
@@ -30,8 +42,15 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     selector: "st-selectable-row",
                     standalone: true,
                     template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+    <div [attr.data-st-component]="componentName" [class]="hostClass"
+      [attr.role]="role || 'option'"
+      [attr.aria-selected]="selected"
+      [attr.aria-disabled]="disabled"
+      (click)="handleClick()">
+      @if (accentBar) { <span class="st-selectableRow__bar" aria-hidden="true"></span> }
+      <div class="st-selectableRow__content">
+        <ng-content></ng-content>
+      </div>
     </div>
   `,
                 }]

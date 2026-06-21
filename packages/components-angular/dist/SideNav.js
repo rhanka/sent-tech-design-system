@@ -7,14 +7,27 @@ export class SideNav {
     items;
     label;
     classInput;
+    linkClass(item) {
+        return classNames("st-sidenav__link st-sideNav__link", item.active && "st-sidenav__link--active st-sideNav__link--active");
+    }
     get hostClass() {
-        return ["st-sideNav", this.classInput].filter(Boolean).join(" ");
+        return classNames("st-sidenav st-sideNav", this.classInput);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: SideNav, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: SideNav, isStandalone: true, selector: "st-side-nav", inputs: { items: "items", label: "label", classInput: ["class", "classInput"] }, ngImport: i0, template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: SideNav, isStandalone: true, selector: "st-side-nav", inputs: { items: "items", label: "label", classInput: ["class", "classInput"] }, ngImport: i0, template: `
+    <nav
+      [attr.data-st-component]="componentName"
+      [class]="hostClass"
+      [attr.aria-label]="label ?? 'Navigation'"
+    >
+      @for (item of items; track item.href) {
+        <a
+          [href]="item.href"
+          [class]="linkClass(item)"
+        >{{ item.label }}</a>
+      }
       <ng-content></ng-content>
-    </div>
+    </nav>
   `, isInline: true });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: SideNav, decorators: [{
@@ -23,9 +36,19 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     selector: "st-side-nav",
                     standalone: true,
                     template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    <nav
+      [attr.data-st-component]="componentName"
+      [class]="hostClass"
+      [attr.aria-label]="label ?? 'Navigation'"
+    >
+      @for (item of items; track item.href) {
+        <a
+          [href]="item.href"
+          [class]="linkClass(item)"
+        >{{ item.label }}</a>
+      }
       <ng-content></ng-content>
-    </div>
+    </nav>
   `,
                 }]
         }], propDecorators: { items: [{

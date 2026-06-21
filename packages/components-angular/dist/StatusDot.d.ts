@@ -24,6 +24,6 @@ export declare class StatusDot {
     classInput?: string;
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<StatusDot, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<StatusDot, "st-status-dot", never, { "tone": { "alias": "tone"; "required": false; }; "color": { "alias": "color"; "required": false; }; "size": { "alias": "size"; "required": false; }; "pulse": { "alias": "pulse"; "required": false; }; "label": { "alias": "label"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<StatusDot, "st-status-dot", never, { "tone": { "alias": "tone"; "required": false; }; "color": { "alias": "color"; "required": false; }; "size": { "alias": "size"; "required": false; }; "pulse": { "alias": "pulse"; "required": false; }; "label": { "alias": "label"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
 }
 //# sourceMappingURL=StatusDot.d.ts.map

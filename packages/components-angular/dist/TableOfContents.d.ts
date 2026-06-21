@@ -3,7 +3,12 @@ export interface TableOfContentsItem {
     id: string;
     label: string;
     level?: number;
+    href?: string;
+    active?: boolean;
+    children?: TableOfContentsItem[];
 }
+/** Alias compatible avec la spec TocItem */
+export type TocItem = TableOfContentsItem;
 export type TableOfContentsProps = {
     title?: string;
     items: TableOfContentsItem[];
@@ -19,6 +24,6 @@ export declare class TableOfContents {
     classInput?: string;
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<TableOfContents, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<TableOfContents, "st-table-of-contents", never, { "title": { "alias": "title"; "required": false; }; "items": { "alias": "items"; "required": false; }; "activeId": { "alias": "activeId"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<TableOfContents, "st-table-of-contents", never, { "title": { "alias": "title"; "required": false; }; "items": { "alias": "items"; "required": false; }; "activeId": { "alias": "activeId"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
 }
 //# sourceMappingURL=TableOfContents.d.ts.map

@@ -25,6 +25,6 @@ export declare class LanguageToggle {
     classInput?: string;
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<LanguageToggle, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<LanguageToggle, "st-language-toggle", never, { "locale": { "alias": "locale"; "required": false; }; "frLabel": { "alias": "frLabel"; "required": false; }; "enLabel": { "alias": "enLabel"; "required": false; }; "label": { "alias": "label"; "required": false; }; "selectId": { "alias": "selectId"; "required": false; }; "variant": { "alias": "variant"; "required": false; }; "accordionLabel": { "alias": "accordionLabel"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<LanguageToggle, "st-language-toggle", never, { "locale": { "alias": "locale"; "required": false; }; "frLabel": { "alias": "frLabel"; "required": false; }; "enLabel": { "alias": "enLabel"; "required": false; }; "label": { "alias": "label"; "required": false; }; "selectId": { "alias": "selectId"; "required": false; }; "variant": { "alias": "variant"; "required": false; }; "accordionLabel": { "alias": "accordionLabel"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
 }
 //# sourceMappingURL=LanguageToggle.d.ts.map

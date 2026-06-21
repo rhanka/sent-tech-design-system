@@ -52,6 +52,12 @@ export declare class KpiCard {
     decoration?: CellDecoration;
     classInput?: string;
     get hostClass(): string;
+    get resolvedLocale(): string;
+    get formattedValue(): string;
+    get isFiniteDelta(): boolean;
+    get formattedDelta(): string;
+    get resolvedTrend(): KpiCardTrend;
+    get deltaClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<KpiCard, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<KpiCard, "st-kpi-card", never, { "value": { "alias": "value"; "required": false; }; "label": { "alias": "label"; "required": false; }; "delta": { "alias": "delta"; "required": false; }; "deltaFormat": { "alias": "deltaFormat"; "required": false; }; "trend": { "alias": "trend"; "required": false; }; "format": { "alias": "format"; "required": false; }; "unit": { "alias": "unit"; "required": false; }; "currency": { "alias": "currency"; "required": false; }; "locale": { "alias": "locale"; "required": false; }; "sparkline": { "alias": "sparkline"; "required": false; }; "size": { "alias": "size"; "required": false; }; "tone": { "alias": "tone"; "required": false; }; "decoration": { "alias": "decoration"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
 }

@@ -11,17 +11,21 @@ export type StreamingMessageProps = {
     text?: unknown;
     events?: StreamingMessageEvent[];
     mode?: StreamingMessageMode;
+    streaming?: boolean;
+    content?: string;
     class?: string;
 };
 export declare class StreamingMessage {
     static readonly stComponentName = "StreamingMessage";
     readonly componentName = "StreamingMessage";
+    streaming: boolean;
+    content?: string;
     text?: unknown;
     events?: StreamingMessageEvent[];
     mode?: StreamingMessageMode;
     classInput?: string;
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<StreamingMessage, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<StreamingMessage, "st-streaming-message", never, { "text": { "alias": "text"; "required": false; }; "events": { "alias": "events"; "required": false; }; "mode": { "alias": "mode"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<StreamingMessage, "st-streaming-message", never, { "streaming": { "alias": "streaming"; "required": false; }; "content": { "alias": "content"; "required": false; }; "text": { "alias": "text"; "required": false; }; "events": { "alias": "events"; "required": false; }; "mode": { "alias": "mode"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
 }
 //# sourceMappingURL=StreamingMessage.d.ts.map

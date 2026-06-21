@@ -31,6 +31,8 @@ export type NavItemProps = {
     status?: NavItemStatus;
     /** Sélection (honorée en standalone ; la liste prime si encadrée). */
     selected?: boolean;
+    /** État actif (alias de selected pour compatibilité). */
+    active?: boolean;
     /** Non-interactif. */
     disabled?: boolean;
     /** Rend la rangée comme un lien (ancre) — anatomie identique. */
@@ -50,12 +52,13 @@ export declare class NavItem {
     count?: number;
     status?: NavItemStatus;
     selected?: boolean;
+    active?: boolean;
     disabled?: boolean;
     href?: string;
     divider?: boolean;
     classInput?: string;
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<NavItem, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<NavItem, "st-nav-item", never, { "value": { "alias": "value"; "required": false; }; "title": { "alias": "title"; "required": false; }; "caption": { "alias": "caption"; "required": false; }; "depth": { "alias": "depth"; "required": false; }; "swatch": { "alias": "swatch"; "required": false; }; "count": { "alias": "count"; "required": false; }; "status": { "alias": "status"; "required": false; }; "selected": { "alias": "selected"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "href": { "alias": "href"; "required": false; }; "divider": { "alias": "divider"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<NavItem, "st-nav-item", never, { "value": { "alias": "value"; "required": false; }; "title": { "alias": "title"; "required": false; }; "caption": { "alias": "caption"; "required": false; }; "depth": { "alias": "depth"; "required": false; }; "swatch": { "alias": "swatch"; "required": false; }; "count": { "alias": "count"; "required": false; }; "status": { "alias": "status"; "required": false; }; "selected": { "alias": "selected"; "required": false; }; "active": { "alias": "active"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "href": { "alias": "href"; "required": false; }; "divider": { "alias": "divider"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
 }
 //# sourceMappingURL=NavItem.d.ts.map

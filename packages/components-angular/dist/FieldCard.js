@@ -11,12 +11,22 @@ export class FieldCard {
     onOpenComments;
     classInput;
     get hostClass() {
-        return ["st-fieldCard", this.classInput].filter(Boolean).join(" ");
+        return classNames("st-fieldCard", this.variant && `st-fieldCard--${this.variant}`, this.tone && `st-fieldCard--${this.tone}`, this.classInput);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: FieldCard, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: FieldCard, isStandalone: true, selector: "st-field-card", inputs: { label: "label", variant: "variant", tone: "tone", commentCount: "commentCount", onOpenComments: "onOpenComments", classInput: ["class", "classInput"] }, ngImport: i0, template: `
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: FieldCard, isStandalone: true, selector: "st-field-card", inputs: { label: "label", variant: "variant", tone: "tone", commentCount: "commentCount", onOpenComments: "onOpenComments", classInput: ["class", "classInput"] }, ngImport: i0, template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+      <div class="st-fieldCard__header">
+        <span class="st-fieldCard__label">{{ label }}</span>
+        @if (commentCount !== undefined && commentCount > 0) {
+          <button type="button" class="st-fieldCard__comments" (click)="onOpenComments && onOpenComments()">
+            {{ commentCount }}
+          </button>
+        }
+      </div>
+      <div class="st-fieldCard__body">
+        <ng-content></ng-content>
+      </div>
     </div>
   `, isInline: true });
 }
@@ -27,7 +37,17 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     standalone: true,
                     template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+      <div class="st-fieldCard__header">
+        <span class="st-fieldCard__label">{{ label }}</span>
+        @if (commentCount !== undefined && commentCount > 0) {
+          <button type="button" class="st-fieldCard__comments" (click)="onOpenComments && onOpenComments()">
+            {{ commentCount }}
+          </button>
+        }
+      </div>
+      <div class="st-fieldCard__body">
+        <ng-content></ng-content>
+      </div>
     </div>
   `,
                 }]

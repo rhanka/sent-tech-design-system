@@ -17,6 +17,7 @@ export declare class Stack {
     as?: string;
     classInput?: string;
     get hostClass(): string;
+    get inlineStyles(): Record<string, string | undefined>;
     static ɵfac: i0.ɵɵFactoryDeclaration<Stack, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<Stack, "st-stack", never, { "gap": { "alias": "gap"; "required": false; }; "align": { "alias": "align"; "required": false; }; "justify": { "alias": "justify"; "required": false; }; "as": { "alias": "as"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
 }

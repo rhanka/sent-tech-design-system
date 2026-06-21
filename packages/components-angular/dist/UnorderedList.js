@@ -7,13 +7,16 @@ export class UnorderedList {
     items;
     classInput;
     get hostClass() {
-        return ["st-unorderedList", this.classInput].filter(Boolean).join(" ");
+        return classNames("st-unorderedList", this.classInput);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: UnorderedList, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: UnorderedList, isStandalone: true, selector: "st-unordered-list", inputs: { items: "items", classInput: ["class", "classInput"] }, ngImport: i0, template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: UnorderedList, isStandalone: true, selector: "st-unordered-list", inputs: { items: "items", classInput: ["class", "classInput"] }, ngImport: i0, template: `
+    <ul [attr.data-st-component]="componentName" [class]="hostClass">
+      @for (item of items; track $index) {
+        <li class="st-unorderedList__item">{{ item }}</li>
+      }
       <ng-content></ng-content>
-    </div>
+    </ul>
   `, isInline: true });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: UnorderedList, decorators: [{
@@ -22,9 +25,12 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     selector: "st-unordered-list",
                     standalone: true,
                     template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    <ul [attr.data-st-component]="componentName" [class]="hostClass">
+      @for (item of items; track $index) {
+        <li class="st-unorderedList__item">{{ item }}</li>
+      }
       <ng-content></ng-content>
-    </div>
+    </ul>
   `,
                 }]
         }], propDecorators: { items: [{

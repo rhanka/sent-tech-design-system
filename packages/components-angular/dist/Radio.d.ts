@@ -1,3 +1,4 @@
+import { EventEmitter } from "@angular/core";
 import * as i0 from "@angular/core";
 export type RadioProps = {
     label: string;
@@ -22,8 +23,13 @@ export declare class Radio {
     name?: string;
     value?: string;
     classInput?: string;
+    readonly modelValueChange: EventEmitter<string>;
+    readonly updateModelValue: EventEmitter<string>;
+    readonly change: EventEmitter<Event>;
+    get currentChecked(): boolean;
     get hostClass(): string;
+    onRadioChange(event: Event): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<Radio, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<Radio, "st-radio", never, { "label": { "alias": "label"; "required": false; }; "helperText": { "alias": "helperText"; "required": false; }; "invalid": { "alias": "invalid"; "required": false; }; "modelValue": { "alias": "modelValue"; "required": false; }; "checked": { "alias": "checked"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "name": { "alias": "name"; "required": false; }; "value": { "alias": "value"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<Radio, "st-radio", never, { "label": { "alias": "label"; "required": false; }; "helperText": { "alias": "helperText"; "required": false; }; "invalid": { "alias": "invalid"; "required": false; }; "modelValue": { "alias": "modelValue"; "required": false; }; "checked": { "alias": "checked"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "name": { "alias": "name"; "required": false; }; "value": { "alias": "value"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, { "modelValueChange": "modelValueChange"; "updateModelValue": "update:modelValue"; "change": "change"; }, never, never, true, never>;
 }
 //# sourceMappingURL=Radio.d.ts.map
