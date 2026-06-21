@@ -6,6 +6,7 @@ export type TooltipPlacement = "top" | "bottom";
 
 export type TooltipProps = {
   content: unknown;
+  triggerLabel?: string;
   placement?: TooltipPlacement;
   class?: string;
 };
@@ -24,7 +25,9 @@ function nextTooltipId(): string {
       [class]="hostClass"
     >
       <span class="st-tooltip__trigger">
-        <ng-content></ng-content>
+        @if (triggerLabel) {
+          {{ triggerLabel }}
+        }
       </span>
       <span
         [id]="tooltipId"
@@ -40,6 +43,7 @@ export class Tooltip {
   readonly tooltipId = nextTooltipId();
 
   @NgInput() content!: unknown;
+  @NgInput() triggerLabel?: string;
   @NgInput() placement?: TooltipPlacement;
   @NgInput("class") classInput?: string;
 

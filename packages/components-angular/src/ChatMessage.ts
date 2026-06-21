@@ -29,11 +29,30 @@ export type ChatMessageProps = {
   selector: "st-chat-message",
   standalone: true,
   template: `
-    <article [class]="hostClass" [attr.data-role]="role ?? 'assistant'" [attr.data-status]="normalizedStatus">
+    <article
+      [attr.data-st-component]="componentName"
+      [class]="hostClass"
+      [attr.data-role]="role ?? 'assistant'"
+      [attr.data-status]="normalizedStatus ?? null"
+      [attr.data-align]="(role ?? 'assistant') === 'user' ? 'end' : 'start'"
+      [attr.aria-live]="normalizedStatus === 'processing' ? 'polite' : null"
+    >
       <div class="st-chatMessage__body">
-        <div class="st-chatMessage__content">
-          <ng-content></ng-content>
+        <div class="st-chatMessage__bubble">
+          <div class="st-chatMessage__content">
+            @if (content) {
+              {{ content }}
+            }
+          </div>
+          @if (normalizedStatus === 'processing') {
+            <span class="st-chatMessage__pulse" aria-hidden="true"></span>
+          }
         </div>
+        @if (timestamp) {
+          <div class="st-chatMessage__footer">
+            <span class="st-chatMessage__timestamp">{{ timestamp }}</span>
+          </div>
+        }
       </div>
     </article>
   `,
@@ -44,7 +63,7 @@ export class ChatMessage {
 
   @NgInput() role?: ChatMessageRole;
   @NgInput() status?: ChatMessageStatus;
-  @NgInput() content?: unknown;
+  @NgInput() content?: string;
   @NgInput() timestamp?: unknown;
   @NgInput() footer?: unknown;
   @NgInput() actions?: unknown;
