@@ -53,7 +53,7 @@ export class TimePicker {
         [disabled]="disabled ?? false"
         (input)="onInput($event)"
       />
-      @if (errorText && invalid) {
+      @if (errorText) {
         <span class="st-field__error">{{ errorText }}</span>
       }
     </div>
@@ -79,7 +79,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
         [disabled]="disabled ?? false"
         (input)="onInput($event)"
       />
-      @if (errorText && invalid) {
+      @if (errorText) {
         <span class="st-field__error">{{ errorText }}</span>
       }
     </div>

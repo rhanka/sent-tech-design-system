@@ -7,7 +7,7 @@ export type MessageActionVariant = "default" | "danger";
  */
 export type MessageAction = {
     id?: string;
-    label?: unknown;
+    label?: string;
     icon?: unknown;
     disabled?: boolean;
     variant?: MessageActionVariant;
@@ -27,6 +27,6 @@ export declare class MessageActions {
     get hostClass(): string;
     actionClass(variant?: MessageActionVariant): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<MessageActions, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<MessageActions, "st-message-actions", never, { "actions": { "alias": "actions"; "required": false; }; "visibility": { "alias": "visibility"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<MessageActions, "st-message-actions", never, { "actions": { "alias": "actions"; "required": false; }; "visibility": { "alias": "visibility"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
 }
 //# sourceMappingURL=MessageActions.d.ts.map

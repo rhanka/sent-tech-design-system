@@ -28,6 +28,6 @@ export declare class ChatThread {
     get hostClass(): string;
     msgClass(role?: ChatMessageRole): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<ChatThread, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<ChatThread, "st-chat-thread", never, { "messages": { "alias": "messages"; "required": false; }; "emptyLabel": { "alias": "emptyLabel"; "required": false; }; "label": { "alias": "label"; "required": false; }; "autoScroll": { "alias": "autoScroll"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<ChatThread, "st-chat-thread", never, { "messages": { "alias": "messages"; "required": false; }; "emptyLabel": { "alias": "emptyLabel"; "required": false; }; "label": { "alias": "label"; "required": false; }; "autoScroll": { "alias": "autoScroll"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
 }
 //# sourceMappingURL=ChatThread.d.ts.map

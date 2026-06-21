@@ -2,6 +2,7 @@ import * as i0 from "@angular/core";
 export type TooltipPlacement = "top" | "bottom";
 export type TooltipProps = {
     content: unknown;
+    triggerLabel?: string;
     placement?: TooltipPlacement;
     class?: string;
 };
@@ -10,10 +11,11 @@ export declare class Tooltip {
     readonly componentName = "Tooltip";
     readonly tooltipId: string;
     content: unknown;
+    triggerLabel?: string;
     placement?: TooltipPlacement;
     classInput?: string;
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<Tooltip, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<Tooltip, "st-tooltip", never, { "content": { "alias": "content"; "required": false; }; "placement": { "alias": "placement"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<Tooltip, "st-tooltip", never, { "content": { "alias": "content"; "required": false; }; "triggerLabel": { "alias": "triggerLabel"; "required": false; }; "placement": { "alias": "placement"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
 }
 //# sourceMappingURL=Tooltip.d.ts.map

@@ -13,33 +13,41 @@ export class ChatThread {
         return classNames("st-chatThread", this.classInput);
     }
     msgClass(role) {
-        const r = role ?? "assistant";
-        return classNames("st-chatMessage", `st-chatMessage--${r}`);
+        return classNames("st-chatMessage", `st-chatMessage--${role ?? "assistant"}`);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: ChatThread, deps: [], target: i0.ɵɵFactoryTarget.Component });
     static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: ChatThread, isStandalone: true, selector: "st-chat-thread", inputs: { messages: "messages", emptyLabel: "emptyLabel", label: "label", autoScroll: "autoScroll", classInput: ["class", "classInput"] }, ngImport: i0, template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass" role="log" aria-live="polite" [attr.aria-label]="label || 'Chat'">
-      <div class="st-chatThread__messages">
+    <section
+      [attr.data-st-component]="componentName"
+      [class]="hostClass"
+      role="log"
+      aria-live="polite"
+      aria-relevant="additions text"
+      [attr.aria-label]="label || 'Chat'"
+    >
+      <div class="st-chatThread__list">
         @if (messages && messages.length > 0) {
           @for (msg of messages; track msg.id) {
             <article
-              class="st-chatMessage"
               [class]="msgClass(msg.role)"
+              [attr.data-st-component]="'ChatMessage'"
               [attr.data-role]="msg.role ?? 'assistant'"
               [attr.data-status]="msg.status ?? null"
+              [attr.data-align]="(msg.role ?? 'assistant') === 'user' ? 'end' : 'start'"
             >
               <div class="st-chatMessage__body">
-                <div class="st-chatMessage__content">{{ msg.content }}</div>
+                <div class="st-chatMessage__bubble">
+                  <div class="st-chatMessage__content">{{ msg.content }}</div>
+                </div>
               </div>
             </article>
           }
-        } @else if (messages !== undefined) {
-          <div class="st-chatThread__empty">{{ emptyLabel ?? '' }}</div>
-        } @else {
-          <ng-content></ng-content>
         }
       </div>
-    </div>
+      @if (messages !== undefined && messages.length === 0 && emptyLabel) {
+        <div class="st-chatThread__empty">{{ emptyLabel }}</div>
+      }
+    </section>
   `, isInline: true });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: ChatThread, decorators: [{
@@ -48,28 +56,37 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     selector: "st-chat-thread",
                     standalone: true,
                     template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass" role="log" aria-live="polite" [attr.aria-label]="label || 'Chat'">
-      <div class="st-chatThread__messages">
+    <section
+      [attr.data-st-component]="componentName"
+      [class]="hostClass"
+      role="log"
+      aria-live="polite"
+      aria-relevant="additions text"
+      [attr.aria-label]="label || 'Chat'"
+    >
+      <div class="st-chatThread__list">
         @if (messages && messages.length > 0) {
           @for (msg of messages; track msg.id) {
             <article
-              class="st-chatMessage"
               [class]="msgClass(msg.role)"
+              [attr.data-st-component]="'ChatMessage'"
               [attr.data-role]="msg.role ?? 'assistant'"
               [attr.data-status]="msg.status ?? null"
+              [attr.data-align]="(msg.role ?? 'assistant') === 'user' ? 'end' : 'start'"
             >
               <div class="st-chatMessage__body">
-                <div class="st-chatMessage__content">{{ msg.content }}</div>
+                <div class="st-chatMessage__bubble">
+                  <div class="st-chatMessage__content">{{ msg.content }}</div>
+                </div>
               </div>
             </article>
           }
-        } @else if (messages !== undefined) {
-          <div class="st-chatThread__empty">{{ emptyLabel ?? '' }}</div>
-        } @else {
-          <ng-content></ng-content>
         }
       </div>
-    </div>
+      @if (messages !== undefined && messages.length === 0 && emptyLabel) {
+        <div class="st-chatThread__empty">{{ emptyLabel }}</div>
+      }
+    </section>
   `,
                 }]
         }], propDecorators: { messages: [{

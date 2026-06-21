@@ -16,7 +16,7 @@ export declare class ChatMessage {
     readonly componentName = "ChatMessage";
     role?: ChatMessageRole;
     status?: ChatMessageStatus;
-    content?: unknown;
+    content?: string;
     timestamp?: unknown;
     footer?: unknown;
     actions?: unknown;
@@ -25,6 +25,6 @@ export declare class ChatMessage {
     get normalizedStatus(): string | undefined;
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<ChatMessage, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<ChatMessage, "st-chat-message", never, { "role": { "alias": "role"; "required": false; }; "status": { "alias": "status"; "required": false; }; "content": { "alias": "content"; "required": false; }; "timestamp": { "alias": "timestamp"; "required": false; }; "footer": { "alias": "footer"; "required": false; }; "actions": { "alias": "actions"; "required": false; }; "avatar": { "alias": "avatar"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<ChatMessage, "st-chat-message", never, { "role": { "alias": "role"; "required": false; }; "status": { "alias": "status"; "required": false; }; "content": { "alias": "content"; "required": false; }; "timestamp": { "alias": "timestamp"; "required": false; }; "footer": { "alias": "footer"; "required": false; }; "actions": { "alias": "actions"; "required": false; }; "avatar": { "alias": "avatar"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
 }
 //# sourceMappingURL=ChatMessage.d.ts.map
