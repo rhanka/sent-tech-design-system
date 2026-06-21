@@ -294,6 +294,7 @@
         if (out.value.includes("/")) {
           const [s, e] = out.value.split("/");
           out.value = { start: s ? new Date(s) : null, end: e ? new Date(e) : null };
+          if (!out.mode) out.mode = "range";
         } else {
           out.value = new Date(out.value);
         }
