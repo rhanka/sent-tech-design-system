@@ -29,7 +29,7 @@
 
   const DS_COMPONENTS = [
     { name: "KpiCard", slug: "kpi-card" }, { name: "AreaChart", slug: "area-chart" },
-    { name: "PieChart", slug: "pie-chart" }, { name: "Table", slug: "table" },
+    { name: "DonutChart", slug: "donut-chart" }, { name: "Table", slug: "table" },
     { name: "DatePicker", slug: "date-picker" }, { name: "Select", slug: "select" },
     { name: "Badge", slug: "badge" }, { name: "Button", slug: "button" }
   ];
@@ -62,7 +62,7 @@
             { el: "div", props: { class: "ao-chart-main" },
               children: [{ comp: "AreaChart", props: { label: fr ? "Revenu mensuel — tendance" : "Monthly Revenue — trend", data: AREA_DATA, tone: "category3", height: 220 } }] },
             { el: "div", props: { class: "ao-chart-side" },
-              children: [{ comp: "PieChart", props: { label: fr ? "Sources de trafic" : "Traffic Sources", data: PIE_DATA, height: 220 } }] }
+              children: [{ comp: "DonutChart", props: { centerLabel: fr ? "Sources de trafic" : "Traffic Sources", data: PIE_DATA } }] }
           ]
         },
         {
@@ -128,7 +128,7 @@
         <tr><td>KpiCard</td><td>delta</td><td>number</td><td>{fr ? "Variation absolue ou relative" : "Absolute or relative delta"}</td></tr>
         <tr><td>KpiCard</td><td>sparkline</td><td>number[]</td><td>{fr ? "Points du mini-graphe" : "Sparkline data points"}</td></tr>
         <tr><td>AreaChart</td><td>data</td><td>{'{ x, y }[]'}</td><td>{fr ? "Série temporelle" : "Time series data"}</td></tr>
-        <tr><td>PieChart</td><td>data</td><td>{'{ label, value, tone }[]'}</td><td>{fr ? "Tranches avec libellé et ton" : "Slices with label and tone"}</td></tr>
+        <tr><td>DonutChart</td><td>data</td><td>{'{ label, value, tone }[]'}</td><td>{fr ? "Tranches avec libellé et ton" : "Slices with label and tone"}</td></tr>
         <tr><td>Table</td><td>columns</td><td>Column[]</td><td>{fr ? "Colonnes (key, label, align)" : "Columns (key, label, align)"}</td></tr>
         <tr><td>Select</td><td>options</td><td>Option[]</td><td>{fr ? "Choix disponibles" : "Available options"}</td></tr>
       </tbody>

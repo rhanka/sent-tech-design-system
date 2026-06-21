@@ -63,7 +63,7 @@
               { comp: "AreaChart", props: { label: fr ? "Évolution de la valeur du stock" : "Stock Value Trend", data: AREA_DATA, tone: "category1", height: 220 } }
             ] },
             { el: "div", props: { class: "so-chart-side" }, children: [
-              { comp: "PieChart", props: { label: fr ? "Répartition par entrepôt" : "Breakdown by Warehouse", data: PIE_DATA, height: 220 } }
+              { comp: "DonutChart", props: { centerLabel: fr ? "Répartition par entrepôt" : "Breakdown by Warehouse", data: PIE_DATA } }
             ] }
           ]
         },
@@ -114,7 +114,7 @@
       {#each [
         { name: "KpiCard", slug: "kpi-card" },
         { name: "AreaChart", slug: "area-chart" },
-        { name: "PieChart", slug: "pie-chart" },
+        { name: "DonutChart", slug: "donut-chart" },
         { name: "Table", slug: "table" },
         { name: "Badge", slug: "badge" },
         { name: "Select", slug: "select" }
@@ -139,7 +139,7 @@
         <tr><td>KpiCard</td><td>delta</td><td>number</td><td>{fr ? "Variation absolue ou relative" : "Absolute or relative delta"}</td></tr>
         <tr><td>KpiCard</td><td>sparkline</td><td>number[]</td><td>{fr ? "Série de points pour le mini-graphe" : "Data points for the sparkline"}</td></tr>
         <tr><td>AreaChart</td><td>data</td><td>{"{ x, y }[]"}</td><td>{fr ? "Points de la série temporelle" : "Time series data points"}</td></tr>
-        <tr><td>PieChart</td><td>data</td><td>{"{ label, value, tone }[]"}</td><td>{fr ? "Tranches avec libellé et ton" : "Slices with label and tone"}</td></tr>
+        <tr><td>DonutChart</td><td>data</td><td>{"{ label, value, tone }[]"}</td><td>{fr ? "Tranches avec libellé et ton" : "Slices with label and tone"}</td></tr>
         <tr><td>Table</td><td>columns</td><td>Column[]</td><td>{fr ? "Définition des colonnes (key, label, align)" : "Column definitions (key, label, align)"}</td></tr>
         <tr><td>Select</td><td>options</td><td>Option[]</td><td>{fr ? "Liste de choix disponibles" : "Available option list"}</td></tr>
         <tr><td>Badge</td><td>tone</td><td>string</td><td>{fr ? "Ton sémantique (danger, success, info…)" : "Semantic tone (danger, success, info…)"}</td></tr>
