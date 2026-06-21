@@ -4,7 +4,7 @@
   "description": "Airbus theme mapping for the Sentropic design system.",
   "type": "module",
   "publishConfig": {
-    "access": "public"
+    "access": "restricted"
   },
   "repository": {
     "type": "git",
