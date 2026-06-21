@@ -8,8 +8,7 @@
   // Identités de démonstration pour les deux variantes d'état connecté.
   const accountWithPhoto: HeaderAccount = {
     name: "Alex Martin",
-    email: "alex.martin@sentropic.app",
-    avatarUrl: "/SENT-logo-squared.svg"
+    email: "alex.martin@sentropic.app"
   };
 
   const accountWithInitials: HeaderAccount = {
@@ -26,7 +25,7 @@
   // Exemple de consommation AppHeader (marque par props + classes utilitaires publiées).
   const appHeaderUsageSnippet = `<AppHeader
   brandName="Sentropic"
-  productName="dataviz"
+  productName="Console"
   logoSrc="/SENT-logo-squared.svg"
   brandHref="/"
   nav={topNav}        <!-- <a class="st-appHeader__navLink" aria-current="page"> -->
@@ -129,18 +128,20 @@
         Logo + titre, navigation primaire, actions (recherche, notifications) et compte
         avec menu. Cliquez sur l'identité pour ouvrir le menu compte.
       </p>
-      <Header
-        title="Console"
-        label="En-tête de la console Sentropic"
-        sticky={false}
-        logo={brand}
-        navigation={primaryNav}
-        actions={utilityActions}
-        account={accountWithPhoto}
-        accountMenu={photoMenu}
-        accountMenuOpen={photoMenuOpen}
-        onAccountTriggerClick={() => (photoMenuOpen = !photoMenuOpen)}
-      />
+      <div class="header-preview-full">
+        <Header
+          title="Console"
+          label="En-tête de la console Sentropic"
+          sticky={false}
+          logo={brand}
+          navigation={primaryNav}
+          actions={utilityActions}
+          account={accountWithPhoto}
+          accountMenu={photoMenu}
+          accountMenuOpen={photoMenuOpen}
+          onAccountTriggerClick={() => (photoMenuOpen = !photoMenuOpen)}
+        />
+      </div>
     </article>
   </section>
   <section class="docs-section">
@@ -157,53 +158,59 @@
           CTA explicite « Se connecter » via <code>onSignIn</code> / <code>signInLabel</code>,
           sans menu compte ni carré vide.
         </p>
-        <Header
-          title="Console"
-          sticky={false}
-          logo={brand}
-          navigation={primaryNav}
-          actions={utilityActions}
-          signInLabel="Se connecter"
-          onSignIn={() => {}}
-        />
+        <div class="header-preview-full">
+          <Header
+            title="Console"
+            sticky={false}
+            logo={brand}
+            navigation={primaryNav}
+            actions={utilityActions}
+            signInLabel="Se connecter"
+            onSignIn={() => {}}
+          />
+        </div>
       </article>
 
       <article class="docs-demo-block">
-        <h3>2. Connecté avec photo</h3>
+        <h3>2. Connecté avec initiales (fallback)</h3>
         <p class="docs-demo-context">
-          <code>account.avatarUrl</code> est fourni : la photo est rendue dans un avatar
-          carré (<code>object-fit: cover</code>), accompagnée du nom et de l'email. Le menu
-          compte est disponible.
+          Sans <code>avatarUrl</code>, le Header affiche les initiales (ici «&nbsp;AM&nbsp;» dérivées
+          automatiquement de « Alex Martin »). Le nom et l'email restent affichés : pas d'icône
+          carrée anonyme.
         </p>
-        <Header
-          title="Console"
-          sticky={false}
-          logo={brand}
-          navigation={primaryNav}
-          account={accountWithPhoto}
-          accountMenu={photoMenu}
-          accountMenuOpen={photoMenuOpen}
-          onAccountTriggerClick={() => (photoMenuOpen = !photoMenuOpen)}
-        />
+        <div class="header-preview-full">
+          <Header
+            title="Console"
+            sticky={false}
+            logo={brand}
+            navigation={primaryNav}
+            account={accountWithPhoto}
+            accountMenu={photoMenu}
+            accountMenuOpen={photoMenuOpen}
+            onAccountTriggerClick={() => (photoMenuOpen = !photoMenuOpen)}
+          />
+        </div>
       </article>
 
       <article class="docs-demo-block">
-        <h3>3. Connecté avec initiales (fallback)</h3>
+        <h3>3. Connecté avec initiales explicites</h3>
         <p class="docs-demo-context">
           Sans <code>avatarUrl</code>, le Header retombe sur les initiales (ici dérivées
           automatiquement de « Camille Noé » → <code>CN</code>). Le nom et l'email restent
           affichés : pas d'icône carrée anonyme.
         </p>
-        <Header
-          title="Console"
-          sticky={false}
-          logo={brand}
-          navigation={primaryNav}
-          account={accountWithInitials}
-          accountMenu={initialsMenu}
-          accountMenuOpen={initialsMenuOpen}
-          onAccountTriggerClick={() => (initialsMenuOpen = !initialsMenuOpen)}
-        />
+        <div class="header-preview-full">
+          <Header
+            title="Console"
+            sticky={false}
+            logo={brand}
+            navigation={primaryNav}
+            account={accountWithInitials}
+            accountMenu={initialsMenu}
+            accountMenuOpen={initialsMenuOpen}
+            onAccountTriggerClick={() => (initialsMenuOpen = !initialsMenuOpen)}
+          />
+        </div>
       </article>
     </div>
   </section>
@@ -242,22 +249,40 @@
       obtient le même rendu que ce site en passant uniquement ses libellés.
     </p>
     <article class="docs-demo-block">
-      <h3>Marque par props (aucun CSS d'application)</h3>
+      <h3>Mode A — produit seul (<code>productName</code> uniquement)</h3>
       <p class="docs-demo-context">
-        Fournir <code>brandName</code>, <code>productName</code> et <code>logoSrc</code> rend le
-        bloc marque officiel (logo + « Sentropic » + sous-titre produit). Les liens de nav portent
+        Sans <code>brandName</code>, seul le nom produit est affiché dans la zone marque.
+        Cas d'usage : application mono-produit où la marque parente n'est pas exposée dans le chrome.
+      </p>
+      <div class="header-preview-full">
+        <AppHeader
+          productName="Console"
+          logoSrc="/SENT-logo-squared.svg"
+          brandHref="/"
+          nav={appHeaderNav}
+          actions={appHeaderActions}
+        />
+      </div>
+    </article>
+    <article class="docs-demo-block">
+      <h3>Mode B — marque + produit (<code>brandName</code> + <code>productName</code>)</h3>
+      <p class="docs-demo-context">
+        Avec <code>brandName</code> et <code>productName</code>, le bloc marque affiche le nom
+        de la société en gras puis le produit en sous-titre. Les liens de nav portent
         <code>st-appHeader__navLink</code> (pill soulignée + état actif via
         <code>aria-current="page"</code>) ; les contrôles utilitaires portent
         <code>st-appHeader__control</code> (pill thème / langue / icône).
       </p>
-      <AppHeader
-        brandName="Sentropic"
-        productName="dataviz"
-        logoSrc="/SENT-logo-squared.svg"
-        brandHref="/"
-        nav={appHeaderNav}
-        actions={appHeaderActions}
-      />
+      <div class="header-preview-full">
+        <AppHeader
+          brandName="Sentropic"
+          productName="Console"
+          logoSrc="/SENT-logo-squared.svg"
+          brandHref="/"
+          nav={appHeaderNav}
+          actions={appHeaderActions}
+        />
+      </div>
     </article>
     <h3>API ajoutée (marque)</h3>
     <table class="docs-table">
@@ -590,5 +615,11 @@
   .docs-list li {
     color: var(--docs-muted);
     line-height: 1.6;
+  }
+
+  /* Prévisualisation pleine largeur des exemples Header/AppHeader */
+  .header-preview-full {
+    margin: 0 calc(-1 * var(--st-spacing-6, 1.5rem));
+    overflow: hidden;
   }
 </style>
