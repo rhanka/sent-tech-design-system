@@ -66,6 +66,37 @@
   let host: HTMLDivElement | undefined = $state();
   let list: HTMLUListElement | undefined = $state();
 
+  // Cap viewport-aware (aligné sur MenuPopover) : sans ça, une longue liste
+  // (~12+ items) déborde du viewport en mobile <768px sans scroll. On borne la
+  // hauteur du panneau à l'espace réellement disponible sous (ou au-dessus, en
+  // placement `top`) le déclencheur, et `overflow-y:auto` (CSS) rend scrollable.
+  let maxHeight = $state(0);
+  const VIEWPORT_GAP = 4;
+  const VIEWPORT_MARGIN = 8;
+  const MIN_PANEL_HEIGHT = 160;
+
+  function computeMaxHeight() {
+    if (!host || typeof window === "undefined") return;
+    const rect = host.getBoundingClientRect();
+    const up = placement === "top-start" || placement === "top-end";
+    maxHeight = up
+      ? Math.max(rect.top - VIEWPORT_GAP - VIEWPORT_MARGIN, MIN_PANEL_HEIGHT)
+      : Math.max(window.innerHeight - rect.bottom - VIEWPORT_GAP - VIEWPORT_MARGIN, MIN_PANEL_HEIGHT);
+  }
+
+  // À l'ouverture : calcule la hauteur dispo et suit scroll/resize tant qu'ouvert.
+  $effect(() => {
+    if (!open) return;
+    computeMaxHeight();
+    const recompute = () => computeMaxHeight();
+    window.addEventListener("scroll", recompute, true);
+    window.addEventListener("resize", recompute);
+    return () => {
+      window.removeEventListener("scroll", recompute, true);
+      window.removeEventListener("resize", recompute);
+    };
+  });
+
   function getFocusableItems(): HTMLButtonElement[] {
     return Array.from(
       list?.querySelectorAll<HTMLButtonElement>('[role="menuitem"]:not(:disabled)') ?? []
@@ -196,7 +227,13 @@
     <Ellipsis size={18} strokeWidth={2.25} aria-hidden="true" />
   </button>
   {#if open}
-    <ul bind:this={list} class="st-overflowMenu__list" role="menu" aria-label={label}>
+    <ul
+      bind:this={list}
+      class="st-overflowMenu__list"
+      role="menu"
+      aria-label={label}
+      style={maxHeight ? `max-height: ${maxHeight}px` : undefined}
+    >
       {#each items as item, index (index)}
         {#if isAction(item)}
           {@const Icon = item.icon}
@@ -281,6 +318,10 @@
     margin: 0;
     min-width: var(--st-component-menu-minWidth, 12rem);
     max-width: var(--st-component-menu-maxWidth, 18rem);
+    /* Fallback CSS si le calcul JS n'a pas encore posé le max-height inline ;
+       overflow-y:auto rend la liste scrollable quand elle dépasse le viewport. */
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
     padding: var(--st-spacing-1, 0.25rem);
     position: absolute;
     z-index: var(--st-component-popover-zIndex, 80);

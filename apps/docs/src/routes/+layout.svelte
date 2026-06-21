@@ -621,7 +621,7 @@
          (icône User, même densité que thème/langue), pas un bouton plein qui
          casse l'homogénéité. Connecté -> menu compte (IdentityMenu). -->
     {#if auth.status === "authed"}
-      <IdentityMenu isAuthenticated={true} user={identityUser} onLogout={() => auth.logout()} />
+      <IdentityMenu isAuthenticated={true} user={identityUser} onLogout={() => auth.logout()} compact={true} />
     {:else}
       <button
         type="button"

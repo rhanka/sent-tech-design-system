@@ -44,6 +44,11 @@
      * - `accordion` : déclencheur + liste inline (tiroir mobile).
      */
     variant?: "dropdown" | "accordion";
+    /**
+     * Mode compact : n'affiche que l'avatar (2 initiales) sans nom ni chevron.
+     * Idéal pour les headers où l'espace est limité.
+     */
+    compact?: boolean;
     class?: string;
   }
 
@@ -51,6 +56,12 @@
   export function identityInitial(user: IdentityUser | null | undefined): string {
     const source = user?.displayName || user?.email || "U";
     return source.charAt(0).toUpperCase();
+  }
+
+  /** Deux initiales (1re lettre de chaque mot, jusqu'à 2 mots) pour le mode compact. */
+  export function identityInitials(user: IdentityUser | null | undefined): string {
+    const source = user?.displayName || user?.email || "U";
+    return source.trim().split(/\s+/).map((w) => w[0]).slice(0, 2).join("").toUpperCase();
   }
 </script>
 
@@ -71,6 +82,7 @@
     settingsLabel = "Paramètres",
     logoutLabel = "Se déconnecter",
     variant = "dropdown",
+    compact = false,
     class: className,
   }: IdentityMenuProps = $props();
 
@@ -91,8 +103,11 @@
     onOpenChange?.(next);
   }
 
-  const classes = () => ["st-identityMenu", className].filter(Boolean).join(" ");
-  const initial = $derived(identityInitial(user));
+  const classes = () =>
+    ["st-identityMenu", compact ? "st-identityMenu--compact" : null, className]
+      .filter(Boolean)
+      .join(" ");
+  const initial = $derived(compact ? identityInitials(user) : identityInitial(user));
   const displayName = $derived(user?.displayName || user?.email || "User");
 
   function getMenuItems(): HTMLElement[] {
@@ -234,17 +249,19 @@
       onkeydown={onTriggerKeydown}
     >
       <span class="st-identityMenu__avatar" aria-hidden="true">{initial}</span>
-      <span class="st-identityMenu__meta">
-        <span class="st-identityMenu__name">{displayName}</span>
-        {#if variant === "accordion" && user.email}
-          <span class="st-identityMenu__email">{user.email}</span>
-        {/if}
-      </span>
-      <ChevronDown
-        class={`st-identityMenu__chevron${isOpen ? " st-identityMenu__chevron--open" : ""}`}
-        size={16}
-        aria-hidden="true"
-      />
+      {#if !compact}
+        <span class="st-identityMenu__meta">
+          <span class="st-identityMenu__name">{displayName}</span>
+          {#if variant === "accordion" && user.email}
+            <span class="st-identityMenu__email">{user.email}</span>
+          {/if}
+        </span>
+        <ChevronDown
+          class={`st-identityMenu__chevron${isOpen ? " st-identityMenu__chevron--open" : ""}`}
+          size={16}
+          aria-hidden="true"
+        />
+      {/if}
     </button>
 
     {#if isOpen}
@@ -307,6 +324,10 @@
 
   .st-identityMenu--accordion {
     width: 100%;
+  }
+
+  .st-identityMenu--compact .st-identityMenu__trigger {
+    padding: var(--st-spacing-1, 0.25rem);
   }
 
   .st-identityMenu__trigger {
