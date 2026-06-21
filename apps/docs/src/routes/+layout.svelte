@@ -658,6 +658,8 @@
     aria-haspopup="dialog"
   >
     <SearchIcon size={16} strokeWidth={2.1} aria-hidden="true" />
+    <span class="docs-search-trigger__label">{locale.value === "fr" ? "Rechercher…" : "Search…"}</span>
+    <kbd class="docs-search-trigger__kbd">/</kbd>
   </button>
 {/snippet}
 
