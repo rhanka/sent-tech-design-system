@@ -41,6 +41,7 @@ export type RangeSliderProps = {
           [step]="step ?? 1"
           [value]="low"
           [disabled]="disabled ?? false"
+          [attr.aria-label]="ariaLabelMin ?? 'Minimum value'"
           (input)="onLow($event)"
         />
         <input
@@ -51,9 +52,19 @@ export type RangeSliderProps = {
           [step]="step ?? 1"
           [value]="high"
           [disabled]="disabled ?? false"
+          [attr.aria-label]="ariaLabelMax ?? 'Maximum value'"
           (input)="onHigh($event)"
         />
       </div>
+      @if (showValue) {
+        <span class="st-rangeSlider__values">{{ formatValue(low) }} – {{ formatValue(high) }}</span>
+      }
+      @if (errorText) {
+        <span class="st-field__error">{{ errorText }}</span>
+      }
+      @if (!errorText && helperText) {
+        <span class="st-field__help">{{ helperText }}</span>
+      }
     </div>
   `,
 })
@@ -100,6 +111,10 @@ export class RangeSlider {
       this.invalid ? "st-field--invalid" : undefined,
       this.classInput,
     );
+  }
+
+  formatValue(n: number): string {
+    return this.valueFormatter ? this.valueFormatter(n) : String(n);
   }
 
   onLow(e: Event): void {

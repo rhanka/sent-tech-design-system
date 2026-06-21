@@ -26,9 +26,13 @@ export type StreamingMessageProps = {
   selector: "st-streaming-message",
   standalone: true,
   template: `
-    <div class="st-streamingMessage" [class]="hostClass">
+    <div [attr.data-st-component]="componentName" [class]="hostClass">
       <div class="st-streamingMessage__content">
-        <ng-content></ng-content>
+        @if (resolvedText) {
+          <p class="st-streamingMessage__text">{{ resolvedText }}</p>
+        } @else {
+          <p class="st-streamingMessage__text st-streamingMessage__text--muted">Streaming en cours…</p>
+        }
       </div>
       @if (streaming) {
         <span class="st-streamingMessage__cursor" aria-hidden="true"></span>
@@ -53,5 +57,9 @@ export class StreamingMessage {
       this.streaming ? "st-streamingMessage--streaming" : undefined,
       this.classInput,
     );
+  }
+
+  get resolvedText(): string | undefined {
+    return this.content ?? (this.text as string | undefined);
   }
 }

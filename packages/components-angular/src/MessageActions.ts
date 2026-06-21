@@ -11,7 +11,7 @@ export type MessageActionVariant = "default" | "danger";
  */
 export type MessageAction = {
   id?: string;
-  label?: unknown;
+  label?: string;
   icon?: unknown;
   disabled?: boolean;
   variant?: MessageActionVariant;
@@ -28,8 +28,16 @@ export type MessageActionsProps = {
   selector: "st-message-actions",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass" role="toolbar">
-      <ng-content></ng-content>
+    <div [attr.data-st-component]="componentName" [class]="hostClass" role="group" aria-label="Actions du message">
+      @for (action of actions ?? []; track action.id ?? $index) {
+        <button
+          type="button"
+          [class]="actionClass(action.variant)"
+          [disabled]="action.disabled ?? false"
+          [attr.aria-label]="action.label ?? null"
+          (click)="action.onClick && action.onClick()"
+        >{{ action.label }}</button>
+      }
     </div>
   `,
 })
@@ -37,15 +45,22 @@ export class MessageActions {
   static readonly stComponentName = "MessageActions";
   readonly componentName = "MessageActions";
 
-  @NgInput() actions!: MessageAction[];
+  @NgInput() actions: MessageAction[] = [];
   @NgInput() visibility?: "always" | "hover";
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
     return classNames(
       "st-messageActions",
-      this.visibility === "hover" ? "st-messageActions--hover" : undefined,
+      this.visibility === "hover" ? "st-messageActions--hoverOnly" : undefined,
       this.classInput,
+    );
+  }
+
+  actionClass(variant?: MessageActionVariant): string {
+    return classNames(
+      "st-messageActions__action",
+      variant === "danger" ? "st-messageActions__action--danger" : undefined,
     );
   }
 }

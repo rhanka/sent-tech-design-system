@@ -44,7 +44,7 @@ let _tpCounter = 0;
         [disabled]="disabled ?? false"
         (input)="onInput($event)"
       />
-      @if (errorText && invalid) {
+      @if (errorText) {
         <span class="st-field__error">{{ errorText }}</span>
       }
     </div>

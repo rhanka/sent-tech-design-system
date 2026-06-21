@@ -11,6 +11,7 @@ export type DrawerProps = {
   placement?: DrawerPlacement;
   class?: string;
   closeLabel?: string;
+  bodyText?: string;
 };
 
 @Component({
@@ -31,22 +32,26 @@ export type DrawerProps = {
           aria-modal="true"
           [attr.aria-label]="title || 'Drawer'"
         >
-          <div class="st-drawer__header">
-            @if (title) {
-              <h2 class="st-drawer__title">{{ title }}</h2>
-            }
+          <header class="st-drawer__header">
+            <div>
+              @if (title) {
+                <h2 class="st-drawer__title">{{ title }}</h2>
+              }
+              @if (description) {
+                <p class="st-drawer__description">{{ description }}</p>
+              }
+            </div>
             <button
               type="button"
               class="st-drawer__close"
               [attr.aria-label]="closeLabel || 'Close'"
               (click)="close.emit()"
-            >&#x2715;</button>
-          </div>
-          @if (description) {
-            <p class="st-drawer__description">{{ description }}</p>
-          }
+            ><span aria-hidden="true">&#x2715;</span></button>
+          </header>
           <div class="st-drawer__body">
-            <ng-content></ng-content>
+            @if (bodyText) {
+              <p>{{ bodyText }}</p>
+            }
           </div>
         </aside>
       </div>
@@ -62,6 +67,7 @@ export class Drawer {
   @NgInput() description?: string;
   @NgInput() placement?: DrawerPlacement;
   @NgInput() closeLabel?: string;
+  @NgInput() bodyText?: string;
   @NgInput("class") classInput?: string;
 
   @Output() readonly close = new EventEmitter<void>();
