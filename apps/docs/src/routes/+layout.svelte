@@ -584,6 +584,10 @@
 {#snippet docsBrand()}
   <a class="docs-brand" href="/" aria-label="Sentropic Design System">
     <img class="docs-brand-mark" src="/SENT-logo-squared.svg" alt="Sentropic Design System" />
+    <span class="docs-brand-copy">
+      <span class="docs-brand-name">Sentropic</span>
+      <span class="docs-brand-product">Design System</span>
+    </span>
   </a>
 {/snippet}
 
@@ -654,8 +658,6 @@
     aria-haspopup="dialog"
   >
     <SearchIcon size={16} strokeWidth={2.1} aria-hidden="true" />
-    <span class="docs-search-trigger__label">{locale.value === "fr" ? "Rechercher…" : "Search…"}</span>
-    <kbd class="docs-search-trigger__kbd">/</kbd>
   </button>
 {/snippet}
 

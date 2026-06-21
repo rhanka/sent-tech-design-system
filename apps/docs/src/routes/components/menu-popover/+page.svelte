@@ -17,27 +17,24 @@
   // (kind/value/danger) pour un rendu SSR correct.
   const actionsDemo = $derived<NodeSpec[]>([
     {
-      comp: "MenuPopover",
-      props: { open: true, placement: "bottom-start", label: fr("Actions", "Actions") },
-      children: [
-        {
-          comp: "Menu",
-          props: {
-            label: fr("Actions", "Actions"),
-            items: [
-              { kind: "group", label: fr("Édition", "Edit") },
-              { value: "edit", label: fr("Éditer", "Edit") },
-              { value: "duplicate", label: fr("Dupliquer", "Duplicate") },
-              { kind: "divider" },
-              { kind: "group", label: fr("Distribuer", "Distribute") },
-              { value: "share", label: fr("Partager", "Share") },
-              { value: "archive", label: fr("Archiver", "Archive") },
-              { kind: "divider" },
-              { value: "delete", label: fr("Supprimer", "Delete"), danger: true }
-            ]
-          }
-        }
-      ]
+      comp: "OverflowMenu",
+      props: {
+        open: true,
+        placement: "bottom-start",
+        label: fr("Actions", "Actions"),
+        triggerLabel: fr("Actions", "Actions"),
+        items: [
+          { kind: "group", label: fr("Édition", "Edit") },
+          { value: "edit", label: fr("Éditer", "Edit"), icon: "✎" },
+          { value: "duplicate", label: fr("Dupliquer", "Duplicate"), icon: "⎘" },
+          { kind: "divider" },
+          { kind: "group", label: fr("Distribuer", "Distribute") },
+          { value: "share", label: fr("Partager", "Share"), icon: "↗" },
+          { value: "archive", label: fr("Archiver", "Archive"), icon: "⊟" },
+          { kind: "divider" },
+          { value: "delete", label: fr("Supprimer", "Delete"), danger: true, icon: "✕" }
+        ]
+      }
     }
   ]);
 
@@ -53,9 +50,8 @@
       props: { class: "docs-demo-stack" },
       children: (["bottom-start", "bottom-end", "top-start", "top-end"] as const).map(
         (placement) => ({
-          comp: "MenuPopover" as const,
-          props: { open: true, placement, label: placement },
-          children: [{ comp: "Menu" as const, props: { label: placement, items: placementItems } }]
+          comp: "OverflowMenu" as const,
+          props: { open: true, placement, label: placement, triggerLabel: placement, items: placementItems }
         })
       )
     }

@@ -8,7 +8,7 @@
     class?: string;
   } & Record<`data-${string}`, unknown>;
 
-  export type MenuIcon = Component<MenuIconProps>;
+  export type MenuIcon = Component<MenuIconProps> | string;
 
   export interface MenuActionItem {
     kind?: "item";
@@ -158,7 +158,11 @@
         >
           {#if Icon}
             <span class="st-menu__itemIcon" aria-hidden="true">
-              <Icon size={16} strokeWidth={2} />
+              {#if typeof Icon === "string"}
+                {Icon}
+              {:else}
+                <Icon size={16} strokeWidth={2} />
+              {/if}
             </span>
           {/if}
           <span class="st-menu__itemLabel">{item.label}</span>

@@ -6723,11 +6723,12 @@ import { ChatComposer } from "@sentropic/design-system-vue";
           {
             comp: "Menu",
             props: {
+              label: "Actions",
               items: [
-                { id: "edit", label: "Modifier" },
-                { id: "duplicate", label: "Dupliquer" },
-                { type: "divider" },
-                { id: "delete", label: "Supprimer", variant: "danger" }
+                { value: "edit", label: "Modifier", icon: "✎" },
+                { value: "duplicate", label: "Dupliquer", icon: "⎘" },
+                { kind: "divider" },
+                { value: "delete", label: "Supprimer", danger: true, icon: "✕" }
               ]
             }
           }
@@ -6740,11 +6741,12 @@ import { ChatComposer } from "@sentropic/design-system-vue";
 </script>
 
 <Menu
+  label="Actions"
   items={[
-    { id: "edit", label: "Modifier" },
-    { id: "duplicate", label: "Dupliquer" },
-    { type: "divider" },
-    { id: "delete", label: "Supprimer", variant: "danger" }
+    { value: "edit", label: "Modifier" },
+    { value: "duplicate", label: "Dupliquer" },
+    { kind: "divider" },
+    { value: "delete", label: "Supprimer", danger: true }
   ]}
 />`,
       react: `import { Menu } from "@sentropic/design-system-react";
@@ -6752,11 +6754,12 @@ import { ChatComposer } from "@sentropic/design-system-vue";
 export function Demo() {
   return (
     <Menu
+      label="Actions"
       items={[
-        { id: "edit", label: "Modifier" },
-        { id: "duplicate", label: "Dupliquer" },
-        { type: "divider" },
-        { id: "delete", label: "Supprimer", variant: "danger" }
+        { value: "edit", label: "Modifier" },
+        { value: "duplicate", label: "Dupliquer" },
+        { kind: "divider" },
+        { value: "delete", label: "Supprimer", danger: true }
       ]}
     />
   );
@@ -6767,11 +6770,12 @@ import { Menu } from "@sentropic/design-system-vue";
 
 <template>
   <Menu
+    label="Actions"
     :items="[
-      { id: 'edit', label: 'Modifier' },
-      { id: 'duplicate', label: 'Dupliquer' },
-      { type: 'divider' },
-      { id: 'delete', label: 'Supprimer', variant: 'danger' }
+      { value: 'edit', label: 'Modifier' },
+      { value: 'duplicate', label: 'Dupliquer' },
+      { kind: 'divider' },
+      { value: 'delete', label: 'Supprimer', danger: true }
     ]"
   />
 </template>`
@@ -6792,14 +6796,14 @@ import { Menu } from "@sentropic/design-system-vue";
               label: "Actions",
               items: [
                 { kind: "group", label: "\u00c9dition" },
-                { label: "\u00c9diter", value: "edit" },
-                { label: "Dupliquer", value: "duplicate" },
+                { label: "\u00c9diter", value: "edit", icon: "\u270e" },
+                { label: "Dupliquer", value: "duplicate", icon: "\u2398" },
                 { kind: "divider" },
                 { kind: "group", label: "Distribuer" },
-                { label: "Partager", value: "share" },
-                { label: "Archiver", value: "archive" },
+                { label: "Partager", value: "share", icon: "\u2197" },
+                { label: "Archiver", value: "archive", icon: "\u229f" },
                 { kind: "divider" },
-                { label: "Supprimer", value: "delete", danger: true }
+                { label: "Supprimer", value: "delete", danger: true, icon: "\u2715" }
               ]
             }
           }
