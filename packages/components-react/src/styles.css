@@ -3980,6 +3980,7 @@
     cursor: pointer;
     display: flex;
     font: inherit;
+    font-size: var(--st-component-menu-fontSize, 0.875rem);
     gap: var(--st-spacing-2, 0.5rem);
     padding: var(--st-spacing-2, 0.5rem) var(--st-spacing-3, 0.75rem);
     text-align: left;
@@ -4015,6 +4016,8 @@
     display: inline-flex;
     flex: 0 0 auto;
     justify-content: center;
+    line-height: 1;
+    width: 1rem;
   }
 
   .st-menu__itemLabel {

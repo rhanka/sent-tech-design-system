@@ -40,6 +40,9 @@ export class Menu {
     itemClass(item) {
         return classNames("st-menu__item", isDangerAction(item) && "st-menu__item--danger");
     }
+    isStringIcon(icon) {
+        return typeof icon === "string";
+    }
     onItemClick(item) {
         if (item.disabled)
             return;
@@ -79,6 +82,9 @@ export class Menu {
             [class]="itemClass(asAction(item))"
             (click)="onItemClick(asAction(item))"
           >
+            @if (isStringIcon(asAction(item).icon)) {
+              <span class="st-menu__itemIcon" aria-hidden="true">{{ asAction(item).icon }}</span>
+            }
             <span class="st-menu__itemLabel">{{ asAction(item).label }}</span>
           </button>
         }
@@ -123,6 +129,9 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
             [class]="itemClass(asAction(item))"
             (click)="onItemClick(asAction(item))"
           >
+            @if (isStringIcon(asAction(item).icon)) {
+              <span class="st-menu__itemIcon" aria-hidden="true">{{ asAction(item).icon }}</span>
+            }
             <span class="st-menu__itemLabel">{{ asAction(item).label }}</span>
           </button>
         }
