@@ -5,22 +5,14 @@
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
 
-  // Identités de démonstration pour les deux variantes d'état connecté.
+  // Identité de démonstration pour l'état connecté.
   const accountWithPhoto: HeaderAccount = {
     name: "Alex Martin",
     email: "alex.martin@sentropic.app"
   };
 
-  const accountWithInitials: HeaderAccount = {
-    name: "Camille Noé",
-    email: "camille.noe@sentropic.app",
-    avatarUrl: null
-    // initials dérivées automatiquement de "Camille Noé" -> "CN"
-  };
-
   // État ouvert/fermé du menu compte (contrôlé par la page, comme le ferait un parent réel).
   let photoMenuOpen = $state(false);
-  let initialsMenuOpen = $state(false);
 
   // Exemple de consommation AppHeader (marque par props + classes utilitaires publiées).
   const appHeaderUsageSnippet = `<AppHeader
@@ -75,7 +67,8 @@
   <button type="button" class="st-appHeader__control" aria-haspopup="true">Thème · Sentropic</button>
   <button type="button" class="st-appHeader__control" aria-label="Mode sombre">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+      <circle cx="12" cy="12" r="4"/>
+      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
     </svg>
   </button>
 {/snippet}
@@ -89,13 +82,24 @@
   <button type="button" class="header-menu-item">Déconnexion</button>
 {/snippet}
 
-{#snippet initialsMenu()}
-  <p class="header-menu-name">{accountWithInitials.name}</p>
-  <p class="header-menu-email">{accountWithInitials.email}</p>
-  <hr class="header-menu-sep" />
-  <button type="button" class="header-menu-item">Voir le profil</button>
-  <button type="button" class="header-menu-item">Paramètres du compte</button>
-  <button type="button" class="header-menu-item">Déconnexion</button>
+{#snippet anonymousActions()}
+  <button type="button" class="header-icon-btn" aria-label="Rechercher">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="11" cy="11" r="7" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+    </svg>
+  </button>
+  <button type="button" class="header-icon-btn" aria-label="Notifications">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 0 1-3.46 0" />
+    </svg>
+  </button>
+  <button type="button" class="header-icon-btn" aria-label="Se connecter" aria-haspopup="true">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="3" y="3" width="18" height="18" rx="2"/>
+      <circle cx="12" cy="10" r="3"/>
+      <path d="M6 21v-1a6 6 0 0 1 12 0v1"/>
+    </svg>
+  </button>
 {/snippet}
 
 <div class="docs-page">
@@ -145,18 +149,17 @@
     </article>
   </section>
   <section class="docs-section">
-    <h2>Les trois états de connexion</h2>
+    <h2>Les deux états de connexion</h2>
     <p>
-      La zone compte du Header couvre intégralement le cycle d'authentification. Dans les
-      trois cas le nom reste lisible et la cible cliquable annonce correctement l'identité.
+      La zone compte du Header couvre les deux cas d'authentification : anonyme (icône carrée
+      personne avec déclencheur de connexion) et connecté (initiales ou photo avec menu compte).
     </p>
     <div class="docs-demo-stack">
       <article class="docs-demo-block">
-        <h3>1. Anonyme: appel à la connexion</h3>
+        <h3>1. Anonyme</h3>
         <p class="docs-demo-context">
-          Aucune identité n'est fournie (<code>account</code> absent). Le Header affiche un
-          CTA explicite « Se connecter » via <code>onSignIn</code> / <code>signInLabel</code>,
-          sans menu compte ni carré vide.
+          Aucune identité fournie. Les actions utilitaires incluent un bouton icône « personne »
+          (carré) avec <code>aria-haspopup</code> pour déclencher la connexion — pas de CTA textuel.
         </p>
         <div class="header-preview-full">
           <Header
@@ -164,19 +167,16 @@
             sticky={false}
             logo={brand}
             navigation={primaryNav}
-            actions={utilityActions}
-            signInLabel="Se connecter"
-            onSignIn={() => {}}
+            actions={anonymousActions}
           />
         </div>
       </article>
 
       <article class="docs-demo-block">
-        <h3>2. Connecté avec initiales (fallback)</h3>
+        <h3>2. Connecté (initiales)</h3>
         <p class="docs-demo-context">
-          Sans <code>avatarUrl</code>, le Header affiche les initiales (ici «&nbsp;AM&nbsp;» dérivées
-          automatiquement de « Alex Martin »). Le nom et l'email restent affichés : pas d'icône
-          carrée anonyme.
+          Sans <code>avatarUrl</code>, le Header affiche les initiales dérivées du nom
+          («&nbsp;AM&nbsp;» pour « Alex Martin »). Cliquez sur l'identité pour ouvrir le menu compte.
         </p>
         <div class="header-preview-full">
           <Header
@@ -188,27 +188,6 @@
             accountMenu={photoMenu}
             accountMenuOpen={photoMenuOpen}
             onAccountTriggerClick={() => (photoMenuOpen = !photoMenuOpen)}
-          />
-        </div>
-      </article>
-
-      <article class="docs-demo-block">
-        <h3>3. Connecté avec initiales explicites</h3>
-        <p class="docs-demo-context">
-          Sans <code>avatarUrl</code>, le Header retombe sur les initiales (ici dérivées
-          automatiquement de « Camille Noé » → <code>CN</code>). Le nom et l'email restent
-          affichés : pas d'icône carrée anonyme.
-        </p>
-        <div class="header-preview-full">
-          <Header
-            title="Console"
-            sticky={false}
-            logo={brand}
-            navigation={primaryNav}
-            account={accountWithInitials}
-            accountMenu={initialsMenu}
-            accountMenuOpen={initialsMenuOpen}
-            onAccountTriggerClick={() => (initialsMenuOpen = !initialsMenuOpen)}
           />
         </div>
       </article>
@@ -621,5 +600,6 @@
   .header-preview-full {
     margin: 0 calc(-1 * var(--st-spacing-6, 1.5rem));
     overflow: hidden;
+    width: calc(100% + 2 * var(--st-spacing-6, 1.5rem));
   }
 </style>

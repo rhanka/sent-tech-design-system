@@ -12,8 +12,8 @@ export type MenuActionItem = {
   disabled?: boolean;
   variant?: "default" | "danger";
   danger?: boolean;
-  /** Optional leading icon component (rendered in `.st-menu__itemIcon`). */
-  icon?: Component;
+  /** Optional leading icon component or string character (rendered in `.st-menu__itemIcon`). */
+  icon?: Component | string;
   onClick?: () => void;
 };
 export type MenuDividerItem = { type?: "divider"; kind?: "divider"; id?: string };
@@ -114,7 +114,9 @@ export const Menu = defineComponent({
             ? h(
                 "span",
                 { class: "st-menu__itemIcon", "aria-hidden": "true" },
-                h(actionItem.icon, { size: 16, strokeWidth: 2 }),
+                typeof actionItem.icon === "string"
+                  ? actionItem.icon
+                  : h(actionItem.icon, { size: 16, strokeWidth: 2 }),
               )
             : null,
           h("span", { class: "st-menu__itemLabel" }, actionItem.label as string),
