@@ -25,12 +25,31 @@ export class ChatMessage {
         return classNames("st-chatMessage", `st-chatMessage--${role}`, this.normalizedStatus ? `st-chatMessage--${this.normalizedStatus}` : undefined, this.classInput);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: ChatMessage, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: ChatMessage, isStandalone: true, selector: "st-chat-message", inputs: { role: "role", status: "status", content: "content", timestamp: "timestamp", footer: "footer", actions: "actions", avatar: "avatar", classInput: ["class", "classInput"] }, ngImport: i0, template: `
-    <article [class]="hostClass" [attr.data-role]="role ?? 'assistant'" [attr.data-status]="normalizedStatus">
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: ChatMessage, isStandalone: true, selector: "st-chat-message", inputs: { role: "role", status: "status", content: "content", timestamp: "timestamp", footer: "footer", actions: "actions", avatar: "avatar", classInput: ["class", "classInput"] }, ngImport: i0, template: `
+    <article
+      [attr.data-st-component]="componentName"
+      [class]="hostClass"
+      [attr.data-role]="role ?? 'assistant'"
+      [attr.data-status]="normalizedStatus ?? null"
+      [attr.data-align]="(role ?? 'assistant') === 'user' ? 'end' : 'start'"
+      [attr.aria-live]="normalizedStatus === 'processing' ? 'polite' : null"
+    >
       <div class="st-chatMessage__body">
-        <div class="st-chatMessage__content">
-          <ng-content></ng-content>
+        <div class="st-chatMessage__bubble">
+          <div class="st-chatMessage__content">
+            @if (content) {
+              {{ content }}
+            }
+          </div>
+          @if (normalizedStatus === 'processing') {
+            <span class="st-chatMessage__pulse" aria-hidden="true"></span>
+          }
         </div>
+        @if (timestamp) {
+          <div class="st-chatMessage__footer">
+            <span class="st-chatMessage__timestamp">{{ timestamp }}</span>
+          </div>
+        }
       </div>
     </article>
   `, isInline: true });
@@ -41,11 +60,30 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     selector: "st-chat-message",
                     standalone: true,
                     template: `
-    <article [class]="hostClass" [attr.data-role]="role ?? 'assistant'" [attr.data-status]="normalizedStatus">
+    <article
+      [attr.data-st-component]="componentName"
+      [class]="hostClass"
+      [attr.data-role]="role ?? 'assistant'"
+      [attr.data-status]="normalizedStatus ?? null"
+      [attr.data-align]="(role ?? 'assistant') === 'user' ? 'end' : 'start'"
+      [attr.aria-live]="normalizedStatus === 'processing' ? 'polite' : null"
+    >
       <div class="st-chatMessage__body">
-        <div class="st-chatMessage__content">
-          <ng-content></ng-content>
+        <div class="st-chatMessage__bubble">
+          <div class="st-chatMessage__content">
+            @if (content) {
+              {{ content }}
+            }
+          </div>
+          @if (normalizedStatus === 'processing') {
+            <span class="st-chatMessage__pulse" aria-hidden="true"></span>
+          }
         </div>
+        @if (timestamp) {
+          <div class="st-chatMessage__footer">
+            <span class="st-chatMessage__timestamp">{{ timestamp }}</span>
+          </div>
+        }
       </div>
     </article>
   `,

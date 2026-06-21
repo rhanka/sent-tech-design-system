@@ -9,6 +9,7 @@ export class Drawer {
     description;
     placement;
     closeLabel;
+    bodyText;
     classInput;
     close = new EventEmitter();
     get hostClass() {
@@ -20,7 +21,7 @@ export class Drawer {
         }
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Drawer, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: Drawer, isStandalone: true, selector: "st-drawer", inputs: { open: "open", title: "title", description: "description", placement: "placement", closeLabel: "closeLabel", classInput: ["class", "classInput"] }, outputs: { close: "close" }, ngImport: i0, template: `
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: Drawer, isStandalone: true, selector: "st-drawer", inputs: { open: "open", title: "title", description: "description", placement: "placement", closeLabel: "closeLabel", bodyText: "bodyText", classInput: ["class", "classInput"] }, outputs: { close: "close" }, ngImport: i0, template: `
     @if (open) {
       <div
         class="st-drawer__backdrop"
@@ -35,22 +36,26 @@ export class Drawer {
           aria-modal="true"
           [attr.aria-label]="title || 'Drawer'"
         >
-          <div class="st-drawer__header">
-            @if (title) {
-              <h2 class="st-drawer__title">{{ title }}</h2>
-            }
+          <header class="st-drawer__header">
+            <div>
+              @if (title) {
+                <h2 class="st-drawer__title">{{ title }}</h2>
+              }
+              @if (description) {
+                <p class="st-drawer__description">{{ description }}</p>
+              }
+            </div>
             <button
               type="button"
               class="st-drawer__close"
               [attr.aria-label]="closeLabel || 'Close'"
               (click)="close.emit()"
-            >&#x2715;</button>
-          </div>
-          @if (description) {
-            <p class="st-drawer__description">{{ description }}</p>
-          }
+            ><span aria-hidden="true">&#x2715;</span></button>
+          </header>
           <div class="st-drawer__body">
-            <ng-content></ng-content>
+            @if (bodyText) {
+              <p>{{ bodyText }}</p>
+            }
           </div>
         </aside>
       </div>
@@ -77,22 +82,26 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
           aria-modal="true"
           [attr.aria-label]="title || 'Drawer'"
         >
-          <div class="st-drawer__header">
-            @if (title) {
-              <h2 class="st-drawer__title">{{ title }}</h2>
-            }
+          <header class="st-drawer__header">
+            <div>
+              @if (title) {
+                <h2 class="st-drawer__title">{{ title }}</h2>
+              }
+              @if (description) {
+                <p class="st-drawer__description">{{ description }}</p>
+              }
+            </div>
             <button
               type="button"
               class="st-drawer__close"
               [attr.aria-label]="closeLabel || 'Close'"
               (click)="close.emit()"
-            >&#x2715;</button>
-          </div>
-          @if (description) {
-            <p class="st-drawer__description">{{ description }}</p>
-          }
+            ><span aria-hidden="true">&#x2715;</span></button>
+          </header>
           <div class="st-drawer__body">
-            <ng-content></ng-content>
+            @if (bodyText) {
+              <p>{{ bodyText }}</p>
+            }
           </div>
         </aside>
       </div>
@@ -108,6 +117,8 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
             }], placement: [{
                 type: NgInput
             }], closeLabel: [{
+                type: NgInput
+            }], bodyText: [{
                 type: NgInput
             }], classInput: [{
                 type: NgInput,

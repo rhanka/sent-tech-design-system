@@ -29,9 +29,11 @@ export declare class Transcription {
     text?: string;
     classInput?: string;
     open?: boolean;
-    showTimestamps?: boolean;
+    showTimestamps: boolean;
     get hostClass(): string;
+    get resolvedSegments(): TranscriptionSegment[];
+    formatInterval(seg: TranscriptionSegment): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<Transcription, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<Transcription, "st-transcription", never, { "title": { "alias": "title"; "required": false; }; "segments": { "alias": "segments"; "required": false; }; "entries": { "alias": "entries"; "required": false; }; "text": { "alias": "text"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; "open": { "alias": "open"; "required": false; }; "showTimestamps": { "alias": "showTimestamps"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<Transcription, "st-transcription", never, { "title": { "alias": "title"; "required": false; }; "segments": { "alias": "segments"; "required": false; }; "entries": { "alias": "entries"; "required": false; }; "text": { "alias": "text"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; "open": { "alias": "open"; "required": false; }; "showTimestamps": { "alias": "showTimestamps"; "required": false; }; }, {}, never, never, true, never>;
 }
 //# sourceMappingURL=Transcription.d.ts.map

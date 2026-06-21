@@ -34,6 +34,9 @@ export class RangeSlider {
     get hostClass() {
         return classNames("st-field", this.size ? `st-field--${this.size}` : undefined, this.invalid ? "st-field--invalid" : undefined, this.classInput);
     }
+    formatValue(n) {
+        return this.valueFormatter ? this.valueFormatter(n) : String(n);
+    }
     onLow(e) {
         this.valueChange.emit([Number(e.target.value), this.high]);
     }
@@ -55,6 +58,7 @@ export class RangeSlider {
           [step]="step ?? 1"
           [value]="low"
           [disabled]="disabled ?? false"
+          [attr.aria-label]="ariaLabelMin ?? 'Minimum value'"
           (input)="onLow($event)"
         />
         <input
@@ -65,9 +69,19 @@ export class RangeSlider {
           [step]="step ?? 1"
           [value]="high"
           [disabled]="disabled ?? false"
+          [attr.aria-label]="ariaLabelMax ?? 'Maximum value'"
           (input)="onHigh($event)"
         />
       </div>
+      @if (showValue) {
+        <span class="st-rangeSlider__values">{{ formatValue(low) }} – {{ formatValue(high) }}</span>
+      }
+      @if (errorText) {
+        <span class="st-field__error">{{ errorText }}</span>
+      }
+      @if (!errorText && helperText) {
+        <span class="st-field__help">{{ helperText }}</span>
+      }
     </div>
   `, isInline: true });
 }
@@ -90,6 +104,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
           [step]="step ?? 1"
           [value]="low"
           [disabled]="disabled ?? false"
+          [attr.aria-label]="ariaLabelMin ?? 'Minimum value'"
           (input)="onLow($event)"
         />
         <input
@@ -100,9 +115,19 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
           [step]="step ?? 1"
           [value]="high"
           [disabled]="disabled ?? false"
+          [attr.aria-label]="ariaLabelMax ?? 'Maximum value'"
           (input)="onHigh($event)"
         />
       </div>
+      @if (showValue) {
+        <span class="st-rangeSlider__values">{{ formatValue(low) }} – {{ formatValue(high) }}</span>
+      }
+      @if (errorText) {
+        <span class="st-field__error">{{ errorText }}</span>
+      }
+      @if (!errorText && helperText) {
+        <span class="st-field__help">{{ helperText }}</span>
+      }
     </div>
   `,
                 }]
