@@ -38,7 +38,14 @@ describe("docs navigation model", () => {
           name !== "NavDrawer" &&
           name !== "ContextPanel" &&
           name !== "UtilityPanel" &&
-          name !== "IdentityButton"
+          name !== "IdentityButton" &&
+          // Gabarits d'application — documentés dans /layouts, pas dans le catalogue composants
+          name !== "Dashboard" &&
+          name !== "KanbanBoard" &&
+          name !== "ListReportPage" &&
+          name !== "MasterDetail" &&
+          name !== "ObjectPage" &&
+          name !== "Wizard"
       )
       .sort();
     const catalogComponents = COMPONENTS.map((component) => component.name).sort();
@@ -52,26 +59,30 @@ describe("docs navigation model", () => {
     expect(DOCS_TOP_NAV.map((item) => item.label)).toEqual([
       "Documentation",
       "Composants",
-      "Vues"
+      "Vues",
+      "Gabarits"
     ]);
-    expect(DOCS_TOP_NAV.map((item) => item.href)).toEqual(["/", "/components", "/views"]);
+    expect(DOCS_TOP_NAV.map((item) => item.href)).toEqual(["/", "/components", "/views", "/layouts"]);
   });
 
   it("localizes top and side navigation labels", () => {
     expect(buildTopNav("en").map((item) => item.label)).toEqual([
       "Documentation",
       "Components",
-      "Views"
+      "Views",
+      "Layouts"
     ]);
 
     expect(buildFoundationNav("fr").map((item) => item.label)).toEqual([
       "Vue d'ensemble",
+      "Démarrage rapide",
       "Fondations",
       "Tokens",
       "Thèmes"
     ]);
     expect(buildFoundationNav("en").map((item) => item.label)).toEqual([
       "Overview",
+      "Getting started",
       "Foundations",
       "Tokens",
       "Themes"
@@ -81,6 +92,7 @@ describe("docs navigation model", () => {
   it("keeps the Documentation sub-nav to page sections (Contrats fusionné dans Thèmes, Aperçu hors menu)", () => {
     expect(buildFoundationNav("fr").map((item) => item.href)).toEqual([
       "/",
+      "/getting-started",
       "/#foundations",
       "/#tokens",
       "/#themes"
@@ -90,6 +102,7 @@ describe("docs navigation model", () => {
     expect(buildFoundationNav("fr").some((item) => item.href === "/#contracts")).toBe(false);
     expect(DOCS_FOUNDATION_NAV.map((item) => item.label)).toEqual([
       "Vue d'ensemble",
+      "Démarrage rapide",
       "Fondations",
       "Tokens",
       "Thèmes"
@@ -99,10 +112,13 @@ describe("docs navigation model", () => {
   it("groups the views gallery by business domain, free of product citations", () => {
     const groups = buildViewsNav("fr");
     expect(groups.map((group) => group.label)).toEqual([
+      "Analytics & BI",
       "CRM & Ventes",
-      "ERP & Gestion",
-      "Support",
-      "Dashboards & BI",
+      "ERP & Stock",
+      "Comptabilité",
+      "RH",
+      "Projet & Support",
+      "Production",
       "Fondations d'application"
     ]);
 
