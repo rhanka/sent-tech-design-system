@@ -14,6 +14,7 @@ export type DropdownProps = {
   value?: string;
   open?: boolean;
   placeholder?: string;
+  locale?: string;
   onSelect?: (value: string) => void;
   class?: string;
 };
@@ -67,6 +68,7 @@ export class Dropdown {
   @NgInput() value?: string;
   @NgInput() open?: boolean;
   @NgInput() placeholder?: string;
+  @NgInput() locale?: string;
   @NgInput() onSelect?: (value: string) => void;
   @NgInput("class") classInput?: string;
 
@@ -75,10 +77,15 @@ export class Dropdown {
   localOpen = false;
   localValue = "";
 
+  get resolvedPlaceholder(): string {
+    const isFr = (this.locale ?? "fr-FR").toLowerCase().startsWith("fr");
+    return this.placeholder ?? (isFr ? "Sélectionner" : "Select");
+  }
+
   get selectedLabel(): string {
     const val = this.value ?? this.localValue;
     const opt = this.options.find((o) => o.value === val);
-    return opt ? String(opt.label) : (this.placeholder ?? "Select");
+    return opt ? String(opt.label) : this.resolvedPlaceholder;
   }
 
   get hostClass(): string {
