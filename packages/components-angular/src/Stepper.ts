@@ -75,7 +75,6 @@ export type StepperProps = {
           </span>
         </li>
       }
-      <ng-content></ng-content>
     </ol>
   `,
 })
