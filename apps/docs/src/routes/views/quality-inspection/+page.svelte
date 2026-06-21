@@ -16,15 +16,15 @@
   ]);
 
   const PIE_DATA = $derived([
-    { label: fr ? "Conforme" : "Pass", value: 87, color: "#22c55e" },
-    { label: fr ? "Défaut mineur" : "Minor defect", value: 9, color: "#f59e0b" },
-    { label: fr ? "Défaut majeur" : "Major defect", value: 4, color: "#ef4444" }
+    { label: fr ? "Conforme" : "Pass", value: 87, tone: "category1" as const },
+    { label: fr ? "Défaut mineur" : "Minor defect", value: 9, tone: "category2" as const },
+    { label: fr ? "Défaut majeur" : "Major defect", value: 4, tone: "category3" as const }
   ]);
 
   const SCORE_CARDS = $derived([
-    { label: fr ? "Score de conformité" : "Conformity score", value: "87 %", tone: "success" as const },
-    { label: fr ? "Pièces inspectées" : "Parts inspected", value: "115 / 120", tone: "neutral" as const },
-    { label: fr ? "Non-conformités" : "Non-conformances", value: "15", tone: "danger" as const }
+    { label: fr ? "Score de conformité" : "Conformity score", value: "87 %", tone: "category1" as const },
+    { label: fr ? "Pièces inspectées" : "Parts inspected", value: "115 / 120", tone: "category2" as const },
+    { label: fr ? "Non-conformités" : "Non-conformances", value: "15", tone: "category3" as const }
   ]);
 
   // ── NodeSpec ──────────────────────────────────────────────────────────────
@@ -48,7 +48,7 @@
           el: "div",
           props: { class: "qi-kpis" },
           children: SCORE_CARDS.map((c) => ({
-            comp: "ScoreCard",
+            comp: "KpiCard",
             props: { label: c.label, value: c.value, tone: c.tone }
           }))
         },
@@ -59,10 +59,10 @@
           children: [
             { el: "h3", props: { class: "qi-section-title" }, children: [fr ? "Répartition des défauts — Lot LOT-2026-0412" : "Defect breakdown — Batch LOT-2026-0412"] },
             {
-              comp: "PieChart",
+              comp: "DonutChart",
               props: {
                 data: PIE_DATA,
-                label: fr ? "Répartition des défauts" : "Defect breakdown"
+                centerLabel: fr ? "Répartition" : "Breakdown"
               }
             }
           ]
@@ -126,8 +126,8 @@
   // ── Composants DS utilisés ────────────────────────────────────────────────
   const DS_COMPONENTS = [
     { name: "Stepper", slug: "stepper" },
-    { name: "ScoreCard", slug: "score-card" },
-    { name: "PieChart", slug: "pie-chart" },
+    { name: "KpiCard", slug: "kpi-card" },
+    { name: "DonutChart", slug: "donut-chart" },
     { name: "Input", slug: "input" },
     { name: "FileUploader", slug: "file-uploader" },
     { name: "Alert", slug: "alert" },

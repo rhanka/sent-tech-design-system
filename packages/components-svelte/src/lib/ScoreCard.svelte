@@ -44,7 +44,7 @@
     Array.from({ length: max }, (_, i) => i < filled)
   );
   const ariaLabel = $derived(
-    `${title}, ${score.toFixed(1)} ${unit}, ${filled} sur ${max}`
+    `${title}, ${(score ?? 0).toFixed(1)} ${unit}, ${filled} sur ${max}`
   );
 
   const classes = $derived(
@@ -80,7 +80,7 @@
       {/each}
     </div>
     <span class="st-scoreCard__score">
-      {score.toFixed(1)} {unit}
+      {(score ?? 0).toFixed(1)} {unit}
     </span>
   </div>
 </article>

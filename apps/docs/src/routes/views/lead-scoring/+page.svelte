@@ -9,10 +9,10 @@
   // ── Données mock CRM — Scoring des leads ─────────────────────────────────
 
   const SCORECARDS = $derived([
-    { label: fr ? "Score moyen" : "Avg Score", value: "74", delta: "+8", trend: "up" as const },
-    { label: fr ? "Leads chauds" : "Hot Leads", value: "23", delta: "+5", trend: "up" as const },
-    { label: fr ? "Convertis ce mois" : "Converted this month", value: "11", delta: "+3", trend: "up" as const },
-    { label: fr ? "Délai moyen (j)" : "Avg Time (d)", value: "18", delta: "-4", trend: "down" as const }
+    { label: fr ? "Score moyen" : "Avg Score", value: "74", delta: 8, trend: "up" as const },
+    { label: fr ? "Leads chauds" : "Hot Leads", value: "23", delta: 5, trend: "up" as const },
+    { label: fr ? "Convertis ce mois" : "Converted this month", value: "11", delta: 3, trend: "up" as const },
+    { label: fr ? "Délai moyen (j)" : "Avg Time (d)", value: "18", delta: -4, trend: "down" as const }
   ]);
 
   const PIE_SLICES = $derived([
@@ -61,7 +61,7 @@
   const demoNodes = $derived<NodeSpec[]>([{
     el: "div", props: { class: "ls-shell" },
     children: [
-      { el: "div", props: { class: "ls-scorecards" }, children: SCORECARDS.map((s) => ({ comp: "ScoreCard", props: { label: s.label, value: s.value, delta: s.delta, trend: s.trend } })) },
+      { el: "div", props: { class: "ls-scorecards" }, children: SCORECARDS.map((s) => ({ comp: "KpiCard", props: { label: s.label, value: s.value, delta: s.delta, trend: s.trend } })) },
       { el: "div", props: { class: "ls-mid" }, children: [
         { el: "div", props: { class: "ls-kpis" }, children: [
           { comp: "KpiCard", props: { label: fr ? "Score cible (≥ 80)" : "Target score (≥ 80)", value: 23, delta: 5, deltaFormat: "absolute", tone: "category1", sparkline: [10, 13, 15, 17, 20, 23] } },
@@ -81,7 +81,6 @@
   }]);
 
   const DS_COMPONENTS = [
-    { name: "ScoreCard", slug: "score-card" },
     { name: "KpiCard", slug: "kpi-card" },
     { name: "Badge", slug: "badge" },
     { name: "ProgressBar", slug: "progress-bar" },
