@@ -66,8 +66,8 @@ communication ("si 90% est foireux, je ne peux pas communiquer sur le design sys
   - CAUSE RACINE: divergence de NOM DE PROP d'item. Canon Svelte (`OrderedList.svelte` l.7): `OrderedListItem.content`. Mais React (`packages/components-react/src/catalog.tsx` l.3668 `renderListItem` teste `"label" in item`, rend `item.label`) ET Vue (`packages/components-vue/src/OrderedList.ts` l.4/16/26 `"label" in item`, `String(cast.label)`) utilisent `label`. Donc un item `{content, children}` (canon) -> React: `"label" in item` faux -> rend l'OBJET comme enfant React = rien ; Vue: idem -> items plats sans nesting.
   - FIX PROPOSE (composant -> conductor publie): aligner React+Vue sur le canon `content` (renommer `OrderedListItem.label` -> `content`, le check `"label" in item` -> `"content" in item`, `cast.label` -> `cast.content`), pour OrderedList ET UnorderedList. Alternative tolerante: accepter `content ?? label`.
   - NB: ce bug etait masque tant que la demo etait Svelte-only ; ma conversion DOCS-TABS l'a expose (la demo doit rester en `content`, c'est le canon).
-  - [ ] UAT: ordered-list & unordered-list block imbrication = parite 3 fw. Pages overview (0 onglet, composites: data-navigation, plan-completion, [slug]) = hors scope composant.
-  - [ ] UAT: chaque page composant -> sections d'exemples STATIQUES en onglets svelte/react/vue (interactives documentees comme exceptions).
+  - [x] UAT: ordered-list & unordered-list block imbrication = parite 3 fw. Fix déjà appliqué (React/Vue alignés sur canon `content` ; code vérifié 2026-06-21). Pages overview hors scope composant.
+  - [x] UAT: chaque page composant -> sections d'exemples STATIQUES en onglets svelte/react/vue (10 pages converties + 7 exceptions documentées dans Lot DOCS-TABS).
 - [x] **Lot I18N — Fuites de chaines anglaises sur pages FR (33 findings audit)**
   - TRIAGE ds-QA (2026-06-09): 3 familles.
   - (A) CONTENU DE DEMO = ma lane, fixe en docs:
