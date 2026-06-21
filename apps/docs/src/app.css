@@ -470,7 +470,7 @@ select {
   cursor: pointer;
   display: flex;
   font-family: inherit;
-  font-size: 0.82rem;
+  font-size: var(--docs-text-xs);
   font-weight: 550;
   gap: 0.45rem;
   padding: 0.35rem 0.65rem;
