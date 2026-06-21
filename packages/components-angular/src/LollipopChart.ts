@@ -28,12 +28,6 @@ export type LollipopChartProps = {
   height?: number;
   orientation?: "vertical" | "horizontal";
   label: string;
-  /**
-   * Fixed value-axis domain `[min, max]`. When provided (and finite), the value
-   * scale uses it instead of the data-derived min/max — letting several
-   * LollipopCharts in a grid share one scale. When absent or invalid, the scale
-   * falls back to the auto data range (unchanged).
-   */
   domain?: [number, number];
   class?: string;
 };
