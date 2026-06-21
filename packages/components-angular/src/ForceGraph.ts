@@ -1,4 +1,5 @@
-import { Component, Input as NgInput, type OnChanges, type OnInit } from "@angular/core";
+import { Component, Input as NgInput } from "@angular/core";
+import type { OnChanges, OnInit, SimpleChanges } from "@angular/core";
 
 import { classNames } from "./classNames.js";
 
@@ -204,20 +205,229 @@ export function nodeShapePath(shape: ForceGraphNodeShape | undefined, r: number)
   return `M ${fmt(-half)} ${fmt(-half)} H ${fmt(half)} V ${fmt(half)} H ${fmt(-half)} Z`;
 }
 
+// ---------------------------------------------------------------------------
+// Lightweight force simulation (ported from Svelte reference, no external dep)
+// ---------------------------------------------------------------------------
+type SimNode = { id: string; x: number; y: number; vx: number; vy: number; fixed: boolean };
+
+function mulberry32(seed: number): () => number {
+  let a = seed >>> 0;
+  return () => {
+    a |= 0; a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function stableSeed(ns: ForceGraphNode[]): number {
+  const ids = ns.map((n) => n.id).sort();
+  let h = 0x811c9dc5;
+  const joined = ids.join("|");
+  for (let i = 0; i < joined.length; i++) {
+    h ^= joined.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  h ^= ns.length;
+  return h >>> 0;
+}
+
+function runSimulation(
+  ns: ForceGraphNode[], es: ForceGraphEdge[],
+  w: number, h: number, ticks: number, repulsionFactor: number
+): Map<string, { x: number; y: number }> {
+  const cx = w / 2, cy = h / 2;
+  const rand = mulberry32(stableSeed(ns));
+  const idIndex = new Map<string, number>();
+  const nodeRadius = 8; // default radius for clamping
+  const sim: SimNode[] = ns.map((n, i) => {
+    idIndex.set(n.id, i);
+    const fixed = typeof n.fx === "number" && typeof n.fy === "number";
+    const angle = (i / Math.max(ns.length, 1)) * Math.PI * 2;
+    const r = Math.min(w, h) * 0.3 * (0.5 + rand() * 0.5);
+    return { id: n.id, x: fixed ? (n.fx as number) : cx + Math.cos(angle) * r, y: fixed ? (n.fy as number) : cy + Math.sin(angle) * r, vx: 0, vy: 0, fixed };
+  });
+  const links = es.map((e) => ({ s: idIndex.get(e.source), t: idIndex.get(e.target) })).filter((l): l is { s: number; t: number } => l.s !== undefined && l.t !== undefined);
+  const area = w * h;
+  const k = Math.sqrt(area / Math.max(ns.length, 1));
+  const clampedRepulsion = Math.min(Math.max(repulsionFactor, 0.1), 10);
+  const repulsion = k * k * 0.9 * clampedRepulsion;
+  const restLength = k * 0.8;
+  const springK = 0.04;
+  const gravity = 0.012;
+  const damping = 0.85;
+  let temperature = Math.min(w, h) * 0.08;
+  const cooling = ticks > 0 ? Math.pow(0.02, 1 / ticks) : 0.95;
+  for (let step = 0; step < ticks; step++) {
+    for (let i = 0; i < sim.length; i++) {
+      for (let j = i + 1; j < sim.length; j++) {
+        let dx = sim[i].x - sim[j].x, dy = sim[i].y - sim[j].y;
+        let dist2 = dx * dx + dy * dy;
+        if (dist2 < 0.01) { dx = (rand() - 0.5) * 0.1; dy = (rand() - 0.5) * 0.1; dist2 = dx * dx + dy * dy + 0.01; }
+        const dist = Math.sqrt(dist2);
+        const force = repulsion / dist2;
+        const fx = (dx / dist) * force, fy = (dy / dist) * force;
+        sim[i].vx += fx; sim[i].vy += fy; sim[j].vx -= fx; sim[j].vy -= fy;
+      }
+    }
+    for (const l of links) {
+      const a = sim[l.s], b = sim[l.t];
+      const dx = b.x - a.x, dy = b.y - a.y;
+      const dist = Math.sqrt(dx * dx + dy * dy) || 0.01;
+      const force = (dist - restLength) * springK;
+      const fx = (dx / dist) * force, fy = (dy / dist) * force;
+      a.vx += fx; a.vy += fy; b.vx -= fx; b.vy -= fy;
+    }
+    for (const node of sim) {
+      if (node.fixed) { node.vx = 0; node.vy = 0; continue; }
+      node.vx += (cx - node.x) * gravity; node.vy += (cy - node.y) * gravity;
+      node.vx *= damping; node.vy *= damping;
+      const speed = Math.sqrt(node.vx * node.vx + node.vy * node.vy);
+      if (speed > temperature) { node.vx = (node.vx / speed) * temperature; node.vy = (node.vy / speed) * temperature; }
+      node.x += node.vx; node.y += node.vy;
+      const padX = w * 0.5 + nodeRadius * 2, padY = h * 0.5 + nodeRadius * 2;
+      node.x = Math.max(-padX, Math.min(w + padX, node.x));
+      node.y = Math.max(-padY, Math.min(h + padY, node.y));
+    }
+    temperature *= cooling;
+  }
+  const out = new Map<string, { x: number; y: number }>();
+  for (const node of sim) out.set(node.id, { x: node.x, y: node.y });
+  return out;
+}
+
+const FG_TONES: ForceGraphTone[] = [
+  "category1", "category2", "category3", "category4",
+  "category5", "category6", "category7", "category8",
+];
+
+const FG_CONTENT_MARGIN = 0.08;
+const FG_CURVE_FACTOR = 0.5;
+
+type FGPositionedNode = {
+  node: ForceGraphNode;
+  i: number; x: number; y: number; r: number;
+  tone: ForceGraphTone; title: string; shapePath: string | null;
+};
+
+type FGPositionedEdge = {
+  edge: ForceGraphEdge; i: number;
+  x1: number; y1: number; x2: number; y2: number;
+  midX: number; midY: number; path: string | null;
+  dashArray: string | null; strokeWidth: number | null;
+  srcLabel: string; tgtLabel: string;
+};
+
 @Component({
   selector: "st-force-graph",
   standalone: true,
   template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+      <svg
+        [attr.viewBox]="viewBox"
+        preserveAspectRatio="xMidYMid meet"
+        width="100%"
+        height="100%"
+        focusable="false"
+        [attr.aria-label]="label"
+        role="img"
+        (pointermove)="handlePointerMove($event)"
+        (pointerleave)="handlePointerLeave()"
+      >
+        <g class="st-forceGraph__edges">
+          @for (e of fgEdges; track e.i) {
+            @if (e.path) {
+              <path
+                [class]="edgeClass(e)"
+                [attr.d]="e.path"
+                [attr.stroke-dasharray]="e.dashArray"
+                [attr.stroke-width]="e.strokeWidth"
+                fill="none"
+                [attr.data-edge-index]="e.i"
+              ></path>
+            } @else {
+              <line
+                [class]="edgeClass(e)"
+                [attr.x1]="e.x1" [attr.y1]="e.y1"
+                [attr.x2]="e.x2" [attr.y2]="e.y2"
+                [attr.stroke-dasharray]="e.dashArray"
+                [attr.stroke-width]="e.strokeWidth"
+                [attr.data-edge-index]="e.i"
+              ></line>
+            }
+          }
+        </g>
+        <g class="st-forceGraph__nodes">
+          @for (p of fgNodes; track p.node.id) {
+            <g
+              [class]="nodeClass(p)"
+              [attr.transform]="'translate(' + p.x + ',' + p.y + ')'"
+              [attr.data-node-id]="p.node.id"
+              (click)="handleNodeClick(p.node)"
+            >
+              @if (p.shapePath) {
+                <path
+                  [class]="'st-forceGraph__nodeShape st-forceGraph__nodeShape--' + p.tone"
+                  [attr.d]="p.shapePath"
+                ></path>
+              } @else {
+                <circle
+                  [class]="'st-forceGraph__nodeDot st-forceGraph__nodeDot--' + p.tone"
+                  [attr.r]="p.r"
+                ></circle>
+              }
+              @if (showLabels) {
+                <text class="st-forceGraph__nodeLabel" [attr.dy]="p.r + 12" text-anchor="middle">{{ p.title }}</text>
+              }
+            </g>
+          }
+        </g>
+      </svg>
+
+      @if (legend && legend.length > 0) {
+        <div class="st-forceGraph__legend">
+          @for (entry of legend; track $index) {
+            <div class="st-forceGraph__legendEntry">
+              <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+                @if (entry.shape !== undefined) {
+                  <g transform="translate(8,8)">
+                    @if (lgShapePath(entry)) {
+                      <path [class]="'st-forceGraph__nodeShape st-forceGraph__nodeShape--' + (entry.tone ?? 'category1')" [attr.d]="lgShapePath(entry)"></path>
+                    } @else {
+                      <circle [class]="'st-forceGraph__nodeDot st-forceGraph__nodeDot--' + (entry.tone ?? 'category1')" r="5"></circle>
+                    }
+                  </g>
+                } @else {
+                  <line
+                    [class]="'st-forceGraph__edge' + (entry.weak ? ' st-forceGraph__edge--weak' : '')"
+                    x1="0" y1="8" x2="16" y2="8"
+                    [attr.stroke-dasharray]="lgDashArray(entry)"
+                  ></line>
+                }
+              </svg>
+              <span class="st-forceGraph__legendLabel">{{ entry.label }}</span>
+            </div>
+          }
+        </div>
+      }
+
+      @if (hoveredIdx !== null && fgNodes[hoveredIdx]) {
+        <div class="st-forceGraph__tooltip" role="presentation"
+          [style.left]="tooltipLeft + '%'"
+          [style.top]="tooltipTop + '%'"
+        >
+          <span class="st-forceGraph__tooltipLabel">{{ fgNodes[hoveredIdx].title }}</span>
+        </div>
+      }
     </div>
   `,
 })
-export class ForceGraph {
+export class ForceGraph implements OnChanges, OnInit {
   static readonly stComponentName = "ForceGraph";
   readonly componentName = "ForceGraph";
-  @NgInput() nodes!: ForceGraphNode[];
-  @NgInput() edges!: ForceGraphEdge[];
+
+  @NgInput() nodes: ForceGraphNode[] = [];
+  @NgInput() edges: ForceGraphEdge[] = [];
   @NgInput() label?: string;
   @NgInput() width?: number;
   @NgInput() height?: number;
@@ -237,7 +447,101 @@ export class ForceGraph {
   @NgInput() onMergeComplete?: (pair: { id: string; from: string; into: string }) => void;
   @NgInput("class") classInput?: string;
 
-  get hostClass(): string {
-    return ["st-forceGraph", this.classInput].filter(Boolean).join(" ");
+  hoveredIdx: number | null = null;
+  fgNodes: FGPositionedNode[] = [];
+  fgEdges: FGPositionedEdge[] = [];
+  private _cb = { x: 0, y: 0, w: 480, h: 320 };
+
+  ngOnInit(): void { this._layout(); }
+  ngOnChanges(_c: SimpleChanges): void { this._layout(); }
+
+  private _layout(): void {
+    const w = this.width ?? 480, h = this.height ?? 320;
+    const nr = this.nodeRadius ?? 8;
+    const iter = Math.max(1, Math.round(this.iterations ?? 120));
+    const layout = runSimulation(this.nodes, this.edges, w, h, iter, this.repulsion ?? 1);
+
+    const toneMap = new Map<string, ForceGraphTone>();
+    const groupTones = new Map<string | number, ForceGraphTone>();
+    let gi = 0, ai = 0;
+    for (const n of this.nodes) {
+      if (n.tone) { toneMap.set(n.id, n.tone); continue; }
+      if (n.group !== undefined) {
+        if (!groupTones.has(n.group)) groupTones.set(n.group, FG_TONES[gi++ % 8]);
+        toneMap.set(n.id, groupTones.get(n.group)!);
+      }
+    }
+    for (const n of this.nodes) {
+      if (!toneMap.has(n.id)) toneMap.set(n.id, FG_TONES[ai++ % 8]);
+    }
+
+    this.fgNodes = this.nodes.map((n, i) => {
+      const p = layout.get(n.id) ?? { x: w / 2, y: h / 2 };
+      const r = nr * Math.sqrt(Math.max(n.weight ?? 1, 0.25));
+      return { node: n, i, x: p.x, y: p.y, r, tone: toneMap.get(n.id) ?? "category1", title: n.label ?? n.id, shapePath: nodeShapePath(n.shape, r) };
+    });
+
+    if (this.fgNodes.length > 0) {
+      let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+      for (const p of this.fgNodes) {
+        const e = p.r * 1.7;
+        x0 = Math.min(x0, p.x - e); y0 = Math.min(y0, p.y - e);
+        x1 = Math.max(x1, p.x + e); y1 = Math.max(y1, p.y + e);
+      }
+      let bw = x1 - x0, bh = y1 - y0;
+      if (!(bw > 0)) { bw = w; x0 = x1 - bw / 2; }
+      if (!(bh > 0)) { bh = h; y0 = y1 - bh / 2; }
+      const mx = bw * FG_CONTENT_MARGIN, my = bh * FG_CONTENT_MARGIN;
+      this._cb = { x: x0 - mx, y: y0 - my, w: bw + 2 * mx, h: bh + 2 * my };
+    } else {
+      this._cb = { x: 0, y: 0, w, h };
+    }
+
+    const curve = Math.max(0, this.edgeCurve ?? 0);
+    const nById = new Map(this.nodes.map((n) => [n.id, n]));
+    this.fgEdges = this.edges.map((e, i) => {
+      const a = layout.get(e.source), b = layout.get(e.target);
+      if (!a || !b) return null;
+      let path: string | null = null;
+      let cx = (a.x + b.x) / 2, cy = (a.y + b.y) / 2;
+      if (curve > 0) {
+        const dx = b.x - a.x, dy = b.y - a.y;
+        const dist = Math.sqrt(dx * dx + dy * dy) || 0.0001;
+        const off = curve * dist * FG_CURVE_FACTOR;
+        cx = (a.x + b.x) / 2 + (-dy / dist) * off;
+        cy = (a.y + b.y) / 2 + (dx / dist) * off;
+        path = `M ${a.x} ${a.y} Q ${cx} ${cy} ${b.x} ${b.y}`;
+      }
+      return { edge: e, i, x1: a.x, y1: a.y, x2: b.x, y2: b.y, midX: cx, midY: cy, path, dashArray: edgeDashArray(e.dash, e.weak), strokeWidth: typeof e.width === "number" ? e.width : e.emphasis ? 2.5 : null, srcLabel: nById.get(e.source)?.label ?? e.source, tgtLabel: nById.get(e.target)?.label ?? e.target };
+    }).filter((e): e is FGPositionedEdge => e !== null);
   }
+
+  get viewBox(): string { return `${this._cb.x} ${this._cb.y} ${this._cb.w} ${this._cb.h}`; }
+  get hostClass(): string { return classNames("st-forceGraph", this.classInput); }
+
+  get tooltipLeft(): number {
+    const p = this.hoveredIdx !== null ? this.fgNodes[this.hoveredIdx] : null;
+    return p ? ((p.x - this._cb.x) / this._cb.w) * 100 : 0;
+  }
+  get tooltipTop(): number {
+    const p = this.hoveredIdx !== null ? this.fgNodes[this.hoveredIdx] : null;
+    return p ? ((p.y - this._cb.y) / this._cb.h) * 100 : 0;
+  }
+
+  nodeClass(p: FGPositionedNode): string {
+    return classNames("st-forceGraph__node", this.selectedIds?.includes(p.node.id) && "st-forceGraph__node--selected", this.focusId === p.node.id && "st-forceGraph__node--focused");
+  }
+  edgeClass(e: FGPositionedEdge): string {
+    return classNames("st-forceGraph__edge", e.edge.weak && "st-forceGraph__edge--weak", e.edge.emphasis && "st-forceGraph__edge--emphasis");
+  }
+  lgShapePath(entry: ForceGraphLegendEntry): string | null { return nodeShapePath(entry.shape, 5); }
+  lgDashArray(entry: ForceGraphLegendEntry): string | null { return edgeDashArray(entry.dash, entry.weak); }
+  handleNodeClick(node: ForceGraphNode): void { this.onSelect?.(node.id); }
+  handlePointerMove(event: PointerEvent): void {
+    const nodeId = (event.target as Element | null)?.closest("[data-node-id]")?.getAttribute("data-node-id");
+    const idx = nodeId ? this.fgNodes.findIndex((p) => p.node.id === nodeId) : -1;
+    this.hoveredIdx = idx >= 0 ? idx : null;
+    this.onNodeHover?.(idx >= 0 ? this.fgNodes[idx].node : null);
+  }
+  handlePointerLeave(): void { this.hoveredIdx = null; this.onNodeHover?.(null); }
 }
