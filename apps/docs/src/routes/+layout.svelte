@@ -9,7 +9,7 @@
   // sans règles tant que ce stylesheet global (identique entre frameworks) n'est pas chargé.
   import "@sentropic/design-system-react/styles.css";
   import { Boxes, ChevronDown, Github, Globe, Menu, Moon, Palette, Sun, User, X } from "@lucide/svelte";
-  import { Header, IdentityMenu } from "@sentropic/design-system-svelte";
+  import { Header, IdentityMenu, Menu as DsMenu } from "@sentropic/design-system-svelte";
   import { auth } from "$lib/auth/auth.svelte";
   import {
     sentTechTheme,
@@ -669,7 +669,7 @@
       class="docs-header-control docs-header-menuButton docs-locale-trigger docs-theme-trigger"
       onclick={() => (isThemeOpen = !isThemeOpen)}
       aria-expanded={isThemeOpen}
-      aria-haspopup="true"
+      aria-haspopup="menu"
       aria-label={locale.value === "fr" ? "Changer le thème" : "Change theme"}
     >
       <Palette size={14} aria-hidden="true" />
@@ -677,24 +677,19 @@
       <ChevronDown size={12} class="docs-locale-trigger-chevron {isThemeOpen ? 'rotated' : ''}" aria-hidden="true" />
     </button>
 
-    {#if isThemeOpen}
-      <div class="docs-locale-menu" role="menu">
-        {#each visibleThemes as theme (theme.id)}
-          <button
-            type="button"
-            class="docs-locale-item"
-            class:active={activeThemeId === theme.id}
-            role="menuitem"
-            onclick={() => { activeThemeId = theme.id; isThemeOpen = false; }}
-          >
-            <span class="locale-check">{#if activeThemeId === theme.id}✓{/if}</span>
-            <span class="docs-theme-item-copy">
-              <span>{theme.label}</span>
-            </span>
-          </button>
-        {/each}
-      </div>
-    {/if}
+    <div class="docs-dropdown-panel">
+      <DsMenu
+        label={locale.value === "fr" ? "Changer le thème" : "Change theme"}
+        dense={true}
+        open={isThemeOpen}
+        items={visibleThemes.map(theme => ({
+          value: theme.id,
+          label: theme.label,
+          icon: activeThemeId === theme.id ? "✓" : " "
+        }))}
+        onselect={(id) => { activeThemeId = id; isThemeOpen = false; }}
+      />
+    </div>
   </div>
 {/snippet}
 
@@ -706,7 +701,7 @@
       class="docs-header-control docs-header-menuButton docs-locale-trigger docs-framework-trigger"
       onclick={() => (isFrameworkOpen = !isFrameworkOpen)}
       aria-expanded={isFrameworkOpen}
-      aria-haspopup="true"
+      aria-haspopup="menu"
       aria-label={locale.value === "fr" ? "Changer de framework" : "Change framework"}
     >
       <Boxes size={14} aria-hidden="true" />
@@ -714,22 +709,19 @@
       <ChevronDown size={12} class="docs-locale-trigger-chevron {isFrameworkOpen ? 'rotated' : ''}" aria-hidden="true" />
     </button>
 
-    {#if isFrameworkOpen}
-      <div class="docs-locale-menu" role="menu">
-        {#each FRAMEWORKS as option (option.id)}
-          <button
-            type="button"
-            class="docs-locale-item"
-            class:active={framework.value === option.id}
-            role="menuitem"
-            onclick={() => { framework.value = option.id; isFrameworkOpen = false; }}
-          >
-            <span class="locale-check">{#if framework.value === option.id}✓{/if}</span>
-            <span>{option.label}</span>
-          </button>
-        {/each}
-      </div>
-    {/if}
+    <div class="docs-dropdown-panel">
+      <DsMenu
+        label={locale.value === "fr" ? "Changer de framework" : "Change framework"}
+        dense={true}
+        open={isFrameworkOpen}
+        items={FRAMEWORKS.map(option => ({
+          value: option.id,
+          label: option.label,
+          icon: framework.value === option.id ? "✓" : " "
+        }))}
+        onselect={(id) => { framework.value = id; isFrameworkOpen = false; }}
+      />
+    </div>
   </div>
 {/snippet}
 
@@ -776,7 +768,7 @@
       class="docs-header-control docs-header-menuButton docs-locale-trigger"
       onclick={() => (isOpen = !isOpen)}
       aria-expanded={isOpen}
-      aria-haspopup="true"
+      aria-haspopup="menu"
       aria-label={locale.value === "fr" ? "Changer la langue" : "Change language"}
     >
       <Globe size={14} class="docs-locale-trigger-icon" aria-hidden="true" />
@@ -784,30 +776,18 @@
       <ChevronDown size={12} class="docs-locale-trigger-chevron {isOpen ? 'rotated' : ''}" aria-hidden="true" />
     </button>
 
-    {#if isOpen}
-      <div class="docs-locale-menu" role="menu">
-        <button
-          type="button"
-          class="docs-locale-item"
-          class:active={locale.value === "fr"}
-          role="menuitem"
-          onclick={() => { locale.value = "fr"; isOpen = false; }}
-        >
-          <span class="locale-check">{#if locale.value === "fr"}✓{/if}</span>
-          <span>Français</span>
-        </button>
-        <button
-          type="button"
-          class="docs-locale-item"
-          class:active={locale.value === "en"}
-          role="menuitem"
-          onclick={() => { locale.value = "en"; isOpen = false; }}
-        >
-          <span class="locale-check">{#if locale.value === "en"}✓{/if}</span>
-          <span>English</span>
-        </button>
-      </div>
-    {/if}
+    <div class="docs-dropdown-panel">
+      <DsMenu
+        label={locale.value === "fr" ? "Changer la langue" : "Change language"}
+        dense={true}
+        open={isOpen}
+        items={[
+          { value: "fr", label: "Français", icon: locale.value === "fr" ? "✓" : " " },
+          { value: "en", label: "English", icon: locale.value === "en" ? "✓" : " " }
+        ]}
+        onselect={(v) => { locale.value = v as "fr" | "en"; isOpen = false; }}
+      />
+    </div>
   </div>
 {/snippet}
 
