@@ -401,23 +401,17 @@
     outline: none;
   }
 
-  .cbn-header__actions :global(.docs-locale-menu) {
+  .cbn-header__actions :global(.docs-dropdown-panel .st-menu) {
     background: var(--cbn-gray-90);
     border: none;
     border-radius: 0;
     box-shadow: 0 4px 16px rgb(0 0 0 / 0.5);
-  }
-
-  .cbn-header__actions :global(.docs-locale-item) {
     color: var(--cbn-gray-30);
   }
 
-  .cbn-header__actions :global(.docs-locale-item:hover) {
+  .cbn-header__actions :global(.docs-dropdown-panel .st-menu__item:hover:not(:disabled)),
+  .cbn-header__actions :global(.docs-dropdown-panel .st-menu__item:focus-visible) {
     background: var(--cbn-gray-80);
-    color: var(--cbn-white);
-  }
-
-  .cbn-header__actions :global(.docs-locale-item.active) {
     color: var(--cbn-white);
   }
 

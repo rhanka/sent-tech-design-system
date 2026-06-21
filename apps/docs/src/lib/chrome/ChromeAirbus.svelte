@@ -575,23 +575,17 @@
     outline: none;
   }
 
-  .abus-header__actions :global(.docs-locale-menu) {
+  .abus-header__actions :global(.docs-dropdown-panel .st-menu) {
     background: #0a2d6e;
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 4px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-  }
-
-  .abus-header__actions :global(.docs-locale-item) {
     color: rgba(255, 255, 255, 0.8);
   }
 
-  .abus-header__actions :global(.docs-locale-item:hover) {
+  .abus-header__actions :global(.docs-dropdown-panel .st-menu__item:hover:not(:disabled)),
+  .abus-header__actions :global(.docs-dropdown-panel .st-menu__item:focus-visible) {
     background: rgba(255, 255, 255, 0.1);
-    color: var(--abus-white);
-  }
-
-  .abus-header__actions :global(.docs-locale-item.active) {
     color: var(--abus-white);
   }
 
