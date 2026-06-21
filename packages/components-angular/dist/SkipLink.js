@@ -7,13 +7,13 @@ export class SkipLink {
     href;
     classInput;
     get hostClass() {
-        return ["st-skipLink", this.classInput].filter(Boolean).join(" ");
+        return classNames("st-skipLink", this.classInput);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: SkipLink, deps: [], target: i0.ɵɵFactoryTarget.Component });
     static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: SkipLink, isStandalone: true, selector: "st-skip-link", inputs: { href: "href", classInput: ["class", "classInput"] }, ngImport: i0, template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
-    </div>
+    <a [href]="href || '#main-content'" [attr.data-st-component]="componentName" [class]="hostClass">
+      <ng-content>Aller au contenu principal</ng-content>
+    </a>
   `, isInline: true });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: SkipLink, decorators: [{
@@ -22,9 +22,9 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     selector: "st-skip-link",
                     standalone: true,
                     template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
-    </div>
+    <a [href]="href || '#main-content'" [attr.data-st-component]="componentName" [class]="hostClass">
+      <ng-content>Aller au contenu principal</ng-content>
+    </a>
   `,
                 }]
         }], propDecorators: { href: [{

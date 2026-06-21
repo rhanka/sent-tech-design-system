@@ -8,13 +8,18 @@ export class CodeSnippet {
     inline;
     classInput;
     get hostClass() {
-        return ["st-codeSnippet", this.classInput].filter(Boolean).join(" ");
+        return classNames("st-codeSnippet", this.inline && "st-codeSnippet--inline", this.classInput);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: CodeSnippet, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: CodeSnippet, isStandalone: true, selector: "st-code-snippet", inputs: { code: "code", inline: "inline", classInput: ["class", "classInput"] }, ngImport: i0, template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
-    </div>
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: CodeSnippet, isStandalone: true, selector: "st-code-snippet", inputs: { code: "code", inline: "inline", classInput: ["class", "classInput"] }, ngImport: i0, template: `
+    @if (inline) {
+      <code [attr.data-st-component]="componentName" [class]="hostClass">{{ code }}</code>
+    } @else {
+      <div [attr.data-st-component]="componentName" [class]="hostClass">
+        <pre class="st-codeSnippet__pre"><code class="st-codeSnippet__code">{{ code }}</code></pre>
+        <ng-content></ng-content>
+      </div>
+    }
   `, isInline: true });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: CodeSnippet, decorators: [{
@@ -23,9 +28,14 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     selector: "st-code-snippet",
                     standalone: true,
                     template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
-    </div>
+    @if (inline) {
+      <code [attr.data-st-component]="componentName" [class]="hostClass">{{ code }}</code>
+    } @else {
+      <div [attr.data-st-component]="componentName" [class]="hostClass">
+        <pre class="st-codeSnippet__pre"><code class="st-codeSnippet__code">{{ code }}</code></pre>
+        <ng-content></ng-content>
+      </div>
+    }
   `,
                 }]
         }], propDecorators: { code: [{

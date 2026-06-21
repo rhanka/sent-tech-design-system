@@ -5,6 +5,7 @@ export type MessageStatusBadgeProps = {
     status: ChatMessageStatus;
     tone?: MessageStatusBadgeTone;
     labels?: Partial<Record<ChatMessageStatus, unknown>>;
+    label?: string;
     class?: string;
 };
 export declare class MessageStatusBadge {
@@ -13,9 +14,10 @@ export declare class MessageStatusBadge {
     status: ChatMessageStatus;
     tone?: MessageStatusBadgeTone;
     labels?: Partial<Record<ChatMessageStatus, unknown>>;
+    label?: string;
     classInput?: string;
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<MessageStatusBadge, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<MessageStatusBadge, "st-message-status-badge", never, { "status": { "alias": "status"; "required": false; }; "tone": { "alias": "tone"; "required": false; }; "labels": { "alias": "labels"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<MessageStatusBadge, "st-message-status-badge", never, { "status": { "alias": "status"; "required": false; }; "tone": { "alias": "tone"; "required": false; }; "labels": { "alias": "labels"; "required": false; }; "label": { "alias": "label"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
 }
 //# sourceMappingURL=MessageStatusBadge.d.ts.map

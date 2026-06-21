@@ -10,7 +10,7 @@ export class IconButton {
     disabled;
     classInput;
     get hostClass() {
-        return ["st-iconButton", this.classInput].filter(Boolean).join(" ");
+        return classNames("st-iconButton", this.size && `st-iconButton--${this.size}`, this.variant && `st-iconButton--${this.variant}`, this.classInput);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: IconButton, deps: [], target: i0.ɵɵFactoryTarget.Component });
     static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: IconButton, isStandalone: true, selector: "st-icon-button", inputs: { size: "size", variant: "variant", typeInput: ["type", "typeInput"], disabled: "disabled", classInput: ["class", "classInput"] }, ngImport: i0, template: `

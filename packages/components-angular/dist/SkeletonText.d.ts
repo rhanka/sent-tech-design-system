@@ -14,8 +14,9 @@ export declare class SkeletonText {
     heading?: boolean;
     paragraph?: boolean;
     classInput?: string;
+    get linesArray(): number[];
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<SkeletonText, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<SkeletonText, "st-skeleton-text", never, { "lines": { "alias": "lines"; "required": false; }; "width": { "alias": "width"; "required": false; }; "heading": { "alias": "heading"; "required": false; }; "paragraph": { "alias": "paragraph"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<SkeletonText, "st-skeleton-text", never, { "lines": { "alias": "lines"; "required": false; }; "width": { "alias": "width"; "required": false; }; "heading": { "alias": "heading"; "required": false; }; "paragraph": { "alias": "paragraph"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
 }
 //# sourceMappingURL=SkeletonText.d.ts.map

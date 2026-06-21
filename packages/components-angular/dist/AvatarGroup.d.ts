@@ -17,6 +17,7 @@ export declare class AvatarGroup {
     total?: number;
     classInput?: string;
     get hostClass(): string;
+    get overflow(): number;
     static ɵfac: i0.ɵɵFactoryDeclaration<AvatarGroup, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<AvatarGroup, "st-avatar-group", never, { "max": { "alias": "max"; "required": false; }; "size": { "alias": "size"; "required": false; }; "total": { "alias": "total"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
 }

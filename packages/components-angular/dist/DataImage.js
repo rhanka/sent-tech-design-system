@@ -14,12 +14,19 @@ export class DataImage {
     decoding;
     classInput;
     get hostClass() {
-        return ["st-dataImage", this.classInput].filter(Boolean).join(" ");
+        return classNames("st-dataImage", this.fit && `st-dataImage--${this.fit}`, this.classInput);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: DataImage, deps: [], target: i0.ɵɵFactoryTarget.Component });
     static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: DataImage, isStandalone: true, selector: "st-data-image", inputs: { src: "src", alt: "alt", width: "width", height: "height", fit: "fit", radius: "radius", loading: "loading", decoding: "decoding", classInput: ["class", "classInput"] }, ngImport: i0, template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+      <img class="st-dataImage__img"
+        [src]="src" [alt]="alt"
+        [attr.width]="width ?? null"
+        [attr.height]="height ?? null"
+        [attr.loading]="loading ?? null"
+        [attr.decoding]="decoding ?? null"
+        [style.object-fit]="fit ?? null"
+        [style.border-radius]="radius ?? null" />
     </div>
   `, isInline: true });
 }
@@ -30,7 +37,14 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     standalone: true,
                     template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+      <img class="st-dataImage__img"
+        [src]="src" [alt]="alt"
+        [attr.width]="width ?? null"
+        [attr.height]="height ?? null"
+        [attr.loading]="loading ?? null"
+        [attr.decoding]="decoding ?? null"
+        [style.object-fit]="fit ?? null"
+        [style.border-radius]="radius ?? null" />
     </div>
   `,
                 }]

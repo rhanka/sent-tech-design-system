@@ -15,7 +15,9 @@ export declare class FilterBar {
     onClearAll?: () => void;
     clearAllLabel?: string;
     classInput?: string;
+    get hasClearAll(): boolean;
     get hostClass(): string;
+    triggerClearAll(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<FilterBar, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<FilterBar, "st-filter-bar", never, { "label": { "alias": "label"; "required": false; }; "onClearAll": { "alias": "onClearAll"; "required": false; }; "clearAllLabel": { "alias": "clearAllLabel"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
 }

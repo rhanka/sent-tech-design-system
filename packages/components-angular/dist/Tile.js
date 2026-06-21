@@ -12,7 +12,7 @@ export class Tile {
     disabled;
     classInput;
     get hostClass() {
-        return ["st-tile", this.classInput].filter(Boolean).join(" ");
+        return classNames("st-tile", `st-tile--${this.variant ?? "static"}`, this.variant === "selectable" && this.selected && "st-tile--selected", this.disabled && "st-tile--disabled", this.classInput);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Tile, deps: [], target: i0.ɵɵFactoryTarget.Component });
     static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: Tile, isStandalone: true, selector: "st-tile", inputs: { title: "title", description: "description", variant: "variant", href: "href", selected: "selected", disabled: "disabled", classInput: ["class", "classInput"] }, ngImport: i0, template: `

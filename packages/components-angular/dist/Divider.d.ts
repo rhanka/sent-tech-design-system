@@ -19,7 +19,8 @@ export declare class Divider {
     variant?: DividerVariant;
     classInput?: string;
     get hostClass(): string;
+    get spacingStyle(): Record<string, string | undefined>;
     static ɵfac: i0.ɵɵFactoryDeclaration<Divider, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<Divider, "st-divider", never, { "orientation": { "alias": "orientation"; "required": false; }; "spacing": { "alias": "spacing"; "required": false; }; "label": { "alias": "label"; "required": false; }; "variant": { "alias": "variant"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<Divider, "st-divider", never, { "orientation": { "alias": "orientation"; "required": false; }; "spacing": { "alias": "spacing"; "required": false; }; "label": { "alias": "label"; "required": false; }; "variant": { "alias": "variant"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
 }
 //# sourceMappingURL=Divider.d.ts.map

@@ -34,6 +34,6 @@ export declare class ConfigItemCard {
     classInput?: string;
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<ConfigItemCard, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<ConfigItemCard, "st-config-item-card", never, { "item": { "alias": "item"; "required": false; }; "hasCopy": { "alias": "hasCopy"; "required": false; }; "onCopy": { "alias": "onCopy"; "required": false; }; "onEdit": { "alias": "onEdit"; "required": false; }; "onReset": { "alias": "onReset"; "required": false; }; "onDelete": { "alias": "onDelete"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<ConfigItemCard, "st-config-item-card", never, { "item": { "alias": "item"; "required": false; }; "hasCopy": { "alias": "hasCopy"; "required": false; }; "onCopy": { "alias": "onCopy"; "required": false; }; "onEdit": { "alias": "onEdit"; "required": false; }; "onReset": { "alias": "onReset"; "required": false; }; "onDelete": { "alias": "onDelete"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
 }
 //# sourceMappingURL=ConfigItemCard.d.ts.map

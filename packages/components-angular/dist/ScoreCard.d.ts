@@ -22,6 +22,7 @@ export declare class ScoreCard {
     unit?: string;
     size?: ScoreCardSize;
     classInput?: string;
+    get starsArray(): number[];
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<ScoreCard, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<ScoreCard, "st-score-card", never, { "title": { "alias": "title"; "required": false; }; "score": { "alias": "score"; "required": false; }; "stars": { "alias": "stars"; "required": false; }; "max": { "alias": "max"; "required": false; }; "typeInput": { "alias": "type"; "required": false; }; "unit": { "alias": "unit"; "required": false; }; "size": { "alias": "size"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;

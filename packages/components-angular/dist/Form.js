@@ -8,13 +8,18 @@ export class Form {
     message;
     classInput;
     get hostClass() {
-        return ["st-form", this.classInput].filter(Boolean).join(" ");
+        return classNames("st-form", this.status && `st-form--${this.status}`, this.classInput);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Form, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: Form, isStandalone: true, selector: "st-form", inputs: { status: "status", message: "message", classInput: ["class", "classInput"] }, ngImport: i0, template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: Form, isStandalone: true, selector: "st-form", inputs: { status: "status", message: "message", classInput: ["class", "classInput"] }, ngImport: i0, template: `
+    <form [attr.data-st-component]="componentName" [class]="hostClass">
+      @if (status && status !== 'idle') {
+        <div class="st-form__status" [attr.data-status]="status">
+          @if (message) { <p class="st-form__message">{{ message }}</p> }
+        </div>
+      }
       <ng-content></ng-content>
-    </div>
+    </form>
   `, isInline: true });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Form, decorators: [{
@@ -23,9 +28,14 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     selector: "st-form",
                     standalone: true,
                     template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    <form [attr.data-st-component]="componentName" [class]="hostClass">
+      @if (status && status !== 'idle') {
+        <div class="st-form__status" [attr.data-status]="status">
+          @if (message) { <p class="st-form__message">{{ message }}</p> }
+        </div>
+      }
       <ng-content></ng-content>
-    </div>
+    </form>
   `,
                 }]
         }], propDecorators: { status: [{

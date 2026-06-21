@@ -1,3 +1,4 @@
+import { EventEmitter } from "@angular/core";
 import * as i0 from "@angular/core";
 export type FilterPillTone = "neutral" | "success" | "warning" | "error" | "info";
 export type FilterPillProps = {
@@ -30,8 +31,12 @@ export declare class FilterPill {
     onClick?: () => void;
     onRemove?: () => void;
     classInput?: string;
+    readonly remove: EventEmitter<void>;
+    get hasClick(): boolean;
     get hostClass(): string;
+    handleClick(): void;
+    handleRemove(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<FilterPill, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<FilterPill, "st-filter-pill", never, { "field": { "alias": "field"; "required": false; }; "value": { "alias": "value"; "required": false; }; "operator": { "alias": "operator"; "required": false; }; "active": { "alias": "active"; "required": false; }; "removable": { "alias": "removable"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "tone": { "alias": "tone"; "required": false; }; "onClick": { "alias": "onClick"; "required": false; }; "onRemove": { "alias": "onRemove"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<FilterPill, "st-filter-pill", never, { "field": { "alias": "field"; "required": false; }; "value": { "alias": "value"; "required": false; }; "operator": { "alias": "operator"; "required": false; }; "active": { "alias": "active"; "required": false; }; "removable": { "alias": "removable"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "tone": { "alias": "tone"; "required": false; }; "onClick": { "alias": "onClick"; "required": false; }; "onRemove": { "alias": "onRemove"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, { "remove": "remove"; }, never, never, true, never>;
 }
 //# sourceMappingURL=FilterPill.d.ts.map

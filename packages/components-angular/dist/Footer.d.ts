@@ -12,6 +12,7 @@ export type FooterProps = {
     columns?: FooterColumn[];
     links?: FooterLink[];
     copyright?: unknown;
+    label?: string;
     class?: string;
 };
 export declare class Footer {
@@ -21,9 +22,10 @@ export declare class Footer {
     columns?: FooterColumn[];
     links?: FooterLink[];
     copyright?: unknown;
+    label?: string;
     classInput?: string;
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<Footer, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<Footer, "st-footer", never, { "brand": { "alias": "brand"; "required": false; }; "columns": { "alias": "columns"; "required": false; }; "links": { "alias": "links"; "required": false; }; "copyright": { "alias": "copyright"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<Footer, "st-footer", never, { "brand": { "alias": "brand"; "required": false; }; "columns": { "alias": "columns"; "required": false; }; "links": { "alias": "links"; "required": false; }; "copyright": { "alias": "copyright"; "required": false; }; "label": { "alias": "label"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
 }
 //# sourceMappingURL=Footer.d.ts.map

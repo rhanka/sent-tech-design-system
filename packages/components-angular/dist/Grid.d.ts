@@ -22,6 +22,7 @@ export declare class Grid {
     as?: string;
     classInput?: string;
     get hostClass(): string;
+    get inlineStyles(): Record<string, string | undefined>;
     static ɵfac: i0.ɵɵFactoryDeclaration<Grid, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<Grid, "st-grid", never, { "columns": { "alias": "columns"; "required": false; }; "minItemWidth": { "alias": "minItemWidth"; "required": false; }; "gap": { "alias": "gap"; "required": false; }; "as": { "alias": "as"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
 }

@@ -8,6 +8,8 @@ export type ChatThreadProps = {
         status?: ChatMessageStatus;
     }>;
     emptyLabel?: unknown;
+    label?: string;
+    autoScroll?: boolean;
     class?: string;
 };
 export declare class ChatThread {
@@ -20,9 +22,12 @@ export declare class ChatThread {
         status?: ChatMessageStatus;
     }>;
     emptyLabel?: unknown;
+    label?: string;
+    autoScroll?: boolean;
     classInput?: string;
     get hostClass(): string;
+    msgClass(role?: ChatMessageRole): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<ChatThread, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<ChatThread, "st-chat-thread", never, { "messages": { "alias": "messages"; "required": false; }; "emptyLabel": { "alias": "emptyLabel"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<ChatThread, "st-chat-thread", never, { "messages": { "alias": "messages"; "required": false; }; "emptyLabel": { "alias": "emptyLabel"; "required": false; }; "label": { "alias": "label"; "required": false; }; "autoScroll": { "alias": "autoScroll"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
 }
 //# sourceMappingURL=ChatThread.d.ts.map

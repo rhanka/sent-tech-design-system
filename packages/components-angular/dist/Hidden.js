@@ -9,7 +9,7 @@ export class Hidden {
     as;
     classInput;
     get hostClass() {
-        return ["st-hidden", this.classInput].filter(Boolean).join(" ");
+        return classNames("st-hidden", this.below && `st-hidden--below-${this.below}`, this.above && `st-hidden--above-${this.above}`, this.classInput);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Hidden, deps: [], target: i0.ɵɵFactoryTarget.Component });
     static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: Hidden, isStandalone: true, selector: "st-hidden", inputs: { below: "below", above: "above", as: "as", classInput: ["class", "classInput"] }, ngImport: i0, template: `
