@@ -100,7 +100,8 @@
   import {
     FRAMEWORKS,
     framework,
-    FRAMEWORK_STORAGE_KEY
+    FRAMEWORK_STORAGE_KEY,
+    type FrameworkId
   } from "$lib/framework.svelte";
   import {
     readUrlParams,
@@ -719,7 +720,7 @@
           label: option.label,
           icon: framework.value === option.id ? "✓" : " "
         }))}
-        onselect={(id) => { framework.value = id; isFrameworkOpen = false; }}
+        onselect={(id) => { framework.value = id as FrameworkId; isFrameworkOpen = false; }}
       />
     </div>
   </div>
