@@ -583,11 +583,7 @@
 
 {#snippet docsBrand()}
   <a class="docs-brand" href="/" aria-label="Sentropic Design System">
-    <img class="docs-brand-mark" src="/SENT-logo-squared.svg" alt="" aria-hidden="true" />
-    <span class="docs-brand-copy">
-      <span class="docs-brand-name">Sentropic</span>
-      <span class="docs-brand-product">Design System</span>
-    </span>
+    <img class="docs-brand-mark" src="/SENT-logo-squared.svg" alt="Sentropic Design System" />
   </a>
 {/snippet}
 
@@ -676,7 +672,6 @@
     >
       <Palette size={14} aria-hidden="true" />
       <span class="docs-theme-trigger-label">{activeTheme.label}</span>
-      <span class="docs-theme-trigger-id">{activeTheme.id}</span>
       <ChevronDown size={12} class="docs-locale-trigger-chevron {isThemeOpen ? 'rotated' : ''}" aria-hidden="true" />
     </button>
 
@@ -693,7 +688,6 @@
             <span class="locale-check">{#if activeThemeId === theme.id}✓{/if}</span>
             <span class="docs-theme-item-copy">
               <span>{theme.label}</span>
-              <span class="docs-theme-item-id">{theme.id}</span>
             </span>
           </button>
         {/each}
