@@ -33,6 +33,6 @@ export declare class DataImage {
     classInput?: string;
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<DataImage, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<DataImage, "st-data-image", never, { "src": { "alias": "src"; "required": false; }; "alt": { "alias": "alt"; "required": false; }; "width": { "alias": "width"; "required": false; }; "height": { "alias": "height"; "required": false; }; "fit": { "alias": "fit"; "required": false; }; "radius": { "alias": "radius"; "required": false; }; "loading": { "alias": "loading"; "required": false; }; "decoding": { "alias": "decoding"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<DataImage, "st-data-image", never, { "src": { "alias": "src"; "required": false; }; "alt": { "alias": "alt"; "required": false; }; "width": { "alias": "width"; "required": false; }; "height": { "alias": "height"; "required": false; }; "fit": { "alias": "fit"; "required": false; }; "radius": { "alias": "radius"; "required": false; }; "loading": { "alias": "loading"; "required": false; }; "decoding": { "alias": "decoding"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
 }
 //# sourceMappingURL=DataImage.d.ts.map

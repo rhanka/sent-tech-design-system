@@ -19,15 +19,22 @@ export class Header {
     navItems;
     account;
     sticky;
+    label;
+    compact = false;
     classInput;
     get hostClass() {
-        return ["st-header", this.classInput].filter(Boolean).join(" ");
+        return classNames("st-header", this.compact && "st-header--compact", this.sticky && "st-header--sticky", this.classInput);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Header, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: Header, isStandalone: true, selector: "st-header", inputs: { brand: "brand", title: "title", navigation: "navigation", navItems: "navItems", account: "account", sticky: "sticky", classInput: ["class", "classInput"] }, ngImport: i0, template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
-    </div>
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: Header, isStandalone: true, selector: "st-header", inputs: { brand: "brand", title: "title", navigation: "navigation", navItems: "navItems", account: "account", sticky: "sticky", label: "label", compact: "compact", classInput: ["class", "classInput"] }, ngImport: i0, template: `
+    <header [attr.data-st-component]="componentName" [class]="hostClass" [attr.aria-label]="label">
+      <div class="st-header__body">
+        <ng-content select="[slot=logo]"></ng-content>
+        <ng-content select="[slot=navigation]"></ng-content>
+        <ng-content select="[slot=actions]"></ng-content>
+        <ng-content></ng-content>
+      </div>
+    </header>
   `, isInline: true });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Header, decorators: [{
@@ -36,9 +43,14 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     selector: "st-header",
                     standalone: true,
                     template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
-    </div>
+    <header [attr.data-st-component]="componentName" [class]="hostClass" [attr.aria-label]="label">
+      <div class="st-header__body">
+        <ng-content select="[slot=logo]"></ng-content>
+        <ng-content select="[slot=navigation]"></ng-content>
+        <ng-content select="[slot=actions]"></ng-content>
+        <ng-content></ng-content>
+      </div>
+    </header>
   `,
                 }]
         }], propDecorators: { brand: [{
@@ -52,6 +64,10 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
             }], account: [{
                 type: NgInput
             }], sticky: [{
+                type: NgInput
+            }], label: [{
+                type: NgInput
+            }], compact: [{
                 type: NgInput
             }], classInput: [{
                 type: NgInput,

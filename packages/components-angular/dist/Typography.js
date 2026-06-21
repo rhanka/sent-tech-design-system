@@ -12,7 +12,7 @@ export class Typography {
     truncate;
     classInput;
     get hostClass() {
-        return ["st-typography", this.classInput].filter(Boolean).join(" ");
+        return classNames("st-typography", this.variant && `st-typography--${this.variant}`, this.weight && `st-typography--weight-${this.weight}`, this.tone && `st-typography--tone-${this.tone}`, this.align && `st-typography--align-${this.align}`, this.truncate && "st-typography--truncate", this.classInput);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Typography, deps: [], target: i0.ɵɵFactoryTarget.Component });
     static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: Typography, isStandalone: true, selector: "st-typography", inputs: { variant: "variant", as: "as", weight: "weight", tone: "tone", align: "align", truncate: "truncate", classInput: ["class", "classInput"] }, ngImport: i0, template: `

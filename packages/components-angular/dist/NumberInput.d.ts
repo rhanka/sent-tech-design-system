@@ -1,3 +1,4 @@
+import { EventEmitter } from "@angular/core";
 import * as i0 from "@angular/core";
 export type NumberInputSize = "sm" | "md" | "lg";
 export type NumberInputProps = {
@@ -20,6 +21,7 @@ export type NumberInputProps = {
 export declare class NumberInput {
     static readonly stComponentName = "NumberInput";
     readonly componentName = "NumberInput";
+    private readonly autoId;
     label?: unknown;
     helperText?: unknown;
     errorText?: unknown;
@@ -34,8 +36,28 @@ export declare class NumberInput {
     incrementLabel?: string;
     decrementLabel?: string;
     classInput?: string;
+    readonly modelValueChange: EventEmitter<number | null>;
+    readonly updateModelValue: EventEmitter<number | null>;
+    readonly input: EventEmitter<Event>;
+    readonly change: EventEmitter<Event>;
+    private _internal;
+    get inputId(): string;
+    get isInvalid(): boolean;
+    get controlWrapClass(): string;
     get hostClass(): string;
+    get numMin(): number | undefined;
+    get numMax(): number | undefined;
+    get numStep(): number;
+    get numValue(): number | null;
+    get currentValue(): number | string;
+    get isAtMin(): boolean;
+    get isAtMax(): boolean;
+    private clamp;
+    private setValue;
+    increment(): void;
+    decrement(): void;
+    onInput(event: Event): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<NumberInput, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<NumberInput, "st-number-input", never, { "label": { "alias": "label"; "required": false; }; "helperText": { "alias": "helperText"; "required": false; }; "errorText": { "alias": "errorText"; "required": false; }; "size": { "alias": "size"; "required": false; }; "modelValue": { "alias": "modelValue"; "required": false; }; "value": { "alias": "value"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "readonly": { "alias": "readonly"; "required": false; }; "min": { "alias": "min"; "required": false; }; "max": { "alias": "max"; "required": false; }; "step": { "alias": "step"; "required": false; }; "incrementLabel": { "alias": "incrementLabel"; "required": false; }; "decrementLabel": { "alias": "decrementLabel"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<NumberInput, "st-number-input", never, { "label": { "alias": "label"; "required": false; }; "helperText": { "alias": "helperText"; "required": false; }; "errorText": { "alias": "errorText"; "required": false; }; "size": { "alias": "size"; "required": false; }; "modelValue": { "alias": "modelValue"; "required": false; }; "value": { "alias": "value"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "readonly": { "alias": "readonly"; "required": false; }; "min": { "alias": "min"; "required": false; }; "max": { "alias": "max"; "required": false; }; "step": { "alias": "step"; "required": false; }; "incrementLabel": { "alias": "incrementLabel"; "required": false; }; "decrementLabel": { "alias": "decrementLabel"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, { "modelValueChange": "modelValueChange"; "updateModelValue": "update:modelValue"; "input": "input"; "change": "change"; }, never, never, true, never>;
 }
 //# sourceMappingURL=NumberInput.d.ts.map

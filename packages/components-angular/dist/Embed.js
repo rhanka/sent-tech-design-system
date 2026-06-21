@@ -13,12 +13,19 @@ export class Embed {
     loading;
     classInput;
     get hostClass() {
-        return ["st-embed", this.classInput].filter(Boolean).join(" ");
+        return classNames("st-embed", this.classInput);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Embed, deps: [], target: i0.ɵɵFactoryTarget.Component });
     static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: Embed, isStandalone: true, selector: "st-embed", inputs: { src: "src", title: "title", sandbox: "sandbox", aspectRatio: "aspectRatio", allow: "allow", loading: "loading", classInput: ["class", "classInput"] }, ngImport: i0, template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+    <div [attr.data-st-component]="componentName" [class]="hostClass" [style.aspect-ratio]="aspectRatio ?? '16/9'">
+      <iframe class="st-embed__frame"
+        [attr.src]="src"
+        [title]="title"
+        [attr.sandbox]="sandbox ?? null"
+        [attr.allow]="allow ?? null"
+        [attr.loading]="loading ?? null"
+        width="100%" height="100%"
+        frameborder="0"></iframe>
     </div>
   `, isInline: true });
 }
@@ -28,8 +35,15 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     selector: "st-embed",
                     standalone: true,
                     template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+    <div [attr.data-st-component]="componentName" [class]="hostClass" [style.aspect-ratio]="aspectRatio ?? '16/9'">
+      <iframe class="st-embed__frame"
+        [attr.src]="src"
+        [title]="title"
+        [attr.sandbox]="sandbox ?? null"
+        [attr.allow]="allow ?? null"
+        [attr.loading]="loading ?? null"
+        width="100%" height="100%"
+        frameborder="0"></iframe>
     </div>
   `,
                 }]

@@ -32,6 +32,6 @@ export declare class Embed {
     classInput?: string;
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<Embed, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<Embed, "st-embed", never, { "src": { "alias": "src"; "required": false; }; "title": { "alias": "title"; "required": false; }; "sandbox": { "alias": "sandbox"; "required": false; }; "aspectRatio": { "alias": "aspectRatio"; "required": false; }; "allow": { "alias": "allow"; "required": false; }; "loading": { "alias": "loading"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<Embed, "st-embed", never, { "src": { "alias": "src"; "required": false; }; "title": { "alias": "title"; "required": false; }; "sandbox": { "alias": "sandbox"; "required": false; }; "aspectRatio": { "alias": "aspectRatio"; "required": false; }; "allow": { "alias": "allow"; "required": false; }; "loading": { "alias": "loading"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
 }
 //# sourceMappingURL=Embed.d.ts.map

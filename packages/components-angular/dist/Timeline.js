@@ -11,10 +11,21 @@ export class Timeline {
         return classNames("st-timeline", `st-timeline--${this.orientation ?? "vertical"}`, this.classInput);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Timeline, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: Timeline, isStandalone: true, selector: "st-timeline", inputs: { items: "items", orientation: "orientation", classInput: ["class", "classInput"] }, ngImport: i0, template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
-    </div>
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: Timeline, isStandalone: true, selector: "st-timeline", inputs: { items: "items", orientation: "orientation", classInput: ["class", "classInput"] }, ngImport: i0, template: `
+    <ol [attr.data-st-component]="componentName" [class]="hostClass">
+      @for(item of items; track item.title ?? item.label){
+        <li class="st-timeline__item">
+          <div class="st-timeline__connector"></div>
+          <div class="st-timeline__content">
+            <span class="st-timeline__date">{{item.date ?? item.meta}}</span>
+            <span class="st-timeline__label">{{item.label ?? item.title}}</span>
+            @if(item.description){
+              <p class="st-timeline__desc">{{item.description}}</p>
+            }
+          </div>
+        </li>
+      }
+    </ol>
   `, isInline: true });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Timeline, decorators: [{
@@ -23,9 +34,20 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     selector: "st-timeline",
                     standalone: true,
                     template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
-    </div>
+    <ol [attr.data-st-component]="componentName" [class]="hostClass">
+      @for(item of items; track item.title ?? item.label){
+        <li class="st-timeline__item">
+          <div class="st-timeline__connector"></div>
+          <div class="st-timeline__content">
+            <span class="st-timeline__date">{{item.date ?? item.meta}}</span>
+            <span class="st-timeline__label">{{item.label ?? item.title}}</span>
+            @if(item.description){
+              <p class="st-timeline__desc">{{item.description}}</p>
+            }
+          </div>
+        </li>
+      }
+    </ol>
   `,
                 }]
         }], propDecorators: { items: [{

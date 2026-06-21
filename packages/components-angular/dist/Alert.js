@@ -10,12 +10,25 @@ export class Alert {
     actions;
     classInput;
     get hostClass() {
-        return ["st-alert", this.classInput].filter(Boolean).join(" ");
+        return classNames("st-alert", this.tone && `st-alert--${this.tone}`, this.classInput);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Alert, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: Alert, isStandalone: true, selector: "st-alert", inputs: { tone: "tone", title: "title", message: "message", actions: "actions", classInput: ["class", "classInput"] }, ngImport: i0, template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: Alert, isStandalone: true, selector: "st-alert", inputs: { tone: "tone", title: "title", message: "message", actions: "actions", classInput: ["class", "classInput"] }, ngImport: i0, template: `
+    <div [attr.data-st-component]="componentName" [class]="hostClass" role="alert">
+      <div class="st-alert__content">
+        @if (title) {
+          <p class="st-alert__title">{{ title }}</p>
+        }
+        @if (message) {
+          <p class="st-alert__message">{{ message }}</p>
+        }
+        <ng-content></ng-content>
+      </div>
+      @if (actions) {
+        <div class="st-alert__actions">
+          <ng-content select="[slot='actions']"></ng-content>
+        </div>
+      }
     </div>
   `, isInline: true });
 }
@@ -25,8 +38,21 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     selector: "st-alert",
                     standalone: true,
                     template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+    <div [attr.data-st-component]="componentName" [class]="hostClass" role="alert">
+      <div class="st-alert__content">
+        @if (title) {
+          <p class="st-alert__title">{{ title }}</p>
+        }
+        @if (message) {
+          <p class="st-alert__message">{{ message }}</p>
+        }
+        <ng-content></ng-content>
+      </div>
+      @if (actions) {
+        <div class="st-alert__actions">
+          <ng-content select="[slot='actions']"></ng-content>
+        </div>
+      }
     </div>
   `,
                 }]

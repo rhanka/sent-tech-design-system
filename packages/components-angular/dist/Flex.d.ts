@@ -28,6 +28,7 @@ export declare class Flex {
     as?: string;
     classInput?: string;
     get hostClass(): string;
+    get inlineStyles(): Record<string, string | undefined>;
     static ɵfac: i0.ɵɵFactoryDeclaration<Flex, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<Flex, "st-flex", never, { "direction": { "alias": "direction"; "required": false; }; "gap": { "alias": "gap"; "required": false; }; "align": { "alias": "align"; "required": false; }; "justify": { "alias": "justify"; "required": false; }; "wrap": { "alias": "wrap"; "required": false; }; "inline": { "alias": "inline"; "required": false; }; "as": { "alias": "as"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
 }

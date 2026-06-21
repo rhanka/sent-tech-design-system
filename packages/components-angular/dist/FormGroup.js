@@ -8,13 +8,15 @@ export class FormGroup {
     helperText;
     classInput;
     get hostClass() {
-        return ["st-formGroup", this.classInput].filter(Boolean).join(" ");
+        return classNames("st-formGroup", this.classInput);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: FormGroup, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: FormGroup, isStandalone: true, selector: "st-form-group", inputs: { legend: "legend", helperText: "helperText", classInput: ["class", "classInput"] }, ngImport: i0, template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: FormGroup, isStandalone: true, selector: "st-form-group", inputs: { legend: "legend", helperText: "helperText", classInput: ["class", "classInput"] }, ngImport: i0, template: `
+    <fieldset [attr.data-st-component]="componentName" [class]="hostClass">
+      @if (legend) { <legend class="st-formGroup__legend">{{ legend }}</legend> }
       <ng-content></ng-content>
-    </div>
+      @if (helperText) { <p class="st-formGroup__helper">{{ helperText }}</p> }
+    </fieldset>
   `, isInline: true });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: FormGroup, decorators: [{
@@ -23,9 +25,11 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     selector: "st-form-group",
                     standalone: true,
                     template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    <fieldset [attr.data-st-component]="componentName" [class]="hostClass">
+      @if (legend) { <legend class="st-formGroup__legend">{{ legend }}</legend> }
       <ng-content></ng-content>
-    </div>
+      @if (helperText) { <p class="st-formGroup__helper">{{ helperText }}</p> }
+    </fieldset>
   `,
                 }]
         }], propDecorators: { legend: [{

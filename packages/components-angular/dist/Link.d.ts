@@ -22,6 +22,7 @@ export declare class Link {
     disabled?: boolean;
     external?: boolean;
     classInput?: string;
+    get effectiveVariant(): string;
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<Link, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<Link, "st-link", never, { "href": { "alias": "href"; "required": false; }; "variant": { "alias": "variant"; "required": false; }; "standalone": { "alias": "standalone"; "required": false; }; "muted": { "alias": "muted"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "external": { "alias": "external"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;

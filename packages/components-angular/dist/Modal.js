@@ -1,4 +1,4 @@
-import { Component, Input as NgInput } from "@angular/core";
+import { Component, EventEmitter, Input as NgInput, Output } from "@angular/core";
 import { classNames } from "./classNames.js";
 import * as i0 from "@angular/core";
 export class Modal {
@@ -7,15 +7,47 @@ export class Modal {
     open;
     title;
     description;
+    size;
+    closeLabel;
     classInput;
+    close = new EventEmitter();
     get hostClass() {
-        return ["st-modal", this.classInput].filter(Boolean).join(" ");
+        return classNames("st-modal", this.size && `st-modal--${this.size}`, this.classInput);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Modal, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: Modal, isStandalone: true, selector: "st-modal", inputs: { open: "open", title: "title", description: "description", classInput: ["class", "classInput"] }, ngImport: i0, template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
-    </div>
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: Modal, isStandalone: true, selector: "st-modal", inputs: { open: "open", title: "title", description: "description", size: "size", closeLabel: "closeLabel", classInput: ["class", "classInput"] }, outputs: { close: "close" }, ngImport: i0, template: `
+    @if (open) {
+      <div class="st-modal__backdrop">
+        <section
+          [attr.data-st-component]="componentName"
+          [class]="hostClass"
+          role="dialog"
+          aria-modal="true"
+          [attr.aria-label]="title || 'Modal'"
+        >
+          <div class="st-modal__header">
+            @if (title) {
+              <h2 class="st-modal__title">{{ title }}</h2>
+            }
+            <button
+              type="button"
+              class="st-modal__close"
+              [attr.aria-label]="closeLabel || 'Close'"
+              (click)="close.emit()"
+            >&#x2715;</button>
+          </div>
+          @if (description) {
+            <p class="st-modal__description">{{ description }}</p>
+          }
+          <div class="st-modal__body">
+            <ng-content></ng-content>
+          </div>
+          <div class="st-modal__footer">
+            <ng-content select="[slot='footer']"></ng-content>
+          </div>
+        </section>
+      </div>
+    }
   `, isInline: true });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Modal, decorators: [{
@@ -24,9 +56,38 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     selector: "st-modal",
                     standalone: true,
                     template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
-    </div>
+    @if (open) {
+      <div class="st-modal__backdrop">
+        <section
+          [attr.data-st-component]="componentName"
+          [class]="hostClass"
+          role="dialog"
+          aria-modal="true"
+          [attr.aria-label]="title || 'Modal'"
+        >
+          <div class="st-modal__header">
+            @if (title) {
+              <h2 class="st-modal__title">{{ title }}</h2>
+            }
+            <button
+              type="button"
+              class="st-modal__close"
+              [attr.aria-label]="closeLabel || 'Close'"
+              (click)="close.emit()"
+            >&#x2715;</button>
+          </div>
+          @if (description) {
+            <p class="st-modal__description">{{ description }}</p>
+          }
+          <div class="st-modal__body">
+            <ng-content></ng-content>
+          </div>
+          <div class="st-modal__footer">
+            <ng-content select="[slot='footer']"></ng-content>
+          </div>
+        </section>
+      </div>
+    }
   `,
                 }]
         }], propDecorators: { open: [{
@@ -35,8 +96,14 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                 type: NgInput
             }], description: [{
                 type: NgInput
+            }], size: [{
+                type: NgInput
+            }], closeLabel: [{
+                type: NgInput
             }], classInput: [{
                 type: NgInput,
                 args: ["class"]
+            }], close: [{
+                type: Output
             }] } });
 //# sourceMappingURL=Modal.js.map

@@ -66,6 +66,7 @@ export declare class SelectableRow {
     role?: string;
     accentBar?: boolean;
     classInput?: string;
+    handleClick(): void;
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<SelectableRow, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<SelectableRow, "st-selectable-row", never, { "selected": { "alias": "selected"; "required": false; }; "onSelect": { "alias": "onSelect"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "value": { "alias": "value"; "required": false; }; "role": { "alias": "role"; "required": false; }; "accentBar": { "alias": "accentBar"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;

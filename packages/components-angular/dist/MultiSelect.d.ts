@@ -1,8 +1,10 @@
+import { EventEmitter } from "@angular/core";
 import * as i0 from "@angular/core";
 export type MultiSelectOption = {
     value: string;
     label: unknown;
     disabled?: boolean;
+    group?: string;
 };
 export type MultiSelectSize = "sm" | "md" | "lg";
 export type MultiSelectProps = {
@@ -13,7 +15,6 @@ export type MultiSelectProps = {
     options: MultiSelectOption[];
     value?: string[];
     values?: string[];
-    /** Svelte-canonical alias for the selected values. */
     selected?: string[];
     size?: MultiSelectSize;
     open?: boolean;
@@ -29,12 +30,13 @@ export type MultiSelectProps = {
 export declare class MultiSelect {
     static readonly stComponentName = "MultiSelect";
     readonly componentName = "MultiSelect";
+    isOpen: boolean;
     label?: unknown;
     helperText?: unknown;
     errorText?: unknown;
     invalid?: boolean;
     options: MultiSelectOption[];
-    value?: string[];
+    value: string[];
     values?: string[];
     selected?: string[];
     size?: MultiSelectSize;
@@ -47,8 +49,14 @@ export declare class MultiSelect {
     listLabel?: string;
     disabled?: boolean;
     classInput?: string;
+    readonly valueChange: EventEmitter<string[]>;
     get hostClass(): string;
+    get currentValue(): string[];
+    get selectedLabel(): string;
+    isSelected(v: string): boolean;
+    toggleOpen(): void;
+    toggle(v: string): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<MultiSelect, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<MultiSelect, "st-multi-select", never, { "label": { "alias": "label"; "required": false; }; "helperText": { "alias": "helperText"; "required": false; }; "errorText": { "alias": "errorText"; "required": false; }; "invalid": { "alias": "invalid"; "required": false; }; "options": { "alias": "options"; "required": false; }; "value": { "alias": "value"; "required": false; }; "values": { "alias": "values"; "required": false; }; "selected": { "alias": "selected"; "required": false; }; "size": { "alias": "size"; "required": false; }; "open": { "alias": "open"; "required": false; }; "placeholder": { "alias": "placeholder"; "required": false; }; "searchPlaceholder": { "alias": "searchPlaceholder"; "required": false; }; "noResultsLabel": { "alias": "noResultsLabel"; "required": false; }; "toggleLabel": { "alias": "toggleLabel"; "required": false; }; "removeLabel": { "alias": "removeLabel"; "required": false; }; "listLabel": { "alias": "listLabel"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<MultiSelect, "st-multi-select", never, { "label": { "alias": "label"; "required": false; }; "helperText": { "alias": "helperText"; "required": false; }; "errorText": { "alias": "errorText"; "required": false; }; "invalid": { "alias": "invalid"; "required": false; }; "options": { "alias": "options"; "required": false; }; "value": { "alias": "value"; "required": false; }; "values": { "alias": "values"; "required": false; }; "selected": { "alias": "selected"; "required": false; }; "size": { "alias": "size"; "required": false; }; "open": { "alias": "open"; "required": false; }; "placeholder": { "alias": "placeholder"; "required": false; }; "searchPlaceholder": { "alias": "searchPlaceholder"; "required": false; }; "noResultsLabel": { "alias": "noResultsLabel"; "required": false; }; "toggleLabel": { "alias": "toggleLabel"; "required": false; }; "removeLabel": { "alias": "removeLabel"; "required": false; }; "listLabel": { "alias": "listLabel"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, { "valueChange": "valueChange"; }, never, never, true, never>;
 }
 //# sourceMappingURL=MultiSelect.d.ts.map

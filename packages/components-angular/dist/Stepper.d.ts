@@ -1,3 +1,4 @@
+import { EventEmitter } from "@angular/core";
 import * as i0 from "@angular/core";
 export interface StepperStep {
     label: string;
@@ -26,8 +27,12 @@ export declare class Stepper {
     onStepClick?: (index: number) => void;
     label?: string;
     classInput?: string;
+    readonly stepClick: EventEmitter<number>;
+    stateOf(index: number): "complete" | "current" | "upcoming";
+    stepClass(index: number): string;
+    handleClick(index: number): void;
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<Stepper, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<Stepper, "st-stepper", never, { "steps": { "alias": "steps"; "required": false; }; "current": { "alias": "current"; "required": false; }; "orientation": { "alias": "orientation"; "required": false; }; "clickable": { "alias": "clickable"; "required": false; }; "onStepClick": { "alias": "onStepClick"; "required": false; }; "label": { "alias": "label"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<Stepper, "st-stepper", never, { "steps": { "alias": "steps"; "required": false; }; "current": { "alias": "current"; "required": false; }; "orientation": { "alias": "orientation"; "required": false; }; "clickable": { "alias": "clickable"; "required": false; }; "onStepClick": { "alias": "onStepClick"; "required": false; }; "label": { "alias": "label"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, { "stepClick": "stepClick"; }, never, ["*"], true, never>;
 }
 //# sourceMappingURL=Stepper.d.ts.map

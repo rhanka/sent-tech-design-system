@@ -8,6 +8,7 @@ export type TooltipProps = {
 export declare class Tooltip {
     static readonly stComponentName = "Tooltip";
     readonly componentName = "Tooltip";
+    readonly tooltipId: string;
     content: unknown;
     placement?: TooltipPlacement;
     classInput?: string;

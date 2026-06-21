@@ -215,4 +215,10 @@ export { spanBasis, offsetMargin } from "./Col.js";
 export { gridTemplateColumns } from "./Grid.js";
 export { resolvePortalTarget } from "./Portal.js";
 export { computePosition, splitPlacement, joinPlacement } from "./Popper.js";
+export { ListReportPage } from "./ListReportPage.js";
+export { ObjectPage } from "./ObjectPage.js";
+export { KanbanBoard } from "./KanbanBoard.js";
+export { MasterDetail } from "./MasterDetail.js";
+export { Dashboard } from "./Dashboard.js";
+export { Wizard } from "./Wizard.js";
 //# sourceMappingURL=index.js.map

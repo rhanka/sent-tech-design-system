@@ -15,8 +15,10 @@ export declare class Toggletip {
     open?: boolean;
     placement?: ToggletipPlacement;
     classInput?: string;
+    localOpen: boolean;
     get hostClass(): string;
+    toggle(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<Toggletip, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<Toggletip, "st-toggletip", never, { "label": { "alias": "label"; "required": false; }; "content": { "alias": "content"; "required": false; }; "open": { "alias": "open"; "required": false; }; "placement": { "alias": "placement"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<Toggletip, "st-toggletip", never, { "label": { "alias": "label"; "required": false; }; "content": { "alias": "content"; "required": false; }; "open": { "alias": "open"; "required": false; }; "placement": { "alias": "placement"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
 }
 //# sourceMappingURL=Toggletip.d.ts.map

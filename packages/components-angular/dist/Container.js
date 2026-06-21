@@ -9,7 +9,7 @@ export class Container {
     as;
     classInput;
     get hostClass() {
-        return ["st-container", this.classInput].filter(Boolean).join(" ");
+        return classNames("st-container", this.size && `st-container--${this.size}`, this.padding && "st-container--padding", this.classInput);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Container, deps: [], target: i0.ɵɵFactoryTarget.Component });
     static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: Container, isStandalone: true, selector: "st-container", inputs: { size: "size", padding: "padding", as: "as", classInput: ["class", "classInput"] }, ngImport: i0, template: `

@@ -25,6 +25,7 @@ export declare class MessageActions {
     visibility?: "always" | "hover";
     classInput?: string;
     get hostClass(): string;
+    actionClass(variant?: MessageActionVariant): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<MessageActions, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<MessageActions, "st-message-actions", never, { "actions": { "alias": "actions"; "required": false; }; "visibility": { "alias": "visibility"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
 }

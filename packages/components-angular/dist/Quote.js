@@ -8,13 +8,21 @@ export class Quote {
     source;
     classInput;
     get hostClass() {
-        return ["st-quote", this.classInput].filter(Boolean).join(" ");
+        return classNames("st-quote", this.classInput);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Quote, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: Quote, isStandalone: true, selector: "st-quote", inputs: { author: "author", source: "source", classInput: ["class", "classInput"] }, ngImport: i0, template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
-    </div>
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: Quote, isStandalone: true, selector: "st-quote", inputs: { author: "author", source: "source", classInput: ["class", "classInput"] }, ngImport: i0, template: `
+    <blockquote [attr.data-st-component]="componentName" [class]="hostClass">
+      <div class="st-quote__body">
+        <ng-content></ng-content>
+      </div>
+      @if (author) {
+        <footer class="st-quote__footer">
+          <cite class="st-quote__author">{{ author }}</cite>
+          @if (source) { <span class="st-quote__source"> — {{ source }}</span> }
+        </footer>
+      }
+    </blockquote>
   `, isInline: true });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Quote, decorators: [{
@@ -23,9 +31,17 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     selector: "st-quote",
                     standalone: true,
                     template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
-    </div>
+    <blockquote [attr.data-st-component]="componentName" [class]="hostClass">
+      <div class="st-quote__body">
+        <ng-content></ng-content>
+      </div>
+      @if (author) {
+        <footer class="st-quote__footer">
+          <cite class="st-quote__author">{{ author }}</cite>
+          @if (source) { <span class="st-quote__source"> — {{ source }}</span> }
+        </footer>
+      }
+    </blockquote>
   `,
                 }]
         }], propDecorators: { author: [{

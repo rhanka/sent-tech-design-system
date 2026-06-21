@@ -8,12 +8,27 @@ export class MessageActions {
     visibility;
     classInput;
     get hostClass() {
-        return ["st-messageActions", this.classInput].filter(Boolean).join(" ");
+        return classNames("st-messageActions", this.visibility === "hover" ? "st-messageActions--hover" : undefined, this.classInput);
+    }
+    actionClass(variant) {
+        return classNames("st-messageActions__action", variant === "danger" ? "st-messageActions__action--danger" : undefined);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: MessageActions, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: MessageActions, isStandalone: true, selector: "st-message-actions", inputs: { actions: "actions", visibility: "visibility", classInput: ["class", "classInput"] }, ngImport: i0, template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: MessageActions, isStandalone: true, selector: "st-message-actions", inputs: { actions: "actions", visibility: "visibility", classInput: ["class", "classInput"] }, ngImport: i0, template: `
+    <div [attr.data-st-component]="componentName" [class]="hostClass" role="toolbar">
+      @if (actions && actions.length > 0) {
+        @for (action of actions; track action.id ?? $index) {
+          <button
+            type="button"
+            [class]="actionClass(action.variant)"
+            [disabled]="action.disabled ?? false"
+            [attr.aria-label]="action.label ?? null"
+            (click)="action.onClick && action.onClick()"
+          >{{ action.label ?? action.icon }}</button>
+        }
+      } @else {
+        <ng-content></ng-content>
+      }
     </div>
   `, isInline: true });
 }
@@ -23,8 +38,20 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     selector: "st-message-actions",
                     standalone: true,
                     template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+    <div [attr.data-st-component]="componentName" [class]="hostClass" role="toolbar">
+      @if (actions && actions.length > 0) {
+        @for (action of actions; track action.id ?? $index) {
+          <button
+            type="button"
+            [class]="actionClass(action.variant)"
+            [disabled]="action.disabled ?? false"
+            [attr.aria-label]="action.label ?? null"
+            (click)="action.onClick && action.onClick()"
+          >{{ action.label ?? action.icon }}</button>
+        }
+      } @else {
+        <ng-content></ng-content>
+      }
     </div>
   `,
                 }]

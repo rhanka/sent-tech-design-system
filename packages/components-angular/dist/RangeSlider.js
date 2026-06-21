@@ -1,4 +1,4 @@
-import { Component, Input as NgInput } from "@angular/core";
+import { Component, EventEmitter, Input as NgInput, Output } from "@angular/core";
 import { classNames } from "./classNames.js";
 import * as i0 from "@angular/core";
 export class RangeSlider {
@@ -21,13 +21,53 @@ export class RangeSlider {
     ariaLabelMin;
     ariaLabelMax;
     classInput;
+    valueChange = new EventEmitter();
+    get currentValue() {
+        return this.modelValue ?? this.value ?? [this.min ?? 0, this.max ?? 100];
+    }
+    get low() {
+        return this.currentValue[0];
+    }
+    get high() {
+        return this.currentValue[1];
+    }
     get hostClass() {
-        return ["st-rangeSlider", this.classInput].filter(Boolean).join(" ");
+        return classNames("st-field", this.size ? `st-field--${this.size}` : undefined, this.invalid ? "st-field--invalid" : undefined, this.classInput);
+    }
+    onLow(e) {
+        this.valueChange.emit([Number(e.target.value), this.high]);
+    }
+    onHigh(e) {
+        this.valueChange.emit([this.low, Number(e.target.value)]);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: RangeSlider, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: RangeSlider, isStandalone: true, selector: "st-range-slider", inputs: { modelValue: "modelValue", value: "value", defaultValue: "defaultValue", min: "min", max: "max", step: "step", size: "size", disabled: "disabled", label: "label", helperText: "helperText", errorText: "errorText", invalid: "invalid", showValue: "showValue", valueFormatter: "valueFormatter", ariaLabelMin: "ariaLabelMin", ariaLabelMax: "ariaLabelMax", classInput: ["class", "classInput"] }, ngImport: i0, template: `
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: RangeSlider, isStandalone: true, selector: "st-range-slider", inputs: { modelValue: "modelValue", value: "value", defaultValue: "defaultValue", min: "min", max: "max", step: "step", size: "size", disabled: "disabled", label: "label", helperText: "helperText", errorText: "errorText", invalid: "invalid", showValue: "showValue", valueFormatter: "valueFormatter", ariaLabelMin: "ariaLabelMin", ariaLabelMax: "ariaLabelMax", classInput: ["class", "classInput"] }, outputs: { valueChange: "valueChange" }, ngImport: i0, template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+      @if (label) {
+        <label class="st-field__label">{{ label }}</label>
+      }
+      <div class="st-rangeSlider">
+        <input
+          type="range"
+          class="st-rangeSlider__thumb st-rangeSlider__thumb--low"
+          [min]="min ?? 0"
+          [max]="high"
+          [step]="step ?? 1"
+          [value]="low"
+          [disabled]="disabled ?? false"
+          (input)="onLow($event)"
+        />
+        <input
+          type="range"
+          class="st-rangeSlider__thumb st-rangeSlider__thumb--high"
+          [min]="low"
+          [max]="max ?? 100"
+          [step]="step ?? 1"
+          [value]="high"
+          [disabled]="disabled ?? false"
+          (input)="onHigh($event)"
+        />
+      </div>
     </div>
   `, isInline: true });
 }
@@ -38,7 +78,31 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     standalone: true,
                     template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+      @if (label) {
+        <label class="st-field__label">{{ label }}</label>
+      }
+      <div class="st-rangeSlider">
+        <input
+          type="range"
+          class="st-rangeSlider__thumb st-rangeSlider__thumb--low"
+          [min]="min ?? 0"
+          [max]="high"
+          [step]="step ?? 1"
+          [value]="low"
+          [disabled]="disabled ?? false"
+          (input)="onLow($event)"
+        />
+        <input
+          type="range"
+          class="st-rangeSlider__thumb st-rangeSlider__thumb--high"
+          [min]="low"
+          [max]="max ?? 100"
+          [step]="step ?? 1"
+          [value]="high"
+          [disabled]="disabled ?? false"
+          (input)="onHigh($event)"
+        />
+      </div>
     </div>
   `,
                 }]
@@ -77,5 +141,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
             }], classInput: [{
                 type: NgInput,
                 args: ["class"]
+            }], valueChange: [{
+                type: Output
             }] } });
 //# sourceMappingURL=RangeSlider.js.map

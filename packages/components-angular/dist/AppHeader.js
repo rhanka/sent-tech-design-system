@@ -16,13 +16,16 @@ export class AppHeader {
     brandLabel;
     classInput;
     get hostClass() {
-        return ["st-appHeader", this.classInput].filter(Boolean).join(" ");
+        return classNames("st-appHeader", this.compact && "st-appHeader--compact", this.classInput);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: AppHeader, deps: [], target: i0.ɵɵFactoryTarget.Component });
     static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: AppHeader, isStandalone: true, selector: "st-app-header", inputs: { compact: "compact", menuOpen: "menuOpen", menuLabel: "menuLabel", drawerId: "drawerId", brandName: "brandName", productName: "productName", logoSrc: "logoSrc", logoAlt: "logoAlt", brandHref: "brandHref", brandLabel: "brandLabel", classInput: ["class", "classInput"] }, ngImport: i0, template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    <header [attr.data-st-component]="componentName" [class]="hostClass">
+      <ng-content select="[slot=logo]"></ng-content>
+      <ng-content select="[slot=navigation]"></ng-content>
+      <ng-content select="[slot=actions]"></ng-content>
       <ng-content></ng-content>
-    </div>
+    </header>
   `, isInline: true });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: AppHeader, decorators: [{
@@ -31,9 +34,12 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     selector: "st-app-header",
                     standalone: true,
                     template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    <header [attr.data-st-component]="componentName" [class]="hostClass">
+      <ng-content select="[slot=logo]"></ng-content>
+      <ng-content select="[slot=navigation]"></ng-content>
+      <ng-content select="[slot=actions]"></ng-content>
       <ng-content></ng-content>
-    </div>
+    </header>
   `,
                 }]
         }], propDecorators: { compact: [{

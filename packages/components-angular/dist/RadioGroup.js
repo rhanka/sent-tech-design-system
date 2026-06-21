@@ -1,10 +1,10 @@
-import { Component, Input as NgInput } from "@angular/core";
+import { Component, EventEmitter, Input as NgInput, Output } from "@angular/core";
 import { classNames } from "./classNames.js";
-import { Radio } from "./Radio.js";
 import * as i0 from "@angular/core";
 export class RadioGroup {
     static stComponentName = "RadioGroup";
     componentName = "RadioGroup";
+    label;
     legend;
     value;
     onChange;
@@ -14,14 +14,36 @@ export class RadioGroup {
     helperText;
     disabled;
     classInput;
+    valueChange = new EventEmitter();
     get hostClass() {
-        return ["st-radioGroup", this.classInput].filter(Boolean).join(" ");
+        return classNames("st-radioGroup", this.orientation ? `st-radioGroup--${this.orientation}` : undefined, this.classInput);
+    }
+    onChangeHandler(v) {
+        this.valueChange.emit(v);
+        this.onChange?.(v);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: RadioGroup, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: RadioGroup, isStandalone: true, selector: "st-radio-group", inputs: { legend: "legend", value: "value", onChange: "onChange", orientation: "orientation", name: "name", options: "options", helperText: "helperText", disabled: "disabled", classInput: ["class", "classInput"] }, ngImport: i0, template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
-    </div>
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: RadioGroup, isStandalone: true, selector: "st-radio-group", inputs: { label: "label", legend: "legend", value: "value", onChange: "onChange", orientation: "orientation", name: "name", options: "options", helperText: "helperText", disabled: "disabled", classInput: ["class", "classInput"] }, outputs: { valueChange: "valueChange" }, ngImport: i0, template: `
+    <fieldset [attr.data-st-component]="componentName" [class]="hostClass">
+      @if (label ?? legend) {
+        <legend class="st-radioGroup__legend">{{ label ?? legend }}</legend>
+      }
+      <div class="st-radioGroup__list">
+        @for (opt of options ?? []; track opt.value) {
+          <label class="st-radioGroup__option">
+            <input
+              type="radio"
+              [name]="name"
+              [value]="opt.value"
+              [checked]="opt.value === value"
+              [disabled]="opt.disabled ?? false"
+              (change)="onChangeHandler(opt.value)"
+            />
+            <span>{{ opt.label }}</span>
+          </label>
+        }
+      </div>
+    </fieldset>
   `, isInline: true });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: RadioGroup, decorators: [{
@@ -30,12 +52,31 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     selector: "st-radio-group",
                     standalone: true,
                     template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
-    </div>
+    <fieldset [attr.data-st-component]="componentName" [class]="hostClass">
+      @if (label ?? legend) {
+        <legend class="st-radioGroup__legend">{{ label ?? legend }}</legend>
+      }
+      <div class="st-radioGroup__list">
+        @for (opt of options ?? []; track opt.value) {
+          <label class="st-radioGroup__option">
+            <input
+              type="radio"
+              [name]="name"
+              [value]="opt.value"
+              [checked]="opt.value === value"
+              [disabled]="opt.disabled ?? false"
+              (change)="onChangeHandler(opt.value)"
+            />
+            <span>{{ opt.label }}</span>
+          </label>
+        }
+      </div>
+    </fieldset>
   `,
                 }]
-        }], propDecorators: { legend: [{
+        }], propDecorators: { label: [{
+                type: NgInput
+            }], legend: [{
                 type: NgInput
             }], value: [{
                 type: NgInput
@@ -54,5 +95,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
             }], classInput: [{
                 type: NgInput,
                 args: ["class"]
+            }], valueChange: [{
+                type: Output
             }] } });
 //# sourceMappingURL=RadioGroup.js.map

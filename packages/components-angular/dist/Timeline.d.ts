@@ -6,6 +6,10 @@ export type TimelineItem = {
     meta?: string;
     description?: string;
     tone?: TimelineTone;
+    date?: string;
+    label?: string;
+    status?: string;
+    icon?: string;
 };
 export type TimelineProps = {
     items: TimelineItem[];
@@ -20,6 +24,6 @@ export declare class Timeline {
     classInput?: string;
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<Timeline, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<Timeline, "st-timeline", never, { "items": { "alias": "items"; "required": false; }; "orientation": { "alias": "orientation"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<Timeline, "st-timeline", never, { "items": { "alias": "items"; "required": false; }; "orientation": { "alias": "orientation"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
 }
 //# sourceMappingURL=Timeline.d.ts.map

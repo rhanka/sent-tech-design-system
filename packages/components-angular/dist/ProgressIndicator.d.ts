@@ -25,7 +25,10 @@ export declare class ProgressIndicator {
     vertical?: boolean;
     label?: string;
     classInput?: string;
+    get resolvedOrientation(): ProgressIndicatorOrientation;
     get hostClass(): string;
+    itemKey(item: ProgressIndicatorItem, index: number): string;
+    itemClass(item: ProgressIndicatorItem): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<ProgressIndicator, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<ProgressIndicator, "st-progress-indicator", never, { "items": { "alias": "items"; "required": false; }; "orientation": { "alias": "orientation"; "required": false; }; "vertical": { "alias": "vertical"; "required": false; }; "label": { "alias": "label"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
 }

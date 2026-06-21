@@ -12,14 +12,27 @@ export class ChatMessage {
     actions;
     avatar;
     classInput;
+    get normalizedStatus() {
+        const status = this.status;
+        if (status === "idle" || status === "streaming")
+            return "processing";
+        if (status === "error")
+            return "failed";
+        return status;
+    }
     get hostClass() {
-        return ["st-chatMessage", this.classInput].filter(Boolean).join(" ");
+        const role = this.role ?? "assistant";
+        return classNames("st-chatMessage", `st-chatMessage--${role}`, this.normalizedStatus ? `st-chatMessage--${this.normalizedStatus}` : undefined, this.classInput);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: ChatMessage, deps: [], target: i0.ɵɵFactoryTarget.Component });
     static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: ChatMessage, isStandalone: true, selector: "st-chat-message", inputs: { role: "role", status: "status", content: "content", timestamp: "timestamp", footer: "footer", actions: "actions", avatar: "avatar", classInput: ["class", "classInput"] }, ngImport: i0, template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
-    </div>
+    <article [class]="hostClass" [attr.data-role]="role ?? 'assistant'" [attr.data-status]="normalizedStatus">
+      <div class="st-chatMessage__body">
+        <div class="st-chatMessage__content">
+          <ng-content></ng-content>
+        </div>
+      </div>
+    </article>
   `, isInline: true });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: ChatMessage, decorators: [{
@@ -28,9 +41,13 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     selector: "st-chat-message",
                     standalone: true,
                     template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
-    </div>
+    <article [class]="hostClass" [attr.data-role]="role ?? 'assistant'" [attr.data-status]="normalizedStatus">
+      <div class="st-chatMessage__body">
+        <div class="st-chatMessage__content">
+          <ng-content></ng-content>
+        </div>
+      </div>
+    </article>
   `,
                 }]
         }], propDecorators: { role: [{

@@ -8,12 +8,18 @@ export class InlineLoading {
     status;
     classInput;
     get hostClass() {
-        return ["st-inlineLoading", this.classInput].filter(Boolean).join(" ");
+        return classNames("st-inlineLoading", this.status && `st-inlineLoading--${this.status}`, this.classInput);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: InlineLoading, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: InlineLoading, isStandalone: true, selector: "st-inline-loading", inputs: { label: "label", status: "status", classInput: ["class", "classInput"] }, ngImport: i0, template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: InlineLoading, isStandalone: true, selector: "st-inline-loading", inputs: { label: "label", status: "status", classInput: ["class", "classInput"] }, ngImport: i0, template: `
+    <div [attr.data-st-component]="componentName" [class]="hostClass" role="status" [attr.aria-label]="label">
+      <span class="st-inlineLoading__spinner" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none">
+          <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" opacity="0.25"/>
+          <path d="M12 3a9 9 0 0 1 9 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </span>
+      @if (label) { <span class="st-inlineLoading__label">{{ label }}</span> }
     </div>
   `, isInline: true });
 }
@@ -23,8 +29,14 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     selector: "st-inline-loading",
                     standalone: true,
                     template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+    <div [attr.data-st-component]="componentName" [class]="hostClass" role="status" [attr.aria-label]="label">
+      <span class="st-inlineLoading__spinner" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none">
+          <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" opacity="0.25"/>
+          <path d="M12 3a9 9 0 0 1 9 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </span>
+      @if (label) { <span class="st-inlineLoading__label">{{ label }}</span> }
     </div>
   `,
                 }]

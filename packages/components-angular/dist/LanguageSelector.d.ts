@@ -16,8 +16,9 @@ export declare class LanguageSelector {
     value?: string;
     open?: boolean;
     classInput?: string;
+    onChange(_event: Event): void;
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<LanguageSelector, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<LanguageSelector, "st-language-selector", never, { "options": { "alias": "options"; "required": false; }; "value": { "alias": "value"; "required": false; }; "open": { "alias": "open"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<LanguageSelector, "st-language-selector", never, { "options": { "alias": "options"; "required": false; }; "value": { "alias": "value"; "required": false; }; "open": { "alias": "open"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
 }
 //# sourceMappingURL=LanguageSelector.d.ts.map

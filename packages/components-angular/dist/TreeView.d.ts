@@ -29,6 +29,20 @@ export declare class TreeView {
     defaultExpanded?: string[];
     label?: string;
     classInput?: string;
+    private localExpandedIds;
+    ngOnInit(): void;
+    get effectiveExpandedIds(): string[];
+    get activeSelectedId(): string | undefined;
+    get flatNodes(): Array<TreeNode & {
+        depth: number;
+        hasChildren: boolean;
+    }>;
+    isExpanded(id: string): boolean;
+    isSelected(id: string): boolean;
+    toggleNode(id: string): void;
+    nodeClass(node: TreeNode & {
+        depth: number;
+    }): string;
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<TreeView, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<TreeView, "st-tree-view", never, { "nodes": { "alias": "nodes"; "required": false; }; "selectedId": { "alias": "selectedId"; "required": false; }; "selected": { "alias": "selected"; "required": false; }; "expandedIds": { "alias": "expandedIds"; "required": false; }; "defaultExpandedIds": { "alias": "defaultExpandedIds"; "required": false; }; "defaultExpanded": { "alias": "defaultExpanded"; "required": false; }; "label": { "alias": "label"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;

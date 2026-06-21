@@ -8,11 +8,21 @@ export class ErrorSummary {
     errors;
     classInput;
     get hostClass() {
-        return ["st-errorSummary", this.classInput].filter(Boolean).join(" ");
+        return classNames("st-errorSummary", this.classInput);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: ErrorSummary, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: ErrorSummary, isStandalone: true, selector: "st-error-summary", inputs: { heading: "heading", errors: "errors", classInput: ["class", "classInput"] }, ngImport: i0, template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: ErrorSummary, isStandalone: true, selector: "st-error-summary", inputs: { heading: "heading", errors: "errors", classInput: ["class", "classInput"] }, ngImport: i0, template: `
+    <div [attr.data-st-component]="componentName" [class]="hostClass" role="alert">
+      @if (heading) { <h2 class="st-errorSummary__heading">{{ heading }}</h2> }
+      @if (errors && errors.length) {
+        <ul class="st-errorSummary__list">
+          @for (err of errors; track err.href) {
+            <li class="st-errorSummary__item">
+              <a [href]="err.href" class="st-errorSummary__link">{{ err.text }}</a>
+            </li>
+          }
+        </ul>
+      }
       <ng-content></ng-content>
     </div>
   `, isInline: true });
@@ -23,7 +33,17 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     selector: "st-error-summary",
                     standalone: true,
                     template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    <div [attr.data-st-component]="componentName" [class]="hostClass" role="alert">
+      @if (heading) { <h2 class="st-errorSummary__heading">{{ heading }}</h2> }
+      @if (errors && errors.length) {
+        <ul class="st-errorSummary__list">
+          @for (err of errors; track err.href) {
+            <li class="st-errorSummary__item">
+              <a [href]="err.href" class="st-errorSummary__link">{{ err.text }}</a>
+            </li>
+          }
+        </ul>
+      }
       <ng-content></ng-content>
     </div>
   `,

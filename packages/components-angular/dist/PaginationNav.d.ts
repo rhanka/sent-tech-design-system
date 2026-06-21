@@ -24,6 +24,9 @@ export declare class PaginationNav {
     previousHref?: string;
     nextHref?: string;
     classInput?: string;
+    get currentPage(): number;
+    get totalPageCount(): number;
+    get pages(): number[];
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<PaginationNav, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<PaginationNav, "st-pagination-nav", never, { "page": { "alias": "page"; "required": false; }; "pageCount": { "alias": "pageCount"; "required": false; }; "totalPages": { "alias": "totalPages"; "required": false; }; "siblings": { "alias": "siblings"; "required": false; }; "label": { "alias": "label"; "required": false; }; "previousLabel": { "alias": "previousLabel"; "required": false; }; "nextLabel": { "alias": "nextLabel"; "required": false; }; "previousHref": { "alias": "previousHref"; "required": false; }; "nextHref": { "alias": "nextHref"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;

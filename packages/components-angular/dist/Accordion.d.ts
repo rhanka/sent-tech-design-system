@@ -1,3 +1,4 @@
+import { EventEmitter } from "@angular/core";
 import * as i0 from "@angular/core";
 export type AccordionItem = {
     id?: string;
@@ -23,6 +24,8 @@ export type AccordionProps = {
 export declare class Accordion {
     static readonly stComponentName = "Accordion";
     readonly componentName = "Accordion";
+    private readonly instancePrefix;
+    private localOpenIds;
     items: AccordionItem[];
     openIds?: string[];
     defaultOpenIds?: string[];
@@ -32,8 +35,18 @@ export declare class Accordion {
     align?: AccordionAlign;
     size?: AccordionSize;
     classInput?: string;
+    readonly change: EventEmitter<string[]>;
+    ngOnInit(): void;
+    get resolvedAlign(): AccordionAlign;
+    get resolvedAllowMultiple(): boolean;
+    get effectiveOpenIds(): string[];
+    itemId(item: AccordionItem, index: number): string;
+    isOpen(item: AccordionItem, index: number): boolean;
+    itemClass(item: AccordionItem, index: number): string;
+    toggle(item: AccordionItem, index: number): void;
+    resolveContent(item: AccordionItem): string;
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<Accordion, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<Accordion, "st-accordion", never, { "items": { "alias": "items"; "required": false; }; "openIds": { "alias": "openIds"; "required": false; }; "defaultOpenIds": { "alias": "defaultOpenIds"; "required": false; }; "allowMultiple": { "alias": "allowMultiple"; "required": false; }; "open": { "alias": "open"; "required": false; }; "multiple": { "alias": "multiple"; "required": false; }; "align": { "alias": "align"; "required": false; }; "size": { "alias": "size"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<Accordion, "st-accordion", never, { "items": { "alias": "items"; "required": false; }; "openIds": { "alias": "openIds"; "required": false; }; "defaultOpenIds": { "alias": "defaultOpenIds"; "required": false; }; "allowMultiple": { "alias": "allowMultiple"; "required": false; }; "open": { "alias": "open"; "required": false; }; "multiple": { "alias": "multiple"; "required": false; }; "align": { "alias": "align"; "required": false; }; "size": { "alias": "size"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, { "change": "change"; }, never, never, true, never>;
 }
 //# sourceMappingURL=Accordion.d.ts.map

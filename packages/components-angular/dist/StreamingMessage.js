@@ -4,17 +4,24 @@ import * as i0 from "@angular/core";
 export class StreamingMessage {
     static stComponentName = "StreamingMessage";
     componentName = "StreamingMessage";
+    streaming = false;
+    content;
     text;
     events;
     mode;
     classInput;
     get hostClass() {
-        return ["st-streamingMessage", this.classInput].filter(Boolean).join(" ");
+        return classNames("st-streamingMessage", this.streaming ? "st-streamingMessage--streaming" : undefined, this.classInput);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: StreamingMessage, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: StreamingMessage, isStandalone: true, selector: "st-streaming-message", inputs: { text: "text", events: "events", mode: "mode", classInput: ["class", "classInput"] }, ngImport: i0, template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: StreamingMessage, isStandalone: true, selector: "st-streaming-message", inputs: { streaming: "streaming", content: "content", text: "text", events: "events", mode: "mode", classInput: ["class", "classInput"] }, ngImport: i0, template: `
+    <div class="st-streamingMessage" [class]="hostClass">
+      <div class="st-streamingMessage__content">
+        <ng-content></ng-content>
+      </div>
+      @if (streaming) {
+        <span class="st-streamingMessage__cursor" aria-hidden="true"></span>
+      }
     </div>
   `, isInline: true });
 }
@@ -24,12 +31,21 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     selector: "st-streaming-message",
                     standalone: true,
                     template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+    <div class="st-streamingMessage" [class]="hostClass">
+      <div class="st-streamingMessage__content">
+        <ng-content></ng-content>
+      </div>
+      @if (streaming) {
+        <span class="st-streamingMessage__cursor" aria-hidden="true"></span>
+      }
     </div>
   `,
                 }]
-        }], propDecorators: { text: [{
+        }], propDecorators: { streaming: [{
+                type: NgInput
+            }], content: [{
+                type: NgInput
+            }], text: [{
                 type: NgInput
             }], events: [{
                 type: NgInput

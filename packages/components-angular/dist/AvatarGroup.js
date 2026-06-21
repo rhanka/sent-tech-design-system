@@ -9,12 +9,20 @@ export class AvatarGroup {
     total;
     classInput;
     get hostClass() {
-        return ["st-avatarGroup", this.classInput].filter(Boolean).join(" ");
+        return classNames("st-avatarGroup", this.classInput);
+    }
+    get overflow() {
+        return this.total && this.max && this.total > this.max ? this.total - this.max : 0;
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: AvatarGroup, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: AvatarGroup, isStandalone: true, selector: "st-avatar-group", inputs: { max: "max", size: "size", total: "total", classInput: ["class", "classInput"] }, ngImport: i0, template: `
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: AvatarGroup, isStandalone: true, selector: "st-avatar-group", inputs: { max: "max", size: "size", total: "total", classInput: ["class", "classInput"] }, ngImport: i0, template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
       <ng-content></ng-content>
+      @if (overflow > 0) {
+        <div class="st-avatarGroup__overflow st-avatar st-avatar--{{ size ?? 'md' }} st-avatar--circle st-avatar--category1" [attr.aria-label]="overflow + ' autres'">
+          <span class="st-avatar__initials">+{{ overflow }}</span>
+        </div>
+      }
     </div>
   `, isInline: true });
 }
@@ -26,6 +34,11 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
       <ng-content></ng-content>
+      @if (overflow > 0) {
+        <div class="st-avatarGroup__overflow st-avatar st-avatar--{{ size ?? 'md' }} st-avatar--circle st-avatar--category1" [attr.aria-label]="overflow + ' autres'">
+          <span class="st-avatar__initials">+{{ overflow }}</span>
+        </div>
+      }
     </div>
   `,
                 }]
