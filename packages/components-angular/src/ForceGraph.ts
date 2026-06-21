@@ -1,4 +1,4 @@
-import { Component, Input as NgInput } from "@angular/core";
+import { Component, Input as NgInput, type OnChanges, type OnInit } from "@angular/core";
 
 import { classNames } from "./classNames.js";
 
