@@ -45,12 +45,12 @@ Corrections visuelles signalées lors de la session 2026-06-21 sur les docs et l
 
 ### LOT 5 — Responsive : burger + couleurs primary
 
-- [ ] **Burger collé au logo** — en responsive, le burger doit être poussé à droite
-  - EN COURS (2026-06-21): Agent `aa06283cd7c2cb98a`.
-- [ ] **Bouton "Composants" noir** — sur la page d'accueil, doit être primary
-  - EN COURS (2026-06-21): Agent `aa06283cd7c2cb98a`.
-- [ ] **Couleurs primary incorrectes en responsive** — media queries qui écrasent les variables
-  - EN COURS (2026-06-21): Agent `aa06283cd7c2cb98a`.
+- [x] **Burger collé au logo** — `.docs-header .st-header__actions` écrasait `margin-left: auto` du DS
+  - FAIT (2026-06-21): `margin-left: auto` ajouté dans `app.css:148`. Commit `d6777c67`.
+- [x] **Bouton "Composants" noir** — déjà fixé par `4b0ff2f8` (`--st-semantic-action-primary` bleu oklch) ; était un problème de cache navigateur
+  - FAIT (2026-06-21): Pas de changement supplémentaire.
+- [x] **Couleurs primary incorrectes en responsive** — non reproductible statiquement ; aucune règle media n'écrase les variables sémantiques
+  - FAIT (2026-06-21): Aucun fix requis.
 
 ### LOT 6 — Lockfile docs 0.34.58
 
