@@ -54,35 +54,36 @@ export type SolidGaugeChartProps = {
         [attr.aria-label]="label"
       >
         <svg
-          [attr.viewBox]="svgViewBox"
+          [attr.viewBox]="viewBoxStr"
           width="100%"
           height="100%"
           focusable="false"
           aria-hidden="true"
         >
-          <path class="st-solidGaugeChart__track" [attr.d]="arcPath(0, 1)" fill="none" [attr.stroke-width]="thickness"></path>
+          <path class="st-solidGaugeChart__track" [attr.d]="arcPath(0, 1)" fill="none" [attr.stroke-width]="thicknessComputed" />
 
           @if (frac > 0) {
             <path
               [class]="progressClass"
               [attr.d]="arcPath(0, frac)"
               fill="none"
-              [attr.stroke-width]="thickness"
+              [attr.stroke-width]="thicknessComputed"
             ></path>
           }
 
           <text
             class="st-solidGaugeChart__value"
             [attr.x]="cx"
-            [attr.y]="cy - thickness * 0.1"
+            [attr.y]="cy - thicknessComputed * 0.1"
             text-anchor="middle"
             dominant-baseline="auto"
           >{{ formatted }}</text>
+
           @if (label) {
             <text
               class="st-solidGaugeChart__label"
               [attr.x]="cx"
-              [attr.y]="cy + thickness * 0.35"
+              [attr.y]="cy + thicknessComputed * 0.35"
               text-anchor="middle"
               dominant-baseline="hanging"
             >{{ label }}</text>
@@ -119,52 +120,65 @@ export class SolidGaugeChart {
     return classNames("st-solidGaugeChart", this.classInput);
   }
 
-  get minValue(): number { return this.min ?? 0; }
-  get maxValue(): number { return this.max ?? 100; }
-  get sizeValue(): number { return this.size ?? 220; }
-  get innerRadiusValue(): number { return this.innerRadius ?? 0.72; }
-  get startAngleValue(): number { return this.startAngle ?? 180; }
-  get endAngleValue(): number { return this.endAngle ?? 360; }
-
-  get span(): number { return Math.max(this.maxValue - this.minValue, 0); }
-  get clamped(): number { return Math.min(Math.max(this.value, this.minValue), this.maxValue); }
-  get frac(): number { return this.span > 0 ? (this.clamped - this.minValue) / this.span : 0; }
-
-  get cx(): number { return this.sizeValue / 2; }
-  get cy(): number { return this.sizeValue / 2; }
-  get r(): number { return this.sizeValue / 2 - 2; }
-  get innerR(): number { return Math.min(Math.max(this.innerRadiusValue, 0), 0.95) * this.r; }
-  get thickness(): number { return Math.max(this.r - this.innerR, 1); }
-  get trackR(): number { return (this.r + this.innerR) / 2; }
-
-  private toRad(deg: number): number { return (deg * Math.PI) / 180; }
-  private get a0(): number { return this.toRad(this.startAngleValue); }
-  private get a1(): number { return this.toRad(this.endAngleValue); }
-  private get totalAngle(): number { return this.a1 - this.a0; }
-
-  private polar(radius: number, angle: number): [number, number] {
-    return [this.cx + radius * Math.cos(angle), this.cy + radius * Math.sin(angle)];
+  get minValue(): number {
+    return this.min ?? 0;
+  }
+  get maxValue(): number {
+    return this.max ?? 100;
+  }
+  get sizeValue(): number {
+    return this.size ?? 220;
+  }
+  get startAngleValue(): number {
+    return this.startAngle ?? 180;
+  }
+  get endAngleValue(): number {
+    return this.endAngle ?? 360;
+  }
+  get innerRadiusValue(): number {
+    return this.innerRadius ?? 0.72;
   }
 
-  get svgViewBox(): string {
-    const size = this.sizeValue;
-    const cx = this.cx;
-    const r = this.r;
-    const a0 = this.a0;
-    const totalAngle = this.totalAngle;
-    const samples = 64;
-    let minY = Infinity;
-    let maxY = -Infinity;
-    for (let i = 0; i <= samples; i++) {
-      const a = a0 + (totalAngle * i) / samples;
-      const yOuter = cx + r * Math.sin(a);
-      minY = Math.min(minY, yOuter);
-      maxY = Math.max(maxY, yOuter);
-    }
-    minY = Math.min(minY, cx - r);
-    const vbTop = Math.max(minY, 0);
-    const vbHeight = Math.max(Math.min(maxY, size) - vbTop, this.thickness);
-    return `0 ${vbTop} ${size} ${vbHeight}`;
+  get span(): number {
+    return Math.max(this.maxValue - this.minValue, 0);
+  }
+  get clamped(): number {
+    return Math.min(Math.max(this.value, this.minValue), this.maxValue);
+  }
+  get frac(): number {
+    return this.span > 0 ? (this.clamped - this.minValue) / this.span : 0;
+  }
+
+  get cx(): number {
+    return this.sizeValue / 2;
+  }
+  get cy(): number {
+    return this.sizeValue / 2;
+  }
+  get r(): number {
+    return this.sizeValue / 2 - 2;
+  }
+  get innerR(): number {
+    return Math.min(Math.max(this.innerRadiusValue, 0), 0.95) * this.r;
+  }
+  get thicknessComputed(): number {
+    return Math.max(this.r - this.innerR, 1);
+  }
+  get trackR(): number {
+    return (this.r + this.innerR) / 2;
+  }
+  get a0(): number {
+    return (this.startAngleValue * Math.PI) / 180;
+  }
+  get a1(): number {
+    return (this.endAngleValue * Math.PI) / 180;
+  }
+  get totalAngle(): number {
+    return this.a1 - this.a0;
+  }
+
+  polar(radius: number, angle: number): [number, number] {
+    return [this.cx + radius * Math.cos(angle), this.cy + radius * Math.sin(angle)];
   }
 
   arcPath(fromFrac: number, toFrac: number): string {
@@ -177,10 +191,25 @@ export class SolidGaugeChart {
     return `M ${x0} ${y0} A ${this.trackR} ${this.trackR} 0 ${large} ${sweep} ${x1} ${y1}`;
   }
 
+  get viewBoxStr(): string {
+    const samples = 64;
+    let minY = Infinity;
+    let maxY = -Infinity;
+    for (let i = 0; i <= samples; i++) {
+      const a = this.a0 + (this.totalAngle * i) / samples;
+      const yOuter = this.cy + this.r * Math.sin(a);
+      minY = Math.min(minY, yOuter);
+      maxY = Math.max(maxY, yOuter);
+    }
+    minY = Math.min(minY, this.cy - this.r);
+    const vbTop = Math.max(minY, 0);
+    const vbH = Math.max(Math.min(maxY, this.sizeValue) - vbTop, this.thicknessComputed);
+    return `0 ${vbTop} ${this.sizeValue} ${vbH}`;
+  }
+
   get activeTone(): SolidGaugeTone | null {
-    const thresholds = this.thresholds;
-    if (!thresholds || thresholds.length === 0 || this.span <= 0) return null;
-    const sorted = [...thresholds].sort((a, b) => a.value - b.value);
+    if (!this.thresholds || this.thresholds.length === 0 || this.span <= 0) return null;
+    const sorted = [...this.thresholds].sort((a, b) => a.value - b.value);
     let tone: SolidGaugeTone = sorted[0].tone;
     for (const t of sorted) {
       if (this.clamped >= t.value) tone = t.tone;
@@ -189,9 +218,8 @@ export class SolidGaugeChart {
   }
 
   get progressClass(): string {
-    const tone = this.activeTone;
-    return tone
-      ? `st-solidGaugeChart__progress st-solidGaugeChart__progress--${tone}`
+    return this.activeTone
+      ? `st-solidGaugeChart__progress st-solidGaugeChart__progress--${this.activeTone}`
       : "st-solidGaugeChart__progress";
   }
 
