@@ -43,6 +43,12 @@
     actions?: Snippet;
     /** Contenu du tiroir compact (nav + langue + identité en accordéon). */
     drawer?: Snippet;
+    /**
+     * Alignement de la nav desktop.
+     * - `"start"` (défaut) : la nav occupe l'espace restant et pousse les actions à droite.
+     * - `"center"` : la nav est centrée absolument entre le logo et les actions.
+     */
+    navAlign?: "start" | "center";
     class?: string;
   }
 
@@ -74,6 +80,7 @@
     nav,
     actions,
     drawer,
+    navAlign = "start",
     class: className,
   }: AppHeaderProps = $props();
 
@@ -93,10 +100,18 @@
   );
 
   const classes = () => ["st-appHeader", className].filter(Boolean).join(" ");
+  const barClasses = () =>
+    ["st-appHeader__bar", navAlign === "center" ? "st-appHeader__bar--navCenter" : null]
+      .filter(Boolean)
+      .join(" ");
+  const navClasses = () =>
+    ["st-appHeader__nav", navAlign === "center" ? "st-appHeader__nav--center" : null]
+      .filter(Boolean)
+      .join(" ");
 </script>
 
 <header class={classes()}>
-  <div class="st-appHeader__bar">
+  <div class={barClasses()}>
     <!-- Logo SENT à GAUCHE (+ sous-titre). -->
     {#if logo}
       <div class="st-appHeader__logo">{@render logo()}</div>
@@ -116,7 +131,7 @@
 
     <!-- Nav desktop (masquée en mode compact). -->
     {#if !compact}
-      <nav class="st-appHeader__nav" aria-label="Primary">
+      <nav class={navClasses()} aria-label="Primary">
         {#if nav}{@render nav()}{/if}
       </nav>
 
@@ -172,12 +187,17 @@
     align-items: center;
     display: flex;
     gap: var(--st-spacing-4, 1rem);
-    height: 3.5rem;
+    height: var(--st-component-appHeader-height, 3.5rem);
     justify-content: space-between;
     margin: 0 auto;
     max-width: 80rem;
     padding: 0 var(--st-spacing-4, 1rem);
     width: 100%;
+  }
+
+  /* Quand navAlign="center" : position relative sur la bar pour ancrer la nav. */
+  .st-appHeader__bar--navCenter {
+    position: relative;
   }
 
   .st-appHeader__nav {
@@ -189,6 +209,14 @@
     font-weight: 500;
     gap: var(--st-spacing-4, 1rem);
     min-width: 0;
+  }
+
+  /* Nav centrée absolument : ne participe plus au flux flex. */
+  .st-appHeader__nav--center {
+    flex: 0 0 auto;
+    left: 50%;
+    position: absolute;
+    transform: translateX(-50%);
   }
 
   .st-appHeader__burger {

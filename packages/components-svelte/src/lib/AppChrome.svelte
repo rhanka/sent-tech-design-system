@@ -663,7 +663,7 @@
     color: var(--st-semantic-text-on-emphasis, var(--st-semantic-surface-default));
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 767px) {
     .st-appChrome__utilityNav {
       display: none;
     }
@@ -674,6 +674,12 @@
 
     .st-appChrome__drawer {
       display: flex;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .st-appChrome__burgerTrigger {
+      display: none;
     }
   }
 </style>
