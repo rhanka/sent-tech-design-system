@@ -102,10 +102,14 @@ Composants les plus utilisés dans les apps → portage Angular prioritaire (tem
 Ces composants requièrent le chargement de Highcharts + un `ElementRef` pour le container SVG.
 Modèle de référence : `BarChart.ts`, `GeoMap.ts`.
 
-- [ ] **Lot CHART-TIME** — `AreaChart`, `LineChart`, `StackedBarChart`, `ComboChart`, `StepLineChart`, `GanttChart`, `TimelineChart`, `StateTimelineChart`, `StatusHistoryChart`
-- [ ] **Lot CHART-DIST** — `DonutChart`, `FunnelChart`, `GaugeChart`, `SolidGaugeChart`, `RadarChart`, `ScatterPlot`, `BubbleChart`, `BoxPlotChart`, `ViolinChart`
-- [ ] **Lot CHART-FLOW** — `SankeyChart`, `ChordDiagram`, `DependencyWheelChart`, `ArcDiagramChart`, `ForceGraph`, `OrganizationChart`, `TreemapChart`, `TreegraphChart`, `SunburstChart`
-- [ ] **Lot CHART-MISC** — tous les charts restants (60+) : portage au cas par cas
+- [x] **Lot CHART-TIME** — `AreaChart`, `LineChart`, `StackedBarChart`, `ComboChart`, `StepLineChart`, `GanttChart`, `TimelineChart`, `StateTimelineChart`, `StatusHistoryChart`
+  - FAIT (2026-06-21): SVG inline Angular, patron BarChart, gate 224/0. Commit 2d7bcc59.
+- [x] **Lot CHART-DIST** — `DonutChart`, `FunnelChart`, `GaugeChart`, `SolidGaugeChart`, `RadarChart`, `ScatterPlot`, `BubbleChart`, `BoxPlotChart`, `ViolinChart`
+  - FAIT (2026-06-21): ScatterPlot 505 lignes SVG pur, autres déjà portés en SVG, gate 224/0. Commit 3af6d0a9.
+- [x] **Lot CHART-FLOW** — `SankeyChart`, `ChordDiagram`, `DependencyWheelChart`, `ArcDiagramChart`, `ForceGraph`, `OrganizationChart`, `TreemapChart`, `TreegraphChart`, `SunburstChart`
+  - FAIT (2026-06-21): SVG inline Angular, simulation force custom pour ForceGraph. Commit db4ae522.
+- [x] **Lot CHART-MISC** — tous les charts restants (60+) : portage au cas par cas
+  - FAIT (2026-06-21): ~50 composants portés SVG inline, gate 224/0. Commit db4ae522.
 
 ## Guardrails techniques
 
