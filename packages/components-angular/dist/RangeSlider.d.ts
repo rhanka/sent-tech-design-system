@@ -45,6 +45,7 @@ export declare class RangeSlider {
     get low(): number;
     get high(): number;
     get hostClass(): string;
+    formatValue(n: number): string;
     onLow(e: Event): void;
     onHigh(e: Event): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<RangeSlider, never>;
