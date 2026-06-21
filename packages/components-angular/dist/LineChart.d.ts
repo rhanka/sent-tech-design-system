@@ -1,5 +1,5 @@
-import { type ChartBand, type ChartGoalLine, type ChartReferenceLine, type ChartScale } from "./chartScale.js";
-import { type ChartAnnotation } from "./chartAnnotations.js";
+import { type ChartBand, type ChartGoalLine, type ChartReferenceLine, type ChartScale, type ForecastRun } from "./chartScale.js";
+import { type ChartAnnotation, type ResolvedAnnotation } from "./chartAnnotations.js";
 import { type DataLabelsProp } from "./chartDataLabels.js";
 import * as i0 from "@angular/core";
 export type LineChartTone = "category1" | "category2" | "category3" | "category4" | "category5" | "category6" | "category7" | "category8";
@@ -96,9 +96,42 @@ export type LineChartProps = {
     onSelectKey?: (key: string | null) => void;
     class?: string;
 };
+type AnnotationRegion = Extract<ResolvedAnnotation, {
+    kind: "region";
+}>;
+type AnnotationAbove = Extract<ResolvedAnnotation, {
+    kind: "line" | "shape" | "point" | "label";
+}>;
+type BandRect = {
+    key: number;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    label?: string;
+    tone?: ChartBand["tone"];
+};
+type RefLineGeom = {
+    key: number;
+    axis: "x" | "y";
+    x1: number;
+    x2: number;
+    y1: number;
+    y2: number;
+    label?: string;
+    tone?: ChartReferenceLine["tone"];
+};
 export declare class LineChart {
     static readonly stComponentName = "LineChart";
     readonly componentName = "LineChart";
+    readonly MARGIN: {
+        top: number;
+        right: number;
+        bottom: number;
+        left: number;
+    };
+    private hoveredIndex;
+    private focusedIndex;
     data: LineChartDatum[];
     width?: number;
     height?: number;
@@ -122,7 +155,113 @@ export declare class LineChart {
     onSelectKey?: (key: string | null) => void;
     classInput?: string;
     get hostClass(): string;
+    get widthValue(): number;
+    get heightValue(): number;
+    get viewBox(): string;
+    get plotWidth(): number;
+    get plotHeight(): number;
+    get safeData(): LineChartDatum[];
+    get isLog(): boolean;
+    get validDomain(): [number, number] | null;
+    get goal(): ChartGoalLine | null;
+    get xIsNumeric(): boolean;
+    get xDomainMin(): number;
+    get xDomainMax(): number;
+    get yValues(): number[];
+    get yTicks(): number[];
+    get yDomain(): {
+        min: number;
+        max: number;
+    };
+    valueFraction(v: number): number;
+    yPixel(v: number): number;
+    xPixel(datum: LineChartDatum, index: number): number;
+    get points(): Array<{
+        x: number;
+        y: number;
+        datum: LineChartDatum;
+        index: number;
+    }>;
+    get forecastFlags(): boolean[];
+    get hasForecast(): boolean;
+    get fullLinePath(): string;
+    get computedForecastRuns(): ForecastRun[];
+    get solidPaths(): string[];
+    get forecastPaths(): string[];
+    get areaPath(): string;
+    get gridLines(): Array<{
+        value: number;
+        y: number;
+    }>;
+    get xTickEntries(): Array<{
+        key: string;
+        x: number;
+        label: string;
+    }>;
+    get bandRects(): BandRect[];
+    bandClass(band: BandRect): string;
+    get refLines(): RefLineGeom[];
+    refLineClass(line: RefLineGeom): string;
+    get trendLine(): {
+        x1: number;
+        y1: number;
+        x2: number;
+        y2: number;
+    } | null;
+    get goalGeom(): {
+        y: number;
+        label?: string;
+        value: number;
+    } | null;
+    get annotationContext(): {
+        xScale: (value: number | string) => number | null;
+        yScale: (value: number) => number | null;
+        plotLeft: number;
+        plotTop: number;
+        plotWidth: number;
+        plotHeight: number;
+    };
+    get resolvedAnnotations(): ResolvedAnnotation[];
+    get annotationRegions(): AnnotationRegion[];
+    get annotationAbove(): AnnotationAbove[];
+    annotationShapePoints(annotation: Extract<ResolvedAnnotation, {
+        kind: "shape";
+    }>): string;
+    dotClass(index: number): string;
+    get dataLabelItems(): Array<{
+        key: string;
+        x: number;
+        y: number;
+        text: string;
+        baseline: string;
+    }>;
+    get dataValueItems(): string[];
+    get hoverKeys(): string[];
+    get activeIndex(): number;
+    get hoveredPoint(): {
+        x: number;
+        y: number;
+        datum: LineChartDatum;
+        index: number;
+    } | null;
+    get navEnabled(): boolean;
+    formatTickLabel(v: number): string;
+    datapointLabel(pt: {
+        datum: LineChartDatum;
+    }): string;
+    rovingTabIndexFor(index: number): number;
+    tooltipLeft(pt: {
+        x: number;
+    }): number;
+    tooltipTop(pt: {
+        y: number;
+    }): number;
+    handleLeave(): void;
+    handleVisualPointerMove(e: PointerEvent): void;
+    handleDatapointFocus(index: number): void;
+    handleDatapointKeyDown(e: KeyboardEvent, index: number): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<LineChart, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<LineChart, "st-line-chart", never, { "data": { "alias": "data"; "required": false; }; "width": { "alias": "width"; "required": false; }; "height": { "alias": "height"; "required": false; }; "tone": { "alias": "tone"; "required": false; }; "smooth": { "alias": "smooth"; "required": false; }; "area": { "alias": "area"; "required": false; }; "label": { "alias": "label"; "required": false; }; "referenceLines": { "alias": "referenceLines"; "required": false; }; "bands": { "alias": "bands"; "required": false; }; "goalLine": { "alias": "goalLine"; "required": false; }; "trend": { "alias": "trend"; "required": false; }; "annotations": { "alias": "annotations"; "required": false; }; "dataLabels": { "alias": "dataLabels"; "required": false; }; "domain": { "alias": "domain"; "required": false; }; "scale": { "alias": "scale"; "required": false; }; "invertAxis": { "alias": "invertAxis"; "required": false; }; "showLegend": { "alias": "showLegend"; "required": false; }; "hoverKey": { "alias": "hoverKey"; "required": false; }; "onHoverKeyChange": { "alias": "onHoverKeyChange"; "required": false; }; "keyboardNav": { "alias": "keyboardNav"; "required": false; }; "onSelectKey": { "alias": "onSelectKey"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<LineChart, "st-line-chart", never, { "data": { "alias": "data"; "required": false; }; "width": { "alias": "width"; "required": false; }; "height": { "alias": "height"; "required": false; }; "tone": { "alias": "tone"; "required": false; }; "smooth": { "alias": "smooth"; "required": false; }; "area": { "alias": "area"; "required": false; }; "label": { "alias": "label"; "required": false; }; "referenceLines": { "alias": "referenceLines"; "required": false; }; "bands": { "alias": "bands"; "required": false; }; "goalLine": { "alias": "goalLine"; "required": false; }; "trend": { "alias": "trend"; "required": false; }; "annotations": { "alias": "annotations"; "required": false; }; "dataLabels": { "alias": "dataLabels"; "required": false; }; "domain": { "alias": "domain"; "required": false; }; "scale": { "alias": "scale"; "required": false; }; "invertAxis": { "alias": "invertAxis"; "required": false; }; "showLegend": { "alias": "showLegend"; "required": false; }; "hoverKey": { "alias": "hoverKey"; "required": false; }; "onHoverKeyChange": { "alias": "onHoverKeyChange"; "required": false; }; "keyboardNav": { "alias": "keyboardNav"; "required": false; }; "onSelectKey": { "alias": "onSelectKey"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
 }
+export {};
 //# sourceMappingURL=LineChart.d.ts.map
