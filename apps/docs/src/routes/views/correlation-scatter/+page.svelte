@@ -50,16 +50,16 @@
           props: { class: "cs-scorecards" },
           children: [
             { comp: "Card", props: { variant: "outlined" }, children: [
-              { comp: "ScoreCard", props: { label: fr ? "Pearson r" : "Pearson r", value: 0.74, format: "decimal", delta: 0.06, deltaFormat: "absolute", tone: "category1" } }
+              { comp: "KpiCard", props: { label: fr ? "Pearson r" : "Pearson r", value: 0.74, format: "decimal", delta: 0.06, deltaFormat: "absolute", tone: "category1" } }
             ] },
             { comp: "Card", props: { variant: "outlined" }, children: [
-              { comp: "ScoreCard", props: { label: "R²", value: 0.55, format: "decimal", delta: 0.04, deltaFormat: "absolute", tone: "category2" } }
+              { comp: "KpiCard", props: { label: "R²", value: 0.55, format: "decimal", delta: 0.04, deltaFormat: "absolute", tone: "category2" } }
             ] },
             { comp: "Card", props: { variant: "outlined" }, children: [
-              { comp: "ScoreCard", props: { label: fr ? "Points aberrants" : "Outliers", value: 2, format: "integer", delta: -1, deltaFormat: "absolute", tone: "warning" } }
+              { comp: "KpiCard", props: { label: fr ? "Points aberrants" : "Outliers", value: 2, format: "integer", delta: -1, deltaFormat: "absolute", tone: "category3" } }
             ] },
             { comp: "Card", props: { variant: "outlined" }, children: [
-              { comp: "ScoreCard", props: { label: fr ? "Observations" : "Data points", value: 10, format: "integer", tone: "category3" } }
+              { comp: "KpiCard", props: { label: fr ? "Observations" : "Data points", value: 10, format: "integer", tone: "category3" } }
             ] }
           ]
         },
@@ -100,7 +100,7 @@
 
   const DS_COMPONENTS = [
     { name: "AreaChart", slug: "area-chart" },
-    { name: "ScoreCard", slug: "score-card" },
+    { name: "KpiCard", slug: "kpi-card" },
     { name: "Combobox", slug: "combobox" },
     { name: "Select", slug: "select" },
     { name: "DatePicker", slug: "date-picker" },

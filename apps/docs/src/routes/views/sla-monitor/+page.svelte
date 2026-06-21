@@ -26,9 +26,8 @@
 
   const DS_COMPONENTS = [
     { name: "KpiCard", slug: "kpi-card" },
-    { name: "ScoreCard", slug: "score-card" },
     { name: "Alert", slug: "alert" },
-    { name: "PieChart", slug: "pie-chart" },
+    { name: "DonutChart", slug: "donut-chart" },
     { name: "DataGrid", slug: "data-grid" },
     { name: "Badge", slug: "badge" },
     { name: "Select", slug: "select" },
@@ -62,7 +61,7 @@
             { comp: "KpiCard", props: { label: fr ? "Taux de respect SLA" : "SLA Compliance Rate", value: 0.847, format: "percent", delta: -0.023, deltaFormat: "percent", tone: "category2" } },
             { comp: "KpiCard", props: { label: fr ? "Tickets en dépassement" : "Breached Tickets", value: 8, delta: 3, deltaFormat: "absolute", tone: "danger" } },
             { comp: "KpiCard", props: { label: fr ? "Tickets à risque" : "At-Risk Tickets", value: 14, delta: -2, deltaFormat: "absolute", tone: "warning" } },
-            { comp: "ScoreCard", props: { label: fr ? "Délai moyen de résolution" : "Avg. Resolution Time", value: "4h 32min", note: fr ? "Objectif : < 4h" : "Target: < 4h", tone: "warning" } }
+            { comp: "KpiCard", props: { label: fr ? "Délai moyen de résolution" : "Avg. Resolution Time", value: "4h 32min", tone: "category3" } }
           ]
         },
         // Charts + grille
@@ -73,7 +72,7 @@
               el: "div", props: { class: "sla-pie-panel" },
               children: [
                 { el: "h3", props: { class: "sla-panel-title" }, children: [fr ? "Répartition par sévérité" : "Breakdown by severity"] },
-                { comp: "PieChart", props: { label: fr ? "Tickets ouverts par sévérité" : "Open tickets by severity", data: PIE_DATA, height: 220 } }
+                { comp: "DonutChart", props: { centerLabel: fr ? "Tickets ouverts par sévérité" : "Open tickets by severity", data: PIE_DATA } }
               ]
             },
             {
@@ -149,9 +148,8 @@
       <tbody>
         <tr><td>KpiCard</td><td>value</td><td>number</td><td>{fr ? "Valeur principale affichée" : "Main displayed value"}</td></tr>
         <tr><td>KpiCard</td><td>delta</td><td>number</td><td>{fr ? "Variation absolue ou relative" : "Absolute or relative delta"}</td></tr>
-        <tr><td>ScoreCard</td><td>note</td><td>string</td><td>{fr ? "Annotation contextuelle sous la valeur" : "Contextual note under the value"}</td></tr>
         <tr><td>Alert</td><td>tone</td><td>string</td><td>{fr ? "Niveau de sévérité (danger, warning, info)" : "Severity level (danger, warning, info)"}</td></tr>
-        <tr><td>PieChart</td><td>data</td><td>{"{ label, value, tone }[]"}</td><td>{fr ? "Tranches avec libellé et ton" : "Slices with label and tone"}</td></tr>
+        <tr><td>DonutChart</td><td>data</td><td>{"{ label, value, tone }[]"}</td><td>{fr ? "Tranches avec libellé et ton" : "Slices with label and tone"}</td></tr>
         <tr><td>DataGrid</td><td>columns</td><td>Column[]</td><td>{fr ? "Colonnes avec clé, libellé et tri" : "Columns with key, label and sort"}</td></tr>
         <tr><td>Select</td><td>options</td><td>Option[]</td><td>{fr ? "Options du filtre déroulant" : "Dropdown filter options"}</td></tr>
       </tbody>

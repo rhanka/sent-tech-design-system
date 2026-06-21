@@ -94,38 +94,43 @@
           props: { class: "ch-scorecards" },
           children: [
             {
-              comp: "ScoreCard",
+              comp: "KpiCard",
               props: {
                 label: fr ? "Rétention M+1 moy." : "Avg M+1 Retention",
-                value: "72,8 %",
-                delta: "+4,2 pp",
-                trend: "up" as const
+                value: 0.728,
+                format: "percent",
+                delta: 0.042,
+                deltaFormat: "percent",
+                tone: "category1"
               }
             },
             {
-              comp: "ScoreCard",
+              comp: "KpiCard",
               props: {
                 label: fr ? "Rétention M+3 moy." : "Avg M+3 Retention",
-                value: "46,7 %",
-                delta: "+2,1 pp",
-                trend: "up" as const
+                value: 0.467,
+                format: "percent",
+                delta: 0.021,
+                deltaFormat: "percent",
+                tone: "category2"
               }
             },
             {
-              comp: "ScoreCard",
+              comp: "KpiCard",
               props: {
                 label: fr ? "Nouvelles cohortes" : "New cohorts",
-                value: "6",
-                delta: fr ? "Jan – Jun 2026" : "Jan – Jun 2026"
+                value: 6,
+                tone: "category3"
               }
             },
             {
-              comp: "ScoreCard",
+              comp: "KpiCard",
               props: {
                 label: fr ? "Taille moy. cohorte" : "Avg cohort size",
-                value: "6 788",
-                delta: "+19 %",
-                trend: "up" as const
+                value: 6788,
+                delta: 0.19,
+                deltaFormat: "percent",
+                tone: "category4"
               }
             }
           ]
@@ -168,7 +173,7 @@
 
   const DS_COMPONENTS = [
     { name: "DataGrid", slug: "data-grid" },
-    { name: "ScoreCard", slug: "score-card" },
+    { name: "KpiCard", slug: "kpi-card" },
     { name: "Select", slug: "select" },
     { name: "Combobox", slug: "combobox" },
     { name: "Badge", slug: "badge" },

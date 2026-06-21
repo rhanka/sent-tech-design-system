@@ -29,7 +29,7 @@
 
   const DS_COMPONENTS = [
     { name: "KpiCard", slug: "kpi-card" }, { name: "DatePicker", slug: "date-picker" },
-    { name: "PieChart", slug: "pie-chart" }, { name: "AreaChart", slug: "area-chart" },
+    { name: "DonutChart", slug: "donut-chart" }, { name: "AreaChart", slug: "area-chart" },
     { name: "Table", slug: "table" }, { name: "Badge", slug: "badge" },
     { name: "Button", slug: "button" }, { name: "Alert", slug: "alert" }
   ];
@@ -64,7 +64,7 @@
             { el: "div", props: { class: "la-chart-main" },
               children: [{ comp: "AreaChart", props: { label: fr ? "Taux de présence mensuel (%)" : "Monthly Attendance Rate (%)", data: TREND_DATA, tone: "category2", height: 220 } }] },
             { el: "div", props: { class: "la-chart-side" },
-              children: [{ comp: "PieChart", props: { label: fr ? "Répartition des absences" : "Absence Breakdown", data: PIE_DATA, height: 220 } }] }
+              children: [{ comp: "DonutChart", props: { centerLabel: fr ? "Répartition des absences" : "Absence Breakdown", data: PIE_DATA } }] }
           ]
         },
         {
@@ -131,7 +131,7 @@
         <tr><td>KpiCard</td><td>sparkline</td><td>number[]</td><td>{fr ? "Points du mini-graphe tendance" : "Sparkline trend points"}</td></tr>
         <tr><td>KpiCard</td><td>format</td><td>string</td><td>{fr ? '"percent" pour afficher en %' : '"percent" to display as %'}</td></tr>
         <tr><td>AreaChart</td><td>data</td><td>{'{ x, y }[]'}</td><td>{fr ? "Série temporelle mensuelle" : "Monthly time series"}</td></tr>
-        <tr><td>PieChart</td><td>data</td><td>{'{ label, value, tone }[]'}</td><td>{fr ? "Tranches d'absence par type" : "Absence slices by type"}</td></tr>
+        <tr><td>DonutChart</td><td>data</td><td>{'{ label, value, tone }[]'}</td><td>{fr ? "Tranches d'absence par type" : "Absence slices by type"}</td></tr>
         <tr><td>Table</td><td>columns</td><td>Column[]</td><td>{fr ? "Colonnes (key, label, align)" : "Columns (key, label, align)"}</td></tr>
         <tr><td>Alert</td><td>tone</td><td>string</td><td>{fr ? "Niveau d'alerte (warning, info…)" : "Alert level (warning, info…)"}</td></tr>
         <tr><td>Badge</td><td>tone</td><td>string</td><td>{fr ? "Statut visuel de la demande" : "Visual status of the request"}</td></tr>
