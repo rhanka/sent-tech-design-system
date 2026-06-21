@@ -21,11 +21,37 @@ export type ChatThreadProps = {
   selector: "st-chat-thread",
   standalone: true,
   template: `
-    <div class="st-chatThread" [class]="hostClass" role="log" aria-live="polite">
-      <div class="st-chatThread__messages">
-        <ng-content></ng-content>
+    <section
+      [attr.data-st-component]="componentName"
+      [class]="hostClass"
+      role="log"
+      aria-live="polite"
+      aria-relevant="additions text"
+      [attr.aria-label]="label || 'Chat'"
+    >
+      <div class="st-chatThread__list">
+        @if (messages && messages.length > 0) {
+          @for (msg of messages; track msg.id) {
+            <article
+              [class]="msgClass(msg.role)"
+              [attr.data-st-component]="'ChatMessage'"
+              [attr.data-role]="msg.role ?? 'assistant'"
+              [attr.data-status]="msg.status ?? null"
+              [attr.data-align]="(msg.role ?? 'assistant') === 'user' ? 'end' : 'start'"
+            >
+              <div class="st-chatMessage__body">
+                <div class="st-chatMessage__bubble">
+                  <div class="st-chatMessage__content">{{ msg.content }}</div>
+                </div>
+              </div>
+            </article>
+          }
+        }
       </div>
-    </div>
+      @if (messages !== undefined && messages.length === 0 && emptyLabel) {
+        <div class="st-chatThread__empty">{{ emptyLabel }}</div>
+      }
+    </section>
   `,
 })
 export class ChatThread {
@@ -45,5 +71,9 @@ export class ChatThread {
 
   get hostClass(): string {
     return classNames("st-chatThread", this.classInput);
+  }
+
+  msgClass(role?: ChatMessageRole): string {
+    return classNames("st-chatMessage", `st-chatMessage--${role ?? "assistant"}`);
   }
 }
