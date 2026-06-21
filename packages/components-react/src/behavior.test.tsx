@@ -301,6 +301,7 @@ describe("React behavioral parity", () => {
     render(
       <Toast
         title="Ignored"
+        locale="en-US"
         items={[
           { id: "saved", tone: "success", title: "Saved", message: "Changes persisted" },
           { id: "queued", tone: "info", title: "Queued", message: "Next item" },
