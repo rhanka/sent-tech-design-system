@@ -1,3 +1,4 @@
+import type { OnChanges, OnInit, SimpleChanges } from "@angular/core";
 import * as i0 from "@angular/core";
 export type ForceGraphTone = "category1" | "category2" | "category3" | "category4" | "category5" | "category6" | "category7" | "category8";
 export type ForceGraphNodeShape = "dot" | "circle" | "diamond" | "star" | "hexagon" | "box" | "square" | "roundedbox" | "triangle";
@@ -131,7 +132,32 @@ export type ForceGraphProps = {
 };
 export declare function edgeDashArray(dash: ForceGraphEdgeDash | undefined, weak?: boolean): string | null;
 export declare function nodeShapePath(shape: ForceGraphNodeShape | undefined, r: number): string | null;
-export declare class ForceGraph {
+type FGPositionedNode = {
+    node: ForceGraphNode;
+    i: number;
+    x: number;
+    y: number;
+    r: number;
+    tone: ForceGraphTone;
+    title: string;
+    shapePath: string | null;
+};
+type FGPositionedEdge = {
+    edge: ForceGraphEdge;
+    i: number;
+    x1: number;
+    y1: number;
+    x2: number;
+    y2: number;
+    midX: number;
+    midY: number;
+    path: string | null;
+    dashArray: string | null;
+    strokeWidth: number | null;
+    srcLabel: string;
+    tgtLabel: string;
+};
+export declare class ForceGraph implements OnChanges, OnInit {
     static readonly stComponentName = "ForceGraph";
     readonly componentName = "ForceGraph";
     nodes: ForceGraphNode[];
@@ -162,8 +188,26 @@ export declare class ForceGraph {
         into: string;
     }) => void;
     classInput?: string;
+    hoveredIdx: number | null;
+    fgNodes: FGPositionedNode[];
+    fgEdges: FGPositionedEdge[];
+    private _cb;
+    ngOnInit(): void;
+    ngOnChanges(_c: SimpleChanges): void;
+    private _layout;
+    get viewBox(): string;
     get hostClass(): string;
+    get tooltipLeft(): number;
+    get tooltipTop(): number;
+    nodeClass(p: FGPositionedNode): string;
+    edgeClass(e: FGPositionedEdge): string;
+    lgShapePath(entry: ForceGraphLegendEntry): string | null;
+    lgDashArray(entry: ForceGraphLegendEntry): string | null;
+    handleNodeClick(node: ForceGraphNode): void;
+    handlePointerMove(event: PointerEvent): void;
+    handlePointerLeave(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<ForceGraph, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<ForceGraph, "st-force-graph", never, { "nodes": { "alias": "nodes"; "required": false; }; "edges": { "alias": "edges"; "required": false; }; "label": { "alias": "label"; "required": false; }; "width": { "alias": "width"; "required": false; }; "height": { "alias": "height"; "required": false; }; "nodeRadius": { "alias": "nodeRadius"; "required": false; }; "showLabels": { "alias": "showLabels"; "required": false; }; "iterations": { "alias": "iterations"; "required": false; }; "selectedIds": { "alias": "selectedIds"; "required": false; }; "focusId": { "alias": "focusId"; "required": false; }; "legend": { "alias": "legend"; "required": false; }; "edgeCurve": { "alias": "edgeCurve"; "required": false; }; "repulsion": { "alias": "repulsion"; "required": false; }; "onSelect": { "alias": "onSelect"; "required": false; }; "onOpenEntity": { "alias": "onOpenEntity"; "required": false; }; "onEdgeHover": { "alias": "onEdgeHover"; "required": false; }; "onNodeHover": { "alias": "onNodeHover"; "required": false; }; "mergePair": { "alias": "mergePair"; "required": false; }; "onMergeComplete": { "alias": "onMergeComplete"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<ForceGraph, "st-force-graph", never, { "nodes": { "alias": "nodes"; "required": false; }; "edges": { "alias": "edges"; "required": false; }; "label": { "alias": "label"; "required": false; }; "width": { "alias": "width"; "required": false; }; "height": { "alias": "height"; "required": false; }; "nodeRadius": { "alias": "nodeRadius"; "required": false; }; "showLabels": { "alias": "showLabels"; "required": false; }; "iterations": { "alias": "iterations"; "required": false; }; "selectedIds": { "alias": "selectedIds"; "required": false; }; "focusId": { "alias": "focusId"; "required": false; }; "legend": { "alias": "legend"; "required": false; }; "edgeCurve": { "alias": "edgeCurve"; "required": false; }; "repulsion": { "alias": "repulsion"; "required": false; }; "onSelect": { "alias": "onSelect"; "required": false; }; "onOpenEntity": { "alias": "onOpenEntity"; "required": false; }; "onEdgeHover": { "alias": "onEdgeHover"; "required": false; }; "onNodeHover": { "alias": "onNodeHover"; "required": false; }; "mergePair": { "alias": "mergePair"; "required": false; }; "onMergeComplete": { "alias": "onMergeComplete"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
 }
+export {};
 //# sourceMappingURL=ForceGraph.d.ts.map
