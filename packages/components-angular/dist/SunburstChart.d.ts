@@ -14,6 +14,18 @@ export type SunburstChartProps = {
     label: string;
     class?: string;
 };
+type ArcDatum = {
+    datum: SunburstChartDatum;
+    pathLabel: string[];
+    value: number;
+    tone: SunburstChartTone;
+    depth: number;
+    start: number;
+    end: number;
+    path: string;
+    labelX: number;
+    labelY: number;
+};
 export declare class SunburstChart {
     static readonly stComponentName = "SunburstChart";
     readonly componentName = "SunburstChart";
@@ -23,8 +35,32 @@ export declare class SunburstChart {
     legend?: boolean;
     label: string;
     classInput?: string;
+    hoveredIndex: number | null;
+    get widthValue(): number;
+    get heightValue(): number;
     get hostClass(): string;
+    private leafValue;
+    private sumValue;
+    private maxDepth;
+    private pt;
+    private buildArcPath;
+    get arcs(): ArcDatum[];
+    get leafItems(): string[];
+    get legendItems(): {
+        label: string;
+        tone: SunburstChartTone;
+    }[];
+    arcKey(arc: ArcDatum): string;
+    arcClass(arc: ArcDatum, index: number): string;
+    contrastText(tone: SunburstChartTone): string;
+    tooltipLeft(): string;
+    tooltipTop(): string;
+    tooltipLabel(): string;
+    tooltipValue(): number | string;
+    handleVisualPointerMove(event: PointerEvent): void;
+    handleLeave(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<SunburstChart, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<SunburstChart, "st-sunburst-chart", never, { "data": { "alias": "data"; "required": false; }; "width": { "alias": "width"; "required": false; }; "height": { "alias": "height"; "required": false; }; "legend": { "alias": "legend"; "required": false; }; "label": { "alias": "label"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<SunburstChart, "st-sunburst-chart", never, { "data": { "alias": "data"; "required": false; }; "width": { "alias": "width"; "required": false; }; "height": { "alias": "height"; "required": false; }; "legend": { "alias": "legend"; "required": false; }; "label": { "alias": "label"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
 }
+export {};
 //# sourceMappingURL=SunburstChart.d.ts.map

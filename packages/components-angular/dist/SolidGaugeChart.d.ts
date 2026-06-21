@@ -35,7 +35,33 @@ export declare class SolidGaugeChart {
     endAngle?: number;
     classInput?: string;
     get hostClass(): string;
+    get minValue(): number;
+    get maxValue(): number;
+    get sizeValue(): number;
+    get startAngleValue(): number;
+    get endAngleValue(): number;
+    get innerRadiusValue(): number;
+    get span(): number;
+    get clamped(): number;
+    get frac(): number;
+    get cx(): number;
+    get cy(): number;
+    get r(): number;
+    get innerR(): number;
+    get thicknessComputed(): number;
+    get trackR(): number;
+    get a0(): number;
+    get a1(): number;
+    get totalAngle(): number;
+    polar(radius: number, angle: number): [number, number];
+    arcPath(fromFrac: number, toFrac: number): string;
+    get viewBoxStr(): string;
+    get activeTone(): SolidGaugeTone | null;
+    get progressClass(): string;
+    get formatted(): string;
+    get ariaValueText(): string;
+    get dataValueItems(): string[];
     static ɵfac: i0.ɵɵFactoryDeclaration<SolidGaugeChart, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<SolidGaugeChart, "st-solid-gauge-chart", never, { "value": { "alias": "value"; "required": false; }; "min": { "alias": "min"; "required": false; }; "max": { "alias": "max"; "required": false; }; "thresholds": { "alias": "thresholds"; "required": false; }; "innerRadius": { "alias": "innerRadius"; "required": false; }; "label": { "alias": "label"; "required": false; }; "format": { "alias": "format"; "required": false; }; "unit": { "alias": "unit"; "required": false; }; "size": { "alias": "size"; "required": false; }; "startAngle": { "alias": "startAngle"; "required": false; }; "endAngle": { "alias": "endAngle"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<SolidGaugeChart, "st-solid-gauge-chart", never, { "value": { "alias": "value"; "required": false; }; "min": { "alias": "min"; "required": false; }; "max": { "alias": "max"; "required": false; }; "thresholds": { "alias": "thresholds"; "required": false; }; "innerRadius": { "alias": "innerRadius"; "required": false; }; "label": { "alias": "label"; "required": false; }; "format": { "alias": "format"; "required": false; }; "unit": { "alias": "unit"; "required": false; }; "size": { "alias": "size"; "required": false; }; "startAngle": { "alias": "startAngle"; "required": false; }; "endAngle": { "alias": "endAngle"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
 }
 //# sourceMappingURL=SolidGaugeChart.d.ts.map

@@ -22,6 +22,15 @@ export type DonutChartProps = {
     label: string;
     class?: string;
 };
+type SliceItem = {
+    datum: DonutChartDatum;
+    path: string;
+    tone: DonutChartTone;
+    pct: number;
+    spanDeg: number;
+    labelX: number;
+    labelY: number;
+};
 export declare class DonutChart {
     static readonly stComponentName = "DonutChart";
     readonly componentName = "DonutChart";
@@ -32,8 +41,28 @@ export declare class DonutChart {
     dataLabels?: DataLabelsProp;
     label: string;
     classInput?: string;
+    hoveredIndex: number | null;
     get hostClass(): string;
+    get sizeValue(): number;
+    get thicknessValue(): number;
+    get viewBox(): string;
+    get slices(): {
+        total: number;
+        items: SliceItem[];
+    };
+    sliceClass(slice: SliceItem, i: number): string;
+    fmtPct(p: number): string;
+    get dataValueItems(): string[];
+    get dataLabelItems(): Array<{
+        key: string;
+        x: number;
+        y: number;
+        text: string;
+    }>;
+    handleVisualPointerMove(event: PointerEvent): void;
+    handleLeave(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<DonutChart, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<DonutChart, "st-donut-chart", never, { "data": { "alias": "data"; "required": false; }; "size": { "alias": "size"; "required": false; }; "thickness": { "alias": "thickness"; "required": false; }; "centerLabel": { "alias": "centerLabel"; "required": false; }; "dataLabels": { "alias": "dataLabels"; "required": false; }; "label": { "alias": "label"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<DonutChart, "st-donut-chart", never, { "data": { "alias": "data"; "required": false; }; "size": { "alias": "size"; "required": false; }; "thickness": { "alias": "thickness"; "required": false; }; "centerLabel": { "alias": "centerLabel"; "required": false; }; "dataLabels": { "alias": "dataLabels"; "required": false; }; "label": { "alias": "label"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
 }
+export {};
 //# sourceMappingURL=DonutChart.d.ts.map

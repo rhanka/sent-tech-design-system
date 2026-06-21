@@ -33,6 +33,6 @@ export declare class Stepper {
     handleClick(index: number): void;
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<Stepper, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<Stepper, "st-stepper", never, { "steps": { "alias": "steps"; "required": false; }; "current": { "alias": "current"; "required": false; }; "orientation": { "alias": "orientation"; "required": false; }; "clickable": { "alias": "clickable"; "required": false; }; "onStepClick": { "alias": "onStepClick"; "required": false; }; "label": { "alias": "label"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, { "stepClick": "stepClick"; }, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<Stepper, "st-stepper", never, { "steps": { "alias": "steps"; "required": false; }; "current": { "alias": "current"; "required": false; }; "orientation": { "alias": "orientation"; "required": false; }; "clickable": { "alias": "clickable"; "required": false; }; "onStepClick": { "alias": "onStepClick"; "required": false; }; "label": { "alias": "label"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, { "stepClick": "stepClick"; }, never, never, true, never>;
 }
 //# sourceMappingURL=Stepper.d.ts.map

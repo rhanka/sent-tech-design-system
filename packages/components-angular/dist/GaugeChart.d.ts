@@ -19,6 +19,11 @@ export type GaugeChartProps = {
     endAngle?: number;
     class?: string;
 };
+type GaugeBand = {
+    from: number;
+    to: number;
+    tone: GaugeChartTone;
+};
 export declare class GaugeChart {
     static readonly stComponentName = "GaugeChart";
     readonly componentName = "GaugeChart";
@@ -35,7 +40,32 @@ export declare class GaugeChart {
     endAngle?: number;
     classInput?: string;
     get hostClass(): string;
+    get minValue(): number;
+    get maxValue(): number;
+    get thicknessValue(): number;
+    get sizeValue(): number;
+    get startAngleValue(): number;
+    get endAngleValue(): number;
+    get span(): number;
+    get clamped(): number;
+    get frac(): number;
+    get cx(): number;
+    get cy(): number;
+    get r(): number;
+    get a0(): number;
+    get a1(): number;
+    get totalAngle(): number;
+    polar(radius: number, angle: number): [number, number];
+    arcPath(fromFrac: number, toFrac: number): string;
+    get viewBoxStr(): string;
+    get bands(): GaugeBand[];
+    get needlePath(): string;
+    get hubRadius(): number;
+    get formatted(): string;
+    get ariaValueText(): string;
+    get dataValueItems(): string[];
     static ɵfac: i0.ɵɵFactoryDeclaration<GaugeChart, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<GaugeChart, "st-gauge-chart", never, { "value": { "alias": "value"; "required": false; }; "min": { "alias": "min"; "required": false; }; "max": { "alias": "max"; "required": false; }; "thresholds": { "alias": "thresholds"; "required": false; }; "label": { "alias": "label"; "required": false; }; "format": { "alias": "format"; "required": false; }; "unit": { "alias": "unit"; "required": false; }; "size": { "alias": "size"; "required": false; }; "thickness": { "alias": "thickness"; "required": false; }; "startAngle": { "alias": "startAngle"; "required": false; }; "endAngle": { "alias": "endAngle"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<GaugeChart, "st-gauge-chart", never, { "value": { "alias": "value"; "required": false; }; "min": { "alias": "min"; "required": false; }; "max": { "alias": "max"; "required": false; }; "thresholds": { "alias": "thresholds"; "required": false; }; "label": { "alias": "label"; "required": false; }; "format": { "alias": "format"; "required": false; }; "unit": { "alias": "unit"; "required": false; }; "size": { "alias": "size"; "required": false; }; "thickness": { "alias": "thickness"; "required": false; }; "startAngle": { "alias": "startAngle"; "required": false; }; "endAngle": { "alias": "endAngle"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
 }
+export {};
 //# sourceMappingURL=GaugeChart.d.ts.map

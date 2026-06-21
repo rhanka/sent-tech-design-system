@@ -1,22 +1,172 @@
 import { Component, Input as NgInput } from "@angular/core";
 import { classNames } from "./classNames.js";
-import { chartDataList } from "./chartScale.js";
 import * as i0 from "@angular/core";
+const TONES = [
+    "category1", "category2", "category3", "category4",
+    "category5", "category6", "category7", "category8",
+];
+const FONT_MIN = 14;
+const FONT_MAX = 52;
+const CHAR_W = 0.6;
+const SPIRAL_STEP = 0.25;
+const MAX_TURNS = 60;
+const GAP = 4;
+function validWord(w) {
+    return !!w && typeof w.text === "string" && w.text.length > 0 &&
+        Number.isFinite(w.weight) && w.weight > 0;
+}
+function overlaps(a, b) {
+    return !(a.x + a.w + GAP <= b.x ||
+        b.x + b.w + GAP <= a.x ||
+        a.y + a.h + GAP <= b.y ||
+        b.y + b.h + GAP <= a.y);
+}
+function computeLayout(data, width, height) {
+    const words = (data ?? []).filter(validWord);
+    if (words.length === 0)
+        return { placed: [], omitted: [] };
+    const sorted = words
+        .map((w, i) => ({ w, i }))
+        .sort((a, b) => (b.w.weight - a.w.weight) || (a.i - b.i))
+        .map((e) => e.w);
+    const minW = sorted[sorted.length - 1].weight;
+    const maxW = sorted[0].weight;
+    const span = maxW - minW;
+    const fontFor = (weight) => {
+        if (span <= 0)
+            return (FONT_MIN + FONT_MAX) / 2;
+        const t = (weight - minW) / span;
+        return FONT_MIN + t * (FONT_MAX - FONT_MIN);
+    };
+    const cx0 = width / 2;
+    const cy0 = height / 2;
+    const a = Math.min(width, height) / (2 * Math.PI * MAX_TURNS);
+    const placed = [];
+    const omitted = [];
+    sorted.forEach((word, idx) => {
+        const fontSize = fontFor(word.weight);
+        const w = word.text.length * fontSize * CHAR_W;
+        const h = fontSize;
+        const tone = word.tone ?? TONES[idx % TONES.length];
+        let placedOk = false;
+        for (let theta = 0; theta <= MAX_TURNS * 2 * Math.PI; theta += SPIRAL_STEP) {
+            const r = a * theta;
+            const cx = cx0 + r * Math.cos(theta);
+            const cy = cy0 + r * Math.sin(theta);
+            const box = { x: cx - w / 2, y: cy - h / 2, w, h };
+            if (box.x < 0 || box.y < 0 || box.x + box.w > width || box.y + box.h > height) {
+                continue;
+            }
+            let collides = false;
+            for (const p of placed) {
+                if (overlaps(box, p.box)) {
+                    collides = true;
+                    break;
+                }
+            }
+            if (!collides) {
+                placedOk = true;
+                placed.push({ word, tone, fontSize, cx, cy, box, index: placed.length });
+                break;
+            }
+        }
+        if (!placedOk) {
+            omitted.push(word);
+        }
+    });
+    return { placed, omitted };
+}
 export class WordCloudChart {
     static stComponentName = "WordCloudChart";
     componentName = "WordCloudChart";
-    data;
+    hoveredIndex = null;
+    data = [];
     width;
     height;
-    label;
+    label = "";
     classInput;
     get hostClass() {
-        return ["st-wordCloudChart", this.classInput].filter(Boolean).join(" ");
+        return classNames("st-wordCloudChart", this.classInput);
+    }
+    get widthValue() { return this.width ?? 480; }
+    get heightValue() { return this.height ?? 320; }
+    get viewBox() { return `0 0 ${this.widthValue} ${this.heightValue}`; }
+    get layout() {
+        return computeLayout(this.data, this.widthValue, this.heightValue);
+    }
+    get placed() { return this.layout.placed; }
+    get omitted() { return this.layout.omitted; }
+    get dataValueItems() {
+        return [
+            ...this.placed.map((p) => `${p.word.text}: ${p.word.weight}`),
+            ...this.omitted.map((o) => `${o.text}: ${o.weight} (omis)`),
+        ];
+    }
+    wordClass(i) {
+        return classNames("st-wordCloudChart__word", `st-wordCloudChart__word--${this.placed[i]?.tone ?? "category1"}`, this.hoveredIndex !== null && this.hoveredIndex !== i && "st-wordCloudChart__word--dim");
+    }
+    get tooltipLeft() {
+        const p = this.hoveredIndex !== null ? this.placed[this.hoveredIndex] : undefined;
+        return p ? (p.cx / this.widthValue) * 100 : 0;
+    }
+    get tooltipTop() {
+        const p = this.hoveredIndex !== null ? this.placed[this.hoveredIndex] : undefined;
+        return p ? ((p.cy - p.fontSize / 2) / this.heightValue) * 100 : 0;
+    }
+    handleVisualPointerMove(event) {
+        const target = event.target;
+        const raw = Number(target?.getAttribute?.("data-chart-index"));
+        this.hoveredIndex = Number.isInteger(raw) && !isNaN(raw) ? raw : null;
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: WordCloudChart, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: WordCloudChart, isStandalone: true, selector: "st-word-cloud-chart", inputs: { data: "data", width: "width", height: "height", label: "label", classInput: ["class", "classInput"] }, ngImport: i0, template: `
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: WordCloudChart, isStandalone: true, selector: "st-word-cloud-chart", inputs: { data: "data", width: "width", height: "height", label: "label", classInput: ["class", "classInput"] }, ngImport: i0, template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+      <div
+        class="st-wordCloudChart__visual"
+        role="img"
+        [attr.aria-label]="label"
+        (pointermove)="handleVisualPointerMove($event)"
+        (pointerleave)="hoveredIndex = null"
+      >
+        <svg
+          [attr.viewBox]="viewBox"
+          preserveAspectRatio="xMidYMid meet"
+          width="100%"
+          height="100%"
+          focusable="false"
+          aria-hidden="true"
+        >
+          @for (p of placed; track p.word.text; let i = $index) {
+            <text
+              [class]="wordClass(i)"
+              [attr.x]="p.cx"
+              [attr.y]="p.cy"
+              text-anchor="middle"
+              dominant-baseline="central"
+              [attr.font-size]="p.fontSize"
+              [attr.data-chart-index]="i"
+            >{{ p.word.text }}</text>
+          }
+        </svg>
+      </div>
+
+      <ul class="st-chartDataList" [attr.aria-label]="'Data values for ' + label">
+        @for (item of dataValueItems; track item) {
+          <li>{{ item }}</li>
+        }
+      </ul>
+
+      @if (hoveredIndex !== null && placed[hoveredIndex]) {
+        <div
+          class="st-wordCloudChart__tooltip"
+          role="presentation"
+          [style.left]="tooltipLeft + '%'"
+          [style.top]="tooltipTop + '%'"
+        >
+          <span class="st-wordCloudChart__tooltipLabel">{{ placed[hoveredIndex].word.text }}</span>
+          <span class="st-wordCloudChart__tooltipValue">{{ placed[hoveredIndex].word.weight }}</span>
+        </div>
+      }
     </div>
   `, isInline: true });
 }
@@ -27,7 +177,52 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     standalone: true,
                     template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
+      <div
+        class="st-wordCloudChart__visual"
+        role="img"
+        [attr.aria-label]="label"
+        (pointermove)="handleVisualPointerMove($event)"
+        (pointerleave)="hoveredIndex = null"
+      >
+        <svg
+          [attr.viewBox]="viewBox"
+          preserveAspectRatio="xMidYMid meet"
+          width="100%"
+          height="100%"
+          focusable="false"
+          aria-hidden="true"
+        >
+          @for (p of placed; track p.word.text; let i = $index) {
+            <text
+              [class]="wordClass(i)"
+              [attr.x]="p.cx"
+              [attr.y]="p.cy"
+              text-anchor="middle"
+              dominant-baseline="central"
+              [attr.font-size]="p.fontSize"
+              [attr.data-chart-index]="i"
+            >{{ p.word.text }}</text>
+          }
+        </svg>
+      </div>
+
+      <ul class="st-chartDataList" [attr.aria-label]="'Data values for ' + label">
+        @for (item of dataValueItems; track item) {
+          <li>{{ item }}</li>
+        }
+      </ul>
+
+      @if (hoveredIndex !== null && placed[hoveredIndex]) {
+        <div
+          class="st-wordCloudChart__tooltip"
+          role="presentation"
+          [style.left]="tooltipLeft + '%'"
+          [style.top]="tooltipTop + '%'"
+        >
+          <span class="st-wordCloudChart__tooltipLabel">{{ placed[hoveredIndex].word.text }}</span>
+          <span class="st-wordCloudChart__tooltipValue">{{ placed[hoveredIndex].word.weight }}</span>
+        </div>
+      }
     </div>
   `,
                 }]
