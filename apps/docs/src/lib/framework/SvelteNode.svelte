@@ -288,8 +288,16 @@
     }
 
     // DatePicker : `value`, `min`, `max` peuvent être des chaînes ISO → Date.
+    // Une valeur "YYYY-MM-DD/YYYY-MM-DD" = plage → convertir en DatePickerRange.
     if (comp === "DatePicker") {
-      if (typeof out.value === "string") out.value = new Date(out.value);
+      if (typeof out.value === "string") {
+        if (out.value.includes("/")) {
+          const [s, e] = out.value.split("/");
+          out.value = { start: s ? new Date(s) : null, end: e ? new Date(e) : null };
+        } else {
+          out.value = new Date(out.value);
+        }
+      }
       if (typeof out.min === "string") out.min = new Date(out.min);
       if (typeof out.max === "string") out.max = new Date(out.max);
     }
