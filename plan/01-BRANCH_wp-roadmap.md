@@ -26,8 +26,8 @@ owner (6/7 composants buggy) → portée par WP16. Détail bugs: `02-BRANCH` ; 1
 - [x] **Lot WP8 — Moteur design + skill multi-harness (100%)**
   - Inclut les ajouts récents: CLI audit visuel headless (audit:visual, skills 0.2.0), harnais audit:parity (en construction), ratchet CI Design Quality Gate 100→95.
 - [x] **Lot WP9 — Surface Chat / Agent (100%)**
-- [ ] **Lot WP10 — Theming DSFR/Carbon/Airbus (82%)**
-  - Reste: rollout Phase 2 hors pilotes ; gouvernance publication client (Airbus = JAMAIS public npmjs, privé).
+- [x] **Lot WP10 — Theming DSFR/Carbon/Airbus (100%)**
+  - Gouvernance distribution Airbus formalisée: `publishConfig.access=restricted` + MAPPING.md décision 2026-06-21 (JAMAIS public npmjs, privé). Rollout Phase 2 = 66 thèmes livrés (77/77 tâches done).
 - [x] **Lot WP11 — Dogfooding moteur publié (100%, routine)**
 - [x] **Lot WP12 — Templates docs / slides ESN (100%)**
 - [x] **Lot WP13 — Portage React (100%)**
