@@ -44,6 +44,7 @@ export declare class Menu {
     asGroup(item: MenuItem): MenuGroupItem;
     asAction(item: MenuItem): MenuActionItem;
     itemClass(item: MenuActionItem): string;
+    isStringIcon(icon: unknown): icon is string;
     onItemClick(item: MenuActionItem): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<Menu, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<Menu, "st-menu", never, { "items": { "alias": "items"; "required": false; }; "dense": { "alias": "dense"; "required": false; }; "role": { "alias": "role"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, { "select": "select"; }, never, never, true, never>;
