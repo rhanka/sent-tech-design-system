@@ -52,3 +52,4 @@ export class DecompositionTreeChart {
     return ["st-decompositionTreeChart", this.classInput].filter(Boolean).join(" ");
   }
 }
+TESTLINE
