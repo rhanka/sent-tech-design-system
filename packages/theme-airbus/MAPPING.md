@@ -3,9 +3,14 @@
 This package maps the local Airbus Design System reference at
 `../airbus-design-system` onto the Sentropic `TenantTheme` contract.
 
-The package is public-ready from a manifest standpoint. It is not included in
-the npm publication workflow until versioning, release tag, and distribution
-rules are explicitly decided.
+## Gouvernance de distribution (WP10 — décision formalisée 2026-06-21)
+
+Ce thème est **STRICTEMENT PRIVÉ** : il ne sera jamais publié sur npmjs.com public.
+
+- `publishConfig.access: "restricted"` — empêche toute publication publique accidentelle.
+- Le package est exclu du workflow de publication OIDC (les tags `theme-airbus-v*` ne déclenchent aucune CI publish).
+- Distribution autorisée uniquement via un registre npm privé, à la demande explicite du client Airbus.
+- Raison : données de design propriétaires Airbus, accords de confidentialité, branding contrôlé.
 
 ## Sources
 
