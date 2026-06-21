@@ -1,7 +1,6 @@
 import { Component, Input as NgInput } from "@angular/core";
 
 import { classNames } from "./classNames.js";
-
 import { contrastTextForTone } from "./chartContrast.js";
 
 export type FunnelChartTone =
@@ -32,13 +31,19 @@ export type FunnelChartProps = {
   class?: string;
 };
 
-const FUNNEL_TONES = [
-  "category1", "category2", "category3", "category4",
-  "category5", "category6", "category7", "category8",
-] as const;
+const TONES: FunnelChartTone[] = [
+  "category1",
+  "category2",
+  "category3",
+  "category4",
+  "category5",
+  "category6",
+  "category7",
+  "category8",
+];
 
-const FUNNEL_MARGIN = { top: 16, right: 16, bottom: 16, left: 16 };
-const FUNNEL_GAP = 6;
+const MARGIN = { top: 16, right: 16, bottom: 16, left: 16 };
+const GAP = 6;
 
 type FunnelSegment = {
   points: string;
@@ -74,7 +79,7 @@ type FunnelSegment = {
         >
           @for (seg of segments; track seg.datum.label; let i = $index) {
             <polygon
-              [class]="segmentClass(seg, i)"
+              [class]="segmentClass(i)"
               [attr.points]="seg.points"
               [attr.data-chart-index]="i"
             ></polygon>
@@ -106,15 +111,15 @@ type FunnelSegment = {
         }
       </ul>
 
-      @if (hoveredIndex !== null && segments[hoveredIndex!]) {
+      @if (hoveredIndex !== null && segments[hoveredIndex]) {
         <div
           class="st-funnelChart__tooltip"
           role="presentation"
-          [style.left.%]="(segments[hoveredIndex!]!.cx / widthValue) * 100"
-          [style.top.%]="(segments[hoveredIndex!]!.cy / heightValue) * 100"
+          [style.left]="tooltipLeft(segments[hoveredIndex])"
+          [style.top]="tooltipTop(segments[hoveredIndex])"
         >
-          <span class="st-funnelChart__tooltipLabel">{{ segments[hoveredIndex!]!.datum.label }}</span>
-          <span class="st-funnelChart__tooltipValue">{{ segments[hoveredIndex!]!.datum.value }}{{ showPercentagesValue ? ' · ' + formatPercent(segments[hoveredIndex!]!.percent) : '' }}</span>
+          <span class="st-funnelChart__tooltipLabel">{{ segments[hoveredIndex].datum.label }}</span>
+          <span class="st-funnelChart__tooltipValue">{{ segments[hoveredIndex].datum.value }}{{ showPercentagesValue ? ' · ' + formatPercent(segments[hoveredIndex].percent) : '' }}</span>
         </div>
       }
 
@@ -135,6 +140,8 @@ export class FunnelChart {
   static readonly stComponentName = "FunnelChart";
   readonly componentName = "FunnelChart";
 
+  hoveredIndex: number | null = null;
+
   @NgInput() data: FunnelChartDatum[] = [];
   @NgInput() orientation?: "vertical" | "horizontal";
   @NgInput() showPercentages?: boolean;
@@ -145,22 +152,31 @@ export class FunnelChart {
   @NgInput() height?: number;
   @NgInput("class") classInput?: string;
 
-  hoveredIndex: number | null = null;
-
   get hostClass(): string {
     return classNames("st-funnelChart", this.classInput);
   }
 
-  get widthValue(): number { return this.width ?? 480; }
-  get heightValue(): number { return this.height ?? 280; }
-  get showPercentagesValue(): boolean { return this.showPercentages !== false; }
-  get percentModeValue(): "ofFirst" | "ofPrevious" { return this.percentMode ?? "ofFirst"; }
+  get widthValue(): number {
+    return this.width ?? 480;
+  }
+  get heightValue(): number {
+    return this.height ?? 280;
+  }
+  get orientationValue(): "vertical" | "horizontal" {
+    return this.orientation ?? "vertical";
+  }
+  get showPercentagesValue(): boolean {
+    return this.showPercentages ?? true;
+  }
+  get percentModeValue(): "ofFirst" | "ofPrevious" {
+    return this.percentMode ?? "ofFirst";
+  }
 
   get viewBox(): string {
     return `0 0 ${this.widthValue} ${this.heightValue}`;
   }
 
-  private magnitude(v: number): number {
+  magnitude(v: number): number {
     return Number.isFinite(v) && v > 0 ? v : 0;
   }
 
@@ -170,59 +186,60 @@ export class FunnelChart {
   }
 
   get percents(): number[] {
-    const data = this.data;
-    const first = this.magnitude(data[0]?.value ?? 0);
-    return data.map((d, i) => {
+    const first = this.magnitude(this.data[0]?.value ?? 0);
+    return this.data.map((d, i) => {
       const value = this.magnitude(d.value);
-      const ref = this.percentModeValue === "ofPrevious"
-        ? this.magnitude(data[i - 1]?.value ?? value)
-        : first;
+      const ref =
+        this.percentModeValue === "ofPrevious"
+          ? this.magnitude(this.data[i - 1]?.value ?? value)
+          : first;
       return ref === 0 ? 0 : (value / ref) * 100;
     });
   }
 
   get segments(): FunnelSegment[] {
-    const data = this.data;
-    if (data.length === 0) return [];
-    const maxValue = Math.max(0, ...data.map((d) => this.magnitude(d.value)));
+    if (this.data.length === 0) return [];
+    const maxValue = Math.max(0, ...this.data.map((d) => this.magnitude(d.value)));
     const safeMax = maxValue === 0 ? 1 : maxValue;
-    const width = this.widthValue;
-    const height = this.heightValue;
-    const m = FUNNEL_MARGIN;
-    const plotW = Math.max(width - m.left - m.right, 1);
-    const plotH = Math.max(height - m.top - m.bottom, 1);
+    const plotW = Math.max(this.widthValue - MARGIN.left - MARGIN.right, 1);
+    const plotH = Math.max(this.heightValue - MARGIN.top - MARGIN.bottom, 1);
     const percents = this.percents;
 
-    if ((this.orientation ?? "vertical") === "vertical") {
-      const band = plotH / data.length;
-      const segH = Math.max(band - FUNNEL_GAP, 1);
-      const cx = m.left + plotW / 2;
-      return data.map((d, i) => {
-        const tone = d.tone ?? FUNNEL_TONES[i % FUNNEL_TONES.length];
+    if (this.orientationValue === "vertical") {
+      const band = plotH / this.data.length;
+      const segH = Math.max(band - GAP, 1);
+      const cx = MARGIN.left + plotW / 2;
+      return this.data.map((d, i) => {
+        const tone = d.tone ?? TONES[i % TONES.length];
         const topHalf = (this.magnitude(d.value) / safeMax) * (plotW / 2);
-        const nextVal = data[i + 1] ? this.magnitude(data[i + 1].value) : this.magnitude(d.value);
+        const nextVal = this.data[i + 1] ? this.magnitude(this.data[i + 1].value) : this.magnitude(d.value);
         const botHalf = Math.min((nextVal / safeMax) * (plotW / 2), topHalf);
-        const y0 = m.top + band * i;
+        const y0 = MARGIN.top + band * i;
         const y1 = y0 + segH;
-        const points = [
-          `${cx - topHalf},${y0}`,
-          `${cx + topHalf},${y0}`,
-          `${cx + botHalf},${y1}`,
-          `${cx - botHalf},${y1}`,
-        ].join(" ");
-        return { points, datum: d, tone, textColor: contrastTextForTone(tone), cx, cy: (y0 + y1) / 2, labelX: cx, labelY: (y0 + y1) / 2, percent: percents[i] };
+        const points = [`${cx - topHalf},${y0}`, `${cx + topHalf},${y0}`, `${cx + botHalf},${y1}`, `${cx - botHalf},${y1}`].join(" ");
+        return {
+          points,
+          datum: d,
+          tone,
+          textColor: contrastTextForTone(tone),
+          cx,
+          cy: (y0 + y1) / 2,
+          labelX: cx,
+          labelY: (y0 + y1) / 2,
+          percent: percents[i],
+        };
       });
     }
 
-    const band = plotW / data.length;
-    const segW = Math.max(band - FUNNEL_GAP, 1);
-    const cy = m.top + plotH / 2;
-    return data.map((d, i) => {
-      const tone = d.tone ?? FUNNEL_TONES[i % FUNNEL_TONES.length];
+    const band = plotW / this.data.length;
+    const segW = Math.max(band - GAP, 1);
+    const cy = MARGIN.top + plotH / 2;
+    return this.data.map((d, i) => {
+      const tone = d.tone ?? TONES[i % TONES.length];
       const leftHalf = (this.magnitude(d.value) / safeMax) * (plotH / 2);
-      const nextVal = data[i + 1] ? this.magnitude(data[i + 1].value) : this.magnitude(d.value);
+      const nextVal = this.data[i + 1] ? this.magnitude(this.data[i + 1].value) : this.magnitude(d.value);
       const rightHalf = Math.min((nextVal / safeMax) * (plotH / 2), leftHalf);
-      const x0 = m.left + band * i;
+      const x0 = MARGIN.left + band * i;
       const x1 = x0 + segW;
       const points = [
         `${x0},${cy - leftHalf}`,
@@ -230,37 +247,51 @@ export class FunnelChart {
         `${x1},${cy + rightHalf}`,
         `${x0},${cy + leftHalf}`,
       ].join(" ");
-      return { points, datum: d, tone, textColor: contrastTextForTone(tone), cx: (x0 + x1) / 2, cy, labelX: (x0 + x1) / 2, labelY: cy, percent: percents[i] };
+      return {
+        points,
+        datum: d,
+        tone,
+        textColor: contrastTextForTone(tone),
+        cx: (x0 + x1) / 2,
+        cy,
+        labelX: (x0 + x1) / 2,
+        labelY: cy,
+        percent: percents[i],
+      };
     });
   }
 
-  segmentClass(seg: FunnelSegment, i: number): string {
-    const isDim = this.hoveredIndex !== null && this.hoveredIndex !== i;
-    return classNames(
-      "st-funnelChart__segment",
-      `st-funnelChart__segment--${seg.tone}`,
-      isDim ? "st-funnelChart__segment--dim" : undefined,
-    );
+  get legendItems(): Array<{ label: string; tone: FunnelChartTone }> {
+    return this.data.map((d, i) => ({ label: d.label, tone: d.tone ?? TONES[i % TONES.length] }));
   }
 
   get dataValueItems(): string[] {
     const percents = this.percents;
     return this.data.map((d, i) =>
-      this.showPercentagesValue
-        ? `${d.label}: ${d.value} (${this.formatPercent(percents[i])})`
-        : `${d.label}: ${d.value}`,
+      this.showPercentagesValue ? `${d.label}: ${d.value} (${this.formatPercent(percents[i])})` : `${d.label}: ${d.value}`,
     );
   }
 
-  get legendItems(): Array<{ label: string; tone: FunnelChartTone }> {
-    return this.data.map((d, i) => ({ label: d.label, tone: d.tone ?? FUNNEL_TONES[i % FUNNEL_TONES.length] }));
+  segmentClass(i: number): string {
+    return classNames(
+      "st-funnelChart__segment",
+      `st-funnelChart__segment--${this.segments[i]?.tone ?? "category1"}`,
+      this.hoveredIndex !== null && this.hoveredIndex !== i && "st-funnelChart__segment--dim",
+    );
+  }
+
+  tooltipLeft(seg: FunnelSegment): string {
+    return `${(seg.cx / this.widthValue) * 100}%`;
+  }
+
+  tooltipTop(seg: FunnelSegment): string {
+    return `${(seg.cy / this.heightValue) * 100}%`;
   }
 
   handleVisualPointerMove(event: PointerEvent): void {
-    const target = event.target;
-    if (!(target instanceof Element)) { this.hoveredIndex = null; return; }
-    const raw = Number(target.getAttribute("data-chart-index"));
-    this.hoveredIndex = Number.isInteger(raw) ? raw : null;
+    const target = event.target as { getAttribute?: (name: string) => string | null } | null;
+    const raw = Number(target?.getAttribute?.("data-chart-index"));
+    this.hoveredIndex = Number.isInteger(raw) && !isNaN(raw) ? raw : null;
   }
 
   handleLeave(): void {
