@@ -145,6 +145,7 @@ select {
 
 .docs-header .st-header__actions {
   flex: 0 0 auto;
+  margin-left: auto;
 }
 
 .docs-brand {
