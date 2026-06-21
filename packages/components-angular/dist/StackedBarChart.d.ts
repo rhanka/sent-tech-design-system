@@ -39,6 +39,12 @@ export type StackedBarChartProps = {
 export declare class StackedBarChart {
     static readonly stComponentName = "StackedBarChart";
     readonly componentName = "StackedBarChart";
+    readonly MARGIN: {
+        top: number;
+        right: number;
+        bottom: number;
+        left: number;
+    };
     data: StackedBarDatum[];
     width?: number;
     height?: number;
@@ -49,7 +55,51 @@ export declare class StackedBarChart {
     onToggleSeries?: (seriesId: string) => void;
     classInput?: string;
     get hostClass(): string;
+    get widthValue(): number;
+    get heightValue(): number;
+    get viewBox(): string;
+    get plotWidth(): number;
+    get plotHeight(): number;
+    get safeData(): StackedBarDatum[];
+    get hiddenSet(): Set<string>;
+    get legendInteractive(): boolean;
+    get dlEnabled(): boolean;
+    get segmentLabels(): string[];
+    toneForLabel(label: string): StackedBarTone;
+    get columnTotals(): number[];
+    get totalMax(): number;
+    get yTicks(): number[];
+    get yDomain(): {
+        min: number;
+        max: number;
+    };
+    yPixel(y: number): number;
+    get gridLines(): Array<{
+        value: number;
+        y: number;
+    }>;
+    get columns(): Array<{
+        datum: StackedBarDatum;
+        x: number;
+        cx: number;
+        width: number;
+        segments: Array<{
+            segLabel: string;
+            value: number;
+            tone: StackedBarTone;
+            y: number;
+            height: number;
+        }>;
+    }>;
+    get legendItems(): Array<{
+        label: string;
+        tone: StackedBarTone;
+    }>;
+    get dataValueItems(): string[];
+    formatTick(v: number): string;
+    formatDataLabel(v: number): string;
+    toggleSeries(label: string): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<StackedBarChart, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<StackedBarChart, "st-stacked-bar-chart", never, { "data": { "alias": "data"; "required": false; }; "width": { "alias": "width"; "required": false; }; "height": { "alias": "height"; "required": false; }; "label": { "alias": "label"; "required": false; }; "showLegend": { "alias": "showLegend"; "required": false; }; "dataLabels": { "alias": "dataLabels"; "required": false; }; "hiddenSeries": { "alias": "hiddenSeries"; "required": false; }; "onToggleSeries": { "alias": "onToggleSeries"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<StackedBarChart, "st-stacked-bar-chart", never, { "data": { "alias": "data"; "required": false; }; "width": { "alias": "width"; "required": false; }; "height": { "alias": "height"; "required": false; }; "label": { "alias": "label"; "required": false; }; "showLegend": { "alias": "showLegend"; "required": false; }; "dataLabels": { "alias": "dataLabels"; "required": false; }; "hiddenSeries": { "alias": "hiddenSeries"; "required": false; }; "onToggleSeries": { "alias": "onToggleSeries"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
 }
 //# sourceMappingURL=StackedBarChart.d.ts.map

@@ -1,4 +1,4 @@
-import { type ChartAnnotation } from "./chartAnnotations.js";
+import { type ChartAnnotation, type ResolvedAnnotation } from "./chartAnnotations.js";
 import { type DataLabelsProp } from "./chartDataLabels.js";
 import * as i0 from "@angular/core";
 export type AreaChartTone = "category1" | "category2" | "category3" | "category4" | "category5" | "category6" | "category7" | "category8";
@@ -58,9 +58,24 @@ export type AreaChartProps = {
     onSelectKey?: (key: string | null) => void;
     class?: string;
 };
+type AnnotationRegion = Extract<ResolvedAnnotation, {
+    kind: "region";
+}>;
+type AnnotationAbove = Extract<ResolvedAnnotation, {
+    kind: "line" | "shape" | "point" | "label";
+}>;
 export declare class AreaChart {
     static readonly stComponentName = "AreaChart";
     readonly componentName = "AreaChart";
+    readonly MARGIN: {
+        top: number;
+        right: number;
+        bottom: number;
+        left: number;
+    };
+    readonly gradientId: string;
+    private hoveredIndex;
+    private focusedIndex;
     data: (number | AreaChartDatum)[];
     width?: number;
     height?: number;
@@ -75,7 +90,88 @@ export declare class AreaChart {
     onSelectKey?: (key: string | null) => void;
     classInput?: string;
     get hostClass(): string;
+    get widthValue(): number;
+    get heightValue(): number;
+    get viewBox(): string;
+    get plotWidth(): number;
+    get plotHeight(): number;
+    get normalizedData(): AreaChartDatum[];
+    get yValues(): number[];
+    get yTicks(): number[];
+    get yDomain(): {
+        min: number;
+        max: number;
+    };
+    get xIsNumeric(): boolean;
+    get xDomainMin(): number;
+    get xDomainMax(): number;
+    xPixel(datum: AreaChartDatum, index: number): number;
+    yPixel(y: number): number;
+    get points(): Array<{
+        x: number;
+        y: number;
+        datum: AreaChartDatum;
+        index: number;
+    }>;
+    get linePath(): string;
+    get areaPath(): string;
+    get gridLines(): Array<{
+        value: number;
+        y: number;
+    }>;
+    get xTickEntries(): Array<{
+        key: string;
+        x: number;
+        label: string;
+    }>;
+    get annotationContext(): {
+        xScale: (value: number | string) => number | null;
+        yScale: (value: number) => number | null;
+        plotLeft: number;
+        plotTop: number;
+        plotWidth: number;
+        plotHeight: number;
+    };
+    get resolvedAnnotations(): ResolvedAnnotation[];
+    get annotationRegions(): AnnotationRegion[];
+    get annotationAbove(): AnnotationAbove[];
+    annotationShapePoints(annotation: Extract<ResolvedAnnotation, {
+        kind: "shape";
+    }>): string;
+    get dataLabelItems(): Array<{
+        key: string;
+        x: number;
+        y: number;
+        text: string;
+        baseline: string;
+    }>;
+    get dataValueItems(): string[];
+    get hoverKeys(): string[];
+    get activeIndex(): number;
+    get hoveredPoint(): {
+        x: number;
+        y: number;
+        datum: AreaChartDatum;
+        index: number;
+    } | null;
+    get navEnabled(): boolean;
+    formatTickLabel(v: number): string;
+    datapointLabel(pt: {
+        datum: AreaChartDatum;
+    }): string;
+    rovingTabIndexFor(index: number): number;
+    tooltipLeft(pt: {
+        x: number;
+    }): number;
+    tooltipTop(pt: {
+        y: number;
+    }): number;
+    handleLeave(): void;
+    handleVisualPointerMove(e: PointerEvent): void;
+    handleDatapointFocus(index: number): void;
+    handleDatapointKeyDown(e: KeyboardEvent, index: number): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<AreaChart, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<AreaChart, "st-area-chart", never, { "data": { "alias": "data"; "required": false; }; "width": { "alias": "width"; "required": false; }; "height": { "alias": "height"; "required": false; }; "tone": { "alias": "tone"; "required": false; }; "smooth": { "alias": "smooth"; "required": false; }; "label": { "alias": "label"; "required": false; }; "annotations": { "alias": "annotations"; "required": false; }; "dataLabels": { "alias": "dataLabels"; "required": false; }; "hoverKey": { "alias": "hoverKey"; "required": false; }; "onHoverKeyChange": { "alias": "onHoverKeyChange"; "required": false; }; "keyboardNav": { "alias": "keyboardNav"; "required": false; }; "onSelectKey": { "alias": "onSelectKey"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<AreaChart, "st-area-chart", never, { "data": { "alias": "data"; "required": false; }; "width": { "alias": "width"; "required": false; }; "height": { "alias": "height"; "required": false; }; "tone": { "alias": "tone"; "required": false; }; "smooth": { "alias": "smooth"; "required": false; }; "label": { "alias": "label"; "required": false; }; "annotations": { "alias": "annotations"; "required": false; }; "dataLabels": { "alias": "dataLabels"; "required": false; }; "hoverKey": { "alias": "hoverKey"; "required": false; }; "onHoverKeyChange": { "alias": "onHoverKeyChange"; "required": false; }; "keyboardNav": { "alias": "keyboardNav"; "required": false; }; "onSelectKey": { "alias": "onSelectKey"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
 }
+export {};
 //# sourceMappingURL=AreaChart.d.ts.map

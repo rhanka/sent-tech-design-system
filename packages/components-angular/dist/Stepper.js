@@ -83,7 +83,6 @@ export class Stepper {
           </span>
         </li>
       }
-      <ng-content></ng-content>
     </ol>
   `, isInline: true });
 }
@@ -142,7 +141,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
           </span>
         </li>
       }
-      <ng-content></ng-content>
     </ol>
   `,
                 }]
