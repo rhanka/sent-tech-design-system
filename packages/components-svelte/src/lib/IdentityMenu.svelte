@@ -107,7 +107,7 @@
     ["st-identityMenu", compact ? "st-identityMenu--compact" : null, className]
       .filter(Boolean)
       .join(" ");
-  const initial = $derived(compact ? identityInitials(user) : identityInitial(user));
+  const initial = $derived(identityInitials(user));
   const displayName = $derived(user?.displayName || user?.email || "User");
 
   function getMenuItems(): HTMLElement[] {
