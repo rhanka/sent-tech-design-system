@@ -713,7 +713,7 @@ select {
 }
 
 .docs-side-link--docs {
-  font-size: var(--docs-text-md);
+  font-size: var(--docs-text-sm);
   /* Cible pointeur min WCAG 2.2 (2.5.8) : 32px en desktop (était 29.6px). */
   min-height: 2rem;
   padding: 0.3rem 0.5rem;
