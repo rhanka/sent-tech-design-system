@@ -305,6 +305,18 @@
       </div>
     {/if}
   </div>
+{:else if compact}
+  <button
+    type="button"
+    class="st-identityMenu__loginCompact"
+    aria-label={loginLabel}
+    onclick={() => onLogin?.()}
+  >
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="12" cy="8" r="4"/>
+      <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+    </svg>
+  </button>
 {:else}
   <button
     type="button"
@@ -326,14 +338,17 @@
     width: 100%;
   }
 
-  /* Mode compact : le trigger imite .st-appHeader__control (pill encadrée grise). */
+  /* Mode compact : le trigger est un carré strict (même gabarit qu'un bouton
+     icône .st-appHeader__control sans texte) avec l'avatar gris centré. */
   .st-identityMenu--compact .st-identityMenu__trigger {
     background: var(--st-semantic-surface-default);
     border: 1px solid var(--st-semantic-border-subtle);
     border-radius: var(--st-radius-sm, 0.375rem);
     color: var(--st-semantic-text-secondary);
     height: 2.25rem;
-    padding: 0 0.5rem;
+    justify-content: center;
+    padding: 0;
+    width: 2.25rem;
     transition: background-color var(--st-motion-fast, 120ms) ease,
       border-color var(--st-motion-fast, 120ms) ease,
       color var(--st-motion-fast, 120ms) ease;
@@ -523,6 +538,33 @@
 
   .st-identityMenu__login:focus-visible {
     box-shadow: 0 0 0 2px var(--st-semantic-border-interactive);
+    outline: none;
+  }
+
+  /* Mode déconnecté compact : carré icône bonhomme (même gabarit 2.25rem que
+     le trigger compact connecté). */
+  .st-identityMenu__loginCompact {
+    align-items: center;
+    background: var(--st-semantic-surface-default);
+    border: 1px solid var(--st-semantic-border-subtle);
+    border-radius: var(--st-radius-sm, 0.375rem);
+    color: var(--st-semantic-text-secondary);
+    cursor: pointer;
+    display: inline-flex;
+    height: 2.25rem;
+    justify-content: center;
+    padding: 0;
+    width: 2.25rem;
+    transition: background-color var(--st-motion-fast, 120ms) ease,
+      border-color var(--st-motion-fast, 120ms) ease,
+      color var(--st-motion-fast, 120ms) ease;
+  }
+
+  .st-identityMenu__loginCompact:hover,
+  .st-identityMenu__loginCompact:focus-visible {
+    background: var(--st-semantic-surface-subtle);
+    border-color: var(--st-semantic-border-interactive);
+    color: var(--st-semantic-text-primary);
     outline: none;
   }
 </style>

@@ -35,7 +35,7 @@
     src,
     alt,
     size = "md",
-    shape = "circle",
+    shape = "square",
     tone = "category1",
     class: className,
     ...rest
