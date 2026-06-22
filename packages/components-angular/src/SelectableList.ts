@@ -38,9 +38,9 @@ export type SelectableListProps = {
   template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass"
       role="listbox"
-      [attr.aria-label]="label"
+      [attr.aria-label]="labelledby ? null : label"
       [attr.aria-labelledby]="labelledby"
-      [attr.aria-multiselectable]="multiple">
+      [attr.aria-multiselectable]="multiple ? 'true' : null">
       <ng-content></ng-content>
     </div>
   `,

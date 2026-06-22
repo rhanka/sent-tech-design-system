@@ -17,9 +17,27 @@ export type SwitchProps = {
   selector: "st-switch",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
-    </div>
+    <label [attr.data-st-component]="componentName" [class]="hostClass">
+      <input
+        class="st-switch__input"
+        type="checkbox"
+        role="switch"
+        [checked]="checked ?? false"
+        [attr.aria-checked]="(checked ?? false) ? 'true' : 'false'"
+        [disabled]="disabled ?? false"
+        [attr.name]="name ?? null"
+        [attr.value]="value ?? null"
+      />
+      <span class="st-switch__track" aria-hidden="true">
+        <span class="st-switch__thumb"></span>
+      </span>
+      <span class="st-switch__content">
+        <span class="st-switch__label">{{ label }}</span>
+        @if (helperText) {
+          <span class="st-switch__help">{{ helperText }}</span>
+        }
+      </span>
+    </label>
   `,
 })
 export class Switch {

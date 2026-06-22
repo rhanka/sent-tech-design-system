@@ -32,7 +32,7 @@ export type BreadcrumbProps = {
               <span [attr.aria-current]="item.current ? 'page' : null">{{ item.label }}</span>
             }
             @if ($index < items.length - 1) {
-              <span class="st-breadcrumb__separator">/</span>
+              <span class="st-breadcrumb__separator" aria-hidden="true">/</span>
             }
           </li>
         }

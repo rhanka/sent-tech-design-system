@@ -60,7 +60,7 @@ export class Avatar {
     return classNames(
       "st-avatar",
       `st-avatar--${this.size ?? "md"}`,
-      `st-avatar--${this.shape ?? "circle"}`,
+      `st-avatar--${this.shape ?? "square"}`,
       this.src ? "st-avatar--image" : `st-avatar--${this.tone ?? "category1"}`,
       this.classInput,
     );

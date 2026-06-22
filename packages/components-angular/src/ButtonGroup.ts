@@ -23,7 +23,14 @@ export type ButtonGroupProps = {
   selector: "st-button-group",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    <div
+      [attr.data-st-component]="componentName"
+      [class]="hostClass"
+      role="group"
+      [attr.aria-label]="label ?? null"
+      [attr.data-size]="size ?? 'md'"
+      [style.gap]="gapValue"
+    >
       <ng-content></ng-content>
     </div>
   `,
@@ -38,7 +45,17 @@ export class ButtonGroup {
   @NgInput() label?: string;
   @NgInput("class") classInput?: string;
 
+  get gapValue(): string | null {
+    if (this.attached || this.gap == null) return null;
+    return `var(--st-spacing-${this.gap}, ${this.gap * 0.25}rem)`;
+  }
+
   get hostClass(): string {
-    return ["st-buttonGroup", this.classInput].filter(Boolean).join(" ");
+    return classNames(
+      "st-buttonGroup",
+      `st-buttonGroup--${this.orientation ?? "horizontal"}`,
+      this.attached && "st-buttonGroup--attached",
+      this.classInput,
+    );
   }
 }

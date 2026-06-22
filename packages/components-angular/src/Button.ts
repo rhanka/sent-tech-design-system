@@ -18,9 +18,14 @@ export type ButtonProps = {
   selector: "st-button",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    <button
+      [attr.data-st-component]="componentName"
+      [class]="hostClass"
+      [type]="typeInput ?? 'button'"
+      [disabled]="disabled ?? false"
+    >
       <ng-content></ng-content>
-    </div>
+    </button>
   `,
 })
 export class Button {
@@ -35,8 +40,8 @@ export class Button {
   get hostClass(): string {
     return classNames(
       "st-button",
-      this.variant && `st-button--${this.variant}`,
-      this.size && `st-button--${this.size}`,
+      `st-button--${this.variant ?? "primary"}`,
+      `st-button--${this.size ?? "md"}`,
       this.classInput,
     );
   }

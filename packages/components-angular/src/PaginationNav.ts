@@ -1,6 +1,8 @@
-import { Component, Input as NgInput } from "@angular/core";
+import { Component, EventEmitter, Input as NgInput, Output } from "@angular/core";
 
 import { classNames } from "./classNames.js";
+
+type Slot = number | "ellipsis-start" | "ellipsis-end";
 
 // `pageCount` (Svelte-canonical) is accepted as an alias of `totalPages`.
 export type PaginationNavProps = {
@@ -11,8 +13,6 @@ export type PaginationNavProps = {
   label?: string;
   previousLabel?: string;
   nextLabel?: string;
-  previousHref?: string;
-  nextHref?: string;
   class?: string;
 };
 
@@ -25,30 +25,48 @@ export type PaginationNavProps = {
       [class]="hostClass"
       [attr.aria-label]="label ?? 'Pagination'"
     >
-      @if (previousHref) {
-        <a
-          class="st-paginationNav__prev"
-          [href]="(currentPage ?? 1) <= 1 ? null : previousHref"
-          [attr.aria-disabled]="(currentPage ?? 1) <= 1 ? 'true' : null"
-          rel="prev"
-        >{{ previousLabel ?? 'Précédent' }}</a>
-      }
-      @for (p of pages; track p) {
-        <span
-          class="st-paginationNav__page"
-          [class.st-paginationNav__page--current]="p === (currentPage ?? 1)"
-          [attr.aria-current]="p === (currentPage ?? 1) ? 'page' : null"
-        >{{ p }}</span>
-      }
-      @if (nextHref) {
-        <a
-          class="st-paginationNav__next"
-          [href]="(currentPage ?? 1) >= totalPageCount ? null : nextHref"
-          [attr.aria-disabled]="(currentPage ?? 1) >= totalPageCount ? 'true' : null"
-          rel="next"
-        >{{ nextLabel ?? 'Suivant' }}</a>
-      }
-      <ng-content></ng-content>
+      <ul class="st-paginationNav__list">
+        <li>
+          <button
+            type="button"
+            class="st-paginationNav__nav"
+            [attr.aria-label]="previousLabel ?? 'Page précédente'"
+            [disabled]="currentPage <= 1 || totalPageCount <= 0"
+            (click)="go(currentPage - 1)"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+        </li>
+        @for (slot of slots; track slotKey(slot, $index)) {
+          <li>
+            @if (slot === 'ellipsis-start' || slot === 'ellipsis-end') {
+              <span class="st-paginationNav__ellipsis" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+              </span>
+            } @else {
+              <button
+                type="button"
+                class="st-paginationNav__page"
+                [class.st-paginationNav__page--active]="slot === currentPage"
+                [attr.aria-label]="'Page ' + slot"
+                [attr.aria-current]="slot === currentPage ? 'page' : null"
+                (click)="go(asPage(slot))"
+              >{{ slot }}</button>
+            }
+          </li>
+        }
+        <li>
+          <button
+            type="button"
+            class="st-paginationNav__nav"
+            [attr.aria-label]="nextLabel ?? 'Page suivante'"
+            [disabled]="currentPage >= totalPageCount || totalPageCount <= 0"
+            (click)="go(currentPage + 1)"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
+        </li>
+      </ul>
     </nav>
   `,
 })
@@ -62,9 +80,9 @@ export class PaginationNav {
   @NgInput() label?: string;
   @NgInput() previousLabel?: string;
   @NgInput() nextLabel?: string;
-  @NgInput() previousHref?: string;
-  @NgInput() nextHref?: string;
   @NgInput("class") classInput?: string;
+
+  @Output() readonly pageChange = new EventEmitter<number>();
 
   get currentPage(): number {
     return this.page ?? 1;
@@ -74,16 +92,60 @@ export class PaginationNav {
     return this.pageCount ?? this.totalPages ?? 1;
   }
 
-  get pages(): number[] {
-    const total = this.totalPageCount;
+  get slots(): Slot[] {
+    const total = Math.max(0, Math.floor(this.totalPageCount));
     if (total <= 0) return [];
-    const sibs = this.siblings ?? 1;
-    const current = this.currentPage;
-    const start = Math.max(1, current - sibs);
-    const end = Math.min(total, current + sibs);
-    const result: number[] = [];
-    for (let i = start; i <= end; i++) result.push(i);
+
+    const current = Math.min(Math.max(1, Math.floor(this.currentPage)), total);
+    const sib = Math.max(0, Math.floor(this.siblings ?? 1));
+
+    const minSlots = sib * 2 + 5;
+    if (total <= minSlots) {
+      return Array.from({ length: total }, (_, i) => i + 1) as Slot[];
+    }
+
+    const leftSibling = Math.max(current - sib, 1);
+    const rightSibling = Math.min(current + sib, total);
+    const showLeftEllipsis = leftSibling > 2;
+    const showRightEllipsis = rightSibling < total - 1;
+
+    const result: Slot[] = [];
+
+    if (!showLeftEllipsis && showRightEllipsis) {
+      const leftItemCount = 3 + sib * 2;
+      for (let i = 1; i <= leftItemCount; i += 1) result.push(i);
+      result.push("ellipsis-end");
+      result.push(total);
+    } else if (showLeftEllipsis && !showRightEllipsis) {
+      result.push(1);
+      result.push("ellipsis-start");
+      const rightItemCount = 3 + sib * 2;
+      for (let i = total - rightItemCount + 1; i <= total; i += 1) result.push(i);
+    } else if (showLeftEllipsis && showRightEllipsis) {
+      result.push(1);
+      result.push("ellipsis-start");
+      for (let i = leftSibling; i <= rightSibling; i += 1) result.push(i);
+      result.push("ellipsis-end");
+      result.push(total);
+    } else {
+      for (let i = 1; i <= total; i += 1) result.push(i);
+    }
+
     return result;
+  }
+
+  slotKey(slot: Slot, index: number): string {
+    return typeof slot === "number" ? `p-${slot}` : `${slot}-${index}`;
+  }
+
+  asPage(slot: Slot): number {
+    return slot as number;
+  }
+
+  go(target: number): void {
+    const total = Math.max(0, Math.floor(this.totalPageCount));
+    if (target < 1 || target > total || target === this.currentPage) return;
+    this.pageChange.emit(target);
   }
 
   get hostClass(): string {
