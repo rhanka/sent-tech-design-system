@@ -190,7 +190,7 @@ describe("IdentityMenu", () => {
     expect(trigger).toBeTruthy();
     expect(trigger.getAttribute("aria-haspopup")).toBe("menu");
     expect(trigger.getAttribute("aria-expanded")).toBe("false");
-    expect(container.querySelector(".st-identityMenu__avatar")?.textContent).toBe("A");
+    expect(container.querySelector(".st-identityMenu__avatar")?.textContent).toBe("AL");
     expect(container.querySelector(".st-identityMenu__name")?.textContent).toContain("Ada Lovelace");
     expect(container.querySelector("button.st-identityMenu__login")).toBeNull();
   });
