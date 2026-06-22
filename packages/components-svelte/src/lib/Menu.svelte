@@ -193,6 +193,10 @@
     display: grid;
     min-width: var(--st-component-menu-minWidth, 12rem);
     max-width: var(--st-component-menu-maxWidth, 18rem);
+    /* Scroll quand la liste dépasse le viewport (ex: 24+ thèmes) plutôt que de
+       déborder hors de l'écran. */
+    max-height: var(--st-menu-maxHeight, 80vh);
+    overflow-y: auto;
     padding: var(--st-spacing-1, 0.25rem);
   }
 
