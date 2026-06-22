@@ -1,4 +1,10 @@
-import { Component, Input as NgInput } from "@angular/core";
+import {
+  Component,
+  ElementRef,
+  Input as NgInput,
+  ViewChild,
+} from "@angular/core";
+import type { AfterViewInit, OnChanges, OnDestroy } from "@angular/core";
 
 import { classNames } from "./classNames.js";
 
@@ -162,12 +168,28 @@ export function computePosition(
   selector: "st-popper",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
-    </div>
+    @if (open && anchor) {
+      <div
+        #panel
+        [attr.data-st-component]="componentName"
+        [class]="hostClass"
+        [attr.data-popper-placement]="resolvedPlacement"
+        [style]="panelStyle"
+        [attr.tabindex]="trapFocus ? -1 : null"
+      >
+        <ng-content></ng-content>
+        @if (arrow) {
+          <span
+            class="st-popper__arrow"
+            [attr.data-popper-side]="panelSide"
+            aria-hidden="true"
+          ></span>
+        }
+      </div>
+    }
   `,
 })
-export class Popper {
+export class Popper implements AfterViewInit, OnChanges, OnDestroy {
   static readonly stComponentName = "Popper";
   readonly componentName = "Popper";
   @NgInput() anchor!: HTMLElement | null;
@@ -185,7 +207,99 @@ export class Popper {
   @NgInput() closeOnEscape?: boolean;
   @NgInput() onClose?: () => void;
 
+  @ViewChild("panel") panel?: ElementRef<HTMLDivElement>;
+
+  top = 0;
+  left = 0;
+  private flippedPlacement?: PopperPlacement;
+  private onScroll = () => this.reposition();
+  private onResize = () => this.reposition();
+  private onDocKeydown = (e: KeyboardEvent) => {
+    if (e.key === "Escape" && this.open && (this.closeOnEscape ?? true)) {
+      e.preventDefault();
+      this.onClose?.();
+    }
+  };
+
+  get resolvedPlacement(): PopperPlacement {
+    return this.flippedPlacement ?? this.placement ?? "bottom";
+  }
+
+  get panelSide(): PopperSide {
+    return splitPlacement(this.resolvedPlacement).side;
+  }
+
+  get panelStyle(): string {
+    const strategy = this.strategy ?? "absolute";
+    return `position: ${strategy}; top: ${this.top}px; left: ${this.left}px;`;
+  }
+
   get hostClass(): string {
-    return ["st-popper", this.classInput].filter(Boolean).join(" ");
+    return classNames("st-popper", this.classInput);
+  }
+
+  ngAfterViewInit(): void {
+    if (typeof window === "undefined") return;
+    window.addEventListener("scroll", this.onScroll, true);
+    window.addEventListener("resize", this.onResize);
+    document.addEventListener("keydown", this.onDocKeydown);
+    this.reposition();
+  }
+
+  ngOnChanges(): void {
+    if (typeof window === "undefined") return;
+    // Recompute after Angular renders the panel for the new state.
+    queueMicrotask(() => this.reposition());
+  }
+
+  ngOnDestroy(): void {
+    if (typeof window === "undefined") return;
+    window.removeEventListener("scroll", this.onScroll, true);
+    window.removeEventListener("resize", this.onResize);
+    document.removeEventListener("keydown", this.onDocKeydown);
+  }
+
+  private reposition(): void {
+    if (typeof window === "undefined") return;
+    const panelEl = this.panel?.nativeElement;
+    if (!this.open || !this.anchor || !panelEl) return;
+
+    const anchorRect = this.anchor.getBoundingClientRect();
+    const panelRect = panelEl.getBoundingClientRect();
+    const strategy = this.strategy ?? "absolute";
+
+    const result = computePosition(
+      {
+        top: anchorRect.top,
+        left: anchorRect.left,
+        right: anchorRect.right,
+        bottom: anchorRect.bottom,
+        width: anchorRect.width,
+        height: anchorRect.height,
+      },
+      panelRect.width,
+      panelRect.height,
+      {
+        placement: this.placement ?? "bottom",
+        offset: this.offset ?? 8,
+        flip: this.flip ?? true,
+        shift: this.shift ?? true,
+        viewportWidth: window.innerWidth,
+        viewportHeight: window.innerHeight,
+      },
+    );
+
+    if (strategy === "absolute") {
+      this.top = result.top + window.scrollY;
+      this.left = result.left + window.scrollX;
+    } else {
+      this.top = result.top;
+      this.left = result.left;
+    }
+
+    if (result.placement !== this.resolvedPlacement) {
+      this.flippedPlacement = result.placement;
+      this.onPlacementChange?.(result.placement);
+    }
   }
 }

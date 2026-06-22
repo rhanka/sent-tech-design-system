@@ -21,9 +21,7 @@ export type AvatarGroupProps = {
     <div [attr.data-st-component]="componentName" [class]="hostClass">
       <ng-content></ng-content>
       @if (overflow > 0) {
-        <div class="st-avatarGroup__overflow st-avatar st-avatar--{{ size ?? 'md' }} st-avatar--circle st-avatar--category1" [attr.aria-label]="overflow + ' autres'">
-          <span class="st-avatar__initials">+{{ overflow }}</span>
-        </div>
+        <span class="st-avatarGroup__overflow" [attr.aria-label]="'+' + overflow">+{{ overflow }}</span>
       }
     </div>
   `,
@@ -37,7 +35,7 @@ export class AvatarGroup {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return classNames("st-avatarGroup", this.classInput);
+    return classNames("st-avatarGroup", `st-avatarGroup--${this.size ?? "md"}`, this.classInput);
   }
 
   get overflow(): number {

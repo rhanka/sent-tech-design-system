@@ -31,28 +31,31 @@ let _counter = 0;
   standalone: true,
   template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
-      @if (label) {
-        <label class="st-field__label" [attr.for]="selectId">{{ label }}</label>
-      }
-      <select
-        class="st-select"
-        [id]="selectId"
-        [value]="currentValue"
-        [disabled]="disabled ?? false"
-        (change)="onChange($event)"
-      >
-        @if (placeholder) {
-          <option value="" disabled selected>{{ placeholder }}</option>
+      <label class="st-field__control">
+        @if (label) {
+          <span class="st-field__label">{{ label }}</span>
         }
-        @for (opt of options ?? []; track opt.value) {
-          <option [value]="opt.value" [disabled]="opt.disabled ?? false">{{ opt.label }}</option>
-        }
-      </select>
-      @if (helperText && !invalid) {
-        <span class="st-field__helper">{{ helperText }}</span>
-      }
-      @if (errorText && invalid) {
+        <select
+          [class]="controlClass"
+          [id]="selectId"
+          [value]="currentValue"
+          [disabled]="disabled ?? false"
+          [attr.aria-invalid]="isInvalid ? 'true' : null"
+          (change)="onChange($event)"
+        >
+          @if (placeholder) {
+            <option value="" disabled selected>{{ placeholder }}</option>
+          }
+          @for (opt of options ?? []; track opt.value) {
+            <option [value]="opt.value" [disabled]="opt.disabled ?? false">{{ opt.label }}</option>
+          }
+          <ng-content></ng-content>
+        </select>
+      </label>
+      @if (errorText) {
         <span class="st-field__error">{{ errorText }}</span>
+      } @else if (helperText) {
+        <span class="st-field__help">{{ helperText }}</span>
       }
     </div>
   `,
@@ -85,13 +88,16 @@ export class Select {
     return this.modelValue ?? this.value ?? "";
   }
 
+  get isInvalid(): boolean {
+    return Boolean(this.invalid) || Boolean(this.errorText);
+  }
+
   get hostClass(): string {
-    return classNames(
-      "st-field",
-      this.size ? `st-field--${this.size}` : undefined,
-      this.invalid ? "st-field--invalid" : undefined,
-      this.classInput,
-    );
+    return classNames("st-field", this.classInput);
+  }
+
+  get controlClass(): string {
+    return classNames("st-select", `st-select--${this.size ?? "md"}`);
   }
 
   onChange(e: Event): void {

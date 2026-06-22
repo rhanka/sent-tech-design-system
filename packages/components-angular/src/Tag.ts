@@ -26,18 +26,37 @@ export type TagProps = {
   selector: "st-tag",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    <span
+      [attr.data-st-component]="componentName"
+      [class]="hostClass"
+      [attr.aria-disabled]="disabled ? 'true' : null"
+    >
       <span class="st-tag__label"><ng-content></ng-content></span>
       @if (dismissible) {
         <button
           type="button"
           class="st-tag__dismiss"
-          [attr.aria-label]="dismissLabel ?? 'Supprimer'"
+          [attr.aria-label]="dismissLabel ?? 'Dismiss'"
           [disabled]="disabled ?? false"
           (click)="handleDismiss($event)"
-        >&#x2715;</button>
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M18 6 6 18" />
+            <path d="m6 6 12 12" />
+          </svg>
+        </button>
       }
-    </div>
+    </span>
   `,
 })
 export class Tag {
@@ -56,15 +75,15 @@ export class Tag {
   get hostClass(): string {
     return classNames(
       "st-tag",
-      this.tone && `st-tag--${this.tone}`,
-      this.size && `st-tag--${this.size}`,
+      `st-tag--${this.tone ?? "neutral"}`,
+      `st-tag--${this.size ?? "md"}`,
       this.disabled && "st-tag--disabled",
-      this.dismissible && "st-tag--dismissible",
       this.classInput,
     );
   }
 
   handleDismiss(event: MouseEvent): void {
+    if (this.disabled) return;
     this.onDismiss?.(event);
     this.dismiss.emit(event);
   }

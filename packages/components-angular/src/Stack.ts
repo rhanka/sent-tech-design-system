@@ -36,7 +36,10 @@ export class Stack {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return classNames("st-stack", this.classInput);
+    // Svelte renders Stack via <Flex>, whose root element carries `st-flex`
+    // before the consumer class — reproduce the same rendered class chain so
+    // `.st-flex` rules (box-sizing, min-width) apply.
+    return classNames("st-flex", "st-stack", this.classInput);
   }
 
   get inlineStyles(): Record<string, string | undefined> {

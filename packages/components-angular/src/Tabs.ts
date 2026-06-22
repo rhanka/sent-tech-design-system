@@ -22,8 +22,6 @@ export type TabsProps = {
   class?: string;
 };
 
-let _tabCounter = 0;
-
 @Component({
   selector: "st-tabs",
   standalone: true,
@@ -34,22 +32,14 @@ let _tabCounter = 0;
           <button
             type="button"
             role="tab"
-            [id]="uid + '-tab-' + tabId(item, $index)"
             [class]="tabClass(item, $index)"
-            [attr.aria-selected]="isActive(item, $index)"
-            [attr.aria-controls]="uid + '-panel-' + tabId(item, $index)"
-            [attr.tabindex]="isActive(item, $index) ? 0 : -1"
+            [attr.aria-selected]="isActive(item, $index) ? 'true' : 'false'"
             [disabled]="item.disabled"
             (click)="select(item, $index)"
           >{{ item.label }}</button>
         }
       </div>
-      <div
-        [id]="uid + '-panel-' + activeTabId"
-        class="st-tabs__panel"
-        role="tabpanel"
-        [attr.aria-labelledby]="uid + '-tab-' + activeTabId"
-      >{{ activeContent }}<ng-content></ng-content></div>
+      <div class="st-tabs__panel" role="tabpanel">{{ activeContent }}<ng-content></ng-content></div>
     </section>
   `,
 })
@@ -57,7 +47,6 @@ export class Tabs {
   static readonly stComponentName = "Tabs";
   readonly componentName = "Tabs";
 
-  readonly uid = `st-tabs-${++_tabCounter}`;
   private localCurrent = "";
 
   @NgInput() items!: TabItem[];
@@ -84,11 +73,6 @@ export class Tabs {
 
   get current(): string {
     return this.activeValue ?? this.activeId ?? this.localCurrent;
-  }
-
-  get activeTabId(): string {
-    const idx = Math.max(0, this.items?.findIndex((item, i) => this.tabId(item, i) === this.current) ?? 0);
-    return this.tabId(this.items?.[idx] ?? this.items?.[0], idx);
   }
 
   get activeContent(): unknown {

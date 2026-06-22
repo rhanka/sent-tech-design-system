@@ -26,24 +26,34 @@ export type CheckboxGroupProps = {
   selector: "st-checkbox-group",
   standalone: true,
   template: `
-    <fieldset [attr.data-st-component]="componentName" [class]="hostClass">
-      @if (label ?? legend) {
-        <legend class="st-checkboxGroup__legend">{{ label ?? legend }}</legend>
+    <fieldset [attr.data-st-component]="componentName" [class]="hostClass" [disabled]="disabled ?? false">
+      @if (resolvedLegend) {
+        <legend class="st-checkboxGroup__legend">{{ resolvedLegend }}</legend>
       }
-      <div class="st-checkboxGroup__list">
+      @if (helperText) {
+        <p class="st-checkboxGroup__help">{{ helperText }}</p>
+      }
+      <div class="st-checkboxGroup__options">
         @for (opt of options ?? []; track opt.value) {
-          <label class="st-checkboxGroup__option">
+          <label class="st-choice st-choice--checkbox">
             <input
+              class="st-choice__input"
               type="checkbox"
-              class="st-checkbox__control"
+              [attr.name]="name"
               [value]="opt.value"
               [checked]="isChecked(opt.value)"
               [disabled]="opt.disabled ?? false"
               (change)="toggle(opt.value, $event)"
             />
-            <span>{{ opt.label }}</span>
+            <span class="st-choice__content">
+              <span class="st-choice__label">{{ opt.label }}</span>
+              @if (opt.helperText) {
+                <span class="st-choice__help">{{ opt.helperText }}</span>
+              }
+            </span>
           </label>
         }
+        <ng-content></ng-content>
       </div>
     </fieldset>
   `,
@@ -65,10 +75,14 @@ export class CheckboxGroup {
 
   @Output() readonly valueChange = new EventEmitter<string[]>();
 
+  get resolvedLegend(): string | undefined {
+    return this.legend ?? this.label;
+  }
+
   get hostClass(): string {
     return classNames(
       "st-checkboxGroup",
-      this.orientation ? `st-checkboxGroup--${this.orientation}` : undefined,
+      `st-checkboxGroup--${this.orientation ?? "vertical"}`,
       this.classInput,
     );
   }

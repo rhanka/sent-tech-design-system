@@ -19,10 +19,13 @@ describe("Search (angular)", () => {
     component.ariaDescribedBy = "search-help";
 
     expect(component.currentValue).toBe("initial");
-    expect(component.hostClass).toContain("st-search");
-    expect(component.hostClass).toContain("st-search--md");
+    // Anatomie canonique (parité Svelte) : le wrapper porte st-field + st-search--fluid,
+    // le groupe interne porte st-search + st-search--{size}.
+    expect(component.hostClass).toContain("st-field");
     expect(component.hostClass).toContain("st-search--fluid");
     expect(component.hostClass).toContain("drawer-search");
+    expect(component.groupClass).toContain("st-search");
+    expect(component.groupClass).toContain("st-search--md");
     expect(component.name).toBe("globalSearch");
     expect(component.autocomplete).toBe("off");
     expect(component.required).toBe(true);

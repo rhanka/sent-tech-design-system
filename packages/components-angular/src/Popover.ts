@@ -29,6 +29,7 @@ export type PopoverProps = {
       (focusout)="onHover(false)"
       (click)="onHostClick()"
     >
+      <ng-content select="[slot='trigger']"></ng-content>
       @if (triggerLabel) {
         <button type="button" class="st-popover__trigger">{{ triggerLabel }}</button>
       }
@@ -37,7 +38,10 @@ export type PopoverProps = {
           [class]="popoverClass"
           role="dialog"
           [attr.aria-label]="label || content || 'Popover'"
-        >{{ content }}</section>
+        >
+          <ng-content></ng-content>
+          {{ content }}
+        </section>
       }
     </span>
   `,

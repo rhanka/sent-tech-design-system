@@ -2,13 +2,17 @@ import { Component, Input as NgInput } from "@angular/core";
 
 import { classNames } from "./classNames.js";
 
-// Forme item alignée sur le canon Svelte : `content` (+ `label` en alias compat).
-export type UnorderedListItem = { content?: unknown; label?: unknown; children?: UnorderedListInput[] };
+export type UnorderedListInput = string | UnorderedListItem;
 
-export type UnorderedListInput = unknown;
+export interface UnorderedListItem {
+  content: unknown;
+  /** Sous-items : chaînes ou objets (normalisés au rendu). */
+  children?: UnorderedListInput[];
+}
 
 export type UnorderedListProps = {
   items: UnorderedListInput[];
+  nested?: boolean;
   class?: string;
 };
 
@@ -17,8 +21,19 @@ export type UnorderedListProps = {
   standalone: true,
   template: `
     <ul [attr.data-st-component]="componentName" [class]="hostClass">
-      @for (item of items; track $index) {
-        <li class="st-unorderedList__item">{{ item }}</li>
+      @for (raw of items; track $index) {
+        @let item = normalize(raw);
+        <li class="st-unorderedList__item">
+          {{ item.content }}
+          @if (item.children && item.children.length > 0) {
+            <ul class="st-unorderedList st-unorderedList--nested">
+              @for (childRaw of item.children; track $index) {
+                @let child = normalize(childRaw);
+                <li class="st-unorderedList__item">{{ child.content }}</li>
+              }
+            </ul>
+          }
+        </li>
       }
       <ng-content></ng-content>
     </ul>
@@ -27,10 +42,20 @@ export type UnorderedListProps = {
 export class UnorderedList {
   static readonly stComponentName = "UnorderedList";
   readonly componentName = "UnorderedList";
-  @NgInput() items!: UnorderedListInput[];
+  @NgInput() items: UnorderedListInput[] = [];
+  @NgInput() nested = false;
   @NgInput("class") classInput?: string;
 
+  normalize(item: UnorderedListInput): UnorderedListItem {
+    if (typeof item === "string") return { content: item };
+    return item;
+  }
+
   get hostClass(): string {
-    return classNames("st-unorderedList", this.classInput);
+    return classNames(
+      "st-unorderedList",
+      this.nested && "st-unorderedList--nested",
+      this.classInput,
+    );
   }
 }

@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input as NgInput, Output } from "@angular/core";
 import type { NavShellSide } from "./NavShell.js";
+import { NavItem } from "./NavItem.js";
 import { classNames } from "./classNames.js";
 
 export type NavDrawerProps = {
@@ -14,6 +15,7 @@ export type NavDrawerProps = {
 @Component({
   selector: "st-nav-drawer",
   standalone: true,
+  imports: [NavItem],
   template: `
     @if (open) {
       <div
@@ -42,21 +44,20 @@ export type NavDrawerProps = {
             ><span aria-hidden="true">&#x2715;</span></button>
           </header>
           <div class="st-drawer__body">
-            @if (navItems && navItems.length > 0) {
-              <nav>
-                <ul class="st-navDrawer__list">
+            <div class="st-navShell__body">
+              @if (navItems && navItems.length > 0) {
+                <nav [attr.aria-label]="label || title || 'Navigation'">
                   @for (item of navItems; track item.label) {
-                    <li class="st-navDrawer__item">
-                      <a
-                        [href]="item.href ?? '#'"
-                        class="st-navDrawer__link"
-                        [class.st-navDrawer__link--active]="item.active"
-                      >{{ item.label }}</a>
-                    </li>
+                    <st-nav-item
+                      [title]="item.label"
+                      [href]="item.href"
+                      [active]="item.active"
+                    ></st-nav-item>
                   }
-                </ul>
-              </nav>
-            }
+                </nav>
+              }
+              <ng-content></ng-content>
+            </div>
           </div>
         </aside>
       </div>
@@ -78,10 +79,15 @@ export class NavDrawer {
 
   get hostClass(): string {
     return classNames(
-      "st-navDrawer",
+      // Base `st-drawer` est LOAD-BEARING : positionnement absolu, surface,
+      // largeur, grille du panneau. Sans elle le tiroir rend cassé (bloc nu).
+      "st-drawer",
+      `st-drawer--${this.side ?? "left"}`,
+      // Le drawer de nav compose NavShell (cf. source Svelte) + le marqueur
+      // `st-navDrawer` (sans CSS propre, intentionnel).
       "st-navShell",
       "st-navShell--drawer",
-      `st-drawer--${this.side ?? "left"}`,
+      "st-navDrawer",
       this.classInput,
     );
   }

@@ -28,6 +28,7 @@ function nextTooltipId(): string {
         @if (triggerLabel) {
           {{ triggerLabel }}
         }
+        <ng-content></ng-content>
       </span>
       <span
         [id]="tooltipId"

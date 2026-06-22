@@ -6,6 +6,9 @@ export type SearchSize = "sm" | "md" | "lg";
 
 export type SearchProps = {
   label?: unknown;
+  helperText?: unknown;
+  errorText?: unknown;
+  invalid?: boolean;
   size?: SearchSize;
   modelValue?: string;
   /** Svelte/React-canonical alias for `modelValue`. */
@@ -37,44 +40,74 @@ function nextId(): string {
   standalone: true,
   template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
-      @if (label) {
-        <label class="st-field__label" [attr.for]="inputId">{{ label }}</label>
-      }
-      <span class="st-search__icon" aria-hidden="true">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"></circle>
-          <path d="m20 20-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
-        </svg>
-      </span>
-      <input
-        [id]="inputId"
-        class="st-search__control st-search__input"
-        type="search"
-        [value]="currentValue"
-        [placeholder]="placeholder"
-        [disabled]="disabled"
-        [attr.name]="name"
-        [attr.autocomplete]="autocomplete"
-        [attr.required]="required ? '' : null"
-        [attr.readonly]="readOnly ? '' : null"
-        [attr.inputmode]="inputMode"
-        [attr.aria-label]="ariaLabel"
-        [attr.aria-describedby]="ariaDescribedBy"
-        (input)="handleInput($event)"
-        (change)="change.emit($event)"
-      />
-      @if (currentValue) {
-        <button
-          type="button"
-          class="st-search__clear"
-          [attr.aria-label]="clearLabelText"
-          [disabled]="disabled"
-          (click)="handleClear()"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M18 6 6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
-          </svg>
-        </button>
+      <label class="st-field__control">
+        @if (label) {
+          <span class="st-field__label">{{ label }}</span>
+        }
+        <span [class]="groupClass">
+          <span class="st-search__icon" aria-hidden="true">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.3-4.3"></path>
+            </svg>
+          </span>
+          <input
+            [id]="inputId"
+            class="st-search__control"
+            type="search"
+            [value]="currentValue"
+            [placeholder]="placeholder"
+            [disabled]="disabled"
+            [attr.name]="name"
+            [attr.autocomplete]="autocomplete"
+            [attr.required]="required ? '' : null"
+            [attr.readonly]="readOnly ? '' : null"
+            [attr.inputmode]="inputMode"
+            [attr.aria-label]="ariaLabel"
+            [attr.aria-describedby]="ariaDescribedBy"
+            [attr.aria-invalid]="isInvalid ? 'true' : null"
+            (input)="handleInput($event)"
+            (change)="change.emit($event)"
+          />
+          @if (currentValue) {
+            <button
+              type="button"
+              class="st-search__clear"
+              [attr.aria-label]="clearLabelText"
+              [disabled]="disabled"
+              (click)="handleClear()"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M18 6 6 18M6 6l12 12"></path>
+              </svg>
+            </button>
+          }
+        </span>
+      </label>
+      @if (errorText) {
+        <span class="st-field__error">{{ errorText }}</span>
+      } @else if (helperText) {
+        <span class="st-field__help">{{ helperText }}</span>
       }
     </div>
   `,
@@ -85,6 +118,9 @@ export class Search {
   private readonly autoId = nextId();
 
   @NgInput() label?: unknown;
+  @NgInput() helperText?: unknown;
+  @NgInput() errorText?: unknown;
+  @NgInput() invalid?: boolean;
   @NgInput() size?: SearchSize;
   @NgInput() modelValue?: string;
   @NgInput() value?: string;
@@ -120,13 +156,20 @@ export class Search {
     return this.clearLabel || "Clear search";
   }
 
+  get isInvalid(): boolean {
+    return Boolean(this.invalid) || Boolean(this.errorText);
+  }
+
   get hostClass(): string {
     return classNames(
-      "st-search",
-      `st-search--${this.size ?? "md"}`,
+      "st-field",
       this.fluid ? "st-search--fluid" : undefined,
       this.classInput,
     );
+  }
+
+  get groupClass(): string {
+    return classNames("st-search", `st-search--${this.size ?? "md"}`);
   }
 
   handleInput(event: Event): void {

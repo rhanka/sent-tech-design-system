@@ -38,7 +38,21 @@ export type SelectionChipProps = {
           [attr.aria-label]="'Effacer ' + label"
           [disabled]="disabled"
           (click)="handleClear($event)"
-        >&#x2715;</button>
+        >
+          <svg
+            width="11"
+            height="11"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M18 6 6 18M6 6l12 12"></path>
+          </svg>
+        </button>
       }
     </span>
   `,
@@ -67,7 +81,7 @@ export class SelectionChip {
   get hostClass(): string {
     return classNames(
       "st-selectionChip",
-      this.tone && `st-selectionChip--${this.tone}`,
+      `st-selectionChip--${this.tone ?? "neutral"}`,
       this.disabled ? "st-selectionChip--disabled" : undefined,
       this.classInput,
     );

@@ -24,13 +24,17 @@ export type SideNavProps = {
       [class]="hostClass"
       [attr.aria-label]="label ?? 'Navigation'"
     >
-      @for (item of items; track item.href) {
-        <a
-          [href]="item.href"
-          [class]="linkClass(item)"
-        >{{ item.label }}</a>
-      }
-      <ng-content></ng-content>
+      <ul>
+        @for (item of items; track item.href) {
+          <li>
+            <a
+              [href]="item.href"
+              [class]="linkClass(item)"
+              [attr.aria-current]="item.active ? 'page' : null"
+            >{{ item.label }}</a>
+          </li>
+        }
+      </ul>
     </nav>
   `,
 })
@@ -43,13 +47,10 @@ export class SideNav {
   @NgInput("class") classInput?: string;
 
   linkClass(item: SideNavItem): string {
-    return classNames(
-      "st-sidenav__link st-sideNav__link",
-      item.active && "st-sidenav__link--active st-sideNav__link--active",
-    );
+    return classNames(item.active && "st-sidenav__link--active");
   }
 
   get hostClass(): string {
-    return classNames("st-sidenav st-sideNav", this.classInput);
+    return classNames("st-sidenav", this.classInput);
   }
 }

@@ -42,9 +42,9 @@ export class Badge {
   get hostClass(): string {
     return classNames(
       "st-badge",
-      this.tone && `st-badge--${this.tone}`,
-      this.shape && `st-badge--${this.shape}`,
-      this.size && `st-badge--${this.size}`,
+      `st-badge--${this.tone ?? "neutral"}`,
+      `st-badge--${this.shape ?? "pill"}`,
+      `st-badge--${this.size ?? "md"}`,
       this.classInput,
     );
   }
