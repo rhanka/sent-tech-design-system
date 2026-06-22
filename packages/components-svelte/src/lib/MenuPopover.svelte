@@ -152,6 +152,9 @@
     border-radius: var(--st-component-menu-radius, 0.375rem);
     box-shadow: var(--st-component-menu-shadow, 0 8px 24px rgb(15 23 42 / 0.14));
     color: var(--st-component-menu-text, var(--st-semantic-text-primary));
+    /* Aligne la taille de texte sur le Menu normal (.st-menu__item) : sans ça le
+       contenu hérite de la taille de la page (~1rem) au lieu de 0.875rem. */
+    font-size: var(--st-component-menu-fontSize, 0.875rem);
     min-width: var(--st-component-menu-minWidth, 12rem);
     max-width: var(--st-component-menu-maxWidth, 18rem);
     max-height: calc(100vh - 2rem);
