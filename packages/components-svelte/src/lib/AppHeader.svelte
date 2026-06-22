@@ -49,6 +49,12 @@
      * - `"center"` : la nav est centrée absolument entre le logo et les actions.
      */
     navAlign?: "start" | "center";
+    /**
+     * Mode d'affichage de la marque.
+     * - `"icon"` (défaut) : si `logoSrc` → image seule ; sinon bigramme dans un carré+cercle.
+     * - `"full"` : comportement complet logo + `brandName`/`productName`.
+     */
+    brandMode?: "icon" | "full";
     class?: string;
   }
 
@@ -81,8 +87,18 @@
     actions,
     drawer,
     navAlign = "start",
+    brandMode = "icon",
     class: className,
   }: AppHeaderProps = $props();
+
+  // Bigramme : 2 premières initiales du brandName (ex. "Sentropic Console" → "SC").
+  const brandBigramme = $derived.by(() => {
+    const src = (brandName || '').trim();
+    const words = src.split(/\s+/).filter(Boolean);
+    if (words.length >= 2) return (words[0][0] + words[1][0]).toUpperCase();
+    if (words.length === 1) return src.slice(0, 2).toUpperCase();
+    return '';
+  });
 
   // Marque par défaut : rendue ssi aucun snippet `logo` et qu'il y a au moins un
   // nom / logo / produit. Calque le bloc marque canonique du site DS.
@@ -117,14 +133,24 @@
       <div class="st-appHeader__logo">{@render logo()}</div>
     {:else if hasDefaultBrand}
       <a class="st-appHeader__brand" href={brandHref} aria-label={resolvedBrandLabel || undefined}>
-        {#if logoSrc}
-          <img class="st-appHeader__brandMark" src={logoSrc} alt={logoAlt} aria-hidden={logoAlt ? undefined : "true"} />
-        {/if}
-        {#if brandName || productName}
-          <span class="st-appHeader__brandCopy">
-            {#if brandName}<span class="st-appHeader__brandName">{brandName}</span>{/if}
-            {#if productName}<span class="st-appHeader__brandProduct">{productName}</span>{/if}
-          </span>
+        {#if brandMode === 'full'}
+          {#if logoSrc}
+            <img class="st-appHeader__brandMark" src={logoSrc} alt={logoAlt} aria-hidden={logoAlt ? undefined : "true"} />
+          {/if}
+          {#if brandName || productName}
+            <span class="st-appHeader__brandCopy">
+              {#if brandName}<span class="st-appHeader__brandName">{brandName}</span>{/if}
+              {#if productName}<span class="st-appHeader__brandProduct">{productName}</span>{/if}
+            </span>
+          {/if}
+        {:else}
+          {#if logoSrc}
+            <img class="st-appHeader__brandMark" src={logoSrc} alt={logoAlt} aria-hidden={logoAlt ? undefined : "true"} />
+          {:else if brandBigramme}
+            <span class="st-appHeader__brandIconWrap">
+              <span class="st-appHeader__brandIcon" aria-hidden="true">{brandBigramme}</span>
+            </span>
+          {/if}
         {/if}
       </a>
     {/if}
@@ -305,6 +331,30 @@
     color: var(--st-semantic-text-secondary);
     font-size: 0.75rem;
     font-weight: 650;
+  }
+
+  .st-appHeader__brandIconWrap {
+    align-items: center;
+    background: var(--st-semantic-surface-subtle);
+    border-radius: var(--st-radius-sm, 0.375rem);
+    display: inline-flex;
+    flex: 0 0 auto;
+    height: 2rem;
+    justify-content: center;
+    width: 2rem;
+  }
+
+  .st-appHeader__brandIcon {
+    align-items: center;
+    background: var(--st-semantic-action-primary);
+    border-radius: var(--st-radius-pill, 9999px);
+    color: var(--st-semantic-action-primaryText);
+    display: inline-flex;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    height: 1.5rem;
+    justify-content: center;
+    width: 1.5rem;
   }
 
   /* --- Lien de nav canonique (pill soulignée, état actif) ---
