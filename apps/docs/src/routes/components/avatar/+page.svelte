@@ -23,10 +23,10 @@
       el: "div",
       props: { class: "fp-row" },
       children: [
-        { comp: "Avatar", props: { name: "Sent Tech", size: "sm" } },
-        { comp: "Avatar", props: { name: "Sent Tech", size: "md" } },
-        { comp: "Avatar", props: { name: "Sent Tech", size: "lg" } },
-        { comp: "Avatar", props: { name: "Sent Tech", size: "xl" } }
+        { comp: "Avatar", props: { name: "Sent Tech", size: "sm", shape: "circle" } },
+        { comp: "Avatar", props: { name: "Sent Tech", size: "md", shape: "circle" } },
+        { comp: "Avatar", props: { name: "Sent Tech", size: "lg", shape: "circle" } },
+        { comp: "Avatar", props: { name: "Sent Tech", size: "xl", shape: "circle" } }
       ]
     }
   ];
