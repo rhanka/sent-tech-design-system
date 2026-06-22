@@ -54,12 +54,12 @@ Corrections visuelles signalées lors de la session 2026-06-21 sur les docs et l
 
 ### LOT 7 — Page header docs : 3 bugs visuels
 
-- [ ] **AppHeader déborde de la carte** — ~5px de chaque côté gauche/droite du container d'aperçu
-  - EN COURS (2026-06-21): Agent délégué.
-- [ ] **Identité exemple = bigramme seul** — la démo montre "FA + Fabien Antoine + email" → doit être avatar compact (bigramme carré seul, sans nom ni email visible)
-  - EN COURS (2026-06-21): Agent délégué.
-- [ ] **Bloc "Mode par défaut" à supprimer** — section inutile qui passe par-dessus le header normal
-  - EN COURS (2026-06-21): Agent délégué.
+- [x] **AppHeader déborde de la carte** — margin `-1.5rem` vs padding bloc `1.1rem` → `margin: 0 -1.1rem; width: calc(100% + 2.2rem)`
+  - FAIT (2026-06-21): Commit `72980eb9`.
+- [x] **Identité exemple = bigramme seul** — TabbedExample rendait IdentityMenu non-compact → TabbedExample supprimée
+  - FAIT (2026-06-21): Commit `72980eb9`.
+- [x] **Bloc "Mode par défaut" à supprimer** — TabbedExample sticky passait par-dessus le header → TabbedExample supprimée
+  - FAIT (2026-06-21): Commit `72980eb9`.
 
 ### LOT 6 — Lockfile docs 0.34.58
 
