@@ -592,8 +592,8 @@
 
   /* Prévisualisation pleine largeur des exemples Header/AppHeader */
   .header-preview-full {
-    margin: 0 -1.1rem;
+    margin: 0 calc(-1.1rem - 1px);
     overflow: hidden;
-    width: calc(100% + 2.2rem);
+    width: calc(100% + 2.2rem + 2px);
   }
 </style>
