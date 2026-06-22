@@ -16,10 +16,10 @@ export type AlertProps = {
   selector: "st-alert",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass" role="alert">
+    <section [attr.data-st-component]="componentName" [class]="hostClass" [attr.role]="role">
       <div class="st-alert__content">
         @if (title) {
-          <p class="st-alert__title">{{ title }}</p>
+          <h2 class="st-alert__title">{{ title }}</h2>
         }
         @if (message) {
           <p class="st-alert__message">{{ message }}</p>
@@ -31,7 +31,7 @@ export type AlertProps = {
           <ng-content select="[slot='actions']"></ng-content>
         </div>
       }
-    </div>
+    </section>
   `,
 })
 export class Alert {
@@ -43,10 +43,15 @@ export class Alert {
   @NgInput() actions?: unknown;
   @NgInput("class") classInput?: string;
 
+  get role(): string {
+    const tone = this.tone ?? "info";
+    return tone === "error" || tone === "warning" ? "alert" : "status";
+  }
+
   get hostClass(): string {
     return classNames(
       "st-alert",
-      this.tone && `st-alert--${this.tone}`,
+      `st-alert--${this.tone ?? "info"}`,
       this.classInput,
     );
   }

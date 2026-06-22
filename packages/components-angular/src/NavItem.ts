@@ -1,5 +1,8 @@
 import { Component, Input as NgInput } from "@angular/core";
 
+import { Badge } from "./Badge.js";
+import { ColorSwatch } from "./ColorSwatch.js";
+import { StatusDot } from "./StatusDot.js";
 import { classNames } from "./classNames.js";
 
 /** Profondeur dans l'arbre de nav → échelle typographique DÉCROISSANTE.
@@ -51,24 +54,45 @@ export type NavItemProps = {
 @Component({
   selector: "st-nav-item",
   standalone: true,
+  imports: [Badge, ColorSwatch, StatusDot],
   template: `
-    <a
-      [attr.data-st-component]="componentName"
-      [attr.href]="disabled ? null : href"
-      [attr.aria-disabled]="disabled ? 'true' : null"
-      [attr.aria-current]="(active || selected) ? 'page' : null"
-      [class]="hostClass"
-    >
-      <span class="st-navItem__body">
-        <span class="st-navItem__title">{{ title }}<ng-content></ng-content></span>
-        @if (caption) {
-          <span class="st-navItem__caption">{{ caption }}</span>
+    <div [attr.data-st-component]="componentName" [class]="hostClass" [style]="depthStyle">
+      <a
+        class="st-selectableRow"
+        [class.st-selectableRow--selected]="active || selected"
+        [class.st-selectableRow--disabled]="disabled"
+        [attr.href]="disabled ? null : href"
+        [attr.role]="href ? null : 'option'"
+        [attr.aria-disabled]="disabled ? 'true' : null"
+        [attr.aria-selected]="(active || selected) ? 'true' : null"
+        [attr.aria-current]="(active || selected) ? 'page' : null"
+        [attr.data-value]="value ?? null"
+      >
+        @if (swatch) {
+          <span class="st-selectableRow__leading">
+            @if (swatch.color) {
+              <st-color-swatch [color]="swatch.color" [shape]="swatch.shape ?? 'square'" [size]="14"></st-color-swatch>
+            } @else {
+              <st-status-dot [tone]="swatch.tone ?? 'neutral'" [size]="8"></st-status-dot>
+            }
+          </span>
         }
-      </span>
-      @if (count !== undefined) {
-        <span class="st-navItem__count" aria-label="{{ count }}">{{ count }}</span>
+        <span class="st-selectableRow__content" [class.st-selectableRow__content--stacked]="caption">
+          <span class="st-navItem__title">{{ title }}<ng-content></ng-content></span>
+          @if (caption) {
+            <span class="st-navItem__caption">{{ caption }}</span>
+          }
+        </span>
+        @if (count !== undefined && count !== null) {
+          <span class="st-selectableRow__trailing">
+            <st-badge shape="circle" size="sm" [tone]="status ?? 'neutral'" [attr.aria-label]="count + ' ' + title">{{ count }}</st-badge>
+          </span>
+        }
+      </a>
+      @if (divider) {
+        <hr class="st-navItem__divider" aria-hidden="true" />
       }
-    </a>
+    </div>
   `,
 })
 export class NavItem {
@@ -88,15 +112,25 @@ export class NavItem {
   @NgInput() divider?: boolean;
   @NgInput("class") classInput?: string;
 
+  private get safeDepth(): number {
+    return Math.min(Math.max(Math.trunc(Number(this.depth) || 0), 0), 3);
+  }
+
   get hostClass(): string {
-    const depth = Math.min(Math.max(Math.trunc(Number(this.depth) || 0), 0), 3);
     const status = this.status ?? "neutral";
     return classNames(
       "st-navItem",
-      `st-navItem--depth${depth}`,
+      `st-navItem--depth${this.safeDepth}`,
       status !== "neutral" ? `st-navItem--status-${status}` : null,
-      (this.active || this.selected) ? "st-navItem--active" : null,
       this.classInput,
     );
+  }
+
+  /** Indentation de profondeur : var additive sur le wrapper, héritée par la
+   * rangée (.st-selectableRow) via la cascade — miroir du Svelte. */
+  get depthStyle(): string {
+    const depth = this.safeDepth;
+    const fallback = ["0rem", "0.75rem", "1.5rem", "2.25rem"][depth];
+    return `--st-navItem-indent: var(--st-component-navItem-depth${depth}-indent, ${fallback});`;
   }
 }

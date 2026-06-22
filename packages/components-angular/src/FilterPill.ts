@@ -37,8 +37,9 @@ export type FilterPillProps = {
           type="button"
           class="st-filterPill__body"
           [attr.aria-pressed]="active !== false ? 'true' : 'false'"
-          [disabled]="disabled"
+          [disabled]="disabled || null"
           (click)="handleClick()"
+          (keydown)="handleBodyKeydown($event)"
         >
           <span class="st-filterPill__field">{{ field }}</span>
           @if (operator) {
@@ -60,7 +61,7 @@ export type FilterPillProps = {
           type="button"
           class="st-filterPill__remove"
           [attr.aria-label]="'Retirer le filtre ' + field"
-          [disabled]="disabled"
+          [disabled]="disabled || null"
           (click)="handleRemove()"
         >&#x2715;</button>
       }
@@ -74,10 +75,10 @@ export class FilterPill {
   @NgInput() field!: string;
   @NgInput() value!: string;
   @NgInput() operator?: string;
-  @NgInput() active?: boolean;
-  @NgInput() removable?: boolean;
-  @NgInput() disabled?: boolean;
-  @NgInput() tone?: FilterPillTone;
+  @NgInput() active = true;
+  @NgInput() removable = true;
+  @NgInput() disabled = false;
+  @NgInput() tone: FilterPillTone = "neutral";
   @NgInput() onClick?: () => void;
   @NgInput() onRemove?: () => void;
   @NgInput("class") classInput?: string;
@@ -91,7 +92,7 @@ export class FilterPill {
   get hostClass(): string {
     return classNames(
       "st-filterPill",
-      this.tone && `st-filterPill--${this.tone}`,
+      `st-filterPill--${this.tone}`,
       this.active !== false ? "st-filterPill--active" : undefined,
       this.disabled ? "st-filterPill--disabled" : undefined,
       this.classInput,
@@ -107,5 +108,14 @@ export class FilterPill {
     if (this.disabled) return;
     this.onRemove?.();
     this.remove.emit();
+  }
+
+  handleBodyKeydown(event: KeyboardEvent): void {
+    if (this.disabled) return;
+    if ((event.key === "Delete" || event.key === "Backspace") && this.removable !== false) {
+      event.preventDefault();
+      this.onRemove?.();
+      this.remove.emit();
+    }
   }
 }

@@ -11,6 +11,8 @@ export type ModalProps = {
   size?: ModalSize;
   class?: string;
   closeLabel?: string;
+  dismissible?: boolean;
+  zIndex?: number;
 };
 
 @Component({
@@ -18,34 +20,42 @@ export type ModalProps = {
   standalone: true,
   template: `
     @if (open) {
-      <div class="st-modal__backdrop">
+      <div
+        class="st-modal__backdrop"
+        role="presentation"
+        [style.z-index]="zIndex != null ? zIndex : null"
+        (click)="onBackdropClick($event)"
+      >
         <section
           [attr.data-st-component]="componentName"
           [class]="hostClass"
           role="dialog"
           aria-modal="true"
           [attr.aria-label]="title || 'Modal'"
+          tabindex="-1"
         >
-          <div class="st-modal__header">
-            @if (title) {
-              <h2 class="st-modal__title">{{ title }}</h2>
-            }
+          <header class="st-modal__header">
+            <div>
+              @if (title) {
+                <h2 class="st-modal__title">{{ title }}</h2>
+              }
+              @if (description) {
+                <p class="st-modal__description">{{ description }}</p>
+              }
+            </div>
             <button
               type="button"
               class="st-modal__close"
               [attr.aria-label]="closeLabel || 'Close'"
               (click)="close.emit()"
             >&#x2715;</button>
-          </div>
-          @if (description) {
-            <p class="st-modal__description">{{ description }}</p>
-          }
+          </header>
           <div class="st-modal__body">
             <ng-content></ng-content>
           </div>
-          <div class="st-modal__footer">
+          <footer class="st-modal__footer">
             <ng-content select="[slot='footer']"></ng-content>
-          </div>
+          </footer>
         </section>
       </div>
     }
@@ -60,6 +70,8 @@ export class Modal {
   @NgInput() description?: string;
   @NgInput() size?: ModalSize;
   @NgInput() closeLabel?: string;
+  @NgInput() dismissible?: boolean;
+  @NgInput() zIndex?: number;
   @NgInput("class") classInput?: string;
 
   @Output() readonly close = new EventEmitter<void>();
@@ -70,5 +82,12 @@ export class Modal {
       this.size && `st-modal--${this.size}`,
       this.classInput,
     );
+  }
+
+  onBackdropClick(event: MouseEvent): void {
+    const dismissible = this.dismissible ?? true;
+    if (dismissible && event.target === event.currentTarget) {
+      this.close.emit();
+    }
   }
 }

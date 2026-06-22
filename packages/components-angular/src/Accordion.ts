@@ -41,7 +41,9 @@ let _accordionCounter = 0;
               type="button"
               class="st-accordion__trigger"
               [disabled]="item.disabled"
-              [attr.aria-expanded]="isOpen(item, $index)"
+              [attr.aria-expanded]="isOpen(item, $index) ? 'true' : 'false'"
+              [attr.aria-controls]="'st-accordion-panel-' + itemId(item, $index)"
+              [id]="'st-accordion-trigger-' + itemId(item, $index)"
               (click)="toggle(item, $index)"
             >
               @if (resolvedAlign === 'start') {
@@ -62,7 +64,12 @@ let _accordionCounter = 0;
             </button>
           </h3>
           @if (isOpen(item, $index)) {
-            <div class="st-accordion__panel" role="region">
+            <div
+              class="st-accordion__panel"
+              role="region"
+              [id]="'st-accordion-panel-' + itemId(item, $index)"
+              [attr.aria-labelledby]="'st-accordion-trigger-' + itemId(item, $index)"
+            >
               {{ resolveContent(item) }}
             </div>
           }

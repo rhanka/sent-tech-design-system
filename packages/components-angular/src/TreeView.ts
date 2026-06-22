@@ -1,26 +1,41 @@
-import { Component, Input as NgInput } from "@angular/core";
+import {
+  Component,
+  EventEmitter,
+  Input as NgInput,
+  Output,
+} from "@angular/core";
 
 import { classNames } from "./classNames.js";
 
-export type TreeNode = {
+export interface TreeNode {
   id: string;
-  label: unknown;
+  label: string;
   children?: TreeNode[];
   disabled?: boolean;
-};
+}
 
 export type TreeViewProps = {
   nodes: TreeNode[];
-  selectedId?: string;
-  /** Svelte-canonical alias of `selectedId`. */
+  /** Id du nœud sélectionné. */
   selected?: string;
-  expandedIds?: string[];
-  defaultExpandedIds?: string[];
-  /** Svelte-canonical alias of `defaultExpandedIds`. */
+  /** Alias compat de `selected`. */
+  selectedId?: string;
+  /** Ids dépliés au départ. */
   defaultExpanded?: string[];
-  /** Accessible name for the tree (parity with the Svelte `label`). */
+  /** Alias compat de `defaultExpanded`. */
+  defaultExpandedIds?: string[];
+  /** Ids dépliés contrôlés. */
+  expandedIds?: string[];
   label?: string;
   class?: string;
+};
+
+type FlatNode = {
+  node: TreeNode;
+  level: number;
+  parentId: string | null;
+  hasChildren: boolean;
+  expanded: boolean;
 };
 
 @Component({
@@ -31,29 +46,37 @@ export type TreeViewProps = {
       [attr.data-st-component]="componentName"
       [class]="hostClass"
       role="tree"
-      [attr.aria-label]="label ?? 'Arbre'"
+      [attr.aria-label]="label ?? 'Arborescence'"
     >
-      @for (node of flatNodes; track node.id) {
-        <li
-          role="treeitem"
-          [class]="nodeClass(node)"
-          [style.paddingLeft]="(node.depth * 1.25) + 'rem'"
-          [attr.aria-selected]="isSelected(node.id)"
-          [attr.aria-expanded]="node.hasChildren ? isExpanded(node.id) : null"
-        >
-          @if (node.hasChildren) {
-            <button
-              type="button"
-              class="st-treeView__toggle"
-              (click)="toggleNode(node.id)"
-              [attr.aria-label]="isExpanded(node.id) ? 'Réduire' : 'Développer'"
-            >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path [attr.d]="isExpanded(node.id) ? 'M6 9l6 6 6-6' : 'M9 6l6 6-6 6'" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </button>
-          }
-          <span class="st-treeView__label">{{ node.label }}</span>
+      @for (flat of visible; track flat.node.id) {
+        <li role="none">
+          <div
+            role="treeitem"
+            class="st-treeView__row"
+            [class.st-treeView__row--selected]="activeSelected === flat.node.id"
+            [class.st-treeView__row--disabled]="flat.node.disabled"
+            [attr.aria-level]="flat.level"
+            [attr.aria-expanded]="flat.hasChildren ? flat.expanded : null"
+            [attr.aria-selected]="activeSelected === flat.node.id"
+            [attr.aria-disabled]="flat.node.disabled || null"
+            [attr.data-tree-id]="flat.node.id"
+            [attr.tabindex]="flat.node.id === tabbableId ? 0 : -1"
+            [style.padding-inline-start]="indentFor(flat.level)"
+            (click)="activate(flat)"
+            (keydown)="onKey($event, flat)"
+            (focus)="focusedId = flat.node.id"
+          >
+            @if (flat.hasChildren) {
+              <span
+                class="st-treeView__caret"
+                [class.st-treeView__caret--open]="flat.expanded"
+                aria-hidden="true"
+              ></span>
+            } @else {
+              <span class="st-treeView__caret st-treeView__caret--leaf" aria-hidden="true"></span>
+            }
+            <span class="st-treeView__label">{{ flat.node.label }}</span>
+          </div>
         </li>
       }
       <ng-content></ng-content>
@@ -63,67 +86,126 @@ export type TreeViewProps = {
 export class TreeView {
   static readonly stComponentName = "TreeView";
   readonly componentName = "TreeView";
-  @NgInput() nodes!: TreeNode[];
-  @NgInput() selectedId?: string;
+  @NgInput() nodes: TreeNode[] = [];
   @NgInput() selected?: string;
-  @NgInput() expandedIds?: string[];
-  @NgInput() defaultExpandedIds?: string[];
+  @NgInput() selectedId?: string;
   @NgInput() defaultExpanded?: string[];
+  @NgInput() defaultExpandedIds?: string[];
+  @NgInput() expandedIds?: string[];
   @NgInput() label?: string;
   @NgInput("class") classInput?: string;
+  @Output() selectedChange = new EventEmitter<string>();
+  @Output() select = new EventEmitter<string>();
 
-  private localExpandedIds: string[] = [];
+  private localExpanded: Record<string, boolean> = {};
+  private localSelected?: string;
+  focusedId?: string;
 
   ngOnInit(): void {
-    this.localExpandedIds = [...(this.defaultExpandedIds ?? this.defaultExpanded ?? [])];
+    const seed = this.defaultExpanded ?? this.defaultExpandedIds ?? [];
+    this.localExpanded = Object.fromEntries(seed.map((id) => [id, true]));
   }
 
-  get effectiveExpandedIds(): string[] {
-    return this.expandedIds ?? this.localExpandedIds;
+  private get expandedMap(): Record<string, boolean> {
+    if (this.expandedIds !== undefined) {
+      return Object.fromEntries(this.expandedIds.map((id) => [id, true]));
+    }
+    return this.localExpanded;
   }
 
-  get activeSelectedId(): string | undefined {
-    return this.selectedId ?? this.selected;
+  get activeSelected(): string | undefined {
+    return this.selected ?? this.selectedId ?? this.localSelected;
   }
 
-  get flatNodes(): Array<TreeNode & { depth: number; hasChildren: boolean }> {
-    const result: Array<TreeNode & { depth: number; hasChildren: boolean }> = [];
-    const flatten = (nodes: TreeNode[], depth: number): void => {
-      for (const node of nodes) {
-        const hasChildren = (node.children?.length ?? 0) > 0;
-        result.push({ ...node, depth, hasChildren });
-        if (hasChildren && this.isExpanded(node.id)) {
-          flatten(node.children!, depth + 1);
-        }
+  get visible(): FlatNode[] {
+    const out: FlatNode[] = [];
+    const map = this.expandedMap;
+    const walk = (items: TreeNode[], level: number, parentId: string | null): void => {
+      for (const node of items) {
+        const hasChildren = Boolean(node.children && node.children.length > 0);
+        const expanded = Boolean(map[node.id]);
+        out.push({ node, level, parentId, hasChildren, expanded });
+        if (hasChildren && expanded) walk(node.children!, level + 1, node.id);
       }
     };
-    flatten(this.nodes ?? [], 0);
-    return result;
+    walk(this.nodes ?? [], 1, null);
+    return out;
   }
 
-  isExpanded(id: string): boolean {
-    return this.effectiveExpandedIds.includes(id);
+  get tabbableId(): string | undefined {
+    return this.focusedId ?? this.visible[0]?.node.id;
   }
 
-  isSelected(id: string): boolean {
-    return id === this.activeSelectedId;
+  indentFor(level: number): string {
+    return `calc(${level - 1} * var(--st-spacing-4, 1rem) + 0.25rem)`;
   }
 
-  toggleNode(id: string): void {
+  private toggle(id: string): void {
     if (this.expandedIds !== undefined) return;
-    if (this.localExpandedIds.includes(id)) {
-      this.localExpandedIds = this.localExpandedIds.filter((e) => e !== id);
+    this.localExpanded = { ...this.localExpanded, [id]: !this.localExpanded[id] };
+  }
+
+  activate(flat: FlatNode): void {
+    if (flat.node.disabled) return;
+    this.focusedId = flat.node.id;
+    if (flat.hasChildren) {
+      this.toggle(flat.node.id);
     } else {
-      this.localExpandedIds = [...this.localExpandedIds, id];
+      this.localSelected = flat.node.id;
+      this.selectedChange.emit(flat.node.id);
+      this.select.emit(flat.node.id);
     }
   }
 
-  nodeClass(node: TreeNode & { depth: number }): string {
-    return classNames(
-      "st-treeView__node",
-      this.isSelected(node.id) && "st-treeView__node--selected",
-      node.disabled && "st-treeView__node--disabled",
-    );
+  private focusAt(index: number): void {
+    const target = this.visible[index];
+    if (!target) return;
+    this.focusedId = target.node.id;
+    queueMicrotask(() => {
+      const rows = Array.from(
+        document.querySelectorAll<HTMLElement>("[data-tree-id]"),
+      );
+      rows.find((row) => row.dataset["treeId"] === target.node.id)?.focus();
+    });
+  }
+
+  onKey(event: KeyboardEvent, flat: FlatNode): void {
+    const list = this.visible;
+    const i = list.findIndex((v) => v.node.id === flat.node.id);
+    switch (event.key) {
+      case "ArrowDown":
+        event.preventDefault();
+        this.focusAt(i + 1);
+        break;
+      case "ArrowUp":
+        event.preventDefault();
+        this.focusAt(i - 1);
+        break;
+      case "Home":
+        event.preventDefault();
+        this.focusAt(0);
+        break;
+      case "End":
+        event.preventDefault();
+        this.focusAt(list.length - 1);
+        break;
+      case "ArrowRight":
+        event.preventDefault();
+        if (flat.hasChildren && !flat.expanded) this.toggle(flat.node.id);
+        else if (flat.hasChildren) this.focusAt(i + 1);
+        break;
+      case "ArrowLeft":
+        event.preventDefault();
+        if (flat.hasChildren && flat.expanded) this.toggle(flat.node.id);
+        else if (flat.parentId)
+          this.focusAt(list.findIndex((v) => v.node.id === flat.parentId));
+        break;
+      case "Enter":
+      case " ":
+        event.preventDefault();
+        this.activate(flat);
+        break;
+    }
   }
 
   get hostClass(): string {

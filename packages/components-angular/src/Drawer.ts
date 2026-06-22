@@ -2,16 +2,18 @@ import { Component, EventEmitter, Input as NgInput, Output } from "@angular/core
 
 import { classNames } from "./classNames.js";
 
-export type DrawerPlacement = "left" | "right" | "bottom";
+export type DrawerSide = "left" | "right" | "bottom";
+
+/** @deprecated Use {@link DrawerSide}. Kept for backward compatibility. */
+export type DrawerPlacement = DrawerSide;
 
 export type DrawerProps = {
   open?: boolean;
   title?: string;
   description?: string;
-  placement?: DrawerPlacement;
-  class?: string;
+  side?: DrawerSide;
   closeLabel?: string;
-  bodyText?: string;
+  class?: string;
 };
 
 @Component({
@@ -49,10 +51,13 @@ export type DrawerProps = {
             ><span aria-hidden="true">&#x2715;</span></button>
           </header>
           <div class="st-drawer__body">
-            @if (bodyText) {
-              <p>{{ bodyText }}</p>
-            }
+            <ng-content></ng-content>
           </div>
+          @if (footer != null) {
+            <footer class="st-drawer__footer">
+              <ng-content select="[slot='footer']"></ng-content>
+            </footer>
+          }
         </aside>
       </div>
     }
@@ -65,9 +70,9 @@ export class Drawer {
   @NgInput() open?: boolean;
   @NgInput() title?: string;
   @NgInput() description?: string;
-  @NgInput() placement?: DrawerPlacement;
+  @NgInput() side?: DrawerSide;
   @NgInput() closeLabel?: string;
-  @NgInput() bodyText?: string;
+  @NgInput() footer?: unknown;
   @NgInput("class") classInput?: string;
 
   @Output() readonly close = new EventEmitter<void>();
@@ -75,7 +80,7 @@ export class Drawer {
   get hostClass(): string {
     return classNames(
       "st-drawer",
-      `st-drawer--${this.placement ?? "right"}`,
+      `st-drawer--${this.side ?? "right"}`,
       this.classInput,
     );
   }

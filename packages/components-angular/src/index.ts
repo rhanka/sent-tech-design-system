@@ -389,7 +389,7 @@ export type { TileVariant, TileProps } from "./Tile.js";
 export { TileGroup } from "./TileGroup.js";
 export type { TileGroupItem, TileGroupProps } from "./TileGroup.js";
 export { Toast } from "./Toast.js";
-export type { ToastTone, ToastItem, ToastProps } from "./Toast.js";
+export type { ToastTone, ToastProps } from "./Toast.js";
 export { Toggle } from "./Toggle.js";
 export type { ToggleSize, ToggleProps } from "./Toggle.js";
 export { Toggletip } from "./Toggletip.js";

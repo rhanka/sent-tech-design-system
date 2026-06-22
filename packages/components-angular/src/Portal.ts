@@ -25,7 +25,11 @@ export function resolvePortalTarget(target: string | HTMLElement | undefined): H
   selector: "st-portal",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    <div
+      [attr.data-st-component]="componentName"
+      [class]="hostClass"
+      [attr.data-st-portal]="disabled ? 'inline' : 'teleported'"
+    >
       <ng-content></ng-content>
     </div>
   `,

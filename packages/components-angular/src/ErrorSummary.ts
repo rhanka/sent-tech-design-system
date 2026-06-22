@@ -15,29 +15,29 @@ export type ErrorSummaryProps = {
   selector: "st-error-summary",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass" role="alert">
-      @if (heading) { <h2 class="st-errorSummary__heading">{{ heading }}</h2> }
-      @if (errors && errors.length) {
-        <ul class="st-errorSummary__list">
+    <section [attr.data-st-component]="componentName" [class]="hostClass" role="alert" tabindex="-1">
+      <h2 class="st-error-summary__heading">{{ heading }}</h2>
+      @if (errors && errors.length > 0) {
+        <ul class="st-error-summary__list">
           @for (err of errors; track err.href) {
-            <li class="st-errorSummary__item">
-              <a [href]="err.href" class="st-errorSummary__link">{{ err.text }}</a>
+            <li class="st-error-summary__item">
+              <a [href]="err.href" class="st-error-summary__link">{{ err.text }}</a>
             </li>
           }
         </ul>
       }
       <ng-content></ng-content>
-    </div>
+    </section>
   `,
 })
 export class ErrorSummary {
   static readonly stComponentName = "ErrorSummary";
   readonly componentName = "ErrorSummary";
-  @NgInput() heading?: string;
-  @NgInput() errors?: ErrorSummaryItem[];
+  @NgInput() heading = "There was a problem";
+  @NgInput() errors: ErrorSummaryItem[] = [];
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return classNames("st-errorSummary", this.classInput);
+    return classNames("st-error-summary", this.classInput);
   }
 }
