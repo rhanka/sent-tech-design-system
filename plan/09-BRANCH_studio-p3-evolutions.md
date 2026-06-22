@@ -54,5 +54,5 @@ Corrections visuelles signalées lors de la session 2026-06-21 sur les docs et l
 
 ### LOT 6 — Lockfile docs 0.34.58
 
-- [ ] **Bumper lockfile** — `apps/docs/package-lock.json` doit pointer sur 0.34.58 après publish npm
-  - EN ATTENTE (2026-06-21): Agent `af3b57502aa8a9613` surveille npm publish.
+- [x] **Bumper lockfile** — `apps/docs/package-lock.json` pointe sur 0.34.58
+  - FAIT (2026-06-21): Tag corrigé `v0.34.58` → `svelte-v0.34.58` (npm-publish.yml exige lockstep tokens+themes). svelte-publish.yml success. Commit `664bcfb0`.
