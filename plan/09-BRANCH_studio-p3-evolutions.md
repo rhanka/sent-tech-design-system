@@ -52,6 +52,15 @@ Corrections visuelles signalées lors de la session 2026-06-21 sur les docs et l
 - [x] **Couleurs primary incorrectes en responsive** — non reproductible statiquement ; aucune règle media n'écrase les variables sémantiques
   - FAIT (2026-06-21): Aucun fix requis.
 
+### LOT 7 — Page header docs : 3 bugs visuels
+
+- [ ] **AppHeader déborde de la carte** — ~5px de chaque côté gauche/droite du container d'aperçu
+  - EN COURS (2026-06-21): Agent délégué.
+- [ ] **Identité exemple = bigramme seul** — la démo montre "FA + Fabien Antoine + email" → doit être avatar compact (bigramme carré seul, sans nom ni email visible)
+  - EN COURS (2026-06-21): Agent délégué.
+- [ ] **Bloc "Mode par défaut" à supprimer** — section inutile qui passe par-dessus le header normal
+  - EN COURS (2026-06-21): Agent délégué.
+
 ### LOT 6 — Lockfile docs 0.34.58
 
 - [x] **Bumper lockfile** — `apps/docs/package-lock.json` pointe sur 0.34.58
