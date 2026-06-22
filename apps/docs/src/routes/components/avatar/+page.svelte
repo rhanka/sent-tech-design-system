@@ -26,6 +26,18 @@
         { comp: "Avatar", props: { name: "Sent Tech", size: "sm" } },
         { comp: "Avatar", props: { name: "Sent Tech", size: "md" } },
         { comp: "Avatar", props: { name: "Sent Tech", size: "lg" } },
+        { comp: "Avatar", props: { name: "Sent Tech", size: "xl" } }
+      ]
+    }
+  ];
+  const shapeDemo: NodeSpec[] = [
+    {
+      el: "div",
+      props: { class: "fp-row" },
+      children: [
+        { comp: "Avatar", props: { name: "Sent Tech", size: "sm", shape: "square" } },
+        { comp: "Avatar", props: { name: "Sent Tech", size: "md", shape: "square" } },
+        { comp: "Avatar", props: { name: "Sent Tech", size: "lg", shape: "square" } },
         { comp: "Avatar", props: { name: "Sent Tech", size: "xl", shape: "square" } }
       ]
     }
@@ -50,7 +62,8 @@
   <section class="docs-section">
     <h2>{t(locale.value, "examplesTitle")}</h2>
     <TabbedExample nodes={initialsDemo} title={fr ? "Initiales colorées" : "Colored initials"} />
-    <TabbedExample nodes={sizeDemo} title={fr ? "Tailles et formes" : "Sizes and shapes"} />
+    <TabbedExample nodes={sizeDemo} title={fr ? "Tailles (cercle)" : "Sizes (circle)"} />
+    <TabbedExample nodes={shapeDemo} title={fr ? "Tailles (carré)" : "Sizes (square)"} />
   </section>
 
   <section class="docs-section">
