@@ -215,8 +215,6 @@
     gap: var(--st-spacing-4, 1rem);
     height: var(--st-component-appHeader-height, 3.5rem);
     justify-content: space-between;
-    margin: 0 auto;
-    max-width: 80rem;
     padding: 0 var(--st-spacing-4, 1rem);
     width: 100%;
   }
