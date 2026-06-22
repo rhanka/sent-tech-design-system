@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Badge, Header, AppHeader, type HeaderAccount } from "@sentropic/design-system-svelte";
+  import { Badge, Header, AppHeader, IdentityMenu, type HeaderAccount, type IdentityUser } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
 
@@ -11,6 +11,12 @@
 
   // État ouvert/fermé du menu compte (contrôlé par la page, comme le ferait un parent réel).
   let photoMenuOpen = $state(false);
+
+  // Identité au format IdentityMenu (displayName) pour la démo compacte AppHeader.
+  const identityUser: IdentityUser = {
+    displayName: accountWithPhoto.name,
+    email: accountWithPhoto.email
+  };
 
   // Exemple de consommation AppHeader (marque par props + classes utilitaires publiées).
   const appHeaderUsageSnippet = `<AppHeader
@@ -62,13 +68,20 @@
 {/snippet}
 
 {#snippet appHeaderActions()}
-  <button type="button" class="st-appHeader__control" aria-haspopup="true">Thème · Sentropic</button>
-  <button type="button" class="st-appHeader__control" aria-label="Mode sombre">
+  <button type="button" class="st-appHeader__control" aria-label="Mode clair/sombre">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <circle cx="12" cy="12" r="4"/>
       <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
     </svg>
   </button>
+  <button type="button" class="st-appHeader__control" aria-label="Langue">
+    FR
+  </button>
+  <IdentityMenu
+    user={identityUser}
+    isAuthenticated={true}
+    compact={true}
+  />
 {/snippet}
 
 {#snippet photoMenu()}
@@ -146,8 +159,9 @@
   <section class="docs-section">
     <h2>Les deux états de connexion</h2>
     <p>
-      La zone compte du Header couvre les deux cas d'authentification : anonyme (icône carrée
-      personne avec déclencheur de connexion) et connecté (initiales ou photo avec menu compte).
+      Dans <code>AppHeader</code>, la zone actions couvre les deux cas d'authentification : anonyme
+      (icône carrée personne avec déclencheur de connexion) et connecté (<code>IdentityMenu</code>
+      compact à initiales aux côtés des contrôles jour/nuit et langue).
     </p>
     <div class="docs-demo-stack">
       <article class="docs-demo-block">
@@ -157,11 +171,12 @@
           (carré) avec <code>aria-haspopup</code> pour déclencher la connexion — pas de CTA textuel.
         </p>
         <div class="header-preview-full">
-          <Header
-            title="Console"
-            sticky={false}
-            logo={brand}
-            navigation={primaryNav}
+          <AppHeader
+            brandName="Sentropic"
+            productName="Console"
+            logoSrc="/SENT-logo-squared.svg"
+            brandHref="/"
+            nav={appHeaderNav}
             actions={anonymousActions}
           />
         </div>
@@ -170,19 +185,18 @@
       <article class="docs-demo-block">
         <h3>2. Connecté (initiales)</h3>
         <p class="docs-demo-context">
-          Sans <code>avatarUrl</code>, le Header affiche les initiales dérivées du nom
-          («&nbsp;AM&nbsp;» pour « Alex Martin »). Cliquez sur l'identité pour ouvrir le menu compte.
+          La zone actions porte le menu d'identité compact (<code>IdentityMenu</code> en
+          <code>compact</code>) : avatar à initiales («&nbsp;AM&nbsp;» pour « Alex Martin »)
+          aux côtés des contrôles jour/nuit et langue. Cliquez sur l'avatar pour ouvrir le menu compte.
         </p>
         <div class="header-preview-full">
-          <Header
-            title="Console"
-            sticky={false}
-            logo={brand}
-            navigation={primaryNav}
-            account={accountWithPhoto}
-            accountMenu={photoMenu}
-            accountMenuOpen={photoMenuOpen}
-            onAccountTriggerClick={() => (photoMenuOpen = !photoMenuOpen)}
+          <AppHeader
+            brandName="Sentropic"
+            productName="Console"
+            logoSrc="/SENT-logo-squared.svg"
+            brandHref="/"
+            nav={appHeaderNav}
+            actions={appHeaderActions}
           />
         </div>
       </article>
