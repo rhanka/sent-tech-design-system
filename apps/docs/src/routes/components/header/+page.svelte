@@ -1,21 +1,12 @@
 <script lang="ts">
-  import { Badge, Header, AppHeader, IdentityMenu, type HeaderAccount, type IdentityUser } from "@sentropic/design-system-svelte";
+  import { Badge, AppHeader, IdentityMenu, type IdentityUser } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
 
-  // Identité de démonstration pour l'état connecté.
-  const accountWithPhoto: HeaderAccount = {
-    name: "Alex Martin",
-    email: "alex.martin@sentropic.app"
-  };
-
-  // État ouvert/fermé du menu compte (contrôlé par la page, comme le ferait un parent réel).
-  let photoMenuOpen = $state(false);
-
-  // Identité au format IdentityMenu (displayName) pour la démo compacte AppHeader.
+  // Identité au format IdentityMenu (displayName) pour les démos AppHeader / IdentityMenu.
   const identityUser: IdentityUser = {
-    displayName: accountWithPhoto.name,
-    email: accountWithPhoto.email
+    displayName: "Alex Martin",
+    email: "alex.martin@sentropic.app"
   };
 
   // Exemple de consommation AppHeader (marque par props + classes utilitaires publiées).
@@ -29,36 +20,6 @@
   {compact} menuOpen={open} onMenuToggle={toggle} drawer={mobileNav}
 />`;
 </script>
-
-{#snippet brand()}
-  <span class="header-brand">
-    <img class="header-brand-mark" src="/SENT-logo-squared.svg" alt="" aria-hidden="true" />
-    <span class="header-brand-copy">
-      <span class="header-brand-name">Sentropic</span>
-      <span class="header-brand-product">Console</span>
-    </span>
-  </span>
-{/snippet}
-
-{#snippet primaryNav()}
-  <a href="/components/header" aria-current="page">Tableau de bord</a>
-  <a href="/components/header">Projets</a>
-  <a href="/components/header">Équipe</a>
-  <a href="/components/header">Facturation</a>
-{/snippet}
-
-{#snippet utilityActions()}
-  <button type="button" class="header-icon-btn" aria-label="Rechercher">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <circle cx="11" cy="11" r="7" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
-    </svg>
-  </button>
-  <button type="button" class="header-icon-btn" aria-label="Notifications">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 0 1-3.46 0" />
-    </svg>
-  </button>
-{/snippet}
 
 {#snippet appHeaderNav()}
   <a class="st-appHeader__navLink" href="/components/header" aria-current="page">Charts</a>
@@ -75,22 +36,19 @@
     </svg>
   </button>
   <button type="button" class="st-appHeader__control" aria-label="Langue">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+    </svg>
     FR
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <polyline points="6 9 12 15 18 9"/>
+    </svg>
   </button>
   <IdentityMenu
     user={identityUser}
     isAuthenticated={true}
     compact={true}
   />
-{/snippet}
-
-{#snippet photoMenu()}
-  <p class="header-menu-name">{accountWithPhoto.name}</p>
-  <p class="header-menu-email">{accountWithPhoto.email}</p>
-  <hr class="header-menu-sep" />
-  <button type="button" class="header-menu-item">Voir le profil</button>
-  <button type="button" class="header-menu-item">Paramètres du compte</button>
-  <button type="button" class="header-menu-item">Déconnexion</button>
 {/snippet}
 
 {#snippet anonymousActions()}
@@ -137,21 +95,18 @@
     <article class="docs-demo-block">
       <h3>Application connectée</h3>
       <p class="docs-demo-context">
-        Logo + titre, navigation primaire, actions (recherche, notifications) et compte
-        avec menu. Cliquez sur l'identité pour ouvrir le menu compte.
+        Marque (logo + nom + produit), navigation primaire et zone actions (jour/nuit,
+        langue, compte avec menu). Cliquez sur l'identité pour ouvrir le menu compte.
       </p>
       <div class="header-preview-full">
-        <Header
-          title="Console"
-          label="En-tête de la console Sentropic"
-          sticky={false}
-          logo={brand}
-          navigation={primaryNav}
-          actions={utilityActions}
-          account={accountWithPhoto}
-          accountMenu={photoMenu}
-          accountMenuOpen={photoMenuOpen}
-          onAccountTriggerClick={() => (photoMenuOpen = !photoMenuOpen)}
+        <AppHeader
+          brandMode="full"
+          brandName="Sentropic"
+          productName="Console"
+          logoSrc="/SENT-logo-squared.svg"
+          brandHref="/"
+          nav={appHeaderNav}
+          actions={appHeaderActions}
         />
       </div>
     </article>
@@ -198,6 +153,48 @@
             nav={appHeaderNav}
             actions={appHeaderActions}
           />
+        </div>
+      </article>
+    </div>
+  </section>
+  <section class="docs-section">
+    <h2>IdentityMenu : trois modes</h2>
+    <p>
+      Le composant <code>IdentityMenu</code> se décline en trois rendus selon l'espace et
+      l'état d'authentification : grand (nom + chevron), compact (carré gris à initiales)
+      et déconnecté (bouton « Se connecter »).
+    </p>
+    <div class="docs-demo-stack">
+      <article class="docs-demo-block">
+        <h3>Mode grand (nom visible)</h3>
+        <p class="docs-demo-context">
+          Avatar cercle primary + nom + chevron. Rendu par défaut (non compact) : idéal
+          quand l'espace le permet (tiroir, page compte).
+        </p>
+        <div class="identity-demo">
+          <IdentityMenu user={identityUser} isAuthenticated={true} />
+        </div>
+      </article>
+
+      <article class="docs-demo-block">
+        <h3>Mode compact (carré gris)</h3>
+        <p class="docs-demo-context">
+          Trigger encadré gris (même gabarit que <code>st-appHeader__control</code>) avec
+          avatar carré à initiales («&nbsp;AM&nbsp;»), sans nom ni chevron. Utilisé dans
+          l'en-tête où l'espace est compté.
+        </p>
+        <div class="identity-demo">
+          <IdentityMenu user={identityUser} isAuthenticated={true} compact={true} />
+        </div>
+      </article>
+
+      <article class="docs-demo-block">
+        <h3>Mode déconnecté</h3>
+        <p class="docs-demo-context">
+          Sans identité authentifiée, le composant rend un bouton « Se connecter ».
+        </p>
+        <div class="identity-demo">
+          <IdentityMenu isAuthenticated={false} />
         </div>
       </article>
     </div>
@@ -470,108 +467,14 @@
 </div>
 
 <style>
-  .header-brand {
-    align-items: center;
-    display: inline-flex;
-    gap: 0.5rem;
-  }
-
-  .header-brand-mark {
-    height: 1.5rem;
-    width: 1.5rem;
-  }
-
-  .header-brand-copy {
-    display: grid;
-    gap: 0.05rem;
-    line-height: 1.05;
-  }
-
-  .header-brand-name {
-    font-size: 0.95rem;
-    font-weight: 720;
-  }
-
-  .header-brand-product {
-    color: var(--docs-muted);
-    font-size: 0.72rem;
-    font-weight: 600;
-  }
-
-  :global(.docs-page .st-header__navigation a),
-  :global(.docs-page .st-header__navigation a:visited) {
-    border-bottom: 2px solid transparent;
-    color: var(--docs-muted);
-    font-size: 0.9rem;
-    padding: 0.35rem 0.6rem;
-    text-decoration: none;
-  }
-
-  :global(.docs-page .st-header__navigation a:hover) {
-    color: var(--docs-ink);
-  }
-
-  :global(.docs-page .st-header__navigation a[aria-current="page"]) {
-    border-bottom-color: var(--docs-accent);
-    color: var(--docs-ink);
-    font-weight: 650;
-  }
-
-  .header-icon-btn {
-    align-items: center;
-    background: transparent;
-    border: 1px solid transparent;
-    border-radius: 0.375rem;
-    color: var(--docs-muted);
-    cursor: pointer;
-    display: inline-flex;
-    height: 2.25rem;
-    justify-content: center;
-    width: 2.25rem;
-  }
-
-  .header-icon-btn:hover,
-  .header-icon-btn:focus-visible {
-    background: var(--st-semantic-surface-subtle, #f1f5f9);
-    color: var(--docs-ink);
-    outline: none;
-  }
-
-  .header-menu-name {
-    color: var(--docs-ink);
-    font-size: 0.88rem;
-    font-weight: 650;
-    margin: 0;
-  }
-
-  .header-menu-email {
-    color: var(--docs-muted);
-    font-size: 0.8rem;
-    margin: 0;
-  }
-
-  .header-menu-sep {
-    border: 0;
-    border-top: 1px solid var(--docs-line);
-    margin: 0.25rem 0;
-  }
-
-  .header-menu-item {
-    background: transparent;
-    border: 0;
-    border-radius: 0.375rem;
-    color: var(--docs-ink);
-    cursor: pointer;
-    font: inherit;
-    font-size: 0.84rem;
-    padding: 0.4rem 0.5rem;
-    text-align: left;
-  }
-
-  .header-menu-item:hover,
-  .header-menu-item:focus-visible {
-    background: var(--st-semantic-surface-subtle, #f1f5f9);
-    outline: none;
+  /* Démos IdentityMenu autonomes (composant flottant, hors AppHeader). */
+  .identity-demo {
+    align-items: flex-start;
+    background: var(--st-semantic-surface-subtle, #f8fafc);
+    border: 1px solid var(--docs-line);
+    border-radius: 0.5rem;
+    display: flex;
+    padding: 1rem;
   }
 
   .docs-codeblock {

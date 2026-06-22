@@ -326,8 +326,38 @@
     width: 100%;
   }
 
+  /* Mode compact : le trigger imite .st-appHeader__control (pill encadrée grise). */
   .st-identityMenu--compact .st-identityMenu__trigger {
-    padding: var(--st-spacing-1, 0.25rem);
+    background: var(--st-semantic-surface-default);
+    border: 1px solid var(--st-semantic-border-subtle);
+    border-radius: var(--st-radius-sm, 0.375rem);
+    color: var(--st-semantic-text-secondary);
+    height: 2.25rem;
+    padding: 0 0.5rem;
+    transition: background-color var(--st-motion-fast, 120ms) ease,
+      border-color var(--st-motion-fast, 120ms) ease,
+      color var(--st-motion-fast, 120ms) ease;
+  }
+
+  .st-identityMenu--compact .st-identityMenu__trigger:hover,
+  .st-identityMenu--compact .st-identityMenu__trigger:focus-visible,
+  .st-identityMenu--compact .st-identityMenu__trigger[aria-expanded="true"] {
+    background: var(--st-semantic-surface-subtle);
+    border-color: var(--st-semantic-border-interactive);
+    box-shadow: none;
+    color: var(--st-semantic-text-primary);
+    outline: none;
+  }
+
+  /* Avatar compact = carré gris (surface-subtle + radius-sm), pas cercle primary. */
+  .st-identityMenu--compact .st-identityMenu__avatar {
+    background: var(--st-semantic-surface-subtle);
+    border-radius: var(--st-radius-sm, 0.375rem);
+    color: var(--st-semantic-text-primary);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    height: 1.5rem;
+    width: 1.5rem;
   }
 
   .st-identityMenu__trigger {
