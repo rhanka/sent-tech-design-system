@@ -1,9 +1,5 @@
 <script lang="ts">
-  import TabbedExample from "$lib/framework/TabbedExample.svelte";
-  import { getExample } from "$lib/framework/examples";
   import { Badge, Header, AppHeader, type HeaderAccount } from "@sentropic/design-system-svelte";
-  import { t } from "$lib/i18n";
-  import { locale } from "$lib/locale.svelte";
 
   // Identité de démonstration pour l'état connecté.
   const accountWithPhoto: HeaderAccount = {
@@ -117,8 +113,6 @@
       <strong>toujours le nom</strong> (jamais un carré sans libellé).
     </p>
   </section>
-  <TabbedExample nodes={getExample("header")?.nodes ?? []} />
-
   <section class="docs-section">
     <h2>Header complet</h2>
     <p>
@@ -598,8 +592,8 @@
 
   /* Prévisualisation pleine largeur des exemples Header/AppHeader */
   .header-preview-full {
-    margin: 0 calc(-1 * var(--st-spacing-6, 1.5rem));
+    margin: 0 -1.1rem;
     overflow: hidden;
-    width: calc(100% + 2 * var(--st-spacing-6, 1.5rem));
+    width: calc(100% + 2.2rem);
   }
 </style>
