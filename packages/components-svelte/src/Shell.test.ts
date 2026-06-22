@@ -80,6 +80,7 @@ describe("AppHeader", () => {
         productName: "dataviz",
         logoSrc: "/SENT-logo-squared.svg",
         brandHref: "/home",
+        brandMode: "full",
       },
     });
     const brand = container.querySelector("a.st-appHeader__brand") as HTMLAnchorElement;
