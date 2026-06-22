@@ -61,6 +61,13 @@ Corrections visuelles signalées lors de la session 2026-06-21 sur les docs et l
 - [x] **Bloc "Mode par défaut" à supprimer** — TabbedExample sticky passait par-dessus le header → TabbedExample supprimée
   - FAIT (2026-06-21): Commit `72980eb9`.
 
+### LOT 8 — AppHeader brandMode + overflow docs
+
+- [x] **Prop `brandMode?: 'icon' | 'full'`** — défaut `'icon'` : bigramme circulaire si pas de logoSrc, image seule si logoSrc ; mode `'full'` = comportement historique (texte complet)
+  - FAIT (2026-06-22): Commit `2622f4e0`. Version 0.34.59. Tag `svelte-v0.34.59` poussé.
+- [x] **Débordement AppHeader 1px dans carte docs** — `margin: 0 calc(-1.1rem - 1px); width: calc(100% + 2.2rem + 2px)` + `overflow: hidden` sur `.docs-demo-block`
+  - FAIT (2026-06-22): Commit `2622f4e0`.
+
 ### LOT 6 — Lockfile docs 0.34.58
 
 - [x] **Bumper lockfile** — `apps/docs/package-lock.json` pointe sur 0.34.58
