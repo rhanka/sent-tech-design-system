@@ -118,7 +118,7 @@
       (icône carrée personne avec déclencheur de connexion) et connecté (<code>IdentityMenu</code>
       compact à initiales aux côtés des contrôles jour/nuit et langue).
     </p>
-    <div class="docs-demo-stack">
+    <div class="docs-demo-stack docs-demo-stack--full">
       <article class="docs-demo-block">
         <h3>1. Anonyme</h3>
         <p class="docs-demo-context">
@@ -158,18 +158,18 @@
     </div>
   </section>
   <section class="docs-section">
-    <h2>IdentityMenu : trois modes</h2>
+    <h2>IdentityMenu : quatre modes</h2>
     <p>
-      Le composant <code>IdentityMenu</code> se décline en trois rendus selon l'espace et
-      l'état d'authentification : grand (nom + chevron), compact (carré gris à initiales)
-      et déconnecté (bouton « Se connecter »).
+      Le composant <code>IdentityMenu</code> se décline en quatre rendus selon l'espace et
+      l'état d'authentification : grand (avatar + nom + chevron), grand avec email visible,
+      compact (carré gris à initiales) et déconnecté compact (carré icône bonhomme).
     </p>
-    <div class="docs-demo-stack">
+    <div class="docs-demo-stack docs-demo-stack--full">
       <article class="docs-demo-block">
-        <h3>Mode grand (nom visible)</h3>
+        <h3>1. Mode grand (avatar + nom)</h3>
         <p class="docs-demo-context">
-          Avatar cercle primary + nom + chevron. Rendu par défaut (non compact) : idéal
-          quand l'espace le permet (tiroir, page compte).
+          Avatar cercle primary + nom + chevron. Rendu par défaut (non compact, variant
+          <code>dropdown</code>) : idéal quand l'espace le permet (tiroir, page compte).
         </p>
         <div class="identity-demo">
           <IdentityMenu user={identityUser} isAuthenticated={true} />
@@ -177,11 +177,34 @@
       </article>
 
       <article class="docs-demo-block">
-        <h3>Mode compact (carré gris)</h3>
+        <h3>2. Mode grand (avatar + nom + email)</h3>
         <p class="docs-demo-context">
-          Trigger encadré gris (même gabarit que <code>st-appHeader__control</code>) avec
-          avatar carré à initiales («&nbsp;AM&nbsp;»), sans nom ni chevron. Utilisé dans
-          l'en-tête où l'espace est compté.
+          Quand l'email doit être visible dans le déclencheur, on assemble le layout avec les
+          classes publiées (<code>st-identityMenu__avatar</code>, <code>__name</code>,
+          <code>__email</code>) : avatar à initiales, nom en gras, email en sous-titre,
+          chevron. C'est aussi le rendu du déclencheur en variant <code>accordion</code>
+          (tiroir mobile).
+        </p>
+        <div class="identity-demo">
+          <div class="st-identityMenu identity-bigtrigger">
+            <span class="st-identityMenu__avatar" aria-hidden="true">AM</span>
+            <span class="st-identityMenu__meta">
+              <span class="st-identityMenu__name">{identityUser.displayName}</span>
+              <span class="st-identityMenu__email">{identityUser.email}</span>
+            </span>
+            <svg class="identity-bigtrigger__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </div>
+        </div>
+      </article>
+
+      <article class="docs-demo-block">
+        <h3>3. Mode compact (carré gris)</h3>
+        <p class="docs-demo-context">
+          Trigger carré encadré gris (même gabarit qu'un bouton icône
+          <code>st-appHeader__control</code>) avec avatar carré à initiales
+          («&nbsp;AM&nbsp;»), sans nom ni chevron. Utilisé dans l'en-tête où l'espace est compté.
         </p>
         <div class="identity-demo">
           <IdentityMenu user={identityUser} isAuthenticated={true} compact={true} />
@@ -189,12 +212,14 @@
       </article>
 
       <article class="docs-demo-block">
-        <h3>Mode déconnecté</h3>
+        <h3>4. Mode déconnecté compact</h3>
         <p class="docs-demo-context">
-          Sans identité authentifiée, le composant rend un bouton « Se connecter ».
+          Sans identité authentifiée et en <code>compact</code>, le composant rend un carré
+          icône «&nbsp;bonhomme&nbsp;» (même gabarit 2.25rem que le trigger compact connecté)
+          plutôt qu'un bouton textuel. Idéal dans la zone actions d'un header.
         </p>
         <div class="identity-demo">
-          <IdentityMenu isAuthenticated={false} />
+          <IdentityMenu isAuthenticated={false} compact={true} />
         </div>
       </article>
     </div>
@@ -475,6 +500,20 @@
     border-radius: 0.5rem;
     display: flex;
     padding: 1rem;
+  }
+
+  /* Démo « avatar + nom + email » : reproduit le déclencheur grand avec email
+     visible à partir des classes publiées du composant (st-identityMenu__*). */
+  .identity-bigtrigger {
+    align-items: center;
+    display: inline-flex;
+    gap: 0.5rem;
+    padding: 0.25rem 0.75rem;
+  }
+
+  .identity-bigtrigger__chevron {
+    color: var(--st-semantic-text-secondary);
+    flex: 0 0 auto;
   }
 
   .docs-codeblock {

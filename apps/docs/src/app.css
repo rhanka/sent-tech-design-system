@@ -323,6 +323,24 @@ select {
   font-weight: 650;
 }
 
+/* Démos AppHeader (page Header) : aligner le poids des liens de nav sur le vrai
+   header de la doc (.docs-top-nav a → 400 normal / 650 actif). Deux écarts à
+   neutraliser dans le contexte docs :
+   1. le conteneur .st-appHeader__nav porte font-weight:500, hérité par les
+      navLink (normal) ;
+   2. le bundle React global (components-react/dist/styles.css) déclare l'actif à
+      font-weight:700 et, chargé après app.css à spécificité égale (0,2,0), écrase
+      le 650 du composant Svelte.
+   On préfixe par .docs-page (spécificité 0,3,0 sur l'actif) pour gagner la
+   cascade sans !important. Portée strictement docs. */
+.docs-page .st-appHeader__navLink {
+  font-weight: 400;
+}
+
+.docs-page .st-appHeader__navLink[aria-current="page"] {
+  font-weight: 650;
+}
+
 .docs-version {
   background: var(--st-semantic-surface-subtle, #f8fafc);
   color: var(--docs-muted);
@@ -1021,6 +1039,12 @@ select {
   display: grid;
   gap: 0.9rem;
   max-width: 42rem;
+}
+
+/* Variante pleine largeur : pour les piles contenant des AppHeader / démos
+   larges qui ne doivent pas être bridées à 42rem. */
+.docs-demo-stack--full {
+  max-width: none;
 }
 
 .docs-demo-block {
