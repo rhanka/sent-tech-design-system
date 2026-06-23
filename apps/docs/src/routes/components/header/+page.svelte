@@ -29,7 +29,7 @@
 {/snippet}
 
 {#snippet appHeaderActions()}
-  <button type="button" class="st-appHeader__control" aria-label="Mode clair/sombre">
+  <button type="button" class="st-appHeader__control st-appHeader__control--icon" aria-label="Mode clair/sombre">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <circle cx="12" cy="12" r="4"/>
       <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
@@ -52,17 +52,17 @@
 {/snippet}
 
 {#snippet anonymousActions()}
-  <button type="button" class="st-appHeader__control" aria-label="Rechercher">
+  <button type="button" class="st-appHeader__control st-appHeader__control--icon" aria-label="Rechercher">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <circle cx="11" cy="11" r="7" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
     </svg>
   </button>
-  <button type="button" class="st-appHeader__control" aria-label="Notifications">
+  <button type="button" class="st-appHeader__control st-appHeader__control--icon" aria-label="Notifications">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 0 1-3.46 0" />
     </svg>
   </button>
-  <button type="button" class="st-appHeader__control" aria-label="Se connecter" aria-haspopup="true">
+  <button type="button" class="st-appHeader__control st-appHeader__control--icon" aria-label="Se connecter" aria-haspopup="true">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <circle cx="12" cy="8" r="4"/>
       <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
