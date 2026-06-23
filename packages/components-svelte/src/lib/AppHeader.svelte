@@ -215,6 +215,8 @@
     gap: var(--st-spacing-4, 1rem);
     height: var(--st-component-appHeader-height, 3.5rem);
     justify-content: space-between;
+    margin: 0;
+    max-width: none;
     padding: 0 var(--st-spacing-4, 1rem);
     width: 100%;
   }
@@ -246,8 +248,7 @@
   .st-appHeader__burger {
     align-items: center;
     display: flex;
-    flex: 1 1 auto;
-    justify-content: flex-end;
+    margin-left: auto;
   }
 
   .st-appHeader__burgerButton {
@@ -419,6 +420,13 @@
     outline: none;
   }
 
+  /* Variante mono-icône : carré (largeur = hauteur du control) */
+  :global(.st-appHeader__control--icon) {
+    justify-content: center;
+    padding: 0;
+    width: 2.25rem;
+  }
+
   .st-appHeader__actions {
     align-items: center;
     display: flex;
@@ -442,10 +450,12 @@
     box-shadow: var(--st-shadow-medium, 0 8px 24px rgb(15 23 42 / 0.12));
     left: 0;
     max-height: 100vh;
+    overflow-x: hidden;
     overflow-y: auto;
+    padding: var(--st-spacing-4, 1rem);
     position: fixed;
     top: 0;
-    width: min(22rem, 85vw);
+    width: min(24rem, 92vw);
     z-index: calc(var(--st-zindex-overlay, 80) + 10);
   }
 </style>
