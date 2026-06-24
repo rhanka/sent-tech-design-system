@@ -4,7 +4,7 @@
   font-family: var(--st-font-sans, Inter, ui-sans-serif, system-ui, sans-serif);
   --docs-header-height: 5rem;
   --docs-sidebar-width: 19.5rem;
-  --docs-accent: #0043ce;
+  --docs-accent: var(--st-semantic-action-primary, #0043ce);
   --docs-ink: var(--st-semantic-text-primary, #0f172a);
   --docs-muted: var(--st-semantic-text-secondary, #475569);
   --docs-line: var(--st-semantic-border-subtle, #e2e8f0);
