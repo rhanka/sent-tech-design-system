@@ -44,9 +44,12 @@ export type SelectableRowProps = {
     disabled?: boolean;
     /** Stable value, surfaced as `data-value` and used by the list for `value`. */
     value?: string;
+    /** Native link target. When set on a standalone row, the row renders as an anchor. */
+    href?: string;
     /**
-     * ARIA role for the standalone row. Defaults to "option" so a lone row still
-     * reads as a selectable item. Inside a list the role is forced to "option".
+     * ARIA role for the standalone row. Defaults to "button" for standalone use —
+     * "option" is only valid inside a listbox. Inside a list the role is forced to
+     * "option".
      */
     role?: string;
     /**
@@ -54,6 +57,15 @@ export type SelectableRowProps = {
      * selected item is a calm tinted surface + accented text (two signals only).
      */
     accentBar?: boolean;
+    /**
+     * When true, the row stacks the primary label over a muted caption line
+     * (projected via `[slot='caption']`) and gains the `--hasCaption` modifier.
+     */
+    caption?: boolean;
+    /** When true, renders the leading slot wrapper (projected via `[slot='leading']`). */
+    leading?: boolean;
+    /** When true, renders the trailing slot wrapper (projected via `[slot='trailing']`). */
+    trailing?: boolean;
     class?: string;
 };
 export declare class SelectableRow {
@@ -63,12 +75,19 @@ export declare class SelectableRow {
     onSelect?: (selected: boolean) => void;
     disabled?: boolean;
     value?: string;
+    href?: string;
     role?: string;
     accentBar?: boolean;
+    caption?: boolean;
+    leading?: boolean;
+    trailing?: boolean;
     classInput?: string;
-    handleClick(): void;
+    get effectiveRole(): string | null;
+    get selectedAttr(): "true" | "false";
+    get tabindex(): number;
+    handleClick(event: MouseEvent): void;
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<SelectableRow, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<SelectableRow, "st-selectable-row", never, { "selected": { "alias": "selected"; "required": false; }; "onSelect": { "alias": "onSelect"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "value": { "alias": "value"; "required": false; }; "role": { "alias": "role"; "required": false; }; "accentBar": { "alias": "accentBar"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<SelectableRow, "st-selectable-row", never, { "selected": { "alias": "selected"; "required": false; }; "onSelect": { "alias": "onSelect"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "value": { "alias": "value"; "required": false; }; "href": { "alias": "href"; "required": false; }; "role": { "alias": "role"; "required": false; }; "accentBar": { "alias": "accentBar"; "required": false; }; "caption": { "alias": "caption"; "required": false; }; "leading": { "alias": "leading"; "required": false; }; "trailing": { "alias": "trailing"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["[slot='leading']", "*", "[slot='caption']", "*", "[slot='trailing']", "[slot='leading']", "*", "[slot='caption']", "*", "[slot='trailing']"], true, never>;
 }
 //# sourceMappingURL=SelectableRow.d.ts.map

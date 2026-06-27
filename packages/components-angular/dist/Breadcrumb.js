@@ -26,7 +26,7 @@ export class Breadcrumb {
               <span [attr.aria-current]="item.current ? 'page' : null">{{ item.label }}</span>
             }
             @if ($index < items.length - 1) {
-              <span class="st-breadcrumb__separator">/</span>
+              <span class="st-breadcrumb__separator" aria-hidden="true">/</span>
             }
           </li>
         }
@@ -55,7 +55,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
               <span [attr.aria-current]="item.current ? 'page' : null">{{ item.label }}</span>
             }
             @if ($index < items.length - 1) {
-              <span class="st-breadcrumb__separator">/</span>
+              <span class="st-breadcrumb__separator" aria-hidden="true">/</span>
             }
           </li>
         }

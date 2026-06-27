@@ -24,11 +24,17 @@ export type DividerProps = {
   standalone: true,
   imports: [NgStyle],
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass" [ngStyle]="spacingStyle">
-      @if (label) {
+    @if (isLabeled) {
+      <div [attr.data-st-component]="componentName" [class]="hostClass"
+        role="separator" aria-orientation="horizontal" [ngStyle]="spacingStyle">
+        <span class="st-divider__line" aria-hidden="true"></span>
         <span class="st-divider__label">{{ label }}</span>
-      }
-    </div>
+        <span class="st-divider__line" aria-hidden="true"></span>
+      </div>
+    } @else {
+      <div [attr.data-st-component]="componentName" [class]="hostClass"
+        role="separator" [attr.aria-orientation]="orientation ?? 'horizontal'" [ngStyle]="spacingStyle"></div>
+    }
   `,
 })
 export class Divider {
@@ -37,20 +43,33 @@ export class Divider {
   @NgInput() orientation?: DividerOrientation;
   @NgInput() spacing?: number;
   @NgInput() label?: string;
-  @NgInput() variant?: DividerVariant;
+  @NgInput() variant: DividerVariant = "solid";
   @NgInput("class") classInput?: string;
+
+  get isLabeled(): boolean {
+    return (
+      (this.orientation ?? "horizontal") !== "vertical" &&
+      this.label != null &&
+      this.label !== ""
+    );
+  }
 
   get hostClass(): string {
     return classNames(
       "st-divider",
-      `st-divider--${this.orientation ?? 'horizontal'}`,
-      this.variant && `st-divider--${this.variant}`,
+      `st-divider--${this.orientation ?? "horizontal"}`,
+      `st-divider--${this.variant ?? "solid"}`,
+      this.isLabeled && "st-divider--labeled",
       this.classInput,
     );
   }
 
   get spacingStyle(): Record<string, string | undefined> {
     const margin = this.spacing != null ? spacingToken(this.spacing) : undefined;
-    return { margin };
+    const isVertical = (this.orientation ?? "horizontal") === "vertical";
+    return {
+      "margin-block": isVertical ? undefined : margin,
+      "margin-inline": isVertical ? margin : undefined,
+    };
   }
 }

@@ -1,17 +1,19 @@
 import * as i0 from "@angular/core";
 export type FormGroupProps = {
-    legend: unknown;
+    legend?: unknown;
     helperText?: unknown;
+    disabled?: boolean;
     class?: string;
 };
 export declare class FormGroup {
     static readonly stComponentName = "FormGroup";
     readonly componentName = "FormGroup";
-    legend: unknown;
+    legend?: unknown;
     helperText?: unknown;
+    disabled?: boolean;
     classInput?: string;
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<FormGroup, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<FormGroup, "st-form-group", never, { "legend": { "alias": "legend"; "required": false; }; "helperText": { "alias": "helperText"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<FormGroup, "st-form-group", never, { "legend": { "alias": "legend"; "required": false; }; "helperText": { "alias": "helperText"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
 }
 //# sourceMappingURL=FormGroup.d.ts.map

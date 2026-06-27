@@ -8,39 +8,39 @@ export class Table {
     rows;
     caption;
     classInput;
-    get hostClass() {
+    get tableClass() {
         return classNames("st-table", this.classInput);
+    }
+    cellClass(col) {
+        return classNames(col.align === "right" && "st-table__cell--right", col.align === "center" && "st-table__cell--center");
+    }
+    cellValue(row, key) {
+        return String(row[key] ?? "");
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Table, deps: [], target: i0.ɵɵFactoryTarget.Component });
     static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: Table, isStandalone: true, selector: "st-table", inputs: { columns: "columns", rows: "rows", caption: "caption", classInput: ["class", "classInput"] }, ngImport: i0, template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <table class="st-table__table">
+    <div [attr.data-st-component]="componentName" class="st-table-wrap">
+      <table [class]="tableClass">
         @if (caption) {
-          <caption class="st-table__caption">{{ caption }}</caption>
+          <caption>{{ caption }}</caption>
         }
-        <thead class="st-table__head">
+        <thead>
           <tr>
             @for (col of columns ?? []; track col.key) {
-              <th class="st-table__th" [attr.data-align]="col.align ?? 'start'" scope="col">{{ col.label }}</th>
+              <th [class]="cellClass(col)" scope="col">{{ col.label }}</th>
             }
           </tr>
         </thead>
-        <tbody class="st-table__body">
+        <tbody>
           @for (row of rows ?? []; track $index) {
-            <tr class="st-table__row">
-              @for (col of columns ?? []; track col.key) {
-                <td class="st-table__td" [attr.data-align]="col.align ?? 'start'">{{ row[col.key] }}</td>
-              }
-            </tr>
-          }
-          @if ((rows ?? []).length === 0) {
             <tr>
-              <td [attr.colspan]="(columns ?? []).length" class="st-table__empty">—</td>
+              @for (col of columns ?? []; track col.key) {
+                <td [class]="cellClass(col)">{{ cellValue(row, col.key) }}</td>
+              }
             </tr>
           }
         </tbody>
       </table>
-      <ng-content></ng-content>
     </div>
   `, isInline: true });
 }
@@ -50,34 +50,28 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     selector: "st-table",
                     standalone: true,
                     template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <table class="st-table__table">
+    <div [attr.data-st-component]="componentName" class="st-table-wrap">
+      <table [class]="tableClass">
         @if (caption) {
-          <caption class="st-table__caption">{{ caption }}</caption>
+          <caption>{{ caption }}</caption>
         }
-        <thead class="st-table__head">
+        <thead>
           <tr>
             @for (col of columns ?? []; track col.key) {
-              <th class="st-table__th" [attr.data-align]="col.align ?? 'start'" scope="col">{{ col.label }}</th>
+              <th [class]="cellClass(col)" scope="col">{{ col.label }}</th>
             }
           </tr>
         </thead>
-        <tbody class="st-table__body">
+        <tbody>
           @for (row of rows ?? []; track $index) {
-            <tr class="st-table__row">
-              @for (col of columns ?? []; track col.key) {
-                <td class="st-table__td" [attr.data-align]="col.align ?? 'start'">{{ row[col.key] }}</td>
-              }
-            </tr>
-          }
-          @if ((rows ?? []).length === 0) {
             <tr>
-              <td [attr.colspan]="(columns ?? []).length" class="st-table__empty">—</td>
+              @for (col of columns ?? []; track col.key) {
+                <td [class]="cellClass(col)">{{ cellValue(row, col.key) }}</td>
+              }
             </tr>
           }
         </tbody>
       </table>
-      <ng-content></ng-content>
     </div>
   `,
                 }]

@@ -11,30 +11,73 @@ export class BackToTop {
     autoHide;
     smooth;
     classInput;
+    visible = false;
+    onScroll;
+    get resolvedLabel() {
+        return this.label ?? "Retour en haut";
+    }
+    get resolvedAutoHide() {
+        return this.autoHide !== false;
+    }
+    get ariaHidden() {
+        return this.resolvedAutoHide && !this.visible;
+    }
+    ngOnInit() {
+        if (!this.resolvedAutoHide) {
+            this.visible = true;
+            return;
+        }
+        if (typeof window === "undefined")
+            return;
+        const threshold = this.threshold ?? 240;
+        this.onScroll = () => {
+            this.visible = window.scrollY > threshold;
+        };
+        this.onScroll();
+        window.addEventListener("scroll", this.onScroll, { passive: true });
+    }
+    ngOnDestroy() {
+        if (this.onScroll && typeof window !== "undefined") {
+            window.removeEventListener("scroll", this.onScroll);
+        }
+    }
     get hostClass() {
         return classNames("st-backToTop", this.classInput);
     }
-    scrollToTop() {
-        if (typeof window !== "undefined") {
-            const el = this.targetId ? document.getElementById(this.targetId) : null;
-            if (el) {
-                el.scrollIntoView({ behavior: this.smooth !== false ? "smooth" : "auto" });
-            }
-            else {
-                window.scrollTo({ top: 0, behavior: this.smooth !== false ? "smooth" : "auto" });
-            }
+    goTop() {
+        if (typeof window === "undefined")
+            return;
+        const behavior = this.smooth !== false ? "smooth" : "auto";
+        const anchor = (this.targetId ?? "top").replace(/^#/, "");
+        const el = anchor ? document.getElementById(anchor) : null;
+        if (el) {
+            el.scrollIntoView({ behavior, block: "start" });
+        }
+        else {
+            window.scrollTo({ top: 0, behavior });
         }
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: BackToTop, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: BackToTop, isStandalone: true, selector: "st-back-to-top", inputs: { label: "label", disabled: "disabled", targetId: "targetId", threshold: "threshold", autoHide: "autoHide", smooth: "smooth", classInput: ["class", "classInput"] }, ngImport: i0, template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <button type="button" class="st-backToTop__button" [disabled]="disabled" (click)="scrollToTop()" [attr.aria-label]="label || 'Retour en haut'">
-        <svg class="st-backToTop__icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">
-          <polyline points="18 15 12 9 6 15"/>
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: BackToTop, isStandalone: true, selector: "st-back-to-top", inputs: { label: "label", disabled: "disabled", targetId: "targetId", threshold: "threshold", autoHide: "autoHide", smooth: "smooth", classInput: ["class", "classInput"] }, ngImport: i0, template: `
+    <button
+      type="button"
+      [attr.data-st-component]="componentName"
+      [class]="hostClass"
+      [disabled]="disabled ?? false"
+      [attr.aria-label]="resolvedLabel"
+      [attr.aria-hidden]="ariaHidden"
+      [attr.aria-live]="ariaHidden ? 'polite' : null"
+      [attr.tabindex]="ariaHidden ? -1 : null"
+      (click)="goTop()"
+    >
+      <span class="st-backToTop__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 19V5"/>
+          <path d="M5 12l7-7 7 7"/>
         </svg>
-        @if (label) { <span class="st-backToTop__label">{{ label }}</span> }
-      </button>
-    </div>
+      </span>
+      <span class="st-backToTop__label">{{ resolvedLabel }}</span>
+    </button>
   `, isInline: true });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: BackToTop, decorators: [{
@@ -43,14 +86,25 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     selector: "st-back-to-top",
                     standalone: true,
                     template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <button type="button" class="st-backToTop__button" [disabled]="disabled" (click)="scrollToTop()" [attr.aria-label]="label || 'Retour en haut'">
-        <svg class="st-backToTop__icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">
-          <polyline points="18 15 12 9 6 15"/>
+    <button
+      type="button"
+      [attr.data-st-component]="componentName"
+      [class]="hostClass"
+      [disabled]="disabled ?? false"
+      [attr.aria-label]="resolvedLabel"
+      [attr.aria-hidden]="ariaHidden"
+      [attr.aria-live]="ariaHidden ? 'polite' : null"
+      [attr.tabindex]="ariaHidden ? -1 : null"
+      (click)="goTop()"
+    >
+      <span class="st-backToTop__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 19V5"/>
+          <path d="M5 12l7-7 7 7"/>
         </svg>
-        @if (label) { <span class="st-backToTop__label">{{ label }}</span> }
-      </button>
-    </div>
+      </span>
+      <span class="st-backToTop__label">{{ resolvedLabel }}</span>
+    </button>
   `,
                 }]
         }], propDecorators: { label: [{

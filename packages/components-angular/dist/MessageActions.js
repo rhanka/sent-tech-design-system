@@ -5,13 +5,13 @@ export class MessageActions {
     static stComponentName = "MessageActions";
     componentName = "MessageActions";
     actions = [];
-    visibility;
+    visibility = "hover";
     classInput;
     get hostClass() {
         return classNames("st-messageActions", this.visibility === "hover" ? "st-messageActions--hoverOnly" : undefined, this.classInput);
     }
     actionClass(variant) {
-        return classNames("st-messageActions__action", variant === "danger" ? "st-messageActions__action--danger" : undefined);
+        return classNames("st-iconButton st-iconButton--sm", variant === "danger" ? "st-iconButton--danger" : "st-iconButton--ghost");
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: MessageActions, deps: [], target: i0.ɵɵFactoryTarget.Component });
     static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: MessageActions, isStandalone: true, selector: "st-message-actions", inputs: { actions: "actions", visibility: "visibility", classInput: ["class", "classInput"] }, ngImport: i0, template: `
@@ -21,9 +21,9 @@ export class MessageActions {
           type="button"
           [class]="actionClass(action.variant)"
           [disabled]="action.disabled ?? false"
-          [attr.aria-label]="action.label ?? null"
+          [attr.aria-label]="action.label ?? action.id ?? null"
           (click)="action.onClick && action.onClick()"
-        >{{ action.label }}</button>
+        >{{ action.icon ?? action.label }}</button>
       }
     </div>
   `, isInline: true });
@@ -40,9 +40,9 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
           type="button"
           [class]="actionClass(action.variant)"
           [disabled]="action.disabled ?? false"
-          [attr.aria-label]="action.label ?? null"
+          [attr.aria-label]="action.label ?? action.id ?? null"
           (click)="action.onClick && action.onClick()"
-        >{{ action.label }}</button>
+        >{{ action.icon ?? action.label }}</button>
       }
     </div>
   `,

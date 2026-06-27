@@ -16,9 +16,20 @@ export type OverlineProps = {
   selector: "st-overline",
   standalone: true,
   template: `
-    <span [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
-    </span>
+    @switch (resolvedTag) {
+      @case ("div") {
+        <div [attr.data-st-component]="componentName" [class]="hostClass"><ng-content></ng-content></div>
+      }
+      @case ("h2") {
+        <h2 [attr.data-st-component]="componentName" [class]="hostClass"><ng-content></ng-content></h2>
+      }
+      @case ("h3") {
+        <h3 [attr.data-st-component]="componentName" [class]="hostClass"><ng-content></ng-content></h3>
+      }
+      @default {
+        <span [attr.data-st-component]="componentName" [class]="hostClass"><ng-content></ng-content></span>
+      }
+    }
   `,
 })
 export class Overline {
@@ -26,6 +37,10 @@ export class Overline {
   readonly componentName = "Overline";
   @NgInput() as?: OverlineAs;
   @NgInput("class") classInput?: string;
+
+  get resolvedTag(): OverlineAs {
+    return this.as ?? "span";
+  }
 
   get hostClass(): string {
     return classNames("st-overline", this.classInput);

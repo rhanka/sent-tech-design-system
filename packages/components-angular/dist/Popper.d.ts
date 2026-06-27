@@ -1,3 +1,5 @@
+import { ElementRef } from "@angular/core";
+import type { AfterViewInit, OnChanges, OnDestroy } from "@angular/core";
 import * as i0 from "@angular/core";
 export type PopperStrategy = "absolute" | "fixed";
 export type PopperPlacement = "top" | "bottom" | "left" | "right" | "top-start" | "top-end" | "bottom-start" | "bottom-end" | "left-start" | "left-end" | "right-start" | "right-end";
@@ -69,7 +71,7 @@ export declare function computePosition(anchorRect: Rect, panelWidth: number, pa
     top: number;
     left: number;
 };
-export declare class Popper {
+export declare class Popper implements AfterViewInit, OnChanges, OnDestroy {
     static readonly stComponentName = "Popper";
     readonly componentName = "Popper";
     anchor: HTMLElement | null;
@@ -86,7 +88,21 @@ export declare class Popper {
     trapFocus?: boolean;
     closeOnEscape?: boolean;
     onClose?: () => void;
+    panel?: ElementRef<HTMLDivElement>;
+    top: number;
+    left: number;
+    private flippedPlacement?;
+    private onScroll;
+    private onResize;
+    private onDocKeydown;
+    get resolvedPlacement(): PopperPlacement;
+    get panelSide(): PopperSide;
+    get panelStyle(): string;
     get hostClass(): string;
+    ngAfterViewInit(): void;
+    ngOnChanges(): void;
+    ngOnDestroy(): void;
+    private reposition;
     static ɵfac: i0.ɵɵFactoryDeclaration<Popper, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<Popper, "st-popper", never, { "anchor": { "alias": "anchor"; "required": false; }; "open": { "alias": "open"; "required": false; }; "placement": { "alias": "placement"; "required": false; }; "offset": { "alias": "offset"; "required": false; }; "flip": { "alias": "flip"; "required": false; }; "shift": { "alias": "shift"; "required": false; }; "arrow": { "alias": "arrow"; "required": false; }; "strategy": { "alias": "strategy"; "required": false; }; "portal": { "alias": "portal"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; "onPlacementChange": { "alias": "onPlacementChange"; "required": false; }; "trapFocus": { "alias": "trapFocus"; "required": false; }; "closeOnEscape": { "alias": "closeOnEscape"; "required": false; }; "onClose": { "alias": "onClose"; "required": false; }; }, {}, never, ["*"], true, never>;
 }

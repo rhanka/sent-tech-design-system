@@ -4,18 +4,18 @@ import * as i0 from "@angular/core";
 export class Highlight {
     static stComponentName = "Highlight";
     componentName = "Highlight";
-    tone;
+    tone = "neutral";
     title;
     classInput;
     get hostClass() {
-        return classNames("st-highlight", this.tone && `st-highlight--${this.tone}`, this.classInput);
+        return classNames("st-highlight", `st-highlight--${this.tone}`, this.classInput);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Highlight, deps: [], target: i0.ɵɵFactoryTarget.Component });
     static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: Highlight, isStandalone: true, selector: "st-highlight", inputs: { tone: "tone", title: "title", classInput: ["class", "classInput"] }, ngImport: i0, template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass" role="note">
-      @if (title) { <strong class="st-highlight__title">{{ title }}</strong> }
+    <aside [attr.data-st-component]="componentName" [class]="hostClass">
+      @if (title) { <h3 class="st-highlight__title">{{ title }}</h3> }
       <div class="st-highlight__body"><ng-content></ng-content></div>
-    </div>
+    </aside>
   `, isInline: true });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Highlight, decorators: [{
@@ -24,10 +24,10 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     selector: "st-highlight",
                     standalone: true,
                     template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass" role="note">
-      @if (title) { <strong class="st-highlight__title">{{ title }}</strong> }
+    <aside [attr.data-st-component]="componentName" [class]="hostClass">
+      @if (title) { <h3 class="st-highlight__title">{{ title }}</h3> }
       <div class="st-highlight__body"><ng-content></ng-content></div>
-    </div>
+    </aside>
   `,
                 }]
         }], propDecorators: { tone: [{

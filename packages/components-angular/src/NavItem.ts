@@ -2,6 +2,7 @@ import { Component, Input as NgInput } from "@angular/core";
 
 import { Badge } from "./Badge.js";
 import { ColorSwatch } from "./ColorSwatch.js";
+import { SelectableRow } from "./SelectableRow.js";
 import { StatusDot } from "./StatusDot.js";
 import { classNames } from "./classNames.js";
 
@@ -54,41 +55,33 @@ export type NavItemProps = {
 @Component({
   selector: "st-nav-item",
   standalone: true,
-  imports: [Badge, ColorSwatch, StatusDot],
+  imports: [Badge, ColorSwatch, StatusDot, SelectableRow],
   template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass" [style]="depthStyle">
-      <a
-        class="st-selectableRow"
-        [class.st-selectableRow--selected]="active || selected"
-        [class.st-selectableRow--disabled]="disabled"
-        [attr.href]="disabled ? null : href"
-        [attr.role]="href ? null : 'option'"
-        [attr.aria-disabled]="disabled ? 'true' : null"
-        [attr.aria-selected]="(active || selected) ? 'true' : null"
-        [attr.aria-current]="(active || selected) ? 'page' : null"
-        [attr.data-value]="value ?? null"
+      <st-selectable-row
+        [selected]="active || selected"
+        [value]="value"
+        [href]="href"
+        [disabled]="disabled"
+        [leading]="!!swatch"
+        [trailing]="hasCount"
+        [caption]="!!caption"
       >
         @if (swatch) {
-          <span class="st-selectableRow__leading">
-            @if (swatch.color) {
-              <st-color-swatch [color]="swatch.color" [shape]="swatch.shape ?? 'square'" [size]="14"></st-color-swatch>
-            } @else {
-              <st-status-dot [tone]="swatch.tone ?? 'neutral'" [size]="8"></st-status-dot>
-            }
-          </span>
-        }
-        <span class="st-selectableRow__content" [class.st-selectableRow__content--stacked]="caption">
-          <span class="st-navItem__title">{{ title }}<ng-content></ng-content></span>
-          @if (caption) {
-            <span class="st-navItem__caption">{{ caption }}</span>
+          @if (swatch.color) {
+            <st-color-swatch slot="leading" [color]="swatch.color" [shape]="swatch.shape ?? 'square'" [size]="14"></st-color-swatch>
+          } @else {
+            <st-status-dot slot="leading" [tone]="swatch.tone ?? 'neutral'" [size]="8"></st-status-dot>
           }
-        </span>
-        @if (count !== undefined && count !== null) {
-          <span class="st-selectableRow__trailing">
-            <st-badge shape="circle" size="sm" [tone]="status ?? 'neutral'" [attr.aria-label]="count + ' ' + title">{{ count }}</st-badge>
-          </span>
         }
-      </a>
+        <span class="st-navItem__title">{{ title }}</span>
+        @if (caption) {
+          <span slot="caption" class="st-navItem__caption">{{ caption }}</span>
+        }
+        @if (hasCount) {
+          <st-badge slot="trailing" shape="circle" size="sm" [tone]="status ?? 'neutral'" [attr.aria-label]="countAriaLabel">{{ count }}</st-badge>
+        }
+      </st-selectable-row>
       @if (divider) {
         <hr class="st-navItem__divider" aria-hidden="true" />
       }
@@ -111,6 +104,16 @@ export class NavItem {
   @NgInput() href?: string;
   @NgInput() divider?: boolean;
   @NgInput("class") classInput?: string;
+
+  get hasCount(): boolean {
+    return this.count !== undefined && this.count !== null;
+  }
+
+  /** Explicit accessible name for the trailing count bubble (« N title »): a bare
+   * number is ambiguous for a screen reader (cf. Badge). */
+  get countAriaLabel(): string {
+    return `${this.count} ${this.title}`;
+  }
 
   private get safeDepth(): number {
     return Math.min(Math.max(Math.trunc(Number(this.depth) || 0), 0), 3);

@@ -10,8 +10,8 @@ export type ContainerProps = {
 export declare class Container {
     static readonly stComponentName = "Container";
     readonly componentName = "Container";
-    size?: ContainerSize;
-    padding?: boolean;
+    size: ContainerSize;
+    padding: boolean;
     as?: string;
     classInput?: string;
     get hostClass(): string;

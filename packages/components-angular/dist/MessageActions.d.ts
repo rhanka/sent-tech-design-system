@@ -22,7 +22,7 @@ export declare class MessageActions {
     static readonly stComponentName = "MessageActions";
     readonly componentName = "MessageActions";
     actions: MessageAction[];
-    visibility?: "always" | "hover";
+    visibility: "always" | "hover";
     classInput?: string;
     get hostClass(): string;
     actionClass(variant?: MessageActionVariant): string;

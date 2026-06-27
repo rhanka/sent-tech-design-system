@@ -36,13 +36,13 @@ export type AvatarProps = {
   selector: "st-avatar",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass" [attr.aria-label]="name" role="img">
+    <span [attr.data-st-component]="componentName" [class]="hostClass" [attr.aria-label]="alt ?? name" role="img">
       @if (src) {
         <img class="st-avatar__image" [src]="src" [alt]="alt || name" aria-hidden="false" />
       } @else {
         <span class="st-avatar__initials" aria-hidden="true">{{ initials }}</span>
       }
-    </div>
+    </span>
   `,
 })
 export class Avatar {
@@ -60,7 +60,7 @@ export class Avatar {
     return classNames(
       "st-avatar",
       `st-avatar--${this.size ?? "md"}`,
-      `st-avatar--${this.shape ?? "square"}`,
+      `st-avatar--${this.shape ?? "circle"}`,
       this.src ? "st-avatar--image" : `st-avatar--${this.tone ?? "category1"}`,
       this.classInput,
     );

@@ -77,7 +77,7 @@ function formatSize(bytes: number | undefined): string {
           (change)="onChange($event)"
         />
         <div class="st-fileUploader__content">
-          <span class="st-fileUploader__affordance" aria-hidden="true"></span>
+          <span class="st-fileUploader__affordance" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"></path><path d="m17 8-5-5-5 5"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path></svg></span>
           <button
             type="button"
             class="st-fileUploader__trigger"
@@ -100,7 +100,17 @@ function formatSize(bytes: number | undefined): string {
         <ul class="st-fileUploader__list">
           @for (item of items; track $index) {
             <li [class]="itemClass(item)">
-              <span class="st-fileUploader__itemIcon" aria-hidden="true"></span>
+              <span class="st-fileUploader__itemIcon" aria-hidden="true">
+                @if (item.status === "uploading") {
+                  <span class="st-fileUploader__spinner"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg></span>
+                } @else if (item.status === "complete") {
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="m9 12 2 2 4-4"></path></svg>
+                } @else if (item.status === "error") {
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" x2="12" y1="8" y2="12"></line><line x1="12" x2="12.01" y1="16" y2="16"></line></svg>
+                } @else {
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"></path><path d="M14 2v5a1 1 0 0 0 1 1h5"></path></svg>
+                }
+              </span>
               <span class="st-fileUploader__itemMeta">
                 <span class="st-fileUploader__itemName st-fileUploader__name">{{ itemName(item) }}</span>
                 <span class="st-fileUploader__itemSize">{{ itemSize(item) }}</span>
@@ -114,7 +124,7 @@ function formatSize(bytes: number | undefined): string {
                 [attr.aria-label]="removeLabel(itemName(item))"
                 [disabled]="disabled"
                 (click)="removeAt($index)"
-              ></button>
+              ><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
             </li>
           }
         </ul>

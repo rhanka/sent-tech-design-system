@@ -13,13 +13,11 @@ export type QuoteProps = {
   standalone: true,
   template: `
     <blockquote [attr.data-st-component]="componentName" [class]="hostClass">
-      <div class="st-quote__body">
-        <ng-content></ng-content>
-      </div>
-      @if (author) {
-        <footer class="st-quote__footer">
-          <cite class="st-quote__author">{{ author }}</cite>
-          @if (source) { <span class="st-quote__source"> — {{ source }}</span> }
+      <p class="st-quote__text"><ng-content></ng-content></p>
+      @if (author || source) {
+        <footer class="st-quote__attribution">
+          @if (author) { <span class="st-quote__author">{{ author }}</span> }
+          @if (source) { <span class="st-quote__source">{{ source }}</span> }
         </footer>
       }
     </blockquote>

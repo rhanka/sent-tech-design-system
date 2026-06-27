@@ -80,11 +80,11 @@ function stableSeed(ns) {
     h ^= ns.length;
     return h >>> 0;
 }
-function runSimulation(ns, es, w, h, ticks, repulsionFactor) {
+function runSimulation(ns, es, w, h, ticks, repulsionFactor, nr) {
     const cx = w / 2, cy = h / 2;
     const rand = mulberry32(stableSeed(ns));
     const idIndex = new Map();
-    const nodeRadius = 8; // default radius for clamping
+    const nodeRadius = nr; // base radius for the soft clamp (mirrors Svelte ref)
     const sim = ns.map((n, i) => {
         idIndex.set(n.id, i);
         const fixed = typeof n.fx === "number" && typeof n.fy === "number";
@@ -183,6 +183,7 @@ export class ForceGraph {
     legend;
     edgeCurve;
     repulsion;
+    legendLabel;
     onSelect;
     onOpenEntity;
     onEdgeHover;
@@ -193,14 +194,22 @@ export class ForceGraph {
     hoveredIdx = null;
     fgNodes = [];
     fgEdges = [];
-    _cb = { x: 0, y: 0, w: 480, h: 320 };
+    _cb = { x: 0, y: 0, w: 480, h: 360 };
+    // Selection/focus + adjacency precomputed in _layout for deterministic
+    // dim/selected/focus classes (mirror the Svelte/React reference).
+    _selectedSet = new Set();
+    _focusValue = null;
+    _adjacency = new Map();
+    _activeAndNeighbours = new Set();
+    get showLabelsValue() { return this.showLabels ?? true; }
+    get legendLabelValue() { return this.legendLabel ?? "Graph legend"; }
     ngOnInit() { this._layout(); }
     ngOnChanges(_c) { this._layout(); }
     _layout() {
-        const w = this.width ?? 480, h = this.height ?? 320;
-        const nr = this.nodeRadius ?? 8;
-        const iter = Math.max(1, Math.round(this.iterations ?? 120));
-        const layout = runSimulation(this.nodes, this.edges, w, h, iter, this.repulsion ?? 1);
+        const w = this.width ?? 480, h = this.height ?? 360;
+        const nr = this.nodeRadius ?? 7;
+        const iter = Math.max(1, Math.round(this.iterations ?? 300));
+        const layout = runSimulation(this.nodes, this.edges, w, h, iter, this.repulsion ?? 1, nr);
         const toneMap = new Map();
         const groupTones = new Map();
         let gi = 0, ai = 0;
@@ -248,7 +257,35 @@ export class ForceGraph {
         else {
             this._cb = { x: 0, y: 0, w, h };
         }
-        const curve = Math.max(0, this.edgeCurve ?? 0);
+        // Selection/focus + adjacency (used by node/edge dim classes).
+        this._selectedSet = new Set(this.selectedIds ?? []);
+        this._focusValue = this.focusId ?? null;
+        const adj = new Map();
+        const addAdj = (a, b) => {
+            let set = adj.get(a);
+            if (!set) {
+                set = new Set();
+                adj.set(a, set);
+            }
+            set.add(b);
+        };
+        for (const e of this.edges) {
+            addAdj(e.source, e.target);
+            addAdj(e.target, e.source);
+        }
+        this._adjacency = adj;
+        const active = new Set(this._selectedSet);
+        if (this._focusValue != null)
+            active.add(this._focusValue);
+        const withNeighbours = new Set(active);
+        for (const id of active) {
+            const nb = adj.get(id);
+            if (nb)
+                for (const n of nb)
+                    withNeighbours.add(n);
+        }
+        this._activeAndNeighbours = withNeighbours;
+        const curve = Math.max(0, this.edgeCurve ?? 0.15);
         const nById = new Map(this.nodes.map((n) => [n.id, n]));
         this.fgEdges = this.edges.map((e, i) => {
             const a = layout.get(e.source), b = layout.get(e.target);
@@ -278,12 +315,23 @@ export class ForceGraph {
         return p ? ((p.y - this._cb.y) / this._cb.h) * 100 : 0;
     }
     nodeClass(p) {
-        return classNames("st-forceGraph__node", this.selectedIds?.includes(p.node.id) && "st-forceGraph__node--selected", this.focusId === p.node.id && "st-forceGraph__node--focused");
+        const id = p.node.id;
+        const hoveredId = this.hoveredIdx !== null ? this.fgNodes[this.hoveredIdx]?.node.id ?? null : null;
+        const hasSelection = this._selectedSet.size > 0 || this._focusValue != null;
+        const selectionDim = hasSelection && !this._activeAndNeighbours.has(id);
+        const hoverDim = hoveredId != null && id !== hoveredId && !(this._adjacency.get(hoveredId)?.has(id) ?? false);
+        return classNames("st-forceGraph__node", 
+        // Tone class carries the node fill colour (.st-forceGraph__node--catN .st-forceGraph__dot).
+        `st-forceGraph__node--${p.tone}`, (selectionDim || hoverDim) && "st-forceGraph__node--dim", this._selectedSet.has(id) && "st-forceGraph__node--selected", this._focusValue === id && "st-forceGraph__node--focus");
     }
     edgeClass(e) {
-        return classNames("st-forceGraph__edge", e.edge.weak && "st-forceGraph__edge--weak", e.edge.emphasis && "st-forceGraph__edge--emphasis");
+        const hasSelection = this._selectedSet.size > 0 || this._focusValue != null;
+        const srcActive = this._selectedSet.has(e.edge.source) || this._focusValue === e.edge.source;
+        const tgtActive = this._selectedSet.has(e.edge.target) || this._focusValue === e.edge.target;
+        const dim = hasSelection && !(srcActive || tgtActive);
+        return classNames("st-forceGraph__edge", e.edge.weak && "st-forceGraph__edge--weak", e.edge.emphasis && "st-forceGraph__edge--emphasis", dim && "st-forceGraph__edge--dim");
     }
-    lgShapePath(entry) { return nodeShapePath(entry.shape, 5); }
+    lgShapePath(entry) { return nodeShapePath(entry.shape, 7); }
     lgDashArray(entry) { return edgeDashArray(entry.dash, entry.weak); }
     handleNodeClick(node) { this.onSelect?.(node.id); }
     handlePointerMove(event) {
@@ -294,16 +342,15 @@ export class ForceGraph {
     }
     handlePointerLeave() { this.hoveredIdx = null; this.onNodeHover?.(null); }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: ForceGraph, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: ForceGraph, isStandalone: true, selector: "st-force-graph", inputs: { nodes: "nodes", edges: "edges", label: "label", width: "width", height: "height", nodeRadius: "nodeRadius", showLabels: "showLabels", iterations: "iterations", selectedIds: "selectedIds", focusId: "focusId", legend: "legend", edgeCurve: "edgeCurve", repulsion: "repulsion", onSelect: "onSelect", onOpenEntity: "onOpenEntity", onEdgeHover: "onEdgeHover", onNodeHover: "onNodeHover", mergePair: "mergePair", onMergeComplete: "onMergeComplete", classInput: ["class", "classInput"] }, usesOnChanges: true, ngImport: i0, template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: ForceGraph, isStandalone: true, selector: "st-force-graph", inputs: { nodes: "nodes", edges: "edges", label: "label", width: "width", height: "height", nodeRadius: "nodeRadius", showLabels: "showLabels", iterations: "iterations", selectedIds: "selectedIds", focusId: "focusId", legend: "legend", edgeCurve: "edgeCurve", repulsion: "repulsion", legendLabel: "legendLabel", onSelect: "onSelect", onOpenEntity: "onOpenEntity", onEdgeHover: "onEdgeHover", onNodeHover: "onNodeHover", mergePair: "mergePair", onMergeComplete: "onMergeComplete", classInput: ["class", "classInput"] }, usesOnChanges: true, ngImport: i0, template: `
+    <div [attr.data-st-component]="componentName" [class]="hostClass" role="img" [attr.aria-label]="label">
       <svg
         [attr.viewBox]="viewBox"
         preserveAspectRatio="xMidYMid meet"
         width="100%"
         height="100%"
         focusable="false"
-        [attr.aria-label]="label"
-        role="img"
+        aria-hidden="true"
         (pointermove)="handlePointerMove($event)"
         (pointerleave)="handlePointerLeave()"
       >
@@ -311,21 +358,21 @@ export class ForceGraph {
           @for (e of fgEdges; track e.i) {
             @if (e.path) {
               <path
-                [class]="edgeClass(e)"
+                [attr.class]="edgeClass(e)"
                 [attr.d]="e.path"
+                fill="none"
                 [attr.stroke-dasharray]="e.dashArray"
                 [attr.stroke-width]="e.strokeWidth"
-                fill="none"
-                [attr.data-edge-index]="e.i"
+                pointer-events="none"
               ></path>
             } @else {
               <line
-                [class]="edgeClass(e)"
+                [attr.class]="edgeClass(e)"
                 [attr.x1]="e.x1" [attr.y1]="e.y1"
                 [attr.x2]="e.x2" [attr.y2]="e.y2"
                 [attr.stroke-dasharray]="e.dashArray"
                 [attr.stroke-width]="e.strokeWidth"
-                [attr.data-edge-index]="e.i"
+                pointer-events="none"
               ></line>
             }
           }
@@ -333,24 +380,24 @@ export class ForceGraph {
         <g class="st-forceGraph__nodes">
           @for (p of fgNodes; track p.node.id) {
             <g
-              [class]="nodeClass(p)"
-              [attr.transform]="'translate(' + p.x + ',' + p.y + ')'"
+              [attr.class]="nodeClass(p)"
+              [attr.transform]="'translate(' + p.x + ' ' + p.y + ')'"
               [attr.data-node-id]="p.node.id"
               (click)="handleNodeClick(p.node)"
             >
               @if (p.shapePath) {
                 <path
-                  [class]="'st-forceGraph__nodeShape st-forceGraph__nodeShape--' + p.tone"
+                  class="st-forceGraph__shape st-forceGraph__dot"
                   [attr.d]="p.shapePath"
                 ></path>
               } @else {
                 <circle
-                  [class]="'st-forceGraph__nodeDot st-forceGraph__nodeDot--' + p.tone"
+                  class="st-forceGraph__dot"
                   [attr.r]="p.r"
                 ></circle>
               }
-              @if (showLabels) {
-                <text class="st-forceGraph__nodeLabel" [attr.dy]="p.r + 12" text-anchor="middle">{{ p.title }}</text>
+              @if (showLabelsValue) {
+                <text class="st-forceGraph__label" [attr.x]="p.r + 3" y="0" dominant-baseline="middle">{{ p.title }}</text>
               }
             </g>
           }
@@ -358,26 +405,26 @@ export class ForceGraph {
       </svg>
 
       @if (legend && legend.length > 0) {
-        <div class="st-forceGraph__legend">
+        <div class="st-forceGraph__legend" [attr.aria-label]="legendLabelValue">
           @for (entry of legend; track $index) {
             <div class="st-forceGraph__legendEntry">
-              <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
-                @if (entry.shape !== undefined) {
-                  <g transform="translate(8,8)">
-                    @if (lgShapePath(entry)) {
-                      <path [class]="'st-forceGraph__nodeShape st-forceGraph__nodeShape--' + (entry.tone ?? 'category1')" [attr.d]="lgShapePath(entry)"></path>
-                    } @else {
-                      <circle [class]="'st-forceGraph__nodeDot st-forceGraph__nodeDot--' + (entry.tone ?? 'category1')" r="5"></circle>
-                    }
-                  </g>
-                } @else {
+              @if (entry.shape !== undefined) {
+                <svg class="st-forceGraph__legendSwatch" viewBox="-13 -13 26 26" width="16" height="16" aria-hidden="true">
+                  @if (lgShapePath(entry)) {
+                    <path [attr.d]="lgShapePath(entry)" [attr.class]="'st-forceGraph__legendShape st-forceGraph__legendShape--' + (entry.tone ?? 'category1')"></path>
+                  } @else {
+                    <circle r="7" [attr.class]="'st-forceGraph__legendShape st-forceGraph__legendShape--' + (entry.tone ?? 'category1')"></circle>
+                  }
+                </svg>
+              } @else {
+                <svg class="st-forceGraph__legendSwatch" viewBox="0 0 16 8" width="16" height="8" aria-hidden="true">
                   <line
-                    [class]="'st-forceGraph__edge' + (entry.weak ? ' st-forceGraph__edge--weak' : '')"
-                    x1="0" y1="8" x2="16" y2="8"
+                    x1="0" y1="4" x2="16" y2="4"
+                    [attr.class]="'st-forceGraph__legendEdge' + (entry.weak ? ' st-forceGraph__legendEdge--weak' : '')"
                     [attr.stroke-dasharray]="lgDashArray(entry)"
                   ></line>
-                }
-              </svg>
+                </svg>
+              }
               <span class="st-forceGraph__legendLabel">{{ entry.label }}</span>
             </div>
           }
@@ -401,15 +448,14 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     selector: "st-force-graph",
                     standalone: true,
                     template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    <div [attr.data-st-component]="componentName" [class]="hostClass" role="img" [attr.aria-label]="label">
       <svg
         [attr.viewBox]="viewBox"
         preserveAspectRatio="xMidYMid meet"
         width="100%"
         height="100%"
         focusable="false"
-        [attr.aria-label]="label"
-        role="img"
+        aria-hidden="true"
         (pointermove)="handlePointerMove($event)"
         (pointerleave)="handlePointerLeave()"
       >
@@ -417,21 +463,21 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
           @for (e of fgEdges; track e.i) {
             @if (e.path) {
               <path
-                [class]="edgeClass(e)"
+                [attr.class]="edgeClass(e)"
                 [attr.d]="e.path"
+                fill="none"
                 [attr.stroke-dasharray]="e.dashArray"
                 [attr.stroke-width]="e.strokeWidth"
-                fill="none"
-                [attr.data-edge-index]="e.i"
+                pointer-events="none"
               ></path>
             } @else {
               <line
-                [class]="edgeClass(e)"
+                [attr.class]="edgeClass(e)"
                 [attr.x1]="e.x1" [attr.y1]="e.y1"
                 [attr.x2]="e.x2" [attr.y2]="e.y2"
                 [attr.stroke-dasharray]="e.dashArray"
                 [attr.stroke-width]="e.strokeWidth"
-                [attr.data-edge-index]="e.i"
+                pointer-events="none"
               ></line>
             }
           }
@@ -439,24 +485,24 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
         <g class="st-forceGraph__nodes">
           @for (p of fgNodes; track p.node.id) {
             <g
-              [class]="nodeClass(p)"
-              [attr.transform]="'translate(' + p.x + ',' + p.y + ')'"
+              [attr.class]="nodeClass(p)"
+              [attr.transform]="'translate(' + p.x + ' ' + p.y + ')'"
               [attr.data-node-id]="p.node.id"
               (click)="handleNodeClick(p.node)"
             >
               @if (p.shapePath) {
                 <path
-                  [class]="'st-forceGraph__nodeShape st-forceGraph__nodeShape--' + p.tone"
+                  class="st-forceGraph__shape st-forceGraph__dot"
                   [attr.d]="p.shapePath"
                 ></path>
               } @else {
                 <circle
-                  [class]="'st-forceGraph__nodeDot st-forceGraph__nodeDot--' + p.tone"
+                  class="st-forceGraph__dot"
                   [attr.r]="p.r"
                 ></circle>
               }
-              @if (showLabels) {
-                <text class="st-forceGraph__nodeLabel" [attr.dy]="p.r + 12" text-anchor="middle">{{ p.title }}</text>
+              @if (showLabelsValue) {
+                <text class="st-forceGraph__label" [attr.x]="p.r + 3" y="0" dominant-baseline="middle">{{ p.title }}</text>
               }
             </g>
           }
@@ -464,26 +510,26 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
       </svg>
 
       @if (legend && legend.length > 0) {
-        <div class="st-forceGraph__legend">
+        <div class="st-forceGraph__legend" [attr.aria-label]="legendLabelValue">
           @for (entry of legend; track $index) {
             <div class="st-forceGraph__legendEntry">
-              <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
-                @if (entry.shape !== undefined) {
-                  <g transform="translate(8,8)">
-                    @if (lgShapePath(entry)) {
-                      <path [class]="'st-forceGraph__nodeShape st-forceGraph__nodeShape--' + (entry.tone ?? 'category1')" [attr.d]="lgShapePath(entry)"></path>
-                    } @else {
-                      <circle [class]="'st-forceGraph__nodeDot st-forceGraph__nodeDot--' + (entry.tone ?? 'category1')" r="5"></circle>
-                    }
-                  </g>
-                } @else {
+              @if (entry.shape !== undefined) {
+                <svg class="st-forceGraph__legendSwatch" viewBox="-13 -13 26 26" width="16" height="16" aria-hidden="true">
+                  @if (lgShapePath(entry)) {
+                    <path [attr.d]="lgShapePath(entry)" [attr.class]="'st-forceGraph__legendShape st-forceGraph__legendShape--' + (entry.tone ?? 'category1')"></path>
+                  } @else {
+                    <circle r="7" [attr.class]="'st-forceGraph__legendShape st-forceGraph__legendShape--' + (entry.tone ?? 'category1')"></circle>
+                  }
+                </svg>
+              } @else {
+                <svg class="st-forceGraph__legendSwatch" viewBox="0 0 16 8" width="16" height="8" aria-hidden="true">
                   <line
-                    [class]="'st-forceGraph__edge' + (entry.weak ? ' st-forceGraph__edge--weak' : '')"
-                    x1="0" y1="8" x2="16" y2="8"
+                    x1="0" y1="4" x2="16" y2="4"
+                    [attr.class]="'st-forceGraph__legendEdge' + (entry.weak ? ' st-forceGraph__legendEdge--weak' : '')"
                     [attr.stroke-dasharray]="lgDashArray(entry)"
                   ></line>
-                }
-              </svg>
+                </svg>
+              }
               <span class="st-forceGraph__legendLabel">{{ entry.label }}</span>
             </div>
           }
@@ -526,6 +572,8 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
             }], edgeCurve: [{
                 type: NgInput
             }], repulsion: [{
+                type: NgInput
+            }], legendLabel: [{
                 type: NgInput
             }], onSelect: [{
                 type: NgInput
