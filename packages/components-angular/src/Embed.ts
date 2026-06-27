@@ -27,6 +27,7 @@ export type EmbedProps = {
 @Component({
   selector: "st-embed",
   standalone: true,
+  styles: [":host { display: contents; }"],
   template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
       <div class="st-aspectRatio" [style.aspect-ratio]="aspectRatio ?? '16/9'">

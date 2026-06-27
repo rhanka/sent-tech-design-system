@@ -88,6 +88,7 @@ function buildCells(data: FlamegraphNode, plotWidth: number): Cell[] {
 @Component({
   selector: "st-flamegraph-chart",
   standalone: true,
+  styles: [":host { display: contents; }"],
   template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
       <div
