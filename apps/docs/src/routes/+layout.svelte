@@ -83,6 +83,36 @@
   import { agropurTheme } from "@sentropic/design-system-theme-agropur";
   import { vanHoutteTheme } from "@sentropic/design-system-theme-van-houtte";
   import { dynamiteTheme } from "@sentropic/design-system-theme-dynamite";
+  import { lvmhTheme } from "@sentropic/design-system-theme-lvmh";
+  import { lorealTheme } from "@sentropic/design-system-theme-loreal";
+  import { totalenergiesTheme } from "@sentropic/design-system-theme-totalenergies";
+  import { sanofiTheme } from "@sentropic/design-system-theme-sanofi";
+  import { bnpParibasTheme } from "@sentropic/design-system-theme-bnp-paribas";
+  import { hermesTheme } from "@sentropic/design-system-theme-hermes";
+  import { keringTheme } from "@sentropic/design-system-theme-kering";
+  import { pernodRicardTheme } from "@sentropic/design-system-theme-pernod-ricard";
+  import { danoneTheme } from "@sentropic/design-system-theme-danone";
+  import { accorTheme } from "@sentropic/design-system-theme-accor";
+  import { axaTheme } from "@sentropic/design-system-theme-axa";
+  import { societeGeneraleTheme } from "@sentropic/design-system-theme-societe-generale";
+  import { creditAgricoleTheme } from "@sentropic/design-system-theme-credit-agricole";
+  import { edenredTheme } from "@sentropic/design-system-theme-edenred";
+  import { worldlineTheme } from "@sentropic/design-system-theme-worldline";
+  import { airLiquideTheme } from "@sentropic/design-system-theme-air-liquide";
+  import { schneiderElectricTheme } from "@sentropic/design-system-theme-schneider-electric";
+  import { saintGobainTheme } from "@sentropic/design-system-theme-saint-gobain";
+  import { engieTheme } from "@sentropic/design-system-theme-engie";
+  import { edfTheme } from "@sentropic/design-system-theme-edf";
+  import { dassaultSystemesTheme } from "@sentropic/design-system-theme-dassault-systemes";
+  import { thalesTheme } from "@sentropic/design-system-theme-thales";
+  import { safranTheme } from "@sentropic/design-system-theme-safran";
+  import { capgeminiTheme } from "@sentropic/design-system-theme-capgemini";
+  import { orangeTheme } from "@sentropic/design-system-theme-orange";
+  import { vinciTheme } from "@sentropic/design-system-theme-vinci";
+  import { bouyguesTheme } from "@sentropic/design-system-theme-bouygues";
+  import { veoliaTheme } from "@sentropic/design-system-theme-veolia";
+  import { publicisTheme } from "@sentropic/design-system-theme-publicis";
+  import { renaultTheme } from "@sentropic/design-system-theme-renault";
   import {
     DOCS_UTILITY_NAV,
     DOCS_VERSION,
@@ -215,7 +245,7 @@
   // Thèmes proposés : le DS Sentropic de référence + les 2 mappings tiers
   // (DSFR/Carbon) + le thème client Airbus (port d'anatomie).
   // (forge/entropic sont des tenants de démo internes — exclus du sélecteur.)
-  const THEMES: TenantTheme[] = [sentTechTheme, dsfrTheme, carbonTheme, airbusTheme, canadaTheme, quebecTheme, ssenseTheme, lightspeedTheme, desjardinsTheme, nationalBankTheme, cirqueDuSoleilTheme, ubisoftTheme, bombardierTheme, caeTheme, saqTheme, cgiTheme, stmTheme, nuveiTheme, coveoTheme, circleKTheme, aldoTheme, brpTheme, miregoTheme, ellioTheme, airCanadaTheme, cascadesTheme, hopperTheme, dialogueTheme, momentFactoryTheme, lionElectricTheme, genetecTheme, videotronTheme, saputoTheme, metroTheme, workleapTheme, frankAndOakTheme, sidLeeTheme, simonsTheme, laVieEnRoseTheme, dollaramaTheme, bellTheme, behaviourInteractiveTheme, ronaTheme, gameloftTheme, cossetteTheme, eidosMontrealTheme, stingrayTheme, lg2Theme, sonderTheme, plusgradeTheme, gildanTheme, quebecorTheme, cogecoTheme, iaTheme, laurentianBankTheme, jeanCoutuTheme, reitmansTheme, stHubertTheme, benevaTheme, airTransatTheme, birksTheme, lufaFarmsTheme, hydroQuebecTheme, energirTheme, agropurTheme, vanHoutteTheme, dynamiteTheme];
+  const THEMES: TenantTheme[] = [sentTechTheme, dsfrTheme, carbonTheme, airbusTheme, canadaTheme, quebecTheme, ssenseTheme, lightspeedTheme, desjardinsTheme, nationalBankTheme, cirqueDuSoleilTheme, ubisoftTheme, bombardierTheme, caeTheme, saqTheme, cgiTheme, stmTheme, nuveiTheme, coveoTheme, circleKTheme, aldoTheme, brpTheme, miregoTheme, ellioTheme, airCanadaTheme, cascadesTheme, hopperTheme, dialogueTheme, momentFactoryTheme, lionElectricTheme, genetecTheme, videotronTheme, saputoTheme, metroTheme, workleapTheme, frankAndOakTheme, sidLeeTheme, simonsTheme, laVieEnRoseTheme, dollaramaTheme, bellTheme, behaviourInteractiveTheme, ronaTheme, gameloftTheme, cossetteTheme, eidosMontrealTheme, stingrayTheme, lg2Theme, sonderTheme, plusgradeTheme, gildanTheme, quebecorTheme, cogecoTheme, iaTheme, laurentianBankTheme, jeanCoutuTheme, reitmansTheme, stHubertTheme, benevaTheme, airTransatTheme, birksTheme, lufaFarmsTheme, hydroQuebecTheme, energirTheme, agropurTheme, vanHoutteTheme, dynamiteTheme, lvmhTheme, lorealTheme, totalenergiesTheme, sanofiTheme, bnpParibasTheme, hermesTheme, keringTheme, pernodRicardTheme, danoneTheme, accorTheme, axaTheme, societeGeneraleTheme, creditAgricoleTheme, edenredTheme, worldlineTheme, airLiquideTheme, schneiderElectricTheme, saintGobainTheme, engieTheme, edfTheme, dassaultSystemesTheme, thalesTheme, safranTheme, capgeminiTheme, orangeTheme, vinciTheme, bouyguesTheme, veoliaTheme, publicisTheme, renaultTheme];
   const THEME_STORAGE_KEY = "st-docs-theme";
   // ── Mode démo (anonymisation pour visiteurs externes) ─────────────────────
   // Les thèmes "tiers" (clones de marques privées : Carbon/IBM, Airbus, …) sont
@@ -225,7 +255,7 @@
   const DEMO_MODE_STORAGE_KEY = "st-docs-demo-mode";
   // Thèmes tiers (clones de marques privées) masqués du sélecteur public, révélés
   // en mode démo. Ajouter ici l'id de chaque nouveau thème de société privée.
-  const HIDDEN_THEME_IDS = new Set<string>(["carbon", "airbus", "ssense", "lightspeed", "desjardins", "national-bank", "cirque-du-soleil", "ubisoft", "bombardier", "cae", "saq", "cgi", "stm", "nuvei", "coveo", "circle-k", "aldo", "brp", "mirego", "ellio", "air-canada", "cascades", "hopper", "dialogue", "moment-factory", "lion-electric", "genetec", "videotron", "saputo", "metro", "workleap", "frank-and-oak", "sid-lee", "simons", "la-vie-en-rose", "dollarama", "bell", "behaviour-interactive", "rona", "gameloft", "cossette", "eidos-montreal", "stingray", "lg2", "sonder", "plusgrade", "gildan", "quebecor", "cogeco", "ia", "laurentian-bank", "jean-coutu", "reitmans", "st-hubert", "beneva", "air-transat", "birks", "lufa-farms", "hydro-quebec", "energir", "agropur", "van-houtte", "dynamite"]);
+  const HIDDEN_THEME_IDS = new Set<string>(["carbon", "airbus", "ssense", "lightspeed", "desjardins", "national-bank", "cirque-du-soleil", "ubisoft", "bombardier", "cae", "saq", "cgi", "stm", "nuvei", "coveo", "circle-k", "aldo", "brp", "mirego", "ellio", "air-canada", "cascades", "hopper", "dialogue", "moment-factory", "lion-electric", "genetec", "videotron", "saputo", "metro", "workleap", "frank-and-oak", "sid-lee", "simons", "la-vie-en-rose", "dollarama", "bell", "behaviour-interactive", "rona", "gameloft", "cossette", "eidos-montreal", "stingray", "lg2", "sonder", "plusgrade", "gildan", "quebecor", "cogeco", "ia", "laurentian-bank", "jean-coutu", "reitmans", "st-hubert", "beneva", "air-transat", "birks", "lufa-farms", "hydro-quebec", "energir", "agropur", "van-houtte", "dynamite", "lvmh", "loreal", "totalenergies", "sanofi", "bnp-paribas", "hermes", "kering", "pernod-ricard", "danone", "accor", "axa", "societe-generale", "credit-agricole", "edenred", "worldline", "air-liquide", "schneider-electric", "saint-gobain", "engie", "edf", "dassault-systemes", "thales", "safran", "capgemini", "orange", "vinci", "bouygues", "veolia", "publicis", "renault"]);
   // Lire la valeur initiale de demoMode AVANT de créer les $state pour éviter
   // state_referenced_locally (on ne peut pas référencer un $state dans l'init d'un autre $state).
   const initialDemoMode = browser ? localStorage.getItem(DEMO_MODE_STORAGE_KEY) === "true" : false;
