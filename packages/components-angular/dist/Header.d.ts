@@ -32,8 +32,12 @@ export declare class Header {
     label?: string;
     compact: boolean;
     classInput?: string;
+    /** Liens de navigation : `navigation` prime, sinon `navItems` (parité React/Vue). */
+    get links(): HeaderNavItem[];
+    /** Initiales dérivées du nom du compte connecté (mêmes règles que React/Vue). */
+    get accountInitials(): string;
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<Header, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<Header, "st-header", never, { "brand": { "alias": "brand"; "required": false; }; "title": { "alias": "title"; "required": false; }; "navigation": { "alias": "navigation"; "required": false; }; "navItems": { "alias": "navItems"; "required": false; }; "account": { "alias": "account"; "required": false; }; "sticky": { "alias": "sticky"; "required": false; }; "label": { "alias": "label"; "required": false; }; "compact": { "alias": "compact"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["[slot=logo]", "[slot=navigation]", "[slot=actions]", "*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<Header, "st-header", never, { "brand": { "alias": "brand"; "required": false; }; "title": { "alias": "title"; "required": false; }; "navigation": { "alias": "navigation"; "required": false; }; "navItems": { "alias": "navItems"; "required": false; }; "account": { "alias": "account"; "required": false; }; "sticky": { "alias": "sticky"; "required": false; }; "label": { "alias": "label"; "required": false; }; "compact": { "alias": "compact"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
 }
 //# sourceMappingURL=Header.d.ts.map

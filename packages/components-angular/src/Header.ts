@@ -31,14 +31,34 @@ export function deriveInitials(name?: string): string {
 @Component({
   selector: "st-header",
   standalone: true,
+  // Structure alignée byte-pour-byte sur React (catalog.tsx) et Vue (Header.ts) :
+  // zone "leading" (logo/brand + title), navigation (liens), et zone compte.
+  // L'ancienne version ne rendait QUE des <ng-content>, donc les props title /
+  // navItems / account (passées par les démos docs) n'apparaissaient jamais.
   template: `
     <header [attr.data-st-component]="componentName" [class]="hostClass" [attr.aria-label]="label">
-      <div class="st-header__body">
-        <ng-content select="[slot=logo]"></ng-content>
-        <ng-content select="[slot=navigation]"></ng-content>
-        <ng-content select="[slot=actions]"></ng-content>
-        <ng-content></ng-content>
+      <div class="st-header__leading">
+        @if (brand) {
+          <a class="st-header__logo" href="/">{{ brand }}</a>
+        }
+        @if (title) {
+          <span class="st-header__title">{{ title }}</span>
+        }
       </div>
+      <nav class="st-header__navigation">
+        @for (link of links; track link.href) {
+          <a [attr.href]="link.href">{{ link.label }}</a>
+        }
+      </nav>
+      @if (account) {
+        <div class="st-header__account">
+          <span class="st-header__avatar st-header__avatar--initials">{{ accountInitials }}</span>
+          <span class="st-header__account-name">{{ account.name }}</span>
+          @if (account.email) {
+            <span class="st-header__account-email">{{ account.email }}</span>
+          }
+        </div>
+      }
     </header>
   `,
 })
@@ -55,7 +75,17 @@ export class Header {
   @NgInput() compact = false;
   @NgInput("class") classInput?: string;
 
+  /** Liens de navigation : `navigation` prime, sinon `navItems` (parité React/Vue). */
+  get links(): HeaderNavItem[] {
+    return this.navigation ?? this.navItems ?? [];
+  }
+
+  /** Initiales dérivées du nom du compte connecté (mêmes règles que React/Vue). */
+  get accountInitials(): string {
+    return deriveInitials(this.account?.name);
+  }
+
   get hostClass(): string {
-    return classNames("st-header", this.compact && "st-header--compact", this.sticky && "st-header--sticky", this.classInput);
+    return classNames("st-header", this.sticky && "st-header--sticky", this.classInput);
   }
 }
