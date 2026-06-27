@@ -22,18 +22,42 @@ export class Header {
     label;
     compact = false;
     classInput;
+    /** Liens de navigation : `navigation` prime, sinon `navItems` (parité React/Vue). */
+    get links() {
+        return this.navigation ?? this.navItems ?? [];
+    }
+    /** Initiales dérivées du nom du compte connecté (mêmes règles que React/Vue). */
+    get accountInitials() {
+        return deriveInitials(this.account?.name);
+    }
     get hostClass() {
-        return classNames("st-header", this.compact && "st-header--compact", this.sticky && "st-header--sticky", this.classInput);
+        return classNames("st-header", this.sticky && "st-header--sticky", this.classInput);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Header, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: Header, isStandalone: true, selector: "st-header", inputs: { brand: "brand", title: "title", navigation: "navigation", navItems: "navItems", account: "account", sticky: "sticky", label: "label", compact: "compact", classInput: ["class", "classInput"] }, ngImport: i0, template: `
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: Header, isStandalone: true, selector: "st-header", inputs: { brand: "brand", title: "title", navigation: "navigation", navItems: "navItems", account: "account", sticky: "sticky", label: "label", compact: "compact", classInput: ["class", "classInput"] }, ngImport: i0, template: `
     <header [attr.data-st-component]="componentName" [class]="hostClass" [attr.aria-label]="label">
-      <div class="st-header__body">
-        <ng-content select="[slot=logo]"></ng-content>
-        <ng-content select="[slot=navigation]"></ng-content>
-        <ng-content select="[slot=actions]"></ng-content>
-        <ng-content></ng-content>
+      <div class="st-header__leading">
+        @if (brand) {
+          <a class="st-header__logo" href="/">{{ brand }}</a>
+        }
+        @if (title) {
+          <span class="st-header__title">{{ title }}</span>
+        }
       </div>
+      <nav class="st-header__navigation">
+        @for (link of links; track link.href) {
+          <a [attr.href]="link.href">{{ link.label }}</a>
+        }
+      </nav>
+      @if (account) {
+        <div class="st-header__account">
+          <span class="st-header__avatar st-header__avatar--initials">{{ accountInitials }}</span>
+          <span class="st-header__account-name">{{ account.name }}</span>
+          @if (account.email) {
+            <span class="st-header__account-email">{{ account.email }}</span>
+          }
+        </div>
+      }
     </header>
   `, isInline: true });
 }
@@ -42,14 +66,34 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
             args: [{
                     selector: "st-header",
                     standalone: true,
+                    // Structure alignée byte-pour-byte sur React (catalog.tsx) et Vue (Header.ts) :
+                    // zone "leading" (logo/brand + title), navigation (liens), et zone compte.
+                    // L'ancienne version ne rendait QUE des <ng-content>, donc les props title /
+                    // navItems / account (passées par les démos docs) n'apparaissaient jamais.
                     template: `
     <header [attr.data-st-component]="componentName" [class]="hostClass" [attr.aria-label]="label">
-      <div class="st-header__body">
-        <ng-content select="[slot=logo]"></ng-content>
-        <ng-content select="[slot=navigation]"></ng-content>
-        <ng-content select="[slot=actions]"></ng-content>
-        <ng-content></ng-content>
+      <div class="st-header__leading">
+        @if (brand) {
+          <a class="st-header__logo" href="/">{{ brand }}</a>
+        }
+        @if (title) {
+          <span class="st-header__title">{{ title }}</span>
+        }
       </div>
+      <nav class="st-header__navigation">
+        @for (link of links; track link.href) {
+          <a [attr.href]="link.href">{{ link.label }}</a>
+        }
+      </nav>
+      @if (account) {
+        <div class="st-header__account">
+          <span class="st-header__avatar st-header__avatar--initials">{{ accountInitials }}</span>
+          <span class="st-header__account-name">{{ account.name }}</span>
+          @if (account.email) {
+            <span class="st-header__account-email">{{ account.email }}</span>
+          }
+        </div>
+      }
     </header>
   `,
                 }]
