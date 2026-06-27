@@ -71,6 +71,11 @@ type LegendItem = {
 @Component({
   selector: "st-ribbon-chart",
   standalone: true,
+  // Host transparent (parité React/Vue/Svelte qui n'ont pas d'élément hôte) :
+  // sans cela l'élément <st-*> (display:inline par défaut) s'intercale dans le
+  // layout (line-box autour du contenu, ou SVG width:100% qui collapse) et
+  // désaligne le rendu. display:contents efface la boîte de l'hôte.
+  styles: [":host { display: contents; }"],
   template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
       <div
