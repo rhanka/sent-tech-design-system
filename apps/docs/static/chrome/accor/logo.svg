@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Accor wordmark — TEXT FALLBACK (not an official vector).
+  Aucun SVG officiel fiable du logo Accor 2023 n'est disponible sur Wikimedia
+  Commons (seul le mark hérité « AccorHotels » pré-2023 y figure, écarté par le
+  thème). Repli wordmark texte propre, encre indigo profond #050033 de la marque.
+-->
+<svg width="200" height="44" viewBox="0 0 200 44" xmlns="http://www.w3.org/2000/svg">
+  <title>Accor</title>
+  <desc>French hospitality group — text wordmark fallback</desc>
+  <text x="0" y="33" fill="#050033"
+        font-family="'Helvetica Neue', Arial, 'Segoe UI', sans-serif"
+        font-size="36" font-weight="700" letter-spacing="1.5">ACCOR</text>
+</svg>
