@@ -42,45 +42,33 @@ type FlatNode = {
   selector: "st-tree-view",
   standalone: true,
   template: `
-    <ul
+    <div
       [attr.data-st-component]="componentName"
       [class]="hostClass"
       role="tree"
       [attr.aria-label]="label ?? 'Arborescence'"
     >
       @for (flat of visible; track flat.node.id) {
-        <li role="none">
-          <div
-            role="treeitem"
-            class="st-treeView__row"
-            [class.st-treeView__row--selected]="activeSelected === flat.node.id"
-            [class.st-treeView__row--disabled]="flat.node.disabled"
-            [attr.aria-level]="flat.level"
-            [attr.aria-expanded]="flat.hasChildren ? flat.expanded : null"
-            [attr.aria-selected]="activeSelected === flat.node.id"
-            [attr.aria-disabled]="flat.node.disabled || null"
-            [attr.data-tree-id]="flat.node.id"
-            [attr.tabindex]="flat.node.id === tabbableId ? 0 : -1"
-            [style.padding-inline-start]="indentFor(flat.level)"
-            (click)="activate(flat)"
-            (keydown)="onKey($event, flat)"
-            (focus)="focusedId = flat.node.id"
-          >
-            @if (flat.hasChildren) {
-              <span
-                class="st-treeView__caret"
-                [class.st-treeView__caret--open]="flat.expanded"
-                aria-hidden="true"
-              ></span>
-            } @else {
-              <span class="st-treeView__caret st-treeView__caret--leaf" aria-hidden="true"></span>
-            }
-            <span class="st-treeView__label">{{ flat.node.label }}</span>
-          </div>
-        </li>
+        <div
+          role="treeitem"
+          [class]="rowClass(flat)"
+          [attr.aria-level]="flat.level"
+          [attr.aria-expanded]="flat.hasChildren ? flat.expanded : null"
+          [attr.aria-selected]="activeSelected === flat.node.id"
+          [attr.aria-disabled]="flat.node.disabled || null"
+          [attr.data-tree-id]="flat.node.id"
+          [attr.tabindex]="flat.node.id === tabbableId ? 0 : -1"
+          [style.padding-inline-start]="indentFor(flat.level)"
+          (click)="activate(flat)"
+          (keydown)="onKey($event, flat)"
+          (focus)="focusedId = flat.node.id"
+        >
+          <span [class]="caretClass(flat)" aria-hidden="true"></span>
+          <span class="st-treeView__label">{{ flat.node.label }}</span>
+        </div>
       }
       <ng-content></ng-content>
-    </ul>
+    </div>
   `,
 })
 export class TreeView {
@@ -138,6 +126,22 @@ export class TreeView {
 
   indentFor(level: number): string {
     return `calc(${level - 1} * var(--st-spacing-4, 1rem) + 0.25rem)`;
+  }
+
+  rowClass(flat: FlatNode): string {
+    return classNames(
+      "st-treeView__row",
+      this.activeSelected === flat.node.id && "st-treeView__row--selected",
+      flat.node.disabled && "st-treeView__row--disabled",
+    );
+  }
+
+  caretClass(flat: FlatNode): string {
+    return classNames(
+      "st-treeView__caret",
+      !flat.hasChildren && "st-treeView__caret--leaf",
+      flat.expanded && "st-treeView__caret--open",
+    );
   }
 
   private toggle(id: string): void {

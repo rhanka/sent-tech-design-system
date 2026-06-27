@@ -26,8 +26,16 @@ export declare class ProgressBar {
     showValue?: boolean;
     valueText?: string;
     classInput?: string;
+    get resolvedMax(): number;
+    get resolvedTone(): ProgressBarTone;
+    get resolvedSize(): ProgressBarSize;
+    get clampedValue(): number;
+    get percent(): number;
+    get fillStyle(): string;
+    get displayValue(): string;
+    get trackClass(): string;
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<ProgressBar, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<ProgressBar, "st-progress-bar", never, { "label": { "alias": "label"; "required": false; }; "helperText": { "alias": "helperText"; "required": false; }; "value": { "alias": "value"; "required": false; }; "max": { "alias": "max"; "required": false; }; "tone": { "alias": "tone"; "required": false; }; "size": { "alias": "size"; "required": false; }; "indeterminate": { "alias": "indeterminate"; "required": false; }; "showValue": { "alias": "showValue"; "required": false; }; "valueText": { "alias": "valueText"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<ProgressBar, "st-progress-bar", never, { "label": { "alias": "label"; "required": false; }; "helperText": { "alias": "helperText"; "required": false; }; "value": { "alias": "value"; "required": false; }; "max": { "alias": "max"; "required": false; }; "tone": { "alias": "tone"; "required": false; }; "size": { "alias": "size"; "required": false; }; "indeterminate": { "alias": "indeterminate"; "required": false; }; "showValue": { "alias": "showValue"; "required": false; }; "valueText": { "alias": "valueText"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
 }
 //# sourceMappingURL=ProgressBar.d.ts.map

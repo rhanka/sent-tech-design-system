@@ -43,6 +43,7 @@ export class Popover {
       (focusout)="onHover(false)"
       (click)="onHostClick()"
     >
+      <ng-content select="[slot='trigger']"></ng-content>
       @if (triggerLabel) {
         <button type="button" class="st-popover__trigger">{{ triggerLabel }}</button>
       }
@@ -51,7 +52,10 @@ export class Popover {
           [class]="popoverClass"
           role="dialog"
           [attr.aria-label]="label || content || 'Popover'"
-        >{{ content }}</section>
+        >
+          <ng-content></ng-content>
+          {{ content }}
+        </section>
       }
     </span>
   `, isInline: true });
@@ -71,6 +75,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
       (focusout)="onHover(false)"
       (click)="onHostClick()"
     >
+      <ng-content select="[slot='trigger']"></ng-content>
       @if (triggerLabel) {
         <button type="button" class="st-popover__trigger">{{ triggerLabel }}</button>
       }
@@ -79,7 +84,10 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
           [class]="popoverClass"
           role="dialog"
           [attr.aria-label]="label || content || 'Popover'"
-        >{{ content }}</section>
+        >
+          <ng-content></ng-content>
+          {{ content }}
+        </section>
       }
     </span>
   `,

@@ -57,7 +57,7 @@ export type MultiSelectProps = {
                 [attr.aria-label]="resolvedRemoveLabel + ' ' + option.label"
                 [disabled]="disabled ?? false"
                 (click)="removeOption(option.value)"
-              >&#x2715;</button>
+              ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
             </span>
           }
         </span>
@@ -77,10 +77,19 @@ export type MultiSelectProps = {
             <span class="st-multiSelect__count">{{ selectedOptions.length }} {{ isFr ? "sélectionné(s)" : "selected" }}</span>
           }
           <span class="st-multiSelect__caret" aria-hidden="true">
-            <span
+            <svg
               class="st-multiSelect__caretIcon"
               [class.st-multiSelect__caretIcon--open]="isOpen"
-            >&#x25BE;</span>
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.25"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            ><path d="m6 9 6 6 6-6"></path></svg>
           </span>
           <span class="st-visually-hidden">{{ resolvedToggleLabel }}</span>
         </button>

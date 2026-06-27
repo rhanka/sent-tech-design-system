@@ -19,23 +19,23 @@ export type HighlightProps = {
   selector: "st-highlight",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass" role="note">
-      @if (title) { <strong class="st-highlight__title">{{ title }}</strong> }
+    <aside [attr.data-st-component]="componentName" [class]="hostClass">
+      @if (title) { <h3 class="st-highlight__title">{{ title }}</h3> }
       <div class="st-highlight__body"><ng-content></ng-content></div>
-    </div>
+    </aside>
   `,
 })
 export class Highlight {
   static readonly stComponentName = "Highlight";
   readonly componentName = "Highlight";
-  @NgInput() tone?: HighlightTone;
+  @NgInput() tone: HighlightTone = "neutral";
   @NgInput() title?: unknown;
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
     return classNames(
       "st-highlight",
-      this.tone && `st-highlight--${this.tone}`,
+      `st-highlight--${this.tone}`,
       this.classInput,
     );
   }

@@ -38,7 +38,7 @@ export class Inline {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return classNames("st-inline", this.classInput);
+    return classNames("st-flex", "st-inline", this.classInput);
   }
 
   get inlineStyles(): Record<string, string | undefined> {

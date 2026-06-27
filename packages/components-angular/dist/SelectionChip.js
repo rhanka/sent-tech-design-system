@@ -18,7 +18,7 @@ export class SelectionChip {
         return typeof this.onClear === "function";
     }
     get hostClass() {
-        return classNames("st-selectionChip", this.tone && `st-selectionChip--${this.tone}`, this.disabled ? "st-selectionChip--disabled" : undefined, this.classInput);
+        return classNames("st-selectionChip", `st-selectionChip--${this.tone ?? "neutral"}`, this.disabled ? "st-selectionChip--disabled" : undefined, this.classInput);
     }
     handleClear(event) {
         event.stopPropagation();
@@ -47,7 +47,21 @@ export class SelectionChip {
           [attr.aria-label]="'Effacer ' + label"
           [disabled]="disabled"
           (click)="handleClear($event)"
-        >&#x2715;</button>
+        >
+          <svg
+            width="11"
+            height="11"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M18 6 6 18M6 6l12 12"></path>
+          </svg>
+        </button>
       }
     </span>
   `, isInline: true });
@@ -76,7 +90,21 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
           [attr.aria-label]="'Effacer ' + label"
           [disabled]="disabled"
           (click)="handleClear($event)"
-        >&#x2715;</button>
+        >
+          <svg
+            width="11"
+            height="11"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M18 6 6 18M6 6l12 12"></path>
+          </svg>
+        </button>
       }
     </span>
   `,

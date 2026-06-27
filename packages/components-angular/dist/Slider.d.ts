@@ -37,10 +37,21 @@ export declare class Slider {
     valueFormatter?: (value: number) => string;
     classInput?: string;
     readonly modelValueChange: EventEmitter<number>;
-    get currentValue(): number;
+    readonly change: EventEmitter<number>;
+    get resolvedMin(): number;
+    get resolvedMax(): number;
+    get resolvedStep(): number;
+    get showValueResolved(): boolean;
+    get rawValue(): number;
+    get safeValue(): number;
+    get percent(): number;
+    get fillStyle(): string;
+    get formatted(): string;
+    get isInvalid(): boolean;
+    get groupClass(): string;
     get hostClass(): string;
     onInput(e: Event): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<Slider, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<Slider, "st-slider", never, { "label": { "alias": "label"; "required": false; }; "size": { "alias": "size"; "required": false; }; "value": { "alias": "value"; "required": false; }; "defaultValue": { "alias": "defaultValue"; "required": false; }; "min": { "alias": "min"; "required": false; }; "max": { "alias": "max"; "required": false; }; "step": { "alias": "step"; "required": false; }; "modelValue": { "alias": "modelValue"; "required": false; }; "helperText": { "alias": "helperText"; "required": false; }; "errorText": { "alias": "errorText"; "required": false; }; "invalid": { "alias": "invalid"; "required": false; }; "showValue": { "alias": "showValue"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "valueFormatter": { "alias": "valueFormatter"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, { "modelValueChange": "modelValueChange"; }, never, never, true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<Slider, "st-slider", never, { "label": { "alias": "label"; "required": false; }; "size": { "alias": "size"; "required": false; }; "value": { "alias": "value"; "required": false; }; "defaultValue": { "alias": "defaultValue"; "required": false; }; "min": { "alias": "min"; "required": false; }; "max": { "alias": "max"; "required": false; }; "step": { "alias": "step"; "required": false; }; "modelValue": { "alias": "modelValue"; "required": false; }; "helperText": { "alias": "helperText"; "required": false; }; "errorText": { "alias": "errorText"; "required": false; }; "invalid": { "alias": "invalid"; "required": false; }; "showValue": { "alias": "showValue"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "valueFormatter": { "alias": "valueFormatter"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, { "modelValueChange": "modelValueChange"; "change": "change"; }, never, never, true, never>;
 }
 //# sourceMappingURL=Slider.d.ts.map

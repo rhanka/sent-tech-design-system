@@ -1,11 +1,9 @@
 import { Component, EventEmitter, Input as NgInput, Output } from "@angular/core";
 import { classNames } from "./classNames.js";
 import * as i0 from "@angular/core";
-let _tabCounter = 0;
 export class Tabs {
     static stComponentName = "Tabs";
     componentName = "Tabs";
-    uid = `st-tabs-${++_tabCounter}`;
     localCurrent = "";
     items;
     activeValue;
@@ -27,10 +25,6 @@ export class Tabs {
     }
     get current() {
         return this.activeValue ?? this.activeId ?? this.localCurrent;
-    }
-    get activeTabId() {
-        const idx = Math.max(0, this.items?.findIndex((item, i) => this.tabId(item, i) === this.current) ?? 0);
-        return this.tabId(this.items?.[idx] ?? this.items?.[0], idx);
     }
     get activeContent() {
         const idx = Math.max(0, this.items?.findIndex((item, i) => this.tabId(item, i) === this.current) ?? 0);
@@ -63,22 +57,14 @@ export class Tabs {
           <button
             type="button"
             role="tab"
-            [id]="uid + '-tab-' + tabId(item, $index)"
             [class]="tabClass(item, $index)"
-            [attr.aria-selected]="isActive(item, $index)"
-            [attr.aria-controls]="uid + '-panel-' + tabId(item, $index)"
-            [attr.tabindex]="isActive(item, $index) ? 0 : -1"
+            [attr.aria-selected]="isActive(item, $index) ? 'true' : 'false'"
             [disabled]="item.disabled"
             (click)="select(item, $index)"
           >{{ item.label }}</button>
         }
       </div>
-      <div
-        [id]="uid + '-panel-' + activeTabId"
-        class="st-tabs__panel"
-        role="tabpanel"
-        [attr.aria-labelledby]="uid + '-tab-' + activeTabId"
-      >{{ activeContent }}<ng-content></ng-content></div>
+      <div class="st-tabs__panel" role="tabpanel">{{ activeContent }}<ng-content></ng-content></div>
     </section>
   `, isInline: true });
 }
@@ -94,22 +80,14 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
           <button
             type="button"
             role="tab"
-            [id]="uid + '-tab-' + tabId(item, $index)"
             [class]="tabClass(item, $index)"
-            [attr.aria-selected]="isActive(item, $index)"
-            [attr.aria-controls]="uid + '-panel-' + tabId(item, $index)"
-            [attr.tabindex]="isActive(item, $index) ? 0 : -1"
+            [attr.aria-selected]="isActive(item, $index) ? 'true' : 'false'"
             [disabled]="item.disabled"
             (click)="select(item, $index)"
           >{{ item.label }}</button>
         }
       </div>
-      <div
-        [id]="uid + '-panel-' + activeTabId"
-        class="st-tabs__panel"
-        role="tabpanel"
-        [attr.aria-labelledby]="uid + '-tab-' + activeTabId"
-      >{{ activeContent }}<ng-content></ng-content></div>
+      <div class="st-tabs__panel" role="tabpanel">{{ activeContent }}<ng-content></ng-content></div>
     </section>
   `,
                 }]

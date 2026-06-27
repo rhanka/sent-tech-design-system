@@ -9,15 +9,19 @@ export class Alert {
     message;
     actions;
     classInput;
+    get role() {
+        const tone = this.tone ?? "info";
+        return tone === "error" || tone === "warning" ? "alert" : "status";
+    }
     get hostClass() {
-        return classNames("st-alert", this.tone && `st-alert--${this.tone}`, this.classInput);
+        return classNames("st-alert", `st-alert--${this.tone ?? "info"}`, this.classInput);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Alert, deps: [], target: i0.ɵɵFactoryTarget.Component });
     static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: Alert, isStandalone: true, selector: "st-alert", inputs: { tone: "tone", title: "title", message: "message", actions: "actions", classInput: ["class", "classInput"] }, ngImport: i0, template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass" role="alert">
+    <section [attr.data-st-component]="componentName" [class]="hostClass" [attr.role]="role">
       <div class="st-alert__content">
         @if (title) {
-          <p class="st-alert__title">{{ title }}</p>
+          <h2 class="st-alert__title">{{ title }}</h2>
         }
         @if (message) {
           <p class="st-alert__message">{{ message }}</p>
@@ -29,7 +33,7 @@ export class Alert {
           <ng-content select="[slot='actions']"></ng-content>
         </div>
       }
-    </div>
+    </section>
   `, isInline: true });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Alert, decorators: [{
@@ -38,10 +42,10 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     selector: "st-alert",
                     standalone: true,
                     template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass" role="alert">
+    <section [attr.data-st-component]="componentName" [class]="hostClass" [attr.role]="role">
       <div class="st-alert__content">
         @if (title) {
-          <p class="st-alert__title">{{ title }}</p>
+          <h2 class="st-alert__title">{{ title }}</h2>
         }
         @if (message) {
           <p class="st-alert__message">{{ message }}</p>
@@ -53,7 +57,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
           <ng-content select="[slot='actions']"></ng-content>
         </div>
       }
-    </div>
+    </section>
   `,
                 }]
         }], propDecorators: { tone: [{

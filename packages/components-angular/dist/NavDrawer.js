@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input as NgInput, Output } from "@angular/core";
+import { NavItem } from "./NavItem.js";
 import { classNames } from "./classNames.js";
 import * as i0 from "@angular/core";
 export class NavDrawer {
@@ -12,7 +13,13 @@ export class NavDrawer {
     classInput;
     closeEvent = new EventEmitter();
     get hostClass() {
-        return classNames("st-navDrawer", "st-navShell", "st-navShell--drawer", `st-drawer--${this.side ?? "left"}`, this.classInput);
+        return classNames(
+        // Base `st-drawer` est LOAD-BEARING : positionnement absolu, surface,
+        // largeur, grille du panneau. Sans elle le tiroir rend cassé (bloc nu).
+        "st-drawer", `st-drawer--${this.side ?? "left"}`, 
+        // Le drawer de nav compose NavShell (cf. source Svelte) + le marqueur
+        // `st-navDrawer` (sans CSS propre, intentionnel).
+        "st-navShell", "st-navShell--drawer", "st-navDrawer", this.classInput);
     }
     onBackdropClick(event) {
         if (event.target === event.currentTarget) {
@@ -48,32 +55,32 @@ export class NavDrawer {
             ><span aria-hidden="true">&#x2715;</span></button>
           </header>
           <div class="st-drawer__body">
-            @if (navItems && navItems.length > 0) {
-              <nav>
-                <ul class="st-navDrawer__list">
+            <div class="st-navShell__body">
+              @if (navItems && navItems.length > 0) {
+                <nav [attr.aria-label]="label || title || 'Navigation'">
                   @for (item of navItems; track item.label) {
-                    <li class="st-navDrawer__item">
-                      <a
-                        [href]="item.href ?? '#'"
-                        class="st-navDrawer__link"
-                        [class.st-navDrawer__link--active]="item.active"
-                      >{{ item.label }}</a>
-                    </li>
+                    <st-nav-item
+                      [title]="item.label"
+                      [href]="item.href"
+                      [active]="item.active"
+                    ></st-nav-item>
                   }
-                </ul>
-              </nav>
-            }
+                </nav>
+              }
+              <ng-content></ng-content>
+            </div>
           </div>
         </aside>
       </div>
     }
-  `, isInline: true });
+  `, isInline: true, dependencies: [{ kind: "component", type: NavItem, selector: "st-nav-item", inputs: ["value", "title", "caption", "depth", "swatch", "count", "status", "selected", "active", "disabled", "href", "divider", "class"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: NavDrawer, decorators: [{
             type: Component,
             args: [{
                     selector: "st-nav-drawer",
                     standalone: true,
+                    imports: [NavItem],
                     template: `
     @if (open) {
       <div
@@ -102,21 +109,20 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
             ><span aria-hidden="true">&#x2715;</span></button>
           </header>
           <div class="st-drawer__body">
-            @if (navItems && navItems.length > 0) {
-              <nav>
-                <ul class="st-navDrawer__list">
+            <div class="st-navShell__body">
+              @if (navItems && navItems.length > 0) {
+                <nav [attr.aria-label]="label || title || 'Navigation'">
                   @for (item of navItems; track item.label) {
-                    <li class="st-navDrawer__item">
-                      <a
-                        [href]="item.href ?? '#'"
-                        class="st-navDrawer__link"
-                        [class.st-navDrawer__link--active]="item.active"
-                      >{{ item.label }}</a>
-                    </li>
+                    <st-nav-item
+                      [title]="item.label"
+                      [href]="item.href"
+                      [active]="item.active"
+                    ></st-nav-item>
                   }
-                </ul>
-              </nav>
-            }
+                </nav>
+              }
+              <ng-content></ng-content>
+            </div>
           </div>
         </aside>
       </div>

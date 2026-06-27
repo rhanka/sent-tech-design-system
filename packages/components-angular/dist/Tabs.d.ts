@@ -18,7 +18,6 @@ export type TabsProps = {
 export declare class Tabs {
     static readonly stComponentName = "Tabs";
     readonly componentName = "Tabs";
-    readonly uid: string;
     private localCurrent;
     items: TabItem[];
     activeValue?: string;
@@ -30,7 +29,6 @@ export declare class Tabs {
     ngOnInit(): void;
     tabId(item: TabItem, index: number): string;
     get current(): string;
-    get activeTabId(): string;
     get activeContent(): unknown;
     isActive(item: TabItem, index: number): boolean;
     tabClass(item: TabItem, index: number): string;

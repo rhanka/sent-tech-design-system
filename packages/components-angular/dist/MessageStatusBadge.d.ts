@@ -16,6 +16,9 @@ export declare class MessageStatusBadge {
     labels?: Partial<Record<ChatMessageStatus, unknown>>;
     label?: string;
     classInput?: string;
+    private get normalizedStatus();
+    get resolvedTone(): MessageStatusBadgeTone;
+    get resolvedLabel(): unknown;
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<MessageStatusBadge, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<MessageStatusBadge, "st-message-status-badge", never, { "status": { "alias": "status"; "required": false; }; "tone": { "alias": "tone"; "required": false; }; "labels": { "alias": "labels"; "required": false; }; "label": { "alias": "label"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;

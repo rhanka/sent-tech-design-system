@@ -173,6 +173,7 @@ export declare class ForceGraph implements OnChanges, OnInit {
     legend?: ForceGraphLegendEntry[];
     edgeCurve?: number;
     repulsion?: number;
+    legendLabel?: string;
     onSelect?: (id: string) => void;
     onOpenEntity?: (id: string) => void;
     onEdgeHover?: (edge: ForceGraphEdge) => void;
@@ -192,6 +193,12 @@ export declare class ForceGraph implements OnChanges, OnInit {
     fgNodes: FGPositionedNode[];
     fgEdges: FGPositionedEdge[];
     private _cb;
+    private _selectedSet;
+    private _focusValue;
+    private _adjacency;
+    private _activeAndNeighbours;
+    get showLabelsValue(): boolean;
+    get legendLabelValue(): string;
     ngOnInit(): void;
     ngOnChanges(_c: SimpleChanges): void;
     private _layout;
@@ -207,7 +214,7 @@ export declare class ForceGraph implements OnChanges, OnInit {
     handlePointerMove(event: PointerEvent): void;
     handlePointerLeave(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<ForceGraph, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<ForceGraph, "st-force-graph", never, { "nodes": { "alias": "nodes"; "required": false; }; "edges": { "alias": "edges"; "required": false; }; "label": { "alias": "label"; "required": false; }; "width": { "alias": "width"; "required": false; }; "height": { "alias": "height"; "required": false; }; "nodeRadius": { "alias": "nodeRadius"; "required": false; }; "showLabels": { "alias": "showLabels"; "required": false; }; "iterations": { "alias": "iterations"; "required": false; }; "selectedIds": { "alias": "selectedIds"; "required": false; }; "focusId": { "alias": "focusId"; "required": false; }; "legend": { "alias": "legend"; "required": false; }; "edgeCurve": { "alias": "edgeCurve"; "required": false; }; "repulsion": { "alias": "repulsion"; "required": false; }; "onSelect": { "alias": "onSelect"; "required": false; }; "onOpenEntity": { "alias": "onOpenEntity"; "required": false; }; "onEdgeHover": { "alias": "onEdgeHover"; "required": false; }; "onNodeHover": { "alias": "onNodeHover"; "required": false; }; "mergePair": { "alias": "mergePair"; "required": false; }; "onMergeComplete": { "alias": "onMergeComplete"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<ForceGraph, "st-force-graph", never, { "nodes": { "alias": "nodes"; "required": false; }; "edges": { "alias": "edges"; "required": false; }; "label": { "alias": "label"; "required": false; }; "width": { "alias": "width"; "required": false; }; "height": { "alias": "height"; "required": false; }; "nodeRadius": { "alias": "nodeRadius"; "required": false; }; "showLabels": { "alias": "showLabels"; "required": false; }; "iterations": { "alias": "iterations"; "required": false; }; "selectedIds": { "alias": "selectedIds"; "required": false; }; "focusId": { "alias": "focusId"; "required": false; }; "legend": { "alias": "legend"; "required": false; }; "edgeCurve": { "alias": "edgeCurve"; "required": false; }; "repulsion": { "alias": "repulsion"; "required": false; }; "legendLabel": { "alias": "legendLabel"; "required": false; }; "onSelect": { "alias": "onSelect"; "required": false; }; "onOpenEntity": { "alias": "onOpenEntity"; "required": false; }; "onEdgeHover": { "alias": "onEdgeHover"; "required": false; }; "onNodeHover": { "alias": "onNodeHover"; "required": false; }; "mergePair": { "alias": "mergePair"; "required": false; }; "onMergeComplete": { "alias": "onMergeComplete"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
 }
 export {};
 //# sourceMappingURL=ForceGraph.d.ts.map

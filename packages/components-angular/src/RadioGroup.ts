@@ -26,14 +26,18 @@ export type RadioGroupProps = {
   selector: "st-radio-group",
   standalone: true,
   template: `
-    <fieldset [attr.data-st-component]="componentName" [class]="hostClass">
-      @if (label ?? legend) {
-        <legend class="st-radioGroup__legend">{{ label ?? legend }}</legend>
+    <fieldset [attr.data-st-component]="componentName" [class]="hostClass" [disabled]="disabled ?? false">
+      @if (legend ?? label) {
+        <legend class="st-radioGroup__legend">{{ legend ?? label }}</legend>
       }
-      <div class="st-radioGroup__list">
+      @if (helperText) {
+        <p class="st-radioGroup__help">{{ helperText }}</p>
+      }
+      <div class="st-radioGroup__options">
         @for (opt of options ?? []; track opt.value) {
-          <label class="st-radioGroup__option">
+          <label class="st-choice st-choice--radio">
             <input
+              class="st-choice__input"
               type="radio"
               [name]="name"
               [value]="opt.value"
@@ -41,7 +45,12 @@ export type RadioGroupProps = {
               [disabled]="opt.disabled ?? false"
               (change)="onChangeHandler(opt.value)"
             />
-            <span>{{ opt.label }}</span>
+            <span class="st-choice__content">
+              <span class="st-choice__label">{{ opt.label }}</span>
+              @if (opt.helperText) {
+                <span class="st-choice__help">{{ opt.helperText }}</span>
+              }
+            </span>
           </label>
         }
       </div>
@@ -68,7 +77,7 @@ export class RadioGroup {
   get hostClass(): string {
     return classNames(
       "st-radioGroup",
-      this.orientation ? `st-radioGroup--${this.orientation}` : undefined,
+      `st-radioGroup--${this.orientation ?? "vertical"}`,
       this.classInput,
     );
   }

@@ -33,14 +33,20 @@ export type NavActionStackProps = {
 export declare class NavActionStack {
     static readonly stComponentName = "NavActionStack";
     readonly componentName = "NavActionStack";
-    actions?: NavAction[];
+    actions: NavAction[];
     dangerZone?: NavActionDangerZone;
-    dangerLabel?: string;
-    orientation?: NavActionStackOrientation;
-    label?: string;
+    dangerLabel: string;
+    orientation: NavActionStackOrientation;
+    label: string;
     classInput?: string;
     get hostClass(): string;
+    /** Règle « un seul primary » appliquée au runtime, en miroir du type :
+     * on garde le premier `primary`, on dégrade les suivants en `secondary`. */
+    get normalizedActions(): Array<NavAction & {
+        kind: NavActionKind;
+    }>;
+    variantFor(kind: NavActionKind): "primary" | "secondary" | "ghost";
     static ɵfac: i0.ɵɵFactoryDeclaration<NavActionStack, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<NavActionStack, "st-nav-action-stack", never, { "actions": { "alias": "actions"; "required": false; }; "dangerZone": { "alias": "dangerZone"; "required": false; }; "dangerLabel": { "alias": "dangerLabel"; "required": false; }; "orientation": { "alias": "orientation"; "required": false; }; "label": { "alias": "label"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<NavActionStack, "st-nav-action-stack", never, { "actions": { "alias": "actions"; "required": false; }; "dangerZone": { "alias": "dangerZone"; "required": false; }; "dangerLabel": { "alias": "dangerLabel"; "required": false; }; "orientation": { "alias": "orientation"; "required": false; }; "label": { "alias": "label"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
 }
 //# sourceMappingURL=NavActionStack.d.ts.map

@@ -3,6 +3,9 @@ import * as i0 from "@angular/core";
 export type SearchSize = "sm" | "md" | "lg";
 export type SearchProps = {
     label?: unknown;
+    helperText?: unknown;
+    errorText?: unknown;
+    invalid?: boolean;
     size?: SearchSize;
     modelValue?: string;
     /** Svelte/React-canonical alias for `modelValue`. */
@@ -27,6 +30,9 @@ export declare class Search {
     readonly componentName = "Search";
     private readonly autoId;
     label?: unknown;
+    helperText?: unknown;
+    errorText?: unknown;
+    invalid?: boolean;
     size?: SearchSize;
     modelValue?: string;
     value?: string;
@@ -51,11 +57,13 @@ export declare class Search {
     get inputId(): string;
     get currentValue(): string;
     get clearLabelText(): string;
+    get isInvalid(): boolean;
     get hostClass(): string;
+    get groupClass(): string;
     handleInput(event: Event): void;
     handleClear(): void;
     private emitModelValue;
     static ɵfac: i0.ɵɵFactoryDeclaration<Search, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<Search, "st-search", never, { "label": { "alias": "label"; "required": false; }; "size": { "alias": "size"; "required": false; }; "modelValue": { "alias": "modelValue"; "required": false; }; "value": { "alias": "value"; "required": false; }; "placeholder": { "alias": "placeholder"; "required": false; }; "clearLabel": { "alias": "clearLabel"; "required": false; }; "fluid": { "alias": "fluid"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "id": { "alias": "id"; "required": false; }; "name": { "alias": "name"; "required": false; }; "autocomplete": { "alias": "autocomplete"; "required": false; }; "required": { "alias": "required"; "required": false; }; "readOnly": { "alias": "readonly"; "required": false; }; "inputMode": { "alias": "inputmode"; "required": false; }; "ariaLabel": { "alias": "aria-label"; "required": false; }; "ariaDescribedBy": { "alias": "aria-describedby"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, { "modelValueChange": "modelValueChange"; "updateModelValue": "update:modelValue"; "input": "input"; "change": "change"; "clear": "clear"; }, never, never, true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<Search, "st-search", never, { "label": { "alias": "label"; "required": false; }; "helperText": { "alias": "helperText"; "required": false; }; "errorText": { "alias": "errorText"; "required": false; }; "invalid": { "alias": "invalid"; "required": false; }; "size": { "alias": "size"; "required": false; }; "modelValue": { "alias": "modelValue"; "required": false; }; "value": { "alias": "value"; "required": false; }; "placeholder": { "alias": "placeholder"; "required": false; }; "clearLabel": { "alias": "clearLabel"; "required": false; }; "fluid": { "alias": "fluid"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "id": { "alias": "id"; "required": false; }; "name": { "alias": "name"; "required": false; }; "autocomplete": { "alias": "autocomplete"; "required": false; }; "required": { "alias": "required"; "required": false; }; "readOnly": { "alias": "readonly"; "required": false; }; "inputMode": { "alias": "inputmode"; "required": false; }; "ariaLabel": { "alias": "aria-label"; "required": false; }; "ariaDescribedBy": { "alias": "aria-describedby"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, { "modelValueChange": "modelValueChange"; "updateModelValue": "update:modelValue"; "input": "input"; "change": "change"; "clear": "clear"; }, never, never, true, never>;
 }
 //# sourceMappingURL=Search.d.ts.map

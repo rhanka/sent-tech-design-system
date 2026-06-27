@@ -31,6 +31,10 @@ export declare class DataImage {
     loading?: "eager" | "lazy";
     decoding?: "async" | "sync" | "auto";
     classInput?: string;
+    private len;
+    get widthStyle(): string | null;
+    get heightStyle(): string | null;
+    get radiusStyle(): string | null;
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<DataImage, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<DataImage, "st-data-image", never, { "src": { "alias": "src"; "required": false; }; "alt": { "alias": "alt"; "required": false; }; "width": { "alias": "width"; "required": false; }; "height": { "alias": "height"; "required": false; }; "fit": { "alias": "fit"; "required": false; }; "radius": { "alias": "radius"; "required": false; }; "loading": { "alias": "loading"; "required": false; }; "decoding": { "alias": "decoding"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;

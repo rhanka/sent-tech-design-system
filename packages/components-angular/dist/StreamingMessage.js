@@ -8,28 +8,37 @@ export class StreamingMessage {
     content;
     text;
     events;
-    mode;
+    mode = "live";
+    placeholder = "Streaming en cours…";
     classInput;
     get hostClass() {
-        return classNames("st-streamingMessage", this.streaming ? "st-streamingMessage--streaming" : undefined, this.classInput);
+        return classNames("st-streamingMessage", `st-streamingMessage--${this.mode}`, this.classInput);
     }
     get resolvedText() {
         return this.content ?? this.text;
     }
+    get isEmpty() {
+        const value = this.resolvedText;
+        return value == null || value === "";
+    }
+    get textClass() {
+        return classNames("st-streamingMessage__text", this.isEmpty && "st-streamingMessage__text--muted");
+    }
+    get displayText() {
+        return this.isEmpty ? this.placeholder : this.resolvedText;
+    }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: StreamingMessage, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: StreamingMessage, isStandalone: true, selector: "st-streaming-message", inputs: { streaming: "streaming", content: "content", text: "text", events: "events", mode: "mode", classInput: ["class", "classInput"] }, ngImport: i0, template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <div class="st-streamingMessage__content">
-        @if (resolvedText) {
-          <p class="st-streamingMessage__text">{{ resolvedText }}</p>
-        } @else {
-          <p class="st-streamingMessage__text st-streamingMessage__text--muted">Streaming en cours…</p>
-        }
-      </div>
-      @if (streaming) {
-        <span class="st-streamingMessage__cursor" aria-hidden="true"></span>
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: StreamingMessage, isStandalone: true, selector: "st-streaming-message", inputs: { streaming: "streaming", content: "content", text: "text", events: "events", mode: "mode", placeholder: "placeholder", classInput: ["class", "classInput"] }, ngImport: i0, template: `
+    <section [attr.data-st-component]="componentName" [class]="hostClass">
+      <p [class]="textClass">{{ displayText }}</p>
+      @if (events?.length) {
+        <ul class="st-streamingMessage__trailList">
+          @for (event of events ?? []; track event.id) {
+            <li>{{ event.label }}</li>
+          }
+        </ul>
       }
-    </div>
+    </section>
   `, isInline: true });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: StreamingMessage, decorators: [{
@@ -38,18 +47,16 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     selector: "st-streaming-message",
                     standalone: true,
                     template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <div class="st-streamingMessage__content">
-        @if (resolvedText) {
-          <p class="st-streamingMessage__text">{{ resolvedText }}</p>
-        } @else {
-          <p class="st-streamingMessage__text st-streamingMessage__text--muted">Streaming en cours…</p>
-        }
-      </div>
-      @if (streaming) {
-        <span class="st-streamingMessage__cursor" aria-hidden="true"></span>
+    <section [attr.data-st-component]="componentName" [class]="hostClass">
+      <p [class]="textClass">{{ displayText }}</p>
+      @if (events?.length) {
+        <ul class="st-streamingMessage__trailList">
+          @for (event of events ?? []; track event.id) {
+            <li>{{ event.label }}</li>
+          }
+        </ul>
       }
-    </div>
+    </section>
   `,
                 }]
         }], propDecorators: { streaming: [{
@@ -61,6 +68,8 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
             }], events: [{
                 type: NgInput
             }], mode: [{
+                type: NgInput
+            }], placeholder: [{
                 type: NgInput
             }], classInput: [{
                 type: NgInput,

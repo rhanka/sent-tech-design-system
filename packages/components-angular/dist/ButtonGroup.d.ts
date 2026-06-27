@@ -22,6 +22,7 @@ export declare class ButtonGroup {
     size?: ButtonGroupSize;
     label?: string;
     classInput?: string;
+    get gapValue(): string | null;
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<ButtonGroup, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<ButtonGroup, "st-button-group", never, { "orientation": { "alias": "orientation"; "required": false; }; "attached": { "alias": "attached"; "required": false; }; "gap": { "alias": "gap"; "required": false; }; "size": { "alias": "size"; "required": false; }; "label": { "alias": "label"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;

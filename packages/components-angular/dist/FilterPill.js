@@ -7,10 +7,10 @@ export class FilterPill {
     field;
     value;
     operator;
-    active;
-    removable;
-    disabled;
-    tone;
+    active = true;
+    removable = true;
+    disabled = false;
+    tone = "neutral";
     onClick;
     onRemove;
     classInput;
@@ -19,7 +19,7 @@ export class FilterPill {
         return typeof this.onClick === "function";
     }
     get hostClass() {
-        return classNames("st-filterPill", this.tone && `st-filterPill--${this.tone}`, this.active !== false ? "st-filterPill--active" : undefined, this.disabled ? "st-filterPill--disabled" : undefined, this.classInput);
+        return classNames("st-filterPill", `st-filterPill--${this.tone}`, this.active !== false ? "st-filterPill--active" : undefined, this.disabled ? "st-filterPill--disabled" : undefined, this.classInput);
     }
     handleClick() {
         if (this.disabled)
@@ -31,6 +31,15 @@ export class FilterPill {
             return;
         this.onRemove?.();
         this.remove.emit();
+    }
+    handleBodyKeydown(event) {
+        if (this.disabled)
+            return;
+        if ((event.key === "Delete" || event.key === "Backspace") && this.removable !== false) {
+            event.preventDefault();
+            this.onRemove?.();
+            this.remove.emit();
+        }
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: FilterPill, deps: [], target: i0.ɵɵFactoryTarget.Component });
     static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: FilterPill, isStandalone: true, selector: "st-filter-pill", inputs: { field: "field", value: "value", operator: "operator", active: "active", removable: "removable", disabled: "disabled", tone: "tone", onClick: "onClick", onRemove: "onRemove", classInput: ["class", "classInput"] }, outputs: { remove: "remove" }, ngImport: i0, template: `
@@ -45,8 +54,9 @@ export class FilterPill {
           type="button"
           class="st-filterPill__body"
           [attr.aria-pressed]="active !== false ? 'true' : 'false'"
-          [disabled]="disabled"
+          [disabled]="disabled || null"
           (click)="handleClick()"
+          (keydown)="handleBodyKeydown($event)"
         >
           <span class="st-filterPill__field">{{ field }}</span>
           @if (operator) {
@@ -68,9 +78,14 @@ export class FilterPill {
           type="button"
           class="st-filterPill__remove"
           [attr.aria-label]="'Retirer le filtre ' + field"
-          [disabled]="disabled"
+          [disabled]="disabled || null"
           (click)="handleRemove()"
-        >&#x2715;</button>
+        >
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M18 6 6 18"/>
+            <path d="m6 6 12 12"/>
+          </svg>
+        </button>
       }
     </span>
   `, isInline: true });
@@ -92,8 +107,9 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
           type="button"
           class="st-filterPill__body"
           [attr.aria-pressed]="active !== false ? 'true' : 'false'"
-          [disabled]="disabled"
+          [disabled]="disabled || null"
           (click)="handleClick()"
+          (keydown)="handleBodyKeydown($event)"
         >
           <span class="st-filterPill__field">{{ field }}</span>
           @if (operator) {
@@ -115,9 +131,14 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
           type="button"
           class="st-filterPill__remove"
           [attr.aria-label]="'Retirer le filtre ' + field"
-          [disabled]="disabled"
+          [disabled]="disabled || null"
           (click)="handleRemove()"
-        >&#x2715;</button>
+        >
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M18 6 6 18"/>
+            <path d="m6 6 12 12"/>
+          </svg>
+        </button>
       }
     </span>
   `,

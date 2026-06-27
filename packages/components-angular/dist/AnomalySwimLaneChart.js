@@ -1,4 +1,3 @@
-import { NgFor } from "@angular/common";
 import { Component, Input as NgInput } from "@angular/core";
 import { classNames } from "./classNames.js";
 import * as i0 from "@angular/core";
@@ -159,22 +158,6 @@ export class AnomalySwimLaneChart {
         }
         return null;
     }
-    get tooltipLeft() {
-        const hovered = this.hoveredCell;
-        return hovered ? `${(hovered.cell.cx / this.resolvedWidth) * 100}%` : "0%";
-    }
-    get tooltipTop() {
-        const hovered = this.hoveredCell;
-        return hovered ? `${((hovered.row.y + hovered.row.height / 2) / this.resolvedHeight) * 100}%` : "0%";
-    }
-    get tooltipLabel() {
-        const hovered = this.hoveredCell;
-        return hovered ? `${hovered.row.datum.job} · ${hovered.cell.datum.at}` : "";
-    }
-    get tooltipValue() {
-        const hovered = this.hoveredCell;
-        return hovered ? String(hovered.cell.datum.score) : "";
-    }
     ellipsize(text, maxChars) {
         return ellipsizeLabel(text, maxChars);
     }
@@ -196,7 +179,7 @@ export class AnomalySwimLaneChart {
         this.hoveredKey = null;
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: AnomalySwimLaneChart, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: AnomalySwimLaneChart, isStandalone: true, selector: "st-anomaly-swim-lane-chart", inputs: { data: "data", max: "max", scale: "scale", label: "label", width: "width", height: "height", size: "size", classInput: ["class", "classInput"] }, ngImport: i0, template: `
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: AnomalySwimLaneChart, isStandalone: true, selector: "st-anomaly-swim-lane-chart", inputs: { data: "data", max: "max", scale: "scale", label: "label", width: "width", height: "height", size: "size", classInput: ["class", "classInput"] }, ngImport: i0, template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
       <div
         class="st-anomalySwimLaneChart__visual"
@@ -213,13 +196,14 @@ export class AnomalySwimLaneChart {
           focusable="false"
           aria-hidden="true"
         >
-          <text
-            *ngFor="let column of columns"
-            class="st-anomalySwimLaneChart__tickLabel"
-            [attr.x]="column.cx"
-            [attr.y]="resolvedHeight - margin.bottom + 16"
-            text-anchor="middle"
-          >{{ formatTick(column.at) }}</text>
+          @for (column of columns; track column.at) {
+            <text
+              class="st-anomalySwimLaneChart__tickLabel"
+              [attr.x]="column.cx"
+              [attr.y]="resolvedHeight - margin.bottom + 16"
+              text-anchor="middle"
+            >{{ formatTick(column.at) }}</text>
+          }
 
           <line
             class="st-anomalySwimLaneChart__axis"
@@ -236,7 +220,7 @@ export class AnomalySwimLaneChart {
             [attr.y2]="resolvedHeight - margin.bottom"
           ></line>
 
-          <ng-container *ngFor="let row of rows">
+          @for (row of rows; track row.index) {
             <text
               class="st-anomalySwimLaneChart__jobLabel"
               [attr.x]="margin.left - 8"
@@ -245,54 +229,60 @@ export class AnomalySwimLaneChart {
               dominant-baseline="middle"
             >{{ ellipsize(row.datum.job, 18) }}</text>
 
-            <rect
-              *ngFor="let cell of row.cells"
-              [attr.class]="cellClass(cell.key, cell.tone)"
-              [attr.x]="cell.x"
-              [attr.y]="row.y"
-              [attr.width]="cell.width"
-              [attr.height]="row.height"
-              rx="2"
-              [attr.data-chart-key]="cell.key"
-            ></rect>
-          </ng-container>
+            @for (cell of row.cells; track cell.key) {
+              <rect
+                [attr.class]="cellClass(cell.key, cell.tone)"
+                [attr.x]="cell.x"
+                [attr.y]="row.y"
+                [attr.width]="cell.width"
+                [attr.height]="row.height"
+                rx="2"
+                [attr.data-chart-key]="cell.key"
+              ></rect>
+            }
+          }
         </svg>
       </div>
 
-      <ul class="st-chartDataList" [attr.aria-label]="(label ?? 'anomaly swim lane') + ' data'">
-        <li *ngFor="let item of dataValueItems">{{ item }}</li>
-      </ul>
+      @if (hasLegend) {
+        <div class="st-anomalySwimLaneChart__legend" aria-hidden="true">
+          <span class="st-anomalySwimLaneChart__legendText">Low</span>
+          <span class="st-anomalySwimLaneChart__legendRamp">
+            @for (tone of tones; track tone) {
+              <span [attr.class]="'st-anomalySwimLaneChart__legendSwatch st-anomalySwimLaneChart__legendSwatch--' + tone"></span>
+            }
+          </span>
+          <span class="st-anomalySwimLaneChart__legendText">High</span>
+        </div>
+      }
 
-      <div
-        class="st-anomalySwimLaneChart__tooltip"
-        role="presentation"
-        [style.display]="hoveredCell ? 'inline-flex' : 'none'"
-        [style.left]="tooltipLeft"
-        [style.top]="tooltipTop"
-      >
-        <span class="st-anomalySwimLaneChart__tooltipLabel">{{ tooltipLabel }}</span>
-        <span class="st-anomalySwimLaneChart__tooltipValue">{{ tooltipValue }}</span>
-      </div>
+      @if (dataValueItems.length > 0) {
+        <ul class="st-chartDataList" [attr.aria-label]="'Data values for ' + (label ?? 'anomaly swim lane')">
+          @for (item of dataValueItems; track $index) {
+            <li>{{ item }}</li>
+          }
+        </ul>
+      }
 
-      <div class="st-anomalySwimLaneChart__legend" aria-hidden="true" [style.display]="hasLegend ? 'flex' : 'none'">
-        <span class="st-anomalySwimLaneChart__legendText">Low</span>
-        <span class="st-anomalySwimLaneChart__legendRamp">
-          <span
-            *ngFor="let tone of tones"
-            [attr.class]="'st-anomalySwimLaneChart__legendSwatch st-anomalySwimLaneChart__legendSwatch--' + tone"
-          ></span>
-        </span>
-        <span class="st-anomalySwimLaneChart__legendText">High</span>
-      </div>
+      @if (hoveredCell; as hovered) {
+        <div
+          class="st-anomalySwimLaneChart__tooltip"
+          role="presentation"
+          [style.left.%]="(hovered.cell.cx / resolvedWidth) * 100"
+          [style.top.%]="(hovered.row.rowCenterY / resolvedHeight) * 100"
+        >
+          <span class="st-anomalySwimLaneChart__tooltipLabel">{{ hovered.row.datum.job }} · {{ hovered.cell.datum.at }}</span>
+          <span class="st-anomalySwimLaneChart__tooltipValue">{{ hovered.cell.datum.score }}</span>
+        </div>
+      }
     </div>
-  `, isInline: true, dependencies: [{ kind: "directive", type: NgFor, selector: "[ngFor][ngForOf]", inputs: ["ngForOf", "ngForTrackBy", "ngForTemplate"] }] });
+  `, isInline: true });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: AnomalySwimLaneChart, decorators: [{
             type: Component,
             args: [{
                     selector: "st-anomaly-swim-lane-chart",
                     standalone: true,
-                    imports: [NgFor],
                     template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
       <div
@@ -310,13 +300,14 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
           focusable="false"
           aria-hidden="true"
         >
-          <text
-            *ngFor="let column of columns"
-            class="st-anomalySwimLaneChart__tickLabel"
-            [attr.x]="column.cx"
-            [attr.y]="resolvedHeight - margin.bottom + 16"
-            text-anchor="middle"
-          >{{ formatTick(column.at) }}</text>
+          @for (column of columns; track column.at) {
+            <text
+              class="st-anomalySwimLaneChart__tickLabel"
+              [attr.x]="column.cx"
+              [attr.y]="resolvedHeight - margin.bottom + 16"
+              text-anchor="middle"
+            >{{ formatTick(column.at) }}</text>
+          }
 
           <line
             class="st-anomalySwimLaneChart__axis"
@@ -333,7 +324,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
             [attr.y2]="resolvedHeight - margin.bottom"
           ></line>
 
-          <ng-container *ngFor="let row of rows">
+          @for (row of rows; track row.index) {
             <text
               class="st-anomalySwimLaneChart__jobLabel"
               [attr.x]="margin.left - 8"
@@ -342,45 +333,52 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
               dominant-baseline="middle"
             >{{ ellipsize(row.datum.job, 18) }}</text>
 
-            <rect
-              *ngFor="let cell of row.cells"
-              [attr.class]="cellClass(cell.key, cell.tone)"
-              [attr.x]="cell.x"
-              [attr.y]="row.y"
-              [attr.width]="cell.width"
-              [attr.height]="row.height"
-              rx="2"
-              [attr.data-chart-key]="cell.key"
-            ></rect>
-          </ng-container>
+            @for (cell of row.cells; track cell.key) {
+              <rect
+                [attr.class]="cellClass(cell.key, cell.tone)"
+                [attr.x]="cell.x"
+                [attr.y]="row.y"
+                [attr.width]="cell.width"
+                [attr.height]="row.height"
+                rx="2"
+                [attr.data-chart-key]="cell.key"
+              ></rect>
+            }
+          }
         </svg>
       </div>
 
-      <ul class="st-chartDataList" [attr.aria-label]="(label ?? 'anomaly swim lane') + ' data'">
-        <li *ngFor="let item of dataValueItems">{{ item }}</li>
-      </ul>
+      @if (hasLegend) {
+        <div class="st-anomalySwimLaneChart__legend" aria-hidden="true">
+          <span class="st-anomalySwimLaneChart__legendText">Low</span>
+          <span class="st-anomalySwimLaneChart__legendRamp">
+            @for (tone of tones; track tone) {
+              <span [attr.class]="'st-anomalySwimLaneChart__legendSwatch st-anomalySwimLaneChart__legendSwatch--' + tone"></span>
+            }
+          </span>
+          <span class="st-anomalySwimLaneChart__legendText">High</span>
+        </div>
+      }
 
-      <div
-        class="st-anomalySwimLaneChart__tooltip"
-        role="presentation"
-        [style.display]="hoveredCell ? 'inline-flex' : 'none'"
-        [style.left]="tooltipLeft"
-        [style.top]="tooltipTop"
-      >
-        <span class="st-anomalySwimLaneChart__tooltipLabel">{{ tooltipLabel }}</span>
-        <span class="st-anomalySwimLaneChart__tooltipValue">{{ tooltipValue }}</span>
-      </div>
+      @if (dataValueItems.length > 0) {
+        <ul class="st-chartDataList" [attr.aria-label]="'Data values for ' + (label ?? 'anomaly swim lane')">
+          @for (item of dataValueItems; track $index) {
+            <li>{{ item }}</li>
+          }
+        </ul>
+      }
 
-      <div class="st-anomalySwimLaneChart__legend" aria-hidden="true" [style.display]="hasLegend ? 'flex' : 'none'">
-        <span class="st-anomalySwimLaneChart__legendText">Low</span>
-        <span class="st-anomalySwimLaneChart__legendRamp">
-          <span
-            *ngFor="let tone of tones"
-            [attr.class]="'st-anomalySwimLaneChart__legendSwatch st-anomalySwimLaneChart__legendSwatch--' + tone"
-          ></span>
-        </span>
-        <span class="st-anomalySwimLaneChart__legendText">High</span>
-      </div>
+      @if (hoveredCell; as hovered) {
+        <div
+          class="st-anomalySwimLaneChart__tooltip"
+          role="presentation"
+          [style.left.%]="(hovered.cell.cx / resolvedWidth) * 100"
+          [style.top.%]="(hovered.row.rowCenterY / resolvedHeight) * 100"
+        >
+          <span class="st-anomalySwimLaneChart__tooltipLabel">{{ hovered.row.datum.job }} · {{ hovered.cell.datum.at }}</span>
+          <span class="st-anomalySwimLaneChart__tooltipValue">{{ hovered.cell.datum.score }}</span>
+        </div>
+      }
     </div>
   `,
                 }]

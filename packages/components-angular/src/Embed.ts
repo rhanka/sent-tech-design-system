@@ -2,8 +2,6 @@ import { Component, Input as NgInput } from "@angular/core";
 
 import { classNames } from "./classNames.js";
 
-import { AspectRatio } from "./AspectRatio.js";
-
 export type EmbedProps = {
   /** URL of the embedded document (required). */
   src: string;
@@ -30,15 +28,15 @@ export type EmbedProps = {
   selector: "st-embed",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass" [style.aspect-ratio]="aspectRatio ?? '16/9'">
-      <iframe class="st-embed__frame"
-        [attr.src]="src"
-        [title]="title"
-        [attr.sandbox]="sandbox ?? null"
-        [attr.allow]="allow ?? null"
-        [attr.loading]="loading ?? null"
-        width="100%" height="100%"
-        frameborder="0"></iframe>
+    <div [attr.data-st-component]="componentName" [class]="hostClass">
+      <div class="st-aspectRatio" [style.aspect-ratio]="aspectRatio ?? '16/9'">
+        <iframe class="st-embed__frame"
+          [attr.src]="src"
+          [title]="title"
+          [attr.sandbox]="sandbox ?? ''"
+          [attr.allow]="allow ?? null"
+          [attr.loading]="loading ?? 'lazy'"></iframe>
+      </div>
     </div>
   `,
 })

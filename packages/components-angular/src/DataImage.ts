@@ -28,16 +28,17 @@ export type DataImageProps = {
   selector: "st-data-image",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <img class="st-dataImage__img"
-        [src]="src" [alt]="alt"
-        [attr.width]="width ?? null"
-        [attr.height]="height ?? null"
-        [attr.loading]="loading ?? null"
-        [attr.decoding]="decoding ?? null"
-        [style.object-fit]="fit ?? null"
-        [style.border-radius]="radius ?? null" />
-    </div>
+    <img
+      [attr.data-st-component]="componentName"
+      [class]="hostClass"
+      [src]="src"
+      [alt]="alt"
+      [style.width]="widthStyle"
+      [style.height]="heightStyle"
+      [style.border-radius]="radiusStyle"
+      [attr.loading]="loading ?? 'lazy'"
+      [attr.decoding]="decoding ?? 'async'"
+    />
   `,
 })
 export class DataImage {
@@ -53,10 +54,27 @@ export class DataImage {
   @NgInput() decoding?: "async" | "sync" | "auto";
   @NgInput("class") classInput?: string;
 
+  private len(v: number | string | undefined): string | null {
+    if (v === undefined) return null;
+    return typeof v === "number" ? `${v}px` : v;
+  }
+
+  get widthStyle(): string | null {
+    return this.len(this.width);
+  }
+
+  get heightStyle(): string | null {
+    return this.len(this.height);
+  }
+
+  get radiusStyle(): string | null {
+    return this.len(this.radius);
+  }
+
   get hostClass(): string {
     return classNames(
       "st-dataImage",
-      this.fit && `st-dataImage--${this.fit}`,
+      `st-dataImage--${this.fit ?? "cover"}`,
       this.classInput,
     );
   }

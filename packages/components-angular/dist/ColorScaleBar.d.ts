@@ -21,8 +21,16 @@ export declare class ColorScaleBar {
     max?: string;
     label?: string;
     classInput?: string;
+    get isVertical(): boolean;
+    get stops(): string[];
+    get gradient(): string;
+    private get safeLength();
+    private get safeThickness();
+    get barWidthPx(): number | null;
+    get barHeightPx(): number | null;
+    get hasEndLabels(): boolean;
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<ColorScaleBar, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<ColorScaleBar, "st-color-scale-bar", never, { "colors": { "alias": "colors"; "required": false; }; "orientation": { "alias": "orientation"; "required": false; }; "length": { "alias": "length"; "required": false; }; "thickness": { "alias": "thickness"; "required": false; }; "min": { "alias": "min"; "required": false; }; "max": { "alias": "max"; "required": false; }; "label": { "alias": "label"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<ColorScaleBar, "st-color-scale-bar", never, { "colors": { "alias": "colors"; "required": false; }; "orientation": { "alias": "orientation"; "required": false; }; "length": { "alias": "length"; "required": false; }; "thickness": { "alias": "thickness"; "required": false; }; "min": { "alias": "min"; "required": false; }; "max": { "alias": "max"; "required": false; }; "label": { "alias": "label"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
 }
 //# sourceMappingURL=ColorScaleBar.d.ts.map

@@ -7,12 +7,12 @@ export class ContentSwitcher {
     items;
     value;
     activeId;
-    size;
+    size = "md";
     onchange;
     classInput;
     localValue;
     get hostClass() {
-        return classNames("st-contentSwitcher", this.size && `st-contentSwitcher--${this.size}`, this.classInput);
+        return classNames("st-contentSwitcher", `st-contentSwitcher--${this.size}`, this.classInput);
     }
     itemKey(item, index) {
         return item.id ?? item.value ?? String(index);
@@ -24,7 +24,7 @@ export class ContentSwitcher {
         return item.value === active || item.id === active;
     }
     buttonClass(item, index) {
-        return classNames("st-contentSwitcher__button", this.isActive(item, index) && "st-contentSwitcher__button--active");
+        return classNames("st-contentSwitcher__option st-contentSwitcher__button", this.isActive(item, index) && "st-contentSwitcher__option--selected");
     }
     select(item, index) {
         const key = item.value ?? item.id ?? String(index);

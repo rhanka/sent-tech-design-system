@@ -1,3 +1,4 @@
+import { EventEmitter } from "@angular/core";
 import * as i0 from "@angular/core";
 export interface NavRailItem {
     id: string;
@@ -16,12 +17,15 @@ export type NavRailProps = {
 export declare class NavRail {
     static readonly stComponentName = "NavRail";
     readonly componentName = "NavRail";
-    items?: NavRailItem[];
+    items: NavRailItem[];
     label: string;
     activeItemId?: string;
     classInput?: string;
+    readonly itemSelect: EventEmitter<string>;
     get hostClass(): string;
+    isActive(item: NavRailItem): boolean;
+    selectItem(item: NavRailItem): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<NavRail, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<NavRail, "st-nav-rail", never, { "items": { "alias": "items"; "required": false; }; "label": { "alias": "label"; "required": false; }; "activeItemId": { "alias": "activeItemId"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<NavRail, "st-nav-rail", never, { "items": { "alias": "items"; "required": false; }; "label": { "alias": "label"; "required": false; }; "activeItemId": { "alias": "activeItemId"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, { "itemSelect": "itemSelect"; }, never, ["*"], true, never>;
 }
 //# sourceMappingURL=NavRail.d.ts.map

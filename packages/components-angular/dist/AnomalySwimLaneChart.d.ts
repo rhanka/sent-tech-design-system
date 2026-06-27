@@ -75,10 +75,6 @@ export declare class AnomalySwimLaneChart {
         row: AnomalyRow;
         cell: AnomalyRowCell;
     } | null;
-    get tooltipLeft(): string;
-    get tooltipTop(): string;
-    get tooltipLabel(): string;
-    get tooltipValue(): string;
     ellipsize(text: string, maxChars: number): string;
     formatTick(value: number): string;
     cellClass(key: string, tone: AnomalySwimLaneTone): string;

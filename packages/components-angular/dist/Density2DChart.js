@@ -1,4 +1,3 @@
-import { NgFor } from "@angular/common";
 import { Component, Input as NgInput } from "@angular/core";
 import { classNames } from "./classNames.js";
 import * as i0 from "@angular/core";
@@ -224,7 +223,7 @@ export class Density2DChart {
         this.hoveredKey = null;
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Density2DChart, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: Density2DChart, isStandalone: true, selector: "st-density2-d-chart", inputs: { data: "data", bins: "bins", scale: "scale", label: "label", width: "width", height: "height", size: "size", classInput: ["class", "classInput"] }, ngImport: i0, template: `
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: Density2DChart, isStandalone: true, selector: "st-density2-d-chart", inputs: { data: "data", bins: "bins", scale: "scale", label: "label", width: "width", height: "height", size: "size", classInput: ["class", "classInput"] }, ngImport: i0, template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
       <div
         class="st-density2DChart__visual"
@@ -241,23 +240,28 @@ export class Density2DChart {
           focusable="false"
           aria-hidden="true"
         >
-          <text
-            *ngFor="let tick of yAxisTicks"
-            class="st-density2DChart__tickLabel"
-            [attr.x]="margin.left - 8"
-            [attr.y]="tick.y"
-            text-anchor="end"
-            dominant-baseline="middle"
-          >{{ formatTick(tick.value) }}</text>
+          <!-- tick labels (Y axis) -->
+          @for (tick of yAxisTicks; track tick.value) {
+            <text
+              class="st-density2DChart__tickLabel"
+              [attr.x]="margin.left - 8"
+              [attr.y]="tick.y"
+              text-anchor="end"
+              dominant-baseline="middle"
+            >{{ formatTick(tick.value) }}</text>
+          }
 
-          <text
-            *ngFor="let tick of xAxisTicks"
-            class="st-density2DChart__tickLabel"
-            [attr.x]="tick.x"
-            [attr.y]="resolvedHeight - margin.bottom + 16"
-            text-anchor="middle"
-          >{{ formatTick(tick.value) }}</text>
+          <!-- tick labels (X axis) -->
+          @for (tick of xAxisTicks; track tick.value) {
+            <text
+              class="st-density2DChart__tickLabel"
+              [attr.x]="tick.x"
+              [attr.y]="resolvedHeight - margin.bottom + 16"
+              text-anchor="middle"
+            >{{ formatTick(tick.value) }}</text>
+          }
 
+          <!-- axes -->
           <line
             class="st-density2DChart__axis"
             [attr.x1]="margin.left"
@@ -273,52 +277,58 @@ export class Density2DChart {
             [attr.y2]="resolvedHeight - margin.bottom"
           ></line>
 
-          <rect
-            *ngFor="let cell of binCells"
-            [attr.class]="cellClass(cell.key, cell.tone)"
-            [attr.x]="cell.x"
-            [attr.y]="cell.y"
-            [attr.width]="cell.width"
-            [attr.height]="cell.height"
-            [attr.data-chart-key]="cell.key"
-          ></rect>
+          <!-- density cells (binCount×binCount grid, color ∝ density) -->
+          @for (cell of binCells; track cell.key) {
+            <rect
+              [attr.class]="cellClass(cell.key, cell.tone)"
+              [attr.x]="cell.x"
+              [attr.y]="cell.y"
+              [attr.width]="cell.width"
+              [attr.height]="cell.height"
+              rx="1"
+              [attr.data-chart-key]="cell.key"
+            ></rect>
+          }
         </svg>
       </div>
 
-      <ul class="st-chartDataList" [attr.aria-label]="(label ?? 'density') + ' data'">
-        <li *ngFor="let item of dataValueItems">{{ item }}</li>
+      @if (hasLegend) {
+        <div class="st-density2DChart__legend" aria-hidden="true">
+          <span class="st-density2DChart__legendText">Low</span>
+          <span class="st-density2DChart__legendRamp">
+            @for (tone of tones; track tone) {
+              <span [attr.class]="'st-density2DChart__legendSwatch st-density2DChart__legendSwatch--' + tone"></span>
+            }
+          </span>
+          <span class="st-density2DChart__legendText">High</span>
+        </div>
+      }
+
+      <ul class="st-chartDataList" [attr.aria-label]="'Data values for ' + (label ?? 'density 2d')">
+        @for (item of dataValueItems; track $index) {
+          <li>{{ item }}</li>
+        }
       </ul>
 
-      <div
-        class="st-density2DChart__tooltip"
-        role="presentation"
-        [style.display]="hoveredCell ? 'inline-flex' : 'none'"
-        [style.left]="tooltipLeft"
-        [style.top]="tooltipTop"
-      >
-        <span class="st-density2DChart__tooltipLabel">{{ tooltipLabel }}</span>
-        <span class="st-density2DChart__tooltipValue">{{ tooltipValue }}</span>
-      </div>
-
-      <div class="st-density2DChart__legend" aria-hidden="true" [style.display]="hasLegend ? 'flex' : 'none'">
-        <span class="st-density2DChart__legendText">Low</span>
-        <span class="st-density2DChart__legendRamp">
-          <span
-            *ngFor="let tone of tones"
-            [attr.class]="'st-density2DChart__legendSwatch st-density2DChart__legendSwatch--' + tone"
-          ></span>
-        </span>
-        <span class="st-density2DChart__legendText">High</span>
-      </div>
+      @if (hoveredCell) {
+        <div
+          class="st-density2DChart__tooltip"
+          role="presentation"
+          [style.left]="tooltipLeft"
+          [style.top]="tooltipTop"
+        >
+          <span class="st-density2DChart__tooltipLabel">{{ tooltipLabel }}</span>
+          <span class="st-density2DChart__tooltipValue">{{ tooltipValue }}</span>
+        </div>
+      }
     </div>
-  `, isInline: true, dependencies: [{ kind: "directive", type: NgFor, selector: "[ngFor][ngForOf]", inputs: ["ngForOf", "ngForTrackBy", "ngForTemplate"] }] });
+  `, isInline: true });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Density2DChart, decorators: [{
             type: Component,
             args: [{
                     selector: "st-density2-d-chart",
                     standalone: true,
-                    imports: [NgFor],
                     template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
       <div
@@ -336,23 +346,28 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
           focusable="false"
           aria-hidden="true"
         >
-          <text
-            *ngFor="let tick of yAxisTicks"
-            class="st-density2DChart__tickLabel"
-            [attr.x]="margin.left - 8"
-            [attr.y]="tick.y"
-            text-anchor="end"
-            dominant-baseline="middle"
-          >{{ formatTick(tick.value) }}</text>
+          <!-- tick labels (Y axis) -->
+          @for (tick of yAxisTicks; track tick.value) {
+            <text
+              class="st-density2DChart__tickLabel"
+              [attr.x]="margin.left - 8"
+              [attr.y]="tick.y"
+              text-anchor="end"
+              dominant-baseline="middle"
+            >{{ formatTick(tick.value) }}</text>
+          }
 
-          <text
-            *ngFor="let tick of xAxisTicks"
-            class="st-density2DChart__tickLabel"
-            [attr.x]="tick.x"
-            [attr.y]="resolvedHeight - margin.bottom + 16"
-            text-anchor="middle"
-          >{{ formatTick(tick.value) }}</text>
+          <!-- tick labels (X axis) -->
+          @for (tick of xAxisTicks; track tick.value) {
+            <text
+              class="st-density2DChart__tickLabel"
+              [attr.x]="tick.x"
+              [attr.y]="resolvedHeight - margin.bottom + 16"
+              text-anchor="middle"
+            >{{ formatTick(tick.value) }}</text>
+          }
 
+          <!-- axes -->
           <line
             class="st-density2DChart__axis"
             [attr.x1]="margin.left"
@@ -368,43 +383,50 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
             [attr.y2]="resolvedHeight - margin.bottom"
           ></line>
 
-          <rect
-            *ngFor="let cell of binCells"
-            [attr.class]="cellClass(cell.key, cell.tone)"
-            [attr.x]="cell.x"
-            [attr.y]="cell.y"
-            [attr.width]="cell.width"
-            [attr.height]="cell.height"
-            [attr.data-chart-key]="cell.key"
-          ></rect>
+          <!-- density cells (binCount×binCount grid, color ∝ density) -->
+          @for (cell of binCells; track cell.key) {
+            <rect
+              [attr.class]="cellClass(cell.key, cell.tone)"
+              [attr.x]="cell.x"
+              [attr.y]="cell.y"
+              [attr.width]="cell.width"
+              [attr.height]="cell.height"
+              rx="1"
+              [attr.data-chart-key]="cell.key"
+            ></rect>
+          }
         </svg>
       </div>
 
-      <ul class="st-chartDataList" [attr.aria-label]="(label ?? 'density') + ' data'">
-        <li *ngFor="let item of dataValueItems">{{ item }}</li>
+      @if (hasLegend) {
+        <div class="st-density2DChart__legend" aria-hidden="true">
+          <span class="st-density2DChart__legendText">Low</span>
+          <span class="st-density2DChart__legendRamp">
+            @for (tone of tones; track tone) {
+              <span [attr.class]="'st-density2DChart__legendSwatch st-density2DChart__legendSwatch--' + tone"></span>
+            }
+          </span>
+          <span class="st-density2DChart__legendText">High</span>
+        </div>
+      }
+
+      <ul class="st-chartDataList" [attr.aria-label]="'Data values for ' + (label ?? 'density 2d')">
+        @for (item of dataValueItems; track $index) {
+          <li>{{ item }}</li>
+        }
       </ul>
 
-      <div
-        class="st-density2DChart__tooltip"
-        role="presentation"
-        [style.display]="hoveredCell ? 'inline-flex' : 'none'"
-        [style.left]="tooltipLeft"
-        [style.top]="tooltipTop"
-      >
-        <span class="st-density2DChart__tooltipLabel">{{ tooltipLabel }}</span>
-        <span class="st-density2DChart__tooltipValue">{{ tooltipValue }}</span>
-      </div>
-
-      <div class="st-density2DChart__legend" aria-hidden="true" [style.display]="hasLegend ? 'flex' : 'none'">
-        <span class="st-density2DChart__legendText">Low</span>
-        <span class="st-density2DChart__legendRamp">
-          <span
-            *ngFor="let tone of tones"
-            [attr.class]="'st-density2DChart__legendSwatch st-density2DChart__legendSwatch--' + tone"
-          ></span>
-        </span>
-        <span class="st-density2DChart__legendText">High</span>
-      </div>
+      @if (hoveredCell) {
+        <div
+          class="st-density2DChart__tooltip"
+          role="presentation"
+          [style.left]="tooltipLeft"
+          [style.top]="tooltipTop"
+        >
+          <span class="st-density2DChart__tooltipLabel">{{ tooltipLabel }}</span>
+          <span class="st-density2DChart__tooltipValue">{{ tooltipValue }}</span>
+        </div>
+      }
     </div>
   `,
                 }]

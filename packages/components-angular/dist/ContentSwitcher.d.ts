@@ -20,7 +20,7 @@ export declare class ContentSwitcher {
     items: ContentSwitcherItem[];
     value?: string;
     activeId?: string;
-    size?: ContentSwitcherSize;
+    size: ContentSwitcherSize;
     onchange?: (value: string) => void;
     classInput?: string;
     private localValue?;

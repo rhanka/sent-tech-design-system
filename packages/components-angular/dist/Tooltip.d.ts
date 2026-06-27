@@ -16,6 +16,6 @@ export declare class Tooltip {
     classInput?: string;
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<Tooltip, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<Tooltip, "st-tooltip", never, { "content": { "alias": "content"; "required": false; }; "triggerLabel": { "alias": "triggerLabel"; "required": false; }; "placement": { "alias": "placement"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<Tooltip, "st-tooltip", never, { "content": { "alias": "content"; "required": false; }; "triggerLabel": { "alias": "triggerLabel"; "required": false; }; "placement": { "alias": "placement"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
 }
 //# sourceMappingURL=Tooltip.d.ts.map

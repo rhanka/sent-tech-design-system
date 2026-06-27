@@ -25,8 +25,14 @@ export class Select {
     get currentValue() {
         return this.modelValue ?? this.value ?? "";
     }
+    get isInvalid() {
+        return Boolean(this.invalid) || Boolean(this.errorText);
+    }
     get hostClass() {
-        return classNames("st-field", this.size ? `st-field--${this.size}` : undefined, this.invalid ? "st-field--invalid" : undefined, this.classInput);
+        return classNames("st-field", this.classInput);
+    }
+    get controlClass() {
+        return classNames("st-select", `st-select--${this.size ?? "md"}`);
     }
     onChange(e) {
         this.modelValueChange.emit(e.target.value);
@@ -34,28 +40,31 @@ export class Select {
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Select, deps: [], target: i0.ɵɵFactoryTarget.Component });
     static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: Select, isStandalone: true, selector: "st-select", inputs: { label: "label", helperText: "helperText", errorText: "errorText", invalid: "invalid", size: "size", options: "options", modelValue: "modelValue", value: "value", placeholder: "placeholder", disabled: "disabled", classInput: ["class", "classInput"] }, outputs: { modelValueChange: "modelValueChange" }, ngImport: i0, template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
-      @if (label) {
-        <label class="st-field__label" [attr.for]="selectId">{{ label }}</label>
-      }
-      <select
-        class="st-select"
-        [id]="selectId"
-        [value]="currentValue"
-        [disabled]="disabled ?? false"
-        (change)="onChange($event)"
-      >
-        @if (placeholder) {
-          <option value="" disabled selected>{{ placeholder }}</option>
+      <label class="st-field__control">
+        @if (label) {
+          <span class="st-field__label">{{ label }}</span>
         }
-        @for (opt of options ?? []; track opt.value) {
-          <option [value]="opt.value" [disabled]="opt.disabled ?? false">{{ opt.label }}</option>
-        }
-      </select>
-      @if (helperText && !invalid) {
-        <span class="st-field__helper">{{ helperText }}</span>
-      }
-      @if (errorText && invalid) {
+        <select
+          [class]="controlClass"
+          [id]="selectId"
+          [value]="currentValue"
+          [disabled]="disabled ?? false"
+          [attr.aria-invalid]="isInvalid ? 'true' : null"
+          (change)="onChange($event)"
+        >
+          @if (placeholder) {
+            <option value="" disabled selected>{{ placeholder }}</option>
+          }
+          @for (opt of options ?? []; track opt.value) {
+            <option [value]="opt.value" [disabled]="opt.disabled ?? false">{{ opt.label }}</option>
+          }
+          <ng-content></ng-content>
+        </select>
+      </label>
+      @if (errorText) {
         <span class="st-field__error">{{ errorText }}</span>
+      } @else if (helperText) {
+        <span class="st-field__help">{{ helperText }}</span>
       }
     </div>
   `, isInline: true });
@@ -67,28 +76,31 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     standalone: true,
                     template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
-      @if (label) {
-        <label class="st-field__label" [attr.for]="selectId">{{ label }}</label>
-      }
-      <select
-        class="st-select"
-        [id]="selectId"
-        [value]="currentValue"
-        [disabled]="disabled ?? false"
-        (change)="onChange($event)"
-      >
-        @if (placeholder) {
-          <option value="" disabled selected>{{ placeholder }}</option>
+      <label class="st-field__control">
+        @if (label) {
+          <span class="st-field__label">{{ label }}</span>
         }
-        @for (opt of options ?? []; track opt.value) {
-          <option [value]="opt.value" [disabled]="opt.disabled ?? false">{{ opt.label }}</option>
-        }
-      </select>
-      @if (helperText && !invalid) {
-        <span class="st-field__helper">{{ helperText }}</span>
-      }
-      @if (errorText && invalid) {
+        <select
+          [class]="controlClass"
+          [id]="selectId"
+          [value]="currentValue"
+          [disabled]="disabled ?? false"
+          [attr.aria-invalid]="isInvalid ? 'true' : null"
+          (change)="onChange($event)"
+        >
+          @if (placeholder) {
+            <option value="" disabled selected>{{ placeholder }}</option>
+          }
+          @for (opt of options ?? []; track opt.value) {
+            <option [value]="opt.value" [disabled]="opt.disabled ?? false">{{ opt.label }}</option>
+          }
+          <ng-content></ng-content>
+        </select>
+      </label>
+      @if (errorText) {
         <span class="st-field__error">{{ errorText }}</span>
+      } @else if (helperText) {
+        <span class="st-field__help">{{ helperText }}</span>
       }
     </div>
   `,

@@ -21,13 +21,19 @@ export type ComboboxProps = {
     allowCustomValue?: boolean;
     noResultsLabel?: unknown;
     listLabel?: string;
+    clearLabel?: string;
+    toggleLabel?: string;
     class?: string;
 };
 export declare class Combobox {
     static readonly stComponentName = "Combobox";
     readonly componentName = "Combobox";
+    readonly inputId: string;
+    readonly listId: string;
     isOpen: boolean;
     search: string;
+    private searchTouched;
+    constructor();
     label?: unknown;
     helperText?: string;
     errorText?: string;
@@ -42,14 +48,26 @@ export declare class Combobox {
     allowCustomValue?: boolean;
     noResultsLabel?: unknown;
     listLabel?: string;
+    clearLabel?: string;
+    toggleLabel?: string;
     classInput?: string;
     readonly valueChange: EventEmitter<string>;
     get hostClass(): string;
+    get boxClass(): string;
+    get toggleIconClass(): string;
+    get isInvalid(): boolean;
+    get labelText(): string | undefined;
+    get selectedOption(): ComboboxOption | undefined;
+    get displayValue(): string;
     get filteredOptions(): ComboboxOption[];
+    optLabel(opt: ComboboxOption): string;
+    onFocus(): void;
     onSearch(e: Event): void;
     onBlur(): void;
-    select(opt: ComboboxOption): void;
+    onToggle(e: Event): void;
+    onClear(e: Event): void;
+    select(opt: ComboboxOption, e: Event): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<Combobox, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<Combobox, "st-combobox", never, { "label": { "alias": "label"; "required": false; }; "helperText": { "alias": "helperText"; "required": false; }; "errorText": { "alias": "errorText"; "required": false; }; "invalid": { "alias": "invalid"; "required": false; }; "options": { "alias": "options"; "required": false; }; "value": { "alias": "value"; "required": false; }; "modelValue": { "alias": "modelValue"; "required": false; }; "size": { "alias": "size"; "required": false; }; "placeholder": { "alias": "placeholder"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "open": { "alias": "open"; "required": false; }; "allowCustomValue": { "alias": "allowCustomValue"; "required": false; }; "noResultsLabel": { "alias": "noResultsLabel"; "required": false; }; "listLabel": { "alias": "listLabel"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, { "valueChange": "valueChange"; }, never, never, true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<Combobox, "st-combobox", never, { "label": { "alias": "label"; "required": false; }; "helperText": { "alias": "helperText"; "required": false; }; "errorText": { "alias": "errorText"; "required": false; }; "invalid": { "alias": "invalid"; "required": false; }; "options": { "alias": "options"; "required": false; }; "value": { "alias": "value"; "required": false; }; "modelValue": { "alias": "modelValue"; "required": false; }; "size": { "alias": "size"; "required": false; }; "placeholder": { "alias": "placeholder"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "open": { "alias": "open"; "required": false; }; "allowCustomValue": { "alias": "allowCustomValue"; "required": false; }; "noResultsLabel": { "alias": "noResultsLabel"; "required": false; }; "listLabel": { "alias": "listLabel"; "required": false; }; "clearLabel": { "alias": "clearLabel"; "required": false; }; "toggleLabel": { "alias": "toggleLabel"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, { "valueChange": "valueChange"; }, never, never, true, never>;
 }
 //# sourceMappingURL=Combobox.d.ts.map

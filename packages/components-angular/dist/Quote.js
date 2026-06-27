@@ -13,13 +13,11 @@ export class Quote {
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Quote, deps: [], target: i0.ɵɵFactoryTarget.Component });
     static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: Quote, isStandalone: true, selector: "st-quote", inputs: { author: "author", source: "source", classInput: ["class", "classInput"] }, ngImport: i0, template: `
     <blockquote [attr.data-st-component]="componentName" [class]="hostClass">
-      <div class="st-quote__body">
-        <ng-content></ng-content>
-      </div>
-      @if (author) {
-        <footer class="st-quote__footer">
-          <cite class="st-quote__author">{{ author }}</cite>
-          @if (source) { <span class="st-quote__source"> — {{ source }}</span> }
+      <p class="st-quote__text"><ng-content></ng-content></p>
+      @if (author || source) {
+        <footer class="st-quote__attribution">
+          @if (author) { <span class="st-quote__author">{{ author }}</span> }
+          @if (source) { <span class="st-quote__source">{{ source }}</span> }
         </footer>
       }
     </blockquote>
@@ -32,13 +30,11 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     standalone: true,
                     template: `
     <blockquote [attr.data-st-component]="componentName" [class]="hostClass">
-      <div class="st-quote__body">
-        <ng-content></ng-content>
-      </div>
-      @if (author) {
-        <footer class="st-quote__footer">
-          <cite class="st-quote__author">{{ author }}</cite>
-          @if (source) { <span class="st-quote__source"> — {{ source }}</span> }
+      <p class="st-quote__text"><ng-content></ng-content></p>
+      @if (author || source) {
+        <footer class="st-quote__attribution">
+          @if (author) { <span class="st-quote__author">{{ author }}</span> }
+          @if (source) { <span class="st-quote__source">{{ source }}</span> }
         </footer>
       }
     </blockquote>

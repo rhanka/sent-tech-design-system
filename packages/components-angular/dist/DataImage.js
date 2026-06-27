@@ -13,21 +13,36 @@ export class DataImage {
     loading;
     decoding;
     classInput;
+    len(v) {
+        if (v === undefined)
+            return null;
+        return typeof v === "number" ? `${v}px` : v;
+    }
+    get widthStyle() {
+        return this.len(this.width);
+    }
+    get heightStyle() {
+        return this.len(this.height);
+    }
+    get radiusStyle() {
+        return this.len(this.radius);
+    }
     get hostClass() {
-        return classNames("st-dataImage", this.fit && `st-dataImage--${this.fit}`, this.classInput);
+        return classNames("st-dataImage", `st-dataImage--${this.fit ?? "cover"}`, this.classInput);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: DataImage, deps: [], target: i0.ɵɵFactoryTarget.Component });
     static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: DataImage, isStandalone: true, selector: "st-data-image", inputs: { src: "src", alt: "alt", width: "width", height: "height", fit: "fit", radius: "radius", loading: "loading", decoding: "decoding", classInput: ["class", "classInput"] }, ngImport: i0, template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <img class="st-dataImage__img"
-        [src]="src" [alt]="alt"
-        [attr.width]="width ?? null"
-        [attr.height]="height ?? null"
-        [attr.loading]="loading ?? null"
-        [attr.decoding]="decoding ?? null"
-        [style.object-fit]="fit ?? null"
-        [style.border-radius]="radius ?? null" />
-    </div>
+    <img
+      [attr.data-st-component]="componentName"
+      [class]="hostClass"
+      [src]="src"
+      [alt]="alt"
+      [style.width]="widthStyle"
+      [style.height]="heightStyle"
+      [style.border-radius]="radiusStyle"
+      [attr.loading]="loading ?? 'lazy'"
+      [attr.decoding]="decoding ?? 'async'"
+    />
   `, isInline: true });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: DataImage, decorators: [{
@@ -36,16 +51,17 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     selector: "st-data-image",
                     standalone: true,
                     template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <img class="st-dataImage__img"
-        [src]="src" [alt]="alt"
-        [attr.width]="width ?? null"
-        [attr.height]="height ?? null"
-        [attr.loading]="loading ?? null"
-        [attr.decoding]="decoding ?? null"
-        [style.object-fit]="fit ?? null"
-        [style.border-radius]="radius ?? null" />
-    </div>
+    <img
+      [attr.data-st-component]="componentName"
+      [class]="hostClass"
+      [src]="src"
+      [alt]="alt"
+      [style.width]="widthStyle"
+      [style.height]="heightStyle"
+      [style.border-radius]="radiusStyle"
+      [attr.loading]="loading ?? 'lazy'"
+      [attr.decoding]="decoding ?? 'async'"
+    />
   `,
                 }]
         }], propDecorators: { src: [{

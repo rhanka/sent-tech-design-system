@@ -3,9 +3,6 @@ export interface TableOfContentsItem {
     id: string;
     label: string;
     level?: number;
-    href?: string;
-    active?: boolean;
-    children?: TableOfContentsItem[];
 }
 /** Alias compatible avec la spec TocItem */
 export type TocItem = TableOfContentsItem;
@@ -22,6 +19,10 @@ export declare class TableOfContents {
     items: TableOfContentsItem[];
     activeId?: string;
     classInput?: string;
+    get normalizedActive(): string;
+    get normalizedItems(): Array<TableOfContentsItem & {
+        level: number;
+    }>;
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<TableOfContents, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<TableOfContents, "st-table-of-contents", never, { "title": { "alias": "title"; "required": false; }; "items": { "alias": "items"; "required": false; }; "activeId": { "alias": "activeId"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;

@@ -18,11 +18,11 @@ export type FormGroupProps = {
       [class]="hostClass"
       [disabled]="disabled ?? false"
     >
-      @if (legend) { <legend class="st-form-group__legend">{{ legend }}</legend> }
-      <div class="st-form-group__body">
+      @if (legend) { <legend class="st-form-group__legend st-formGroup__legend">{{ legend }}</legend> }
+      <div class="st-form-group__body st-formGroup__body">
         <ng-content></ng-content>
       </div>
-      @if (helperText) { <p class="st-form-group__help">{{ helperText }}</p> }
+      @if (helperText) { <p class="st-form-group__help st-formGroup__help">{{ helperText }}</p> }
     </fieldset>
   `,
 })
@@ -35,6 +35,6 @@ export class FormGroup {
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
-    return classNames("st-form-group", this.classInput);
+    return classNames("st-form-group", "st-formGroup", this.classInput);
   }
 }

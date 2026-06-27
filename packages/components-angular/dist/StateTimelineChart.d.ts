@@ -17,6 +17,32 @@ export type StateTimelineChartProps = {
     height?: number;
     class?: string;
 };
+type ValidSegment = {
+    start: number;
+    end: number;
+    state: string | number;
+    tone?: StateTimelineTone;
+};
+type ValidSeries = {
+    series: string;
+    segments: ValidSegment[];
+};
+type LaneSegment = {
+    key: string;
+    datum: ValidSegment;
+    x: number;
+    width: number;
+    cx: number;
+    tone: StateTimelineTone;
+};
+type Lane = {
+    datum: ValidSeries;
+    index: number;
+    y: number;
+    height: number;
+    rowCenterY: number;
+    segments: LaneSegment[];
+};
 export declare class StateTimelineChart {
     static readonly stComponentName = "StateTimelineChart";
     readonly componentName = "StateTimelineChart";
@@ -38,62 +64,32 @@ export declare class StateTimelineChart {
     get viewBox(): string;
     get plotWidth(): number;
     get plotHeight(): number;
-    get safeData(): StateTimelineSeries[];
-    get xDomain(): {
-        min: number;
-        max: number;
-    };
-    xOf(value: number): number;
-    get stateOrderMap(): Map<string, number>;
-    toneForSegment(seg: StateTimelineSegment): StateTimelineTone;
-    get lanes(): Array<{
-        seriesLabel: string;
-        centerY: number;
-        rects: Array<{
-            key: string;
-            x: number;
-            y: number;
-            width: number;
-            height: number;
-            tone: StateTimelineTone;
-            state: string;
-            start: number;
-            end: number;
-            seriesLabel: string;
-        }>;
-    }>;
-    get allRects(): {
-        key: string;
-        x: number;
-        y: number;
-        width: number;
-        height: number;
-        tone: StateTimelineTone;
-        state: string;
-        start: number;
-        end: number;
-        seriesLabel: string;
-    }[];
-    get hoveredRect(): {
-        key: string;
-        x: number;
-        y: number;
-        width: number;
-        height: number;
-        tone: StateTimelineTone;
-        state: string;
-        start: number;
-        end: number;
-        seriesLabel: string;
-    } | null;
+    get validData(): ValidSeries[];
+    private get stateMaps();
+    toneOf(segment: {
+        state: string | number;
+        tone?: StateTimelineTone;
+    }): StateTimelineTone;
     get legendItems(): Array<{
         state: string;
         tone: StateTimelineTone;
     }>;
+    get hasLegend(): boolean;
+    private get domain();
+    get ticks(): number[];
+    xOf(value: number): number;
+    get lanes(): Lane[];
     get dataValueItems(): string[];
+    get hoveredSegment(): {
+        lane: Lane;
+        seg: LaneSegment;
+    } | null;
+    segmentClass(seg: LaneSegment): string;
     ellipsize(text: string, n: number): string;
-    handlePointerMove(e: PointerEvent): void;
+    formatTick(value: number): string;
+    handlePointerMove(event: PointerEvent): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<StateTimelineChart, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<StateTimelineChart, "st-state-timeline-chart", never, { "data": { "alias": "data"; "required": false; }; "label": { "alias": "label"; "required": false; }; "width": { "alias": "width"; "required": false; }; "height": { "alias": "height"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
 }
+export {};
 //# sourceMappingURL=StateTimelineChart.d.ts.map

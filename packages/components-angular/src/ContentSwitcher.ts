@@ -47,14 +47,14 @@ export class ContentSwitcher {
   @NgInput() items!: ContentSwitcherItem[];
   @NgInput() value?: string;
   @NgInput() activeId?: string;
-  @NgInput() size?: ContentSwitcherSize;
+  @NgInput() size: ContentSwitcherSize = "md";
   @NgInput() onchange?: (value: string) => void;
   @NgInput("class") classInput?: string;
 
   private localValue?: string;
 
   get hostClass(): string {
-    return classNames("st-contentSwitcher", this.size && `st-contentSwitcher--${this.size}`, this.classInput);
+    return classNames("st-contentSwitcher", `st-contentSwitcher--${this.size}`, this.classInput);
   }
 
   itemKey(item: ContentSwitcherItem, index: number): string {
@@ -69,8 +69,8 @@ export class ContentSwitcher {
 
   buttonClass(item: ContentSwitcherItem, index: number): string {
     return classNames(
-      "st-contentSwitcher__button",
-      this.isActive(item, index) && "st-contentSwitcher__button--active",
+      "st-contentSwitcher__option st-contentSwitcher__button",
+      this.isActive(item, index) && "st-contentSwitcher__option--selected",
     );
   }
 

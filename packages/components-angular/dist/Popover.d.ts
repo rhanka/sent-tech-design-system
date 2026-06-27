@@ -29,6 +29,6 @@ export declare class Popover {
     onHover(value: boolean): void;
     onHostClick(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<Popover, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<Popover, "st-popover", never, { "content": { "alias": "content"; "required": false; }; "label": { "alias": "label"; "required": false; }; "triggerLabel": { "alias": "triggerLabel"; "required": false; }; "open": { "alias": "open"; "required": false; }; "placement": { "alias": "placement"; "required": false; }; "openOn": { "alias": "openOn"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, { "close": "close"; }, never, never, true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<Popover, "st-popover", never, { "content": { "alias": "content"; "required": false; }; "label": { "alias": "label"; "required": false; }; "triggerLabel": { "alias": "triggerLabel"; "required": false; }; "open": { "alias": "open"; "required": false; }; "placement": { "alias": "placement"; "required": false; }; "openOn": { "alias": "openOn"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, { "close": "close"; }, never, ["[slot='trigger']", "*"], true, never>;
 }
 //# sourceMappingURL=Popover.d.ts.map

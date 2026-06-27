@@ -1,4 +1,3 @@
-import { NgTemplateOutlet } from "@angular/common";
 import { Component, EventEmitter, Input as NgInput, Output } from "@angular/core";
 
 import { classNames } from "./classNames.js";
@@ -31,19 +30,6 @@ export type RatingProps = {
   selector: "st-rating",
   standalone: true,
   template: `
-    <ng-template #icon let-state="state">
-      @if (state === 'half') {
-        <svg [attr.width]="iconSize" [attr.height]="iconSize" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M12 18.338a2.1 2.1 0 0 0-.987.244L6.396 21.01l.824-5.118a2.1 2.1 0 0 0-.605-1.86l-3.71-3.625 5.121-.745a2.1 2.1 0 0 0 1.58-1.148l2.29-4.642"/>
-          <path d="M12 2v16.5"/>
-        </svg>
-      } @else {
-        <svg [attr.width]="iconSize" [attr.height]="iconSize" viewBox="0 0 24 24" [attr.fill]="state === 'full' ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.69 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.453 9.795a.53.53 0 0 1 .294-.904l5.166-.756a2.122 2.122 0 0 0 1.597-1.16z"/>
-        </svg>
-      }
-    </ng-template>
-
     @if (readonly) {
       <div
         [attr.data-st-component]="componentName"
@@ -58,7 +44,16 @@ export type RatingProps = {
             [class.st-rating__star--half]="fill(star) === 'half'"
             aria-hidden="true"
           >
-            <ng-container [ngTemplateOutlet]="icon" [ngTemplateOutletContext]="{ state: fill(star) }"></ng-container>
+            @if (fill(star) === 'half') {
+              <svg [attr.width]="iconSize" [attr.height]="iconSize" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2v15.77z" fill="currentColor" />
+                <path d="M12 2v15.77l6.18 3.25L17 14.14 22 9.27l-6.91-1.01L12 2z" />
+              </svg>
+            } @else {
+              <svg [attr.width]="iconSize" [attr.height]="iconSize" viewBox="0 0 24 24" [attr.fill]="fill(star) === 'full' ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+              </svg>
+            }
           </span>
         }
       </div>
@@ -83,7 +78,16 @@ export type RatingProps = {
             aria-hidden="true"
             (click)="onStarClick($event, star)"
           >
-            <ng-container [ngTemplateOutlet]="icon" [ngTemplateOutletContext]="{ state: fill(star) }"></ng-container>
+            @if (fill(star) === 'half') {
+              <svg [attr.width]="iconSize" [attr.height]="iconSize" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2v15.77z" fill="currentColor" />
+                <path d="M12 2v15.77l6.18 3.25L17 14.14 22 9.27l-6.91-1.01L12 2z" />
+              </svg>
+            } @else {
+              <svg [attr.width]="iconSize" [attr.height]="iconSize" viewBox="0 0 24 24" [attr.fill]="fill(star) === 'full' ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+              </svg>
+            }
           </span>
         }
       </div>
@@ -107,13 +111,14 @@ export type RatingProps = {
             (click)="onStarClick($event, star)"
             (keydown)="onKeyDown($event)"
           >
-            <ng-container [ngTemplateOutlet]="icon" [ngTemplateOutletContext]="{ state: fill(star) }"></ng-container>
+            <svg [attr.width]="iconSize" [attr.height]="iconSize" viewBox="0 0 24 24" [attr.fill]="fill(star) === 'full' ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+            </svg>
           </button>
         }
       </div>
     }
   `,
-  imports: [NgTemplateOutlet],
 })
 export class Rating {
   static readonly stComponentName = "Rating";

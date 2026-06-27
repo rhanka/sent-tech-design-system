@@ -2,7 +2,7 @@ import { Component, Input as NgInput } from "@angular/core";
 
 import { classNames } from "./classNames.js";
 
-import { Sparkline, type SparklineTone } from "./Sparkline.js";
+import { type SparklineTone } from "./Sparkline.js";
 
 import {
   type CellDecoration,
@@ -62,7 +62,6 @@ export type KpiCardProps = {
 @Component({
   selector: "st-kpi-card",
   standalone: true,
-  imports: [Sparkline],
   template: `
     <article
       [attr.data-st-component]="componentName"
@@ -70,7 +69,10 @@ export type KpiCardProps = {
       role="group"
       [attr.aria-label]="ariaLabel"
     >
-      <p class="st-kpiCard__label">{{ label }}</p>
+      <p class="st-kpiCard__label">
+        @if (tone) { <span class="st-kpiCard__swatch" aria-hidden="true"></span> }
+        <span class="st-kpiCard__labelText">{{ label }}</span>
+      </p>
 
       <p class="st-kpiCard__value">
         @if (decoration && decorationIconNodes) {
@@ -106,7 +108,7 @@ export type KpiCardProps = {
         }
       </p>
 
-      @if (formattedDelta || (sparkline && sparkline.length > 0)) {
+      @if (formattedDelta || sparkline) {
         <div class="st-kpiCard__footer">
           @if (formattedDelta) {
             <span [class]="deltaClass" aria-hidden="true">
@@ -132,12 +134,29 @@ export type KpiCardProps = {
           }
 
           @if (sparkline && sparkline.length > 0) {
-            <st-sparkline
-              class="st-kpiCard__sparkline"
-              [data]="sparkline"
-              [tone]="sparklineTone"
-              [area]="true"
-            ></st-sparkline>
+            <span [class]="sparklineSpanClass" role="img">
+              <svg
+                [attr.width]="sparklineWidth"
+                [attr.height]="sparklineHeight"
+                [attr.viewBox]="sparklineViewBox"
+                preserveAspectRatio="none"
+                focusable="false"
+              >
+                @if (sparklineArea) {
+                  <path [attr.d]="sparklineArea" class="st-sparkline__area" />
+                }
+                @if (sparklineLine) {
+                  <path
+                    [attr.d]="sparklineLine"
+                    class="st-sparkline__line"
+                    fill="none"
+                    [attr.stroke-width]="sparklineStrokeWidth"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                }
+              </svg>
+            </span>
           }
         </div>
       }
@@ -218,6 +237,58 @@ export class KpiCard {
       : this.resolvedTrend === "down"
         ? "error"
         : "neutral";
+  }
+
+  readonly sparklineWidth = 120;
+  readonly sparklineHeight = 28;
+  readonly sparklineStrokeWidth = 1.5;
+
+  get sparklineViewBox(): string {
+    return `0 0 ${this.sparklineWidth} ${this.sparklineHeight}`;
+  }
+
+  get sparklineSpanClass(): string {
+    return classNames(
+      "st-kpiCard__sparkline",
+      "st-sparkline",
+      `st-sparkline--${this.sparklineTone}`,
+    );
+  }
+
+  private get sparklineGeometry(): { line: string; area: string } {
+    const data = this.sparkline;
+    if (!data || data.length === 0) return { line: "", area: "" };
+    const PADDING = 2;
+    const width = this.sparklineWidth;
+    const height = this.sparklineHeight;
+    const min = Math.min(...data);
+    const max = Math.max(...data);
+    const span = max - min || 1;
+    const innerWidth = Math.max(width - PADDING * 2, 1);
+    const innerHeight = Math.max(height - PADDING * 2, 1);
+    const step = data.length > 1 ? innerWidth / (data.length - 1) : 0;
+    const points = data.map((value, index) => {
+      const x = PADDING + step * index;
+      const normalised = (value - min) / span;
+      const y = PADDING + (1 - normalised) * innerHeight;
+      return { x, y };
+    });
+    const line = points
+      .map((p, i) => `${i === 0 ? "M" : "L"}${p.x.toFixed(2)},${p.y.toFixed(2)}`)
+      .join(" ");
+    const baseline = height - PADDING;
+    const first = points[0];
+    const last = points[points.length - 1];
+    const area = `${line} L${last.x.toFixed(2)},${baseline.toFixed(2)} L${first.x.toFixed(2)},${baseline.toFixed(2)} Z`;
+    return { line, area };
+  }
+
+  get sparklineLine(): string {
+    return this.sparklineGeometry.line;
+  }
+
+  get sparklineArea(): string {
+    return this.sparklineGeometry.area;
   }
 
   get arrow(): string {

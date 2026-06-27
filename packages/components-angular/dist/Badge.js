@@ -10,7 +10,7 @@ export class Badge {
     label;
     classInput;
     get hostClass() {
-        return classNames("st-badge", this.tone && `st-badge--${this.tone}`, this.shape && `st-badge--${this.shape}`, this.size && `st-badge--${this.size}`, this.classInput);
+        return classNames("st-badge", `st-badge--${this.tone ?? "neutral"}`, `st-badge--${this.shape ?? "pill"}`, `st-badge--${this.size ?? "md"}`, this.classInput);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Badge, deps: [], target: i0.ɵɵFactoryTarget.Component });
     static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: Badge, isStandalone: true, selector: "st-badge", inputs: { tone: "tone", shape: "shape", size: "size", label: "label", classInput: ["class", "classInput"] }, ngImport: i0, template: `

@@ -16,11 +16,13 @@ export type ColorSwatchProps = {
   selector: "st-color-swatch",
   standalone: true,
   template: `
-    <span [attr.data-st-component]="componentName" [class]="hostClass" [attr.aria-label]="label || color" role="img">
-      <span class="st-colorSwatch__preview"
+    <span [attr.data-st-component]="componentName" [class]="hostClass">
+      <span class="st-colorSwatch__chip"
         [style.background-color]="color"
-        [style.width.px]="size ?? 24"
-        [style.height.px]="size ?? 24"></span>
+        [style.width.px]="safeSize"
+        [style.height.px]="safeSize"
+        role="img"
+        [attr.aria-label]="accessibleLabel"></span>
       @if (label) { <span class="st-colorSwatch__label">{{ label }}</span> }
     </span>
   `,
@@ -33,6 +35,14 @@ export class ColorSwatch {
   @NgInput() shape?: ColorSwatchShape;
   @NgInput() label?: string;
   @NgInput("class") classInput?: string;
+
+  get safeSize(): number {
+    return Math.max(Number(this.size ?? 24) || 0, 1);
+  }
+
+  get accessibleLabel(): string {
+    return this.label ?? this.color;
+  }
 
   get hostClass(): string {
     return classNames("st-colorSwatch", `st-colorSwatch--${this.shape ?? "square"}`, this.classInput);

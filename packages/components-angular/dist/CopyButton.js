@@ -23,25 +23,26 @@ export class CopyButton {
         }
     }
     get hostClass() {
-        return classNames("st-copyButton", this.size && `st-copyButton--${this.size}`, this.copied && "st-copyButton--copied", this.classInput);
+        return classNames("st-copyButton", `st-copyButton--${this.size ?? "md"}`, this.copied && "st-copyButton--copied", this.classInput);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: CopyButton, deps: [], target: i0.ɵɵFactoryTarget.Component });
     static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: CopyButton, isStandalone: true, selector: "st-copy-button", inputs: { text: "text", value: "value", label: "label", copiedLabel: "copiedLabel", size: "size", classInput: ["class", "classInput"] }, ngImport: i0, template: `
     <button type="button" [attr.data-st-component]="componentName" [class]="hostClass"
-      [attr.aria-label]="copied ? (copiedLabel || 'Copié !') : (label || 'Copier')"
+      aria-live="polite"
       (click)="copy()">
-      @if (copied) {
-        <span class="st-copyButton__icon" aria-hidden="true">✓</span>
-        {{ copiedLabel || 'Copié !' }}
-      } @else {
-        <span class="st-copyButton__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+      <span class="st-copyButton__icon" aria-hidden="true">
+        @if (copied) {
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        } @else {
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
           </svg>
-        </span>
-        {{ label || 'Copier' }}
-      }
+        }
+      </span>
+      <span class="st-copyButton__label">{{ copied ? (copiedLabel || 'Copié') : (label || 'Copier') }}</span>
     </button>
   `, isInline: true });
 }
@@ -52,20 +53,21 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     standalone: true,
                     template: `
     <button type="button" [attr.data-st-component]="componentName" [class]="hostClass"
-      [attr.aria-label]="copied ? (copiedLabel || 'Copié !') : (label || 'Copier')"
+      aria-live="polite"
       (click)="copy()">
-      @if (copied) {
-        <span class="st-copyButton__icon" aria-hidden="true">✓</span>
-        {{ copiedLabel || 'Copié !' }}
-      } @else {
-        <span class="st-copyButton__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+      <span class="st-copyButton__icon" aria-hidden="true">
+        @if (copied) {
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        } @else {
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
           </svg>
-        </span>
-        {{ label || 'Copier' }}
-      }
+        }
+      </span>
+      <span class="st-copyButton__label">{{ copied ? (copiedLabel || 'Copié') : (label || 'Copier') }}</span>
     </button>
   `,
                 }]

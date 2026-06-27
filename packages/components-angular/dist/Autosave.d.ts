@@ -1,3 +1,4 @@
+import { EventEmitter } from "@angular/core";
 import * as i0 from "@angular/core";
 export type AutosaveStatus = "idle" | "saving" | "saved" | "error";
 export type AutosaveLabels = {
@@ -29,8 +30,18 @@ export declare class Autosave {
     retryLabel?: string;
     locale?: string;
     classInput?: string;
+    readonly retry: EventEmitter<void>;
+    get resolvedStatus(): AutosaveStatus;
+    private get isFr();
+    private get defaultLabels();
+    get statusLabel(): string;
+    get resolvedRetryLabel(): string;
+    get role(): string;
+    get relativeTime(): string;
+    get showRelative(): boolean;
     get hostClass(): string;
+    triggerRetry(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<Autosave, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<Autosave, "st-autosave", never, { "status": { "alias": "status"; "required": false; }; "lastSaved": { "alias": "lastSaved"; "required": false; }; "onRetry": { "alias": "onRetry"; "required": false; }; "labels": { "alias": "labels"; "required": false; }; "retryLabel": { "alias": "retryLabel"; "required": false; }; "locale": { "alias": "locale"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<Autosave, "st-autosave", never, { "status": { "alias": "status"; "required": false; }; "lastSaved": { "alias": "lastSaved"; "required": false; }; "onRetry": { "alias": "onRetry"; "required": false; }; "labels": { "alias": "labels"; "required": false; }; "retryLabel": { "alias": "retryLabel"; "required": false; }; "locale": { "alias": "locale"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, { "retry": "retry"; }, never, never, true, never>;
 }
 //# sourceMappingURL=Autosave.d.ts.map

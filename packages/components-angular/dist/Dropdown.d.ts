@@ -31,6 +31,7 @@ export declare class Dropdown {
     localValue: string;
     get resolvedPlaceholder(): string;
     get selectedLabel(): string;
+    get iconClass(): string;
     get hostClass(): string;
     selectOption(option: DropdownOption): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<Dropdown, never>;

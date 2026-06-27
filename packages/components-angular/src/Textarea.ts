@@ -31,7 +31,7 @@ function nextId(): string {
         }
         <textarea
           [id]="inputId"
-          class="st-textarea"
+          class="st-textarea st-control"
           [value]="currentValue"
           [placeholder]="placeholder ?? ''"
           [disabled]="disabled ?? false"

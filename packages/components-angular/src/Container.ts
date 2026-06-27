@@ -24,16 +24,16 @@ export type ContainerProps = {
 export class Container {
   static readonly stComponentName = "Container";
   readonly componentName = "Container";
-  @NgInput() size?: ContainerSize;
-  @NgInput() padding?: boolean;
+  @NgInput() size: ContainerSize = "lg";
+  @NgInput() padding = true;
   @NgInput() as?: string;
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
     return classNames(
       "st-container",
-      this.size && `st-container--${this.size}`,
-      this.padding && "st-container--padding",
+      `st-container--${this.size ?? "lg"}`,
+      (this.padding ?? true) && "st-container--padded",
       this.classInput,
     );
   }

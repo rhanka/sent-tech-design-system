@@ -16,8 +16,9 @@ export declare class Divider {
     orientation?: DividerOrientation;
     spacing?: number;
     label?: string;
-    variant?: DividerVariant;
+    variant: DividerVariant;
     classInput?: string;
+    get isLabeled(): boolean;
     get hostClass(): string;
     get spacingStyle(): Record<string, string | undefined>;
     static ɵfac: i0.ɵɵFactoryDeclaration<Divider, never>;

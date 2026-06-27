@@ -16,10 +16,28 @@ export class Switch {
         return ["st-switch", this.classInput].filter(Boolean).join(" ");
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Switch, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: Switch, isStandalone: true, selector: "st-switch", inputs: { label: "label", helperText: "helperText", modelValue: "modelValue", checked: "checked", disabled: "disabled", name: "name", value: "value", classInput: ["class", "classInput"] }, ngImport: i0, template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
-    </div>
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: Switch, isStandalone: true, selector: "st-switch", inputs: { label: "label", helperText: "helperText", modelValue: "modelValue", checked: "checked", disabled: "disabled", name: "name", value: "value", classInput: ["class", "classInput"] }, ngImport: i0, template: `
+    <label [attr.data-st-component]="componentName" [class]="hostClass">
+      <input
+        class="st-switch__input"
+        type="checkbox"
+        role="switch"
+        [checked]="checked ?? false"
+        [attr.aria-checked]="(checked ?? false) ? 'true' : 'false'"
+        [disabled]="disabled ?? false"
+        [attr.name]="name ?? null"
+        [attr.value]="value ?? null"
+      />
+      <span class="st-switch__track" aria-hidden="true">
+        <span class="st-switch__thumb"></span>
+      </span>
+      <span class="st-switch__content">
+        <span class="st-switch__label">{{ label }}</span>
+        @if (helperText) {
+          <span class="st-switch__help">{{ helperText }}</span>
+        }
+      </span>
+    </label>
   `, isInline: true });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Switch, decorators: [{
@@ -28,9 +46,27 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     selector: "st-switch",
                     standalone: true,
                     template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <ng-content></ng-content>
-    </div>
+    <label [attr.data-st-component]="componentName" [class]="hostClass">
+      <input
+        class="st-switch__input"
+        type="checkbox"
+        role="switch"
+        [checked]="checked ?? false"
+        [attr.aria-checked]="(checked ?? false) ? 'true' : 'false'"
+        [disabled]="disabled ?? false"
+        [attr.name]="name ?? null"
+        [attr.value]="value ?? null"
+      />
+      <span class="st-switch__track" aria-hidden="true">
+        <span class="st-switch__thumb"></span>
+      </span>
+      <span class="st-switch__content">
+        <span class="st-switch__label">{{ label }}</span>
+        @if (helperText) {
+          <span class="st-switch__help">{{ helperText }}</span>
+        }
+      </span>
+    </label>
   `,
                 }]
         }], propDecorators: { label: [{

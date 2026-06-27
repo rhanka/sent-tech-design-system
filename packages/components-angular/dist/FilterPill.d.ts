@@ -24,10 +24,10 @@ export declare class FilterPill {
     field: string;
     value: string;
     operator?: string;
-    active?: boolean;
-    removable?: boolean;
-    disabled?: boolean;
-    tone?: FilterPillTone;
+    active: boolean;
+    removable: boolean;
+    disabled: boolean;
+    tone: FilterPillTone;
     onClick?: () => void;
     onRemove?: () => void;
     classInput?: string;
@@ -36,6 +36,7 @@ export declare class FilterPill {
     get hostClass(): string;
     handleClick(): void;
     handleRemove(): void;
+    handleBodyKeydown(event: KeyboardEvent): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<FilterPill, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<FilterPill, "st-filter-pill", never, { "field": { "alias": "field"; "required": false; }; "value": { "alias": "value"; "required": false; }; "operator": { "alias": "operator"; "required": false; }; "active": { "alias": "active"; "required": false; }; "removable": { "alias": "removable"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "tone": { "alias": "tone"; "required": false; }; "onClick": { "alias": "onClick"; "required": false; }; "onRemove": { "alias": "onRemove"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, { "remove": "remove"; }, never, never, true, never>;
 }

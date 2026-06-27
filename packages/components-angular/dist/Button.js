@@ -10,13 +10,18 @@ export class Button {
     disabled;
     classInput;
     get hostClass() {
-        return classNames("st-button", this.variant && `st-button--${this.variant}`, this.size && `st-button--${this.size}`, this.classInput);
+        return classNames("st-button", `st-button--${this.variant ?? "primary"}`, `st-button--${this.size ?? "md"}`, this.classInput);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Button, deps: [], target: i0.ɵɵFactoryTarget.Component });
     static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: Button, isStandalone: true, selector: "st-button", inputs: { variant: "variant", size: "size", typeInput: ["type", "typeInput"], disabled: "disabled", classInput: ["class", "classInput"] }, ngImport: i0, template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    <button
+      [attr.data-st-component]="componentName"
+      [class]="hostClass"
+      [type]="typeInput ?? 'button'"
+      [disabled]="disabled ?? false"
+    >
       <ng-content></ng-content>
-    </div>
+    </button>
   `, isInline: true });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Button, decorators: [{
@@ -25,9 +30,14 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     selector: "st-button",
                     standalone: true,
                     template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
+    <button
+      [attr.data-st-component]="componentName"
+      [class]="hostClass"
+      [type]="typeInput ?? 'button'"
+      [disabled]="disabled ?? false"
+    >
       <ng-content></ng-content>
-    </div>
+    </button>
   `,
                 }]
         }], propDecorators: { variant: [{

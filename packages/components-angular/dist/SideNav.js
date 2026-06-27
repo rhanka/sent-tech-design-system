@@ -24,9 +24,9 @@ export class SideNav {
         <a
           [href]="item.href"
           [class]="linkClass(item)"
+          [attr.aria-current]="item.active ? 'page' : null"
         >{{ item.label }}</a>
       }
-      <ng-content></ng-content>
     </nav>
   `, isInline: true });
 }
@@ -45,9 +45,9 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
         <a
           [href]="item.href"
           [class]="linkClass(item)"
+          [attr.aria-current]="item.active ? 'page' : null"
         >{{ item.label }}</a>
       }
-      <ng-content></ng-content>
     </nav>
   `,
                 }]

@@ -67,7 +67,9 @@ export class Accordion {
               type="button"
               class="st-accordion__trigger"
               [disabled]="item.disabled"
-              [attr.aria-expanded]="isOpen(item, $index)"
+              [attr.aria-expanded]="isOpen(item, $index) ? 'true' : 'false'"
+              [attr.aria-controls]="'st-accordion-panel-' + itemId(item, $index)"
+              [id]="'st-accordion-trigger-' + itemId(item, $index)"
               (click)="toggle(item, $index)"
             >
               @if (resolvedAlign === 'start') {
@@ -88,7 +90,12 @@ export class Accordion {
             </button>
           </h3>
           @if (isOpen(item, $index)) {
-            <div class="st-accordion__panel" role="region">
+            <div
+              class="st-accordion__panel"
+              role="region"
+              [id]="'st-accordion-panel-' + itemId(item, $index)"
+              [attr.aria-labelledby]="'st-accordion-trigger-' + itemId(item, $index)"
+            >
               {{ resolveContent(item) }}
             </div>
           }
@@ -111,7 +118,9 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
               type="button"
               class="st-accordion__trigger"
               [disabled]="item.disabled"
-              [attr.aria-expanded]="isOpen(item, $index)"
+              [attr.aria-expanded]="isOpen(item, $index) ? 'true' : 'false'"
+              [attr.aria-controls]="'st-accordion-panel-' + itemId(item, $index)"
+              [id]="'st-accordion-trigger-' + itemId(item, $index)"
               (click)="toggle(item, $index)"
             >
               @if (resolvedAlign === 'start') {
@@ -132,7 +141,12 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
             </button>
           </h3>
           @if (isOpen(item, $index)) {
-            <div class="st-accordion__panel" role="region">
+            <div
+              class="st-accordion__panel"
+              role="region"
+              [id]="'st-accordion-panel-' + itemId(item, $index)"
+              [attr.aria-labelledby]="'st-accordion-trigger-' + itemId(item, $index)"
+            >
               {{ resolveContent(item) }}
             </div>
           }

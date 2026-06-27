@@ -1,4 +1,3 @@
-import { NgTemplateOutlet } from "@angular/common";
 import { Component, Input as NgInput } from "@angular/core";
 
 import { classNames } from "./classNames.js";
@@ -90,7 +89,20 @@ export type SelectableRowProps = {
         [attr.tabindex]="tabindex"
         (click)="handleClick($event)"
       >
-        <ng-container [ngTemplateOutlet]="body"></ng-container>
+        @if (leading) {
+          <span class="st-selectableRow__leading"><ng-content select="[slot='leading']"></ng-content></span>
+        }
+        @if (caption) {
+          <span class="st-selectableRow__content st-selectableRow__content--stacked">
+            <span class="st-selectableRow__label"><ng-content></ng-content></span>
+            <span class="st-selectableRow__caption"><ng-content select="[slot='caption']"></ng-content></span>
+          </span>
+        } @else {
+          <span class="st-selectableRow__content"><ng-content></ng-content></span>
+        }
+        @if (trailing) {
+          <span class="st-selectableRow__trailing"><ng-content select="[slot='trailing']"></ng-content></span>
+        }
       </a>
     } @else {
       <div
@@ -104,27 +116,23 @@ export type SelectableRowProps = {
         [attr.tabindex]="tabindex"
         (click)="handleClick($event)"
       >
-        <ng-container [ngTemplateOutlet]="body"></ng-container>
+        @if (leading) {
+          <span class="st-selectableRow__leading"><ng-content select="[slot='leading']"></ng-content></span>
+        }
+        @if (caption) {
+          <span class="st-selectableRow__content st-selectableRow__content--stacked">
+            <span class="st-selectableRow__label"><ng-content></ng-content></span>
+            <span class="st-selectableRow__caption"><ng-content select="[slot='caption']"></ng-content></span>
+          </span>
+        } @else {
+          <span class="st-selectableRow__content"><ng-content></ng-content></span>
+        }
+        @if (trailing) {
+          <span class="st-selectableRow__trailing"><ng-content select="[slot='trailing']"></ng-content></span>
+        }
       </div>
     }
-    <ng-template #body>
-      @if (leading) {
-        <span class="st-selectableRow__leading"><ng-content select="[slot='leading']"></ng-content></span>
-      }
-      @if (caption) {
-        <span class="st-selectableRow__content st-selectableRow__content--stacked">
-          <span class="st-selectableRow__label"><ng-content></ng-content></span>
-          <span class="st-selectableRow__caption"><ng-content select="[slot='caption']"></ng-content></span>
-        </span>
-      } @else {
-        <span class="st-selectableRow__content"><ng-content></ng-content></span>
-      }
-      @if (trailing) {
-        <span class="st-selectableRow__trailing"><ng-content select="[slot='trailing']"></ng-content></span>
-      }
-    </ng-template>
   `,
-  imports: [NgTemplateOutlet],
 })
 export class SelectableRow {
   static readonly stComponentName = "SelectableRow";

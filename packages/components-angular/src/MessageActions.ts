@@ -34,9 +34,9 @@ export type MessageActionsProps = {
           type="button"
           [class]="actionClass(action.variant)"
           [disabled]="action.disabled ?? false"
-          [attr.aria-label]="action.label ?? null"
+          [attr.aria-label]="action.label ?? action.id ?? null"
           (click)="action.onClick && action.onClick()"
-        >{{ action.label }}</button>
+        >{{ action.icon ?? action.label }}</button>
       }
     </div>
   `,
@@ -46,7 +46,7 @@ export class MessageActions {
   readonly componentName = "MessageActions";
 
   @NgInput() actions: MessageAction[] = [];
-  @NgInput() visibility?: "always" | "hover";
+  @NgInput() visibility: "always" | "hover" = "hover";
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
@@ -59,8 +59,8 @@ export class MessageActions {
 
   actionClass(variant?: MessageActionVariant): string {
     return classNames(
-      "st-messageActions__action",
-      variant === "danger" ? "st-messageActions__action--danger" : undefined,
+      "st-iconButton st-iconButton--sm",
+      variant === "danger" ? "st-iconButton--danger" : "st-iconButton--ghost",
     );
   }
 }

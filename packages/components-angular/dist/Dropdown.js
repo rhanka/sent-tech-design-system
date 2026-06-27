@@ -24,6 +24,9 @@ export class Dropdown {
         const opt = this.options.find((o) => o.value === val);
         return opt ? String(opt.label) : this.resolvedPlaceholder;
     }
+    get iconClass() {
+        return classNames("st-dropdown__icon", this.localOpen ? "st-dropdown__icon--open" : undefined);
+    }
     get hostClass() {
         return classNames("st-dropdown", this.classInput);
     }
@@ -48,8 +51,19 @@ export class Dropdown {
         [attr.aria-expanded]="localOpen"
         (click)="localOpen = !localOpen"
       >
-        <span class="st-dropdown__label">{{ label ?? 'Select' }}</span>
-        : <span class="st-dropdown__value">{{ selectedLabel }}</span>
+        <span class="st-dropdown__label">{{ label }}</span>: <span class="st-dropdown__value">{{ selectedLabel }}</span>
+        <svg
+          [class]="iconClass"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.25"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        ><path d="m6 9 6 6 6-6"></path></svg>
       </button>
       @if (localOpen) {
         <div
@@ -90,8 +104,19 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
         [attr.aria-expanded]="localOpen"
         (click)="localOpen = !localOpen"
       >
-        <span class="st-dropdown__label">{{ label ?? 'Select' }}</span>
-        : <span class="st-dropdown__value">{{ selectedLabel }}</span>
+        <span class="st-dropdown__label">{{ label }}</span>: <span class="st-dropdown__value">{{ selectedLabel }}</span>
+        <svg
+          [class]="iconClass"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.25"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        ><path d="m6 9 6 6 6-6"></path></svg>
       </button>
       @if (localOpen) {
         <div
