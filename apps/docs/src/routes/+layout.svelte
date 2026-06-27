@@ -212,6 +212,11 @@
   import ChromeAgropur from "$lib/chrome/ChromeAgropur.svelte";
   import ChromeVanHoutte from "$lib/chrome/ChromeVanHoutte.svelte";
   import ChromeDynamite from "$lib/chrome/ChromeDynamite.svelte";
+  import ChromeLvmh from "$lib/chrome/ChromeLvmh.svelte";
+  import ChromeOrange from "$lib/chrome/ChromeOrange.svelte";
+  import ChromeBnpParibas from "$lib/chrome/ChromeBnpParibas.svelte";
+  import ChromeAxa from "$lib/chrome/ChromeAxa.svelte";
+  import ChromeTotalenergies from "$lib/chrome/ChromeTotalenergies.svelte";
   import DocsSearch from "$lib/chat/DocsSearch.svelte";
   import { Search as SearchIcon } from "@lucide/svelte";
   // Bascule A/B du header unique « app-shell » (?shell=v2) : wrapper SSR-safe
@@ -528,7 +533,7 @@
   const shellV2 = $derived(browser && page.url.searchParams.get("shell") === "v2");
 
   const useCustomChrome = $derived(
-    !shellV2 && browser && (activeThemeId === "carbon" || activeThemeId === "dsfr" || activeThemeId === "airbus" || activeThemeId === "canada" || activeThemeId === "quebec" || activeThemeId === "lightspeed" || activeThemeId === "desjardins" || activeThemeId === "ssense" || activeThemeId === "ubisoft" || activeThemeId === "cirque-du-soleil" || activeThemeId === "cgi" || activeThemeId === "national-bank" || activeThemeId === "bombardier" || activeThemeId === "saq" || activeThemeId === "nuvei" || activeThemeId === "coveo" || activeThemeId === "cae" || activeThemeId === "stm" || activeThemeId === "circle-k" || activeThemeId === "aldo" || activeThemeId === "brp" || activeThemeId === "air-canada" || activeThemeId === "metro" || activeThemeId === "hopper" || activeThemeId === "cascades" || activeThemeId === "dialogue" || activeThemeId === "moment-factory" || activeThemeId === "genetec" || activeThemeId === "saputo" || activeThemeId === "mirego" || activeThemeId === "ellio" || activeThemeId === "lion-electric" || activeThemeId === "videotron" || activeThemeId === "frank-and-oak" || activeThemeId === "sid-lee" || activeThemeId === "workleap" || activeThemeId === "simons" || activeThemeId === "la-vie-en-rose" || activeThemeId === "dollarama" || activeThemeId === "bell" || activeThemeId === "behaviour-interactive" || activeThemeId === "rona" || activeThemeId === "gameloft" || activeThemeId === "cossette" || activeThemeId === "eidos-montreal" || activeThemeId === "stingray" || activeThemeId === "lg2" || activeThemeId === "sonder" || activeThemeId === "plusgrade" || activeThemeId === "gildan" || activeThemeId === "quebecor" || activeThemeId === "cogeco" || activeThemeId === "ia" || activeThemeId === "laurentian-bank" || activeThemeId === "jean-coutu" || activeThemeId === "reitmans" || activeThemeId === "st-hubert" || activeThemeId === "beneva" || activeThemeId === "air-transat" || activeThemeId === "birks" || activeThemeId === "lufa-farms" || activeThemeId === "hydro-quebec" || activeThemeId === "energir" || activeThemeId === "agropur" || activeThemeId === "van-houtte" || activeThemeId === "dynamite")
+    !shellV2 && browser && (activeThemeId === "lvmh" || activeThemeId === "orange" || activeThemeId === "bnp-paribas" || activeThemeId === "axa" || activeThemeId === "totalenergies" || activeThemeId === "carbon" || activeThemeId === "dsfr" || activeThemeId === "airbus" || activeThemeId === "canada" || activeThemeId === "quebec" || activeThemeId === "lightspeed" || activeThemeId === "desjardins" || activeThemeId === "ssense" || activeThemeId === "ubisoft" || activeThemeId === "cirque-du-soleil" || activeThemeId === "cgi" || activeThemeId === "national-bank" || activeThemeId === "bombardier" || activeThemeId === "saq" || activeThemeId === "nuvei" || activeThemeId === "coveo" || activeThemeId === "cae" || activeThemeId === "stm" || activeThemeId === "circle-k" || activeThemeId === "aldo" || activeThemeId === "brp" || activeThemeId === "air-canada" || activeThemeId === "metro" || activeThemeId === "hopper" || activeThemeId === "cascades" || activeThemeId === "dialogue" || activeThemeId === "moment-factory" || activeThemeId === "genetec" || activeThemeId === "saputo" || activeThemeId === "mirego" || activeThemeId === "ellio" || activeThemeId === "lion-electric" || activeThemeId === "videotron" || activeThemeId === "frank-and-oak" || activeThemeId === "sid-lee" || activeThemeId === "workleap" || activeThemeId === "simons" || activeThemeId === "la-vie-en-rose" || activeThemeId === "dollarama" || activeThemeId === "bell" || activeThemeId === "behaviour-interactive" || activeThemeId === "rona" || activeThemeId === "gameloft" || activeThemeId === "cossette" || activeThemeId === "eidos-montreal" || activeThemeId === "stingray" || activeThemeId === "lg2" || activeThemeId === "sonder" || activeThemeId === "plusgrade" || activeThemeId === "gildan" || activeThemeId === "quebecor" || activeThemeId === "cogeco" || activeThemeId === "ia" || activeThemeId === "laurentian-bank" || activeThemeId === "jean-coutu" || activeThemeId === "reitmans" || activeThemeId === "st-hubert" || activeThemeId === "beneva" || activeThemeId === "air-transat" || activeThemeId === "birks" || activeThemeId === "lufa-farms" || activeThemeId === "hydro-quebec" || activeThemeId === "energir" || activeThemeId === "agropur" || activeThemeId === "van-houtte" || activeThemeId === "dynamite")
   );
 
   // siteConfig du shell, câblé au mécanisme EXISTANT du layout (thème
@@ -1231,6 +1236,111 @@
         {@render pageContent()}
       {/snippet}
     </ChromeCae>
+  </div>
+
+{:else if useCustomChrome && activeThemeId === "lvmh"}
+  <div data-st-theme={activeThemeId}>
+    <ChromeLvmh
+      activeThemeId={activeThemeId}
+      isThemeOpen={isThemeOpen}
+      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onSearchOpen={openSearch}
+      themeSwitcher={themeSelector}
+      frameworkSwitcher={frameworkSelector}
+      localeSwitcher={langSelector}
+      compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
+      mobileMenuOpen={isMobileMenuOpen}
+      onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
+    >
+      {#snippet children()}
+        {@render pageContent()}
+      {/snippet}
+    </ChromeLvmh>
+  </div>
+
+{:else if useCustomChrome && activeThemeId === "orange"}
+  <div data-st-theme={activeThemeId}>
+    <ChromeOrange
+      activeThemeId={activeThemeId}
+      isThemeOpen={isThemeOpen}
+      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onSearchOpen={openSearch}
+      themeSwitcher={themeSelector}
+      frameworkSwitcher={frameworkSelector}
+      localeSwitcher={langSelector}
+      compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
+      mobileMenuOpen={isMobileMenuOpen}
+      onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
+    >
+      {#snippet children()}
+        {@render pageContent()}
+      {/snippet}
+    </ChromeOrange>
+  </div>
+
+{:else if useCustomChrome && activeThemeId === "bnp-paribas"}
+  <div data-st-theme={activeThemeId}>
+    <ChromeBnpParibas
+      activeThemeId={activeThemeId}
+      isThemeOpen={isThemeOpen}
+      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onSearchOpen={openSearch}
+      themeSwitcher={themeSelector}
+      frameworkSwitcher={frameworkSelector}
+      localeSwitcher={langSelector}
+      compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
+      mobileMenuOpen={isMobileMenuOpen}
+      onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
+    >
+      {#snippet children()}
+        {@render pageContent()}
+      {/snippet}
+    </ChromeBnpParibas>
+  </div>
+
+{:else if useCustomChrome && activeThemeId === "axa"}
+  <div data-st-theme={activeThemeId}>
+    <ChromeAxa
+      activeThemeId={activeThemeId}
+      isThemeOpen={isThemeOpen}
+      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onSearchOpen={openSearch}
+      themeSwitcher={themeSelector}
+      frameworkSwitcher={frameworkSelector}
+      localeSwitcher={langSelector}
+      compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
+      mobileMenuOpen={isMobileMenuOpen}
+      onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
+    >
+      {#snippet children()}
+        {@render pageContent()}
+      {/snippet}
+    </ChromeAxa>
+  </div>
+
+{:else if useCustomChrome && activeThemeId === "totalenergies"}
+  <div data-st-theme={activeThemeId}>
+    <ChromeTotalenergies
+      activeThemeId={activeThemeId}
+      isThemeOpen={isThemeOpen}
+      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onSearchOpen={openSearch}
+      themeSwitcher={themeSelector}
+      frameworkSwitcher={frameworkSelector}
+      localeSwitcher={langSelector}
+      compareButton={sharedCompareButton}
+      colorModeToggle={colorModeToggle}
+      mobileMenuOpen={isMobileMenuOpen}
+      onMobileMenuToggle={() => (isMobileMenuOpen = !isMobileMenuOpen)}
+    >
+      {#snippet children()}
+        {@render pageContent()}
+      {/snippet}
+    </ChromeTotalenergies>
   </div>
 
 {:else if useCustomChrome && activeThemeId === "stm"}
