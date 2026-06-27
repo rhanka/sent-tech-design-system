@@ -43,7 +43,14 @@ export function offsetMargin(offset: number | undefined): string | undefined {
   // (flex-basis porté par le `.st-col` interne) ne s'applique plus.
   styles: [":host { display: contents; }"],
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass" [ngStyle]="inlineStyles">
+    <div
+      [attr.data-st-component]="componentName"
+      [class]="hostClass"
+      [style.--st-col-sm]="spanBasisFor(sm)"
+      [style.--st-col-md]="spanBasisFor(md)"
+      [style.--st-col-lg]="spanBasisFor(lg)"
+      [ngStyle]="inlineStyles"
+    >
       <ng-content></ng-content>
     </div>
   `,
@@ -59,15 +66,34 @@ export class Col {
   @NgInput() as?: string;
   @NgInput("class") classInput?: string;
 
+  get isAuto(): boolean {
+    return this.span === "auto";
+  }
+
   get hostClass(): string {
-    return ["st-col", this.classInput].filter(Boolean).join(" ");
+    return classNames(
+      "st-col",
+      this.isAuto && "st-col--auto",
+      this.sm != null && "st-col--has-sm",
+      this.md != null && "st-col--has-md",
+      this.lg != null && "st-col--has-lg",
+      this.classInput,
+    );
+  }
+
+  // Parité stricte React/Vue : la colonne `auto` grandit (flex-grow:1) au lieu de
+  // se figer à la largeur du contenu ; les autres colonnes sont plafonnées à leur
+  // basis et les surcharges responsives passent par les variables `--st-col-*`.
+  spanBasisFor(span: ColSpan | undefined): string | null {
+    return spanBasis(span) ?? null;
   }
 
   get inlineStyles(): Record<string, string | undefined> {
+    const basis = spanBasis(this.span);
     return {
-      flexBasis: spanBasis(this.span),
-      flexGrow: '0',
-      flexShrink: '0',
+      flexBasis: basis,
+      maxInlineSize: this.isAuto ? undefined : basis,
+      flexGrow: this.isAuto ? '1' : '0',
       marginInlineStart: offsetMargin(this.offset),
     };
   }
