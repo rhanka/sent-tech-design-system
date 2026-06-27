@@ -20,6 +20,7 @@ export type BadgeProps = {
 @Component({
   selector: "st-badge",
   standalone: true,
+  styles: [":host { display: contents; }"],
   template: `
     <span [attr.data-st-component]="componentName" [class]="hostClass">
       @if (label !== undefined) {
