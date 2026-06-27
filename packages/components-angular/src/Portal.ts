@@ -24,6 +24,7 @@ export function resolvePortalTarget(target: string | HTMLElement | undefined): H
 @Component({
   selector: "st-portal",
   standalone: true,
+  styles: [":host { display: contents; }"],
   template: `
     <div
       [attr.data-st-component]="componentName"

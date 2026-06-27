@@ -14,6 +14,7 @@ export type InlineLoadingProps = {
 @Component({
   selector: "st-inline-loading",
   standalone: true,
+  styles: [":host { display: contents; }"],
   template: `
     <div
       [attr.data-st-component]="componentName"

@@ -16,6 +16,7 @@ export type HiddenProps = {
 @Component({
   selector: "st-hidden",
   standalone: true,
+  styles: [":host { display: contents; }"],
   template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
       <ng-content></ng-content>

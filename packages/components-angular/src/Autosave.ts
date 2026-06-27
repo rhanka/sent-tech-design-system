@@ -30,6 +30,7 @@ export type AutosaveProps = {
 @Component({
   selector: "st-autosave",
   standalone: true,
+  styles: [":host { display: contents; }"],
   template: `
     <div
       [attr.data-st-component]="componentName"

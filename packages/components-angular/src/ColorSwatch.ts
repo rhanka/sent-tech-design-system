@@ -15,6 +15,7 @@ export type ColorSwatchProps = {
 @Component({
   selector: "st-color-swatch",
   standalone: true,
+  styles: [":host { display: contents; }"],
   template: `
     <span [attr.data-st-component]="componentName" [class]="hostClass">
       <span class="st-colorSwatch__chip"
