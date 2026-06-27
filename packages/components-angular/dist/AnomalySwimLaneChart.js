@@ -276,14 +276,11 @@ export class AnomalySwimLaneChart {
         </div>
       }
     </div>
-  `, isInline: true });
+  `, isInline: true, styles: [":host { display: block; width: 100%; }"] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: AnomalySwimLaneChart, decorators: [{
             type: Component,
-            args: [{
-                    selector: "st-anomaly-swim-lane-chart",
-                    standalone: true,
-                    template: `
+            args: [{ selector: "st-anomaly-swim-lane-chart", standalone: true, template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
       <div
         class="st-anomalySwimLaneChart__visual"
@@ -380,8 +377,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
         </div>
       }
     </div>
-  `,
-                }]
+  `, styles: [":host { display: block; width: 100%; }"] }]
         }], propDecorators: { data: [{
                 type: NgInput
             }], max: [{
