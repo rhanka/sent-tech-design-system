@@ -18,6 +18,7 @@ export type ColorScaleBarProps = {
 @Component({
   selector: "st-color-scale-bar",
   standalone: true,
+  styles: [":host { display: contents; }"],
   template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
       @if (label) {
