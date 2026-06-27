@@ -16,6 +16,7 @@ export type CopyButtonProps = {
 @Component({
   selector: "st-copy-button",
   standalone: true,
+  styles: [":host { display: contents; }"],
   template: `
     <button type="button" [attr.data-st-component]="componentName" [class]="hostClass"
       aria-live="polite"

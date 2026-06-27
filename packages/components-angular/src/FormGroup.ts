@@ -12,6 +12,7 @@ export type FormGroupProps = {
 @Component({
   selector: "st-form-group",
   standalone: true,
+  styles: [":host { display: contents; }"],
   template: `
     <fieldset
       [attr.data-st-component]="componentName"

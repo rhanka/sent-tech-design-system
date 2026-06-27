@@ -21,8 +21,17 @@ export type RowProps = {
   selector: "st-row",
   standalone: true,
   imports: [NgStyle],
+  // Hôte transparent (parité React/Vue qui rendent le `.st-row` directement) :
+  // sans cela `<st-row>` (élément inconnu = inline) écrase le flex container et
+  // la rangée se réduit à la largeur de son contenu.
+  styles: [":host { display: contents; }"],
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass" [ngStyle]="inlineStyles">
+    <div
+      [attr.data-st-component]="componentName"
+      [class]="hostClass"
+      [style.--st-row-gutter]="gutterToken"
+      [ngStyle]="inlineStyles"
+    >
       <ng-content></ng-content>
     </div>
   `,
@@ -41,13 +50,18 @@ export class Row {
     return ["st-row", this.classInput].filter(Boolean).join(" ");
   }
 
+  // Gouttière exposée en variable CSS pour que les `Col` enfants soustraient le
+  // gutter de leur flex-basis (parité Vue : `calc(% - var(--st-row-gutter))`).
+  get gutterToken(): string {
+    return spacingToken(this.gutter) ?? "0";
+  }
+
   get inlineStyles(): Record<string, string | undefined> {
-    const gutter = this.gutter ? `var(--st-spacing-${this.gutter}, ${this.gutter * 0.25}rem)` : undefined;
     return {
       display: 'flex',
       flexDirection: 'row',
       flexWrap: this.wrap !== false ? 'wrap' : 'nowrap',
-      gap: gutter,
+      gap: this.gutterToken,
       alignItems: this.align ? alignValue(this.align) : undefined,
       justifyContent: this.justify ? justifyValue(this.justify) : undefined,
     };
