@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  WORDMARK TEXTE (non officiel) — Publicis Groupe ne publie pas de logo SVG
+  libre sur Wikimedia Commons (seul « PS Logo RGB » = Publicis Sapient existe).
+  Reconstruction propre du wordmark : « Publicis » en Publicis Black éditorial
+  (serif), accent « Groupe » en Publicis Gold #9d833e. Signalé au conducteur.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 232 28" role="img" aria-label="Publicis Groupe">
+  <text x="0" y="21" font-family="Georgia, 'Times New Roman', 'Libre Baskerville', serif" font-size="23" font-weight="700" letter-spacing="0.2" fill="#212129">Publicis<tspan font-weight="400" font-style="italic" fill="#9d833e"> Groupe</tspan></text>
+</svg>
