@@ -91,6 +91,7 @@ function formatTickLabel(value: number): string {
 @Component({
   selector: "st-anomaly-swim-lane-chart",
   standalone: true,
+  styles: [":host { display: block; width: 100%; }"],
   template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
       <div

@@ -21,14 +21,11 @@ export class Badge {
         <ng-content></ng-content>
       }
     </span>
-  `, isInline: true });
+  `, isInline: true, styles: [":host { display: contents; }"] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Badge, decorators: [{
             type: Component,
-            args: [{
-                    selector: "st-badge",
-                    standalone: true,
-                    template: `
+            args: [{ selector: "st-badge", standalone: true, template: `
     <span [attr.data-st-component]="componentName" [class]="hostClass">
       @if (label !== undefined) {
         {{ label }}
@@ -36,8 +33,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
         <ng-content></ng-content>
       }
     </span>
-  `,
-                }]
+  `, styles: [":host { display: contents; }"] }]
         }], propDecorators: { tone: [{
                 type: NgInput
             }], shape: [{
