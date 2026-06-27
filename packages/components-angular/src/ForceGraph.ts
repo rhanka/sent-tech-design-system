@@ -321,6 +321,12 @@ type FGPositionedEdge = {
 @Component({
   selector: "st-force-graph",
   standalone: true,
+  // Le wrapper d'hôte Angular (<st-force-graph>) s'intercale entre le conteneur
+  // (souvent un flex) et le <div class="st-forceGraph"> width:100%. Sans largeur
+  // propre, l'hôte se réduit à la largeur intrinsèque du SVG (300px) et le graphe
+  // rend ~3x trop petit vs React/Vue/Svelte (où le div est l'enfant flex direct).
+  // On force l'hôte à occuper toute la largeur pour retrouver la parité.
+  styles: [":host { display: block; width: 100%; }"],
   template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass" role="img" [attr.aria-label]="label">
       <svg
