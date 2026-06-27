@@ -38,6 +38,10 @@ export function offsetMargin(offset: number | undefined): string | undefined {
   selector: "st-col",
   standalone: true,
   imports: [NgStyle],
+  // Hôte transparent (parité React/Vue qui rendent le `.st-col` directement) :
+  // sans cela `<st-col>` s'intercale comme enfant flex de la Row et la grille
+  // (flex-basis porté par le `.st-col` interne) ne s'applique plus.
+  styles: [":host { display: contents; }"],
   template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass" [ngStyle]="inlineStyles">
       <ng-content></ng-content>

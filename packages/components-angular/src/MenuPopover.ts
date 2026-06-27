@@ -18,6 +18,7 @@ export type MenuPopoverProps = {
 @Component({
   selector: "st-menu-popover",
   standalone: true,
+  styles: [":host { display: contents; }"],
   template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
       <ng-content></ng-content>

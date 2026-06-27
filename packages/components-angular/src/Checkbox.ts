@@ -26,6 +26,7 @@ function nextId(): string {
 @Component({
   selector: "st-checkbox",
   standalone: true,
+  styles: [":host { display: contents; }"],
   template: `
     <label [attr.data-st-component]="componentName" [class]="hostClass">
       <input

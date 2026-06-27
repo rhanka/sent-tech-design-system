@@ -23,6 +23,7 @@ export type OverlineProps = {
   // contenu — la balise active (span/h3) n'affichait donc rien. Un unique
   // ng-content dans un <ng-template> partagé garantit la projection pour TOUTES
   // les balises.
+  styles: [":host { display: contents; }"],
   template: `
     <ng-template #content><ng-content></ng-content></ng-template>
     @switch (resolvedTag) {
