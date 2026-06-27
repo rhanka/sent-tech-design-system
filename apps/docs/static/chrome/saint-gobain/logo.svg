@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 232 34" width="232" height="34" role="img" aria-label="Saint-Gobain">
+  <!--
+    WORDMARK reconstruit (non officiel). Aucun SVG du logo Saint-Gobain n'est
+    publié librement sur Wikimedia (le seul fichier disponible était un faux
+    "parliamentarch"). Wordmark propre dans le bleu de marque #17428C (Pantone
+    7687 C), police système sans (aucune police réseau). Signalé au conducteur.
+  -->
+  <text x="0" y="26" font-family="Arial, 'Helvetica Neue', Helvetica, sans-serif"
+        font-size="27" font-weight="700" letter-spacing="0.4" fill="#17428C">SAINT-GOBAIN</text>
+</svg>
