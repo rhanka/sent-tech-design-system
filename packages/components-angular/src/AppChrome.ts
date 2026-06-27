@@ -52,6 +52,7 @@ let appChromeIdCounter = 0;
 @Component({
   selector: "st-app-chrome",
   standalone: true,
+  styles: [":host { display: contents; }"],
   template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
       <header class="st-appHeader st-appChrome__header">

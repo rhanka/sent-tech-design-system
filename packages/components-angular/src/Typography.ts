@@ -1,3 +1,4 @@
+import { NgTemplateOutlet } from "@angular/common";
 import { Component, Input as NgInput } from "@angular/core";
 
 import { classNames } from "./classNames.js";
@@ -51,34 +52,43 @@ const VARIANT_TAG: Record<TypographyVariant, string> = {
 @Component({
   selector: "st-typography",
   standalone: true,
+  imports: [NgTemplateOutlet],
+  // Host transparent (parité React/Vue/Svelte qui n'ont pas d'élément hôte).
+  styles: [":host { display: contents; }"],
+  // Un SEUL <ng-content> (réutilisé via ngTemplateOutlet) : avec createComponent
+  // (île Angular des docs), projectableNodes ne remplit que le slot d'index 0.
+  // Mettre un <ng-content> par @case créait 9 slots dont un seul recevait le
+  // contenu — seul le 1er variant (display/h1) s'affichait. Un unique ng-content
+  // dans un <ng-template> partagé garantit la projection pour TOUTES les balises.
   template: `
+    <ng-template #content><ng-content></ng-content></ng-template>
     @switch (tag) {
       @case ("h1") {
-        <h1 [attr.data-st-component]="componentName" [class]="hostClass"><ng-content></ng-content></h1>
+        <h1 [attr.data-st-component]="componentName" [class]="hostClass"><ng-container [ngTemplateOutlet]="content" /></h1>
       }
       @case ("h2") {
-        <h2 [attr.data-st-component]="componentName" [class]="hostClass"><ng-content></ng-content></h2>
+        <h2 [attr.data-st-component]="componentName" [class]="hostClass"><ng-container [ngTemplateOutlet]="content" /></h2>
       }
       @case ("h3") {
-        <h3 [attr.data-st-component]="componentName" [class]="hostClass"><ng-content></ng-content></h3>
+        <h3 [attr.data-st-component]="componentName" [class]="hostClass"><ng-container [ngTemplateOutlet]="content" /></h3>
       }
       @case ("h4") {
-        <h4 [attr.data-st-component]="componentName" [class]="hostClass"><ng-content></ng-content></h4>
+        <h4 [attr.data-st-component]="componentName" [class]="hostClass"><ng-container [ngTemplateOutlet]="content" /></h4>
       }
       @case ("h5") {
-        <h5 [attr.data-st-component]="componentName" [class]="hostClass"><ng-content></ng-content></h5>
+        <h5 [attr.data-st-component]="componentName" [class]="hostClass"><ng-container [ngTemplateOutlet]="content" /></h5>
       }
       @case ("h6") {
-        <h6 [attr.data-st-component]="componentName" [class]="hostClass"><ng-content></ng-content></h6>
+        <h6 [attr.data-st-component]="componentName" [class]="hostClass"><ng-container [ngTemplateOutlet]="content" /></h6>
       }
       @case ("p") {
-        <p [attr.data-st-component]="componentName" [class]="hostClass"><ng-content></ng-content></p>
+        <p [attr.data-st-component]="componentName" [class]="hostClass"><ng-container [ngTemplateOutlet]="content" /></p>
       }
       @case ("span") {
-        <span [attr.data-st-component]="componentName" [class]="hostClass"><ng-content></ng-content></span>
+        <span [attr.data-st-component]="componentName" [class]="hostClass"><ng-container [ngTemplateOutlet]="content" /></span>
       }
       @default {
-        <p [attr.data-st-component]="componentName" [class]="hostClass"><ng-content></ng-content></p>
+        <p [attr.data-st-component]="componentName" [class]="hostClass"><ng-container [ngTemplateOutlet]="content" /></p>
       }
     }
   `,
