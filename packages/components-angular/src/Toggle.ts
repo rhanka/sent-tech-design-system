@@ -21,6 +21,11 @@ export type ToggleProps = {
 @Component({
   selector: "st-toggle",
   standalone: true,
+  // Host transparent (parité React/Vue/Svelte qui n'ont pas d'élément hôte) :
+  // sans cela l'élément <st-*> (display:inline par défaut) s'intercale dans le
+  // layout (line-box autour du contenu, ou SVG width:100% qui collapse) et
+  // désaligne le rendu. display:contents efface la boîte de l'hôte.
+  styles: [":host { display: contents; }"],
   template: `
     <label [attr.data-st-component]="componentName" [class]="hostClass">
       <span class="st-toggle__label">{{ label }}</span>
