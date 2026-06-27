@@ -12,8 +12,8 @@ export type ErrorSummaryProps = {
 export declare class ErrorSummary {
     static readonly stComponentName = "ErrorSummary";
     readonly componentName = "ErrorSummary";
-    heading?: string;
-    errors?: ErrorSummaryItem[];
+    heading: string;
+    errors: ErrorSummaryItem[];
     classInput?: string;
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<ErrorSummary, never>;

@@ -15,6 +15,8 @@ export declare class ColorSwatch {
     shape?: ColorSwatchShape;
     label?: string;
     classInput?: string;
+    get safeSize(): number;
+    get accessibleLabel(): string;
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<ColorSwatch, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<ColorSwatch, "st-color-swatch", never, { "color": { "alias": "color"; "required": false; }; "size": { "alias": "size"; "required": false; }; "shape": { "alias": "shape"; "required": false; }; "label": { "alias": "label"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;

@@ -13,14 +13,14 @@ export type EmptyStateProps = {
   selector: "st-empty-state",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass" role="status">
-      <div class="st-emptyState__body">
-        <p class="st-emptyState__title">{{ title }}</p>
-        @if (message) { <p class="st-emptyState__message">{{ message }}</p> }
-        @if (action) { <div class="st-emptyState__action">{{ action }}</div> }
+    <section [attr.data-st-component]="componentName" [class]="hostClass">
+      <div class="st-empty-state__content">
+        <h2 class="st-empty-state__title st-emptyState__title">{{ title }}</h2>
+        @if (message) { <p class="st-empty-state__message st-emptyState__message">{{ message }}</p> }
+        <ng-content></ng-content>
+        @if (action) { <div class="st-empty-state__action">{{ action }}</div> }
       </div>
-      <ng-content></ng-content>
-    </div>
+    </section>
   `,
 })
 export class EmptyState {

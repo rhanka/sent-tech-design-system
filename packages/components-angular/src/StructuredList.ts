@@ -22,10 +22,8 @@ export type StructuredListProps = {
     <dl [attr.data-st-component]="componentName" [class]="hostClass">
       @for (item of items; track $index) {
         <div class="st-structuredList__row">
-          @if (item.term ?? item.label) {
-            <dt class="st-structuredList__term">{{ item.term ?? item.label }}</dt>
-          }
-          <dd class="st-structuredList__description">{{ item.description ?? item.value }}</dd>
+          <dt class="st-structuredList__term">{{ item.term ?? item.label }}</dt>
+          <dd class="st-structuredList__definition">{{ item.description ?? item.value }}</dd>
         </div>
       }
       <ng-content></ng-content>

@@ -9,7 +9,7 @@ export class AvatarGroup {
     total;
     classInput;
     get hostClass() {
-        return classNames("st-avatarGroup", this.classInput);
+        return classNames("st-avatarGroup", `st-avatarGroup--${this.size ?? "md"}`, this.classInput);
     }
     get overflow() {
         return this.total && this.max && this.total > this.max ? this.total - this.max : 0;
@@ -19,9 +19,7 @@ export class AvatarGroup {
     <div [attr.data-st-component]="componentName" [class]="hostClass">
       <ng-content></ng-content>
       @if (overflow > 0) {
-        <div class="st-avatarGroup__overflow st-avatar st-avatar--{{ size ?? 'md' }} st-avatar--circle st-avatar--category1" [attr.aria-label]="overflow + ' autres'">
-          <span class="st-avatar__initials">+{{ overflow }}</span>
-        </div>
+        <span class="st-avatarGroup__overflow" [attr.aria-label]="'+' + overflow">+{{ overflow }}</span>
       }
     </div>
   `, isInline: true });
@@ -35,9 +33,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
     <div [attr.data-st-component]="componentName" [class]="hostClass">
       <ng-content></ng-content>
       @if (overflow > 0) {
-        <div class="st-avatarGroup__overflow st-avatar st-avatar--{{ size ?? 'md' }} st-avatar--circle st-avatar--category1" [attr.aria-label]="overflow + ' autres'">
-          <span class="st-avatar__initials">+{{ overflow }}</span>
-        </div>
+        <span class="st-avatarGroup__overflow" [attr.aria-label]="'+' + overflow">+{{ overflow }}</span>
       }
     </div>
   `,

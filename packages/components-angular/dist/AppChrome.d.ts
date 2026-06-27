@@ -50,15 +50,15 @@ export declare class AppChrome {
     logoAlt?: string;
     brandHref?: string;
     brandLabel?: string;
-    nav?: AppChromeNavItem[];
+    nav: AppChromeNavItem[];
     navLabel?: string;
-    themes?: AppChromeThemeOption[];
+    themes: AppChromeThemeOption[];
     theme?: string;
     onThemeChange?: (id: string) => void;
     themeLabel?: string;
     colorMode?: AppChromeColorMode;
     onColorModeChange?: (mode: AppChromeColorMode) => void;
-    colorModeLabels?: {
+    colorModeLabels: {
         light: string;
         dark: string;
         auto: string;
@@ -68,12 +68,37 @@ export declare class AppChrome {
     localeLabel?: string;
     githubHref?: string;
     githubLabel?: string;
-    mobileMenuOpen?: boolean;
+    mobileMenuOpen: boolean;
     onMobileMenuToggle?: () => void;
     menuLabel?: string;
     classInput?: string;
+    /** Id du tiroir, stable et partagé entre `aria-controls` (burger) et `id` (drawer). */
+    readonly drawerId: string;
+    readonly localeOptions: AppChromeLocale[];
+    readonly colorModeOptions: AppChromeColorMode[];
+    isThemeOpen: boolean;
+    isLocaleOpen: boolean;
     get hostClass(): string;
+    get resolvedBrandLabel(): string | null;
+    get activeTheme(): AppChromeThemeOption | undefined;
+    get showThemeSelector(): boolean;
+    get showColorMode(): boolean;
+    get showLocaleSelector(): boolean;
+    get showGithub(): boolean;
+    get colorModeAriaLabel(): string;
+    chevronClass(open: boolean): string;
+    toggleTheme(): void;
+    toggleLocale(): void;
+    pickTheme(id: string): void;
+    pickLocale(value: AppChromeLocale): void;
+    cycleColorMode(): void;
+    toggleMobileMenu(): void;
+    pickThemeFromDrawer(id: string): void;
+    pickLocaleFromDrawer(value: AppChromeLocale): void;
+    selectColorMode(mode: AppChromeColorMode): void;
+    onDocumentClick(e: MouseEvent): void;
+    onDocumentKeydown(e: KeyboardEvent): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<AppChrome, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<AppChrome, "st-app-chrome", never, { "brandName": { "alias": "brandName"; "required": false; }; "productName": { "alias": "productName"; "required": false; }; "logoSrc": { "alias": "logoSrc"; "required": false; }; "logoAlt": { "alias": "logoAlt"; "required": false; }; "brandHref": { "alias": "brandHref"; "required": false; }; "brandLabel": { "alias": "brandLabel"; "required": false; }; "nav": { "alias": "nav"; "required": false; }; "navLabel": { "alias": "navLabel"; "required": false; }; "themes": { "alias": "themes"; "required": false; }; "theme": { "alias": "theme"; "required": false; }; "onThemeChange": { "alias": "onThemeChange"; "required": false; }; "themeLabel": { "alias": "themeLabel"; "required": false; }; "colorMode": { "alias": "colorMode"; "required": false; }; "onColorModeChange": { "alias": "onColorModeChange"; "required": false; }; "colorModeLabels": { "alias": "colorModeLabels"; "required": false; }; "locale": { "alias": "locale"; "required": false; }; "onLocaleChange": { "alias": "onLocaleChange"; "required": false; }; "localeLabel": { "alias": "localeLabel"; "required": false; }; "githubHref": { "alias": "githubHref"; "required": false; }; "githubLabel": { "alias": "githubLabel"; "required": false; }; "mobileMenuOpen": { "alias": "mobileMenuOpen"; "required": false; }; "onMobileMenuToggle": { "alias": "onMobileMenuToggle"; "required": false; }; "menuLabel": { "alias": "menuLabel"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<AppChrome, "st-app-chrome", never, { "brandName": { "alias": "brandName"; "required": false; }; "productName": { "alias": "productName"; "required": false; }; "logoSrc": { "alias": "logoSrc"; "required": false; }; "logoAlt": { "alias": "logoAlt"; "required": false; }; "brandHref": { "alias": "brandHref"; "required": false; }; "brandLabel": { "alias": "brandLabel"; "required": false; }; "nav": { "alias": "nav"; "required": false; }; "navLabel": { "alias": "navLabel"; "required": false; }; "themes": { "alias": "themes"; "required": false; }; "theme": { "alias": "theme"; "required": false; }; "onThemeChange": { "alias": "onThemeChange"; "required": false; }; "themeLabel": { "alias": "themeLabel"; "required": false; }; "colorMode": { "alias": "colorMode"; "required": false; }; "onColorModeChange": { "alias": "onColorModeChange"; "required": false; }; "colorModeLabels": { "alias": "colorModeLabels"; "required": false; }; "locale": { "alias": "locale"; "required": false; }; "onLocaleChange": { "alias": "onLocaleChange"; "required": false; }; "localeLabel": { "alias": "localeLabel"; "required": false; }; "githubHref": { "alias": "githubHref"; "required": false; }; "githubLabel": { "alias": "githubLabel"; "required": false; }; "mobileMenuOpen": { "alias": "mobileMenuOpen"; "required": false; }; "onMobileMenuToggle": { "alias": "onMobileMenuToggle"; "required": false; }; "menuLabel": { "alias": "menuLabel"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
 }
 //# sourceMappingURL=AppChrome.d.ts.map

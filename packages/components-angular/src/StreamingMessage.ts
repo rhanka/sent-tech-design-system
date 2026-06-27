@@ -17,6 +17,7 @@ export type StreamingMessageProps = {
   text?: unknown;
   events?: StreamingMessageEvent[];
   mode?: StreamingMessageMode;
+  placeholder?: unknown;
   streaming?: boolean;
   content?: string;
   class?: string;
@@ -26,18 +27,16 @@ export type StreamingMessageProps = {
   selector: "st-streaming-message",
   standalone: true,
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <div class="st-streamingMessage__content">
-        @if (resolvedText) {
-          <p class="st-streamingMessage__text">{{ resolvedText }}</p>
-        } @else {
-          <p class="st-streamingMessage__text st-streamingMessage__text--muted">Streaming en cours…</p>
-        }
-      </div>
-      @if (streaming) {
-        <span class="st-streamingMessage__cursor" aria-hidden="true"></span>
+    <section [attr.data-st-component]="componentName" [class]="hostClass">
+      <p [class]="textClass">{{ displayText }}</p>
+      @if (events?.length) {
+        <ul class="st-streamingMessage__trailList">
+          @for (event of events ?? []; track event.id) {
+            <li>{{ event.label }}</li>
+          }
+        </ul>
       }
-    </div>
+    </section>
   `,
 })
 export class StreamingMessage {
@@ -48,18 +47,35 @@ export class StreamingMessage {
   @NgInput() content?: string;
   @NgInput() text?: unknown;
   @NgInput() events?: StreamingMessageEvent[];
-  @NgInput() mode?: StreamingMessageMode;
+  @NgInput() mode: StreamingMessageMode = "live";
+  @NgInput() placeholder: unknown = "Streaming en cours…";
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
     return classNames(
       "st-streamingMessage",
-      this.streaming ? "st-streamingMessage--streaming" : undefined,
+      `st-streamingMessage--${this.mode}`,
       this.classInput,
     );
   }
 
-  get resolvedText(): string | undefined {
-    return this.content ?? (this.text as string | undefined);
+  get resolvedText(): unknown {
+    return this.content ?? this.text;
+  }
+
+  get isEmpty(): boolean {
+    const value = this.resolvedText;
+    return value == null || value === "";
+  }
+
+  get textClass(): string {
+    return classNames(
+      "st-streamingMessage__text",
+      this.isEmpty && "st-streamingMessage__text--muted",
+    );
+  }
+
+  get displayText(): unknown {
+    return this.isEmpty ? this.placeholder : this.resolvedText;
   }
 }

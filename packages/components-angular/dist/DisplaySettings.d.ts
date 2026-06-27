@@ -1,3 +1,4 @@
+import { EventEmitter } from "@angular/core";
 import * as i0 from "@angular/core";
 export type DisplayFontScale = "normal" | "large" | "extra-large";
 export type DisplayContrast = "default" | "high";
@@ -22,13 +23,18 @@ export declare class DisplaySettings {
     readonly componentName = "DisplaySettings";
     title?: string;
     values?: Partial<DisplaySettingsState>;
-    showFontScale?: boolean;
-    showContrast?: boolean;
-    showLineSpacing?: boolean;
-    showReducedMotion?: boolean;
+    showFontScale: boolean;
+    showContrast: boolean;
+    showLineSpacing: boolean;
+    showReducedMotion: boolean;
     classInput?: string;
+    readonly change: EventEmitter<DisplaySettingsState>;
+    private overrides;
+    get resolvedTitle(): string;
+    get state(): DisplaySettingsState;
+    update(next: Partial<DisplaySettingsState>): void;
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<DisplaySettings, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<DisplaySettings, "st-display-settings", never, { "title": { "alias": "title"; "required": false; }; "values": { "alias": "values"; "required": false; }; "showFontScale": { "alias": "showFontScale"; "required": false; }; "showContrast": { "alias": "showContrast"; "required": false; }; "showLineSpacing": { "alias": "showLineSpacing"; "required": false; }; "showReducedMotion": { "alias": "showReducedMotion"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<DisplaySettings, "st-display-settings", never, { "title": { "alias": "title"; "required": false; }; "values": { "alias": "values"; "required": false; }; "showFontScale": { "alias": "showFontScale"; "required": false; }; "showContrast": { "alias": "showContrast"; "required": false; }; "showLineSpacing": { "alias": "showLineSpacing"; "required": false; }; "showReducedMotion": { "alias": "showReducedMotion"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, { "change": "change"; }, never, never, true, never>;
 }
 //# sourceMappingURL=DisplaySettings.d.ts.map

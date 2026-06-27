@@ -1,3 +1,4 @@
+import { EventEmitter } from "@angular/core";
 import * as i0 from "@angular/core";
 export type SlideIndicatorVariant = "dots" | "bars";
 export type SlideIndicatorSize = "sm" | "md" | "lg";
@@ -24,8 +25,14 @@ export declare class SlideIndicator {
     variant?: SlideIndicatorVariant;
     label?: string;
     classInput?: string;
+    readonly change: EventEmitter<number>;
+    get resolvedCurrent(): number;
+    get resolvedLabel(): string;
+    get items(): number[];
     get hostClass(): string;
+    select(index: number): void;
+    onKeyDown(event: KeyboardEvent, index: number): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<SlideIndicator, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<SlideIndicator, "st-slide-indicator", never, { "count": { "alias": "count"; "required": false; }; "current": { "alias": "current"; "required": false; }; "onChange": { "alias": "onChange"; "required": false; }; "size": { "alias": "size"; "required": false; }; "variant": { "alias": "variant"; "required": false; }; "label": { "alias": "label"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<SlideIndicator, "st-slide-indicator", never, { "count": { "alias": "count"; "required": false; }; "current": { "alias": "current"; "required": false; }; "onChange": { "alias": "onChange"; "required": false; }; "size": { "alias": "size"; "required": false; }; "variant": { "alias": "variant"; "required": false; }; "label": { "alias": "label"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, { "change": "change"; }, never, never, true, never>;
 }
 //# sourceMappingURL=SlideIndicator.d.ts.map

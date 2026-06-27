@@ -32,10 +32,11 @@ export declare class CheckboxGroup {
     disabled?: boolean;
     classInput?: string;
     readonly valueChange: EventEmitter<string[]>;
+    get resolvedLegend(): string | undefined;
     get hostClass(): string;
     isChecked(v: string): boolean;
     toggle(v: string, e: Event): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CheckboxGroup, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<CheckboxGroup, "st-checkbox-group", never, { "label": { "alias": "label"; "required": false; }; "legend": { "alias": "legend"; "required": false; }; "value": { "alias": "value"; "required": false; }; "onChange": { "alias": "onChange"; "required": false; }; "orientation": { "alias": "orientation"; "required": false; }; "name": { "alias": "name"; "required": false; }; "options": { "alias": "options"; "required": false; }; "helperText": { "alias": "helperText"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, { "valueChange": "valueChange"; }, never, never, true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<CheckboxGroup, "st-checkbox-group", never, { "label": { "alias": "label"; "required": false; }; "legend": { "alias": "legend"; "required": false; }; "value": { "alias": "value"; "required": false; }; "onChange": { "alias": "onChange"; "required": false; }; "orientation": { "alias": "orientation"; "required": false; }; "name": { "alias": "name"; "required": false; }; "options": { "alias": "options"; "required": false; }; "helperText": { "alias": "helperText"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, { "valueChange": "valueChange"; }, never, ["*"], true, never>;
 }
 //# sourceMappingURL=CheckboxGroup.d.ts.map

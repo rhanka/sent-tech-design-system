@@ -26,6 +26,7 @@ export class Tooltip {
         @if (triggerLabel) {
           {{ triggerLabel }}
         }
+        <ng-content></ng-content>
       </span>
       <span
         [id]="tooltipId"
@@ -49,6 +50,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
         @if (triggerLabel) {
           {{ triggerLabel }}
         }
+        <ng-content></ng-content>
       </span>
       <span
         [id]="tooltipId"

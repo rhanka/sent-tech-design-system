@@ -7,13 +7,13 @@ export class Drawer {
     open;
     title;
     description;
-    placement;
+    side;
     closeLabel;
-    bodyText;
+    footer;
     classInput;
     close = new EventEmitter();
     get hostClass() {
-        return classNames("st-drawer", `st-drawer--${this.placement ?? "right"}`, this.classInput);
+        return classNames("st-drawer", `st-drawer--${this.side ?? "right"}`, this.classInput);
     }
     onBackdropClick(event) {
         if (event.target === event.currentTarget) {
@@ -21,7 +21,7 @@ export class Drawer {
         }
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Drawer, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: Drawer, isStandalone: true, selector: "st-drawer", inputs: { open: "open", title: "title", description: "description", placement: "placement", closeLabel: "closeLabel", bodyText: "bodyText", classInput: ["class", "classInput"] }, outputs: { close: "close" }, ngImport: i0, template: `
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: Drawer, isStandalone: true, selector: "st-drawer", inputs: { open: "open", title: "title", description: "description", side: "side", closeLabel: "closeLabel", footer: "footer", classInput: ["class", "classInput"] }, outputs: { close: "close" }, ngImport: i0, template: `
     @if (open) {
       <div
         class="st-drawer__backdrop"
@@ -53,10 +53,13 @@ export class Drawer {
             ><span aria-hidden="true">&#x2715;</span></button>
           </header>
           <div class="st-drawer__body">
-            @if (bodyText) {
-              <p>{{ bodyText }}</p>
-            }
+            <ng-content></ng-content>
           </div>
+          @if (footer != null) {
+            <footer class="st-drawer__footer">
+              <ng-content select="[slot='footer']"></ng-content>
+            </footer>
+          }
         </aside>
       </div>
     }
@@ -99,10 +102,13 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
             ><span aria-hidden="true">&#x2715;</span></button>
           </header>
           <div class="st-drawer__body">
-            @if (bodyText) {
-              <p>{{ bodyText }}</p>
-            }
+            <ng-content></ng-content>
           </div>
+          @if (footer != null) {
+            <footer class="st-drawer__footer">
+              <ng-content select="[slot='footer']"></ng-content>
+            </footer>
+          }
         </aside>
       </div>
     }
@@ -114,11 +120,11 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                 type: NgInput
             }], description: [{
                 type: NgInput
-            }], placement: [{
+            }], side: [{
                 type: NgInput
             }], closeLabel: [{
                 type: NgInput
-            }], bodyText: [{
+            }], footer: [{
                 type: NgInput
             }], classInput: [{
                 type: NgInput,

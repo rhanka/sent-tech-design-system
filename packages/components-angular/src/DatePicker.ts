@@ -38,8 +38,7 @@ let _dpCounter = 0;
   standalone: true,
   template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
-      <div class="st-field__anchor">
-        <label class="st-field__control" [attr.for]="fieldId">
+      <label class="st-field__control" [attr.for]="fieldId">
           @if (label) {
             <span class="st-field__label">{{ label }}</span>
           }
@@ -129,7 +128,6 @@ let _dpCounter = 0;
             </div>
           </div>
         }
-      </div>
       @if (errorText) {
         <span class="st-field__error">{{ errorText }}</span>
       } @else if (helperText) {

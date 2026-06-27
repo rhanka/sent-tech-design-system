@@ -8,7 +8,7 @@ export type HighlightProps = {
 export declare class Highlight {
     static readonly stComponentName = "Highlight";
     readonly componentName = "Highlight";
-    tone?: HighlightTone;
+    tone: HighlightTone;
     title?: unknown;
     classInput?: string;
     get hostClass(): string;

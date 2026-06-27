@@ -23,31 +23,51 @@ export type StatusDotProps = {
   standalone: true,
   template: `
     <span [attr.data-st-component]="componentName" [class]="hostClass">
-      <span class="st-statusDot__dot"
-        [style.background-color]="color || null"
-        [style.width.px]="size ?? 8"
-        [style.height.px]="size ?? 8"
-        aria-hidden="true"></span>
-      @if (label) { <span class="st-statusDot__label">{{ label }}</span> }
+      @if (label) {
+        <span [class]="dotClass"
+          [style.background-color]="color || null"
+          [style.width.px]="safeSize"
+          [style.height.px]="safeSize"
+          aria-hidden="true"></span>
+        <span class="st-statusDot__label">{{ label }}</span>
+      } @else {
+        <span [class]="dotClass"
+          [style.background-color]="color || null"
+          [style.width.px]="safeSize"
+          [style.height.px]="safeSize"
+          role="img"
+          [attr.aria-label]="accessibleLabel"></span>
+      }
     </span>
   `,
 })
 export class StatusDot {
   static readonly stComponentName = "StatusDot";
   readonly componentName = "StatusDot";
-  @NgInput() tone?: StatusDotTone;
+  @NgInput() tone: StatusDotTone = "neutral";
   @NgInput() color?: string;
-  @NgInput() size?: number;
-  @NgInput() pulse?: boolean;
+  @NgInput() size = 8;
+  @NgInput() pulse = false;
   @NgInput() label?: string;
   @NgInput("class") classInput?: string;
 
+  get safeSize(): number {
+    return Math.max(Number(this.size ?? 8) || 0, 1);
+  }
+
+  get accessibleLabel(): string {
+    return this.label ?? this.color ?? this.tone;
+  }
+
   get hostClass(): string {
+    return classNames("st-statusDot", this.classInput);
+  }
+
+  get dotClass(): string {
     return classNames(
-      "st-statusDot",
-      this.tone && `st-statusDot--${this.tone}`,
-      this.pulse && "st-statusDot--pulse",
-      this.classInput,
+      "st-statusDot__dot",
+      this.color ? null : `st-statusDot__dot--${this.tone}`,
+      this.pulse ? "st-statusDot__dot--pulse" : null,
     );
   }
 }

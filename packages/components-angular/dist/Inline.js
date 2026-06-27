@@ -13,7 +13,7 @@ export class Inline {
     as;
     classInput;
     get hostClass() {
-        return classNames("st-inline", this.classInput);
+        return classNames("st-flex", "st-inline", this.classInput);
     }
     get inlineStyles() {
         return {

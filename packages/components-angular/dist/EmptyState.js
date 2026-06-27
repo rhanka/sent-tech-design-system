@@ -13,14 +13,14 @@ export class EmptyState {
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: EmptyState, deps: [], target: i0.ɵɵFactoryTarget.Component });
     static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: EmptyState, isStandalone: true, selector: "st-empty-state", inputs: { title: "title", message: "message", action: "action", classInput: ["class", "classInput"] }, ngImport: i0, template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass" role="status">
-      <div class="st-emptyState__body">
-        <p class="st-emptyState__title">{{ title }}</p>
-        @if (message) { <p class="st-emptyState__message">{{ message }}</p> }
-        @if (action) { <div class="st-emptyState__action">{{ action }}</div> }
+    <section [attr.data-st-component]="componentName" [class]="hostClass">
+      <div class="st-empty-state__content">
+        <h2 class="st-empty-state__title st-emptyState__title">{{ title }}</h2>
+        @if (message) { <p class="st-empty-state__message st-emptyState__message">{{ message }}</p> }
+        <ng-content></ng-content>
+        @if (action) { <div class="st-empty-state__action">{{ action }}</div> }
       </div>
-      <ng-content></ng-content>
-    </div>
+    </section>
   `, isInline: true });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: EmptyState, decorators: [{
@@ -29,14 +29,14 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
                     selector: "st-empty-state",
                     standalone: true,
                     template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass" role="status">
-      <div class="st-emptyState__body">
-        <p class="st-emptyState__title">{{ title }}</p>
-        @if (message) { <p class="st-emptyState__message">{{ message }}</p> }
-        @if (action) { <div class="st-emptyState__action">{{ action }}</div> }
+    <section [attr.data-st-component]="componentName" [class]="hostClass">
+      <div class="st-empty-state__content">
+        <h2 class="st-empty-state__title st-emptyState__title">{{ title }}</h2>
+        @if (message) { <p class="st-empty-state__message st-emptyState__message">{{ message }}</p> }
+        <ng-content></ng-content>
+        @if (action) { <div class="st-empty-state__action">{{ action }}</div> }
       </div>
-      <ng-content></ng-content>
-    </div>
+    </section>
   `,
                 }]
         }], propDecorators: { title: [{

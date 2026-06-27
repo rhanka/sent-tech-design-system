@@ -13,11 +13,13 @@ export declare class FieldCard {
     static readonly stComponentName = "FieldCard";
     readonly componentName = "FieldCard";
     label: string;
-    variant?: FieldCardVariant;
+    variant: FieldCardVariant;
     tone?: FieldCardTone;
     commentCount?: number;
     onOpenComments?: () => void;
     classInput?: string;
+    get count(): number;
+    get showBadge(): boolean;
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<FieldCard, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<FieldCard, "st-field-card", never, { "label": { "alias": "label"; "required": false; }; "variant": { "alias": "variant"; "required": false; }; "tone": { "alias": "tone"; "required": false; }; "commentCount": { "alias": "commentCount"; "required": false; }; "onOpenComments": { "alias": "onOpenComments"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;

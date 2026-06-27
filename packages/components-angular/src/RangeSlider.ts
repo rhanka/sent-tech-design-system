@@ -106,7 +106,7 @@ export class RangeSlider {
   @NgInput() helperText?: string;
   @NgInput() errorText?: string;
   @NgInput() invalid?: boolean;
-  @NgInput() showValue?: boolean;
+  @NgInput() showValue = true;
   @NgInput() valueFormatter?: (value: number) => string;
   @NgInput() ariaLabelMin?: string;
   @NgInput() ariaLabelMax?: string;
