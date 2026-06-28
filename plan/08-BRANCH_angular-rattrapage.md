@@ -111,6 +111,17 @@ Modèle de référence : `BarChart.ts`, `GeoMap.ts`.
 - [x] **Lot CHART-MISC** — tous les charts restants (60+) : portage au cas par cas
   - FAIT (2026-06-21): ~50 composants portés SVG inline, gate 224/0. Commit db4ae522.
 
+### LOT 6 — Pixel-perfect exhaustif 4 frameworks (vérif + corrections)
+
+Vérification déterministe de la parité pixel Angular vs référence (Vue/React/Svelte) sur les ~201 pages
+composants des docs : un seul chromium headless séquentiel, capture `#main-content` après hauteur stable,
+pixel-diff (pixelmatch). Flag Angular uniquement si react≈svelte≈vue concordent et angular diverge.
+
+- [x] **Lot PIXEL-VERIF** — diff exhaustif des ~201 composants ; isolement des écarts Angular réels vs faux positifs (animation/overlay/sub-pixel)
+  - FAIT (2026-06-27): 198/201 pixel-identiques. 3 NO_CAPTURE (config-item-card/field-card/stacked-bar-chart) = pages non rendues en headless dans les 2 frameworks (symétrique → pas un écart de parité).
+- [x] **Lot PIXEL-FIX** — correction des ~35 composants Angular divergents. Cause racine : hôte `<st-*>` `display:inline` (line-box accumulée / collapse des SVG `width:100%`) → `:host{display:contents}` dans les `styles` du `@Component` (jamais `styles.css` → parité byte-for-byte React préservée) ; Typography multi-`ng-content` → `ngTemplateOutlet` ; grille Col/Row (flex-grow + gutter token).
+  - FAIT (2026-06-27): ~35 composants. Gate 224/224, parité CSS `styles.test.ts` verte. Commits 36b6de50, f3cd4487, 7427e351, 9d66877b, a30a52e8, 5b7958e5, 2949c15f.
+
 ## Guardrails techniques
 
 - **Patron de référence** : `BarChart.ts` (Angular 17+ control flow `@if`/`@for`, pas `*ngIf`/`*ngFor`)
