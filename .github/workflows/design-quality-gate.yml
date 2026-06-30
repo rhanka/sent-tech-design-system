@@ -1,17 +1,9 @@
 name: Design Quality Gate
 
 on:
+  # Push-to-main quality is handled inside docs.yml (build once, deploy + gate).
+  # This standalone gate now runs on PRs only.
   pull_request:
-    paths:
-      - "apps/docs/**"
-      - "docs/**"
-      - "packages/skills/**"
-      - "packages/components-svelte/**"
-      - "packages/themes/**"
-      - "packages/tokens/**"
-      - ".github/workflows/design-quality-gate.yml"
-  push:
-    branches: ["main"]
     paths:
       - "apps/docs/**"
       - "docs/**"

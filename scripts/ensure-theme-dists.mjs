@@ -6,12 +6,15 @@
 //
 // Two properties matter:
 //  - Auto-discovery: the list comes from the workspace graph, so adding a theme
-//    needs no script edit (kills the documented two-chain footgun).
-//  - Incremental: a package is rebuilt only when its sources are newer than its
-//    dist/. In CI, `npm run build` already builds every package, so by the time
-//    the docs build runs this prebuild every dist/ is fresh -> instant no-op.
-//    Cold local dev (no prior build) still builds everything once.
-import { existsSync, readdirSync, statSync } from "node:fs";
+//    needs no script edit.
+//  - Incremental, by CONTENT HASH: a package is rebuilt only when the hash of
+//    its sources changed since its dist was built (the hash is stored in
+//    dist/.srchash). Content-based (not mtime) so it stays correct after a CI
+//    `actions/cache` restore — restored files get fresh mtimes that would fool
+//    an mtime check, but their content hash is unchanged, so cached dists are
+//    correctly skipped and only genuinely-changed packages rebuild.
+import { createHash } from "node:crypto";
+import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
@@ -20,8 +23,14 @@ import { getOrderedWorkspaces } from "./run-workspaces.mjs";
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const packagesDir = join(root, "packages") + sep;
 
-function newestMtime(dir, skip) {
-  let newest = 0;
+// Build outputs / deps to exclude from the source hash. `css` is the themes
+// package's generated stylesheet output (build:css writes there).
+const SKIP = new Set(["node_modules", "dist", "css", ".turbo", ".svelte-kit"]);
+
+// Deterministic hash of every source file (path + content) in the package,
+// excluding build outputs and deps.
+function sourceHash(pkgDir) {
+  const files = [];
   const walk = (d) => {
     let entries;
     try {
@@ -30,32 +39,31 @@ function newestMtime(dir, skip) {
       return;
     }
     for (const e of entries) {
-      if (skip.has(e.name)) continue;
+      if (SKIP.has(e.name)) continue;
       const p = join(d, e.name);
       if (e.isDirectory()) walk(p);
-      else {
-        const m = statSync(p).mtimeMs;
-        if (m > newest) newest = m;
-      }
+      else files.push(p);
     }
   };
-  walk(dir);
-  return newest;
+  walk(pkgDir);
+  files.sort();
+  const h = createHash("sha256");
+  for (const f of files) {
+    h.update(f.slice(pkgDir.length));
+    h.update("\0");
+    h.update(readFileSync(f));
+    h.update("\0");
+  }
+  return h.digest("hex");
 }
 
-// Newest mtime across the package, excluding build output and deps.
-// `css` is the themes package's generated stylesheet output (build:css writes
-// there, after tsc populates dist/), so it must be treated as output too —
-// otherwise that package looks perpetually stale and rebuilds every run.
-function sourceMtime(pkgDir) {
-  return newestMtime(pkgDir, new Set(["node_modules", "dist", "css", ".turbo", ".svelte-kit"]));
-}
-
-// Newest mtime within dist/; 0 if dist is missing or empty.
-function distMtime(pkgDir) {
-  const distDir = join(pkgDir, "dist");
-  if (!existsSync(distDir)) return 0;
-  return newestMtime(distDir, new Set());
+function storedHash(pkgDir) {
+  const f = join(pkgDir, "dist", ".srchash");
+  try {
+    return readFileSync(f, "utf8").trim();
+  } catch {
+    return null;
+  }
 }
 
 function run(cmd, args, cwd) {
@@ -66,7 +74,8 @@ function run(cmd, args, cwd) {
 // 1) Preserve the overlay step the old prebuild ran first.
 run(process.execPath, [join(root, "scripts", "ensure-compare-local-overlays.mjs")], root);
 
-// 2) Build only stale/missing library packages, in dependency order.
+// 2) Build only packages whose source hash changed (or that have no dist), in
+//    dependency order.
 const targets = getOrderedWorkspaces(root).filter(
   (w) =>
     (w.dir + sep).startsWith(packagesDir) &&
@@ -77,13 +86,15 @@ const targets = getOrderedWorkspaces(root).filter(
 let built = 0;
 let skipped = 0;
 for (const w of targets) {
-  const distM = distMtime(w.dir);
-  if (distM !== 0 && distM >= sourceMtime(w.dir)) {
+  const hash = sourceHash(w.dir);
+  const distDir = join(w.dir, "dist");
+  if (existsSync(distDir) && storedHash(w.dir) === hash) {
     skipped += 1;
     continue;
   }
   console.log(`[ensure-theme-dists] build ${w.name}`);
   run("npm", ["run", "build"], w.dir);
+  writeFileSync(join(w.dir, "dist", ".srchash"), hash + "\n");
   built += 1;
 }
 
