@@ -17482,51 +17482,79 @@
 
 .st-appShell--workspace {
   display: grid;
-  grid-template-areas:
-    "top top top top"
-    "rail nav main context"
-    "bottom bottom bottom bottom";
-  grid-template-columns: auto minmax(0, var(--st-component-navShell-width, 18rem)) minmax(0, 1fr) minmax(0, var(--st-component-contextPanel-width, 20rem));
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto minmax(0, 1fr) auto;
   position: relative;
 }
 
-.st-appShell--workspace:has(.st-appShell__utilityPanel)[data-utility-mode="reserve"]:not([data-utility-side]),
-.st-appShell--workspace:has(.st-appShell__utilityPanel)[data-utility-mode="reserve"][data-utility-side="right"] {
-  grid-template-areas:
-    "top top top top top"
-    "rail nav main context utility"
-    "bottom bottom bottom bottom bottom";
-  grid-template-columns: auto minmax(0, var(--st-component-navShell-width, 18rem)) minmax(0, 1fr) minmax(0, var(--st-component-contextPanel-width, 20rem)) minmax(0, var(--st-component-utilityPanel-width, 24rem));
-  grid-template-rows: auto minmax(0, 1fr) auto;
+/* The body owns the horizontal layout: a flex row whose panels collapse when
+   they aren't rendered, so empty rail/nav/context/utility columns are never
+   reserved (a dashboard providing only `main` gets the full width). The outer
+   element only stacks top / body / bottom. */
+.st-appShell__body {
+  grid-row: 2;
+  display: flex;
+  flex-flow: row nowrap;
+  min-block-size: 0;
+  min-inline-size: 0;
+  position: relative;
 }
 
-.st-appShell--workspace:has(.st-appShell__utilityPanel)[data-utility-mode="reserve"][data-utility-side="left"] {
-  grid-template-areas:
-    "top top top top top"
-    "rail nav utility main context"
-    "bottom bottom bottom bottom bottom";
-  grid-template-columns: auto minmax(0, var(--st-component-navShell-width, 18rem)) minmax(0, var(--st-component-utilityPanel-width, 24rem)) minmax(0, 1fr) minmax(0, var(--st-component-contextPanel-width, 20rem));
-  grid-template-rows: auto minmax(0, 1fr) auto;
+.st-appShell[data-utility-side="bottom"] .st-appShell__body {
+  flex-wrap: wrap;
 }
 
-.st-appShell--workspace:has(.st-appShell__utilityPanel)[data-utility-mode="reserve"][data-utility-side="bottom"] {
-  grid-template-areas:
-    "top top top top"
-    "rail nav main context"
-    "rail nav utility utility"
-    "bottom bottom bottom bottom";
-  grid-template-columns: auto minmax(0, var(--st-component-navShell-width, 18rem)) minmax(0, 1fr) minmax(0, var(--st-component-contextPanel-width, 20rem));
-  grid-template-rows: auto minmax(0, 1fr) auto auto;
+.st-appShell__topChrome { grid-row: 1; }
+.st-appShell__bottomPanel { grid-row: 3; }
+
+.st-appShell__primaryRail {
+  order: 10;
+  flex: 0 0 auto;
+  min-block-size: 0;
+  overflow: hidden;
 }
 
-.st-appShell__topChrome { grid-area: top; }
-.st-appShell__primaryRail { grid-area: rail; min-block-size: 0; }
-.st-appShell__navigationPanel { grid-area: nav; min-block-size: 0; overflow: hidden; }
-.st-appShell__main { grid-area: main; min-block-size: 0; min-inline-size: 0; overflow: auto; }
-.st-appShell__contextPanel { grid-area: context; min-block-size: 0; overflow: hidden; }
-.st-appShell__utilityPanel { grid-area: utility; inline-size: 100%; min-block-size: 0; overflow: hidden; }
-.st-appShell__bottomPanel { grid-area: bottom; }
+.st-appShell__navigationPanel {
+  order: 20;
+  flex: 0 1 auto;
+  inline-size: var(--st-component-navShell-width, 18rem);
+  min-block-size: 0;
+  overflow: hidden;
+}
+
+.st-appShell__main {
+  order: 30;
+  flex: 1 1 0;
+  min-block-size: 0;
+  min-inline-size: 0;
+  overflow: auto;
+}
+
+.st-appShell__contextPanel {
+  order: 40;
+  flex: 0 1 auto;
+  inline-size: var(--st-component-contextPanel-width, 20rem);
+  min-block-size: 0;
+  overflow: hidden;
+}
+
+.st-appShell__utilityPanel {
+  order: 50;
+  flex: 0 1 auto;
+  inline-size: var(--st-component-utilityPanel-width, 24rem);
+  min-block-size: 0;
+  overflow: hidden;
+}
+
+.st-appShell[data-utility-side="left"] .st-appShell__utilityPanel {
+  order: 25;
+}
+
+.st-appShell[data-utility-mode="reserve"][data-utility-side="bottom"] .st-appShell__utilityPanel {
+  flex-basis: 100%;
+  inline-size: auto;
+  order: 60;
+}
 
 .st-appShell[data-utility-mode="overlay"] .st-appShell__utilityPanel,
 .st-appShell[data-utility-mode="floating"] .st-appShell__utilityPanel {
@@ -17774,17 +17802,15 @@
 }
 
 @media (max-width: 900px) {
-  .st-appShell--workspace {
-    grid-template-areas:
-      "top"
-      "rail"
-      "nav"
-      "main"
-      "context"
-      "utility"
-      "bottom";
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto auto auto minmax(0, 1fr) auto auto auto;
+  .st-appShell__body {
+    flex-flow: column nowrap;
+  }
+
+  .st-appShell__primaryRail,
+  .st-appShell__navigationPanel,
+  .st-appShell__contextPanel,
+  .st-appShell__utilityPanel {
+    inline-size: auto;
   }
 
   .st-navRail {
