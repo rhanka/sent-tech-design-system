@@ -10,10 +10,8 @@ name: Vue Publish
 
 on:
   push:
-    branches: ["main"]
     tags: ["vue-v*"]
-  pull_request:
-    branches: ["main"]
+  workflow_dispatch:
 
 jobs:
   verify:

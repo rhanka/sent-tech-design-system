@@ -10,10 +10,8 @@ name: Quebec Theme Publish
 
 on:
   push:
-    branches: ["main"]
     tags: ["quebec-v*"]
-  pull_request:
-    branches: ["main"]
+  workflow_dispatch:
 
 jobs:
   verify:
