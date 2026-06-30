@@ -125,6 +125,24 @@
   import { amazonTheme } from "@sentropic/design-system-theme-amazon";
   import { vercelTheme } from "@sentropic/design-system-theme-vercel";
   import { assistantUiTheme } from "@sentropic/design-system-theme-assistant-ui";
+  import { cohereTheme } from "@sentropic/design-system-theme-cohere";
+  import { xaiTheme } from "@sentropic/design-system-theme-xai";
+  import { metaTheme } from "@sentropic/design-system-theme-meta";
+  import { togetherTheme } from "@sentropic/design-system-theme-together";
+  import { deepseekTheme } from "@sentropic/design-system-theme-deepseek";
+  import { databricksTheme } from "@sentropic/design-system-theme-databricks";
+  import { ai21Theme } from "@sentropic/design-system-theme-ai21";
+  import { stabilityTheme } from "@sentropic/design-system-theme-stability";
+  import { groqTheme } from "@sentropic/design-system-theme-groq";
+  import { replicateTheme } from "@sentropic/design-system-theme-replicate";
+  import { huggingfaceTheme } from "@sentropic/design-system-theme-huggingface";
+  import { characterAiTheme } from "@sentropic/design-system-theme-character-ai";
+  import { inflectionTheme } from "@sentropic/design-system-theme-inflection";
+  import { youTheme } from "@sentropic/design-system-theme-you";
+  import { openrouterTheme } from "@sentropic/design-system-theme-openrouter";
+  import { writerTheme } from "@sentropic/design-system-theme-writer";
+  import { poeTheme } from "@sentropic/design-system-theme-poe";
+  import { fireworksTheme } from "@sentropic/design-system-theme-fireworks";
   import {
     DOCS_UTILITY_NAV,
     DOCS_VERSION,
@@ -287,7 +305,7 @@
   // Thèmes proposés : le DS Sentropic de référence + les 2 mappings tiers
   // (DSFR/Carbon) + le thème client Airbus (port d'anatomie).
   // (forge/entropic sont des tenants de démo internes — exclus du sélecteur.)
-  const THEMES: TenantTheme[] = [sentTechTheme, dsfrTheme, carbonTheme, airbusTheme, canadaTheme, quebecTheme, ssenseTheme, lightspeedTheme, desjardinsTheme, nationalBankTheme, cirqueDuSoleilTheme, ubisoftTheme, bombardierTheme, caeTheme, saqTheme, cgiTheme, stmTheme, nuveiTheme, coveoTheme, circleKTheme, aldoTheme, brpTheme, miregoTheme, ellioTheme, airCanadaTheme, cascadesTheme, hopperTheme, dialogueTheme, momentFactoryTheme, lionElectricTheme, genetecTheme, videotronTheme, saputoTheme, metroTheme, workleapTheme, frankAndOakTheme, sidLeeTheme, simonsTheme, laVieEnRoseTheme, dollaramaTheme, bellTheme, behaviourInteractiveTheme, ronaTheme, gameloftTheme, cossetteTheme, eidosMontrealTheme, stingrayTheme, lg2Theme, sonderTheme, plusgradeTheme, gildanTheme, quebecorTheme, cogecoTheme, iaTheme, laurentianBankTheme, jeanCoutuTheme, reitmansTheme, stHubertTheme, benevaTheme, airTransatTheme, birksTheme, lufaFarmsTheme, hydroQuebecTheme, energirTheme, agropurTheme, vanHoutteTheme, dynamiteTheme, lvmhTheme, lorealTheme, totalenergiesTheme, sanofiTheme, bnpParibasTheme, hermesTheme, keringTheme, pernodRicardTheme, danoneTheme, accorTheme, axaTheme, societeGeneraleTheme, creditAgricoleTheme, edenredTheme, worldlineTheme, airLiquideTheme, schneiderElectricTheme, saintGobainTheme, engieTheme, edfTheme, dassaultSystemesTheme, thalesTheme, safranTheme, capgeminiTheme, orangeTheme, vinciTheme, bouyguesTheme, veoliaTheme, publicisTheme, renaultTheme, anthropicTheme, openaiTheme, geminiTheme, copilotTheme, githubTheme, perplexityTheme, palantirTheme, nousHermesTheme, mistralTheme, amazonTheme, vercelTheme, assistantUiTheme];
+  const THEMES: TenantTheme[] = [sentTechTheme, dsfrTheme, carbonTheme, airbusTheme, canadaTheme, quebecTheme, ssenseTheme, lightspeedTheme, desjardinsTheme, nationalBankTheme, cirqueDuSoleilTheme, ubisoftTheme, bombardierTheme, caeTheme, saqTheme, cgiTheme, stmTheme, nuveiTheme, coveoTheme, circleKTheme, aldoTheme, brpTheme, miregoTheme, ellioTheme, airCanadaTheme, cascadesTheme, hopperTheme, dialogueTheme, momentFactoryTheme, lionElectricTheme, genetecTheme, videotronTheme, saputoTheme, metroTheme, workleapTheme, frankAndOakTheme, sidLeeTheme, simonsTheme, laVieEnRoseTheme, dollaramaTheme, bellTheme, behaviourInteractiveTheme, ronaTheme, gameloftTheme, cossetteTheme, eidosMontrealTheme, stingrayTheme, lg2Theme, sonderTheme, plusgradeTheme, gildanTheme, quebecorTheme, cogecoTheme, iaTheme, laurentianBankTheme, jeanCoutuTheme, reitmansTheme, stHubertTheme, benevaTheme, airTransatTheme, birksTheme, lufaFarmsTheme, hydroQuebecTheme, energirTheme, agropurTheme, vanHoutteTheme, dynamiteTheme, lvmhTheme, lorealTheme, totalenergiesTheme, sanofiTheme, bnpParibasTheme, hermesTheme, keringTheme, pernodRicardTheme, danoneTheme, accorTheme, axaTheme, societeGeneraleTheme, creditAgricoleTheme, edenredTheme, worldlineTheme, airLiquideTheme, schneiderElectricTheme, saintGobainTheme, engieTheme, edfTheme, dassaultSystemesTheme, thalesTheme, safranTheme, capgeminiTheme, orangeTheme, vinciTheme, bouyguesTheme, veoliaTheme, publicisTheme, renaultTheme, anthropicTheme, openaiTheme, geminiTheme, copilotTheme, githubTheme, perplexityTheme, palantirTheme, nousHermesTheme, mistralTheme, amazonTheme, vercelTheme, assistantUiTheme, cohereTheme, xaiTheme, metaTheme, togetherTheme, deepseekTheme, databricksTheme, ai21Theme, stabilityTheme, groqTheme, replicateTheme, huggingfaceTheme, characterAiTheme, inflectionTheme, youTheme, openrouterTheme, writerTheme, poeTheme, fireworksTheme];
   const THEME_STORAGE_KEY = "st-docs-theme";
   // ── Mode démo (anonymisation pour visiteurs externes) ─────────────────────
   // Les thèmes "tiers" (clones de marques privées : Carbon/IBM, Airbus, …) sont
