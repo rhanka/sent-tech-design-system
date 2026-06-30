@@ -283,17 +283,30 @@
     z-index: var(--st-component-appShell-top-zIndex, 30);
   }
 
+  /* The shared styles.css styles `.st-appShell--workspace` as a 4/5-column grid
+     with named areas (rail/nav/main/context/utility) sized for a flat DOM. This
+     component nests the panels in `__body`, so span `__body` across every
+     inherited column track (`1 / -1`, row 2) — the outer grid then only stacks
+     top / body / bottom, and `__body` owns the horizontal layout.
+     `__body` itself is a flex row (not a fixed 5-track grid): a panel that isn't
+     rendered takes no space, so a dashboard providing only `main` gets no empty
+     rail/nav/context columns and `main` keeps the full width. `order` still
+     drives placement; `main` flexes to fill the remainder. */
   .st-appShell__body {
-    display: grid;
-    grid-template-columns:
-      minmax(0, auto)
-      minmax(0, auto)
-      minmax(0, 1fr)
-      minmax(0, auto)
-      minmax(0, auto);
+    grid-column: 1 / -1;
+    grid-row: 2;
+    display: flex;
+    flex-flow: row nowrap;
     min-block-size: 0;
     min-inline-size: 0;
     position: relative;
+  }
+
+  /* Only the bottom-utility variant needs wrapping (its utility panel uses
+     flex-basis:100% to drop onto its own row below). Other variants stay on a
+     single row and shrink panels to fit, matching the old minmax() grid. */
+  .st-appShell[data-utility-side="bottom"] .st-appShell__body {
+    flex-wrap: wrap;
   }
 
   .st-appShell__primaryRail {
@@ -324,6 +337,7 @@
   .st-appShell__navigationPanel,
   .st-appShell__contextPanel,
   .st-appShell__utilityPanel {
+    flex: 0 1 auto;
     background: var(--st-component-appShell-panelSurface, var(--st-semantic-surface-raised));
     border-color: var(--st-component-appShell-border, var(--st-semantic-border-subtle));
     min-block-size: 0;
@@ -353,12 +367,13 @@
   .st-appShell[data-utility-side="bottom"] .st-appShell__utilityPanel {
     border-block-start: 1px solid var(--st-component-appShell-border, var(--st-semantic-border-subtle));
     border-inline-start-width: 0;
-    grid-column: 1 / -1;
+    flex-basis: 100%;
     inline-size: auto;
     order: 60;
   }
 
   .st-appShell__main {
+    flex: 1 1 0;
     min-block-size: 0;
     min-inline-size: 0;
     overflow: auto;
@@ -406,8 +421,7 @@
 
   @media (max-width: 48rem) {
     .st-appShell__body {
-      display: flex;
-      flex-direction: column;
+      flex-flow: column nowrap;
     }
 
     .st-appShell__primaryRail,
