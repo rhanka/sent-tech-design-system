@@ -8,6 +8,8 @@ on:
       - "packages/components-svelte/**"
       - "packages/themes/**"
       - "packages/tokens/**"
+      - "packages/skills/**"
+      - "scripts/ensure-theme-dists.mjs"
       - ".github/workflows/docs.yml"
   workflow_dispatch:
 
@@ -29,11 +31,35 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # `npm run build` already builds every workspace in dependency order,
-      # docs included (its vite build emits apps/docs/build). A second explicit
-      # docs build here just re-ran the whole theme prebuild — removed.
-      - name: Build workspace packages (docs included)
-        run: npm run build
+      # Restore previously-built theme/component dists. ensure-theme-dists (run
+      # by the docs prebuild) rebuilds only packages whose source hash changed,
+      # so on a docs-only change every theme is skipped and only the docs vite
+      # build runs. Content-hash skip stays correct across cache restores.
+      - name: Restore built dists
+        uses: actions/cache@v4
+        with:
+          path: packages/*/dist
+          key: dist-v1-${{ hashFiles('packages/*/src/**', 'packages/*/package.json', 'packages/*/*.config.*', 'packages/*/tsconfig*.json') }}
+          restore-keys: |
+            dist-v1-
+
+      # Builds the docs; its prebuild (scripts/ensure-theme-dists.mjs) rebuilds
+      # only the packages whose sources changed since their dist was built.
+      - name: Build docs (incremental package rebuild)
+        run: npm run build --workspace=@sentropic/design-system-docs
+
+      # Design quality gate, run here on the freshly-built docs so a push to main
+      # builds once (the standalone Design Quality Gate workflow now runs on PRs
+      # only).
+      - name: Design quality gate
+        run: node packages/skills/dist/cli.js check apps/docs/build --tech --fail-under 95 > design-quality-report.json
+
+      - name: Upload design report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: design-quality-report
+          path: design-quality-report.json
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
