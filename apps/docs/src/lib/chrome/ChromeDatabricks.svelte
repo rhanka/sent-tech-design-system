@@ -190,6 +190,14 @@
 
           <li class="dbx-side-divider" role="separator"></li>
 
+          <li class="dbx-side-heading">
+            <a
+              class="dbx-side-link dbx-side-link--heading"
+              href="/components"
+              aria-current={isActive("/components") ? "page" : undefined}
+            >{locale.value === "fr" ? "Composants" : "Components"}</a>
+          </li>
+
           {#each componentGroups as group (group.label)}
             <li>
               <details class="dbx-side-group" open={isGroupOpen(group.items)}>
@@ -207,12 +215,16 @@
                       >{item.label}</a>
                     </li>
                   {/each}
+                </ul>
+              </details>
+            </li>
+          {/each}
 
           <li class="dbx-side-divider" role="separator"></li>
 
-          <li>
+          <li class="dbx-side-heading">
             <a
-              class="dbx-side-link"
+              class="dbx-side-link dbx-side-link--heading"
               href="/views"
               aria-current={isActive("/views") ? "page" : undefined}
             >{locale.value === "fr" ? "Vues" : "Views"}</a>
@@ -235,10 +247,6 @@
                       >{item.label}</a>
                     </li>
                   {/each}
-                </ul>
-              </details>
-            </li>
-          {/each}
                 </ul>
               </details>
             </li>

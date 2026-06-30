@@ -193,6 +193,14 @@
 
           <li class="anthropic-side-divider" role="separator"></li>
 
+          <li class="anthropic-side-heading">
+            <a
+              class="anthropic-side-link anthropic-side-link--heading"
+              href="/components"
+              aria-current={isActive("/components") ? "page" : undefined}
+            >{locale.value === "fr" ? "Composants" : "Components"}</a>
+          </li>
+
           {#each componentGroups as group (group.label)}
             <li>
               <details class="anthropic-side-group" open={isGroupOpen(group.items)}>
@@ -210,12 +218,16 @@
                       >{item.label}</a>
                     </li>
                   {/each}
+                </ul>
+              </details>
+            </li>
+          {/each}
 
           <li class="anthropic-side-divider" role="separator"></li>
 
-          <li>
+          <li class="anthropic-side-heading">
             <a
-              class="anthropic-side-link"
+              class="anthropic-side-link anthropic-side-link--heading"
               href="/views"
               aria-current={isActive("/views") ? "page" : undefined}
             >{locale.value === "fr" ? "Vues" : "Views"}</a>
@@ -238,10 +250,6 @@
                       >{item.label}</a>
                     </li>
                   {/each}
-                </ul>
-              </details>
-            </li>
-          {/each}
                 </ul>
               </details>
             </li>

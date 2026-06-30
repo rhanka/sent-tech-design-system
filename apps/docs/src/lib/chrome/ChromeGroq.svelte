@@ -191,6 +191,14 @@
 
           <li class="groq-side-divider" role="separator"></li>
 
+          <li class="groq-side-heading">
+            <a
+              class="groq-side-link groq-side-link--heading"
+              href="/components"
+              aria-current={isActive("/components") ? "page" : undefined}
+            >{locale.value === "fr" ? "Composants" : "Components"}</a>
+          </li>
+
           {#each componentGroups as group (group.label)}
             <li>
               <details class="groq-side-group" open={isGroupOpen(group.items)}>
@@ -208,12 +216,16 @@
                       >{item.label}</a>
                     </li>
                   {/each}
+                </ul>
+              </details>
+            </li>
+          {/each}
 
           <li class="groq-side-divider" role="separator"></li>
 
-          <li>
+          <li class="groq-side-heading">
             <a
-              class="groq-side-link"
+              class="groq-side-link groq-side-link--heading"
               href="/views"
               aria-current={isActive("/views") ? "page" : undefined}
             >{locale.value === "fr" ? "Vues" : "Views"}</a>
@@ -236,10 +248,6 @@
                       >{item.label}</a>
                     </li>
                   {/each}
-                </ul>
-              </details>
-            </li>
-          {/each}
                 </ul>
               </details>
             </li>

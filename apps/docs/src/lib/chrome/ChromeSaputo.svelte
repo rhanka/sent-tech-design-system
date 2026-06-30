@@ -205,6 +205,14 @@
 
           <li class="sap-side-divider" role="separator"></li>
 
+          <li class="sap-side-heading">
+            <a
+              class="sap-side-link sap-side-link--heading"
+              href="/components"
+              aria-current={isActive("/components") ? "page" : undefined}
+            >{locale.value === "fr" ? "Composants" : "Components"}</a>
+          </li>
+
           {#each componentGroups as group (group.label)}
             <li>
               <details class="sap-side-group" open={isGroupOpen(group.items)}>
@@ -222,12 +230,16 @@
                       >{item.label}</a>
                     </li>
                   {/each}
+                </ul>
+              </details>
+            </li>
+          {/each}
 
           <li class="sap-side-divider" role="separator"></li>
 
-          <li>
+          <li class="sap-side-heading">
             <a
-              class="sap-side-link"
+              class="sap-side-link sap-side-link--heading"
               href="/views"
               aria-current={isActive("/views") ? "page" : undefined}
             >{locale.value === "fr" ? "Vues" : "Views"}</a>
@@ -250,10 +262,6 @@
                       >{item.label}</a>
                     </li>
                   {/each}
-                </ul>
-              </details>
-            </li>
-          {/each}
                 </ul>
               </details>
             </li>

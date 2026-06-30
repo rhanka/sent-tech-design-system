@@ -193,6 +193,14 @@
 
           <li class="cgo-side-divider" role="separator"></li>
 
+          <li class="cgo-side-heading">
+            <a
+              class="cgo-side-link cgo-side-link--heading"
+              href="/components"
+              aria-current={isActive("/components") ? "page" : undefined}
+            >{locale.value === "fr" ? "Composants" : "Components"}</a>
+          </li>
+
           {#each componentGroups as group (group.label)}
             <li>
               <details class="cgo-side-group" open={isGroupOpen(group.items)}>
@@ -210,12 +218,16 @@
                       >{item.label}</a>
                     </li>
                   {/each}
+                </ul>
+              </details>
+            </li>
+          {/each}
 
           <li class="cgo-side-divider" role="separator"></li>
 
-          <li>
+          <li class="cgo-side-heading">
             <a
-              class="cgo-side-link"
+              class="cgo-side-link cgo-side-link--heading"
               href="/views"
               aria-current={isActive("/views") ? "page" : undefined}
             >{locale.value === "fr" ? "Vues" : "Views"}</a>
@@ -238,10 +250,6 @@
                       >{item.label}</a>
                     </li>
                   {/each}
-                </ul>
-              </details>
-            </li>
-          {/each}
                 </ul>
               </details>
             </li>
