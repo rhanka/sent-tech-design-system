@@ -64,19 +64,19 @@
           children: [
             {
               comp: "KpiCard",
-              props: { label: fr ? "Visites totales" : "Total Visits",    value: "48 200", delta: "+8,4 %", tone: "category1" }
+              props: { label: fr ? "Visites totales" : "Total Visits",    value: "48 200", delta: 0.084, tone: "category1" }
             },
             {
               comp: "KpiCard",
-              props: { label: fr ? "Commandes"       : "Orders",          value:  "3 240", delta: "+5,2 %", tone: "category2" }
+              props: { label: fr ? "Commandes"       : "Orders",          value:  "3 240", delta: 0.052, tone: "category2" }
             },
             {
               comp: "KpiCard",
-              props: { label: fr ? "Conversion globale" : "Overall Rate", value:  "6,7 %", delta: "-0,3 %", tone: "category3" }
+              props: { label: fr ? "Conversion globale" : "Overall Rate", value:  "6,7 %", delta: -0.003, tone: "category3" }
             },
             {
               comp: "KpiCard",
-              props: { label: fr ? "Valeur moy. panier" : "Avg. Order Value", value: "87 €", delta: "+2,1 %", tone: "category4" }
+              props: { label: fr ? "Valeur moy. panier" : "Avg. Order Value", value: "87 €", delta: 0.021, tone: "category4" }
             }
           ]
         },
