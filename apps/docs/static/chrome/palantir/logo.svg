@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 24" fill="none" role="img" aria-label="Palantir">
+  <title>Palantir</title>
+  <!-- Official Palantir mark (brand asset, source simple-icons "palantir") -->
+  <path fill="#fff" d="M20.147 18 12 21.178 3.853 18 2.5 20.343 12 24l9.5-3.657L20.147 18ZM12 0a9.5 9.5 0 1 0 0 19 9.5 9.5 0 0 0 0-19Zm0 16.078a6.568 6.568 0 1 1 0-13.136 6.568 6.568 0 0 1 0 13.136Z"/>
+  <text x="33" y="17" font-family="'Helvetica Neue', Arial, system-ui, sans-serif" font-size="15.5" font-weight="600" letter-spacing="0.2" fill="#fff">Palantir</text>
+</svg>
