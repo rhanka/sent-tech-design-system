@@ -191,6 +191,14 @@
 
           <li class="vercel-side-divider" role="separator"></li>
 
+          <li class="vercel-side-heading">
+            <a
+              class="vercel-side-link vercel-side-link--heading"
+              href="/components"
+              aria-current={isActive("/components") ? "page" : undefined}
+            >{locale.value === "fr" ? "Composants" : "Components"}</a>
+          </li>
+
           {#each componentGroups as group (group.label)}
             <li>
               <details class="vercel-side-group" open={isGroupOpen(group.items)}>
@@ -208,12 +216,16 @@
                       >{item.label}</a>
                     </li>
                   {/each}
+                </ul>
+              </details>
+            </li>
+          {/each}
 
           <li class="vercel-side-divider" role="separator"></li>
 
-          <li>
+          <li class="vercel-side-heading">
             <a
-              class="vercel-side-link"
+              class="vercel-side-link vercel-side-link--heading"
               href="/views"
               aria-current={isActive("/views") ? "page" : undefined}
             >{locale.value === "fr" ? "Vues" : "Views"}</a>
@@ -236,10 +248,6 @@
                       >{item.label}</a>
                     </li>
                   {/each}
-                </ul>
-              </details>
-            </li>
-          {/each}
                 </ul>
               </details>
             </li>

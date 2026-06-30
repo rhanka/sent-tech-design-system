@@ -198,6 +198,14 @@
 
           <li class="lbc-side-divider" role="separator"></li>
 
+          <li class="lbc-side-heading">
+            <a
+              class="lbc-side-link lbc-side-link--heading"
+              href="/components"
+              aria-current={isActive("/components") ? "page" : undefined}
+            >{locale.value === "fr" ? "Composants" : "Components"}</a>
+          </li>
+
           {#each componentGroups as group (group.label)}
             <li>
               <details class="lbc-side-group" open={isGroupOpen(group.items)}>
@@ -215,12 +223,16 @@
                       >{item.label}</a>
                     </li>
                   {/each}
+                </ul>
+              </details>
+            </li>
+          {/each}
 
           <li class="lbc-side-divider" role="separator"></li>
 
-          <li>
+          <li class="lbc-side-heading">
             <a
-              class="lbc-side-link"
+              class="lbc-side-link lbc-side-link--heading"
               href="/views"
               aria-current={isActive("/views") ? "page" : undefined}
             >{locale.value === "fr" ? "Vues" : "Views"}</a>
@@ -243,10 +255,6 @@
                       >{item.label}</a>
                     </li>
                   {/each}
-                </ul>
-              </details>
-            </li>
-          {/each}
                 </ul>
               </details>
             </li>
