@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 136 24" role="img" aria-label="Replicate">
+  <title>Replicate</title>
+  <!-- Official Replicate mark (stacked corner bars) — Replicate brand asset, source simple-icons (replicate.svg). Wordmark set in the brand UI font (Freigeist / Basier Square) with system fallback. -->
+  <path fill="#000000" d="M24 10.262v2.712h-9.518V24h-3.034V10.262zm0-5.131v2.717H8.755V24H5.722V5.131zM24 0v2.717H3.034V24H0V0z"/>
+  <text x="33" y="18.5" fill="#000000" font-family="'rb-freigeist-neue','basier-square',ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="20" font-weight="600" letter-spacing="-0.015em">replicate</text>
+</svg>
