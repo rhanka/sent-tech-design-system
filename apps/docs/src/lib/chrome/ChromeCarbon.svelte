@@ -177,6 +177,14 @@
           <!-- Séparateur -->
           <li class="cbn-side-divider" role="separator"></li>
 
+          <li class="cbn-side-heading">
+            <a
+              class="cbn-side-link cbn-side-link--heading"
+              href="/components"
+              aria-current={isActive("/components") ? "page" : undefined}
+            >{locale.value === "fr" ? "Composants" : "Components"}</a>
+          </li>
+
           <!-- Groupes composants repliables -->
           {#each componentGroups as group (group.label)}
             <li>
@@ -195,12 +203,16 @@
                       >{item.label}</a>
                     </li>
                   {/each}
+                </ul>
+              </details>
+            </li>
+          {/each}
 
           <li class="cbn-side-divider" role="separator"></li>
 
-          <li>
+          <li class="cbn-side-heading">
             <a
-              class="cbn-side-link"
+              class="cbn-side-link cbn-side-link--heading"
               href="/views"
               aria-current={isActive("/views") ? "page" : undefined}
             >{locale.value === "fr" ? "Vues" : "Views"}</a>
@@ -223,10 +235,6 @@
                       >{item.label}</a>
                     </li>
                   {/each}
-                </ul>
-              </details>
-            </li>
-          {/each}
                 </ul>
               </details>
             </li>

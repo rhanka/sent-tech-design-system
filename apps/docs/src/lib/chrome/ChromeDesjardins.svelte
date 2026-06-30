@@ -210,6 +210,14 @@
 
           <li class="dsj-side-divider" role="separator"></li>
 
+          <li class="dsj-side-heading">
+            <a
+              class="dsj-side-link dsj-side-link--heading"
+              href="/components"
+              aria-current={isActive("/components") ? "page" : undefined}
+            >{locale.value === "fr" ? "Composants" : "Components"}</a>
+          </li>
+
           {#each componentGroups as group (group.label)}
             <li>
               <details class="dsj-side-group" open={isGroupOpen(group.items)}>
@@ -227,12 +235,16 @@
                       >{item.label}</a>
                     </li>
                   {/each}
+                </ul>
+              </details>
+            </li>
+          {/each}
 
           <li class="dsj-side-divider" role="separator"></li>
 
-          <li>
+          <li class="dsj-side-heading">
             <a
-              class="dsj-side-link"
+              class="dsj-side-link dsj-side-link--heading"
               href="/views"
               aria-current={isActive("/views") ? "page" : undefined}
             >{locale.value === "fr" ? "Vues" : "Views"}</a>
@@ -255,10 +267,6 @@
                       >{item.label}</a>
                     </li>
                   {/each}
-                </ul>
-              </details>
-            </li>
-          {/each}
                 </ul>
               </details>
             </li>
