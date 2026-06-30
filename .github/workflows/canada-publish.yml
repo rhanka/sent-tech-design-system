@@ -10,10 +10,8 @@ name: Canada Theme Publish
 
 on:
   push:
-    branches: ["main"]
     tags: ["canada-v*"]
-  pull_request:
-    branches: ["main"]
+  workflow_dispatch:
 
 jobs:
   verify:

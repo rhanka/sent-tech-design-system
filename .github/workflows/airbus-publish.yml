@@ -9,10 +9,8 @@ name: Airbus Theme Publish
 
 on:
   push:
-    branches: ["main"]
     tags: ["airbus-v*"]
-  pull_request:
-    branches: ["main"]
+  workflow_dispatch:
 
 jobs:
   verify:

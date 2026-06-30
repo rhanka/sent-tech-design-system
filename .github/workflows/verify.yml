@@ -1,0 +1,51 @@
+name: Verify
+
+# Single consolidated verification gate for code changes.
+#
+# Runs the full workspace gate (build + check + test + pack smoke) ONCE per
+# relevant push/PR. This replaces the per-package `verify` jobs that the
+# *-publish workflows used to run on every push to main (~10 redundant full
+# builds per push); those workflows now trigger only on their release tags,
+# where their own verify still runs before publishing.
+#
+# `npm run verify` builds every workspace in dependency order then checks,
+# tests and pack-smokes all packages, so this single run covers strictly more
+# than the sum of the old per-package verifies.
+#
+# Path-filtered to package / build changes: a docs-only change is already
+# covered by docs.yml + design-quality-gate.yml and skips this gate entirely.
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "packages/**"
+      - "scripts/**"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/verify.yml"
+  pull_request:
+    paths:
+      - "packages/**"
+      - "scripts/**"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/verify.yml"
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Full workspace verify (build + check + test + pack smoke)
+        run: npm run verify

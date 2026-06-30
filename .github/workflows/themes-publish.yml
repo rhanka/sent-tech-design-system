@@ -14,10 +14,8 @@ name: Themes Publish
 
 on:
   push:
-    branches: ["main"]
     tags: ["themes-v*"]
-  pull_request:
-    branches: ["main"]
+  workflow_dispatch:
 
 jobs:
   verify:
