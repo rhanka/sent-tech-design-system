@@ -43,18 +43,18 @@
   const demoNodes = $derived<NodeSpec[]>([{
     el: "div", props: { class: "nc-shell" }, children: [
       { el: "div", props: { class: "nc-toolbar" }, children: [
-        { comp: "Tabs", props: { value: "all", tabs: [
-          { value: "all",      label: fr ? "Tout" : "All" },
-          { value: "mentions", label: fr ? "Mentions" : "Mentions" },
-          { value: "alerts",   label: fr ? "Alertes" : "Alerts" },
-          { value: "system",   label: fr ? "Système" : "System" }
+        { comp: "Tabs", props: { activeValue: "all", label: fr ? "Filtres de notifications" : "Notification filters", items: [
+          { value: "all",      label: fr ? "Tout" : "All",        content: "" },
+          { value: "mentions", label: fr ? "Mentions" : "Mentions", content: "" },
+          { value: "alerts",   label: fr ? "Alertes" : "Alerts",   content: "" },
+          { value: "system",   label: fr ? "Système" : "System",   content: "" }
         ]}},
         { el: "div", props: { class: "nc-actions" }, children: [
           { comp: "Button", props: { variant: "ghost", size: "sm" }, children: [fr ? "Tout marquer comme lu" : "Mark all as read"] },
-          { comp: "Dropdown", props: { label: fr ? "Filtrer" : "Filter", size: "sm", variant: "outline", items: [
-            { id: "unread", label: fr ? "Non lus seulement" : "Unread only" },
-            { id: "mentions", label: fr ? "Mentions" : "Mentions" },
-            { id: "alerts", label: fr ? "Alertes" : "Alerts" }
+          { comp: "OverflowMenu", props: { label: fr ? "Filtrer" : "Filter", triggerLabel: fr ? "Filtrer" : "Filter", placement: "bottom-end", items: [
+            { value: "unread", label: fr ? "Non lus seulement" : "Unread only" },
+            { value: "mentions", label: fr ? "Mentions" : "Mentions" },
+            { value: "alerts", label: fr ? "Alertes" : "Alerts" }
           ]}}
         ]}
       ]},
@@ -69,7 +69,7 @@
     { name: "Avatar",        slug: "avatar" },
     { name: "Badge",         slug: "badge" },
     { name: "Button",        slug: "button" },
-    { name: "Dropdown",      slug: "dropdown" },
+    { name: "OverflowMenu",  slug: "overflow-menu" },
     { name: "Alert",         slug: "alert" },
     { name: "UnorderedList", slug: "unordered-list" }
   ];

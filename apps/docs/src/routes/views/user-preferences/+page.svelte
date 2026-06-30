@@ -123,18 +123,21 @@
         },
         // Canaux de notification par catégorie
         {
-          comp: "ConfigItemCard",
-          props: { label: fr ? "Notifications" : "Notifications", description: fr ? "Choisissez les canaux par catégorie d'événement." : "Choose channels per event category." },
-          children: NOTIF_ROWS.map((row) => ({
-            el: "div" as const,
-            props: { class: "up-notif-row" },
-            children: [
-              { el: "span", props: { class: "up-notif-label" }, children: [row.label] },
-              { comp: "Badge" as const, props: { tone: row.email ? ("info" as const) : ("neutral" as const) }, children: ["Email"] },
-              { comp: "Badge" as const, props: { tone: row.push ? ("warning" as const) : ("neutral" as const) }, children: ["Push"] },
-              { comp: "Badge" as const, props: { tone: row.inapp ? ("success" as const) : ("neutral" as const) }, children: [fr ? "In-app" : "In-app"] }
-            ]
-          }))
+          comp: "FieldCard",
+          props: { label: fr ? "Notifications" : "Notifications", variant: "bordered" },
+          children: [
+            { el: "p" as const, props: { class: "up-notif-desc" }, children: [fr ? "Choisissez les canaux par catégorie d'événement." : "Choose channels per event category."] },
+            ...NOTIF_ROWS.map((row) => ({
+              el: "div" as const,
+              props: { class: "up-notif-row" },
+              children: [
+                { el: "span", props: { class: "up-notif-label" }, children: [row.label] },
+                { comp: "Badge" as const, props: { tone: row.email ? ("info" as const) : ("neutral" as const) }, children: ["Email"] },
+                { comp: "Badge" as const, props: { tone: row.push ? ("warning" as const) : ("neutral" as const) }, children: ["Push"] },
+                { comp: "Badge" as const, props: { tone: row.inapp ? ("success" as const) : ("neutral" as const) }, children: [fr ? "In-app" : "In-app"] }
+              ]
+            }))
+          ]
         },
         // Barre d'enregistrement
         {
@@ -156,7 +159,6 @@
     { name: "Badge", slug: "badge" },
     { name: "Select", slug: "select" },
     { name: "Input", slug: "input" },
-    { name: "ConfigItemCard", slug: "config-item-card" },
     { name: "FieldCard", slug: "field-card" },
     { name: "Button", slug: "button" }
   ];
@@ -203,6 +205,7 @@
   :global(.up-profile-name) { font-size: 1.25rem; font-weight: 700; margin: 0; color: var(--st-semantic-text-primary, #0f172a); }
   :global(.up-profile-role) { font-size: 0.875rem; margin: 0; color: var(--st-semantic-text-secondary, #64748b); }
   :global(.up-selects) { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
+  :global(.up-notif-desc) { margin: 0 0 0.5rem; font-size: 0.85rem; color: var(--st-semantic-text-secondary, #475569); }
   :global(.up-notif-row) { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0; border-bottom: 1px solid var(--st-semantic-border-subtle, #e2e8f0); flex-wrap: wrap; }
   :global(.up-notif-row:last-child) { border-bottom: none; }
   :global(.up-notif-label) { flex: 1; font-size: 0.875rem; color: var(--st-semantic-text-primary, #0f172a); min-width: 160px; }
