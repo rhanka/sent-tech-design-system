@@ -23,8 +23,8 @@
   const BASKET_COLS = $derived([
     { key: "ref", label: fr ? "Référence" : "Reference", sortable: true },
     { key: "desc", label: fr ? "Désignation" : "Description", sortable: false },
-    { key: "stock", label: fr ? "Stock dispo" : "Avail. stock", sortable: true, align: "end" as const },
-    { key: "qty", label: fr ? "Qté" : "Qty", sortable: false, align: "end" as const }
+    { key: "stock", label: fr ? "Stock dispo" : "Avail. stock", sortable: true, align: "right" as const },
+    { key: "qty", label: fr ? "Qté" : "Qty", sortable: false, align: "right" as const }
   ]);
 
   const HISTORY_ROWS = $derived([
@@ -38,7 +38,7 @@
     { key: "from", label: fr ? "Origine" : "Source", sortable: true },
     { key: "to", label: fr ? "Destination" : "Destination", sortable: true },
     { key: "date", label: "Date", sortable: true },
-    { key: "lines", label: fr ? "Lignes" : "Lines", sortable: true, align: "end" as const },
+    { key: "lines", label: fr ? "Lignes" : "Lines", sortable: true, align: "right" as const },
     { key: "status", label: fr ? "Statut" : "Status", sortable: false }
   ]);
 
@@ -66,83 +66,82 @@
             { comp: "Button", props: { variant: "primary", size: "sm" }, children: [fr ? "Créer" : "Create"] }
           ]
         },
-        // Onglets : préparation / expédition / réception / historique
+        // Onglets : préparation / expédition / historique (barre de navigation).
+        // Les panneaux riches sont rendus en sections sœurs ci-dessous (Tabs ne
+        // rend que sa barre + le `content` texte de l'onglet actif).
         {
           comp: "Tabs",
           props: {
-            value: "picking",
-            tabs: [
-              { value: "picking", label: fr ? "Préparation" : "Picking" },
-              { value: "shipping", label: fr ? "Expédition" : "Shipping" },
-              { value: "history", label: fr ? "Historique" : "History" }
+            activeValue: "picking",
+            label: fr ? "Étapes du transfert" : "Transfer steps",
+            items: [
+              { value: "picking", label: fr ? "Préparation" : "Picking", content: "" },
+              { value: "shipping", label: fr ? "Expédition" : "Shipping", content: "" },
+              { value: "history", label: fr ? "Historique" : "History", content: "" }
             ]
-          },
+          }
+        },
+        // Préparation : panier (Table)
+        {
+          el: "div",
+          props: { class: "wt-panel" },
           children: [
-            // Préparation : panier DataGrid
             {
               el: "div",
-              props: { slot: "picking", class: "wt-panel" },
+              props: { class: "wt-panel-head" },
               children: [
-                {
-                  el: "div",
-                  props: { class: "wt-panel-head" },
-                  children: [
-                    { el: "h3", props: { class: "wt-panel-title" }, children: [fr ? "Articles à préparer" : "Items to pick"] },
-                    { comp: "Badge", props: { tone: "info" }, children: [`${BASKET_ROWS.length} ${fr ? "lignes" : "lines"}`] }
-                  ]
-                },
-                {
-                  comp: "DataGrid",
-                  props: {
-                    caption: fr ? "Panier TRF-2026-0099" : "Basket TRF-2026-0099",
-                    columns: BASKET_COLS,
-                    rows: BASKET_ROWS,
-                    size: "sm"
-                  }
-                },
-                {
-                  el: "div",
-                  props: { class: "wt-actions" },
-                  children: [
-                    { comp: "Button", props: { variant: "secondary", size: "sm" }, children: [fr ? "Ajouter un article" : "Add item"] },
-                    { comp: "Button", props: { variant: "primary", size: "sm" }, children: [fr ? "Valider la préparation" : "Confirm picking"] }
-                  ]
-                }
+                { el: "h3", props: { class: "wt-panel-title" }, children: [fr ? "Articles à préparer" : "Items to pick"] },
+                { comp: "Badge", props: { tone: "info" }, children: [`${BASKET_ROWS.length} ${fr ? "lignes" : "lines"}`] }
               ]
             },
-            // Expédition : liste ordonnée
             {
-              el: "div",
-              props: { slot: "shipping", class: "wt-panel" },
-              children: [
-                { comp: "OrderedList", props: { label: fr ? "Étapes d'expédition" : "Shipping steps", items: SHIP_STEPS } },
-                {
-                  el: "div",
-                  props: { class: "wt-actions" },
-                  children: [
-                    { comp: "Button", props: { variant: "primary", size: "sm" }, children: [fr ? "Valider l'expédition" : "Confirm shipment"] }
-                  ]
-                }
-              ]
+              comp: "Table",
+              props: {
+                caption: fr ? "Panier TRF-2026-0099" : "Basket TRF-2026-0099",
+                columns: BASKET_COLS,
+                rows: BASKET_ROWS,
+                size: "sm"
+              }
             },
-            // Historique : DataGrid avec Badge statut
             {
               el: "div",
-              props: { slot: "history", class: "wt-panel" },
+              props: { class: "wt-actions" },
               children: [
-                {
-                  comp: "DataGrid",
-                  props: {
-                    caption: fr ? "Historique des transferts" : "Transfer history",
-                    columns: HISTORY_COLS,
-                    rows: HISTORY_ROWS.map((r) => ({
-                      ...r,
-                      status: { comp: "Badge", props: { tone: r.tone }, children: [r.status] }
-                    })),
-                    size: "sm"
-                  }
-                }
+                { comp: "Button", props: { variant: "secondary", size: "sm" }, children: [fr ? "Ajouter un article" : "Add item"] },
+                { comp: "Button", props: { variant: "primary", size: "sm" }, children: [fr ? "Valider la préparation" : "Confirm picking"] }
               ]
+            }
+          ]
+        },
+        // Expédition : liste ordonnée
+        {
+          el: "div",
+          props: { class: "wt-panel" },
+          children: [
+            { el: "h3", props: { class: "wt-panel-title" }, children: [fr ? "Étapes d'expédition" : "Shipping steps"] },
+            { comp: "OrderedList", props: { items: SHIP_STEPS.map((s) => ({ content: s.label })) } },
+            {
+              el: "div",
+              props: { class: "wt-actions" },
+              children: [
+                { comp: "Button", props: { variant: "primary", size: "sm" }, children: [fr ? "Valider l'expédition" : "Confirm shipment"] }
+              ]
+            }
+          ]
+        },
+        // Historique : Table (statut en texte ; la colonne reste une chaîne)
+        {
+          el: "div",
+          props: { class: "wt-panel" },
+          children: [
+            {
+              comp: "Table",
+              props: {
+                caption: fr ? "Historique des transferts" : "Transfer history",
+                columns: HISTORY_COLS,
+                rows: HISTORY_ROWS,
+                size: "sm"
+              }
             }
           ]
         }
@@ -153,7 +152,7 @@
   const DS_COMPONENTS = [
     { name: "Select", slug: "select" },
     { name: "Tabs", slug: "tabs" },
-    { name: "DataGrid", slug: "data-grid" },
+    { name: "Table", slug: "table" },
     { name: "Badge", slug: "badge" },
     { name: "OrderedList", slug: "ordered-list" },
     { name: "Button", slug: "button" },

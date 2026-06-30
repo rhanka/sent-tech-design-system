@@ -99,11 +99,10 @@
         {
           comp: "BarChart",
           props: {
-            title: fr ? "Entonnoir de conversion" : "Conversion Funnel",
-            series: FUNNEL_STAGES.map((s) => ({ label: s.label, value: s.value, tone: "category1" as const })),
-            valueFormat: "number",
-            horizontal: false,
-            showValues: true
+            label: fr ? "Entonnoir de conversion" : "Conversion Funnel",
+            data: FUNNEL_STAGES.map((s) => ({ label: s.label, value: s.value, tone: "category1" as const })),
+            orientation: "vertical",
+            dataLabels: true
           }
         },
         // Progress bars entre étapes
@@ -129,7 +128,7 @@
                 ]
               },
               {
-                comp: "Progress",
+                comp: "ProgressBar",
                 props: { value: stage.pct, max: 100, tone: stage.pct >= 50 ? "success" : "warning", size: "sm" }
               }
             ]
@@ -154,7 +153,7 @@
     { name: "KpiCard",  slug: "kpi-card"  },
     { name: "Table",    slug: "table"     },
     { name: "Select",   slug: "select"    },
-    { name: "Progress", slug: "progress"  },
+    { name: "ProgressBar", slug: "progress-bar" },
     { name: "Badge",    slug: "badge"     },
     { name: "Alert",    slug: "alert"     }
   ];

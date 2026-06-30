@@ -35,10 +35,10 @@
         { el: "div", props: { class: "cd-cell" }, children: [{ comp: "Badge", props: { tone: segTone }, children: [c.seg()] }] },
         { el: "div", props: { class: "cd-cell cd-cell-actions" }, children: [
           { comp: "Button", props: { variant: "ghost", size: "sm" }, children: [fr ? "Modifier" : "Edit"] },
-          { comp: "Dropdown", props: { label: "⋯", size: "sm", variant: "ghost", items: [
-            { id: "view", label: fr ? "Voir le profil" : "View profile" },
-            { id: "email", label: fr ? "Envoyer un e-mail" : "Send email" },
-            { id: "delete", label: fr ? "Supprimer" : "Delete" }
+          { comp: "OverflowMenu", props: { label: fr ? "Actions du contact" : "Contact actions", triggerLabel: fr ? "Plus d'actions" : "More actions", placement: "bottom-end", items: [
+            { value: "view", label: fr ? "Voir le profil" : "View profile" },
+            { value: "email", label: fr ? "Envoyer un e-mail" : "Send email" },
+            { value: "delete", label: fr ? "Supprimer" : "Delete", danger: true }
           ]}}
         ]}
       ]
@@ -72,7 +72,7 @@
     { name: "Input", slug: "input" }, { name: "Combobox", slug: "combobox" },
     { name: "Select", slug: "select" }, { name: "Avatar", slug: "avatar" },
     { name: "Badge", slug: "badge" }, { name: "Button", slug: "button" },
-    { name: "Dropdown", slug: "dropdown" }
+    { name: "OverflowMenu", slug: "overflow-menu" }
   ];
 </script>
 
