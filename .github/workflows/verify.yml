@@ -1,13 +1,11 @@
 name: Verify
 
-# Consolidated verification gate for code changes, MATRIXED so the three checks
-# run in parallel (wall-clock = the slowest one, not their sum). Each leg shares
-# the same incremental package build (content-hash skip) + node_modules/dist
-# caches, so on a warm cache only the changed packages rebuild.
-#
-# Publishing runs only on release tags (*-publish workflows); this gate does the
-# per-package build/check/test/pack-smoke that used to run per-publish workflow.
-# Path-filtered to package/build changes: docs-only changes skip this gate.
+# Scalable package gate:
+# - detects changed package workspaces from the git diff
+# - expands to local dependents (tokens -> themes/frameworks/themes depending on them)
+# - shards affected workspaces across ~10 jobs
+# - runs check/test/pack-smoke in parallel per shard
+# - full scan only for package-lock/root package/scripts/workflow changes
 
 on:
   push:
@@ -28,19 +26,44 @@ on:
   workflow_dispatch:
 
 jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Plan affected workspace shards
+        id: plan
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            BASE="${{ github.event.pull_request.base.sha }}"
+          else
+            BASE="${{ github.event.before }}"
+            if [[ -z "$BASE" || "$BASE" == "0000000000000000000000000000000000000000" ]]; then
+              BASE="HEAD^"
+            fi
+          fi
+          HEAD="${{ github.sha }}"
+          MATRIX=$(node scripts/ci-affected-workspaces.mjs --base="$BASE" --head="$HEAD" --shards=10 --format=github-matrix)
+          echo "matrix=$MATRIX" >> "$GITHUB_OUTPUT"
+          echo "$MATRIX"
+
   verify:
-    name: verify (${{ matrix.task }})
+    needs: plan
+    if: ${{ needs.plan.outputs.matrix != '{"include":[]}' }}
+    name: verify (${{ matrix.task }} / shard ${{ matrix.shard }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          - task: check
-            run: node scripts/run-workspaces.mjs check
-          - task: test
-            run: node --test scripts/*.test.mjs && node scripts/run-workspaces.mjs test
-          - task: pack-smoke
-            run: node scripts/smoke-pack.mjs
+      matrix: ${{ fromJson(needs.plan.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
 
@@ -49,7 +72,18 @@ jobs:
           node-version: "22"
           cache: "npm"
 
+      # Root-only node_modules cache: small enough to help repeated fan-out jobs,
+      # unlike the huge root+workspace node_modules cache previously measured as
+      # no faster than npm ci.
+      - name: Restore root node_modules
+        id: root-node-modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: root-node-modules-v1-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
       - name: Install dependencies
+        if: steps.root-node-modules.outputs.cache-hit != 'true'
         run: npm ci
 
       - name: Restore built dists
@@ -61,7 +95,16 @@ jobs:
             dist-v1-
 
       - name: Build packages (incremental, content-hash)
-        run: node scripts/ensure-theme-dists.mjs
+        run: node scripts/ensure-theme-dists.mjs --workspaces="${{ matrix.workspaces }}"
 
-      - name: ${{ matrix.task }}
-        run: ${{ matrix.run }}
+      - name: check
+        if: matrix.task == 'check'
+        run: node scripts/run-workspaces.mjs check --workspaces="${{ matrix.workspaces }}"
+
+      - name: test
+        if: matrix.task == 'test'
+        run: node scripts/run-workspaces.mjs test --workspaces="${{ matrix.workspaces }}"
+
+      - name: pack-smoke
+        if: matrix.task == 'pack-smoke'
+        run: node scripts/smoke-pack.mjs --workspaces="${{ matrix.workspaces }}"

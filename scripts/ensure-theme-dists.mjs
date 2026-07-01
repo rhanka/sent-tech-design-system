@@ -20,6 +20,8 @@ import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import { getOrderedWorkspaces } from "./run-workspaces.mjs";
 
+const dependencyFields = ["dependencies", "devDependencies", "peerDependencies", "optionalDependencies"];
+
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const packagesDir = join(root, "packages") + sep;
 
@@ -74,10 +76,47 @@ function run(cmd, args, cwd) {
 // 1) Preserve the overlay step the old prebuild ran first.
 run(process.execPath, [join(root, "scripts", "ensure-compare-local-overlays.mjs")], root);
 
+function localDeps(manifest, localNames) {
+  const deps = new Set();
+  for (const field of dependencyFields) {
+    for (const name of Object.keys(manifest[field] ?? {})) {
+      if (localNames.has(name)) deps.add(name);
+    }
+  }
+  return deps;
+}
+
+function dependencyClosure(seedNames, workspaces) {
+  if (!seedNames) return null;
+  const byName = new Map(workspaces.map((workspace) => [workspace.name, workspace]));
+  const localNames = new Set(byName.keys());
+  const result = new Set();
+
+  function visit(name) {
+    if (result.has(name)) return;
+    const workspace = byName.get(name);
+    if (!workspace) return;
+    for (const dep of localDeps(workspace.manifest, localNames)) visit(dep);
+    result.add(name);
+  }
+
+  for (const name of seedNames) visit(name);
+  return result;
+}
+
+const workspacesArg = process.argv.find((value) => value.startsWith("--workspaces="));
+const selectedNames = workspacesArg
+  ? new Set(workspacesArg.slice("--workspaces=".length).split(",").map((value) => value.trim()).filter(Boolean))
+  : null;
+
 // 2) Build only packages whose source hash changed (or that have no dist), in
-//    dependency order.
-const targets = getOrderedWorkspaces(root).filter(
+//    dependency order. With --workspaces, include local dependencies of the
+//    selected workspaces so each shard can build/test independently.
+const orderedWorkspaces = getOrderedWorkspaces(root);
+const buildNames = dependencyClosure(selectedNames, orderedWorkspaces);
+const targets = orderedWorkspaces.filter(
   (w) =>
+    (!buildNames || buildNames.has(w.name)) &&
     (w.dir + sep).startsWith(packagesDir) &&
     w.manifest.scripts?.build &&
     existsSync(join(w.dir, "src")),

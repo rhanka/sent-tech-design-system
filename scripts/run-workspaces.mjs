@@ -100,8 +100,9 @@ export function orderWorkspaces(workspaces) {
   return ordered;
 }
 
-export function runWorkspaceScript(scriptName, root = defaultRoot) {
-  const workspaces = getOrderedWorkspaces(root);
+export function runWorkspaceScript(scriptName, root = defaultRoot, options = {}) {
+  const only = options.workspaces ? new Set(options.workspaces) : null;
+  const workspaces = getOrderedWorkspaces(root).filter((workspace) => !only || only.has(workspace.name));
   let ran = 0;
 
   for (const workspace of workspaces) {
@@ -129,11 +130,16 @@ export function runWorkspaceScript(scriptName, root = defaultRoot) {
 function main() {
   const scriptName = process.argv[2];
   if (!scriptName) {
-    console.error("Usage: node scripts/run-workspaces.mjs <script>");
+    console.error("Usage: node scripts/run-workspaces.mjs <script> [--workspaces=name[,name...]]");
     process.exit(1);
   }
 
-  runWorkspaceScript(scriptName);
+  const workspacesArg = process.argv.find((value) => value.startsWith("--workspaces="));
+  const workspaces = workspacesArg
+    ? workspacesArg.slice("--workspaces=".length).split(",").map((value) => value.trim()).filter(Boolean)
+    : undefined;
+
+  runWorkspaceScript(scriptName, defaultRoot, { workspaces });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
