@@ -1,19 +1,13 @@
 name: Verify
 
-# Single consolidated verification gate for code changes.
+# Consolidated verification gate for code changes, MATRIXED so the three checks
+# run in parallel (wall-clock = the slowest one, not their sum). Each leg shares
+# the same incremental package build (content-hash skip) + node_modules/dist
+# caches, so on a warm cache only the changed packages rebuild.
 #
-# Runs the full workspace gate (build + check + test + pack smoke) ONCE per
-# relevant push/PR. This replaces the per-package `verify` jobs that the
-# *-publish workflows used to run on every push to main (~10 redundant full
-# builds per push); those workflows now trigger only on their release tags,
-# where their own verify still runs before publishing.
-#
-# `npm run verify` builds every workspace in dependency order then checks,
-# tests and pack-smokes all packages, so this single run covers strictly more
-# than the sum of the old per-package verifies.
-#
-# Path-filtered to package / build changes: a docs-only change is already
-# covered by docs.yml + design-quality-gate.yml and skips this gate entirely.
+# Publishing runs only on release tags (*-publish workflows); this gate does the
+# per-package build/check/test/pack-smoke that used to run per-publish workflow.
+# Path-filtered to package/build changes: docs-only changes skip this gate.
 
 on:
   push:
@@ -35,7 +29,18 @@ on:
 
 jobs:
   verify:
+    name: verify (${{ matrix.task }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - task: check
+            run: node scripts/run-workspaces.mjs check
+          - task: test
+            run: node --test scripts/*.test.mjs && node scripts/run-workspaces.mjs test
+          - task: pack-smoke
+            run: node scripts/smoke-pack.mjs
     steps:
       - uses: actions/checkout@v4
 
@@ -47,5 +52,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Full workspace verify (build + check + test + pack smoke)
-        run: npm run verify
+      - name: Restore built dists
+        uses: actions/cache@v4
+        with:
+          path: packages/*/dist
+          key: dist-v1-${{ hashFiles('packages/*/src/**', 'packages/*/package.json', 'packages/*/*.config.*', 'packages/*/tsconfig*.json') }}
+          restore-keys: |
+            dist-v1-
+
+      - name: Build packages (incremental, content-hash)
+        run: node scripts/ensure-theme-dists.mjs
+
+      - name: ${{ matrix.task }}
+        run: ${{ matrix.run }}
