@@ -59,19 +59,6 @@ jobs:
       - name: Build docs (incremental package rebuild)
         run: npm run build --workspace=@sentropic/design-system-docs
 
-      # Design quality gate, run here on the freshly-built docs so a push to main
-      # builds once (the standalone Design Quality Gate workflow now runs on PRs
-      # only).
-      - name: Design quality gate
-        run: node packages/skills/dist/cli.js check apps/docs/build --tech --fail-under 95 > design-quality-report.json
-
-      - name: Upload design report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: design-quality-report
-          path: design-quality-report.json
-
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
