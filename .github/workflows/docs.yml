@@ -28,7 +28,18 @@ jobs:
           node-version: "22"
           cache: "npm"
 
+      # Root-only node_modules cache: this avoids the huge root+workspace cache
+      # previously measured as no faster than npm ci, while still skipping most
+      # of the install cost for docs-only pushes.
+      - name: Restore root node_modules
+        id: root-node-modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: root-node-modules-v1-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
       - name: Install dependencies
+        if: steps.root-node-modules.outputs.cache-hit != 'true'
         run: npm ci
 
       # Restore previously-built theme/component dists. ensure-theme-dists (run
