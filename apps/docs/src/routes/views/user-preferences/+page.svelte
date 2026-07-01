@@ -131,7 +131,7 @@
               el: "div" as const,
               props: { class: "up-notif-row" },
               children: [
-                { el: "span", props: { class: "up-notif-label" }, children: [row.label] },
+                { el: "span" as const, props: { class: "up-notif-label" }, children: [row.label] },
                 { comp: "Badge" as const, props: { tone: row.email ? ("info" as const) : ("neutral" as const) }, children: ["Email"] },
                 { comp: "Badge" as const, props: { tone: row.push ? ("warning" as const) : ("neutral" as const) }, children: ["Push"] },
                 { comp: "Badge" as const, props: { tone: row.inapp ? ("success" as const) : ("neutral" as const) }, children: [fr ? "In-app" : "In-app"] }
