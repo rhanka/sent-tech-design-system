@@ -538,21 +538,38 @@ console.log("Package imports verified");
   return smokePath;
 }
 
+const workspacesArg = process.argv.find((value) => value.startsWith("--workspaces="));
+const selectedNames = workspacesArg
+  ? new Set(workspacesArg.slice("--workspaces=".length).split(",").map((value) => value.trim()).filter(Boolean))
+  : null;
+const selectedPackages = selectedNames
+  ? packages.filter((pkg) => selectedNames.has(pkg.name))
+  : packages;
+
 try {
   console.log("Sent Tech package smoke test");
   console.log(`Temp dir: ${tmp}`);
 
+  if (selectedPackages.length === 0) {
+    console.log("No smoke-pack package selected; skipping.");
+    process.exit(0);
+  }
+
   const tarballs = [];
-  for (const pkg of packages) {
+  for (const pkg of selectedPackages) {
     const tarball = packWorkspace(pkg);
     verifyTarball(pkg, tarball);
     tarballs.push(tarball);
     console.log(`OK packed ${pkg.name}`);
   }
 
-  const installDir = installTarballs(tarballs);
-  const smokePath = writeImportSmoke(installDir);
-  run("node", [smokePath], { cwd: installDir });
+  if (selectedPackages.length === packages.length) {
+    const installDir = installTarballs(tarballs);
+    const smokePath = writeImportSmoke(installDir);
+    run("node", [smokePath], { cwd: installDir });
+  } else {
+    console.log("Partial smoke-pack selection; tarball contents verified, full import smoke skipped.");
+  }
 
   console.log("OK package smoke test passed");
 } finally {
