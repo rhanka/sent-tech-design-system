@@ -9,7 +9,6 @@ import {
   type TenantTheme
 } from "@sentropic/design-system-themes";
 import { dsfrTheme } from "@sentropic/design-system-theme-dsfr";
-import { carbonTheme } from "@sentropic/design-system-theme-carbon";
 
 /**
  * Anti-var-fantôme guard (spec §5 / revue B-2): every `var(--st-*)` that the 5
@@ -85,7 +84,7 @@ function consumedPrimaryVars(source: string): string[] {
   return [...out].sort();
 }
 
-const THEMES: TenantTheme[] = [sentTechTheme, dsfrTheme, carbonTheme];
+const THEMES: TenantTheme[] = [sentTechTheme, dsfrTheme];
 
 describe("anatomy tokens — no phantom vars in the 5 pilot components", () => {
   const componentVars = new Map<string, string[]>();
@@ -106,15 +105,11 @@ describe("anatomy tokens — no phantom vars in the 5 pilot components", () => {
     }
   }
 
-  it("focus strategy resolves to distinct techniques per theme (outline vs inset)", () => {
+  it("focus strategy resolves for the public government theme", () => {
     const dsfr = compileTheme(dsfrTheme);
-    const carbon = compileTheme(carbonTheme);
     // DSFR = native offset outline; box-shadow channel is a no-op.
     expect(dsfr).toContain("--st-component-button-anatomy-focus-outline: 2px solid");
     expect(dsfr).toContain("--st-component-button-anatomy-focus-boxShadow: none");
-    // Carbon = inset box-shadow; outline channel is a no-op.
-    expect(carbon).toContain("--st-component-button-anatomy-focus-boxShadow: inset 0 0 0 2px");
-    expect(carbon).toContain("--st-component-button-anatomy-focus-outline: none");
   });
 });
 
@@ -123,7 +118,7 @@ describe("anatomy tokens — no phantom vars in the 5 pilot components", () => {
  * link hover decoration and the per-size button font sizes must be EMITTED for
  * every theme (no phantom var, no silent fallback) and carry each theme's own
  * value. This is what retires the D1/C1 (hover bg) and D3/C3 (per-size font)
- * escapes and the tokenisable part of C2 (Carbon none → underline on hover).
+ * escapes and keeps government/public themes aligned.
  */
 describe("anatomy v1.1.0 — hover bg, hover decoration, per-size font size", () => {
   const compiled = new Map<string, string>(
@@ -159,26 +154,24 @@ describe("anatomy v1.1.0 — hover bg, hover decoration, per-size font size", ()
   }
 
   it("hover bg carries each theme's dedicated hover colour", () => {
-    // DSFR Bleu France hover #1212ff, Carbon $button-primary-hover Blue 70 #0043ce.
+    // DSFR Bleu France hover #1212ff.
     expect(compiled.get("dsfr")!).toContain("--st-component-button-anatomy-states-hover-bg: #1212ff");
-    expect(compiled.get("carbon")!).toContain("--st-component-button-anatomy-states-hover-bg: #0043ce");
+    expect(compiled.get("sent-tech")!).toMatch(/--st-component-button-anatomy-states-hover-bg:\s*[^;]+;/);
   });
 
-  it("link hover decoration differs by theme intent (Carbon none → underline on hover)", () => {
-      // Carbon: rest decoration none, hover decoration underline (the toggle).
-      expect(compiled.get("carbon")!).toContain("--st-component-link-anatomy-typography-textDecoration: none");
-      expect(compiled.get("carbon")!).toContain("--st-component-link-anatomy-states-hover-decoration: underline");
-      // DSFR: underlined at rest, underline on hover (no-op toggle, animated thickness is tokenized).
-      expect(compiled.get("dsfr")!).toContain("--st-component-link-anatomy-typography-textDecoration: underline");
-      expect(compiled.get("dsfr")!).toContain("--st-component-link-anatomy-states-hover-decoration: underline");
-    });
-
-    it("card hover background carries each theme's card surface intent", () => {
-      expect(compiled.get("sent-tech")!).toContain("--st-component-card-anatomy-states-hover-bg: #ffffff");
-      expect(compiled.get("dsfr")!).toContain("--st-component-card-anatomy-states-hover-bg: #ffffff");
-      expect(compiled.get("carbon")!).toContain("--st-component-card-anatomy-states-hover-bg: #e0e0e0");
-    });
+  it("link hover decoration follows public theme intent", () => {
+    // DSFR: underlined at rest, underline on hover (no-op toggle, animated thickness is tokenized).
+    expect(compiled.get("dsfr")!).toContain("--st-component-link-anatomy-typography-textDecoration: underline");
+    expect(compiled.get("dsfr")!).toContain("--st-component-link-anatomy-states-hover-decoration: underline");
+    // Base Sent Tech keeps the standard underline contract too.
+    expect(compiled.get("sent-tech")!).toContain("--st-component-link-anatomy-states-hover-decoration: underline");
   });
+
+  it("card hover background carries each theme's card surface intent", () => {
+    expect(compiled.get("sent-tech")!).toContain("--st-component-card-anatomy-states-hover-bg: #ffffff");
+    expect(compiled.get("dsfr")!).toContain("--st-component-card-anatomy-states-hover-bg: #ffffff");
+  });
+});
 
 describe("anatomy v1.5.0 — link underline geometry (hover)", () => {
   const compiled = new Map<string, string>(
@@ -212,8 +205,8 @@ describe("anatomy v1.5.0 — link underline geometry (hover)", () => {
     expect(css).toContain("--st-component-link-anatomy-typography-decorationOffsetHover: 0.155em");
   });
 
-  it("Sent Tech and Carbon keep stable hover geometry fallback values", () => {
-    for (const id of ["sent-tech", "carbon"] as const) {
+  it("Sent Tech keeps stable hover geometry fallback values", () => {
+    for (const id of ["sent-tech"] as const) {
       const css = compiled.get(id)!;
       expect(css).toContain("--st-component-link-anatomy-typography-decorationThicknessHover: auto");
       expect(css).toContain("--st-component-link-anatomy-typography-decorationOffsetHover: 0.18em");
@@ -224,10 +217,10 @@ describe("anatomy v1.5.0 — link underline geometry (hover)", () => {
 /**
  * Anatomy v1.2.0 field style (cf. spec extension): the input/control anatomy now
  * carries a `field` block — `style`, `fillBg` and the four per-side border
- * shorthands — so a filled-underline field (DSFR/Carbon) is faithful instead of
- * a boxed encadré. Every var must be EMITTED for every theme (no phantom var)
- * and carry each theme's own style: Sent Tech = outline (4 equal borders);
- * DSFR / Carbon = filled-underline (filled bg + bottom rule only).
+ * shorthands — so a filled-underline field (DSFR) is faithful instead of
+ * a boxed encadré. Every var must be EMITTED for every public test theme
+ * (no phantom var) and carry each theme's own style: Sent Tech = outline
+ * (4 equal borders); DSFR = filled-underline (filled bg + bottom rule only).
  */
 describe("anatomy v1.2.0 — field style (outline vs filled-underline)", () => {
   const compiled = new Map<string, string>(
@@ -284,32 +277,13 @@ describe("anatomy v1.2.0 — field style (outline vs filled-underline)", () => {
     expect(css).toContain(`${FIELD}-radiusBottom: 0`);
   });
 
-  it("Carbon = filled-underline with a REAL border-bottom (#8d8d8d) — its real technique, no box-shadow underline", () => {
-    const css = compiled.get("carbon")!;
-    expect(css).toContain(`${FIELD}-style: filled-underline`);
-    expect(css).toContain(`${FIELD}-fillBg: #f4f4f4`);
-    expect(css).toContain(`${FIELD}-borderTop: none`);
-    expect(css).toContain(`${FIELD}-borderRight: none`);
-    expect(css).toContain(`${FIELD}-borderLeft: none`);
-    // Carbon genuinely uses a geometric border-bottom (matches .bx--text-input),
-    // so we keep it and DO NOT draw a box-shadow underline.
-    expect(css).toContain(`${FIELD}-borderBottom: 1px solid #8d8d8d`);
-    expect(css).toContain(`${FIELD}-underline: none`);
-    // Carbon fields are square top and bottom (radiusTop inherits shape radius 0).
-    expect(css).toContain(`${FIELD}-radiusTop: 0`);
-    expect(css).toContain(`${FIELD}-radiusBottom: 0`);
-  });
-
-  it("only the DSFR field opts into the box-shadow underline (F4); Carbon stays on its real border-bottom", () => {
+  it("the DSFR field opts into the box-shadow underline (F4)", () => {
     // DSFR: bottom rule is the inset box-shadow, border-bottom dropped to none.
     expect(compiled.get("dsfr")!).toContain(`${FIELD}-borderBottom: none`);
     expect(compiled.get("dsfr")!).toContain(`${FIELD}-underline: inset 0 -1px 0 0 #3a3a3a`);
     // DSFR uses the native outline focus strategy (focus box-shadow channel =
     // none), so the field focus box-shadow stays the underline — never dropped.
     expect(compiled.get("dsfr")!).toContain(`${FIELD}-focusShadow: inset 0 -1px 0 0 #3a3a3a`);
-    // Carbon has no box-shadow underline; its focus box-shadow is the plain
-    // inset ring (border-bottom carries the rule).
-    expect(compiled.get("carbon")!).toContain(`${FIELD}-focusShadow: inset 0 0 0 2px #0f62fe`);
   });
 });
 
@@ -381,9 +355,9 @@ describe("anatomy phase 2 — PaginationNav aliases", () => {
  * text/bg/weight, tab padding/font-size/line-height, the per-side indicator
  * widths and the box-shadow accent). Every var must be EMITTED for every theme
  * (no phantom var) and DEFAULT to the prior base render (base Sent Tech
- * unchanged) while DSFR/Carbon carry the measured selected-tab values.
+ * unchanged) while DSFR carries the measured selected-tab values.
  */
-describe("anatomy v1.5.0 — active-tab metrics (F7 DSFR / F8 Carbon)", () => {
+describe("anatomy v1.5.0 — active-tab metrics (F7 DSFR)", () => {
   const compiled = new Map<string, string>(
     THEMES.map((t) => [t.id, compileTheme(t)])
   );
@@ -431,18 +405,4 @@ describe("anatomy v1.5.0 — active-tab metrics (F7 DSFR / F8 Carbon)", () => {
     expect(css).toContain(`${TABS}-activeShadow: inset 0 1px 0 0 #000091`);
   });
 
-  it("Carbon active tab (F8): 14px / 16px line-height, 0 inline padding, weight 400, real selected colour #161616, blue bottom border indicator", () => {
-    const css = compiled.get("carbon")!;
-    expect(css).toContain(`${TABS}-tabFontSize: 0.875rem`);
-    expect(css).toContain(`${TABS}-tabLineHeight: 1rem`);
-    expect(css).toContain(`${TABS}-tabPaddingInline: 0`);
-    expect(css).toContain(`${TABS}-activeWeight: 400`);
-    // Real selected-tab design colour (NOT the mobile-base #525252 the bench
-    // measures below Carbon's 42rem breakpoint — that gap is a justified escape).
-    expect(css).toContain(`${TABS}-activeText: #161616`);
-    // Bottom indicator is a real border (the blue #0f62fe selected design),
-    // no box-shadow accent.
-    expect(css).toContain(`${TABS}-activeBorderBottomWidth: 1px`);
-    expect(css).toContain(`${TABS}-activeShadow: none`);
-  });
 });

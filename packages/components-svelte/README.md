@@ -32,15 +32,15 @@ Import the package CSS once at the app or preview boundary, then render componen
 </ThemeProvider>
 ```
 
-`ThemeProvider` defaults to the Sent Tech theme. Tenant themes can be supplied from `@sentropic/design-system-themes`, `@sentropic/design-system-theme-dsfr`, or `@sentropic/design-system-theme-carbon`.
+`ThemeProvider` defaults to the Sent Tech theme. Tenant themes can be supplied from `@sentropic/design-system-themes`, `@sentropic/design-system-theme-dsfr`, `@sentropic/design-system-theme-canada`, or `@sentropic/design-system-theme-quebec`.
 
 ```svelte
 <script>
   import { ThemeProvider } from "@sentropic/design-system-svelte";
-  import { carbonTheme } from "@sentropic/design-system-theme-carbon";
+  import { dsfrTheme } from "@sentropic/design-system-theme-dsfr";
 </script>
 
-<ThemeProvider theme={carbonTheme}>
+<ThemeProvider theme={dsfrTheme}>
   <!-- your content -->
 </ThemeProvider>
 ```
