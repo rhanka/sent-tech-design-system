@@ -37,7 +37,8 @@
     --st-highlight-accent: var(--st-semantic-action-primary);
     background: var(--st-semantic-surface-subtle);
     border-left: 4px solid var(--st-highlight-accent);
-    border-radius: var(--st-radius-md, 0.375rem);
+    /* Accent latéral fort = coins carrés. Ne pas arrondir une carte/exergue à liseré. */
+    border-radius: 0;
     color: var(--st-semantic-text-primary);
     padding: var(--st-spacing-4, 1rem);
   }
