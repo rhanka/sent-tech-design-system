@@ -1,10 +1,8 @@
 {
   "name": "@sentropic/design-system-theme-carbon",
   "version": "0.2.2",
+  "private": true,
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",

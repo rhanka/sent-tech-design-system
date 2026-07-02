@@ -34,15 +34,15 @@ export function Example() {
 }
 ```
 
-`ThemeProvider` defaults to the Sent Tech theme. Tenant themes can be supplied from `@sentropic/design-system-themes`, `@sentropic/design-system-theme-dsfr`, or `@sentropic/design-system-theme-carbon`.
+`ThemeProvider` defaults to the Sent Tech theme. Tenant themes can be supplied from `@sentropic/design-system-themes`, `@sentropic/design-system-theme-dsfr`, `@sentropic/design-system-theme-canada`, or `@sentropic/design-system-theme-quebec`.
 
 ```tsx
 import type { ReactNode } from "react";
 import { ThemeProvider } from "@sentropic/design-system-react";
-import { carbonTheme } from "@sentropic/design-system-theme-carbon";
+import { dsfrTheme } from "@sentropic/design-system-theme-dsfr";
 
 export function CarbonPreview({ children }: { children: ReactNode }) {
-  return <ThemeProvider theme={carbonTheme}>{children}</ThemeProvider>;
+  return <ThemeProvider theme={dsfrTheme}>{children}</ThemeProvider>;
 }
 ```
 

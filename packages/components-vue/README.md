@@ -34,16 +34,16 @@ import "@sentropic/design-system-vue/styles.css";
 </template>
 ```
 
-`ThemeProvider` defaults to the Sent Tech theme. Tenant themes can be supplied from `@sentropic/design-system-themes`, `@sentropic/design-system-theme-dsfr`, or `@sentropic/design-system-theme-carbon`.
+`ThemeProvider` defaults to the Sent Tech theme. Tenant themes can be supplied from `@sentropic/design-system-themes`, `@sentropic/design-system-theme-dsfr`, `@sentropic/design-system-theme-canada`, or `@sentropic/design-system-theme-quebec`.
 
 ```vue
 <script setup>
 import { ThemeProvider } from "@sentropic/design-system-vue";
-import { carbonTheme } from "@sentropic/design-system-theme-carbon";
+import { dsfrTheme } from "@sentropic/design-system-theme-dsfr";
 </script>
 
 <template>
-  <ThemeProvider :theme="carbonTheme">
+  <ThemeProvider :theme="dsfrTheme">
     <!-- your content -->
   </ThemeProvider>
 </template>

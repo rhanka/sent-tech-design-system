@@ -1,16 +1,14 @@
 name: Themes Publish
 
-# Publication des thèmes de mapping DS tiers → Sentropic
-# (@sentropic/design-system-theme-dsfr et -theme-carbon), sur leur propre ligne
-# de version, indépendante des packages DS coeur et du moteur skills.
-# Déclenchée par un tag `themes-v<version>` (les deux packages sont versionnés
-# en lockstep, comme tokens/themes/svelte).
+# Publication des thèmes gouvernementaux uniquement
+# (@sentropic/design-system-theme-dsfr). Les autres thèmes client/provider
+# (carbon, airbus, accor, etc.) sont private:true et ne doivent pas être publiés.
+# Canada/Québec ont leurs workflows dédiés canada-publish.yml/quebec-publish.yml.
+# Déclenchée par un tag `themes-v<version>` pour le thème DSFR.
 #
 # Publication via npm Trusted Publishing (OIDC) : trusted publisher
 # (rhanka/sent-tech-design-system + themes-publish.yml, permission npm publish)
-# configuré sur npm pour CHAQUE package — aucun token requis, provenance SLSA
-# automatique. npm autorise la pré-configuration d'un trusted publisher avant
-# le tout premier publish d'un package neuf.
+# configuré sur npm — aucun token requis, provenance SLSA automatique.
 
 on:
   push:
@@ -27,23 +25,20 @@ jobs:
           node-version: "22"
           cache: "npm"
       - run: npm ci
-      - name: Build themes (dep order)
+      - name: Build DSFR theme (dep order)
         run: |
           npm --workspace @sentropic/design-system-tokens run build
           npm --workspace @sentropic/design-system-themes run build
           npm --workspace @sentropic/design-system-theme-dsfr run build
-          npm --workspace @sentropic/design-system-theme-carbon run build
       - name: Smoke — compiled CSS non vide
         run: |
           node --input-type=module -e "
           import { compileThemeStyleTag } from '@sentropic/design-system-themes';
           import { dsfrTheme } from '@sentropic/design-system-theme-dsfr';
-          import { carbonTheme } from '@sentropic/design-system-theme-carbon';
-          for (const [id, t] of [['dsfr', dsfrTheme], ['carbon', carbonTheme]]) {
-            const css = compileThemeStyleTag(t);
-            if (!css || css.length < 1000) { console.error('CSS trop court pour ' + id); process.exit(1); }
-            console.log(id + ' -> ' + css.length + ' octets CSS');
-          }"
+          const css = compileThemeStyleTag(dsfrTheme);
+          if (!css || css.length < 1000) { console.error('CSS trop court pour dsfr'); process.exit(1); }
+          console.log('dsfr -> ' + css.length + ' octets CSS');
+          "
 
   release-guard:
     needs: verify
@@ -63,17 +58,15 @@ jobs:
             echo "::error::Refusing to publish ${TAG}: ${GITHUB_SHA} is not merged into origin/${RELEASE_BRANCH}."
             exit 1
           fi
-      - name: Verify both theme versions match tag
+      - name: Verify DSFR theme version matches tag
         run: |
           EXPECTED="${TAG#themes-v}"
-          for pkg in theme-dsfr theme-carbon; do
-            ACTUAL=$(node -p "require('./packages/${pkg}/package.json').version")
-            if [ "$EXPECTED" != "$ACTUAL" ]; then
-              echo "::error::Tag ${TAG} expects ${EXPECTED} but packages/${pkg} is ${ACTUAL}."
-              exit 1
-            fi
-          done
-          echo "both theme versions match ${EXPECTED}"
+          ACTUAL=$(node -p "require('./packages/theme-dsfr/package.json').version")
+          if [ "$EXPECTED" != "$ACTUAL" ]; then
+            echo "::error::Tag ${TAG} expects ${EXPECTED} but packages/theme-dsfr is ${ACTUAL}."
+            exit 1
+          fi
+          echo "DSFR theme version matches ${EXPECTED}"
 
   publish:
     needs: release-guard
@@ -96,14 +89,8 @@ jobs:
           npm --workspace @sentropic/design-system-tokens run build
           npm --workspace @sentropic/design-system-themes run build
           npm --workspace @sentropic/design-system-theme-dsfr run build
-          npm --workspace @sentropic/design-system-theme-carbon run build
-      # OIDC pur : trusted publisher (rhanka/sent-tech-design-system +
-      # themes-publish.yml, permission npm publish) configuré sur npm pour
-      # CHACUN des deux packages. Aucun token, provenance SLSA automatique.
       - name: Publish theme-dsfr
         run: npm publish --workspace @sentropic/design-system-theme-dsfr --access public
-      - name: Publish theme-carbon
-        run: npm publish --workspace @sentropic/design-system-theme-carbon --access public
 
   post-publish-check:
     needs: publish
@@ -118,15 +105,14 @@ jobs:
       - name: Wait for npm propagation
         run: |
           VERSION="${TAG#themes-v}"
-          for pkg in @sentropic/design-system-theme-dsfr @sentropic/design-system-theme-carbon; do
-            ok=""
-            for attempt in {1..20}; do
-              if npm view "${pkg}@${VERSION}" version --silent > /dev/null 2>&1; then
-                echo "${pkg}@${VERSION} is available from npm."
-                ok=1; break
-              fi
-              echo "Waiting for ${pkg} propagation, attempt ${attempt}/20..."
-              sleep 15
-            done
-            if [ -z "$ok" ]; then echo "::error::Timed out waiting for ${pkg}."; exit 1; fi
+          PKG="@sentropic/design-system-theme-dsfr"
+          ok=""
+          for attempt in {1..20}; do
+            if npm view "${PKG}@${VERSION}" version --silent > /dev/null 2>&1; then
+              echo "${PKG}@${VERSION} is available from npm."
+              ok=1; break
+            fi
+            echo "Waiting for ${PKG} propagation, attempt ${attempt}/20..."
+            sleep 15
           done
+          if [ -z "$ok" ]; then echo "::error::Timed out waiting for ${PKG}."; exit 1; fi
