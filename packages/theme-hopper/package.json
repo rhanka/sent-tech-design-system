@@ -1,11 +1,9 @@
 {
   "name": "@sentropic/design-system-theme-hopper",
   "version": "0.1.0",
+  "private": true,
   "description": "Hopper (Montréal travel-booking app) playful coral theme mapping for the Sentropic token structure.",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",

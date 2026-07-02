@@ -1,11 +1,9 @@
 {
   "name": "@sentropic/design-system-theme-van-houtte",
   "version": "0.1.0",
+  "private": true,
   "description": "Van Houtte (iconic Québec coffee roaster, est. 1919) warm coffee-house theme mapping for the Sentropic token structure.",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",

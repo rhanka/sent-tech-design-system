@@ -1,11 +1,9 @@
 {
   "name": "@sentropic/design-system-theme-aldo",
   "version": "0.1.0",
+  "private": true,
   "description": "ALDO (Montréal footwear & fashion house) black-on-white theme with a signature bright-yellow accent, mapping for the Sentropic token structure.",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",

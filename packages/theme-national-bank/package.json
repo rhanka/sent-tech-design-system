@@ -1,11 +1,9 @@
 {
   "name": "@sentropic/design-system-theme-national-bank",
   "version": "0.1.0",
+  "private": true,
   "description": "National Bank of Canada (Banque Nationale du Canada, the Montréal-HQ bank) red-on-navy measured-clone theme mapping for the Sentropic token structure.",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",

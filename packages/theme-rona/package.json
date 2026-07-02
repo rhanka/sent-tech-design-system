@@ -1,11 +1,9 @@
 {
   "name": "@sentropic/design-system-theme-rona",
   "version": "0.1.0",
+  "private": true,
   "description": "RONA (rona.ca — Québec home-improvement / hardware retailer, rebranded by lg2) modern blue + chartreuse-accent theme mapping for the Sentropic token structure.",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",

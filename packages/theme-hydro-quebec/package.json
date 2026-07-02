@@ -1,11 +1,9 @@
 {
   "name": "@sentropic/design-system-theme-hydro-quebec",
   "version": "0.1.0",
+  "private": true,
   "description": "Hydro-Québec (hydroquebec.com — Québec's public electric utility crown corporation) deep-indigo / amber institutional theme mapping for the Sentropic token structure.",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",

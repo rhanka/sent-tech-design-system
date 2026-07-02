@@ -1,11 +1,9 @@
 {
   "name": "@sentropic/design-system-theme-coveo",
   "version": "0.1.0",
+  "private": true,
   "description": "Coveo (coveo.com, the Québec City AI-search SaaS) red-on-indigo measured-clone theme mapping for the Sentropic token structure.",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",

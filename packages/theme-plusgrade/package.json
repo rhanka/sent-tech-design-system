@@ -1,11 +1,9 @@
 {
   "name": "@sentropic/design-system-theme-plusgrade",
   "version": "0.1.0",
+  "private": true,
   "description": "Plusgrade (plusgrade.com — Montréal travel/ancillary-revenue tech) vivid-orange-on-near-black modern startup theme mapping for the Sentropic token structure.",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",

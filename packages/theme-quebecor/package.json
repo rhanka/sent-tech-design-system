@@ -1,11 +1,9 @@
 {
   "name": "@sentropic/design-system-theme-quebecor",
   "version": "0.1.0",
+  "private": true,
   "description": "Quebecor (quebecor.com — Montréal media & telecom group) corporate steel-blue / navy theme mapping for the Sentropic token structure.",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",

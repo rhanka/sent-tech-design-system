@@ -1,11 +1,9 @@
 {
   "name": "@sentropic/design-system-theme-nous-hermes",
   "version": "0.1.0",
+  "private": true,
   "description": "Nous Research / Hermes (dark terminal-monospace) design language theme mapping for the Sentropic token structure.",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",

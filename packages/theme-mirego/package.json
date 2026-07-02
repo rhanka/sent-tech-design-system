@@ -1,11 +1,9 @@
 {
   "name": "@sentropic/design-system-theme-mirego",
   "version": "0.1.0",
+  "private": true,
   "description": "Mirego (Montréal digital product studio) minimal editorial black-on-cream theme mapping for the Sentropic token structure.",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",

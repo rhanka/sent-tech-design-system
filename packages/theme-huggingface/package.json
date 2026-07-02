@@ -1,11 +1,9 @@
 {
   "name": "@sentropic/design-system-theme-huggingface",
   "version": "0.1.0",
+  "private": true,
   "description": "Hugging Face brand theme mapping (yellow #FFD21E + light Tailwind neutrals, Source Sans Pro) for the Sentropic token structure.",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",

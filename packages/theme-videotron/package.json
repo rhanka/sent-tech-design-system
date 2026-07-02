@@ -1,11 +1,9 @@
 {
   "name": "@sentropic/design-system-theme-videotron",
   "version": "0.1.0",
+  "private": true,
   "description": "Vidéotron (videotron.com, the Québec telecom) yellow-on-charcoal measured-clone theme mapping for the Sentropic token structure.",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",
