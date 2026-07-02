@@ -1,11 +1,9 @@
 {
   "name": "@sentropic/design-system-theme-replicate",
   "version": "0.1.0",
+  "private": true,
   "description": "Replicate brand theme mapping (public site CSS — Radix gray/accent scales, branding-red gradient, Basier Square / RB Freigeist Neue / JetBrains Mono) for the Sentropic token structure.",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",

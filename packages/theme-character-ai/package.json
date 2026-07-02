@@ -1,11 +1,9 @@
 {
   "name": "@sentropic/design-system-theme-character-ai",
   "version": "0.1.0",
+  "private": true,
   "description": "Character.AI brand / product UI theme mapping for the Sentropic token structure.",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",

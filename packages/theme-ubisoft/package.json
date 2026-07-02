@@ -1,11 +1,9 @@
 {
   "name": "@sentropic/design-system-theme-ubisoft",
   "version": "0.1.0",
+  "private": true,
   "description": "Ubisoft (UDS — Ubisoft Design System) dark-first blue-on-black theme mapping for the Sentropic token structure.",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",

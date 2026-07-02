@@ -1,11 +1,9 @@
 {
   "name": "@sentropic/design-system-theme-moment-factory",
   "version": "0.1.0",
+  "private": true,
   "description": "Moment Factory (Montréal immersive-media studio) bold black-and-yellow dark theme mapping for the Sentropic token structure.",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",

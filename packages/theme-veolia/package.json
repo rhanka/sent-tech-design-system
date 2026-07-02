@@ -1,11 +1,9 @@
 {
   "name": "@sentropic/design-system-theme-veolia",
   "version": "0.1.0",
+  "private": true,
   "description": "Veolia brand theme mapping for the Sentropic token structure (measured-clone of the public Veolia 2024 graphic charter).",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",

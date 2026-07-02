@@ -1,11 +1,9 @@
 {
   "name": "@sentropic/design-system-theme-brp",
   "version": "0.1.0",
+  "private": true,
   "description": "BRP (brp.com — Bombardier Recreational Products, Valcourt QC; Ski-Doo, Sea-Doo, Can-Am) bold yellow-on-black measured-clone theme mapping for the Sentropic token structure.",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",

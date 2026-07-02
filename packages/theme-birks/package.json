@@ -1,11 +1,9 @@
 {
   "name": "@sentropic/design-system-theme-birks",
   "version": "0.1.0",
+  "private": true,
   "description": "Maison Birks (Montréal luxury jeweller since 1879) elegant luxury theme — Birks-blue CTA with a gold accent on a black/white canvas — mapping for the Sentropic token structure.",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",

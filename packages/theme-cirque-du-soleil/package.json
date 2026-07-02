@@ -1,11 +1,9 @@
 {
   "name": "@sentropic/design-system-theme-cirque-du-soleil",
   "version": "0.1.0",
+  "private": true,
   "description": "Cirque du Soleil (Montréal live-entertainment company) theatrical gold-on-black dark theme mapping for the Sentropic token structure.",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",

@@ -1,11 +1,9 @@
 {
   "name": "@sentropic/design-system-theme-genetec",
   "version": "0.1.0",
+  "private": true,
   "description": "Genetec (genetec.com, the Montréal physical-security & video-surveillance software vendor) charcoal-and-cyan measured-clone theme mapping for the Sentropic token structure.",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",

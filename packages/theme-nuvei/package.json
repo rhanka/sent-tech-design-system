@@ -1,11 +1,9 @@
 {
   "name": "@sentropic/design-system-theme-nuvei",
   "version": "0.1.0",
+  "private": true,
   "description": "Nuvei (nuvei.com, the Montréal-headquartered fintech / payments company) deep-indigo-on-white measured-clone theme mapping for the Sentropic token structure.",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",

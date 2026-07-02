@@ -1,11 +1,9 @@
 {
   "name": "@sentropic/design-system-theme-bnp-paribas",
   "version": "0.1.0",
+  "private": true,
   "description": "BNP Paribas brand theme mapping for the Sentropic token structure.",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",

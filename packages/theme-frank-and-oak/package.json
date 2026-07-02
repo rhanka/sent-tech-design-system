@@ -1,11 +1,9 @@
 {
   "name": "@sentropic/design-system-theme-frank-and-oak",
   "version": "0.1.0",
+  "private": true,
   "description": "Frank And Oak (Montréal fashion) minimal black-on-white theme mapping for the Sentropic token structure.",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",

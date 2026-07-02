@@ -1,11 +1,9 @@
 {
   "name": "@sentropic/design-system-theme-eidos-montreal",
   "version": "0.1.0",
+  "private": true,
   "description": "Eidos-Montréal (eidosmontreal.com — AAA game studio, Deus Ex / Tomb Raider) minimal monochrome studio theme with a warm orange accent (à confirmer) for the Sentropic token structure.",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",

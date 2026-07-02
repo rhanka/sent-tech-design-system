@@ -1,11 +1,9 @@
 {
   "name": "@sentropic/design-system-theme-mistral",
   "version": "0.1.0",
+  "private": true,
   "description": "Mistral AI (mistral.ai / Le Chat) theme mapping for the Sentropic token structure — the warm 'flame' palette on a cream stage.",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",
