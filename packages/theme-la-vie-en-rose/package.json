@@ -1,11 +1,9 @@
 {
   "name": "@sentropic/design-system-theme-la-vie-en-rose",
   "version": "0.1.0",
+  "private": true,
   "description": "La Vie en Rose (Montréal lingerie house) rose-on-white theme with a signature rose accent, mapping for the Sentropic token structure.",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",

@@ -1,11 +1,9 @@
 {
   "name": "@sentropic/design-system-theme-assistant-ui",
   "version": "0.1.0",
+  "private": true,
   "description": "assistant-ui (open-source chat UI, shadcn/Radix default theme) mapping for the Sentropic token structure.",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",

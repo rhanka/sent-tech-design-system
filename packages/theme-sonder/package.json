@@ -1,11 +1,9 @@
 {
   "name": "@sentropic/design-system-theme-sonder",
   "version": "0.1.0",
+  "private": true,
   "description": "Sonder (sonder.com — design-forward hospitality / short-stay, Montréal HQ) warm minimal theme mapping for the Sentropic token structure.",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",

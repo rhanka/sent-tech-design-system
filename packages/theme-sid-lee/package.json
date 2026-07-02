@@ -1,11 +1,9 @@
 {
   "name": "@sentropic/design-system-theme-sid-lee",
   "version": "0.1.0",
+  "private": true,
   "description": "Sid Lee (Montréal creative agency, sidlee.com) bold-creative theme mapping for the Sentropic token structure.",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",

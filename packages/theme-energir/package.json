@@ -1,11 +1,9 @@
 {
   "name": "@sentropic/design-system-theme-energir",
   "version": "0.1.0",
+  "private": true,
   "description": "Énergir (energir.com — Québec natural-gas / energy utility, formerly Gaz Métro) blue + deep-navy institutional theme mapping for the Sentropic token structure.",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",

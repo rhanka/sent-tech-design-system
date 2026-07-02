@@ -1,11 +1,9 @@
 {
   "name": "@sentropic/design-system-theme-palantir",
   "version": "0.1.0",
+  "private": true,
   "description": "Palantir Blueprint design system theme mapping for the Sentropic token structure (dark-first).",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",

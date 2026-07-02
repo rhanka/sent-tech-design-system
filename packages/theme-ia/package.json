@@ -1,11 +1,9 @@
 {
   "name": "@sentropic/design-system-theme-ia",
   "version": "0.1.0",
+  "private": true,
   "description": "iA Financial Group (iA Groupe financier — Québec City insurance & wealth management) corporate blue/red/gold theme mapping for the Sentropic token structure.",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",

@@ -1,11 +1,9 @@
 {
   "name": "@sentropic/design-system-theme-bombardier",
   "version": "0.1.0",
+  "private": true,
   "description": "Bombardier (bombardier.com, the Montréal-HQ business-jet manufacturer) premium teal-and-gold measured-clone theme mapping for the Sentropic token structure.",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",

@@ -1,11 +1,9 @@
 {
   "name": "@sentropic/design-system-theme-behaviour-interactive",
   "version": "0.1.0",
+  "private": true,
   "description": "Behaviour Interactive (Montréal video-game studio, Dead by Daylight) bold blood-red black-and-white theme mapping for the Sentropic token structure.",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",

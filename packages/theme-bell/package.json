@@ -1,11 +1,9 @@
 {
   "name": "@sentropic/design-system-theme-bell",
   "version": "0.1.0",
+  "private": true,
   "description": "Bell Canada (bell.ca, the Montréal-HQ telecom) blue-on-navy measured-clone theme mapping for the Sentropic token structure.",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",

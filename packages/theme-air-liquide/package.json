@@ -1,11 +1,9 @@
 {
   "name": "@sentropic/design-system-theme-air-liquide",
   "version": "0.1.0",
+  "private": true,
   "description": "Air Liquide brand theme mapping for the Sentropic token structure.",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",
