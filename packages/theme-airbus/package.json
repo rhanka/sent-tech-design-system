@@ -1,11 +1,9 @@
 {
   "name": "@sentropic/design-system-theme-airbus",
   "version": "0.1.0",
+  "private": true,
   "description": "Airbus theme mapping for the Sentropic design system.",
   "type": "module",
-  "publishConfig": {
-    "access": "restricted"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",
