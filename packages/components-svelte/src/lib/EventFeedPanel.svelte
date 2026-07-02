@@ -158,7 +158,8 @@
     align-items: flex-start;
     background: var(--st-semantic-surface-subtle);
     border-left: 3px solid var(--st-semantic-border-strong);
-    border-radius: var(--st-radius-sm, 0.25rem);
+    /* Accent latéral fort = coins carrés. Ne pas arrondir une carte/exergue à liseré. */
+    border-radius: 0;
     display: flex;
     gap: var(--st-spacing-2, 0.5rem);
     padding: var(--st-spacing-2, 0.5rem) var(--st-spacing-3, 0.75rem);

@@ -378,7 +378,8 @@
   .docs-cli-didactic {
     background: var(--st-semantic-surface-subtle, #f8fafc);
     border-left: 4px solid var(--st-semantic-text-accent, #2563eb);
-    border-radius: 0 0.5rem 0.5rem 0;
+    /* Accent latéral fort = coins carrés. */
+    border-radius: 0;
     padding: 1.15rem 1.5rem;
     font-size: 0.92rem;
     line-height: 1.6;
