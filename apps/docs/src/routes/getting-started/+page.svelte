@@ -141,8 +141,8 @@ import { quebecTheme } from "@sentropic/design-system-theme-quebec";
     <ul class="gs-checklist">
       <li><a href="/components">{fr ? "Catalogue des composants" : "Component catalog"}</a></li>
       <li><a href="/#tokens">{fr ? "Système de tokens" : "Token system"}</a></li>
-      <li><a href="/layouts">{fr ? "Gabarits de pages" : "Page layouts"}</a></li>
-      <li><a href="/views">{fr ? "Vues métier" : "Domain views"}</a></li>
+      <li><a href="/layouts">{fr ? "Gabarits" : "Templates"}</a></li>
+      <li><a href="/views">{fr ? "Vues" : "Views"}</a></li>
     </ul>
   </section>
 </div>

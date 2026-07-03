@@ -15,16 +15,6 @@
 
   const VIEWS: ViewEntry[] = [
     {
-      slug: "dashboard",
-      name: "Executive Dashboard",
-      nameFr: "Dashboard exécutif",
-      domain: "Analytics / BI",
-      domainFr: "Analytics / BI",
-      status: "available",
-      description: "KPI cards, line/bar/donut charts, and a top-N data table : the go-to pattern for business reporting.",
-      descriptionFr: "Cartes KPI, graphiques ligne/barres/donut et table Top N : le patron de référence pour le reporting métier."
-    },
-    {
       slug: "app-shell",
       name: "App Shell",
       nameFr: "App Shell",
@@ -105,16 +95,6 @@
       descriptionFr: "Colonnes de cartes avec badge, avatar et progression : la vue pipeline CRM emblématique."
     },
     {
-      slug: "data-explorer",
-      name: "Data Explorer",
-      nameFr: "Explorateur de données",
-      domain: "Analytics / BI",
-      domainFr: "Analytics / BI",
-      status: "available",
-      description: "Pivot table + bar chart side by side + filter bar + content switcher + a configuration drawer : the BI pivot showcase.",
-      descriptionFr: "Tableau croisé + graphique en barres côte à côte + barre de filtres + bascule table/graphique + volet de configuration : la vitrine BI pivot."
-    },
-    {
       slug: "import-mapping",
       name: "Data Import / Mapping",
       nameFr: "Import / mappage de données",
@@ -163,16 +143,6 @@
       status: "available",
       description: "ConfigItemCard grid of ViewSpec templates organized by domain — copy, edit, reset, delete. Shows the ViewSpec format and the ConfigItemCard/FieldCard/ScoreCard patterns.",
       descriptionFr: "Grille ConfigItemCard de gabarits ViewSpec par domaine — copier, éditer, réinitialiser, supprimer. Illustre le format ViewSpec et les patterns ConfigItemCard/FieldCard/ScoreCard."
-    },
-    {
-      slug: "analytics-overview",
-      name: "Analytics Overview",
-      nameFr: "Vue d'ensemble analytique",
-      domain: "Analytics / BI",
-      domainFr: "Analytics / BI",
-      status: "available",
-      description: "Executive dashboard: a band of KPI cards with deltas, area trend charts, a pie breakdown and a ranked top-N table. Period and segment filters in the header. For daily tracking of business indicators.",
-      descriptionFr: "Tableau de bord exécutif : bandeau de cartes KPI avec variation, courbes de tendance sur l'aire, répartition en camembert et table top-N classée. Filtres de période et de segment en tête. Pour le suivi quotidien des indicateurs business."
     },
     {
       slug: "cohort-heatmap",

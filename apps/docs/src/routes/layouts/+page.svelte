@@ -82,15 +82,15 @@
 <div class="docs-page">
   <section class="docs-hero">
     <p class="docs-hero-kicker">{fr ? "Design System · Sentropic" : "Design System · Sentropic"}</p>
-    <h1>{fr ? "Gabarits de mise en page" : "Layout templates"}</h1>
+    <h1>{fr ? "Gabarits" : "Templates"}</h1>
     <p>
       {#if fr}
-        Patrons de mise en page prêts à l'emploi : chaque gabarit combine les composants du DS
-        en une disposition testée et documentée. Un seul <code>NodeSpec</code> → rendu identique
+        Assemblages réutilisables prêts à l'emploi : chaque gabarit combine les composants du DS
+        en une page neutre métier, testée et documentée. Un seul <code>NodeSpec</code> → rendu identique
         en Svelte, React, Vue et Angular.
       {:else}
-        Ready-to-use layout patterns: each template combines DS components into a tested and
-        documented arrangement. One <code>NodeSpec</code> → identical render in Svelte, React,
+        Ready-to-use templates: each one combines DS components into a business-neutral, tested,
+        documented page. One <code>NodeSpec</code> → identical render in Svelte, React,
         Vue, and Angular.
       {/if}
     </p>
