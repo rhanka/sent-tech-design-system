@@ -3826,6 +3826,38 @@
             {/each}
           </section>
 
+          <section class="docs-side-section" aria-labelledby="docs-layouts-heading">
+            <h2 id="docs-layouts-heading">
+              <a
+                class="docs-side-section-link"
+                href="/layouts"
+                aria-current={isActive("/layouts") ? "page" : undefined}
+              >
+                {locale.value === "fr" ? "Gabarits" : "Templates"}
+              </a>
+            </h2>
+            {#each layoutsGroups as group (group.label)}
+              <details class="docs-side-group" open={isLayoutGroupOpen(group.items)}>
+                <summary>
+                  <ChevronDown class="docs-side-group-icon" size={16} strokeWidth={2.25} aria-hidden="true" />
+                  <span>{group.label}</span>
+                </summary>
+                <ul>
+                  {#each group.items as item (item.slug)}
+                    <li>
+                      <a
+                        class="docs-side-link docs-side-link--view"
+                        href={item.href}
+                        aria-current={isLayoutActive(item) ? "page" : undefined}
+                      >
+                        <span>{item.label}</span>
+                      </a>
+                    </li>
+                  {/each}
+                </ul>
+              </details>
+            {/each}
+          </section>
           <section class="docs-side-section" aria-labelledby="docs-views-heading">
             <h2 id="docs-views-heading">
               <a
@@ -3859,38 +3891,6 @@
             {/each}
           </section>
 
-          <section class="docs-side-section" aria-labelledby="docs-layouts-heading">
-            <h2 id="docs-layouts-heading">
-              <a
-                class="docs-side-section-link"
-                href="/layouts"
-                aria-current={isActive("/layouts") ? "page" : undefined}
-              >
-                {locale.value === "fr" ? "Gabarits" : "Layouts"}
-              </a>
-            </h2>
-            {#each layoutsGroups as group (group.label)}
-              <details class="docs-side-group" open={isLayoutGroupOpen(group.items)}>
-                <summary>
-                  <ChevronDown class="docs-side-group-icon" size={16} strokeWidth={2.25} aria-hidden="true" />
-                  <span>{group.label}</span>
-                </summary>
-                <ul>
-                  {#each group.items as item (item.slug)}
-                    <li>
-                      <a
-                        class="docs-side-link docs-side-link--view"
-                        href={item.href}
-                        aria-current={isLayoutActive(item) ? "page" : undefined}
-                      >
-                        <span>{item.label}</span>
-                      </a>
-                    </li>
-                  {/each}
-                </ul>
-              </details>
-            {/each}
-          </section>
         </nav>
 
         <!-- Pied de barre latérale : version + lien GitHub (déplacés du header). -->

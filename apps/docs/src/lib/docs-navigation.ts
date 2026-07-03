@@ -48,13 +48,13 @@ interface DocsNavDefinition {
 
 // Premier niveau UNIQUE et aligné (barre horizontale = sidebar) : 4 pistes.
 // Documentation regroupe fondations/tokens/thèmes/contrats/aperçu (sous-nav) ;
-// Composants ouvre le catalogue ; Vues ouvre la galerie de patrons par domaine ;
-// Gabarits ouvre la galerie de mises en page.
+// Composants ouvre le catalogue ; Gabarits ouvre les assemblages réutilisables ;
+// Vues ouvre les écrans métier scénarisés.
 const DOCS_TOP_NAV_DEFINITIONS: DocsNavDefinition[] = [
   { label: { fr: "Documentation", en: "Documentation" }, href: "/" },
   { label: { fr: "Composants", en: "Components" }, href: "/components" },
-  { label: { fr: "Vues", en: "Views" }, href: "/views" },
-  { label: { fr: "Gabarits", en: "Layouts" }, href: "/layouts" }
+  { label: { fr: "Gabarits", en: "Templates" }, href: "/layouts" },
+  { label: { fr: "Vues", en: "Views" }, href: "/views" }
 ];
 
 export const DOCS_UTILITY_NAV: DocsNavItem[] = [
@@ -104,8 +104,8 @@ const COMPONENTS_LABEL: Record<Locale, string> = { fr: "Composants", en: "Compon
 const COMPONENT_FALLBACK_LABEL: Record<Locale, string> = { fr: "Composant", en: "Component" };
 const VIEWS_LABEL: Record<Locale, string> = { fr: "Vues", en: "Views" };
 const VIEW_FALLBACK_LABEL: Record<Locale, string> = { fr: "Vue", en: "View" };
-const LAYOUTS_LABEL: Record<Locale, string> = { fr: "Gabarits", en: "Layouts" };
-const LAYOUT_FALLBACK_LABEL: Record<Locale, string> = { fr: "Gabarit", en: "Layout" };
+const LAYOUTS_LABEL: Record<Locale, string> = { fr: "Gabarits", en: "Templates" };
+const LAYOUT_FALLBACK_LABEL: Record<Locale, string> = { fr: "Gabarit", en: "Template" };
 
 export interface LayoutNavItem extends DocsNavItem {
   slug: string;
@@ -137,16 +137,13 @@ interface ViewNavGroupDefinition {
 }
 
 // Galerie de vues regroupée par DOMAINE métier (pas par marque — aucune citation
-// de produit). Chaque vue est un patron applicatif neutre, décliné des composants
-// et patrons du DS. Source unique : alimente la sous-nav latérale « Vues » ET les
-// libellés de fil d'Ariane.
+// de produit). Les gabarits analytiques génériques restent dans « Gabarits » :
+// ici, on ne promeut que des écrans métier ou scénarios analytiques spécifiques.
+// Source unique : alimente la sous-nav latérale « Vues » ET les libellés de fil d'Ariane.
 const DOCS_VIEWS_NAV_DEFINITIONS: ViewNavGroupDefinition[] = [
   {
     label: { fr: "Analytics & BI", en: "Analytics & BI" },
     views: [
-      { slug: "dashboard", label: { fr: "Dashboard exécutif", en: "Executive Dashboard" } },
-      { slug: "analytics-overview", label: { fr: "Vue d'ensemble analytique", en: "Analytics Overview" } },
-      { slug: "data-explorer", label: { fr: "Explorateur de données", en: "Data Explorer" } },
       { slug: "cohort-heatmap", label: { fr: "Cohortes & heatmap", en: "Cohort Heatmap" } },
       { slug: "conversion-funnel", label: { fr: "Entonnoir de conversion", en: "Conversion Funnel" } },
       { slug: "correlation-scatter", label: { fr: "Corrélation scatter", en: "Correlation Scatter" } },

@@ -54,23 +54,23 @@ describe("docs navigation model", () => {
     expect(COMPONENTS.every((component) => component.status === "documented")).toBe(true);
   });
 
-  it("reduces the top nav to a single aligned first level (Documentation/Composants/Vues)", () => {
+  it("reduces the top nav to a single aligned first level (Documentation/Composants/Gabarits/Vues)", () => {
     expect(DOCS_VERSION).toMatch(/^v\d+\.\d+\.\d+$/);
     expect(DOCS_TOP_NAV.map((item) => item.label)).toEqual([
       "Documentation",
       "Composants",
-      "Vues",
-      "Gabarits"
+      "Gabarits",
+      "Vues"
     ]);
-    expect(DOCS_TOP_NAV.map((item) => item.href)).toEqual(["/", "/components", "/views", "/layouts"]);
+    expect(DOCS_TOP_NAV.map((item) => item.href)).toEqual(["/", "/components", "/layouts", "/views"]);
   });
 
   it("localizes top and side navigation labels", () => {
     expect(buildTopNav("en").map((item) => item.label)).toEqual([
       "Documentation",
       "Components",
-      "Views",
-      "Layouts"
+      "Templates",
+      "Views"
     ]);
 
     expect(buildFoundationNav("fr").map((item) => item.label)).toEqual([
@@ -125,6 +125,7 @@ describe("docs navigation model", () => {
     const items = groups.flatMap((group) => group.items);
     expect(items.length).toBeGreaterThan(0);
     expect(items.every((item) => item.href === `/views/${item.slug}`)).toBe(true);
+    expect(items.map((item) => item.slug)).not.toEqual(expect.arrayContaining(["dashboard", "analytics-overview", "data-explorer"]));
 
     // Aucune marque/produit dans les libellés de vues (fr + en).
     const haystack = JSON.stringify(buildViewsNav("fr")) + JSON.stringify(buildViewsNav("en"));
