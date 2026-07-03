@@ -224,14 +224,8 @@ export const KpiCard = defineComponent({
         );
       }
 
-      const labelChildren: ReturnType<typeof h>[] = [];
-      if (tone) {
-        labelChildren.push(h("span", { class: "st-kpiCard__swatch", "aria-hidden": "true" }));
-      }
-      labelChildren.push(h("span", { class: "st-kpiCard__labelText" }, label));
-
       const children: ReturnType<typeof h>[] = [
-        h("p", { class: "st-kpiCard__label" }, labelChildren),
+        h("p", { class: "st-kpiCard__label" }, label),
         h("p", { class: "st-kpiCard__value" }, valueChildren),
       ];
       if (formattedDelta || sparkline) {

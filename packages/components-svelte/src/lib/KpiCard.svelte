@@ -234,9 +234,11 @@
     padding: var(--st-spacing-6, 1.5rem);
   }
 
-  /* Accent catégoriel : liseré coloré à gauche. */
+  /* Accent catégoriel : liseré conservé, mais carte carrée pour éviter
+     le liseré arrondi sur conteneur arrondi. */
   .st-kpiCard--toned {
     border-inline-start-width: var(--st-spacing-1, 0.25rem);
+    border-radius: 0;
   }
 
   .st-kpiCard__label {
