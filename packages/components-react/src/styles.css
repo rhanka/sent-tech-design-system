@@ -9177,12 +9177,9 @@
 }
 
 .st-kpiCard__label {
-  align-items: center;
   color: var(--st-semantic-text-secondary);
-  display: flex;
   font-size: 0.8125rem;
   font-weight: 500;
-  gap: var(--st-spacing-1, 0.25rem);
   line-height: 1.25;
   margin: 0;
 }
@@ -9269,40 +9266,37 @@
   color: var(--st-semantic-text-secondary);
 }
 
-/* Accent catégoriel discret : pastille inline près de l'étiquette
-   (remplace l'ancien liseré gauche, anti-pattern sur conteneur arrondi). */
-.st-kpiCard__swatch {
-  background: var(--st-semantic-border-subtle);
-  border-radius: 50%;
-  display: inline-block;
-  flex: 0 0 auto;
-  height: 0.5rem;
-  width: 0.5rem;
+/* Accent catégoriel : liseré conservé, mais carte carrée pour éviter
+   le liseré arrondi sur conteneur arrondi. */
+.st-kpiCard--toned {
+  border-inline-start-width: var(--st-spacing-1, 0.25rem);
+  border-radius: 0;
 }
 
-.st-kpiCard--category1 .st-kpiCard__swatch {
-  background: var(--st-semantic-data-category1);
+/* Liserés catégoriels — alignés sur la palette data des autres composants. */
+.st-kpiCard--category1 {
+  border-inline-start-color: var(--st-semantic-data-category1);
 }
-.st-kpiCard--category2 .st-kpiCard__swatch {
-  background: var(--st-semantic-data-category2);
+.st-kpiCard--category2 {
+  border-inline-start-color: var(--st-semantic-data-category2);
 }
-.st-kpiCard--category3 .st-kpiCard__swatch {
-  background: var(--st-semantic-data-category3);
+.st-kpiCard--category3 {
+  border-inline-start-color: var(--st-semantic-data-category3);
 }
-.st-kpiCard--category4 .st-kpiCard__swatch {
-  background: var(--st-semantic-data-category4);
+.st-kpiCard--category4 {
+  border-inline-start-color: var(--st-semantic-data-category4);
 }
-.st-kpiCard--category5 .st-kpiCard__swatch {
-  background: var(--st-semantic-data-category5);
+.st-kpiCard--category5 {
+  border-inline-start-color: var(--st-semantic-data-category5);
 }
-.st-kpiCard--category6 .st-kpiCard__swatch {
-  background: var(--st-semantic-data-category6);
+.st-kpiCard--category6 {
+  border-inline-start-color: var(--st-semantic-data-category6);
 }
-.st-kpiCard--category7 .st-kpiCard__swatch {
-  background: var(--st-semantic-data-category7);
+.st-kpiCard--category7 {
+  border-inline-start-color: var(--st-semantic-data-category7);
 }
-.st-kpiCard--category8 .st-kpiCard__swatch {
-  background: var(--st-semantic-data-category8);
+.st-kpiCard--category8 {
+  border-inline-start-color: var(--st-semantic-data-category8);
 }
 
 /* ---------------------------------------------------------------------------
