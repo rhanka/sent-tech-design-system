@@ -69,10 +69,7 @@ export type KpiCardProps = {
       role="group"
       [attr.aria-label]="ariaLabel"
     >
-      <p class="st-kpiCard__label">
-        @if (tone) { <span class="st-kpiCard__swatch" aria-hidden="true"></span> }
-        <span class="st-kpiCard__labelText">{{ label }}</span>
-      </p>
+      <p class="st-kpiCard__label">{{ label }}</p>
 
       <p class="st-kpiCard__value">
         @if (decoration && decorationIconNodes) {

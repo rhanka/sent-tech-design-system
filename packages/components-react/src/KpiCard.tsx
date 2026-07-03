@@ -169,10 +169,7 @@ export function KpiCard({
       role="group"
       aria-label={ariaLabel}
     >
-      <p className="st-kpiCard__label">
-        {tone ? <span className="st-kpiCard__swatch" aria-hidden="true" /> : null}
-        {label}
-      </p>
+      <p className="st-kpiCard__label">{label}</p>
 
       <p className="st-kpiCard__value">
         {decoration ? <CellDecorationIcon icon={decoration.icon} /> : null}
