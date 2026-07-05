@@ -7,6 +7,16 @@ export interface AppChromeNavItem {
   href: string;
   /** Marqué actif (souligné, aria-current=page). */
   active?: boolean;
+  /** Roles autorisés à voir l'item. Vide/undefined = visible par tous. */
+  roles?: string[];
+  /** Alias pratique pour un seul rôle autorisé. */
+  role?: string;
+  /** Coupe la navigation tout en gardant l'item visible/annoncé. */
+  disabled?: boolean;
+  ariaLabel?: string;
+  target?: string;
+  rel?: string;
+  onClick?: (event: MouseEvent) => void;
 }
 
 export interface AppChromeThemeOption {
@@ -27,6 +37,8 @@ export type AppChromeProps = {
   brandLabel?: string;
   nav?: AppChromeNavItem[];
   navLabel?: string;
+  /** Roles de l'utilisateur courant pour filtrer les nav items gatés par rôle. */
+  userRoles?: string[];
   themes?: AppChromeThemeOption[];
   theme?: string;
   onThemeChange?: (id: string) => void;
@@ -84,11 +96,18 @@ let appChromeIdCounter = 0;
           <!-- ── Nav principale ─────────────────────────────────────────── -->
           <nav class="st-appHeader__nav" aria-label="Primary">
             @for (item of nav; track item.href) {
-              <a
-                class="st-appChrome__navLink st-appHeader__navLink"
-                [href]="item.href"
-                [attr.aria-current]="item.active ? 'page' : null"
-              >{{ item.label }}</a>
+              @if (canShowNavItem(item)) {
+                <a
+                  [class]="navLinkClass(item, 'st-appChrome__navLink st-appHeader__navLink')"
+                  [attr.href]="item.disabled ? null : item.href"
+                  [attr.aria-current]="item.active ? 'page' : null"
+                  [attr.aria-disabled]="item.disabled ? 'true' : null"
+                  [attr.aria-label]="item.ariaLabel ?? null"
+                  [attr.target]="item.disabled ? null : (item.target ?? null)"
+                  [attr.rel]="navRel(item) ?? null"
+                  (click)="handleNavClick($event, item)"
+                >{{ item.label }}</a>
+              }
             }
           </nav>
 
@@ -244,12 +263,18 @@ let appChromeIdCounter = 0;
         <nav [id]="drawerId" class="st-appChrome__drawer" [attr.aria-label]="navLabel">
           <div class="st-appChrome__drawerSection">
             @for (item of nav; track item.href) {
-              <a
-                class="st-appChrome__drawerLink"
-                [href]="item.href"
-                [attr.aria-current]="item.active ? 'page' : null"
-                (click)="toggleMobileMenu()"
-              >{{ item.label }}</a>
+              @if (canShowNavItem(item)) {
+                <a
+                  [class]="navLinkClass(item, 'st-appChrome__drawerLink')"
+                  [attr.href]="item.disabled ? null : item.href"
+                  [attr.aria-current]="item.active ? 'page' : null"
+                  [attr.aria-disabled]="item.disabled ? 'true' : null"
+                  [attr.aria-label]="item.ariaLabel ?? null"
+                  [attr.target]="item.disabled ? null : (item.target ?? null)"
+                  [attr.rel]="navRel(item) ?? null"
+                  (click)="handleNavClick($event, item, true)"
+                >{{ item.label }}</a>
+              }
             }
           </div>
 
@@ -322,6 +347,7 @@ export class AppChrome {
   @NgInput() brandLabel?: string;
   @NgInput() nav: AppChromeNavItem[] = [];
   @NgInput() navLabel?: string = "Primary";
+  @NgInput() userRoles: string[] = [];
   @NgInput() themes: AppChromeThemeOption[] = [];
   @NgInput() theme?: string;
   @NgInput() onThemeChange?: (id: string) => void;
@@ -389,6 +415,26 @@ export class AppChrome {
 
   chevronClass(open: boolean): string {
     return classNames("st-appChrome__chevron", open ? "is-rotated" : undefined);
+  }
+
+  canShowNavItem(item: AppChromeNavItem): boolean {
+    const allowed = item.roles ?? (item.role ? [item.role] : []);
+    return allowed.length === 0 || allowed.some((role) => this.userRoles.includes(role));
+  }
+
+  navRel(item: AppChromeNavItem): string | undefined {
+    if (item.disabled) return undefined;
+    return item.rel ?? (item.target === "_blank" ? "noreferrer" : undefined);
+  }
+
+  navLinkClass(item: AppChromeNavItem, base: string): string {
+    return classNames(base, item.disabled ? "st-appChrome__navLink--disabled" : undefined);
+  }
+
+  handleNavClick(event: MouseEvent, item: AppChromeNavItem, closeDrawer = false): void {
+    if (item.disabled) event.preventDefault();
+    item.onClick?.(event);
+    if (!item.disabled && closeDrawer) this.onMobileMenuToggle?.();
   }
 
   toggleTheme(): void {

@@ -7,6 +7,16 @@ export interface AppChromeNavItem {
   href: string;
   /** Marqué actif (souligné, aria-current=page). */
   active?: boolean;
+  /** Roles autorisés à voir l'item. Vide/undefined = visible par tous. */
+  roles?: string[];
+  /** Alias pratique pour un seul rôle autorisé. */
+  role?: string;
+  /** Coupe la navigation tout en gardant l'item visible/annoncé. */
+  disabled?: boolean;
+  ariaLabel?: string;
+  target?: React.AnchorHTMLAttributes<HTMLAnchorElement>["target"];
+  rel?: string;
+  onClick?: React.MouseEventHandler<HTMLAnchorElement>;
 }
 
 export interface AppChromeThemeOption {
@@ -28,6 +38,8 @@ export interface AppChromeProps {
   // Navigation
   nav?: AppChromeNavItem[];
   navLabel?: string;
+  /** Roles de l'utilisateur courant pour filtrer les nav items gatés par rôle. */
+  userRoles?: string[];
   // Thème (contrôlé)
   themes?: AppChromeThemeOption[];
   theme?: string;
@@ -128,6 +140,7 @@ export function AppChrome({
   brandLabel,
   nav = [],
   navLabel = "Primary",
+  userRoles = [],
   themes = [],
   theme,
   onThemeChange,
@@ -203,16 +216,32 @@ export function AppChrome({
     </a>
   );
 
-  const navContent = nav.map((item) => (
-    <a
-      key={item.href}
-      className="st-appChrome__navLink st-appHeader__navLink"
-      href={item.href}
-      aria-current={item.active ? "page" : undefined}
-    >
-      {item.label}
-    </a>
-  ));
+  const visibleNav = nav.filter((item) => {
+    const allowed = item.roles ?? (item.role ? [item.role] : []);
+    return allowed.length === 0 || allowed.some((role) => userRoles.includes(role));
+  });
+  const renderNavLink = (item: AppChromeNavItem) => {
+    const disabled = item.disabled ?? false;
+    return (
+      <a
+        key={item.href}
+        className={classNames("st-appChrome__navLink st-appHeader__navLink", disabled ? "st-appChrome__navLink--disabled" : undefined)}
+        href={disabled ? undefined : item.href}
+        aria-current={item.active ? "page" : undefined}
+        aria-disabled={disabled ? "true" : undefined}
+        aria-label={item.ariaLabel}
+        target={disabled ? undefined : item.target}
+        rel={disabled ? undefined : item.rel ?? (item.target === "_blank" ? "noreferrer" : undefined)}
+        onClick={(event) => {
+          if (disabled) event.preventDefault();
+          item.onClick?.(event);
+        }}
+      >
+        {item.label}
+      </a>
+    );
+  };
+  const navContent = visibleNav.map(renderNavLink);
 
   const utilityNav = (
     <div className="st-appChrome__utilityNav">
@@ -339,17 +368,28 @@ export function AppChrome({
       {mobileMenuOpen ? (
         <nav id={drawerId} className="st-appChrome__drawer" aria-label={navLabel}>
           <div className="st-appChrome__drawerSection">
-            {nav.map((item) => (
-              <a
-                key={item.href}
-                className="st-appChrome__drawerLink"
-                href={item.href}
-                aria-current={item.active ? "page" : undefined}
-                onClick={() => onMobileMenuToggle?.()}
-              >
-                {item.label}
-              </a>
-            ))}
+            {visibleNav.map((item) => {
+              const disabled = item.disabled ?? false;
+              return (
+                <a
+                  key={item.href}
+                  className={classNames("st-appChrome__drawerLink", disabled ? "st-appChrome__navLink--disabled" : undefined)}
+                  href={disabled ? undefined : item.href}
+                  aria-current={item.active ? "page" : undefined}
+                  aria-disabled={disabled ? "true" : undefined}
+                  aria-label={item.ariaLabel}
+                  target={disabled ? undefined : item.target}
+                  rel={disabled ? undefined : item.rel ?? (item.target === "_blank" ? "noreferrer" : undefined)}
+                  onClick={(event) => {
+                    if (disabled) event.preventDefault();
+                    item.onClick?.(event);
+                    if (!disabled) onMobileMenuToggle?.();
+                  }}
+                >
+                  {item.label}
+                </a>
+              );
+            })}
           </div>
 
           {showThemeSelector ? (

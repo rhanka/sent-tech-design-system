@@ -7,6 +7,16 @@ export interface AppChromeNavItem {
   href: string;
   /** Marqué actif (souligné, aria-current=page). */
   active?: boolean;
+  /** Roles autorisés à voir l'item. Vide/undefined = visible par tous. */
+  roles?: string[];
+  /** Alias pratique pour un seul rôle autorisé. */
+  role?: string;
+  /** Coupe la navigation tout en gardant l'item visible/annoncé. */
+  disabled?: boolean;
+  ariaLabel?: string;
+  target?: string;
+  rel?: string;
+  onClick?: (event: MouseEvent) => void;
 }
 
 export interface AppChromeThemeOption {
@@ -26,6 +36,8 @@ export type AppChromeProps = {
   brandLabel?: string;
   nav?: AppChromeNavItem[];
   navLabel?: string;
+  /** Roles de l'utilisateur courant pour filtrer les nav items gatés par rôle. */
+  userRoles?: string[];
   themes?: AppChromeThemeOption[];
   theme?: string;
   onThemeChange?: (id: string) => void;
@@ -155,6 +167,7 @@ export const AppChrome = defineComponent({
     brandLabel: { type: String, default: undefined },
     nav: { type: Array as PropType<AppChromeNavItem[]>, default: () => [] },
     navLabel: { type: String, default: "Primary" },
+    userRoles: { type: Array as PropType<string[]>, default: () => [] },
     themes: { type: Array as PropType<AppChromeThemeOption[]>, default: () => [] },
     theme: { type: String, default: undefined },
     onThemeChange: { type: Function as PropType<(id: string) => void>, default: undefined },
@@ -248,14 +261,27 @@ export const AppChrome = defineComponent({
         ],
       );
 
-      const navContent = props.nav.map((item) =>
+      const visibleNav = props.nav.filter((item) => {
+        const allowed = item.roles ?? (item.role ? [item.role] : []);
+        return allowed.length === 0 || allowed.some((role) => props.userRoles.includes(role));
+      });
+      const navRel = (item: AppChromeNavItem) => item.disabled ? undefined : item.rel ?? (item.target === "_blank" ? "noreferrer" : undefined);
+      const navContent = visibleNav.map((item) =>
         h(
           "a",
           {
             key: item.href,
-            class: "st-appChrome__navLink st-appHeader__navLink",
-            href: item.href,
+            class: classNames("st-appChrome__navLink st-appHeader__navLink", item.disabled ? "st-appChrome__navLink--disabled" : undefined),
+            href: item.disabled ? undefined : item.href,
             "aria-current": item.active ? "page" : undefined,
+            "aria-disabled": item.disabled ? "true" : undefined,
+            "aria-label": item.ariaLabel,
+            target: item.disabled ? undefined : item.target,
+            rel: navRel(item),
+            onClick: (event: MouseEvent) => {
+              if (item.disabled) event.preventDefault();
+              item.onClick?.(event);
+            },
           },
           item.label,
         ),
@@ -422,15 +448,23 @@ export const AppChrome = defineComponent({
             h(
               "div",
               { class: "st-appChrome__drawerSection" },
-              props.nav.map((item) =>
+              visibleNav.map((item) =>
                 h(
                   "a",
                   {
                     key: item.href,
-                    class: "st-appChrome__drawerLink",
-                    href: item.href,
+                    class: classNames("st-appChrome__drawerLink", item.disabled ? "st-appChrome__navLink--disabled" : undefined),
+                    href: item.disabled ? undefined : item.href,
                     "aria-current": item.active ? "page" : undefined,
-                    onClick: () => props.onMobileMenuToggle?.(),
+                    "aria-disabled": item.disabled ? "true" : undefined,
+                    "aria-label": item.ariaLabel,
+                    target: item.disabled ? undefined : item.target,
+                    rel: navRel(item),
+                    onClick: (event: MouseEvent) => {
+                      if (item.disabled) event.preventDefault();
+                      item.onClick?.(event);
+                      if (!item.disabled) props.onMobileMenuToggle?.();
+                    },
                   },
                   item.label,
                 ),
