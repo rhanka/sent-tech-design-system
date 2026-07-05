@@ -20,6 +20,7 @@ import {
   X,
 } from "lucide-react";
 import { classNames } from "./classNames.js";
+import { Portal } from "./Portal.js";
 
 export type Size = "sm" | "md" | "lg";
 export type Tone = "neutral" | "info" | "success" | "warning" | "error";
@@ -1208,10 +1209,18 @@ export function Dropdown({ label, options, value, open: controlledOpen, locale =
   const resolvedPlaceholder = placeholder ?? (isFr ? "Sélectionner" : "Select");
   const handleSelect = onSelect ?? onselect;
   const hostRef = React.useRef<HTMLDivElement>(null);
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
+  const listRef = React.useRef<HTMLDivElement>(null);
   const itemRefs = React.useRef<Array<HTMLButtonElement | null>>([]);
   const [open, setOpen] = useControlled(controlledOpen, false);
   const [current, setCurrent] = useControlled(value, value ?? "");
   const [activeIndex, setActiveIndex] = React.useState(-1);
+  const [listPos, setListPos] = React.useState({ top: 0, left: 0, width: 0 });
+  const updateListPos = React.useCallback(() => {
+    const rect = buttonRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    setListPos({ top: rect.bottom + 4, left: rect.left, width: rect.width });
+  }, []);
   const selected = options.find((option) => option.value === current);
   const focusOption = (index: number) => {
     setActiveIndex(index);
@@ -1226,7 +1235,24 @@ export function Dropdown({ label, options, value, open: controlledOpen, locale =
     setActiveIndex(-1);
     handleSelect?.(option.value);
   };
-  useOutsideMouseDown(open, hostRef, () => setOpen(false));
+  React.useEffect(() => {
+    if (!open) return;
+    updateListPos();
+    const onPointerDown = (event: MouseEvent) => {
+      const target = event.target as Node | null;
+      if (target && !hostRef.current?.contains(target) && !listRef.current?.contains(target)) setOpen(false);
+    };
+    const onScroll = () => updateListPos();
+    const onResize = () => updateListPos();
+    window.addEventListener("mousedown", onPointerDown);
+    window.addEventListener("scroll", onScroll, true);
+    window.addEventListener("resize", onResize);
+    return () => {
+      window.removeEventListener("mousedown", onPointerDown);
+      window.removeEventListener("scroll", onScroll, true);
+      window.removeEventListener("resize", onResize);
+    };
+  }, [open, setOpen, updateListPos]);
   useEscape(open, () => setOpen(false));
   return (
     <div {...rest} ref={hostRef} className={classNames("st-dropdown", className)}>
@@ -1234,8 +1260,12 @@ export function Dropdown({ label, options, value, open: controlledOpen, locale =
         type="button"
         className="st-dropdown__button"
         aria-haspopup="listbox"
+        ref={buttonRef}
         aria-expanded={open}
-        onClick={() => setOpen(!open)}
+        onClick={() => {
+          setOpen(!open);
+          if (!open) requestAnimationFrame(updateListPos);
+        }}
         onKeyDown={(event) => {
           if (event.key === "ArrowDown") {
             event.preventDefault();
@@ -1248,7 +1278,14 @@ export function Dropdown({ label, options, value, open: controlledOpen, locale =
         <ChevronDown className={classNames("st-dropdown__icon", open && "st-dropdown__icon--open")} size={18} strokeWidth={2.25} aria-hidden="true" />
       </button>
       {open ? (
-        <div className="st-dropdown__list" role="listbox" aria-label={text(resolvedLabel)}>
+        <Portal>
+        <div
+          ref={listRef}
+          className="st-dropdown__list"
+          role="listbox"
+          aria-label={text(resolvedLabel)}
+          style={{ top: listPos.top, left: listPos.left, minWidth: listPos.width }}
+        >
           {options.map((option, index) => (
             <button
               key={option.value}
@@ -1282,6 +1319,7 @@ export function Dropdown({ label, options, value, open: controlledOpen, locale =
             </button>
           ))}
         </div>
+        </Portal>
       ) : null}
     </div>
   );

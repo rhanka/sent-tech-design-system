@@ -1,6 +1,7 @@
 <script lang="ts">
   import { ChevronDown } from "@lucide/svelte";
   import type { HTMLAttributes } from "svelte/elements";
+  import Portal from "./Portal.svelte";
 
   export type DropdownOption = {
     label: string;
@@ -40,6 +41,7 @@
   let currentValue = $state<string | undefined>(undefined);
   let syncedOpen = $state<boolean | undefined>(undefined);
   let syncedValue = $state<string | undefined>(undefined);
+  let listEl: HTMLDivElement | undefined = $state();
   let listPos = $state({ top: 0, left: 0, width: 0 });
 
   const classes = () => ["st-dropdown", className].filter(Boolean).join(" ");
@@ -72,7 +74,7 @@
   function onWindowPointerDown(event: MouseEvent) {
     if (!expanded) return;
     const target = event.target as Node | null;
-    if (host && target && !host.contains(target)) close();
+    if (target && !host?.contains(target) && !listEl?.contains(target)) close();
   }
 
   function onWindowScroll() {
@@ -122,7 +124,9 @@
     />
   </button>
   {#if expanded}
+    <Portal>
     <div
+      bind:this={listEl}
       class="st-dropdown__list"
       role="listbox"
       aria-label={label}
@@ -142,6 +146,7 @@
         </button>
       {/each}
     </div>
+    </Portal>
   {/if}
 </div>
 
