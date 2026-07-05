@@ -7,6 +7,16 @@
     href: string;
     /** Marqué actif (souligné, aria-current=page). */
     active?: boolean;
+    /** Roles autorisés à voir l'item. Vide/undefined = visible par tous. */
+    roles?: string[];
+    /** Alias pratique pour un seul rôle autorisé. */
+    role?: string;
+    /** Coupe la navigation tout en gardant l'item visible/annoncé. */
+    disabled?: boolean;
+    ariaLabel?: string;
+    target?: string;
+    rel?: string;
+    onClick?: (event: MouseEvent) => void;
   }
 
   /** Une option du sélecteur de thème. */
@@ -38,6 +48,8 @@
     nav?: AppChromeNavItem[];
     /** aria-label de la nav principale. */
     navLabel?: string;
+    /** Roles de l'utilisateur courant pour filtrer les nav items gatés par rôle. */
+    userRoles?: string[];
 
     // ── Contrôle thème (contrôlé) ─────────────────────────────────────────────
     /** Options de thème. Vide => le sélecteur est masqué. */
@@ -118,6 +130,7 @@
     brandLabel,
     nav = [],
     navLabel = "Primary",
+    userRoles = [],
     themes = [],
     theme,
     onThemeChange,
@@ -172,6 +185,23 @@
   }
 
   const classes = () => ["st-appChrome", className].filter(Boolean).join(" ");
+  const visibleNav = $derived(
+    nav.filter((item) => {
+      const allowed = item.roles ?? (item.role ? [item.role] : []);
+      return allowed.length === 0 || allowed.some((role) => userRoles.includes(role));
+    }),
+  );
+
+  function navRel(item: AppChromeNavItem): string | undefined {
+    if (item.disabled) return undefined;
+    return item.rel ?? (item.target === "_blank" ? "noreferrer" : undefined);
+  }
+
+  function handleNavClick(event: MouseEvent, item: AppChromeNavItem, closeDrawer = false) {
+    if (item.disabled) event.preventDefault();
+    item.onClick?.(event);
+    if (!item.disabled && closeDrawer) onMobileMenuToggle?.();
+  }
 
   function closeMenus(target: EventTarget | null) {
     const el = target as Element | null;
@@ -207,11 +237,17 @@
 
 <!-- ── Nav principale ─────────────────────────────────────────────────────── -->
 {#snippet navContent()}
-  {#each nav as item (item.href)}
+  {#each visibleNav as item (item.href)}
     <a
       class="st-appChrome__navLink st-appHeader__navLink"
-      href={item.href}
+      class:st-appChrome__navLink--disabled={item.disabled}
+      href={item.disabled ? undefined : item.href}
       aria-current={item.active ? "page" : undefined}
+      aria-disabled={item.disabled ? "true" : undefined}
+      aria-label={item.ariaLabel}
+      target={item.disabled ? undefined : item.target}
+      rel={navRel(item)}
+      onclick={(event) => handleNavClick(event, item)}
     >
       {item.label}
     </a>
@@ -357,12 +393,17 @@
   {#if mobileMenuOpen}
     <nav id={drawerId} class="st-appChrome__drawer" aria-label={navLabel}>
       <div class="st-appChrome__drawerSection">
-        {#each nav as item (item.href)}
+        {#each visibleNav as item (item.href)}
           <a
             class="st-appChrome__drawerLink"
-            href={item.href}
+            class:st-appChrome__navLink--disabled={item.disabled}
+            href={item.disabled ? undefined : item.href}
             aria-current={item.active ? "page" : undefined}
-            onclick={() => onMobileMenuToggle?.()}
+            aria-disabled={item.disabled ? "true" : undefined}
+            aria-label={item.ariaLabel}
+            target={item.disabled ? undefined : item.target}
+            rel={navRel(item)}
+            onclick={(event) => handleNavClick(event, item, true)}
           >
             {item.label}
           </a>

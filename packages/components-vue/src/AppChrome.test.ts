@@ -47,6 +47,16 @@ describe("AppChrome — navigation", () => {
     expect(links[1].attributes("aria-current")).toBeUndefined();
     expect(links[0].classes()).toContain("st-appHeader__navLink");
   });
+
+  it("filters role-gated items and renders disabled nav without href", () => {
+    const wrapper = mount(AppChrome, {
+      props: { nav: [...nav, { label: "Admin", href: "/admin", role: "admin" }, { label: "Soon", href: "/soon", disabled: true }], userRoles: ["member"] },
+    });
+    const links = wrapper.findAll(".st-appChrome__navLink");
+    expect(links.map((a) => a.text())).toEqual(["Vues", "Données", "Réglages", "Soon"]);
+    expect(links.at(-1)?.attributes("href")).toBeUndefined();
+    expect(links.at(-1)?.attributes("aria-disabled")).toBe("true");
+  });
 });
 
 describe("AppChrome — contrôle thème", () => {
