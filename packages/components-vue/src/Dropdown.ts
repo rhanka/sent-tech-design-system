@@ -1,4 +1,4 @@
-import { defineComponent, h, ref, watch, onUnmounted } from "vue";
+import { defineComponent, h, ref, watch, onUnmounted, nextTick, Teleport } from "vue";
 import { ChevronDown } from "lucide-vue-next";
 import { classNames } from "./classNames.js";
 
@@ -37,13 +37,24 @@ export const Dropdown = defineComponent({
   setup(props, { emit, attrs }) {
     const localOpen = ref(false);
     const localValue = ref(props.value ?? "");
+    const hostRef = ref<HTMLElement | null>(null);
+    const buttonRef = ref<HTMLButtonElement | null>(null);
+    const listRef = ref<HTMLElement | null>(null);
+    const listPos = ref({ top: 0, left: 0, width: 0 });
 
     const isOpen = () => props.open !== undefined ? props.open : localOpen.value;
     const selected = () => props.options.find((opt) => opt.value === (props.value ?? localValue.value));
 
+    const updateListPos = () => {
+      const rect = buttonRef.value?.getBoundingClientRect();
+      if (!rect) return;
+      listPos.value = { top: rect.bottom + 4, left: rect.left, width: rect.width };
+    };
+
     const setOpen = (val: boolean) => {
       if (props.open === undefined) localOpen.value = val;
       emit("update:open", val);
+      if (val) nextTick(updateListPos);
     };
 
     const selectOption = (option: DropdownOption) => {
@@ -51,23 +62,46 @@ export const Dropdown = defineComponent({
       localValue.value = option.value;
       setOpen(false);
       emit("select", option.value);
+      props.onSelect?.(option.value);
     };
 
     const onMouseDown = (event: MouseEvent) => {
       const target = event.target as Node | null;
-      const host = (attrs as { _hostEl?: HTMLElement })._hostEl;
-      if (target && host && !host.contains(target)) setOpen(false);
+      if (target && !hostRef.value?.contains(target) && !listRef.value?.contains(target)) setOpen(false);
     };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && isOpen()) {
+        event.preventDefault();
+        setOpen(false);
+      }
+    };
+    const onScroll = () => { if (isOpen()) updateListPos(); };
 
     watch(
       () => isOpen(),
       (open) => {
-        if (open) document.addEventListener("mousedown", onMouseDown);
-        else document.removeEventListener("mousedown", onMouseDown);
+        if (open) {
+          nextTick(updateListPos);
+          document.addEventListener("mousedown", onMouseDown);
+          window.addEventListener("keydown", onKeyDown);
+          window.addEventListener("scroll", onScroll, true);
+          window.addEventListener("resize", onScroll);
+        } else {
+          document.removeEventListener("mousedown", onMouseDown);
+          window.removeEventListener("keydown", onKeyDown);
+          window.removeEventListener("scroll", onScroll, true);
+          window.removeEventListener("resize", onScroll);
+        }
       },
+      { immediate: true },
     );
 
-    onUnmounted(() => document.removeEventListener("mousedown", onMouseDown));
+    onUnmounted(() => {
+      document.removeEventListener("mousedown", onMouseDown);
+      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("scroll", onScroll, true);
+      window.removeEventListener("resize", onScroll);
+    });
 
     return () => {
       const isFr = (props.locale ?? "fr-FR").toLowerCase().startsWith("fr");
@@ -76,16 +110,51 @@ export const Dropdown = defineComponent({
       const open = isOpen();
       const sel = selected();
 
+      const list = open
+        ? h(
+            Teleport,
+            { to: "body" },
+            h(
+              "div",
+              {
+                ref: listRef,
+                class: "st-dropdown__list",
+                role: "listbox",
+                "aria-label": resolvedLabel,
+                style: { top: `${listPos.value.top}px`, left: `${listPos.value.left}px`, minWidth: `${listPos.value.width}px` },
+              },
+              props.options.map((option) =>
+                h(
+                  "button",
+                  {
+                    key: option.value,
+                    type: "button",
+                    role: "option",
+                    class: "st-dropdown__option",
+                    disabled: option.disabled,
+                    "aria-disabled": option.disabled ? "true" : undefined,
+                    "aria-selected": option.value === (props.value ?? localValue.value),
+                    onClick: () => selectOption(option),
+                  },
+                  option.label as string,
+                ),
+              ),
+            ),
+          )
+        : null;
+
       return h(
         "div",
         {
           ...attrs,
+          ref: hostRef,
           class: classNames("st-dropdown", props.class),
         },
         [
           h(
             "button",
             {
+              ref: buttonRef,
               type: "button",
               class: "st-dropdown__button",
               "aria-haspopup": "listbox",
@@ -104,32 +173,7 @@ export const Dropdown = defineComponent({
               }),
             ],
           ),
-          open
-            ? h(
-                "div",
-                {
-                  class: "st-dropdown__list",
-                  role: "listbox",
-                  "aria-label": resolvedLabel,
-                },
-                props.options.map((option) =>
-                  h(
-                    "button",
-                    {
-                      key: option.value,
-                      type: "button",
-                      role: "option",
-                      class: "st-dropdown__option",
-                      disabled: option.disabled,
-                      "aria-disabled": option.disabled ? "true" : undefined,
-                      "aria-selected": option.value === (props.value ?? localValue.value),
-                      onClick: () => selectOption(option),
-                    },
-                    option.label as string,
-                  ),
-                ),
-              )
-            : null,
+          list,
         ],
       );
     };

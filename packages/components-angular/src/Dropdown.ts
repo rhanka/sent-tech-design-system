@@ -31,8 +31,8 @@ export type DropdownProps = {
         type="button"
         class="st-dropdown__button"
         aria-haspopup="listbox"
-        [attr.aria-expanded]="localOpen"
-        (click)="localOpen = !localOpen"
+        [attr.aria-expanded]="isOpen"
+        (click)="toggleOpen()"
       >
         <span class="st-dropdown__label">{{ label }}</span>: <span class="st-dropdown__value">{{ selectedLabel }}</span>
         <svg
@@ -48,7 +48,7 @@ export type DropdownProps = {
           aria-hidden="true"
         ><path d="m6 9 6 6 6-6"></path></svg>
       </button>
-      @if (localOpen) {
+      @if (isOpen) {
         <div
           class="st-dropdown__list"
           role="listbox"
@@ -88,6 +88,14 @@ export class Dropdown {
   localOpen = false;
   localValue = "";
 
+  get isOpen(): boolean {
+    return this.open ?? this.localOpen;
+  }
+
+  toggleOpen(): void {
+    if (this.open === undefined) this.localOpen = !this.localOpen;
+  }
+
   get resolvedPlaceholder(): string {
     const isFr = (this.locale ?? "fr-FR").toLowerCase().startsWith("fr");
     return this.placeholder ?? (isFr ? "Sélectionner" : "Select");
@@ -100,7 +108,7 @@ export class Dropdown {
   }
 
   get iconClass(): string {
-    return classNames("st-dropdown__icon", this.localOpen ? "st-dropdown__icon--open" : undefined);
+    return classNames("st-dropdown__icon", this.isOpen ? "st-dropdown__icon--open" : undefined);
   }
 
   get hostClass(): string {
@@ -110,7 +118,7 @@ export class Dropdown {
   selectOption(option: DropdownOption): void {
     if (option.disabled) return;
     this.localValue = option.value;
-    this.localOpen = false;
+    if (this.open === undefined) this.localOpen = false;
     this.select.emit(option.value);
     this.onSelect?.(option.value);
   }
