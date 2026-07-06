@@ -7,8 +7,9 @@ const roots = ["packages", "apps/docs/src"];
 const extensions = new Set([".css", ".svelte", ".ts", ".tsx", ".js", ".jsx"]);
 const skipParts = new Set(["dist", "node_modules", ".svelte-kit"]);
 
-const cardLikeSelector = /card|highlight|callout|panel|tile|kpi|metric|stat|notice|guideline|feature|promo|surface|summary|eventFeedPanel__item/i;
-const sideOrBottomBorder = /border-(left|right|bottom|inline-start|inline-end|block-end)(?:-width)?\s*:\s*([^;]+)/gi;
+const componentSelector = /\.(?:st-|docs-)/;
+const sideOrBottomBorder = /border-(left|right|top|bottom|inline-start|inline-end|block-start|block-end)(?:-width)?\s*:\s*([^;]+)/gi;
+const fullBorder = /(?:^|[;\s])border\s*:\s*([^;]+)/i;
 const radiusDecl = /border-radius\s*:\s*([^;]+)|border-(?:top|bottom)-(?:left|right)-radius\s*:\s*([^;]+)/gi;
 
 function* walk(dir) {
@@ -23,15 +24,15 @@ function* walk(dir) {
 }
 
 function isZeroRadius(value) {
-  return /^\s*0(?:\s|$)/.test(value.trim());
+  const v = value.trim().toLowerCase();
+  if (/^0(?:\s|$)/.test(v)) return true;
+  return /var\([^,]+,\s*0\s*\)/.test(v);
 }
 
-function isThinOrTransparent(value) {
+function isZeroOrTransparentBorder(value) {
   const v = value.trim().toLowerCase();
   if (v.includes("transparent")) return true;
   if (/^0(?:\s|;|$)|^0px\b|^0rem\b/.test(v)) return true;
-  if (v.includes("var(") && !/(2px|3px|4px|5px|6px|0\.125rem|0\.1875rem|0\.25rem)/.test(v)) return true;
-  if (/^1px\b|^0\.0625rem\b/.test(v)) return true;
   return false;
 }
 
@@ -43,6 +44,36 @@ function baseClass(name) {
   return name.includes("--") ? name.slice(0, name.indexOf("--")) : name;
 }
 
+function compoundClassNames(selector) {
+  return selector
+    .split(/\s*,\s*/)
+    .flatMap((part) => part.trim().split(/\s+/).map(classNames));
+}
+
+function hasCompleteSideSet(matches) {
+  const sides = new Set(matches.map((m) => m[1]));
+  const physical = ["top", "right", "bottom", "left"].every((side) => sides.has(side));
+  const logical = ["block-start", "inline-end", "block-end", "inline-start"].every((side) => sides.has(side));
+  return physical || logical;
+}
+
+function sameElementRoundedClass(accentBlock, roundedBlock) {
+  // Reject descendant element targets such as `.st-sidenav a`: the radius is on the link,
+  // not on the `.st-sidenav` host that owns the structural separator.
+  if (/\s[a-z][a-z0-9-]*(?:[\s:{.#[]|$)/i.test(roundedBlock.selector)) return false;
+  const accentCompounds = compoundClassNames(accentBlock.selector);
+  const roundedCompounds = compoundClassNames(roundedBlock.selector);
+  return accentCompounds.some((accentClasses) =>
+    roundedCompounds.some((roundedClasses) => {
+      if (roundedClasses.length === 0 || accentClasses.length === 0) return false;
+      // Every class used by the rounded rule must be present on the same selector compound.
+      // This avoids false positives like `.card--bordered .card__header` inheriting `.card` radius
+      // through an ancestor: the seam is on the header element, not on the rounded host.
+      return roundedClasses.every((name) => accentClasses.includes(name));
+    }),
+  );
+}
+
 function violationsIn(path) {
   const text = readFileSync(path, "utf8");
   const out = [];
@@ -52,10 +83,14 @@ function violationsIn(path) {
   for (const match of text.matchAll(blockRe)) {
     const selector = match[1].trim();
     const body = match[2];
-    if (!cardLikeSelector.test(selector)) continue;
+    if (!componentSelector.test(selector)) continue;
 
-    const borders = [...body.matchAll(sideOrBottomBorder)].map((m) => m[2]);
-    const thickSideBorders = borders.filter((value) => !isThinOrTransparent(value));
+    const sideBorderMatches = [...body.matchAll(sideOrBottomBorder)];
+    const borders = sideBorderMatches.map((m) => m[2]);
+    const nonZeroSideBorders = borders.filter((value) => !isZeroOrTransparentBorder(value));
+    const hasFullBorder = fullBorder.test(body) && !isZeroOrTransparentBorder(body.match(fullBorder)?.[1] ?? "0");
+    const hasCompleteNonZeroSideSet = hasCompleteSideSet(sideBorderMatches.filter((m) => !isZeroOrTransparentBorder(m[2])));
+    const hasEffectiveOneSidedBorder = nonZeroSideBorders.length > 0 && !hasFullBorder && !hasCompleteNonZeroSideSet;
     const radii = [...body.matchAll(radiusDecl)].map((m) => m[1] ?? m[2]);
     const roundedRadii = radii.filter((value) => !isZeroRadius(value));
     const classes = classNames(selector);
@@ -67,15 +102,17 @@ function violationsIn(path) {
       classes,
       bases: classes.map(baseClass),
       borders,
-      thickSideBorders,
+      nonZeroSideBorders,
+      hasFullBorder,
+      hasCompleteNonZeroSideSet,
       radii,
       roundedRadii,
-      hasThickSideBorder: thickSideBorders.length > 0,
+      hasEffectiveOneSidedBorder,
       hasRoundedRadius: roundedRadii.length > 0,
       hasZeroRadius: radii.some(isZeroRadius),
     });
 
-    if (thickSideBorders.length > 0 && roundedRadii.length > 0) {
+    if (hasEffectiveOneSidedBorder && roundedRadii.length > 0) {
       out.push({
         path: relative(process.cwd(), path),
         line: text.slice(0, match.index).split("\n").length,
@@ -86,14 +123,15 @@ function violationsIn(path) {
     }
   }
 
-  for (const accentBlock of blocks.filter((block) => block.hasThickSideBorder && !block.hasZeroRadius)) {
+  for (const accentBlock of blocks.filter((block) => block.hasEffectiveOneSidedBorder && !block.hasZeroRadius)) {
     const inheritedRoundedBase = blocks.find(
       (block) =>
         block !== accentBlock &&
         block.hasRoundedRadius &&
-        block.bases.some((base) => accentBlock.bases.includes(base)),
+        sameElementRoundedClass(accentBlock, block),
     );
     if (!inheritedRoundedBase) continue;
+    if (inheritedRoundedBase.hasFullBorder) continue;
     out.push({
       path: relative(process.cwd(), path),
       line: text.slice(0, accentBlock.index).split("\n").length,
@@ -107,11 +145,11 @@ function violationsIn(path) {
   return out;
 }
 
-test("no rounded card/exergue with a thick one-sided accent border", () => {
+test("no rounded component/docs surface with a one-sided border seam", () => {
   const violations = roots.flatMap((root) => [...walk(root)].flatMap(violationsIn));
   assert.deepEqual(
     violations,
     [],
-    "A card/highlight/panel with a thick left/right/bottom accent border must have square corners (border-radius: 0).",
+    "Any component/docs surface with a one-sided border seam must have square corners (border-radius: 0); 1px seams on rounded corners are forbidden.",
   );
 });

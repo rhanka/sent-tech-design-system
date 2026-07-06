@@ -254,11 +254,21 @@
     width: 100%;
   }
 
-  /* Opt-in accent bar: reserve the 2px gutter only when enabled so text never
-     shifts on selection. */
+  /* Opt-in accent bar: reserve a 2px gutter without attaching a border to the
+     rounded host. The selected accent is painted by a square pseudo-element so
+     no one-sided stroke follows the row radius. */
   .st-selectableRow--accentBar {
     padding-left: calc(0.75rem - 2px);
-    border-left: 2px solid transparent;
+  }
+
+  .st-selectableRow--accentBar::before {
+    background: transparent;
+    block-size: 100%;
+    content: "";
+    inline-size: 2px;
+    inset-block: 0;
+    inset-inline-start: 0;
+    position: absolute;
   }
 
   .st-selectableRow:hover:not(.st-selectableRow--disabled):not(.st-selectableRow--selected) {
@@ -291,8 +301,8 @@
   }
 
   /* The left accent bar paints only when opt-in AND selected. */
-  .st-selectableRow--accentBar.st-selectableRow--selected {
-    border-left-color: var(
+  .st-selectableRow--accentBar.st-selectableRow--selected::before {
+    background: var(
       --st-component-selectableRow-selectedAccent,
       var(--st-semantic-action-primary, #2563eb)
     );
