@@ -1342,6 +1342,7 @@ describe("Vue behavioral parity — batch 3", () => {
     it("opens list when trigger clicked", async () => {
       const wrapper = mount(Dropdown, {
         props: { options: [{ value: "a", label: "A" }] },
+        global: { stubs: { teleport: true } },
       });
       expect(wrapper.find(".st-dropdown__list").exists()).toBe(false);
       await wrapper.find(".st-dropdown__button").trigger("click");
@@ -1356,6 +1357,7 @@ describe("Vue behavioral parity — batch 3", () => {
             { value: "b", label: "B" },
           ],
         },
+        global: { stubs: { teleport: true } },
       });
       await wrapper.find(".st-dropdown__button").trigger("click");
       expect(wrapper.findAll(".st-dropdown__option").length).toBe(2);

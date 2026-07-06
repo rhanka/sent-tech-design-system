@@ -1219,7 +1219,14 @@ export function Dropdown({ label, options, value, open: controlledOpen, locale =
   const updateListPos = React.useCallback(() => {
     const rect = buttonRef.current?.getBoundingClientRect();
     if (!rect) return;
-    setListPos({ top: rect.bottom + 4, left: rect.left, width: rect.width });
+    const top = rect.bottom + 4;
+    // Bail out when the position is unchanged so an effect re-run (useControlled
+    // returns a fresh setter each render) can't drive an infinite render loop.
+    setListPos((prev) =>
+      prev.top === top && prev.left === rect.left && prev.width === rect.width
+        ? prev
+        : { top, left: rect.left, width: rect.width },
+    );
   }, []);
   const selected = options.find((option) => option.value === current);
   const focusOption = (index: number) => {
@@ -1252,7 +1259,11 @@ export function Dropdown({ label, options, value, open: controlledOpen, locale =
       window.removeEventListener("scroll", onScroll, true);
       window.removeEventListener("resize", onResize);
     };
-  }, [open, setOpen, updateListPos]);
+    // `setOpen`/`updateListPos` are intentionally omitted: `useControlled`
+    // returns a fresh setter each render, and depending on it re-ran this effect
+    // every render → setListPos → re-render → hang. We only re-bind on open toggles.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
   useEscape(open, () => setOpen(false));
   return (
     <div {...rest} ref={hostRef} className={classNames("st-dropdown", className)}>
