@@ -529,7 +529,7 @@
     font-size: 0.8125rem;
     color: var(--st-semantic-text-secondary);
     gap: 0.5rem;
-    border-radius: 4px 4px 0 0;
+    border-radius: 0;
   }
 
   .docs-composer-action-btn {
