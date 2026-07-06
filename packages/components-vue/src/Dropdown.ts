@@ -61,8 +61,10 @@ export const Dropdown = defineComponent({
       if (option.disabled) return;
       localValue.value = option.value;
       setOpen(false);
+      // `emit("select")` already routes to an `onSelect` handler prop (Vue maps
+      // emitted events to their `onX` listeners), so calling `props.onSelect`
+      // here as well would fire the callback twice. Emit only.
       emit("select", option.value);
-      props.onSelect?.(option.value);
     };
 
     const onMouseDown = (event: MouseEvent) => {

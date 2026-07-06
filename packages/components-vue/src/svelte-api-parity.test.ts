@@ -253,6 +253,7 @@ describe("Vue accepts the canonical Svelte API", () => {
           options: [{ value: "a", label: "A" }],
           onSelect,
         },
+        global: { stubs: { teleport: true } },
       });
       await wrapper.find('[role="option"]').trigger("click");
       expect(onSelect).toHaveBeenCalledTimes(1);
@@ -262,6 +263,7 @@ describe("Vue accepts the canonical Svelte API", () => {
     it("still emits the Vue-native `select` event", async () => {
       const wrapper = mount(Dropdown, {
         props: { label: "Pick", open: true, options: [{ value: "a", label: "A" }] },
+        global: { stubs: { teleport: true } },
       });
       await wrapper.find('[role="option"]').trigger("click");
       expect(wrapper.emitted("select")?.[0]).toEqual(["a"]);
