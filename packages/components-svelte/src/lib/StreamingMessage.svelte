@@ -305,7 +305,7 @@
   .st-streamingMessage__reasoning {
     background: var(--st-component-chatMessage-reasoningBackground, var(--st-semantic-surface-subtle));
     border-left: 2px solid var(--st-semantic-border-subtle);
-    border-radius: var(--st-component-control-radius, 0.375rem);
+    border-radius: 0;
     margin: 0 0 0.5rem;
     padding: 0.4rem 0.6rem;
   }
