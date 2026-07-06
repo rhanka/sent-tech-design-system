@@ -4,6 +4,16 @@ export interface AppChromeNavItem {
     href: string;
     /** Marqué actif (souligné, aria-current=page). */
     active?: boolean;
+    /** Roles autorisés à voir l'item. Vide/undefined = visible par tous. */
+    roles?: string[];
+    /** Alias pratique pour un seul rôle autorisé. */
+    role?: string;
+    /** Coupe la navigation tout en gardant l'item visible/annoncé. */
+    disabled?: boolean;
+    ariaLabel?: string;
+    target?: string;
+    rel?: string;
+    onClick?: (event: MouseEvent) => void;
 }
 export interface AppChromeThemeOption {
     id: string;
@@ -20,6 +30,8 @@ export type AppChromeProps = {
     brandLabel?: string;
     nav?: AppChromeNavItem[];
     navLabel?: string;
+    /** Roles de l'utilisateur courant pour filtrer les nav items gatés par rôle. */
+    userRoles?: string[];
     themes?: AppChromeThemeOption[];
     theme?: string;
     onThemeChange?: (id: string) => void;
@@ -52,6 +64,7 @@ export declare class AppChrome {
     brandLabel?: string;
     nav: AppChromeNavItem[];
     navLabel?: string;
+    userRoles: string[];
     themes: AppChromeThemeOption[];
     theme?: string;
     onThemeChange?: (id: string) => void;
@@ -87,6 +100,10 @@ export declare class AppChrome {
     get showGithub(): boolean;
     get colorModeAriaLabel(): string;
     chevronClass(open: boolean): string;
+    canShowNavItem(item: AppChromeNavItem): boolean;
+    navRel(item: AppChromeNavItem): string | undefined;
+    navLinkClass(item: AppChromeNavItem, base: string): string;
+    handleNavClick(event: MouseEvent, item: AppChromeNavItem, closeDrawer?: boolean): void;
     toggleTheme(): void;
     toggleLocale(): void;
     pickTheme(id: string): void;
@@ -99,6 +116,6 @@ export declare class AppChrome {
     onDocumentClick(e: MouseEvent): void;
     onDocumentKeydown(e: KeyboardEvent): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<AppChrome, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<AppChrome, "st-app-chrome", never, { "brandName": { "alias": "brandName"; "required": false; }; "productName": { "alias": "productName"; "required": false; }; "logoSrc": { "alias": "logoSrc"; "required": false; }; "logoAlt": { "alias": "logoAlt"; "required": false; }; "brandHref": { "alias": "brandHref"; "required": false; }; "brandLabel": { "alias": "brandLabel"; "required": false; }; "nav": { "alias": "nav"; "required": false; }; "navLabel": { "alias": "navLabel"; "required": false; }; "themes": { "alias": "themes"; "required": false; }; "theme": { "alias": "theme"; "required": false; }; "onThemeChange": { "alias": "onThemeChange"; "required": false; }; "themeLabel": { "alias": "themeLabel"; "required": false; }; "colorMode": { "alias": "colorMode"; "required": false; }; "onColorModeChange": { "alias": "onColorModeChange"; "required": false; }; "colorModeLabels": { "alias": "colorModeLabels"; "required": false; }; "locale": { "alias": "locale"; "required": false; }; "onLocaleChange": { "alias": "onLocaleChange"; "required": false; }; "localeLabel": { "alias": "localeLabel"; "required": false; }; "githubHref": { "alias": "githubHref"; "required": false; }; "githubLabel": { "alias": "githubLabel"; "required": false; }; "mobileMenuOpen": { "alias": "mobileMenuOpen"; "required": false; }; "onMobileMenuToggle": { "alias": "onMobileMenuToggle"; "required": false; }; "menuLabel": { "alias": "menuLabel"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<AppChrome, "st-app-chrome", never, { "brandName": { "alias": "brandName"; "required": false; }; "productName": { "alias": "productName"; "required": false; }; "logoSrc": { "alias": "logoSrc"; "required": false; }; "logoAlt": { "alias": "logoAlt"; "required": false; }; "brandHref": { "alias": "brandHref"; "required": false; }; "brandLabel": { "alias": "brandLabel"; "required": false; }; "nav": { "alias": "nav"; "required": false; }; "navLabel": { "alias": "navLabel"; "required": false; }; "userRoles": { "alias": "userRoles"; "required": false; }; "themes": { "alias": "themes"; "required": false; }; "theme": { "alias": "theme"; "required": false; }; "onThemeChange": { "alias": "onThemeChange"; "required": false; }; "themeLabel": { "alias": "themeLabel"; "required": false; }; "colorMode": { "alias": "colorMode"; "required": false; }; "onColorModeChange": { "alias": "onColorModeChange"; "required": false; }; "colorModeLabels": { "alias": "colorModeLabels"; "required": false; }; "locale": { "alias": "locale"; "required": false; }; "onLocaleChange": { "alias": "onLocaleChange"; "required": false; }; "localeLabel": { "alias": "localeLabel"; "required": false; }; "githubHref": { "alias": "githubHref"; "required": false; }; "githubLabel": { "alias": "githubLabel"; "required": false; }; "mobileMenuOpen": { "alias": "mobileMenuOpen"; "required": false; }; "onMobileMenuToggle": { "alias": "onMobileMenuToggle"; "required": false; }; "menuLabel": { "alias": "menuLabel"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, never, true, never>;
 }
 //# sourceMappingURL=AppChrome.d.ts.map

@@ -19,6 +19,7 @@ export declare class Row {
     as?: string;
     classInput?: string;
     get hostClass(): string;
+    get gutterToken(): string;
     get inlineStyles(): Record<string, string | undefined>;
     static ɵfac: i0.ɵɵFactoryDeclaration<Row, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<Row, "st-row", never, { "gutter": { "alias": "gutter"; "required": false; }; "align": { "alias": "align"; "required": false; }; "justify": { "alias": "justify"; "required": false; }; "wrap": { "alias": "wrap"; "required": false; }; "as": { "alias": "as"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;

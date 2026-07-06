@@ -26,14 +26,11 @@ export class Embed {
           [attr.loading]="loading ?? 'lazy'"></iframe>
       </div>
     </div>
-  `, isInline: true });
+  `, isInline: true, styles: [":host { display: contents; }"] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Embed, decorators: [{
             type: Component,
-            args: [{
-                    selector: "st-embed",
-                    standalone: true,
-                    template: `
+            args: [{ selector: "st-embed", standalone: true, template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
       <div class="st-aspectRatio" [style.aspect-ratio]="aspectRatio ?? '16/9'">
         <iframe class="st-embed__frame"
@@ -44,8 +41,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
           [attr.loading]="loading ?? 'lazy'"></iframe>
       </div>
     </div>
-  `,
-                }]
+  `, styles: [":host { display: contents; }"] }]
         }], propDecorators: { src: [{
                 type: NgInput
             }], title: [{

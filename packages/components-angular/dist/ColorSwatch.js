@@ -29,14 +29,11 @@ export class ColorSwatch {
         [attr.aria-label]="accessibleLabel"></span>
       @if (label) { <span class="st-colorSwatch__label">{{ label }}</span> }
     </span>
-  `, isInline: true });
+  `, isInline: true, styles: [":host { display: contents; }"] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: ColorSwatch, decorators: [{
             type: Component,
-            args: [{
-                    selector: "st-color-swatch",
-                    standalone: true,
-                    template: `
+            args: [{ selector: "st-color-swatch", standalone: true, template: `
     <span [attr.data-st-component]="componentName" [class]="hostClass">
       <span class="st-colorSwatch__chip"
         [style.background-color]="color"
@@ -46,8 +43,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
         [attr.aria-label]="accessibleLabel"></span>
       @if (label) { <span class="st-colorSwatch__label">{{ label }}</span> }
     </span>
-  `,
-                }]
+  `, styles: [":host { display: contents; }"] }]
         }], propDecorators: { color: [{
                 type: NgInput
             }], size: [{

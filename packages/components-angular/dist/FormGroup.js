@@ -24,14 +24,11 @@ export class FormGroup {
       </div>
       @if (helperText) { <p class="st-form-group__help st-formGroup__help">{{ helperText }}</p> }
     </fieldset>
-  `, isInline: true });
+  `, isInline: true, styles: [":host { display: contents; }"] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: FormGroup, decorators: [{
             type: Component,
-            args: [{
-                    selector: "st-form-group",
-                    standalone: true,
-                    template: `
+            args: [{ selector: "st-form-group", standalone: true, template: `
     <fieldset
       [attr.data-st-component]="componentName"
       [class]="hostClass"
@@ -43,8 +40,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
       </div>
       @if (helperText) { <p class="st-form-group__help st-formGroup__help">{{ helperText }}</p> }
     </fieldset>
-  `,
-                }]
+  `, styles: [":host { display: contents; }"] }]
         }], propDecorators: { legend: [{
                 type: NgInput
             }], helperText: [{

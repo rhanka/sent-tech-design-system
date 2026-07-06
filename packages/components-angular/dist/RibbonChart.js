@@ -243,14 +243,11 @@ export class RibbonChart {
         </div>
       }
     </div>
-  `, isInline: true });
+  `, isInline: true, styles: [":host { display: contents; }"] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: RibbonChart, decorators: [{
             type: Component,
-            args: [{
-                    selector: "st-ribbon-chart",
-                    standalone: true,
-                    template: `
+            args: [{ selector: "st-ribbon-chart", standalone: true, template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
       <div
         class="st-ribbonChart__visual"
@@ -320,8 +317,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
         </div>
       }
     </div>
-  `,
-                }]
+  `, styles: [":host { display: contents; }"] }]
         }], propDecorators: { data: [{
                 type: NgInput
             }], label: [{

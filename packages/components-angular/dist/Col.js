@@ -30,36 +30,55 @@ export class Col {
     lg;
     as;
     classInput;
+    get isAuto() {
+        return this.span === "auto";
+    }
     get hostClass() {
-        return ["st-col", this.classInput].filter(Boolean).join(" ");
+        return classNames("st-col", this.isAuto && "st-col--auto", this.sm != null && "st-col--has-sm", this.md != null && "st-col--has-md", this.lg != null && "st-col--has-lg", this.classInput);
+    }
+    // Parité stricte React/Vue : la colonne `auto` grandit (flex-grow:1) au lieu de
+    // se figer à la largeur du contenu ; les autres colonnes sont plafonnées à leur
+    // basis et les surcharges responsives passent par les variables `--st-col-*`.
+    spanBasisFor(span) {
+        return spanBasis(span) ?? null;
     }
     get inlineStyles() {
+        const basis = spanBasis(this.span);
         return {
-            flexBasis: spanBasis(this.span),
-            flexGrow: '0',
-            flexShrink: '0',
+            flexBasis: basis,
+            maxInlineSize: this.isAuto ? undefined : basis,
+            flexGrow: this.isAuto ? '1' : '0',
             marginInlineStart: offsetMargin(this.offset),
         };
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Col, deps: [], target: i0.ɵɵFactoryTarget.Component });
     static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: Col, isStandalone: true, selector: "st-col", inputs: { span: "span", offset: "offset", sm: "sm", md: "md", lg: "lg", as: "as", classInput: ["class", "classInput"] }, ngImport: i0, template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass" [ngStyle]="inlineStyles">
+    <div
+      [attr.data-st-component]="componentName"
+      [class]="hostClass"
+      [style.--st-col-sm]="spanBasisFor(sm)"
+      [style.--st-col-md]="spanBasisFor(md)"
+      [style.--st-col-lg]="spanBasisFor(lg)"
+      [ngStyle]="inlineStyles"
+    >
       <ng-content></ng-content>
     </div>
-  `, isInline: true, dependencies: [{ kind: "directive", type: NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }] });
+  `, isInline: true, styles: [":host { display: contents; }"], dependencies: [{ kind: "directive", type: NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Col, decorators: [{
             type: Component,
-            args: [{
-                    selector: "st-col",
-                    standalone: true,
-                    imports: [NgStyle],
-                    template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass" [ngStyle]="inlineStyles">
+            args: [{ selector: "st-col", standalone: true, imports: [NgStyle], template: `
+    <div
+      [attr.data-st-component]="componentName"
+      [class]="hostClass"
+      [style.--st-col-sm]="spanBasisFor(sm)"
+      [style.--st-col-md]="spanBasisFor(md)"
+      [style.--st-col-lg]="spanBasisFor(lg)"
+      [ngStyle]="inlineStyles"
+    >
       <ng-content></ng-content>
     </div>
-  `,
-                }]
+  `, styles: [":host { display: contents; }"] }]
         }], propDecorators: { span: [{
                 type: NgInput
             }], offset: [{

@@ -29,6 +29,8 @@ export declare class Dropdown {
     readonly select: EventEmitter<string>;
     localOpen: boolean;
     localValue: string;
+    get isOpen(): boolean;
+    toggleOpen(): void;
     get resolvedPlaceholder(): string;
     get selectedLabel(): string;
     get iconClass(): string;
