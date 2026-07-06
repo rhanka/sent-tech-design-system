@@ -12676,6 +12676,15 @@
   font-weight: 700;
 }
 
+.st-appChrome__navLink--disabled,
+.st-appChrome__navLink--disabled:hover,
+.st-appChrome__navLink--disabled:focus-visible {
+  color: var(--st-semantic-text-disabled, var(--st-semantic-text-secondary));
+  cursor: not-allowed;
+  opacity: 0.56;
+  pointer-events: none;
+}
+
 .st-appHeader__control {
   align-items: center;
   background: var(--st-semantic-surface-default);
