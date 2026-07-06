@@ -388,6 +388,15 @@
     font-weight: 650;
   }
 
+  :global(.st-appChrome__navLink--disabled),
+  :global(.st-appChrome__navLink--disabled:hover),
+  :global(.st-appChrome__navLink--disabled:focus-visible) {
+    color: var(--st-semantic-text-disabled, var(--st-semantic-text-secondary));
+    cursor: not-allowed;
+    opacity: 0.56;
+    pointer-events: none;
+  }
+
   /* --- Contrôle utilitaire canonique (pill : thème / langue / icône) --- */
   :global(.st-appHeader__control) {
     align-items: center;
