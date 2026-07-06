@@ -15,6 +15,7 @@ export class AppChrome {
     brandLabel;
     nav = [];
     navLabel = "Primary";
+    userRoles = [];
     themes = [];
     theme;
     onThemeChange;
@@ -75,6 +76,25 @@ export class AppChrome {
     chevronClass(open) {
         return classNames("st-appChrome__chevron", open ? "is-rotated" : undefined);
     }
+    canShowNavItem(item) {
+        const allowed = item.roles ?? (item.role ? [item.role] : []);
+        return allowed.length === 0 || allowed.some((role) => this.userRoles.includes(role));
+    }
+    navRel(item) {
+        if (item.disabled)
+            return undefined;
+        return item.rel ?? (item.target === "_blank" ? "noreferrer" : undefined);
+    }
+    navLinkClass(item, base) {
+        return classNames(base, item.disabled ? "st-appChrome__navLink--disabled" : undefined);
+    }
+    handleNavClick(event, item, closeDrawer = false) {
+        if (item.disabled)
+            event.preventDefault();
+        item.onClick?.(event);
+        if (!item.disabled && closeDrawer)
+            this.onMobileMenuToggle?.();
+    }
     toggleTheme() {
         this.isThemeOpen = !this.isThemeOpen;
     }
@@ -121,7 +141,7 @@ export class AppChrome {
         }
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: AppChrome, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: AppChrome, isStandalone: true, selector: "st-app-chrome", inputs: { brandName: "brandName", productName: "productName", logoSrc: "logoSrc", logoAlt: "logoAlt", brandHref: "brandHref", brandLabel: "brandLabel", nav: "nav", navLabel: "navLabel", themes: "themes", theme: "theme", onThemeChange: "onThemeChange", themeLabel: "themeLabel", colorMode: "colorMode", onColorModeChange: "onColorModeChange", colorModeLabels: "colorModeLabels", locale: "locale", onLocaleChange: "onLocaleChange", localeLabel: "localeLabel", githubHref: "githubHref", githubLabel: "githubLabel", mobileMenuOpen: "mobileMenuOpen", onMobileMenuToggle: "onMobileMenuToggle", menuLabel: "menuLabel", classInput: ["class", "classInput"] }, host: { listeners: { "document:click": "onDocumentClick($event)", "document:keydown": "onDocumentKeydown($event)" } }, ngImport: i0, template: `
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: AppChrome, isStandalone: true, selector: "st-app-chrome", inputs: { brandName: "brandName", productName: "productName", logoSrc: "logoSrc", logoAlt: "logoAlt", brandHref: "brandHref", brandLabel: "brandLabel", nav: "nav", navLabel: "navLabel", userRoles: "userRoles", themes: "themes", theme: "theme", onThemeChange: "onThemeChange", themeLabel: "themeLabel", colorMode: "colorMode", onColorModeChange: "onColorModeChange", colorModeLabels: "colorModeLabels", locale: "locale", onLocaleChange: "onLocaleChange", localeLabel: "localeLabel", githubHref: "githubHref", githubLabel: "githubLabel", mobileMenuOpen: "mobileMenuOpen", onMobileMenuToggle: "onMobileMenuToggle", menuLabel: "menuLabel", classInput: ["class", "classInput"] }, host: { listeners: { "document:click": "onDocumentClick($event)", "document:keydown": "onDocumentKeydown($event)" } }, ngImport: i0, template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
       <header class="st-appHeader st-appChrome__header">
         <div class="st-appHeader__bar">
@@ -152,11 +172,18 @@ export class AppChrome {
           <!-- ── Nav principale ─────────────────────────────────────────── -->
           <nav class="st-appHeader__nav" aria-label="Primary">
             @for (item of nav; track item.href) {
-              <a
-                class="st-appChrome__navLink st-appHeader__navLink"
-                [href]="item.href"
-                [attr.aria-current]="item.active ? 'page' : null"
-              >{{ item.label }}</a>
+              @if (canShowNavItem(item)) {
+                <a
+                  [class]="navLinkClass(item, 'st-appChrome__navLink st-appHeader__navLink')"
+                  [attr.href]="item.disabled ? null : item.href"
+                  [attr.aria-current]="item.active ? 'page' : null"
+                  [attr.aria-disabled]="item.disabled ? 'true' : null"
+                  [attr.aria-label]="item.ariaLabel ?? null"
+                  [attr.target]="item.disabled ? null : (item.target ?? null)"
+                  [attr.rel]="navRel(item) ?? null"
+                  (click)="handleNavClick($event, item)"
+                >{{ item.label }}</a>
+              }
             }
           </nav>
 
@@ -312,12 +339,18 @@ export class AppChrome {
         <nav [id]="drawerId" class="st-appChrome__drawer" [attr.aria-label]="navLabel">
           <div class="st-appChrome__drawerSection">
             @for (item of nav; track item.href) {
-              <a
-                class="st-appChrome__drawerLink"
-                [href]="item.href"
-                [attr.aria-current]="item.active ? 'page' : null"
-                (click)="toggleMobileMenu()"
-              >{{ item.label }}</a>
+              @if (canShowNavItem(item)) {
+                <a
+                  [class]="navLinkClass(item, 'st-appChrome__drawerLink')"
+                  [attr.href]="item.disabled ? null : item.href"
+                  [attr.aria-current]="item.active ? 'page' : null"
+                  [attr.aria-disabled]="item.disabled ? 'true' : null"
+                  [attr.aria-label]="item.ariaLabel ?? null"
+                  [attr.target]="item.disabled ? null : (item.target ?? null)"
+                  [attr.rel]="navRel(item) ?? null"
+                  (click)="handleNavClick($event, item, true)"
+                >{{ item.label }}</a>
+              }
             }
           </div>
 
@@ -377,14 +410,11 @@ export class AppChrome {
         </nav>
       }
     </div>
-  `, isInline: true });
+  `, isInline: true, styles: [":host { display: contents; }"] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: AppChrome, decorators: [{
             type: Component,
-            args: [{
-                    selector: "st-app-chrome",
-                    standalone: true,
-                    template: `
+            args: [{ selector: "st-app-chrome", standalone: true, template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
       <header class="st-appHeader st-appChrome__header">
         <div class="st-appHeader__bar">
@@ -415,11 +445,18 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
           <!-- ── Nav principale ─────────────────────────────────────────── -->
           <nav class="st-appHeader__nav" aria-label="Primary">
             @for (item of nav; track item.href) {
-              <a
-                class="st-appChrome__navLink st-appHeader__navLink"
-                [href]="item.href"
-                [attr.aria-current]="item.active ? 'page' : null"
-              >{{ item.label }}</a>
+              @if (canShowNavItem(item)) {
+                <a
+                  [class]="navLinkClass(item, 'st-appChrome__navLink st-appHeader__navLink')"
+                  [attr.href]="item.disabled ? null : item.href"
+                  [attr.aria-current]="item.active ? 'page' : null"
+                  [attr.aria-disabled]="item.disabled ? 'true' : null"
+                  [attr.aria-label]="item.ariaLabel ?? null"
+                  [attr.target]="item.disabled ? null : (item.target ?? null)"
+                  [attr.rel]="navRel(item) ?? null"
+                  (click)="handleNavClick($event, item)"
+                >{{ item.label }}</a>
+              }
             }
           </nav>
 
@@ -575,12 +612,18 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
         <nav [id]="drawerId" class="st-appChrome__drawer" [attr.aria-label]="navLabel">
           <div class="st-appChrome__drawerSection">
             @for (item of nav; track item.href) {
-              <a
-                class="st-appChrome__drawerLink"
-                [href]="item.href"
-                [attr.aria-current]="item.active ? 'page' : null"
-                (click)="toggleMobileMenu()"
-              >{{ item.label }}</a>
+              @if (canShowNavItem(item)) {
+                <a
+                  [class]="navLinkClass(item, 'st-appChrome__drawerLink')"
+                  [attr.href]="item.disabled ? null : item.href"
+                  [attr.aria-current]="item.active ? 'page' : null"
+                  [attr.aria-disabled]="item.disabled ? 'true' : null"
+                  [attr.aria-label]="item.ariaLabel ?? null"
+                  [attr.target]="item.disabled ? null : (item.target ?? null)"
+                  [attr.rel]="navRel(item) ?? null"
+                  (click)="handleNavClick($event, item, true)"
+                >{{ item.label }}</a>
+              }
             }
           </div>
 
@@ -640,8 +683,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
         </nav>
       }
     </div>
-  `,
-                }]
+  `, styles: [":host { display: contents; }"] }]
         }], propDecorators: { brandName: [{
                 type: NgInput
             }], productName: [{
@@ -657,6 +699,8 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
             }], nav: [{
                 type: NgInput
             }], navLabel: [{
+                type: NgInput
+            }], userRoles: [{
                 type: NgInput
             }], themes: [{
                 type: NgInput

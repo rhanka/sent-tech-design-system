@@ -191,14 +191,11 @@ export class Rating {
         }
       </div>
     }
-  `, isInline: true });
+  `, isInline: true, styles: [":host { display: contents; }"] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Rating, decorators: [{
             type: Component,
-            args: [{
-                    selector: "st-rating",
-                    standalone: true,
-                    template: `
+            args: [{ selector: "st-rating", standalone: true, template: `
     @if (readonly) {
       <div
         [attr.data-st-component]="componentName"
@@ -287,8 +284,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
         }
       </div>
     }
-  `,
-                }]
+  `, styles: [":host { display: contents; }"] }]
         }], propDecorators: { value: [{
                 type: NgInput
             }], max: [{

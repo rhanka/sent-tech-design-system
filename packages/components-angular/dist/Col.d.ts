@@ -24,7 +24,9 @@ export declare class Col {
     lg?: ColSpan;
     as?: string;
     classInput?: string;
+    get isAuto(): boolean;
     get hostClass(): string;
+    spanBasisFor(span: ColSpan | undefined): string | null;
     get inlineStyles(): Record<string, string | undefined>;
     static ɵfac: i0.ɵɵFactoryDeclaration<Col, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<Col, "st-col", never, { "span": { "alias": "span"; "required": false; }; "offset": { "alias": "offset"; "required": false; }; "sm": { "alias": "sm"; "required": false; }; "md": { "alias": "md"; "required": false; }; "lg": { "alias": "lg"; "required": false; }; "as": { "alias": "as"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;

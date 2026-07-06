@@ -44,14 +44,11 @@ export class CopyButton {
       </span>
       <span class="st-copyButton__label">{{ copied ? (copiedLabel || 'Copié') : (label || 'Copier') }}</span>
     </button>
-  `, isInline: true });
+  `, isInline: true, styles: [":host { display: contents; }"] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: CopyButton, decorators: [{
             type: Component,
-            args: [{
-                    selector: "st-copy-button",
-                    standalone: true,
-                    template: `
+            args: [{ selector: "st-copy-button", standalone: true, template: `
     <button type="button" [attr.data-st-component]="componentName" [class]="hostClass"
       aria-live="polite"
       (click)="copy()">
@@ -69,8 +66,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
       </span>
       <span class="st-copyButton__label">{{ copied ? (copiedLabel || 'Copié') : (label || 'Copier') }}</span>
     </button>
-  `,
-                }]
+  `, styles: [":host { display: contents; }"] }]
         }], propDecorators: { text: [{
                 type: NgInput
             }], value: [{

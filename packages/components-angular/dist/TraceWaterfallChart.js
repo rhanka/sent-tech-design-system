@@ -280,14 +280,11 @@ export class TraceWaterfallChart {
         </div>
       }
     </div>
-  `, isInline: true });
+  `, isInline: true, styles: [":host { display: contents; }"] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: TraceWaterfallChart, decorators: [{
             type: Component,
-            args: [{
-                    selector: "st-trace-waterfall-chart",
-                    standalone: true,
-                    template: `
+            args: [{ selector: "st-trace-waterfall-chart", standalone: true, template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
       <div
         class="st-traceWaterfallChart__visual"
@@ -374,8 +371,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
         </div>
       }
     </div>
-  `,
-                }]
+  `, styles: [":host { display: contents; }"] }]
         }], propDecorators: { data: [{
                 type: NgInput
             }], label: [{

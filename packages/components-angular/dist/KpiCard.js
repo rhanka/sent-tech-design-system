@@ -156,10 +156,7 @@ export class KpiCard {
       role="group"
       [attr.aria-label]="ariaLabel"
     >
-      <p class="st-kpiCard__label">
-        @if (tone) { <span class="st-kpiCard__swatch" aria-hidden="true"></span> }
-        <span class="st-kpiCard__labelText">{{ label }}</span>
-      </p>
+      <p class="st-kpiCard__label">{{ label }}</p>
 
       <p class="st-kpiCard__value">
         @if (decoration && decorationIconNodes) {
@@ -262,10 +259,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
       role="group"
       [attr.aria-label]="ariaLabel"
     >
-      <p class="st-kpiCard__label">
-        @if (tone) { <span class="st-kpiCard__swatch" aria-hidden="true"></span> }
-        <span class="st-kpiCard__labelText">{{ label }}</span>
-      </p>
+      <p class="st-kpiCard__label">{{ label }}</p>
 
       <p class="st-kpiCard__value">
         @if (decoration && decorationIconNodes) {

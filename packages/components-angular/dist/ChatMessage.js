@@ -36,11 +36,7 @@ export class ChatMessage {
     >
       <div class="st-chatMessage__body">
         <div class="st-chatMessage__bubble">
-          <div class="st-chatMessage__content">
-            @if (content) {
-              {{ content }}
-            }
-          </div>
+          <div class="st-chatMessage__content"><ng-content>{{ content }}</ng-content></div>
           @if (normalizedStatus === 'processing') {
             <span class="st-chatMessage__pulse" aria-hidden="true"></span>
           }
@@ -70,11 +66,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
     >
       <div class="st-chatMessage__body">
         <div class="st-chatMessage__bubble">
-          <div class="st-chatMessage__content">
-            @if (content) {
-              {{ content }}
-            }
-          </div>
+          <div class="st-chatMessage__content"><ng-content>{{ content }}</ng-content></div>
           @if (normalizedStatus === 'processing') {
             <span class="st-chatMessage__pulse" aria-hidden="true"></span>
           }

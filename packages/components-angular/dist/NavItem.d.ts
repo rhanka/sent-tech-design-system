@@ -58,6 +58,7 @@ export declare class NavItem {
     divider?: boolean;
     classInput?: string;
     get hasCount(): boolean;
+    get rowClass(): string;
     /** Explicit accessible name for the trailing count bubble (« N title »): a bare
      * number is ambiguous for a screen reader (cf. Badge). */
     get countAriaLabel(): string;

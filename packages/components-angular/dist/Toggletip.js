@@ -58,14 +58,11 @@ export class Toggletip {
         </span>
       }
     </span>
-  `, isInline: true });
+  `, isInline: true, styles: [":host { display: contents; }"] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Toggletip, decorators: [{
             type: Component,
-            args: [{
-                    selector: "st-toggletip",
-                    standalone: true,
-                    template: `
+            args: [{ selector: "st-toggletip", standalone: true, template: `
     <span [attr.data-st-component]="componentName" [class]="hostClass">
       <ng-content></ng-content>
       <button
@@ -86,8 +83,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
         </span>
       }
     </span>
-  `,
-                }]
+  `, styles: [":host { display: contents; }"] }]
         }], propDecorators: { content: [{
                 type: NgInput
             }], label: [{
