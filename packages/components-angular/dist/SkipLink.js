@@ -14,19 +14,15 @@ export class SkipLink {
     <a [href]="href || '#main-content'" [attr.data-st-component]="componentName" [class]="hostClass">
       <ng-content>Aller au contenu principal</ng-content>
     </a>
-  `, isInline: true });
+  `, isInline: true, styles: [":host { display: contents; }"] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: SkipLink, decorators: [{
             type: Component,
-            args: [{
-                    selector: "st-skip-link",
-                    standalone: true,
-                    template: `
+            args: [{ selector: "st-skip-link", standalone: true, template: `
     <a [href]="href || '#main-content'" [attr.data-st-component]="componentName" [class]="hostClass">
       <ng-content>Aller au contenu principal</ng-content>
     </a>
-  `,
-                }]
+  `, styles: [":host { display: contents; }"] }]
         }], propDecorators: { href: [{
                 type: NgInput
             }], classInput: [{

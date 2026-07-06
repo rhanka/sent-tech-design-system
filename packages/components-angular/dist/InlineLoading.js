@@ -61,14 +61,11 @@ export class InlineLoading {
       </span>
       @if (label) { <span class="st-inlineLoading__label">{{ label }}</span> }
     </div>
-  `, isInline: true });
+  `, isInline: true, styles: [":host { display: contents; }"] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: InlineLoading, decorators: [{
             type: Component,
-            args: [{
-                    selector: "st-inline-loading",
-                    standalone: true,
-                    template: `
+            args: [{ selector: "st-inline-loading", standalone: true, template: `
     <div
       [attr.data-st-component]="componentName"
       [class]="hostClass"
@@ -99,8 +96,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
       </span>
       @if (label) { <span class="st-inlineLoading__label">{{ label }}</span> }
     </div>
-  `,
-                }]
+  `, styles: [":host { display: contents; }"] }]
         }], propDecorators: { label: [{
                 type: NgInput
             }], status: [{

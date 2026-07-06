@@ -55,14 +55,11 @@ export class Toggle {
         <span class="st-toggle__help">{{ helperText }}</span>
       }
     </label>
-  `, isInline: true });
+  `, isInline: true, styles: [":host { display: contents; }"] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Toggle, decorators: [{
             type: Component,
-            args: [{
-                    selector: "st-toggle",
-                    standalone: true,
-                    template: `
+            args: [{ selector: "st-toggle", standalone: true, template: `
     <label [attr.data-st-component]="componentName" [class]="hostClass">
       <span class="st-toggle__label">{{ label }}</span>
       <span class="st-toggle__row">
@@ -86,8 +83,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
         <span class="st-toggle__help">{{ helperText }}</span>
       }
     </label>
-  `,
-                }]
+  `, styles: [":host { display: contents; }"] }]
         }], propDecorators: { label: [{
                 type: NgInput
             }], labelOn: [{

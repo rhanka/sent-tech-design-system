@@ -16,19 +16,15 @@ export class Hidden {
     <div [attr.data-st-component]="componentName" [class]="hostClass">
       <ng-content></ng-content>
     </div>
-  `, isInline: true });
+  `, isInline: true, styles: [":host { display: contents; }"] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Hidden, decorators: [{
             type: Component,
-            args: [{
-                    selector: "st-hidden",
-                    standalone: true,
-                    template: `
+            args: [{ selector: "st-hidden", standalone: true, template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
       <ng-content></ng-content>
     </div>
-  `,
-                }]
+  `, styles: [":host { display: contents; }"] }]
         }], propDecorators: { below: [{
                 type: NgInput
             }], above: [{

@@ -28,14 +28,11 @@ export class Portal {
     >
       <ng-content></ng-content>
     </div>
-  `, isInline: true });
+  `, isInline: true, styles: [":host { display: contents; }"] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Portal, decorators: [{
             type: Component,
-            args: [{
-                    selector: "st-portal",
-                    standalone: true,
-                    template: `
+            args: [{ selector: "st-portal", standalone: true, template: `
     <div
       [attr.data-st-component]="componentName"
       [class]="hostClass"
@@ -43,8 +40,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
     >
       <ng-content></ng-content>
     </div>
-  `,
-                }]
+  `, styles: [":host { display: contents; }"] }]
         }], propDecorators: { target: [{
                 type: NgInput
             }], disabled: [{

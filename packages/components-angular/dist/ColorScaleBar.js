@@ -67,14 +67,11 @@ export class ColorScaleBar {
         }
       </div>
     </div>
-  `, isInline: true });
+  `, isInline: true, styles: [":host { display: contents; }"] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: ColorScaleBar, decorators: [{
             type: Component,
-            args: [{
-                    selector: "st-color-scale-bar",
-                    standalone: true,
-                    template: `
+            args: [{ selector: "st-color-scale-bar", standalone: true, template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
       @if (label) {
         <span class="st-colorScaleBar__label">{{ label }}</span>
@@ -96,8 +93,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
         }
       </div>
     </div>
-  `,
-                }]
+  `, styles: [":host { display: contents; }"] }]
         }], propDecorators: { colors: [{
                 type: NgInput
             }], orientation: [{

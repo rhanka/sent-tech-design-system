@@ -1,7 +1,6 @@
 import { Component, Input as NgInput } from "@angular/core";
 import { Badge } from "./Badge.js";
 import { ColorSwatch } from "./ColorSwatch.js";
-import { SelectableRow } from "./SelectableRow.js";
 import { StatusDot } from "./StatusDot.js";
 import { classNames } from "./classNames.js";
 import * as i0 from "@angular/core";
@@ -23,6 +22,9 @@ export class NavItem {
     classInput;
     get hasCount() {
         return this.count !== undefined && this.count !== null;
+    }
+    get rowClass() {
+        return classNames("st-selectableRow", (this.active || this.selected) && "st-selectableRow--selected", this.disabled && "st-selectableRow--disabled", this.caption && "st-selectableRow--hasCaption");
     }
     /** Explicit accessible name for the trailing count bubble (« N title »): a bare
      * number is ambiguous for a screen reader (cf. Badge). */
@@ -46,68 +48,82 @@ export class NavItem {
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: NavItem, deps: [], target: i0.ɵɵFactoryTarget.Component });
     static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "21.2.17", type: NavItem, isStandalone: true, selector: "st-nav-item", inputs: { value: "value", title: "title", caption: "caption", depth: "depth", swatch: "swatch", count: "count", status: "status", selected: "selected", active: "active", disabled: "disabled", href: "href", divider: "divider", classInput: ["class", "classInput"] }, ngImport: i0, template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass" [style]="depthStyle">
-      <st-selectable-row
-        [selected]="active || selected"
-        [value]="value"
-        [href]="href"
-        [disabled]="disabled"
-        [leading]="!!swatch"
-        [trailing]="hasCount"
-        [caption]="!!caption"
+      <div
+        [class]="rowClass"
+        [attr.role]="'button'"
+        [attr.aria-pressed]="(active || selected) ? 'true' : 'false'"
+        [attr.aria-disabled]="disabled ? 'true' : null"
+        [attr.data-value]="value"
+        [attr.tabindex]="disabled ? -1 : 0"
       >
         @if (swatch) {
-          @if (swatch.color) {
-            <st-color-swatch slot="leading" [color]="swatch.color" [shape]="swatch.shape ?? 'square'" [size]="14"></st-color-swatch>
-          } @else {
-            <st-status-dot slot="leading" [tone]="swatch.tone ?? 'neutral'" [size]="8"></st-status-dot>
-          }
+          <span class="st-selectableRow__leading">
+            @if (swatch.color) {
+              <st-color-swatch [color]="swatch.color" [shape]="swatch.shape ?? 'square'" [size]="14"></st-color-swatch>
+            } @else {
+              <st-status-dot [tone]="swatch.tone ?? 'neutral'" [size]="8"></st-status-dot>
+            }
+          </span>
         }
-        <span class="st-navItem__title">{{ title }}</span>
         @if (caption) {
-          <span slot="caption" class="st-navItem__caption">{{ caption }}</span>
+          <span class="st-selectableRow__content st-selectableRow__content--stacked">
+            <span class="st-selectableRow__label"><span class="st-navItem__title">{{ title }}</span></span>
+            <span class="st-selectableRow__caption"><span class="st-navItem__caption">{{ caption }}</span></span>
+          </span>
+        } @else {
+          <span class="st-selectableRow__content"><span class="st-navItem__title">{{ title }}</span></span>
         }
         @if (hasCount) {
-          <st-badge slot="trailing" shape="circle" size="sm" [tone]="status ?? 'neutral'" [attr.aria-label]="countAriaLabel">{{ count }}</st-badge>
+          <span class="st-selectableRow__trailing">
+            <st-badge shape="circle" size="sm" [tone]="status ?? 'neutral'" [attr.aria-label]="countAriaLabel">{{ count }}</st-badge>
+          </span>
         }
-      </st-selectable-row>
+      </div>
       @if (divider) {
         <hr class="st-navItem__divider" aria-hidden="true" />
       }
     </div>
-  `, isInline: true, dependencies: [{ kind: "component", type: Badge, selector: "st-badge", inputs: ["tone", "shape", "size", "label", "class"] }, { kind: "component", type: ColorSwatch, selector: "st-color-swatch", inputs: ["color", "size", "shape", "label", "class"] }, { kind: "component", type: StatusDot, selector: "st-status-dot", inputs: ["tone", "color", "size", "pulse", "label", "class"] }, { kind: "component", type: SelectableRow, selector: "st-selectable-row", inputs: ["selected", "onSelect", "disabled", "value", "href", "role", "accentBar", "caption", "leading", "trailing", "class"] }] });
+  `, isInline: true, dependencies: [{ kind: "component", type: Badge, selector: "st-badge", inputs: ["tone", "shape", "size", "label", "class"] }, { kind: "component", type: ColorSwatch, selector: "st-color-swatch", inputs: ["color", "size", "shape", "label", "class"] }, { kind: "component", type: StatusDot, selector: "st-status-dot", inputs: ["tone", "color", "size", "pulse", "label", "class"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: NavItem, decorators: [{
             type: Component,
             args: [{
                     selector: "st-nav-item",
                     standalone: true,
-                    imports: [Badge, ColorSwatch, StatusDot, SelectableRow],
+                    imports: [Badge, ColorSwatch, StatusDot],
                     template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass" [style]="depthStyle">
-      <st-selectable-row
-        [selected]="active || selected"
-        [value]="value"
-        [href]="href"
-        [disabled]="disabled"
-        [leading]="!!swatch"
-        [trailing]="hasCount"
-        [caption]="!!caption"
+      <div
+        [class]="rowClass"
+        [attr.role]="'button'"
+        [attr.aria-pressed]="(active || selected) ? 'true' : 'false'"
+        [attr.aria-disabled]="disabled ? 'true' : null"
+        [attr.data-value]="value"
+        [attr.tabindex]="disabled ? -1 : 0"
       >
         @if (swatch) {
-          @if (swatch.color) {
-            <st-color-swatch slot="leading" [color]="swatch.color" [shape]="swatch.shape ?? 'square'" [size]="14"></st-color-swatch>
-          } @else {
-            <st-status-dot slot="leading" [tone]="swatch.tone ?? 'neutral'" [size]="8"></st-status-dot>
-          }
+          <span class="st-selectableRow__leading">
+            @if (swatch.color) {
+              <st-color-swatch [color]="swatch.color" [shape]="swatch.shape ?? 'square'" [size]="14"></st-color-swatch>
+            } @else {
+              <st-status-dot [tone]="swatch.tone ?? 'neutral'" [size]="8"></st-status-dot>
+            }
+          </span>
         }
-        <span class="st-navItem__title">{{ title }}</span>
         @if (caption) {
-          <span slot="caption" class="st-navItem__caption">{{ caption }}</span>
+          <span class="st-selectableRow__content st-selectableRow__content--stacked">
+            <span class="st-selectableRow__label"><span class="st-navItem__title">{{ title }}</span></span>
+            <span class="st-selectableRow__caption"><span class="st-navItem__caption">{{ caption }}</span></span>
+          </span>
+        } @else {
+          <span class="st-selectableRow__content"><span class="st-navItem__title">{{ title }}</span></span>
         }
         @if (hasCount) {
-          <st-badge slot="trailing" shape="circle" size="sm" [tone]="status ?? 'neutral'" [attr.aria-label]="countAriaLabel">{{ count }}</st-badge>
+          <span class="st-selectableRow__trailing">
+            <st-badge shape="circle" size="sm" [tone]="status ?? 'neutral'" [attr.aria-label]="countAriaLabel">{{ count }}</st-badge>
+          </span>
         }
-      </st-selectable-row>
+      </div>
       @if (divider) {
         <hr class="st-navItem__divider" aria-hidden="true" />
       }

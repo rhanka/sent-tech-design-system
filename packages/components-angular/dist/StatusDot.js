@@ -41,14 +41,11 @@ export class StatusDot {
           [attr.aria-label]="accessibleLabel"></span>
       }
     </span>
-  `, isInline: true });
+  `, isInline: true, styles: [":host { display: contents; }"] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: StatusDot, decorators: [{
             type: Component,
-            args: [{
-                    selector: "st-status-dot",
-                    standalone: true,
-                    template: `
+            args: [{ selector: "st-status-dot", standalone: true, template: `
     <span [attr.data-st-component]="componentName" [class]="hostClass">
       @if (label) {
         <span [class]="dotClass"
@@ -66,8 +63,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
           [attr.aria-label]="accessibleLabel"></span>
       }
     </span>
-  `,
-                }]
+  `, styles: [":host { display: contents; }"] }]
         }], propDecorators: { tone: [{
                 type: NgInput
             }], color: [{

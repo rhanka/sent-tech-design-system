@@ -109,14 +109,11 @@ export class Autosave {
         <button type="button" class="st-autosave__retry" (click)="triggerRetry()">{{ resolvedRetryLabel }}</button>
       }
     </div>
-  `, isInline: true });
+  `, isInline: true, styles: [":host { display: contents; }"] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Autosave, decorators: [{
             type: Component,
-            args: [{
-                    selector: "st-autosave",
-                    standalone: true,
-                    template: `
+            args: [{ selector: "st-autosave", standalone: true, template: `
     <div
       [attr.data-st-component]="componentName"
       [class]="hostClass"
@@ -151,8 +148,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
         <button type="button" class="st-autosave__retry" (click)="triggerRetry()">{{ resolvedRetryLabel }}</button>
       }
     </div>
-  `,
-                }]
+  `, styles: [":host { display: contents; }"] }]
         }], propDecorators: { status: [{
                 type: NgInput
             }], lastSaved: [{

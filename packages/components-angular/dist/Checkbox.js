@@ -62,14 +62,11 @@ export class Checkbox {
         }
       </span>
     </label>
-  `, isInline: true });
+  `, isInline: true, styles: [":host { display: contents; }"] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Checkbox, decorators: [{
             type: Component,
-            args: [{
-                    selector: "st-checkbox",
-                    standalone: true,
-                    template: `
+            args: [{ selector: "st-checkbox", standalone: true, template: `
     <label [attr.data-st-component]="componentName" [class]="hostClass">
       <input
         class="st-choice__input"
@@ -92,8 +89,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
         }
       </span>
     </label>
-  `,
-                }]
+  `, styles: [":host { display: contents; }"] }]
         }], propDecorators: { label: [{
                 type: NgInput
             }], helperText: [{

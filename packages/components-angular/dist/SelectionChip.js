@@ -64,14 +64,11 @@ export class SelectionChip {
         </button>
       }
     </span>
-  `, isInline: true });
+  `, isInline: true, styles: [":host { display: contents; }"] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: SelectionChip, decorators: [{
             type: Component,
-            args: [{
-                    selector: "st-selection-chip",
-                    standalone: true,
-                    template: `
+            args: [{ selector: "st-selection-chip", standalone: true, template: `
     <span
       [attr.data-st-component]="componentName"
       [class]="hostClass"
@@ -107,8 +104,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImpo
         </button>
       }
     </span>
-  `,
-                }]
+  `, styles: [":host { display: contents; }"] }]
         }], propDecorators: { label: [{
                 type: NgInput
             }], count: [{

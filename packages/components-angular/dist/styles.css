@@ -2349,12 +2349,8 @@
     border-radius: var(--st-component-dropdown-radius, 0.375rem);
     box-shadow: var(--st-component-dropdown-shadow, 0 8px 24px rgb(15 23 42 / 0.14));
     display: grid;
-    left: 0;
-    margin-top: var(--st-spacing-1, 0.25rem);
-    min-width: 100%;
     overflow: hidden;
-    position: absolute;
-    top: 100%;
+    position: fixed;
     z-index: var(--st-component-popover-zIndex, 80);
   }
 
@@ -3297,7 +3293,8 @@
     --st-highlight-accent: var(--st-semantic-action-primary);
     background: var(--st-semantic-surface-subtle);
     border-left: 4px solid var(--st-highlight-accent);
-    border-radius: var(--st-radius-md, 0.375rem);
+    /* Accent latéral fort = coins carrés. Ne pas arrondir une carte/exergue à liseré. */
+    border-radius: 0;
     color: var(--st-semantic-text-primary);
     padding: var(--st-spacing-4, 1rem);
   }
@@ -6337,7 +6334,7 @@
   .st-streamingMessage__reasoning {
     background: var(--st-component-chatMessage-reasoningBackground, var(--st-semantic-surface-subtle));
     border-left: 2px solid var(--st-semantic-border-subtle);
-    border-radius: var(--st-component-control-radius, 0.375rem);
+    border-radius: 0;
     margin: 0 0 0.5rem;
     padding: 0.4rem 0.6rem;
   }
@@ -9022,11 +9019,21 @@
   width: 100%;
 }
 
-/* Opt-in accent bar: reserve the 2px gutter only when enabled so text never
-   shifts on selection. */
+/* Opt-in accent bar: reserve a 2px gutter without attaching a border to the
+   rounded host. The selected accent is painted by a square pseudo-element so no
+   one-sided stroke follows the row radius. */
 .st-selectableRow--accentBar {
   padding-left: calc(0.75rem - 2px);
-  border-left: 2px solid transparent;
+}
+
+.st-selectableRow--accentBar::before {
+  background: transparent;
+  block-size: 100%;
+  content: "";
+  inline-size: 2px;
+  inset-block: 0;
+  inset-inline-start: 0;
+  position: absolute;
 }
 
 .st-selectableRow:hover:not(.st-selectableRow--disabled):not(.st-selectableRow--selected) {
@@ -9059,8 +9066,8 @@
 }
 
 /* The left accent bar paints only when opt-in AND selected. */
-.st-selectableRow--accentBar.st-selectableRow--selected {
-  border-left-color: var(
+.st-selectableRow--accentBar.st-selectableRow--selected::before {
+  background: var(
     --st-component-selectableRow-selectedAccent,
     var(--st-semantic-action-primary, #2563eb)
   );
@@ -9176,12 +9183,9 @@
 }
 
 .st-kpiCard__label {
-  align-items: center;
   color: var(--st-semantic-text-secondary);
-  display: flex;
   font-size: 0.8125rem;
   font-weight: 500;
-  gap: var(--st-spacing-1, 0.25rem);
   line-height: 1.25;
   margin: 0;
 }
@@ -9268,40 +9272,37 @@
   color: var(--st-semantic-text-secondary);
 }
 
-/* Accent catégoriel discret : pastille inline près de l'étiquette
-   (remplace l'ancien liseré gauche, anti-pattern sur conteneur arrondi). */
-.st-kpiCard__swatch {
-  background: var(--st-semantic-border-subtle);
-  border-radius: 50%;
-  display: inline-block;
-  flex: 0 0 auto;
-  height: 0.5rem;
-  width: 0.5rem;
+/* Accent catégoriel : liseré conservé, mais carte carrée pour éviter
+   le liseré arrondi sur conteneur arrondi. */
+.st-kpiCard--toned {
+  border-inline-start-width: var(--st-spacing-1, 0.25rem);
+  border-radius: 0;
 }
 
-.st-kpiCard--category1 .st-kpiCard__swatch {
-  background: var(--st-semantic-data-category1);
+/* Liserés catégoriels — alignés sur la palette data des autres composants. */
+.st-kpiCard--category1 {
+  border-inline-start-color: var(--st-semantic-data-category1);
 }
-.st-kpiCard--category2 .st-kpiCard__swatch {
-  background: var(--st-semantic-data-category2);
+.st-kpiCard--category2 {
+  border-inline-start-color: var(--st-semantic-data-category2);
 }
-.st-kpiCard--category3 .st-kpiCard__swatch {
-  background: var(--st-semantic-data-category3);
+.st-kpiCard--category3 {
+  border-inline-start-color: var(--st-semantic-data-category3);
 }
-.st-kpiCard--category4 .st-kpiCard__swatch {
-  background: var(--st-semantic-data-category4);
+.st-kpiCard--category4 {
+  border-inline-start-color: var(--st-semantic-data-category4);
 }
-.st-kpiCard--category5 .st-kpiCard__swatch {
-  background: var(--st-semantic-data-category5);
+.st-kpiCard--category5 {
+  border-inline-start-color: var(--st-semantic-data-category5);
 }
-.st-kpiCard--category6 .st-kpiCard__swatch {
-  background: var(--st-semantic-data-category6);
+.st-kpiCard--category6 {
+  border-inline-start-color: var(--st-semantic-data-category6);
 }
-.st-kpiCard--category7 .st-kpiCard__swatch {
-  background: var(--st-semantic-data-category7);
+.st-kpiCard--category7 {
+  border-inline-start-color: var(--st-semantic-data-category7);
 }
-.st-kpiCard--category8 .st-kpiCard__swatch {
-  background: var(--st-semantic-data-category8);
+.st-kpiCard--category8 {
+  border-inline-start-color: var(--st-semantic-data-category8);
 }
 
 /* ---------------------------------------------------------------------------
@@ -12673,6 +12674,15 @@
   border-bottom-color: var(--st-semantic-border-interactive);
   color: var(--st-semantic-text-primary);
   font-weight: 700;
+}
+
+.st-appChrome__navLink--disabled,
+.st-appChrome__navLink--disabled:hover,
+.st-appChrome__navLink--disabled:focus-visible {
+  color: var(--st-semantic-text-disabled, var(--st-semantic-text-secondary));
+  cursor: not-allowed;
+  opacity: 0.56;
+  pointer-events: none;
 }
 
 .st-appHeader__control {
@@ -16416,7 +16426,8 @@
   align-items: flex-start;
   background: var(--st-semantic-surface-subtle);
   border-left: 3px solid var(--st-semantic-border-strong);
-  border-radius: var(--st-radius-sm, 0.25rem);
+  /* Accent latéral fort = coins carrés. Ne pas arrondir une carte/exergue à liseré. */
+  border-radius: 0;
   display: flex;
   gap: var(--st-spacing-2, 0.5rem);
   padding: var(--st-spacing-2, 0.5rem) var(--st-spacing-3, 0.75rem);
@@ -17482,51 +17493,79 @@
 
 .st-appShell--workspace {
   display: grid;
-  grid-template-areas:
-    "top top top top"
-    "rail nav main context"
-    "bottom bottom bottom bottom";
-  grid-template-columns: auto minmax(0, var(--st-component-navShell-width, 18rem)) minmax(0, 1fr) minmax(0, var(--st-component-contextPanel-width, 20rem));
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto minmax(0, 1fr) auto;
   position: relative;
 }
 
-.st-appShell--workspace:has(.st-appShell__utilityPanel)[data-utility-mode="reserve"]:not([data-utility-side]),
-.st-appShell--workspace:has(.st-appShell__utilityPanel)[data-utility-mode="reserve"][data-utility-side="right"] {
-  grid-template-areas:
-    "top top top top top"
-    "rail nav main context utility"
-    "bottom bottom bottom bottom bottom";
-  grid-template-columns: auto minmax(0, var(--st-component-navShell-width, 18rem)) minmax(0, 1fr) minmax(0, var(--st-component-contextPanel-width, 20rem)) minmax(0, var(--st-component-utilityPanel-width, 24rem));
-  grid-template-rows: auto minmax(0, 1fr) auto;
+/* The body owns the horizontal layout: a flex row whose panels collapse when
+   they aren't rendered, so empty rail/nav/context/utility columns are never
+   reserved (a dashboard providing only `main` gets the full width). The outer
+   element only stacks top / body / bottom. */
+.st-appShell__body {
+  grid-row: 2;
+  display: flex;
+  flex-flow: row nowrap;
+  min-block-size: 0;
+  min-inline-size: 0;
+  position: relative;
 }
 
-.st-appShell--workspace:has(.st-appShell__utilityPanel)[data-utility-mode="reserve"][data-utility-side="left"] {
-  grid-template-areas:
-    "top top top top top"
-    "rail nav utility main context"
-    "bottom bottom bottom bottom bottom";
-  grid-template-columns: auto minmax(0, var(--st-component-navShell-width, 18rem)) minmax(0, var(--st-component-utilityPanel-width, 24rem)) minmax(0, 1fr) minmax(0, var(--st-component-contextPanel-width, 20rem));
-  grid-template-rows: auto minmax(0, 1fr) auto;
+.st-appShell[data-utility-side="bottom"] .st-appShell__body {
+  flex-wrap: wrap;
 }
 
-.st-appShell--workspace:has(.st-appShell__utilityPanel)[data-utility-mode="reserve"][data-utility-side="bottom"] {
-  grid-template-areas:
-    "top top top top"
-    "rail nav main context"
-    "rail nav utility utility"
-    "bottom bottom bottom bottom";
-  grid-template-columns: auto minmax(0, var(--st-component-navShell-width, 18rem)) minmax(0, 1fr) minmax(0, var(--st-component-contextPanel-width, 20rem));
-  grid-template-rows: auto minmax(0, 1fr) auto auto;
+.st-appShell__topChrome { grid-row: 1; }
+.st-appShell__bottomPanel { grid-row: 3; }
+
+.st-appShell__primaryRail {
+  order: 10;
+  flex: 0 0 auto;
+  min-block-size: 0;
+  overflow: hidden;
 }
 
-.st-appShell__topChrome { grid-area: top; }
-.st-appShell__primaryRail { grid-area: rail; min-block-size: 0; }
-.st-appShell__navigationPanel { grid-area: nav; min-block-size: 0; overflow: hidden; }
-.st-appShell__main { grid-area: main; min-block-size: 0; min-inline-size: 0; overflow: auto; }
-.st-appShell__contextPanel { grid-area: context; min-block-size: 0; overflow: hidden; }
-.st-appShell__utilityPanel { grid-area: utility; inline-size: 100%; min-block-size: 0; overflow: hidden; }
-.st-appShell__bottomPanel { grid-area: bottom; }
+.st-appShell__navigationPanel {
+  order: 20;
+  flex: 0 1 auto;
+  inline-size: var(--st-component-navShell-width, 18rem);
+  min-block-size: 0;
+  overflow: hidden;
+}
+
+.st-appShell__main {
+  order: 30;
+  flex: 1 1 0;
+  min-block-size: 0;
+  min-inline-size: 0;
+  overflow: auto;
+}
+
+.st-appShell__contextPanel {
+  order: 40;
+  flex: 0 1 auto;
+  inline-size: var(--st-component-contextPanel-width, 20rem);
+  min-block-size: 0;
+  overflow: hidden;
+}
+
+.st-appShell__utilityPanel {
+  order: 50;
+  flex: 0 1 auto;
+  inline-size: var(--st-component-utilityPanel-width, 24rem);
+  min-block-size: 0;
+  overflow: hidden;
+}
+
+.st-appShell[data-utility-side="left"] .st-appShell__utilityPanel {
+  order: 25;
+}
+
+.st-appShell[data-utility-mode="reserve"][data-utility-side="bottom"] .st-appShell__utilityPanel {
+  flex-basis: 100%;
+  inline-size: auto;
+  order: 60;
+}
 
 .st-appShell[data-utility-mode="overlay"] .st-appShell__utilityPanel,
 .st-appShell[data-utility-mode="floating"] .st-appShell__utilityPanel {
@@ -17774,17 +17813,15 @@
 }
 
 @media (max-width: 900px) {
-  .st-appShell--workspace {
-    grid-template-areas:
-      "top"
-      "rail"
-      "nav"
-      "main"
-      "context"
-      "utility"
-      "bottom";
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto auto auto minmax(0, 1fr) auto auto auto;
+  .st-appShell__body {
+    flex-flow: column nowrap;
+  }
+
+  .st-appShell__primaryRail,
+  .st-appShell__navigationPanel,
+  .st-appShell__contextPanel,
+  .st-appShell__utilityPanel {
+    inline-size: auto;
   }
 
   .st-navRail {

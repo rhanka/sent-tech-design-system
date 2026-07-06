@@ -15,36 +15,45 @@ export class Row {
     get hostClass() {
         return ["st-row", this.classInput].filter(Boolean).join(" ");
     }
+    // Gouttière exposée en variable CSS pour que les `Col` enfants soustraient le
+    // gutter de leur flex-basis (parité Vue : `calc(% - var(--st-row-gutter))`).
+    get gutterToken() {
+        return spacingToken(this.gutter) ?? "0";
+    }
     get inlineStyles() {
-        const gutter = this.gutter ? `var(--st-spacing-${this.gutter}, ${this.gutter * 0.25}rem)` : undefined;
         return {
             display: 'flex',
             flexDirection: 'row',
             flexWrap: this.wrap !== false ? 'wrap' : 'nowrap',
-            gap: gutter,
+            gap: this.gutterToken,
             alignItems: this.align ? alignValue(this.align) : undefined,
             justifyContent: this.justify ? justifyValue(this.justify) : undefined,
         };
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Row, deps: [], target: i0.ɵɵFactoryTarget.Component });
     static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "21.2.17", type: Row, isStandalone: true, selector: "st-row", inputs: { gutter: "gutter", align: "align", justify: "justify", wrap: "wrap", as: "as", classInput: ["class", "classInput"] }, ngImport: i0, template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass" [ngStyle]="inlineStyles">
+    <div
+      [attr.data-st-component]="componentName"
+      [class]="hostClass"
+      [style.--st-row-gutter]="gutterToken"
+      [ngStyle]="inlineStyles"
+    >
       <ng-content></ng-content>
     </div>
-  `, isInline: true, dependencies: [{ kind: "directive", type: NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }] });
+  `, isInline: true, styles: [":host { display: contents; }"], dependencies: [{ kind: "directive", type: NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "21.2.17", ngImport: i0, type: Row, decorators: [{
             type: Component,
-            args: [{
-                    selector: "st-row",
-                    standalone: true,
-                    imports: [NgStyle],
-                    template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass" [ngStyle]="inlineStyles">
+            args: [{ selector: "st-row", standalone: true, imports: [NgStyle], template: `
+    <div
+      [attr.data-st-component]="componentName"
+      [class]="hostClass"
+      [style.--st-row-gutter]="gutterToken"
+      [ngStyle]="inlineStyles"
+    >
       <ng-content></ng-content>
     </div>
-  `,
-                }]
+  `, styles: [":host { display: contents; }"] }]
         }], propDecorators: { gutter: [{
                 type: NgInput
             }], align: [{

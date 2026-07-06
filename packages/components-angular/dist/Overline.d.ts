@@ -15,6 +15,6 @@ export declare class Overline {
     get resolvedTag(): OverlineAs;
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<Overline, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<Overline, "st-overline", never, { "as": { "alias": "as"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*", "*", "*", "*"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<Overline, "st-overline", never, { "as": { "alias": "as"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["*"], true, never>;
 }
 //# sourceMappingURL=Overline.d.ts.map

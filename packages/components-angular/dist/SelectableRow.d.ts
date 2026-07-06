@@ -83,11 +83,12 @@ export declare class SelectableRow {
     trailing?: boolean;
     classInput?: string;
     get effectiveRole(): string | null;
+    get contentClass(): string;
     get selectedAttr(): "true" | "false";
     get tabindex(): number;
     handleClick(event: MouseEvent): void;
     get hostClass(): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<SelectableRow, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<SelectableRow, "st-selectable-row", never, { "selected": { "alias": "selected"; "required": false; }; "onSelect": { "alias": "onSelect"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "value": { "alias": "value"; "required": false; }; "href": { "alias": "href"; "required": false; }; "role": { "alias": "role"; "required": false; }; "accentBar": { "alias": "accentBar"; "required": false; }; "caption": { "alias": "caption"; "required": false; }; "leading": { "alias": "leading"; "required": false; }; "trailing": { "alias": "trailing"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["[slot='leading']", "*", "[slot='caption']", "*", "[slot='trailing']", "[slot='leading']", "*", "[slot='caption']", "*", "[slot='trailing']"], true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<SelectableRow, "st-selectable-row", never, { "selected": { "alias": "selected"; "required": false; }; "onSelect": { "alias": "onSelect"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "value": { "alias": "value"; "required": false; }; "href": { "alias": "href"; "required": false; }; "role": { "alias": "role"; "required": false; }; "accentBar": { "alias": "accentBar"; "required": false; }; "caption": { "alias": "caption"; "required": false; }; "leading": { "alias": "leading"; "required": false; }; "trailing": { "alias": "trailing"; "required": false; }; "classInput": { "alias": "class"; "required": false; }; }, {}, never, ["[slot='leading']", "*", "[slot='caption']", "[slot='trailing']"], true, never>;
 }
 //# sourceMappingURL=SelectableRow.d.ts.map
