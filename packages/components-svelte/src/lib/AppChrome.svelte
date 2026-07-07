@@ -48,6 +48,8 @@
     nav?: AppChromeNavItem[];
     /** aria-label de la nav principale. */
     navLabel?: string;
+    /** Alignement de la nav desktop, forwardé à AppHeader. */
+    navAlign?: "start" | "center";
     /** Roles de l'utilisateur courant pour filtrer les nav items gatés par rôle. */
     userRoles?: string[];
 
@@ -130,6 +132,7 @@
     brandLabel,
     nav = [],
     navLabel = "Primary",
+    navAlign = "start",
     userRoles = [],
     themes = [],
     theme,
@@ -387,6 +390,7 @@
     brandLabel={brandLabel}
     logo={brand}
     nav={navContent}
+    navAlign={navAlign}
     actions={actions}
   />
 

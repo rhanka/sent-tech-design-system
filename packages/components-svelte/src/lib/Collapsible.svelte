@@ -172,7 +172,7 @@
     width: 1.25rem;
   }
 
-  .st-collapsible--open .st-collapsible__icon {
+  .st-collapsible--open > .st-collapsible__trigger .st-collapsible__icon {
     transform: rotate(180deg);
   }
 
