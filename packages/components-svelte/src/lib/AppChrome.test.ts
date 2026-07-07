@@ -52,6 +52,12 @@ describe("AppChrome — navigation", () => {
     expect(links[0].classList.contains("st-appHeader__navLink")).toBe(true);
   });
 
+  it("forwards navAlign=center to AppHeader", () => {
+    const { container } = render(AppChrome, { props: { nav, navAlign: "center" } });
+    expect(container.querySelector(".st-appHeader__bar")?.classList.contains("st-appHeader__bar--navCenter")).toBe(true);
+    expect(container.querySelector(".st-appHeader__nav")?.classList.contains("st-appHeader__nav--center")).toBe(true);
+  });
+
   it("filters role-gated items and renders disabled nav without href", () => {
     const { container } = render(AppChrome, {
       props: { nav: [...nav, { label: "Admin", href: "/admin", role: "admin" }, { label: "Soon", href: "/soon", disabled: true }], userRoles: ["member"] },
