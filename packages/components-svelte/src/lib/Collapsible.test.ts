@@ -1,3 +1,6 @@
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
 import { fireEvent, render } from "@testing-library/svelte";
 import { createRawSnippet } from "svelte";
 import { describe, expect, it } from "vitest";
@@ -76,4 +79,11 @@ describe("Collapsible — a11y unchanged", () => {
     await fireEvent.click(trigger);
     expect(trigger.getAttribute("aria-expanded")).toBe("true");
   });
+});
+
+
+it("scopes open chevron rotation to the direct trigger icon", () => {
+  const source = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "Collapsible.svelte"), "utf8");
+  expect(source).toContain(".st-collapsible--open > .st-collapsible__trigger .st-collapsible__icon");
+  expect(source).not.toContain(".st-collapsible--open .st-collapsible__icon {\n    transform");
 });
