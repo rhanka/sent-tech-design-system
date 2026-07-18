@@ -13,9 +13,12 @@ import {
   Eye,
   EyeOff,
   File as FileIcon,
+  Layers,
   LoaderCircle,
   Search as SearchIcon,
   Send,
+  Settings,
+  Target,
   Upload,
   X,
 } from "lucide-react";
@@ -3327,6 +3330,54 @@ export function Highlight({ tone = "neutral", title, children, className, ...res
       {title ? <h3 className="st-highlight__title">{title}</h3> : null}
       <div className="st-highlight__body">{children}</div>
     </aside>
+  );
+}
+
+// ── Icon — canonical DS icon set ──────────────────────────────────────────
+// The DS prescribes ONE icon set, addressed by DS-owned names via <Icon>. The
+// visual source is lucide (stroke-24, the de-facto internal standard); consumers
+// address glyphs by these names, never by lucide component names, so the source
+// can evolve without breaking the public API. Names are ADDITIVE.
+export const ICONS = {
+  settings: Settings,
+  eye: Eye,
+  "eye-off": EyeOff,
+  layers: Layers,
+  target: Target,
+  close: X,
+  "chevron-down": ChevronDown,
+  "chevron-right": ChevronRight,
+} as const;
+
+export type IconName = keyof typeof ICONS;
+
+export const ICON_NAMES = Object.keys(ICONS) as IconName[];
+
+export type IconProps = Omit<React.SVGAttributes<SVGSVGElement>, "name"> & {
+  /** Canonical DS icon name. */
+  name: IconName;
+  /** Square size in px. Default 18 — the DS-standard inline glyph size. */
+  size?: number;
+  /** Stroke width. Default 2.25 — matches the DS's existing lucide usage. */
+  strokeWidth?: number;
+  /** Accessible name; when omitted the icon is decorative (`aria-hidden`). */
+  title?: string;
+};
+
+export function Icon({ name, size = 18, strokeWidth = 2.25, title, className, ...rest }: IconProps) {
+  const Glyph = ICONS[name];
+  if (!Glyph) return null;
+  return (
+    <Glyph
+      size={size}
+      strokeWidth={strokeWidth}
+      className={classNames("st-icon", className)}
+      role={title ? "img" : undefined}
+      aria-label={title}
+      aria-hidden={title ? undefined : "true"}
+      focusable="false"
+      {...rest}
+    />
   );
 }
 
