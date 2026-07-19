@@ -161,8 +161,10 @@ export const TimePicker = defineComponent({
       const pick = (slot: string) => {
         if (props.value === undefined) internal.value = slot;
         emit("update:modelValue", slot);
+        // `emit("change")` already routes to an `onChange` handler prop (Vue maps
+        // emitted events to their `onX` listeners), so calling `props.onChange`
+        // here as well would fire the callback twice. Emit only.
         emit("change", slot);
-        props.onChange?.(slot);
         closeList(true);
       };
 

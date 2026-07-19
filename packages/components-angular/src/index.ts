@@ -5,7 +5,7 @@ export type { AppHeaderProps } from "./AppHeader.js";
 export { AppChrome } from "./AppChrome.js";
 export type { AppChromeNavItem, AppChromeThemeOption, AppChromeColorMode, AppChromeLocale, AppChromeProps } from "./AppChrome.js";
 export { AppShell } from "./AppShell.js";
-export type { AppShellProps, AppShellUtilityMode, AppShellUtilitySide, AppShellVariant } from "./AppShell.js";
+export type { AppShellPanelCollapse, AppShellProps, AppShellUtilityMode, AppShellUtilitySide, AppShellVariant } from "./AppShell.js";
 export { NavShell } from "./NavShell.js";
 export type { NavShellProps, NavShellSide, NavShellVariant } from "./NavShell.js";
 export { NavRail } from "./NavRail.js";
@@ -384,6 +384,29 @@ export { ThemeProvider } from "./ThemeProvider.js";
 export type { ThemeProviderProps } from "./ThemeProvider.js";
 export { Textarea } from "./Textarea.js";
 export type { TextareaProps } from "./Textarea.js";
+export { TimeRangePicker } from "./TimeRangePicker.js";
+export type {
+  TimeRangePickerProps,
+  TimeRangePickerAlign,
+  TimeRangePickerPlacement,
+  TimeRangePickerSize,
+} from "./TimeRangePicker.js";
+export {
+  DEFAULT_TIME_RANGE_PRESETS,
+  parsePresetMs,
+  resolveRelative,
+  splitAbsolute,
+  composeAbsolute,
+  formatPresetLabel,
+  formatTriggerLabel,
+} from "./timeRange.js";
+export type {
+  TimeRange,
+  TimeRangeMode,
+  TimeRangePreset,
+  AbsoluteDraft,
+  AbsoluteSplit,
+} from "./timeRange.js";
 export { TimePicker } from "./TimePicker.js";
 export type { TimePickerFormat, TimePickerSize, TimePickerProps } from "./TimePicker.js";
 export { Tile } from "./Tile.js";

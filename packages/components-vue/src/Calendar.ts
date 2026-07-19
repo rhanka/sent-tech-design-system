@@ -339,8 +339,10 @@ export const Calendar = defineComponent({
     const commit = (next: CalendarValue) => {
       if (props.value === undefined) internal.value = next;
       emit("update:modelValue", next);
+      // `emit("change")` already routes to an `onChange` handler prop (Vue maps
+      // emitted events to their `onX` listeners), so calling `props.onChange`
+      // here as well would fire the callback twice. Emit only.
       emit("change", next);
-      props.onChange?.(next);
     };
 
     return () => {
