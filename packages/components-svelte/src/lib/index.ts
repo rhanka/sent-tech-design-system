@@ -136,6 +136,23 @@ export { default as HistogramChart } from "./HistogramChart.svelte";
 export { default as DisplaySettings } from "./DisplaySettings.svelte";
 export { default as MediaContent } from "./MediaContent.svelte";
 export { default as Transcription } from "./Transcription.svelte";
+export { default as TimeRangePicker } from "./TimeRangePicker.svelte";
+export {
+  DEFAULT_TIME_RANGE_PRESETS,
+  parsePresetMs,
+  resolveRelative,
+  splitAbsolute,
+  composeAbsolute,
+  formatPresetLabel,
+  formatTriggerLabel,
+} from "./timeRange.js";
+export type {
+  TimeRange,
+  TimeRangeMode,
+  TimeRangePreset,
+  AbsoluteDraft,
+  AbsoluteSplit,
+} from "./timeRange.js";
 export { default as Icon } from "./Icon.svelte";
 export { ICONS, ICON_NAMES } from "./icons.js";
 export type { IconName } from "./icons.js";
@@ -227,7 +244,7 @@ export { default as ThemeProvider } from "./ThemeProvider.svelte";
 // Ex-paquet @sentropic/app-shell, replié ici — c'est un composant comme un autre ;
 // seul son contrat `SiteConfig` (data) est agnostique et réexporté ci-dessous.
 export { default as AppShell } from "./AppShell.svelte";
-export type { AppShellProps, AppShellUtilityMode, AppShellUtilitySide, AppShellVariant } from "./AppShell.svelte";
+export type { AppShellPanelCollapse, AppShellProps, AppShellUtilityMode, AppShellUtilitySide, AppShellVariant } from "./AppShell.svelte";
 export { default as IdentityButton } from "./IdentityButton.svelte";
 export type {
   SiteConfig,
