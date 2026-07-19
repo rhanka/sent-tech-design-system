@@ -5,6 +5,7 @@
   export type AppShellVariant = "site" | "workspace";
   export type AppShellUtilityMode = "reserve" | "overlay" | "floating";
   export type AppShellUtilitySide = "left" | "right" | "bottom";
+  export type AppShellPanelCollapse = "stack" | "accordion";
 
   export type AppShellProps = {
     variant?: AppShellVariant;
@@ -23,6 +24,25 @@
     utilityLabel?: string;
     utilityMode?: AppShellUtilityMode;
     utilitySide?: AppShellUtilitySide;
+    /**
+     * Below the 48rem breakpoint, `"stack"` (default) keeps today's behaviour —
+     * panels stack full-width in document order, always expanded. `"accordion"`
+     * degrades each present panel to a keyboard-accessible disclosure (collapsed
+     * by default) instead of squeezing the main content. Desktop (>48rem)
+     * rendering is IDENTICAL in both modes — side panels stay side-by-side
+     * columns. Panel content is mounted once regardless of mode/breakpoint;
+     * collapsing hides/sizes the region rather than destroying it, so stateful
+     * widgets (maps, live panels…) mounted in a panel never remount.
+     */
+    panelCollapse?: AppShellPanelCollapse;
+    /** Disclosure label for `primaryRail` when `panelCollapse="accordion"`. */
+    primaryRailLabel?: string;
+    /** Disclosure label for `navigationPanel` when `panelCollapse="accordion"`. Defaults to `navigationLabel`. */
+    navigationPanelLabel?: string;
+    /** Disclosure label for `contextPanel` when `panelCollapse="accordion"`. Defaults to `contextLabel`. */
+    contextPanelLabel?: string;
+    /** Disclosure label for `utilityPanel` when `panelCollapse="accordion"`. Defaults to `utilityLabel`. */
+    utilityPanelLabel?: string;
     class?: string;
   };
 </script>
@@ -58,8 +78,28 @@
     utilityLabel = "Utility panel",
     utilityMode = "reserve",
     utilitySide = "right",
+    panelCollapse = "stack",
+    primaryRailLabel = "Primary rail",
+    navigationPanelLabel,
+    contextPanelLabel,
+    utilityPanelLabel,
     class: className
   }: AppShellProps = $props();
+
+  // Resolved disclosure labels: default to the existing aria-label props so a
+  // consumer who already customized navigationLabel/contextLabel/utilityLabel
+  // doesn't need to duplicate the translation for the accordion trigger text.
+  const navigationPanelLabelResolved = $derived(navigationPanelLabel ?? navigationLabel);
+  const contextPanelLabelResolved = $derived(contextPanelLabel ?? contextLabel);
+  const utilityPanelLabelResolved = $derived(utilityPanelLabel ?? utilityLabel);
+
+  // Uncontrolled per-panel disclosure state (v1) — each accordion panel starts
+  // collapsed. Desktop rendering never reads these (CSS scopes the collapse to
+  // `@media (max-width: 48rem)`), so they have zero effect above the breakpoint.
+  let primaryRailPanelOpen = $state(false);
+  let navigationPanelOpen = $state(false);
+  let contextPanelOpen = $state(false);
+  let utilityPanelOpen = $state(false);
 
   const mode = $derived(variant ?? (config ? "site" : "workspace"));
   const siteConfig = $derived(config ?? ({ brand: { name: "Sentropic" }, nav: [], theming: { themes: [], theme: "" } } as SiteConfig));
@@ -182,6 +222,7 @@
     data-st-app-shell-variant="workspace"
     data-utility-mode={utilityMode}
     data-utility-side={utilitySide}
+    data-panel-collapse={panelCollapse}
   >
     {#if topChrome}
       <div class="st-appShell__topChrome">
@@ -191,12 +232,62 @@
     <div class="st-appShell__body">
       {#if primaryRail}
         <aside class="st-appShell__primaryRail" aria-label="Primary rail">
-          {@render primaryRail()}
+          {#if panelCollapse === "accordion"}
+            <button
+              type="button"
+              class="st-appShell__panelDisclosure"
+              aria-expanded={primaryRailPanelOpen}
+              aria-controls="st-appShell-primaryRail-region"
+              id="st-appShell-primaryRail-trigger"
+              onclick={() => (primaryRailPanelOpen = !primaryRailPanelOpen)}
+            >
+              <span class="st-appShell__panelDisclosureLabel">{primaryRailLabel}</span>
+              <span class="st-appShell__panelDisclosureIcon" class:st-appShell__panelDisclosureIcon--expanded={primaryRailPanelOpen}>
+                <ChevronDown size={16} aria-hidden="true" />
+              </span>
+            </button>
+            <div
+              class="st-appShell__panelRegion"
+              class:st-appShell__panelRegion--collapsed={!primaryRailPanelOpen}
+              id="st-appShell-primaryRail-region"
+              role="region"
+              aria-labelledby="st-appShell-primaryRail-trigger"
+            >
+              {@render primaryRail()}
+            </div>
+          {:else}
+            {@render primaryRail()}
+          {/if}
         </aside>
       {/if}
       {#if navigationPanel}
         <aside class="st-appShell__navigationPanel" aria-label={navigationLabel}>
-          {@render navigationPanel()}
+          {#if panelCollapse === "accordion"}
+            <button
+              type="button"
+              class="st-appShell__panelDisclosure"
+              aria-expanded={navigationPanelOpen}
+              aria-controls="st-appShell-navigationPanel-region"
+              id="st-appShell-navigationPanel-trigger"
+              onclick={() => (navigationPanelOpen = !navigationPanelOpen)}
+            >
+              <span class="st-appShell__panelDisclosureLabel">{navigationPanelLabelResolved}</span>
+              <span class="st-appShell__panelDisclosureIcon" class:st-appShell__panelDisclosureIcon--expanded={navigationPanelOpen}>
+                <ChevronDown size={16} aria-hidden="true" />
+              </span>
+            </button>
+            <div
+              class="st-appShell__panelRegion"
+              class:st-appShell__panelRegion--collapsed={!navigationPanelOpen}
+              id="st-appShell-navigationPanel-region"
+              role="region"
+              aria-labelledby="st-appShell-navigationPanel-trigger"
+            >
+              {@render navigationPanel()}
+            </div>
+          {:else}
+            {@render navigationPanel()}
+          {/if}
         </aside>
       {/if}
       <main class="st-appShell__main" id={mainId}>
@@ -208,12 +299,62 @@
       </main>
       {#if contextPanel}
         <aside class="st-appShell__contextPanel" aria-label={contextLabel}>
-          {@render contextPanel()}
+          {#if panelCollapse === "accordion"}
+            <button
+              type="button"
+              class="st-appShell__panelDisclosure"
+              aria-expanded={contextPanelOpen}
+              aria-controls="st-appShell-contextPanel-region"
+              id="st-appShell-contextPanel-trigger"
+              onclick={() => (contextPanelOpen = !contextPanelOpen)}
+            >
+              <span class="st-appShell__panelDisclosureLabel">{contextPanelLabelResolved}</span>
+              <span class="st-appShell__panelDisclosureIcon" class:st-appShell__panelDisclosureIcon--expanded={contextPanelOpen}>
+                <ChevronDown size={16} aria-hidden="true" />
+              </span>
+            </button>
+            <div
+              class="st-appShell__panelRegion"
+              class:st-appShell__panelRegion--collapsed={!contextPanelOpen}
+              id="st-appShell-contextPanel-region"
+              role="region"
+              aria-labelledby="st-appShell-contextPanel-trigger"
+            >
+              {@render contextPanel()}
+            </div>
+          {:else}
+            {@render contextPanel()}
+          {/if}
         </aside>
       {/if}
       {#if utilityPanel}
         <aside class="st-appShell__utilityPanel" aria-label={utilityLabel}>
-          {@render utilityPanel()}
+          {#if panelCollapse === "accordion"}
+            <button
+              type="button"
+              class="st-appShell__panelDisclosure"
+              aria-expanded={utilityPanelOpen}
+              aria-controls="st-appShell-utilityPanel-region"
+              id="st-appShell-utilityPanel-trigger"
+              onclick={() => (utilityPanelOpen = !utilityPanelOpen)}
+            >
+              <span class="st-appShell__panelDisclosureLabel">{utilityPanelLabelResolved}</span>
+              <span class="st-appShell__panelDisclosureIcon" class:st-appShell__panelDisclosureIcon--expanded={utilityPanelOpen}>
+                <ChevronDown size={16} aria-hidden="true" />
+              </span>
+            </button>
+            <div
+              class="st-appShell__panelRegion"
+              class:st-appShell__panelRegion--collapsed={!utilityPanelOpen}
+              id="st-appShell-utilityPanel-region"
+              role="region"
+              aria-labelledby="st-appShell-utilityPanel-trigger"
+            >
+              {@render utilityPanel()}
+            </div>
+          {:else}
+            {@render utilityPanel()}
+          {/if}
         </aside>
       {/if}
     </div>
@@ -419,6 +560,50 @@
     margin: var(--st-spacing-4, 1rem);
   }
 
+  /* Disclosure trigger for panelCollapse="accordion". Hidden by default (this
+     rule has no `@media` guard, so it also hides the button on desktop where
+     accordion mode is not active) — only shown by the max-width:48rem rule
+     below, and only when `data-panel-collapse="accordion"`. This keeps desktop
+     rendering byte-identical in both modes. */
+  .st-appShell__panelDisclosure {
+    align-items: center;
+    background: transparent;
+    border: 0;
+    color: inherit;
+    cursor: pointer;
+    display: none;
+    font: inherit;
+    font-weight: 650;
+    gap: var(--st-spacing-2, 0.5rem);
+    justify-content: space-between;
+    padding: var(--st-spacing-3, 0.75rem) var(--st-spacing-4, 1rem);
+    text-align: start;
+    width: 100%;
+  }
+
+  .st-appShell__panelDisclosure:focus-visible {
+    outline: 2px solid var(--st-semantic-border-focus, var(--st-semantic-brand-default, #2563eb));
+    outline-offset: -2px;
+  }
+
+  .st-appShell__panelDisclosureIcon {
+    display: inline-flex;
+    flex-shrink: 0;
+    transition: transform var(--st-motion-duration-fast, 0.15s) ease;
+  }
+
+  .st-appShell__panelDisclosureIcon--expanded {
+    transform: rotate(180deg);
+  }
+
+  /* The region stays mounted at all times — it is only ever resized/hidden via
+     CSS below, never removed from the DOM, so panel content (maps, live
+     widgets…) never remounts when a panel collapses or expands. */
+  .st-appShell__panelRegion {
+    min-block-size: 0;
+    min-inline-size: 0;
+  }
+
   @media (max-width: 48rem) {
     .st-appShell__body {
       flex-flow: column nowrap;
@@ -432,6 +617,33 @@
       border-block-end: 1px solid var(--st-component-appShell-border, var(--st-semantic-border-subtle));
       inline-size: auto;
       max-block-size: min(60vh, 28rem);
+    }
+
+    /* Accordion mode: the panel's own max-block-size cap is superseded by the
+       region's (below) so a collapsed panel can shrink to 0 and an expanded
+       one keeps the same 60vh/28rem ceiling the stack mode always had. */
+    .st-appShell[data-panel-collapse="accordion"] .st-appShell__primaryRail,
+    .st-appShell[data-panel-collapse="accordion"] .st-appShell__navigationPanel,
+    .st-appShell[data-panel-collapse="accordion"] .st-appShell__contextPanel,
+    .st-appShell[data-panel-collapse="accordion"] .st-appShell__utilityPanel {
+      max-block-size: none;
+    }
+
+    .st-appShell[data-panel-collapse="accordion"] .st-appShell__panelDisclosure {
+      display: flex;
+    }
+
+    .st-appShell[data-panel-collapse="accordion"] .st-appShell__panelRegion {
+      max-block-size: min(60vh, 28rem);
+      overflow: auto;
+    }
+
+    .st-appShell[data-panel-collapse="accordion"] .st-appShell__panelRegion--collapsed {
+      block-size: 0;
+      max-block-size: 0;
+      overflow: hidden;
+      padding-block: 0;
+      visibility: hidden;
     }
   }
 </style>

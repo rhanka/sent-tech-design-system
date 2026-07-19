@@ -304,7 +304,13 @@ export type { SelectProps } from "./Select.js";
 export { SideNav } from "./SideNav.js";
 export type { SideNavProps, SideNavItem } from "./SideNav.js";
 export { AppShell } from "./AppShell.js";
-export type { AppShellProps, AppShellUtilityMode, AppShellUtilitySide, AppShellVariant } from "./AppShell.js";
+export type {
+  AppShellPanelCollapse,
+  AppShellProps,
+  AppShellUtilityMode,
+  AppShellUtilitySide,
+  AppShellVariant,
+} from "./AppShell.js";
 export { NavShell } from "./NavShell.js";
 export type { NavShellProps, NavShellSide, NavShellVariant } from "./NavShell.js";
 export { NavRail } from "./NavRail.js";
@@ -561,3 +567,21 @@ export type {
 } from "./NavItem.js";
 export { NavSection } from "./NavSection.js";
 export type { NavSectionProps, NavSectionHeadingLevel } from "./NavSection.js";
+export { TimeRangePicker } from "./TimeRangePicker.js";
+export type { TimeRangePickerProps } from "./TimeRangePicker.js";
+export {
+  DEFAULT_TIME_RANGE_PRESETS,
+  parsePresetMs,
+  resolveRelative,
+  splitAbsolute,
+  composeAbsolute,
+  formatPresetLabel,
+  formatTriggerLabel,
+} from "./timeRange.js";
+export type {
+  TimeRange,
+  TimeRangeMode,
+  TimeRangePreset,
+  AbsoluteDraft,
+  AbsoluteSplit,
+} from "./timeRange.js";

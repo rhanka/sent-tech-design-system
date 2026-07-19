@@ -191,6 +191,8 @@ export { Tabs } from "./Tabs.js";
 export { Tag } from "./Tag.js";
 export { ThemeProvider } from "./ThemeProvider.js";
 export { Textarea } from "./Textarea.js";
+export { TimeRangePicker } from "./TimeRangePicker.js";
+export { DEFAULT_TIME_RANGE_PRESETS, parsePresetMs, resolveRelative, splitAbsolute, composeAbsolute, formatPresetLabel, formatTriggerLabel, } from "./timeRange.js";
 export { TimePicker } from "./TimePicker.js";
 export { Tile } from "./Tile.js";
 export { TileGroup } from "./TileGroup.js";

@@ -66,6 +66,16 @@ export const Input = defineComponent({
             onChange: (event: Event) => {
               emit("change", event);
             },
+            // `focus`/`blur` are declared in `emits`, so Vue strips any
+            // `onFocus`/`onBlur` listener out of `attrs` and expects the
+            // component to emit them. Without these handlers the declared
+            // events never fired and consumer listeners were silently dropped.
+            onFocus: (event: FocusEvent) => {
+              emit("focus", event);
+            },
+            onBlur: (event: FocusEvent) => {
+              emit("blur", event);
+            },
           }),
         ]),
         props.errorText
