@@ -447,4 +447,8 @@ export { Dashboard } from "./Dashboard.js";
 export type { DashboardProps, DashboardNavItem, DashboardKpi } from "./Dashboard.js";
 export { Wizard } from "./Wizard.js";
 export type { WizardProps, WizardStep } from "./Wizard.js";
+export { PanelStack, PANEL_STACK_MAX_SECTIONS, resolvePanelStackPrimary, computePanelStackAutoCollapse } from "./PanelStack.js";
+export type { PanelStackShape, PanelStackProps, PanelStackAutoCollapseMeasurements } from "./PanelStack.js";
+export { PanelSection } from "./PanelSection.js";
+export type { PanelSectionProps } from "./PanelSection.js";
 //# sourceMappingURL=index.d.ts.map
