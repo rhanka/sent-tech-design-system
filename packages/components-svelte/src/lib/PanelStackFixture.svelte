@@ -14,6 +14,7 @@
     defaultExpanded = null,
     onExpandedChange,
     primary,
+    primaryMinHeight,
     sections,
     class: className
   }: {
@@ -23,12 +24,22 @@
     defaultExpanded?: string | null;
     onExpandedChange?: (id: string | null) => void;
     primary?: string;
+    primaryMinHeight?: number;
     sections: Section[];
     class?: string;
   } = $props();
 </script>
 
-<PanelStack {shape} {label} {expanded} {defaultExpanded} {onExpandedChange} {primary} class={className}>
+<PanelStack
+  {shape}
+  {label}
+  {expanded}
+  {defaultExpanded}
+  {onExpandedChange}
+  {primary}
+  {primaryMinHeight}
+  class={className}
+>
   {#each sections as section (section.id)}
     <PanelSection id={section.id} label={section.label} class={section.class}>
       {#snippet actions()}

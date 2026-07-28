@@ -219,13 +219,15 @@
      body stays `overflow: hidden`, content-sized or collapsed to zero.
 
      `min-block-size` is the floor split-primary's auto-collapse protects (see
-     PanelStack.svelte): secondaries collapse before the primary is ever
-     squeezed below this. Keep the fallback in sync with PanelStack.svelte's
-     `PRIMARY_MIN_BLOCK_SIZE_PX`. Harmless for sticky-item too (there is only
+     PanelStack.svelte's `primaryMinHeight` prop): PanelStack emits that prop,
+     live, as this very custom property on its own root, so the JS threshold
+     and this CSS floor read the SAME number and can never drift apart. The
+     `160px` fallback only matters when a PanelSection renders without a
+     PanelStack ancestor at all. Harmless for sticky-item too (there is only
      ever one scroll owner in that shape as well). */
   .st-panelSection__body--scrollOwner {
     flex: 1 1 0;
-    min-block-size: var(--st-component-panelStack-primaryMinBlockSize, 10rem);
+    min-block-size: var(--st-component-panelStack-primaryMinBlockSize, 160px);
     overflow: auto;
   }
 

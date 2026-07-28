@@ -4,7 +4,7 @@ import { fireEvent, render, screen } from "@testing-library/svelte";
 import { flushSync } from "svelte";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import PanelStackFixture from "./PanelStackFixture.svelte";
-import { PANEL_STACK_MAX_SECTIONS } from "./PanelStack.svelte";
+import { PANEL_STACK_MAX_SECTIONS, PRIMARY_MIN_BLOCK_SIZE_PX } from "./PanelStack.svelte";
 
 const sections = [
   { id: "a", label: "Alpha" },
@@ -475,8 +475,6 @@ describe("PanelStack — split-primary primary fallback chain", () => {
 });
 
 describe("PanelStack — split-primary auto-collapse (secondaries yield to the primary's floor)", () => {
-  const PRIMARY_MIN_BLOCK_SIZE_PX = 160; // must match PanelStack.svelte's own constant
-
   beforeEach(() => {
     FakeResizeObserver.instances = [];
     vi.stubGlobal("ResizeObserver", FakeResizeObserver);
@@ -621,6 +619,47 @@ describe("PanelStack — split-primary auto-collapse (secondaries yield to the p
     expect(scrollOwnerBodies(container)).toEqual([body(container, "a")]);
   });
 
+  it("a custom, HIGHER primaryMinHeight raises the auto-collapse threshold: measurements that fit comfortably under the default floor now trigger a collapse", async () => {
+    const { container } = render(PanelStackFixture, {
+      props: { shape: "split-primary", sections, primary: "a", primaryMinHeight: 800 }
+    });
+    await fireEvent.click(trigger(container, "b")!); // opened first -> least recently expanded
+    await fireEvent.click(trigger(container, "c")!);
+
+    fireResize(stackRoot(container), 1000);
+    fireResize(sectionHeaderEl(container, "a")!, 40);
+    fireResize(sectionRootEl(container, "b")!, 150);
+    fireResize(sectionRootEl(container, "c")!, 100);
+    // available = 1000 - 40 - (150 + 100) = 710. Against the DEFAULT floor
+    // (160) this comfortably fits (see the "no false positives" test above,
+    // same numbers) — but 710 < 800, this instance's custom floor, so "b"
+    // (LRU) must auto-collapse. Proves the JS threshold reads the live prop,
+    // not the hardcoded default.
+    expect(body(container, "b")?.classList.contains("st-panelSection__body--collapsed")).toBe(true);
+    expect(body(container, "c")?.classList.contains("st-panelSection__body--collapsed")).toBe(false);
+    expect(scrollOwnerBodies(container)).toEqual([body(container, "a")]);
+  });
+
+  it("a custom, LOWER primaryMinHeight relaxes the auto-collapse threshold: measurements that would collapse a secondary under the default floor now fit", async () => {
+    const { container } = render(PanelStackFixture, {
+      props: { shape: "split-primary", sections, primary: "a", primaryMinHeight: 50 }
+    });
+    await fireEvent.click(trigger(container, "b")!);
+    await fireEvent.click(trigger(container, "c")!);
+
+    fireResize(stackRoot(container), 400);
+    fireResize(sectionHeaderEl(container, "a")!, 40);
+    fireResize(sectionRootEl(container, "b")!, 150);
+    fireResize(sectionRootEl(container, "c")!, 100);
+    // available = 400 - 40 - (150 + 100) = 110. Against the DEFAULT floor
+    // (160) this collapses "b" (see the earlier "collapses the
+    // least-recently-expanded secondary…" test, identical numbers) — but
+    // 110 >= 50, this instance's custom lower floor, so nothing collapses.
+    expect(body(container, "b")?.classList.contains("st-panelSection__body--collapsed")).toBe(false);
+    expect(body(container, "c")?.classList.contains("st-panelSection__body--collapsed")).toBe(false);
+    expect(scrollOwnerBodies(container)).toEqual([body(container, "a")]);
+  });
+
   it("floor constant used by the algorithm matches the documented value", () => {
     // Sanity check that the scenarios above (which assume 160px) are actually
     // exercising the real threshold and not a coincidence of the numbers
@@ -643,5 +682,107 @@ describe("PanelStack — auto-collapse is a no-throw no-op when ResizeObserver i
     expect(body(container, "b")?.classList.contains("st-panelSection__body--collapsed")).toBe(false);
     expect(body(container, "c")?.classList.contains("st-panelSection__body--collapsed")).toBe(false);
     expect(scrollOwnerBodies(container)).toEqual([body(container, "a")]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Consumer-lane follow-up, two changes:
+//   1. `primaryMinHeight` is the single source of truth for both the JS
+//      auto-collapse threshold (covered above) and the CSS floor — PanelStack
+//      mirrors it onto an inline custom property on its own root.
+//   2. a controlled `expanded` pointing at a non-existent id must still
+//      resolve exactly one scroll owner, without PanelStack ever overriding
+//      the controlled value itself.
+// ---------------------------------------------------------------------------
+describe("PanelStack — primaryMinHeight drives the CSS custom property on the stack root", () => {
+  it("defaults to PRIMARY_MIN_BLOCK_SIZE_PX and emits it as the inline custom property", () => {
+    const { container } = render(PanelStackFixture, { props: { sections, defaultExpanded: "a" } });
+    expect(
+      stackRoot(container).style.getPropertyValue("--st-component-panelStack-primaryMinBlockSize")
+    ).toBe(`${PRIMARY_MIN_BLOCK_SIZE_PX}px`);
+  });
+
+  it("a custom primaryMinHeight is reflected verbatim on the inline custom property, matching the prop", () => {
+    const { container } = render(PanelStackFixture, {
+      props: { sections, defaultExpanded: "a", primaryMinHeight: 240 }
+    });
+    expect(
+      stackRoot(container).style.getPropertyValue("--st-component-panelStack-primaryMinBlockSize")
+    ).toBe("240px");
+  });
+
+  it("holds for split-primary too (the property is emitted regardless of shape)", () => {
+    const { container } = render(PanelStackFixture, {
+      props: { shape: "split-primary", sections, primary: "a", primaryMinHeight: 320 }
+    });
+    expect(
+      stackRoot(container).style.getPropertyValue("--st-component-panelStack-primaryMinBlockSize")
+    ).toBe("320px");
+  });
+});
+
+describe("PanelStack — controlled expanded pointing at a non-existent id still resolves a scroll owner", () => {
+  it("leaves the controlled value untouched (every header renders collapsed), resolves EXACTLY one scroll owner via the first-registered fallback, and warns once", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const { container } = render(PanelStackFixture, {
+      props: { sections, expanded: "does-not-exist" }
+    });
+
+    // The controlled contract is honoured: nothing was overridden, so no
+    // header renders as expanded — exactly what the (invalid) prop says.
+    for (const id of ["a", "b", "c"]) {
+      expect(trigger(container, id)?.getAttribute("aria-expanded")).toBe("false");
+    }
+
+    // But the invariant this whole component pair exists to guarantee still
+    // holds: exactly one scroll owner, resolved internally — the first
+    // registered section, same fallback used everywhere else in this file.
+    expect(scrollOwnerBodies(container).length).toBe(1);
+    expect(scrollOwnerBodies(container)[0]).toBe(body(container, "a"));
+
+    expect(warn).toHaveBeenCalledTimes(1);
+    expect(warn.mock.calls[0][0]).toContain("[PanelStack]");
+    expect(warn.mock.calls[0][0]).toContain("does-not-exist");
+    warn.mockRestore();
+  });
+
+  it("a controlled expanded of exactly null is a DELIBERATE all-collapsed state: honoured as-is, zero scroll owners, no warning", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const { container } = render(PanelStackFixture, {
+      props: { sections, expanded: null }
+    });
+
+    for (const id of ["a", "b", "c"]) {
+      expect(trigger(container, id)?.getAttribute("aria-expanded")).toBe("false");
+    }
+    // Nothing is hidden from the user in this state — every section is
+    // visibly, correctly, collapsed — so zero scroll owners is legitimate
+    // here, unlike the invalid-id case above, and nothing is healed.
+    expect(scrollOwnerBodies(container).length).toBe(0);
+    expect(warn).not.toHaveBeenCalled();
+    warn.mockRestore();
+  });
+
+  it("a valid controlled expanded is unaffected by the fallback (no warning, scroll owner matches the expanded section)", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const { container } = render(PanelStackFixture, {
+      props: { sections, expanded: "b" }
+    });
+
+    expect(trigger(container, "b")?.getAttribute("aria-expanded")).toBe("true");
+    expect(scrollOwnerBodies(container)).toEqual([body(container, "b")]);
+    expect(warn).not.toHaveBeenCalled();
+    warn.mockRestore();
+  });
+
+  it("split-primary ignores expanded entirely — an invalid value there never warns and never affects the primary's fallback", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const { container } = render(PanelStackFixture, {
+      props: { shape: "split-primary", sections, expanded: "does-not-exist" }
+    });
+
+    expect(scrollOwnerBodies(container)).toEqual([body(container, "a")]);
+    expect(warn).not.toHaveBeenCalled();
+    warn.mockRestore();
   });
 });

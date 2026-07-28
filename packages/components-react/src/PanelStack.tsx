@@ -33,6 +33,10 @@ export type PanelStackProps = {
    * degrades to zero scroll owners.
    */
   primary?: string;
+  /** Usable floor for the primary section, in px. While the primary sits above it the
+      primary absorbs overflow; once it would drop below, a secondary auto-collapses
+      instead of compressing the primary further. Default 160. */
+  primaryMinHeight?: number;
   /**
    * At most {@link PANEL_STACK_MAX_SECTIONS} `PanelSection` children are
    * supported — see that constant's doc comment for why.
@@ -94,13 +98,17 @@ function sortByDom(list: Entry[]): Entry[] {
   });
 }
 
-// Kept in sync with the CSS fallback for
-// --st-component-panelStack-primaryMinBlockSize (10rem @ a 16px root font
-// size) in styles.css. Not read via getComputedStyle: this package's test
-// environment (jsdom) does not reliably resolve CSS custom properties/rem
-// units in computed style, which would make the threshold untestable; a
-// hardcoded, documented, kept-in-sync constant is this codebase's existing
-// pattern for a JS-side numeric mirror of a CSS default.
+// Default for the `primaryMinHeight` prop below. The prop is the single
+// source of truth for both the JS auto-collapse threshold (read directly off
+// the prop, not off this constant, inside `runDecision`) and the CSS floor:
+// PanelStack emits it as an inline custom property
+// (--st-component-panelStack-primaryMinBlockSize) on the stack root, which
+// styles.css's `min-block-size` reads via `var(...)`. Not read back via
+// getComputedStyle: this package's test environment (jsdom) does not
+// reliably resolve CSS custom properties in computed style, which would make
+// the threshold untestable. The stylesheet keeps a `160px` var() fallback —
+// matching this constant — for the (non-React) case where nothing sets the
+// custom property.
 const PRIMARY_MIN_BLOCK_SIZE_PX = 160;
 
 /**
@@ -138,6 +146,7 @@ export function PanelStack({
   defaultExpanded = null,
   onExpandedChange,
   primary,
+  primaryMinHeight = PRIMARY_MIN_BLOCK_SIZE_PX,
   children,
   className,
 }: PanelStackProps) {
@@ -158,6 +167,13 @@ export function PanelStack({
   // this is NOT a live binding to `defaultExpanded`, same idiom as
   // RangeSlider's `defaultValue`.
   const internalExpandedRef = React.useRef<string | null>(defaultExpanded);
+
+  // Dev-time-only "warned once" latch for the controlled-invalid-`expanded`
+  // fallback below. Guards the console.warn, NOT the fallback itself (which
+  // must always resolve a scroll owner, every render) — see
+  // `computeEffectiveExpandedId`. Never reset: the contract asked for is "a
+  // console.warn once", not "once per distinct bad id".
+  const warnedInvalidExpandedRef = React.useRef(false);
 
   // Independent open/closed state for split-primary's NON-primary sections.
   // Always uncontrolled — the API exposes no prop for it, only `primary` is
@@ -216,9 +232,32 @@ export function PanelStack({
   // The one place the "never zero scroll owners" fallback lives for
   // sticky-item: resolves to the first registered section whenever
   // `internalExpanded` is unset OR points at a section that no longer
-  // exists (e.g. the previously-expanded section just unmounted).
+  // exists (e.g. the previously-expanded section just unmounted). The
+  // controlled branch mirrors this: an invalid controlled `expanded` (a
+  // consumer-supplied id that names no registered section) must NOT be
+  // overridden — the controlled contract says the prop is the source of
+  // truth, full stop — but the EFFECTIVE (scroll-owner-resolving) id is a
+  // separate, internal concept, decoupled from the raw prop, and it still
+  // has to land on a real section: content unreachable by the wheel is the
+  // one state this stack must never produce. So the invalid id resolves via
+  // the same first-registered fallback, with a one-time dev warning.
   function computeEffectiveExpandedId(): string | null {
-    if (controlled) return expanded ?? null;
+    if (controlled) {
+      if (
+        expanded != null &&
+        entriesRef.current.length > 0 &&
+        !entriesRef.current.some((e) => e.id === expanded)
+      ) {
+        if (!warnedInvalidExpandedRef.current) {
+          warnedInvalidExpandedRef.current = true;
+          console.warn(
+            `[PanelStack] expanded="${expanded}" does not match any registered section — falling back to the first registered section as the scroll owner. The \`expanded\` prop itself is left untouched (it is controlled).`,
+          );
+        }
+        return getFirstId();
+      }
+      return expanded ?? null;
+    }
     if (internalExpandedRef.current !== null && entriesRef.current.some((e) => e.id === internalExpandedRef.current)) {
       return internalExpandedRef.current;
     }
@@ -341,7 +380,7 @@ export function PanelStack({
       secondaryTotal += rootHeightsRef.current.get(e.id) ?? 0;
     }
     const available = stackHeightRef.current - primaryHeaderHeightRef.current - secondaryTotal;
-    if (available >= PRIMARY_MIN_BLOCK_SIZE_PX) return;
+    if (available >= primaryMinHeight) return;
 
     const candidate = expansionOrderRef.current.find(
       (id) => id !== primaryId && openSecondaryRef.current.has(id) && !autoCollapsedRef.current.has(id),
@@ -493,8 +532,17 @@ export function PanelStack({
 
   const classes = classNames("st-panelStack", className);
 
+  // `primaryMinHeight` is the single source of truth for both the JS
+  // auto-collapse threshold (`runDecision`, above) and the CSS floor: this
+  // custom property is what styles.css's `.st-panelSection__body--scrollOwner`
+  // reads via `var(--st-component-panelStack-primaryMinBlockSize, 160px)`, so
+  // the two can no longer drift apart.
+  const stackStyle = {
+    "--st-component-panelStack-primaryMinBlockSize": `${primaryMinHeight}px`,
+  } as React.CSSProperties;
+
   return (
-    <div className={classes} role="group" aria-label={label} ref={stackElRef}>
+    <div className={classes} role="group" aria-label={label} ref={stackElRef} style={stackStyle}>
       <PanelStackContext.Provider value={contextObjRef.current}>
         <PanelStackVersionContext.Provider value={version}>{children}</PanelStackVersionContext.Provider>
       </PanelStackContext.Provider>
