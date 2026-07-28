@@ -107,7 +107,14 @@ export type { SelectProps, SelectSize, SelectOption } from "./Select.js";
 export { SideNav } from "./SideNav.js";
 export type { SideNavProps, SideNavItem } from "./SideNav.js";
 export { AppShell } from "./AppShell.js";
-export type { AppShellPanelCollapse, AppShellProps, AppShellUtilityMode, AppShellUtilitySide, AppShellVariant } from "./AppShell.js";
+export type {
+  AppShellPanelCollapse,
+  AppShellPanelKey,
+  AppShellProps,
+  AppShellUtilityMode,
+  AppShellUtilitySide,
+  AppShellVariant,
+} from "./AppShell.js";
 export { NavShell } from "./NavShell.js";
 export type { NavShellProps, NavShellSide, NavShellVariant } from "./NavShell.js";
 export { NavRail } from "./NavRail.js";

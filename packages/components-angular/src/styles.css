@@ -17493,9 +17493,9 @@
      which — thanks to inline-style specificity — transparently overrides the
      token-driven default declared here without ever touching a panel that
      hasn't been resized. */
-  --st-appShell-navigation-width: var(--st-component-navShell-width, 18rem);
-  --st-appShell-context-width: var(--st-component-contextPanel-width, 20rem);
-  --st-appShell-utility-width: var(--st-component-utilityPanel-width, 24rem);
+  --st-appShell-navigation-width: var(--st-component-appShell-navigationWidth, 20rem);
+  --st-appShell-context-width: var(--st-component-appShell-contextWidth, 22rem);
+  --st-appShell-utility-width: var(--st-component-appShell-utilityWidth, 24rem);
   background: var(--st-component-appShell-surface, var(--st-semantic-surface-default));
   color: var(--st-semantic-text-primary);
   min-block-size: 100vh;
