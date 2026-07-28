@@ -160,10 +160,28 @@ describe("PanelStack / PanelSection — single scroll owner invariant", () => {
   });
 
   it("exactly one CSS rule across the PanelStack/PanelSection block ever sets overflow: auto, and it is the scroll-owner body", () => {
-    const css = readFileSync(join(process.cwd(), "src/styles.css"), "utf8");
-    const start = css.indexOf(".st-panelStack {");
-    expect(start).toBeGreaterThan(-1);
-    const block = css.slice(start);
+    // Selected BY SELECTOR, not by slicing from `.st-panelStack {` to end-of-file.
+    // A positional slice happens to work only while this pair is last in the
+    // stylesheet: the first component appended after it would be silently pulled
+    // into the scan, and an unrelated `overflow: auto` would fail this test with
+    // a message pointing at PanelStack. The pair's rules are flat (no @media
+    // nesting), so matching top-level blocks is sufficient.
+    //
+    // Comments are stripped first: one of this block's own comments explains the
+    // invariant using the words `overflow: auto`, and counting prose as CSS made
+    // the assertion see two occurrences where the stylesheet declares one.
+    const css = readFileSync(join(process.cwd(), "src/styles.css"), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+    const blocks: string[] = [];
+    const rule = /(^|\n)([^{}@][^{}]*)\{([^{}]*)\}/g;
+    let match: RegExpExecArray | null;
+    while ((match = rule.exec(css)) !== null) {
+      const selector = match[2].trim();
+      if (/\.st-panelStack|\.st-panelSection/.test(selector)) {
+        blocks.push(`${selector} {${match[3]}}`);
+      }
+    }
+    expect(blocks.length).toBeGreaterThan(0);
+    const block = blocks.join("\n");
     const autoOccurrences = block.match(/overflow:\s*auto/g) ?? [];
     expect(autoOccurrences.length).toBe(1);
     expect(block).toMatch(/\.st-panelSection__body--scrollOwner\s*{[^}]*overflow:\s*auto/);
