@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { mount } from "@vue/test-utils";
 import { defineComponent, h, nextTick, type PropType } from "vue";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { PanelStack, PANEL_STACK_MAX_SECTIONS, type PanelStackShape } from "./PanelStack.js";
+import { PanelStack, PANEL_STACK_MAX_SECTIONS, PRIMARY_MIN_BLOCK_SIZE_PX, type PanelStackShape } from "./PanelStack.js";
 import { PanelSection } from "./PanelSection.js";
 
 // ---------------------------------------------------------------------------
@@ -26,6 +26,7 @@ const Fixture = defineComponent({
       default: undefined,
     },
     primary: { type: String, default: undefined },
+    primaryMinHeight: { type: Number, default: undefined },
     sections: { type: Array as PropType<FixtureSection[]>, required: true },
     class: { type: String, default: undefined },
   },
@@ -40,6 +41,7 @@ const Fixture = defineComponent({
           defaultExpanded: props.defaultExpanded,
           onExpandedChange: props.onExpandedChange,
           primary: props.primary,
+          primaryMinHeight: props.primaryMinHeight,
           class: props.class,
         },
         {
@@ -552,8 +554,6 @@ describe("PanelStack — split-primary primary fallback chain", () => {
 });
 
 describe("PanelStack — split-primary auto-collapse (secondaries yield to the primary's floor)", () => {
-  const PRIMARY_MIN_BLOCK_SIZE_PX = 160; // must match PanelStack.ts's own constant
-
   beforeEach(() => {
     FakeResizeObserver.instances = [];
     vi.stubGlobal("ResizeObserver", FakeResizeObserver);
@@ -710,5 +710,194 @@ describe("PanelStack — auto-collapse is a no-throw no-op when ResizeObserver i
     expect(body(container, "b")?.classList.contains("st-panelSection__body--collapsed")).toBe(false);
     expect(body(container, "c")?.classList.contains("st-panelSection__body--collapsed")).toBe(false);
     expect(scrollOwnerBodies(container)).toEqual([body(container, "a")]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Consumer-lane change 1: `primaryMinHeight` is the single source of truth
+// for BOTH the JS auto-collapse threshold and the CSS floor — emitted as an
+// inline `--st-component-panelStack-primaryMinBlockSize` custom property on
+// the stack root, defaulting to PRIMARY_MIN_BLOCK_SIZE_PX (160).
+// ---------------------------------------------------------------------------
+describe("PanelStack — primaryMinHeight prop", () => {
+  it("emits the inline custom property on the stack root, defaulting to PRIMARY_MIN_BLOCK_SIZE_PX", async () => {
+    const { container } = await mountFixture({ sections, defaultExpanded: "a" });
+    const root = stackRoot(container);
+    expect(root.style.getPropertyValue("--st-component-panelStack-primaryMinBlockSize")).toBe(
+      `${PRIMARY_MIN_BLOCK_SIZE_PX}px`,
+    );
+  });
+
+  it("emits the inline custom property matching a custom primaryMinHeight, driving both JS and CSS from one value", async () => {
+    const { container } = await mountFixture({ sections, defaultExpanded: "a", primaryMinHeight: 320 });
+    const root = stackRoot(container);
+    expect(root.style.getPropertyValue("--st-component-panelStack-primaryMinBlockSize")).toBe("320px");
+  });
+
+  describe("drives the auto-collapse threshold (split-primary)", () => {
+    beforeEach(() => {
+      FakeResizeObserver.instances = [];
+      vi.stubGlobal("ResizeObserver", FakeResizeObserver);
+    });
+
+    afterEach(() => {
+      vi.unstubAllGlobals();
+    });
+
+    it("a lower custom floor tolerates a squeeze that the default 160px floor would have collapsed", async () => {
+      const { container } = await mountFixture({
+        shape: "split-primary",
+        sections,
+        primary: "a",
+        primaryMinHeight: 100,
+      });
+      await click(trigger(container, "b"));
+      await click(trigger(container, "c"));
+
+      const stackEl = stackRoot(container);
+      const headerA = sectionHeaderEl(container, "a")!;
+      const rootB = sectionRootEl(container, "b")!;
+      const rootC = sectionRootEl(container, "c")!;
+
+      await fireResize(stackEl, 400);
+      await fireResize(headerA, 40);
+      await fireResize(rootB, 150);
+      await fireResize(rootC, 100);
+      // available = 400 - 40 - (150 + 100) = 110: would collapse under the
+      // DEFAULT 160px floor (see the sibling describe block above using the
+      // very same numbers), but comfortably clears this stack's custom
+      // 100px floor — nothing collapses.
+      expect(body(container, "b")?.classList.contains("st-panelSection__body--collapsed")).toBe(false);
+      expect(body(container, "c")?.classList.contains("st-panelSection__body--collapsed")).toBe(false);
+      expect(scrollOwnerBodies(container)).toEqual([body(container, "a")]);
+    });
+
+    it("raising primaryMinHeight at runtime re-evaluates the decision and can newly trigger an auto-collapse off the SAME measurements", async () => {
+      const { wrapper, container } = await mountFixture({
+        shape: "split-primary",
+        sections,
+        primary: "a",
+        primaryMinHeight: 100,
+      });
+      await click(trigger(container, "b"));
+      await click(trigger(container, "c"));
+
+      const stackEl = stackRoot(container);
+      const headerA = sectionHeaderEl(container, "a")!;
+      const rootB = sectionRootEl(container, "b")!;
+      const rootC = sectionRootEl(container, "c")!;
+
+      await fireResize(stackEl, 400);
+      await fireResize(headerA, 40);
+      await fireResize(rootB, 150);
+      await fireResize(rootC, 100);
+      // available = 110 >= the custom 100px floor: fits, nothing collapses yet.
+      expect(body(container, "b")?.classList.contains("st-panelSection__body--collapsed")).toBe(false);
+
+      await wrapper.setProps({ primaryMinHeight: 200 });
+      // No new measurement lands — only the floor itself rose above the
+      // already-known `available` (110 < 200): the decision watcher must
+      // re-run off the PROP change alone and collapse the LRU secondary ("b").
+      expect(body(container, "b")?.classList.contains("st-panelSection__body--collapsed")).toBe(true);
+      expect(trigger(container, "b")?.getAttribute("aria-expanded")).toBe("false");
+      expect(body(container, "c")?.classList.contains("st-panelSection__body--collapsed")).toBe(false);
+      expect(scrollOwnerBodies(container)).toEqual([body(container, "a")]);
+    });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Consumer-lane change 2: a controlled `expanded` is never overridden — the
+// prop is never written and `expandedChange` never fires on the consumer's
+// behalf — but the "never zero scroll owners" invariant still has to hold,
+// so an id that matches no registered section resolves a scroll owner via
+// the existing first-registered fallback, and warns once. In sticky-item,
+// "expanded" and "scroll owner" are the same thing by definition, so that
+// fallback section must ALSO be reported as expanded (aria-expanded=true,
+// body carries --scrollOwner and never --collapsed) — anything else is a
+// screen reader announcing "collapsed" for content that is visibly, still
+// scrolling on screen. An explicit `expanded: null` is a distinct,
+// deliberate "everything collapsed" and is honored as-is (zero scroll
+// owners is correct there — nothing is unreachable, so nothing is
+// misdescribed either).
+// ---------------------------------------------------------------------------
+describe("PanelStack — sticky-item: controlled expanded pointing at a non-existent id", () => {
+  it("the fallback (first registered) section is reported as expanded — aria-expanded matches what's actually rendered", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const { container } = await mountFixture({ sections, expanded: "does-not-exist" });
+
+    expect(trigger(container, "a")?.getAttribute("aria-expanded")).toBe("true");
+    expect(trigger(container, "b")?.getAttribute("aria-expanded")).toBe("false");
+    expect(trigger(container, "c")?.getAttribute("aria-expanded")).toBe("false");
+    warn.mockRestore();
+  });
+
+  it("the fallback section's body carries --scrollOwner and never --collapsed, consistent with aria-expanded=true", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const { container } = await mountFixture({ sections, expanded: "does-not-exist" });
+
+    expect(body(container, "a")?.classList.contains("st-panelSection__body--scrollOwner")).toBe(true);
+    expect(body(container, "a")?.classList.contains("st-panelSection__body--collapsed")).toBe(false);
+    warn.mockRestore();
+  });
+
+  it("still resolves exactly one scroll owner internally — the first registered section — never zero", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const { container } = await mountFixture({ sections, expanded: "does-not-exist" });
+
+    expect(scrollOwnerBodies(container).length).toBe(1);
+    expect(scrollOwnerBodies(container)[0]).toBe(body(container, "a"));
+    warn.mockRestore();
+  });
+
+  it("the controlled prop is left untouched by the fallback: no expandedChange is emitted merely from mounting/resolving it", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const onExpandedChange = vi.fn();
+    const { wrapper } = await mountFixture({ sections, expanded: "does-not-exist", onExpandedChange });
+
+    // The consumer's own prop value is never rewritten by the component —
+    // Vue props are one-way regardless, but this also confirms no code path
+    // attempted to "fix" it by emitting a change on the consumer's behalf.
+    expect(wrapper.props("expanded")).toBe("does-not-exist");
+    expect(onExpandedChange).not.toHaveBeenCalled();
+    warn.mockRestore();
+  });
+
+  it("warns once, following the [PanelStack] convention, naming the offending value", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    await mountFixture({ sections, expanded: "does-not-exist" });
+
+    expect(warn).toHaveBeenCalledTimes(1);
+    expect(warn.mock.calls[0][0]).toContain("[PanelStack]");
+    expect(warn.mock.calls[0][0]).toContain("does-not-exist");
+    warn.mockRestore();
+  });
+
+  it("does NOT warn for a valid controlled expanded", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    await mountFixture({ sections, expanded: "a" });
+
+    expect(warn).not.toHaveBeenCalled();
+    warn.mockRestore();
+  });
+
+  it("does NOT warn for split-primary (expanded is a sticky-item-only control there)", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    await mountFixture({ shape: "split-primary", sections, primary: "a", expanded: "does-not-exist" });
+
+    expect(warn).not.toHaveBeenCalled();
+    warn.mockRestore();
+  });
+
+  it("explicit expanded: null is a deliberate 'everything collapsed' — honored as-is, zero scroll owners, no warning", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const { container } = await mountFixture({ sections, expanded: null });
+
+    expect(warn).not.toHaveBeenCalled();
+    for (const id of ["a", "b", "c"]) {
+      expect(trigger(container, id)?.getAttribute("aria-expanded")).toBe("false");
+    }
+    expect(scrollOwnerBodies(container).length).toBe(0);
+    warn.mockRestore();
   });
 });

@@ -2,7 +2,13 @@ import "@angular/compiler";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { ElementRef } from "@angular/core";
 
-import { PANEL_STACK_MAX_SECTIONS, PanelStack, computePanelStackAutoCollapse, resolvePanelStackPrimary } from "../dist/PanelStack.js";
+import {
+  PANEL_STACK_MAX_SECTIONS,
+  PanelStack,
+  computePanelStackAutoCollapse,
+  resolvePanelStackExpanded,
+  resolvePanelStackPrimary,
+} from "../dist/PanelStack.js";
 import { PanelSection } from "../dist/PanelSection.js";
 
 // ---------------------------------------------------------------------------
@@ -184,12 +190,17 @@ describe("PanelStack — sticky-item shape (default)", () => {
     expect(stack.effectiveExpandedId).toBe("b");
   });
 
-  it("an explicit `expanded: null` still counts as controlled (undefined-vs-set, same idiom as AppShell.panelWidths)", () => {
+  it("an explicit `expanded: null` still counts as controlled (undefined-vs-set, same idiom as AppShell.panelWidths); it is a deliberate 'everything collapsed', so it is honoured with ZERO scroll owners and no warning", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     const stack = newStack();
     stack.expanded = null;
     stack.register("a", fakeEl("a"), fakeEl("a-h"));
+    stack.register("b", fakeEl("b"), fakeEl("b-h"));
     expect(stack.controlled).toBe(true);
     expect(stack.effectiveExpandedId).toBe(null);
+    expect(["a", "b"].filter((id) => stack.isScrollOwner(id))).toEqual([]);
+    expect(warn).not.toHaveBeenCalled();
+    warn.mockRestore();
   });
 
   it("dynamic: unregistering the current owner leaves EXACTLY one owner — the next first section", () => {
@@ -204,6 +215,105 @@ describe("PanelStack — sticky-item shape (default)", () => {
     unregisterB();
 
     expect(stack.effectiveExpandedId).toBe("a");
+  });
+});
+
+describe("PanelStack — controlled `expanded` pointing at a non-existent id (ratified cross-framework rule)", () => {
+  it("leaves the controlled value untouched, resolves exactly one scroll owner (first registered), reports that SAME section as expanded (sticky-item: expanded and scroll owner are the same thing), and warns once", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const stack = newStack();
+    stack.expanded = "does-not-exist";
+    stack.register("a", fakeEl("a"), fakeEl("a-h"));
+    stack.register("b", fakeEl("b"), fakeEl("b-h"));
+    stack.register("c", fakeEl("c"), fakeEl("c-h"));
+
+    // Invariant holds: exactly one scroll owner, resolved via the same
+    // first-registered fallback as the uncontrolled/unset case.
+    const owners = ["a", "b", "c"].filter((id) => stack.isScrollOwner(id));
+    expect(owners).toEqual(["a"]);
+
+    // The fallback section must also report `isExpanded === true` — its body
+    // is rendered as the scroll owner (visible, overflow:auto), so
+    // `aria-expanded` must NOT lie and say "collapsed". sticky-item's
+    // expanded id and scroll-owner id are the same thing by definition.
+    expect(stack.isExpanded("a")).toBe(true);
+    expect(stack.isExpanded("b")).toBe(false);
+    expect(stack.isExpanded("c")).toBe(false);
+
+    // The controlled value itself is NEVER rewritten — reading it back off
+    // the instance still shows exactly what the consumer passed in.
+    expect(stack.expanded).toBe("does-not-exist");
+
+    expect(warn).toHaveBeenCalledTimes(1);
+    expect(warn.mock.calls[0][0]).toContain("[PanelStack]");
+    expect(warn.mock.calls[0][0]).toContain("does-not-exist");
+    warn.mockRestore();
+  });
+
+  it("does not fire onExpandedChange/expandedChange on its own — healing the scroll owner is purely an internal read, never a synthetic change notification", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const onExpandedChange = vi.fn();
+    const stack = newStack();
+    stack.expanded = "does-not-exist";
+    stack.onExpandedChange = onExpandedChange;
+    const emitted: Array<string | null> = [];
+    stack.expandedChange.subscribe((v) => emitted.push(v));
+
+    stack.register("a", fakeEl("a"), fakeEl("a-h"));
+    stack.register("b", fakeEl("b"), fakeEl("b-h"));
+    // Read state repeatedly — must never itself trigger a change output.
+    for (let i = 0; i < 3; i++) {
+      stack.isExpanded("a");
+      stack.isScrollOwner("a");
+    }
+
+    expect(onExpandedChange).not.toHaveBeenCalled();
+    expect(emitted).toEqual([]);
+    warn.mockRestore();
+  });
+
+  it("does not re-warn on repeated reads (isScrollOwner/isExpanded checked across every section, several times)", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const stack = newStack();
+    stack.expanded = "does-not-exist";
+    for (const id of ["a", "b", "c"]) stack.register(id, fakeEl(id), fakeEl(`${id}-h`));
+
+    for (let i = 0; i < 5; i++) {
+      for (const id of ["a", "b", "c"]) {
+        stack.isScrollOwner(id);
+        stack.isExpanded(id);
+      }
+    }
+
+    expect(warn).toHaveBeenCalledTimes(1);
+    warn.mockRestore();
+  });
+
+  it("a click still fires onExpandedChange/expandedChange (the controlled contract is intact) but does not move the resolved scroll owner", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const onExpandedChange = vi.fn();
+    const stack = newStack();
+    stack.expanded = "does-not-exist";
+    stack.onExpandedChange = onExpandedChange;
+    stack.register("a", fakeEl("a"), fakeEl("a-h"));
+    stack.register("b", fakeEl("b"), fakeEl("b-h"));
+
+    stack.toggle("b");
+
+    expect(onExpandedChange).toHaveBeenCalledWith("b");
+    expect(stack.expanded).toBe("does-not-exist");
+    expect(["a", "b"].filter((id) => stack.isScrollOwner(id))).toEqual(["a"]);
+    warn.mockRestore();
+  });
+
+  it("does not warn before any section has registered (nothing to fall back to yet)", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const stack = newStack();
+    stack.expanded = "does-not-exist";
+    // No `register()` calls at all — reading state must not warn prematurely.
+    expect(stack.effectiveExpandedId).toBe("does-not-exist");
+    expect(warn).not.toHaveBeenCalled();
+    warn.mockRestore();
   });
 });
 
@@ -344,6 +454,24 @@ describe("resolvePanelStackPrimary — pure fallback-chain resolver", () => {
   });
 });
 
+describe("resolvePanelStackExpanded — pure resolver for sticky-item's healed expanded/scroll-owner id", () => {
+  it("a valid, registered id is returned as-is", () => {
+    expect(resolvePanelStackExpanded("b", ["a", "b", "c"])).toBe("b");
+  });
+
+  it("a non-null id naming no registered section (a mistake) falls back to the first registered id", () => {
+    expect(resolvePanelStackExpanded("does-not-exist", ["a", "b", "c"])).toBe("a");
+  });
+
+  it("explicit null (deliberate 'everything collapsed') is returned as-is — no fallback", () => {
+    expect(resolvePanelStackExpanded(null, ["a", "b", "c"])).toBe(null);
+  });
+
+  it("a non-null invalid id with no registered sections at all resolves to null (nothing to fall back to)", () => {
+    expect(resolvePanelStackExpanded("does-not-exist", [])).toBe(null);
+  });
+});
+
 describe("computePanelStackAutoCollapse — pure decision function", () => {
   const base = {
     primaryId: "a",
@@ -415,6 +543,77 @@ describe("computePanelStackAutoCollapse — pure decision function", () => {
     // numbers: 1px under the floor collapses, exactly at the floor fits.
     expect(computePanelStackAutoCollapse({ ...base, stackHeight: 40 + 250 + 159 })).toBe("b");
     expect(computePanelStackAutoCollapse({ ...base, stackHeight: 40 + 250 + 160 })).toBe(null);
+  });
+});
+
+describe("PanelStack — primaryMinHeight drives the CSS floor via an inline custom property, and the JS threshold", () => {
+  it("defaults the resolved floor and the host's custom property to 160px (PRIMARY_MIN_BLOCK_SIZE_PX) when primaryMinHeight is unset", () => {
+    const stack = newStack();
+    expect(stack.resolvedPrimaryMinHeight).toBe(160);
+    expect(stack.primaryMinHeightStyle).toBe("160px");
+  });
+
+  it("a custom primaryMinHeight is the single source of truth for BOTH the resolved JS floor and the host's inline custom property", () => {
+    const stack = newStack();
+    stack.primaryMinHeight = 220;
+    expect(stack.resolvedPrimaryMinHeight).toBe(220);
+    expect(stack.primaryMinHeightStyle).toBe("220px");
+  });
+
+  describe("a custom primaryMinHeight changes WHEN auto-collapse triggers, not just the CSS floor", () => {
+    beforeEach(() => {
+      FakeResizeObserver.instances = [];
+      vi.stubGlobal("ResizeObserver", FakeResizeObserver);
+    });
+
+    afterEach(() => {
+      vi.unstubAllGlobals();
+    });
+
+    it("collapses a secondary at a gap that comfortably fits the default 160px floor but not a custom, higher one", () => {
+      const host = fakeHost();
+      const stack = new PanelStack(host.ref);
+      stack.shape = "split-primary";
+      stack.primary = "a";
+      stack.primaryMinHeight = 300;
+      const headerA = fakeEl("a-header");
+      const rootB = fakeEl("b-root");
+      stack.register("a", fakeEl("a-root"), headerA);
+      stack.register("b", rootB, fakeEl("b-header"));
+      stack.ngAfterViewInit();
+
+      stack.toggle("b");
+
+      fireResize(host.el, 400);
+      fireResize(headerA, 40);
+      fireResize(rootB, 100);
+      // available = 400 - 40 - 100 = 260: >= the default 160px floor (would
+      // NOT collapse there) but < the custom 300px floor set above — proof
+      // `runAutoCollapseDecision` actually reads the input, not a fixed
+      // constant.
+      expect(stack.isExpanded("b")).toBe(false);
+      expect(stack.isScrollOwner("a")).toBe(true);
+    });
+
+    it("the SAME gap does NOT collapse anything under the default 160px floor (control case)", () => {
+      const host = fakeHost();
+      const stack = new PanelStack(host.ref);
+      stack.shape = "split-primary";
+      stack.primary = "a";
+      const headerA = fakeEl("a-header");
+      const rootB = fakeEl("b-root");
+      stack.register("a", fakeEl("a-root"), headerA);
+      stack.register("b", rootB, fakeEl("b-header"));
+      stack.ngAfterViewInit();
+
+      stack.toggle("b");
+
+      fireResize(host.el, 400);
+      fireResize(headerA, 40);
+      fireResize(rootB, 100);
+      // available = 260 >= 160 (default): fits, nothing collapses.
+      expect(stack.isExpanded("b")).toBe(true);
+    });
   });
 });
 

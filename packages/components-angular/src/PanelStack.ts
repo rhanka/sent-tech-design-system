@@ -20,14 +20,20 @@ export type PanelStackShape = "split-primary" | "sticky-item";
 export const PANEL_STACK_MAX_SECTIONS = 4;
 
 /**
- * Floor (px) below which the primary must never be squeezed by split-primary
- * auto-collapse. Kept in sync with the CSS token
- * `--st-component-panelStack-primaryMinBlockSize` (10rem @ a 16px root font
- * size) — not read via `getComputedStyle` because this package's Node test
- * environment has no DOM at all, which would make the threshold untestable;
- * a hardcoded, documented, kept-in-sync numeric mirror of the CSS default is
- * this codebase's existing pattern (see MenuPopover's `MIN_HEIGHT`/`GAP`).
- * Mirrors `PanelStack.svelte`'s local `PRIMARY_MIN_BLOCK_SIZE_PX`.
+ * Default for the `primaryMinHeight` input below. The INPUT — not this
+ * constant — is the single source of truth for both the JS auto-collapse
+ * threshold (`resolvedPrimaryMinHeight`, fed into
+ * `computePanelStackAutoCollapse`'s `floorPx`) and the CSS floor: the host
+ * emits it as an inline `--st-component-panelStack-primaryMinBlockSize`
+ * custom property (see the `@Component` `host` binding), which styles.css's
+ * `.st-panelSection__body--scrollOwner` rule reads via `var(...)` — kept in
+ * sync with that stylesheet's `160px` var() fallback for the case where
+ * nothing sets the inline property. Not read back via `getComputedStyle`:
+ * this package's Node test environment has no DOM at all, which would make
+ * the threshold untestable; a hardcoded, documented, kept-in-sync numeric
+ * mirror of the CSS default is this codebase's existing pattern (see
+ * MenuPopover's `MIN_HEIGHT`/`GAP`). Mirrors `PanelStack.svelte`'s local
+ * `PRIMARY_MIN_BLOCK_SIZE_PX`.
  */
 const PRIMARY_MIN_BLOCK_SIZE_PX = 160;
 
@@ -50,6 +56,10 @@ export type PanelStackProps = {
    * never degrades to zero scroll owners.
    */
   primary?: string;
+  /** Usable floor for the primary section, in px. While the primary sits above it the
+      primary absorbs overflow; once it would drop below, a secondary auto-collapses
+      instead of compressing the primary further. Default 160. */
+  primaryMinHeight?: number;
   /**
    * At most {@link PANEL_STACK_MAX_SECTIONS} `PanelSection` children are
    * supported — see that constant's doc comment for why.
@@ -80,6 +90,52 @@ export function resolvePanelStackPrimary(
   }
   const firstExpanded = orderedIds.find((id) => openIds.has(id));
   if (firstExpanded !== undefined) return firstExpanded;
+  return orderedIds[0] ?? null;
+}
+
+/**
+ * Pure resolver for sticky-item's effective expanded/scroll-owner id — a
+ * SINGLE resolved value deliberately reused by the class for both
+ * `isExpanded` and `isScrollOwner` in that shape (see `effectiveExpandedId`).
+ * Splitting these into two different values would let a section render as
+ * the (visible, `overflow:auto`) scroll owner while its trigger reports
+ * `aria-expanded="false"` — a screen reader announcing "collapsed" for
+ * on-screen, scrolling content. sticky-item's contract is that "expanded"
+ * and "owns the scroll" are the same fact about the same section by
+ * definition, so this resolver is the one place that fact is decided, for
+ * both.
+ *
+ * The controlled counterpart to `effectiveExpandedId`'s uncontrolled
+ * fallback (which already resolves to the first registered id on its own).
+ * Mirrors `resolvePanelStackPrimary`'s last-resort tier so this package's
+ * Node test environment can exercise the decision without any
+ * component/DOM machinery.
+ *
+ * Ratified cross-framework rule: a controlled `expanded` is NEVER silently
+ * corrected — the caller must still expose the raw, possibly-invalid value
+ * back to the consumer (never rewritten, never fed through
+ * `onExpandedChange`) — that is about the PROP, not about what gets
+ * rendered: ARIA still has to describe the actual DOM, so the resolved
+ * (possibly healed) value below is what both `isExpanded` and
+ * `isScrollOwner` read. Two distinct controlled inputs are told apart here:
+ *
+ * - `expandedId` is a non-null id that names NO id in `orderedIds`: this is
+ *   a MISTAKE (a stale/typo'd controlled value) — the consumer intended a
+ *   section open and silently got none, which is exactly the "content
+ *   unreachable by the wheel" state the stack must never reach. Falls back
+ *   to the first registered id, identically to `resolvePanelStackPrimary`'s
+ *   own tier 3.
+ * - `expandedId` is explicitly `null`: this is a DELIBERATE "everything
+ *   collapsed" — honoured as-is, no fallback. An all-collapsed stack shows
+ *   no content at all, so nothing is unreachable; zero scroll owners is the
+ *   correct, legitimate outcome here.
+ */
+export function resolvePanelStackExpanded(
+  expandedId: string | null,
+  orderedIds: readonly string[],
+): string | null {
+  if (expandedId === null) return null;
+  if (orderedIds.includes(expandedId)) return expandedId;
   return orderedIds[0] ?? null;
 }
 
@@ -192,6 +248,13 @@ export function computePanelStackAutoCollapse(
     "[class]": "hostClass",
     role: "group",
     "[attr.aria-label]": "label ?? null",
+    // `primaryMinHeight` is the single source of truth for BOTH the JS
+    // auto-collapse threshold (`resolvedPrimaryMinHeight`, read below) and
+    // the CSS floor: styles.css's `.st-panelSection__body--scrollOwner` rule
+    // reads this same inherited custom property via
+    // `var(--st-component-panelStack-primaryMinBlockSize, 160px)`, so the
+    // two can never drift apart again.
+    "[style.--st-component-panelStack-primaryMinBlockSize]": "primaryMinHeightStyle",
   },
   template: `<ng-content></ng-content>`,
 })
@@ -212,6 +275,7 @@ export class PanelStack implements OnInit, AfterContentInit, AfterViewInit, OnCh
    *  `[(expanded)]` two-way binding alongside `onExpandedChange`. */
   @Output() readonly expandedChange = new EventEmitter<string | null>();
   @NgInput() primary?: string;
+  @NgInput() primaryMinHeight?: number;
   @NgInput("class") classInput?: string;
 
   @ContentChildren(PanelSection, { descendants: true }) private sectionsQuery?: QueryList<PanelSection>;
@@ -227,6 +291,12 @@ export class PanelStack implements OnInit, AfterContentInit, AfterViewInit, OnCh
   private primaryHeaderHeight = 0;
   private resizeObserver: ResizeObserver | null = null;
   private observedPrimaryHeaderEl: HTMLElement | null = null;
+  /** Dev-time "warned once" latch for a controlled `expanded` naming no
+   *  registered section — see `effectiveExpandedId`. Guards the
+   *  `console.warn` only, never the fallback resolution itself (which must
+   *  always resolve a scroll owner). Never reset: the contract is "a
+   *  console.warn once" (per instance), not "once per distinct bad id". */
+  private warnedInvalidExpanded = false;
 
   // --- @ContentChildren glue: reconcile the discovered PanelSection
   // instances against `entries`/subscriptions, and push state back onto
@@ -256,11 +326,17 @@ export class PanelStack implements OnInit, AfterContentInit, AfterViewInit, OnCh
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes["primary"] || changes["shape"]) {
+    if (changes["primary"] || changes["shape"] || changes["primaryMinHeight"]) {
       this.syncPrimaryHeaderObserver();
       this.runAutoCollapseDecision();
     }
-    if (changes["primary"] || changes["shape"] || changes["expanded"] || changes["defaultExpanded"]) {
+    if (
+      changes["primary"] ||
+      changes["shape"] ||
+      changes["expanded"] ||
+      changes["defaultExpanded"] ||
+      changes["primaryMinHeight"]
+    ) {
       this.applyStateToChildren();
     }
   }
@@ -287,8 +363,39 @@ export class PanelStack implements OnInit, AfterContentInit, AfterViewInit, OnCh
     return this.expanded !== undefined;
   }
 
+  /**
+   * sticky-item: the controlled branch NEVER rewrites `this.expanded` (the
+   * controlled contract is absolute — no self-correction, no synthetic
+   * `onExpandedChange`/`expandedChange` call), but it DOES resolve through
+   * `resolvePanelStackExpanded` so every DERIVED read (`isExpanded`,
+   * `isScrollOwner`) sees a healed value: a non-null `expanded` naming no
+   * registered section falls back to the first registered id (with a
+   * one-time dev warning below); an explicit `null` is a deliberate
+   * "everything collapsed" and is returned as-is. Guarded by
+   * `this.entries.length > 0` so a controlled value isn't flagged as
+   * "invalid" before any `PanelSection` has had a chance to register yet.
+   */
   get effectiveExpandedId(): string | null {
-    if (this.controlled) return this.expanded ?? null;
+    if (this.controlled) {
+      const rawExpanded = this.expanded ?? null;
+      // Explicit null: deliberate "everything collapsed" — honoured as-is,
+      // never escalated to the fallback below (see resolvePanelStackExpanded's
+      // doc). No sections registered yet: defer judgment entirely — a
+      // controlled value isn't "invalid" before any `PanelSection` has had a
+      // chance to register, so return it untouched rather than resolving
+      // against an empty list (which would otherwise heal it to `null`).
+      if (rawExpanded === null) return null;
+      const orderedIds = this.entries.map((e) => e.id);
+      if (orderedIds.length === 0) return rawExpanded;
+      const resolved = resolvePanelStackExpanded(rawExpanded, orderedIds);
+      if (resolved !== rawExpanded && !this.warnedInvalidExpanded) {
+        this.warnedInvalidExpanded = true;
+        console.warn(
+          `[PanelStack] expanded="${rawExpanded}" does not match any registered section — the controlled value is left untouched, but "${resolved}" is resolved internally as the scroll owner so the stack never has zero.`,
+        );
+      }
+      return resolved;
+    }
     if (this.internalExpanded !== null && this.entries.some((e) => e.id === this.internalExpanded)) {
       return this.internalExpanded;
     }
@@ -302,6 +409,22 @@ export class PanelStack implements OnInit, AfterContentInit, AfterViewInit, OnCh
       this.entries.map((e) => e.id),
       this.openSecondary,
     );
+  }
+
+  /** Resolved floor fed to `computePanelStackAutoCollapse`'s `floorPx` —
+   *  falls back to `PRIMARY_MIN_BLOCK_SIZE_PX` (the same value as the CSS
+   *  fallback) when `primaryMinHeight` is unset. */
+  get resolvedPrimaryMinHeight(): number {
+    return this.primaryMinHeight ?? PRIMARY_MIN_BLOCK_SIZE_PX;
+  }
+
+  /** Inline value for the host's `--st-component-panelStack-primaryMinBlockSize`
+   *  custom property — see the `host` binding in the `@Component` decorator.
+   *  `resolvedPrimaryMinHeight` is the single source of truth this is
+   *  derived from, so the JS threshold and the CSS floor can never drift
+   *  apart. */
+  get primaryMinHeightStyle(): string {
+    return `${this.resolvedPrimaryMinHeight}px`;
   }
 
   isPrimary(id: string): boolean {
@@ -521,7 +644,7 @@ export class PanelStack implements OnInit, AfterContentInit, AfterViewInit, OnCh
         autoCollapsed: this.autoCollapsed,
         expansionOrder: this.expansionOrder,
       },
-      PRIMARY_MIN_BLOCK_SIZE_PX,
+      this.resolvedPrimaryMinHeight,
     );
     if (candidate !== null) this.autoCollapsed.add(candidate);
   }

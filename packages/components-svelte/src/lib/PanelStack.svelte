@@ -177,11 +177,12 @@
   // Controlled vs uncontrolled `expanded` — same dual-prop idiom as
   // SelectableList's `value`/`internal` (controlled whenever the prop is
   // passed at all, including explicit `null`). `internalExpanded` is the raw
-  // seed / last explicit choice; `effectiveExpandedId` is what actually
-  // renders and is the one place the "never zero scroll owners" fallback
-  // lives: it resolves to the first registered section whenever
-  // `internalExpanded` is unset OR points at a section that no longer exists
-  // (e.g. the previously-expanded section just unmounted).
+  // seed / last explicit choice. `effectiveExpandedId` is the RAW resolved
+  // value — controlled or the uncontrolled/first-registered fallback — used
+  // below as `toggle`'s "is this already the selection" reference. It is NOT
+  // what `isExpanded` reports for sticky-item any more (see
+  // `effectiveScrollOwnerId` below): the two agree in every normal case, and
+  // diverge only for a controlled `expanded` matching no registered section.
   const controlled = $derived(expanded !== undefined);
   // `untrack`: this is a one-time SEED, not a live binding to `defaultExpanded`
   // — same idiom as RangeSlider's `defaultValue`.
@@ -195,16 +196,22 @@
     return firstId;
   });
 
-  // sticky-item's scroll owner. Normally identical to `effectiveExpandedId`
-  // above, with ONE exception: a controlled `expanded` set to a STRING that
-  // matches no registered section. The consumer clearly intended some
-  // section open and got none — that is content unreachable by the wheel,
-  // the one state this whole component pair exists to prevent — so a scroll
-  // owner is still resolved here, invisibly, via the same first-registered
-  // fallback everything else in this file uses, WITHOUT touching `expanded`
-  // itself (overriding a controlled prop would be a worse violation than the
-  // one being fixed; every header still renders collapsed, matching what the
-  // prop asked for). A controlled `expanded` of exactly `null`, by contrast,
+  // sticky-item's expanded-AND-scroll-owner section — the two are the same
+  // thing by definition in this shape (exactly one section is expanded and
+  // it owns the scroll), so this single value backs BOTH `isExpanded` and
+  // `isScrollOwner` for sticky-item. Normally identical to
+  // `effectiveExpandedId` above, with ONE exception: a controlled `expanded`
+  // set to a STRING that matches no registered section. The consumer clearly
+  // intended some section open and got none — that is content unreachable by
+  // the wheel, the one state this whole component pair exists to prevent —
+  // so a fallback section is resolved here, invisibly, via the same
+  // first-registered fallback everything else in this file uses, WITHOUT
+  // touching `expanded` itself (overriding a controlled prop would be a
+  // worse violation than the one being fixed). That fallback section is
+  // reported as genuinely expanded — aria-expanded="true", scroll-owner
+  // styling — because it IS what is actually rendered and scrolling; ARIA
+  // must describe the DOM, not an unmatched prop value a screen reader user
+  // can't see anyway. A controlled `expanded` of exactly `null`, by contrast,
   // is a DELIBERATE "everything collapsed" and is honoured as-is: nothing is
   // hidden from the user in that state (every section is visibly, correctly,
   // collapsed), so zero scroll owners is legitimate there, not a bug to
@@ -217,7 +224,7 @@
     if (!controlled) return effectiveExpandedId;
     if (expanded == null) return null; // deliberate "everything collapsed" — legitimate zero.
     if (entries.some((e) => e.id === expanded)) return expanded;
-    return firstId; // invalid id — heal the scroll owner only, never the prop.
+    return firstId; // invalid id — heal the rendered section only, never the prop.
   });
 
   // Dev-time visibility for the fallback above — same `[PanelStack] …`
@@ -233,7 +240,7 @@
     if (warnedInvalidControlledExpanded) return;
     warnedInvalidControlledExpanded = true;
     console.warn(
-      `[PanelStack] expanded="${expanded}" does not match any registered section. The prop is left untouched — every header still renders collapsed — but a scroll owner is still resolved internally via the first registered section so the stack never has zero.`
+      `[PanelStack] expanded="${expanded}" does not match any registered section. The prop is left untouched, but the first registered section is resolved internally as the expanded, scroll-owning fallback so the stack never has zero scroll owners (and ARIA matches what actually renders).`
     );
   });
 
@@ -404,7 +411,18 @@
       if (id === effectivePrimary) return true;
       return openSecondary.has(id) && !autoCollapsed.has(id);
     }
-    return id === effectiveExpandedId;
+    // sticky-item: expanded and scroll owner are the same thing by
+    // definition — exactly one section is expanded and it owns the scroll —
+    // so this reads `effectiveScrollOwnerId`, NOT `effectiveExpandedId`.
+    // They agree in every normal case (uncontrolled, controlled-valid,
+    // controlled-null); they diverge only when a controlled `expanded`
+    // matches no registered section, and THAT is exactly the case where
+    // aria-expanded must track what is actually rendered (the fallback
+    // section, visibly scrolling), not the unmatched prop value — otherwise
+    // a screen reader announces "collapsed" for an on-screen, scrolling
+    // region. The controlled prop itself is still never written here; this
+    // only changes what `isExpanded` reports.
+    return id === effectiveScrollOwnerId;
   }
 
   function isScrollOwner(id: string): boolean {
