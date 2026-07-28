@@ -224,4 +224,6 @@ export { KanbanBoard } from "./KanbanBoard.js";
 export { MasterDetail } from "./MasterDetail.js";
 export { Dashboard } from "./Dashboard.js";
 export { Wizard } from "./Wizard.js";
+export { PanelStack, PANEL_STACK_MAX_SECTIONS, resolvePanelStackPrimary, computePanelStackAutoCollapse } from "./PanelStack.js";
+export { PanelSection } from "./PanelSection.js";
 //# sourceMappingURL=index.js.map
