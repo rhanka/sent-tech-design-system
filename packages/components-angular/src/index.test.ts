@@ -6,8 +6,12 @@ import "@angular/compiler";
 import * as angular from "../dist/index.js";
 
 const svelteIndex = readFileSync(resolve("../components-svelte/src/lib/index.ts"), "utf8");
+// Anchored to line start (with `m`) so a commented-out export line is not read
+// as a real one — an unanchored pattern matched inside `// export { default as
+// Foo }` and demanded an Angular component for a Svelte export that does not
+// exist.
 const componentNames = [
-  ...svelteIndex.matchAll(/export \{ default as (\w+)(?:,| \})/g),
+  ...svelteIndex.matchAll(/^export \{ default as (\w+)(?:,| \})/gm),
 ]
   .map((match) => match[1])
   // AppShell + IdentityButton = chrome applicatif svelte-only (ex-paquet app-shell,
