@@ -18317,13 +18317,18 @@
    `overflow: hidden`, content-sized or collapsed to zero.
 
    `min-block-size` is the floor split-primary's auto-collapse protects:
-   secondaries collapse before the primary is ever squeezed below this. Keep
-   the fallback in sync with PanelStack.tsx's `PRIMARY_MIN_BLOCK_SIZE_PX`.
-   Harmless for sticky-item too (there is only ever one scroll owner in that
-   shape as well). */
+   secondaries collapse before the primary is ever squeezed below this.
+   PanelStack's `primaryMinHeight` prop is the single source of truth for
+   this value — it emits `--st-component-panelStack-primaryMinBlockSize` as
+   an inline custom property on the stack root, so the JS auto-collapse
+   threshold and this CSS floor can no longer drift apart. The `160px`
+   fallback below only applies when nothing sets the custom property, and
+   must be kept in sync with PanelStack.tsx's `PRIMARY_MIN_BLOCK_SIZE_PX`
+   (the prop's own default). Harmless for sticky-item too (there is only
+   ever one scroll owner in that shape as well). */
 .st-panelSection__body--scrollOwner {
   flex: 1 1 0;
-  min-block-size: var(--st-component-panelStack-primaryMinBlockSize, 10rem);
+  min-block-size: var(--st-component-panelStack-primaryMinBlockSize, 160px);
   overflow: auto;
 }
 

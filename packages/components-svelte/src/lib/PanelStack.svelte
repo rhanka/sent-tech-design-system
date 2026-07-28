@@ -14,6 +14,20 @@
    */
   export const PANEL_STACK_MAX_SECTIONS = 4;
 
+  /**
+   * Default of `PanelStackProps.primaryMinHeight` (the primary section's
+   * usable floor, in px) — exported so a consumer can reference the default
+   * without hardcoding it. This is also the ONLY place the number is
+   * hardcoded: PanelStack mirrors the live `primaryMinHeight` prop (which
+   * defaults to this constant) onto the
+   * `--st-component-panelStack-primaryMinBlockSize` custom property on its
+   * own root, and the stylesheet's `min-block-size` reads that same
+   * property — so the JS auto-collapse threshold and the CSS floor read the
+   * same number and can no longer drift apart the way two independently
+   * hardcoded copies could.
+   */
+  export const PRIMARY_MIN_BLOCK_SIZE_PX = 160;
+
   export type PanelStackProps = {
     /** "sticky-item" (default): one section expanded at a time, all headers stay visible.
         "split-primary": the `primary` section is always expanded and owns the scroll;
@@ -33,6 +47,10 @@
      * degrades to zero scroll owners.
      */
     primary?: string;
+    /** Usable floor for the primary section, in px. While the primary sits above it the
+        primary absorbs overflow; once it would drop below, a secondary auto-collapses
+        instead of compressing the primary further. Default 160. */
+    primaryMinHeight?: number;
     /**
      * At most {@link PANEL_STACK_MAX_SECTIONS} `PanelSection` children are
      * supported — see that constant's doc comment for why.
@@ -84,6 +102,7 @@
     defaultExpanded = null,
     onExpandedChange,
     primary,
+    primaryMinHeight = PRIMARY_MIN_BLOCK_SIZE_PX,
     children,
     class: className
   }: PanelStackProps = $props();
@@ -176,6 +195,48 @@
     return firstId;
   });
 
+  // sticky-item's scroll owner. Normally identical to `effectiveExpandedId`
+  // above, with ONE exception: a controlled `expanded` set to a STRING that
+  // matches no registered section. The consumer clearly intended some
+  // section open and got none — that is content unreachable by the wheel,
+  // the one state this whole component pair exists to prevent — so a scroll
+  // owner is still resolved here, invisibly, via the same first-registered
+  // fallback everything else in this file uses, WITHOUT touching `expanded`
+  // itself (overriding a controlled prop would be a worse violation than the
+  // one being fixed; every header still renders collapsed, matching what the
+  // prop asked for). A controlled `expanded` of exactly `null`, by contrast,
+  // is a DELIBERATE "everything collapsed" and is honoured as-is: nothing is
+  // hidden from the user in that state (every section is visibly, correctly,
+  // collapsed), so zero scroll owners is legitimate there, not a bug to
+  // heal. The uncontrolled path already resolves its own first-registered
+  // fallback inside `effectiveExpandedId` above, so it needs no separate
+  // handling here. split-primary has its own equivalent (`effectivePrimary`)
+  // and never reads `expanded` at all.
+  const effectiveScrollOwnerId = $derived.by((): string | null => {
+    if (shape === "split-primary") return null; // handled by effectivePrimary instead.
+    if (!controlled) return effectiveExpandedId;
+    if (expanded == null) return null; // deliberate "everything collapsed" — legitimate zero.
+    if (entries.some((e) => e.id === expanded)) return expanded;
+    return firstId; // invalid id — heal the scroll owner only, never the prop.
+  });
+
+  // Dev-time visibility for the fallback above — same `[PanelStack] …`
+  // convention as PANEL_STACK_MAX_SECTIONS' warning in `register()`. Fired at
+  // most once per instance, not once per registration: sections register
+  // incrementally as each PanelSection mounts, and the condition below can
+  // keep holding across several of those ticks before `entries` settles.
+  let warnedInvalidControlledExpanded = false;
+  $effect(() => {
+    if (shape === "split-primary") return; // `expanded` has no effect on that shape.
+    if (!controlled || expanded == null) return;
+    if (entries.some((e) => e.id === expanded)) return;
+    if (warnedInvalidControlledExpanded) return;
+    warnedInvalidControlledExpanded = true;
+    console.warn(
+      `[PanelStack] expanded="${expanded}" does not match any registered section. The prop is left untouched — every header still renders collapsed — but a scroll owner is still resolved internally via the first registered section so the stack never has zero.`
+    );
+  });
+
   // Independent open/closed state for split-primary's NON-primary sections.
   // Always uncontrolled — the API exposes no prop for it, only `primary` is
   // stable for that shape. Several sections may be open at once; a section
@@ -223,16 +284,6 @@
    *  never touches this list itself, only `toggle()` does, so a user re-open
    *  always makes that section the last one considered for collapse again. */
   let expansionOrder = $state<string[]>([]);
-
-  // Kept in sync with the CSS fallback for
-  // --st-component-panelStack-primaryMinBlockSize (10rem @ a 16px root font
-  // size) below. Not read via getComputedStyle: this package's test
-  // environment (jsdom) does not reliably resolve CSS custom properties/rem
-  // units in computed style, which would make the threshold untestable; a
-  // hardcoded, documented, kept-in-sync constant is this codebase's existing
-  // pattern for a JS-side numeric mirror of a CSS default (see
-  // ChatComposer.svelte's hardcoded line-height multiples).
-  const PRIMARY_MIN_BLOCK_SIZE_PX = 160;
 
   let resizeObserver: ResizeObserver | null = null;
   let observedPrimaryHeaderEl: HTMLElement | null = null;
@@ -294,8 +345,9 @@
   });
 
   // THE decision. Re-evaluates only when a REAL measurement changes
-  // (stackHeight / primaryHeaderHeight / rootHeights / entries) or the primary
-  // itself changes — `openSecondary`/`autoCollapsed`/`expansionOrder` are read
+  // (stackHeight / primaryHeaderHeight / rootHeights / entries), the primary
+  // itself changes, or the consumer tunes `primaryMinHeight` at runtime —
+  // `openSecondary`/`autoCollapsed`/`expansionOrder` are read
   // through `untrack` so that THIS effect's own write to `autoCollapsed` never
   // re-triggers itself with stale (pre-layout) measurements. That is what
   // guarantees convergence: each pass collapses at most one NEW secondary,
@@ -318,7 +370,7 @@
       secondaryTotal += rootHeights.get(e.id) ?? 0;
     }
     const available = stackHeight - primaryHeaderHeight - secondaryTotal;
-    if (available >= PRIMARY_MIN_BLOCK_SIZE_PX) return;
+    if (available >= primaryMinHeight) return;
 
     // Both the candidate search AND the Set construction below must read
     // `autoCollapsed` inside `untrack` — reading it ANYWHERE untracked in
@@ -356,7 +408,7 @@
   }
 
   function isScrollOwner(id: string): boolean {
-    return shape === "split-primary" ? id === effectivePrimary : id === effectiveExpandedId;
+    return shape === "split-primary" ? id === effectivePrimary : id === effectiveScrollOwnerId;
   }
 
   function toggle(id: string) {
@@ -404,7 +456,13 @@
   const classes = $derived(["st-panelStack", className].filter(Boolean).join(" "));
 </script>
 
-<div class={classes} role="group" aria-label={label} bind:this={stackEl}>
+<div
+  class={classes}
+  role="group"
+  aria-label={label}
+  bind:this={stackEl}
+  style="--st-component-panelStack-primaryMinBlockSize: {primaryMinHeight}px"
+>
   {@render children?.()}
 </div>
 
