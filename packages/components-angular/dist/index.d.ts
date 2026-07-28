@@ -5,7 +5,7 @@ export type { AppHeaderProps } from "./AppHeader.js";
 export { AppChrome } from "./AppChrome.js";
 export type { AppChromeNavItem, AppChromeThemeOption, AppChromeColorMode, AppChromeLocale, AppChromeProps } from "./AppChrome.js";
 export { AppShell } from "./AppShell.js";
-export type { AppShellPanelCollapse, AppShellProps, AppShellUtilityMode, AppShellUtilitySide, AppShellVariant } from "./AppShell.js";
+export type { AppShellPanelCollapse, AppShellPanelKey, AppShellProps, AppShellUtilityMode, AppShellUtilitySide, AppShellVariant, } from "./AppShell.js";
 export { NavShell } from "./NavShell.js";
 export type { NavShellProps, NavShellSide, NavShellVariant } from "./NavShell.js";
 export { NavRail } from "./NavRail.js";
