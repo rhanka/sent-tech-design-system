@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
-import { h } from "vue";
+import { defineComponent, h, nextTick, ref } from "vue";
 import {
   Accordion,
   Alert,
@@ -1975,35 +1975,223 @@ describe("Vue behavioral parity — batch 4", () => {
   });
 
   // --- MenuPopover ---
+  // A small harness mirroring the real Svelte consumer pattern (TimeRangePicker.svelte,
+  // IdentityButton.svelte): the trigger button is rendered by the CONSUMER, not by
+  // MenuPopover itself, and its DOM node is passed in as the `trigger` prop.
+  const MenuPopoverHarness = defineComponent({
+    name: "MenuPopoverHarness",
+    props: {
+      closeOnOutside: { type: Boolean, default: true },
+      closeOnEscape: { type: Boolean, default: true },
+      placement: { type: String, default: "bottom-start" },
+    },
+    setup(props) {
+      const open = ref(false);
+      const triggerRef = ref<HTMLElement | null>(null);
+      return () =>
+        h("div", [
+          h(
+            "button",
+            {
+              type: "button",
+              class: "harness-trigger",
+              ref: triggerRef,
+              "aria-expanded": open.value ? "true" : "false",
+              onClick: () => {
+                open.value = !open.value;
+              },
+            },
+            "Trigger",
+          ),
+          h(
+            MenuPopover,
+            {
+              open: open.value,
+              "onUpdate:open": (value: boolean) => {
+                open.value = value;
+              },
+              trigger: triggerRef.value,
+              label: "Menu",
+              placement: props.placement,
+              closeOnOutside: props.closeOnOutside,
+              closeOnEscape: props.closeOnEscape,
+            },
+            { default: () => h("button", { type: "button", class: "inside-item" }, "Item") },
+          ),
+        ]);
+    },
+  });
+
   describe("MenuPopover", () => {
-    it("renders div.st-menuPopover", () => {
-      const wrapper = mount(MenuPopover, { props: { items: [], open: false } });
+    it("renders no popover element when closed (was: always-mounted shell)", () => {
+      const wrapper = mount(MenuPopover, { props: { items: [], open: false, label: "Menu" } });
+      expect(wrapper.find(".st-menuPopover").exists()).toBe(false);
+    });
+
+    it("renders children directly inside .st-menuPopover when open=true (no wrapper div, Svelte DOM parity)", () => {
+      const wrapper = mount(MenuPopover, {
+        props: { items: [{ label: "Item" }], open: true, label: "Menu" },
+      });
       expect(wrapper.find(".st-menuPopover").exists()).toBe(true);
-    });
-
-    it("shows content when open=true", () => {
-      const wrapper = mount(MenuPopover, {
-        props: { items: [{ label: "Item" }], open: true },
-      });
-      expect(wrapper.find(".st-menuPopover__content").exists()).toBe(true);
-    });
-
-    it("hides content when open=false", () => {
-      const wrapper = mount(MenuPopover, {
-        props: { items: [{ label: "Item" }], open: false },
-      });
       expect(wrapper.find(".st-menuPopover__content").exists()).toBe(false);
+      expect(wrapper.find(".st-menuPopover .st-menu").exists()).toBe(true);
+    });
+
+    it("sets role=dialog and aria-label from the label prop", () => {
+      const wrapper = mount(MenuPopover, { props: { open: true, label: "Actions menu" } });
+      const panel = wrapper.find(".st-menuPopover");
+      expect(panel.attributes("role")).toBe("dialog");
+      expect(panel.attributes("aria-label")).toBe("Actions menu");
     });
 
     it("applies placement modifier", () => {
       const wrapper = mount(MenuPopover, {
-        props: { items: [], open: false, placement: "top-end" },
+        props: { items: [], open: true, label: "Menu", placement: "top-end" },
       });
       expect(wrapper.find(".st-menuPopover--top-end").exists()).toBe(true);
     });
 
     it("has name MenuPopover", () => {
       expect(MenuPopover.name).toBe("MenuPopover");
+    });
+
+    it("computes a viewport-aware max-height from the trigger position (not a flat max-height:100vh)", async () => {
+      const originalInnerHeight = window.innerHeight;
+      const trigger = document.createElement("button");
+      document.body.appendChild(trigger);
+      vi.spyOn(trigger, "getBoundingClientRect").mockReturnValue({
+        top: 40,
+        bottom: 200,
+        left: 10,
+        right: 10,
+        width: 0,
+        height: 0,
+        x: 10,
+        y: 40,
+        toJSON() {
+          return {};
+        },
+      } as DOMRect);
+      Object.defineProperty(window, "innerHeight", { configurable: true, value: 600 });
+
+      try {
+        const wrapper = mount(MenuPopover, {
+          props: { open: true, label: "Menu", trigger, placement: "bottom-start" },
+        });
+        await nextTick();
+        const panel = wrapper.find(".st-menuPopover").element as HTMLElement;
+        // available space below trigger = innerHeight(600) - bottom(200) - GAP(4) - VIEWPORT_MARGIN(8) = 388
+        expect(panel.style.maxHeight).toBe("388px");
+        expect(panel.style.top).toBe("204px");
+        expect(panel.style.left).toBe("10px");
+        wrapper.unmount();
+      } finally {
+        Object.defineProperty(window, "innerHeight", { configurable: true, value: originalInnerHeight });
+        document.body.removeChild(trigger);
+      }
+    });
+
+    it("floors the computed max-height at MIN_HEIGHT when the trigger is glued to the viewport edge", async () => {
+      const originalInnerHeight = window.innerHeight;
+      const trigger = document.createElement("button");
+      document.body.appendChild(trigger);
+      vi.spyOn(trigger, "getBoundingClientRect").mockReturnValue({
+        top: 590, bottom: 590, left: 0, right: 0, width: 0, height: 0, x: 0, y: 590, toJSON() { return {}; },
+      } as DOMRect);
+      Object.defineProperty(window, "innerHeight", { configurable: true, value: 600 });
+
+      try {
+        const wrapper = mount(MenuPopover, { props: { open: true, label: "Menu", trigger } });
+        await nextTick();
+        const panel = wrapper.find(".st-menuPopover").element as HTMLElement;
+        // available space = 600 - 590 - 4 - 8 = -2 -> floored to MIN_HEIGHT (160)
+        expect(panel.style.maxHeight).toBe("160px");
+        wrapper.unmount();
+      } finally {
+        Object.defineProperty(window, "innerHeight", { configurable: true, value: originalInnerHeight });
+        document.body.removeChild(trigger);
+      }
+    });
+
+    describe("interaction lifecycle (Svelte parity)", () => {
+      function mountHarness(props: Record<string, unknown> = {}) {
+        return mount(MenuPopoverHarness, { props, attachTo: document.body });
+      }
+
+      it("trigger aria-expanded reflects open state via update:open", async () => {
+        const wrapper = mountHarness();
+        const trigger = wrapper.find(".harness-trigger");
+        expect(trigger.attributes("aria-expanded")).toBe("false");
+        await trigger.trigger("click");
+        expect(trigger.attributes("aria-expanded")).toBe("true");
+        wrapper.unmount();
+      });
+
+      it("Escape closes the panel", async () => {
+        const wrapper = mountHarness();
+        await wrapper.find(".harness-trigger").trigger("click");
+        await nextTick();
+        expect(document.querySelector(".st-menuPopover")).toBeTruthy();
+        window.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true, cancelable: true }));
+        await nextTick();
+        expect(document.querySelector(".st-menuPopover")).toBeNull();
+        expect(wrapper.find(".harness-trigger").attributes("aria-expanded")).toBe("false");
+        wrapper.unmount();
+      });
+
+      it("an outside pointerdown closes the panel", async () => {
+        const wrapper = mountHarness();
+        await wrapper.find(".harness-trigger").trigger("click");
+        await nextTick();
+        expect(document.querySelector(".st-menuPopover")).toBeTruthy();
+        document.body.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true }));
+        await nextTick();
+        expect(document.querySelector(".st-menuPopover")).toBeNull();
+        wrapper.unmount();
+      });
+
+      it("a pointerdown inside the panel does NOT close it", async () => {
+        const wrapper = mountHarness();
+        await wrapper.find(".harness-trigger").trigger("click");
+        await nextTick();
+        const item = document.querySelector(".inside-item") as HTMLElement;
+        item.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true }));
+        await nextTick();
+        expect(document.querySelector(".st-menuPopover")).toBeTruthy();
+        wrapper.unmount();
+      });
+
+      it("a pointerdown on the trigger itself does NOT close it via outside-click handling", async () => {
+        const wrapper = mountHarness();
+        await wrapper.find(".harness-trigger").trigger("click");
+        await nextTick();
+        (document.querySelector(".harness-trigger") as HTMLElement).dispatchEvent(
+          new PointerEvent("pointerdown", { bubbles: true }),
+        );
+        await nextTick();
+        expect(document.querySelector(".st-menuPopover")).toBeTruthy();
+        wrapper.unmount();
+      });
+
+      it("closeOnEscape=false keeps the panel open on Escape", async () => {
+        const wrapper = mountHarness({ closeOnEscape: false });
+        await wrapper.find(".harness-trigger").trigger("click");
+        await nextTick();
+        window.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true, cancelable: true }));
+        await nextTick();
+        expect(document.querySelector(".st-menuPopover")).toBeTruthy();
+        wrapper.unmount();
+      });
+
+      it("closeOnOutside=false keeps the panel open on outside pointerdown", async () => {
+        const wrapper = mountHarness({ closeOnOutside: false });
+        await wrapper.find(".harness-trigger").trigger("click");
+        await nextTick();
+        document.body.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true }));
+        await nextTick();
+        expect(document.querySelector(".st-menuPopover")).toBeTruthy();
+        wrapper.unmount();
+      });
     });
   });
 

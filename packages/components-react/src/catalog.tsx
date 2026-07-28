@@ -3610,19 +3610,159 @@ export function Menu({ items, dense = false, onSelect, className, role, ...rest 
   );
 }
 
-export type MenuPopoverProps = React.HTMLAttributes<HTMLDivElement> & {
-  trigger?: React.ReactNode;
-  items?: MenuItem[];
+export type MenuPopoverPlacement = "top-start" | "top-end" | "bottom-start" | "bottom-end";
+export type MenuPopoverAlign = "start" | "end" | "center";
+
+// Anchor spacing between panel and trigger.
+const MENU_POPOVER_GAP = 4;
+// Anti-overflow margin between the panel and the viewport edge.
+const MENU_POPOVER_VIEWPORT_MARGIN = 8;
+// Height floor: below this threshold we keep a usable scrollable window
+// rather than a crushed menu (rare case of a trigger glued to the edge).
+const MENU_POPOVER_MIN_HEIGHT = 160;
+
+function menuPopoverIsWithin(event: Event, node: Element | null | undefined): boolean {
+  if (!node) return false;
+  const path =
+    typeof (event as Event & { composedPath?: () => EventTarget[] }).composedPath === "function"
+      ? (event as Event & { composedPath: () => EventTarget[] }).composedPath()
+      : [];
+  if (path.includes(node)) return true;
+  const target = event.target as Node | null;
+  return Boolean(target && node.contains(target));
+}
+
+export type MenuPopoverProps = Omit<React.HTMLAttributes<HTMLDivElement>, "className"> & {
+  /** Bindable in Svelte; controlled here via `open`+`onOpenChange`, uncontrolled via `defaultOpen`. */
   open?: boolean;
-  placement?: "top-start" | "top-end" | "bottom-start" | "bottom-end";
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  /** Anchor element used for position computation and outside-click exclusion (Svelte-canonical). */
+  trigger?: HTMLElement | null;
+  placement?: MenuPopoverPlacement;
+  align?: MenuPopoverAlign;
   /** Accessible name for the panel (Svelte-canonical: applied as aria-label on role="dialog"). */
   label?: string;
+  className?: string;
+  closeOnOutside?: boolean;
+  closeOnEscape?: boolean;
+  /** Convenience (not in the Svelte contract): renders a <Menu> from `items` instead of `children`. */
+  items?: MenuItem[];
 };
-export function MenuPopover({ trigger, items = [], open = true, placement = "bottom-start", label, children, className, ...rest }: MenuPopoverProps) {
+export function MenuPopover({
+  open: controlledOpen,
+  defaultOpen = false,
+  onOpenChange,
+  trigger = null,
+  placement = "bottom-start",
+  align,
+  label,
+  className,
+  closeOnOutside = true,
+  closeOnEscape = true,
+  items = [],
+  children,
+  ...rest
+}: MenuPopoverProps) {
+  const [open, setOpen] = useControlled(controlledOpen, defaultOpen, onOpenChange);
+  const panelRef = React.useRef<HTMLDivElement | null>(null);
+  const [pos, setPos] = React.useState({ top: 0, left: 0, maxHeight: 0, alignEnd: false, alignCenter: false });
+
+  const computePosition = React.useCallback(() => {
+    if (!trigger) return;
+    const rect = trigger.getBoundingClientRect();
+    const verticalUp = placement === "top-start" || placement === "top-end";
+    const horizontalEnd = placement === "bottom-end" || placement === "top-end";
+    const resolvedAlign: MenuPopoverAlign = align ?? (horizontalEnd ? "end" : "start");
+    const alignEnd = resolvedAlign === "end";
+    const alignCenter = resolvedAlign === "center";
+
+    let top: number;
+    let maxHeight: number;
+    if (verticalUp) {
+      // Panel bottom edge sits above the trigger (transform handles the flip);
+      // available space is what's ABOVE the trigger.
+      top = rect.top + window.scrollY - MENU_POPOVER_GAP;
+      maxHeight = Math.max(rect.top - MENU_POPOVER_GAP - MENU_POPOVER_VIEWPORT_MARGIN, MENU_POPOVER_MIN_HEIGHT);
+    } else {
+      top = rect.bottom + window.scrollY + MENU_POPOVER_GAP;
+      // Space actually available BELOW the trigger — `max-height: 100vh` alone
+      // ignores the panel's offset and overflows past the bottom edge.
+      maxHeight = Math.max(
+        window.innerHeight - rect.bottom - MENU_POPOVER_GAP - MENU_POPOVER_VIEWPORT_MARGIN,
+        MENU_POPOVER_MIN_HEIGHT
+      );
+    }
+
+    let left: number;
+    if (resolvedAlign === "end") {
+      left = rect.right + window.scrollX;
+    } else if (resolvedAlign === "center") {
+      left = rect.left + window.scrollX + rect.width / 2;
+    } else {
+      left = rect.left + window.scrollX;
+    }
+
+    setPos({ top, left, maxHeight, alignEnd, alignCenter });
+  }, [trigger, placement, align]);
+
+  React.useEffect(() => {
+    if (!open) return;
+    computePosition();
+    const onScroll = () => computePosition();
+    const onResize = () => computePosition();
+    window.addEventListener("scroll", onScroll, true);
+    window.addEventListener("resize", onResize);
+    return () => {
+      window.removeEventListener("scroll", onScroll, true);
+      window.removeEventListener("resize", onResize);
+    };
+  }, [open, computePosition]);
+
+  React.useEffect(() => {
+    if (!open) return;
+    const onPointerDown = (event: PointerEvent) => {
+      if (!closeOnOutside) return;
+      if (menuPopoverIsWithin(event, panelRef.current)) return;
+      if (menuPopoverIsWithin(event, trigger)) return;
+      setOpen(false);
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (!closeOnEscape) return;
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setOpen(false);
+      }
+    };
+    window.addEventListener("pointerdown", onPointerDown);
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      window.removeEventListener("pointerdown", onPointerDown);
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open, closeOnOutside, closeOnEscape, trigger, setOpen]);
+
+  if (!open) return null;
+
+  const style: React.CSSProperties = { top: `${pos.top}px`, left: `${pos.left}px` };
+  if (pos.maxHeight) style.maxHeight = `${pos.maxHeight}px`;
+
   return (
-    <div {...rest} className={classNames("st-menuPopover", `st-menuPopover--${placement}`, className)} role="dialog" aria-label={label}>
-      {trigger}
-      {open ? <div className="st-menuPopover__content">{items.length ? <Menu items={items} role="presentation" /> : children}</div> : null}
+    <div
+      {...rest}
+      ref={panelRef}
+      className={classNames(
+        "st-menuPopover",
+        `st-menuPopover--${placement}`,
+        pos.alignEnd ? "st-menuPopover--alignEnd" : null,
+        pos.alignCenter ? "st-menuPopover--alignCenter" : null,
+        className
+      )}
+      role="dialog"
+      aria-label={label}
+      style={style}
+    >
+      {items.length ? <Menu items={items} role="presentation" /> : children}
     </div>
   );
 }

@@ -4060,9 +4060,10 @@
   }
 
   /* Le panneau (.st-menuPopover) porte déjà la surface (bordure, ombre, rayon).
-     Le Menu imbriqué (React/Vue rendent .st-menuPopover > .st-menuPopover__content
-     > .st-menu) ne doit donc PAS redessiner sa propre bordure : double bordure
-     sinon. On neutralise la surface du Menu interne ; c'est le panneau qui scrolle. */
+     Le Menu imbriqué (React/Vue rendent .st-menuPopover > .st-menu, sans
+     wrapper intermédiaire — parité DOM avec Svelte) ne doit donc PAS redessiner
+     sa propre bordure : double bordure sinon. On neutralise la surface du Menu
+     interne ; c'est le panneau qui scrolle. */
   .st-menuPopover .st-menu {
     border: 0;
     border-radius: 0;
