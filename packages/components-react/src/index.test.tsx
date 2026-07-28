@@ -150,7 +150,7 @@ const componentCases: Array<{ name: string; element: React.ReactElement; text?: 
   { name: "Link", element: <Link href="/docs">Link text</Link>, text: "Link text" },
   { name: "LoadingState", element: <LoadingState label="Loading label" />, text: "Loading label" },
   { name: "Menu", element: <Menu items={[{ id: "open", label: "Open item" }]} />, text: "Open item" },
-  { name: "MenuPopover", element: <MenuPopover open trigger={<button type="button">Menu trigger</button>} items={[{ id: "open", label: "Menu item" }]} />, text: "Menu item" },
+  { name: "MenuPopover", element: <MenuPopover open label="Menu" items={[{ id: "open", label: "Menu item" }]} />, text: "Menu item" },
   { name: "MenuTriggerButton", element: <MenuTriggerButton open>Trigger text</MenuTriggerButton>, text: "Trigger text" },
   { name: "MessageActions", element: <MessageActions actions={[{ id: "copy", label: "Copy action" }]} />, text: "Copy action" },
   { name: "MessageStatusBadge", element: <MessageStatusBadge status="processing" />, text: "Processing" },

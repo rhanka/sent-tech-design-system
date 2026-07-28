@@ -250,7 +250,7 @@ export type { LoadingStateProps } from "./LoadingState.js";
 export { Menu } from "./Menu.js";
 export type { MenuProps, MenuItem } from "./Menu.js";
 export { MenuPopover } from "./MenuPopover.js";
-export type { MenuPopoverProps } from "./MenuPopover.js";
+export type { MenuPopoverProps, MenuPopoverPlacement, MenuPopoverAlign } from "./MenuPopover.js";
 export { MenuTriggerButton } from "./MenuTriggerButton.js";
 export type { MenuTriggerButtonProps } from "./MenuTriggerButton.js";
 export { MessageActions } from "./MessageActions.js";
