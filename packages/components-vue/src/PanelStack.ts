@@ -44,6 +44,10 @@ export type PanelStackProps = {
    * degrades to zero scroll owners.
    */
   primary?: string;
+  /** Usable floor for the primary section, in px. While the primary sits above it the
+      primary absorbs overflow; once it would drop below, a secondary auto-collapses
+      instead of compressing the primary further. Default 160. */
+  primaryMinHeight?: number;
   class?: string;
 };
 
@@ -98,13 +102,17 @@ function sortByDom(list: Entry[]): Entry[] {
   });
 }
 
-// Kept in sync with the CSS fallback for
-// --st-component-panelStack-primaryMinBlockSize (10rem @ a 16px root font
-// size) in styles.css. Not read via getComputedStyle: jsdom (this package's
-// test environment) does not reliably resolve CSS custom properties/rem
-// units in computed style, which would make the threshold untestable; a
-// hardcoded, documented, kept-in-sync constant mirrors PanelStack.svelte.
-const PRIMARY_MIN_BLOCK_SIZE_PX = 160;
+// Default for the `primaryMinHeight` prop. The prop — not this constant — is
+// the single source of truth for BOTH the JS auto-collapse threshold below
+// AND the CSS floor: `setup()` emits it as an inline
+// `--st-component-panelStack-primaryMinBlockSize` custom property on the
+// stack root, and styles.css's `.st-panelSection__body--scrollOwner` rule
+// consumes that same variable (with a literal `160px` fallback matching this
+// constant, for the rare case the inline style hasn't landed). This constant
+// only supplies the default VALUE when the prop is omitted; it is never read
+// via getComputedStyle (jsdom, this package's test environment, does not
+// reliably resolve CSS custom properties in computed style).
+export const PRIMARY_MIN_BLOCK_SIZE_PX = 160;
 
 /**
  * Stacks several PanelSection children inside ONE panel so a docked chat can
@@ -125,6 +133,7 @@ export const PanelStack = defineComponent({
       default: undefined,
     },
     primary: { type: String, default: undefined },
+    primaryMinHeight: { type: Number, default: undefined },
     class: { type: String, default: undefined },
   },
   emits: {
@@ -157,6 +166,12 @@ export const PanelStack = defineComponent({
      *  user re-open always makes that section the last one considered for
      *  collapse again. */
     const expansionOrder = ref<string[]>([]);
+
+    // The `primaryMinHeight` prop is the single source of truth for the JS
+    // threshold below AND (via the inline style set on the root, in the
+    // render function) the CSS floor — see PRIMARY_MIN_BLOCK_SIZE_PX's doc
+    // comment.
+    const effectivePrimaryMinHeight = computed(() => props.primaryMinHeight ?? PRIMARY_MIN_BLOCK_SIZE_PX);
 
     let resizeObserver: ResizeObserver | null = null;
     let observedPrimaryHeaderEl: HTMLElement | null = null;
@@ -244,6 +259,65 @@ export const PanelStack = defineComponent({
       return firstId.value;
     });
 
+    // sticky-item's resolved expanded/scroll-owner id — a SINGLE value, used
+    // by BOTH `isExpanded` and `isScrollOwner` below, because in this shape
+    // "expanded" and "scroll owner" are the same thing by definition:
+    // exactly one section is expanded and it owns the scroll. Reporting them
+    // from two different values (the raw controlled prop for one, a healed
+    // fallback for the other) would let a section render as the visible,
+    // scrolling `--scrollOwner` while its own trigger claims
+    // `aria-expanded="false"` — a real defect (a screen reader announcing
+    // "collapsed" for content that is on screen and scrolling), not a
+    // faithful reflection of the controlled contract. "Never override a
+    // controlled value" means never WRITING `props.expanded` and never
+    // firing `expandedChange` on the consumer's behalf — both still hold
+    // here — it does not mean this derived, read-only rendering decision has
+    // to reproduce an invalid raw value verbatim.
+    //
+    // Deliberately NOT always equal to `effectiveExpandedId`, though the two
+    // coincide in every normal case (uncontrolled, controlled-valid,
+    // controlled-null) — they diverge only for the one case below:
+    //   - `expanded === null`: an explicit, deliberate "everything
+    //     collapsed". Honored as-is — zero scroll owners is correct here,
+    //     because there is no expanded content to be unreachable.
+    //   - `expanded` a non-null id matching NO registered section: a
+    //     mistake, not an intent — the consumer meant to expand a real
+    //     section and silently got none. Heals to the first registered
+    //     section, same fallback `effectiveExpandedId` itself already uses
+    //     for the uncontrolled case, and that section is reported as
+    //     expanded consistently with it actually being the scroll owner.
+    const stickyScrollOwnerId = computed((): string | null => {
+      const id = effectiveExpandedId.value;
+      if (id === null) return null;
+      if (entries.value.some((e) => e.id === id)) return id;
+      return firstId.value;
+    });
+
+    // Dev-time visibility for the "mistake" case above — same convention as
+    // PANEL_STACK_MAX_SECTIONS: warn, never throw, never silently rewrite the
+    // consumer's own controlled prop. Scoped to sticky-item (the only shape
+    // `expanded` drives). Warns AT MOST ONCE per component instance lifetime
+    // — not once per distinct invalid value, and the guard is never reset —
+    // so a consumer that never fixes the misconfiguration isn't spammed
+    // every time `entries` happens to change (e.g. a dynamic section
+    // list) or the invalid id itself changes.
+    let hasWarnedInvalidExpanded = false;
+    watch(
+      [() => props.expanded, entries, () => props.shape],
+      () => {
+        if (hasWarnedInvalidExpanded) return;
+        if (props.shape === "split-primary") return;
+        if (!controlled.value) return;
+        const id = props.expanded ?? null;
+        if (id === null) return; // deliberate "everything collapsed" — not a misconfiguration.
+        if (entries.value.some((e) => e.id === id)) return; // valid — nothing to warn about.
+        hasWarnedInvalidExpanded = true;
+        console.warn(
+          `[PanelStack] expanded="${id}" does not match any registered section. The controlled value is left untouched — it is never overridden — but the stack still needs exactly one scroll owner, so the first registered section is used as a fallback scroll owner. Pass a valid section id, or null, to silence this.`,
+        );
+      },
+    );
+
     // split-primary: the section matching `primary`, or — if `primary` is
     // unset or matches no registered section (a misconfiguration) — the
     // first EXPANDED section in DOM order, or — if nothing is expanded
@@ -315,7 +389,15 @@ export const PanelStack = defineComponent({
     // (≤ PANEL_STACK_MAX_SECTIONS - 1 secondaries) — so it always reaches a
     // fixed point in a bounded number of measurement-driven passes.
     watch(
-      [stackHeight, primaryHeaderHeight, rootHeights, entries, effectivePrimary, () => props.shape],
+      [
+        stackHeight,
+        primaryHeaderHeight,
+        rootHeights,
+        entries,
+        effectivePrimary,
+        () => props.shape,
+        effectivePrimaryMinHeight,
+      ],
       () => {
         if (props.shape !== "split-primary") return;
         const primaryId = effectivePrimary.value;
@@ -328,7 +410,7 @@ export const PanelStack = defineComponent({
           secondaryTotal += rootHeights.value.get(e.id) ?? 0;
         }
         const available = stackHeight.value - primaryHeaderHeight.value - secondaryTotal;
-        if (available >= PRIMARY_MIN_BLOCK_SIZE_PX) return;
+        if (available >= effectivePrimaryMinHeight.value) return;
 
         const candidate = expansionOrder.value.find(
           (id) => id !== primaryId && openSecondary.value.has(id) && !autoCollapsed.value.has(id),
@@ -355,11 +437,25 @@ export const PanelStack = defineComponent({
         if (id === effectivePrimary.value) return true;
         return openSecondary.value.has(id) && !autoCollapsed.value.has(id);
       }
-      return id === effectiveExpandedId.value;
+      // sticky-item: expanded and scroll owner are the same thing by
+      // definition — exactly one section is expanded and it owns the
+      // scroll — so this MUST resolve from `stickyScrollOwnerId`, not the
+      // raw `effectiveExpandedId`. They already coincide in every normal
+      // case (uncontrolled, controlled-valid, controlled-null); the only
+      // case where they'd diverge is a controlled `expanded` pointing at a
+      // non-existent id, and reporting that section's raw (unmatched) value
+      // here would render an `aria-expanded="false"` trigger on a body that
+      // is visibly, scrollably on screen (`--scrollOwner`) — content a
+      // screen reader would announce as collapsed while sighted users see
+      // it open. The controlled prop itself is still never written and
+      // `expandedChange` still never fires on its own; only what ARIA
+      // reports about the section that's ALREADY rendered as scroll owner
+      // changes.
+      return id === stickyScrollOwnerId.value;
     }
 
     function isScrollOwner(id: string): boolean {
-      return props.shape === "split-primary" ? id === effectivePrimary.value : id === effectiveExpandedId.value;
+      return props.shape === "split-primary" ? id === effectivePrimary.value : id === stickyScrollOwnerId.value;
     }
 
     function toggle(id: string) {
@@ -411,6 +507,11 @@ export const PanelStack = defineComponent({
         {
           ...attrs,
           class: classNames("st-panelStack", props.class),
+          // Single source of truth for both the JS auto-collapse threshold
+          // (effectivePrimaryMinHeight, read above) and the CSS floor —
+          // styles.css's `.st-panelSection__body--scrollOwner` rule reads
+          // this same custom property, so the two can never drift apart.
+          style: { "--st-component-panelStack-primaryMinBlockSize": `${effectivePrimaryMinHeight.value}px` },
           role: "group",
           "aria-label": props.label,
           ref: stackEl,
