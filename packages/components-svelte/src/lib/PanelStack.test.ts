@@ -722,23 +722,33 @@ describe("PanelStack — primaryMinHeight drives the CSS custom property on the 
 });
 
 describe("PanelStack — controlled expanded pointing at a non-existent id still resolves a scroll owner", () => {
-  it("leaves the controlled value untouched (every header renders collapsed), resolves EXACTLY one scroll owner via the first-registered fallback, and warns once", () => {
+  it("leaves the controlled value untouched, but reports the fallback section as genuinely expanded (ARIA matches what renders), and warns once", () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const onExpandedChange = vi.fn();
     const { container } = render(PanelStackFixture, {
-      props: { sections, expanded: "does-not-exist" }
+      props: { sections, expanded: "does-not-exist", onExpandedChange }
     });
 
-    // The controlled contract is honoured: nothing was overridden, so no
-    // header renders as expanded — exactly what the (invalid) prop says.
-    for (const id of ["a", "b", "c"]) {
-      expect(trigger(container, id)?.getAttribute("aria-expanded")).toBe("false");
-    }
+    // The fallback section ("a", first registered) is what is ACTUALLY
+    // rendered and scrolling, so ARIA must say so — a screen reader must
+    // never announce "collapsed" for an on-screen, scrolling region (the
+    // same defect class as an aria-valuenow a splitter doesn't have).
+    expect(trigger(container, "a")?.getAttribute("aria-expanded")).toBe("true");
+    expect(trigger(container, "b")?.getAttribute("aria-expanded")).toBe("false");
+    expect(trigger(container, "c")?.getAttribute("aria-expanded")).toBe("false");
+    expect(body(container, "a")?.classList.contains("st-panelSection__body--scrollOwner")).toBe(true);
+    expect(body(container, "a")?.classList.contains("st-panelSection__body--collapsed")).toBe(false);
 
-    // But the invariant this whole component pair exists to guarantee still
+    // The invariant this whole component pair exists to guarantee still
     // holds: exactly one scroll owner, resolved internally — the first
     // registered section, same fallback used everywhere else in this file.
     expect(scrollOwnerBodies(container).length).toBe(1);
     expect(scrollOwnerBodies(container)[0]).toBe(body(container, "a"));
+
+    // The controlled contract is still fully honoured: PanelStack never
+    // mutates `expanded` and never fires the change callback on its own —
+    // only a genuine user interaction would ever call onExpandedChange.
+    expect(onExpandedChange).not.toHaveBeenCalled();
 
     expect(warn).toHaveBeenCalledTimes(1);
     expect(warn.mock.calls[0][0]).toContain("[PanelStack]");

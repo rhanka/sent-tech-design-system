@@ -818,7 +818,24 @@ describe("PanelStack — controlled `expanded` pointing at a non-existent id", (
     // first-registered fallback as the unset/uncontrolled case.
     expect(scrollOwnerBodies(container).length).toBe(1);
     expect(scrollOwnerBodies(container)[0]).toBe(body(container, "a"));
+
+    // ARIA must describe what is actually rendered, not the raw (invalid)
+    // prop: sticky-item's `isExpanded` resolves from the SAME effective id
+    // as `isScrollOwner` (both read `computeEffectiveExpandedId()`), so the
+    // fallback section is never reported "collapsed" while it is on screen
+    // and scrolling. Not overwriting a controlled value means never
+    // mutating it and never firing the change callback on the stack's own
+    // initiative — it does NOT mean ARIA may misdescribe the DOM.
     expect(trigger(container, "a")?.getAttribute("aria-expanded")).toBe("true");
+    expect(body(container, "a")?.classList.contains("st-panelSection__body--scrollOwner")).toBe(true);
+    expect(body(container, "a")?.classList.contains("st-panelSection__body--collapsed")).toBe(false);
+    // The other sections are ordinary, closed, non-owning secondaries.
+    expect(trigger(container, "b")?.getAttribute("aria-expanded")).toBe("false");
+    expect(body(container, "b")?.classList.contains("st-panelSection__body--scrollOwner")).toBe(false);
+
+    // No self-initiated correction on mount: the invalid prop is resolved
+    // internally, but the stack never calls back to "fix" it.
+    expect(onExpandedChange).not.toHaveBeenCalled();
 
     expect(warn).toHaveBeenCalledTimes(1);
     expect(warn.mock.calls[0][0]).toContain("[PanelStack]");
@@ -826,20 +843,26 @@ describe("PanelStack — controlled `expanded` pointing at a non-existent id", (
 
     // A click still fires onExpandedChange (the controlled contract is
     // intact) but does NOT move the DOM — the stack never self-corrects the
-    // prop, only its own internal scroll-owner resolution.
+    // prop, only its own internal scroll-owner/expanded resolution.
     await act(async () => {
       fireEvent.click(trigger(container, "b")!);
     });
+    expect(onExpandedChange).toHaveBeenCalledTimes(1);
     expect(onExpandedChange).toHaveBeenCalledWith("b");
     expect(scrollOwnerBodies(container).length).toBe(1);
     expect(scrollOwnerBodies(container)[0]).toBe(body(container, "a"));
+    expect(trigger(container, "a")?.getAttribute("aria-expanded")).toBe("true");
 
-    // Re-rendering with the SAME invalid value must not warn again.
+    // Re-rendering with the SAME invalid value (the consumer did NOT apply
+    // the callback's value — the prop is still literally untouched) must
+    // reproduce the identical resolution and must not warn again.
     act(() => {
       rerender(<Fixture sections={sections} expanded="does-not-exist" onExpandedChange={onExpandedChange} />);
     });
     expect(warn).toHaveBeenCalledTimes(1);
     expect(scrollOwnerBodies(container).length).toBe(1);
+    expect(trigger(container, "a")?.getAttribute("aria-expanded")).toBe("true");
+    expect(body(container, "a")?.classList.contains("st-panelSection__body--collapsed")).toBe(false);
 
     warn.mockRestore();
   });
