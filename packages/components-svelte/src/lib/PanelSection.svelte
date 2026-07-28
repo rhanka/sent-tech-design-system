@@ -24,6 +24,10 @@
   const stack = getContext<PanelStackContext | undefined>(PANEL_STACK_KEY);
 
   let rootEl: HTMLElement | null = $state(null);
+  // The header is also registered (not just the root): split-primary's
+  // auto-collapse measures whichever section is CURRENTLY primary by its
+  // header height specifically — see PanelStack.svelte's `register` doc.
+  let headerEl: HTMLElement | null = $state(null);
 
   // Register with the parent stack (mount order) so it can fall back to "the
   // first section" whenever nothing else designates a scroll owner (unset or
@@ -31,8 +35,8 @@
   // register-in-an-effect / return-the-unregister-callback idiom as
   // SelectableRow.
   $effect(() => {
-    if (!stack || !rootEl) return;
-    return stack.register(id, rootEl);
+    if (!stack || !rootEl || !headerEl) return;
+    return stack.register(id, rootEl, headerEl);
   });
 
   const triggerId = $derived(`st-panelSection-trigger-${id}`);
@@ -63,7 +67,7 @@
 </script>
 
 <div class={rootClasses} data-panel-section-id={id} bind:this={rootEl}>
-  <div class="st-panelSection__header">
+  <div class="st-panelSection__header" bind:this={headerEl}>
     <h3 class="st-panelSection__heading">
       {#if isPrimary}
         <span class="st-panelSection__title st-panelSection__title--primary" id={triggerId}>
@@ -212,10 +216,16 @@
   /* THE single scroll owner across the whole stack: at any moment exactly one
      PanelSection body carries this class (see PanelStack.svelte's context
      contract, which is the only place deciding who gets it) — every other
-     body stays `overflow: hidden`, content-sized or collapsed to zero. */
+     body stays `overflow: hidden`, content-sized or collapsed to zero.
+
+     `min-block-size` is the floor split-primary's auto-collapse protects (see
+     PanelStack.svelte): secondaries collapse before the primary is ever
+     squeezed below this. Keep the fallback in sync with PanelStack.svelte's
+     `PRIMARY_MIN_BLOCK_SIZE_PX`. Harmless for sticky-item too (there is only
+     ever one scroll owner in that shape as well). */
   .st-panelSection__body--scrollOwner {
     flex: 1 1 0;
-    min-block-size: 0;
+    min-block-size: var(--st-component-panelStack-primaryMinBlockSize, 10rem);
     overflow: auto;
   }
 

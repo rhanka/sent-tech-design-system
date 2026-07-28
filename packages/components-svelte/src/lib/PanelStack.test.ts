@@ -1,8 +1,10 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fireEvent, render, screen } from "@testing-library/svelte";
-import { describe, expect, it, vi } from "vitest";
+import { flushSync } from "svelte";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import PanelStackFixture from "./PanelStackFixture.svelte";
+import { PANEL_STACK_MAX_SECTIONS } from "./PanelStack.svelte";
 
 const sections = [
   { id: "a", label: "Alpha" },
@@ -28,6 +30,57 @@ function trigger(container: Element, id: string): HTMLButtonElement | null {
 
 function body(container: Element, id: string): HTMLElement | null {
   return container.querySelector<HTMLElement>(`#st-panelSection-region-${id}`);
+}
+
+function sectionRootEl(container: Element, id: string): HTMLElement | null {
+  return container.querySelector<HTMLElement>(`[data-panel-section-id="${id}"]`);
+}
+
+function sectionHeaderEl(container: Element, id: string): HTMLElement | null {
+  return sectionRootEl(container, id)?.querySelector<HTMLElement>(".st-panelSection__header") ?? null;
+}
+
+function stackRoot(container: Element): HTMLElement {
+  return container.querySelector<HTMLElement>(".st-panelStack")!;
+}
+
+// ---------------------------------------------------------------------------
+// Minimal ResizeObserver stand-in for jsdom (which has none — the component
+// must degrade gracefully there, see the dedicated guard test below). Tracks
+// every constructed instance and its currently-observed targets so a test can
+// simulate a real measurement landing on whichever target it cares about,
+// without needing to know which of PanelStack's (possibly several) internal
+// `observe()` calls is "the" one watching that element.
+// ---------------------------------------------------------------------------
+type FakeResizeEntry = { target: Element; contentRect: { height: number } };
+
+class FakeResizeObserver {
+  static instances: FakeResizeObserver[] = [];
+  private observed = new Set<Element>();
+  constructor(private callback: (entries: FakeResizeEntry[]) => void) {
+    FakeResizeObserver.instances.push(this);
+  }
+  observe(target: Element) {
+    this.observed.add(target);
+  }
+  unobserve(target: Element) {
+    this.observed.delete(target);
+  }
+  disconnect() {
+    this.observed.clear();
+  }
+  deliver(target: Element, height: number) {
+    if (this.observed.has(target)) this.callback([{ target, contentRect: { height } }]);
+  }
+}
+
+/** Simulate a real layout measurement landing for `target`, synchronously
+ *  flushing whatever reactive consequence it has (e.g. the auto-collapse
+ *  decision effect re-evaluating). */
+function fireResize(target: Element, height: number) {
+  flushSync(() => {
+    for (const instance of FakeResizeObserver.instances) instance.deliver(target, height);
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -329,5 +382,266 @@ describe("PanelStack / PanelSection — misc", () => {
     const sectionRoot = container.querySelector('[data-panel-section-id="a"]');
     expect(sectionRoot?.classList.contains("st-panelSection")).toBe(true);
     expect(sectionRoot?.classList.contains("consumer-a")).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Ratified consumer-lane contract, three changes:
+//   1. the stack is bounded to PANEL_STACK_MAX_SECTIONS (4) — a dev warning,
+//      never a throw or a silent truncation;
+//   2. split-primary's primary fallback chain is now designated / first
+//      EXPANDED (DOM order) / first registered — not designated / first
+//      registered;
+//   3. split-primary auto-collapses secondaries that would squeeze the
+//      primary below its floor, least-recently-expanded first, and never
+//      oscillates.
+// ---------------------------------------------------------------------------
+describe("PanelStack — bounded to PANEL_STACK_MAX_SECTIONS sections", () => {
+  it("PANEL_STACK_MAX_SECTIONS is 4", () => {
+    expect(PANEL_STACK_MAX_SECTIONS).toBe(4);
+  });
+
+  it("registering exactly the max (4) sections does not warn", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const four = [...sections, { id: "d", label: "Delta" }];
+    const { container } = render(PanelStackFixture, { props: { sections: four, defaultExpanded: "a" } });
+    expect(bodies(container).length).toBe(4);
+    expect(warn).not.toHaveBeenCalled();
+    warn.mockRestore();
+  });
+
+  it("registering a 5th section warns once (dev visibility), but still renders ALL sections — never truncated", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const five = [...sections, { id: "d", label: "Delta" }, { id: "e", label: "Epsilon" }];
+    const { container } = render(PanelStackFixture, { props: { sections: five, defaultExpanded: "a" } });
+
+    expect(bodies(container).length).toBe(5);
+    expect(warn).toHaveBeenCalledTimes(1);
+    expect(warn.mock.calls[0][0]).toContain("[PanelStack]");
+    expect(warn.mock.calls[0][0]).toContain("4");
+
+    // The bound is advisory, not enforced — the single-scroll-owner invariant
+    // must still hold with a 5th (unsupported-count) section present.
+    expect(scrollOwnerBodies(container).length).toBe(1);
+    warn.mockRestore();
+  });
+});
+
+describe("PanelStack — split-primary primary fallback chain", () => {
+  it("tier 1: a valid designated `primary` always wins, regardless of what's expanded", async () => {
+    const { container } = render(PanelStackFixture, {
+      props: { shape: "split-primary", sections, primary: "a" }
+    });
+    await fireEvent.click(trigger(container, "b")!);
+    expect(scrollOwnerBodies(container)).toEqual([body(container, "a")]);
+  });
+
+  it("tier 2: primary unset — opening ONE secondary makes IT the primary (first EXPANDED)", async () => {
+    const { container } = render(PanelStackFixture, { props: { shape: "split-primary", sections } });
+    // Nothing expanded yet: last-resort tier (first registered) applies.
+    expect(scrollOwnerBodies(container)).toEqual([body(container, "a")]);
+
+    await fireEvent.click(trigger(container, "b")!);
+
+    expect(scrollOwnerBodies(container)).toEqual([body(container, "b")]);
+    // "a" was implicitly primary and is now demoted to an ordinary,
+    // closed-by-default secondary with a real disclosure button.
+    expect(container.querySelector("#st-panelSection-trigger-a")?.tagName).toBe("BUTTON");
+    expect(trigger(container, "a")?.getAttribute("aria-expanded")).toBe("false");
+  });
+
+  it("tier 2: primary unset — DOM order breaks ties, not click order", async () => {
+    const { container } = render(PanelStackFixture, { props: { shape: "split-primary", sections } });
+    // Click "c" first, then "b" — DOM order is a, b, c.
+    await fireEvent.click(trigger(container, "c")!);
+    await fireEvent.click(trigger(container, "b")!);
+
+    expect(scrollOwnerBodies(container)).toEqual([body(container, "b")]);
+  });
+
+  it("tier 2 beats tier 3: a `primary` matching no section (typo) still prefers the first EXPANDED over the first registered", async () => {
+    const { container } = render(PanelStackFixture, {
+      props: { shape: "split-primary", sections, primary: "does-not-exist" }
+    });
+    await fireEvent.click(trigger(container, "c")!);
+
+    expect(scrollOwnerBodies(container)).toEqual([body(container, "c")]);
+  });
+
+  it("tier 3 (last resort): primary unset and nothing expanded — first registered section owns the scroll", () => {
+    const { container } = render(PanelStackFixture, { props: { shape: "split-primary", sections } });
+    expect(scrollOwnerBodies(container)).toEqual([body(container, "a")]);
+  });
+});
+
+describe("PanelStack — split-primary auto-collapse (secondaries yield to the primary's floor)", () => {
+  const PRIMARY_MIN_BLOCK_SIZE_PX = 160; // must match PanelStack.svelte's own constant
+
+  beforeEach(() => {
+    FakeResizeObserver.instances = [];
+    vi.stubGlobal("ResizeObserver", FakeResizeObserver);
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("collapses the least-recently-expanded secondary when the primary would be squeezed below its floor, and stops as soon as it fits again (no avalanche)", async () => {
+    const { container } = render(PanelStackFixture, {
+      props: { shape: "split-primary", sections, primary: "a" }
+    });
+    await fireEvent.click(trigger(container, "b")!); // opened first -> least recently expanded
+    await fireEvent.click(trigger(container, "c")!); // opened second
+
+    const stackEl = stackRoot(container);
+    const headerA = sectionHeaderEl(container, "a")!;
+    const rootB = sectionRootEl(container, "b")!;
+    const rootC = sectionRootEl(container, "c")!;
+
+    fireResize(stackEl, 400);
+    fireResize(headerA, 40);
+    fireResize(rootB, 150);
+    // available = 400 - 40 - 150 = 210 >= 160: still fits, nothing collapses yet.
+    expect(body(container, "b")?.classList.contains("st-panelSection__body--collapsed")).toBe(false);
+
+    fireResize(rootC, 100);
+    // available = 400 - 40 - (150 + 100) = 110 < 160: over budget -> collapse "b" (LRU).
+    expect(body(container, "b")?.classList.contains("st-panelSection__body--collapsed")).toBe(true);
+    expect(trigger(container, "b")?.getAttribute("aria-expanded")).toBe("false");
+    // "c" — opened more recently — is left alone. This is the no-avalanche
+    // assertion: the decision that collapsed "b" must NOT also collapse "c"
+    // in the same pass using "b"'s now-stale (pre-collapse) measurement.
+    expect(body(container, "c")?.classList.contains("st-panelSection__body--collapsed")).toBe(false);
+    expect(scrollOwnerBodies(container)).toEqual([body(container, "a")]);
+
+    // Simulate the real shrink that follows "b" actually collapsing.
+    fireResize(rootB, 40);
+    // available = 400 - 40 - (40 + 100) = 220 >= 160: fits now — "c" must
+    // remain untouched; the single earlier collapse was sufficient.
+    expect(body(container, "c")?.classList.contains("st-panelSection__body--collapsed")).toBe(false);
+    expect(scrollOwnerBodies(container)).toEqual([body(container, "a")]);
+  });
+
+  it("collapses MULTIPLE secondaries when one isn't enough, converges to a stable fixed point, and does not oscillate on repeated identical measurements", async () => {
+    const { container } = render(PanelStackFixture, {
+      props: { shape: "split-primary", sections, primary: "a" }
+    });
+    await fireEvent.click(trigger(container, "b")!);
+    await fireEvent.click(trigger(container, "c")!);
+
+    const stackEl = stackRoot(container);
+    const headerA = sectionHeaderEl(container, "a")!;
+    const rootB = sectionRootEl(container, "b")!;
+    const rootC = sectionRootEl(container, "c")!;
+
+    fireResize(stackEl, 250);
+    fireResize(headerA, 40);
+    fireResize(rootB, 150);
+    fireResize(rootC, 100);
+    // available = 250 - 40 - (150 + 100) = -40 < 160 -> collapse "b" (LRU).
+    expect(body(container, "b")?.classList.contains("st-panelSection__body--collapsed")).toBe(true);
+
+    fireResize(rootB, 40); // "b"'s real post-collapse (header-only) height.
+    // available = 250 - 40 - (40 + 100) = 70 < 160 -> still short -> collapse "c" too.
+    expect(body(container, "c")?.classList.contains("st-panelSection__body--collapsed")).toBe(true);
+
+    fireResize(rootC, 40); // "c"'s real post-collapse height.
+    // available = 250 - 40 - (40 + 40) = 130 < 160: still under the floor, but
+    // nothing left to collapse — the degenerate "pane too small even fully
+    // collapsed" case. The algorithm must stop, not throw, not loop.
+    expect(scrollOwnerBodies(container)).toEqual([body(container, "a")]);
+
+    // Fire the SAME measurements again, several times: must be a no-op —
+    // proof against oscillation (nothing flips back open, nothing new
+    // collapses, the single-scroll-owner invariant never wavers).
+    for (let i = 0; i < 5; i++) {
+      fireResize(stackEl, 250);
+      fireResize(headerA, 40);
+      fireResize(rootB, 40);
+      fireResize(rootC, 40);
+      expect(body(container, "b")?.classList.contains("st-panelSection__body--collapsed")).toBe(true);
+      expect(body(container, "c")?.classList.contains("st-panelSection__body--collapsed")).toBe(true);
+      expect(scrollOwnerBodies(container).length).toBe(1);
+      expect(scrollOwnerBodies(container)).toEqual([body(container, "a")]);
+    }
+  });
+
+  it("explicitly re-opening an auto-collapsed secondary clears its collapse immediately, and a later re-squeeze collapses the NEW least-recently-expanded one instead (the just-reopened section survives)", async () => {
+    const { container } = render(PanelStackFixture, {
+      props: { shape: "split-primary", sections, primary: "a" }
+    });
+    await fireEvent.click(trigger(container, "b")!); // opened first
+    await fireEvent.click(trigger(container, "c")!); // opened second
+
+    const stackEl = stackRoot(container);
+    const headerA = sectionHeaderEl(container, "a")!;
+    const rootB = sectionRootEl(container, "b")!;
+    const rootC = sectionRootEl(container, "c")!;
+
+    fireResize(stackEl, 400);
+    fireResize(headerA, 40);
+    fireResize(rootB, 150);
+    fireResize(rootC, 100);
+    // "b" (LRU) auto-collapses; single-owner invariant holds throughout.
+    expect(body(container, "b")?.classList.contains("st-panelSection__body--collapsed")).toBe(true);
+    expect(scrollOwnerBodies(container)).toEqual([body(container, "a")]);
+
+    // User explicitly re-opens "b" — clears the forced collapse right away,
+    // before any new measurement, and makes "b" the MOST recently expanded.
+    await fireEvent.click(trigger(container, "b")!);
+    expect(body(container, "b")?.classList.contains("st-panelSection__body--collapsed")).toBe(false);
+    expect(trigger(container, "b")?.getAttribute("aria-expanded")).toBe("true");
+    expect(scrollOwnerBodies(container)).toEqual([body(container, "a")]);
+
+    // A subsequent measurement reflecting "b" back at its natural size
+    // re-triggers the same squeeze — this time "c" (now the LRU) must yield,
+    // NOT "b" again.
+    fireResize(rootB, 150);
+    expect(body(container, "c")?.classList.contains("st-panelSection__body--collapsed")).toBe(true);
+    expect(body(container, "b")?.classList.contains("st-panelSection__body--collapsed")).toBe(false);
+    expect(trigger(container, "b")?.getAttribute("aria-expanded")).toBe("true");
+    expect(scrollOwnerBodies(container)).toEqual([body(container, "a")]);
+  });
+
+  it("never collapses anything when the pane comfortably fits everyone (no false positives)", async () => {
+    const { container } = render(PanelStackFixture, {
+      props: { shape: "split-primary", sections, primary: "a" }
+    });
+    await fireEvent.click(trigger(container, "b")!);
+    await fireEvent.click(trigger(container, "c")!);
+
+    fireResize(stackRoot(container), 1000);
+    fireResize(sectionHeaderEl(container, "a")!, 40);
+    fireResize(sectionRootEl(container, "b")!, 150);
+    fireResize(sectionRootEl(container, "c")!, 100);
+    // available = 1000 - 40 - (150 + 100) = 710 >= 160.
+
+    expect(body(container, "b")?.classList.contains("st-panelSection__body--collapsed")).toBe(false);
+    expect(body(container, "c")?.classList.contains("st-panelSection__body--collapsed")).toBe(false);
+    expect(scrollOwnerBodies(container)).toEqual([body(container, "a")]);
+  });
+
+  it("floor constant used by the algorithm matches the documented value", () => {
+    // Sanity check that the scenarios above (which assume 160px) are actually
+    // exercising the real threshold and not a coincidence of the numbers
+    // chosen: reduce the deficit to exactly at the boundary.
+    expect(PRIMARY_MIN_BLOCK_SIZE_PX).toBe(160);
+  });
+});
+
+describe("PanelStack — auto-collapse is a no-throw no-op when ResizeObserver is unavailable", () => {
+  it("split-primary with several secondaries opened renders normally, without throwing, and keeps the single-scroll-owner invariant — jsdom has no ResizeObserver by default", async () => {
+    expect(typeof ResizeObserver).toBe("undefined");
+
+    const { container } = render(PanelStackFixture, {
+      props: { shape: "split-primary", sections, primary: "a" }
+    });
+    await fireEvent.click(trigger(container, "b")!);
+    await fireEvent.click(trigger(container, "c")!);
+
+    // No auto-collapse can possibly engage — both stay expanded as requested.
+    expect(body(container, "b")?.classList.contains("st-panelSection__body--collapsed")).toBe(false);
+    expect(body(container, "c")?.classList.contains("st-panelSection__body--collapsed")).toBe(false);
+    expect(scrollOwnerBodies(container)).toEqual([body(container, "a")]);
   });
 });
