@@ -6,6 +6,7 @@
   export type AppShellUtilityMode = "reserve" | "overlay" | "floating";
   export type AppShellUtilitySide = "left" | "right" | "bottom";
   export type AppShellPanelCollapse = "stack" | "accordion";
+  export type AppShellPanelKey = "navigationPanel" | "contextPanel" | "utilityPanel";
 
   export type AppShellProps = {
     variant?: AppShellVariant;
@@ -43,6 +44,18 @@
     contextPanelLabel?: string;
     /** Disclosure label for `utilityPanel` when `panelCollapse="accordion"`. Defaults to `utilityLabel`. */
     utilityPanelLabel?: string;
+    /** Enables drag-to-resize handles on side panels above 48rem. Default false — zero regression. */
+    panelResize?: boolean;
+    /** Controlled panel widths in px. When provided the component never mutates width itself. */
+    panelWidths?: Partial<Record<AppShellPanelKey, number>>;
+    /** Seeds uncontrolled widths in px. */
+    defaultPanelWidths?: Partial<Record<AppShellPanelKey, number>>;
+    /** Fired on every committed resize. Persistence is the CONSUMER's job — the DS stays presentational. */
+    onPanelResize?: (key: AppShellPanelKey, width: number) => void;
+    /** Lower clamp in px. Default 180. */
+    panelMinWidth?: number;
+    /** Upper clamp in px. Default 640. */
+    panelMaxWidth?: number;
     class?: string;
   };
 </script>
@@ -53,6 +66,7 @@
   // identité = DS IdentityMenu ; barre = DS Header. Le look vient donc des tokens DS
   // (--st-component-control-*) → pixel-cohérent avec le header de référence, et les
   // menus sont ceux du DS (fonctionnels). Piloté par `siteConfig`.
+  import { untrack } from "svelte";
   import Header from "./Header.svelte";
   import Button from "./Button.svelte";
   import IconButton from "./IconButton.svelte";
@@ -60,6 +74,31 @@
   import Menu from "./Menu.svelte";
   import { Boxes, ChevronDown, Globe, Moon, Palette, Search as SearchIcon, Sun } from "@lucide/svelte";
   import IdentityButton from "./IdentityButton.svelte";
+
+  // CSS custom property each resizable panel is sized by (see the
+  // `.st-appShell` base rule in the style block below) — setting it inline
+  // on the shell root is the intended resize mechanism, it simply
+  // out-specificities the token-driven default declared there.
+  const PANEL_VAR: Record<AppShellPanelKey, string> = {
+    navigationPanel: "--st-appShell-navigation-width",
+    contextPanel: "--st-appShell-context-width",
+    utilityPanel: "--st-appShell-utility-width",
+  };
+
+  // Nominal px equivalent of each panel's own CSS-token default (navigation
+  // 20rem, context 22rem, utility 24rem, all at a 16px root) — used ONLY as a
+  // display/ARIA fallback (aria-valuenow, drag-start anchor) before any width
+  // has ever been supplied or committed. Never written back as an inline
+  // style, so a themed override of the underlying token is never fought
+  // until the consumer/user actually establishes a concrete width.
+  // NOTE: `primaryRail` is intentionally NOT a resizable panel — it is a
+  // fixed-width icon rail (à la VS Code's activity bar), not a splittable
+  // pane; see `AppShellPanelKey` above.
+  const PANEL_NOMINAL_PX: Record<AppShellPanelKey, number> = {
+    navigationPanel: 320,
+    contextPanel: 352,
+    utilityPanel: 384,
+  };
 
   let {
     variant,
@@ -83,6 +122,12 @@
     navigationPanelLabel,
     contextPanelLabel,
     utilityPanelLabel,
+    panelResize = false,
+    panelWidths,
+    defaultPanelWidths,
+    onPanelResize,
+    panelMinWidth = 180,
+    panelMaxWidth = 640,
     class: className
   }: AppShellProps = $props();
 
@@ -100,6 +145,124 @@
   let navigationPanelOpen = $state(false);
   let contextPanelOpen = $state(false);
   let utilityPanelOpen = $state(false);
+
+  // ── Resizable panels (panelResize) ────────────────────────────────────────
+  // Controlled/uncontrolled mirrors RangeSlider.svelte: `panelWidths` present
+  // (even as `{}`) means controlled — the component reads it but never writes
+  // it; otherwise widths live in `internalWidths`, seeded once from
+  // `defaultPanelWidths`.
+  let internalWidths = $state<Partial<Record<AppShellPanelKey, number>>>(untrack(() => ({ ...defaultPanelWidths })));
+
+  let navigationPanelEl = $state<HTMLElement | null>(null);
+  let contextPanelEl = $state<HTMLElement | null>(null);
+  let utilityPanelEl = $state<HTMLElement | null>(null);
+
+  const isWidthControlled = $derived(panelWidths !== undefined);
+
+  // `utilityPanel` mirrors a left panel (grow-on-drag-right) unless it sits on
+  // the right edge; the "bottom" side never renders a handle at all (checked
+  // at the call sites), so its `positive` value is never read.
+  const utilityPositive = $derived(utilitySide !== "right");
+
+  function widthFor(key: AppShellPanelKey): number | undefined {
+    const source = isWidthControlled ? panelWidths : internalWidths;
+    return source?.[key];
+  }
+
+  function clampWidth(n: number): number {
+    return Math.min(Math.max(n, panelMinWidth), panelMaxWidth);
+  }
+
+  // Current width for rendering/ARIA — always a concrete, clamped number so
+  // aria-valuenow is never NaN and is always within [aria-valuemin, aria-valuemax].
+  function displayWidth(key: AppShellPanelKey): number {
+    return clampWidth(widthFor(key) ?? PANEL_NOMINAL_PX[key]);
+  }
+
+  function panelElFor(key: AppShellPanelKey): HTMLElement | null {
+    if (key === "navigationPanel") return navigationPanelEl;
+    if (key === "contextPanel") return contextPanelEl;
+    return utilityPanelEl;
+  }
+
+  // Only the CSS vars for panels with an explicit (controlled or committed)
+  // width are emitted — an untouched panel keeps deferring to its token
+  // default (`.st-appShell` base rule), so a theme's own width override is
+  // never silently overridden just because `panelResize` is on.
+  const panelStyle = $derived.by(() => {
+    if (!panelResize) return undefined;
+    const parts: string[] = [];
+    for (const key of Object.keys(PANEL_VAR) as AppShellPanelKey[]) {
+      const width = widthFor(key);
+      if (width !== undefined) parts.push(`${PANEL_VAR[key]}: ${clampWidth(width)}px`);
+    }
+    return parts.length ? parts.join("; ") : undefined;
+  });
+
+  function commitWidth(key: AppShellPanelKey, next: number) {
+    const clamped = clampWidth(next);
+    if (!isWidthControlled) internalWidths = { ...internalWidths, [key]: clamped };
+    onPanelResize?.(key, clamped);
+  }
+
+  // Pointer-drag bookkeeping — plain (non-reactive) fields, never read from
+  // the template, only from the pointer handlers below.
+  let dragKey: AppShellPanelKey | null = null;
+  let dragPositive = true;
+  let dragStartX = 0;
+  let dragStartWidth = 0;
+
+  function onHandlePointerDown(event: PointerEvent, key: AppShellPanelKey, positive: boolean) {
+    const handle = event.currentTarget as HTMLElement;
+    handle.setPointerCapture?.(event.pointerId);
+    dragKey = key;
+    dragPositive = positive;
+    dragStartX = event.clientX;
+    const measured = panelElFor(key)?.getBoundingClientRect().width ?? 0;
+    dragStartWidth = measured > 0 ? measured : displayWidth(key);
+    event.preventDefault();
+  }
+
+  function onHandlePointerMove(event: PointerEvent) {
+    if (dragKey === null) return;
+    const dx = event.clientX - dragStartX;
+    const delta = dragPositive ? dx : -dx;
+    commitWidth(dragKey, dragStartWidth + delta);
+  }
+
+  function onHandlePointerUp(event: PointerEvent) {
+    if (dragKey === null) return;
+    const handle = event.currentTarget as HTMLElement;
+    if (handle.hasPointerCapture?.(event.pointerId)) handle.releasePointerCapture?.(event.pointerId);
+    dragKey = null;
+  }
+
+  // Arrow keys move the splitter itself (WAI-ARIA window-splitter pattern):
+  // for a "positive" (left-edge) panel, moving the splitter right grows it;
+  // for a "negative" (right-edge) panel, moving the splitter right shrinks
+  // it. Home/End always jump to the absolute clamp bounds.
+  function onHandleKeydown(event: KeyboardEvent, key: AppShellPanelKey, positive: boolean) {
+    const current = displayWidth(key);
+    let next: number;
+    switch (event.key) {
+      case "ArrowLeft":
+        next = current + (positive ? -16 : 16);
+        break;
+      case "ArrowRight":
+        next = current + (positive ? 16 : -16);
+        break;
+      case "Home":
+        next = panelMinWidth;
+        break;
+      case "End":
+        next = panelMaxWidth;
+        break;
+      default:
+        return;
+    }
+    event.preventDefault();
+    commitWidth(key, next);
+  }
 
   const mode = $derived(variant ?? (config ? "site" : "workspace"));
   const siteConfig = $derived(config ?? ({ brand: { name: "Sentropic" }, nav: [], theming: { themes: [], theme: "" } } as SiteConfig));
@@ -223,6 +386,7 @@
     data-utility-mode={utilityMode}
     data-utility-side={utilitySide}
     data-panel-collapse={panelCollapse}
+    style={panelStyle}
   >
     {#if topChrome}
       <div class="st-appShell__topChrome">
@@ -258,10 +422,13 @@
           {:else}
             {@render primaryRail()}
           {/if}
+          <!-- No resize handle here: `primaryRail` is a fixed-width icon
+               rail (à la VS Code's activity bar), not a resizable panel —
+               see `AppShellPanelKey`. -->
         </aside>
       {/if}
       {#if navigationPanel}
-        <aside class="st-appShell__navigationPanel" aria-label={navigationLabel}>
+        <aside class="st-appShell__navigationPanel" aria-label={navigationLabel} bind:this={navigationPanelEl}>
           {#if panelCollapse === "accordion"}
             <button
               type="button"
@@ -288,6 +455,23 @@
           {:else}
             {@render navigationPanel()}
           {/if}
+          {#if panelResize}
+            <div
+              class="st-appShell__resizeHandle"
+              role="separator"
+              aria-orientation="vertical"
+              tabindex="0"
+              aria-valuenow={displayWidth("navigationPanel")}
+              aria-valuemin={panelMinWidth}
+              aria-valuemax={panelMaxWidth}
+              aria-label={`Resize ${navigationLabel}`}
+              onpointerdown={(event) => onHandlePointerDown(event, "navigationPanel", true)}
+              onpointermove={onHandlePointerMove}
+              onpointerup={onHandlePointerUp}
+              onpointercancel={onHandlePointerUp}
+              onkeydown={(event) => onHandleKeydown(event, "navigationPanel", true)}
+            ></div>
+          {/if}
         </aside>
       {/if}
       <main class="st-appShell__main" id={mainId}>
@@ -298,7 +482,7 @@
         {/if}
       </main>
       {#if contextPanel}
-        <aside class="st-appShell__contextPanel" aria-label={contextLabel}>
+        <aside class="st-appShell__contextPanel" aria-label={contextLabel} bind:this={contextPanelEl}>
           {#if panelCollapse === "accordion"}
             <button
               type="button"
@@ -325,10 +509,27 @@
           {:else}
             {@render contextPanel()}
           {/if}
+          {#if panelResize}
+            <div
+              class="st-appShell__resizeHandle"
+              role="separator"
+              aria-orientation="vertical"
+              tabindex="0"
+              aria-valuenow={displayWidth("contextPanel")}
+              aria-valuemin={panelMinWidth}
+              aria-valuemax={panelMaxWidth}
+              aria-label={`Resize ${contextLabel}`}
+              onpointerdown={(event) => onHandlePointerDown(event, "contextPanel", false)}
+              onpointermove={onHandlePointerMove}
+              onpointerup={onHandlePointerUp}
+              onpointercancel={onHandlePointerUp}
+              onkeydown={(event) => onHandleKeydown(event, "contextPanel", false)}
+            ></div>
+          {/if}
         </aside>
       {/if}
       {#if utilityPanel}
-        <aside class="st-appShell__utilityPanel" aria-label={utilityLabel}>
+        <aside class="st-appShell__utilityPanel" aria-label={utilityLabel} bind:this={utilityPanelEl}>
           {#if panelCollapse === "accordion"}
             <button
               type="button"
@@ -354,6 +555,23 @@
             </div>
           {:else}
             {@render utilityPanel()}
+          {/if}
+          {#if panelResize && utilitySide !== "bottom"}
+            <div
+              class="st-appShell__resizeHandle"
+              role="separator"
+              aria-orientation="vertical"
+              tabindex="0"
+              aria-valuenow={displayWidth("utilityPanel")}
+              aria-valuemin={panelMinWidth}
+              aria-valuemax={panelMaxWidth}
+              aria-label={`Resize ${utilityLabel}`}
+              onpointerdown={(event) => onHandlePointerDown(event, "utilityPanel", utilityPositive)}
+              onpointermove={onHandlePointerMove}
+              onpointerup={onHandlePointerUp}
+              onpointercancel={onHandlePointerUp}
+              onkeydown={(event) => onHandleKeydown(event, "utilityPanel", utilityPositive)}
+            ></div>
           {/if}
         </aside>
       {/if}
@@ -484,6 +702,7 @@
     min-block-size: 0;
     min-inline-size: 0;
     overflow: hidden;
+    position: relative;
   }
 
   .st-appShell__primaryRail,
@@ -582,7 +801,7 @@
   }
 
   .st-appShell__panelDisclosure:focus-visible {
-    outline: 2px solid var(--st-semantic-border-focus, var(--st-semantic-brand-default, #2563eb));
+    outline: 2px solid var(--st-semantic-border-focus, var(--st-semantic-brand-default));
     outline-offset: -2px;
   }
 
@@ -604,6 +823,50 @@
     min-inline-size: 0;
   }
 
+  /* Drag-to-resize handle (panelResize). Desktop-only: visible by default
+     here, forced to `display:none` under the 48rem breakpoint below — the
+     element is only ever rendered to the DOM at all when `panelResize` is
+     true, so a `panelResize`-less shell never pays for or shows any of this.
+     Sits fully inside its panel's own `overflow:hidden` box (no negative
+     inset), flush against the edge shared with the next region in flow. */
+  .st-appShell__resizeHandle {
+    background: transparent;
+    block-size: auto;
+    cursor: col-resize;
+    display: block;
+    inset-block: 0;
+    inline-size: var(--st-component-appShell-resizeHandle-width, 0.5rem);
+    position: absolute;
+    touch-action: none;
+    z-index: var(--st-component-appShell-resizeHandle-zIndex, 5);
+  }
+
+  .st-appShell__resizeHandle:hover,
+  .st-appShell__resizeHandle:focus-visible {
+    background: var(--st-component-appShell-resizeHandle-activeBackground, var(--st-semantic-border-interactive));
+  }
+
+  .st-appShell__resizeHandle:focus-visible {
+    outline: 2px solid var(--st-semantic-border-focus, var(--st-semantic-brand-default));
+    outline-offset: -2px;
+  }
+
+  .st-appShell__navigationPanel > .st-appShell__resizeHandle {
+    inset-inline-end: 0;
+  }
+
+  .st-appShell__contextPanel > .st-appShell__resizeHandle {
+    inset-inline-start: 0;
+  }
+
+  .st-appShell[data-utility-side="left"] .st-appShell__utilityPanel > .st-appShell__resizeHandle {
+    inset-inline-end: 0;
+  }
+
+  .st-appShell[data-utility-side="right"] .st-appShell__utilityPanel > .st-appShell__resizeHandle {
+    inset-inline-start: 0;
+  }
+
   @media (max-width: 48rem) {
     .st-appShell__body {
       flex-flow: column nowrap;
@@ -617,6 +880,12 @@
       border-block-end: 1px solid var(--st-component-appShell-border, var(--st-semantic-border-subtle));
       inline-size: auto;
       max-block-size: min(60vh, 28rem);
+    }
+
+    /* Resize is desktop-only (>48rem) — panels stack/accordion below this
+       breakpoint instead, where a drag handle has no meaning. */
+    .st-appShell__resizeHandle {
+      display: none;
     }
 
     /* Accordion mode: the panel's own max-block-size cap is superseded by the

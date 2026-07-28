@@ -283,7 +283,7 @@ export type { LoadingStateVariant, LoadingStateProps } from "./LoadingState.js";
 export { Menu } from "./Menu.js";
 export type { MenuActionItem, MenuDividerItem, MenuGroupItem, MenuItem, MenuProps } from "./Menu.js";
 export { MenuPopover } from "./MenuPopover.js";
-export type { MenuPopoverPlacement, MenuPopoverProps } from "./MenuPopover.js";
+export type { MenuPopoverPlacement, MenuPopoverAlign, MenuPopoverProps } from "./MenuPopover.js";
 export { MenuTriggerButton } from "./MenuTriggerButton.js";
 export type { MenuTriggerButtonSize, MenuTriggerButtonVariant, MenuTriggerButtonProps } from "./MenuTriggerButton.js";
 export { Modal } from "./Modal.js";

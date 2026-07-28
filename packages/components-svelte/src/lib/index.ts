@@ -244,7 +244,7 @@ export { default as ThemeProvider } from "./ThemeProvider.svelte";
 // Ex-paquet @sentropic/app-shell, replié ici — c'est un composant comme un autre ;
 // seul son contrat `SiteConfig` (data) est agnostique et réexporté ci-dessous.
 export { default as AppShell } from "./AppShell.svelte";
-export type { AppShellPanelCollapse, AppShellProps, AppShellUtilityMode, AppShellUtilitySide, AppShellVariant } from "./AppShell.svelte";
+export type { AppShellPanelCollapse, AppShellPanelKey, AppShellProps, AppShellUtilityMode, AppShellUtilitySide, AppShellVariant } from "./AppShell.svelte";
 export { default as IdentityButton } from "./IdentityButton.svelte";
 export type {
   SiteConfig,
