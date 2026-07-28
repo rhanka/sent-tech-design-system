@@ -28,6 +28,7 @@ function Fixture({
   defaultExpanded = null,
   onExpandedChange,
   primary,
+  primaryMinHeight,
   sections: fixtureSections,
   className,
 }: {
@@ -37,6 +38,7 @@ function Fixture({
   defaultExpanded?: string | null;
   onExpandedChange?: (id: string | null) => void;
   primary?: string;
+  primaryMinHeight?: number;
   sections: FixtureSection[];
   className?: string;
 }) {
@@ -48,6 +50,7 @@ function Fixture({
       defaultExpanded={defaultExpanded}
       onExpandedChange={onExpandedChange}
       primary={primary}
+      primaryMinHeight={primaryMinHeight}
       className={className}
     >
       {fixtureSections.map((section) => (
@@ -470,6 +473,29 @@ describe("PanelStack / PanelSection — misc", () => {
 });
 
 // ---------------------------------------------------------------------------
+// `primaryMinHeight` is the single source of truth for both the JS
+// auto-collapse threshold and the CSS floor: PanelStack emits it as an
+// inline `--st-component-panelStack-primaryMinBlockSize` custom property on
+// the stack root, which styles.css's `.st-panelSection__body--scrollOwner`
+// reads via var(...). These two facts (the prop drives the DOM style AND the
+// default matches the CSS fallback) are what stop the two from drifting
+// apart again the way the old JS-constant/CSS-fallback pair could.
+// ---------------------------------------------------------------------------
+describe("PanelStack — primaryMinHeight prop drives the CSS floor via an inline custom property", () => {
+  it("emits --st-component-panelStack-primaryMinBlockSize on the stack root, matching the prop", () => {
+    const { container } = render(<Fixture sections={sections} defaultExpanded="a" primaryMinHeight={220} />);
+    const root = stackRoot(container);
+    expect(root.style.getPropertyValue("--st-component-panelStack-primaryMinBlockSize")).toBe("220px");
+  });
+
+  it("defaults the custom property to 160px (PRIMARY_MIN_BLOCK_SIZE_PX) when primaryMinHeight is unset", () => {
+    const { container } = render(<Fixture sections={sections} defaultExpanded="a" />);
+    const root = stackRoot(container);
+    expect(root.style.getPropertyValue("--st-component-panelStack-primaryMinBlockSize")).toBe("160px");
+  });
+});
+
+// ---------------------------------------------------------------------------
 // Ratified consumer-lane contract, three changes:
 //   1. the stack is bounded to PANEL_STACK_MAX_SECTIONS (4) — a dev warning,
 //      never a throw or a silent truncation;
@@ -727,6 +753,28 @@ describe("PanelStack — split-primary auto-collapse (secondaries yield to the p
     // chosen: reduce the deficit to exactly at the boundary.
     expect(PRIMARY_MIN_BLOCK_SIZE_PX).toBe(160);
   });
+
+  it("a custom primaryMinHeight changes WHEN auto-collapse triggers, not just the CSS floor", async () => {
+    // available below is chosen to sit ABOVE the default 160px floor (so the
+    // default would leave "b" alone) but BELOW a custom, higher floor — proof
+    // that the prop is what `runDecision` actually compares against, not a
+    // fixed constant.
+    const { container } = render(
+      <Fixture shape="split-primary" sections={sections} primary="a" primaryMinHeight={300} />,
+    );
+    await act(async () => {
+      fireEvent.click(trigger(container, "b")!);
+    });
+
+    fireResize(stackRoot(container), 400);
+    fireResize(sectionHeaderEl(container, "a")!, 40);
+    fireResize(sectionRootEl(container, "b")!, 100);
+    // available = 400 - 40 - 100 = 260: >= the default 160px floor (would NOT
+    // collapse there) but < the custom 300px floor passed above.
+    expect(body(container, "b")?.classList.contains("st-panelSection__body--collapsed")).toBe(true);
+    expect(trigger(container, "b")?.getAttribute("aria-expanded")).toBe("false");
+    expect(scrollOwnerBodies(container)).toEqual([body(container, "a")]);
+  });
 });
 
 describe("PanelStack — auto-collapse is a no-throw no-op when ResizeObserver is unavailable", () => {
@@ -745,5 +793,54 @@ describe("PanelStack — auto-collapse is a no-throw no-op when ResizeObserver i
     expect(body(container, "b")?.classList.contains("st-panelSection__body--collapsed")).toBe(false);
     expect(body(container, "c")?.classList.contains("st-panelSection__body--collapsed")).toBe(false);
     expect(scrollOwnerBodies(container)).toEqual([body(container, "a")]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Ratified consumer-lane follow-up: a controlled `expanded` naming no
+// registered section must NOT be overridden (the controlled contract is
+// absolute — the stack never self-corrects the prop, never calls
+// `onExpandedChange` on its own initiative) but the single-scroll-owner
+// invariant still has to hold, so the EFFECTIVE (internal) resolution
+// decouples from the raw prop and falls back to the first registered
+// section, same as the unset/uncontrolled case — with a one-time dev warning
+// using the established `[PanelStack] …` convention.
+// ---------------------------------------------------------------------------
+describe("PanelStack — controlled `expanded` pointing at a non-existent id", () => {
+  it("leaves the controlled value untouched, still resolves exactly one scroll owner (first registered), and warns once", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const onExpandedChange = vi.fn();
+    const { container, rerender } = render(
+      <Fixture sections={sections} expanded="does-not-exist" onExpandedChange={onExpandedChange} />,
+    );
+
+    // Invariant holds: exactly one scroll owner, resolved via the same
+    // first-registered fallback as the unset/uncontrolled case.
+    expect(scrollOwnerBodies(container).length).toBe(1);
+    expect(scrollOwnerBodies(container)[0]).toBe(body(container, "a"));
+    expect(trigger(container, "a")?.getAttribute("aria-expanded")).toBe("true");
+
+    expect(warn).toHaveBeenCalledTimes(1);
+    expect(warn.mock.calls[0][0]).toContain("[PanelStack]");
+    expect(warn.mock.calls[0][0]).toContain("does-not-exist");
+
+    // A click still fires onExpandedChange (the controlled contract is
+    // intact) but does NOT move the DOM — the stack never self-corrects the
+    // prop, only its own internal scroll-owner resolution.
+    await act(async () => {
+      fireEvent.click(trigger(container, "b")!);
+    });
+    expect(onExpandedChange).toHaveBeenCalledWith("b");
+    expect(scrollOwnerBodies(container).length).toBe(1);
+    expect(scrollOwnerBodies(container)[0]).toBe(body(container, "a"));
+
+    // Re-rendering with the SAME invalid value must not warn again.
+    act(() => {
+      rerender(<Fixture sections={sections} expanded="does-not-exist" onExpandedChange={onExpandedChange} />);
+    });
+    expect(warn).toHaveBeenCalledTimes(1);
+    expect(scrollOwnerBodies(container).length).toBe(1);
+
+    warn.mockRestore();
   });
 });
