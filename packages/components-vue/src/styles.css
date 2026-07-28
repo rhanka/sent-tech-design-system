@@ -18166,3 +18166,151 @@
   gap: var(--st-spacing-2, 0.5rem);
   justify-content: flex-end;
 }
+
+/* PanelStack / PanelSection — stacks several contents inside ONE panel
+   (typically an AppShell panel slot) so a docked chat can share a pane with
+   other content. The invariant is the whole point: exactly one element in
+   the stack has `overflow: auto` at any moment, and the stack itself NEVER
+   scrolls — see the single `overflow: auto` declaration below, on
+   `.st-panelSection__body--scrollOwner`. */
+.st-panelStack {
+  block-size: 100%;
+  display: flex;
+  flex-direction: column;
+  min-block-size: 0;
+  overflow: hidden;
+}
+
+/* Separator between adjacent PanelSection instances. */
+.st-panelStack > .st-panelSection + .st-panelSection {
+  border-top: 1px solid var(--st-component-control-border, var(--st-semantic-border-subtle));
+}
+
+.st-panelSection {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  min-block-size: 0;
+}
+
+/* The scroll-owning section grows to fill the stack; every other section
+   stays content-sized. */
+.st-panelSection--scrollOwner {
+  flex: 1 1 0;
+  min-block-size: 0;
+  overflow: hidden;
+}
+
+.st-panelSection__header {
+  align-items: center;
+  display: flex;
+  flex: 0 0 auto;
+}
+
+.st-panelSection__heading {
+  flex: 1 1 auto;
+  margin: 0;
+  min-inline-size: 0;
+}
+
+.st-panelSection__trigger {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: var(--st-component-accordion-text, inherit);
+  cursor: pointer;
+  display: flex;
+  font: inherit;
+  font-size: var(--st-component-accordion-fontSize, inherit);
+  font-weight: var(--st-component-accordion-fontWeight, 600);
+  gap: 0.75rem;
+  inline-size: 100%;
+  justify-content: space-between;
+  line-height: var(--st-component-accordion-lineHeight, normal);
+  padding: var(--st-component-accordion-paddingBlock, 0.875rem)
+    var(--st-component-accordion-paddingInline, 0.5rem);
+  text-align: start;
+  transition: background-color var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
+}
+
+.st-panelSection__trigger:hover {
+  background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle));
+}
+
+.st-panelSection__trigger:focus-visible {
+  outline: 2px solid var(--st-semantic-border-focus, var(--st-semantic-brand-default));
+  outline-offset: -2px;
+}
+
+.st-panelSection__title {
+  flex: 1 1 auto;
+}
+
+/* Primary heading (split-primary): same box/typography as a trigger's title
+   so switching shapes doesn't reflow the header row, but it is a plain
+   <span> inside the <h3> — never a <button> — because it cannot collapse
+   and a disclosure affordance would lie. */
+.st-panelSection__title--primary {
+  color: var(--st-semantic-text-primary);
+  display: block;
+  font-weight: 600;
+  padding: var(--st-component-accordion-paddingBlock, 0.875rem)
+    var(--st-component-accordion-paddingInline, 0.5rem);
+}
+
+.st-panelSection__icon {
+  align-items: center;
+  block-size: 1.25rem;
+  color: var(--st-semantic-text-secondary);
+  display: inline-flex;
+  flex: 0 0 auto;
+  inline-size: 1.25rem;
+  justify-content: center;
+  transition: transform var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);
+}
+
+.st-panelSection__icon--expanded {
+  transform: rotate(180deg);
+}
+
+.st-panelSection__actions {
+  align-items: center;
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 0.5rem;
+  padding-inline-end: 0.5rem;
+}
+
+.st-panelSection__body {
+  color: var(--st-semantic-text-secondary);
+  flex: 0 0 auto;
+  line-height: 1.5;
+  overflow: hidden;
+  padding: 0 0.5rem 0.875rem;
+}
+
+/* THE single scroll owner across the whole stack: at any moment exactly one
+   PanelSection body carries this class (see PanelStack.ts's context
+   contract, which is the only place deciding who gets it) — every other
+   body stays overflow: hidden, content-sized or collapsed to zero.
+
+   min-block-size is the floor split-primary's auto-collapse protects (see
+   PanelStack.ts): secondaries collapse before the primary is ever squeezed
+   below this. Keep the fallback in sync with PanelStack.ts's
+   PRIMARY_MIN_BLOCK_SIZE_PX. Harmless for sticky-item too (there is only
+   ever one scroll owner in that shape as well). */
+.st-panelSection__body--scrollOwner {
+  flex: 1 1 0;
+  min-block-size: var(--st-component-panelStack-primaryMinBlockSize, 10rem);
+  overflow: auto;
+}
+
+/* Collapsed (sticky-item, not the expanded item): header-only. The region
+   stays mounted — never removed — only sized to zero and hidden. */
+.st-panelSection__body--collapsed {
+  block-size: 0;
+  max-block-size: 0;
+  overflow: hidden;
+  padding-block: 0;
+  visibility: hidden;
+}
