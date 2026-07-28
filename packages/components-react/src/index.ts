@@ -306,6 +306,7 @@ export type { SideNavProps, SideNavItem } from "./SideNav.js";
 export { AppShell } from "./AppShell.js";
 export type {
   AppShellPanelCollapse,
+  AppShellPanelKey,
   AppShellProps,
   AppShellUtilityMode,
   AppShellUtilitySide,
