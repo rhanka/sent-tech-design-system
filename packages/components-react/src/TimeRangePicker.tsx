@@ -22,17 +22,18 @@ import {
 // TimeRangePicker — composes EXISTING DS primitives (MenuPopover,
 // ContentSwitcher, SelectableList/SelectableRow, Calendar, TimePicker, Input,
 // Button); no new low-level control is introduced. The trigger is bespoke
-// (there is no generic "field trigger button" primitive). The React
-// MenuPopover primitive is a plain, always-mounted display shell — unlike the
-// Svelte MenuPopover it does NOT own its open/close lifecycle (no
-// Escape/outside-click handling of its own) and does NOT trap or return
-// focus. This component therefore owns open state itself and is rendered
-// conditionally (`{open && <MenuPopover>...}`) so no `[role="dialog"]` node
-// exists while closed; Escape, outside-pointerdown, Tab-trap and focus-return
-// to the trigger are all implemented here, mirroring TimeRangePicker.svelte's
-// own focus-trap addition (Modal.svelte's trapFocus pattern) but going one
-// step further to also cover Escape/outside-click since the React primitive
-// doesn't provide them.
+// (there is no generic "field trigger button" primitive). MenuPopover now
+// owns its own Escape/outside-click/viewport-aware positioning lifecycle
+// (Svelte-parity), given `trigger={triggerRef.current}`; it is rendered
+// uncontrolled (`open` passed as a literal, no `onOpenChange`) so its own
+// close attempts are no-ops. This component still owns open state itself and
+// renders MenuPopover conditionally (`{open && <MenuPopover>...}`) so no
+// `[role="dialog"]` node exists while closed; Escape, outside-pointerdown,
+// Tab-trap and focus-return to the trigger are all ALSO implemented here
+// (redundant with MenuPopover's own Escape/outside-click, harmless), mirroring
+// TimeRangePicker.svelte's own focus-trap addition (Modal.svelte's trapFocus
+// pattern) but going one step further to also cover Tab-trap/focus-return
+// since the MenuPopover primitive doesn't provide those.
 
 export type TimeRangePickerProps = Omit<React.HTMLAttributes<HTMLDivElement>, "onChange" | "defaultValue"> & {
   /** Controlled value. Omit to let the component manage its own state. */
@@ -401,7 +402,6 @@ export function TimeRangePicker({
   }
 
   const rootClasses = classNames("st-timeRangePicker", `st-timeRangePicker--${size}`, className);
-  const alignClass = align === "end" ? "st-menuPopover--alignEnd" : align === "center" ? "st-menuPopover--alignCenter" : undefined;
 
   return (
     <div {...rest} ref={rootRef} className={rootClasses}>
@@ -429,9 +429,12 @@ export function TimeRangePicker({
 
       {open ? (
         <MenuPopover
+          open
+          trigger={triggerRef.current}
           label={panelLabel}
           placement={placement}
-          className={classNames("st-timeRangePicker__popover", alignClass)}
+          align={align}
+          className="st-timeRangePicker__popover"
         >
           <div ref={panelRef} className="st-timeRangePicker__panel" tabIndex={-1}>
             {/* `onchange` (lowercase): ContentSwitcherProps intersects React.HTMLAttributes<HTMLDivElement>,
