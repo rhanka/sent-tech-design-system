@@ -223,6 +223,19 @@ export { default as ContextPanel } from "./ContextPanel.svelte";
 export type { ContextPanelProps } from "./ContextPanel.svelte";
 export { default as UtilityPanel } from "./UtilityPanel.svelte";
 export type { UtilityPanelMode, UtilityPanelProps, UtilityPanelSide } from "./UtilityPanel.svelte";
+// PanelStack / PanelSection are intentionally NOT exported yet.
+//
+// Their design is the design system's own reading of the D10 stacked-section
+// contract (split-primary + sticky-item) written by the chat consumer lane,
+// which has not confirmed it. Publishing them here would freeze that API and —
+// via the Angular index parity test, which derives its expected component list
+// from this file — force the port to the other three frameworks before anyone
+// has validated the shape.
+//
+// The implementation and its tests live in the package so the contract is
+// concrete and reviewable. Add the four export lines (the components plus
+// PanelStackShape, PanelStackProps and PanelSectionProps) together with the
+// ports once the design is confirmed.
 export { default as SkeletonText } from "./SkeletonText.svelte";
 export { default as SkipLink } from "./SkipLink.svelte";
 export { default as SlideIndicator } from "./SlideIndicator.svelte";
