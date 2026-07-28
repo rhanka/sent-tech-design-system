@@ -17487,6 +17487,15 @@
 
 /* NavSystem wave 3 primitives */
 .st-appShell {
+  /* Indirection vars each resizable panel's `inline-size` reads (see
+     `.st-appShell__navigationPanel` etc. below). `panelResize` sets these
+     inline on this same root element ONLY for panels with an explicit width,
+     which — thanks to inline-style specificity — transparently overrides the
+     token-driven default declared here without ever touching a panel that
+     hasn't been resized. */
+  --st-appShell-navigation-width: var(--st-component-navShell-width, 18rem);
+  --st-appShell-context-width: var(--st-component-contextPanel-width, 20rem);
+  --st-appShell-utility-width: var(--st-component-utilityPanel-width, 24rem);
   background: var(--st-component-appShell-surface, var(--st-semantic-surface-default));
   color: var(--st-semantic-text-primary);
   min-block-size: 100vh;
@@ -17529,9 +17538,10 @@
 .st-appShell__navigationPanel {
   order: 20;
   flex: 0 1 auto;
-  inline-size: var(--st-component-navShell-width, 18rem);
+  inline-size: var(--st-appShell-navigation-width);
   min-block-size: 0;
   overflow: hidden;
+  position: relative;
 }
 
 .st-appShell__main {
@@ -17545,17 +17555,19 @@
 .st-appShell__contextPanel {
   order: 40;
   flex: 0 1 auto;
-  inline-size: var(--st-component-contextPanel-width, 20rem);
+  inline-size: var(--st-appShell-context-width);
   min-block-size: 0;
   overflow: hidden;
+  position: relative;
 }
 
 .st-appShell__utilityPanel {
   order: 50;
   flex: 0 1 auto;
-  inline-size: var(--st-component-utilityPanel-width, 24rem);
+  inline-size: var(--st-appShell-utility-width);
   min-block-size: 0;
   overflow: hidden;
+  position: relative;
 }
 
 .st-appShell[data-utility-side="left"] .st-appShell__utilityPanel {
@@ -17579,7 +17591,7 @@
 .st-appShell[data-utility-mode="overlay"][data-utility-side="right"] .st-appShell__utilityPanel,
 .st-appShell[data-utility-mode="floating"][data-utility-side="right"] .st-appShell__utilityPanel {
   block-size: 100%;
-  inline-size: min(100%, var(--st-component-utilityPanel-width, 24rem));
+  inline-size: min(100%, var(--st-appShell-utility-width));
   inset-block: 0;
   inset-inline-end: 0;
 }
@@ -17587,7 +17599,7 @@
 .st-appShell[data-utility-mode="overlay"][data-utility-side="left"] .st-appShell__utilityPanel,
 .st-appShell[data-utility-mode="floating"][data-utility-side="left"] .st-appShell__utilityPanel {
   block-size: 100%;
-  inline-size: min(100%, var(--st-component-utilityPanel-width, 24rem));
+  inline-size: min(100%, var(--st-appShell-utility-width));
   inset-block: 0;
   inset-inline-start: 0;
 }
@@ -17650,6 +17662,50 @@
   min-inline-size: 0;
 }
 
+/* Drag-to-resize handle (panelResize). Desktop-only: visible by default
+   here, forced to `display:none` under the 48rem breakpoint below — the
+   element is only ever rendered to the DOM at all when `panelResize` is
+   true, so a `panelResize`-less shell never pays for or shows any of this.
+   Sits fully inside its panel's own `overflow:hidden` box (no negative
+   inset), flush against the edge shared with the next region in flow. */
+.st-appShell__resizeHandle {
+  background: transparent;
+  block-size: auto;
+  cursor: col-resize;
+  display: block;
+  inset-block: 0;
+  inline-size: var(--st-component-appShell-resizeHandle-width, 0.5rem);
+  position: absolute;
+  touch-action: none;
+  z-index: var(--st-component-appShell-resizeHandle-zIndex, 5);
+}
+
+.st-appShell__resizeHandle:hover,
+.st-appShell__resizeHandle:focus-visible {
+  background: var(--st-component-appShell-resizeHandle-activeBackground, var(--st-semantic-border-interactive));
+}
+
+.st-appShell__resizeHandle:focus-visible {
+  outline: 2px solid var(--st-semantic-border-focus, var(--st-semantic-brand-default));
+  outline-offset: -2px;
+}
+
+.st-appShell__navigationPanel > .st-appShell__resizeHandle {
+  inset-inline-end: 0;
+}
+
+.st-appShell__contextPanel > .st-appShell__resizeHandle {
+  inset-inline-start: 0;
+}
+
+.st-appShell[data-utility-side="left"] .st-appShell__utilityPanel > .st-appShell__resizeHandle {
+  inset-inline-end: 0;
+}
+
+.st-appShell[data-utility-side="right"] .st-appShell__utilityPanel > .st-appShell__resizeHandle {
+  inset-inline-start: 0;
+}
+
 @media (max-width: 48rem) {
   .st-appShell[data-panel-collapse="accordion"] .st-appShell__panelDisclosure {
     display: flex;
@@ -17666,6 +17722,12 @@
     overflow: hidden;
     padding-block: 0;
     visibility: hidden;
+  }
+
+  /* Resize is desktop-only (>48rem) — panels stack/accordion below this
+     breakpoint instead, where a drag handle has no meaning. */
+  .st-appShell__resizeHandle {
+    display: none;
   }
 }
 
