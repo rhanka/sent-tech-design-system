@@ -1,5 +1,51 @@
+// Sent Tech published-package smoke test.
+//
+// WHAT THIS GENUINELY VERIFIES
+// - Tarball shape: every package's `npm pack` output contains the files we
+//   expect (dist entry points, every top-level component/module file we
+//   currently ship, CSS where applicable). For react/vue/angular/svelte this
+//   list is generated from the local, freshly-built dist/ at pack time (not
+//   hand-maintained), so it cannot silently go stale as components are
+//   added - see "found weaker than it looked" in the change report for why
+//   that mattered here.
+// - @sentropic/design-system-tokens / -themes / -skills: the packed tarball
+//   is installed fresh in a throwaway project (no monorepo, no workspace
+//   symlinks, no npm/yarn workspace resolution) and its real entry point is
+//   `await import()`-ed; a documented export is asserted to be a function.
+// - @sentropic/design-system-svelte: every single *.svelte file shipped in
+//   the installed tarball's dist/ is run through the exact preprocessing a
+//   SvelteKit/Vite consumer applies (`vitePreprocess()` from
+//   `@sveltejs/vite-plugin-svelte`) and then through the real
+//   `svelte/compiler` `compile()`. A file a bundler cannot parse - the
+//   defect class that prompted this rewrite - fails here, by filename, with
+//   the compiler's own error. This is deliberately a direct compile, not a
+//   full Vite/bundler build: faster, deterministic, and it covers every
+//   shipped component instead of only the handful a demo app would import.
+// - @sentropic/design-system-react / -vue / -angular: the packed tarball's
+//   main entry is `await import()`-ed for real, with peer runtimes
+//   (react/react-dom, vue, @angular/core) installed fresh in the throwaway
+//   project so resolution is genuine, not simulated. Every named export the
+//   real module graph produced is asserted to be defined and, for
+//   PascalCase (component) exports, of a plausible runtime shape.
+//
+// WHAT THIS DOES NOT COVER (say so, rather than let a check pretend)
+// - No component is ever mounted/rendered in any framework. Svelte files are
+//   compiled, not run; React/Vue/Angular exports are imported, not rendered.
+//   A component that compiles/imports cleanly but throws once actually
+//   mounted (e.g. an effect that dereferences a missing prop) is not caught
+//   here - that is `apps/docs`' and each package's own component-test job.
+// - Angular ships "partial" (linked) compilation output; a real consumer's
+//   build runs the Angular CLI linker to fully AOT-compile it. There is no
+//   bundler/linker here, so the Angular check preloads @angular/compiler to
+//   force Node's JIT fallback path instead. That proves the module graph and
+//   export shapes are real and resolvable, but does not exercise the actual
+//   linker step a consumer's build performs.
+// - No bundler build (Vite/webpack/Rollup) is run against any package.
+// - Only the 7 packages listed below are covered at all, even for the
+//   tarball-shape check. theme-* clone packages and apps/* are untested by
+//   this script.
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -8,6 +54,41 @@ const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const tmp = mkdtempSync(join(tmpdir(), "sent-tech-pack-"));
 const npmCache = join(tmp, "npm-cache");
 mkdirSync(npmCache);
+
+function readJson(relPath) {
+  return JSON.parse(readFileSync(join(root, relPath), "utf8"));
+}
+
+// Every *.js (or *.svelte) file directly under a built package's local
+// dist/, excluding the barrel file itself and any leaked test/spec output.
+// Used both as the tarball-required-files list and as the "how many exports
+// should this import produce, at minimum" ground truth for the deep import
+// check below - one source of truth for both, so they cannot drift apart.
+function distFiles(pkgRelDir, ext) {
+  const dir = join(root, pkgRelDir, "dist");
+  if (!existsSync(dir)) {
+    throw new Error(
+      `${pkgRelDir}/dist does not exist - build packages before running smoke-pack.mjs (CI does this in the ` +
+        `"Build packages" step; locally run \`npm run build\`).`,
+    );
+  }
+  return readdirSync(dir)
+    .filter((file) => file.endsWith(`.${ext}`))
+    .filter((file) => file !== `index.${ext}`)
+    .filter((file) => !file.includes(".test.") && !file.includes(".spec."))
+    .sort()
+    .map((file) => `dist/${file}`);
+}
+
+const rootManifest = readJson("package.json");
+const reactManifest = readJson("packages/components-react/package.json");
+const vueManifest = readJson("packages/components-vue/package.json");
+const angularManifest = readJson("packages/components-angular/package.json");
+
+const reactComponentFiles = distFiles("packages/components-react", "js");
+const vueComponentFiles = distFiles("packages/components-vue", "js");
+const angularComponentFiles = distFiles("packages/components-angular", "js");
+const svelteComponentFiles = distFiles("packages/components-svelte", "svelte");
 
 const packages = [
   {
@@ -26,102 +107,11 @@ const packages = [
   },
   {
     name: "@sentropic/design-system-svelte",
-    requiredFiles: [
-      "dist/index.js",
-      "dist/index.d.ts",
-      "dist/Button.svelte",
-      "dist/Card.svelte",
-      "dist/Input.svelte",
-      "dist/Textarea.svelte",
-    ],
+    requiredFiles: ["dist/index.js", "dist/index.d.ts", ...svelteComponentFiles],
   },
   {
     name: "@sentropic/design-system-react",
-    requiredFiles: [
-      "dist/index.js",
-      "dist/index.d.ts",
-      "dist/Accordion.js",
-      "dist/Alert.js",
-      "dist/AreaChart.js",
-      "dist/AspectRatio.js",
-      "dist/Badge.js",
-      "dist/BarChart.js",
-      "dist/Breadcrumb.js",
-      "dist/Button.js",
-      "dist/Card.js",
-      "dist/ChatComposer.js",
-      "dist/ChatMessage.js",
-      "dist/ChatThread.js",
-      "dist/Checkbox.js",
-      "dist/CodeSnippet.js",
-      "dist/Combobox.js",
-      "dist/ContentSwitcher.js",
-      "dist/CopyButton.js",
-      "dist/DataTable.js",
-      "dist/DatePicker.js",
-      "dist/DonutChart.js",
-      "dist/Drawer.js",
-      "dist/Dropdown.js",
-      "dist/EmptyState.js",
-      "dist/FileUploader.js",
-      "dist/Footer.js",
-      "dist/ForceGraph.js",
-      "dist/Form.js",
-      "dist/FormGroup.js",
-      "dist/Header.js",
-      "dist/Highlight.js",
-      "dist/IconButton.js",
-      "dist/InlineLoading.js",
-      "dist/Input.js",
-      "dist/LanguageSelector.js",
-      "dist/LineChart.js",
-      "dist/Link.js",
-      "dist/LoadingState.js",
-      "dist/Menu.js",
-      "dist/MenuPopover.js",
-      "dist/MenuTriggerButton.js",
-      "dist/MessageActions.js",
-      "dist/MessageStatusBadge.js",
-      "dist/Modal.js",
-      "dist/MultiSelect.js",
-      "dist/NumberInput.js",
-      "dist/OrderedList.js",
-      "dist/OverflowMenu.js",
-      "dist/Pagination.js",
-      "dist/PaginationNav.js",
-      "dist/PasswordInput.js",
-      "dist/Popover.js",
-      "dist/ProgressBar.js",
-      "dist/ProgressIndicator.js",
-      "dist/Quote.js",
-      "dist/Radio.js",
-      "dist/ScatterPlot.js",
-      "dist/Search.js",
-      "dist/Select.js",
-      "dist/SideNav.js",
-      "dist/SkeletonText.js",
-      "dist/SkipLink.js",
-      "dist/Slider.js",
-      "dist/Sparkline.js",
-      "dist/StackedBarChart.js",
-      "dist/StreamingMessage.js",
-      "dist/StructuredList.js",
-      "dist/Switch.js",
-      "dist/Table.js",
-      "dist/Tabs.js",
-      "dist/Tag.js",
-      "dist/Textarea.js",
-      "dist/ThemeProvider.js",
-      "dist/Tile.js",
-      "dist/TileGroup.js",
-      "dist/Toast.js",
-      "dist/Toggle.js",
-      "dist/Toggletip.js",
-      "dist/Tooltip.js",
-      "dist/TreeView.js",
-      "dist/UnorderedList.js",
-      "dist/styles.css",
-    ],
+    requiredFiles: ["dist/index.js", "dist/index.d.ts", "dist/styles.css", ...reactComponentFiles],
   },
   {
     name: "@sentropic/design-system-skills",
@@ -129,93 +119,91 @@ const packages = [
   },
   {
     name: "@sentropic/design-system-vue",
-    requiredFiles: [
-      "dist/index.js",
-      "dist/index.d.ts",
-      "dist/Accordion.js",
-      "dist/Alert.js",
-      "dist/AspectRatio.js",
-      "dist/Badge.js",
-      "dist/Breadcrumb.js",
-      "dist/Button.js",
-      "dist/Card.js",
-      "dist/Checkbox.js",
-      "dist/CodeSnippet.js",
-      "dist/ContentSwitcher.js",
-      "dist/CopyButton.js",
-      "dist/Drawer.js",
-      "dist/Dropdown.js",
-      "dist/EmptyState.js",
-      "dist/FileUploader.js",
-      "dist/Footer.js",
-      "dist/Form.js",
-      "dist/FormGroup.js",
-      "dist/Header.js",
-      "dist/Highlight.js",
-      "dist/IconButton.js",
-      "dist/InlineLoading.js",
-      "dist/Input.js",
-      "dist/LanguageSelector.js",
-      "dist/Link.js",
-      "dist/LoadingState.js",
-      "dist/NumberInput.js",
-      "dist/OrderedList.js",
-      "dist/Pagination.js",
-      "dist/PaginationNav.js",
-      "dist/PasswordInput.js",
-      "dist/ProgressBar.js",
-      "dist/ProgressIndicator.js",
-      "dist/Quote.js",
-      "dist/Radio.js",
-      "dist/Search.js",
-      "dist/Select.js",
-      "dist/SideNav.js",
-      "dist/SkeletonText.js",
-      "dist/SkipLink.js",
-      "dist/Slider.js",
-      "dist/StructuredList.js",
-      "dist/Switch.js",
-      "dist/Tag.js",
-      "dist/Textarea.js",
-      "dist/ThemeProvider.js",
-      "dist/Tile.js",
-      "dist/TileGroup.js",
-      "dist/Toggle.js",
-      "dist/UnorderedList.js",
-      "dist/Combobox.js",
-      "dist/DataTable.js",
-      "dist/DatePicker.js",
-      "dist/Menu.js",
-      "dist/MenuPopover.js",
-      "dist/MenuTriggerButton.js",
-      "dist/Modal.js",
-      "dist/MultiSelect.js",
-      "dist/OverflowMenu.js",
-      "dist/Popover.js",
-      "dist/Table.js",
-      "dist/Tabs.js",
-      "dist/Toast.js",
-      "dist/Toggletip.js",
-      "dist/Tooltip.js",
-      "dist/TreeView.js",
-      "dist/AreaChart.js",
-      "dist/BarChart.js",
-      "dist/LineChart.js",
-      "dist/DonutChart.js",
-      "dist/ScatterPlot.js",
-      "dist/Sparkline.js",
-      "dist/StackedBarChart.js",
-      "dist/ForceGraph.js",
-      "dist/ChatComposer.js",
-      "dist/ChatMessage.js",
-      "dist/ChatThread.js",
-      "dist/StreamingMessage.js",
-      "dist/MessageActions.js",
-      "dist/MessageStatusBadge.js",
-      "dist/styles.css",
-    ],
+    requiredFiles: ["dist/index.js", "dist/index.d.ts", "dist/styles.css", ...vueComponentFiles],
+  },
+  {
+    name: "@sentropic/design-system-angular",
+    requiredFiles: ["dist/index.js", "dist/index.d.ts", "dist/styles.css", ...angularComponentFiles],
   },
 ];
+
+// For each deep-verifiable package: which OTHER local workspace tarballs
+// must be installed alongside it for its runtime imports to resolve (e.g.
+// ThemeProvider.js does `import ... from "@sentropic/design-system-themes"`
+// at module scope), and which external peer packages the throwaway project
+// needs installed so the import is genuine rather than simulated.
+//
+// closure deps are always packed from the LOCAL workspace, never pulled
+// from the npm registry - this is what lets `smoke-pack.mjs --workspaces=`
+// deep-verify a single package (as the CI matrix shards routinely do) even
+// when its runtime dependencies were not themselves part of this shard's
+// selection. Their dist/ is guaranteed already built: scripts/ensure-theme-
+// dists.mjs, run before this script in CI, resolves the same --workspaces=
+// selection's *local dependency closure*, so themes/tokens dist already
+// exists whenever react/vue/angular/themes was selected.
+const deepVerify = {
+  "@sentropic/design-system-tokens": { closure: [], peers: [] },
+  "@sentropic/design-system-themes": {
+    closure: ["@sentropic/design-system-tokens"],
+    peers: [],
+  },
+  "@sentropic/design-system-skills": { closure: [], peers: [] },
+  "@sentropic/design-system-svelte": {
+    // Compiling .svelte source needs only the svelte compiler + preprocessor
+    // toolchain - compile() never resolves the component's own imports, so
+    // no local closure dependency is needed here.
+    closure: [],
+    peers: [
+      ["svelte", rootManifest.devDependencies.svelte],
+      ["vite", rootManifest.devDependencies.vite],
+      ["@sveltejs/vite-plugin-svelte", rootManifest.devDependencies["@sveltejs/vite-plugin-svelte"]],
+    ],
+  },
+  "@sentropic/design-system-react": {
+    closure: ["@sentropic/design-system-themes", "@sentropic/design-system-tokens"],
+    peers: [
+      ["react", reactManifest.devDependencies.react],
+      ["react-dom", reactManifest.devDependencies["react-dom"]],
+    ],
+  },
+  "@sentropic/design-system-vue": {
+    closure: ["@sentropic/design-system-themes", "@sentropic/design-system-tokens"],
+    peers: [["vue", vueManifest.devDependencies.vue]],
+  },
+  "@sentropic/design-system-angular": {
+    closure: ["@sentropic/design-system-themes", "@sentropic/design-system-tokens"],
+    peers: [
+      ["@angular/core", angularManifest.devDependencies["@angular/core"]],
+      // @angular/compiler is an OPTIONAL peer of @angular/core and a real
+      // Angular CLI build never needs it (the linker fully AOT-compiles our
+      // partially-compiled output). Installed here only so a bare `node
+      // --import` can JIT-fallback-compile the component defs, since this
+      // harness has no bundler/linker. See the header comment above.
+      ["@angular/compiler", angularManifest.devDependencies["@angular/compiler"]],
+      // FINDING: @sentropic/design-system-angular's compiled output imports
+      // @angular/common directly (NgFor/NgIf-style directives, DatePipe,
+      // etc. - ~20 files) but declares it in NEITHER peerDependencies NOR
+      // devDependencies. In this monorepo it only "works" because
+      // apps/docs depends on @angular/common and hoists it to the workspace
+      // root node_modules. A real minimal consumer almost always has
+      // @angular/common anyway (every `ng new` app ships it), so this is
+      // unlikely to be user-visible, but the declaration gap is real.
+      // Pinned to @angular/core's own version track since Angular family
+      // packages are always released in lockstep.
+      ["@angular/common", angularManifest.devDependencies["@angular/core"]],
+      // rxjs is @angular/core's own (non-optional) peer dependency, not
+      // ours - required for @angular/core itself to import, independent of
+      // anything design-system-angular does.
+      ["rxjs", "^7.8.0"],
+    ],
+  },
+};
+
+const minExportCounts = {
+  "@sentropic/design-system-react": reactComponentFiles.length,
+  "@sentropic/design-system-vue": vueComponentFiles.length,
+  "@sentropic/design-system-angular": angularComponentFiles.length,
+};
 
 function run(command, args, options = {}) {
   const result = spawnSync(command, args, {
@@ -261,6 +249,14 @@ function packWorkspace(pkg) {
   return tarball;
 }
 
+const tarballCache = new Map();
+function ensureTarball(pkg) {
+  if (tarballCache.has(pkg.name)) return tarballCache.get(pkg.name);
+  const tarball = packWorkspace(pkg);
+  tarballCache.set(pkg.name, tarball);
+  return tarball;
+}
+
 function listTarball(tarball) {
   const result = run("tar", ["-tf", tarball], { capture: true });
   return result.stdout.split(/\r?\n/).filter(Boolean);
@@ -276,13 +272,15 @@ function verifyTarball(pkg, tarball) {
   );
 }
 
-function installTarballs(tarballs) {
+function installProject(tarballs, peerSpecs) {
   const installDir = join(tmp, "install");
   mkdirSync(installDir);
   writeFileSync(
     join(installDir, "package.json"),
     JSON.stringify({ name: "sent-tech-pack-smoke", private: true, type: "module" }, null, 2),
   );
+
+  const peerArgs = [...peerSpecs.entries()].map(([name, version]) => `${name}@${version}`);
 
   run(
     "npm",
@@ -293,6 +291,7 @@ function installTarballs(tarballs) {
       "--ignore-scripts",
       "--legacy-peer-deps",
       ...tarballs,
+      ...peerArgs,
     ],
     { cwd: installDir },
   );
@@ -300,241 +299,15 @@ function installTarballs(tarballs) {
   return installDir;
 }
 
-function writeImportSmoke(installDir) {
+function writeVerifyScript(installDir, targetNames) {
+  const templatePath = join(root, "scripts", "smoke-pack-verify-template.mjs");
+  const template = readFileSync(templatePath, "utf8");
+  const content = template
+    .replaceAll("__SMOKE_TARGETS_JSON__", JSON.stringify(targetNames))
+    .replaceAll("__SMOKE_MIN_EXPORT_COUNTS_JSON__", JSON.stringify(minExportCounts));
+
   const smokePath = join(installDir, "verify.mjs");
-  writeFileSync(
-    smokePath,
-    `
-import { readFileSync } from "node:fs";
-
-const tokens = await import("@sentropic/design-system-tokens");
-const themes = await import("@sentropic/design-system-themes");
-const skills = await import("@sentropic/design-system-skills");
-
-if (typeof tokens.flattenTokens !== "function") {
-  throw new Error("@sentropic/design-system-tokens missing flattenTokens export");
-}
-
-if (typeof themes.compileTheme !== "function") {
-  throw new Error("@sentropic/design-system-themes missing compileTheme export");
-}
-
-if (typeof skills.audit !== "function") {
-  throw new Error("@sentropic/design-system-skills missing audit export");
-}
-
-const componentsEntry = await import.meta.resolve("@sentropic/design-system-svelte");
-if (!componentsEntry.endsWith("/dist/index.js")) {
-  throw new Error("@sentropic/design-system-svelte resolved to unexpected entry: " + componentsEntry);
-}
-
-const componentIndex = readFileSync(new URL(componentsEntry), "utf8");
-for (const exportName of ["Button", "Card", "Input", "Textarea"]) {
-  if (!componentIndex.includes("as " + exportName)) {
-    throw new Error("@sentropic/design-system-svelte missing " + exportName + " export");
-  }
-}
-
-const reactEntry = await import.meta.resolve("@sentropic/design-system-react");
-if (!reactEntry.endsWith("/dist/index.js")) {
-  throw new Error("@sentropic/design-system-react resolved to unexpected entry: " + reactEntry);
-}
-
-const reactIndex = readFileSync(new URL(reactEntry), "utf8");
-for (const exportName of [
-  "Accordion",
-  "Alert",
-  "AreaChart",
-  "AspectRatio",
-  "Badge",
-  "BarChart",
-  "Breadcrumb",
-  "Button",
-  "Card",
-  "ChatComposer",
-  "ChatMessage",
-  "ChatThread",
-  "Checkbox",
-  "CodeSnippet",
-  "Combobox",
-  "ContentSwitcher",
-  "CopyButton",
-  "DataTable",
-  "DatePicker",
-  "DonutChart",
-  "Drawer",
-  "Dropdown",
-  "EmptyState",
-  "FileUploader",
-  "Footer",
-  "ForceGraph",
-  "Form",
-  "FormGroup",
-  "Header",
-  "Highlight",
-  "IconButton",
-  "InlineLoading",
-  "Input",
-  "LanguageSelector",
-  "LineChart",
-  "Link",
-  "LoadingState",
-  "Menu",
-  "MenuPopover",
-  "MenuTriggerButton",
-  "MessageActions",
-  "MessageStatusBadge",
-  "Modal",
-  "MultiSelect",
-  "NumberInput",
-  "OrderedList",
-  "OverflowMenu",
-  "Pagination",
-  "PaginationNav",
-  "PasswordInput",
-  "Popover",
-  "ProgressBar",
-  "ProgressIndicator",
-  "Quote",
-  "Radio",
-  "ScatterPlot",
-  "Search",
-  "Select",
-  "SideNav",
-  "SkeletonText",
-  "SkipLink",
-  "Slider",
-  "Sparkline",
-  "StackedBarChart",
-  "StreamingMessage",
-  "StructuredList",
-  "Switch",
-  "Table",
-  "Tabs",
-  "Tag",
-  "Textarea",
-  "ThemeProvider",
-  "Tile",
-  "TileGroup",
-  "Toast",
-  "Toggle",
-  "Toggletip",
-  "Tooltip",
-  "TreeView",
-  "UnorderedList"
-]) {
-  if (!reactIndex.includes('from "./' + exportName + '.js"')) {
-    throw new Error("@sentropic/design-system-react missing " + exportName + " export");
-  }
-}
-
-const reactStyles = await import.meta.resolve("@sentropic/design-system-react/styles.css");
-if (!reactStyles.endsWith("/dist/styles.css")) {
-  throw new Error("@sentropic/design-system-react styles resolved to unexpected path: " + reactStyles);
-}
-
-const vueEntry = await import.meta.resolve("@sentropic/design-system-vue");
-if (!vueEntry.endsWith("/dist/index.js")) {
-  throw new Error("@sentropic/design-system-vue resolved to unexpected entry: " + vueEntry);
-}
-
-const vueIndex = readFileSync(new URL(vueEntry), "utf8");
-for (const exportName of [
-  "Accordion",
-  "Alert",
-  "AspectRatio",
-  "Badge",
-  "Breadcrumb",
-  "Button",
-  "Card",
-  "Checkbox",
-  "CodeSnippet",
-  "ContentSwitcher",
-  "CopyButton",
-  "Drawer",
-  "Dropdown",
-  "EmptyState",
-  "FileUploader",
-  "Footer",
-  "Form",
-  "FormGroup",
-  "Header",
-  "Highlight",
-  "IconButton",
-  "InlineLoading",
-  "Input",
-  "LanguageSelector",
-  "Link",
-  "LoadingState",
-  "NumberInput",
-  "OrderedList",
-  "Pagination",
-  "PaginationNav",
-  "PasswordInput",
-  "ProgressBar",
-  "ProgressIndicator",
-  "Quote",
-  "Radio",
-  "Search",
-  "Select",
-  "SideNav",
-  "SkeletonText",
-  "SkipLink",
-  "Slider",
-  "StructuredList",
-  "Switch",
-  "Tag",
-  "Textarea",
-  "ThemeProvider",
-  "Tile",
-  "TileGroup",
-  "Toggle",
-  "UnorderedList",
-  "Combobox",
-  "DataTable",
-  "DatePicker",
-  "Menu",
-  "MenuPopover",
-  "MenuTriggerButton",
-  "Modal",
-  "MultiSelect",
-  "OverflowMenu",
-  "Popover",
-  "Table",
-  "Tabs",
-  "Toast",
-  "Toggletip",
-  "Tooltip",
-  "TreeView",
-  "AreaChart",
-  "BarChart",
-  "LineChart",
-  "DonutChart",
-  "ScatterPlot",
-  "Sparkline",
-  "StackedBarChart",
-  "ForceGraph",
-  "ChatComposer",
-  "ChatMessage",
-  "ChatThread",
-  "StreamingMessage",
-  "MessageActions",
-  "MessageStatusBadge",
-]) {
-  if (!vueIndex.includes('from "./' + exportName + '.js"')) {
-    throw new Error("@sentropic/design-system-vue missing " + exportName + " export");
-  }
-}
-
-const vueStyles = await import.meta.resolve("@sentropic/design-system-vue/styles.css");
-if (!vueStyles.endsWith("/dist/styles.css")) {
-  throw new Error("@sentropic/design-system-vue styles resolved to unexpected path: " + vueStyles);
-}
-
-console.log("Package imports verified");
-`,
-  );
-
+  writeFileSync(smokePath, content);
   return smokePath;
 }
 
@@ -556,19 +329,50 @@ try {
   }
 
   const tarballs = [];
+  const selectedNamesSet = new Set(selectedPackages.map((pkg) => pkg.name));
   for (const pkg of selectedPackages) {
-    const tarball = packWorkspace(pkg);
+    const tarball = ensureTarball(pkg);
     verifyTarball(pkg, tarball);
     tarballs.push(tarball);
     console.log(`OK packed ${pkg.name}`);
   }
 
-  if (selectedPackages.length === packages.length) {
-    const installDir = installTarballs(tarballs);
-    const smokePath = writeImportSmoke(installDir);
-    run("node", [smokePath], { cwd: installDir });
+  const deepTargets = selectedPackages.filter((pkg) => deepVerify[pkg.name]);
+
+  if (deepTargets.length === 0) {
+    console.log("No deep-verifiable package in this selection; tarball contents verified only.");
   } else {
-    console.log("Partial smoke-pack selection; tarball contents verified, full import smoke skipped.");
+    // Pull in whatever local closure tarballs the deep targets need to
+    // resolve at runtime, even if this shard's --workspaces= selection did
+    // not itself include them. Packed, but not re-verified for required
+    // files here - that check belongs to the shard where the dependency
+    // itself is under test.
+    const installTarballs = [...tarballs];
+    for (const pkg of deepTargets) {
+      for (const depName of deepVerify[pkg.name].closure) {
+        if (selectedNamesSet.has(depName)) continue;
+        if (tarballCache.has(depName)) continue;
+        const depPkg = packages.find((candidate) => candidate.name === depName);
+        const tarball = ensureTarball(depPkg);
+        installTarballs.push(tarball);
+        selectedNamesSet.add(depName);
+        console.log(`OK packed ${depName} (closure dependency for deep verification, not itself under test here)`);
+      }
+    }
+
+    const peerSpecs = new Map();
+    for (const pkg of deepTargets) {
+      for (const [peerName, peerVersion] of deepVerify[pkg.name].peers) {
+        peerSpecs.set(peerName, peerVersion);
+      }
+    }
+
+    const installDir = installProject(installTarballs, peerSpecs);
+    const verifyPath = writeVerifyScript(
+      installDir,
+      deepTargets.map((pkg) => pkg.name),
+    );
+    run("node", [verifyPath], { cwd: installDir });
   }
 
   console.log("OK package smoke test passed");

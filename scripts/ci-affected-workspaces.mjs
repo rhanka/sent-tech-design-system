@@ -13,6 +13,7 @@ const smokePackWorkspaces = new Set([
   "@sentropic/design-system-react",
   "@sentropic/design-system-skills",
   "@sentropic/design-system-vue",
+  "@sentropic/design-system-angular",
 ]);
 
 function arg(name, fallback = undefined) {
