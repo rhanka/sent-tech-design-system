@@ -1,6 +1,6 @@
 {
   "name": "@sentropic/design-system-svelte",
-  "version": "0.34.73",
+  "version": "0.34.74",
   "type": "module",
   "publishConfig": {
     "access": "public"
@@ -23,7 +23,12 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "!dist/**/*.test.js",
+    "!dist/**/*.test.d.ts",
+    "!dist/**/*.test.d.ts.map",
+    "!dist/**/*Fixture.svelte",
+    "!dist/**/*Fixture.d.ts"
   ],
   "dependencies": {
     "@lucide/svelte": "^0.562.0",
