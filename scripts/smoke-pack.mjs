@@ -107,10 +107,23 @@ const reactManifest = readJson("packages/components-react/package.json");
 const vueManifest = readJson("packages/components-vue/package.json");
 const angularManifest = readJson("packages/components-angular/package.json");
 
-const reactComponentFiles = distFiles("packages/components-react", "js");
-const vueComponentFiles = distFiles("packages/components-vue", "js");
-const angularComponentFiles = distFiles("packages/components-angular", "js");
-const svelteComponentFiles = distFiles("packages/components-svelte", "svelte");
+// LAZY, and that is load-bearing. In CI this script runs per shard, and a shard
+// builds only its own workspaces — so a package outside the selection has no
+// dist/ at all. Enumerating all four eagerly made the script throw
+// "packages/components-vue/dist does not exist" on every shard that legitimately
+// had nothing to do with Vue, long before the --workspaces= filter below could
+// drop it. Memoised so the repeated reads inside one run stay free.
+const distFilesMemo = new Map();
+function distFilesLazy(pkgRelDir, ext) {
+  const key = `${pkgRelDir}:${ext}`;
+  if (!distFilesMemo.has(key)) distFilesMemo.set(key, distFiles(pkgRelDir, ext));
+  return distFilesMemo.get(key);
+}
+
+const reactComponentFiles = () => distFilesLazy("packages/components-react", "js");
+const vueComponentFiles = () => distFilesLazy("packages/components-vue", "js");
+const angularComponentFiles = () => distFilesLazy("packages/components-angular", "js");
+const svelteComponentFiles = () => distFilesLazy("packages/components-svelte", "svelte");
 
 const packages = [
   {
@@ -129,11 +142,11 @@ const packages = [
   },
   {
     name: "@sentropic/design-system-svelte",
-    requiredFiles: ["dist/index.js", "dist/index.d.ts", ...svelteComponentFiles],
+    get requiredFiles() { return ["dist/index.js", "dist/index.d.ts", ...svelteComponentFiles()]; },
   },
   {
     name: "@sentropic/design-system-react",
-    requiredFiles: ["dist/index.js", "dist/index.d.ts", "dist/styles.css", ...reactComponentFiles],
+    get requiredFiles() { return ["dist/index.js", "dist/index.d.ts", "dist/styles.css", ...reactComponentFiles()]; },
   },
   {
     name: "@sentropic/design-system-skills",
@@ -141,11 +154,11 @@ const packages = [
   },
   {
     name: "@sentropic/design-system-vue",
-    requiredFiles: ["dist/index.js", "dist/index.d.ts", "dist/styles.css", ...vueComponentFiles],
+    get requiredFiles() { return ["dist/index.js", "dist/index.d.ts", "dist/styles.css", ...vueComponentFiles()]; },
   },
   {
     name: "@sentropic/design-system-angular",
-    requiredFiles: ["dist/index.js", "dist/index.d.ts", "dist/styles.css", ...angularComponentFiles],
+    get requiredFiles() { return ["dist/index.js", "dist/index.d.ts", "dist/styles.css", ...angularComponentFiles()]; },
   },
 ];
 
@@ -222,9 +235,9 @@ const deepVerify = {
 };
 
 const minExportCounts = {
-  "@sentropic/design-system-react": reactComponentFiles.length,
-  "@sentropic/design-system-vue": vueComponentFiles.length,
-  "@sentropic/design-system-angular": angularComponentFiles.length,
+  "@sentropic/design-system-react": () => reactComponentFiles().length,
+  "@sentropic/design-system-vue": () => vueComponentFiles().length,
+  "@sentropic/design-system-angular": () => angularComponentFiles().length,
 };
 
 function run(command, args, options = {}) {
@@ -324,9 +337,18 @@ function installProject(tarballs, peerSpecs) {
 function writeVerifyScript(installDir, targetNames) {
   const templatePath = join(root, "scripts", "smoke-pack-verify-template.mjs");
   const template = readFileSync(templatePath, "utf8");
+  // Resolve the lazy counts here, and ONLY for the packages this run actually
+  // targets. Serialising the whole map would both drop the thunks (JSON.stringify
+  // discards functions) and force a dist/ read for packages outside this shard's
+  // selection — the exact failure the laziness above exists to avoid.
+  const resolvedCounts = Object.fromEntries(
+    targetNames
+      .filter((name) => typeof minExportCounts[name] === "function")
+      .map((name) => [name, minExportCounts[name]()]),
+  );
   const content = template
     .replaceAll("__SMOKE_TARGETS_JSON__", JSON.stringify(targetNames))
-    .replaceAll("__SMOKE_MIN_EXPORT_COUNTS_JSON__", JSON.stringify(minExportCounts));
+    .replaceAll("__SMOKE_MIN_EXPORT_COUNTS_JSON__", JSON.stringify(resolvedCounts));
 
   const smokePath = join(installDir, "verify.mjs");
   writeFileSync(smokePath, content);
