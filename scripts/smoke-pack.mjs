@@ -64,6 +64,26 @@ function readJson(relPath) {
 // Used both as the tarball-required-files list and as the "how many exports
 // should this import produce, at minimum" ground truth for the deep import
 // check below - one source of truth for both, so they cannot drift apart.
+// A package's `files` field may carry negation patterns ("!dist/**/*.test.js")
+// that keep build output out of the tarball. Local dist/ is therefore a
+// SUPERSET of what ships, and enumerating it blindly makes this script demand
+// files npm was told not to publish. Read the exclusions from package.json so
+// the manifest stays the single source of truth — hardcoding the patterns here
+// too would just be the same drift in a second place.
+function packExclusions(pkgRelDir) {
+  const manifest = JSON.parse(readFileSync(join(root, pkgRelDir, "package.json"), "utf8"));
+  return (manifest.files ?? [])
+    .filter((entry) => entry.startsWith("!"))
+    .map((entry) => {
+      const rx = entry
+        .slice(1)
+        .replace(/[.+^${}()|[\]\\]/g, "\\$&")
+        .replace(/\*\*\//g, "(?:.*/)?")
+        .replace(/\*/g, "[^/]*");
+      return new RegExp(`^${rx}$`);
+    });
+}
+
 function distFiles(pkgRelDir, ext) {
   const dir = join(root, pkgRelDir, "dist");
   if (!existsSync(dir)) {
@@ -72,12 +92,14 @@ function distFiles(pkgRelDir, ext) {
         `"Build packages" step; locally run \`npm run build\`).`,
     );
   }
+  const excluded = packExclusions(pkgRelDir);
   return readdirSync(dir)
     .filter((file) => file.endsWith(`.${ext}`))
     .filter((file) => file !== `index.${ext}`)
     .filter((file) => !file.includes(".test.") && !file.includes(".spec."))
-    .sort()
-    .map((file) => `dist/${file}`);
+    .map((file) => `dist/${file}`)
+    .filter((path) => !excluded.some((rx) => rx.test(path)))
+    .sort();
 }
 
 const rootManifest = readJson("package.json");
