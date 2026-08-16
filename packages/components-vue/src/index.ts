@@ -329,27 +329,27 @@ export type {
 } from "./DecompositionTreeChart.js";
 export { Density2DChart } from "./Density2DChart.js";
 export type { Density2DChartProps, Density2DTone, Density2DPoint, Density2DChartScale } from "./Density2DChart.js";
-export { GeoMap } from "./GeoMap.js";
+export { GeoChart } from "./GeoChart.js";
 export type {
-  GeoMapProps,
-  GeoMapTone,
-  GeoMapCoordinate,
-  GeoMapBounds,
-  GeoMapProjection,
-  GeoMapGeometryType,
-  GeoMapGeometry,
-  GeoMapFeature,
-  GeoMapPoint,
-  GeoMapFlow,
-  GeoMapGeojsonLayer,
-  GeoMapChoroplethLayer,
-  GeoMapPointsLayer,
-  GeoMapDensityLayer,
-  GeoMapFlowLayer,
-  GeoMapHexbinLayer,
-  GeoMapClusterLayer,
-  GeoMapLayer,
-} from "./GeoMap.js";
+  GeoChartProps,
+  GeoChartTone,
+  GeoChartCoordinate,
+  GeoChartBounds,
+  GeoChartProjection,
+  GeoChartGeometryType,
+  GeoChartGeometry,
+  GeoChartFeature,
+  GeoChartPoint,
+  GeoChartFlow,
+  GeoChartGeojsonLayer,
+  GeoChartChoroplethLayer,
+  GeoChartPointsLayer,
+  GeoChartDensityLayer,
+  GeoChartFlowLayer,
+  GeoChartHexbinLayer,
+  GeoChartClusterLayer,
+  GeoChartLayer,
+} from "./GeoChart.js";
 export { FunnelChart } from "./FunnelChart.js";
 export type { FunnelChartProps, FunnelChartTone, FunnelChartDatum } from "./FunnelChart.js";
 export { WaterfallChart } from "./WaterfallChart.js";
