@@ -1,6 +1,6 @@
 {
   "name": "@sentropic/design-system-angular",
-  "version": "0.36.63",
+  "version": "0.37.0",
   "description": "Angular components for the Sentropic design system.",
   "type": "module",
   "publishConfig": {
