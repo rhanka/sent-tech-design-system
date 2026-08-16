@@ -1031,8 +1031,8 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
-    name: "GeoMap",
-    slug: "geo-map",
+    name: "GeoChart",
+    slug: "geo-chart",
     status: "documented",
     category: "data",
     description: {

@@ -1,25 +1,25 @@
 <script lang="ts" module>
-  export type GeoMapTone =
+  export type GeoChartTone =
     | "category1" | "category2" | "category3" | "category4"
     | "category5" | "category6" | "category7" | "category8";
 
   /** Coordonnée géographique — même forme que `GeoCoordinate` (dataviz-core). */
-  export type GeoMapCoordinate = {
+  export type GeoChartCoordinate = {
     latitude: number;
     longitude: number;
   };
 
   /** Emprise géographique — même forme que `GeoBounds` (dataviz-core). */
-  export type GeoMapBounds = {
+  export type GeoChartBounds = {
     south: number;
     west: number;
     north: number;
     east: number;
   };
 
-  export type GeoMapProjection = "equirectangular" | "mercator";
+  export type GeoChartProjection = "equirectangular" | "mercator";
 
-  export type GeoMapGeometryType =
+  export type GeoChartGeometryType =
     | "Point"
     | "MultiPoint"
     | "LineString"
@@ -28,124 +28,124 @@
     | "MultiPolygon";
 
   /** Géométrie GeoJSON — même forme que `GeoJsonGeometry` (dataviz-core). */
-  export type GeoMapGeometry = {
-    type: GeoMapGeometryType;
+  export type GeoChartGeometry = {
+    type: GeoChartGeometryType;
     coordinates: unknown[];
   };
 
   /** Entité géographique — sous-ensemble structurel de `GeoJsonFeature` (dataviz-core). */
-  export type GeoMapFeature = {
+  export type GeoChartFeature = {
     id: string;
     label?: string;
     value?: number;
-    geometry: GeoMapGeometry;
+    geometry: GeoChartGeometry;
   };
 
   /** Point géographique — sur-ensemble structurel de `GeoPoint` (dataviz-core). */
-  export type GeoMapPoint = GeoMapCoordinate & {
+  export type GeoChartPoint = GeoChartCoordinate & {
     id?: string;
     label?: string;
     value?: number;
-    tone?: GeoMapTone;
+    tone?: GeoChartTone;
     /** Rayon explicite en px (prioritaire sur l'échelle par `value`), borné à 32. */
     r?: number;
   };
 
   /** Flux géographique — sous-ensemble structurel de `GeoFlowLink` (dataviz-core). */
-  export type GeoMapFlow = {
+  export type GeoChartFlow = {
     id?: string;
     label?: string;
-    source: GeoMapCoordinate;
-    target: GeoMapCoordinate;
+    source: GeoChartCoordinate;
+    target: GeoChartCoordinate;
     value?: number;
   };
 
   /** Entités GeoJSON (polygones, lignes, points) ; ton par couche ou cycle de palette par entité. */
-  export type GeoMapGeojsonLayer = {
+  export type GeoChartGeojsonLayer = {
     type: "geojson";
-    features: GeoMapFeature[];
-    tone?: GeoMapTone;
+    features: GeoChartFeature[];
+    tone?: GeoChartTone;
     label?: string;
   };
 
   /** Choroplèthe : entités + valeur par id (`regions` dataviz : `key` → `value`) → intensité color-mix. */
-  export type GeoMapChoroplethLayer = {
+  export type GeoChartChoroplethLayer = {
     type: "choropleth";
-    features: GeoMapFeature[];
+    features: GeoChartFeature[];
     values: Record<string, number>;
     /** Ton de base de la rampe d'intensité (défaut `category1`). */
-    tone?: GeoMapTone;
+    tone?: GeoChartTone;
     label?: string;
   };
 
   /** Points/épingles : rayon ∝ `value` (bornes `minRadius`/`maxRadius`, défauts 5/14 comme dataviz). */
-  export type GeoMapPointsLayer = {
+  export type GeoChartPointsLayer = {
     type: "points";
-    points: GeoMapPoint[];
-    tone?: GeoMapTone;
+    points: GeoChartPoint[];
+    tone?: GeoChartTone;
     minRadius?: number;
     maxRadius?: number;
     label?: string;
   };
 
   /** Densité : cercles translucides superposés, rayon/intensité ∝ `value` (poids). */
-  export type GeoMapDensityLayer = {
+  export type GeoChartDensityLayer = {
     type: "density";
-    points: GeoMapPoint[];
+    points: GeoChartPoint[];
     /** Ton de la nappe (défaut `category3` — parité visuelle dataviz). */
-    tone?: GeoMapTone;
+    tone?: GeoChartTone;
     maxRadius?: number;
     label?: string;
   };
 
   /** Flux : arcs quadratiques source → target, épaisseur ∝ `value` (défaut ton `category1`). */
-  export type GeoMapFlowLayer = {
+  export type GeoChartFlowLayer = {
     type: "flow";
-    flows: GeoMapFlow[];
-    tone?: GeoMapTone;
+    flows: GeoChartFlow[];
+    tone?: GeoChartTone;
     label?: string;
   };
 
   /** Hexbin : binning hexagonal des points (même binning que dataviz-core), intensité ∝ valeur agrégée. */
-  export type GeoMapHexbinLayer = {
+  export type GeoChartHexbinLayer = {
     type: "hexbin";
-    points: GeoMapPoint[];
+    points: GeoChartPoint[];
     /** Taille de cellule en degrés (défaut 1). */
     cellSize?: number;
-    tone?: GeoMapTone;
+    tone?: GeoChartTone;
     label?: string;
   };
 
   /** Clusters : regroupement glouton des points (même algo que dataviz-core), centroïdes marqueurs distinctifs. */
-  export type GeoMapClusterLayer = {
+  export type GeoChartClusterLayer = {
     type: "cluster";
-    points: GeoMapPoint[];
+    points: GeoChartPoint[];
     /** Rayon de regroupement en degrés (défaut 1). */
     radius?: number;
-    tone?: GeoMapTone;
+    tone?: GeoChartTone;
     label?: string;
   };
 
-  export type GeoMapLayer =
-    | GeoMapGeojsonLayer
-    | GeoMapChoroplethLayer
-    | GeoMapPointsLayer
-    | GeoMapDensityLayer
-    | GeoMapFlowLayer
-    | GeoMapHexbinLayer
-    | GeoMapClusterLayer;
+  export type GeoChartLayer =
+    | GeoChartGeojsonLayer
+    | GeoChartChoroplethLayer
+    | GeoChartPointsLayer
+    | GeoChartDensityLayer
+    | GeoChartFlowLayer
+    | GeoChartHexbinLayer
+    | GeoChartClusterLayer;
 </script>
 
 <script lang="ts">
   import ChartDataList from "./ChartDataList.svelte";
 
-  type GeoMapProps = {
-    layers: GeoMapLayer[];
+  type GeoChartProps = {
+    layers: GeoChartLayer[];
     width?: number;
     height?: number;
-    projection?: GeoMapProjection;
+    projection?: GeoChartProjection;
     /** Emprise explicite ; sinon auto-ajustement sur les données de toutes les couches + marge. */
-    bounds?: GeoMapBounds;
+    bounds?: GeoChartBounds;
     label: string;
     class?: string;
   };
@@ -158,15 +158,15 @@
     bounds,
     label,
     class: className
-  }: GeoMapProps = $props();
+  }: GeoChartProps = $props();
 
   const PADDING = 24;
   const MAX_POINT_RADIUS = 32;
-  const WORLD: GeoMapBounds = { south: -90, west: -180, north: 90, east: 180 };
+  const WORLD: GeoChartBounds = { south: -90, west: -180, north: 90, east: 180 };
   const TONES = ["category1","category2","category3","category4","category5","category6","category7","category8"] as const;
   const GEOMETRY_TYPES = new Set(["Point","MultiPoint","LineString","MultiLineString","Polygon","MultiPolygon"]);
 
-  function isFiniteCoordinate<T extends GeoMapCoordinate>(c: T | undefined): c is T {
+  function isFiniteCoordinate<T extends GeoChartCoordinate>(c: T | undefined): c is T {
     return !!c && Number.isFinite(c.latitude) && Number.isFinite(c.longitude);
   }
 
@@ -179,7 +179,7 @@
     return Math.round(Math.max(0, Math.min(100, value)));
   }
 
-  function coordinatePair(value: unknown): GeoMapCoordinate | undefined {
+  function coordinatePair(value: unknown): GeoChartCoordinate | undefined {
     if (!Array.isArray(value) || value.length < 2 || Array.isArray(value[0])) return undefined;
     const longitude = Number(value[0]);
     const latitude = Number(value[1]);
@@ -187,7 +187,7 @@
     return { latitude, longitude };
   }
 
-  function collectGeometryCoordinates(value: unknown, out: GeoMapCoordinate[]): void {
+  function collectGeometryCoordinates(value: unknown, out: GeoChartCoordinate[]): void {
     if (!Array.isArray(value)) return;
     const pair = coordinatePair(value);
     if (pair) {
@@ -197,15 +197,15 @@
     for (const item of value) collectGeometryCoordinates(item, out);
   }
 
-  function isGeometry(geometry: GeoMapGeometry | undefined): geometry is GeoMapGeometry {
+  function isGeometry(geometry: GeoChartGeometry | undefined): geometry is GeoChartGeometry {
     return !!geometry && GEOMETRY_TYPES.has(geometry.type) && Array.isArray(geometry.coordinates);
   }
 
-  function layerCoordinates(layer: GeoMapLayer): GeoMapCoordinate[] {
+  function layerCoordinates(layer: GeoChartLayer): GeoChartCoordinate[] {
     switch (layer.type) {
       case "geojson":
       case "choropleth": {
-        const out: GeoMapCoordinate[] = [];
+        const out: GeoChartCoordinate[] = [];
         for (const feature of layer.features ?? []) {
           if (isGeometry(feature.geometry)) collectGeometryCoordinates(feature.geometry.coordinates, out);
         }
@@ -217,7 +217,7 @@
       case "cluster":
         return (layer.points ?? []).filter(isFiniteCoordinate);
       case "flow": {
-        const out: GeoMapCoordinate[] = [];
+        const out: GeoChartCoordinate[] = [];
         for (const flow of layer.flows ?? []) {
           if (isFiniteCoordinate(flow.source)) out.push(flow.source);
           if (isFiniteCoordinate(flow.target)) out.push(flow.target);
@@ -227,7 +227,7 @@
     }
   }
 
-  function validBounds(candidate: GeoMapBounds | undefined): GeoMapBounds | null {
+  function validBounds(candidate: GeoChartBounds | undefined): GeoChartBounds | null {
     return candidate &&
       Number.isFinite(candidate.south) && Number.isFinite(candidate.west) &&
       Number.isFinite(candidate.north) && Number.isFinite(candidate.east) &&
@@ -236,7 +236,7 @@
       : null;
   }
 
-  function fitBounds(all: GeoMapLayer[]): GeoMapBounds {
+  function fitBounds(all: GeoChartLayer[]): GeoChartBounds {
     const coords = all.flatMap(layerCoordinates);
     if (coords.length === 0) return WORLD;
     let south = Infinity, west = Infinity, north = -Infinity, east = -Infinity;
@@ -273,7 +273,7 @@
     const bottom = projY(b.south);
     const lonSpan = b.east - b.west || 1;
     const ySpan = top - bottom || 1;
-    return (c: GeoMapCoordinate) => ({
+    return (c: GeoChartCoordinate) => ({
       x: PADDING + ((c.longitude - b.west) / lonSpan) * innerW,
       y: PADDING + ((top - projY(c.latitude)) / ySpan) * innerH
     });
@@ -301,7 +301,7 @@
       .join(" ");
   }
 
-  function geometryPath(geometry: GeoMapGeometry): string {
+  function geometryPath(geometry: GeoChartGeometry): string {
     switch (geometry.type) {
       case "Point": {
         const pair = coordinatePair(geometry.coordinates);
@@ -331,7 +331,7 @@
     }
   }
 
-  function pointRadius(point: GeoMapPoint, min: number, max: number, rMin: number, rMax: number): number {
+  function pointRadius(point: GeoChartPoint, min: number, max: number, rMin: number, rMax: number): number {
     if (typeof point.r === "number" && Number.isFinite(point.r) && point.r >= 0) {
       return Math.min(point.r, MAX_POINT_RADIUS);
     }
@@ -345,7 +345,7 @@
     }).join(" ");
   }
 
-  function flowPath(source: GeoMapCoordinate, target: GeoMapCoordinate): string {
+  function flowPath(source: GeoChartCoordinate, target: GeoChartCoordinate): string {
     const a = project(source);
     const b = project(target);
     // Arc quadratique : point de contrôle au milieu, décalé perpendiculairement.
@@ -358,9 +358,9 @@
     return `M ${a.x} ${a.y} Q ${cx} ${cy} ${b.x} ${b.y}`;
   }
 
-  type HexbinBin = { id: string; q: number; r: number; center: GeoMapCoordinate; count: number; value: number };
+  type HexbinBin = { id: string; q: number; r: number; center: GeoChartCoordinate; count: number; value: number };
 
-  function binPoints(points: GeoMapPoint[], cellSize: number): HexbinBin[] {
+  function binPoints(points: GeoChartPoint[], cellSize: number): HexbinBin[] {
     const hexHeight = cellSize * (Math.sqrt(3) / 2);
     const bins = new Map<string, HexbinBin>();
     for (const point of points) {
@@ -379,9 +379,9 @@
     return [...bins.values()];
   }
 
-  type Cluster = GeoMapCoordinate & { id: string; count: number; value: number };
+  type Cluster = GeoChartCoordinate & { id: string; count: number; value: number };
 
-  function clusterPoints(points: GeoMapPoint[], radius: number): Cluster[] {
+  function clusterPoints(points: GeoChartPoint[], radius: number): Cluster[] {
     const clusters: Cluster[] = [];
     for (const point of points) {
       const cluster = clusters.find((item) => {
@@ -412,18 +412,18 @@
     return typeof value === "number" && Number.isFinite(value) && value > 0 ? value : fallback;
   }
 
-  type FeatureMark = { key: string; d: string; tone: GeoMapTone; line: boolean; text: string };
+  type FeatureMark = { key: string; d: string; tone: GeoChartTone; line: boolean; text: string };
   type RegionMark = { key: string; d: string; mix: number | null; text: string };
-  type CircleMark = { key: string; cx: number; cy: number; r: number; tone: GeoMapTone; mix?: number; text: string };
+  type CircleMark = { key: string; cx: number; cy: number; r: number; tone: GeoChartTone; mix?: number; text: string };
   type FlowMark = { key: string; d: string; strokeWidth: number; text: string };
-  type HexMark = { key: string; points: string; mix: number; text: string; tone: GeoMapTone };
+  type HexMark = { key: string; points: string; mix: number; text: string; tone: GeoChartTone };
 
   type LayerMarks =
     | { type: "geojson"; key: string; summary: string; features: FeatureMark[] }
-    | { type: "choropleth"; key: string; summary: string; tone: GeoMapTone; regions: RegionMark[] }
+    | { type: "choropleth"; key: string; summary: string; tone: GeoChartTone; regions: RegionMark[] }
     | { type: "points"; key: string; summary: string; circles: CircleMark[] }
-    | { type: "density"; key: string; summary: string; tone: GeoMapTone; circles: CircleMark[] }
-    | { type: "flow"; key: string; summary: string; tone: GeoMapTone; flows: FlowMark[] }
+    | { type: "density"; key: string; summary: string; tone: GeoChartTone; circles: CircleMark[] }
+    | { type: "flow"; key: string; summary: string; tone: GeoChartTone; flows: FlowMark[] }
     | { type: "hexbin"; key: string; summary: string; bins: HexMark[] }
     | { type: "cluster"; key: string; summary: string; clusters: CircleMark[] };
 

@@ -127,7 +127,7 @@ export { default as FlamegraphChart } from "./FlamegraphChart.svelte";
 export { default as TraceWaterfallChart } from "./TraceWaterfallChart.svelte";
 export { default as DecompositionTreeChart } from "./DecompositionTreeChart.svelte";
 export { default as Density2DChart } from "./Density2DChart.svelte";
-export { default as GeoMap } from "./GeoMap.svelte";
+export { default as GeoChart } from "./GeoChart.svelte";
 export { default as Header } from "./Header.svelte";
 export { default as HeatmapChart } from "./HeatmapChart.svelte";
 export { default as Hidden } from "./Hidden.svelte";
@@ -455,24 +455,24 @@ export type { DonutChartDatum, DonutChartTone } from "./DonutChart.svelte";
 export type { ForceGraphNode, ForceGraphEdge, ForceGraphTone, ForceGraphNodeShape, ForceGraphEdgeDash, ForceGraphLegendEntry } from "./ForceGraph.svelte";
 export { nodeShapePath, edgeDashArray } from "./ForceGraph.svelte";
 export type {
-  GeoMapTone,
-  GeoMapCoordinate,
-  GeoMapBounds,
-  GeoMapProjection,
-  GeoMapGeometryType,
-  GeoMapGeometry,
-  GeoMapFeature,
-  GeoMapPoint,
-  GeoMapFlow,
-  GeoMapGeojsonLayer,
-  GeoMapChoroplethLayer,
-  GeoMapPointsLayer,
-  GeoMapDensityLayer,
-  GeoMapFlowLayer,
-  GeoMapHexbinLayer,
-  GeoMapClusterLayer,
-  GeoMapLayer
-} from "./GeoMap.svelte";
+  GeoChartTone,
+  GeoChartCoordinate,
+  GeoChartBounds,
+  GeoChartProjection,
+  GeoChartGeometryType,
+  GeoChartGeometry,
+  GeoChartFeature,
+  GeoChartPoint,
+  GeoChartFlow,
+  GeoChartGeojsonLayer,
+  GeoChartChoroplethLayer,
+  GeoChartPointsLayer,
+  GeoChartDensityLayer,
+  GeoChartFlowLayer,
+  GeoChartHexbinLayer,
+  GeoChartClusterLayer,
+  GeoChartLayer
+} from "./GeoChart.svelte";
 export type { DropdownOption } from "./Dropdown.svelte";
 export type { HeaderAccount } from "./Header.svelte";
 export { deriveInitials } from "./Header.svelte";

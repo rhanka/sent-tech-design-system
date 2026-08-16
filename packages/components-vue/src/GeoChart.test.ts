@@ -1,39 +1,38 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import React from "react";
-import { render } from "@testing-library/react";
+import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import { GeoMap } from "./index.js";
-import type { GeoMapBounds, GeoMapFeature, GeoMapLayer, GeoMapPoint } from "./GeoMap.js";
+import { GeoChart } from "./index.js";
+import type { GeoChartBounds, GeoChartFeature, GeoChartLayer, GeoChartPoint } from "./GeoChart.js";
 
-// WP15 — GeoMap générique à couches : surface DS native qui remplace les 7
+// WP15 — GeoChart générique à couches : surface DS native qui remplace les 7
 // fallbacks géo de dataviz (GeoPointMap, ChoroplethMap, GeoFlowMap,
 // GeoHexbinMap, GeoClusterMap, GeoDensityMap, GeoJsonMap). Présentationnel pur.
 
-const WORLD: GeoMapBounds = { south: -90, west: -180, north: 90, east: 180 };
+const WORLD: GeoChartBounds = { south: -90, west: -180, north: 90, east: 180 };
 
-const pointsLayer = (points: GeoMapPoint[]): GeoMapLayer => ({ type: "points", points });
+const pointsLayer = (points: GeoChartPoint[]): GeoChartLayer => ({ type: "points", points });
 
 const circles = (el: HTMLElement) => Array.from(el.querySelectorAll<SVGCircleElement>(".st-geoMap__point"));
 const dataListItems = (el: HTMLElement) =>
   Array.from(el.querySelectorAll(".st-chartDataList li")).map((n) => n.textContent?.trim());
 
-describe("GeoMap (WP15 — carte générique à couches)", () => {
+describe("GeoChart (WP15 — carte générique à couches)", () => {
   it("renders an accessible figure (role=img + aria-label) with a tokenized SVG frame", () => {
-    const { container } = render(<GeoMap label="Carte démo" layers={[]} />);
-    const visual = container.querySelector('[role="img"]');
+    const el = mount(GeoChart, { props: { label: "Carte démo", layers: [] } }).element as HTMLElement;
+    const visual = el.querySelector('[role="img"]');
     expect(visual?.getAttribute("aria-label")).toBe("Carte démo");
-    const svg = container.querySelector("svg");
+    const svg = el.querySelector("svg");
     expect(svg?.getAttribute("aria-hidden")).toBe("true");
     expect(svg?.getAttribute("viewBox")).toBe("0 0 520 320");
-    expect(container.querySelector(".st-geoMap__frame")).not.toBeNull();
+    expect(el.querySelector(".st-geoMap__frame")).not.toBeNull();
   });
 
   it("projects equirectangular coordinates linearly within explicit bounds", () => {
-    const { container } = render(
-      <GeoMap label="Monde" bounds={WORLD} layers={[pointsLayer([{ latitude: 0, longitude: 0 }])]} />,
-    );
-    const [c] = circles(container);
+    const el = mount(GeoChart, {
+      props: { label: "Monde", bounds: WORLD, layers: [pointsLayer([{ latitude: 0, longitude: 0 }])] },
+    }).element as HTMLElement;
+    const [c] = circles(el);
     // padding 24 ; (0,0) au centre : x = 24 + 236 = 260, y = 24 + 136 = 160.
     expect(Number(c.getAttribute("cx"))).toBeCloseTo(260, 5);
     expect(Number(c.getAttribute("cy"))).toBeCloseTo(160, 5);
@@ -41,26 +40,30 @@ describe("GeoMap (WP15 — carte générique à couches)", () => {
 
   it("mercator projection shifts mid-latitudes versus equirectangular", () => {
     const layers = [pointsLayer([{ latitude: 60, longitude: 0 }])];
-    const equirect = render(<GeoMap label="Projection" bounds={WORLD} layers={layers} projection="equirectangular" />);
-    const mercator = render(<GeoMap label="Projection" bounds={WORLD} layers={layers} projection="mercator" />);
-    const yEq = Number(circles(equirect.container)[0].getAttribute("cy"));
-    const yMe = Number(circles(mercator.container)[0].getAttribute("cy"));
+    const equirect = mount(GeoChart, {
+      props: { label: "Projection", bounds: WORLD, layers, projection: "equirectangular" as const },
+    }).element as HTMLElement;
+    const mercator = mount(GeoChart, {
+      props: { label: "Projection", bounds: WORLD, layers, projection: "mercator" as const },
+    }).element as HTMLElement;
+    const yEq = Number(circles(equirect)[0].getAttribute("cy"));
+    const yMe = Number(circles(mercator)[0].getAttribute("cy"));
     expect(yEq).not.toBeCloseTo(yMe, 1);
     // Mercator étire les pôles : une latitude moyenne descend vers le centre.
     expect(yMe).toBeGreaterThan(yEq);
   });
 
   it("auto-fits bounds on the data of all layers with a margin", () => {
-    const { container } = render(
-      <GeoMap
-        label="Fit"
-        layers={[pointsLayer([
+    const el = mount(GeoChart, {
+      props: {
+        label: "Fit",
+        layers: [pointsLayer([
           { latitude: 0, longitude: 0 },
           { latitude: 10, longitude: 10 },
-        ])]}
-      />,
-    );
-    const [a, b] = circles(container);
+        ])],
+      },
+    }).element as HTMLElement;
+    const [a, b] = circles(el);
     const ax = Number(a.getAttribute("cx"));
     const bx = Number(b.getAttribute("cx"));
     // Marge : les données restent strictement à l'intérieur du padding (24).
@@ -72,7 +75,7 @@ describe("GeoMap (WP15 — carte générique à couches)", () => {
   });
 
   it("renders a geojson layer (closed polygon, line without fill, tone classes)", () => {
-    const layers: GeoMapLayer[] = [
+    const layers: GeoChartLayer[] = [
       {
         type: "geojson",
         features: [
@@ -84,8 +87,8 @@ describe("GeoMap (WP15 — carte générique à couches)", () => {
         ],
       },
     ];
-    const { container } = render(<GeoMap label="GeoJSON" layers={layers} />);
-    const paths = Array.from(container.querySelectorAll<SVGPathElement>(".st-geoMap__feature"));
+    const el = mount(GeoChart, { props: { label: "GeoJSON", layers } }).element as HTMLElement;
+    const paths = Array.from(el.querySelectorAll<SVGPathElement>(".st-geoMap__feature"));
     expect(paths.length).toBe(2);
     expect(paths[0].getAttribute("d")).toContain("Z");
     expect(paths[0].classList.contains("st-geoMap__feature--category1")).toBe(true);
@@ -95,11 +98,11 @@ describe("GeoMap (WP15 — carte générique à couches)", () => {
   });
 
   it("choropleth: color-mix intensity proportional to the value by feature id", () => {
-    const square = (x: number): GeoMapFeature => ({
+    const square = (x: number): GeoChartFeature => ({
       id: `r${x}`,
       geometry: { type: "Polygon", coordinates: [[[x, 0], [x + 5, 0], [x + 5, 5], [x, 5], [x, 0]]] },
     });
-    const layers: GeoMapLayer[] = [
+    const layers: GeoChartLayer[] = [
       {
         type: "choropleth",
         features: [square(0), square(10), square(20)],
@@ -107,10 +110,10 @@ describe("GeoMap (WP15 — carte générique à couches)", () => {
         tone: "category4",
       },
     ];
-    const { container } = render(<GeoMap label="Choro" layers={layers} />);
-    const regions = Array.from(container.querySelectorAll<SVGPathElement>(".st-geoMap__region"));
+    const el = mount(GeoChart, { props: { label: "Choro", layers } }).element as HTMLElement;
+    const regions = Array.from(el.querySelectorAll<SVGPathElement>(".st-geoMap__region"));
     expect(regions.length).toBe(3);
-    const mix = (el: SVGPathElement) => Number(/--st-geoMap-mix:\s*(\d+)%/.exec(el.getAttribute("style") ?? "")?.[1]);
+    const mix = (item: SVGPathElement) => Number(/--st-geoMap-mix:\s*(\d+)%/.exec(item.getAttribute("style") ?? "")?.[1]);
     expect(mix(regions[0])).toBeLessThan(mix(regions[1]));
     expect(regions[0].classList.contains("st-geoMap__region--category4")).toBe(true);
     // Région sans valeur : neutre (pas d'intensité).
@@ -118,7 +121,7 @@ describe("GeoMap (WP15 — carte générique à couches)", () => {
   });
 
   it("points: radius scales with value (5..14 as dataviz), explicit r wins, tones cycle", () => {
-    const layers: GeoMapLayer[] = [
+    const layers: GeoChartLayer[] = [
       {
         type: "points",
         points: [
@@ -128,8 +131,8 @@ describe("GeoMap (WP15 — carte générique à couches)", () => {
         ],
       },
     ];
-    const { container } = render(<GeoMap label="Points" layers={layers} />);
-    const pts = circles(container);
+    const el = mount(GeoChart, { props: { label: "Points", layers } }).element as HTMLElement;
+    const pts = circles(el);
     expect(pts.length).toBe(3);
     const r = (i: number) => Number(pts[i].getAttribute("r"));
     expect(r(0)).toBeGreaterThanOrEqual(5);
@@ -142,7 +145,7 @@ describe("GeoMap (WP15 — carte générique à couches)", () => {
   });
 
   it("skips invalid coordinates and flow endpoints (Number.isFinite guard)", () => {
-    const layers: GeoMapLayer[] = [
+    const layers: GeoChartLayer[] = [
       {
         type: "points",
         points: [
@@ -159,16 +162,16 @@ describe("GeoMap (WP15 — carte générique à couches)", () => {
         ],
       },
     ];
-    const { container } = render(<GeoMap label="Guarded" layers={layers} />);
-    expect(circles(container).length).toBe(1);
-    expect(container.querySelectorAll(".st-geoMap__flow").length).toBe(1);
-    const items = dataListItems(container);
+    const el = mount(GeoChart, { props: { label: "Guarded", layers } }).element as HTMLElement;
+    expect(circles(el).length).toBe(1);
+    expect(el.querySelectorAll(".st-geoMap__flow").length).toBe(1);
+    const items = dataListItems(el);
     expect(items).toContain("Points: 1");
     expect(items).toContain("Flux: 1");
   });
 
   it("density: translucent circles sized and mixed by weight (default tone category3)", () => {
-    const layers: GeoMapLayer[] = [
+    const layers: GeoChartLayer[] = [
       {
         type: "density",
         points: [
@@ -177,8 +180,8 @@ describe("GeoMap (WP15 — carte générique à couches)", () => {
         ],
       },
     ];
-    const { container } = render(<GeoMap label="Densité" layers={layers} />);
-    const cells = Array.from(container.querySelectorAll<SVGCircleElement>(".st-geoMap__density"));
+    const el = mount(GeoChart, { props: { label: "Densité", layers } }).element as HTMLElement;
+    const cells = Array.from(el.querySelectorAll<SVGCircleElement>(".st-geoMap__density"));
     expect(cells.length).toBe(2);
     expect(Number(cells[0].getAttribute("r"))).toBeLessThan(Number(cells[1].getAttribute("r")));
     expect(cells[0].classList.contains("st-geoMap__density--category3")).toBe(true);
@@ -186,7 +189,7 @@ describe("GeoMap (WP15 — carte générique à couches)", () => {
   });
 
   it("flow: quadratic arcs with stroke width proportional to value (2..9 as dataviz)", () => {
-    const layers: GeoMapLayer[] = [
+    const layers: GeoChartLayer[] = [
       {
         type: "flow",
         flows: [
@@ -195,8 +198,8 @@ describe("GeoMap (WP15 — carte générique à couches)", () => {
         ],
       },
     ];
-    const { container } = render(<GeoMap label="Flux" layers={layers} />);
-    const flows = Array.from(container.querySelectorAll<SVGPathElement>(".st-geoMap__flow"));
+    const el = mount(GeoChart, { props: { label: "Flux", layers } }).element as HTMLElement;
+    const flows = Array.from(el.querySelectorAll<SVGPathElement>(".st-geoMap__flow"));
     expect(flows.length).toBe(2);
     expect(flows[0].getAttribute("d")).toContain("Q");
     const w = (i: number) => Number(flows[i].getAttribute("stroke-width"));
@@ -206,7 +209,7 @@ describe("GeoMap (WP15 — carte générique à couches)", () => {
   });
 
   it("hexbin: bins points into hexagonal cells (same binning as dataviz-core)", () => {
-    const layers: GeoMapLayer[] = [
+    const layers: GeoChartLayer[] = [
       {
         type: "hexbin",
         cellSize: 10,
@@ -217,18 +220,18 @@ describe("GeoMap (WP15 — carte générique à couches)", () => {
         ],
       },
     ];
-    const { container } = render(<GeoMap label="Hexbin" layers={layers} />);
-    const bins = Array.from(container.querySelectorAll<SVGPolygonElement>(".st-geoMap__hexbin"));
+    const el = mount(GeoChart, { props: { label: "Hexbin", layers } }).element as HTMLElement;
+    const bins = Array.from(el.querySelectorAll<SVGPolygonElement>(".st-geoMap__hexbin"));
     expect(bins.length).toBe(2);
     // 6 sommets par alvéole.
     expect((bins[0].getAttribute("points") ?? "").split(" ").length).toBe(6);
-    const items = dataListItems(container);
+    const items = dataListItems(el);
     expect(items).toContain("Hexbin: 2 alvéoles");
     expect(items).toContain("0:0: 2");
   });
 
   it("cluster: merges nearby points into distinctive centroid markers (running mean)", () => {
-    const layers: GeoMapLayer[] = [
+    const layers: GeoChartLayer[] = [
       {
         type: "cluster",
         radius: 5,
@@ -239,8 +242,8 @@ describe("GeoMap (WP15 — carte générique à couches)", () => {
         ],
       },
     ];
-    const { container } = render(<GeoMap label="Clusters" layers={layers} />);
-    const marks = Array.from(container.querySelectorAll<SVGGElement>(".st-geoMap__cluster"));
+    const el = mount(GeoChart, { props: { label: "Clusters", layers } }).element as HTMLElement;
+    const marks = Array.from(el.querySelectorAll<SVGGElement>(".st-geoMap__cluster"));
     expect(marks.length).toBe(2);
     // Marqueur distinctif : disque + anneau.
     expect(marks[0].querySelector(".st-geoMap__clusterDot")).not.toBeNull();
@@ -248,13 +251,13 @@ describe("GeoMap (WP15 — carte générique à couches)", () => {
     // Le cluster de 2 points est plus gros que le singleton.
     const r = (m: SVGGElement) => Number(m.querySelector(".st-geoMap__clusterDot")?.getAttribute("r"));
     expect(r(marks[0])).toBeGreaterThan(r(marks[1]));
-    const items = dataListItems(container);
+    const items = dataListItems(el);
     expect(items).toContain("cluster:0: 2");
     expect(items).toContain("cluster:1: 1");
   });
 
   it("summarizes every layer in the accessible data list (ChartDataList)", () => {
-    const layers: GeoMapLayer[] = [
+    const layers: GeoChartLayer[] = [
       {
         type: "points",
         label: "Bureaux",
@@ -286,8 +289,8 @@ describe("GeoMap (WP15 — carte générique à couches)", () => {
         values: { fr: 67 },
       },
     ];
-    const { container } = render(<GeoMap label="Synthèse" layers={layers} />);
-    const items = dataListItems(container);
+    const el = mount(GeoChart, { props: { label: "Synthèse", layers } }).element as HTMLElement;
+    const items = dataListItems(el);
     expect(items).toContain("Bureaux: 2");
     expect(items).toContain("Paris: 12");
     expect(items).toContain("Montréal");
@@ -298,13 +301,13 @@ describe("GeoMap (WP15 — carte générique à couches)", () => {
   });
 
   it("renders the world frame with no data (fallback bounds) and stays empty", () => {
-    const { container } = render(<GeoMap label="Vide" layers={[]} />);
-    expect(container.querySelector(".st-geoMap__frame")).not.toBeNull();
-    expect(container.querySelectorAll(".st-geoMap__layer").length).toBe(0);
-    expect(container.querySelector(".st-chartDataList")).toBeNull();
+    const el = mount(GeoChart, { props: { label: "Vide", layers: [] } }).element as HTMLElement;
+    expect(el.querySelector(".st-geoMap__frame")).not.toBeNull();
+    expect(el.querySelectorAll(".st-geoMap__layer").length).toBe(0);
+    expect(el.querySelector(".st-chartDataList")).toBeNull();
   });
 
-  it("GeoMap styles are tokenized (color-mix on data tokens, no raw hex) and respect reduced motion", () => {
+  it("GeoChart styles are tokenized (color-mix on data tokens, no raw hex) and respect reduced motion", () => {
     const css = readFileSync(join(process.cwd(), "src/styles.css"), "utf8");
     const start = css.indexOf(".st-geoMap {");
     expect(start).toBeGreaterThan(-1);

@@ -1,6 +1,6 @@
 <script lang="ts">
   import TabbedExample from "$lib/framework/TabbedExample.svelte";
-  import { Badge, type GeoMapLayer } from "@sentropic/design-system-svelte";
+  import { Badge, type GeoChartLayer } from "@sentropic/design-system-svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
   // Choroplèthe : trois régions rectangulaires + valeurs par id.
@@ -13,7 +13,7 @@
     }
   });
 
-  const choroplethLayers: GeoMapLayer[] = [
+  const choroplethLayers: GeoChartLayer[] = [
     {
       type: "choropleth",
       label: "Population",
@@ -23,7 +23,7 @@
     }
   ];
 
-  const clusterHexbinLayers: GeoMapLayer[] = [
+  const clusterHexbinLayers: GeoChartLayer[] = [
     {
       type: "hexbin",
       label: "Signalements",
@@ -45,7 +45,7 @@
     }
   ];
 
-  const densityLayers: GeoMapLayer[] = [
+  const densityLayers: GeoChartLayer[] = [
     {
       type: "density",
       label: "Activité",
@@ -63,9 +63,9 @@
       el: "div",
       props: { class: "docs-geomap-box" },
       children: [
-        { comp: "GeoMap", props: { label: "Choroplèthe démo", layers: choroplethLayers, height: 240 } },
-        { comp: "GeoMap", props: { label: "Hexbin et clusters démo", layers: clusterHexbinLayers, height: 240 } },
-        { comp: "GeoMap", props: { label: "Densité démo", layers: densityLayers, height: 240 } }
+        { comp: "GeoChart", props: { label: "Choroplèthe démo", layers: choroplethLayers, height: 240 } },
+        { comp: "GeoChart", props: { label: "Hexbin et clusters démo", layers: clusterHexbinLayers, height: 240 } },
+        { comp: "GeoChart", props: { label: "Densité démo", layers: densityLayers, height: 240 } }
       ]
     }
   ];
@@ -75,7 +75,7 @@
   <section class="docs-hero">
     <p class="docs-hero-kicker">Composant · Données</p>
     <div class="docs-hero-title">
-      <h1>GeoMap</h1>
+      <h1>GeoChart</h1>
       <Badge tone="neutral">Documenté</Badge>
     </div>
     <p>
@@ -104,7 +104,7 @@
     <h2>Correspondance avec Highcharts Maps</h2>
     <table class="docs-table">
       <thead>
-        <tr><th>Type Highcharts</th><th>Couche GeoMap</th><th>Notes</th></tr>
+        <tr><th>Type Highcharts</th><th>Couche GeoChart</th><th>Notes</th></tr>
       </thead>
       <tbody>
         <tr><td><code>mapline</code></td><td><code>geojson</code></td><td>Utiliser des géométries <code>LineString</code> ou <code>MultiLineString</code>.</td></tr>
@@ -112,7 +112,7 @@
         <tr><td><code>mapbubble</code></td><td><code>points</code></td><td>Rayon drivé par <code>value</code> via <code>minRadius</code>/<code>maxRadius</code>, ou fixé par <code>r</code>.</td></tr>
         <tr><td><code>flowmap</code></td><td><code>flow</code></td><td>Arcs source → cible avec épaisseur proportionnelle à <code>value</code>.</td></tr>
         <tr><td><code>geoheatmap</code></td><td><code>density</code> ou <code>hexbin</code></td><td><code>density</code> pour une nappe continue par poids ; <code>hexbin</code> pour une agrégation par cellules.</td></tr>
-        <tr><td><code>tiledwebmap</code></td><td><em>non couvert</em></td><td><code>GeoMap</code> reste un rendu SVG pur : aucun provider, aucune URL de tuiles, aucun fond raster.</td></tr>
+        <tr><td><code>tiledwebmap</code></td><td><em>non couvert</em></td><td><code>GeoChart</code> reste un rendu SVG pur : aucun provider, aucune URL de tuiles, aucun fond raster.</td></tr>
       </tbody>
     </table>
   </section>
@@ -124,14 +124,14 @@
         <tr><th>Prop</th><th>Type</th><th>Par défaut</th></tr>
       </thead>
       <tbody>
-        <tr><td><code>layers</code></td><td><code>GeoMapLayer[]</code></td><td>requis</td></tr>
+        <tr><td><code>layers</code></td><td><code>GeoChartLayer[]</code></td><td>requis</td></tr>
         <tr><td><code>label</code></td><td><code>string</code></td><td>requis (a11y)</td></tr>
         <tr><td><code>width</code> / <code>height</code></td><td><code>number</code></td><td><code>520</code> / <code>320</code></td></tr>
         <tr><td><code>projection</code></td><td><code>"equirectangular" | "mercator"</code></td><td><code>"equirectangular"</code></td></tr>
         <tr><td><code>bounds</code></td><td><code>{`{ south, west, north, east }`}</code></td><td><em>auto-fit + marge</em></td></tr>
       </tbody>
     </table>
-    <h3>Couches (<code>GeoMapLayer</code>, union discriminée par <code>type</code>)</h3>
+    <h3>Couches (<code>GeoChartLayer</code>, union discriminée par <code>type</code>)</h3>
     <table class="docs-table">
       <thead>
         <tr><th><code>type</code></th><th>Données</th><th>Rendu</th></tr>
