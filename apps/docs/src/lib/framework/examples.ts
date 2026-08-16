@@ -117,7 +117,7 @@ export type ComponentName =
   | "TableOfContents"
   | "Transcription"
   | "ForceGraph"
-  | "GeoMap"
+  | "GeoChart"
   | "PasswordInput"
   | "PaginationNav"
   | "MenuTriggerButton"
@@ -4756,14 +4756,14 @@ import { ScatterPlot } from "@sentropic/design-system-vue";
 
   geomap: {
     id: "geomap",
-    slug: "geo-map",
+    slug: "geo-chart",
     nodes: [
       {
         el: "div",
         props: { class: "fp-stack" },
         children: [
           {
-            comp: "GeoMap",
+            comp: "GeoChart",
             props: {
               label: "Bureaux et flux",
               layers: [
@@ -4801,10 +4801,10 @@ import { ScatterPlot } from "@sentropic/design-system-vue";
     ],
     code: {
       svelte: `<script>
-  import { GeoMap } from "@sentropic/design-system-svelte";
+  import { GeoChart } from "@sentropic/design-system-svelte";
 </script>
 
-<GeoMap
+<GeoChart
   label="Bureaux et flux"
   layers={[
     {
@@ -4829,11 +4829,11 @@ import { ScatterPlot } from "@sentropic/design-system-vue";
     }
   ]}
 />`,
-      react: `import { GeoMap } from "@sentropic/design-system-react";
+      react: `import { GeoChart } from "@sentropic/design-system-react";
 
 export function Demo() {
   return (
-    <GeoMap
+    <GeoChart
       label="Bureaux et flux"
       layers={[
         {
@@ -4861,11 +4861,11 @@ export function Demo() {
   );
 }`,
       vue: `<script setup>
-import { GeoMap } from "@sentropic/design-system-vue";
+import { GeoChart } from "@sentropic/design-system-vue";
 </script>
 
 <template>
-  <GeoMap
+  <GeoChart
     label="Bureaux et flux"
     :layers="[
       {
