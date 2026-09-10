@@ -152,7 +152,7 @@
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "vite": "^8.0.16",
-    "vitest": "^4.1.5"
+    "vitest": "^4.1.11"
   },
   "scripts": {
     "predev": "node ../../scripts/ensure-theme-dists.mjs",
