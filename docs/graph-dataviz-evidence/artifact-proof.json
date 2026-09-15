@@ -1,0 +1,15 @@
+{
+  "result": "pass",
+  "counts": {
+    "sources": 3547,
+    "ds": 1520,
+    "references": 578
+  },
+  "mappedItems": 26,
+  "pendingDecisions": 4,
+  "dagNodes": 16,
+  "dagEdges": 39,
+  "provenanceFiles": 200,
+  "trackEvents": 1555,
+  "programmeEvents": 119
+}
