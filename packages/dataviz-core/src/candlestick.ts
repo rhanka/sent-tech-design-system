@@ -1,0 +1,88 @@
+/**
+ * Candlestick chart data builder.
+ *
+ * Maps four numeric fields (open, high, low, close) plus a label field from
+ * raw rows into CandlestickDatum-compatible objects, as expected by the DS
+ * CandlestickChart component.
+ *
+ * No aggregation: each row becomes one datum. A row is dropped silently when
+ * any of open/high/low/close is non-finite (mirrors the null-handling pattern
+ * used in scatter.ts and analyticsDsData.ts).
+ */
+
+import { type DataModel, type Row, findMeasure, findDimension } from './model.js';
+
+export interface CandlestickDatum {
+  label: string;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+}
+
+export interface CandlestickConfig {
+  /** Field id whose value becomes the bar label (string-coerced; typically a date or category dimension). */
+  label: string;
+  /** Field id whose numeric value becomes the open price. */
+  open: string;
+  /** Field id whose numeric value becomes the high price. */
+  high: string;
+  /** Field id whose numeric value becomes the low price. */
+  low: string;
+  /** Field id whose numeric value becomes the close price. */
+  close: string;
+}
+
+function toFiniteNumber(value: unknown): number | undefined {
+  if (typeof value === 'boolean') return value ? 1 : 0;
+  if (typeof value === 'number') return Number.isFinite(value) ? value : undefined;
+  if (typeof value === 'string' && value.trim() !== '') {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : undefined;
+  }
+  return undefined;
+}
+
+function fieldLabel(model: DataModel, fieldId: string): string {
+  return findMeasure(model, fieldId)?.label ?? findDimension(model, fieldId)?.label ?? fieldId;
+}
+
+/**
+ * Build candlestick chart data from raw rows by mapping OHLC numeric fields
+ * and a label field per row.
+ *
+ * @param _model  DataModel — reserved for future label/format lookup
+ * @param rows    Filtered rows from `store.applyCrossfilter(viewId)`
+ * @param config  { label, open, high, low, close } — field ids
+ */
+export function buildCandlestickData(
+  _model: DataModel,
+  rows: readonly Row[],
+  config: CandlestickConfig,
+): CandlestickDatum[] {
+  void fieldLabel; // fieldLabel reserved for future axis-label surface
+  const data: CandlestickDatum[] = [];
+
+  for (const row of rows) {
+    const open = toFiniteNumber(row[config.open]);
+    const high = toFiniteNumber(row[config.high]);
+    const low = toFiniteNumber(row[config.low]);
+    const close = toFiniteNumber(row[config.close]);
+
+    if (
+      open === undefined ||
+      high === undefined ||
+      low === undefined ||
+      close === undefined
+    ) {
+      continue;
+    }
+
+    const labelRaw = row[config.label];
+    const label = labelRaw == null ? '' : String(labelRaw);
+
+    data.push({ label, open, high, low, close });
+  }
+
+  return data;
+}
