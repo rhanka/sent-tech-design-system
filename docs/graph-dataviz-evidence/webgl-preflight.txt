@@ -1,0 +1,9 @@
+npm warn Unknown builtin config "globalignorefile". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+
+> @sentropic/graph@0.2.0 golden:webgl:preflight
+> node tests/golden/webgl-preflight.mjs
+
+[webgl-preflight] chrome = /home/antoinefa/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome
+[webgl-preflight] flags  = --use-gl=angle --use-angle=swiftshader-webgl --enable-unsafe-swiftshader
+[webgl-preflight] glinfo = {"webgl2":true,"vendor":"Google Inc. (Google)","renderer":"ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)","version":"WebGL 2.0 (OpenGL ES 3.0 Chromium)","clearPixel":[255,0,0,255]}
+[webgl-preflight] OK: real WebGL2 via "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)" (Google Inc. (Google)); clear+readPixels verified. The golden-webgl pixel-diff will RUN.

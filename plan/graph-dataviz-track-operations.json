@@ -1,0 +1,357 @@
+{
+  "schemaVersion": 1,
+  "actor": "codex:.repat-wt:b943adbe6d5c",
+  "streams": {
+    "S1": {
+      "id": "01KW85QZ8EXVA1A3NW828N0XG2",
+      "title": "S1 · Cœur & Composants"
+    },
+    "S2": {
+      "id": "01KW8609WHKK20XE3HVQ7C6AS5",
+      "title": "S2 · Frameworks & Parité"
+    },
+    "S3": {
+      "id": "01KW860A52N3P1BRCVTAQK59DN",
+      "title": "S3 · Theming & Marques"
+    },
+    "S4": {
+      "id": "01KW860AE02142WK477SGQCFY9",
+      "title": "S4 · Dataviz / BI"
+    },
+    "S5": {
+      "id": "01KW860AN79KF4WN4RVX2PH727",
+      "title": "S5 · Docs & Site"
+    },
+    "S6": {
+      "id": "01KW860ATXPNDVSCVHT92KB6P2",
+      "title": "S6 · Moteur, Outillage & Release"
+    },
+    "S7": {
+      "id": "01KW860AZTVXKZ50J9R3EBB9K9",
+      "title": "S7 · Application & QA Consommateurs"
+    }
+  },
+  "items": [
+    {
+      "key": "GD-M0-RECONCILE",
+      "sourceKey": "graph-dataviz-repatriation/v1/GD-M0-RECONCILE",
+      "stream": "S4",
+      "title": "Rapatriement graph/dataviz — M0 correspondance exhaustive et réconciliation",
+      "body": "Mandat owner 2026-09-15; périmètre et preuves dans plan/10-BRANCH_graph-dataviz-repatriation.md. Programme ouvert; inventorié ne signifie pas implémenté.",
+      "acceptance": "Tous exports source et DS ont source/destination/décision/item; historique WP20 confronté au code et aux tests, SHAs et limites explicites.",
+      "dependsOn": [],
+      "start": true,
+      "delivery": {
+        "locator": "docs/graph-dataviz-source-map.md",
+        "sha256": "1e806ff86a4f846fa796a19d8f37e2fe18ae9704b1fe96cf993bb317f826cf56",
+        "kind": "manual"
+      }
+    },
+    {
+      "key": "GD-M0-ARCHITECTURE",
+      "sourceKey": "graph-dataviz-repatriation/v1/GD-M0-ARCHITECTURE",
+      "stream": "S4",
+      "title": "Rapatriement graph/dataviz — architecture et modèle formel à challenger",
+      "body": "Mandat owner 2026-09-15; périmètre et preuves dans plan/10-BRANCH_graph-dataviz-repatriation.md. Programme ouvert; inventorié ne signifie pas implémenté.",
+      "acceptance": "Deux DAG Mermaid; 5 couches document/vues/projection/scène/sources; pivots et rapports de conversion; décisions structurées soumises au conducteur.",
+      "dependsOn": [],
+      "start": true,
+      "delivery": {
+        "locator": "spec/SPEC_STUDY_GRAPH_DATAVIZ_REPATRIATION.md",
+        "sha256": "5bd5c57c5718036098ae2e0571e70b7d612f5ff96a5af33147a79574d2b5ba09",
+        "kind": "manual"
+      }
+    },
+    {
+      "key": "GD-M1-GRAPH",
+      "sourceKey": "graph-dataviz-repatriation/v1/GD-M1-GRAPH",
+      "stream": "S4",
+      "title": "Rapatrier @sentropic/graph avec provenance et compatibilité",
+      "body": "Mandat owner 2026-09-15; périmètre et preuves dans plan/10-BRANCH_graph-dataviz-repatriation.md. Programme ouvert; inventorié ne signifie pas implémenté.",
+      "acceptance": "211 exports publics conservés; sources/tests/golden/bench/doc transférés, ESM+CJS+types packagés, zéro dépendance runtime; tests rejoués.",
+      "dependsOn": [
+        "GD-M0-RECONCILE"
+      ],
+      "delivery": {
+        "locator": "docs/graph-dataviz-m1-verification.md",
+        "sha256": "aa69876dfb9a4f80cde8db3a12838b06ad47ac4f645d8802eefe2ce3b8dd4ff0",
+        "kind": "integration"
+      }
+    },
+    {
+      "key": "GD-M1-DATAVIZ-CORE",
+      "sourceKey": "graph-dataviz-repatriation/v1/GD-M1-DATAVIZ-CORE",
+      "stream": "S4",
+      "title": "Rapatrier @sentropic/dataviz-core sans changement de comportement",
+      "body": "Mandat owner 2026-09-15; périmètre et preuves dans plan/10-BRANCH_graph-dataviz-repatriation.md. Programme ouvert; inventorié ne signifie pas implémenté.",
+      "acceptance": "495 exports conservés; 68 fichiers tests rejoués; build/types/pack/import sans DOM ni framework.",
+      "dependsOn": [
+        "GD-M0-RECONCILE"
+      ],
+      "delivery": {
+        "locator": "docs/graph-dataviz-m1-verification.md",
+        "sha256": "aa69876dfb9a4f80cde8db3a12838b06ad47ac4f645d8802eefe2ce3b8dd4ff0",
+        "kind": "integration"
+      }
+    },
+    {
+      "key": "GD-M1-DATAVIZ-SVELTE",
+      "sourceKey": "graph-dataviz-repatriation/v1/GD-M1-DATAVIZ-SVELTE",
+      "stream": "S2",
+      "title": "Rapatrier @sentropic/dataviz-svelte et ses contrats",
+      "body": "Mandat owner 2026-09-15; périmètre et preuves dans plan/10-BRANCH_graph-dataviz-repatriation.md. Programme ouvert; inventorié ne signifie pas implémenté.",
+      "acceptance": "Exports inventoriés conservés; tests/build/types/pack et consommateur minimal; CSS/peers vérifiés; Angular private et couverture partielle visibles, tarball DS remplacé par workspace.",
+      "dependsOn": [
+        "GD-M1-DATAVIZ-CORE",
+        "GD-M1-PACKAGING"
+      ]
+    },
+    {
+      "key": "GD-M1-DATAVIZ-REACT",
+      "sourceKey": "graph-dataviz-repatriation/v1/GD-M1-DATAVIZ-REACT",
+      "stream": "S2",
+      "title": "Rapatrier @sentropic/dataviz-react et ses contrats",
+      "body": "Mandat owner 2026-09-15; périmètre et preuves dans plan/10-BRANCH_graph-dataviz-repatriation.md. Programme ouvert; inventorié ne signifie pas implémenté.",
+      "acceptance": "Exports inventoriés conservés; tests/build/types/pack et consommateur minimal; CSS/peers vérifiés; Angular private et couverture partielle visibles, tarball DS remplacé par workspace.",
+      "dependsOn": [
+        "GD-M1-DATAVIZ-CORE",
+        "GD-M1-PACKAGING"
+      ]
+    },
+    {
+      "key": "GD-M1-DATAVIZ-VUE",
+      "sourceKey": "graph-dataviz-repatriation/v1/GD-M1-DATAVIZ-VUE",
+      "stream": "S2",
+      "title": "Rapatrier @sentropic/dataviz-vue et ses contrats",
+      "body": "Mandat owner 2026-09-15; périmètre et preuves dans plan/10-BRANCH_graph-dataviz-repatriation.md. Programme ouvert; inventorié ne signifie pas implémenté.",
+      "acceptance": "Exports inventoriés conservés; tests/build/types/pack et consommateur minimal; CSS/peers vérifiés; Angular private et couverture partielle visibles, tarball DS remplacé par workspace.",
+      "dependsOn": [
+        "GD-M1-DATAVIZ-CORE",
+        "GD-M1-PACKAGING"
+      ]
+    },
+    {
+      "key": "GD-M1-DATAVIZ-ANGULAR",
+      "sourceKey": "graph-dataviz-repatriation/v1/GD-M1-DATAVIZ-ANGULAR",
+      "stream": "S2",
+      "title": "Rapatrier @sentropic/dataviz-angular et ses contrats",
+      "body": "Mandat owner 2026-09-15; périmètre et preuves dans plan/10-BRANCH_graph-dataviz-repatriation.md. Programme ouvert; inventorié ne signifie pas implémenté.",
+      "acceptance": "Exports inventoriés conservés; tests/build/types/pack et consommateur minimal; CSS/peers vérifiés; Angular private et couverture partielle visibles, tarball DS remplacé par workspace.",
+      "dependsOn": [
+        "GD-M1-DATAVIZ-CORE",
+        "GD-M1-PACKAGING"
+      ]
+    },
+    {
+      "key": "GD-M1-PACKAGING",
+      "sourceKey": "graph-dataviz-repatriation/v1/GD-M1-PACKAGING",
+      "stream": "S6",
+      "title": "Workspace et distribution des six bibliothèques rapatriées",
+      "body": "Mandat owner 2026-09-15; périmètre et preuves dans plan/10-BRANCH_graph-dataviz-repatriation.md. Programme ouvert; inventorié ne signifie pas implémenté.",
+      "acceptance": "Résolution locale des dépendances DS/core, lockfile reproductible, workers/assets/CSS présents au pack; absence de file: hors workspace; OIDC graph et dataviz explicitement séparés avant publication.",
+      "dependsOn": [
+        "GD-M0-RECONCILE"
+      ]
+    },
+    {
+      "key": "GD-WP20-HEATMAP",
+      "sourceKey": "graph-dataviz-repatriation/v1/GD-WP20-HEATMAP",
+      "stream": "S4",
+      "title": "WP20 heatmap — rapprochement existant",
+      "body": "Mandat owner 2026-09-15; périmètre et preuves dans plan/10-BRANCH_graph-dataviz-repatriation.md. Programme ouvert; inventorié ne signifie pas implémenté.",
+      "acceptance": "Vérifier scale sequential sur les 4 DS ET exposition/transmission par les adaptateurs dataviz; exemple et preuve consommation de la version publiée. État global partial tant que cette chaîne manque.",
+      "dependsOn": [],
+      "existingId": "01KTV0000000000000000010"
+    },
+    {
+      "key": "GD-WP20-GRID",
+      "sourceKey": "graph-dataviz-repatriation/v1/GD-WP20-GRID",
+      "stream": "S4",
+      "title": "WP20 grid — rapprochement existant",
+      "body": "Mandat owner 2026-09-15; périmètre et preuves dans plan/10-BRANCH_graph-dataviz-repatriation.md. Programme ouvert; inventorié ne signifie pas implémenté.",
+      "acceptance": "Comparer DS tiles/onLayout et dataviz layout/onLayoutChange; convergence sans perte du rendu de panneau, drag/resize/clavier/SSR et publication consommée.",
+      "dependsOn": [],
+      "existingId": "01KTV0000000000000000020"
+    },
+    {
+      "key": "GD-WP20-FR3",
+      "sourceKey": "graph-dataviz-repatriation/v1/GD-WP20-FR3",
+      "stream": "S4",
+      "title": "WP20 troisième FR — rapprochement existant",
+      "body": "Mandat owner 2026-09-15; périmètre et preuves dans plan/10-BRANCH_graph-dataviz-repatriation.md. Programme ouvert; inventorié ne signifie pas implémenté.",
+      "acceptance": "Réconcilier trace heatmap-like et trace nearest-X; tester espace vide/masquage/crosshair inter-vues et quatre frameworks; ne pas déduire conformité du statut done.",
+      "dependsOn": [],
+      "existingId": "01KTV0000000000000000030"
+    },
+    {
+      "key": "GD-M2-MODEL",
+      "sourceKey": "graph-dataviz-repatriation/v1/GD-M2-MODEL",
+      "stream": "S4",
+      "title": "Documents sémantiques, vues, profils et commandes versionnés",
+      "body": "Mandat owner 2026-09-15; périmètre et preuves dans plan/10-BRANCH_graph-dataviz-repatriation.md. Programme ouvert; inventorié ne signifie pas implémenté.",
+      "acceptance": "Références typées, multi-occurrences, migrations de schéma, contraintes BPMN/ArchiMate et commandes entité/occurrence/vue validées sans DOM.",
+      "dependsOn": [
+        "GD-M0-ARCHITECTURE",
+        "GD-M1-GRAPH"
+      ]
+    },
+    {
+      "key": "GD-M2-PROCESSING",
+      "sourceKey": "graph-dataviz-repatriation/v1/GD-M2-PROCESSING",
+      "stream": "S4",
+      "title": "Processing graph — extraire force/hierarchy et normaliser résultats",
+      "body": "Mandat owner 2026-09-15; périmètre et preuves dans plan/10-BRANCH_graph-dataviz-repatriation.md. Programme ouvert; inventorié ne signifie pas implémenté.",
+      "acceptance": "Réutiliser Barnes-Hut/hierarchy source avec fixtures et provenance; résultats ports/routes/labels/diagnostics; force historique demeure passthrough; contraintes impossibles signalées.",
+      "dependsOn": [
+        "GD-M1-GRAPH",
+        "GD-M2-MODEL"
+      ]
+    },
+    {
+      "key": "GD-M2-WORKERS",
+      "sourceKey": "graph-dataviz-repatriation/v1/GD-M2-WORKERS",
+      "stream": "S6",
+      "title": "Workers sur snapshots versionnés et distribution portable",
+      "body": "Mandat owner 2026-09-15; périmètre et preuves dans plan/10-BRANCH_graph-dataviz-repatriation.md. Programme ouvert; inventorié ne signifie pas implémenté.",
+      "acceptance": "Annulation, seed, stabilité incrémentale, fallback sync, rejet résultats périmés; import worker depuis tarball consommateur prouvé.",
+      "dependsOn": [
+        "GD-M2-PROCESSING"
+      ]
+    },
+    {
+      "key": "GD-M2-DS-PRESENTATION",
+      "sourceKey": "graph-dataviz-repatriation/v1/GD-M2-DS-PRESENTATION",
+      "stream": "S1",
+      "title": "Primitives graph/dataviz contrôlées et géométrie partagée",
+      "body": "Mandat owner 2026-09-15; périmètre et preuves dans plan/10-BRANCH_graph-dataviz-repatriation.md. Programme ouvert; inventorié ne signifie pas implémenté.",
+      "acceptance": "Préserver exports DS; sélectionner/dessiner depuis scène commune; pas de store dashboard dans composants; convergence ForceGraph/Grid prouvée sans substitution de contrats.",
+      "dependsOn": [
+        "GD-M1-GRAPH",
+        "GD-M2-MODEL"
+      ]
+    },
+    {
+      "key": "GD-M2-CANVAS",
+      "sourceKey": "graph-dataviz-repatriation/v1/GD-M2-CANVAS",
+      "stream": "S1",
+      "title": "Canevas humain/agent via commandes et transactions communes",
+      "body": "Mandat owner 2026-09-15; périmètre et preuves dans plan/10-BRANCH_graph-dataviz-repatriation.md. Programme ouvert; inventorié ne signifie pas implémenté.",
+      "acceptance": "Sélection/move/resize/ports/snap/groupes/copy/paste/palette/inspecteur/undo/annotations; preview≠transaction≠persistence; mutations validées et révisions contrôlées.",
+      "dependsOn": [
+        "GD-M2-DS-PRESENTATION",
+        "GD-M2-PROCESSING"
+      ]
+    },
+    {
+      "key": "GD-M2-PARITY",
+      "sourceKey": "graph-dataviz-repatriation/v1/GD-M2-PARITY",
+      "stream": "S2",
+      "title": "Parité fonctionnelle et a11y des wrappers graph/dataviz",
+      "body": "Mandat owner 2026-09-15; périmètre et preuves dans plan/10-BRANCH_graph-dataviz-repatriation.md. Programme ouvert; inventorié ne signifie pas implémenté.",
+      "acceptance": "Matrice Svelte/React/Vue/Angular inclut contrats manquants; tests clavier/focus/IME/SSR/parité pixel; objectif et seuil Angular arbitrés.",
+      "dependsOn": [
+        "GD-M2-DS-PRESENTATION"
+      ]
+    },
+    {
+      "key": "GD-M2-THEMES",
+      "sourceKey": "graph-dataviz-repatriation/v1/GD-M2-THEMES",
+      "stream": "S3",
+      "title": "Palettes, typographie et contraste scène/canevas/dataviz",
+      "body": "Mandat owner 2026-09-15; périmètre et preuves dans plan/10-BRANCH_graph-dataviz-repatriation.md. Programme ouvert; inventorié ne signifie pas implémenté.",
+      "acceptance": "Échelles couleur gardent leur API core; tokens résolus hors noyau; SVG/WebGL/HTML suivent thèmes clairs/sombres et contraste.",
+      "dependsOn": [
+        "GD-M2-DS-PRESENTATION"
+      ]
+    },
+    {
+      "key": "GD-M3-SLICE",
+      "sourceKey": "graph-dataviz-repatriation/v1/GD-M3-SLICE",
+      "stream": "S4",
+      "title": "Tranche éditable SVG/WebGL + HTML, BPMN/ArchiMate natifs",
+      "body": "Mandat owner 2026-09-15; périmètre et preuves dans plan/10-BRANCH_graph-dataviz-repatriation.md. Programme ouvert; inventorié ne signifie pas implémenté.",
+      "acceptance": "Deux profils natifs versionnés; même scène/commande/sélection/layout/routage sur SVG et WebGL; IME HTML; export/a11y et limites démontrés via APIs publiques.",
+      "dependsOn": [
+        "GD-M2-CANVAS",
+        "GD-M2-WORKERS",
+        "GD-M2-THEMES",
+        "GD-M2-PARITY"
+      ]
+    },
+    {
+      "key": "GD-M4-CODECS",
+      "sourceKey": "graph-dataviz-repatriation/v1/GD-M4-CODECS",
+      "stream": "S4",
+      "title": "Pivots UML/PlantUML, Mermaid, BPMN, ArchiMate, draw.io et EA",
+      "body": "Mandat owner 2026-09-15; périmètre et preuves dans plan/10-BRANCH_graph-dataviz-repatriation.md. Programme ouvert; inventorié ne signifie pas implémenté.",
+      "acceptance": "Chaque sous-ensemble versionné a fixtures import/export/round-trip et rapport exhaustif converted/extension/degraded/ignored/unsupported; aucun universel sans perte.",
+      "dependsOn": [
+        "GD-M3-SLICE"
+      ]
+    },
+    {
+      "key": "GD-M5-PROCESSING",
+      "sourceKey": "graph-dataviz-repatriation/v1/GD-M5-PROCESSING",
+      "stream": "S4",
+      "title": "Couverture algorithmes et groupes/options ELK/Graphviz",
+      "body": "Mandat owner 2026-09-15; périmètre et preuves dans plan/10-BRANCH_graph-dataviz-repatriation.md. Programme ouvert; inventorié ne signifie pas implémenté.",
+      "acceptance": "Catalogue source daté/versionné, équivalents Sentropic et gaps itemisés; réimplémentations autonomes avec déterminisme/contraintes/routes/ports/labels/perf; pas de tiers implicite.",
+      "dependsOn": [
+        "GD-M2-PROCESSING"
+      ]
+    },
+    {
+      "key": "GD-M5-APPS",
+      "sourceKey": "graph-dataviz-repatriation/v1/GD-M5-APPS",
+      "stream": "S5",
+      "title": "Recettes et bibliothèque apps graph/dataviz",
+      "body": "Mandat owner 2026-09-15; périmètre et preuves dans plan/10-BRANCH_graph-dataviz-repatriation.md. Programme ouvert; inventorié ne signifie pas implémenté.",
+      "acceptance": "Catalogue JointJS comme couverture minimale; chaque recette via APIs publiques, exigences métier explicites, quatre frameworks et état de conformité distincts.",
+      "dependsOn": [
+        "GD-M3-SLICE",
+        "GD-M4-CODECS"
+      ]
+    },
+    {
+      "key": "GD-M6-GRAPHIFY",
+      "sourceKey": "graph-dataviz-repatriation/v1/GD-M6-GRAPHIFY",
+      "stream": "S7",
+      "title": "Graphify — adoption canonique et audit DS",
+      "body": "Mandat owner 2026-09-15; périmètre et preuves dans plan/10-BRANCH_graph-dataviz-repatriation.md. Programme ouvert; inventorié ne signifie pas implémenté.",
+      "acceptance": "Graphify consomme six bibliothèques selon besoin via versions DS; retrait copies/aliases, pipeline knowledge/evidence conservé; usages réels/build/SSR/workers/tests consommateurs prouvés.",
+      "dependsOn": [
+        "GD-M1-GRAPH",
+        "GD-M2-WORKERS",
+        "GD-M1-PACKAGING"
+      ],
+      "existingId": "01KW860Y8HHXFHG4Z27BW58CWP"
+    },
+    {
+      "key": "GD-M6-DATAVIZ",
+      "sourceKey": "graph-dataviz-repatriation/v1/GD-M6-DATAVIZ",
+      "stream": "S7",
+      "title": "Dataviz — adoption canonique et audit DS",
+      "body": "Mandat owner 2026-09-15; périmètre et preuves dans plan/10-BRANCH_graph-dataviz-repatriation.md. Programme ouvert; inventorié ne signifie pas implémenté.",
+      "acceptance": "Apps docs/site/démos importent packages du DS publiés; plus de double implémentation active; filtres/bookmarks/exports et parité conservent comportement; ancien audit de style seul ne suffit pas.",
+      "dependsOn": [
+        "GD-M1-DATAVIZ-SVELTE",
+        "GD-M1-DATAVIZ-REACT",
+        "GD-M1-DATAVIZ-VUE",
+        "GD-M1-DATAVIZ-ANGULAR",
+        "GD-M1-PACKAGING"
+      ],
+      "existingId": "01KW860YF3330RKT7BP16GFTM1"
+    },
+    {
+      "key": "GD-M6-SENTROPIC",
+      "sourceKey": "graph-dataviz-repatriation/v1/GD-M6-SENTROPIC",
+      "stream": "S7",
+      "title": "Sentropic — adoption et ports persistence/live/ressources",
+      "body": "Mandat owner 2026-09-15; périmètre et preuves dans plan/10-BRANCH_graph-dataviz-repatriation.md. Programme ouvert; inventorié ne signifie pas implémenté.",
+      "acceptance": "Auditer contrats réels canvas/comments/presence; intégrer via ports sans importer app/h2a/track dans noyaux; conflits révision et ressources testés; pas de CRDT supposé livré.",
+      "dependsOn": [
+        "GD-M3-SLICE"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1809 @@
+{
+  "schemaVersion": 1,
+  "scope": "M1 initial: graph + dataviz-core only",
+  "files": [
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/FEATURES.md",
+      "destination": "packages/graph/FEATURES.md",
+      "gitBlob": "321632282ce1114f7bc7db747049ac25a8aeb5ea",
+      "sha256": "dc4b6e7b6e1d8757cb1733656f02ded0762732f56bd07dbdec89b5a303f4644e",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/PUBLISHING.md",
+      "destination": "packages/graph/PUBLISHING.md",
+      "gitBlob": "bc5f30145507efd92bbef7e85655ccd21cfeb8e3",
+      "sha256": "0582e075f38473b2ddbdf59d68da60cdf6abdb3a12f7abc2dd1bbedd66009d77",
+      "status": "adapted-packaging-only",
+      "destinationSha256": "c4c8a891c6fd7ee44ca1a3fcd9a5ee416295c1258b098c65b9cadbcbe3f77896"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/README.md",
+      "destination": "packages/graph/README.md",
+      "gitBlob": "e2491261c069841e4eb8e8e55192f7bd8588a8a6",
+      "sha256": "5fbf13fc479d075155b6e2bb6b0d18fabf89498a3323c4e81380b5a37aed5017",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/bench/buffers-bench.mjs",
+      "destination": "packages/graph/bench/buffers-bench.mjs",
+      "gitBlob": "cab179b5caa74773a0cd3c48d7b6716599ce1742",
+      "sha256": "1200e08c80010ec2eb2b3354008c6facab83a4d753654421cfcfefd5ddc73639",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/package.json",
+      "destination": "packages/graph/package.json",
+      "gitBlob": "ace049eeddcc4467ac0e103cde9466d7eb0805aa",
+      "sha256": "2e336ec40b2a4febb1b1cef53ca2e411fb6817fbb55ba9fe99ace6db83949092",
+      "status": "adapted-packaging-only",
+      "destinationSha256": "8296f1ba916bf85708dbfa729d37a404677e46daf0db87acdc3fe500753c1b08"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/src/buffers.ts",
+      "destination": "packages/graph/src/buffers.ts",
+      "gitBlob": "ba7e49589f97fa9187f3a8598728c57d3d6634c8",
+      "sha256": "a9f18b2e10ff64610e0eb663caef8ec92b74f1c98eeaed7b5ed3cc94f4548f6b",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/src/edge-geometry.ts",
+      "destination": "packages/graph/src/edge-geometry.ts",
+      "gitBlob": "3e20c23b32fbc252788945bcda9b9888b35e01e3",
+      "sha256": "dc7131c0521fa50ae25de1893a4b2d8c6fe90eeabc68c9423404a226b1a7557f",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/src/gitflow-labels.ts",
+      "destination": "packages/graph/src/gitflow-labels.ts",
+      "gitBlob": "3fb556219b752de70ccf0f1433c878001ce83270",
+      "sha256": "9888b9f585c782d9d891688aad5c6943088002bf467d117e692e35bdfa301bad",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/src/index.ts",
+      "destination": "packages/graph/src/index.ts",
+      "gitBlob": "60737ae7eee84671e02ce52d4a9647685c1e24c8",
+      "sha256": "ec1daa04a0d3b82e1b73ecfdcdf0a4df2c38b5a2d7db91e76b0ea66c2430b759",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/src/layout-gitflow.ts",
+      "destination": "packages/graph/src/layout-gitflow.ts",
+      "gitBlob": "a3a0d01f6dd736d6ccfca760494ba9ceb4214926",
+      "sha256": "3f1c7fcb5f73b411aee446f10558852802f117545eece15522bbe4f2e034366c",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/src/layout-grid.ts",
+      "destination": "packages/graph/src/layout-grid.ts",
+      "gitBlob": "0913a279d81b75688ecba7a05621b2d648e781fc",
+      "sha256": "bc8ea00c8a6283c50ebcd2c9ca6dd6a08a953c59b62b435f18d11b693dec330f",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/src/layout-metro.ts",
+      "destination": "packages/graph/src/layout-metro.ts",
+      "gitBlob": "f0c1b70385165340dee14e32c86d19ded43d4a23",
+      "sha256": "781ff61da7e67da865fff8f3ffcd1901a2f2e76e05a257e848f8742ffb91a0c6",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/src/layout-radial.ts",
+      "destination": "packages/graph/src/layout-radial.ts",
+      "gitBlob": "70b31ce86f5cb931bf93d31ac0b553e99368c5a4",
+      "sha256": "671c2af940d487257021288b5a05a7b71dfa17064bae35d3ad582acec848a992",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/src/layout-registry.ts",
+      "destination": "packages/graph/src/layout-registry.ts",
+      "gitBlob": "e1d25b4befbedc9a4d44b43a896e1c7fd2deac03",
+      "sha256": "448f4566041a7f6c42049198391d65135654a1977ea2aeb5d6eba6de70f10587",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/src/layout.ts",
+      "destination": "packages/graph/src/layout.ts",
+      "gitBlob": "e72f6a7db3f9f8146f4f88299b5a6e3c1ca85aab",
+      "sha256": "7ced30da39f523991d3550530c2cd99afe9d414c0f6eda81b7eda34f5ad16795",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/src/mat4.ts",
+      "destination": "packages/graph/src/mat4.ts",
+      "gitBlob": "4c04b0c52f80e75a2ed7bda0b0e04e784318ad68",
+      "sha256": "01e191dc4c19577beae5d5112bad3cb06d222e9c89073c6a1fe3d8bb19553eb7",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/src/positions.ts",
+      "destination": "packages/graph/src/positions.ts",
+      "gitBlob": "e549014bd3c56c5d40133a55b1d80fb942066296",
+      "sha256": "d41c34a53d9a09e73ea1f5be19821ca47b22be3cc685163804b036e2315b6e38",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/src/render-geometry.ts",
+      "destination": "packages/graph/src/render-geometry.ts",
+      "gitBlob": "a16b8aa938c60f593efb76b8fac7ef244b4cdd15",
+      "sha256": "0df078a60d60e4dbc65f11ec643881cad6cd085ce93ae327a07fb2a595581d27",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/src/renderer.ts",
+      "destination": "packages/graph/src/renderer.ts",
+      "gitBlob": "a3ab2255f051df71a860dba361eb4362b8ca651d",
+      "sha256": "b1f538526dadcd2925d45e55d73fd043d4cd499abbac82cf0793aad27d067300",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/src/shape-geometry.ts",
+      "destination": "packages/graph/src/shape-geometry.ts",
+      "gitBlob": "b2653efad6318cce5abb691849091313b7789fd0",
+      "sha256": "c9da42edfb411bf74a0349e25d2be159d860a3813c48ff64a31006a4308e1e0e",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/src/styles.ts",
+      "destination": "packages/graph/src/styles.ts",
+      "gitBlob": "fa72000b05ed8921d85c9c1b8b9a9d3bc94fcd45",
+      "sha256": "8fcd577fafdc089f371b17e4785475ceb4386330da657572fd988ddc0a63cc95",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/src/types.ts",
+      "destination": "packages/graph/src/types.ts",
+      "gitBlob": "01dfb76e0e500dcecca44d9a5ae158cf1c3c9e36",
+      "sha256": "7585c7304db663b0ca37b4027dd31327dd22e384eb543fdf34982a196d676cf0",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/src/webgl-boxes.ts",
+      "destination": "packages/graph/src/webgl-boxes.ts",
+      "gitBlob": "1c6ce6ee0c0d761e2b6bc9db42b61a40520da863",
+      "sha256": "36a6e9b48a51a8c647a3c1d5fd029827c5e704365aedf33905f1060f2ab79855",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/src/webgl-edges.ts",
+      "destination": "packages/graph/src/webgl-edges.ts",
+      "gitBlob": "c9dc077b53c654e29a709318cc84ba90e8d9e0e9",
+      "sha256": "08e24e4759d62fc4ca14a799b6f7f58ef0c8aeb7483712b0ab6cc605752c076a",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/src/webgl-shapes.ts",
+      "destination": "packages/graph/src/webgl-shapes.ts",
+      "gitBlob": "4da0e5a877211c77e60502729d51beb5e0bc8edb",
+      "sha256": "7e7184d8384eb8d9f24dcf9970e4d42b063cff173d3479c660b0c4b0f7ebeac4",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/tests/buffers.test.ts",
+      "destination": "packages/graph/tests/buffers.test.ts",
+      "gitBlob": "4bae7fac38add635531bfa87fb83f340a58e7e6b",
+      "sha256": "850b44437af138b197b2b387156d29cc7359056a5f7e35496999ff1d5431ed77",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/tests/edge-flow-port.test.ts",
+      "destination": "packages/graph/tests/edge-flow-port.test.ts",
+      "gitBlob": "ead6451d2af4a5669a73709283c273f1d1c9bede",
+      "sha256": "16bf0c47c16aeb2f1e1a2143e0d18b110dbb8a9915a2fdcb6bccb074ca4794d0",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/tests/edge-geometry.test.ts",
+      "destination": "packages/graph/tests/edge-geometry.test.ts",
+      "gitBlob": "c57d77528878184c82c2534f9d36d422a44fbc60",
+      "sha256": "3f94603498a5098b385a67ac5a34914c40d5e94605ba1e5927bf3e87234a17fa",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/tests/gitflow-labels.test.ts",
+      "destination": "packages/graph/tests/gitflow-labels.test.ts",
+      "gitBlob": "2b85cbfed2dfc70214d412a9a0265c3fab915842",
+      "sha256": "d2318717d1f4b5082ecdd7479364c96c988e36cc84315734320fb4544bde84d1",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/tests/golden/README.md",
+      "destination": "packages/graph/tests/golden/README.md",
+      "gitBlob": "7c13a79269cef72a6144b6f7f3d9d79cf240b572",
+      "sha256": "d255d04a29f2ae4145c28bd396af463e11b57fb844f6c7039bf1676d03dc9888",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/tests/golden/boxes-golden.test.ts",
+      "destination": "packages/graph/tests/golden/boxes-golden.test.ts",
+      "gitBlob": "6daca52322adbd710885022278de321588f86fad",
+      "sha256": "6e0b9d7d7c5e8056d84b4d43a8aa7b8e44c9976b0008b25b36543404e514917b",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/tests/golden/cdp-harness.mjs",
+      "destination": "packages/graph/tests/golden/cdp-harness.mjs",
+      "gitBlob": "f2c4396d0ce39c7d129b645957771f0a1e18d1c0",
+      "sha256": "794210f403e7e6a722c84723768e97d3a99cfe603b38024d0563285c0efad6d5",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/tests/golden/diff.mjs",
+      "destination": "packages/graph/tests/golden/diff.mjs",
+      "gitBlob": "c2617a1733d9eec07bd8026646d4bb316194dfaf",
+      "sha256": "1c257262fae20e529132a6fffd9524baa8fbaa5f8499d1dcf9091423f61e7b36",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/tests/golden/edges-golden.test.ts",
+      "destination": "packages/graph/tests/golden/edges-golden.test.ts",
+      "gitBlob": "f97ef7c3fe3206f806e70d904eafc45933564aa3",
+      "sha256": "94ed015d3d8c871f7d196b42eed8fb9a760ddcb02ff10080851a0a1f26ab28f3",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/tests/golden/fixtures.mjs",
+      "destination": "packages/graph/tests/golden/fixtures.mjs",
+      "gitBlob": "18a60f906446b8fc4eb416537a65efebb3833877",
+      "sha256": "d4f341064dd835a5a105e9f6f3c8bd3dc23cba4ad309c1eb2d2e16045caff357",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/tests/golden/gitflow-golden.test.ts",
+      "destination": "packages/graph/tests/golden/gitflow-golden.test.ts",
+      "gitBlob": "dc320285ef09d91fce072ba9163cd407dee0fb1c",
+      "sha256": "ca4a1f8229389677f87061383aaad47ef213966b0595ea97b5c1211e4f33276e",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/tests/golden/golden-harness.test.ts",
+      "destination": "packages/graph/tests/golden/golden-harness.test.ts",
+      "gitBlob": "465fece0b5f82d2d9f9b4f4328daec2cf1792050",
+      "sha256": "4daf0e18b54b5b922227d477b4d7839290d93a9147cdfa3f9aa02fe3f8e0ee37",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/tests/golden/harness-page.html",
+      "destination": "packages/graph/tests/golden/harness-page.html",
+      "gitBlob": "101161eaadd8fc549b279f8a24bd6c5319d007d8",
+      "sha256": "884290f5306a19cc22fdb869ac80f6dcd2c0887c1be2e86c0fecebbe0b9fb744",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/tests/golden/png.mjs",
+      "destination": "packages/graph/tests/golden/png.mjs",
+      "gitBlob": "a6f5ba9cf616a7eefc8ecd83ce548d3fd1c215f4",
+      "sha256": "153cb518985ee6f1d2373cc916410bdff3819dccb4c69dddb3fcdbfc4187ee43",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/tests/golden/shapes-golden.test.ts",
+      "destination": "packages/graph/tests/golden/shapes-golden.test.ts",
+      "gitBlob": "967552c7059d8797c7c474fb91b4e8e620eae1ca",
+      "sha256": "90f1b371f8ee1f28dac5eeebc430b6a5eb16cd74692b40fe54a9cc627d4f2c59",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/tests/golden/smoke.mjs",
+      "destination": "packages/graph/tests/golden/smoke.mjs",
+      "gitBlob": "0af5607c254e45bb1a712a87b793fc851079903b",
+      "sha256": "5b420ad98d607c39fd73c9790309800b3d6d6e478de224052fe971dec4c86b73",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/tests/golden/webgl-preflight.mjs",
+      "destination": "packages/graph/tests/golden/webgl-preflight.mjs",
+      "gitBlob": "f892d99084ead813747c95545390db84372e540f",
+      "sha256": "602482f575470795575ac770c64cd221c866f7d0af06f23b7f56f46d8469d8f6",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/tests/layout-gitflow.test.ts",
+      "destination": "packages/graph/tests/layout-gitflow.test.ts",
+      "gitBlob": "8ad7fdcaa8321b7aac1c327a686ffd7c116ad4cf",
+      "sha256": "9211fe4045e14c18cdabaf12761d7c8b861ad6c3022c9965539fe55e6f284b50",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/tests/layout-grid.test.ts",
+      "destination": "packages/graph/tests/layout-grid.test.ts",
+      "gitBlob": "815319d632d366d3920ba96e91e718821bd8493c",
+      "sha256": "5b01838d733a463f74628b1e278ebd3bf195c5b64df0762f638158d490f8fb5e",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/tests/layout-metro.test.ts",
+      "destination": "packages/graph/tests/layout-metro.test.ts",
+      "gitBlob": "b5513787bb56a8f2fa797e7318ecab92999de8f7",
+      "sha256": "aea6308434cec3ee714750f48bc1a1e6e9ce18a3552218264217eaba1d286840",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/tests/layout-radial.test.ts",
+      "destination": "packages/graph/tests/layout-radial.test.ts",
+      "gitBlob": "c7a6c83440837dc475aa05ec1e6e6c800bf09609",
+      "sha256": "90a9b0688ddf80f7f60488d32807aa18384ecde84dba492e924e6d6f33a06034",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/tests/layout-registry.test.ts",
+      "destination": "packages/graph/tests/layout-registry.test.ts",
+      "gitBlob": "e0914b7ffb5b26f7b4de863fcf0394565ba0e96c",
+      "sha256": "d2c1fa2887a8a2cd1330b37e60eeacd75f26b910b986192b7db03a5e31e0c1c8",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/tests/layout-time-oriented.test.ts",
+      "destination": "packages/graph/tests/layout-time-oriented.test.ts",
+      "gitBlob": "afc9b7d3c7504f3f6b822bff4bfefda14c77c500",
+      "sha256": "b2e581719005b82b998c8f41c42dde4907d0922bb8106f8833d34dfb0608e55d",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/tests/layout-typed-layer.test.ts",
+      "destination": "packages/graph/tests/layout-typed-layer.test.ts",
+      "gitBlob": "ffd950bc4ac97e24982333621fb3f254ae0c21a9",
+      "sha256": "6170164c01c7a53517c652672b70b1ca91e8c3c4b1d5c49f71a4b87d724a5e05",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/tests/mat4.test.ts",
+      "destination": "packages/graph/tests/mat4.test.ts",
+      "gitBlob": "11a30f7aca9b266601fa0a260c2a9feff941c269",
+      "sha256": "9a9eca3751f35775d6ca0d818becafea6e3b90b441a5a2adec3363498d5076b2",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/tests/renderer-api.test.ts",
+      "destination": "packages/graph/tests/renderer-api.test.ts",
+      "gitBlob": "4be483ff5126260386b51f503b086b67a2b2c174",
+      "sha256": "9db9e1fbc4a473030fd2abf4481e924ebdb7f6c9f3ff989dd8865c4773be1efd",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/tests/shape-geometry.test.ts",
+      "destination": "packages/graph/tests/shape-geometry.test.ts",
+      "gitBlob": "dfc9b2120094992139d08c9dff93525931a39ee8",
+      "sha256": "c97b50d200266e57fbdad66ff190e8e0a4f87d369a3e70904134336c4e69eb14",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/tests/styles.test.ts",
+      "destination": "packages/graph/tests/styles.test.ts",
+      "gitBlob": "322a8dc52dc1bfe8301c8215653cf9a0ddc27490",
+      "sha256": "d158871bd9e5e29f524c33099386fcc75b9d63f16fe1b52b3b79502d5a72389a",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/tests/webgl-boxes.test.ts",
+      "destination": "packages/graph/tests/webgl-boxes.test.ts",
+      "gitBlob": "ea47dee46e51f4aca99b13fa7f6fcad9b764d9cb",
+      "sha256": "74fbef6c53714b4bdd2cb0a2fb6b884b5f9fff691e542846e7cf38dde2d54730",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/tests/webgl-edges.test.ts",
+      "destination": "packages/graph/tests/webgl-edges.test.ts",
+      "gitBlob": "f1235cba81ecaf9468c72efd3643a0daba371f0c",
+      "sha256": "a39ee56179177c77b8585ebc320ec3d6708c78de4d7f7a8686b99192f026637e",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/tests/webgl-shapes.test.ts",
+      "destination": "packages/graph/tests/webgl-shapes.test.ts",
+      "gitBlob": "57b7f24d6782decdc22d7847aeedf12af660e4a1",
+      "sha256": "a6b6c5b65a8e7d24046775d64873d9c1ca3a098485a61248955dfe337db79009",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/tsconfig.json",
+      "destination": "packages/graph/tsconfig.json",
+      "gitBlob": "ffc176cb8b9250a923b8e6755a10ebb576686838",
+      "sha256": "f315ef783b7babbfb2fd3429d864f780d3b2a54c88a331ad715319aa6c69a24f",
+      "status": "adapted-packaging-only",
+      "destinationSha256": "316b0a48741c08fefc61b3473794d054164bfa0d060fded932b8221cfc31e9bb"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/tsup.config.ts",
+      "destination": "packages/graph/tsup.config.ts",
+      "gitBlob": "5668937bc0c0b7f36d4617558cb5f25dab49ff50",
+      "sha256": "e48a39ba97e2d5593171f39d0f7f738c7340d793aaa3dbeb4f86186f74ecc272",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "packages/graph/vitest.config.ts",
+      "destination": "packages/graph/vitest.config.ts",
+      "gitBlob": "6a01365faf5073a5bda974bb40b05a4771aed03e",
+      "sha256": "0fdd1271a3812c07ae93678d2b84dc7cbced8c055e530c75525aeddf50efd53c",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "source": "LICENSE",
+      "destination": "packages/graph/LICENSE",
+      "sha256": "36ecff6bbb97aca1be64e95f42538cf796adde5864edac583e620643c096931a",
+      "status": "license-preserved"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/LICENSE",
+      "destination": "packages/dataviz-core/LICENSE",
+      "gitBlob": "b33160835a04be8afe8e0a0ac6a83ea85e4ba5f1",
+      "sha256": "a748719859ae8bce89d80df97a598f946465ffed95e05ba3a39fbc628153eaf4",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/package.json",
+      "destination": "packages/dataviz-core/package.json",
+      "gitBlob": "43bd36e47930e1348bdaa535607c57b7e7358e08",
+      "sha256": "a48bae892eb533058304605566d320ed9925eaf5c62258bff0f807e190f39349",
+      "status": "adapted-packaging-only",
+      "destinationSha256": "b1f5713ecb0842f5b44f7bee321fc8ab25584df81e22430034a4c53c91bb6518"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/actions.test.ts",
+      "destination": "packages/dataviz-core/src/actions.test.ts",
+      "gitBlob": "d14b60d924116911e503ab5c4c85c90ca3ae4fd9",
+      "sha256": "f2ee861f9efc0d6baf5d610ad3c9b2c183f43ad7d932537f63643e83f1c18206",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/actions.ts",
+      "destination": "packages/dataviz-core/src/actions.ts",
+      "gitBlob": "24aa6e06edf290e673f52b620cbc312584f6b3dd",
+      "sha256": "b8a50b4e1c700deb75d2588b121defc0939dbc101eae9f403e5abeb485b37d8f",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/aggregate.test.ts",
+      "destination": "packages/dataviz-core/src/aggregate.test.ts",
+      "gitBlob": "9eb4c3bd7c5274f019dc9efe7145441474344920",
+      "sha256": "b640bbf92ef6b230aa88246a1323e5590bf238c18f2a72f83f80edf0176b3a93",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/aggregate.ts",
+      "destination": "packages/dataviz-core/src/aggregate.ts",
+      "gitBlob": "8040947488adbf69341a5b156c4e551930fb7167",
+      "sha256": "23b5e0c707b4a425011cd7d18b357bba924e4b768e10fe3a46ab9dd998fef21d",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/analytics.test.ts",
+      "destination": "packages/dataviz-core/src/analytics.test.ts",
+      "gitBlob": "c4770bd30a818d96048bdab9e1249f32544bc5e1",
+      "sha256": "0e57d6a2c96884a0633d9f1b9f6012af349333d91e24076fd3b6a2b6d983e7b6",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/analytics.ts",
+      "destination": "packages/dataviz-core/src/analytics.ts",
+      "gitBlob": "0b8b21ef6c1793447cb8ddfe4b279b0da8d481ce",
+      "sha256": "ff1c2bd95d33f1c37f78318aff007fa88b75a694d65e8a085c1b534aebce7414",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/animatedBubble.test.ts",
+      "destination": "packages/dataviz-core/src/animatedBubble.test.ts",
+      "gitBlob": "5c338085c37ab0455e88ecf117e19f7dbe5f361a",
+      "sha256": "eb3eed2323666e76e8232879193ed10d75fce83abe5e6ffc4d3c698f20ff8239",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/animatedBubble.ts",
+      "destination": "packages/dataviz-core/src/animatedBubble.ts",
+      "gitBlob": "3a098f2677c5df9ca32b065ee85de0bc88588d68",
+      "sha256": "6c430e4b82885646a506072adc490e4ccfedb7ac9d8ea9952172a3176a3cbe49",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/annotations.test.ts",
+      "destination": "packages/dataviz-core/src/annotations.test.ts",
+      "gitBlob": "3fae27f10793f62f47a276882a5360883d779412",
+      "sha256": "c3dab97efc156193f58652af5a3cc72abeeeff2122e4ebc356654ece0ad046e5",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/annotations.ts",
+      "destination": "packages/dataviz-core/src/annotations.ts",
+      "gitBlob": "9d59fec4fce9e9518ebe063593094c5f011487d1",
+      "sha256": "cd76d48e6e69a3aa9692d6f248ab6fa171774615c98a0db8956f396c7d5f705f",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/anomalySwimLane.test.ts",
+      "destination": "packages/dataviz-core/src/anomalySwimLane.test.ts",
+      "gitBlob": "37f8eff01ce5dbc86e2a60760af68a163d8f40bf",
+      "sha256": "4e636dceb2b8bd0f1d32f74fe01b84b39e9ef482a0021c6ce86d6ece051a47e0",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/anomalySwimLane.ts",
+      "destination": "packages/dataviz-core/src/anomalySwimLane.ts",
+      "gitBlob": "6053380dabc16213bd191f026c21dd51a70e05a7",
+      "sha256": "5d6304962b87c821beade4b6496140b1a4416d5c2414d7074fc8eaaa7398bded",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/arcDiagram.test.ts",
+      "destination": "packages/dataviz-core/src/arcDiagram.test.ts",
+      "gitBlob": "dfe6446c346adc0a1a55e0348b356735aaf00b56",
+      "sha256": "33d84190908fb54d41745d8fef2d2e2863e612894841f46d99ee0621cb21c959",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/arcDiagram.ts",
+      "destination": "packages/dataviz-core/src/arcDiagram.ts",
+      "gitBlob": "c40397f81575f2f941e0eda1e2a1b77a1d4564f8",
+      "sha256": "6d2818dff2421b074a84815c6f030a2e571fadc5e5198656a09379743f42cb80",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/bellCurve.test.ts",
+      "destination": "packages/dataviz-core/src/bellCurve.test.ts",
+      "gitBlob": "9257553a1ae07366388582416f0121e2c49b3c0c",
+      "sha256": "393d4d1a28ad81c9dd871ff4ab34cb19293e233585c7bb5e2007d6a8a7fa7301",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/bellCurve.ts",
+      "destination": "packages/dataviz-core/src/bellCurve.ts",
+      "gitBlob": "57909d6d0b9286dacf7ab13304a1e36361165533",
+      "sha256": "17e6a0422e8aa454e60008adda6ba83c74216f9b128ed802488e64ae6e319707",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/bump.test.ts",
+      "destination": "packages/dataviz-core/src/bump.test.ts",
+      "gitBlob": "ee3c924c482901e89b7231b8b918d79493fba0b9",
+      "sha256": "f423702d6d3d6e71ffac8eb473524f70b68da17d26985941f410e6756e3d9bda",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/bump.ts",
+      "destination": "packages/dataviz-core/src/bump.ts",
+      "gitBlob": "519ad85805282c28281789c2f3010c9095ce100b",
+      "sha256": "03b8a82a45eac10669b2b983c63fbfd6e34954ce5cb348ab3b6038a41cc4ffc3",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/calculations.test.ts",
+      "destination": "packages/dataviz-core/src/calculations.test.ts",
+      "gitBlob": "18735c0656900c75f1b7cc41f23e5fbe5e2a954b",
+      "sha256": "14e73e1ad0594cf48943da95d3a179d3e51c407d3e5788dc38bf5c06aa67586b",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/calculations.ts",
+      "destination": "packages/dataviz-core/src/calculations.ts",
+      "gitBlob": "95770a2d785cad1416bbad2c9f207da25336849b",
+      "sha256": "e0b359a8961a16ea91e18fd2fd92495d06e965b31eb952cd8ad216b13587fb0e",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/candlestick.test.ts",
+      "destination": "packages/dataviz-core/src/candlestick.test.ts",
+      "gitBlob": "23c4d6ca6dc3ebcee394c4795fad8c9fee5f734d",
+      "sha256": "3a374ede15566e120ec4e5cdcb96e0bcca12af0f1240584c78394a297bbc7758",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/candlestick.ts",
+      "destination": "packages/dataviz-core/src/candlestick.ts",
+      "gitBlob": "5c268dfcb3c48281b1757e530e5b30d9b04990ba",
+      "sha256": "cc74bd3e1acd52a1dfdf9d47a4bffec978ba2dcc0425470b798f94f7e915b762",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/categorical.test.ts",
+      "destination": "packages/dataviz-core/src/categorical.test.ts",
+      "gitBlob": "20487cf24f53d75bf605be069b470c85ec9d4a10",
+      "sha256": "11c015dd715cc0dd6a3cddf0ae748966d83bf49a732346a0849f3fa392519143",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/categorical.ts",
+      "destination": "packages/dataviz-core/src/categorical.ts",
+      "gitBlob": "cc6887d6b1de5262a0cb310c02c5be907e88a43a",
+      "sha256": "63d7ad1559cd7f42ea5153fc13b46f53a36885a267e2d14dc34cc2868d52d6c5",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/color.test.ts",
+      "destination": "packages/dataviz-core/src/color.test.ts",
+      "gitBlob": "2876f23a8f570a25beadec39e7011715056ce78e",
+      "sha256": "02a7513258d182c53802b3b4a511ed2b5f89b406bf3cb781f8acee8d9c686896",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/color.ts",
+      "destination": "packages/dataviz-core/src/color.ts",
+      "gitBlob": "feebe2c0e861a26a0266b1545e0073189b8f27af",
+      "sha256": "94c778bbe46ce9be0d113818c8741340a07efa438928e55b617fe663424533ba",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/columnPyramid.test.ts",
+      "destination": "packages/dataviz-core/src/columnPyramid.test.ts",
+      "gitBlob": "bcda5f2a8111ca783dd009451c00055b47173125",
+      "sha256": "f52635a57972426d0bb6b35e1d828b43cc9c8ee3f28f9478f5c754ce9e16e5e0",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/columnPyramid.ts",
+      "destination": "packages/dataviz-core/src/columnPyramid.ts",
+      "gitBlob": "232746fe4e3ec4c7e9edfe65a84f82959b636cb3",
+      "sha256": "f5fcfa3d59e651cb50c422d5bbe12ea1385e373121cc5aff388efbaa050a8620",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/conditional-format.test.ts",
+      "destination": "packages/dataviz-core/src/conditional-format.test.ts",
+      "gitBlob": "27d330e22e6d0dbe66f3260ba1ee00739ea766ab",
+      "sha256": "ba2f5d53f219864b734b1f1cacc10abe526b70e0859056c10e8c2a5299697cc2",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/conditional-format.ts",
+      "destination": "packages/dataviz-core/src/conditional-format.ts",
+      "gitBlob": "e2319ce043e2286320e4a05f0b7b8ced52df4802",
+      "sha256": "3d334281f76dfa4e33b0871a9b3d9b246104c8e1c2c98e8e6803389faefd7cb4",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/contour.test.ts",
+      "destination": "packages/dataviz-core/src/contour.test.ts",
+      "gitBlob": "5819170fb924f2b0141eeba4e1cb29f96217c986",
+      "sha256": "5edaf89444c19f54ef48d3eeb9956b0e76687f8d95800a280ecb7cbc62ff673f",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/contour.ts",
+      "destination": "packages/dataviz-core/src/contour.ts",
+      "gitBlob": "5c651401137cd91aab48210344a158e635ac9d88",
+      "sha256": "eef998e81c36a1573bcea9aada67124ec65cb611be7877dd245d5a81879717d9",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/correlation.test.ts",
+      "destination": "packages/dataviz-core/src/correlation.test.ts",
+      "gitBlob": "51e2f2d85e9efb206bc9fee9f1065c43605b3dc9",
+      "sha256": "b28e27814717b8ac3869abb5db426cedf7afd21709390255163964a87f7c65d5",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/correlation.ts",
+      "destination": "packages/dataviz-core/src/correlation.ts",
+      "gitBlob": "fac9ae82503c7f8d73c55b9344ddf2e09f7cd0c4",
+      "sha256": "6416c8fb57db597a7075cadd1828f3e367c6f94e94c681e5ecc090b915358b4e",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/crossfilter.test.ts",
+      "destination": "packages/dataviz-core/src/crossfilter.test.ts",
+      "gitBlob": "dc40ac2120e0aae61d2848f423b7beafd0ec99bf",
+      "sha256": "034cf7c6503f8dacaefd87b848b8116813d2495a7b77993dab5111d76a3e81e9",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/crossfilter.ts",
+      "destination": "packages/dataviz-core/src/crossfilter.ts",
+      "gitBlob": "aa16d5d91ac57c34854253d092e485b64846b79b",
+      "sha256": "0a65ab8911365eb860534f744ff5c8dcb2d55af0be41079ce8403b244c69a574",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/dateHistogram.test.ts",
+      "destination": "packages/dataviz-core/src/dateHistogram.test.ts",
+      "gitBlob": "378ade7ac07b58b219a05b384161b08ff02ce0a9",
+      "sha256": "e30d2f7b2817a906f0d8b2ed2f14003b070ed0af1ad8d4d2e94c07b7fb640b11",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/dateHistogram.ts",
+      "destination": "packages/dataviz-core/src/dateHistogram.ts",
+      "gitBlob": "cc900c640963a02c6c897471cc78413338e18e80",
+      "sha256": "1837c11d6fb112d08aaff933218f9cb76761b4fd86e822352a44c3a2db1e061e",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/decompositionTree.test.ts",
+      "destination": "packages/dataviz-core/src/decompositionTree.test.ts",
+      "gitBlob": "9a926d0e077211e57c23f424baba7f5213b95c5d",
+      "sha256": "36ccb22de0e2bc5e4cd44c8928415366ffc2cd9690688305bf01bc8bea3e4a10",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/decompositionTree.ts",
+      "destination": "packages/dataviz-core/src/decompositionTree.ts",
+      "gitBlob": "e1a2933bcfdbb418d2e2b52f96a142191b37fde6",
+      "sha256": "a29c4c348b1c3a7366fa91acf925b9188ce6681a073562b8f20506c3470946bf",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/density2d.test.ts",
+      "destination": "packages/dataviz-core/src/density2d.test.ts",
+      "gitBlob": "43cbdae6b768787f18bb8a7e0b8715eff49c0c9d",
+      "sha256": "8894f12db313adbb8754f5c20b0cb70ab10f55218ed060d8f91e105a6d4f8140",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/density2d.ts",
+      "destination": "packages/dataviz-core/src/density2d.ts",
+      "gitBlob": "1b328e7b8510cb90837a836fe25d0d9b87f23001",
+      "sha256": "4420efd4e73d56c87cb2a27f03297506925bd175281ffd46227eb1334e2148d4",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/dependencyWheel.test.ts",
+      "destination": "packages/dataviz-core/src/dependencyWheel.test.ts",
+      "gitBlob": "ff94ff8e0c2b7aa6675fb2111bb7ca147ffffa26",
+      "sha256": "45ce2e1453f3d1fe84d4c24c0c000a57f98403fa44cb9fcd0fb09e1fe3503940",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/dependencyWheel.ts",
+      "destination": "packages/dataviz-core/src/dependencyWheel.ts",
+      "gitBlob": "53fd97ffb5f3aeff08af3bb105372811a4cac312",
+      "sha256": "0c5960b21e0aae8677d602bd1e3e06ffa8d2414af70e6fdb7c63089b3915de36",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/describe.test.ts",
+      "destination": "packages/dataviz-core/src/describe.test.ts",
+      "gitBlob": "6c9f0a378dc1e6879a12f7f1f28441d415d3f39f",
+      "sha256": "82cbe0029acc810d015f3b4c57db6a34461263d4077f67935500f3dd245a33f5",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/describe.ts",
+      "destination": "packages/dataviz-core/src/describe.ts",
+      "gitBlob": "ca28675151c1b9aa83db25da3fe9cc123bef362b",
+      "sha256": "2b84ab5b29fc2e613e310ac738ac3c8d3907bdb49f9fef1818a51e9ea384eefe",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/distribution.test.ts",
+      "destination": "packages/dataviz-core/src/distribution.test.ts",
+      "gitBlob": "8519a3042bf2355a6ce915a9de1da55c2cd86b6b",
+      "sha256": "6d7c1f0cd8d864657057aafa2cec25142980b0f5efb53902aac17b128ad4b55d",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/distribution.ts",
+      "destination": "packages/dataviz-core/src/distribution.ts",
+      "gitBlob": "eadce8c021481fa5d09f1d5a28aeaf704049be42",
+      "sha256": "ed3e1a1560c8015b5424c540a8beedd03427334c0ca9737a5709e35f2ee860cc",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/eventFeed.test.ts",
+      "destination": "packages/dataviz-core/src/eventFeed.test.ts",
+      "gitBlob": "ef3f157aa3bc8c50db88de425314069d46349749",
+      "sha256": "4578c4399401210afb973f113941be015df516737515e82a65ab439e8dbf15aa",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/eventFeed.ts",
+      "destination": "packages/dataviz-core/src/eventFeed.ts",
+      "gitBlob": "744c0f436f3a809c7dce959633bfde5f5dfe3340",
+      "sha256": "bed30816b349d1d0115c677bd0c5bccef6f45997da59ac5b3184b00591721420",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/fields.test.ts",
+      "destination": "packages/dataviz-core/src/fields.test.ts",
+      "gitBlob": "477082e6987bf448497b4bafe891003d13e9b27e",
+      "sha256": "62a0547b34183c84229c6e31c10c7a58369c4d9ff136ff2fa52739ce504d399e",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/fields.ts",
+      "destination": "packages/dataviz-core/src/fields.ts",
+      "gitBlob": "d226faecb45e93c03d63751e33c6581e2e9983c6",
+      "sha256": "73e752cb6090b398011bd0fd481d37c6ab7ff19f32d11413f86e608f7682acb6",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/flamegraph.test.ts",
+      "destination": "packages/dataviz-core/src/flamegraph.test.ts",
+      "gitBlob": "fccd308e59ce94468c4cda10bdffcd9a1fdfec0c",
+      "sha256": "9e33faec51aa1bca9d9f9b2b40ea71980094bcca193c02f50ccf72c2c927a5ac",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/flamegraph.ts",
+      "destination": "packages/dataviz-core/src/flamegraph.ts",
+      "gitBlob": "d49bcaab97228bc2ec993193cc25fb9febb846dd",
+      "sha256": "d6339fd45900027f0f90f6503dc1768a75d5ab79eb9038b9f990053f2e3b5a56",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/forceGraph.test.ts",
+      "destination": "packages/dataviz-core/src/forceGraph.test.ts",
+      "gitBlob": "c88a0c0dd0a4050fdd21a353ea6c4df109c836f7",
+      "sha256": "8b1e511bd4afb63e62c9af8b5058e0f4fa574d0b0d3a2cdd97696b4e9cca500d",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/forceGraph.ts",
+      "destination": "packages/dataviz-core/src/forceGraph.ts",
+      "gitBlob": "0a78af9ed35249310892abff68e6693d6cbc0b3b",
+      "sha256": "b1e89f4ca5d96c469df2ef9944fb3fc95af6dc8d563953368591961074032e51",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/format-value.test.ts",
+      "destination": "packages/dataviz-core/src/format-value.test.ts",
+      "gitBlob": "ffb9ff7187fa349ae26b04299f07882ba5c47fe4",
+      "sha256": "002fa4e7c94f77eb6d81ca59edad6d9474f18cf7e2d9dea745d4c64480db8421",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/format-value.ts",
+      "destination": "packages/dataviz-core/src/format-value.ts",
+      "gitBlob": "7931f95f39b88311da8038533dbc40d1fab8c4c0",
+      "sha256": "06d511d60bf25248d1129c67f99249a37fa2f89792e368620e2ef171a5edf91d",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/format.test.ts",
+      "destination": "packages/dataviz-core/src/format.test.ts",
+      "gitBlob": "64820ea032603452fcf9abf03a3a832e7b2257e2",
+      "sha256": "6cc8faf64ab8ef9f9eda2870866c04267446bbc23c00676b99f59d3bd73dbef5",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/format.ts",
+      "destination": "packages/dataviz-core/src/format.ts",
+      "gitBlob": "dc651c3022b31aad8da495b3ddebae189e0b1e7f",
+      "sha256": "0b674b4b733355685ae1236b92e00e2b4d3be871ee5f399c0fb3b18b3de7b665",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/gantt.test.ts",
+      "destination": "packages/dataviz-core/src/gantt.test.ts",
+      "gitBlob": "171e44ec6482c28d544e713946e5efb06c8aeb6e",
+      "sha256": "00e2212b56d991480aadd69e70dc827287d624b1cc8b20d9d022744a0cc1ccb5",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/gantt.ts",
+      "destination": "packages/dataviz-core/src/gantt.ts",
+      "gitBlob": "c03d58fb147f9752ca290935b2ee0c6dd5119add",
+      "sha256": "fee5c504a3c0eac62503800223c525fc1b323a3771d7d80f808ec669de88941c",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/geo.test.ts",
+      "destination": "packages/dataviz-core/src/geo.test.ts",
+      "gitBlob": "94bd3fadd5eb548d8ed63617a11a76e27787ad57",
+      "sha256": "05ce303b65abadf728b43bea2ff572440e628f362523a495235d53e19ca7f3e9",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/geo.ts",
+      "destination": "packages/dataviz-core/src/geo.ts",
+      "gitBlob": "8978de3342f797f34ea9db348cd72062fedfb49d",
+      "sha256": "b3d4e378a15882ebb3105e9bfc55c9776ff19f9e1e5a9d16aac143d3d076c80a",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/hierarchy.test.ts",
+      "destination": "packages/dataviz-core/src/hierarchy.test.ts",
+      "gitBlob": "5645fab87ae7724e7869f2d684a690cbbc1eda40",
+      "sha256": "24f9524320ed8134cd151f98906eaaae353a1f91b9c1fc6e061da23911571ccf",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/hierarchy.ts",
+      "destination": "packages/dataviz-core/src/hierarchy.ts",
+      "gitBlob": "bc0a3e1aaa77cfa6fc6e51609b304a51773fe3eb",
+      "sha256": "60ce5f2a7d56bd64f75dde517089d44304fb88ba80326dc1a31690db60786e6a",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/hlc.test.ts",
+      "destination": "packages/dataviz-core/src/hlc.test.ts",
+      "gitBlob": "efd3e16251fbdfe3a0867d6abd1338570ac0ad61",
+      "sha256": "e29998dd36db6fd31515efa34b591d259b0425ba2cf2fcfb071334eefbe53abb",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/hlc.ts",
+      "destination": "packages/dataviz-core/src/hlc.ts",
+      "gitBlob": "1a0f7835aceaaa4ba73803fd8fed9a66199d5f5e",
+      "sha256": "be6bc8c0a382f42918a2caec16d7405e8db01061a4edba0774f6e8f75f285bc8",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/hover.test.ts",
+      "destination": "packages/dataviz-core/src/hover.test.ts",
+      "gitBlob": "06f9351a067a3ef43c086f93a4c74b84e9bfe577",
+      "sha256": "8bbc1d33a8e903a31eefe4e2d1772330bea1f21cff3c6f98f7f543639e844a72",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/hover.ts",
+      "destination": "packages/dataviz-core/src/hover.ts",
+      "gitBlob": "e4e0ac3b3254bb064ef24845c6908ec9baa8d4f8",
+      "sha256": "e891ab1ce9ded9c1a9a9d447eb9ef319fcb6d3f6082f8cf1e076579388e71baa",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/index.ts",
+      "destination": "packages/dataviz-core/src/index.ts",
+      "gitBlob": "8b83d27e619c59aeeb930c0d2c6103a481b2c163",
+      "sha256": "79ebf67482becc2f3812a7e732c339fbf6c6150592c200647bd5f12a64cc6104",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/itemChart.test.ts",
+      "destination": "packages/dataviz-core/src/itemChart.test.ts",
+      "gitBlob": "217c1038ad0d438f7f8bc3d584d5c315cbcc30b1",
+      "sha256": "96342444266fd91e44133f0c352a97547ef318d0a2f68b40e88418d4257d0ccb",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/itemChart.ts",
+      "destination": "packages/dataviz-core/src/itemChart.ts",
+      "gitBlob": "8495d1dd880e7314dcf66c15f1968a69346b58d5",
+      "sha256": "32efaee33fbfe6c3ed46aea888d15f30348446ee1bfb2f5cebdafd2cd1472e35",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/kpi.test.ts",
+      "destination": "packages/dataviz-core/src/kpi.test.ts",
+      "gitBlob": "f248a97ad850cd168c1eb16d4987622e8815fa9b",
+      "sha256": "2c7b4e34361b8c469fe1e42ad440b468be17036785d4476a299f0990ace232b9",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/kpi.ts",
+      "destination": "packages/dataviz-core/src/kpi.ts",
+      "gitBlob": "0bc3ed1d7f49eee9219245da28eaad531dd42c3f",
+      "sha256": "a0424e147fb47b4a15667cf04ec88a3ce85590e5de795b009c7dd10f5d4125ca",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/layout.test.ts",
+      "destination": "packages/dataviz-core/src/layout.test.ts",
+      "gitBlob": "9a9a6ef60ccd346494ae393e65522e5a1caf5567",
+      "sha256": "257b0ac525caa0e938bd69992d24927a15af776761e5a0722261f6e09831301e",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/layout.ts",
+      "destination": "packages/dataviz-core/src/layout.ts",
+      "gitBlob": "7870e5c942997dc16bae3d1a144387b0637568a8",
+      "sha256": "b64f76dc8f71feb86a225561444298d39150996198983351735b5df96fd21293",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/model.test.ts",
+      "destination": "packages/dataviz-core/src/model.test.ts",
+      "gitBlob": "a9c43b6f276c1ff15d08153bd209feca51851072",
+      "sha256": "91072471f6754778f7f08614b9bab1057f631c2f4cc5805ae794d9808763fe42",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/model.ts",
+      "destination": "packages/dataviz-core/src/model.ts",
+      "gitBlob": "ec2d71bfd65bccf74e2383bc57fd485c059bf277",
+      "sha256": "483dba773d3de9f1cb4f964140465cb19431977d2dd17592cdb2ffb880eaa3fc",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/objects.test.ts",
+      "destination": "packages/dataviz-core/src/objects.test.ts",
+      "gitBlob": "a80899d443b408f40b9e04f8b38f636957b9ef51",
+      "sha256": "405626c7a9b46031bab8ce8a630e88971c8491540194fe48bbc3ab791b866680",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/objects.ts",
+      "destination": "packages/dataviz-core/src/objects.ts",
+      "gitBlob": "1ab112f251b8135e6439c20addb9c1e9a4528c51",
+      "sha256": "4e707eb217851bd30f7f46a5410fc0cb524ddb869df4337dab337996dee2fb08",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/ohlc.test.ts",
+      "destination": "packages/dataviz-core/src/ohlc.test.ts",
+      "gitBlob": "a2a59df1f8ce86cc04391f455dcf83996a49937f",
+      "sha256": "44128ef816b6e86ff577d7eee8f3287ffe49bf6881ec0c6fc760e0fa0c34fcbe",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/ohlc.ts",
+      "destination": "packages/dataviz-core/src/ohlc.ts",
+      "gitBlob": "a4bba2e9ad3fe8e7a9d59644b13ed42ae3b0713c",
+      "sha256": "92643e763e7fd3c867abf226b771bb12662c23b1603b73a9a7f4f39d1cf8185a",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/parallelCoordinates.test.ts",
+      "destination": "packages/dataviz-core/src/parallelCoordinates.test.ts",
+      "gitBlob": "a829612711a1332702e277131b10951cbdf71ad6",
+      "sha256": "d67e3f57ba9977fcc6a6c176d898d1e3231e3705d76bf50071c3efb9f082c1ba",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/parallelCoordinates.ts",
+      "destination": "packages/dataviz-core/src/parallelCoordinates.ts",
+      "gitBlob": "1205ac035346ec677ff70106ce53c2582cfbb928",
+      "sha256": "e0305a170f67d37e04fd3828cfe9bf4cc6bf84cb11ff05a976628d96629d9930",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/partOfWhole.test.ts",
+      "destination": "packages/dataviz-core/src/partOfWhole.test.ts",
+      "gitBlob": "1c10a4838c19924e6d271e687dac60784485b369",
+      "sha256": "99817236f731d09ace37b4d029fb28ad2c16bfdb72cc8eb3814e633a64778b76",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/partOfWhole.ts",
+      "destination": "packages/dataviz-core/src/partOfWhole.ts",
+      "gitBlob": "7603debba5e3b75dc5dabbc52a8765d6cf8811ba",
+      "sha256": "76f3b31ed123b8f6a18382a4fc56d5cce07fc7af884e68ce588e54fbeb993771",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/pivot.test.ts",
+      "destination": "packages/dataviz-core/src/pivot.test.ts",
+      "gitBlob": "d7fe48e12e63a31c5579976c5761ea01842417fb",
+      "sha256": "98258c790d04320b248295c240dfd1642609bda0b1228b97efc5ef3f19f40501",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/pivot.ts",
+      "destination": "packages/dataviz-core/src/pivot.ts",
+      "gitBlob": "b50e438a2951628dc736ba87120566669fe02b1d",
+      "sha256": "5b72cd971ff8d6cbe5753c796bc3c67955684ada46c5ad8a559fdd7a33ec0f70",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/pivotAdvanced.test.ts",
+      "destination": "packages/dataviz-core/src/pivotAdvanced.test.ts",
+      "gitBlob": "7415af238fee097c4823b41a61660a6bfe7f76d5",
+      "sha256": "7587844f9ce5dbe84a5cb31ca2276f8a6316ebdcc8057fdde4933e26c712f9c8",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/pivotAdvanced.ts",
+      "destination": "packages/dataviz-core/src/pivotAdvanced.ts",
+      "gitBlob": "9cc271586667f674768b39b65a04959a71e89ee2",
+      "sha256": "8bb7707695dce5d3a7f06c45adf2e258451078df79cfe534ecd7914a6e5176dc",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/pointAndFigure.test.ts",
+      "destination": "packages/dataviz-core/src/pointAndFigure.test.ts",
+      "gitBlob": "a7de5acc0d519a2fd2f7ae14fb36bb832f12130e",
+      "sha256": "eb6c4d8cc0820cb51a1608483378bbf793f1cfb337285a0f7f4ae20ee2ba1213",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/pointAndFigure.ts",
+      "destination": "packages/dataviz-core/src/pointAndFigure.ts",
+      "gitBlob": "aa2d2857f6444db82daf0b775c3ed6c3eeb3d0c8",
+      "sha256": "836d67ac58dd03b655bf4d47cb63b759737594e9d96153f68e62bcd21002694f",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/polygon.test.ts",
+      "destination": "packages/dataviz-core/src/polygon.test.ts",
+      "gitBlob": "7deb36e73a12da0f03fd3d9982197424a9248608",
+      "sha256": "c8beabc8ab0873f5e6d8c29bd92c30bc8221d7f74c4cf5b9d5cec5cec1c701b4",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/polygon.ts",
+      "destination": "packages/dataviz-core/src/polygon.ts",
+      "gitBlob": "43d5a9c1f1c94213fa649bc17c8f45cc6e0fc517",
+      "sha256": "bd1f83313f2ae36b637562954070c5cccc6ef724b7f57e9e6572d77643d07419",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/query.test.ts",
+      "destination": "packages/dataviz-core/src/query.test.ts",
+      "gitBlob": "6b69818b33059feb8c2265d30d739c0a6750b15b",
+      "sha256": "770229673c893c6df84fe03468a53b5721785436b980f35a7113dd572cc504b7",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/query.ts",
+      "destination": "packages/dataviz-core/src/query.ts",
+      "gitBlob": "57744ad57e7b476f2ca167f91201cef477ea6575",
+      "sha256": "20bada0cdbf3d989988db18cc00223b318970d8ffa71e99d827057593ab8ae13",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/range.test.ts",
+      "destination": "packages/dataviz-core/src/range.test.ts",
+      "gitBlob": "6ba771431475cf67610e08841700154a34bbc10a",
+      "sha256": "c279ef568b941fe6a5bfd52fc5c3e7dc22705a782debc610beb1f9c5ce5e53a5",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/range.ts",
+      "destination": "packages/dataviz-core/src/range.ts",
+      "gitBlob": "fd7d2cee9714415ee03e8f6004e561f285a589de",
+      "sha256": "118306569bd6228646454be04a3471366adf7252cafe03fc77ef26e3b5436c9d",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/renko.test.ts",
+      "destination": "packages/dataviz-core/src/renko.test.ts",
+      "gitBlob": "5e19c6da44d203ffbeaf31eb788e34dda45b6035",
+      "sha256": "0925a40a36aa52d3254b2cef64b62614cb8845bfa1e3b0de6639a7e1a78c478a",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/renko.ts",
+      "destination": "packages/dataviz-core/src/renko.ts",
+      "gitBlob": "3138b38701fda2b31fe051cdfa3fab08c969bcd9",
+      "sha256": "34010f534ab1744393d86f98d43be24ff46fcdcdc428e750506e700193aa287b",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/ribbon.test.ts",
+      "destination": "packages/dataviz-core/src/ribbon.test.ts",
+      "gitBlob": "efecdf775dade987ae4d0f650e3d7681a03a80a8",
+      "sha256": "c38ea04278d904159eef8230a0e27aeb0ae70996bb604ba02d7b2b816d52d202",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/ribbon.ts",
+      "destination": "packages/dataviz-core/src/ribbon.ts",
+      "gitBlob": "5bff11e1c1be1daed25303a67bd1ccce838ea53f",
+      "sha256": "26ca31100e57c12cb96c6187ec3b17072466c09f3928f4fff18c8d7301d06233",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/scatter.test.ts",
+      "destination": "packages/dataviz-core/src/scatter.test.ts",
+      "gitBlob": "c4ceb55acbb08d1e3b13a91ea261ca2f98d0d6df",
+      "sha256": "e506984168b6ead27a724a9a81c50cdb4e10765022838bf530870b13df0b9dc9",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/scatter.ts",
+      "destination": "packages/dataviz-core/src/scatter.ts",
+      "gitBlob": "6d81a5521331bc3e72fe418fa5f73525cda0a27e",
+      "sha256": "34703fee3c4cb6334c86eabde6ee157e2c2d195d5b119abcd2658aab0b408f49",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/scatterMatrix.test.ts",
+      "destination": "packages/dataviz-core/src/scatterMatrix.test.ts",
+      "gitBlob": "018d1be1b187fbc749dbc7aa4d44c9de864d0b40",
+      "sha256": "5d369c13118ab8eb5da1ad221c8950cbc9af28586781b0439f2fd436e3a62503",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/scatterMatrix.ts",
+      "destination": "packages/dataviz-core/src/scatterMatrix.ts",
+      "gitBlob": "9e25865a11d216ed929ff7457f39ff267d79328e",
+      "sha256": "525f9ab24c25eb50c075dfe0df47a6319603c07eaa7196be0d3244cad508563a",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/serialize.test.ts",
+      "destination": "packages/dataviz-core/src/serialize.test.ts",
+      "gitBlob": "f4fc7c18de18ea08b9bb978f80e6c444e7598408",
+      "sha256": "1a9e8b83052d241058bee57178538fb61386860c67fa923ba1e1dccdaf93f46d",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/serialize.ts",
+      "destination": "packages/dataviz-core/src/serialize.ts",
+      "gitBlob": "17d87a3287626b6245c9a014b914631b28c82e55",
+      "sha256": "652e9d9ad6c3ee071939b48ae7a0b41f7ed40205c898c7b7dcfa64a6d80b91dc",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/stateTimeline.test.ts",
+      "destination": "packages/dataviz-core/src/stateTimeline.test.ts",
+      "gitBlob": "4998da1921094f797a13a90af269f7e4615aa71f",
+      "sha256": "b5722052fb958d8e51c5a21e666e5dfd288c0ba3e0f3b5ab91adf4a142ad4db8",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/stateTimeline.ts",
+      "destination": "packages/dataviz-core/src/stateTimeline.ts",
+      "gitBlob": "801babbc6632f4befe35749d5a5177cbe1a8cec3",
+      "sha256": "ffd8bd3fe21d048d06e75e0174ceb4c52db5e004f410d3ba608268542317b726",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/statusHistory.test.ts",
+      "destination": "packages/dataviz-core/src/statusHistory.test.ts",
+      "gitBlob": "1897be47b3566818b8d54af4e50044839cb7aa6f",
+      "sha256": "20f121b6142750d0e57856af06c69dd6ecfd771d424a988e9ab733d7d12d6c9e",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/statusHistory.ts",
+      "destination": "packages/dataviz-core/src/statusHistory.ts",
+      "gitBlob": "36b9795bfda24502d7390480f2c11f41e2afb644",
+      "sha256": "0d30faf9e17d70081df8ca213a202d814af13b31be8f963a1d8cccfd3d7d4325",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/store.test.ts",
+      "destination": "packages/dataviz-core/src/store.test.ts",
+      "gitBlob": "ffbc62595393568385aca8a23ec0f41dbbbd6203",
+      "sha256": "5156855dd6ebdffc05ce4d84abba2313ccb8b1f61d89119a05607f81cd7b0e95",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/store.ts",
+      "destination": "packages/dataviz-core/src/store.ts",
+      "gitBlob": "9b53f9a0d837369b2f9d6f725547556df8399394",
+      "sha256": "74e16a65351a8af33061e5b424480ea3bd4146abf33bd45d33731d691a207f01",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/streamgraph.test.ts",
+      "destination": "packages/dataviz-core/src/streamgraph.test.ts",
+      "gitBlob": "1ecbb4b2b0f20eb5f85ceb0bef57b00b47b21acf",
+      "sha256": "0a85bd467aa2af9fe66df46d0a3ca671323ee380cc00a0d21ff9e05dbba2a9fb",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/streamgraph.ts",
+      "destination": "packages/dataviz-core/src/streamgraph.ts",
+      "gitBlob": "52b4b41faecb580a2e191d3315a8a59714cebb4c",
+      "sha256": "b8922b8a5f0cc79f6b0f798bceeaeee052f2a0cbdefa053e6a2e5bc9de950925",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/tilemap.test.ts",
+      "destination": "packages/dataviz-core/src/tilemap.test.ts",
+      "gitBlob": "096e3741f1dfd14b2bc18ee64f0e4d0f4d0c795f",
+      "sha256": "60c4dd4d070f5e4446055e3367c96c3925c1844a9eb4504963288c59c869daea",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/tilemap.ts",
+      "destination": "packages/dataviz-core/src/tilemap.ts",
+      "gitBlob": "7cdebb42f105387130a8ea22db2d13a2534b4f2c",
+      "sha256": "4b89b6a649551fb1dce0bd35672d13f4706d3b8537e3b2f6feb69036cea95839",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/timeline.test.ts",
+      "destination": "packages/dataviz-core/src/timeline.test.ts",
+      "gitBlob": "5900e4230aab1fe67e5ac0c6de380be06b97e2a1",
+      "sha256": "a50a52051be414c72467da666345283f408a7c553d94ffdd5c932ba892f41296",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/timeline.ts",
+      "destination": "packages/dataviz-core/src/timeline.ts",
+      "gitBlob": "09863eb4f2f1cf7322ead96259817ae35548da50",
+      "sha256": "e4ea876bed96395970f237c40b27368c0f25916ba330f3a119d7eb745d94fee3",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/timeseries.test.ts",
+      "destination": "packages/dataviz-core/src/timeseries.test.ts",
+      "gitBlob": "be276c6b63f4170514d7b836887dbae5dfda6b91",
+      "sha256": "676f127230d5c6ccce5c99f04d44c4f69b55317c611bd089ab82d6a4dc4c49f3",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/timeseries.ts",
+      "destination": "packages/dataviz-core/src/timeseries.ts",
+      "gitBlob": "9c090ba98abd20ebfc4534d64451a13ea13a9e6a",
+      "sha256": "d3d9ea8bc6ade47ab2898c54c1b8624339a57178090cb586b74ee3e597e4860a",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/traceWaterfall.test.ts",
+      "destination": "packages/dataviz-core/src/traceWaterfall.test.ts",
+      "gitBlob": "55069666744f787f55f7de162bb789e8ea9e0cbc",
+      "sha256": "34e6f216de6342e895309bc5bbcd17c4ce6da4f990621324f8cfe41703ffe9e6",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/traceWaterfall.ts",
+      "destination": "packages/dataviz-core/src/traceWaterfall.ts",
+      "gitBlob": "23fb0ff1c60ce7f45fe02af98d911d5859dadbe0",
+      "sha256": "f8811a00186391fdfd67f0787a73bdc625f5df5f7518750e455f1def5ed8388b",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/variablePie.test.ts",
+      "destination": "packages/dataviz-core/src/variablePie.test.ts",
+      "gitBlob": "d86b068dd857eb2edc51a5e3e0ad7872c58a1392",
+      "sha256": "75d69be5734efd96cb0f3f0a8209763ddb05a9c53e4abe6b036a97bbcdb6c83a",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/variablePie.ts",
+      "destination": "packages/dataviz-core/src/variablePie.ts",
+      "gitBlob": "17f7ba29e3abe10a746ca02ae4282ed73cfae360",
+      "sha256": "e1bd5d3a5634abd78fdc45d6fa92ed40c0c37f952a44eca3f4390d04d9581172",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/vectorField.test.ts",
+      "destination": "packages/dataviz-core/src/vectorField.test.ts",
+      "gitBlob": "3ab996e2ad0f78ffeab3030c77c10cfdd00bb017",
+      "sha256": "f03e35c36c45432adc441a8cf8eac0272fc92b995e016ddfed6ede16bb8e7571",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/vectorField.ts",
+      "destination": "packages/dataviz-core/src/vectorField.ts",
+      "gitBlob": "b93011424f992de9a26c8e176a1b93d864e1a289",
+      "sha256": "08b47b779809c0b9f77bf9b25e54e9d545eb27b017edb70ac117e78a561d4dba",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/venn.test.ts",
+      "destination": "packages/dataviz-core/src/venn.test.ts",
+      "gitBlob": "b241a1835b510062a347fdb86031a1450f1487c9",
+      "sha256": "3f757562e2fcd3c52eb725061081fe147f6cb0dd14b8d6cfea1ec556589653e0",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/venn.ts",
+      "destination": "packages/dataviz-core/src/venn.ts",
+      "gitBlob": "8bd96b007515448538cf7269125c9d201d2eea68",
+      "sha256": "efc7388eea1df5974d9e8422b2838276effb27282981de0581dfc59f4fea91db",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/violin.test.ts",
+      "destination": "packages/dataviz-core/src/violin.test.ts",
+      "gitBlob": "340942153668077a22f338217663443e2c65c602",
+      "sha256": "833a32aa04f672a1a44d790f3f75a1df752a22cbc3cee7ac282a0e1b8daea1c6",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/violin.ts",
+      "destination": "packages/dataviz-core/src/violin.ts",
+      "gitBlob": "e7b616a393ddbd6459d271d73378483e33532926",
+      "sha256": "bc0dbd8feda5c843972ce133d8e8443201692b7733ee717b9202a3aa2c9ab520",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/windBarb.test.ts",
+      "destination": "packages/dataviz-core/src/windBarb.test.ts",
+      "gitBlob": "793febb20a33e91a202acd980294a7ebbbf9b202",
+      "sha256": "af477610c1c9547444669fcce2030457b8ccd35306ec54473c5960eab211c853",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/windBarb.ts",
+      "destination": "packages/dataviz-core/src/windBarb.ts",
+      "gitBlob": "b11255f1a239b29c4fa7043607542290d1261541",
+      "sha256": "ef26432b45835fff0bab18e9bafc0a7e2bbabf8414250c0d0cdb16bcf2437f45",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/wordCloud.test.ts",
+      "destination": "packages/dataviz-core/src/wordCloud.test.ts",
+      "gitBlob": "5c22ffcf33c7822bbc659bd5e9fab7dc762c3fa1",
+      "sha256": "986b89b6f0742bacca235fa46f87a8d43f805a243e0fc3106ff08a577079b111",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/src/wordCloud.ts",
+      "destination": "packages/dataviz-core/src/wordCloud.ts",
+      "gitBlob": "26114561a51f45c8ad86ff3419cfe2e70f848dbf",
+      "sha256": "414e66714a23a41360dd76c32ea9c3862ebdc5a7acb3fc5be9a73e7dbc83abde",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-core/tsconfig.json",
+      "destination": "packages/dataviz-core/tsconfig.json",
+      "gitBlob": "785874894e0f971e272cad24c368bd12e5b09dd4",
+      "sha256": "a3a706209734e40b2485117703772301adbc860661c4724c88d003c6e7b57a91",
+      "status": "copied-byte-identical"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "nodeCount": 100000,
+  "edgeCount": 200000,
+  "droppedEdges": 0,
+  "buildMs": 50.74,
+  "styleMs": 36.88,
+  "straightGeometryMs": 5.22,
+  "arcGeometryMs": 12.92,
+  "positionBytes": 800000,
+  "edgeIndexBytes": 1600000,
+  "styleBytes": 3400000,
+  "lineVertexBytes": 3200000,
+  "arcVertexBytes": 12800000
+}
