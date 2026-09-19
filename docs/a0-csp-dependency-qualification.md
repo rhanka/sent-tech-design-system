@@ -204,6 +204,71 @@ vérifiable. Aucune matrice de capacités à trois colonnes ne sera signée tant
 qu'une de ses colonnes reposerait sur de la documentation plutôt que sur un
 rendu observé.
 
+### 5.3 État réel du design system, colonne par colonne
+
+Inventaire du dépôt, pour situer le DS face aux cibles d'export. Il contredit le
+cadrage spontané du problème : sur plusieurs axes, **la cible la plus pauvre est
+le design system**, pas mermaid.
+
+**Export : aucune capacité implémentée.** Les occurrences de mermaid et draw.io
+sont des cibles de spec ou des diagrammes de documentation. `@sentropic/graph-codecs`,
+qui porterait `mermaid` et `drawio`, est à créer ; le lot `GD-M4-CODECS` du plan
+de rapatriement est non coché. Les capacités marquées « source-present » dans
+l'étude de couverture vivent dans les dépôts d'origine et ne sont pas encore
+rapatriées : dans ce monorepo, la surface d'export est vide.
+
+Conséquence de planification : les deux exportateurs sont à écrire. La contrainte
+de forme des tokens peut donc être posée **avant** qu'aucun exportateur existe,
+ce qui est le moment le moins coûteux. Imposée après coup, elle obligerait à
+réécrire deux exportateurs et le moteur.
+
+**Icônes : huit.** Le DS prescrit 8 icônes sous noms DS gelés — `settings`,
+`eye`, `eye-off`, `layers`, `target`, `close`, `chevron-down`, `chevron-right`.
+lucide est une dépendance d'usage interne, explicitement pas un ré-export : le
+consommateur adresse les icônes par les noms DS, jamais par les noms lucide.
+Angular n'a aucune dépendance lucide, ses tracés sont inlinés.
+
+Icônes de fournisseurs — AWS, GCP, Azure, kubernetes, base de données, bucket :
+**aucune**. Ni sprite, ni mapping, ni fichier. Une attente exprimée comme
+« compléter le jeu d'icônes à la manière de draw.io » porte en réalité sur
+plusieurs milliers de formes de fournisseurs, avec leur gouvernance de noms,
+leur provenance et leurs conditions d'usage — ce qui retombe sur D7.
+
+Tokens d'icône : la taille est tokenisée (`iconSize` sm/md/lg). **L'épaisseur de
+trait ne l'est pas** (`2.25` codé en dur dans les quatre composants) et **la
+couleur non plus** (héritée par `currentColor`). Ces deux axes bloquent toute
+promesse de rendu identique entre cibles tant qu'ils ne sont pas tokenisés.
+
+**Formes : sept, et pas les bonnes.** Le DS rend aujourd'hui `ForceGraph` en SVG
+sur les quatre frameworks, avec 7 géométries normalisées en aire — cercle,
+losange, étoile, hexagone, carré, rectangle arrondi, triangle. Pas de cylindre,
+pas de bucket, pas de stadium : précisément les formes que C4 réclame pour ses
+bases de données et ses buckets, et précisément celles que mermaid possède
+nativement.
+
+**Style par nœud.** Paramétrable : tonalité parmi 8 catégories sémantiques,
+groupe, poids, forme, étiquette. Non paramétrable : remplissage arbitraire,
+couleur de trait, épaisseur de trait, rayon d'arrondi, alignement du texte. Le
+moteur `@sentropic/graph` rapatrié ajoute `fill: solid|hollow` et
+`border: normal|bold`, avec une limite inscrite dans son propre type — le
+backend WebGL les ignore.
+
+**Gabarits et skins : inexistants.** Le mot « gabarit » désigne dans le DS les
+gabarits de page. L'équivalent fonctionnel actuel est le système de thèmes, qui
+pilote les nœuds par variables CSS de catégorie, pas un gabarit de nœud.
+
+Récapitulatif de l'écart à combler avant toute promesse de parité :
+
+| Axe | DS aujourd'hui | mermaid 12 |
+|---|---|---|
+| Formes | 7, sans cylindre ni bucket | 53, cylindres et bucket inclus |
+| Remplissage arbitraire | non | oui |
+| Couleur et épaisseur de trait | non | oui |
+| Rayon d'angle | non paramétrable | choix de forme, pas de valeur |
+| Alignement du texte | non | oui |
+| Icônes de fournisseurs | aucune | paquets enregistrables |
+| Export | aucun | n/a (c'est la cible) |
+
 ## 6. Dettes DS bloquantes pour l'embarquement
 
 Ces deux dettes conditionnent l'adoption, parce qu'EPL-2.0 comme la clause
