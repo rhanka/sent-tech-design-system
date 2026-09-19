@@ -118,13 +118,91 @@ amont à l'émetteur des propositions.
 | Seuil écran | 11 px | **12 px** | `FONT_SIZE_SCALE` (`packages/skills/src/rules/typographyScaleTokenRule.ts`) a 12 pour plus petite valeur ; ratifier 11 contredirait le linter du DS |
 | Zone de référence | 1 440 × 900 (r4) contre 1 440 × 1 000 (r3) | **1 440 × 900** | aucune autorité DS ne soutient 1 000 ; les scripts d'audit DS utilisent 1 440 × 1 100 pour un autre usage |
 | Impression | 7 pt A4 | **non ratifiable en l'état** | le DS n'a aucune unité `pt`, aucun `@media print`, aucune feuille d'impression : le seuil serait invérifiable. Intérimaire : 8 pt pour le texte de lecture, 7 pt réservé à l'annotation secondaire, à confirmer sur un rendu A4 réel |
-| Taux de remplissage | ratio à définir | **règle opérante** : un libellé ne s'affiche que s'il tient sans troncature à la taille minimale ratifiée, sinon infobulle ou légende | ancrée sur les garde-fous DS réels (`w > 28 && h > 14`, `LABEL_MIN_W = 44`) et vérifiable automatiquement, ce qu'un ratio n'est pas |
+| Taux de remplissage | ratio à définir | **règle opérante** : un libellé ne s'affiche que s'il tient sans troncature à la taille minimale ratifiée ; sinon la vue ne passe pas la porte | ancrée sur les garde-fous DS réels (`w > 28 && h > 14`, `LABEL_MIN_W = 44`) et vérifiable automatiquement, ce qu'un ratio n'est pas |
+
+La règle ci-dessus **détecte**, elle ne remédie pas. Le repli en infobulle ou en
+légende n'est pas ratifié comme chemin par défaut : l'owner a posé la contrainte
+« ne jamais retirer d'information pour passer la porte », et le choix entre
+scission par domaine, ouverture à taille lisible avec défilement, ou vue
+compacte assumée lui revient. Une vue qui échoue à la porte remonte comme
+arbitrage de découpage, pas comme dégradation automatique.
 | Rôles de texte | `label/caption/title/annotation` | **quatre rôles de diagramme à tokeniser** : titre de vue, libellé de nœud, annotation, légende/axe | les quatre rôles tokenisés du DS sont `control/field/label/link`, des rôles de formulaire ; le DS a déjà trois systèmes typographiques non réconciliés, il n'en recevra pas un quatrième |
 
 Le balayage ELK — grille bornée, nombre de candidats, budget de temps — n'est pas
 ratifié : les seuls chiffres disponibles proviennent d'un graphe jouet à
 2 groupes et 4 nœuds (86 ms navigateur, 80 ms Node). Ratification après mesure
 sur corpus réel.
+
+### 5.1 Ce que le corpus réel révèle sur le plancher
+
+Corpus de scènes réelles fourni en entrée ELK sérialisée, rejoué avec le pin
+0.12.0. Harnais : [`tools/elk-corpus-measure/`](../tools/elk-corpus-measure/),
+preuve : `evidence/2026-09-19-corpus-icond.json`.
+
+| Vue | Cartes | Boîte ELK | Occupation | Échelle ajustée | Plafond si empaqueté |
+|---|---:|---|---:|---:|---:|
+| architecture | 28 | 4347 × 2456 | 24,1 % | 0,331 | **0,709** |
+| séquence | 14 | 3562 × 2038 | 17,7 % | 0,404 | **1,003** |
+| mise en service | 12 | 3072 × 1942 | 18,5 % | 0,463 | **1,084** |
+
+Taille de police source qu'il faudrait pour rendre 12 px — formulation
+indépendante de la typographie réelle des cartes, donc vérifiable :
+
+| Vue | À l'échelle ajustée | Au plafond empaqueté |
+|---|---:|---:|
+| architecture | 36,2 px | **16,9 px** |
+| séquence | 29,7 px | **12,0 px** |
+| mise en service | 25,9 px | **11,1 px** |
+
+Deux conclusions distinctes, à ne pas confondre :
+
+- **L'architecture est hors d'atteinte par le placement.** L'aire cumulée de ses
+  28 cartes vaut 2 576 000 px² contre 1 296 000 px² pour le cadre : les cartes
+  font deux fois le cadre. Aucun réglage ELK ne rattrape un facteur deux ; seule
+  une décision de découpage le peut.
+- **La séquence et la mise en service ne sont pas contraintes par la densité.**
+  Leur plafond d'empaquetage dépasse 1 : les cartes tiennent dans le cadre. Ce
+  qui les bloque est le gaspillage d'espace du placement, qui laisse plus de
+  80 % du cadre vide. Pour ces deux vues, le plancher reste atteignable par le
+  placement.
+
+Réserve : le plafond d'empaquetage ignore les couloirs de routage orthogonal et
+l'écart de rapport d'aspect. C'est une borne inatteignable, à lire comme telle.
+L'écart entre 0,40 et 1,00 reste toutefois trop large pour que cette réserve
+renverse la conclusion.
+
+## 5.2 Parité de style entre cibles d'export
+
+Mesure de ce qu'une cible conserve réellement au rendu, plutôt que de ce que sa
+documentation annonce. Harnais : [`tools/style-parity-probe/`](../tools/style-parity-probe/),
+preuve : `evidence/2026-09-19-mermaid-12.json`.
+
+mermaid 12.0.0, `classDef` appliqué à cinq formes, propriétés relevées sur le
+SVG produit : `fill`, `stroke`, `stroke-width`, `stroke-dasharray`, `color`,
+`font-size`, `font-weight`, `font-family` et `text-align` **survivent tous**.
+
+Deux faits qui élargissent ce que mermaid peut porter :
+
+- **53 formes nommées**, dont `cyl`, `h-cyl`, `lin-cyl`, `datastore` et
+  `bucket` : les formes spéciales C4 pour bases de données et buckets existent
+  nativement.
+- `registerIconPacks` existe : un jeu d'icônes peut être enregistré. La question
+  devient l'origine et la licence du paquet d'icônes — donc D7 — et non une
+  limite du format.
+
+**Le point dur est géométrique, pas typographique.** Le rayon d'angle n'est pas
+une propriété de style en mermaid : `rx` est absent du SVG produit, et l'arrondi
+est cuit dans le tracé de la forme choisie (`rounded` contre `rect`). Or
+« carré ou arrondi » est le premier axe de skin demandé. Conséquence pour un
+éventuel modèle de style unifié : le rayon doit être une **énumération** à
+quelques crans, projetable sur un choix de forme mermaid et sur `rounded=1;arcSize=…`
+en mxGraph, et non un token numérique continu. La forme des tokens est
+contrainte par la cible la plus pauvre, pas seulement leurs valeurs.
+
+Limite assumée : le versant mxGraph n'est pas mesuré faute de rendu draw.io
+vérifiable. Aucune matrice de capacités à trois colonnes ne sera signée tant
+qu'une de ses colonnes reposerait sur de la documentation plutôt que sur un
+rendu observé.
 
 ## 6. Dettes DS bloquantes pour l'embarquement
 

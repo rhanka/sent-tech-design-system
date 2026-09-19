@@ -1,0 +1,83 @@
+{
+  "versionMermaid": "inconnue",
+  "nodes": {
+    "A": {
+      "trouve": true,
+      "formeTag": "rect",
+      "fill": "rgb(238, 242, 255)",
+      "stroke": "rgb(79, 70, 229)",
+      "strokeWidth": "2px",
+      "strokeDasharray": "4px, 2px",
+      "rxAttr": "12",
+      "couleurTexte": "rgb(30, 27, 75)",
+      "tailleTexte": "12px",
+      "graisseTexte": "600",
+      "familleTexte": "Inter",
+      "alignementTexte": "center"
+    },
+    "B": {
+      "trouve": true,
+      "formeTag": "path",
+      "fill": "rgb(238, 242, 255)",
+      "stroke": "rgb(79, 70, 229)",
+      "strokeWidth": "2px",
+      "strokeDasharray": "4px, 2px",
+      "rxAttr": null,
+      "couleurTexte": "rgb(30, 27, 75)",
+      "tailleTexte": "12px",
+      "graisseTexte": "600",
+      "familleTexte": "Inter",
+      "alignementTexte": "center"
+    },
+    "C": {
+      "trouve": true,
+      "formeTag": "path",
+      "fill": "rgb(238, 242, 255)",
+      "stroke": "rgb(79, 70, 229)",
+      "strokeWidth": "2px",
+      "strokeDasharray": "4px, 2px",
+      "rxAttr": null,
+      "couleurTexte": "rgb(30, 27, 75)",
+      "tailleTexte": "12px",
+      "graisseTexte": "600",
+      "familleTexte": "Inter",
+      "alignementTexte": "center"
+    },
+    "D": {
+      "trouve": true,
+      "formeTag": "polygon",
+      "fill": "rgb(238, 242, 255)",
+      "stroke": "rgb(79, 70, 229)",
+      "strokeWidth": "2px",
+      "strokeDasharray": "4px, 2px",
+      "rxAttr": null,
+      "couleurTexte": "rgb(30, 27, 75)",
+      "tailleTexte": "12px",
+      "graisseTexte": "600",
+      "familleTexte": "Inter",
+      "alignementTexte": "center"
+    },
+    "E": {
+      "trouve": true,
+      "formeTag": "rect",
+      "fill": "rgb(238, 242, 255)",
+      "stroke": "rgb(79, 70, 229)",
+      "strokeWidth": "2px",
+      "strokeDasharray": "4px, 2px",
+      "rxAttr": null,
+      "couleurTexte": "rgb(30, 27, 75)",
+      "tailleTexte": "12px",
+      "graisseTexte": "600",
+      "familleTexte": "Inter",
+      "alignementTexte": "center"
+    }
+  },
+  "idsPresents": [
+    "g1-flowchart-A-0",
+    "g1-flowchart-B-2",
+    "g1-flowchart-C-4",
+    "g1-flowchart-D-6",
+    "g1-flowchart-E-8"
+  ],
+  "svgTaille": 37299
+}
