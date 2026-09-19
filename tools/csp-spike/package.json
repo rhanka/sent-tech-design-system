@@ -1,0 +1,18 @@
+{
+  "name": "@sentropic/csp-spike-a0",
+  "private": true,
+  "type": "module",
+  "version": "0.0.0",
+  "description": "Lot A0 — harnais de mesure CSP pour elkjs et bpmn-js. Rejouable, avec témoin positif.",
+  "scripts": {
+    "build": "vite build",
+    "measure": "node serve-and-measure.mjs",
+    "layout:server": "node server-layout.mjs",
+    "spike": "npm run layout:server && cp placed-view.json public/ && npm run build && npm run measure"
+  },
+  "devDependencies": {
+    "bpmn-js": "18.28.0",
+    "elkjs": "0.12.0",
+    "vite": "^8.3.0"
+  }
+}
