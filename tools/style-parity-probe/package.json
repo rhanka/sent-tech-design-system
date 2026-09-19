@@ -1,0 +1,9 @@
+{
+  "name": "@sentropic/style-parity-probe",
+  "private": true,
+  "type": "module",
+  "version": "0.0.0",
+  "description": "Mesure des propriétés de style qu'une cible d'export conserve réellement au rendu.",
+  "scripts": { "measure:mermaid": "node probe/mermaid-probe.mjs" },
+  "devDependencies": { "mermaid": "^12.0.0" }
+}
