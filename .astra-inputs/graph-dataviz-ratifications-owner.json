@@ -1,0 +1,20 @@
+{
+  "dossier": "graph-dataviz-repatriation",
+  "revision": "2026-09-15-r1",
+  "capturedAt": "2026-09-16T02:03:43.954Z",
+  "source": "owner ratification via focus kit (:5610)",
+  "ratifications": {
+    "D1": "A",
+    "D2": "C",
+    "D3": "A",
+    "D4": "C",
+    "D5": "B",
+    "D6": "C",
+    "D7": "A"
+  },
+  "owner_notes": {
+    "D5": "propal pas claire : donner le DÉTAIL des propositions de package à partir d'une étude fonctionnelle exhaustive — librairies d'algo/layout (tous ELK, Graphviz, etc.), moteurs SVG/HTML/WebGL, exports aux formats, et TOUTES les vues (JointJS fourni comme exemple de vues → les veut TOUTES).",
+    "global": "Dossier déceptif : pas convaincu que TOUTES les libs d'algo (ELK/Graphviz…) et TOUTES les vues JointJS soient reprises ; travail de nommage des libs pas sérieux / pas fondé sur une étude fonctionnelle exhaustive. 'prend déjà mes validations et poursuis le travail'."
+  },
+  "next": "Étude fonctionnelle EXHAUSTIVE (énumérée, pas des comptes) → architecture de packages + nommage sérieux (D5=B). Décisions D1-D4/D6/D7 ratifiées appliquées."
+}
