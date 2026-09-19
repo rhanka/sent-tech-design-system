@@ -269,6 +269,102 @@ Récapitulatif de l'écart à combler avant toute promesse de parité :
 | Icônes de fournisseurs | aucune | paquets enregistrables |
 | Export | aucun | n/a (c'est la cible) |
 
+## 6. Icônes de fournisseurs — qualification du pack
+
+Harnais : [`tools/icon-provider-audit/`](../tools/icon-provider-audit/README.md),
+preuve : `evidence/2026-09-19-iconify.json`.
+
+Ce qui existe réellement, par collection iconify candidate :
+
+| Collection | AWS | GCP | Azure | OVHcloud | Scaleway | Kubernetes |
+|---|---:|---:|---:|---:|---:|---:|
+| `logos` | **65** | 4 | 2 | **0** | **0** | 1 |
+| `devicon` | 0 | 0 | 5 | **0** | 2 | 2 |
+| `simple-icons` | 6 | 0 | 5 | **1** | **1** | 1 |
+| `skill-icons` | 2 | 2 | 2 | **0** | **0** | 1 |
+
+Point de comparaison mesuré dans le dépôt draw.io : le stencil `mxgraph.aws4`
+compte **1 050 formes**.
+
+**OVHcloud et Scaleway n'existent qu'en marque.** `simple-icons:ovh`,
+`devicon:scaleway` et son wordmark sont des logos, pas des jeux de services.
+Kubernetes n'a pas davantage d'icônes de ressources : `deployment`, `ingress` et
+`statefulset` ne donnent rien. Une attente formulée comme « à la manière de
+draw.io » n'est donc pas satisfaite par un pack iconify : l'écart est d'un
+facteur 16 sur AWS, et total sur les deux fournisseurs ajoutés en dernier.
+
+**La licence du pack ne transmet aucun droit de marque.** Les collections sont en
+CC0 ou MIT, et le texte CC0 est explicite : « No trademark or patent rights held
+by Affirmer are waived, abandoned, surrendered, licensed or otherwise affected by
+this document. » Les logos restent soumis aux conditions de leur propriétaire.
+C'est la structure de la clause bpmn.io : libre de copier, pas libre d'employer
+comme on veut.
+
+### 6.1 Sortie proposée : résoudre l'icône par cible
+
+Plutôt qu'un jeu unique poussé vers les trois cibles, appliquer à l'icône le
+mécanisme déjà retenu pour le style — le métamodèle porte un **identifiant
+d'icône abstrait**, et l'adaptateur le résout :
+
+| Cible | Source des tracés |
+|---|---|
+| xyflow | pack iconify enregistré par nous |
+| draw.io | **stencils natifs** `mxgraph.aws4.*`, `mxgraph.gcp*`, `mxgraph.azure*`, kubernetes |
+| mermaid | pack enregistré, lorsque le visualiseur l'autorise |
+
+Ce découpage limite l'exposition aux marques à la seule cible xyflow, et donne en
+draw.io des icônes d'un ordre de grandeur plus riches que tout ce que nous
+pourrions embarquer. La gouvernance de noms reste au DS ; seule la source des
+tracés change.
+
+## 7. Adaptateur mxGraph — faits établis sur source
+
+Lecture du source mxGraph 4.2.2 (Apache-2.0) et du dépôt draw.io. Établi plus
+solidement que de la documentation, mais **pas encore par un rendu draw.io
+observé** : la colonne draw.io d'une matrice de capacités reste non signée tant
+qu'un rendu vérifiable manque.
+
+**La chaîne de style n'échappe pas le point-virgule.** `mxStylesheet.prototype.getCellStyle`
+fait `name.split(';')` puis cherche un `=` dans chaque fragment. Une valeur
+contenant `;` est coupée, et `data:image/svg+xml;base64,…` perd son contenu. La
+forme utilisable est `image=data:image/svg+xml,<base64>`.
+
+**Le rayon d'angle est un pourcentage par défaut, et l'absolu vaut la moitié.**
+`mxShape.prototype.getArcSize` :
+
+- sans `absoluteArcSize` : `f = arcSize / 100`, `r = min(w·f, h·f)` — pourcentage
+  du plus petit côté, défaut `RECTANGLE_ROUNDING_FACTOR = 0.15`, soit 15 % ;
+- avec `absoluteArcSize=1` : `r = min(w/2, min(h/2, arcSize/2))`.
+
+Le rayon rendu vaut donc **`arcSize/2`**. Pour 8 px de rayon il faut écrire
+`arcSize=16;absoluteArcSize=1`. À inscrire au contrat d'adaptateur : quiconque
+écrit `arcSize=8` obtient 4 px et conclura à un défaut de son propre code.
+
+**draw.io couvre déjà ArchiMate et C4 nativement.** Le dépôt contient
+`Sidebar-ArchiMate.js`, `Sidebar-ArchiMate3.js` et `Sidebar-ArchiMate4.js`, plus
+`Sidebar-C4.js` et `shapes/mxC4.js`, ainsi que BPMN, SysML, UML 2.5 et Kubernetes,
+sur 52 jeux de stencils. Reconstruire ces gabarits à la main pour la cible
+draw.io serait du travail perdu.
+
+## 8. Porte de lisibilité et exports
+
+Le plancher de 12 px est une porte **d'écran**, ratifiée à 1 440 × 900. Il n'est
+pas transportable en l'état : ce qui est invariant à l'échelle n'est pas une
+taille en pixels mais le rapport entre la taille du texte et la géométrie de la
+scène. Chaque cible porte donc son niveau à sa définition :
+
+| Cible | Porte de lisibilité |
+|---|---|
+| xyflow | plancher applicable tel quel, 12 px à 1 440 × 900 |
+| draw.io | **non applicable en pixels** — le lecteur choisit son zoom. Garantie substituée : la fidélité géométrique préserve le rapport texte/carte, et l'export **déclare le facteur de zoom** auquel la scène satisfait le plancher. Un export incapable de le déclarer échoue la porte |
+| mermaid | **non applicable et non approximable** — mermaid calcule sa propre géométrie. Seule l'identité des jetons et de la famille de forme est garantie |
+| SVG figé | plancher exprimable en unités document : l'export **déclare sa taille de rendu nominale** et le plancher s'applique à cette taille. Une mise à l'échelle par le visualiseur sort de notre contrôle et n'est pas garantie |
+
+Règle générale : le plancher est une propriété de la **scène rendue**, pas du
+document. Hors xyflow, ce qui est ratifié est le rapport préservé et la taille
+nominale déclarée — jamais une promesse de pixels. Écrire que mermaid respecte le
+plancher serait invérifiable.
+
 ## 6. Dettes DS bloquantes pour l'embarquement
 
 Ces deux dettes conditionnent l'adoption, parce qu'EPL-2.0 comme la clause
