@@ -1,0 +1,13 @@
+{
+  "status": "pass",
+  "checks_passed": 1887,
+  "failures": [],
+  "capabilities": 1820,
+  "packages": 30,
+  "new_packages": 18,
+  "source_export_pairs": 3547,
+  "jointjs_demos": 186,
+  "graphviz_output_parameters": 65,
+  "source_files_rechecked": 835,
+  "runtime_tests_executed": false
+}

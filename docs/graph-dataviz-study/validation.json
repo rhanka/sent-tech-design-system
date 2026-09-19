@@ -1,0 +1,121 @@
+{
+  "build_input_sha256": {
+    "docs/graph-dataviz-study/build.py": "f97771c738bb9d7a26c6d6c24a050e93d15899d35edcea2e8b745029c4763a3d",
+    "docs/graph-dataviz-study/model.py": "6b1ffdc9d3a97aa32e46543e6cb16dadaddee4c13a341ad2e20682aca1ae4434",
+    "docs/graph-dataviz-study/live-evidence.json": "44505c8ac5872514b586c7f8dfc8fda792870aa6be5591e4e0558908aa768b00",
+    "docs/graph-dataviz-study/local-evidence.json": "35e2c224db100d954887d894164627c47df5a4a80d0900664219b7fb5199e696",
+    "docs/graph-dataviz-study/source-exports.json": "837360c9f8aac16ef754fcd2698f742fb2b12ea2773c50a6dcd6bb70afb74916",
+    ".astra-inputs/graph-dataviz-reference-catalog.json": "8e4d06a2f7a8accc21b7325234f8f7ef6b925cc11d753fb571bc09ac0a306efa"
+  },
+  "capability_rows": 1820,
+  "counts_by_area": {
+    "ELK algorithmes": 21,
+    "ELK groupes options": 60,
+    "ELK options": 286,
+    "Graphviz moteurs": 10,
+    "Graphviz attributs": 177,
+    "Graphviz sorties": 65,
+    "Sentropic moteurs": 34,
+    "Sentropic ponts et producteurs": 9,
+    "Sentropic modules": 455,
+    "DS rendu/dataviz": 371,
+    "Contrats et canvas": 16,
+    "Rendu capacités": 17,
+    "Domaines et codecs": 17,
+    "Exports Sentropic / mandat": 18,
+    "JointJS features": 61,
+    "JointJS vues et applications": 186,
+    "Processing complémentaire": 9,
+    "Adaptateurs 4-fw": 8
+  },
+  "original_catalogue_rows": 578,
+  "original_entry_keys_preserved": true,
+  "elk_distinct_option_ids": 279,
+  "packages": 30,
+  "new_packages": 18,
+  "unassigned_capabilities": 0,
+  "duplicate_capabilities": 0,
+  "dependency_cycle_count": 0,
+  "topological_order": [
+    "@sentropic/graph-model",
+    "@sentropic/graph-profiles",
+    "@sentropic/graph-scene",
+    "@sentropic/graph-codecs",
+    "@sentropic/graph-processing",
+    "@sentropic/graph-routing",
+    "@sentropic/graph-layout",
+    "@sentropic/graph-worker",
+    "@sentropic/graph-compiler",
+    "@sentropic/graph",
+    "@sentropic/graph-svg",
+    "@sentropic/graph-dom",
+    "@sentropic/graph-canvas",
+    "@sentropic/graph-export",
+    "@sentropic/graph-recipes",
+    "@sentropic/design-system-tokens",
+    "@sentropic/design-system-themes",
+    "@sentropic/design-system-svelte",
+    "@sentropic/graph-svelte",
+    "@sentropic/design-system-react",
+    "@sentropic/graph-react",
+    "@sentropic/design-system-vue",
+    "@sentropic/graph-vue",
+    "@sentropic/design-system-angular",
+    "@sentropic/graph-angular",
+    "@sentropic/dataviz-core",
+    "@sentropic/dataviz-svelte",
+    "@sentropic/dataviz-react",
+    "@sentropic/dataviz-vue",
+    "@sentropic/dataviz-angular"
+  ],
+  "source_export_pairs": 3547,
+  "live_sources": 975,
+  "http_failures": [
+    {
+      "url": "https://resources.jointjs.com/demos/rappid/apps/ChatGPT",
+      "fetched_at_utc": "2026-09-16T02:14:16.416186+00:00",
+      "http_status": 404,
+      "error": "HTTP Error 404: Not Found",
+      "bytes": 0,
+      "sha256": null
+    },
+    {
+      "url": "https://resources.jointjs.com/demos/rappid/apps/ZUI/",
+      "fetched_at_utc": "2026-09-16T02:14:16.418813+00:00",
+      "http_status": 404,
+      "error": "HTTP Error 404: Not Found",
+      "bytes": 0,
+      "sha256": null
+    }
+  ],
+  "baseline_live_checks": [
+    {
+      "check": "elk_algorithms baseline ↔ live",
+      "before": 21,
+      "live": 21,
+      "added": [],
+      "missing": []
+    },
+    {
+      "check": "elk_option_groups baseline ↔ live",
+      "before": 60,
+      "live": 60,
+      "added": [],
+      "missing": []
+    },
+    {
+      "check": "elk_options baseline ↔ live",
+      "before": 286,
+      "live": 286,
+      "added": [],
+      "missing": []
+    },
+    {
+      "check": "graphviz_engines baseline ↔ live",
+      "before": 10,
+      "live": 10,
+      "added": [],
+      "missing": []
+    }
+  ]
+}
