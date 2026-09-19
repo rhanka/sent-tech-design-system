@@ -1,0 +1,101 @@
+{
+  "csp": "default-src 'self'; script-src 'self'; style-src 'self'; style-src-attr 'none'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; worker-src 'none'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+  "browser": "151.0.7922.34",
+  "pages": {
+    "control": {
+      "result": {
+        "ok": true,
+        "attrStyleApplied": "rgba(0, 0, 0, 0)",
+        "cssomStyleApplied": "rgb(46, 139, 87)"
+      },
+      "violations": [
+        {
+          "directive": "style-src-attr",
+          "blockedURI": "inline",
+          "sample": "",
+          "source": "control-TPp3CydM.js:1"
+        }
+      ],
+      "consoleErrors": [
+        "Applying inline style violates the following Content Security Policy directive 'style-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-9NVtTdrQdEVlUpUqLokK3LEcJ+Vig+ovxm2yELWcKDQ=",
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ]
+    },
+    "elk": {
+      "result": {
+        "ok": true,
+        "ms": 79,
+        "width": 264,
+        "height": 188,
+        "placed": [
+          {
+            "id": "g1",
+            "x": 20,
+            "y": 20,
+            "w": 224,
+            "h": 64
+          },
+          {
+            "id": "g2",
+            "x": 20,
+            "y": 104,
+            "w": 224,
+            "h": 64
+          }
+        ]
+      },
+      "violations": [],
+      "consoleErrors": []
+    },
+    "bpmn": {
+      "result": {
+        "ok": true,
+        "ms": 17,
+        "warnings": 0,
+        "elements": 10,
+        "watermark": {
+          "present": true,
+          "visible": "visible",
+          "opacity": "1",
+          "rect": {
+            "x": 849,
+            "y": 469,
+            "w": 53,
+            "h": 23
+          },
+          "href": "http://bpmn.io",
+          "zIndex": "100"
+        }
+      },
+      "violations": [],
+      "consoleErrors": []
+    },
+    "bpmn-modeler": {
+      "result": {
+        "ok": true,
+        "steps": [
+          "select",
+          "appendShape",
+          "directEditing"
+        ],
+        "directEditingActive": true,
+        "elements": 4,
+        "xmlRoundTrip": true,
+        "xmlHead": "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spe",
+        "watermarkVisible": true
+      },
+      "violations": [],
+      "consoleErrors": []
+    },
+    "focus": {
+      "result": {
+        "ok": true,
+        "ms": 3,
+        "rects": 6,
+        "elkInBundle": false
+      },
+      "violations": [],
+      "consoleErrors": []
+    }
+  }
+}
