@@ -24,9 +24,11 @@
 // SCOPE, STATED SO IT IS NOT MISREAD
 // The root manifest is `private: true`: it is never packed, so a LICENSE or a
 // notices file at the repository root would ship in nothing. That is why the
-// gate is per package and why there is deliberately no root LICENSE - the tree
-// holds measured clones of private brands and tracked state emblems that are
-// not ours to relicense.
+// gate is per package, and why the repository root deliberately carries
+// neither a LICENSE file nor a `license` field - the tree holds measured
+// clones of private brands and tracked state emblems that are not ours to
+// relicense, and the manifest field, though inert for npm, is exactly what
+// GitHub's licence detection and SBOM tools read.
 // apps/docs is likewise private here; it is distributed through GitHub Pages,
 // which is a separate question this gate does not answer.
 import { spawnSync } from "node:child_process";
@@ -43,7 +45,14 @@ const LICENSE_FILENAME = "LICENSE";
 // Below this, a "licence file" is a placeholder, not a licence. The shortest
 // real OSI text in common use (ISC) is ~750 bytes.
 const MIN_LICENSE_BYTES = 300;
-const PLACEHOLDER_LICENSE_FIELDS = new Set(["", "UNLICENSED", "SEE LICENSE IN LICENSE"]);
+const PLACEHOLDER_LICENSE_FIELDS = new Set(["", "UNLICENSED"]);
+// SPDX's "I have not decided, read the file" form is `SEE LICENSE IN <file>`,
+// and the filename is free: `SEE LICENSE IN LICENSE`, `SEE LICENSE IN
+// LICENSE.txt`, `SEE LICENSE IN ./COPYING` are all the same non-answer. An
+// equality test against one spelling catches one spelling and waves the other
+// two through, so match the PREFIX - case-insensitively, and after collapsing
+// runs of whitespace so `SEE  LICENSE\tIN x` is not a way around it.
+const DEFERRED_LICENSE_RE = /^see licen[cs]e in\b/i;
 
 function fileSize(absPath) {
   try {
@@ -60,7 +69,7 @@ function fileSize(absPath) {
  * exactly as it would at publish time, and reports the real file list. One
  * invocation rather than eleven - measured at well under a second.
  */
-function packedFileLists(names) {
+function packedFileLists(rootDir, names) {
   // Own cache directory: a dry-run pack still touches npm's cache, and the
   // shared user cache is a cross-process write the gate has no business
   // racing on - it made this check fail under `node --test`, which runs test
@@ -71,7 +80,7 @@ function packedFileLists(names) {
   const args = ["pack", "--dry-run", "--json", "--cache", cache];
   for (const name of names) args.push("-w", name);
   const result = spawnSync("npm", args, {
-    cwd: root,
+    cwd: rootDir,
     encoding: "utf8",
     maxBuffer: 256 * 1024 * 1024,
   });
@@ -98,8 +107,13 @@ export function collectViolations(rootDir = root) {
   for (const { dir, manifest } of packages) {
     const label = `${manifest.name} (${dir})`;
 
-    const declared = typeof manifest.license === "string" ? manifest.license.trim() : "";
-    if (PLACEHOLDER_LICENSE_FIELDS.has(declared.toUpperCase()) || declared === "") {
+    const declared =
+      typeof manifest.license === "string" ? manifest.license.replace(/\s+/g, " ").trim() : "";
+    if (
+      declared === "" ||
+      PLACEHOLDER_LICENSE_FIELDS.has(declared.toUpperCase()) ||
+      DEFERRED_LICENSE_RE.test(declared)
+    ) {
       violations.push(
         `${label}: manifest declares no usable "license" field (found ${JSON.stringify(manifest.license ?? null)}).`,
       );
@@ -137,7 +151,7 @@ export function collectViolations(rootDir = root) {
   }
 
   // Tarball membership, measured.
-  const packed = packedFileLists(packages.map(({ manifest }) => manifest.name));
+  const packed = packedFileLists(rootDir, packages.map(({ manifest }) => manifest.name));
   for (const { dir, manifest } of packages) {
     const files = packed.get(manifest.name);
     if (!files) {

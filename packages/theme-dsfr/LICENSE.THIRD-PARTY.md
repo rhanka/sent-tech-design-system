@@ -13,7 +13,17 @@ c'est délibéré : les `peerDependencies`, fournies par le consommateur, et les
 
 ## 1. Code tiers recopié dans ce paquet
 
-Aucun. Ce paquet ne recopie aucune source tierce dans ses propres fichiers.
+**Rien de mesuré.** Ce qui a été cherché, littéralement : les données de
+tracé publiées par `lucide`, comparées octet pour octet aux sources de ce
+paquet. Aucune n'y figure.
+
+Ce qui n'a **pas** été cherché : tout amont non déclaré dans
+`scripts/third-party-sources.json`. L'absence ci-dessus est donc l'absence
+de ces données-là, et non un constat d'absence générale de code tiers dans
+ce paquet.
+
+Ce paquet porte par ailleurs une section « Points ouverts », plus bas :
+elle nomme ce que cette mesure ne couvre pas.
 
 ## 2. Dépendances installées avec ce paquet
 

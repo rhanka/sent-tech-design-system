@@ -1,7 +1,6 @@
 {
   "name": "@sentropic/design-system-root",
   "version": "0.9.0",
-  "license": "MIT",
   "private": true,
   "type": "module",
   "workspaces": [

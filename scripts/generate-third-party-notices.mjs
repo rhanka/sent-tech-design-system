@@ -58,7 +58,17 @@ const FIRST_PARTY_SCOPE = "@sentropic/";
 // Files a published package uses to carry its licence text. Matched
 // case-insensitively against the package root only (never recursively: a
 // nested LICENSE belongs to a vendored sub-work, not to the package itself).
-const LICENSE_FILE_RE = /^(licen[cs]e|copying|notice)(\..*)?$/i;
+//
+// The separator class is `[._-]`, not a bare `.`, and that is the whole point.
+// `LICENSE-MIT` / `LICENSE-APACHE` is the convention dual-licensed packages
+// use, so a pattern accepting only a dot after `license` declares every one of
+// them to carry no licence text at all. Measured on this repository's closure:
+// `punycode` and `is-potential-custom-element-name` each ship a complete
+// ~1.1 kB MIT text as `LICENSE-MIT.txt`, and the dot-only pattern reported
+// both as `source-gap` in notices that ship to consumers. With the separator
+// class, one real gap remains in the closure (`saxes`, which ships no licence
+// file at all) and nothing else in it changes.
+const LICENSE_FILE_RE = /^(licen[cs]e|copying|notice)([._-].*)?$/i;
 
 function readJson(absPath) {
   return JSON.parse(readFileSync(absPath, "utf8"));
@@ -182,11 +192,16 @@ export function runtimeClosure(lock, workspaceDir) {
 function readLicenseText(rootDir, pkgPath) {
   let entries;
   try {
-    entries = readdirSync(join(rootDir, pkgPath));
+    entries = readdirSync(join(rootDir, pkgPath), { withFileTypes: true });
   } catch {
     return null;
   }
-  const files = entries.filter((name) => LICENSE_FILE_RE.test(name)).sort();
+  // Files only: the widened pattern can now match a directory name, and
+  // reading a directory as text would abort the whole generation.
+  const files = entries
+    .filter((entry) => entry.isFile() && LICENSE_FILE_RE.test(entry.name))
+    .map((entry) => entry.name)
+    .sort();
   if (files.length === 0) return null;
   return files
     .map((name) => {
@@ -323,12 +338,45 @@ export function scanVendored(rootDir, pkgDir, scanner, fingerprints) {
   };
 }
 
-function renderVendored(rootDir, findings, upstreamVersions) {
+function renderVendored(rootDir, findings, upstreamVersions, { scanners, hasNote }) {
   const out = [];
   out.push("## 1. Code tiers recopié dans ce paquet");
   out.push("");
   if (findings.length === 0) {
-    out.push("Aucun. Ce paquet ne recopie aucune source tierce dans ses propres fichiers.");
+    // Say what was measured, not more. The scanners declared in
+    // scripts/third-party-sources.json are the entire reach of this section;
+    // writing "ce paquet ne recopie aucune source tierce" would assert an
+    // absence nothing here establishes - and, in the three state-design-system
+    // themes, would contradict the `unresolved` note printed a few lines below
+    // in the same shipped file.
+    if (scanners.length === 0) {
+      out.push(
+        "**Non mesuré.** Aucun amont n'est déclaré dans",
+        "`scripts/third-party-sources.json`, donc rien n'a été cherché dans les",
+        "sources de ce paquet. Cette section ne dit rien, ni dans un sens ni dans",
+        "l'autre.",
+      );
+      out.push("");
+      return out;
+    }
+    const names = scanners.map((scanner) => `\`${scanner.upstream}\``).join(", ");
+    out.push(
+      `**Rien de mesuré.** Ce qui a été cherché, littéralement : les données de`,
+      `tracé publiées par ${names}, comparées octet pour octet aux sources de ce`,
+      "paquet. Aucune n'y figure.",
+      "",
+      "Ce qui n'a **pas** été cherché : tout amont non déclaré dans",
+      "`scripts/third-party-sources.json`. L'absence ci-dessus est donc l'absence",
+      "de ces données-là, et non un constat d'absence générale de code tiers dans",
+      "ce paquet.",
+    );
+    if (hasNote) {
+      out.push(
+        "",
+        "Ce paquet porte par ailleurs une section « Points ouverts », plus bas :",
+        "elle nomme ce que cette mesure ne couvre pas.",
+      );
+    }
     out.push("");
     return out;
   }
@@ -481,7 +529,12 @@ export function renderNotices({ rootDir = root, lock, sources, scanners, upstrea
     "`devDependencies`, qui n'entrent dans aucun tarball.",
     "",
   );
-  out.push(...renderVendored(rootDir, vendored, upstreamVersions));
+  out.push(
+    ...renderVendored(rootDir, vendored, upstreamVersions, {
+      scanners: scanners.map(({ scanner }) => scanner),
+      hasNote: note !== null,
+    }),
+  );
   out.push(...renderInstalled(rootDir, closure));
 
   if (closure.unresolved.length > 0) {

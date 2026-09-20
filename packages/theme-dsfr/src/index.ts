@@ -12,6 +12,15 @@ import type { TenantTheme } from "@sentropic/design-system-themes";
  * a Sentropic role, the closest DSFR token is used and the choice is noted in
  * MAPPING.md.
  *
+ * LICENSING — AND THE TENSION TO READ WITH IT. The sentence above says what the
+ * UPSTREAM SOURCE is published under. It does not say what regime applies to
+ * this package's subject matter, and the two are different questions: the
+ * marks, signatures and state emblems a state design system carries are not
+ * covered by the licence of the source that describes them. This package's
+ * shipped `LICENSE.THIRD-PARTY.md` records that second question as
+ * `unresolved` — a pending owner decision. Neither statement overrides the
+ * other, and nothing here settles it.
+ *
  * DSFR color reference (light theme — utility / decision tokens):
  *   White (background default)        #ffffff   (--grey-1000-50)
  *   Grey alt (background alt)         #f6f6f6   (--grey-975-75)

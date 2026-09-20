@@ -52,7 +52,15 @@ Release commits must include the current portable `.graphify` artifacts: `graph.
 - a `LICENSE.THIRD-PARTY.md` at the package root, matching what `scripts/generate-third-party-notices.mjs` re-derives from `package-lock.json` and the installed upstreams;
 - both files actually present in the tarball, measured with `npm pack --dry-run --json` rather than assumed.
 
-It runs in three places, so no release path skips it: the `licensing` job in `.github/workflows/verify.yml` (unsharded, on every PR), the head of `npm run pack:smoke` (which every publish workflow runs, over all publishable packages whatever `--workspaces` selects), and `npm run verify`.
+It runs in three places, so no release path skips it:
+
+- the `licensing` job in `.github/workflows/verify.yml`, unsharded, on every PR;
+- the head of `npm run pack:smoke`, over all publishable packages whatever `--workspaces` selects;
+- `npm run verify`.
+
+The second of those is the one that covers a release, and it covers a release only if **every** publish workflow runs it. Measured on the nine `*-publish.yml` workflows: each has a `verify` job whose last step is `npm run pack:smoke`, and each `publish` job reaches that job through `needs: release-guard` → `needs: verify`.
+
+That was not true before: `skills-publish.yml` and `themes-publish.yml` ran neither `pack:smoke`, nor `licensing:check`, nor `npm run verify` — they built and tested their own workspace and nothing else. Being tag-triggered, they do not run the `licensing` job in `verify.yml` either. So `@sentropic/design-system-skills` (45 packages in its transitive closure, 8 licence families) and `@sentropic/design-system-theme-dsfr` (a state design system whose regime is recorded `unresolved`) were the two packages that could reach npm with no licensing gate at all. Both workflows now run the same `npm run build` + `npm run pack:smoke` pair as the other seven.
 
 Adding a publishable package, adding or bumping a runtime dependency, or changing the inlined icon path data all change what must be disclosed. Run `npm run notices:generate` in the same change; the gate fails on stale notices. Policy, open questions, and everything the generator cannot derive live in `THIRD-PARTY-NOTICES.md` at the repository root — that file is documentation only and ships in nothing, by design.
 
