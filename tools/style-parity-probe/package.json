@@ -5,5 +5,5 @@
   "version": "0.0.0",
   "description": "Mesure des propriétés de style qu'une cible d'export conserve réellement au rendu.",
   "scripts": { "measure:mermaid": "node probe/mermaid-probe.mjs" },
-  "devDependencies": { "mermaid": "^12.0.0" }
+  "devDependencies": { "mermaid": "11.17.2" }
 }

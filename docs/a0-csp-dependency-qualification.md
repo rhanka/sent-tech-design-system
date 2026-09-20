@@ -365,6 +365,94 @@ document. Hors xyflow, ce qui est ratifié est le rapport préservé et la taill
 nominale déclarée — jamais une promesse de pixels. Écrire que mermaid respecte le
 plancher serait invérifiable.
 
+## 9. Épinglage mermaid et visualiseur de référence
+
+### 9.1 Correction de la mesure de §5.2
+
+La sonde de §5.2 tournait sur **mermaid 12.0.0**, dernière version publiée.
+**Aucun visualiseur ne fait tourner la 12** : GitHub sert 11.17.2, GitLab
+déclare 11.16.1, VS Code 11.16.1, et `mmdc` résout en 11.x. La mesure portait
+donc sur une version que personne ne rend. Elle a été refaite sur **11.17.2**.
+
+Inchangé : 53 formes nommées, `bucket`, `cyl`, `datastore`, `h-cyl` et `lin-cyl`
+présents, `registerIconPacks` présent, et les neuf propriétés de style qui
+survivent au rendu.
+
+Corrigé : en 11.17.2 la forme `rounded` rend un `<rect rx="5">` — l'attribut
+**existe**, contrairement à ce que §5.2 affirmait d'après la 12. Mais il vaut 5,
+constante de mermaid, alors que la `classDef` demandait `rx:8`. En 12.0.0 c'est
+un `path` sans `rx`. **La conclusion est inchangée et plus nette : le rayon n'est
+réglable dans aucune des deux versions** ; seule la manière dont mermaid l'ignore
+change.
+
+### 9.2 Pin : 11.17.2
+
+C'est la version servie par GitHub, à un patch de GitLab et VS Code, et celle où
+`mmdc` résout. La 12.0.0 apporte des ruptures — ELK par défaut, nouveau thème,
+exigences de moteur relevées — pour un parc installé de zéro visualiseur.
+
+Réserve : GitHub ne documente sa version nulle part ; 11.17.2 vient de
+l'inspection de l'asset déployé. Elle peut changer sans préavis — raison de plus
+pour que le visualiseur de référence ne soit pas une plateforme.
+
+### 9.3 Visualiseur de référence : `mmdc`
+
+| Visualiseur | Version | Packs d'icônes arbitraires |
+|---|---|---|
+| **`mmdc`** | 11.17.0, mermaid 11.x | **oui** — `--iconPacks` (11.4.3), `--iconPacksNamesAndUrls` (11.10.1) |
+| VS Code intégré | 11.16.1 | partiel — `logos` et `mdi` codés en dur, non configurable |
+| GitHub | 11.17.2 | **non** — `registerIconPacks` exporté, jamais appelé |
+| GitLab | 11.16.1 | **non** — absent du dépôt |
+
+`mmdc` est le seul à satisfaire simultanément les formes nommées et les packs
+d'icônes. Conséquence à inscrire au contrat : **sur GitHub et GitLab, nos icônes
+n'existeront pas** — limite de plateforme, pas dégradation choisie.
+
+VS Code code en dur la collection `logos`, précisément celle qui porte les 65
+icônes AWS comptées en §6 : s'y limiter en fait un second visualiseur viable
+sans configuration.
+
+### 9.4 Limite de taille GitLab, mesurée sur les scènes réelles
+
+GitLab plafonne à **2 000 caractères par diagramme**, 50 blocs par page, et
+diffère le rendu au-delà. Mermaid généré pour les scènes du corpus, avec
+identifiants nettoyés, une seule `classDef`, aucune icône et aucun style par
+nœud :
+
+| Vue | Nœuds | Caractères | GitLab |
+|---|---:|---:|---|
+| **architecture-sauvegardes** | 35 | **2 879** | **dépassée de 879** |
+| sequence-bout-en-bout | 17 | 1 678 | passe |
+| mise-en-service | 15 | 1 564 | passe |
+
+Deux contraintes indépendantes désignent la même vue : l'architecture échoue la
+porte de lisibilité **et** la limite GitLab, tandis que les deux autres passent
+les deux. Scinder cette vue n'est donc pas seulement une affaire de lisibilité,
+c'est ce qui la rend publiable.
+
+### 9.5 Contraintes de sécurité des plateformes
+
+GitHub fige `securityLevel: "antiscript"` et rend non surchargeables par
+directive `secure`, `securityLevel`, `startOnLoad` et `maxTextSize`. GitLab est
+en `strict`, avec bac à sable et `dompurifyConfig`, et **supprime les `<img>`**
+hors de sa table d'asset-proxy.
+
+Ce dernier point est signalé **non mesuré** : si un pack d'icônes produisait des
+`<img>` plutôt que du SVG inline, GitLab les supprimerait même dans le cas où un
+pack serait enregistrable. À vérifier avant tout engagement.
+
+### 9.6 Deux profils d'export mermaid
+
+Aucun visualiseur unique ne couvre tout, donc l'export déclare son profil :
+
+- **portable** — formes nommées et `classDef`, sans icône. Rend sur GitHub,
+  GitLab, VS Code et `mmdc`. Profil par défaut d'un export destiné à un dépôt.
+- **complet** — avec icônes, qualifié sur `mmdc` seul. Profil d'un export destiné
+  à une chaîne que nous contrôlons.
+
+Le profil est une propriété de l'export, pas de la scène : un même document
+produit l'un ou l'autre.
+
 ## 6. Dettes DS bloquantes pour l'embarquement
 
 Ces deux dettes conditionnent l'adoption, parce qu'EPL-2.0 comme la clause
