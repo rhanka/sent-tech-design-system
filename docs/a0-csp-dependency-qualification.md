@@ -512,3 +512,74 @@ préfixer les identifiants Iconify** avant d'être tenu pour inlinable. Sans cel
 deux diagrammes exportés posés sur une même page peuvent voir leurs dégradés se
 mélanger — un défaut invisible à l'export, visible seulement chez le lecteur, et
 silencieux : des icônes aux mauvaises couleurs, sans aucune erreur.
+
+## 10. Correction : la cause de l'échec CSP attribué à xyflow
+
+L'amendement 6 s'appuie sur l'énoncé « xyflow interactif ne passe PAS
+`style-src-attr 'none'` (1 violation au load) », sans cause identifiée. La cause
+est maintenant établie, et **ce n'est pas xyflow**. Harnais :
+[`tools/xyflow-csp-probe/`](../tools/xyflow-csp-probe/README.md), preuve :
+`evidence/2026-09-20-bissection.txt`.
+
+`@xyflow/svelte` 1.6.6, `@xyflow/system` 0.0.82, Svelte 5.57.1, même CSP stricte
+et même témoin positif qu'en §1 :
+
+| MiniMap | Interaction | Violations |
+|---|---|---:|
+| non | non | **0** |
+| non | oui — glisser, molette, panoramique | **0** |
+| oui | non | **1** `style-src-attr` |
+| oui | oui | **1** |
+
+Le canevas, les nœuds, les liaisons, le fond, les contrôles, le glisser et le
+zoom passent tous à zéro violation. **MiniMap est la cause unique.**
+
+Le gabarit fautif, extrait du bundle, est `style="display: contents"`. Il vient
+du **compilateur Svelte** : quand un composant reçoit une propriété CSS
+personnalisée, Svelte émet `<svelte-css-wrapper style='display: contents'>`,
+instancié par `innerHTML`, donc bloqué. Reproduit sans xyflow, avec un composant
+trivial :
+
+- `<Carte titre="…" />` → **0 violation**, aucune enveloppe ;
+- `<Carte --st-fond="#cfe" titre="…" />` → **1 violation**, attribut relevé dans
+  le DOM : `display: contents; --st-fond: #cfe;`.
+
+**Conséquences.** L'incompatibilité appartient à un **idiome Svelte**, pas à
+xyflow ; toute bibliothèque de composants, y compris la nôtre, tomberait sur le
+même mur. Le repli « v1 = SVG statique » peut rester le bon choix pour la
+simplicité, le rendu serveur ou le poids — **il n'est plus justifié par la CSP**.
+
+Vérifié : **aucun composant du design system ni la documentation n'emploie cet
+idiome**. C'est un piège à documenter, pas une dette à solder.
+
+## 11. Dimensionnement côté serveur
+
+§4 démontrait qu'un serveur sait **placer**. Il ne démontrait rien sur sa
+capacité à **dimensionner** : les dimensions y étaient codées en dur
+(`width: 90, height: 40`), et celles du corpus étaient lues du corpus. Or ELK
+place des boîtes dont la taille dépend du texte.
+
+Mesuré : mêmes chaînes, même fichier de police enregistré des deux côtés,
+`@napi-rs/canvas` en Node contre `measureText` en Chromium. Harnais :
+[`tools/text-metrics-probe/`](../tools/text-metrics-probe/README.md).
+
+**Écart maximal 0,005 px** sur 10 chaînes et 3 corps ; la mesure SVG
+`getComputedTextLength` s'en écarte d'au plus 0,02 px.
+
+**Une table de métriques versionnée est donc une commodité, pas une nécessité** —
+à une condition qui devient la vraie exigence : **le fichier de police doit être
+épinglé et disponible au placeur**. Ce n'est pas une table de nombres qu'il faut
+versionner, c'est une police.
+
+`@napi-rs/canvas` est déjà une devDependency de `@sentropic/graph` rapatrié : la
+capacité est présente, seule sa promotion en dépendance d'exécution serait une
+décision.
+
+Portée : largeurs d'avance, une seule police, sans chaîne de repli, sans
+`letter-spacing` ni `font-feature-settings`. Avec une fonte web et un repli, la
+mesure serveur ne vaut que si le repli est identique des deux côtés.
+
+Cela ne change pas la scission entre **axes géométriques** — résolus avant le
+placement, tout changement impose un replacement — et **axes de peinture**,
+résolus au rendu. Cela en change le coût : épingler une police, non figer une
+table.
