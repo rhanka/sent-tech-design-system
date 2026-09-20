@@ -11,6 +11,15 @@ import type { TenantTheme } from "@sentropic/design-system-themes";
  * GCDS has no direct equivalent for a Sentropic role, the closest GCDS token is
  * used and the choice is noted "à confirmer" in MAPPING.md.
  *
+ * LICENSING — AND THE TENSION TO READ WITH IT. The sentence above says what the
+ * UPSTREAM SOURCE is published under. It does not say what regime applies to
+ * this package's subject matter, and the two are different questions: the
+ * marks, signatures and state emblems a state design system carries are not
+ * covered by the licence of the source that describes them. This package's
+ * shipped `LICENSE.THIRD-PARTY.md` records that second question as
+ * `unresolved` — a pending owner decision. Neither statement overrides the
+ * other, and nothing here settles it.
+ *
  * GCDS colour reference (light theme):
  *   White (background default)        #ffffff   (--gcds-bg-white / --gcds-text-light)
  *   Grey light (background alt)       #f2f2f2   (--gcds-bg-light, grey-50)

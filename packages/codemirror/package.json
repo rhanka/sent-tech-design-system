@@ -1,6 +1,7 @@
 {
   "name": "@sentropic/design-system-codemirror",
   "version": "0.1.0",
+  "license": "MIT",
   "type": "module",
   "publishConfig": {
     "access": "public"

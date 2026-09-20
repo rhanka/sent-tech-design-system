@@ -1,6 +1,7 @@
 {
   "name": "@sentropic/design-system-theme-quebec",
   "version": "0.1.0",
+  "license": "MIT",
   "description": "Gouvernement du Québec (Système de design gouvernemental / SDG) theme mapping for the Sentropic token structure.",
   "type": "module",
   "publishConfig": {
