@@ -12,137 +12,12 @@
   import { Header, IdentityMenu, Menu as DsMenu } from "@sentropic/design-system-svelte";
   import { auth } from "$lib/auth/auth.svelte";
   import {
-    sentTechTheme,
-    type TenantTheme
+    sentTechTheme
   } from "@sentropic/design-system-themes";
+  import { THEMES, PUBLIC_THEMES, isPrivateTheme } from "$lib/theme-catalog";
+  import ThemePicker from "$lib/ThemePicker.svelte";
   import { compileThemeModes } from "$lib/compile-modes";
   import { colorMode, type ColorMode } from "$lib/color-mode.svelte";
-  import { dsfrTheme } from "@sentropic/design-system-theme-dsfr";
-  import { carbonTheme } from "@sentropic/design-system-theme-carbon";
-  import { airbusTheme } from "@sentropic/design-system-theme-airbus";
-  import { canadaTheme } from "@sentropic/design-system-theme-canada";
-  import { quebecTheme } from "@sentropic/design-system-theme-quebec";
-  import { ssenseTheme } from "@sentropic/design-system-theme-ssense";
-  import { lightspeedTheme } from "@sentropic/design-system-theme-lightspeed";
-  import { desjardinsTheme } from "@sentropic/design-system-theme-desjardins";
-  import { nationalBankTheme } from "@sentropic/design-system-theme-national-bank";
-  import { cirqueDuSoleilTheme } from "@sentropic/design-system-theme-cirque-du-soleil";
-  import { ubisoftTheme } from "@sentropic/design-system-theme-ubisoft";
-  import { bombardierTheme } from "@sentropic/design-system-theme-bombardier";
-  import { caeTheme } from "@sentropic/design-system-theme-cae";
-  import { saqTheme } from "@sentropic/design-system-theme-saq";
-  import { cgiTheme } from "@sentropic/design-system-theme-cgi";
-  import { stmTheme } from "@sentropic/design-system-theme-stm";
-  import { nuveiTheme } from "@sentropic/design-system-theme-nuvei";
-  import { coveoTheme } from "@sentropic/design-system-theme-coveo";
-  import { circleKTheme } from "@sentropic/design-system-theme-circle-k";
-  import { aldoTheme } from "@sentropic/design-system-theme-aldo";
-  import { brpTheme } from "@sentropic/design-system-theme-brp";
-  import { miregoTheme } from "@sentropic/design-system-theme-mirego";
-  import { ellioTheme } from "@sentropic/design-system-theme-ellio";
-  import { airCanadaTheme } from "@sentropic/design-system-theme-air-canada";
-  import { cascadesTheme } from "@sentropic/design-system-theme-cascades";
-  import { hopperTheme } from "@sentropic/design-system-theme-hopper";
-  import { dialogueTheme } from "@sentropic/design-system-theme-dialogue";
-  import { momentFactoryTheme } from "@sentropic/design-system-theme-moment-factory";
-  import { lionElectricTheme } from "@sentropic/design-system-theme-lion-electric";
-  import { genetecTheme } from "@sentropic/design-system-theme-genetec";
-  import { videotronTheme } from "@sentropic/design-system-theme-videotron";
-  import { saputoTheme } from "@sentropic/design-system-theme-saputo";
-  import { metroTheme } from "@sentropic/design-system-theme-metro";
-  import { workleapTheme } from "@sentropic/design-system-theme-workleap";
-  import { frankAndOakTheme } from "@sentropic/design-system-theme-frank-and-oak";
-  import { sidLeeTheme } from "@sentropic/design-system-theme-sid-lee";
-  import { simonsTheme } from "@sentropic/design-system-theme-simons";
-  import { laVieEnRoseTheme } from "@sentropic/design-system-theme-la-vie-en-rose";
-  import { dollaramaTheme } from "@sentropic/design-system-theme-dollarama";
-  import { bellTheme } from "@sentropic/design-system-theme-bell";
-  import { behaviourInteractiveTheme } from "@sentropic/design-system-theme-behaviour-interactive";
-  import { ronaTheme } from "@sentropic/design-system-theme-rona";
-  import { gameloftTheme } from "@sentropic/design-system-theme-gameloft";
-  import { cossetteTheme } from "@sentropic/design-system-theme-cossette";
-  import { eidosMontrealTheme } from "@sentropic/design-system-theme-eidos-montreal";
-  import { stingrayTheme } from "@sentropic/design-system-theme-stingray";
-  import { lg2Theme } from "@sentropic/design-system-theme-lg2";
-  import { sonderTheme } from "@sentropic/design-system-theme-sonder";
-  import { plusgradeTheme } from "@sentropic/design-system-theme-plusgrade";
-  import { gildanTheme } from "@sentropic/design-system-theme-gildan";
-  import { quebecorTheme } from "@sentropic/design-system-theme-quebecor";
-  import { cogecoTheme } from "@sentropic/design-system-theme-cogeco";
-  import { iaTheme } from "@sentropic/design-system-theme-ia";
-  import { laurentianBankTheme } from "@sentropic/design-system-theme-laurentian-bank";
-  import { jeanCoutuTheme } from "@sentropic/design-system-theme-jean-coutu";
-  import { reitmansTheme } from "@sentropic/design-system-theme-reitmans";
-  import { stHubertTheme } from "@sentropic/design-system-theme-st-hubert";
-  import { benevaTheme } from "@sentropic/design-system-theme-beneva";
-  import { airTransatTheme } from "@sentropic/design-system-theme-air-transat";
-  import { birksTheme } from "@sentropic/design-system-theme-birks";
-  import { lufaFarmsTheme } from "@sentropic/design-system-theme-lufa-farms";
-  import { hydroQuebecTheme } from "@sentropic/design-system-theme-hydro-quebec";
-  import { energirTheme } from "@sentropic/design-system-theme-energir";
-  import { agropurTheme } from "@sentropic/design-system-theme-agropur";
-  import { vanHoutteTheme } from "@sentropic/design-system-theme-van-houtte";
-  import { dynamiteTheme } from "@sentropic/design-system-theme-dynamite";
-  import { lvmhTheme } from "@sentropic/design-system-theme-lvmh";
-  import { lorealTheme } from "@sentropic/design-system-theme-loreal";
-  import { totalenergiesTheme } from "@sentropic/design-system-theme-totalenergies";
-  import { sanofiTheme } from "@sentropic/design-system-theme-sanofi";
-  import { bnpParibasTheme } from "@sentropic/design-system-theme-bnp-paribas";
-  import { hermesTheme } from "@sentropic/design-system-theme-hermes";
-  import { keringTheme } from "@sentropic/design-system-theme-kering";
-  import { pernodRicardTheme } from "@sentropic/design-system-theme-pernod-ricard";
-  import { danoneTheme } from "@sentropic/design-system-theme-danone";
-  import { accorTheme } from "@sentropic/design-system-theme-accor";
-  import { axaTheme } from "@sentropic/design-system-theme-axa";
-  import { societeGeneraleTheme } from "@sentropic/design-system-theme-societe-generale";
-  import { creditAgricoleTheme } from "@sentropic/design-system-theme-credit-agricole";
-  import { edenredTheme } from "@sentropic/design-system-theme-edenred";
-  import { worldlineTheme } from "@sentropic/design-system-theme-worldline";
-  import { airLiquideTheme } from "@sentropic/design-system-theme-air-liquide";
-  import { schneiderElectricTheme } from "@sentropic/design-system-theme-schneider-electric";
-  import { saintGobainTheme } from "@sentropic/design-system-theme-saint-gobain";
-  import { engieTheme } from "@sentropic/design-system-theme-engie";
-  import { edfTheme } from "@sentropic/design-system-theme-edf";
-  import { dassaultSystemesTheme } from "@sentropic/design-system-theme-dassault-systemes";
-  import { thalesTheme } from "@sentropic/design-system-theme-thales";
-  import { safranTheme } from "@sentropic/design-system-theme-safran";
-  import { capgeminiTheme } from "@sentropic/design-system-theme-capgemini";
-  import { orangeTheme } from "@sentropic/design-system-theme-orange";
-  import { vinciTheme } from "@sentropic/design-system-theme-vinci";
-  import { bouyguesTheme } from "@sentropic/design-system-theme-bouygues";
-  import { veoliaTheme } from "@sentropic/design-system-theme-veolia";
-  import { publicisTheme } from "@sentropic/design-system-theme-publicis";
-  import { renaultTheme } from "@sentropic/design-system-theme-renault";
-  import { anthropicTheme } from "@sentropic/design-system-theme-anthropic";
-  import { openaiTheme } from "@sentropic/design-system-theme-openai";
-  import { geminiTheme } from "@sentropic/design-system-theme-gemini";
-  import { copilotTheme } from "@sentropic/design-system-theme-copilot";
-  import { githubTheme } from "@sentropic/design-system-theme-github";
-  import { perplexityTheme } from "@sentropic/design-system-theme-perplexity";
-  import { palantirTheme } from "@sentropic/design-system-theme-palantir";
-  import { nousHermesTheme } from "@sentropic/design-system-theme-nous-hermes";
-  import { mistralTheme } from "@sentropic/design-system-theme-mistral";
-  import { amazonTheme } from "@sentropic/design-system-theme-amazon";
-  import { vercelTheme } from "@sentropic/design-system-theme-vercel";
-  import { assistantUiTheme } from "@sentropic/design-system-theme-assistant-ui";
-  import { cohereTheme } from "@sentropic/design-system-theme-cohere";
-  import { xaiTheme } from "@sentropic/design-system-theme-xai";
-  import { metaTheme } from "@sentropic/design-system-theme-meta";
-  import { togetherTheme } from "@sentropic/design-system-theme-together";
-  import { deepseekTheme } from "@sentropic/design-system-theme-deepseek";
-  import { databricksTheme } from "@sentropic/design-system-theme-databricks";
-  import { ai21Theme } from "@sentropic/design-system-theme-ai21";
-  import { stabilityTheme } from "@sentropic/design-system-theme-stability";
-  import { groqTheme } from "@sentropic/design-system-theme-groq";
-  import { replicateTheme } from "@sentropic/design-system-theme-replicate";
-  import { huggingfaceTheme } from "@sentropic/design-system-theme-huggingface";
-  import { characterAiTheme } from "@sentropic/design-system-theme-character-ai";
-  import { inflectionTheme } from "@sentropic/design-system-theme-inflection";
-  import { youTheme } from "@sentropic/design-system-theme-you";
-  import { openrouterTheme } from "@sentropic/design-system-theme-openrouter";
-  import { writerTheme } from "@sentropic/design-system-theme-writer";
-  import { poeTheme } from "@sentropic/design-system-theme-poe";
-  import { fireworksTheme } from "@sentropic/design-system-theme-fireworks";
   import {
     DOCS_UTILITY_NAV,
     DOCS_VERSION,
@@ -332,24 +207,7 @@
     page.url.pathname.startsWith("/layouts")
   );
 
-  // Thèmes proposés : le DS Sentropic de référence + les 2 mappings tiers
-  // (DSFR/Carbon) + le thème client Airbus (port d'anatomie).
-  // (forge/entropic sont des tenants de démo internes — exclus du sélecteur.)
-  const THEMES: TenantTheme[] = [sentTechTheme, dsfrTheme, carbonTheme, airbusTheme, canadaTheme, quebecTheme, ssenseTheme, lightspeedTheme, desjardinsTheme, nationalBankTheme, cirqueDuSoleilTheme, ubisoftTheme, bombardierTheme, caeTheme, saqTheme, cgiTheme, stmTheme, nuveiTheme, coveoTheme, circleKTheme, aldoTheme, brpTheme, miregoTheme, ellioTheme, airCanadaTheme, cascadesTheme, hopperTheme, dialogueTheme, momentFactoryTheme, lionElectricTheme, genetecTheme, videotronTheme, saputoTheme, metroTheme, workleapTheme, frankAndOakTheme, sidLeeTheme, simonsTheme, laVieEnRoseTheme, dollaramaTheme, bellTheme, behaviourInteractiveTheme, ronaTheme, gameloftTheme, cossetteTheme, eidosMontrealTheme, stingrayTheme, lg2Theme, sonderTheme, plusgradeTheme, gildanTheme, quebecorTheme, cogecoTheme, iaTheme, laurentianBankTheme, jeanCoutuTheme, reitmansTheme, stHubertTheme, benevaTheme, airTransatTheme, birksTheme, lufaFarmsTheme, hydroQuebecTheme, energirTheme, agropurTheme, vanHoutteTheme, dynamiteTheme, lvmhTheme, lorealTheme, totalenergiesTheme, sanofiTheme, bnpParibasTheme, hermesTheme, keringTheme, pernodRicardTheme, danoneTheme, accorTheme, axaTheme, societeGeneraleTheme, creditAgricoleTheme, edenredTheme, worldlineTheme, airLiquideTheme, schneiderElectricTheme, saintGobainTheme, engieTheme, edfTheme, dassaultSystemesTheme, thalesTheme, safranTheme, capgeminiTheme, orangeTheme, vinciTheme, bouyguesTheme, veoliaTheme, publicisTheme, renaultTheme, anthropicTheme, openaiTheme, geminiTheme, copilotTheme, githubTheme, perplexityTheme, palantirTheme, nousHermesTheme, mistralTheme, amazonTheme, vercelTheme, assistantUiTheme, cohereTheme, xaiTheme, metaTheme, togetherTheme, deepseekTheme, databricksTheme, ai21Theme, stabilityTheme, groqTheme, replicateTheme, huggingfaceTheme, characterAiTheme, inflectionTheme, youTheme, openrouterTheme, writerTheme, poeTheme, fireworksTheme];
   const THEME_STORAGE_KEY = "st-docs-theme";
-  // ── Mode démo (anonymisation pour visiteurs externes) ─────────────────────
-  // Les thèmes "tiers" (clones de marques privées : Carbon/IBM, Airbus, …) sont
-  // CACHÉS du sélecteur public ; on les révèle en "mode démo", basculé via
-  // Ctrl+Shift+X et persisté en localStorage. Les DS publics/gouvernementaux et
-  // nos thèmes propres restent visibles (thirdParty non défini).
-  const DEMO_MODE_STORAGE_KEY = "st-docs-demo-mode";
-  // Thèmes tiers (clones de marques privées) masqués du sélecteur public, révélés
-  // en mode démo. Ajouter ici l'id de chaque nouveau thème de société privée.
-  const HIDDEN_THEME_IDS = new Set<string>(["carbon", "airbus", "ssense", "lightspeed", "desjardins", "national-bank", "cirque-du-soleil", "ubisoft", "bombardier", "cae", "saq", "cgi", "stm", "nuvei", "coveo", "circle-k", "aldo", "brp", "mirego", "ellio", "air-canada", "cascades", "hopper", "dialogue", "moment-factory", "lion-electric", "genetec", "videotron", "saputo", "metro", "workleap", "frank-and-oak", "sid-lee", "simons", "la-vie-en-rose", "dollarama", "bell", "behaviour-interactive", "rona", "gameloft", "cossette", "eidos-montreal", "stingray", "lg2", "sonder", "plusgrade", "gildan", "quebecor", "cogeco", "ia", "laurentian-bank", "jean-coutu", "reitmans", "st-hubert", "beneva", "air-transat", "birks", "lufa-farms", "hydro-quebec", "energir", "agropur", "van-houtte", "dynamite", "lvmh", "loreal", "totalenergies", "sanofi", "bnp-paribas", "hermes", "kering", "pernod-ricard", "danone", "accor", "axa", "societe-generale", "credit-agricole", "edenred", "worldline", "air-liquide", "schneider-electric", "saint-gobain", "engie", "edf", "dassault-systemes", "thales", "safran", "capgemini", "orange", "vinci", "bouygues", "veolia", "publicis", "renault"]);
-  // Lire la valeur initiale de demoMode AVANT de créer les $state pour éviter
-  // state_referenced_locally (on ne peut pas référencer un $state dans l'init d'un autre $state).
-  const initialDemoMode = browser ? localStorage.getItem(DEMO_MODE_STORAGE_KEY) === "true" : false;
-  let demoMode = $state(initialDemoMode);
   // Balise <style> du thème de base, injectée en SSR pour le premier rendu.
   // Utilise compileThemeWithModes pour émettre 3 blocs (light + auto dark + explicit dark).
   // (Construite dans le script pour éviter un littéral <style> dans le markup.)
@@ -369,25 +227,43 @@
     framework.value = resolveFramework(readUrlParams().framework, FRAMEWORK_STORAGE_KEY);
   }
 
-  // Anonymisation : un thème tiers deep-linké (?theme=carbon) est ignoré hors
-  // mode démo — on retombe sur le thème par défaut au premier rendu.
-  // Utilise initialDemoMode (valeur scalaire) pour éviter state_referenced_locally.
+  // Les thèmes tiers sont des clones mesurés de marques privées : ils ne
+  // paraissent pas sur le site public. Ctrl+Shift+X ouvre le catalogue complet,
+  // et le fait de s'y servir lève le masquage pour la session (persisté).
+  const DEMO_MODE_STORAGE_KEY = "st-docs-demo-mode";
+  // Lu AVANT les $state : on ne peut pas référencer un $state dans l'init d'un autre.
+  const initialDemoMode = browser ? localStorage.getItem(DEMO_MODE_STORAGE_KEY) === "true" : false;
+  let demoMode = $state(initialDemoMode);
+
+  // Anonymisation : un thème tiers deep-linké (?theme=cossette) est ignoré tant
+  // que le catalogue n'a pas été ouvert — on retombe sur le thème par défaut.
   let activeThemeId = $state(
-    !initialDemoMode && HIDDEN_THEME_IDS.has(rawInitialTheme) ? sentTechTheme.id : rawInitialTheme
+    !initialDemoMode && isPrivateTheme(rawInitialTheme) ? sentTechTheme.id : rawInitialTheme
   );
   const activeTheme = $derived(
     THEMES.find((theme) => theme.id === activeThemeId) ?? sentTechTheme
   );
-  // Sélecteur public : masque les thèmes tiers hors mode démo (réactif au flag).
-  const visibleThemes = $derived(THEMES.filter((theme) => !HIDDEN_THEME_IDS.has(theme.id) || demoMode));
-  // Garde runtime : si on quitte le mode démo alors qu'un thème tiers est actif,
-  // on revient au thème par défaut (anonymisation affichage + URL).
+  // Sélecteur public : seuls les thèmes de la liste blanche, hors mode démo.
+  const visibleThemes = $derived(demoMode ? THEMES : PUBLIC_THEMES);
+
+  // Garde runtime : si le masquage est rétabli alors qu'un thème tiers est
+  // actif, on revient au thème par défaut (affichage ET URL).
   $effect(() => {
     if (!browser) return;
-    if (!demoMode && HIDDEN_THEME_IDS.has(activeThemeId)) {
-      activeThemeId = sentTechTheme.id;
-    }
+    if (!demoMode && isPrivateTheme(activeThemeId)) activeThemeId = sentTechTheme.id;
   });
+
+  $effect(() => {
+    if (!browser) return;
+    localStorage.setItem(DEMO_MODE_STORAGE_KEY, String(demoMode));
+  });
+
+  // Choisir un thème tiers dans le catalogue lève le masquage : sans cela, la
+  // garde ci-dessus annulerait la sélection dans la foulée.
+  function selectTheme(id: string) {
+    if (isPrivateTheme(id)) demoMode = true;
+    activeThemeId = id;
+  }
 
   // ═══ URL = SOURCE DE VÉRITÉ pour thème + framework ═══════════════════════
   // L'URL fait foi ; le store MIROIR l'URL (jamais l'inverse). localStorage ne
@@ -667,16 +543,12 @@
   if (isOpen && target && !target.closest(".docs-locale-wrapper")) {
     isOpen = false;
   }
-  if (isThemeOpen && target && !target.closest(".docs-theme-wrapper")) {
-    isThemeOpen = false;
-  }
   if (isFrameworkOpen && target && !target.closest(".docs-framework-wrapper")) {
     isFrameworkOpen = false;
   }
 }} onkeydown={(e) => {
   if (e.key === "Escape") {
     isOpen = false;
-    isThemeOpen = false;
     isFrameworkOpen = false;
     isMobileMenuOpen = false;
     isSidebarOpen = false;
@@ -689,11 +561,13 @@
     e.preventDefault();
     openSearch();
   }
-  // Ctrl+Shift+X : bascule le mode démo (révèle/masque les thèmes tiers privés).
+  // Ctrl+Shift+X est la SEULE porte vers les thèmes tiers : il bascule le
+  // masquage et, quand il le lève, ouvre le catalogue complet. Le bouton de
+  // thème de l'en-tête, lui, n'ouvre jamais que la liste publique.
   if (e.ctrlKey && e.shiftKey && e.code === "KeyX") {
     e.preventDefault();
     demoMode = !demoMode;
-    if (browser) localStorage.setItem(DEMO_MODE_STORAGE_KEY, demoMode ? "true" : "false");
+    isThemeOpen = demoMode;
   }
 }} />
 
@@ -787,29 +661,15 @@
     <button
       type="button"
       class="docs-header-control docs-header-menuButton docs-locale-trigger docs-theme-trigger"
-      onclick={() => (isThemeOpen = !isThemeOpen)}
+      onclick={() => (isThemeOpen = true)}
       aria-expanded={isThemeOpen}
-      aria-haspopup="menu"
+      aria-haspopup="dialog"
       aria-label={locale.value === "fr" ? "Changer le thème" : "Change theme"}
     >
       <Palette size={14} aria-hidden="true" />
       <span class="docs-theme-trigger-label">{activeTheme.label}</span>
       <ChevronDown size={12} class="docs-locale-trigger-chevron {isThemeOpen ? 'rotated' : ''}" aria-hidden="true" />
     </button>
-
-    <div class="docs-dropdown-panel">
-      <DsMenu
-        label={locale.value === "fr" ? "Changer le thème" : "Change theme"}
-        dense={true}
-        open={isThemeOpen}
-        items={visibleThemes.map(theme => ({
-          value: theme.id,
-          label: theme.label,
-          icon: activeThemeId === theme.id ? "✓" : " "
-        }))}
-        onselect={(id) => { activeThemeId = id; isThemeOpen = false; }}
-      />
-    </div>
   </div>
 {/snippet}
 
@@ -3947,3 +3807,11 @@
 <!-- Widget de chat « light-auth » — persistant sur toutes les routes/thèmes.
      Client-only (rendu gardé par `browser`), positionné en fixed bottom-right. -->
 <ChatWidget />
+
+<ThemePicker
+  bind:open={isThemeOpen}
+  themes={visibleThemes}
+  activeThemeId={activeThemeId}
+  locale={locale.value}
+  onselect={selectTheme}
+/>
