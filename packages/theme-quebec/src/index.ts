@@ -12,6 +12,15 @@ import type { TenantTheme } from "@sentropic/design-system-themes";
  * Sentropic role, the closest SDG token is used and the choice is noted
  * "à confirmer" in MAPPING.md.
  *
+ * LICENSING — AND THE TENSION TO READ WITH IT. The sentence above says what the
+ * UPSTREAM SOURCE is published under. It does not say what regime applies to
+ * this package's subject matter, and the two are different questions: the
+ * marks, signatures and state emblems a state design system carries are not
+ * covered by the licence of the source that describes them. This package's
+ * shipped `LICENSE.THIRD-PARTY.md` records that second question as
+ * `unresolved` — a pending owner decision. Neither statement overrides the
+ * other, and nothing here settles it.
+ *
  * SDG colour reference (thème clair) — public/css/qc-sdg-design-tokens.css :
  *   Bleu PIV (brand / action / lien)    #095797   --qc-color-blue-piv
  *   Bleu medium (hover primaire)        #19406C   --qc-color-blue-medium

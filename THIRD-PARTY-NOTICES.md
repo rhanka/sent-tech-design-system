@@ -46,14 +46,21 @@ mesure la composition réelle du tarball avec `npm pack --dry-run --json`.
 
 Dénombrement exact, mesuré sur l'arbre : **11 manifestes publiables**, dont
 **10 ne déclaraient aucun champ `license`** — `packages/skills` l'avait déjà. La
-racine et `apps/docs` sont `private`, donc non publiables ; le champ ajouté à la
-racine ne compte pas dans les 11. Sur 134 paquets sous `packages/`, 123 sont des
-thèmes privés hors périmètre de publication.
+racine et `apps/docs` sont `private`, donc non publiables. Sur 134 paquets sous
+`packages/`, 123 sont des thèmes privés hors périmètre de publication.
 
-Il n'y a **pas** de `LICENSE` à la racine, délibérément : l'arbre contient 123
-clones mesurés de marques privées et des emblèmes d'État suivis. MIT accorde le
-droit de sous-licencier et de vendre ; ce droit n'est pas le nôtre sur ces
-fichiers.
+À la racine, il n'y a délibérément **ni fichier `LICENSE`, ni champ `license`
+dans le manifeste**. L'arbre contient 123 clones mesurés de marques privées et
+des emblèmes d'État suivis ; MIT accorde le droit de sous-licencier et de
+vendre, et ce droit n'est pas le nôtre sur ces fichiers.
+
+Le champ `license` de `package.json` méritait d'être retiré au même titre que le
+fichier, et ne l'avait pas été. Il est inerte pour npm — le manifeste racine est
+`private: true`, il n'est jamais publié — mais il ne l'est pas pour les lecteurs
+de métadonnées : la détection de licence de GitHub et les outils de SBOM lisent
+`package.json`. Le laisser à `MIT` réintroduisait sous forme lisible par machine
+exactement la revendication que le retrait du `LICENSE` racine venait d'écarter.
+« Rien à la racine » inclut ce champ.
 
 ## 3. Redistribution au niveau des sources — lucide
 
@@ -118,11 +125,25 @@ Ce qui n'est **pas** couvert, et pourquoi :
 - **`peerDependencies`** — Angular, React, Svelte, Vue, CodeMirror, Lezer :
   fournies par le consommateur. Nous ne les distribuons pas.
 - **`devDependencies`** : n'entrent dans aucun tarball publié.
-- **Les 3 paquets où un texte de licence manque à l'amont**
-  (`is-potential-custom-element-name`, `punycode`, `saxes`) : marqués
-  `source-gap` dans les fichiers générés, avec l'identifiant déclaré, l'auteur
-  et le dépôt. Le texte doit être relu à la source avant toute redistribution
-  d'une copie de ces paquets.
+- **Le seul paquet de la fermeture où un texte de licence manque à l'amont** :
+  `saxes` 6.0.0, dont le tarball publié ne contient que `README.md`,
+  `package.json`, `saxes.js`, `saxes.js.map` et `saxes.d.ts`. Il est marqué
+  `source-gap` dans le fichier généré, avec l'identifiant déclaré, l'auteur et
+  le dépôt. Le texte doit être relu à la source avant toute redistribution
+  d'une copie de ce paquet.
+
+  Ce document en annonçait **trois**, et deux de ces trois étaient faux :
+  `punycode` 2.3.1 et `is-potential-custom-element-name` 1.0.1 publient chacun
+  un texte MIT complet de 1 077 octets, nommé `LICENSE-MIT.txt`. C'est le
+  détecteur du générateur qui les manquait — sa regex n'acceptait après
+  `license` qu'une fin de chaîne ou un point littéral —, et les notices
+  expédiées aux consommateurs affirmaient donc un `source-gap` inexistant tout
+  en omettant les deux textes qu'elles existent pour transporter.
+  `LICENSE-MIT` / `LICENSE-APACHE` étant la convention des paquets en double
+  licence, le défaut était systémique et non anecdotique. Corrigé : les deux
+  textes figurent intégralement dans
+  `packages/skills/LICENSE.THIRD-PARTY.md`, et la correction a été repassée sur
+  les 48 paquets de la fermeture réunie — aucun autre ne change de statut.
 
 Deux obligations méritent d'être nommées plutôt que réduites à un identifiant :
 
