@@ -1,7 +1,7 @@
 import { readdirSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { THEMES, PUBLIC_THEMES, isPrivateTheme, filterThemes } from "./theme-catalog";
-import { readUrlParams, resolveTheme } from "./url-state";
+import { readUrlParams, resolveTheme, enforceThemePrivacy } from "./url-state";
 import { vi } from "vitest";
 
 describe("docs theme catalogue", () => {
@@ -63,6 +63,14 @@ describe("docs theme catalogue", () => {
     expect(THEMES[0].id).toBe("sent-tech");
     const rest = THEMES.slice(1).map((theme) => theme.label);
     expect(rest).toEqual([...rest].sort((a, b) => a.localeCompare(b, "fr")));
+  });
+
+  it("drops a private theme coming from outside unless masking is lifted", () => {
+    expect(enforceThemePrivacy("cossette", false)).toBe("sent-tech");
+    expect(enforceThemePrivacy("cossette", true)).toBe("cossette");
+    expect(enforceThemePrivacy("dsfr", false)).toBe("dsfr");
+    // Identifiant inconnu : traité comme privé, donc écarté.
+    expect(enforceThemePrivacy("marque-inconnue", false)).toBe("sent-tech");
   });
 
   it("filters enterprise and startup labels and ids without case sensitivity", () => {

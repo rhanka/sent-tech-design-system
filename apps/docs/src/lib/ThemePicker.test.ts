@@ -12,7 +12,9 @@ describe("theme picker keyboard", () => {
     const view = render(ThemePicker, { open: true, themes: THEMES, activeThemeId: "sent-tech", locale: "fr", onselect });
     const input = view.getByRole("searchbox", { name: "Rechercher un thème" });
     await waitFor(() => expect(document.activeElement).toBe(input));
-    expect(view.getAllByRole("menuitem")).toHaveLength(127);
+    // Longueur du catalogue, pas un nombre gravé : un nouveau paquet de thème
+    // n'est pas une régression du sélecteur.
+    expect(view.getAllByRole("menuitem")).toHaveLength(THEMES.length);
     await fireEvent.input(input, { target: { value: "DESJ" } });
     expect(view.getAllByRole("menuitem")).toHaveLength(1);
     await fireEvent.keyDown(input, { key: "ArrowDown" });
