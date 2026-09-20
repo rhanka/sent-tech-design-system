@@ -550,7 +550,58 @@ même mur. Le repli « v1 = SVG statique » peut rester le bon choix pour la
 simplicité, le rendu serveur ou le poids — **il n'est plus justifié par la CSP**.
 
 Vérifié : **aucun composant du design system ni la documentation n'emploie cet
-idiome**. C'est un piège à documenter, pas une dette à solder.
+idiome** aujourd'hui. Cela rassure sur le présent et ne dit rien du futur — or
+c'est précisément l'idiome vers lequel on tend quand on veut thématiser un
+composant par jeton, c'est-à-dire ce que D8 demande de faire. Ce n'est donc pas
+une note de bas de page du dossier diagrammes, c'est une **règle de conception
+du design system**. Voir §10.1.
+
+### 10.1 Règle de conception — porter un jeton jusqu'à un composant
+
+Nommer le chemin interdit ne suffit pas : il fallait mesurer les remplacements.
+Harnais : [`tools/xyflow-csp-probe/token-paths/`](../tools/xyflow-csp-probe/token-paths/README.md),
+preuve : `evidence/2026-09-20-chemins-jeton.jsonl`.
+
+| Chemin | Violations | Enveloppe | Jeton appliqué |
+|---|---:|---:|---|
+| **A** — propriété CSS passée au composant | **1** | 1 `<svelte-css-wrapper>` | oui |
+| **B** — variable posée sur un élément ancêtre (`style:--x={…}`) | **0** | 0 | oui |
+| **C** — thématisation par classe | **0** | 0 | oui |
+| **D** — CSSOM après montage (`setProperty`) | **0** | 0 | oui |
+| **E** — même idiome qu'en A, en espace de noms SVG | **0** | 0 (un `<g>`) | non concluant |
+
+Les trois remplacements appliquent bien le jeton. **Le chemin interdit n'apporte
+donc rien** que B, C ou D n'apportent, et le coût de la règle est nul.
+
+> **Règle.** Un composant destiné à tourner sous CSP stricte ne reçoit pas ses
+> jetons par propriété CSS personnalisée passée en attribut. Il les reçoit par
+> une variable posée sur un ancêtre, par une classe, ou par le CSSOM après
+> montage.
+
+Sur E : le compilateur émet `<g>` au lieu de `<svelte-css-wrapper>` en espace de
+noms SVG, donc aucun attribut `style` littéral. L'application du jeton n'est pas
+concluante dans cette sonde — elle lisait `backgroundColor` sur un `<rect>`, qui
+se peint par `fill`. À remesurer avant de s'appuyer dessus ; **non mesuré**, pas
+« ne marche pas ».
+
+**Rendre la règle exécutoire.** Les règles de `@sentropic/design-system-skills`
+s'appliquent au **DOM rendu**, pas à la source. La forme naturelle est donc une
+règle signalant tout élément portant un attribut `style` littéral dans le rendu :
+elle attrape cette classe de défaut sans avoir à reconnaître un idiome de
+compilateur, et elle en attrape d'autres du même genre. Cette règle toucherait un
+paquet publié : elle est proposée, pas ajoutée.
+
+### 10.2 Règle de renseignement des capacités
+
+Issue de la réserve posée sur `elevation` en §5.3, et généralisée à toute la
+matrice :
+
+> Ne jamais inscrire « impossible » quand on veut dire « pas essayé ». Un axe non
+> mesuré se borne prudemment et se déclare **non mesuré** ; il ne se déclare pas
+> incapable.
+
+Motif : un axe déclaré incapable est un axe que personne ne réessaiera, alors
+qu'une borne prudente invite à la mesure.
 
 ## 11. Dimensionnement côté serveur
 
