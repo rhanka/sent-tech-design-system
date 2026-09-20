@@ -82,8 +82,32 @@
             document.documentElement.setAttribute("data-color-mode", mode);
           }
           // Thème : data-st-theme pilote le chrome + les variables :root du thème.
+          //
+          // COPIE EXACTE de la liste blanche publique de $lib/theme-catalog.
+          // Ce script ne peut pas lire le catalogue (il s'exécute avant tout
+          // module), donc il embarque les identifiants en dur, et TOUT ce qui
+          // n'y figure pas est traité comme privé : ni attribut, ni amorce
+          // d'URL. Le reste du catalogue est fait de clones mesurés de marques
+          // privées, qui ne doivent paraître ni sur <html> ni dans la barre
+          // d'adresse — pas même le temps d'un premier rendu.
+          //
+          // La liste est COMPLÈTE, et pas un sous-ensemble « suffisant » : un
+          // thème public absent d'ici ne serait pas seulement appliqué plus
+          // tard, il ne serait pas amorcé dans l'URL, ce qui change l'ensemble
+          // des chargements qui passent par le chemin sans param. Un test de
+          // contrat vérifie l'ÉGALITÉ avec la liste publique, dans les deux
+          // sens : voir header-contract.test.ts.
+          var PUBLIC_BOOT_THEMES = [
+            "ai21", "amazon", "anthropic", "assistant-ui", "canada", "character-ai",
+            "cohere", "copilot", "databricks", "deepseek", "dsfr", "fireworks", "gemini",
+            "github", "groq", "huggingface", "inflection", "meta", "mistral",
+            "nous-hermes", "openai", "openrouter", "palantir", "perplexity", "poe",
+            "quebec", "replicate", "sent-tech", "stability", "together", "vercel",
+            "writer", "xai", "you"
+          ];
           var theme = localStorage.getItem("st-docs-theme");
-          if (theme === "sent-tech" || theme === "dsfr" || theme === "carbon" || theme === "airbus" || theme === "canada") {
+          var themeIsPublic = PUBLIC_BOOT_THEMES.indexOf(theme) !== -1;
+          if (themeIsPublic) {
             document.documentElement.setAttribute("data-st-theme", theme);
           }
           // Framework : data-st-framework pilote l'affichage des îles docs.
@@ -101,7 +125,12 @@
           // touche pas. localStorage ne sert qu'à cette amorce.
           var params = new URLSearchParams(location.search);
           var changed = false;
-          if (!params.has("theme") && theme && theme !== "sent-tech") {
+          // N'amorcer l'URL qu'avec un thème PUBLIC, et selon la même liste
+          // que ci-dessus : un identifiant privé dans la barre d'adresse
+          // exposerait la marque avant même l'hydratation. localStorage peut
+          // parfaitement contenir un identifiant privé (choisi pendant une
+          // démonstration) — c'est ici qu'on refuse de le propager.
+          if (!params.has("theme") && themeIsPublic && theme !== "sent-tech") {
             params.set("theme", theme); changed = true;
           }
           if (!params.has("framework") && fw && fw !== "svelte") {

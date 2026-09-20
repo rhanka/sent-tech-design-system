@@ -12,6 +12,7 @@ on:
     branches: ["main"]
     paths:
       - "packages/**"
+      - "apps/docs/**"
       - "scripts/**"
       - "package.json"
       - "package-lock.json"
@@ -19,6 +20,7 @@ on:
   pull_request:
     paths:
       - "packages/**"
+      - "apps/docs/**"
       - "scripts/**"
       - "package.json"
       - "package-lock.json"
