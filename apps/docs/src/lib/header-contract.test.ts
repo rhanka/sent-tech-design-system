@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
+import { PUBLIC_THEMES, THEMES } from "./theme-catalog";
 
 const docsRoot = resolve(__dirname, "../..");
 const layoutSource = readFileSync(resolve(docsRoot, "src/routes/+layout.svelte"), "utf8");
@@ -28,6 +29,23 @@ const airbusChromeSource = readFileSync(
   resolve(docsRoot, "src/lib/chrome/ChromeAirbus.svelte"),
   "utf8"
 );
+
+/**
+ * Extrait `var PUBLIC_BOOT_THEMES = [...]` du script pré-hydratation de
+ * app.html. Lecture TOLÉRANTE : elle rend `null` quand la déclaration est
+ * absente ou n'est pas un littéral de chaînes simples, pour que le test
+ * ÉCHOUE avec un message lisible au lieu de lever une exception de parsing.
+ */
+function readBootAllowlist(source: string): string[] | null {
+  const literal = source.match(/var PUBLIC_BOOT_THEMES = \[([\s\S]*?)\];/)?.[1];
+  if (literal === undefined) return null;
+  const entries = literal
+    .split(",")
+    .map((entry) => entry.trim())
+    .filter((entry) => entry !== "");
+  const ids = entries.map((entry) => /^"([^"]+)"$/.exec(entry)?.[1]);
+  return ids.every((id): id is string => id !== undefined) ? ids : null;
+}
 
 function cssRule(source: string, selector: string): string {
   const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -96,7 +114,73 @@ describe("docs header alignment contract", () => {
   });
 
   it("includes the imported tenants (Airbus, Canada, Québec) in the theme picker", () => {
-    expect(layoutSource).toContain('const THEMES: TenantTheme[] = [sentTechTheme, dsfrTheme, carbonTheme, airbusTheme, canadaTheme, quebecTheme, ssenseTheme, lightspeedTheme, desjardinsTheme, nationalBankTheme, cirqueDuSoleilTheme, ubisoftTheme, bombardierTheme, caeTheme, saqTheme, cgiTheme, stmTheme, nuveiTheme, coveoTheme, circleKTheme, aldoTheme, brpTheme, miregoTheme, ellioTheme, airCanadaTheme, cascadesTheme, hopperTheme, dialogueTheme, momentFactoryTheme, lionElectricTheme, genetecTheme, videotronTheme, saputoTheme, metroTheme, workleapTheme, frankAndOakTheme, sidLeeTheme, simonsTheme, laVieEnRoseTheme, dollaramaTheme, bellTheme, behaviourInteractiveTheme, ronaTheme, gameloftTheme, cossetteTheme, eidosMontrealTheme, stingrayTheme, lg2Theme, sonderTheme, plusgradeTheme, gildanTheme, quebecorTheme, cogecoTheme, iaTheme, laurentianBankTheme, jeanCoutuTheme, reitmansTheme, stHubertTheme, benevaTheme, airTransatTheme, birksTheme, lufaFarmsTheme, hydroQuebecTheme, energirTheme, agropurTheme, vanHoutteTheme, dynamiteTheme, lvmhTheme, lorealTheme, totalenergiesTheme, sanofiTheme, bnpParibasTheme, hermesTheme, keringTheme, pernodRicardTheme, danoneTheme, accorTheme, axaTheme, societeGeneraleTheme, creditAgricoleTheme, edenredTheme, worldlineTheme, airLiquideTheme, schneiderElectricTheme, saintGobainTheme, engieTheme, edfTheme, dassaultSystemesTheme, thalesTheme, safranTheme, capgeminiTheme, orangeTheme, vinciTheme, bouyguesTheme, veoliaTheme, publicisTheme, renaultTheme, anthropicTheme, openaiTheme, geminiTheme, copilotTheme, githubTheme, perplexityTheme, palantirTheme, nousHermesTheme, mistralTheme, amazonTheme, vercelTheme, assistantUiTheme, cohereTheme, xaiTheme, metaTheme, togetherTheme, deepseekTheme, databricksTheme, ai21Theme, stabilityTheme, groqTheme, replicateTheme, huggingfaceTheme, characterAiTheme, inflectionTheme, youTheme, openrouterTheme, writerTheme, poeTheme, fireworksTheme]');
+    expect(THEMES.map((theme) => theme.id)).toEqual(
+      expect.arrayContaining(["airbus", "canada", "quebec", "desjardins", "national-bank", "hydro-quebec"])
+    );
+  });
+
+  // ── Confidentialité des thèmes tiers ────────────────────────────────────
+  // Le COMPORTEMENT de la porte Ctrl+Shift+X se teste dans theme-access.test.ts,
+  // sur des fonctions pures. Il ne reste ici que ce qu'un test comportemental
+  // ne peut pas atteindre : le CÂBLAGE du layout vers ce module, et le script
+  // pré-hydratation de app.html, qui s'exécute hors de tout module.
+
+  it("wires every theme surface to the public list or to the pure access module", () => {
+    // Surfaces publiques (menu mobile, configuration AppShell) : liste publique,
+    // sans condition. Sélecteur : la seule liste que theme-access calcule.
+    expect(layoutSource).toContain("const visibleThemes = PUBLIC_THEMES;");
+    expect(layoutSource).toContain("themesForPicker(access, THEMES)");
+    expect(layoutSource).toContain("themes={pickerThemes}");
+    expect(layoutSource).not.toContain("themes={THEMES}");
+    // L'accès ne se persiste pas : un seul geste ne doit pas ouvrir la porte
+    // pour toutes les sessions futures de ce navigateur.
+    expect(layoutSource).not.toContain("st-docs-demo-mode");
+    expect(appHtml).not.toContain("st-docs-demo-mode");
+  });
+
+  it("closes the theme picker on navigation, by the same transition as any close", () => {
+    // Un sélecteur ouvert par Ctrl+Shift+X ne doit pas suivre le visiteur d'une
+    // page à l'autre avec le catalogue complet. La fermeture passe par
+    // `closePicker`, comme Échap / ✕ / fond : elle rétrécit la portée sans
+    // rien remasquer. Ce câblage-là ne se voit pas depuis les fonctions pures.
+    const afterNavigateBody = layoutSource.match(/afterNavigate\(\(\) => \{([\s\S]*?)\n  \}\);/)?.[1];
+    expect(afterNavigateBody, "bloc afterNavigate introuvable dans +layout.svelte").toBeDefined();
+    expect(afterNavigateBody).toContain("searchOpen = false;");
+    expect(afterNavigateBody).toContain("access = closePicker(access);");
+  });
+
+  it("keeps the pre-hydration theme allowlist EQUAL to the public list", () => {
+    // app.html pose data-st-theme et amorce ?theme AVANT l'hydratation, à
+    // partir d'un localStorage qui peut très bien contenir une marque privée
+    // (choisie pendant une démonstration). Sa liste en dur est donc une
+    // frontière de confidentialité, pas une commodité.
+    //
+    // ÉGALITÉ, pas inclusion : une liste trop LARGE laisserait fuiter une
+    // marque privée, une liste trop ÉTROITE priverait d'amorce d'URL des
+    // thèmes publics parfaitement légitimes — et déplacerait silencieusement
+    // l'ensemble des chargements qui empruntent le chemin sans param. Un test
+    // d'inclusion laisserait passer `["sent-tech"]` seul ; celui-ci non.
+    const allowlist = readBootAllowlist(appHtml);
+    expect(
+      allowlist,
+      "var PUBLIC_BOOT_THEMES = [...] introuvable ou pas un littéral de chaînes dans app.html"
+    ).not.toBeNull();
+
+    const publicIds = PUBLIC_THEMES.map((theme) => theme.id);
+    // Comparaison triée des deux côtés : l'ordre de la liste d'amorce n'a
+    // aucun sens fonctionnel, mais tout écart d'appartenance ou de cardinalité
+    // (oubli, ajout, doublon) fait échouer.
+    expect([...allowlist!].sort()).toEqual([...publicIds].sort());
+
+    // L'attribut ET l'amorce d'URL passent par le même verdict.
+    expect(appHtml).toContain("var themeIsPublic = PUBLIC_BOOT_THEMES.indexOf(theme) !== -1;");
+    expect(appHtml).toMatch(
+      /if \(themeIsPublic\) \{\s*document\.documentElement\.setAttribute\("data-st-theme", theme\);/
+    );
+    expect(appHtml).toContain('if (!params.has("theme") && themeIsPublic && theme !== "sent-tech") {');
+    // Plus de drapeau persisté : la décision se fonde sur la liste publique.
+    expect(appHtml).not.toContain("st-docs-theme-public");
+    expect(layoutSource).not.toContain("st-docs-theme-public");
   });
 
   it("does not render fake auth access in the public docs header", () => {
