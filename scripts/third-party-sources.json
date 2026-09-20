@@ -1,0 +1,40 @@
+{
+  "$comment": [
+    "Entrées de notices tierces qu'on ne peut PAS déduire de package-lock.json.",
+    "Lues par scripts/generate-third-party-notices.mjs.",
+    "",
+    "`scanners` : du code tiers recopié dans NOS sources, donc redistribué",
+    "littéralement dans le tarball publié. C'est l'obligation la plus stricte :",
+    "le texte de notice doit voyager avec la copie. Rien n'est énuméré à la main",
+    "ici — l'inventaire est RE-MESURÉ à chaque génération en comparant nos",
+    "sources à l'amont installé, et le texte de notice est relu depuis",
+    "`licenseFrom`. Un glyphe ajouté ou retiré change donc le fichier généré, et",
+    "`npm run licensing:check` refuse la dérive.",
+    "",
+    "`notes` : avertissements propres à un paquet, rendus tels quels sous la",
+    "section « Points ouverts » de son fichier de notices."
+  ],
+  "scanners": [
+    {
+      "id": "lucide",
+      "upstream": "lucide",
+      "package": "lucide-react",
+      "licenseFrom": "node_modules/lucide-react/LICENSE",
+      "spdx": "ISC AND MIT",
+      "fingerprintDir": "node_modules/lucide-react/dist/esm/icons",
+      "holders": [
+        "Lucide Contributors 2025 (ISC)",
+        "Cole Bemis 2013-2023, pour les portions dérivées de Feather (MIT)"
+      ],
+      "homepage": "https://github.com/lucide-icons/lucide",
+      "what": "Des chaînes de tracé SVG (attribut `d`) identiques octet pour octet aux données d'icônes lucide, écrites directement dans nos fichiers source et compilées dans le `dist/` publié.",
+      "why": "Le jeu d'icônes du design system est lucide : `packages/components-angular/src/Icon.ts` le dit explicitement (« the same lucide (stroke-24) path data the other frameworks wrap — the single visual source of truth »). Inliner les données plutôt que dépendre du paquet ne supprime pas l'obligation : cela la déplace du `node_modules` du consommateur vers notre propre tarball. Le port Angular ne déclare aucune dépendance lucide et n'embarque que des copies ; les ports React, Vue et Svelte dépendent du paquet lucide ET en recopient une partie.",
+      "obligation": "ISC comme MIT exigent que la notice de copyright et la notice de permission figurent dans toute copie. Elles sont reproduites intégralement ci-dessous. Un identifiant SPDX seul ne satisfait ni l'une ni l'autre."
+    }
+  ],
+  "notes": {
+    "@sentropic/design-system-theme-dsfr": "Ce paquet est une transcription mesurée d'un système de conception d'État (Système de design de l'État français). Le code de transcription est publié sous la licence de ce paquet, mais le régime applicable au système transcrit lui-même — et aux marques et emblèmes d'État qu'il porte — est une décision propriétaire en attente. Statut : `unresolved`. Ne pas en déduire que le système d'origine est couvert par la licence de ce paquet.",
+    "@sentropic/design-system-theme-canada": "Ce paquet est une transcription mesurée d'un système de conception d'État (Canada.ca / Normes du gouvernement du Canada). Le code de transcription est publié sous la licence de ce paquet, mais le régime applicable au système transcrit lui-même — et aux marques et emblèmes d'État qu'il porte, dont la signature et le mot-symbole fédéraux — est une décision propriétaire en attente. Statut : `unresolved`. Ne pas en déduire que le système d'origine est couvert par la licence de ce paquet.",
+    "@sentropic/design-system-theme-quebec": "Ce paquet est une transcription mesurée d'un système de conception d'État (Québec.ca). Le code de transcription est publié sous la licence de ce paquet, mais le régime applicable au système transcrit lui-même — et aux marques et emblèmes d'État qu'il porte — est une décision propriétaire en attente. Statut : `unresolved`. Ne pas en déduire que le système d'origine est couvert par la licence de ce paquet."
+  }
+}

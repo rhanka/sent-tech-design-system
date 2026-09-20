@@ -43,6 +43,19 @@ git status --short --branch
 `npm run pack:smoke` verifies the four package tarballs and installs them together in a clean temporary project.
 Release commits must include the current portable `.graphify` artifacts: `graph.json`, `graph.html`, `GRAPH_REPORT.md`, `manifest.json`, `cost.json`, and `.graphify_runtime.json`. Do not commit local lifecycle files such as `.graphify/cache/`, `.graphify/branch.json`, `.graphify/worktree.json`, or `.graphify/needs_update`.
 
+## Licensing Gate
+
+`npm run licensing:check` is a release blocker, not a report. For **every** workspace whose manifest is not `private: true` it requires, and fails without:
+
+- a non-placeholder `license` field in the manifest;
+- a `LICENSE` file at the package root;
+- a `LICENSE.THIRD-PARTY.md` at the package root, matching what `scripts/generate-third-party-notices.mjs` re-derives from `package-lock.json` and the installed upstreams;
+- both files actually present in the tarball, measured with `npm pack --dry-run --json` rather than assumed.
+
+It runs in three places, so no release path skips it: the `licensing` job in `.github/workflows/verify.yml` (unsharded, on every PR), the head of `npm run pack:smoke` (which every publish workflow runs, over all publishable packages whatever `--workspaces` selects), and `npm run verify`.
+
+Adding a publishable package, adding or bumping a runtime dependency, or changing the inlined icon path data all change what must be disclosed. Run `npm run notices:generate` in the same change; the gate fails on stale notices. Policy, open questions, and everything the generator cannot derive live in `THIRD-PARTY-NOTICES.md` at the repository root — that file is documentation only and ships in nothing, by design.
+
 ## Versioning
 
 The release tag must match every publishable package version.
