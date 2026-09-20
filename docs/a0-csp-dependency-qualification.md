@@ -437,9 +437,8 @@ directive `secure`, `securityLevel`, `startOnLoad` et `maxTextSize`. GitLab est
 en `strict`, avec bac à sable et `dompurifyConfig`, et **supprime les `<img>`**
 hors de sa table d'asset-proxy.
 
-Ce dernier point est signalé **non mesuré** : si un pack d'icônes produisait des
-`<img>` plutôt que du SVG inline, GitLab les supprimerait même dans le cas où un
-pack serait enregistrable. À vérifier avant tout engagement.
+Le risque `<img>` associé — un pack d'icônes produisant des `<img>` que GitLab
+supprimerait — **a été mesuré et n'existe pas** : voir §9.7.
 
 ### 9.6 Deux profils d'export mermaid
 
@@ -468,3 +467,48 @@ bpmn.io exigent la conservation des notices :
 La qualification technique ci-dessus est favorable et ne remplace pas cette
 décision. Le câblage peut être préparé derrière l'adaptateur paresseux ; l'ajout
 effectif aux manifestes publiés attend l'owner.
+
+### 9.7 Comment mermaid rend les icônes d'un pack enregistré
+
+Mesuré : mermaid 11.17.2, pack `@iconify-json/logos` enregistré,
+`securityLevel: 'strict'`, rendu Chromium. Preuve :
+`tools/style-parity-probe/evidence/2026-09-20-mermaid-icones.json`.
+
+| Relevé | Valeur |
+|---|---:|
+| `<img>` | **0** |
+| `<image>` SVG | **0** |
+| data URI | aucun |
+| href externes | aucun |
+| icônes rendues | 2 `<svg>` imbriqués **inline** |
+
+Le contenu provient bien du pack : viewBox `0 0 256 153` et `fill="#252f3e"`,
+valeurs de l'icône AWS du paquet.
+
+**Conséquence : le risque de suppression des `<img>` par GitLab ne s'applique
+pas.** mermaid inline les tracés, il ne référence rien. Le seul obstacle GitLab
+reste celui de §9.3 — il n'appelle jamais `registerIconPacks`, donc les icônes
+n'y parviennent pas du tout.
+
+### 9.8 Dégradés référencés par identifiant — risque pour l'export
+
+La mesure ci-dessus a révélé un point adjacent. Les icônes de fournisseurs sont
+fréquemment en dégradé, et mermaid rend alors
+`fill="url(#IconifyId1a0bf420eda89cdac0)"` — une référence par identifiant.
+Preuve : `evidence/2026-09-20-collision-identifiants.json`.
+
+| Scénario | Résultat |
+|---|---|
+| Deux rendus distincts sur une même page (cas des 50 blocs GitLab) | identifiants `…fa30` et `…fa31` — **aucune collision** |
+| Le même SVG inliné deux fois (cas de l'export) | **identifiant dupliqué** : le second dégradé se lie à la première définition |
+
+Non établi : sur deux exécutions séparées, les identifiants partagent le préfixe
+`IconifyId1a0bf42` et ne diffèrent que par la fin. Aucune collision entre
+exécutions n'a été observée, mais le préfixe commun la rend possible. C'est
+signalé comme une hypothèse, pas comme un fait.
+
+**Règle pour le contrat d'export** : l'export SVG figé doit **réécrire ou
+préfixer les identifiants Iconify** avant d'être tenu pour inlinable. Sans cela,
+deux diagrammes exportés posés sur une même page peuvent voir leurs dégradés se
+mélanger — un défaut invisible à l'export, visible seulement chez le lecteur, et
+silencieux : des icônes aux mauvaises couleurs, sans aucune erreur.
