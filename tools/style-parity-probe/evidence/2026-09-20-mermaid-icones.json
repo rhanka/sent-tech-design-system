@@ -1,0 +1,32 @@
+{
+  "version": "11.17.2",
+  "etapes": [
+    "registerIconPacks ok",
+    "render ok"
+  ],
+  "comptes": {
+    "img": 0,
+    "imageSvg": 0,
+    "svgImbriques": 2,
+    "pathTotaux": 18,
+    "foreignObject": 3,
+    "use": 0
+  },
+  "dataUriPresent": false,
+  "hrefExternes": [],
+  "extraitNoeud": null,
+  "tailleSvg": 20021,
+  "iconesRendues": [
+    {
+      "viewBox": "0 0 256 153",
+      "paths": 2,
+      "premierFill": "#252f3e"
+    },
+    {
+      "viewBox": "0 0 256 256",
+      "paths": 2,
+      "premierFill": "url(#IconifyId1a0bf4331afee35690)"
+    }
+  ],
+  "contientCouleurAws": true
+}
