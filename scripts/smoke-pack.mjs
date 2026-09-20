@@ -41,14 +41,20 @@
 //   export shapes are real and resolvable, but does not exercise the actual
 //   linker step a consumer's build performs.
 // - No bundler build (Vite/webpack/Rollup) is run against any package.
-// - Only the 7 packages listed below are covered at all, even for the
-//   tarball-shape check. theme-* clone packages and apps/* are untested by
-//   this script.
+// - Only the 7 packages listed below are covered by the tarball-shape and
+//   deep-import checks. The other 4 publishable packages - theme-dsfr,
+//   theme-canada, theme-quebec, codemirror - and apps/* are untested by those.
+//   THE ONE EXCEPTION is the licensing gate below: it runs over all 11
+//   publishable packages on every invocation, whatever --workspaces selects,
+//   precisely because the package nobody selected is the one that ships
+//   unlicensed.
 import { spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+
+import { collectViolations as collectLicensingViolations } from "./verify-publishable-licensing.mjs";
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const tmp = mkdtempSync(join(tmpdir(), "sent-tech-pack-"));
@@ -363,9 +369,27 @@ const selectedPackages = selectedNames
   ? packages.filter((pkg) => selectedNames.has(pkg.name))
   : packages;
 
+// Licensing gate, run over ALL publishable packages regardless of the shard.
+// Deliberately not narrowed by --workspaces: the defect it guards against is a
+// package nobody thought to select. Every publish workflow in .github runs
+// pack:smoke, so this is the one point every release path goes through.
+// Measured at ~2s, against smoke-pack's own runtime in minutes.
+function runLicensingGate() {
+  const { violations, packages: publishable } = collectLicensingViolations(root);
+  if (violations.length > 0) {
+    console.error(`Licensing gate FAILED: ${violations.length} violation(s).`);
+    for (const violation of violations) console.error(`  - ${violation}`);
+    console.error("Run `npm run licensing:check` for the same report on its own.");
+    process.exit(1);
+  }
+  console.log(`Licensing gate OK (${publishable.length} publishable packages, all shards).`);
+}
+
 try {
   console.log("Sent Tech package smoke test");
   console.log(`Temp dir: ${tmp}`);
+
+  runLicensingGate();
 
   if (selectedPackages.length === 0) {
     console.log("No smoke-pack package selected; skipping.");

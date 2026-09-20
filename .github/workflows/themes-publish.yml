@@ -39,6 +39,10 @@ jobs:
           if (!css || css.length < 1000) { console.error('CSS trop court pour dsfr'); process.exit(1); }
           console.log('dsfr -> ' + css.length + ' octets CSS');
           "
+      - name: Build workspace for package smoke
+        run: npm run build
+      - name: Smoke packed packages
+        run: npm run pack:smoke
 
   release-guard:
     needs: verify

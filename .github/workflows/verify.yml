@@ -28,6 +28,25 @@ on:
   workflow_dispatch:
 
 jobs:
+  # Deliberately NOT sharded and NOT gated on the affected-workspace plan: the
+  # package this catches is the one nobody thought to select. It needs no build
+  # (it reads manifests, the lockfile and `npm pack --dry-run`), so it is the
+  # cheapest job here and it always runs.
+  licensing:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - run: npm ci
+
+      - name: Licensing gate (all publishable packages)
+        run: npm run licensing:check
+
   plan:
     runs-on: ubuntu-latest
     outputs:
