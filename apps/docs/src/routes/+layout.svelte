@@ -15,6 +15,16 @@
     sentTechTheme
   } from "@sentropic/design-system-themes";
   import { THEMES, PUBLIC_THEMES, isPrivateTheme } from "$lib/theme-catalog";
+  import {
+    allowsPrivateTheme,
+    closePicker,
+    createThemeAccess,
+    openPicker,
+    pickTheme,
+    themesForPicker,
+    toggleDemoPicker,
+    type ThemeAccess
+  } from "$lib/theme-access";
   import ThemePicker from "$lib/ThemePicker.svelte";
   import { compileThemeModes } from "$lib/compile-modes";
   import { colorMode, type ColorMode } from "$lib/color-mode.svelte";
@@ -45,6 +55,7 @@
     reconcileTheme,
     reconcileFramework,
     buildUpdatedSearch,
+    enforceThemePrivacy,
     type ThemeId as UrlThemeId
   } from "$lib/url-state";
   import CompareButton from "$lib/compare/CompareButton.svelte";
@@ -228,40 +239,61 @@
   }
 
   // Les thèmes tiers sont des clones mesurés de marques privées : ils ne
-  // paraissent pas sur le site public. Ctrl+Shift+X ouvre le catalogue complet,
-  // et le fait de s'y servir lève le masquage pour la session (persisté).
-  const DEMO_MODE_STORAGE_KEY = "st-docs-demo-mode";
-  // Lu AVANT les $state : on ne peut pas référencer un $state dans l'init d'un autre.
-  const initialDemoMode = browser ? localStorage.getItem(DEMO_MODE_STORAGE_KEY) === "true" : false;
-  let demoMode = $state(initialDemoMode);
+  // paraissent pas sur le site public, et Ctrl+Shift+X est la seule porte vers
+  // eux. Toute la logique d'accès (portée du sélecteur, ouverture, mode démo)
+  // vit dans $lib/theme-access, en fonctions pures : c'est là qu'elle est
+  // testable par ses gestes, au lieu de se laisser relire à travers 3 800
+  // lignes de gabarit. Ce layout n'est plus que le câblage.
+  //
+  // L'état est PUREMENT EN MÉMOIRE : rien n'est écrit dans localStorage, donc
+  // chaque chargement de page repart masqué et le geste doit être refait. Un
+  // rechargement en pleine démonstration perd le thème privé : c'est voulu.
+  const initialAccess = createThemeAccess();
+  let access = $state<ThemeAccess>(initialAccess);
 
   // Anonymisation : un thème tiers deep-linké (?theme=cossette) est ignoré tant
-  // que le catalogue n'a pas été ouvert — on retombe sur le thème par défaut.
+  // que la porte n'a pas été ouverte — on retombe sur le thème par défaut.
+  // `initialAccess` (et non `access`) : on ne peut pas lire un $state dans
+  // l'init d'un autre, et un accès neuf n'autorise de toute façon rien.
   let activeThemeId = $state(
-    !initialDemoMode && isPrivateTheme(rawInitialTheme) ? sentTechTheme.id : rawInitialTheme
+    enforceThemePrivacy(rawInitialTheme, allowsPrivateTheme(initialAccess))
   );
   const activeTheme = $derived(
     THEMES.find((theme) => theme.id === activeThemeId) ?? sentTechTheme
   );
-  // Sélecteur public : seuls les thèmes de la liste blanche, hors mode démo.
-  const visibleThemes = $derived(demoMode ? THEMES : PUBLIC_THEMES);
+  // Les surfaces publiques — bouton d'en-tête, menu mobile, AppShell — ne
+  // montrent QUE la liste publique, y compris pendant une démonstration. Le
+  // catalogue complet n'existe que dans le sélecteur ouvert par Ctrl+Shift+X :
+  // sans cette séparation, le bouton d'en-tête deviendrait une seconde porte.
+  const visibleThemes = PUBLIC_THEMES;
 
-  // Garde runtime : si le masquage est rétabli alors qu'un thème tiers est
-  // actif, on revient au thème par défaut (affichage ET URL).
+  // L'invariant, en un seul endroit : ce que le sélecteur reçoit.
+  const pickerThemes = $derived(themesForPicker(access, THEMES));
+
+  function openPublicPicker() {
+    access = openPicker(access);
+  }
+
+  function toggleThemePicker() {
+    access = access.open ? closePicker(access) : openPicker(access);
+  }
+
+  // Garde runtime, en défense de dernier ressort : un thème privé ne doit
+  // jamais rester actif sur un chargement masqué (affichage ET URL). Le filtre
+  // en amont (enforceThemePrivacy, appliqué à l'init et à chaque lecture
+  // d'URL) devrait suffire ; cette garde ne coûte rien et ne dépend pas de
+  // l'ordre des effets.
   $effect(() => {
     if (!browser) return;
-    if (!demoMode && isPrivateTheme(activeThemeId)) activeThemeId = sentTechTheme.id;
+    if (!allowsPrivateTheme(access) && isPrivateTheme(activeThemeId)) {
+      activeThemeId = sentTechTheme.id;
+    }
   });
 
-  $effect(() => {
-    if (!browser) return;
-    localStorage.setItem(DEMO_MODE_STORAGE_KEY, String(demoMode));
-  });
-
-  // Choisir un thème tiers dans le catalogue lève le masquage : sans cela, la
+  // Choisir un thème privé lève le masquage pour ce chargement : sans cela, la
   // garde ci-dessus annulerait la sélection dans la foulée.
   function selectTheme(id: string) {
-    if (isPrivateTheme(id)) demoMode = true;
+    access = pickTheme(access, id);
     activeThemeId = id;
   }
 
@@ -296,7 +328,13 @@
     untrack(() => {
       // Param présent => autorité URL ; absent => on conserve l'état courant
       // (afterNavigate ré-estampille). On n'écrit que si différent (anti-boucle).
-      const nextTheme = reconcileTheme(urlTheme, activeThemeId as UrlThemeId);
+      // Le filtre s'applique ICI, sur la valeur qui vient de l'URL, et non plus
+      // seulement dans une garde en aval : un `?theme=` privé n'atteint jamais
+      // l'état, donc il ne peut ni être appliqué ni être persisté.
+      const nextTheme = enforceThemePrivacy(
+        reconcileTheme(urlTheme, activeThemeId as UrlThemeId),
+        allowsPrivateTheme(access)
+      );
       if (nextTheme !== activeThemeId) activeThemeId = nextTheme;
       const nextFramework = reconcileFramework(urlFramework, framework.value);
       if (nextFramework !== framework.value) framework.value = nextFramework;
@@ -312,6 +350,12 @@
     if (!browser) return;
     // Toute navigation (ex. clic sur un résultat de recherche) ferme la palette.
     searchOpen = false;
+    // …et le sélecteur de thèmes, par la MÊME transition que toute autre
+    // fermeture : sans cela, un sélecteur ouvert par Ctrl+Shift+X survivrait au
+    // clic sur un lien interne et promènerait le catalogue complet de page en
+    // page. `closePicker` ne touche pas à `demoMode` : naviguer ferme le
+    // panneau, il ne remasque pas (c'est l'affaire du chargement suivant).
+    access = closePicker(access);
     // Le store est amorcé SYNCHRONEMENT depuis l'URL au montage : sur la
     // navigation initiale, buildUpdatedSearch reproduit la search courante => no-op
     // (aucun risque d'écraser le ?theme/?framework du deep-link). Sur une nav
@@ -368,7 +412,7 @@
   });
 
   let isOpen = $state(false);
-  let isThemeOpen = $state(false);
+  const isThemeOpen = $derived(access.open);
   let isFrameworkOpen = $state(false);
   let isMobileMenuOpen = $state(false);
   let isSidebarOpen = $state(false);
@@ -523,7 +567,7 @@
       themes: visibleThemes.map((t) => ({ id: t.id, label: t.label })),
       theme: activeThemeId,
       colorMode: colorMode.value,
-      onThemeChange: (id) => (activeThemeId = id),
+      onThemeChange: (id: string) => selectTheme(id),
       onColorModeChange: (mode) => (colorMode.value = mode),
       themeLabel: locale.value === "fr" ? "Changer le thème" : "Change theme",
     },
@@ -561,13 +605,13 @@
     e.preventDefault();
     openSearch();
   }
-  // Ctrl+Shift+X est la SEULE porte vers les thèmes tiers : il bascule le
-  // masquage et, quand il le lève, ouvre le catalogue complet. Le bouton de
-  // thème de l'en-tête, lui, n'ouvre jamais que la liste publique.
+  // Ctrl+Shift+X est la SEULE porte vers les thèmes tiers. Il ouvre le
+  // catalogue complet ; le represser referme le panneau — sans rien détruire,
+  // exactement comme Échap. Le remasquage, lui, est l'affaire du chargement
+  // suivant : l'état d'accès n'est jamais persisté.
   if (e.ctrlKey && e.shiftKey && e.code === "KeyX") {
     e.preventDefault();
-    demoMode = !demoMode;
-    isThemeOpen = demoMode;
+    access = toggleDemoPicker(access);
   }
 }} />
 
@@ -661,7 +705,7 @@
     <button
       type="button"
       class="docs-header-control docs-header-menuButton docs-locale-trigger docs-theme-trigger"
-      onclick={() => (isThemeOpen = true)}
+      onclick={openPublicPicker}
       aria-expanded={isThemeOpen}
       aria-haspopup="dialog"
       aria-label={locale.value === "fr" ? "Changer le thème" : "Change theme"}
@@ -831,7 +875,7 @@
     <ChromeCarbon
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -852,7 +896,7 @@
     <ChromeAnthropic
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -873,7 +917,7 @@
     <ChromeOpenai
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -894,7 +938,7 @@
     <ChromeGemini
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -915,7 +959,7 @@
     <ChromeGithub
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -936,7 +980,7 @@
     <ChromeMistral
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -957,7 +1001,7 @@
     <ChromePerplexity
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -978,7 +1022,7 @@
     <ChromeCopilot
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -999,7 +1043,7 @@
     <ChromePalantir
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1020,7 +1064,7 @@
     <ChromeNousHermes
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1041,7 +1085,7 @@
     <ChromeAmazon
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1062,7 +1106,7 @@
     <ChromeVercel
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1083,7 +1127,7 @@
     <ChromeAssistantUi
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1104,7 +1148,7 @@
     <ChromeCohere
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1125,7 +1169,7 @@
     <ChromeXai
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1146,7 +1190,7 @@
     <ChromeMeta
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1167,7 +1211,7 @@
     <ChromeTogether
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1188,7 +1232,7 @@
     <ChromeDeepseek
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1209,7 +1253,7 @@
     <ChromeDatabricks
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1230,7 +1274,7 @@
     <ChromeAi21
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1251,7 +1295,7 @@
     <ChromeStability
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1272,7 +1316,7 @@
     <ChromeGroq
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1293,7 +1337,7 @@
     <ChromeReplicate
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1314,7 +1358,7 @@
     <ChromeHuggingface
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1335,7 +1379,7 @@
     <ChromeCharacterAi
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1356,7 +1400,7 @@
     <ChromeInflection
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1377,7 +1421,7 @@
     <ChromeYou
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1398,7 +1442,7 @@
     <ChromeOpenrouter
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1419,7 +1463,7 @@
     <ChromeWriter
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1440,7 +1484,7 @@
     <ChromePoe
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1461,7 +1505,7 @@
     <ChromeFireworks
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1482,7 +1526,7 @@
     <ChromeDsfr
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1503,7 +1547,7 @@
     <ChromeAirbus
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1524,7 +1568,7 @@
     <ChromeCanada
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1545,7 +1589,7 @@
     <ChromeQuebec
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1566,7 +1610,7 @@
     <ChromeLightspeed
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1587,7 +1631,7 @@
     <ChromeDesjardins
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1608,7 +1652,7 @@
     <ChromeSsense
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1629,7 +1673,7 @@
     <ChromeUbisoft
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1650,7 +1694,7 @@
     <ChromeCirqueDuSoleil
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1671,7 +1715,7 @@
     <ChromeCgi
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1692,7 +1736,7 @@
     <ChromeNationalBank
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1713,7 +1757,7 @@
     <ChromeBombardier
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1734,7 +1778,7 @@
     <ChromeSaq
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1755,7 +1799,7 @@
     <ChromeNuvei
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1776,7 +1820,7 @@
     <ChromeCoveo
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1797,7 +1841,7 @@
     <ChromeCae
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1818,7 +1862,7 @@
     <ChromeSaintGobain
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1839,7 +1883,7 @@
     <ChromeDassaultSystemes
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1860,7 +1904,7 @@
     <ChromeThales
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1881,7 +1925,7 @@
     <ChromeSafran
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1902,7 +1946,7 @@
     <ChromeCapgemini
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1923,7 +1967,7 @@
     <ChromePernodRicard
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1944,7 +1988,7 @@
     <ChromeCreditAgricole
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1965,7 +2009,7 @@
     <ChromeSocieteGenerale
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -1986,7 +2030,7 @@
     <ChromeEdenred
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2007,7 +2051,7 @@
     <ChromeWorldline
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2028,7 +2072,7 @@
     <ChromeVinci
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2049,7 +2093,7 @@
     <ChromeBouygues
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2070,7 +2114,7 @@
     <ChromeVeolia
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2091,7 +2135,7 @@
     <ChromePublicis
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2112,7 +2156,7 @@
     <ChromeRenault
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2133,7 +2177,7 @@
     <ChromeAccor
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2154,7 +2198,7 @@
     <ChromeAirLiquide
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2175,7 +2219,7 @@
     <ChromeSchneiderElectric
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2196,7 +2240,7 @@
     <ChromeEngie
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2217,7 +2261,7 @@
     <ChromeEdf
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2238,7 +2282,7 @@
     <ChromeLoreal
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2259,7 +2303,7 @@
     <ChromeSanofi
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2280,7 +2324,7 @@
     <ChromeDanone
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2301,7 +2345,7 @@
     <ChromeHermes
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2322,7 +2366,7 @@
     <ChromeKering
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2343,7 +2387,7 @@
     <ChromeLvmh
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2364,7 +2408,7 @@
     <ChromeOrange
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2385,7 +2429,7 @@
     <ChromeBnpParibas
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2406,7 +2450,7 @@
     <ChromeAxa
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2427,7 +2471,7 @@
     <ChromeTotalenergies
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2448,7 +2492,7 @@
     <ChromeStm
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2469,7 +2513,7 @@
     <ChromeCircleK
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2490,7 +2534,7 @@
     <ChromeAldo
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2511,7 +2555,7 @@
     <ChromeBrp
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2532,7 +2576,7 @@
     <ChromeAirCanada
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2553,7 +2597,7 @@
     <ChromeMetro
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2574,7 +2618,7 @@
     <ChromeHopper
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2595,7 +2639,7 @@
     <ChromeCascades
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2616,7 +2660,7 @@
     <ChromeDialogue
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2637,7 +2681,7 @@
     <ChromeMomentFactory
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2658,7 +2702,7 @@
     <ChromeGenetec
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2679,7 +2723,7 @@
     <ChromeSaputo
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2700,7 +2744,7 @@
     <ChromeMirego
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2721,7 +2765,7 @@
     <ChromeEllio
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2742,7 +2786,7 @@
     <ChromeLionElectric
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2763,7 +2807,7 @@
     <ChromeVideotron
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2784,7 +2828,7 @@
     <ChromeFrankAndOak
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2805,7 +2849,7 @@
     <ChromeSidLee
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2826,7 +2870,7 @@
     <ChromeWorkleap
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2847,7 +2891,7 @@
     <ChromeSimons
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2868,7 +2912,7 @@
     <ChromeLaVieEnRose
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2889,7 +2933,7 @@
     <ChromeDollarama
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2910,7 +2954,7 @@
     <ChromeBell
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2931,7 +2975,7 @@
     <ChromeBehaviourInteractive
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2952,7 +2996,7 @@
     <ChromeRona
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2973,7 +3017,7 @@
     <ChromeGameloft
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -2994,7 +3038,7 @@
     <ChromeCossette
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -3015,7 +3059,7 @@
     <ChromeEidosMontreal
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -3036,7 +3080,7 @@
     <ChromeStingray
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -3057,7 +3101,7 @@
     <ChromeLg2
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -3078,7 +3122,7 @@
     <ChromeSonder
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -3099,7 +3143,7 @@
     <ChromePlusgrade
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -3120,7 +3164,7 @@
     <ChromeGildan
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -3141,7 +3185,7 @@
     <ChromeQuebecor
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -3162,7 +3206,7 @@
     <ChromeCogeco
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -3183,7 +3227,7 @@
     <ChromeIa
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -3204,7 +3248,7 @@
     <ChromeLaurentianBank
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -3225,7 +3269,7 @@
     <ChromeJeanCoutu
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -3246,7 +3290,7 @@
     <ChromeReitmans
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -3267,7 +3311,7 @@
     <ChromeStHubert
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -3288,7 +3332,7 @@
     <ChromeBeneva
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -3309,7 +3353,7 @@
     <ChromeAirTransat
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -3330,7 +3374,7 @@
     <ChromeBirks
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -3351,7 +3395,7 @@
     <ChromeLufaFarms
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -3372,7 +3416,7 @@
     <ChromeHydroQuebec
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -3393,7 +3437,7 @@
     <ChromeEnergir
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -3414,7 +3458,7 @@
     <ChromeAgropur
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -3435,7 +3479,7 @@
     <ChromeVanHoutte
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -3456,7 +3500,7 @@
     <ChromeDynamite
       activeThemeId={activeThemeId}
       isThemeOpen={isThemeOpen}
-      onThemeToggle={() => (isThemeOpen = !isThemeOpen)}
+      onThemeToggle={toggleThemePicker}
       onSearchOpen={openSearch}
       themeSwitcher={themeSelector}
       frameworkSwitcher={frameworkSelector}
@@ -3557,7 +3601,7 @@
                 type="button"
                 class="docs-mobile-locale-btn"
                 class:active={activeThemeId === theme.id}
-                onclick={() => { activeThemeId = theme.id; isMobileMenuOpen = false; }}
+                onclick={() => { selectTheme(theme.id); isMobileMenuOpen = false; }}
               >
                 {theme.label}
               </button>
@@ -3808,9 +3852,15 @@
      Client-only (rendu gardé par `browser`), positionné en fixed bottom-right. -->
 <ChatWidget />
 
+<!--
+  Liaison par fonctions : le sélecteur se referme aussi de l'intérieur (Échap,
+  ✕, clic sur le fond). En routant CETTE fermeture-là par `closePicker`, on
+  garantit que la portée retombe à la liste publique quelle que soit la sortie —
+  et qu'aucune sortie ne change le thème actif.
+-->
 <ThemePicker
-  bind:open={isThemeOpen}
-  themes={visibleThemes}
+  bind:open={() => access.open, (value) => { if (!value) access = closePicker(access); }}
+  themes={pickerThemes}
   activeThemeId={activeThemeId}
   locale={locale.value}
   onselect={selectTheme}
