@@ -28,6 +28,10 @@ jobs:
         run: |
           npm --workspace packages/skills run build
           npm --workspace packages/skills run test
+      - name: Build workspace for package smoke
+        run: npm run build
+      - name: Smoke packed packages
+        run: npm run pack:smoke
 
   release-guard:
     needs: verify
