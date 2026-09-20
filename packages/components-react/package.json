@@ -1,6 +1,7 @@
 {
   "name": "@sentropic/design-system-react",
   "version": "0.37.0",
+  "license": "MIT",
   "description": "React components for the Sentropic design system.",
   "type": "module",
   "publishConfig": {
