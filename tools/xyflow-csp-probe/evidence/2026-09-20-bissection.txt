@@ -1,0 +1,4 @@
+MiniMap=0 interaction=0  →  violations: 0 [] 2
+MiniMap=0 interaction=1  →  violations: 0 [] 2
+MiniMap=1 interaction=0  →  violations: 1 ['style-src-attr'] 2
+MiniMap=1 interaction=1  →  violations: 1 ['style-src-attr'] 2
