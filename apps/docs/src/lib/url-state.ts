@@ -5,7 +5,7 @@ import type { FrameworkId } from "./framework.svelte";
 import { FRAMEWORKS, DEFAULT_FRAMEWORK } from "./framework.svelte";
 
 // ── Thèmes valides ────────────────────────────────────────────────────────────
-import { THEMES } from "./theme-catalog";
+import { THEMES, isPrivateTheme } from "./theme-catalog";
 export type ThemeId = string;
 export const VALID_THEME_IDS: readonly ThemeId[] = THEMES.map((theme) => theme.id);
 export const DEFAULT_THEME_ID: ThemeId = "sent-tech";
@@ -76,6 +76,19 @@ export function resolveFramework(
 
 export function reconcileTheme(urlValue: ThemeId | null, current: ThemeId): ThemeId {
   return urlValue !== null ? urlValue : current;
+}
+
+/**
+ * Filtre de confidentialité, appliqué à tout identifiant venant de l'extérieur —
+ * URL ou localStorage. Il vit ici, et non dans un `$effect` du layout, parce
+ * qu'une protection qui ne tient qu'à l'ordre textuel des effets se casse au
+ * premier réagencement, sans qu'aucun test ne bronche.
+ *
+ * Sûr par défaut : un identifiant inconnu est privé, donc écarté.
+ */
+export function enforceThemePrivacy(id: ThemeId, allowPrivate: boolean): ThemeId {
+  if (allowPrivate) return id;
+  return isPrivateTheme(id) ? DEFAULT_THEME_ID : id;
 }
 
 export function reconcileFramework(
