@@ -1,0 +1,31 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Collision d'identifiants</title></head><body>
+<div id="a"></div><div id="b"></div>
+<script type="module">
+import mermaid from '/node_modules/mermaid/dist/mermaid.esm.min.mjs';
+import iconsJson from '/node_modules/@iconify-json/logos/icons.json' with { type: 'json' };
+mermaid.registerIconPacks([{ name: 'logos', icons: iconsJson }]);
+mermaid.initialize({ startOnLoad: false });
+const def = (n) => `flowchart LR\n  X${n}@{ icon: "logos:aws-lambda", form: "square", label: "L${n}" }\n`;
+
+// Deux rendus distincts sur la même page, comme GitLab en autorise jusqu'à 50.
+const r1 = await mermaid.render('d1', def(1));
+const r2 = await mermaid.render('d2', def(2));
+document.getElementById('a').innerHTML = r1.svg;
+document.getElementById('b').innerHTML = r2.svg;
+
+const ids = (s) => [...s.matchAll(/id="(IconifyId[^"]+)"/g)].map((m) => m[1]);
+const id1 = ids(r1.svg), id2 = ids(r2.svg);
+
+// Et le cas de l'export : le MÊME svg inliné deux fois.
+document.body.insertAdjacentHTML('beforeend', `<div id="c">${r1.svg}</div>`);
+const dupIds = [...document.querySelectorAll('[id^="IconifyId"]')].map((e) => e.id);
+const doublons = dupIds.filter((v, i) => dupIds.indexOf(v) !== i);
+
+window.__out = {
+  idsRendu1: id1, idsRendu2: id2,
+  collisionEntreRendus: id1.filter((x) => id2.includes(x)),
+  identifiantsDupliquesApresReinsertion: [...new Set(doublons)],
+  totalIdsDansLaPage: dupIds.length
+};
+window.__done = true;
+</script></body></html>

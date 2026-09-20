@@ -1,0 +1,50 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Sonde icônes mermaid</title></head><body>
+<div id="out"></div>
+<script type="module">
+import mermaid from '/node_modules/mermaid/dist/mermaid.esm.min.mjs';
+import iconsJson from '/node_modules/@iconify-json/logos/icons.json' with { type: 'json' };
+
+const report = { version: '11.17.2', etapes: [] };
+try {
+  mermaid.registerIconPacks([{ name: 'logos', icons: iconsJson }]);
+  report.etapes.push('registerIconPacks ok');
+} catch (e) { report.etapes.push('registerIconPacks ÉCHEC: ' + e); }
+
+mermaid.initialize({ startOnLoad: false, securityLevel: 'strict' });
+
+const def = `flowchart LR
+  A@{ icon: "logos:aws", form: "square", label: "Compute" }
+  B@{ icon: "logos:aws-lambda", form: "rounded", label: "Lambda" }
+  A --> B
+`;
+let svg = '';
+try { ({ svg } = await mermaid.render('ic', def)); report.etapes.push('render ok'); }
+catch (e) { report.etapes.push('render ÉCHEC: ' + e); }
+document.getElementById('out').innerHTML = svg;
+
+const root = document.getElementById('out');
+report.comptes = {
+  img: root.querySelectorAll('img').length,
+  imageSvg: root.querySelectorAll('image').length,
+  svgImbriques: root.querySelectorAll('svg svg').length,
+  pathTotaux: root.querySelectorAll('path').length,
+  foreignObject: root.querySelectorAll('foreignObject').length,
+  use: root.querySelectorAll('use').length
+};
+report.dataUriPresent = /data:image\//.test(svg);
+report.hrefExternes = [...root.querySelectorAll('[href],[xlink\\:href],[src]')]
+  .map((e) => (e.getAttribute('href') || e.getAttribute('src') || '').slice(0, 60))
+  .filter((v) => v && !v.startsWith('#')).slice(0, 5);
+// à quoi ressemble concrètement le noeud à icône
+const first = root.querySelector('.node');
+report.extraitNoeud = first ? first.innerHTML.replace(/\s+/g, ' ').slice(0, 320) : null;
+report.tailleSvg = svg.length;
+// Le contenu de l'icône est-il bien celui du pack ?
+const nested = root.querySelectorAll('svg svg');
+report.iconesRendues = [...nested].map((n) => ({
+  viewBox: n.getAttribute('viewBox'), paths: n.querySelectorAll('path').length,
+  premierFill: n.querySelector('path')?.getAttribute('fill') ?? null
+}));
+report.contientCouleurAws = svg.includes('#252f3e');
+window.__out = report; window.__done = true;
+</script></body></html>

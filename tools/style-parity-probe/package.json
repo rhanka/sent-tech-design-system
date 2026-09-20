@@ -4,6 +4,13 @@
   "type": "module",
   "version": "0.0.0",
   "description": "Mesure des propriétés de style qu'une cible d'export conserve réellement au rendu.",
-  "scripts": { "measure:mermaid": "node probe/mermaid-probe.mjs" },
-  "devDependencies": { "mermaid": "11.17.2" }
+  "scripts": {
+    "measure:mermaid": "node probe/mermaid-probe.mjs",
+    "measure:icons": "node probe/mermaid-icons-probe.mjs",
+    "measure:id-collision": "node probe/mermaid-idcollision-probe.mjs"
+  },
+  "devDependencies": {
+    "mermaid": "11.17.2",
+    "@iconify-json/logos": "^1.2.14"
+  }
 }
