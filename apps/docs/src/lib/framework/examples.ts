@@ -216,6 +216,10 @@ export type ComponentName =
   | "DashboardGrid"
   | "DataGrid"
   | "PieChart"
+  | "Icon"
+  | "PanelStack"
+  | "PanelSection"
+  | "TimeRangePicker"
   | "Progress";
 
 export interface ComponentNodeSpec {
