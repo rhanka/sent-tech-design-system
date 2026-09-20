@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
+import { THEMES } from "./theme-catalog";
 
 const docsRoot = resolve(__dirname, "../..");
 const layoutSource = readFileSync(resolve(docsRoot, "src/routes/+layout.svelte"), "utf8");
@@ -96,7 +97,9 @@ describe("docs header alignment contract", () => {
   });
 
   it("includes the imported tenants (Airbus, Canada, Québec) in the theme picker", () => {
-    expect(layoutSource).toContain('const THEMES: TenantTheme[] = [sentTechTheme, dsfrTheme, carbonTheme, airbusTheme, canadaTheme, quebecTheme, ssenseTheme, lightspeedTheme, desjardinsTheme, nationalBankTheme, cirqueDuSoleilTheme, ubisoftTheme, bombardierTheme, caeTheme, saqTheme, cgiTheme, stmTheme, nuveiTheme, coveoTheme, circleKTheme, aldoTheme, brpTheme, miregoTheme, ellioTheme, airCanadaTheme, cascadesTheme, hopperTheme, dialogueTheme, momentFactoryTheme, lionElectricTheme, genetecTheme, videotronTheme, saputoTheme, metroTheme, workleapTheme, frankAndOakTheme, sidLeeTheme, simonsTheme, laVieEnRoseTheme, dollaramaTheme, bellTheme, behaviourInteractiveTheme, ronaTheme, gameloftTheme, cossetteTheme, eidosMontrealTheme, stingrayTheme, lg2Theme, sonderTheme, plusgradeTheme, gildanTheme, quebecorTheme, cogecoTheme, iaTheme, laurentianBankTheme, jeanCoutuTheme, reitmansTheme, stHubertTheme, benevaTheme, airTransatTheme, birksTheme, lufaFarmsTheme, hydroQuebecTheme, energirTheme, agropurTheme, vanHoutteTheme, dynamiteTheme, lvmhTheme, lorealTheme, totalenergiesTheme, sanofiTheme, bnpParibasTheme, hermesTheme, keringTheme, pernodRicardTheme, danoneTheme, accorTheme, axaTheme, societeGeneraleTheme, creditAgricoleTheme, edenredTheme, worldlineTheme, airLiquideTheme, schneiderElectricTheme, saintGobainTheme, engieTheme, edfTheme, dassaultSystemesTheme, thalesTheme, safranTheme, capgeminiTheme, orangeTheme, vinciTheme, bouyguesTheme, veoliaTheme, publicisTheme, renaultTheme, anthropicTheme, openaiTheme, geminiTheme, copilotTheme, githubTheme, perplexityTheme, palantirTheme, nousHermesTheme, mistralTheme, amazonTheme, vercelTheme, assistantUiTheme, cohereTheme, xaiTheme, metaTheme, togetherTheme, deepseekTheme, databricksTheme, ai21Theme, stabilityTheme, groqTheme, replicateTheme, huggingfaceTheme, characterAiTheme, inflectionTheme, youTheme, openrouterTheme, writerTheme, poeTheme, fireworksTheme]');
+    expect(THEMES.map((theme) => theme.id)).toEqual(
+      expect.arrayContaining(["airbus", "canada", "quebec", "desjardins", "national-bank", "hydro-quebec"])
+    );
   });
 
   it("does not render fake auth access in the public docs header", () => {
