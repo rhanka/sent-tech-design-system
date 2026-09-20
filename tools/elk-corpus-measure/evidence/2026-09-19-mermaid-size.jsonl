@@ -1,0 +1,3 @@
+{"vue":"architecture-sauvegardes","noeuds":35,"liaisons":15,"caracteres":2879,"limiteGitLab":2000,"passeGitLab":false,"depassement":879}
+{"vue":"mise-en-service","noeuds":15,"liaisons":15,"caracteres":1564,"limiteGitLab":2000,"passeGitLab":true,"depassement":0}
+{"vue":"sequence-bout-en-bout","noeuds":17,"liaisons":17,"caracteres":1678,"limiteGitLab":2000,"passeGitLab":true,"depassement":0}
