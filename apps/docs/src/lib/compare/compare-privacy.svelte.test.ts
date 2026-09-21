@@ -9,6 +9,7 @@ import { createRawSnippet, flushSync, tick } from "svelte";
 import { cleanup, fireEvent, render } from "@testing-library/svelte";
 import Layout from "../../routes/+layout.svelte";
 import ComparePage from "../../routes/compare/+page.svelte";
+import CompareInLayoutFixture from "./CompareInLayoutFixture.svelte";
 import { PRIVATE_THEME_ACCESS, compareThemeFor } from "./compare-store.svelte";
 
 // Le layout lit l'URL par `page.url` (triptyque) et par `window.location`
@@ -20,7 +21,11 @@ vi.mock("$app/state", () => ({
 vi.mock("$app/navigation", () => ({ replaceState: vi.fn(), afterNavigate: vi.fn(), goto: vi.fn() }));
 vi.mock("$app/environment", () => ({ browser: true, dev: false, building: false, version: "test" }));
 
-afterEach(cleanup);
+// Le mode révélé est persisté : chaque test repart d'un stockage vide.
+afterEach(() => {
+  cleanup();
+  localStorage.clear();
+});
 
 async function openLayoutAt(path: string) {
   nav.url = new URL(`http://localhost${path}`);
@@ -90,6 +95,21 @@ describe("/compare bench: private themes stay behind Ctrl+Shift+X", () => {
     expect(benchThemes()).toEqual(["dsfr", "carbon"]);
     expect(document.body.textContent).toContain("IBM Carbon officiel");
     expect(document.head.innerHTML).toContain("cmp-scope--carbon");
+  });
+
+  it("follows the layout's reveal when mounted inside the real layout", async () => {
+    // Le vrai layout, la vraie page : c'est le contexte fourni par le layout,
+    // et non un contexte de test, qui décide. Un layout qui fournirait
+    // `() => true` montrerait Carbon dès le chargement masqué.
+    nav.url = new URL("http://localhost/compare");
+    window.history.replaceState({}, "", "/compare");
+    render(CompareInLayoutFixture);
+    await tick();
+    expect(benchThemes()).toEqual(["dsfr"]);
+    expect(document.querySelector('[data-compare-theme="carbon"]')).toBeNull();
+
+    await pressDemoShortcut();
+    expect(benchThemes()).toEqual(["dsfr", "carbon"]);
   });
 });
 
