@@ -6,20 +6,29 @@ import type { TenantTheme } from "@sentropic/design-system-themes";
  * the Sentropic token structure.
  *
  * All values below are taken from the PUBLIC SDG design tokens (`--qc-*`)
- * distributed under the MIT licence by Quebecca/qc_trousse_sdg. Only font
+ * published by Quebecca/qc_trousse_sdg (licence: see below). Only font
  * *names* are referenced (Open Sans), never font binaries. Sources and the full
  * mapping table are in MAPPING.md. Where the SDG has no direct equivalent for a
  * Sentropic role, the closest SDG token is used and the choice is noted
  * "à confirmer" in MAPPING.md.
  *
- * LICENSING — AND THE TENSION TO READ WITH IT. The sentence above says what the
- * UPSTREAM SOURCE is published under. It does not say what regime applies to
- * this package's subject matter, and the two are different questions: the
- * marks, signatures and state emblems a state design system carries are not
- * covered by the licence of the source that describes them. This package's
- * shipped `LICENSE.THIRD-PARTY.md` records that second question as
- * `unresolved` — a pending owner decision. Neither statement overrides the
- * other, and nothing here settles it.
+ * LICENSING — UPSTREAM ATTRIBUTION (owner decision; verified 2026-09-21). This
+ * transcription code is published under MIT (see LICENSE). It cites its source
+ * and claims no right over it:
+ *   - Upstream: Système de design gouvernemental (SDG), gouvernement du Québec
+ *     (ministère du Conseil exécutif) — https://github.com/Quebecca/qc_trousse_sdg
+ *   - Upstream licence: the repository's licence file, copyright.txt (blob
+ *     79656060), is the MIT text with the line "Copyright (c) Microsoft
+ *     Corporation."; its package.json and the npm registry declare ISC. The
+ *     two do not agree and the holder line does not name the publisher: this
+ *     is recorded as published, not corrected (`source-gap`).
+ *   - The government signature, the flag and the emblems of Québec are covered
+ *     by neither licence: the signature is for the exclusive use of the
+ *     Government of Québec. This package ships no mark or emblem file; as
+ *     strings it ships colour values (including the PIV blue #095797), the
+ *     Open Sans font name and the theme label "Gouvernement du Québec".
+ * The verbatim upstream notice, the usage rules and what remains open are in
+ * the shipped `LICENSE.THIRD-PARTY.md`.
  *
  * SDG colour reference (thème clair) — public/css/qc-sdg-design-tokens.css :
  *   Bleu PIV (brand / action / lien)    #095797   --qc-color-blue-piv
