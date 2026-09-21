@@ -9,6 +9,9 @@ const navigationSource = readFileSync(resolve(docsRoot, "src/lib/docs-navigation
 const frameworkSource = readFileSync(resolve(docsRoot, "src/lib/framework.svelte.ts"), "utf8");
 const appCss = readFileSync(resolve(docsRoot, "src/app.css"), "utf8");
 const appHtml = readFileSync(resolve(docsRoot, "src/app.html"), "utf8");
+// Script pré-hydratation : servi tel quel depuis static/ (compatibilité CSP
+// `script-src 'self'`), chargé par app.html.
+const preHydrationScript = readFileSync(resolve(docsRoot, "static/pre-hydration.js"), "utf8");
 const carbonChromeSource = readFileSync(
   resolve(docsRoot, "src/lib/chrome/ChromeCarbon.svelte"),
   "utf8"
@@ -31,8 +34,8 @@ const airbusChromeSource = readFileSync(
 );
 
 /**
- * Extrait `var PUBLIC_BOOT_THEMES = [...]` du script pré-hydratation de
- * app.html. Lecture TOLÉRANTE : elle rend `null` quand la déclaration est
+ * Extrait `var PUBLIC_BOOT_THEMES = [...]` du script pré-hydratation
+ * (static/pre-hydration.js). Lecture TOLÉRANTE : elle rend `null` quand la déclaration est
  * absente ou n'est pas un littéral de chaînes simples, pour que le test
  * ÉCHOUE avec un message lisible au lieu de lever une exception de parsing.
  */
@@ -48,13 +51,13 @@ function readBootAllowlist(source: string): string[] | null {
 }
 
 /**
- * Exécute le script pré-hydratation de app.html contre un navigateur réduit à
- * ce qu'il touche : localStorage, l'attribut de <html>, l'URL. Rend le thème
- * posé sur <html> et l'URL réécrite (`null` quand il n'y touche pas).
+ * Exécute le script pré-hydratation (le fichier servi, tel quel) contre un
+ * navigateur réduit à ce qu'il touche : localStorage, l'attribut de <html>,
+ * l'URL. Rend le thème posé sur <html> et l'URL réécrite (`null` quand il n'y
+ * touche pas).
  */
 function runBootScript(storage: Record<string, string>, search = "") {
-  const script = appHtml.match(/<script>([\s\S]*?)<\/script>/)?.[1];
-  if (script === undefined) throw new Error("script pré-hydratation introuvable dans app.html");
+  const script = preHydrationScript;
   const attributes: Record<string, string> = {};
   let rewrittenUrl: string | null = null;
   const browser = {
@@ -115,7 +118,7 @@ describe("docs header alignment contract", () => {
 
   it("offers Angular in the shared framework selector and initial URL bootstrap", () => {
     expect(frameworkSource).toContain('{ id: "angular", label: "Angular" }');
-    expect(appHtml).toContain('fw === "angular"');
+    expect(preHydrationScript).toContain('fw === "angular"');
   });
 
   it("moves the version + GitHub link to the bottom of the left sidebar", () => {
@@ -175,10 +178,10 @@ describe("docs header alignment contract", () => {
     // thèmes publics parfaitement légitimes — et déplacerait silencieusement
     // l'ensemble des chargements qui empruntent le chemin sans param. Un test
     // d'inclusion laisserait passer `["sent-tech"]` seul ; celui-ci non.
-    const allowlist = readBootAllowlist(appHtml);
+    const allowlist = readBootAllowlist(preHydrationScript);
     expect(
       allowlist,
-      "var PUBLIC_BOOT_THEMES = [...] introuvable ou pas un littéral de chaînes dans app.html"
+      "var PUBLIC_BOOT_THEMES = [...] introuvable ou pas un littéral de chaînes dans static/pre-hydration.js"
     ).not.toBeNull();
 
     const publicIds = PUBLIC_THEMES.map((theme) => theme.id);
@@ -188,7 +191,27 @@ describe("docs header alignment contract", () => {
     expect([...allowlist!].sort()).toEqual([...publicIds].sort());
 
     expect(appHtml).not.toContain("st-docs-theme-public");
+    expect(preHydrationScript).not.toContain("st-docs-theme-public");
     expect(layoutSource).not.toContain("st-docs-theme-public");
+  });
+
+  it("loads the pre-hydration script as a render-blocking file in <head>, never inline", () => {
+    // Compatibilité CSP `script-src 'self'` : app.html ne porte AUCUN script
+    // inline. Anti-FOUC : le fichier est un script classique SYNCHRONE dans
+    // <head> (ni async, ni defer, ni module), donc bloquant pour le rendu : il
+    // pose ses attributs sur <html> avant la première peinture. Il précède les
+    // feuilles de style (il ne les attend pas) et l'en-tête SvelteKit.
+    const scripts = [...appHtml.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)];
+    expect(scripts, "app.html doit charger exactement un script").toHaveLength(1);
+    const [tag, attributes, inlineSource] = scripts[0];
+    expect(inlineSource.trim(), "aucun code inline dans app.html").toBe("");
+    expect(attributes).toMatch(/^ src="%sveltekit\.assets%\/pre-hydration\.js\?v=%sveltekit\.version%"$/);
+
+    const head = appHtml.slice(appHtml.indexOf("<head>"), appHtml.indexOf("</head>"));
+    const at = head.indexOf(tag);
+    expect(at, "le script pré-hydratation doit être dans <head>").toBeGreaterThan(-1);
+    expect(at).toBeLessThan(head.indexOf('rel="stylesheet"'));
+    expect(at).toBeLessThan(head.indexOf("%sveltekit.head%"));
   });
 
   it("boots a saved private theme before hydration only when the reveal is persisted", () => {

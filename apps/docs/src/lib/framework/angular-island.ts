@@ -2,10 +2,11 @@
 // package @sentropic/design-system-angular.
 //
 // 100 % cote client : Angular et le package DS Angular sont importes
-// dynamiquement. Le compilateur Angular est charge avant le DS parce que la
-// librairie locale est publiee en compilation partielle et n'est pas linkee par
-// le build SvelteKit. Les styles globaux .st-* sont deja charges par le layout
-// via le CSS React, byte-identique au CSS Angular.
+// dynamiquement. Ces paquets sont publies en compilation partielle ; ils sont
+// lies AU BUILD par le linker Angular (apps/docs/angular-linker.ts), donc
+// @angular/compiler n'est jamais charge dans le navigateur et l'ile n'exige pas
+// `unsafe-eval`. Les styles globaux .st-* sont deja charges par le layout via
+// le CSS React, byte-identique au CSS Angular.
 
 import type {
   ApplicationRef,
@@ -124,7 +125,6 @@ function wireComponentEvent(
 }
 
 async function loadAngularDesignSystem(): Promise<AngularComponents> {
-  await import("@angular/compiler");
   return (await import("@sentropic/design-system-angular")) as unknown as AngularComponents;
 }
 
