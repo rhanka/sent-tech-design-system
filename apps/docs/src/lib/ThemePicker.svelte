@@ -52,29 +52,105 @@
   }
 </script>
 
-<Modal {open} title={locale === "fr" ? "Changer le thème" : "Change theme"}
+<Modal {open} class="theme-picker-modal" title={locale === "fr" ? "Changer le thème" : "Change theme"}
   closeLabel={locale === "fr" ? "Fermer" : "Close"} onclose={close}>
-  <div bind:this={host}>
+  <div class="theme-picker" bind:this={host}>
     <Input type="search" bind:value={query}
       label={locale === "fr" ? "Rechercher un thème" : "Search themes"}
       onkeydown={searchKeydown} />
-    <p role="status">{filtered.length} / {themes.length}</p>
+    <p class="theme-picker__count" role="status">{filtered.length} / {themes.length}</p>
     <div class="theme-results">
-      <Menu label={locale === "fr" ? "Thèmes" : "Themes"} dense={true}
+      <Menu label={locale === "fr" ? "Thèmes" : "Themes"}
         items={filtered.map((theme) => ({ value: theme.id, label: theme.label,
           icon: activeThemeId === theme.id ? "✓" : " " }))}
         onselect={select} />
       {#if filtered.length === 0}
-        <p>{locale === "fr" ? "Aucun thème trouvé" : "No themes found"}</p>
+        <p class="theme-picker__empty">{locale === "fr" ? "Aucun thème trouvé" : "No themes found"}</p>
       {/if}
     </div>
   </div>
 </Modal>
 
 <style>
+  /* ── La coquille ─────────────────────────────────────────────────────────
+     `.st-modal` défile EN BLOC (`overflow: auto`). Pour un sélecteur filtrable
+     c'est le mauvais découpage : le titre, le champ de recherche et le compteur
+     doivent rester sous les yeux pendant qu'on parcourt la liste. On rend donc
+     ce modal — et lui seul, via la classe passée en prop — souple en hauteur :
+     en-tête figé, corps qui se rétrécit, comme `.st-drawer` le fait déjà dans
+     le design system (`grid-template-rows: auto 1fr auto` + `overflow` sur le
+     seul corps). La coquille ne défile plus du tout : c'est ce qui garantit
+     qu'il n'y a qu'UN ascenseur, celui de `.theme-results`, au lieu de plafonner
+     la liste à une fraction de `vh` choisie au jugé. */
+  :global(.st-modal.theme-picker-modal) {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  :global(.st-modal.theme-picker-modal > .st-modal__header) {
+    flex: 0 0 auto;
+  }
+
+  :global(.st-modal.theme-picker-modal > .st-modal__body) {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  /* ── La colonne : champ, compteur, liste, tous à la même largeur ─────────
+     Sans ces deux plafonds, `Input` s'arrête à 28rem et `Menu` à 18rem dans un
+     dialogue large de 36rem : la liste n'occupait que la moitié gauche. Ces
+     valeurs par défaut sont justes pour un formulaire et pour un menu ancré à
+     un bouton — pas pour la liste qui EST le contenu du dialogue. On les lève
+     ici seulement, par les tokens prévus pour ça, sans toucher au défaut que
+     partagent Menu, MenuPopover et OverflowMenu. */
+  .theme-picker {
+    --st-component-field-maxWidth: none;
+    --st-component-menu-maxWidth: none;
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: var(--st-spacing-2, 0.5rem);
+    min-height: 0;
+  }
+
+  .theme-picker__count {
+    color: var(--st-semantic-text-secondary);
+    font-size: 0.8125rem;
+    margin: 0;
+  }
+
+  /* ── L'unique zone défilante ─────────────────────────────────────────────
+     Le cadre appartient au conteneur qui défile, pas au contenu : sinon la
+     bordure du menu défilerait avec ses items. */
   .theme-results {
-    max-height: 50vh;
+    border: 1px solid var(--st-semantic-border-subtle);
+    border-radius: var(--st-radius-small, 0.375rem);
+    flex: 1 1 auto;
+    min-height: 0;
     overflow-y: auto;
-    margin-top: var(--st-spacing-2, 0.5rem);
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+  }
+
+  /* `Menu` est ici une liste posée dans un dialogue, pas un menu flottant :
+     il rend sa carte (fond, bordure, ombre) et surtout son propre ascenseur —
+     `max-height: 80vh; overflow-y: auto` — qui se superposait à celui de
+     `.theme-results`. On lui retire les deux, dans ce sous-arbre uniquement. */
+  .theme-results :global(.st-menu) {
+    background: transparent;
+    border: 0;
+    border-radius: inherit;
+    box-shadow: none;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .theme-picker__empty {
+    color: var(--st-semantic-text-secondary);
+    margin: 0;
+    padding: var(--st-spacing-3, 0.75rem);
   }
 </style>
