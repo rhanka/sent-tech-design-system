@@ -1,6 +1,6 @@
 {
   "name": "@sentropic/design-system-angular",
-  "version": "0.37.0",
+  "version": "0.37.1",
   "license": "MIT",
   "description": "Angular components for the Sentropic design system.",
   "type": "module",
