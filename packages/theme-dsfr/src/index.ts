@@ -5,21 +5,29 @@ import type { TenantTheme } from "@sentropic/design-system-themes";
  * DSFR (Système de Design de l'État — French government design system) theme
  * for the Sentropic token structure.
  *
- * All values below are taken from the PUBLIC DSFR (the design system itself is
- * open source under the MIT license; only the Marianne font binary has a
- * restricted license — we only reference the font *name* here, not the file).
- * Sources are documented in MAPPING.md. Where DSFR has no direct equivalent for
- * a Sentropic role, the closest DSFR token is used and the choice is noted in
- * MAPPING.md.
+ * All values below are taken from the PUBLIC DSFR. They were transcribed in
+ * May–June 2026, while the DSFR repository was published under the MIT licence
+ * (up to v1.15.0), the Marianne font excepted — we only reference the font
+ * *name* here, not the file. Sources are documented in MAPPING.md. Where DSFR
+ * has no direct equivalent for a Sentropic role, the closest DSFR token is used
+ * and the choice is noted in MAPPING.md.
  *
- * LICENSING — AND THE TENSION TO READ WITH IT. The sentence above says what the
- * UPSTREAM SOURCE is published under. It does not say what regime applies to
- * this package's subject matter, and the two are different questions: the
- * marks, signatures and state emblems a state design system carries are not
- * covered by the licence of the source that describes them. This package's
- * shipped `LICENSE.THIRD-PARTY.md` records that second question as
- * `unresolved` — a pending owner decision. Neither statement overrides the
- * other, and nothing here settles it.
+ * LICENSING — UPSTREAM ATTRIBUTION (owner decision; verified 2026-09-21). This
+ * transcription code is published under MIT (see LICENSE). It cites its source
+ * and claims no right over it:
+ *   - Upstream: Système de Design de l'État (DSFR), published by the Service
+ *     d'information du Gouvernement (SIG) — https://github.com/GouvernementFR/dsfr
+ *   - Licence of the transcribed values: MIT, per LICENSE.md blob b21b8e9b
+ *     (tags v1.14.4 and v1.15.0), which carries no named copyright line. Since
+ *     v1.15.1 (2026-07-20, commit 3d40e0cd) the DSFR is under Licence Ouverte
+ *     2.0 (Etalab 2.0), with usage terms that reserve it to the
+ *     administration. These values predate that change and were not re-synced.
+ *   - State marks and emblems (the Marque de l'État: bloc-marque, Marianne, the
+ *     Marianne typefaces) are covered by neither licence; the DSFR usage terms
+ *     reserve their use to the State. This package ships none of them — only
+ *     the font name and colour values.
+ * The verbatim upstream notice, the usage rules and what remains open are in
+ * the shipped `LICENSE.THIRD-PARTY.md`.
  *
  * DSFR color reference (light theme — utility / decision tokens):
  *   White (background default)        #ffffff   (--grey-1000-50)
