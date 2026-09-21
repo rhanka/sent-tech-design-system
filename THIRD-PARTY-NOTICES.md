@@ -161,16 +161,47 @@ copies » : écrire « ISC » dans une colonne ne satisfait ni l'une ni l'autre.
 
 ## 5. Questions ouvertes, non tranchées ici
 
-### Les trois thèmes d'État publiables
+### Les trois thèmes d'État publiables — attribution amont
 
 `@sentropic/design-system-theme-dsfr`, `-theme-canada` et `-theme-quebec` sont
-des transcriptions mesurées de systèmes de conception d'État. Le code de
-transcription est publié sous la licence du paquet ; le régime applicable au
-système transcrit lui-même, et aux marques et emblèmes d'État qu'il porte — dont
-la signature et le mot-symbole fédéraux canadiens — est une **décision
-propriétaire en attente**. Statut : `unresolved`. Ce document ne la tranche pas,
-et le `LICENSE.THIRD-PARTY.md` de chacun des trois porte le même avertissement,
-qui ship avec eux.
+des transcriptions mesurées de systèmes de conception d'État. **Décision de
+l'owner : attribution amont.** Les trois paquets restent sous MIT et citent leur
+source ; aucun ne revendique de droit sur le système transcrit. Le
+`LICENSE.THIRD-PARTY.md` de chacun, qui ship avec lui, nomme le système amont,
+son éditeur et sa source, reproduit la notice de licence amont telle que
+publiée, et cite la règle d'usage des marques. Ce texte vit dans
+`scripts/third-party-sources.json` (`notes`). Vérifié le 2026-09-21.
+
+| Thème | Amont et éditeur | Licence amont vérifiée | Marques et emblèmes |
+|---|---|---|---|
+| `theme-dsfr` | DSFR, Service d'information du Gouvernement — `GouvernementFR/dsfr` | MIT jusqu'à la v1.15.0 (`LICENSE.md` blob `b21b8e9b`, sans ligne de copyright nominative), période de la transcription. Licence Ouverte 2.0 depuis la v1.15.1 (2026-07-20). | Marque de l'État — bloc-marque, Marianne, fontes Marianne : usage réservé à l'État par les modalités d'utilisation du DSFR. |
+| `theme-canada` | GCDS, Service numérique canadien — `cds-snc/gcds-tokens`, `cds-snc/gcds-components` | MIT : « Copyright (c) 2021 Canadian Digital Service – Service numérique canadien » (jetons) ; « Copyright (c) 2018 », sans titulaire (composants). | Signature, mot-symbole « Canada », armoiries : PCIM, marques interdites au sens de la Loi sur les marques de commerce, par. 9(1), réservées au gouvernement du Canada. |
+| `theme-quebec` | SDG, ministère du Conseil exécutif — `Quebecca/qc_trousse_sdg` | MIT selon `copyright.txt`, dont la ligne de copyright nomme « Microsoft Corporation » ; ISC selon `package.json` et npm. Discordance amont. | Signature gouvernementale : usage exclusif du gouvernement du Québec. Drapeau et armoiries protégés. |
+
+Aucun des trois tarballs n'embarque de marque ni d'emblème, mesuré avec
+`npm pack --dry-run` : ils contiennent `LICENSE`, `LICENSE.THIRD-PARTY.md`,
+`package.json` et `dist/index.*`, soit des valeurs et des noms de jetons, des
+noms de police sans binaire et un chevron SVG générique.
+
+Ce qui reste ouvert :
+
+- **DSFR, régime amont postérieur à la décision.** La décision d'attribution
+  amont repose sur un DSFR sous MIT. C'est exact pour la période de
+  transcription (mai–juin 2026) et ne l'est plus pour l'amont actuel : depuis
+  le 2026-07-20, Licence Ouverte 2.0 et modalités d'utilisation selon
+  lesquelles le DSFR « ne doit pas être utilisé par des entités extérieures à
+  l'administration ». L'effet sur la publication de `theme-dsfr` relève de
+  l'owner.
+- **Québec, titulaire amont.** La seule notice publiée par l'amont nomme
+  « Microsoft Corporation », et son manifeste déclare ISC : `source-gap`.
+- **Fonte Marianne.** Conditions d'usage `unverified` : la page d'info.gouv.fr
+  qui les porte a répondu HTTP 403.
+- **Version amont exacte** de chaque transcription : non consignée,
+  `unverified`.
+- **Emblèmes suivis hors des paquets.** `apps/docs/static/chrome/{dsfr,canada,quebec}/`
+  et `docs/chrome-reference/dsfr/assets/` contiennent bloc-marque, signatures
+  et mot-symbole. Ils n'entrent dans aucun tarball npm, mais `apps/docs` est
+  diffusé par GitHub Pages : voir la sous-section suivante.
 
 ### `apps/docs`
 

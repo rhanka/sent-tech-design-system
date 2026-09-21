@@ -347,8 +347,8 @@ function renderVendored(rootDir, findings, upstreamVersions, { scanners, hasNote
     // scripts/third-party-sources.json are the entire reach of this section;
     // writing "ce paquet ne recopie aucune source tierce" would assert an
     // absence nothing here establishes - and, in the three state-design-system
-    // themes, would contradict the `unresolved` note printed a few lines below
-    // in the same shipped file.
+    // themes, would contradict the upstream-attribution note printed a few
+    // lines below in the same shipped file, which says what they transcribe.
     if (scanners.length === 0) {
       out.push(
         "**Non mesuré.** Aucun amont n'est déclaré dans",
@@ -511,7 +511,11 @@ export function renderNotices({ rootDir = root, lock, sources, scanners, upstrea
   const vendored = scanners
     .map(({ scanner, fingerprints }) => scanVendored(rootDir, dir, scanner, fingerprints))
     .filter((finding) => finding !== null);
-  const note = sources.notes?.[manifest.name] ?? null;
+  // A note is one Markdown string, or an array of Markdown lines - the array
+  // form keeps a multi-paragraph note (a reproduced licence text, say)
+  // readable in scripts/third-party-sources.json.
+  const rawNote = sources.notes?.[manifest.name] ?? null;
+  const note = Array.isArray(rawNote) ? rawNote.join("\n") : rawNote;
 
   const out = [];
   out.push(
