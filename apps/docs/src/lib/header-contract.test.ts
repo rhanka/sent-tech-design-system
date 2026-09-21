@@ -9,6 +9,9 @@ const navigationSource = readFileSync(resolve(docsRoot, "src/lib/docs-navigation
 const frameworkSource = readFileSync(resolve(docsRoot, "src/lib/framework.svelte.ts"), "utf8");
 const appCss = readFileSync(resolve(docsRoot, "src/app.css"), "utf8");
 const appHtml = readFileSync(resolve(docsRoot, "src/app.html"), "utf8");
+// Script pré-hydratation : inline dans app.html (le build le sert ensuite en
+// fichier adressé par le contenu, voir scripts/externalize-inline-scripts.mjs).
+const preHydrationScript = appHtml.match(/<script>([\s\S]*?)<\/script>/)?.[1] ?? "";
 const carbonChromeSource = readFileSync(
   resolve(docsRoot, "src/lib/chrome/ChromeCarbon.svelte"),
   "utf8"
@@ -53,8 +56,8 @@ function readBootAllowlist(source: string): string[] | null {
  * posé sur <html> et l'URL réécrite (`null` quand il n'y touche pas).
  */
 function runBootScript(storage: Record<string, string>, search = "") {
-  const script = appHtml.match(/<script>([\s\S]*?)<\/script>/)?.[1];
-  if (script === undefined) throw new Error("script pré-hydratation introuvable dans app.html");
+  const script = preHydrationScript;
+  if (script.trim() === "") throw new Error("script pré-hydratation introuvable dans app.html");
   const attributes: Record<string, string> = {};
   let rewrittenUrl: string | null = null;
   const browser = {
@@ -115,7 +118,7 @@ describe("docs header alignment contract", () => {
 
   it("offers Angular in the shared framework selector and initial URL bootstrap", () => {
     expect(frameworkSource).toContain('{ id: "angular", label: "Angular" }');
-    expect(appHtml).toContain('fw === "angular"');
+    expect(preHydrationScript).toContain('fw === "angular"');
   });
 
   it("moves the version + GitHub link to the bottom of the left sidebar", () => {
@@ -175,7 +178,7 @@ describe("docs header alignment contract", () => {
     // thèmes publics parfaitement légitimes — et déplacerait silencieusement
     // l'ensemble des chargements qui empruntent le chemin sans param. Un test
     // d'inclusion laisserait passer `["sent-tech"]` seul ; celui-ci non.
-    const allowlist = readBootAllowlist(appHtml);
+    const allowlist = readBootAllowlist(preHydrationScript);
     expect(
       allowlist,
       "var PUBLIC_BOOT_THEMES = [...] introuvable ou pas un littéral de chaînes dans app.html"
@@ -189,6 +192,28 @@ describe("docs header alignment contract", () => {
 
     expect(appHtml).not.toContain("st-docs-theme-public");
     expect(layoutSource).not.toContain("st-docs-theme-public");
+  });
+
+  it("runs the pre-hydration script synchronously at the top of <head>, before any stylesheet", () => {
+    // Anti-FOUC : UN seul script dans app.html, classique et SYNCHRONE (aucun
+    // attribut : ni async, ni defer, ni type=module, ni src), dans <head>, avant
+    // toute feuille de style (il ne les attend pas) et avant l'en-tête
+    // SvelteKit : il bloque le rendu et pose ses attributs sur <html> avant la
+    // première peinture. Le build le sert en fichier adressé par le contenu, au
+    // même endroit et sans attribut (scripts/externalize-inline-scripts.mjs,
+    // vérifié sur le build par scripts/csp-check.mjs).
+    const scripts = [...appHtml.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)];
+    expect(scripts, "app.html doit porter exactement un script").toHaveLength(1);
+    const [tag, attributes, source] = scripts[0];
+    expect(attributes, "script pré-hydratation sans attribut").toBe("");
+    expect(source).toContain("PUBLIC_BOOT_THEMES");
+
+    const head = appHtml.slice(appHtml.indexOf("<head>"), appHtml.indexOf("</head>"));
+    const at = head.indexOf(tag);
+    expect(at, "le script pré-hydratation doit être dans <head>").toBeGreaterThan(-1);
+    expect(at).toBeLessThan(head.indexOf('rel="stylesheet"'));
+    expect(at).toBeLessThan(head.indexOf("<style>"));
+    expect(at).toBeLessThan(head.indexOf("%sveltekit.head%"));
   });
 
   it("boots a saved private theme before hydration only when the reveal is persisted", () => {
