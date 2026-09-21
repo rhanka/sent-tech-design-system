@@ -438,6 +438,24 @@ interface SelectableRowInput {
   captionGap?: string;      // vertical gap label↔caption; default "0.125rem" (2px)
 }
 
+// Icon primitive (additive) — the stroke width and stroke colour of the DS
+// `Icon` glyphs, read by the four `Icon` components through
+// `--st-component-icon-strokeWidth` / `--st-component-icon-color`. Every leaf is
+// optional and DEFAULTS to the render the components hard-coded before the
+// tokens existed, so a theme that emits nothing renders identically:
+//   - strokeWidth: "2.25" (the former `strokeWidth` prop default, user units of
+//     the 24×24 lucide viewBox).
+//   - color: "currentColor" (the glyph follows the text colour of its context:
+//     IconButton, Button, Tag… keep tinting their icons).
+// A concrete `color` makes every token-driven icon take that colour, including
+// inside components that tint their icon through `color` (IconButton danger /
+// disabled). An explicit `strokeWidth` prop, or an explicit `color` / `stroke`
+// passed to the component, still wins over the tokens.
+interface IconInput {
+  strokeWidth?: string;
+  color?: string;
+}
+
 interface FoundationInput {
   radius: { none?: string; sm?: string; md: string; lg: string; pill: string };
   shadow: { subtle: string; medium: string; floating: string };
@@ -488,6 +506,9 @@ interface FoundationInput {
   // colours. Optional — when omitted (every current theme) the selected item
   // derives its colours from `action.primary` via the resolver defaults.
   selectableRow?: SelectableRowInput;
+  // Icon (additive): per-theme icon stroke width / colour. Optional — when
+  // omitted (every current theme) the icons keep 2.25 and `currentColor`.
+  icon?: IconInput;
   // F9 (additive): a BUTTON-specific density override. The button shares the
   // control `density` scale with the fields (Input/Select/Textarea/Tabs all read
   // it), so a button-only geometry — e.g. Carbon's tall 48px primary button with
@@ -1037,6 +1058,19 @@ function selectableRowOf(semantic: SemanticInput, f: FoundationInput): {
   };
 }
 
+/**
+ * Icon resolution (additive). Resolves the per-theme icon primitive into the two
+ * leaves the `Icon` components consume. Defaults are the former hard-coded
+ * render (stroke width 2.25, `currentColor`), so the base render is unchanged.
+ */
+function iconOf(f: FoundationInput): { strokeWidth: string; color: string } {
+  const i = f.icon ?? {};
+  return {
+    strokeWidth: i.strokeWidth || "2.25",
+    color: i.color || "currentColor"
+  };
+}
+
 function typographyOf(f: FoundationInput, role: "control" | "field" | "label" | "link"): TypographyAnatomy {
   // Widen to TypographyAnatomy so the optional textDecorationHover leaf is
   // readable across all roles (only `link` carries it in the FALLBACK literal).
@@ -1348,6 +1382,9 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
   // UAT8 — SelectableRow / SelectableList selected-item colours (per theme;
   // derived from action.primary via the resolver defaults).
   const selectableRowResolved = selectableRowOf(semantic, foundation);
+
+  // Icon — stroke width / colour of the DS `Icon` (per theme; base unchanged).
+  const iconResolved = iconOf(foundation);
 
   return {
     button: {
@@ -1692,6 +1729,10 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       assistantBubbleText: semantic.text.primary,
       composerSurface: semantic.surface.raised,
       toolCallSurface: semantic.surface.subtle
+    },
+    icon: {
+      strokeWidth: iconResolved.strokeWidth,
+      color: iconResolved.color
     },
     graph: {
       panelBackground: semantic.surface.inverse,

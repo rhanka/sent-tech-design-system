@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+import { createComponent, foundation, semantic } from "@sentropic/design-system-tokens";
 import { compileTheme, compileThemeWithModes } from "./compile.js";
 import { sentTechTheme } from "./themes/sent-tech.js";
 
@@ -11,6 +12,26 @@ describe("compileTheme", () => {
     expect(css).toContain("--st-foundation-font-sans:");
     expect(css).toContain("--st-semantic-action-primary:");
     expect(css).toContain("--st-component-chat-composerSurface:");
+  });
+
+  it("emits the icon tokens with the default render, and a theme override", () => {
+    const base = compileTheme(sentTechTheme);
+    expect(base).toContain("--st-component-icon-strokeWidth: 2.25;");
+    expect(base).toContain("--st-component-icon-color: currentColor;");
+
+    const css = compileTheme({
+      id: "icon-override",
+      label: "Icon override",
+      mode: "light",
+      tokens: {
+        foundation,
+        semantic,
+        component: createComponent(semantic, { ...foundation, icon: { strokeWidth: "1.5", color: "rgb(0 90 200)" } })
+      }
+    });
+    expect(css).toContain('[data-st-theme="icon-override"]');
+    expect(css).toContain("--st-component-icon-strokeWidth: 1.5;");
+    expect(css).toContain("--st-component-icon-color: rgb(0 90 200);");
   });
 
   it("rejects malformed themes", () => {
