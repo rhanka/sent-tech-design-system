@@ -123,12 +123,12 @@ import "@sentropic/design-system-vue/styles.css";
         ? "Par défaut, ThemeProvider applique le thème Sent Tech. Vous pouvez surcharger avec n'importe quel thème du package :"
         : "By default, ThemeProvider applies the Sent Tech theme. Override with any theme from the package:"}
     </p>
-    <pre class="gs-code"><code>{`import { carbonTheme } from "@sentropic/design-system-theme-carbon";
+    <pre class="gs-code"><code>{`import { canadaTheme } from "@sentropic/design-system-theme-canada";
 import { dsfrTheme } from "@sentropic/design-system-theme-dsfr";
 import { quebecTheme } from "@sentropic/design-system-theme-quebec";
 
 // Passer le thème comme prop :
-// <ThemeProvider theme={carbonTheme}>`}</code></pre>
+// <ThemeProvider theme={canadaTheme}>`}</code></pre>
     <p>
       {fr
         ? "Les thèmes disponibles : Sent Tech (défaut), DSFR (France), Canada, Québec."
