@@ -55,7 +55,7 @@ describe("theme picker keyboard", () => {
    La géométrie se vérifie dans un vrai navigateur, sur le site construit
    (`npm run build -w apps/docs`, `apps/docs/build` servi en statique,
    Chromium piloté par playwright-core), aux deux ouvertures : bouton d'en-tête
-   (34 thèmes) et Ctrl+Shift+X (127) :
+   (thèmes publics) et Ctrl+Shift+X (127) :
    - 1440×900, 800×700, 1280×500 : un seul élément du dialogue a
      `scrollHeight > clientHeight`, `.theme-results` ; `.st-menu` y est large
      d'environ 525 px ; le dialogue mesure 232 px avec un résultat.

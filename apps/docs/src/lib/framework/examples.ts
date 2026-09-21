@@ -12596,7 +12596,7 @@ import { NavSection, NavItem, Button } from "@sentropic/design-system-vue";
           themes: [
             { id: "sent-tech", label: "Sentropic" },
             { id: "forge", label: "Forge" },
-            { id: "carbon", label: "Carbon" }
+            { id: "dsfr", label: "DSFR" }
           ],
           theme: "sent-tech",
           colorMode: "light",
@@ -12613,7 +12613,7 @@ import { NavSection, NavItem, Button } from "@sentropic/design-system-vue";
   const themes = [
     { id: "sent-tech", label: "Sentropic" },
     { id: "forge", label: "Forge" },
-    { id: "carbon", label: "Carbon" }
+    { id: "dsfr", label: "DSFR" }
   ];
   const nav = [
     { label: "Vues", href: "#views", active: true },
@@ -12650,7 +12650,7 @@ import { AppChrome } from "@sentropic/design-system-react";
 const themes = [
   { id: "sent-tech", label: "Sentropic" },
   { id: "forge", label: "Forge" },
-  { id: "carbon", label: "Carbon" }
+  { id: "dsfr", label: "DSFR" }
 ];
 const nav = [
   { label: "Vues", href: "#views", active: true },
@@ -12691,7 +12691,7 @@ import { AppChrome } from "@sentropic/design-system-vue";
 const themes = [
   { id: "sent-tech", label: "Sentropic" },
   { id: "forge", label: "Forge" },
-  { id: "carbon", label: "Carbon" }
+  { id: "dsfr", label: "DSFR" }
 ];
 const nav = [
   { label: "Vues", href: "#views", active: true },
