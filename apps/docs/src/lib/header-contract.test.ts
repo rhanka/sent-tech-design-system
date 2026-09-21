@@ -47,6 +47,34 @@ function readBootAllowlist(source: string): string[] | null {
   return ids.every((id): id is string => id !== undefined) ? ids : null;
 }
 
+/**
+ * Exécute le script pré-hydratation de app.html contre un navigateur réduit à
+ * ce qu'il touche : localStorage, l'attribut de <html>, l'URL. Rend le thème
+ * posé sur <html> et l'URL réécrite (`null` quand il n'y touche pas).
+ */
+function runBootScript(storage: Record<string, string>, search = "") {
+  const script = appHtml.match(/<script>([\s\S]*?)<\/script>/)?.[1];
+  if (script === undefined) throw new Error("script pré-hydratation introuvable dans app.html");
+  const attributes: Record<string, string> = {};
+  let rewrittenUrl: string | null = null;
+  const browser = {
+    localStorage: { getItem: (key: string) => storage[key] ?? null },
+    document: {
+      documentElement: {
+        setAttribute: (name: string, value: string) => void (attributes[name] = value)
+      }
+    },
+    location: { pathname: "/components/button", search, hash: "" },
+    history: {
+      state: null,
+      replaceState: (_state: unknown, _title: string, url: string) => void (rewrittenUrl = url)
+    },
+    URLSearchParams
+  };
+  new Function(...Object.keys(browser), script)(...Object.values(browser));
+  return { theme: attributes["data-st-theme"] ?? null, url: rewrittenUrl };
+}
+
 function cssRule(source: string, selector: string): string {
   const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   return source.match(new RegExp(`${escaped}\\s*\\{([\\s\\S]*?)\\}`))?.[1] ?? "";
@@ -120,29 +148,16 @@ describe("docs header alignment contract", () => {
   });
 
   // ── Confidentialité des thèmes tiers ────────────────────────────────────
-  // Le COMPORTEMENT de la porte Ctrl+Shift+X se teste dans theme-access.test.ts,
-  // sur des fonctions pures. Il ne reste ici que ce qu'un test comportemental
-  // ne peut pas atteindre : le CÂBLAGE du layout vers ce module, et le script
+  // Le COMPORTEMENT de l'interrupteur Ctrl+Shift+X se teste dans
+  // theme-access.test.ts (fonctions pures) et theme-reveal.test.ts (layout
+  // monté). Il ne reste ici que la fermeture à la navigation et le script
   // pré-hydratation de app.html, qui s'exécute hors de tout module.
 
-  it("wires every theme surface to the public list or to the pure access module", () => {
-    // Surfaces publiques (menu mobile, configuration AppShell) : liste publique,
-    // sans condition. Sélecteur : la seule liste que theme-access calcule.
-    expect(layoutSource).toContain("const visibleThemes = PUBLIC_THEMES;");
-    expect(layoutSource).toContain("themesForPicker(access, THEMES)");
-    expect(layoutSource).toContain("themes={pickerThemes}");
-    expect(layoutSource).not.toContain("themes={THEMES}");
-    // L'accès ne se persiste pas : un seul geste ne doit pas ouvrir la porte
-    // pour toutes les sessions futures de ce navigateur.
-    expect(layoutSource).not.toContain("st-docs-demo-mode");
-    expect(appHtml).not.toContain("st-docs-demo-mode");
-  });
-
   it("closes the theme picker on navigation, by the same transition as any close", () => {
-    // Un sélecteur ouvert par Ctrl+Shift+X ne doit pas suivre le visiteur d'une
-    // page à l'autre avec le catalogue complet. La fermeture passe par
-    // `closePicker`, comme Échap / ✕ / fond : elle rétrécit la portée sans
-    // rien remasquer. Ce câblage-là ne se voit pas depuis les fonctions pures.
+    // Un sélecteur ouvert ne doit pas suivre le visiteur d'une page à l'autre.
+    // La fermeture passe par `closePicker`, comme Échap / ✕ / fond : elle ne
+    // touche pas au mode révélé. Ce câblage-là ne se voit pas depuis les
+    // fonctions pures.
     const afterNavigateBody = layoutSource.match(/afterNavigate\(\(\) => \{([\s\S]*?)\n  \}\);/)?.[1];
     expect(afterNavigateBody, "bloc afterNavigate introuvable dans +layout.svelte").toBeDefined();
     expect(afterNavigateBody).toContain("searchOpen = false;");
@@ -152,7 +167,7 @@ describe("docs header alignment contract", () => {
   it("keeps the pre-hydration theme allowlist EQUAL to the public list", () => {
     // app.html pose data-st-theme et amorce ?theme AVANT l'hydratation, à
     // partir d'un localStorage qui peut très bien contenir une marque privée
-    // (choisie pendant une démonstration). Sa liste en dur est donc une
+    // (choisie en mode révélé). Hors mode révélé, sa liste en dur est donc une
     // frontière de confidentialité, pas une commodité.
     //
     // ÉGALITÉ, pas inclusion : une liste trop LARGE laisserait fuiter une
@@ -172,15 +187,34 @@ describe("docs header alignment contract", () => {
     // (oubli, ajout, doublon) fait échouer.
     expect([...allowlist!].sort()).toEqual([...publicIds].sort());
 
-    // L'attribut ET l'amorce d'URL passent par le même verdict.
-    expect(appHtml).toContain("var themeIsPublic = PUBLIC_BOOT_THEMES.indexOf(theme) !== -1;");
-    expect(appHtml).toMatch(
-      /if \(themeIsPublic\) \{\s*document\.documentElement\.setAttribute\("data-st-theme", theme\);/
-    );
-    expect(appHtml).toContain('if (!params.has("theme") && themeIsPublic && theme !== "sent-tech") {');
-    // Plus de drapeau persisté : la décision se fonde sur la liste publique.
     expect(appHtml).not.toContain("st-docs-theme-public");
     expect(layoutSource).not.toContain("st-docs-theme-public");
+  });
+
+  it("boots a saved private theme before hydration only when the reveal is persisted", () => {
+    // Hors mode révélé : ni attribut sur <html>, ni amorce d'URL, pas même un
+    // instant. Le layout rejette ensuite l'identifiant (enforceThemePrivacy).
+    for (const reveal of [undefined, "false", "1"]) {
+      const storage: Record<string, string> = { "st-docs-theme": "cossette" };
+      if (reveal !== undefined) storage["st-docs-demo-mode"] = reveal;
+      expect(runBootScript(storage)).toEqual({ theme: null, url: null });
+    }
+
+    // Un thème public s'amorce toujours : attribut ET URL, même verdict.
+    expect(runBootScript({ "st-docs-theme": "dsfr" })).toEqual({
+      theme: "dsfr",
+      url: "/components/button?theme=dsfr"
+    });
+
+    // Mode révélé persisté (même clé et mêmes valeurs que le layout) : le thème
+    // privé enregistré peut être amorcé.
+    expect(runBootScript({ "st-docs-theme": "cossette", "st-docs-demo-mode": "true" })).toEqual({
+      theme: "cossette",
+      url: "/components/button?theme=cossette"
+    });
+
+    // Un ?theme= déjà présent fait foi : le script ne réécrit pas l'URL.
+    expect(runBootScript({}, "?theme=cossette")).toEqual({ theme: null, url: null });
   });
 
   it("does not render fake auth access in the public docs header", () => {
