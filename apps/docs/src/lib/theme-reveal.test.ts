@@ -97,6 +97,38 @@ describe("layout: Ctrl+Shift+X reveals private themes, it does not open the pick
     expect(pickerLabels()).toEqual(labels(PUBLIC_THEMES));
   });
 
+  it("keeps the search query when the shortcut flips the list of an open picker", async () => {
+    await openLayoutAt("/");
+    await clickThemeButton();
+    const search = picker()!.querySelector("input")!;
+    await fireEvent.input(search, { target: { value: "coss" } });
+    await settle();
+    expect(pickerLabels()).toEqual([]);
+
+    // La recherche est indépendante de l'interrupteur : elle garde sa saisie
+    // et s'applique à la liste révélée.
+    await pressRevealShortcut();
+    expect(picker()!.querySelector("input")!.value).toBe("coss");
+    expect(pickerLabels()).toEqual(["Cossette"]);
+  });
+
+  it("gives the app-shell header (?shell=v2) the same list as the picker", async () => {
+    await openLayoutAt("/?shell=v2");
+    const shellThemeItems = async () => {
+      const trigger = [...document.querySelectorAll<HTMLButtonElement>("button.st-shell__switch")]
+        .find((button) => button.textContent?.includes("Sent Tech"))!;
+      await fireEvent.click(trigger);
+      await settle();
+      const items = [...document.querySelectorAll(".st-menu__item")].map((item) => item.textContent?.trim());
+      await fireEvent.keyDown(window, { key: "Escape" });
+      await settle();
+      return items;
+    };
+    expect(await shellThemeItems()).toEqual(labels(PUBLIC_THEMES));
+    await pressRevealShortcut();
+    expect(await shellThemeItems()).toHaveLength(THEMES.length);
+  });
+
   it("gives the mobile menu the same list as the picker", async () => {
     await openLayoutAt("/");
     await pressRevealShortcut();
