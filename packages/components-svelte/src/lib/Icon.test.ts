@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { render } from "@testing-library/svelte";
 import { describe, expect, it } from "vitest";
 import Icon from "./Icon.svelte";
@@ -39,5 +41,36 @@ describe("Icon — canonical DS icon set", () => {
     const { container } = render(Icon, { props: { name: "layers", size: 24 } });
     const svg = container.querySelector("svg") as SVGElement;
     expect(svg.getAttribute("width")).toBe("24");
+  });
+
+  it("renders the 2.25 default unmarked, so the theme token applies", () => {
+    const { container } = render(Icon, { props: { name: "settings" } });
+    const svg = container.querySelector("svg") as SVGElement;
+    expect(svg.getAttribute("stroke")).toBe("currentColor");
+    expect(svg.hasAttribute("data-st-icon-stroke")).toBe(false);
+    expect(svg.hasAttribute("style")).toBe(false);
+  });
+
+  it("marks an explicit strokeWidth so it keeps winning over the token", () => {
+    const { container } = render(Icon, { props: { name: "settings", strokeWidth: 2.25 } });
+    const svg = container.querySelector("svg") as SVGElement;
+    expect(svg.getAttribute("stroke-width")).toBe("2.25");
+    expect(svg.getAttribute("data-st-icon-stroke")).toBe("prop");
+    expect(svg.hasAttribute("style")).toBe(false);
+  });
+
+  it("carries the same token rule as the shared styles.css of the other frameworks", () => {
+    const svelteSource = readFileSync(resolve("src/lib/Icon.svelte"), "utf8");
+    const sharedStyles = readFileSync(resolve("../components-react/src/styles.css"), "utf8");
+    const rules = [
+      [':where(.st-icon[stroke-width="2.25"]:not([data-st-icon-stroke]))', "stroke-width: var(--st-component-icon-strokeWidth, 2.25);"],
+      [':where(.st-icon[stroke="currentColor"])', "stroke: var(--st-component-icon-color, currentColor);"],
+    ];
+    for (const [selector, declaration] of rules) {
+      expect(svelteSource).toContain(`:global(${selector})`);
+      expect(sharedStyles).toContain(`${selector} {`);
+      expect(svelteSource).toContain(declaration);
+      expect(sharedStyles).toContain(declaration);
+    }
   });
 });

@@ -17,4 +17,18 @@ describe("Angular styles", () => {
     expect(geoMapStart).toBeGreaterThanOrEqual(0);
     expect(styles.slice(geoMapStart)).not.toMatch(/#[0-9a-fA-F]{3,8}\b/);
   });
+
+  it("wires the Icon stroke width and colour to the theme tokens", () => {
+    const styles = readFileSync(resolve("src/styles.css"), "utf8");
+    const icon = readFileSync(resolve("src/Icon.ts"), "utf8");
+
+    expect(styles).toContain(
+      ':where(.st-icon[stroke-width="2.25"]:not([data-st-icon-stroke])) {\n    stroke-width: var(--st-component-icon-strokeWidth, 2.25);',
+    );
+    expect(styles).toContain(
+      ':where(.st-icon[stroke="currentColor"]) {\n    stroke: var(--st-component-icon-color, currentColor);',
+    );
+    // An explicit strokeWidth input is marked so the token rule leaves it alone.
+    expect(icon).toContain(`[attr.data-st-icon-stroke]="strokeWidth == null ? null : 'prop'"`);
+  });
 });
