@@ -11,14 +11,16 @@ import { vitePreprocess } from "@sveltejs/vite-plugin-svelte";
 // Cloudflare sur la zone, hors de ce dépôt. Un fichier `_headers` serait ignoré
 // (fonction de Cloudflare Pages, pas de GitHub Pages).
 //
-// Le build est COMPATIBLE avec cette politique, sans `unsafe-eval` ni
-// `unsafe-inline` pour les scripts :
+// Le build est compatible avec cette politique, sans `unsafe-eval` ni
+// `unsafe-inline` pour les scripts, À DEUX ÉCARTS CONNUS PRÈS (ci-dessous,
+// KNOWN_CSP_DEVIATIONS) :
 //   - île Angular liée au build (angular-linker.ts) : pas de compilateur JIT ;
-//   - script pré-hydratation servi en fichier (static/pre-hydration.js) ;
-//   - amorce d'hydratation SvelteKit externalisée après le build
-//     (scripts/externalize-inline-scripts.mjs).
+//   - script pré-hydratation d'app.html et amorce d'hydratation SvelteKit
+//     servis après le build en fichiers adressés par le contenu, au même
+//     endroit (scripts/externalize-inline-scripts.mjs).
 // Preuve exécutable : `npm run csp:check` (scripts/csp-check.mjs) sert le build
-// AVEC cet en-tête et charge les pages clés dans Chromium.
+// AVEC cet en-tête et charge les pages clés dans Chromium ; il signale les
+// écarts connus par leur chaîne exacte, sans échouer.
 //
 // Pourquoi pas `kit.csp` : sur les pages prérendues, SvelteKit écrit la
 // politique dans une balise <meta http-equiv="content-security-policy">, donc
@@ -30,7 +32,20 @@ import { vitePreprocess } from "@sveltejs/vite-plugin-svelte";
 // chargé. `connect-src` autorise https://auth.sent-tech.ca (login OAuth : token,
 // userinfo, jwks). `img-src https:` couvre un éventuel avatar (claim picture).
 // `style-src https://cdn.jsdelivr.net` : /compare charge dans ses iframes srcdoc
-// (qui héritent de la CSP) les CSS officielles de référence (DSFR…).
+// (qui héritent de la CSP) les CSS officielles de référence (DSFR…) ; ajout à
+// valider par l'owner.
+//
+// ÉCARTS CONNUS (politique NON tranchée : décision owner) :
+//   1. DataImage (/components/data-image, /preview) : Svelte 5 écrit au SSR
+//      `onload="this.__e=event"` et `onerror="this.__e=event"` sur les <img>
+//      qui écoutent load/error, pour rejouer l'événement après l'hydratation.
+//      Bloqués par `script-src 'self'` (violation script-src-attr) : seul ce
+//      rejeu est perdu. Options : `'unsafe-hashes'` + hash de ce gestionnaire,
+//      ou retirer load/error de ces <img>.
+//   2. Embed (/components/embed) : la démo encadre
+//      https://www.openstreetmap.org/export/embed.html, bloquée par
+//      `default-src 'self'` (pas de `frame-src`) : la carte ne s'affiche pas.
+//      Option : `frame-src https://www.openstreetmap.org`.
 // ─────────────────────────────────────────────────────────────────────────────
 export const DOCUMENTED_CSP = [
   "default-src 'self'",
@@ -42,6 +57,18 @@ export const DOCUMENTED_CSP = [
   "frame-ancestors 'none'",
   "base-uri 'self'"
 ].join("; ");
+
+// Chaînes EXACTES des écarts connus, relues par scripts/csp-check.mjs.
+export const KNOWN_CSP_DEVIATIONS = {
+  // Attributs relevés par le scan statique (écart 1).
+  inlineHandlers: ['onload="this.__e=event"', 'onerror="this.__e=event"'],
+  // `${effectiveDirective} ${blockedURI}` de `securitypolicyviolation` (écart 2).
+  violations: ["frame-src https://www.openstreetmap.org"],
+  // Début exact du message console de Chromium pour la même violation.
+  consoleMessages: [
+    `Framing 'https://www.openstreetmap.org/' violates the following Content Security Policy directive: "default-src 'self'".`
+  ]
+};
 
 export default {
   preprocess: vitePreprocess(),

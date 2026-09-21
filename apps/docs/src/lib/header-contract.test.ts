@@ -9,9 +9,9 @@ const navigationSource = readFileSync(resolve(docsRoot, "src/lib/docs-navigation
 const frameworkSource = readFileSync(resolve(docsRoot, "src/lib/framework.svelte.ts"), "utf8");
 const appCss = readFileSync(resolve(docsRoot, "src/app.css"), "utf8");
 const appHtml = readFileSync(resolve(docsRoot, "src/app.html"), "utf8");
-// Script pré-hydratation : servi tel quel depuis static/ (compatibilité CSP
-// `script-src 'self'`), chargé par app.html.
-const preHydrationScript = readFileSync(resolve(docsRoot, "static/pre-hydration.js"), "utf8");
+// Script pré-hydratation : inline dans app.html (le build le sert ensuite en
+// fichier adressé par le contenu, voir scripts/externalize-inline-scripts.mjs).
+const preHydrationScript = appHtml.match(/<script>([\s\S]*?)<\/script>/)?.[1] ?? "";
 const carbonChromeSource = readFileSync(
   resolve(docsRoot, "src/lib/chrome/ChromeCarbon.svelte"),
   "utf8"
@@ -34,8 +34,8 @@ const airbusChromeSource = readFileSync(
 );
 
 /**
- * Extrait `var PUBLIC_BOOT_THEMES = [...]` du script pré-hydratation
- * (static/pre-hydration.js). Lecture TOLÉRANTE : elle rend `null` quand la déclaration est
+ * Extrait `var PUBLIC_BOOT_THEMES = [...]` du script pré-hydratation de
+ * app.html. Lecture TOLÉRANTE : elle rend `null` quand la déclaration est
  * absente ou n'est pas un littéral de chaînes simples, pour que le test
  * ÉCHOUE avec un message lisible au lieu de lever une exception de parsing.
  */
@@ -51,13 +51,13 @@ function readBootAllowlist(source: string): string[] | null {
 }
 
 /**
- * Exécute le script pré-hydratation (le fichier servi, tel quel) contre un
- * navigateur réduit à ce qu'il touche : localStorage, l'attribut de <html>,
- * l'URL. Rend le thème posé sur <html> et l'URL réécrite (`null` quand il n'y
- * touche pas).
+ * Exécute le script pré-hydratation de app.html contre un navigateur réduit à
+ * ce qu'il touche : localStorage, l'attribut de <html>, l'URL. Rend le thème
+ * posé sur <html> et l'URL réécrite (`null` quand il n'y touche pas).
  */
 function runBootScript(storage: Record<string, string>, search = "") {
   const script = preHydrationScript;
+  if (script.trim() === "") throw new Error("script pré-hydratation introuvable dans app.html");
   const attributes: Record<string, string> = {};
   let rewrittenUrl: string | null = null;
   const browser = {
@@ -181,7 +181,7 @@ describe("docs header alignment contract", () => {
     const allowlist = readBootAllowlist(preHydrationScript);
     expect(
       allowlist,
-      "var PUBLIC_BOOT_THEMES = [...] introuvable ou pas un littéral de chaînes dans static/pre-hydration.js"
+      "var PUBLIC_BOOT_THEMES = [...] introuvable ou pas un littéral de chaînes dans app.html"
     ).not.toBeNull();
 
     const publicIds = PUBLIC_THEMES.map((theme) => theme.id);
@@ -191,26 +191,28 @@ describe("docs header alignment contract", () => {
     expect([...allowlist!].sort()).toEqual([...publicIds].sort());
 
     expect(appHtml).not.toContain("st-docs-theme-public");
-    expect(preHydrationScript).not.toContain("st-docs-theme-public");
     expect(layoutSource).not.toContain("st-docs-theme-public");
   });
 
-  it("loads the pre-hydration script as a render-blocking file in <head>, never inline", () => {
-    // Compatibilité CSP `script-src 'self'` : app.html ne porte AUCUN script
-    // inline. Anti-FOUC : le fichier est un script classique SYNCHRONE dans
-    // <head> (ni async, ni defer, ni module), donc bloquant pour le rendu : il
-    // pose ses attributs sur <html> avant la première peinture. Il précède les
-    // feuilles de style (il ne les attend pas) et l'en-tête SvelteKit.
+  it("runs the pre-hydration script synchronously at the top of <head>, before any stylesheet", () => {
+    // Anti-FOUC : UN seul script dans app.html, classique et SYNCHRONE (aucun
+    // attribut : ni async, ni defer, ni type=module, ni src), dans <head>, avant
+    // toute feuille de style (il ne les attend pas) et avant l'en-tête
+    // SvelteKit : il bloque le rendu et pose ses attributs sur <html> avant la
+    // première peinture. Le build le sert en fichier adressé par le contenu, au
+    // même endroit et sans attribut (scripts/externalize-inline-scripts.mjs,
+    // vérifié sur le build par scripts/csp-check.mjs).
     const scripts = [...appHtml.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)];
-    expect(scripts, "app.html doit charger exactement un script").toHaveLength(1);
-    const [tag, attributes, inlineSource] = scripts[0];
-    expect(inlineSource.trim(), "aucun code inline dans app.html").toBe("");
-    expect(attributes).toMatch(/^ src="%sveltekit\.assets%\/pre-hydration\.js\?v=%sveltekit\.version%"$/);
+    expect(scripts, "app.html doit porter exactement un script").toHaveLength(1);
+    const [tag, attributes, source] = scripts[0];
+    expect(attributes, "script pré-hydratation sans attribut").toBe("");
+    expect(source).toContain("PUBLIC_BOOT_THEMES");
 
     const head = appHtml.slice(appHtml.indexOf("<head>"), appHtml.indexOf("</head>"));
     const at = head.indexOf(tag);
     expect(at, "le script pré-hydratation doit être dans <head>").toBeGreaterThan(-1);
     expect(at).toBeLessThan(head.indexOf('rel="stylesheet"'));
+    expect(at).toBeLessThan(head.indexOf("<style>"));
     expect(at).toBeLessThan(head.indexOf("%sveltekit.head%"));
   });
 
