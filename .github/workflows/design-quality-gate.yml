@@ -33,7 +33,7 @@ jobs:
 
       # csp-no-style-attr runs in report mode (--warn-only): its findings land in
       # the report's `warnings` key, outside the score and the exit code. Blocking,
-      # it would take the score from 97 to 82 on today's docs build (1048 literal
+      # it would take the score from 97 to 82 on today's docs build (1049 literal
       # style attributes). Making it blocking is an owner decision, once the
       # components are fixed.
       - name: Run design quality gate

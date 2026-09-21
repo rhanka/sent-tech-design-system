@@ -70,9 +70,27 @@ interface TechnicalCheckReport {
   warnings?: Finding[];
 }
 
+/**
+ * Une option répétée est refusée : sinon la valeur de la seconde occurrence
+ * (`--fail-under 50 --fail-under 99 page.html`) devient la cible auditée, et le
+ * gate passe sur un HTML inline sans rapport avec la cible.
+ */
+function findRepeatedOption(args: string[]): string | undefined {
+  const seen = new Set<string>();
+  for (const arg of args) {
+    if (!arg.startsWith("-")) continue;
+    if (seen.has(arg)) return arg;
+    seen.add(arg);
+  }
+  return undefined;
+}
+
 function parseFailUnderOption(args: string[]): { args: string[]; failUnder?: number; error?: string } {
   const index = args.indexOf("--fail-under");
   if (index < 0) return { args };
+  if (args.indexOf("--fail-under", index + 1) >= 0) {
+    return { args, error: "--fail-under répété ; un seul seuil est accepté." };
+  }
 
   const rawValue = args[index + 1];
   if (!rawValue || rawValue.startsWith("-")) {
@@ -860,6 +878,14 @@ async function handleCheck(args: string[]) {
   if (args.includes("-h") || args.includes("--help")) {
     printCheckHelp();
     process.exit(0);
+  }
+
+  const repeatedOption = findRepeatedOption(args);
+  if (repeatedOption) {
+    process.stderr.write(
+      `\x1b[1m\x1b[31mErreur :\x1b[0m Option '${repeatedOption}' répétée ; chaque option de design check ne s'emploie qu'une fois.\n`
+    );
+    process.exit(2);
   }
 
   const parsedFailUnder = parseFailUnderOption(args);

@@ -145,22 +145,45 @@ une violation ; une écriture CSSOM (`el.style.setProperty(…)`) n'est pas conc
 émettent l'un ou l'autre selon le contexte (la directive Svelte `style:` donne un attribut en rendu serveur et
 un `setProperty` côté client) : la règle porte donc sur le balisage rendu, pas sur la source.
 
-- Sévérité `high` : la déclaration n'est pas appliquée. Un attribut vide ou blanc (`style=""`) sort en `low` :
+Règle de conception dont elle découle (texte repris du commit `a0f789e3`, branche non fusionnée
+`feat/graph-dataviz-repatriation`, où il figure avec la mesure des chemins de remplacement) :
+
+> Un composant destiné à tourner sous CSP stricte ne reçoit pas ses jetons par propriété CSS personnalisée
+> passée en attribut. Il les reçoit par une variable posée sur un ancêtre, par une classe, ou par le CSSOM
+> après montage.
+
+- Sévérité `high` : la déclaration n'est pas appliquée (dans un `<template>`, la violation est levée même si
+  le style s'applique ensuite sur une copie clonée). Un attribut vide ou blanc (`style=""`) sort en `low` :
   rien n'est perdu, mais la violation est quand même signalée.
 - Chaque finding donne l'élément, son chemin, la valeur, la directive en cause et le remplacement de la règle de
   conception : une classe (variable définie en feuille de style) ou le CSSOM après montage. Une variable posée
   sur un ancêtre ne convient que si elle ne passe pas elle-même par un attribut `style`.
 - Couvert : éléments HTML et SVG (l'attribut `style` d'un élément SVG est soumis à la même directive ; les
-  attributs de présentation comme `fill` ne le sont pas), contenu des `<template>`, y compris imbriqués.
+  attributs de présentation comme `fill` ne le sont pas), contenu des `<template>`, y compris imbriqués, et
+  document `srcdoc` des `<iframe>`, récursivement (il hérite de la CSP du parent ; chemin préfixé `#srcdoc`).
+- Pour un contenu de `<template>`, le message dit ce qui se passe réellement : la violation est levée dès
+  l'analyse du balisage, puis le style s'applique sur une copie obtenue par `cloneNode` ou `importNode`, et
+  reste bloqué si le contenu est réinjecté par `innerHTML`.
 - Comportement mesuré (Chromium 153, CSP en en-tête) : attribut littéral, vide ou blanc, sur HTML ou SVG :
   une violation, style non appliqué. Contenu de `<template>` : une violation dès l'analyse, même sans
-  instanciation ; instancié par `cloneNode`, le style s'applique ; par `innerHTML`, il est bloqué.
+  instanciation ; instancié par `cloneNode` ou `importNode`, le style s'applique ; par `innerHTML`, il est
+  bloqué. `srcdoc` : une violation par attribut, style non appliqué.
   `setProperty` : aucune violation, style appliqué. `setAttribute('style', …)` : bloqué.
 - Limite : l'audit lit le HTML servi sans exécuter de script. Une écriture CSSOM faite au runtime n'y figure
   pas, donc n'est pas signalée. Mais un DOM vivant sérialisé après écriture CSSOM (`outerHTML` pris après
   hydratation) porte l'attribut et serait signalé : auditer le balisage servi, pas une capture du DOM
   hydraté. De même, un `setAttribute('style', …)` exécuté au runtime est bloqué par le navigateur mais
   invisible pour l'audit statique.
+- Limite, gabarits client : un balisage injecté au runtime par `template.innerHTML` (ou `innerHTML`) n'est pas
+  dans le HTML servi. Exemple : l'annonceur de route de SvelteKit (`#svelte-announcer`, attribut `style`
+  littéral) lève une violation sur chaque page chargée avec JavaScript, soit au moins 272 violations au
+  runtime sur la doc, qu'aucun audit statique ne voit.
+- Limite, `<select>` personnalisable : parse5 (l'analyseur de JSDOM) supprime les éléments autres que
+  `<option>`/`<optgroup>` placés dans un `<select>` ou une `<option>` (`<div>`, `<span>`, `<button>`),
+  alors que Chromium les garde et bloque leur attribut `style` : faux négatif.
+- Limite, `<noscript>` : l'audit analyse sans script, donc lit le contenu de `<noscript>` comme des éléments
+  et le signale. Avec JavaScript actif, le navigateur le traite comme du texte : la violation ne concerne
+  que les visiteurs sans JavaScript.
 - Hors périmètre : les éléments `<style>` inline relèvent de `style-src-elem`, pas de cette règle.
 
 ## Architecture
@@ -171,5 +194,5 @@ un `setProperty` côté client) : la règle porte donc sur le balisage rendu, pa
 
 ## Notes
 
-- Cette version expose 33 règles déterministes, chacune reliée à un principe `design` et à un finding WP7/WP23 (ou, pour `csp-no-style-attr`, à la règle de conception A0 §10.1).
+- Cette version expose 33 règles déterministes, chacune reliée à un principe `design` et à un finding WP7/WP23 (ou, pour `csp-no-style-attr`, à la règle de conception citée dans sa section).
   L’enrichissement vers ~`30-35` règles reste géré via WP7/8.
