@@ -3318,6 +3318,22 @@
 
   .st-highlight__body p { margin: 0; }
 
+/* Icon (.st-icon) — stroke width and colour come from the theme tokens
+   (--st-component-icon-strokeWidth / --st-component-icon-color). The selectors
+   only match the DS defaults (stroke-width 2.25 set by no prop, stroke
+   currentColor), so an explicit strokeWidth prop (marked data-st-icon-stroke)
+   or an explicit colour keeps winning. :where() keeps the specificity at 0: any
+   consumer rule still wins, while the declaration still beats the SVG
+   presentation attributes. The fallbacks reproduce the former render when no
+   theme is loaded. Same rule as the Svelte Icon component. */
+:where(.st-icon[stroke-width="2.25"]:not([data-st-icon-stroke])) {
+    stroke-width: var(--st-component-icon-strokeWidth, 2.25);
+  }
+
+  :where(.st-icon[stroke="currentColor"]) {
+    stroke: var(--st-component-icon-color, currentColor);
+  }
+
 .st-iconButton {
     align-items: center;
     background: transparent;

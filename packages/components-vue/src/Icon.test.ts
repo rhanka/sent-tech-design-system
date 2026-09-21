@@ -31,4 +31,18 @@ describe("Icon — canonical DS icon set", () => {
     expect(svg.attributes("role")).toBe("img");
     expect(svg.attributes("aria-label")).toBe("Afficher");
   });
+
+  it("renders the 2.25 default unmarked, so the theme token applies", () => {
+    const svg = mount(Icon, { props: { name: "settings" } }).find("svg");
+    expect(svg.attributes("stroke")).toBe("currentColor");
+    expect(svg.attributes("data-st-icon-stroke")).toBeUndefined();
+    expect(svg.attributes("style")).toBeUndefined();
+  });
+
+  it("marks an explicit strokeWidth so it keeps winning over the token", () => {
+    const svg = mount(Icon, { props: { name: "settings", strokeWidth: 2.25 } }).find("svg");
+    expect(svg.attributes("stroke-width")).toBe("2.25");
+    expect(svg.attributes("data-st-icon-stroke")).toBe("prop");
+    expect(svg.attributes("style")).toBeUndefined();
+  });
 });

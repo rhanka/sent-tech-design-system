@@ -130,13 +130,18 @@
     <h2>{locale.value === "fr" ? "Taille et graisse" : "Size and stroke"}</h2>
     <p class="section-desc">
       {#if locale.value === "fr"}
-        <code>size</code> vaut 18 px par défaut — la taille de glyphe en ligne standard du DS —
-        et <code>strokeWidth</code> 2.25, aligné sur l'usage existant. Les deux se règlent au cas
-        par cas plutôt que par une classe CSS.
+        <code>size</code> vaut 18 px par défaut, la taille de glyphe en ligne standard du DS.
+        L'épaisseur du trait et la couleur viennent des tokens du thème :
+        <code>--st-component-icon-strokeWidth</code> (2.25 par défaut) et
+        <code>--st-component-icon-color</code> (<code>currentColor</code> par défaut, l'icône suit
+        la couleur du texte). Une prop <code>strokeWidth</code> ou une couleur passée à l'icône
+        l'emporte sur le token.
       {:else}
-        <code>size</code> defaults to 18 px — the DS-standard inline glyph size — and
-        <code>strokeWidth</code> to 2.25, matching existing usage. Both are set per call rather than
-        through a CSS class.
+        <code>size</code> defaults to 18 px, the DS-standard inline glyph size. Stroke width and
+        colour come from the theme tokens: <code>--st-component-icon-strokeWidth</code> (2.25 by
+        default) and <code>--st-component-icon-color</code> (<code>currentColor</code> by default,
+        so the icon follows the text colour). A <code>strokeWidth</code> prop or a colour passed to
+        the icon wins over the token.
       {/if}
     </p>
     <TabbedExample nodes={sizeDemo} title={locale.value === "fr" ? "Tailles" : "Sizes"} />
@@ -203,7 +208,11 @@
           <td><code>strokeWidth</code></td>
           <td><code>number</code></td>
           <td><code>2.25</code></td>
-          <td>{locale.value === "fr" ? "Épaisseur du trait." : "Stroke width."}</td>
+          <td>
+            {locale.value === "fr"
+              ? "Épaisseur du trait ; absente, le token --st-component-icon-strokeWidth s'applique."
+              : "Stroke width; when absent, the --st-component-icon-strokeWidth token applies."}
+          </td>
         </tr>
         <tr>
           <td><code>title</code></td>
