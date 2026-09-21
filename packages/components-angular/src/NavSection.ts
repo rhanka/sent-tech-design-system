@@ -1,3 +1,4 @@
+import { NgTemplateOutlet } from "@angular/common";
 import { Component, Input as NgInput } from "@angular/core";
 
 import { Badge } from "./Badge.js";
@@ -28,8 +29,17 @@ export type NavSectionProps = {
 @Component({
   selector: "st-nav-section",
   standalone: true,
-  imports: [Badge],
+  imports: [Badge, NgTemplateOutlet],
+  // Le contenu projete est declare UNE SEULE FOIS, dans `#body`, et insere par
+  // `ngTemplateOutlet` dans la branche active. Deux emplacements de projection
+  // par defaut dans un meme template (un par branche, ce que faisait ce
+  // composant) ne se comportent pas comme les `{@render children?.()}` de la
+  // version Svelte qu'il porte : Angular n'alimente qu'UN emplacement par
+  // selecteur, le DERNIER declare. La branche repliable ne recevait donc
+  // jamais rien — un vrai defaut cote consommateur, que l'apercu docs masquait
+  // seulement parce qu'il projetait les enfants a la main.
   template: `
+    <ng-template #body><ng-content></ng-content></ng-template>
     @if (collapsible) {
       <div [attr.data-st-component]="componentName" [class]="collapsibleClass">
         <button
@@ -60,7 +70,7 @@ export type NavSectionProps = {
             [id]="uid + '-region'"
             [attr.aria-labelledby]="uid + '-trigger'"
           >
-            <ng-content></ng-content>
+            <ng-container [ngTemplateOutlet]="body"></ng-container>
           </div>
         }
       </div>
@@ -75,7 +85,7 @@ export type NavSectionProps = {
           <h3 class="st-overline st-navSection__label" [id]="uid + '-label'">{{ label }}@if (hasCount) {<st-badge class="st-navSection__count" shape="circle" size="sm" [attr.aria-label]="countAriaLabel">{{ count }}</st-badge>}</h3>
         </div>
         <div class="st-navSection__body">
-          <ng-content></ng-content>
+          <ng-container [ngTemplateOutlet]="body"></ng-container>
         </div>
       </section>
     }

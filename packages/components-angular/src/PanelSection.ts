@@ -107,7 +107,19 @@ export class PanelSection {
    *  section's emitter to drive `toggle()`. */
   @Output() readonly toggleRequested = new EventEmitter<string>();
 
-  @ViewChild("headerEl") private headerElRef?: ElementRef<HTMLElement>;
+  /**
+   * `static: true` — ce `#headerEl` n'est dans aucune vue embarquee, la
+   * requete peut donc etre resolue des la creation de la vue. Ce n'est pas
+   * cosmetique : un `PanelStack` ancetre appelle `syncSections()` depuis SON
+   * `ngAfterContentInit`, qui s'execute AVANT le rafraichissement des
+   * requetes de VUE de ses enfants. Avec une requete non statique,
+   * `headerElement` y vaut encore `undefined`, `register()` est saute pour
+   * chaque section, et le stack ne coordonne plus rien — aucune section
+   * depliee, aucun proprietaire du defilement — sans jamais se resynchroniser
+   * ensuite, `QueryList.changes` n'etant emis que si le JEU de sections
+   * change.
+   */
+  @ViewChild("headerEl", { static: true }) private headerElRef?: ElementRef<HTMLElement>;
 
   constructor(private readonly host: ElementRef<HTMLElement>) {}
 
