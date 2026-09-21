@@ -34,6 +34,13 @@ jobs:
       - name: Run design quality gate
         run: node packages/skills/dist/cli.js check apps/docs/build --tech --fail-under 95 > design-quality-report.json
 
+      # Compatibility proof only: serves the built docs WITH the documented
+      # Content-Security-Policy header (script-src 'self', no unsafe-eval or
+      # unsafe-inline for scripts) and loads the key pages in Chrome. The policy
+      # is NOT applied in production (owner decision, see apps/docs/svelte.config.js).
+      - name: CSP compatibility check (docs build)
+        run: npm run csp:check --workspace=@sentropic/design-system-docs
+
       - name: Upload design report
         if: always()
         uses: actions/upload-artifact@v4

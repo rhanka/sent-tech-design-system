@@ -9,7 +9,8 @@
  *   → pose `data-color-mode="dark"` sur `<html>`.
  *
  * Persistance : `localStorage` clé `st-docs-color-mode`.
- * L'anti-FOUC est géré par le script inline dans `app.html`.
+ * L'anti-FOUC est géré par le script pré-hydratation `static/pre-hydration.js`,
+ * chargé en synchrone dans le `<head>` de `app.html`.
  */
 import { browser } from "$app/environment";
 
