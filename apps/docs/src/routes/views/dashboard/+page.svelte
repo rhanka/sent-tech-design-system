@@ -53,9 +53,9 @@
   const BAR_DATA = [
     { label: "Forge", value: 42000, tone: "category1" as const },
     { label: "Entropic", value: 31500, tone: "category2" as const },
-    { label: "Airbus", value: 27300, tone: "category3" as const },
+    { label: "Canada", value: 27300, tone: "category3" as const },
     { label: "DSFR", value: 14000, tone: "category4" as const },
-    { label: "Carbon", value: 10000, tone: "category5" as const }
+    { label: "Québec", value: 10000, tone: "category5" as const }
   ];
 
   const DONUT_DATA = [
@@ -281,7 +281,7 @@
       <li>{locale.value === "fr" ? "État vide (EmptyState pour chaque section)" : "Empty state (EmptyState per section)"}</li>
       <li>{locale.value === "fr" ? "Vue dense (taille sm sur tous les composants)" : "Dense view (sm size on all components)"}</li>
       <li>{locale.value === "fr" ? "Avec SideNav + Header (app shell complet)" : "With SideNav + Header (full app shell)"}</li>
-      <li>{locale.value === "fr" ? "Rendu sous thème Airbus / Carbon / DSFR" : "Render under Airbus / Carbon / DSFR theme"}</li>
+      <li>{locale.value === "fr" ? "Rendu sous thème DSFR / Canada / Québec" : "Render under DSFR / Canada / Québec theme"}</li>
     </ul>
   </section>
 </div>
