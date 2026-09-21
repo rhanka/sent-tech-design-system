@@ -900,25 +900,11 @@ async function cspFindings(html) {
   return report.findings.filter((finding) => finding.ruleId === "csp-no-style-attr");
 }
 
-// Rendu serveur réel d'un composant Svelte du design system : compilation
-// `generate: "server"` puis `render` de `svelte/server`, sans bundler. Test de
-// monorepo : `svelte` vient des devDependencies racine, le composant de
-// packages/components-svelte.
-async function renderDsSvelteComponent(fileName, props = {}) {
-  const { compile } = await import("svelte/compiler");
-  const { render } = await import("svelte/server");
-  const componentPath = resolve(import.meta.dirname, "../../components-svelte/src/lib", fileName);
-  const { js } = compile(readFileSync(componentPath, "utf8"), { generate: "server", filename: componentPath });
-  const code = js.code.replace(/from\s+(['"])(svelte(?:\/[^'"]*)?)\1/g, (_, quote, spec) => `from ${JSON.stringify(import.meta.resolve(spec))}`);
-  const dir = mkdtempSync(join(tmpdir(), "sent-tech-csp-ssr-"));
-  try {
-    const modulePath = join(dir, fileName.replace(/\.svelte$/, ".mjs"));
-    writeFileSync(modulePath, code);
-    const { default: Component } = await import(modulePath);
-    return render(Component, { props }).body;
-  } finally {
-    rmSync(dir, { recursive: true, force: true });
-  }
+// Rendus serveur réels de composants du design system, figés dans
+// test-fixtures/ssr/ (provenance en tête de chaque fichier) : la suite ne
+// dépend ni du paquet svelte ni des sources des composants.
+function readSsrFixture(fileName) {
+  return readFileSync(resolve(import.meta.dirname, "ssr", fileName), "utf8");
 }
 
 test("rule csp-no-style-attr: attribut style littéral rendu (SSR) → finding avec élément, chemin, valeur, directive et remplacement", async () => {
@@ -987,11 +973,34 @@ test("rule csp-no-style-attr: attribut style dans le contenu d'un <template> →
   assert.match(findings[0].message, /<template>/);
 });
 
-test("rule csp-no-style-attr: rendu serveur réel de ProgressBar (design system) → finding sur la jauge", async () => {
-  // ProgressBar porte aujourd'hui sa largeur par un attribut style littéral
-  // (`--st-progressBar-pct`). Si le composant passe au CSSOM ou à une classe,
-  // ce cas devient négatif : l'inverser, ne pas retirer la règle.
-  const body = await renderDsSvelteComponent("ProgressBar.svelte", { value: 40, label: "Import" });
+test("rule csp-no-style-attr: message exact pour un <template> (violation à l'analyse, style appliqué après clonage)", async () => {
+  const [inTemplate] = await cspFindings('<template><li class="item" style="color:red">x</li></template>');
+  assert.match(inTemplate.message, /dès l'analyse du balisage/);
+  assert.match(inTemplate.message, /cloneNode ou importNode/);
+  assert.match(inTemplate.message, /innerHTML/);
+  assert.doesNotMatch(inTemplate.message, /n'est pas appliquée/);
+
+  const [outside] = await cspFindings('<li class="item" style="color:red">x</li>');
+  assert.match(outside.message, /n'est pas appliquée/);
+});
+
+test("rule csp-no-style-attr: document srcdoc d'une iframe, imbriqué → findings préfixés par #srcdoc", async () => {
+  const inner = "<b class='deep' style='color:red'>x</b>";
+  const outer = `<iframe class="inner" srcdoc="${inner.replace(/'/g, "&amp;#39;")}"></iframe><p class='mid' style='margin:0'>y</p>`;
+  const html = `<main><iframe class="demo" srcdoc="${outer.replace(/"/g, "&quot;")}"></iframe><iframe class="plain" src="/x.html"></iframe></main>`;
+  const findings = await cspFindings(html);
+  const locations = findings.map((finding) => finding.location);
+  assert.strictEqual(findings.length, 2, JSON.stringify(locations));
+  assert.ok(locations.some((location) => /iframe\.demo > #srcdoc > .*p\.mid$/.test(location)), JSON.stringify(locations));
+  assert.ok(locations.some((location) => /iframe\.demo > #srcdoc > .*iframe\.inner > #srcdoc > .*b\.deep$/.test(location)), JSON.stringify(locations));
+  assert.ok(findings.every((finding) => /n'est pas appliquée/.test(finding.message)));
+});
+
+test("rule csp-no-style-attr: rendu serveur réel de ProgressBar (design system, figé) → finding sur la jauge", async () => {
+  // ProgressBar porte sa largeur par un attribut style littéral
+  // (`--st-progressBar-pct`) dans le rendu figé. Quand le composant passera au
+  // CSSOM ou à une classe, régénérer le fixture et inverser ce cas.
+  const body = readSsrFixture("ProgressBar.value-40.html");
   const literalStyleAttrs = body.match(/\sstyle="/g) ?? [];
   const findings = await cspFindings(body);
   assert.strictEqual(findings.length, literalStyleAttrs.length);
@@ -1001,10 +1010,20 @@ test("rule csp-no-style-attr: rendu serveur réel de ProgressBar (design system)
   );
 });
 
-test("rule csp-no-style-attr: rendu serveur réel de Badge (design system) → pas de finding", async () => {
-  const body = await renderDsSvelteComponent("Badge.svelte", { tone: "success" });
+test("rule csp-no-style-attr: rendu serveur réel de Badge (design system, figé) → pas de finding", async () => {
+  const body = readSsrFixture("Badge.tone-success.html");
   assert.match(body, /st-badge/);
   assert.strictEqual((await cspFindings(body)).length, 0);
+});
+
+test("rule csp-no-style-attr: sa source est citée depuis main (README), pas depuis une branche non fusionnée", () => {
+  const rule = defaultRules.find((candidate) => candidate.id === "csp-no-style-attr");
+  assert.doesNotMatch(rule.wp7Finding, /A0 §10\.1/);
+  assert.match(rule.wp7Finding, /packages\/skills\/README\.md/);
+  const readme = readFileSync(resolve(import.meta.dirname, "../README.md"), "utf8").replace(/\s*\n>\s*/g, " ");
+  assert.match(readme, /ne reçoit pas ses jetons par propriété CSS personnalisée passée en attribut/);
+  assert.match(readme, /a0f789e3/);
+  assert.doesNotMatch(readme, /A0 §10\.1/);
 });
 
 test("design check --warn-only sort une règle du score et du code retour, sans la taire", async () => {
@@ -1025,6 +1044,30 @@ test("design check --warn-only sort une règle du score et du code retour, sans 
   assert.strictEqual(advisoryReport.warnings.length, 1);
   assert.strictEqual(advisoryReport.warnings[0].ruleId, "csp-no-style-attr");
   assert.match(advisory.stderr, /non bloquant/);
+});
+
+test("design check refuse une option répétée (code 2) au lieu d'auditer la seconde valeur comme cible", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "sent-tech-repeated-option-"));
+  try {
+    const page = join(dir, "page.html");
+    writeFileSync(page, "<main><h1>Titre</h1><p style='margin:0'>x</p></main>");
+
+    const warnOnly = await runCliCommand(["check", "--warn-only", "csp-no-style-attr", "--warn-only", "no-bare-hex", page, "--tech"]);
+    assert.strictEqual(warnOnly.status, 2, warnOnly.stdout);
+    assert.match(warnOnly.stderr, /--warn-only/);
+    assert.strictEqual(warnOnly.stdout.trim(), "");
+
+    const failUnder = await runCliCommand(["check", "--fail-under", "50", "--fail-under", "99", page, "--tech"]);
+    assert.strictEqual(failUnder.status, 2, failUnder.stdout);
+    assert.match(failUnder.stderr, /--fail-under/);
+    assert.strictEqual(failUnder.stdout.trim(), "");
+
+    const visual = await runCliCommand(["audit:visual", dir, "--fail-under", "50", "--fail-under", "99"]);
+    assert.strictEqual(visual.status, 2);
+    assert.match(visual.stderr, /--fail-under/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
 });
 
 test("design check --warn-only refuse un identifiant de règle inconnu", async () => {
