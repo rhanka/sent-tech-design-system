@@ -48,15 +48,24 @@ describe("docs theme catalogue", () => {
     expect(PUBLIC_THEMES.length).toBeLessThan(THEMES.length);
   });
 
-  it("keeps the public picker to our own, governmental and publicly documented systems", () => {
+  it("keeps the public picker to our own theme and governmental systems, with no private brand", () => {
     expect(PUBLIC_THEMES.map((theme) => theme.id).sort()).toEqual([
-      "ai21", "amazon", "anthropic", "assistant-ui", "canada", "character-ai",
-      "cohere", "copilot", "databricks", "deepseek", "dsfr", "fireworks",
-      "gemini", "github", "groq", "huggingface", "inflection", "meta",
-      "mistral", "nous-hermes", "openai", "openrouter", "palantir",
-      "perplexity", "poe", "quebec", "replicate", "sent-tech", "stability",
-      "together", "vercel", "writer", "xai", "you"
+      "canada", "dsfr", "quebec", "sent-tech"
     ]);
+  });
+
+  it("keeps AI and software vendor brands behind Ctrl+Shift+X too", () => {
+    // Une documentation publique ne fait pas d'une marque un thème public.
+    const vendors = [
+      "ai21", "amazon", "anthropic", "assistant-ui", "character-ai", "cohere",
+      "copilot", "databricks", "deepseek", "fireworks", "gemini", "github",
+      "groq", "huggingface", "inflection", "meta", "mistral", "nous-hermes",
+      "openai", "openrouter", "palantir", "perplexity", "poe", "replicate",
+      "stability", "together", "vercel", "writer", "xai", "you", "carbon", "airbus"
+    ];
+    for (const id of vendors) {
+      expect(isPrivateTheme(id), `${id} ne doit pas être public`).toBe(true);
+    }
   });
 
   it("lists the house theme first, then every other theme alphabetically", () => {

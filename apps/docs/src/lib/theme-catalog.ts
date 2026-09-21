@@ -7,8 +7,9 @@ const modules = import.meta.glob<Record<string, TenantTheme>>(
   { eager: true }
 );
 
-// Thèmes montrés dans le sélecteur public du site : nos thèmes propres, les DS
-// gouvernementaux, et les DS d'éditeurs dont la documentation est publique.
+// Thèmes montrés dans le sélecteur public du site : notre thème propre et les DS
+// gouvernementaux. AUCUNE marque privée, quelle que soit la publicité de sa
+// documentation : toutes ne s'affichent qu'après Ctrl+Shift+X.
 //
 // C'est une LISTE BLANCHE, et c'est délibéré : tout thème absent d'ici est
 // traité comme privé. Le reste du catalogue est constitué de clones mesurés de
@@ -16,12 +17,7 @@ const modules = import.meta.glob<Record<string, TenantTheme>>(
 // noire laisserait un nouveau clone devenir public par simple oubli ; une liste
 // blanche le garde masqué tant que personne ne l'a explicitement ouvert.
 const PUBLIC_THEME_IDS: ReadonlySet<string> = new Set([
-  "ai21", "amazon", "anthropic", "assistant-ui", "canada", "character-ai",
-  "cohere", "copilot", "databricks", "deepseek", "dsfr", "fireworks", "gemini",
-  "github", "groq", "huggingface", "inflection", "meta", "mistral",
-  "nous-hermes", "openai", "openrouter", "palantir", "perplexity", "poe",
-  "quebec", "replicate", "sent-tech", "stability", "together", "vercel",
-  "writer", "xai", "you"
+  "canada", "dsfr", "quebec", "sent-tech"
 ]);
 
 // Catalogue complet : le thème maison d'abord, puis tout le reste par ordre
