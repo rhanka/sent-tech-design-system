@@ -60,6 +60,7 @@
   } from "$lib/url-state";
   import CompareButton from "$lib/compare/CompareButton.svelte";
   import CompareTriptych from "$lib/compare/CompareTriptych.svelte";
+  import { compareThemeFor, providePrivateThemeAccess } from "$lib/compare/compare-store.svelte";
   import ChatWidget from "$lib/chat/ChatWidget.svelte";
   // Chromes thématisés — importés conditionnellement côté client uniquement.
   import ChromeCarbon from "$lib/chrome/ChromeCarbon.svelte";
@@ -506,9 +507,16 @@
   const compareActive = $derived(
     browser && page.url.searchParams.get("compare") === "1"
   );
+  // Un thème privé deep-linké (?compare=1&theme=carbon) n'ouvre le triptyque
+  // qu'après Ctrl+Shift+X : sans cela, bandeau, panneaux et écarts affichaient
+  // la marque sur un chargement masqué.
   const compareThemeId = $derived(
-    browser ? (page.url.searchParams.get("theme") ?? null) : null
+    browser
+      ? compareThemeFor(page.url.searchParams.get("theme"), allowsPrivateTheme(access))
+      : null
   );
+  // Le banc /compare lit la même levée du masquage.
+  providePrivateThemeAccess(() => allowsPrivateTheme(access));
   const compareScenarioId = $derived(
     browser ? (page.url.searchParams.get("scenario") ?? null) : null
   );
