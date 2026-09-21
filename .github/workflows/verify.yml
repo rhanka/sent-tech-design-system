@@ -73,7 +73,7 @@ jobs:
             fi
           fi
           HEAD="${{ github.sha }}"
-          MATRIX=$(node scripts/ci-affected-workspaces.mjs --base="$BASE" --head="$HEAD" --shards=10 --format=github-matrix)
+          MATRIX=$(node scripts/ci-affected-workspaces.mjs --base="$BASE" --head="$HEAD" --shards=10 --include-apps --format=github-matrix)
           echo "matrix=$MATRIX" >> "$GITHUB_OUTPUT"
           echo "$MATRIX"
 
