@@ -86,10 +86,10 @@
           // COPIE EXACTE de la liste blanche publique de $lib/theme-catalog.
           // Ce script ne peut pas lire le catalogue (il s'exécute avant tout
           // module), donc il embarque les identifiants en dur, et TOUT ce qui
-          // n'y figure pas est traité comme privé : ni attribut, ni amorce
-          // d'URL. Le reste du catalogue est fait de clones mesurés de marques
-          // privées, qui ne doivent paraître ni sur <html> ni dans la barre
-          // d'adresse — pas même le temps d'un premier rendu.
+          // n'y figure pas est traité comme privé : hors mode révélé, ni
+          // attribut, ni amorce d'URL. Le reste du catalogue est fait de clones
+          // mesurés de marques privées, qui ne doivent paraître ni sur <html>
+          // ni dans la barre d'adresse — pas même le temps d'un premier rendu.
           //
           // La liste est COMPLÈTE, et pas un sous-ensemble « suffisant » : un
           // thème public absent d'ici ne serait pas seulement appliqué plus
@@ -100,9 +100,14 @@
           var PUBLIC_BOOT_THEMES = [
             "canada", "dsfr", "quebec", "sent-tech"
           ];
+          // Mode révélé (Ctrl+Shift+X) : même clé et mêmes valeurs que le
+          // layout ($lib/theme-access). Lui seul autorise l'amorce d'un thème
+          // privé enregistré.
+          var revealed = localStorage.getItem("st-docs-demo-mode") === "true";
           var theme = localStorage.getItem("st-docs-theme");
           var themeIsPublic = PUBLIC_BOOT_THEMES.indexOf(theme) !== -1;
-          if (themeIsPublic) {
+          var themeIsBootable = themeIsPublic || (revealed && !!theme);
+          if (themeIsBootable) {
             document.documentElement.setAttribute("data-st-theme", theme);
           }
           // Framework : data-st-framework pilote l'affichage des îles docs.
@@ -120,12 +125,12 @@
           // touche pas. localStorage ne sert qu'à cette amorce.
           var params = new URLSearchParams(location.search);
           var changed = false;
-          // N'amorcer l'URL qu'avec un thème PUBLIC, et selon la même liste
-          // que ci-dessus : un identifiant privé dans la barre d'adresse
-          // exposerait la marque avant même l'hydratation. localStorage peut
-          // parfaitement contenir un identifiant privé (choisi pendant une
-          // démonstration) — c'est ici qu'on refuse de le propager.
-          if (!params.has("theme") && themeIsPublic && theme !== "sent-tech") {
+          // Même verdict que pour l'attribut : hors mode révélé, n'amorcer
+          // l'URL qu'avec un thème PUBLIC. Un identifiant privé dans la barre
+          // d'adresse exposerait la marque avant même l'hydratation.
+          // localStorage peut contenir un identifiant privé (choisi en mode
+          // révélé) : sans mode révélé persisté, on refuse de le propager.
+          if (!params.has("theme") && themeIsBootable && theme !== "sent-tech") {
             params.set("theme", theme); changed = true;
           }
           if (!params.has("framework") && fw && fw !== "svelte") {

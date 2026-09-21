@@ -21,7 +21,7 @@ const PUBLIC_THEME_IDS: ReadonlySet<string> = new Set([
 ]);
 
 // Catalogue complet : le thème maison d'abord, puis tout le reste par ordre
-// alphabétique. C'est ce que montre le sélecteur ouvert par Ctrl+Shift+X.
+// alphabétique. C'est ce que montre le sélecteur une fois Ctrl+Shift+X activé.
 export const THEMES: TenantTheme[] = [
   sentTechTheme,
   ...Object.entries(modules).flatMap(([path, module]) =>
@@ -33,7 +33,7 @@ export const THEMES: TenantTheme[] = [
   ).sort((a, b) => a.label.localeCompare(b.label, "fr"))
 ];
 
-/** Un thème tiers ne s'atteint que par le sélecteur Ctrl+Shift+X. */
+/** Un thème tiers ne s'affiche qu'une fois Ctrl+Shift+X activé. */
 export function isPrivateTheme(id: string): boolean {
   return !PUBLIC_THEME_IDS.has(id);
 }
