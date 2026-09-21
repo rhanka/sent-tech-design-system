@@ -3848,7 +3848,7 @@
   les autres : aucune sortie ne change le mode révélé ni le thème actif.
 -->
 <ThemePicker
-  bind:open={() => access.open, (value) => { if (!value) access = closePicker(access); }}
+  bind:open={() => isThemeOpen, (value) => { if (!value) access = closePicker(access); }}
   themes={visibleThemes}
   activeThemeId={activeThemeId}
   locale={locale.value}
