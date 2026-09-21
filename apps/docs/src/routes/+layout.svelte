@@ -14,15 +14,16 @@
   import {
     sentTechTheme
   } from "@sentropic/design-system-themes";
-  import { THEMES, PUBLIC_THEMES, isPrivateTheme } from "$lib/theme-catalog";
+  import { THEMES, isPrivateTheme } from "$lib/theme-catalog";
   import {
     allowsPrivateTheme,
     closePicker,
     createThemeAccess,
     openPicker,
-    pickTheme,
+    persistDemoMode,
+    readDemoMode,
     themesForPicker,
-    toggleDemoPicker,
+    toggleDemoMode,
     type ThemeAccess
   } from "$lib/theme-access";
   import ThemePicker from "$lib/ThemePicker.svelte";
@@ -240,38 +241,33 @@
   }
 
   // Les thèmes tiers sont des clones mesurés de marques privées : ils ne
-  // paraissent pas sur le site public, et Ctrl+Shift+X est la seule porte vers
-  // eux. Toute la logique d'accès (portée du sélecteur, ouverture, mode démo)
-  // vit dans $lib/theme-access, en fonctions pures : c'est là qu'elle est
-  // testable par ses gestes, au lieu de se laisser relire à travers 3 800
-  // lignes de gabarit. Ce layout n'est plus que le câblage.
+  // paraissent pas sur le site public tant que Ctrl+Shift+X n'a pas activé le
+  // mode révélé. Toute la logique d'accès (mode révélé, liste montrée,
+  // ouverture du sélecteur) vit dans $lib/theme-access, en fonctions pures :
+  // c'est là qu'elle est testable par ses gestes, au lieu de se laisser relire
+  // à travers 3 800 lignes de gabarit. Ce layout n'est plus que le câblage.
   //
-  // L'état est PUREMENT EN MÉMOIRE : rien n'est écrit dans localStorage, donc
-  // chaque chargement de page repart masqué et le geste doit être refait. Un
-  // rechargement en pleine démonstration perd le thème privé : c'est voulu.
-  const initialAccess = createThemeAccess();
+  // Le mode révélé est PERSISTÉ (localStorage["st-docs-demo-mode"]) : il
+  // survit au rechargement, jusqu'au Ctrl+Shift+X suivant.
+  const initialAccess = createThemeAccess(browser ? readDemoMode(localStorage) : false);
   let access = $state<ThemeAccess>(initialAccess);
 
-  // Anonymisation : un thème tiers deep-linké (?theme=cossette) est ignoré tant
-  // que la porte n'a pas été ouverte — on retombe sur le thème par défaut.
+  // Anonymisation : un thème tiers deep-linké (?theme=cossette) ou enregistré
+  // est ignoré hors mode révélé — on retombe sur le thème par défaut.
   // `initialAccess` (et non `access`) : on ne peut pas lire un $state dans
-  // l'init d'un autre, et un accès neuf n'autorise de toute façon rien.
+  // l'init d'un autre.
   let activeThemeId = $state(
     enforceThemePrivacy(rawInitialTheme, allowsPrivateTheme(initialAccess))
   );
   const activeTheme = $derived(
     THEMES.find((theme) => theme.id === activeThemeId) ?? sentTechTheme
   );
-  // Les surfaces publiques — bouton d'en-tête, menu mobile, AppShell — ne
-  // montrent QUE la liste publique, y compris pendant une démonstration. Le
-  // catalogue complet n'existe que dans le sélecteur ouvert par Ctrl+Shift+X :
-  // sans cette séparation, le bouton d'en-tête deviendrait une seconde porte.
-  const visibleThemes = PUBLIC_THEMES;
+  // L'invariant, en un seul endroit : la liste que montrent le sélecteur, le
+  // menu mobile et l'AppShell. Catalogue complet en mode révélé, liste
+  // publique sinon ; elle suit le mode même sélecteur ouvert.
+  const visibleThemes = $derived(themesForPicker(access, THEMES));
 
-  // L'invariant, en un seul endroit : ce que le sélecteur reçoit.
-  const pickerThemes = $derived(themesForPicker(access, THEMES));
-
-  function openPublicPicker() {
+  function openThemePicker() {
     access = openPicker(access);
   }
 
@@ -279,10 +275,9 @@
     access = access.open ? closePicker(access) : openPicker(access);
   }
 
-  // Garde runtime, en défense de dernier ressort : un thème privé ne doit
-  // jamais rester actif sur un chargement masqué (affichage ET URL). Le filtre
-  // en amont (enforceThemePrivacy, appliqué à l'init et à chaque lecture
-  // d'URL) devrait suffire ; cette garde ne coûte rien et ne dépend pas de
+  // Quitter le mode révélé alors qu'un thème privé est actif ramène au thème
+  // par défaut (affichage ET URL). C'est aussi la défense de dernier ressort :
+  // un thème privé ne reste jamais actif hors mode révélé, quel que soit
   // l'ordre des effets.
   $effect(() => {
     if (!browser) return;
@@ -291,10 +286,8 @@
     }
   });
 
-  // Choisir un thème privé lève le masquage pour ce chargement : sans cela, la
-  // garde ci-dessus annulerait la sélection dans la foulée.
   function selectTheme(id: string) {
-    access = pickTheme(access, id);
+    access = closePicker(access);
     activeThemeId = id;
   }
 
@@ -349,10 +342,8 @@
     // Toute navigation (ex. clic sur un résultat de recherche) ferme la palette.
     searchOpen = false;
     // …et le sélecteur de thèmes, par la MÊME transition que toute autre
-    // fermeture : sans cela, un sélecteur ouvert par Ctrl+Shift+X survivrait au
-    // clic sur un lien interne et promènerait le catalogue complet de page en
-    // page. `closePicker` ne touche pas à `demoMode` : naviguer ferme le
-    // panneau, il ne remasque pas (c'est l'affaire du chargement suivant).
+    // fermeture. `closePicker` ne touche pas au mode révélé : naviguer ferme
+    // le panneau, sans rien remasquer.
     access = closePicker(access);
   });
 
@@ -605,13 +596,12 @@
     e.preventDefault();
     openSearch();
   }
-  // Ctrl+Shift+X est la SEULE porte vers les thèmes tiers. Il ouvre le
-  // catalogue complet ; le represser referme le panneau — sans rien détruire,
-  // exactement comme Échap. Le remasquage, lui, est l'affaire du chargement
-  // suivant : l'état d'accès n'est jamais persisté.
+  // Ctrl+Shift+X bascule le mode révélé (thèmes tiers montrés ou masqués) et
+  // le persiste. Il n'ouvre pas le sélecteur ; s'il est ouvert, sa liste suit.
   if (e.ctrlKey && e.shiftKey && e.code === "KeyX") {
     e.preventDefault();
-    access = toggleDemoPicker(access);
+    access = toggleDemoMode(access);
+    if (browser) persistDemoMode(localStorage, access);
   }
 }} />
 
@@ -705,7 +695,7 @@
     <button
       type="button"
       class="docs-header-control docs-header-menuButton docs-locale-trigger docs-theme-trigger"
-      onclick={openPublicPicker}
+      onclick={openThemePicker}
       aria-expanded={isThemeOpen}
       aria-haspopup="dialog"
       aria-label={locale.value === "fr" ? "Changer le thème" : "Change theme"}
@@ -3854,13 +3844,12 @@
 
 <!--
   Liaison par fonctions : le sélecteur se referme aussi de l'intérieur (Échap,
-  ✕, clic sur le fond). En routant CETTE fermeture-là par `closePicker`, on
-  garantit que la portée retombe à la liste publique quelle que soit la sortie —
-  et qu'aucune sortie ne change le thème actif.
+  ✕, clic sur le fond). Cette fermeture-là passe par `closePicker`, comme toutes
+  les autres : aucune sortie ne change le mode révélé ni le thème actif.
 -->
 <ThemePicker
   bind:open={() => access.open, (value) => { if (!value) access = closePicker(access); }}
-  themes={pickerThemes}
+  themes={visibleThemes}
   activeThemeId={activeThemeId}
   locale={locale.value}
   onselect={selectTheme}

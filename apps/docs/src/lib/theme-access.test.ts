@@ -2,152 +2,127 @@ import { describe, expect, it } from "vitest";
 import { PUBLIC_THEMES, THEMES, isPrivateTheme } from "./theme-catalog";
 import { enforceThemePrivacy } from "./url-state";
 import {
+  DEMO_MODE_STORAGE_KEY,
   allowsPrivateTheme,
   closePicker,
   createThemeAccess,
-  openDemoPicker,
   openPicker,
-  pickTheme,
+  persistDemoMode,
+  readDemoMode,
   themesForPicker,
-  toggleDemoPicker,
-  type ThemeAccess
+  toggleDemoMode
 } from "./theme-access";
 
 // Ces tests décrivent des GESTES, pas la forme du code : « ouvrir par le
-// bouton », « ouvrir par le raccourci », « fermer », « choisir un thème »,
-// « recharger ». Chacun échoue si la logique d'accès ment sur ce que le
-// sélecteur reçoit ou sur ce qu'un chargement autorise — c'est exactement ce
-// qu'une assertion sur la source du layout ne sait pas voir.
+// bouton », « Ctrl+Shift+X », « fermer », « recharger ». Chacun échoue si la
+// logique d'accès ment sur ce que le sélecteur reçoit ou sur ce qu'un
+// chargement autorise.
 
 const PRIVATE_BRAND = "cossette";
-const PUBLIC_BRAND = "dsfr";
 
 const ids = (themes: readonly { id: string }[]) => themes.map((theme) => theme.id);
 const privateOnesIn = (themes: readonly { id: string }[]) => ids(themes).filter(isPrivateTheme);
 
-describe("theme access — la porte Ctrl+Shift+X", () => {
-  it("starts every page load masked, closed, and scoped to the public list", () => {
-    const fresh = createThemeAccess();
+/** Un localStorage réduit à ce que le module lit et écrit. */
+function memoryStorage(initial: Record<string, string> = {}) {
+  const values = new Map(Object.entries(initial));
+  return {
+    getItem: (key: string) => values.get(key) ?? null,
+    setItem: (key: string, value: string) => void values.set(key, value),
+    values
+  };
+}
+
+describe("theme access — l'interrupteur Ctrl+Shift+X", () => {
+  it("starts a load without a persisted reveal masked, closed, on the public list", () => {
+    const fresh = createThemeAccess(readDemoMode(memoryStorage()));
 
     expect(fresh.open).toBe(false);
     expect(allowsPrivateTheme(fresh)).toBe(false);
-    // Au repos, avant tout geste, le sélecteur ne connaît que la liste publique.
     expect(privateOnesIn(themesForPicker(fresh, THEMES))).toEqual([]);
     expect(ids(themesForPicker(fresh, THEMES))).toEqual(ids(PUBLIC_THEMES));
   });
 
-  it("never lets the header button reach a private brand — first click or after a demo", () => {
-    const firstClick = openPicker(createThemeAccess());
-    expect(firstClick.open).toBe(true);
-    expect(ids(themesForPicker(firstClick, THEMES))).toEqual(ids(PUBLIC_THEMES));
+  it("gives the header button the public list when masked, the whole catalogue when revealed", () => {
+    const masked = openPicker(createThemeAccess());
+    expect(masked.open).toBe(true);
+    expect(ids(themesForPicker(masked, THEMES))).toEqual(ids(PUBLIC_THEMES));
 
-    // Démonstration complète : raccourci, choix d'une marque privée, fermeture.
-    // Le bouton d'en-tête ne doit pas être devenu une seconde porte.
-    const afterDemo = closePicker(pickTheme(openDemoPicker(createThemeAccess()), PRIVATE_BRAND));
-    expect(privateOnesIn(themesForPicker(openPicker(afterDemo), THEMES))).toEqual([]);
+    const revealed = openPicker(toggleDemoMode(createThemeAccess()));
+    expect(revealed.open).toBe(true);
+    expect(ids(themesForPicker(revealed, THEMES))).toEqual(ids(THEMES));
+    expect(ids(themesForPicker(revealed, THEMES))).toContain(PRIVATE_BRAND);
   });
 
-  it("reaches the whole catalogue only through the shortcut", () => {
-    const demo = openDemoPicker(createThemeAccess());
+  it("toggles the reveal without ever opening the picker", () => {
+    const once = toggleDemoMode(createThemeAccess());
+    expect(once.demoMode).toBe(true);
+    expect(once.open).toBe(false);
 
-    expect(demo.open).toBe(true);
-    expect(ids(themesForPicker(demo, THEMES))).toEqual(ids(THEMES));
-    expect(ids(themesForPicker(demo, THEMES))).toContain(PRIVATE_BRAND);
-
-    // Le raccourci pressé sur un sélecteur déjà ouvert par un bouton élargit,
-    // il ne referme pas : le geste demandé est « montre-moi tout ».
-    const widened = toggleDemoPicker(openPicker(createThemeAccess()));
-    expect(widened.open).toBe(true);
-    expect(ids(themesForPicker(widened, THEMES))).toEqual(ids(THEMES));
+    const twice = toggleDemoMode(once);
+    expect(twice.demoMode).toBe(false);
+    expect(twice.open).toBe(false);
   });
 
-  it("closes without ever changing which theme is allowed", () => {
-    const demo = pickTheme(openDemoPicker(createThemeAccess()), PRIVATE_BRAND);
-    expect(enforceThemePrivacy(PRIVATE_BRAND, allowsPrivateTheme(demo))).toBe(PRIVATE_BRAND);
+  it("lets an open picker's list follow the shortcut, without closing it", () => {
+    const open = openPicker(createThemeAccess());
+    expect(ids(themesForPicker(open, THEMES))).toEqual(ids(PUBLIC_THEMES));
 
-    // Échap / ✕ / clic sur le fond, et re-pression du raccourci : mêmes effets.
-    const byEscape = closePicker(demo);
-    const byShortcut = toggleDemoPicker(openDemoPicker(demo));
+    const revealed = toggleDemoMode(open);
+    expect(revealed.open).toBe(true);
+    expect(ids(themesForPicker(revealed, THEMES))).toEqual(ids(THEMES));
 
-    for (const closed of [byEscape, byShortcut]) {
+    const masked = toggleDemoMode(revealed);
+    expect(masked.open).toBe(true);
+    expect(ids(themesForPicker(masked, THEMES))).toEqual(ids(PUBLIC_THEMES));
+  });
+
+  it("closes without changing the reveal", () => {
+    for (const demoMode of [false, true]) {
+      const closed = closePicker(openPicker(createThemeAccess(demoMode)));
       expect(closed.open).toBe(false);
-      expect(closed.scope).toBe("public");
-      // Fermer un panneau ne redessine pas la page.
-      expect(enforceThemePrivacy(PRIVATE_BRAND, allowsPrivateTheme(closed))).toBe(PRIVATE_BRAND);
+      expect(closed.demoMode).toBe(demoMode);
     }
   });
 
-  it("re-masks on the next page load, whatever happened during the demo", () => {
-    const duringDemo = closePicker(pickTheme(openDemoPicker(createThemeAccess()), PRIVATE_BRAND));
-    expect(allowsPrivateTheme(duringDemo)).toBe(true);
+  it("persists the reveal under the original key and values, and restores it on the next load", () => {
+    const storage = memoryStorage();
 
-    // Rien n'est persisté : le chargement suivant repart d'un état neuf, et un
-    // `?theme=cossette` laissé dans une URL partagée redevient inerte.
-    const nextLoad = createThemeAccess();
-    expect(allowsPrivateTheme(nextLoad)).toBe(false);
-    expect(enforceThemePrivacy(PRIVATE_BRAND, allowsPrivateTheme(nextLoad))).toBe("sent-tech");
+    const revealed = toggleDemoMode(createThemeAccess(readDemoMode(storage)));
+    persistDemoMode(storage, revealed);
+    expect(storage.values.get(DEMO_MODE_STORAGE_KEY)).toBe("true");
+    expect(DEMO_MODE_STORAGE_KEY).toBe("st-docs-demo-mode");
+
+    // Rechargement : toujours révélé, catalogue complet.
+    const reloaded = createThemeAccess(readDemoMode(storage));
+    expect(allowsPrivateTheme(reloaded)).toBe(true);
+    expect(ids(themesForPicker(openPicker(reloaded), THEMES))).toEqual(ids(THEMES));
+
+    // Ctrl+Shift+X à nouveau : masqué, et le rechargement suivant aussi.
+    persistDemoMode(storage, toggleDemoMode(reloaded));
+    expect(storage.values.get(DEMO_MODE_STORAGE_KEY)).toBe("false");
+    expect(allowsPrivateTheme(createThemeAccess(readDemoMode(storage)))).toBe(false);
   });
 
-  it("narrows a wide-open picker back to the public list when a button reopens it", () => {
-    // La démonstration est EN COURS : le sélecteur est ouvert sur les 127, rien
-    // n'a été fermé. Si le bouton d'en-tête (ou un chrome tiers) rouvre à ce
-    // moment-là, il doit rétrécir la portée lui-même — et non compter sur la
-    // remise à zéro d'une fermeture qui n'a pas eu lieu.
-    const stillWide = openDemoPicker(createThemeAccess());
-    expect(ids(themesForPicker(stillWide, THEMES))).toEqual(ids(THEMES));
-
-    const reopenedByButton = openPicker(stillWide);
-    expect(reopenedByButton.open).toBe(true);
-    expect(reopenedByButton.scope).toBe("public");
-    expect(privateOnesIn(themesForPicker(reopenedByButton, THEMES))).toEqual([]);
-    expect(ids(themesForPicker(reopenedByButton, THEMES))).toEqual(ids(PUBLIC_THEMES));
+  it("reads anything but \"true\" as masked", () => {
+    for (const stored of [undefined, "false", "1", "TRUE", ""]) {
+      const storage = memoryStorage(stored === undefined ? {} : { [DEMO_MODE_STORAGE_KEY]: stored });
+      expect(readDemoMode(storage)).toBe(false);
+    }
   });
 
-  it("treats the shortcut itself as the unlock, before any theme is chosen", () => {
-    // Sémantique VOULUE : le geste EST le déverrouillage. Ctrl+Shift+X seul,
-    // sans rien sélectionner, ouvre l'autorité des deep-links privés pour tout
-    // le chargement — c'est ce qui rend une démonstration utilisable (coller un
-    // ?theme=cossette après avoir fait le geste). L'éphémère vient du
-    // chargement suivant, pas d'une fermeture.
-    const justTheGesture = openDemoPicker(createThemeAccess());
-    expect(justTheGesture.demoMode).toBe(true);
-    expect(allowsPrivateTheme(justTheGesture)).toBe(true);
-    expect(enforceThemePrivacy(PRIVATE_BRAND, allowsPrivateTheme(justTheGesture))).toBe(
-      PRIVATE_BRAND
-    );
+  it("accepts a private theme from the URL or storage only while revealed", () => {
+    const masked = createThemeAccess(false);
+    expect(enforceThemePrivacy(PRIVATE_BRAND, allowsPrivateTheme(masked))).toBe("sent-tech");
+    expect(enforceThemePrivacy("dsfr", allowsPrivateTheme(masked))).toBe("dsfr");
 
-    // Même geste par le raccourci lui-même (toggle), même verdict.
-    const byShortcut = toggleDemoPicker(createThemeAccess());
-    expect(allowsPrivateTheme(byShortcut)).toBe(true);
+    const revealed = createThemeAccess(true);
+    expect(enforceThemePrivacy(PRIVATE_BRAND, allowsPrivateTheme(revealed))).toBe(PRIVATE_BRAND);
 
-    // Et l'autorité survit à la fermeture, tandis que le sélecteur, lui,
-    // retombe à la liste publique : fermer n'est pas remasquer.
-    const closed = closePicker(justTheGesture);
-    expect(allowsPrivateTheme(closed)).toBe(true);
-    expect(ids(themesForPicker(openPicker(closed), THEMES))).toEqual(ids(PUBLIC_THEMES));
-  });
-
-  it("never lets the picker's scope alone authorise a private theme", () => {
-    // « Montrer » et « autoriser » sont deux choses : `scope` dit ce que le
-    // panneau affiche, `demoMode` dit ce qu'un identifiant venu de l'URL ou du
-    // stockage a le droit d'être. Aucune transition ne produit aujourd'hui cet
-    // état, et c'est justement l'invariant à épingler : si une future
-    // transition élargissait la portée sans lever le masquage, l'autorisation
-    // ne devrait pas suivre en douce.
-    const widenedButMasked: ThemeAccess = { scope: "all", open: true, demoMode: false };
-
-    expect(allowsPrivateTheme(widenedButMasked)).toBe(false);
-    expect(enforceThemePrivacy(PRIVATE_BRAND, allowsPrivateTheme(widenedButMasked))).toBe(
+    // Quitter le mode révélé retire l'autorisation : le layout revient alors
+    // au thème par défaut.
+    expect(enforceThemePrivacy(PRIVATE_BRAND, allowsPrivateTheme(toggleDemoMode(revealed)))).toBe(
       "sent-tech"
     );
-  });
-
-  it("keeps masking in place when the chosen theme is a public one", () => {
-    const afterPublicPick = pickTheme(openPicker(createThemeAccess()), PUBLIC_BRAND);
-
-    expect(afterPublicPick.open).toBe(false);
-    expect(allowsPrivateTheme(afterPublicPick)).toBe(false);
-    expect(enforceThemePrivacy(PUBLIC_BRAND, allowsPrivateTheme(afterPublicPick))).toBe(PUBLIC_BRAND);
-    expect(enforceThemePrivacy(PRIVATE_BRAND, allowsPrivateTheme(afterPublicPick))).toBe("sent-tech");
   });
 });
