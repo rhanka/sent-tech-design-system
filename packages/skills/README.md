@@ -22,6 +22,7 @@ Options :
 - `design audit <target>` est le contrat WP8 V1 pour les harness agents.
 - `design` et `sentech-design` sont les binaires publiés par le package.
 - `design check <target> --fail-under <score>` active un gate qualité 0-100. En mode technique, `<target>` peut être un fichier HTML, du HTML inline, une URL ou un dossier de build statique contenant des pages `.html`.
+- `design check <target> --warn-only <rule-id[,rule-id…]>` passe ces règles en signalement : leurs findings sont rapportés sous la clé `warnings` du JSON (avec `warnOnly`), hors score et hors code retour. Sert à introduire une règle dans un gate existant sans le faire échouer d'emblée ; un identifiant inconnu retourne `2`.
 - `design check <target> --human` retourne une revue heuristique déterministe (charge cognitive, structure, signaux a11y) ; ce n'est pas une simulation IA.
 - `design init --extract` génère `DESIGN.md` à partir de tokens CSS réels.
 - `design build <feature>` génère un squelette Svelte 5 réel ; `--propose`, `--promote` et `--global` sont explicitement expérimentaux et retournent `2`.
@@ -134,6 +135,33 @@ Ou `kind: "url"` / `kind: "html"` pour un bloc HTML brut.
 - `navsystem-color-state-only` — signale un marqueur couleur/état sans libellé d'état explicite.
 - `navsystem-depth-hierarchy` — signale une profondeur rail/drawer/panel/menu au-delà du contrat statique.
 - `navsystem-search-fill-affordance` — signale une recherche de drawer/panel sans affordance de remplissage explicite.
+- `csp-no-style-attr` — signale tout attribut `style` littéral du balisage rendu (voir ci-dessous).
+
+### `csp-no-style-attr` — attribut style sous CSP stricte
+
+Le design system vise la CSP `default-src 'self'; script-src 'self'; style-src 'self'; style-src-attr 'none'`.
+Sous `style-src-attr 'none'`, le navigateur bloque tout attribut `style` présent dans le balisage et signale
+une violation ; une écriture CSSOM (`el.style.setProperty(…)`) n'est pas concernée. Certains compilateurs
+émettent l'un ou l'autre selon le contexte (la directive Svelte `style:` donne un attribut en rendu serveur et
+un `setProperty` côté client) : la règle porte donc sur le balisage rendu, pas sur la source.
+
+- Sévérité `high` : la déclaration n'est pas appliquée. Un attribut vide ou blanc (`style=""`) sort en `low` :
+  rien n'est perdu, mais la violation est quand même signalée.
+- Chaque finding donne l'élément, son chemin, la valeur, la directive en cause et le remplacement de la règle de
+  conception : une classe (variable définie en feuille de style) ou le CSSOM après montage. Une variable posée
+  sur un ancêtre ne convient que si elle ne passe pas elle-même par un attribut `style`.
+- Couvert : éléments HTML et SVG (l'attribut `style` d'un élément SVG est soumis à la même directive ; les
+  attributs de présentation comme `fill` ne le sont pas), contenu des `<template>`, y compris imbriqués.
+- Comportement mesuré (Chromium 153, CSP en en-tête) : attribut littéral, vide ou blanc, sur HTML ou SVG :
+  une violation, style non appliqué. Contenu de `<template>` : une violation dès l'analyse, même sans
+  instanciation ; instancié par `cloneNode`, le style s'applique ; par `innerHTML`, il est bloqué.
+  `setProperty` : aucune violation, style appliqué. `setAttribute('style', …)` : bloqué.
+- Limite : l'audit lit le HTML servi sans exécuter de script. Une écriture CSSOM faite au runtime n'y figure
+  pas, donc n'est pas signalée. Mais un DOM vivant sérialisé après écriture CSSOM (`outerHTML` pris après
+  hydratation) porte l'attribut et serait signalé : auditer le balisage servi, pas une capture du DOM
+  hydraté. De même, un `setAttribute('style', …)` exécuté au runtime est bloqué par le navigateur mais
+  invisible pour l'audit statique.
+- Hors périmètre : les éléments `<style>` inline relèvent de `style-src-elem`, pas de cette règle.
 
 ## Architecture
 
@@ -143,5 +171,5 @@ Ou `kind: "url"` / `kind: "html"` pour un bloc HTML brut.
 
 ## Notes
 
-- Cette version expose 32 règles déterministes, chacune reliée à un principe `design` et à un finding WP7/WP23.
+- Cette version expose 33 règles déterministes, chacune reliée à un principe `design` et à un finding WP7/WP23 (ou, pour `csp-no-style-attr`, à la règle de conception A0 §10.1).
   L’enrichissement vers ~`30-35` règles reste géré via WP7/8.
