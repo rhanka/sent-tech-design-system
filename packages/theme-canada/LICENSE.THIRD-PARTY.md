@@ -105,7 +105,16 @@ Les symboles officiels du gouvernement du Canada relèvent du Programme de coord
 - les dessins, logos ou marques qui leur ressemblent ou peuvent être confondus avec eux sont poursuivis comme usage non autorisé ;
 - toute demande de reproduction s'adresse au ministère fédéral responsable du sujet.
 
-Ce que ce paquet embarque de ce registre, mesuré avec `npm pack --dry-run` (`LICENSE`, `LICENSE.THIRD-PARTY.md`, `package.json`, `dist/index.*`) : **aucun fichier** de marque ou d'emblème. Il n'y a ni signature, ni mot-symbole, ni armoiries, ni drapeau, ni fonte, ni SVG amont ; le seul SVG du paquet est un chevron de liste générique, commun aux thèmes du dépôt. Le paquet embarque en revanche, sous forme de chaînes : des couleurs, dont le bleu `#26374a` que ses commentaires rattachent au PCIM ; les noms de police `Lato`, `Noto Sans` et `Noto Sans Mono`, sans binaire ; les noms de jetons GCDS ; le libellé de thème `Government of Canada`.
+Ce que ce paquet embarque, mesuré avec `npm pack --dry-run` :
+
+- le tarball contient `LICENSE`, `LICENSE.THIRD-PARTY.md`, `package.json` et, sous `dist/`, `index.js`, `index.d.ts`, `index.test.js`, `index.test.d.ts` et leurs quatre fichiers `.map` ;
+- il contient en plus `dist/.srchash` quand le build passe par `scripts/ensure-theme-dists.mjs`.
+
+On n'y trouve **aucun fichier** de marque ni d'emblème : ni signature, ni mot-symbole, ni armoiries, ni drapeau, ni fonte, ni SVG amont. Le seul SVG, une URI `data:` dans `dist/index.js`, est un chevron de liste générique, commun aux thèmes du dépôt. Le paquet embarque en revanche, sous forme de chaînes :
+
+- des couleurs, dont le bleu `#26374a` que ses commentaires rattachent au PCIM ;
+- les noms de police `Lato`, `Noto Sans` et `Noto Sans Mono`, sans binaire ;
+- les noms de jetons GCDS et le libellé de thème `Government of Canada`.
 
 ### Ce qui reste ouvert
 
