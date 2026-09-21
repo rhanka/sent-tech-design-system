@@ -25,7 +25,9 @@ import type { TenantTheme } from "@sentropic/design-system-themes";
  *     the Canada wordmark, the arms of Canada) are not covered by that
  *     licence: they are protected under the Trademarks Act, s. 9(1), and their
  *     use is restricted to Government of Canada communications, operations
- *     and activities. This package ships none of them.
+ *     and activities. This package ships no mark or emblem file; as strings
+ *     it ships colour values (including #26374a, which its comments tie to
+ *     the FIP), font names and the theme label "Government of Canada".
  * The verbatim upstream notices, the usage rules and what remains open are in
  * the shipped `LICENSE.THIRD-PARTY.md`.
  *

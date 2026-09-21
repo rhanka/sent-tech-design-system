@@ -174,24 +174,38 @@ publiée, et cite la règle d'usage des marques. Ce texte vit dans
 
 | Thème | Amont et éditeur | Licence amont vérifiée | Marques et emblèmes |
 |---|---|---|---|
-| `theme-dsfr` | DSFR, Service d'information du Gouvernement — `GouvernementFR/dsfr` | MIT jusqu'à la v1.15.0 (`LICENSE.md` blob `b21b8e9b`, sans ligne de copyright nominative), période de la transcription. Licence Ouverte 2.0 depuis la v1.15.1 (2026-07-20). | Marque de l'État — bloc-marque, Marianne, fontes Marianne : usage réservé à l'État par les modalités d'utilisation du DSFR. |
+| `theme-dsfr` | DSFR, Service d'information du Gouvernement — `GouvernementFR/dsfr` | `LICENSE.md` sous MIT jusqu'à la v1.15.0 (blob `b21b8e9b`, sans ligne de copyright nominative), période de la transcription. Licence Ouverte 2.0 depuis la v1.15.1 (2026-07-20). | Marque de l'État, dont l'amont liste les éléments graphiques : « bloc marque, couleurs, typographies, iconographies ». Les CGU de la v1.14.4 rangeaient déjà couleurs et typographies parmi ses « Eléments d’Identité » ; les modalités 1.0.0 (dans le dépôt depuis le 2026-06-10, présentes dans la v1.15.0) destinent ses Ressources aux seuls sites en .gouv.fr et aux applications mobiles. |
 | `theme-canada` | GCDS, Service numérique canadien — `cds-snc/gcds-tokens`, `cds-snc/gcds-components` | MIT : « Copyright (c) 2021 Canadian Digital Service – Service numérique canadien » (jetons) ; « Copyright (c) 2018 », sans titulaire (composants). | Signature, mot-symbole « Canada », armoiries : PCIM, marques interdites au sens de la Loi sur les marques de commerce, par. 9(1), réservées au gouvernement du Canada. |
 | `theme-quebec` | SDG, ministère du Conseil exécutif — `Quebecca/qc_trousse_sdg` | MIT selon `copyright.txt`, dont la ligne de copyright nomme « Microsoft Corporation » ; ISC selon `package.json` et npm. Discordance amont. | Signature gouvernementale : usage exclusif du gouvernement du Québec. Drapeau et armoiries protégés. |
 
-Aucun des trois tarballs n'embarque de marque ni d'emblème, mesuré avec
-`npm pack --dry-run` : ils contiennent `LICENSE`, `LICENSE.THIRD-PARTY.md`,
-`package.json` et `dist/index.*`, soit des valeurs et des noms de jetons, des
-noms de police sans binaire et un chevron SVG générique.
+Mesuré avec `npm pack --dry-run`, aucun des trois tarballs ne contient de
+fichier de marque ni d'emblème. Chacun contient `LICENSE`,
+`LICENSE.THIRD-PARTY.md`, `package.json` et, sous `dist/`, `index.js`,
+`index.d.ts`, `index.test.js`, `index.test.d.ts` et leurs `.map`, plus
+`dist/.srchash` quand le build passe par `scripts/ensure-theme-dists.mjs`. Ils
+embarquent en revanche, sous forme de chaînes, des valeurs et des noms de
+jetons, des noms de police sans binaire, un libellé de thème et un chevron SVG
+générique. Parmi ces chaînes : pour `theme-dsfr`, Bleu France `#000091`, Rouge
+Marianne `#e1000f` et le nom de police `Marianne`, que l'amont range dans la
+Marque de l'État ; pour `theme-canada`, `#26374a`, que les commentaires du
+paquet rattachent au PCIM ; pour `theme-quebec`, le bleu PIV `#095797`.
 
 Ce qui reste ouvert :
 
-- **DSFR, régime amont postérieur à la décision.** La décision d'attribution
-  amont repose sur un DSFR sous MIT. C'est exact pour la période de
-  transcription (mai–juin 2026) et ne l'est plus pour l'amont actuel : depuis
-  le 2026-07-20, Licence Ouverte 2.0 et modalités d'utilisation selon
-  lesquelles le DSFR « ne doit pas être utilisé par des entités extérieures à
-  l'administration ». L'effet sur la publication de `theme-dsfr` relève de
-  l'owner.
+- **DSFR, prémisse MIT et Marque de l'État.** La décision d'attribution amont
+  repose sur un DSFR sous MIT. Cette prémisse vaut pour le `LICENSE.md` de la
+  période de transcription (mai–juin 2026). Les CGU de la même période (v1.14.4)
+  rangeaient pourtant déjà couleurs et typographies parmi les éléments de la
+  « Marque État », et `theme-dsfr` embarque Bleu France, Rouge Marianne et le
+  nom de police `Marianne`. L'effet sur la publication de `theme-dsfr` relève
+  de l'owner.
+- **DSFR, chronologie amont.** Les modalités d'utilisation 1.0.0, datées du
+  20 mai 2026, sont entrées dans le dépôt le 2026-06-10 (`e165c60f`). Elles
+  sont présentes dès la v1.15.0 (2026-07-17), encore sous `LICENSE.md` MIT, qui
+  subordonne aussi l'installation à leur acceptation. La Licence Ouverte 2.0
+  est arrivée le 2026-07-20 (`3d40e0cd`, v1.15.1). `cec9ace8` ne change ensuite
+  que la version (1.0.1) et la date des modalités. Vigueur des modalités 1.0.0
+  pendant la transcription : `unverified`.
 - **Québec, titulaire amont.** La seule notice publiée par l'amont nomme
   « Microsoft Corporation », et son manifeste déclare ISC : `source-gap`.
 - **Fonte Marianne.** Conditions d'usage `unverified` : la page d'info.gouv.fr
