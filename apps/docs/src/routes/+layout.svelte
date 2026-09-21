@@ -54,10 +54,10 @@
     resolveFramework,
     reconcileTheme,
     reconcileFramework,
-    buildUpdatedSearch,
     enforceThemePrivacy,
     type ThemeId as UrlThemeId
   } from "$lib/url-state";
+  import { syncUrlOutbound } from "$lib/url-sync.svelte";
   import CompareButton from "$lib/compare/CompareButton.svelte";
   import CompareTriptych from "$lib/compare/CompareTriptych.svelte";
   import { compareThemeFor, providePrivateThemeAccess } from "$lib/compare/compare-store.svelte";
@@ -342,11 +342,8 @@
     });
   });
 
-  // Sync SORTANTE à la navigation (store -> URL). Les liens de nav internes
-  // (sidebar/top-nav) sont des href STATIQUES sans param : après navigation,
-  // l'URL les perd. `afterNavigate` ré-inscrit alors thème + framework courants
-  // dans la nouvelle URL (replaceState, pas d'entrée historique), pour que l'URL
-  // reste la source de vérité, partageable et deep-linkable. Garde `browser`.
+  // Fermetures à la navigation. (La ré-inscription de thème + framework dans
+  // l'URL après une nav interne « nue » vit dans la sync sortante, plus bas.)
   afterNavigate(() => {
     if (!browser) return;
     // Toute navigation (ex. clic sur un résultat de recherche) ferme la palette.
@@ -357,14 +354,6 @@
     // page. `closePicker` ne touche pas à `demoMode` : naviguer ferme le
     // panneau, il ne remasque pas (c'est l'affaire du chargement suivant).
     access = closePicker(access);
-    // Le store est amorcé SYNCHRONEMENT depuis l'URL au montage : sur la
-    // navigation initiale, buildUpdatedSearch reproduit la search courante => no-op
-    // (aucun risque d'écraser le ?theme/?framework du deep-link). Sur une nav
-    // interne « nue », il ré-inscrit l'état courant dans la nouvelle URL.
-    const newSearch = buildUpdatedSearch(activeThemeId as UrlThemeId, framework.value);
-    if (newSearch !== window.location.search) {
-      replaceState(window.location.pathname + newSearch, page.state);
-    }
   });
 
   // Init du mode couleur (restaure localStorage, applique data-color-mode).
@@ -394,22 +383,25 @@
     framework.persist();
   });
 
-  // Sync SORTANTE au CHANGEMENT de thème/framework (store -> URL) : un clic sur
-  // un sélecteur ne navigue pas, donc afterNavigate ne se déclenche pas — cet
-  // effet ré-inscrit l'état dans l'URL via replaceState (pas d'entrée historique).
-  // Dépendances réactives EXPLICITES : thème + framework UNIQUEMENT (PAS l'URL,
-  // dont l'écriture est gérée par afterNavigate) ; tracker page.url.search ici
-  // re-déclencherait l'effet sur sa propre écriture et « consommerait » le
-  // tracking de framework.value (depuis le défaut svelte, le 1er clic vers react
-  // n'écrivait jamais l'URL). page.state lu en untrack.
-  $effect(() => {
-    const theme = activeThemeId as UrlThemeId;
-    const fw = framework.value;
-    if (!browser) return;
-    const newSearch = buildUpdatedSearch(theme, fw);
-    if (newSearch !== window.location.search) {
-      untrack(() => replaceState(window.location.pathname + newSearch, page.state));
-    }
+  // Sync SORTANTE (store -> URL) : après une nav interne « nue » (les liens de
+  // nav sont des href STATIQUES sans param) et à chaque changement de thème ou
+  // de framework (un clic sur un onglet ne navigue pas), l'état est ré-inscrit
+  // dans l'URL via replaceState, sans entrée d'historique, pour qu'elle reste
+  // la source de vérité, partageable et deep-linkable.
+  //
+  // Le câblage vit dans $lib/url-sync.svelte, testé par ses gestes : il ne
+  // doit appeler `replaceState` qu'une fois le routeur SvelteKit démarré. Au
+  // tout premier flush d'effets, le composant racine n'existe pas encore, et
+  // l'appel levait `Cannot read properties of undefined (reading '$set')` dès
+  // que l'URL chargée divergeait de l'état (?framework=svelte, thème privé
+  // rejeté…) — le flush s'interrompait et les onglets ne répondaient plus.
+  // Ce layout n'appelle donc JAMAIS `replaceState` lui-même.
+  syncUrlOutbound({
+    theme: () => activeThemeId as UrlThemeId,
+    framework: () => framework.value,
+    replaceState,
+    pageState: () => page.state,
+    afterNavigate
   });
 
   let isOpen = $state(false);
