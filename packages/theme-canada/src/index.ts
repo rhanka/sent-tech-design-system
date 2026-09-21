@@ -11,14 +11,25 @@ import type { TenantTheme } from "@sentropic/design-system-themes";
  * GCDS has no direct equivalent for a Sentropic role, the closest GCDS token is
  * used and the choice is noted "à confirmer" in MAPPING.md.
  *
- * LICENSING — AND THE TENSION TO READ WITH IT. The sentence above says what the
- * UPSTREAM SOURCE is published under. It does not say what regime applies to
- * this package's subject matter, and the two are different questions: the
- * marks, signatures and state emblems a state design system carries are not
- * covered by the licence of the source that describes them. This package's
- * shipped `LICENSE.THIRD-PARTY.md` records that second question as
- * `unresolved` — a pending owner decision. Neither statement overrides the
- * other, and nothing here settles it.
+ * LICENSING — UPSTREAM ATTRIBUTION (owner decision; verified 2026-09-21). This
+ * transcription code is published under MIT (see LICENSE). It cites its source
+ * and claims no right over it:
+ *   - Upstream: GC Design System (GCDS), published by the Canadian Digital
+ *     Service – Service numérique canadien — https://github.com/cds-snc/gcds-tokens
+ *     and https://github.com/cds-snc/gcds-components
+ *   - Upstream licence: MIT — "Copyright (c) 2021 Canadian Digital Service –
+ *     Service numérique canadien" (gcds-tokens, LICENSE blob a8a69f4c) and
+ *     "Copyright (c) 2018", no holder named (gcds-components, LICENSE blob
+ *     b442934b).
+ *   - Federal Identity Program symbols (the Government of Canada signature,
+ *     the Canada wordmark, the arms of Canada) are not covered by that
+ *     licence: they are protected under the Trademarks Act, s. 9(1), and their
+ *     use is restricted to Government of Canada communications, operations
+ *     and activities. This package ships no mark or emblem file; as strings
+ *     it ships colour values (including #26374a, which its comments tie to
+ *     the FIP), font names and the theme label "Government of Canada".
+ * The verbatim upstream notices, the usage rules and what remains open are in
+ * the shipped `LICENSE.THIRD-PARTY.md`.
  *
  * GCDS colour reference (light theme):
  *   White (background default)        #ffffff   (--gcds-bg-white / --gcds-text-light)
