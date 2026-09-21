@@ -350,7 +350,11 @@
         </tr>
         <tr>
           <td><code>--st-semantic-border-focus</code></td>
-          <td>{fr ? "Anneau de focus de l'en-tête." : "Header focus ring."}</td>
+          <td>
+            {fr
+              ? "Anneau de focus de l'en-tête. Point de surcharge uniquement : aucun thème ne le définit, le composant retombe sur --st-semantic-brand-default tant que vous ne lui donnez pas de valeur."
+              : "Header focus ring. An override point only: no theme defines it, and the component falls back to --st-semantic-brand-default until you give it a value."}
+          </td>
         </tr>
       </tbody>
     </table>

@@ -104,7 +104,9 @@
     </p>
     <TabbedExample
       nodes={setDemo}
-      title={locale.value === "fr" ? "Les huit noms gelés" : "The eight frozen names"}
+      title={locale.value === "fr"
+        ? `Les ${ICON_NAMES.length} noms gelés`
+        : `The ${ICON_NAMES.length} frozen names`}
     />
     <table class="docs-table">
       <thead>

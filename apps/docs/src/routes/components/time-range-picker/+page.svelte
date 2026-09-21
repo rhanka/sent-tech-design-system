@@ -228,8 +228,12 @@
         <tr>
           <td><code>defaultValue</code></td>
           <td><code>TimeRange</code></td>
-          <td><code>30m</code></td>
-          <td>{fr ? "Graine non contrôlée." : "Uncontrolled seed."}</td>
+          <td>—</td>
+          <td>
+            {fr
+              ? "Graine non contrôlée. Sans value ni defaultValue, le composant part des 30 dernières minutes — un repli interne, pas un défaut de cette prop."
+              : "Uncontrolled seed. With neither value nor defaultValue, the component starts on the last 30 minutes — an internal fallback, not a default on this prop."}
+          </td>
         </tr>
         <tr>
           <td><code>onChange</code></td>
@@ -277,7 +281,11 @@
           <td><code>label</code></td>
           <td><code>string</code></td>
           <td>—</td>
-          <td>{fr ? "Libellé de champ au-dessus du déclencheur." : "Field label above the trigger."}</td>
+          <td>
+            {fr
+              ? "Libellé de champ au-dessus du déclencheur (voir la réserve Angular sous le tableau)."
+              : "Field label above the trigger (see the Angular caveat below the table)."}
+          </td>
         </tr>
         <tr>
           <td><code>size</code></td>
@@ -286,10 +294,20 @@
           <td>{fr ? "Hauteur du déclencheur." : "Trigger height."}</td>
         </tr>
         <tr>
-          <td><code>placement</code> / <code>align</code></td>
-          <td><code>string</code></td>
+          <td><code>placement</code></td>
+          <td><code>'bottom-start' | 'bottom-end' | 'top-start' | 'top-end'</code></td>
           <td><code>'bottom-start'</code></td>
-          <td>{fr ? "Position du popover." : "Popover placement."}</td>
+          <td>{fr ? "Côté où s'ouvre le popover." : "Which side the popover opens on."}</td>
+        </tr>
+        <tr>
+          <td><code>align</code></td>
+          <td><code>'start' | 'end' | 'center'</code></td>
+          <td>—</td>
+          <td>
+            {fr
+              ? "Alignement transversal du popover ; sans valeur, aucune classe d'alignement n'est émise."
+              : "Cross-axis alignment of the popover; with no value, no alignment class is emitted."}
+          </td>
         </tr>
         <tr>
           <td><code>disabled</code></td>
@@ -315,6 +333,11 @@
         </tr>
       </tbody>
     </table>
+    <p class="docs-demo-note">
+      {fr
+        ? "React et Vue exposent la même API que Svelte ; en Angular, label ne rend pas le libellé de champ au-dessus du déclencheur — il n'y sert que de aria-label sur le déclencheur et sur le popover. Prévoyez votre propre libellé visible si vous en avez besoin."
+        : "React and Vue expose the same API as Svelte; on Angular, label does not render the field label above the trigger — it only becomes an aria-label on the trigger and the popover. Supply your own visible label there if you need one."}
+    </p>
   </section>
 
   <section class="docs-section">
