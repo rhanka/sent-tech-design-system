@@ -131,8 +131,8 @@ import { quebecTheme } from "@sentropic/design-system-theme-quebec";
 // <ThemeProvider theme={carbonTheme}>`}</code></pre>
     <p>
       {fr
-        ? "Les thèmes disponibles : Sent Tech (défaut), Carbon (IBM), DSFR (France), Québec."
-        : "Available themes: Sent Tech (default), Carbon (IBM), DSFR (France), Québec."}
+        ? "Les thèmes disponibles : Sent Tech (défaut), DSFR (France), Canada, Québec."
+        : "Available themes: Sent Tech (default), DSFR (France), Canada, Québec."}
     </p>
   </section>
 
