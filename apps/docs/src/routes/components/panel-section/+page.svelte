@@ -18,6 +18,17 @@
     children
   });
 
+  // Aperçu Angular de CETTE documentation : l'île passe les sections au stack en
+  // noeuds projetés (projectableNodes), que @ContentChildren ne résout pas. Le
+  // stack ne voit donc aucune section et chacune garde ses défauts hors stack.
+  // Le composant publié n'est pas en cause : chez un consommateur qui déclare ses
+  // sections dans son template, la coordination a lieu (tests de rendu du paquet
+  // Angular). Tant que l'île n'est pas refaite, la page le dit là où on regarde.
+  const angularPreviewNote = (symptom: { fr: string; en: string }) =>
+    fr
+      ? `Aperçu Angular incomplet : cette documentation injecte les sections dans le stack d'une manière que PanelStack ne voit pas, donc la coordination PanelStack ↔ PanelSection n'est pas reproduite ici — ${symptom.fr} Le composant Angular, lui, réalise cette coordination chez un consommateur réel qui déclare ses PanelSection dans son template (voir la limite connue sous l'API de PanelStack).`
+      : `Incomplete Angular preview: this documentation injects the sections into the stack in a way PanelStack cannot see, so the PanelStack ↔ PanelSection coordination is not reproduced here — ${symptom.en} The Angular component itself does perform this coordination for a real consumer that declares its PanelSection children in its template (see the known limitation under the PanelStack API).`;
+
   const body = (text: string): NodeSpec => ({
     el: "p",
     props: { style: "margin:0 0 0.75rem;font-size:0.875rem" },
@@ -161,6 +172,12 @@
     <TabbedExample
       nodes={stickyDemo}
       title={fr ? "Panneau latéral à trois sections" : "Three-section side panel"}
+      notes={{
+        angular: angularPreviewNote({
+          fr: "les trois sections y restent dépliées au lieu d'une seule.",
+          en: "all three sections stay expanded instead of one."
+        })
+      }}
     />
   </section>
 
@@ -185,6 +202,12 @@
     <TabbedExample
       nodes={splitDemo}
       title={fr ? "Conversation primaire + annexes" : "Primary conversation + side sections"}
+      notes={{
+        angular: angularPreviewNote({
+          fr: "toutes les sections y restent dépliées et la primaire y garde un bouton de repli.",
+          en: "every section stays expanded and the primary keeps a collapse button."
+        })
+      }}
     />
     <p class="docs-demo-note">
       {fr
@@ -312,6 +335,27 @@
         </tr>
       </tbody>
     </table>
+    <p class="docs-caveat" role="note">
+      {#if fr}
+        <strong>Angular — limite connue.</strong> Déclarez les <code>PanelSection</code> directement
+        dans le template du <code>PanelStack</code>. Des sections produites par <code>@for</code>, ou
+        des sections statiques mêlées à des sections sous <code>@if</code> / <code>@for</code>,
+        reçoivent l'état du stack trop tard : en mode développement, Angular lève
+        <code>NG0100</code> (ExpressionChangedAfterItHasBeenChecked) ; en production, la première image
+        montre ces sections avec leurs défauts hors stack (dépliées, chacune propriétaire du défilement),
+        et dans une application sans zone.js elles restent ainsi tant que rien ne les fait revérifier
+        (une interaction, par exemple). Limite non corrigée à ce jour.
+      {:else}
+        <strong>Angular — known limitation.</strong> Declare the <code>PanelSection</code> children
+        directly in the <code>PanelStack</code>'s template. Sections produced by <code>@for</code>, or
+        static sections mixed with sections under <code>@if</code> / <code>@for</code>, receive the
+        stack's state too late: in development mode Angular throws <code>NG0100</code>
+        (ExpressionChangedAfterItHasBeenChecked); in production the first frame shows those sections
+        with their standalone defaults (expanded, each owning the scroll), and in a zoneless application
+        they stay that way until something gets them checked again (a user interaction, for instance).
+        Not fixed yet.
+      {/if}
+    </p>
   </section>
 
   <section class="docs-section">
@@ -379,5 +423,20 @@
     color: var(--st-semantic-text-secondary);
     font-size: 0.875rem;
     margin-top: 0.75rem;
+  }
+
+  /* Réserve à ne pas manquer : même traitement que l'avertissement d'aperçu de
+     TabbedExample (paire surface-subtle / text-primary du thème actif). */
+  .docs-caveat {
+    background: var(--st-semantic-surface-subtle, #f8fafc);
+    border: 1px solid var(--st-semantic-border-subtle, #e2e8f0);
+    border-left: 4px solid var(--st-semantic-feedback-warning, #b45309);
+    border-radius: 0.375rem;
+    color: var(--st-semantic-text-primary, #0f172a);
+    font-size: 0.875rem;
+    line-height: 1.55;
+    margin: 1rem 0 0;
+    max-width: 46rem;
+    padding: 0.75rem 0.9rem;
   }
 </style>

@@ -229,6 +229,23 @@ export function computePanelStackAutoCollapse(
  * - No `ChangeDetectorRef`/`markForCheck` — matching this package's existing
  *   idiom of relying on zone.js's default full-tree change detection (same
  *   as `MenuPopover`'s window-listener-driven position updates).
+ *
+ * KNOWN LIMITATION, not fixed yet — declare the sections statically, directly
+ * in this stack's template. The stack pushes its state onto the sections from
+ * its own `ngAfterContentInit`. Sections declared statically in the consumer's
+ * template are checked AFTER that hook, so they render the stack's state on
+ * the first frame (covered by `PanelStack.render.test.ts`). Sections created
+ * by control flow inside the stack — every section under `@for`, or `@if` /
+ * `@for` sections mixed with static ones — live in embedded views Angular
+ * checks BEFORE that hook, so the state reaches them after they were checked:
+ * - dev mode: Angular throws NG0100 (ExpressionChangedAfterItHasBeenChecked);
+ * - production build: the first frame shows those sections with their
+ *   standalone defaults (expanded, each owning the scroll) instead of the
+ *   stack's state. In a zoneless application they stay that way until
+ *   something marks them for check again: a second `ApplicationRef.tick()`
+ *   with nothing dirty does not correct them (measured).
+ * Partly pre-existing: before `PanelSection`'s header query became static,
+ * `@for` sections already hit this, while static sections never registered.
  */
 @Component({
   selector: "st-panel-stack",
