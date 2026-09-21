@@ -17,15 +17,21 @@ import type { TenantTheme } from "@sentropic/design-system-themes";
  * and claims no right over it:
  *   - Upstream: Système de Design de l'État (DSFR), published by the Service
  *     d'information du Gouvernement (SIG) — https://github.com/GouvernementFR/dsfr
- *   - Licence of the transcribed values: MIT, per LICENSE.md blob b21b8e9b
- *     (tags v1.14.4 and v1.15.0), which carries no named copyright line. Since
- *     v1.15.1 (2026-07-20, commit 3d40e0cd) the DSFR is under Licence Ouverte
- *     2.0 (Etalab 2.0), with usage terms that reserve it to the
- *     administration. These values predate that change and were not re-synced.
- *   - State marks and emblems (the Marque de l'État: bloc-marque, Marianne, the
- *     Marianne typefaces) are covered by neither licence; the DSFR usage terms
- *     reserve their use to the State. This package ships none of them — only
- *     the font name and colour values.
+ *   - Repository licence (LICENSE.md): MIT, blob b21b8e9b (tags v1.14.4 and
+ *     v1.15.0), with no named copyright line. The CGU of the same period
+ *     (v1.14.4) already class colours and typefaces among the "Eléments
+ *     d'Identité" of the "Marque État" and state that all Resources belong to
+ *     the State. Usage terms 1.0.0 (dated 20 May 2026) entered the repository
+ *     on 2026-06-10 and ship in v1.15.0, still under the MIT LICENSE.md; the
+ *     switch to Licence Ouverte 2.0 (Etalab 2.0) came in v1.15.1 (2026-07-20,
+ *     commit 3d40e0cd). These values were not re-synced after transcription.
+ *   - State marks and emblems: the Marque de l'État, whose graphic elements
+ *     the upstream lists as "bloc marque, couleurs, typographies,
+ *     iconographies", is covered by neither licence. This package ships no
+ *     mark or emblem file, but it does ship, as strings, elements the upstream
+ *     classes in that brand: the DSFR palette colours, including Bleu France
+ *     #000091 and Rouge Marianne #e1000f, and the `Marianne` font name (no
+ *     font binary).
  * The verbatim upstream notice, the usage rules and what remains open are in
  * the shipped `LICENSE.THIRD-PARTY.md`.
  *

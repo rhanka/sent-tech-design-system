@@ -79,15 +79,24 @@ Le code de transcription de ce paquet, c'est-à-dire la mise en correspondance d
 
 ### Marques et emblèmes d'État : hors de toute licence
 
-La signature gouvernementale, le drapeau et les emblèmes du Québec ne relèvent d'aucune de ces licences. Le Programme d'identification visuelle (PIV) encadre les communications du gouvernement, des ministères et des organismes. Règles publiées par l'éditeur (« Utilisation ou reproduction du drapeau du Québec », quebec.ca, dernière mise à jour le 5 septembre 2025) :
+La signature gouvernementale, le drapeau et les emblèmes du Québec ne relèvent d'aucune de ces licences. La page « Programme d’identification visuelle » de quebec.ca (dernière mise à jour le 24 mars 2026) renvoie aux « normes graphiques auxquelles sont soumises les communications du gouvernement, des ministères et des organismes gouvernementaux ». Règles publiées par l'éditeur (« Utilisation ou reproduction du drapeau du Québec », quebec.ca, dernière mise à jour le 5 septembre 2025) :
 
 - « La signature gouvernementale est à l'usage exclusif du gouvernement du Québec. »
 - Sur la fleur de lys de la signature : « L'utilisation de cette fleur de lys n'est pas permise. Au même titre que le mot « Québec », elle est indissociable de la signature gouvernementale. »
 - « Le drapeau et les symboles ou emblèmes nationaux ne peuvent être associés à la promotion d'un produit ou d'une entreprise, c'est-à-dire être utilisés à des fins publicitaires. »
 - « De même, le drapeau du Québec et les armoiries sont protégés. Les dispositions légales interdisent à quiconque de les utiliser comme marque de commerce (logo) ou autrement. »
-- Autorisation préalable : drapeau@mlf.gouv.qc.ca.
+- Pour la communication graphique ou publicitaire, la page conseille une fleur de lys « plus stylisée », éloignée de celle du drapeau et de celle de la signature, et ajoute : « Pour s'assurer qu'une telle utilisation ne contrevient pas à la législation applicable, une autorisation préalable est requise à cet égard. » Les demandes d'autorisation d'utilisation de l'image de la fleur de lys ou du drapeau s'adressent à drapeau@mlf.gouv.qc.ca.
 
-Ce que ce paquet embarque de ce registre, mesuré avec `npm pack --dry-run` (`LICENSE`, `LICENSE.THIRD-PARTY.md`, `package.json`, `dist/index.*`) : **aucun fichier** de marque ou d'emblème. Il n'y a ni signature, ni drapeau, ni fleur de lys, ni fonte, ni SVG amont ; la trousse amont publie `QUEBEC_couleur.svg` et `QUEBEC_blanc.svg`, ce paquet ne les reprend pas. Le seul SVG du paquet est un chevron de liste générique, commun aux thèmes du dépôt. Le paquet embarque en revanche, sous forme de chaînes : des couleurs, dont le bleu PIV `#095797` ; le nom de police `Open Sans`, sans binaire ; les noms de jetons SDG ; le libellé de thème `Gouvernement du Québec`.
+Ce que ce paquet embarque, mesuré avec `npm pack --dry-run` :
+
+- le tarball contient `LICENSE`, `LICENSE.THIRD-PARTY.md`, `package.json` et, sous `dist/`, `index.js`, `index.d.ts`, `index.test.js`, `index.test.d.ts` et leurs quatre fichiers `.map` ;
+- il contient en plus `dist/.srchash` quand le build passe par `scripts/ensure-theme-dists.mjs`.
+
+On n'y trouve **aucun fichier** de marque ni d'emblème : ni signature, ni drapeau, ni fleur de lys, ni fonte, ni SVG amont. La trousse amont publie `QUEBEC_couleur.svg` et `QUEBEC_blanc.svg`, que ce paquet ne reprend pas. Le seul SVG, une URI `data:` dans `dist/index.js`, est un chevron de liste générique, commun aux thèmes du dépôt. Le paquet embarque en revanche, sous forme de chaînes :
+
+- des couleurs, dont le bleu PIV `#095797` ;
+- le nom de police `Open Sans`, sans binaire ;
+- les noms de jetons SDG et le libellé de thème `Gouvernement du Québec`.
 
 ### Ce qui reste ouvert
 

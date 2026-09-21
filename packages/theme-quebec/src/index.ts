@@ -24,7 +24,9 @@ import type { TenantTheme } from "@sentropic/design-system-themes";
  *     is recorded as published, not corrected (`source-gap`).
  *   - The government signature, the flag and the emblems of Québec are covered
  *     by neither licence: the signature is for the exclusive use of the
- *     Government of Québec. This package ships none of them.
+ *     Government of Québec. This package ships no mark or emblem file; as
+ *     strings it ships colour values (including the PIV blue #095797), the
+ *     Open Sans font name and the theme label "Gouvernement du Québec".
  * The verbatim upstream notice, the usage rules and what remains open are in
  * the shipped `LICENSE.THIRD-PARTY.md`.
  *
