@@ -3358,19 +3358,25 @@ export type IconProps = Omit<React.SVGAttributes<SVGSVGElement>, "name"> & {
   name: IconName;
   /** Square size in px. Default 18 — the DS-standard inline glyph size. */
   size?: number;
-  /** Stroke width. Default 2.25 — matches the DS's existing lucide usage. */
+  /**
+   * Stroke width. When omitted, the theme token `--st-component-icon-strokeWidth`
+   * applies (default 2.25 — the DS's existing lucide usage). When set, it wins
+   * over the token.
+   */
   strokeWidth?: number;
   /** Accessible name; when omitted the icon is decorative (`aria-hidden`). */
   title?: string;
 };
 
-export function Icon({ name, size = 18, strokeWidth = 2.25, title, className, ...rest }: IconProps) {
+export function Icon({ name, size = 18, strokeWidth, title, className, ...rest }: IconProps) {
   const Glyph = ICONS[name];
   if (!Glyph) return null;
   return (
     <Glyph
       size={size}
-      strokeWidth={strokeWidth}
+      strokeWidth={strokeWidth ?? 2.25}
+      // An explicit prop is marked so the styles.css token rule leaves it alone.
+      data-st-icon-stroke={strokeWidth == null ? undefined : "prop"}
       className={classNames("st-icon", className)}
       role={title ? "img" : undefined}
       aria-label={title}

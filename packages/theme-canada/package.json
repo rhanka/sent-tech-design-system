@@ -1,6 +1,7 @@
 {
   "name": "@sentropic/design-system-theme-canada",
   "version": "0.1.0",
+  "license": "MIT",
   "description": "Government of Canada Design System (GCDS) theme mapping for the Sentropic token structure.",
   "type": "module",
   "publishConfig": {

@@ -7,7 +7,11 @@
     name: IconName;
     /** Square size in px. Default 18 — the DS-standard inline glyph size. */
     size?: number;
-    /** Stroke width. Default 2.25 — matches the DS's existing lucide usage. */
+    /**
+     * Stroke width. When omitted, the theme token
+     * `--st-component-icon-strokeWidth` applies (default 2.25 — the DS's
+     * existing lucide usage). When set, it wins over the token.
+     */
     strokeWidth?: number;
     /**
      * Accessible name. When set, the icon is exposed as an image with this
@@ -20,7 +24,7 @@
   let {
     name,
     size = 18,
-    strokeWidth = 2.25,
+    strokeWidth,
     title,
     class: className,
     ...rest
@@ -28,12 +32,16 @@
 
   const Glyph = $derived(ICONS[name]);
   const classes = $derived(["st-icon", className].filter(Boolean).join(" "));
+  // An explicit prop is marked so the token rule below leaves it alone; the
+  // presentation attribute keeps 2.25 when no stylesheet or theme is loaded.
+  const strokeMarker = $derived(strokeWidth == null ? undefined : "prop");
 </script>
 
 {#if Glyph}
   <Glyph
     {size}
-    {strokeWidth}
+    strokeWidth={strokeWidth ?? 2.25}
+    data-st-icon-stroke={strokeMarker}
     class={classes}
     role={title ? "img" : undefined}
     aria-label={title}
@@ -42,3 +50,27 @@
     {...rest}
   />
 {/if}
+
+<style>
+  /* Stroke width and colour come from the theme tokens. The selectors only
+     match the DS defaults (stroke-width 2.25 set by no prop, stroke
+     currentColor), so an explicit strokeWidth prop or colour keeps its
+     presentation attribute. The rules live in the cascade layer `st-icon`: a
+     layered rule still beats the SVG presentation attributes, and any unlayered
+     consumer rule beats it. A consumer rule inside a layer (Tailwind v4
+     utilities) only wins if `st-icon` comes first in the layer order: declare
+     `@layer st-icon;` before `@import "tailwindcss";`. Svelte usually emits
+     component CSS after the app's global CSS, so without that declaration the
+     token rules beat layered utilities on the icon. The fallbacks reproduce
+     the former render when no theme is loaded. Same rules as the
+     React/Vue/Angular styles.css. */
+  @layer st-icon {
+    :global(:where(.st-icon[stroke-width="2.25"]:not([data-st-icon-stroke]))) {
+      stroke-width: var(--st-component-icon-strokeWidth, 2.25);
+    }
+
+    :global(:where(.st-icon[stroke="currentColor"])) {
+      stroke: var(--st-component-icon-color, currentColor);
+    }
+  }
+</style>

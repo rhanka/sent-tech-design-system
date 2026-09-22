@@ -1,3 +1,38 @@
+/**
+ * @license
+ * This file REDISTRIBUTES third-party work.
+ *
+ * The SVG path data of the eight glyphs in ICON_NODES below — settings, eye,
+ * eye-off, layers, target, close (`x` upstream), chevron-down, chevron-right —
+ * is copied verbatim from lucide (lucide-react 0.562.0). The other framework
+ * ports depend on a lucide package; this one inlines the data instead, so the
+ * copy ships inside dist/Icon.js and inside the published tarball. That makes
+ * it a redistribution of lucide, and lucide's notices must travel with it.
+ *
+ * lucide carries a dual regime, both of which require the copyright notice and
+ * the permission notice to appear in every copy:
+ *
+ *   ISC License
+ *   Copyright (c) for portions of Lucide are held by Cole Bemis 2013-2023 as
+ *   part of Feather (MIT). All other copyright (c) for Lucide are held by
+ *   Lucide Contributors 2025.
+ *
+ *   The MIT License (MIT) (for portions derived from Feather)
+ *   Copyright (c) 2013-2023 Cole Bemis
+ *
+ * The full permission and warranty text of both is reproduced, unabridged, in
+ * this package's LICENSE.THIRD-PARTY.md, which ships in the tarball.
+ * Source: https://github.com/lucide-icons/lucide — LICENSE.
+ *
+ * This file is the canonical set, not the whole extent: other components in
+ * this package, and in the React, Vue and Svelte ports, also inline lucide
+ * path data. The exhaustive, per-file inventory is MEASURED rather than
+ * listed - scripts/generate-third-party-notices.mjs re-derives it on every run
+ * by comparing our sources to the installed lucide, and writes it into each
+ * package's LICENSE.THIRD-PARTY.md. Adding, replacing or removing a glyph
+ * therefore changes that file: run `npm run notices:generate` in the same
+ * change, or `npm run licensing:check` fails.
+ */
 import { Component, Input as NgInput } from "@angular/core";
 
 import { classNames } from "./classNames.js";
@@ -81,6 +116,7 @@ export const ICON_NAMES = Object.keys(ICON_NODES) as IconName[];
         fill="none"
         stroke="currentColor"
         [attr.stroke-width]="strokeWidth ?? 2.25"
+        [attr.data-st-icon-stroke]="strokeWidth == null ? null : 'prop'"
         stroke-linecap="round"
         stroke-linejoin="round"
         [class]="hostClass"
@@ -113,7 +149,12 @@ export class Icon {
   @NgInput() name!: IconName;
   /** Square size in px. Default 18 — the DS-standard inline glyph size. */
   @NgInput() size?: number;
-  /** Stroke width. Default 2.25 — matches the DS's existing lucide usage. */
+  /**
+   * Stroke width. When omitted, the theme token `--st-component-icon-strokeWidth`
+   * applies (default 2.25 — the DS's existing lucide usage). When set, it wins
+   * over the token; it is then marked `data-st-icon-stroke="prop"` so the
+   * styles.css token rule leaves it alone.
+   */
   @NgInput() strokeWidth?: number;
   /** Accessible name; when omitted the icon is decorative (`aria-hidden`). */
   @NgInput("title") titleInput?: string;

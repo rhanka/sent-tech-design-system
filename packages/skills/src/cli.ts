@@ -9,6 +9,7 @@ import { heuristicReview } from "./engine/heuristics.js";
 import { openDom } from "./engine/openDom.js";
 import { visualAudit, VisualAuditDependencyError } from "./engine/visualAudit.js";
 import { parityAudit } from "./engine/parityAudit.js";
+import { defaultRules } from "./rules/index.js";
 import type { AuditTarget, Finding, VisualAuditReport, VisualLocale, ParityAuditReport } from "./types.js";
 
 function resolveTarget(raw: string): AuditTarget {
@@ -63,11 +64,33 @@ interface TechnicalCheckReport {
   findings: Finding[];
   score: number;
   durationMs: number;
+  /** Règles passées en signalement par `--warn-only` (clé absente sans l'option). */
+  warnOnly?: string[];
+  /** Findings de ces règles : rapportés, hors score et hors code retour. */
+  warnings?: Finding[];
+}
+
+/**
+ * Une option répétée est refusée : sinon la valeur de la seconde occurrence
+ * (`--fail-under 50 --fail-under 99 page.html`) devient la cible auditée, et le
+ * gate passe sur un HTML inline sans rapport avec la cible.
+ */
+function findRepeatedOption(args: string[]): string | undefined {
+  const seen = new Set<string>();
+  for (const arg of args) {
+    if (!arg.startsWith("-")) continue;
+    if (seen.has(arg)) return arg;
+    seen.add(arg);
+  }
+  return undefined;
 }
 
 function parseFailUnderOption(args: string[]): { args: string[]; failUnder?: number; error?: string } {
   const index = args.indexOf("--fail-under");
   if (index < 0) return { args };
+  if (args.indexOf("--fail-under", index + 1) >= 0) {
+    return { args, error: "--fail-under répété ; un seul seuil est accepté." };
+  }
 
   const rawValue = args[index + 1];
   if (!rawValue || rawValue.startsWith("-")) {
@@ -82,6 +105,33 @@ function parseFailUnderOption(args: string[]): { args: string[]; failUnder?: num
   return {
     args: args.filter((_, argIndex) => argIndex !== index && argIndex !== index + 1),
     failUnder
+  };
+}
+
+/**
+ * `--warn-only <rule-id[,rule-id…]>` : les findings de ces règles restent
+ * rapportés (clé `warnings`) mais sortent du score et du code retour. Sert à
+ * introduire une règle dans un gate existant sans le faire échouer d'emblée.
+ */
+function parseWarnOnlyOption(args: string[]): { args: string[]; warnOnly?: string[]; error?: string } {
+  const index = args.indexOf("--warn-only");
+  if (index < 0) return { args };
+
+  const rawValue = args[index + 1];
+  if (!rawValue || rawValue.startsWith("-")) {
+    return { args, error: "--warn-only attend un ou plusieurs identifiants de règle séparés par des virgules." };
+  }
+
+  const warnOnly = [...new Set(rawValue.split(",").map((id) => id.trim()).filter(Boolean))];
+  const known = new Set(defaultRules.map((rule) => rule.id));
+  const unknown = warnOnly.filter((id) => !known.has(id));
+  if (warnOnly.length === 0 || unknown.length > 0) {
+    return { args, error: `--warn-only : règle inconnue (${unknown.join(", ") || rawValue}).` };
+  }
+
+  return {
+    args: args.filter((_, argIndex) => argIndex !== index && argIndex !== index + 1),
+    warnOnly
   };
 }
 
@@ -122,6 +172,19 @@ function isDirectoryPath(raw: string): boolean {
   } catch {
     return false;
   }
+}
+
+function withWarnOnly(report: TechnicalCheckReport, warnOnly?: string[]): TechnicalCheckReport {
+  if (!warnOnly) return report;
+  const advisory = new Set(warnOnly);
+  const findings = report.findings.filter((finding) => !advisory.has(finding.ruleId));
+  return {
+    ...report,
+    findings,
+    score: designQualityScore(findings, report.pages),
+    warnOnly,
+    warnings: report.findings.filter((finding) => advisory.has(finding.ruleId))
+  };
 }
 
 async function auditTechnicalTarget(raw: string): Promise<TechnicalCheckReport> {
@@ -253,6 +316,7 @@ function printCheckHelp() {
     `  --tech, --technical   Audit technique déterministe statique (par défaut).\n` +
     `  --human, --heuristics Revue heuristique déterministe (charge, structure, a11y), sans IA.\n` +
     `  --fail-under <score>  Gate qualité 0-100; supporte un dossier HTML statique en mode technique.\n` +
+    `  --warn-only <ids>     Règles (séparées par des virgules) rapportées dans \`warnings\`, hors score et hors code retour.\n` +
     `  --personas            Non supporté en V1; retourne une erreur explicite.\n` +
     `  -h, --help            Affiche cette aide.\n\n` +
     `\x1b[1mEXEMPLES\x1b[0m\n` +
@@ -816,17 +880,32 @@ async function handleCheck(args: string[]) {
     process.exit(0);
   }
 
+  const repeatedOption = findRepeatedOption(args);
+  if (repeatedOption) {
+    process.stderr.write(
+      `\x1b[1m\x1b[31mErreur :\x1b[0m Option '${repeatedOption}' répétée ; chaque option de design check ne s'emploie qu'une fois.\n`
+    );
+    process.exit(2);
+  }
+
   const parsedFailUnder = parseFailUnderOption(args);
   if (parsedFailUnder.error) {
     process.stderr.write(`\x1b[1m\x1b[31mErreur :\x1b[0m ${parsedFailUnder.error}\n`);
     process.exit(2);
   }
 
-  const checkArgs = parsedFailUnder.args;
+  const parsedWarnOnly = parseWarnOnlyOption(parsedFailUnder.args);
+  if (parsedWarnOnly.error) {
+    process.stderr.write(`\x1b[1m\x1b[31mErreur :\x1b[0m ${parsedWarnOnly.error}\n`);
+    process.exit(2);
+  }
+
+  const checkArgs = parsedWarnOnly.args;
   const failUnder = parsedFailUnder.failUnder;
+  const warnOnly = parsedWarnOnly.warnOnly;
   const technicalFlags = new Set(["--tech", "--technical"]);
   const humanFlags = new Set(["--human", "--heuristics"]);
-  const allowedFlags = new Set([...technicalFlags, ...humanFlags, "--personas", "--fail-under"]);
+  const allowedFlags = new Set([...technicalFlags, ...humanFlags, "--personas", "--fail-under", "--warn-only"]);
   const flags = args.filter((arg) => arg.startsWith("-"));
   const unknownFlag = flags.find((arg) => !allowedFlags.has(arg));
   if (unknownFlag) {
@@ -867,6 +946,12 @@ async function handleCheck(args: string[]) {
   }
 
   if (isHuman) {
+    if (warnOnly) {
+      process.stderr.write(
+        `\x1b[1m\x1b[31mErreur :\x1b[0m '--warn-only' ne s'applique qu'au mode technique (règles déterministes).\n`
+      );
+      process.exit(2);
+    }
     if (isDirectoryPath(targetRaw)) {
       process.stderr.write(
         `\x1b[1m\x1b[31mErreur :\x1b[0m design check --human ne supporte pas encore les dossiers HTML.\n` +
@@ -886,9 +971,14 @@ async function handleCheck(args: string[]) {
       h.accessibilityFriction === "none" && h.nielsenUsability === "compliant" && h.cognitiveLoad !== "high";
     process.exit(failUnder === undefined ? (clean ? 0 : 1) : report.score >= failUnder ? 0 : 1);
   } else {
-    const report = await auditTechnicalTarget(targetRaw);
+    const report = withWarnOnly(await auditTechnicalTarget(targetRaw), warnOnly);
     process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
     process.stderr.write(`${prettySummary(report.findings, report.durationMs, report.score)}\n`);
+    if (report.warnOnly && report.warnings) {
+      process.stderr.write(
+        `sentech-design: ${report.warnings.length} avertissement(s) non bloquant(s) (--warn-only ${report.warnOnly.join(",")}), hors score et hors code retour\n`
+      );
+    }
     process.exit(failUnder === undefined ? (report.findings.length === 0 ? 0 : 1) : report.score >= failUnder ? 0 : 1);
   }
 }
