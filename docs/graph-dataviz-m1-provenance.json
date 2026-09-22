@@ -6618,6 +6618,30 @@
       "status": "local-monorepo-helper",
       "sha256": "691e71d3d839802abd9d388d1ddd918cc56233309b9e911b07ad0d5eb8e2b06e",
       "note": "monorepo-authored in M0 repatriation 69baca78 (ignores golden __out__), no source; hash-pinned"
+    },
+    {
+      "destination": "packages/graph/LICENSE.THIRD-PARTY.md",
+      "status": "generated-notices"
+    },
+    {
+      "destination": "packages/dataviz-core/LICENSE.THIRD-PARTY.md",
+      "status": "generated-notices"
+    },
+    {
+      "destination": "packages/dataviz-svelte/LICENSE.THIRD-PARTY.md",
+      "status": "generated-notices"
+    },
+    {
+      "destination": "packages/dataviz-react/LICENSE.THIRD-PARTY.md",
+      "status": "generated-notices"
+    },
+    {
+      "destination": "packages/dataviz-vue/LICENSE.THIRD-PARTY.md",
+      "status": "generated-notices"
+    },
+    {
+      "destination": "packages/dataviz-angular/LICENSE.THIRD-PARTY.md",
+      "status": "generated-notices"
     }
   ]
 }
