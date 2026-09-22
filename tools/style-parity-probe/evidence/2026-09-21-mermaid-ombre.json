@@ -1,0 +1,1232 @@
+{
+  "date": "2026-09-21",
+  "horodatage": "2026-09-22T03:57:03.436Z",
+  "navigateur": "153.0.8010.36",
+  "mermaid": "11.17.2",
+  "securityLevel": "strict",
+  "csp": "default-src 'self'; script-src 'self'; style-src 'self'; style-src-attr 'none'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; worker-src 'none'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+  "modes": {
+    "sans-csp": {
+      "variantes": {
+        "temoin-sans-ombre": {
+          "definition": "flowchart LR\n  A@{ shape: rounded, label: \"Service\" }\n  B@{ shape: rect, label: \"Base\" }\n  A --> B\n  classDef ombre fill:#eef2ff,stroke:#4f46e5\n  class A,B ombre\n",
+          "rendu": true,
+          "chaine": {
+            "octets": 10994,
+            "elementsStyle": 1,
+            "ombreDansStyleElement": [
+              "cluster rect,#v0 [data-look=\"neo\"].node polygon{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#v0 [data-look=\"neo\"]",
+              "370DB;stroke-width:1px;}#v0 [data-look=\"neo\"].node .outer-path{filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#v0 [data-look=\"neo\"]",
+              ";filter:none;}#v0 [data-look=\"neo\"].node circle{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#v0 [data-look=\"neo\"]",
+              "l:#000000;}#v0 [data-look=\"neo\"].icon-shape .icon{fill:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#v0 [data-look=\"neo\"]"
+            ],
+            "reglesOmbreHorsNeo": [],
+            "attributsStyleAvecOmbre": [],
+            "attributsStyleTotal": 21,
+            "elementsFilter": 2
+          },
+          "dom": {
+            "formeTag": "rect",
+            "attributStyleForme": "fill:#eef2ff !important;stroke:#4f46e5 !important",
+            "filterCalcule": "none",
+            "boxShadowCalcule": "none",
+            "fillCalcule": "rgb(238, 242, 255)",
+            "strokeCalcule": "rgb(79, 70, 229)"
+          },
+          "bandes": {
+            "enLigne": {
+              "droite": {
+                "x": 246.828125,
+                "y": 19,
+                "width": 4,
+                "height": 51
+              },
+              "dessous": {
+                "x": 152.359375,
+                "y": 71,
+                "width": 93.46875,
+                "height": 4
+              }
+            },
+            "image": {
+              "droite": {
+                "x": 246.99440666115808,
+                "y": 93.00559333884192,
+                "width": 4,
+                "height": 51.03775503718299
+              },
+              "dessous": {
+                "x": 152.45820886035722,
+                "y": 145.0433483760249,
+                "width": 93.53619780080086,
+                "height": 4
+              }
+            }
+          },
+          "image": {
+            "largeur": 246,
+            "hauteur": 70,
+            "charge": true
+          },
+          "violations": [],
+          "luminance": {
+            "enLigne": {
+              "droite": {
+                "luminanceMoyenne": 255,
+                "luminanceMin": 255,
+                "pixels": 204
+              },
+              "dessous": {
+                "luminanceMoyenne": 255,
+                "luminanceMin": 255,
+                "pixels": 372
+              }
+            },
+            "image": {
+              "droite": {
+                "luminanceMoyenne": 255,
+                "luminanceMin": 255,
+                "pixels": 204
+              },
+              "dessous": {
+                "luminanceMoyenne": 255,
+                "luminanceMin": 255,
+                "pixels": 372
+              }
+            }
+          }
+        },
+        "classDef-drop-shadow-hex": {
+          "definition": "flowchart LR\n  A@{ shape: rounded, label: \"Service\" }\n  B@{ shape: rect, label: \"Base\" }\n  A --> B\n  classDef ombre fill:#eef2ff,stroke:#4f46e5,filter:drop-shadow(2px 3px 2px #00000066)\n  class A,B ombre\n",
+          "rendu": false,
+          "erreur": "Error: Parse error on line 5:\n...5,filter:drop-shadow(2px 3px 2px #000000\n-----------------------^\nExpecting 'SEMI', 'NEWLINE', 'SPACE', 'EOF', 'COLON', 'STYLE', 'NUM', 'COMMA', 'NODE_STRING', 'UNIT', 'BRKT', 'PCT', got 'PS'",
+          "violations": []
+        },
+        "classDef-drop-shadow-rgba-virgules-echappees": {
+          "definition": "flowchart LR\n  A@{ shape: rounded, label: \"Service\" }\n  B@{ shape: rect, label: \"Base\" }\n  A --> B\n  classDef ombre fill:#eef2ff,stroke:#4f46e5,filter:drop-shadow(2px 3px 2px rgba(0\\,0\\,0\\,0.4))\n  class A,B ombre\n",
+          "rendu": false,
+          "erreur": "Error: Parse error on line 5:\n...5,filter:drop-shadow(2px 3px 2px rgba(0\\\n-----------------------^\nExpecting 'SEMI', 'NEWLINE', 'SPACE', 'EOF', 'COLON', 'STYLE', 'NUM', 'COMMA', 'NODE_STRING', 'UNIT', 'BRKT', 'PCT', got 'PS'",
+          "violations": []
+        },
+        "classDef-filter-url": {
+          "definition": "flowchart LR\n  A@{ shape: rounded, label: \"Service\" }\n  B@{ shape: rect, label: \"Base\" }\n  A --> B\n  classDef ombre fill:#eef2ff,stroke:#4f46e5,filter:url(#ombre)\n  class A,B ombre\n",
+          "rendu": false,
+          "erreur": "Error: Parse error on line 5:\n...e:#4f46e5,filter:url(#ombre)  class A,B\n-----------------------^\nExpecting 'SEMI', 'NEWLINE', 'SPACE', 'EOF', 'COLON', 'STYLE', 'NUM', 'COMMA', 'NODE_STRING', 'UNIT', 'BRKT', 'PCT', got 'PS'",
+          "violations": []
+        },
+        "classDef-box-shadow": {
+          "definition": "flowchart LR\n  A@{ shape: rounded, label: \"Service\" }\n  B@{ shape: rect, label: \"Base\" }\n  A --> B\n  classDef ombre fill:#eef2ff,stroke:#4f46e5,box-shadow:2px 3px 2px #00000066\n  class A,B ombre\n",
+          "rendu": true,
+          "chaine": {
+            "octets": 11186,
+            "elementsStyle": 1,
+            "ombreDansStyleElement": [
+              "cluster rect,#v4 [data-look=\"neo\"].node polygon{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#v4 [data-look=\"neo\"]",
+              "370DB;stroke-width:1px;}#v4 [data-look=\"neo\"].node .outer-path{filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#v4 [data-look=\"neo\"]",
+              ";filter:none;}#v4 [data-look=\"neo\"].node circle{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#v4 [data-look=\"neo\"]",
+              "l:#000000;}#v4 [data-look=\"neo\"].icon-shape .icon{fill:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#v4 [data-look=\"neo\"]"
+            ],
+            "reglesOmbreHorsNeo": [
+              "#v4 .ombre&gt;*{fill:rgb(238, 242, 255)!important;stroke:rgb(79, 70, 229)!important;box-shadow:rgba(0, 0, 0, 0.4) 2px 3px 2px!important;}",
+              "#v4 .ombre span{fill:rgb(238, 242, 255)!important;stroke:rgb(79, 70, 229)!important;box-shadow:rgba(0, 0, 0, 0.4) 2px 3px 2px!important;}"
+            ],
+            "attributsStyleAvecOmbre": [
+              "rect: fill:#eef2ff !important;stroke:#4f46e5 !important;box-shadow:2px 3px 2px #00000066 !important",
+              "rect: fill:#eef2ff !important;stroke:#4f46e5 !important;box-shadow:2px 3px 2px #00000066 !important"
+            ],
+            "attributsStyleTotal": 21,
+            "elementsFilter": 2
+          },
+          "dom": {
+            "formeTag": "rect",
+            "attributStyleForme": "fill:#eef2ff !important;stroke:#4f46e5 !important;box-shadow:2px 3px 2px #00000066 !important",
+            "filterCalcule": "none",
+            "boxShadowCalcule": "rgba(0, 0, 0, 0.4) 2px 3px 2px 0px",
+            "fillCalcule": "rgb(238, 242, 255)",
+            "strokeCalcule": "rgb(79, 70, 229)"
+          },
+          "bandes": {
+            "enLigne": {
+              "droite": {
+                "x": 246.828125,
+                "y": 167.046875,
+                "width": 4,
+                "height": 51
+              },
+              "dessous": {
+                "x": 152.359375,
+                "y": 219.046875,
+                "width": 93.46875,
+                "height": 4
+              }
+            },
+            "image": {
+              "droite": {
+                "x": 246.99440666115808,
+                "y": 241.05246833884192,
+                "width": 4,
+                "height": 51.03775503718302
+              },
+              "dessous": {
+                "x": 152.45820886035722,
+                "y": 293.09022337602494,
+                "width": 93.53619780080086,
+                "height": 4
+              }
+            }
+          },
+          "image": {
+            "largeur": 246,
+            "hauteur": 70,
+            "charge": true
+          },
+          "violations": [],
+          "luminance": {
+            "enLigne": {
+              "droite": {
+                "luminanceMoyenne": 255,
+                "luminanceMin": 255,
+                "pixels": 204
+              },
+              "dessous": {
+                "luminanceMoyenne": 255,
+                "luminanceMin": 255,
+                "pixels": 372
+              }
+            },
+            "image": {
+              "droite": {
+                "luminanceMoyenne": 255,
+                "luminanceMin": 255,
+                "pixels": 204
+              },
+              "dessous": {
+                "luminanceMoyenne": 255,
+                "luminanceMin": 255,
+                "pixels": 372
+              }
+            }
+          }
+        },
+        "look-neo-natif": {
+          "definition": "---\nconfig:\n  look: neo\n---\nflowchart LR\n  A@{ shape: rounded, label: \"Service\" }\n  B@{ shape: rect, label: \"Base\" }\n  A --> B\n",
+          "rendu": true,
+          "chaine": {
+            "octets": 10773,
+            "elementsStyle": 1,
+            "ombreDansStyleElement": [
+              "cluster rect,#v5 [data-look=\"neo\"].node polygon{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#v5 [data-look=\"neo\"]",
+              "370DB;stroke-width:1px;}#v5 [data-look=\"neo\"].node .outer-path{filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#v5 [data-look=\"neo\"]",
+              ";filter:none;}#v5 [data-look=\"neo\"].node circle{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#v5 [data-look=\"neo\"]",
+              "l:#000000;}#v5 [data-look=\"neo\"].icon-shape .icon{fill:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#v5 [data-look=\"neo\"]"
+            ],
+            "reglesOmbreHorsNeo": [],
+            "attributsStyleAvecOmbre": [],
+            "attributsStyleTotal": 21,
+            "elementsFilter": 2
+          },
+          "dom": {
+            "formeTag": "rect",
+            "attributStyleForme": "",
+            "filterCalcule": "drop-shadow(rgb(185, 185, 185) 1px 2px 2px)",
+            "boxShadowCalcule": "none",
+            "fillCalcule": "rgb(236, 236, 255)",
+            "strokeCalcule": "rgb(147, 112, 219)"
+          },
+          "bandes": {
+            "enLigne": {
+              "droite": {
+                "x": 218.828125,
+                "y": 318.09375,
+                "width": 4,
+                "height": 45
+              },
+              "dessous": {
+                "x": 152.359375,
+                "y": 364.09375,
+                "width": 65.46875,
+                "height": 4
+              }
+            },
+            "image": {
+              "droite": {
+                "x": 218.99368768381035,
+                "y": 392.1024294347608,
+                "width": 4,
+                "height": 45.037873897137956
+              },
+              "dessous": {
+                "x": 152.47091313392153,
+                "y": 438.14030333189874,
+                "width": 65.52277454988882,
+                "height": 4
+              }
+            }
+          },
+          "image": {
+            "largeur": 218,
+            "hauteur": 70,
+            "charge": true
+          },
+          "violations": [],
+          "luminance": {
+            "enLigne": {
+              "droite": {
+                "luminanceMoyenne": 237.9,
+                "luminanceMin": 223,
+                "pixels": 180
+              },
+              "dessous": {
+                "luminanceMoyenne": 225.6,
+                "luminanceMin": 208,
+                "pixels": 260
+              }
+            },
+            "image": {
+              "droite": {
+                "luminanceMoyenne": 236,
+                "luminanceMin": 220,
+                "pixels": 180
+              },
+              "dessous": {
+                "luminanceMoyenne": 225.6,
+                "luminanceMin": 208,
+                "pixels": 260
+              }
+            }
+          }
+        },
+        "themeCSS-classe": {
+          "definition": "---\nconfig:\n  themeCSS: \".ombre rect, .ombre path, .ombre polygon { filter: drop-shadow(2px 3px 2px rgba(0, 0, 0, 0.4)); }\"\n---\nflowchart LR\n  A@{ shape: rounded, label: \"Service\" }\n  B@{ shape: rect, label: \"Base\" }\n  A --> B\n  classDef ombre fill:#eef2ff,stroke:#4f46e5\n  class A,B ombre\n",
+          "rendu": true,
+          "chaine": {
+            "octets": 11097,
+            "elementsStyle": 1,
+            "ombreDansStyleElement": [
+              "cluster rect,#v6 [data-look=\"neo\"].node polygon{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#v6 [data-look=\"neo\"]",
+              "370DB;stroke-width:1px;}#v6 [data-look=\"neo\"].node .outer-path{filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#v6 [data-look=\"neo\"]",
+              ";filter:none;}#v6 [data-look=\"neo\"].node circle{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#v6 [data-look=\"neo\"]",
+              "l:#000000;}#v6 [data-look=\"neo\"].icon-shape .icon{fill:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#v6 [data-look=\"neo\"]"
+            ],
+            "reglesOmbreHorsNeo": [
+              "#v6 .ombre rect,#v6 .ombre path,#v6 .ombre polygon{filter:drop-shadow(rgba(0, 0, 0, 0.4) 2px 3px 2px);}"
+            ],
+            "attributsStyleAvecOmbre": [],
+            "attributsStyleTotal": 21,
+            "elementsFilter": 2
+          },
+          "dom": {
+            "formeTag": "rect",
+            "attributStyleForme": "fill:#eef2ff !important;stroke:#4f46e5 !important",
+            "filterCalcule": "drop-shadow(rgba(0, 0, 0, 0.4) 2px 3px 2px)",
+            "boxShadowCalcule": "none",
+            "fillCalcule": "rgb(238, 242, 255)",
+            "strokeCalcule": "rgb(79, 70, 229)"
+          },
+          "bandes": {
+            "enLigne": {
+              "droite": {
+                "x": 246.828125,
+                "y": 463.140625,
+                "width": 4,
+                "height": 51
+              },
+              "dessous": {
+                "x": 152.359375,
+                "y": 515.140625,
+                "width": 93.46875,
+                "height": 4
+              }
+            },
+            "image": {
+              "droite": {
+                "x": 246.99440666115808,
+                "y": 537.1462183388419,
+                "width": 4,
+                "height": 51.03775503718305
+              },
+              "dessous": {
+                "x": 152.45820886035722,
+                "y": 589.1839733760249,
+                "width": 93.53619780080086,
+                "height": 4
+              }
+            }
+          },
+          "image": {
+            "largeur": 246,
+            "hauteur": 70,
+            "charge": true
+          },
+          "violations": [],
+          "luminance": {
+            "enLigne": {
+              "droite": {
+                "luminanceMoyenne": 216.2,
+                "luminanceMin": 191,
+                "pixels": 204
+              },
+              "dessous": {
+                "luminanceMoyenne": 196.3,
+                "luminanceMin": 172,
+                "pixels": 372
+              }
+            },
+            "image": {
+              "droite": {
+                "luminanceMoyenne": 212.6,
+                "luminanceMin": 187,
+                "pixels": 204
+              },
+              "dessous": {
+                "luminanceMoyenne": 196.3,
+                "luminanceMin": 172,
+                "pixels": 372
+              }
+            }
+          }
+        }
+      },
+      "violationsTotal": [],
+      "erreursPage": []
+    },
+    "csp-stricte": {
+      "variantes": {
+        "temoin-sans-ombre": {
+          "definition": "flowchart LR\n  A@{ shape: rounded, label: \"Service\" }\n  B@{ shape: rect, label: \"Base\" }\n  A --> B\n  classDef ombre fill:#eef2ff,stroke:#4f46e5\n  class A,B ombre\n",
+          "rendu": true,
+          "chaine": {
+            "octets": 10999,
+            "elementsStyle": 1,
+            "ombreDansStyleElement": [
+              "cluster rect,#v0 [data-look=\"neo\"].node polygon{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#v0 [data-look=\"neo\"]",
+              "370DB;stroke-width:1px;}#v0 [data-look=\"neo\"].node .outer-path{filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#v0 [data-look=\"neo\"]",
+              ";filter:none;}#v0 [data-look=\"neo\"].node circle{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#v0 [data-look=\"neo\"]",
+              "l:#000000;}#v0 [data-look=\"neo\"].icon-shape .icon{fill:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#v0 [data-look=\"neo\"]"
+            ],
+            "reglesOmbreHorsNeo": [],
+            "attributsStyleAvecOmbre": [],
+            "attributsStyleTotal": 21,
+            "elementsFilter": 2
+          },
+          "dom": {
+            "formeTag": "rect",
+            "attributStyleForme": "fill:#eef2ff !important;stroke:#4f46e5 !important",
+            "filterCalcule": "none",
+            "boxShadowCalcule": "none",
+            "fillCalcule": "rgb(0, 0, 0)",
+            "strokeCalcule": "none"
+          },
+          "bandes": {
+            "enLigne": {
+              "droite": {
+                "x": 1229.9822998046875,
+                "y": 54.01225662231445,
+                "width": 4,
+                "height": 459.3817138671875
+              },
+              "dessous": {
+                "x": 742.1298217773438,
+                "y": 514.393970489502,
+                "width": 486.85247802734375,
+                "height": 4
+              }
+            },
+            "image": {
+              "droite": {
+                "x": 236.00319021666888,
+                "y": 571.4030597833312,
+                "width": 4,
+                "height": 82.96570517080943
+              },
+              "dessous": {
+                "x": 146.93014754752093,
+                "y": 655.3687649541406,
+                "width": 88.07304266914795,
+                "height": 4
+              }
+            }
+          },
+          "image": {
+            "largeur": 235,
+            "hauteur": 102,
+            "charge": true
+          },
+          "violations": [
+            "style-src-elem",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-elem",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-elem"
+          ],
+          "luminance": {
+            "enLigne": {
+              "droite": {
+                "luminanceMoyenne": 255,
+                "luminanceMin": 255,
+                "pixels": 1836
+              },
+              "dessous": {
+                "luminanceMoyenne": 255,
+                "luminanceMin": 255,
+                "pixels": 1944
+              }
+            },
+            "image": {
+              "droite": {
+                "luminanceMoyenne": 255,
+                "luminanceMin": 255,
+                "pixels": 328
+              },
+              "dessous": {
+                "luminanceMoyenne": 255,
+                "luminanceMin": 255,
+                "pixels": 352
+              }
+            }
+          }
+        },
+        "classDef-drop-shadow-hex": {
+          "definition": "flowchart LR\n  A@{ shape: rounded, label: \"Service\" }\n  B@{ shape: rect, label: \"Base\" }\n  A --> B\n  classDef ombre fill:#eef2ff,stroke:#4f46e5,filter:drop-shadow(2px 3px 2px #00000066)\n  class A,B ombre\n",
+          "rendu": false,
+          "erreur": "Error: Parse error on line 5:\n...5,filter:drop-shadow(2px 3px 2px #000000\n-----------------------^\nExpecting 'SEMI', 'NEWLINE', 'SPACE', 'EOF', 'COLON', 'STYLE', 'NUM', 'COMMA', 'NODE_STRING', 'UNIT', 'BRKT', 'PCT', got 'PS'",
+          "violations": [
+            "style-src-elem",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-elem",
+            "style-src-attr",
+            "style-src-attr"
+          ]
+        },
+        "classDef-drop-shadow-rgba-virgules-echappees": {
+          "definition": "flowchart LR\n  A@{ shape: rounded, label: \"Service\" }\n  B@{ shape: rect, label: \"Base\" }\n  A --> B\n  classDef ombre fill:#eef2ff,stroke:#4f46e5,filter:drop-shadow(2px 3px 2px rgba(0\\,0\\,0\\,0.4))\n  class A,B ombre\n",
+          "rendu": false,
+          "erreur": "Error: Parse error on line 5:\n...5,filter:drop-shadow(2px 3px 2px rgba(0\\\n-----------------------^\nExpecting 'SEMI', 'NEWLINE', 'SPACE', 'EOF', 'COLON', 'STYLE', 'NUM', 'COMMA', 'NODE_STRING', 'UNIT', 'BRKT', 'PCT', got 'PS'",
+          "violations": [
+            "style-src-elem",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-elem",
+            "style-src-attr",
+            "style-src-attr"
+          ]
+        },
+        "classDef-filter-url": {
+          "definition": "flowchart LR\n  A@{ shape: rounded, label: \"Service\" }\n  B@{ shape: rect, label: \"Base\" }\n  A --> B\n  classDef ombre fill:#eef2ff,stroke:#4f46e5,filter:url(#ombre)\n  class A,B ombre\n",
+          "rendu": false,
+          "erreur": "Error: Parse error on line 5:\n...e:#4f46e5,filter:url(#ombre)  class A,B\n-----------------------^\nExpecting 'SEMI', 'NEWLINE', 'SPACE', 'EOF', 'COLON', 'STYLE', 'NUM', 'COMMA', 'NODE_STRING', 'UNIT', 'BRKT', 'PCT', got 'PS'",
+          "violations": [
+            "style-src-elem",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-elem",
+            "style-src-attr",
+            "style-src-attr"
+          ]
+        },
+        "classDef-box-shadow": {
+          "definition": "flowchart LR\n  A@{ shape: rounded, label: \"Service\" }\n  B@{ shape: rect, label: \"Base\" }\n  A --> B\n  classDef ombre fill:#eef2ff,stroke:#4f46e5,box-shadow:2px 3px 2px #00000066\n  class A,B ombre\n",
+          "rendu": true,
+          "chaine": {
+            "octets": 11191,
+            "elementsStyle": 1,
+            "ombreDansStyleElement": [
+              "cluster rect,#v4 [data-look=\"neo\"].node polygon{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#v4 [data-look=\"neo\"]",
+              "370DB;stroke-width:1px;}#v4 [data-look=\"neo\"].node .outer-path{filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#v4 [data-look=\"neo\"]",
+              ";filter:none;}#v4 [data-look=\"neo\"].node circle{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#v4 [data-look=\"neo\"]",
+              "l:#000000;}#v4 [data-look=\"neo\"].icon-shape .icon{fill:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#v4 [data-look=\"neo\"]"
+            ],
+            "reglesOmbreHorsNeo": [
+              "#v4 .ombre&gt;*{fill:rgb(238, 242, 255)!important;stroke:rgb(79, 70, 229)!important;box-shadow:rgba(0, 0, 0, 0.4) 2px 3px 2px!important;}",
+              "#v4 .ombre span{fill:rgb(238, 242, 255)!important;stroke:rgb(79, 70, 229)!important;box-shadow:rgba(0, 0, 0, 0.4) 2px 3px 2px!important;}"
+            ],
+            "attributsStyleAvecOmbre": [
+              "rect: fill:#eef2ff !important;stroke:#4f46e5 !important;box-shadow:2px 3px 2px #00000066 !important",
+              "rect: fill:#eef2ff !important;stroke:#4f46e5 !important;box-shadow:2px 3px 2px #00000066 !important"
+            ],
+            "attributsStyleTotal": 21,
+            "elementsFilter": 2
+          },
+          "dom": {
+            "formeTag": "rect",
+            "attributStyleForme": "fill:#eef2ff !important;stroke:#4f46e5 !important;box-shadow:2px 3px 2px #00000066 !important",
+            "filterCalcule": "none",
+            "boxShadowCalcule": "none",
+            "fillCalcule": "rgb(0, 0, 0)",
+            "strokeCalcule": "none"
+          },
+          "bandes": {
+            "enLigne": {
+              "droite": {
+                "x": 1229.9822998046875,
+                "y": 712.3716430664062,
+                "width": 4,
+                "height": 459.38177490234375
+              },
+              "dessous": {
+                "x": 742.1298217773438,
+                "y": 1172.75341796875,
+                "width": 486.85247802734375,
+                "height": 4
+              }
+            },
+            "image": {
+              "droite": {
+                "x": 236.00319021666888,
+                "y": 1229.7624347833312,
+                "width": 4,
+                "height": 82.96570517080954
+              },
+              "dessous": {
+                "x": 146.93014754752093,
+                "y": 1313.7281399541407,
+                "width": 88.07304266914795,
+                "height": 4
+              }
+            }
+          },
+          "image": {
+            "largeur": 235,
+            "hauteur": 102,
+            "charge": true
+          },
+          "violations": [
+            "style-src-elem",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-elem",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-elem"
+          ],
+          "luminance": {
+            "enLigne": {
+              "droite": {
+                "luminanceMoyenne": 255,
+                "luminanceMin": 255,
+                "pixels": 1836
+              },
+              "dessous": {
+                "luminanceMoyenne": 255,
+                "luminanceMin": 255,
+                "pixels": 1944
+              }
+            },
+            "image": {
+              "droite": {
+                "luminanceMoyenne": 255,
+                "luminanceMin": 255,
+                "pixels": 328
+              },
+              "dessous": {
+                "luminanceMoyenne": 255,
+                "luminanceMin": 255,
+                "pixels": 352
+              }
+            }
+          }
+        },
+        "look-neo-natif": {
+          "definition": "---\nconfig:\n  look: neo\n---\nflowchart LR\n  A@{ shape: rounded, label: \"Service\" }\n  B@{ shape: rect, label: \"Base\" }\n  A --> B\n",
+          "rendu": true,
+          "chaine": {
+            "octets": 10778,
+            "elementsStyle": 1,
+            "ombreDansStyleElement": [
+              "cluster rect,#v5 [data-look=\"neo\"].node polygon{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#v5 [data-look=\"neo\"]",
+              "370DB;stroke-width:1px;}#v5 [data-look=\"neo\"].node .outer-path{filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#v5 [data-look=\"neo\"]",
+              ";filter:none;}#v5 [data-look=\"neo\"].node circle{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#v5 [data-look=\"neo\"]",
+              "l:#000000;}#v5 [data-look=\"neo\"].icon-shape .icon{fill:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#v5 [data-look=\"neo\"]"
+            ],
+            "reglesOmbreHorsNeo": [],
+            "attributsStyleAvecOmbre": [],
+            "attributsStyleTotal": 21,
+            "elementsFilter": 2
+          },
+          "dom": {
+            "formeTag": "rect",
+            "attributStyleForme": "",
+            "filterCalcule": "none",
+            "boxShadowCalcule": "none",
+            "fillCalcule": "rgb(0, 0, 0)",
+            "strokeCalcule": "none"
+          },
+          "bandes": {
+            "enLigne": {
+              "droite": {
+                "x": 1224.160888671875,
+                "y": 1394.856201171875,
+                "width": 4,
+                "height": 485.27197265625
+              },
+              "dessous": {
+                "x": 840.9790649414062,
+                "y": 1881.128173828125,
+                "width": 382.18182373046875,
+                "height": 4
+              }
+            },
+            "image": {
+              "droite": {
+                "x": 208.0036215482119,
+                "y": 1965.2606453712087,
+                "width": 4,
+                "height": 76.96378451788132
+              },
+              "dessous": {
+                "x": 146.92281575373474,
+                "y": 2043.22442988909,
+                "width": 60.08080579447716,
+                "height": 4
+              }
+            }
+          },
+          "image": {
+            "largeur": 207,
+            "hauteur": 102,
+            "charge": true
+          },
+          "violations": [
+            "style-src-elem",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-elem",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-elem"
+          ],
+          "luminance": {
+            "enLigne": {
+              "droite": {
+                "luminanceMoyenne": 255,
+                "luminanceMin": 255,
+                "pixels": 1940
+              },
+              "dessous": {
+                "luminanceMoyenne": 255,
+                "luminanceMin": 255,
+                "pixels": 1528
+              }
+            },
+            "image": {
+              "droite": {
+                "luminanceMoyenne": 235.8,
+                "luminanceMin": 220,
+                "pixels": 304
+              },
+              "dessous": {
+                "luminanceMoyenne": 225.7,
+                "luminanceMin": 208,
+                "pixels": 240
+              }
+            }
+          }
+        },
+        "themeCSS-classe": {
+          "definition": "---\nconfig:\n  themeCSS: \".ombre rect, .ombre path, .ombre polygon { filter: drop-shadow(2px 3px 2px rgba(0, 0, 0, 0.4)); }\"\n---\nflowchart LR\n  A@{ shape: rounded, label: \"Service\" }\n  B@{ shape: rect, label: \"Base\" }\n  A --> B\n  classDef ombre fill:#eef2ff,stroke:#4f46e5\n  class A,B ombre\n",
+          "rendu": true,
+          "chaine": {
+            "octets": 11102,
+            "elementsStyle": 1,
+            "ombreDansStyleElement": [
+              "cluster rect,#v6 [data-look=\"neo\"].node polygon{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#v6 [data-look=\"neo\"]",
+              "370DB;stroke-width:1px;}#v6 [data-look=\"neo\"].node .outer-path{filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#v6 [data-look=\"neo\"]",
+              ";filter:none;}#v6 [data-look=\"neo\"].node circle{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#v6 [data-look=\"neo\"]",
+              "l:#000000;}#v6 [data-look=\"neo\"].icon-shape .icon{fill:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#v6 [data-look=\"neo\"]"
+            ],
+            "reglesOmbreHorsNeo": [
+              "#v6 .ombre rect,#v6 .ombre path,#v6 .ombre polygon{filter:drop-shadow(rgba(0, 0, 0, 0.4) 2px 3px 2px);}"
+            ],
+            "attributsStyleAvecOmbre": [],
+            "attributsStyleTotal": 21,
+            "elementsFilter": 2
+          },
+          "dom": {
+            "formeTag": "rect",
+            "attributStyleForme": "fill:#eef2ff !important;stroke:#4f46e5 !important",
+            "filterCalcule": "none",
+            "boxShadowCalcule": "none",
+            "fillCalcule": "rgb(0, 0, 0)",
+            "strokeCalcule": "none"
+          },
+          "bandes": {
+            "enLigne": {
+              "droite": {
+                "x": 1229.9822998046875,
+                "y": 2103.23095703125,
+                "width": 4,
+                "height": 459.3818359375
+              },
+              "dessous": {
+                "x": 742.1298217773438,
+                "y": 2563.61279296875,
+                "width": 486.85247802734375,
+                "height": 4
+              }
+            },
+            "image": {
+              "droite": {
+                "x": 236.00319021666888,
+                "y": 2620.621809783331,
+                "width": 4,
+                "height": 82.96570517080954
+              },
+              "dessous": {
+                "x": 146.93014754752093,
+                "y": 2704.5875149541407,
+                "width": 88.07304266914795,
+                "height": 4
+              }
+            }
+          },
+          "image": {
+            "largeur": 235,
+            "hauteur": 102,
+            "charge": true
+          },
+          "violations": [
+            "style-src-elem",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-elem",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-attr",
+            "style-src-elem"
+          ],
+          "luminance": {
+            "enLigne": {
+              "droite": {
+                "luminanceMoyenne": 255,
+                "luminanceMin": 255,
+                "pixels": 1836
+              },
+              "dessous": {
+                "luminanceMoyenne": 255,
+                "luminanceMin": 255,
+                "pixels": 1944
+              }
+            },
+            "image": {
+              "droite": {
+                "luminanceMoyenne": 212.4,
+                "luminanceMin": 187,
+                "pixels": 328
+              },
+              "dessous": {
+                "luminanceMoyenne": 196.3,
+                "luminanceMin": 172,
+                "pixels": 352
+              }
+            }
+          }
+        }
+      },
+      "violationsTotal": [
+        "style-src-elem",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-elem",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-elem",
+        "style-src-elem",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-elem",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-elem",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-elem",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-elem",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-elem",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-elem",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-elem",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-elem",
+        "style-src-elem",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-elem",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-elem",
+        "style-src-elem",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-elem",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-attr",
+        "style-src-elem"
+      ],
+      "erreursPage": []
+    }
+  }
+}

@@ -41,15 +41,15 @@
 //   export shapes are real and resolvable, but does not exercise the actual
 //   linker step a consumer's build performs.
 // - No bundler build (Vite/webpack/Rollup) is run against any package.
-// - Only the 7 packages listed below are covered by the tarball-shape and
+// - Only the 13 packages listed below are covered by the tarball-shape and
 //   deep-import checks. The other 4 publishable packages - theme-dsfr,
 //   theme-canada, theme-quebec, codemirror - and apps/* are untested by those.
-//   THE ONE EXCEPTION is the licensing gate below: it runs over all 11
+//   THE ONE EXCEPTION is the licensing gate below: it runs over all 17
 //   publishable packages on every invocation, whatever --workspaces selects,
 //   precisely because the package nobody selected is the one that ships
 //   unlicensed.
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -112,6 +112,10 @@ const rootManifest = readJson("package.json");
 const reactManifest = readJson("packages/components-react/package.json");
 const vueManifest = readJson("packages/components-vue/package.json");
 const angularManifest = readJson("packages/components-angular/package.json");
+const datavizSvelteManifest = readJson("packages/dataviz-svelte/package.json");
+const datavizReactManifest = readJson("packages/dataviz-react/package.json");
+const datavizVueManifest = readJson("packages/dataviz-vue/package.json");
+const datavizAngularManifest = readJson("packages/dataviz-angular/package.json");
 
 // LAZY, and that is load-bearing. In CI this script runs per shard, and a shard
 // builds only its own workspaces — so a package outside the selection has no
@@ -130,6 +134,53 @@ const reactComponentFiles = () => distFilesLazy("packages/components-react", "js
 const vueComponentFiles = () => distFilesLazy("packages/components-vue", "js");
 const angularComponentFiles = () => distFilesLazy("packages/components-angular", "js");
 const svelteComponentFiles = () => distFilesLazy("packages/components-svelte", "svelte");
+
+// Recursive variant: the dataviz adapters ship nested modules under
+// dist/lib/* (and dataviz-svelte its components as nested .svelte files),
+// so a top-level readdir misses most of what the tarball carries. Walks the
+// whole dist/ tree, still honouring the package.json `files` negations and
+// still excluding the barrel file and leaked test/spec output.
+function distFilesRecursive(pkgRelDir, ext) {
+  const dir = join(root, pkgRelDir, "dist");
+  if (!existsSync(dir)) {
+    throw new Error(
+      `${pkgRelDir}/dist does not exist - build packages before running smoke-pack.mjs (CI does this in the ` +
+        `"Build packages" step; locally run \`npm run build\`).`,
+    );
+  }
+  const excluded = packExclusions(pkgRelDir);
+  const found = [];
+  const walk = (absolute, relative) => {
+    for (const entry of readdirSync(absolute).sort()) {
+      const absoluteEntry = join(absolute, entry);
+      const relativeEntry = relative ? `${relative}/${entry}` : entry;
+      if (statSync(absoluteEntry).isDirectory()) {
+        walk(absoluteEntry, relativeEntry);
+        continue;
+      }
+      if (!entry.endsWith(`.${ext}`)) continue;
+      if (entry === `index.${ext}`) continue;
+      if (entry.includes(".test.") || entry.includes(".spec.")) continue;
+      const candidate = `dist/${relativeEntry}`;
+      if (excluded.some((rx) => rx.test(candidate))) continue;
+      found.push(candidate);
+    }
+  };
+  walk(dir, "");
+  return found;
+}
+
+function distFilesRecursiveLazy(pkgRelDir, ext) {
+  const key = `${pkgRelDir}:recursive:${ext}`;
+  if (!distFilesMemo.has(key)) distFilesMemo.set(key, distFilesRecursive(pkgRelDir, ext));
+  return distFilesMemo.get(key);
+}
+
+const datavizCoreFiles = () => distFilesRecursiveLazy("packages/dataviz-core", "js");
+const datavizSvelteComponentFiles = () => distFilesRecursiveLazy("packages/dataviz-svelte", "svelte");
+const datavizReactLibFiles = () => distFilesRecursiveLazy("packages/dataviz-react", "js");
+const datavizVueLibFiles = () => distFilesRecursiveLazy("packages/dataviz-vue", "js");
+const datavizAngularLibFiles = () => distFilesRecursiveLazy("packages/dataviz-angular", "js");
 
 const packages = [
   {
@@ -165,6 +216,30 @@ const packages = [
   {
     name: "@sentropic/design-system-angular",
     get requiredFiles() { return ["dist/index.js", "dist/index.d.ts", "dist/styles.css", ...angularComponentFiles()]; },
+  },
+  {
+    name: "@sentropic/graph",
+    requiredFiles: ["dist/index.js", "dist/index.d.ts", "dist/index.cjs", "dist/index.d.cts"],
+  },
+  {
+    name: "@sentropic/dataviz-core",
+    get requiredFiles() { return ["dist/index.js", "dist/index.d.ts", ...datavizCoreFiles()]; },
+  },
+  {
+    name: "@sentropic/dataviz-svelte",
+    get requiredFiles() { return ["dist/index.js", "dist/index.d.ts", ...datavizSvelteComponentFiles()]; },
+  },
+  {
+    name: "@sentropic/dataviz-react",
+    get requiredFiles() { return ["dist/index.js", "dist/index.d.ts", ...datavizReactLibFiles()]; },
+  },
+  {
+    name: "@sentropic/dataviz-vue",
+    get requiredFiles() { return ["dist/index.js", "dist/index.d.ts", ...datavizVueLibFiles()]; },
+  },
+  {
+    name: "@sentropic/dataviz-angular",
+    get requiredFiles() { return ["dist/index.js", "dist/index.d.ts", ...datavizAngularLibFiles()]; },
   },
 ];
 
@@ -238,12 +313,74 @@ const deepVerify = {
       ["rxjs", "^7.8.0"],
     ],
   },
+  // GD-M1: graph and dataviz packages. graph and dataviz-core are
+  // dependency-free libraries: no local closure, no peers; their verifiers
+  // import the real entry point and assert a documented export is a
+  // function, exactly like tokens/themes/skills. The adapters resolve their
+  // local DS dependencies from workspace tarballs (never the registry), so
+  // a single-package shard still deep-verifies against real code.
+  "@sentropic/graph": { closure: [], peers: [] },
+  "@sentropic/dataviz-core": { closure: [], peers: [] },
+  "@sentropic/dataviz-svelte": {
+    // Compiling .svelte source never resolves the component's own imports
+    // (same load-bearing remark as design-system-svelte above), but the
+    // closure is still the real runtime closure so the installed throwaway
+    // project mirrors a consumer.
+    closure: [
+      "@sentropic/dataviz-core",
+      "@sentropic/design-system-svelte",
+      "@sentropic/design-system-themes",
+    ],
+    peers: [
+      ["svelte", datavizSvelteManifest.devDependencies.svelte],
+      ["vite", datavizSvelteManifest.devDependencies.vite],
+      ["@sveltejs/vite-plugin-svelte", datavizSvelteManifest.devDependencies["@sveltejs/vite-plugin-svelte"]],
+    ],
+  },
+  "@sentropic/dataviz-react": {
+    closure: [
+      "@sentropic/dataviz-core",
+      "@sentropic/design-system-react",
+      "@sentropic/design-system-themes",
+    ],
+    peers: [
+      ["react", datavizReactManifest.devDependencies.react],
+      ["react-dom", datavizReactManifest.devDependencies["react-dom"]],
+    ],
+  },
+  "@sentropic/dataviz-vue": {
+    closure: [
+      "@sentropic/dataviz-core",
+      "@sentropic/design-system-vue",
+      "@sentropic/design-system-themes",
+    ],
+    peers: [["vue", datavizVueManifest.devDependencies.vue]],
+  },
+  "@sentropic/dataviz-angular": {
+    closure: [
+      "@sentropic/dataviz-core",
+      "@sentropic/design-system-angular",
+      "@sentropic/design-system-themes",
+    ],
+    peers: [
+      ["@angular/core", datavizAngularManifest.devDependencies["@angular/core"]],
+      // Same JIT-fallback rationale as design-system-angular above: the
+      // dataviz-angular output is partial compilation, the harness has no
+      // linker.
+      ["@angular/compiler", datavizAngularManifest.devDependencies["@angular/compiler"]],
+      ["@angular/common", datavizAngularManifest.devDependencies["@angular/core"]],
+      ["rxjs", "^7.8.0"],
+    ],
+  },
 };
 
 const minExportCounts = {
   "@sentropic/design-system-react": () => reactComponentFiles().length,
   "@sentropic/design-system-vue": () => vueComponentFiles().length,
   "@sentropic/design-system-angular": () => angularComponentFiles().length,
+  "@sentropic/dataviz-react": () => datavizReactLibFiles().length,
+  "@sentropic/dataviz-vue": () => datavizVueLibFiles().length,
+  "@sentropic/dataviz-angular": () => datavizAngularLibFiles().length,
 };
 
 function run(command, args, options = {}) {

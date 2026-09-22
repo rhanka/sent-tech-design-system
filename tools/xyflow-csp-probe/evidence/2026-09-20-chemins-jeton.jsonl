@@ -1,0 +1,5 @@
+{"variante": "prop-composant", "violations": 1, "directives": ["style-src-attr"], "wrappers": 1, "gDansSvg": 0, "fondApplique": "rgb(204, 255, 238)"}
+{"variante": "ancetre-directive", "violations": 0, "directives": [], "wrappers": 0, "gDansSvg": 0, "fondApplique": "rgb(204, 255, 238)"}
+{"variante": "classe", "violations": 0, "directives": [], "wrappers": 0, "gDansSvg": 0, "fondApplique": "rgb(204, 255, 238)"}
+{"variante": "cssom", "violations": 0, "directives": [], "wrappers": 0, "gDansSvg": 0, "fondApplique": "rgb(204, 255, 238)"}
+{"variante": "prop-composant-svg", "violations": 0, "directives": [], "wrappers": 0, "gDansSvg": 1, "fondApplique": "rgba(0, 0, 0, 0)"}
