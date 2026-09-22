@@ -712,6 +712,8 @@
   --st-component-chat-assistantBubbleText: #0f172a;
   --st-component-chat-composerSurface: #ffffff;
   --st-component-chat-toolCallSurface: #f8fafc;
+  --st-component-icon-strokeWidth: 2.25;
+  --st-component-icon-color: currentColor;
   --st-component-graph-panelBackground: #0f172a;
   --st-component-graph-panelText: #ffffff;
   --st-component-graph-edgeDefault: rgb(226 232 240 / 0.56);
@@ -1434,6 +1436,8 @@
   --st-component-chat-assistantBubbleText: oklch(96% 0.005 250);
   --st-component-chat-composerSurface: oklch(21% 0.015 250);
   --st-component-chat-toolCallSurface: oklch(19% 0.014 250);
+  --st-component-icon-strokeWidth: 2.25;
+  --st-component-icon-color: currentColor;
   --st-component-graph-panelBackground: oklch(96% 0.005 250);
   --st-component-graph-panelText: oklch(15% 0.012 250);
   --st-component-graph-edgeDefault: rgb(226 232 240 / 0.56);
@@ -2156,6 +2160,8 @@
   --st-component-chat-assistantBubbleText: oklch(96% 0.005 250);
   --st-component-chat-composerSurface: oklch(21% 0.015 250);
   --st-component-chat-toolCallSurface: oklch(19% 0.014 250);
+  --st-component-icon-strokeWidth: 2.25;
+  --st-component-icon-color: currentColor;
   --st-component-graph-panelBackground: oklch(96% 0.005 250);
   --st-component-graph-panelText: oklch(15% 0.012 250);
   --st-component-graph-edgeDefault: rgb(226 232 240 / 0.56);

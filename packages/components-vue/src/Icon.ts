@@ -1,4 +1,4 @@
-import { defineComponent, h } from "vue";
+import { defineComponent, h, type PropType } from "vue";
 import {
   Settings,
   Eye,
@@ -49,8 +49,12 @@ export const Icon = defineComponent({
     name: { type: String as () => IconName, required: true },
     /** Square size in px. Default 18 — the DS-standard inline glyph size. */
     size: { type: Number, default: 18 },
-    /** Stroke width. Default 2.25 — matches the DS's existing lucide usage. */
-    strokeWidth: { type: Number, default: 2.25 },
+    /**
+     * Stroke width. When omitted, the theme token
+     * `--st-component-icon-strokeWidth` applies (default 2.25 — the DS's
+     * existing lucide usage). When set, it wins over the token.
+     */
+    strokeWidth: { type: Number as PropType<number | undefined>, default: undefined },
     /** Accessible name; when omitted the icon is decorative (`aria-hidden`). */
     title: { type: String, default: undefined },
     class: { type: String, default: undefined },
@@ -61,7 +65,9 @@ export const Icon = defineComponent({
       if (!Glyph) return null;
       return h(Glyph, {
         size: props.size,
-        strokeWidth: props.strokeWidth,
+        strokeWidth: props.strokeWidth ?? 2.25,
+        // An explicit prop is marked so the styles.css token rule leaves it alone.
+        "data-st-icon-stroke": props.strokeWidth == null ? undefined : "prop",
         class: classNames("st-icon", props.class),
         role: props.title ? "img" : undefined,
         "aria-label": props.title,
