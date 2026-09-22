@@ -33,8 +33,9 @@ n'aurait signifié qu'une absence d'observation.
 **Cause racine de l'écart avec xyflow.** bpmn-js applique ses styles par
 `assignStyle` de min-dom, qui écrit `element.style[clé] = valeur` en CSSOM.
 `style-src-attr` gouverne l'attribut `style`, pas les écritures CSSOM. Le repli
-« SVG statique » reste justifié pour la scène générique v1, mais il n'est pas
-justifié par la CSP pour le parcours BPMN.
+« SVG statique » était motivé par la CSP ; ce motif est réfuté pour le parcours BPMN
+par la mesure ci-dessus, et pour la scène générique au §10. Les motifs restants
+invoqués et leurs mesures figurent en §12.
 
 **Preuves d'exécution obtenues par construction.** `worker-src 'none'` sans
 violation établit qu'elkjs n'ouvre aucun worker : son `elk.bundled.js` embarque
@@ -465,8 +466,8 @@ bpmn.io exigent la conservation des notices :
 ## 7. Porte restante
 
 **D7=A** — « nouveau runtime tiers seulement après décision owner explicite ».
-La qualification technique ci-dessus est favorable et ne remplace pas cette
-décision. Le câblage peut être préparé derrière l'adaptateur paresseux ; l'ajout
+La qualification technique ci-dessus, avec ses conditions (§2 et §3), ne remplace
+pas cette décision. Le câblage peut être préparé derrière l'adaptateur paresseux ; l'ajout
 effectif aux manifestes publiés attend l'owner.
 
 ### 9.7 Comment mermaid rend les icônes d'un pack enregistré
