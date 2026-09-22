@@ -1,11 +1,20 @@
 # Release
 
-Sent Tech Design System publishes four public npm packages from this private workspace root:
+Sent Tech Design System publishes seventeen public npm packages from this private workspace root:
 
 - `@sentropic/design-system-tokens`
 - `@sentropic/design-system-themes`
 - `@sentropic/design-system-svelte`
 - `@sentropic/design-system-skills`
+- `@sentropic/design-system-react`
+- `@sentropic/design-system-vue`
+- `@sentropic/design-system-angular`
+- `@sentropic/design-system-theme-canada`
+- `@sentropic/design-system-theme-dsfr`
+- `@sentropic/design-system-theme-quebec`
+- `@sentropic/design-system-codemirror`
+- `@sentropic/graph` (tag `graph-v<version>`)
+- `@sentropic/dataviz-core`, `@sentropic/dataviz-svelte`, `@sentropic/dataviz-react`, `@sentropic/dataviz-vue`, `@sentropic/dataviz-angular` (tag `dataviz-v<version>`, lockstep)
 
 The release model follows Graphify: GitHub Actions verifies the repo, packs the npm artifacts, guards the tag, publishes through npm Trusted Publishing, waits until npm registry propagation is visible, then installs the published packages back from npm.
 
@@ -21,9 +30,34 @@ Configure npm Trusted Publishing for each package:
 - Workflow: `.github/workflows/npm-publish.yml`
 - Registry: `https://registry.npmjs.org`
 
+Plus, for the graph/dataviz families:
+
+- Package: `@sentropic/graph`
+- Repository: `rhanka/sent-tech-design-system`
+- Workflow: `.github/workflows/graph-publish.yml`
+- Registry: `https://registry.npmjs.org`
+
+- Package: `@sentropic/dataviz-core`
+- Package: `@sentropic/dataviz-svelte`
+- Package: `@sentropic/dataviz-react`
+- Package: `@sentropic/dataviz-vue`
+- Package: `@sentropic/dataviz-angular`
+- Repository: `rhanka/sent-tech-design-system`
+- Workflow: `.github/workflows/dataviz-publish.yml`
+- Registry: `https://registry.npmjs.org`
+
 The packages are scoped and public. Keep `publishConfig.access = "public"` in each publishable workspace.
 
 Before the first release, confirm the npm `@sentropic` scope is owned by the publishing account or organization.
+
+## Owner Prerequisites Before the First Graph/Dataviz Tag
+
+Nothing below is automated; the owner performs each step once, before pushing `graph-v*` or `dataviz-v*` for the first time:
+
+1. Confirm on npm that the DS versions the adapters depend on exist: `design-system-svelte@0.35.0`, `design-system-react@0.37.0`, `design-system-vue@0.37.0`, `design-system-angular@0.37.1`, `design-system-themes@0.11.0`.
+2. For `graph`, `dataviz-core`, `-svelte`, `-react` and `-vue`: declare the DS repository and the publishing workflow as a trusted publisher on npmjs.com.
+3. For `dataviz-angular` (never published): bootstrap with a temporary token following the checklist below, then declare the trusted publisher and revoke the token.
+4. On the `rhanka/dataviz` side: remove the trusted publisher of the `rhanka/dataviz` repository and freeze its `v*` tags **before** the first DS tag (otherwise a source-side `v0.5.0` would permanently pin 0.5.0 on npm). On the graphify side, publication is manual (`PUBLISHING.md`); stop it by discipline once the DS publishes `graph`.
 
 Each package manifest must keep its `repository.url` pointed at `git+https://github.com/rhanka/sent-tech-design-system.git`; npm uses that metadata when validating GitHub trusted publishing.
 
@@ -40,7 +74,7 @@ git diff --check
 git status --short --branch
 ```
 
-`npm run pack:smoke` verifies the four package tarballs and installs them together in a clean temporary project.
+`npm run pack:smoke` verifies thirteen package tarballs (the seven design-system ports, `graph` and the five `dataviz-*`) and installs them together in a clean temporary project.
 Release commits must include the current portable `.graphify` artifacts: `graph.json`, `graph.html`, `GRAPH_REPORT.md`, `manifest.json`, `cost.json`, and `.graphify_runtime.json`. Do not commit local lifecycle files such as `.graphify/cache/`, `.graphify/branch.json`, `.graphify/worktree.json`, or `.graphify/needs_update`.
 
 ## Licensing Gate
@@ -58,9 +92,9 @@ It runs in three places, so no release path skips it:
 - the head of `npm run pack:smoke`, over all publishable packages whatever `--workspaces` selects;
 - `npm run verify`.
 
-The second of those is the one that covers a release, and it covers a release only if **every** publish workflow runs it. Measured on the nine `*-publish.yml` workflows: each has a `verify` job whose last step is `npm run pack:smoke`, and each `publish` job reaches that job through `needs: release-guard` → `needs: verify`.
+The second of those is the one that covers a release, and it covers a release only if **every** publish workflow runs it. Measured on the eleven `*-publish.yml` workflows: each has a `verify` job whose last step is `npm run pack:smoke`, and each `publish` job reaches that job through `needs: release-guard` → `needs: verify`.
 
-That was not true before: `skills-publish.yml` and `themes-publish.yml` ran neither `pack:smoke`, nor `licensing:check`, nor `npm run verify` — they built and tested their own workspace and nothing else. Being tag-triggered, they do not run the `licensing` job in `verify.yml` either. So `@sentropic/design-system-skills` (45 packages in its transitive closure, 8 licence families) and `@sentropic/design-system-theme-dsfr` (a transcription of a state design system, whose shipped notices must carry its upstream attribution) were the two packages that could reach npm with no licensing gate at all. Both workflows now run the same `npm run build` + `npm run pack:smoke` pair as the other seven.
+That was not true before: `skills-publish.yml` and `themes-publish.yml` ran neither `pack:smoke`, nor `licensing:check`, nor `npm run verify` — they built and tested their own workspace and nothing else. Being tag-triggered, they do not run the `licensing` job in `verify.yml` either. So `@sentropic/design-system-skills` (45 packages in its transitive closure, 8 licence families) and `@sentropic/design-system-theme-dsfr` (a transcription of a state design system, whose shipped notices must carry its upstream attribution) were the two packages that could reach npm with no licensing gate at all. Both workflows now run the same `npm run build` + `npm run pack:smoke` pair as the other nine.
 
 Adding a publishable package, adding or bumping a runtime dependency, or changing the inlined icon path data all change what must be disclosed. Run `npm run notices:generate` in the same change; the gate fails on stale notices. Policy, open questions, and everything the generator cannot derive live in `THIRD-PARTY-NOTICES.md` at the repository root — that file is documentation only and ships in nothing, by design.
 
@@ -79,6 +113,8 @@ Internal dependencies must match the same version:
 
 - `@sentropic/design-system-themes` depends on `@sentropic/design-system-tokens`.
 - `@sentropic/design-system-svelte` depends on `@sentropic/design-system-themes`.
+
+The graph and dataviz families follow the same rule on their own tags. `graph` has its own line: for `graph-v0.3.0`, `packages/graph/package.json` must contain `"version": "0.3.0"`. The five `dataviz-*` move in lockstep: for `dataviz-v0.5.0`, all five manifests must contain `"version": "0.5.0"`, and every internal `@sentropic/dataviz-*` dependency between them must be the exact same version. The existing DS packages keep their own lines.
 
 ## Publish
 
@@ -109,6 +145,30 @@ npm publish --workspace @sentropic/design-system-tokens --access public
 npm publish --workspace @sentropic/design-system-themes --access public
 npm publish --workspace @sentropic/design-system-svelte --access public
 npm publish --workspace @sentropic/design-system-skills --access public
+```
+
+Publish the graph family by pushing the `graph-v<version>` tag:
+
+```bash
+git push origin main
+git tag graph-v0.3.0
+git push origin graph-v0.3.0
+```
+
+Publish the dataviz family by pushing the `dataviz-v<version>` tag. The workflow publishes in dependency order — `core` first, then `svelte`, `react`, `vue`, `angular`:
+
+```bash
+git push origin main
+git tag dataviz-v0.5.0
+git push origin dataviz-v0.5.0
+```
+
+```bash
+npm publish --workspace @sentropic/dataviz-core --access public
+npm publish --workspace @sentropic/dataviz-svelte --access public
+npm publish --workspace @sentropic/dataviz-react --access public
+npm publish --workspace @sentropic/dataviz-vue --access public
+npm publish --workspace @sentropic/dataviz-angular --access public
 ```
 
 Do not move a published tag unless the npm publish failed before creating any package version. npm versions are immutable after publication.

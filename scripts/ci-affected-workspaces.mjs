@@ -14,6 +14,12 @@ const smokePackWorkspaces = new Set([
   "@sentropic/design-system-skills",
   "@sentropic/design-system-vue",
   "@sentropic/design-system-angular",
+  "@sentropic/graph",
+  "@sentropic/dataviz-core",
+  "@sentropic/dataviz-svelte",
+  "@sentropic/dataviz-react",
+  "@sentropic/dataviz-vue",
+  "@sentropic/dataviz-angular",
 ]);
 
 function arg(name, fallback = undefined) {
