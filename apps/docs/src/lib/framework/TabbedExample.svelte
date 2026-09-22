@@ -21,6 +21,11 @@
   Les îles non-Svelte sont strictement client (import dynamique, garde browser,
   montage en $effect) ; une seule île est montée à la fois et démontée proprement
   au changement d'onglet.
+
+  `notes` (optionnel) : avertissement par framework, affiché DANS le cadre, entre
+  la barre d'onglets et le rendu, uniquement quand cet onglet est actif. Sert
+  quand l'aperçu d'un framework ne reproduit pas fidèlement le composant : le
+  lecteur le lit là où il regarde, sans que la barre d'onglets ne se déplace.
 -->
 <script lang="ts">
   import { browser } from "$app/environment";
@@ -32,12 +37,21 @@
   import SvelteNode from "./SvelteNode.svelte";
   import { ContentSwitcher } from "@sentropic/design-system-svelte";
 
-  let { nodes, title }: { nodes: NodeSpec[]; title?: string } = $props();
+  let {
+    nodes,
+    title,
+    notes
+  }: {
+    nodes: NodeSpec[];
+    title?: string;
+    notes?: Partial<Record<FrameworkId, string>>;
+  } = $props();
 
   const fr = $derived(locale.value === "fr");
 
   // Onglet actif = état global unique (route-backed). Pas de copie locale.
   const active = $derived(framework.value);
+  const note = $derived(notes?.[active]);
 
   const fwLabel = (id: FrameworkId) =>
     FRAMEWORKS.find((entry) => entry.id === id)?.label ?? id;
@@ -115,6 +129,9 @@
   </div>
 
   <div class="tex__stage">
+    {#if note}
+      <p class="tex__note" role="note">{note}</p>
+    {/if}
     {#if active === "svelte"}
       <div class="tex__render">
         {#each nodes as node, i (i)}
@@ -171,6 +188,21 @@
   .tex__stage {
     border-top: 1px solid var(--docs-line, #e2e8f0);
     padding: 1.5rem;
+  }
+
+  /* Fond et texte tirés de la même paire du thème actif (surface-subtle /
+     text-primary) : le contraste ne dépend pas du fond blanc du cadre. */
+  .tex__note {
+    background: var(--st-semantic-surface-subtle, #f8fafc);
+    border: 1px solid var(--docs-line, #e2e8f0);
+    border-left: 4px solid var(--st-semantic-feedback-warning, #b45309);
+    border-radius: 0.375rem;
+    color: var(--st-semantic-text-primary, #0f172a);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin: 0 0 1rem;
+    max-width: 46rem;
+    padding: 0.6rem 0.85rem;
   }
 
   .tex__render {

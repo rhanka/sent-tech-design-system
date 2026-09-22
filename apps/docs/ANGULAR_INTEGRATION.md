@@ -21,8 +21,10 @@ copyable examples.
 
 - Done: Angular 21 runtime dependencies added to `apps/docs`.
 - Done: RED tests added for `?framework=angular` and Angular code generation.
-- Done: Angular island imports `@sentropic/design-system-angular` strictly and
-  loads `@angular/compiler` before the partially compiled package.
+- Done: Angular island imports `@sentropic/design-system-angular` strictly. The
+  partially compiled Angular packages are linked at build time by the Angular
+  linker (`angular-linker.ts`), so `@angular/compiler` is never loaded in the
+  browser and the island needs no `unsafe-eval`.
 - Done: Shared framework wiring for selector, URL state, `TabbedExample`,
   `FrameworkPreview`, and interactive live demos.
 - Done: View copy now says multi-framework and includes Angular.

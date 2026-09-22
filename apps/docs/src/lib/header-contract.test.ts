@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
+import { PUBLIC_THEMES, THEMES } from "./theme-catalog";
 
 const docsRoot = resolve(__dirname, "../..");
 const layoutSource = readFileSync(resolve(docsRoot, "src/routes/+layout.svelte"), "utf8");
@@ -8,6 +9,9 @@ const navigationSource = readFileSync(resolve(docsRoot, "src/lib/docs-navigation
 const frameworkSource = readFileSync(resolve(docsRoot, "src/lib/framework.svelte.ts"), "utf8");
 const appCss = readFileSync(resolve(docsRoot, "src/app.css"), "utf8");
 const appHtml = readFileSync(resolve(docsRoot, "src/app.html"), "utf8");
+// Script pré-hydratation : inline dans app.html (le build le sert ensuite en
+// fichier adressé par le contenu, voir scripts/externalize-inline-scripts.mjs).
+const preHydrationScript = appHtml.match(/<script>([\s\S]*?)<\/script>/)?.[1] ?? "";
 const carbonChromeSource = readFileSync(
   resolve(docsRoot, "src/lib/chrome/ChromeCarbon.svelte"),
   "utf8"
@@ -28,6 +32,51 @@ const airbusChromeSource = readFileSync(
   resolve(docsRoot, "src/lib/chrome/ChromeAirbus.svelte"),
   "utf8"
 );
+
+/**
+ * Extrait `var PUBLIC_BOOT_THEMES = [...]` du script pré-hydratation de
+ * app.html. Lecture TOLÉRANTE : elle rend `null` quand la déclaration est
+ * absente ou n'est pas un littéral de chaînes simples, pour que le test
+ * ÉCHOUE avec un message lisible au lieu de lever une exception de parsing.
+ */
+function readBootAllowlist(source: string): string[] | null {
+  const literal = source.match(/var PUBLIC_BOOT_THEMES = \[([\s\S]*?)\];/)?.[1];
+  if (literal === undefined) return null;
+  const entries = literal
+    .split(",")
+    .map((entry) => entry.trim())
+    .filter((entry) => entry !== "");
+  const ids = entries.map((entry) => /^"([^"]+)"$/.exec(entry)?.[1]);
+  return ids.every((id): id is string => id !== undefined) ? ids : null;
+}
+
+/**
+ * Exécute le script pré-hydratation de app.html contre un navigateur réduit à
+ * ce qu'il touche : localStorage, l'attribut de <html>, l'URL. Rend le thème
+ * posé sur <html> et l'URL réécrite (`null` quand il n'y touche pas).
+ */
+function runBootScript(storage: Record<string, string>, search = "") {
+  const script = preHydrationScript;
+  if (script.trim() === "") throw new Error("script pré-hydratation introuvable dans app.html");
+  const attributes: Record<string, string> = {};
+  let rewrittenUrl: string | null = null;
+  const browser = {
+    localStorage: { getItem: (key: string) => storage[key] ?? null },
+    document: {
+      documentElement: {
+        setAttribute: (name: string, value: string) => void (attributes[name] = value)
+      }
+    },
+    location: { pathname: "/components/button", search, hash: "" },
+    history: {
+      state: null,
+      replaceState: (_state: unknown, _title: string, url: string) => void (rewrittenUrl = url)
+    },
+    URLSearchParams
+  };
+  new Function(...Object.keys(browser), script)(...Object.values(browser));
+  return { theme: attributes["data-st-theme"] ?? null, url: rewrittenUrl };
+}
 
 function cssRule(source: string, selector: string): string {
   const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -69,7 +118,7 @@ describe("docs header alignment contract", () => {
 
   it("offers Angular in the shared framework selector and initial URL bootstrap", () => {
     expect(frameworkSource).toContain('{ id: "angular", label: "Angular" }');
-    expect(appHtml).toContain('fw === "angular"');
+    expect(preHydrationScript).toContain('fw === "angular"');
   });
 
   it("moves the version + GitHub link to the bottom of the left sidebar", () => {
@@ -96,7 +145,101 @@ describe("docs header alignment contract", () => {
   });
 
   it("includes the imported tenants (Airbus, Canada, Québec) in the theme picker", () => {
-    expect(layoutSource).toContain('const THEMES: TenantTheme[] = [sentTechTheme, dsfrTheme, carbonTheme, airbusTheme, canadaTheme, quebecTheme, ssenseTheme, lightspeedTheme, desjardinsTheme, nationalBankTheme, cirqueDuSoleilTheme, ubisoftTheme, bombardierTheme, caeTheme, saqTheme, cgiTheme, stmTheme, nuveiTheme, coveoTheme, circleKTheme, aldoTheme, brpTheme, miregoTheme, ellioTheme, airCanadaTheme, cascadesTheme, hopperTheme, dialogueTheme, momentFactoryTheme, lionElectricTheme, genetecTheme, videotronTheme, saputoTheme, metroTheme, workleapTheme, frankAndOakTheme, sidLeeTheme, simonsTheme, laVieEnRoseTheme, dollaramaTheme, bellTheme, behaviourInteractiveTheme, ronaTheme, gameloftTheme, cossetteTheme, eidosMontrealTheme, stingrayTheme, lg2Theme, sonderTheme, plusgradeTheme, gildanTheme, quebecorTheme, cogecoTheme, iaTheme, laurentianBankTheme, jeanCoutuTheme, reitmansTheme, stHubertTheme, benevaTheme, airTransatTheme, birksTheme, lufaFarmsTheme, hydroQuebecTheme, energirTheme, agropurTheme, vanHoutteTheme, dynamiteTheme, lvmhTheme, lorealTheme, totalenergiesTheme, sanofiTheme, bnpParibasTheme, hermesTheme, keringTheme, pernodRicardTheme, danoneTheme, accorTheme, axaTheme, societeGeneraleTheme, creditAgricoleTheme, edenredTheme, worldlineTheme, airLiquideTheme, schneiderElectricTheme, saintGobainTheme, engieTheme, edfTheme, dassaultSystemesTheme, thalesTheme, safranTheme, capgeminiTheme, orangeTheme, vinciTheme, bouyguesTheme, veoliaTheme, publicisTheme, renaultTheme, anthropicTheme, openaiTheme, geminiTheme, copilotTheme, githubTheme, perplexityTheme, palantirTheme, nousHermesTheme, mistralTheme, amazonTheme, vercelTheme, assistantUiTheme, cohereTheme, xaiTheme, metaTheme, togetherTheme, deepseekTheme, databricksTheme, ai21Theme, stabilityTheme, groqTheme, replicateTheme, huggingfaceTheme, characterAiTheme, inflectionTheme, youTheme, openrouterTheme, writerTheme, poeTheme, fireworksTheme]');
+    expect(THEMES.map((theme) => theme.id)).toEqual(
+      expect.arrayContaining(["airbus", "canada", "quebec", "desjardins", "national-bank", "hydro-quebec"])
+    );
+  });
+
+  // ── Confidentialité des thèmes tiers ────────────────────────────────────
+  // Le COMPORTEMENT de l'interrupteur Ctrl+Shift+X se teste dans
+  // theme-access.test.ts (fonctions pures) et theme-reveal.test.ts (layout
+  // monté). Il ne reste ici que la fermeture à la navigation et le script
+  // pré-hydratation de app.html, qui s'exécute hors de tout module.
+
+  it("closes the theme picker on navigation, by the same transition as any close", () => {
+    // Un sélecteur ouvert ne doit pas suivre le visiteur d'une page à l'autre.
+    // La fermeture passe par `closePicker`, comme Échap / ✕ / fond : elle ne
+    // touche pas au mode révélé. Ce câblage-là ne se voit pas depuis les
+    // fonctions pures.
+    const afterNavigateBody = layoutSource.match(/afterNavigate\(\(\) => \{([\s\S]*?)\n  \}\);/)?.[1];
+    expect(afterNavigateBody, "bloc afterNavigate introuvable dans +layout.svelte").toBeDefined();
+    expect(afterNavigateBody).toContain("searchOpen = false;");
+    expect(afterNavigateBody).toContain("access = closePicker(access);");
+  });
+
+  it("keeps the pre-hydration theme allowlist EQUAL to the public list", () => {
+    // app.html pose data-st-theme et amorce ?theme AVANT l'hydratation, à
+    // partir d'un localStorage qui peut très bien contenir une marque privée
+    // (choisie en mode révélé). Hors mode révélé, sa liste en dur est donc une
+    // frontière de confidentialité, pas une commodité.
+    //
+    // ÉGALITÉ, pas inclusion : une liste trop LARGE laisserait fuiter une
+    // marque privée, une liste trop ÉTROITE priverait d'amorce d'URL des
+    // thèmes publics parfaitement légitimes — et déplacerait silencieusement
+    // l'ensemble des chargements qui empruntent le chemin sans param. Un test
+    // d'inclusion laisserait passer `["sent-tech"]` seul ; celui-ci non.
+    const allowlist = readBootAllowlist(preHydrationScript);
+    expect(
+      allowlist,
+      "var PUBLIC_BOOT_THEMES = [...] introuvable ou pas un littéral de chaînes dans app.html"
+    ).not.toBeNull();
+
+    const publicIds = PUBLIC_THEMES.map((theme) => theme.id);
+    // Comparaison triée des deux côtés : l'ordre de la liste d'amorce n'a
+    // aucun sens fonctionnel, mais tout écart d'appartenance ou de cardinalité
+    // (oubli, ajout, doublon) fait échouer.
+    expect([...allowlist!].sort()).toEqual([...publicIds].sort());
+
+    expect(appHtml).not.toContain("st-docs-theme-public");
+    expect(layoutSource).not.toContain("st-docs-theme-public");
+  });
+
+  it("runs the pre-hydration script synchronously at the top of <head>, before any stylesheet", () => {
+    // Anti-FOUC : UN seul script dans app.html, classique et SYNCHRONE (aucun
+    // attribut : ni async, ni defer, ni type=module, ni src), dans <head>, avant
+    // toute feuille de style (il ne les attend pas) et avant l'en-tête
+    // SvelteKit : il bloque le rendu et pose ses attributs sur <html> avant la
+    // première peinture. Le build le sert en fichier adressé par le contenu, au
+    // même endroit et sans attribut (scripts/externalize-inline-scripts.mjs,
+    // vérifié sur le build par scripts/csp-check.mjs).
+    const scripts = [...appHtml.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)];
+    expect(scripts, "app.html doit porter exactement un script").toHaveLength(1);
+    const [tag, attributes, source] = scripts[0];
+    expect(attributes, "script pré-hydratation sans attribut").toBe("");
+    expect(source).toContain("PUBLIC_BOOT_THEMES");
+
+    const head = appHtml.slice(appHtml.indexOf("<head>"), appHtml.indexOf("</head>"));
+    const at = head.indexOf(tag);
+    expect(at, "le script pré-hydratation doit être dans <head>").toBeGreaterThan(-1);
+    expect(at).toBeLessThan(head.indexOf('rel="stylesheet"'));
+    expect(at).toBeLessThan(head.indexOf("<style>"));
+    expect(at).toBeLessThan(head.indexOf("%sveltekit.head%"));
+  });
+
+  it("boots a saved private theme before hydration only when the reveal is persisted", () => {
+    // Hors mode révélé : ni attribut sur <html>, ni amorce d'URL, pas même un
+    // instant. Le layout rejette ensuite l'identifiant (enforceThemePrivacy).
+    for (const reveal of [undefined, "false", "1"]) {
+      const storage: Record<string, string> = { "st-docs-theme": "cossette" };
+      if (reveal !== undefined) storage["st-docs-demo-mode"] = reveal;
+      expect(runBootScript(storage)).toEqual({ theme: null, url: null });
+    }
+
+    // Un thème public s'amorce toujours : attribut ET URL, même verdict.
+    expect(runBootScript({ "st-docs-theme": "dsfr" })).toEqual({
+      theme: "dsfr",
+      url: "/components/button?theme=dsfr"
+    });
+
+    // Mode révélé persisté (même clé et mêmes valeurs que le layout) : le thème
+    // privé enregistré peut être amorcé.
+    expect(runBootScript({ "st-docs-theme": "cossette", "st-docs-demo-mode": "true" })).toEqual({
+      theme: "cossette",
+      url: "/components/button?theme=cossette"
+    });
+
+    // Un ?theme= déjà présent fait foi : le script ne réécrit pas l'URL.
+    expect(runBootScript({}, "?theme=cossette")).toEqual({ theme: null, url: null });
   });
 
   it("does not render fake auth access in the public docs header", () => {

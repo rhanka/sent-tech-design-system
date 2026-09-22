@@ -5,10 +5,10 @@
   "type": "module",
   "dependencies": {
     "@angular/common": "^21.2.17",
-    "@angular/compiler": "^21.2.17",
     "@angular/core": "^21.2.17",
     "@angular/platform-browser": "^21.2.17",
     "@lucide/svelte": "^0.562.0",
+    "@sentropic/design-system-angular": "0.37.1",
     "@sentropic/design-system-react": "0.37.0",
     "@sentropic/design-system-svelte": "0.35.0",
     "@sentropic/design-system-theme-accor": "0.1.0",
@@ -148,9 +148,15 @@
     "vue": "^3.5.35"
   },
   "devDependencies": {
+    "@angular/compiler": "^21.2.17",
+    "@angular/compiler-cli": "^21.2.17",
+    "@babel/core": "^7.29.0",
     "@sveltejs/vite-plugin-svelte": "^7.1.2",
+    "@testing-library/svelte": "^5.2.8",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
+    "jsdom": "^27.2.0",
+    "playwright-core": "^1.60.0",
     "vite": "^8.0.16",
     "vitest": "^4.1.5"
   },
@@ -158,8 +164,9 @@
     "predev": "node ../../scripts/ensure-theme-dists.mjs",
     "dev": "vite dev",
     "prebuild": "node ../../scripts/ensure-theme-dists.mjs",
-    "build": "vite build",
+    "build": "vite build && node scripts/externalize-inline-scripts.mjs build",
     "check": "svelte-kit sync && svelte-check --tsconfig tsconfig.json",
-    "test": "vitest run src --passWithNoTests"
+    "test": "vitest run src --passWithNoTests",
+    "csp:check": "node scripts/csp-check.mjs build"
   }
 }

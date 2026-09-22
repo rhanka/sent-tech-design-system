@@ -21,6 +21,11 @@ describe("mountAngularIsland", () => {
     ]);
 
     expect(host.querySelector("[data-st-component=\"Button\"]")?.textContent).toBe("Primary");
+    // Paquets liés au build : le compilateur JIT n'a jamais été chargé. À son
+    // import, @angular/compiler se publie dans `globalThis.ng.ɵcompilerFacade`.
+    expect(
+      (globalThis as { ng?: { ɵcompilerFacade?: unknown } }).ng?.ɵcompilerFacade
+    ).toBeUndefined();
 
     handle.unmount();
     expect(host.textContent).toBe("");

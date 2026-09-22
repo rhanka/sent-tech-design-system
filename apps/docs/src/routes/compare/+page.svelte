@@ -55,6 +55,7 @@
   import { getReferenceThemes } from "$lib/compare/reference-themes.mjs";
   // getCompareManifest({includeLocal:true}) intègre les scénarios privés locaux.
   import { getCompareManifest } from "$lib/compare/manifest.mjs";
+  import { compareThemeFor, readPrivateThemeAccess } from "$lib/compare/compare-store.svelte";
 
   // Registre des thèmes de référence (public + overlay local si présent).
   const ALL_REF_THEMES = getReferenceThemes({ includeLocal: true });
@@ -72,11 +73,19 @@
 
   // Thèmes importés dans l'ordre : dsfr, carbon, puis tout overlay local connu.
   // L'ordre est déterminé par l'ordre des clés dans ALL_REF_THEMES (insertion).
-  const THEMES: TenantTheme[] = Object.keys(ALL_REF_THEMES)
-    .filter((id) => TENANT_REGISTRY[id] != null)
-    .map((id) => TENANT_REGISTRY[id]);
+  // Un thème privé (Carbon, overlay local) n'y paraît qu'après Ctrl+Shift+X :
+  // ni dans le HTML prérendu, ni au rendu client d'un chargement masqué.
+  const privateThemesAllowed = readPrivateThemeAccess();
+  const THEMES: TenantTheme[] = $derived(
+    Object.keys(ALL_REF_THEMES)
+      .filter((id) => TENANT_REGISTRY[id] != null)
+      .filter((id) => compareThemeFor(id, privateThemesAllowed()) !== null)
+      .map((id) => TENANT_REGISTRY[id])
+  );
 
-  const scopedCss = THEMES.map((t) => compileTheme(t, { selector: `.cmp-scope--${t.id}` })).join("\n");
+  const scopedCss = $derived(
+    THEMES.map((t) => compileTheme(t, { selector: `.cmp-scope--${t.id}` })).join("\n")
+  );
 
   // Versions (source = deps épinglées du docs) : DS Sentropic + thème.
   const dsVersion = docsPkg.dependencies["@sentropic/design-system-themes"];

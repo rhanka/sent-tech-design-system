@@ -31,6 +31,7 @@ import { navSystemOptionInteractiveRule } from "./navSystemOptionInteractiveRule
 import { navSystemColorStateRule } from "./navSystemColorStateRule.js";
 import { navSystemDepthHierarchyRule } from "./navSystemDepthHierarchyRule.js";
 import { navSystemSearchFillRule } from "./navSystemSearchFillRule.js";
+import { cspNoStyleAttrRule } from "./cspNoStyleAttrRule.js";
 
 export const defaultRules: Rule[] = [
   singleFontRule,
@@ -64,7 +65,8 @@ export const defaultRules: Rule[] = [
   navSystemOptionInteractiveRule,
   navSystemColorStateRule,
   navSystemDepthHierarchyRule,
-  navSystemSearchFillRule
+  navSystemSearchFillRule,
+  cspNoStyleAttrRule
 ];
 
 export {
@@ -99,5 +101,6 @@ export {
   navSystemOptionInteractiveRule,
   navSystemColorStateRule,
   navSystemDepthHierarchyRule,
-  navSystemSearchFillRule
+  navSystemSearchFillRule,
+  cspNoStyleAttrRule
 };

@@ -2120,6 +2120,36 @@ export const COMPONENTS: ComponentEntry[] = [
       fr: "Pile d'actions avec hiérarchie encodée dans le type (une seule primaire) et zone sensible destructrice isolée.",
       en: "Action stack with hierarchy encoded in the type (a single primary) and an isolated destructive danger zone."
     }
+  },
+  {
+    name: "Icon",
+    slug: "icon",
+    status: "documented",
+    category: "other",
+    description: {
+      fr: "Jeu d'icônes prescrit par le DS, adressé par noms gelés (IconName).",
+      en: "DS-prescribed icon set, addressed by frozen names (IconName)."
+    }
+  },
+  {
+    name: "PanelSection",
+    slug: "panel-section",
+    status: "documented",
+    category: "layout",
+    description: {
+      fr: "Section d'un PanelStack : en-tête repliable et corps propriétaire du défilement.",
+      en: "One PanelStack section: collapsible header and scroll-owning body."
+    }
+  },
+  {
+    name: "TimeRangePicker",
+    slug: "time-range-picker",
+    status: "documented",
+    category: "form",
+    description: {
+      fr: "Sélecteur de plage temporelle : presets relatifs ou plage absolue.",
+      en: "Time-range selector: relative presets or an absolute range."
+    }
   }
 ];
 

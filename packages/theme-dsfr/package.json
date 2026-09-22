@@ -1,6 +1,7 @@
 {
   "name": "@sentropic/design-system-theme-dsfr",
   "version": "0.2.2",
+  "license": "MIT",
   "type": "module",
   "publishConfig": {
     "access": "public"

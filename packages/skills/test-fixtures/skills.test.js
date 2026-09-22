@@ -640,8 +640,8 @@ test("rule underline-hardcoded-border: champ avec box-shadow inset → pas de fi
   assert.ok(!(await ruleIds('<input style="box-shadow:inset 0 -2px #161616">')).includes("underline-hardcoded-border"));
 });
 
-test("ruleset WP8/WP23: 32 règles actives avec traçabilité WP7/WP23", () => {
-  assert.strictEqual(defaultRules.length, 32);
+test("ruleset WP8/WP23: 33 règles actives avec traçabilité WP7/WP23", () => {
+  assert.strictEqual(defaultRules.length, 33);
   for (const rule of defaultRules) {
     assert.ok(rule.principle, `${rule.id} should expose a design principle`);
     assert.ok(rule.wp7Finding, `${rule.id} should expose its WP7 finding source`);
@@ -888,4 +888,190 @@ test("rule viewport-zoom: initial-scale et viewport-fit seuls → pas de finding
 test("rule viewport-zoom: maximum-scale à 2 → pas de finding", async () => {
   const html = '<meta name="viewport" content="width=device-width, maximum-scale=2"><main>OK</main>';
   assert.ok(!(await ruleIds(html)).includes("viewport-zoom"));
+});
+
+// ── csp-no-style-attr ────────────────────────────────────────────────────────
+// Sous `style-src-attr 'none'`, tout attribut style du balisage est bloqué ;
+// une écriture CSSOM (`el.style.setProperty`) ne l'est pas. La règle lit le
+// balisage rendu tel qu'il est servi (JSDOM, scripts non exécutés).
+
+async function cspFindings(html) {
+  const report = await audit({ kind: "html", value: html });
+  return report.findings.filter((finding) => finding.ruleId === "csp-no-style-attr");
+}
+
+// Rendus serveur réels de composants du design system, figés dans
+// test-fixtures/ssr/ (provenance en tête de chaque fichier) : la suite ne
+// dépend ni du paquet svelte ni des sources des composants.
+function readSsrFixture(fileName) {
+  return readFileSync(resolve(import.meta.dirname, "ssr", fileName), "utf8");
+}
+
+test("rule csp-no-style-attr: attribut style littéral rendu (SSR) → finding avec élément, chemin, valeur, directive et remplacement", async () => {
+  const findings = await cspFindings('<main><div class="card" style="--st-card-accent: red">x</div></main>');
+  assert.strictEqual(findings.length, 1);
+  const [finding] = findings;
+  assert.strictEqual(finding.severity, "high");
+  assert.match(finding.location, /div\.card$/);
+  assert.match(finding.message, /<div>/);
+  assert.match(finding.message, /--st-card-accent: red/);
+  assert.match(finding.message, /style-src-attr 'none'/);
+  assert.match(finding.suggestion, /classe/);
+  assert.match(finding.suggestion, /setProperty/);
+});
+
+test("rule csp-no-style-attr: un finding par élément porteur, rien sans attribut style", async () => {
+  const findings = await cspFindings('<div style="color:var(--st-semantic-text-primary)"><span style="margin:0">a</span><span>b</span></div>');
+  assert.strictEqual(findings.length, 2);
+});
+
+test("rule csp-no-style-attr: thématisation par classe et bloc <style> → pas de finding", async () => {
+  const html = "<style>.card--accent{--st-card-accent:var(--st-semantic-action-primary)}</style><div class='card card--accent'>x</div>";
+  assert.strictEqual((await cspFindings(html)).length, 0);
+});
+
+test("rule csp-no-style-attr: style posé par le CSSOM après montage → pas de finding (absent du balisage servi)", async () => {
+  const html = "<div id='t' class='card'>x</div><script>document.getElementById('t').style.setProperty('--st-card-accent', 'red');</script>";
+  assert.strictEqual((await cspFindings(html)).length, 0);
+});
+
+test("rule csp-no-style-attr: limite documentée, un DOM vivant sérialisé après écriture CSSOM porte l'attribut → signalé", async () => {
+  // Le CSSOM et l'attribut style sont reflétés l'un dans l'autre : une fois le
+  // DOM sérialisé, rien ne distingue plus une écriture CSSOM (autorisée) d'un
+  // attribut littéral (bloqué). La règle doit donc auditer le balisage servi,
+  // pas un `outerHTML` pris après hydratation.
+  const { JSDOM } = await import("jsdom");
+  const live = new JSDOM("<div id='t' class='card'>x</div>");
+  live.window.document.getElementById("t").style.setProperty("--st-card-accent", "red");
+  const serialized = live.window.document.documentElement.outerHTML;
+  live.window.close();
+  assert.strictEqual((await cspFindings(serialized)).length, 1);
+});
+
+test("rule csp-no-style-attr: attribut style dans un SVG → finding ; attribut de présentation SVG → pas de finding", async () => {
+  const flagged = await cspFindings('<svg viewBox="0 0 10 10"><rect class="bar" width="10" height="10" style="fill: var(--st-chart-1)"/></svg>');
+  assert.strictEqual(flagged.length, 1);
+  assert.match(flagged[0].message, /<rect>/);
+  assert.match(flagged[0].message, /SVG/);
+  const presentation = await cspFindings('<svg viewBox="0 0 10 10"><rect width="10" height="10" fill="currentColor"/></svg>');
+  assert.strictEqual(presentation.length, 0);
+});
+
+test("rule csp-no-style-attr: attribut style vide → finding de sévérité basse (violation sans déclaration perdue)", async () => {
+  for (const html of ['<div class="x" style="">x</div>', '<div class="x" style="   ">x</div>']) {
+    const findings = await cspFindings(html);
+    assert.strictEqual(findings.length, 1, html);
+    assert.strictEqual(findings[0].severity, "low");
+    assert.match(findings[0].message, /vide/);
+  }
+});
+
+test("rule csp-no-style-attr: attribut style dans le contenu d'un <template> → finding localisé dans le gabarit", async () => {
+  const findings = await cspFindings('<template id="row"><li class="item" style="color:red">x</li><template><b style="margin:0">y</b></template></template>');
+  assert.strictEqual(findings.length, 2);
+  assert.ok(findings.every((finding) => /template#row > #content > /.test(finding.location)), JSON.stringify(findings.map((f) => f.location)));
+  assert.match(findings[0].message, /<template>/);
+});
+
+test("rule csp-no-style-attr: message exact pour un <template> (violation à l'analyse, style appliqué après clonage)", async () => {
+  const [inTemplate] = await cspFindings('<template><li class="item" style="color:red">x</li></template>');
+  assert.match(inTemplate.message, /dès l'analyse du balisage/);
+  assert.match(inTemplate.message, /cloneNode ou importNode/);
+  assert.match(inTemplate.message, /innerHTML/);
+  assert.doesNotMatch(inTemplate.message, /n'est pas appliquée/);
+
+  const [outside] = await cspFindings('<li class="item" style="color:red">x</li>');
+  assert.match(outside.message, /n'est pas appliquée/);
+});
+
+test("rule csp-no-style-attr: document srcdoc d'une iframe, imbriqué → findings préfixés par #srcdoc", async () => {
+  const inner = "<b class='deep' style='color:red'>x</b>";
+  const outer = `<iframe class="inner" srcdoc="${inner.replace(/'/g, "&amp;#39;")}"></iframe><p class='mid' style='margin:0'>y</p>`;
+  const html = `<main><iframe class="demo" srcdoc="${outer.replace(/"/g, "&quot;")}"></iframe><iframe class="plain" src="/x.html"></iframe></main>`;
+  const findings = await cspFindings(html);
+  const locations = findings.map((finding) => finding.location);
+  assert.strictEqual(findings.length, 2, JSON.stringify(locations));
+  assert.ok(locations.some((location) => /iframe\.demo > #srcdoc > .*p\.mid$/.test(location)), JSON.stringify(locations));
+  assert.ok(locations.some((location) => /iframe\.demo > #srcdoc > .*iframe\.inner > #srcdoc > .*b\.deep$/.test(location)), JSON.stringify(locations));
+  assert.ok(findings.every((finding) => /n'est pas appliquée/.test(finding.message)));
+});
+
+test("rule csp-no-style-attr: rendu serveur réel de ProgressBar (design system, figé) → finding sur la jauge", async () => {
+  // ProgressBar porte sa largeur par un attribut style littéral
+  // (`--st-progressBar-pct`) dans le rendu figé. Quand le composant passera au
+  // CSSOM ou à une classe, régénérer le fixture et inverser ce cas.
+  const body = readSsrFixture("ProgressBar.value-40.html");
+  const literalStyleAttrs = body.match(/\sstyle="/g) ?? [];
+  const findings = await cspFindings(body);
+  assert.strictEqual(findings.length, literalStyleAttrs.length);
+  assert.ok(
+    findings.some((finding) => /st-progressBar__fill/.test(finding.location) && /--st-progressBar-pct: 40%/.test(finding.message)),
+    JSON.stringify(findings)
+  );
+});
+
+test("rule csp-no-style-attr: rendu serveur réel de Badge (design system, figé) → pas de finding", async () => {
+  const body = readSsrFixture("Badge.tone-success.html");
+  assert.match(body, /st-badge/);
+  assert.strictEqual((await cspFindings(body)).length, 0);
+});
+
+test("rule csp-no-style-attr: sa source est citée depuis main (README), pas depuis une branche non fusionnée", () => {
+  const rule = defaultRules.find((candidate) => candidate.id === "csp-no-style-attr");
+  assert.doesNotMatch(rule.wp7Finding, /A0 §10\.1/);
+  assert.match(rule.wp7Finding, /packages\/skills\/README\.md/);
+  const readme = readFileSync(resolve(import.meta.dirname, "../README.md"), "utf8").replace(/\s*\n>\s*/g, " ");
+  assert.match(readme, /ne reçoit pas ses jetons par propriété CSS personnalisée passée en attribut/);
+  assert.match(readme, /a0f789e3/);
+  assert.doesNotMatch(readme, /A0 §10\.1/);
+});
+
+test("design check --warn-only sort une règle du score et du code retour, sans la taire", async () => {
+  const html = "<main><h1>Titre</h1><p class='x' style='margin:0'>Texte court.</p></main>";
+
+  const blocking = await runCliCommand(["check", html, "--tech"]);
+  assert.strictEqual(blocking.status, 1);
+  const blockingReport = parseCommandReport(blocking, "design check sans --warn-only");
+  assert.ok(blockingReport.findings.some((finding) => finding.ruleId === "csp-no-style-attr"));
+  assert.strictEqual(blockingReport.warnings, undefined);
+
+  const advisory = await runCliCommand(["check", "--warn-only", "csp-no-style-attr", html, "--tech", "--fail-under", "100"]);
+  assert.strictEqual(advisory.status, 0);
+  const advisoryReport = parseCommandReport(advisory, "design check --warn-only");
+  assert.strictEqual(advisoryReport.score, 100);
+  assert.ok(!advisoryReport.findings.some((finding) => finding.ruleId === "csp-no-style-attr"));
+  assert.deepStrictEqual(advisoryReport.warnOnly, ["csp-no-style-attr"]);
+  assert.strictEqual(advisoryReport.warnings.length, 1);
+  assert.strictEqual(advisoryReport.warnings[0].ruleId, "csp-no-style-attr");
+  assert.match(advisory.stderr, /non bloquant/);
+});
+
+test("design check refuse une option répétée (code 2) au lieu d'auditer la seconde valeur comme cible", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "sent-tech-repeated-option-"));
+  try {
+    const page = join(dir, "page.html");
+    writeFileSync(page, "<main><h1>Titre</h1><p style='margin:0'>x</p></main>");
+
+    const warnOnly = await runCliCommand(["check", "--warn-only", "csp-no-style-attr", "--warn-only", "no-bare-hex", page, "--tech"]);
+    assert.strictEqual(warnOnly.status, 2, warnOnly.stdout);
+    assert.match(warnOnly.stderr, /--warn-only/);
+    assert.strictEqual(warnOnly.stdout.trim(), "");
+
+    const failUnder = await runCliCommand(["check", "--fail-under", "50", "--fail-under", "99", page, "--tech"]);
+    assert.strictEqual(failUnder.status, 2, failUnder.stdout);
+    assert.match(failUnder.stderr, /--fail-under/);
+    assert.strictEqual(failUnder.stdout.trim(), "");
+
+    const visual = await runCliCommand(["audit:visual", dir, "--fail-under", "50", "--fail-under", "99"]);
+    assert.strictEqual(visual.status, 2);
+    assert.match(visual.stderr, /--fail-under/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("design check --warn-only refuse un identifiant de règle inconnu", async () => {
+  const result = await runCliCommand(["check", "<p>x</p>", "--tech", "--warn-only", "csp-no-style-atr"]);
+  assert.strictEqual(result.status, 2);
+  assert.match(result.stderr, /csp-no-style-atr/);
 });
