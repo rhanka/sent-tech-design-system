@@ -8,7 +8,8 @@ chemin interdit.
 
 ## Résultat mesuré
 
-Chromium 151, CSP stricte en en-tête, même témoin positif que les autres sondes :
+CSP stricte en en-tête, même politique que les autres sondes. A–D : Chromium 151 le 2026-09-20,
+rejoués à l'identique en Chromium 153 le 2026-09-21 ; E, E' et témoin SVG : Chromium 153, 2026-09-21.
 
 | Chemin | Violations | Enveloppe | Jeton appliqué |
 |---|---:|---:|---|
@@ -16,17 +17,25 @@ Chromium 151, CSP stricte en en-tête, même témoin positif que les autres sond
 | **B** — variable posée sur un élément ancêtre (`style:--x={…}`) | **0** | 0 | oui |
 | **C** — thématisation par classe | **0** | 0 | oui |
 | **D** — CSSOM après montage (`setProperty`) | **0** | 0 | oui |
-| **E** — même idiome qu'en A, dans l'espace de noms SVG | **0** | 0 (un `<g>`) | non concluant ici |
+| **E** — même idiome qu'en A, dans l'espace de noms SVG | **0** | 0 (un `<g>`) | **oui** — `fill` calculé `rgb(204, 255, 238)` |
+| **E'** — idem, peinture par règle CSS du composant au lieu de l'attribut `fill` | **0** | 0 (un `<g>`) | **oui** — `rgb(204, 255, 238)` |
+| Témoin SVG — composant de E sans propriété CSS | **0** | 0 | non, repli `rgb(238, 238, 238)` : la lecture distingue bien jeton et repli |
 
 **Les trois remplacements fonctionnent et appliquent bien le jeton.** Le chemin
 interdit n'a donc aucune justification fonctionnelle : il n'apporte rien que B,
 C ou D n'apportent.
 
-Sur E : le compilateur Svelte émet `<g>` au lieu de `<svelte-css-wrapper>` dans
-l'espace de noms SVG, donc aucun attribut `style` littéral et aucune violation.
-La mesure d'application du jeton n'est pas concluante dans cette sonde — elle
-lisait `backgroundColor` sur un `<rect>`, qui se peint par `fill`. À remesurer
-avant de s'appuyer dessus.
+Sur E, remesuré le 2026-09-21 (Chromium 153, preuve `../evidence/2026-09-21-chemins-jeton-svg.jsonl`) :
+la première sonde lisait `backgroundColor` sur un `<rect>`, propriété qui vaut toujours
+transparent en SVG. La propriété qui peint est `fill`. Lue correctement, elle vaut le jeton
+(`#cfe`), et le témoin sans propriété CSS vaut le repli (`#eee`). Le compilateur émet `<g>` au
+lieu de `<svelte-css-wrapper>` et y pose la variable **par CSSOM** après montage (`<g>` porte
+ensuite `style="--st-fond: #cfe;"`, sans violation) : E fonctionne en rendu client.
+
+Réserve, en rendu serveur : `svelte/server` sérialise ce même `<g>` avec un attribut `style`
+littéral (`<g style="--st-fond: #cfe;">`, relevé par `run.sh`). Servi sous `style-src-attr 'none'`,
+un tel attribut est bloqué à l'analyse du HTML — mécanisme mesuré pour xyflow en SSR dans
+`tools/csp-spike/o3`. Pour E lui-même, le chargement SSR sous CSP n'est pas mesuré.
 
 ## La règle qui en découle
 
@@ -48,5 +57,9 @@ compilateur.
 ## Rejouer
 
 ```bash
-./run.sh
+cd .. && npm install && cd token-paths
+PLAYWRIGHT_CORE=/chemin/node_modules/playwright-core/index.js CHROMIUM_PATH=/chemin/chromium ./run.sh
 ```
+
+Une ligne JSON par variante, puis le HTML rendu serveur des variantes A et E. La variante A,
+qui doit produire une violation, tient lieu de témoin positif dans le même run.
