@@ -35,7 +35,8 @@ n'aurait signifié qu'une absence d'observation.
 `style-src-attr` gouverne l'attribut `style`, pas les écritures CSSOM. Le repli
 « SVG statique » était motivé par la CSP ; ce motif est réfuté pour le parcours BPMN
 par la mesure ci-dessus, et pour la scène générique au §10. Les motifs restants
-invoqués et leurs mesures figurent en §12.
+invoqués sont la simplicité, le rendu serveur et le poids ; le §12 mesure le rendu
+serveur, le poids et le coût du premier rendu, la simplicité n'y est pas mesurée.
 
 **Preuves d'exécution obtenues par construction.** `worker-src 'none'` sans
 violation établit qu'elkjs n'ouvre aucun worker : son `elk.bundled.js` embarque
@@ -466,8 +467,9 @@ bpmn.io exigent la conservation des notices :
 ## 7. Porte restante
 
 **D7=A** — « nouveau runtime tiers seulement après décision owner explicite ».
-La qualification technique ci-dessus, avec ses conditions (§2 et §3), ne remplace
-pas cette décision. Le câblage peut être préparé derrière l'adaptateur paresseux ; l'ajout
+La qualification technique ci-dessus — « elkjs — qualifié sous conditions » (§2),
+« bpmn-js — qualifié, clause de filigrane tenable » (§3) — ne remplace pas cette
+décision. Le câblage peut être préparé derrière l'adaptateur paresseux ; l'ajout
 effectif aux manifestes publiés attend l'owner.
 
 ### 9.7 Comment mermaid rend les icônes d'un pack enregistré
@@ -811,25 +813,27 @@ xyflow rendues serveur ne sont pas chronométrées : leur rendu sous CSP est inc
 | SVG statique, rendu serveur puis hydratation | 30,5 [28,8–32,3] (25,1–39,8) | 42,2 [38,5–44,5] (32,0–54,0) | 11,4 [9,0–12,6] |
 | xyflow | 109,3 [105,4–113,6] (96,1–119,3) | 123,0 [120,3–126,2] (107,9–136,1) | 87,6 [84,3–92,4] |
 
+- elkjs dans le navigateur : sur les 96,9 ms de `tRender` à 35 nœuds, le placement en
+  prend 94,2 [92,0–104,4] ; à 200 nœuds, 169,2 [162,9–173,1] sur 175,7.
 - SVG statique rendu serveur : données inline dans le HTML, sans `fetch` ; la scène est
   dans le document avant toute exécution de script, et `tReady` marque la fin de
   l'hydratation, pas la première apparition de la scène.
-- elkjs dans le navigateur : sur les 96,9 ms de `tRender` à 35 nœuds, le placement en
-  prend 94,2 [92,0–104,4] ; à 200 nœuds, 169,2 [162,9–173,1] sur 175,7.
 
 ### 12.3 Rendu serveur
 
 Côté Node, rendu à chaud, 30 rendus, médiane. Côté navigateur, la page rendue serveur
-est chargée sous la CSP stricte, avec puis sans JavaScript.
+est chargée sous la CSP stricte, avec puis sans JavaScript. Violations comptées sur la
+console du navigateur. « Violation ajoutée » : écart entre le compte avec JavaScript et
+le compte sans JavaScript ; l'écouteur de la page n'en relève aucune non plus.
 
 | Candidat | Rendu serveur | Durée, 35 / 200 nœuds | HTML rendu, 35 / 200 nœuds | Attributs `style` dans ce HTML | CSP stricte, sans JavaScript | CSP stricte, après hydratation |
 |---|---|---|---|---|---|---|
 | bpmn-js (Viewer) | non | — | — | — | — | — |
 | elkjs | placement seulement, sans rendu | 13,9 / 49,4 ms | — (vue placée JSON 14,1 / 84,8 ko) | — | — | — |
-| SVG statique (Svelte) | oui | 0,1 / 0,2 ms | 7,8 / 46,0 ko | 0 / 0 | 0 / 0 violation ; nœuds 35/35 et 200/200, arêtes 40/40 et 238/238 | 0 violation ; nœuds 35/35 et 200/200, arêtes 40/40 et 238/238 |
-| xyflow, configuration par défaut | oui | 0,8 / 4,2 ms | 37,0 / 191,9 ko | 36 / 201 (`transform`, `z-index`, `visibility`) | 36 / 201 violations `style-src-attr` ; nœuds visibles, 0 positionné ; 0 arête | nœuds positionnés 0/35 et 0/200 ; arêtes 40/40 et 238/238 |
-| xyflow, dimensions fournies | oui | 0,8 / 3,9 ms | 38,2 / 197,4 ko | 37 / 202 (s'y ajoutent `width`, `height`) | 37 / 202 violations ; 0 nœud positionné ; 0 arête | nœuds positionnés 0/35 et 0/200 ; arêtes 40/40 et 238/238 |
-| xyflow, dimensions et poignées | oui | 1,1 / 6,0 ms | 63,9 / 352,3 ko | 77 / 440 | 77 / 440 violations ; 0 nœud positionné ; arêtes 40 / 238 | nœuds positionnés 0/35 et 0/200 ; arêtes 40/40 et 238/238 |
+| SVG statique (Svelte) | oui | 0,1 / 0,2 ms | 7,8 / 46,0 ko | 0 / 0 | 0 / 0 violations, pour 0 / 0 éléments à attribut `style` ; nœuds présents 35/35 et 200/200, visibles et positionnés : non relevés ; arêtes 40/40 et 238/238 | 0 / 0 violation ajoutée ; nœuds présents 35/35 et 200/200, visibles et positionnés : non relevés ; arêtes 40/40 et 238/238 |
+| xyflow, configuration par défaut | oui | 0,8 / 4,2 ms | 37,0 / 191,9 ko | 36 / 201 (`transform`, `z-index`, `visibility`) | 36 / 201 violations, pour 36 / 201 éléments à attribut `style` ; nœuds présents 35/35 et 200/200, visibles 35/35 et 200/200, positionnés 0/35 et 0/200 ; arêtes 0/40 et 0/238 | 0 / 0 violation ajoutée ; nœuds présents 35/35 et 200/200, visibles 35/35 et 200/200, positionnés 0/35 et 0/200 ; arêtes 40/40 et 238/238 |
+| xyflow, dimensions fournies | oui | 0,8 / 3,9 ms | 38,2 / 197,4 ko | 37 / 202 (s'y ajoutent `width`, `height`) | 37 / 202 violations, pour 37 / 202 éléments à attribut `style` ; nœuds présents 35/35 et 200/200, visibles 35/35 et 200/200, positionnés 0/35 et 0/200 ; arêtes 0/40 et 0/238 | 0 / 0 violation ajoutée ; nœuds présents 35/35 et 200/200, visibles 35/35 et 200/200, positionnés 0/35 et 0/200 ; arêtes 40/40 et 238/238 |
+| xyflow, dimensions et poignées | oui | 1,1 / 6,0 ms | 63,9 / 352,3 ko | 77 / 440 | 77 / 440 violations, pour 77 / 440 éléments à attribut `style` ; nœuds présents 35/35 et 200/200, visibles 35/35 et 200/200, positionnés 0/35 et 0/200 ; arêtes 40/40 et 238/238 | 0 / 0 violation ajoutée ; nœuds présents 35/35 et 200/200, visibles 35/35 et 200/200, positionnés 0/35 et 0/200 ; arêtes 40/40 et 238/238 |
 
 - **bpmn-js** : pas de rendu serveur. En Node nu, l'import direct échoue sans empaqueteur
   (`ERR_UNSUPPORTED_DIR_IMPORT`) ; empaqueté, `new Viewer()` échoue faute de `document`.
@@ -868,4 +872,6 @@ est chargée sous la CSP stricte, avec puis sans JavaScript.
 - bpmn-js pré-rendu par un navigateur côté serveur, ou sous un autre émulateur de DOM ;
   bpmn-js Modeler en Node : non essayés.
 - Idiome E de §10.1 chargé en rendu serveur sous CSP : non mesuré.
+- Visibilité et position calculées des nœuds du SVG statique rendu serveur : non
+  relevées par la sonde, qui en compte seulement la présence.
 - Corpus réel : `source-gap`, absent du dépôt.

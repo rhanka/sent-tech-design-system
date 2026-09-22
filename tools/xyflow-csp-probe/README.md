@@ -44,9 +44,11 @@ documentation n'emploie cet idiome**. Nous ne sommes pas exposés — c'est un p
 à connaître, pas une dette à solder.
 
 Conséquence pour le repli « v1 = SVG statique » : il était motivé par la CSP, et
-**ce motif est réfuté**. Les motifs restants invoqués — simplicité, rendu serveur,
-poids — et leurs mesures figurent au §12 de
-[`docs/a0-csp-dependency-qualification.md`](../../docs/a0-csp-dependency-qualification.md).
+**ce motif est réfuté**. Les motifs restants invoqués sont la simplicité, le rendu
+serveur et le poids ; le §12 de
+[`docs/a0-csp-dependency-qualification.md`](../../docs/a0-csp-dependency-qualification.md)
+mesure le rendu serveur, le poids et le coût du premier rendu, la simplicité n'y est pas
+mesurée.
 
 ## Rejouer
 
