@@ -77,3 +77,49 @@ Portée de ce qui est mesuré ici : Chromium seul, rendu par défaut des
 bibliothèques, sans thème ni extension du design system. Nos propres extensions
 peuvent réintroduire des violations — c'est notre code qu'il faudra remesurer,
 pas le leur.
+
+## O3 — poids, premier rendu et SSR du repli « SVG statique »
+
+Extension du harnais pour instruire le repli v1 « SVG statique » face aux moteurs
+interactifs, maintenant que la CSP ne le justifie plus (§10 du dossier A0). Même CSP,
+même témoin positif, même pilote ; le détail des résultats est au §12 du dossier.
+
+```bash
+npm ci
+TMPDIR=$HOME/pw-tmp \
+PLAYWRIGHT_CORE=/chemin/node_modules/playwright-core/index.js \
+CHROMIUM_PATH=/snap/bin/chromium \
+npm run o3            # RUNS=30 et SSR_RUNS=30 par défaut
+```
+
+Une seule commande enchaîne :
+
+1. `o3/scene.mjs` — scènes déterministes (35 et 200 nœuds), placées par elkjs **en Node** ;
+   la même vue placée alimente tous les candidats, et le BPMN (DI comprise) en est dérivé ;
+2. build de production Vite (une entrée HTML par candidat, CSS découpée par page), puis build SSR ;
+3. `o3/ssr.mjs` — rendu serveur `svelte/server` (repli statique, xyflow), bpmn-js en Node nu
+   et sous jsdom (processus isolés), placement elkjs en Node ; écrit les pages SSR à hydrater ;
+4. `o3/browser.mjs` — Chromium, CSP en en-tête : témoin positif, poids réellement chargé
+   (réponses réseau, pesées brut et gzip niveau 6), puis `RUNS` tours de premier rendu, ordre
+   mélangé à chaque tour, contexte neuf (cache vide) à chaque exécution ; pages SSR chargées
+   aussi sans JavaScript et sans CSP (témoins) ;
+5. `o3/run.mjs` — preuve datée `evidence/<date>-o3-chromium-<version>.json` (machine,
+   versions, échantillons bruts) et résumé Markdown sur la sortie standard.
+
+| Page (`o3/pages/`) | Candidat |
+|---|---|
+| `static-vanilla` | repli statique, rendu DOM sans framework (plancher) |
+| `static-svelte` | repli statique, composant `StaticScene.svelte` |
+| `ssr-static` | le même, rendu serveur puis hydraté |
+| `elk-client` | placeur embarqué : elkjs place dans le navigateur, puis même rendu |
+| `xyflow` | `@xyflow/svelte`, configuration CSP-sûre (sans MiniMap) |
+| `ssr-xyflow`, `-sized`, `-sized-handles` | xyflow rendu serveur : par défaut, avec dimensions, avec dimensions et poignées |
+| `bpmn-viewer`, `bpmn-modeler` | bpmn-js |
+| `svelte-empty` | page Svelte vide, pour isoler le coût marginal d'un composant |
+
+Chronométrage (`o3/src/common.js`), en ms depuis le début de navigation : `tReady` quand
+la scène est complète dans le DOM, mise en page forcée ; `tRender` = `tReady` moins l'appel
+du moteur (données déjà chargées). Pour xyflow, « complète » veut dire tous les nœuds mesurés
+et visibles, toutes les arêtes tracées, `fitView` appliqué — observé par `MutationObserver`,
+donc sans quantification par les trames. Serveur local : le poids n'intervient pas dans le
+temps mesuré ici.

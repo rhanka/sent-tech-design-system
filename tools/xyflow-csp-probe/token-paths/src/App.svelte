@@ -1,6 +1,7 @@
 <script>
   import Carte from './Carte.svelte';
   import CarteSvg from './CarteSvg.svelte';
+  import CarteSvgCss from './CarteSvgCss.svelte';
   const variante = __VARIANTE__;
   let hote = $state();
   $effect(() => { if (variante === 'cssom' && hote) hote.style.setProperty('--st-fond', '#cfe'); });
@@ -21,4 +22,10 @@
 {:else if variante === 'prop-composant-svg'}
   <!-- E — même idiome qu'en A, mais dans l'espace de noms SVG -->
   <svg width="300" height="60"><CarteSvg --st-fond="#cfe" titre="E" /></svg>
+{:else if variante === 'prop-composant-svg-css'}
+  <!-- E' — même idiome qu'en E, peinture par règle CSS dans le composant -->
+  <svg width="300" height="60"><CarteSvgCss --st-fond="#cfe" titre="E'" /></svg>
+{:else if variante === 'svg-temoin-sans-jeton'}
+  <!-- Témoin : même composant qu'en E sans propriété CSS, pour lire la valeur de repli (#eee) -->
+  <svg width="300" height="60"><CarteSvg titre="T" /></svg>
 {/if}

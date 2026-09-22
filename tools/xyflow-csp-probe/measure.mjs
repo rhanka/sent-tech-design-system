@@ -9,7 +9,8 @@ const PLAYWRIGHT_CORE = process.env.PLAYWRIGHT_CORE
 const playwright = (await import(PLAYWRIGHT_CORE)).default;
 const { chromium } = playwright;
 
-const DIST = new URL('./dist/', import.meta.url).pathname;
+// DIST : dossier servi (par défaut ./dist ; token-paths/run.sh passe le sien).
+const DIST = process.env.DIST ?? new URL('./dist/', import.meta.url).pathname;
 const CSP = [
   "default-src 'self'", "script-src 'self'", "style-src 'self'", "style-src-attr 'none'",
   "img-src 'self' data:", "font-src 'self' data:", "connect-src 'self'", "worker-src 'none'",
