@@ -43,9 +43,10 @@ Vérifié au moment de l'écriture : **aucun composant du design system ni la
 documentation n'emploie cet idiome**. Nous ne sommes pas exposés — c'est un piège
 à connaître, pas une dette à solder.
 
-Conséquence pour la justification du repli « v1 = SVG statique » : il peut rester
-le bon choix pour la simplicité, le rendu serveur ou le poids, mais **il n'est
-plus justifié par la CSP**.
+Conséquence pour le repli « v1 = SVG statique » : il était motivé par la CSP, et
+**ce motif est réfuté**. Les motifs restants invoqués — simplicité, rendu serveur,
+poids — et leurs mesures figurent au §12 de
+[`docs/a0-csp-dependency-qualification.md`](../../docs/a0-csp-dependency-qualification.md).
 
 ## Rejouer
 
