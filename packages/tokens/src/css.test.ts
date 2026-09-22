@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { component } from "./component.js";
+import { component, createComponent } from "./component.js";
+import { foundation } from "./foundation.js";
+import { semantic } from "./semantic.js";
 import { flattenTokens, toCssVariables } from "./css.js";
 
 describe("token CSS serialization", () => {
@@ -138,6 +140,28 @@ describe("token CSS serialization", () => {
       indicator: expect.any(String),
       track: expect.any(String),
       text: expect.any(String)
+    });
+  });
+
+  it("defaults the icon tokens to the former hard-coded render", () => {
+    // 2.25 = the former `strokeWidth` prop default of the four Icon components;
+    // currentColor = the glyph keeps following its context's text colour.
+    expect(component.icon).toEqual({ strokeWidth: "2.25", color: "currentColor" });
+    const css = toCssVariables({ component }, ":root");
+    expect(css).toContain("  --st-component-icon-strokeWidth: 2.25;\n");
+    expect(css).toContain("  --st-component-icon-color: currentColor;\n");
+  });
+
+  it("lets a theme override the icon tokens through createComponent", () => {
+    const themed = createComponent(semantic, {
+      ...foundation,
+      icon: { strokeWidth: "1.5", color: "var(--st-semantic-text-secondary)" }
+    });
+    expect(themed.icon).toEqual({ strokeWidth: "1.5", color: "var(--st-semantic-text-secondary)" });
+    // A partial override keeps the default for the other leaf.
+    expect(createComponent(semantic, { ...foundation, icon: { strokeWidth: "2" } }).icon).toEqual({
+      strokeWidth: "2",
+      color: "currentColor"
     });
   });
 });

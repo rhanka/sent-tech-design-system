@@ -205,7 +205,11 @@
     RangeSlider,
     Modal,
     Drawer,
-    DashboardGrid
+    DashboardGrid,
+    Icon,
+    PanelStack,
+    PanelSection,
+    TimeRangePicker
   } from "@sentropic/design-system-svelte";
   import Self from "./SvelteNode.svelte";
   import { createRawSnippet, type Component, type Snippet } from "svelte";
@@ -507,7 +511,11 @@
     RangeSlider,
     Modal,
     Drawer,
-    DashboardGrid
+    DashboardGrid,
+    Icon,
+    PanelStack,
+    PanelSection,
+    TimeRangePicker
   } as unknown as Record<ComponentName, Component<Record<string, unknown>>>;
 
   let { node }: { node: NodeSpec } = $props();

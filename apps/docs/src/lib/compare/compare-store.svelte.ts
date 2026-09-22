@@ -3,10 +3,12 @@
 // L'état réactif (thème actif, compareActive, etc.) vit dans +layout.svelte
 // et est passé en props aux composants compare.
 
+import { getContext, setContext } from "svelte";
 import type { CompareEntry } from "./manifest.d.ts";
 import { COMPARE_MANIFEST } from "./manifest.mjs";
 import { REFERENCE_THEMES } from "./reference-themes.mjs";
 import gapsRaw from "./compare-gaps.json";
+import { isPrivateTheme } from "../theme-catalog";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -100,4 +102,32 @@ export function buildCompareUrl(
  */
 export function isImportTheme(themeId: string): boolean {
   return themeId in REFERENCE_THEMES;
+}
+
+// ── Confidentialité ─────────────────────────────────────────────────────────
+
+/**
+ * Thème à comparer pour un identifiant venu de l'URL (`?theme=`), ou `null`.
+ * Un thème privé n'est comparé que si le masquage est levé (Ctrl+Shift+X) :
+ * sinon pas de compare du tout, et son nom ne s'affiche nulle part.
+ */
+export function compareThemeFor(themeId: string | null, allowPrivate: boolean): string | null {
+  if (!themeId) return null;
+  return allowPrivate || !isPrivateTheme(themeId) ? themeId : null;
+}
+
+/**
+ * Clé de contexte : le layout y dépose la levée du masquage (Ctrl+Shift+X),
+ * sous forme de lecteur réactif, pour les pages de compare hors triptyque.
+ */
+export const PRIVATE_THEME_ACCESS = Symbol("st-docs:private-theme-access");
+
+/** Appelé par le layout, à l'initialisation. */
+export function providePrivateThemeAccess(allowed: () => boolean): void {
+  setContext(PRIVATE_THEME_ACCESS, allowed);
+}
+
+/** Lit la levée du masquage. Sans layout (rendu isolé), le masquage tient. */
+export function readPrivateThemeAccess(): () => boolean {
+  return getContext<(() => boolean) | undefined>(PRIVATE_THEME_ACCESS) ?? (() => false);
 }
