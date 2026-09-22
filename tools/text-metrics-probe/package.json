@@ -1,0 +1,9 @@
+{
+  "name": "@sentropic/text-metrics-probe",
+  "private": true,
+  "type": "module",
+  "version": "0.0.0",
+  "description": "Compare la mesure de texte côté serveur et côté navigateur, pour décider si un placeur serveur peut dimensionner les boîtes.",
+  "scripts": { "measure:node": "node node-measure.mjs", "measure:browser": "node browser-measure.mjs" },
+  "devDependencies": { "@napi-rs/canvas": "^1.0.0" }
+}

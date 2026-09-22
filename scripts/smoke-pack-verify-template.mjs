@@ -8,18 +8,20 @@
 // an escaped string literal inside smoke-pack.mjs.
 //
 // SMOKE_TARGETS placeholder -> JSON array of package names to deep-verify in
-//                                 this run (a subset of the 7 packages
+//                                 this run (a subset of the 13 packages
 //                                 below, depending on which the CI shard, or
 //                                 a local --workspaces= selection, packed).
 // SMOKE_MIN_EXPORT_COUNTS placeholder -> JSON object mapping the react/vue/
-//                                 angular package names to the minimum
-//                                 number of named exports their locally
-//                                 built dist/ had at pack time. Ties the
-//                                 runtime import check to the same ground
-//                                 truth as the tarball file-list check, so
-//                                 neither can silently drift stale as
-//                                 components are added.
-import { readFileSync, readdirSync } from "node:fs";
+//                                 angular (design-system and dataviz)
+//                                 package names to the minimum number of
+//                                 named exports their locally built dist/
+//                                 had at pack time. Ties the runtime import
+//                                 check to the same ground truth as the
+//                                 tarball file-list check, so neither can
+//                                 silently drift stale as components are
+//                                 added.
+import { readdirSync, readFileSync, statSync } from "node:fs";
+import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const targets = new Set(__SMOKE_TARGETS_JSON__);
@@ -134,9 +136,17 @@ function assertModuleExports(label, mod, minCount) {
     // letter, which excludes SCREAMING_SNAKE_CASE constants (e.g.
     // ICON_NAMES, PANEL_STACK_MAX_SECTIONS) that legitimately export numbers
     // or arrays alongside the components in the same index.
+    // Symbols are likewise legitimate: the dataviz-vue adapter exposes its
+    // store as a Vue InjectionKey (DashboardKey), and an InjectionKey IS a
+    // symbol by construction.
     const looksLikeComponent = /^[A-Z]/.test(key) && /[a-z]/.test(key);
-    if (looksLikeComponent && typeof value !== "function" && typeof value !== "object") {
-      broken.push(key + ' has unexpected type "' + typeof value + '" (expected function or object)');
+    if (
+      looksLikeComponent &&
+      typeof value !== "function" &&
+      typeof value !== "object" &&
+      typeof value !== "symbol"
+    ) {
+      broken.push(key + ' has unexpected type "' + typeof value + '" (expected function, object or symbol)');
     }
   }
   if (broken.length > 0) {
@@ -170,6 +180,96 @@ async function verifyAngular() {
   assertModuleExports("@sentropic/design-system-angular", mod, minExportCounts["@sentropic/design-system-angular"] ?? 0);
 }
 
+async function verifyGraph() {
+  const mod = await import("@sentropic/graph");
+  if (typeof mod.buildRenderGraphBuffers !== "function") {
+    fail("@sentropic/graph", "missing buildRenderGraphBuffers export (or not a function)");
+    return;
+  }
+  console.log("OK @sentropic/graph: buildRenderGraphBuffers import verified");
+}
+
+async function verifyDatavizCore() {
+  const mod = await import("@sentropic/dataviz-core");
+  if (typeof mod.validateModel !== "function") {
+    fail("@sentropic/dataviz-core", "missing validateModel export (or not a function)");
+    return;
+  }
+  console.log("OK @sentropic/dataviz-core: validateModel import verified");
+}
+
+// Same preprocessing + compile check as verifySvelte, but recursive: the
+// dataviz-svelte tarball ships its components nested under dist/lib/ and a
+// top-level readdir would verify only the barrel. Every shipped .svelte
+// file, at any depth, goes through vitePreprocess + svelte/compiler.
+async function verifyDatavizSvelte() {
+  const { preprocess, compile } = await import("svelte/compiler");
+  const { vitePreprocess } = await import("@sveltejs/vite-plugin-svelte");
+
+  const entryUrl = await import.meta.resolve("@sentropic/dataviz-svelte");
+  const entryPath = fileURLToPath(entryUrl);
+  const distDir = entryPath.replace(/index\.js$/, "");
+
+  const svelteFiles = [];
+  const walk = (dir, relative) => {
+    for (const entry of readdirSync(dir).sort()) {
+      const absolute = join(dir, entry);
+      const rel = relative ? relative + "/" + entry : entry;
+      if (statSync(absolute).isDirectory()) {
+        walk(absolute, rel);
+        continue;
+      }
+      if (entry.endsWith(".svelte")) svelteFiles.push(rel);
+    }
+  };
+  walk(distDir, "");
+  if (svelteFiles.length === 0) {
+    fail("@sentropic/dataviz-svelte", "no .svelte files found under the installed dist/ - nothing was compiled");
+    return;
+  }
+
+  const preprocessor = vitePreprocess();
+  const compileFailures = [];
+  for (const file of svelteFiles) {
+    const source = readFileSync(distDir + file, "utf8");
+    try {
+      const preprocessed = await preprocess(source, preprocessor, { filename: file });
+      compile(preprocessed.code, { filename: file, generate: "client" });
+    } catch (error) {
+      compileFailures.push(file + ": " + String(error.message).split("\n")[0]);
+    }
+  }
+  if (compileFailures.length > 0) {
+    fail(
+      "@sentropic/dataviz-svelte",
+      compileFailures.length +
+        "/" +
+        svelteFiles.length +
+        " .svelte file(s) failed to compile:\n    - " +
+        compileFailures.join("\n    - "),
+    );
+    return;
+  }
+
+  console.log("OK @sentropic/dataviz-svelte: " + svelteFiles.length + " .svelte files preprocessed + compiled");
+}
+
+async function verifyDatavizReact() {
+  const mod = await import("@sentropic/dataviz-react");
+  assertModuleExports("@sentropic/dataviz-react", mod, minExportCounts["@sentropic/dataviz-react"] ?? 0);
+}
+
+async function verifyDatavizVue() {
+  const mod = await import("@sentropic/dataviz-vue");
+  assertModuleExports("@sentropic/dataviz-vue", mod, minExportCounts["@sentropic/dataviz-vue"] ?? 0);
+}
+
+async function verifyDatavizAngular() {
+  await import("@angular/compiler");
+  const mod = await import("@sentropic/dataviz-angular");
+  assertModuleExports("@sentropic/dataviz-angular", mod, minExportCounts["@sentropic/dataviz-angular"] ?? 0);
+}
+
 const verifiers = {
   "@sentropic/design-system-tokens": verifyTokens,
   "@sentropic/design-system-themes": verifyThemes,
@@ -178,11 +278,20 @@ const verifiers = {
   "@sentropic/design-system-react": verifyReact,
   "@sentropic/design-system-vue": verifyVue,
   "@sentropic/design-system-angular": verifyAngular,
+  "@sentropic/graph": verifyGraph,
+  "@sentropic/dataviz-core": verifyDatavizCore,
+  "@sentropic/dataviz-svelte": verifyDatavizSvelte,
+  "@sentropic/dataviz-react": verifyDatavizReact,
+  "@sentropic/dataviz-vue": verifyDatavizVue,
+  "@sentropic/dataviz-angular": verifyDatavizAngular,
 };
 
 for (const name of targets) {
   const verifier = verifiers[name];
-  if (!verifier) continue;
+  if (!verifier) {
+    fail(name, "no verifier registered for this package - refusing to pass silently");
+    continue;
+  }
   try {
     await verifier();
   } catch (error) {

@@ -1,0 +1,10 @@
+{
+  "name": "@sentropic/elk-corpus-measure",
+  "private": true,
+  "type": "module",
+  "version": "0.0.0",
+  "description": "Mesure de lisibilité atteignable d'une scène ELK : occupation, échelle ajustée, plafond d'empaquetage.",
+  "scripts": { "measure": "node measure.mjs",
+    "measure:mermaid-size": "node mermaid-size.mjs" },
+  "devDependencies": { "elkjs": "0.12.0" }
+}

@@ -1,0 +1,214 @@
+{
+  "date": "2026-09-19",
+  "collections": {
+    "logos": {
+      "total": 1935,
+      "licence": {
+        "title": "CC0",
+        "spdx": "CC0-1.0",
+        "url": "https://raw.githubusercontent.com/gilbarbara/logos/master/LICENSE.txt"
+      },
+      "parFournisseur": {
+        "aws": {
+          "nombre": 65,
+          "exemples": [
+            "aws",
+            "aws-amplify",
+            "aws-api-gateway",
+            "aws-app-mesh",
+            "aws-appflow"
+          ]
+        },
+        "google-cloud": {
+          "nombre": 4,
+          "exemples": [
+            "google-cloud",
+            "google-cloud-functions",
+            "google-cloud-platform",
+            "google-cloud-run"
+          ]
+        },
+        "gcp": {
+          "nombre": 0,
+          "exemples": []
+        },
+        "azure": {
+          "nombre": 2,
+          "exemples": [
+            "azure",
+            "azure-icon"
+          ]
+        },
+        "ovh": {
+          "nombre": 0,
+          "exemples": []
+        },
+        "scaleway": {
+          "nombre": 0,
+          "exemples": []
+        },
+        "kubernetes": {
+          "nombre": 1,
+          "exemples": [
+            "kubernetes"
+          ]
+        }
+      }
+    },
+    "devicon": {
+      "total": 1052,
+      "licence": {
+        "title": "MIT",
+        "spdx": "MIT",
+        "url": "https://github.com/devicons/devicon/blob/master/LICENSE"
+      },
+      "parFournisseur": {
+        "aws": {
+          "nombre": 0,
+          "exemples": []
+        },
+        "google-cloud": {
+          "nombre": 0,
+          "exemples": []
+        },
+        "gcp": {
+          "nombre": 0,
+          "exemples": []
+        },
+        "azure": {
+          "nombre": 5,
+          "exemples": [
+            "azure",
+            "azure-wordmark",
+            "azuredatafactory",
+            "azuredevops",
+            "azuresqldatabase"
+          ]
+        },
+        "ovh": {
+          "nombre": 0,
+          "exemples": []
+        },
+        "scaleway": {
+          "nombre": 2,
+          "exemples": [
+            "scaleway",
+            "scaleway-wordmark"
+          ]
+        },
+        "kubernetes": {
+          "nombre": 2,
+          "exemples": [
+            "kubernetes",
+            "kubernetes-wordmark"
+          ]
+        }
+      }
+    },
+    "simple-icons": {
+      "total": 3460,
+      "licence": {
+        "title": "CC0 1.0",
+        "spdx": "CC0-1.0",
+        "url": "https://github.com/simple-icons/simple-icons/blob/develop/LICENSE.md"
+      },
+      "parFournisseur": {
+        "aws": {
+          "nombre": 6,
+          "exemples": [
+            "awsamplify",
+            "awselasticloadbalancing",
+            "awsfargate",
+            "awslambda",
+            "awsorganizations"
+          ]
+        },
+        "google-cloud": {
+          "nombre": 0,
+          "exemples": []
+        },
+        "gcp": {
+          "nombre": 0,
+          "exemples": []
+        },
+        "azure": {
+          "nombre": 5,
+          "exemples": [
+            "azureartifacts",
+            "azuredataexplorer",
+            "azuredevops",
+            "azurefunctions",
+            "azurepipelines"
+          ]
+        },
+        "ovh": {
+          "nombre": 1,
+          "exemples": [
+            "ovh"
+          ]
+        },
+        "scaleway": {
+          "nombre": 1,
+          "exemples": [
+            "scaleway"
+          ]
+        },
+        "kubernetes": {
+          "nombre": 1,
+          "exemples": [
+            "kubernetes"
+          ]
+        }
+      }
+    },
+    "skill-icons": {
+      "total": 400,
+      "licence": {
+        "title": "MIT",
+        "spdx": "MIT",
+        "url": "https://github.com/tandpfun/skill-icons/blob/main/LICENSE"
+      },
+      "parFournisseur": {
+        "aws": {
+          "nombre": 2,
+          "exemples": [
+            "aws-dark",
+            "aws-light"
+          ]
+        },
+        "google-cloud": {
+          "nombre": 0,
+          "exemples": []
+        },
+        "gcp": {
+          "nombre": 2,
+          "exemples": [
+            "gcp-dark",
+            "gcp-light"
+          ]
+        },
+        "azure": {
+          "nombre": 2,
+          "exemples": [
+            "azure-dark",
+            "azure-light"
+          ]
+        },
+        "ovh": {
+          "nombre": 0,
+          "exemples": []
+        },
+        "scaleway": {
+          "nombre": 0,
+          "exemples": []
+        },
+        "kubernetes": {
+          "nombre": 1,
+          "exemples": [
+            "kubernetes"
+          ]
+        }
+      }
+    }
+  }
+}

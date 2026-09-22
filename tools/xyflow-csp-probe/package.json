@@ -1,0 +1,14 @@
+{
+  "name": "@sentropic/xyflow-csp-probe",
+  "private": true,
+  "type": "module",
+  "version": "0.0.0",
+  "description": "Isole la cause de l'échec CSP attribué à xyflow. Bissection MiniMap x interaction, plus une reproduction sans xyflow.",
+  "scripts": { "bisect": "./bisect.sh", "measure": "node measure.mjs" },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "7.3.0",
+    "@xyflow/svelte": "1.6.6",
+    "svelte": "^5.57.1",
+    "vite": "^8.3.0"
+  }
+}

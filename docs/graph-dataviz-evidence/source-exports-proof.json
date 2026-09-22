@@ -1,0 +1,89 @@
+{
+  "mode": "verify-inventory",
+  "typescriptVersion": "5.9.3",
+  "method": "TypeScript checker public exports cross-checked with independent recursive TypeScript AST export enumeration; .svelte explicit named exports checked in module scripts",
+  "totalPackageExportPairs": 3547,
+  "uniqueCanonicalSymbols": 1564,
+  "manifestSubpaths": 6,
+  "manifestWildcardCount": 0,
+  "namespaceExportCount": 0,
+  "svelteDefaultAliases": 118,
+  "missingDestinationCount": 0,
+  "duplicatePairCount": 0,
+  "implementationTestsRun": false,
+  "publishedArtifactParity": "unverified",
+  "packages": [
+    {
+      "name": "@sentropic/graph",
+      "exports": 211,
+      "own": 211,
+      "reexports": 0,
+      "kinds": {
+        "value": 138,
+        "type": 73,
+        "value+type": 0,
+        "namespace": 0
+      }
+    },
+    {
+      "name": "@sentropic/dataviz-core",
+      "exports": 495,
+      "own": 495,
+      "reexports": 0,
+      "kinds": {
+        "value": 174,
+        "type": 321,
+        "value+type": 0,
+        "namespace": 0
+      }
+    },
+    {
+      "name": "@sentropic/dataviz-svelte",
+      "exports": 779,
+      "own": 282,
+      "reexports": 497,
+      "kinds": {
+        "value": 319,
+        "type": 460,
+        "value+type": 0,
+        "namespace": 0
+      }
+    },
+    {
+      "name": "@sentropic/dataviz-react",
+      "exports": 776,
+      "own": 278,
+      "reexports": 498,
+      "kinds": {
+        "value": 317,
+        "type": 459,
+        "value+type": 0,
+        "namespace": 0
+      }
+    },
+    {
+      "name": "@sentropic/dataviz-vue",
+      "exports": 776,
+      "own": 278,
+      "reexports": 498,
+      "kinds": {
+        "value": 319,
+        "type": 457,
+        "value+type": 0,
+        "namespace": 0
+      }
+    },
+    {
+      "name": "@sentropic/dataviz-angular",
+      "exports": 510,
+      "own": 13,
+      "reexports": 497,
+      "kinds": {
+        "value": 179,
+        "type": 329,
+        "value+type": 2,
+        "namespace": 0
+      }
+    }
+  ]
+}

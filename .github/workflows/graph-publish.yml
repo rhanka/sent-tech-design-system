@@ -1,0 +1,126 @@
+name: Graph Publish
+
+# Publication de @sentropic/graph, sur sa propre ligne de version,
+# indépendante des paquets dataviz-* et des paquets DS existants.
+# Déclenchée par un tag `graph-v<version>`.
+#
+# Publication via npm Trusted Publishing (OIDC). Le trusted publisher attendu
+# côté npm est : rhanka/sent-tech-design-system + graph-publish.yml.
+
+on:
+  push:
+    tags: ["graph-v*"]
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+      - run: npm ci
+      - name: Verify Graph package
+        run: |
+          npm --workspace @sentropic/graph run build
+          npm --workspace @sentropic/graph run check
+          npm --workspace @sentropic/graph run test
+      - name: Build workspace for package smoke
+        run: npm run build
+      - name: Smoke packed packages
+        run: npm run pack:smoke
+
+  release-guard:
+    needs: verify
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/graph-v')
+    env:
+      RELEASE_BRANCH: ${{ github.event.repository.default_branch }}
+      TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify tag is merged into default branch
+        run: |
+          git fetch origin "${RELEASE_BRANCH}:refs/remotes/origin/${RELEASE_BRANCH}"
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" "origin/${RELEASE_BRANCH}"; then
+            echo "::error::Refusing to publish ${TAG}: ${GITHUB_SHA} is not merged into origin/${RELEASE_BRANCH}."
+            exit 1
+          fi
+      - name: Verify Graph version matches tag
+        run: |
+          EXPECTED="${TAG#graph-v}"
+          ACTUAL=$(node -p "require('./packages/graph/package.json').version")
+          if [ "$EXPECTED" != "$ACTUAL" ]; then
+            echo "::error::Tag ${TAG} expects ${EXPECTED} but packages/graph is ${ACTUAL}."
+            exit 1
+          fi
+          echo "Graph package version matches ${EXPECTED}"
+
+  publish:
+    needs: release-guard
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/graph-v')
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+      - name: Upgrade npm
+        run: npm install -g npm@11.6.2
+      - name: Install and build
+        run: |
+          npm ci
+          npm --workspace @sentropic/graph run build
+      - name: Publish Graph package
+        run: npm publish --workspace @sentropic/graph --access public
+
+  post-publish-check:
+    needs: publish
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/graph-v')
+    env:
+      TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Wait for npm propagation
+        run: |
+          VERSION="${TAG#graph-v}"
+          for attempt in {1..20}; do
+            if npm view "@sentropic/graph@${VERSION}" version --silent > /dev/null 2>&1; then
+              echo "@sentropic/graph@${VERSION} is available from npm."
+              exit 0
+            fi
+            echo "Waiting for npm propagation, attempt ${attempt}/20..."
+            sleep 15
+          done
+          echo "::error::Timed out waiting for npm propagation."
+          exit 1
+
+      - name: Install published package
+        run: |
+          VERSION="${TAG#graph-v}"
+          mkdir /tmp/sent-tech-graph-post-publish
+          cd /tmp/sent-tech-graph-post-publish
+          npm init -y --silent
+          npm install "@sentropic/graph@${VERSION}"
+
+      - name: Verify published package import
+        run: |
+          cd /tmp/sent-tech-graph-post-publish
+          node --input-type=module <<'NODE'
+          const graph = await import("@sentropic/graph");
+
+          if (typeof graph.buildRenderGraphBuffers !== "function") {
+            throw new Error("@sentropic/graph missing buildRenderGraphBuffers export");
+          }
+          NODE
