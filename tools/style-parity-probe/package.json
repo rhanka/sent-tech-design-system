@@ -7,7 +7,8 @@
   "scripts": {
     "measure:mermaid": "node probe/mermaid-probe.mjs",
     "measure:icons": "node probe/mermaid-icons-probe.mjs",
-    "measure:id-collision": "node probe/mermaid-idcollision-probe.mjs"
+    "measure:id-collision": "node probe/mermaid-idcollision-probe.mjs",
+    "measure:shadow": "node probe/mermaid-shadow-probe.mjs"
   },
   "devDependencies": {
     "mermaid": "11.17.2",

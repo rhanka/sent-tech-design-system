@@ -1,3 +1,7 @@
 node_modules/
 dist/
+dist-o3/
+dist-o3-ssr/
+o3/public/
 placed-view.json
+shot-*.png
