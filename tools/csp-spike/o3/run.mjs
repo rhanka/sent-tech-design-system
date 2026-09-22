@@ -4,11 +4,13 @@
 import { execFileSync } from 'node:child_process';
 import { writeFileSync, readFileSync } from 'node:fs';
 import os from 'node:os';
+import { relative } from 'node:path';
 import { writeScenes } from './scene.mjs';
 import { runSsr } from './ssr.mjs';
 import { runBrowser } from './browser.mjs';
 
 const ROOT = new URL('../', import.meta.url).pathname;
+const REPO = new URL('../../../', import.meta.url).pathname;
 const vite = new URL('../node_modules/.bin/vite', import.meta.url).pathname;
 const log = (...a) => console.error('[o3]', ...a);
 const version = (p) => { try { return JSON.parse(readFileSync(new URL(`../node_modules/${p}/package.json`, import.meta.url), 'utf8')).version; } catch { return null; } };
@@ -34,7 +36,7 @@ const evidence = {
   date, debut: debut.toISOString(), fin: new Date().toISOString(),
   machine: { cpu: os.cpus()[0]?.model, coeurs: os.cpus().length, memoireGo: Math.round(os.totalmem() / 2 ** 30),
     os: `${os.type()} ${os.release()}`, distribution: osName(), chargeMoyenne1min: os.loadavg()[0] },
-  versions: { node: process.version, chromium: browser.browser, playwrightCore: pwVersion(), playwrightCoreChemin: process.env.PLAYWRIGHT_CORE ?? 'défaut',
+  versions: { node: process.version, chromium: browser.browser, playwrightCore: pwVersion(), playwrightCoreChemin: process.env.PLAYWRIGHT_CORE ? relative(REPO, process.env.PLAYWRIGHT_CORE) : 'défaut',
     vite: version('vite'), svelte: version('svelte'), '@sveltejs/vite-plugin-svelte': version('@sveltejs/vite-plugin-svelte'),
     '@xyflow/svelte': version('@xyflow/svelte'), '@xyflow/system': version('@xyflow/system'), 'bpmn-js': version('bpmn-js'),
     'diagram-js': version('diagram-js'), elkjs: version('elkjs'), jsdom: version('jsdom') },

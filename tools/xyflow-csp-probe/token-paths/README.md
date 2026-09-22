@@ -17,8 +17,8 @@ rejoués à l'identique en Chromium 153 le 2026-09-21 ; E, E' et témoin SVG : C
 | **B** — variable posée sur un élément ancêtre (`style:--x={…}`) | **0** | 0 | oui |
 | **C** — thématisation par classe | **0** | 0 | oui |
 | **D** — CSSOM après montage (`setProperty`) | **0** | 0 | oui |
-| **E** — même idiome qu'en A, dans l'espace de noms SVG | **0** | 0 (un `<g>`) | **oui** — `fill` calculé `rgb(204, 255, 238)` |
-| **E'** — idem, peinture par règle CSS du composant au lieu de l'attribut `fill` | **0** | 0 (un `<g>`) | **oui** — `rgb(204, 255, 238)` |
+| **E** — même idiome qu'en A, dans l'espace de noms SVG | **0** | 0 (un `<g>`) | oui — `fill` calculé `rgb(204, 255, 238)` |
+| **E'** — idem, peinture par règle CSS du composant au lieu de l'attribut `fill` | **0** | 0 (un `<g>`) | oui — `rgb(204, 255, 238)` |
 | Témoin SVG — composant de E sans propriété CSS | **0** | 0 | non, repli `rgb(238, 238, 238)` : la lecture distingue bien jeton et repli |
 
 **Les trois remplacements fonctionnent et appliquent bien le jeton.** Le chemin

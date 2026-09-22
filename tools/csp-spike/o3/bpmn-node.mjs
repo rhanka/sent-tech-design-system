@@ -7,9 +7,12 @@ const mode = process.argv[2] ?? 'plain';
 const n = Number(process.argv[3] ?? 35);
 const xml = readFileSync(new URL(`./public/scene-${n}.bpmn`, import.meta.url), 'utf8');
 const out = { mode, n, etapes: [] };
+// Chemins rendus relatifs au dépôt dans les messages d'erreur consignés.
+const REPO = new URL('../../../', import.meta.url).pathname;
+const rel = (t) => t.split(REPO).join('');
 const step = async (etape, fn) => {
   try { const v = await fn(); out.etapes.push({ etape, ok: true, ...(v ?? {}) }); return true; }
-  catch (e) { out.etapes.push({ etape, ok: false, erreur: String(e && e.stack ? e.stack.split('\n').slice(0, 3).join(' | ') : e).slice(0, 400) }); return false; }
+  catch (e) { out.etapes.push({ etape, ok: false, erreur: rel(String(e && e.stack ? e.stack.split('\n').slice(0, 3).join(' | ') : e)).slice(0, 400) }); return false; }
 };
 let container = undefined;
 if (mode === 'jsdom') {
