@@ -1,0 +1,33 @@
+{
+  "name": "@sentropic/dataviz-core",
+  "version": "0.5.0",
+  "description": "Framework-agnostic engine for shared inter-view dashboard state: data model, observable immutable store, cross-filter, aggregation, bookmark serialisation.",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rhanka/sent-tech-design-system.git",
+    "directory": "packages/dataviz-core"
+  },
+  "files": [
+    "dist",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "types": "./dist/index.d.ts",
+  "main": "./dist/index.js",
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run src"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

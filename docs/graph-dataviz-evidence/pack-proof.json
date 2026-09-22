@@ -1,0 +1,16 @@
+[
+  {
+    "package": "@sentropic/graph",
+    "runtimeExports": 138,
+    "declarationExports": 211,
+    "isolatedImport": "pass",
+    "cjs": "pass"
+  },
+  {
+    "package": "@sentropic/dataviz-core",
+    "runtimeExports": 174,
+    "declarationExports": 495,
+    "isolatedImport": "pass",
+    "cjs": "N-A"
+  }
+]

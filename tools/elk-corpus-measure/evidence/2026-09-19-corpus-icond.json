@@ -1,0 +1,47 @@
+[
+  {
+    "vue": "architecture-sauvegardes",
+    "cartes": 28,
+    "ms": 120,
+    "boite": {
+      "w": 4347,
+      "h": 2456
+    },
+    "aireCartes": 2576000,
+    "occupation": 24.1,
+    "echelleAjustee": 0.3312,
+    "echellePlafondEmpaquete": 0.7093,
+    "policeSourceRequisePour12px": 36.2,
+    "policeSourceRequisePour12pxSiEmpaquete": 16.9
+  },
+  {
+    "vue": "mise-en-service",
+    "cartes": 12,
+    "ms": 30,
+    "boite": {
+      "w": 3072,
+      "h": 1942
+    },
+    "aireCartes": 1104000,
+    "occupation": 18.5,
+    "echelleAjustee": 0.4634,
+    "echellePlafondEmpaquete": 1.0835,
+    "policeSourceRequisePour12px": 25.9,
+    "policeSourceRequisePour12pxSiEmpaquete": 11.1
+  },
+  {
+    "vue": "sequence-bout-en-bout",
+    "cartes": 14,
+    "ms": 27,
+    "boite": {
+      "w": 3562,
+      "h": 2038
+    },
+    "aireCartes": 1288000,
+    "occupation": 17.7,
+    "echelleAjustee": 0.4043,
+    "echellePlafondEmpaquete": 1.0031,
+    "policeSourceRequisePour12px": 29.7,
+    "policeSourceRequisePour12pxSiEmpaquete": 12
+  }
+]
