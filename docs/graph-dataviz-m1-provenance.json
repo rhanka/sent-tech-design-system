@@ -1841,7 +1841,8 @@
       "gitBlob": "0324f1612dd9a0405d50dddd2ba7e1c58a029f2d",
       "sha256": "97141365d0ab46106c6d894e5ede74c342efbf46b4771d9c9d6ba22b3dfc6777",
       "status": "adapted-packaging-only",
-      "destinationSha256": "49df0645672faa71a2b3447ed9940b7890642f06fa399029ede5baa09cda916b"
+      "destinationSha256": "1d525884e178661f60e772d64b04e57801f9b20ced68d490e49ccc8d760dd77f",
+      "note": "angular devDeps pinned to exact 21.2.17 (single runtime; ^ resolved a nested 21.2.23 breaking TestBed)"
     },
     {
       "repository": "dataviz",
@@ -1922,7 +1923,9 @@
       "destination": "packages/dataviz-angular/src/lib/angular-dom-smoke.test.ts",
       "gitBlob": "645689408038798495ccf9b8940b83a0a0615dbc",
       "sha256": "8b9f4083220a31816ba2e5e99e263c863b8e383cf35d023c5508d70f83ba4f78",
-      "status": "copied-byte-identical"
+      "status": "adapted-ds-api-drift",
+      "destinationSha256": "616853adf012626950f50adf3fe0e6c79b44a47706801a4cafbaeedc366096c3",
+      "note": "DS b793ddb8 dropped st-search__input from Search (kept st-search__control); same element, same assertions"
     },
     {
       "repository": "dataviz",
