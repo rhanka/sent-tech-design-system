@@ -146,8 +146,10 @@ jobs:
           npm --workspace @sentropic/dataviz-vue run build
           npm --workspace @sentropic/dataviz-angular run build
       - name: Bootstrap npm auth for first publish (inactive without secret)
-        if: ${{ secrets.NPM_TOKEN != '' }}
-        run: npm config set //registry.npmjs.org/:_authToken "${{ secrets.NPM_TOKEN }}"
+        if: ${{ env.NPM_TOKEN != '' }}
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm config set //registry.npmjs.org/:_authToken "${NPM_TOKEN}"
       - name: Publish Dataviz packages in dependency order
         run: |
           npm publish --workspace @sentropic/dataviz-core --access public
