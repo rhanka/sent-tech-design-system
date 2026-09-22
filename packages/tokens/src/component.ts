@@ -449,8 +449,12 @@ interface SelectableRowInput {
 //     IconButton, Button, Tag… keep tinting their icons).
 // A concrete `color` makes every token-driven icon take that colour, including
 // inside components that tint their icon through `color` (IconButton danger /
-// disabled). An explicit `strokeWidth` prop, or an explicit `color` / `stroke`
-// passed to the component, still wins over the tokens.
+// disabled). An explicit `strokeWidth` prop, or an explicit colour passed to
+// the component, still wins over the tokens.
+// Like every other resolver here, values are NOT validated: an empty string
+// falls back to the default, but an invalid colour makes the stroke invisible
+// (`stroke` invalid at computed-value time → inherited, usually `none`) and an
+// invalid width falls back to the inherited width (1px by default).
 interface IconInput {
   strokeWidth?: string;
   color?: string;
