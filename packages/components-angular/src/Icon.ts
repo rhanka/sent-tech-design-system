@@ -116,6 +116,7 @@ export const ICON_NAMES = Object.keys(ICON_NODES) as IconName[];
         fill="none"
         stroke="currentColor"
         [attr.stroke-width]="strokeWidth ?? 2.25"
+        [attr.data-st-icon-stroke]="strokeWidth == null ? null : 'prop'"
         stroke-linecap="round"
         stroke-linejoin="round"
         [class]="hostClass"
@@ -148,7 +149,12 @@ export class Icon {
   @NgInput() name!: IconName;
   /** Square size in px. Default 18 — the DS-standard inline glyph size. */
   @NgInput() size?: number;
-  /** Stroke width. Default 2.25 — matches the DS's existing lucide usage. */
+  /**
+   * Stroke width. When omitted, the theme token `--st-component-icon-strokeWidth`
+   * applies (default 2.25 — the DS's existing lucide usage). When set, it wins
+   * over the token; it is then marked `data-st-icon-stroke="prop"` so the
+   * styles.css token rule leaves it alone.
+   */
   @NgInput() strokeWidth?: number;
   /** Accessible name; when omitted the icon is decorative (`aria-hidden`). */
   @NgInput("title") titleInput?: string;
