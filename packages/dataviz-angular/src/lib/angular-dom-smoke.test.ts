@@ -72,7 +72,7 @@ describe('dataviz angular DOM smoke', () => {
     fixture.detectChanges();
 
     const root = fixture.nativeElement as HTMLElement;
-    const input = root.querySelector('input.st-search__input') as HTMLInputElement | null;
+    const input = root.querySelector('input.st-search__control') as HTMLInputElement | null;
     expect(input).not.toBeNull();
 
     input!.value = 'payment';
