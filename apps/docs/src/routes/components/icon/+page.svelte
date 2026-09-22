@@ -134,16 +134,55 @@
         L'épaisseur du trait et la couleur viennent des tokens du thème :
         <code>--st-component-icon-strokeWidth</code> (2.25 par défaut) et
         <code>--st-component-icon-color</code> (<code>currentColor</code> par défaut, l'icône suit
-        la couleur du texte). Une prop <code>strokeWidth</code> ou une couleur passée à l'icône
-        l'emporte sur le token.
+        la couleur du texte). Une prop <code>strokeWidth</code> l'emporte sur le token d'épaisseur,
+        une couleur explicite sur le token de couleur.
       {:else}
         <code>size</code> defaults to 18 px, the DS-standard inline glyph size. Stroke width and
         colour come from the theme tokens: <code>--st-component-icon-strokeWidth</code> (2.25 by
         default) and <code>--st-component-icon-color</code> (<code>currentColor</code> by default,
-        so the icon follows the text colour). A <code>strokeWidth</code> prop or a colour passed to
-        the icon wins over the token.
+        so the icon follows the text colour). A <code>strokeWidth</code> prop wins over the width
+        token, an explicit colour over the colour token.
       {/if}
     </p>
+    <p class="section-desc">
+      {#if locale.value === "fr"}
+        Pour une couleur explicite, passez la prop <code>color</code> (Svelte, React, Vue). En
+        Svelte et en Vue, un attribut <code>stroke</code> passé à l'icône est écrasé par la
+        bibliothèque de glyphes : il n'a aucun effet, seule <code>color</code> fonctionne. En React,
+        <code>color</code> et <code>stroke</code> fonctionnent tous deux. En Angular, l'icône n'a
+        pas d'API de couleur : elle suit la couleur du texte de son conteneur, ou le token.
+      {:else}
+        For an explicit colour, pass the <code>color</code> prop (Svelte, React, Vue). In Svelte
+        and Vue, a <code>stroke</code> attribute passed to the icon is overwritten by the glyph
+        library: it has no effect, only <code>color</code> works. In React, both
+        <code>color</code> and <code>stroke</code> work. In Angular, the icon has no colour API: it
+        follows its container's text colour, or the token.
+      {/if}
+    </p>
+    <p class="section-desc">
+      {#if locale.value === "fr"}
+        Les deux règles qui lisent ces tokens vivent dans la couche CSS <code>st-icon</code>.
+        Toute règle de votre application hors couche l'emporte sur elles, quelle que soit sa
+        spécificité. Une règle placée dans une couche (les utilitaires Tailwind v4, toute CSS en
+        <code>@layer</code>) ne l'emporte que si <code>st-icon</code> est déclarée
+        <strong>avant</strong> cette couche : l'ordre des couches suit leur première apparition.
+        Déclarez-la en tête de votre feuille, avant Tailwind, ou chargez la CSS du DS avant toute
+        CSS en couches. Sans cela, par exemple quand la CSS du DS arrive après Tailwind (cas usuel
+        des styles de composants Svelte), les tokens l'emportent sur vos utilitaires sur l'icône.
+      {:else}
+        The two rules that read these tokens live in the <code>st-icon</code> CSS layer. Any
+        unlayered rule of your application wins over them, whatever its specificity. A rule inside
+        a layer (Tailwind v4 utilities, any <code>@layer</code> CSS) only wins if
+        <code>st-icon</code> is declared <strong>before</strong> that layer: layer order follows
+        first appearance. Declare it at the top of your stylesheet, before Tailwind, or load the DS
+        CSS before any layered CSS. Otherwise, for instance when the DS CSS comes after Tailwind
+        (the usual case for Svelte component styles), the tokens win over your utilities on the
+        icon.
+      {/if}
+    </p>
+    <pre class="icon-code"><code>{`/* app.css */
+@layer st-icon;
+@import "tailwindcss";`}</code></pre>
     <TabbedExample nodes={sizeDemo} title={locale.value === "fr" ? "Tailles" : "Sizes"} />
     <TabbedExample nodes={strokeDemo} title={locale.value === "fr" ? "Graisses" : "Stroke widths"} />
   </section>
@@ -281,16 +320,30 @@
     <h2>{locale.value === "fr" ? "Tokens CSS" : "CSS Tokens"}</h2>
     <p class="section-desc">
       {#if locale.value === "fr"}
-        <code>&lt;Icon&gt;</code> n'introduit aucun token : le glyphe hérite de
-        <code>currentColor</code>. La couleur se pilote donc par le texte du conteneur (par exemple
-        <code>--st-semantic-text-secondary</code> sur un en-tête discret).
+        <code>&lt;Icon&gt;</code> lit deux tokens de composant, émis par chaque thème via
+        <code>createComponent</code> (entrée <code>icon</code> du <code>foundation</code>). Par
+        défaut, <code>--st-component-icon-color</code> vaut <code>currentColor</code> : la couleur se
+        pilote alors par le texte du conteneur (par exemple
+        <code>--st-semantic-text-secondary</code> sur un en-tête discret). Une couleur concrète
+        s'applique à toutes les icônes sans couleur explicite, y compris dans les composants qui
+        teintent leur icône par le texte (IconButton danger ou désactivé). Aucune valeur n'est
+        validée : une couleur invalide rend le trait invisible (<code>stroke: none</code>), une
+        épaisseur invalide retombe sur l'épaisseur héritée (1 px par défaut).
       {:else}
-        <code>&lt;Icon&gt;</code> introduces no token of its own: the glyph inherits
-        <code>currentColor</code>. Color is therefore driven by the container's text color (for
-        instance <code>--st-semantic-text-secondary</code> on a muted header).
+        <code>&lt;Icon&gt;</code> reads two component tokens, emitted by every theme through
+        <code>createComponent</code> (the <code>icon</code> input of the <code>foundation</code>).
+        By default, <code>--st-component-icon-color</code> is <code>currentColor</code>: colour is
+        then driven by the container's text colour (for instance
+        <code>--st-semantic-text-secondary</code> on a muted header). A concrete colour applies to
+        every icon without an explicit colour, including in components that tint their icon through
+        the text colour (IconButton danger or disabled). No value is validated: an invalid colour
+        makes the stroke invisible (<code>stroke: none</code>), an invalid width falls back to the
+        inherited width (1 px by default).
       {/if}
     </p>
     <ul class="docs-token-list">
+      <li><code>--st-component-icon-strokeWidth</code></li>
+      <li><code>--st-component-icon-color</code></li>
       <li><code>currentColor</code></li>
       <li><code>--st-semantic-text-primary</code></li>
       <li><code>--st-semantic-text-secondary</code></li>
@@ -310,6 +363,18 @@
   .api-subhead {
     font-size: 1rem;
     margin: 1.5rem 0 0.5rem;
+  }
+
+  .icon-code {
+    background: var(--st-semantic-surface-subtle);
+    border: 1px solid var(--st-semantic-border-subtle);
+    border-radius: var(--st-radius-md, 0.375rem);
+    font-family: var(--st-font-mono, ui-monospace, monospace);
+    font-size: 0.875rem;
+    margin: 0 0 1.5rem;
+    max-width: 800px;
+    overflow-x: auto;
+    padding: 0.75rem 1rem;
   }
 
   .docs-demo-note {

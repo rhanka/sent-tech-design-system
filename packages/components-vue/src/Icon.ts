@@ -1,4 +1,4 @@
-import { defineComponent, h } from "vue";
+import { defineComponent, h, type PropType } from "vue";
 import {
   Settings,
   Eye,
@@ -54,7 +54,7 @@ export const Icon = defineComponent({
      * `--st-component-icon-strokeWidth` applies (default 2.25 — the DS's
      * existing lucide usage). When set, it wins over the token.
      */
-    strokeWidth: { type: Number, default: undefined },
+    strokeWidth: { type: Number as PropType<number | undefined>, default: undefined },
     /** Accessible name; when omitted the icon is decorative (`aria-hidden`). */
     title: { type: String, default: undefined },
     class: { type: String, default: undefined },

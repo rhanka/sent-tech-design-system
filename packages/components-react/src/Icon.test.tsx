@@ -1,6 +1,40 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { Icon, ICON_NAMES } from "./Icon.js";
+
+// The icon token rules shipped in the `@layer st-icon` block of a stylesheet,
+// as [{ selector, declarations }]. Empty when the block is absent.
+function iconLayerRules(css: string): Array<{ selector: string; declarations: string }> {
+  const start = css.indexOf("@layer st-icon {");
+  if (start < 0) return [];
+  const open = css.indexOf("{", start);
+  let depth = 0;
+  let end = -1;
+  for (let i = open; i < css.length; i++) {
+    if (css[i] === "{") depth++;
+    else if (css[i] === "}" && --depth === 0) {
+      end = i;
+      break;
+    }
+  }
+  const body = css.slice(open + 1, end).replace(/\/\*[\s\S]*?\*\//g, "");
+  return [...body.matchAll(/([^{}]+)\{([^{}]*)\}/g)].map(([, selector, declarations]) => ({
+    selector: selector.trim(),
+    declarations: declarations.trim().replace(/\s+/g, " "),
+  }));
+}
+
+// Declarations of those rules that reach `el` (what the cascade layer applies).
+function tokenDeclarationsFor(el: Element, rules: ReturnType<typeof iconLayerRules>): string[] {
+  return rules.filter((rule) => el.matches(rule.selector)).map((rule) => rule.declarations);
+}
+
+const STROKE_WIDTH_TOKEN = "stroke-width: var(--st-component-icon-strokeWidth, 2.25);";
+const STROKE_TOKEN = "stroke: var(--st-component-icon-color, currentColor);";
+
+const rules = iconLayerRules(readFileSync(resolve("src/styles.css"), "utf8"));
 
 describe("Icon — canonical DS icon set", () => {
   it("renders an svg for every canonical name", () => {
@@ -33,19 +67,32 @@ describe("Icon — canonical DS icon set", () => {
     expect(svg.getAttribute("aria-label")).toBe("Afficher");
   });
 
-  it("renders the 2.25 default unmarked, so the theme token applies", () => {
+  it("renders the default so both layered token rules of styles.css apply", () => {
     const { container } = render(<Icon name="settings" />);
     const svg = container.querySelector("svg") as SVGElement;
+    expect(tokenDeclarationsFor(svg, rules)).toEqual([STROKE_WIDTH_TOKEN, STROKE_TOKEN]);
+    // Presentation attributes = the render when no stylesheet is loaded.
+    expect(svg.getAttribute("stroke-width")).toBe("2.25");
     expect(svg.getAttribute("stroke")).toBe("currentColor");
-    expect(svg.hasAttribute("data-st-icon-stroke")).toBe(false);
     expect(svg.hasAttribute("style")).toBe(false);
   });
 
-  it("marks an explicit strokeWidth so it keeps winning over the token", () => {
-    const { container } = render(<Icon name="settings" strokeWidth={2.25} />);
+  it("marks an explicit strokeWidth so the stroke-width token rule skips it", () => {
+    for (const strokeWidth of [2.25, 1.5]) {
+      const { container, unmount } = render(<Icon name="settings" strokeWidth={strokeWidth} />);
+      const svg = container.querySelector("svg") as SVGElement;
+      expect(svg.getAttribute("stroke-width")).toBe(String(strokeWidth));
+      expect(svg.getAttribute("data-st-icon-stroke")).toBe("prop");
+      expect(tokenDeclarationsFor(svg, rules)).toEqual([STROKE_TOKEN]);
+      expect(svg.hasAttribute("style")).toBe(false);
+      unmount();
+    }
+  });
+
+  it("keeps an explicit colour out of the colour token rule", () => {
+    const { container } = render(<Icon name="close" color="rgb(0, 128, 0)" />);
     const svg = container.querySelector("svg") as SVGElement;
-    expect(svg.getAttribute("stroke-width")).toBe("2.25");
-    expect(svg.getAttribute("data-st-icon-stroke")).toBe("prop");
-    expect(svg.hasAttribute("style")).toBe(false);
+    expect(svg.getAttribute("stroke")).toBe("rgb(0, 128, 0)");
+    expect(tokenDeclarationsFor(svg, rules)).toEqual([STROKE_WIDTH_TOKEN]);
   });
 });
