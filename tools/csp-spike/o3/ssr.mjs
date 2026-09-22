@@ -42,7 +42,8 @@ function analyse(body) {
     noeudsXyflow: (body.match(/class="svelte-flow__node /g) ?? []).length,
     aretesXyflow: (body.match(/class="svelte-flow__edge-path"/g) ?? []).length,
     noeudsVisibilityHidden: (body.match(/visibility: hidden/g) ?? []).length,
-    noeudsMarquesSelected: (body.match(/class="svelte-flow__node [^"]*\bselected\b/g) ?? []).length
+    noeudsMarquesSelected: (body.match(/class="svelte-flow__node [^"]*\bselected\b/g) ?? []).length,
+    noeudsMarquesDragging: (body.match(/class="svelte-flow__node [^"]*\bdragging\b/g) ?? []).length
   };
 }
 
@@ -64,8 +65,10 @@ export async function runSsr() {
         }
         out.svelte[key] = { ok: true, msRendu: describe(times), head: res.head.length, ...analyse(res.body) };
         const tpl = readFileSync(new URL(`o3/pages/${PAGE_OF[name]}.html`, DIST), 'utf8');
-        writeFileSync(new URL(`o3/pages/${PAGE_OF[name]}-${n}.html`, DIST),
-          tpl.replace('@@SSR_OUTLET@@', () => res.body).replace('@@SSR_DATA@@', () => JSON.stringify(view)));
+        const doc = tpl.replace('@@SSR_OUTLET@@', () => res.body).replace('@@SSR_DATA@@', () => JSON.stringify(view));
+        writeFileSync(new URL(`o3/pages/${PAGE_OF[name]}-${n}.html`, DIST), doc);
+        // Document HTML servi : rendu serveur + vue placée inline (non compté dans le poids JS/CSS).
+        out.svelte[key].document = { octets: Buffer.byteLength(doc), octetsGzip: gzipSync(doc).length };
       } catch (e) {
         out.svelte[key] = { ok: false, erreur: String(e && e.stack ? e.stack.split('\n').slice(0, 3).join(' | ') : e).slice(0, 400) };
       }

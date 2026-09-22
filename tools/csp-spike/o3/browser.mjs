@@ -36,7 +36,8 @@ function configs() {
   const list = [];
   for (const n of SIZES) {
     for (const p of CSR) if (p !== 'svelte-empty' || n === SIZES[0]) list.push({ page: p, n, url: `/o3/pages/${p}.html?n=${n}` });
-    for (const p of SSR) list.push({ page: p, n, url: `/o3/pages/${p}-${n}.html` });
+    // ?n= : lu par common.js pour étiqueter le résultat (le serveur ignore la requête).
+    for (const p of SSR) list.push({ page: p, n, url: `/o3/pages/${p}-${n}.html?n=${n}` });
   }
   return list;
 }

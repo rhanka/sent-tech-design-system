@@ -1,4 +1,4 @@
-// Même balisage que StaticScene.svelte, sans framework : plancher du repli statique.
+// Même balisage que StaticScene.svelte, sans framework ni runtime.
 const NS = 'http://www.w3.org/2000/svg';
 export function renderVanilla(view, target) {
   const svg = document.createElementNS(NS, 'svg');
