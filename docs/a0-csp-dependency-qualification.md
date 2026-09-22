@@ -268,7 +268,7 @@ Récapitulatif de l'écart à combler avant toute promesse de parité :
 | Alignement du texte | non | oui |
 | Icônes de fournisseurs | aucune | paquets enregistrables |
 | Export | aucun | n/a (c'est la cible) |
-| Ombre portée | aucune ombre paramétrable par nœud ; un `drop-shadow` codé en dur marque le focus de `ForceGraph` (quatre frameworks) | **pas par `classDef`** : `filter:…(…)` refusé à l'analyse, `box-shadow` accepté mais non peint ; ombre peinte avec le look `neo`, par une règle de thème (mesuré en 11.17.2, §9.9) |
+| Ombre portée | aucune ombre paramétrable par nœud ; un `drop-shadow` codé en dur marque le focus de `ForceGraph` (quatre frameworks) | par nœud via `themeCSS` (règle ciblant la classe du nœud) ; pour tout le diagramme via le look `neo` ; pas via `classDef` (`filter:…(…)` refusé à l'analyse, `box-shadow` accepté mais non peint) — mesuré en 11.17.2 sans CSP, §9.9 |
 
 ## 6. Icônes de fournisseurs — qualification du pack
 
@@ -524,29 +524,33 @@ pixels : luminance moyenne d'une bande de 4 px juste sous le nœud, fond blanc =
 
 | Écriture | Analyse | Mécanisme dans le SVG | Ombre peinte, sans CSP | CSP stricte, SVG en ligne | CSP stricte, SVG en `<img>` |
 |---|---|---|---|---|---|
-| `classDef … filter:drop-shadow(2px 3px 2px #00000066)` | **erreur** : `(` refusé (jeton `PS`) | — | — | — | — |
-| idem, `rgba(0\,0\,0\,0.4)` à virgules échappées | **erreur** | — | — | — | — |
-| `classDef … filter:url(#ombre)` | **erreur** | — | — | — | — |
-| `classDef … box-shadow:2px 3px 2px #00000066` | acceptée | attribut `style` sur la forme, `!important` | **non** : calculée, bande à 255 | non | non |
-| look `neo`, sans `classDef` | acceptée | règle `filter: drop-shadow(1px 2px 2px rgba(185, 185, 185, 1))` dans le `<style>` du SVG | **oui** : 225,6 | **non** : `<style>` bloqué par `style-src-elem` | **oui** : 225,7 |
-| témoin : `classDef` sans ombre | acceptée | attribut `style` (`fill`, `stroke`) | non : 255 | non, et `fill` perdu (noir) | non : 255 |
+| témoin : `classDef` sans ombre | acceptée | règle `.ombre>*` dans le `<style>` du SVG et attribut `style` sur la forme (`fill`, `stroke`) | non : 255 | non ; `fill` et `stroke` perdus | non : 255 |
+| `classDef … filter:drop-shadow(2px 3px 2px #00000066)` | erreur : `(` refusé (jeton `PS`) | — | — | — | — |
+| idem, `rgba(0\,0\,0\,0.4)` à virgules échappées | erreur | — | — | — | — |
+| `classDef … filter:url(#ombre)` | erreur | — | — | — | — |
+| `classDef … box-shadow:2px 3px 2px #00000066` | acceptée | même double émission que le témoin, `box-shadow` compris, `!important` | non : calculée, bande à 255 | non | non : 255 |
+| `themeCSS` : `.ombre rect, .ombre path, .ombre polygon { filter: drop-shadow(…) }`, plus `class A,B ombre` | acceptée | règle `themeCSS` dans le `<style>` du SVG, portée par l'identifiant du diagramme | oui : 196,3 | non : `<style>` bloqué par `style-src-elem` | oui : 196,3 |
+| look `neo`, sans `classDef` | acceptée | règle de thème `filter: drop-shadow(1px 2px 2px rgba(185, 185, 185, 1))` dans le `<style>` du SVG | oui : 225,6 | non : `<style>` bloqué par `style-src-elem` | oui : 225,7 |
 
-Trois faits :
+Quatre faits :
 
-- **Une ombre portée ne s'écrit pas en `classDef`.** La grammaire refuse la
-  parenthèse, donc toute fonction CSS : `drop-shadow()` comme `url(#…)`. `box-shadow`
-  passe l'analyse et le navigateur la calcule, mais elle ne peint pas une forme SVG.
-- **L'ombre existe dans mermaid par le look `neo`**, portée par une règle de thème
-  dans l'élément `<style>` du SVG, pas par la classe du nœud.
+- **`classDef` n'exprime pas d'ombre portée.** Sa grammaire refuse la parenthèse, donc
+  toute fonction CSS : `drop-shadow()` comme `url(#…)`. `box-shadow` passe l'analyse et
+  le navigateur la calcule, mais elle ne peint pas une forme SVG.
+- **`themeCSS` porte une ombre par nœud** : une règle libre ciblant la classe que
+  `class` pose sur le nœud, compilée dans l'élément `<style>` du SVG. L'acceptation de
+  `themeCSS` par GitHub, GitLab, VS Code et `mmdc` n'est pas mesurée.
+- **Le look `neo` porte une ombre pour tout le diagramme**, par une règle de thème dans
+  le même élément `<style>`.
 - **Sous la CSP stricte, un SVG mermaid inséré dans la page perd tout son style**, pas
   seulement l'ombre : l'élément `<style>` tombe sous `style-src-elem`, les attributs
   `style` sous `style-src-attr` — environ 48 violations `style-src-attr` et 3
-  `style-src-elem` par diagramme. Servi comme image, le même SVG garde l'ombre du look
-  `neo` sous la même CSP.
+  `style-src-elem` par diagramme. Servi comme image, le même SVG garde l'ombre de
+  `themeCSS` et du look `neo` sous la même CSP.
 
 Portée : la mesure de §5.2 (neuf propriétés conservées) était faite sans CSP. Sous la
-CSP stricte, en ligne, le témoin perd son `fill` ; les huit autres propriétés n'y ont
-pas été remesurées une à une.
+CSP stricte, en ligne, le témoin perd son `fill` et son `stroke` ; les sept autres
+propriétés n'y ont pas été remesurées une à une.
 
 ## 10. Correction : la cause de l'échec CSP attribué à xyflow
 
@@ -581,9 +585,9 @@ trivial :
 
 **Conséquences.** L'incompatibilité appartient à un **idiome Svelte**, pas à
 xyflow ; toute bibliothèque de composants, y compris la nôtre, tomberait sur le
-même mur. Le repli « v1 = SVG statique » peut rester le bon choix pour la
-simplicité, le rendu serveur ou le poids — **il n'est plus justifié par la CSP**. Le poids,
-le coût du premier rendu et le rendu serveur sont mesurés au §12.
+même mur. **La CSP ne justifie plus le repli « v1 = SVG statique ».** Les motifs
+restants invoqués en sa faveur sont la simplicité, le rendu serveur et le poids ; voir
+les mesures au §12.
 
 Vérifié : **aucun composant du design system ni la documentation n'emploie cet
 idiome** aujourd'hui. Cela rassure sur le présent et ne dit rien du futur — or
@@ -605,7 +609,7 @@ pour E (remesuré, Chromium 153).
 | **B** — variable posée sur un élément ancêtre (`style:--x={…}`) | **0** | 0 | oui |
 | **C** — thématisation par classe | **0** | 0 | oui |
 | **D** — CSSOM après montage (`setProperty`) | **0** | 0 | oui |
-| **E** — même idiome qu'en A, en espace de noms SVG | **0** | 0 (un `<g>`) | **oui** — `fill` calculé `rgb(204, 255, 238)` ; témoin sans jeton `rgb(238, 238, 238)` |
+| **E** — même idiome qu'en A, en espace de noms SVG | **0** | 0 (un `<g>`) | oui — `fill` calculé `rgb(204, 255, 238)` ; témoin sans jeton `rgb(238, 238, 238)` |
 
 Les trois remplacements appliquent bien le jeton. **Le chemin interdit n'apporte
 donc rien** que B, C ou D n'apportent, et le coût de la règle est nul.
@@ -621,7 +625,7 @@ Lue correctement, elle vaut le jeton, et un témoin sans propriété CSS vaut le
 `#eee` : la lecture distingue bien les deux. Le compilateur émet `<g>` au lieu de
 `<svelte-css-wrapper>` et y pose la variable par CSSOM, sans violation ; une variante
 qui peint par une règle CSS du composant plutôt que par l'attribut `fill` donne le
-même résultat. **E fonctionne en rendu client.**
+même résultat. E fonctionne en rendu client.
 
 Réserve, en rendu serveur : `svelte/server` sérialise ce `<g>` avec un attribut
 `style` littéral, `<g style="--st-fond: #cfe;">`. Servi sous `style-src-attr 'none'`,
@@ -682,78 +686,93 @@ table.
 ## 12. Repli « SVG statique » — poids, premier rendu, rendu serveur
 
 §10 retire la CSP des motifs du repli v1 « SVG statique » et en laisse trois
-possibles : la simplicité, le rendu serveur, le poids. Ce paragraphe mesure les deux
+invoqués : la simplicité, le rendu serveur, le poids. Ce paragraphe mesure les deux
 derniers, plus le coût du premier rendu. La simplicité n'est pas mesurée. Rien ici ne
 tranche : la décision reste à l'owner.
 
 Harnais : [`tools/csp-spike/`](../tools/csp-spike/README.md), étendu par `o3/`,
 commande unique `npm run o3`. Preuve, échantillons bruts compris :
-`tools/csp-spike/evidence/2026-09-21-o3-chromium-153.json`.
+`tools/csp-spike/evidence/2026-09-22-o3-chromium-153.json`.
+
+Dans tous les tableaux de ce paragraphe, les candidats sont rangés par ordre
+alphabétique ; la ligne de référence vient en dernier.
 
 **Ce qui est comparé.**
 
 | Candidat | Forme mesurée |
 |---|---|
-| Repli statique | vue placée par elkjs **en Node**, rendue en SVG sans placeur : DOM sans framework, composant Svelte, et le même composant rendu serveur puis hydraté |
-| Placeur embarqué | elkjs 0.12.0 place dans le navigateur, puis même rendu SVG : le repli sans placement serveur |
-| xyflow | `@xyflow/svelte` 1.6.6, configuration CSP-sûre de §10 : fond et contrôles, sans MiniMap |
 | bpmn-js | 18.28.0, Viewer et Modeler (§3) |
+| elkjs dans le navigateur | elkjs 0.12.0 place la scène dans la page, puis même rendu SVG que le SVG statique |
+| SVG statique (repli v1) | vue placée par elkjs en Node, rendue en SVG sans placeur : DOM sans framework, composant Svelte, et le même composant rendu serveur puis hydraté |
+| xyflow | `@xyflow/svelte` 1.6.6, configuration CSP-sûre de §10 : fond et contrôles, sans MiniMap |
 
 Aucun composant du dépôt n'implémente aujourd'hui la scène statique v1 : le composant
 mesuré est une implémentation minimale écrite pour la mesure
 (`o3/src/StaticScene.svelte` : rectangles, libellés, arêtes orthogonales, classes,
-aucun attribut `style`). Ses chiffres sont un plancher du chemin statique, sans chrome
-DS. mermaid n'est pas candidat : c'est une cible d'export (§9), pas un moteur de rendu
-dans l'application.
+aucun attribut `style`). Ses chiffres sont une borne basse du chemin statique, sans
+chrome DS. mermaid n'est pas candidat : c'est une cible d'export (§9), pas un moteur de
+rendu dans l'application.
 
 **Scènes.** Deux scènes déterministes : 35 nœuds et 40 arêtes, la taille de la plus
 grande vue du corpus en §9.4, puis 200 nœuds et 238 arêtes. Nœuds de 120 × 48, arbre
 binaire plus une arête transverse tous les cinq nœuds, placement ELK `layered`. Tous
-les candidats reçoivent les mêmes positions ; le BPMN, DI comprise, est dérivé de la vue
-placée. Le corpus réel n'est pas dans le dépôt et n'est pas rejoué ici.
+les candidats reçoivent les mêmes positions de nœuds. Les arêtes diffèrent : bpmn-js et
+le SVG statique reprennent les tracés ELK (le BPMN, DI comprise, est dérivé de la vue
+placée), elkjs dans le navigateur les recalcule sur la même entrée, et xyflow trace ses
+propres courbes entre poignées. Le corpus réel n'est pas dans le dépôt et n'est pas
+rejoué ici.
 
 **Protocole.** Chromium 153.0.8010.36 sans interface, CSP stricte de §1 en en-tête,
 témoin positif valide (une violation `style-src-attr`, style non appliqué). Viewport
 1 440 × 900, build de production Vite 8.3.0, une entrée HTML par candidat. 30 tours ; à
 chaque tour l'ordre des pages est mélangé (graine fixe), et chaque chargement ouvre un
 contexte neuf, cache vide ; 2 chargements d'échauffement par page sont écartés.
-Serveur local : aucun délai réseau, donc le poids n'entre pas dans les temps.
+Serveur local : le transfert n'entre pas dans les temps ; l'analyse et la compilation du
+JS chargé, elles, y entrent.
 
 - `tReady` : ms depuis le début de la navigation jusqu'à la scène complète dans le DOM,
-  mise en page forcée. Pour xyflow, « complète » veut dire tous les nœuds mesurés et
-  visibles, toutes les arêtes tracées et `fitView` appliqué, observé par
-  `MutationObserver`.
-- `tRender` : `tReady` moins l'appel du moteur, données déjà chargées : le coût du
-  moteur seul.
+  mise en page forcée. Les pages client récupèrent d'abord leurs données de scène par
+  `fetch` ; ce délai est inclus.
+- **Écart de définition.** Hors xyflow, `tReady` est pris dès que le rendu est terminé,
+  sans attendre de trame. xyflow ne peut être complet qu'après au moins une trame :
+  il mesure ses nœuds par `ResizeObserver`, puis applique `fitView`. Sa complétude (nœuds
+  visibles, arêtes tracées, `fitView` appliqué) est détectée par `MutationObserver`, sans
+  attente supplémentaire, mais elle inclut cette trame.
+- `tPainted` : deux `requestAnimationFrame` après `tReady`, pris de la même façon pour
+  tous ; quantifié par les trames, environ 16,7 ms.
+- `tRender` : `tReady` moins l'appel du moteur, données déjà chargées.
 
 Machine : AMD Ryzen AI Max+ 395 (32 fils), 57 Go, Linux 7.0.0-31 (Ubuntu 26.04),
 Node 22.22.1, playwright-core 1.60.0 ; charge moyenne sur une minute en fin de run :
-3,4 pour 32 fils. Autres versions : svelte 5.57.1, `@sveltejs/vite-plugin-svelte`
-7.3.0, `@xyflow/system` 0.0.82, diagram-js 15.26.0, jsdom 30.1.1. Mesuré le 2026-09-21.
+3,1 pour 32 fils. Autres versions : svelte 5.57.1, `@sveltejs/vite-plugin-svelte`
+7.3.0, `@xyflow/system` 0.0.82, diagram-js 15.26.0, jsdom 30.1.1. Mesuré le 2026-09-22.
 
 ### 12.1 Poids chargé
 
-Octets réellement chargés par la page, relevés sur les réponses réseau puis pesés sur
-disque ; ko = 1 000 octets, gzip niveau 6, fichier par fichier. Chaque page compte aussi
-2,9 ko bruts (1,4 ko gzip) d'instrumentation commune, CSP et chronométrage,
-identique d'une page à l'autre.
+JS, CSS et autres ressources chargés par la page, relevés sur les réponses réseau puis
+pesés sur disque ; ko = 1 000 octets, gzip niveau 6, fichier par fichier. Le document HTML
+et les données de scène ne sont pas comptés. Chaque page compte aussi 2,9 ko bruts
+(1,4 ko gzip) d'instrumentation commune, CSP et chronométrage, identique d'une page à
+l'autre.
 
 | Page | JS brut | JS gzip | CSS brut | CSS gzip | Total brut | Total gzip |
 |---|---:|---:|---:|---:|---:|---:|
-| Repli statique, DOM sans framework | 4,3 | 2,2 | 0,4 | 0,2 | 4,7 | **2,4** |
-| Repli statique, composant Svelte | 54,9 | 21,5 | 0,4 | 0,2 | 55,3 | **21,7** |
-| Plancher : page Svelte vide | 53,9 | 20,9 | 0,4 | 0,2 | 54,3 | **21,1** |
-| Placeur embarqué : elkjs client et même rendu | 1 436,4 | 438,7 | 0,4 | 0,2 | 1 436,8 | **438,9** |
-| xyflow (`@xyflow/svelte`) | 216,6 | 72,4 | 16,7 | 3,0 | 233,3 | **75,4** |
-| bpmn-js Viewer | 204,5 | 59,8 | 25,9 | 5,2 | 230,4 | **64,9** |
-| bpmn-js Modeler | 578,2 | 166,4 | 118,9 | 50,8 | 697,1 | **217,1** |
+| bpmn-js Modeler | 578,2 | 166,4 | 118,9 | 50,8 | 697,1 | 217,1 |
+| bpmn-js Viewer | 204,5 | 59,8 | 25,9 | 5,2 | 230,4 | 64,9 |
+| elkjs dans le navigateur, puis rendu SVG | 1 436,4 | 438,7 | 0,4 | 0,2 | 1 436,8 | 438,9 |
+| SVG statique, DOM sans framework | 4,3 | 2,2 | 0,4 | 0,2 | 4,7 | 2,4 |
+| SVG statique, composant Svelte | 54,9 | 21,5 | 0,4 | 0,2 | 55,3 | 21,7 |
+| xyflow | 216,6 | 72,4 | 16,7 | 3,0 | 233,3 | 75,4 |
+| Référence : page Svelte vide, runtime seul | 53,9 | 20,9 | 0,4 | 0,2 | 54,3 | 21,1 |
 
-- Dans un hôte Svelte, le runtime du plancher est déjà payé. Au-delà : le composant
-  statique ajoute 1,0 ko brut (0,6 ko gzip), xyflow 179,0 ko bruts (54,3 ko gzip).
-- Les pages rendues serveur pèsent comme leurs équivalents client (55,3 et
-  233,5 ko bruts) : l'hydratation charge le même composant.
-- Données de scène, en plus du tableau : vue placée 14,1 ko à 35 nœuds et
-  84,8 ko à 200 ; BPMN 19,5 et 116,3 ko ; entrée ELK brute
+- Dans un hôte Svelte, le runtime de la ligne de référence est déjà payé. Au-delà : le
+  composant SVG statique ajoute 1,0 ko brut (0,6 ko gzip), xyflow 179,0 ko bruts (54,3 ko gzip).
+- Pages rendues serveur : JS et CSS identiques à leurs équivalents client. Le document
+  HTML servi, non compté ci-dessus, porte en plus le rendu serveur et la vue placée
+  inline : 22,6 / 131,6 ko (3,4 / 16,5 ko gzip) pour le SVG statique, 52,0 / 277,5 ko
+  (5,2 / 19,4 ko gzip) pour xyflow par défaut, à 35 / 200 nœuds.
+- Données de scène des pages client, non comptées ci-dessus : vue placée 14,1 ko à
+  35 nœuds et 84,8 ko à 200 ; BPMN 19,5 et 116,3 ko ; entrée ELK brute
   4,7 et 26,8 ko.
 - La CSS du Modeler comprend une feuille de 93,0 ko qui embarque la police BPMN.
 - Écart avec §2 et §3 : ces chiffres comptent la page entière et le gzip de zlib ; les
@@ -762,56 +781,76 @@ identique d'une page à l'autre.
 ### 12.2 Coût du premier rendu
 
 Médiane [p25–p75] (min–max), en ms, 30 exécutions par case, quantiles par interpolation
-linéaire. Toutes les exécutions chronométrées ont abouti, sans violation CSP.
+linéaire. Toutes les exécutions chronométrées ont abouti, sans violation CSP. Les pages
+xyflow rendues serveur ne sont pas chronométrées : leur rendu sous CSP est incomplet
+(§12.3).
 
-| Candidat | 35 nœuds : `tReady` | 35 : `tRender` | 200 nœuds : `tReady` | 200 : `tRender` |
-|---|---|---|---|---|
-| Repli statique, DOM | 16,7 [15,6–17,8] (14,5–29,6) | 2,6 [2,4–3,0] | 22,6 [21,4–23,7] (17,3–30,4) | 7,2 [6,1–9,2] |
-| Repli statique, Svelte | 24,1 [21,7–25,8] (20,0–30,3) | 5,5 [5,0–6,7] | 32,8 [30,6–35,5] (27,6–48,1) | 13,8 [12,5–15,2] |
-| Repli statique, SSR puis hydratation | 20,7 [18,7–22,0] (16,7–24,7) | 4,1 [3,4–5,3] | 30,2 [29,2–32,1] (25,8–37,6) | 11,2 [10,4–13,2] |
-| Placeur embarqué elkjs et rendu | 173,2 [170,3–176,8] (166,4–187,3) | 97,2 [95,7–99,8] | 247,2 [243,0–253,9] (230,0–274,9) | 171,0 [166,2–175,7] |
-| xyflow | 62,4 [61,0–65,9] (55,2–73,2) | 41,7 [40,0–43,6] | 111,2 [107,0–117,1] (100,8–122,4) | 89,2 [85,7–93,0] |
-| bpmn-js Viewer | 49,4 [48,7–50,4] (42,1–55,3) | 30,2 [29,1–31,1] | 86,2 [84,2–89,7] (79,0–99,7) | 66,5 [64,7–68,8] |
-| bpmn-js Modeler | 66,7 [64,9–69,3] (58,0–79,4) | 36,6 [35,6–39,1] | 103,2 [101,5–106,4] (92,4–128,7) | 74,3 [72,8–76,8] |
+À 35 nœuds :
 
-- Plancher de page, sans scène : la page Svelte vide atteint `tReady` à
-  17,8 [16,3–19,3] ms.
-- Placeur embarqué : sur les 97,2 ms de `tRender` à 35 nœuds, le placement
-  elkjs en prend 94,3 [92,8–96,4] ; à 200 nœuds, 164,9 [160,6–169,4] sur
-  171,0.
-- Pour la ligne SSR, la scène est déjà dans le HTML avant toute exécution de script ;
-  `tReady` y marque la fin de l'hydratation, pas la première apparition de la scène.
+| Candidat | `tReady` | `tPainted` | `tRender` |
+|---|---|---|---|
+| bpmn-js Modeler | 65,8 [64,3–67,8] (60,2–76,7) | 72,5 [71,4–75,3] (66,9–86,2) | 35,8 [34,1–37,6] |
+| bpmn-js Viewer | 49,5 [48,5–51,8] (44,4–58,3) | 55,5 [54,6–57,8] (50,5–64,6) | 30,9 [28,6–32,2] |
+| elkjs dans le navigateur, puis rendu SVG | 173,7 [166,7–182,0] (157,2–195,7) | 195,8 [188,2–205,3] (169,1–225,1) | 96,9 [94,8–107,1] |
+| SVG statique, DOM sans framework | 17,4 [15,7–18,8] (13,4–23,5) | 41,1 [37,3–43,7] (29,9–51,9) | 2,7 [2,5–3,1] |
+| SVG statique, composant Svelte | 23,2 [21,7–25,1] (18,6–30,7) | 40,4 [37,5–46,6] (33,1–55,2) | 5,4 [5,0–6,4] |
+| SVG statique, rendu serveur puis hydratation | 20,8 [19,5–22,8] (16,4–27,4) | 40,5 [37,2–42,9] (31,3–46,0) | 4,1 [3,3–6,2] |
+| xyflow | 65,5 [61,6–67,2] (57,1–77,7) | 74,7 [71,2–78,3] (61,2–92,2) | 43,5 [41,2–44,9] |
+| Référence : page Svelte vide, runtime seul | 17,8 [16,8–19,1] (15,1–22,6) | 39,3 [36,5–41,5] (32,0–43,7) | 2,7 [2,3–2,8] |
+
+À 200 nœuds :
+
+| Candidat | `tReady` | `tPainted` | `tRender` |
+|---|---|---|---|
+| bpmn-js Modeler | 104,5 [101,2–107,6] (95,5–116,6) | 114,8 [111,8–117,8] (106,6–127,5) | 74,0 [71,9–76,5] |
+| bpmn-js Viewer | 85,0 [82,8–87,9] (78,3–102,7) | 94,5 [91,7–96,9] (87,1–111,9) | 65,7 [63,4–68,9] |
+| elkjs dans le navigateur, puis rendu SVG | 251,1 [245,2–253,9] (239,7–260,2) | 270,9 [262,0–272,9] (241,9–284,0) | 175,7 [169,0–179,3] |
+| SVG statique, DOM sans framework | 23,4 [21,3–24,6] (18,1–27,1) | 41,0 [35,6–42,6] (28,9–46,9) | 8,8 [6,5–9,3] |
+| SVG statique, composant Svelte | 32,5 [30,4–35,0] (28,1–38,1) | 42,7 [41,0–46,0] (35,7–53,8) | 13,4 [12,6–15,1] |
+| SVG statique, rendu serveur puis hydratation | 30,5 [28,8–32,3] (25,1–39,8) | 42,2 [38,5–44,5] (32,0–54,0) | 11,4 [9,0–12,6] |
+| xyflow | 109,3 [105,4–113,6] (96,1–119,3) | 123,0 [120,3–126,2] (107,9–136,1) | 87,6 [84,3–92,4] |
+
+- SVG statique rendu serveur : données inline dans le HTML, sans `fetch` ; la scène est
+  dans le document avant toute exécution de script, et `tReady` marque la fin de
+  l'hydratation, pas la première apparition de la scène.
+- elkjs dans le navigateur : sur les 96,9 ms de `tRender` à 35 nœuds, le placement en
+  prend 94,2 [92,0–104,4] ; à 200 nœuds, 169,2 [162,9–173,1] sur 175,7.
 
 ### 12.3 Rendu serveur
 
-Côté Node, rendu `svelte/server` à chaud, 30 rendus, médiane. Côté navigateur, la page
-rendue serveur est chargée sous la CSP stricte, avec puis sans JavaScript.
+Côté Node, rendu à chaud, 30 rendus, médiane. Côté navigateur, la page rendue serveur
+est chargée sous la CSP stricte, avec puis sans JavaScript.
 
-| Candidat | Rendu serveur | HTML produit, 35 / 200 nœuds | Attributs `style` dans ce HTML | CSP stricte, sans JavaScript | CSP stricte, après hydratation |
-|---|---|---|---|---|---|
-| Repli statique (Svelte) | **oui**, 0,1 / 0,2 ms, sans DOM ni canvas | 7,8 / 46,0 ko (1,0 / 4,6 ko gzip) | **0** | scène complète : 35/35 nœuds, 40/40 arêtes ; 0 violation | 0 violation ; hydratation `tRender` 4,1 / 11,2 ms |
-| xyflow, configuration par défaut | oui, 0,8 / 3,9 ms | 37,0 / 191,9 ko | 36 / 201 (`transform`, `z-index`, `visibility`) | 36 / 201 violations `style-src-attr` ; nœuds visibles mais **aucun positionné**, aucune arête | **0/35 et 0/200 nœuds positionnés**, tous à l'origine ; arêtes tracées |
-| xyflow, dimensions fournies | oui, 0,8 / 3,9 ms | 38,2 / 197,4 ko | 37 / 202 (plus `width`, `height`) | 37 / 202 violations ; aucun nœud positionné, aucune arête | 0/35 et 0/200 positionnés |
-| xyflow, dimensions et poignées | oui, 1,1 / 6,0 ms | 63,9 / 352,3 ko | 77 / 440 | 77 / 440 violations ; arêtes présentes (40 / 238), aucun nœud positionné | 0/35 et 0/200 positionnés |
-| bpmn-js Viewer | **non** | — | — | — | — |
-| elkjs, placement | oui : c'est la moitié serveur du repli | vue placée JSON 14,1 / 84,8 ko | — | — | — |
+| Candidat | Rendu serveur | Durée, 35 / 200 nœuds | HTML rendu, 35 / 200 nœuds | Attributs `style` dans ce HTML | CSP stricte, sans JavaScript | CSP stricte, après hydratation |
+|---|---|---|---|---|---|---|
+| bpmn-js (Viewer) | non | — | — | — | — | — |
+| elkjs | placement seulement, sans rendu | 13,9 / 49,4 ms | — (vue placée JSON 14,1 / 84,8 ko) | — | — | — |
+| SVG statique (Svelte) | oui | 0,1 / 0,2 ms | 7,8 / 46,0 ko | 0 / 0 | 0 / 0 violation ; nœuds 35/35 et 200/200, arêtes 40/40 et 238/238 | 0 violation ; nœuds 35/35 et 200/200, arêtes 40/40 et 238/238 |
+| xyflow, configuration par défaut | oui | 0,8 / 4,2 ms | 37,0 / 191,9 ko | 36 / 201 (`transform`, `z-index`, `visibility`) | 36 / 201 violations `style-src-attr` ; nœuds visibles, 0 positionné ; 0 arête | nœuds positionnés 0/35 et 0/200 ; arêtes 40/40 et 238/238 |
+| xyflow, dimensions fournies | oui | 0,8 / 3,9 ms | 38,2 / 197,4 ko | 37 / 202 (s'y ajoutent `width`, `height`) | 37 / 202 violations ; 0 nœud positionné ; 0 arête | nœuds positionnés 0/35 et 0/200 ; arêtes 40/40 et 238/238 |
+| xyflow, dimensions et poignées | oui | 1,1 / 6,0 ms | 63,9 / 352,3 ko | 77 / 440 | 77 / 440 violations ; 0 nœud positionné ; arêtes 40 / 238 | nœuds positionnés 0/35 et 0/200 ; arêtes 40/40 et 238/238 |
 
-- **xyflow** rend côté serveur, mais porte toute sa géométrie de nœud en attributs
-  `style`. Servis dans le HTML, ils sont bloqués à l'analyse, et l'hydratation ne les
-  rétablit pas. Témoin sans CSP, un chargement par page : 35/35 et 200/200 nœuds
-  positionnés après hydratation. Explication compatible avec ces relevés, non vérifiée
-  dans le source de Svelte : l'hydratation ne réécrit pas une valeur de style inchangée,
-  donc le `transform` servi puis bloqué n'est jamais réappliqué. Le HTML serveur marque
-  aussi chaque nœud des classes `selected` et `dragging` (35/35).
-- **bpmn-js** n'a pas de rendu serveur. En Node nu, l'import direct échoue sans
-  empaqueteur (`ERR_UNSUPPORTED_DIR_IMPORT`), et, empaqueté, `new Viewer()` échoue faute
-  de `document`. Sous jsdom, `new Viewer()` passe et `importXML` échoue : `getBBox`
-  manque, jsdom ne calcule pas la géométrie SVG. Un moteur qui la calcule côté serveur
-  n'a pas été essayé.
-- **elkjs** place en Node : 13,2 [12,4–14,5] ms à 35 nœuds et 49,0 [46,0–55,1] ms à 200,
-  à chaud. Au premier placement d'un processus neuf : 107,9 [106,8–110,3] ms et
-  197,8 [197,2–198,2] ms, plus 62,7 et 62,9 ms d'import du module
-  (médianes, 10 processus neufs par taille).
+- **bpmn-js** : pas de rendu serveur. En Node nu, l'import direct échoue sans empaqueteur
+  (`ERR_UNSUPPORTED_DIR_IMPORT`) ; empaqueté, `new Viewer()` échoue faute de `document`.
+  Sous jsdom, `new Viewer()` passe et `importXML` échoue : `getBBox` manque, jsdom ne
+  calcule pas la géométrie SVG. Un moteur qui la calcule côté serveur n'a pas été essayé,
+  ni le Modeler.
+- **elkjs** : placement en Node, 13,9 [12,3–14,6] ms à 35 nœuds et 49,4 [47,5–52,0] ms à
+  200, à chaud. Au premier placement d'un processus neuf : 111,0 [109,9–113,5] ms et
+  206,3 [200,8–209,0] ms, plus 64,8 et 64,5 ms d'import du module (médianes,
+  10 processus neufs par taille).
+- **SVG statique** : rendu par `svelte/server` en Node nu, sans DOM ni canvas. La
+  géométrie passe par des attributs SVG, la peinture par des classes : aucun attribut
+  `style` dans le HTML, scène complète sans JavaScript. Hydratation : `tRender`
+  4,1 / 11,4 ms (§12.2).
+- **xyflow** : rendu par `svelte/server` en Node nu, sans DOM ni canvas. La géométrie des
+  nœuds passe par des attributs `style` ; servis dans le HTML, ils sont bloqués à
+  l'analyse, et l'hydratation ne les rétablit pas. Témoin sans CSP, un chargement par
+  page : 35/35 et 200/200 nœuds positionnés après hydratation. Explication compatible avec
+  ces relevés, non vérifiée dans le source de Svelte : l'hydratation ne réécrit pas une
+  valeur de style inchangée, donc le `transform` servi puis bloqué n'est jamais
+  réappliqué. Le HTML serveur marque aussi chaque nœud des classes `selected` et
+  `dragging` (35/35 et 200/200, pour chacune).
 
 **Non mesuré.**
 
@@ -824,8 +863,8 @@ rendue serveur est chargée sous la CSP stricte, avec puis sans JavaScript.
 - Première peinture (FCP) : l'entrée n'était pas disponible au moment de la lecture dans
   la plupart des exécutions ; non rapportée.
 - Hydratation de xyflow rendu serveur sous CSP : non chronométrée, puisque le rendu est
-  incorrect ; sans CSP, un seul échantillon par page, pas de statistique.
-- bpmn-js pré-rendu par un navigateur côté serveur, ou sous un autre émulateur de DOM :
-  non essayé.
+  incomplet ; sans CSP, un seul échantillon par page, pas de statistique.
+- bpmn-js pré-rendu par un navigateur côté serveur, ou sous un autre émulateur de DOM ;
+  bpmn-js Modeler en Node : non essayés.
 - Idiome E de §10.1 chargé en rendu serveur sous CSP : non mesuré.
 - Corpus réel : `source-gap`, absent du dépôt.

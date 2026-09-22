@@ -2,7 +2,7 @@
 import { hydrate } from 'svelte';
 import XyflowScene from './XyflowScene.svelte';
 import './scene.css';
-import { T, finish, fail, whenXyflowComplete, xyflowCounts } from './common.js';
+import { N, T, finish, fail, whenXyflowComplete, xyflowCounts } from './common.js';
 const host = document.getElementById('app');
 try {
   const before = xyflowCounts(host);
@@ -13,5 +13,5 @@ try {
   const tHydrated = performance.now();
   whenXyflowComplete(host, view.children.length, view.edges.length, 3000, true)
     .then(() => finish(() => ({ ...xyflowCounts(host), tInit, tHydrated, beforeHydration: before })))
-    .catch((e) => { window.__result = { ok: false, error: String(e), tStart: T.start, tHydrated, ...xyflowCounts(host), beforeHydration: before }; });
+    .catch((e) => { window.__result = { ok: false, n: N, error: String(e), tStart: T.start, tHydrated, ...xyflowCounts(host), beforeHydration: before }; });
 } catch (e) { fail(e); }

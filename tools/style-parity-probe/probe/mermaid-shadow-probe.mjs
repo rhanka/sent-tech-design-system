@@ -30,7 +30,8 @@ function lumaStats(png) {
   for (let i = 0; i < px.length; i += bpp) { const l = 0.2126 * px[i] + 0.7152 * px[i + 1] + 0.0722 * px[i + 2]; sum += l; if (l < min) min = l; }
   return { luminanceMoyenne: Math.round((sum / (w * h)) * 10) / 10, luminanceMin: Math.round(min), pixels: w * h };
 }
-const PW = process.env.PLAYWRIGHT_CORE ?? '/home/antoinefa/src/sent-tech-design-system/node_modules/playwright-core/index.js';
+// Par défaut : playwright-core à la racine du dépôt (tools/style-parity-probe/probe → ../../../).
+const PW = process.env.PLAYWRIGHT_CORE ?? new URL('../../../node_modules/playwright-core/index.js', import.meta.url).pathname;
 const { chromium } = (await import(PW)).default;
 const ROOT = new URL('../', import.meta.url).pathname;
 const CSP = [

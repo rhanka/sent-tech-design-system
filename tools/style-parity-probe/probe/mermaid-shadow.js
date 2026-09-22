@@ -10,7 +10,10 @@ const VARIANTES = {
   'classDef-drop-shadow-rgba-virgules-echappees': base + '  classDef ombre fill:#eef2ff,stroke:#4f46e5,filter:drop-shadow(2px 3px 2px rgba(0\\,0\\,0\\,0.4))\n  class A,B ombre\n',
   'classDef-filter-url': base + '  classDef ombre fill:#eef2ff,stroke:#4f46e5,filter:url(#ombre)\n  class A,B ombre\n',
   'classDef-box-shadow': base + '  classDef ombre fill:#eef2ff,stroke:#4f46e5,box-shadow:2px 3px 2px #00000066\n  class A,B ombre\n',
-  'look-neo-natif': '---\nconfig:\n  look: neo\n---\n' + base
+  'look-neo-natif': '---\nconfig:\n  look: neo\n---\n' + base,
+  // themeCSS (look classique) : règle CSS libre ciblant la classe posée par classDef/class.
+  'themeCSS-classe': '---\nconfig:\n  themeCSS: ".ombre rect, .ombre path, .ombre polygon { filter: drop-shadow(2px 3px 2px rgba(0, 0, 0, 0.4)); }"\n---\n'
+    + base + '  classDef ombre fill:#eef2ff,stroke:#4f46e5\n  class A,B ombre\n'
 };
 
 const ctx = (s, i, n = 90) => s.slice(Math.max(0, i - n), i + n);
@@ -36,6 +39,8 @@ for (const [nom, def] of Object.entries(VARIANTES)) {
       octets: svg.length,
       elementsStyle: styleEls.length,
       ombreDansStyleElement: [...cssText.matchAll(/(drop-shadow|box-shadow|filter:url)/g)].map((m) => ctx(cssText, m.index, 70)).slice(0, 4),
+      // Règles d'ombre du <style> hors look neo (celles du thème neo sont toujours présentes).
+      reglesOmbreHorsNeo: cssText.split('}').filter((r) => /shadow/.test(r) && !/data-look="neo"/.test(r)).map((r) => r.trim() + '}').slice(0, 4),
       attributsStyleAvecOmbre: [...svg.matchAll(/<(\w+)[^>]*\sstyle="([^"]*(?:shadow|filter)[^"]*)"/g)].map((m) => `${m[1]}: ${m[2]}`).slice(0, 6),
       attributsStyleTotal: (svg.match(/\sstyle="/g) || []).length,
       elementsFilter: (svg.match(/<filter\b/g) || []).length

@@ -42,18 +42,22 @@ Mesuré le 2026-09-21, mermaid 11.17.2, Chromium 153, `securityLevel: 'strict'`,
 la CSP stricte du harnais A0 en en-tête. L'ombre est jugée sur les pixels : luminance d'une
 bande de 4 px juste à droite et sous un nœud (fond blanc = 255), en ligne et dans un `<img>`.
 
-- `classDef … filter:drop-shadow(…)` : **erreur d'analyse**, avec ou sans virgules
-  échappées, et de même `filter:url(#…)`. La grammaire de `classDef` refuse la parenthèse
-  (jeton `PS`) : aucune fonction CSS n'y passe.
-- `classDef … box-shadow:…` : accepté, émis en attribut `style` sur la forme (`!important`),
-  calculé par le navigateur, **aucun pixel peint** (bandes à 255, identiques au témoin) :
-  `box-shadow` ne peint pas une forme SVG.
-- look `neo`, sans `classDef` : ombre **peinte** (bandes à 226–238), portée par une règle
-  `filter: drop-shadow(1px 2px 2px rgba(185, 185, 185, 1))` dans l'élément `<style>` du SVG.
+- `classDef … filter:drop-shadow(…)`, avec ou sans virgules échappées, et
+  `classDef … filter:url(#…)` : erreur d'analyse. La grammaire de `classDef` refuse la
+  parenthèse (jeton `PS`) : aucune fonction CSS n'y passe.
+- `classDef … box-shadow:…` : acceptée, émise comme le reste de la classe à la fois en
+  règle `.ombre>*` dans le `<style>` du SVG et en attribut `style` sur la forme
+  (`!important`) ; calculée par le navigateur, aucun pixel peint (bandes à 255, comme le
+  témoin) : `box-shadow` ne peint pas une forme SVG.
+- `themeCSS` avec une règle ciblant la classe du nœud (`.ombre rect { filter: drop-shadow(…) }`
+  et `class A,B ombre`) : ombre peinte par nœud (bandes à 196–216), règle compilée dans le
+  `<style>` du SVG. Acceptation de `themeCSS` par les plateformes : non mesurée.
+- look `neo`, sans `classDef` : ombre peinte (bandes à 226–238), portée par une règle de
+  thème `filter: drop-shadow(1px 2px 2px rgba(185, 185, 185, 1))` dans le `<style>` du SVG.
 - Sous CSP stricte, SVG inséré dans la page : l'élément `<style>` du SVG est bloqué par
-  `style-src-elem`, les attributs `style` par `style-src-attr` ; plus d'ombre, et même le
-  remplissage de `classDef` est perdu. Le même SVG servi comme image (`<img>`, `data:`)
-  garde l'ombre du look `neo` sous la même CSP.
+  `style-src-elem`, les attributs `style` par `style-src-attr` ; plus d'ombre, et le témoin
+  perd aussi `fill` et `stroke`. Le même SVG servi comme image (`<img>`, `data:`) garde
+  l'ombre de `themeCSS` et du look `neo` sous la même CSP.
 
 ## Ce qui manque
 
