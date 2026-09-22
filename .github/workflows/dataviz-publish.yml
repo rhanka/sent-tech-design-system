@@ -1,0 +1,248 @@
+name: Dataviz Publish
+
+# Publication des cinq paquets @sentropic/dataviz-* en lockstep, sur leur
+# propre ligne de version, indépendante de @sentropic/graph et des paquets DS
+# existants. Déclenchée par un tag `dataviz-v<version>`.
+#
+# Ordre de publication : dataviz-core d'abord, puis svelte, react, vue,
+# angular (les adaptateurs dépendent du cœur à la version exacte du tag).
+#
+# Publication via npm Trusted Publishing (OIDC). Le trusted publisher attendu
+# côté npm est : rhanka/sent-tech-design-system + dataviz-publish.yml.
+# @sentropic/dataviz-angular n'a jamais été publié : sa première publication
+# passe par le chemin d'amorçage au jeton temporaire (secret NPM_TOKEN,
+# voir docs/release.md), inactif quand le secret est absent.
+
+on:
+  push:
+    tags: ["dataviz-v*"]
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+      - run: npm ci
+      - name: Build Dataviz dependencies
+        run: |
+          npm --workspace @sentropic/design-system-tokens run build
+          npm --workspace @sentropic/design-system-themes run build
+          npm --workspace @sentropic/dataviz-core run build
+          npm --workspace @sentropic/design-system-svelte run build
+          npm --workspace @sentropic/design-system-react run build
+          npm --workspace @sentropic/design-system-vue run build
+          npm --workspace @sentropic/design-system-angular run build
+      - name: Verify Dataviz packages
+        run: |
+          npm --workspace @sentropic/dataviz-core run build
+          npm --workspace @sentropic/dataviz-core run check
+          npm --workspace @sentropic/dataviz-core run test
+          npm --workspace @sentropic/dataviz-svelte run build
+          npm --workspace @sentropic/dataviz-svelte run check
+          npm --workspace @sentropic/dataviz-svelte run test
+          npm --workspace @sentropic/dataviz-react run build
+          npm --workspace @sentropic/dataviz-react run check
+          npm --workspace @sentropic/dataviz-react run test
+          npm --workspace @sentropic/dataviz-vue run build
+          npm --workspace @sentropic/dataviz-vue run check
+          npm --workspace @sentropic/dataviz-vue run test
+          npm --workspace @sentropic/dataviz-angular run build
+          npm --workspace @sentropic/dataviz-angular run check
+          npm --workspace @sentropic/dataviz-angular run test
+      - name: Build workspace for package smoke
+        run: npm run build
+      - name: Smoke packed packages
+        run: npm run pack:smoke
+
+  release-guard:
+    needs: verify
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/dataviz-v')
+    env:
+      RELEASE_BRANCH: ${{ github.event.repository.default_branch }}
+      TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify tag is merged into default branch
+        run: |
+          git fetch origin "${RELEASE_BRANCH}:refs/remotes/origin/${RELEASE_BRANCH}"
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" "origin/${RELEASE_BRANCH}"; then
+            echo "::error::Refusing to publish ${TAG}: ${GITHUB_SHA} is not merged into origin/${RELEASE_BRANCH}."
+            exit 1
+          fi
+      - name: Verify Dataviz versions match tag
+        run: |
+          EXPECTED="${TAG#dataviz-v}"
+          EXPECTED="$EXPECTED" node --input-type=module <<'NODE'
+          import { readFileSync } from "node:fs";
+
+          const expected = process.env.EXPECTED;
+          // The five dataviz packages move in lockstep: every manifest and
+          // every internal dependency must carry the tag version.
+          const manifests = [
+            "packages/dataviz-core/package.json",
+            "packages/dataviz-svelte/package.json",
+            "packages/dataviz-react/package.json",
+            "packages/dataviz-vue/package.json",
+            "packages/dataviz-angular/package.json",
+          ];
+          const failures = [];
+
+          for (const manifestPath of manifests) {
+            const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
+            if (manifest.version !== expected) {
+              failures.push(`${manifest.name}: ${manifest.version}`);
+            }
+            for (const field of ["dependencies", "peerDependencies", "optionalDependencies"]) {
+              for (const [name, version] of Object.entries(manifest[field] ?? {})) {
+                if (name.startsWith("@sentropic/dataviz-") && version !== expected) {
+                  failures.push(`${manifest.name} -> ${name}: ${version}`);
+                }
+              }
+            }
+          }
+
+          if (failures.length > 0) {
+            console.error(`Tag version ${expected} does not match dataviz versions:`);
+            for (const failure of failures) console.error(`- ${failure}`);
+            process.exit(1);
+          }
+
+          console.log(`All dataviz package versions match ${expected}`);
+          NODE
+
+  publish:
+    needs: release-guard
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/dataviz-v')
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+      - name: Upgrade npm
+        run: npm install -g npm@11.6.2
+      - name: Install and build
+        run: |
+          npm ci
+          npm --workspace @sentropic/dataviz-core run build
+          npm --workspace @sentropic/design-system-svelte run build
+          npm --workspace @sentropic/design-system-react run build
+          npm --workspace @sentropic/design-system-vue run build
+          npm --workspace @sentropic/design-system-angular run build
+          npm --workspace @sentropic/dataviz-svelte run build
+          npm --workspace @sentropic/dataviz-react run build
+          npm --workspace @sentropic/dataviz-vue run build
+          npm --workspace @sentropic/dataviz-angular run build
+      - name: Bootstrap npm auth for first publish (inactive without secret)
+        if: ${{ secrets.NPM_TOKEN != '' }}
+        run: npm config set //registry.npmjs.org/:_authToken "${{ secrets.NPM_TOKEN }}"
+      - name: Publish Dataviz packages in dependency order
+        run: |
+          npm publish --workspace @sentropic/dataviz-core --access public
+          npm publish --workspace @sentropic/dataviz-svelte --access public
+          npm publish --workspace @sentropic/dataviz-react --access public
+          npm publish --workspace @sentropic/dataviz-vue --access public
+          npm publish --workspace @sentropic/dataviz-angular --access public
+
+  post-publish-check:
+    needs: publish
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/dataviz-v')
+    env:
+      TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Wait for npm propagation
+        run: |
+          VERSION="${TAG#dataviz-v}"
+          PACKAGES=(
+            "@sentropic/dataviz-core"
+            "@sentropic/dataviz-svelte"
+            "@sentropic/dataviz-react"
+            "@sentropic/dataviz-vue"
+            "@sentropic/dataviz-angular"
+          )
+
+          for attempt in {1..20}; do
+            missing=()
+
+            for package in "${PACKAGES[@]}"; do
+              if ! npm view "${package}@${VERSION}" version --silent > /dev/null 2>&1; then
+                missing+=("${package}@${VERSION}")
+              fi
+            done
+
+            if [ "${#missing[@]}" -eq 0 ]; then
+              echo "All packages are available from npm."
+              exit 0
+            fi
+
+            echo "Waiting for npm propagation, attempt ${attempt}/20: ${missing[*]}"
+            sleep 15
+          done
+
+          echo "::error::Timed out waiting for npm propagation."
+          exit 1
+
+      - name: Install published packages
+        run: |
+          VERSION="${TAG#dataviz-v}"
+          mkdir /tmp/sent-tech-dataviz-post-publish
+          cd /tmp/sent-tech-dataviz-post-publish
+          npm init -y --silent
+          npm install \
+            "@sentropic/dataviz-core@${VERSION}" \
+            "@sentropic/dataviz-svelte@${VERSION}" \
+            "@sentropic/dataviz-react@${VERSION}" \
+            "@sentropic/dataviz-vue@${VERSION}" \
+            "@sentropic/dataviz-angular@${VERSION}" \
+            "svelte@^5" \
+            "react@^19" \
+            "react-dom@^19" \
+            "vue@^3" \
+            "@angular/compiler@^21.2.17"
+
+      - name: Verify published package imports
+        run: |
+          cd /tmp/sent-tech-dataviz-post-publish
+          node --input-type=module <<'NODE'
+          const core = await import("@sentropic/dataviz-core");
+          if (typeof core.validateModel !== "function") {
+            throw new Error("@sentropic/dataviz-core missing validateModel export");
+          }
+
+          const react = await import("@sentropic/dataviz-react");
+          if (Object.keys(react).length === 0) {
+            throw new Error("@sentropic/dataviz-react has no exports");
+          }
+
+          const vue = await import("@sentropic/dataviz-vue");
+          if (Object.keys(vue).length === 0) {
+            throw new Error("@sentropic/dataviz-vue has no exports");
+          }
+
+          await import("@angular/compiler");
+          const angular = await import("@sentropic/dataviz-angular");
+          if (Object.keys(angular).length === 0) {
+            throw new Error("@sentropic/dataviz-angular has no exports");
+          }
+
+          const svelteEntry = await import.meta.resolve("@sentropic/dataviz-svelte");
+          if (!svelteEntry.endsWith("dist/index.js")) {
+            throw new Error("@sentropic/dataviz-svelte resolves to an unexpected entry: " + svelteEntry);
+          }
+          NODE
