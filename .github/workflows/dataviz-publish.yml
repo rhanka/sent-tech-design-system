@@ -125,6 +125,8 @@ jobs:
     permissions:
       contents: read
       id-token: write
+    env:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -147,8 +149,6 @@ jobs:
           npm --workspace @sentropic/dataviz-angular run build
       - name: Bootstrap npm auth for first publish (inactive without secret)
         if: ${{ env.NPM_TOKEN != '' }}
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npm config set //registry.npmjs.org/:_authToken "${NPM_TOKEN}"
       - name: Publish Dataviz packages in dependency order
         run: |
