@@ -3537,7 +3537,8 @@
       "gitBlob": "f32a53f263658fb563ecc81febd33693dfe3bc43",
       "sha256": "4de2b350a549668ad67d5972bdc237539dcbcc03e133e835eea3d47657bb0da8",
       "status": "adapted-packaging-only",
-      "destinationSha256": "8487b5d9c111415cb7f39c60bf28bf747a6f5d6fc34d9e23f67560086ec17e2a"
+      "destinationSha256": "b824fd3bb5314257efa98708c819822ab1ec727b8d016c13ffede3995945f3e0",
+      "note": "svelte devDep pinned to exact 5.55.7 (single runtime; ^ resolved a nested 5.57.1 breaking 60 tests)"
     },
     {
       "repository": "dataviz",
