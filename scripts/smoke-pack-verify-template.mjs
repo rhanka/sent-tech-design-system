@@ -136,9 +136,17 @@ function assertModuleExports(label, mod, minCount) {
     // letter, which excludes SCREAMING_SNAKE_CASE constants (e.g.
     // ICON_NAMES, PANEL_STACK_MAX_SECTIONS) that legitimately export numbers
     // or arrays alongside the components in the same index.
+    // Symbols are likewise legitimate: the dataviz-vue adapter exposes its
+    // store as a Vue InjectionKey (DashboardKey), and an InjectionKey IS a
+    // symbol by construction.
     const looksLikeComponent = /^[A-Z]/.test(key) && /[a-z]/.test(key);
-    if (looksLikeComponent && typeof value !== "function" && typeof value !== "object") {
-      broken.push(key + ' has unexpected type "' + typeof value + '" (expected function or object)');
+    if (
+      looksLikeComponent &&
+      typeof value !== "function" &&
+      typeof value !== "object" &&
+      typeof value !== "symbol"
+    ) {
+      broken.push(key + ' has unexpected type "' + typeof value + '" (expected function, object or symbol)');
     }
   }
   if (broken.length > 0) {
