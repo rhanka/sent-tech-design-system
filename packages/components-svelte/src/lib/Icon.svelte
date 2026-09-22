@@ -54,16 +54,23 @@
 <style>
   /* Stroke width and colour come from the theme tokens. The selectors only
      match the DS defaults (stroke-width 2.25 set by no prop, stroke
-     currentColor), so an explicit strokeWidth prop or colour keeps winning.
-     :where() keeps the specificity at 0: any consumer rule still wins, while
-     the declaration still beats the SVG presentation attributes. The fallbacks
-     reproduce the former render when no theme is loaded. Same rule as the
+     currentColor), so an explicit strokeWidth prop or colour keeps its
+     presentation attribute. The rules live in the cascade layer `st-icon`: a
+     layered rule still beats the SVG presentation attributes, and any unlayered
+     consumer rule beats it. A consumer rule inside a layer (Tailwind v4
+     utilities) only wins if `st-icon` comes first in the layer order: declare
+     `@layer st-icon;` before `@import "tailwindcss";`. Svelte usually emits
+     component CSS after the app's global CSS, so without that declaration the
+     token rules beat layered utilities on the icon. The fallbacks reproduce
+     the former render when no theme is loaded. Same rules as the
      React/Vue/Angular styles.css. */
-  :global(:where(.st-icon[stroke-width="2.25"]:not([data-st-icon-stroke]))) {
-    stroke-width: var(--st-component-icon-strokeWidth, 2.25);
-  }
+  @layer st-icon {
+    :global(:where(.st-icon[stroke-width="2.25"]:not([data-st-icon-stroke]))) {
+      stroke-width: var(--st-component-icon-strokeWidth, 2.25);
+    }
 
-  :global(:where(.st-icon[stroke="currentColor"])) {
-    stroke: var(--st-component-icon-color, currentColor);
+    :global(:where(.st-icon[stroke="currentColor"])) {
+      stroke: var(--st-component-icon-color, currentColor);
+    }
   }
 </style>
