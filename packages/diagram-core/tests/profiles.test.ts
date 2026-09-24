@@ -190,3 +190,38 @@ describe("a document may not use a profile it does not declare", () => {
     expect(distinctErrorCodes(validateDocument(smuggled, { registry }))).toEqual(["profile-not-declared"]);
   });
 });
+
+describe("the executable constraints of generic@1", () => {
+  const fixture = readFixture("valid/generic-state.json");
+  const document = stateOf(fixture).document;
+  const root = document.entities["entity:root"] as NonNullable<(typeof document.entities)[string]>;
+
+  /** A document with `count` containers, all named `name`. */
+  function withContainers(count: number, name: (index: number) => string): SemanticDocument {
+    const entities: Record<string, typeof root> = {};
+    for (let index = 0; index < count; index += 1) {
+      const id = entityRef(`c${index}`);
+      entities[id] = { ...root, id, attributes: { name: { kind: "text", value: name(index) } } };
+    }
+    return { ...document, typeDefinitions: {}, entities, ports: {}, relations: {}, extensions: [] };
+  }
+
+  it("enforces unique-attribute, naming both entities that collide", () => {
+    const clash = withContainers(2, () => "Same name");
+    const diagnostics = validateDocument(clash, { registry });
+    expect(distinctErrorCodes(diagnostics)).toEqual(["unique-attribute-violation"]);
+    expect(diagnostics[0]?.refs).toEqual(["entity:c1", "entity:c0"]);
+    // Distinct names are accepted: the constraint is about collisions, not about
+    // the attribute being present.
+    expect(validateDocument(withContainers(2, (index) => `Name ${index}`), { registry })).toEqual([]);
+  });
+
+  it("enforces max-entities-of-type, and says how many it saw", () => {
+    const atLimit = withContainers(64, (index) => `Name ${index}`);
+    expect(validateDocument(atLimit, { registry })).toEqual([]);
+    const overLimit = withContainers(65, (index) => `Name ${index}`);
+    const diagnostics = validateDocument(overLimit, { registry });
+    expect(distinctErrorCodes(diagnostics)).toEqual(["limit-exceeded"]);
+    expect(diagnostics[0]?.details).toEqual({ type: "container", seen: 65, max: 64 });
+  });
+});
