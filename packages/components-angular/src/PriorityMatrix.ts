@@ -369,9 +369,10 @@ export class PriorityMatrix implements OnInit, OnChanges {
     }));
   }
 
-  // Cached placement (ForceGraph precedent): the annealing pass costs ~3ms at
-  // 13 points but ~37ms at 50, and must not rerun on every change-detection
-  // cycle. Recomputed in ngOnInit/ngOnChanges only.
+  // Cached placement (ForceGraph precedent): the annealing pass costs ~1ms at
+  // 13 points but ~40ms at 50, and must not rerun on every change-detection
+  // cycle. Recomputed in ngOnInit/ngOnChanges only. Public because the template
+  // reads it; treat it as read-only from outside.
   placed: PlacedLabel[] = [];
 
   ngOnInit(): void {
