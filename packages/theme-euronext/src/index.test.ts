@@ -18,9 +18,10 @@ describe("euronextTheme", () => {
     expect(css).toContain("--st-component-control-hoverBackground:");
     expect(css).toContain("--st-component-control-hoverBorder:");
     expect(css).toContain("--st-component-selection-switchTrackChecked");
-    // Euronext form fields are filled-underline (brand search input draws a
-    // single bottom hairline), not boxed.
-    expect(css).toContain("--st-field-style: filled-underline;");
+    // Euronext form fields are boxed (general .form-control is a white box
+    // with four equal #c8d1da borders); the search-widget underline is a
+    // documented exception, not the field anatomy.
+    expect(css).toContain("--st-field-style: outline;");
   });
 
   it("publishes expected anatomy for core control components", () => {
@@ -30,7 +31,7 @@ describe("euronextTheme", () => {
       hoverBackground: "#f2f4f6"
     });
     expect(component.control.anatomy?.field).toMatchObject({
-      style: "filled-underline",
+      style: "outline",
       fillBg: "#ffffff"
     });
     expect(component.tabs).toMatchObject({
