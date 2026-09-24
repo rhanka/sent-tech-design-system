@@ -53,7 +53,7 @@ const MARGIN = { top: 16, right: 18, bottom: 36, left: 52 } as const;
         </svg>
       </div>
 
-      <ul class="st-chartDataList" [attr.aria-label]="(label ?? 'point and figure') + ' data'">
+      <ul class="st-chartDataList" [attr.aria-label]="'Data values for ' + (label ?? 'point and figure')">
         <li *ngFor="let item of dataValueItems">{{ item }}</li>
       </ul>
 

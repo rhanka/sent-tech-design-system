@@ -97,7 +97,7 @@ type Stats = { mean: number; sd: number; n: number };
         </svg>
       </div>
 
-      <ul class="st-chartDataList" [attr.aria-label]="ariaLabel">
+      <ul class="st-chartDataList" [attr.aria-label]="'Data values for ' + ariaLabel">
         @for (item of dataValueItems; track $index) {
           <li>{{ item }}</li>
         }

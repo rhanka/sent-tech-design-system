@@ -62,7 +62,7 @@ function barbCounts(speed: number): { flags: number; full: number; half: number 
         </svg>
       </div>
 
-      <ul class="st-chartDataList" [attr.aria-label]="(label ?? 'wind barb') + ' data'">
+      <ul class="st-chartDataList" [attr.aria-label]="'Data values for ' + (label ?? 'wind barb')">
         <li *ngFor="let item of dataValueItems">{{ item }}</li>
       </ul>
 
