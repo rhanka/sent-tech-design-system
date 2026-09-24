@@ -32,4 +32,22 @@ describe("PriorityMatrix (parity with Svelte)", () => {
     expect(items).toHaveLength(data.length);
     expect(items[0]).toContain("Auth SSO");
   });
+
+  it("clamps non-finite values instead of rendering NaN", () => {
+    const bad: PriorityMatrixDatum[] = [
+      { x: NaN, y: 82, label: "Bad X" },
+      { x: 20, y: Infinity, label: "Bad Y" },
+    ];
+    const wrapper = mount(PriorityMatrix, { props: { label: "Matrice", data: bad } });
+    const el = wrapper.element as HTMLElement;
+    expect(el.innerHTML).not.toContain("NaN");
+    const circles = Array.from(el.querySelectorAll(".st-priorityMatrix__point"));
+    expect(circles).toHaveLength(bad.length);
+    for (const c of circles) {
+      expect(Number.isFinite(Number(c.getAttribute("cx")))).toBe(true);
+      expect(Number.isFinite(Number(c.getAttribute("cy")))).toBe(true);
+    }
+    const items = Array.from(el.querySelectorAll(".st-chartDataList li")).map((n) => n.textContent ?? "");
+    expect(items.join(" ")).not.toContain("NaN");
+  });
 });

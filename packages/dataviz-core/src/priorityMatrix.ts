@@ -2,14 +2,19 @@
  * Priority-matrix label placement (2x2 value/effort matrix).
  *
  * Pure TypeScript, no DOM. Given anchor points in frame pixels, label box
- * sizes and a plot frame, returns non-overlapping label positions with leader
- * lines back to their anchors. Deterministic: a fixed-seed PRNG drives the
- * simulated-annealing refinement (d3-labeler style energy), so repeated calls
- * with identical inputs return byte-identical outputs.
+ * sizes and a plot frame, returns label positions with leader lines back to
+ * their anchors. Deterministic: a fixed-seed PRNG drives the simulated-
+ * annealing refinement (d3-labeler style energy), so repeated calls with
+ * identical inputs return byte-identical outputs.
  *
  * Pipeline: greedy 8-candidate seeding around each anchor, then annealing over
  * overlap area + anchor distance + point-cover + out-of-frame penalties, with
  * hard clamping into the frame after every move.
+ *
+ * Best effort, not a guarantee: on dense sets labels may still overlap each
+ * other, cover points, cross the threshold lines or hide a quadrant name.
+ * Known limits (recommended cap around 50 points, estimated boxes, fixed
+ * frame, input-order dependence) are documented on `placePriorityLabels`.
  */
 
 /** One matrix point in DATA space (0-100 per axis). */
@@ -33,6 +38,20 @@ export interface PriorityMatrixFrame {
   marginTop: number;
   plotWidth: number;
   plotHeight: number;
+}
+
+/**
+ * Fixed obstacle rectangle in frame pixels: a threshold keep-out band or a
+ * quadrant-name box derived by the caller from its own layout. Overlap with an
+ * obstacle is a soft cost weighted 4x above label/label overlap per px2, so a
+ * label crosses a thin threshold band only when every alternative is worse.
+ * Degenerate rectangles (non-finite or non-positive size) are ignored.
+ */
+export interface PriorityMatrixObstacle {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
 }
 
 /** Placed label: top-left box origin plus leader segment endpoints. */
@@ -72,6 +91,14 @@ export function priorityQuadrant(x: number, y: number, xThreshold = 50, yThresho
 /**
  * Rough box estimate from a label string when the caller has no measurement.
  * Single line up to 12 chars, two lines beyond; capped at 120px wide.
+ *
+ * This is a glyph-count MODEL, not a measurement: it assumes narrow latin
+ * glyphs at 11px. Wide latin runs overflow the box (Inter 11px measured in
+ * Chromium, review figures: "MMMMMMMMMM" by 17.7px, "WWWWWWWWWWWW" by 26.7px;
+ * same-direction check with DejaVu Sans 11px advances: 12.9px and 34.5px) and
+ * CJK text overflows further ("データ可視化の基盤" by 24.0px in Inter 11px).
+ * The non-overlap behaviour only holds for narrow latin; there is currently
+ * no prop to pass caller-measured boxes through the DS components.
  */
 export function estimatePriorityLabelBox(label: string): PriorityMatrixBox {
   const chars = [...label].length;
@@ -84,8 +111,20 @@ export function estimatePriorityLabelBox(label: string): PriorityMatrixBox {
 export interface PlacePriorityLabelsOptions {
   xThreshold?: number;
   yThreshold?: number;
-  /** Annealing iterations scale; default max(1500, n*120). */
+  /**
+   * PRNG seed for the annealing refinement; default 42. Identical inputs with
+   * the same seed return byte-identical outputs. Note: output is NOT stable
+   * across input orders — reversing the input array moves every label (13/13
+   * on the reference set, up to 177.4px, leaders 343px to 306px). Sort or
+   * stabilise the input order upstream when stability across data refreshes
+   * matters.
+   */
   seed?: number;
+  /**
+   * Fixed obstacle rectangles (threshold bands, quadrant-name boxes) in frame
+   * pixels. Overlap with an obstacle costs 4x a label/label overlap per px2.
+   */
+  obstacles?: readonly PriorityMatrixObstacle[];
 }
 
 const CANDIDATE_GAP = 8;
@@ -125,6 +164,25 @@ function clampInto(x: number, y: number, w: number, h: number, f: PriorityMatrix
 /**
  * Place one label per point. Never throws on degenerate input: non-finite
  * coordinates fall back to the plot origin, empty arrays yield [].
+ *
+ * Cost model: label/label overlap area, point-cover (a label box covering ANY
+ * anchor — including its own — costs 300 in seeding, 800 in annealing, so
+ * opaque label boxes avoid hiding points), obstacle overlap, anchor distance,
+ * and out-of-frame penalties, refined by fixed-schedule simulated annealing.
+ *
+ * Complexity is O(n^2) per energy evaluation with max(1500, n*120) iterations,
+ * i.e. O(n^3) overall (the 1500 floor dominates below ~30 points). Measured
+ * (Node 22, desktop class, seeded random sets with long 2-line labels):
+ * n=13 in 3.2ms, n=30 in 13.7ms, n=50 in 36.8ms, n=80 in 137.8ms, n=100 in
+ * 258.9ms. Overlap counts are set-dependent (0/1/15/83/176 on that
+ * adversarial set). Recommended cap: around 50 points; beyond that both
+ * latency and overlaps degrade.
+ *
+ * Frame floor: with the shipped DS configuration (splitLabel boxes, threshold
+ * and name obstacles) the 13-point reference set is clean at 640x400, shows
+ * 1 overlap at 480x300 and 400x250, 9 overlaps at 320x200, 35 at 200x140, and
+ * 78 overlaps plus 12 out-of-plot boxes at 120x90. Do not render below
+ * roughly 480x300.
  */
 export function placePriorityLabels(
   points: readonly PriorityMatrixPoint[],
@@ -135,6 +193,9 @@ export function placePriorityLabels(
   const xT = opts.xThreshold ?? 50;
   const yT = opts.yThreshold ?? 50;
   const seed = opts.seed ?? 42;
+  const obstacles = (opts.obstacles ?? []).filter(
+    (o) => Number.isFinite(o.x) && Number.isFinite(o.y) && o.w > 0 && o.h > 0,
+  );
   const n = points.length;
   if (n === 0) return [];
 
@@ -170,8 +231,14 @@ export function placePriorityLabels(
       c += overlapArea(x, y, w, h, pos[j]!.x, pos[j]!.y, sizes[j]!.w, sizes[j]!.h) * 2;
     }
     for (let j = 0; j < n; j++) {
-      if (j === idx) continue;
       if (pointInBox(anchors[j]!.ax, anchors[j]!.ay, x, y, w, h)) c += 300;
+    }
+    // Obstacles (threshold bands, quadrant names) cost 4x a label/label overlap
+    // per px2: crossing a 6px threshold band with a label must cost about as
+    // much as fully overlapping another label, otherwise the band is crossed
+    // whenever space is scarce.
+    for (const o of obstacles) {
+      c += overlapArea(x, y, w, h, o.x, o.y, o.w, o.h) * 8;
     }
     c += Math.hypot(x + w / 2 - anchors[idx]!.ax, y + h / 2 - anchors[idx]!.ay) * 0.5;
     return c;
@@ -214,8 +281,10 @@ export function placePriorityLabels(
         e += 5000;
       }
       for (let j = 0; j < n; j++) {
-        if (j === i) continue;
         if (pointInBox(anchors[j]!.ax, anchors[j]!.ay, pos[i]!.x, pos[i]!.y, w, h)) e += 800;
+      }
+      for (const o of obstacles) {
+        e += overlapArea(pos[i]!.x, pos[i]!.y, w, h, o.x, o.y, o.w, o.h) * 12;
       }
       for (let j = i + 1; j < n; j++) {
         e += overlapArea(pos[i]!.x, pos[i]!.y, w, h, pos[j]!.x, pos[j]!.y, sizes[j]!.w, sizes[j]!.h) * 3;
@@ -247,7 +316,8 @@ export function placePriorityLabels(
     const { w, h } = sizes[i]!;
     const bx = pos[i]!.x;
     const by = pos[i]!.y;
-    // Leader from box edge midpoint nearest the anchor to the anchor.
+    // Leader from the closest point of the box to the anchor (edge-clamped;
+    // zero-length when the anchor lies inside the box) to the anchor.
     const cx = Math.min(Math.max(anchors[i]!.ax, bx), bx + w);
     const cy = Math.min(Math.max(anchors[i]!.ay, by), by + h);
     return {
