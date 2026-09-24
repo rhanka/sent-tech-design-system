@@ -1,0 +1,19 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    // NO "DOM" in lib and NO ambient types: the DOM-free rule of this package is
+    // enforced by the compiler, not only by a test. `document`, `window`,
+    // `navigator` and every node builtin are unresolvable identifiers here, so a
+    // module that reaches for one fails `npm run build` before any test runs.
+    "lib": ["ES2022"],
+    "types": [],
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["src"],
+  "exclude": ["dist", "node_modules"]
+}
