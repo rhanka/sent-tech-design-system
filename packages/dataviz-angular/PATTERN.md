@@ -1,10 +1,9 @@
 # Porting a store-driven adapter to `@sentropic/dataviz-angular`
 
-This is the recipe used to port the first ten adapters of the lot
-(`AreaChart`, `DonutChart`, `HeatmapChart`, `ScatterPlot`, `TreemapChart`,
-`DashboardFilterBar`, `DateRangeFilter`, `RecordsTable`, `KpiCardGroup`,
-`SelectionLegend`). Follow it verbatim for the next lots: every step below
-exists because something broke without it.
+This is the recipe used to port the first thirty-two adapters, in two lots: ten
+written by hand (the first lot, one per family of the pattern) and twenty
+generated from a descriptor (the second, see "Adding a lot"). Follow it for the
+next lots — every step below exists because something broke without it.
 
 An adapter in this package is **state wiring, not rendering**. It reads a
 `DashboardStore`, derives a plain array with the framework-free helpers, and
@@ -187,7 +186,7 @@ asserts the whole surface — add the new name to its `components` table.
 
 ---
 
-## Traps actually hit while porting these ten
+## Traps actually hit while porting
 
 1. **DS class-field defaults are destroyed by an `undefined` binding.**
    `KpiCard` declares `format: KpiCardFormat = "number"` and `size: KpiCardSize =
@@ -269,15 +268,41 @@ asserts the whole surface — add the new name to its `components` table.
     dependency array and map each entry to an Angular lifecycle hook or to the
     store subscription.
 13. **A divergence visible from an adapter is usually a DS bug worth fixing.**
-    Three were found this way and fixed in `packages/components-angular` rather
-    than documented as exceptions: `Inline` without ARIA inputs (trap 6), seven
-    charts labelling their data list `"<label> data"` where React's shared
-    `ChartDataList` says `"Data values for <label>"`, and `SelectionChip`/`Search`
-    drawing their close cross as one path where React's lucide `X` is two. The
-    last one shifted every following entry, so a 1-element difference read as a
-    whole-tail divergence. Measure with the control experiment first (bare DS
-    component, identical inputs): when the adapter count equals the bare count,
-    the fix belongs in the DS package.
+    Measure with the bare-DS control first (same inputs, no adapter): when the
+    adapter's diff count equals the bare count, the fix belongs in
+    `packages/components-angular`. Seven such fixes came out of the first two lots,
+    and two of them were defects rather than cosmetics:
+    `chartScale.buildSmoothPath` was a stub returning `buildLinearPath`, so every
+    smoothing Angular chart — `AreaSplineRangeChart` above all — drew straight
+    segments where React draws Béziers; and `RenkoChart` read its value list as
+    `DOWN 104.8 -> 105` where React reads `▼ 104.8 → 105`. The others were the
+    `Inline` ARIA inputs, the close-icon path, and a sweep of **21** charts whose
+    accessible data list did not use React's shared `Data values for <label>`
+    wording. Sweep the whole class when you find one: the second lot re-found the
+    same wording bug in three more spellings the first sweep's grep had missed.
+
+## Adding a lot
+
+Do not hand-copy the skeleton. `tools/dataviz-angular-port/` extracts a descriptor
+from each `dataviz-vue` adapter and emits the Angular one; its README has the
+procedure and the list of shapes it refuses. The second lot's twenty adapters came
+out of it with no hand editing and passed `ngc` with `strictTemplates` on the first
+run. Two lessons are baked into the extractor and worth knowing when reading its
+output:
+
+- `import type { A, B }` marks the whole clause as types, while
+  `import { type A, b }` marks them one by one. Both spellings occur in the Vue
+  sources; reading only the second loses a type import.
+- a prop bound straight through to a DS input takes **that input's** declared
+  type, not the Vue `Props` alias's. Several aliases widen it to `string` and cast
+  with `as any` at the `h()` call (`tone?: string` against `AreaRangeChartTone`);
+  Angular cannot cast inside a template, and stating the union the DS component
+  honours is the better contract for the same accepted values.
+
+Tests are table-driven: `src/lib/generated-adapters.test.ts` holds one row per
+adapter and asserts the same things for all of them, including that a selection in
+another cross-filter view changes what is rendered.
+
 
 ---
 
@@ -311,17 +336,26 @@ trap 13 says, that is usually a DS bug to fix rather than an exception to record
 
 ## Known debt
 
-- **The three data helpers are duplicated, not shared.**
-  `categoricalData.ts`, `partOfWholeData.ts` and `distributionData.ts` exist once
-  per adapter package (389 lines × 4). None of their 35 exported symbols exists in
-  `@sentropic/dataviz-core`, and all four adapter packages already depend on core,
-  so the resolution is to promote them into core and delete the copies. Until that
-  happens, `scripts/verify-dataviz-helper-copies.test.mjs` hashes every copy and
-  fails when they drift apart. Do not edit one package's copy: change the
-  reference and copy it across, or do the promotion.
+- **The data helpers are duplicated, not shared.** `categoricalData.ts`,
+  `partOfWholeData.ts` and `distributionData.ts` exist once per adapter package,
+  byte-identical; `geoMapLayers.ts` too, except for its design-system type import.
+  None of their exported symbols exists in `@sentropic/dataviz-core`, and all four
+  adapter packages already depend on core, so the resolution is to promote them and
+  delete the copies. Until then `scripts/verify-dataviz-helper-copies.test.mjs`
+  pins every copy — byte-for-byte for the three, modulo the one import line for
+  `geoMapLayers.ts`. Do not edit one package's copy.
+- **`data-chart-index` is Angular-only on some charts.** `OHLCChart` and
+  `DumbbellChart` emit it on each mark; their React counterparts do not, which is
+  the whole of their residual markup difference (3 entries each, equal to the bare
+  DS control). React already uses the attribute on other charts, so adding it there
+  is the likely resolution; it is a `components-react` change.
+- **Angular renders tooltips always, React only on hover.** The Angular
+  `RenkoChart` keeps a hidden `__tooltip` in the DOM (`[style.display]`), React
+  omits it until hovered: 7 of `RenkoChart`'s entries, and probably most of
+  `HeatmapChart`'s 27. One pattern, several components.
 - **`ChartDataList` empty-list behaviour.** React's shared helper renders nothing
-  when the item list is empty; the seven Angular charts that used to carry the
-  other data-list wording still render an empty `<ul>`. No adapter in the current
-  lots produces an empty list, so it is left for the lot that first hits it.
+  when the item list is empty; the Angular charts render an empty `<ul>`. No
+  adapter in the current lots produces an empty list.
 - **`Flex` and `Stack` have no ARIA inputs** (trap 6 closed this for `Inline`
   only). Same one-line change when an adapter needs it.
+

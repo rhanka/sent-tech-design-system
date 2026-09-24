@@ -217,7 +217,7 @@ const cases: Case[] = [
     component: RenkoChart,
     ds: "RenkoChart",
     template: `<st-dataviz-renko-chart [store]="store" viewId="v" date="ts" close="close" label="L" class="probe"></st-dataviz-renko-chart>`,
-    items: { count: 31, first: "DOWN 104.8 -> 105", last: "UP 106.8 -> 107" },
+    items: { count: 31, first: '▼ 104.8 → 105', last: '▲ 106.8 → 107' },
     after: [],
   },
   {
