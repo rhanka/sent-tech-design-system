@@ -8,6 +8,11 @@
     "rootDir": "./src",
     "outDir": "./dist",
     "strict": true,
+    // The provenance copies under src/processing/ compile upstream with
+    // strict:false; they contain one implicit-any index the frozen bytes keep
+    // (graph-layout.ts initialPositions lookup). Relax ONLY that flag so the
+    // byte-identical copies typecheck; every other strict check stays on.
+    "noImplicitAny": false,
     "strictNullChecks": true,
     "noImplicitReturns": true,
     "esModuleInterop": true,
