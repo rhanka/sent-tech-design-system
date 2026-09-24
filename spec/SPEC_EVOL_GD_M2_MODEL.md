@@ -40,8 +40,10 @@ Créer `packages/diagram-core` (`@sentropic/diagram-core`, version `0.1.0`, `"pr
 
 - Aucune dépendance runtime. Aucun import de DOM, de framework, de `renderer.ts` ni d'aucun module WebGL.
 - Les seuls imports autorisés depuis `@sentropic/graph` sont des **contrats sans DOM** (types de positions,
-  de buffers et de géométrie). Si le sous-chemin sans DOM n'existe pas encore côté `graph`, ce lot le crée
-  (`@sentropic/graph/contracts`) sans toucher à la racine publique du paquet, inchangée depuis M1.
+  de buffers et de géométrie). Le sous-chemin `@sentropic/graph/contracts` était conditionné au besoin ;
+  l'implémentation (#85) n'en a eu aucun et ne l'a donc pas créé : le paquet livré a zéro dépendance,
+  `packages/graph` est resté intact, et l'arête `diagram-core → graph` du DAG reste `proposed`. Lier le
+  schéma persisté des vues aux types d'un autre paquet irait d'ailleurs contre l'esprit du §3.6.
 - Le paquet reste absent de la liste des paquets publiables : `scripts/verify-publishable-licensing.test.mjs`
   doit continuer d'en compter **17**, et `scripts/smoke-pack.mjs` de ne pas le sélectionner.
 
@@ -91,8 +93,11 @@ non-inversible)`. Exigences :
 - Conflit de révision : refus explicite (`revision-conflict`) portant la révision attendue et la révision vue.
 - Inverse logique : chaque commande fournit son inverse ou la raison documentée de son absence.
 - Jeu de commandes de ce lot : créer/mettre à jour/supprimer une entité, une relation, un port ; créer/déplacer/
-  supprimer une occurrence ; créer/supprimer une vue ; attacher/détacher une ressource ; appliquer une extension
-  conservée. Sélection, édition de ports géométriques et annotations relèvent de `GD-M2-CANVAS`.
+  supprimer une occurrence ; créer/supprimer une vue ; attacher/détacher une ressource ; appliquer **et
+  retirer** une extension conservée — la première version de ce paragraphe exigeait un inverse pour chaque
+  commande sans lister celle qui retire une extension, alors qu'ajouter une extension ne s'annule qu'en la
+  retirant, ce qui porte le jeu à dix-huit commandes (relevé par #85). Sélection, édition de ports
+  géométriques et annotations relèvent de `GD-M2-CANVAS`.
 
 ### 3.6 Migration de schéma
 
@@ -117,7 +122,10 @@ natifs complets (`GD-M3`), toute publication npm, tout changement de la racine p
 ## 5. Critères d'acceptation (tous exécutés et consignés)
 
 1. **Périmètre** : le diff ne touche que `packages/diagram-core/**`, `packages/graph/**` (ajout du sous-chemin
-   de contrats uniquement), `package.json`, `package-lock.json`, `spec/**`, `plan/**`, `.track/**` via Track.
+   de contrats uniquement), `package.json`, `package-lock.json`, `spec/**`, `plan/**`,
+   `docs/graph-dataviz-*` et `.track/**` via Track. La première version de ce critère omettait `docs/**`
+   alors que le critère 8 exige la mise à jour du plan de migration : contradiction relevée par
+   l'implémentation (#85), qui a suivi l'instruction spécifique et consigné le conflit.
 2. **Portes** : `npm ci`, `npm run build`, `npm run check`, `npm test`, `npm run licensing:check`,
    `npm run pack:smoke` — tous exit 0. Aucun paquet publiable ajouté (17 inchangé).
 3. **Sans DOM** : un test importe tout le barrel de `diagram-core` dans Node sans jsdom et échoue si un
@@ -131,8 +139,12 @@ natifs complets (`GD-M3`), toute publication npm, tout changement de la racine p
    `scripts/verify-publishable-licensing.test.mjs` assère `publishable.length === 17`.
 5. **Invariants** : les huit invariants de l'étude §4.2 ont chacun au moins un test nommé, ou une justification
    écrite s'ils relèvent d'un lot ultérieur.
-6. **Commandes** : pour chaque commande du §3.5, un test `commande → inverse → état initial` octet pour octet
-   sur la sérialisation du document, et un test de conflit de révision.
+6. **Commandes** : pour chaque commande du §3.5, un test `commande → inverse → état initial` octet pour
+   octet sur la sérialisation **du contenu**, révisions normalisées, plus une assertion séparée que la
+   révision a avancé de deux. Pris au mot, « octet pour octet sur la sérialisation du document » était
+   infaisable pour toute implémentation, puisque ce même §3.5 impose que la commande incrémente la
+   révision et que l'annulation soit une nouvelle transaction : une comparaison d'octets incluant la
+   révision ne pouvait pas passer. Relevé par l'implémentation (#85).
 7. **Cas rejetés** : les neuf cas du §3.7 échouent avec un diagnostic assérté.
 8. **Documentation** : `packages/diagram-core/README.md` (anglais) décrit le modèle, ses limites et ce qui
    n'est pas encore couvert ; `docs/graph-dataviz-migration-plan.md` est mis à jour pour l'état réel de M2.
