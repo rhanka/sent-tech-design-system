@@ -26,7 +26,7 @@ sources à l'amont installé : il ne peut pas se désynchroniser en silence.
 **Ce qui est copié.** Des chaînes de tracé SVG (attribut `d`) identiques octet pour octet aux données d'icônes lucide, écrites directement dans nos fichiers source et compilées dans le `dist/` publié.
 
 **Étendue mesurée.** 43 chaîne(s) de tracé distincte(s),
-71 occurrence(s), dans 20 fichier(s) source de ce paquet :
+75 occurrence(s), dans 21 fichier(s) source de ce paquet :
 
 | Fichier source | Occurrences |
 |---|---|
@@ -47,7 +47,8 @@ sources à l'amont installé : il ne peut pas se désynchroniser en silence.
 | `src/MultiSelect.ts` | 3 |
 | `src/PaginationNav.ts` | 2 |
 | `src/ProgressIndicator.ts` | 3 |
-| `src/Search.ts` | 1 |
+| `src/Search.ts` | 3 |
+| `src/SelectionChip.ts` | 2 |
 | `src/Tag.ts` | 2 |
 | `src/TimePicker.ts` | 1 |
 
