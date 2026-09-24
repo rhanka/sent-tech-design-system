@@ -119,10 +119,12 @@ const TONES: VectorFieldChartTone[] = [
         <li *ngFor="let item of dataValueItems">{{ item }}</li>
       </ul>
 
-      <div class="st-vectorFieldChart__tooltip" role="presentation" [style.display]="hoveredArrow ? 'inline-flex' : 'none'" [style.left]="tooltipLeft" [style.top]="tooltipTop">
-        <span class="st-vectorFieldChart__tooltipLabel">{{ tooltipLabel }}</span>
-        <span class="st-vectorFieldChart__tooltipValue">{{ tooltipValue }}</span>
-      </div>
+      @if (hoveredArrow) {
+        <div class="st-vectorFieldChart__tooltip" role="presentation" [style.left]="tooltipLeft" [style.top]="tooltipTop">
+          <span class="st-vectorFieldChart__tooltipLabel">{{ tooltipLabel }}</span>
+          <span class="st-vectorFieldChart__tooltipValue">{{ tooltipValue }}</span>
+        </div>
+      }
     </div>
   `,
 })
