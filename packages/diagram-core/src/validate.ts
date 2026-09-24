@@ -974,18 +974,9 @@ export function validateView(
         diagnostic({ code: "record-key-mismatch", path, message: `record key ${key} is not the group id ${group.id}` }),
       );
     }
-    for (const member of group.members) {
-      if (seenOccurrenceIds.get(member) === undefined) {
-        diagnostics.push(
-          diagnostic({
-            code: "dangling-reference",
-            path: `${path}.members`,
-            message: `group member ${member} is no occurrence of this view`,
-            refs: [member],
-          }),
-        );
-      }
-    }
+    // Membership is not checked here because it is not stored here: an
+    // occurrence names its group, and that reference is validated where the
+    // occurrence is (`entityOccurrences.*.group`).
   }
 
   const filterIds = new Set<string>();

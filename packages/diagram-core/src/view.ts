@@ -73,10 +73,21 @@ export interface PortOccurrence {
   readonly anchor: number;
 }
 
+/**
+ * A visual group declares itself; MEMBERSHIP IS NOT DUPLICATED HERE. An
+ * occurrence names its group through `EntityOccurrence.group`, and
+ * {@link occurrencesInGroup} derives the list.
+ *
+ * Why it is not a member list: two sources of truth for one fact drift, and they
+ * drift in a way that breaks the inverse. With a member list, removing a drawing
+ * had to prune the list too, and re-creating the drawing could not restore it
+ * (no command of this lot edits a group), so `delete -> undo` came back with a
+ * group that had quietly lost a member - a byte difference the round-trip test
+ * caught. Derived membership has no such gap.
+ */
 export interface VisualGroup {
   readonly id: string;
   readonly label?: string;
-  readonly members: readonly OccurrenceRef[];
   readonly collapsed?: boolean;
 }
 
@@ -182,6 +193,13 @@ export function occurrencesOfEntity(view: ViewDocument, entity: EntityRef): read
 export function occurrencesOfRelation(view: ViewDocument, relation: RelationRef): readonly RelationOccurrence[] {
   return Object.values(view.relationOccurrences)
     .filter((occurrence) => occurrence.relation === relation)
+    .sort((left, right) => (left.id < right.id ? -1 : left.id > right.id ? 1 : 0));
+}
+
+/** Derived membership: the entity drawings that name this group. */
+export function occurrencesInGroup(view: ViewDocument, group: string): readonly EntityOccurrence[] {
+  return Object.values(view.entityOccurrences)
+    .filter((occurrence) => occurrence.group === group)
     .sort((left, right) => (left.id < right.id ? -1 : left.id > right.id ? 1 : 0));
 }
 

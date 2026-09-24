@@ -222,7 +222,6 @@
         "group:cluster": {
           "id": "group:cluster",
           "label": "Cluster",
-          "members": ["occurrence:alpha-1", "occurrence:beta-1"],
           "collapsed": false
         }
       },

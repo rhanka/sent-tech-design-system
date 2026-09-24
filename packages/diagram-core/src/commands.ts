@@ -386,16 +386,12 @@ function applyRemoval(state: DiagramState, plan: RemovalPlan): AppliedRemoval {
         effects.push({ kind: "occurrence-removed", view: viewRef, occurrence: id });
       }
     }
-    // A visual group that lost members keeps its declaration; its member list is
-    // pruned so the view stays valid, and the inverse restores the list.
-    let groups = view.groups;
-    for (const group of Object.values(view.groups)) {
-      const kept = group.members.filter((member) => !removedIds.includes(member));
-      if (kept.length !== group.members.length) {
-        groups = withKey(groups, group.id, { ...group, members: kept });
-      }
-    }
-    views[viewKey] = { ...view, entityOccurrences, relationOccurrences, portOccurrences, groups };
+    // Visual groups are untouched: a group DECLARES itself and membership lives
+    // on the occurrence, so removing a drawing removes its membership with it and
+    // re-creating the drawing brings the membership back. A group that ends up
+    // with no member stays declared - an empty group is a legitimate state, and
+    // deleting it would be a decision nobody asked for.
+    views[viewKey] = { ...view, entityOccurrences, relationOccurrences, portOccurrences };
     touchedViews.push(viewRef);
   }
 
