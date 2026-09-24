@@ -4,25 +4,33 @@ import type { TenantTheme } from "@sentropic/design-system-themes";
 /**
  * Euronext brand theme for the Sentropic token structure.
  *
- * Euronext publishes no tokenised design system, but both euronext.com and
- * live.euronext.com serve a shared themed stylesheet (live served with
+ * Euronext publishes no tokenised design system, but www.euronext.com and
+ * live.euronext.com serve themed stylesheets (live served with
  * `theme=euronext_live`) whose brand-owned utility classes name the palette
  * explicitly (`.btn-brand-teal-green`, `.bg-brand-*`, `.btn-ui-*`,
- * `.text-*`, `.badge--*`). This package is a MEASURED-CLONE mapping: the
- * teal-green action colour (#008d7f), the hunter/kelly greens, the
- * primary-dark ink (#252631), the ui-blue link (#007aff) and the ui-grey
- * ramp are read from those brand-owned rules, and we reference the brand
- * font *name* (Inter, the `body` typeface) only — never font binaries.
- * Sources and exact provenance are documented in MAPPING.md. Where the
- * brand publishes no usable value (geometry, overlay backdrop, readable
- * text steps of vivid hues), the closest derived value is used and the
- * choice is noted "à confirmer" in MAPPING.md.
+ * `.text-*`, `.badge--*`). The two hosts DISAGREE on the colour of action:
+ * `.bg-primary`, `.text-primary`, `.btn-primary` and `.badge--primary` are
+ * `#008d7f` on live but `#00685e` on corporate, and `a{color:}` is
+ * `#007aff` on live but `#00685e` on corporate (see MAPPING.md for the
+ * per-host counts and the tie-break). This package is a MEASURED-CLONE
+ * mapping: the teal-green action colour (#008d7f, union winner), the
+ * hunter/kelly greens, the primary-dark ink (#252631), the ui-blue link
+ * (#007aff, live) and the ui-grey ramp are read from those brand-owned
+ * rules, and we reference the brand font *name* (Inter, the `body`
+ * typeface) only — never font binaries. Sources and exact provenance are
+ * documented in MAPPING.md. Where the brand publishes no usable value
+ * (overlay backdrop, readable text steps of vivid hues), the closest
+ * derived value is used and the choice is noted "à confirmer" in
+ * MAPPING.md. Control geometry IS published by the brand (see `density`
+ * below) but this package keeps the reference theme package's geometry
+ * for component-grid fidelity.
  *
  * Euronext colour reference (light theme):
  *   White (surface default)            #ffffff   (surface default)
  *   Lightest grey (ui-grey-5)          #f8fafb   (raised tint — brand)
  *   Page background (ui-grey-4)        #f2f4f6   (body background — brand)
- *   Hairline / field stroke (grey-3)   #e8ecef   (.border, search underline — brand)
+ *   Hairline (grey-3)                #e8ecef   (.border on live, search underline — brand)
+ *   Field stroke (ui-grey-6)         #c8d1da   (.form-control border — brand)
  *   Mid grey (ui-grey-2)               #98a9bc   (brand)
  *   Grey text (ui-grey-1)              #778ca2   (.timestamp — brand)
  *   Dark grey (ui-grey-0)              #3b4b5d   (brand)
@@ -44,11 +52,11 @@ import type { TenantTheme } from "@sentropic/design-system-themes";
  *   Error red                          #fe4d6a   (.bg-danger — brand)
  *   Info cyan                          #2ce5f6   (.bg-info — brand)
  *   Readable link blue                 #006ee6   (derived 1-step darkening — à confirmer)
- *   Readable secondary grey            #5d7389   (derived 2-step darkening — à confirmer)
+ *   Readable secondary grey            #5d7289   (derived 2-step darkening — à confirmer)
  *   Readable success green             #007c2f   (derived 1-step darkening — à confirmer)
  *   Readable warning amber             #aa6700   (derived 5-step darkening — à confirmer)
  *   Readable error red                 #e40126   (derived 4-step darkening — à confirmer)
- *   Readable info cyan                 #067984   (derived 6-step darkening — à confirmer)
+ *   Readable info cyan                 #067983   (derived 6-step darkening — à confirmer)
  */
 
 // --- Euronext raw colour palette --------------------------------------------
@@ -59,29 +67,32 @@ const euronextColor = {
     teal: "#008d7f", // .btn-brand-teal-green{background-color:#008d7f} (action / brand)
     tealHover: "#00675d", // .btn-brand-teal-green:hover{background-color:#00675d}
     tealHoverBorder: "#005a51", // .btn-brand-teal-green:hover{border-color:#005a51}
-    hunter: "#00685e", // .btn-brand-hunter-green{background-color:#00685e}
+    hunter: "#00685e", // .btn-brand-hunter-green{background-color:#00685e} — also the corporate host action colour (.bg-primary/.text-primary/.btn-primary/a on www)
     kelly: "#009639", // .btn-brand-kelly-green{background-color:#009639}
     sky: "#41b6e6", // .btn-brand-sky-blue{background-color:#41b6e6}
     spring: "#79d100", // .btn-brand-spring-green{background-color:#79d100}
     primaryDark: "#252631" // body{color:#252631} / .btn-brand-primary-dark
   },
-  // Link / ui blue family (`a{color:#007aff}`, `.btn-ui-blue`).
+  // Link / ui blue family. Live host: `a{color:#007aff}` and
+  // `.btn-ui-blue{background-color:#007aff}`; corporate host serves
+  // `a{color:#00685e}` instead (see MAPPING.md host disagreement).
   blue: {
-    ui: "#007aff", // a{color:#007aff} / .btn-ui-blue{background-color:#007aff}
+    ui: "#007aff", // live a{color:#007aff} / .btn-ui-blue{background-color:#007aff}
     link: "#006ee6", // derived readable link blue, 1 stop-rule step (à confirmer)
     foam: "#f1fafe" // .btn-ui-foam-blue{background-color:#f1fafe}
   },
   // Neutral ui-grey ramp (`.btn-ui-grey-*`) plus body/input ink.
   slate: {
     0: "#ffffff", // white / surface default
-    50: "#f8fafb", // .btn-ui-grey-5{background-color:#f8fafb}
-    100: "#f2f4f6", // body{background-color:#f2f4f6} / .btn-ui-grey-4
-    200: "#e8ecef", // .border{border:1px solid #e8ecef} / .btn-ui-grey-3
+    50: "#f8fafb", // .btn-ui-grey-5{background-color:#f8fafb} (both hosts)
+    100: "#f2f4f6", // live body{background-color:#f2f4f6} / .btn-ui-grey-4 (both hosts; www body is #fff)
+    200: "#e8ecef", // live .border{border:1px solid #e8ecef} / .btn-ui-grey-3 (both hosts; www .border is Bootstrap default #dee2e6)
     300: "#98a9bc", // .btn-ui-grey-2{background-color:#98a9bc}
     400: "#778ca2", // .timestamp{color:#778ca2} / .btn-ui-grey-1
     500: "#3b4b5d", // .btn-ui-grey-0{background-color:#3b4b5d}
+    600: "#c8d1da", // .form-control{border:1px solid #c8d1da} / .btn-ui-grey-6 (brand override of Bootstrap #ced4da)
     800: "#252631", // body{color:#252631} (primary text / dark inverse surface)
-    900: "#1b1e24" // .form-control:focus{color:#1b1e24}
+    900: "#1b1e24" // .form-control:focus{color:#1b1e24} (general form control, least-scoped rule)
   },
   // Light tints published as named ui/badge backgrounds.
   tint: {
@@ -98,7 +109,7 @@ const euronextColor = {
     error: "#fe4d6a", // .bg-danger{background-color:#fe4d6a} (brand fill)
     errorText: "#e40126", // derived readable error text, 4 steps (à confirmer)
     info: "#2ce5f6", // .bg-info{background-color:#2ce5f6} (brand fill)
-    infoText: "#067984", // derived readable info text, 6 steps (à confirmer)
+    infoText: "#067983", // derived readable info text, 6 steps (à confirmer)
     muted: "#676767" // .text-muted{color:#676767}
   }
 } as const;
@@ -117,7 +128,7 @@ const foundation = {
     cyan: {
       10: euronextColor.tint.info, // #eafcfe badge info tint (.badge--info)
       50: euronextColor.brand.sky, // #41b6e6 sky blue (.btn-brand-sky-blue)
-      70: euronextColor.system.infoText // #067984 readable info text (à confirmer)
+      70: euronextColor.system.infoText // #067983 readable info text (à confirmer)
     },
     // Sentropic "slate" role family mapped onto the ui-grey ramp.
     slate: {
@@ -157,8 +168,9 @@ const foundation = {
     12: "3rem", // 48px
     16: "4rem" // 64px
   },
-  // Euronext controls carry a 4px radius (`.btn` / themed inputs
-  // `border-radius:.25rem`, data-table buttons `border-radius:4px`); no card
+  // Euronext controls carry a 4px radius (`.btn-input,.form-control{
+  // border-radius:4px}` — brand rule; `.btn{border-radius:.25rem}` alone is
+  // the intact Bootstrap 4 default and is not cited as brand proof); no card
   // radius is published, so `lg` stays aligned with the reference theme
   // package's geometry (à confirmer).
   radius: {
@@ -194,13 +206,21 @@ const foundation = {
   // --- Anatomy primitives (Euronext) ----------------------------------------
   borderWidth: {
     none: "0",
-    thin: "1px", // .border{border:1px solid #e8ecef} / search underline 1px
-    thick: "2px" // body{border-top:2px solid #e8ecef}
+    thin: "1px", // live .border{border:1px solid #e8ecef} / search underline 1px
+    thick: "2px" // .table tbody+tbody{border-top:2px solid #e8ecef}; brand 2px also in .btn{border:2px solid transparent} (Bootstrap override of 1px)
   },
   borderStyle: { solid: "solid" },
-  // Control density. The brand publishes no usable control geometry, so this
-  // block is aligned with the reference theme package's geometry
-  // ("à confirmer"); only controlHeight/iconSize match the Sentropic base.
+  // Control density. The brand DOES publish control geometry:
+  // `.btn-input,.form-control{height:52px}`,
+  // `.form-control{padding:.375rem .75rem}`,
+  // `.form-control-lg{height:calc(2.875rem + 2px);padding:.5rem 1rem}`,
+  // `.form-control-sm{height:calc(1.8125rem + 2px);padding:.25rem .5rem}`,
+  // `.custom-file-label{height:52px;padding:.75rem 1rem}`,
+  // `.btn-primary{padding-top:10.5px;padding-bottom:10.5px;min-width:125px}`,
+  // `.btn-cta{padding:14.5px 56px 14.5px 26px}` (measured 52px ≈ 3.25rem
+  // at a 16px root). This block deliberately keeps the reference theme
+  // package's geometry for component-grid fidelity ("à confirmer"); only
+  // controlHeight/iconSize match the Sentropic base.
   density: {
     sm: { controlHeight: "2rem", paddingBlock: "0", paddingInline: "0.5rem", gap: "0.5rem", minWidth: "2rem", fontSize: "0.875rem" }, // (à confirmer)
     md: { controlHeight: "2.5rem", paddingBlock: "0.375rem", paddingInline: "0.75rem", gap: "0.5rem", minWidth: "2.5rem", fontSize: "1rem" }, // (à confirmer)
@@ -225,25 +245,36 @@ const foundation = {
   transition: { property: "background-color, border-color, color, box-shadow", duration: "150ms", easing: "ease-in-out" }, // (à confirmer)
   cursor: { interactive: "pointer", disabled: "not-allowed", text: "text" },
   iconSize: { sm: "1rem", md: "1.125rem", lg: "1.25rem" },
-  // FOCUS = a teal RING drawn as a box-shadow:
+  // FOCUS = a teal RING drawn as a box-shadow (live host):
   // `.form-control:focus{border-color:#0effe7;box-shadow:0 0 0 .2rem
   // rgba(0,141,127,.25)}` (rgba(0,141,127) = #008d7f) and
   // `.btn-primary:focus{box-shadow:0 0 0 .2rem rgba(0,141,127,.5)}`.
+  // Corporate (www) serves `border-color:#00e8d1` with
+  // `rgba(0,104,94,.25)` instead. The `focus.color` primitive carries no
+  // alpha, so the opaque teal below is the closest encodable value — the
+  // rendered ring will read stronger than the brand's translucent ring.
   focus: {
     strategy: "ring",
     width: "0.2rem",
     offset: "0",
-    color: euronextColor.brand.teal, // #008d7f teal focus ring
+    color: euronextColor.brand.teal, // #008d7f teal focus ring (opaque encoding of the measured rgba ring)
     inset: "0"
   },
-  // Form fields are FILLED-UNDERLINE: the brand's own search input draws a
-  // single bottom stroke (`.search input{border:none;border-bottom:1px solid
-  // #e8ecef}`) on a white fill. `fillBg` is the surface default, the
-  // underline is a real `border-bottom` technique.
+  // Form fields are BOXED (outline): the general brand control is a white
+  // box with four equal borders
+  // (`.form-control{background-color:#fff;border:1px solid #c8d1da}` with
+  // `.btn-input,.form-control{border-radius:4px;height:52px}`, confirmed by
+  // `.form-control.is-invalid{border-color:#fe4d6a}` /
+  // `.is-valid{border-color:#009639}`). `#c8d1da` is a brand override
+  // (Bootstrap ships `#ced4da`). `.search input{border:none;border-bottom:
+  // 1px solid #e8ecef}` is a search-widget exception (like
+  // `.header__form .form-control{border:none;height:22px}`), not the general
+  // field anatomy. `style: "outline"` makes the builder draw four equal
+  // borders.
   field: {
-    style: "filled-underline",
+    style: "outline",
     fillBg: euronextColor.slate[0], // #ffffff
-    underlineColor: euronextColor.slate[200], // #e8ecef bottom stroke
+    underlineColor: euronextColor.slate[600], // #c8d1da measured field stroke (kept for provenance; unused by the outline builder)
     underlineWidth: "1px",
     // Native <select>: redraw the chevron in the brand teal with a 40px right gutter.
     selectAppearance: "none",
@@ -391,10 +422,13 @@ const semantic = {
     primary: euronextColor.slate[800], // #252631 (body color)
     // The published grey text #778ca2 (3.47:1) and link blue #007aff (4.02:1)
     // fail AA as text: both roles use their first passing stop-rule step.
-    secondary: "#5d7389", // derived from #778ca2, 2 steps, 4.91:1 (à confirmer)
+    // `secondary` is 4.96:1 on surface.default #ffffff but 4.50:1 on
+    // surface.subtle #f2f4f6 (the live body background); section 9 anchors
+    // on surface.default, so the role is conforming.
+    secondary: "#5d7289", // derived from #778ca2, 2 steps, 4.96:1 (à confirmer)
     muted: euronextColor.system.muted, // #676767 (.text-muted, 5.66:1)
     inverse: euronextColor.slate[0], // white on dark / coloured surfaces
-    link: euronextColor.blue.link // #006ee6, from #007aff, 1 step, 4.80:1 (à confirmer)
+    link: euronextColor.blue.link // #006ee6, from live #007aff, 1 step, 4.80:1 (à confirmer)
   },
   border: {
     subtle: euronextColor.slate[200], // #e8ecef (.border)
@@ -402,13 +436,13 @@ const semantic = {
     interactive: euronextColor.brand.teal // #008d7f brand teal (4.10:1, line role)
   },
   action: {
-    primary: euronextColor.brand.teal, // #008d7f brand teal primary
+    primary: euronextColor.brand.teal, // #008d7f brand teal primary (union winner; corporate action is #00685e)
     primaryHover: euronextColor.brand.tealHover, // #00675d measured hover
-    primaryText: "#ffffff", // white text on the brand teal (brand pattern)
+    primaryText: "#ffffff", // measured brand pairing .btn-brand-teal-green{color:#fff} (4.10:1, kept unaltered per the brand-fill rule)
     secondary: euronextColor.slate[100], // #f2f4f6 secondary surface
     secondaryHover: euronextColor.slate[200], // #e8ecef
     secondaryText: euronextColor.brand.primaryDark, // #252631
-    danger: euronextColor.system.error // #fe4d6a brand error red
+    danger: euronextColor.system.error // #fe4d6a brand error red fill (white text 3.24:1; black text 6.48:1 — brand fill kept unaltered)
   },
   feedback: {
     success: euronextColor.system.successText, // #007c2f readable (à confirmer)
