@@ -93,7 +93,7 @@ describe("processing is DOM- and renderer-free", () => {
     }
   });
 
-  it("no barrel-reachable module touches DOM globals", () => {
+  it("no barrel-reachable module touches DOM globals, nor names Worker", () => {
     const closure = barrelClosure();
     for (const file of closure) {
       const diskPath = file.startsWith("processing/")
@@ -111,6 +111,15 @@ describe("processing is DOM- and renderer-free", () => {
       expect(code).not.toMatch(/\bdocument\b/);
       expect(code).not.toMatch(/\bwindow\b/);
       expect(code).not.toMatch(/\bnavigator\b/);
+      // GD-M2-WORKERS extends this guard to `Worker`. It was NOT already
+      // covered: `tsconfig.json` puts `DOM` in `lib`, so a module referencing
+      // `Worker` behind a `typeof Worker !== "undefined"` check typechecked and
+      // passed the three assertions above unchanged (measured). The worker half
+      // lives in `src/worker.ts` and the client in `src/layout-client.ts`,
+      // outside this barrel, because the client emits a bundler-visible worker
+      // asset reference a pure computation entry has no business carrying —
+      // enforcing that here is what keeps it from drifting back in.
+      expect(code).not.toMatch(/\bWorker\b/);
     }
   });
 

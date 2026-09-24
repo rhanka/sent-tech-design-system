@@ -50,6 +50,7 @@
     "test:golden:webgl": "npm run golden:build && npm run golden:webgl:preflight && vitest run --config vitest.config.ts tests/golden/",
     "golden:selftest": "npm run golden:build && node tests/golden/cdp-harness.mjs --selftest",
     "bench": "npm run build && node bench/buffers-bench.mjs",
+    "bench:worker": "npm run build && node bench/layout-worker-bench.mjs",
     "prepublishOnly": "npm run test && npm run build",
     "check": "tsc -p tsconfig.json --noEmit"
   },
