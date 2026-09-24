@@ -40,8 +40,12 @@
  * compute and resolve before the next was even created, so all three callers
  * would receive positions — the opposite of the worker path's behaviour, and a
  * way to tell the paths apart. Deferring costs the sync path one macrotask of
- * latency (measured at well under 1 ms) and buys identical supersession
- * semantics on both paths.
+ * latency — measured at 1.104 ms, which is Node's `setTimeout(…, 0)` clamp, and
+ * up to ~4 ms in a browser once timers nest — and buys identical supersession
+ * semantics on both paths. A microtask would be cheaper and is the wrong tool:
+ * it would preserve supersession only for a burst issued synchronously, while an
+ * `await`-separated burst would settle each request before the next arrived. A
+ * macrotask is what the worker path can match, which is the whole point.
  *
  * `request()` NEVER REJECTS for a runtime outcome: cancellation, supersession
  * and computation failure are all arms of {@link LayoutRequestOutcome}, so a
@@ -70,18 +74,32 @@ export type {
 /**
  * Node count below which `"auto"` dispatch prefers the synchronous path.
  *
- * MEASURED, not guessed — see the PR body for the full table. The message
- * boundary is not free: posting the request and cloning the answer back costs a
- * roughly node-count-proportional amount that the worker's parallelism only
- * starts to repay once the computation itself dominates. Below this count the
- * worker's wall time as perceived by the caller EXCEEDS the synchronous one, so
- * `"auto"` picks the synchronous path there; the freeze it causes at those sizes
- * is a few milliseconds, far below a frame.
+ * MEASURED, and NOT on the criterion the spec's §6 assumed. That section
+ * expected the message boundary to make the worker slower below some size, and
+ * asked for the crossover. There is no crossover: swept on this machine (AMD
+ * Ryzen AI MAX+ 395, Node 22.22.1, median of 11 per size, warm worker) the
+ * worker/sync ratio of caller-perceived wall time is 0.872 at 100 nodes, 0.971
+ * at 150, 1.046 at 200, 0.978 at 250, 1.013 at 300, 1.104 at 350, 0.998 at 400,
+ * 1.002 at 500 and 1.061 at 700 — noise around parity, with no size below which
+ * the worker is materially slower. The boundary cost is real but never
+ * dominates: 0.27 ms at 1 000 nodes, 8.29 ms at 5 000, 30.34 ms at 20 000,
+ * against computations of 190.9 / 1 262.3 / 7 089.3 ms, so at most 0.5%. Part of
+ * why the small sizes favour the worker is this client's own doing: the
+ * deferred synchronous path pays Node's 1 ms `setTimeout` clamp (measured floor
+ * 1.104 ms at 2 nodes) where the worker round trip costs 0.050 ms.
  *
- * Re-measure with `node bench/layout-worker-bench.mjs` after any change to the
- * computation or to the message shape.
+ * What DOES justify a threshold is the one-off worker spawn, which the spec did
+ * not consider: 30.1 ms median over five fresh clients (28.5 / 29.0 / 30.1 /
+ * 31.7 / 32.3). Spawning a thread to avoid a computation shorter than the spawn
+ * loses even counting only the first request. 250 nodes is the smallest swept
+ * size whose synchronous computation (30.50 ms) exceeds that spawn cost, so
+ * that is the threshold: below it `"auto"` computes on the calling thread, where
+ * the whole freeze is at most ~30 ms and no thread is ever created.
+ *
+ * Re-measure with `npm run bench:worker` after any change to the computation or
+ * to the message shape; the boundary cost scales with `8 * nodeCount` bytes out.
  */
-export const WORKER_NODE_THRESHOLD = 700;
+export const WORKER_NODE_THRESHOLD = 250;
 
 /** Which path a client is allowed to take. `"auto"` applies the threshold. */
 export type LayoutDispatchMode = "auto" | "worker" | "sync";
@@ -176,7 +194,11 @@ export interface LayoutClientStats {
   unmatchedResults: number;
   /** Requests actually posted to a worker. */
   workerDispatches: number;
-  /** Requests actually computed on the calling thread. */
+  /**
+   * Requests that actually COMPUTED on the calling thread. A request superseded
+   * before its deferred slot ran never computes and is not counted here, which
+   * makes `workerDispatches + syncDispatches` the number of computations run.
+   */
   syncDispatches: number;
   /** Worker `onerror` events handled (each one tears the worker down). */
   workerFailures: number;
@@ -467,8 +489,16 @@ export function createLayoutClient(options: LayoutClientOptions = {}): LayoutCli
     }
     cancelledAfterDispatch.clear();
     if (victim !== null && !victim.settled) {
-      if (isStale(victim)) closeSuperseded(victim);
-      else queue.unshift(victim);
+      if (isStale(victim)) {
+        closeSuperseded(victim);
+      } else {
+        // Downgrade an explicitly forced worker dispatch to the fallback. The
+        // caller asked for a worker, but the worker is gone and failing the
+        // request in its place is exactly the serial-failure behaviour this
+        // client exists to avoid — it asked for positions, not for a thread.
+        victim.dispatch = "sync";
+        queue.unshift(victim);
+      }
     }
     pump();
   }
@@ -511,16 +541,19 @@ export function createLayoutClient(options: LayoutClientOptions = {}): LayoutCli
         return;
       }
     }
-    stats.syncDispatches++;
     // Deferred, not inline — see the module header: an inline computation would
     // settle before a same-tick supersession could reach it, which is the one
     // way a caller could tell the two paths apart.
     setTimeout(() => {
       if (entry.settled) {
+        // Superseded (or cancelled, or terminated) while it waited for its slot:
+        // it never computes, which is why `syncDispatches` is incremented below
+        // and not when the slot was handed out.
         if (inFlight === entry) inFlight = null;
         pump();
         return;
       }
+      stats.syncDispatches++;
       let response: LayoutSnapshotResponse;
       try {
         response = {
