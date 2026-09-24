@@ -18369,3 +18369,30 @@
   padding-block: 0;
   visibility: hidden;
 }
+
+/* PriorityMatrix — 2x2 value/complexity matrix with placed labels. Token-only. */
+.st-priorityMatrix { color: var(--st-semantic-text-secondary); display: block; font-family: inherit; position: relative; width: 100%; }
+.st-priorityMatrix__visual { display: block; }
+.st-priorityMatrix svg { display: block; overflow: visible; }
+.st-priorityMatrix__title { fill: var(--st-semantic-text-primary); font-size: 0.875rem; font-weight: 700; }
+.st-priorityMatrix__quad--quick-wins { fill: color-mix(in srgb, var(--st-semantic-feedback-success) 12%, transparent); }
+.st-priorityMatrix__quad--major-projects { fill: color-mix(in srgb, var(--st-semantic-feedback-info) 12%, transparent); }
+.st-priorityMatrix__quad--wait { fill: color-mix(in srgb, var(--st-semantic-feedback-warning) 12%, transparent); }
+.st-priorityMatrix__quad--drop { fill: color-mix(in srgb, var(--st-semantic-border-subtle) 22%, transparent); }
+.st-priorityMatrix__threshold { stroke: var(--st-semantic-text-secondary); stroke-width: 1.5; stroke-dasharray: 5 4; }
+.st-priorityMatrix__quadName { fill: var(--st-semantic-text-secondary); font-size: 0.6875rem; font-weight: 600; }
+.st-priorityMatrix__grid { stroke: var(--st-semantic-border-subtle); stroke-dasharray: 2 3; stroke-width: 1; opacity: 0.7; }
+.st-priorityMatrix__axis { stroke: var(--st-semantic-border-subtle); stroke-width: 1; }
+.st-priorityMatrix__tick { fill: var(--st-semantic-text-secondary); font-size: 0.6875rem; }
+.st-priorityMatrix__axisLabel { fill: var(--st-semantic-text-secondary); font-size: 0.75rem; font-weight: 600; }
+.st-priorityMatrix__point--category1 { fill: var(--st-semantic-data-category1); }
+.st-priorityMatrix__point--category2 { fill: var(--st-semantic-data-category2); }
+.st-priorityMatrix__point--category3 { fill: var(--st-semantic-data-category3); }
+.st-priorityMatrix__point--category4 { fill: var(--st-semantic-data-category4); }
+.st-priorityMatrix__point--category5 { fill: var(--st-semantic-data-category5); }
+.st-priorityMatrix__point--category6 { fill: var(--st-semantic-data-category6); }
+.st-priorityMatrix__point--category7 { fill: var(--st-semantic-data-category7); }
+.st-priorityMatrix__point--category8 { fill: var(--st-semantic-data-category8); }
+.st-priorityMatrix__leader { stroke: var(--st-semantic-text-secondary); stroke-width: 1; opacity: 0.8; }
+.st-priorityMatrix__labelBox { fill: var(--st-semantic-surface-default); stroke: var(--st-semantic-border-subtle); stroke-width: 1; }
+.st-priorityMatrix__labelText { fill: var(--st-semantic-text-primary); font-size: 0.6875rem; }
