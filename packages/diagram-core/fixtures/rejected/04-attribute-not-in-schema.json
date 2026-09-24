@@ -1,0 +1,28 @@
+{
+  "case": "attribute-not-in-schema",
+  "note": "An attribute the effective schema does not declare. It is not stored as a free property: unmodelled content belongs in an extension, with its hash and its validation level, never in the typed attribute bag (decision D1-A).",
+  "kind": "document",
+  "expect": { "codes": ["attribute-not-in-schema"] },
+  "document": {
+    "documentId": "document:r4",
+    "schemaVersion": { "major": 1, "minor": 1 },
+    "revision": 0,
+    "profileRefs": ["generic@1"],
+    "typeDefinitions": {},
+    "entities": {
+      "entity:alpha": {
+        "id": "entity:alpha",
+        "profile": "generic@1",
+        "type": "node",
+        "attributes": {
+          "name": { "kind": "text", "value": "Alpha" },
+          "colour": { "kind": "text", "value": "red" }
+        }
+      }
+    },
+    "ports": {},
+    "relations": {},
+    "resources": {},
+    "extensions": []
+  }
+}

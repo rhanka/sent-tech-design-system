@@ -1,0 +1,21 @@
+{
+  // `npm run check` compiles the TESTS too, which is load-bearing and not a
+  // convenience: tests/refs-nominal.test.ts proves the five reference types are
+  // not interchangeable with one `@ts-expect-error` per illegitimate
+  // assignment. Those assertions only mean something if a compiler reads them,
+  // so they must be inside the configuration `check` runs. Drop a brand and the
+  // expected error disappears, which TypeScript reports as TS2578 ("Unused
+  // '@ts-expect-error' directive") - the regression this file exists to catch.
+  //
+  // The build configuration deliberately stays test-free (dist ships src only).
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "rootDir": ".",
+    // Tests read fixtures from disk, so they need node builtins; src still
+    // compiles with `types: []` under tsconfig.json, which is what keeps the
+    // shipped modules free of node and DOM.
+    "types": ["node"]
+  },
+  "include": ["src", "tests"]
+}

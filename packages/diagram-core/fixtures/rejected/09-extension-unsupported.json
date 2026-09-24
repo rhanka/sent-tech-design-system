@@ -1,0 +1,33 @@
+{
+  "case": "extension-unsupported",
+  "note": "An extension at validation level `unsupported`. Decision D3-C keeps it (with its hash, readable, exportable) and refuses to let it look like a business fact: the document carrying it is not writable, and no command may apply it.",
+  "kind": "document",
+  "expect": { "codes": ["extension-unsupported"] },
+  "document": {
+    "documentId": "document:r9",
+    "schemaVersion": { "major": 1, "minor": 1 },
+    "revision": 0,
+    "profileRefs": ["generic@1"],
+    "typeDefinitions": {},
+    "entities": {
+      "entity:alpha": {
+        "id": "entity:alpha",
+        "profile": "generic@1",
+        "type": "node",
+        "attributes": { "name": { "kind": "text", "value": "Alpha" } }
+      }
+    },
+    "ports": {},
+    "relations": {},
+    "resources": {},
+    "extensions": [
+      {
+        "namespace": "https://example.invalid/vendor/unsupported-dialect",
+        "schemaVersion": "7",
+        "scope": { "kind": "document" },
+        "validation": "unsupported",
+        "contentHash": "fnv1a64:00ff00ff00ff00ff"
+      }
+    ]
+  }
+}

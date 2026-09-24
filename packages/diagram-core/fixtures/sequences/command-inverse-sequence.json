@@ -1,0 +1,91 @@
+{
+  "case": "command-inverse-sequence",
+  "note": "A multi-command transaction and the state it runs against: create a node, draw it, move the drawing, then attach a resource. The test applies it, replays the returned inverse as a NEW transaction, and compares the canonical CONTENT bytes with the initial ones. The revision is two ahead afterwards, which the test asserts separately - undo is a new transaction, not a rewrite of the journal.",
+  "kind": "transaction",
+  "state": {
+    "document": {
+      "documentId": "document:seq",
+      "schemaVersion": { "major": 1, "minor": 1 },
+      "revision": 7,
+      "profileRefs": ["generic@1"],
+      "typeDefinitions": {},
+      "entities": {
+        "entity:existing": {
+          "id": "entity:existing",
+          "profile": "generic@1",
+          "type": "node",
+          "attributes": { "name": { "kind": "text", "value": "Existing" } }
+        }
+      },
+      "ports": {},
+      "relations": {},
+      "resources": {},
+      "extensions": []
+    },
+    "views": {
+      "view:main": {
+        "viewId": "view:main",
+        "semanticDocumentId": "document:seq",
+        "revision": 7,
+        "entityOccurrences": {
+          "occurrence:existing-1": {
+            "id": "occurrence:existing-1",
+            "entity": "entity:existing",
+            "geometry": { "x": 0, "y": 0, "width": 120, "height": 60 }
+          }
+        },
+        "portOccurrences": {},
+        "relationOccurrences": {},
+        "groups": {},
+        "filters": [],
+        "presentation": { "camera": { "x": 0, "y": 0, "zoom": 1 } }
+      }
+    }
+  },
+  "transaction": {
+    "commandId": "cmd:sequence",
+    "baseRevision": 7,
+    "author": "fixture",
+    "commands": [
+      {
+        "kind": "create-entity",
+        "entity": {
+          "id": "entity:added",
+          "profile": "generic@1",
+          "type": "node",
+          "attributes": {
+            "name": { "kind": "text", "value": "Added" },
+            "weight": { "kind": "quantity", "value": 3, "unit": "unit" }
+          }
+        }
+      },
+      {
+        "kind": "create-occurrence",
+        "view": "view:main",
+        "occurrence": {
+          "of": "entity",
+          "occurrence": {
+            "id": "occurrence:added-1",
+            "entity": "entity:added",
+            "geometry": { "x": 200, "y": 0, "width": 120, "height": 60 }
+          }
+        }
+      },
+      {
+        "kind": "move-occurrence",
+        "view": "view:main",
+        "occurrence": "occurrence:existing-1",
+        "placement": { "kind": "geometry", "geometry": { "x": 24, "y": 48, "width": 120, "height": 60 } }
+      },
+      {
+        "kind": "attach-resource",
+        "resource": {
+          "id": "resource:added",
+          "uri": "sentropic://resource/added",
+          "mediaType": "text/plain",
+          "contentHash": "fnv1a64:1122334455667788"
+        }
+      }
+    ]
+  }
+}
