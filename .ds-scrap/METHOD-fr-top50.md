@@ -63,6 +63,26 @@ requests: retry with a browser user-agent and a referer. Extract the custom
 property declarations (`--*`) and read their values. Record, per value: the
 hex, the declaring variable name, and the file/URL it came from.
 
+**Step 0.2 — Read the brand's `rem` root BEFORE transcribing any length.**
+Grep the stylesheet for `html{` and for `font-size` on `html` or `:root`. A
+site serving `html{font-size:62.5%}` has a 10px root, so its `.8rem` is **8px**,
+not 12.8px — and this theme's own output is read at a 16px root, so a verbatim
+`0.8rem` ships 1.6× too round. The 62.5% trick is common; assuming 16px is the
+error. Record the root in `MAPPING.md` and convert **every** length you
+transcribe: radii, paddings, heights, outline widths, font sizes. This has
+already been caught once, in a package that converted its borders and its font
+sizes correctly and let only `radius` through — so convert the whole block, not
+the value you happen to be looking at.
+
+**Step 0.3 — Note how many hosts the brand serves, and whether they agree.**
+When a brand serves a corporate site and an application (or `.com` and a
+country domain), fetch both and compare the same selectors. They may not
+declare the same value: one brand was found serving `#008d7f` for
+`.bg-primary` on its application and `#00685e` on its corporate site. That
+disagreement is a measured fact. Record it, name the file each cited value
+comes from — per-file counts, not a union total — and declare which host wins
+and why.
+
 **Step 1 — Raw measured palette first.** Declare
 `const <id>Color = { … }` at the top of `src/index.ts`, grouped by family
 (brand, accent, grey scale, system). Each entry carries a `//` comment citing
@@ -349,6 +369,24 @@ conductor's act, done once per lot (section 1).
    Tech base values), reuse the base values explicitly and mark the block
    `à confirmer`. State in `MAPPING.md` which of the two paths was taken.
 
+   **You may not take the "nothing published" path without showing what you
+   looked for.** Both lot 2 packages that claimed the brand publishes no usable
+   control geometry were wrong: one declares `min-height:4.8rem` and a `sm`
+   variant, the other `height:52px` plus `form-control-sm`/`-lg` paddings. Grep
+   the brand's own control selectors (its button, its input, its select) for
+   `height`, `min-height` and `padding`, and **quote the result in
+   `MAPPING.md`** — the declarations you found, or the greps that came back
+   empty. "Not published" is a claim, and it needs evidence like any other.
+
+   **Scope is part of the measurement.** A rule scoped to one component is not
+   the site-wide value. One package took its `focus.color` from a rule scoped to
+   the breadcrumb (two occurrences of a grey) while the brand's own blue covers
+   every form control (twenty-three occurrences); another read
+   `field.style` off a search widget while the brand's general form control is a
+   boxed field with four equal borders. Prefer the **least-scoped** brand rule,
+   count occurrences across selectors rather than within one block, and record
+   the scope of what you chose next to the value.
+
    **Third path, the one that actually happens: copying the reference
    package.** Only `controlHeight` and `iconSize` match the base. The rest of
    `density` (`paddingInline`, `paddingBlock`, `gap`, the extra `fontSize`
@@ -361,6 +399,17 @@ conductor's act, done once per lot (section 1).
    values is a false provenance statement, and it has already been caught
    twice. Check the claim against `packages/tokens/src/foundation.ts` before
    writing it.
+
+   **The same label is required for `typography` and for the 12 component
+   overrides.** Packages have applied it correctly to `density`, the shadows,
+   the easing, `disabledOpacity` and `transition`, then stopped — shipping
+   `typography.control`, `alert`, `search`, `tabs` and `pagination` geometry
+   straight from the reference package with no label, no marker and no mapping
+   row. One of them shipped `typography.control.lineHeight: 1.5` while the
+   brand's own button declares `line-height:1.25`, and a label size of `1rem`
+   against a measured `1.4rem` at a 62.5% root. Either transcribe what the brand
+   publishes, or carry the label and the marker — and check first whether the
+   brand has already answered the question.
 
 ## 9. Accessibility floor
 
