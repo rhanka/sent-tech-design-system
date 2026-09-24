@@ -59,7 +59,17 @@ Deterministic order. Never skip a step, never reorder.
 the native binaries already present (`curl`, `grep`, `sed` — no Python, no
 script or image; one-line Node commands per section 9 and present native
 binaries are allowed; see section 10). Some hosts block bare
-requests: retry with a browser user-agent and a referer. Extract the custom
+requests, and a browser user-agent alone is often not enough. A CDN front such
+as Akamai answers `403 Access Denied` (body: `errors.edgesuite.net`) to a bare
+request AND to a plain user-agent, which is the usual workaround — so an
+executor that retries with only a UA loops on 403 for ever. Two builders were
+lost that way on one brand before the cause was found. When a host refuses, send
+the full browser header set: `User-Agent`, `Accept`, `Accept-Language`,
+`Accept-Encoding: gzip, deflate, br` with `--compressed`, `Referer`,
+`Sec-Fetch-Dest`/`-Mode`/`-Site`, `Upgrade-Insecure-Requests`; stylesheets
+often need the `Referer` even when the page did not. If a brand needed this,
+record how it was reached in a `## Upstream access` section of `MAPPING.md`, for
+whoever measures that brand next. Extract the custom
 property declarations (`--*`) and read their values. Record, per value: the
 hex, the declaring variable name, and the file/URL it came from.
 
@@ -124,6 +134,14 @@ consent banners (`#__tealium*`, OneTrust, Didomi), carousels (`.swiper-*`,
 first, by the namespace its selector belongs to: does the selector name the
 site's own components, or a vendor widget? Then discard the vendor blocks as
 ORIGINS. They may still be reported as context.
+
+**A vendor block can live INSIDE a brand file.** Do not assume the split is
+per-file. One brand ships `clientlib-site.min.css`, its own stylesheet, whose
+first 403 lines are an embedded Bootstrap 4/5 compatibility shim — that is where
+its `#428bca`, `#e9ecef`, `#ced4da` and its `a{text-decoration:none}` live.
+Find the boundary between the vendor region and the brand region, name it in
+`MAPPING.md` (that brand's boundary is the rule `html *{scrollbar-width:none}`),
+and compute every count on the brand region alone.
 
 A hex that appears **only** in vendor blocks is not a brand colour, however
 frequent it is, and giving it a brand role is a provenance defect — the most
