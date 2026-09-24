@@ -297,6 +297,8 @@ export { SankeyChart } from "./SankeyChart.js";
 export type { SankeyChartProps, SankeyChartNode, SankeyChartLink, SankeyChartTone } from "./SankeyChart.js";
 export { ScatterPlot } from "./ScatterPlot.js";
 export type { ScatterPlotProps, ScatterPlotDatum, ScatterPlotTone, ScatterPlotCentroid } from "./ScatterPlot.js";
+export { PriorityMatrix } from "./PriorityMatrix.js";
+export type { PriorityMatrixProps, PriorityMatrixDatum, PriorityMatrixTone } from "./PriorityMatrix.js";
 export { Search } from "./Search.js";
 export type { SearchProps } from "./Search.js";
 export { Select } from "./Select.js";

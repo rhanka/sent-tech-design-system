@@ -343,6 +343,8 @@ export { Row } from "./Row.js";
 export type { RowProps } from "./Row.js";
 export { ScatterPlot } from "./ScatterPlot.js";
 export type { ScatterPlotTone, ScatterPlotDatum, ScatterPlotCentroid, ScatterPlotProps } from "./ScatterPlot.js";
+export { PriorityMatrix } from "./PriorityMatrix.js";
+export type { PriorityMatrixTone, PriorityMatrixDatum, PriorityMatrixProps } from "./PriorityMatrix.js";
 export { Search } from "./Search.js";
 export type { SearchSize, SearchProps } from "./Search.js";
 export { Select } from "./Select.js";
