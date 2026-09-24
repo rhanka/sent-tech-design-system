@@ -68,8 +68,9 @@ Invariants, chacun testé :
    qu'un échec à sa place serait exactement le comportement en série que cet invariant proscrit. Le lot ajoute
    par ailleurs **une seule requête en vol par client** : la spec exige un worker réutilisé et ne dit rien de
    la concurrence, or un worker vide sa file séquentiellement, donc poster trois requêtes ferait attendre la
-   plus récente derrière deux réponses dont personne ne veut (≈ 34 s à 20 000 nœuds). Une requête périmée
-   avant d'avoir été postée ne coûte alors rien.
+   plus récente derrière deux réponses dont personne ne veut : à 20 000 nœuds ≈ 21 s aux 7 089 ms mesurés par
+   l'implémentation, ≈ 34 s aux 11 490 ms que rapporte #77. Une requête périmée avant d'avoir été postée ne
+   coûte alors rien.
 4. **Égalité des deux voies** : pour les mêmes entrées, la voie worker et la voie synchrone produisent des
    positions **identiques à l'octet** sur la sérialisation du `Float32Array`. Le déterminisme démontré en #77
    n'a de valeur que si le passage par worker ne l'altère pas. Précision de l'implémentation : l'égalité n'est

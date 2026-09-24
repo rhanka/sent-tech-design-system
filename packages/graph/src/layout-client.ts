@@ -27,7 +27,8 @@
  * protocol the spec fixes (it requires one reused worker; it says nothing about
  * concurrency). A worker processes its message queue serially, so posting three
  * requests for the same snapshot would make the newest wait behind two answers
- * nobody wants — at 20 000 nodes, ~34 s before the useful one. The client
+ * nobody wants — at 20 000 nodes, ~21 s before the useful one at the 7 089 ms
+ * measured here, ~34 s at the 11 490 ms #77 reports. The client
  * therefore keeps at most one request in flight and queues the rest; a queued
  * request superseded before it is ever posted costs NOTHING. Measured
  * consequence on the three-rapid-requests scenario: two requests close as
