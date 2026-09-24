@@ -93,15 +93,23 @@ jobs:
           node-version: "22"
           cache: "npm"
 
-      # Root-only node_modules cache: small enough to help repeated fan-out jobs,
-      # unlike the huge root+workspace node_modules cache previously measured as
-      # no faster than npm ci.
-      - name: Restore root node_modules
+      # node_modules cache for the fan-out jobs. It MUST cover the workspace
+      # node_modules too: the lockfile nests some devDependencies (for instance
+      # packages/dataviz-react/node_modules/@vitejs/plugin-react, required by
+      # that workspace's vitest config), and a root-only cache made the install
+      # step skip on a hit while those nested modules were absent — the shard
+      # then failed with ERR_MODULE_NOT_FOUND on a tree that npm ci resolves
+      # correctly. The key stays the lockfile hash, so the restored tree always
+      # matches the lock.
+      - name: Restore node_modules
         id: root-node-modules
         uses: actions/cache@v4
         with:
-          path: node_modules
-          key: root-node-modules-v1-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          path: |
+            node_modules
+            packages/*/node_modules
+            apps/*/node_modules
+          key: node-modules-v2-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
 
       - name: Install dependencies
         if: steps.root-node-modules.outputs.cache-hit != 'true'
