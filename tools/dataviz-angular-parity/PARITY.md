@@ -16,5 +16,25 @@ command to re-derive them.
 | `SelectionLegend` | 18 | **0** | **0** | 0 | — |
 | `DateRangeFilter` | 16 | 1 | **0** | — | React serialises value="" on the readonly input; Angular sets the property |
 | `DashboardFilterBar` | 110 | 106 | **0** | 17 | DS: Search/Select/MultiSelect/DatePicker internal DOM |
+| `ChoroplethMap` | 25 | **0** | **0** | — | — |
+| `GeoClusterMap` | 42 | **0** | **0** | — | — |
+| `GeoDensityMap` | 30 | **0** | **0** | — | — |
+| `GeoFlowMap` | 30 | **0** | **0** | — | — |
+| `GeoHexbinMap` | 30 | **0** | **0** | — | — |
+| `GeoJsonMap` | 30 | **0** | **0** | — | — |
+| `GeoPointMap` | 30 | **0** | **0** | — | — |
+| `CandlestickChart` | 67 | **0** | **0** | — | — |
+| `HeikinAshiChart` | 67 | **0** | **0** | — | — |
+| `HollowCandlestickChart` | 67 | **0** | **0** | — | — |
+| `OHLCChart` | 79 | 3 | **0** | 3 | DS: Angular emits data-chart-index on each bar, React does not |
+| `HLCChart` | 73 | **0** | **0** | — | — |
+| `RenkoChart` | 203 | 7 | **0** | 7 | DS: Angular always renders the tooltip, React renders it only on hover |
+| `AreaRangeChart` | 86 | **0** | **0** | — | — |
+| `AreaSplineRangeChart` | 86 | **0** | **0** | — | — |
+| `ColumnRangeChart` | 61 | **0** | **0** | — | — |
+| `DumbbellChart` | 100 | 3 | **0** | 3 | DS: Angular emits data-chart-index on each row, React does not |
+| `RoseChart` | 24 | **0** | **0** | — | — |
+| `SunburstChart` | 54 | **0** | **0** | — | — |
+| `PackedBubbleChart` | 28 | **0** | **0** | — | — |
 
-exact-markup matches: **6/10** · exact-signature matches: **10/10**
+exact-markup matches: **23/30** · exact-signature matches: **30/30**
