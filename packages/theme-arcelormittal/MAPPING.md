@@ -18,17 +18,21 @@ Derived/unmeasured values are flagged `à confirmer`.
 
 ## Sources
 
-- ArcelorMittal corporate site (live, blocked 2026-09-24 by a Cloudflare
-  challenge — `unverified, 2026-09-24, HTTP challenge`) — https://corporate.arcelormittal.com/
-- ArcelorMittal global site (live, blocked 2026-09-24 by a Cloudflare
-  challenge — `unverified, 2026-09-24, HTTP challenge`) — https://www.arcelormittal.com/
+- ArcelorMittal corporate site (live, blocked 2026-09-24 —
+  `unverified, 2026-09-24, HTTP 403`; no value taken from the live page, all
+  values come from the archived stylesheet below) — https://corporate.arcelormittal.com/
+- ArcelorMittal global site (live, blocked 2026-09-24 —
+  `unverified, 2026-09-24, HTTP 403`; no value taken, listed as the brand's
+  alternate official host) — https://www.arcelormittal.com/
 - Archived copy of the corporate homepage + its stylesheet (capture
-  2025-01-01, the measured origin of every value below) —
+  2025-01-01, the measured origin of every value below; the CSS URL serves the
+  nearest asset capture `20250102002914`, same content) —
   https://web.archive.org/web/20250101021034/https://corporate.arcelormittal.com/
   and
   https://web.archive.org/web/20250101021034cs_/https://corporate.arcelormittal.com/assets/css/main.css?638684864414173555
 - Brand colour aggregator (cross-check only, never an origin — the aggregator
-  lists `#F47D30`, the measured stylesheet declares `#ff3700`) —
+  lists `#F47D30`, the measured stylesheet declares `#ff3700`; no value taken
+  from it) —
   https://www.brandcolorcode.com/arcelormittal
 
 Per-file declaration counts below are counted over the single official
@@ -56,46 +60,48 @@ VideoJS player chrome (`#73859f`, `#2b333f`), vue-multiselect defaults
 | `feedback.info` / `status.processing` | section blue `#0070c0` (`.page-header`, `.featured-insights`, `.banner__call-to-action` backgrounds; pull-quote `border-left:4px solid #0070c0`) | `#0070c0` |
 | `text.primary` / `action.secondaryText` | body text `#2a2a2a` (`color:#2a2a2a`, 25 declarations) | `#2a2a2a` |
 | `text.secondary` | logo wordmark grey `#4c4c4c` (`.logo--color .logo__text` fill, tag text; 8.59:1 on white) | `#4c4c4c` |
-| `text.muted` | derived from `#979797` via the section 9 stop rule (first hex reaching 4.5:1) | `#646464` *(à confirmer)* |
+| `text.muted` | derived from `#979797` (2.92:1 on white) via the section 9 stop rule (−0.05 L per step): step 1 `#8a8a8a` 3.45:1 (fail), step 2 `#7e7e7e` 4.06:1 (fail), step 3 `#717171` 4.88:1 (first pass, kept) | `#717171` *(à confirmer)* |
 | `border.subtle` / card border | card grey `#979797` (`.key-figure{border:1px solid #979797}`, calendar cards; 16 declarations) | `#979797` |
 | `border.strong` | dark navy list rule `#001626` (press-release list borders; 6 declarations) | `#001626` |
 | `surface.subtle` / `action.secondary` / `tag.neutralBackground` | disabled-input fill `#e6eaef` (`.calculator-tool__right .form-group input:disabled{background-color:#e6eaef}`; 4 declarations) | `#e6eaef` |
 | `action.secondaryHover` | derived darker fill | `#d7dde4` *(à confirmer)* |
 | `surface.default` / `surface.raised` / `field.fillBg` | white `#fff` (159 declarations) | `#ffffff` |
 | `surface.inverse` / darkest | header near-black `#151515` (site-header / nav text; 15 declarations) | `#151515` |
+| `surface.overlay` | measured modal backdrop (`.is-active .modal-overlay{background-color:rgba(0,0,0,.6)}` in `main.css`) | `rgb(0 0 0 / 0.6)` |
 | `field.underlineColor` | form bottom stroke `#000` (`.multiselect{border-bottom:2px solid #000}` overrides, calculator `border:1px solid #000`) | `#000000` |
 | `action.primaryText` / `pagination.activeText` / `badge.infoText` | white on the brand orange (the brand's own solid-button pairing in `main.css`; 3.62:1, kept as brand fill) | `#ffffff` |
 | `feedback.success` / `status.completed` | derived success green | `#2f9e44` *(à confirmer)* |
 | `feedback.warning` / `status.pending` | derived warning amber | `#e8890c` *(à confirmer)* |
 | `feedback.error` / `action.danger` / `status.failed` | derived error red | `#d13438` *(à confirmer)* |
-| `data.category1..8` | coherent proposal from the measured hues (orange, section blue, gradient purple, pressed orange, light orange, dialog slate-blue `#5c7f92`, near-black, wordmark grey) | `#ff3700`, `#0070c0`, `#840d81`, `#d92f00`, `#fe6b45`, `#5c7f92`, `#2a2a2a`, `#4c4c4c` *(à confirmer)* |
+| `data.category1..8` | coherent proposal from the measured hues (orange, section blue, gradient purple, pressed orange, light orange, dialog slate-blue `#5c7f92`, near-black `#151515`, wordmark grey) | `#ff3700`, `#0070c0`, `#840d81`, `#d92f00`, `#fe6b45`, `#5c7f92`, `#151515`, `#4c4c4c` *(à confirmer)* |
 
 ## À confirmer (derived or no published brand token)
 
 - **Light orange tint** (`#ffede6`) — no light orange tint is published; a coherent low-emphasis surface derived from the brand orange.
 - **`secondaryHover` fill** (`#d7dde4`) — no hover fill is published; a slightly darker stand-in for the measured `#e6eaef` secondary surface.
-- **Muted grey** (`#646464`) — `#979797` (card borders) fails AA as text (2.92:1); derived from it via the deterministic stop rule (first hex reaching 4.5:1 on white: 4.73:1).
+- **Muted grey** (`#717171`, 4.88:1 on white) — `#979797` (card borders, 2.92:1) fails AA as text; section 9 stop-rule chain (−0.05 L per step): step 1 `#8a8a8a` 3.45:1 (fail), step 2 `#7e7e7e` 4.06:1 (fail), step 3 `#717171` 4.88:1 (**first pass, kept**).
 - **Feedback hues** (`success #2f9e44`, `warning #e8890c`, `error #d13438`) — no status hues are published as brand rules; the Swiper/Bootstrap remnants in the bundle are third-party and excluded. Only `info #0070c0` is measured.
 - **Categorical `data.*` palette** — a coherent proposal from the measured brand hues, not an official sequential scale.
-- **Focus technique** (`outline`, 2px, 2px offset, `#ff3700`) — `main.css` publishes only `outline:none` resets; the colour clears the 3:1 line threshold (3.62:1).
+- **Focus technique** (`outline`, 2px, 2px offset, `#ff3700`) — the technique is derived; the colour is supported by the brand's own focus treatment (`.article-breadcrumb .breadcrumb__link:focus{color:#ff3700}` in `main.css`) and clears the 3:1 line threshold (3.62:1). The only other focus rule in `main.css` is the `button:-moz-focusring` reset remnant.
 - **`field.style = "filled-underline"` reading** — the site-wide signature is the bottom stroke (header search `border-bottom`, module `multiselect` 2px black overrides), but the calculator widget uses boxed `border:1px solid #000` inputs; the bottom-stroke pattern is taken as the signature and the boxed counter-evidence is recorded here.
-- **Sharp `radius.sm/md = 0`** — measured on the brand calculator inputs (`border-radius:0`); `radius.lg` (cards), `shadow.*`, `motion.*`, `disabledOpacity`, and the `density.*` geometry are not published site-wide (the calculator's ~60px inputs are widget-specific), so the Sentropic base values are reused explicitly.
+- **Sharp `radius.sm/md = 0`** — measured on the brand calculator inputs (`.calculator-tool .form-group input,...{border-radius:0}` in `main.css`); `radius.lg = 0.5rem` is the Sentropic base value, reused explicitly.
+- **Reference-aligned geometry (not the base)** — only `controlHeight` (`2rem`/`2.5rem`/`3rem`), `iconSize` (`1rem`/`1.125rem`/`1.25rem`) and `radius.lg` are the Sentropic base values, reused explicitly. `shadow.medium`/`shadow.floating`, `motion.easing`, `disabledOpacity` (`0.5` against the `0.55` base), the `density.*` insets/gaps (`paddingInline`, `paddingBlock`, `gap`, `fontSize`) and `transition` are aligned with the reference theme package's geometry (shadows tinted to the brand near-black), flagged `à confirmer` inline. The brand publishes no site-wide control geometry: the calculator widget's real geometries (`.calculator-tool .tabs-head__title{min-height:45px}`, `.calculator-tool .dropdown__native{height:50px}`, `.calculator-tool .form-group input{...padding:18px 31px}`) are widget-specific, and the brand button (`.primary-link{font-size:18px}` then `.primary-link{padding:23px 85px 23px 30px;width:100%}`, plus `.search-bar__input{font-size:16px;padding:0 86px 0 16px}`) is a full-width marketing CTA with an asymmetric icon gutter — neither is transposed to the site-wide density.
 - **Font fallback stack** — Gilroy Standard / Gilroy Standard-SemiBold are the measured brand names; the exact fallback list here is a faithful expression.
-- **Component geometry** (`tabs`/`pagination`/`breadcrumb`/`alert`/`accordion`/`tag`/`badge`/`choice`/`search`/`toggle` metrics) — brand-flavoured metrics; only the cited colours, the 4px left rule, the 14px tag text and the uppercase buttons are measured.
+- **Component geometry** (`tabs`/`pagination`/`breadcrumb`/`alert`/`accordion`/`tag`/`badge`/`choice`/`search`/`toggle` metrics) — brand-flavoured metrics; only the cited colours, the 4px left rule, the 14px tag text and the uppercase tag (`badge.textTransform`, from `.spotify__content .tag span`) are measured. No button rule publishes uppercase, so `typography.control.textTransform` is `none`.
 
 ## Typography
 
-- **Body / fields** (`font.sans`, `typography.field`): **'Gilroy Standard'** — `font-family:Gilroy Standard,…` (37+ declarations in `main.css`). We reference the font *name* only.
-- **Display / controls / labels** (`font.display`, `typography.control/label`): **'Gilroy Standard-SemiBold'** — headings and interactive anchors (`font-family:Gilroy Standard-SemiBold,…`, 14 declarations). We reference the font *name* only.
+- **Body / fields** (`font.sans`, `typography.field`): **'Gilroy Standard'** — `font-family:Gilroy Standard,…` (43 declarations: 42 usages + 1 `@font-face` in `main.css`). We reference the font *name* only.
+- **Display / controls / labels** (`font.display`, `typography.control/label`): **'Gilroy Standard-SemiBold'** — headings and interactive anchors (`font-family:Gilroy Standard-SemiBold,…`, 18 declarations: 17 usages + 1 `@font-face`). We reference the font *name* only.
 - **Monospace** (`font.mono`): system stack.
-- Links: pressed orange `#d92f00`, underlined at rest (the brand `a` draws a 2px gradient underline, `padding-bottom:2px`) and underlined on hover. Buttons render uppercase (brand solid buttons carry `text-transform:uppercase`).
+- Links: pressed orange `#d92f00`, underlined at rest (the brand `a` draws a 2px gradient underline, `padding-bottom:2px`) and underlined on hover. The only measured uppercase is the orange tag (`.spotify__content .tag span{...text-transform:uppercase}`); no button rule (`.primary-link`, `.primary-link--dark`, `.share__toggle`) publishes uppercase.
 
 ## Signatures anatomiques
 
 - **Fields**: `field.style = "filled-underline"` — white `#ffffff` fill with a measured 2px black `border-bottom` stroke (`underlineMode: "border"`). Native `<select>` chevron redrawn in the brand orange `#ff3700`.
 - **Radius**: sharp brand — 0 on controls/inputs/tabs (`radius.sm/md = 0`, measured `border-radius:0`); 8px on cards (`radius.lg = 0.5rem`, derived); pills stay `999px`.
 - **Focus**: high-contrast **outline** in the brand orange `#ff3700` (`focus.strategy = "outline"`, 2px width, 2px offset; technique derived).
-- **Buttons**: primary = solid brand orange `#ff3700` with **white text** (brand pairing, uppercase) → hover pressed orange `#d92f00`; secondary = **outlined** in the brand orange (transparent fill, `#ff3700` border, `#2a2a2a` text per `.primary-link--dark`, light-orange `#ffede6` hover fill).
+- **Buttons**: primary = solid brand orange `#ff3700` with **white text** (brand pairing) → hover pressed orange `#d92f00`; secondary = **outlined** in the brand orange (transparent fill, `#ff3700` border, `#2a2a2a` text per `.primary-link--dark`, light-orange `#ffede6` hover fill).
 - **Tabs / top-nav**: active tab = legible pressed-orange label `#d92f00` with a bottom orange underline (`indicatorSide: "bottom"`, `indicatorMode: "border"`).
 - **Pagination**: pressed-orange text links; active page = filled brand orange `#ff3700` with white text.
 
