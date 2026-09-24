@@ -207,6 +207,7 @@ export { default as VariablePieChart } from "./VariablePieChart.svelte";
 export { default as VennChart } from "./VennChart.svelte";
 export { default as Row } from "./Row.svelte";
 export { default as ScatterPlot } from "./ScatterPlot.svelte";
+export { default as PriorityMatrix } from "./PriorityMatrix.svelte";
 export { default as Search } from "./Search.svelte";
 export { default as Select } from "./Select.svelte";
 export { default as SelectableRow } from "./SelectableRow.svelte";
@@ -299,6 +300,7 @@ export type { VennChartArea, VennChartProps, VennChartTone } from "./VennChart.s
 export type { SankeyChartLink, SankeyChartNode, SankeyChartTone } from "./SankeyChart.svelte";
 export type { SunburstChartDatum, SunburstChartTone } from "./SunburstChart.svelte";
 export type { ScatterPlotDatum, ScatterPlotTone, ScatterPlotCentroid } from "./ScatterPlot.svelte";
+export type { PriorityMatrixDatum, PriorityMatrixTone } from "./PriorityMatrix.svelte";
 export type { StackedBarDatum, StackedBarSegment, StackedBarTone } from "./StackedBarChart.svelte";
 export type { LineChartDatum, LineChartTone } from "./LineChart.svelte";
 export type { ChartOverlayTone, ChartReferenceLine, ChartBand, ChartGoalLine, ChartScale } from "./LineChart.svelte";
