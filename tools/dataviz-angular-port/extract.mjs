@@ -136,12 +136,19 @@ function extract(name) {
   const helpers = Object.fromEntries(
     helperPairs.map((m) => ['./' + m[2] + '.js', m[1].split(',').map((s) => s.trim()).filter(Boolean)]),
   );
-  const coreImports = [...src.matchAll(/import (?:type )?\{([^}]+)\} from '@sentropic\/dataviz-core';/g)]
-    .flatMap((m) => m[1].split(','))
-    .map((s) => s.trim())
-    .filter(Boolean);
-  const coreFns = coreImports.filter((s) => !s.startsWith('type ') && /^[a-z]/.test(s));
-  const coreTypes = coreImports.filter((s) => s.startsWith('type ')).map((s) => s.slice(5).trim());
+  // `import type { A, B }` marks the whole clause as types; `import { type A, b }`
+  // marks them one by one. Both spellings occur in the Vue sources.
+  const coreFns = [];
+  const coreTypes = [];
+  for (const m of src.matchAll(/import (type )?\{([^}]+)\} from '@sentropic\/dataviz-core';/g)) {
+    const clauseIsType = Boolean(m[1]);
+    for (const raw of m[2].split(',')) {
+      const item = raw.trim();
+      if (!item) continue;
+      if (clauseIsType || item.startsWith('type ')) coreTypes.push(item.replace(/^type\s+/, ''));
+      else coreFns.push(item);
+    }
+  }
   const dsTypeImports = [...src.matchAll(/import \{([^}]+)\} from '@sentropic\/design-system-vue';/g)]
     .flatMap((m) => m[1].split(','))
     .map((s) => s.trim())

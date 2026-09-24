@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input as NgInput, inject } from '@angular/core';
 import type { OnChanges, OnDestroy, OnInit } from '@angular/core';
-import { DumbbellChart as DsDumbbellChart, type DumbbellChartDatum } from '@sentropic/design-system-angular';
+import { DumbbellChart as DsDumbbellChart, type DumbbellChartDatum, type DumbbellChartTone } from '@sentropic/design-system-angular';
 import { buildColumnRangeData, type DashboardStore } from '@sentropic/dataviz-core';
 import { toSignalStore, type AngularSignalStore } from '../adapter.js';
 
@@ -72,8 +72,8 @@ export class DumbbellChart implements OnInit, OnChanges, OnDestroy {
   @NgInput({ required: true }) category!: string;
   @NgInput({ required: true }) low!: string;
   @NgInput({ required: true }) high!: string;
-  @NgInput() lowTone?: string;
-  @NgInput() highTone?: string;
+  @NgInput() lowTone?: DumbbellChartTone;
+  @NgInput() highTone?: DumbbellChartTone;
   @NgInput() lowLabel?: string;
   @NgInput() highLabel?: string;
   @NgInput() width?: number;

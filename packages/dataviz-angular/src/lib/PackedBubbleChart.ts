@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input as NgInput, inject } from '@angular/core';
 import type { OnChanges, OnDestroy, OnInit } from '@angular/core';
 import { PackedBubblesChart as DsPackedBubblesChart, type PackedBubblesChartDatum } from '@sentropic/design-system-angular';
-import { type DashboardStore } from '@sentropic/dataviz-core';
+import { type DashboardStore, type PartWholeSort } from '@sentropic/dataviz-core';
 import { toSignalStore, type AngularSignalStore } from '../adapter.js';
 import { buildSafePackedBubbleModel, toPackedBubbleData } from './partOfWholeData.js';
 
@@ -64,9 +64,9 @@ export class PackedBubbleChart implements OnInit, OnChanges, OnDestroy {
   @NgInput({ required: true }) viewId!: string;
   @NgInput({ required: true }) category!: string;
   @NgInput({ required: true }) measure!: string;
-  @NgInput() sort = 'value-desc';
-  @NgInput() width = 420;
-  @NgInput() height = 320;
+  @NgInput() sort: PartWholeSort = 'value-desc';
+  @NgInput() width: number = 420;
+  @NgInput() height: number = 320;
   @NgInput({ required: true }) label!: string;
   @NgInput('class') classInput?: string;
 

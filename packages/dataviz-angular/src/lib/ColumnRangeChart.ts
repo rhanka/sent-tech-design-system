@@ -66,7 +66,7 @@ export class ColumnRangeChart implements OnInit, OnChanges, OnDestroy {
   @NgInput({ required: true }) category!: string;
   @NgInput({ required: true }) low!: string;
   @NgInput({ required: true }) high!: string;
-  @NgInput() orientation?: string;
+  @NgInput() orientation?: "vertical" | "horizontal";
   @NgInput() width?: number;
   @NgInput() height?: number;
   @NgInput({ required: true }) label!: string;

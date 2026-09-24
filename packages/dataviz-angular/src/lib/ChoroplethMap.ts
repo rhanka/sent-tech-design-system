@@ -65,8 +65,8 @@ export class ChoroplethMap implements OnInit, OnChanges, OnDestroy {
   @NgInput({ required: true }) region!: string;
   @NgInput({ required: true }) measure!: string;
   @NgInput() geometry?: string;
-  @NgInput() width = 520;
-  @NgInput() height = 260;
+  @NgInput() width: number = 520;
+  @NgInput() height: number = 260;
   @NgInput({ required: true }) label!: string;
   @NgInput('class') classInput?: string;
 

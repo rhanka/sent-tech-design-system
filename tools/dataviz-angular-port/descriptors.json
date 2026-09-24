@@ -112,7 +112,9 @@
    ]
   },
   "coreFns": [],
-  "coreTypes": []
+  "coreTypes": [
+   "DashboardStore"
+  ]
  },
  {
   "name": "GeoClusterMap",
@@ -241,7 +243,9 @@
    ]
   },
   "coreFns": [],
-  "coreTypes": []
+  "coreTypes": [
+   "DashboardStore"
+  ]
  },
  {
   "name": "GeoDensityMap",
@@ -362,7 +366,9 @@
    ]
   },
   "coreFns": [],
-  "coreTypes": []
+  "coreTypes": [
+   "DashboardStore"
+  ]
  },
  {
   "name": "GeoFlowMap",
@@ -491,7 +497,9 @@
    ]
   },
   "coreFns": [],
-  "coreTypes": []
+  "coreTypes": [
+   "DashboardStore"
+  ]
  },
  {
   "name": "GeoHexbinMap",
@@ -613,7 +621,9 @@
    ]
   },
   "coreFns": [],
-  "coreTypes": []
+  "coreTypes": [
+   "DashboardStore"
+  ]
  },
  {
   "name": "GeoJsonMap",
@@ -735,7 +745,9 @@
    ]
   },
   "coreFns": [],
-  "coreTypes": []
+  "coreTypes": [
+   "DashboardStore"
+  ]
  },
  {
   "name": "GeoPointMap",
@@ -864,7 +876,9 @@
    ]
   },
   "coreFns": [],
-  "coreTypes": []
+  "coreTypes": [
+   "DashboardStore"
+  ]
  },
  {
   "name": "CandlestickChart",
@@ -985,7 +999,9 @@
   "coreFns": [
    "buildCandlestickData"
   ],
-  "coreTypes": []
+  "coreTypes": [
+   "DashboardStore"
+  ]
  },
  {
   "name": "HeikinAshiChart",
@@ -1106,7 +1122,9 @@
   "coreFns": [
    "buildCandlestickData"
   ],
-  "coreTypes": []
+  "coreTypes": [
+   "DashboardStore"
+  ]
  },
  {
   "name": "HollowCandlestickChart",
@@ -1227,7 +1245,9 @@
   "coreFns": [
    "buildCandlestickData"
   ],
-  "coreTypes": []
+  "coreTypes": [
+   "DashboardStore"
+  ]
  },
  {
   "name": "OHLCChart",
@@ -1348,7 +1368,9 @@
   "coreFns": [
    "buildOhlcData"
   ],
-  "coreTypes": []
+  "coreTypes": [
+   "DashboardStore"
+  ]
  },
  {
   "name": "HLCChart",
@@ -1462,7 +1484,9 @@
   "coreFns": [
    "buildHlcData"
   ],
-  "coreTypes": []
+  "coreTypes": [
+   "DashboardStore"
+  ]
  },
  {
   "name": "RenkoChart",
@@ -1582,7 +1606,9 @@
   "coreFns": [
    "buildRenkoData"
   ],
-  "coreTypes": []
+  "coreTypes": [
+   "DashboardStore"
+  ]
  },
  {
   "name": "AreaRangeChart",
@@ -1699,7 +1725,9 @@
   "coreFns": [
    "buildAreaRangeData"
   ],
-  "coreTypes": []
+  "coreTypes": [
+   "DashboardStore"
+  ]
  },
  {
   "name": "AreaSplineRangeChart",
@@ -1816,7 +1844,9 @@
   "coreFns": [
    "buildAreaRangeData"
   ],
-  "coreTypes": []
+  "coreTypes": [
+   "DashboardStore"
+  ]
  },
  {
   "name": "ColumnRangeChart",
@@ -1933,7 +1963,9 @@
   "coreFns": [
    "buildColumnRangeData"
   ],
-  "coreTypes": []
+  "coreTypes": [
+   "DashboardStore"
+  ]
  },
  {
   "name": "DumbbellChart",
@@ -2080,7 +2112,9 @@
   "coreFns": [
    "buildColumnRangeData"
   ],
-  "coreTypes": []
+  "coreTypes": [
+   "DashboardStore"
+  ]
  },
  {
   "name": "RoseChart",
@@ -2183,7 +2217,9 @@
    ]
   },
   "coreFns": [],
-  "coreTypes": []
+  "coreTypes": [
+   "DashboardStore"
+  ]
  },
  {
   "name": "SunburstChart",
@@ -2295,7 +2331,9 @@
    ]
   },
   "coreFns": [],
-  "coreTypes": []
+  "coreTypes": [
+   "DashboardStore"
+  ]
  },
  {
   "name": "PackedBubbleChart",
@@ -2406,6 +2444,9 @@
    ]
   },
   "coreFns": [],
-  "coreTypes": []
+  "coreTypes": [
+   "DashboardStore",
+   "PartWholeSort"
+  ]
  }
 ]
