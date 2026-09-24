@@ -30,7 +30,7 @@ design system documente, et l'écart composant par composant.
 | Composants exportés `@sentropic/dataviz-svelte` | **118** |
 | Composants exportés `@sentropic/dataviz-react` | **118** (+`TimeSeriesLineChart`, −`UrlSync`) |
 | Composants exportés `@sentropic/dataviz-vue` | **117** (−`UrlSync`) |
-| Composants exportés `@sentropic/dataviz-angular` | **12** (lot 1 : 5 charts, 3 contrôles, 3 panneaux, + `QueryBar`) + adaptateur |
+| Composants exportés `@sentropic/dataviz-angular` | **12** (lot 1 : 5 charts, 3 contrôles, 2 panneaux ; plus `QueryBar` et `DateHistogramChart`, antérieurs) + adaptateur |
 | Composants distincts (svelte ∪ react-only) | **119** |
 | Entrées au catalogue DS (`components-catalog.ts`) | **203**, toutes natifs DS |
 | Routes `apps/docs/src/routes/components/` | **205** dossiers (200 pages dédiées + 4 pages groupes + 1 route dynamique `[slug]` ; 3 entrées catalogue couvertes par page groupe, sans route propre) |
