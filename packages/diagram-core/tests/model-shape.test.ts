@@ -10,6 +10,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   CURRENT_SCHEMA_VERSION,
+  createProfileRegistry,
   documentContentHashInput,
   findOccurrence,
   hashContent,
@@ -189,5 +190,87 @@ describe("serialising one object at a time", () => {
     const bumped = { ...state.document, revision: state.document.revision + 5 };
     expect(documentContentHashInput(bumped)).toBe(documentContentHashInput(state.document));
     expect(hashContent(documentContentHashInput(state.document))).toMatch(/^fnv1a64:[0-9a-f]{16}$/);
+  });
+});
+
+describe("document-local type definitions are ADDITIVE refinements", () => {
+  const state = stateOf(readFixture("valid/generic-state.json"));
+  const document = state.document;
+  const definition = document.typeDefinitions["measured-node"] as NonNullable<
+    (typeof document.typeDefinitions)[string]
+  >;
+
+  it("adds an attribute to its base type, and an entity may use the refined type", () => {
+    expect(definition.baseType).toBe("node");
+    const gamma = document.entities["entity:gamma"] as NonNullable<(typeof document.entities)[string]>;
+    expect(gamma.type).toBe("measured-node");
+    // `name` comes from the base type, `sampleCount` from the refinement: both
+    // validate, which is what "additive" means concretely.
+    expect(Object.keys(gamma.attributes).sort()).toEqual(["name", "sampleCount"]);
+    expect(validateDocument(document, { registry })).toEqual([]);
+  });
+
+  it("refuses a refinement that redeclares an attribute of its base type", () => {
+    const shadowing: SemanticDocument = {
+      ...document,
+      typeDefinitions: {
+        "measured-node": {
+          ...definition,
+          attributes: [...definition.attributes, { name: "name", kind: "boolean" }],
+        },
+      },
+    };
+    const diagnostics = validateDocument(shadowing, { registry });
+    // Two diagnostics, and the second one is the reason the first matters: with
+    // `name` redeclared as a boolean, the entity's existing text value no longer
+    // satisfies the effective schema. A refinement cannot change what a profile
+    // means, and this is what it would cost if it could.
+    expect(diagnostics.map((entry) => entry.code)).toEqual([
+      "type-definition-conflict",
+      "attribute-type-mismatch",
+    ]);
+    expect(diagnostics[0]?.details).toEqual({ attribute: "name", baseType: "node" });
+  });
+
+  it("refuses a refinement of a base type the profile does not declare", () => {
+    const orphan: SemanticDocument = {
+      ...document,
+      typeDefinitions: { "measured-node": { ...definition, baseType: "no-such-type" } },
+    };
+    expect(validateDocument(orphan, { registry }).map((entry) => entry.code)).toContain("unknown-entity-type");
+  });
+
+  it("refuses to instantiate an abstract profile type, and says it is abstract", () => {
+    const abstractRegistry = createProfileRegistry([
+      {
+        id: "abstracted@1",
+        name: "abstracted",
+        version: 1,
+        completeness: "skeleton",
+        entityTypes: [{ id: "base", label: "Base", attributes: [], abstract: true }],
+        portTypes: [],
+        relationTypes: [],
+        constraints: [],
+        limits: {},
+        notes: ["SKELETON. A single abstract type, to prove abstract types cannot be instantiated."],
+      },
+    ]);
+    const instantiated: SemanticDocument = {
+      documentId: documentRef("abstract"),
+      schemaVersion: CURRENT_SCHEMA_VERSION,
+      revision: 0,
+      profileRefs: ["abstracted@1"],
+      typeDefinitions: {},
+      entities: {
+        "entity:a": { id: entityRef("a"), profile: "abstracted@1", type: "base", attributes: {} },
+      },
+      relations: {},
+      ports: {},
+      resources: {},
+      extensions: [],
+    };
+    const diagnostics = validateDocument(instantiated, { registry: abstractRegistry });
+    expect(diagnostics.map((entry) => entry.code)).toEqual(["unknown-entity-type"]);
+    expect(diagnostics[0]?.details).toEqual({ abstract: true });
   });
 });
