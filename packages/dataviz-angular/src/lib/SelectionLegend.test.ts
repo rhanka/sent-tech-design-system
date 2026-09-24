@@ -63,13 +63,15 @@ describe('SelectionLegend (angular)', () => {
     fixture.detectChanges();
     const root = fixture.nativeElement as HTMLElement;
 
-    // `role`/`aria-label` sit on the `<st-inline>` host: DS Angular `Inline`
-    // takes no ARIA input, so they cannot reach its inner `.st-inline` div
-    // (React/Vue spread them onto that div instead).
+    // DS Angular `Inline` now declares the ARIA inputs, so `role`/`aria-label`
+    // reach the rendered `.st-inline` div exactly as React and Vue place them,
+    // and do not leak onto the `<st-inline>` host element.
     const group = root.querySelector('[role="group"]');
-    expect(group?.tagName.toLowerCase()).toBe('st-inline');
+    expect(group?.tagName.toLowerCase()).toBe('div');
+    expect(group?.getAttribute('class')).toBe('st-flex st-inline');
     expect(group?.getAttribute('aria-label')).toBe('Sélections actives');
-    expect(group?.querySelector('div.st-inline')).not.toBeNull();
+    expect(root.querySelector('st-inline')?.hasAttribute('role')).toBe(false);
+    expect(root.querySelector('st-inline')?.hasAttribute('aria-label')).toBe(false);
 
     const chips = Array.from(root.querySelectorAll('.st-selectionChip'));
     expect(chips).toHaveLength(1);

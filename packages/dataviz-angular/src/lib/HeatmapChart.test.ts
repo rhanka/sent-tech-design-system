@@ -65,9 +65,7 @@ describe('HeatmapChart (angular)', () => {
     expect(root.querySelector('div.st-heatmapChart')).not.toBeNull();
     expect(root.querySelector('.st-heatmapChart__visual')?.getAttribute('aria-label')).toBe('Revenue heatmap');
     expect(root.querySelectorAll('rect.st-heatmapChart__cell')).toHaveLength(4);
-    // The DS Angular HeatmapChart labels its data list `<label> data`; the DS
-    // React one labels it `Data values for <label>` (a components-* divergence).
-    expect(root.querySelector('ul.st-chartDataList')?.getAttribute('aria-label')).toBe('Revenue heatmap data');
+    expect(root.querySelector('ul.st-chartDataList')?.getAttribute('aria-label')).toBe('Data values for Revenue heatmap');
     expect(dataList(root)).toEqual([
       'eu, checkout: 10',
       'eu, billing: 7',

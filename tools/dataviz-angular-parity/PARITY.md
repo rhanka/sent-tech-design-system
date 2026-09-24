@@ -8,13 +8,13 @@ command to re-derive them.
 | --- | --- | --- | --- | --- | --- |
 | `AreaChart` | 65 | **0** | **0** | — | — |
 | `DonutChart` | 21 | **0** | **0** | — | — |
-| `HeatmapChart` | 74 | 28 | 1 | 28 | DS: components-angular vs components-react HeatmapChart |
+| `HeatmapChart` | 74 | 27 | **0** | 27 | DS: components-angular vs components-react HeatmapChart |
 | `ScatterPlot` | 76 | **0** | **0** | — | — |
-| `TreemapChart` | 79 | 76 | 1 | 76 | DS: components-angular vs components-react TreemapChart |
+| `TreemapChart` | 79 | 76 | **0** | 76 | DS: components-angular vs components-react TreemapChart |
 | `KpiCardGroup` | 12 | **0** | **0** | — | — |
 | `RecordsTable` | 129 | **0** | **0** | — | — |
-| `SelectionLegend` | 18 | 8 | 5 | 6 | DS SelectionChip icon path + DS Inline takes no ARIA input |
+| `SelectionLegend` | 18 | **0** | **0** | 0 | — |
 | `DateRangeFilter` | 16 | 1 | **0** | — | React serialises value="" on the readonly input; Angular sets the property |
 | `DashboardFilterBar` | 110 | 106 | **0** | 17 | DS: Search/Select/MultiSelect/DatePicker internal DOM |
 
-exact-markup matches: **5/10** · exact-signature matches: **7/10**
+exact-markup matches: **6/10** · exact-signature matches: **10/10**

@@ -65,9 +65,7 @@ describe('TreemapChart (angular)', () => {
     expect(root.querySelector('div.st-treemapChart')).not.toBeNull();
     expect(root.querySelector('.st-treemapChart__visual')?.getAttribute('aria-label')).toBe('Revenue treemap');
     expect(root.querySelectorAll('rect.st-treemapChart__rect')).toHaveLength(3);
-    // The DS Angular TreemapChart labels its data list `<label> data`; the DS
-    // React one labels it `Data values for <label>` (a components-* divergence).
-    expect(root.querySelector('ul.st-chartDataList')?.getAttribute('aria-label')).toBe('Revenue treemap data');
+    expect(root.querySelector('ul.st-chartDataList')?.getAttribute('aria-label')).toBe('Data values for Revenue treemap');
     expect(dataList(root)).toEqual(['eu, checkout: 10', 'eu, billing: 7', 'us, checkout: 5']);
   });
 
