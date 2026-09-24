@@ -37,9 +37,21 @@ that data from the Vue source; `emit.mjs` is deliberately dumb and renders it.
 `builder(model, rows, cfg)`, `wrap(builder(model, rows, cfg))`, and
 `layerFn(store, viewId, cfg)` — plus two binding shapes, `[derived]` handed to a
 plural input and `mapClass('st-x', props.class)`. A component whose `setup()` does
-anything else (local state, several `h()` calls, emitted events, slots) is
-reported as a skip and must be written by hand. Of the 106 adapters left after the
-first lot, a classification pass put 85 in the generatable set and 21 outside it.
+anything else (local state, several `h()` calls, emitted events, slots) is reported
+as a skip and must be written by hand.
+
+Ask the tool how far it reaches, rather than estimating:
+
+```sh
+node tools/dataviz-angular-port/classify.mjs          # add --names for the lists
+```
+
+It runs the real `extract()` over every pending adapter and prints what it reads,
+what it refuses and why. On the pool left after the second lot it reads **28 of the
+87 pending** and refuses 59. The refusal reasons are the lever: 19 differ only by
+the `setup()` preamble the extractor anchors on, and 13 more are "no binding
+consumes the derived <name>" — shapes close to ones already handled, so extending
+the vocabulary is worth measuring before hand-writing them.
 
 ## Adding a lot
 
