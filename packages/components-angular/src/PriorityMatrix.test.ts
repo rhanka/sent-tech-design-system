@@ -1,4 +1,5 @@
 import "@angular/compiler";
+import type { SimpleChanges } from "@angular/core";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -18,6 +19,7 @@ function component(): PriorityMatrix {
   const c = new PriorityMatrix();
   c.data = data;
   c.label = "Matrice";
+  c.ngOnInit();
   return c;
 }
 
@@ -57,5 +59,30 @@ describe("PriorityMatrix (parity with Svelte)", () => {
     const src = readFileSync(join(here, "PriorityMatrix.ts"), "utf8");
     expect(src).not.toMatch(/style\s*=/);
     expect(src).not.toMatch(/\[style\./);
+  });
+
+  it("computes the placement once per input change, not on every read", () => {
+    const c = component();
+    const first = c.placed;
+    expect(first).toHaveLength(data.length);
+    expect(c.placed).toBe(first);
+    c.ngOnChanges({} as SimpleChanges);
+    expect(c.placed).not.toBe(first);
+    expect(c.placed).toHaveLength(data.length);
+  });
+
+  it("clamps non-finite values instead of exposing NaN", () => {
+    const c = new PriorityMatrix();
+    c.data = [
+      { x: NaN, y: 82, label: "Bad X" },
+      { x: 20, y: Infinity, label: "Bad Y" },
+    ];
+    c.label = "Matrice";
+    c.ngOnInit();
+    for (const p of c.points) {
+      expect(Number.isFinite(p.cx)).toBe(true);
+      expect(Number.isFinite(p.cy)).toBe(true);
+    }
+    expect(c.dataValueItems.join(" ")).not.toContain("NaN");
   });
 });

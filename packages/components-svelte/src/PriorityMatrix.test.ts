@@ -35,6 +35,23 @@ describe("PriorityMatrix", () => {
     expect(items[0]).toContain("Auth SSO");
   });
 
+  it("clamps non-finite values instead of rendering NaN", () => {
+    const bad: PriorityMatrixDatum[] = [
+      { x: NaN, y: 82, label: "Bad X" },
+      { x: 20, y: Infinity, label: "Bad Y" },
+    ];
+    const { container } = render(PriorityMatrix, { props: { label: "Matrice", data: bad } });
+    expect(container.innerHTML).not.toContain("NaN");
+    const circles = Array.from(container.querySelectorAll(".st-priorityMatrix__point"));
+    expect(circles).toHaveLength(bad.length);
+    for (const c of circles) {
+      expect(Number.isFinite(Number(c.getAttribute("cx")))).toBe(true);
+      expect(Number.isFinite(Number(c.getAttribute("cy")))).toBe(true);
+    }
+    const items = Array.from(container.querySelectorAll(".st-chartDataList li")).map((n) => n.textContent ?? "");
+    expect(items.join(" ")).not.toContain("NaN");
+  });
+
   it("places non-overlapping labels on the 13-point reference set", () => {
     const ref: PriorityMatrixDatum[] = [
       { x: 18, y: 82, label: "Auth SSO" },
@@ -66,6 +83,13 @@ describe("PriorityMatrix", () => {
         const overlap = a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
         expect(overlap).toBe(false);
       }
+    }
+    // Threshold keep-out (S1): no label box crosses either threshold line.
+    const tx = 48 + (640 - 48 - 18) / 2;
+    const ty = 26 + (400 - 26 - 36) / 2;
+    for (const b of boxes) {
+      expect(tx > b.x && tx < b.x + b.w).toBe(false);
+      expect(ty > b.y && ty < b.y + b.h).toBe(false);
     }
   });
 });
