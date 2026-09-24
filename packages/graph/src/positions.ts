@@ -1,4 +1,4 @@
-import type { PositionBounds, PositionFrame, PositionFrameMeta } from "./types";
+import type { LayoutOutcome, PositionBounds, PositionFrame, PositionFrameMeta } from "./types";
 
 export function assertPositionArray(positions: Float32Array, nodeCount?: number): void {
   if (!(positions instanceof Float32Array)) {
@@ -17,6 +17,11 @@ export function assertPositionArray(positions: Float32Array, nodeCount?: number)
 export function copyPositions(positions: Float32Array, nodeCount?: number): Float32Array {
   assertPositionArray(positions, nodeCount);
   return new Float32Array(positions);
+}
+
+export function toPositions(outcome: Float32Array | LayoutOutcome): Float32Array {
+  if (outcome instanceof Float32Array) return outcome;
+  return outcome.positions;
 }
 
 export function createPositionFrame(positions: Float32Array, meta: PositionFrameMeta = {}): PositionFrame {

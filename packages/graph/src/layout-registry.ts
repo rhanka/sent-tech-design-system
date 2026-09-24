@@ -8,17 +8,31 @@
  * only chooses WHICH positions are produced; it never touches the renderer,
  * camera, or shaders (raw-WebGL2 instanced draw path is unchanged).
  *
- * Three layouts ship registered:
+ * Seven layouts ship registered (see the bottom of this file):
  *   • `"force"`         — the DEFAULT. Passthrough of the already-baked positions
  *                         (the deterministic Barnes-Hut FA2 force layout runs OFF
- *                         this path — `src/graph-layout.ts` — and is pinned into
- *                         `graph.positions`; this engine returns them verbatim).
+ *                         this path and is pinned into `graph.positions`; this
+ *                         engine returns them verbatim).
  *   • `"typed-layer"`   — Variant A swimlane: deterministic O(n) banding by node
  *                         type. OPT-IN; never the default.
  *   • `"time-oriented"` — Variant E: deterministic O(n) placement of nodes by
  *                         their interval-start `t` on the X (time) axis (oldest
  *                         left → newest right), banded into type lanes on Y.
  *                         OPT-IN; never the default.
+ *   • `"git-flow"`, `"radial"`, `"grid"`, `"metro"` — further OPT-IN layouts.
+ *
+ * Two MORE layouts exist behind the DOM-free `@sentropic/graph/processing`
+ * entry (`src/processing/register.ts`, GD-M2-PROCESSING) and register
+ * themselves on import of that entry — never on import of this root:
+ *   • `"force-fa2"`       — the COMPUTED deterministic Barnes-Hut FA2 force
+ *                           layout (the computation the `"force"` passthrough
+ *                           skips), projected onto node order. OPT-IN.
+ *   • `"hierarchy-aware"` — the simulation-free tidy-tree + phyllotaxis layout
+ *                           over `LayoutOptions.hierarchies`, narrowed to
+ *                           `Float32Array`. OPT-IN; degrades to `"force-fa2"`
+ *                           with no usable forest.
+ * Keeping them out of the root import graph is what lets a render-only
+ * consumer avoid loading the ~1 200 lines of layout computation.
  *
  * The registry honors the existing {@link LayoutEngine} / {@link LayoutOptions}
  * contract: {@link createLayoutEngine} wraps any registered layout as the
@@ -30,15 +44,26 @@ import { gitFlowLayout } from "./layout-gitflow";
 import { gridLayout } from "./layout-grid";
 import { metroLayout } from "./layout-metro";
 import { radialLayout } from "./layout-radial";
-import { copyPositions, createPositionFrame } from "./positions";
-import type { LayoutEngine, LayoutOptions, PositionFrame, RenderGraphBuffers } from "./types";
+import { copyPositions, createPositionFrame, toPositions } from "./positions";
+import type {
+  LayoutEngine,
+  LayoutOptions,
+  LayoutOutcome,
+  PositionFrame,
+  RenderGraphBuffers,
+} from "./types";
 
 /**
  * A layout function: graph (+ options) → node-order-keyed 2D positions
- * (`2 * nodeCount` floats). The returned array is exactly what
- * {@link GraphRenderer.setPositions} consumes — no renderer change required.
+ * (`2 * nodeCount` floats), either directly as a `Float32Array` or as a rich
+ * {@link LayoutOutcome} (normalized with `toPositions`). The positions are
+ * exactly what {@link GraphRenderer.setPositions} consumes — no renderer
+ * change required.
  */
-export type LayoutFn = (graph: RenderGraphBuffers, options?: LayoutOptions) => Float32Array;
+export type LayoutFn = (
+  graph: RenderGraphBuffers,
+  options?: LayoutOptions,
+) => Float32Array | LayoutOutcome;
 
 /** Registered id of the DEFAULT layout (the baked FA2 force positions). */
 export const DEFAULT_LAYOUT_ID = "force";
@@ -132,7 +157,7 @@ export function createLayoutEngine(id: string = DEFAULT_LAYOUT_ID): LayoutEngine
   const fn = resolveLayout(id);
   return {
     *run(graph: RenderGraphBuffers, options?: LayoutOptions): Iterable<PositionFrame> {
-      yield createPositionFrame(fn(graph, options), { alpha: 0, tick: 0 });
+      yield createPositionFrame(toPositions(fn(graph, options)), { alpha: 0, tick: 0 });
     },
   };
 }
