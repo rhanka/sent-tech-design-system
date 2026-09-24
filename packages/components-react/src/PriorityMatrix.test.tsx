@@ -1,6 +1,7 @@
 import React from "react";
 import { render } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+import * as priorityLabels from "./priorityLabels.js";
 import { PriorityMatrix } from "./index.js";
 import type { PriorityMatrixDatum } from "./PriorityMatrix.js";
 
@@ -47,5 +48,20 @@ describe("PriorityMatrix (parity with Svelte)", () => {
     }
     const items = Array.from(container.querySelectorAll(".st-chartDataList li")).map((n) => n.textContent ?? "");
     expect(items.join(" ")).not.toContain("NaN");
+  });
+
+  it("places the labels once per data reference, not on every render", () => {
+    const spy = vi.spyOn(priorityLabels, "placePriorityLabels");
+    try {
+      const { rerender } = render(<PriorityMatrix data={data} label="Matrice" />);
+      const afterFirst = spy.mock.calls.length;
+      expect(afterFirst).toBe(1);
+      for (let i = 0; i < 5; i += 1) rerender(<PriorityMatrix data={data} label="Matrice" />);
+      expect(spy.mock.calls.length).toBe(afterFirst);
+      rerender(<PriorityMatrix data={[...data]} label="Matrice" />);
+      expect(spy.mock.calls.length).toBe(afterFirst + 1);
+    } finally {
+      spy.mockRestore();
+    }
   });
 });

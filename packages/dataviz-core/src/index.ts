@@ -641,6 +641,7 @@ export type {
   PriorityMatrixPoint,
   PriorityMatrixBox,
   PriorityMatrixFrame,
+  PriorityMatrixObstacle,
   PriorityMatrixPlacement,
   PriorityQuadrant,
   PlacePriorityLabelsOptions,
