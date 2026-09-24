@@ -534,7 +534,7 @@
       "gitBlob": "5668937bc0c0b7f36d4617558cb5f25dab49ff50",
       "sha256": "e48a39ba97e2d5593171f39d0f7f738c7340d793aaa3dbeb4f86186f74ecc272",
       "status": "adapted-gd-m2-processing",
-      "destinationSha256": "69b674729c4cba4d1dfbb493ae42abb19541fd1236c8396704dfe1f259e4a372",
+      "destinationSha256": "b5998854dff99644dd3e3a7a43e9f35729bc57a0dbbce38d0df6d439e905e169",
       "note": "GD-M2-PROCESSING: LayoutOutcome/toPositions/force-fa2/hierarchy-aware adaptation; prior M1 source hash kept in sha256"
     },
     {
@@ -6798,7 +6798,7 @@
     {
       "destination": "packages/graph/src/layout-client.ts",
       "status": "local-monorepo-helper",
-      "sha256": "72986cee31120f7ce2fa642da1a089b6a204f039b620d291be3e68e018481d6b",
+      "sha256": "fa1cb27804ac3c34f9079831f8201c1c6ea326d4ce124b13a31bb2bea6f631fd",
       "note": "GD-M2-WORKERS: monorepo-authored, no upstream source; hash-pinned. Client entry (@sentropic/graph/layout-client): one worker, one request in flight, stale results discarded before they reach the caller. WORKER_NODE_THRESHOLD = 250, measured."
     },
     {
@@ -6822,7 +6822,7 @@
     {
       "destination": "packages/graph/tests/workers/boundaries.test.ts",
       "status": "local-monorepo-helper",
-      "sha256": "0b0788654084ddb5e451d027fa7cb4ccfc97cb1dd0484e1d990d78ef03721a49",
+      "sha256": "cb171feb397a81092a5426f6ee253a68a0769d3db8b8139b5d2d20f22efa3628",
       "note": "GD-M2-WORKERS: monorepo-authored, no upstream source; hash-pinned. Dependency direction and the literal new URL(\"./worker.js\", import.meta.url) resolution form."
     },
     {
