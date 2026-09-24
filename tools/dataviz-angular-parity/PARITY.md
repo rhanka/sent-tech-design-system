@@ -8,7 +8,7 @@ command to re-derive them.
 | --- | --- | --- | --- | --- | --- |
 | `AreaChart` | 65 | **0** | **0** | — | — |
 | `DonutChart` | 21 | **0** | **0** | — | — |
-| `HeatmapChart` | 74 | 27 | **0** | 27 | DS: components-angular vs components-react HeatmapChart |
+| `HeatmapChart` | 68 | **0** | **0** | 0 | — |
 | `ScatterPlot` | 76 | **0** | **0** | — | — |
 | `TreemapChart` | 79 | 76 | **0** | 76 | DS: components-angular vs components-react TreemapChart |
 | `KpiCardGroup` | 12 | **0** | **0** | — | — |
@@ -26,9 +26,9 @@ command to re-derive them.
 | `CandlestickChart` | 67 | **0** | **0** | — | — |
 | `HeikinAshiChart` | 67 | **0** | **0** | — | — |
 | `HollowCandlestickChart` | 67 | **0** | **0** | — | — |
-| `OHLCChart` | 79 | 3 | **0** | 3 | DS: Angular emits data-chart-index on each bar, React does not |
+| `OHLCChart` | 79 | **0** | **0** | 0 | DS: Angular emits data-chart-index on each bar, React does not |
 | `HLCChart` | 73 | **0** | **0** | — | — |
-| `RenkoChart` | 203 | 7 | **0** | 7 | DS: Angular always renders the tooltip, React renders it only on hover |
+| `RenkoChart` | 197 | **0** | **0** | 0 | DS: Angular always renders the tooltip, React renders it only on hover |
 | `AreaRangeChart` | 86 | **0** | **0** | — | — |
 | `AreaSplineRangeChart` | 86 | **0** | **0** | — | — |
 | `ColumnRangeChart` | 61 | **0** | **0** | — | — |
@@ -37,4 +37,4 @@ command to re-derive them.
 | `SunburstChart` | 54 | **0** | **0** | — | — |
 | `PackedBubbleChart` | 28 | **0** | **0** | — | — |
 
-exact-markup matches: **23/30** · exact-signature matches: **30/30**
+exact-markup matches: **26/30** · exact-signature matches: **30/30**
