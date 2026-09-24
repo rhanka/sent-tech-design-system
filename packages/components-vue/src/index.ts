@@ -220,6 +220,8 @@ export { DonutChart } from "./DonutChart.js";
 export type { DonutChartProps, DonutChartDatum, DonutChartTone } from "./DonutChart.js";
 export { ScatterPlot } from "./ScatterPlot.js";
 export type { ScatterPlotProps, ScatterPlotDatum, ScatterPlotTone, ScatterPlotCentroid } from "./ScatterPlot.js";
+export { PriorityMatrix } from "./PriorityMatrix.js";
+export type { PriorityMatrixProps, PriorityMatrixDatum, PriorityMatrixTone } from "./PriorityMatrix.js";
 export { Sparkline } from "./Sparkline.js";
 export type { SparklineProps, SparklineTone } from "./Sparkline.js";
 export { StackedBarChart } from "./StackedBarChart.js";

@@ -84,6 +84,7 @@ export type ComponentName =
   | "LineChart"
   | "DonutChart"
   | "ScatterPlot"
+  | "PriorityMatrix"
   | "Sparkline"
   | "StackedBarChart"
   | "HeatmapChart"
