@@ -55,7 +55,8 @@ export type SelectionChipProps = {
             stroke-linejoin="round"
             aria-hidden="true"
           >
-            <path d="M18 6 6 18M6 6l12 12"></path>
+            <path d="M18 6 6 18"></path>
+                <path d="m6 6 12 12"></path>
           </svg>
         </button>
       }
