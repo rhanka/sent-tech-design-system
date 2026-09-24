@@ -1,0 +1,44 @@
+{
+  "case": "divergent-revisions",
+  "note": "A view stamped with a revision the document never reached. It is refused: one counter governs the state, a transaction bumps it and stamps the views it touched, so a view is never ahead of its document. This is the read-side detection of a lost or reordered write.",
+  "kind": "state",
+  "expect": { "codes": ["revision-divergence"] },
+  "document": {
+    "documentId": "document:d2",
+    "schemaVersion": { "major": 1, "minor": 1 },
+    "revision": 3,
+    "profileRefs": ["generic@1"],
+    "typeDefinitions": {},
+    "entities": {
+      "entity:only": {
+        "id": "entity:only",
+        "profile": "generic@1",
+        "type": "node",
+        "attributes": { "name": { "kind": "text", "value": "Only" } }
+      }
+    },
+    "ports": {},
+    "relations": {},
+    "resources": {},
+    "extensions": []
+  },
+  "views": {
+    "view:ahead": {
+      "viewId": "view:ahead",
+      "semanticDocumentId": "document:d2",
+      "revision": 9,
+      "entityOccurrences": {
+        "occurrence:only-1": {
+          "id": "occurrence:only-1",
+          "entity": "entity:only",
+          "geometry": { "x": 0, "y": 0, "width": 100, "height": 40 }
+        }
+      },
+      "portOccurrences": {},
+      "relationOccurrences": {},
+      "groups": {},
+      "filters": [],
+      "presentation": { "camera": { "x": 0, "y": 0, "zoom": 1 } }
+    }
+  }
+}

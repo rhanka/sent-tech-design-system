@@ -1,0 +1,28 @@
+{
+  "case": "dangling-reference",
+  "note": "A typed reference attribute pointing at an entity the document does not hold. It is REFUSED, never silently dropped: study invariant 1 forbids the semantic level from pruning a dangling edge (the renderer's historical tolerance in buildRenderGraphBuffers is a rendering behaviour, not a model one).",
+  "kind": "document",
+  "expect": { "codes": ["dangling-reference"] },
+  "document": {
+    "documentId": "document:r1",
+    "schemaVersion": { "major": 1, "minor": 1 },
+    "revision": 0,
+    "profileRefs": ["generic@1"],
+    "typeDefinitions": {},
+    "entities": {
+      "entity:alpha": {
+        "id": "entity:alpha",
+        "profile": "generic@1",
+        "type": "node",
+        "attributes": {
+          "name": { "kind": "text", "value": "Alpha" },
+          "owner": { "kind": "reference", "value": "entity:missing" }
+        }
+      }
+    },
+    "ports": {},
+    "relations": {},
+    "resources": {},
+    "extensions": []
+  }
+}

@@ -1,0 +1,250 @@
+{
+  "case": "generic-complete",
+  "note": "The reference document of generic@1: two occurrences of the same entity in one view AND an occurrence of it in a second view (study invariant 2), a hyperrelation with three members keeping one business id, a document-local type definition refining `node`, semantic ports bound to geometric ports through occurrences (invariant 4), and a hash-only preserved extension (the importer kept the identity, not the bytes).",
+  "kind": "state",
+  "document": {
+    "documentId": "document:d1",
+    "schemaVersion": { "major": 1, "minor": 1 },
+    "revision": 4,
+    "profileRefs": ["generic@1"],
+    "typeDefinitions": {
+      "measured-node": {
+        "id": "measured-node",
+        "profile": "generic@1",
+        "baseType": "node",
+        "label": "Measured node",
+        "attributes": [{ "name": "sampleCount", "kind": "quantity", "units": ["unit"] }]
+      }
+    },
+    "entities": {
+      "entity:root": {
+        "id": "entity:root",
+        "profile": "generic@1",
+        "type": "container",
+        "attributes": {
+          "name": { "kind": "text", "value": "Root" },
+          "collapsed": { "kind": "boolean", "value": false }
+        }
+      },
+      "entity:alpha": {
+        "id": "entity:alpha",
+        "profile": "generic@1",
+        "type": "node",
+        "attributes": {
+          "name": { "kind": "text", "value": "Alpha" },
+          "state": { "kind": "enum", "value": "active" },
+          "weight": { "kind": "quantity", "value": 2, "unit": "unit" },
+          "duration": { "kind": "quantity", "value": 90, "unit": "s" },
+          "tags": {
+            "kind": "collection",
+            "items": [
+              { "kind": "text", "value": "ingest" },
+              { "kind": "text", "value": "batch" }
+            ]
+          },
+          "owner": { "kind": "reference", "value": "entity:root" }
+        }
+      },
+      "entity:beta": {
+        "id": "entity:beta",
+        "profile": "generic@1",
+        "type": "node",
+        "attributes": {
+          "name": { "kind": "text", "value": "Beta" },
+          "createdAt": { "kind": "date", "value": "2026-09-01" },
+          "pinned": { "kind": "boolean", "value": true }
+        }
+      },
+      "entity:gamma": {
+        "id": "entity:gamma",
+        "profile": "generic@1",
+        "type": "measured-node",
+        "attributes": {
+          "name": { "kind": "text", "value": "Gamma" },
+          "sampleCount": { "kind": "quantity", "value": 12, "unit": "unit" }
+        }
+      }
+    },
+    "ports": {
+      "port:alpha-out": {
+        "id": "port:alpha-out",
+        "profile": "generic@1",
+        "type": "port",
+        "owner": "entity:alpha",
+        "name": "out",
+        "direction": "out",
+        "attributes": { "label": { "kind": "text", "value": "out" } }
+      },
+      "port:beta-in": {
+        "id": "port:beta-in",
+        "profile": "generic@1",
+        "type": "port",
+        "owner": "entity:beta",
+        "name": "in",
+        "direction": "in",
+        "attributes": {}
+      }
+    },
+    "relations": {
+      "relation:flow": {
+        "id": "relation:flow",
+        "profile": "generic@1",
+        "type": "link",
+        "endpoints": [
+          { "role": "source", "target": "port:alpha-out" },
+          { "role": "target", "target": "port:beta-in" }
+        ],
+        "attributes": {
+          "label": { "kind": "text", "value": "alpha to beta" },
+          "weight": { "kind": "quantity", "value": 1, "unit": "unit" }
+        }
+      },
+      "relation:root-alpha": {
+        "id": "relation:root-alpha",
+        "profile": "generic@1",
+        "type": "contains",
+        "endpoints": [
+          { "role": "parent", "target": "entity:root" },
+          { "role": "child", "target": "entity:alpha" }
+        ],
+        "attributes": {}
+      },
+      "relation:root-beta": {
+        "id": "relation:root-beta",
+        "profile": "generic@1",
+        "type": "contains",
+        "endpoints": [
+          { "role": "parent", "target": "entity:root" },
+          { "role": "child", "target": "entity:beta" }
+        ],
+        "attributes": {}
+      },
+      "relation:triple": {
+        "id": "relation:triple",
+        "profile": "generic@1",
+        "type": "association",
+        "endpoints": [
+          { "role": "member", "target": "entity:alpha" },
+          { "role": "member", "target": "entity:beta" },
+          { "role": "member", "target": "entity:gamma" }
+        ],
+        "attributes": { "label": { "kind": "text", "value": "three-way" } }
+      }
+    },
+    "resources": {
+      "resource:spec": {
+        "id": "resource:spec",
+        "uri": "sentropic://resource/spec-pdf",
+        "mediaType": "application/pdf",
+        "contentHash": "fnv1a64:0123456789abcdef",
+        "byteLength": 20480
+      }
+    },
+    "extensions": [
+      {
+        "namespace": "https://example.invalid/vendor/layout",
+        "schemaVersion": "3",
+        "scope": { "kind": "entity", "target": "entity:alpha" },
+        "validation": "preserved-unvalidated",
+        "contentHash": "fnv1a64:fedcba9876543210"
+      }
+    ]
+  },
+  "views": {
+    "view:main": {
+      "viewId": "view:main",
+      "semanticDocumentId": "document:d1",
+      "revision": 4,
+      "entityOccurrences": {
+        "occurrence:root-1": {
+          "id": "occurrence:root-1",
+          "entity": "entity:root",
+          "geometry": { "x": 0, "y": 0, "width": 480, "height": 260 },
+          "z": 0
+        },
+        "occurrence:alpha-1": {
+          "id": "occurrence:alpha-1",
+          "entity": "entity:alpha",
+          "geometry": { "x": 40, "y": 40, "width": 160, "height": 80 },
+          "group": "group:cluster",
+          "z": 1
+        },
+        "occurrence:alpha-2": {
+          "id": "occurrence:alpha-2",
+          "entity": "entity:alpha",
+          "geometry": { "x": 40, "y": 160, "width": 160, "height": 80 },
+          "z": 1
+        },
+        "occurrence:beta-1": {
+          "id": "occurrence:beta-1",
+          "entity": "entity:beta",
+          "geometry": { "x": 280, "y": 40, "width": 160, "height": 80 },
+          "group": "group:cluster",
+          "z": 1
+        },
+        "occurrence:gamma-1": {
+          "id": "occurrence:gamma-1",
+          "entity": "entity:gamma",
+          "geometry": { "x": 280, "y": 160, "width": 160, "height": 80 },
+          "z": 1
+        }
+      },
+      "portOccurrences": {
+        "occurrence:alpha-out-1": {
+          "id": "occurrence:alpha-out-1",
+          "port": "port:alpha-out",
+          "ownerOccurrence": "occurrence:alpha-1",
+          "side": "east",
+          "order": 0,
+          "anchor": 0.5
+        },
+        "occurrence:beta-in-1": {
+          "id": "occurrence:beta-in-1",
+          "port": "port:beta-in",
+          "ownerOccurrence": "occurrence:beta-1",
+          "side": "west",
+          "order": 0,
+          "anchor": 0.5
+        }
+      },
+      "relationOccurrences": {
+        "occurrence:flow-1": {
+          "id": "occurrence:flow-1",
+          "relation": "relation:flow",
+          "endpoints": [
+            { "role": "source", "occurrence": "occurrence:alpha-out-1" },
+            { "role": "target", "occurrence": "occurrence:beta-in-1" }
+          ],
+          "waypoints": [{ "x": 210, "y": 80 }, { "x": 270, "y": 80 }]
+        }
+      },
+      "groups": {
+        "group:cluster": {
+          "id": "group:cluster",
+          "label": "Cluster",
+          "members": ["occurrence:alpha-1", "occurrence:beta-1"],
+          "collapsed": false
+        }
+      },
+      "filters": [{ "id": "filter:nodes", "kind": "entity-type", "types": ["node"], "mode": "include" }],
+      "presentation": { "camera": { "x": 0, "y": 0, "zoom": 1 }, "grid": { "size": 8, "snap": true } }
+    },
+    "view:detail": {
+      "viewId": "view:detail",
+      "semanticDocumentId": "document:d1",
+      "revision": 2,
+      "entityOccurrences": {
+        "occurrence:alpha-detail": {
+          "id": "occurrence:alpha-detail",
+          "entity": "entity:alpha",
+          "geometry": { "x": 0, "y": 0, "width": 320, "height": 200 }
+        }
+      },
+      "portOccurrences": {},
+      "relationOccurrences": {},
+      "groups": {},
+      "filters": [],
+      "presentation": { "camera": { "x": -40, "y": -40, "zoom": 1.5 } }
+    }
+  }
+}
