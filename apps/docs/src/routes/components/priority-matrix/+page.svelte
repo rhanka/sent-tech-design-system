@@ -109,10 +109,16 @@
   <section class="docs-section">
     <h2>Limites documentées</h2>
     <p class="docs-demo-context">
-      Le placement est un meilleur effort : sur le jeu de référence 13 points
-      (640×400), 0 chevauchement, 0 point couvert, seuils et noms dégagés ;
-      les jeux denses se dégradent (voir ci-dessous). Chiffres mesurés sur
-      Node 22, recuit à graine 42.
+      Le placement est un meilleur effort. Sur le jeu de référence 13 points
+      (640×400) : 0 chevauchement entre boîtes, seuils et noms de quadrant
+      dégagés, mais 3 points sur 13 couverts par une boîte ; les obstacles de
+      seuil poussent les étiquettes sur les ancres quand la place manque. Les
+      jeux denses se dégradent : 25 points, 0 chevauchement et 7 points
+      couverts ; 40 points, 3 chevauchements et 15 points couverts. Tous les
+      chiffres de cette section se rejouent par
+      <code>node packages/dataviz-core/bench/priority-matrix-measure.mjs</code>
+      (Node 22, graine 42), sauf les deux mesures de police signalées comme
+      relevées en navigateur.
     </p>
     <table class="docs-table">
       <thead>
@@ -121,23 +127,23 @@
       <tbody>
         <tr>
           <td>Coût du recuit (O(n³), <code>max(1500, n×120)</code> itérations)</td>
-          <td>13 pts : 3,2 ms ; 30 : 13,7 ms ; 50 : 36,8 ms ; 80 : 137,8 ms ; 100 : 258,9 ms. Plafond recommandé : ~50 points. Le placement est mémoïsé (une fois par changement d'entrées, lectures ensuite gratuites).</td>
+          <td>13 pts : 1,3 ms (1 560 itérations) ; 30 : 9,1 ms ; 50 : 39,8 ms ; 80 : 151,6 ms ; 100 : 277,3 ms. La qualité s'effondre avant le temps : sur jeux denses, 3 chevauchements à 50 points, 75 à 80, 152 à 100. Plafond utile : ~30 points, ~50 au maximum. Le placement est mémoïsé une fois par changement de <em>référence</em> des entrées ; muter le tableau en place laisse le placement périmé.</td>
         </tr>
         <tr>
           <td>Boîtes estimées, pas mesurées</td>
-          <td><code>12 + 7 × caractères</code>, plafonné à 120 px : modèle valable pour du latin étroit. En Inter 11 px (Chromium) « MMMMMMMMMM » déborde de 17,7 px, « WWWWWWWWWWWW » de 26,7 px, « データ可視化の基盤 » de 24,0 px. Aucune prop ne permet de passer des boîtes mesurées.</td>
+          <td><code>12 + 7 × caractères</code>, plafonné à 120 px : modèle valable pour du latin étroit. Relevé ponctuel en navigateur (Inter 11 px, Chromium, hors harnais) : « MMMMMMMMMM » déborde de 17,7 px, « WWWWWWWWWWWW » de 26,7 px, « データ可視化の基盤 » de 24,0 px. Aucune prop ne permet de passer des boîtes mesurées, donc la garantie de non-chevauchement ne vaut que dans ce modèle.</td>
         </tr>
         <tr>
           <td>Texte agrandi à 200 %</td>
-          <td>La taille en <code>rem</code> dans un <code>viewBox</code> fixe est partagée avec <code>ScatterPlot</code> ; propre au composant, l'encadré dimensionné en dur : à 200 %, les 13 libellés de référence débordent de leur boîte (jusqu'à ~60 px).</td>
+          <td>La taille en <code>rem</code> dans un <code>viewBox</code> fixe est partagée avec <code>ScatterPlot</code> ; propre au composant, l'encadré dimensionné en dur. Relevé ponctuel en navigateur (hors harnais) : à 200 %, les libellés du jeu de référence débordent de leur boîte, jusqu'à ~60 px.</td>
         </tr>
         <tr>
           <td>Taille minimale de cadre</td>
-          <td>Jeu 13 points : net à 640×400, 1 chevauchement à 480×300 et 400×250, 9 à 320×200, 35 à 200×140 ; à 120×90, 78 chevauchements et 12 boîtes hors tracé. Ne pas descendre sous ~480×300.</td>
+          <td>Jeu 13 points, chevauchements entre boîtes : 0 à 640×400, 1 à 480×300 et 400×250, 9 à 320×200, 35 à 200×140, 78 à 120×90 avec 12 boîtes hors tracé. Les points couverts suivent : 3/13 jusqu'à 400×250, 10/13 à 320×200, 13/13 à 120×90. Ne pas descendre sous ~480×300.</td>
         </tr>
         <tr>
           <td>Déterminisme par exécution, pas par ordre d'entrée</td>
-          <td>Répétitions et SSR identiques à l'octet ; inverser le tableau d'entrée déplace 13/13 étiquettes (écart max 177,4 px). Stabiliser l'ordre en amont si la comparabilité entre rafraîchissements compte.</td>
+          <td>Répétitions et SSR identiques à l'octet ; inverser le tableau d'entrée déplace 13/13 étiquettes, écart maximal 86,6 px, longueur des traits 168,5 → 221,3 px. Stabiliser l'ordre en amont si la comparabilité entre rafraîchissements compte.</td>
         </tr>
         <tr>
           <td>Noms de quadrant non configurables</td>

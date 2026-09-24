@@ -1,5 +1,6 @@
 import { mount } from "@vue/test-utils";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+import * as priorityLabels from "./priorityLabels.js";
 import { PriorityMatrix } from "./index.js";
 import type { PriorityMatrixDatum } from "./PriorityMatrix.js";
 
@@ -49,5 +50,22 @@ describe("PriorityMatrix (parity with Svelte)", () => {
     }
     const items = Array.from(el.querySelectorAll(".st-chartDataList li")).map((n) => n.textContent ?? "");
     expect(items.join(" ")).not.toContain("NaN");
+  });
+
+  it("places the labels once per data reference, not on every update", async () => {
+    const spy = vi.spyOn(priorityLabels, "placePriorityLabels");
+    try {
+      const wrapper = mount(PriorityMatrix, { props: { data, label: "Matrice" } });
+      const afterFirst = spy.mock.calls.length;
+      expect(afterFirst).toBe(1);
+      for (let i = 0; i < 5; i += 1) {
+        await wrapper.setProps({ label: `Matrice ${i}` });
+      }
+      expect(spy.mock.calls.length).toBe(afterFirst);
+      await wrapper.setProps({ data: [...data] });
+      expect(spy.mock.calls.length).toBe(afterFirst + 1);
+    } finally {
+      spy.mockRestore();
+    }
   });
 });

@@ -171,7 +171,7 @@ function clampInto(x: number, y: number, w: number, h: number, f: PriorityMatrix
  * and out-of-frame penalties, refined by fixed-schedule simulated annealing.
  *
  * Complexity is O(n^2) per energy evaluation with max(1500, n*120) iterations,
- * i.e. O(n^3) overall (the 1500 floor dominates below ~30 points). Measured
+ * i.e. O(n^3) overall (the 1500 floor only dominates below 13 points, since n*120 passes 1500 at n=13). Measured
  * (Node 22, desktop class, seeded random sets with long 2-line labels):
  * n=13 in 3.2ms, n=30 in 13.7ms, n=50 in 36.8ms, n=80 in 137.8ms, n=100 in
  * 258.9ms. Overlap counts are set-dependent (0/1/15/83/176 on that
