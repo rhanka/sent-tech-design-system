@@ -25,7 +25,7 @@ import type { TenantTheme } from "@sentropic/design-system-themes";
  *   Deep yellow                         #cca800   (header border accent)
  *   Light interactive blue              #3cb4e6   (checked controls, focus border)
  *   Interactive blue                    #2b8ec5   (control hover border)
- *   Pale blue tint                      #b0dcef   (measured pale tint)
+ *   Footer nav hover blue               #b0dcef   (.stn-footer__nav-item:hover)
  *   Pale blue-grey                      #edf1f4   (measured pale blue-grey)
  *   White (surface default)             #ffffff
  *   Body background alt                 #f7f8fa   (body background)
@@ -34,7 +34,7 @@ import type { TenantTheme } from "@sentropic/design-system-themes";
  *   Muted grey text                     #767c84   (.font-color--grey-text)
  *   Neutral grey text                   #525a63   (.font-color--grey-neutral-1)
  *   Error red                           #e6007e   (.modal-content .text-red)
- *   Readable muted (darkened)           #6a6f76   (derived — à confirmer)
+ *   Readable muted (darkened)           #6a6f77   (derived — à confirmer)
  *   Readable link blue (darkened)       #22709b   (derived — à confirmer)
  *   Success green                       #1e7e34   (derived — à confirmer)
  *   Warning amber                       #b45309   (derived — à confirmer)
@@ -59,13 +59,13 @@ const stmicroelectronicsColor = {
   interactive: {
     light: "#3cb4e6", // checkbox checked / pagination selected border / modal input focus
     base: "#2b8ec5", // checkbox hover border / .color-blue contact boxes
-    pale: "#b0dcef", // measured pale blue tint
+    pale: "#b0dcef", // .stn-footer__nav-item:hover{color:#b0dcef} — footer link hover, reused as the pale tint (role adapted — à confirmer)
     paleBg: "#edf1f4" // measured pale blue-grey (search icon stroke)
   },
   // Neutral grey scale read from the newsroom theme.
   grey: {
     0: "#ffffff", // surface default / card fill
-    50: "#f7f8fa", // body{background-color} / submenu hover fill
+    50: "#f7f8fa", // body{background-color} / .stn-pagination__list li, .stn-header__blockmenu-item, .stn-page-navigation__search-item hovers (submenu hovers are #f7f6f6)
     100: "#eeeff1", // pagination dropdown hover fill
     200: "#dbdee2", // input / pagination borders
     400: "#767c84", // .font-color--grey-text / input placeholders
@@ -79,8 +79,8 @@ const stmicroelectronicsColor = {
   },
   // Readability-darkened stand-ins (H/S kept, stop rule — à confirmer).
   readable: {
-    muted: "#6a6f76", // #767c84 darkened to 5.06:1 on white
-    link: "#22709b" // #2b8ec5 darkened to 5.44:1 on white
+    muted: "#6a6f77", // #767c84 darkened to 5.06:1 on white (stop rule, step 1)
+    link: "#22709b" // #2b8ec5 darkened to 5.44:1 on white (stop rule, step 2)
   }
 } as const;
 
@@ -117,12 +117,14 @@ const foundation = {
     }
   },
   // ST body copy is Arial (27 font-family declarations); headings use the
-  // brand face ITCLubalinGraphStdMedium (14 declarations). Mono is the
-  // system stack. We reference the font *names* only, not binaries.
+  // brand face ITCLubalinGraphStdMedium (the h6-h1 rule plus section/header
+  // rules). Mono is the system stack, aligned with the reference theme
+  // package's stack (it differs from the Sentropic base — à confirmer).
+  // We reference the font *names* only, not binaries.
   font: {
     sans: "Arial, Helvetica, sans-serif",
     display: "'ITCLubalinGraphStdMedium', Arial, Helvetica, sans-serif",
-    mono: "'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"
+    mono: "'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace" // à confirmer
   },
   // Standard rem spacing scale (kept aligned with the Sentropic base; the
   // newsroom CSS publishes no spacing token scale — à confirmer).
@@ -144,21 +146,22 @@ const foundation = {
     sm: "3px", // card radius (.stn-card)
     md: "0.375rem", // control dropdown / pagination page radius
     lg: "0.75rem 0", // button signature radius (.stn-button — à confirmer)
-    pill: "999px" // tags / pills
+    pill: "999px" // no pill radius declared by the brand (the 50px radii are flatpickr — à confirmer)
   },
   // Elevation tinted with the brand navy. The subtle value is the measured
-  // card shadow; medium/floating extend it (à confirmer).
+  // card shadow; medium/floating are the reference theme package's geometry
+  // re-tinted with the brand navy (à confirmer).
   shadow: {
     subtle: "0 0 4px 0 rgb(3 35 75 / 0.05)", // measured .stn-card shadow
-    medium: "0 4px 12px rgb(3 35 75 / 0.14)", // navy-tinted (à confirmer)
-    floating: "0 8px 24px rgb(3 35 75 / 0.18)" // navy-tinted (à confirmer)
+    medium: "0 4px 12px rgb(3 35 75 / 0.14)", // reference geometry, navy tint (à confirmer)
+    floating: "0 8px 24px rgb(3 35 75 / 0.18)" // reference geometry, navy tint (à confirmer)
   },
   // Motion read from the newsroom theme: `transition:all .3s ease-in-out`
-  // on buttons/controls, `.45s` on newsletter transitions.
+  // on buttons/controls, `.45s` on modal text-field transitions.
   motion: {
     fast: "150ms", // not published as a token (à confirmer)
     normal: "300ms", // measured .3s control transition
-    slow: "450ms", // measured .45s newsletter transition
+    slow: "450ms", // .modal-content input[type=text]{transition:box-shadow .45s,border-color .45s ease-in-out} — a field transition, not a general duration (à confirmer)
     easing: "ease-in-out" // measured easing
   },
   // z-index roles are not brand-specific; kept aligned with the Sentropic base.
@@ -178,18 +181,22 @@ const foundation = {
   borderStyle: { solid: "solid" },
   // Control density. The newsroom CSS declares control-specific heights
   // (59px search fields, 2.5rem pagination pages) but no control size scale,
-  // so the standard size scale is reused explicitly (à confirmer).
+  // so the geometry is aligned with the reference theme package's geometry
+  // (à confirmer): only controlHeight matches the Sentropic base; the
+  // paddings, gaps and fontSize key differ from it (see MAPPING.md).
   density: {
-    sm: { controlHeight: "2rem", paddingBlock: "0", paddingInline: "0.5rem", gap: "0.5rem", minWidth: "2rem", fontSize: "0.875rem" },
-    md: { controlHeight: "2.5rem", paddingBlock: "0.375rem", paddingInline: "0.75rem", gap: "0.5rem", minWidth: "2.5rem", fontSize: "1rem" },
-    lg: { controlHeight: "3rem", paddingBlock: "0", paddingInline: "1rem", gap: "0.5rem", minWidth: "3rem", fontSize: "1.125rem" }
+    sm: { controlHeight: "2rem", paddingBlock: "0", paddingInline: "0.5rem", gap: "0.5rem", minWidth: "2rem", fontSize: "0.875rem" }, // à confirmer
+    md: { controlHeight: "2.5rem", paddingBlock: "0.375rem", paddingInline: "0.75rem", gap: "0.5rem", minWidth: "2.5rem", fontSize: "1rem" }, // à confirmer
+    lg: { controlHeight: "3rem", paddingBlock: "0", paddingInline: "1rem", gap: "0.5rem", minWidth: "3rem", fontSize: "1.125rem" } // à confirmer
   },
-  // ST typography: Arial everywhere; buttons bold (700), form labels light
-  // (300, .stn-form__label), fields regular (400).
+  // ST typography: Arial everywhere; buttons bold (700, .stn-button),
+  // form labels light (300, .stn-form__label), fields regular (400).
+  // The measured body size is 1.0625rem; the 1rem field size and the label
+  // lineHeight below are coherent stand-ins (à confirmer).
   typography: {
-    control: { family: "Arial, Helvetica, sans-serif", size: "1rem", weight: "700", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
-    field: { family: "Arial, Helvetica, sans-serif", size: "1rem", weight: "400", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
-    label: { family: "Arial, Helvetica, sans-serif", size: "1rem", weight: "300", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
+    control: { family: "Arial, Helvetica, sans-serif", size: "1rem", weight: "700", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" }, // size measured on .stn-button
+    field: { family: "Arial, Helvetica, sans-serif", size: "1rem", weight: "400", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" }, // size not declared for fields — à confirmer
+    label: { family: "Arial, Helvetica, sans-serif", size: "1rem", weight: "300", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" }, // size/weight measured on .stn-form__label; lineHeight undeclared — à confirmer
     // Brand links read navy with a bottom rule (.stn-custom-link,
     // .stn-latest__browse a) or underlined (card links): underlined at rest
     // and on hover.
@@ -199,14 +206,15 @@ const foundation = {
       textDecorationHover: "underline", decorationThicknessHover: "auto", decorationOffsetHover: "auto"
     }
   },
-  disabledOpacity: "0.35", // measured .newsletter-submit.disabled opacity
+  disabledOpacity: "0.35", // #newsletter-subscription-validation-popup .validation-form .newsletter-submit.disabled{opacity:.35} (a same-valued third-party .swiper-button-disabled exists — this cite is the brand rule)
   transition: { property: "all", duration: "300ms", easing: "ease-in-out" }, // measured transition:all .3s ease-in-out
   cursor: { interactive: "pointer", disabled: "not-allowed", text: "text" },
   iconSize: { sm: "1rem", md: "1.125rem", lg: "1.25rem" }, // base scale (à confirmer)
-  // FOCUS: the newsroom theme declares no persistent visible focus token
-  // (focus rules resolve to outline:none / border-color shifts), so the
-  // accessible stand-in is an OUTLINE in the measured interactive blue
-  // #2b8ec5, which clears the 3:1 line threshold (3.63:1) — à confirmer.
+  // FOCUS: the only focus colour the brand declares,
+  // .modal-content input[type=text]:focus{border-color:#3cb4e6}, fails the
+  // 3:1 line floor (2.37:1), so the accessible stand-in is an OUTLINE in the
+  // measured interactive (hover) blue #2b8ec5, which clears it (3.63:1) —
+  // à confirmer (see MAPPING.md).
   focus: {
     strategy: "outline",
     width: "2px",
@@ -223,17 +231,21 @@ const foundation = {
     underlineColor: stmicroelectronicsColor.grey[200], // unused for outline, kept for completeness
     underlineWidth: "1px",
     // Native <select>: no brand chevron published (custom .edd dropdowns),
-    // so the chevron is redrawn in the brand navy with a 40px right gutter.
-    selectAppearance: "none",
+    // so the chevron is redrawn in the brand navy with a 40px right gutter
+    // (à confirmer).
+    selectAppearance: "none", // à confirmer
     selectChevron:
-      "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%2303234b' d='M8 11L3 6l1-1 4 4 4-4 1 1z'/%3E%3C/svg%3E\") no-repeat right 0.75rem center",
-    selectPaddingRight: "2.5rem"
+      "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%2303234b' d='M8 11L3 6l1-1 4 4 4-4 1 1z'/%3E%3C/svg%3E\") no-repeat right 0.75rem center", // à confirmer
+    selectPaddingRight: "2.5rem" // à confirmer
   },
-  // Cards: white, 3px radius, navy-tinted shadow, neutral grey text.
+  // Cards: white, 3px radius, navy-tinted shadow, neutral grey text. The
+  // measured card hover changes only the shadow
+  // (.stn-card:hover{box-shadow:0 3px 3px 0 rgba(3,35,75,.15)}), so the fill
+  // is kept at white (à confirmer).
   card: {
     borderWidth: "1px",
     lineHeight: "1.5",
-    hoverBackground: stmicroelectronicsColor.grey[50] // #f7f8fa
+    hoverBackground: stmicroelectronicsColor.grey[0] // #ffffff — hover is shadow-only (à confirmer)
   },
   // Secondary button = solid brand YELLOW with navy text (10.75:1),
   // deep-yellow hover fill.
@@ -242,17 +254,19 @@ const foundation = {
     border: stmicroelectronicsColor.yellow.primary, // #ffd200 stroke
     hoverBackground: stmicroelectronicsColor.yellow.deep // #cca800 hover fill (à confirmer)
   },
-  // Pagination: bordered pages in neutral grey; selected page = light-blue
-  // left border on a subtle fill with a navy label.
+  // Tabs / top-nav: active tab = navy label with a bottom underline
+  // (indicatorSide bottom, indicatorMode border). The block padding is the
+  // measured `.stn-page-navigation__tabs a{padding:1rem 0}`; the remaining
+  // geometry is aligned with the reference theme package (à confirmer).
   tabs: {
     activeText: stmicroelectronicsColor.navy.primary, // #03234b active label
     activeBackground: "transparent",
     inactiveBackground: "transparent",
     activeWeight: "700",
-    paddingBlock: "0.75rem", // 12px
-    paddingInline: "1rem", // 16px
-    fontSize: "1rem", // 16px
-    lineHeight: "1.5rem", // 24px
+    paddingBlock: "1rem", // measured .stn-page-navigation__tabs a padding
+    paddingInline: "1rem", // 16px (à confirmer)
+    fontSize: "1rem", // 16px (à confirmer)
+    lineHeight: "1.5rem", // 24px (à confirmer)
     indicatorSide: "bottom",
     indicatorMode: "border"
   },
@@ -266,13 +280,15 @@ const foundation = {
     activeBackground: stmicroelectronicsColor.grey[50], // #f7f8fa selected fill
     activeText: stmicroelectronicsColor.navy.primary, // #03234b selected label
     activeBorderWidth: "2px", // selected 2px light-blue filet
-    paddingBlock: "0.25rem", // 4px
-    paddingInline: "0.75rem", // 12px
+    paddingBlock: "0.25rem", // 4px (à confirmer — aligned with the reference package)
+    paddingInline: "0.75rem", // 12px (à confirmer — aligned with the reference package)
     minSize: "2.5rem", // 40px page box (.stn-pagination__page)
-    fontSize: "1rem", // 16px
-    lineHeight: "1.5rem" // 24px
+    fontSize: "1rem", // 16px (à confirmer — aligned with the reference package)
+    lineHeight: "1.5rem" // 24px (à confirmer — aligned with the reference package)
   },
-  // Breadcrumb: readable blue links, grey trail, navy current page.
+  // Breadcrumb: readable blue links, grey trail, navy current page. The
+  // brand breadcrumb is white-on-dark; porting it onto light roles is an
+  // adaptation, and the current-page weight is the measured 600 (à confirmer).
   breadcrumb: {
     linkText: stmicroelectronicsColor.readable.link, // #22709b readable blue (à confirmer)
     text: stmicroelectronicsColor.grey[500], // #525a63 trail text
@@ -280,22 +296,24 @@ const foundation = {
     separator: stmicroelectronicsColor.grey[400], // #767c84
     fontSize: "0.875rem", // 14px
     lineHeight: "1.5rem", // 24px
-    currentWeight: "700"
+    currentWeight: "600" // .stn-page-header__breadcrumb .page{font-weight:600} (à confirmer)
   },
-  // Alert / notice: a coloured LEFT accent filet on a transparent box.
+  // Alert / notice: the newsroom CSS publishes no alert, notice or message
+  // rule, so this block is aligned with the reference theme package's
+  // geometry (à confirmer).
   alert: {
     background: "transparent",
     borderTop: "none",
     borderRight: "none",
     borderBottom: "none",
     accentWidth: "0",
-    filetWidth: "0.25rem", // 4px ::before accent bar
-    paddingTop: "1rem", // 16px
-    paddingRight: "1rem", // 16px
-    paddingBottom: "1rem", // 16px
-    paddingLeft: "1.25rem", // 20px (clears the left filet)
-    fontSize: "1rem", // 16px
-    lineHeight: "1.5rem" // 24px
+    filetWidth: "0.25rem", // 4px (à confirmer)
+    paddingTop: "1rem", // 16px (à confirmer)
+    paddingRight: "1rem", // 16px (à confirmer)
+    paddingBottom: "1rem", // 16px (à confirmer)
+    paddingLeft: "1.25rem", // 20px (à confirmer)
+    fontSize: "1rem", // 16px (à confirmer)
+    lineHeight: "1.5rem" // 24px (à confirmer)
   },
   // Accordion / details: a navy bold summary trigger.
   accordion: {
@@ -338,12 +356,16 @@ const foundation = {
     radioLineHeight: "1.5rem", // 24px
     labelColor: stmicroelectronicsColor.grey[500] // #525a63
   },
-  // Search input.
+  // Search input: the measured search fields carry icon gutters
+  // (.stn-form__input{padding:.75rem 3rem .75rem 4rem;height:59px},
+  // .stn-page-navigation__search-input .stn-form__input{padding:9px 36px}),
+  // which do not fit this symmetric model — so this block is aligned with
+  // the reference theme package's geometry (à confirmer).
   search: {
-    paddingBlock: "0.375rem", // 6px
-    paddingInline: "0.75rem", // 12px
-    fontSize: "1rem", // 16px
-    lineHeight: "1.5rem" // 24px
+    paddingBlock: "0.375rem", // 6px (à confirmer)
+    paddingInline: "0.75rem", // 12px (à confirmer)
+    fontSize: "1rem", // 16px (à confirmer)
+    lineHeight: "1.5rem" // 24px (à confirmer)
   },
   // Toggle / switch label.
   toggle: {
@@ -360,7 +382,7 @@ const semantic = {
     subtle: stmicroelectronicsColor.grey[50], // #f7f8fa body background
     raised: stmicroelectronicsColor.grey[0], // white
     inverse: stmicroelectronicsColor.navy.dark, // #0f182f primary-dark surface
-    overlay: "rgb(3 35 75 / 0.6)" // modal backdrop (brand navy tint)
+    overlay: "rgb(0 0 0 / 0.5)" // .stn-overlay{background-color:rgba(0,0,0,.5)}
   },
   text: {
     primary: stmicroelectronicsColor.navy.primary, // #03234b (body color)
