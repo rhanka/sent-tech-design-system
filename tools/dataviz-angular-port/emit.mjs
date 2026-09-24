@@ -69,17 +69,32 @@ function emit(d) {
   // A one-element list handed to a plural input reads better under that name.
   const field = d.derive.asArray ? derivedInput : d.derive.field;
 
+  // A prop bound straight through to a DS input takes that input's declared type.
+  // Several Vue Props aliases widen it to `string` and then cast with `as any` at
+  // the h() call; Angular states the union the DS component actually honours.
+  const passthroughType = new Map();
+  for (const b of d.bindings) {
+    if (b.expr === d.derive.field || b.input === 'class') continue;
+    const prop = b.expr.replace(/^props\./, '');
+    if (!/^[A-Za-z_$][\w$]*$/.test(prop)) continue;
+    const dsType = dsTypes.get(b.input);
+    if (dsType) passthroughType.set(prop, dsType.replace(/\s*\|\s*undefined$/, ''));
+  }
+
   const typeNames = new Set();
-  for (const t of [derivedType].concat(d.ds.typeImports)) {
+  for (const t of [derivedType].concat(d.ds.typeImports, [...passthroughType.values()])) {
     for (const m of t.matchAll(/\b([A-Z][A-Za-z0-9]*)\b/g)) typeNames.add(m[1]);
   }
 
   const inputs = d.props
     .filter((p) => p.name !== 'store' && p.name !== 'class')
     .map((p) => {
-      if (p.required) return '  @NgInput({ required: true }) ' + p.name + '!: ' + p.tsType + ';';
-      if (p.default !== undefined) return '  @NgInput() ' + p.name + ' = ' + p.default + ';';
-      return '  @NgInput() ' + p.name + '?: ' + p.tsType + ';';
+      const tsType = passthroughType.get(p.name) || p.tsType;
+      if (p.required) return '  @NgInput({ required: true }) ' + p.name + '!: ' + tsType + ';';
+      // The annotation is load-bearing: `sort = 'input'` would infer `string`,
+      // not the union the DS input declares.
+      if (p.default !== undefined) return '  @NgInput() ' + p.name + ': ' + tsType + ' = ' + p.default + ';';
+      return '  @NgInput() ' + p.name + '?: ' + tsType + ';';
     })
     .join('\n');
 

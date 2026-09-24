@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input as NgInput, inject } from '@angular/core';
 import type { OnChanges, OnDestroy, OnInit } from '@angular/core';
-import { AreaRangeChart as DsAreaRangeChart, type AreaRangeChartDatum } from '@sentropic/design-system-angular';
+import { AreaRangeChart as DsAreaRangeChart, type AreaRangeChartDatum, type AreaRangeChartTone } from '@sentropic/design-system-angular';
 import { buildAreaRangeData, type DashboardStore } from '@sentropic/dataviz-core';
 import { toSignalStore, type AngularSignalStore } from '../adapter.js';
 
@@ -66,7 +66,7 @@ export class AreaRangeChart implements OnInit, OnChanges, OnDestroy {
   @NgInput({ required: true }) x_field!: string;
   @NgInput({ required: true }) low!: string;
   @NgInput({ required: true }) high!: string;
-  @NgInput() tone?: string;
+  @NgInput() tone?: AreaRangeChartTone;
   @NgInput() width?: number;
   @NgInput() height?: number;
   @NgInput({ required: true }) label!: string;

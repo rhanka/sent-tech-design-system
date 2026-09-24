@@ -69,8 +69,8 @@ export class GeoFlowMap implements OnInit, OnChanges, OnDestroy {
   @NgInput({ required: true }) targetLatitude!: string;
   @NgInput({ required: true }) targetLongitude!: string;
   @NgInput() value?: string;
-  @NgInput() width = 520;
-  @NgInput() height = 320;
+  @NgInput() width: number = 520;
+  @NgInput() height: number = 320;
   @NgInput({ required: true }) label!: string;
   @NgInput('class') classInput?: string;
 

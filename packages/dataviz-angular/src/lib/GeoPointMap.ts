@@ -69,8 +69,8 @@ export class GeoPointMap implements OnInit, OnChanges, OnDestroy {
   @NgInput() id?: string;
   @NgInput() labelField?: string;
   @NgInput() value?: string;
-  @NgInput() width = 520;
-  @NgInput() height = 320;
+  @NgInput() width: number = 520;
+  @NgInput() height: number = 320;
   @NgInput({ required: true }) label!: string;
   @NgInput('class') classInput?: string;
 
