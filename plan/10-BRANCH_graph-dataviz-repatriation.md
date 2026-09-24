@@ -27,6 +27,12 @@
   `scripts/smoke-pack.mjs` + `scripts/smoke-pack-verify-template.mjs` (cover the new
   `@sentropic/graph/processing` subpath from the tarball, SPEC §4.2). Nothing else leaves
   `packages/graph/**`, `docs/graph-dataviz-*` and this plan file.
+- [x] Widened for the GD-M2-MODEL implementation (same commit, SPEC_EVOL_GD_M2_MODEL §5.1) :
+  `packages/diagram-core/**` (the new private package, entirely additive),
+  `package-lock.json` (the two entries npm writes for a new private workspace),
+  `docs/graph-dataviz-migration-plan.md` (SPEC_EVOL_GD_M2_MODEL §5.8 requires it, while
+  that spec's §5.1 scope list omits `docs/**` - the conflict is recorded in the PR body).
+  Nothing else is touched: no `packages/graph/**` change, no `spec/**` change, no `.track/**` write.
 
 ## Plan / Todo
 
