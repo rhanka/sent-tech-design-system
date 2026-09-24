@@ -52,9 +52,9 @@ node tools/dataviz-angular-port/classify.mjs          # add --names for the list
 ```
 
 It runs the real `extract()` over every pending adapter and prints what it reads,
-what it refuses and why. On the pool left after the second lot it reads **41 of the
-87 pending** and refuses 46, up from 28/59 before the third lot widened the
-vocabulary.
+what it refuses and why. Widening the vocabulary in the third lot took it from
+**28 of 87** readable to **41 of 87**; the same lot then ported 25 of those 41, so
+on the pool that remains it reads **16 of 62** and refuses 46.
 
 What is still refused is mostly *not* the same kind of component: 16 have no
 `void <state>.value` read at all — they are stateful panels and filters
