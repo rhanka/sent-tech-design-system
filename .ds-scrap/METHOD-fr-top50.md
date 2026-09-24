@@ -60,10 +60,15 @@ the native binaries already present (`curl`, `grep`, `sed` — no Python, no
 script or image; one-line Node commands per section 9 and present native
 binaries are allowed; see section 10). Some hosts block bare
 requests, and a browser user-agent alone is often not enough. A CDN front such
-as Akamai answers `403 Access Denied` (body: `errors.edgesuite.net`) to a bare
-request AND to a plain user-agent, which is the usual workaround — so an
-executor that retries with only a UA loops on 403 for ever. Two builders were
-lost that way on one brand before the cause was found. When a host refuses, send
+as Akamai can answer `403 Access Denied` (body: `errors.edgesuite.net`)
+**specifically to a browser user-agent sent without the rest of a browser's
+headers** — measured on one brand: the bare `curl/8.x` request returned 200, the
+same request with only `-A '…Chrome…'` returned 403, and the full header set
+returned 200 again. So the prescribed workaround is what triggers the block, and
+an executor that keeps retrying with only a UA loops on 403 for ever. Two
+builders were lost that way before the cause was found. Do not assume the
+direction: probe the three forms (bare, UA-only, full) and record which ones
+answer. When a host refuses, send
 the full browser header set: `User-Agent`, `Accept`, `Accept-Language`,
 `Accept-Encoding: gzip, deflate, br` with `--compressed`, `Referer`,
 `Sec-Fetch-Dest`/`-Mode`/`-Site`, `Upgrade-Insecure-Requests`; stylesheets
