@@ -32,7 +32,9 @@ const ID_ATTRS = new Set([
   'xlink:href',
 ]);
 const DROP_ATTR = /^(ng-reflect-|_ngcontent|_nghost|ng-version|jsaction|data-st-component$|xmlns$)/;
-const GENERATED_ID = /^(?:#|url\(#)?[A-Za-z][A-Za-z-]*-(?:_R_[^_]*_|\d+|[A-Za-z0-9]{5,9})\)?$/;
+// A generated id is either `<prefix>-<generated>` or React's bare `useId()` value
+// (`_R_0_`), which carries no prefix at all.
+const GENERATED_ID = /^(?:#|url\(#)?(?:[A-Za-z][A-Za-z-]*-(?:_R_[^_]*_|\d+|[A-Za-z0-9]{5,9})|_R_[A-Za-z0-9]*_)\)?$/;
 
 function normalizeValue(name: string, value: string): string {
   if (name === 'style') {

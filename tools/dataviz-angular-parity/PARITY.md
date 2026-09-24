@@ -36,5 +36,30 @@ command to re-derive them.
 | `RoseChart` | 24 | **0** | **0** | — | — |
 | `SunburstChart` | 54 | **0** | **0** | — | — |
 | `PackedBubbleChart` | 28 | **0** | **0** | — | — |
+| `FunnelChart` | 42 | **0** | **0** | — | — |
+| `MekkoChart` | 40 | 3 | **0** | 3 | DS: components-react sets the cell label colour with an inline style, Angular with a fill attribute |
+| `SankeyChart` | 47 | **0** | **0** | — | — |
+| `WaffleChart` | 234 | **0** | **0** | — | — |
+| `WaterfallChart` | 89 | **0** | **0** | — | — |
+| `VariablePieChart` | 29 | **0** | **0** | — | — |
+| `ColumnPyramidChart` | 66 | **0** | **0** | — | — |
+| `TreegraphChart` | 28 | **0** | **0** | — | — |
+| `OrganizationChart` | 28 | **0** | **0** | — | — |
+| `DecompositionTreeChart` | 78 | **0** | **0** | — | — |
+| `ArcDiagramChart` | 77 | 49 | 9 | 49 | DS: the shared st-graphLegend block differs, and Angular marks it aria-hidden where React labels it |
+| `DependencyWheelChart` | 87 | 49 | 9 | 49 | DS: the shared st-graphLegend block differs, and Angular marks it aria-hidden where React labels it |
+| `GaugeChart` | 25 | **0** | **0** | — | — |
+| `SolidGaugeChart` | 21 | **0** | **0** | — | — |
+| `ViolinChart` | 36 | **0** | **0** | — | — |
+| `BellCurveChart` | 206 | **0** | **0** | — | — |
+| `Density2DChart` | 89 | **0** | **0** | — | — |
+| `ContourChart` | 97 | **0** | **0** | — | — |
+| `StateTimelineChart` | 67 | **0** | **0** | — | — |
+| `StatusHistoryChart` | 56 | **0** | **0** | — | — |
+| `TimelineChart` | 65 | 59 | 12 | 59 | DS: the two frameworks draw a different timeline (connector+marker vs tick+tickLabel) |
+| `GanttChart` | 61 | **0** | **0** | — | — |
+| `FlamegraphChart` | 38 | **0** | **0** | — | — |
+| `StreamgraphChart` | 41 | **0** | **0** | — | — |
+| `BumpChart` | 49 | **0** | **0** | — | — |
 
-exact-markup matches: **26/30** · exact-signature matches: **30/30**
+exact-markup matches: **47/55** · exact-signature matches: **52/55**
