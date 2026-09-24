@@ -11,8 +11,11 @@ Décision owner appliquée : **documenter les quatre frameworks** (Svelte, React
   composant du design system** qui existe déjà dans les quatre frameworks ; trois n'en ont pas
   (`UrlSync`, `WebFrame`, `TimeSeriesLineChart`).
 - **69 de ces 119 portent le nom d'un composant DS natif déjà documenté** (« homonymes » du relevé).
-- Le catalogue du site compte **205 entrées** pour **207 routes** sous `apps/docs/src/routes/components/`,
-  et **aucune page d'adaptateur dataviz** : la parité annoncée n'est aujourd'hui montrée nulle part.
+- Le catalogue du site compte **204 entrées** pour **206 routes** sous `apps/docs/src/routes/components/`
+  (dont une route dynamique `[slug]`), et **aucune page d'adaptateur dataviz** : la parité annoncée n'est
+  aujourd'hui montrée nulle part. Les deux comptes valaient 205 et 207 dans la première version de ce
+  cadrage : un `grep -c 'slug:'` comptait la déclaration de champ `slug: string;` de l'interface, et un
+  `ls` comptait le `+page.svelte` d'index comme une route.
 - La parité Angular est en cours : **12 adaptateurs sur 119** au moment d'écrire, les autres arrivant
   par lots de 20 à 25 (voir `PATTERN.md` du paquet et la ligne `GD-M2-PARITY` du plan).
 - Convention de page en vigueur : `TabbedExample` avec démos Svelte/React/Vue/Angular, table d'API,
@@ -30,6 +33,20 @@ recherche et multiplieraient par deux le coût de toute évolution de composant.
 doit raconter ses deux modes d'emploi, pas exister deux fois.
 
 **Un composant sans homonyme obtient sa page**, à la convention, catégorie `data`.
+
+**Un homonyme dont l'adaptateur ne compose pas le natif obtient aussi sa page.** Trois cas mesurés, où
+une section partagée parlerait d'un autre composant que la page qui l'héberge : `ScoreCard` (l'adaptateur
+compose `KpiCard`, pas le `ScoreCard` natif, qui est une carte de notation), `DataImage` et
+`DashboardGrid` (aucun import DS : l'adaptateur rend son propre markup). Là, une page unique serait
+trompeuse et pas seulement incomplète.
+
+**Toute section « piloté par store » énumère les props du natif que la version store n'accepte pas.**
+La mesure dit que la divergence est l'exception — 60 des 69 homonymes conservent le contrat du natif à
+`data` près, les props ajoutés étant la liaison au store (quel champ alimente quel canal) — mais six
+homonymes abandonnent une surface large et une page muette surpromettrait : `ForceGraph` ne transmet pas
+18 props sur 22, `ScatterPlot` 10 sur 15, `CandlestickChart` et `OHLCChart` 7 sur 11 chacun,
+`ComboChart` 4 sur 18, `ParallelCoordinatesChart` 3 sur 7. Cette énumération est mesurable, donc
+gardable par un test plutôt que laissée au jugement page par page.
 
 ## 3. Travail demandé, par lots alignés sur la parité Angular
 
@@ -80,8 +97,10 @@ ce site (dataviz #18).
 - **Poids du bundle docs** : chaque démo store-based tire un paquet `dataviz-*` dans le site. Le
   premier lot mesure l'effet sur la taille du build et le temps de construction ; si la progression est
   linéaire et forte, le lot suivant tranche entre chargement paresseux et démos plus petites.
-- **Les 69 homonymes ne sont pas tous de vrais jumeaux** : un nom identique ne garantit pas un contrat
-  identique. Chaque section « piloté par store » doit être écrite en regardant les deux composants, et
-  toute divergence de nom de prop ou de classe CSS est signalée plutôt que lissée.
+- **Les 69 homonymes ne sont pas tous de vrais jumeaux**, mais la mesure a requalifié le risque :
+  0 prop natif abandonné pour 3 homonymes, exactement `data` seul pour 45, deux props pour 12, et trois
+  ou plus pour 9. La divergence est donc l'exception, et les neuf valeurs aberrantes sont traitées par le
+  §2 (trois pages propres pour les faux amis, énumération obligatoire pour les six à grande surface
+  abandonnée). Ce qui reste à surveiller est la divergence de **classe CSS**, qui n'a pas été mesurée.
 - **Ordre de dépendance** : documenter avant que l'adaptateur Angular existe produirait un onglet vide,
   ce que le §3 interdit. La file de documentation est donc pilotée par la file de parité.
