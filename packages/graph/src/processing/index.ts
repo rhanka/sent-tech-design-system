@@ -16,11 +16,18 @@
  *     `computeHierarchyAwarePositions` directly through `register.ts`.
  */
 
+// `fastLayoutEnabled` from the frozen copy is DELIBERATELY not re-exported. It
+// reads ENGRAM_FAST_LAYOUT with a GRAPHIFY_FAST_LAYOUT fallback and writes an
+// `[engram] … is deprecated` line to stderr, so a consumer of this subpath
+// would get a message naming another product. Worse, it answers about a switch
+// this package does not obey: with ENGRAM_FAST_LAYOUT=true it returns true
+// while "force-fa2" still runs its full iteration budget. The switch this
+// package honours is `sentropicFastLayoutEnabled` (SENTROPIC_FAST_LAYOUT, with
+// GRAPHIFY_FAST_LAYOUT kept as a legacy fallback), exported from ./register.js.
 export {
   attachLayoutPositions,
   computeLayout,
   defaultLayoutIterations,
-  fastLayoutEnabled,
   type ComputeLayoutOptions,
   type LayoutGraphEdge,
   type LayoutGraphNode,

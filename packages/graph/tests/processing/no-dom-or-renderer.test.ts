@@ -13,10 +13,22 @@ function readSource(name: string): string {
   return readFileSync(join(srcDir, name), "utf8");
 }
 
-/** Resolve `./x.js` / `../y.js` specifiers to source-relative paths. */
+/**
+ * Resolve `./x.js` / `../y.js` specifiers to source-relative paths.
+ *
+ * Three runtime forms count, because all three load the module: a static
+ * import or re-export (`from "./x.js"`), a side-effect import
+ * (`import "./x.js";`) and a dynamic one (`await import("./x.js")`). An
+ * inline TYPE reference does not load anything, so `import("./x.js").Y` is
+ * excluded — src/types.ts writes exactly that against webgl-boxes, and
+ * counting it would report the barrel as pulling WebGL code when it does not.
+ */
 function relativeImports(source: string): string[] {
   const found: string[] = [];
-  for (const match of source.matchAll(/from\s+["'](\.[^"']+)["']/g)) {
+  for (const match of source.matchAll(/(?:from|import)\s+["'](\.[^"']+)["']/g)) {
+    found.push(match[1] as string);
+  }
+  for (const match of source.matchAll(/import\s*\(\s*["'](\.[^"']+)["']\s*\)(?!\s*\.)/g)) {
     found.push(match[1] as string);
   }
   return found;
