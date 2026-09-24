@@ -89,8 +89,8 @@ const cases: Case[] = [
     template: `<st-dataviz-heatmap-chart [store]="store" viewId="revenue" x="service" y="region" measure="amount" label="Revenue heatmap"></st-dataviz-heatmap-chart>`,
     re: RE.HeatmapChart as ComponentType<Props>,
     props: { viewId: 'revenue', x: 'service', y: 'region', measure: 'amount', label: 'Revenue heatmap' },
-    expectedMarkupDiffs: 28,
-    expectedSignatureDiffs: 1,
+    expectedMarkupDiffs: 27,
+    expectedSignatureDiffs: 0,
     attribution: 'DS: components-angular vs components-react HeatmapChart',
     control: {
       ng: NGDS.HeatmapChart as Type<unknown>,
@@ -116,7 +116,7 @@ const cases: Case[] = [
     re: RE.TreemapChart as ComponentType<Props>,
     props: { viewId: 'revenue', hierarchy: ['region', 'service'], measure: 'amount', label: 'Revenue treemap' },
     expectedMarkupDiffs: 76,
-    expectedSignatureDiffs: 1,
+    expectedSignatureDiffs: 0,
     attribution: 'DS: components-angular vs components-react TreemapChart',
     control: {
       ng: NGDS.TreemapChart as Type<unknown>,
@@ -152,9 +152,9 @@ const cases: Case[] = [
     re: RE.SelectionLegend as ComponentType<Props>,
     props: { labels: { revenue: 'Service' } },
     select: true,
-    expectedMarkupDiffs: 8,
-    expectedSignatureDiffs: 5,
-    attribution: 'DS SelectionChip icon path + DS Inline takes no ARIA input',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
     control: {
       ng: NGDS.SelectionChip as Type<unknown>,
       template: `<st-selection-chip label="Service" [count]="1" [onClear]="noop"></st-selection-chip>`,

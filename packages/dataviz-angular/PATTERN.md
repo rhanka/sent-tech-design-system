@@ -221,13 +221,15 @@ asserts the whole surface — add the new name to its `components` table.
    Side effect: the static attribute also stays on the adapter's own
    `<st-dataviz-*>` host element, so the token appears twice in the DOM. React
    and Vue have no host element at all.
-6. **ARIA attributes cannot be pushed into a DS component's inner element.**
-   `SelectionLegend` passes `role="group"` + `aria-label` to `Inline`; DS Angular
-   `Inline` only accepts `gap/align/justify/wrap/as/class`, so the two attributes
-   land on the `<st-inline>` host element instead of the `.st-inline` div that
-   React/Vue decorate. Assistive technology still finds the labelled group; the
-   markup position differs. Closing this needs an ARIA input on
-   `components-angular/src/Inline.ts`, i.e. a DS change, not an adapter change.
+6. **ARIA has to be an input on the DS component, and bound as a property.**
+   React and Vue spread arbitrary attributes onto the element they render; Angular
+   has no spread, so a DS layout primitive must *declare* the ARIA attributes.
+   `Inline` now declares `role`, `aria-label`, `aria-labelledby` and
+   `aria-describedby` and puts them on its rendered `.st-inline` div. Bind them as
+   **properties** (`[role]="'group'"`, `[aria-label]="label"`): a static attribute
+   both feeds the input and stays on the `<st-dataviz-*>`/`<st-*>` host element, so
+   it ends up in the DOM twice. When a DS component you need lacks the ARIA input,
+   add it there — do not work around it in the adapter.
 7. **`class=""` vs no `class` attribute.** React renders `className={undefined}`
    as no attribute; an Angular `[class]="x"` on a plain element renders
    `class=""`. On a wrapper div the adapter owns, use
@@ -266,11 +268,16 @@ asserts the whole surface — add the new name to its `components` table.
     unfiltered. When porting a React adapter that uses `useEffect`, read its
     dependency array and map each entry to an Angular lifecycle hook or to the
     store subscription.
-13. **Two DS-level divergences are visible from the adapters and are not ours.**
-    `components-angular`'s `HeatmapChart` and `TreemapChart` label their
-    accessible data list `"<label> data"`, where `components-react` labels it
-    `"Data values for <label>"`. The Angular tests assert the Angular wording
-    with a comment pointing at the divergence, rather than pretending parity.
+13. **A divergence visible from an adapter is usually a DS bug worth fixing.**
+    Three were found this way and fixed in `packages/components-angular` rather
+    than documented as exceptions: `Inline` without ARIA inputs (trap 6), seven
+    charts labelling their data list `"<label> data"` where React's shared
+    `ChartDataList` says `"Data values for <label>"`, and `SelectionChip`/`Search`
+    drawing their close cross as one path where React's lucide `X` is two. The
+    last one shifted every following entry, so a 1-element difference read as a
+    whole-tail divergence. Measure with the control experiment first (bare DS
+    component, identical inputs): when the adapter count equals the bare count,
+    the fix belongs in the DS package.
 
 ---
 
@@ -296,14 +303,11 @@ Every count depends on the normalisation in
 the numbers without changing the conclusions. Read that file before quoting a
 figure, and add a new lot's adapters as new cases there.
 
-Result for this lot (from `PARITY.md`): **5 of 10 adapters match React entry for
-entry**, class passthrough included, and **7 of 10 match on content signature**.
-`HeatmapChart` (28) and `TreemapChart` (76) show exactly the bare DS components'
-diff counts, so nothing is adapter-attributable. `DashboardFilterBar` differs only
-inside the DS primitives (bare `Search` alone: 17) with a zero signature diff.
-`DateRangeFilter` differs by one entry (React serialises `value=""` on the readonly
-input, Angular sets the property). `SelectionLegend` differs by trap 6 plus the DS
-`SelectionChip` icon path (bare chip: 6).
+`PARITY.md` carries the current table; do not restate its numbers elsewhere, cite
+it. Read it for which adapters match React entry for entry, which match only on
+content signature, and what the residue is attributed to. Where a residue is
+attributed to the design system, the bare-DS control column proves it — and, as
+trap 13 says, that is usually a DS bug to fix rather than an exception to record.
 
 ## Known debt
 
@@ -315,7 +319,9 @@ input, Angular sets the property). `SelectionLegend` differs by trap 6 plus the 
   happens, `scripts/verify-dataviz-helper-copies.test.mjs` hashes every copy and
   fails when they drift apart. Do not edit one package's copy: change the
   reference and copy it across, or do the promotion.
-- **Two DS-level parity gaps** (see trap 13 and the parity table): the
-  `HeatmapChart`/`TreemapChart` data-list wording, and `Inline` accepting no ARIA
-  input. Both are `packages/components-angular` changes. Closing them first would
-  let the next lots reach exact parity instead of documenting exceptions.
+- **`ChartDataList` empty-list behaviour.** React's shared helper renders nothing
+  when the item list is empty; the seven Angular charts that used to carry the
+  other data-list wording still render an empty `<ul>`. No adapter in the current
+  lots produces an empty list, so it is left for the lot that first hits it.
+- **`Flex` and `Stack` have no ARIA inputs** (trap 6 closed this for `Inline`
+  only). Same one-line change when an adapter needs it.
