@@ -216,7 +216,8 @@ const foundation = {
   // `.form-control-lg{height:calc(2.875rem + 2px);padding:.5rem 1rem}`,
   // `.form-control-sm{height:calc(1.8125rem + 2px);padding:.25rem .5rem}`,
   // `.custom-file-label{height:52px;padding:.75rem 1rem}`,
-  // `.btn-primary{padding-top:10.5px;padding-bottom:10.5px;min-width:125px}`,
+  // `.btn-lg{padding-top:10.5px;padding-bottom:10.5px}`,
+  // `.modal-filters-inner .btn-primary{min-width:125px}`,
   // `.btn-cta{padding:14.5px 56px 14.5px 26px}` (measured 52px ≈ 3.25rem
   // at a 16px root). This block deliberately keeps the reference theme
   // package's geometry for component-grid fidelity ("à confirmer"); only
