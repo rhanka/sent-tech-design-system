@@ -172,7 +172,12 @@ export class RenkoChart {
   }
 
   get dataValueItems(): string[] {
-    return this.columns.map((column) => `${column.direction === "up" ? "UP" : "DOWN"} ${formatTick(column.brick.bottom)} -> ${formatTick(column.brick.top)}`);
+    // Same glyphs and arrow as the React counterpart, so the accessible value
+    // list reads identically across frameworks.
+    return this.columns.map(
+      (column) =>
+        `${column.direction === "up" ? "▲" : "▼"} ${formatTick(column.brick.bottom)} → ${formatTick(column.brick.top)}`,
+    );
   }
 
   get hoveredColumn(): RenkoColumn | null { return this.hoveredKey === null ? null : this.columns.find((column) => column.key === this.hoveredKey) ?? null; }
