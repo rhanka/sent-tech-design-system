@@ -1845,7 +1845,8 @@
       "gitBlob": "e25344a224d2ce3597755e67e0d577d0f89337ff",
       "sha256": "459a37c73d6a7661073bca9b6ba8cafb3e0cae58c34248f079c8ea341e2fb9b1",
       "status": "adapted-angular-publication",
-      "destinationSha256": "d31ce2361ec3467f20f83f9f83f6b9e4a0d7e5c796a86fb850e4a3106ca5b7da"
+      "destinationSha256": "a5293f081e9d0fc799fa266244c46cffb58bf7ee4808a513b53ad03a8cb5aa8e",
+      "note": "PR #76 documents the ten ported adapters and points at PATTERN.md"
     },
     {
       "repository": "dataviz",
@@ -1883,7 +1884,9 @@
       "destination": "packages/dataviz-angular/src/index.test.ts",
       "gitBlob": "10ecd826e8bfa1f82e41c7c78327cd298af3ec73",
       "sha256": "9eea92afee5de19b05875a831728527d6604a39b6c60573316bd59eef950fcd7",
-      "status": "copied-byte-identical"
+      "status": "adapted-monorepo-pattern",
+      "destinationSha256": "a86e0491e5fbcb0f9b1efe35fee7bfd2b96cdfdb002fe0321619255ead6dd929",
+      "note": "PR #76 extends the export-surface assertions to the ten new adapters"
     },
     {
       "repository": "dataviz",
@@ -1892,7 +1895,9 @@
       "destination": "packages/dataviz-angular/src/index.ts",
       "gitBlob": "e0da2ca152892d3985977fbd7588ec7e6bb4df31",
       "sha256": "cafea77294137e31b664bef0f053927c4c1edda93d2391f339b44ae3e669c98b",
-      "status": "copied-byte-identical"
+      "status": "adapted-monorepo-pattern",
+      "destinationSha256": "747ac89c819d020485d7031ef25a9802fc021ef2fed6a787ed12e2d382198fa1",
+      "note": "PR #76 exports the ten new adapters and their prop types"
     },
     {
       "repository": "dataviz",
@@ -1901,7 +1906,9 @@
       "destination": "packages/dataviz-angular/src/lib/DateHistogramChart.test.ts",
       "gitBlob": "22f32528766cff82586c3ce20771ff96c3ff86c4",
       "sha256": "993e7725108423bfd0c5f562263ee7bb6fb54dfdf7ff60f8c8fa71ac01b57f8d",
-      "status": "copied-byte-identical"
+      "status": "adapted-monorepo-pattern",
+      "destinationSha256": "09d887415a3f967318152198d2a60f4f681742382a302a5a7d5e62fbfe0bc8e9",
+      "note": "PR #76 rewrote the test for TestBed mounting after the adapter moved to the memoised pattern (inject() makes direct construction invalid), keeping the previous assertions and adding the rendered bar count, the accessible list and a click"
     },
     {
       "repository": "dataviz",
@@ -1910,7 +1917,9 @@
       "destination": "packages/dataviz-angular/src/lib/DateHistogramChart.ts",
       "gitBlob": "78a232dbdc31fa5cc90aafac5ae8a7e7381d991e",
       "sha256": "eade0ce61b3d4a94608945c4331b82f0db550ae640182730c81fd7da64dc56b9",
-      "status": "copied-byte-identical"
+      "status": "adapted-monorepo-pattern",
+      "destinationSha256": "7b010e1f4e516b29533dce26e660c23792be738f7239e63e03c65e652b6d0784",
+      "note": "PR #76 aligned it on the memoised pattern: the chained computing getters the template read (4.9 ms per read at 20 000 rows) became fields refreshed by a private recompute() from ngOnInit/ngOnChanges"
     },
     {
       "repository": "dataviz",
@@ -1928,7 +1937,9 @@
       "destination": "packages/dataviz-angular/src/lib/QueryBar.ts",
       "gitBlob": "c617279616dfacef1c09dcb3debd9251028e0ce8",
       "sha256": "d90ab02c13fe376d62361cf445311a38479ce70cb669ea40e675b4ba9126061d",
-      "status": "copied-byte-identical"
+      "status": "adapted-monorepo-pattern",
+      "destinationSha256": "be4d0f44af6b504300f6868a577dd8cd8443c385fcebaa87476b66a5df926639",
+      "note": "PR #76 aligned it on the memoised pattern, same reason as DateHistogramChart"
     },
     {
       "repository": "dataviz",
@@ -6788,6 +6799,168 @@
       "status": "local-monorepo-helper",
       "sha256": "a4175a1d9a09761a011163772e8462eaa7e5ffc03f9a08be9199e2fdc35c3229",
       "note": "monorepo-authored in PR #65, reproduces every figure the documentation page states; hash-pinned"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-vue/src/lib/categoricalData.ts",
+      "destination": "packages/dataviz-angular/src/lib/categoricalData.ts",
+      "gitBlob": "acb9fe4f94b6e2130fda1d32341e5a4efacc9919",
+      "sha256": "070a49a50555224c629cf3fa948621c8676ec6ebe2d7d90d29a4b23369614921",
+      "status": "copied-byte-identical",
+      "note": "fourth copy of the framework-free helper, byte-identical to the vue/react/svelte ones; the four are pinned against drift by scripts/verify-dataviz-helper-copies.test.mjs (PR #76)"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-vue/src/lib/distributionData.ts",
+      "destination": "packages/dataviz-angular/src/lib/distributionData.ts",
+      "gitBlob": "f4e425e09dd0075e69edff7ea63b32125bb2edd2",
+      "sha256": "33aec5df16bdb12a6ead068064eb76f963eb411bfdc2676ddba2ccd23e17034a",
+      "status": "copied-byte-identical",
+      "note": "fourth copy of the framework-free helper, byte-identical to the vue/react/svelte ones; the four are pinned against drift by scripts/verify-dataviz-helper-copies.test.mjs (PR #76)"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-vue/src/lib/partOfWholeData.ts",
+      "destination": "packages/dataviz-angular/src/lib/partOfWholeData.ts",
+      "gitBlob": "9d8761e8815cec85b9749a72bebc99a05f4dc6a3",
+      "sha256": "faab6e8d920b1f264f22303ee99577458e428c5172129677bd7a36042d3ccb8f",
+      "status": "copied-byte-identical",
+      "note": "fourth copy of the framework-free helper, byte-identical to the vue/react/svelte ones; the four are pinned against drift by scripts/verify-dataviz-helper-copies.test.mjs (PR #76)"
+    },
+    {
+      "destination": "packages/dataviz-angular/PATTERN.md",
+      "status": "local-monorepo-helper",
+      "sha256": "bc8d5c2e9d7b8ec4bc07a1e8098ddbb6e957b45dcafe26995c7c9ccd96811be8",
+      "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/AreaChart.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "4e2365dc9a0419581fce62c2ccb52b229574f8f99f0956402a5c551ea54e3e58",
+      "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/AreaChart.test.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "06a655ee73c45eb9b9a115e747b787124356d82f93e9f40f1f736d61bed7decc",
+      "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/DashboardFilterBar.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "b288edeed9f8134aaeb6cae1fe73ea9a5913da78afdfb1548480e8160192f453",
+      "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/DashboardFilterBar.test.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "a692bd903b4284ee97c022ee18c34bb28199c6fec392e7b022c01a98c9d47cf5",
+      "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/DateRangeFilter.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "e0ccaee478740ecf775c43a91d4692d4432f876232e9e44dee5abe942014d2ed",
+      "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/DateRangeFilter.test.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "cbdf53cbf7f6c1ac9b3bdee30de1d9508c50e4445d315596c8b041a705e2633c",
+      "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/DonutChart.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "f37f6a271e17767f24e118cd789cc752aac87e3d06e2806316d9ca2906a7750a",
+      "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/DonutChart.test.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "e3be22c9502200d955210fadbc439758b26d9f801b61529b57e7cde4b919eb75",
+      "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/HeatmapChart.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "3088df42adeb7d50b0dd70f29c766ff769d57079967ce97d7fad13d17ee1d63c",
+      "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/HeatmapChart.test.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "2dde4b361cf7594eec83f0521798cfe571f0023f9f3c0a33e09a5a8db53eeaeb",
+      "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/KpiCardGroup.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "7eb12e559d0037461067d4f08616d11d09d7d6141a5b529e5ad919fce5bd2113",
+      "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/KpiCardGroup.test.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "327db6b67428021a3e9c5314c52826f838a4f616484583b3e419b3ff97eb2682",
+      "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/RecordsTable.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "abab02d89453d9127d5cdeda528f892bde05aa36467ff048d390b3e835943d8f",
+      "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/RecordsTable.test.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "a19e128e883100e1f9c70632fd33dfdb84c4d936c2480b926a4032aa6c3daf62",
+      "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/ScatterPlot.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "a374567b25cdfc66164db1c76b7e8b67e29283673dbf31eee701bb8553e959f4",
+      "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/ScatterPlot.test.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "d6b1d8871ac3673979c26961c2d8898ca80c15f1aa80cb4c9c8dd5b5b2af7e82",
+      "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/SelectionLegend.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "c4a98b6519abd6968f7086f1b464561bab534a85b1d51fc8c3e804971a226d70",
+      "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/SelectionLegend.test.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "63f318831929a757d8f9858eb6f32fb67902a9b7a44578a7eba8b5ffea5ae334",
+      "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/TreemapChart.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "7ad0a69eb6a0ae3677e65d3f0a89ef313daa7d9f56368a4cc1d9e389be770945",
+      "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/TreemapChart.test.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "efcc405a855c72905d0d9e82f21204d0dd2cd2bbf66d1acae423983415620a60",
+      "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/adapter-pattern.test.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "77d21b6aa32b47cf0b82b47535a452b483b39a9d0b84e6fafeed38f2ab092097",
+      "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned"
     }
   ]
 }
