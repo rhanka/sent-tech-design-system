@@ -598,7 +598,7 @@ function emptyRenderLayer(type: GeoChartLayer["type"], key: string, summary: str
         </svg>
       </div>
 
-      <ul class="st-chartDataList" [attr.aria-label]="label + ' data'">
+      <ul class="st-chartDataList" [attr.aria-label]="'Data values for ' + label">
         <li *ngFor="let item of dataValueItems">{{ item }}</li>
       </ul>
     </div>
