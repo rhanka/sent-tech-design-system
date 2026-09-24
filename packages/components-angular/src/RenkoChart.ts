@@ -183,8 +183,8 @@ export class RenkoChart {
   get hoveredColumn(): RenkoColumn | null { return this.hoveredKey === null ? null : this.columns.find((column) => column.key === this.hoveredKey) ?? null; }
   get tooltipLeft(): string { const column = this.hoveredColumn; return column ? `${(column.cx / this.resolvedWidth) * 100}%` : "0"; }
   get tooltipTop(): string { const column = this.hoveredColumn; return column ? `${(column.cy / this.resolvedHeight) * 100}%` : "0"; }
-  get tooltipLabel(): string { const column = this.hoveredColumn; return column ? (column.direction === "up" ? "UP" : "DOWN") : ""; }
-  get tooltipValue(): string { const column = this.hoveredColumn; return column ? `${formatTick(column.brick.bottom)} -> ${formatTick(column.brick.top)}` : ""; }
+  get tooltipLabel(): string { const column = this.hoveredColumn; return column ? (column.direction === "up" ? "▲" : "▼") : ""; }
+  get tooltipValue(): string { const column = this.hoveredColumn; return column ? `${formatTick(column.brick.bottom)} → ${formatTick(column.brick.top)}` : ""; }
 
   handlePointerMove(event: PointerEvent): void { const target = event.target; this.hoveredKey = target instanceof Element ? target.getAttribute("data-chart-key") : null; }
   handleLeave(): void { this.hoveredKey = null; }
