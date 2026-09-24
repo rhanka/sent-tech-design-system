@@ -15,11 +15,18 @@ Cible : une PR vers `main`, branche `feat/gd-m2-workers`.
 - L'amont en a un, mais minimal, et **ce lot n'est donc pas un rapatriement** : `studio/src/lib/layoutWorker.js`
   fait 20 lignes (un `onmessage`, un `try/catch`, un `postMessage`) et `studio/src/lib/forceLayoutClient.js`
   85 lignes (une `Map` de requêtes en attente indexée par `id`, `new Worker(new URL(…), { type: "module" })`,
-  repli synchrone quand `Worker` est absent, `terminate()` sur erreur). Il n'y a **ni version de snapshot, ni
-  annulation, ni rejet de résultat périmé** — exactement les quatre propriétés que le plan demande.
-- Le sous-chemin `processing` est garanti **sans DOM** par trois gardes (compilateur, exécution, balayage des
-  sources). Un client de worker a besoin de `Worker`, qui n'existe pas dans ce périmètre : il ne peut donc pas
-  y vivre.
+  repli synchrone quand `Worker` est absent, `terminate()` sur erreur). Il n'y a **ni version de snapshot,
+  ni annulation, ni rejet de résultat périmé** — les propriétés que le plan demande. Deux de ces absences sont
+  des défauts, mesurés en revue : `terminateForceWorker()` détruit le worker et vide sa `Map` **sans rejeter**
+  les promesses en vol, qui restent éternellement non résolues ; et une réponse périmée **résout quand même sa
+  promesse**, si bien qu'un appelant qui redemande reçoit les deux réponses dans l'ordre d'arrivée sans pouvoir
+  distinguer la périmée. L'`id` amont est une identité de requête, pas une version d'instantané. L'amont
+  importe d'ailleurs `@graphify/graph-layout`, pas `@sentropic/graph`.
+- Le sous-chemin `processing` est garanti **sans DOM** par trois gardes — mais elles n'interdisent que
+  `document`, `window` et `navigator`, et `packages/graph/tsconfig.json` inclut déjà `DOM` dans `lib`. Un
+  module référençant `Worker` derrière un `typeof Worker !== "undefined"` y passerait donc les gardes telles
+  quelles : la contrainte technique que la première version de ce cadrage invoquait **n'existe pas** (mesuré
+  en revue).
 
 ## 2. Décision de découpage (réversible, prise ici)
 
@@ -30,9 +37,13 @@ Deux nouveaux sous-chemins, parce que les deux moitiés n'ont pas le même envir
 - **`@sentropic/graph/layout-client`** : l'appelant. Il crée le worker quand `Worker` existe, retombe sur le
   calcul synchrone sinon (SSR, jsdom, Node), et expose une API qui ne dit pas laquelle des deux voies a servi.
 
-La garde sans DOM de `processing` reste inchangée et ne s'étend pas à ces deux sous-chemins ; en revanche un
-test assère que **ni l'un ni l'autre n'importe le rendu** (`renderer.ts`, `webgl-*.ts`), et que `processing`
-n'importe ni l'un ni l'autre — la dépendance va du client vers le calcul, jamais l'inverse.
+Le motif du découpage n'est donc pas une impossibilité technique, c'est que le client fait
+`new Worker(new URL("./worker.js", import.meta.url))` et **émet une référence d'actif visible de
+l'empaqueteur**, qu'une entrée de calcul pur n'a pas à porter. Pour que la frontière soit appliquée et pas
+seulement affirmée, la garde de `processing` est **étendue pour y interdire `Worker`** ; sans cela rien
+n'empêcherait un client de revenir s'y glisser. Elle ne s'étend pas aux deux nouveaux sous-chemins ; en
+revanche un test assère que **ni l'un ni l'autre n'importe le rendu** (`renderer.ts`, `webgl-*.ts`), et que
+`processing` n'importe ni l'un ni l'autre — la dépendance va du client vers le calcul, jamais l'inverse.
 
 ## 3. Travail demandé
 
@@ -55,9 +66,13 @@ Invariants, chacun testé :
 4. **Égalité des deux voies** : pour les mêmes entrées, la voie worker et la voie synchrone produisent des
    positions **identiques à l'octet** sur la sérialisation du `Float32Array`. Le déterminisme démontré en #77
    n'a de valeur que si le passage par worker ne l'altère pas.
-5. **Aucune promesse de progression dans ce lot** : `computeLayout` est une boucle fermée sans point de
-   rappel. Prétendre à un rapport de progression demanderait de modifier une copie à provenance, ce qui est
-   hors périmètre. Le cadrage le dit au lieu de laisser croire le contraire.
+5. **Aucune promesse de progression dans ce lot**, pour la raison mesurée en revue et non celle que la
+   première version donnait. Un point d'observation **existe** sans toucher la copie gelée :
+   `computeLayout` accepte `iterations` et `initialPositions`, donc un appelant peut découper le calcul en
+   tranches et rapporter entre elles. Mais le découpage **ne reproduit pas** le résultat d'un appel unique :
+   mesuré sur 200 nœuds, six tranches de 50 itérations contre un appel de 300 donnent un écart maximal de
+   **400,6 px**. La progression coûterait donc le déterminisme que ce programme protège depuis #77. C'est ce
+   qui la disqualifie, pas l'absence d'un point de rappel.
 
 ### 3.2 Résolution du worker dans le paquet publié
 
@@ -84,7 +99,10 @@ modification d'une copie à provenance, et toute publication npm.
 ## 5. Critères d'acceptation (tous exécutés et consignés)
 
 1. **Périmètre** : le diff ne touche que `packages/graph/**`, `scripts/smoke-pack*`, `spec/**`, `plan/**`,
-   `docs/graph-dataviz-*` et `.track/**` via Track. Aucune copie à provenance modifiée : `verify.mjs` à zéro écart.
+   `docs/graph-dataviz-*` et `.track/**` via Track. Les **copies à provenance restent inchangées**, et les
+   **nouveaux fichiers locaux reçoivent leur entrée `local-*`** au registre : sans cette précision, ce critère
+   rendrait le critère 2 insatisfaisable, puisque tout fichier suivi de `packages/graph/**` dépourvu d'entrée
+   fait échouer le vérifieur.
 2. **Portes** : `npm ci`, `npm run build`, `npm run check`, `npm test`, `npm run licensing:check`,
    `npm run pack:smoke`, `node --test scripts/*.test.mjs`, `node tools/graph-dataviz-provenance/verify.mjs`.
 3. **Racine publique inchangée** : le test de ligne de base des exports racine reste vert, et les deux nouveaux
