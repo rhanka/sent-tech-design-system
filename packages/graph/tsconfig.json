@@ -9,9 +9,16 @@
     "outDir": "./dist",
     "strict": true,
     // The provenance copies under src/processing/ compile upstream with
-    // strict:false; they contain one implicit-any index the frozen bytes keep
-    // (graph-layout.ts initialPositions lookup). Relax ONLY that flag so the
-    // byte-identical copies typecheck; every other strict check stays on.
+    // strict:false; exactly one implicit-any index survives in them, measured:
+    // graph-layout.ts:265, the initialPositions lookup. Relax ONLY that flag so
+    // the byte-identical copies typecheck; every other strict check stays on.
+    //
+    // Splitting this into two projects was tried and does not work: TypeScript
+    // follows imports past "exclude", so excluding just the four frozen files
+    // still pulls graph-layout.ts in through register.ts and the error returns.
+    // Excluding all of src/processing/ would work only by leaving our own
+    // register.ts unchecked, which is the opposite of what is wanted. The
+    // relaxation stays package-wide until the upstream copy stops needing it.
     "noImplicitAny": false,
     "strictNullChecks": true,
     "noImplicitReturns": true,
