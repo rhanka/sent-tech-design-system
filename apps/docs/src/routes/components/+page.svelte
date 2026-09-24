@@ -34,23 +34,21 @@
       </h2>
       <p class="dataviz-banner-text">
         {#if locale.value === "fr"}
-          Les 119 composants pilotés par store des paquets
-          <code>@sentropic/dataviz-*</code> (galerie interactive Svelte, React,
-          Vue) sont présentés sur le site dédié du projet dataviz ; leur
+          Les composants de graphiques et de BI pilotés par store des paquets
+          <code>@sentropic/dataviz-*</code> sont développés dans ce dépôt ; leur
           intégration à ce catalogue se fait par lots.
         {:else}
-          The 119 store-driven components of the
-          <code>@sentropic/dataviz-*</code> packages (interactive Svelte,
-          React, Vue gallery) are presented on the dedicated dataviz project
-          site; their integration into this catalog ships in batches.
+          The store-driven chart and BI components of the
+          <code>@sentropic/dataviz-*</code> packages are developed in this
+          repository; their integration into this catalog ships in batches.
         {/if}
       </p>
       <p class="dataviz-banner-links">
-        <Link href="https://dataviz.sent-tech.ca" external
-          >{locale.value === "fr" ? "Ouvrir le site dataviz" : "Open the dataviz site"}</Link
+        <Link href="https://www.npmjs.com/package/@sentropic/dataviz-core" external
+          >{locale.value === "fr" ? "Paquets dataviz sur npm" : "Dataviz packages on npm"}</Link
         >
-        <Link href="https://github.com/rhanka/dataviz" external
-          >{locale.value === "fr" ? "Dépôt dataviz sur GitHub" : "Dataviz repository on GitHub"}</Link
+        <Link href="https://github.com/rhanka/sent-tech-design-system/tree/main/packages" external
+          >{locale.value === "fr" ? "Sources dans ce dépôt" : "Sources in this repository"}</Link
         >
       </p>
     </Card>
@@ -119,7 +117,7 @@
     font-weight: 650;
   }
 
-  :global(.dataviz-banner) {
+  :global(.st-card.dataviz-banner) {
     border-color: var(--st-semantic-border-strong);
     padding: 1.25rem 1.5rem;
   }
