@@ -30,7 +30,7 @@ design system documente, et l'écart composant par composant.
 | Composants exportés `@sentropic/dataviz-svelte` | **118** |
 | Composants exportés `@sentropic/dataviz-react` | **118** (+`TimeSeriesLineChart`, −`UrlSync`) |
 | Composants exportés `@sentropic/dataviz-vue` | **117** (−`UrlSync`) |
-| Composants exportés `@sentropic/dataviz-angular` | **2** (`QueryBar`, `DateHistogramChart`) + adaptateur |
+| Composants exportés `@sentropic/dataviz-angular` | **12** (lot 1 : 5 charts, 3 contrôles, 3 panneaux, + `QueryBar`) + adaptateur |
 | Composants distincts (svelte ∪ react-only) | **119** |
 | Entrées au catalogue DS (`components-catalog.ts`) | **203**, toutes natifs DS |
 | Routes `apps/docs/src/routes/components/` | **205** dossiers (200 pages dédiées + 4 pages groupes + 1 route dynamique `[slug]` ; 3 entrées catalogue couvertes par page groupe, sans route propre) |
@@ -235,9 +235,11 @@ Statut N-A : uniquement les utilitaires non-composants, exclus du décompte
 - **P0 — Renvoi (livré, §6).** Liens DS → site dataviz et dépôt ; l'inverse
   est fait par un autre agent sur le dépôt dataviz.
 - **P1 — Parité angular (prérequis, hors lot D).** `dataviz-angular`
-  n'exporte que 2/119 composants. Sans lui, aucune page DS ne peut satisfaire
-  la règle de parité des frameworks. Recommandé avant les lots P2 ; à défaut,
-  pages avec mention de couverture explicite (décision owner).
+  n'exporte que 12/119 composants (lot 1 livré ; 107 restants, patron de portage
+  dans `packages/dataviz-angular/PATTERN.md`). Sans la suite, aucune page DS ne
+  peut satisfaire la règle de parité des frameworks au-delà de ces 12. Recommandé
+  avant les lots P2 ; à défaut, pages avec mention de couverture explicite
+  (décision owner).
 - **P2 — Pages DS, par lots.** Prérequis infra : dépendances workspace
   `@sentropic/dataviz-*` dans `apps/docs`, support NodeSpec store-based dans
   `examples.ts` (4 frameworks), index de recherche, conventions §2.
