@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input as NgInput, signal } from '@angular/core';
+import type { OnChanges, OnInit } from '@angular/core';
 import { Search, type SearchProps, type SearchSize } from '@sentropic/design-system-angular';
 import { buildQueryFilterSpec, type DashboardStore } from '@sentropic/dataviz-core';
 import { classNames } from './classNames.js';
@@ -37,7 +38,7 @@ export type QueryBarProps = {
     ></st-search>
   `,
 })
-export class QueryBar {
+export class QueryBar implements OnInit, OnChanges {
   static readonly stComponentName = 'QueryBar';
 
   private readonly querySignal = signal('');
@@ -66,8 +67,19 @@ export class QueryBar {
 
   readonly query = this.querySignal.asReadonly();
 
-  get searchClass(): string {
-    return classNames('st-queryBar', this.classInput);
+  /** Recomputed by `recompute()`; never derived in a template getter. */
+  searchClass = 'st-queryBar';
+
+  ngOnInit(): void {
+    this.recompute();
+  }
+
+  ngOnChanges(): void {
+    this.recompute();
+  }
+
+  private recompute(): void {
+    this.searchClass = classNames('st-queryBar', this.classInput);
   }
 
   handleSearchValueChange(next: string): void {
