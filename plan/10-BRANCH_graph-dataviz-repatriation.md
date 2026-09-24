@@ -56,7 +56,7 @@
   - [ ] `GD-M2-WORKERS` : snapshot/version/cancel/fallback/rejet périmé et résolution worker dans pack.
   - [ ] `GD-M2-DS-PRESENTATION` : convergence du rendu et des contrats contrôlés sans remonter le store dans les composants.
   - [ ] `GD-M2-CANVAS` : commandes de sélection/édition/ports/annotations ; preview/transaction/persistence séparés.
-  - [ ] `GD-M2-PARITY` et `GD-M2-THEMES` : quatre frameworks, a11y/IME/SSR et géométrie/token communes. Retard mesuré : `dataviz-angular` expose 2 composants contre 118 en Svelte, 118 en React et 117 en Vue ; premier lot de 10 engagé avec extraction du patron de portage.
+  - [ ] `GD-M2-PARITY` et `GD-M2-THEMES` : quatre frameworks, a11y/IME/SSR et géométrie/token communes. Retard mesuré : `dataviz-angular` expose 12 composants contre 118 en Svelte, 118 en React et 117 en Vue ; premier lot de 10 livré avec le patron de portage (`packages/dataviz-angular/PATTERN.md`), 107 adaptateurs restants.
   - [ ] Gate : tests invariants, imports sans DOM, absence cycles, contrats multimoteurs, conflits révisions.
 
 - [ ] **M3 — Tranche complète**
