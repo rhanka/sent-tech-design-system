@@ -295,6 +295,13 @@ interface PendingRequest {
   settled: boolean;
   dispatch: LayoutDispatchMode;
   dispatched: boolean;
+  /**
+   * Which path actually took it, once dispatched. Read on a worker failure: only
+   * a request the WORKER was holding is a casualty of that failure. One the
+   * calling thread was already computing keeps its own slot instead of being
+   * scheduled a second time.
+   */
+  dispatchedPath: "worker" | "sync" | null;
 }
 
 function requestKey(snapshotId: string, version: number): string {
@@ -493,13 +500,21 @@ export function createLayoutClient(options: LayoutClientOptions = {}): LayoutCli
     if (victim !== null && !victim.settled) {
       if (isStale(victim)) {
         closeSuperseded(victim);
-      } else {
+      } else if (victim.dispatchedPath === "worker") {
         // Downgrade an explicitly forced worker dispatch to the fallback. The
         // caller asked for a worker, but the worker is gone and failing the
         // request in its place is exactly the serial-failure behaviour this
         // client exists to avoid — it asked for positions, not for a thread.
         victim.dispatch = "sync";
+        victim.dispatchedPath = null;
         queue.unshift(victim);
+      } else {
+        // The calling thread already holds this one's deferred slot, so leave it
+        // there. Re-queueing it would schedule a SECOND slot for the same
+        // request; the duplicate would abort on the `settled` check rather than
+        // compute twice — measured — so this saves redundant scheduling and does
+        // not correct a wrong answer.
+        inFlight = victim;
       }
     }
     pump();
@@ -522,6 +537,7 @@ export function createLayoutClient(options: LayoutClientOptions = {}): LayoutCli
       if (handle !== null) {
         try {
           handle.postMessage(entry.request);
+          entry.dispatchedPath = "worker";
           stats.workerDispatches++;
           return;
         } catch {
@@ -543,6 +559,7 @@ export function createLayoutClient(options: LayoutClientOptions = {}): LayoutCli
         return;
       }
     }
+    entry.dispatchedPath = "sync";
     // Deferred, not inline — see the module header: an inline computation would
     // settle before a same-tick supersession could reach it, which is the one
     // way a caller could tell the two paths apart.
@@ -641,6 +658,7 @@ export function createLayoutClient(options: LayoutClientOptions = {}): LayoutCli
         settled: false,
         dispatch: mode,
         dispatched: false,
+        dispatchedPath: null,
       };
       open.set(requestKey(snapshotId, version), entry);
       queue.push(entry);
