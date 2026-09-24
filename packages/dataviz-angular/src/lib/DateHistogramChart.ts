@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, Input as NgInput } from '@angular/core';
-import type { OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input as NgInput, inject } from '@angular/core';
+import type { OnChanges, OnDestroy, OnInit } from '@angular/core';
 import { BarChart, type BarChartDatum, type BarChartTone } from '@sentropic/design-system-angular';
 import {
   buildDateHistogramModel,
@@ -80,14 +80,23 @@ function selectionKeyFor(bin: DateHistogramBin): string {
     ></st-bar-chart>
   `,
 })
-export class DateHistogramChart implements OnDestroy {
+export class DateHistogramChart implements OnInit, OnChanges, OnDestroy {
   static readonly stComponentName = 'DateHistogramChart';
 
+  private readonly changeDetector = inject(ChangeDetectorRef);
   private signals?: AngularSignalStore;
+  private unsubscribe: () => void = () => {};
+  private model: DateHistogramModel = emptyModel('');
+  private labels: string[] = [];
 
   @NgInput({ required: true }) set store(value: DashboardStore) {
     if (this.signals) this.signals.replace(value);
     else this.signals = toSignalStore(value);
+    this.unsubscribe();
+    this.unsubscribe = value.subscribe(() => {
+      this.recompute();
+      this.changeDetector.markForCheck();
+    });
   }
 
   get store(): DashboardStore {
@@ -113,12 +122,48 @@ export class DateHistogramChart implements OnDestroy {
   @NgInput() formatLabel: DateHistogramLabelFormatter = defaultFormatLabel;
   @NgInput('class') classInput?: string;
 
-  get chartClass(): string {
-    return classNames('st-dateHistogramChart', this.classInput);
+  /** Recomputed by `recompute()`; never derived in a template getter. */
+  data: BarChartDatum[] = [];
+  chartSelectedKeys: string[] = [];
+  chartClass = 'st-dateHistogramChart';
+  onSelect?: (key: string) => void;
+
+  ngOnInit(): void {
+    this.recompute();
   }
 
-  get model(): DateHistogramModel {
-    if (this.signals) void this.signals.state();
+  ngOnChanges(): void {
+    this.recompute();
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe();
+    this.signals?.destroy();
+  }
+
+  readonly handleBarSelect = (key: string): void => {
+    if (!this.selectable || !this.viewId) return;
+    const index = this.labels.indexOf(key);
+    const bin = this.model.bins[index];
+    if (!bin) return;
+    this.store.toggleSelection(this.viewId, selectionKeyFor(bin));
+  };
+
+  private recompute(): void {
+    this.chartClass = classNames('st-dateHistogramChart', this.classInput);
+    this.onSelect = this.selectable && this.viewId ? this.handleBarSelect : undefined;
+    if (!this.signals) return;
+    void this.signals.state();
+    this.model = this.buildModel();
+    this.labels = this.model.bins.map((bin) => this.formatLabel(bin, this.model));
+    this.data = this.model.bins.map((bin, index) => {
+      const datum = { label: this.labels[index] ?? String(index + 1), value: bin.count };
+      return this.tone ? { ...datum, tone: this.tone } : datum;
+    });
+    this.chartSelectedKeys = this.selectedKeysFor();
+  }
+
+  private buildModel(): DateHistogramModel {
     try {
       return buildDateHistogramModel(this.store.model, this.store.applyCrossfilter(this.viewId), {
         date: this.date,
@@ -131,41 +176,11 @@ export class DateHistogramChart implements OnDestroy {
     }
   }
 
-  get labels(): string[] {
-    const model = this.model;
-    return model.bins.map((bin) => this.formatLabel(bin, model));
-  }
-
-  get data(): BarChartDatum[] {
-    const labels = this.labels;
-    return this.model.bins.map((bin, index) => {
-      const datum = { label: labels[index] ?? String(index + 1), value: bin.count };
-      return this.tone ? { ...datum, tone: this.tone } : datum;
-    });
-  }
-
-  get chartSelectedKeys(): string[] {
+  private selectedKeysFor(): string[] {
     if (!this.selectable || !this.viewId || !this.signals) return [];
     const activeKeys = this.signals.state().selections[this.viewId] ?? [];
-    const labels = this.labels;
     return this.model.bins.flatMap((bin, index) =>
-      activeKeys.includes(selectionKeyFor(bin)) ? [labels[index] ?? String(index + 1)] : [],
+      activeKeys.includes(selectionKeyFor(bin)) ? [this.labels[index] ?? String(index + 1)] : [],
     );
-  }
-
-  readonly handleBarSelect = (key: string): void => {
-    if (!this.selectable || !this.viewId) return;
-    const index = this.labels.indexOf(key);
-    const bin = this.model.bins[index];
-    if (!bin) return;
-    this.store.toggleSelection(this.viewId, selectionKeyFor(bin));
-  };
-
-  get onSelect(): ((key: string) => void) | undefined {
-    return this.selectable && this.viewId ? this.handleBarSelect : undefined;
-  }
-
-  ngOnDestroy(): void {
-    this.signals?.destroy();
   }
 }
