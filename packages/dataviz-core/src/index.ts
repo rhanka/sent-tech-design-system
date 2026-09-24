@@ -636,5 +636,16 @@ export { buildPolygonData } from './polygon.js';
 export type { VennArea, VennConfig } from './venn.js';
 export { buildVennData } from './venn.js';
 
+// Priority matrix label placement (2x2 value/complexity matrix)
+export type {
+  PriorityMatrixPoint,
+  PriorityMatrixBox,
+  PriorityMatrixFrame,
+  PriorityMatrixPlacement,
+  PriorityQuadrant,
+  PlacePriorityLabelsOptions,
+} from './priorityMatrix.js';
+export { placePriorityLabels, priorityQuadrant, estimatePriorityLabelBox } from './priorityMatrix.js';
+
 // Shared UI contract types (framework-agnostic, consumed by dataviz-{react,vue,svelte})
 export type TimeRange = { from: string; to: string; relativeLabel?: string };
