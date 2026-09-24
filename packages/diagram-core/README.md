@@ -169,8 +169,10 @@ a test asserts by scanning every file. In particular:
   points at cannot be deleted: the transaction refuses itself on the final state
   (`dangling-reference`) rather than clearing someone's attribute. "Clear",
   "refuse" or "reassign" as an explicit choice is a later decision.
-- **Commands over groups and filters**: a view's groups and filters are validated
-  and persisted, and no command of this lot edits them.
+- **Filter evaluation, and commands over groups and filters.** A view's groups and
+  filters are declared, validated and persisted here; nothing in this lot decides
+  what a filter hides, nor what happens to a relation whose endpoint is hidden,
+  and no command of this lot edits a group or a filter. Both are GD-M2-CANVAS.
 - **Selection, geometric port editing and annotations**: GD-M2-CANVAS, by SPEC 3.5.
 - **A cryptographic content hash**: see `hash.ts`.
 - **Concurrency beyond compare-and-swap semantics.** `revision-conflict` is a

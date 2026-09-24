@@ -10,6 +10,17 @@ import { describe, expect, it } from "vitest";
 
 import {
   CURRENT_SCHEMA_VERSION,
+  documentContentHashInput,
+  findOccurrence,
+  hashContent,
+  occurrenceKindOf,
+  occurrenceRef,
+  occurrencesOfPort,
+  occurrencesOfRelation,
+  portRef,
+  relationRef,
+  serialiseDocument,
+  serialiseView,
   DEFAULT_PRESENTATION,
   GENERIC_PROFILE_ID,
   SEMANTIC_DOCUMENT_FIELDS,
@@ -135,5 +146,48 @@ describe("the view document", () => {
       (entry) => entry.code,
     );
     expect(codes).toContain("record-key-mismatch");
+  });
+});
+
+describe("lookup helpers over a view", () => {
+  const state = stateOf(readFixture("valid/generic-state.json"));
+  const main = state.views["view:main"] as NonNullable<(typeof state.views)[string]>;
+
+  it("answers which of the three maps holds an occurrence id", () => {
+    expect(occurrenceKindOf(main, occurrenceRef("alpha-1"))).toBe("entity");
+    expect(occurrenceKindOf(main, occurrenceRef("alpha-out-1"))).toBe("port");
+    expect(occurrenceKindOf(main, occurrenceRef("flow-1"))).toBe("relation");
+    expect(occurrenceKindOf(main, occurrenceRef("absent"))).toBeUndefined();
+  });
+
+  it("finds an occurrence of any kind by its reference", () => {
+    expect(findOccurrence(main, occurrenceRef("flow-1"))?.id).toBe("occurrence:flow-1");
+    expect(findOccurrence(main, occurrenceRef("absent"))).toBeUndefined();
+  });
+
+  it("lists the drawings of one relation and of one port", () => {
+    expect(occurrencesOfRelation(main, relationRef("flow")).map((occurrence) => occurrence.id)).toEqual([
+      "occurrence:flow-1",
+    ]);
+    expect(occurrencesOfRelation(main, relationRef("triple"))).toEqual([]);
+    expect(occurrencesOfPort(main, portRef("alpha-out")).map((occurrence) => occurrence.id)).toEqual([
+      "occurrence:alpha-out-1",
+    ]);
+  });
+});
+
+describe("serialising one object at a time", () => {
+  const state = stateOf(readFixture("valid/generic-state.json"));
+  const main = state.views["view:main"] as NonNullable<(typeof state.views)[string]>;
+
+  it("serialises a document and a view on their own, canonically", () => {
+    expect(serialiseDocument(state.document).startsWith('{"documentId":"document:d1"')).toBe(true);
+    expect(serialiseView(main).startsWith('{"entityOccurrences":')).toBe(true);
+  });
+
+  it("hashes a document's content independently of its revision", () => {
+    const bumped = { ...state.document, revision: state.document.revision + 5 };
+    expect(documentContentHashInput(bumped)).toBe(documentContentHashInput(state.document));
+    expect(hashContent(documentContentHashInput(state.document))).toMatch(/^fnv1a64:[0-9a-f]{16}$/);
   });
 });

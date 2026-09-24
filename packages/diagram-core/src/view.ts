@@ -91,7 +91,12 @@ export interface VisualGroup {
   readonly collapsed?: boolean;
 }
 
-/** Declarative view filters. Each kind is executable by `applyViewFilters`. */
+/**
+ * Declarative view filters. This lot VALIDATES and PERSISTS them; it does not
+ * evaluate them. Deciding what a filter hides, and what happens to a relation
+ * whose endpoint is hidden, is a presentation decision and belongs to
+ * GD-M2-CANVAS - see README, "What is not covered yet".
+ */
 export type ViewFilter =
   | { readonly id: string; readonly kind: "entity-type"; readonly types: readonly string[]; readonly mode: "include" | "exclude" }
   | { readonly id: string; readonly kind: "relation-type"; readonly types: readonly string[]; readonly mode: "include" | "exclude" }

@@ -129,11 +129,3 @@ export const codesOf = (diagnostics: readonly Diagnostic[]): readonly Diagnostic
 /** One line per diagnostic, for a message a human reads in a failed gate. */
 export const formatDiagnostics = (diagnostics: readonly Diagnostic[]): string =>
   diagnostics.map((entry) => `${entry.severity} ${entry.code} at ${entry.path}: ${entry.message}`).join("\n");
-
-/** A success-or-diagnostics result. Used wherever a value may be refused. */
-export type Result<T> =
-  | { readonly ok: true; readonly value: T }
-  | { readonly ok: false; readonly diagnostics: readonly Diagnostic[] };
-
-export const ok = <T>(value: T): Result<T> => ({ ok: true, value });
-export const failed = <T>(diagnostics: readonly Diagnostic[]): Result<T> => ({ ok: false, diagnostics });
