@@ -32,25 +32,25 @@
   - [x] Architecture STUDY, deux DAG Mermaid, modèle formel/pivots et décisions autoportantes.
   - [ ] Revue design owner prescrite fable 5.1 + gemini 3.7 réconciliée par le conducteur avant EVOL.
 
-- [ ] **M1 — Rapatriement conservatoire**
+- [x] **M1 — Rapatriement conservatoire** (PR #61, `7c3fbbcf` ; publication préparée, non déclenchée)
   - [x] `GD-M1-GRAPH` : copier fichiers Git du package avec licence/provenance, conserver 211 exports ESM/CJS/types et tests/golden/bench ; build/pack/import vérifiés.
   - [x] `GD-M1-DATAVIZ-CORE` : copier package avec ses 495 exports et 68 fichiers tests, préserver tsconfig et indépendance ; tests/build/pack/import vérifiés.
-  - [ ] `GD-M1-PACKAGING` : dépendances workspace locales, lockfile, assets/CSS, workers ; adapter scripts smoke/release/OIDC pour six noms sans collision de publication.
-  - [ ] `GD-M1-DATAVIZ-SVELTE` : source+tests+doc, peers/CSS ; résoudre `GeoMap`→`GeoChart`, builds/typecheck/SSR consommateur.
-  - [ ] `GD-M1-DATAVIZ-REACT` : mêmes preuves ; hooks store/SSR/types, pas de core dupliqué.
-  - [ ] `GD-M1-DATAVIZ-VUE` : mêmes preuves ; events et provide/inject, pas de double émission.
-  - [ ] `GD-M1-DATAVIZ-ANGULAR` : rapatrier aussi le seam privé, remplacer `file:` DS par workspace, préserver les deux composants et exposer les absences de parité.
+  - [x] `GD-M1-PACKAGING` : dépendances workspace locales, lockfile, assets/CSS, workers ; adapter scripts smoke/release/OIDC pour six noms sans collision de publication.
+  - [x] `GD-M1-DATAVIZ-SVELTE` : source+tests+doc, peers/CSS ; résoudre `GeoMap`→`GeoChart`, builds/typecheck/SSR consommateur.
+  - [x] `GD-M1-DATAVIZ-REACT` : mêmes preuves ; hooks store/SSR/types, pas de core dupliqué.
+  - [x] `GD-M1-DATAVIZ-VUE` : mêmes preuves ; events et provide/inject, pas de double émission.
+  - [x] `GD-M1-DATAVIZ-ANGULAR` : rapatrier aussi le seam privé, remplacer `file:` DS par workspace, préserver les deux composants et exposer les absences de parité.
   - [x] Gate graph : suites `packages/graph/tests/*.test.ts`, golden Canvas2D/WebGL préflight séparés, `bench/buffers-bench.mjs` ; échecs environnement distingués.
   - [x] Gate core : `packages/dataviz-core/src/*.test.ts` sans cache/parallélisme de fichiers ; tsc sans emit puis build ; import tarball propre.
-  - [ ] Gate adapters : toutes suites source copiées, public imports + CSS compilés depuis tarballs, build/SSR des consommateurs représentatifs.
+  - [x] Gate adapters : toutes suites source copiées, public imports + CSS compilés depuis tarballs, build/SSR des consommateurs représentatifs.
 
 - [ ] **M2 — Fondations**
-  - [ ] `GD-M2-MODEL` : refs/profils/vues/occurrences/transactions ; fixtures schéma/révisions/inverse et cas rejetés.
+  - [ ] `GD-M2-MODEL` : refs/profils/vues/occurrences/transactions ; fixtures schéma/révisions/inverse et cas rejetés. Cadrage écrit : [SPEC_EVOL_GD_M2_MODEL.md](../spec/SPEC_EVOL_GD_M2_MODEL.md) (D1-A, D3-C appliquées ; paquet `@sentropic/diagram-core` privé).
   - [ ] `GD-M2-PROCESSING` : déplacer Barnes-Hut/hierarchy avec tests existants ; adapter registre et résultats riches avec compat PositionFrame. Cadrage écrit : [SPEC_EVOL_GD_M2_PROCESSING.md](../spec/SPEC_EVOL_GD_M2_PROCESSING.md) ; le calcul FA2 vit encore dans graphify (`src/graph-layout.ts`, `src/hierarchy-layout.ts`, `src/scene-layout.ts`), l'identifiant `force` du paquet publié n'étant qu'un passe-plat rendant un `Float32Array`.
   - [ ] `GD-M2-WORKERS` : snapshot/version/cancel/fallback/rejet périmé et résolution worker dans pack.
   - [ ] `GD-M2-DS-PRESENTATION` : convergence du rendu et des contrats contrôlés sans remonter le store dans les composants.
   - [ ] `GD-M2-CANVAS` : commandes de sélection/édition/ports/annotations ; preview/transaction/persistence séparés.
-  - [ ] `GD-M2-PARITY` et `GD-M2-THEMES` : quatre frameworks, a11y/IME/SSR et géométrie/token communes.
+  - [ ] `GD-M2-PARITY` et `GD-M2-THEMES` : quatre frameworks, a11y/IME/SSR et géométrie/token communes. Retard mesuré : `dataviz-angular` expose 2 adaptateurs contre ~110 en Svelte/React/Vue ; premier lot de 10 engagé avec extraction du patron de portage.
   - [ ] Gate : tests invariants, imports sans DOM, absence cycles, contrats multimoteurs, conflits révisions.
 
 - [ ] **M3 — Tranche complète**
