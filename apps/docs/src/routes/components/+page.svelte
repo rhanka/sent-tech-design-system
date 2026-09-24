@@ -34,20 +34,20 @@
       </h2>
       <p class="dataviz-banner-text">
         {#if locale.value === "fr"}
-          Les 119 composants pilotés par store des paquets
+          Les composants de graphiques et de BI pilotés par store des paquets
           <code>@sentropic/dataviz-*</code> (galerie interactive Svelte, React,
           Vue) sont présentés sur le site dédié du projet dataviz ; leur
           intégration à ce catalogue se fait par lots.
         {:else}
-          The 119 store-driven components of the
+          The store-driven chart and BI components of the
           <code>@sentropic/dataviz-*</code> packages (interactive Svelte,
           React, Vue gallery) are presented on the dedicated dataviz project
           site; their integration into this catalog ships in batches.
         {/if}
       </p>
       <p class="dataviz-banner-links">
-        <Link href="https://dataviz.sent-tech.ca" external
-          >{locale.value === "fr" ? "Ouvrir le site dataviz" : "Open the dataviz site"}</Link
+        <Link href="https://dataviz.sent-tech.ca/charts" external
+          >{locale.value === "fr" ? "Ouvrir la galerie de démonstrations dataviz" : "Open the dataviz demo gallery"}</Link
         >
         <Link href="https://github.com/rhanka/dataviz" external
           >{locale.value === "fr" ? "Dépôt dataviz sur GitHub" : "Dataviz repository on GitHub"}</Link
@@ -119,7 +119,7 @@
     font-weight: 650;
   }
 
-  :global(.dataviz-banner) {
+  :global(.st-card.dataviz-banner) {
     border-color: var(--st-semantic-border-strong);
     padding: 1.25rem 1.5rem;
   }
