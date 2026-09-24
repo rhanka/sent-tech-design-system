@@ -47,6 +47,15 @@ jobs:
       - name: Licensing gate (all publishable packages)
         run: npm run licensing:check
 
+      # The repatriated graph/dataviz files carry a provenance ledger: source
+      # repository, commit, blob and hash, plus a named status for every
+      # adaptation. It was verified by hand until now, so drift was silent —
+      # two manifest hashes had already gone stale under dependency bumps by
+      # the time this step was added. It runs here rather than in the shards
+      # because it reads the whole tree, not a workspace slice.
+      - name: Provenance ledger (repatriated graph/dataviz files)
+        run: node tools/graph-dataviz-provenance/verify.mjs
+
   plan:
     runs-on: ubuntu-latest
     outputs:

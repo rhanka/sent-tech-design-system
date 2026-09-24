@@ -1,3 +1,8 @@
+import type {
+  HierarchyAwareLayoutOptions,
+  HierarchyLayoutForest,
+} from "./processing/hierarchy-layout";
+
 export type NodeId = string;
 export type ColorInput = string | number | readonly [number, number, number] | readonly [number, number, number, number];
 export type EdgeDashMode = "solid" | "dashed" | "dotted" | "long-dash";
@@ -195,10 +200,36 @@ export interface PositionFrame extends PositionFrameMeta {
   positions: Float32Array;
 }
 
+export interface LayoutOutcome {
+  /** Node-order-keyed 2D positions (`2 * nodeCount` floats), the same shape `LayoutFn` returns. */
+  positions: Float32Array;
+  /** Node ids in the order `positions` follows (parallel to `RenderGraphBuffers.nodeIds`). */
+  nodes?: readonly NodeId[];
+  /** Cluster diagnostics (e.g. hierarchy forests + type groups), when the layout produces them. */
+  groups?: readonly { id: string; memberIndices: readonly number[] }[];
+  /** Port placements, when the layout produces them. Reserved; currently unset by every layout. */
+  ports?: readonly unknown[];
+  /** Constraints the layout satisfied, when the layout reports them. Reserved; currently unset. */
+  constraints?: readonly unknown[];
+  /**
+   * Origin → projection → result correspondence: `projectedIndex[i]` is the
+   * index into the layout's projected input list that produced output node `i`,
+   * and `resultIds` carries the projected ids in output order. Set by adapters
+   * that re-key results by id (see `processing/register.ts`).
+   */
+  inverse?: { readonly projectedIndex: readonly number[]; readonly resultIds: readonly string[] };
+}
+
 export interface LayoutOptions {
   repulsion?: number;
   theta?: number;
   iterations?: number;
+  /**
+   * Caller-provided seed. Honored by layouts that derive randomness from it;
+   * IGNORED by `"force-fa2"`, whose deterministic seed is derived internally
+   * from the sorted node ids (`stableSeed` + `mulberry32` in
+   * `processing/graph-layout.ts`) — see `processing/register.ts`.
+   */
   seed?: string | number;
   pinnedIds?: readonly NodeId[];
   pinMask?: Uint8Array;
@@ -244,6 +275,19 @@ export interface LayoutOptions {
    * layout. Optional & additive — absent ⇒ `"rank"`, the historical output.
    */
   xMode?: "rank" | "time";
+  /**
+   * Declared hierarchy forests keyed by hierarchy id, consumed ONLY by the
+   * `"hierarchy-aware"` layout (see `processing/register.ts`). A node joins a
+   * forest when its node id is a key of that forest's `nodes_by_id`.
+   * Optional & additive — absent (or with no usable forest) ⇒ the layout
+   * degrades to the `"force-fa2"` computation; ignored by every other layout.
+   */
+  hierarchies?: Record<string, HierarchyLayoutForest>;
+  /**
+   * Tuning forwarded to the `"hierarchy-aware"` layout. Optional & additive;
+   * ignored by every other layout.
+   */
+  hierarchyLayout?: HierarchyAwareLayoutOptions;
 }
 
 export interface LayoutEngine {
