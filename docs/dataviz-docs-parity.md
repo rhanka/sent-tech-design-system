@@ -267,11 +267,21 @@ Statut N-A : uniquement les utilitaires non-composants, exclus du décompte
 ## 6. Renvoi (livré)
 
 - Depuis le site DS : encart « Dataviz » sur la page catalogue
-  (`/components`) et la section composants de l'accueil, avec liens externes
-  `https://dataviz.sent-tech.ca/charts` (galerie de démonstrations) et
-  `https://github.com/rhanka/dataviz` (dépôt). Les pages `header` et
-  `app-chrome` mentionnaient déjà le domaine en prose, sans lien.
-- Depuis le site dataviz : à faire par un autre agent sur le dépôt dataviz.
+  (`/components`) et la section composants de l'accueil. Les deux pointent
+  vers les paquets publiés (`https://www.npmjs.com/package/@sentropic/dataviz-core`)
+  et vers les sources de ce dépôt
+  (`https://github.com/rhanka/sent-tech-design-system/tree/main/packages`).
+  Aucun lien ne pointe plus vers `dataviz.sent-tech.ca` : mesuré le 2026-09-24,
+  la racine répond 200 avec une page de renvoi vers
+  `design-system.sent-tech.ca/components`, et tout chemin profond répond
+  **404** en servant le même corps (`/charts`, `/charts/`,
+  `/charts/treemap`, et n'importe quelle URL inconnue) — GitHub Pages sert
+  son repli `404.html` avec le code 404, qu'un hébergeur statique ne peut pas
+  transformer en 301. Les pages `header` et `app-chrome` mentionnent encore
+  le domaine en prose, sans lien.
+- Depuis le site dataviz : livré en amont (dataviz #18) — la page de renvoi est
+  servie à la racine **et** comme repli 404, donc toute URL du domaine mène au
+  design system, avec et sans JavaScript.
 
 ## 7. Lots livrés et vérifications
 
