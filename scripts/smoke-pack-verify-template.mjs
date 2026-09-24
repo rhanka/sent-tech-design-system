@@ -199,6 +199,109 @@ async function verifyGraph() {
     return;
   }
   console.log("OK @sentropic/graph/processing: computeLayout + forceFa2Layout import verified");
+  await verifyGraphWorkerSubpaths();
+}
+
+// GD-M2-WORKERS: the worker entry and its client, imported FROM THE INSTALLED
+// TARBALL. This is the check the lot is most likely to need: a worker that
+// resolves from the workspace and not from the published package is the classic
+// way to ship this feature broken, and neither a source test nor a file-list
+// check can see it. Three things are verified here and nowhere else:
+//   1. both subpaths resolve through the manifest's `exports` and import for
+//      real out of a throwaway install with no workspace symlinks;
+//   2. `resolveLayoutWorkerUrl()` — which evaluates
+//      `new URL("./worker.js", import.meta.url)` inside the installed
+//      dist/layout-client.js — points at a file that actually exists in the
+//      install, i.e. dist/worker.js really is its sibling;
+//   3. the published worker entry COMPUTES: its exported handler is driven with
+//      a small request and the answer is checked for shape and length, so a
+//      tarball whose worker chunk was emitted empty or unbundled fails here.
+// The browser `Worker` constructor itself is NOT exercised: Node has no `Worker`
+// global (measured on 22.x), so constructing one is out of reach of this
+// harness. What the harness can prove is that the URL the constructor would be
+// handed resolves to real published code.
+async function verifyGraphWorkerSubpaths() {
+  const worker = await import("@sentropic/graph/worker");
+  if (typeof worker.handleLayoutRequest !== "function") {
+    fail("@sentropic/graph/worker", "missing handleLayoutRequest export (or not a function)");
+    return;
+  }
+  if (typeof worker.installLayoutWorker !== "function") {
+    fail("@sentropic/graph/worker", "missing installLayoutWorker export (or not a function)");
+    return;
+  }
+  const answer = worker.handleLayoutRequest({
+    snapshotId: "smoke",
+    version: 1,
+    nodes: [{ id: "a" }, { id: "b" }, { id: "c" }],
+    edges: [{ source: "a", target: "b" }, { source: "b", target: "c" }],
+    options: { iterations: 4 },
+  });
+  if (answer === undefined || answer.error !== undefined) {
+    fail("@sentropic/graph/worker", "handleLayoutRequest returned " + JSON.stringify(answer));
+    return;
+  }
+  if (!(answer.positions instanceof Float32Array) || answer.positions.length !== 6) {
+    fail(
+      "@sentropic/graph/worker",
+      "handleLayoutRequest positions must be a Float32Array of length 6, got " +
+        (answer.positions && answer.positions.constructor && answer.positions.constructor.name) +
+        " length " + (answer.positions && answer.positions.length),
+    );
+    return;
+  }
+  console.log("OK @sentropic/graph/worker: handleLayoutRequest computed 3 node positions");
+
+  const client = await import("@sentropic/graph/layout-client");
+  for (const name of ["createLayoutClient", "requestLayout", "resolveLayoutWorkerUrl"]) {
+    if (typeof client[name] !== "function") {
+      fail("@sentropic/graph/layout-client", "missing " + name + " export (or not a function)");
+      return;
+    }
+  }
+  if (typeof client.WORKER_NODE_THRESHOLD !== "number") {
+    fail("@sentropic/graph/layout-client", "WORKER_NODE_THRESHOLD must be a number");
+    return;
+  }
+  let workerUrl;
+  try {
+    workerUrl = client.resolveLayoutWorkerUrl();
+  } catch (error) {
+    fail("@sentropic/graph/layout-client", "resolveLayoutWorkerUrl threw: " + error.message);
+    return;
+  }
+  const workerPath = fileURLToPath(workerUrl);
+  if (!statSync(workerPath, { throwIfNoEntry: false })?.isFile()) {
+    fail(
+      "@sentropic/graph/layout-client",
+      "resolveLayoutWorkerUrl points at " + workerPath + ", which is not a file in the install",
+    );
+    return;
+  }
+  if (!readFileSync(workerPath, "utf8").includes("installLayoutWorker")) {
+    fail(
+      "@sentropic/graph/layout-client",
+      "the resolved worker file does not contain the worker entry's own code",
+    );
+    return;
+  }
+  // And the client itself works out of the tarball, through the synchronous
+  // fallback this host is bound to take.
+  const outcome = await client.createLayoutClient({ dispatch: "sync" }).request({
+    snapshotId: "smoke",
+    nodes: [{ id: "a" }, { id: "b" }, { id: "c" }],
+    edges: [{ source: "a", target: "b" }],
+    options: { iterations: 4 },
+  });
+  if (outcome.status !== "fulfilled" || outcome.positions.length !== 6) {
+    fail("@sentropic/graph/layout-client", "sync request returned " + JSON.stringify(outcome.status));
+    return;
+  }
+  console.log(
+    "OK @sentropic/graph/layout-client: worker URL resolves to " +
+      workerPath.split("/node_modules/").pop() +
+      ", sync request fulfilled",
+  );
 }
 
 async function verifyDatavizCore() {
