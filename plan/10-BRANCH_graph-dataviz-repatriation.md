@@ -46,7 +46,7 @@
 
 - [ ] **M2 — Fondations**
   - [ ] `GD-M2-MODEL` : refs/profils/vues/occurrences/transactions ; fixtures schéma/révisions/inverse et cas rejetés.
-  - [ ] `GD-M2-PROCESSING` : déplacer Barnes-Hut/hierarchy avec tests existants ; adapter registre et résultats riches avec compat PositionFrame.
+  - [ ] `GD-M2-PROCESSING` : déplacer Barnes-Hut/hierarchy avec tests existants ; adapter registre et résultats riches avec compat PositionFrame. Cadrage écrit : [SPEC_EVOL_GD_M2_PROCESSING.md](../spec/SPEC_EVOL_GD_M2_PROCESSING.md) ; le calcul FA2 vit encore dans graphify `8f19554c` (`src/graph-layout.ts`, `src/hierarchy-layout.ts`), l'identifiant `force` du paquet publié n'étant qu'un passe-plat.
   - [ ] `GD-M2-WORKERS` : snapshot/version/cancel/fallback/rejet périmé et résolution worker dans pack.
   - [ ] `GD-M2-DS-PRESENTATION` : convergence du rendu et des contrats contrôlés sans remonter le store dans les composants.
   - [ ] `GD-M2-CANVAS` : commandes de sélection/édition/ports/annotations ; preview/transaction/persistence séparés.
