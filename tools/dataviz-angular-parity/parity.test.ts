@@ -26,8 +26,13 @@ import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 import { diff, flatten, flattenHtml, textSignature } from './normalize.js';
+import { buildColumnRangeData, buildOhlcData, buildRenkoData } from '@sentropic/dataviz-core';
 import {
   activeFilters,
+  hierarchy,
+  newWideStore,
+  wideModel,
+  wideRows,
   dsHeatmapData,
   dsTreemapData,
   exportConfig,
@@ -58,6 +63,8 @@ type Case = {
   expectedSignatureDiffs: number;
   /** Where a non-zero markup diff comes from. */
   attribution: string;
+  /** Which fixture to mount: the lot 1 one by default, 'wide' for lot 2. */
+  fixture?: 'wide';
   /** Bare DS control: same inputs, no adapter. */
   control?: { ng: Type<unknown>; template: string; re: ComponentType<Props>; props: Props };
 };
@@ -89,8 +96,8 @@ const cases: Case[] = [
     template: `<st-dataviz-heatmap-chart [store]="store" viewId="revenue" x="service" y="region" measure="amount" label="Revenue heatmap"></st-dataviz-heatmap-chart>`,
     re: RE.HeatmapChart as ComponentType<Props>,
     props: { viewId: 'revenue', x: 'service', y: 'region', measure: 'amount', label: 'Revenue heatmap' },
-    expectedMarkupDiffs: 28,
-    expectedSignatureDiffs: 1,
+    expectedMarkupDiffs: 27,
+    expectedSignatureDiffs: 0,
     attribution: 'DS: components-angular vs components-react HeatmapChart',
     control: {
       ng: NGDS.HeatmapChart as Type<unknown>,
@@ -116,7 +123,7 @@ const cases: Case[] = [
     re: RE.TreemapChart as ComponentType<Props>,
     props: { viewId: 'revenue', hierarchy: ['region', 'service'], measure: 'amount', label: 'Revenue treemap' },
     expectedMarkupDiffs: 76,
-    expectedSignatureDiffs: 1,
+    expectedSignatureDiffs: 0,
     attribution: 'DS: components-angular vs components-react TreemapChart',
     control: {
       ng: NGDS.TreemapChart as Type<unknown>,
@@ -152,9 +159,9 @@ const cases: Case[] = [
     re: RE.SelectionLegend as ComponentType<Props>,
     props: { labels: { revenue: 'Service' } },
     select: true,
-    expectedMarkupDiffs: 8,
-    expectedSignatureDiffs: 5,
-    attribution: 'DS SelectionChip icon path + DS Inline takes no ARIA input',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
     control: {
       ng: NGDS.SelectionChip as Type<unknown>,
       template: `<st-selection-chip label="Service" [count]="1" [onClear]="noop"></st-selection-chip>`,
@@ -189,6 +196,244 @@ const cases: Case[] = [
       props: { label: 'Query', placeholder: 'Search rows' },
     },
   },
+  {
+    name: 'ChoroplethMap',
+    ng: NG.ChoroplethMap as Type<unknown>,
+    template: `<st-dataviz-choropleth-map [store]="store" viewId="v" region="region" measure="amount" geometry="shape" label="L" class="probe"></st-dataviz-choropleth-map>`,
+    re: RE.ChoroplethMap as ComponentType<Props>,
+    props: { viewId: 'v', region: 'region', measure: 'amount', geometry: 'shape', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'GeoClusterMap',
+    ng: NG.GeoClusterMap as Type<unknown>,
+    template: `<st-dataviz-geo-cluster-map [store]="store" viewId="v" latitude="lat" longitude="lon" label="L" class="probe"></st-dataviz-geo-cluster-map>`,
+    re: RE.GeoClusterMap as ComponentType<Props>,
+    props: { viewId: 'v', latitude: 'lat', longitude: 'lon', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'GeoDensityMap',
+    ng: NG.GeoDensityMap as Type<unknown>,
+    template: `<st-dataviz-geo-density-map [store]="store" viewId="v" latitude="lat" longitude="lon" label="L" class="probe"></st-dataviz-geo-density-map>`,
+    re: RE.GeoDensityMap as ComponentType<Props>,
+    props: { viewId: 'v', latitude: 'lat', longitude: 'lon', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'GeoFlowMap',
+    ng: NG.GeoFlowMap as Type<unknown>,
+    template: `<st-dataviz-geo-flow-map [store]="store" viewId="v" sourceLatitude="lat" sourceLongitude="lon" targetLatitude="dstLat" targetLongitude="dstLon" label="L" class="probe"></st-dataviz-geo-flow-map>`,
+    re: RE.GeoFlowMap as ComponentType<Props>,
+    props: { viewId: 'v', sourceLatitude: 'lat', sourceLongitude: 'lon', targetLatitude: 'dstLat', targetLongitude: 'dstLon', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'GeoHexbinMap',
+    ng: NG.GeoHexbinMap as Type<unknown>,
+    template: `<st-dataviz-geo-hexbin-map [store]="store" viewId="v" latitude="lat" longitude="lon" label="L" class="probe"></st-dataviz-geo-hexbin-map>`,
+    re: RE.GeoHexbinMap as ComponentType<Props>,
+    props: { viewId: 'v', latitude: 'lat', longitude: 'lon', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'GeoJsonMap',
+    ng: NG.GeoJsonMap as Type<unknown>,
+    template: `<st-dataviz-geo-json-map [store]="store" viewId="v" geometry="shape" label="L" class="probe"></st-dataviz-geo-json-map>`,
+    re: RE.GeoJsonMap as ComponentType<Props>,
+    props: { viewId: 'v', geometry: 'shape', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'GeoPointMap',
+    ng: NG.GeoPointMap as Type<unknown>,
+    template: `<st-dataviz-geo-point-map [store]="store" viewId="v" latitude="lat" longitude="lon" label="L" class="probe"></st-dataviz-geo-point-map>`,
+    re: RE.GeoPointMap as ComponentType<Props>,
+    props: { viewId: 'v', latitude: 'lat', longitude: 'lon', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'CandlestickChart',
+    ng: NG.CandlestickChart as Type<unknown>,
+    template: `<st-dataviz-candlestick-chart [store]="store" viewId="v" label_field="region" open="open" high="high" low="low" close="close" label="L" class="probe"></st-dataviz-candlestick-chart>`,
+    re: RE.CandlestickChart as ComponentType<Props>,
+    props: { viewId: 'v', label_field: 'region', open: 'open', high: 'high', low: 'low', close: 'close', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'HeikinAshiChart',
+    ng: NG.HeikinAshiChart as Type<unknown>,
+    template: `<st-dataviz-heikin-ashi-chart [store]="store" viewId="v" label_field="region" open="open" high="high" low="low" close="close" label="L" class="probe"></st-dataviz-heikin-ashi-chart>`,
+    re: RE.HeikinAshiChart as ComponentType<Props>,
+    props: { viewId: 'v', label_field: 'region', open: 'open', high: 'high', low: 'low', close: 'close', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'HollowCandlestickChart',
+    ng: NG.HollowCandlestickChart as Type<unknown>,
+    template: `<st-dataviz-hollow-candlestick-chart [store]="store" viewId="v" label_field="region" open="open" high="high" low="low" close="close" label="L" class="probe"></st-dataviz-hollow-candlestick-chart>`,
+    re: RE.HollowCandlestickChart as ComponentType<Props>,
+    props: { viewId: 'v', label_field: 'region', open: 'open', high: 'high', low: 'low', close: 'close', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'OHLCChart',
+    ng: NG.OHLCChart as Type<unknown>,
+    template: `<st-dataviz-ohlc-chart [store]="store" viewId="v" label_field="region" open="open" high="high" low="low" close="close" label="L" class="probe"></st-dataviz-ohlc-chart>`,
+    re: RE.OHLCChart as ComponentType<Props>,
+    props: { viewId: 'v', label_field: 'region', open: 'open', high: 'high', low: 'low', close: 'close', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 3,
+    expectedSignatureDiffs: 0,
+    attribution: "DS: Angular emits data-chart-index on each bar, React does not",
+    control: {
+      ng: NGDS.OHLCChart as Type<unknown>,
+      template: `<st-ohlc-chart [data]="controlData" label="L"></st-ohlc-chart>`,
+      re: REDS.OHLCChart as ComponentType<Props>,
+      props: { data: buildOhlcData(wideModel, wideRows, { label: 'region', open: 'open', high: 'high', low: 'low', close: 'close' }), label: 'L' },
+    },
+  },
+  {
+    name: 'HLCChart',
+    ng: NG.HLCChart as Type<unknown>,
+    template: `<st-dataviz-hlc-chart [store]="store" viewId="v" label_field="region" high="high" low="low" close="close" label="L" class="probe"></st-dataviz-hlc-chart>`,
+    re: RE.HLCChart as ComponentType<Props>,
+    props: { viewId: 'v', label_field: 'region', high: 'high', low: 'low', close: 'close', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'RenkoChart',
+    ng: NG.RenkoChart as Type<unknown>,
+    template: `<st-dataviz-renko-chart [store]="store" viewId="v" date="ts" close="close" label="L" class="probe"></st-dataviz-renko-chart>`,
+    re: RE.RenkoChart as ComponentType<Props>,
+    props: { viewId: 'v', date: 'ts', close: 'close', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 7,
+    expectedSignatureDiffs: 0,
+    attribution: "DS: Angular always renders the tooltip, React renders it only on hover",
+    control: {
+      ng: NGDS.RenkoChart as Type<unknown>,
+      template: `<st-renko-chart [data]="controlData" label="L"></st-renko-chart>`,
+      re: REDS.RenkoChart as ComponentType<Props>,
+      props: { data: buildRenkoData(wideModel, wideRows, { date: 'ts', close: 'close' }), label: 'L' },
+    },
+  },
+  {
+    name: 'AreaRangeChart',
+    ng: NG.AreaRangeChart as Type<unknown>,
+    template: `<st-dataviz-area-range-chart [store]="store" viewId="v" x_field="region" low="low" high="high" label="L" class="probe"></st-dataviz-area-range-chart>`,
+    re: RE.AreaRangeChart as ComponentType<Props>,
+    props: { viewId: 'v', x_field: 'region', low: 'low', high: 'high', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'AreaSplineRangeChart',
+    ng: NG.AreaSplineRangeChart as Type<unknown>,
+    template: `<st-dataviz-area-spline-range-chart [store]="store" viewId="v" x_field="region" low="low" high="high" label="L" class="probe"></st-dataviz-area-spline-range-chart>`,
+    re: RE.AreaSplineRangeChart as ComponentType<Props>,
+    props: { viewId: 'v', x_field: 'region', low: 'low', high: 'high', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'ColumnRangeChart',
+    ng: NG.ColumnRangeChart as Type<unknown>,
+    template: `<st-dataviz-column-range-chart [store]="store" viewId="v" category="region" low="low" high="high" label="L" class="probe"></st-dataviz-column-range-chart>`,
+    re: RE.ColumnRangeChart as ComponentType<Props>,
+    props: { viewId: 'v', category: 'region', low: 'low', high: 'high', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'DumbbellChart',
+    ng: NG.DumbbellChart as Type<unknown>,
+    template: `<st-dataviz-dumbbell-chart [store]="store" viewId="v" category="region" low="low" high="high" label="L" class="probe"></st-dataviz-dumbbell-chart>`,
+    re: RE.DumbbellChart as ComponentType<Props>,
+    props: { viewId: 'v', category: 'region', low: 'low', high: 'high', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 3,
+    expectedSignatureDiffs: 0,
+    attribution: "DS: Angular emits data-chart-index on each row, React does not",
+    control: {
+      ng: NGDS.DumbbellChart as Type<unknown>,
+      template: `<st-dumbbell-chart [data]="controlData" label="L"></st-dumbbell-chart>`,
+      re: REDS.DumbbellChart as ComponentType<Props>,
+      props: { data: buildColumnRangeData(wideModel, wideRows, { category: 'region', low: 'low', high: 'high' }), label: 'L' },
+    },
+  },
+  {
+    name: 'RoseChart',
+    ng: NG.RoseChart as Type<unknown>,
+    template: `<st-dataviz-rose-chart [store]="store" viewId="v" category="region" measure="amount" label="L" class="probe"></st-dataviz-rose-chart>`,
+    re: RE.RoseChart as ComponentType<Props>,
+    props: { viewId: 'v', category: 'region', measure: 'amount', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'SunburstChart',
+    ng: NG.SunburstChart as Type<unknown>,
+    template: `<st-dataviz-sunburst-chart [store]="store" viewId="v" [hierarchy]="hierarchy" measure="amount" label="L" class="probe"></st-dataviz-sunburst-chart>`,
+    re: RE.SunburstChart as ComponentType<Props>,
+    props: { viewId: 'v', hierarchy: hierarchy, measure: 'amount', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'PackedBubbleChart',
+    ng: NG.PackedBubbleChart as Type<unknown>,
+    template: `<st-dataviz-packed-bubble-chart [store]="store" viewId="v" category="region" measure="amount" label="L" class="probe"></st-dataviz-packed-bubble-chart>`,
+    re: RE.PackedBubbleChart as ComponentType<Props>,
+    props: { viewId: 'v', category: 'region', measure: 'amount', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
 ];
 
 type Row = {
@@ -202,7 +447,7 @@ type Row = {
 
 const table: Row[] = [];
 
-function renderAngular(component: Type<unknown>, template: string, store: unknown): Element {
+function renderAngular(component: Type<unknown>, template: string, store: unknown, controlData?: unknown): Element {
   class Host {
     readonly store = store;
     readonly filterControls = filterControls;
@@ -211,6 +456,8 @@ function renderAngular(component: Type<unknown>, template: string, store: unknow
     readonly dsHeatmapData = dsHeatmapData;
     readonly dsTreemapData = dsTreemapData;
     readonly noop = () => {};
+    readonly hierarchy = hierarchy;
+    readonly controlData = controlData;
   }
   Component({ standalone: true, imports: [component], template })(Host);
   const fixture = TestBed.createComponent(Host);
@@ -221,8 +468,9 @@ function renderAngular(component: Type<unknown>, template: string, store: unknow
 describe('dataviz-angular ↔ dataviz-react rendered-markup parity', () => {
   for (const testCase of cases) {
     it(`${testCase.name}: ${testCase.expectedMarkupDiffs} markup / ${testCase.expectedSignatureDiffs} signature differing entries`, () => {
-      const ngStore = newStore();
-      const reStore = newStore();
+      const make = testCase.fixture === 'wide' ? newWideStore : newStore;
+      const ngStore = make();
+      const reStore = make();
       if (testCase.select) {
         ngStore.toggleSelection('revenue', 'checkout');
         reStore.toggleSelection('revenue', 'checkout');
@@ -238,7 +486,9 @@ describe('dataviz-angular ↔ dataviz-react rendered-markup parity', () => {
 
       let controlDiffs: number | null = null;
       if (testCase.control) {
-        const controlNg = flatten(renderAngular(testCase.control.ng, testCase.control.template, ngStore));
+        const controlNg = flatten(
+          renderAngular(testCase.control.ng, testCase.control.template, ngStore, testCase.control.props.data),
+        );
         const controlRe = flattenHtml(
           renderToStaticMarkup(createElement(testCase.control.re, testCase.control.props)),
         );
@@ -254,6 +504,9 @@ describe('dataviz-angular ↔ dataviz-react rendered-markup parity', () => {
         attribution: testCase.attribution,
       });
 
+      // PARITY_RECORD=1 measures and writes the table without asserting, to
+      // seed the expected counts of a new lot. Never use it as the gate.
+      if (process.env.PARITY_RECORD) return;
       expect(signatureDiffs.length, signatureDiffs.join('\n')).toBe(testCase.expectedSignatureDiffs);
       expect(markupDiffs.length, markupDiffs.slice(0, 4).join('\n')).toBe(testCase.expectedMarkupDiffs);
     });
@@ -264,8 +517,17 @@ describe('dataviz-angular ↔ dataviz-react rendered-markup parity', () => {
     // bare DS components' diff count: nothing is added by the adapter.
     const heatmap = table.find((row) => row.name === 'HeatmapChart');
     const treemap = table.find((row) => row.name === 'TreemapChart');
-    expect(heatmap?.markup).toBe(heatmap?.control);
-    expect(treemap?.markup).toBe(treemap?.control);
+    if (!process.env.PARITY_RECORD) {
+      // Every case whose residue is attributed to the design system must show the
+      // SAME diff count as the bare DS component with identical inputs. Where the
+      // two differ, the adapter is adding something of its own.
+      const attributed = ['HeatmapChart', 'TreemapChart', 'OHLCChart', 'RenkoChart', 'DumbbellChart', 'SelectionLegend'];
+      for (const name of attributed) {
+        const row = table.find((entry) => entry.name === name);
+        expect(row, name).toBeDefined();
+        expect(row?.markup, name + ' vs its bare DS control').toBe(row?.control);
+      }
+    }
 
     const order = new Map(cases.map((c, i) => [c.name, i]));
     const rows = [...table].sort((a, b) => (order.get(a.name) ?? 0) - (order.get(b.name) ?? 0));

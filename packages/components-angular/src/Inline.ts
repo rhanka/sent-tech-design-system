@@ -14,6 +14,17 @@ export type InlineProps = {
   justify?: FlexJustify;
   wrap?: boolean;
   as?: string;
+  /**
+   * ARIA passthrough. The React and Vue Inline spread arbitrary HTML attributes
+   * onto the rendered element; Angular has no spread, so the attributes callers
+   * actually use on a layout primitive are declared explicitly. Without them a
+   * caller's `role`/`aria-label` lands on the `<st-inline>` host element instead
+   * of the `.st-inline` div the other frameworks decorate.
+   */
+  role?: string;
+  "aria-label"?: string;
+  "aria-labelledby"?: string;
+  "aria-describedby"?: string;
   class?: string;
 };
 
@@ -22,7 +33,15 @@ export type InlineProps = {
   standalone: true,
   imports: [NgStyle],
   template: `
-    <div [attr.data-st-component]="componentName" [class]="hostClass" [ngStyle]="inlineStyles">
+    <div
+      [attr.data-st-component]="componentName"
+      [class]="hostClass"
+      [ngStyle]="inlineStyles"
+      [attr.role]="role ?? null"
+      [attr.aria-label]="ariaLabel ?? null"
+      [attr.aria-labelledby]="ariaLabelledBy ?? null"
+      [attr.aria-describedby]="ariaDescribedBy ?? null"
+    >
       <ng-content></ng-content>
     </div>
   `,
@@ -35,6 +54,10 @@ export class Inline {
   @NgInput() justify?: FlexJustify;
   @NgInput() wrap?: boolean;
   @NgInput() as?: string;
+  @NgInput() role?: string;
+  @NgInput("aria-label") ariaLabel?: string;
+  @NgInput("aria-labelledby") ariaLabelledBy?: string;
+  @NgInput("aria-describedby") ariaDescribedBy?: string;
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
