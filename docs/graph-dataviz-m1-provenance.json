@@ -521,10 +521,10 @@
       "source": "packages/graph/tsconfig.json",
       "destination": "packages/graph/tsconfig.json",
       "gitBlob": "ffc176cb8b9250a923b8e6755a10ebb576686838",
-      "sha256": "5daee35d7f7195babb90a038f28b53cfc42d3a453b8b030c13ac49db1e743845",
+      "sha256": "f315ef783b7babbfb2fd3429d864f780d3b2a54c88a331ad715319aa6c69a24f",
       "status": "adapted-gd-m2-processing",
       "destinationSha256": "5daee35d7f7195babb90a038f28b53cfc42d3a453b8b030c13ac49db1e743845",
-      "note": "GD-M2-PROCESSING: noImplicitAny relaxed for the frozen upstream copies (upstream compiles strict:false); prior M1 source hash kept in sha256; noImplicitAny rationale extended with the measured line (graph-layout.ts:265) and with why a two-project split does not work: TypeScript follows imports past exclude"
+      "note": "GD-M2-PROCESSING: noImplicitAny relaxed for the frozen upstream copies (upstream compiles strict:false); prior M1 source hash kept in sha256; noImplicitAny rationale extended with the measured line (graph-layout.ts:265) and with why a two-project split does not work: TypeScript follows imports past exclude; the upstream hash was overwritten with the local one when this entry was refreshed in #77 and is restored here, measured from graphify 8f19554c"
     },
     {
       "repository": "graphify",
