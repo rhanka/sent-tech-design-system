@@ -1212,7 +1212,9 @@
       "destination": "packages/dataviz-core/src/index.ts",
       "gitBlob": "8b83d27e619c59aeeb930c0d2c6103a481b2c163",
       "sha256": "79ebf67482becc2f3812a7e732c339fbf6c6150592c200647bd5f12a64cc6104",
-      "status": "copied-byte-identical"
+      "status": "adapted-local-exports",
+      "destinationSha256": "4680a6b1cb4f8728c21934bfec3610882ce5b6cc80ffa8d841a4cc4f07018407",
+      "note": "PR #65 added the PriorityMatrix exports, including PriorityMatrixObstacle which the public options type references"
     },
     {
       "repository": "dataviz",
@@ -6768,6 +6770,24 @@
       "status": "local-monorepo-helper",
       "sha256": "473ca037cfcd0579b996421b26088fd9084b5b3571f3fb97fcfb9b4ed829f123",
       "note": "GD-M2-PROCESSING: monorepo-authored, no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-core/src/priorityMatrix.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "555143080df3c911a7108d9338dd1f638109fc3af71366f7516722b53e0bc157",
+      "note": "monorepo-authored in PR #65 (deterministic label placement for the PriorityMatrix), no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-core/src/priorityMatrix.test.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "e46a89c17d7d6ad4b905c694d9c4fa2026ce446e8dfbd8803ecb016f25cedf61",
+      "note": "monorepo-authored in PR #65, carries the golden vector shared with the four design system copies; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-core/bench/priority-matrix-measure.mjs",
+      "status": "local-monorepo-helper",
+      "sha256": "a4175a1d9a09761a011163772e8462eaa7e5ffc03f9a08be9199e2fdc35c3229",
+      "note": "monorepo-authored in PR #65, reproduces every figure the documentation page states; hash-pinned"
     }
   ]
 }
