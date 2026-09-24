@@ -45,7 +45,9 @@ describe("arcelorMittalTheme", () => {
     // Error red danger and near-black inverse surface.
     expect(css).toContain("--st-semantic-action-danger: #d13438;");
     expect(css).toContain("--st-semantic-surface-inverse: #151515;");
-    // ArcelorMittal brand font family (Gilroy, the corporate-site typeface).
-    expect(css).toContain("Gilroy");
+    // ArcelorMittal brand font families (Gilroy, the corporate-site typeface),
+    // pinned separately so a swap between body and display faces fails.
+    expect(css).toContain("Gilroy Standard");
+    expect(css).toContain("Gilroy Standard-SemiBold");
   });
 });
