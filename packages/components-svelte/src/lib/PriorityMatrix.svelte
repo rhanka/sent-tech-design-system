@@ -1,5 +1,5 @@
 <script lang="ts" module>
-  import { placePriorityLabels } from "@sentropic/dataviz-core";
+  import { placePriorityLabels, type PriorityMatrixObstacle } from "./priorityLabels.js";
 
   export type PriorityMatrixTone =
     | "category1" | "category2" | "category3" | "category4"
@@ -68,10 +68,45 @@
     return [value.slice(0, mid), value.slice(mid)];
   }
 
+  /**
+   * Fixed obstacles for the placement: keep-out bands around the two threshold
+   * lines plus one rectangle per quadrant name, in frame pixels. Estimated from
+   * the rendered geometry (11px names); a soft cost, not a hard exclusion.
+   */
+  function buildMatrixObstacles(
+    tx: number,
+    ty: number,
+    plotW: number,
+    plotH: number
+  ): PriorityMatrixObstacle[] {
+    const names = [
+      { x: MARGIN.left + 6, y: MARGIN.top + 14, anchor: "start" as const, text: QUADRANTS[0]!.name },
+      { x: MARGIN.left + plotW - 6, y: MARGIN.top + 14, anchor: "end" as const, text: QUADRANTS[1]!.name },
+      { x: MARGIN.left + 6, y: MARGIN.top + plotH - 8, anchor: "start" as const, text: QUADRANTS[2]!.name },
+      { x: MARGIN.left + plotW - 6, y: MARGIN.top + plotH - 8, anchor: "end" as const, text: QUADRANTS[3]!.name }
+    ];
+    const out: PriorityMatrixObstacle[] = [
+      { x: tx - 3, y: MARGIN.top, w: 6, h: plotH },
+      { x: MARGIN.left, y: ty - 3, w: plotW, h: 6 }
+    ];
+    for (const q of names) {
+      const w = [...q.text].length * 6.5 + 4;
+      out.push({ x: q.anchor === "start" ? q.x : q.x - w, y: q.y - 9, w, h: 12 });
+    }
+    return out;
+  }
+
+  /** Accessible coordinate text; non-finite values read as N/A, never NaN. */
+  function coordText(v: number): string {
+    return Number.isFinite(v) ? String(v) : "N/A";
+  }
+
   const plotW = $derived(Math.max(width - MARGIN.left - MARGIN.right, 1));
   const plotH = $derived(Math.max(height - MARGIN.top - MARGIN.bottom, 1));
-  const scaleX = $derived((v: number) => MARGIN.left + (Math.min(Math.max(v, 0), 100) / 100) * plotW);
-  const scaleY = $derived((v: number) => MARGIN.top + (1 - Math.min(Math.max(v, 0), 100) / 100) * plotH);
+  const scaleX = $derived((v: number) =>
+    Number.isFinite(v) ? MARGIN.left + (Math.min(Math.max(v, 0), 100) / 100) * plotW : MARGIN.left);
+  const scaleY = $derived((v: number) =>
+    Number.isFinite(v) ? MARGIN.top + (1 - Math.min(Math.max(v, 0), 100) / 100) * plotH : MARGIN.top);
   const tx = $derived(scaleX(xThreshold));
   const ty = $derived(scaleY(yThreshold));
 
@@ -109,13 +144,13 @@
       data.map((d) => ({ x: d.x, y: d.y, label: d.label })),
       boxes,
       { width, height, marginLeft: MARGIN.left, marginTop: MARGIN.top, plotWidth: plotW, plotHeight: plotH },
-      { xThreshold, yThreshold }
+      { xThreshold, yThreshold, obstacles: buildMatrixObstacles(tx, ty, plotW, plotH) }
     );
     return result.map((p) => ({ ...p, lines: boxes[p.index]!.lines as string[] }));
   });
 
   const dataValueItems = $derived(
-    data.map((d) => `${d.label} : complexité ${d.x}, valeur ${d.y}`)
+    data.map((d) => `${d.label} : complexité ${coordText(d.x)}, valeur ${coordText(d.y)}`)
   );
 
   const quadName = (id: string) => QUADRANTS.find((q) => q.id === id)?.name ?? id;

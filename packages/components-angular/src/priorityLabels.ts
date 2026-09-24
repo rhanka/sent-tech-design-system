@@ -1,4 +1,15 @@
 /**
+ * Internal priority-label placement for the DS PriorityMatrix component.
+ *
+ * STRUCTURAL TWIN of packages/dataviz-core/src/priorityMatrix.ts: same
+ * algorithm, same types, same behaviour. Duplicated (not imported) on purpose:
+ * the DS layer must not depend on @sentropic/dataviz-core, so this copy is
+ * kept in sync by hand. A shared golden-vector test pins all five copies to
+ * identical placements. Not exported from the package barrel (internal
+ * component use only).
+ */
+
+/**
  * Priority-matrix label placement (2x2 value/effort matrix).
  *
  * Pure TypeScript, no DOM. Given anchor points in frame pixels, label box

@@ -1,5 +1,5 @@
 import React from "react";
-import { placePriorityLabels } from "@sentropic/dataviz-core";
+import { placePriorityLabels, type PriorityMatrixObstacle } from "./priorityLabels.js";
 import { classNames } from "./classNames.js";
 import { ChartDataList } from "./chartScale.js";
 
@@ -67,6 +67,39 @@ function splitLabel(value: string): string[] {
   return [value.slice(0, mid), value.slice(mid)];
 }
 
+/**
+ * Fixed obstacles for the placement: keep-out bands around the two threshold
+ * lines plus one rectangle per quadrant name, in frame pixels. Estimated from
+ * the rendered geometry (11px names); a soft cost, not a hard exclusion.
+ */
+function buildMatrixObstacles(
+  tx: number,
+  ty: number,
+  plotW: number,
+  plotH: number,
+): PriorityMatrixObstacle[] {
+  const names: Array<{ x: number; y: number; anchor: "start" | "end"; text: string }> = [
+    { x: MARGIN.left + 6, y: MARGIN.top + 14, anchor: "start", text: QUADRANT_NAMES["quick-wins"]! },
+    { x: MARGIN.left + plotW - 6, y: MARGIN.top + 14, anchor: "end", text: QUADRANT_NAMES["major-projects"]! },
+    { x: MARGIN.left + 6, y: MARGIN.top + plotH - 8, anchor: "start", text: QUADRANT_NAMES.wait! },
+    { x: MARGIN.left + plotW - 6, y: MARGIN.top + plotH - 8, anchor: "end", text: QUADRANT_NAMES.drop! },
+  ];
+  const out: PriorityMatrixObstacle[] = [
+    { x: tx - 3, y: MARGIN.top, w: 6, h: plotH },
+    { x: MARGIN.left, y: ty - 3, w: plotW, h: 6 },
+  ];
+  for (const q of names) {
+    const w = [...q.text].length * 6.5 + 4;
+    out.push({ x: q.anchor === "start" ? q.x : q.x - w, y: q.y - 9, w, h: 12 });
+  }
+  return out;
+}
+
+/** Accessible coordinate text; non-finite values read as N/A, never NaN. */
+function coordText(v: number): string {
+  return Number.isFinite(v) ? String(v) : "N/A";
+}
+
 export function PriorityMatrix({
   data,
   title = "Matrice de priorisation",
@@ -83,8 +116,10 @@ export function PriorityMatrix({
 }: PriorityMatrixProps) {
   const plotW = Math.max(width - MARGIN.left - MARGIN.right, 1);
   const plotH = Math.max(height - MARGIN.top - MARGIN.bottom, 1);
-  const scaleX = (v: number) => MARGIN.left + (Math.min(Math.max(v, 0), 100) / 100) * plotW;
-  const scaleY = (v: number) => MARGIN.top + (1 - Math.min(Math.max(v, 0), 100) / 100) * plotH;
+  const scaleX = (v: number) =>
+    Number.isFinite(v) ? MARGIN.left + (Math.min(Math.max(v, 0), 100) / 100) * plotW : MARGIN.left;
+  const scaleY = (v: number) =>
+    Number.isFinite(v) ? MARGIN.top + (1 - Math.min(Math.max(v, 0), 100) / 100) * plotH : MARGIN.top;
   const tx = scaleX(xThreshold);
   const ty = scaleY(yThreshold);
 
@@ -109,19 +144,23 @@ export function PriorityMatrix({
     tone: (d.tone ?? TONES[i % TONES.length]) as PriorityMatrixTone,
   }));
 
-  const boxes = data.map((d) => {
-    const lines = splitLabel(d.label);
-    const longest = Math.max(...lines.map((l) => [...l].length));
-    return { w: Math.min(120, 12 + 7 * longest), h: lines.length > 1 ? 34 : 20, lines };
-  });
-  const placed = placePriorityLabels(
-    data.map((d) => ({ x: d.x, y: d.y, label: d.label })),
-    boxes,
-    { width, height, marginLeft: MARGIN.left, marginTop: MARGIN.top, plotWidth: plotW, plotHeight: plotH },
-    { xThreshold, yThreshold },
-  ).map((p) => ({ ...p, lines: boxes[p.index]!.lines as string[] }));
+  // Memoised: the annealing pass costs ~3ms at 13 points but ~37ms at 50,
+  // and must not rerun on every parent render.
+  const placed = React.useMemo(() => {
+    const boxes = data.map((d) => {
+      const lines = splitLabel(d.label);
+      const longest = Math.max(...lines.map((l) => [...l].length));
+      return { w: Math.min(120, 12 + 7 * longest), h: lines.length > 1 ? 34 : 20, lines };
+    });
+    return placePriorityLabels(
+      data.map((d) => ({ x: d.x, y: d.y, label: d.label })),
+      boxes,
+      { width, height, marginLeft: MARGIN.left, marginTop: MARGIN.top, plotWidth: plotW, plotHeight: plotH },
+      { xThreshold, yThreshold, obstacles: buildMatrixObstacles(tx, ty, plotW, plotH) },
+    ).map((p) => ({ ...p, lines: boxes[p.index]!.lines as string[] }));
+  }, [data, xThreshold, yThreshold, width, height]);
 
-  const dataValueItems = data.map((d) => `${d.label} : complexité ${d.x}, valeur ${d.y}`);
+  const dataValueItems = data.map((d) => `${d.label} : complexité ${coordText(d.x)}, valeur ${coordText(d.y)}`);
 
   return (
     <div {...rest} className={classNames("st-priorityMatrix", className)}>

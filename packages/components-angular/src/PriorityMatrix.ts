@@ -1,5 +1,6 @@
 import { Component, Input as NgInput } from "@angular/core";
-import { placePriorityLabels, type PriorityMatrixPlacement } from "@sentropic/dataviz-core";
+import type { OnChanges, OnInit, SimpleChanges } from "@angular/core";
+import { placePriorityLabels, type PriorityMatrixObstacle, type PriorityMatrixPlacement } from "./priorityLabels.js";
 
 import { classNames } from "./classNames.js";
 
@@ -67,6 +68,39 @@ function splitLabel(value: string): string[] {
   const space = value.lastIndexOf(" ", mid + 4);
   if (space > 2 && space < value.length - 2) return [value.slice(0, space), value.slice(space + 1)];
   return [value.slice(0, mid), value.slice(mid)];
+}
+
+/**
+ * Fixed obstacles for the placement: keep-out bands around the two threshold
+ * lines plus one rectangle per quadrant name, in frame pixels. Estimated from
+ * the rendered geometry (11px names); a soft cost, not a hard exclusion.
+ */
+function buildMatrixObstacles(
+  tx: number,
+  ty: number,
+  plotW: number,
+  plotH: number,
+): PriorityMatrixObstacle[] {
+  const names: Array<{ x: number; y: number; anchor: string; text: string }> = [
+    { x: MARGIN.left + 6, y: MARGIN.top + 14, anchor: "start", text: QUADRANT_NAMES["quick-wins"]! },
+    { x: MARGIN.left + plotW - 6, y: MARGIN.top + 14, anchor: "end", text: QUADRANT_NAMES["major-projects"]! },
+    { x: MARGIN.left + 6, y: MARGIN.top + plotH - 8, anchor: "start", text: QUADRANT_NAMES.wait! },
+    { x: MARGIN.left + plotW - 6, y: MARGIN.top + plotH - 8, anchor: "end", text: QUADRANT_NAMES.drop! },
+  ];
+  const out: PriorityMatrixObstacle[] = [
+    { x: tx - 3, y: MARGIN.top, w: 6, h: plotH },
+    { x: MARGIN.left, y: ty - 3, w: plotW, h: 6 },
+  ];
+  for (const q of names) {
+    const w = [...q.text].length * 6.5 + 4;
+    out.push({ x: q.anchor === "start" ? q.x : q.x - w, y: q.y - 9, w, h: 12 });
+  }
+  return out;
+}
+
+/** Accessible coordinate text; non-finite values read as N/A, never NaN. */
+function coordText(v: number): string {
+  return Number.isFinite(v) ? String(v) : "N/A";
 }
 
 type QuadRect = { id: string; x: number; y: number; w: number; h: number };
@@ -215,7 +249,7 @@ type PlacedLabel = PriorityMatrixPlacement & { lines: string[] };
     </div>
   `,
 })
-export class PriorityMatrix {
+export class PriorityMatrix implements OnInit, OnChanges {
   static readonly stComponentName = "PriorityMatrix";
   readonly componentName = "PriorityMatrix";
   readonly MARGIN = MARGIN;
@@ -278,11 +312,11 @@ export class PriorityMatrix {
   }
 
   tickX(v: number): number {
-    return MARGIN.left + (Math.min(Math.max(v, 0), 100) / 100) * this.plotW;
+    return Number.isFinite(v) ? MARGIN.left + (Math.min(Math.max(v, 0), 100) / 100) * this.plotW : MARGIN.left;
   }
 
   tickY(v: number): number {
-    return MARGIN.top + (1 - Math.min(Math.max(v, 0), 100) / 100) * this.plotH;
+    return Number.isFinite(v) ? MARGIN.top + (1 - Math.min(Math.max(v, 0), 100) / 100) * this.plotH : MARGIN.top;
   }
 
   get tx(): number {
@@ -335,13 +369,26 @@ export class PriorityMatrix {
     }));
   }
 
-  get placed(): PlacedLabel[] {
+  // Cached placement (ForceGraph precedent): the annealing pass costs ~3ms at
+  // 13 points but ~37ms at 50, and must not rerun on every change-detection
+  // cycle. Recomputed in ngOnInit/ngOnChanges only.
+  placed: PlacedLabel[] = [];
+
+  ngOnInit(): void {
+    this.refreshPlaced();
+  }
+
+  ngOnChanges(_changes: SimpleChanges): void {
+    this.refreshPlaced();
+  }
+
+  private refreshPlaced(): void {
     const boxes = this.safeData.map((d) => {
       const lines = splitLabel(d.label);
       const longest = Math.max(...lines.map((l) => [...l].length));
       return { w: Math.min(120, 12 + 7 * longest), h: lines.length > 1 ? 34 : 20, lines };
     });
-    return placePriorityLabels(
+    this.placed = placePriorityLabels(
       this.safeData.map((d) => ({ x: d.x, y: d.y, label: d.label })),
       boxes,
       {
@@ -352,11 +399,15 @@ export class PriorityMatrix {
         plotWidth: this.plotW,
         plotHeight: this.plotH,
       },
-      { xThreshold: this.xThresholdValue, yThreshold: this.yThresholdValue },
+      {
+        xThreshold: this.xThresholdValue,
+        yThreshold: this.yThresholdValue,
+        obstacles: buildMatrixObstacles(this.tx, this.ty, this.plotW, this.plotH),
+      },
     ).map((p) => ({ ...p, lines: boxes[p.index]!.lines as string[] }));
   }
 
   get dataValueItems(): string[] {
-    return this.safeData.map((d) => `${d.label} : complexité ${d.x}, valeur ${d.y}`);
+    return this.safeData.map((d) => `${d.label} : complexité ${coordText(d.x)}, valeur ${coordText(d.y)}`);
   }
 }
