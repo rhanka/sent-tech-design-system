@@ -35,13 +35,12 @@
       <p class="dataviz-banner-text">
         {#if locale.value === "fr"}
           Les composants de graphiques et de BI pilotés par store des paquets
-          <code>@sentropic/dataviz-*</code> sont développés et publiés depuis ce
-          dépôt ; leur intégration à ce catalogue se fait par lots.
+          <code>@sentropic/dataviz-*</code> sont développés dans ce dépôt ; leur
+          intégration à ce catalogue se fait par lots.
         {:else}
           The store-driven chart and BI components of the
-          <code>@sentropic/dataviz-*</code> packages are developed and published
-          from this repository; their integration into this catalog ships in
-          batches.
+          <code>@sentropic/dataviz-*</code> packages are developed in this
+          repository; their integration into this catalog ships in batches.
         {/if}
       </p>
       <p class="dataviz-banner-links">
