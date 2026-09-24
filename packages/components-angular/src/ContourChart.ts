@@ -194,7 +194,7 @@ function formatTickLabel(value: number): string {
         <span class="st-contourChart__legendText">High</span>
       </div>
 
-      <ul class="st-chartDataList" [attr.aria-label]="(label ?? 'contour') + ' data'">
+      <ul class="st-chartDataList" [attr.aria-label]="'Data values for ' + (label ?? 'contour')">
         <li *ngFor="let item of dataValueItems">{{ item }}</li>
       </ul>
 
