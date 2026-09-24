@@ -1,0 +1,40 @@
+{
+  "case": "revision-conflict",
+  "note": "A transaction built on revision 4 submitted against a state at revision 5. It is refused with the two revisions in the diagnostic details (expected = the state's, seen = the transaction's), so a host can present the conflict rather than guess a merge. The state is left untouched.",
+  "kind": "transaction",
+  "expect": { "codes": ["revision-conflict"] },
+  "state": {
+    "document": {
+      "documentId": "document:r8",
+      "schemaVersion": { "major": 1, "minor": 1 },
+      "revision": 5,
+      "profileRefs": ["generic@1"],
+      "typeDefinitions": {},
+      "entities": {
+        "entity:alpha": {
+          "id": "entity:alpha",
+          "profile": "generic@1",
+          "type": "node",
+          "attributes": { "name": { "kind": "text", "value": "Alpha" } }
+        }
+      },
+      "ports": {},
+      "relations": {},
+      "resources": {},
+      "extensions": []
+    },
+    "views": {}
+  },
+  "transaction": {
+    "commandId": "cmd:stale-write",
+    "baseRevision": 4,
+    "author": "fixture",
+    "commands": [
+      {
+        "kind": "update-entity-attributes",
+        "entity": "entity:alpha",
+        "attributes": { "name": { "kind": "text", "value": "Alpha renamed by a stale writer" } }
+      }
+    ]
+  }
+}

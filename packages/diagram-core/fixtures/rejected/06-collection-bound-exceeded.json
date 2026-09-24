@@ -1,0 +1,41 @@
+{
+  "case": "collection-bound-exceeded",
+  "note": "Nine items in a collection generic@1 bounds at eight. maxItems is REQUIRED on every collection schema: an unbounded list is how a typed schema degrades into a bag.",
+  "kind": "document",
+  "expect": { "codes": ["collection-bound-exceeded"] },
+  "document": {
+    "documentId": "document:r6",
+    "schemaVersion": { "major": 1, "minor": 1 },
+    "revision": 0,
+    "profileRefs": ["generic@1"],
+    "typeDefinitions": {},
+    "entities": {
+      "entity:alpha": {
+        "id": "entity:alpha",
+        "profile": "generic@1",
+        "type": "node",
+        "attributes": {
+          "name": { "kind": "text", "value": "Alpha" },
+          "tags": {
+            "kind": "collection",
+            "items": [
+              { "kind": "text", "value": "t1" },
+              { "kind": "text", "value": "t2" },
+              { "kind": "text", "value": "t3" },
+              { "kind": "text", "value": "t4" },
+              { "kind": "text", "value": "t5" },
+              { "kind": "text", "value": "t6" },
+              { "kind": "text", "value": "t7" },
+              { "kind": "text", "value": "t8" },
+              { "kind": "text", "value": "t9" }
+            ]
+          }
+        }
+      }
+    },
+    "ports": {},
+    "relations": {},
+    "resources": {},
+    "extensions": []
+  }
+}
