@@ -97,7 +97,30 @@ secondaryText,danger}`, `feedback{success,warning,error,info}`,
 **Step 4 — `component = createComponent(semantic, foundation)`.** Always.
 Never hand-written (section 10).
 
-**Tie-break when several hex candidates exist for one role:** (1) occurrence
+**Step 0.5 — Separate brand-owned rules from third-party blocks, BEFORE
+counting anything.** A brand stylesheet is mostly not the brand: it carries
+consent banners (`#__tealium*`, OneTrust, Didomi), carousels (`.swiper-*`,
+`.slick-*`), CMS defaults, and library resets. Classify every declaration
+first, by the namespace its selector belongs to: does the selector name the
+site's own components, or a vendor widget? Then discard the vendor blocks as
+ORIGINS. They may still be reported as context.
+
+A hex that appears **only** in vendor blocks is not a brand colour, however
+frequent it is, and giving it a brand role is a provenance defect — the most
+serious one possible here, because it dresses a consent-banner grey as a
+brand hairline. Counting before classifying inverts the whole procedure:
+frequency then measures how much boilerplate a bundle carries.
+
+Consequence to accept rather than work around: **some brands declare no
+colour at all in their own rules.** Their visible black is the user-agent
+default, not a published value. That is a legitimate measured finding, and
+the answer is to record it and mark the palette **derived**, never to promote
+a vendor hex to brand status to make the theme look measured. A theme whose
+raw palette is largely `à confirmer` with the absence documented is
+conforming; one that cites `#__tealiumGDPRecModal` as a brand source is not.
+
+**Tie-break when several hex candidates exist for one role**, applied only to
+what survived Step 0.5: (1) occurrence
 frequency wins — one occurrence is one declaration of that hex (a `--*`
 custom-property declaration, or a property value containing the hex, case
 normalised), counted over the union of the brand's official stylesheets
@@ -128,8 +151,16 @@ section 10).
 **Not sources:** a brand-colour aggregator (usable only as a cross-check,
 never as the origin of a value — cf. Renault, whose yellow is taken from
 `brand.renault.com` and only mirrored by aggregators), a screenshot, an
-"inspired-by" palette, the model's memory. Any value not from (a)–(d) is
-derived and must be flagged (section 6).
+"inspired-by" palette, the model's memory.
+
+**And not a source, however it is counted: a declaration from a third-party
+block inside the brand's own stylesheet** — consent banner, carousel, CMS
+default, library reset (Step 0.5). Excluding one vendor hex while keeping
+another from the same block is the internal contradiction to watch for: if a
+consent-banner green is excluded, the consent-banner grey from the same block
+is excluded too.
+
+Any value not from (a)–(d) is derived and must be flagged (section 6).
 
 ## 4. Package template
 
@@ -318,6 +349,19 @@ conductor's act, done once per lot (section 1).
    Tech base values), reuse the base values explicitly and mark the block
    `à confirmer`. State in `MAPPING.md` which of the two paths was taken.
 
+   **Third path, the one that actually happens: copying the reference
+   package.** Only `controlHeight` and `iconSize` match the base. The rest of
+   `density` (`paddingInline`, `paddingBlock`, `gap`, the extra `fontSize`
+   key), and `shadow.medium`/`shadow.floating`, `motion.easing`,
+   `disabledOpacity` and `transition`, differ from the base in both reference
+   packages — those are another brand's measured geometry. Copying them is
+   allowed, and it is NOT "reusing the Sentropic base": say
+   "aligned with the reference theme package's geometry" and mark it
+   `à confirmer`. Claiming the base while shipping the reference package's
+   values is a false provenance statement, and it has already been caught
+   twice. Check the claim against `packages/tokens/src/foundation.ts` before
+   writing it.
+
 ## 9. Accessibility floor
 
 Deterministic rule. Thresholds (WCAG 2.x): **4.5:1** for running text
@@ -347,6 +391,24 @@ keep H and S, subtract 0.05 from L per step, convert back to hex (nearest,
 lowercase), recompute the ratio against `surface.default` after each step,
 and keep the FIRST hex that reaches the threshold. Two builders following
 this rule obtain the same hex.
+
+**Record the chain, or the rule is unverifiable.** In `MAPPING.md`, every
+value produced this way carries: the starting measured hex and its ratio, the
+number of steps taken, and the resulting hex with its ratio. Without the
+starting hex a reviewer cannot replay the chain, and "first passing value"
+becomes an unfalsifiable claim. Two failures already caught: a package that
+took the fourth step when the third already passed, and announced a ratio
+matching no step at all; and a package whose greys pass their thresholds but
+whose chain cannot be replayed because no starting value was recorded. Stop at
+the FIRST pass — an extra step is a defect, not extra safety.
+
+**`semantic.surface.overlay` is the key most often shipped without
+provenance** — all three reviewed packages missed it. It is a colour like any
+other: either the brand publishes a modal backdrop (look for
+`.modal-overlay`, `.backdrop`, `.c-modal` and their `background-color`) and
+you transcribe it, or it is derived, flagged `à confirmer` inline, and given
+its own `MAPPING.md` row. A comment such as "brand near-black tint" names no
+source and is a defect under section 6.
 
 Brand colours in brand roles (fill, accent) are never altered: the brand
 hex stays, with readable text on top (dark `#0a160d` on Schneider Life
@@ -384,8 +446,28 @@ Cross-review is an adversarial pass by an agent other than the builder,
 cold: it re-reads the diff without justifying it. Verifiable checklist —
 fail the theme on any miss:
 
-- Every hex in `index.test.ts` is found in `index.ts`.
-- Every hex in `index.ts` has a row in `MAPPING.md`.
+- Every hex in `index.test.ts` is found in `index.ts`, and every font family
+  present in the compiled output is pinned by the test — not just the display
+  face. Compile the theme and list the families rather than trusting the test.
+- Every hex in `index.ts` has a row in `MAPPING.md`, including the `rgb()`
+  values (`surface.overlay` is the one that escapes).
+- **For every hex presented as measured, the cited occurrence is a
+  brand-owned rule.** Fetch the stylesheet and look at the block the selector
+  belongs to: a consent banner, a carousel, a CMS default or a library reset
+  is not the brand (section 2, Step 0.5). A hex living only in vendor blocks
+  and given a brand role is a blocking provenance defect.
+- **The cited selector really declares the cited property.** Grep the
+  stylesheet for the selector and confirm it carries that variable or that
+  value. Naming a neighbouring selector, or the block that consumes a variable
+  instead of the one that declares it, defeats the whole point of the
+  provenance rule.
+- **Every derived value carries BOTH the inline `à confirmer` marker and its
+  `MAPPING.md` row.** Listing it in the section while the code stays silent is
+  half the rule; count the inline markers against the reference packages if the
+  total looks low.
+- **Replay every stop-rule chain** from the recorded starting hex, and confirm
+  the value is the first passing step, not a later one, and that the announced
+  ratio matches.
 - `foundation` and `semantic` are compared key by key against
   `packages/tokens/src/foundation.ts` and
   `packages/tokens/src/semantic.ts`: every scalar sub-key and every one of
