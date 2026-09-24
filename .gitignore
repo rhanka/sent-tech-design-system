@@ -29,3 +29,6 @@ coverage/
 apps/docs/src/lib/compare/*.local.mjs
 apps/docs/src/lib/compare/compare-gaps.local.json
 apps/docs/static/compare-local/**
+
+# Chromium profiles created by the graph golden tests (WebGL oracle over CDP)
+.graphify-cdp-prof-*/

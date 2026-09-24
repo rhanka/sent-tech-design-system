@@ -187,6 +187,18 @@ async function verifyGraph() {
     return;
   }
   console.log("OK @sentropic/graph: buildRenderGraphBuffers import verified");
+  // GD-M2-PROCESSING: the DOM-free computation subpath, imported from the
+  // installed tarball (never the workspace source).
+  const processing = await import("@sentropic/graph/processing");
+  if (typeof processing.computeLayout !== "function") {
+    fail("@sentropic/graph/processing", "missing computeLayout export (or not a function)");
+    return;
+  }
+  if (typeof processing.forceFa2Layout !== "function") {
+    fail("@sentropic/graph/processing", "missing forceFa2Layout export (or not a function)");
+    return;
+  }
+  console.log("OK @sentropic/graph/processing: computeLayout + forceFa2Layout import verified");
 }
 
 async function verifyDatavizCore() {

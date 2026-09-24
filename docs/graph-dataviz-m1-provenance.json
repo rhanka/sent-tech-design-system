@@ -46,8 +46,9 @@
       "destination": "packages/graph/package.json",
       "gitBlob": "ace049eeddcc4467ac0e103cde9466d7eb0805aa",
       "sha256": "2e336ec40b2a4febb1b1cef53ca2e411fb6817fbb55ba9fe99ace6db83949092",
-      "status": "adapted-packaging-only",
-      "destinationSha256": "7cb13f69ac878bb85f72eb0ab18b4eb71978931e52b70523ae38e4daf30f9ab6"
+      "status": "adapted-gd-m2-processing",
+      "destinationSha256": "f447ea20f317fb34db690e060428a31a3265aa305eee559f256ad27035d51926",
+      "note": "GD-M2-PROCESSING: LayoutOutcome/toPositions/force-fa2/hierarchy-aware adaptation; prior M1 source hash kept in sha256"
     },
     {
       "repository": "graphify",
@@ -128,7 +129,9 @@
       "destination": "packages/graph/src/layout-registry.ts",
       "gitBlob": "e1d25b4befbedc9a4d44b43a896e1c7fd2deac03",
       "sha256": "448f4566041a7f6c42049198391d65135654a1977ea2aeb5d6eba6de70f10587",
-      "status": "copied-byte-identical"
+      "status": "adapted-gd-m2-processing",
+      "destinationSha256": "2b32f648c910235214b33c915075bc4f7c96d4befe596a76377e465578b36c7b",
+      "note": "GD-M2-PROCESSING: LayoutOutcome/toPositions/force-fa2/hierarchy-aware adaptation; prior M1 source hash kept in sha256"
     },
     {
       "repository": "graphify",
@@ -155,7 +158,9 @@
       "destination": "packages/graph/src/positions.ts",
       "gitBlob": "e549014bd3c56c5d40133a55b1d80fb942066296",
       "sha256": "d41c34a53d9a09e73ea1f5be19821ca47b22be3cc685163804b036e2315b6e38",
-      "status": "copied-byte-identical"
+      "status": "adapted-gd-m2-processing",
+      "destinationSha256": "b25bf4994c8b740e7ac2a3955412d7bcb3ce7502af78332c4f1dd383f0cad2dc",
+      "note": "GD-M2-PROCESSING: LayoutOutcome/toPositions/force-fa2/hierarchy-aware adaptation; prior M1 source hash kept in sha256"
     },
     {
       "repository": "graphify",
@@ -200,7 +205,9 @@
       "destination": "packages/graph/src/types.ts",
       "gitBlob": "01dfb76e0e500dcecca44d9a5ae158cf1c3c9e36",
       "sha256": "7585c7304db663b0ca37b4027dd31327dd22e384eb543fdf34982a196d676cf0",
-      "status": "copied-byte-identical"
+      "status": "adapted-gd-m2-processing",
+      "destinationSha256": "1b8a4878b69cdd98cd45fd6eb57b17bd99bfbd8276e7c2876ee8810d0f7ab0f9",
+      "note": "GD-M2-PROCESSING: LayoutOutcome/toPositions/force-fa2/hierarchy-aware adaptation; prior M1 source hash kept in sha256"
     },
     {
       "repository": "graphify",
@@ -515,8 +522,9 @@
       "destination": "packages/graph/tsconfig.json",
       "gitBlob": "ffc176cb8b9250a923b8e6755a10ebb576686838",
       "sha256": "f315ef783b7babbfb2fd3429d864f780d3b2a54c88a331ad715319aa6c69a24f",
-      "status": "adapted-packaging-only",
-      "destinationSha256": "316b0a48741c08fefc61b3473794d054164bfa0d060fded932b8221cfc31e9bb"
+      "status": "adapted-gd-m2-processing",
+      "destinationSha256": "d9b1fab00dc6097067d987a004b523afa13e09bca42da060095387cdc51b7ee4",
+      "note": "GD-M2-PROCESSING: noImplicitAny relaxed for the frozen upstream copies (upstream compiles strict:false); prior M1 source hash kept in sha256"
     },
     {
       "repository": "graphify",
@@ -525,7 +533,9 @@
       "destination": "packages/graph/tsup.config.ts",
       "gitBlob": "5668937bc0c0b7f36d4617558cb5f25dab49ff50",
       "sha256": "e48a39ba97e2d5593171f39d0f7f738c7340d793aaa3dbeb4f86186f74ecc272",
-      "status": "copied-byte-identical"
+      "status": "adapted-gd-m2-processing",
+      "destinationSha256": "5688db6288454b6e5fdb3afaf650fb56ce8477a9171dd1b07db92cabd06e72bf",
+      "note": "GD-M2-PROCESSING: LayoutOutcome/toPositions/force-fa2/hierarchy-aware adaptation; prior M1 source hash kept in sha256"
     },
     {
       "repository": "graphify",
@@ -534,7 +544,9 @@
       "destination": "packages/graph/vitest.config.ts",
       "gitBlob": "6a01365faf5073a5bda974bb40b05a4771aed03e",
       "sha256": "0fdd1271a3812c07ae93678d2b84dc7cbced8c055e530c75525aeddf50efd53c",
-      "status": "copied-byte-identical"
+      "status": "adapted-gd-m2-processing",
+      "destinationSha256": "68bf2c6294d07423c37e1ce399fadd42bd5d455fbaf4703a51ee2a7c7af6dc23",
+      "note": "GD-M2-PROCESSING: LayoutOutcome/toPositions/force-fa2/hierarchy-aware adaptation; prior M1 source hash kept in sha256"
     },
     {
       "repository": "graphify",
@@ -1841,8 +1853,8 @@
       "gitBlob": "0324f1612dd9a0405d50dddd2ba7e1c58a029f2d",
       "sha256": "97141365d0ab46106c6d894e5ede74c342efbf46b4771d9c9d6ba22b3dfc6777",
       "status": "adapted-packaging-only",
-      "destinationSha256": "1d525884e178661f60e772d64b04e57801f9b20ced68d490e49ccc8d760dd77f",
-      "note": "angular devDeps pinned to exact 21.2.17 (single runtime; ^ resolved a nested 21.2.23 breaking TestBed)"
+      "destinationSha256": "fbff8f6fa64246ac1db36ad46efc950d2b4b7aa345c52769f00d73159fc6fc51",
+      "note": "angular devDeps pinned to exact 21.2.17 (single runtime; ^ resolved a nested 21.2.23 breaking TestBed); @angular/* devDeps moved to exact 21.2.24 by #72 (single hoisted runtime, clears the i18n XSS advisory)"
     },
     {
       "repository": "dataviz",
@@ -3537,8 +3549,8 @@
       "gitBlob": "f32a53f263658fb563ecc81febd33693dfe3bc43",
       "sha256": "4de2b350a549668ad67d5972bdc237539dcbcc03e133e835eea3d47657bb0da8",
       "status": "adapted-packaging-only",
-      "destinationSha256": "b824fd3bb5314257efa98708c819822ab1ec727b8d016c13ffede3995945f3e0",
-      "note": "svelte devDep pinned to exact 5.55.7 (single runtime; ^ resolved a nested 5.57.1 breaking 60 tests)"
+      "destinationSha256": "addf3bef97b7bb38c5092c3bee7f9c7c9d76d576c16cc852cb8a5812e987e3e4",
+      "note": "svelte devDep pinned to exact 5.55.7 (single runtime; ^ resolved a nested 5.57.1 breaking 60 tests); vitest devDep range moved to ^4.1.11 by the security bump in #42"
     },
     {
       "repository": "dataviz",
@@ -6646,6 +6658,116 @@
     {
       "destination": "packages/dataviz-angular/LICENSE.THIRD-PARTY.md",
       "status": "generated-notices"
+    },
+    {
+      "repository": "graphify",
+      "commit": "a5ce7397e68b2e38a83778d24592c3d78b344102",
+      "source": "src/graph-layout.ts",
+      "destination": "packages/graph/src/processing/graph-layout.ts",
+      "gitBlob": "ce1bde16245fe85b8ce360ad0e93a54741c7645a",
+      "sha256": "7f75f50a6aeba6e3e6b04d818817eeb9f7644184a697dfc5f86d665277acb806",
+      "status": "copied-byte-identical",
+      "note": "GD-M2-PROCESSING: pinned to graphify origin/main (not 8f19554c). Spec section 2.1 claimed byte-identity with 8f19554c; measured drift at main: graph-layout.ts and scene-layout.ts read ENGRAM_* with GRAPHIFY_* fallback via src/env.ts, hierarchy-layout.ts renames one comment word. env.ts copied alongside because the main revisions import ./env.js."
+    },
+    {
+      "repository": "graphify",
+      "commit": "a5ce7397e68b2e38a83778d24592c3d78b344102",
+      "source": "src/hierarchy-layout.ts",
+      "destination": "packages/graph/src/processing/hierarchy-layout.ts",
+      "gitBlob": "04366ee1f07a7a00a54f18b9d7001d082e0853d8",
+      "sha256": "692bb0fbc6f424c24368cd06fd75cd49a490ef3ea29211789d7f44e4ab07d178",
+      "status": "copied-byte-identical",
+      "note": "GD-M2-PROCESSING: pinned to graphify origin/main (not 8f19554c). Spec section 2.1 claimed byte-identity with 8f19554c; measured drift at main: graph-layout.ts and scene-layout.ts read ENGRAM_* with GRAPHIFY_* fallback via src/env.ts, hierarchy-layout.ts renames one comment word. env.ts copied alongside because the main revisions import ./env.js."
+    },
+    {
+      "repository": "graphify",
+      "commit": "a5ce7397e68b2e38a83778d24592c3d78b344102",
+      "source": "src/scene-layout.ts",
+      "destination": "packages/graph/src/processing/scene-layout.ts",
+      "gitBlob": "42b204c805d7084c5c3afff8bb9c970e78ece675",
+      "sha256": "f72f2e8f3819408d6e6fd0b6ff009f4df695eb355c1add5e8b873a53b6a04f0a",
+      "status": "copied-byte-identical",
+      "note": "GD-M2-PROCESSING: pinned to graphify origin/main (not 8f19554c). Spec section 2.1 claimed byte-identity with 8f19554c; measured drift at main: graph-layout.ts and scene-layout.ts read ENGRAM_* with GRAPHIFY_* fallback via src/env.ts, hierarchy-layout.ts renames one comment word. env.ts copied alongside because the main revisions import ./env.js."
+    },
+    {
+      "repository": "graphify",
+      "commit": "a5ce7397e68b2e38a83778d24592c3d78b344102",
+      "source": "src/env.ts",
+      "destination": "packages/graph/src/processing/env.ts",
+      "gitBlob": "382bde1c1daf85841823af8dc21a75e060b2a550",
+      "sha256": "58a6951fb7e06a779c2702ebb7afaa1df86dc35a3e896552b57937624b362134",
+      "status": "copied-byte-identical",
+      "note": "GD-M2-PROCESSING: pinned to graphify origin/main (not 8f19554c). Spec section 2.1 claimed byte-identity with 8f19554c; measured drift at main: graph-layout.ts and scene-layout.ts read ENGRAM_* with GRAPHIFY_* fallback via src/env.ts, hierarchy-layout.ts renames one comment word. env.ts copied alongside because the main revisions import ./env.js."
+    },
+    {
+      "repository": "graphify",
+      "commit": "a5ce7397e68b2e38a83778d24592c3d78b344102",
+      "source": "tests/graph-layout.test.ts",
+      "destination": "packages/graph/tests/processing/graph-layout.test.ts",
+      "gitBlob": "4a882052c11a940328bf267a5e91c29f20c9decc",
+      "sha256": "48e80b648ce38861af2b65b6106b20ef50dcd00b8bc3d0ad11fed83f4a4b210b",
+      "status": "adapted-import-path-only",
+      "destinationSha256": "65a3087e95d836792af677b92d67deb4b397dd7256edfcf6e906529cdf072a3d",
+      "note": "GD-M2-PROCESSING: byte-identical to origin/main except the relative import specifiers (../src/*.js -> ../../src/processing/*.js) required by the target directory the spec names. Both suites are byte-identical between 8f19554c and main."
+    },
+    {
+      "repository": "graphify",
+      "commit": "a5ce7397e68b2e38a83778d24592c3d78b344102",
+      "source": "tests/scene-hierarchy-aware-layout.test.ts",
+      "destination": "packages/graph/tests/processing/scene-hierarchy-aware-layout.test.ts",
+      "gitBlob": "407f3476ecd894d63bfd31d0fbf6058fc9c05a49",
+      "sha256": "955085eebd11d3b7a522ab3c0456c052751021dec58ee85cd59fccce1d8feae2",
+      "status": "adapted-import-path-only",
+      "destinationSha256": "0b50e69a372358caa746c601c0c2dc7dcd50b912dc685f5a90dfda5162329bb8",
+      "note": "GD-M2-PROCESSING: byte-identical to origin/main except the relative import specifiers (../src/*.js -> ../../src/processing/*.js) required by the target directory the spec names. Both suites are byte-identical between 8f19554c and main."
+    },
+    {
+      "destination": "packages/graph/src/processing/register.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "c0b0251be52a601a7a5cff4f705d84a09d0b97f83c2ce5958b96a16a0b50e62e",
+      "note": "GD-M2-PROCESSING: monorepo-authored, no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/graph/src/processing/index.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "530bb2cad344b7e40c0a5dc4af29a415d7b50aa30056fd63d6caf37167c16561",
+      "note": "GD-M2-PROCESSING: monorepo-authored, no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/graph/tests/processing/register-adapter.test.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "691c0a5216d0dbc053cf9ff9ca16106df868c35e4ca82bd75ef7ef51c253e95f",
+      "note": "GD-M2-PROCESSING: monorepo-authored, no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/graph/tests/processing/registry-compat.test.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "ba1b88ea29a2c269366a75e6337bbeea0de102dfc5f0696f9282a90575d3144c",
+      "note": "GD-M2-PROCESSING: monorepo-authored, no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/graph/tests/processing/no-dom-or-renderer.test.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "0c52b4c63b48021f98df52be929fa84a4f1d8e73048a7ad4e25a32d1f048144e",
+      "note": "GD-M2-PROCESSING: monorepo-authored, no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/graph/tests/processing/root-exports.test.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "f2154ad93bfaf3c7f6e0c027613b4b6bf104296065d8299b6dbe341ea0946d40",
+      "note": "GD-M2-PROCESSING: monorepo-authored, no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/graph/tests/processing/root-exports.baseline.json",
+      "status": "local-monorepo-helper",
+      "sha256": "1e5ccb7321bceac458e0ad1153e0c00ce1294fb698180a557fef6390c257b1d3",
+      "note": "GD-M2-PROCESSING: monorepo-authored, no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/graph/tests/processing/determinism-child.mjs",
+      "status": "local-monorepo-helper",
+      "sha256": "473ca037cfcd0579b996421b26088fd9084b5b3571f3fb97fcfb9b4ed829f123",
+      "note": "GD-M2-PROCESSING: monorepo-authored, no upstream source; hash-pinned"
     }
   ]
 }

@@ -219,7 +219,18 @@ const packages = [
   },
   {
     name: "@sentropic/graph",
-    requiredFiles: ["dist/index.js", "dist/index.d.ts", "dist/index.cjs", "dist/index.d.cts"],
+    // GD-M2-PROCESSING: the DOM-free computation subpath ships alongside the
+    // root entry; both are required in the tarball.
+    requiredFiles: [
+      "dist/index.js",
+      "dist/index.d.ts",
+      "dist/index.cjs",
+      "dist/index.d.cts",
+      "dist/processing/index.js",
+      "dist/processing/index.d.ts",
+      "dist/processing/index.cjs",
+      "dist/processing/index.d.cts",
+    ],
   },
   {
     name: "@sentropic/dataviz-core",
