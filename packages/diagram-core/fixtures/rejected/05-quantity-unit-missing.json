@@ -1,0 +1,28 @@
+{
+  "case": "quantity-unit-missing",
+  "note": "A magnitude without its unit. A number alone is not a quantity, so the value is refused even though the attribute name and the value kind are both right.",
+  "kind": "document",
+  "expect": { "codes": ["quantity-unit-missing"] },
+  "document": {
+    "documentId": "document:r5",
+    "schemaVersion": { "major": 1, "minor": 1 },
+    "revision": 0,
+    "profileRefs": ["generic@1"],
+    "typeDefinitions": {},
+    "entities": {
+      "entity:alpha": {
+        "id": "entity:alpha",
+        "profile": "generic@1",
+        "type": "node",
+        "attributes": {
+          "name": { "kind": "text", "value": "Alpha" },
+          "duration": { "kind": "quantity", "value": 90 }
+        }
+      }
+    },
+    "ports": {},
+    "relations": {},
+    "resources": {},
+    "extensions": []
+  }
+}
