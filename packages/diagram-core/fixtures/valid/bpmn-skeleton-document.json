@@ -1,0 +1,98 @@
+{
+  "case": "bpmn-skeleton",
+  "note": "PARTIAL qualification fixture for the bpmn@1 SKELETON. It proves the declared types and arities validate through the same machinery; it proves NOTHING about BPMN conformance, and the profile's own notes list what is not declared.",
+  "kind": "document",
+  "document": {
+    "documentId": "document:bpmn-1",
+    "schemaVersion": { "major": 1, "minor": 1 },
+    "revision": 1,
+    "profileRefs": ["bpmn@1"],
+    "typeDefinitions": {},
+    "entities": {
+      "entity:process": {
+        "id": "entity:process",
+        "profile": "bpmn@1",
+        "type": "process",
+        "attributes": { "name": { "kind": "text", "value": "Order handling" } }
+      },
+      "entity:start": {
+        "id": "entity:start",
+        "profile": "bpmn@1",
+        "type": "event",
+        "attributes": {
+          "name": { "kind": "text", "value": "Order received" },
+          "position": { "kind": "enum", "value": "start" }
+        }
+      },
+      "entity:task": {
+        "id": "entity:task",
+        "profile": "bpmn@1",
+        "type": "task",
+        "attributes": { "name": { "kind": "text", "value": "Check stock" } }
+      },
+      "entity:gateway": {
+        "id": "entity:gateway",
+        "profile": "bpmn@1",
+        "type": "gateway",
+        "attributes": {
+          "name": { "kind": "text", "value": "In stock?" },
+          "gatewayKind": { "kind": "enum", "value": "exclusive" }
+        }
+      },
+      "entity:end": {
+        "id": "entity:end",
+        "profile": "bpmn@1",
+        "type": "event",
+        "attributes": {
+          "name": { "kind": "text", "value": "Order handled" },
+          "position": { "kind": "enum", "value": "end" }
+        }
+      }
+    },
+    "ports": {},
+    "relations": {
+      "relation:sf1": {
+        "id": "relation:sf1",
+        "profile": "bpmn@1",
+        "type": "sequenceFlow",
+        "endpoints": [
+          { "role": "source", "target": "entity:start" },
+          { "role": "target", "target": "entity:task" }
+        ],
+        "attributes": {}
+      },
+      "relation:sf2": {
+        "id": "relation:sf2",
+        "profile": "bpmn@1",
+        "type": "sequenceFlow",
+        "endpoints": [
+          { "role": "source", "target": "entity:task" },
+          { "role": "target", "target": "entity:gateway" }
+        ],
+        "attributes": { "default": { "kind": "boolean", "value": true } }
+      },
+      "relation:sf3": {
+        "id": "relation:sf3",
+        "profile": "bpmn@1",
+        "type": "sequenceFlow",
+        "endpoints": [
+          { "role": "source", "target": "entity:gateway" },
+          { "role": "target", "target": "entity:end" }
+        ],
+        "attributes": { "condition": { "kind": "text", "value": "stock > 0" } }
+      },
+      "relation:c1": {
+        "id": "relation:c1",
+        "profile": "bpmn@1",
+        "type": "flowElementContainment",
+        "endpoints": [
+          { "role": "parent", "target": "entity:process" },
+          { "role": "child", "target": "entity:task" }
+        ],
+        "attributes": {}
+      }
+    },
+    "resources": {},
+    "extensions": []
+  }
+}

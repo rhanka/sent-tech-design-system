@@ -1,0 +1,52 @@
+{
+  "case": "hierarchy-cycle",
+  "note": "generic@1 declares `contains` as a TREE, so a containment cycle is refused. Business cycles remain legal through `link` and `association`: only the declared hierarchy is acyclic (study invariant 3).",
+  "kind": "document",
+  "expect": { "codes": ["hierarchy-cycle"] },
+  "document": {
+    "documentId": "document:r3",
+    "schemaVersion": { "major": 1, "minor": 1 },
+    "revision": 0,
+    "profileRefs": ["generic@1"],
+    "typeDefinitions": {},
+    "entities": {
+      "entity:c1": {
+        "id": "entity:c1",
+        "profile": "generic@1",
+        "type": "container",
+        "attributes": { "name": { "kind": "text", "value": "First" } }
+      },
+      "entity:c2": {
+        "id": "entity:c2",
+        "profile": "generic@1",
+        "type": "container",
+        "attributes": { "name": { "kind": "text", "value": "Second" } }
+      }
+    },
+    "ports": {},
+    "relations": {
+      "relation:c1-c2": {
+        "id": "relation:c1-c2",
+        "profile": "generic@1",
+        "type": "contains",
+        "endpoints": [
+          { "role": "parent", "target": "entity:c1" },
+          { "role": "child", "target": "entity:c2" }
+        ],
+        "attributes": {}
+      },
+      "relation:c2-c1": {
+        "id": "relation:c2-c1",
+        "profile": "generic@1",
+        "type": "contains",
+        "endpoints": [
+          { "role": "parent", "target": "entity:c2" },
+          { "role": "child", "target": "entity:c1" }
+        ],
+        "attributes": {}
+      }
+    },
+    "resources": {},
+    "extensions": []
+  }
+}
