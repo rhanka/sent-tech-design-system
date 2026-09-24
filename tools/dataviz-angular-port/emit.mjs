@@ -44,6 +44,23 @@ function builderLines(d, indent) {
 }
 
 function assignment(d, field) {
+  // Several inputs read members of one derived model: keep the model in the field.
+  if (d.derive.multiMember) {
+    const inner = builderLines(d, 4);
+    inner[0] = '    this.' + field + ' = ' + d.derive.builder + '(';
+    inner[inner.length - 1] += ';';
+    return inner.join('\n');
+  }
+  // One member of a derived model feeds the input, optionally through a mapper.
+  if (d.derive.member) {
+    const inner = builderLines(d, 4);
+    inner[0] = '    const ' + d.derive.intermediate + ' = ' + d.derive.builder + '(';
+    inner[inner.length - 1] += ';';
+    const read = d.derive.intermediate + '.' + d.derive.member;
+    return inner
+      .concat(['    this.' + field + ' = ' + (d.derive.wrap ? d.derive.wrap + '(' + read + ')' : read) + ';'])
+      .join('\n');
+  }
   if (d.derive.asArray) {
     const inner = builderLines(d, 6);
     inner[inner.length - 1] += ',';
@@ -62,8 +79,14 @@ function assignment(d, field) {
 
 function emit(d) {
   const dsTypes = dsInputTypes(d.ds.name);
-  const derivedInput = d.bindings.find((b) => b.expr === d.derive.field).input;
-  const derivedType = dsTypes.get(derivedInput);
+  // With several members consumed, the field holds the model itself, and its type
+  // is the builder's return type — mechanical, and exact without knowing the model.
+  const derivedInput = d.derive.multiMember
+    ? null
+    : d.bindings.find((b) => b.expr === d.derive.field).input;
+  const derivedType = d.derive.multiMember
+    ? 'ReturnType<typeof ' + d.derive.builder + '>'
+    : dsTypes.get(derivedInput);
   if (!derivedType) throw new Error(d.name + ': no DS input type for ' + derivedInput);
   const isArray = derivedType.endsWith('[]');
   // A one-element list handed to a plural input reads better under that name.
