@@ -211,7 +211,7 @@ function computeLayout(data: OrganizationChartNode[], width: number, height: num
         </svg>
       </div>
 
-      <ul class="st-chartDataList" [attr.aria-label]="label + ' data'">
+      <ul class="st-chartDataList" [attr.aria-label]="'Data values for ' + label">
         @for (item of dataValueItems; track item) {
           <li>{{ item }}</li>
         }

@@ -97,7 +97,7 @@ const TONES: SunburstChartTone[] = [
         </svg>
       </div>
 
-      <ul class="st-chartDataList" [attr.aria-label]="label + ' data'">
+      <ul class="st-chartDataList" [attr.aria-label]="'Data values for ' + label">
         @for (item of leafItems; track item) {
           <li>{{ item }}</li>
         }

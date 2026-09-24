@@ -44,7 +44,7 @@ const MARGIN = { top: 16, right: 18, bottom: 36, left: 52 } as const;
         </svg>
       </div>
 
-      <ul class="st-chartDataList" [attr.aria-label]="(label ?? 'renko') + ' data'">
+      <ul class="st-chartDataList" [attr.aria-label]="'Data values for ' + (label ?? 'renko')">
         <li *ngFor="let item of dataValueItems">{{ item }}</li>
       </ul>
 
@@ -172,14 +172,19 @@ export class RenkoChart {
   }
 
   get dataValueItems(): string[] {
-    return this.columns.map((column) => `${column.direction === "up" ? "UP" : "DOWN"} ${formatTick(column.brick.bottom)} -> ${formatTick(column.brick.top)}`);
+    // Same glyphs and arrow as the React counterpart, so the accessible value
+    // list reads identically across frameworks.
+    return this.columns.map(
+      (column) =>
+        `${column.direction === "up" ? "▲" : "▼"} ${formatTick(column.brick.bottom)} → ${formatTick(column.brick.top)}`,
+    );
   }
 
   get hoveredColumn(): RenkoColumn | null { return this.hoveredKey === null ? null : this.columns.find((column) => column.key === this.hoveredKey) ?? null; }
   get tooltipLeft(): string { const column = this.hoveredColumn; return column ? `${(column.cx / this.resolvedWidth) * 100}%` : "0"; }
   get tooltipTop(): string { const column = this.hoveredColumn; return column ? `${(column.cy / this.resolvedHeight) * 100}%` : "0"; }
-  get tooltipLabel(): string { const column = this.hoveredColumn; return column ? (column.direction === "up" ? "UP" : "DOWN") : ""; }
-  get tooltipValue(): string { const column = this.hoveredColumn; return column ? `${formatTick(column.brick.bottom)} -> ${formatTick(column.brick.top)}` : ""; }
+  get tooltipLabel(): string { const column = this.hoveredColumn; return column ? (column.direction === "up" ? "▲" : "▼") : ""; }
+  get tooltipValue(): string { const column = this.hoveredColumn; return column ? `${formatTick(column.brick.bottom)} → ${formatTick(column.brick.top)}` : ""; }
 
   handlePointerMove(event: PointerEvent): void { const target = event.target; this.hoveredKey = target instanceof Element ? target.getAttribute("data-chart-key") : null; }
   handleLeave(): void { this.hoveredKey = null; }
