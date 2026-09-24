@@ -47,9 +47,16 @@ Créer `packages/diagram-core` (`@sentropic/diagram-core`, version `0.1.0`, `"pr
 
 ### 3.2 Références (cinq types non interchangeables)
 
-`EntityRef`, `OccurrenceRef`, `PortRef`, `ViewRef`, `ResourceRef` : types nominaux distincts (marque de type),
-non assignables entre eux, chacun avec son namespace d'identité. Une fonction qui attend une occurrence ne
-doit pas accepter une entité, à la compilation comme à l'exécution (garde de forme + diagnostic).
+`EntityRef`, `OccurrenceRef`, `PortRef`, `ViewRef`, `ResourceRef`, `RelationRef` et `DocumentRef` :
+types nominaux distincts (marque de type), non assignables entre eux, chacun avec son namespace d'identité.
+Une fonction qui attend une occurrence ne doit pas accepter une entité, à la compilation comme à
+l'exécution (garde de forme + diagnostic).
+
+Les deux derniers manquaient à la première version de ce cadrage, qui n'en nommait que cinq alors que le
+§3.4 en exige sept : `ViewDocument.semanticDocumentId` pointe vers un **document**, qui n'est ni une vue ni
+une entité, et une occurrence de **relation** pointe vers une relation, qui n'est pas une entité. Typer ces
+deux champs avec l'une des cinq aurait été exactement le mésusage que ce paragraphe interdit. La lacune a
+été relevée par l'implémentation (#85), qui livre les sept et le déclare au lieu de le glisser en douce.
 
 ### 3.3 Document sémantique et profils versionnés (D1-A)
 
