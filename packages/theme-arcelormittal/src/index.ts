@@ -31,7 +31,7 @@ import type { TenantTheme } from "@sentropic/design-system-themes";
  *   Gradient purple                    #840d81   (accent / data)
  *   Dialog slate-blue                  #5c7f92   (map / modal surface)
  *   Section blue                       #0070c0   (info)
- *   Muted grey                         #646464   (derived via the stop rule — à confirmer)
+ *   Muted grey                         #717171   (stop-rule step 3 from #979797, 4.88:1 — à confirmer)
  *   Success green                      #2f9e44   (derived — à confirmer)
  *   Warning amber                      #e8890c   (derived — à confirmer)
  *   Error red                          #d13438   (derived — à confirmer)
@@ -75,7 +75,7 @@ const arcelorMittalColor = {
     200: "#979797", // key-figure / calendar card borders (16 declarations)
     300: "#001626", // press-release list rules (6 declarations)
     500: "#4c4c4c", // logo wordmark fill + tag text (3 declarations)
-    600: "#646464", // derived muted grey via the stop rule (à confirmer)
+    600: "#717171", // derived muted grey: #979797 (2.92:1) fails AA as text; stop-rule step 3 of 3, first hex reaching 4.5:1 on white (4.88:1) — à confirmer
     800: "#2a2a2a", // body text color (25 declarations)
     900: "#151515" // header / nav near-black text (15 declarations)
   },
@@ -126,10 +126,11 @@ const foundation = {
       info: arcelorMittalColor.system.info
     }
   },
-  // ArcelorMittal's brand typeface is Gilroy: `Gilroy Standard` for body and
-  // `Gilroy Standard-SemiBold` for headings and interactive labels (37+
-  // declarations in main.css). mono is the system stack. We reference the
-  // font *names* only, not binaries.
+  // ArcelorMittal's brand typeface is Gilroy: `Gilroy Standard` for body (43
+  // declarations: 42 usages + 1 @font-face) and `Gilroy Standard-SemiBold`
+  // for headings and interactive labels (18 declarations: 17 usages + 1
+  // @font-face). mono is the system stack. We reference the font *names*
+  // only, never binaries.
   font: {
     sans: "'Gilroy Standard', Arial, Helvetica, sans-serif",
     display: "'Gilroy Standard-SemiBold', Arial, Helvetica, sans-serif",
@@ -159,20 +160,23 @@ const foundation = {
     lg: "0.5rem", // 8px — cards (à confirmer)
     pill: "999px" // dots / pills
   },
-  // Light, neutral elevation tinted with the brand near-black. Exact specs
-  // "à confirmer".
+  // Light, neutral elevation tinted with the brand near-black. The geometry
+  // is aligned with the reference theme package (not the Sentropic base:
+  // base medium is `0 8px 24px rgb(15 23 42 / 0.12)`), tint adapted to the
+  // brand near-black — à confirmer.
   shadow: {
     subtle: "0 1px 2px rgb(21 21 21 / 0.10)",
-    medium: "0 4px 12px rgb(21 21 21 / 0.14)",
-    floating: "0 8px 24px rgb(21 21 21 / 0.18)"
+    medium: "0 4px 12px rgb(21 21 21 / 0.14)", // reference-package geometry, brand tint (à confirmer)
+    floating: "0 8px 24px rgb(21 21 21 / 0.18)" // reference-package geometry, brand tint (à confirmer)
   },
-  // Motion durations are not tokenised by the brand stylesheet publicly; kept
-  // aligned with the Sentropic base ("à confirmer").
+  // Motion durations match the Sentropic base; the easing
+  // (`cubic-bezier(0.4, 0, 0.2, 1)`, against the `cubic-bezier(0.16, 1, 0.3, 1)`
+  // base) is aligned with the reference theme package — à confirmer.
   motion: {
     fast: "120ms",
     normal: "180ms",
     slow: "280ms",
-    easing: "cubic-bezier(0.4, 0, 0.2, 1)"
+    easing: "cubic-bezier(0.4, 0, 0.2, 1)" // reference-package easing, not the base (à confirmer)
   },
   // z-index roles are not brand-specific; kept aligned with the Sentropic base.
   z: {
@@ -189,19 +193,32 @@ const foundation = {
     thick: "2px" // multiselect bottom stroke 2px
   },
   borderStyle: { solid: "solid" },
-  // Control density. The brand publishes no site-wide control geometry (the
-  // calculator widget's 60px inputs are widget-specific), so the Sentropic
-  // base values are reused explicitly ("à confirmer").
+  // Control density. Only `controlHeight` (2rem/2.5rem/3rem) and `iconSize`
+  // (1rem/1.125rem/1.25rem) are the Sentropic base values, reused explicitly.
+  // The remaining geometry (insets, gaps, label sizes) is aligned with the
+  // reference theme package (à confirmer): the brand publishes no site-wide
+  // control geometry. Its real published geometries are widget-specific —
+  // `.calculator-tool .tabs-head__title{min-height:45px}`,
+  // `.calculator-tool .dropdown__native{height:50px}`,
+  // `.calculator-tool .form-group input{...padding:18px 31px}` — and the brand
+  // button (`.primary-link{padding:23px 85px 23px 30px;width:100%}`) is a
+  // full-width marketing CTA with an asymmetric icon gutter, so neither is
+  // transposed to the site-wide density. `radius.lg` below is likewise the
+  // base value, reused explicitly.
   density: {
     sm: { controlHeight: "2rem", paddingBlock: "0", paddingInline: "0.5rem", gap: "0.5rem", minWidth: "2rem", fontSize: "0.875rem" },
     md: { controlHeight: "2.5rem", paddingBlock: "0.375rem", paddingInline: "0.75rem", gap: "0.5rem", minWidth: "2.5rem", fontSize: "1rem" },
     lg: { controlHeight: "3rem", paddingBlock: "0", paddingInline: "1rem", gap: "0.5rem", minWidth: "3rem", fontSize: "1.125rem" }
   },
   // ArcelorMittal typography: Gilroy Standard for interactive/fields, Gilroy
-  // Standard-SemiBold for display and labels. Buttons render uppercase in the
-  // brand (solid orange buttons carry `text-transform:uppercase`).
+  // Standard-SemiBold for display and labels. The only measured uppercase is
+  // the orange tag (`.spotify__content .tag span{...text-transform:uppercase}`
+  // in main.css — the other uppercase rule is third-party VideoJS, excluded);
+  // no button rule (`.primary-link`, `.primary-link--dark`, `.share__toggle`)
+  // publishes uppercase, so controls stay `none` and the tag citation carries
+  // `badge.textTransform` instead.
   typography: {
-    control: { family: "'Gilroy Standard-SemiBold', Arial, Helvetica, sans-serif", size: "1rem", weight: "600", lineHeight: "1.5", letterSpacing: "0", textTransform: "uppercase", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
+    control: { family: "'Gilroy Standard-SemiBold', Arial, Helvetica, sans-serif", size: "1rem", weight: "600", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
     field: { family: "'Gilroy Standard', Arial, Helvetica, sans-serif", size: "1rem", weight: "400", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
     label: { family: "'Gilroy Standard-SemiBold', Arial, Helvetica, sans-serif", size: "1rem", weight: "600", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
     // Brand links are the pressed orange #d92f00 (AA-legible), underlined at
@@ -212,13 +229,18 @@ const foundation = {
       textDecorationHover: "underline", decorationThicknessHover: "2px", decorationOffsetHover: "2px"
     }
   },
-  disabledOpacity: "0.5", // disabled controls dim to 0.5 (à confirmer)
+  disabledOpacity: "0.5", // reference-package value (Sentropic base is 0.55) — à confirmer
+  // Interaction transition, aligned with the reference theme package — not the
+  // Sentropic base (`background-color, border-color, color, box-shadow, outline-color` /
+  // `120ms` / `cubic-bezier(0.16, 1, 0.3, 1)`) — à confirmer.
   transition: { property: "background-color, border-color, color, box-shadow", duration: "150ms", easing: "ease-in-out" },
   cursor: { interactive: "pointer", disabled: "not-allowed", text: "text" },
   iconSize: { sm: "1rem", md: "1.125rem", lg: "1.25rem" },
-  // FOCUS = a high-contrast OUTLINE in the brand orange. No focus technique is
-  // published in main.css (only `outline:none` resets), so the technique is
-  // derived (à confirmer); the colour clears the 3:1 line threshold (3.62:1).
+  // FOCUS = a high-contrast OUTLINE in the brand orange. The technique is
+  // derived (à confirmer); the colour is supported by the brand's own focus
+  // treatment (`.article-breadcrumb .breadcrumb__link:focus{color:#ff3700}`
+  // in main.css) and clears the 3:1 line threshold (3.62:1). The only other
+  // focus rule in main.css is the `button:-moz-focusring` reset remnant.
   focus: {
     strategy: "outline",
     width: "2px",
@@ -348,7 +370,7 @@ const foundation = {
     fontSize: "0.875rem", // 14px
     fontWeight: "600",
     lineHeight: "1.5rem", // 24px
-    textTransform: "uppercase",
+    textTransform: "uppercase", // measured orange tag (.spotify__content .tag span{...text-transform:uppercase} in main.css)
     minHeight: "1.5rem", // 24px
     infoBackground: arcelorMittalColor.orange.primary, // #ff3700
     infoText: "#ffffff" // white on the brand orange (brand pairing)
@@ -382,12 +404,12 @@ const semantic = {
     subtle: arcelorMittalColor.slate[50], // #e6eaef disabled-input fill
     raised: arcelorMittalColor.slate[0], // white
     inverse: arcelorMittalColor.slate[900], // #151515 header near-black
-    overlay: "rgb(21 21 21 / 0.6)" // modal backdrop (brand near-black tint)
+    overlay: "rgb(0 0 0 / 0.6)" // measured modal backdrop (.is-active .modal-overlay{background-color:rgba(0,0,0,.6)} in main.css)
   },
   text: {
     primary: arcelorMittalColor.slate[800], // #2a2a2a (body color)
     secondary: arcelorMittalColor.slate[500], // #4c4c4c (logo wordmark, 8.59:1)
-    muted: arcelorMittalColor.slate[600], // #646464 derived via the stop rule (à confirmer)
+    muted: arcelorMittalColor.slate[600], // #717171 (stop rule: #979797 at 2.92:1 → step 3, 4.88:1) — à confirmer
     inverse: arcelorMittalColor.slate[0], // white on dark / coloured surfaces
     link: arcelorMittalColor.orange.hover // #d92f00 legible orange link (4.82:1)
   },
