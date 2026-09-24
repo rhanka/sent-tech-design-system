@@ -1845,7 +1845,7 @@
       "gitBlob": "e25344a224d2ce3597755e67e0d577d0f89337ff",
       "sha256": "459a37c73d6a7661073bca9b6ba8cafb3e0cae58c34248f079c8ea341e2fb9b1",
       "status": "adapted-angular-publication",
-      "destinationSha256": "4b0317ea8ca3febd3748278d95c59cd46c41ca7ca0d1623bda2c8242ef1ac5a3",
+      "destinationSha256": "6ea75ab1ef9b9707e85b1d9cebe8c2ec7b4bf295d25fa22617d06a231e223372",
       "note": "PR #76 documents the ten ported adapters and points at PATTERN.md"
     },
     {
@@ -6834,7 +6834,7 @@
     {
       "destination": "packages/dataviz-angular/PATTERN.md",
       "status": "local-monorepo-helper",
-      "sha256": "37c73de8a729e05a974eadab5b919dcf6b32905810c4b8296a9a7dd3f969f857",
+      "sha256": "ec63745985a91f3d8a995cf8e32384d40359b60c2c502fd9e1e95c499302c1bd",
       "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned"
     },
     {
