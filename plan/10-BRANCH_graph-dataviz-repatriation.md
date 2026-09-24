@@ -21,6 +21,12 @@
 - [x] Allowed M1 initial : `packages/graph/**`, `packages/dataviz-core/**`, `package.json`, `package-lock.json` ; runtime source conservé, configuration packaging minimale.
 - [x] Conditional M1 suivant : `packages/dataviz-{svelte,react,vue,angular}/**`, scripts/CI packaging nécessaires après compatibilité GeoChart et tests.
 - [x] Forbidden : `.astra-inputs/**` au staging, autres checkouts en écriture, journaux/hashes manuels, Makefile/Docker/cursor, changements produit non liés.
+- [x] Widened for the GD-M2-PROCESSING implementation (same commit, SPEC_EVOL_GD_M2_PROCESSING §4.1) :
+  `spec/SPEC_EVOL_GD_M2_PROCESSING.md` (framing only, already on `main`),
+  `tools/graph-dataviz-provenance/**` (provenance reads only — `verify.mjs` unchanged),
+  `scripts/smoke-pack.mjs` + `scripts/smoke-pack-verify-template.mjs` (cover the new
+  `@sentropic/graph/processing` subpath from the tarball, SPEC §4.2). Nothing else leaves
+  `packages/graph/**`, `docs/graph-dataviz-*` and this plan file.
 
 ## Plan / Todo
 
