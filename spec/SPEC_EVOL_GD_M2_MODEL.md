@@ -13,7 +13,7 @@ Cible : une PR vers `main`, branche `feat/gd-m2-model`.
 | D3 | Interopérabilité | **C — import large en lecture seule d'abord.** Un contenu importé qu'un profil ne valide pas est conservé (`preserved-unvalidated`) avec son hash, jamais promu en fait métier ; l'écriture inverse (export fidèle, aller-retour) est hors de ce lot. |
 | D2 | Familles de publication | Rappel M1 : `graph` et `dataviz` restent deux lignes distinctes. Tout nouveau paquet naît **privé** ; aucune publication sans geste du propriétaire. |
 
-## 2. Point de départ (vérifié le 2026-09-24, `main` à 37846cff)
+## 2. Point de départ (vérifié le 2026-09-24, revérifié sur la branche après revue croisée)
 
 - `@sentropic/graph` 0.3.0 contient un moteur de rendu et de mise en page : `renderer.ts`, `webgl-*.ts`,
   `layout-*.ts`, `render-geometry.ts`, `edge-geometry.ts`, `buffers.ts`, `positions.ts`, `types.ts`
@@ -22,9 +22,15 @@ Cible : une PR vers `main`, branche `feat/gd-m2-model`.
 - `@sentropic/dataviz-core` 0.5.0 porte l'état inter-vues des tableaux de bord : il ne modélise pas de
   diagramme et n'a pas à le faire.
 - Les paquets proposés par l'étude §3.2 — `@sentropic/diagram-core`, `-codecs`, `-canvas` — n'existent pas.
-- Règle de couche déjà tenue et à ne pas casser : aucun paquet `@sentropic/design-system-*` n'importe
-  `dataviz-core` ni un futur `diagram-core` (vérifié : un import de ce genre, introduit par erreur dans la
-  PR #65, rendait la publication des quatre paquets DS dépendante du train dataviz ; il a été retiré).
+- Règle de couche à ne pas casser, énoncée comme la garde l'applique : aucun paquet
+  `@sentropic/design-system-*` ne dépend de `@sentropic/dataviz-*`, de `@sentropic/diagram-core` ni de
+  `@sentropic/diagram-codecs`, ni en dépendance, ni en dépendance de développement, ni en pair, ni par
+  un import de source (vérifié : un import de ce genre, introduit par erreur dans la PR #65, rendait la
+  publication des quatre paquets DS dépendante du train dataviz ; il a été retiré). En revanche les huit
+  arêtes que l'architecture cible déclare — `design-system-{svelte,react,vue,angular}` vers
+  `@sentropic/graph` et vers `@sentropic/diagram-canvas`, dans `docs/graph-dataviz-architecture-dag.json`
+  et à l'étude §3.2/§3.3 — **restent permises** : ce sont elles qui portent `GD-M2-DS-PRESENTATION` et
+  `GD-M2-CANVAS`, et le sous-chemin `@sentropic/graph/contracts` du §3.1 en dépend.
 
 ## 3. Travail demandé
 
@@ -110,8 +116,12 @@ natifs complets (`GD-M3`), toute publication npm, tout changement de la racine p
 3. **Sans DOM** : un test importe tout le barrel de `diagram-core` dans Node sans jsdom et échoue si un
    `document`/`window` est touché ; un test de dépendances interdit tout import de `renderer`, `webgl-*`,
    d'un framework ou d'un paquet DS depuis `diagram-core`.
-4. **Références** : un test de types (compilation attendue en échec) prouve que les cinq `*Ref` ne sont pas
-   interchangeables.
+4. **Références** : un test de types prouve que les cinq `*Ref` ne sont pas interchangeables, par
+   `@ts-expect-error` sur chaque affectation illégitime (le mécanisme déjà employé dans sept fichiers du
+   dépôt). Il tient le critère 2 en même temps : `npm run check` reste à exit 0 tant que les erreurs
+   attendues ont lieu, et rend `TS2578` (« @ts-expect-error inutilisé ») dès que les marques de type
+   disparaissent — ce qui est la régression à attraper. Le compte de paquets publiables est déjà outillé :
+   `scripts/verify-publishable-licensing.test.mjs` assère `publishable.length === 17`.
 5. **Invariants** : les huit invariants de l'étude §4.2 ont chacun au moins un test nommé, ou une justification
    écrite s'ils relèvent d'un lot ultérieur.
 6. **Commandes** : pour chaque commande du §3.5, un test `commande → inverse → état initial` octet pour octet
