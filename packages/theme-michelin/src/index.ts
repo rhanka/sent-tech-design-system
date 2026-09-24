@@ -14,8 +14,9 @@ import type { TenantTheme } from "@sentropic/design-system-themes";
  * public values onto the Sentropic tokens; we reference the font *names* only,
  * never font binaries. Sources and exact provenance are documented in
  * MAPPING.md. Where the brand publishes no direct equivalent for a Sentropic
- * role (the modal overlay alpha, the warning text hue, control geometry), the
- * closest derived value is used and flagged "à confirmer" in MAPPING.md.
+ * role (the modal overlay alpha, the warning text hue, default-size button
+ * padding and the elevation/motion scalars), the closest derived value is
+ * used and flagged "à confirmer" in MAPPING.md.
  *
  * Michelin colour reference (light theme):
  *   White (main background)              #ffffff   (:root --color-main-background)
@@ -23,7 +24,7 @@ import type { TenantTheme } from "@sentropic/design-system-themes";
  *   Pale grey (secondary hover)          #e5e5e5   (:root --color-light-10)
  *   Border grey (card base border)       #cccccc   (:root --color-light-20)
  *   Secondary text grey                  #404040   (:root --color-dark-60)
- *   Muted / focus grey                   #666666   (:root --color-dark-40, focus outline)
+ *   Muted grey                           #666666   (:root --color-dark-40)
  *   Body / primary text                  #1a1a1a   (:root --color-main-text)
  *   Darkest                              #000000   (:root --color-dark)
  *   Michelin blue (brand / action)       #27509b   (:root --color-primary)
@@ -62,16 +63,17 @@ const michelinColor = {
   // #fce500;--card-color-text:#000;--card-color-border:#fce500}` (yellow fill
   // carrying black text, exactly how the brand uses it).
   yellow: "#fce500", // .ds__card-panel secondary skin (accent fill)
-  // Neutral scale from the brand `:root` dark/light ramps.
+  // Neutral scale from the brand `:root` dark/light ramps (keys ordered
+  // light → dark so the ramp reads monotonically).
   neutral: {
-    0: "#ffffff", // :root --color-main-background / --color-light
+    0: "#ffffff", // :root --color-main-background / --color-light (declared `#fff`, used here as `#ffffff`)
     50: "#f2f2f2", // :root --color-light-05 (secondary surface)
     100: "#e5e5e5", // :root --color-light-10
-    200: "#cccccc", // :root --color-light-20 (card base border)
-    500: "#404040", // :root --color-dark-60 (secondary text)
-    600: "#666666", // :root --color-dark-40 (muted text, focus outline)
+    200: "#cccccc", // :root --color-light-20 (declared `#ccc`, used here as `#cccccc`; card base border)
+    500: "#666666", // :root --color-dark-40 (declared `#666`, used here as `#666666`; muted text)
+    600: "#404040", // :root --color-dark-60 (secondary text)
     800: "#1a1a1a", // :root --color-main-text / --color-dark-80 (body text)
-    900: "#000000" // :root --color-dark (darkest)
+    900: "#000000" // :root --color-dark (declared `#000`, used here as `#000000`; darkest)
   },
   // System / status colours from the brand `:root --color-is-*` tokens, except
   // the warning text step which is derived (à confirmer).
@@ -106,7 +108,7 @@ const foundation = {
       0: michelinColor.neutral[0], // white
       10: michelinColor.neutral[50], // secondary surface
       20: michelinColor.neutral[200], // card base border
-      60: michelinColor.neutral[500], // secondary text
+      60: michelinColor.neutral[600], // secondary text
       80: michelinColor.neutral[800], // primary text
       90: michelinColor.neutral[900] // darkest
     },
@@ -142,15 +144,17 @@ const foundation = {
     12: "3rem", // 48px
     16: "4rem" // 64px
   },
-  // Michelin geometry is rounded at 0.8rem: `.ds__btn,.ds__btn-icon{
-  // border-radius:.8rem}`, `.ds__input{...border-radius:.8rem}` and
-  // `[data-ui-card-base]{border-radius:.8rem}`; small elements (link-sm,
-  // focus ring) use .4rem.
+  // Michelin geometry is rounded: the brand declares `border-radius:.8rem`
+  // on `.ds__btn,.ds__btn-icon`, `.ds__input` and `[data-ui-card-base]`,
+  // and `.4rem` on small elements (breadcrumb focus rings). The brand root
+  // is `html{font-size:var(--font-size-root,62.5%)}` (10px), so `.8rem` =
+  // 8px and `.4rem` = 4px; transcribed at this theme's 16px root that is
+  // `0.5rem` and `0.25rem` (see MAPPING.md).
   radius: {
     none: "0",
-    sm: "0.4rem", // small elements / focus ring
-    md: "0.8rem", // buttons / inputs
-    lg: "0.8rem", // cards
+    sm: "0.25rem", // .4rem at the brand 62.5% root = 4px
+    md: "0.5rem", // .8rem at the brand 62.5% root = 8px (buttons / inputs)
+    lg: "0.5rem", // .8rem at the brand 62.5% root = 8px (cards)
     pill: "999px" // tags / pills
   },
   // Light, neutral elevation tinted with the brand ink. Exact specs "à confirmer".
@@ -182,21 +186,30 @@ const foundation = {
     thick: "2px"
   },
   borderStyle: { solid: "solid" },
-  // Control density. The brand publishes no usable control-height geometry, so
-  // controlHeight/iconSize reuse the Sentropic base values while the remaining
-  // density keys are aligned with the reference theme package's geometry
-  // (à confirmer).
+  // Control density, transcribed from the brand's own button rules (all lengths
+  // converted from the brand 62.5% root, i.e. divided by 1.6 — see MAPPING.md):
+  // `.ds__btn,.ds__btn-icon{...min-height:4.8rem}` (48px) and
+  // `.ds__btn-icon[data-ui-size=sm]:where(.ds__btn),
+  // .ds__btn[data-ui-size=sm]:where(.ds__btn){min-height:3.6rem;
+  // padding:.4rem 1.6rem}` (36px high, 4px/16px padding). Default-size padding
+  // is not published, so `md`/`lg` paddings, every `gap`/`minWidth` and the
+  // `lg` row stay aligned with the reference theme package's geometry
+  // (à confirmer); `iconSize` reuses the Sentropic base values.
   density: {
-    sm: { controlHeight: "2rem", paddingBlock: "0", paddingInline: "0.5rem", gap: "0.5rem", minWidth: "2rem", fontSize: "0.875rem" }, // aligned with the reference theme package's geometry (à confirmer)
-    md: { controlHeight: "2.5rem", paddingBlock: "0.375rem", paddingInline: "0.75rem", gap: "0.5rem", minWidth: "2.5rem", fontSize: "1rem" }, // aligned with the reference theme package's geometry (à confirmer)
+    sm: { controlHeight: "2.25rem", paddingBlock: "0.25rem", paddingInline: "1rem", gap: "0.5rem", minWidth: "2rem", fontSize: "0.875rem" }, // controlHeight/paddings/fontSize measured (3.6rem/.4rem/1.6rem/1.4rem at 62.5%); gap/minWidth aligned with the reference theme package's geometry (à confirmer)
+    md: { controlHeight: "3rem", paddingBlock: "0.375rem", paddingInline: "0.75rem", gap: "0.5rem", minWidth: "2.5rem", fontSize: "1rem" }, // controlHeight/fontSize measured (4.8rem/1.6rem at 62.5%); paddings/gap/minWidth aligned with the reference theme package's geometry (à confirmer)
     lg: { controlHeight: "3rem", paddingBlock: "0", paddingInline: "1rem", gap: "0.5rem", minWidth: "3rem", fontSize: "1.125rem" } // aligned with the reference theme package's geometry (à confirmer)
   },
   // Michelin typography: Noto Sans for interactive/fields/labels, Michelin
   // Unit Titling for display titles. Button labels carry no transform.
+  // Measured: `.ds__btn,...{...font-size:1.6rem;line-height:1.25}` (16px/1.25
+  // at the 62.5% root) and `.ds__label span{...font-size:1.4rem}` (14px).
+  // Every other typographic scalar below is aligned with the reference theme
+  // package's geometry (à confirmer) — see MAPPING.md.
   typography: {
-    control: { family: "'Noto Sans', Arial, system-ui, sans-serif", size: "1rem", weight: "500", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
-    field: { family: "'Noto Sans', Arial, system-ui, sans-serif", size: "1rem", weight: "400", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
-    label: { family: "'Noto Sans', Arial, system-ui, sans-serif", size: "1rem", weight: "700", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
+    control: { family: "'Noto Sans', Arial, system-ui, sans-serif", size: "1rem", weight: "500", lineHeight: "1.25", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" }, // lineHeight measured (.ds__btn line-height:1.25); rest aligned with the reference theme package's geometry (à confirmer)
+    field: { family: "'Noto Sans', Arial, system-ui, sans-serif", size: "1rem", weight: "400", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" }, // aligned with the reference theme package's geometry (à confirmer)
+    label: { family: "'Noto Sans', Arial, system-ui, sans-serif", size: "0.875rem", weight: "700", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" }, // size measured (.ds__label span font-size:1.4rem at 62.5% = 14px); rest aligned with the reference theme package's geometry (à confirmer)
     // Brand links are Michelin blue #27509b (`.ds__link[data-ui-skin=
     // tertiary][data-ui-selected=true]{--link-color-text:#27509b}` and
     // `.ds__lang-selector ...{--link-color-text:#27509b}`), not underlined at
@@ -212,15 +225,19 @@ const foundation = {
   transition: { property: "background-color, border-color, color, box-shadow", duration: "150ms", easing: "ease-in-out" }, // aligned with the reference theme package's geometry (à confirmer)
   cursor: { interactive: "pointer", disabled: "not-allowed", text: "text" },
   iconSize: { sm: "1rem", md: "1.125rem", lg: "1.25rem" },
-  // FOCUS = a brand OUTLINE: `.ds__btn-icon:focus,.ds__breadcrumb
-  // .ds__btn-icon:focus-visible{...outline:.2rem dashed #666}` — a 2px dashed
-  // grey outline (the dashed style is noted here; the strategy enum carries
-  // the technique). Offset is not published (à confirmer).
+  // FOCUS = a brand OUTLINE: the dominant declaration across the whole
+  // stylesheet is `outline:.2rem solid #27509b` (9 occurrences, covering every
+  // form control, e.g. `.ds__input-wrapper .ds__input:focus-visible{
+  // ...outline:.2rem solid #27509b}`); the grey `outline:.2rem dashed #666`
+  // occurs only twice, both scoped to the breadcrumb (see MAPPING.md).
+  // Offset: `outline-offset` is declared 9 times on `.ds__*` focus rules
+  // (`.4rem` 5 times, `.2rem` twice, `.1rem` once, `0` once); the frequency
+  // winner `.4rem` at the 62.5% root = 4px = `0.25rem` here.
   focus: {
     strategy: "outline",
-    width: "2px",
-    offset: "2px", // à confirmer
-    color: michelinColor.neutral[600], // #666666 dashed brand outline
+    width: "2px", // .2rem at the brand 62.5% root = 2px
+    offset: "0.25rem", // measured: frequency winner .4rem at 62.5% = 4px
+    color: michelinColor.blue.primary, // #27509b solid brand outline
     inset: "0"
   },
   // Form fields are BOXED (outline): `.ds__input{background-color:#fff;
@@ -238,21 +255,32 @@ const foundation = {
       "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%2327509b' d='M8 11L3 6l1-1 4 4 4-4 1 1z'/%3E%3C/svg%3E\") no-repeat right 0.75rem center",
     selectPaddingRight: "2.5rem"
   },
-  // Cards: a subtle 1px grey border + 0.8rem radius, light hover tint
+  // --- 12 component overrides --------------------------------------------
+  // Colours/fills below are measured brand values; every padding/size/
+  // line-height scalar is aligned with the reference theme package's
+  // geometry (à confirmer) — see MAPPING.md. Converted brand lengths are
+  // cited inline where they occur (radius, control heights).
+  // Cards: a subtle 1px grey border + brand radius, light hover tint
   // (`[data-ui-card-base]{border-radius:.8rem;--card-color-background:#fff;
-  // --card-base-border-color:var(--color-light-20)}`).
+  // --card-base-border-color:var(--color-light-20)}` — .8rem at 62.5% = 8px,
+  // carried by `radius.lg`, not re-declared here).
   card: {
     borderWidth: "1px",
     lineHeight: "1.5",
     hoverBackground: michelinColor.neutral[50] // #f2f2f2
   },
-  // Secondary button = OUTLINED in Michelin blue: transparent fill (brand
-  // `.ds__btn[data-ui-skin=secondary]` sets `--button-color-background:
-  // transparent`), blue border + navy text, light blue fill on hover.
+  // Secondary button = OUTLINED in Michelin blue. The winning brand rule
+  // `.ds__btn[data-ui-skin=secondary]:not([disabled],[data-ui-disabled=true])
+  // {--button-color-background:transparent;--button-color-text:
+  // var(--color-primary);--button-color-border:currentcolor}` gives a
+  // transparent fill with BLUE (#27509b) text and border; its hover rule
+  // sets `--button-color-background:var(--color-primary);
+  // --button-color-text:var(--color-primary-reverse)` — a solid blue fill
+  // with white text.
   buttonSecondary: {
     background: "transparent",
     border: michelinColor.blue.primary, // #27509b stroke
-    hoverBackground: michelinColor.blue.light // #d4e7fa light fill on hover
+    hoverBackground: michelinColor.blue.primary // #27509b solid brand hover fill
   },
   // Tabs / top-nav: active tab = Michelin-blue label with a bottom blue
   // underline (selected tertiary links declare `--link-color-text:#27509b`).
@@ -287,9 +315,9 @@ const foundation = {
   // Breadcrumb: blue links, dark current page, grey separators.
   breadcrumb: {
     linkText: michelinColor.blue.primary, // #27509b
-    text: michelinColor.neutral[600], // #666666 trail text
+    text: michelinColor.neutral[500], // #666666 trail text
     currentText: michelinColor.neutral[800], // #1a1a1a current page
-    separator: michelinColor.neutral[600], // #666666
+    separator: michelinColor.neutral[500], // #666666
     fontSize: "0.875rem", // 14px
     lineHeight: "1.5rem", // 24px
     currentWeight: "700"
@@ -318,9 +346,11 @@ const foundation = {
     fontWeight: "700",
     lineHeight: "1.5rem" // 24px
   },
-  // Tag: a small 0.8rem-radius grey chip (brand radius).
+  // Tag: a small grey chip carrying the brand radius (.8rem at 62.5% = 8px).
+  // Paddings/sizes below are aligned with the reference theme package's
+  // geometry (à confirmer) — see MAPPING.md.
   tag: {
-    radius: "0.8rem",
+    radius: "0.5rem",
     paddingBlock: "0.25rem", // 4px
     paddingInline: "0.5rem", // 8px
     fontSize: "0.875rem", // 14px
@@ -330,10 +360,11 @@ const foundation = {
     neutralBackground: michelinColor.neutral[50], // #f2f2f2
     neutralText: michelinColor.neutral[800] // #1a1a1a
   },
-  // Badge: a 0.8rem-radius filled badge in Michelin blue with white text
-  // (7.76:1).
+  // Badge: a filled badge in Michelin blue with white text (7.76:1),
+  // carrying the brand radius (.8rem at 62.5% = 8px). Other scalars are
+  // aligned with the reference theme package's geometry (à confirmer).
   badge: {
-    radius: "0.8rem",
+    radius: "0.5rem",
     paddingBlock: "0",
     paddingInline: "0.5rem", // 8px
     fontSize: "0.875rem", // 14px
@@ -377,14 +408,14 @@ const semantic = {
   },
   text: {
     primary: michelinColor.neutral[800], // #1a1a1a (body color)
-    secondary: michelinColor.neutral[500], // #404040 (secondary)
-    muted: michelinColor.neutral[600], // #666666 (muted)
+    secondary: michelinColor.neutral[600], // #404040 (secondary)
+    muted: michelinColor.neutral[500], // #666666 (muted)
     inverse: michelinColor.neutral[0], // white on dark / coloured surfaces
     link: michelinColor.blue.primary // #27509b Michelin blue link (7.76:1)
   },
   border: {
     subtle: michelinColor.neutral[200], // #cccccc (card base border)
-    strong: michelinColor.neutral[600], // #666666
+    strong: michelinColor.neutral[500], // #666666
     interactive: michelinColor.blue.primary // #27509b Michelin blue interactive (7.76:1)
   },
   action: {
@@ -420,7 +451,7 @@ const semantic = {
     category5: michelinColor.blue.mid, // #6182bb mid blue
     category6: michelinColor.system.success, // #2e7d32 green
     category7: michelinColor.system.error, // #b71c1c red
-    category8: michelinColor.neutral[500] // #404040 grey
+    category8: michelinColor.neutral[600] // #404040 grey
   }
 } as const;
 
