@@ -234,9 +234,9 @@ export function placePriorityLabels(
       if (pointInBox(anchors[j]!.ax, anchors[j]!.ay, x, y, w, h)) c += 300;
     }
     // Obstacles (threshold bands, quadrant names) cost 4x a label/label overlap
-    // per px2: crossing a 6px threshold band with a label must cost about as
-    // much as fully overlapping another label, otherwise the band is crossed
-    // whenever space is scarce.
+    // per px2. That is a nudge, not a veto: crossing a 6px band with a 68x20
+    // box costs 960 here against 2720 for fully overlapping another label,
+    // about a third, so a band is still crossed when nothing else fits.
     for (const o of obstacles) {
       c += overlapArea(x, y, w, h, o.x, o.y, o.w, o.h) * 8;
     }
