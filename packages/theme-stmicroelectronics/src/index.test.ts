@@ -45,8 +45,13 @@ describe("stmicroelectronicsTheme", () => {
     // Measured error red danger and primary-dark inverse surface.
     expect(css).toContain("--st-semantic-action-danger: #e6007e;");
     expect(css).toContain("--st-semantic-surface-inverse: #0f182f;");
-    // ST brand font families (Arial body, ITCLubalinGraphStdMedium display).
+    // ST brand font families (Arial body, ITCLubalinGraphStdMedium display,
+    // system mono stack).
     expect(css).toContain("Arial");
     expect(css).toContain("ITCLubalinGraphStdMedium");
+    expect(css).toContain("SFMono-Regular");
+    expect(css).toContain("Menlo");
+    expect(css).toContain("Monaco");
+    expect(css).toContain("Consolas");
   });
 });
