@@ -31,6 +31,24 @@ test("there is more than one adapter package to compare", () => {
   assert.ok(adapterPackages.length >= 2, `expected several dataviz-* packages, found ${adapterPackages.join(", ")}`);
 });
 
+/**
+ * `geoMapLayers.ts` cannot be byte-identical across frameworks: it imports its
+ * design-system types from its own framework package. It is still a copy, so the
+ * Angular one is pinned to the dataviz-vue one modulo that single import line.
+ */
+test("geoMapLayers.ts matches the dataviz-vue copy except for the design-system import", () => {
+  const strip = (path) =>
+    readFileSync(path, "utf8").replace(/@sentropic\/design-system-\w+/g, "@sentropic/design-system-FRAMEWORK");
+  const vue = join(packagesDir, "dataviz-vue", "src", "lib", "geoMapLayers.ts");
+  const angular = join(packagesDir, "dataviz-angular", "src", "lib", "geoMapLayers.ts");
+  assert.ok(existsSync(vue) && existsSync(angular), "both copies must exist");
+  assert.equal(
+    strip(angular),
+    strip(vue),
+    "the dataviz-angular geoMapLayers.ts must be the dataviz-vue file with only its design-system import changed",
+  );
+});
+
 for (const helper of helpers) {
   test(`${helper} is byte-identical in every package that ships it`, () => {
     const copies = adapterPackages

@@ -67,8 +67,8 @@ export class GeoDensityMap implements OnInit, OnChanges, OnDestroy {
   @NgInput({ required: true }) longitude!: string;
   @NgInput() value?: string;
   @NgInput() cellSize?: number;
-  @NgInput() width = 520;
-  @NgInput() height = 320;
+  @NgInput() width: number = 520;
+  @NgInput() height: number = 320;
   @NgInput({ required: true }) label!: string;
   @NgInput('class') classInput?: string;
 

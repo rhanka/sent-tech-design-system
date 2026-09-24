@@ -63,8 +63,8 @@ export class RoseChart implements OnInit, OnChanges, OnDestroy {
   @NgInput({ required: true }) viewId!: string;
   @NgInput({ required: true }) category!: string;
   @NgInput({ required: true }) measure!: string;
-  @NgInput() width = 360;
-  @NgInput() height = 360;
+  @NgInput() width: number = 360;
+  @NgInput() height: number = 360;
   @NgInput({ required: true }) label!: string;
   @NgInput('class') classInput?: string;
 

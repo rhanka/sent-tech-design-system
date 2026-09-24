@@ -65,7 +65,7 @@ export class SunburstChart implements OnInit, OnChanges, OnDestroy {
   @NgInput({ required: true }) viewId!: string;
   @NgInput({ required: true }) hierarchy!: string[];
   @NgInput({ required: true }) measure!: string;
-  @NgInput() legend = true;
+  @NgInput() legend: boolean = true;
   @NgInput() width?: number;
   @NgInput() height?: number;
   @NgInput({ required: true }) label!: string;
