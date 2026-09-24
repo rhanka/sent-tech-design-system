@@ -327,6 +327,34 @@ describe("invariant 3 — one worker, reused; a worker failure falls back", () =
     expect(built).toBe(1); // never rebuilt after the failure
   });
 
+  it("a worker error leaves a request the calling thread was already computing alone", async () => {
+    // A live worker can error asynchronously while the in-flight request is a
+    // small one the threshold sent to the fallback. VERIFIED, so the claim stays
+    // the right size: without the `dispatchedPath` check the request would be
+    // scheduled a SECOND slot, and the duplicate would abort on the `settled`
+    // check rather than compute twice — the assertions below hold either way.
+    // This is a regression net over the counters and the single delivery, not a
+    // proof that the check fixes a wrong answer.
+    const worker = createControlledWorker();
+    const client = createLayoutClient({
+      createWorker: () => worker,
+      workerNodeThreshold: 5,
+    });
+    const viaWorker = client.request({ snapshotId: "big", ...graph(10) });
+    worker.respondOldest();
+    expect((await viaWorker).status).toBe("fulfilled");
+
+    const viaSync = client.request({ snapshotId: "small", ...graph(2) });
+    worker.breakWorker(); // the worker dies while the fallback holds the slot
+    expect(await settledWithin(viaSync, 1000)).toMatchObject({ status: "fulfilled" });
+    await tick();
+
+    const stats = client.stats();
+    expect(stats.syncDispatches).toBe(1); // computed once, not twice
+    expect(stats.fulfilled).toBe(2);
+    expect(stats.unmatchedResults).toBe(0);
+  });
+
   it("falls back when worker construction throws, and never retries it", async () => {
     let attempts = 0;
     const client = createLayoutClient({
