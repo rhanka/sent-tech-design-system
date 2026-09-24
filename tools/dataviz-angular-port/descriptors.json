@@ -2448,5 +2448,3132 @@
    "DashboardStore",
    "PartWholeSort"
   ]
+ },
+ {
+  "name": "FunnelChart",
+  "selector": "st-dataviz-funnel-chart",
+  "ds": {
+   "name": "FunnelChart",
+   "alias": "DsFunnelChart",
+   "selector": "st-funnel-chart",
+   "typeImports": [
+    "FunnelChartDatum"
+   ]
+  },
+  "props": [
+   {
+    "name": "store",
+    "tsType": "DashboardStore",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "viewId",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "category",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "measure",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "sort",
+    "tsType": "PartWholeSort",
+    "optional": true,
+    "required": false,
+    "default": "'value-desc'"
+   },
+   {
+    "name": "orientation",
+    "tsType": "'vertical' | 'horizontal'",
+    "optional": true,
+    "required": false,
+    "default": "'vertical'"
+   },
+   {
+    "name": "showPercentages",
+    "tsType": "boolean",
+    "optional": true,
+    "required": false,
+    "default": "true"
+   },
+   {
+    "name": "percentMode",
+    "tsType": "'ofFirst' | 'ofPrevious'",
+    "optional": true,
+    "required": false,
+    "default": "'ofFirst'"
+   },
+   {
+    "name": "legend",
+    "tsType": "boolean",
+    "optional": true,
+    "required": false,
+    "default": "true"
+   },
+   {
+    "name": "width",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "height",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "label",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "class",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   }
+  ],
+  "derive": {
+   "kind": "model-rows",
+   "field": "data",
+   "wrap": "toPartWholeData",
+   "builder": "buildSafePartWholeModel",
+   "config": {
+    "category": "category",
+    "measure": "measure",
+    "sort": "sort"
+   },
+   "intermediate": "model",
+   "member": "items"
+  },
+  "classExpr": null,
+  "bindings": [
+   {
+    "input": "data",
+    "expr": "data"
+   },
+   {
+    "input": "label",
+    "expr": "props.label"
+   },
+   {
+    "input": "orientation",
+    "expr": "props.orientation"
+   },
+   {
+    "input": "showPercentages",
+    "expr": "props.showPercentages"
+   },
+   {
+    "input": "percentMode",
+    "expr": "props.percentMode"
+   },
+   {
+    "input": "legend",
+    "expr": "props.legend"
+   },
+   {
+    "input": "width",
+    "expr": "props.width"
+   },
+   {
+    "input": "height",
+    "expr": "props.height"
+   },
+   {
+    "input": "class",
+    "expr": "props.class"
+   }
+  ],
+  "helpers": {
+   "./partOfWholeData.js": [
+    "buildSafePartWholeModel",
+    "toPartWholeData"
+   ]
+  },
+  "coreFns": [],
+  "coreTypes": [
+   "DashboardStore",
+   "PartWholeSort"
+  ]
+ },
+ {
+  "name": "MekkoChart",
+  "selector": "st-dataviz-mekko-chart",
+  "ds": {
+   "name": "MarimekkoChart",
+   "alias": "DsMarimekkoChart",
+   "selector": "st-marimekko-chart",
+   "typeImports": []
+  },
+  "props": [
+   {
+    "name": "store",
+    "tsType": "DashboardStore",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "viewId",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "category",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "series",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "measure",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "width",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "height",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "label",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "class",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   }
+  ],
+  "derive": {
+   "kind": "model-rows",
+   "field": "model",
+   "wrap": "toMarimekkoData",
+   "builder": "buildSafeMekkoModel",
+   "config": {
+    "category": "category",
+    "series": "series",
+    "measure": "measure"
+   }
+  },
+  "classExpr": null,
+  "bindings": [
+   {
+    "input": "data",
+    "expr": "model"
+   },
+   {
+    "input": "width",
+    "expr": "props.width"
+   },
+   {
+    "input": "height",
+    "expr": "props.height"
+   },
+   {
+    "input": "label",
+    "expr": "props.label"
+   },
+   {
+    "input": "class",
+    "expr": "props.class"
+   }
+  ],
+  "helpers": {
+   "./partOfWholeData.js": [
+    "buildSafeMekkoModel",
+    "toMarimekkoData"
+   ]
+  },
+  "coreFns": [],
+  "coreTypes": [
+   "DashboardStore"
+  ]
+ },
+ {
+  "name": "SankeyChart",
+  "selector": "st-dataviz-sankey-chart",
+  "ds": {
+   "name": "SankeyChart",
+   "alias": "DsSankeyChart",
+   "selector": "st-sankey-chart",
+   "typeImports": []
+  },
+  "props": [
+   {
+    "name": "store",
+    "tsType": "DashboardStore",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "viewId",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "source",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "target",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "measure",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "width",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "height",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "label",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "class",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   }
+  ],
+  "derive": {
+   "kind": "model-rows",
+   "field": "model",
+   "wrap": null,
+   "builder": "buildSafeFlowModel",
+   "config": {
+    "source": "source",
+    "target": "target",
+    "measure": "measure"
+   },
+   "intermediate": "model",
+   "multiMember": true
+  },
+  "classExpr": null,
+  "bindings": [
+   {
+    "input": "nodes",
+    "expr": "model.nodes"
+   },
+   {
+    "input": "links",
+    "expr": "model.links"
+   },
+   {
+    "input": "label",
+    "expr": "props.label"
+   },
+   {
+    "input": "width",
+    "expr": "props.width"
+   },
+   {
+    "input": "height",
+    "expr": "props.height"
+   },
+   {
+    "input": "class",
+    "expr": "props.class"
+   }
+  ],
+  "helpers": {
+   "./partOfWholeData.js": [
+    "buildSafeFlowModel"
+   ]
+  },
+  "coreFns": [],
+  "coreTypes": [
+   "DashboardStore"
+  ]
+ },
+ {
+  "name": "WaffleChart",
+  "selector": "st-dataviz-waffle-chart",
+  "ds": {
+   "name": "WaffleChart",
+   "alias": "DsWaffleChart",
+   "selector": "st-waffle-chart",
+   "typeImports": [
+    "WaffleChartDatum"
+   ]
+  },
+  "props": [
+   {
+    "name": "store",
+    "tsType": "DashboardStore",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "viewId",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "label_field",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "value",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "totalCells",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "columns",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "label",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "size",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "class",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   }
+  ],
+  "derive": {
+   "kind": "model-rows",
+   "field": "data",
+   "wrap": null,
+   "builder": "buildItemChartData",
+   "config": {
+    "label": "label_field",
+    "value": "value"
+   }
+  },
+  "classExpr": null,
+  "bindings": [
+   {
+    "input": "data",
+    "expr": "data"
+   },
+   {
+    "input": "totalCells",
+    "expr": "props.totalCells"
+   },
+   {
+    "input": "columns",
+    "expr": "props.columns"
+   },
+   {
+    "input": "label",
+    "expr": "props.label"
+   },
+   {
+    "input": "size",
+    "expr": "props.size"
+   },
+   {
+    "input": "class",
+    "expr": "props.class"
+   }
+  ],
+  "helpers": {},
+  "coreFns": [
+   "buildItemChartData"
+  ],
+  "coreTypes": [
+   "DashboardStore"
+  ]
+ },
+ {
+  "name": "WaterfallChart",
+  "selector": "st-dataviz-waterfall-chart",
+  "ds": {
+   "name": "WaterfallChart",
+   "alias": "DsWaterfallChart",
+   "selector": "st-waterfall-chart",
+   "typeImports": []
+  },
+  "props": [
+   {
+    "name": "store",
+    "tsType": "DashboardStore",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "viewId",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "category",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "measure",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "totalLabel",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "connectors",
+    "tsType": "boolean",
+    "optional": true,
+    "required": false,
+    "default": "true"
+   },
+   {
+    "name": "format",
+    "tsType": "(value: number) => string",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "width",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "height",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "label",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "class",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   }
+  ],
+  "derive": {
+   "kind": "model-rows",
+   "field": "model",
+   "wrap": "toWaterfallData",
+   "builder": "buildSafeWaterfallModel",
+   "config": {
+    "category": "category",
+    "measure": "measure",
+    "totalLabel": "totalLabel"
+   }
+  },
+  "classExpr": null,
+  "bindings": [
+   {
+    "input": "data",
+    "expr": "model"
+   },
+   {
+    "input": "label",
+    "expr": "props.label"
+   },
+   {
+    "input": "connectors",
+    "expr": "props.connectors"
+   },
+   {
+    "input": "format",
+    "expr": "props.format"
+   },
+   {
+    "input": "width",
+    "expr": "props.width"
+   },
+   {
+    "input": "height",
+    "expr": "props.height"
+   },
+   {
+    "input": "class",
+    "expr": "props.class"
+   }
+  ],
+  "helpers": {
+   "./partOfWholeData.js": [
+    "buildSafeWaterfallModel",
+    "toWaterfallData"
+   ]
+  },
+  "coreFns": [],
+  "coreTypes": [
+   "DashboardStore"
+  ]
+ },
+ {
+  "name": "VariablePieChart",
+  "selector": "st-dataviz-variable-pie-chart",
+  "ds": {
+   "name": "VariablePieChart",
+   "alias": "DsVariablePieChart",
+   "selector": "st-variable-pie-chart",
+   "typeImports": [
+    "VariablePieChartDatum"
+   ]
+  },
+  "props": [
+   {
+    "name": "store",
+    "tsType": "DashboardStore",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "viewId",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "label_field",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "value",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "z",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "width",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "height",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "label",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "class",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   }
+  ],
+  "derive": {
+   "kind": "model-rows",
+   "field": "data",
+   "wrap": null,
+   "builder": "buildVariablePieData",
+   "config": {
+    "label": "label_field",
+    "value": "value",
+    "z": "z"
+   }
+  },
+  "classExpr": null,
+  "bindings": [
+   {
+    "input": "data",
+    "expr": "data"
+   },
+   {
+    "input": "label",
+    "expr": "props.label"
+   },
+   {
+    "input": "width",
+    "expr": "props.width"
+   },
+   {
+    "input": "height",
+    "expr": "props.height"
+   },
+   {
+    "input": "class",
+    "expr": "props.class"
+   }
+  ],
+  "helpers": {},
+  "coreFns": [
+   "buildVariablePieData"
+  ],
+  "coreTypes": [
+   "DashboardStore"
+  ]
+ },
+ {
+  "name": "ColumnPyramidChart",
+  "selector": "st-dataviz-column-pyramid-chart",
+  "ds": {
+   "name": "ColumnPyramidChart",
+   "alias": "DsColumnPyramidChart",
+   "selector": "st-column-pyramid-chart",
+   "typeImports": [
+    "ColumnPyramidChartDatum"
+   ]
+  },
+  "props": [
+   {
+    "name": "store",
+    "tsType": "DashboardStore",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "viewId",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "category",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "value",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "width",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "height",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "label",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "class",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   }
+  ],
+  "derive": {
+   "kind": "model-rows",
+   "field": "data",
+   "wrap": null,
+   "builder": "buildColumnPyramidData",
+   "config": {
+    "category": "category",
+    "value": "value"
+   }
+  },
+  "classExpr": null,
+  "bindings": [
+   {
+    "input": "data",
+    "expr": "data"
+   },
+   {
+    "input": "label",
+    "expr": "props.label"
+   },
+   {
+    "input": "width",
+    "expr": "props.width"
+   },
+   {
+    "input": "height",
+    "expr": "props.height"
+   },
+   {
+    "input": "class",
+    "expr": "props.class"
+   }
+  ],
+  "helpers": {},
+  "coreFns": [
+   "buildColumnPyramidData"
+  ],
+  "coreTypes": [
+   "DashboardStore"
+  ]
+ },
+ {
+  "name": "TreegraphChart",
+  "selector": "st-dataviz-treegraph-chart",
+  "ds": {
+   "name": "TreegraphChart",
+   "alias": "DsTreegraphChart",
+   "selector": "st-treegraph-chart",
+   "typeImports": [
+    "TreegraphChartNode"
+   ]
+  },
+  "props": [
+   {
+    "name": "store",
+    "tsType": "DashboardStore",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "viewId",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "id_field",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "parent_field",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "label_field",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "width",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "height",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "label",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "class",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   }
+  ],
+  "derive": {
+   "kind": "model-rows",
+   "field": "data",
+   "wrap": null,
+   "builder": "buildHierarchyData",
+   "config": {
+    "id": "id_field",
+    "parentId": "parent_field",
+    "label": "label_field"
+   }
+  },
+  "classExpr": null,
+  "bindings": [
+   {
+    "input": "data",
+    "expr": "data"
+   },
+   {
+    "input": "label",
+    "expr": "props.label"
+   },
+   {
+    "input": "width",
+    "expr": "props.width"
+   },
+   {
+    "input": "height",
+    "expr": "props.height"
+   },
+   {
+    "input": "class",
+    "expr": "props.class"
+   }
+  ],
+  "helpers": {},
+  "coreFns": [
+   "buildHierarchyData"
+  ],
+  "coreTypes": [
+   "DashboardStore"
+  ]
+ },
+ {
+  "name": "OrganizationChart",
+  "selector": "st-dataviz-organization-chart",
+  "ds": {
+   "name": "OrganizationChart",
+   "alias": "DsOrganizationChart",
+   "selector": "st-organization-chart",
+   "typeImports": [
+    "OrganizationChartNode"
+   ]
+  },
+  "props": [
+   {
+    "name": "store",
+    "tsType": "DashboardStore",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "viewId",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "id_field",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "parent_field",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "label_field",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "width",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "height",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "label",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "class",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   }
+  ],
+  "derive": {
+   "kind": "model-rows",
+   "field": "data",
+   "wrap": null,
+   "builder": "buildHierarchyData",
+   "config": {
+    "id": "id_field",
+    "parentId": "parent_field",
+    "label": "label_field"
+   }
+  },
+  "classExpr": null,
+  "bindings": [
+   {
+    "input": "data",
+    "expr": "data"
+   },
+   {
+    "input": "label",
+    "expr": "props.label"
+   },
+   {
+    "input": "width",
+    "expr": "props.width"
+   },
+   {
+    "input": "height",
+    "expr": "props.height"
+   },
+   {
+    "input": "class",
+    "expr": "props.class"
+   }
+  ],
+  "helpers": {},
+  "coreFns": [
+   "buildHierarchyData"
+  ],
+  "coreTypes": [
+   "DashboardStore"
+  ]
+ },
+ {
+  "name": "DecompositionTreeChart",
+  "selector": "st-dataviz-decomposition-tree-chart",
+  "ds": {
+   "name": "DecompositionTreeChart",
+   "alias": "DsDecompositionTreeChart",
+   "selector": "st-decomposition-tree-chart",
+   "typeImports": [
+    "DecompositionTreeData"
+   ]
+  },
+  "props": [
+   {
+    "name": "store",
+    "tsType": "DashboardStore",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "viewId",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "measure",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "levels",
+    "tsType": "string[]",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "width",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "height",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "size",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "label",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "class",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   }
+  ],
+  "derive": {
+   "kind": "model-rows",
+   "field": "data",
+   "wrap": null,
+   "builder": "buildDecompositionTreeData",
+   "config": {
+    "measure": "measure",
+    "levels": "levels"
+   }
+  },
+  "classExpr": null,
+  "bindings": [
+   {
+    "input": "data",
+    "expr": "data"
+   },
+   {
+    "input": "label",
+    "expr": "props.label"
+   },
+   {
+    "input": "width",
+    "expr": "props.width"
+   },
+   {
+    "input": "height",
+    "expr": "props.height"
+   },
+   {
+    "input": "size",
+    "expr": "props.size"
+   },
+   {
+    "input": "class",
+    "expr": "props.class"
+   }
+  ],
+  "helpers": {},
+  "coreFns": [
+   "buildDecompositionTreeData"
+  ],
+  "coreTypes": [
+   "DashboardStore"
+  ]
+ },
+ {
+  "name": "ArcDiagramChart",
+  "selector": "st-dataviz-arc-diagram-chart",
+  "ds": {
+   "name": "ArcDiagramChart",
+   "alias": "DsArcDiagramChart",
+   "selector": "st-arc-diagram-chart",
+   "typeImports": [
+    "ArcDiagramChartLink"
+   ]
+  },
+  "props": [
+   {
+    "name": "store",
+    "tsType": "DashboardStore",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "viewId",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "source",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "target",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "weight",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "labels",
+    "tsType": "Record<string, string>",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "width",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "height",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "label",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "class",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   }
+  ],
+  "derive": {
+   "kind": "model-rows",
+   "field": "data",
+   "wrap": null,
+   "builder": "buildArcDiagramData",
+   "config": {
+    "source": "source",
+    "target": "target",
+    "weight": "weight"
+   }
+  },
+  "classExpr": null,
+  "bindings": [
+   {
+    "input": "data",
+    "expr": "data"
+   },
+   {
+    "input": "labels",
+    "expr": "props.labels"
+   },
+   {
+    "input": "label",
+    "expr": "props.label"
+   },
+   {
+    "input": "width",
+    "expr": "props.width"
+   },
+   {
+    "input": "height",
+    "expr": "props.height"
+   },
+   {
+    "input": "class",
+    "expr": "props.class"
+   }
+  ],
+  "helpers": {},
+  "coreFns": [
+   "buildArcDiagramData"
+  ],
+  "coreTypes": [
+   "DashboardStore"
+  ]
+ },
+ {
+  "name": "DependencyWheelChart",
+  "selector": "st-dataviz-dependency-wheel-chart",
+  "ds": {
+   "name": "DependencyWheelChart",
+   "alias": "DsDependencyWheelChart",
+   "selector": "st-dependency-wheel-chart",
+   "typeImports": [
+    "DependencyWheelChartLink"
+   ]
+  },
+  "props": [
+   {
+    "name": "store",
+    "tsType": "DashboardStore",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "viewId",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "source",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "target",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "weight",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "labels",
+    "tsType": "Record<string, string>",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "width",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "height",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "label",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "class",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   }
+  ],
+  "derive": {
+   "kind": "model-rows",
+   "field": "data",
+   "wrap": null,
+   "builder": "buildDependencyWheelData",
+   "config": {
+    "source": "source",
+    "target": "target",
+    "weight": "weight"
+   }
+  },
+  "classExpr": null,
+  "bindings": [
+   {
+    "input": "data",
+    "expr": "data"
+   },
+   {
+    "input": "labels",
+    "expr": "props.labels"
+   },
+   {
+    "input": "label",
+    "expr": "props.label"
+   },
+   {
+    "input": "width",
+    "expr": "props.width"
+   },
+   {
+    "input": "height",
+    "expr": "props.height"
+   },
+   {
+    "input": "class",
+    "expr": "props.class"
+   }
+  ],
+  "helpers": {},
+  "coreFns": [
+   "buildDependencyWheelData"
+  ],
+  "coreTypes": [
+   "DashboardStore"
+  ]
+ },
+ {
+  "name": "GaugeChart",
+  "selector": "st-dataviz-gauge-chart",
+  "ds": {
+   "name": "GaugeChart",
+   "alias": "DsGaugeChart",
+   "selector": "st-gauge-chart",
+   "typeImports": []
+  },
+  "props": [
+   {
+    "name": "store",
+    "tsType": "DashboardStore",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "viewId",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "value",
+    "tsType": "GaugeChartConfig['value']",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "label",
+    "tsType": "GaugeChartConfig['label']",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "min",
+    "tsType": "GaugeChartConfig['min']",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "max",
+    "tsType": "GaugeChartConfig['max']",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "thresholds",
+    "tsType": "GaugeChartConfig['thresholds']",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "format",
+    "tsType": "GaugeChartConfig['format']",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "unit",
+    "tsType": "GaugeChartConfig['unit']",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "size",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "thickness",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "startAngle",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "endAngle",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "class",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   }
+  ],
+  "derive": {
+   "kind": "model-rows",
+   "field": "gauge",
+   "wrap": null,
+   "builder": "buildGaugeData",
+   "config": {
+    "value": "value",
+    "label": "label",
+    "min": "min",
+    "max": "max",
+    "thresholds": "thresholds",
+    "format": "format",
+    "unit": "unit"
+   },
+   "intermediate": "gauge",
+   "multiMember": true
+  },
+  "classExpr": null,
+  "bindings": [
+   {
+    "input": "value",
+    "expr": "gauge.displayValue"
+   },
+   {
+    "input": "min",
+    "expr": "gauge.min"
+   },
+   {
+    "input": "max",
+    "expr": "gauge.max"
+   },
+   {
+    "input": "thresholds",
+    "expr": "gauge.thresholds"
+   },
+   {
+    "input": "label",
+    "expr": "gauge.label"
+   },
+   {
+    "input": "format",
+    "expr": "gauge.format"
+   },
+   {
+    "input": "unit",
+    "expr": "gauge.unit"
+   },
+   {
+    "input": "size",
+    "expr": "props.size"
+   },
+   {
+    "input": "thickness",
+    "expr": "props.thickness"
+   },
+   {
+    "input": "startAngle",
+    "expr": "props.startAngle"
+   },
+   {
+    "input": "endAngle",
+    "expr": "props.endAngle"
+   },
+   {
+    "input": "class",
+    "expr": "props.class"
+   }
+  ],
+  "helpers": {
+   "./distributionData.js": [
+    "buildGaugeData"
+   ]
+  },
+  "coreFns": [],
+  "coreTypes": [
+   "DashboardStore",
+   "GaugeChartConfig",
+   "GaugeChartFormat",
+   "GaugeChartThreshold"
+  ]
+ },
+ {
+  "name": "SolidGaugeChart",
+  "selector": "st-dataviz-solid-gauge-chart",
+  "ds": {
+   "name": "SolidGaugeChart",
+   "alias": "DsSolidGaugeChart",
+   "selector": "st-solid-gauge-chart",
+   "typeImports": []
+  },
+  "props": [
+   {
+    "name": "store",
+    "tsType": "DashboardStore",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "viewId",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "value",
+    "tsType": "GaugeChartConfig['value']",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "label",
+    "tsType": "GaugeChartConfig['label']",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "min",
+    "tsType": "GaugeChartConfig['min']",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "max",
+    "tsType": "GaugeChartConfig['max']",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "thresholds",
+    "tsType": "GaugeChartConfig['thresholds']",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "format",
+    "tsType": "GaugeChartConfig['format']",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "unit",
+    "tsType": "GaugeChartConfig['unit']",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "size",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "innerRadius",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "startAngle",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "endAngle",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "class",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   }
+  ],
+  "derive": {
+   "kind": "model-rows",
+   "field": "gauge",
+   "wrap": null,
+   "builder": "buildGaugeData",
+   "config": {
+    "value": "value",
+    "label": "label",
+    "min": "min",
+    "max": "max",
+    "thresholds": "thresholds",
+    "format": "format",
+    "unit": "unit"
+   },
+   "intermediate": "gauge",
+   "multiMember": true
+  },
+  "classExpr": null,
+  "bindings": [
+   {
+    "input": "value",
+    "expr": "gauge.displayValue"
+   },
+   {
+    "input": "min",
+    "expr": "gauge.min"
+   },
+   {
+    "input": "max",
+    "expr": "gauge.max"
+   },
+   {
+    "input": "thresholds",
+    "expr": "gauge.thresholds"
+   },
+   {
+    "input": "label",
+    "expr": "gauge.label"
+   },
+   {
+    "input": "format",
+    "expr": "gauge.format"
+   },
+   {
+    "input": "unit",
+    "expr": "gauge.unit"
+   },
+   {
+    "input": "size",
+    "expr": "props.size"
+   },
+   {
+    "input": "innerRadius",
+    "expr": "props.innerRadius"
+   },
+   {
+    "input": "startAngle",
+    "expr": "props.startAngle"
+   },
+   {
+    "input": "endAngle",
+    "expr": "props.endAngle"
+   },
+   {
+    "input": "class",
+    "expr": "props.class"
+   }
+  ],
+  "helpers": {
+   "./distributionData.js": [
+    "buildGaugeData"
+   ]
+  },
+  "coreFns": [],
+  "coreTypes": [
+   "DashboardStore",
+   "GaugeChartConfig",
+   "GaugeChartFormat",
+   "GaugeChartThreshold"
+  ]
+ },
+ {
+  "name": "ViolinChart",
+  "selector": "st-dataviz-violin-chart",
+  "ds": {
+   "name": "ViolinChart",
+   "alias": "DsViolinChart",
+   "selector": "st-violin-chart",
+   "typeImports": [
+    "ViolinChartDatum"
+   ]
+  },
+  "props": [
+   {
+    "name": "store",
+    "tsType": "DashboardStore",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "viewId",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "groupBy",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "measure",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "bins",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "quartiles",
+    "tsType": "boolean",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "width",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "height",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "label",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "class",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   }
+  ],
+  "derive": {
+   "kind": "model-rows",
+   "field": "model",
+   "wrap": null,
+   "builder": "buildViolinModel",
+   "config": {
+    "groupBy": "groupBy",
+    "measure": "measure",
+    "bins": "bins",
+    "quartiles": "quartiles"
+   },
+   "intermediate": "model",
+   "multiMember": true
+  },
+  "classExpr": null,
+  "bindings": [
+   {
+    "input": "data",
+    "expr": "model.data"
+   },
+   {
+    "input": "bins",
+    "expr": "model.bins"
+   },
+   {
+    "input": "quartiles",
+    "expr": "model.quartiles"
+   },
+   {
+    "input": "label",
+    "expr": "props.label"
+   },
+   {
+    "input": "width",
+    "expr": "props.width"
+   },
+   {
+    "input": "height",
+    "expr": "props.height"
+   },
+   {
+    "input": "class",
+    "expr": "props.class"
+   }
+  ],
+  "helpers": {},
+  "coreFns": [
+   "buildViolinModel"
+  ],
+  "coreTypes": [
+   "DashboardStore"
+  ]
+ },
+ {
+  "name": "BellCurveChart",
+  "selector": "st-dataviz-bell-curve-chart",
+  "ds": {
+   "name": "BellCurveChart",
+   "alias": "DsBellCurveChart",
+   "selector": "st-bell-curve-chart",
+   "typeImports": []
+  },
+  "props": [
+   {
+    "name": "store",
+    "tsType": "DashboardStore",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "viewId",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "measure",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "tone",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "smooth",
+    "tsType": "boolean",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "intervals",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "width",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "height",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "label",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "class",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   }
+  ],
+  "derive": {
+   "kind": "model-rows",
+   "field": "data",
+   "wrap": null,
+   "builder": "buildBellCurveData",
+   "config": {
+    "measure": "measure"
+   }
+  },
+  "classExpr": null,
+  "bindings": [
+   {
+    "input": "data",
+    "expr": "data"
+   },
+   {
+    "input": "label",
+    "expr": "props.label"
+   },
+   {
+    "input": "width",
+    "expr": "props.width"
+   },
+   {
+    "input": "height",
+    "expr": "props.height"
+   },
+   {
+    "input": "tone",
+    "expr": "props.tone"
+   },
+   {
+    "input": "smooth",
+    "expr": "props.smooth"
+   },
+   {
+    "input": "intervals",
+    "expr": "props.intervals"
+   },
+   {
+    "input": "class",
+    "expr": "props.class"
+   }
+  ],
+  "helpers": {},
+  "coreFns": [
+   "buildBellCurveData"
+  ],
+  "coreTypes": [
+   "DashboardStore"
+  ]
+ },
+ {
+  "name": "Density2DChart",
+  "selector": "st-dataviz-density2-d-chart",
+  "ds": {
+   "name": "Density2DChart",
+   "alias": "DsDensity2DChart",
+   "selector": "st-density2-d-chart",
+   "typeImports": [
+    "Density2DPoint"
+   ]
+  },
+  "props": [
+   {
+    "name": "store",
+    "tsType": "DashboardStore",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "viewId",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "x",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "y",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "weight",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "bins",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "width",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "height",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "size",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "label",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "class",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   }
+  ],
+  "derive": {
+   "kind": "model-rows",
+   "field": "data",
+   "wrap": null,
+   "builder": "buildDensity2DData",
+   "config": {
+    "x": "x",
+    "y": "y",
+    "weight": "weight"
+   }
+  },
+  "classExpr": null,
+  "bindings": [
+   {
+    "input": "data",
+    "expr": "data"
+   },
+   {
+    "input": "bins",
+    "expr": "props.bins"
+   },
+   {
+    "input": "label",
+    "expr": "props.label"
+   },
+   {
+    "input": "width",
+    "expr": "props.width"
+   },
+   {
+    "input": "height",
+    "expr": "props.height"
+   },
+   {
+    "input": "size",
+    "expr": "props.size"
+   },
+   {
+    "input": "class",
+    "expr": "props.class"
+   }
+  ],
+  "helpers": {},
+  "coreFns": [
+   "buildDensity2DData"
+  ],
+  "coreTypes": [
+   "DashboardStore"
+  ]
+ },
+ {
+  "name": "ContourChart",
+  "selector": "st-dataviz-contour-chart",
+  "ds": {
+   "name": "ContourChart",
+   "alias": "DsContourChart",
+   "selector": "st-contour-chart",
+   "typeImports": [
+    "ContourChartDatum"
+   ]
+  },
+  "props": [
+   {
+    "name": "store",
+    "tsType": "DashboardStore",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "viewId",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "x",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "y",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "value",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "levels",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "width",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "height",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "size",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "label",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "class",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   }
+  ],
+  "derive": {
+   "kind": "model-rows",
+   "field": "data",
+   "wrap": null,
+   "builder": "buildContourData",
+   "config": {
+    "x": "x",
+    "y": "y",
+    "value": "value"
+   }
+  },
+  "classExpr": null,
+  "bindings": [
+   {
+    "input": "data",
+    "expr": "data"
+   },
+   {
+    "input": "levels",
+    "expr": "props.levels"
+   },
+   {
+    "input": "label",
+    "expr": "props.label"
+   },
+   {
+    "input": "width",
+    "expr": "props.width"
+   },
+   {
+    "input": "height",
+    "expr": "props.height"
+   },
+   {
+    "input": "size",
+    "expr": "props.size"
+   },
+   {
+    "input": "class",
+    "expr": "props.class"
+   }
+  ],
+  "helpers": {},
+  "coreFns": [
+   "buildContourData"
+  ],
+  "coreTypes": [
+   "DashboardStore"
+  ]
+ },
+ {
+  "name": "StateTimelineChart",
+  "selector": "st-dataviz-state-timeline-chart",
+  "ds": {
+   "name": "StateTimelineChart",
+   "alias": "DsStateTimelineChart",
+   "selector": "st-state-timeline-chart",
+   "typeImports": [
+    "StateTimelineSeries"
+   ]
+  },
+  "props": [
+   {
+    "name": "store",
+    "tsType": "DashboardStore",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "viewId",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "series",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "start",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "end",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "state",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "label",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "width",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "height",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "class",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   }
+  ],
+  "derive": {
+   "kind": "model-rows",
+   "field": "data",
+   "wrap": null,
+   "builder": "buildStateTimelineData",
+   "config": {
+    "series": "series",
+    "start": "start",
+    "end": "end",
+    "state": "state"
+   }
+  },
+  "classExpr": null,
+  "bindings": [
+   {
+    "input": "data",
+    "expr": "data"
+   },
+   {
+    "input": "label",
+    "expr": "props.label"
+   },
+   {
+    "input": "width",
+    "expr": "props.width"
+   },
+   {
+    "input": "height",
+    "expr": "props.height"
+   },
+   {
+    "input": "class",
+    "expr": "props.class"
+   }
+  ],
+  "helpers": {},
+  "coreFns": [
+   "buildStateTimelineData"
+  ],
+  "coreTypes": [
+   "DashboardStore"
+  ]
+ },
+ {
+  "name": "StatusHistoryChart",
+  "selector": "st-dataviz-status-history-chart",
+  "ds": {
+   "name": "StatusHistoryChart",
+   "alias": "DsStatusHistoryChart",
+   "selector": "st-status-history-chart",
+   "typeImports": [
+    "StatusHistorySeries"
+   ]
+  },
+  "props": [
+   {
+    "name": "store",
+    "tsType": "DashboardStore",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "viewId",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "series",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "at",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "value",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "label",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "width",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "height",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "size",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "class",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   }
+  ],
+  "derive": {
+   "kind": "model-rows",
+   "field": "data",
+   "wrap": null,
+   "builder": "buildStatusHistoryData",
+   "config": {
+    "series": "series",
+    "at": "at",
+    "value": "value"
+   }
+  },
+  "classExpr": null,
+  "bindings": [
+   {
+    "input": "data",
+    "expr": "data"
+   },
+   {
+    "input": "label",
+    "expr": "props.label"
+   },
+   {
+    "input": "width",
+    "expr": "props.width"
+   },
+   {
+    "input": "height",
+    "expr": "props.height"
+   },
+   {
+    "input": "size",
+    "expr": "props.size"
+   },
+   {
+    "input": "class",
+    "expr": "props.class"
+   }
+  ],
+  "helpers": {},
+  "coreFns": [
+   "buildStatusHistoryData"
+  ],
+  "coreTypes": [
+   "DashboardStore"
+  ]
+ },
+ {
+  "name": "TimelineChart",
+  "selector": "st-dataviz-timeline-chart",
+  "ds": {
+   "name": "TimelineChart",
+   "alias": "DsTimelineChart",
+   "selector": "st-timeline-chart",
+   "typeImports": [
+    "TimelineChartEvent"
+   ]
+  },
+  "props": [
+   {
+    "name": "store",
+    "tsType": "DashboardStore",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "viewId",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "label_field",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "position",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "description",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "tone",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "width",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "height",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "label",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "class",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   }
+  ],
+  "derive": {
+   "kind": "model-rows",
+   "field": "data",
+   "wrap": null,
+   "builder": "buildTimelineData",
+   "config": {
+    "label": "label_field",
+    "position": "position",
+    "description": "description",
+    "tone": "tone"
+   }
+  },
+  "classExpr": null,
+  "bindings": [
+   {
+    "input": "data",
+    "expr": "data"
+   },
+   {
+    "input": "label",
+    "expr": "props.label"
+   },
+   {
+    "input": "width",
+    "expr": "props.width"
+   },
+   {
+    "input": "height",
+    "expr": "props.height"
+   },
+   {
+    "input": "class",
+    "expr": "props.class"
+   }
+  ],
+  "helpers": {},
+  "coreFns": [
+   "buildTimelineData"
+  ],
+  "coreTypes": [
+   "DashboardStore"
+  ]
+ },
+ {
+  "name": "GanttChart",
+  "selector": "st-dataviz-gantt-chart",
+  "ds": {
+   "name": "GanttChart",
+   "alias": "DsGanttChart",
+   "selector": "st-gantt-chart",
+   "typeImports": [
+    "GanttChartTask"
+   ]
+  },
+  "props": [
+   {
+    "name": "store",
+    "tsType": "DashboardStore",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "viewId",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "task",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "start",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "end",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "category",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "width",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "height",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "marker",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "label",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "class",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   }
+  ],
+  "derive": {
+   "kind": "model-rows",
+   "field": "data",
+   "wrap": null,
+   "builder": "buildGanttData",
+   "config": {
+    "task": "task",
+    "start": "start",
+    "end": "end",
+    "category": "category"
+   }
+  },
+  "classExpr": null,
+  "bindings": [
+   {
+    "input": "data",
+    "expr": "data"
+   },
+   {
+    "input": "label",
+    "expr": "props.label"
+   },
+   {
+    "input": "width",
+    "expr": "props.width"
+   },
+   {
+    "input": "height",
+    "expr": "props.height"
+   },
+   {
+    "input": "marker",
+    "expr": "props.marker"
+   },
+   {
+    "input": "class",
+    "expr": "props.class"
+   }
+  ],
+  "helpers": {},
+  "coreFns": [
+   "buildGanttData"
+  ],
+  "coreTypes": [
+   "DashboardStore"
+  ]
+ },
+ {
+  "name": "FlamegraphChart",
+  "selector": "st-dataviz-flamegraph-chart",
+  "ds": {
+   "name": "FlamegraphChart",
+   "alias": "DsFlamegraphChart",
+   "selector": "st-flamegraph-chart",
+   "typeImports": [
+    "FlamegraphNode"
+   ]
+  },
+  "props": [
+   {
+    "name": "store",
+    "tsType": "DashboardStore",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "viewId",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "id",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "parentId",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "name",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "value",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "width",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "height",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "size",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "label",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "class",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   }
+  ],
+  "derive": {
+   "kind": "model-rows",
+   "field": "data",
+   "wrap": null,
+   "builder": "buildFlamegraphData",
+   "config": {
+    "id": "id",
+    "parentId": "parentId",
+    "name": "name",
+    "value": "value"
+   }
+  },
+  "classExpr": null,
+  "bindings": [
+   {
+    "input": "data",
+    "expr": "data"
+   },
+   {
+    "input": "label",
+    "expr": "props.label"
+   },
+   {
+    "input": "width",
+    "expr": "props.width"
+   },
+   {
+    "input": "height",
+    "expr": "props.height"
+   },
+   {
+    "input": "size",
+    "expr": "props.size"
+   },
+   {
+    "input": "class",
+    "expr": "props.class"
+   }
+  ],
+  "helpers": {},
+  "coreFns": [
+   "buildFlamegraphData"
+  ],
+  "coreTypes": [
+   "DashboardStore"
+  ]
+ },
+ {
+  "name": "StreamgraphChart",
+  "selector": "st-dataviz-streamgraph-chart",
+  "ds": {
+   "name": "StreamgraphChart",
+   "alias": "DsStreamgraphChart",
+   "selector": "st-streamgraph-chart",
+   "typeImports": [
+    "StreamgraphChartDatum"
+   ]
+  },
+  "props": [
+   {
+    "name": "store",
+    "tsType": "DashboardStore",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "viewId",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "category",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "series",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "measure",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "tone",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "smooth",
+    "tsType": "boolean",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "showLegend",
+    "tsType": "boolean",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "width",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "height",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "label",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "class",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   }
+  ],
+  "derive": {
+   "kind": "model-rows",
+   "field": "data",
+   "wrap": null,
+   "builder": "buildStreamgraphData",
+   "config": {
+    "category": "category",
+    "label": "series",
+    "value": "measure",
+    "tone": "tone"
+   }
+  },
+  "classExpr": null,
+  "bindings": [
+   {
+    "input": "data",
+    "expr": "data"
+   },
+   {
+    "input": "label",
+    "expr": "props.label"
+   },
+   {
+    "input": "smooth",
+    "expr": "props.smooth"
+   },
+   {
+    "input": "showLegend",
+    "expr": "props.showLegend"
+   },
+   {
+    "input": "width",
+    "expr": "props.width"
+   },
+   {
+    "input": "height",
+    "expr": "props.height"
+   },
+   {
+    "input": "class",
+    "expr": "props.class"
+   }
+  ],
+  "helpers": {},
+  "coreFns": [
+   "buildStreamgraphData"
+  ],
+  "coreTypes": [
+   "DashboardStore"
+  ]
+ },
+ {
+  "name": "BumpChart",
+  "selector": "st-dataviz-bump-chart",
+  "ds": {
+   "name": "BumpChart",
+   "alias": "DsBumpChart",
+   "selector": "st-bump-chart",
+   "typeImports": [
+    "BumpChartSeries"
+   ]
+  },
+  "props": [
+   {
+    "name": "store",
+    "tsType": "DashboardStore",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "viewId",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "series",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "category",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "measure",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "direction",
+    "tsType": "'asc' | 'desc'",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "width",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "height",
+    "tsType": "number",
+    "optional": true,
+    "required": false
+   },
+   {
+    "name": "label",
+    "tsType": "string",
+    "optional": false,
+    "required": true
+   },
+   {
+    "name": "class",
+    "tsType": "string",
+    "optional": true,
+    "required": false
+   }
+  ],
+  "derive": {
+   "kind": "model-rows",
+   "field": "bumpModel",
+   "wrap": null,
+   "builder": "buildBumpModel",
+   "config": {
+    "series": "series",
+    "category": "category",
+    "measure": "measure",
+    "direction": "direction"
+   },
+   "intermediate": "bumpModel",
+   "multiMember": true
+  },
+  "classExpr": null,
+  "bindings": [
+   {
+    "input": "data",
+    "expr": "bumpModel.series"
+   },
+   {
+    "input": "categories",
+    "expr": "bumpModel.categories"
+   },
+   {
+    "input": "label",
+    "expr": "props.label"
+   },
+   {
+    "input": "width",
+    "expr": "props.width"
+   },
+   {
+    "input": "height",
+    "expr": "props.height"
+   },
+   {
+    "input": "class",
+    "expr": "props.class"
+   }
+  ],
+  "helpers": {},
+  "coreFns": [
+   "buildBumpModel"
+  ],
+  "coreTypes": [
+   "DashboardStore"
+  ]
  }
 ]
