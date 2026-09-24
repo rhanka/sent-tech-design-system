@@ -267,9 +267,11 @@ export interface LayoutClient {
  * siblings, so the relative specifier resolves inside the installed tarball —
  * which the pack smoke test verifies from the tarball rather than from source.
  *
- * @throws in a CommonJS host, where `import.meta` does not exist. That is why
- *   the two new subpaths are published ESM-only; a `require()` consumer has the
- *   synchronous path, which needs no URL.
+ * @throws `TypeError [ERR_INVALID_URL]` in a CommonJS build, where `import.meta`
+ *   is compiled away to `{}` (measured with esbuild, which also warns about it).
+ *   That is why the two new subpaths are published ESM-only: a `require()`
+ *   consumer never reaches this module and uses the computation subpath
+ *   synchronously, which needs no URL.
  */
 export function resolveLayoutWorkerUrl(): URL {
   return new URL("./worker.js", import.meta.url);

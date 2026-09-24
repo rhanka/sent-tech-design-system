@@ -155,8 +155,10 @@ describe("invariant — the worker resolves in the published package", () => {
       types: "./dist/layout-client.d.ts",
       import: "./dist/layout-client.js",
     });
-    // No `require`: `import.meta` has no CommonJS equivalent, so a CJS build of
-    // the client would resolve a wrong URL silently. See tsup.config.ts.
+    // No `require`: measured, a CJS build of this module writes
+    // `var import_meta = {}` and throws `TypeError [ERR_INVALID_URL]` at
+    // `new URL("./worker.js", undefined)`. A `require` condition that throws at
+    // the one call that matters is worse than none. See tsup.config.ts.
     expect(manifest.exports["./worker"]?.require).toBeUndefined();
     expect(manifest.exports["./layout-client"]?.require).toBeUndefined();
 

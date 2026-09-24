@@ -33,6 +33,17 @@
   `docs/graph-dataviz-migration-plan.md` (SPEC_EVOL_GD_M2_MODEL §5.8 requires it, while
   that spec's §5.1 scope list omits `docs/**` - the conflict is recorded in the PR body).
   Nothing else is touched: no `packages/graph/**` change, no `spec/**` change, no `.track/**` write.
+- [x] Widened for the GD-M2-WORKERS implementation (same commit, SPEC_EVOL_GD_M2_WORKERS §5.1) :
+  `packages/graph/**` (two new ESM-only subpaths, their shared protocol module, three test
+  files, two test helpers and a measurement bench),
+  `scripts/smoke-pack.mjs` + `scripts/smoke-pack-verify-template.mjs` (require and import
+  `@sentropic/graph/worker` and `@sentropic/graph/layout-client` from the tarball, SPEC §3.2),
+  `docs/graph-dataviz-m1-provenance.json` (ten new `local-monorepo-helper` entries; the three
+  entries whose files changed refreshed in their LOCAL field only — no `adapted-*` upstream
+  `sha256` touched),
+  `spec/SPEC_EVOL_GD_M2_WORKERS.md` (deviations measured by the implementation appended as §7,
+  same pattern as #87 for GD-M2-MODEL) and this plan file.
+  Nothing else: no `tools/**` change, no `package-lock.json` change, no `.track/**` write.
 
 ## Plan / Todo
 
