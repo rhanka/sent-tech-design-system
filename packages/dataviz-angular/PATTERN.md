@@ -169,6 +169,14 @@ Assert three things: the DS root element and its classes, the key DS sub-element
 others). Add one test that mutates the store after the first
 `detectChanges()` and asserts the render followed.
 
+The structural guard `src/lib/adapter-pattern.test.ts` enforces the shape of
+every adapter from its source: no getter but the `store` accessor, `ngOnInit` and
+`ngOnChanges` both calling the same **private** derivation method, an
+`ngOnDestroy` that unsubscribes exactly when the adapter subscribes, and no
+inline style or hard-coded colour. Add the new file to the expected list in its
+first case — the guard cross-checks that list against `src/index.ts`, so a new
+adapter cannot slip past it, and the failure tells you which file is missing.
+
 ## 6. Exports
 
 Add the component and its `…Props` type to `src/index.ts`, plus any pure helper
@@ -268,34 +276,46 @@ asserts the whole surface — add the new name to its `components` table.
 
 ## Proving parity with React or Vue
 
-The adapters are compared by **rendered markup**, attribute by attribute, against
-`@sentropic/dataviz-react`. Method (run from a scratch directory outside the
-package so that no React dependency enters this package's manifest):
+The harness lives in `tools/dataviz-angular-parity/` and is one command:
 
-1. Render the Angular adapter with `TestBed` (jsdom) and the React adapter with
-   `renderToStaticMarkup`, from the **same** fixture data and the same props.
-2. Flatten both DOMs into an order-sensitive list of
-   `<tag attr="value" …>` / `#text` entries, with a short, explicit allowlist for
-   differences that belong to the DS packages rather than to the adapters:
-   `data-st-component` (emitted by every DS Angular component, by no DS React
-   one), generated ids (Angular counter / `Math.random()` vs React `useId()`),
-   `style` formatting (`a: b;` vs `a:b`), the empty `class=""` React renders, and
-   the `xmlns`/`lucide-*` class the React icon helper carries. Unwrap the
-   `<st-*>` host elements, drop comment nodes, sort attributes and class tokens.
-3. Diff position by position, and diff a second, weaker signature: every text
-   node plus every `aria-label`/`placeholder`/`title`/`alt` value, in document
-   order — the user- and AT-visible content, independent of the wrapper
-   elements the DS chose.
-4. Run the same comparison on the **DS components alone**, with identical inputs.
-   A diff count that is identical at both levels proves the divergence lives
-   below the adapter.
+```sh
+npm run build && npm run parity:dataviz-angular
+```
 
-Result for this lot: five adapters (`AreaChart`, `DonutChart`, `ScatterPlot`,
-`KpiCardGroup`, `RecordsTable`) match React with **zero** differing entries, class
-passthrough included. `DashboardFilterBar` matches on content signature with zero
-differences while its markup differs only inside the DS primitives.
-`HeatmapChart` and `TreemapChart` show exactly the same diff count as the bare DS
-components (28 and 76), i.e. no adapter-attributable difference.
-`DateRangeFilter` differs by one entry (React serialises `value=""` on the
-readonly input, Angular sets the property). `SelectionLegend` differs by trap 6
-plus the DS `SelectionChip` icon path.
+It renders each Angular adapter with `TestBed` (jsdom) and its React counterpart
+with `renderToStaticMarkup`, from the same fixture and the same props, then
+compares (a) the flattened markup entry by entry, (b) the user- and
+AT-visible content signature, and (c) the same comparison on the **bare DS
+components**, which is what attributes a residual difference to
+`components-angular` rather than to the adapter. Expected counts are asserted, so
+the harness is also a regression gate; it regenerates
+`tools/dataviz-angular-parity/PARITY.md`.
+
+Every count depends on the normalisation in
+`tools/dataviz-angular-parity/normalize.ts` — a stricter or looser allowlist moves
+the numbers without changing the conclusions. Read that file before quoting a
+figure, and add a new lot's adapters as new cases there.
+
+Result for this lot (from `PARITY.md`): **5 of 10 adapters match React entry for
+entry**, class passthrough included, and **7 of 10 match on content signature**.
+`HeatmapChart` (28) and `TreemapChart` (76) show exactly the bare DS components'
+diff counts, so nothing is adapter-attributable. `DashboardFilterBar` differs only
+inside the DS primitives (bare `Search` alone: 17) with a zero signature diff.
+`DateRangeFilter` differs by one entry (React serialises `value=""` on the readonly
+input, Angular sets the property). `SelectionLegend` differs by trap 6 plus the DS
+`SelectionChip` icon path (bare chip: 6).
+
+## Known debt
+
+- **The three data helpers are duplicated, not shared.**
+  `categoricalData.ts`, `partOfWholeData.ts` and `distributionData.ts` exist once
+  per adapter package (389 lines × 4). None of their 35 exported symbols exists in
+  `@sentropic/dataviz-core`, and all four adapter packages already depend on core,
+  so the resolution is to promote them into core and delete the copies. Until that
+  happens, `scripts/verify-dataviz-helper-copies.test.mjs` hashes every copy and
+  fails when they drift apart. Do not edit one package's copy: change the
+  reference and copy it across, or do the promotion.
+- **Two DS-level parity gaps** (see trap 13 and the parity table): the
+  `HeatmapChart`/`TreemapChart` data-list wording, and `Inline` accepting no ARIA
+  input. Both are `packages/components-angular` changes. Closing them first would
+  let the next lots reach exact parity instead of documenting exceptions.
