@@ -29,11 +29,11 @@ import type { TenantTheme } from "@sentropic/design-system-themes";
  *   Body / primary text (near-black)   #242424   (`.text-title` / `.article__text-body`)
  *   Darkest                            #111111   (`.contact-form-container h2` text)
  *   Main Red (brand / action)          #d62d20   (named `main-red` token)
- *   Main Red hover                     #bb271c   (derived darker red for hover — à confirmer)
+ *   Main Red hover                     #bb271c   (HSL L −0.06 choice outside the stop rule — à confirmer)
  *   Light red tint                     #fae3e1   (derived light red tint — à confirmer)
  *   Corn silk accent                   #e0d9d1   (named `corn-silk` token)
  *   Floral accent                      #a99f93   (named `floral-white` token)
- *   Deep taupe accent                  #7d7468   (derived deep taupe — à confirmer)
+ *   Deep taupe accent                  #7d7468   (chosen stand-in, not a stop-rule product — à confirmer)
  *   Success green                      #166534   (derived — à confirmer)
  *   Warning amber                      #b45309   (derived — à confirmer)
  *   Info blue                          #1d4ed8   (derived — à confirmer)
@@ -46,8 +46,8 @@ const unibailRodamcoWestfieldColor = {
   // `.focus:ring-main-red`).
   red: {
     primary: "#d62d20", // URW `main-red` — brand red (action / brand)
-    hover: "#bb271c", // derived darker red for hover (à confirmer)
-    light: "#fae3e1" // derived light red tint (à confirmer)
+    hover: "#bb271c", // darker red for hover, one HSL L −0.06 step from #d62d20 — a choice outside the stop rule (à confirmer)
+    light: "#fae3e1" // chosen light red tint, coherent stand-in, not a stop-rule product (à confirmer)
   },
   // Neutral scale. Every step is read from a brand-owned rule (named theme
   // tokens or site-owned selectors — see MAPPING.md); only the darkest step
@@ -69,7 +69,7 @@ const unibailRodamcoWestfieldColor = {
   accent: {
     cornSilk: "#e0d9d1", // named `corn-silk` token
     floral: "#a99f93", // named `floral-white` token
-    deep: "#7d7468" // derived deep taupe (à confirmer)
+    deep: "#7d7468" // chosen deep taupe stand-in from #a99f93, not a stop-rule product (à confirmer)
   },
   // System / status colours. The error role reuses the brand Main Red
   // (measured); success / warning / info are derived (à confirmer).
@@ -177,10 +177,14 @@ const foundation = {
     thick: "2px"
   },
   borderStyle: { solid: "solid" },
-  // Control density. The brand publishes input padding (10px 12px) but no full
-  // size grid, so density is aligned with the reference theme package's
-  // geometry ("à confirmer"); only controlHeight/iconSize match the Sentropic
-  // base values.
+  // Control density. Brand geometry found: `.contact-form input{padding:10px 12px}`
+  // (no `height`/`min-height` on brand form controls) and `.contact-form
+  // button{padding:12px 28px}` — no full size grid, so density is aligned with
+  // the reference theme package's geometry ("à confirmer"). Gaps vs the
+  // Sentropic base: `md.paddingBlock` 0.375rem (base 0), `md.paddingInline`
+  // 0.75rem (base 1rem), `sm.paddingInline` 0.5rem (base 0.75rem),
+  // `lg.paddingInline` 1rem (base 1.25rem), `sm.gap` 0.5rem (base 0.375rem),
+  // plus the extra `fontSize` key.
   density: {
     sm: { controlHeight: "2rem", paddingBlock: "0", paddingInline: "0.5rem", gap: "0.5rem", minWidth: "2rem", fontSize: "0.875rem" }, // à confirmer
     md: { controlHeight: "2.5rem", paddingBlock: "0.375rem", paddingInline: "0.75rem", gap: "0.5rem", minWidth: "2.5rem", fontSize: "1rem" }, // à confirmer
@@ -193,9 +197,11 @@ const foundation = {
     control: { family: "'FlamaCondensed', 'Helvetica', Arial, sans-serif", size: "1rem", weight: "500", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
     field: { family: "'Helvetica', Arial, sans-serif", size: "1rem", weight: "400", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
     label: { family: "'Helvetica', Arial, sans-serif", size: "1rem", weight: "700", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
-    // Brand links read in the Main Red #d62d20 (legible at 4.93:1 on white),
-    // not underlined at rest (rest state unmeasured — à confirmer), underlined
-    // on hover (`.siteCoreContainer a:hover`).
+    // Brand links take the Main Red #d62d20 (legible at 4.93:1 on white) by
+    // inference from `.text-body{color:#d62d20}` and the `main-red` token — no
+    // resting link-colour rule is published (`a{color:inherit}`); underline on
+    // hover is measured (`.siteCoreContainer a:hover`, whose hover colour is
+    // #333, not the red).
     link: {
       family: "inherit", size: "inherit", weight: "inherit", lineHeight: "inherit", letterSpacing: "0", textTransform: "none",
       textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto",
@@ -206,12 +212,14 @@ const foundation = {
   transition: { property: "background-color, border-color, color, box-shadow", duration: "150ms", easing: "ease-in-out" }, // à confirmer
   cursor: { interactive: "pointer", disabled: "not-allowed", text: "text" },
   iconSize: { sm: "1rem", md: "1.125rem", lg: "1.25rem" },
-  // FOCUS = a Main Red RING (`.focus:ring-main-red` declares a ring-colour
-  // technique in the brand red; width/offset unmeasured — à confirmer).
+  // FOCUS = a Main Red RING: `.focus:ring-main-red` declares the ring-colour
+  // technique in the brand red, `.focus\:ring-2:focus` publishes the 2px ring
+  // (`calc(2px + var(--tw-ring-offset-width))`) and `.focus\:ring-offset-2:focus`
+  // publishes `--tw-ring-offset-width:2px`.
   focus: {
     strategy: "ring",
-    width: "2px", // à confirmer
-    offset: "2px", // à confirmer
+    width: "2px", // measured (`.focus\:ring-2:focus`)
+    offset: "2px", // measured (`.focus\:ring-offset-2:focus`)
     color: unibailRodamcoWestfieldColor.red.primary, // #d62d20 `main-red` ring (4.93:1 on white)
     inset: "0"
   },

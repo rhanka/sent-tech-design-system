@@ -45,8 +45,10 @@ describe("unibailRodamcoWestfieldTheme", () => {
     // Main Red danger and near-black inverse surface.
     expect(css).toContain("--st-semantic-action-danger: #d62d20;");
     expect(css).toContain("--st-semantic-surface-inverse: #242424;");
-    // URW brand font families (FlamaCondensed display, Helvetica body).
+    // URW brand font families (FlamaCondensed display, Helvetica body,
+    // Arial fallback — every family present in the output is pinned).
     expect(css).toContain("FlamaCondensed");
     expect(css).toContain("Helvetica");
+    expect(css).toContain("Arial");
   });
 });
