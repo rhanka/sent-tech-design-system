@@ -96,9 +96,9 @@ const cases: Case[] = [
     template: `<st-dataviz-heatmap-chart [store]="store" viewId="revenue" x="service" y="region" measure="amount" label="Revenue heatmap"></st-dataviz-heatmap-chart>`,
     re: RE.HeatmapChart as ComponentType<Props>,
     props: { viewId: 'revenue', x: 'service', y: 'region', measure: 'amount', label: 'Revenue heatmap' },
-    expectedMarkupDiffs: 27,
+    expectedMarkupDiffs: 0,
     expectedSignatureDiffs: 0,
-    attribution: 'DS: components-angular vs components-react HeatmapChart',
+    attribution: "—",
     control: {
       ng: NGDS.HeatmapChart as Type<unknown>,
       template: `<st-heatmap-chart [data]="dsHeatmapData" [legend]="true" label="Revenue heatmap"></st-heatmap-chart>`,
@@ -313,7 +313,7 @@ const cases: Case[] = [
     re: RE.OHLCChart as ComponentType<Props>,
     props: { viewId: 'v', label_field: 'region', open: 'open', high: 'high', low: 'low', close: 'close', label: 'L', className: 'probe' },
     fixture: 'wide',
-    expectedMarkupDiffs: 3,
+    expectedMarkupDiffs: 0,
     expectedSignatureDiffs: 0,
     attribution: "DS: Angular emits data-chart-index on each bar, React does not",
     control: {
@@ -341,7 +341,7 @@ const cases: Case[] = [
     re: RE.RenkoChart as ComponentType<Props>,
     props: { viewId: 'v', date: 'ts', close: 'close', label: 'L', className: 'probe' },
     fixture: 'wide',
-    expectedMarkupDiffs: 7,
+    expectedMarkupDiffs: 0,
     expectedSignatureDiffs: 0,
     attribution: "DS: Angular always renders the tooltip, React renders it only on hover",
     control: {
