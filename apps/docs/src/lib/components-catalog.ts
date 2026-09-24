@@ -1021,6 +1021,16 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "PriorityMatrix",
+    slug: "priority-matrix",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Matrice de priorisation 2×2 (complexité/valeur), quadrants teintés et étiquettes placées sans chevauchement.",
+      en: "2×2 priority matrix (complexity/value) with tinted quadrants and overlap-free label placement."
+    }
+  },
+  {
     name: "ForceGraph",
     slug: "force-graph",
     status: "documented",
