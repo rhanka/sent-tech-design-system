@@ -129,14 +129,14 @@
     <p class="docs-dataviz-note">
       {#if locale.value === "fr"}
         Les composants graphiques et BI pilotés par store
-        (<code>@sentropic/dataviz-*</code>) sont présentés sur le site dédié du
-        projet dataviz :
-        <Link href="https://dataviz.sent-tech.ca/charts" external>Ouvrir la galerie de démonstrations dataviz</Link>.
+        (<code>@sentropic/dataviz-*</code>) sont développés et publiés depuis ce
+        dépôt :
+        <Link href="https://www.npmjs.com/package/@sentropic/dataviz-core" external>Paquets dataviz sur npm</Link>.
       {:else}
         The store-driven chart and BI components
-        (<code>@sentropic/dataviz-*</code>) are presented on the dedicated
-        dataviz project site:
-        <Link href="https://dataviz.sent-tech.ca/charts" external>Open the dataviz demo gallery</Link>.
+        (<code>@sentropic/dataviz-*</code>) are developed and published from
+        this repository:
+        <Link href="https://www.npmjs.com/package/@sentropic/dataviz-core" external>Dataviz packages on npm</Link>.
       {/if}
     </p>
     {#each groups as group (group.category)}
