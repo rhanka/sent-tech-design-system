@@ -74,7 +74,7 @@ function configMap(text) {
   return Object.fromEntries(pairs.map((m) => [m[1], m[2]]));
 }
 
-function extract(name) {
+export function extract(name) {
   const src = readFileSync(VUE + '/' + name + '.ts', 'utf8');
   const types = propTypes(src, name);
   const runtime = propRuntime(src);
@@ -175,23 +175,47 @@ function extract(name) {
   };
 }
 
-const names = process.argv.slice(2);
-const out = [];
-for (const n of names) {
-  try {
-    out.push(extract(n));
-  } catch (e) {
-    console.error('SKIP ' + n + ': ' + e.message);
+if (import.meta.url === `file://${process.argv[1]}`) {
+  const names = process.argv.slice(2);
+  if (names.length === 0) {
+    console.error(
+      'usage: node tools/dataviz-angular-port/extract.mjs <ComponentName> [...]\n' +
+        'Refusing to run with no names: it would overwrite descriptors.json with an\n' +
+        'empty list, and that file is the artefact a review reads.',
+    );
+    process.exit(2);
   }
-}
-writeFileSync(ROOT + '/tools/dataviz-angular-port/descriptors.json', JSON.stringify(out, null, 1) + '\n');
-console.log('extracted ' + out.length + '/' + names.length);
-for (const d of out) {
-  const b = d.derive.wrap ? d.derive.wrap + '(' + d.derive.builder + ')' : d.derive.builder;
-  console.log(
-    d.name.padEnd(24) + ' ' + d.ds.selector.padEnd(30) + ' ' + d.derive.kind.padEnd(11) + ' ' +
-    b.padEnd(42) + ' props=' + String(d.props.length).padStart(2) +
-    ' cfg=' + Object.keys(d.derive.config).length + ' binds=' + d.bindings.length +
-    (d.classExpr ? ' class=' + d.classExpr.base : '') + (d.derive.asArray ? ' [array]' : ''),
-  );
+  const out = [];
+  for (const n of names) {
+    try {
+      out.push(extract(n));
+    } catch (e) {
+      console.error('SKIP ' + n + ': ' + e.message);
+    }
+  }
+  // Merge by name into the existing ledger: a lot extracts its own components
+  // without discarding the descriptors of the lots already shipped.
+  const target = ROOT + '/tools/dataviz-angular-port/descriptors.json';
+  let existing = [];
+  try {
+    existing = JSON.parse(readFileSync(target, 'utf8'));
+  } catch {
+    existing = [];
+  }
+  const merged = existing.map((d) => out.find((n) => n.name === d.name) ?? d);
+  for (const fresh of out) {
+    if (!merged.some((d) => d.name === fresh.name)) merged.push(fresh);
+  }
+  writeFileSync(target, JSON.stringify(merged, null, 1) + '\n');
+  console.log('extracted ' + out.length + '/' + names.length + ', descriptors.json now holds ' + merged.length);
+  for (const d of out) {
+    const b = d.derive.wrap ? d.derive.wrap + '(' + d.derive.builder + ')' : d.derive.builder;
+    console.log(
+      d.name.padEnd(24) + ' ' + d.ds.selector.padEnd(30) + ' ' + d.derive.kind.padEnd(11) + ' ' +
+      b.padEnd(42) + ' props=' + String(d.props.length).padStart(2) +
+      ' cfg=' + Object.keys(d.derive.config).length + ' binds=' + d.bindings.length +
+      (d.classExpr ? ' class=' + d.classExpr.base : '') + (d.derive.asArray ? ' [array]' : ''),
+    );
+  }
+
 }
