@@ -131,12 +131,12 @@
         Les composants graphiques et BI pilotés par store
         (<code>@sentropic/dataviz-*</code>) sont présentés sur le site dédié du
         projet dataviz :
-        <Link href="https://dataviz.sent-tech.ca" external>Ouvrir le site dataviz</Link>.
+        <Link href="https://dataviz.sent-tech.ca/charts" external>Ouvrir la galerie de démonstrations dataviz</Link>.
       {:else}
         The store-driven chart and BI components
         (<code>@sentropic/dataviz-*</code>) are presented on the dedicated
         dataviz project site:
-        <Link href="https://dataviz.sent-tech.ca" external>Open the dataviz site</Link>.
+        <Link href="https://dataviz.sent-tech.ca/charts" external>Open the dataviz demo gallery</Link>.
       {/if}
     </p>
     {#each groups as group (group.category)}
