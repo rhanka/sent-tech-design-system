@@ -3,7 +3,9 @@
 Angular adapter for `@sentropic/dataviz-core`, built against
 `@sentropic/design-system-angular`.
 
-Scope is still a subset of the Vue/React/Svelte adapters. **32 of ~119** ported:
+Scope is still a subset of the Vue/React/Svelte adapters. **32 of 119** ported,
+87 remaining — `node tools/dataviz-angular-port/classify.mjs` prints the count and
+how much of the remainder the generator can read:
 
 - signal-based bridge for the core dashboard store
   (`createDashboard`, `toSignalStore`, `provideDashboard`, `injectDashboard`)
