@@ -1,0 +1,28 @@
+{
+  "case": "reference-type-mismatch",
+  "note": "A well-formed reference of the WRONG namespace: the schema declares `owner` as an entity reference and the value is a port reference. The five (here seven) reference types are not interchangeable at runtime either, so this is a named diagnostic and not a lookup miss.",
+  "kind": "document",
+  "expect": { "codes": ["reference-type-mismatch"] },
+  "document": {
+    "documentId": "document:r2",
+    "schemaVersion": { "major": 1, "minor": 1 },
+    "revision": 0,
+    "profileRefs": ["generic@1"],
+    "typeDefinitions": {},
+    "entities": {
+      "entity:alpha": {
+        "id": "entity:alpha",
+        "profile": "generic@1",
+        "type": "node",
+        "attributes": {
+          "name": { "kind": "text", "value": "Alpha" },
+          "owner": { "kind": "reference", "value": "port:alpha-out" }
+        }
+      }
+    },
+    "ports": {},
+    "relations": {},
+    "resources": {},
+    "extensions": []
+  }
+}

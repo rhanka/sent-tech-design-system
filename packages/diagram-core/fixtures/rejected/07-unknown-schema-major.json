@@ -1,0 +1,13 @@
+{
+  "case": "unknown-schema-major",
+  "note": "A stored document from a schema major this build does not know. It is refused FOR WRITE and preserved for inspection and export: `preserved.canonical` is the export, byte-stable, with its hash. Nothing in it is partially interpreted.",
+  "kind": "stored",
+  "expect": { "codes": ["unknown-schema-major"] },
+  "stored": {
+    "documentId": "document:future",
+    "schemaVersion": { "major": 2, "minor": 0 },
+    "revision": 12,
+    "profileRefs": ["generic@1"],
+    "graph": { "nodes": [{ "id": "n1", "kind": "whatever-2-0-calls-it" }] }
+  }
+}
