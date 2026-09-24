@@ -28,15 +28,21 @@ jobs:
           node-version: "22"
           cache: "npm"
 
-      # Root-only node_modules cache: this avoids the huge root+workspace cache
-      # previously measured as no faster than npm ci, while still skipping most
-      # of the install cost for docs-only pushes.
-      - name: Restore root node_modules
+      # node_modules cache, workspaces included: the lockfile nests some
+      # devDependencies (for instance
+      # packages/dataviz-react/node_modules/@vitejs/plugin-react), and a
+      # root-only cache made the install step skip on a hit with those nested
+      # modules absent. The key stays the lockfile hash, so the restored tree
+      # always matches the lock.
+      - name: Restore node_modules
         id: root-node-modules
         uses: actions/cache@v4
         with:
-          path: node_modules
-          key: root-node-modules-v1-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          path: |
+            node_modules
+            packages/*/node_modules
+            apps/*/node_modules
+          key: node-modules-v2-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
 
       - name: Install dependencies
         if: steps.root-node-modules.outputs.cache-hit != 'true'
