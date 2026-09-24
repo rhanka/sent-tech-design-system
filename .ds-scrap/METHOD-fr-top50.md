@@ -1,0 +1,531 @@
+# METHOD — Top-50 France brand themes + LaTeX (builder method)
+
+Scope: 22 builder agents, each delivering ONE package `packages/theme-<id>/`.
+This file is self-contained: a builder who reads only this file must be able
+to deliver a conforming theme without asking questions. Language for
+everything produced in the repo (docs, code, comments): English. The
+derived-value marker `à confirmer` is a literal flag and is kept as-is.
+
+Verified against `main` at `0592bd9e` on 2026-09-24. Reference template:
+`packages/theme-schneider-electric/` (newest, cleanest). Provenance models:
+`packages/theme-hermes/MAPPING.md`, `packages/theme-renault/MAPPING.md`.
+Publishable model: `packages/theme-canada/`.
+
+---
+
+## 1. Scope rule
+
+The builder creates ONLY `packages/theme-<id>/` — the five files listed in
+section 4. It touches NO shared file, NO other package, NOTHING under `apps/`,
+and NOT the lockfile.
+
+Docs registration is a **serial conductor act**, not a builder act — reduced,
+for this programme, to exactly three items (it used to be five under the old
+recipe):
+
+| Act | Who | When |
+|---|---|---|
+| `npm install`, then commit of `package-lock.json` alone | conductor | once per lot, after the lot's packages land |
+| dependency entry in `apps/docs/package.json` | conductor | once per lot |
+| `Chrome<Brand>.svelte` + `+layout.svelte` wiring (`useCustomChrome` and the render branch) + update of the `apps/docs/src/lib/header-contract.test.ts` literal | conductor | **second wave**, outside this package programme |
+
+Without the lockfile entry `npm ci` fails: `package-lock.json` carries one
+entry per theme package, and every workflow in `.github/workflows` installs
+with `npm ci`. The model for that act is the dedicated commit
+`139690f6 chore(lock): enregistrer les 5 packages thèmes Paris lot 4 dans le
+lockfile`, which touches only `package-lock.json`.
+
+Everything else about registration is **automatic** and stays automatic:
+`apps/docs/src/lib/theme-catalog.ts` discovers every
+`packages/theme-*/src/index.ts` through `import.meta.glob`; `url-state.ts`
+derives its valid ids (`VALID_THEME_IDS`) from that catalogue; privacy is a
+whitelist (`PUBLIC_THEME_IDS`) so a new theme is private by construction;
+`dist/` is built by `scripts/ensure-theme-dists.mjs` (workspace-graph
+auto-discovery, content-hash rebuilds — no script edit when a theme is
+added); and `scripts/smoke-pack.mjs` only packs and deep-import-checks
+publishable packages, so a new `private: true` brand theme enters no pack
+selection (the licensing gate, `scripts/verify-publishable-licensing.mjs`,
+likewise applies only to non-`private` workspaces).
+
+The scope rule therefore stays as **merge hygiene**: with 22 builders working
+in parallel, a shared-file edit is a merge conflict and a defect. The review
+protocol (section 12) rejects any diff outside `packages/theme-<id>/`.
+
+## 2. Token measurement procedure
+
+Deterministic order. Never skip a step, never reorder.
+
+**Step 0 — Fetch without a browser.** Retrieve the brand's public CSS with
+the native binaries already present (`curl`, `grep`, `sed` — no Python, no
+script or image; one-line Node commands per section 9 and present native
+binaries are allowed; see section 10). Some hosts block bare
+requests: retry with a browser user-agent and a referer. Extract the custom
+property declarations (`--*`) and read their values. Record, per value: the
+hex, the declaring variable name, and the file/URL it came from.
+
+**Step 1 — Raw measured palette first.** Declare
+`const <id>Color = { … }` at the top of `src/index.ts`, grouped by family
+(brand, accent, grey scale, system). Each entry carries a `//` comment citing
+its real source variable or source document (section 6).
+
+**Step 2 — `foundation`.** Map the raw palette onto `foundation.color`
+(`blue{10,60,80}`, `cyan{10,50,70}`, `slate{0,10,20,60,80,90}`,
+`feedback{success,warning,error,info}`), then write the scalars — **always
+all present, never omitted**: `font{sans,display,mono}`,
+`spacing{0,1,2,3,4,6,8,12,16}`, `radius{none,sm,md,lg,pill}`,
+`shadow{subtle,medium,floating}`, `motion{fast,normal,slow,easing}`,
+`z{header,toast,overlay,modal,chat}` (full inventory read in
+`packages/tokens/src/foundation.ts` — re-read that file, never copy these
+keys from memory). Then the anatomy primitives (`borderWidth`,
+`borderStyle`, `density`, `typography{control,field,label,link}`,
+`disabledOpacity`, `transition`, `cursor`, `iconSize`, `focus`, `field`):
+override only what differs from the Sent Tech base; the rest falls back.
+Then the **12 component overrides — always all present**, as in both
+reference packages (`packages/theme-schneider-electric/src/index.ts`,
+`packages/theme-renault/src/index.ts`): `card`, `buttonSecondary`, `tabs`,
+`pagination`, `breadcrumb`, `alert`, `accordion`, `tag`, `badge`, `choice`,
+`search`, `toggle`. A value identical to the base is rewritten, not omitted
+(a missing key passes the whole gate — section 12).
+
+**Step 3 — `semantic`.** Map every mandatory role: `surface{default,subtle,
+raised,inverse,overlay}`, `text{primary,secondary,muted,inverse,link}`,
+`border{subtle,strong,interactive}`,
+`action{primary,primaryHover,primaryText,secondary,secondaryHover,
+secondaryText,danger}`, `feedback{success,warning,error,info}`,
+`status{pending,processing,completed,failed}`, `data{category1..8}`.
+
+**Step 4 — `component = createComponent(semantic, foundation)`.** Always.
+Never hand-written (section 10).
+
+**Tie-break when several hex candidates exist for one role:** (1) occurrence
+frequency wins — one occurrence is one declaration of that hex (a `--*`
+custom-property declaration, or a property value containing the hex, case
+normalised), counted over the union of the brand's official stylesheets
+linked from its homepage; record per-file counts in `MAPPING.md`. When the
+site serves several stylesheets, all of them count, and every cited value
+names the file it came from. (2) Then the role declared by the variable
+name (a `--brand-action-*` beats an anonymous grey). (3) If still tied, a
+hex declared as a custom property (`--*`) beats one used only inline in a
+rule; if still tied, the higher-ranked source in section 3 wins. Note the
+choice in `MAPPING.md`. A value with no source in
+section 3(a)–(d) is **derived**: mark it `à confirmer` inline AND list it in
+the `MAPPING.md` section of the same name.
+
+## 3. Allowed sources, ranked
+
+(a) A public tokenised design system published by the brand, when one
+exists. Real example: Schneider Electric publishes "Quartz"
+(`quartz.se.com`, GitHub org `quartzds`; brand typeface token
+`--qds-font-family-brand` = Nunito).
+
+(b) The custom CSS properties of the brand's official site stylesheet.
+
+(c) A brand charter published as a PDF by the brand.
+
+(d) The font name as declared by the official stylesheet (names only —
+section 10).
+
+**Not sources:** a brand-colour aggregator (usable only as a cross-check,
+never as the origin of a value — cf. Renault, whose yellow is taken from
+`brand.renault.com` and only mirrored by aggregators), a screenshot, an
+"inspired-by" palette, the model's memory. Any value not from (a)–(d) is
+derived and must be flagged (section 6).
+
+## 4. Package template
+
+Five files — a **prescription of this programme**, not a description of the
+repository (15 of the 126 existing theme packages carry no `MAPPING.md`;
+the builder still delivers one). Copy the reference package and adapt only
+what is listed as changing.
+
+| File | Changes | Does NOT change |
+|---|---|---|
+| `package.json` | `name` → `@sentropic/design-system-theme-<id>`; `description`; `repository.directory` → `packages/theme-<id>` | `version: "0.1.0"`; exact pins `dependencies`: `@sentropic/design-system-themes: "0.11.0"` and `@sentropic/design-system-tokens: "0.11.0"` (read in existing packages on 2026-09-24 — do not reuse a version from memory); `devDependencies`: `typescript: "^5.9.3"`; scripts `build: "tsc -p tsconfig.json"`, `check: "tsc -p tsconfig.json --noEmit"`, `test: "vitest run src"`; `main`, `types`, `exports`, `files: ["dist"]`, `type: "module"`, `repository.type/url` |
+| `tsconfig.json` | Nothing — byte-identical copy (`extends: "../../tsconfig.base.json"`, `rootDir: "src"`, `outDir: "dist"`, `include: ["src/**/*.ts"]`) | — |
+| `src/index.ts` | The theme (sections 2, 6, 8) | Import shape (`createComponent` + `TenantTheme` type from `@sentropic/design-system-themes`); raw palette → `foundation` → `semantic` → `export const <camelId>Theme: TenantTheme = { id, label, mode: "light", tokens: { foundation, semantic, component: createComponent(semantic, foundation) } }` + `export default` |
+| `src/index.test.ts` | The imported theme symbol, the `describe` name, `id`, `label`, the `--st-field-style` value, and every measured hex and font name (section 7) | The three tests and what they assert |
+| `MAPPING.md` | All content (section 5) | The section order and the mandatory derived-values section |
+
+Catalogue invariants — asserted OUTSIDE the package gate, by shared
+`apps/docs` tests, so a deviation is invisible to the builder and breaks
+the docs build: `id` is exactly the `<id>` of `packages/theme-<id>/`; the
+exported constant's name ends in `Theme`; the entry file is `src/index.ts`.
+This is imposed by `apps/docs/src/lib/theme-catalog.ts` (the
+`import.meta.glob` over `packages/theme-*/src/index.ts`, the
+`name.endsWith("Theme")` filter, and the
+`theme.id === path.split("/theme-")[1].split("/")[0]` filter) and asserted
+by `apps/docs/src/lib/theme-catalog.test.ts` (catalogue ids equal the
+`packages/theme-*` directories).
+
+`"private": true` is mandatory for every brand theme. Motive (from
+`scripts/verify-publishable-licensing.mjs`): the licensing gate applies to
+every workspace whose manifest is NOT `private: true`, and the repository
+root deliberately carries no licence because the tree holds measured clones
+of private brands that are not ours to relicense. Declaring a licence on a
+brand clone would mislead licence detection and SBOM tooling. (The only
+exception in this programme is `theme-latex` — section 14.)
+
+Do NOT create `dist/`, `README.md`, `LICENSE`, `LICENSE.THIRD-PARTY.md`, or
+`references` in the tsconfig. npm workspaces auto-discover `packages/*`;
+`dist/` is built incrementally by `scripts/ensure-theme-dists.mjs`
+(content-hash based, auto-discovering — no script edit needed when a theme
+is added).
+
+## 5. `MAPPING.md` template
+
+Literal shape, deduced from the Schneider, Hermès and Renault mappings
+(the newest practice — not a theoretical shape). Keep the sections in this
+order:
+
+```markdown
+# <Brand> → Sentropic mapping
+
+This package maps the **public** <brand design / design system> onto the
+Sentropic token structure (`TenantTheme`). Method = **measured-clone**:
+<brand fact: which value is measured, where from>. Only public values and
+font *names* are referenced — no font binaries. Derived/unmeasured values
+are flagged `à confirmer`.
+
+> Key measured fact (optional box, used when the headline fact is
+> surprising — e.g. Hermès chrome has zero orange in its CSS; Renault
+> Yellow fails AA as text but passes as a fill): state it here so no
+> reader misreads the table.
+
+## Sources
+- <what it provides> — <URL> (<which value comes from it>)
+
+## Colour mapping
+
+| Sentropic role | <Brand> source | Value |
+|---|---|---|
+| `action.primary` / … | <real token name, CSS declaration, or "derived …"> | `#hex` (or `#hex` *(à confirmer)*) |
+
+## À confirmer (derived or no published brand token)
+- **<what>** (`#hex`, …) — <why derived, what it is a coherent stand-in for>.
+
+## Typography
+- **<usage>** (`font.sans`, …): **'<Name>'** — <where the name is declared>. We reference the font *name* only.
+- **Monospace** (`font.mono`): system stack.
+- Links: <colour>, <underline behaviour at rest / on hover>.
+
+## Signatures anatomiques
+- **Fields**: `field.style = "…"`.
+- **Radius**: … **Focus**: … **Buttons**: … **Tabs**: …
+  **Pagination**: … (chevron redraw colour, density — section 8).
+
+## Asset officiel
+- <Brand> logo = <what it is>. Use the official SVG/PNG from the brand
+  assets — **do not redraw the logo by hand**. This package references
+  only font *names* and public colour values, never logo artwork or font
+  binaries.
+```
+
+Rules for the table: the "source" column names a real token, a real CSS
+declaration (`body{background-color:…}`), or says "derived …" — never a
+vague description. There is exactly ONE table shape (role / source / value,
+derived hexes followed by `*(à confirmer)*`) and ONE derived-values heading
+(`## À confirmer …`): the Hermès `Status`-column variant and the `###`
+heading seen in one reference mapping are prior variances, not accepted
+alternatives — two packages are equivalent only in the single form. The
+derived-values section is **mandatory even when empty** — in that case it
+says so explicitly
+(`None — every value above is measured from the listed sources.`). The
+`## Signatures anatomiques` section is a NEW prescription of this
+programme (only 87 of the 111 existing `MAPPING.md` carry it): every
+delivered mapping includes it.
+
+## 6. Provenance rule
+
+Every `//` comment in `index.ts` cites a real source variable or a real
+source document; every derived value carries the `à confirmer` marker and
+appears in the corresponding `MAPPING.md` section. A comment that describes
+a value without naming its source is a defect to fix, not an acceptable
+approximation. Cross-checks against aggregators are named as cross-checks,
+never as origins.
+
+## 7. Test gate
+
+Three tests in `src/index.test.ts`. What each asserts (reference:
+`theme-schneider-electric`) —
+
+1. **Identity + contract.** `toMatchObject({ id, label, mode })`, then on
+   `compileTheme(theme)`: contains `[data-st-theme="<id>"]`,
+   `--st-component-control-hoverBackground:`,
+   `--st-component-control-hoverBorder:`,
+   `--st-component-selection-switchTrackChecked`, and
+   `--st-field-style: <style>;` (the measured style, `outline` or
+   `filled-underline`).
+2. **Anatomy.** `component.control` matches `{ background, hoverBackground }`
+   (measured hexes); `component.control.anatomy?.field` matches `{ style,
+   fillBg }`; `component.tabs` matches `{ activeText }`.
+3. **Compiled brand variables.** `--st-semantic-action-primary: <hex>;`,
+   `--st-semantic-text-primary: <hex>;`,
+   `--st-semantic-action-danger: <hex>;`,
+   `--st-semantic-surface-inverse: <hex>;` (all four WITH their hex, as in
+   all three reference tests), plus every font family name present in the
+   output.
+
+The hardcoded hexes and font names in the test are the **regression lock**:
+they pin the measured values, so any later edit that shifts a colour or a
+typeface fails loudly. Put the measured values in — the test only locks
+what the builder writes.
+
+Commands, per package:
+
+```
+npm --workspace packages/theme-<id> run test    # vitest run src — 3 tests
+npm --workspace packages/theme-<id> run check   # tsc --noEmit
+npm --workspace packages/theme-<id> run build   # tsc -> dist (the docs need it)
+```
+
+Green = all three pass. The builder runs the three commands itself
+(`vitest` and `tsc` are present, hoisted at the repository root). What the
+builder never does is install dependencies: the full installation is the
+conductor's act, done once per lot (section 1).
+
+## 8. Fidelity levers
+
+1. **`field.style`: `outline` vs `filled-underline`.** Decide from the
+   brand's input declarations, never by taste:
+   - filled (grey, non-surface-default) `background` → `filled-underline`
+     (the fill decides first): `fillBg` is the fill, `underlineColor` /
+     `underlineWidth` carry the bottom stroke, `underlineMode` carries its
+     technique (`"border"` for a `border-bottom` declaration, `"shadow"`
+     for an inset `box-shadow` — DSFR draws its bottom rule as a
+     box-shadow inset with `border-bottom: none`).
+   - surface/white fill + four equal side borders → `outline`.
+   - surface/white fill + bottom-only stroke → `filled-underline` with
+     `fillBg` = `surface.default`.
+   - mixed case (four side borders PLUS a thicker `border-bottom`) with a
+     non-filled background → `outline`; record the bottom emphasis in
+     `MAPPING.md` (no primitive carries it).
+   Redraw the native `<select>` chevron as a data-URI SVG carrying the brand hex,
+   with `selectAppearance: "none"` and a matching `selectPaddingRight`
+   gutter (reference: Schneider draws it in Life Green `#3DCD58` with a
+   `2.5rem` gutter; Renault in anthracite, monochrome by brand).
+2. **`focus.strategy`: `outline | ring | inset | double`** + `width` /
+   `offset` / `color`. Encode the real *technique*: an `outline`
+   declaration → `outline`; a `box-shadow` ring → `ring`; an inset shadow
+   → `inset`; an outline-plus-shadow combo → `double`. Never just the
+   colour. (Measured examples: Hermès `outline: 2px solid #000` +
+   `outline-offset: 3px`; Canada 3px outline in focus blue.)
+3. **`density` without a browser.** Never measure pixels from a rendering:
+   read the `height` and `padding` declarations in the brand CSS when they
+   exist and transcribe them into `controlHeight` / `paddingBlock` /
+   `paddingInline`. When the brand publishes no usable geometry (both
+   reference packages are in this case — their `controlHeight`
+   `2rem/2.5rem/3rem` and `iconSize` `1rem/1.125rem/1.25rem` are the Sent
+   Tech base values), reuse the base values explicitly and mark the block
+   `à confirmer`. State in `MAPPING.md` which of the two paths was taken.
+
+## 9. Accessibility floor
+
+Deterministic rule. Thresholds (WCAG 2.x): **4.5:1** for running text
+(including `text.link`); **3:1** for large text (at least 24px, or at
+least 19px bold) and for non-text elements including the focus indicator
+(WCAG 1.4.11) — so `border.interactive` and `focus.color` are held to
+**3:1**, not 4.5:1: they are lines, not text.
+
+Computation: relative luminance per channel
+`s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4`, then
+`L = 0.2126·R + 0.7152·G + 0.0722·B`, then
+`ratio = (Llighter + 0.05) / (Ldarker + 0.05)`. Reference implementation:
+`luminance` and `contrastRatio` in
+`packages/skills/src/rules/contrastTokenPairRule.ts` (not exported by that
+package — hence the one-line command below, which is allowed: a one-line
+Node computation is not the measurement tool forbidden in section 10):
+
+```
+node -e 'const L=h=>{const c=h.replace("#","");const f=c.length===3?c.split("").map(x=>x+x).join(""):c;const n=parseInt(f,16);const ch=v=>{const s=((n>>v)&255)/255;return s<=0.03928?s/12.92:((s+0.055)/1.055)**2.4};return 0.2126*ch(16)+0.7152*ch(8)+0.0722*ch(0)};const r=(a,b)=>{const x=L(a),y=L(b);return (Math.max(x,y)+0.05)/(Math.min(x,y)+0.05)};console.log(r(process.argv[1],process.argv[2]).toFixed(2))' '#1e7e34' '#ffffff'
+```
+
+prints `5.14` — the ratio of the deep green `#1e7e34` on white, which
+passes 4.5:1.
+
+Stop rule for a DERIVED value that fails its threshold: convert to HSL,
+keep H and S, subtract 0.05 from L per step, convert back to hex (nearest,
+lowercase), recompute the ratio against `surface.default` after each step,
+and keep the FIRST hex that reaches the threshold. Two builders following
+this rule obtain the same hex.
+
+Brand colours in brand roles (fill, accent) are never altered: the brand
+hex stays, with readable text on top (dark `#0a160d` on Schneider Life
+Green, 8.89:1; black on Renault Yellow, 15.23:1). Only a text or line role
+that fails its threshold is routed to a readable neutral: Renault routes
+`text.link`, `border.interactive` and `focus.color` to anthracite
+`#191c1f` (17.11:1 on white). Schneider routes `action.primary`,
+`border.interactive` AND `focus.color` all three to `#3DCD58`
+(`packages/theme-schneider-electric/MAPPING.md`, `src/index.ts`): that
+triple routing fails even the 3:1 line threshold (`#3DCD58` on white is
+2.09:1) and predates this rule — it is a non-reconductible precedent,
+named as such.
+
+## 10. Forbidden (closed list)
+
+No Python, and no script or image either; one-line Node commands
+(section 9) and already-present native binaries (`curl`, `grep`, `sed`)
+are allowed. No font binary, only names. No
+hardcoded colour outside the tokens. No inline `style=` attribute. No new
+flag on the `TenantTheme` type (the `thirdParty` flag broke pinned
+consumers' typecheck in the past — rejected precedent). No hand-written
+`component`. No shared file touched. No invented value: unmeasured means
+`à confirmer`, never silent.
+
+## 11. Per-theme deliverable
+
+The five files, all gate-green, plus a short summary: id, label, primary
+hex, font, `field.style` value, `focus.strategy` value, source URLs, and
+the derived-values list. No report file, no notes, no draft left in the
+repo — the summary is the handoff message.
+
+## 12. Review protocol
+
+Cross-review is an adversarial pass by an agent other than the builder,
+cold: it re-reads the diff without justifying it. Verifiable checklist —
+fail the theme on any miss:
+
+- Every hex in `index.test.ts` is found in `index.ts`.
+- Every hex in `index.ts` has a row in `MAPPING.md`.
+- `foundation` and `semantic` are compared key by key against
+  `packages/tokens/src/foundation.ts` and
+  `packages/tokens/src/semantic.ts`: every scalar sub-key and every one of
+  the 12 component overrides is present. Neither `tsc --noEmit` nor the
+  three tests detect a missing key — `TenantTheme.tokens` is typed
+  `TokenTree`, a plain index signature (`packages/themes/src/schema.ts`,
+  `packages/tokens/src/foundation.ts`) — so a forgotten key passes the
+  whole gate. This comparison is the only net for it.
+- Every source URL responds and contains the cited value. On HTTP 403 (or
+  any block already anticipated in section 2), retry with a browser
+  user-agent and a referer; if the page still blocks or its content has
+  changed since the measurement, keep the original measurement (hex, URL,
+  date), mark the URL `unverified, <date>, HTTP <code>`, and fall back to
+  a dated archived copy of the brand's own page, named with its capture
+  date. If no archived copy shows the value, the value is derived
+  (`à confirmer`).
+- `component` is the `createComponent` call, not hand-written.
+- The package is `private` (brand themes; LaTeX excepted — section 14).
+- The gate is green (test + check + build).
+- No shared file was touched (`git status` shows only
+  `packages/theme-<id>/`).
+
+## 13. Target list
+
+CAC 40 composition valid since Monday 2026-09-21 (annual review announced
+2026-09-10, implemented after the close of Friday 2026-09-18: no
+composition change; three consecutive reviews without change — March,
+June and September 2026). ISIN and tickers taken 2026-09-24 from Euronext Paris
+data. Ranks and market capitalisations: companiesmarketcap France page,
+fetched 2026-09-24, in USD billions. Capitalisations are a selection
+criterion, not theme data.
+No identifier below collides with the 126 existing `packages/theme-*`
+(checked 2026-09-24).
+
+The programme covers 50 companies: the 40 CAC 40 members plus the next 10
+French market capitalisations outside the index. Of these 50, 28 are
+already implemented as theme packages, leaving 22 to build: the 12 CAC
+members below plus the 10 next-caps below that.
+
+Unimplemented CAC 40 members (12):
+
+| id | Company | Ticker / ISIN | Token source to prefer |
+|---|---|---|---|
+| `essilorluxottica` | EssilorLuxottica SA | EL / FR0000121667 | essilorluxottica.com |
+| `arcelormittal` | ArcelorMittal S.A. | MT / LU1598757687 | corporate.arcelormittal.com |
+| `stmicroelectronics` | STMicroelectronics N.V. | STMPA / NL0000226223 | st.com |
+| `legrand` | Legrand SA | LR / FR0010307819 | legrandgroup.com |
+| `michelin` | Cie Générale des Éts Michelin SCA | ML / FR001400AJ45 | michelin.com |
+| `euronext` | Euronext N.V. | ENX / NL0006294274 | euronext.com |
+| `stellantis` | Stellantis N.V. | STLAP / NL00150001Q9 | stellantis.com |
+| `unibail-rodamco-westfield` | Unibail-Rodamco-Westfield SE | URW / FR0013326246 | urw.com |
+| `eurofins` | Eurofins Scientific SE | ERF / FR0014000MR3 | eurofins.com |
+| `bureau-veritas` | Bureau Veritas SA | BVI / FR0006174348 | bureauveritas.com |
+| `carrefour` | Carrefour SA | CA / FR0000120172 | carrefour.com |
+| `eiffage` | Eiffage SA | FGR / FR0000130452 | eiffage.com |
+
+Next French capitalisations outside the CAC 40, completing the top 50 (10):
+
+| id | Company | Rank | Market cap (USD bn) | Token source to prefer |
+|---|---|---|---|---|
+| `christian-dior` | Christian Dior SE | 11 | 87.92 | dior.com, dior-finance.com |
+| `dassault-aviation` | Dassault Aviation SA | 27 | 25.58 | dassault-aviation.com |
+| `amundi` | Amundi SA | 28 | 20.72 | amundi.com |
+| `ipsen` | Ipsen SA | 33 | 14.00 | ipsen.com |
+| `aeroports-de-paris` | Aéroports de Paris (Groupe ADP) | 36 | 12.16 | parisaeroport.fr, adp.fr |
+| `rexel` | Rexel SA | 37 | 12.12 | rexel.com |
+| `klepierre` | Klépierre SA | 38 | 11.82 | klepierre.com |
+| `bollore` | Bolloré SE | 41 | 11.57 | bollore.com |
+| `getlink` | Getlink SE | 42 | 11.45 | getlinkgroup.com |
+| `biomerieux` | bioMérieux SA | 43 | 10.33 | biomerieux.com |
+
+Ranks skip (11, 27, 28, 33, 36, 37, 38, 41, 42, 43) because this table
+lists only companies OUTSIDE the CAC 40: every skipped rank is a CAC 40
+member — either already delivered as a theme package, or listed in the CAC
+table above (ranks 12, 20, 26, 32, 34, 35 and 40: EssilorLuxottica,
+Legrand, Michelin, Unibail-Rodamco-Westfield, Bureau Veritas, Carrefour,
+Eiffage).
+
+Plus `latex` — specified separately, see section 14.
+
+## 14. The LaTeX case — specify, do not build here
+
+`theme-latex` is the only package in this programme that will be
+**published on npm** — and it stays **private in the docs selector**
+behind Ctrl+Shift+X, like any other theme. Publishing on npm and appearing
+on the public site are two distinct things.
+
+**Admitted primary sources:** the LaTeX project (`latex-project.org`),
+CTAN (`ctan.org`), the `article` and `book` classes (their `classes.dtx`
+source), the Computer Modern and Latin Modern families (GUST metrics, the
+`lm` package on CTAN), the Tufte-LaTeX tradition (the `tufte-latex`
+package on CTAN), and the Overleaf reference rendering.
+
+**What is measured, and where:** lengths from `article.cls` and `book.cls`
+(`\parindent`, `\textwidth`, `\baselineskip`, rule thicknesses); font
+names (`Latin Modern Roman`, `Latin Modern Sans`, `Latin Modern Mono`);
+`hyperref` link colours.
+
+**Package difference** (compare `packages/theme-canada/`, already in this
+configuration: `license: "MIT"`, `publishConfig.access: "public"`, no
+`private` field, plus `LICENSE` and `LICENSE.THIRD-PARTY.md` at the
+package root): `private` is removed, `publishConfig.access: "public"` is
+added, a `license` field is declared (LaTeX Project material under the
+LaTeX Project Public License, Latin Modern under the GUST Font License),
+a `LICENSE` file is present and `LICENSE.THIRD-PARTY.md` is filled in
+(regenerate with `npm run notices:generate`).
+
+Taking it out of the whitelist would be a NAMED conductor act, requiring
+the owner's agreement and edits to exactly three files:
+`apps/docs/src/lib/theme-catalog.ts` (`PUBLIC_THEME_IDS`),
+`apps/docs/src/app.html` (`PUBLIC_BOOT_THEMES`, whose equality with the
+public list is asserted in `header-contract.test.ts`), and
+`apps/docs/src/lib/theme-catalog.test.ts`. This is a gate, not a builder
+option: the builder never touches it.
+
+`npm run notices:generate` re-derives the notices from `package-lock.json`
+and the INSTALLED upstreams, so regenerating `LICENSE.THIRD-PARTY.md`
+requires the full dependency installation: it is a **conductor act** after
+installation. The latex builder delivers `LICENSE` and the `package.json`
+and reports the regeneration as not run. (This is consistent with section
+7: the builder runs the three package commands — it never installs.)
+
+This package must pass `scripts/verify-publishable-licensing.mjs`, which
+asserts exactly the following for every non-`private` workspace (read
+2026-09-24 — the LaTeX builder re-reads the script before delivering):
+
+1. The `license` field is declared, non-empty after whitespace
+   normalisation, not `UNLICENSED` (case-insensitive), and not of the
+   deferred `SEE LICENSE IN <file>` form (matched as a prefix,
+   case-insensitive, `licence`/`license` spellings, collapsed
+   whitespace — any filename spelling counts as the same non-answer).
+2. A `LICENSE` file exists at the package root and is at least **300
+   bytes** (below that it is a placeholder, not a licence text; the
+   shortest real OSI text in common use, ISC, is ~750 bytes).
+3. `LICENSE.THIRD-PARTY.md` exists at the package root.
+4. The notices are current: re-derived from `package-lock.json` and the
+   installed upstreams, they must match what is committed byte for byte
+   (adding, bumping or dropping a dependency without regenerating
+   fails).
+5. BOTH files are really inside the tarball npm would publish — measured
+   with `npm pack --dry-run --json`, not assumed.
+6. If no publishable workspace existed at all, the gate fails rather
+   than passing vacuously.
