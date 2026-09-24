@@ -104,3 +104,25 @@ Les extractions ne commencent qu’après A0–A3. Chaque extraction doit prouve
 - Les deux dépendances de la première étape sont visibles dans les manifests et isolées des entrées légères ; elles ne deviennent jamais implicites.
 - Les références de couverture ELK, Graphviz et JointJS restent des références jusqu’à une décision explicite distincte.
 - Les recettes et les specs restent exhaustives, même si elles ne deviennent pas des packages publiables.
+
+## État réel de M2 — mesuré le 24 septembre 2026
+
+Cette section remplace, pour M2, la ligne « M2 » du tableau « Migration en parallèle » ci-dessus. Elle décrit ce qui existe dans le dépôt, vérifié fichier par fichier, et non ce qui était projeté.
+
+| Lot M2 | État | Preuve dans le dépôt |
+|---|---|---|
+| `GD-M2-PROCESSING` | **livré** | `packages/graph/src/processing/` (copies à provenance + `register.ts`), sous-chemin public `@sentropic/graph/processing`, identifiants `force-fa2` et `hierarchy-aware` enregistrés. `DEFAULT_LAYOUT_ID = "force"` reste le passe-plat historique : le défaut n'a pas changé. |
+| `GD-M2-MODEL` | **livré, privé** | `packages/diagram-core` (`@sentropic/diagram-core` 0.1.0, `"private": true`, zéro dépendance, zéro DOM) : références nominales, document sémantique et profils versionnés, vues et occurrences, commandes transactionnelles avec inverse, migration de schéma versionnée. `generic@1` est le seul profil complet ; `bpmn@1`, `archimate@1`, `uml@1` sont des ossatures déclarées qui ne revendiquent aucune conformité. |
+| `GD-M2-WORKERS` | non commencé | — |
+| `GD-M2-DS-PRESENTATION` | non commencé | les quatre arêtes `design-system-{fw}` → `@sentropic/graph` restent permises par `scripts/verify-layering.test.mjs` ; aucune n'est encore posée. |
+| `GD-M2-CANVAS` | non commencé | `@sentropic/diagram-canvas` n'existe pas. La scène, le hit-testing, la sélection, l'édition de ports géométriques et les annotations en dépendent. |
+| `GD-M2-PARITY` / `GD-M2-THEMES` | hors de ce fil | suivis par leurs propres branches. |
+
+### Deux écarts entre ce document et le code livré
+
+1. **Le contrat transversal esquissé plus haut (`DiagramDocumentV1`, `DiagramCommandV1`) est dépassé.** Il décrit une forme plate `{ nodes, edges }` avec un `payload: unknown`. La décision D1-A du 24 septembre 2026 (`spec/SPEC_DECISIONS_GRAPH_DATAVIZ_REPATRIATION.md`, reprise par `spec/SPEC_EVOL_GD_M2_MODEL.md`) impose l'inverse : union discriminée par type **et** profil, attributs validés par un schéma de profil versionné, jamais un sac de propriétés. `packages/diagram-core` implémente la décision ; l'esquisse de ce document n'est plus la cible et n'est conservée ici que pour l'historique.
+2. **`@sentropic/diagram-core` n'importe pas `@sentropic/graph`.** L'arête `diagram-core → graph` de `docs/graph-dataviz-architecture-dag.json` reste `"status": "proposed"` : le lot M2-MODEL n'a eu besoin d'aucun contrat sans DOM du paquet `graph`, et le sous-chemin `@sentropic/graph/contracts` prévu par `spec/SPEC_EVOL_GD_M2_MODEL.md` §3.1 n'a donc pas été créé. La raison est dans `packages/diagram-core/README.md`, section « What this package does not import » : lier un schéma persisté et migré par version aux types d'un autre paquet est précisément ce que la règle de migration interdit. Le sous-chemin reste possible dès qu'un consommateur réel le demande — `GD-M2-CANVAS` est le candidat.
+
+### Étape A (xyflow + bpmn-js) — inchangée et non commencée
+
+Aucun des lots ci-dessus n'introduit `@xyflow/svelte`, `bpmn-js` ni `diagram-js` : ces dépendances ne sont dans aucun manifeste du dépôt à ce jour. Les critères de passage CSP énoncés plus haut restent donc à mesurer, et le noyau sémantique livré ne présuppose ni l'un ni l'autre moteur.
