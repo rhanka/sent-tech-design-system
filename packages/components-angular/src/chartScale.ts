@@ -80,8 +80,30 @@ export function buildLinearPath(points: { x: number; y: number }[]): string {
   return points.map((point, index) => `${index === 0 ? "M" : "L"}${point.x.toFixed(2)},${point.y.toFixed(2)}`).join(" ");
 }
 
+/**
+ * Catmull-Rom-ish smoothing, ported verbatim from the React helper
+ * (`components-react/src/chartScale.tsx`) so the two frameworks emit the same
+ * `d` attribute: same tension, same control points, same two-decimal rounding.
+ * It used to delegate to `buildLinearPath`, which made every smoothing Angular
+ * chart draw straight segments — including `AreaSplineRangeChart`, whose whole
+ * point is the spline.
+ */
 export function buildSmoothPath(points: { x: number; y: number }[]): string {
-  return buildLinearPath(points);
+  if (points.length < 2) return buildLinearPath(points);
+  const tension = 0.18;
+  let d = `M${points[0].x.toFixed(2)},${points[0].y.toFixed(2)}`;
+  for (let index = 0; index < points.length - 1; index += 1) {
+    const p0 = points[index - 1] ?? points[index];
+    const p1 = points[index];
+    const p2 = points[index + 1];
+    const p3 = points[index + 2] ?? p2;
+    const c1x = p1.x + (p2.x - p0.x) * tension;
+    const c1y = p1.y + (p2.y - p0.y) * tension;
+    const c2x = p2.x - (p3.x - p1.x) * tension;
+    const c2y = p2.y - (p3.y - p1.y) * tension;
+    d += ` C${c1x.toFixed(2)},${c1y.toFixed(2)} ${c2x.toFixed(2)},${c2y.toFixed(2)} ${p2.x.toFixed(2)},${p2.y.toFixed(2)}`;
+  }
+  return d;
 }
 
 export type ForecastRun = { start: number; end: number; forecast: boolean };
