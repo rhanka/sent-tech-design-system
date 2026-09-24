@@ -6798,7 +6798,7 @@
     {
       "destination": "packages/graph/src/layout-client.ts",
       "status": "local-monorepo-helper",
-      "sha256": "fa1cb27804ac3c34f9079831f8201c1c6ea326d4ce124b13a31bb2bea6f631fd",
+      "sha256": "c76c7d74caab6ae1465ff1ee89a7464415c010a0812cb8d946a93ef8decb8418",
       "note": "GD-M2-WORKERS: monorepo-authored, no upstream source; hash-pinned. Client entry (@sentropic/graph/layout-client): one worker, one request in flight, stale results discarded before they reach the caller. WORKER_NODE_THRESHOLD = 250, measured."
     },
     {
@@ -6810,7 +6810,7 @@
     {
       "destination": "packages/graph/tests/workers/layout-client.test.ts",
       "status": "local-monorepo-helper",
-      "sha256": "ab41c43f8d02d032e110841f3c92d8b1384fe3b64f003df608b74a00211af643",
+      "sha256": "e053cfd52deded0c7ca649959e60881cb52f35b4942c0290b833ce54ada69803",
       "note": "GD-M2-WORKERS: monorepo-authored, no upstream source; hash-pinned. Protocol invariants driven through an in-process double over the real worker handler."
     },
     {
