@@ -43,6 +43,26 @@ banners (`#__tealium*`, OneTrust, Didomi), carousels (`.swiper-*`,
 rules live in the brand-owned `.ds__*` namespace or the brand `:root`
 token block. No vendor hex is promoted anywhere below.
 
+## Rem root and length conversion
+
+The brand stylesheet declares
+`html{box-sizing:border-box;font-size:var(--font-size-root,62.5%);height:100%}`,
+so the brand root is **10px**, not 16px. Every brand length below is converted
+by dividing by 1.6 for this theme's 16px root:
+
+| Brand declaration | px at brand root | Transcribed value |
+|---|---|---|
+| `border-radius:.8rem` (`.ds__btn,.ds__btn-icon`, `.ds__input`, `[data-ui-card-base]`; 82 + 4 occurrences) | 8px | `radius.md` / `radius.lg` / `tag.radius` / `badge.radius` = `0.5rem` |
+| `border-radius:.4rem` (small elements, breadcrumb focus rings; 16 occurrences) | 4px | `radius.sm` = `0.25rem` |
+| `border-width:.1rem` / `.ds__input{border:.1rem solid …}` | 1px | `borderWidth.thin` = `1px` |
+| `outline:.2rem …` (focus technique) | 2px | `focus.width` = `2px` |
+| `outline-offset:.4rem` (frequency winner, 5 of 9 declarations) | 4px | `focus.offset` = `0.25rem` |
+| `.ds__btn,.ds__btn-icon{...min-height:4.8rem}` | 48px | `density.md.controlHeight` = `3rem` |
+| `...:where(.ds__btn){min-height:3.6rem;padding:.4rem 1.6rem}` (sm variant) | 36px / 4px / 16px | `density.sm.controlHeight` = `2.25rem`, `paddingBlock` = `0.25rem`, `paddingInline` = `1rem` |
+| `.ds__btn-icon{...height:4.8rem;...width:4.8rem}` (icon square) | 48px | consistent with `md.controlHeight` = `3rem` |
+| `.ds__btn,...{font-size:1.6rem}` | 16px | `typography.control.size` / `field.size` = `1rem` |
+| `...[data-ui-size=sm]{font-size:1.4rem}` / `.ds__label span{...font-size:1.4rem}` | 14px | `density.sm.fontSize` / `typography.label.size` = `0.875rem` |
+
 ## Colour mapping
 
 | Sentropic role | Michelin source | Value |
@@ -51,18 +71,23 @@ token block. No vendor hex is promoted anywhere below.
 | `action.primaryHover` | `:root --color-primary-darken-03`, also inline in `.ds__btn[data-ui-skin=primary]…:hover{--button-color-background:#3a61a6}` | `#3a61a6` |
 | `surface.inverse` / `action.secondaryText` | `:root --color-tertiary-01` | `#00205b` |
 | `cyan.50` / `data.category5` | `:root --color-primary-darken-02` | `#6182bb` |
-| `blue.10` / `buttonSecondary.hoverBackground` | `:root --color-primary-lighten-01` | `#d4e7fa` |
+| `blue.10` | `:root --color-primary-lighten-01` | `#d4e7fa` |
+| `buttonSecondary.hoverBackground` | `.ds__btn[data-ui-skin=secondary]:not(…)…:where(a,button):hover{--button-color-background:var(--color-primary);--button-color-text:var(--color-primary-reverse);--button-color-border:var(--color-primary)}` (solid blue fill, white text) | `#27509b` |
 | `cyan.10` | `:root --color-primary-lighten-02` | `#c1d6ef` |
 | `cyan.70` / `data.category3` | `:root --color-tertiary-02` (role assignment derived) | `#582c83` *(à confirmer)* |
 | `data.category4` | `.ds__card-panel[data-ui-skin=secondary]{--card-color-background:#fce500;--card-color-text:#000}` (yellow fill, black text) | `#fce500` |
 | `text.primary` | `:root --color-main-text` | `#1a1a1a` |
 | `text.secondary` / `data.category8` | `:root --color-dark-60` | `#404040` |
-| `text.muted` / `border.strong` / `focus.color` | `:root --color-dark-40`; focus declared by `.ds__btn-icon:focus,.ds__breadcrumb .ds__btn-icon:focus-visible{…outline:.2rem dashed #666}` | `#666666` |
-| `border.subtle` | `:root --color-light-20` (consumed as `[data-ui-card-base]{--card-base-border-color:var(--color-light-20)}`) | `#cccccc` |
+| `text.muted` / `border.strong` | `:root --color-dark-40` (declared `#666`, used here as `#666666`) | `#666666` |
+| `focus.color` | dominant site-wide focus declaration `outline:.2rem solid #27509b` (9 occurrences over all form controls, e.g. `.ds__input-wrapper .ds__input:focus-visible{border-color:transparent;font-weight:700;outline:.2rem solid #27509b}`); the grey `outline:.2rem dashed #666` occurs only twice, both scoped to the breadcrumb (`.ds__breadcrumb .ds__btn-icon:focus,…` and `.ds__breadcrumb .ds__list>li .ds__link:focus,…`) — scope is part of the measurement, so the site-wide blue wins (23 `#27509b` vs 2 `#666` `outline:` declarations) | `#27509b` |
+| `border.subtle` | `:root --color-light-20` (declared `#ccc`, used here as `#cccccc`; consumed as `[data-ui-card-base]{--card-base-border-color:var(--color-light-20)}`) | `#cccccc` |
 | `surface.subtle` / `action.secondary` | `:root --color-light-05` | `#f2f2f2` |
 | `action.secondaryHover` | `:root --color-light-10` | `#e5e5e5` |
-| `surface.default` / `surface.raised` / `field.fillBg` | `:root --color-main-background` (white) | `#ffffff` |
+| `surface.default` / `surface.raised` / `field.fillBg` | `:root --color-main-background` / `--color-light` (declared `#fff`, used here as `#ffffff`) | `#ffffff` |
 | `slate.90` (darkest) | `:root --color-dark` (declared `#000`, used here as `#000000`) | `#000000` |
+| `shadow.subtle` | brand overlay ink `#1a1a1a` (= `rgb(26 26 26)`) with a derived 0.10 alpha (no alpha published) | `rgb(26 26 26 / 0.10)` *(à confirmer)* |
+| `shadow.medium` | brand overlay ink `#1a1a1a` (= `rgb(26 26 26)`) with a derived 0.14 alpha, aligned with the reference theme package's geometry (no alpha published) | `rgb(26 26 26 / 0.14)` *(à confirmer)* |
+| `shadow.floating` | brand overlay ink `#1a1a1a` (= `rgb(26 26 26)`) with a derived 0.18 alpha, aligned with the reference theme package's geometry (no alpha published) | `rgb(26 26 26 / 0.18)` *(à confirmer)* |
 | `action.primaryText` / `pagination.activeText` / `badge.infoText` | white on Michelin blue (contrast choice, 7.76:1) | `#ffffff` |
 | `action.danger` / `feedback.error` | `:root --color-is-error` | `#b71c1c` |
 | `feedback.success` | `:root --color-is-valid` | `#2e7d32` |
@@ -92,13 +117,32 @@ kept. No other text/line role needed the rule: `#27509b` is 7.76:1,
   proposal from measured brand hues, not an official sequential scale.
 - **Link hover underline** — rest state (`text-decoration:none`) is measured;
   the hover underline is a coherent stand-in.
-- **Focus offset `2px`** — width (2px) and colour (`#666666`, dashed) are
-  measured; no offset is published.
-- **`shadow.medium` / `shadow.floating`, `motion.easing`, `disabledOpacity`,
-  `transition`, and the non-height `density.*` keys** — the brand publishes no
-  usable control-height geometry; `controlHeight`/`iconSize` reuse the
-  Sentropic base values and the rest is aligned with the reference theme
-  package's geometry.
+- **Control geometry that is NOT published** — default-size button padding
+  (only the `sm` padding `.4rem 1.6rem` is declared), every `density.*.gap` /
+  `minWidth`, the whole `lg` row, and `iconSize` (which reuses the Sentropic
+  base values `1rem/1.125rem/1.25rem`): aligned with the reference theme
+  package's geometry. What IS published and transcribed: `md.controlHeight`
+  `3rem` (`min-height:4.8rem`), corroborated by
+  `.ds__select{...font-size:1.6rem;min-height:4.8rem;...}`;
+  `sm.controlHeight` `2.25rem` + paddings `0.25rem`/`1rem`
+  (`min-height:3.6rem;padding:.4rem 1.6rem`); both font sizes
+  (`1.6rem`/`1.4rem`); and the icon square `4.8rem`. Searched: `height`,
+  `min-height` and `padding` on the brand's button (`.ds__btn`), icon button
+  (`.ds__btn-icon`) and input (`.ds__input`) selectors — quoted above; no
+  `.ds__input` rule declares a height or a padding (only a decorative
+  `::after` bar carries a `height`).
+- **`typography` scalars and the 12 component-override scalars that the brand
+  does not publish** (weights, letter-spacing, paddings, font sizes beyond
+  `control.size`/`label.size`, line-heights beyond `control.lineHeight`) —
+  aligned with the reference theme package's geometry. Measured and
+  transcribed: `typography.control.lineHeight` = `1.25`
+  (`.ds__btn{...line-height:1.25}`), `typography.label.size` = `0.875rem`
+  (`.ds__label span{...font-size:1.4rem}` at the 62.5% root = 14px).
+- **`shadow.subtle` / `shadow.medium` / `shadow.floating`
+  (`rgb(26 26 26 / 0.10 | 0.14 | 0.18)`), `motion.easing`,
+  `disabledOpacity`, `transition`** — the ink (`#1a1a1a`) is the measured
+  brand overlay ink; alphas, offsets and blurs are aligned with the reference
+  theme package's geometry.
 - **Font fallback stacks** — `Noto Sans` and `Michelin Unit Titling` are the
   brand faces (`--font-family-primary/secondary`); the exact fallback chains
   here are a faithful expression.
@@ -116,6 +160,11 @@ kept. No other text/line role needed the rule: `#27509b` is 7.76:1,
   (`.ds__heading:where(h1){--heading-font:"Michelin Unit Titling",
   Helvetica,sans-serif}`). We reference the font *name* only.
 - **Monospace** (`font.mono`): system stack.
+- **Measured sizes**: `typography.control.lineHeight` = `1.25` from
+  `.ds__btn,.ds__btn-icon{...line-height:1.25}`; `typography.label.size` =
+  `0.875rem` from `.ds__label span{...font-size:1.4rem}` (14px at the 62.5%
+  root). All other `typography` scalars are aligned with the reference theme
+  package's geometry (à confirmer).
 - Links: Michelin blue `#27509b`, not underlined at rest, underlined on hover
   (hover underline à confirmer).
 
@@ -124,18 +173,26 @@ kept. No other text/line role needed the rule: `#27509b` is 7.76:1,
 - **Fields**: `field.style = "outline"` — boxed inputs
   (`.ds__input{background-color:#fff;border:.1rem solid
   var(--form-input-border,#1a1a1a);border-radius:.8rem}`: white fill, full
-  border, 0.8rem radius). Native `<select>` chevron redrawn in Michelin blue
+  border, brand radius). Effective border colour is `#1a1a1a`:
+  `--form-input-border` is never declared as its own custom property (it
+  appears only as a `var()` fallback), so the `#1a1a1a` fallback wins
+  everywhere. Native `<select>` chevron redrawn in Michelin blue
   `#27509b`.
-- **Radius**: measured 0.8rem on buttons, inputs and cards
+- **Radius**: brand `.8rem` on buttons, inputs and cards
   (`.ds__btn,.ds__btn-icon{border-radius:.8rem}`,
-  `[data-ui-card-base]{border-radius:.8rem}`); 0.4rem on small elements
-  (`radius.sm = 0.4rem`, `radius.md/lg = 0.8rem`); pills stay `999px`.
-- **Focus**: brand **outline** technique, 2px dashed grey `#666666`
-  (`focus.strategy = "outline"`, width `2px`, offset `2px` à confirmer).
+  `[data-ui-card-base]{border-radius:.8rem}`) and `.4rem` on small elements —
+  converted from the 62.5% root (8px/4px): `radius.sm = 0.25rem`,
+  `radius.md/lg = tag.radius = badge.radius = 0.5rem`; pills stay `999px`.
+- **Focus**: brand **outline** technique — `outline:.2rem solid #27509b`
+  (`focus.strategy = "outline"`, width `2px`, `color #27509b` at 7.76:1, so
+  no threshold departure applies). Offset is measured, not derived:
+  `outline-offset` is declared 9 times on `.ds__*` focus rules (`.4rem` 5
+  times, `.2rem` twice, `.1rem` once, `0` once) → `focus.offset = 0.25rem`.
 - **Buttons**: primary = solid Michelin blue `#27509b` with **white** label
-  (7.76:1) → hover `#3a61a6`; secondary = **outlined** in Michelin blue
-  (transparent fill per the brand secondary skin, `#27509b` border, navy
-  text, light-blue `#d4e7fa` hover fill).
+  (7.76:1) → hover `#3a61a6`; secondary = **outlined** in Michelin blue —
+  the winning rule sets a transparent fill with **blue** `#27509b` text and
+  border, and its hover rule is a **solid blue fill with white text**
+  (`hoverBackground #27509b`), not a light tint.
 - **Tabs / top-nav**: active tab = bold **Michelin blue** label `#27509b`
   with a bottom blue underline (`indicatorSide: "bottom"`,
   `indicatorMode: "border"`).

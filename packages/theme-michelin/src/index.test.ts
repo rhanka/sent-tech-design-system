@@ -37,6 +37,36 @@ describe("michelinTheme", () => {
     });
   });
 
+  it("transcribes brand lengths from the 62.5% root and uses the site-wide focus", () => {
+    const foundation = michelinTheme.tokens.foundation as {
+      radius: Record<string, string>;
+      focus: Record<string, string>;
+      density: Record<string, Record<string, string>>;
+      typography: Record<string, Record<string, string>>;
+      buttonSecondary: Record<string, string>;
+    };
+    // .8rem/.4rem at the brand 10px root = 8px/4px.
+    expect(foundation.radius).toMatchObject({
+      sm: "0.25rem",
+      md: "0.5rem",
+      lg: "0.5rem"
+    });
+    // Site-wide focus is the solid blue outline, not the breadcrumb grey.
+    expect(foundation.focus).toMatchObject({
+      strategy: "outline",
+      color: "#27509b",
+      offset: "0.25rem"
+    });
+    // Button geometry: min-height 4.8rem/3.6rem at 10px root.
+    expect(foundation.density.md.controlHeight).toBe("3rem");
+    expect(foundation.density.sm.controlHeight).toBe("2.25rem");
+    // .ds__btn line-height:1.25; .ds__label span font-size:1.4rem at 10px root.
+    expect(foundation.typography.control.lineHeight).toBe("1.25");
+    expect(foundation.typography.label.size).toBe("0.875rem");
+    // Secondary hover is the solid brand blue fill.
+    expect(foundation.buttonSecondary.hoverBackground).toBe("#27509b");
+  });
+
   it("emits Michelin brand colours and fonts in the compiled variables", () => {
     const css = compileTheme(michelinTheme);
     // Michelin blue action + ink text.
