@@ -21,12 +21,23 @@ import { Component, type Type } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { createElement, type ComponentType } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { writeFileSync } from 'node:fs';
+import { appendFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 import { diff, flatten, flattenHtml, textSignature } from './normalize.js';
-import { buildColumnRangeData, buildOhlcData, buildRenkoData } from '@sentropic/dataviz-core';
+import {
+  buildArcDiagramData,
+  buildColumnRangeData,
+  buildDependencyWheelData,
+  buildOhlcData,
+  buildRenkoData,
+  buildTimelineData,
+} from '@sentropic/dataviz-core';
+import {
+  buildSafeMekkoModel,
+  toMarimekkoData,
+} from '../../packages/dataviz-angular/dist/lib/partOfWholeData.js';
 import {
   activeFilters,
   hierarchy,
@@ -434,6 +445,305 @@ const cases: Case[] = [
     expectedSignatureDiffs: 0,
     attribution: '—',
   },
+  {
+    name: 'FunnelChart',
+    ng: NG.FunnelChart as Type<unknown>,
+    template: `<st-dataviz-funnel-chart [store]="store" viewId="v" category="region" measure="amount" label="L" class="probe"></st-dataviz-funnel-chart>`,
+    re: RE.FunnelChart as ComponentType<Props>,
+    props: { viewId: 'v', category: 'region', measure: 'amount', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'MekkoChart',
+    ng: NG.MekkoChart as Type<unknown>,
+    template: `<st-dataviz-mekko-chart [store]="store" viewId="v" category="region" series="service" measure="amount" label="L" class="probe"></st-dataviz-mekko-chart>`,
+    re: RE.MekkoChart as ComponentType<Props>,
+    props: { viewId: 'v', category: 'region', series: 'service', measure: 'amount', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 3,
+    expectedSignatureDiffs: 0,
+    attribution: "DS: components-react sets the cell label colour with an inline style, Angular with a fill attribute",
+    control: {
+      ng: NGDS.MarimekkoChart as Type<unknown>,
+      template: `<st-marimekko-chart [data]="controlData" label="L"></st-marimekko-chart>`,
+      re: REDS.MarimekkoChart as ComponentType<Props>,
+      props: { data: toMarimekkoData(buildSafeMekkoModel(wideModel, wideRows, { category: 'region', series: 'service', measure: 'amount' })), label: 'L' },
+    },
+  },
+  {
+    name: 'SankeyChart',
+    ng: NG.SankeyChart as Type<unknown>,
+    template: `<st-dataviz-sankey-chart [store]="store" viewId="v" source="region" target="service" measure="amount" label="L" class="probe"></st-dataviz-sankey-chart>`,
+    re: RE.SankeyChart as ComponentType<Props>,
+    props: { viewId: 'v', source: 'region', target: 'service', measure: 'amount', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'WaffleChart',
+    ng: NG.WaffleChart as Type<unknown>,
+    template: `<st-dataviz-waffle-chart [store]="store" viewId="v" label_field="region" value="amount" label="L" class="probe"></st-dataviz-waffle-chart>`,
+    re: RE.WaffleChart as ComponentType<Props>,
+    props: { viewId: 'v', label_field: 'region', value: 'amount', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'WaterfallChart',
+    ng: NG.WaterfallChart as Type<unknown>,
+    template: `<st-dataviz-waterfall-chart [store]="store" viewId="v" category="region" measure="amount" label="L" class="probe"></st-dataviz-waterfall-chart>`,
+    re: RE.WaterfallChart as ComponentType<Props>,
+    props: { viewId: 'v', category: 'region', measure: 'amount', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'VariablePieChart',
+    ng: NG.VariablePieChart as Type<unknown>,
+    template: `<st-dataviz-variable-pie-chart [store]="store" viewId="v" label_field="region" value="amount" z="close" label="L" class="probe"></st-dataviz-variable-pie-chart>`,
+    re: RE.VariablePieChart as ComponentType<Props>,
+    props: { viewId: 'v', label_field: 'region', value: 'amount', z: 'close', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'ColumnPyramidChart',
+    ng: NG.ColumnPyramidChart as Type<unknown>,
+    template: `<st-dataviz-column-pyramid-chart [store]="store" viewId="v" category="region" value="amount" label="L" class="probe"></st-dataviz-column-pyramid-chart>`,
+    re: RE.ColumnPyramidChart as ComponentType<Props>,
+    props: { viewId: 'v', category: 'region', value: 'amount', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'TreegraphChart',
+    ng: NG.TreegraphChart as Type<unknown>,
+    template: `<st-dataviz-treegraph-chart [store]="store" viewId="v" id_field="region" parent_field="service" label_field="service" label="L" class="probe"></st-dataviz-treegraph-chart>`,
+    re: RE.TreegraphChart as ComponentType<Props>,
+    props: { viewId: 'v', id_field: 'region', parent_field: 'service', label_field: 'service', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'OrganizationChart',
+    ng: NG.OrganizationChart as Type<unknown>,
+    template: `<st-dataviz-organization-chart [store]="store" viewId="v" id_field="region" parent_field="service" label_field="service" label="L" class="probe"></st-dataviz-organization-chart>`,
+    re: RE.OrganizationChart as ComponentType<Props>,
+    props: { viewId: 'v', id_field: 'region', parent_field: 'service', label_field: 'service', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'DecompositionTreeChart',
+    ng: NG.DecompositionTreeChart as Type<unknown>,
+    template: `<st-dataviz-decomposition-tree-chart [store]="store" viewId="v" measure="amount" [levels]="hierarchy" label="L" class="probe"></st-dataviz-decomposition-tree-chart>`,
+    re: RE.DecompositionTreeChart as ComponentType<Props>,
+    props: { viewId: 'v', measure: 'amount', levels: hierarchy, label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'ArcDiagramChart',
+    ng: NG.ArcDiagramChart as Type<unknown>,
+    template: `<st-dataviz-arc-diagram-chart [store]="store" viewId="v" source="region" target="service" weight="amount" label="L" class="probe"></st-dataviz-arc-diagram-chart>`,
+    re: RE.ArcDiagramChart as ComponentType<Props>,
+    props: { viewId: 'v', source: 'region', target: 'service', weight: 'amount', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 49,
+    expectedSignatureDiffs: 9,
+    attribution: "DS: the shared st-graphLegend block differs, and Angular marks it aria-hidden where React labels it",
+    control: {
+      ng: NGDS.ArcDiagramChart as Type<unknown>,
+      template: `<st-arc-diagram-chart [data]="controlData" label="L"></st-arc-diagram-chart>`,
+      re: REDS.ArcDiagramChart as ComponentType<Props>,
+      props: { data: buildArcDiagramData(wideModel, wideRows, { source: 'region', target: 'service', weight: 'amount' }), label: 'L' },
+    },
+  },
+  {
+    name: 'DependencyWheelChart',
+    ng: NG.DependencyWheelChart as Type<unknown>,
+    template: `<st-dataviz-dependency-wheel-chart [store]="store" viewId="v" source="region" target="service" weight="amount" label="L" class="probe"></st-dataviz-dependency-wheel-chart>`,
+    re: RE.DependencyWheelChart as ComponentType<Props>,
+    props: { viewId: 'v', source: 'region', target: 'service', weight: 'amount', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 49,
+    expectedSignatureDiffs: 9,
+    attribution: "DS: the shared st-graphLegend block differs, and Angular marks it aria-hidden where React labels it",
+    control: {
+      ng: NGDS.DependencyWheelChart as Type<unknown>,
+      template: `<st-dependency-wheel-chart [data]="controlData" label="L"></st-dependency-wheel-chart>`,
+      re: REDS.DependencyWheelChart as ComponentType<Props>,
+      props: { data: buildDependencyWheelData(wideModel, wideRows, { source: 'region', target: 'service', weight: 'amount' }), label: 'L' },
+    },
+  },
+  {
+    name: 'GaugeChart',
+    ng: NG.GaugeChart as Type<unknown>,
+    template: `<st-dataviz-gauge-chart [store]="store" viewId="v" value="amount" label="L" class="probe"></st-dataviz-gauge-chart>`,
+    re: RE.GaugeChart as ComponentType<Props>,
+    props: { viewId: 'v', value: 'amount', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'SolidGaugeChart',
+    ng: NG.SolidGaugeChart as Type<unknown>,
+    template: `<st-dataviz-solid-gauge-chart [store]="store" viewId="v" value="amount" label="L" class="probe"></st-dataviz-solid-gauge-chart>`,
+    re: RE.SolidGaugeChart as ComponentType<Props>,
+    props: { viewId: 'v', value: 'amount', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'ViolinChart',
+    ng: NG.ViolinChart as Type<unknown>,
+    template: `<st-dataviz-violin-chart [store]="store" viewId="v" groupBy="region" measure="amount" label="L" class="probe"></st-dataviz-violin-chart>`,
+    re: RE.ViolinChart as ComponentType<Props>,
+    props: { viewId: 'v', groupBy: 'region', measure: 'amount', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'BellCurveChart',
+    ng: NG.BellCurveChart as Type<unknown>,
+    template: `<st-dataviz-bell-curve-chart [store]="store" viewId="v" measure="amount" label="L" class="probe"></st-dataviz-bell-curve-chart>`,
+    re: RE.BellCurveChart as ComponentType<Props>,
+    props: { viewId: 'v', measure: 'amount', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'Density2DChart',
+    ng: NG.Density2DChart as Type<unknown>,
+    template: `<st-dataviz-density2-d-chart [store]="store" viewId="v" x="amount" y="close" label="L" class="probe"></st-dataviz-density2-d-chart>`,
+    re: RE.Density2DChart as ComponentType<Props>,
+    props: { viewId: 'v', x: 'amount', y: 'close', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'ContourChart',
+    ng: NG.ContourChart as Type<unknown>,
+    template: `<st-dataviz-contour-chart [store]="store" viewId="v" x="amount" y="close" value="high" label="L" class="probe"></st-dataviz-contour-chart>`,
+    re: RE.ContourChart as ComponentType<Props>,
+    props: { viewId: 'v', x: 'amount', y: 'close', value: 'high', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'StateTimelineChart',
+    ng: NG.StateTimelineChart as Type<unknown>,
+    template: `<st-dataviz-state-timeline-chart [store]="store" viewId="v" series="region" start="ts" end="ts" state="service" label="L" class="probe"></st-dataviz-state-timeline-chart>`,
+    re: RE.StateTimelineChart as ComponentType<Props>,
+    props: { viewId: 'v', series: 'region', start: 'ts', end: 'ts', state: 'service', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'StatusHistoryChart',
+    ng: NG.StatusHistoryChart as Type<unknown>,
+    template: `<st-dataviz-status-history-chart [store]="store" viewId="v" series="region" at="ts" value="amount" label="L" class="probe"></st-dataviz-status-history-chart>`,
+    re: RE.StatusHistoryChart as ComponentType<Props>,
+    props: { viewId: 'v', series: 'region', at: 'ts', value: 'amount', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'TimelineChart',
+    ng: NG.TimelineChart as Type<unknown>,
+    template: `<st-dataviz-timeline-chart [store]="store" viewId="v" label_field="region" position="ts" label="L" class="probe"></st-dataviz-timeline-chart>`,
+    re: RE.TimelineChart as ComponentType<Props>,
+    props: { viewId: 'v', label_field: 'region', position: 'ts', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 59,
+    expectedSignatureDiffs: 12,
+    attribution: "DS: the two frameworks draw a different timeline (connector+marker vs tick+tickLabel)",
+    control: {
+      ng: NGDS.TimelineChart as Type<unknown>,
+      template: `<st-timeline-chart [data]="controlData" label="L"></st-timeline-chart>`,
+      re: REDS.TimelineChart as ComponentType<Props>,
+      props: { data: buildTimelineData(wideModel, wideRows, { label: 'region', position: 'ts' }), label: 'L' },
+    },
+  },
+  {
+    name: 'GanttChart',
+    ng: NG.GanttChart as Type<unknown>,
+    template: `<st-dataviz-gantt-chart [store]="store" viewId="v" task="region" start="ts" end="ts" label="L" class="probe"></st-dataviz-gantt-chart>`,
+    re: RE.GanttChart as ComponentType<Props>,
+    props: { viewId: 'v', task: 'region', start: 'ts', end: 'ts', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'FlamegraphChart',
+    ng: NG.FlamegraphChart as Type<unknown>,
+    template: `<st-dataviz-flamegraph-chart [store]="store" viewId="v" id="region" parentId="service" name="shape" value="amount" label="L" class="probe"></st-dataviz-flamegraph-chart>`,
+    re: RE.FlamegraphChart as ComponentType<Props>,
+    props: { viewId: 'v', id: 'region', parentId: 'service', name: 'shape', value: 'amount', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'StreamgraphChart',
+    ng: NG.StreamgraphChart as Type<unknown>,
+    template: `<st-dataviz-streamgraph-chart [store]="store" viewId="v" category="region" series="service" measure="amount" label="L" class="probe"></st-dataviz-streamgraph-chart>`,
+    re: RE.StreamgraphChart as ComponentType<Props>,
+    props: { viewId: 'v', category: 'region', series: 'service', measure: 'amount', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'BumpChart',
+    ng: NG.BumpChart as Type<unknown>,
+    template: `<st-dataviz-bump-chart [store]="store" viewId="v" series="region" category="service" measure="amount" label="L" class="probe"></st-dataviz-bump-chart>`,
+    re: RE.BumpChart as ComponentType<Props>,
+    props: { viewId: 'v', series: 'region', category: 'service', measure: 'amount', label: 'L', className: 'probe' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
 ];
 
 type Row = {
@@ -504,6 +814,16 @@ describe('dataviz-angular ↔ dataviz-react rendered-markup parity', () => {
         attribution: testCase.attribution,
       });
 
+      // PARITY_DUMP=<file> appends every differing entry, which is how a residue
+      // gets classified before it is either fixed or attributed.
+      if (process.env.PARITY_DUMP && (markupDiffs.length || signatureDiffs.length)) {
+        appendFileSync(
+          process.env.PARITY_DUMP,
+          '##### ' + testCase.name + ' markup=' + markupDiffs.length + ' signature=' + signatureDiffs.length +
+            '\n' + markupDiffs.slice(0, 10).join('\n') + '\n--- signature ---\n' +
+            signatureDiffs.slice(0, 10).join('\n') + '\n',
+        );
+      }
       // PARITY_RECORD=1 measures and writes the table without asserting, to
       // seed the expected counts of a new lot. Never use it as the gate.
       if (process.env.PARITY_RECORD) return;
@@ -521,7 +841,10 @@ describe('dataviz-angular ↔ dataviz-react rendered-markup parity', () => {
       // Every case whose residue is attributed to the design system must show the
       // SAME diff count as the bare DS component with identical inputs. Where the
       // two differ, the adapter is adding something of its own.
-      const attributed = ['HeatmapChart', 'TreemapChart', 'OHLCChart', 'RenkoChart', 'DumbbellChart', 'SelectionLegend'];
+      const attributed = [
+        'HeatmapChart', 'TreemapChart', 'OHLCChart', 'RenkoChart', 'DumbbellChart', 'SelectionLegend',
+        'MekkoChart', 'ArcDiagramChart', 'DependencyWheelChart', 'TimelineChart',
+      ];
       for (const name of attributed) {
         const row = table.find((entry) => entry.name === name);
         expect(row, name).toBeDefined();
