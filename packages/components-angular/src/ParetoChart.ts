@@ -46,7 +46,7 @@ type ParetoEntry = {
           }
         </svg>
       </div>
-      <ul class="st-chartDataList" [attr.aria-label]="label">
+      <ul class="st-chartDataList" [attr.aria-label]="'Data values for ' + label">
         @for (item of dataValueItems; track $index) { <li>{{ item }}</li> }
       </ul>
       @if (hoveredIndex !== null && entries[hoveredIndex]) {

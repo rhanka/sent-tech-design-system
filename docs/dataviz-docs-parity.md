@@ -30,7 +30,7 @@ design system documente, et l'écart composant par composant.
 | Composants exportés `@sentropic/dataviz-svelte` | **118** |
 | Composants exportés `@sentropic/dataviz-react` | **118** (+`TimeSeriesLineChart`, −`UrlSync`) |
 | Composants exportés `@sentropic/dataviz-vue` | **117** (−`UrlSync`) |
-| Composants exportés `@sentropic/dataviz-angular` | **12** (lot 1 : 5 charts, 3 contrôles, 2 panneaux ; plus `QueryBar` et `DateHistogramChart`, antérieurs) + adaptateur |
+| Composants exportés `@sentropic/dataviz-angular` | **32** (lot 1 : 10 ; lot 2 : 20, générés ; plus `QueryBar` et `DateHistogramChart`, antérieurs) + adaptateur |
 | Composants distincts (svelte ∪ react-only) | **119** |
 | Entrées au catalogue DS (`components-catalog.ts`) | **203**, toutes natifs DS |
 | Routes `apps/docs/src/routes/components/` | **205** dossiers (200 pages dédiées + 4 pages groupes + 1 route dynamique `[slug]` ; 3 entrées catalogue couvertes par page groupe, sans route propre) |
@@ -39,7 +39,7 @@ design system documente, et l'écart composant par composant.
 | Adaptateurs adossés à un composant DS catalogué | **116** (69 homonymes + 47 non homonymes ; seuls `TimeSeriesLineChart`, `UrlSync` et `WebFrame` sans composant DS) |
 
 L'estimation « ~119 composants par framework » est inexacte : elle vaut pour
-svelte/react/vue (≈118), pas pour angular (2). La parité angular est le
+svelte/react/vue (≈118), pas pour angular (32 après les lots 1 et 2). La parité angular est le
 prérequis manquant avant toute page DS (règle de parité des frameworks).
 
 Détail site dataviz (112) : `charts.ts` = 87 fiches (`CHART_ENTRIES`,
@@ -235,9 +235,9 @@ Statut N-A : uniquement les utilitaires non-composants, exclus du décompte
 - **P0 — Renvoi (livré, §6).** Liens DS → site dataviz et dépôt ; l'inverse
   est fait par un autre agent sur le dépôt dataviz.
 - **P1 — Parité angular (prérequis, hors lot D).** `dataviz-angular`
-  n'exporte que 12/119 composants (lot 1 livré ; 107 restants, patron de portage
+  n'exporte que 32/119 composants (lots 1 et 2 livrés ; 87 restants, patron de portage
   dans `packages/dataviz-angular/PATTERN.md`). Sans la suite, aucune page DS ne
-  peut satisfaire la règle de parité des frameworks au-delà de ces 12. Recommandé
+  peut satisfaire la règle de parité des frameworks au-delà de ces 32. Recommandé
   avant les lots P2 ; à défaut, pages avec mention de couverture explicite
   (décision owner).
 - **P2 — Pages DS, par lots.** Prérequis infra : dépendances workspace

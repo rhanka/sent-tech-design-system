@@ -33,7 +33,7 @@ type SelectionLegendEntry = {
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (entries.length > 0) {
-      <st-inline role="group" [attr.aria-label]="label" [gap]="2" [wrap]="true" [class]="classInput">
+      <st-inline [role]="'group'" [aria-label]="label" [gap]="2" [wrap]="true" [class]="classInput">
         @for (entry of entries; track entry.viewId) {
           <st-selection-chip
             [label]="entry.label"

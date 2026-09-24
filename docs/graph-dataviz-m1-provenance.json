@@ -1845,7 +1845,7 @@
       "gitBlob": "e25344a224d2ce3597755e67e0d577d0f89337ff",
       "sha256": "459a37c73d6a7661073bca9b6ba8cafb3e0cae58c34248f079c8ea341e2fb9b1",
       "status": "adapted-angular-publication",
-      "destinationSha256": "a5293f081e9d0fc799fa266244c46cffb58bf7ee4808a513b53ad03a8cb5aa8e",
+      "destinationSha256": "6ea75ab1ef9b9707e85b1d9cebe8c2ec7b4bf295d25fa22617d06a231e223372",
       "note": "PR #76 documents the ten ported adapters and points at PATTERN.md"
     },
     {
@@ -1896,7 +1896,7 @@
       "gitBlob": "e0da2ca152892d3985977fbd7588ec7e6bb4df31",
       "sha256": "cafea77294137e31b664bef0f053927c4c1edda93d2391f339b44ae3e669c98b",
       "status": "adapted-monorepo-pattern",
-      "destinationSha256": "747ac89c819d020485d7031ef25a9802fc021ef2fed6a787ed12e2d382198fa1",
+      "destinationSha256": "07890f005b9afdb451b28b66841ff4f110a4f137d35a17f1092210447b5ea267",
       "note": "PR #76 exports the ten new adapters and their prop types"
     },
     {
@@ -6670,7 +6670,8 @@
     },
     {
       "destination": "packages/dataviz-angular/LICENSE.THIRD-PARTY.md",
-      "status": "generated-notices"
+      "status": "generated-notices",
+      "sha256": "4bfa00874ba6d40196c250564a38c19316707ac317b1ee5be124b8b462d2e6aa"
     },
     {
       "repository": "graphify",
@@ -6833,7 +6834,7 @@
     {
       "destination": "packages/dataviz-angular/PATTERN.md",
       "status": "local-monorepo-helper",
-      "sha256": "bc8d5c2e9d7b8ec4bc07a1e8098ddbb6e957b45dcafe26995c7c9ccd96811be8",
+      "sha256": "ec63745985a91f3d8a995cf8e32384d40359b60c2c502fd9e1e95c499302c1bd",
       "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned"
     },
     {
@@ -6893,7 +6894,7 @@
     {
       "destination": "packages/dataviz-angular/src/lib/HeatmapChart.test.ts",
       "status": "local-monorepo-helper",
-      "sha256": "2dde4b361cf7594eec83f0521798cfe571f0023f9f3c0a33e09a5a8db53eeaeb",
+      "sha256": "524e07e31f104e1e06bd01837f377874f9fcc4607c650fca8e3362d5383bd462",
       "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned"
     },
     {
@@ -6935,13 +6936,13 @@
     {
       "destination": "packages/dataviz-angular/src/lib/SelectionLegend.ts",
       "status": "local-monorepo-helper",
-      "sha256": "c4a98b6519abd6968f7086f1b464561bab534a85b1d51fc8c3e804971a226d70",
+      "sha256": "1432bc169a394cdc902c7d26c76adf3570bc75c9120cab486d58eb17a9252ff5",
       "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned"
     },
     {
       "destination": "packages/dataviz-angular/src/lib/SelectionLegend.test.ts",
       "status": "local-monorepo-helper",
-      "sha256": "63f318831929a757d8f9858eb6f32fb67902a9b7a44578a7eba8b5ffea5ae334",
+      "sha256": "6570b7e4d8c0a9ff8d9f16689a1fa8c26cd89c839ba848271e2bbc93c9cd56ad",
       "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned"
     },
     {
@@ -6953,14 +6954,151 @@
     {
       "destination": "packages/dataviz-angular/src/lib/TreemapChart.test.ts",
       "status": "local-monorepo-helper",
-      "sha256": "efcc405a855c72905d0d9e82f21204d0dd2cd2bbf66d1acae423983415620a60",
+      "sha256": "65e93fa779cfd748421638da1f060cb1ca2f0d4cb0f0bedd5cddc89a9c020567",
       "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned"
     },
     {
       "destination": "packages/dataviz-angular/src/lib/adapter-pattern.test.ts",
       "status": "local-monorepo-helper",
-      "sha256": "77d21b6aa32b47cf0b82b47535a452b483b39a9d0b84e6fafeed38f2ab092097",
+      "sha256": "243187923eeceb47a236b3acc7d674a6f1fa261d1fd6c7d06b32fc9337bc9cc4",
       "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-vue/src/lib/geoMapLayers.ts",
+      "destination": "packages/dataviz-angular/src/lib/geoMapLayers.ts",
+      "gitBlob": "b754fb84e878d03942148b7505e2bc74f00b49d2",
+      "sha256": "de384e775218d25d314031f30fb4cf6031e70feb7928eabba9540fd1e158ef81",
+      "status": "adapted-import-path-only",
+      "destinationSha256": "75273ff4a6048cce544013149727ca8829fb892d2468f271f31376cf3e07771e",
+      "note": "GD-M2-PARITY lot 2: the dataviz-vue copy with its design-system type import changed to @sentropic/design-system-angular, nothing else; pinned that way by scripts/verify-dataviz-helper-copies.test.mjs"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/AreaRangeChart.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "088680a71ab247b19c1c692b138a27025429828acbdd3116e406e070f5887a15",
+      "note": "GD-M2-PARITY lot 2: monorepo-authored, emitted from tools/dataviz-angular-port/descriptors.json for the AreaRangeChart store-driven adapter; no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/AreaSplineRangeChart.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "fff9f964990ea6c3db194d2eabf8505529d62eb2f46d5cc564336a30f84381c9",
+      "note": "GD-M2-PARITY lot 2: monorepo-authored, emitted from tools/dataviz-angular-port/descriptors.json for the AreaSplineRangeChart store-driven adapter; no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/CandlestickChart.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "0163a0ad043444339e6d74c9fe962776a364c3084740ad3cb3f0ec4bb579e129",
+      "note": "GD-M2-PARITY lot 2: monorepo-authored, emitted from tools/dataviz-angular-port/descriptors.json for the CandlestickChart store-driven adapter; no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/ChoroplethMap.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "6ae58ca8c9a05c7ac759057ca766868e3b88f0bfe346ee9bbf81b6687a4ed98e",
+      "note": "GD-M2-PARITY lot 2: monorepo-authored, emitted from tools/dataviz-angular-port/descriptors.json for the ChoroplethMap store-driven adapter; no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/ColumnRangeChart.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "7dd069ed97df0974d437b5e93d9798e21bb8ae5c5ed91869a65cfaa3267cc031",
+      "note": "GD-M2-PARITY lot 2: monorepo-authored, emitted from tools/dataviz-angular-port/descriptors.json for the ColumnRangeChart store-driven adapter; no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/DumbbellChart.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "4a1c56119a59ca5c05775f9b1c7f0e5908925820ff12ec2b1bc88a6cd6ae62b1",
+      "note": "GD-M2-PARITY lot 2: monorepo-authored, emitted from tools/dataviz-angular-port/descriptors.json for the DumbbellChart store-driven adapter; no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/GeoClusterMap.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "8ddab0d1d5b14053d187329e36b0b0d90e6ed97371cd550e98797543d3492786",
+      "note": "GD-M2-PARITY lot 2: monorepo-authored, emitted from tools/dataviz-angular-port/descriptors.json for the GeoClusterMap store-driven adapter; no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/GeoDensityMap.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "4393527d058b835c791906cda377855ec9864c9de9be8169019959e1894adaf5",
+      "note": "GD-M2-PARITY lot 2: monorepo-authored, emitted from tools/dataviz-angular-port/descriptors.json for the GeoDensityMap store-driven adapter; no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/GeoFlowMap.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "f55a20f6e60fc034ddb0bb98b7d2ebf3868447b1c4aebd99576e1aaf51eb8591",
+      "note": "GD-M2-PARITY lot 2: monorepo-authored, emitted from tools/dataviz-angular-port/descriptors.json for the GeoFlowMap store-driven adapter; no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/GeoHexbinMap.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "38030b6f44f7a44ac7cb61ff6d96de74649faf5dcda7ab34992d9b6e2ce4524e",
+      "note": "GD-M2-PARITY lot 2: monorepo-authored, emitted from tools/dataviz-angular-port/descriptors.json for the GeoHexbinMap store-driven adapter; no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/GeoJsonMap.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "1395eadcc2fdb7fbc7b3a8558f43686614432987e16072c0a59dc328f23c67f0",
+      "note": "GD-M2-PARITY lot 2: monorepo-authored, emitted from tools/dataviz-angular-port/descriptors.json for the GeoJsonMap store-driven adapter; no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/GeoPointMap.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "174d49f8dcadc4f29856ef109c409096143c199254f15b2c6eafd93715eeb7af",
+      "note": "GD-M2-PARITY lot 2: monorepo-authored, emitted from tools/dataviz-angular-port/descriptors.json for the GeoPointMap store-driven adapter; no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/HLCChart.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "e4ca87963f09717408f853e976d34478a8d97a6c43c53c7e6cfc48d327e26856",
+      "note": "GD-M2-PARITY lot 2: monorepo-authored, emitted from tools/dataviz-angular-port/descriptors.json for the HLCChart store-driven adapter; no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/HeikinAshiChart.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "2eff5c754f70d73e0b13adcd368337a0a5e395f7caf9ca6203e3b7231f39c3a8",
+      "note": "GD-M2-PARITY lot 2: monorepo-authored, emitted from tools/dataviz-angular-port/descriptors.json for the HeikinAshiChart store-driven adapter; no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/HollowCandlestickChart.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "7d80e93a8231ee5054ce6f905a8f5fb19b76198635d55ec502b2a7d8161df866",
+      "note": "GD-M2-PARITY lot 2: monorepo-authored, emitted from tools/dataviz-angular-port/descriptors.json for the HollowCandlestickChart store-driven adapter; no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/OHLCChart.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "d7919302df6e268c52535d9d092ad4da55f4fa390399e662581d49dc94728b85",
+      "note": "GD-M2-PARITY lot 2: monorepo-authored, emitted from tools/dataviz-angular-port/descriptors.json for the OHLCChart store-driven adapter; no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/PackedBubbleChart.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "c5b51576c9bd56f94fc4ac8b2885f7903af438da1e3bfe554263fbe39c28c533",
+      "note": "GD-M2-PARITY lot 2: monorepo-authored, emitted from tools/dataviz-angular-port/descriptors.json for the PackedBubbleChart store-driven adapter; no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/RenkoChart.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "66417dbf76d5ce76b2ce516d1388a6b2562a612b850b9822d7ddf51e9eb9ea47",
+      "note": "GD-M2-PARITY lot 2: monorepo-authored, emitted from tools/dataviz-angular-port/descriptors.json for the RenkoChart store-driven adapter; no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/RoseChart.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "7589b9b2cba97901b9928828b58af097cd76698f27fd9e0cb2f3cb39ef289d71",
+      "note": "GD-M2-PARITY lot 2: monorepo-authored, emitted from tools/dataviz-angular-port/descriptors.json for the RoseChart store-driven adapter; no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/SunburstChart.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "cf2db4b0d906f7396d35a56db7510414e60abc756dd963134959b9fab2085183",
+      "note": "GD-M2-PARITY lot 2: monorepo-authored, emitted from tools/dataviz-angular-port/descriptors.json for the SunburstChart store-driven adapter; no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/generated-adapters.test.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "126bb62510dc3f6230ef800f0c5e0c71a5efccfb27c45fb876bd18238d543a96",
+      "note": "GD-M2-PARITY lot 2: monorepo-authored table-driven test over the generated adapters; no upstream source; hash-pinned"
     }
   ]
 }

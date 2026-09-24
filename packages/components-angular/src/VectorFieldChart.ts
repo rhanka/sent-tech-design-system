@@ -115,7 +115,7 @@ const TONES: VectorFieldChartTone[] = [
         </svg>
       </div>
 
-      <ul class="st-chartDataList" [attr.aria-label]="(label ?? 'vector field') + ' data'">
+      <ul class="st-chartDataList" [attr.aria-label]="'Data values for ' + (label ?? 'vector field')">
         <li *ngFor="let item of dataValueItems">{{ item }}</li>
       </ul>
 

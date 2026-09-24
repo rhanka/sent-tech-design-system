@@ -53,7 +53,7 @@ const MARGIN = { top: 16, right: 18, bottom: 36, left: 52 } as const;
         </svg>
       </div>
 
-      <ul class="st-chartDataList" [attr.aria-label]="(label ?? 'point and figure') + ' data'">
+      <ul class="st-chartDataList" [attr.aria-label]="'Data values for ' + (label ?? 'point and figure')">
         <li *ngFor="let item of dataValueItems">{{ item }}</li>
       </ul>
 
@@ -199,14 +199,14 @@ export class PointAndFigureChart {
   }
 
   get dataValueItems(): string[] {
-    return this.pnfColumns.map((column) => `${column.mark === "x" ? "X" : "O"} ${formatTick(column.priceLow)} -> ${formatTick(column.priceHigh)}`);
+    return this.pnfColumns.map((column) => `${column.mark === "x" ? "X" : "O"} ${formatTick(column.priceLow)} → ${formatTick(column.priceHigh)}`);
   }
 
   get hoveredMark(): PnfMark | null { return this.hoveredKey === null ? null : this.marks.find((mark) => mark.key === this.hoveredKey) ?? null; }
   get tooltipLeft(): string { const mark = this.hoveredMark; return mark ? `${(mark.cx / this.resolvedWidth) * 100}%` : "0"; }
   get tooltipTop(): string { const mark = this.hoveredMark; return mark ? `${(mark.cy / this.resolvedHeight) * 100}%` : "0"; }
   get tooltipLabel(): string { const mark = this.hoveredMark; return mark ? (mark.mark === "x" ? "X" : "O") : ""; }
-  get tooltipValue(): string { const mark = this.hoveredMark; return mark ? `${formatTick(mark.priceLow)} -> ${formatTick(mark.priceHigh)}` : ""; }
+  get tooltipValue(): string { const mark = this.hoveredMark; return mark ? `${formatTick(mark.priceLow)} → ${formatTick(mark.priceHigh)}` : ""; }
 
   handlePointerMove(event: PointerEvent): void { const target = event.target; this.hoveredKey = target instanceof Element ? target.getAttribute("data-chart-key") : null; }
   handleLeave(): void { this.hoveredKey = null; }
