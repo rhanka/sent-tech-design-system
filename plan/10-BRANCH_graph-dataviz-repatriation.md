@@ -57,6 +57,7 @@
   - [ ] `GD-M2-DS-PRESENTATION` : convergence du rendu et des contrats contrôlés sans remonter le store dans les composants.
   - [ ] `GD-M2-CANVAS` : commandes de sélection/édition/ports/annotations ; preview/transaction/persistence séparés.
   - [ ] `GD-M2-PARITY` et `GD-M2-THEMES` : quatre frameworks, a11y/IME/SSR et géométrie/token communes. Retard mesuré : `dataviz-angular` expose 12 composants contre 118 en Svelte, 118 en React et 117 en Vue ; premier lot de 10 livré avec le patron de portage (`packages/dataviz-angular/PATTERN.md`), 107 adaptateurs restants.
+  - [ ] `GD-DATAVIZ-DOCS` : documenter les composants dataviz sur les quatre frameworks. Cadrage écrit : [SPEC_EVOL_GD_DATAVIZ_DOCS.md](../spec/SPEC_EVOL_GD_DATAVIZ_DOCS.md) ; décision de structure : une section « piloté par store » sur la page existante pour les 69 homonymes, une page propre pour les autres, et la file de documentation suit la file de parité pour ne jamais livrer un onglet Angular vide.
   - [ ] Gate : tests invariants, imports sans DOM, absence cycles, contrats multimoteurs, conflits révisions.
 
 - [ ] **M3 — Tranche complète**
