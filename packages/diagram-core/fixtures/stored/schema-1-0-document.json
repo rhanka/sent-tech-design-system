@@ -1,0 +1,70 @@
+{
+  "case": "schema-1-0",
+  "note": "A document stored in schema 1.0: elements carry no `profile` field, attribute values are bare JSON primitives, and the extension carries `hash` instead of `contentHash`. Three items cannot be carried over and are listed in the report with their reason: a quantity whose schema declares three units (the migration does not guess), an attribute the schema does not declare, and a value whose type does not match its schema.",
+  "kind": "stored",
+  "stored": {
+    "documentId": "document:legacy",
+    "schemaVersion": { "major": 1, "minor": 0 },
+    "revision": 11,
+    "profileRefs": ["generic@1"],
+    "entities": {
+      "entity:legacy-root": {
+        "id": "entity:legacy-root",
+        "type": "container",
+        "attributes": { "name": "Legacy root", "collapsed": false }
+      },
+      "entity:legacy-node": {
+        "id": "entity:legacy-node",
+        "type": "node",
+        "attributes": {
+          "name": "Legacy node",
+          "state": "active",
+          "weight": 4,
+          "duration": 120,
+          "createdAt": "2026-01-15",
+          "pinned": true,
+          "tags": ["legacy", "migrated"],
+          "owner": "entity:legacy-root",
+          "colour": "red",
+          "state_typo": true
+        }
+      },
+      "entity:legacy-other": {
+        "id": "entity:legacy-other",
+        "type": "node",
+        "attributes": { "name": 42 }
+      }
+    },
+    "ports": {
+      "port:legacy-out": {
+        "id": "port:legacy-out",
+        "type": "port",
+        "owner": "entity:legacy-node",
+        "name": "out",
+        "direction": "out",
+        "attributes": { "label": "out" }
+      }
+    },
+    "relations": {
+      "relation:legacy-contains": {
+        "id": "relation:legacy-contains",
+        "type": "contains",
+        "endpoints": [
+          { "role": "parent", "target": "entity:legacy-root" },
+          { "role": "child", "target": "entity:legacy-node" }
+        ],
+        "attributes": {}
+      }
+    },
+    "resources": {},
+    "extensions": [
+      {
+        "namespace": "https://example.invalid/legacy/annotation",
+        "schemaVersion": "1",
+        "scope": { "kind": "entity", "target": "entity:legacy-node" },
+        "validation": "preserved-unvalidated",
+        "hash": "fnv1a64:aaaabbbbccccdddd"
+      }
+    ]
+  }
+}
