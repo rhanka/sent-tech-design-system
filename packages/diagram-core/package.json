@@ -1,0 +1,27 @@
+{
+  "name": "@sentropic/diagram-core",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Typed semantic core for diagrams: versioned documents and profiles, views with occurrences, transactional commands with logical inverses. No runtime dependency, no DOM, no framework.",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rhanka/sent-tech-design-system.git",
+    "directory": "packages/diagram-core"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "types": "./dist/index.d.ts",
+  "main": "./dist/index.js",
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check": "tsc -p tsconfig.check.json",
+    "test": "vitest run"
+  }
+}
