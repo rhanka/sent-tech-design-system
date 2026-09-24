@@ -158,7 +158,7 @@
     "jsdom": "^27.2.0",
     "playwright-core": "^1.60.0",
     "vite": "^8.0.16",
-    "vitest": "^4.1.5"
+    "vitest": "^4.1.11"
   },
   "scripts": {
     "predev": "node ../../scripts/ensure-theme-dists.mjs",
