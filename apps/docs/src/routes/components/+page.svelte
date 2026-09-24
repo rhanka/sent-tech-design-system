@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Card } from "@sentropic/design-system-svelte";
+  import { Card, Link } from "@sentropic/design-system-svelte";
   import { locale } from "$lib/locale.svelte";
   import { buildComponentNavGroups } from "$lib/docs-navigation";
 
@@ -25,6 +25,35 @@
     <p class="components-meta">
       {total} {locale.value === "fr" ? "composants" : "components"}
     </p>
+  </section>
+
+  <section class="docs-section" aria-label="Dataviz">
+    <Card class="dataviz-banner">
+      <h2 class="dataviz-banner-title">
+        {locale.value === "fr" ? "Graphiques & BI (dataviz)" : "Charts & BI (dataviz)"}
+      </h2>
+      <p class="dataviz-banner-text">
+        {#if locale.value === "fr"}
+          Les 119 composants pilotés par store des paquets
+          <code>@sentropic/dataviz-*</code> (galerie interactive Svelte, React,
+          Vue) sont présentés sur le site dédié du projet dataviz ; leur
+          intégration à ce catalogue se fait par lots.
+        {:else}
+          The 119 store-driven components of the
+          <code>@sentropic/dataviz-*</code> packages (interactive Svelte,
+          React, Vue gallery) are presented on the dedicated dataviz project
+          site; their integration into this catalog ships in batches.
+        {/if}
+      </p>
+      <p class="dataviz-banner-links">
+        <Link href="https://dataviz.sent-tech.ca" external
+          >{locale.value === "fr" ? "Ouvrir le site dataviz" : "Open the dataviz site"}</Link
+        >
+        <Link href="https://github.com/rhanka/dataviz" external
+          >{locale.value === "fr" ? "Dépôt dataviz sur GitHub" : "Dataviz repository on GitHub"}</Link
+        >
+      </p>
+    </Card>
   </section>
 
   {#each groups as group (group.label)}
@@ -88,5 +117,31 @@
     color: var(--st-semantic-text-primary);
     font-size: 0.95rem;
     font-weight: 650;
+  }
+
+  :global(.dataviz-banner) {
+    border-color: var(--st-semantic-border-strong);
+    padding: 1.25rem 1.5rem;
+  }
+
+  .dataviz-banner-title {
+    color: var(--st-semantic-text-primary);
+    font-size: 1.125rem;
+    margin: 0 0 0.5rem;
+  }
+
+  .dataviz-banner-text {
+    color: var(--st-semantic-text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0;
+    max-width: 60rem;
+  }
+
+  .dataviz-banner-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    margin: 0.75rem 0 0;
   }
 </style>

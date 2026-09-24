@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Badge, Card } from "@sentropic/design-system-svelte";
+  import { Badge, Card, Link } from "@sentropic/design-system-svelte";
   import { t, type Locale } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
   import {
@@ -126,6 +126,19 @@
   <section class="docs-section" id="components">
     <h2>{t(locale.value, "components")}</h2>
     <p>{t(locale.value, "componentsCatalogIntro")}</p>
+    <p class="docs-dataviz-note">
+      {#if locale.value === "fr"}
+        Les composants graphiques et BI pilotés par store
+        (<code>@sentropic/dataviz-*</code>) sont présentés sur le site dédié du
+        projet dataviz :
+        <Link href="https://dataviz.sent-tech.ca" external>Ouvrir le site dataviz</Link>.
+      {:else}
+        The store-driven chart and BI components
+        (<code>@sentropic/dataviz-*</code>) are presented on the dedicated
+        dataviz project site:
+        <Link href="https://dataviz.sent-tech.ca" external>Open the dataviz site</Link>.
+      {/if}
+    </p>
     {#each groups as group (group.category)}
       <div class="docs-catalog-group">
         <h3 class="docs-catalog-group-title">{CATEGORY_LABELS[group.category][locale.value]}</h3>
@@ -301,6 +314,13 @@
     font-size: 0.95rem;
     line-height: 1.6;
     margin: 0;
+  }
+
+  .docs-dataviz-note {
+    color: var(--st-semantic-text-secondary, #475569);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0 0 1.5rem;
   }
 
   .docs-cli-grid {
