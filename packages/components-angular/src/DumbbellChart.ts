@@ -89,7 +89,7 @@ type GridLine = { value: number; x: number };
         <st-graph-legend class="st-dumbbellChart__legend" [entries]="legendEntries"></st-graph-legend>
       </div>
 
-      <ul class="st-chartDataList" [attr.aria-label]="label">
+      <ul class="st-chartDataList" [attr.aria-label]="'Data values for ' + label">
         @for (item of dataValueItems; track $index) {
           <li>{{ item }}</li>
         }

@@ -29,7 +29,7 @@ type AxisGeom = { key: string; label: string; ax: number; domainMin: number; dom
           }
         </svg>
       </div>
-      <ul class="st-chartDataList" [attr.aria-label]="label">
+      <ul class="st-chartDataList" [attr.aria-label]="'Data values for ' + label">
         @for (item of dataValueItems; track $index) { <li>{{ item }}</li> }
       </ul>
     </div>
