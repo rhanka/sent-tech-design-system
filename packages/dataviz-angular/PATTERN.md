@@ -334,6 +334,31 @@ content signature, and what the residue is attributed to. Where a residue is
 attributed to the design system, the bare-DS control column proves it — and, as
 trap 13 says, that is usually a DS bug to fix rather than an exception to record.
 
+### What the render harness cannot see
+
+Two blind spots are properties of measuring **rendered markup**, not accidents of a
+lot. Both bit this package, and a sweep validated only by the harness cannot be
+called complete because of them:
+
+1. **Text that only exists on hover.** An Angular tooltip is rendered but empty
+   without a pointer, so no text node exists in a static render and the content
+   signature has nothing to compare. `RenkoChart`'s tooltip kept `UP`/`DOWN` and
+   `->` for a whole review round after its data list had been aligned, and the
+   harness reported that adapter as clean on content signature.
+2. **Components outside the adapters the harness mounts.** `PARITY.md` covers the
+   ported adapters and nothing else. `PointAndFigureChart` read `X 104.8 -> 105`
+   against React's `X 104.8 → 105` and no measurement touched it.
+
+`scripts/verify-angular-react-glyphs.test.mjs` closes that class by reading the two
+**sources** instead of the two renders: it compares the presence of each direction
+token per component, both ways, over **224** components — so a token both
+frameworks use (the `SankeyChart`'s `source -> target`) is not a finding. Comments
+are stripped first, because prose uses arrows far more than rendered strings do and
+comparing raw files reports 58 files of noise.
+
+When a divergence is about *text a person reads*, prefer a source-level comparison:
+it sees hovered states, and it sees components no adapter has reached yet.
+
 ## Known debt
 
 - **The data helpers are duplicated, not shared.** `categoricalData.ts`,
