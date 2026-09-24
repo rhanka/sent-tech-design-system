@@ -45,7 +45,9 @@ describe("legrandTheme", () => {
     // Error brick danger and dark inverse surface.
     expect(css).toContain("--st-semantic-action-danger: #961e16;");
     expect(css).toContain("--st-semantic-surface-inverse: #1f1f20;");
-    // Legrand brand font family (Acumin, the legrand.fr body typeface).
+    // Legrand brand font families: Roboto (body/controls/fields/labels,
+    // the legrand.fr body typeface) and Acumin (display/headings).
+    expect(css).toContain("Roboto");
     expect(css).toContain("Acumin");
   });
 });

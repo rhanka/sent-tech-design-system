@@ -9,9 +9,9 @@ import type { TenantTheme } from "@sentropic/design-system-themes";
  * `[data-js-theme="part"]` universe) and legrandgroup.com. The signature is
  * the "particuliers" brand orange (#d54401, the `[data-js-theme=part]`
  * `--theme-color`) used for primary buttons and interactive accents over a
- * monochrome black-led chrome. We reference the brand font *names* (Acumin
- * for body/headings, Roboto for labels/captions — the legrand.fr
- * `@font-face` families) only — never font binaries. Sources and exact
+ * monochrome black-led chrome. We reference the brand font *names* (Roboto
+ * for body/controls/fields/labels, Acumin for display/headings — the
+ * legrand.fr `@font-face` families) only — never font binaries. Sources and exact
  * provenance are documented in MAPPING.md. Where the public stylesheets
  * publish no direct equivalent for a Sentropic role (the warning hue, the
  * sm/lg density steps, elevation, motion), the closest derived value is used
@@ -34,7 +34,7 @@ import type { TenantTheme } from "@sentropic/design-system-themes";
  *   Error brick                       #961e16   (form error text)
  *   Error border red                  #f75c53   (form error border)
  *   Success green                     #0c732e   (derived AA step from #0e8a37 — à confirmer)
- *   Warning amber                     #a76800   (measured — AA on white)
+ *   Warning amber                     #a76800   (measured .c-text--warning — AA on white)
  */
 
 // --- Legrand raw colour palette ------------------------------------------------
@@ -43,7 +43,7 @@ const legrandColor = {
   // ([data-js-theme=part] --theme-color). Used as the action / brand family.
   brand: {
     primary: "#d54401", // [data-js-theme=part] --theme-color (action / brand)
-    hover: "#1f1f20", // [data-js-theme=part] --button-hover (primary hover)
+    hover: "#1f1f20", // .c-button--part --button-hover (primary hover)
     dark: "#be3c0d", // [data-js-theme=part] --theme-color-dark
     light: "#fae8e0" // [data-js-theme=part] --theme-color-light
   },
@@ -68,8 +68,8 @@ const legrandColor = {
   muted: "#73757b", // :root --theme-color-light (muted text)
   // System / status colours.
   system: {
-    success: "#0c732e", // derived AA step from the measured #0e8a37 (à confirmer)
-    warning: "#a76800", // measured warning-adjacent hue (AA on white)
+    success: "#0c732e", // derived AA step from the measured #0e8a37 (.c-text--success, à confirmer)
+    warning: "#a76800", // measured .c-text--warning{color:#a76800} (AA on white)
     error: "#961e16", // measured form error text (--form-field-text-color error)
     errorBorder: "#f75c53", // measured form error border (--form-field-border-color error)
     info: "#00798f" // measured pro teal (AA on white)
@@ -109,13 +109,15 @@ const foundation = {
       info: legrandColor.system.info
     }
   },
-  // legrand.fr loads Acumin (AcuminProCond woff2) for body and headings and
-  // Roboto for labels/captions (both via @font-face in main.css); we use
-  // Acumin for body/controls and display. mono is the system stack. We
-  // reference the font *names* only, not binaries.
+  // legrand.fr sets the body/controls type in Roboto
+  // (`body,html{…font-family:Roboto,sans-serif…}` — inputs inherit it) and
+  // reserves Acumin (AcuminProCond woff2 via @font-face in main.css) for
+  // headings/titles/buttons. mono is the system stack. We reference the
+  // font *names* only, not binaries; the fallback stacks are a faithful
+  // expression (à confirmer).
   font: {
-    sans: "'Acumin', 'Acumin Pro', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-    display: "'Acumin', 'Acumin Pro', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+    sans: "'Roboto', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", // à confirmer (fallbacks)
+    display: "'Acumin', 'Acumin Pro', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", // à confirmer (fallbacks)
     mono: "'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"
   },
   // Standard rem spacing scale (kept aligned with the Sentropic base for
@@ -132,13 +134,15 @@ const foundation = {
     16: "4rem" // 64px
   },
   // Legrand / legrand.fr aesthetic is squared: form fields carry a 0 radius
-  // (--form-field-rounded: 0); pills stay fully rounded (à confirmer).
+  // (.c-form__field --form-field-rounded: 0); the 9999px pill is measured on
+  // .c-button--rounded-full, .c-pagination__link and .c-checkbox[type=radio]
+  // (.c-tag publishes no border-radius).
   radius: {
     none: "0",
     sm: "0", // squared fields (measured --form-field-rounded)
     md: "0", // squared controls (measured --form-field-rounded)
     lg: "0.5rem", // 8px — cards (à confirmer)
-    pill: "9999px" // pills / tags (measured pill radius)
+    pill: "9999px" // measured pill radius (buttons / pagination / radio)
   },
   // Light, neutral elevation tinted with the brand ink. Exact specs "à confirmer".
   shadow: {
@@ -177,14 +181,17 @@ const foundation = {
     md: { controlHeight: "2.875rem", paddingBlock: "0.75rem", paddingInline: "0.75rem", gap: "0.5rem", minWidth: "2.5rem", fontSize: "1rem" },
     lg: { controlHeight: "3rem", paddingBlock: "0", paddingInline: "1rem", gap: "0.5rem", minWidth: "3rem", fontSize: "1.125rem" }
   },
-  // Legrand typography: Acumin for interactive/fields, Roboto uppercase for
-  // labels/captions. Button labels use a medium weight (500).
+  // Legrand typography: Roboto for body/controls/fields (inherited from
+  // `body,html{…font-family:Roboto,sans-serif…}`), Roboto uppercase for
+  // labels/captions (measured caption group). Button labels use a medium
+  // weight (500).
   typography: {
-    control: { family: "'Acumin', 'Acumin Pro', system-ui, sans-serif", size: "1rem", weight: "500", lineHeight: "1.35", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
-    field: { family: "'Acumin', 'Acumin Pro', system-ui, sans-serif", size: "1rem", weight: "300", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
-    label: { family: "'Roboto', system-ui, sans-serif", size: "0.75rem", weight: "400", lineHeight: "1.35", letterSpacing: "0.24px", textTransform: "uppercase", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
-    // Brand links inherit the body colour and stay UNDERLINED at rest (1px);
-    // on hover they take the current theme color (measured).
+    control: { family: "'Roboto', system-ui, sans-serif", size: "1rem", weight: "500", lineHeight: "1.35", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" }, // à confirmer (weight/size assignment)
+    field: { family: "'Roboto', system-ui, sans-serif", size: "1rem", weight: "300", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" }, // à confirmer (weight/size assignment)
+    label: { family: "'Roboto', system-ui, sans-serif", size: "0.75rem", weight: "500", lineHeight: "1.35", letterSpacing: "0.24px", textTransform: "uppercase", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" }, // measured caption group (.c-form__label, .c-tag…); desktop size
+    // Brand links sit in the body ink at rest (`a{color:inherit}`) and stay
+    // UNDERLINED at rest (1px); on hover they take the current theme color
+    // (`a:focus-visible,a:hover{color:var(--current-color)}`, measured).
     link: {
       family: "inherit", size: "inherit", weight: "inherit", lineHeight: "inherit", letterSpacing: "0", textTransform: "none",
       textDecoration: "underline", decorationThickness: "1px", decorationOffset: "auto",
@@ -192,16 +199,21 @@ const foundation = {
     }
   },
   disabledOpacity: "0.5", // disabled controls dim to 0.5 (à confirmer)
-  transition: { property: "background-color, border-color, color, box-shadow", duration: "150ms", easing: "ease-in-out" },
-  cursor: { interactive: "pointer", disabled: "not-allowed", text: "text" },
-  iconSize: { sm: "1rem", md: "1.125rem", lg: "1.25rem" },
-  // FOCUS = a strong 4px OUTLINE in the current theme color
-  // (`html :focus-visible{outline:4px solid currentColor}`).
+  transition: { property: "background-color, border-color, color, box-shadow", duration: "150ms", easing: "ease-in-out" }, // à confirmer (not tokenised publicly)
+  cursor: { interactive: "pointer", disabled: "not-allowed", text: "text" }, // à confirmer (not tokenised publicly)
+  iconSize: { sm: "1rem", md: "1.125rem", lg: "1.25rem" }, // à confirmer (not tokenised publicly)
+  // FOCUS = a strong 4px OUTLINE in currentColor
+  // (`html :focus-visible{outline:4px solid currentColor}`, measured). The
+  // orange only holds where the focused element also sets
+  // `color:var(--current-color)` (links, buttons); elsewhere currentColor is
+  // the body ink. Fields carry their own rule (`.c-form__select:focus,…{
+  // border-color:var(--current-color);outline:2px solid transparent;
+  // outline-offset:2px}`, measured).
   focus: {
     strategy: "outline",
     width: "4px",
     offset: "0",
-    color: legrandColor.brand.primary, // #d54401 current theme color (part universe)
+    color: legrandColor.brand.primary, // #d54401 current theme color (part universe) — derived from currentColor (à confirmer)
     inset: "0"
   },
   // Form fields are BOXED (outline): a white fill, a 1px light-grey border
@@ -212,133 +224,158 @@ const foundation = {
     fillBg: legrandColor.slate[0], // #ffffff
     underlineColor: legrandColor.slate[20], // unused for outline, kept for completeness
     underlineWidth: "1px",
-    // Native <select>: redraw the chevron in the brand ink with a 40px right gutter (à confirmer).
+    // Native <select>: redraw the chevron in the measured field icon colour
+    // (.c-form__field --form-icon-text-color:#1f1f20); the 40px right gutter
+    // is a coherent stand-in (à confirmer).
     selectAppearance: "none",
     selectChevron:
       "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%231f1f20' d='M8 11L3 6l1-1 4 4 4-4 1 1z'/%3E%3C/svg%3E\") no-repeat right 0.75rem center",
-    selectPaddingRight: "2.5rem"
+    selectPaddingRight: "2.5rem" // à confirmer (gutter)
   },
-  // Cards: a subtle 1px grey border, light hover tint.
+  // Cards: legrand.fr publishes no card border/hover spec (`.c-card` only
+  // sets theme-coloured border-color); coherent stand-in (à confirmer).
   card: {
-    borderWidth: "1px",
-    lineHeight: "1.5",
-    hoverBackground: legrandColor.slate[10] // #f0f1f2
+    borderWidth: "1px", // à confirmer (no published card border-width)
+    lineHeight: "1.5", // à confirmer (no published card spec)
+    hoverBackground: legrandColor.slate[10] // #f0f1f2 (à confirmer — no published card hover)
   },
   // Secondary button = OUTLINED in the brand orange: transparent fill, orange
-  // border + text, light orange fill on hover.
+  // border + text. The light-orange hover fill generalises the
+  // `.c-button--push` hover (`--button-bg-hover:var(--theme-color-light)`,
+  // measured); a `.c-button--bordered.c-button--part` hover instead resolves
+  // `--button-bg-hover:#1f1f20` (à confirmer).
   buttonSecondary: {
-    background: "transparent",
-    border: legrandColor.brand.primary, // #d54401 stroke
-    hoverBackground: legrandColor.brand.light // #fae8e0 light fill on hover
+    background: "transparent", // measured .c-button--bordered background-color
+    border: legrandColor.brand.primary, // #d54401 stroke (measured .c-button--bordered border-color)
+    hoverBackground: legrandColor.brand.light // #fae8e0 light fill on hover (à confirmer — push-variant hover generalised)
   },
-  // Tabs / top-nav: active tab = brand-orange label with a bottom orange
-  // underline.
+  // Tabs / top-nav: legrand.fr publishes NO tabs component (à confirmer —
+  // explicit derivation). The active orange label generalises the hover
+  // current-color (`a:hover/button:hover{color:var(--current-color)}`,
+  // measured); the only published active-indicator analogue is the ink
+  // 2px bottom border
+  // (`.c-product-viewer__thumbnail[aria-current=true]{
+  // border-bottom-width:2px;border-color:rgb(31 31 32)}`, measured).
   tabs: {
-    activeText: legrandColor.brand.primary, // #d54401 current-color label
-    activeBackground: "transparent",
-    inactiveBackground: "transparent",
-    activeWeight: "700",
-    paddingBlock: "0.75rem", // 12px
-    paddingInline: "1rem", // 16px
-    fontSize: "1rem", // 16px
-    lineHeight: "1.5rem", // 24px
-    indicatorSide: "bottom",
-    indicatorMode: "border"
+    activeText: legrandColor.brand.primary, // #d54401 current-color label (à confirmer — derived, no tabs component published)
+    activeBackground: "transparent", // à confirmer (no tabs component published)
+    inactiveBackground: "transparent", // à confirmer (no tabs component published)
+    activeWeight: "700", // à confirmer (no tabs component published)
+    paddingBlock: "0.75rem", // 12px (à confirmer — no tabs component published)
+    paddingInline: "1rem", // 16px (à confirmer — no tabs component published)
+    fontSize: "1rem", // 16px (à confirmer — no tabs component published)
+    lineHeight: "1.5rem", // 24px (à confirmer — no tabs component published)
+    indicatorSide: "bottom", // à confirmer (thumbnail analogue is a bottom border)
+    indicatorMode: "border" // à confirmer (thumbnail analogue is a bottom border)
   },
-  // Pagination: borderless dark-ink text links; active page = filled brand
-  // orange with white text for AA contrast.
+  // Pagination: white round page links (measured `.c-pagination__link{
+  // background-color:rgb(255 255 255);border-radius:9999px;padding:.625rem}`);
+  // the active page takes the part-universe light fill + dark text (measured
+  // `.c-pagination__link[aria-current],…:hover{
+  // background-color:var(--theme-color-light);color:var(--theme-color-dark)}`,
+  // i.e. #fae8e0 / #be3c0d — 4.60:1, passes AA, no rerouting).
   pagination: {
-    background: "transparent",
-    border: "transparent",
-    borderWidth: "0",
-    text: legrandColor.slate[80], // #1f1f20 link text
-    activeBackground: legrandColor.brand.primary, // #d54401 filled active page
-    activeText: "#ffffff", // white text on the brand orange for AA contrast (measured --button-contrasted)
-    activeBorderWidth: "0",
-    paddingBlock: "0.25rem", // 4px
-    paddingInline: "0.75rem", // 12px
-    minSize: "2.25rem", // 36px page box
-    fontSize: "1rem", // 16px
-    lineHeight: "1.5rem" // 24px
+    background: "#ffffff", // measured .c-pagination__link background
+    border: "transparent", // à confirmer (no published pagination border)
+    borderWidth: "0", // à confirmer (no published pagination border)
+    text: legrandColor.slate[80], // #1f1f20 link text (inherited body ink)
+    activeBackground: "#fae8e0", // measured .c-pagination__link[aria-current] fill
+    activeText: legrandColor.brand.dark, // #be3c0d measured .c-pagination__link[aria-current] text
+    activeBorderWidth: "0", // à confirmer (no published pagination border)
+    paddingBlock: "0.625rem", // measured .c-pagination__link padding
+    paddingInline: "0.625rem", // measured .c-pagination__link padding
+    minSize: "2.25rem", // 36px page box (à confirmer — no published page-box size)
+    fontSize: "1rem", // 16px (à confirmer — no published pagination type size)
+    lineHeight: "1.5rem" // 24px (à confirmer — no published pagination type size)
   },
-  // Breadcrumb: dark-ink links, near-black current page, grey separators.
+  // Breadcrumb: dark-orange links, near-black current page, grey separators.
   breadcrumb: {
-    linkText: legrandColor.brand.dark, // #be3c0d
-    text: legrandColor.slate[60], // #52575c trail text
-    currentText: legrandColor.slate[80], // #1f1f20 current page
-    separator: legrandColor.slate[60], // #52575c
-    fontSize: "0.875rem", // 14px
-    lineHeight: "1.5rem", // 24px
-    currentWeight: "700"
+    linkText: legrandColor.brand.dark, // #be3c0d (à confirmer — role assignment, hex is the measured part dark orange)
+    text: legrandColor.slate[60], // #52575c trail text (à confirmer — no published breadcrumb spec)
+    currentText: legrandColor.slate[80], // #1f1f20 current page (à confirmer — no published breadcrumb spec)
+    separator: legrandColor.slate[60], // #52575c (à confirmer — no published breadcrumb spec)
+    fontSize: "0.875rem", // 14px (à confirmer — no published breadcrumb spec)
+    lineHeight: "1.5rem", // 24px (à confirmer — no published breadcrumb spec)
+    currentWeight: "700" // à confirmer (no published breadcrumb spec)
   },
-  // Alert / notice: a coloured LEFT accent filet on a transparent box.
+  // Alert / notice: legrand.fr publishes NO `.c-alert` / `.c-notice`
+  // component (zero match in main.css) — coherent stand-in (à confirmer).
   alert: {
-    background: "transparent",
-    borderTop: "none",
-    borderRight: "none",
-    borderBottom: "none",
-    accentWidth: "0",
-    filetWidth: "0.25rem", // 4px ::before accent bar
-    paddingTop: "1rem", // 16px
-    paddingRight: "1rem", // 16px
-    paddingBottom: "1rem", // 16px
-    paddingLeft: "1.25rem", // 20px (clears the left filet)
-    fontSize: "1rem", // 16px
-    lineHeight: "1.5rem" // 24px
+    background: "transparent", // à confirmer (no published alert component)
+    borderTop: "none", // à confirmer (no published alert component)
+    borderRight: "none", // à confirmer (no published alert component)
+    borderBottom: "none", // à confirmer (no published alert component)
+    accentWidth: "0", // à confirmer (no published alert component)
+    filetWidth: "0.25rem", // 4px ::before accent bar (à confirmer — no published alert component)
+    paddingTop: "1rem", // 16px (à confirmer — no published alert component)
+    paddingRight: "1rem", // 16px (à confirmer — no published alert component)
+    paddingBottom: "1rem", // 16px (à confirmer — no published alert component)
+    paddingLeft: "1.25rem", // 20px, clears the left filet (à confirmer — no published alert component)
+    fontSize: "1rem", // 16px (à confirmer — no published alert component)
+    lineHeight: "1.5rem" // 24px (à confirmer — no published alert component)
   },
-  // Accordion / details: a dark bold summary trigger.
+  // Accordion / details: legrand.fr publishes no accordion component, but
+  // `details{--padding:12px}` (measured) corroborates the 12px block padding.
   accordion: {
-    text: legrandColor.slate[80], // #1f1f20 summary label
-    paddingBlock: "0.75rem", // 12px
-    paddingInline: "1rem", // 16px
-    fontSize: "1rem", // 16px
-    fontWeight: "700",
-    lineHeight: "1.5rem" // 24px
+    text: legrandColor.slate[80], // #1f1f20 summary label (à confirmer — no published accordion component)
+    paddingBlock: "0.75rem", // 12px (measured details --padding)
+    paddingInline: "1rem", // 16px (à confirmer — no published accordion component)
+    fontSize: "1rem", // 16px (à confirmer — no published accordion component)
+    fontWeight: "700", // à confirmer (no published accordion component)
+    lineHeight: "1.5rem" // 24px (à confirmer — no published accordion component)
   },
-  // Tag: a small pill chip in the measured light grey with caption-grey text.
+  // Tag: measured `.c-tag{…background-color:var(--tag-bg);color:var(--tag-color);
+  // line-height:100%;margin:0;max-width:100%;padding:.375rem;width:auto}` with
+  // `.c-tag{--tag-color:#52575c;--tag-bg:#f0f1f2}`; type is the Roboto caption
+  // group (`.625rem/500`, `.75rem` at ≥1024px). No border-radius is published,
+  // so the squared brand default applies (à confirmer).
   tag: {
-    radius: "999px",
-    paddingBlock: "0.25rem", // 4px
-    paddingInline: "0.5rem", // 8px
-    fontSize: "0.875rem", // 14px
-    fontWeight: "400",
-    lineHeight: "1.5rem", // 24px
-    minHeight: "1.5rem", // 24px
-    neutralBackground: legrandColor.slate[10], // #f0f1f2 measured --tag-bg
-    neutralText: legrandColor.slate[60] // #52575c measured --tag-color
+    radius: "0", // à confirmer (no published tag radius — squared default)
+    paddingBlock: "0.375rem", // measured .c-tag padding
+    paddingInline: "0.375rem", // measured .c-tag padding
+    fontSize: "0.625rem", // measured caption group (.75rem at ≥1024px)
+    fontWeight: "500", // measured caption group
+    lineHeight: "100%", // measured .c-tag line-height
+    minHeight: "1.5rem", // 24px (à confirmer — no published tag min-height)
+    neutralBackground: legrandColor.slate[10], // #f0f1f2 measured .c-tag --tag-bg
+    neutralText: legrandColor.slate[60] // #52575c measured .c-tag --tag-color
   },
-  // Badge: a pill badge in the brand orange with white text.
+  // Badge: legrand.fr publishes no badge component — coherent stand-in built
+  // from the brand orange (à confirmer).
   badge: {
-    radius: "999px",
-    paddingBlock: "0",
-    paddingInline: "0.5rem", // 8px
-    fontSize: "0.875rem", // 14px
-    fontWeight: "700",
-    lineHeight: "1.5rem", // 24px
-    textTransform: "none",
-    minHeight: "1.5rem", // 24px
-    infoBackground: legrandColor.brand.primary, // #d54401
-    infoText: "#ffffff" // white text on the brand orange for AA contrast (measured --button-contrasted)
+    radius: "999px", // à confirmer (no published badge component)
+    paddingBlock: "0", // à confirmer (no published badge component)
+    paddingInline: "0.5rem", // 8px (à confirmer — no published badge component)
+    fontSize: "0.875rem", // 14px (à confirmer — no published badge component)
+    fontWeight: "700", // à confirmer (no published badge component)
+    lineHeight: "1.5rem", // 24px (à confirmer — no published badge component)
+    textTransform: "none", // à confirmer (no published badge component)
+    minHeight: "1.5rem", // 24px (à confirmer — no published badge component)
+    infoBackground: legrandColor.brand.primary, // #d54401 (à confirmer — no published badge component)
+    infoText: "#ffffff" // white text on the brand orange (à confirmer — no published badge component)
   },
-  // Checkbox/radio label.
+  // Checkbox/radio label: legrand.fr publishes no choice-label spec —
+  // coherent stand-in (à confirmer).
   choice: {
-    labelFontSize: "1rem", // 16px
-    labelLineHeight: "1.5rem", // 24px
-    radioLineHeight: "1.5rem", // 24px
-    labelColor: legrandColor.slate[80] // #1f1f20
+    labelFontSize: "1rem", // 16px (à confirmer — no published choice spec)
+    labelLineHeight: "1.5rem", // 24px (à confirmer — no published choice spec)
+    radioLineHeight: "1.5rem", // 24px (à confirmer — no published choice spec)
+    labelColor: legrandColor.slate[80] // #1f1f20 (à confirmer — no published choice spec)
   },
-  // Search input.
+  // Search input: legrand.fr publishes NO `.c-search*` rule (zero match in
+  // main.css) — coherent stand-in (à confirmer).
   search: {
-    paddingBlock: "0.375rem", // 6px
-    paddingInline: "0.75rem", // 12px
-    fontSize: "1rem", // 16px
-    lineHeight: "1.5rem" // 24px
+    paddingBlock: "0.375rem", // 6px (à confirmer — no published search component)
+    paddingInline: "0.75rem", // 12px (à confirmer — no published search component)
+    fontSize: "1rem", // 16px (à confirmer — no published search component)
+    lineHeight: "1.5rem" // 24px (à confirmer — no published search component)
   },
-  // Toggle / switch label.
+  // Toggle / switch label: legrand.fr publishes no toggle spec — coherent
+  // stand-in (à confirmer).
   toggle: {
-    trackPadding: "0",
-    lineHeight: "1.5rem", // 24px
-    textColor: legrandColor.slate[80] // #1f1f20
+    trackPadding: "0", // à confirmer (no published toggle spec)
+    lineHeight: "1.5rem", // 24px (à confirmer — no published toggle spec)
+    textColor: legrandColor.slate[80] // #1f1f20 (à confirmer — no published toggle spec)
   }
 } as const;
 
@@ -349,14 +386,14 @@ const semantic = {
     subtle: legrandColor.slate[10], // #f0f1f2 light grey surface
     raised: legrandColor.slate[0], // white
     inverse: legrandColor.slate[80], // #1f1f20 dark ink inverse surface
-    overlay: "rgb(31 31 32 / 0.6)" // modal backdrop (brand ink tint)
+    overlay: "rgb(31 31 32 / 0.6)" // brand-ink modal backdrop (à confirmer — no modal backdrop published in main.css)
   },
   text: {
     primary: legrandColor.slate[80], // #1f1f20 (body color rgb(31 31 32))
     secondary: legrandColor.slate[60], // #52575c (caption color)
     muted: legrandColor.muted, // #73757b (default-universe light theme step)
     inverse: legrandColor.slate[0], // white on dark / coloured surfaces
-    link: legrandColor.brand.primary // #d54401 current theme color on hover (AA on white)
+    link: legrandColor.brand.primary // #d54401 hover current-color generalised to the link role (à confirmer — rest state is the body ink); AA on white
   },
   border: {
     subtle: legrandColor.slate[20], // #e2e4e6 (field stroke)
@@ -365,11 +402,11 @@ const semantic = {
   },
   action: {
     primary: legrandColor.brand.primary, // #d54401 brand orange primary
-    primaryHover: legrandColor.brand.hover, // #1f1f20 dark hover (measured --button-hover)
-    primaryText: "#ffffff", // white text on the brand orange for AA contrast — Legrand uses white contrasted text (measured --button-contrasted)
+    primaryHover: legrandColor.brand.hover, // #1f1f20 dark hover (.c-button--part --button-hover)
+    primaryText: "#ffffff", // white text on the brand orange for AA contrast (.c-button--part --button-contrasted)
     secondary: legrandColor.slate[10], // #f0f1f2 secondary surface
-    secondaryHover: legrandColor.slate[20], // #e2e4e6
-    secondaryText: legrandColor.brand.dark, // #be3c0d
+    secondaryHover: legrandColor.slate[20], // #e2e4e6 (à confirmer — role assignment, hex is the measured field-stroke grey)
+    secondaryText: legrandColor.brand.dark, // #be3c0d (à confirmer — role assignment, hex is the measured part dark orange)
     danger: legrandColor.system.error // #961e16 error brick
   },
   feedback: {
