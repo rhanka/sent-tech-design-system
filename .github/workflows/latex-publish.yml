@@ -1,0 +1,126 @@
+name: LaTeX Theme Publish
+
+# Publication du thème LaTeX (@sentropic/design-system-theme-latex), sur sa propre
+# ligne de version. Déclenchée par un tag `latex-v<version>`.
+#
+# Publication via npm Trusted Publishing (OIDC), comme canada-publish.yml et
+# quebec-publish.yml : aucun NPM_TOKEN n'est utilisé.
+#
+# ACTION REQUISE AVANT LE PREMIER PUBLISH — le trusted publisher attendu côté npm
+# est : rhanka/sent-tech-design-system + latex-publish.yml. Il doit être déclaré
+# sur npmjs.com pour @sentropic/design-system-theme-latex, un nom qui n'existe pas
+# encore au registre. Tant que ce n'est pas fait, le job `publish` échouera sur
+# l'échange OIDC. Ce geste passe par la session npmjs du propriétaire.
+#
+# Pourquoi ce thème est publiable alors que les clones de marque ne le sont pas :
+# LaTeX n'est pas une marque commerciale. Le matériel amont est libre (projet
+# LaTeX sous LaTeX Project Public License, famille Latin Modern sous GUST Font
+# License), et le paquet ne redistribue ni classe ni fichier de police — il porte
+# des valeurs mesurées et des NOMS de police. La provenance amont est documentée
+# dans packages/theme-latex/MAPPING.md.
+
+on:
+  push:
+    tags: ["latex-v*"]
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+      - run: npm ci
+      - name: Build LaTeX theme dependencies
+        run: |
+          npm --workspace @sentropic/design-system-tokens run build
+          npm --workspace @sentropic/design-system-themes run build
+      - name: Verify LaTeX theme package
+        run: |
+          npm --workspace @sentropic/design-system-theme-latex run build
+          npm --workspace @sentropic/design-system-theme-latex test
+      - name: Verify publishable licensing
+        run: npm run licensing:check
+      - name: Build workspace for package smoke
+        run: npm run build
+      - name: Smoke packed packages
+        run: npm run pack:smoke
+
+  release-guard:
+    needs: verify
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/latex-v')
+    env:
+      RELEASE_BRANCH: ${{ github.event.repository.default_branch }}
+      TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify tag is merged into default branch
+        run: |
+          git fetch origin "${RELEASE_BRANCH}:refs/remotes/origin/${RELEASE_BRANCH}"
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" "origin/${RELEASE_BRANCH}"; then
+            echo "::error::Refusing to publish ${TAG}: ${GITHUB_SHA} is not merged into origin/${RELEASE_BRANCH}."
+            exit 1
+          fi
+      - name: Verify LaTeX theme version matches tag
+        run: |
+          EXPECTED="${TAG#latex-v}"
+          ACTUAL=$(node -p "require('./packages/theme-latex/package.json').version")
+          if [ "$EXPECTED" != "$ACTUAL" ]; then
+            echo "::error::Tag ${TAG} expects ${EXPECTED} but packages/theme-latex is ${ACTUAL}."
+            exit 1
+          fi
+          echo "LaTeX theme version matches ${EXPECTED}"
+
+  publish:
+    needs: release-guard
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/latex-v')
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+      - name: Upgrade npm
+        run: npm install -g npm@11.6.2
+      - name: Install and build
+        run: |
+          npm ci
+          npm --workspace @sentropic/design-system-tokens run build
+          npm --workspace @sentropic/design-system-themes run build
+          npm --workspace @sentropic/design-system-theme-latex run build
+      - name: Publish LaTeX theme package
+        run: npm publish --workspace @sentropic/design-system-theme-latex --access public
+
+  post-publish-check:
+    needs: publish
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/latex-v')
+    env:
+      TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Wait for npm propagation
+        run: |
+          VERSION="${TAG#latex-v}"
+          for attempt in {1..20}; do
+            if npm view "@sentropic/design-system-theme-latex@${VERSION}" version --silent > /dev/null 2>&1; then
+              echo "@sentropic/design-system-theme-latex@${VERSION} is available from npm."
+              exit 0
+            fi
+            echo "Waiting for npm propagation, attempt ${attempt}/20..."
+            sleep 15
+          done
+          echo "::error::Timed out waiting for npm propagation."
+          exit 1
