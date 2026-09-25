@@ -52,6 +52,10 @@ import {
   dsVectorFieldData,
   dsWindBarbData,
   dsForceGraph,
+  dsSparklineData,
+  dsStepLinePoints,
+  dsDivergingBarData,
+  dsDivergingBarDomain,
 } from './fixture.js';
 
 import * as NG from '../../packages/dataviz-angular/dist/index.js';
@@ -979,6 +983,112 @@ const cases: Case[] = [
     expectedSignatureDiffs: 0,
     attribution: '—',
   },
+  {
+    name: 'Sparkline',
+    ng: NG.Sparkline as Type<unknown>,
+    template: `<st-dataviz-sparkline [store]="store" viewId="v" dimension="region" measure="amount" label="Amount trend" class="lot5-spark"></st-dataviz-sparkline>`,
+    re: RE.Sparkline as ComponentType<Props>,
+    props: { viewId: 'v', dimension: 'region', measure: 'amount', label: 'Amount trend', className: 'lot5-spark' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 2,
+    expectedSignatureDiffs: 0,
+    attribution: 'DS: components-angular renders the Sparkline root as a div, components-react as a span',
+    control: {
+      ng: NGDS.Sparkline as Type<unknown>,
+      template: `<st-sparkline [data]="controlData" label="Amount trend"></st-sparkline>`,
+      re: REDS.Sparkline as ComponentType<Props>,
+      props: { data: dsSparklineData, label: 'Amount trend' },
+    },
+  },
+  {
+    name: 'ScoreCard',
+    ng: NG.ScoreCard as Type<unknown>,
+    template: `<st-dataviz-score-card [store]="store" viewId="v" measure="amount" label="Total amount"></st-dataviz-score-card>`,
+    re: RE.ScoreCard as ComponentType<Props>,
+    props: { viewId: 'v', measure: 'amount', label: 'Total amount' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'LollipopChart',
+    ng: NG.LollipopChart as Type<unknown>,
+    template: `<st-dataviz-lollipop-chart [store]="store" viewId="v" category="region" measure="amount" label="Amount by region"></st-dataviz-lollipop-chart>`,
+    re: RE.LollipopChart as ComponentType<Props>,
+    props: { viewId: 'v', category: 'region', measure: 'amount', label: 'Amount by region' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'StepLineChart',
+    ng: NG.StepLineChart as Type<unknown>,
+    template: `<st-dataviz-step-line-chart [store]="store" viewId="v" category="region" measure="amount" label="Amount by region"></st-dataviz-step-line-chart>`,
+    re: RE.StepLineChart as ComponentType<Props>,
+    props: { viewId: 'v', category: 'region', measure: 'amount', label: 'Amount by region' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 1,
+    expectedSignatureDiffs: 0,
+    attribution: 'DS: components-react writes the step path with H/V shorthand and sets stroke-width/linecap on it, components-angular writes L segments and sets neither',
+    control: {
+      ng: NGDS.StepLineChart as Type<unknown>,
+      template: `<st-step-line-chart [data]="controlData" label="Amount by region"></st-step-line-chart>`,
+      re: REDS.StepLineChart as ComponentType<Props>,
+      props: { data: dsStepLinePoints, label: 'Amount by region' },
+    },
+  },
+  {
+    name: 'CalendarHeatmapChart',
+    ng: NG.CalendarHeatmapChart as Type<unknown>,
+    template: `<st-dataviz-calendar-heatmap-chart [store]="store" viewId="v" date="day" measure="amount" label="Amount per day"></st-dataviz-calendar-heatmap-chart>`,
+    re: RE.CalendarHeatmapChart as ComponentType<Props>,
+    props: { viewId: 'v', date: 'day', measure: 'amount', label: 'Amount per day' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'ChordChart',
+    ng: NG.ChordChart as Type<unknown>,
+    template: `<st-dataviz-chord-chart [store]="store" viewId="v" source="region" target="service" measure="amount" label="Region to service"></st-dataviz-chord-chart>`,
+    re: RE.ChordChart as ComponentType<Props>,
+    props: { viewId: 'v', source: 'region', target: 'service', measure: 'amount', label: 'Region to service' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'DivergingBarChart',
+    ng: NG.DivergingBarChart as Type<unknown>,
+    template: `<st-dataviz-diverging-bar-chart [store]="store" viewId="v" category="region" measure="amount" label="Amount by region"></st-dataviz-diverging-bar-chart>`,
+    re: RE.DivergingBarChart as ComponentType<Props>,
+    props: { viewId: 'v', category: 'region', measure: 'amount', label: 'Amount by region' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 2,
+    expectedSignatureDiffs: 0,
+    attribution: 'DS: components-react repeats the tone class on each bar (st-divergentBarChart__bar--positive twice), components-angular writes it once',
+    control: {
+      ng: NGDS.DivergentBarChart as Type<unknown>,
+      template: `<st-divergent-bar-chart [data]="controlData" label="Amount by region" [domain]="[0, 17]" [showLegend]="true"></st-divergent-bar-chart>`,
+      re: REDS.DivergentBarChart as ComponentType<Props>,
+      props: { data: dsDivergingBarData, label: 'Amount by region', domain: dsDivergingBarDomain, showLegend: true },
+    },
+  },
+  {
+    name: 'ParetoChart',
+    ng: NG.ParetoChart as Type<unknown>,
+    template: `<st-dataviz-pareto-chart [store]="store" viewId="v" category="region" measure="amount" label="Amount by region"></st-dataviz-pareto-chart>`,
+    re: RE.ParetoChart as ComponentType<Props>,
+    props: { viewId: 'v', category: 'region', measure: 'amount', label: 'Amount by region' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
 ];
 
 type Row = {
@@ -1012,6 +1122,27 @@ function dataListItems(root: Element): string[] {
   if (list === null) return [];
   return Array.from(list.querySelectorAll('li')).map((li) => (li.textContent ?? '').replace(/\s+/g, ' ').trim());
 }
+
+/**
+ * The cases whose design-system component renders no `Data values for …` list at
+ * all, in EITHER framework. They are named rather than skipped, because the
+ * identity assertion below compares two lists and an empty one compares to an
+ * empty one: without this set, a case that stopped rendering its list would pass
+ * silently. `ScoreCard` and `Sparkline` are lot 5's two list-less cases — the DS
+ * KpiCard and Sparkline carry their accessible name on the root element instead,
+ * and their own mount tests in packages/dataviz-angular assert it.
+ */
+const NO_DATA_LIST = new Set([
+  'DashboardFilterBar',
+  'DateRangeFilter',
+  'EventFeedPanel',
+  'ForceGraph',
+  'KpiCardGroup',
+  'RecordsTable',
+  'ScoreCard',
+  'SelectionLegend',
+  'Sparkline',
+]);
 
 function renderAngular(component: Type<unknown>, template: string, store: unknown, controlData?: unknown): Element {
   class Host {
@@ -1122,9 +1253,38 @@ describe('dataviz-angular ↔ dataviz-react rendered-markup parity', () => {
       .map((entry) => `${entry.name}:\n  angular: ${JSON.stringify(entry.angular)}\n  react:   ${JSON.stringify(entry.react)}`);
     expect(findings, findings.join('\n')).toEqual([]);
     // The assertion must have something to compare: a selector that silently
-    // stopped matching would make every case an empty-vs-empty pass.
+    // stopped matching would make every case an empty-vs-empty pass. The floor is
+    // measured (73 of the 82 cases render a list); the test below is its sharp
+    // form, case by case.
     const withList = dataLists.filter((entry) => entry.angular.length > 0).length;
-    expect(withList, 'data lists actually found').toBeGreaterThan(40);
+    expect(withList, 'data lists actually found').toBeGreaterThan(70);
+  });
+
+  /**
+   * The floor above is global: it survives one case falling silent. This one does
+   * not. Every case either compares a NON-EMPTY list on both sides, or is named in
+   * `NO_DATA_LIST` — and the two groups must cover the table exactly, so neither
+   * can grow without being written down. Emptying an adapter's derivation (for
+   * instance returning `[]` from `ParetoChart.recompute`) turns this red while the
+   * markup and signature counts of that case stay at 0, because both renders lose
+   * the same entries.
+   */
+  it('every case either compares a non-empty data list or is named as having none', () => {
+    const silent = dataLists
+      .filter((entry) => !NO_DATA_LIST.has(entry.name) && (entry.angular.length === 0 || entry.react.length === 0))
+      .map((entry) => `${entry.name}: angular ${entry.angular.length} items, react ${entry.react.length} items`);
+    expect(silent, 'these cases compare no data list and are not named as list-less:\n' + silent.join('\n')).toEqual(
+      [],
+    );
+
+    const spurious = dataLists
+      .filter((entry) => NO_DATA_LIST.has(entry.name) && (entry.angular.length > 0 || entry.react.length > 0))
+      .map((entry) => `${entry.name}: angular ${entry.angular.length} items, react ${entry.react.length} items`);
+    expect(spurious, 'these cases are named as list-less but render a list:\n' + spurious.join('\n')).toEqual([]);
+
+    // Exact partition: nothing is outside the two groups.
+    const withList = dataLists.filter((entry) => entry.angular.length > 0).length;
+    expect(withList + NO_DATA_LIST.size, 'list-bearing + named list-less cases').toBe(cases.length);
   });
 
   it('attributes the residue to the DS components and writes PARITY.md', () => {
@@ -1143,6 +1303,8 @@ describe('dataviz-angular ↔ dataviz-react rendered-markup parity', () => {
         // asserts the bare DS control STAYS at 0.
         'ArcDiagramChart', 'DependencyWheelChart',
         'VectorFieldChart', 'WindBarbChart', 'ForceGraph',
+        // Lot 5: all three residues are DS-level, and the control proves it.
+        'Sparkline', 'StepLineChart', 'DivergingBarChart',
       ];
       for (const name of attributed) {
         const row = table.find((entry) => entry.name === name);
