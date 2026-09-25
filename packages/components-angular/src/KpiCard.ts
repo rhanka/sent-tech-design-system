@@ -210,7 +210,9 @@ export class KpiCard {
   }
 
   get formattedDelta(): string | undefined {
-    if (this.delta == null) return undefined;
+    // Same class as `formattedValue` above, one getter down: Intl renders `NaN`,
+    // `NaN %` and `+∞` for a non-finite delta, where React renders no delta at all.
+    if (this.delta == null || !Number.isFinite(this.delta)) return undefined;
     const sign = this.delta > 0 ? "+" : "";
     if (this.deltaFormat === "percent") {
       const pct = new Intl.NumberFormat(this.locale, {
