@@ -891,6 +891,32 @@ pays that discipline for another object — `pack:smoke` installs from tarballs 
 because "it works in the workspace" is not "it works for a consumer" — so the rule is
 that principle carried from packages to citations, not a new burden.
 
+**An instruction expressed as a range is an instruction whose extent is decided elsewhere,
+later, by someone who is not reading it.** A range designates by extension rather than by
+enumeration, so it does not name its own content and inherits silently whatever grows
+inside it. Nobody decides that inheritance, which is what distinguishes this from an
+ordinary imprecision.
+
+Four instances met in a single day, on objects with nothing else in common:
+
+| the range | who fixes its extent | what it did |
+|---|---|---|
+| `^5.9.3` and 243 other caret specifiers | the registry, at install time | lets a third party choose the version installed |
+| `scripts/*.test.mjs` | the filesystem, at run time | returns **rc=0** when it matches nothing |
+| `A..B` | the command, at parse time | two different meanings for `git diff` and for `cherry-pick` |
+| "read sections 1 to 12" in a builder's brief | whoever next enlarges the method | imposed **683 lines** that do not concern a builder, measured |
+
+The counter-measure is the same in all four and it is always an enumeration: the named
+reading list, the file-count floor that refuses an empty glob, the range frozen on an
+explicit sha, the exact pins that theme packages already carry where determinism is
+required. **The repository already applies it where it matters**, which is why this is a
+principle generalised rather than a new demand.
+
+And the rule is not "never use a range": a library that accepts patch releases wants one.
+The test is narrower and answerable: **would you notice if the extent changed?** If the
+answer is no, the designation is doing work nobody is watching — and an instruction, a
+glob or a reading list almost always answers no.
+
 **A measurement produces a narrow guarantee and a broad confidence, so a measured clause
 states the condition under which its probe holds — not only the sample it used.** Twice in
 this programme a rule that was genuinely measured turned out to be silent about the case
