@@ -213,7 +213,8 @@ const foundation = {
     strategy: "ring",
     width: "2px",
     offset: "2px",
-    color: lionColor.blue[500] // #4164ff — electric-blue focus ring
+    color: lionColor.blue[500], // #4164ff — electric-blue focus ring
+    inset: "0" // Sent Tech base: unused by the `ring` strategy, present so the leaf is not dropped
   },
   // LION ELECTRIC form fields: the kit publishes no custom input chrome (Elementor's
   // default boxed input). We encode a clean BOXED outline (white fill, 1px steel-blue
