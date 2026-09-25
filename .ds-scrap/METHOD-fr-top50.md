@@ -506,6 +506,17 @@ form decides. When no comparable agent has finished yet, there is no control and
 answer is to wait or to relaunch a copy alongside, never to conclude from the absence
 of a signal.
 
+**And the two conditions this rule holds under, stated because the rule above requires
+it.** First, a control band is valid **only for the invocation that produced it, effort
+tier included**: a band measured at one reasoning tier does not transfer to another, and
+using it there would be a threshold measuring an execution convention rather than a
+property. Second, **one delivery is a point, not a band** — with a single witness there is
+still no threshold, because a minimum and a maximum need two. Between the first and the
+second delivery nothing has changed about what can be decided; only the impression of
+being able to decide has changed, and elapsed time keeps adding pressure while adding no
+information. Both conditions were found while a lot was in flight, on a band measured at a
+lower tier than the lot it would have judged.
+
 **Rebase onto the tip at the moment you rebase, never onto a sha someone handed you.**
 Main moves while a lot is in flight — in one session five documentation PRs landed
 between a lot branch's first commit and its gates, each one moving the base, and two
@@ -879,6 +890,30 @@ So for anything a reader will follow, the instrument must have **the reader's sh
 pays that discipline for another object — `pack:smoke` installs from tarballs precisely
 because "it works in the workspace" is not "it works for a consumer" — so the rule is
 that principle carried from packages to citations, not a new burden.
+
+**A measurement produces a narrow guarantee and a broad confidence, so a measured clause
+states the condition under which its probe holds — not only the sample it used.** Twice in
+this programme a rule that was genuinely measured turned out to be silent about the case
+its probe had not covered:
+
+| measured rule | what the probe used | the domain it was silent about | the cost |
+|---|---|---|---|
+| integration by `cherry-pick -n <sha>` | **one** commit | n commits | false from the second commit on |
+| the range form taking a branch **name** | a **static** branch | a branch still moving | a range that includes an unexamined commit |
+
+Both times the measurement was real. What made each rule trustworthy for the case it
+covered is also what hid the case it did not, because a measurement grants a narrow
+guarantee and invites a broad confidence. The first rule recorded "probed with three
+commits" — it declared its **sample** and said nothing about its **domain**. Had it said
+"on a branch whose tip no longer moves", the gap would have shown on reading instead of
+waiting for a refutation.
+
+So this is the citation discipline one notch further: it is not enough to cite the artefact
+that produced a measurement, the condition under which that measurement holds is cited too.
+**A measurement without its domain is a number without its unit.** And the practical half,
+which is cheaper than it sounds: **enumerate the states of the subject before choosing the
+probe case** — the table of four builder states above is what made the second gap visible
+before an integration needed it.
 
 **A precedent is a measurement, not a citation** — open the package, resolve the
 token, compute. **And resolve it in the package you are talking about, scoped to the
