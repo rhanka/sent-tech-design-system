@@ -992,6 +992,27 @@ type Row = {
 
 const table: Row[] = [];
 
+/** The accessible data-list items of one render, in order. */
+type DataList = { name: string; angular: string[]; react: string[] };
+const dataLists: DataList[] = [];
+
+function parseHtml(html: string): Element {
+  const host = document.createElement('div');
+  host.innerHTML = html;
+  return host;
+}
+
+/**
+ * The items of the shared `ChartDataList`, found by the `aria-label` it carries
+ * rather than by position in the flattened tree. Empty when the render has no
+ * such list (`EventFeedPanel` and `ForceGraph` render none — see PATTERN.md).
+ */
+function dataListItems(root: Element): string[] {
+  const list = root.querySelector('[aria-label^="Data values"]');
+  if (list === null) return [];
+  return Array.from(list.querySelectorAll('li')).map((li) => (li.textContent ?? '').replace(/\s+/g, ' ').trim());
+}
+
 function renderAngular(component: Type<unknown>, template: string, store: unknown, controlData?: unknown): Element {
   class Host {
     readonly store = store;
@@ -1021,13 +1042,16 @@ describe('dataviz-angular ↔ dataviz-react rendered-markup parity', () => {
         reStore.toggleSelection('revenue', 'checkout');
       }
 
-      const ngEntries = flatten(renderAngular(testCase.ng, testCase.template, ngStore));
+      const ngRoot = renderAngular(testCase.ng, testCase.template, ngStore);
+      const ngEntries = flatten(ngRoot);
       const reactProps: Props = { ...testCase.props };
       if (!testCase.storeless) reactProps.store = reStore;
-      const reEntries = flattenHtml(renderToStaticMarkup(createElement(testCase.re, reactProps)));
+      const reHtml = renderToStaticMarkup(createElement(testCase.re, reactProps));
+      const reEntries = flattenHtml(reHtml);
 
       const markupDiffs = diff(ngEntries, reEntries);
       const signatureDiffs = diff(textSignature(ngEntries), textSignature(reEntries));
+      dataLists.push({ name: testCase.name, angular: dataListItems(ngRoot), react: dataListItems(parseHtml(reHtml)) });
 
       let controlDiffs: number | null = null;
       if (testCase.control) {
@@ -1066,6 +1090,42 @@ describe('dataviz-angular ↔ dataviz-react rendered-markup parity', () => {
       expect(markupDiffs.length, markupDiffs.slice(0, 4).join('\n')).toBe(testCase.expectedMarkupDiffs);
     });
   }
+
+  /**
+   * WHY THIS TEST EXISTS, AND WHAT THE COUNTS ABOVE CANNOT MEASURE.
+   * `diff()` compares the two flattened lists POSITION BY POSITION. As soon as one
+   * framework emits elements the other does not, everything after that point is
+   * shifted and counted as a difference whatever it contains: the count SATURATES
+   * and stops measuring anything downstream of the structural divergence.
+   *
+   * `TimelineChart` is the case that proves it. React emits five `tickLabel` text
+   * nodes Angular does not, so its signature list is shifted from index 1 on.
+   * Aligning Angular's data list on React's `${position}: ${label}` spelling —
+   * Angular used to print the label alone, dropping the position a reader needs —
+   * moved NO count at all: 59 markup / 12 signature before and after, the whole
+   * suite green either way. A repair that nothing measures is a repair that can be
+   * silently undone.
+   *
+   * So the data list is measured on its own here, located by its `aria-label`
+   * instead of by position. Reverting `TimelineChart.dataValueItems` to
+   * `${label}` / `${label}: ${description}` turns THIS test red while 59/12 and
+   * every other count stay exactly where they are.
+   *
+   * Both sides empty is an equality too, and a truthful one: `EventFeedPanel` and
+   * `ForceGraph` render no such list in either framework (PATTERN.md records that
+   * as DS debt), so they assert an absence rather than abstain.
+   */
+  it('the accessible data list is identical, independently of markup position', () => {
+    expect(dataLists).toHaveLength(cases.length);
+    const findings = dataLists
+      .filter((entry) => entry.angular.join('\u0000') !== entry.react.join('\u0000'))
+      .map((entry) => `${entry.name}:\n  angular: ${JSON.stringify(entry.angular)}\n  react:   ${JSON.stringify(entry.react)}`);
+    expect(findings, findings.join('\n')).toEqual([]);
+    // The assertion must have something to compare: a selector that silently
+    // stopped matching would make every case an empty-vs-empty pass.
+    const withList = dataLists.filter((entry) => entry.angular.length > 0).length;
+    expect(withList, 'data lists actually found').toBeGreaterThan(40);
+  });
 
   it('attributes the residue to the DS components and writes PARITY.md', () => {
     // The adapter passes identical inputs, so its diff count must be exactly the
