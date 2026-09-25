@@ -221,6 +221,15 @@ const packages = [
     name: "@sentropic/graph",
     // GD-M2-PROCESSING: the DOM-free computation subpath ships alongside the
     // root entry; both are required in the tarball.
+    //
+    // GD-M2-WORKERS: so do the worker entry and its client, and THESE are the
+    // ones a tarball is likely to ship broken. `layout-client.js` resolves its
+    // worker with `new URL("./worker.js", import.meta.url)`, so the two files
+    // must be siblings under dist/ — demanding them by name here is what turns
+    // "the worker resolves from the installed package" into a failable claim
+    // rather than something that only ever worked from the workspace. They are
+    // ESM-only (no .cjs, no .d.cts) because `import.meta` has no CommonJS
+    // equivalent: see packages/graph/tsup.config.ts.
     requiredFiles: [
       "dist/index.js",
       "dist/index.d.ts",
@@ -230,6 +239,10 @@ const packages = [
       "dist/processing/index.d.ts",
       "dist/processing/index.cjs",
       "dist/processing/index.d.cts",
+      "dist/worker.js",
+      "dist/worker.d.ts",
+      "dist/layout-client.js",
+      "dist/layout-client.d.ts",
     ],
   },
   {
