@@ -8,9 +8,6 @@ brand's own compiled theme stylesheet; only public values and font *names*
 are referenced — no font binaries. Derived/unmeasured values are flagged
 `à confirmer`.
 
-Dassault Aviation ranks 27th among French market capitalisations at 25.58
-in USD billions (method section 13 — a selection criterion, not theme data).
-
 > Key measured facts: (1) Dassault links are **black** (`a{color:#000}`) at
 > rest *and* on hover — the **underline** on hover (plus Dassault blue inside
 > editorial content) is what makes a link, not a colour. (2) The brand colour
