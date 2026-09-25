@@ -3,7 +3,8 @@
   import { Badge, type AreaChartDatum } from "@sentropic/design-system-svelte";
   import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
-  import type { NodeSpec } from "$lib/framework/examples";
+  import { storeChartDemoNodes, type NodeSpec } from "$lib/framework/examples";
+  import { createDashboardStore, type DataModel } from "@sentropic/dataviz-core";
 
   // Jeux de données présentés en exemples statiques (le bac à sable interactif
   // a été figé pour permettre la bascule multi-framework).
@@ -93,6 +94,30 @@
       ]
     }
   ]);
+
+  // Version adaptateur : la série est dérivée d'un vrai store minimal.
+  const storeModel: DataModel = {
+    dimensions: [{ id: "month", label: "Mois", type: "discrete" }],
+    measures: [{ id: "revenue", label: "Revenu", aggregation: "sum" }]
+  };
+  const store = createDashboardStore({
+    model: storeModel,
+    data: [
+      { month: "Jan", revenue: 120 },
+      { month: "Fév", revenue: 150 },
+      { month: "Mar", revenue: 220 }
+    ]
+  });
+
+  const storeDemo = $derived<NodeSpec[]>(
+    storeChartDemoNodes("AreaChart", {
+      store,
+      viewId: "store",
+      category: "month",
+      measure: "revenue",
+      label: locale.value === "fr" ? "Revenu mensuel (store)" : "Monthly revenue (store)"
+    })
+  );
 </script>
 
 <div class="docs-page">
@@ -354,6 +379,49 @@
         {/if}
       </li>
     </ul>
+  </section>
+  <section class="docs-section">
+    <h2>{locale.value === "fr" ? "Piloté par store" : "Store-driven"}</h2>
+    <p class="section-desc">
+      {#if locale.value === "fr"}
+        La version adaptateur (<code>@sentropic/dataviz-svelte</code>,
+        <code>-react</code>, <code>-vue</code>, <code>-angular</code>) dérive la série
+        d’un <code>DashboardStore</code> partagé : <code>category</code> et
+        <code>measure</code> désignent les canaux, le reste du contrat est inchangé.
+      {:else}
+        The adapter version (<code>@sentropic/dataviz-svelte</code>,
+        <code>-react</code>, <code>-vue</code>, <code>-angular</code>) derives the
+        series from a shared <code>DashboardStore</code>: <code>category</code> and
+        <code>measure</code> name the channels, the rest of the contract is unchanged.
+      {/if}
+    </p>
+    <TabbedExample nodes={storeDemo} title={locale.value === "fr" ? "Revenu mensuel (store)" : "Monthly revenue (store)"} />
+    <table class="docs-table">
+      <thead>
+        <tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>store</code></td><td><code>DashboardStore</code></td><td><code>required</code></td><td>{locale.value === "fr" ? "Store partagé." : "Shared store."}</td></tr>
+        <tr><td><code>viewId</code></td><td><code>string</code></td><td><code>required</code></td><td>{locale.value === "fr" ? "Identifiant de vue." : "View id."}</td></tr>
+        <tr><td><code>category</code> / <code>measure</code></td><td><code>string</code></td><td><code>required</code></td><td>{locale.value === "fr" ? "Canaux catégorie et mesure." : "Category and measure channels."}</td></tr>
+        <tr><td><code>tone</code> / <code>smooth</code></td><td><code>AreaChartTone / boolean</code></td><td>natif</td><td>{locale.value === "fr" ? "Repris du natif." : "Carried from the native."}</td></tr>
+        <tr><td><code>width</code> / <code>height</code></td><td><code>number</code></td><td>natif</td><td>{locale.value === "fr" ? "Repris du natif." : "Carried from the native."}</td></tr>
+        <tr><td><code>annotations</code> / <code>dataLabels</code></td><td><code>ChartAnnotation[] / DataLabelsProp</code></td><td>natif</td><td>{locale.value === "fr" ? "Repris du natif." : "Carried from the native."}</td></tr>
+        <tr><td><code>hoverKey</code> / <code>onHoverKeyChange</code> / <code>onSelectKey</code></td><td><code>string | null / callbacks</code></td><td>natif</td><td>{locale.value === "fr" ? "Repris du natif." : "Carried from the native."}</td></tr>
+        <tr><td><code>label</code></td><td><code>string</code></td><td><code>required</code></td><td>{locale.value === "fr" ? "Label a11y." : "A11y label."}</td></tr>
+      </tbody>
+    </table>
+    <p class="docs-demo-context">
+      {#if locale.value === "fr"}
+        Props du natif non reprises par la version store : <code>data</code> (dérivé
+        du store via <code>category</code> / <code>measure</code>) et
+        <code>keyboardNav</code> (navigation clavier propre au natif).
+      {:else}
+        Native props not carried by the store version: <code>data</code> (derived
+        from the store through <code>category</code> / <code>measure</code>) and
+        <code>keyboardNav</code> (native-only keyboard navigation).
+      {/if}
+    </p>
   </section>
 </div>
 
