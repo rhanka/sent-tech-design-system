@@ -1906,8 +1906,8 @@
       "gitBlob": "e0da2ca152892d3985977fbd7588ec7e6bb4df31",
       "sha256": "cafea77294137e31b664bef0f053927c4c1edda93d2391f339b44ae3e669c98b",
       "status": "adapted-monorepo-pattern",
-      "destinationSha256": "6ff1d18a0b27bb901368151cbeae8cf97f3e104b02227c080c8f785848d2a8d9",
-      "note": "PR #76 exports the ten new adapters and their prop types"
+      "destinationSha256": "ae778cac4376cd0ce821406970837a133177195b26d2ed55d83544d08e3e639c",
+      "note": "PR #76 exports the ten new adapters and their prop types; GD-M2-PARITY lot 7 adds the six hand-written adapters whose binding reads a prop the descriptor cannot express"
     },
     {
       "repository": "dataviz",
@@ -6904,8 +6904,8 @@
     {
       "destination": "packages/dataviz-angular/PATTERN.md",
       "status": "local-monorepo-helper",
-      "sha256": "4628d818dcac8ecc80448d234d1139b27c3713b62084ff7253e982a7dec13367",
-      "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned"
+      "sha256": "d10669ec130ba032c3338b3bcbaafdeecde5f1247cdb08dc5eda23a3c5509588",
+      "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned. GD-M2-PARITY lot 7 documents the linearRegression stub fix and the ComboChart legend-swatch residue"
     },
     {
       "destination": "packages/dataviz-angular/src/lib/AreaChart.ts",
@@ -7030,8 +7030,8 @@
     {
       "destination": "packages/dataviz-angular/src/lib/adapter-pattern.test.ts",
       "status": "local-monorepo-helper",
-      "sha256": "afe71cfbf62a30d1e45ac6d62ad04082dcc0bb20e7af65358de60ff5fbd59541",
-      "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned"
+      "sha256": "02c1aca7dff27952c09d270d0403c9cdc192f1fb02896a0f7b1692025a5f427d",
+      "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned. GD-M2-PARITY lot 7 adds the six new adapter files to the expected list"
     },
     {
       "repository": "dataviz",
@@ -7167,8 +7167,8 @@
     {
       "destination": "packages/dataviz-angular/src/lib/generated-adapters.test.ts",
       "status": "local-monorepo-helper",
-      "sha256": "04a1fad8b3bba71b6787e0a53b63ee6f6d0f0c031611418e3fcc6be96a34cf01",
-      "note": "GD-M2-PARITY lot 2: monorepo-authored table-driven test over the generated adapters; no upstream source; hash-pinned"
+      "sha256": "489033492d8067b0f9a51cbf5ca94d0e31e0773846882f2164649646f63b8f0c",
+      "note": "GD-M2-PARITY lot 2: monorepo-authored table-driven test over the generated adapters; no upstream source; hash-pinned. Lot 7 adds ErrorBarsChart/PercentileBandChart/ReferenceLineChart/TrendLineChart/ComboChart rows"
     },
     {
       "destination": "packages/dataviz-angular/src/lib/ArcDiagramChart.ts",
@@ -7474,6 +7474,48 @@
       "status": "local-monorepo-helper",
       "sha256": "538d45750c65ce5a873037265156a8a22c10039ab6d1b8ad9f90a1ecf24e8cd3",
       "note": "GD-M2-PARITY lot 5: monorepo-authored by hand for the ParetoChart store-driven adapter; tools/dataviz-angular-port refuses this shape (see its README), so no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/ComboChart.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "e5042c347b96dde5b3c0481b0cd5e3d9d46fe70d237308d569e2b066aae1a919",
+      "note": "GD-M2-PARITY lot 7: monorepo-authored by hand for the ComboChart store-driven adapter; tools/dataviz-angular-port refuses this shape (binding 'bars' reads 'bars', which the descriptor cannot express — see its README), so no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/ErrorBarsChart.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "e2f924b46dc4b34a0a1669708fa666eb6d0d8c5159b58f7a8c90757f94e5b8bd",
+      "note": "GD-M2-PARITY lot 7: monorepo-authored by hand for the ErrorBarsChart store-driven adapter; tools/dataviz-angular-port refuses this shape (binding 'data' reads 'data', which the descriptor cannot express — see its README), so no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/PercentileBandChart.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "a97d1622d48f877c8e0e7160573fed82445ebf15a31897f20c7d87ff8fbcfd96",
+      "note": "GD-M2-PARITY lot 7: monorepo-authored by hand for the PercentileBandChart store-driven adapter; tools/dataviz-angular-port refuses this shape (binding 'data' reads 'data', which the descriptor cannot express — see its README), so no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/PivotDataTable.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "bffe4709455374af8bc32c42dadcf7c1f2b329f5e8ed6c505832eead1cb5292b",
+      "note": "GD-M2-PARITY lot 7: monorepo-authored by hand for the PivotDataTable store-driven adapter; tools/dataviz-angular-port refuses this shape (binding 'columns' reads 'columns', which the descriptor cannot express — see its README), so no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/PivotDataTable.test.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "f29abcb4c88981902cf593ca44a31798374ddccc1b3c82448c39aff76e473ea5",
+      "note": "GD-M2-PARITY lot 7: monorepo-authored dedicated test for PivotDataTable (its DS DataTable renders no ul.st-chartDataList, so it is not a row in generated-adapters.test.ts, per PATTERN.md); no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/ReferenceLineChart.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "ca77fbd3eb4b8aa035e973394b4159e210ab16f8d4419d5c417d327dca6a2a3e",
+      "note": "GD-M2-PARITY lot 7: monorepo-authored by hand for the ReferenceLineChart store-driven adapter; tools/dataviz-angular-port refuses this shape (binding 'data' reads 'data', which the descriptor cannot express — see its README), so no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/TrendLineChart.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "c374c8e6bb47d4674a4fc90e211a2d285400854462525186e29247ba35adfde2",
+      "note": "GD-M2-PARITY lot 7: monorepo-authored by hand for the TrendLineChart store-driven adapter; tools/dataviz-angular-port refuses this shape (binding 'data' reads 'data', which the descriptor cannot express — see its README), so no descriptor and no upstream source; hash-pinned"
     },
     {
       "destination": "packages/dataviz-angular/src/lib/ScoreCard.ts",
