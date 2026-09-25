@@ -34,7 +34,11 @@ function host() {
   return el;
 }
 
-afterEach(() => {
+afterEach(async () => {
+  // Drain React's scheduler leftovers while `window` still exists: a commit
+  // scheduled through setImmediate may otherwise fire after the unstub below
+  // and throw `window is not defined` as an unhandled error.
+  await new Promise((done) => setTimeout(done, 0));
   vi.unstubAllGlobals();
 });
 
@@ -148,6 +152,151 @@ describe("vue island (dataviz)", () => {
     expect(el.textContent).toContain("Vue adapter missing: TimeSeriesLineChart");
     handle.unmount();
   });
+});
+
+describe("homonym store sections (dataviz)", () => {
+  // Same builders as the eight native-page sections, mounted in every
+  // framework with a ported adapter (all eight are ported). The label travels
+  // into the markup (aria-label or visible text), so containing it proves the
+  // adapter rendered instead of throwing on a mistyped channel.
+  const sectionCases = [
+    {
+      comp: "AreaChart",
+      model: {
+        dimensions: [{ id: "month", label: "Month", type: "discrete" }],
+        measures: [{ id: "revenue", label: "Revenue", aggregation: "sum" }]
+      },
+      rows: [{ month: "Jan", revenue: 120 }],
+      props: { viewId: "store", category: "month", measure: "revenue" },
+      label: "Section Area"
+    },
+    {
+      comp: "DonutChart",
+      model: {
+        dimensions: [{ id: "product", label: "Product", type: "discrete" }],
+        measures: [{ id: "revenue", label: "Revenue", aggregation: "sum" }]
+      },
+      rows: [{ product: "Atlas", revenue: 120 }],
+      props: { viewId: "store", category: "product", measure: "revenue" },
+      label: "Section Donut"
+    },
+    {
+      comp: "FunnelChart",
+      model: {
+        dimensions: [{ id: "stage", label: "Stage", type: "discrete" }],
+        measures: [{ id: "count", label: "Count", aggregation: "sum" }]
+      },
+      rows: [{ stage: "Visitors", count: 8400 }],
+      props: { viewId: "store", category: "stage", measure: "count" },
+      label: "Section Funnel"
+    },
+    {
+      comp: "GanttChart",
+      model: {
+        dimensions: [{ id: "task", label: "Task", type: "discrete" }],
+        measures: [
+          { id: "start", label: "Start", aggregation: "min" },
+          { id: "end", label: "End", aggregation: "min" }
+        ]
+      },
+      rows: [{ task: "Design", start: 1, end: 5 }],
+      props: { viewId: "store", task: "task", start: "start", end: "end" },
+      label: "Section Gantt"
+    },
+    {
+      comp: "GaugeChart",
+      model: {
+        dimensions: [{ id: "product", label: "Product", type: "discrete" }],
+        measures: [{ id: "revenue", label: "Revenue", aggregation: "sum" }]
+      },
+      rows: [{ product: "Atlas", revenue: 72 }],
+      props: { value: 72, min: 0, max: 100 },
+      label: "Section Gauge"
+    },
+    {
+      comp: "HeatmapChart",
+      model: {
+        dimensions: [
+          { id: "row", label: "Row", type: "discrete" },
+          { id: "col", label: "Col", type: "discrete" }
+        ],
+        measures: [{ id: "value", label: "Value", aggregation: "sum" }]
+      },
+      rows: [{ row: "A", col: "X", value: 12 }],
+      props: { viewId: "store", x: "col", y: "row", measure: "value" },
+      label: "Section Heatmap"
+    },
+    {
+      comp: "SankeyChart",
+      model: {
+        dimensions: [
+          { id: "from", label: "From", type: "discrete" },
+          { id: "to", label: "To", type: "discrete" }
+        ],
+        measures: [{ id: "flow", label: "Flow", aggregation: "sum" }]
+      },
+      rows: [{ from: "A", to: "B", flow: 120 }],
+      props: { viewId: "store", source: "from", target: "to", measure: "flow" },
+      label: "Section Sankey"
+    },
+    {
+      comp: "TreemapChart",
+      model: {
+        dimensions: [
+          { id: "region", label: "Region", type: "discrete" },
+          { id: "product", label: "Product", type: "discrete" }
+        ],
+        measures: [{ id: "revenue", label: "Revenue", aggregation: "sum" }]
+      },
+      rows: [{ region: "North", product: "Atlas", revenue: 120 }],
+      props: { viewId: "store", hierarchy: ["region", "product"], measure: "revenue" },
+      label: "Section Treemap"
+    }
+  ] as const;
+
+  for (const { comp, model, rows, props, label } of sectionCases) {
+    it(`renders the ${comp} section demo in React`, async () => {
+      const el = host();
+      const store = createDashboardStore({ model, data: [...rows] });
+      const handle = await mountReactIsland(el, [
+        {
+          comp,
+          library: "dataviz",
+          props: { store, label, ...props }
+        }
+      ]);
+      await vi.waitFor(() => expect(el.innerHTML).toContain(label));
+      handle.unmount();
+    });
+
+    it(`renders the ${comp} section demo in Vue`, async () => {
+      const el = host();
+      const store = createDashboardStore({ model, data: [...rows] });
+      const handle = await mountVueIsland(el, [
+        {
+          comp,
+          library: "dataviz",
+          props: { store, label, ...props }
+        }
+      ]);
+      expect(el.innerHTML).toContain(label);
+      handle.unmount();
+    });
+
+    it(`renders the ${comp} section demo in Angular`, async () => {
+      const el = host();
+      const store = createDashboardStore({ model, data: [...rows] });
+      const handle = await mountAngularIsland(el, [
+        {
+          comp,
+          library: "dataviz",
+          props: { store, label, ...props }
+        }
+      ]);
+      expect(el.innerHTML).toContain(label);
+      handle.unmount();
+    });
+  }
 });
 
 describe("angular island (dataviz)", () => {
