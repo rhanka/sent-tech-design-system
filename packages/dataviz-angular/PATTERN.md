@@ -361,26 +361,36 @@ it sees hovered states, and it sees components no adapter has reached yet.
 
 ## Known debt
 
-- **The data helpers are duplicated, not shared.** `categoricalData.ts`,
-  `partOfWholeData.ts` and `distributionData.ts` exist once per adapter package,
-  byte-identical; `geoMapLayers.ts` too, except for its design-system type import.
-  None of their exported symbols exists in `@sentropic/dataviz-core`, and all four
-  adapter packages already depend on core, so the resolution is to promote them and
-  delete the copies. Until then `scripts/verify-dataviz-helper-copies.test.mjs`
-  pins every copy — byte-for-byte for the three, modulo the one import line for
-  `geoMapLayers.ts`. Do not edit one package's copy.
-- **`data-chart-index` is Angular-only on some charts.** `OHLCChart` and
-  `DumbbellChart` emit it on each mark; their React counterparts do not, which is
-  the whole of their residual markup difference (3 entries each, equal to the bare
-  DS control). React already uses the attribute on other charts, so adding it there
-  is the likely resolution; it is a `components-react` change.
-- **Angular renders tooltips always, React only on hover.** The Angular
-  `RenkoChart` keeps a hidden `__tooltip` in the DOM (`[style.display]`), React
-  omits it until hovered: 7 of `RenkoChart`'s entries, and probably most of
-  `HeatmapChart`'s 27. One pattern, several components.
-- **`ChartDataList` empty-list behaviour.** React's shared helper renders nothing
-  when the item list is empty; the Angular charts render an empty `<ul>`. No
-  adapter in the current lots produces an empty list.
-- **`Flex` and `Stack` have no ARIA inputs** (trap 6 closed this for `Inline`
-  only). Same one-line change when an adapter needs it.
+Each item carries the cost the parity harness measures for it, so a lot can pick
+the cheapest win. Two items from the first two lots are closed: `Inline` now takes
+ARIA inputs, and the `display:none` visibility gates are gone.
 
+- **The `st-graphLegend` block is hidden from assistive technology in Angular.**
+  Angular renders it `<ul aria-hidden="true">`; React renders
+  `<div aria-label="Graph legend"><ul role="list">`. Three Angular components share
+  the block, so three legends are invisible to a screen reader where React exposes
+  them. Cost: 49 markup and 9 content-signature differing entries each on
+  `ArcDiagramChart` and `DependencyWheelChart`. **The most valuable open item, and
+  an accessibility defect rather than a cosmetic one.**
+- **The two frameworks draw a different timeline.** Angular uses
+  connector + marker + label, React tick + tickLabel. Cost: 59 entries on
+  `TimelineChart`. A design divergence to arbitrate, not a wiring bug.
+- **`TreemapChart` and the `DashboardFilterBar` primitives** still differ inside
+  the DS components (76 and 106 entries, both equal to their bare-DS controls).
+- **components-react puts colour and size in inline styles** where Angular uses
+  attributes or the stylesheet: `MekkoChart`'s cell label `style="fill:…"` (3
+  entries) and `DumbbellChart`'s `style="font-size:…"` (3 entries, and the shared
+  stylesheet already carries that exact value). Angular's form is the one the
+  repository's `csp-no-style-attr` posture wants, so these are `components-react`
+  fixes.
+- **The data helpers are duplicated, not shared.** `categoricalData.ts`,
+  `partOfWholeData.ts`, `distributionData.ts` and `geoMapLayers.ts` exist once per
+  adapter package. None of their exported symbols is in `@sentropic/dataviz-core`,
+  and all four packages already depend on it, so the resolution is to promote them.
+  `scripts/verify-dataviz-helper-copies.test.mjs` pins every copy until then.
+- **`ChartDataList` renders an empty `<ul>`** where React renders nothing. No
+  adapter in the current lots produces an empty list.
+- **`Flex` and `Stack` have no ARIA inputs** — the same one-line change `Inline`
+  received, when an adapter needs it.
+- **`DateRangeFilter`: React serialises `value=""`** on the readonly input where
+  Angular sets the property. One entry, no behavioural difference.

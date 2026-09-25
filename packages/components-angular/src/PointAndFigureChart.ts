@@ -57,10 +57,12 @@ const MARGIN = { top: 16, right: 18, bottom: 36, left: 52 } as const;
         <li *ngFor="let item of dataValueItems">{{ item }}</li>
       </ul>
 
-      <div class="st-pointAndFigureChart__tooltip" role="presentation" [style.display]="hoveredMark ? 'inline-flex' : 'none'" [style.left]="tooltipLeft" [style.top]="tooltipTop">
-        <span class="st-pointAndFigureChart__tooltipLabel">{{ tooltipLabel }}</span>
-        <span class="st-pointAndFigureChart__tooltipValue">{{ tooltipValue }}</span>
-      </div>
+      @if (hoveredMark) {
+        <div class="st-pointAndFigureChart__tooltip" role="presentation" [style.left]="tooltipLeft" [style.top]="tooltipTop">
+          <span class="st-pointAndFigureChart__tooltipLabel">{{ tooltipLabel }}</span>
+          <span class="st-pointAndFigureChart__tooltipValue">{{ tooltipValue }}</span>
+        </div>
+      }
     </div>
   `,
 })

@@ -140,27 +140,30 @@ function toneForValue(value: number, min: number, max: number): HeatmapChartTone
         <li *ngFor="let item of dataValueItems">{{ item }}</li>
       </ul>
 
-      <div
-        class="st-heatmapChart__tooltip"
-        role="presentation"
-        [style.display]="hoveredCell ? 'inline-flex' : 'none'"
-        [style.left]="tooltipLeft"
-        [style.top]="tooltipTop"
-      >
-        <span class="st-heatmapChart__tooltipLabel">{{ tooltipLabel }}</span>
-        <span class="st-heatmapChart__tooltipValue">{{ tooltipValue }}</span>
-      </div>
+      @if (hoveredCell) {
+        <div
+          class="st-heatmapChart__tooltip"
+          role="presentation"
+          [style.left]="tooltipLeft"
+          [style.top]="tooltipTop"
+        >
+          <span class="st-heatmapChart__tooltipLabel">{{ tooltipLabel }}</span>
+          <span class="st-heatmapChart__tooltipValue">{{ tooltipValue }}</span>
+        </div>
+      }
 
-      <div class="st-heatmapChart__legend" aria-hidden="true" [style.display]="legend ? 'flex' : 'none'">
-        <span class="st-heatmapChart__legendText">Low</span>
-        <span class="st-heatmapChart__legendRamp">
-          <span
-            *ngFor="let tone of tones"
-            [attr.class]="'st-heatmapChart__legendSwatch st-heatmapChart__legendSwatch--' + tone"
-          ></span>
-        </span>
-        <span class="st-heatmapChart__legendText">High</span>
-      </div>
+      @if (legend) {
+        <div class="st-heatmapChart__legend" aria-hidden="true">
+          <span class="st-heatmapChart__legendText">Low</span>
+          <span class="st-heatmapChart__legendRamp">
+            <span
+              *ngFor="let tone of tones"
+              [attr.class]="'st-heatmapChart__legendSwatch st-heatmapChart__legendSwatch--' + tone"
+            ></span>
+          </span>
+          <span class="st-heatmapChart__legendText">High</span>
+        </div>
+      }
     </div>
   `,
 })

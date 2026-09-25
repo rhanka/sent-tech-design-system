@@ -153,7 +153,7 @@ function ohlcFormatTick(v: number): string {
           }
 
           @for (b of bars; track b.datum.label) {
-            <g [class]="barGroupClass(b)" [attr.data-chart-index]="b.index">
+            <g [class]="barGroupClass(b)">
               <line
                 class="st-ohlcChart__range"
                 [attr.x1]="b.centerX"

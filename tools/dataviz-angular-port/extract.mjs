@@ -46,10 +46,11 @@ function propRuntime(src) {
 }
 
 function setupBody(src) {
-  const marker = '      void state.value;';
-  const i = src.indexOf(marker);
-  if (i < 0) throw new Error('no `void state.value` marker');
-  return src.slice(i + marker.length, src.lastIndexOf('return h('));
+  // The local holding the dashboard signal is named by each adapter (`state`,
+  // `storeState`, …), so anchor on the shape of the read, not on one name.
+  const marker = /^\s*void \w+\.value;$/m.exec(src);
+  if (!marker) throw new Error('no `void <state>.value` marker');
+  return src.slice(src.indexOf(marker[0]) + marker[0].length, src.lastIndexOf('return h('));
 }
 
 function hBindings(src) {
@@ -89,6 +90,9 @@ export function extract(name) {
   const wrapped = /const (\w+) = (\w+)\(\s*\n?\s*(\w+)\(props\.store\.model, props\.store\.applyCrossfilter\(props\.viewId\), \{([\s\S]*?)\}\),?\s*\)/.exec(body);
   const modelRows = /const (\w+) = (\w+)\(\s*props\.store\.model,\s*props\.store\.applyCrossfilter\(props\.viewId\),\s*\{([\s\S]*?)\},?\s*\)/.exec(body);
   const storeLayer = /const (\w+) = (\w+)\(props\.store, props\.viewId, \{([\s\S]*?)\}\)/.exec(body);
+  const inlineBinding = /^\s{8}(\w+): (\w+)\(props\.store\.model, props\.store\.applyCrossfilter\(props\.viewId\), \{([\s\S]*?)\}\),$/m.exec(
+    src.slice(src.lastIndexOf('return h(')),
+  );
 
   let derive;
   if (wrapped) {
@@ -97,11 +101,34 @@ export function extract(name) {
     derive = { kind: 'model-rows', field: modelRows[1], wrap: null, builder: modelRows[2], config: configMap(modelRows[3]) };
   } else if (storeLayer) {
     derive = { kind: 'store-layer', field: storeLayer[1], wrap: null, builder: storeLayer[2], config: configMap(storeLayer[3]) };
+  } else if (inlineBinding) {
+    // The derivation can live inside an h() binding, with no `const` at all.
+    derive = {
+      kind: 'model-rows',
+      field: inlineBinding[1],
+      wrap: null,
+      builder: inlineBinding[2],
+      config: configMap(inlineBinding[3]),
+      inlineBinding: true,
+    };
   } else {
     throw new Error(name + ': setup body matches no supported shape');
   }
 
-  const wrapPattern = new RegExp('^([A-Za-z_$][\\w$]*)\\(' + derive.field + '\\)$');
+  // A second statement may map a member of the first: `const data = wrap(model.items)`.
+  const memberStep = /const (\w+)(?::\s*[^=]+)? = (\w+)\((\w+)\.(\w+)\);/.exec(body);
+  if (memberStep && memberStep[3] === derive.field && !derive.inlineBinding) {
+    derive.intermediate = derive.field;
+    derive.field = memberStep[1];
+    derive.wrap = memberStep[2];
+    derive.member = memberStep[4];
+  }
+
+  const ident = '[A-Za-z_$][\\w$]*';
+  // A binding consumes the derived value as itself, as a member of it, or wrapped
+  // in one call around either. Anything else is refused rather than guessed.
+  const wrapPattern = new RegExp('^(' + ident + ')\\(' + derive.field + '(?:\\.(' + ident + '))?\\)$');
+  const memberPattern = new RegExp('^' + derive.field + '\\.(' + ident + ')$');
   const arrayPattern = new RegExp('^\\[' + derive.field + '\\]$');
   let classExpr = null;
   const folded = [];
@@ -123,12 +150,40 @@ export function extract(name) {
     if (hit) {
       if (derive.wrap) throw new Error(name + ': two wrapping calls');
       derive.wrap = hit[1];
+      if (hit[2]) {
+        derive.intermediate = derive.field;
+        derive.member = hit[2];
+      }
       folded.push([key, derive.field]);
+      continue;
+    }
+    const member = memberPattern.exec(expr);
+    if (member) {
+      if (derive.member && derive.member !== member[1]) {
+        // Several inputs read different members of one derived model. Keep the
+        // model itself and let each binding read its member.
+        derive.multiMember = true;
+      }
+      derive.intermediate = derive.field;
+      derive.member = member[1];
+      folded.push([key, derive.field + '.' + member[1]]);
       continue;
     }
     folded.push([key, expr]);
   }
-  if (!folded.some((pair) => pair[1] === derive.field)) {
+  if (derive.multiMember) {
+    delete derive.member;
+    if (derive.wrap) throw new Error(name + ': a wrapped model with several members consumed');
+  } else {
+    // A single member was folded into the descriptor, so the binding names the field.
+    for (const pair of folded) {
+      if (derive.member && pair[1] === derive.field + '.' + derive.member) pair[1] = derive.field;
+    }
+  }
+  const consumes = derive.multiMember
+    ? folded.some((pair) => pair[1].startsWith(derive.field + '.'))
+    : folded.some((pair) => pair[1] === derive.field);
+  if (!consumes) {
     throw new Error(name + ": no binding consumes the derived '" + derive.field + "'");
   }
 

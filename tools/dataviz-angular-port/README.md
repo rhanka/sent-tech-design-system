@@ -33,10 +33,15 @@ that data from the Vue source; `emit.mjs` is deliberately dumb and renders it.
 
 ## What it refuses
 
-`extract.mjs` throws rather than guess. It recognises three derivation shapes —
-`builder(model, rows, cfg)`, `wrap(builder(model, rows, cfg))`, and
-`layerFn(store, viewId, cfg)` — plus two binding shapes, `[derived]` handed to a
-plural input and `mapClass('st-x', props.class)`. A component whose `setup()` does
+`extract.mjs` throws rather than guess. It recognises four derivation shapes —
+`builder(model, rows, cfg)`, `wrap(builder(model, rows, cfg))`,
+`layerFn(store, viewId, cfg)`, and the same builder call written **inline inside an
+h() binding** with no `const` — and four binding shapes: the derived value itself,
+`[derived]` handed to a plural input, `mapClass('st-x', props.class)`, and a
+**member of the derived model** (`model.items`, `wrap(model.items)`), including the
+case where several inputs read different members of one model. It anchors the
+reactivity read on `void <anything>.value`, since each adapter names that local
+itself. A component whose `setup()` does
 anything else (local state, several `h()` calls, emitted events, slots) is reported
 as a skip and must be written by hand.
 
@@ -47,11 +52,18 @@ node tools/dataviz-angular-port/classify.mjs          # add --names for the list
 ```
 
 It runs the real `extract()` over every pending adapter and prints what it reads,
-what it refuses and why. On the pool left after the second lot it reads **28 of the
-87 pending** and refuses 59. The refusal reasons are the lever: 19 differ only by
-the `setup()` preamble the extractor anchors on, and 13 more are "no binding
-consumes the derived <name>" — shapes close to ones already handled, so extending
-the vocabulary is worth measuring before hand-writing them.
+what it refuses and why. Widening the vocabulary in the third lot took it from
+**28 of 87** readable to **41 of 87**; the same lot then ported 25 of those 41, so
+on the pool that remains it reads **16 of 62** and refuses 46.
+
+What is still refused is mostly *not* the same kind of component: 16 have no
+`void <state>.value` read at all — they are stateful panels and filters
+(`BookmarkNavigator`, `CalculationEditor`, `FormatPanel`, `FieldPane`,
+`ExportMenu`, `TopNFilter`, …) that hold local state and belong in hand-written
+code; 3 render several charts from one adapter (`ScatterPlotMatrix`,
+`AnimatedBubbleChart`, `AdvancedPivotDataTable`); 3 have no `Props` alias; 2 exist
+in one framework only and have no Vue source to read. The remaining 8 "no binding
+consumes the derived …" are the next cheap widening if a lot needs them.
 
 ## Adding a lot
 
