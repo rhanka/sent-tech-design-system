@@ -3,10 +3,32 @@ name: Quebec Theme Publish
 # Publication du thème Gouvernement du Québec (@sentropic/design-system-theme-quebec),
 # sur sa propre ligne de version. Déclenchée par un tag `quebec-v<version>`.
 #
-# Publication via npm Trusted Publishing (OIDC). Le trusted publisher attendu
-# côté npm est : rhanka/sent-tech-design-system + quebec-publish.yml.
-# (À configurer sur npmjs.com pour @sentropic/design-system-theme-quebec —
-# requis pour le tout premier publish d'un package neuf.)
+# Publication via npm Trusted Publishing (OIDC), avec le chemin d'amorçage au
+# jeton temporaire pour la PREMIÈRE publication, comme dataviz-publish.yml.
+#
+# Pourquoi un amorçage : @sentropic/design-system-theme-quebec n'existe pas au
+# registre (mesuré le 2026-09-25 : `npm view` rend E404), et npm ne permet de
+# déclarer un trusted publisher que sur un paquet qui existe déjà — docs/release.md :
+# « The first publication used a temporary bootstrap token because npm Trusted
+# Publishing can only be configured after each package exists. » Déclarer le
+# publisher AVANT le premier publish n'est donc pas une action que le registre
+# accepte ; l'ordre inverse est le seul qui aboutit.
+#
+# Le thème est déjà cité comme installable par le site : apps/docs/src/routes/
+# getting-started/+page.svelte montre `import { quebecTheme } from
+# "@sentropic/design-system-theme-quebec"`, un import qui rend E404 aujourd'hui.
+# C'est la publication qui referme cet écart, pas une réécriture de la copie.
+#
+# ACTION PROPRIÉTAIRE, dans cet ordre (checklist docs/release.md) :
+#   1. créer un jeton npm granulaire temporaire, en écriture sur le scope @sentropic ;
+#   2. le stocker dans le secret de dépôt NPM_TOKEN ;
+#   3. poser le tag `quebec-v<version>` — l'étape d'amorçage du job `publish`
+#      s'active seule quand le secret est présent et reste inerte quand il est
+#      absent, donc ce fichier ne change rien tant que l'étape 2 n'a pas eu lieu ;
+#   4. déclarer le trusted publisher (rhanka/sent-tech-design-system +
+#      quebec-publish.yml) sur le paquet désormais créé ;
+#   5. supprimer le secret, révoquer le jeton, puis retirer l'étape d'amorçage ici
+#      et son entrée dans scripts/verify-workflow-invariants.test.mjs.
 
 on:
   push:
@@ -71,6 +93,9 @@ jobs:
     permissions:
       contents: read
       id-token: write
+    env:
+      # Amorçage de la première publication uniquement (voir l'en-tête, étapes 1-5).
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -85,6 +110,9 @@ jobs:
           npm --workspace @sentropic/design-system-tokens run build
           npm --workspace @sentropic/design-system-themes run build
           npm --workspace @sentropic/design-system-theme-quebec run build
+      - name: Bootstrap npm auth for first publish (inactive without secret)
+        if: ${{ env.NPM_TOKEN != '' }}
+        run: npm config set //registry.npmjs.org/:_authToken "${NPM_TOKEN}"
       - name: Publish Quebec theme package
         run: npm publish --workspace @sentropic/design-system-theme-quebec --access public
 
