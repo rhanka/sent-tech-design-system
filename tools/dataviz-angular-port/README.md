@@ -100,6 +100,25 @@ worth keeping, because it is the shape of the rest of that class:
 unreachable without changing `packages/components-angular`. A slice of eight
 measured is worth more than ten announced.
 
+Lot 7 took the **six** refused with `binding '<name>' reads '<name>', which the
+descriptor cannot express` — `ComboChart` (`bars`/`lines`), `PivotDataTable`
+(`columns`), and `ErrorBarsChart` / `PercentileBandChart` / `ReferenceLineChart`
+/ `TrendLineChart` (`data`) — leaving `union 119 / ported 90 / pending 29`. Every
+one of the six has the rest of the shape the descriptor targets — the `void
+<state>.value` marker, a single terminal `h()`, an existing
+`packages/components-angular` component with the inputs the binding needs — and
+is refused only because its `data`/`bars`/`lines`/`columns` binding is a
+`.map()`, a `.filter().map()`, or a multi-member array literal built from the
+derived model, not a bare member read or the descriptor's one supported
+wrapping call. That is ordinary hand-work inside the same recipe PATTERN.md
+already documents (§3 "Reuse, never re-derive"), not a new shape: none of the
+six needed a change to `packages/components-angular`, so none was dropped.
+`PivotDataTable` is the one Angular-specific wrinkle worth naming: its Vue/React
+source shadows the pivot-config `rows`/`columns` props with a `let` of the same
+name inside the derivation, which Angular's class fields cannot do — the ported
+adapter keeps the public `rows`/`columns` `@Input`s and names the DS-facing
+derived arrays `tableRows`/`tableColumns` instead.
+
 ## Adding a lot
 
 1. Run `extract.mjs` with the names. Read the printed one-line-per-component

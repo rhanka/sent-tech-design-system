@@ -56,6 +56,9 @@ import {
   dsStepLinePoints,
   dsDivergingBarData,
   dsDivergingBarDomain,
+  dsComboCategories,
+  dsComboBars,
+  dsComboLines,
 } from './fixture.js';
 
 import * as NG from '../../packages/dataviz-angular/dist/index.js';
@@ -1089,6 +1092,93 @@ const cases: Case[] = [
     expectedSignatureDiffs: 0,
     attribution: '—',
   },
+  // Lot 7: hand-written adapters the port generator refuses because a binding
+  // reads a prop the descriptor cannot express (see
+  // tools/dataviz-angular-port/README.md for the refusal of each one).
+  {
+    name: 'ErrorBarsChart',
+    ng: NG.ErrorBarsChart as Type<unknown>,
+    template: `<st-dataviz-error-bars-chart [store]="store" viewId="v" category="region" value="amount" label="Amount by region" class="lot7"></st-dataviz-error-bars-chart>`,
+    re: RE.ErrorBarsChart as ComponentType<Props>,
+    props: { viewId: 'v', category: 'region', value: 'amount', label: 'Amount by region', className: 'lot7' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'PercentileBandChart',
+    ng: NG.PercentileBandChart as Type<unknown>,
+    template: `<st-dataviz-percentile-band-chart [store]="store" viewId="v" value="amount" [lower]="0.25" [upper]="0.75" label="Amount percentiles" class="lot7"></st-dataviz-percentile-band-chart>`,
+    re: RE.PercentileBandChart as ComponentType<Props>,
+    props: { viewId: 'v', value: 'amount', lower: 0.25, upper: 0.75, label: 'Amount percentiles', className: 'lot7' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'ReferenceLineChart',
+    ng: NG.ReferenceLineChart as Type<unknown>,
+    template: `<st-dataviz-reference-line-chart [store]="store" viewId="v" measure="amount" label="Amount reference" class="lot7"></st-dataviz-reference-line-chart>`,
+    re: RE.ReferenceLineChart as ComponentType<Props>,
+    props: { viewId: 'v', measure: 'amount', label: 'Amount reference', className: 'lot7' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'TrendLineChart',
+    ng: NG.TrendLineChart as Type<unknown>,
+    template: `<st-dataviz-trend-line-chart [store]="store" viewId="v" x="amount" y="close" label="Amount vs close trend" class="lot7"></st-dataviz-trend-line-chart>`,
+    re: RE.TrendLineChart as ComponentType<Props>,
+    props: { viewId: 'v', x: 'amount', y: 'close', label: 'Amount vs close trend', className: 'lot7' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'ComboChart',
+    ng: NG.ComboChart as Type<unknown>,
+    template: `<st-dataviz-combo-chart [store]="store" viewId="v" category="region" [measures]="['amount', { id: 'close', mark: 'line' }]" label="Amount and close by region" class="lot7"></st-dataviz-combo-chart>`,
+    re: RE.ComboChart as ComponentType<Props>,
+    props: {
+      viewId: 'v',
+      category: 'region',
+      measures: ['amount', { id: 'close', mark: 'line' }],
+      label: 'Amount and close by region',
+      className: 'lot7',
+    },
+    fixture: 'wide',
+    expectedMarkupDiffs: 2,
+    expectedSignatureDiffs: 0,
+    attribution: 'DS: components-angular ComboChart marks each legend swatch aria-hidden, components-react ComboChart does not',
+    control: {
+      ng: NGDS.ComboChart as Type<unknown>,
+      template: `<st-combo-chart [categories]="['eu', 'us']" [bars]="[{ label: 'Amount', data: [17, 5] }]" [lines]="[{ label: 'Close', data: [106, 102] }]" [legend]="true" label="Amount and close by region"></st-combo-chart>`,
+      re: REDS.ComboChart as ComponentType<Props>,
+      props: {
+        categories: dsComboCategories,
+        bars: dsComboBars,
+        lines: dsComboLines,
+        legend: true,
+        label: 'Amount and close by region',
+      },
+    },
+  },
+  {
+    name: 'PivotDataTable',
+    ng: NG.PivotDataTable as Type<unknown>,
+    template: `<st-dataviz-pivot-data-table [store]="store" viewId="v" [rows]="['region']" [measures]="['amount']" caption="Amount by region" class="lot7"></st-dataviz-pivot-data-table>`,
+    re: RE.PivotDataTable as ComponentType<Props>,
+    props: { viewId: 'v', rows: ['region'], measures: ['amount'], caption: 'Amount by region', className: 'lot7' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
 ];
 
 type Row = {
@@ -1138,6 +1228,7 @@ const NO_DATA_LIST = new Set([
   'EventFeedPanel',
   'ForceGraph',
   'KpiCardGroup',
+  'PivotDataTable',
   'RecordsTable',
   'ScoreCard',
   'SelectionLegend',
@@ -1305,6 +1396,8 @@ describe('dataviz-angular ↔ dataviz-react rendered-markup parity', () => {
         'VectorFieldChart', 'WindBarbChart', 'ForceGraph',
         // Lot 5: all three residues are DS-level, and the control proves it.
         'Sparkline', 'StepLineChart', 'DivergingBarChart',
+        // Lot 7: the ComboChart legend swatch residue is DS-level too.
+        'ComboChart',
       ];
       for (const name of attributed) {
         const row = table.find((entry) => entry.name === name);

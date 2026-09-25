@@ -178,6 +178,22 @@ export { Sparkline } from './lib/Sparkline.js';
 export type { SparklineProps, SparklineTone } from './lib/Sparkline.js';
 export { StepLineChart } from './lib/StepLineChart.js';
 export type { StepLineChartProps } from './lib/StepLineChart.js';
+
+// Lot 7: hand-written adapters the port generator refuses because a binding
+// reads a prop the descriptor cannot express (see
+// tools/dataviz-angular-port/README.md for the refusal of each one).
+export { ComboChart } from './lib/ComboChart.js';
+export type { ComboChartProps } from './lib/ComboChart.js';
+export { ErrorBarsChart } from './lib/ErrorBarsChart.js';
+export type { ErrorBarsChartProps } from './lib/ErrorBarsChart.js';
+export { PercentileBandChart } from './lib/PercentileBandChart.js';
+export type { PercentileBandChartProps } from './lib/PercentileBandChart.js';
+export { PivotDataTable } from './lib/PivotDataTable.js';
+export type { PivotDataTableProps } from './lib/PivotDataTable.js';
+export { ReferenceLineChart } from './lib/ReferenceLineChart.js';
+export type { ReferenceLineChartProps } from './lib/ReferenceLineChart.js';
+export { TrendLineChart } from './lib/TrendLineChart.js';
+export type { TrendLineChartProps } from './lib/TrendLineChart.js';
 export {
   DASHBOARD_STORE,
   createDashboard,
