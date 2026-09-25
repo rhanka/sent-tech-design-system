@@ -350,11 +350,33 @@ called complete because of them:
    against React's `X 104.8 → 105` and no measurement touched it.
 
 `scripts/verify-angular-react-glyphs.test.mjs` closes that class by reading the two
-**sources** instead of the two renders: it compares the presence of each direction
-token per component, both ways, over **224** components — so a token both
-frameworks use (the `SankeyChart`'s `source -> target`) is not a finding. Comments
-are stripped first, because prose uses arrows far more than rendered strings do and
-comparing raw files reports 58 files of noise.
+**sources** instead of the two renders: it compares each glyph token per component,
+both ways, over **223** pairs — so a token both frameworks use (the
+`SankeyChart`'s `source -> target`) is not a finding. Comments are stripped first,
+because prose uses arrows far more than rendered strings do and comparing raw files
+reports 58 files of noise.
+
+That gate had two blind spots of its own, both closed in lot 4 and both worth
+remembering, because each one made it report success over an unchecked comparison:
+
+3. **A React file that only re-exports.** 80 of the 223 React counterparts are
+   `export { X } from "./catalog.js"`, with the implementation in `catalog.tsx`.
+   For those the gate compared an Angular component against an eleven-line
+   re-export — including `ForceGraph`, a chart. A shim is now resolved to its slice
+   of `catalog.tsx`, and an unresolvable shim fails the gate.
+4. **Presence is not occurrence.** The gate asks whether a token appears in a file.
+   A component that spells a glyph correctly in its data list and wrongly in its
+   tooltip passes: re-adding `deg` to `VectorFieldChart`'s data list left the
+   substring set unchanged, because the tooltip still had `°`. Two regex tokens
+   now catch the ASCII stand-in itself (a unit right after an interpolation, a
+   hyphen between two interpolated values), and that is what found the third
+   VectorFieldChart divergence — hover-only, so invisible to the render harness.
+
+Widening a gate's vocabulary is cheap and pays immediately: `°`, `·`, `—` and `×`
+raised eleven findings, of which four were spelling variants that render
+identically (`\xB7`, `&#xD7;`, an HTML comment in a template, a `console.warn`
+argument). Normalise those four cases rather than exempt the components, and each
+normalisation keeps a test proving it kills a measured false finding.
 
 When a divergence is about *text a person reads*, prefer a source-level comparison:
 it sees hovered states, and it sees components no adapter has reached yet.
@@ -362,16 +384,32 @@ it sees hovered states, and it sees components no adapter has reached yet.
 ## Known debt
 
 Each item carries the cost the parity harness measures for it, so a lot can pick
-the cheapest win. Two items from the first two lots are closed: `Inline` now takes
-ARIA inputs, and the `display:none` visibility gates are gone.
+the cheapest win. Four items are closed: `Inline` now takes ARIA inputs, the
+`display:none` visibility gates are gone, the shared `st-graphLegend` block is no
+longer hidden from assistive technology (`ArcDiagramChart` and
+`DependencyWheelChart` went from 49 markup / 9 signature / 49 bare-DS entries each
+to 0 / 0 / 0, and both stay in the harness's control-equality list so the repair
+cannot silently reopen), and seven reader-visible strings in components-angular now
+match the React spelling.
 
-- **The `st-graphLegend` block is hidden from assistive technology in Angular.**
-  Angular renders it `<ul aria-hidden="true">`; React renders
-  `<div aria-label="Graph legend"><ul role="list">`. Three Angular components share
-  the block, so three legends are invisible to a screen reader where React exposes
-  them. Cost: 49 markup and 9 content-signature differing entries each on
-  `ArcDiagramChart` and `DependencyWheelChart`. **The most valuable open item, and
-  an accessibility defect rather than a cosmetic one.**
+- **A graph's nodes are unreachable and unannounced in Angular.** React's
+  `ForceGraph` node shape carries `tabIndex=0`, `role="button"`, `aria-label` and
+  `aria-pressed`, so a keyboard user reaches a node and a screen reader names it;
+  the Angular node carries none of the four. React also renders an invisible wider
+  `st-forceGraph__edgeHit` path per edge (`role="presentation"`) for hover, and
+  Angular renders none. Cost: 42 markup and 8 content-signature entries on
+  `ForceGraph`, equal to its bare-DS control. **The most valuable open item, and an
+  accessibility defect rather than a cosmetic one** — the same class as the legend
+  repair closed above, and repairing it means porting focus, blur and keydown
+  handling, so it deserves its own measured step.
+- **React warns where Angular is silent.** `NavActionStack`'s React implementation
+  logs a warning when several `primary` actions are passed and degrades the extras;
+  the Angular one has no such warning. Developer-facing, so outside the glyph
+  gate's remit, which is why that gate drops `console.*` arguments.
+- **`data-chart-key` / `data-chart-index` are Angular-only.** Angular tags each
+  datum group with an index attribute React does not emit: 3 entries each on
+  `VectorFieldChart`, `WindBarbChart`, `OHLCChart` and `DumbbellChart`. Harmless
+  for a reader; pick one convention across the two frameworks.
 - **The two frameworks draw a different timeline.** Angular uses
   connector + marker + label, React tick + tickLabel. Cost: 59 entries on
   `TimelineChart`. A design divergence to arbitrate, not a wiring bug.
@@ -384,12 +422,17 @@ ARIA inputs, and the `display:none` visibility gates are gone.
   repository's `csp-no-style-attr` posture wants, so these are `components-react`
   fixes.
 - **The data helpers are duplicated, not shared.** `categoricalData.ts`,
-  `partOfWholeData.ts`, `distributionData.ts` and `geoMapLayers.ts` exist once per
-  adapter package. None of their exported symbols is in `@sentropic/dataviz-core`,
+  `partOfWholeData.ts`, `distributionData.ts`, `geoMapLayers.ts` and
+  `analyticsDsData.ts` exist once per adapter package. None of their exported symbols is in `@sentropic/dataviz-core`,
   and all four packages already depend on it, so the resolution is to promote them.
   `scripts/verify-dataviz-helper-copies.test.mjs` pins every copy until then.
 - **`ChartDataList` renders an empty `<ul>`** where React renders nothing. No
   adapter in the current lots produces an empty list.
+- **Two DS components render no accessible value list at all**: `EventFeedPanel`
+  (a feed) and `ForceGraph`. Their adapters therefore cannot assert one, and
+  `generated-adapters.test.ts` carries `listAria: null` for them — the absence is
+  asserted, and their reactivity proof moves to their datum elements. Inventing a
+  list in the adapter would be the divergence.
 - **`Flex` and `Stack` have no ARIA inputs** — the same one-line change `Inline`
   received, when an adapter needs it.
 - **`DateRangeFilter`: React serialises `value=""`** on the readonly input where
