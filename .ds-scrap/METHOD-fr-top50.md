@@ -248,6 +248,20 @@ that colour as unpainted), and the `rgb()` / `rgba()` equivalents. Restricting t
 count to exact 6-digit matches is a valid convention; leaving it unstated is not.
 (3) **Expansion** — if you transcribe `#666` as `#666666`, say so: a reviewer
 grepping your value finds zero occurrences and reads a fabrication.
+(4) **Spelling** — a count that will appear in a table is verified with a
+**second pattern spelled differently**, because two runs of the same pattern
+share the hypothesis under test: *the spelling I expect is the spelling in use*.
+This is the two-instrument rule applied to greps. Measured three times in one
+day: `rel="stylesheet"` run against a document that writes `rel='stylesheet'`
+reported 0 stylesheets where there were 4, and the shortfall invented a reserve
+that a builder would have been told to investigate; `.match()` without `/g`
+returned the first `muted:` in each file instead of the last, contaminating 134
+measurements; an exact-case hex count missed a brand writing both `#000e56` and
+`#000E56`. Either tolerate the syntax's own variability — quotes, case,
+whitespace — as in `rel=["']?stylesheet`, or count by parsing rather than by
+matching, which is safer still for HTML. The direction of the error is not
+symmetric: a count too low invents a problem and spends a budget on it, a count
+too high hides one.
 
 ## 3. Allowed sources, ranked
 
