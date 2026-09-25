@@ -66,10 +66,12 @@ function barbCounts(speed: number): { flags: number; full: number; half: number 
         <li *ngFor="let item of dataValueItems">{{ item }}</li>
       </ul>
 
-      <div class="st-windBarbChart__tooltip" role="presentation" [style.display]="hoveredBarb ? 'inline-flex' : 'none'" [style.left]="tooltipLeft" [style.top]="tooltipTop">
-        <span class="st-windBarbChart__tooltipLabel">{{ tooltipLabel }}</span>
-        <span class="st-windBarbChart__tooltipValue">{{ tooltipValue }}</span>
-      </div>
+      @if (hoveredBarb) {
+        <div class="st-windBarbChart__tooltip" role="presentation" [style.left]="tooltipLeft" [style.top]="tooltipTop">
+          <span class="st-windBarbChart__tooltipLabel">{{ tooltipLabel }}</span>
+          <span class="st-windBarbChart__tooltipValue">{{ tooltipValue }}</span>
+        </div>
+      }
     </div>
   `,
 })

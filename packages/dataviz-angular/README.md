@@ -3,15 +3,23 @@
 Angular adapter for `@sentropic/dataviz-core`, built against
 `@sentropic/design-system-angular`.
 
-Scope is still a subset of the Vue/React/Svelte adapters. **32 of 119** ported,
-87 remaining — `node tools/dataviz-angular-port/classify.mjs` prints the count and
+Scope is still a subset of the Vue/React/Svelte adapters. **57 of 119** ported,
+62 remaining — `node tools/dataviz-angular-port/classify.mjs` prints the count and
 how much of the remainder the generator can read:
 
 - signal-based bridge for the core dashboard store
   (`createDashboard`, `toSignalStore`, `provideDashboard`, `injectDashboard`)
-- categorical and part-of-whole charts: `AreaChart`, `DateHistogramChart`,
-  `DonutChart`, `RoseChart`, `PackedBubbleChart`, `SunburstChart`,
-  `TreemapChart`
+- categorical and part-of-whole charts: `AreaChart`, `ColumnPyramidChart`,
+  `DateHistogramChart`, `DonutChart`, `FunnelChart`, `MekkoChart`,
+  `PackedBubbleChart`, `RoseChart`, `SunburstChart`, `TreemapChart`,
+  `VariablePieChart`, `WaffleChart`, `WaterfallChart`
+- flow, hierarchy and relation charts: `ArcDiagramChart`,
+  `DecompositionTreeChart`, `DependencyWheelChart`, `FlamegraphChart`,
+  `OrganizationChart`, `SankeyChart`, `TreegraphChart`
+- distribution and gauge charts: `BellCurveChart`, `ContourChart`,
+  `Density2DChart`, `GaugeChart`, `SolidGaugeChart`, `ViolinChart`
+- time and state charts: `BumpChart`, `GanttChart`, `StateTimelineChart`,
+  `StatusHistoryChart`, `StreamgraphChart`, `TimelineChart`
 - range charts: `AreaRangeChart`, `AreaSplineRangeChart`, `ColumnRangeChart`,
   `DumbbellChart`
 - OHLC-family charts: `CandlestickChart`, `HeikinAshiChart`,
