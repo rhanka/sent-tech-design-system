@@ -194,6 +194,26 @@ export { ReferenceLineChart } from './lib/ReferenceLineChart.js';
 export type { ReferenceLineChartProps } from './lib/ReferenceLineChart.js';
 export { TrendLineChart } from './lib/TrendLineChart.js';
 export type { TrendLineChartProps } from './lib/TrendLineChart.js';
+
+// Lot 8: hand-written adapters from the "no `void <state>.value` marker"
+// refusal class — each reads reactive dashboard state (selections, drill path,
+// active filters) that Vue's `setup()` names locally, which the extractor's
+// state-read anchor does not recognise (see
+// tools/dataviz-angular-port/README.md for the refusal of each one).
+// VennChart is the one exception in that same refusal class: it holds no
+// state at all, so it never has the marker to anchor on either.
+export { CrossfilteredBarChart } from './lib/CrossfilteredBarChart.js';
+export type { CrossfilteredBarChartProps } from './lib/CrossfilteredBarChart.js';
+export { DashboardActiveFilters } from './lib/DashboardActiveFilters.js';
+export type { DashboardActiveFiltersProps } from './lib/DashboardActiveFilters.js';
+export { DrillBarChart } from './lib/DrillBarChart.js';
+export type { DrillBarChartProps } from './lib/DrillBarChart.js';
+export { DrillBreadcrumb } from './lib/DrillBreadcrumb.js';
+export type { DrillBreadcrumbProps } from './lib/DrillBreadcrumb.js';
+export { ValueSlicer } from './lib/ValueSlicer.js';
+export type { ValueSlicerProps } from './lib/ValueSlicer.js';
+export { VennChart } from './lib/VennChart.js';
+export type { VennChartProps } from './lib/VennChart.js';
 export {
   DASHBOARD_STORE,
   createDashboard,
