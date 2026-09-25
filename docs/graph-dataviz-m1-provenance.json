@@ -1906,8 +1906,8 @@
       "gitBlob": "e0da2ca152892d3985977fbd7588ec7e6bb4df31",
       "sha256": "cafea77294137e31b664bef0f053927c4c1edda93d2391f339b44ae3e669c98b",
       "status": "adapted-monorepo-pattern",
-      "destinationSha256": "ae778cac4376cd0ce821406970837a133177195b26d2ed55d83544d08e3e639c",
-      "note": "PR #76 exports the ten new adapters and their prop types; GD-M2-PARITY lot 7 adds the six hand-written adapters whose binding reads a prop the descriptor cannot express"
+      "destinationSha256": "2a39c9f9e70fbf4eb3cd21dd931ea89544f61f4ddf21dd44a5aa4b8dae80fab1",
+      "note": "PR #76 exports the ten new adapters and their prop types; GD-M2-PARITY lot 7 adds the six hand-written adapters whose binding reads a prop the descriptor cannot express; lot 8 adds the six from the \"no `void <state>.value` marker\" class"
     },
     {
       "repository": "dataviz",
@@ -7030,8 +7030,8 @@
     {
       "destination": "packages/dataviz-angular/src/lib/adapter-pattern.test.ts",
       "status": "local-monorepo-helper",
-      "sha256": "02c1aca7dff27952c09d270d0403c9cdc192f1fb02896a0f7b1692025a5f427d",
-      "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned. GD-M2-PARITY lot 7 adds the six new adapter files to the expected list"
+      "sha256": "a9d915d2b81ac9febf9c252651333da1d81dc772db0f0015548cec10f89fb23f",
+      "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned. GD-M2-PARITY lot 7 adds the six new adapter files to the expected list; lot 8 adds its own six"
     },
     {
       "repository": "dataviz",
@@ -7167,8 +7167,8 @@
     {
       "destination": "packages/dataviz-angular/src/lib/generated-adapters.test.ts",
       "status": "local-monorepo-helper",
-      "sha256": "489033492d8067b0f9a51cbf5ca94d0e31e0773846882f2164649646f63b8f0c",
-      "note": "GD-M2-PARITY lot 2: monorepo-authored table-driven test over the generated adapters; no upstream source; hash-pinned. Lot 7 adds ErrorBarsChart/PercentileBandChart/ReferenceLineChart/TrendLineChart/ComboChart rows"
+      "sha256": "5d91f136216713d7448e01da4f026ca1851c1f53e0f71c783e26a8430f01d9ca",
+      "note": "GD-M2-PARITY lot 2: monorepo-authored table-driven test over the generated adapters; no upstream source; hash-pinned. Lot 7 adds ErrorBarsChart/PercentileBandChart/ReferenceLineChart/TrendLineChart/ComboChart rows; lot 8 adds CrossfilteredBarChart/DrillBarChart"
     },
     {
       "destination": "packages/dataviz-angular/src/lib/ArcDiagramChart.ts",
@@ -7516,6 +7516,78 @@
       "status": "local-monorepo-helper",
       "sha256": "c374c8e6bb47d4674a4fc90e211a2d285400854462525186e29247ba35adfde2",
       "note": "GD-M2-PARITY lot 7: monorepo-authored by hand for the TrendLineChart store-driven adapter; tools/dataviz-angular-port refuses this shape (binding 'data' reads 'data', which the descriptor cannot express — see its README), so no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/CrossfilteredBarChart.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "7a368cad4ff483022748daf45412949f2e3c76487df9603788baca2e98262424",
+      "note": "GD-M2-PARITY lot 8: monorepo-authored by hand for the CrossfilteredBarChart store-driven adapter; tools/dataviz-angular-port refuses this shape (no `void <state>.value` marker — setup() reads reactive selection state to compute selectedKeys, which the extractor's state-read anchor does not recognise; see its README), so no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/CrossfilteredBarChart.test.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "260f872027f292046f5d08f774e139013adf3cac35ad577019df5fb60b72486d",
+      "note": "GD-M2-PARITY lot 8: monorepo-authored dedicated test for CrossfilteredBarChart's click-to-select interaction (beyond what the shared generated-adapters.test.ts family table proves); no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/DrillBarChart.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "4944255712b4f344624071a63e0696ac76a471bbc31aff7c7a4577095e7ac417",
+      "note": "GD-M2-PARITY lot 8: monorepo-authored by hand for the DrillBarChart store-driven adapter; tools/dataviz-angular-port refuses this shape (no `void <state>.value` marker — setup() reads reactive drill state to pick the current hierarchy level, which the extractor's state-read anchor does not recognise; see its README), so no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/DrillBarChart.test.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "cfa20bb715187950c7046beaf77ce55222505101891aa3bfc299592be704e7af",
+      "note": "GD-M2-PARITY lot 8: monorepo-authored dedicated test for DrillBarChart's drill-down and leaf-selection interaction (beyond what the shared generated-adapters.test.ts family table proves); no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/DrillBreadcrumb.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "401eaa9c93297b10459f756b6d297d139c3b3aa45c07f8e161c422b82210815d",
+      "note": "GD-M2-PARITY lot 8: monorepo-authored by hand for the DrillBreadcrumb store-driven adapter; tools/dataviz-angular-port refuses this shape (no `void <state>.value` marker — setup() reads reactive drill state to build the trail, which the extractor's state-read anchor does not recognise; see its README), so no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/DrillBreadcrumb.test.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "36f7fbd28e36d39489a1bd57c4cbdfa57447c220206a5acfb37ae0809e33c5ee",
+      "note": "GD-M2-PARITY lot 8: monorepo-authored dedicated test for DrillBreadcrumb; its DS Breadcrumb/Inline render no ul.st-chartDataList, so it is not a row in generated-adapters.test.ts, per PATTERN.md; no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/DashboardActiveFilters.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "a1eeb7fd15661b60949bcc2bd646bc7364e226b681e72a98bb2e5c1cffc6c88c",
+      "note": "GD-M2-PARITY lot 8: monorepo-authored by hand for the DashboardActiveFilters store-driven adapter; tools/dataviz-angular-port refuses this shape (no `void <state>.value` marker — setup() reads reactive filter state to build the pill list, which the extractor's state-read anchor does not recognise; see its README), so no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/DashboardActiveFilters.test.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "dfee87554680105af6167eee439794f9a5cb80e76b6849e0ad7873bd9fd15e05",
+      "note": "GD-M2-PARITY lot 8: monorepo-authored dedicated test for DashboardActiveFilters; its DS FilterBar/FilterPill render no ul.st-chartDataList, so it is not a row in generated-adapters.test.ts, per PATTERN.md; no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/ValueSlicer.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "52ab87038ce5a5d6269d6642b4f5411f245b8028256d80072f4df10569adac99",
+      "note": "GD-M2-PARITY lot 8: monorepo-authored by hand for the ValueSlicer store-driven adapter; tools/dataviz-angular-port refuses this shape (no `void <state>.value` marker — setup() reads the current filter from reactive state to keep the checkboxes in sync, which the extractor's state-read anchor does not recognise; see its README), so no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/ValueSlicer.test.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "87ff1e0535d67a4fd261e24652ec4e1f3a9543b8673e3446ebcd04f0f717e1fe",
+      "note": "GD-M2-PARITY lot 8: monorepo-authored dedicated test for ValueSlicer; its DS CheckboxGroup renders no ul.st-chartDataList, so it is not a row in generated-adapters.test.ts, per PATTERN.md; no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/VennChart.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "4963e27e6e0b7607029de5ee7b36d2ce39f69d8c5a0aed88158b39f363800e2a",
+      "note": "GD-M2-PARITY lot 8: monorepo-authored by hand for the VennChart adapter, the exception in its own refusal class; tools/dataviz-angular-port refuses this shape because it holds no local state at all, so setup() never has a `void <state>.value` marker to anchor on either (see its README); no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/VennChart.test.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "c7aa0279988f7096c7b045741c0ee7fe72154141dc32543e59045e0d8a328dd6",
+      "note": "GD-M2-PARITY lot 8: monorepo-authored dedicated test for VennChart; it takes no store, so it does not fit the store-bound Host fixture generated-adapters.test.ts assumes; no upstream source; hash-pinned"
     },
     {
       "destination": "packages/dataviz-angular/src/lib/ScoreCard.ts",
