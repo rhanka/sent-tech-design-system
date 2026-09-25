@@ -88,5 +88,11 @@ command to re-derive them.
 | `ChordChart` | 47 | **0** | **0** | — | — |
 | `DivergingBarChart` | 65 | 2 | **0** | 2 | DS: components-react repeats the tone class on each bar (st-divergentBarChart__bar--positive twice), components-angular writes it once |
 | `ParetoChart` | 76 | **0** | **0** | — | — |
+| `ErrorBarsChart` | 79 | **0** | **0** | — | — |
+| `PercentileBandChart` | 79 | **0** | **0** | — | — |
+| `ReferenceLineChart` | 63 | **0** | **0** | — | — |
+| `TrendLineChart` | 60 | **0** | **0** | — | — |
+| `ComboChart` | 100 | 2 | **0** | 2 | DS: components-angular ComboChart marks each legend swatch aria-hidden, components-react ComboChart does not |
+| `PivotDataTable` | 55 | **0** | **0** | — | — |
 
-exact-markup matches: **70/82** · exact-signature matches: **80/82**
+exact-markup matches: **75/88** · exact-signature matches: **86/88**

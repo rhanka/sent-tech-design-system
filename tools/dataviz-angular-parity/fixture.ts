@@ -173,3 +173,13 @@ export const dsDivergingBarData = [
 ];
 
 export const dsDivergingBarDomain: [number, number] = [0, 17];
+
+/**
+ * Bare-DS control input for the lot 7 ComboChart residue: exactly what the
+ * adapter hands the DS component for category=region,
+ * measures=['amount', { id: 'close', mark: 'line' }] over wideRows (eu =
+ * 10 + 7 summed / (105 + 107) / 2 averaged, us = 5 / 102).
+ */
+export const dsComboCategories = ['eu', 'us'];
+export const dsComboBars = [{ label: 'Amount', data: [17, 5] }];
+export const dsComboLines = [{ label: 'Close', data: [106, 102] }];
