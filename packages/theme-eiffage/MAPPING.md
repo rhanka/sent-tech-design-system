@@ -39,19 +39,28 @@ embeds third-party blocks whose hexes were **excluded before counting**:
 - Marker counts in the brand region: `tealium/oneTrust/didomi/swiper/slick/
   bootstrap` = 0 occurrences each; no consent-banner block exists in this
   bundle, so no consent hex could leak in.
-- Internal per-file boundary: the file opens with `@-moz/webkit-keyframes`
-  and scrollbar-plugin rules; the brand region starts at the `html{`
-  base rule. Every count below is computed on brand-namespaced rules only;
-  per-file counts are given because the brand serves a single bundle.
+- No positional boundary exists in this file: vendor blocks are
+  **interleaved** with brand rules (`.c3-*` at lines 1579–19391, `.os-*` at
+  1739–2235, `.tns-*` at 11964–17885, `.mCS*` from 18716 into a
+  min-width-1024px media query), so exclusions below are by **selector
+  namespace**, not by line range. Every count below is computed on
+  brand-namespaced rules only; per-file counts are given because the brand
+  serves a single bundle.
 
-Excluded although frequent-looking: `#007dbd` (4× but scoped to the single
-component `.contact .form-files__label` — not a site value), `#ff0000` (pure
-red, 4× in `.alert-bg-white .alert-content-text` + `.description--nav` —
-a developer-default-looking one-off, kept as context only), `#008a09 /
-#fed100 / #6d6f72` (single-rule `.edito-focus.*` editorial variants),
-`acumin-pro` (1 rule, `.breadcrumb__nav`, against 152 Montserrat
-declarations — legacy exception, not the site face), `Avenir-Black` (one
-`.safety__container` rule — legacy exception).
+Excluded although frequent-looking: `#007dbd` (4× across
+`.contact .form-files__label*` rules + `.edito-full-picture .media.blue` at
+line 15364 — scoped accents, not a site value), `#ff0000` (pure red, 4× in
+`.alert-bg-white .alert-content-text` + `.description--nav` —
+a developer-default-looking one-off, kept as context only), `#f00` (2×:
+vendor `.tns-controls button:hover path{fill:#f00}` at 17789 + brand
+`.events .liste-complete-item__event a:hover …` at 23656 — a hover
+one-off, not a site value), `#008a09` (2×) / `#fed100` (5×) / `#6d6f72`
+(5×) (`.edito-focus.*` editorial variants + `.edito-full-picture .media.*`
+swatches + career-header `.btn-bg` recolour for `#fed100`; three of the
+`#6d6f72` live in `.safety__*` rules and one in a vendor `.mCS*` rule —
+none is a site-wide value), `acumin-pro` (1 rule, `.breadcrumb__nav`,
+against 152 Montserrat declarations — legacy exception, not the site face),
+`Avenir-Black` (4 rules, all scoped to `.safety__*` — legacy exception).
 
 ## Hosts (Step 0.3)
 
@@ -62,15 +71,26 @@ host, no tie-break needed — `eiffage.com` wins as the canonical source.
 
 ## `rem` root (Step 0.2)
 
-`html { font-size: 18px; }` — the brand root is **18px**, not 16px. Every
-brand `rem` below is converted (×18 ÷ 16). `px` values pass through:
+`html { font-size: 18px; }` (lines 204–206; no `font-size` redefinition in
+any media query, none on `body` or `:root`) — the brand root is **18px**,
+not 16px. Every brand `rem` below is converted (×18 ÷ 16). `px` values pass
+through. Full replayed inventory:
 
-- `.contact .form__input--*` `font-size: 0.833333333333333rem` = 15px →
-  shipped `typography.field.size = 0.9375rem` (15 ÷ 16).
-- Same rule `line-height: 0.888888888888889rem` = 16px → 16 ÷ 15 = 1.07
-  (shipped `typography.field.lineHeight`).
-- `.main .btn-bg` `padding: 11.5px 6.6%` — px, no conversion involved.
-- `.tabs label` `padding: 0.8em 0.5em` — em, not transcribed.
+- `.contact .form__input--*` (rule at lines 3013–3025)
+  `font-size: 0.833333333333333rem` (line 3023) × 18 = 15px → shipped
+  `typography.field.size = 0.9375rem` (15 ÷ 16).
+- Same rule `line-height: 0.888888888888889rem` (line 3024) × 18 = 16px →
+  16 ÷ 15 = 1.0667 → shipped `typography.field.lineHeight = 1.07`.
+- `.tg-link` (lines 1337–1346) `font-size: 1rem` × 18 = 18px → shipped
+  `typography.control.size = 1.125rem` (18 ÷ 16).
+- Same rule `line-height: 1em` = 18px on an 18px font → ratio 1.0 →
+  shipped `typography.control.lineHeight = 1`.
+- Not transcribed: `.main .btn-bg` `padding: 11.5px 6.6%` (px/% — passes
+  through; the fluid `%` has no fixed-`rem` equivalent, see Signatures);
+  `.tabs label` `padding: 0.8em 0.5em` (em, not transcribed); the
+  max-width-767px override `font-size: 0.777777777777778rem` (line 3030,
+  = 14px, mobile breakpoint — the shipped field value follows the base
+  rule).
 
 ## Colour mapping
 
@@ -81,10 +101,10 @@ brand `rem` below is converted (×18 ÷ 16). `px` values pass through:
 | `action.primaryHover` | derived darker red (brand hover inverts — no darker red published) | `#bf0000` *(à confirmer)* |
 | `surface.default` / `surface.raised` | `body{background-color:#fff}` | `#ffffff` |
 | `text.primary` | `body{color:#000}` | `#000000` |
-| `surface.inverse` | `.footer-block{background-color:#333}` (dark footer, white text) | `#333333` |
+| `surface.inverse` | `.footer-block{background-color:#333}` (line 7669; dark footer, white text — tie-break recorded below) | `#333333` |
 | `text.inverse` | `.footer-block{color:#fff}` + `.main .btn-bg{color:#fff}` | `#ffffff` |
 | `text.secondary` | `.title{color:#333745}` + `.tg-link{color:#333745}` (`color:` ×77, 11.84:1) | `#333745` |
-| `text.muted` | meta grey (`color: #757575` ×49, 4.61:1) | `#757575` |
+| `text.muted` | meta grey (`color: #757575` ×53 as the `color` property, 4.61:1) | `#757575` |
 | `text.link` | `.tg-link{color:#333745}` (rest; hover recolours to `#eb0000`) | `#333745` |
 | `border.subtle` | hairline grey (`.stock .table--current-day__row`, popin-press inputs) | `#dedede` |
 | `border.strong` | `.contact .form__input--*{border-bottom/border-right:2px solid #757575}` | `#757575` |
@@ -100,6 +120,14 @@ brand `rem` below is converted (×18 ÷ 16). `px` values pass through:
 | `status.pending` / `processing` / `completed` / `failed` | derived (follow feedback) | `warning/info/success/error` *(à confirmer)* |
 | `data.category1..8` | brand-led categorical proposal (no brand scale published) | red/slate/derived hues *(à confirmer)* |
 | `slate.90` darkest | `.contact .form__input--*{color:#111}` (form near-black) | `#111111` |
+
+Tie-break recorded: `#333` occurs exactly once in the whole bundle (line
+7669, `.footer-block`), while `#333745` carries six `background`/`background-color`
+declarations (lines 7199, 7261, 7588, 10877, 11590, 17834) — a pure
+frequency contest would elect `#333745`. `surface.inverse` keeps `#333`
+because it is the large dark footer surface carrying white text (`.footer-block`),
+whereas the `#333745` fills are small component accents; the slate stays
+available as `slate.80` for text roles.
 
 ## À confirmer (derived or no published brand token)
 
@@ -117,19 +145,21 @@ brand `rem` below is converted (×18 ÷ 16). `px` values pass through:
   measured neutrals plus the derived system hues, not an official scale.
 - **`density`** (all six leaves per size), **`shadow.medium/floating`**,
   **`motion.easing`**, **`disabledOpacity`**, **`transition`**,
-  **`typography.control/label` sizes**, **link hover underline** and **all 12
+  **`typography.label` size/weight**, **link hover underline**,
+  **`field.selectPaddingRight`** (2.5rem gutter) and **all 12
   component-override metrics** — the brand publishes no usable general
   control geometry (see evidence below); only `controlHeight`/`iconSize`
   match the Sentropic base, the rest is aligned with the reference theme
-  package's geometry.
+  package's geometry. (`typography.control` size/lineHeight are measured —
+  `.tg-link`, see the `rem`-root inventory — not derived.)
 - **Shadow tints** `rgb(51 55 69 / 0.10)`, `rgb(51 55 69 / 0.14)`,
   `rgb(51 55 69 / 0.18)` — the `#333745` slate at low alpha; no shadow scale
   is published by the brand.
 - **`focus` technique** (`strategy: "outline"`, `width 2px`, `offset 2px`) —
   no site-wide focus technique is published (see evidence below); the colour
   `#eb0000` is measured (scoped rules cited above).
-- **`radius.sm/md/lg`** — no general brand radius is published (vendor-owned
-  `0/2px/16px`, scattered `4px`); reference-aligned.
+- **`radius.sm/md/lg/pill`** — no general brand radius is published (vendor
+  `0` in `.os-*`/`.tns-nav`/`.mCS*`, scattered brand `4px`); reference-aligned.
 
 ## Stop-rule chains (rounding: nearest lowercase hex per step)
 
@@ -148,18 +178,30 @@ No chain walked: every derived text/line role already passes at step 0.
 
 ## Typography
 
-- **Controls / body / fields / labels** (`font.sans`,
-  `typography.control/field/label`): **`'Montserrat', sans-serif`** — 152
+- **Controls / body / fields** (`font.sans`,
+  `typography.control/field`): **`'Montserrat', sans-serif`** — 152
   `font-family: 'Montserrat', sans-serif` declarations across brand
-  components; the `fonts.css` sheet ships the Montserrat `@font-face` set.
-  We reference the font *name* only.
+  components; the `fonts.css` sheet ships 20 `@font-face` rules (18
+  Montserrat + 2 DM Serif Text). We reference the font *name* only.
+  `typography.control` size/lineHeight are measured from `.tg-link`
+  (lines 1337–1346: `font-size: 1rem` at 18px → `1.125rem`;
+  `line-height: 1em` → `1` — see the `rem`-root inventory).
+- **Labels** (`typography.label` size `1rem`, weight `700`):
+  reference-aligned (à confirmer) — `.tg-link` is weight 600, and the only
+  bold-`1rem` brand rule (`.contact .form-files__label`) is scoped to the
+  file-upload widget, so neither sets the general label value.
 - **Display** (`font.display`): **`'DM Serif Text', serif`** — 37+
   declarations on `.title` and editorial headings
-  (`.title{font-family:'DM Serif Text',serif;…color:#333745}`).
+  (`.title{font-family:'DM Serif Text',serif;…color:#333745}`), backed by
+  the 2 DM Serif Text faces in `fonts.css`.
 - **Monospace** (`font.mono`): system stack.
 - Links: slate `#333745`, not underlined at rest (`.tg-link{…color:#333745}`),
   recoloured to `#eb0000` on hover (`.tg-link:hover{color:#eb0000}`); the
   hover underline is reference-aligned (the brand hover only recolours).
+- **No named tokens**: the bundle declares zero custom properties (`--*`:
+  0 declarations) and contains zero `var()` references, so no hex is
+  promoted from a named token and the declared-but-never-consumed trap
+  cannot apply here — every measured value above comes from a rule.
 
 ## Signatures anatomiques
 
@@ -174,12 +216,26 @@ No chain walked: every derived text/line role already passes at step 0.
   .search__input{…border:1px solid #dadada;…height:38px;…}`) is scoped to the
   search widget — it does not set the general value.
 - **Control-geometry evidence** (brand's own control selectors grepped for
-  `height`, `min-height`, `padding`): general inputs carry NO
-  height/min-height/padding (only `font-size`/`line-height`); `.main .btn-bg`
-  carries only `padding: 11.5px 6.6%` (no height); `.contact .btn` resets to
-  `padding: 0`; newsletter `.btn` rules carry only `padding-bottom: 10px`.
-  The only control `height` found is the widget-scoped `height: 38px` above.
-  "Nothing usable published" is therefore quoted, not asserted.
+  `height`, `min-height`, `padding` — B3 correction path taken: evidence
+  rewritten, values not transcribed). What the brand rules actually declare:
+  `.contact .form__input--text` (lines 3064–3069: `padding-left: 8px`,
+  `padding-top: 13px`, `padding-bottom: 10px`), `--select` (lines
+  3053–3060: `padding-left: 8px`, `padding-top: 10px`,
+  `padding-bottom: 13px`), `--textarea` (lines 3082–3086:
+  `padding: 15px 0 20px 8px`, `height: 170px`); `.main .btn-bg` (lines
+  2603–2612: `padding: 11.5px 6.6%`, no height); `.contact .btn` (line
+  2687–2692: `padding: 0` reset); newsletter `.btn` rules (only
+  `padding-bottom: 10px`); widget-scoped heights only (`.menu__search
+  .search__input`: 38px, 64px at min-width-1024px; video/cookie/cross
+  buttons). None of this is retained, because no single general value
+  exists: the input paddings are variant-specific and asymmetric (13/10 vs
+  10/13 mirrored), the button inline padding is a fluid `%` with no fixed
+  equivalent, and the textarea `170px` is a multi-line area height, not a
+  control density. `density` therefore stays aligned with the reference
+  theme package's geometry (à confirmer).
+- **Native `<select>`**: chevron redrawn as a data-URI SVG carrying the
+  measured brand red (`%23eb0000`), `selectAppearance: "none"`; the
+  `2.5rem` right gutter is reference-aligned (à confirmer).
 - **Focus evidence**: no `:focus-visible` rule exists in the bundle
   (grep: 0); `outline` appears only in widget resets (`.menu__search
   .search__input:focus{outline:0;caret-color:#eb0000}`,
@@ -190,9 +246,14 @@ No chain walked: every derived text/line role already passes at step 0.
   rejected as the site value per the scope rule. The shipped red is the
   colour of the brand's own focus rules (`.nav button:focus`,
   search-input caret) and of the brand action.
-- **Radius**: no brand-owned general radius — `border-radius: 0` lives in
-  `.os-*`/`.tns-nav` vendor rules, `2px`/`16px` in `.mCS*` scrollbar rules,
-  `4px` in two scattered rules (`.liste-complete-item__text a:focus`,
+- **Radius**: no brand-owned general radius — the four `border-radius: 0`
+  declarations split evenly (vendor `.tns-nav button` at 17828 and vendor
+  `.mCS*` at 20064 vs brand `.offer-detail__left-sections-container …
+  li:before` at 5619 and brand `.offre-detail-liste-liens …
+  span:before` rule at 20805–20811, both square list bullets);
+  `border-radius: 0px !important` at 1860 is `.os-*` vendor;
+  `2px`/`16px` live in `.mCS*` scrollbar rules; `4px` in two scattered
+  brand one-offs (`.liste-complete-item__text a:focus`,
   `.filters-tags__item__wrap`); brand buttons ship square with no declared
   radius.
 - **Buttons**: primary = solid **action red `#eb0000`** with **white** label
