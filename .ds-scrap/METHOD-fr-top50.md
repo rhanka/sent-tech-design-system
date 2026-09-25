@@ -809,6 +809,17 @@ This is section 8's rule — find the LAST rule, not the first — applied to th
 instead of to the stylesheet. A first match is a candidate in a script exactly as it
 is in a brand sheet.
 
+**Two instruments are independent only on the hypothesis in question.** Coarseness was a
+proxy for what matters, and the proxy fails: measured, a mutation that worked on the raw
+text and its own `expect()` that also worked on the raw text shared precisely the
+assumption under test — the guard flattens newlines and comment markers before matching
+— so their agreement proved nothing and the check certified a mutation that had not
+landed. Read the same way, the four checks that let a `$$` substitution through (anchor
+matched, write succeeded, `node --check` parsed, added lines read back) all shared "the
+region I aimed at is the region that changed": four checks, one assumption, no
+independence. So the question to answer is not whether two methods differ in refinement
+but whether they differ **on the hypothesis being tested**.
+
 **When a measurement carries a decision, run two methods of different coarseness, and
 treat their disagreement as the alarm.** The case above is the whole argument: a
 refined extractor that resolved the token chain produced a false distribution, and a
@@ -1013,6 +1024,22 @@ This is a required clause and not a good habit: one brief in this programme carr
 instruction its author retracted while the agent was still running, and the only reason
 that was safe is that the brief happened to include a stop condition.
 
+**And the stop condition has three states, not two: contradicted, INSUFFICIENT,
+confirmed.** "Stop if the measurement contradicts this description" is binary, and the
+description that fails is usually not contradicted — it is incomplete. Measured: an
+agent applied an instruction its author had retracted, because it was looking for a
+contradiction and the fault was an insufficiency, which triggered nothing. So the brief
+says: *if this description is incomplete rather than wrong, say that too — a description
+that does not contradict you is not thereby sufficient.*
+
+**And an agent never writes into the code, or into the ledger, the attribution of a
+decision to a person.** Not "owner's decision", not "approved by", not "arbitrated by": it
+writes the **measurement**, and leaves the attribution to whoever decides. Measured: an
+agent wrote "owner's decision" in a source comment for a decision the owner had never
+taken. What makes that grave is not that it is incorrect but that it lasts — **a falsehood
+recorded in source has a lifetime its author does not control**, and the comment would
+outlive by years the confusion that produced it.
+
 **A second pass receives the questions the full review left open, by name, and declares
 its scope before it runs.** Measured over a full lot: four second passes cost 87 500,
 100 382, 111 847 and 127 908 tokens — a mean of 106 909, or **50.8 %** of a full
@@ -1073,6 +1100,27 @@ instrument that accuses must first prove it could measure. And the cost of getti
 wrong is asymmetric on a confidentiality rule: after two false alarms the next lot
 unplugs the only control that measures it, which is a more probable failure than the one
 the control looks for.
+
+**Before shipping a control or a condition with two outcomes, ask whether an intermediate
+state exists — and if it does, name it rather than let it spill.** This is the design
+gesture behind the three clauses above, and it is worth stating separately because each of
+them was shipped binary first and each cost a defect:
+
+| object | shipped binary as | what it cost |
+|---|---|---|
+| the confidentiality check | pass / fail | **four themes accused of leaking** on a correct site |
+| a guard red at the baseline | reached / unreached | eight tests would have been counted as gaps |
+| a brief's stop condition | contradicted / confirmed | **a retracted instruction was applied**, and a false attribution entered the source |
+
+The operative half is where the missing state goes: **it spills into whichever of the two
+most resembles a defect of the subject.** That is why the failure is always an accusation
+and never an acquittal, and it is what makes the class expensive — a false positive sends
+someone to correct something that was correct.
+
+The generality is established on three objects and not proved. Three is enough to act on,
+because in all three the binary version was shipped and produced a measurable defect; it is
+not enough to claim the pattern is universal, and this clause says so rather than implying
+more than it has.
 
 **A received number is a hypothesis, not a target.** An agent asked to correct a figure
 at four places and finding only three reports three. Measured: one builder did exactly
