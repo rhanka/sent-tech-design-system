@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input as NgInput, inject } from '@angular/core';
 import type { OnChanges, OnDestroy, OnInit } from '@angular/core';
-import { ViolinChart as DsViolinChart, type ViolinChartDatum } from '@sentropic/design-system-angular';
+import { ViolinChart as DsViolinChart } from '@sentropic/design-system-angular';
 import { buildViolinModel, type DashboardStore } from '@sentropic/dataviz-core';
 import { toSignalStore, type AngularSignalStore } from '../adapter.js';
 
