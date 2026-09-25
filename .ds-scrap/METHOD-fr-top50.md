@@ -514,6 +514,15 @@ while it measures** — killing to find out consumes its subject, racing consume
 tokens. So when the threshold is approached rather than crossed, race rather than
 wait, and let the copy answer the question the clock cannot.
 
+**But the race has a boundary, and it is the moment it decides.** Racing destroys
+nothing *while it measures*; once a copy has delivered, leaving the loser running stops
+being a measurement and becomes an exposure — it is still writing into the tree the
+conductor is integrating into, so a late write can land on top of work already
+integrated. So the sequence is: race, let the copy deliver, **stop the loser**, then
+integrate. A rule that said only "never kill an agent" would have left an active writer
+in the integration tree, trading one risk for a worse one. The motive is what bounds
+the rule: the loser is stopped because of *where it writes*, not because it was slow.
+
 **And say how the work comes back, or the layout invents a cost that does not exist.**
 Each theme's worktree carries **its own branch**, cut from the lot branch
 (`git worktree add -b <branch> <path> <lot-branch>`). Nothing needs a detached HEAD:
@@ -555,6 +564,17 @@ pull request back. The workaround is
 works. The general rule outlives the bug: **after any write performed through a tool
 you do not control, read the object back.** An exit code describes the command, not the
 object.
+
+**And the rule is about anchored writing, not about remote tools.** The same failure
+arrived from a local script: an edit keyed to an anchor ending at a short phrase, whose
+replacement did not repeat the clause preceding it, silently dropped that clause and
+left a sentence reading "on the conductor's budget. nothing else." Nothing reported it,
+because **an anchored write has no acknowledgement** — the anchor matched, the write
+succeeded, and the loss was in what the replacement failed to carry forward rather than
+in what the tool failed to do. A `sed` and an API call are the same operation in this
+respect. So read the object back after every anchored edit, and prefer an anchor that
+ends on a line boundary over one that ends mid-sentence, since a mid-sentence anchor
+puts the burden of repeating context on the replacement.
 
 **What a repository guard is for — measured, not assumed.** The first lot reviewed
 with all three guards present cost **more** per review than the lot before it
