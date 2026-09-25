@@ -502,6 +502,27 @@ bottleneck, not the agents. Give each theme its own worktree. Then a slow agent 
 raced instead of merely observed, the finished themes are rebased and gated while the
 slow one continues, and a commit is never made under a live agent by accident.
 
+**And say how the work comes back, or the layout invents a cost that does not exist.**
+Each theme's worktree carries **its own branch**, cut from the lot branch
+(`git worktree add -b <branch> <path> <lot-branch>`). Nothing needs a detached HEAD:
+detachment is forced only when two trees race the *same* branch, which is the race
+case and not the layout. The builder then **commits on its own branch** — which
+reverses the standing instruction not to commit — and that commit is the delivery
+unit. The conductor integrates with one command, run from the lot worktree:
+
+```
+git cherry-pick -n <builder-sha>
+```
+
+`-n` stages without committing, so the builder's work arrives whole while the commit
+message — which is part of the provenance record — stays the conductor's to write.
+Measured against the shared-tree model this is **not an extra cost**: the
+`git add -- packages/theme-<id>` it replaces was already one command. Conflicts are
+structurally impossible while every commit touches only its own package directory, so
+themes integrate one at a time as they finish instead of queueing behind the slowest.
+What the layout buys is the rebase: the builders hold their own branches, so the lot
+branch is free the whole time.
+
 **Re-read what a third-party tool wrote, because a silent failure returns success.**
 On this repository `gh pr edit` queries `repository.pullRequest.projectCards`, which
 returns `"pullRequest": null` with `{"type":"NOT_FOUND", "message":"Projects (classic)
