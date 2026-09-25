@@ -156,6 +156,18 @@ Find the boundary between the vendor region and the brand region, name it in
 `MAPPING.md` (that brand's boundary is the rule `html *{scrollbar-width:none}`),
 and compute every count on the brand region alone.
 
+**A de-bannerized vendor block is invisible to keyword search.** Minification strips
+comments, so the licence banner naming the library is gone while its rules remain.
+On one brand, 82 rules of a `normalize.css` reset sit at expanded lines 5545-5626
+and `grep normalize` over the sheet legitimately returns **0** — the classification
+that reported no reset was measured, and wrong. The same sheet carries an unnamed
+payment-vendor region of roughly 155 rules. So do not classify by vendor name alone:
+**search by structure.** A vendor reset is a contiguous run of namespace-free base
+rules on bare element selectors (`html`, `body`, `h1`, `abbr[title]`, `pre`,
+`code`, `sub`, `sup`, `[type=checkbox]`) carrying no class from the brand's own
+namespace, usually near the top of the sheet. Report such a region by its line span
+and by what its selectors are, not by the name you could not find.
+
 A hex that appears **only** in vendor blocks is not a brand colour, however
 frequent it is, and giving it a brand role is a provenance defect — the most
 serious one possible here, because it dresses a consent-banner grey as a
@@ -185,6 +197,21 @@ choice in `MAPPING.md`. A value with no source in
 section 3(a)–(d) is **derived**: mark it `à confirmer` inline AND list it in
 the `MAPPING.md` section of the same name.
 
+**State the counting convention, and state the region.** Two counts of the same hex
+differ legitimately, so a number without its convention is not a measurement.
+(1) **Region** — Step 0.5 prescribes the brand region, and a whole-file count is a
+different figure: on one brand the published totals were 354 / 102 / 19 against
+325 / 88 / 3 on the brand region alone. No decision flipped there, but the number
+published was not the number prescribed. Say which region you counted.
+(2) **Form** — decide and declare whether you count the short form (`#666` and
+`#666666` are one colour and two strings; one brand writes `#666` 49 times and
+`#666666` never), the 8-digit alpha form (`#254f9a14`, `#254f9a1f`, `#254f9a29` are
+one brand's primary painted as a shadow tint, and an exact-6-digit count reports
+that colour as unpainted), and the `rgb()` / `rgba()` equivalents. Restricting the
+count to exact 6-digit matches is a valid convention; leaving it unstated is not.
+(3) **Expansion** — if you transcribe `#666` as `#666666`, say so: a reviewer
+grepping your value finds zero occurrences and reads a fabrication.
+
 ## 3. Allowed sources, ranked
 
 (a) A public tokenised design system published by the brand, when one
@@ -208,6 +235,30 @@ it. So for every hex promoted from a named token, **count its `var()` references
 and record the count**. A token with zero consumption cannot carry a Sentropic role
 unless the gap is documented; keep it in the raw palette for provenance, with no
 role, and say why.
+
+**But `var()` alone is the wrong test, and reading it as the test rejects correct
+palettes.** On the next brand measured after this rule was written, 21 of the 23
+brand tokens cited as sources had **zero** `var()` references — and the palette was
+right, because that brand paints literal hexes in its own rules: its primary blue
+has zero `var()` as `--primary-color` and **325** occurrences in the brand region.
+The question is not "is this token read through a variable" but **"is this colour
+painted at all"**. A colour is operative when it is consumed by `var()` **or** when
+it appears literally in brand rules. The defect is **zero of both** — which is
+exactly what the two failing tokens on that brand were: one occurrence each in
+821 KB, their own declaration, nothing else.
+
+So record **two numbers** for every promoted hex: its `var()` references, and its
+literal occurrences in the brand region. Neither number alone decides; their sum
+being zero does. The failure this catches is the worst available, because it lands
+by preference on the most authoritative-looking token: on that brand it had taken
+`semantic.text.primary`, the most visible role a theme has, and the regression test
+had locked the error in.
+
+Corollary worth measuring when the two numbers disagree: a brand may paint a token
+family it never declares in any linked stylesheet, readable only through the
+fallbacks of its own `var()` calls (`var(--blue-500-brand,#003883)`, 60
+occurrences). That family is evidence — on that brand it corroborated the whole
+delivered palette except the two unpainted values. Record it as such.
 
 (c) A brand charter published as a PDF by the brand.
 
@@ -415,6 +466,21 @@ suspecting the code first. Check the environment first; it costs one command.
    → `inset`; an outline-plus-shadow combo → `double`. Never just the
    colour. (Measured examples: Hermès `outline: 2px solid #000` +
    `outline-offset: 3px`; Canada 3px outline in focus blue.)
+   **Find the LAST rule, not the first.** One brand declares `outline:0` on its
+   inputs and selects, and the sheet reads like a brand that removed focus
+   altogether. Four later rules publish `outline:auto` / `outline:solid` — one of
+   them `form textarea:focus{outline:auto}`, *less* scoped than the rule it follows
+   and at equal specificity, so it wins. That theme shipped the right strategy with
+   a false justification ("the brand draws no focus outline or ring"), and the
+   justification is the provenance defect. Same mechanism, same brand, for
+   typography: a family rule declares `line-height:1.25` on every button class and
+   two later rules at equal specificity redeclare `.9` on the same selectors as
+   exact members, so the effective value is `0.9`.
+   After finding the rule that declares a value, **search the rest of the sheet for
+   later rules carrying the same selector as an exact member**, and take the last
+   one at equal-or-higher specificity. A first match is a candidate, not a
+   measurement. This is reading the cascade, not measuring a rendering (section 10
+   forbids the latter) — say which you did when you report it.
 3. **`density` without a browser.** Never measure pixels from a rendering:
    read the `height` and `padding` declarations in the brand CSS when they
    exist and transcribe them into `controlHeight` / `paddingBlock` /
@@ -549,7 +615,8 @@ repo — the summary is the handoff message.
 Cross-review is an adversarial pass by an agent other than the builder,
 cold: it re-reads the diff without justifying it.
 
-**Do not redo what the repository guards already do.** `verify-theme-shape`,
+**Do not redo what the repository guards already do — and do not trust their
+silence.** `verify-theme-shape`,
 `verify-theme-registration` and `verify-theme-invariants` run under `npm test` and
 mechanically cover the id against the folder name, missing token leaves against the
 base, hexes with no mapping row, unpinned font families, reference geometry claimed
@@ -561,6 +628,19 @@ brand publishes no X" is true, whether a cited selector declares the property it
 cited for, and whether a promoted token is actually consumed. Those five produced
 almost every blocking finding.
 
+**The guards are a floor, not a ceiling, and the floor is lower than the summary
+above suggests.** Measured on the first lot that ran with all three present: the
+geometry guard watches only `easing` and `disabledOpacity`, and accepts the borrow
+label anywhere in the file rather than on the borrowed value; the mapping-row guard
+reads only 6-digit hexes and `rgb()` / `rgba()`, so a borrowed unitless number or a
+bare length escapes it. Neither could see a `card.borderWidth` and a
+`card.lineHeight` copied character for character from the reference package with no
+marker and no mapping row, nor a `transition.property` set belonging to neither the
+base nor the reference and carrying no comment. Of the fifteen blocking defects the
+four reviews of that lot returned, **zero fell in a class any guard covers** — and
+two reviewers had to spend budget instructing the guards themselves. A green guard
+run licenses nothing: report it in one line and keep reading.
+
 Verifiable checklist — fail the theme on any miss:
 
 - Every hex in `index.test.ts` is found in `index.ts`, and every font family
@@ -568,6 +648,10 @@ Verifiable checklist — fail the theme on any miss:
   face. Compile the theme and list the families rather than trusting the test.
 - Every hex in `index.ts` has a row in `MAPPING.md`, including the `rgb()`
   values (`surface.overlay` is the one that escapes).
+- **Every "the brand publishes no X" claim is checked against the LAST matching
+  rule, not the first** (section 8, lever 2). Three of the four themes in one lot
+  carried such a claim; two were false, and both times the contradicting rule was
+  later in the same sheet. Grep the property, not the phrase.
 - **For every hex presented as measured, the cited occurrence is a
   brand-owned rule.** Fetch the stylesheet and look at the block the selector
   belongs to: a consent banner, a carousel, a CMS default or a library reset
