@@ -628,9 +628,10 @@ least 19px bold) and for non-text elements including the focus indicator
 
 **`text.muted` is held to 3:1, and that is a measurement of the repository, not a
 concession.** Resolving `text.muted` to a hex across every theme package that declares
-one — 134 of them — and computing each ratio on white gives **86 below 4.5:1**. The
-lowest is 1.14, twenty-five sit below 3.0, and the lowest value at or above 4.5 is
-4.54. A muted text role under 4.5 is therefore this repository's norm and not its
+one — 134 of them, scoped to `semantic.text.muted` — and computing each ratio on
+white gives **87 below 4.5:1**. Twenty-four sit below 3.0, the lowest is `#c8c8c8` at
+1.67, the lowest value at or above 4.5 is `#767676` at 4.54, and the median is
+`#888888` at 3.54. A muted text role under 4.5 is therefore this repository's norm and not its
 exception. So for a programme theme: `text.muted` must clear **3:1** and record its
 ratio; a value between 3 and 4.5 is a **documented arbitration**, stated with its
 number in `MAPPING.md`; below 3:1 is a defect and the stop rule applies.
@@ -649,17 +650,35 @@ the brand's other measured text grey at **3.95:1** — better than 86 of the 134
 reviewer then argued, from section 9's letter, that a text role owes 4.5 and that the
 stop rule's next step `#737373` at 4.74 was the conforming answer. Applying it would
 have collapsed `muted` into `secondary` (5.01, three grey units away) **and** held one
-new theme to a bar that 86 shipped packages do not clear.
+new theme to a bar that 87 shipped packages do not clear.
 
-**And the precedents both reviewers offered were not measurements.** The pair cited to
-justify the 3.5 band — `#888b8d` at "3.54" and `#8c8c8c` at "3.55", the latter
-attributed to a governmental theme — does not survive being resolved: `#888b8d` is
-**3.43**, `#8c8c8c` belongs to a different package entirely, and the governmental
-theme's actual `text.muted` is `#26374a` at **12.15:1**, among the highest in the
-repository. The conductor relayed that pair without resolving it. **A precedent is a
-measurement, not a citation**: open the package that allegedly sets it, resolve the
-token to a hex, and compute. A cited ratio is a claim about a file, and claims about
-files are cheap to check.
+**And the precedents offered were not measurements — nor was the first attempt to
+refute them.** The pair cited to justify the 3.5 band, `#888b8d` at "3.54" and
+`#8c8c8c` at "3.55", is wrong in its ratios and right in its attribution: measured,
+`#888b8d` is **3.43** and `#8c8c8c` is **3.36**, so neither member reaches 3.5 and the
+band does not exist. But the correction first offered — that `#8c8c8c` belonged to
+another package, and that the governmental theme's `text.muted` was `#26374a` at
+12.15 — was itself false. `#8c8c8c` is the `text.muted` of **both** that theme and
+`theme-behaviour-interactive`, and `#26374a` is that theme's `blue.muted`, consumed as
+`surface.inverse`, `action.primaryHover` and a chart category, never as text.
+
+That failure is worth keeping, because the rule as first written invites it. The
+extractor took the **first** `muted:` in each file, and a palette declares `muted`
+keys long before `semantic` does — so it read a dark blue in one theme and a light
+background tint in another, and inverted a whole distribution before anyone checked.
+This is section 8's rule — find the LAST rule, not the first — applied to the tool
+instead of to the stylesheet. A first match is a candidate in a script exactly as it
+is in a brand sheet.
+
+So the rule has two halves, and the second is the one that was missing:
+
+**A precedent is a measurement, not a citation** — open the package, resolve the
+token, compute. **And resolve it in the package you are talking about, scoped to the
+role you are talking about**, rather than searching the repository for the value.
+Finding the hex somewhere else proves nothing about where it sits here, and finding a
+key of the same name proves nothing about the role: `muted` names a palette tint, a
+background, a border and a text role in this repository, and only one of them is
+`semantic.text.muted`.
 
 Computation: relative luminance per channel
 `s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4`, then
