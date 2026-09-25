@@ -3,12 +3,16 @@ name: Docs
 on:
   push:
     branches: ["main"]
+    # The built site embeds 135 in-house packages: the four framework component
+    # libraries (its tabbed examples render Svelte, React, Vue AND Angular), the
+    # token and theme layers, the skills CLI, and every theme package. Listing a
+    # subset froze production: a fix to packages/components-angular — including
+    # the buildSmoothPath stub that drew straight lines for every smoothed chart
+    # since June — did not redeploy, and neither would a fix to an existing theme.
+    # The theme lot only deployed because it happened to touch apps/docs.
     paths:
       - "apps/docs/**"
-      - "packages/components-svelte/**"
-      - "packages/themes/**"
-      - "packages/tokens/**"
-      - "packages/skills/**"
+      - "packages/**"
       - "scripts/ensure-theme-dists.mjs"
       - ".github/workflows/docs.yml"
   workflow_dispatch:
