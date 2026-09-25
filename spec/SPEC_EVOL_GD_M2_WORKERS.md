@@ -154,19 +154,44 @@ modification d'une copie à provenance, et toute publication npm.
   inscrite dans le code, pas devinée.
 
   **La prémisse est fausse, mesurée** (AMD Ryzen AI MAX+ 395, Node 22.22.1, médiane de 11 par taille, worker
-  chaud) : il n'existe aucune taille en dessous de laquelle le worker est matériellement plus lent. Le rapport
-  worker/synchrone du temps mural vaut 0,872 à 100 nœuds, 0,971 à 150, 1,046 à 200, 0,978 à 250, 1,013 à 300,
-  1,104 à 350, 0,998 à 400, 1,002 à 500 et 1,061 à 700 — du bruit autour de la parité, sans croisement. Le
-  surcoût de frontière existe mais ne domine jamais : 0,27 ms à 1 000 nœuds, 8,29 à 5 000, 30,34 à 20 000,
-  contre des calculs de 190,9 / 1 262,3 / 7 089,3 ms, soit au plus 0,5 %. Ce qui **justifie** un seuil est le
-  démarrage unique du fil, que ce paragraphe ne considérait pas : 30,1 ms de médiane sur cinq clients neufs
-  (28,5 / 29,0 / 30,1 / 31,7 / 32,3). Correction minimale retenue : le seuil reste exigé et inscrit dans le
-  code, mais fondé sur ce coût de démarrage — **250 nœuds**, la plus petite taille mesurée dont le calcul
-  synchrone (30,50 ms) le dépasse, en dessous de laquelle aucun fil n'est jamais créé.
+  chaud) : le rapport worker/synchrone du temps mural **ne suit pas la taille du graphe**. Il vaut 1,452 à
+  50 nœuds, 1,036 à 100, 1,114 à 200, 1,147 à 250, 0,997 à 300, 1,003 à 400, 1,019 à 500, 1,021 à 600, 1,002 à
+  700, 1,018 à 800, 1,042 à 1 000, 1,028 à 1 500 ; une autre exécution du même balayage donne 0,864 / 0,912 /
+  0,904 / 0,942 / 1,024 / 0,899 / 0,988 / 1,050 / 1,002 / 0,982 / 1,019 / 0,996 sur les mêmes tailles. Le
+  rapport erre donc autour de la parité à ±15 % environ, le plus largement à la plus petite taille, et le côté
+  où il tombe est une propriété de l'exécution, pas du nombre de nœuds. Ce que les deux exécutions établissent,
+  c'est qu'**il n'existe aucune taille en dessous de laquelle le worker est plus lent de façon reproductible**.
+
+  Le surcoût de frontière existe et ne domine jamais. C'est le chiffre le plus bruité du banc — une différence
+  de deux horloges mesurées séparément, calcul ramené à son plancher — donc il est rapporté en min/médiane/max
+  sur 15 tirs **appariés** et non en médiane unique : **−0,73 / 0,17 / 4,04 ms à 1 000 nœuds, 2,87 / 8,36 /
+  18,61 à 5 000, 15,84 / 27,29 / 41,76 à 20 000**, contre des calculs synchrones de ~190-212 / ~1 333-1 407 /
+  ~6 856-7 246 ms. À 1 000 nœuds il peut être négatif, parce que la voie synchrone différée paie le plancher
+  de 1 ms de `setTimeout` de Node (1,127 ms mesuré) là où un aller-retour worker chaud coûte 0,021 ms. Une
+  exécution indépendante sur machine chargée a relevé 5,54 / 56,09 / 44,78 ms, au-dessus des maxima vus ici à
+  5 000 nœuds. Une première rédaction de ce paragraphe citait les médianes d'un seul tir tranquille comme
+  « au plus 0,5 % » : c'était un meilleur cas présenté comme un plafond.
+
+  Ce qui **justifie** un seuil est le démarrage unique du fil, que ce paragraphe ne considérait pas : 24,4 ms
+  sur une exécution, 23,0-27,7 ms sur cinq clients neufs d'une autre, jusqu'à 31,4 ms entre exécutions, et
+  33,4 ms sur la mesure indépendante. Correction minimale retenue : le seuil reste exigé et inscrit dans le
+  code, mais fondé sur ce coût de démarrage — **250 nœuds**, la plus petite taille balayée dont le calcul
+  synchrone le franchit, et il le franchit de peu : 32,1 ms ici, 32,5 ms sur la deuxième exécution, 34,00 ms
+  sur l'indépendante, contre des démarrages de 24,4 / 31,4 / 33,4 ms ; la taille juste en dessous — 200 nœuds,
+  24,3-24,7 ms — reste sous le démarrage dans les trois cas. La marge est mince par construction : c'est un
+  point d'équilibre, pas une falaise, et rien en aval ne dépend de sa valeur exacte, seulement du fait qu'il
+  y en ait un.
 - **Un `Float32Array` transférable** évite une copie mais vide le tampon source. Si le transfert est retenu, il
-  doit être testé contre une réutilisation accidentelle du tampon côté worker. Le transfert **est** retenu ; le
-  tampon est alloué à neuf à chaque appel et jamais relu côté worker, ce qu'un test vérifie en enchaînant deux
-  requêtes et en assérant deux tampons distincts, tous deux de longueur pleine et de contenu égal.
+  doit être testé contre une réutilisation accidentelle du tampon côté worker.
+
+  Tranche de l'implémentation : le transfert **n'est pas retenu**, parce que la copie qu'il évite est gratuite.
+  Mesuré sur un aller-retour `worker_threads` réel, médiane de 40 : transférer au lieu de copier gagne
+  **0,001 ms à 1 000 nœuds, 0,004 ms à 5 000, 0,019 ms à 20 000, et rien à 100 000** (−0,009 ms, dans le bruit)
+  — 0,07 % des 26,87 ms de coût de frontière à 20 000 nœuds. Payer un risque de tampon détaché et un
+  `try`/`catch` de repli pour 0,019 ms est le mauvais arbitrage : le worker poste la copie, et il n'existe donc
+  aucun tampon de son côté qu'une requête ultérieure pourrait trouver vidé. Un test assère tout de même ce qui
+  compte dans les deux cas — chaque réponse porte un tampon vivant de longueur pleine, et deux réponses n'en
+  partagent jamais un.
 - **Les environnements de test** : jsdom n'a pas de `Worker` utilisable et Node en a un différent
   (`worker_threads`). Le lot doit dire lequel il couvre et lequel il déclare hors mesure, plutôt que de laisser
   croire à une couverture universelle.

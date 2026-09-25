@@ -60,6 +60,14 @@ function workerClient(options = {}) {
   });
 }
 
+/** `min/median/max`, so no single figure can be quoted as a ceiling. */
+function span(values) {
+  const sorted = [...values].sort((a, b) => a - b);
+  const lo = sorted[0];
+  const hi = sorted[sorted.length - 1];
+  return `${lo.toFixed(2)}/${median(values).toFixed(2)}/${hi.toFixed(2)}`;
+}
+
 function median(values) {
   const sorted = [...values].sort((a, b) => a - b);
   const mid = sorted.length >> 1;
@@ -134,14 +142,20 @@ for (const n of [1000, 5000, 20000]) {
 // 3. Crossover sweep: where does the worker stop being the slower option?
 // ---------------------------------------------------------------------------
 console.log("");
-console.log("=== crossover sweep (median of 5, warm worker) ===");
+console.log("=== crossover sweep (median of 11, warm worker) ===");
 console.log("  nodes     worker(ms)     sync(ms)   worker/sync");
-for (const n of [50, 100, 200, 300, 400, 500, 600, 700, 800, 1000, 1500]) {
+// 250 is in this list on purpose: it is the value `WORKER_NODE_THRESHOLD`
+// carries, and 200 is the size its comment cites as NOT meeting the criterion,
+// so `npm run bench:worker` re-derives the constant instead of leaving a reader
+// to trust it. Eleven shots per size, not five: the small sizes are where the
+// run-to-run spread is widest, and a review had to write its own measurement
+// because five was too thin to confirm the constant from this output.
+for (const n of [50, 100, 200, 250, 300, 400, 500, 600, 700, 800, 1000, 1500]) {
   const { nodes, edges } = graph(n);
   const wc = workerClient();
   await wc.request({ snapshotId: "warm", nodes: [{ id: "a" }], edges: [], options: { iterations: 1 } });
   const workerMs = [];
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 11; i++) {
     const r = await timed(() => wc.request({ snapshotId: `w${n}`, nodes, edges }));
     if (r.value.status !== "fulfilled") fail(`sweep worker ${n}`);
     workerMs.push(r.ms);
@@ -149,7 +163,7 @@ for (const n of [50, 100, 200, 300, 400, 500, 600, 700, 800, 1000, 1500]) {
   wc.terminate();
   const sc = createLayoutClient({ dispatch: "sync" });
   const syncMs = [];
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 11; i++) {
     const r = await timed(() => sc.request({ snapshotId: `s${n}`, nodes, edges }));
     if (r.value.status !== "fulfilled") fail(`sweep sync ${n}`);
     syncMs.push(r.ms);
@@ -214,15 +228,23 @@ console.log("=== three closely-spaced requests for one snapshot (5 000 nodes) ==
 // 5. Message-boundary cost, measured.
 // ---------------------------------------------------------------------------
 console.log("");
-console.log("=== message-boundary cost (iterations: 1, median of 7) ===");
-console.log("  nodes   worker(ms)   sync(ms)   boundary(ms)   bytes out");
+// Reported as min / median / max, NOT as a single median, and that is a
+// correction. This figure is a DIFFERENCE of two separately timed wall clocks at
+// the computation's floor, so it is the noisiest number the bench produces: an
+// independent run of this same bench on a loaded machine saw 5.54 / 56.09 /
+// 44.78 ms where a quiet run here saw 0.27 / 8.29 / 30.34. Printing one median
+// invited exactly the mistake that followed — quoting a best case as a ceiling.
+// The spread is the measurement; the conclusion that survives it is that the
+// boundary never becomes the dominant term.
+console.log("=== message-boundary cost (iterations: 1, 15 shots, min/median/max) ===");
+console.log("  nodes         worker(ms)             sync(ms)         boundary(ms)   bytes out");
 for (const n of [1000, 5000, 20000]) {
   const { nodes, edges } = graph(n);
   const options = { iterations: 1 };
   const wc = workerClient();
   await wc.request({ snapshotId: "warm", nodes: [{ id: "a" }], edges: [], options });
   const workerMs = [];
-  for (let i = 0; i < 7; i++) {
+  for (let i = 0; i < 15; i++) {
     const r = await timed(() => wc.request({ snapshotId: `w${n}`, nodes, edges, options }));
     if (r.value.status !== "fulfilled") fail(`boundary worker ${n}`);
     workerMs.push(r.ms);
@@ -230,17 +252,19 @@ for (const n of [1000, 5000, 20000]) {
   wc.terminate();
   const sc = createLayoutClient({ dispatch: "sync" });
   const syncMs = [];
-  for (let i = 0; i < 7; i++) {
+  for (let i = 0; i < 15; i++) {
     const r = await timed(() => sc.request({ snapshotId: `s${n}`, nodes, edges, options }));
     if (r.value.status !== "fulfilled") fail(`boundary sync ${n}`);
     syncMs.push(r.ms);
   }
-  const w = median(workerMs);
-  const s = median(syncMs);
+  // The boundary spread is derived from the PAIRED shots, not from the
+  // difference of two summaries: subtracting the two medians hides how much the
+  // difference itself moves, which is the quantity being reported.
+  const paired = workerMs.map((w, i) => w - (syncMs[i] ?? 0));
   console.log(
-    `  ${String(n).padStart(5)}  ${w.toFixed(2).padStart(10)}  ${s.toFixed(2).padStart(9)}  ${(w - s).toFixed(2).padStart(13)}  ${String(n * 8).padStart(10)}`,
+    `  ${String(n).padStart(5)}  ${span(workerMs).padStart(20)}  ${span(syncMs).padStart(20)}  ${span(paired).padStart(19)}  ${String(n * 8).padStart(10)}`,
   );
 }
 console.log("");
 console.log("boundary(ms) = worker wall - sync wall at one iteration: the request clone in,");
-console.log("the positions transfer out and the thread hop, with the computation held at its floor.");
+console.log("the positions clone out and the thread hop, with the computation held at its floor.");

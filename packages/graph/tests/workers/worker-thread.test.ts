@@ -19,6 +19,7 @@
  * claims to cover a browser.
  */
 import { describe, expect, it } from "vitest";
+import { isMainThread } from "node:worker_threads";
 
 import { createLayoutClient } from "../../src/layout-client.js";
 import { createNodeWorkerHandle } from "./node-worker-adapter.mjs";
@@ -46,8 +47,17 @@ describe("invariant 4 — the two paths agree to the byte, across a real thread"
     it(`${n} nodes: identical Float32Array bytes through the worker and synchronously`, async () => {
       const bundle = await workerBundleUrl();
       const input = graph(n);
+      // Captured AT CREATION, not read back at the end. `Worker.threadId`
+      // becomes -1 once the thread has exited, and this test terminates the
+      // client before asserting, so reading it late passes when the file runs
+      // alone and fails in a full run — measured, it did.
+      let spawnedThreadId: number | null = null;
       const viaWorker = createLayoutClient({
-        createWorker: () => createNodeWorkerHandle(bundle),
+        createWorker: () => {
+          const handle = createNodeWorkerHandle(bundle);
+          spawnedThreadId = handle.thread.threadId;
+          return handle;
+        },
         dispatch: "worker",
       });
       const workerOutcome = await viaWorker.request({ snapshotId: `eq-${n}`, ...input });
@@ -64,13 +74,22 @@ describe("invariant 4 — the two paths agree to the byte, across a real thread"
       expect(bytes(workerOutcome.positions).equals(bytes(syncOutcome.positions))).toBe(true);
       expect(viaWorker.stats().workerDispatches).toBe(1);
       expect(viaSync.stats().syncDispatches).toBe(1);
+
+      // The equality is only worth asserting if one side really crossed a thread.
+      // Without this, an adapter that degraded to an in-process call would leave
+      // the test green while "across a real thread" quietly became false.
+      expect(isMainThread).toBe(true);
+      expect(spawnedThreadId).not.toBeNull();
+      expect(spawnedThreadId as unknown as number).toBeGreaterThan(0);
     });
   }
 
-  it("the transferable positions buffer arrives intact and is not a detached view", async () => {
-    // The worker hands its buffer over rather than copying it. The received
-    // buffer must therefore be a live one of the right length — a detached
-    // buffer would read back as byteLength 0.
+  it("each answer's positions buffer is live and its own, never a detached view", async () => {
+    // The worker CLONES rather than transfers (measured: transferring saves
+    // 0.019 ms at 20 000 nodes, 0.07% of the boundary cost, and costs a
+    // detached-buffer hazard). This asserts what matters either way: every
+    // answer carries a live buffer of full length, and two answers never share
+    // one — a detached buffer would read back as byteLength 0.
     const bundle = await workerBundleUrl();
     const client = createLayoutClient({
       createWorker: () => createNodeWorkerHandle(bundle),
