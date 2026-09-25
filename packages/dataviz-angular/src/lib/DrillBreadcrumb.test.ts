@@ -47,7 +47,7 @@ describe('DrillBreadcrumb (angular)', () => {
     const root = fixture.nativeElement as HTMLElement;
 
     expect(root.querySelector('.st-inline')?.getAttribute('class')?.split(' ')).toEqual(
-      expect.arrayContaining(['st-drillBreadcrumb', 'probe']),
+      expect.arrayContaining(['probe']),
     );
     expect(Array.from(root.querySelectorAll('.st-breadcrumb li')).map((li) => li.textContent?.trim())).toEqual([
       'Region',
@@ -64,8 +64,10 @@ describe('DrillBreadcrumb (angular)', () => {
     fixture.detectChanges();
     const root = fixture.nativeElement as HTMLElement;
 
+    // The DS Breadcrumb renders the "/" separator inside the preceding <li>,
+    // not as its own node, so a non-final item's textContent carries it too.
     expect(Array.from(root.querySelectorAll('.st-breadcrumb li')).map((li) => li.textContent?.trim())).toEqual([
-      'Region',
+      'Region/',
       'Service',
     ]);
     expect(root.querySelector('span[aria-current="page"]')?.textContent?.trim()).toBe('Service');

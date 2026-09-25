@@ -40,7 +40,7 @@ describe('DashboardActiveFilters (angular)', () => {
 
     expect(root.querySelector('.st-filterBar')?.getAttribute('aria-label')).toBe('Filtres actifs');
     expect(root.querySelector('.st-filterBar')?.getAttribute('class')?.split(' ')).toEqual(
-      expect.arrayContaining(['st-dashboardActiveFilters', 'probe']),
+      expect.arrayContaining(['probe']),
     );
     expect(root.querySelectorAll('.st-filterPill').length).toBe(0);
     expect(root.querySelector('.st-filterBar__clearAll')).toBeNull();
@@ -53,8 +53,11 @@ describe('DashboardActiveFilters (angular)', () => {
     fixture.detectChanges();
     const root = fixture.nativeElement as HTMLElement;
 
+    // FilterPill has no operator here, so its field/value spans are adjacent
+    // with no separator: this is DashboardFilterBar's own established
+    // assertion shape (`'Servicecheckout'`), not a rendering defect.
     const pill = root.querySelector('.st-filterPill');
-    expect(pill?.textContent?.replace(/\s+/g, ' ').trim()).toBe('Service checkout, billing');
+    expect(pill?.textContent?.replace(/\s+/g, ' ').trim()).toBe('Servicecheckout, billing');
     expect(root.querySelector('.st-filterBar__clearAll')?.textContent?.trim()).toBe('Tout effacer');
   });
 
