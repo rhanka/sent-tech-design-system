@@ -7,7 +7,7 @@ import type { TenantTheme } from "@sentropic/design-system-themes";
  * Carrefour SA (CA / FR0000120172, CAC 40, head office Massy) serves TWO fronts
  * with DIFFERENT declared values. This package is a MEASURED-CLONE of the
  * retail front `carrefour.fr`, which ships Carrefour's own TOKENISED design
- * system: 2551 `--ds-*` custom-property declarations in
+ * system: 2551 custom-property declarations (1320 `--ds-*`) in
  * `https://www.carrefour.fr/v3-assets/HHNlKr0TBF.css`, including an explicit
  * brand layer (`--ds-color-brand-primary/-secondary/-tertiary`), radius,
  * spacing, sizing, shadow and opacity scales, and per-component colour roles.
@@ -15,9 +15,11 @@ import type { TenantTheme } from "@sentropic/design-system-themes";
  * Drupal theme (`/themes/custom/c4com/css/app.css`) whose values are literal
  * hexes, and roughly a quarter of that file is normalize.css v8.0.1, a Tailwind
  * v1 preflight + utility layer, Swiper and video.js. Source rank therefore puts
- * carrefour.fr first: a published tokenised design system outranks literal
- * hexes in a site stylesheet. The host disagreement, the per-file counts and the
- * arbitration are recorded in MAPPING.md.
+ * carrefour.fr first: the custom properties of the brand's official site
+ * stylesheet (source (b) — Carrefour publishes no standalone design system, so
+ * source (a) does not apply) outrank literal hexes in a site stylesheet. The
+ * host disagreement, the per-file counts and the arbitration are recorded in
+ * MAPPING.md.
  *
  * Reference-`rem` root: `body,html{font-size:16px}` — declared explicitly on
  * carrefour.fr, so every transcribed length is a 16px-root length and needs no
@@ -28,9 +30,9 @@ import type { TenantTheme } from "@sentropic/design-system-themes";
  *   Action blue                 #0970e6  --ds-color-interactive-active-main-primary (162 occurrences)
  *   Action blue hover           #004e9b  --ds-color-interactive-active-main-hover family
  *   Action blue pressed         #003161  --ds-color-interactive-background-button-filled-main-pressed
- *   Declared brand primary      #254f9a  --ds-color-brand-primary (declared, never consumed)
- *   Declared brand secondary    #c20016  --ds-color-brand-secondary (declared, never consumed)
- *   Loyalty blue                #004f9b  --ds-color-interactive-active-loyalty-primary
+ *   Declared brand primary      #254f9a  --ds-color-brand-primary (declared, 0 var(); only painted use is an alpha shadow tint)
+ *   Declared brand secondary    #c20016  --ds-color-brand-secondary (declared, 0 var())
+ *   Loyalty blue                #004f9b  --ds-color-interactive-active-loyalty-primary (11 var(), 34 occurrences; programme-scoped, no general role)
  *   Content primary (near-black) #121212 --ds-color-core-content-main-primary (187 occurrences)
  *   Content secondary           #454545  --ds-color-core-content-main-secondary
  *   Content tertiary            #575757  --ds-color-core-content-main-tertiary
@@ -62,12 +64,12 @@ const carrefourColor = {
     light: "#f5faff" // --ds-color-core-background-functional-information / --ds-color-decorative-background-main-celeste
   },
   // The DS's DECLARED brand layer. Kept because it is the brand's own
-  // self-description, even though no rule consumes it.
+  // self-description, even though no general role may claim these entries.
   brand: {
-    primary: "#254f9a", // --ds-color-brand-primary (declared; 0 var() consumptions)
+    primary: "#254f9a", // --ds-color-brand-primary (declared; 0 var() consumptions; only painted use is an alpha box-shadow tint #254f9a14/1f/29 in 7 rules)
     secondary: "#c20016", // --ds-color-brand-secondary (declared; 0 var() consumptions)
-    tertiary: "#f0f3f6", // --ds-color-brand-tertiary / --ds-color-decorative-background-main-casper
-    loyalty: "#004f9b" // --ds-color-interactive-active-loyalty-primary (Carrefour card blue)
+    tertiary: "#f0f3f6", // --ds-color-brand-tertiary / --ds-color-decorative-background-main-casper (declared; 0 var() consumptions)
+    loyalty: "#004f9b" // --ds-color-interactive-active-loyalty-primary (Carrefour card blue; 11 var() consumptions, 34 occurrences — programme-scoped, hence no general role)
   },
   // Neutral ramp, all measured.
   neutral: {
@@ -187,15 +189,20 @@ const foundation = {
     medium: "2px 4px 12px rgba(18, 18, 18, 0.12)", // --ds-shadow-action
     floating: "0px 16px 64px rgba(18, 18, 18, 0.12), 0px 8px 24px rgba(18, 18, 18, 0.16)" // --ds-shadow-raised / --ds-shadow-up-l
   },
-  // Durations measured by frequency across the DS component rules: .3s (53
-  // occurrences, e.g. `.c-button{transition:background-color .3s,color .3s}`),
-  // .2s (28, e.g. `.c-input-file__remove-button{transition:background-color .2s
-  // ease-in-out}`), .5s (9). The easing is the DS's only NAMED easing variable,
+  // Durations measured by frequency across the whole file: .3s x66, .2s x34,
+  // .5s x13 (e.g. `.c-button{transition:background-color .3s,color .3s}`);
+  // restricted to selectors containing `.c-`: x25/x13/x2 — same ranking.
+  // The easing is the DS's only NAMED easing variable,
   // `--accordion-animation-easing`, declared on `.c-accordion`.
   motion: {
     fast: "200ms", // .2s
     normal: "300ms", // .3s — the dominant DS duration
     slow: "500ms", // .5s
+    // Coincidence note: this easing is MEASURED on the brand variable
+    // `.c-accordion{--accordion-animation-easing: cubic-bezier(.4, 0, .2, 1)}`
+    // and it coincidentally happens to match the reference package's easing
+    // string (it differs from the Sentropic base cubic-bezier(0.16, 1, 0.3, 1)),
+    // so it is recorded as a coincidence, not a borrowed geometry.
     easing: "cubic-bezier(0.4, 0, 0.2, 1)" // .c-accordion{--accordion-animation-easing}
   },
   // Measured stacking order: `.mainbar--sticky{z-index:10005}`,
@@ -300,7 +307,7 @@ const foundation = {
   transition: {
     property: "background-color, border-color, color, box-shadow, outline-color",
     duration: "300ms",
-    easing: "cubic-bezier(0.4, 0, 0.2, 1)"
+    easing: "cubic-bezier(0.4, 0, 0.2, 1)" // same measured brand easing as motion.easing (see the coincidence note there)
   },
   // `.c-button{cursor:pointer}`; `.c-base-input--disabled …{cursor:default}`
   // and `.c-button--disabled{cursor:initial}` — Carrefour does NOT use
@@ -334,14 +341,16 @@ const foundation = {
   // — a WHITE fill (#ffffff) with FOUR EQUAL 1px borders (#d9d9d9), which is
   // the `outline` case. Carrefour builds its select as a custom listbox
   // (`.c-input-select__option`), not a native `<select>`, so it publishes no
-  // native chevron: the chevron artwork below is derived, drawn in the measured
-  // action blue (à confirmer).
+  // native chevron: the chevron artwork below is derived (à confirmer), drawn
+  // in the MEASURED chevron colour
+  // (`.c-input-select__chevron{color:var(--ds-color-interactive-icon-main-active)}`
+  // = #0970e6).
   field: {
     style: "outline",
     fillBg: carrefourColor.neutral[0], // #ffffff --ds-color-interactive-background-input-active
     underlineColor: carrefourColor.neutral[300], // #d9d9d9 — unused for `outline`, kept for completeness
     underlineWidth: "0.0625rem", // --ds-border-size-1
-    selectAppearance: "none",
+    selectAppearance: "none", // no native select: custom listbox (.c-input-select__container), so the native control is suppressed
     selectChevron:
       "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%230970e6' d='M8 11L3 6l1-1 4 4 4-4 1 1z'/%3E%3C/svg%3E\") no-repeat right 1rem center", // derived chevron artwork (à confirmer)
     selectPaddingRight: "2.5rem" // derived gutter for the redrawn chevron (à confirmer)
@@ -354,7 +363,7 @@ const foundation = {
   // `--ds-color-persistent-background-card-default` = #ffffff.
   card: {
     borderWidth: "0.0625rem", // --ds-border-size-1 (1px)
-    lineHeight: "1.625", // html{font:100%/1.625 Open Sans}
+    lineHeight: "1.625", // html{font:100%/1.625 Open Sans} — brand-owned base rule: declares the Open Sans brand face and the brand 1.625 ratio (see MAPPING.md Step 0.5)
     hoverBackground: carrefourColor.neutral[50] // #f7f7f7 --ds-color-core-background-main-secondary
   },
   // Secondary button = OUTLINED. The fill is declared by
@@ -438,7 +447,7 @@ const foundation = {
     paddingBottom: "1rem", // --ds-spacing-m
     paddingLeft: "1.25rem", // derived — clears the derived filet (à confirmer)
     fontSize: "1rem", // .c-base-input__input / .c-button base size
-    lineHeight: "1.625" // html{font:100%/1.625 Open Sans}
+    lineHeight: "1.625" // html{font:100%/1.625 Open Sans} — brand-owned base rule (see MAPPING.md Step 0.5)
   },
   // Accordion: `.c-accordion{color:var(--ds-color-persistent-text-accordion-default);
   // background-color:var(--ds-color-persistent-background-accordion-default);
@@ -451,7 +460,7 @@ const foundation = {
     paddingInline: "1rem", // --ds-spacing-m
     fontSize: "1rem", // .c-accordion__title-container{font:inherit} → body 1rem
     fontWeight: "700", // derived — the trigger inherits its weight (à confirmer)
-    lineHeight: "1.625" // html{font:100%/1.625 Open Sans}
+    lineHeight: "1.625" // html{font:100%/1.625 Open Sans} — brand-owned base rule (see MAPPING.md Step 0.5)
   },
   // Tag: `.c-tag{font-weight:700;line-height:20px;border-radius:var(--ds-border-radius-4);
   // background:var(--ds-color-persistent-background-main)}` (#ffffff) and
