@@ -3,6 +3,7 @@
   import { timeSeriesDemoNodes, type NodeSpec } from "$lib/framework/examples";
   import { Badge, CodeSnippet } from "@sentropic/design-system-svelte";
   import { createDashboardStore, type DataModel } from "@sentropic/dataviz-core";
+  import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
 
   const fr = $derived(locale.value === "fr");
@@ -64,9 +65,7 @@ const store = createDashboardStore({
 
 <div class="docs-page">
   <section class="docs-hero">
-    <p class="docs-hero-kicker">
-      {fr ? "Dataviz · piloté par store" : "Dataviz · store-driven"}
-    </p>
+    <p class="docs-hero-kicker">{t(locale.value, "datavizKicker")}</p>
     <div class="docs-hero-title">
       <h1>TimeSeriesLineChart</h1>
       <Badge tone="neutral">{fr ? "Documenté" : "Documented"}</Badge>
@@ -87,12 +86,12 @@ const store = createDashboardStore({
   </section>
 
   <section class="docs-section">
-    <h2>{fr ? "Disponibilité par framework" : "Framework availability"}</h2>
+    <h2>{t(locale.value, "datavizCoverageTitle")}</h2>
     <table class="docs-table">
       <thead>
         <tr>
           <th>Framework</th>
-          <th>{fr ? "Forme" : "Shape"}</th>
+          <th>{t(locale.value, "datavizFrameworkShape")}</th>
         </tr>
       </thead>
       <tbody>
@@ -132,7 +131,7 @@ const store = createDashboardStore({
       {notes}
       title={fr ? "Revenu journalier" : "Daily revenue"}
     />
-    <h3 class="docs-demo-title">{fr ? "Amorce du store" : "Store bootstrap"}</h3>
+    <h3 class="docs-demo-title">{t(locale.value, "datavizBootstrapTitle")}</h3>
     <CodeSnippet
       code={storeCode}
       language="ts"

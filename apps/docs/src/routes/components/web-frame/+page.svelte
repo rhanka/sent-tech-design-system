@@ -3,6 +3,7 @@
   import { webFrameDemoNodes, type NodeSpec } from "$lib/framework/examples";
   import { Badge, CodeSnippet } from "@sentropic/design-system-svelte";
   import type { WebFrameConfig } from "@sentropic/dataviz-core";
+  import { t } from "$lib/i18n";
   import { locale } from "$lib/locale.svelte";
 
   const fr = $derived(locale.value === "fr");
@@ -36,9 +37,7 @@ const frame: WebFrameConfig = {
 
 <div class="docs-page">
   <section class="docs-hero">
-    <p class="docs-hero-kicker">
-      {fr ? "Dataviz · piloté par store" : "Dataviz · store-driven"}
-    </p>
+    <p class="docs-hero-kicker">{t(locale.value, "datavizKicker")}</p>
     <div class="docs-hero-title">
       <h1>WebFrame</h1>
       <Badge tone="neutral">{fr ? "Documenté" : "Documented"}</Badge>
@@ -59,12 +58,12 @@ const frame: WebFrameConfig = {
   </section>
 
   <section class="docs-section">
-    <h2>{fr ? "Disponibilité par framework" : "Framework availability"}</h2>
+    <h2>{t(locale.value, "datavizCoverageTitle")}</h2>
     <table class="docs-table">
       <thead>
         <tr>
           <th>Framework</th>
-          <th>{fr ? "Forme" : "Shape"}</th>
+          <th>{t(locale.value, "datavizFrameworkShape")}</th>
         </tr>
       </thead>
       <tbody>
