@@ -133,9 +133,11 @@ export function layoutRequestProblem(value: unknown): string | undefined {
  * THE single layout computation for both dispatch paths.
  *
  * @returns positions as `[x0, y0, x1, y1, …]` in `request.nodes` order, a fresh
- *   `Float32Array` on every call — never a view onto a shared buffer, so the
- *   worker may hand its buffer over as a transferable without any risk of the
- *   detached buffer being read again on a later request.
+ *   `Float32Array` on every call — never a view onto a shared buffer, so no two
+ *   answers can alias each other and a caller may keep one for as long as it
+ *   likes. The worker CLONES this buffer across the boundary rather than
+ *   transferring it: measured, the transfer would save 0.019 ms at 20 000 nodes
+ *   (see `worker.ts`).
  * @throws when `computeLayout` breaks its documented ordering contract, naming
  *   the index and both ids.
  */

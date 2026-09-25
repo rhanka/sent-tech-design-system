@@ -6786,25 +6786,25 @@
     {
       "destination": "packages/graph/src/layout-protocol.ts",
       "status": "local-monorepo-helper",
-      "sha256": "6651021caf3f2628c01c475f89c2a2e773038fd33e793968184dfb50d59e6f9e",
+      "sha256": "37af4c66f1e3c2dd51c3c214d7bbb704c0ce7999819564bea1d18f3a8191f359",
       "note": "GD-M2-WORKERS: monorepo-authored, no upstream source; hash-pinned. Shared wire shape and THE single layout computation for both dispatch paths, so their byte-equality holds by construction."
     },
     {
       "destination": "packages/graph/src/worker.ts",
       "status": "local-monorepo-helper",
-      "sha256": "64f31f4b86c8e7862bd5464d983ade9c2fac29c6bb853cbfc156e4b4a12de853",
+      "sha256": "9a996ef9c0b8281300a969767d424b5bff3f0534bbabe9cf9cd905b88e3edbb2",
       "note": "GD-M2-WORKERS: monorepo-authored, no upstream source; hash-pinned. Worker entry (@sentropic/graph/worker): self.onmessage / self.postMessage only, positions handed over as a transferable."
     },
     {
       "destination": "packages/graph/src/layout-client.ts",
       "status": "local-monorepo-helper",
-      "sha256": "3452899250599e88063627022cffeb5fcbd4c619f6ed310ac34321f92176e98f",
+      "sha256": "02a79d1b6aef73ca2de103c46191f855d8f3ace57e944575ff5c3b8213c736e2",
       "note": "GD-M2-WORKERS: monorepo-authored, no upstream source; hash-pinned. Client entry (@sentropic/graph/layout-client): one worker, one request in flight, stale results discarded before they reach the caller. WORKER_NODE_THRESHOLD = 250, measured."
     },
     {
       "destination": "packages/graph/bench/layout-worker-bench.mjs",
       "status": "local-monorepo-helper",
-      "sha256": "c43206bf1356067ac21e81d5b2898a821656913871de01b8099d374fdbdac7a5",
+      "sha256": "3616899ccfb3053691a1916ee372b676d58de53f9f40813ade86b4af39d5abac",
       "note": "GD-M2-WORKERS: monorepo-authored, no upstream source; hash-pinned. Measurement harness for the spec's section 3.3; run with npm run bench:worker."
     },
     {
@@ -6816,7 +6816,7 @@
     {
       "destination": "packages/graph/tests/workers/worker-thread.test.ts",
       "status": "local-monorepo-helper",
-      "sha256": "52ff7258365b2ee5b906ff98ff92fefde861ff3387570b9179cf50f28e97275e",
+      "sha256": "2323308bef4a4aba6cb46e4767ceae0734de87fe831b643ee18a599fd53de21a",
       "note": "GD-M2-WORKERS: monorepo-authored, no upstream source; hash-pinned. The same protocol against a real node:worker_threads thread; byte-equality of the two paths at 120 and 900 nodes."
     },
     {
