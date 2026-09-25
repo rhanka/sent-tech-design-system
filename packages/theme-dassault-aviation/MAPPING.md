@@ -22,7 +22,8 @@ region only (rules 62-1451 + 1584-2576, see Step 0.5), lowercased, one
 occurrence = one declaration containing the hex; `#fff` and `#ffffff` are one
 colour (the brand writes the short form exclusively — 162 vs 0 — transcribed
 as `#ffffff`); no 8-digit alpha form exists in the sheet; `rgb()/rgba()` are
-censused separately.
+censused separately; `%23`-encoded hexes inside data-URIs (SVG artwork, e.g.
+`%23324b6b` x22, `%23fff` x12, `%23000` x3) are excluded from literal counts.
 
 ## Upstream access
 
@@ -101,17 +102,17 @@ of the brand's own pages below; the original-URL citation is kept and marked
 | `data.category2` | `.tax__color-civil --color` (rule 77) + map fills (1331, 1353) | `#218737` (re-scoped var + 3 lit) |
 | `data.category4` | `.tax__color-espace --color` (rule 78) + map fills (1333, 1355) | `#b05f03` (re-scoped var + 3 lit) |
 | `data.category3` | `.tax__color-passion --color` (rule 79) + map fills (1332, 1354) | `#d51a36` (re-scoped var + 3 lit) |
-| business-line dark/light steps (raw palette) | `.tax__color-defense` (76): `--color-dark` / `--color-light` | `#43472c` / `#757648` (token decls) |
-| business-line dark/light steps (raw palette) | `.tax__color-civil` (77): `--color-dark` / `--color-light` | `#1c752f` / `#319a48` (token decls) |
-| business-line dark/light steps (raw palette) | `.tax__color-espace` (78): `--color-dark` / `--color-light` | `#a65b06` / `#c77211` (token decls) |
-| business-line dark/light steps (raw palette) | `.tax__color-passion` (79): `--color-dark` / `--color-light` | `#be1e36` / `#e32c47` (token decls) |
+| business-line dark/light steps (raw palette, no role) | `.tax__color-defense` (76): `--color-dark` / `--color-light` | `#43472c` / `#757648` (1 decl each) |
+| business-line dark/light steps (raw palette, no role) | `.tax__color-civil` (77): `--color-dark` / `--color-light` (+ `--color-dark-alt` twin) | `#1c752f` (1 decl) / `#319a48` (2 decls) |
+| business-line dark/light steps (raw palette, no role) | `.tax__color-espace` (78): `--color-dark` / `--color-light` (+ `-alt` twins) | `#a65b06` / `#c77211` (2 decls each) |
+| business-line dark/light steps (raw palette, no role) | `.tax__color-passion` (79): `--color-dark` / `--color-light` | `#be1e36` / `#e32c47` (1 decl each) |
 | `surface.default` / `surface.raised` / `field.fillBg` / `text.inverse` / `action.primaryText` | `body{background-color:#fff}` (rule 195), `.btn--primary{color:#fff}` (229), `.modal__inner` (738) | `#ffffff` (162 `#fff` lit, 0 `#ffffff`) |
 | `surface.subtle` / `tag.neutralBackground` | `.entry__section--lightgray` (451), `.card--related` (653), checkbox fill (155) | `#f3f4f5` (38 lit) |
 | `action.secondary` / `border.subtle` | `input{border:.0625rem solid #e8e9ed}` (138), `select` (146), menu/pagination/toggle fills | `#e8e9ed` (88 lit) |
 | `action.secondaryHover` | `.form__radio:hover{background-color:#d1d2d5}` (323), checkbox border (155) | `#d1d2d5` (24 lit) |
-| `breadcrumb.separator` | breadcrumb chevron (rule 829), card filet (653), hr (297) | `#a8adb4` (17 lit) |
+| `breadcrumb.separator` | breadcrumb chevron (rule 828), card filet (653), hr (297) | `#a8adb4` (17 lit) |
 | `text.muted` / `border.strong` / `buttonSecondary.border` | meta/time/copyright text (111, 306, 811, 1676), `.btn--outline` (247), input hover (142) | `#616a74` (24 lit, 5.49:1) |
-| `text.secondary` / `pagination.text` | menu dropdown (2475), pagination (879), form labels (311), descriptions | `#414b56` (27 lit, 8.88:1) |
+| `text.secondary` / `pagination.text` | menu dropdown (2475), pagination (878), form labels (311), descriptions | `#414b56` (27 lit, 8.88:1) |
 | table thead / placeholder (documented, no slot) | thead (115, 121), `::placeholder{color:#333}` (139-141) | `#333333` (9 lit brand + 3 vendor) |
 | `text.primary` / `text.link` / `action.secondaryText` / `breadcrumb.linkText` | `body{color:#000}` (195), `a{color:#000}` (93-94), `.btn--outline{color:#000}` (247) | `#000000` (47 lit, 21.00:1) |
 | `surface.inverse` / `data.category6` / `tag.neutralText` / select chevron | `h1-h4{color:#161c25}` (96, 99), footer menu/bottom-links (434, 1665), tooltip (384), select data-URI (146) | `#161c25` (40 lit, 17.12:1) |
@@ -132,6 +133,10 @@ Notes: (1) the four business-line base colours are operative through
 re-scoping — under `.tax__color-*` the 169 `var(--color)` calls paint the line
 colour — plus literal map fills for civil/espace/passion; defense has no
 literal outside its declaration (rule 76) and is painted by re-scoping alone.
+(1b) the eight dark/light steps above are declaration-only (no other literal
+anywhere in the brand region); their `var()` consumption flows through the
+shared `--color-light`/`--color-dark` names (13/43 refs, + 3/3 `-alt`), which
+is unattributable per line — documented gap, nil impact (no role).
 (2) `var(--color--dark)` (rule 2461) is a source typo resolving to nothing
 (no such property declared); it carries no value. (3) `text.muted` at 5.49:1
 and `text.secondary` at 8.88:1 both clear 4.5:1, so no sub-floor arbitration
@@ -154,15 +159,24 @@ text or line role (decorations only).
   min-heights).
 - **`card.hoverBackground`** (`#ffffff`) — cards carry filets but no generic
   hover fill is published.
+- **`search.*`** (`.9375rem`/`1.25rem`/`1.25rem`/`1.875rem`) — the generic
+  boxed input metrics, because the three published search-field variants
+  disagree with each other: white boxed with `padding-right:3rem` (rule 543),
+  transparent borderless with `1.25rem`/`6.4375rem` pads (rule 2066, same
+  selector, later wins), and the toolbox input with `padding-right:5rem` and
+  `height:4.375rem` (rule 2425). No single search value exists.
 - **`radius.pill`** (`999px`) — site pills vary by component (`50%`, `2rem`,
   `3.125rem`, `99rem`); no single pill value exists.
 - **`shadow.medium` / `shadow.floating`** — only the header/dropdown shadow is
   published; these two reuse the Sentropic base.
 - **`spacing.*`, `z.*`, `density.*`** — no tokenised scale, no brand z roles,
-  and pad-driven controls with no `height`/`min-height` published (empty greps
-  on `.btn`/inputs/selects; measured paddings: `.btn 1.3125rem 1.875rem`,
-  inputs `.9375rem 1.25rem`, selects `1.125rem ... 1.25rem`) — all reuse the
-  Sentropic base.
+  and pad-driven generic controls with no `height`/`min-height` on the generic
+  `.btn`/input/select rules (measured paddings: `.btn 1.3125rem 1.875rem`,
+  inputs `.9375rem 1.25rem`, selects `1.125rem ... 1.25rem`). The declared
+  heights are scoped, not generic, and excluded by scope (§8): the toolbox
+  search input (`height:4.375rem`, rule 2425), the visually-hidden pattern
+  (`height:.0625rem`, rules 153/164/320) and the custom checkbox/radio boxes
+  (rules 155/156/166/167) — all reuse the Sentropic base.
 - **`iconSize.md` / `iconSize.lg`** (`1.125rem`/`1.25rem`) — only the `1rem`
   `.icon` base is published; ad-hoc component sizes exist but form no scale.
 - **`SantEliaScript`** — measured `@font-face` (400/700) and measured accent
@@ -192,7 +206,8 @@ text or line role (decorations only).
   (rule 497).
 - Buttons: uppercase 700, `.875rem/1rem`, `1px` tracking (rule 219). Fields:
   `1.25rem/1.875rem` (last of the `1.5`/`1.875rem` pair, rule 138). Labels:
-  `.875rem` 400 (rule 145); floating variant `.75rem` `#414b56` (rule 311).
+  `.875rem` 400 with no `line-height` declared (rule 145 — inherits body
+  `1.4`, rule 195); floating variant `.75rem` `#414b56` (rule 311).
 
 ## Signatures anatomiques
 
@@ -218,15 +233,15 @@ text or line role (decorations only).
   rules 353-355 / 784-788); uppercase 700 `1rem/1.25rem` labels with
   `1.6875rem 2rem` padding (rule 784 — last of each doubled declaration wins).
 - **Pagination**: borderless link-style pages in `#414b56` (`1.125rem/1.375rem`,
-  `0 .3125rem` padding), current page bold `#324b6b` (rules 879-880); square
+  `0 .3125rem` padding), current page bold `#324b6b` (rules 878-880); square
   `3rem` prev/next boxes in `#e8e9ed` with blue chevrons turning white on blue
   hover (rules 867-875). A second, circular system skins the wp-pagenavi plugin
   (rules 1617-1624: active page filled `#324b6b` with white text, corroborating
   the primary pair).
 - **Cards**: no peripheral border; related/subpage = `#f3f4f5` with a `.125rem`
   `#a8adb4` bottom filet (653-655), job = `#e8e9ed` with a `.125rem` `#324b6b`
-  filet (644); image overlay = Dassault blue at `.8` (734), plane overlay =
-  `rgba(50,75,107,.9)` (701).
+  filet (644); image overlay = Dassault blue at `.8` on hover (736; base
+  734, also 631/683), plane overlay = `rgba(50,75,107,.9)` (701).
 - **Alerts**: 5px left filet on an unfilled box, `2rem` padding (rule 288);
   per-severity pastel fills + text hues (rules 291-294).
 - **Accordion**: white trigger, `.125rem` `#e8e9ed` bottom rule, ink 700 label,
@@ -239,7 +254,9 @@ text or line role (decorations only).
 - **Header/footer**: white sticky header (transparent on home, shadowed white
   on scroll, 388/2359); footer in Dassault blue with `#161c25` menu zone and
   `#10141a` bottom bar (408, 434, 1665, 431).
-- **Motion**: `.2s`/`.3s` `ease` transitions (66/29 occurrences), `.5s` slow,
+- **Motion**: `.2s`/`.3s` `ease` transitions (52/28 declarations), `.5s`
+  slow (9 declarations; durations counted by value — `1.3s`/`2.3s` are not
+  `.3s` — SVG path-data bytes excluded, rule 959),
   `cubic-bezier(.25,1,.5,1)` arrow signature (x25), `animate-arrow-*` keyframes
   (rules 62-73); elevation shadow `0 0 .3125rem .0625rem rgba(0,0,0,.1)` (rules
   831, 2306, 2359).
