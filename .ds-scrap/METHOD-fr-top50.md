@@ -477,6 +477,21 @@ form decides. When no comparable agent has finished yet, there is no control and
 answer is to wait or to relaunch a copy alongside, never to conclude from the absence
 of a signal.
 
+**Rebase onto the tip at the moment you rebase, never onto a sha someone handed you.**
+Main moves while a lot is in flight — in one session five documentation PRs landed
+between a lot branch's first commit and its gates, each one moving the base, and two
+of them were the conductor's own. A sha quoted in a message is already stale by the
+time the worktree is free. Re-fetch and take `origin/main` at the moment of the
+rebase, and say which sha you actually used.
+
+The sharper half of the same rule: **two pull requests merged back to back means the
+first never ran against the second.** That is how a red gate appeared on a lot branch
+whose own code was correct — one merged change interacted with another that had never
+seen it, and the lot was blamed for it. So after any rebase, replay the full gate
+sequence in order before concluding anything about your own diff; and if main moved
+again while the gates were running, rebase and replay rather than report a result
+measured against a base that no longer exists.
+
 **What a repository guard is for — measured, not assumed.** The first lot reviewed
 with all three guards present cost **more** per review than the lot before it
 (210 501 against 178 142 tokens, +18.2 %), and **none of its fifteen blocking defects
