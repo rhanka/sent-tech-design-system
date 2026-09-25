@@ -156,6 +156,9 @@ const foundation = {
     fast: "120ms",
     normal: "180ms",
     slow: "280ms",
+    // The easing and `disabledOpacity` below are aligned with the reference theme
+    // package's geometry (à confirmer), not the Sentropic base, which uses
+    // `cubic-bezier(0.16, 1, 0.3, 1)` and `0.55`. legrand.fr tokenises neither.
     easing: "cubic-bezier(0.4, 0, 0.2, 1)"
   },
   // z-index roles are not brand-specific; kept aligned with the Sentropic base.
