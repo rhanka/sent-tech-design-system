@@ -46,7 +46,9 @@ describe("essilorluxotticaTheme", () => {
     expect(css).toContain("--st-semantic-action-danger: #c62828;");
     expect(css).toContain("--st-semantic-surface-inverse: #000000;");
     // EssilorLuxottica brand font families (Avenir body, Libre Caslon display).
-    expect(css).toContain("Avenir");
+    // The exact family, not a prefix: `toContain("Avenir")` also matches
+    // AvenirMedium or AvenirLight, so it would not catch a face swap.
+    expect(css).toContain("AvenirRegular");
     expect(css).toContain("LibreCaslonDisplayRegular");
   });
 });
