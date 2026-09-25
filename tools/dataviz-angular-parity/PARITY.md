@@ -46,8 +46,8 @@ command to re-derive them.
 | `TreegraphChart` | 28 | **0** | **0** | — | — |
 | `OrganizationChart` | 28 | **0** | **0** | — | — |
 | `DecompositionTreeChart` | 78 | **0** | **0** | — | — |
-| `ArcDiagramChart` | 77 | **0** | **0** | 0 | DS: the shared st-graphLegend block differs, and Angular marks it aria-hidden where React labels it |
-| `DependencyWheelChart` | 87 | **0** | **0** | 0 | DS: the shared st-graphLegend block differs, and Angular marks it aria-hidden where React labels it |
+| `ArcDiagramChart` | 77 | **0** | **0** | 0 | — |
+| `DependencyWheelChart` | 87 | **0** | **0** | 0 | — |
 | `GaugeChart` | 25 | **0** | **0** | — | — |
 | `SolidGaugeChart` | 21 | **0** | **0** | — | — |
 | `ViolinChart` | 36 | **0** | **0** | — | — |
