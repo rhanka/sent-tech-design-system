@@ -237,6 +237,22 @@ const DECLARED_TOKEN_BOOTSTRAPS = {
     // `npm publish`. Measured 404 (never published) on 2026-09-25.
     removeWhen: "@sentropic/dataviz-angular has had a first successful npm publish",
   },
+  "latex-publish.yml": {
+    // Same shape, same reason as the dataviz entry: npm only lets a trusted
+    // publisher be configured on a package that already exists, so the very
+    // first publish of a new name cannot come from OIDC alone.
+    // Remove this entry — and the bootstrap step/secret it names in the
+    // workflow — the day @sentropic/design-system-theme-latex has a first
+    // successful `npm publish`. Measured 404 (never published) on 2026-09-25.
+    removeWhen: "@sentropic/design-system-theme-latex has had a first successful npm publish",
+  },
+  "quebec-publish.yml": {
+    // Remove this entry — and the bootstrap step/secret it names in the
+    // workflow — the day @sentropic/design-system-theme-quebec has a first
+    // successful `npm publish`. Measured 404 (never published) on 2026-09-25,
+    // although apps/docs already shows its import on the getting-started page.
+    removeWhen: "@sentropic/design-system-theme-quebec has had a first successful npm publish",
+  },
 };
 
 const BOOTSTRAP_COMMENT_PATTERN = /bootstrap|amor[cç]age/i;
