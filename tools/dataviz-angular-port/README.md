@@ -52,9 +52,21 @@ node tools/dataviz-angular-port/classify.mjs          # add --names for the list
 ```
 
 It runs the real `extract()` over every pending adapter and prints what it reads,
-what it refuses and why. Widening the vocabulary in the third lot took it from
-**28 of 87** readable to **41 of 87**; the same lot then ported 25 of those 41, so
-on the pool that remains it reads **16 of 62** and refuses 46.
+what it refuses and why. The arc so far: the third lot widened the vocabulary from
+**28 of 87** readable to **41 of 87** and ported 25 of them; the fourth widened it
+again, from **16 of 62** to **21 of 62**.
+
+That second widening is much smaller than the first, and the refusal table says why:
+the vocabulary is close to its natural limit. Of the 41 still refused, **16 never
+read the dashboard signal at all** — stateful panels and filters
+(`BookmarkNavigator`, `CalculationEditor`, `FormatPanel`, `FieldPane`,
+`ExportMenu`, `TopNFilter`, `ValueSlicer`, …) that hold local state and will not
+benefit from a generator; **10 build their data bespoke** (a hand-written array
+literal, a `.map()` over the model, positional builder arguments with
+post-processing); and **9 are structural** — 3 render several charts from one
+adapter, 3 have no `Props` alias, 2 exist in one framework only, 1 imports no
+design-system component. The cheapest widening left is positional builder arguments
+(`builder(model, rows, props.date, props.measure)`), worth one or two components.
 
 What is still refused is mostly *not* the same kind of component: 16 have no
 `void <state>.value` read at all — they are stateful panels and filters
