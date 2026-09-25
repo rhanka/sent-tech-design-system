@@ -80,5 +80,13 @@ command to re-derive them.
 | `EventFeedPanel` | 58 | **0** | **0** | — | — |
 | `ForceGraph` | 48 | 42 | 8 | 42 | DS: components-angular renders no edge hit path and no per-node aria-label/role/tabindex |
 | `RibbonChart` | 40 | **0** | **0** | — | — |
+| `Sparkline` | 6 | 2 | **0** | 2 | DS: components-angular renders the Sparkline root as a div, components-react as a span |
+| `ScoreCard` | 10 | **0** | **0** | — | — |
+| `LollipopChart` | 63 | **0** | **0** | — | — |
+| `StepLineChart` | 55 | 1 | **0** | 1 | DS: components-react writes the step path with H/V shorthand and sets stroke-width/linecap on it, components-angular writes L segments and sets neither |
+| `CalendarHeatmapChart` | 46 | **0** | **0** | — | — |
+| `ChordChart` | 47 | **0** | **0** | — | — |
+| `DivergingBarChart` | 65 | 2 | **0** | 2 | DS: components-react repeats the tone class on each bar (st-divergentBarChart__bar--positive twice), components-angular writes it once |
+| `ParetoChart` | 76 | **0** | **0** | — | — |
 
-exact-markup matches: **65/74** · exact-signature matches: **72/74**
+exact-markup matches: **70/82** · exact-signature matches: **80/82**

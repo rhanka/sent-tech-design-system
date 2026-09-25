@@ -181,8 +181,14 @@ adapter cannot slip past it, and the failure tells you which file is missing.
 Add the component and its `…Props` type to `src/index.ts`, plus any pure helper
 the reference packages export (`dateRangeToSpec` is exported by
 `dataviz-react`/`dataviz-vue`, so it is exported here too). Do **not** export the
-three data-helper modules: the reference packages do not. `src/index.test.ts`
-asserts the whole surface — add the new name to its `components` table.
+three data-helper modules: the reference packages do not. `src/index.test.ts`'s
+`components` table names the twelve adapters of the first lot explicitly and is
+**not** the whole surface — it was read as such for four lots. What does cover the
+surface is the sweep next to it, which requires every export carrying
+`stComponentName` to carry its own export name, and refuses to run on fewer than
+eighty of them. `src/lib/adapter-pattern.test.ts` cross-checks `src/index.ts`
+against the files on disk, so a new adapter cannot be exported without a file or
+written without an export.
 
 ---
 
@@ -301,7 +307,13 @@ output:
 
 Tests are table-driven: `src/lib/generated-adapters.test.ts` holds one row per
 adapter and asserts the same things for all of them, including that a selection in
-another cross-filter view changes what is rendered.
+another cross-filter view changes what is rendered. Its **name is historical**: lot
+5 hand-wrote eight adapters the generator refuses and they are rows in that same
+table, because what the table needs is the shape (store → builder → one DS
+component), not the author. An adapter whose DS component renders no value list
+cannot be a row that proves anything — lot 5's `Sparkline` and `ScoreCard` have
+their own `<Name>.test.ts` instead, asserting the accessible name on the DS root
+and the redrawn path or re-aggregated number.
 
 
 ---
@@ -478,12 +490,29 @@ match the React spelling.
   `scripts/verify-dataviz-helper-copies.test.mjs` pins every copy until then.
 - **`ChartDataList` renders an empty `<ul>`** where React renders nothing. No
   adapter in the current lots produces an empty list.
-- **Two DS components render no accessible value list at all**: `EventFeedPanel`
-  (a feed) and `ForceGraph`. Their adapters therefore cannot assert one, and
-  `generated-adapters.test.ts` carries `listAria: null` for them — the absence is
-  asserted, and their reactivity proof moves to their datum elements. Inventing a
-  list in the adapter would be the divergence.
+- **Four DS components render no accessible value list at all**: `EventFeedPanel`
+  (a feed), `ForceGraph`, `Sparkline` and `KpiCard` (the last two carry their
+  accessible name on the root element instead). Their adapters therefore cannot
+  assert one, and `generated-adapters.test.ts` carries `listAria: null` for the two
+  it holds — the absence is asserted, and their reactivity proof moves to their
+  datum elements. In the parity harness the same four (plus the five non-chart
+  cases) are named in `NO_DATA_LIST`, which is what stops the list-identity
+  assertion from passing on empty-vs-empty. Inventing a list in the adapter would
+  be the divergence.
 - **`Flex` and `Stack` have no ARIA inputs** — the same one-line change `Inline`
   received, when an adapter needs it.
 - **`DateRangeFilter`: React serialises `value=""`** on the readonly input where
   Angular sets the property. One entry, no behavioural difference.
+- **The DS `Sparkline` root is a `div` in Angular and a `span` in React.** Cost:
+  **2 entries** on `Sparkline`, equal to its bare-DS control. Not cosmetic in CSS
+  terms — one is block, the other inline — so it is an arbitration between the two
+  `packages/components-*` implementations, not an adapter fix. Measured in lot 5.
+- **The DS `StepLineChart` line path differs in both spelling and stroke.** React
+  writes `H`/`V` shorthand and sets `stroke-width`, `stroke-linecap` and
+  `stroke-linejoin` on the path; Angular writes explicit `L` segments and sets
+  none of the three, so the same geometry renders with a different stroke. Cost:
+  **1 entry** on `StepLineChart`, equal to its bare-DS control. Measured in lot 5.
+- **components-react repeats a tone class on each diverging bar.**
+  `st-divergentBarChart__bar--positive` appears twice in the React class list and
+  once in the Angular one. Cost: **2 entries** on `DivergingBarChart`, equal to its
+  bare-DS control. A `components-react` fix, and the cheapest of the three.
