@@ -3,8 +3,9 @@
 **Lot**: `GD-M2-CANVAS`, first slice.
 **Package**: `@sentropic/diagram-canvas` 0.1.0, `private: true`.
 **Written after the measurements below, not before them.** Every figure and every
-verdict here carries the command that produced it, on `origin/main` at
-`e5accbf74a82f0fb59eee0eb4b476d242053a153` unless stated otherwise. The programme's
+verdict here carries the command that produced it. The first base measured was
+`origin/main` at `e5accbf74a82f0fb59eee0eb4b476d242053a153`; the last base gated
+was `2bcea7d4e610854e4a2ce0025b9f3df35c2eea81`, and each figure says which. The programme's
 own lesson is that a specification holds exactly as far as it is measured: each
 spec in this series written ahead of the implementation was refuted by the
 implementer's measurement — the worker threshold, a contrast floor, an extractor.
@@ -43,7 +44,8 @@ $ cat packages/diagram-core/src/index.ts
 $ sed -n '134,180p' packages/diagram-core/README.md      # "What this package does not import"
 ```
 
-The barrel re-exports eleven modules. What a scene can consume without a DOM:
+The barrel re-exports thirteen modules (`grep -c '^export \* from' packages/diagram-core/src/index.ts` → 13).
+What a scene can consume without a DOM:
 
 | Consumed | From |
 |---|---|
@@ -125,7 +127,7 @@ that a `diagram-canvas → diagram-core` dependency would turn the guard red
 **although it is the edge the DAG wants**. Measured:
 
 ```
-total package dirs: 150
+total package dirs: 150                                    # at e5accbf7, this lot's first base
 excluded by the diagram-/dataviz-/graph prefix rule:
   ["dataviz-angular","dataviz-core","dataviz-react","dataviz-svelte","dataviz-vue",
    "diagram-canvas","diagram-core","graph"]
@@ -133,7 +135,26 @@ selected by the guard: 142
 is diagram-canvas selected? false
 ```
 
-The selection is *nearly* all of `packages/` — 142 of 150 — but the eight it drops
+Re-measured after the rebase, because `main` had meanwhile added four theme
+packages and a stale count is the kind of number this series has been burned by:
+
+```
+total package dirs: 154                                    # at 3078c469
+excluded by the diagram-/dataviz-/graph prefix rule:       # the same eight
+selected by the guard: 146
+is diagram-canvas selected? false
+
+total package dirs: 154                                    # at 2bcea7d4, the last base gated
+selected by the guard: 146                                 # unchanged
+is diagram-canvas selected? false
+```
+
+`main` moved three times while this lot was gated, which in a tree of concurrent
+worktrees is the normal case and not an incident: `refs/remotes/origin/main` is
+shared, so another agent's `git fetch` advances it without this one asking. The
+figure above was therefore taken again at each base rather than carried forward.
+
+The selection is *nearly* all of `packages/` — 142 of 150, then 146 of 154 — but the eight it drops
 are exactly the graph/dataviz/diagram layers, and `diagram-canvas` is one of them
 by the `diagram-` prefix rule, before the `@sentropic/design-system` name filter
 even applies. The guard's own header already declares the eight
@@ -392,8 +413,58 @@ from a pristine copy. Control before and after: `8 files, 112 tests, 0 failed`.
 
 ### 6.3 Gates, in series
 
-See §"Gates run" of the pull request body for the run after the rebase, with the
-counts and the sha each one ran against.
+Run three times, in series each time and never two sequences at once: at
+`e5accbf7`, then replayed in full after the rebase onto `3078c469`, then replayed
+in full again after the rebase onto `2bcea7d4` — because two changes merged back
+to back mean the first never ran against the second. The counts below are the
+last run, at `2bcea7d4`; the two earlier runs gave the same exits, and the
+workspace counts moved from 152 to 156 as `main` added four theme packages.
+
+| Gate | Exit | Count |
+|---|---|---|
+| `npm ci` | 0 | the rebase-merged lockfile installs clean; the dependency is still a workspace link, not a registry fetch |
+| `npm run build` | 0 | 156 distinct workspaces; `diagram-core` before `diagram-canvas` |
+| `npm run check` | 0 | 156 distinct workspaces |
+| `npm run --workspace @sentropic/diagram-canvas test` | 0 | 8 files, 112 tests |
+| `node scripts/run-script-guards.mjs` | 0 | 12 guard files, 63 tests |
+| `npm run licensing:check` | 0 | 17 publishable packages |
+| `node tools/graph-dataviz-provenance/verify.mjs` | 0 | 857 entries, 857 tracked files |
+
+No gate was dispensed. `npm ci` was rerun rather than assumed because the rebase
+auto-merged `package-lock.json`, and a bad merge there is exactly what it catches.
+`run-script-guards` was rerun rather than dispensed because the incoming delta was
+**not** invisible to it: `scripts/verify-theme-invariants.test.mjs` derives its
+in-scope theme set by parsing the table rows of `.ds-scrap/METHOD-fr-top50.md`,
+which the incoming commits edited.
+
+Also run, outside the named list: `@sentropic/diagram-core` tests (11 files, 164
+tests, exit 0), `@sentropic/graph` tests (32 files, 421 tests, exit 0), and the
+root `npm test` in full.
+
+**The root `npm test` passed, which refutes what this lot was told to expect.**
+The brief, and `.github/workflows/verify.yml`'s own comment, hold that its second
+half "needs a working Chrome for the packages/graph golden tests, so nobody could
+use it as a gate". Measured here: **exit 0**, 156 workspaces, 63 guard assertions
+in the first half and 7 488 vitest assertions in the second, zero failures, and
+not one golden-skip warning in the log — so the Chrome-dependent captures really
+ran. `command -v chromium` answers `/snap/bin/chromium` on this machine. The
+blocker named in that comment is therefore ENVIRONMENTAL, not structural: on a
+machine with a Chromium, the root `npm test` is usable as a gate.
+
+One caveat, READ FROM THE CODE AND NOT MEASURED, because measuring it would have
+meant removing Chromium: `packages/graph/tests/golden/gitflow-golden.test.ts`
+guards its CDP assertions with `if (!chromeUp || !oracle) return;` INSIDE the
+`it()` bodies, and a vitest test whose body returns early reports as *passed*, not
+skipped — while the sibling `boxes-golden.test.ts` and `edges-golden.test.ts`
+headers claim "an EXPLICIT skip — never a false pass". If that reading is right,
+those captures are green having asserted nothing on a machine with no Chrome. It
+is outside this lot; it is recorded because it is the same defect shape
+`scripts/run-script-guards.mjs` exists to prevent one level up.
+
+No provenance entry is due: the verifier's `PACKAGES` array covers
+`packages/graph` and the five `dataviz-*`, and `packages/diagram-canvas` is not
+among them. Every line here is locally authored and copied from no upstream, so
+there is no `adapted-*` entry and no upstream `sha256` to record.
 
 ### 6.4 `vitest` does not go green on an empty set
 
