@@ -1,0 +1,30 @@
+{
+  "name": "@sentropic/diagram-canvas",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Headless scene and hit testing over a diagram view: one world -> view -> CSS pixel -> device pixel transform, deterministic paint order, filter evaluation with reported exclusions. No DOM, no renderer, no framework.",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rhanka/sent-tech-design-system.git",
+    "directory": "packages/diagram-canvas"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "types": "./dist/index.d.ts",
+  "main": "./dist/index.js",
+  "sideEffects": false,
+  "dependencies": {
+    "@sentropic/diagram-core": "0.1.0"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check": "tsc -p tsconfig.check.json",
+    "test": "vitest run"
+  }
+}
