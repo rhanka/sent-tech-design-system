@@ -440,6 +440,28 @@ to resolve the tokens package, and the licensing gate fails on a missing
 misread twice by the conductor and once elsewhere in the same day, each time by
 suspecting the code first. Check the environment first; it costs one command.
 
+**What a repository guard is for — measured, not assumed.** The first lot reviewed
+with all three guards present cost **more** per review than the lot before it
+(210 501 against 178 142 tokens, +18.2 %), and **none of its fifteen blocking defects
+fell in a class any guard covered**. Part of that gap is the brands being harder; the
+zero-of-fifteen is not. So do not write a guard expecting to shorten a review — that
+expectation has been measured and refuted. Write one for the two jobs it demonstrably
+does:
+
+1. **Freeze what is already correct.** A guard earns its place by making a
+   regression impossible on packages that pass today, not by finding what a careful
+   reader would have found anyway.
+2. **Catch the shared acts nobody reviews.** The lockfile entry, the docs manifest
+   dependency, the registration literals: a cross-review reads one package's diff and
+   is structurally blind to them. `verify-theme-registration` caught four missing
+   lockfile entries on the conductor's own work, before commit, outside any review
+   budget. That is the shape of a guard that pays.
+
+A guard that would only restate what the review protocol already asks a reviewer to
+judge is not worth its false positives — and **a false positive is worse than a
+missed defect**, because it spends a reviewer's budget and teaches everyone to
+discount the guard.
+
 ## 8. Fidelity levers
 
 1. **`field.style`: `outline` vs `filled-underline`.** Decide from the
@@ -641,6 +663,16 @@ four reviews of that lot returned, **zero fell in a class any guard covers** —
 two reviewers had to spend budget instructing the guards themselves. A green guard
 run licenses nothing: report it in one line and keep reading.
 
+**And a red guard run is not yours to instruct either.** A reviewer who believes a
+guard is wrong says so in **one line** — which guard, which theme, what it printed —
+and moves on. It does not build the counter-measure, it does not prove the guard at
+fault, it does not map the guard's blind spots. Two of the four reviews that produced
+the measurement above spent budget doing exactly that, one to prove a guard wrong and
+one to establish that a failure could not touch its own package, and neither line of
+work was a finding about the theme under review. Guard disputes are the conductor's
+to settle, on the conductor's budget. Your budget buys the five judgements above and
+nothing else.
+
 Verifiable checklist — fail the theme on any miss:
 
 - Every hex in `index.test.ts` is found in `index.ts`, and every font family
@@ -657,6 +689,24 @@ Verifiable checklist — fail the theme on any miss:
   belongs to: a consent banner, a carousel, a CMS default or a library reset
   is not the brand (section 2, Step 0.5). A hex living only in vendor blocks
   and given a brand role is a blocking provenance defect.
+
+**Verifying a guard before shipping it.** A guard is delivered only after its own
+defect has been reintroduced and seen to turn it red, then restored byte-identically.
+That is necessary and not sufficient: mutation proves a guard reacts to the fault its
+author imagined. Three properties are required, and the third matters most, because
+its absence is what cost two review budgets:
+
+1. It fails when its defect is reintroduced.
+2. It is not vacuous — it must be shown to evaluate something, since a guard can be
+   green because no package exercises the branch it asserts on. One shipped contrast
+   guard was green for exactly that reason.
+3. **It runs against a lot it did not help write.** A guard's first encounter with
+   correct-but-unknown code is part of its verification, not a later event. A guard
+   green on main proves nothing about a package main does not contain: one guard was
+   green on main and flagged four correct themes on the branch that motivated it.
+
+A harness that reports `SKIP` on any of the three has abstained, and abstention is a
+failure, not a neutral result.
 - **The cited selector really declares the cited property.** Grep the
   stylesheet for the selector and confirm it carries that variable or that
   value. Naming a neighbouring selector, or the block that consumes a variable
