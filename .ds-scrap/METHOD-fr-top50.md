@@ -51,8 +51,7 @@ brand, which scope to retain, which rule is the real one — it goes to a builde
 whatever the cost. Choosing a primary would never pass the three conditions; routing
 a failing role to an already-measured neighbour does.
 
-Without the lockfile entry
- `npm ci` fails: `package-lock.json` carries one
+Without the lockfile entry `npm ci` fails: `package-lock.json` carries one
 entry per theme package, and every workflow in `.github/workflows` installs
 with `npm ci`. The model for that act is the dedicated commit
 `139690f6 chore(lock): enregistrer les 5 packages thèmes Paris lot 4 dans le
@@ -462,6 +461,36 @@ to resolve the tokens package, and the licensing gate fails on a missing
 `node_modules` — three failures that look like regressions and are not. This was
 misread twice by the conductor and once elsewhere in the same day, each time by
 suspecting the code first. Check the environment first; it costs one command.
+
+**And a slow delegated agent is not judged alone — it is judged against a comparable
+agent that has finished.** The tempting signals are useless on their own. CPU time is
+near zero for an agent waiting on a network, so low CPU proves nothing; an agent that
+buffers its report writes zero bytes until it finishes, so an empty output file proves
+nothing; and an empty tmux pane proves only that stdout was redirected. What decides
+is a **control**: launch a lot's agents with the same invocation, and when one returns
+normally, compare the others against it. On one lot the three fix agents had written
+the same two stderr lines byte for byte, and one of the three had already delivered —
+at which point the remaining two could not be distinguished from it by any available
+signal, and killing them would have destroyed work. The earlier form of this rule was
+"check the working directory before killing", which prevents a killing; the control
+form decides. When no comparable agent has finished yet, there is no control and the
+answer is to wait or to relaunch a copy alongside, never to conclude from the absence
+of a signal.
+
+**Rebase onto the tip at the moment you rebase, never onto a sha someone handed you.**
+Main moves while a lot is in flight — in one session five documentation PRs landed
+between a lot branch's first commit and its gates, each one moving the base, and two
+of them were the conductor's own. A sha quoted in a message is already stale by the
+time the worktree is free. Re-fetch and take `origin/main` at the moment of the
+rebase, and say which sha you actually used.
+
+The sharper half of the same rule: **two pull requests merged back to back means the
+first never ran against the second.** That is how a red gate appeared on a lot branch
+whose own code was correct — one merged change interacted with another that had never
+seen it, and the lot was blamed for it. So after any rebase, replay the full gate
+sequence in order before concluding anything about your own diff; and if main moved
+again while the gates were running, rebase and replay rather than report a result
+measured against a base that no longer exists.
 
 **What a repository guard is for — measured, not assumed.** The first lot reviewed
 with all three guards present cost **more** per review than the lot before it
