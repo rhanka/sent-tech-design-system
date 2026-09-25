@@ -214,7 +214,17 @@ describe("B1 Phase 1 — shape geometry parity (WebGL a_radius == Canvas2D radiu
 describe("B1 Phase 1 — shape pixel parity (WebGL vs Canvas2D, Chrome/CDP)", () => {
   const REQUIRE_GL = process.env.GOLDEN_REQUIRE_WEBGL === "1";
 
-  it("per-shape WebGL-vs-Canvas2D pixel diff (or explicit no-GL skip)", async () => {
+  // A vitest test body that returns early is reported PASSED, not skipped
+  // (measured on vitest 4.1.11), so this test used to report green on a runner
+  // without Chrome having asserted nothing -- the "false pass" this file's own
+  // header says it never does. `ctx.skip()` is the RUNTIME form and the only
+  // correct one here: `it.skipIf` / `describe.skipIf` evaluate at COLLECTION
+  // time, before `openOracle()` below has been tried, so they would skip this
+  // test even where Chrome IS present (measured).
+  const NO_CHROME = "Chrome/CDP oracle did not boot — pixel diff NOT run";
+  const NO_WEBGL = "no WebGL2 context in this Chrome — pixel diff NOT run";
+
+  it("per-shape WebGL-vs-Canvas2D pixel diff (or explicit no-GL skip)", async (ctx) => {
     let oracle: Awaited<ReturnType<typeof openOracle>> | null = null;
     let glAvailable = false;
     try {
@@ -227,7 +237,7 @@ describe("B1 Phase 1 — shape pixel parity (WebGL vs Canvas2D, Chrome/CDP)", ()
 
     if (!oracle) {
       if (REQUIRE_GL) throw new Error("GOLDEN_REQUIRE_WEBGL=1 but Chrome did not boot");
-      return; // no Chrome at all
+      ctx.skip(NO_CHROME);
     }
 
     try {
@@ -239,7 +249,7 @@ describe("B1 Phase 1 — shape pixel parity (WebGL vs Canvas2D, Chrome/CDP)", ()
         if (REQUIRE_GL) throw new Error(`GOLDEN_REQUIRE_WEBGL=1 but ${reason}`);
         // The geometry-parity block (A) above is the gate in no-GL environments.
         expect(glAvailable).toBe(false);
-        return;
+        ctx.skip(NO_WEBGL);
       }
 
       const dpr = 2;

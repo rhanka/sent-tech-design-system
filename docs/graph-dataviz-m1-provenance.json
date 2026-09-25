@@ -288,7 +288,9 @@
       "destination": "packages/graph/tests/golden/boxes-golden.test.ts",
       "gitBlob": "6daca52322adbd710885022278de321588f86fad",
       "sha256": "6e0b9d7d7c5e8056d84b4d43a8aa7b8e44c9976b0008b25b36543404e514917b",
-      "status": "copied-byte-identical"
+      "status": "adapted-explicit-skip-gate",
+      "destinationSha256": "c8e34fbf35d3827eba3f6b68d36f5a91ebc21760dbf60201acd9a0c93cfa8b4d",
+      "note": "A vitest test body that returns early is reported PASSED, not skipped (measured on vitest 4.1.11), so the CDP pixel-diff test went green on a Chrome-less runner without asserting anything -- the false pass this file header says it never does. Both bail-outs now call ctx.skip(); the no-GL branch keeps its assertion. Upstream M1 source hash kept in sha256."
     },
     {
       "repository": "graphify",
@@ -315,7 +317,9 @@
       "destination": "packages/graph/tests/golden/edges-golden.test.ts",
       "gitBlob": "f97ef7c3fe3206f806e70d904eafc45933564aa3",
       "sha256": "94ed015d3d8c871f7d196b42eed8fb9a760ddcb02ff10080851a0a1f26ab28f3",
-      "status": "copied-byte-identical"
+      "status": "adapted-explicit-skip-gate",
+      "destinationSha256": "8084729f51db8e57af51a6f65cc6aa454e75e4c5ba700f497e8eefbf85d8de9e",
+      "note": "A vitest test body that returns early is reported PASSED, not skipped (measured on vitest 4.1.11), so the CDP pixel-diff test went green on a Chrome-less runner without asserting anything -- the false pass this file header says it never does. Both bail-outs now call ctx.skip(); the no-GL branch keeps its assertion. Upstream M1 source hash kept in sha256."
     },
     {
       "repository": "graphify",
@@ -373,7 +377,9 @@
       "destination": "packages/graph/tests/golden/shapes-golden.test.ts",
       "gitBlob": "967552c7059d8797c7c474fb91b4e8e620eae1ca",
       "sha256": "90f1b371f8ee1f28dac5eeebc430b6a5eb16cd74692b40fe54a9cc627d4f2c59",
-      "status": "copied-byte-identical"
+      "status": "adapted-explicit-skip-gate",
+      "destinationSha256": "b8a1f81b72048c868c7daaa55653b7a2dad92f35948406ee91ac245f0a167614",
+      "note": "A vitest test body that returns early is reported PASSED, not skipped (measured on vitest 4.1.11), so the CDP pixel-diff test went green on a Chrome-less runner without asserting anything -- the false pass this file header says it never does. Both bail-outs now call ctx.skip(); the no-GL branch keeps its assertion. Upstream M1 source hash kept in sha256."
     },
     {
       "repository": "graphify",
