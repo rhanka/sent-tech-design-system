@@ -33,7 +33,7 @@ import type { TenantTheme } from "@sentropic/design-system-themes";
  *   Teal (completed / success)          #00a49a   (success)
  *   Lime category                       #b6ff4e   (data context)
  *   Amber (requested / warning)         #ffc82c   (warning)
- *   Stand-in error red                  #b3261e   (error — à confirmer)
+ *   Derived error red                   #e60000   (error — à confirmer: brand `red` #ff0000 4.00:1, 1 stop-rule step, 4.81:1)
  */
 
 // --- Bureau Veritas raw colour palette --------------------------------------
@@ -69,7 +69,10 @@ const bureauVeritasColor = {
   system: {
     success: "#00a49a", // `.tag-states.completed` etc. (3.10:1 on white)
     warning: "#ffc82c", // `.tag-states.requested,.submitted` (1.55:1)
-    error: "#b3261e", // coherent stand-in red, no brand red published (à confirmer)
+    // Brand error red `red` (#ff0000, 4.00:1 on white — fails 4.5:1) carried
+    // one step down the stop rule (HSL H=0 S=100% L 50%→45%) to the first
+    // passing hex (à confirmer).
+    error: "#e60000", // derived from brand `red`, 4.81:1 (à confirmer)
     info: "#2c32ff" // `.tag-states.confirmed,.inprogress,.validated`
   }
 } as const;
@@ -141,12 +144,13 @@ const foundation = {
     pill: "999px" // Sentropic base (verified); brand status chips use 100px
   },
   // The brand publishes no elevation shadows (buttons and boxes declare
-  // `box-shadow:none`); kept aligned with the reference theme package's
-  // geometry (à confirmer).
+  // `box-shadow:none`); geometry aligned with the reference theme package,
+  // tint re-anchored on the brand's own near-black `#333333`
+  // (à confirmer).
   shadow: {
-    subtle: "0 1px 2px rgb(26 35 38 / 0.10)", // à confirmer
-    medium: "0 4px 12px rgb(26 35 38 / 0.14)", // à confirmer
-    floating: "0 8px 24px rgb(26 35 38 / 0.18)" // à confirmer
+    subtle: "0 1px 2px rgb(51 51 51 / 0.10)", // à confirmer
+    medium: "0 4px 12px rgb(51 51 51 / 0.14)", // à confirmer
+    floating: "0 8px 24px rgb(51 51 51 / 0.18)" // à confirmer
   },
   // Brand transitions are ease-out, most commonly `.25s` (buttons, links)
   // with `.35s` fades; fast has no published value (à confirmer).
@@ -175,8 +179,13 @@ const foundation = {
   },
   borderStyle: { solid: "solid" }, // Sentropic base (verified)
   // Control density. Inputs declare `height:40px` + `padding:12px`; buttons
-  // declare `padding:20px` with no height. sm/lg publish no geometry:
-  // aligned with the reference theme package's geometry (à confirmer) —
+  // declare `padding:20px` with no height. The brand answered in part:
+  // `.button-action.small` / `.button-filled.small` share the fluid small
+  // font-size rule capped at `1rem`, `.button-filled.x-small` /
+  // `.button-action.x-small` read `line-height:1;padding:3px 3px 1px`, and
+  // `.advanced-search-field.small` carries its own font steps — but no
+  // complete sm/lg geometry (heights, paddings, gaps, min-widths), so sm/lg
+  // stay aligned with the reference theme package's geometry (à confirmer) —
   // their controlHeight 2rem/3rem coincide with the Sentropic base.
   density: {
     sm: { controlHeight: "2rem", paddingBlock: "0", paddingInline: "0.5rem", gap: "0.5rem", minWidth: "2rem", fontSize: "0.875rem" }, // à confirmer
@@ -186,8 +195,12 @@ const foundation = {
   // Bureau Veritas typography: condensed uppercase display face for buttons
   // and headings, Source Sans for fields, Source Sans Bold for labels;
   // body links are underlined, signature links carry an arrow instead.
+  // Buttons share the uppercase display-face rule (line-height 1.25) but the
+  // later padding rules (`.button-action` and `.button-filled` exact members,
+  // equal specificity, no later reset except the `.x-small` variants at
+  // line-height 1) set the effective button line-height to .9 — transcribed.
   typography: {
-    control: { family: "'BureauVeritas-ExtBdUltraCond', Arial, sans-serif", size: "1.563rem", weight: "400", lineHeight: "1.25", letterSpacing: "0", textTransform: "uppercase", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
+    control: { family: "'BureauVeritas-ExtBdUltraCond', Arial, sans-serif", size: "1.563rem", weight: "400", lineHeight: "0.9", letterSpacing: "0", textTransform: "uppercase", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
     field: { family: "'Source-Sans-RegularPro', Arial, sans-serif", size: "1.25rem", weight: "400", lineHeight: "1.25", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
     label: { family: "'Source-Sans-BoldPro', Arial, sans-serif", size: "1.25rem", weight: "400", lineHeight: "1.25", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
     // Body links (`ul.links a`) are brand blue; running-text links
@@ -199,16 +212,30 @@ const foundation = {
       textDecorationHover: "underline", decorationThicknessHover: "auto", decorationOffsetHover: "auto"
     }
   },
+  // Disabled treatment differs by control kind: class-based disabled buttons
+  // read `.button.is-disabled{opacity:.5;cursor:default}` (transcribed), while
+  // natively disabled submit controls read `opacity:.7!important` with
+  // `pointer-events:none!important` (noted context, see MAPPING.md).
   disabledOpacity: "0.5", // `.button.is-disabled{opacity:.5}`
-  transition: { property: "background-color, border-color, color", duration: "250ms", easing: "ease-out" },
+  // No brand transition shorthand published as a whole: buttons declare
+  // `transition:border .25s ease-out`, others `transition:all .25s ease-out`;
+  // this set is carried from the measured parts (à confirmer).
+  transition: { property: "background-color, border-color, color", duration: "250ms", easing: "ease-out" }, // à confirmer
   cursor: { interactive: "pointer", disabled: "not-allowed", text: "text" }, // Sentropic base (verified)
   iconSize: { sm: "1rem", md: "1.125rem", lg: "1.25rem" }, // Sentropic base (verified)
-  // FOCUS: the brand draws no outline and no ring. The general control rule
-  // (`form input[…]:focus, form select:focus, form textarea:focus`) declares
-  // `outline:0;border-bottom-width:2px` with `border-color:#333` — focus
-  // thickens the underline to 2px in near-black. The only shadow-based focus
-  // (`.site-logo--inner a:focus{box-shadow:inset …}`) is logo-scoped and
-  // rejected. Encoded as a 2px outline carrier in the measured focus colour.
+  // FOCUS: the brand removes the outline on inputs and selects (`outline:0`)
+  // and thickens the underline to 2px in `#333`, but it KEEPS published
+  // outlines at focus: `form textarea:focus{outline:auto}` (least-scoped
+  // general rule, later than `outline:0` at equal specificity, so it wins),
+  // `.advanced-search-field…:focus` and `.content-filters…:focus`
+  // (`outline:auto` / `outline:solid`, each cancelling the thickening with
+  // `border-bottom-width:inherit`), plus the keyboard search-tool state
+  // (`outline:auto`). The only shadow-based focus
+  // (`.site-logo--inner a:focus{box-shadow:inset 0 0 0 4px #000}`) is
+  // logo-scoped and inset, so `strategy: "outline"` is the measured
+  // technique — not the closest carrier. `width: 2px` and `color: #333333`
+  // transpose the measured border technique: the published outlines declare
+  // neither width nor colour.
   focus: {
     strategy: "outline",
     width: "2px",
@@ -226,18 +253,25 @@ const foundation = {
     underlineColor: bureauVeritasColor.slate[400], // #808080 resting field stroke
     underlineWidth: "1px",
     underlineMode: "border", // `border-width:0 0 1px` (not an inset shadow)
-    // Native <select> (`appearance:none` on `form select`): redraw the
-    // chevron in the brand blue with a 40px right gutter.
+    // Native <select> (`appearance:none` on `form select`): the brand draws
+    // its own chevron — `form select` is the exact last member of the
+    // `background-image:url("data:image/svg+xml;base64,…")` rule whose SVG
+    // decodes to `fill="#333"`; the inverted variant (`.content-filters
+    // select` group) decodes to `fill="#fff"`. Grey is coherent: the custom
+    // `.needs-select--inner:after` caret reads `border-color:gray`.
+    // Position measured (`background-position:calc(100% - 12px) 50%`).
     selectAppearance: "none",
     selectChevron:
-      "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%2300049e' d='M8 11L3 6l1-1 4 4 4-4 1 1z'/%3E%3C/svg%3E\") no-repeat right 0.75rem center",
+      "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='8' viewBox='0 0 13 8'%3E%3Cpath fill='%23333333' d='M13.1.5c-.4-.4-1.1-.4-1.5 0L6.9 5.2 2.1.5C1.7.1 1 .1.7.5.3.9.3 1.6.7 2l5.5 5.5c.2.2.5.3.7.3.3 0 .5-.1.7-.3L13.1 2c.4-.5.4-1.1 0-1.5z'/%3E%3C/svg%3E\") no-repeat right 0.75rem center",
     selectPaddingRight: "2.5rem" // à confirmer (gutter width unpublished)
   },
-  // Cards: no brand card border published; hover tint reuses the measured
-  // subtle surface (à confirmer).
+  // Cards: the brand publishes no card component (no card border, no card
+  // line-height — the published body line-height is 1.25, not 1.5);
+  // geometry aligned with the reference theme package (à confirmer).
+  // Hover tint reuses the measured subtle surface (à confirmer).
   card: {
-    borderWidth: "1px",
-    lineHeight: "1.5",
+    borderWidth: "1px", // à confirmer (no brand card border published)
+    lineHeight: "1.5", // à confirmer (brand body line-height is 1.25)
     hoverBackground: bureauVeritasColor.slate[50] // #eaeaea (à confirmer)
   },
   // Secondary button = OUTLINED in the brand blue: `.button-action` carries
@@ -249,9 +283,12 @@ const foundation = {
     hoverBackground: "transparent" // hover keeps the transparent fill
   },
   // Tabs: `.tabs ul.primary` draws a bottom 2px rule
-  // (`border-width:0 0 2px`); links read `#bbb`. No active-label colour is
-  // published — the active label is routed to the brand action blue
-  // (à confirmer); geometry aligned with the reference package (à confirmer).
+  // (`border-width:0 0 2px`); links read `#bbb`. That markup is Drupal
+  // local-tasks restyled inside the brand aggregate — the same kind of basis
+  // as the excluded `.messages` alert default (see MAPPING.md for the
+  // boundary rationale). No active-label colour is published — the active
+  // label is routed to the brand action blue (à confirmer); geometry aligned
+  // with the reference package (à confirmer).
   tabs: {
     activeText: bureauVeritasColor.brand.primary, // #00049e (à confirmer)
     activeBackground: "transparent", // à confirmer
@@ -261,8 +298,8 @@ const foundation = {
     paddingInline: "1rem", // 16px (à confirmer)
     fontSize: "1rem", // 16px (à confirmer)
     lineHeight: "1.5rem", // 24px (à confirmer)
-    indicatorSide: "bottom", // `.tabs ul.primary{border-width:0 0 2px}`
-    indicatorMode: "border"
+    indicatorSide: "bottom", // `.tabs ul.primary{border-width:0 0 2px}` (à confirmer — Drupal local-tasks basis, see MAPPING.md)
+    indicatorMode: "border" // à confirmer (same basis)
   },
   // Pagination: `.pager a:hover{color:#00049e}`; the active page fill and its
   // white label are routed to the brand blue pair (à confirmer); geometry
@@ -386,7 +423,7 @@ const semantic = {
   text: {
     primary: bureauVeritasColor.slate[800], // #333333 descriptions (12.63:1)
     secondary: bureauVeritasColor.slate[500], // #706f6f brand grey (5.01:1)
-    muted: bureauVeritasColor.slate[200], // #bbbbbb timestamps / pending (1.92:1)
+    muted: bureauVeritasColor.slate[400], // #808080 — the brand's own input text grey (`gray`), 3.95:1. Section-9 routing: the brand writes its de-emphasized text in #bbbbbb (1.92:1), which fails every threshold including the 3:1 line floor, so the role takes the brand's next measured text grey rather than a neutral of ours
     inverse: bureauVeritasColor.slate[0], // white on the brand blue (13.90:1)
     link: bureauVeritasColor.brand.primary // #00049e `ul.links a` (13.90:1)
   },
@@ -402,7 +439,7 @@ const semantic = {
     secondary: bureauVeritasColor.slate[50], // #eaeaea subtle surface
     secondaryHover: bureauVeritasColor.slate[200], // #bbbbbb measured grey
     secondaryText: bureauVeritasColor.brand.primary, // #00049e `.button-action`
-    danger: bureauVeritasColor.system.error // #b3261e stand-in red (à confirmer)
+    danger: bureauVeritasColor.system.error // #e60000 derived from brand `red` (à confirmer)
   },
   feedback: {
     success: bureauVeritasColor.system.success,
@@ -414,7 +451,7 @@ const semantic = {
     pending: bureauVeritasColor.slate[200], // #bbbbbb `.tag-states.pending`
     processing: bureauVeritasColor.brand.bright, // #2c32ff `.tag-states.inprogress`
     completed: bureauVeritasColor.brand.teal, // #00a49a `.tag-states.completed`
-    failed: bureauVeritasColor.system.error // #b3261e stand-in red (à confirmer)
+    failed: bureauVeritasColor.system.error // #e60000 derived from brand `red` (à confirmer)
   },
   // Categorical palette measured from the brand's nine tag gradients
   // (`.tag-std.c-1-c-N:after` / `.tag-highlighted` border-images, c-1 to

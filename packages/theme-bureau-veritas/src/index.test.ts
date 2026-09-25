@@ -42,9 +42,19 @@ describe("bureauVeritasTheme", () => {
     // Brand deep-blue action + near-black body text.
     expect(css).toContain("--st-semantic-action-primary: #00049e;");
     expect(css).toContain("--st-semantic-text-primary: #333333;");
-    // Stand-in error red danger and brand-blue inverse surface.
-    expect(css).toContain("--st-semantic-action-danger: #b3261e;");
+    // Derived error red (brand `red` #ff0000, 1 stop-rule step) on danger,
+    // feedback-error and failed roles; brand-blue inverse surface.
+    expect(css).toContain("--st-semantic-action-danger: #e60000;");
+    expect(css).toContain("--st-semantic-feedback-error: #e60000;");
+    expect(css).toContain("--st-semantic-status-failed: #e60000;");
     expect(css).toContain("--st-semantic-surface-inverse: #00049e;");
+    // Native select chevron redrawn in the brand's measured grey.
+    expect(css).toContain("fill='%23333333'");
+    // Muted text kept on the brand's measured de-emphasized grey; buttons
+    // carry the effective (overridden) line-height 0.9, not the 1.25 of the
+    // display-face rule.
+    expect(css).toContain("--st-semantic-text-muted: #808080;");
+    expect(css).toContain("--st-foundation-typography-control-lineHeight: 0.9;");
     // Bureau Veritas brand font families (display, body, labels).
     expect(css).toContain("BureauVeritas-ExtBdUltraCond");
     expect(css).toContain("Source-Sans-RegularPro");
