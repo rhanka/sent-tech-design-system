@@ -1,0 +1,531 @@
+import { createComponent } from "@sentropic/design-system-themes";
+import type { TenantTheme } from "@sentropic/design-system-themes";
+
+/**
+ * Michelin brand theme for the Sentropic token structure.
+ *
+ * Michelin ships its corporate identity as design tokens in the public
+ * stylesheets of michelin.com (`/public/themes/michelin-corporate/
+ * theme-michelin-corporate.css`): a `:root` block declares `--color-primary`
+ * (#27509b, Michelin blue), `--color-tertiary-01` (#00205b, deep navy),
+ * `--color-primary-lighten-01` (#d4e7fa), the `--color-is-*` status hues and
+ * the `--font-family-primary/secondary` names ("Noto Sans" /
+ * "Michelin Unit Titling"). This package is a MEASURED-CLONE mapping of those
+ * public values onto the Sentropic tokens; we reference the font *names* only,
+ * never font binaries. Sources and exact provenance are documented in
+ * MAPPING.md. Where the brand publishes no direct equivalent for a Sentropic
+ * role (the modal overlay alpha, the warning text hue, default-size button
+ * padding, the third `lg` density step, the lightest elevation step and the
+ * motion scalars), the closest derived value is used and flagged
+ * "à confirmer" in MAPPING.md. Elevation itself IS published: two complete
+ * `box-shadow` steps inked `rgb(51,51,51)` (see `foundation.shadow`).
+ *
+ * Michelin colour reference (light theme):
+ *   White (main background)              #ffffff   (:root --color-main-background)
+ *   Light grey (secondary surface)       #f2f2f2   (:root --color-light-05)
+ *   Pale grey (secondary hover)          #e5e5e5   (:root --color-light-10)
+ *   Border grey (card base border)       #cccccc   (:root --color-light-20)
+ *   Secondary text grey                  #404040   (:root --color-dark-60)
+ *   Muted grey                           #666666   (:root --color-dark-40)
+ *   Shadow ink                           #333333   (:root --color-dark-70; box-shadow rgba(51,51,51,.12/.16))
+ *   Body / primary + overlay ink         #1a1a1a   (:root --color-main-text; .ds__dropdown-overlay)
+ *   Darkest                              #000000   (:root --color-dark)
+ *   Michelin blue (brand / action)       #27509b   (:root --color-primary)
+ *   Michelin blue hover                  #3a61a6   (:root --color-primary-darken-03)
+ *   Mid blue accent                      #6182bb   (:root --color-primary-darken-02)
+ *   Light blue tint                      #d4e7fa   (:root --color-primary-lighten-01)
+ *   Pale blue tint                       #c1d6ef   (:root --color-primary-lighten-02)
+ *   Deep navy (tertiary / inverse)       #00205b   (:root --color-tertiary-01)
+ *   Purple accent (tertiary)             #582c83   (:root --color-tertiary-02)
+ *   Michelin yellow (card accent)        #fce500   (.ds__card-panel secondary skin)
+ *   Success green                        #2e7d32   (:root --color-is-valid)
+ *   Warning amber (derived AA text)      #9a6104   (stop rule from #f9a825 — à confirmer)
+ *   Error red                            #b71c1c   (:root --color-is-error)
+ *   Info blue                            #27509b   (:root --color-is-info)
+ */
+
+// --- Michelin raw colour palette --------------------------------------------
+const michelinColor = {
+  // Michelin blue — the brand signature, declared as `:root{--color-primary:
+  // #27509b}` in theme-michelin-corporate.css and consumed as the primary
+  // button fill by `.ds__btn[data-ui-skin=primary]` (`--button-color-background:
+  // var(--color-primary,inherit)`).
+  blue: {
+    primary: "#27509b", // :root --color-primary (brand blue, action / links)
+    hover: "#3a61a6", // :root --color-primary-darken-03; also the inline primary-button hover fill
+    mid: "#6182bb", // :root --color-primary-darken-02 (mid blue accent)
+    light: "#d4e7fa", // :root --color-primary-lighten-01 (light blue tint)
+    pale: "#c1d6ef" // :root --color-primary-lighten-02 (pale blue tint)
+  },
+  // Deep navy + purple tertiary accents, declared as `:root{
+  // --color-tertiary-01:#00205b}` and `:root{--color-tertiary-02:#582c83}`.
+  navy: "#00205b", // :root --color-tertiary-01 (deep navy, inverse surfaces)
+  purple: "#582c83", // :root --color-tertiary-02 (purple accent)
+  // Michelin yellow — the brand's second accent, declared by the brand-owned
+  // rule `.ds__card-panel[data-ui-skin=secondary]{--card-color-background:
+  // #fce500;--card-color-text:#000;--card-color-border:#fce500}` (yellow fill
+  // carrying black text, exactly how the brand uses it).
+  yellow: "#fce500", // .ds__card-panel secondary skin (accent fill)
+  // Neutral scale from the brand `:root` dark/light ramps (keys ordered
+  // light → dark so the ramp reads monotonically).
+  neutral: {
+    0: "#ffffff", // :root --color-main-background / --color-light (declared `#fff`, used here as `#ffffff`)
+    50: "#f2f2f2", // :root --color-light-05 (secondary surface)
+    100: "#e5e5e5", // :root --color-light-10
+    200: "#cccccc", // :root --color-light-20 (declared `#ccc`, used here as `#cccccc`; card base border)
+    500: "#666666", // :root --color-dark-40 (declared `#666`, used here as `#666666`; muted text)
+    600: "#404040", // :root --color-dark-60 (secondary text)
+    800: "#1a1a1a", // :root --color-main-text / --color-dark-80 (body text; also the overlay ink)
+    900: "#000000" // :root --color-dark (declared `#000`, used here as `#000000`; darkest)
+  },
+  // System / status colours from the brand `:root --color-is-*` tokens, except
+  // the warning text step which is derived (à confirmer).
+  system: {
+    success: "#2e7d32", // :root --color-is-valid
+    warning: "#9a6104", // derived AA warning text via the stop rule from :root --color-is-warning #f9a825 (à confirmer)
+    error: "#b71c1c", // :root --color-is-error
+    info: "#27509b" // :root --color-is-info (Michelin blue)
+  }
+} as const;
+
+// --- foundation (Michelin-specific values) ----------------------------------
+const foundation = {
+  color: {
+    // Sentropic "blue" role family carries Michelin's PRIMARY blue scale
+    // (pale tint → brand blue → hover blue).
+    blue: {
+      10: michelinColor.blue.light, // #d4e7fa light blue tint
+      60: michelinColor.blue.primary, // #27509b Michelin blue (primary)
+      80: michelinColor.blue.hover // #3a61a6 hover blue
+    },
+    // Sentropic "cyan" accent slot parked on measured Michelin tints: the pale
+    // blue, the mid blue and the purple tertiary accent (role assignment
+    // à confirmer — the brand publishes no cyan ramp).
+    cyan: {
+      10: michelinColor.blue.pale, // #c1d6ef pale blue tint
+      50: michelinColor.blue.mid, // #6182bb mid blue accent
+      70: michelinColor.purple // #582c83 purple tertiary accent (à confirmer)
+    },
+    // Sentropic "slate" role family mapped onto the Michelin neutral scale.
+    slate: {
+      0: michelinColor.neutral[0], // white
+      10: michelinColor.neutral[50], // secondary surface
+      20: michelinColor.neutral[200], // card base border
+      60: michelinColor.neutral[600], // secondary text
+      80: michelinColor.neutral[800], // primary text
+      90: michelinColor.neutral[900] // darkest
+    },
+    feedback: {
+      success: michelinColor.system.success,
+      warning: michelinColor.system.warning,
+      error: michelinColor.system.error,
+      info: michelinColor.system.info
+    }
+  },
+  // Michelin declares `:root{--font-family-primary:"Noto Sans",Arial,
+  // sans-serif;--font-family-secondary:"Michelin Unit Titling",Helvetica,
+  // sans-serif}` in theme-michelin-corporate.css (confirmed identical on
+  // michelin.fr). Body/controls use Noto Sans, display titles use Michelin
+  // Unit Titling (also set per-heading via `.ds__heading:where(h1){
+  // --heading-font:"Michelin Unit Titling",Helvetica,sans-serif}`). Mono is
+  // the system stack. We reference the font *names* only, not binaries.
+  font: {
+    sans: "'Noto Sans', Arial, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+    display: "'Michelin Unit Titling', Helvetica, 'Noto Sans', sans-serif",
+    mono: "'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"
+  },
+  // Standard rem spacing scale (kept aligned with the Sentropic base for
+  // component-grid fidelity; the brand scale is rem-based too).
+  spacing: {
+    0: "0",
+    1: "0.25rem", // 4px
+    2: "0.5rem", // 8px
+    3: "0.75rem", // 12px
+    4: "1rem", // 16px
+    6: "1.5rem", // 24px
+    8: "2rem", // 32px
+    12: "3rem", // 48px
+    16: "4rem" // 64px
+  },
+  // Michelin geometry is rounded: the brand declares `border-radius:.8rem`
+  // on `.ds__btn,.ds__btn-icon`, `.ds__input` and `[data-ui-card-base]`,
+  // and `.4rem` on small elements (breadcrumb focus rings). The brand root
+  // is `html{font-size:var(--font-size-root,62.5%)}` (10px), so `.8rem` =
+  // 8px and `.4rem` = 4px; transcribed at this theme's 16px root that is
+  // `0.5rem` and `0.25rem` (see MAPPING.md).
+  radius: {
+    none: "0",
+    sm: "0.25rem", // .4rem at the brand 62.5% root = 4px
+    md: "0.5rem", // .8rem at the brand 62.5% root = 8px (buttons / inputs)
+    lg: "0.5rem", // .8rem at the brand 62.5% root = 8px (cards)
+    pill: "999px" // tags / pills
+  },
+  // Elevation IS published. The brand ships two complete `box-shadow` steps —
+  // offsets, blurs AND alphas — both inked `rgb(51,51,51)` = `#333333`
+  // (`:root --color-dark-70`), converted from the brand 62.5% root:
+  //   `box-shadow:0 .4rem .8rem 0 rgba(51,51,51,.12)` — 10 occurrences
+  //   (`.ds__card-offer`, `.ds__dropdown`, `.ds__sidepanel`, `.ds__form-bar`,
+  //   the expanded `.ds__custom-select` list…) plus 6 more written as
+  //   `var(--header-color-shadow,rgba(51,51,51,.12))`, where
+  //   `--header-color-shadow` is NEVER declared as its own custom property, so
+  //   the fallback wins everywhere — the same pattern this package documents
+  //   for `--form-input-border`. → `medium` = `0 4px 8px`.
+  //   `box-shadow:0 .8rem 1.6rem 0 rgba(51,51,51,.16)` — 4 occurrences
+  //   (`.ds__form-radio-card:hover`, `.ds__card-document:not(div):hover`, the
+  //   overlapping hero widget…). → `floating` = `0 8px 16px`.
+  // The brand publishes NO lighter all-around step: its only other shadow
+  // family is `0 1.1rem .8rem -1rem` (6 occurrences, header-scoped, 3 of them
+  // `inset`, negative spread), a directional under-header hairline rather than
+  // an elevation step — so `subtle` keeps the reference theme package's
+  // offsets/alpha over the measured brand ink (à confirmer, marked in line).
+  // NB `#1a1a1a` is the brand OVERLAY ink (`.ds__dropdown-overlay`,
+  // `.ds__sidepanel-overlay`), a different role — it is not the shadow ink.
+  shadow: {
+    subtle: "0 1px 2px rgb(51 51 51 / 0.10)", // measured ink #333333; offsets + alpha aligned with the reference theme package's geometry (à confirmer — no lighter all-around step is published)
+    medium: "0 4px 8px rgb(51 51 51 / 0.12)", // measured: `0 .4rem .8rem 0 rgba(51,51,51,.12)` at the brand 62.5% root
+    floating: "0 8px 16px rgb(51 51 51 / 0.16)" // measured: `0 .8rem 1.6rem 0 rgba(51,51,51,.16)` at the brand 62.5% root
+  },
+  // Motion durations are not tokenised by Michelin publicly; kept aligned
+  // with the reference theme package's geometry ("à confirmer").
+  motion: {
+    fast: "120ms",
+    normal: "180ms",
+    slow: "280ms",
+    easing: "cubic-bezier(0.4, 0, 0.2, 1)" // aligned with the reference theme package's geometry (à confirmer)
+  },
+  // z-index roles are not brand-specific; kept aligned with the Sentropic base.
+  z: {
+    header: 50,
+    toast: 60,
+    overlay: 80,
+    modal: 100,
+    chat: 110
+  },
+  // --- Anatomy primitives (Michelin) ----------------------------------------
+  borderWidth: {
+    none: "0",
+    thin: "1px", // field border .1rem
+    thick: "2px"
+  },
+  borderStyle: { solid: "solid" },
+  // Control density, transcribed from the brand's own button rules (all lengths
+  // converted from the brand 62.5% root, i.e. divided by 1.6 — see MAPPING.md):
+  // `.ds__btn,.ds__btn-icon{...min-height:4.8rem}` (48px) and
+  // `.ds__btn-icon[data-ui-size=sm]:where(.ds__btn),
+  // .ds__btn[data-ui-size=sm]:where(.ds__btn){min-height:3.6rem;
+  // padding:.4rem 1.6rem}` (36px high, 4px/16px padding). Those two are the
+  // ONLY button heights the brand publishes: `[data-ui-size=sm]` is its single
+  // size variant, and the other `min-height` values in the sheet belong to
+  // skins or widgets, not to a size step (`min-height:4rem` is scoped to
+  // `[data-ui-skin=link]`, `1.6rem` to the slider pager dots). There is
+  // therefore NO published third step. Sentropic requires three DISTINCT
+  // steps, and the Sentropic base `lg` (`3rem`) is now occupied by the measured
+  // `md`, so `lg` continues the brand's own published step upward:
+  // 48px − 36px = 12px, hence 48px + 12px = 60px = `3.75rem` (à confirmer —
+  // derived from the two published heights, no third height published).
+  // Default-size padding is not published either, so `md`/`lg` paddings and
+  // every `gap`/`minWidth` stay aligned with the reference theme package's
+  // geometry (à confirmer); `iconSize` reuses the Sentropic base values.
+  density: {
+    sm: { controlHeight: "2.25rem", paddingBlock: "0.25rem", paddingInline: "1rem", gap: "0.5rem", minWidth: "2rem", fontSize: "0.875rem" }, // controlHeight/paddings/fontSize measured (3.6rem/.4rem/1.6rem/1.4rem at 62.5%); gap/minWidth aligned with the reference theme package's geometry (à confirmer)
+    md: { controlHeight: "3rem", paddingBlock: "0.375rem", paddingInline: "0.75rem", gap: "0.5rem", minWidth: "2.5rem", fontSize: "1rem" }, // controlHeight/fontSize measured (4.8rem/1.6rem at 62.5%); paddings/gap/minWidth aligned with the reference theme package's geometry (à confirmer)
+    lg: { controlHeight: "3.75rem", paddingBlock: "0", paddingInline: "1rem", gap: "0.5rem", minWidth: "3rem", fontSize: "1.125rem" } // controlHeight derived: measured 48px + the brand's own published 36px→48px step of 12px = 60px (à confirmer — no third height is published); paddings/gap/minWidth/fontSize aligned with the reference theme package's geometry (à confirmer)
+  },
+  // Michelin typography: Noto Sans for interactive/fields/labels, Michelin
+  // Unit Titling for display titles. Button labels carry no transform.
+  // Measured: `.ds__btn,...{...font-size:1.6rem;line-height:1.25}` (16px/1.25
+  // at the 62.5% root) and `.ds__label span{...font-size:1.4rem}` (14px).
+  // Every other typographic scalar below is aligned with the reference theme
+  // package's geometry (à confirmer) — see MAPPING.md.
+  typography: {
+    control: { family: "'Noto Sans', Arial, system-ui, sans-serif", size: "1rem", weight: "500", lineHeight: "1.25", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" }, // lineHeight measured (.ds__btn line-height:1.25); rest aligned with the reference theme package's geometry (à confirmer)
+    field: { family: "'Noto Sans', Arial, system-ui, sans-serif", size: "1rem", weight: "400", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" }, // aligned with the reference theme package's geometry (à confirmer)
+    label: { family: "'Noto Sans', Arial, system-ui, sans-serif", size: "0.875rem", weight: "700", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" }, // size measured (.ds__label span font-size:1.4rem at 62.5% = 14px); rest aligned with the reference theme package's geometry (à confirmer)
+    // Brand links are Michelin blue #27509b (`.ds__link[data-ui-skin=
+    // tertiary][data-ui-selected=true]{--link-color-text:#27509b}` and
+    // `.ds__lang-selector ...{--link-color-text:#27509b}`), not underlined at
+    // rest (`.ds__link{...text-decoration:none}`); hover underline is
+    // à confirmer.
+    link: {
+      family: "inherit", size: "inherit", weight: "inherit", lineHeight: "inherit", letterSpacing: "0", textTransform: "none",
+      textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto",
+      textDecorationHover: "underline", decorationThicknessHover: "auto", decorationOffsetHover: "auto" // à confirmer
+    }
+  },
+  disabledOpacity: "0.5", // aligned with the reference theme package's geometry (à confirmer)
+  transition: { property: "background-color, border-color, color, box-shadow", duration: "150ms", easing: "ease-in-out" }, // aligned with the reference theme package's geometry (à confirmer)
+  cursor: { interactive: "pointer", disabled: "not-allowed", text: "text" },
+  iconSize: { sm: "1rem", md: "1.125rem", lg: "1.25rem" },
+  // FOCUS = a brand OUTLINE: the dominant declaration across the whole
+  // stylesheet is `outline:.2rem solid #27509b` (9 occurrences, covering every
+  // form control, e.g. `.ds__input-wrapper .ds__input:focus-visible{
+  // ...outline:.2rem solid #27509b}`); the grey `outline:.2rem dashed #666`
+  // occurs only twice, both scoped to the breadcrumb (see MAPPING.md).
+  // Offset: `outline-offset` is declared 9 times on `.ds__*` focus rules
+  // (`.4rem` 5 times, `.2rem` twice, `.1rem` once, `0` once); the frequency
+  // winner `.4rem` at the 62.5% root = 4px = `0.25rem` here.
+  focus: {
+    strategy: "outline",
+    width: "2px", // .2rem at the brand 62.5% root = 2px
+    offset: "0.25rem", // measured: frequency winner .4rem at 62.5% = 4px
+    color: michelinColor.blue.primary, // #27509b solid brand outline
+    inset: "0"
+  },
+  // Form fields are BOXED (outline): `.ds__input{background-color:#fff;
+  // border:.1rem solid var(--form-input-border,#1a1a1a);border-radius:.8rem;
+  // ...}` — a white fill with four equal side borders. `style: "outline"`
+  // makes the builder draw them from `surface.default` + `border.subtle`.
+  field: {
+    style: "outline",
+    fillBg: michelinColor.neutral[0], // #ffffff
+    underlineColor: michelinColor.neutral[200], // unused for outline, kept for completeness
+    underlineWidth: "1px",
+    // Native <select>: redraw the chevron in Michelin blue with a 40px right gutter.
+    selectAppearance: "none",
+    selectChevron:
+      "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%2327509b' d='M8 11L3 6l1-1 4 4 4-4 1 1z'/%3E%3C/svg%3E\") no-repeat right 0.75rem center",
+    selectPaddingRight: "2.5rem"
+  },
+  // --- 12 component overrides --------------------------------------------
+  // Colours/fills below are measured brand values; every padding/size/
+  // line-height scalar is aligned with the reference theme package's
+  // geometry (à confirmer) — see MAPPING.md. Converted brand lengths are
+  // cited inline where they occur (radius, control heights).
+  // Cards: a subtle 1px grey border + brand radius, light hover tint
+  // (`[data-ui-card-base]{border-radius:.8rem;--card-color-background:#fff;
+  // --card-base-border-color:var(--color-light-20)}` — .8rem at 62.5% = 8px,
+  // carried by `radius.lg`, not re-declared here).
+  card: {
+    borderWidth: "1px",
+    lineHeight: "1.5",
+    hoverBackground: michelinColor.neutral[50] // #f2f2f2
+  },
+  // Secondary button = OUTLINED in Michelin blue. The winning brand rule
+  // `.ds__btn[data-ui-skin=secondary]:not([disabled],[data-ui-disabled=true])
+  // {--button-color-background:transparent;--button-color-text:
+  // var(--color-primary);--button-color-border:currentcolor}` gives a
+  // transparent fill with BLUE (`--color-primary` #27509b) text and a stroke
+  // that EQUALS that text (`currentcolor`); its hover rule
+  // `…:not([disabled],[data-ui-disabled=true]):where(a,button):hover{
+  // --button-color-background:var(--color-primary);--button-color-text:
+  // var(--color-primary-reverse);--button-color-border:var(--color-primary)}`
+  // swaps the fill AND the label together (`--color-primary-reverse:#fff`) —
+  // a solid blue fill carrying a WHITE label.
+  //
+  // Sentropic carries ONE label colour for both states: `ButtonSecondaryInput`
+  // (packages/tokens/src/component.ts) exposes only `background`, `border` and
+  // `hoverBackground`; the label resolves from `semantic.action.secondaryText`
+  // (`component.button.secondaryText`), and the frameworks' hover rule
+  // (`.st-button--secondary:not(:disabled):hover`) repaints `background` ONLY.
+  // Transcribing the blue hover FILL therefore leaves the blue label on top of
+  // it: #27509b on #27509b = 1.00:1. The state transcribed literally is the
+  // REST state (blue label at 7.76:1 on white, `currentcolor` stroke honoured,
+  // both published), and the hover FILL departs to the brand's own light blue
+  // tint `:root --color-primary-lighten-01` #d4e7fa, on which that same blue
+  // label reads 6.14:1 — both states clear the 4.5:1 text floor. The departure
+  // is the hover fill, recorded in MAPPING.md.
+  buttonSecondary: {
+    background: "transparent",
+    border: michelinColor.blue.primary, // #27509b stroke = the rest label, per `--button-color-border:currentcolor`
+    hoverBackground: michelinColor.blue.light // #d4e7fa brand light blue tint (à confirmer — stands in for the published solid #27509b fill, which the single-label model cannot pair with the brand's white hover label)
+  },
+  // Tabs / top-nav: active tab = Michelin-blue label with a bottom blue
+  // underline (selected tertiary links declare `--link-color-text:#27509b`).
+  tabs: {
+    activeText: michelinColor.blue.primary, // #27509b selected blue label
+    activeBackground: "transparent",
+    inactiveBackground: "transparent",
+    activeWeight: "700",
+    paddingBlock: "0.75rem", // 12px
+    paddingInline: "1rem", // 16px
+    fontSize: "1rem", // 16px
+    lineHeight: "1.5rem", // 24px
+    indicatorSide: "bottom",
+    indicatorMode: "border"
+  },
+  // Pagination: borderless blue text links; active page = filled Michelin blue
+  // with white text for AA contrast (7.76:1).
+  pagination: {
+    background: "transparent",
+    border: "transparent",
+    borderWidth: "0",
+    text: michelinColor.blue.primary, // #27509b link text
+    activeBackground: michelinColor.blue.primary, // #27509b filled active page
+    activeText: "#ffffff", // white on Michelin blue (7.76:1)
+    activeBorderWidth: "0",
+    paddingBlock: "0.25rem", // 4px
+    paddingInline: "0.75rem", // 12px
+    minSize: "2.25rem", // 36px page box
+    fontSize: "1rem", // 16px
+    lineHeight: "1.5rem" // 24px
+  },
+  // Breadcrumb: blue links, dark current page, grey separators.
+  breadcrumb: {
+    linkText: michelinColor.blue.primary, // #27509b
+    text: michelinColor.neutral[500], // #666666 trail text
+    currentText: michelinColor.neutral[800], // #1a1a1a current page
+    separator: michelinColor.neutral[500], // #666666
+    fontSize: "0.875rem", // 14px
+    lineHeight: "1.5rem", // 24px
+    currentWeight: "700"
+  },
+  // Alert / notice: a coloured LEFT accent filet on a transparent box.
+  alert: {
+    background: "transparent",
+    borderTop: "none",
+    borderRight: "none",
+    borderBottom: "none",
+    accentWidth: "0",
+    filetWidth: "0.25rem", // 4px ::before accent bar
+    paddingTop: "1rem", // 16px
+    paddingRight: "1rem", // 16px
+    paddingBottom: "1rem", // 16px
+    paddingLeft: "1.25rem", // 20px (clears the left filet)
+    fontSize: "1rem", // 16px
+    lineHeight: "1.5rem" // 24px
+  },
+  // Accordion / details: a dark bold summary trigger.
+  accordion: {
+    text: michelinColor.neutral[800], // #1a1a1a summary label
+    paddingBlock: "0.75rem", // 12px
+    paddingInline: "1rem", // 16px
+    fontSize: "1rem", // 16px
+    fontWeight: "700",
+    lineHeight: "1.5rem" // 24px
+  },
+  // Tag: a small grey chip carrying the brand radius (.8rem at 62.5% = 8px).
+  // Paddings/sizes below are aligned with the reference theme package's
+  // geometry (à confirmer) — see MAPPING.md.
+  tag: {
+    radius: "0.5rem",
+    paddingBlock: "0.25rem", // 4px
+    paddingInline: "0.5rem", // 8px
+    fontSize: "0.875rem", // 14px
+    fontWeight: "400",
+    lineHeight: "1.5rem", // 24px
+    minHeight: "1.5rem", // 24px
+    neutralBackground: michelinColor.neutral[50], // #f2f2f2
+    neutralText: michelinColor.neutral[800] // #1a1a1a
+  },
+  // Badge: a filled badge in Michelin blue with white text (7.76:1),
+  // carrying the brand radius (.8rem at 62.5% = 8px). Other scalars are
+  // aligned with the reference theme package's geometry (à confirmer).
+  badge: {
+    radius: "0.5rem",
+    paddingBlock: "0",
+    paddingInline: "0.5rem", // 8px
+    fontSize: "0.875rem", // 14px
+    fontWeight: "700",
+    lineHeight: "1.5rem", // 24px
+    textTransform: "none",
+    minHeight: "1.5rem", // 24px
+    infoBackground: michelinColor.blue.primary, // #27509b
+    infoText: "#ffffff" // white on Michelin blue (7.76:1)
+  },
+  // Checkbox/radio label.
+  choice: {
+    labelFontSize: "1rem", // 16px
+    labelLineHeight: "1.5rem", // 24px
+    radioLineHeight: "1.5rem", // 24px
+    labelColor: michelinColor.neutral[800] // #1a1a1a
+  },
+  // Search input.
+  search: {
+    paddingBlock: "0.375rem", // 6px
+    paddingInline: "0.75rem", // 12px
+    fontSize: "1rem", // 16px
+    lineHeight: "1.5rem" // 24px
+  },
+  // Toggle / switch label.
+  toggle: {
+    trackPadding: "0",
+    lineHeight: "1.5rem", // 24px
+    textColor: michelinColor.neutral[800] // #1a1a1a
+  }
+} as const;
+
+// --- semantic (Michelin-specific role mapping) -------------------------------
+const semantic = {
+  surface: {
+    default: michelinColor.neutral[0], // white
+    subtle: michelinColor.neutral[50], // #f2f2f2 secondary surface
+    raised: michelinColor.neutral[0], // white
+    inverse: michelinColor.navy, // #00205b deep navy reverse surface
+    overlay: "rgb(26 26 26 / 0.6)" // derived modal backdrop from the brand OVERLAY ink #1a1a1a (`.ds__dropdown-overlay`/`.ds__sidepanel-overlay`), which is not the #333333 shadow ink (à confirmer — no alpha published)
+  },
+  text: {
+    primary: michelinColor.neutral[800], // #1a1a1a (body color)
+    secondary: michelinColor.neutral[600], // #404040 (secondary)
+    muted: michelinColor.neutral[500], // #666666 (muted)
+    inverse: michelinColor.neutral[0], // white on dark / coloured surfaces
+    link: michelinColor.blue.primary // #27509b Michelin blue link (7.76:1)
+  },
+  border: {
+    subtle: michelinColor.neutral[200], // #cccccc (card base border)
+    strong: michelinColor.neutral[500], // #666666
+    interactive: michelinColor.blue.primary // #27509b Michelin blue interactive (7.76:1)
+  },
+  action: {
+    primary: michelinColor.blue.primary, // #27509b Michelin blue primary
+    primaryHover: michelinColor.blue.hover, // #3a61a6 darker hover
+    primaryText: "#ffffff", // white on Michelin blue (7.76:1)
+    secondary: michelinColor.neutral[50], // #f2f2f2 secondary surface
+    secondaryHover: michelinColor.neutral[100], // #e5e5e5
+    // Measured: the secondary button's REST label,
+    // `.ds__btn[data-ui-skin=secondary]:not(…){--button-color-text:
+    // var(--color-primary)}`, matched by its `--button-color-border:
+    // currentcolor` stroke. One key serves rest AND hover here (see
+    // `buttonSecondary`), so the brand's white hover label
+    // (`--color-primary-reverse:#fff`) cannot also be carried: white would
+    // render on the transparent rest fill over `surface.default` at 1.00:1.
+    secondaryText: michelinColor.blue.primary, // #27509b (7.76:1 on white at rest, 6.14:1 on the #d4e7fa hover tint)
+    danger: michelinColor.system.error // #b71c1c error red
+  },
+  feedback: {
+    success: michelinColor.system.success,
+    warning: michelinColor.system.warning,
+    error: michelinColor.system.error,
+    info: michelinColor.system.info
+  },
+  status: {
+    pending: michelinColor.system.warning,
+    processing: michelinColor.system.info,
+    completed: michelinColor.system.success,
+    failed: michelinColor.system.error
+  },
+  // Categorical data-vis palette built from the brand hues: Michelin blue,
+  // deep navy, purple accent, Michelin yellow (fill with dark text), mid blue,
+  // plus the status hues. The brand publishes no 8-colour sequential scale,
+  // so the combination is a coherent proposal (see MAPPING.md, "à confirmer").
+  data: {
+    category1: michelinColor.blue.primary, // #27509b Michelin blue
+    category2: michelinColor.navy, // #00205b deep navy
+    category3: michelinColor.purple, // #582c83 purple accent
+    category4: michelinColor.yellow, // #fce500 Michelin yellow
+    category5: michelinColor.blue.mid, // #6182bb mid blue
+    category6: michelinColor.system.success, // #2e7d32 green
+    category7: michelinColor.system.error, // #b71c1c red
+    category8: michelinColor.neutral[600] // #404040 grey
+  }
+} as const;
+
+/**
+ * The Michelin theme as a Sentropic `TenantTheme`. The `tokens` tree is
+ * complete: `foundation` and `semantic` carry Michelin-specific values, and
+ * the `component` layer is REBUILT from this theme's own semantic/foundation
+ * via `createComponent` — so the Michelin blue brand reaches the components
+ * (buttons, tabs, pagination, chat bubbles…), not just the elements that read
+ * semantic vars directly.
+ */
+export const michelinTheme: TenantTheme = {
+  id: "michelin",
+  label: "Michelin",
+  mode: "light",
+  tokens: {
+    foundation,
+    semantic,
+    component: createComponent(semantic, foundation)
+  }
+};
+
+export default michelinTheme;
