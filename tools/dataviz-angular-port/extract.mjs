@@ -289,12 +289,28 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     process.exit(2);
   }
   const out = [];
+  const skipped = [];
   for (const n of names) {
     try {
       out.push(extract(n));
     } catch (e) {
+      skipped.push(n);
       console.error('SKIP ' + n + ': ' + e.message);
     }
+  }
+  // A total refusal exits non-zero. A SKIP inside a batch is a normal outcome —
+  // it means that adapter is hand-work — so a partial run stays rc=0 and the
+  // summary carries the count. But a run that extracted NOTHING did no work, and
+  // returning success for it makes the refusal invisible to anything that reads
+  // an exit code: a whole lot the extractor rejects would pass such a check while
+  // descriptors.json never changed. It also leaves the ledger untouched here,
+  // rather than rewriting it to its own current contents.
+  if (out.length === 0) {
+    console.error(
+      'extracted 0/' + names.length + ': nothing was extracted, descriptors.json left untouched.\n' +
+        'Every named component was refused — read the SKIP lines above; those adapters are hand-work.',
+    );
+    process.exit(1);
   }
   // Merge by name into the existing ledger: a lot extracts its own components
   // without discarding the descriptors of the lots already shipped.
@@ -310,7 +326,11 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     if (!merged.some((d) => d.name === fresh.name)) merged.push(fresh);
   }
   writeFileSync(target, JSON.stringify(merged, null, 1) + '\n');
-  console.log('extracted ' + out.length + '/' + names.length + ', descriptors.json now holds ' + merged.length);
+  console.log(
+    'extracted ' + out.length + '/' + names.length +
+      (skipped.length ? ', refused ' + skipped.length + ' (' + skipped.join(', ') + ')' : '') +
+      ', descriptors.json now holds ' + merged.length,
+  );
   for (const d of out) {
     const b = d.derive.wrap ? d.derive.wrap + '(' + d.derive.builder + ')' : d.derive.builder;
     console.log(
