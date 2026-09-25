@@ -346,10 +346,6 @@ export class DependencyWheelChart {
     return classNames("st-dependencyWheelChart__arc", `st-dependencyWheelChart__arc--${arc.tone}`);
   }
 
-  legendSwatchClass(entry: LegendEntry): string {
-    return classNames("st-graphLegend__swatch", `st-graphLegend__swatch--${entry.tone}`);
-  }
-
   handleLeave(): void {
     this.hoveredLinkIndex = null;
   }

@@ -570,7 +570,7 @@ const cases: Case[] = [
     fixture: 'wide',
     expectedMarkupDiffs: 0,
     expectedSignatureDiffs: 0,
-    attribution: "DS: the shared st-graphLegend block differs, and Angular marks it aria-hidden where React labels it",
+    attribution: '—',
     control: {
       ng: NGDS.ArcDiagramChart as Type<unknown>,
       template: `<st-arc-diagram-chart [data]="controlData" label="L"></st-arc-diagram-chart>`,
@@ -587,7 +587,7 @@ const cases: Case[] = [
     fixture: 'wide',
     expectedMarkupDiffs: 0,
     expectedSignatureDiffs: 0,
-    attribution: "DS: the shared st-graphLegend block differs, and Angular marks it aria-hidden where React labels it",
+    attribution: '—',
     control: {
       ng: NGDS.DependencyWheelChart as Type<unknown>,
       template: `<st-dependency-wheel-chart [data]="controlData" label="L"></st-dependency-wheel-chart>`,

@@ -294,10 +294,6 @@ export class ArcDiagramChart {
     return classNames("st-arcDiagramChart__node", `st-arcDiagramChart__node--${node.tone}`);
   }
 
-  legendSwatchClass(entry: LegendEntry): string {
-    return classNames("st-graphLegend__swatch", `st-graphLegend__swatch--${entry.tone}`);
-  }
-
   handleLeave(): void {
     this.hoveredLinkIndex = null;
   }
