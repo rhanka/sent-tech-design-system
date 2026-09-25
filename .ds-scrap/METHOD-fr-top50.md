@@ -574,6 +574,22 @@ unit. The conductor integrates with one command, run from the lot worktree:
 git cherry-pick -n <lot-branch>..<theme-branch>
 ```
 
+**But the branch name suffices only for a builder that has finished.** A builder that is
+still committing has a moving tip, so its branch name **resolves twice, to two values**:
+measured on a deliberately moving branch, `git rev-parse` returned one sha, a further
+commit landed, and the same name returned another — so a range computed before that
+commit and taken after it silently includes work nobody examined, and the scope check will
+have examined something other than what was picked. For a live builder the range is
+therefore frozen on an explicit sha: `git rev-parse <branch>` first, then
+`<lot-branch>..<that-sha>`.
+
+This is the validity window again, at the shortest interval it has yet appeared in — not
+between a brief and a rebase, nor between a measurement and a conclusion, but **between two
+of one's own commands**. And the reason the original rule missed it is the familiar one:
+the probe that established it made three commits and *then* measured, so it tested a
+**static** branch and was silent about a moving one. A rule measured on a finished builder
+says nothing about a working one.
+
 The **range** form, not a sha: it takes however many commits the builder made — probed
 with three, one of them a second edit to a file an earlier commit had already touched,
 one adding a file — and stages their cumulative result in a single command, exit 0,
