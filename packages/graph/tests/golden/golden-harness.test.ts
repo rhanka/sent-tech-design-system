@@ -45,6 +45,14 @@ import { napiAvailable, smokeCapture } from "./smoke.mjs";
 // The whole golden suite needs headless Chrome. If absent (some CI runners),
 // the suite skips rather than fails -- the harness's job is to be available
 // where Chrome is, and the napi smoke path (below) still runs.
+//
+// "Skips" must mean SKIPPED IN THE REPORT. Every CDP block below used to guard
+// itself with a bare `return`, and a vitest test body that returns early is
+// reported PASSED, not skipped: measured on vitest 4.1.11, a Chrome-less run of
+// this file reported `27 passed` -- byte-identical to the count a run WITH
+// Chrome reports -- so 24 pixel-parity tests went green having asserted
+// nothing. The guards now call `ctx.skip()`, whose reason string lands in the
+// report. No assertion in this file changed.
 let oracle: Awaited<ReturnType<typeof openOracle>> | null = null;
 let chromeUp = false;
 
@@ -69,6 +77,15 @@ const CAPTURE_OPTS = { dpr: 1, cssWidth: 200, cssHeight: 200, camera: { x: 0, y:
 // hard failure instead of a silent skip.
 const REQUIRE_CHROME = process.env.GOLDEN_REQUIRE_CHROME === "1";
 
+// The reason string vitest prints next to the skipped test. `ctx.skip()` is the
+// RUNTIME skip and the only correct form here: `it.skipIf` / `describe.skipIf`
+// evaluate their condition at COLLECTION time, before the `beforeAll` above has
+// booted the oracle, so they would skip this suite even where Chrome IS present
+// (measured on vitest 4.1.11).
+const NO_CHROME = "Chrome/CDP oracle did not boot — pixel capture NOT run";
+// Same rule for the napi smoke path: absent addon must read as "not run".
+const NO_NAPI = "@napi-rs/canvas unavailable — smoke capture NOT run";
+
 describe("B1 Phase-0 golden harness (Chrome/CDP direct-canvas-pixel oracle)", () => {
   it("oracle booted (or skip is explicit)", () => {
     if (REQUIRE_CHROME) {
@@ -78,8 +95,8 @@ describe("B1 Phase-0 golden harness (Chrome/CDP direct-canvas-pixel oracle)", ()
     expect(typeof chromeUp).toBe("boolean");
   });
 
-  it("capture+diff is DETERMINISTIC: same fixture twice => zero diff", async () => {
-    if (!chromeUp || !oracle) return;
+  it("capture+diff is DETERMINISTIC: same fixture twice => zero diff", async (ctx) => {
+    if (!chromeUp || !oracle) ctx.skip(NO_CHROME);
     const a = await oracle.capture(baseFixture, CAPTURE_OPTS);
     const b = await oracle.capture(baseFixture, CAPTURE_OPTS);
     const result = diffPixels(a, b, { channelTolerance: 0, maxFailingPixels: 0 });
@@ -90,8 +107,8 @@ describe("B1 Phase-0 golden harness (Chrome/CDP direct-canvas-pixel oracle)", ()
     expect(result.pass).toBe(true);
   }, 60_000);
 
-  it("catches a regression: one node moved 3px => diff ABOVE tolerance", async () => {
-    if (!chromeUp || !oracle) return;
+  it("catches a regression: one node moved 3px => diff ABOVE tolerance", async (ctx) => {
+    if (!chromeUp || !oracle) ctx.skip(NO_CHROME);
     const ref = await oracle.capture(baseFixture, CAPTURE_OPTS);
     // Move the red circle 3 world-px (= 3 device-px at zoom 1).
     const moved = perturbNode(baseFixture, "circle", 3, 0);
@@ -103,8 +120,8 @@ describe("B1 Phase-0 golden harness (Chrome/CDP direct-canvas-pixel oracle)", ()
     expect(result.failingPixels).toBeGreaterThan(0);
   }, 60_000);
 
-  it("geometry probes hit known node centers (catches drift a loose tolerance masks)", async () => {
-    if (!chromeUp || !oracle) return;
+  it("geometry probes hit known node centers (catches drift a loose tolerance masks)", async (ctx) => {
+    if (!chromeUp || !oracle) ctx.skip(NO_CHROME);
     const cap = await oracle.capture(baseFixture, CAPTURE_OPTS);
     const view = { width: cap.width, height: cap.height, zoom: 1, camera: { x: 0, y: 0 } };
     // The red circle center should be solidly red. The diamond center solidly blue.
@@ -125,8 +142,8 @@ describe("B1 Phase-0 golden harness (Chrome/CDP direct-canvas-pixel oracle)", ()
     expect(drawnRadius(14, 1, 1)).toBeCloseTo(14, 5);
   }, 60_000);
 
-  it("supports paired captures at DPR 1 / 1.25 / 2 / 3 and >= 2 zooms (dims scale)", async () => {
-    if (!chromeUp || !oracle) return;
+  it("supports paired captures at DPR 1 / 1.25 / 2 / 3 and >= 2 zooms (dims scale)", async (ctx) => {
+    if (!chromeUp || !oracle) ctx.skip(NO_CHROME);
     for (const dpr of [1, 1.25, 2, 3]) {
       for (const zoom of [1, 2]) {
         const cap = await oracle.capture(baseFixture, {
@@ -188,8 +205,8 @@ async function expectDeterministic(
 }
 
 describe("B1-P1 SHAPES per type (N1 dot, N2 diamond, N3 star, N4 square, N5 hexagon, N6 triangle)", () => {
-  it("each shape draws at its center with the shape colour (geometry parity)", async () => {
-    if (!chromeUp || !oracle) return;
+  it("each shape draws at its center with the shape colour (geometry parity)", async (ctx) => {
+    if (!chromeUp || !oracle) ctx.skip(NO_CHROME);
     const cap = await expectDeterministic(oracle, SHAPES_FIXTURE, WIDE_OPTS);
     const view = VIEW(cap);
     // Every node's center must be solidly the one shape colour. A center probe
@@ -203,8 +220,8 @@ describe("B1-P1 SHAPES per type (N1 dot, N2 diamond, N3 star, N4 square, N5 hexa
     expect(pass).toBe(true);
   }, 60_000);
 
-  it("each polygon glyph fills a KNOWN interior point near a vertex (catches wrong start-angle/ratio)", async () => {
-    if (!chromeUp || !oracle) return;
+  it("each polygon glyph fills a KNOWN interior point near a vertex (catches wrong start-angle/ratio)", async (ctx) => {
+    if (!chromeUp || !oracle) ctx.skip(NO_CHROME);
     const cap = await oracle.capture(SHAPES_FIXTURE, WIDE_OPTS);
     const view = VIEW(cap);
     // For each polygon shape, sample a point 70% of the way to its FIRST drawn
@@ -232,8 +249,8 @@ describe("B1-P1 SHAPES per type (N1 dot, N2 diamond, N3 star, N4 square, N5 hexa
     expect(pass).toBe(true);
   }, 60_000);
 
-  it("catches a moved shape: nudging the star 3px diffs above tolerance", async () => {
-    if (!chromeUp || !oracle) return;
+  it("catches a moved shape: nudging the star 3px diffs above tolerance", async (ctx) => {
+    if (!chromeUp || !oracle) ctx.skip(NO_CHROME);
     const ref = await oracle.capture(SHAPES_FIXTURE, WIDE_OPTS);
     const moved = perturbNode(SHAPES_FIXTURE, "star", 3, 0);
     const cap = await oracle.capture(moved, WIDE_OPTS);
@@ -244,8 +261,8 @@ describe("B1-P1 SHAPES per type (N1 dot, N2 diamond, N3 star, N4 square, N5 hexa
 });
 
 describe("B1-P1 BOXES (N7 labelled / N9 empty / recon focal) + #199 pixel-fit ellipsis", () => {
-  it("a labelled god-class box draws dark text at its center over the translucent fill", async () => {
-    if (!chromeUp || !oracle) return;
+  it("a labelled god-class box draws dark text at its center over the translucent fill", async (ctx) => {
+    if (!chromeUp || !oracle) ctx.skip(NO_CHROME);
     const cap = await expectDeterministic(oracle, BOX_LABELLED_FIXTURE);
     // The box center sits on a glyph stroke of the dark label text most of the
     // time; rather than pin a single glyph pixel (font-fragile), assert the box
@@ -262,8 +279,8 @@ describe("B1-P1 BOXES (N7 labelled / N9 empty / recon focal) + #199 pixel-fit el
     expect(bbox.height).toBeLessThanOrEqual(expectedH + 6);
   }, 60_000);
 
-  it("an empty (unlabelled) box collapses to a small square with no text", async () => {
-    if (!chromeUp || !oracle) return;
+  it("an empty (unlabelled) box collapses to a small square with no text", async (ctx) => {
+    if (!chromeUp || !oracle) ctx.skip(NO_CHROME);
     const cap = await expectDeterministic(oracle, BOX_EMPTY_FIXTURE);
     // No dark label text at all (the empty box draws none).
     const darkText = countColorPixels(cap, BOX_TEXT_RGB, 30);
@@ -277,8 +294,8 @@ describe("B1-P1 BOXES (N7 labelled / N9 empty / recon focal) + #199 pixel-fit el
     expect(bbox.height).toBeLessThanOrEqual(side + 6);
   }, 60_000);
 
-  it("recon focal pair: two labelled boxes + connecting edge render deterministically", async () => {
-    if (!chromeUp || !oracle) return;
+  it("recon focal pair: two labelled boxes + connecting edge render deterministically", async (ctx) => {
+    if (!chromeUp || !oracle) ctx.skip(NO_CHROME);
     const cap = await expectDeterministic(oracle, BOX_FOCAL_FIXTURE);
     // Both focal boxes carry text -> dark-text pixels present; the connecting
     // edge means the content spans both boxes (wide bbox).
@@ -289,8 +306,8 @@ describe("B1-P1 BOXES (N7 labelled / N9 empty / recon focal) + #199 pixel-fit el
     expect(bbox.width).toBeGreaterThan(100);
   }, 60_000);
 
-  it("#199: a long box label is PIXEL-CLIPPED so the box stays within the width cap", async () => {
-    if (!chromeUp || !oracle) return;
+  it("#199: a long box label is PIXEL-CLIPPED so the box stays within the width cap", async (ctx) => {
+    if (!chromeUp || !oracle) ctx.skip(NO_CHROME);
     const cap = await expectDeterministic(oracle, BOX_LONG_LABEL_FIXTURE);
     const bbox = contentBBox(cap);
     expect(bbox).not.toBeNull();
@@ -303,8 +320,8 @@ describe("B1-P1 BOXES (N7 labelled / N9 empty / recon focal) + #199 pixel-fit el
     expect(countColorPixels(cap, BOX_TEXT_RGB, 40)).toBeGreaterThan(0);
   }, 60_000);
 
-  it("#199: a short box label is untouched and well under the cap", async () => {
-    if (!chromeUp || !oracle) return;
+  it("#199: a short box label is untouched and well under the cap", async (ctx) => {
+    if (!chromeUp || !oracle) ctx.skip(NO_CHROME);
     const cap = await oracle.capture(BOX_SHORT_LABEL_FIXTURE, CAPTURE_OPTS);
     const bbox = contentBBox(cap);
     expect(bbox).not.toBeNull();
@@ -316,8 +333,8 @@ describe("B1-P1 BOXES (N7 labelled / N9 empty / recon focal) + #199 pixel-fit el
 });
 
 describe("B1-P1 COMMUNITY colours (N14 single-source consumer)", () => {
-  it("same group colour renders IDENTICALLY; distinct groups render DISTINCTLY", async () => {
-    if (!chromeUp || !oracle) return;
+  it("same group colour renders IDENTICALLY; distinct groups render DISTINCTLY", async (ctx) => {
+    if (!chromeUp || !oracle) ctx.skip(NO_CHROME);
     const cap = await expectDeterministic(oracle, COMMUNITY_FIXTURE, WIDE_OPTS);
     const view = VIEW(cap);
     const centerOf = (id: string) => {
@@ -339,8 +356,8 @@ describe("B1-P1 COMMUNITY colours (N14 single-source consumer)", () => {
 });
 
 describe("B1-P1 NODE BORDERS (N10 hollow interior fixed-white / N11 bold)", () => {
-  it("solid center = node colour; hollow center = translucent-white over white page", async () => {
-    if (!chromeUp || !oracle) return;
+  it("solid center = node colour; hollow center = translucent-white over white page", async (ctx) => {
+    if (!chromeUp || !oracle) ctx.skip(NO_CHROME);
     const cap = await expectDeterministic(oracle, BORDERS_FIXTURE, WIDE_OPTS);
     const view = VIEW(cap);
     const at = (id: string) => {
@@ -361,8 +378,8 @@ describe("B1-P1 NODE BORDERS (N10 hollow interior fixed-white / N11 bold)", () =
     expect(pass).toBe(true);
   }, 60_000);
 
-  it("a hollow node's BORDER carries the node colour (ring of node-colour pixels)", async () => {
-    if (!chromeUp || !oracle) return;
+  it("a hollow node's BORDER carries the node colour (ring of node-colour pixels)", async (ctx) => {
+    if (!chromeUp || !oracle) ctx.skip(NO_CHROME);
     const cap = await oracle.capture(BORDERS_FIXTURE, WIDE_OPTS);
     // The four green-bordered nodes must put node-colour pixels on screen (the
     // borders) even though the hollow interiors are white.
@@ -370,8 +387,8 @@ describe("B1-P1 NODE BORDERS (N10 hollow interior fixed-white / N11 bold)", () =
     expect(greenPixels, "border colour must appear on screen").toBeGreaterThan(0);
   }, 60_000);
 
-  it("bold vs normal border differs (more border ink) — same colour, thicker stroke", async () => {
-    if (!chromeUp || !oracle) return;
+  it("bold vs normal border differs (more border ink) — same colour, thicker stroke", async (ctx) => {
+    if (!chromeUp || !oracle) ctx.skip(NO_CHROME);
     // Isolate a hollow-normal vs hollow-bold node: same geometry, the bold one
     // paints MORE node-colour pixels (thicker ring). We render two single-node
     // fixtures so the count is attributable.
@@ -392,13 +409,13 @@ describe("B1-P1 NODE BORDERS (N10 hollow interior fixed-white / N11 bold)", () =
 });
 
 describe("B1-P1 EDGES (E1 thick / E2 colour+alpha / E3 dash families / E4 curve / E6 arrow)", () => {
-  it("the edge sampler scene (thick + 3 dash families + curve) is deterministic", async () => {
-    if (!chromeUp || !oracle) return;
+  it("the edge sampler scene (thick + 3 dash families + curve) is deterministic", async (ctx) => {
+    if (!chromeUp || !oracle) ctx.skip(NO_CHROME);
     await expectDeterministic(oracle, EDGES_FIXTURE, WIDE_OPTS);
   }, 60_000);
 
-  it("each styled edge paints its colour (presence of thick/dashed/dotted/long-dash/curve ink)", async () => {
-    if (!chromeUp || !oracle) return;
+  it("each styled edge paints its colour (presence of thick/dashed/dotted/long-dash/curve ink)", async (ctx) => {
+    if (!chromeUp || !oracle) ctx.skip(NO_CHROME);
     const cap = await oracle.capture(EDGES_FIXTURE, WIDE_OPTS);
     // Each edge colour must appear (the edge drew). Dashed/dotted draw fewer
     // pixels but still > 0; we assert presence, not exact dash phase (fragile).
@@ -409,8 +426,8 @@ describe("B1-P1 EDGES (E1 thick / E2 colour+alpha / E3 dash families / E4 curve 
     expect(countColorPixels(cap, [8, 145, 178], 36), "curved edge").toBeGreaterThan(0);
   }, 60_000);
 
-  it("dash families differ from a solid edge of the same colour (fewer ink pixels)", async () => {
-    if (!chromeUp || !oracle) return;
+  it("dash families differ from a solid edge of the same colour (fewer ink pixels)", async (ctx) => {
+    if (!chromeUp || !oracle) ctx.skip(NO_CHROME);
     // A solid edge vs the same edge dashed/dotted: the dashed/dotted variants
     // paint FEWER pixels along the identical segment (gaps). Single-edge
     // fixtures so the count is attributable to the dash mode alone.
@@ -434,8 +451,8 @@ describe("B1-P1 EDGES (E1 thick / E2 colour+alpha / E3 dash families / E4 curve 
     expect(diffPixels(dashed, dashed2, { channelTolerance: 0, maxFailingPixels: 0 }).maxChannelDelta).toBe(0);
   }, 60_000);
 
-  it("a curved edge bends OFF the straight chord (control offset is honoured)", async () => {
-    if (!chromeUp || !oracle) return;
+  it("a curved edge bends OFF the straight chord (control offset is honoured)", async (ctx) => {
+    if (!chromeUp || !oracle) ctx.skip(NO_CHROME);
     const straight = {
       nodes: [
         { id: "p", x: -120, y: 0, size: 6, color: "#cbd5e1", shape: "circle" },
@@ -462,8 +479,8 @@ describe("B1-P1 EDGES (E1 thick / E2 colour+alpha / E3 dash families / E4 curve 
     expect(isCyan(capC, mx, my), "curved edge bows OFF the chord midpoint").toBe(false);
   }, 60_000);
 
-  it("E2/E12 colour-alpha split: opaque (a255) edge is darker over white than a180", async () => {
-    if (!chromeUp || !oracle) return;
+  it("E2/E12 colour-alpha split: opaque (a255) edge is darker over white than a180", async (ctx) => {
+    if (!chromeUp || !oracle) ctx.skip(NO_CHROME);
     const cap = await expectDeterministic(oracle, EDGE_ALPHA_FIXTURE, WIDE_OPTS);
     const view = VIEW(cap);
     // Both edges are blue #3b82f6; the a255 one composites fully (darker blue),
@@ -481,8 +498,8 @@ describe("B1-P1 EDGES (E1 thick / E2 colour+alpha / E3 dash families / E4 curve 
 });
 
 describe("B1-P1 SELECTION / highlight (N14 selected/focus colour + N16 size multiplier)", () => {
-  it("selected node renders the SELECTED colour; focused node the FOCUS colour", async () => {
-    if (!chromeUp || !oracle) return;
+  it("selected node renders the SELECTED colour; focused node the FOCUS colour", async (ctx) => {
+    if (!chromeUp || !oracle) ctx.skip(NO_CHROME);
     const cap = await expectDeterministic(oracle, SELECTION_FIXTURE, WIDE_OPTS);
     const view = VIEW(cap);
     const at = (id: string) => {
@@ -500,8 +517,8 @@ describe("B1-P1 SELECTION / highlight (N14 selected/focus colour + N16 size mult
     expect(pass).toBe(true);
   }, 60_000);
 
-  it("N16: the selected node's glyph is LARGER (size multiplier baked in renders a bigger disc)", async () => {
-    if (!chromeUp || !oracle) return;
+  it("N16: the selected node's glyph is LARGER (size multiplier baked in renders a bigger disc)", async (ctx) => {
+    if (!chromeUp || !oracle) ctx.skip(NO_CHROME);
     // Same colour, two sizes: base vs base×1.45. The larger renders a wider disc
     // -> a bigger content bbox. Single-node fixtures so the bbox is attributable.
     const base = { nodes: [{ id: "n", x: 0, y: 0, size: 14, color: "#2563eb", shape: "circle" }], edges: [] };
@@ -516,8 +533,8 @@ describe("B1-P1 SELECTION / highlight (N14 selected/focus colour + N16 size mult
 });
 
 describe("B1-P1 DETERMINISM floor — every named fixture re-captures byte-identical", () => {
-  it("each fixture is byte-stable (the A/B golden model rests on this)", async () => {
-    if (!chromeUp || !oracle) return;
+  it("each fixture is byte-stable (the A/B golden model rests on this)", async (ctx) => {
+    if (!chromeUp || !oracle) ctx.skip(NO_CHROME);
     for (const [name, fixture] of Object.entries(ALL_FIXTURES)) {
       const a = await oracle.capture(fixture, CAPTURE_OPTS);
       const b = await oracle.capture(fixture, CAPTURE_OPTS);
@@ -555,11 +572,11 @@ function maxChannelDelta(a: number[], b: number[]): number {
 }
 
 describe("B1 Phase-0 supplemental SMOKE path (@napi-rs/canvas, NOT the parity oracle)", () => {
-  it("napi Canvas2D capture is deterministic and detects the 3px move", async () => {
+  it("napi Canvas2D capture is deterministic and detects the 3px move", async (ctx) => {
     if (!napiAvailable()) {
       // eslint-disable-next-line no-console
       console.warn("[golden] @napi-rs/canvas unavailable, skipping smoke path");
-      return;
+      ctx.skip(NO_NAPI);
     }
     const a = await smokeCapture(baseFixture, CAPTURE_OPTS);
     const b = await smokeCapture(baseFixture, CAPTURE_OPTS);
