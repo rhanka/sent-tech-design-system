@@ -36,7 +36,7 @@ function dsInputTypes(component) {
 function dsFieldDefaults(component) {
   const src = readFileSync(NGDS + '/' + component + '.ts', 'utf8');
   const out = new Map();
-  for (const m of src.matchAll(/^  @NgInput\((?:"([^"]+)")?\)\s*([A-Za-z_$][\w$]*)\s*=\s*([^;]+);$/gm)) {
+  for (const m of src.matchAll(/^  @NgInput\((?:"([^"]+)")?\)\s*([A-Za-z_$][\w$]*)(?:\s*:\s*[^=;]+?)?\s*=\s*([^;]+);$/gm)) {
     out.set(m[1] || m[2], m[3].trim());
   }
   return out;
@@ -133,11 +133,26 @@ function emit(d) {
     'Number', 'Object', 'Omit', 'Parameters', 'Partial', 'Pick', 'Promise', 'Readonly',
     'Record', 'Required', 'ReturnType', 'Set', 'String',
   ]);
+  // Import only the type names the emitted file actually mentions: the derived
+  // field's type, the pass-through input types, and whatever the Props alias text
+  // refers to. Anything else would be an unused import.
+  // The alias's own name and its prose are not types to import: drop the
+  // declaration line and the JSDoc before reading identifiers out of it.
+  const aliasBody = propsAlias(d.name)
+    .replace(/^export type \w+ = \{/, '')
+    .replace(/\/\*\*[\s\S]*?\*\//g, '')
+    .replace(/\/\/[^\n]*/g, '');
   const typeNames = new Set();
-  for (const t of [derivedType].concat(d.ds.typeImports, [...passthroughType.values()])) {
+  for (const t of [derivedType, aliasBody].concat([...passthroughType.values()])) {
     for (const m of t.matchAll(/\b([A-Z][A-Za-z0-9]*)\b/g)) {
-      if (!GLOBAL_TYPES.has(m[1])) typeNames.add(m[1]);
+      if (!GLOBAL_TYPES.has(m[1]) && m[1] !== d.name + 'Props' && m[1] !== d.name) typeNames.add(m[1]);
     }
+  }
+  // A DS type imported under an alias must keep its `Original as Alias` form.
+  const aliasFor = new Map();
+  for (const entry of d.ds.typeImports) {
+    const parts = entry.split(/\s+as\s+/);
+    aliasFor.set(parts[1] ? parts[1].trim() : parts[0].trim(), entry.trim());
   }
 
   const inputs = d.props
@@ -166,7 +181,11 @@ function emit(d) {
     })
     .join('\n');
 
-  const helperImports = Object.entries(d.helpers)
+  const helperEntries = Object.entries(d.helpers);
+  if (d.classExpr && d.classExpr.helper === 'classNames' && !d.helpers['./classNames.js']) {
+    helperEntries.push(['./classNames.js', ['classNames']]);
+  }
+  const helperImports = helperEntries
     .map((e) => 'import { ' + e[1].join(', ') + " } from '" + e[0] + "';")
     .join('\n');
   const coreValue = d.coreFns.length ? d.coreFns.join(', ') + ', ' : '';
@@ -181,9 +200,14 @@ function emit(d) {
   const classAssign = d.classExpr
     ? '    this.classValue = ' + d.classExpr.helper + "('" + d.classExpr.base + "', this.classInput);\n"
     : '';
-  const dsTypeImport = typeNames.size
-    ? ', ' + [...typeNames].sort().map((t) => 'type ' + t).join(', ')
-    : '';
+  // A name core already exports must not be imported from the design system too
+  // (ChartAnnotation is in both), or the emitted file declares it twice.
+  const coreNames = new Set(d.coreTypes.concat(d.coreFns));
+  const dsOnly = [...typeNames]
+    .filter((t) => !coreNames.has(t))
+    .sort()
+    .map((t) => 'type ' + (aliasFor.get(t) ?? t));
+  const dsTypeImport = dsOnly.length ? ', ' + dsOnly.join(', ') : '';
 
   return `import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input as NgInput, inject } from '@angular/core';
 import type { OnChanges, OnDestroy, OnInit } from '@angular/core';
