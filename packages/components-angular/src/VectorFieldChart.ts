@@ -259,7 +259,7 @@ export class VectorFieldChart {
   }
 
   get dataValueItems(): string[] {
-    return this.validData.map((datum) => `x ${datum.x}, y ${datum.y} - |v| ${formatTick(datum.length)} @ ${formatTick(datum.direction)}deg`);
+    return this.validData.map((datum) => `x ${datum.x}, y ${datum.y} · |v| ${formatTick(datum.length)} @ ${formatTick(datum.direction)}°`);
   }
 
   get hoveredArrow(): VectorArrow | null {
@@ -278,12 +278,12 @@ export class VectorFieldChart {
 
   get tooltipLabel(): string {
     const arrow = this.hoveredArrow;
-    return arrow ? `x ${arrow.datum.x} - y ${arrow.datum.y}` : "";
+    return arrow ? `x ${arrow.datum.x} · y ${arrow.datum.y}` : "";
   }
 
   get tooltipValue(): string {
     const arrow = this.hoveredArrow;
-    return arrow ? `|v| ${formatTick(arrow.datum.length)} @ ${formatTick(arrow.datum.direction)}deg` : "";
+    return arrow ? `|v| ${formatTick(arrow.datum.length)} @ ${formatTick(arrow.datum.direction)}°` : "";
   }
 
   handlePointerMove(event: PointerEvent): void {

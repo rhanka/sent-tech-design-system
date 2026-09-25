@@ -192,6 +192,8 @@ export class KpiCard {
 
   get formattedValue(): string {
     if (typeof this.value === "string") return this.value;
+    // Intl renders "NaN"/"∞" for a non-finite value; React prints an em dash instead.
+    if (!Number.isFinite(this.value)) return "—";
     if (this.format === "currency") {
       return new Intl.NumberFormat(this.locale, {
         style: "currency",

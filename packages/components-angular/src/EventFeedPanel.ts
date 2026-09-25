@@ -38,7 +38,7 @@ export type EventFeedPanelProps = {
           *ngFor="let item of items"
           [class]="'st-eventFeedPanel__item st-eventFeedPanel__item--' + item.tone"
           role="article"
-          [attr.aria-label]="item.datum.type + ' - ' + item.datum.message"
+          [attr.aria-label]="item.datum.type + ' — ' + item.datum.message"
         >
           <span [class]="'st-eventFeedPanel__badge st-eventFeedPanel__badge--' + item.tone" aria-hidden="true"></span>
           <div class="st-eventFeedPanel__body">
