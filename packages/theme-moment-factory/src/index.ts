@@ -231,6 +231,12 @@ const foundation = {
   // chevron is redrawn in white with a 36px right gutter.
   field: {
     style: "outline",
+    // Sent Tech base values: unused by the `outline` style, present so the leaves
+    // are not dropped — a missing token leaf compiles to an unset CSS variable and
+    // no gate detects it.
+    fillBg: "var(--st-semantic-surface-default)",
+    underlineColor: "var(--st-semantic-border-strong)",
+    underlineWidth: "1px",
     radius: "0", // measured input border-radius: 0 — square fields
     selectAppearance: "none",
     selectChevron:
