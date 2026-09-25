@@ -71,9 +71,15 @@ beforeAll(async () => {
   ]);
   for (const handle of handles) handle.unmount();
   // Warm the Angular island as well: whichever Angular test runs first must
-  // not pay the cold dynamic-import cost inside its own timeout.
+  // not pay the cold dynamic-import cost inside its own timeout. Use a
+  // dedicated host so this mount never touches the element React's async
+  // commit may still reference after its unmount (shared-host teardown race:
+  // an incoming island clearing children out from under a pending commit
+  // throws NotFoundError, and a late commit here would fail the hook and
+  // skip the whole file instead of logging noise into one test).
+  const angularEl = host();
   const angularHandle = await mountAngularIsland(
-    el,
+    angularEl,
     storeChartDemoNodes("AreaChart", {
       store,
       viewId: "warmup",
