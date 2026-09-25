@@ -31,6 +31,12 @@ props, then compares them:
   position a reader needs, and aligning it left 59 markup / 12 signature untouched
   in both directions. Reverting that alignment now turns this assertion red while
   the two counts stay put.
+- **the data-list partition**, which is the same assertion's floor made per case.
+  Comparing two lists passes when both are empty, so every case must either carry a
+  non-empty list on both sides or be named in `NO_DATA_LIST`, and the two groups
+  must cover the table exactly. Both halves are measured: naming a list-bearing
+  case (`ParetoChart`) turns it red while all 82 counts stay where they are, and
+  emptying an adapter's derivation turns it red with the adapter's own name.
 
 Every count depends on the normalisation in [`normalize.ts`](./normalize.ts),
 whose allowlist is documented at the top of that file and covers only
