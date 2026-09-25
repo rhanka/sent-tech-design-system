@@ -85,8 +85,10 @@ through. Full replayed inventory:
   `typography.control.size = 1.125rem` (18 ÷ 16).
 - Same rule `line-height: 1em` = 18px on an 18px font → ratio 1.0 →
   shipped `typography.control.lineHeight = 1`.
-- Not transcribed: `.main .btn-bg` `padding: 11.5px 6.6%` (px/% — passes
-  through; the fluid `%` has no fixed-`rem` equivalent, see Signatures);
+- `.main .btn-bg` `padding: 11.5px 6.6%`: the **block** 11.5px IS
+  transcribed (`density.*.paddingBlock = 0.71875rem`, 11.5 ÷ 16 — seven
+  declarations across five contexts, see Signatures); the **inline** `%`
+  is fluid and has no fixed-`rem` equivalent (not transcribed);
   `.tabs label` `padding: 0.8em 0.5em` (em, not transcribed); the
   max-width-767px override `font-size: 0.777777777777778rem` (line 3030,
   = 14px, mobile breakpoint — the shipped field value follows the base
@@ -143,15 +145,18 @@ available as `slate.80` for text roles.
 - **`status.*`** — follow the derived feedback hues.
 - **The 8-colour categorical `data.*`** — a red-led proposal over the
   measured neutrals plus the derived system hues, not an official scale.
-- **`density`** (all six leaves per size), **`shadow.medium/floating`**,
-  **`motion.easing`**, **`disabledOpacity`**, **`transition`**,
-  **`typography.label` size/weight**, **link hover underline**,
-  **`field.selectPaddingRight`** (2.5rem gutter) and **all 12
+- **`density`** (`paddingInline`, `gap`, `minWidth`, `fontSize` per size),
+  **`shadow.medium/floating`**, **`motion.easing`**, **`disabledOpacity`**,
+  **`transition`**, **`typography.label` size/weight**, **link hover
+  underline**, **`field.selectPaddingRight`** (2.5rem gutter) and **all 12
   component-override metrics** — the brand publishes no usable general
-  control geometry (see evidence below); only `controlHeight`/`iconSize`
-  match the Sentropic base, the rest is aligned with the reference theme
-  package's geometry. (`typography.control` size/lineHeight are measured —
-  `.tg-link`, see the `rem`-root inventory — not derived.)
+  *inline* control geometry (button inline is fluid; the field right side is
+  undeclared — see evidence below); only `controlHeight`/`iconSize` match
+  the Sentropic base, the rest is aligned with the reference theme
+  package's geometry. (`density.*.paddingBlock = 0.71875rem` IS measured —
+  the repeated 11.5px brand block padding — as are `typography.control`
+  size/lineHeight from `.tg-link`, see the `rem`-root inventory — not
+  derived.)
 - **Shadow tints** `rgb(51 55 69 / 0.10)`, `rgb(51 55 69 / 0.14)`,
   `rgb(51 55 69 / 0.18)` — the `#333745` slate at low alpha; no shadow scale
   is published by the brand.
@@ -216,23 +221,58 @@ No chain walked: every derived text/line role already passes at step 0.
   .search__input{…border:1px solid #dadada;…height:38px;…}`) is scoped to the
   search widget — it does not set the general value.
 - **Control-geometry evidence** (brand's own control selectors grepped for
-  `height`, `min-height`, `padding` — B3 correction path taken: evidence
-  rewritten, values not transcribed). What the brand rules actually declare:
+  `height`, `min-height`, `padding` — second measurement pass: the general
+  block value IS transcribed). The brand repeats a fixed **11.5px block
+  padding in 7 button-padding declarations across 5 component contexts**,
+  all brand-namespaced, none vendor: `.main .btn-bg` (line 2604, the
+  least-scoped general button rule: `padding: 11.5px 6.6%`),
+  `.main__section.millau .btn-bg` (line 7273: `padding: 11.5px 1.2em`),
+  `.offre-detail-header.article-header-career … .btn-bg` (lines 20532 and
+  20538, base + max-width-767px media: `11.5px 42px` / `11.5px 15px`),
+  `.apply-modal .btn-bg` (lines 21207 and 21222, base + max-width-767px
+  media: `11.5px 42px` / `11.5px`), `.intoPage.article-header
+  .btn__wording` (line 22217: `padding: 11.5px 6.6%`, with `font-size: 16px`
+  and `line-height: 22px`). (The 8th `11.5px` occurrence, line 19208, is a
+  `font-size` — out of scope.) The inline axis is fluid (`6.6%`, `1.2em`,
+  `42px`, `15px` vary) and is not transcribed; the block axis is fixed and
+  ships as `density.*.paddingBlock = 0.71875rem` (11.5 ÷ 16 = 0.71875;
+  0.71875 × 16 = 11.5). Scoped non-general variants exist and are recorded
+  but not retained: `padding: 10px 30px` (line 4623) and
+  `padding: 10px 42px` (line 19882) in `.liste-carrieres*` job-listing
+  components, and `padding: 22px 35px` (line 19673, min-width-1280px only)
+  in the `.career-header` hero — per the scope rule the least-scoped
+  general rule (`.main .btn-bg`) plus the 7-declaration majority sets the
+  general value. Corroboration from the general fields:
   `.contact .form__input--text` (lines 3064–3069: `padding-left: 8px`,
-  `padding-top: 13px`, `padding-bottom: 10px`), `--select` (lines
+  `padding-top: 13px`, `padding-bottom: 10px`) and `--select` (lines
   3053–3060: `padding-left: 8px`, `padding-top: 10px`,
-  `padding-bottom: 13px`), `--textarea` (lines 3082–3086:
-  `padding: 15px 0 20px 8px`, `height: 170px`); `.main .btn-bg` (lines
-  2603–2612: `padding: 11.5px 6.6%`, no height); `.contact .btn` (line
-  2687–2692: `padding: 0` reset); newsletter `.btn` rules (only
-  `padding-bottom: 10px`); widget-scoped heights only (`.menu__search
-  .search__input`: 38px, 64px at min-width-1024px; video/cookie/cross
-  buttons). None of this is retained, because no single general value
-  exists: the input paddings are variant-specific and asymmetric (13/10 vs
-  10/13 mirrored), the button inline padding is a fluid `%` with no fixed
-  equivalent, and the textarea `170px` is a multi-line area height, not a
-  control density. `density` therefore stays aligned with the reference
-  theme package's geometry (à confirmer).
+  `padding-bottom: 13px`) average exactly 11.5px block each; `--textarea`
+  (lines 3082–3086: `padding: 15px 0 20px 8px`, `height: 170px`) is a
+  multi-line area, not a control density. `.contact .btn` (lines 2687–2692:
+  `padding: 0` reset) and newsletter `.btn` rules (only
+  `padding-bottom: 10px`) carry no general geometry. Height coherence:
+  11.5 + 18 + 11.5 = 41px against `controlHeight: 2.5rem` (40px at 16px) —
+  a 1px (2.5%) gap at the token level, where the general control text is
+  18px at `line-height: 1` (`.tg-link`, see the `rem`-root inventory):
+  consistent with transcription, not a conflict. No brand rule declares a
+  competing control height — widget-scoped heights only (`.menu__search
+  .search__input`: 38px, 64px at min-width-1024px; `.contact .cs-select`:
+  55px; video/cookie/cross buttons) — so nothing contradicts keeping
+  `controlHeight` at the base 2rem/2.5rem/3rem: actual brand buttons render
+  16px `.btn__wording` text and exceed the 40px nominal minimum on the
+  brand site itself, as they do under these tokens.
+- **Field-inline confrontation**: the three general field variants declare
+  only `padding-left: 8px` (`0.5rem`) — uniform across `--text`, `--select`
+  and the `--textarea` shorthand — and never a general `padding-right`
+  (`--text`/`--select` leave it undeclared; the `--textarea` shorthand sets
+  right to 0; the `40px` right in `.contact .cs-select` is that widget's
+  custom-arrow gutter, cf. `selectPaddingRight`). The shipped symmetric
+  `density.*.paddingInline` (`0.5rem`/`0.75rem`/`1rem`,
+  reference-aligned, à confirmer) is therefore confronted with a single
+  measured 8px-left datum and no general right-side value: it is kept as
+  borrowed, not transcribed. The mirrored variant asymmetry (13/10 vs
+  10/13) holds on the block axis only; inline is uniform-left with no
+  right-side declaration — a missing datum, not a mirrored asymmetry.
 - **Native `<select>`**: chevron redrawn as a data-URI SVG carrying the
   measured brand red (`%23eb0000`), `selectAppearance: "none"`; the
   `2.5rem` right gutter is reference-aligned (à confirmer).
