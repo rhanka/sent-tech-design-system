@@ -58,7 +58,7 @@
   const storeDemo = $derived<NodeSpec[]>(
     storeChartDemoNodes("GaugeChart", {
       store,
-      value: 72,
+      value: "revenue",
       min: 0,
       max: 100,
       unit: "%",
@@ -234,12 +234,16 @@
         La version adaptateur (<code>@sentropic/dataviz-svelte</code>,
         <code>-react</code>, <code>-vue</code>, <code>-angular</code>) reprend
         l’intégralité du contrat natif et y ajoute la liaison au
-        <code>DashboardStore</code> partagé : aucune prop du natif n’est abandonnée.
+        <code>DashboardStore</code> partagé : aucune prop du natif n’est abandonnée,
+        mais <code>value</code> change de sens (identifiant de mesure
+        <code>string</code> agrégé depuis le store, contre nombre direct côté natif).
       {:else}
         The adapter version (<code>@sentropic/dataviz-svelte</code>,
         <code>-react</code>, <code>-vue</code>, <code>-angular</code>) carries the
         full native contract and adds the shared <code>DashboardStore</code>
-        binding: no native prop is dropped.
+        binding: no native prop is dropped, but <code>value</code> changes meaning
+        (a <code>string</code> measure id aggregated from the store, versus a direct
+        number natively).
       {/if}
     </p>
     <TabbedExample nodes={storeDemo} title={locale.value === "fr" ? "Charge (store)" : "Load (store)"} />
@@ -250,7 +254,7 @@
       <tbody>
         <tr><td><code>store</code></td><td><code>DashboardStore</code></td><td>requis</td></tr>
         <tr><td><code>viewId</code></td><td><code>string</code></td><td>non défini</td></tr>
-        <tr><td><code>value</code></td><td><code>number</code></td><td>requis</td></tr>
+        <tr><td><code>value</code></td><td><code>string</code></td><td>requis (identifiant de mesure, agrégé depuis le store — pas le nombre direct du natif)</td></tr>
         <tr><td><code>min</code> / <code>max</code></td><td><code>number</code></td><td>natif</td></tr>
         <tr><td><code>thresholds</code></td><td><code>GaugeChartThreshold[]</code></td><td>non défini</td></tr>
         <tr><td><code>format</code> / <code>unit</code></td><td><code>GaugeChartFormat / string</code></td><td>natif</td></tr>

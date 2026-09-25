@@ -65,9 +65,13 @@ beforeAll(async () => {
     },
     data: [{ d: "a", m: 1 }]
   });
+  // Dedicated hosts per island: two islands sharing one element race on its
+  // children (React's async commit vs the incoming mount/unmount throws
+  // NotFoundError), the same class the Angular warmup below isolates.
+  const vueEl = host();
   const handles = await Promise.all([
     mountReactIsland(el, urlSyncDemoNodes(store)),
-    mountVueIsland(el, urlSyncDemoNodes(store))
+    mountVueIsland(vueEl, urlSyncDemoNodes(store))
   ]);
   for (const handle of handles) handle.unmount();
   // Warm the Angular island as well: whichever Angular test runs first must
@@ -168,6 +172,21 @@ describe("react island (dataviz)", () => {
     await vi.waitFor(() => expect(el.textContent).toContain("React adapter missing: UrlSync"));
     handle.unmount();
   });
+
+  it("renders DashboardGrid panels with no store channel", async () => {
+    const el = host();
+    const handle = await mountReactIsland(
+      el,
+      dashboardGridDemoNodes({
+        columns: 12,
+        panels: [{ id: "pipeline", x: 6, y: 0, w: 6, h: 2 }]
+      })
+    );
+    await vi.waitFor(() =>
+      expect(el.querySelector('section[aria-label="pipeline"]')).not.toBeNull()
+    );
+    handle.unmount();
+  });
 });
 
 describe("vue island (dataviz)", () => {
@@ -201,6 +220,36 @@ describe("vue island (dataviz)", () => {
     expect(el.textContent).toContain("Vue adapter missing: TimeSeriesLineChart");
     handle.unmount();
   });
+
+  it("states the missing UrlSync component instead of staying empty", async () => {
+    const el = host();
+    const handle = await mountVueIsland(el, urlSyncDemoNodes(newStore()));
+    expect(el.textContent).toContain("Vue adapter missing: UrlSync");
+    handle.unmount();
+  });
+
+  it("renders DataImage markup", async () => {
+    const el = host();
+    const handle = await mountVueIsland(
+      el,
+      dataImageDemoNodes({ src: "https://example.com/a.png", alt: "A" })
+    );
+    expect(el.querySelector("img")?.getAttribute("alt")).toBe("A");
+    handle.unmount();
+  });
+
+  it("renders DashboardGrid panels with no store channel", async () => {
+    const el = host();
+    const handle = await mountVueIsland(
+      el,
+      dashboardGridDemoNodes({
+        columns: 12,
+        panels: [{ id: "pipeline", x: 6, y: 0, w: 6, h: 2 }]
+      })
+    );
+    expect(el.querySelector('section[aria-label="pipeline"]')).not.toBeNull();
+    handle.unmount();
+  });
 });
 
 describe("homonym store sections (dataviz)", () => {
@@ -214,6 +263,7 @@ describe("homonym store sections (dataviz)", () => {
     rows: Row[];
     props: Record<string, unknown>;
     label: string;
+    valueText?: string;
   }> = [
     {
       comp: "AreaChart",
@@ -265,8 +315,9 @@ describe("homonym store sections (dataviz)", () => {
         measures: [{ id: "revenue", label: "Revenue", aggregation: "sum" }]
       },
       rows: [{ product: "Atlas", revenue: 72 }],
-      props: { value: 72, min: 0, max: 100 },
-      label: "Section Gauge"
+      props: { value: "revenue", min: 0, max: 100 },
+      label: "Section Gauge",
+      valueText: 'aria-valuenow="72"'
     },
     {
       comp: "HeatmapChart",
@@ -309,7 +360,7 @@ describe("homonym store sections (dataviz)", () => {
     }
   ];
 
-  for (const { comp, model, rows, props, label } of sectionCases) {
+  for (const { comp, model, rows, props, label, valueText } of sectionCases) {
     it(`renders the ${comp} section demo in React`, async () => {
       const el = host();
       const store = createDashboardStore({ model, data: [...rows] });
@@ -321,6 +372,7 @@ describe("homonym store sections (dataviz)", () => {
         }
       ]);
       await vi.waitFor(() => expect(el.innerHTML).toContain(label));
+      if (valueText !== undefined) expect(el.innerHTML).toContain(valueText);
       handle.unmount();
     });
 
@@ -335,6 +387,7 @@ describe("homonym store sections (dataviz)", () => {
         }
       ]);
       expect(el.innerHTML).toContain(label);
+      if (valueText !== undefined) expect(el.innerHTML).toContain(valueText);
       handle.unmount();
     });
 
@@ -349,6 +402,7 @@ describe("homonym store sections (dataviz)", () => {
         }
       ]);
       expect(el.innerHTML).toContain(label);
+      if (valueText !== undefined) expect(el.innerHTML).toContain(valueText);
       handle.unmount();
     });
   }
@@ -378,6 +432,53 @@ describe("angular island (dataviz)", () => {
       scoreCardStoreDemoNodes(newStore(), { measure: "revenue" })
     );
     expect(el.textContent).toContain("Angular component missing: ScoreCard");
+    handle.unmount();
+  });
+
+  it("states the missing UrlSync component instead of staying empty", async () => {
+    const el = host();
+    const handle = await mountAngularIsland(el, urlSyncDemoNodes(newStore()));
+    expect(el.textContent).toContain("Angular component missing: UrlSync");
+    handle.unmount();
+  });
+
+  it("states the missing WebFrame adapter instead of staying empty", async () => {
+    const el = host();
+    const handle = await mountAngularIsland(
+      el,
+      webFrameDemoNodes({ src: "https://example.com", title: "Example" })
+    );
+    expect(el.textContent).toContain("Angular component missing: WebFrame");
+    handle.unmount();
+  });
+
+  it("states the missing TimeSeriesLineChart instead of staying empty", async () => {
+    const el = host();
+    const handle = await mountAngularIsland(
+      el,
+      timeSeriesDemoNodes(newStore(), { viewId: "ts", time: "t", measure: "revenue", label: "Daily" })
+    );
+    expect(el.textContent).toContain("Angular component missing: TimeSeriesLineChart");
+    handle.unmount();
+  });
+
+  it("states the missing DataImage adapter instead of staying empty", async () => {
+    const el = host();
+    const handle = await mountAngularIsland(
+      el,
+      dataImageDemoNodes({ src: "https://example.com/a.png", alt: "A" })
+    );
+    expect(el.textContent).toContain("Angular component missing: DataImage");
+    handle.unmount();
+  });
+
+  it("states the missing DashboardGrid adapter instead of staying empty", async () => {
+    const el = host();
+    const handle = await mountAngularIsland(
+      el,
+      dashboardGridDemoNodes({ columns: 12, panels: [] })
+    );
+    expect(el.textContent).toContain("Angular component missing: DashboardGrid");
     handle.unmount();
   });
 });
