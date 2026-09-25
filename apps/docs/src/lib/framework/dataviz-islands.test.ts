@@ -4,7 +4,7 @@
 // createDashboardStore — never a mock. Absent adapters must render the
 // explicit unavailable block, never an empty island or a throw.
 import { JSDOM } from "jsdom";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { createDashboardStore, type DataModel, type Row } from "@sentropic/dataviz-core";
 
 import {
@@ -42,6 +42,26 @@ afterEach(async () => {
   await new Promise((done) => setTimeout(done, 0));
   vi.unstubAllGlobals();
 });
+
+// Pay the one-time cost of the heavy island imports (react-dom, the DS and
+// dataviz dists) once, outside the per-test budget: under full-suite
+// parallel load the cold import alone can exceed the default 5 s timeout,
+// which measures transform contention, not demo rendering.
+beforeAll(async () => {
+  const el = host();
+  const store = createDashboardStore({
+    model: {
+      dimensions: [{ id: "d", label: "D", type: "discrete" }],
+      measures: [{ id: "m", label: "M", aggregation: "sum" }]
+    },
+    data: [{ d: "a", m: 1 }]
+  });
+  const handles = await Promise.all([
+    mountReactIsland(el, urlSyncDemoNodes(store)),
+    mountVueIsland(el, urlSyncDemoNodes(store))
+  ]);
+  for (const handle of handles) handle.unmount();
+}, 30000);
 
 const model: DataModel = {
   dimensions: [
