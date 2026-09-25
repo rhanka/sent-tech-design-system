@@ -492,6 +492,16 @@ sequence in order before concluding anything about your own diff; and if main mo
 again while the gates were running, rebase and replay rather than report a result
 measured against a base that no longer exists.
 
+**One worktree per theme, not per lot.** The witness rule above prescribes racing a
+slow agent against a fresh copy, and a lot-wide worktree makes that prescription
+impossible: two agents on one tree collide on the same files, so the only moves left
+are to wait or to kill. The same shape blocks the conductor. A rebase cannot happen
+while any agent holds the tree, so the lot's base ages for as long as the slowest
+builder runs — and against a main that moves several times a day, that is the real
+bottleneck, not the agents. Give each theme its own worktree. Then a slow agent is
+raced instead of merely observed, the finished themes are rebased and gated while the
+slow one continues, and a commit is never made under a live agent by accident.
+
 **Re-read what a third-party tool wrote, because a silent failure returns success.**
 On this repository `gh pr edit` queries `repository.pullRequest.projectCards`, which
 returns `"pullRequest": null` with `{"type":"NOT_FOUND", "message":"Projects (classic)
@@ -670,6 +680,18 @@ This is section 8's rule — find the LAST rule, not the first — applied to th
 instead of to the stylesheet. A first match is a candidate in a script exactly as it
 is in a brand sheet.
 
+**When a measurement carries a decision, run two methods of different coarseness, and
+treat their disagreement as the alarm.** The case above is the whole argument: a
+refined extractor that resolved the token chain produced a false distribution, and a
+crude one that read the trailing comment produced the right extremes. The refined tool
+was not merely wrong, it was **silently** wrong — its output was plausible, and it
+erred in the direction that supported the thesis it had been built to test, which is
+the one direction nothing checks. Coarseness is not accuracy, but it fails
+*differently*, and two different failure modes rarely agree. So a figure that will move
+a rule is measured twice, by methods that do not share an assumption: agreement on the
+extremes is the evidence, and disagreement is where the bug is. Agreement reached by
+running the same script twice is not agreement.
+
 So the rule has two halves, and the second is the one that was missing:
 
 **A precedent is a measurement, not a citation** — open the package, resolve the
@@ -790,6 +812,27 @@ one to establish that a failure could not touch its own package, and neither lin
 work was a finding about the theme under review. Guard disputes are the conductor's
 to settle, on the conductor's budget. Your budget buys the five judgements above and
 nothing else.
+
+**An instruction sent to an agent that cannot be reached must carry its stop
+condition.** A one-shot invocation has no inbox: what was sent is final until the agent
+returns, so an instruction found to be wrong five minutes later cannot be withdrawn.
+Every brief therefore states what would make the agent **stop and report** rather than
+proceed — "if the measurement contradicts this description, stop and say so" — and
+marks which of its claims are the conductor's description rather than measured fact.
+This is a required clause and not a good habit: one brief in this programme carried an
+instruction its author retracted while the agent was still running, and the only reason
+that was safe is that the brief happened to include a stop condition.
+
+**A second pass receives the questions the full review left open, by name, and declares
+its scope before it runs.** Measured: two second passes cost 87 500 and 111 847 tokens,
+41.6 % and 53.1 % of a full review's mean for that lot, and most of that went to
+re-deriving what the full review had already established. A second pass is not a
+shorter review, it is a **list**: the named corrections to counter-measure, the claims
+the full review could not settle, and nothing else. Have it state that scope back before
+it spends, so a drift into a second full review shows at the start rather than in the
+total. And do not ask it to estimate its own cost — two agents asked for that estimate
+were wrong by a factor of two, both in the direction that flattered them, while the
+measured figure was already available.
 
 Verifiable checklist — fail the theme on any miss:
 
