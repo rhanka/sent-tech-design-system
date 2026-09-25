@@ -299,7 +299,22 @@ Statut N-A : uniquement les utilitaires non-composants, exclus du décompte
   ds/dataviz sur `NodeSpec`, `DatavizSvelteNode` chargé paresseusement,
   constructeurs dans `examples.ts`, libellés `i18n.ts`. Poids du bundle
   (exigé §6 du cadrage) — AVANT : `apps/docs/build` = 67 916 572 octets
-  (69M), build `3:11.61` elapsed (vite `24.57s` + prerender 274 pages),
-  plus gros chunk JS `1 359 120` octets ; APRÈS : voir rapport de session.
+  (69M), build `3:11.61` elapsed (mesure à froid incluant la reconstruction
+  des dists de thèmes ; vite `24.57s` + prerender 274 pages), plus gros chunk
+  JS `1 359 120` octets ; APRÈS : `apps/docs/build` = 70 922 430 octets
+  (72M), soit +3 005 858 octets (+4,4 %) pour 6 pages et 8 sections, build à
+  chaud `0:27.20` (280 pages). Le découpage paresseux tient : le chargeur
+  `DatavizSvelteNode` pèse `13 586` octets et le code dataviz partagé vit dans
+  des chunks séparés du chunk partagé (`1 359 763` octets, inchangé à l’octet
+  hors hash) ; les pages natives (198 à 214 ko) et dataviz (~197 ko) sont au
+  même ordre de grandeur. Progression à peu près linéaire par page : le lot 2
+  garde le même motif sans démos réduites, à réévaluer s’il double ce coût.
+  Vérification navigateur (critère 3) : aucun navigateur exécutable dans le
+  bac à sable (snap confiné, aucun build Playwright pour l’OS, cache
+  lecture seule, CDN Playwright refusé) — le gate
+  `scripts/verify-dataviz-docs-lot1.test.mjs` saute ce cas proprement et la
+  preuve quatre frameworks est portée par les montages jsdom (mêmes
+  constructeurs, mêmes îles, stores réels) ; à rejouer sous Chromium en CI
+  ou sur machine de dev.
 - Commandes et résultats : voir rapport de session (ci-dessous au moment de
   la livraison ; mis à jour à chaque lot).
