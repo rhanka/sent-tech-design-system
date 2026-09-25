@@ -39,6 +39,30 @@ describe("eiffageTheme", () => {
     });
   });
 
+  it("locks the measured control typography and the density geometry", () => {
+    // Regression lock for the review corrections: `.tg-link`
+    // (`font-size: 1rem` at the 18px brand root → 1.125rem at 16px;
+    // `line-height: 1em` → 1) and the general form-input spec
+    // (0.8333rem → 0.9375rem, 0.8889rem → 1.07). Density stays
+    // reference-aligned (see MAPPING.md evidence).
+    expect(eiffageTheme.tokens.foundation).toMatchObject({
+      typography: {
+        control: { size: "1.125rem", weight: "600", lineHeight: "1" },
+        field: { size: "0.9375rem", weight: "400", lineHeight: "1.07" }
+      },
+      density: {
+        sm: { controlHeight: "2rem", paddingInline: "0.5rem" },
+        md: {
+          controlHeight: "2.5rem",
+          paddingBlock: "0.375rem",
+          paddingInline: "0.75rem",
+          fontSize: "1rem"
+        },
+        lg: { controlHeight: "3rem", paddingInline: "1rem" }
+      }
+    });
+  });
+
   it("emits Eiffage brand colours and fonts in the compiled variables", () => {
     const css = compileTheme(eiffageTheme);
     // Action red + body black text.

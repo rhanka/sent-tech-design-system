@@ -132,7 +132,7 @@ const foundation = {
     sm: "0.25rem", // 4px (à confirmer)
     md: "0.25rem", // 4px — button / input / tabs (à confirmer)
     lg: "0.5rem", // 8px — cards (à confirmer)
-    pill: "999px" // tags / pills
+    pill: "999px" // tags / pills (à confirmer)
   },
   // Light, neutral elevation. Exact specs "à confirmer" (aligned with the
   // reference theme package's geometry).
@@ -164,11 +164,14 @@ const foundation = {
     thick: "2px" // form strokes (`border-bottom: 2px solid #757575`)
   },
   borderStyle: { solid: "solid" },
-  // Control density. The brand publishes no usable general control geometry
-  // (no `height`/`min-height` on its general form controls or buttons — only
-  // paddings; the single `height: 38px` found belongs to the search-widget
-  // rule `.menu__search .search__input`, not the general field — see
-  // MAPPING.md), so density is aligned with the reference theme package's
+  // Control density. The brand publishes no usable general control geometry:
+  // the paddings its general rules declare are variant-specific and
+  // asymmetric (`.contact .form__input--text`: 13px top / 10px bottom;
+  // `--select`: 10px top / 13px bottom; 8px inline), the button padding is
+  // fluid (`.main .btn-bg`: `11.5px 6.6%`), the only `height` values are
+  // widget-scoped (search input 38px/64px, textarea 170px multi-line area),
+  // and no general rule declares `height`/`min-height` — see MAPPING.md.
+  // Density is therefore aligned with the reference theme package's
   // geometry ("à confirmer"). `controlHeight`/`iconSize` match the base.
   density: {
     sm: { controlHeight: "2rem", paddingBlock: "0", paddingInline: "0.5rem", gap: "0.5rem", minWidth: "2rem", fontSize: "0.875rem" },
@@ -176,14 +179,16 @@ const foundation = {
     lg: { controlHeight: "3rem", paddingBlock: "0", paddingInline: "1rem", gap: "0.5rem", minWidth: "3rem", fontSize: "1.125rem" }
   },
   // Eiffage typography: Montserrat for interactive/fields/labels, DM Serif
-  // Text for display. Control labels reuse the brand text-link spec
-  // (`.tg-link`: Montserrat 600, 1rem); field text reuses the general form
-  // input spec (`.contact .form__input--*`: 0.8333rem at the brand's 18px
-  // root = 15px → 0.9375rem at 16px; line 0.8889rem = 16px → 1.07).
-  // Non-transcribed leaves are aligned with the reference theme package's
+  // Text for display. Control text reuses the brand text-link spec
+  // (`.tg-link`: Montserrat 600, `font-size: 1rem` at the brand's 18px root
+  // = 18px → 1.125rem at 16px; `line-height: 1em` = 18px on 18px → 1).
+  // Field text reuses the general form input spec
+  // (`.contact .form__input--*`: 0.8333rem at the brand's 18px root = 15px
+  // → 0.9375rem at 16px; line 0.8889rem = 16px → 1.07). Label size/weight
+  // and the remaining leaves are aligned with the reference theme package's
   // geometry (à confirmer).
   typography: {
-    control: { family: "'Montserrat', system-ui, sans-serif", size: "1rem", weight: "600", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
+    control: { family: "'Montserrat', system-ui, sans-serif", size: "1.125rem", weight: "600", lineHeight: "1", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
     field: { family: "'Montserrat', system-ui, sans-serif", size: "0.9375rem", weight: "400", lineHeight: "1.07", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
     label: { family: "'Montserrat', system-ui, sans-serif", size: "1rem", weight: "700", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
     // Brand text links (`.tg-link`) are dark slate #333745 (11.84:1), not
@@ -229,12 +234,13 @@ const foundation = {
     underlineColor: eiffageColor.slate[500], // #757575 measured form stroke
     underlineWidth: "2px", // measured stroke width
     underlineMode: "border",
-    // Native <select>: redraw the chevron in the Eiffage action red with a
-    // 40px right gutter.
+    // Native <select>: redraw the chevron in the Eiffage action red
+    // (`%23eb0000` = measured brand red); the 40px right gutter follows the
+    // reference theme package's geometry (à confirmer).
     selectAppearance: "none",
     selectChevron:
       "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23eb0000' d='M8 11L3 6l1-1 4 4 4-4 1 1z'/%3E%3C/svg%3E\") no-repeat right 0.75rem center",
-    selectPaddingRight: "2.5rem"
+    selectPaddingRight: "2.5rem" // (à confirmer)
   },
   // Cards: a subtle 1px hairline border + slight radius, light hover tint
   // (aligned with the reference theme package's geometry — à confirmer).
