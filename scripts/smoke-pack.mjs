@@ -290,9 +290,19 @@ const deepVerify = {
   "@sentropic/design-system-skills": { closure: [], peers: [] },
   "@sentropic/design-system-svelte": {
     // Compiling .svelte source needs only the svelte compiler + preprocessor
-    // toolchain - compile() never resolves the component's own imports, so
-    // no local closure dependency is needed here.
-    closure: [],
+    // toolchain - compile() never resolves the component's own imports, so the
+    // COMPILE step needs no closure entry.
+    //
+    // The INSTALL step does, and that is what GD-M2-DS-PRESENTATION first got
+    // wrong: `npm install <tarball>` resolves the tarball manifest's own
+    // `dependencies` for real, against the registry, before any compile
+    // happens. @sentropic/graph is pinned at 0.3.0 while the registry carries
+    // 0.2.0, so the install died with ETARGET. Packing graph from the workspace
+    // is both the fix and the stronger claim - the shipped .svelte files are
+    // checked against the graph code in THIS commit, not against whatever was
+    // published last. Exactly the same reason @sentropic/dataviz-core sits in
+    // dataviz-svelte's closure at an as-yet unpublished 0.5.0.
+    closure: ["@sentropic/graph"],
     peers: [
       ["svelte", rootManifest.devDependencies.svelte],
       ["vite", rootManifest.devDependencies.vite],
@@ -577,16 +587,26 @@ try {
     // files here - that check belongs to the shard where the dependency
     // itself is under test.
     const installTarballs = [...tarballs];
-    for (const pkg of deepTargets) {
-      for (const depName of deepVerify[pkg.name].closure) {
-        if (selectedNamesSet.has(depName)) continue;
-        if (tarballCache.has(depName)) continue;
-        const depPkg = packages.find((candidate) => candidate.name === depName);
-        const tarball = ensureTarball(depPkg);
-        installTarballs.push(tarball);
-        selectedNamesSet.add(depName);
-        console.log(`OK packed ${depName} (closure dependency for deep verification, not itself under test here)`);
-      }
+    // TRANSITIVE, and that is load-bearing. A closure dependency arrives as a
+    // tarball carrying its own manifest, and npm resolves THAT manifest's
+    // dependencies too - so one hop is not enough. Concretely: dataviz-svelte's
+    // closure names design-system-svelte, which depends on @sentropic/graph. A
+    // single-hop walk packed design-system-svelte and then let npm reach for
+    // graph on the registry, which is how the dataviz-svelte shard failed with
+    // the same ETARGET as the shard that selects design-system-svelte directly.
+    // The worklist states the rule once instead of once per shard shape.
+    const pending = deepTargets.flatMap((pkg) => deepVerify[pkg.name].closure);
+    while (pending.length > 0) {
+      const depName = pending.shift();
+      if (selectedNamesSet.has(depName)) continue;
+      if (tarballCache.has(depName)) continue;
+      const depPkg = packages.find((candidate) => candidate.name === depName);
+      assert(depPkg, `closure dependency ${depName} is not a smoke-pack package`);
+      const tarball = ensureTarball(depPkg);
+      installTarballs.push(tarball);
+      selectedNamesSet.add(depName);
+      pending.push(...(deepVerify[depName]?.closure ?? []));
+      console.log(`OK packed ${depName} (closure dependency for deep verification, not itself under test here)`);
     }
 
     const peerSpecs = new Map();
