@@ -22,6 +22,13 @@ import { mountReactIsland } from "./react-island";
 import { mountVueIsland } from "./vue-island";
 import { mountAngularIsland } from "./angular-island";
 
+// Measured CI guard: the first Angular dataviz mount resolves four dynamic
+// packs (@angular/core, @angular/platform-browser, the DS Angular pack, the
+// dataviz Angular pack) and took 5993 ms locally with a warm transform cache
+// (file transform alone runs ~10 s), so the default 5 s per-test budget cannot
+// hold it on a loaded CI shard. 15 s matches the dataviz package suites
+// (dataviz-react/vue/angular vitest configs).
+vi.setConfig({ testTimeout: 15000 });
 
 function host() {
   const dom = new JSDOM("<!doctype html><div id=\"host\"></div>");
