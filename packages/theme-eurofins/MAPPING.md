@@ -177,7 +177,11 @@ Corroborating measured fact: the fallback-token family actually consumed —
 (+ 1 `#333`) — is **declared in none of the four linked sheets** (zero
 `--blue-500-brand:`-style declarations in `style.min.css`, `font_style.css`,
 `customstyles.css` and stock Bootstrap alike) and reads only through its
-fallbacks. It corroborates every value above except `#212b36` and `#DCEBFF`.
+fallbacks. It corroborates the values it carries, and is **silent** on the rest
+rather than corroborating them: the literal-only hexes `#EBF3FF`, `#C75000`,
+`#FEF8F3`, `#317234`, `#b71c1c` and `#9398C7` each measure **zero**
+`var(--…,<hex>)` carriage, as does the derived `#00306F`. `#212b36` and
+`#DCEBFF` are excluded for a different reason — nothing paints them at all.
 Note: the combined `var()` carriage across both `#333` spellings is 15 (10
 `Grey-900` + 5 `Neutral-900`) — recorded here exactly rather than attributed
 to one family.
