@@ -8,6 +8,10 @@ const copy = {
     overviewBody:
       "La V1 expose des tokens stables, un compilateur de thèmes runtime/build-time et des primitives Svelte prêtes pour Forge et Entropic.",
     components: "Composants",
+    datavizKicker: "Dataviz · piloté par store",
+    datavizCoverageTitle: "Disponibilité par framework",
+    datavizFrameworkShape: "Forme",
+    datavizBootstrapTitle: "Amorce du store",
     areaChartTitle: "AreaChart",
     areaChartIntro: "Graphique d'aire interactif pour visualiser des séries de données temporelles ou numériques avec lissage optionnel et différentes tonalités.",
     areaChartKicker: "Composant · Visualisation",
@@ -124,6 +128,10 @@ const copy = {
     overviewBody:
       "V1 exposes stable tokens, a runtime/build-time theme compiler, and Svelte primitives ready for Forge and Entropic.",
     components: "Components",
+    datavizKicker: "Dataviz · store-driven",
+    datavizCoverageTitle: "Framework availability",
+    datavizFrameworkShape: "Shape",
+    datavizBootstrapTitle: "Store bootstrap",
     areaChartTitle: "AreaChart",
     areaChartIntro: "Interactive area chart to visualize temporal or numeric data series with optional smoothing and different color tones.",
     areaChartKicker: "Component · Visualization",
