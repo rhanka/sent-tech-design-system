@@ -23,8 +23,13 @@ import type { TenantTheme } from "@sentropic/design-system-themes";
  *   - `clientlib-site.min.css` LINES 1–403 (pretty-printed) — an embedded
  *     Bootstrap 4/5 compatibility shim (`.ml-auto`, `.pl-3`, `.badge-pill`,
  *     `.rounded-sm`, `.custom-control`, `.card-deck`, `a{text-decoration:none}`).
- *     Only that file's rules from `html *{scrollbar-width:none}` onward are
- *     brand-owned.
+ *     Only that file's rules from `html *{scrollbar-width:none}` (line 405)
+ *     onward are treated as brand-owned. The boundary is NOT clean: two
+ *     brand rules sit inside that region — `.version::before{content:"Version:
+ *     2.16.01";visibility:hidden}` (line 1) and `.btn-check:checked+.btn,…,
+ *     :not(.btn-check)+.btn:active{color:#505050}` (line 357, the brand grey
+ *     patched onto Bootstrap's `.btn`). Neither is used as an origin here, and
+ *     no value below comes from lines 1–403. See MAPPING.md.
  * The consent banner served from `cookielaw.emea.fcagroup.com` is likewise
  * excluded. Brand-owned origins are therefore: `clientlib-site.min.css`
  * (brand region), `clientlib-site-page.min.css`, `clientlib-site-mobile.min.css`.
@@ -42,9 +47,11 @@ import type { TenantTheme } from "@sentropic/design-system-themes";
 
 // --- Stellantis raw measured palette ---------------------------------------
 // Every entry names the CSS declaration it was read from. File keys:
-//   [site]   = /etc.clientlibs/stellantis-corporate/clientlibs/clientlib-site.min.css (brand region, from line 405)
-//   [page]   = …/clientlib-site-page.min.css
-//   [mobile] = …/clientlib-site-mobile.min.css
+//   [site]   = /etc.clientlibs/stellantis-corporate/clientlibs/clientlib-site.min.129893ddb5fa1c21d5d6b6418d0c6bd9.css
+//              (brand region, from line 405 pretty-printed; this is the hash the
+//              homepage manifest serves on 2026-09-24)
+//   [page]   = …/clientlib-site-page.min.4bb169890317e8d4b95abd4208bdbcc9.css
+//   [mobile] = …/clientlib-site-mobile.min.f80d3926ecd219e7e45920a510f07e3e.css
 const stellantisColor = {
   // Stellantis corporate blue — the brand signature. 130 occurrences over the
   // three brand-owned files (site 3 / page 118 / mobile 9).
@@ -80,11 +87,21 @@ const stellantisColor = {
     mid: "#6a6a6a",
     // [page] p{font-size:18px;color:#505050;font-weight:400} / [site] .text-grey{color:#505050} — 68 occurrences
     body: "#505050",
-    // [site] .clear-grey-stella,.clear-grey-stella a{color:#a0a0a0} — 7 occurrences.
+    // [site] .clear-grey-stella,.clear-grey-stella a{color:#a0a0a0} — 7
+    // occurrences (site 1 / page 6), the most frequent of the brand's faint
+    // greys, so the frequency tie-break picks it as the muted-text candidate.
     // MEASURED but 2.61:1 on white: it fails the 4.5:1 text floor, so the muted
     // text role is routed through the stop rule (à confirmer, chain in MAPPING.md).
+    // NOT RETAINED, same family: #767676 ([site] brand region, line 643 pretty-
+    // printed, `.widget-content ul li span.title-style{color:#767676;…}`) — 1
+    // occurrence, scoped to one widget, so the tie-break drops it. It reaches
+    // 4.54:1 on white and would have passed the floor; it is set aside on
+    // frequency and scope, not on contrast.
     faint: "#a0a0a0",
     // stop-rule result from #a0a0a0 (à confirmer) — 4 steps, 5.17:1 on white.
+    // Chain, one convention throughout (HSL L − 0.05 per step, channel rounded
+    // to nearest, ties away from zero):
+    //   #939393 3.07 → #878787 3.59 → #7a7a7a 4.29 → #6d6d6d 5.17 (first pass).
     mutedText: "#6d6d6d",
     // [site] .using-keyboard :focus{outline:dashed;outline-color:#bbb;outline-width:1px;outline-offset:-2px;border-radius:2px}
     // declared as `#bbb`. MEASURED but 1.92:1 on white: it fails the 3:1
@@ -153,7 +170,12 @@ const foundation = {
   font: {
     sans: "'Encode Sans Condensed', sans-serif",
     display: "'Encode Sans', sans-serif",
-    // derived: the brand declares no monospace face anywhere (à confirmer).
+    // The corporate host declares NO monospace face in any of its three
+    // brand-owned regions (grep for `mono` over them = 0 hits), so this is the
+    // Sent Tech base system stack, unchanged (à confirmer). The losing second
+    // host does publish one — [media] `font-family:SFMono-Regular,Menlo,Monaco,
+    // Consolas,Liberation Mono,Courier New,monospace` (2 declarations) — but it
+    // is Bootstrap's own default stack, not a Stellantis face.
     mono: "'SFMono-Regular', Consolas, 'Liberation Mono', monospace"
   },
   // The Sent Tech base 4px-grid rem scale, kept as-is (verified against
@@ -171,8 +193,11 @@ const foundation = {
     16: "4rem" // 64px
   },
   // SQUARE CORNERS are the Stellantis signature: `border-radius:0` is declared
-  // 51 times across the brand-owned files (buttons, inputs, selects, tabs,
-  // cards, breadcrumb, footer button). Nothing rounds.
+  // 50 times across the brand-owned regions ([page] 23, [mobile] 27, [site]
+  // brand region 0) — buttons, inputs, selects, tabs, cards, breadcrumb, footer
+  // button. Nothing rounds. A 51st `border-radius:0` exists as `.rounded-0`
+  // at [site] shim line 71, inside the EXCLUDED Bootstrap region, and is not
+  // counted here.
   radius: {
     none: "0",
     sm: "0", // [page] input#searchInput{border-radius:0}
@@ -189,8 +214,14 @@ const foundation = {
     // same declaration on header@min-width:992px. The NEGATIVE y offset is the
     // measured brand value (the header casts upward), transcribed as-is.
     medium: "0 -2px 16px 0 rgb(0 0 0 / 0.25)",
-    // derived: the measured medium blur doubled at its measured 0.25 alpha
-    // (à confirmer) — the brand publishes no third elevation.
+    // DERIVED (à confirmer) — the brand publishes only two box-shadows, so each
+    // component of this third one is derived from a named measured component:
+    //   y offset 8px  = the measured DOWNWARD offset of `shadow.subtle`
+    //                   ([page] .sticky{box-shadow:0 4px 6px …}) doubled. The
+    //                   medium's -2px is NOT reused: it is the header casting
+    //                   upward, and a floating layer reads downward.
+    //   blur 32px     = the measured medium blur 16px doubled.
+    //   alpha 0.25    = the measured medium alpha, unchanged.
     floating: "0 8px 32px 0 rgb(0 0 0 / 0.25)"
   },
   motion: {
@@ -201,7 +232,8 @@ const foundation = {
   },
   // Not brand-specific: the Sent Tech base z scale, kept as-is (verified against
   // packages/tokens/src/foundation.ts). The brand's own stacking values
-  // (800/900/990/999/1030/1050) are page-chrome specific, not role tokens.
+  // (0/1/2/7/10/20/100/800/900/960/990/991/999/1000/1030/1050/1080/1100/1280/9000)
+  // are page-chrome specific, not role tokens.
   z: {
     header: 50,
     toast: 60,
@@ -216,9 +248,13 @@ const foundation = {
     thick: "2px" // [site] .bb2px{border-bottom:1px solid #f0f0f0;border-top:2px solid #f0f0f0;padding-top:16px}; also outline-width:2px on the skip link
   },
   borderStyle: { solid: "solid" },
-  // Control density. controlHeight md is MEASURED: `height:40px` on
-  // [page] input#searchInput, div.dateFilters select, .resetDateBtn and
-  // button#searchActionBtn. paddingBlock 4px and paddingInline 8/16/24px are
+  // Control density. controlHeight md is MEASURED: `height:40px` on FIVE
+  // [page] control selectors — input#searchInput, div.dateFilters select,
+  // button#searchActionBtn (40×40), .mobile-filters-open .resetDateBtn and
+  // button.btn.btn-search-type. (`height:40px` occurs 8 times in all; the three
+  // others — .multibar-img, .refine-filters-group, [mobile] .id38a
+  // .mobile-gallery.controls — are not controls.)
+  // paddingBlock 4px and paddingInline 8/16/24px are
   // measured on the brand's own buttons and chips. sm/lg controlHeight, every
   // `gap` and every `minWidth` are the Sent Tech base values (à confirmer):
   // the brand's other measured heights (42px filter chip, 64px header icon
@@ -233,7 +269,7 @@ const foundation = {
     },
     md: {
       controlHeight: "2.5rem", // 40px — [page] input#searchInput{…height:40px}
-      paddingBlock: "0.25rem", // 4px — [page] .id18 a.button-banner{padding:4px 16px}
+      paddingBlock: "0.25rem", // 4px — [page] .id18 a.button-banner{padding:4px 16px}; `padding:4px 16px` is declared 12 times in [page]
       paddingInline: "1rem", // 16px — same declaration
       gap: "0.5rem", // Sent Tech base (à confirmer)
       minWidth: "2.5rem" // Sent Tech base (à confirmer)
@@ -247,6 +283,23 @@ const foundation = {
     }
   },
   // Typography read from the brand's own control, field and label rules.
+  //
+  // LINE-HEIGHT. The brand's own control selectors declare NO `line-height`:
+  // grepped over input#searchInput, div.dateFilters select, button.btn.btn-search-type,
+  // .btn-category-filter, #toggleCategoryFiltersBtn, .mobile-filters-open .resetDateBtn,
+  // #choose-cat, .id18 a.button-banner, .menu-column a.cta, .breadcrumb*,
+  // .new-pagination*, a.pagination-link, .results-list span.badge-category,
+  // .accordion .header-accordion / .content-accordion → 0 hits. So the roles
+  // below that have no measurement of their own carry the brand's DOMINANT
+  // measured line-height instead. Full inventory over the three brand-owned
+  // regions, all units:
+  //   1.2em ×13  ← dominant, used here
+  //   1.3em ×12, 1.4em ×10, 1.1em ×6, 1.5em ×3, 1.6em ×2, 1.7em ×2, 1em ×2,
+  //   1.35em ×1, 1.25em ×1, .9em ×1, 25px ×2, 18px ×1, 14vw ×1, 1.2 ×1,
+  //   inherit ×1, 0 ×1
+  // The two roles that DO have a measurement keep it: `tabs` 1.4em
+  // ([page] .nav-tabs .nav-link{line-height:1.4em}) and `alert` 1.2em
+  // ([page] .alert-mail{line-height:1.2em}); `card` keeps its measured 25px.
   typography: {
     // [page] .menu-column a.cta{font-size:16px;font-weight:600;…} and
     // .mobile-filters-footer button{font-family:"Encode Sans",sans-serif;font-size:16px;font-weight:500}
@@ -257,7 +310,7 @@ const foundation = {
       family: "'Encode Sans', sans-serif",
       size: "1rem", // 16px
       weight: "500",
-      lineHeight: "1.3", // the brand's dominant line-height (1.3em, 12 declarations)
+      lineHeight: "1.2", // the brand-dominant measured line-height 1.2em (13 declarations)
       letterSpacing: "0.02rem",
       textTransform: "none", // the brand's buttons declare no transform
       textDecoration: "none", // [page] .main-menu ul li a.desktop-menu-button{text-decoration:none}
@@ -270,7 +323,7 @@ const foundation = {
       family: "'Encode Sans', sans-serif",
       size: "1rem", // 16px
       weight: "500",
-      lineHeight: "1.3", // brand-dominant line-height (à confirmer for this role)
+      lineHeight: "1.2", // brand-dominant measured line-height 1.2em — see `typography` (à confirmer for this role)
       letterSpacing: "0", // the brand's field rules declare none
       textTransform: "none",
       textDecoration: "none",
@@ -283,7 +336,7 @@ const foundation = {
       family: "'Encode Sans', sans-serif",
       size: "1.125rem", // 18px
       weight: "500",
-      lineHeight: "1.3", // brand-dominant line-height (à confirmer for this role)
+      lineHeight: "1.2", // brand-dominant measured line-height 1.2em — see `typography` (à confirmer for this role)
       letterSpacing: "0",
       textTransform: "none",
       textDecoration: "none",
@@ -303,10 +356,17 @@ const foundation = {
       textTransform: "none",
       textDecoration: "none",
       decorationThickness: "auto", // Sent Tech base (à confirmer)
-      decorationOffset: "auto", // Sent Tech base (à confirmer)
+      // NOT the base: the base link declares decorationOffset "0.18em"
+      // (packages/tokens/src/foundation.ts). Aligned with the reference theme
+      // package's geometry (à confirmer) — the brand publishes no underline
+      // offset of its own.
+      decorationOffset: "auto",
       textDecorationHover: "underline",
-      decorationThicknessHover: "auto", // Sent Tech base (à confirmer)
-      decorationOffsetHover: "auto" // Sent Tech base (à confirmer)
+      // NOT the base: the base has no `*Hover` decoration keys at all. Both
+      // leaves are aligned with the reference theme package's geometry
+      // (à confirmer).
+      decorationThicknessHover: "auto",
+      decorationOffsetHover: "auto"
     }
   },
   // [page] #mail-alert-container input[type="submit"]:disabled{cursor:default;opacity:.5}
@@ -317,21 +377,37 @@ const foundation = {
     // the Sent Tech base property list, kept as-is (à confirmer): the brand
     // declares per-property transitions, never a shared list.
     property: "background-color, border-color, color, box-shadow, outline-color",
-    duration: "400ms", // [page] #autocomplete-container li{…transition:background-color .4s ease}
-    easing: "ease" // same declaration; also the brand's dominant easing
+    // The brand's DOMINANT measured duration: `.3s`, 7 declarations across the
+    // brand-owned regions ([page] .menu-column.column-menu-3, .megamenu-container.active,
+    // .cta-id46-main a, .cta-id46-main p a::after, .id47.sticky-c47,
+    // .id47 .scroll-button; [mobile] .second-level-menu>li>a>i). A single `.4s`
+    // exists — [page] #autocomplete-container li{…transition:background-color .4s ease}
+    // — but it is scoped to one autocomplete list item, so the least-scoped /
+    // most frequent value wins for this shared interaction token. Recorded in
+    // MAPPING.md as context.
+    duration: "300ms",
+    easing: "ease" // the brand's dominant easing function (15 declarations)
   },
   cursor: {
     interactive: "pointer", // [page] .menu-column a.cta{…cursor:pointer}
     disabled: "not-allowed", // [site] .megamenu.disabled>a:hover,…{…cursor:not-allowed}
     text: "text" // Sent Tech base (à confirmer) — the brand declares no text cursor
   },
+  // The brand publishes exactly ONE square icon box, and it is 20px:
   // [mobile] .select-icon::after{…width:20px;height:20px;…} and
   // [page] button.lang-button.btn[aria-expanded="true"]::before{…width:20px;height:20px;…}
-  // give a measured 20px icon box; sm/lg step it by 4px (à confirmer).
+  // (grep for `width:16px` and for a square `width:24px;height:24px` over the
+  // three brand-owned regions → 0 hits). `md` is therefore measured; `sm` and
+  // `lg` are DERIVED by stepping that measured box on the brand's own 4px grid
+  // (16 / 20 / 24px). Neither derived step is the Sent Tech base, whose scale is
+  // 1rem / 1.125rem / 1.25rem: `sm` happens to coincide with the base, `lg`
+  // does NOT — 1.5rem is neither the base nor the reference theme package's
+  // 1.25rem, it is this 4px step (à confirmer). Taking the base 1.25rem for `lg`
+  // was rejected because it would collapse `lg` onto the measured `md`.
   iconSize: {
-    sm: "1rem", // 16px (à confirmer)
-    md: "1.25rem", // 20px — measured
-    lg: "1.5rem" // 24px (à confirmer)
+    sm: "1rem", // 16px — 4px step down; coincides with the Sent Tech base (à confirmer)
+    md: "1.25rem", // 20px — measured, 2 square declarations
+    lg: "1.5rem" // 24px — 4px step up; NOT the base (1.25rem) (à confirmer)
   },
   // FOCUS = an OUTLINE. The brand's least-scoped keyboard-focus rule is
   // [site] .using-keyboard :focus,…{outline:dashed;outline-color:#bbb;outline-width:1px;outline-offset:-2px;border-radius:2px}
@@ -349,26 +425,40 @@ const foundation = {
     inset: "0" // unused by the `outline` strategy — Sent Tech base (à confirmer)
   },
   // FIELDS are BOXED (outline): four equal 1px #d3d3d3 borders and radius 0.
-  // Measured on 6 brand-owned control selectors —
-  // [page] input#searchInput{border:1px solid #d3d3d3;…;border-radius:0;height:40px},
-  // div.dateFilters select{border-radius:0;…;height:40px;border:1px solid #d3d3d3},
-  // button.btn.btn-search-type[aria-pressed="false"]{border:1px solid #d3d3d3},
-  // .mobile-filters-open .resetDateBtn{…border:1px solid #d3d3d3},
-  // #category-filters-group .btn-category-filter{border:1px solid #d3d3d3},
-  // div.category-filters-group{border-bottom:1px solid #d3d3d3}.
-  // The brand's two bottom-only fields (input.input-mail, select.category-select)
-  // are the minority — see MAPPING.md for the count.
+  // On the brand's ACTUAL form fields the count is 2 against 2, not 6 against 2:
+  //   boxed, four equal borders — [page] input#searchInput{border:1px solid #d3d3d3;
+  //     …;border-radius:0;height:40px} and div.dateFilters select{border-radius:0;
+  //     …;height:40px;border:1px solid #d3d3d3}
+  //   bottom-only — [page] input.input-mail{…border-bottom-width:1px;border-color:#243882}
+  //     and [mobile] select.category-select{…border-bottom:1px solid #243882;border-top:0…}
+  // The four other `1px solid #d3d3d3` selectors are NOT fields:
+  // button.btn.btn-search-type[aria-pressed="false"], .mobile-filters-open .resetDateBtn
+  // and #category-filters-group .btn-category-filter are buttons/chips, and
+  // div.category-filters-group is a flex CONTAINER with a bottom rule only.
+  // `outline` is chosen on three measured grounds instead of that margin: the
+  // boxed pair carries the brand's radius 0 and its 40px control box, the
+  // bottom-only pair does not; and the least-scoped of the four
+  // (`input#searchInput`, the site search) is boxed.
   field: {
     style: "outline",
-    fillBg: stellantisColor.grey[0], // #ffffff — the measured fill rgba(240,240,240,0.3) composites to ~#fafafa over white (à confirmer)
+    // #ffffff. The search field's own fill is rgba(240,240,240,0.3), which
+    // composites to roughly #fafafa over white (à confirmer). Two of the boxed
+    // controls declare a white fill outright — [page] .mobile-filters-open
+    // .resetDateBtn{…background:#fff} and #toggleCategoryFiltersBtn[aria-expanded="false"]
+    // {background-color:#fff} — which supports surface.default here.
+    fillBg: stellantisColor.grey[0],
     underlineColor: stellantisColor.grey.line, // #d3d3d3 — unused for outline, kept for completeness
     underlineWidth: "1px",
     // [mobile] select.category-select{…-webkit-appearance:none;appearance:none;…}
     selectAppearance: "none",
     // The brand draws its select chevron as a Font Awesome glyph
-    // ([mobile] .select-icon::after{…content:"\f13a";font-family:"Font Awesome 5 Pro";color:#243882}).
-    // We reference no icon binary, so the glyph is redrawn as a data-URI path
-    // (shape à confirmer) carrying the MEASURED brand colour #243882.
+    // ([mobile] .select-icon::after{…content:"\f13a";font-family:"Font Awesome 5 Pro";color:#243882}),
+    // and this package embeds no icon binary. Only the FILL is measured — the
+    // brand blue #243882. The vector itself is byte-identical to the reference
+    // theme package's chevron, so it is aligned with the reference theme
+    // package's geometry, not drawn from the brand (à confirmer). The `0.5rem`
+    // inset has NO brand source either: the brand positions its glyph at
+    // `right:5%`, which this shorthand cannot carry (à confirmer).
     selectChevron:
       "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23243882' d='M8 11L3 6l1-1 4 4 4-4 1 1z'/%3E%3C/svg%3E\") no-repeat right 0.5rem center",
     selectPaddingRight: "1.5rem" // 24px — [mobile] select.category-select{…padding-inline-end:24px}
@@ -383,7 +473,11 @@ const foundation = {
   },
   // SECONDARY BUTTON = white fill, blue 1px border, blue label:
   // [page] .id18 a.button-banner{padding:4px 16px;background:#fff;color:#243882;border:1px solid #243882}
-  // (corroborated by #mail-alert-container input[type="submit"]{color:#243882;…border:1px solid #243882}).
+  // — the fill, the border and the label all come from that one declaration.
+  // [page] #mail-alert-container input[type="submit"] corroborates the blue
+  // label and the blue 1px border only; its own fill is `background:#efefef`,
+  // so it is NOT cited for the white background. `#efefef` is a measured brand
+  // hex that no role in this package carries (see MAPPING.md).
   buttonSecondary: {
     background: stellantisColor.grey[0], // #ffffff
     border: stellantisColor.blue.primary, // #243882
@@ -430,7 +524,7 @@ const foundation = {
     paddingInline: "0.3125rem", // 5px — derived from the measured margin:5px gap (à confirmer)
     minSize: "2.5rem", // 40px — the brand's measured control height (à confirmer for this role)
     fontSize: "1.25rem", // 20px — .new-pagination{font-size:20px}
-    lineHeight: "1.3" // brand-dominant line-height (à confirmer for this role)
+    lineHeight: "1.2" // brand-dominant measured line-height 1.2em — see `typography` (à confirmer for this role)
   },
   // BREADCRUMB: [page] .breadcrumb{font-family:"Encode Sans",sans-serif;padding:15px 0;margin:0;border-radius:0;background-color:transparent;height:50px},
   // .breadcrumb-item{font-size:12px}, .breadcrumb a{color:#243882;font-weight:500},
@@ -442,7 +536,7 @@ const foundation = {
     currentText: stellantisColor.grey.body, // #505050
     separator: stellantisColor.blue.primary, // #243882
     fontSize: "0.75rem", // 12px
-    lineHeight: "1.3", // brand-dominant line-height (à confirmer for this role)
+    lineHeight: "1.2", // brand-dominant measured line-height 1.2em — see `typography` (à confirmer for this role)
     currentWeight: "400"
   },
   // ALERT: the brand's own alert is a bare coloured text line, not a box —
@@ -461,7 +555,10 @@ const foundation = {
     paddingRight: "0", // measured as absent (à confirmer)
     paddingBottom: "0", // measured as absent (à confirmer)
     paddingLeft: "0", // measured as absent (à confirmer)
-    fontSize: "1rem", // Sent Tech base 16px (à confirmer) — .alert-mail declares none
+    // 16px. NOT the Sent Tech base: the base publishes no `alert` block at all
+    // (packages/tokens/src/foundation.ts). Aligned with the reference theme
+    // package's geometry (à confirmer) — .alert-mail declares no font-size.
+    fontSize: "1rem",
     lineHeight: "1.2" // line-height:1.2em
   },
   // ACCORDION: [page] .accordion .header-accordion,.accordion .content-accordion{padding:0 .75rem 0 30px}
@@ -472,7 +569,7 @@ const foundation = {
     paddingInline: "0.75rem", // .75rem
     fontSize: "1.125rem", // 18px — the brand's measured body size ([page] p{font-size:18px}) (à confirmer for this role)
     fontWeight: "600", // [page] p b{font-weight:600} / .style-accordion emphasis (à confirmer for this role)
-    lineHeight: "1.3" // brand-dominant line-height (à confirmer for this role)
+    lineHeight: "1.2" // brand-dominant measured line-height 1.2em — see `typography` (à confirmer for this role)
   },
   // TAG / filter chip: [page] #category-filters-group .btn-category-filter{border:1px solid #d3d3d3;padding:4px 8px;height:42px},
   // .btn-category-filter{padding-bottom:8px;font-family:"Encode Sans",sans-serif;font-size:16px;font-weight:500;color:#505050},
@@ -483,7 +580,7 @@ const foundation = {
     paddingInline: "0.5rem", // 8px
     fontSize: "1rem", // 16px
     fontWeight: "500",
-    lineHeight: "1.3", // brand-dominant line-height (à confirmer for this role)
+    lineHeight: "1.2", // brand-dominant measured line-height 1.2em — see `typography` (à confirmer for this role)
     minHeight: "2.625rem", // 42px — height:42px
     neutralBackground: stellantisColor.grey[0], // #ffffff
     neutralText: stellantisColor.grey.body // #505050
@@ -496,7 +593,7 @@ const foundation = {
     paddingInline: "0", // measured as absent (à confirmer)
     fontSize: "0.75rem", // 12px
     fontWeight: "500",
-    lineHeight: "1.3", // brand-dominant line-height (à confirmer for this role)
+    lineHeight: "1.2", // brand-dominant measured line-height 1.2em — see `typography` (à confirmer for this role)
     textTransform: "uppercase",
     minHeight: "0", // measured as absent (à confirmer)
     infoBackground: "transparent", // measured as absent (à confirmer)
@@ -508,8 +605,8 @@ const foundation = {
   // in MAPPING.md, not used).
   choice: {
     labelFontSize: "1.125rem", // 18px
-    labelLineHeight: "1.3", // brand-dominant line-height (à confirmer for this role)
-    radioLineHeight: "1.3", // same (à confirmer)
+    labelLineHeight: "1.2", // brand-dominant measured line-height 1.2em (à confirmer for this role)
+    radioLineHeight: "1.2", // same (à confirmer)
     labelColor: stellantisColor.grey.body // #505050
   },
   // SEARCH: [page] input#searchInput{border:1px solid #d3d3d3;background:rgba(240,240,240,0.3);padding:4px 0 4px 12px;border-radius:0;height:40px;font-size:16px;font-family:"Encode Sans",sans-serif;font-weight:500;color:#505050}
@@ -517,13 +614,18 @@ const foundation = {
     paddingBlock: "0.25rem", // 4px
     paddingInline: "0.75rem", // 12px (padding-left:12px)
     fontSize: "1rem", // 16px
-    lineHeight: "1.3" // brand-dominant line-height (à confirmer for this role)
+    lineHeight: "1.2" // brand-dominant measured line-height 1.2em — see `typography` (à confirmer for this role)
   },
-  // TOGGLE: the brand publishes no switch on either host, so the track keeps the
-  // Sent Tech base geometry (à confirmer) and only the label colour is measured.
+  // TOGGLE: the brand publishes no switch on either host, so only the label
+  // colour is measured. The track geometry is NOT the Sent Tech base either —
+  // the base publishes no `toggle` block at all
+  // (packages/tokens/src/foundation.ts). `trackPadding` is aligned with the
+  // reference theme package's geometry, which declares "0", as do both
+  // reference implementations (à confirmer). The previous "0.125rem" came from
+  // neither the base nor a reference package and is dropped.
   toggle: {
-    trackPadding: "0.125rem", // Sent Tech base (à confirmer)
-    lineHeight: "1.3", // brand-dominant line-height (à confirmer for this role)
+    trackPadding: "0", // aligned with the reference theme package (à confirmer)
+    lineHeight: "1.2", // brand-dominant measured line-height 1.2em — see `typography` (à confirmer for this role)
     textColor: stellantisColor.grey.body // #505050 — [page] p{color:#505050}
   }
 } as const;
