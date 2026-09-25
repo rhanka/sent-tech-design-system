@@ -135,16 +135,17 @@ function toneForValue(value: number, min: number, max: number): CalendarHeatmapT
         <li *ngFor="let item of dataValueItems">{{ item }}</li>
       </ul>
 
-      <div
-        class="st-calendarHeatmapChart__tooltip"
-        role="presentation"
-        [style.display]="hoveredCell && hoveredCell.value !== null ? 'inline-flex' : 'none'"
-        [style.left]="tooltipLeft"
-        [style.top]="tooltipTop"
-      >
-        <span class="st-calendarHeatmapChart__tooltipLabel">{{ tooltipLabel }}</span>
-        <span class="st-calendarHeatmapChart__tooltipValue">{{ tooltipValue }}</span>
-      </div>
+      @if (hoveredCell && hoveredCell.value !== null) {
+        <div
+          class="st-calendarHeatmapChart__tooltip"
+          role="presentation"
+          [style.left]="tooltipLeft"
+          [style.top]="tooltipTop"
+        >
+          <span class="st-calendarHeatmapChart__tooltipLabel">{{ tooltipLabel }}</span>
+          <span class="st-calendarHeatmapChart__tooltipValue">{{ tooltipValue }}</span>
+        </div>
+      }
     </div>
   `,
 })
