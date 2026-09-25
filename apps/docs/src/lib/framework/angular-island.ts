@@ -15,7 +15,7 @@ import type {
   Type
 } from "@angular/core";
 import type { NodeSpec } from "./examples.js";
-import { isComponentNode, isElementNode } from "./examples.js";
+import { isComponentNode, isElementNode, usesDataviz } from "./examples.js";
 import type { IslandHandle } from "./react-island.js";
 
 export type { IslandHandle } from "./react-island.js";
@@ -31,7 +31,10 @@ export async function mountAngularIsland(
   container: HTMLElement,
   nodes: NodeSpec[]
 ): Promise<IslandHandle> {
-  const dsAngular = await loadAngularDesignSystem();
+  const [dsAngular, dvAngular] = await Promise.all([
+    loadAngularDesignSystem(),
+    usesDataviz(nodes) ? loadAngularDataviz() : Promise.resolve({})
+  ]);
   const runtime = await createAngularRuntime();
   const refs: ComponentRef<unknown>[] = [];
   const cleanups: Array<() => void> = [];
@@ -49,7 +52,8 @@ export async function mountAngularIsland(
     }
 
     if (isComponentNode(node)) {
-      const Comp = dsAngular[node.comp];
+      const pack = node.library === "dataviz" ? dvAngular : dsAngular;
+      const Comp = pack[node.comp];
       if (!Comp) {
         return missingComponentNode(container, node.comp);
       }
@@ -126,6 +130,10 @@ function wireComponentEvent(
 
 async function loadAngularDesignSystem(): Promise<AngularComponents> {
   return (await import("@sentropic/design-system-angular")) as unknown as AngularComponents;
+}
+
+async function loadAngularDataviz(): Promise<AngularComponents> {
+  return (await import("@sentropic/dataviz-angular")) as unknown as AngularComponents;
 }
 
 async function createAngularRuntime(): Promise<AngularRuntime> {
