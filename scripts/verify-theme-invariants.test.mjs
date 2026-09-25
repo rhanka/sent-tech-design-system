@@ -308,10 +308,19 @@ test("every font family a theme declares is pinned by its own test", () => {
     const lock = testOf(dir);
     if (lock === "") continue;
     const families = new Set();
-    for (const match of entryOf(dir).matchAll(
-      /\b(?:sans|display|mono|family)\s*:\s*("((?:[^"\\]|\\.)*)"|'((?:[^'\\]|\\.)*)')/g
+    // Comments are stripped first. The previous version read a CSS declaration
+    // quoted inside an explanatory comment and demanded the theme pin a
+    // third-party icon font it merely cites.
+    const declarations = entryOf(dir).replace(/\/\/[^\n]*/g, "").replace(/\/\*[\s\S]*?\*\//g, "");
+    for (const match of declarations.matchAll(
+      // `(?<![-\w])family` so `font-family:` inside a value is not read as the
+      // token key `family:` — that is how the icon font got in.
+      /(?:\b(?:sans|display|mono)|(?<![-\w])family)\s*:\s*("((?:[^"\\]|\\.)*)"|'((?:[^'\\]|\\.)*)')/g
     )) {
       const stack = match[2] ?? match[3] ?? "";
+      // A `var()` reference is not a family: it points at another token, whose own
+      // declaration is checked on its own line.
+      if (/^\s*var\(/.test(stack)) continue;
       const first = stack.split(",")[0].replace(/['"]/g, "").trim();
       if (first !== "" && !SYSTEM_FACES.has(first)) {
         families.add(first);
@@ -321,8 +330,12 @@ test("every font family a theme declares is pinned by its own test", () => {
     // family named in a comment pass for pinned — which it did, and which mutation
     // testing caught: removing the assertion left the word in an explanatory
     // comment and the guard stayed green.
-    const asserted = [...lock.matchAll(/toContain\(\s*["'`]([^"'`]+)["'`]\s*\)/g)].map(
-      (match) => match[1]
+    // The delimiter is captured and only IT terminates the value, so an assertion
+    // written `toContain("'Open Sans'")` — quotes inside quotes, which is how a CSS
+    // family is pinned — is read. The previous character class excluded every quote
+    // and so skipped those assertions entirely, flagging themes that do pin.
+    const asserted = [...lock.matchAll(/toContain\(\s*(["'`])((?:(?!\1).)*)\1\s*\)/g)].map(
+      (match) => match[2]
     );
     const unpinned = [...families].filter(
       (family) => !asserted.some((value) => value.includes(family))
@@ -370,8 +383,24 @@ test("a theme that borrows the reference package's geometry says so", () => {
     // before matching, or the guard fails on a theme that carries it correctly.
     const flatten = (text) => text.replace(/\n\s*(?:\/\/|\*)?\s*/g, " ");
     const label = /aligned with the reference theme package/i;
-    const declares = label.test(flatten(mapping)) || label.test(flatten(source));
-    if (!declares) offenders.push(`${dir}: borrows ${borrowed.join(", ")} without the label`);
+    // A measured value can COINCIDE with the reference package's, and this guard
+    // cannot tell a copy from a coincidence — a lot 3 theme measured its easing
+    // from `.c-accordion{--accordion-animation-easing}` and it happens to be the
+    // same string. Forcing the borrow label there would make the theme state
+    // something false, so an explicit coincidence note satisfies the rule too. It
+    // is the same discipline either way: say which of the two it is.
+    const coincidence = /coincid(?:e|es|ence|entally)|happens to (?:be|match)|same value as the reference/i;
+    const declares =
+      label.test(flatten(mapping)) ||
+      label.test(flatten(source)) ||
+      coincidence.test(flatten(mapping)) ||
+      coincidence.test(flatten(source));
+    if (!declares) {
+      offenders.push(
+        `${dir}: ${borrowed.join(", ")} matches the reference package and differs from ` +
+          `the base, with neither the borrowed-geometry label nor a coincidence note`
+      );
+    }
   }
 
   assert.deepEqual(
@@ -501,4 +530,36 @@ test("the guards actually see the themes and the base", () => {
     `the method target list no longer parses: ${scope.size} themes in programme scope`
   );
   assert.ok(scope.has("theme-latex"), "the LaTeX theme fell out of programme scope");
+
+  // Regression fixtures for the three false positives this guard shipped with.
+  // Each one flagged a theme that was correct, which is worse than missing a
+  // defect: it blocks work and teaches people to disable the guard.
+  const assertedIn = (lock) =>
+    [...lock.matchAll(/toContain\(\s*(["'`])((?:(?!\1).)*)\1\s*\)/g)].map((m) => m[2]);
+  assert.deepEqual(
+    assertedIn(`expect(css).toContain("'Open Sans'");`),
+    ["'Open Sans'"],
+    "an assertion whose value carries inner quotes must be read; a CSS family is pinned that way"
+  );
+
+  const familiesIn = (source) => {
+    const stripped = source.replace(/\/\/[^\n]*/g, "").replace(/\/\*[\s\S]*?\*\//g, "");
+    return [
+      ...stripped.matchAll(
+        /(?:\b(?:sans|display|mono)|(?<![-\w])family)\s*:\s*("((?:[^"\\]|\\.)*)"|'((?:[^'\\]|\\.)*)')/g
+      )
+    ]
+      .map((m) => (m[2] ?? m[3] ?? "").split(",")[0].replace(/['"]/g, "").trim())
+      .filter((name) => name !== "" && !/^var\(/.test(name));
+  };
+  assert.deepEqual(
+    familiesIn(`// cited: .x{font-family:"Font Awesome 5 Pro"}\n  sans: "Inter, sans-serif",`),
+    ["Inter"],
+    "a CSS declaration quoted in a comment is not a family this theme declares"
+  );
+  assert.deepEqual(
+    familiesIn(`  family: "var(--st-font-sans)",\n  display: "Ubuntu, sans-serif",`),
+    ["Ubuntu"],
+    "a var() reference is not a family; it points at a token checked on its own line"
+  );
 });
