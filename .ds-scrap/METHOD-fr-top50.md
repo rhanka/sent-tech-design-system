@@ -502,6 +502,18 @@ bottleneck, not the agents. Give each theme its own worktree. Then a slow agent 
 raced instead of merely observed, the finished themes are rebased and gated while the
 slow one continues, and a commit is never made under a live agent by accident.
 
+**And the race is the instrument, not merely the remedy.** The witness rule above
+compares a slow agent to a sibling that finished, which controls the *invocation* —
+the tool runs, the network answers, the brief parses. A copy of the **same task**
+controls the task, which is the thing actually in doubt, and it removes the one defence
+a duration ratio can never answer: "that brand is heavier". Measured on one theme: the
+original had written nothing in 72 minutes, a copy launched from the same brief was
+writing files at **9** and delivered complete at 12. That converts an observation into
+an experiment. And it is the cheap kind of experiment, because **it destroys nothing
+while it measures** — killing to find out consumes its subject, racing consumes only
+tokens. So when the threshold is approached rather than crossed, race rather than
+wait, and let the copy answer the question the clock cannot.
+
 **And say how the work comes back, or the layout invents a cost that does not exist.**
 Each theme's worktree carries **its own branch**, cut from the lot branch
 (`git worktree add -b <branch> <path> <lot-branch>`). Nothing needs a detached HEAD:
@@ -840,8 +852,38 @@ fault, it does not map the guard's blind spots. Two of the four reviews that pro
 the measurement above spent budget doing exactly that, one to prove a guard wrong and
 one to establish that a failure could not touch its own package, and neither line of
 work was a finding about the theme under review. Guard disputes are the conductor's
-to settle, on the conductor's budget. Your budget buys the five judgements above and
-nothing else.
+to settle, on the conductor's budget. nothing else.
+
+**Every brief records the method sha it was written against, and integration compares
+that sha to the tip.** On a long lot the method moves under the builders — eleven
+amendments in one session — so an agent briefed at the start is judged against a text
+it never read. One builder in this programme ran for an hour on a brief predating the
+amendment that replaced the very rule its task turned on. Two lines close it:
+
+- in the brief: `reference method: .ds-scrap/METHOD-fr-top50.md at <sha>`;
+- at integration: if `git log <sha>..HEAD -- .ds-scrap/METHOD-fr-top50.md` is not
+  empty, read the amendments that landed and decide, **before judging the work**, which
+  of them apply retroactively.
+
+That second step is the substance, and it is what keeps the retroactive defect of the
+prescriptive guards from returning: **an amendment later than the brief is not
+automatically opposable to the work.** It is opposable when it corrects a false
+measurement — the painting test is, because the rule it replaced validated a defect,
+and the `text.muted` floor is, because the floor it replaced described nothing. It is
+not opposable when it tightens a matter of form, and it is never opposable when it is a
+conduct rule addressed to the conductor rather than to a package.
+
+Worked example, from the lot that produced the rule: eight amendments separated the
+briefs from integration; **two were opposable** and six were conduct rules; and the two
+opposable ones bit on exactly one value across four themes, a `text.muted` at 3.95:1
+whose sub-floor arbitration was already documented with its number. The cost of asking
+was one command; the cost of not asking would have been four themes judged against a
+text none of them contained.
+
+Without the sha the question cannot even be posed, and that is the point: this is the
+same silence as a tool validated on one case or a layout that never says how the work
+returns — **a text whose version is unstated** — and like the others it reads as a
+guarantee, because the brief looks complete.
 
 **An instruction sent to an agent that cannot be reached must carry its stop
 condition.** A one-shot invocation has no inbox: what was sent is final until the agent
