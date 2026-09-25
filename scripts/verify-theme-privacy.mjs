@@ -22,6 +22,8 @@
 // before the shortcut, present after it, and the revealed picker is larger than
 // the public one.
 
+import { mkdtempSync, rmSync } from "node:fs";
+
 const repoRoot = process.env.PW_ROOT ?? new URL("..", import.meta.url).pathname;
 const { chromium } = await import(
   new URL("node_modules/playwright-core/index.mjs", `file://${repoRoot}/`).href
@@ -34,9 +36,15 @@ if (targets.length === 0) {
   process.exit(2);
 }
 
+// The reveal flag SURVIVES a reload, so a reused profile can start already
+// revealed — in which case Ctrl+Shift+X turns it OFF and the two passes are
+// inverted. Measured once: a stale profile reported all four themes as leaked
+// when they were not. So the default is a throwaway profile, created here and
+// removed on exit; PW_PROFILE overrides it only for deliberate debugging.
 // A snap Chromium cannot write its profile lock inside a hidden directory, so the
 // profile lives at a plain path under $HOME.
-const profile = process.env.PW_PROFILE ?? `${process.env.HOME}/chromium-privacy-check-profile`;
+const ownProfile = !process.env.PW_PROFILE;
+const profile = process.env.PW_PROFILE ?? mkdtempSync(`${process.env.HOME}/chromium-theme-privacy-`);
 const executablePath = process.env.PW_CHROMIUM ?? "/snap/bin/chromium";
 
 const browser = await chromium.launchPersistentContext(profile, {
@@ -99,10 +107,22 @@ const report = {
 console.log(JSON.stringify(report, null, 2));
 
 await browser.close();
+if (ownProfile) rmSync(profile, { recursive: true, force: true });
+
+// An inverted pair means the browser started REVEALED, so pass 1 measured the
+// revealed picker and pass 2 the public one. The run says nothing about privacy
+// and must not be read as a leak: the themes listed under
+// leakedWithoutShortcut are an artefact of the starting state, not a finding.
+if (report.revealedCount <= report.publicCount) {
+  console.log(
+    "PRIVACY_CHECK_INVALID: the browser started in revealed state " +
+      `(${report.publicCount} labels before the shortcut, ${report.revealedCount} after). ` +
+      "Nothing here is evidence about privacy. Re-run with a fresh profile."
+  );
+  process.exit(2);
+}
 
 const ok =
-  report.leakedWithoutShortcut.length === 0 &&
-  report.missingAfterReveal.length === 0 &&
-  report.revealedCount > report.publicCount;
+  report.leakedWithoutShortcut.length === 0 && report.missingAfterReveal.length === 0;
 console.log(ok ? "PRIVACY_CHECK_PASS" : "PRIVACY_CHECK_FAIL");
 process.exit(ok ? 0 : 1);
