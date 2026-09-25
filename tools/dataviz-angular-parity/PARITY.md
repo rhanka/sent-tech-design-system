@@ -94,5 +94,11 @@ command to re-derive them.
 | `TrendLineChart` | 60 | **0** | **0** | — | — |
 | `ComboChart` | 100 | 2 | **0** | 2 | DS: components-angular ComboChart marks each legend swatch aria-hidden, components-react ComboChart does not |
 | `PivotDataTable` | 55 | **0** | **0** | — | — |
+| `CrossfilteredBarChart` | 60 | **0** | **0** | — | — |
+| `DrillBarChart` | 65 | **0** | **0** | — | — |
+| `DrillBreadcrumb` | 11 | **0** | **0** | — | — |
+| `DashboardActiveFilters` | 25 | **0** | **0** | — | — |
+| `ValueSlicer` | 25 | 1 | **0** | — | Angular sets the checked DOM property on the pre-filtered checkbox; React SSR serialises checked="" — same class as the DateRangeFilter value="" residue |
+| `VennChart` | 30 | **0** | **0** | — | — |
 
-exact-markup matches: **75/88** · exact-signature matches: **86/88**
+exact-markup matches: **80/94** · exact-signature matches: **92/94**
