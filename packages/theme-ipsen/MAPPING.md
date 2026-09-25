@@ -28,9 +28,12 @@ referenced — no font binaries. Derived/unmeasured values are flagged
   `ipsen-main` rules 2536–3921) — `https://www.ipsen.com/_static/??-eJyVkVEP…`
 - Bundle all-css-12 (vendor plugins + brand `#exit-popup` block, rules
   107–126) — `https://www.ipsen.com/_static/??-eJx9jtEK…`
-- Riovizual table-builder sheet (vendor, excluded — every selector is
-  `.wp-block-riovizual-*`; carries `#fff` ×2, `#000`, `#ddd`, `#0c0b0b`,
-  `#f0f3f9`, no brand hue; 14 569 bytes) —
+- Riovizual table-builder sheet (vendor, excluded as a whole — namespaces
+  `.wp-block-riovizual-*` and `.rv_*` plus a few generic classes: 16 of its 136
+  rules sit outside the `wp-block-riovizual` namespace, 13 of them `.rv_ribbon*`
+  and 3 generic (`.is-scroll-on-pc`, `.is-scroll-on-mobile`, `.empty-cells`);
+  carries `#fff` ×2, `#000`, `#ddd`, `#0c0b0b`, `#f0f3f9`, no brand hue;
+  14 569 bytes) —
   `https://www.ipsen.com/wp-content/plugins/riovizual/build/style-index.css?m=1790328379g`
 - Select chevron pixels — `https://www.ipsen.com/wp-content/themes/ipsen-main/dist/images/arrow-down.png`
   (7×6px, decodes around `#000e56`)

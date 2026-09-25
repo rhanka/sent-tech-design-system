@@ -163,10 +163,13 @@ const foundation = {
     medium: "0 8px 24px rgb(15 23 42 / 0.12)", // Sentropic base (à confirmer)
     floating: "0 18px 45px rgb(15 23 42 / 0.18)" // Sentropic base (à confirmer)
   },
-  // Measured transition durations, in declarations (.2s x52, .3s x28,
+  // Measured transition durations, in declarations (.2s x52, .3s x29,
   // .5s x9; brand region, durations by value, SVG path-data bytes excluded)
   // with the `ease` easing; the cubic-bezier(.25,1,.5,1) signature drives
-  // arrow keyframes.
+  // arrow keyframes. The .3s figure is 29 declarations across 28 rules: rule
+  // 1369 (`.ff-loadmore-wrapper .ff-btn`) carries two `transition`
+  // declarations, and the counting convention is one occurrence = one
+  // declaration, not one cascade winner.
   motion: {
     fast: ".2s",
     normal: ".3s",

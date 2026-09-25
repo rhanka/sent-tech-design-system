@@ -185,8 +185,9 @@ const foundation = {
     floating: "0 8px 24px rgb(3 31 115 / 0.18)"
   },
   // Motion durations measured per component: 150ms links, 200ms buttons and
-  // accordion, 500ms `redirection-grille` + `frontTools .mentions` (not the
-  // tooltip — see MAPPING.md). Easing `ease-in-out` from the buttons (the
+  // accordion, 500ms on three sites — `.tooltipADP .tooltipADPContent`
+  // (`transition:all .5s`), `redirection-grille` and `frontTools .mentions`
+  // (see MAPPING.md). Easing `ease-in-out` from the buttons (the
   // current accordion's `ease-out` is a likely framework default — MAPPING.md).
   motion: {
     fast: "150ms",

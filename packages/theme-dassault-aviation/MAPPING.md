@@ -254,7 +254,10 @@ text or line role (decorations only).
 - **Header/footer**: white sticky header (transparent on home, shadowed white
   on scroll, 388/2359); footer in Dassault blue with `#161c25` menu zone and
   `#10141a` bottom bar (408, 434, 1665, 431).
-- **Motion**: `.2s`/`.3s` `ease` transitions (52/28 declarations), `.5s`
+- **Motion**: `.2s`/`.3s` `ease` transitions (52/29 declarations — the 29 `.3s`
+  declarations sit in 28 rules, rule 1369 `.ff-loadmore-wrapper .ff-btn`
+  carrying two of them; one occurrence = one declaration, so the cascade winner
+  is not what is counted), `.5s`
   slow (9 declarations; durations counted by value — `1.3s`/`2.3s` are not
   `.3s` — SVG path-data bytes excluded, rule 959),
   `cubic-bezier(.25,1,.5,1)` arrow signature (x25), `animate-arrow-*` keyframes
