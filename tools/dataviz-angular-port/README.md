@@ -45,6 +45,18 @@ itself. A component whose `setup()` does
 anything else (local state, several `h()` calls, emitted events, slots) is reported
 as a skip and must be written by hand.
 
+### Exit codes
+
+The refusal is loud on stderr, and it is also in the exit code — a refusal that
+only prints is invisible to anything that checks `$?`, and a whole lot the tool
+rejects would otherwise look like a successful run:
+
+| rc | meaning |
+| --- | --- |
+| `0` | at least one component was extracted; `descriptors.json` was rewritten. A `SKIP` inside the batch is a normal outcome — that adapter is hand-work — and the summary line names the refused ones. |
+| `1` | **nothing** was extracted although components were named: every one was refused. `descriptors.json` is left untouched. |
+| `2` | no component was named at all (running with no names would overwrite the ledger with an empty list). |
+
 Ask the tool how far it reaches, rather than estimating:
 
 ```sh
