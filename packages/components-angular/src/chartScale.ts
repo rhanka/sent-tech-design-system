@@ -131,10 +131,27 @@ export function overlayToneClass(prefix: string, tone: ChartOverlayTone | undefi
 export function linearRegression(points: ReadonlyArray<{ x: number; y: number }>): { slope: number; intercept: number; minX: number; maxX: number } | null {
   const finite = points.filter((point) => Number.isFinite(point.x) && Number.isFinite(point.y));
   if (finite.length < 2) return null;
-  const minX = Math.min(...finite.map((point) => point.x));
-  const maxX = Math.max(...finite.map((point) => point.x));
-  if (minX === maxX) return null;
-  return { slope: 0, intercept: finite[0]?.y ?? 0, minX, maxX };
+  const n = finite.length;
+  let sx = 0;
+  let sy = 0;
+  let sxx = 0;
+  let sxy = 0;
+  let minX = Infinity;
+  let maxX = -Infinity;
+  for (const point of finite) {
+    sx += point.x;
+    sy += point.y;
+    sxx += point.x * point.x;
+    sxy += point.x * point.y;
+    if (point.x < minX) minX = point.x;
+    if (point.x > maxX) maxX = point.x;
+  }
+  const denom = n * sxx - sx * sx;
+  if (denom === 0) return null;
+  const slope = (n * sxy - sx * sy) / denom;
+  const intercept = (sy - slope * sx) / n;
+  if (!Number.isFinite(slope) || !Number.isFinite(intercept)) return null;
+  return { slope, intercept, minX, maxX };
 }
 
 export function extendValueDomain(
