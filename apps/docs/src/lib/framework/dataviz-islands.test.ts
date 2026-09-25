@@ -5,7 +5,7 @@
 // explicit unavailable block, never an empty island or a throw.
 import { JSDOM } from "jsdom";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { createDashboardStore, type DataModel } from "@sentropic/dataviz-core";
+import { createDashboardStore, type DataModel, type Row } from "@sentropic/dataviz-core";
 
 import {
   dashboardGridDemoNodes,
@@ -15,7 +15,8 @@ import {
   timeSeriesDemoNodes,
   urlSyncDemoNodes,
   usesDataviz,
-  webFrameDemoNodes
+  webFrameDemoNodes,
+  type ComponentName
 } from "./examples";
 import { mountReactIsland } from "./react-island";
 import { mountVueIsland } from "./vue-island";
@@ -159,7 +160,13 @@ describe("homonym store sections (dataviz)", () => {
   // framework with a ported adapter (all eight are ported). The label travels
   // into the markup (aria-label or visible text), so containing it proves the
   // adapter rendered instead of throwing on a mistyped channel.
-  const sectionCases = [
+  const sectionCases: Array<{
+    comp: ComponentName;
+    model: DataModel;
+    rows: Row[];
+    props: Record<string, unknown>;
+    label: string;
+  }> = [
     {
       comp: "AreaChart",
       model: {
@@ -252,7 +259,7 @@ describe("homonym store sections (dataviz)", () => {
       props: { viewId: "store", hierarchy: ["region", "product"], measure: "revenue" },
       label: "Section Treemap"
     }
-  ] as const;
+  ];
 
   for (const { comp, model, rows, props, label } of sectionCases) {
     it(`renders the ${comp} section demo in React`, async () => {
