@@ -15,7 +15,7 @@ referenced — no font binaries. Derived/unmeasured values are flagged
 > it is a Drupal theme of literal hexes, about a quarter of which is
 > normalize.css v8.0.1, a Tailwind v1 preflight + utility layer, Swiper and
 > video.js. `carrefour.fr` (retail) ships Carrefour's **own tokenised design
-> system** — 2551 custom-property declarations (1320 `--ds-*`, 1319 distinct
+> system** — 1379 custom-property declarations (1320 `--ds-*`, 1319 distinct
 > names) with an explicit brand layer, scales for
 > radius/spacing/sizing/shadow/opacity, and per-component colour roles.
 > carrefour.fr therefore wins (see *Host arbitration*). Second surprise: the DS
@@ -24,7 +24,7 @@ referenced — no font binaries. Derived/unmeasured values are flagged
 > references; the only painted use of `#254f9a` is an alpha shadow tint in
 > seven rules — see *Step 0.5*, counting convention). The blue that actually
 > paints the interface is `#0970e6`
-> (162 declared occurrences, 11 `var()` consumptions). Third: every Carrefour
+> (162 declared occurrences, 14 `var()` consumptions). Third: every Carrefour
 > value that lands in a threshold-bound role already passes WCAG — **no
 > stop-rule chain was needed anywhere in this package** (see *Accessibility*).
 
@@ -87,7 +87,7 @@ the timestamp to cite, not the one requested.
 
 ## Sources
 
-- **Carrefour's tokenised design system** (2551 custom-property declarations,
+- **Carrefour's tokenised design system** (1379 custom-property declarations,
   1320 `--ds-*`: brand layer, colour roles, radius, spacing, sizing, shadow,
   opacity, breakpoints)
   and its component rules (`.c-button`, `.c-base-input`, `.c-tabs__tab`,
@@ -119,7 +119,8 @@ conversion**, and the pixel values (`height:40px`, `height:56px`,
 
 ## Step 0.5 — brand region vs third-party blocks
 
-**carrefour.fr / `HHNlKr0TBF.css` (5735 expanded rules): brand-owned except two
+**carrefour.fr / `HHNlKr0TBF.css` (5735 expanded lines — 1 empty, 382
+at-rule closers, i.e. 5352 rules): brand-owned except two
 named third-party regions.** Searched for `normalize`, `payline`, `monext`,
 `swiper`, `slick`, `tealium`, `onetrust`, `didomi`, `trustarc`, `bootstrap`,
 `vjs-`, `tarteaucitron`, `axeptio`, `splide`, `glide`, `leaflet`, `mapbox`,
@@ -145,18 +146,26 @@ stripped by the minified build — the method's hardest failure mode, since the
 keyword legitimately reads 0 while the code is present. Lines 5584–5626 are a
 second, 43-rule un-namespaced base layer (`html`, `*`, `*:before/:after`,
 `body`, `h1`–`h6`, `ul,ol`, `table`, `blockquote`, `thead`, `td,th`, `a`,
-`button`). The region ends at the boundary marker `body,html{font-size:16px}`
-at line 5627. **No `--ds-*` declaration exists in either layer (0 of 1320)**,
+`button`). The region ends at the boundary marker
+`body,html{font-size:16px;font-family:Open Sans,…}` at line 5627 (the bare
+`body,html{font-size:16px}` string occurs at line 5628, inside
+`@container (min-width: 768px){…}`). **No `--ds-*` declaration exists in either layer (0 of 1320)**,
 so no token origin is affected; whole-file hex counts shift only by
 `#0970e6` 162 → 158, `#e5e5e5` 68 → 65, `#f7f7f7` −1 once both third-party
 regions are excluded — **no tie-break flips** (see recount note below).
 
 **Boundary 2 — third-party Payline/Monext payment region (unnamed until now).**
-`#PaylineWidget` (188 rules), `#pl-container-lightbox-*`, plus the payment
+`#PaylineWidget` (186 rules), `#pl-container-lightbox-*`, plus the payment
 subset of `.pl-*` (`.pl-cardNumber-container`, `.pl-amex`, `.pl-cb`,
 `.pl-cbpass`, `.pl-apple-pay`, `.pl-AMOUNT-container`,
-`.pl-consent-container`, …) — about 155 rules in all. Excluded as origins
-under Step 0.5 like any vendor block.
+`.pl-consent-container`, …) — about 190 rules in all. Excluded as origins
+under Step 0.5 like any vendor block. Region convention: one expanded line is
+one rule, except the bare-`}` at-rule closers; each `@container` opener carries
+one nested rule on the same line. The contiguous span 2886–3107 is 222 lines
+(186 `#PaylineWidget` + 32 closers + 4
+`.checkout-unified-paypal-shortcut*`), i.e. 190 rules — the old "about 155"
+was the sub-count of rules with `#PaylineWidget` in the line-initial selector
+part (154) relabelled as the total.
 
 **Counting convention (stated here because the headline counts depend on it).**
 One occurrence = one exact 6-digit hex in a `--*` custom-property declaration
@@ -166,6 +175,12 @@ alpha extensions of a stem are **excluded** from its headline count and
 disclosed separately where they exist (`#121212`: 194 raw − 7 alpha = 187;
 `#254f9a`: 1 exact + 8 alpha; `#0970e6` and `#004f9b` have 0 alpha forms).
 Consumption is counted independently as `var(--token)` references.
+A custom-property declaration is a `--name:` in declaration position —
+preceded by `;` or `{` (1344 + 35 = 1379, of which 1320 `--ds-*`, 1319
+distinct names). A bare `--name:` match also catches 1172 BEM selectors
+followed by a pseudo-class (`.c-link--tone-main:hover`,
+`.svg-icon--color-interactive-1:hover`), which are not declarations;
+1379 + 1172 = the 2551 previously stated here.
 Under the method's unqualified literal rule the 8 alpha `#254f9a` forms would
 also be occurrences; the figures that follow use the 6-digit-exact convention
 throughout, so `#254f9a` reads 1 while its shadow-tint use is recorded
@@ -177,7 +192,7 @@ pay-button / wallet / payment-method rules; the bare `a{color:#0970e6}` at
 line 5624 stays counted — see the `1.625` rationale pattern below: a
 bare-element rule declaring a brand-owned value), `#e5e5e5` 68 → **65**,
 `#f7f7f7` −1, everything else unchanged. The operative blue still outnumbers
-the declared brand token 158 to 1, and 11 `var()` to 0 — the promotion
+the declared brand token 158 to 1, and 14 `var()` to 0 — the promotion
 decision is unchanged.
 
 **The `1.625` provenance, stated explicitly.** `card.lineHeight`,
@@ -234,7 +249,7 @@ not a union:
 | primary text | `#000` ×5 | `#121212` ×187 |
 | brand red | `#ed3723` ×1, `#dc3d51` ×1, `#d0021b` ×1 | `#c20016` ×1, `#df1116` ×73, `#d30d1f` ×37 |
 | body face | `body{font-family:Ubuntu}` | `body,html{font-family:Open Sans,…}`; `h1..h6{font-family:Ubuntu,…}` |
-| custom properties | **0** | **2551** (1320 `--ds-*`) |
+| custom properties | **0** | **1379** (1320 `--ds-*`) |
 
 The pairs differ by a single digit in places (`#254f9b`/`#254f9a`,
 `#004e9f`/`#004e9b`/`#004f9b`, `#0870e5`/`#0970e6`): the same design intent,
@@ -372,7 +387,7 @@ use of `#254f9a` is an alpha shadow tint (`#254f9a14` ×6, `#254f9a29` ×1,
 never a fill, a stroke, or a text colour), so promoting either to
 `action.primary` would ship a value the brand's own interface never paints as
 a surface. The operative blue `#0970e6` wins on frequency (162 vs 1 whole-file,
-158 vs 1 on the brand region) and on consumption (11 `var()` vs 0).
+158 vs 1 on the brand region) and on consumption (14 `var()` vs 0).
 
 The loyalty blue `--ds-color-interactive-active-loyalty-primary` `#004f9b` is
 **not** unconsumed and is not in that list: it carries **11 `var()`**

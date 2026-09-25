@@ -7,7 +7,7 @@ import type { TenantTheme } from "@sentropic/design-system-themes";
  * Carrefour SA (CA / FR0000120172, CAC 40, head office Massy) serves TWO fronts
  * with DIFFERENT declared values. This package is a MEASURED-CLONE of the
  * retail front `carrefour.fr`, which ships Carrefour's own TOKENISED design
- * system: 2551 custom-property declarations (1320 `--ds-*`) in
+ * system: 1379 custom-property declarations (1320 `--ds-*`) in
  * `https://www.carrefour.fr/v3-assets/HHNlKr0TBF.css`, including an explicit
  * brand layer (`--ds-color-brand-primary/-secondary/-tertiary`), radius,
  * spacing, sizing, shadow and opacity scales, and per-component colour roles.
@@ -55,7 +55,7 @@ const carrefourColor = {
   // is declared in the same `:root` block but is consumed by NO rule
   // (0 `var()` references); the blue that actually paints buttons, links,
   // focus rings, selected tabs and checked toggles is #0970e6 (162 declared
-  // occurrences, 11 `var()` consumptions). Occurrence frequency decides.
+  // occurrences, 14 `var()` consumptions). Occurrence frequency decides.
   action: {
     primary: "#0970e6", // --ds-color-interactive-active-main-primary / --ds-color-interactive-background-button-filled-main-active
     hover: "#004e9b", // --ds-color-interactive-background-button-filled-main-hover
