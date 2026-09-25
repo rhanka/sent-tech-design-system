@@ -148,9 +148,10 @@ HSL darkening, −0.05 L per step, ratios against `surface.default` `#ffffff`:
   `blue.80` `#800000`, `cyan.10` `#e0fbfb`, `cyan.70` `#006b75`): LaTeX
   publishes no blue and no tints; the families are centred on the measured
   hyperref hues.
-- **`disabledOpacity`, `transition`, `cursor`**: no upstream source; base
-  values kept (transition duration `0ms`, easing `linear`, for the
-  motionless print idiom).
+- **`disabledOpacity`, `cursor`**: no upstream source; base values kept.
+  `transition` and the `motion` durations are not the base values: print has
+  no motion, so duration `0ms` and easing `linear` encode the motionless
+  print idiom (derived — à confirmer).
 
 ## Typography
 
