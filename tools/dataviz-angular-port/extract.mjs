@@ -61,7 +61,10 @@ function hBindings(src) {
   for (const line of m[2].split('\n')) {
     const kv = /^\s{8}([A-Za-z_$][\w$]*):\s*(.+?),?\s*$/.exec(line);
     if (kv) {
-      bindings.push([kv[1], kv[2].replace(/\s+as\s+[\w[\]<>.| ]+$/, '').replace(/,$/, '').trim()]);
+      // Vue casts at the h() call to satisfy its own overloads; Angular types the
+      // input instead. The cast may be a named type or an object type literal.
+      const stripped = kv[2].replace(/\s+as\s+(?:\{[^}]*\}|[\w[\]<>.| ]+)$/, '').replace(/,$/, '').trim();
+      bindings.push([kv[1], stripped]);
       continue;
     }
     const shorthand = /^\s{8}([A-Za-z_$][\w$]*),\s*$/.exec(line);
@@ -90,7 +93,8 @@ export function extract(name) {
   const wrapped = /const (\w+) = (\w+)\(\s*\n?\s*(\w+)\(props\.store\.model, props\.store\.applyCrossfilter\(props\.viewId\), \{([\s\S]*?)\}\),?\s*\)/.exec(body);
   const modelRows = /const (\w+) = (\w+)\(\s*props\.store\.model,\s*props\.store\.applyCrossfilter\(props\.viewId\),\s*\{([\s\S]*?)\},?\s*\)/.exec(body);
   const storeLayer = /const (\w+) = (\w+)\(props\.store, props\.viewId, \{([\s\S]*?)\}\)/.exec(body);
-  const inlineBinding = /^\s{8}(\w+): (\w+)\(props\.store\.model, props\.store\.applyCrossfilter\(props\.viewId\), \{([\s\S]*?)\}\),$/m.exec(
+  // The inline call may be written on one line or spread over several.
+  const inlineBinding = /^\s{8}(\w+): (\w+)\(\s*props\.store\.model,\s*props\.store\.applyCrossfilter\(props\.viewId\),\s*\{([\s\S]*?)\},?\s*\),$/m.exec(
     src.slice(src.lastIndexOf('return h(')),
   );
 
@@ -139,6 +143,11 @@ export function extract(name) {
     if (key === 'class' && mapped) {
       classExpr = { helper: 'mapClass', base: mapped[1] };
       folded.push([key, 'classInput']);
+      continue;
+    }
+    // With the inline shape the binding IS the builder call; it names the field.
+    if (derive.inlineBinding && key === derive.field && expr.startsWith(derive.builder + '(')) {
+      folded.push([key, derive.field]);
       continue;
     }
     if (arrayPattern.test(expr)) {
