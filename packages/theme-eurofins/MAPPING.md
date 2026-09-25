@@ -9,15 +9,17 @@ official stylesheets linked from the brand homepages. Only public values and
 font *names* are referenced — no font binaries. Derived/unmeasured values are
 flagged `à confirmer`.
 
-> Key measured fact: the brand file `style.min.css` (821 013 bytes) is a
+> Key measured fact: the brand file `style.min.css` (821 016 bytes) is a
 > brand-themed Bootstrap 5.3 build, stratified as
 > [brand `:root` tokens 94–1880] [Bootstrap vendor region 1887–~235000]
 > [brand rules >235000]. The vendor region's theme values are re-pointed at
 > the brand's own tokens (`--bs-primary:#003883`,
 > `--bs-secondary:#EE7D11`, `--bs-success:#317234`,
-> `--bs-link-color:#003883`, `--bs-link-decoration:none`, and the re-tinted
-> radius scale `--bs-border-radius-sm:3px`, `--bs-border-radius:0.375rem`,
-> `--bs-border-radius-lg:6px`, `--bs-border-radius-xl:8px`). The brand origin
+> `--bs-link-color:#003883`, `--bs-link-decoration:none`, and the radius
+> scale re-tinted on three steps (`--bs-border-radius-sm:3px`,
+> `--bs-border-radius-lg:6px`, `--bs-border-radius-xl:8px`) while the base
+> step keeps the vendor default (`--bs-border-radius:0.375rem`, identical in
+> stock Bootstrap 5.3.8). The brand origin
 > of each value is the opening brand `:root{--primary-color:#003883;…}`
 > token block plus the brand-scoped custom rules (header/nav/hero/footer,
 > Fira Sans + Inter + brand hexes) — never the vendor defaults
@@ -70,7 +72,7 @@ root is the **16px browser default** and every transcribed rem value converts
 ## Host agreement (Step 0.3)
 
 `eurofins.com` and `eurofins.fr` (via `eurofins.com/fr-fr/`) serve
-**byte-identical** `style.min.css` files (821 013 bytes each, same md5
+**byte-identical** `style.min.css` files (821 016 bytes each, same md5
 `f5cb661d38390693eb3c02d5de0524a8) — a single artefact, not two agreeing
 sources, so the "agreement" measures nothing beyond that identity and there
 is no disagreement to arbitrate. Per-file counts are trivially equal —
@@ -120,8 +122,10 @@ Counts below are computed on the **brand region alone** (bytes after offset
 this fix on 2026-09-25. Convention: case-insensitive match on the
 lowercased sheet; canonical 6-digit form per hex, short forms (`#666`,
 `#333`, `#fff`) counted **separately**; no 8-digit alpha hex exists in the
-file; `rgb()` spellings are noted separately (`rgb(0 56 131)` ×49, all in
-the vendor region; `rgb(0, 47.6, 111.35)` ×1, the `#00306F` hover origin).
+file; `rgb()` spellings are noted separately (`rgb(0 56 131)` ×49 — 6 vendor
+(focus rings, including the three general controls) + 43 brand-region (hero
+gradients, e.g. `.hero .carousel-item-1:before` at offset 257149);
+`rgb(0, 47.6, 111.35)` ×1, the `#00306F` hover origin).
 File totals vs brand region: `#003883` 354 / 325, `#EE7D11` 102 / 88,
 `#E3660E` 227 / 226, `#317234` 20 (= 1 token declaration + 16 vendor + 3
 brand), `#212b36` 1 / 0, `#DCEBFF` 1 / 0.
@@ -132,13 +136,14 @@ literals; most declaring tokens have zero direct `var()`). `var()` counts
 below are `var()` references carrying the hex (any token name, brand
 region); literals are hex-string occurrences in the brand region (including
 inside `var()` fallbacks — the two columns overlap by construction). Only
-two promoted hexes score zero on both:
+two hexes promoted from a brand token score zero on both (the derived
+`#00306F` row carries no declaring token and sits outside this count):
 
 | Hex | Declaring token | `var()` brand | Literal brand | Finding |
 |---|---|---|---|---|
 | `#003883` | `--primary-color` | 82 (`--blue-500-brand` ×60, `--blue-blue-brand` ×22) | 325 | operative |
 | `#00306F` | none (derived hover) | 0 | 0 | derived, à confirmer (exact rounding of `rgb(0, 47.6, 111.35)`) |
-| `#ffffff` | `--body-color`/`--white` | 56 (51 exact-fallback + case/short variants) | 103 (+ 254 short `#fff`) | operative |
+| `#ffffff` | `--body-color`/`--white` | 58 across spellings (55 exact: 51 `--Black-and-White-White` + 4 `--Greyscale-White`; 3 short `#FFF`) | 103 (+ 254 short `#fff`) | operative |
 | `#FAFAFA` | `--gray-background` | 27 | 49 | operative |
 | `#E5E5E5` | `--light-gray` | 10 exact (+ 6 `--Grey-200,#CCC` variant refs) | 33 | operative |
 | `#808080` | `--gray-2` | 12 exact (+ 1 `--Grey-600,#666` variant) | 13 | operative |
@@ -158,6 +163,9 @@ two promoted hexes score zero on both:
 | `#317234` | `--green` | 0 | 3 (`.preview_sec` success rules) | operative (thin; sole green, `--bs-success` re-point) |
 | `#b71c1c` | `--crimson-red` | 0 | 3 (`.preview_sec .btn.reject_btn` + kin) | operative |
 | `#9398C7` | `--purple` | 0 | 7 (menu hovers) | operative |
+| `rgb(0 0 0 / 0.25)` | none (measured) | n/a (`rgb()` spelling) | 31, all brand-region — cited `box-shadow:0 6px 24px 0 rgb(0 0 0 / .25)` ×2 on `.language_menu` (offsets 341895, 344341) | operative — `shadow.subtle` |
+| `rgb(0 34 79 / 0.14)` | none (derived) | n/a (`rgb()` spelling) | 0 | borrowed — `shadow.medium` (à confirmer) |
+| `rgb(0 34 79 / 0.18)` | none (derived) | n/a (`rgb()` spelling) | 0 | borrowed — `shadow.floating` (à confirmer) |
 
 Corroborating measured fact: the fallback-token family actually consumed —
 `var(--blue-500-brand,#003883)` ×60, `var(--blue-blue-brand,#003883)` ×22
@@ -287,10 +295,14 @@ Rounding convention for the hover transcription: nearest, lowercase.
   namespace, adopted for md metrics only). Every height is scoped and they
   contradict each other — no brand rule publishes a general control height,
   hence base heights, à confirmer.
-- **Radius**: the brand re-tints the Bootstrap scale
-  (`--bs-border-radius-sm:3px`, `--bs-border-radius:0.375rem`,
-  `--bs-border-radius-lg:6px`, `--bs-border-radius-xl:8px`), so the generic
-  control answers 6px (`radius.sm = 0.375rem`); the 8px `-xl` is measured on
+- **Radius**: the brand re-tints three steps of the Bootstrap scale
+  (`--bs-border-radius-sm:3px`, `--bs-border-radius-lg:6px`,
+  `--bs-border-radius-xl:8px`); the base step keeps the vendor default
+  (`--bs-border-radius:0.375rem`, identical in stock Bootstrap 5.3.8), so the
+  generic control still answers 6px (`radius.sm = 0.375rem`) — grounded on the
+  shipped declaration (offset 5421) consumed by the vendor `.form-control`
+  rule via `var(--bs-border-radius)`, not on a brand re-tint; the 8px `-xl`
+  is measured on
   CTAs, scoped inputs and menus — 49 strict `border-radius:8px` declarations
   in the brand region vs 24 at 4px (54 vs 34 raw occurrences, the remainder
   multi-value shorthands) — hence `radius.md = 0.5rem`; cards `0.5rem`

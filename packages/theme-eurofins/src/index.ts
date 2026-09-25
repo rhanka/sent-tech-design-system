@@ -75,7 +75,7 @@ const eurofinsColor = {
   },
   // Declared but never painted — kept for provenance with NO semantic role
   // (see MAPPING.md): `--heading-color:#212b36` is 1 occurrence in
-  // 821 013 bytes (its own declaration), zero `var()`, zero brand-region
+  // 821 016 bytes (its own declaration), zero `var()`, zero brand-region
   // paint. The operating text black is `--dark-gray:#333333` above.
   declaredButUnpainted: {
     heading: "#212b36" // `--heading-color` (brand declaration, unpainted)
@@ -150,16 +150,18 @@ const foundation = {
     12: "3rem", // 48px
     16: "4rem" // 64px
   },
-  // Eurofins radius: the brand re-tints the Bootstrap scale
-  // (`--bs-border-radius-sm:3px`, `--bs-border-radius:0.375rem`,
-  // `--bs-border-radius-lg:6px`, `--bs-border-radius-xl:8px`), so the generic
-  // control answers 6px; the 8px `-xl` is measured on brand CTAs
+  // Eurofins radius: the brand re-tints three Bootstrap steps
+  // (`--bs-border-radius-sm:3px`, `--bs-border-radius-lg:6px`,
+  // `--bs-border-radius-xl:8px`); the base step keeps the vendor default
+  // (`--bs-border-radius:0.375rem`, identical in stock Bootstrap 5.3.8), so
+  // the generic control still answers 6px; the 8px `-xl` is measured on
+  // brand CTAs
   // (`.btn-get-started`, `.btn-get-notify`), scoped search inputs
   // (`.footer … .form-control`, `.form-control-mobile`) and menus — 49
   // strict `border-radius:8px` declarations in the brand region vs 24 at 4px.
   radius: {
     none: "0", // matches the Sentropic base
-    sm: "0.375rem", // 6px — generic control, brand re-tinted `--bs-border-radius` (brand)
+    sm: "0.375rem", // 6px — generic control, vendor default retained (stock 5.3.8 identical; shipped declaration + vendor `.form-control` rule)
     md: "0.5rem", // 8px — buttons / CTAs (brand)
     lg: "0.5rem", // 8px — cards (à confirmer)
     pill: "999px" // tags / pills (matches the Sentropic base)
