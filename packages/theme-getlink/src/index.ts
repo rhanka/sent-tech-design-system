@@ -27,8 +27,9 @@ import type { TenantTheme } from "@sentropic/design-system-themes";
  * on literal paintings. Short forms (`#000`, `#fff`, `#03f`, `#eee`, `#333`)
  * are transcribed expanded and the expansion is noted. `rgb()/rgba()/hsl()`
  * equivalents are reported separately in MAPPING.md, never merged into a hex
- * count. Whole-file counts equal brand-region counts for every promoted hex
- * (no promoted hex occurs in a vendor range).
+ * count. Whole-file counts equal brand-region counts for every promoted
+ * LONG hex; the short forms `#fff` (145 whole-file / 108 brand) and `#000`
+ * (62 / 50) also occur in vendor ranges (normalize, Choices, Video.js).
  *
  * Getlink colour reference (light theme):
  *   White (background default)        #ffffff   (surface default — `#fff`, 108)
@@ -47,7 +48,7 @@ import type { TenantTheme } from "@sentropic/design-system-themes";
  *   Meta grey (documents, prices)     #787878   (muted text — 8)
  *   Brand red (numbers, accents)      #e63027   (accent — 16)
  *   Error red (validation)            #f03130   (danger fill — 13)
- *   Focus red (`red` keyword)         #ff0000   (focus outline — 6)
+ *   Focus red (`red` keyword)         #ff0000   (red keyword — 9)
  *   Success green (confirmation)      #61c05e   (measured — 4)
  *   Derived success green             #368434   (stop rule, 4 steps — à confirmer)
  *   Derived warning amber             #bd3f07   (stop rule, 3 steps — à confirmer)
@@ -69,7 +70,7 @@ const getlinkColor = {
     footer: "#0d1630", // `.footer{background-color:#0d1630}` (:217, 3)
     navy: "#001d39", // `.cookie-banner__body{background:#001d39}` (:470, 2) + donut legend (:1337)
     sky: "#009fe3", // `.btn-white:hover{color:#009fe3}` (:296, 4) + history period-4 (:624)
-    bright: "#0133ff", // gradient stop (:510…, 13)
+    bright: "#0133ff", // date/share-price text + sub-menu fill (:291…, 13)
     vivid: "#0033ff", // `#03f` expanded — gradient stop (:96…, 14)
     indigo: "#101c6f", // gradient stop (:96…, 14)
     steel: "#003b75", // document shadow (:819, 1)
@@ -84,7 +85,7 @@ const getlinkColor = {
   accent: {
     red: "#e63027", // `.card-numbers .number{color:#e63027}` (:280, 16)
     error: "#f03130", // `.was-focused:invalid{border-color:#f03130}` (:428, 13)
-    focus: "#ff0000", // `red` keyword — `a,button:focus-visible{outline:2px solid red}` (:89, 6)
+    focus: "#ff0000", // `red` keyword — `a,button:focus-visible{outline:2px solid red}` (:89, 9)
     success: "#61c05e", // `.gform_confirmation_message{color:#61c05e}` (:447, 4)
     greenDeep: "#00825d", // gradient-green-dark stop (:722…, 3)
     mint: "#00eaa0", // gradient-green-dark stop (:722…, 3)
@@ -228,9 +229,10 @@ const foundation = {
     floating: "0 18px 45px rgba(0,0,0,.18)" // base floating geometry, brand black tint (à confirmer)
   },
   // `.3s` dominates transition/animation declarations (78 duration-token
-  // occurrences in the brand region; `.2s` ×15, `.4s` ×11, `.5s` ×10 — one
+  // occurrences in the brand region; `.2s` ×17, `.4s` ×13, `.5s` ×10 — one
   // occurrence is one duration token inside a transition/animation
-  // declaration). Easing is the default `ease` (bare `.3s` + explicit `ease`).
+  // declaration, shorthands and `*-delay`/`*-duration` longhands included).
+  // Easing is the default `ease` (bare `.3s` + explicit `ease`).
   motion: {
     fast: "200ms", // `.2s` transcribed
     normal: "300ms", // `.3s` transcribed
@@ -330,7 +332,7 @@ const foundation = {
   card: {
     borderWidth: "0",
     lineHeight: "1.5rem", // 24px card paragraph
-    hoverBackground: getlinkColor.grey[0] // #ffffff inert (nothing published)
+    hoverBackground: getlinkColor.grey[0] // #ffffff inert (nothing published — à confirmer)
   },
   // Secondary button = the OUTLINED header pill: transparent fill, 1px dark
   // navy border + text, filling navy with white text on hover
