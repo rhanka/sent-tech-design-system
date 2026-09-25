@@ -568,8 +568,8 @@ const cases: Case[] = [
     re: RE.ArcDiagramChart as ComponentType<Props>,
     props: { viewId: 'v', source: 'region', target: 'service', weight: 'amount', label: 'L', className: 'probe' },
     fixture: 'wide',
-    expectedMarkupDiffs: 49,
-    expectedSignatureDiffs: 9,
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
     attribution: "DS: the shared st-graphLegend block differs, and Angular marks it aria-hidden where React labels it",
     control: {
       ng: NGDS.ArcDiagramChart as Type<unknown>,
@@ -585,8 +585,8 @@ const cases: Case[] = [
     re: RE.DependencyWheelChart as ComponentType<Props>,
     props: { viewId: 'v', source: 'region', target: 'service', weight: 'amount', label: 'L', className: 'probe' },
     fixture: 'wide',
-    expectedMarkupDiffs: 49,
-    expectedSignatureDiffs: 9,
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
     attribution: "DS: the shared st-graphLegend block differs, and Angular marks it aria-hidden where React labels it",
     control: {
       ng: NGDS.DependencyWheelChart as Type<unknown>,
