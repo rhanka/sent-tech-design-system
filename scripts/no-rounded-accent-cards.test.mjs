@@ -7,6 +7,15 @@ const roots = ["packages", "apps/docs/src"];
 const extensions = new Set([".css", ".svelte", ".ts", ".tsx", ".js", ".jsx"]);
 const skipParts = new Set(["dist", "node_modules", ".svelte-kit"]);
 
+// Cardinality floor for the file scan below. Measured on the current tree (2026-09-25):
+// walk() across roots ["packages", "apps/docs/src"] finds 2948 files matching the
+// extension filter (2474 under packages, 474 under apps/docs/src). 1000 is well below
+// that measured count, leaving headroom for legitimate tree changes, while still being
+// far above what a silently-broken extension filter (matching nothing, so the assertion
+// below passes vacuously) could produce. A missing root already throws in walk() via
+// readdirSync, so this floor only guards the "matches nothing" failure mode.
+const MIN_FILES_EXAMINED = 1000;
+
 const componentSelector = /\.(?:st-|docs-)/;
 const sideOrBottomBorder = /border-(left|right|top|bottom|inline-start|inline-end|block-start|block-end)(?:-width)?\s*:\s*([^;]+)/gi;
 const fullBorder = /(?:^|[;\s])border\s*:\s*([^;]+)/i;
@@ -146,7 +155,12 @@ function violationsIn(path) {
 }
 
 test("no rounded component/docs surface with a one-sided border seam", () => {
-  const violations = roots.flatMap((root) => [...walk(root)].flatMap(violationsIn));
+  const files = roots.flatMap((root) => [...walk(root)]);
+  assert.ok(
+    files.length >= MIN_FILES_EXAMINED,
+    `expected at least ${MIN_FILES_EXAMINED} files to be examined under ${roots.join(", ")}, but only saw ${files.length} — the extension filter may be matching nothing`,
+  );
+  const violations = files.flatMap(violationsIn);
   assert.deepEqual(
     violations,
     [],
