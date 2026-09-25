@@ -1242,9 +1242,9 @@ const cases: Case[] = [
     props: { dimension: 'region', className: 'lot8' },
     fixture: 'wide',
     presetFilter: { dimension: 'region', values: ['eu'] },
-    expectedMarkupDiffs: 0,
+    expectedMarkupDiffs: 1,
     expectedSignatureDiffs: 0,
-    attribution: '—',
+    attribution: 'Angular sets the checked DOM property on the pre-filtered checkbox; React SSR serialises checked="" — same class as the DateRangeFilter value="" residue',
   },
   {
     name: 'VennChart',

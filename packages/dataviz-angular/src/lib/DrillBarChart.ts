@@ -3,7 +3,6 @@ import type { OnChanges, OnDestroy, OnInit } from '@angular/core';
 import { BarChart as DsBarChart, type BarChartDatum, type BarChartTone } from '@sentropic/design-system-angular';
 import { findMeasure, groupAggregate, type DashboardStore } from '@sentropic/dataviz-core';
 import { toSignalStore, type AngularSignalStore } from '../adapter.js';
-import { classNames } from './classNames.js';
 
 export type DrillBarChartProps = {
   /** The dashboard store to bind to. */
@@ -48,7 +47,7 @@ export type DrillBarChartProps = {
       [height]="height"
       [selectedKeys]="selectedKeys"
       [onSelect]="onSelectHandler"
-      [class]="classValue"
+      [class]="classInput"
     ></st-bar-chart>
   `,
 })
@@ -89,7 +88,6 @@ export class DrillBarChart implements OnInit, OnChanges, OnDestroy {
   /** Recomputed by `recompute()`; never derived in a template getter. */
   data: BarChartDatum[] = [];
   selectedKeys: string[] = [];
-  classValue = 'st-drillBarChart';
 
   private currentLevel = 0;
   private currentDim = '';
@@ -118,7 +116,6 @@ export class DrillBarChart implements OnInit, OnChanges, OnDestroy {
   }
 
   private recompute(): void {
-    this.classValue = classNames('st-drillBarChart', this.classInput);
     if (!this.signals) return;
     const state = this.signals.state();
     const store = this.signals.store;

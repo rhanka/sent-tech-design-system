@@ -3,7 +3,6 @@ import type { OnChanges, OnDestroy, OnInit } from '@angular/core';
 import { CheckboxGroup, type CheckboxGroupOption } from '@sentropic/design-system-angular';
 import { findDimension, type DashboardStore } from '@sentropic/dataviz-core';
 import { toSignalStore, type AngularSignalStore } from '../adapter.js';
-import { classNames } from './classNames.js';
 
 export type ValueSlicerProps = {
   /** The dashboard store to bind to. */
@@ -39,7 +38,7 @@ const keyOf = (v: unknown): string => (v == null ? 'null' : String(v));
       [value]="value"
       [orientation]="orientation"
       [onChange]="onChangeHandler"
-      [class]="classValue"
+      [class]="classInput"
     ></st-checkbox-group>
   `,
 })
@@ -76,7 +75,6 @@ export class ValueSlicer implements OnInit, OnChanges, OnDestroy {
   legendValue = '';
   options: CheckboxGroupOption[] = [];
   value: string[] = [];
-  classValue = 'st-valueSlicer';
 
   readonly onChangeHandler = (values: string[]): void => {
     if (values.length) this.store.setFilter(this.dimension, { kind: 'include', values });
@@ -97,7 +95,6 @@ export class ValueSlicer implements OnInit, OnChanges, OnDestroy {
   }
 
   private recompute(): void {
-    this.classValue = classNames('st-valueSlicer', this.classInput);
     if (!this.signals) return;
     const state = this.signals.state();
     const store = this.signals.store;

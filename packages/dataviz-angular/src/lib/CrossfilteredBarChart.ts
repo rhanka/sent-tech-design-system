@@ -3,7 +3,6 @@ import type { OnChanges, OnDestroy, OnInit } from '@angular/core';
 import { BarChart as DsBarChart, type BarChartDatum, type BarChartTone } from '@sentropic/design-system-angular';
 import { findDimension, findMeasure, groupAggregate, type DashboardStore } from '@sentropic/dataviz-core';
 import { toSignalStore, type AngularSignalStore } from '../adapter.js';
-import { classNames } from './classNames.js';
 
 export type CrossfilteredBarChartProps = {
   /** The dashboard store to bind to. */
@@ -62,7 +61,7 @@ export type CrossfilteredBarChartProps = {
       [hoverKey]="hoverKey"
       [onHoverKeyChange]="onHoverKeyChange"
       [onSelectKey]="onSelectKey"
-      [class]="classValue"
+      [class]="classInput"
     ></st-bar-chart>
   `,
 })
@@ -109,7 +108,6 @@ export class CrossfilteredBarChart implements OnInit, OnChanges, OnDestroy {
   data: BarChartDatum[] = [];
   selectedKeys: string[] = [];
   onSelectInput?: (key: string) => void;
-  classValue = 'st-crossfilteredBarChart';
 
   private readonly onSelectHandler = (key: string): void => {
     this.store.toggleSelection(this.viewId, key);
@@ -129,7 +127,6 @@ export class CrossfilteredBarChart implements OnInit, OnChanges, OnDestroy {
   }
 
   private recompute(): void {
-    this.classValue = classNames('st-crossfilteredBarChart', this.classInput);
     if (!this.signals) return;
     const state = this.signals.state();
     const store = this.signals.store;

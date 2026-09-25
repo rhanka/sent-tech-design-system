@@ -3,7 +3,6 @@ import type { OnChanges, OnDestroy, OnInit } from '@angular/core';
 import { FilterBar, FilterPill } from '@sentropic/design-system-angular';
 import { describeFilterSpec, findDimension, type DashboardStore } from '@sentropic/dataviz-core';
 import { toSignalStore, type AngularSignalStore } from '../adapter.js';
-import { classNames } from './classNames.js';
 
 export type DashboardActiveFiltersProps = {
   /** The dashboard store to bind to. */
@@ -40,7 +39,7 @@ type FilterPillView = {
       [label]="label"
       [clearAllLabel]="clearAllLabel"
       [onClearAll]="onClearAllInput"
-      [class]="classValue"
+      [class]="classInput"
     >
       @for (pill of pills; track pill.dimensionId) {
         <st-filter-pill [field]="pill.field" [value]="pill.value" [onRemove]="pill.remove"></st-filter-pill>
@@ -78,7 +77,6 @@ export class DashboardActiveFilters implements OnInit, OnChanges, OnDestroy {
 
   /** Recomputed by `recompute()`; never derived in a template getter. */
   pills: FilterPillView[] = [];
-  classValue = 'st-dashboardActiveFilters';
   onClearAllInput?: () => void;
 
   ngOnInit(): void {
@@ -95,7 +93,6 @@ export class DashboardActiveFilters implements OnInit, OnChanges, OnDestroy {
   }
 
   private recompute(): void {
-    this.classValue = classNames('st-dashboardActiveFilters', this.classInput);
     if (!this.signals) return;
     const state = this.signals.state();
     const store = this.signals.store;
