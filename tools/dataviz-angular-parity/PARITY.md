@@ -8,7 +8,7 @@ command to re-derive them.
 | --- | --- | --- | --- | --- | --- |
 | `AreaChart` | 65 | **0** | **0** | — | — |
 | `DonutChart` | 21 | **0** | **0** | — | — |
-| `HeatmapChart` | 74 | 27 | **0** | 27 | DS: components-angular vs components-react HeatmapChart |
+| `HeatmapChart` | 68 | **0** | **0** | 0 | — |
 | `ScatterPlot` | 76 | **0** | **0** | — | — |
 | `TreemapChart` | 79 | 76 | **0** | 76 | DS: components-angular vs components-react TreemapChart |
 | `KpiCardGroup` | 12 | **0** | **0** | — | — |
@@ -26,9 +26,9 @@ command to re-derive them.
 | `CandlestickChart` | 67 | **0** | **0** | — | — |
 | `HeikinAshiChart` | 67 | **0** | **0** | — | — |
 | `HollowCandlestickChart` | 67 | **0** | **0** | — | — |
-| `OHLCChart` | 79 | 3 | **0** | 3 | DS: Angular emits data-chart-index on each bar, React does not |
+| `OHLCChart` | 79 | **0** | **0** | 0 | DS: Angular emits data-chart-index on each bar, React does not |
 | `HLCChart` | 73 | **0** | **0** | — | — |
-| `RenkoChart` | 203 | 7 | **0** | 7 | DS: Angular always renders the tooltip, React renders it only on hover |
+| `RenkoChart` | 197 | **0** | **0** | 0 | DS: Angular always renders the tooltip, React renders it only on hover |
 | `AreaRangeChart` | 86 | **0** | **0** | — | — |
 | `AreaSplineRangeChart` | 86 | **0** | **0** | — | — |
 | `ColumnRangeChart` | 61 | **0** | **0** | — | — |
@@ -36,5 +36,30 @@ command to re-derive them.
 | `RoseChart` | 24 | **0** | **0** | — | — |
 | `SunburstChart` | 54 | **0** | **0** | — | — |
 | `PackedBubbleChart` | 28 | **0** | **0** | — | — |
+| `FunnelChart` | 42 | **0** | **0** | — | — |
+| `MekkoChart` | 40 | 3 | **0** | 3 | DS: components-react sets the cell label colour with an inline style, Angular with a fill attribute |
+| `SankeyChart` | 47 | **0** | **0** | — | — |
+| `WaffleChart` | 234 | **0** | **0** | — | — |
+| `WaterfallChart` | 89 | **0** | **0** | — | — |
+| `VariablePieChart` | 29 | **0** | **0** | — | — |
+| `ColumnPyramidChart` | 66 | **0** | **0** | — | — |
+| `TreegraphChart` | 28 | **0** | **0** | — | — |
+| `OrganizationChart` | 28 | **0** | **0** | — | — |
+| `DecompositionTreeChart` | 78 | **0** | **0** | — | — |
+| `ArcDiagramChart` | 77 | 49 | 9 | 49 | DS: the shared st-graphLegend block differs, and Angular marks it aria-hidden where React labels it |
+| `DependencyWheelChart` | 87 | 49 | 9 | 49 | DS: the shared st-graphLegend block differs, and Angular marks it aria-hidden where React labels it |
+| `GaugeChart` | 25 | **0** | **0** | — | — |
+| `SolidGaugeChart` | 21 | **0** | **0** | — | — |
+| `ViolinChart` | 36 | **0** | **0** | — | — |
+| `BellCurveChart` | 206 | **0** | **0** | — | — |
+| `Density2DChart` | 89 | **0** | **0** | — | — |
+| `ContourChart` | 97 | **0** | **0** | — | — |
+| `StateTimelineChart` | 67 | **0** | **0** | — | — |
+| `StatusHistoryChart` | 56 | **0** | **0** | — | — |
+| `TimelineChart` | 65 | 59 | 12 | 59 | DS: the two frameworks draw a different timeline (connector+marker vs tick+tickLabel) |
+| `GanttChart` | 61 | **0** | **0** | — | — |
+| `FlamegraphChart` | 38 | **0** | **0** | — | — |
+| `StreamgraphChart` | 41 | **0** | **0** | — | — |
+| `BumpChart` | 49 | **0** | **0** | — | — |
 
-exact-markup matches: **23/30** · exact-signature matches: **30/30**
+exact-markup matches: **47/55** · exact-signature matches: **52/55**

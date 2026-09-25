@@ -3,6 +3,31 @@ import { Component, type Type } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { describe, expect, it } from 'vitest';
 import { createDashboardStore, type Cell, type DataModel, type Row } from '@sentropic/dataviz-core';
+import { ArcDiagramChart } from '../../dist/lib/ArcDiagramChart.js';
+import { BellCurveChart } from '../../dist/lib/BellCurveChart.js';
+import { BumpChart } from '../../dist/lib/BumpChart.js';
+import { ColumnPyramidChart } from '../../dist/lib/ColumnPyramidChart.js';
+import { ContourChart } from '../../dist/lib/ContourChart.js';
+import { DecompositionTreeChart } from '../../dist/lib/DecompositionTreeChart.js';
+import { Density2DChart } from '../../dist/lib/Density2DChart.js';
+import { DependencyWheelChart } from '../../dist/lib/DependencyWheelChart.js';
+import { FlamegraphChart } from '../../dist/lib/FlamegraphChart.js';
+import { FunnelChart } from '../../dist/lib/FunnelChart.js';
+import { GanttChart } from '../../dist/lib/GanttChart.js';
+import { GaugeChart } from '../../dist/lib/GaugeChart.js';
+import { MekkoChart } from '../../dist/lib/MekkoChart.js';
+import { OrganizationChart } from '../../dist/lib/OrganizationChart.js';
+import { SankeyChart } from '../../dist/lib/SankeyChart.js';
+import { SolidGaugeChart } from '../../dist/lib/SolidGaugeChart.js';
+import { StateTimelineChart } from '../../dist/lib/StateTimelineChart.js';
+import { StatusHistoryChart } from '../../dist/lib/StatusHistoryChart.js';
+import { StreamgraphChart } from '../../dist/lib/StreamgraphChart.js';
+import { TimelineChart } from '../../dist/lib/TimelineChart.js';
+import { TreegraphChart } from '../../dist/lib/TreegraphChart.js';
+import { VariablePieChart } from '../../dist/lib/VariablePieChart.js';
+import { ViolinChart } from '../../dist/lib/ViolinChart.js';
+import { WaffleChart } from '../../dist/lib/WaffleChart.js';
+import { WaterfallChart } from '../../dist/lib/WaterfallChart.js';
 import { AreaRangeChart } from '../../dist/lib/AreaRangeChart.js';
 import { AreaSplineRangeChart } from '../../dist/lib/AreaSplineRangeChart.js';
 import { CandlestickChart } from '../../dist/lib/CandlestickChart.js';
@@ -83,6 +108,8 @@ type Case = {
   ds: string;
   ownClass?: string;
   template: string;
+  /** Defaults to the shared `Data values for <label>`; BellCurveChart appends its stats. */
+  listAria?: string;
   items: Items;
   after: Items;
   mark?: [string, number, number];
@@ -286,6 +313,232 @@ const cases: Case[] = [
     after: ["eu: 7"],
     mark: [".st-packedBubblesChart__bubble", 2, 1],
   },
+  {
+    family: "part-of-whole and flow charts",
+    name: "FunnelChart",
+    component: FunnelChart,
+    ds: "FunnelChart",
+    template: `<st-dataviz-funnel-chart [store]="store" viewId="v" category="region" measure="amount" label="L" class="probe"></st-dataviz-funnel-chart>`,
+    items: ["eu: 17 (100%)", "us: 5 (29.4%)"],
+    after: ["eu: 7 (100%)"],
+  },
+  {
+    family: "part-of-whole and flow charts",
+    name: "MekkoChart",
+    component: MekkoChart,
+    ds: "MarimekkoChart",
+    template: `<st-dataviz-mekko-chart [store]="store" viewId="v" category="region" series="service" measure="amount" label="L" class="probe"></st-dataviz-mekko-chart>`,
+    items: ["eu, checkout: 59% (colonne 77%)", "eu, billing: 41% (colonne 77%)", "us, checkout: 100% (colonne 23%)"],
+    after: ["eu, billing: 100% (colonne 100%)"],
+  },
+  {
+    family: "part-of-whole and flow charts",
+    name: "SankeyChart",
+    component: SankeyChart,
+    ds: "SankeyChart",
+    template: `<st-dataviz-sankey-chart [store]="store" viewId="v" source="region" target="service" measure="amount" label="L" class="probe"></st-dataviz-sankey-chart>`,
+    items: ["eu -> checkout: 10", "us -> checkout: 5", "eu -> billing: 7"],
+    after: ["eu -> billing: 7"],
+  },
+  {
+    family: "part-of-whole and flow charts",
+    name: "WaffleChart",
+    component: WaffleChart,
+    ds: "WaffleChart",
+    template: `<st-dataviz-waffle-chart [store]="store" viewId="v" label_field="region" value="amount" label="L" class="probe"></st-dataviz-waffle-chart>`,
+    items: ["eu: 10 (45%)", "us: 5 (23%)", "eu: 7 (32%)"],
+    after: ["eu: 7 (100%)"],
+  },
+  {
+    family: "part-of-whole and flow charts",
+    name: "WaterfallChart",
+    component: WaterfallChart,
+    ds: "WaterfallChart",
+    template: `<st-dataviz-waterfall-chart [store]="store" viewId="v" category="region" measure="amount" label="L" class="probe"></st-dataviz-waterfall-chart>`,
+    items: ["eu: 17", "us: 5", "Total: 22"],
+    after: ["eu: 7", "Total: 7"],
+  },
+  {
+    family: "part-of-whole and flow charts",
+    name: "VariablePieChart",
+    component: VariablePieChart,
+    ds: "VariablePieChart",
+    template: `<st-dataviz-variable-pie-chart [store]="store" viewId="v" label_field="region" value="amount" z="close" label="L" class="probe"></st-dataviz-variable-pie-chart>`,
+    items: ["eu: 10", "us: 5", "eu: 7"],
+    after: ["eu: 7"],
+  },
+  {
+    family: "part-of-whole and flow charts",
+    name: "ColumnPyramidChart",
+    component: ColumnPyramidChart,
+    ds: "ColumnPyramidChart",
+    template: `<st-dataviz-column-pyramid-chart [store]="store" viewId="v" category="region" value="amount" label="L" class="probe"></st-dataviz-column-pyramid-chart>`,
+    items: ["eu: 10", "us: 5", "eu: 7"],
+    after: ["eu: 7"],
+  },
+  {
+    family: "hierarchy and relation charts",
+    name: "TreegraphChart",
+    component: TreegraphChart,
+    ds: "TreegraphChart",
+    template: `<st-dataviz-treegraph-chart [store]="store" viewId="v" id_field="region" parent_field="service" label_field="service" label="L" class="probe"></st-dataviz-treegraph-chart>`,
+    items: ["checkout (eu)", "checkout (us)"],
+    after: ["billing (eu)"],
+  },
+  {
+    family: "hierarchy and relation charts",
+    name: "OrganizationChart",
+    component: OrganizationChart,
+    ds: "OrganizationChart",
+    template: `<st-dataviz-organization-chart [store]="store" viewId="v" id_field="region" parent_field="service" label_field="service" label="L" class="probe"></st-dataviz-organization-chart>`,
+    items: ["checkout (eu)", "checkout (us)"],
+    after: ["billing (eu)"],
+  },
+  {
+    family: "hierarchy and relation charts",
+    name: "DecompositionTreeChart",
+    component: DecompositionTreeChart,
+    ds: "DecompositionTreeChart",
+    template: `<st-dataviz-decomposition-tree-chart [store]="store" viewId="v" measure="amount" [levels]="hierarchy" label="L" class="probe"></st-dataviz-decomposition-tree-chart>`,
+    items: ["amount: 22", "·eu: 17", "·us: 5", "··checkout: 10", "··checkout: 5", "··billing: 7"],
+    after: ["amount: 7", "·eu: 7", "··billing: 7"],
+  },
+  {
+    family: "hierarchy and relation charts",
+    name: "ArcDiagramChart",
+    component: ArcDiagramChart,
+    ds: "ArcDiagramChart",
+    template: `<st-dataviz-arc-diagram-chart [store]="store" viewId="v" source="region" target="service" weight="amount" label="L" class="probe"></st-dataviz-arc-diagram-chart>`,
+    items: ["eu -> checkout: 10", "us -> checkout: 5", "eu -> billing: 7"],
+    after: ["eu -> billing: 7"],
+  },
+  {
+    family: "hierarchy and relation charts",
+    name: "DependencyWheelChart",
+    component: DependencyWheelChart,
+    ds: "DependencyWheelChart",
+    template: `<st-dataviz-dependency-wheel-chart [store]="store" viewId="v" source="region" target="service" weight="amount" label="L" class="probe"></st-dataviz-dependency-wheel-chart>`,
+    items: ["eu -> checkout: 10", "us -> checkout: 5", "eu -> billing: 7"],
+    after: ["eu -> billing: 7"],
+  },
+  {
+    family: "distribution and gauge charts",
+    name: "GaugeChart",
+    component: GaugeChart,
+    ds: "GaugeChart",
+    template: `<st-dataviz-gauge-chart [store]="store" viewId="v" value="amount" label="L" class="probe"></st-dataviz-gauge-chart>`,
+    items: ["L: 22 (min 0, max 100)"],
+    after: ["L: 7 (min 0, max 100)"],
+  },
+  {
+    family: "distribution and gauge charts",
+    name: "SolidGaugeChart",
+    component: SolidGaugeChart,
+    ds: "SolidGaugeChart",
+    template: `<st-dataviz-solid-gauge-chart [store]="store" viewId="v" value="amount" label="L" class="probe"></st-dataviz-solid-gauge-chart>`,
+    items: ["L: 22 (min 0, max 100)"],
+    after: ["L: 7 (min 0, max 100)"],
+  },
+  {
+    family: "distribution and gauge charts",
+    name: "ViolinChart",
+    component: ViolinChart,
+    ds: "ViolinChart",
+    template: `<st-dataviz-violin-chart [store]="store" viewId="v" groupBy="region" measure="amount" label="L" class="probe"></st-dataviz-violin-chart>`,
+    items: ["eu: 2 points, min 7, median 8.5, max 10", "us: 1 points, min 5, median 5, max 5"],
+    after: ["eu: 1 points, min 7, median 7, max 7"],
+  },
+  {
+    family: "distribution and gauge charts",
+    name: "BellCurveChart",
+    listAria: "Data values for L — μ 7.33, σ 2.52, n 3",
+    component: BellCurveChart,
+    ds: "BellCurveChart",
+    template: `<st-dataviz-bell-curve-chart [store]="store" viewId="v" measure="amount" label="L" class="probe"></st-dataviz-bell-curve-chart>`,
+    items: ["Moyenne (μ): 7.33", "Écart-type (σ): 2.52", "Taille de l'échantillon (n): 3"],
+    after: ["Échantillon insuffisant (au moins 2 valeurs requises)"],
+  },
+  {
+    family: "distribution and gauge charts",
+    name: "Density2DChart",
+    component: Density2DChart,
+    ds: "Density2DChart",
+    template: `<st-dataviz-density2-d-chart [store]="store" viewId="v" x="amount" y="close" label="L" class="probe"></st-dataviz-density2-d-chart>`,
+    items: ["[5–5.4] × [102–102.4]: 1", "[9.6–10] × [104.9–105.3]: 1", "[6.7–7.1] × [106.6–107]: 1"],
+    after: [],
+  },
+  {
+    family: "distribution and gauge charts",
+    name: "ContourChart",
+    component: ContourChart,
+    ds: "ContourChart",
+    template: `<st-dataviz-contour-chart [store]="store" viewId="v" x="amount" y="close" value="high" label="L" class="probe"></st-dataviz-contour-chart>`,
+    items: ["x 10, y 105 · 110", "x 5, y 102 · 112", "x 7, y 107 · 108"],
+    after: ["x 7, y 107 · 108"],
+  },
+  {
+    family: "time and state charts",
+    name: "StateTimelineChart",
+    component: StateTimelineChart,
+    ds: "StateTimelineChart",
+    template: `<st-dataviz-state-timeline-chart [store]="store" viewId="v" series="region" start="ts" end="ts" state="service" label="L" class="probe"></st-dataviz-state-timeline-chart>`,
+    items: ["eu: checkout [1767225600000 → 1767225600000], billing [1767398400000 → 1767398400000]", "us: checkout [1767312000000 → 1767312000000]"],
+    after: ["eu: billing [1767398400000 → 1767398400000]"],
+  },
+  {
+    family: "time and state charts",
+    name: "StatusHistoryChart",
+    component: StatusHistoryChart,
+    ds: "StatusHistoryChart",
+    template: `<st-dataviz-status-history-chart [store]="store" viewId="v" series="region" at="ts" value="amount" label="L" class="probe"></st-dataviz-status-history-chart>`,
+    items: ["eu: 1767225600000 = 10, 1767398400000 = 7", "us: 1767312000000 = 5"],
+    after: ["eu: 1767398400000 = 7"],
+  },
+  {
+    family: "time and state charts",
+    name: "TimelineChart",
+    component: TimelineChart,
+    ds: "TimelineChart",
+    template: `<st-dataviz-timeline-chart [store]="store" viewId="v" label_field="region" position="ts" label="L" class="probe"></st-dataviz-timeline-chart>`,
+    items: ["eu", "us", "eu"],
+    after: ["eu"],
+  },
+  {
+    family: "time and state charts",
+    name: "GanttChart",
+    component: GanttChart,
+    ds: "GanttChart",
+    template: `<st-dataviz-gantt-chart [store]="store" viewId="v" task="region" start="ts" end="ts" label="L" class="probe"></st-dataviz-gantt-chart>`,
+    items: ["eu: 1767225600000 → 1767225600000", "us: 1767312000000 → 1767312000000", "eu: 1767398400000 → 1767398400000"],
+    after: ["eu: 1767398400000 → 1767398400000"],
+  },
+  {
+    family: "time and state charts",
+    name: "FlamegraphChart",
+    component: FlamegraphChart,
+    ds: "FlamegraphChart",
+    template: `<st-dataviz-flamegraph-chart [store]="store" viewId="v" id="region" parentId="service" name="shape" value="amount" label="L" class="probe"></st-dataviz-flamegraph-chart>`,
+    items: ["root: 12", "·[object Object]: 7", "·[object Object]: 5"],
+    after: ["[object Object]: 7"],
+  },
+  {
+    family: "time and state charts",
+    name: "StreamgraphChart",
+    component: StreamgraphChart,
+    ds: "StreamgraphChart",
+    template: `<st-dataviz-streamgraph-chart [store]="store" viewId="v" category="region" series="service" measure="amount" label="L" class="probe"></st-dataviz-streamgraph-chart>`,
+    items: ["checkout: 15", "billing: 7", "Total: 22"],
+    after: ["billing: 7", "Total: 7"],
+  },
+  {
+    family: "time and state charts",
+    name: "BumpChart",
+    component: BumpChart,
+    ds: "BumpChart",
+    template: `<st-dataviz-bump-chart [store]="store" viewId="v" series="region" category="service" measure="amount" label="L" class="probe"></st-dataviz-bump-chart>`,
+    items: ["eu: checkout #1, billing #1", "us: checkout #2, billing ?"],
+    after: ["eu: billing #1"],
+  },
 ];
 
 function dataList(root: Element): string[] {
@@ -326,7 +579,9 @@ for (const [family] of new Map(cases.map((c) => [c.family, true]))) {
         expect(classes, 'class passthrough').toContain('probe');
         if (testCase.ownClass) expect(classes, 'adapter class').toContain(testCase.ownClass);
 
-        expect(root.querySelector('ul.st-chartDataList')?.getAttribute('aria-label')).toBe('Data values for L');
+        expect(root.querySelector('ul.st-chartDataList')?.getAttribute('aria-label')).toBe(
+          testCase.listAria ?? 'Data values for L',
+        );
         expectItems(dataList(root), testCase.items, testCase.name + ' values');
         if (testCase.mark) {
           expect(root.querySelectorAll(testCase.mark[0]).length, testCase.mark[0]).toBe(testCase.mark[1]);

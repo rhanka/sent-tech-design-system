@@ -14,9 +14,30 @@ const OUTDIR = ROOT + '/packages/dataviz-angular/src/lib';
 function dsInputTypes(component) {
   const src = readFileSync(NGDS + '/' + component + '.ts', 'utf8');
   const out = new Map();
-  for (const m of src.matchAll(/^  @NgInput\((?:"([^"]+)")?\)\s*([A-Za-z_$][\w$]*)([!?])?\s*(?::\s*([^=;]+?))?\s*(?:=\s*[^;]+)?;/gm)) {
+  for (const m of src.matchAll(/^  @NgInput\((?:"([^"]+)")?\)\s*([A-Za-z_$][\w$]*)([!?])?\s*(?::\s*(.+?))?\s*;$/gm)) {
     const name = m[1] || m[2];
-    if (m[4]) out.set(name, m[4].trim());
+    if (!m[4]) continue;
+    // Strip an initialiser (` = value`) without cutting a function type at its
+    // `=>`: the former is space-equals-space, the latter space-equals-greater.
+    const parts = m[4].split(/ = /);
+    const declared = parts[0].trim();
+    if (declared) out.set(name, { type: declared, default: parts[1]?.trim(), optional: m[3] === '?' });
+  }
+  return out;
+}
+
+/**
+ * A DS input written `height = 320` has no declared type, so it is NOT optional:
+ * binding `undefined` into it is a type error and, when it isn't, it renders the
+ * literal `undefined` (the trap PATTERN.md records for KpiCard). When the Vue prop
+ * is optional and the DS input carries such an initialiser, the adapter adopts
+ * that same default — behaviour-identical, and it keeps the input non-optional.
+ */
+function dsFieldDefaults(component) {
+  const src = readFileSync(NGDS + '/' + component + '.ts', 'utf8');
+  const out = new Map();
+  for (const m of src.matchAll(/^  @NgInput\((?:"([^"]+)")?\)\s*([A-Za-z_$][\w$]*)\s*=\s*([^;]+);$/gm)) {
+    out.set(m[1] || m[2], m[3].trim());
   }
   return out;
 }
@@ -44,6 +65,23 @@ function builderLines(d, indent) {
 }
 
 function assignment(d, field) {
+  // Several inputs read members of one derived model: keep the model in the field.
+  if (d.derive.multiMember) {
+    const inner = builderLines(d, 4);
+    inner[0] = '    this.' + field + ' = ' + d.derive.builder + '(';
+    inner[inner.length - 1] += ';';
+    return inner.join('\n');
+  }
+  // One member of a derived model feeds the input, optionally through a mapper.
+  if (d.derive.member) {
+    const inner = builderLines(d, 4);
+    inner[0] = '    const ' + d.derive.intermediate + ' = ' + d.derive.builder + '(';
+    inner[inner.length - 1] += ';';
+    const read = d.derive.intermediate + '.' + d.derive.member;
+    return inner
+      .concat(['    this.' + field + ' = ' + (d.derive.wrap ? d.derive.wrap + '(' + read + ')' : read) + ';'])
+      .join('\n');
+  }
   if (d.derive.asArray) {
     const inner = builderLines(d, 6);
     inner[inner.length - 1] += ',';
@@ -62,8 +100,16 @@ function assignment(d, field) {
 
 function emit(d) {
   const dsTypes = dsInputTypes(d.ds.name);
-  const derivedInput = d.bindings.find((b) => b.expr === d.derive.field).input;
-  const derivedType = dsTypes.get(derivedInput);
+  const dsDefaults = dsFieldDefaults(d.ds.name);
+  const boundInput = new Map(d.bindings.map((b) => [b.expr.replace(/^props\./, ''), b.input]));
+  // With several members consumed, the field holds the model itself, and its type
+  // is the builder's return type — mechanical, and exact without knowing the model.
+  const derivedInput = d.derive.multiMember
+    ? null
+    : d.bindings.find((b) => b.expr === d.derive.field).input;
+  const derivedType = d.derive.multiMember
+    ? 'ReturnType<typeof ' + d.derive.builder + '>'
+    : dsTypes.get(derivedInput)?.type;
   if (!derivedType) throw new Error(d.name + ': no DS input type for ' + derivedInput);
   const isArray = derivedType.endsWith('[]');
   // A one-element list handed to a plural input reads better under that name.
@@ -77,19 +123,33 @@ function emit(d) {
     if (b.expr === d.derive.field || b.input === 'class') continue;
     const prop = b.expr.replace(/^props\./, '');
     if (!/^[A-Za-z_$][\w$]*$/.test(prop)) continue;
-    const dsType = dsTypes.get(b.input);
+    const dsType = dsTypes.get(b.input)?.type;
     if (dsType) passthroughType.set(prop, dsType.replace(/\s*\|\s*undefined$/, ''));
   }
 
+  // TypeScript's own globals are not design-system exports.
+  const GLOBAL_TYPES = new Set([
+    'Array', 'Boolean', 'Date', 'Exclude', 'Extract', 'InstanceType', 'Map', 'NonNullable',
+    'Number', 'Object', 'Omit', 'Parameters', 'Partial', 'Pick', 'Promise', 'Readonly',
+    'Record', 'Required', 'ReturnType', 'Set', 'String',
+  ]);
   const typeNames = new Set();
   for (const t of [derivedType].concat(d.ds.typeImports, [...passthroughType.values()])) {
-    for (const m of t.matchAll(/\b([A-Z][A-Za-z0-9]*)\b/g)) typeNames.add(m[1]);
+    for (const m of t.matchAll(/\b([A-Z][A-Za-z0-9]*)\b/g)) {
+      if (!GLOBAL_TYPES.has(m[1])) typeNames.add(m[1]);
+    }
   }
 
   const inputs = d.props
     .filter((p) => p.name !== 'store' && p.name !== 'class')
     .map((p) => {
       const tsType = passthroughType.get(p.name) || p.tsType;
+      // Adopt the DS field initialiser when the prop is optional and the DS input
+      // is a bare `name = value` field, which cannot take undefined.
+      const inherited = p.default === undefined && !p.required
+        ? dsDefaults.get(boundInput.get(p.name))
+        : undefined;
+      if (inherited !== undefined) return '  @NgInput() ' + p.name + ': ' + tsType + ' = ' + inherited + ';';
       if (p.required) return '  @NgInput({ required: true }) ' + p.name + '!: ' + tsType + ';';
       // The annotation is load-bearing: `sort = 'input'` would infer `string`,
       // not the union the DS input declares.

@@ -183,31 +183,34 @@ function formatTickLabel(value: number): string {
         </svg>
       </div>
 
-      <div class="st-contourChart__legend" aria-hidden="true" [style.display]="hasLegend ? 'flex' : 'none'">
-        <span class="st-contourChart__legendText">Low</span>
-        <span class="st-contourChart__legendRamp">
-          <span
-            *ngFor="let item of legendItems"
-            [attr.class]="'st-contourChart__legendSwatch st-contourChart__legendSwatch--' + item.tone"
-          ></span>
-        </span>
-        <span class="st-contourChart__legendText">High</span>
-      </div>
+      @if (hasLegend) {
+        <div class="st-contourChart__legend" aria-hidden="true">
+          <span class="st-contourChart__legendText">Low</span>
+          <span class="st-contourChart__legendRamp">
+            <span
+              *ngFor="let item of legendItems"
+              [attr.class]="'st-contourChart__legendSwatch st-contourChart__legendSwatch--' + item.tone"
+            ></span>
+          </span>
+          <span class="st-contourChart__legendText">High</span>
+        </div>
+      }
 
       <ul class="st-chartDataList" [attr.aria-label]="'Data values for ' + (label ?? 'contour')">
         <li *ngFor="let item of dataValueItems">{{ item }}</li>
       </ul>
 
-      <div
-        class="st-contourChart__tooltip"
-        role="presentation"
-        [style.display]="hoveredCell ? 'inline-flex' : 'none'"
-        [style.left]="tooltipLeft"
-        [style.top]="tooltipTop"
-      >
-        <span class="st-contourChart__tooltipLabel">{{ tooltipLabel }}</span>
-        <span class="st-contourChart__tooltipValue">{{ tooltipValue }}</span>
-      </div>
+      @if (hoveredCell) {
+        <div
+          class="st-contourChart__tooltip"
+          role="presentation"
+          [style.left]="tooltipLeft"
+          [style.top]="tooltipTop"
+        >
+          <span class="st-contourChart__tooltipLabel">{{ tooltipLabel }}</span>
+          <span class="st-contourChart__tooltipValue">{{ tooltipValue }}</span>
+        </div>
+      }
     </div>
   `,
 })
