@@ -159,6 +159,25 @@ export { WindBarbChart } from './lib/WindBarbChart.js';
 export type { WindBarbChartProps } from './lib/WindBarbChart.js';
 export { WordCloudChart } from './lib/WordCloudChart.js';
 export type { WordCloudChartProps } from './lib/WordCloudChart.js';
+
+// Lot 5: hand-written adapters the port generator refuses (see
+// tools/dataviz-angular-port/README.md for the refusal of each one).
+export { CalendarHeatmapChart } from './lib/CalendarHeatmapChart.js';
+export type { CalendarHeatmapChartProps } from './lib/CalendarHeatmapChart.js';
+export { ChordChart } from './lib/ChordChart.js';
+export type { ChordChartProps } from './lib/ChordChart.js';
+export { DivergingBarChart } from './lib/DivergingBarChart.js';
+export type { DivergingBarChartProps } from './lib/DivergingBarChart.js';
+export { LollipopChart } from './lib/LollipopChart.js';
+export type { LollipopChartProps } from './lib/LollipopChart.js';
+export { ParetoChart } from './lib/ParetoChart.js';
+export type { ParetoChartProps } from './lib/ParetoChart.js';
+export { ScoreCard } from './lib/ScoreCard.js';
+export type { ScoreCardProps } from './lib/ScoreCard.js';
+export { Sparkline } from './lib/Sparkline.js';
+export type { SparklineProps, SparklineTone } from './lib/Sparkline.js';
+export { StepLineChart } from './lib/StepLineChart.js';
+export type { StepLineChartProps } from './lib/StepLineChart.js';
 export {
   DASHBOARD_STORE,
   createDashboard,
