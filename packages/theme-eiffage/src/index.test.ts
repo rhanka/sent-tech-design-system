@@ -42,23 +42,34 @@ describe("eiffageTheme", () => {
   it("locks the measured control typography and the density geometry", () => {
     // Regression lock for the review corrections: `.tg-link`
     // (`font-size: 1rem` at the 18px brand root → 1.125rem at 16px;
-    // `line-height: 1em` → 1) and the general form-input spec
-    // (0.8333rem → 0.9375rem, 0.8889rem → 1.07). Density stays
-    // reference-aligned (see MAPPING.md evidence).
+    // `line-height: 1em` → 1), the general form-input spec
+    // (0.8333rem → 0.9375rem, 0.8889rem → 1.07), and the repeated brand
+    // button block padding (11.5px → 0.71875rem at 16px, seven declarations
+    // across five contexts — see MAPPING.md evidence). The inline axis
+    // stays reference-aligned (fluid brand inline values, undeclared field
+    // right side).
     expect(eiffageTheme.tokens.foundation).toMatchObject({
       typography: {
         control: { size: "1.125rem", weight: "600", lineHeight: "1" },
         field: { size: "0.9375rem", weight: "400", lineHeight: "1.07" }
       },
       density: {
-        sm: { controlHeight: "2rem", paddingInline: "0.5rem" },
+        sm: {
+          controlHeight: "2rem",
+          paddingBlock: "0.71875rem",
+          paddingInline: "0.5rem"
+        },
         md: {
           controlHeight: "2.5rem",
-          paddingBlock: "0.375rem",
+          paddingBlock: "0.71875rem",
           paddingInline: "0.75rem",
           fontSize: "1rem"
         },
-        lg: { controlHeight: "3rem", paddingInline: "1rem" }
+        lg: {
+          controlHeight: "3rem",
+          paddingBlock: "0.71875rem",
+          paddingInline: "1rem"
+        }
       }
     });
   });

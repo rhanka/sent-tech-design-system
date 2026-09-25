@@ -13,7 +13,8 @@ import type { TenantTheme } from "@sentropic/design-system-themes";
  * (Montserrat for controls/body, DM Serif Text for display titles) only —
  * never font binaries. Sources and exact provenance are documented in
  * MAPPING.md. Where the brand publishes no direct equivalent for a Sentropic
- * role (feedback hues, hover/deep red tints, control geometry, radii, motion),
+ * role (feedback hues, hover/deep red tints, inline control geometry, radii,
+ * motion),
  * the closest derived value is used and flagged "à confirmer" in MAPPING.md.
  *
  * Eiffage colour reference (light theme):
@@ -164,19 +165,28 @@ const foundation = {
     thick: "2px" // form strokes (`border-bottom: 2px solid #757575`)
   },
   borderStyle: { solid: "solid" },
-  // Control density. The brand publishes no usable general control geometry:
-  // the paddings its general rules declare are variant-specific and
-  // asymmetric (`.contact .form__input--text`: 13px top / 10px bottom;
-  // `--select`: 10px top / 13px bottom; 8px inline), the button padding is
-  // fluid (`.main .btn-bg`: `11.5px 6.6%`), the only `height` values are
-  // widget-scoped (search input 38px/64px, textarea 170px multi-line area),
-  // and no general rule declares `height`/`min-height` — see MAPPING.md.
-  // Density is therefore aligned with the reference theme package's
-  // geometry ("à confirmer"). `controlHeight`/`iconSize` match the base.
+  // Control density. The brand publishes one repeated general block value:
+  // `11.5px` in 7 button-padding declarations across 5 contexts
+  // (`.main .btn-bg`, `.main__section.millau .btn-bg`, the career
+  // `.offre-detail-header` rule + its max-width-767px media, `.apply-modal`
+  // + its media, `.intoPage.article-header .btn__wording`), corroborated by
+  // the general field paddings averaging exactly 11.5px block each (13/10
+  // and 10/13) — so `paddingBlock` is transcribed as 11.5px = `0.71875rem`
+  // (11.5 / 16) on all three sizes; the brand publishes no size scale. The
+  // mirrored field-variant asymmetry (13/10 vs 10/13) holds on the block
+  // axis only; inline is a uniform `8px` left with no right-side
+  // declaration (a missing datum, not an asymmetry). The inline axis is not
+  // transcribable (button inline is fluid: `6.6%`, `1.2em`, `42px`, `15px`;
+  // field right side undeclared), and no general rule declares
+  // `height`/`min-height` (widget-scoped heights only: search input
+  // 38px/64px, textarea 170px multi-line area, custom select 55px) — so
+  // `paddingInline`, `gap`, `minWidth` and `fontSize` stay aligned with the
+  // reference theme package's geometry ("à confirmer"), while
+  // `controlHeight`/`iconSize` match the base. See MAPPING.md.
   density: {
-    sm: { controlHeight: "2rem", paddingBlock: "0", paddingInline: "0.5rem", gap: "0.5rem", minWidth: "2rem", fontSize: "0.875rem" },
-    md: { controlHeight: "2.5rem", paddingBlock: "0.375rem", paddingInline: "0.75rem", gap: "0.5rem", minWidth: "2.5rem", fontSize: "1rem" },
-    lg: { controlHeight: "3rem", paddingBlock: "0", paddingInline: "1rem", gap: "0.5rem", minWidth: "3rem", fontSize: "1.125rem" }
+    sm: { controlHeight: "2rem", paddingBlock: "0.71875rem", paddingInline: "0.5rem", gap: "0.5rem", minWidth: "2rem", fontSize: "0.875rem" },
+    md: { controlHeight: "2.5rem", paddingBlock: "0.71875rem", paddingInline: "0.75rem", gap: "0.5rem", minWidth: "2.5rem", fontSize: "1rem" },
+    lg: { controlHeight: "3rem", paddingBlock: "0.71875rem", paddingInline: "1rem", gap: "0.5rem", minWidth: "3rem", fontSize: "1.125rem" }
   },
   // Eiffage typography: Montserrat for interactive/fields/labels, DM Serif
   // Text for display. Control text reuses the brand text-link spec
