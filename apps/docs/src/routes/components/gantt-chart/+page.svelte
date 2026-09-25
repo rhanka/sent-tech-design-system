@@ -2,7 +2,8 @@
   import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge } from "@sentropic/design-system-svelte";
   import { locale } from "$lib/locale.svelte";
-  import type { NodeSpec } from "$lib/framework/examples";
+  import { storeChartDemoNodes, type NodeSpec } from "$lib/framework/examples";
+  import { createDashboardStore, type DataModel } from "@sentropic/dataviz-core";
 
   const copy = {
     fr: {
@@ -72,6 +73,33 @@
       ]
     }
   ]);
+
+  // Version adaptateur : les barres sont dérivées d'un vrai store minimal.
+  const storeModel: DataModel = {
+    dimensions: [{ id: "task", label: "Tâche", type: "discrete" }],
+    measures: [
+      { id: "start", label: "Début", aggregation: "min" },
+      { id: "end", label: "Fin", aggregation: "min" }
+    ]
+  };
+  const store = createDashboardStore({
+    model: storeModel,
+    data: [
+      { task: "Étude", start: 1, end: 4 },
+      { task: "Build", start: 3, end: 9 }
+    ]
+  });
+
+  const storeDemo = $derived<NodeSpec[]>(
+    storeChartDemoNodes("GanttChart", {
+      store,
+      viewId: "store",
+      task: "task",
+      start: "start",
+      end: "end",
+      label: locale.value === "fr" ? "Planning (store)" : "Schedule (store)"
+    })
+  );
 </script>
 
 <div class="docs-page">
@@ -134,6 +162,49 @@
       <li><code>--st-semantic-text-inverse</code></li>
       <li><code>--st-radius-sm</code></li>
     </ul>
+  </section>
+  <section class="docs-section">
+    <h2>{locale.value === "fr" ? "Piloté par store" : "Store-driven"}</h2>
+    <p class="section-desc">
+      {#if locale.value === "fr"}
+        La version adaptateur (<code>@sentropic/dataviz-svelte</code>,
+        <code>-react</code>, <code>-vue</code>, <code>-angular</code>) dérive les barres
+        d’un <code>DashboardStore</code> partagé : <code>task</code>,
+        <code>start</code> et <code>end</code> désignent les champs de ligne, le reste
+        du contrat est inchangé.
+      {:else}
+        The adapter version (<code>@sentropic/dataviz-svelte</code>,
+        <code>-react</code>, <code>-vue</code>, <code>-angular</code>) derives the bars
+        from a shared <code>DashboardStore</code>: <code>task</code>,
+        <code>start</code>, and <code>end</code> name the row fields, the rest of the
+        contract is unchanged.
+      {/if}
+    </p>
+    <TabbedExample nodes={storeDemo} title={locale.value === "fr" ? "Planning (store)" : "Schedule (store)"} />
+    <table class="docs-table">
+      <thead>
+        <tr><th>Prop</th><th>Type</th><th>Par défaut</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>store</code></td><td><code>DashboardStore</code></td><td>requis</td></tr>
+        <tr><td><code>viewId</code></td><td><code>string</code></td><td>requis</td></tr>
+        <tr><td><code>task</code> / <code>start</code> / <code>end</code></td><td><code>string</code></td><td>requis</td></tr>
+        <tr><td><code>category</code></td><td><code>string</code></td><td>non défini</td></tr>
+        <tr><td><code>width</code> / <code>height</code></td><td><code>number</code></td><td>natif</td></tr>
+        <tr><td><code>marker</code></td><td><code>number</code></td><td>non défini</td></tr>
+        <tr><td><code>label</code></td><td><code>string</code></td><td>requis (a11y)</td></tr>
+      </tbody>
+    </table>
+    <p class="docs-demo-context">
+      {#if locale.value === "fr"}
+        Props du natif non reprises par la version store : <code>data</code> (dérivé
+        du store via <code>task</code> / <code>start</code> / <code>end</code>).
+      {:else}
+        Native props not carried by the store version: <code>data</code> (derived
+        from the store through <code>task</code> / <code>start</code> /
+        <code>end</code>).
+      {/if}
+    </p>
   </section>
 </div>
 
