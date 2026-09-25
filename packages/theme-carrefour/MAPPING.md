@@ -15,12 +15,15 @@ referenced — no font binaries. Derived/unmeasured values are flagged
 > it is a Drupal theme of literal hexes, about a quarter of which is
 > normalize.css v8.0.1, a Tailwind v1 preflight + utility layer, Swiper and
 > video.js. `carrefour.fr` (retail) ships Carrefour's **own tokenised design
-> system** — 2551 `--ds-*` declarations with an explicit brand layer, scales for
+> system** — 2551 custom-property declarations (1320 `--ds-*`, 1319 distinct
+> names) with an explicit brand layer, scales for
 > radius/spacing/sizing/shadow/opacity, and per-component colour roles.
 > carrefour.fr therefore wins (see *Host arbitration*). Second surprise: the DS
 > declares `--ds-color-brand-primary: #254f9a` and
 > `--ds-color-brand-secondary: #c20016` and then **consumes neither** (0 `var()`
-> references). The blue that actually paints the interface is `#0970e6`
+> references; the only painted use of `#254f9a` is an alpha shadow tint in
+> seven rules — see *Step 0.5*, counting convention). The blue that actually
+> paints the interface is `#0970e6`
 > (162 declared occurrences, 11 `var()` consumptions). Third: every Carrefour
 > value that lands in a threshold-bound role already passes WCAG — **no
 > stop-rule chain was needed anywhere in this package** (see *Accessibility*).
@@ -84,8 +87,9 @@ the timestamp to cite, not the one requested.
 
 ## Sources
 
-- **Carrefour's tokenised design system** (`--ds-*`, 2551 declarations: brand
-  layer, colour roles, radius, spacing, sizing, shadow, opacity, breakpoints)
+- **Carrefour's tokenised design system** (2551 custom-property declarations,
+  1320 `--ds-*`: brand layer, colour roles, radius, spacing, sizing, shadow,
+  opacity, breakpoints)
   and its component rules (`.c-button`, `.c-base-input`, `.c-tabs__tab`,
   `.c-modal`, `.c-toggle`, `.c-card`, `.c-accordion`, `.c-tag`, `.c-badge`,
   `.c-link`, `.c-pagination`, `.c-breadcrumbs`, `.c-checkbox`, `.c-radio`) —
@@ -115,17 +119,80 @@ conversion**, and the pixel values (`height:40px`, `height:56px`,
 
 ## Step 0.5 — brand region vs third-party blocks
 
-**carrefour.fr / `HHNlKr0TBF.css` (5735 expanded rules): entirely brand-owned.**
-Searched for `normalize`, `swiper`, `slick`, `tealium`, `onetrust`, `didomi`,
-`trustarc`, `bootstrap`, `vjs-`, `tarteaucitron`, `axeptio`, `splide`, `glide`,
-`leaflet`, `mapbox`, `algolia`, `ais-` — **every one returned zero matches**, and
-the file carries no vendor banner comment. The selectors are Carrefour's own
-across three DS generations (`.pl-*` → `.ds-*` → `.c-*`) plus its product and
-checkout components. The only non-namespaced region is the reset at expanded
-lines 5545–5546 (`html{font-family:sans-serif;-ms-text-size-adjust:100%}`,
-`body{margin:0}`), a normalize-shaped reset with no banner; **no value in this
-package is taken from it**, and the two `html`/`body` rules cited above
-(lines 5627 and 5636) are the brand's own later declarations that override it.
+**carrefour.fr / `HHNlKr0TBF.css` (5735 expanded rules): brand-owned except two
+named third-party regions.** Searched for `normalize`, `payline`, `monext`,
+`swiper`, `slick`, `tealium`, `onetrust`, `didomi`, `trustarc`, `bootstrap`,
+`vjs-`, `tarteaucitron`, `axeptio`, `splide`, `glide`, `leaflet`, `mapbox`,
+`algolia`, `ais-` — `normalize` and `monext` return zero matches **because the
+regions below carry no banner and neither keyword occurs in them**: keyword
+search cannot find a de-bannerised vendor block, so the boundaries below are
+drawn **by structure** (bare-element rules with no namespace), not by keyword.
+The file carries no vendor banner comment anywhere (0 `license` / `/*!`
+markers). Outside the two regions the selectors are Carrefour's own across
+three DS generations (`.pl-*` → `.ds-*` → `.c-*`) plus its product and checkout
+components; the `.pl-*` prefix is mixed — Carrefour's own earlier DS generation
+(`.pl-button--tone-main`, `.pl-base-input__input`) alongside the payment
+region's classes below.
+
+**Boundary 1 — de-bannerised normalize-shaped reset + un-namespaced base layer,
+expanded lines 5545–5626 (82 rules).** Lines 5545–5583 are a 39-rule
+normalize-shaped reset on bare selectors (`html`, `body`,
+`article,aside,…`, `a`, `abbr[title]`, `sub,sup`, `img`, `svg:not(:root)`,
+`code,kbd,pre,samp{font-family:monospace,monospace}`,
+`button,input,optgroup,select,textarea`, `fieldset`, `legend`,
+`[type=search]::-webkit-search-cancel-button`, …) with the licence banner
+stripped by the minified build — the method's hardest failure mode, since the
+keyword legitimately reads 0 while the code is present. Lines 5584–5626 are a
+second, 43-rule un-namespaced base layer (`html`, `*`, `*:before/:after`,
+`body`, `h1`–`h6`, `ul,ol`, `table`, `blockquote`, `thead`, `td,th`, `a`,
+`button`). The region ends at the boundary marker `body,html{font-size:16px}`
+at line 5627. **No `--ds-*` declaration exists in either layer (0 of 1320)**,
+so no token origin is affected; whole-file hex counts shift only by
+`#0970e6` 162 → 158, `#e5e5e5` 68 → 65, `#f7f7f7` −1 once both third-party
+regions are excluded — **no tie-break flips** (see recount note below).
+
+**Boundary 2 — third-party Payline/Monext payment region (unnamed until now).**
+`#PaylineWidget` (188 rules), `#pl-container-lightbox-*`, plus the payment
+subset of `.pl-*` (`.pl-cardNumber-container`, `.pl-amex`, `.pl-cb`,
+`.pl-cbpass`, `.pl-apple-pay`, `.pl-AMOUNT-container`,
+`.pl-consent-container`, …) — about 155 rules in all. Excluded as origins
+under Step 0.5 like any vendor block.
+
+**Counting convention (stated here because the headline counts depend on it).**
+One occurrence = one exact 6-digit hex in a `--*` custom-property declaration
+or in a property value containing that hex, case-normalised — the method's
+literal rule, restricted to the 6-digit stem so counts stay comparable. 8-digit
+alpha extensions of a stem are **excluded** from its headline count and
+disclosed separately where they exist (`#121212`: 194 raw − 7 alpha = 187;
+`#254f9a`: 1 exact + 8 alpha; `#0970e6` and `#004f9b` have 0 alpha forms).
+Consumption is counted independently as `var(--token)` references.
+Under the method's unqualified literal rule the 8 alpha `#254f9a` forms would
+also be occurrences; the figures that follow use the 6-digit-exact convention
+throughout, so `#254f9a` reads 1 while its shadow-tint use is recorded
+verbatim below.
+
+**Recount on the brand region alone** (both boundaries above excluded):
+`#0970e6` 162 → **158** (the 4 excluded occurrences are the `#PaylineWidget`
+pay-button / wallet / payment-method rules; the bare `a{color:#0970e6}` at
+line 5624 stays counted — see the `1.625` rationale pattern below: a
+bare-element rule declaring a brand-owned value), `#e5e5e5` 68 → **65**,
+`#f7f7f7` −1, everything else unchanged. The operative blue still outnumbers
+the declared brand token 158 to 1, and 11 `var()` to 0 — the promotion
+decision is unchanged.
+
+**The `1.625` provenance, stated explicitly.** `card.lineHeight`,
+`alert.lineHeight` and `accordion.lineHeight` (`1.625`) are transcribed from
+`html{font:100%/1.625 Open Sans}` at line 5584 — **inside** boundary 1's span.
+This rule is claimed as brand-owned, not vendor boilerplate, because it
+declares two brand-owned values at once: the `Open Sans` brand body face and a
+`1.625` ratio that the file's own base layer then reuses pervasively
+(`margin-bottom:1.625rem`, `line-height:1.625rem` across `pre`, `table`,
+`blockquote`, …). A vendored reset carries neither a brand face nor a
+brand-specific ratio; this rule carries both, so its provenance is defensible —
+but it is a judgement call on a bare `html` selector inside a vendor-shaped
+region, recorded here instead of being filed under a region declared unused.
+The same rationale keeps the bare `a{color:#0970e6}` at line 5624 in the
+brand region: it declares the brand's operative blue.
 
 **carrefour.com / `app.css` (2202 expanded rules): a brand file carrying four
 vendor regions, and the boundary is NOT per-file.** Named for the record, since
@@ -160,14 +227,14 @@ not a union:
 
 | Role | `carrefour.com` `app.css` brand region | `carrefour.fr` `HHNlKr0TBF.css` |
 |---|---|---|
-| dominant blue | `#004e9f` ×126 | `#0970e6` ×162 |
+| dominant blue | `#004e9f` ×126 | `#0970e6` ×162 (×158 on the brand region alone) |
 | second blue | `#0870e5` ×6 | `#004e9b` ×45 |
 | deep blue | `#254f9b` ×5 | `#254f9a` ×1 (`--ds-color-brand-primary`) |
 | loyalty blue | — | `#004f9b` ×34 |
 | primary text | `#000` ×5 | `#121212` ×187 |
 | brand red | `#ed3723` ×1, `#dc3d51` ×1, `#d0021b` ×1 | `#c20016` ×1, `#df1116` ×73, `#d30d1f` ×37 |
 | body face | `body{font-family:Ubuntu}` | `body,html{font-family:Open Sans,…}`; `h1..h6{font-family:Ubuntu,…}` |
-| custom properties | **0** | **2551** |
+| custom properties | **0** | **2551** (1320 `--ds-*`) |
 
 The pairs differ by a single digit in places (`#254f9b`/`#254f9a`,
 `#004e9f`/`#004e9b`/`#004f9b`, `#0870e5`/`#0970e6`): the same design intent,
@@ -176,18 +243,30 @@ error to smooth over.
 
 **carrefour.fr wins, on four independent grounds:**
 
-1. **Source rank.** A tokenised design system published by the brand outranks
-   the custom properties of a site stylesheet, which in turn outrank literal
-   hexes in rules. carrefour.fr is the first case; carrefour.com is not even
-   the second, since it declares no custom properties at all.
+1. **Source rank.** The custom properties of the brand's official site
+   stylesheet (source (b)) outrank literal hexes in rules. Carrefour publishes
+   no standalone design system — no site, no repository — so source (a) does
+   not apply here; the `--ds-` prefix inside a minified bundle is a case of
+   (b), not (a). carrefour.fr is that case; carrefour.com is not even the
+   second, since it declares no custom properties at all. Grounds 2–4 below
+   carry the arbitration on their own.
 2. **Role naming.** `--ds-color-interactive-background-button-filled-main-active`
    names its role; `#004e9f` on carrefour.com is an anonymous value repeated in
    unrelated rules (`.chapo` text, `.cta` text, `.menu-mobile` text,
    `.btn-base:hover` fill, a scrollbar track).
 3. **Declaration form.** A hex declared as a custom property beats one used only
    inline in a rule.
-4. **Frequency.** Even the raw count favours carrefour.fr: `#0970e6` ×162 vs
-   `#004e9f` ×126, each measured on its own host's brand region.
+4. **Frequency.** Even the raw count favours carrefour.fr: `#0970e6` ×162
+   whole-file (×158 on the brand region alone) vs `#004e9f` ×126 on
+   carrefour.com's brand region.
+
+Per-file counts (the method requires all 14 sheets to count): the 13 other
+`/v3-assets/*.css` files linked from the homepage (`B2dh2Ec5ie`, `BcckqFmKeC`,
+`BebzIitYls`, `BhitPbJm6F`, `Bvub-O9FpM`, `CFcRE-VqXI`, `CNUE2-VEFg`,
+`CvPEoZNGsB`, `DkMs1_isqR`, `gdoHtdhAuh`, `qzqjNeHHDL`, `scdcSN0M0F`,
+`tn0RQdqMVo`) carry **25 hex occurrences, 35 custom properties, 0 `--ds-*`**
+between them — page-level overrides, no rival token layer, no tie-break
+affected.
 
 Scope note for the reader: Carrefour's corporate communication and its retail
 enseigne are one company's two faces, and the theme carries the identity the
@@ -272,7 +351,7 @@ Measured palette entries recorded in `carrefourColor` for provenance that carry
 
 | Palette entry | Carrefour source | Value |
 |---|---|---|
-| `neutral.100` | `--ds-color-persistent-border-main-primary` (= `--ds-separator`; the card and accordion border) | `#ebebeb` |
+| `neutral.100` | `--ds-color-persistent-border-main-primary` (the card and accordion border; `--ds-separator` is the `1px solid #ebebeb` border shorthand built on it, not a colour token) | `#ebebeb` |
 | `neutral.200` | `--ds-color-core-border-main-primary` | `#e5e5e5` |
 | `neutral.400` | `--ds-color-interactive-border-input-hover`, consumed by `.c-base-input__container:hover{border:1px solid var(…)}` | `#b8b8b8` |
 | `system.successLight` | `--ds-color-persistent-background-functional-reversed-success` (= `--ds-color-persistent-background-tag-light-positive`) | `#f0faf6` |
@@ -281,13 +360,27 @@ Measured palette entries recorded in `carrefourColor` for provenance that carry
 
 Declared-but-unconsumed brand tokens, recorded because they are the brand's own
 self-description and a reviewer will look for them: `--ds-color-brand-primary`
-`#254f9a`, `--ds-color-brand-secondary` `#c20016`, `--ds-color-brand-tertiary`
-`#f0f3f6`, and the loyalty blue `--ds-color-interactive-active-loyalty-primary`
-`#004f9b`. They are present in `carrefourColor` for provenance and carry **no**
-Sentropic role: `--ds-color-brand-primary` and `-secondary` have **0** `var()`
-consumptions in the whole stylesheet, so promoting either to `action.primary`
-would ship a value the brand's own interface never paints. The operative blue
-`#0970e6` wins on frequency (162 vs 1) and on consumption (11 `var()` vs 0).
+`#254f9a`, `--ds-color-brand-secondary` `#c20016`, and `--ds-color-brand-tertiary`
+`#f0f3f6` (0 `var()` each). They are present in `carrefourColor` for provenance
+and carry **no** Sentropic role: `--ds-color-brand-primary` and `-secondary`
+have **zero** `var()` consumptions in the whole stylesheet, and the only painted
+use of `#254f9a` is an alpha shadow tint (`#254f9a14` ×6, `#254f9a29` ×1,
+`#254f9a1f` ×1 — 8 occurrences in 7 rules: `.typeahead:before`,
+`.typeahead__footer`, `.channel-switch-modal__header`,
+`.channel-switch-modal__container`, `.bundle-drawer--header-shadow
+.drawer__header`, `.bundle-drawer__header`, `.pl-toaster`, all `box-shadow` —
+never a fill, a stroke, or a text colour), so promoting either to
+`action.primary` would ship a value the brand's own interface never paints as
+a surface. The operative blue `#0970e6` wins on frequency (162 vs 1 whole-file,
+158 vs 1 on the brand region) and on consumption (11 `var()` vs 0).
+
+The loyalty blue `--ds-color-interactive-active-loyalty-primary` `#004f9b` is
+**not** unconsumed and is not in that list: it carries **11 `var()`**
+references and 34 hex occurrences — the same order of proof used above for
+`#0970e6`. It is kept in `carrefourColor` with **no** Sentropic role for a
+different, stated reason: it is a programme colour scoped to the loyalty-card
+component family, not a general-interface colour, so no general role may claim
+it.
 
 Two `rgb()` values appear in the **compiled** output but come from neither this
 package nor Carrefour: `rgba(185, 28, 28, 0.08)` (`dangerHoverBackground`) and
@@ -302,8 +395,10 @@ mistaken for unsourced brand hexes.
 - **`foundation.color.cyan.70`** (`#00484a`) — the DS publishes a decorative
   teal pair (aqua `#edfdff`, sacramento `#006064`) but no darker teal. Derived
   as one HSL L−0.05 step from the measured `#006064` (h 182.4°, s 100%,
-  l 19.6% → l 14.6%), keeping H and S. Not bound to any contrast threshold: no
-  semantic text or line role routes to `cyan.70`.
+  l 19.6% → l 14.6%), keeping H and S. The derivation lands on a rounding
+  near-tie (exact blue channel 74.4999… → 74 = `4a`), so two builders could
+  diverge here; the replay above fixes `#00484a`. Not bound to any contrast
+  threshold: no semantic text or line role routes to `cyan.70`.
 - **`foundation.font.mono`** (system stack) — Carrefour declares no monospace
   face. The `@font-face` families it serves are Ubuntu, Open Sans,
   `cf-body-fallback`, `cf-heading-fallback` and the icon font `c-icon`; none is
@@ -331,8 +426,10 @@ mistaken for unsourced brand hexes.
 - **`foundation.field.selectChevron`** and **`.selectPaddingRight`** — Carrefour
   builds its select as a **custom listbox** (`.c-input-select__container`,
   `.c-input-select__option`), not a native `<select>`, so it publishes no native
-  chevron artwork. The chevron is redrawn as a data-URI SVG carrying the
-  measured action blue `#0970e6`, with a `2.5rem` gutter.
+  chevron artwork. The chevron is redrawn as a data-URI SVG carrying
+  `#0970e6` — that colour is measured
+  (`.c-input-select__chevron{color:var(--ds-color-interactive-icon-main-active)}`
+  = `#0970e6`); only the artwork and the `2.5rem` gutter are derived.
 - **`foundation.tabs.indicatorSide`** (`bottom`) — `.c-tabs__tab--selected`
   recolours a full `2px` box (`border-color`), not one side. `bottom` + `border`
   is the closest Sentropic primitive; the colours and paddings are measured.
@@ -371,6 +468,12 @@ Everything not listed here is measured from the sources above.
   `typography.control.family: var(--st-font-display)`. Ubuntu is also the body
   face of the corporate front (`body{font-family:Ubuntu}` on carrefour.com), so
   the two hosts agree on typography even while they disagree on the blue.
+  Deliberately unmapped: `#0e3368` (63 occurrences, the file's 8th most
+  frequent hex) is the brand's heading colour, declared in that very rule
+  (`h1,…,h6{…color:#0e3368}`, expanded line 5636) — cited above without its
+  `color`. It never occurs in a `.c-*` rule (0), so no component role can
+  claim it; the exclusion is defensible and is recorded here rather than left
+  silent.
 - **Monospace** (`font.mono`): system stack *(à confirmer)* — Carrefour declares
   no monospace face.
 - **Control text**: `1rem`, weight **700**, line-height `1.5`
@@ -427,15 +530,25 @@ Everything not listed here is measured from the sources above.
 - **Pagination**: `padding 0.5rem` both axes (`--ds-spacing-xs`), `radius 4px`,
   page box `1.5rem` (`--ds-sizing-m`), gap `0.125rem` (`--ds-spacing-xxxs`);
   active page = `#0970e6` fill with a literal `#fff` label. The `<select>`
-  chevron is redrawn in `#0970e6` with a `2.5rem` gutter *(à confirmer —
-  Carrefour ships a custom listbox, not a native select)*.
+  chevron colour is **measured** —
+  `.c-input-select__chevron{color:var(--ds-color-interactive-icon-main-active)}`
+  with that token at `#0970e6`, exactly the redrawn hex; only the chevron
+  **artwork** is derived (0 `data:image/svg` in the whole file) with a `2.5rem`
+  gutter *(à confirmer — Carrefour ships a custom listbox, not a native
+  select)*.
 - **Toggle**: track `56px × 32px`, `radius 1.5rem`, padding `0.25rem`;
   unchecked `#d9d9d9`, checked `#0970e6`, handle `#ffffff` at `1.5rem`
   (`--ds-sizing-m`) — all measured.
 - **Motion**: `fast 200ms`, `normal 300ms`, `slow 500ms`, by declared frequency
-  across the DS component rules (`.3s` ×53, `.2s` ×28, `.5s` ×9). Easing
-  `cubic-bezier(0.4, 0, 0.2, 1)`, the DS's **only named** easing variable,
-  declared on `.c-accordion{--accordion-animation-easing}`. Note for a reviewer:
+  across the whole file (`.3s` ×66, `.2s` ×34, `.5s` ×13; restricted to
+  selectors containing `.c-`: ×25/×13/×2 — same ranking, same conclusion either
+  way). Easing `cubic-bezier(0.4, 0, 0.2, 1)`, the DS's **only named** easing
+  variable, declared as `.c-accordion{--accordion-animation-easing:
+  cubic-bezier(.4, 0, .2, 1)}` — **measured** on that brand variable, and it
+  coincidentally happens to match the reference package's easing string while
+  differing from the Sentropic base (`cubic-bezier(0.16, 1, 0.3, 1)`), so this
+  is a recorded coincidence, not a borrowed geometry (see the note on
+  `motion.easing` in `src/index.ts`). Note for a reviewer:
   `cubic-bezier(.16,1,.3,1)` also occurs 13 times in the Carrefour stylesheet,
   but only on Vue page-transition classes (`.modal-enter-active`,
   `.drawer-in-out-enter-active`, `.fade-right-enter-active`) — and it happens to
@@ -538,6 +651,15 @@ it can be replayed regardless.
 decorative hairline (`.c-base-input__container` border) and is held to no
 threshold — it is neither `border.interactive` nor `focus.color`. The field's
 *focus* state is carried by the 2px `#0970e6` outline at 4.70:1.
+
+## Template conformance note
+
+`src/index.test.ts` carries **4 `it()` blocks** where the package template
+prescribes 3 — this package is the only one in the lot in that case. The 4th
+block (`locks every measured hex that carries a Sentropic role`) adds only
+regression locks, no new behaviour, so this is a template deviation, not a
+regression; it is recorded here instead of being merged away, because folding
+it into the 3rd block would weaken the lock's failure signal.
 
 ## Asset officiel
 
