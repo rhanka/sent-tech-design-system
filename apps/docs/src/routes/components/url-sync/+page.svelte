@@ -37,11 +37,11 @@
 
   const notes = $derived({
     react: fr
-      ? "Pas de composant <UrlSync> côté React : appelez useUrlSync(store, options) du paquet @sentropic/dataviz-react. La démo live ci-dessus rend le composant Svelte."
-      : "No <UrlSync> component in React: call useUrlSync(store, options) from @sentropic/dataviz-react. The live demo above renders the Svelte component.",
+      ? "Pas de composant <UrlSync> côté React : appelez useUrlSync(store, options) du paquet @sentropic/dataviz-react. Basculez sur l’onglet Svelte pour la démo live du composant."
+      : "No <UrlSync> component in React: call useUrlSync(store, options) from @sentropic/dataviz-react. Switch to the Svelte tab for the live component demo.",
     vue: fr
-      ? "Pas de composant <UrlSync> côté Vue : appelez le composable useUrlSync(store, options) du paquet @sentropic/dataviz-vue. La démo live ci-dessus rend le composant Svelte."
-      : "No <UrlSync> component in Vue: call the useUrlSync(store, options) composable from @sentropic/dataviz-vue. The live demo above renders the Svelte component.",
+      ? "Pas de composant <UrlSync> côté Vue : appelez le composable useUrlSync(store, options) du paquet @sentropic/dataviz-vue. Basculez sur l’onglet Svelte pour la démo live du composant."
+      : "No <UrlSync> component in Vue: call the useUrlSync(store, options) composable from @sentropic/dataviz-vue. Switch to the Svelte tab for the live component demo.",
     angular: fr
       ? "Aucun adaptateur UrlSync côté Angular : ni composant, ni hook."
       : "No UrlSync adapter in Angular: neither a component nor a hook."

@@ -305,10 +305,16 @@ Statut N-A : uniquement les utilitaires non-composants, exclus du décompte
   (72M), soit +3 005 858 octets (+4,4 %) pour 6 pages et 8 sections, build à
   chaud `0:27.20` (280 pages). Le découpage paresseux tient : le chargeur
   `DatavizSvelteNode` pèse `13 586` octets et le code dataviz partagé vit dans
-  des chunks séparés du chunk partagé (`1 359 763` octets, inchangé à l’octet
-  hors hash) ; les pages natives (198 à 214 ko) et dataviz (~197 ko) sont au
-  même ordre de grandeur. Progression à peu près linéaire par page : le lot 2
-  garde le même motif sans démos réduites, à réévaluer s’il double ce coût.
+  des chunks séparés du chunk partagé, qui ne contient aucune référence
+  dataviz (vérifié par grep insensible à la casse). Le plus gros chunk passe
+  de `1 359 120` à `1 359 763` octets (+643 o) : ce n’est pas du code dataviz
+  ajouté mais un artefact de renommage du bundler (mêmes composants,
+  identifiants minifiés et hashes d’imports décalés) — le chunk partagé n’est
+  donc pas identique à l’octet, mais aucune démo store n’y tire un paquet
+  dataviz et aucune page existante n’en paie le poids ; les pages natives
+  (198 à 214 ko) et dataviz (~197 ko) sont au même ordre de grandeur.
+  Progression à peu près linéaire par page : le lot 2 garde le même motif
+  sans démos réduites, à réévaluer s’il double ce coût.
   Vérification navigateur (critère 3) : aucun navigateur exécutable dans le
   bac à sable (snap confiné, aucun build Playwright pour l’OS, cache
   lecture seule, CDN Playwright refusé) — le gate

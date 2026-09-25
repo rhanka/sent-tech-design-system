@@ -8,8 +8,11 @@ import { createDashboardStore, type DataModel } from "@sentropic/dataviz-core";
 
 import DatavizSvelteNode from "./DatavizSvelteNode.svelte";
 import {
+  dashboardGridDemoNodes,
+  dataImageDemoNodes,
   scoreCardStoreDemoNodes,
   timeSeriesDemoNodes,
+  urlSyncDemoNodes,
   webFrameDemoNodes,
   type NodeSpec
 } from "./examples";
@@ -59,5 +62,33 @@ describe("DatavizSvelteNode", () => {
     await waitFor(() =>
       expect(host.textContent).toContain("Svelte adapter missing: TimeSeriesLineChart")
     );
+  });
+
+  it("renders DataImage markup", async () => {
+    const { host } = renderNodes(
+      dataImageDemoNodes({ src: "https://example.com/a.png", alt: "A" })
+    );
+    await waitFor(() => expect(host.querySelector("img")).not.toBeNull());
+    expect(host.querySelector("img")?.getAttribute("alt")).toBe("A");
+  });
+
+  it("renders DashboardGrid panels with no store channel", async () => {
+    const { host } = renderNodes(
+      dashboardGridDemoNodes({
+        columns: 12,
+        panels: [{ id: "pipeline", x: 6, y: 0, w: 6, h: 2 }]
+      })
+    );
+    await waitFor(() =>
+      expect(host.querySelector('section[aria-label="pipeline"]')).not.toBeNull()
+    );
+  });
+
+  it("mounts UrlSync with no markup by design", async () => {
+    const { host } = renderNodes(urlSyncDemoNodes(newStore()));
+    // The demo wrapper proves the mount ran; the component itself renders
+    // nothing (declarative URL wiring only).
+    await waitFor(() => expect(host.querySelector(".chart-wrapper")).not.toBeNull());
+    expect(host.textContent?.trim()).toBe("");
   });
 });
