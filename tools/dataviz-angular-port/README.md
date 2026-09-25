@@ -90,6 +90,16 @@ local state; a descriptor has nothing to say about them. Widening further would
 mean teaching the extractor to read hand-written data construction, which is
 writing the adapter twice. The remaining 43 are hand-work.
 
+Lot 5 took the first slice of that hand-work: **eight** of the ten refused with
+`setup body matches no supported shape`, leaving `union 119 / ported 84 /
+pending 35`. Two of the ten were dropped after reading them, and the reason is
+worth keeping, because it is the shape of the rest of that class:
+`DrillChart` delegates to `DrillBarChart` (not ported) and needs `drill.ts`
+(not copied into this package), and `SmallMultiples` needs `role` and
+`aria-label` on the DS `Grid`, which it does not declare — so parity with Vue is
+unreachable without changing `packages/components-angular`. A slice of eight
+measured is worth more than ten announced.
+
 ## Adding a lot
 
 1. Run `extract.mjs` with the names. Read the printed one-line-per-component
@@ -98,8 +108,11 @@ writing the adapter twice. The remaining 43 are hand-work.
    emitted files are committed: they are the source, not a build artefact.
 3. Add each adapter to `packages/dataviz-angular/src/index.ts`, to the expected
    list in `src/lib/adapter-pattern.test.ts`, to the family table in
-   `src/lib/generated-adapters.test.ts`, and to
-   `tools/dataviz-angular-parity/parity.test.ts`.
+   `src/lib/generated-adapters.test.ts` (that file's name is historical — it holds
+   hand-written adapters of the same shape too), and to
+   `tools/dataviz-angular-parity/parity.test.ts`. An adapter whose DS component
+   renders no value list cannot be proved by that table: give it its own
+   `<Name>.test.ts` and name it in the harness's `NO_DATA_LIST`.
 4. Declare every new file in `docs/graph-dataviz-m1-provenance.json`.
 
 ## Editing an emitted adapter

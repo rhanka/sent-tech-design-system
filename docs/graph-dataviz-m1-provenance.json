@@ -1895,7 +1895,7 @@
       "gitBlob": "10ecd826e8bfa1f82e41c7c78327cd298af3ec73",
       "sha256": "9eea92afee5de19b05875a831728527d6604a39b6c60573316bd59eef950fcd7",
       "status": "adapted-monorepo-pattern",
-      "destinationSha256": "a86e0491e5fbcb0f9b1efe35fee7bfd2b96cdfdb002fe0321619255ead6dd929",
+      "destinationSha256": "96aa185ef3d23e6ef3ec8070a07aca1220ff09b6caeac7f6d7d54e2aa1f0b044",
       "note": "PR #76 extends the export-surface assertions to the ten new adapters"
     },
     {
@@ -1906,7 +1906,7 @@
       "gitBlob": "e0da2ca152892d3985977fbd7588ec7e6bb4df31",
       "sha256": "cafea77294137e31b664bef0f053927c4c1edda93d2391f339b44ae3e669c98b",
       "status": "adapted-monorepo-pattern",
-      "destinationSha256": "7f7eba06b5bf31887e2fff9c1c7d5afe5cb8b23aa38caaf818b74b7735abad24",
+      "destinationSha256": "6ff1d18a0b27bb901368151cbeae8cf97f3e104b02227c080c8f785848d2a8d9",
       "note": "PR #76 exports the ten new adapters and their prop types"
     },
     {
@@ -6904,7 +6904,7 @@
     {
       "destination": "packages/dataviz-angular/PATTERN.md",
       "status": "local-monorepo-helper",
-      "sha256": "cdca0a5330b92371431edc3e38a160b87be57b1f86298a30764d05e0ee65d8b6",
+      "sha256": "4628d818dcac8ecc80448d234d1139b27c3713b62084ff7253e982a7dec13367",
       "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned"
     },
     {
@@ -7030,7 +7030,7 @@
     {
       "destination": "packages/dataviz-angular/src/lib/adapter-pattern.test.ts",
       "status": "local-monorepo-helper",
-      "sha256": "580e2cd8e4e05cddccd242f2bcc31b5903f1aeee8f0f7c152a9cd1f4dc2836d7",
+      "sha256": "afe71cfbf62a30d1e45ac6d62ad04082dcc0bb20e7af65358de60ff5fbd59541",
       "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned"
     },
     {
@@ -7167,7 +7167,7 @@
     {
       "destination": "packages/dataviz-angular/src/lib/generated-adapters.test.ts",
       "status": "local-monorepo-helper",
-      "sha256": "58c8551995702d8f1f32aec289d1e10b1689463401bb782b4a7295a85fbe8bc2",
+      "sha256": "04a1fad8b3bba71b6787e0a53b63ee6f6d0f0c031611418e3fcc6be96a34cf01",
       "note": "GD-M2-PARITY lot 2: monorepo-authored table-driven test over the generated adapters; no upstream source; hash-pinned"
     },
     {
@@ -7444,6 +7444,66 @@
       "status": "adapted-import-path-only",
       "destinationSha256": "6f513a467448799d2eec9c486af82b5f553513df0289dfe5c2d7f7a54015fd69",
       "note": "GD-M2-PARITY lot 4: the dataviz-vue copy with its design-system type import changed to @sentropic/design-system-angular, nothing else; pinned that way by scripts/verify-dataviz-helper-copies.test.mjs"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/CalendarHeatmapChart.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "e3cb3ebb09641c0b314f37281a7dae982fa65fdf383dbedb5b83939cca11c101",
+      "note": "GD-M2-PARITY lot 5: monorepo-authored by hand for the CalendarHeatmapChart store-driven adapter; tools/dataviz-angular-port refuses this shape (see its README), so no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/ChordChart.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "9d533286e6072163bc1b237d7d57db44f0fc656b0f75a2040d1284c73a3932fe",
+      "note": "GD-M2-PARITY lot 5: monorepo-authored by hand for the ChordChart store-driven adapter; tools/dataviz-angular-port refuses this shape (see its README), so no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/DivergingBarChart.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "b1ae98cd4c1f68f979c5634488489624a835a61c30c1e7a3c0a17c11ed7e8594",
+      "note": "GD-M2-PARITY lot 5: monorepo-authored by hand for the DivergingBarChart store-driven adapter; tools/dataviz-angular-port refuses this shape (see its README), so no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/LollipopChart.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "7b6a7e787cc6c22dba5570ff2341edccc5058f106d376aea4be20480e98a1a64",
+      "note": "GD-M2-PARITY lot 5: monorepo-authored by hand for the LollipopChart store-driven adapter; tools/dataviz-angular-port refuses this shape (see its README), so no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/ParetoChart.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "538d45750c65ce5a873037265156a8a22c10039ab6d1b8ad9f90a1ecf24e8cd3",
+      "note": "GD-M2-PARITY lot 5: monorepo-authored by hand for the ParetoChart store-driven adapter; tools/dataviz-angular-port refuses this shape (see its README), so no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/ScoreCard.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "4cd3d7b1eb6ffcfe404f17ef275cd50a1903d0f6922824593c04dac1520c4ae8",
+      "note": "GD-M2-PARITY lot 5: monorepo-authored by hand for the ScoreCard store-driven adapter; tools/dataviz-angular-port refuses this shape (see its README), so no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/Sparkline.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "61ac556bdc2592727956790081ef10e518b04ec14da9c15e62e24b34de2f1552",
+      "note": "GD-M2-PARITY lot 5: monorepo-authored by hand for the Sparkline store-driven adapter; tools/dataviz-angular-port refuses this shape (see its README), so no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/StepLineChart.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "666ccb967e109a51509257a4a82632a5560217491e3071cd8c8dad504b32fc0b",
+      "note": "GD-M2-PARITY lot 5: monorepo-authored by hand for the StepLineChart store-driven adapter; tools/dataviz-angular-port refuses this shape (see its README), so no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/ScoreCard.test.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "0e725f21b3a3c3ecffcde116cae027e4d3d11f700b2f6341e827b4b75fe32d53",
+      "note": "GD-M2-PARITY lot 5: monorepo-authored by hand for the mount test for the ScoreCard adapter, whose DS component renders no value list; tools/dataviz-angular-port refuses this shape (see its README), so no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/Sparkline.test.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "c3d59cda33832f550caad3071e2bd2509d7755a7b9306b7f73ef6c39439ba3d2",
+      "note": "GD-M2-PARITY lot 5: monorepo-authored by hand for the mount test for the Sparkline adapter, whose DS component renders no value list; tools/dataviz-angular-port refuses this shape (see its README), so no descriptor and no upstream source; hash-pinned"
     }
   ]
 }
