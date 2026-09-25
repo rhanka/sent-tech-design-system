@@ -1,51 +1,44 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input as NgInput, inject } from '@angular/core';
 import type { OnChanges, OnDestroy, OnInit } from '@angular/core';
-import { ViolinChart as DsViolinChart } from '@sentropic/design-system-angular';
-import { buildViolinModel, type DashboardStore } from '@sentropic/dataviz-core';
+import { ForceGraph as DsForceGraph } from '@sentropic/design-system-angular';
+import { buildForceGraphData, type DashboardStore } from '@sentropic/dataviz-core';
 import { toSignalStore, type AngularSignalStore } from '../adapter.js';
 
-export type ViolinChartProps = {
+export type ForceGraphProps = {
   store: DashboardStore;
   viewId: string;
-  /** Field id of the dimension used to split data into groups (one violin per group). */
-  groupBy: string;
-  /** Field id whose numeric values form the distribution for each group. */
-  measure: string;
-  /** Number of density bins (optional; DS default is 20). */
-  bins?: number;
-  /** Whether to overlay median / quartile markers (optional; DS default is true). */
-  quartiles?: boolean;
+  source: string;
+  target: string;
+  weight?: string;
+  label: string;
   width?: number;
   height?: number;
-  /** Accessible label for the chart (aria-label). */
-  label: string;
   class?: string;
 };
 
 /**
- * State wiring for a DS Angular ViolinChart.
+ * State wiring for a DS Angular ForceGraph.
  * Generated from tools/dataviz-angular-port/descriptors.json — see that
  * directory's README before editing this file by hand.
  */
 @Component({
-  selector: 'st-dataviz-violin-chart',
+  selector: 'st-dataviz-force-graph',
   standalone: true,
-  imports: [DsViolinChart],
+  imports: [DsForceGraph],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <st-violin-chart
-      [data]="model.data"
-      [bins]="model.bins"
-      [quartiles]="model.quartiles"
+    <st-force-graph
+      [nodes]="graph.nodes"
+      [edges]="graph.edges"
       [label]="label"
       [width]="width"
       [height]="height"
       [class]="classInput"
-    ></st-violin-chart>
+    ></st-force-graph>
   `,
 })
-export class ViolinChart implements OnInit, OnChanges, OnDestroy {
-  static readonly stComponentName = 'ViolinChart';
+export class ForceGraph implements OnInit, OnChanges, OnDestroy {
+  static readonly stComponentName = 'ForceGraph';
 
   private readonly changeDetector = inject(ChangeDetectorRef);
   private signals?: AngularSignalStore;
@@ -63,23 +56,22 @@ export class ViolinChart implements OnInit, OnChanges, OnDestroy {
 
   get store(): DashboardStore {
     if (!this.signals) {
-      throw new Error('ViolinChart: store is required.');
+      throw new Error('ForceGraph: store is required.');
     }
     return this.signals.store;
   }
 
   @NgInput({ required: true }) viewId!: string;
-  @NgInput({ required: true }) groupBy!: string;
-  @NgInput({ required: true }) measure!: string;
-  @NgInput() bins?: number;
-  @NgInput() quartiles?: boolean;
+  @NgInput({ required: true }) source!: string;
+  @NgInput({ required: true }) target!: string;
+  @NgInput() weight?: string;
+  @NgInput({ required: true }) label!: string;
   @NgInput() width?: number;
   @NgInput() height?: number;
-  @NgInput({ required: true }) label!: string;
   @NgInput('class') classInput?: string;
 
   /** Recomputed by `recompute()`; never derived in a template getter. */
-  model!: ReturnType<typeof buildViolinModel>;
+  graph!: ReturnType<typeof buildForceGraphData>;
 
   ngOnInit(): void {
     this.recompute();
@@ -97,14 +89,13 @@ export class ViolinChart implements OnInit, OnChanges, OnDestroy {
   private recompute(): void {
     if (!this.signals) return;
     void this.signals.state();
-    this.model = buildViolinModel(
+    this.graph = buildForceGraphData(
       this.signals.store.model,
       this.signals.store.applyCrossfilter(this.viewId),
       {
-        groupBy: this.groupBy,
-        measure: this.measure,
-        bins: this.bins,
-        quartiles: this.quartiles,
+        source: this.source,
+        target: this.target,
+        weight: this.weight,
       },
     );
   }

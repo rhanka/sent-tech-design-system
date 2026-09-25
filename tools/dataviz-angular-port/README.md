@@ -45,6 +45,18 @@ itself. A component whose `setup()` does
 anything else (local state, several `h()` calls, emitted events, slots) is reported
 as a skip and must be written by hand.
 
+### Exit codes
+
+The refusal is loud on stderr, and it is also in the exit code — a refusal that
+only prints is invisible to anything that checks `$?`, and a whole lot the tool
+rejects would otherwise look like a successful run:
+
+| rc | meaning |
+| --- | --- |
+| `0` | at least one component was extracted; `descriptors.json` was rewritten. A `SKIP` inside the batch is a normal outcome — that adapter is hand-work — and the summary line names the refused ones. |
+| `1` | **nothing** was extracted although components were named: every one was refused. `descriptors.json` is left untouched. |
+| `2` | no component was named at all (running with no names would overwrite the ledger with an empty list). |
+
 Ask the tool how far it reaches, rather than estimating:
 
 ```sh
@@ -52,18 +64,31 @@ node tools/dataviz-angular-port/classify.mjs          # add --names for the list
 ```
 
 It runs the real `extract()` over every pending adapter and prints what it reads,
-what it refuses and why. Widening the vocabulary in the third lot took it from
-**28 of 87** readable to **41 of 87**; the same lot then ported 25 of those 41, so
-on the pool that remains it reads **16 of 62** and refuses 46.
+what it refuses and why. The arc, measured by the tool itself at the end of each
+lot: the third widened the vocabulary from **28 of 87** readable to **41 of 87** and
+ported 25 of them; the fourth widened it again, from **16 of 62** to **21 of 62**,
+and ported all 21 — minus two that the tightening then refused on purpose
+(`StackedBarChart`'s `measures: [props.measure]`, `ComboChart`'s pass-through
+`bars`/`lines`), so nineteen shipped.
 
-What is still refused is mostly *not* the same kind of component: 16 have no
-`void <state>.value` read at all — they are stateful panels and filters
-(`BookmarkNavigator`, `CalculationEditor`, `FormatPanel`, `FieldPane`,
-`ExportMenu`, `TopNFilter`, …) that hold local state and belong in hand-written
-code; 3 render several charts from one adapter (`ScatterPlotMatrix`,
-`AnimatedBubbleChart`, `AdvancedPivotDataTable`); 3 have no `Props` alias; 2 exist
-in one framework only and have no Vue source to read. The remaining 8 "no binding
-consumes the derived …" are the next cheap widening if a lot needs them.
+**The lever is now spent, and that is a measurement, not an impression.** After the
+fourth lot the tool reads **0 of the 43 pending**. The refusal table says why, and
+it is a different population from the one the generator was built for:
+
+    16  no `void <state>.value` marker           stateful panels and filters
+    10  setup body matches no supported shape    bespoke data building
+     6  a binding reads a prop the descriptor cannot express
+     3  no trailing h() call                     several charts per adapter
+     3  no Props type alias
+     2  no dataviz-vue source                    one-framework-only components
+     2  two wrapping calls / non-`props.x` config entry
+     1  no design-system-vue import
+
+The 16 without a signal read (`BookmarkNavigator`, `CalculationEditor`,
+`FormatPanel`, `FieldPane`, `ExportMenu`, `TopNFilter`, `ValueSlicer`, …) hold
+local state; a descriptor has nothing to say about them. Widening further would
+mean teaching the extractor to read hand-written data construction, which is
+writing the adapter twice. The remaining 43 are hand-work.
 
 ## Adding a lot
 

@@ -1,51 +1,48 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input as NgInput, inject } from '@angular/core';
 import type { OnChanges, OnDestroy, OnInit } from '@angular/core';
-import { ViolinChart as DsViolinChart } from '@sentropic/design-system-angular';
-import { buildViolinModel, type DashboardStore } from '@sentropic/dataviz-core';
+import { PointAndFigureChart as DsPointAndFigureChart, type PointAndFigureChartDatum } from '@sentropic/design-system-angular';
+import { buildPointAndFigureData, type DashboardStore } from '@sentropic/dataviz-core';
 import { toSignalStore, type AngularSignalStore } from '../adapter.js';
 
-export type ViolinChartProps = {
+export type PointAndFigureChartProps = {
   store: DashboardStore;
   viewId: string;
-  /** Field id of the dimension used to split data into groups (one violin per group). */
-  groupBy: string;
-  /** Field id whose numeric values form the distribution for each group. */
-  measure: string;
-  /** Number of density bins (optional; DS default is 20). */
-  bins?: number;
-  /** Whether to overlay median / quartile markers (optional; DS default is true). */
-  quartiles?: boolean;
+  date: string;
+  close: string;
+  boxSize?: number;
+  reversal?: number;
   width?: number;
   height?: number;
-  /** Accessible label for the chart (aria-label). */
-  label: string;
+  size?: number;
+  label?: string;
   class?: string;
 };
 
 /**
- * State wiring for a DS Angular ViolinChart.
+ * State wiring for a DS Angular PointAndFigureChart.
  * Generated from tools/dataviz-angular-port/descriptors.json — see that
  * directory's README before editing this file by hand.
  */
 @Component({
-  selector: 'st-dataviz-violin-chart',
+  selector: 'st-dataviz-point-and-figure-chart',
   standalone: true,
-  imports: [DsViolinChart],
+  imports: [DsPointAndFigureChart],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <st-violin-chart
-      [data]="model.data"
-      [bins]="model.bins"
-      [quartiles]="model.quartiles"
+    <st-point-and-figure-chart
+      [data]="data"
+      [boxSize]="boxSize"
+      [reversal]="reversal"
       [label]="label"
       [width]="width"
       [height]="height"
+      [size]="size"
       [class]="classInput"
-    ></st-violin-chart>
+    ></st-point-and-figure-chart>
   `,
 })
-export class ViolinChart implements OnInit, OnChanges, OnDestroy {
-  static readonly stComponentName = 'ViolinChart';
+export class PointAndFigureChart implements OnInit, OnChanges, OnDestroy {
+  static readonly stComponentName = 'PointAndFigureChart';
 
   private readonly changeDetector = inject(ChangeDetectorRef);
   private signals?: AngularSignalStore;
@@ -63,23 +60,24 @@ export class ViolinChart implements OnInit, OnChanges, OnDestroy {
 
   get store(): DashboardStore {
     if (!this.signals) {
-      throw new Error('ViolinChart: store is required.');
+      throw new Error('PointAndFigureChart: store is required.');
     }
     return this.signals.store;
   }
 
   @NgInput({ required: true }) viewId!: string;
-  @NgInput({ required: true }) groupBy!: string;
-  @NgInput({ required: true }) measure!: string;
-  @NgInput() bins?: number;
-  @NgInput() quartiles?: boolean;
+  @NgInput({ required: true }) date!: string;
+  @NgInput({ required: true }) close!: string;
+  @NgInput() boxSize?: number;
+  @NgInput() reversal?: number;
   @NgInput() width?: number;
   @NgInput() height?: number;
-  @NgInput({ required: true }) label!: string;
+  @NgInput() size?: number;
+  @NgInput() label?: string;
   @NgInput('class') classInput?: string;
 
   /** Recomputed by `recompute()`; never derived in a template getter. */
-  model!: ReturnType<typeof buildViolinModel>;
+  data: PointAndFigureChartDatum[] = [];
 
   ngOnInit(): void {
     this.recompute();
@@ -97,14 +95,12 @@ export class ViolinChart implements OnInit, OnChanges, OnDestroy {
   private recompute(): void {
     if (!this.signals) return;
     void this.signals.state();
-    this.model = buildViolinModel(
+    this.data = buildPointAndFigureData(
       this.signals.store.model,
       this.signals.store.applyCrossfilter(this.viewId),
       {
-        groupBy: this.groupBy,
-        measure: this.measure,
-        bins: this.bins,
-        quartiles: this.quartiles,
+        date: this.date,
+        close: this.close,
       },
     );
   }

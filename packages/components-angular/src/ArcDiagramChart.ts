@@ -1,6 +1,7 @@
 import { Component, Input as NgInput } from "@angular/core";
 
 import { classNames } from "./classNames.js";
+import { GraphLegend } from "./GraphLegend.js";
 
 export type ArcDiagramChartTone =
   | "category1"
@@ -65,6 +66,9 @@ type ArcDatum = {
 
 type LegendEntry = {
   label: string;
+  /** Node legend: the shared GraphLegend draws a circle swatch for a shaped entry
+   * and an edge line for a shapeless one. React sets "circle" here. */
+  shape: "circle";
   tone: ArcDiagramChartTone;
 };
 
@@ -82,6 +86,7 @@ function magnitude(value: number): number {
 @Component({
   selector: "st-arc-diagram-chart",
   standalone: true,
+  imports: [GraphLegend],
   template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
       <div
@@ -131,14 +136,7 @@ function magnitude(value: number): number {
         </svg>
 
         @if (legendEntries.length > 0) {
-          <ul class="st-graphLegend st-arcDiagramChart__legend" aria-hidden="true">
-            @for (entry of legendEntries; track entry.label) {
-              <li class="st-graphLegend__item">
-                <span [class]="legendSwatchClass(entry)"></span>
-                <span class="st-graphLegend__label">{{ entry.label }}</span>
-              </li>
-            }
-          </ul>
+          <st-graph-legend [class]="'st-arcDiagramChart__legend'" [entries]="legendEntries"></st-graph-legend>
         }
       </div>
 
@@ -267,6 +265,7 @@ export class ArcDiagramChart {
   get legendEntries(): LegendEntry[] {
     return this.layout.nodes.map((node) => ({
       label: this.displayLabel(node.id),
+      shape: "circle" as const,
       tone: node.tone,
     }));
   }
@@ -293,10 +292,6 @@ export class ArcDiagramChart {
 
   nodeClass(node: NodeDatum): string {
     return classNames("st-arcDiagramChart__node", `st-arcDiagramChart__node--${node.tone}`);
-  }
-
-  legendSwatchClass(entry: LegendEntry): string {
-    return classNames("st-graphLegend__swatch", `st-graphLegend__swatch--${entry.tone}`);
   }
 
   handleLeave(): void {

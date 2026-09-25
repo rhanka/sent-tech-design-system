@@ -61,7 +61,10 @@ function hBindings(src) {
   for (const line of m[2].split('\n')) {
     const kv = /^\s{8}([A-Za-z_$][\w$]*):\s*(.+?),?\s*$/.exec(line);
     if (kv) {
-      bindings.push([kv[1], kv[2].replace(/\s+as\s+[\w[\]<>.| ]+$/, '').replace(/,$/, '').trim()]);
+      // Vue casts at the h() call to satisfy its own overloads; Angular types the
+      // input instead. The cast may be a named type or an object type literal.
+      const stripped = kv[2].replace(/\s+as\s+(?:\{[^}]*\}|[\w[\]<>.| ]+)$/, '').replace(/,$/, '').trim();
+      bindings.push([kv[1], stripped]);
       continue;
     }
     const shorthand = /^\s{8}([A-Za-z_$][\w$]*),\s*$/.exec(line);
@@ -70,8 +73,27 @@ function hBindings(src) {
   return bindings;
 }
 
-function configMap(text) {
-  const pairs = [...text.matchAll(/([A-Za-z_$][\w$]*):\s*props\.([A-Za-z_$][\w$]*)/g)];
+/**
+ * Every builder-config entry must be a bare `key: props.<name>`. Anything else —
+ * an array literal like `measures: [props.measure]`, a call, a computed value —
+ * is refused, because silently dropping a config key would emit an adapter that
+ * compiles and derives the wrong data. `StackedBarChart` is why this is strict.
+ */
+function configMap(text, name) {
+  // Keys are counted wherever they sit: these configs are written both one per
+  // line and all on one line.
+  const keys = [...text.matchAll(/([A-Za-z_$][\w$]*)\s*:/g)].map((m) => m[1]);
+  // A lookahead, so the LAST entry — which has no trailing comma or brace inside
+  // the captured text — is read like the others.
+  const pairs = [...text.matchAll(/([A-Za-z_$][\w$]*):\s*props\.([A-Za-z_$][\w$]*)(?=\s*(?:[,}\n]|$))/g)];
+  if (pairs.length !== keys.length) {
+    const read = new Set(pairs.map((m) => m[1]));
+    const missed = keys.filter((k) => !read.has(k));
+    throw new Error(
+      (name ? name + ': ' : '') +
+        'builder config entries that are not `key: props.<name>`: ' + missed.join(', '),
+    );
+  }
   return Object.fromEntries(pairs.map((m) => [m[1], m[2]]));
 }
 
@@ -90,17 +112,18 @@ export function extract(name) {
   const wrapped = /const (\w+) = (\w+)\(\s*\n?\s*(\w+)\(props\.store\.model, props\.store\.applyCrossfilter\(props\.viewId\), \{([\s\S]*?)\}\),?\s*\)/.exec(body);
   const modelRows = /const (\w+) = (\w+)\(\s*props\.store\.model,\s*props\.store\.applyCrossfilter\(props\.viewId\),\s*\{([\s\S]*?)\},?\s*\)/.exec(body);
   const storeLayer = /const (\w+) = (\w+)\(props\.store, props\.viewId, \{([\s\S]*?)\}\)/.exec(body);
-  const inlineBinding = /^\s{8}(\w+): (\w+)\(props\.store\.model, props\.store\.applyCrossfilter\(props\.viewId\), \{([\s\S]*?)\}\),$/m.exec(
+  // The inline call may be written on one line or spread over several.
+  const inlineBinding = /^\s{8}(\w+): (\w+)\(\s*props\.store\.model,\s*props\.store\.applyCrossfilter\(props\.viewId\),\s*\{([\s\S]*?)\},?\s*\),$/m.exec(
     src.slice(src.lastIndexOf('return h(')),
   );
 
   let derive;
   if (wrapped) {
-    derive = { kind: 'model-rows', field: wrapped[1], wrap: wrapped[2], builder: wrapped[3], config: configMap(wrapped[4]) };
+    derive = { kind: 'model-rows', field: wrapped[1], wrap: wrapped[2], builder: wrapped[3], config: configMap(wrapped[4], name) };
   } else if (modelRows) {
-    derive = { kind: 'model-rows', field: modelRows[1], wrap: null, builder: modelRows[2], config: configMap(modelRows[3]) };
+    derive = { kind: 'model-rows', field: modelRows[1], wrap: null, builder: modelRows[2], config: configMap(modelRows[3], name) };
   } else if (storeLayer) {
-    derive = { kind: 'store-layer', field: storeLayer[1], wrap: null, builder: storeLayer[2], config: configMap(storeLayer[3]) };
+    derive = { kind: 'store-layer', field: storeLayer[1], wrap: null, builder: storeLayer[2], config: configMap(storeLayer[3], name) };
   } else if (inlineBinding) {
     // The derivation can live inside an h() binding, with no `const` at all.
     derive = {
@@ -108,7 +131,7 @@ export function extract(name) {
       field: inlineBinding[1],
       wrap: null,
       builder: inlineBinding[2],
-      config: configMap(inlineBinding[3]),
+      config: configMap(inlineBinding[3], name),
       inlineBinding: true,
     };
   } else {
@@ -135,10 +158,21 @@ export function extract(name) {
   for (const pair of bindings) {
     const key = pair[0];
     const expr = pair[1];
+    // The adapter's own class, in either spelling the Vue sources use:
+    // `mapClass('st-x', props.class)` or the inline
+    // `['st-x', props.class].filter(Boolean).join(' ')`.
     const mapped = /^mapClass\('([^']+)', props\.class\)$/.exec(expr);
-    if (key === 'class' && mapped) {
-      classExpr = { helper: 'mapClass', base: mapped[1] };
+    const inlineClass = /^\['([^']+)', props\.class\]\.filter\(Boolean\)\.join\(' '\)$/.exec(expr);
+    if (key === 'class' && (mapped || inlineClass)) {
+      classExpr = mapped
+        ? { helper: 'mapClass', base: mapped[1] }
+        : { helper: 'classNames', base: inlineClass[1] };
       folded.push([key, 'classInput']);
+      continue;
+    }
+    // With the inline shape the binding IS the builder call; it names the field.
+    if (derive.inlineBinding && key === derive.field && expr.startsWith(derive.builder + '(')) {
+      folded.push([key, derive.field]);
       continue;
     }
     if (arrayPattern.test(expr)) {
@@ -180,6 +214,19 @@ export function extract(name) {
       if (derive.member && pair[1] === derive.field + '.' + derive.member) pair[1] = derive.field;
     }
   }
+  // Every binding must be something the descriptor can express: a prop, the derived
+  // value (or one of its members), the class, or a literal. A bare local the Vue
+  // setup computed — `bars`, `lines` in ComboChart — is refused, not passed through
+  // into an adapter that would not compile or, worse, would compile wrongly.
+  for (const pair of folded) {
+    const expr = pair[1];
+    if (expr.startsWith('props.')) continue;
+    if (expr === derive.field || expr.startsWith(derive.field + '.')) continue;
+    if (expr === 'classInput') continue;
+    if (/^(?:true|false|-?\d+(?:\.\d+)?|'[^']*'|"[^"]*")$/.test(expr)) continue;
+    throw new Error(name + ": binding '" + pair[0] + "' reads '" + expr + "', which the descriptor cannot express");
+  }
+
   const consumes = derive.multiMember
     ? folded.some((pair) => pair[1].startsWith(derive.field + '.'))
     : folded.some((pair) => pair[1] === derive.field);
@@ -204,11 +251,12 @@ export function extract(name) {
       else coreFns.push(item);
     }
   }
+  // Keep the alias: the Props alias copied verbatim refers to the aliased name.
   const dsTypeImports = [...src.matchAll(/import \{([^}]+)\} from '@sentropic\/design-system-vue';/g)]
     .flatMap((m) => m[1].split(','))
     .map((s) => s.trim())
     .filter((s) => s.startsWith('type '))
-    .map((s) => s.slice(5).split(/\s+as\s+/)[0].trim());
+    .map((s) => s.slice(5).trim());
 
   return {
     name,
@@ -241,12 +289,28 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     process.exit(2);
   }
   const out = [];
+  const skipped = [];
   for (const n of names) {
     try {
       out.push(extract(n));
     } catch (e) {
+      skipped.push(n);
       console.error('SKIP ' + n + ': ' + e.message);
     }
+  }
+  // A total refusal exits non-zero. A SKIP inside a batch is a normal outcome —
+  // it means that adapter is hand-work — so a partial run stays rc=0 and the
+  // summary carries the count. But a run that extracted NOTHING did no work, and
+  // returning success for it makes the refusal invisible to anything that reads
+  // an exit code: a whole lot the extractor rejects would pass such a check while
+  // descriptors.json never changed. It also leaves the ledger untouched here,
+  // rather than rewriting it to its own current contents.
+  if (out.length === 0) {
+    console.error(
+      'extracted 0/' + names.length + ': nothing was extracted, descriptors.json left untouched.\n' +
+        'Every named component was refused — read the SKIP lines above; those adapters are hand-work.',
+    );
+    process.exit(1);
   }
   // Merge by name into the existing ledger: a lot extracts its own components
   // without discarding the descriptors of the lots already shipped.
@@ -262,7 +326,11 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     if (!merged.some((d) => d.name === fresh.name)) merged.push(fresh);
   }
   writeFileSync(target, JSON.stringify(merged, null, 1) + '\n');
-  console.log('extracted ' + out.length + '/' + names.length + ', descriptors.json now holds ' + merged.length);
+  console.log(
+    'extracted ' + out.length + '/' + names.length +
+      (skipped.length ? ', refused ' + skipped.length + ' (' + skipped.join(', ') + ')' : '') +
+      ', descriptors.json now holds ' + merged.length,
+  );
   for (const d of out) {
     const b = d.derive.wrap ? d.derive.wrap + '(' + d.derive.builder + ')' : d.derive.builder;
     console.log(

@@ -1,51 +1,52 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input as NgInput, inject } from '@angular/core';
 import type { OnChanges, OnDestroy, OnInit } from '@angular/core';
-import { ViolinChart as DsViolinChart } from '@sentropic/design-system-angular';
-import { buildViolinModel, type DashboardStore } from '@sentropic/dataviz-core';
+import { LineChart as DsLineChart, type LineChartDatum } from '@sentropic/design-system-angular';
+import { type DashboardStore } from '@sentropic/dataviz-core';
 import { toSignalStore, type AngularSignalStore } from '../adapter.js';
+import { buildForecastLineData } from './analyticsDsData.js';
+import { classNames } from './classNames.js';
 
-export type ViolinChartProps = {
+export type ForecastLineChartProps = {
   store: DashboardStore;
   viewId: string;
-  /** Field id of the dimension used to split data into groups (one violin per group). */
-  groupBy: string;
-  /** Field id whose numeric values form the distribution for each group. */
-  measure: string;
-  /** Number of density bins (optional; DS default is 20). */
-  bins?: number;
-  /** Whether to overlay median / quartile markers (optional; DS default is true). */
-  quartiles?: boolean;
+  x: string;
+  y: string;
+  periods: number;
+  step?: number;
   width?: number;
   height?: number;
-  /** Accessible label for the chart (aria-label). */
   label: string;
+  hoverKey?: string | null;
+  onHoverKeyChange?: (key: string | null) => void;
+  onSelectKey?: (key: string | null) => void;
   class?: string;
 };
 
 /**
- * State wiring for a DS Angular ViolinChart.
+ * State wiring for a DS Angular LineChart.
  * Generated from tools/dataviz-angular-port/descriptors.json — see that
  * directory's README before editing this file by hand.
  */
 @Component({
-  selector: 'st-dataviz-violin-chart',
+  selector: 'st-dataviz-forecast-line-chart',
   standalone: true,
-  imports: [DsViolinChart],
+  imports: [DsLineChart],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <st-violin-chart
-      [data]="model.data"
-      [bins]="model.bins"
-      [quartiles]="model.quartiles"
-      [label]="label"
+    <st-line-chart
+      [data]="data"
       [width]="width"
       [height]="height"
-      [class]="classInput"
-    ></st-violin-chart>
+      [label]="label"
+      [hoverKey]="hoverKey"
+      [onHoverKeyChange]="onHoverKeyChange"
+      [onSelectKey]="onSelectKey"
+      [class]="classValue"
+    ></st-line-chart>
   `,
 })
-export class ViolinChart implements OnInit, OnChanges, OnDestroy {
-  static readonly stComponentName = 'ViolinChart';
+export class ForecastLineChart implements OnInit, OnChanges, OnDestroy {
+  static readonly stComponentName = 'ForecastLineChart';
 
   private readonly changeDetector = inject(ChangeDetectorRef);
   private signals?: AngularSignalStore;
@@ -63,23 +64,28 @@ export class ViolinChart implements OnInit, OnChanges, OnDestroy {
 
   get store(): DashboardStore {
     if (!this.signals) {
-      throw new Error('ViolinChart: store is required.');
+      throw new Error('ForecastLineChart: store is required.');
     }
     return this.signals.store;
   }
 
   @NgInput({ required: true }) viewId!: string;
-  @NgInput({ required: true }) groupBy!: string;
-  @NgInput({ required: true }) measure!: string;
-  @NgInput() bins?: number;
-  @NgInput() quartiles?: boolean;
-  @NgInput() width?: number;
-  @NgInput() height?: number;
+  @NgInput({ required: true }) x!: string;
+  @NgInput({ required: true }) y!: string;
+  @NgInput({ required: true }) periods!: number;
+  @NgInput() step?: number;
+  @NgInput() width: number = 360;
+  @NgInput() height: number = 220;
   @NgInput({ required: true }) label!: string;
+  @NgInput() hoverKey?: string | null;
+  @NgInput() onHoverKeyChange?: (key: string | null) => void;
+  @NgInput() onSelectKey?: (key: string | null) => void;
   @NgInput('class') classInput?: string;
 
   /** Recomputed by `recompute()`; never derived in a template getter. */
-  model!: ReturnType<typeof buildViolinModel>;
+  data: LineChartDatum[] = [];
+  /** Recomputed by `recompute()`; never derived in a template getter. */
+  classValue = 'st-forecastLineChart';
 
   ngOnInit(): void {
     this.recompute();
@@ -95,16 +101,17 @@ export class ViolinChart implements OnInit, OnChanges, OnDestroy {
   }
 
   private recompute(): void {
+    this.classValue = classNames('st-forecastLineChart', this.classInput);
     if (!this.signals) return;
     void this.signals.state();
-    this.model = buildViolinModel(
+    this.data = buildForecastLineData(
       this.signals.store.model,
       this.signals.store.applyCrossfilter(this.viewId),
       {
-        groupBy: this.groupBy,
-        measure: this.measure,
-        bins: this.bins,
-        quartiles: this.quartiles,
+        x: this.x,
+        y: this.y,
+        periods: this.periods,
+        step: this.step,
       },
     );
   }

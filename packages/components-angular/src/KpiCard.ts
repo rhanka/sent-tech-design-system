@@ -192,6 +192,8 @@ export class KpiCard {
 
   get formattedValue(): string {
     if (typeof this.value === "string") return this.value;
+    // Intl renders "NaN"/"∞" for a non-finite value; React prints an em dash instead.
+    if (!Number.isFinite(this.value)) return "—";
     if (this.format === "currency") {
       return new Intl.NumberFormat(this.locale, {
         style: "currency",
@@ -208,7 +210,9 @@ export class KpiCard {
   }
 
   get formattedDelta(): string | undefined {
-    if (this.delta == null) return undefined;
+    // Same class as `formattedValue` above, one getter down: Intl renders `NaN`,
+    // `NaN %` and `+∞` for a non-finite delta, where React renders no delta at all.
+    if (this.delta == null || !Number.isFinite(this.delta)) return undefined;
     const sign = this.delta > 0 ? "+" : "";
     if (this.deltaFormat === "percent") {
       const pct = new Intl.NumberFormat(this.locale, {

@@ -112,3 +112,36 @@ export function newWideStore(): DashboardStore {
     crossfilter: { views: { v: { field: 'service' }, other: { field: 'service' } } },
   });
 }
+
+/**
+ * Bare-DS control inputs for the lot 4 residues: the adapter must produce the
+ * SAME diff count as the DS components fed these values directly.
+ */
+export const dsVectorFieldData = [
+  { x: 10, y: 105, length: 95, direction: 110 },
+  { x: 5, y: 102, length: 101, direction: 112 },
+  { x: 7, y: 107, length: 99, direction: 108 },
+];
+
+export const dsWindBarbData = [
+  { at: T0, speed: 10, direction: 105 },
+  { at: T0 + DAY, speed: 5, direction: 102 },
+  { at: T0 + 2 * DAY, speed: 7, direction: 107 },
+];
+
+export const dsForceGraph = {
+  // Exactly what `buildForceGraphData` derives from wideRows for source=region,
+  // target=service: same order, same labels, same tones. The control is only a
+  // control if the DS component receives what the adapter hands it.
+  nodes: [
+    { id: 'eu', label: 'eu', tone: 'category1' },
+    { id: 'checkout', label: 'checkout', tone: 'category2' },
+    { id: 'us', label: 'us', tone: 'category3' },
+    { id: 'billing', label: 'billing', tone: 'category4' },
+  ],
+  edges: [
+    { source: 'eu', target: 'checkout' },
+    { source: 'us', target: 'checkout' },
+    { source: 'eu', target: 'billing' },
+  ],
+};
