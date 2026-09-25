@@ -336,9 +336,9 @@ trap 13 says, that is usually a DS bug to fix rather than an exception to record
 
 ### What the render harness cannot see
 
-Two blind spots are properties of measuring **rendered markup**, not accidents of a
-lot. Both bit this package, and a sweep validated only by the harness cannot be
-called complete because of them:
+Three blind spots are properties of measuring **rendered markup**, not accidents of
+a lot. All three bit this package, and a sweep validated only by the harness cannot
+be called complete because of them:
 
 1. **Text that only exists on hover.** An Angular tooltip is rendered but empty
    without a pointer, so no text node exists in a static render and the content
@@ -348,6 +348,22 @@ called complete because of them:
 2. **Components outside the adapters the harness mounts.** `PARITY.md` covers the
    ported adapters and nothing else. `PointAndFigureChart` read `X 104.8 -> 105`
    against React's `X 104.8 → 105` and no measurement touched it.
+3. **A saturated diff count downstream of a structural divergence.** `diff()` in
+   `normalize.ts` compares the two flattened lists **position by position**, not by
+   alignment. As soon as one framework emits elements the other does not, every
+   entry after that point counts as a difference whatever it contains: the count
+   stops measuring anything downstream. `TimelineChart` proves it — React emits
+   five `tickLabel` text nodes Angular does not, so aligning Angular's data list on
+   React's `${position}: ${label}` spelling (Angular printed the label alone and
+   dropped the position a reader needs) moved **no count at all**: 59 markup /
+   12 signature before and after, the suite green either way. A repair nothing
+   measures can be silently undone, so the data list is now asserted on its own, by
+   its `aria-label` rather than by position, in the
+   `the accessible data list is identical, independently of markup position` test.
+   Reverting that repair turns that test red while 59/12 stay exactly where they
+   are. **When a count is nonzero, do not read a change in it as the only proof: ask
+   first whether the property you changed is upstream or downstream of the
+   divergence that count already absorbs.**
 
 `scripts/verify-angular-react-glyphs.test.mjs` closes that class by reading the two
 **sources** instead of the two renders: it compares each glyph token per component,
@@ -356,21 +372,36 @@ both ways, over **223** pairs — so a token both frameworks use (the
 because prose uses arrows far more than rendered strings do and comparing raw files
 reports 58 files of noise.
 
-That gate had two blind spots of its own, both closed in lot 4 and both worth
+That gate had three blind spots of its own, all closed in lot 4 and all worth
 remembering, because each one made it report success over an unchecked comparison:
 
-3. **A React file that only re-exports.** 80 of the 223 React counterparts are
+4. **A React file that only re-exports.** 80 of the 223 React counterparts are
    `export { X } from "./catalog.js"`, with the implementation in `catalog.tsx`.
    For those the gate compared an Angular component against an eleven-line
    re-export — including `ForceGraph`, a chart. A shim is now resolved to its slice
    of `catalog.tsx`, and an unresolvable shim fails the gate.
-4. **Presence is not occurrence.** The gate asks whether a token appears in a file.
+5. **Presence is not occurrence.** The gate asks whether a token appears in a file.
    A component that spells a glyph correctly in its data list and wrongly in its
    tooltip passes: re-adding `deg` to `VectorFieldChart`'s data list left the
    substring set unchanged, because the tooltip still had `°`. Two regex tokens
    now catch the ASCII stand-in itself (a unit right after an interpolation, a
-   hyphen between two interpolated values), and that is what found the third
-   VectorFieldChart divergence — hover-only, so invisible to the render harness.
+   hyphen used as a separator between two rendered values), and that is what found
+   the third VectorFieldChart divergence — hover-only, so invisible to the render
+   harness.
+6. **A regex token is only as wide as its character class.** The separator-dash
+   token first accepted an interpolation or an alphanumeric after the hyphen. That
+   left `VectorFieldChart`'s own data list outside it: `y ${datum.y} · |v| ${…}`
+   turns into `} - |`, and `|` was not in the class. Both failure modes of blind
+   spot 5 then stacked — presence of `·` was unchanged because the tooltip still
+   spelled it, and the regex did not fire — so the whole gate passed **6/6 on that
+   regression**. `|` is in the class now, and the addition is measured, not
+   assumed: over the 223 pairs, both sides each, the widened form matches the same
+   four places as the narrow one (`DatePicker`, `Transcription`, symmetric on both
+   frameworks, hence silent) and one more only when the regression is present.
+   A test in the gate file asserts both directions, so neither can be lost again.
+   **Widening a token is not free**: a false finding sends a reader to correct code,
+   which is worse than a missed one, so widen by the character a measured defect
+   needs and re-measure the whole corpus, never by "any character".
 
 Widening a gate's vocabulary is cheap and pays immediately: `°`, `·`, `—` and `×`
 raised eleven findings, of which four were spelling variants that render
@@ -392,16 +423,35 @@ to 0 / 0 / 0, and both stay in the harness's control-equality list so the repair
 cannot silently reopen), and seven reader-visible strings in components-angular now
 match the React spelling.
 
-- **A graph's nodes are unreachable and unannounced in Angular.** React's
-  `ForceGraph` node shape carries `tabIndex=0`, `role="button"`, `aria-label` and
-  `aria-pressed`, so a keyboard user reaches a node and a screen reader names it;
-  the Angular node carries none of the four. React also renders an invisible wider
-  `st-forceGraph__edgeHit` path per edge (`role="presentation"`) for hover, and
-  Angular renders none. Cost: 42 markup and 8 content-signature entries on
-  `ForceGraph`, equal to its bare-DS control. **The most valuable open item, and an
-  accessibility defect rather than a cosmetic one** — the same class as the legend
-  repair closed above, and repairing it means porting focus, blur and keydown
-  handling, so it deserves its own measured step.
+- **`NG-A11Y-FORCEGRAPH` — a graph's nodes are unreachable and unannounced in
+  Angular.** React's `ForceGraph` node shape carries `tabIndex=0`,
+  `role="button"`, `aria-label` and `aria-pressed`, so a keyboard user reaches a
+  node and a screen reader names it; the Angular node carries none of the four.
+  React also renders an invisible wider `st-forceGraph__edgeHit` path per edge
+  (`role="presentation"`) for hover, and Angular renders none. Cost: **42 markup
+  and 8 content-signature entries** on `ForceGraph`, equal to its bare-DS control,
+  so the whole residue sits in `packages/components-angular/src/ForceGraph.ts` and
+  none of it in the adapter. **The most valuable open item, and an accessibility
+  defect rather than a cosmetic one** — the same class as the legend repair closed
+  above.
+
+  This is a deficit that predates the Angular adapter, not a regression it
+  introduced; but the adapter newly *exposes* it, so it is carried as a named
+  follow-up rather than as a closed observation. What the next lot has to port,
+  and nothing beyond it:
+
+  | to port | from | into |
+  | --- | --- | --- |
+  | `tabIndex=0`, `role="button"`, `aria-label`, `aria-pressed` on the node shape | `packages/components-react/src/catalog.tsx`, `ForceGraph` | `packages/components-angular/src/ForceGraph.ts` |
+  | `focus`, `blur` and `keydown` handling (the node is operable, not only focusable) | same | same |
+  | the per-edge `st-forceGraph__edgeHit` path, `role="presentation"`, wider than the visible edge, for hover | same | same |
+
+  Acceptance is the number, not a reading: `npm run parity:dataviz-angular` must
+  take `ForceGraph` from 42 markup / 8 signature to 0 / 0 **and** its bare-DS
+  control with it, exactly as `ArcDiagramChart` and `DependencyWheelChart` went
+  49 / 9 / 49 → 0 / 0 / 0. It stays in the harness's control-equality list, so a
+  repair in the adapter instead of the DS component fails the gate. Tracked in
+  `plan/10-BRANCH_graph-dataviz-repatriation.md` under `GD-M2-PARITY`.
 - **React warns where Angular is silent.** `NavActionStack`'s React implementation
   logs a warning when several `primary` actions are passed and degrades the extras;
   the Angular one has no such warning. Developer-facing, so outside the glyph

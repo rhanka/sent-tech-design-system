@@ -6894,7 +6894,7 @@
     {
       "destination": "packages/dataviz-angular/PATTERN.md",
       "status": "local-monorepo-helper",
-      "sha256": "138a13b402583203365acd7e9d240297c4fc7abd56d177c165c2b826969999ec",
+      "sha256": "cdca0a5330b92371431edc3e38a160b87be57b1f86298a30764d05e0ee65d8b6",
       "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned"
     },
     {
