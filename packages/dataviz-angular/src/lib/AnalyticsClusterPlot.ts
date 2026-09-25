@@ -1,51 +1,48 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input as NgInput, inject } from '@angular/core';
 import type { OnChanges, OnDestroy, OnInit } from '@angular/core';
-import { ViolinChart as DsViolinChart } from '@sentropic/design-system-angular';
-import { buildViolinModel, type DashboardStore } from '@sentropic/dataviz-core';
+import { ScatterPlot as DsScatterPlot } from '@sentropic/design-system-angular';
+import { type DashboardStore } from '@sentropic/dataviz-core';
 import { toSignalStore, type AngularSignalStore } from '../adapter.js';
+import { buildClusterScatterData } from './analyticsDsData.js';
+import { classNames } from './classNames.js';
 
-export type ViolinChartProps = {
+export type AnalyticsClusterPlotProps = {
   store: DashboardStore;
   viewId: string;
-  /** Field id of the dimension used to split data into groups (one violin per group). */
-  groupBy: string;
-  /** Field id whose numeric values form the distribution for each group. */
-  measure: string;
-  /** Number of density bins (optional; DS default is 20). */
-  bins?: number;
-  /** Whether to overlay median / quartile markers (optional; DS default is true). */
-  quartiles?: boolean;
+  fields: string[];
+  k: number;
+  maxIterations?: number;
   width?: number;
   height?: number;
-  /** Accessible label for the chart (aria-label). */
   label: string;
   class?: string;
 };
 
 /**
- * State wiring for a DS Angular ViolinChart.
+ * State wiring for a DS Angular ScatterPlot.
  * Generated from tools/dataviz-angular-port/descriptors.json — see that
  * directory's README before editing this file by hand.
  */
 @Component({
-  selector: 'st-dataviz-violin-chart',
+  selector: 'st-dataviz-analytics-cluster-plot',
   standalone: true,
-  imports: [DsViolinChart],
+  imports: [DsScatterPlot],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <st-violin-chart
+    <st-scatter-plot
       [data]="model.data"
-      [bins]="model.bins"
-      [quartiles]="model.quartiles"
-      [label]="label"
+      [centroids]="model.centroids"
+      [xLabel]="model.xLabel"
+      [yLabel]="model.yLabel"
       [width]="width"
       [height]="height"
-      [class]="classInput"
-    ></st-violin-chart>
+      [label]="label"
+      [class]="classValue"
+    ></st-scatter-plot>
   `,
 })
-export class ViolinChart implements OnInit, OnChanges, OnDestroy {
-  static readonly stComponentName = 'ViolinChart';
+export class AnalyticsClusterPlot implements OnInit, OnChanges, OnDestroy {
+  static readonly stComponentName = 'AnalyticsClusterPlot';
 
   private readonly changeDetector = inject(ChangeDetectorRef);
   private signals?: AngularSignalStore;
@@ -63,23 +60,24 @@ export class ViolinChart implements OnInit, OnChanges, OnDestroy {
 
   get store(): DashboardStore {
     if (!this.signals) {
-      throw new Error('ViolinChart: store is required.');
+      throw new Error('AnalyticsClusterPlot: store is required.');
     }
     return this.signals.store;
   }
 
   @NgInput({ required: true }) viewId!: string;
-  @NgInput({ required: true }) groupBy!: string;
-  @NgInput({ required: true }) measure!: string;
-  @NgInput() bins?: number;
-  @NgInput() quartiles?: boolean;
-  @NgInput() width?: number;
-  @NgInput() height?: number;
+  @NgInput({ required: true }) fields!: string[];
+  @NgInput({ required: true }) k!: number;
+  @NgInput() maxIterations?: number;
+  @NgInput() width: number = 360;
+  @NgInput() height: number = 240;
   @NgInput({ required: true }) label!: string;
   @NgInput('class') classInput?: string;
 
   /** Recomputed by `recompute()`; never derived in a template getter. */
-  model!: ReturnType<typeof buildViolinModel>;
+  model!: ReturnType<typeof buildClusterScatterData>;
+  /** Recomputed by `recompute()`; never derived in a template getter. */
+  classValue = 'st-analyticsClusterPlot';
 
   ngOnInit(): void {
     this.recompute();
@@ -95,16 +93,16 @@ export class ViolinChart implements OnInit, OnChanges, OnDestroy {
   }
 
   private recompute(): void {
+    this.classValue = classNames('st-analyticsClusterPlot', this.classInput);
     if (!this.signals) return;
     void this.signals.state();
-    this.model = buildViolinModel(
+    this.model = buildClusterScatterData(
       this.signals.store.model,
       this.signals.store.applyCrossfilter(this.viewId),
       {
-        groupBy: this.groupBy,
-        measure: this.measure,
-        bins: this.bins,
-        quartiles: this.quartiles,
+        fields: this.fields,
+        k: this.k,
+        maxIterations: this.maxIterations,
       },
     );
   }

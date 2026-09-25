@@ -1,51 +1,43 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input as NgInput, inject } from '@angular/core';
 import type { OnChanges, OnDestroy, OnInit } from '@angular/core';
-import { ViolinChart as DsViolinChart } from '@sentropic/design-system-angular';
-import { buildViolinModel, type DashboardStore } from '@sentropic/dataviz-core';
+import { HeatmapChart as DsHeatmapChart, type HeatmapChartDatum } from '@sentropic/design-system-angular';
+import { buildCorrelationMatrix, type DashboardStore } from '@sentropic/dataviz-core';
 import { toSignalStore, type AngularSignalStore } from '../adapter.js';
 
-export type ViolinChartProps = {
+export type CorrelationMatrixProps = {
   store: DashboardStore;
-  viewId: string;
-  /** Field id of the dimension used to split data into groups (one violin per group). */
-  groupBy: string;
-  /** Field id whose numeric values form the distribution for each group. */
-  measure: string;
-  /** Number of density bins (optional; DS default is 20). */
-  bins?: number;
-  /** Whether to overlay median / quartile markers (optional; DS default is true). */
-  quartiles?: boolean;
+  viewId?: string;
+  measures: string[];
+  legend?: boolean;
+  label: string;
   width?: number;
   height?: number;
-  /** Accessible label for the chart (aria-label). */
-  label: string;
   class?: string;
 };
 
 /**
- * State wiring for a DS Angular ViolinChart.
+ * State wiring for a DS Angular HeatmapChart.
  * Generated from tools/dataviz-angular-port/descriptors.json — see that
  * directory's README before editing this file by hand.
  */
 @Component({
-  selector: 'st-dataviz-violin-chart',
+  selector: 'st-dataviz-correlation-matrix',
   standalone: true,
-  imports: [DsViolinChart],
+  imports: [DsHeatmapChart],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <st-violin-chart
-      [data]="model.data"
-      [bins]="model.bins"
-      [quartiles]="model.quartiles"
+    <st-heatmap-chart
+      [data]="data"
+      [legend]="legend"
       [label]="label"
       [width]="width"
       [height]="height"
       [class]="classInput"
-    ></st-violin-chart>
+    ></st-heatmap-chart>
   `,
 })
-export class ViolinChart implements OnInit, OnChanges, OnDestroy {
-  static readonly stComponentName = 'ViolinChart';
+export class CorrelationMatrix implements OnInit, OnChanges, OnDestroy {
+  static readonly stComponentName = 'CorrelationMatrix';
 
   private readonly changeDetector = inject(ChangeDetectorRef);
   private signals?: AngularSignalStore;
@@ -63,23 +55,21 @@ export class ViolinChart implements OnInit, OnChanges, OnDestroy {
 
   get store(): DashboardStore {
     if (!this.signals) {
-      throw new Error('ViolinChart: store is required.');
+      throw new Error('CorrelationMatrix: store is required.');
     }
     return this.signals.store;
   }
 
-  @NgInput({ required: true }) viewId!: string;
-  @NgInput({ required: true }) groupBy!: string;
-  @NgInput({ required: true }) measure!: string;
-  @NgInput() bins?: number;
-  @NgInput() quartiles?: boolean;
+  @NgInput() viewId?: string;
+  @NgInput({ required: true }) measures!: string[];
+  @NgInput() legend: boolean = true;
+  @NgInput({ required: true }) label!: string;
   @NgInput() width?: number;
   @NgInput() height?: number;
-  @NgInput({ required: true }) label!: string;
   @NgInput('class') classInput?: string;
 
   /** Recomputed by `recompute()`; never derived in a template getter. */
-  model!: ReturnType<typeof buildViolinModel>;
+  data: HeatmapChartDatum[] = [];
 
   ngOnInit(): void {
     this.recompute();
@@ -97,14 +87,11 @@ export class ViolinChart implements OnInit, OnChanges, OnDestroy {
   private recompute(): void {
     if (!this.signals) return;
     void this.signals.state();
-    this.model = buildViolinModel(
+    this.data = buildCorrelationMatrix(
       this.signals.store.model,
       this.signals.store.applyCrossfilter(this.viewId),
       {
-        groupBy: this.groupBy,
-        measure: this.measure,
-        bins: this.bins,
-        quartiles: this.quartiles,
+        measures: this.measures,
       },
     );
   }

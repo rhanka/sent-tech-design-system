@@ -1,51 +1,47 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input as NgInput, inject } from '@angular/core';
 import type { OnChanges, OnDestroy, OnInit } from '@angular/core';
-import { ViolinChart as DsViolinChart } from '@sentropic/design-system-angular';
-import { buildViolinModel, type DashboardStore } from '@sentropic/dataviz-core';
+import { AnomalySwimLaneChart as DsAnomalySwimLaneChart, type AnomalySwimLaneSeries } from '@sentropic/design-system-angular';
+import { buildAnomalySwimLaneData, type DashboardStore } from '@sentropic/dataviz-core';
 import { toSignalStore, type AngularSignalStore } from '../adapter.js';
 
-export type ViolinChartProps = {
+export type AnomalySwimLaneChartProps = {
   store: DashboardStore;
   viewId: string;
-  /** Field id of the dimension used to split data into groups (one violin per group). */
-  groupBy: string;
-  /** Field id whose numeric values form the distribution for each group. */
-  measure: string;
-  /** Number of density bins (optional; DS default is 20). */
-  bins?: number;
-  /** Whether to overlay median / quartile markers (optional; DS default is true). */
-  quartiles?: boolean;
+  job: string;
+  at: string;
+  score: string;
+  max?: number;
+  label?: string;
   width?: number;
   height?: number;
-  /** Accessible label for the chart (aria-label). */
-  label: string;
+  size?: number;
   class?: string;
 };
 
 /**
- * State wiring for a DS Angular ViolinChart.
+ * State wiring for a DS Angular AnomalySwimLaneChart.
  * Generated from tools/dataviz-angular-port/descriptors.json — see that
  * directory's README before editing this file by hand.
  */
 @Component({
-  selector: 'st-dataviz-violin-chart',
+  selector: 'st-dataviz-anomaly-swim-lane-chart',
   standalone: true,
-  imports: [DsViolinChart],
+  imports: [DsAnomalySwimLaneChart],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <st-violin-chart
-      [data]="model.data"
-      [bins]="model.bins"
-      [quartiles]="model.quartiles"
+    <st-anomaly-swim-lane-chart
+      [data]="data"
+      [max]="max"
       [label]="label"
       [width]="width"
       [height]="height"
+      [size]="size"
       [class]="classInput"
-    ></st-violin-chart>
+    ></st-anomaly-swim-lane-chart>
   `,
 })
-export class ViolinChart implements OnInit, OnChanges, OnDestroy {
-  static readonly stComponentName = 'ViolinChart';
+export class AnomalySwimLaneChart implements OnInit, OnChanges, OnDestroy {
+  static readonly stComponentName = 'AnomalySwimLaneChart';
 
   private readonly changeDetector = inject(ChangeDetectorRef);
   private signals?: AngularSignalStore;
@@ -63,23 +59,24 @@ export class ViolinChart implements OnInit, OnChanges, OnDestroy {
 
   get store(): DashboardStore {
     if (!this.signals) {
-      throw new Error('ViolinChart: store is required.');
+      throw new Error('AnomalySwimLaneChart: store is required.');
     }
     return this.signals.store;
   }
 
   @NgInput({ required: true }) viewId!: string;
-  @NgInput({ required: true }) groupBy!: string;
-  @NgInput({ required: true }) measure!: string;
-  @NgInput() bins?: number;
-  @NgInput() quartiles?: boolean;
+  @NgInput({ required: true }) job!: string;
+  @NgInput({ required: true }) at!: string;
+  @NgInput({ required: true }) score!: string;
+  @NgInput() max?: number;
+  @NgInput() label?: string;
   @NgInput() width?: number;
   @NgInput() height?: number;
-  @NgInput({ required: true }) label!: string;
+  @NgInput() size?: number;
   @NgInput('class') classInput?: string;
 
   /** Recomputed by `recompute()`; never derived in a template getter. */
-  model!: ReturnType<typeof buildViolinModel>;
+  data: AnomalySwimLaneSeries[] = [];
 
   ngOnInit(): void {
     this.recompute();
@@ -97,14 +94,13 @@ export class ViolinChart implements OnInit, OnChanges, OnDestroy {
   private recompute(): void {
     if (!this.signals) return;
     void this.signals.state();
-    this.model = buildViolinModel(
+    this.data = buildAnomalySwimLaneData(
       this.signals.store.model,
       this.signals.store.applyCrossfilter(this.viewId),
       {
-        groupBy: this.groupBy,
-        measure: this.measure,
-        bins: this.bins,
-        quartiles: this.quartiles,
+        job: this.job,
+        at: this.at,
+        score: this.score,
       },
     );
   }

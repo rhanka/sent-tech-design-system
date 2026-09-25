@@ -1,51 +1,44 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input as NgInput, inject } from '@angular/core';
 import type { OnChanges, OnDestroy, OnInit } from '@angular/core';
-import { ViolinChart as DsViolinChart } from '@sentropic/design-system-angular';
-import { buildViolinModel, type DashboardStore } from '@sentropic/dataviz-core';
+import { EventFeedPanel as DsEventFeedPanel, type EventFeedPanelEvent } from '@sentropic/design-system-angular';
+import { buildEventFeedData, type DashboardStore } from '@sentropic/dataviz-core';
 import { toSignalStore, type AngularSignalStore } from '../adapter.js';
 
-export type ViolinChartProps = {
+export type EventFeedPanelProps = {
   store: DashboardStore;
   viewId: string;
-  /** Field id of the dimension used to split data into groups (one violin per group). */
-  groupBy: string;
-  /** Field id whose numeric values form the distribution for each group. */
-  measure: string;
-  /** Number of density bins (optional; DS default is 20). */
-  bins?: number;
-  /** Whether to overlay median / quartile markers (optional; DS default is true). */
-  quartiles?: boolean;
-  width?: number;
+  at: string;
+  type: string;
+  severity: string;
+  message: string;
+  maxHeight?: number;
   height?: number;
-  /** Accessible label for the chart (aria-label). */
-  label: string;
+  label?: string;
   class?: string;
 };
 
 /**
- * State wiring for a DS Angular ViolinChart.
+ * State wiring for a DS Angular EventFeedPanel.
  * Generated from tools/dataviz-angular-port/descriptors.json — see that
  * directory's README before editing this file by hand.
  */
 @Component({
-  selector: 'st-dataviz-violin-chart',
+  selector: 'st-dataviz-event-feed-panel',
   standalone: true,
-  imports: [DsViolinChart],
+  imports: [DsEventFeedPanel],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <st-violin-chart
-      [data]="model.data"
-      [bins]="model.bins"
-      [quartiles]="model.quartiles"
+    <st-event-feed-panel
+      [data]="data"
       [label]="label"
-      [width]="width"
+      [maxHeight]="maxHeight"
       [height]="height"
       [class]="classInput"
-    ></st-violin-chart>
+    ></st-event-feed-panel>
   `,
 })
-export class ViolinChart implements OnInit, OnChanges, OnDestroy {
-  static readonly stComponentName = 'ViolinChart';
+export class EventFeedPanel implements OnInit, OnChanges, OnDestroy {
+  static readonly stComponentName = 'EventFeedPanel';
 
   private readonly changeDetector = inject(ChangeDetectorRef);
   private signals?: AngularSignalStore;
@@ -63,23 +56,23 @@ export class ViolinChart implements OnInit, OnChanges, OnDestroy {
 
   get store(): DashboardStore {
     if (!this.signals) {
-      throw new Error('ViolinChart: store is required.');
+      throw new Error('EventFeedPanel: store is required.');
     }
     return this.signals.store;
   }
 
   @NgInput({ required: true }) viewId!: string;
-  @NgInput({ required: true }) groupBy!: string;
-  @NgInput({ required: true }) measure!: string;
-  @NgInput() bins?: number;
-  @NgInput() quartiles?: boolean;
-  @NgInput() width?: number;
+  @NgInput({ required: true }) at!: string;
+  @NgInput({ required: true }) type!: string;
+  @NgInput({ required: true }) severity!: string;
+  @NgInput({ required: true }) message!: string;
+  @NgInput() maxHeight?: number;
   @NgInput() height?: number;
-  @NgInput({ required: true }) label!: string;
+  @NgInput() label?: string;
   @NgInput('class') classInput?: string;
 
   /** Recomputed by `recompute()`; never derived in a template getter. */
-  model!: ReturnType<typeof buildViolinModel>;
+  data: EventFeedPanelEvent[] = [];
 
   ngOnInit(): void {
     this.recompute();
@@ -97,14 +90,14 @@ export class ViolinChart implements OnInit, OnChanges, OnDestroy {
   private recompute(): void {
     if (!this.signals) return;
     void this.signals.state();
-    this.model = buildViolinModel(
+    this.data = buildEventFeedData(
       this.signals.store.model,
       this.signals.store.applyCrossfilter(this.viewId),
       {
-        groupBy: this.groupBy,
-        measure: this.measure,
-        bins: this.bins,
-        quartiles: this.quartiles,
+        at: this.at,
+        type: this.type,
+        severity: this.severity,
+        message: this.message,
       },
     );
   }

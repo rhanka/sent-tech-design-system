@@ -1,51 +1,45 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input as NgInput, inject } from '@angular/core';
 import type { OnChanges, OnDestroy, OnInit } from '@angular/core';
-import { ViolinChart as DsViolinChart } from '@sentropic/design-system-angular';
-import { buildViolinModel, type DashboardStore } from '@sentropic/dataviz-core';
+import { HistogramChart as DsHistogramChart, type HistogramChartDatum } from '@sentropic/design-system-angular';
+import { type DashboardStore, type HistogramConfig } from '@sentropic/dataviz-core';
 import { toSignalStore, type AngularSignalStore } from '../adapter.js';
+import { buildHistogramData } from './distributionData.js';
 
-export type ViolinChartProps = {
+export type HistogramChartProps = {
   store: DashboardStore;
-  viewId: string;
-  /** Field id of the dimension used to split data into groups (one violin per group). */
-  groupBy: string;
-  /** Field id whose numeric values form the distribution for each group. */
-  measure: string;
-  /** Number of density bins (optional; DS default is 20). */
-  bins?: number;
-  /** Whether to overlay median / quartile markers (optional; DS default is true). */
-  quartiles?: boolean;
+  viewId?: string;
+  value: HistogramConfig['value'];
+  bins?: HistogramConfig['bins'];
+  domain?: HistogramConfig['domain'];
+  label: string;
   width?: number;
   height?: number;
-  /** Accessible label for the chart (aria-label). */
-  label: string;
   class?: string;
 };
 
 /**
- * State wiring for a DS Angular ViolinChart.
+ * State wiring for a DS Angular HistogramChart.
  * Generated from tools/dataviz-angular-port/descriptors.json — see that
  * directory's README before editing this file by hand.
  */
 @Component({
-  selector: 'st-dataviz-violin-chart',
+  selector: 'st-dataviz-histogram-chart',
   standalone: true,
-  imports: [DsViolinChart],
+  imports: [DsHistogramChart],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <st-violin-chart
-      [data]="model.data"
-      [bins]="model.bins"
-      [quartiles]="model.quartiles"
+    <st-histogram-chart
+      [data]="data"
+      [bins]="bins"
       [label]="label"
       [width]="width"
       [height]="height"
       [class]="classInput"
-    ></st-violin-chart>
+    ></st-histogram-chart>
   `,
 })
-export class ViolinChart implements OnInit, OnChanges, OnDestroy {
-  static readonly stComponentName = 'ViolinChart';
+export class HistogramChart implements OnInit, OnChanges, OnDestroy {
+  static readonly stComponentName = 'HistogramChart';
 
   private readonly changeDetector = inject(ChangeDetectorRef);
   private signals?: AngularSignalStore;
@@ -63,23 +57,22 @@ export class ViolinChart implements OnInit, OnChanges, OnDestroy {
 
   get store(): DashboardStore {
     if (!this.signals) {
-      throw new Error('ViolinChart: store is required.');
+      throw new Error('HistogramChart: store is required.');
     }
     return this.signals.store;
   }
 
-  @NgInput({ required: true }) viewId!: string;
-  @NgInput({ required: true }) groupBy!: string;
-  @NgInput({ required: true }) measure!: string;
+  @NgInput() viewId?: string;
+  @NgInput({ required: true }) value!: HistogramConfig['value'];
   @NgInput() bins?: number;
-  @NgInput() quartiles?: boolean;
+  @NgInput() domain?: HistogramConfig['domain'];
+  @NgInput({ required: true }) label!: string;
   @NgInput() width?: number;
   @NgInput() height?: number;
-  @NgInput({ required: true }) label!: string;
   @NgInput('class') classInput?: string;
 
   /** Recomputed by `recompute()`; never derived in a template getter. */
-  model!: ReturnType<typeof buildViolinModel>;
+  data: HistogramChartDatum[] = [];
 
   ngOnInit(): void {
     this.recompute();
@@ -97,14 +90,13 @@ export class ViolinChart implements OnInit, OnChanges, OnDestroy {
   private recompute(): void {
     if (!this.signals) return;
     void this.signals.state();
-    this.model = buildViolinModel(
+    this.data = buildHistogramData(
       this.signals.store.model,
       this.signals.store.applyCrossfilter(this.viewId),
       {
-        groupBy: this.groupBy,
-        measure: this.measure,
+        value: this.value,
         bins: this.bins,
-        quartiles: this.quartiles,
+        domain: this.domain,
       },
     );
   }
