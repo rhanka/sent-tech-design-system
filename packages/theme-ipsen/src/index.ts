@@ -48,7 +48,7 @@ const ipsenColor = {
   navy: {
     primary: "#000e56", // body{color} / .btn-primary bg / footer bg / `.charcoal-grey`
     hover: "#061f80", // .btn-primary:hover + a:hover — site-wide hover blue (×26)
-    heroHover: "#3766a8", // hero CTA hover only, hero-scoped (×7)
+    heroHover: "#3766a8", // hero CTA hover/focus (×4) + slim-card button hover (×1) + skip-link focus (×2)
     gradient: "#003e7e", // hero carousel gradient stop (×2)
     cardButton: "#153f99" // .card-btn fill + exit-modal secondary hover (×3)
   },
@@ -56,13 +56,13 @@ const ipsenColor = {
   // `.light-blue` + nav/search/booking accents.
   blue: {
     primary: "#224a81", // `.primary-blue` — links, buttons, checkbox accent (×19)
-    light: "#2797d3", // `.primary-light-blue` — buttons, link hovers (×39)
+    light: "#2797d3", // `.primary-light-blue` — buttons, link hovers (×37)
     nav: "#3286d6", // nav tab active filet + dropdown markers (×8)
-    tint: "#e7faff", // `.light-blue` — filter gradient, accordion hover (×6)
+    tint: "#e7faff", // `.light-blue` — filter gradient, accordion hover (×4)
     sectionBg: "#dbeaf5", // slim-card blue section ground (×6)
     bookingBg: "#e6f8fe", // book-meeting slot button fill (×1)
     footerRule: "#50aaf8", // footer hr + search arrow hover (×3)
-    searchArrow: "#6ec4ff", // search arrow ring (×5)
+    searchArrow: "#6ec4ff", // page-numbers + search arrow ring/border + clear-icon ground (×5)
     buttonHover: "#3fafeb", // slim-card / date button hover (×3)
     divider: "#6eb6c7", // footer divider (`.vibrant-blue` / `.smoke-grey`) (×7)
     serious: "#4a7992", // `.serious-blue` utility declaration only (×1)
@@ -172,7 +172,7 @@ const foundation = {
     16: "4rem" // 64px
   },
   // Ipsen rounds at 8px: controls, cards, dropdowns (`border-radius:8px`
-  // ×39 + corner pairs; rem root is the 16px default — no `html{font-size}`
+  // ×39 (+3 `!important`) + corner pairs; rem root is the 16px default — no `html{font-size}`
   // anywhere). Checkbox 4px, pills 999px (measured).
   radius: {
     none: "0",
@@ -182,22 +182,22 @@ const foundation = {
     pill: "999px" // pills
   },
   // Black-tinted shadows, transcribed verbatim (the chrome is otherwise
-  // flat: `box-shadow:none` ×13).
+  // flat: `box-shadow:none` ×13 (+1 `!important`)).
   shadow: {
     subtle: "0 2px 4px rgba(0,0,0,.1)", // #masthead header shadow
     medium: "0px 4px 8px rgba(0,0,0,.15)", // graphic-card text panel
     floating: "0 4px 10px rgb(0 0 0/25%)" // megamenu dropdown
   },
   // All three durations measured (`.2s` ×4, `.3s` ×8, `.5s` ×25) with the
-  // dominant easing (ease-in ×25 of 37 transitions).
+  // dominant easing (ease-in ×25 of 42 transitions).
   motion: {
     fast: "200ms",
     normal: "300ms",
     slow: "500ms",
     easing: "ease-in"
   },
-  // No z-index system is published (ad hoc 1…2000); the base roles are
-  // retained (à confirmer).
+  // No z-index system is published (ad hoc -1…9999, exit-popup block
+  // included); the base roles are retained (à confirmer).
   z: {
     header: 50,
     toast: 60,
@@ -239,9 +239,9 @@ const foundation = {
     }
   },
   disabledOpacity: "0.5", // `.disabled` buttons: later rule wins over `opacity:.7`
-  transition: { property: "background-color, color, box-shadow, transform", duration: "500ms", easing: "ease-in" }, // dominant property set + duration (.5s ×25) + easing (×25)
+  transition: { property: "background-color, border-color, color, box-shadow", duration: "500ms", easing: "ease-in" }, // property aligned with the reference theme packages (à confirmer — no multi-property set published, 42 transitions all mono-property); duration (.5s ×25) + easing (×25) measured
   cursor: { interactive: "pointer", disabled: "default", text: "text" }, // `.disabled` buttons use `cursor:default` (×5)
-  iconSize: { sm: "1rem", md: "1.125rem", lg: "1.25rem" }, // à confirmer — base (only a 15px search clear-icon is published)
+  iconSize: { sm: "1rem", md: "1.125rem", lg: "1.25rem" }, // à confirmer — base (only a search clear-icon is published: 15px font-size in a 23×23 box)
   // FOCUS = a navy OUTLINE: `outline:2px solid #000e56` + `outline-offset:2px`
   // on filter buttons, survey radios, search inputs. Text inputs keep
   // `outline:none` with a navy border recolour instead (recorded in
@@ -277,10 +277,11 @@ const foundation = {
     lineHeight: "1.5rem",
     hoverBackground: ipsenColor.grey.subtle // #edebe4
   },
-  // Secondary button = OUTLINED navy on white (exit-modal scope): white
-  // fill, navy border + text, hover fills `#153f99`.
+  // Secondary button (exit-modal scope, desktop): `#edebe4` fill with navy
+  // border + text; hover fills `#153f99`. The white exit-modal rule is
+  // mobile-scoped (≤600px); the book-a-meeting modal re-declares white.
   buttonSecondary: {
-    background: "#ffffff", // later rule wins over the `#edebe4` fill
+    background: ipsenColor.grey.subtle, // #edebe4 desktop fill (least-scoped rule; the later white is mobile-only)
     border: ipsenColor.navy.primary, // #000e56 stroke
     hoverBackground: ipsenColor.navy.cardButton // #153f99 hover fill
   },
@@ -327,8 +328,8 @@ const foundation = {
     lineHeight: "1.5rem", // à confirmer — reference geometry
     currentWeight: "700" // à confirmer — reference geometry
   },
-  // Alert: the brand publishes no alert-box geometry (empty grep, quoted in
-  // MAPPING.md) — reference geometry (à confirmer).
+  // Alert: the brand publishes no alert-box geometry (one link-underline
+  // line, no geometry — see MAPPING.md) — reference geometry (à confirmer).
   alert: {
     background: "transparent", // à confirmer — reference geometry
     borderTop: "none", // à confirmer — reference geometry
@@ -457,8 +458,8 @@ const semantic = {
     category2: ipsenColor.blue.primary, // #224a81 primary blue (à confirmer)
     category3: ipsenColor.blue.light, // #2797d3 light blue (à confirmer)
     category4: ipsenColor.blue.nav, // #3286d6 nav blue (à confirmer)
-    category5: ipsenColor.green.trueGreen, // #00b050 green (à confirmer)
-    category6: ipsenColor.green.vibrant, // #b2c966 lime (à confirmer)
+    category5: ipsenColor.green.vibrant, // #b2c966 lime (à confirmer)
+    category6: ipsenColor.green.trueGreen, // #00b050 green (à confirmer)
     category7: ipsenColor.red.error, // #c02b0a red (à confirmer)
     category8: ipsenColor.grey.dark // #5d6265 grey (à confirmer)
   }

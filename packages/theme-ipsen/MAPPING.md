@@ -28,6 +28,10 @@ referenced — no font binaries. Derived/unmeasured values are flagged
   `ipsen-main` rules 2536–3921) — `https://www.ipsen.com/_static/??-eJyVkVEP…`
 - Bundle all-css-12 (vendor plugins + brand `#exit-popup` block, rules
   107–126) — `https://www.ipsen.com/_static/??-eJx9jtEK…`
+- Riovizual table-builder sheet (vendor, excluded — every selector is
+  `.wp-block-riovizual-*`; carries `#fff` ×2, `#000`, `#ddd`, `#0c0b0b`,
+  `#f0f3f9`, no brand hue; 14 569 bytes) —
+  `https://www.ipsen.com/wp-content/plugins/riovizual/build/style-index.css?m=1790328379g`
 - Select chevron pixels — `https://www.ipsen.com/wp-content/themes/ipsen-main/dist/images/arrow-down.png`
   (7×6px, decodes around `#000e56`)
 
@@ -36,8 +40,9 @@ referenced — no font binaries. Derived/unmeasured values are flagged
 Bare `curl` answered 200 twice and 000 once over three tries; UA-only
 (Chrome UA, no other headers) answered 200 all three times, so no full
 header set was needed. Stylesheets were fetched with UA + `Referer:
-https://www.ipsen.com/` + `Accept: text/css`. Full bundle URLs (stable
-Jetpack hashes, 2026-09-25):
+https://www.ipsen.com/` + `Accept: text/css`. Full bundle URLs (fetched
+2026-09-25; the hashes rotate — a same-day re-fetch served new URLs with
+byte-identical contents, so re-fetch by content, not by URL):
 
 - all-css-0: `https://www.ipsen.com/_static/??-eJytkc0KwkAMhF/IuNUWxIP4LOluaBf3z2yKPr6oLbU92j1lhoGPIaMeCXQMQkGU9OQpK5syBfBogxLyyaEQJGSZktZFfcuqJ47QYgjEC/PN9zrnnfobLvQU8GQs/siNzI4x9VaDRjYrV6TzfYhC0ylCzM76T8FZFeEm7Gh8wyzL7GbFEWAw8J5tZTeymbrBIY/FF27ufvWXw+lcHeu6apoXeq8T5w==`
   (82 756 bytes)
@@ -52,16 +57,19 @@ line with `sed 's/}/}\n/g'`, then apply the brand-region boundaries below.
 ## Brand region (Step 0.5) and counting convention
 
 Brand region = **2 317 rules**: all-css-0 whole (945 rules — no vendor base
-run; the 78 glider-mentioning lines are brand-scoped `.graphic-card …`
-overrides carrying a single `#fff`); all-css-14 expanded lines 2536–3921
-minus 34 vendor-widget rules (31 `.ms-options` / `.wpgmp` / `#onetrust`
-lines + bare `.glider-dot` / `.glider-dots` + `#rc-anchor-container`);
-all-css-12 expanded lines 107–126 (`#exit-popup` / `#survey-form` brand
-block). Boundaries in all-css-14: Bootstrap ends ≈2490 (print utilities),
-glider.js 2480–2494, slick 2495–2535 (ends `.slick-arrow.slick-hidden`),
+run; the 78 glider-mentioning lines are brand-scoped overrides — 22
+`.graphic-card …` plus quotes/slim/text-tryo/p-slider and bare `.glider*`
+lines — carrying a single `#fff` on a graphic-card line); all-css-14
+expanded lines 2536–3921 minus 34 vendor-widget rules (18 `.ms-options` +
+2 `.wpgmp` + 1 `#onetrust` + 10 `ot-sdk-show-settings` + bare
+`.glider-dot` / `.glider-dots` + `#rc-anchor-container`); all-css-12
+expanded lines 107–126 (`#exit-popup` / `#survey-form` brand block).
+Boundaries in all-css-14: Bootstrap ends 2468 (print utilities),
+glider.js 2470–2493, slick 2495–2535 (ends `.slick-arrow.slick-hidden`),
 brand starts at 2536 (`.media-filter-main .sorting-sec`). Excluded outright:
 all-css-12 rate-my-post/dashicons/maps/FontAwesome runs, the `riovizual`
-sheet (zero brand hexes), WordPress `global-styles` presets (stock
+sheet (vendor selectors only; `#fff`/`#000`/`#ddd` + `#0c0b0b`/`#f0f3f9`,
+no brand hue), WordPress `global-styles` presets (stock
 `--wp--preset-*`), the `bootstrap-icons` CDN sheet.
 
 Convention: one occurrence = one declaration containing the hex, exact
@@ -71,7 +79,9 @@ Convention: one occurrence = one declaration containing the hex, exact
 (`#eee` → `#eeeeee`); one 8-digit alpha form (`#00000026` ×1, slim-card
 hover shadow) carries no token and takes no table row; `rgb()`/`rgba()`
 equivalents
-listed separately, never merged into hex counts. `rem` root: **16px
+listed separately, never merged into hex counts. One property value holding
+the hex twice (the two accordion `linear-gradient(0deg,#X,#X)` rules) counts
+once. `rem` root: **16px
 default** — no `html{font-size}` rule in any sheet (empty grep over all
 `html` selectors). The brand declares **no `--*` custom properties**, so
 every `var()` count is 0 and consumption is literal-only; the single
@@ -81,9 +91,9 @@ role).
 
 Per-file 6-digit counts (all-css-0 + exit block + all-css-14 brand part):
 `#000e56` 52+2+130=184; `#edebe4` 10+1+37=48 (+1 var fallback); `#2797d3`
-7+0+32=39; `#061f80` 6+0+20=26; `#224a81` 7+0+12=19; `#c02b0a` 16;
+7+0+30=37; `#061f80` 6+0+20=26; `#224a81` 7+0+12=19; `#c02b0a` 16;
 `#292c31` 9; `#c4c9cb` 9; `#3286d6` 8; `#3766a8` 7; `#6eb6c7` 7; `#dbeaf5`
-6; `#e7faff` 6; `#8f9699` 6; `#5d6265` 5; `#6ec4ff` 5; `#00ff1a` 5;
+6; `#e7faff` 4; `#8f9699` 6; `#5d6265` 5; `#6ec4ff` 5; `#00ff1a` 5;
 `#cdd1d3` 4; `#153f99` 3; `#3fafeb` 3; `#50aaf8` 3; `#0a58ca` 3; `#fff9f9`
 3; `#b2c966` 3; `#003e7e` 2; `#c84874` 2; `#790000` 2; `#ff1a1a` 2;
 singletons `#00b050` `#006fee` `#10435e` `#4a7992` `#5a5a5a` `#d7d7d7`
@@ -109,16 +119,16 @@ singletons `#00b050` `#006fee` `#10435e` `#4a7992` `#5a5a5a` `#d7d7d7`
 | `text.muted` | file-size info + disabled download-link text | `#8f9699` |
 | `text.inverse` / `action.primaryText` / `pagination.activeText` / `badge.infoText` | white footer/button text on navy | `#ffffff` |
 | `action.secondaryText` / `buttonSecondary.border` / `breadcrumb.linkText+currentText` / `accordion.text` / `choice.labelColor` / `toggle.textColor` / `tag.neutralText` / `badge.infoBackground` | navy on light grounds (breadcrumb/tag/badge/toggle uses à confirmer) | `#000e56` |
-| `surface.subtle` / `action.secondary` / `border.subtle` / `card.hoverBackground` / `tag.neutralBackground` | quote/tab/drop grounds, `.form-control{border:2px solid #edebe4}` | `#edebe4` |
+| `surface.subtle` / `action.secondary` / `border.subtle` / `card.hoverBackground` / `tag.neutralBackground` / `buttonSecondary.background` | quote/tab/drop grounds, `.form-control{border:2px solid #edebe4}`, exit-modal secondary desktop fill | `#edebe4` |
 | `border.strong` / `breadcrumb.separator` | card + divider strokes (separator use à confirmer) | `#c4c9cb` |
-| `surface.default` / `surface.raised` / `field.fillBg` / `buttonSecondary.background` | card/field/modal white; later exit-modal rule wins over `#edebe4` | `#ffffff` |
+| `surface.default` / `surface.raised` / `field.fillBg` | card/field/modal white (the exit-modal secondary white is mobile-scoped ≤600px, desktop is `#edebe4`) | `#ffffff` |
 | `surface.overlay` | `.modal-backdrop`: later `#fff`+`opacity:.8` wins over `#000` at equal specificity | `rgb(255 255 255 / 0.8)` |
 | `buttonSecondary.hoverBackground` | exit-modal secondary `:hover` fill | `#153f99` |
 | `data.category5` | `.vibrant-green` + slim green section ground | `#b2c966` |
 | `data.category6` | `.true-green` (same gap as above) | `#00b050` |
 | cyan.10 (light accent tint) | `.light-blue` + filter gradient, accordion hover | `#e7faff` |
 | blue.10 (light blue tint) | slim-card blue section ground | `#dbeaf5` |
-| — (raw palette, hero-scoped hover) | hero CTA `:hover` / `:focus` fill | `#3766a8` |
+| — (raw palette, scoped hover/focus) | hero CTA `:hover`/`:focus` (×4) + slim-card button `:hover` (×1) + skip-link `:focus` desktop & mobile (×2) | `#3766a8` |
 | — (raw palette, hero gradient stop) | `.carousel-inner:after` gradient | `#003e7e` |
 | — (raw palette, validation tint) | validation message ground | `#fff9f9` |
 | — (raw palette, legacy validation) | legacy-markup validation text | `#790000` |
@@ -126,7 +136,7 @@ singletons `#00b050` `#006fee` `#10435e` `#4a7992` `#5a5a5a` `#d7d7d7`
 | — (raw palette, scoped financial data) | stock-ticker gain/loss text (excluded from feedback roles) | `#00ff1a` / `#ff1a1a` |
 | — (raw palette, footer divider) | `.footer-divider` + `.vibrant-blue` / `.smoke-grey` | `#6eb6c7` |
 | — (raw palette, footer rule + search) | `hr` + search-arrow hover | `#50aaf8` |
-| — (raw palette, search arrow ring) | `.search-right-arrow` border/fill | `#6ec4ff` |
+| — (raw palette, search arrow ring) | `.search-right-arrow` border/fill + `.page-numbers` current/hover/focus + clear-icon ground | `#6ec4ff` |
 | — (raw palette, button hover) | slim-card / date button hover fill | `#3fafeb` |
 | — (raw palette, booking fill) | book-meeting slot button ground | `#e6f8fe` |
 | — (raw palette, booking borders) | book-meeting borders + shadows | `#cdd1d3` |
@@ -134,7 +144,7 @@ singletons `#00b050` `#006fee` `#10435e` `#4a7992` `#5a5a5a` `#d7d7d7`
 | — (raw palette, icon colour) | `i.bi-chevron-*` | `#10435e` |
 | — (raw palette, checkbox stroke) | gravity contact checkbox 2px border | `#006fee` |
 | — (raw palette, scoped focus) | focus outline on image-ground CTA | `#dbdde8` |
-| — (raw palette, scoped focus) | navbar toggler + mobile-menu close outline and text | `#0a58ca` |
+| — (raw palette, scoped focus) | navbar toggler + mobile-menu close outline and text — coincides with Bootstrap stock link-hover (×9 in the embedded Bootstrap region: `a:hover`, `.btn-primary`, `.nav-link`, …); kept as raw, no role | `#0a58ca` |
 | — (raw palette, search focus) | search-dropdown `outline` (no hex form) | `rgba(0,95,204,.95)` |
 | — (raw palette, hero-scoped text) | `.hero-section{color:…}` | `#5a5a5a` |
 | — (raw palette, mobile close stroke) | `.mobile-menu-close` border | `#d7d7d7` |
@@ -165,9 +175,9 @@ chain was needed (no derived value fails its floor).
   DOM on 2026-09-25; carried as `feedback.success` with this gap stated.
 - **Error-red stock coincidence** — `#c02b0a` is painted by brand-authored
   validation overrides, but may coincide with Gravity Forms stock: the
-  stock file `…/gravityforms/assets/css/dist/gravity-forms-orbital-theme.min.css`
-  answers 200 with `content-length: 0`, so the comparison is inconclusive
-  and recorded as such.
+  stock file `https://www.ipsen.com/wp-content/plugins/gravityforms/assets/css/dist/gravity-forms-orbital-theme.min.css`
+  answered 200 with `content-length: 0` when recorded (2026-09-25), so the
+  comparison is inconclusive and recorded as such.
 - **Categorical `data.*` palette** — a coherent proposal from measured
   brand hues, not an official scale.
 - **`density` sm/lg + md gap/minWidth** — no sm/lg control variants are
@@ -177,12 +187,13 @@ chain was needed (no derived value fails its floor).
   (`appearance:none` + `arrow-down.png`, pixels ≈ `#000e56`) but publishes
   no right gutter; reference geometry.
 - **`breadcrumb` / `tag` / `badge` / `toggle` / `alert` geometry** — no
-  brand rules published (breadcrumb: one RTL-only line; alert/tag/badge:
-  empty greps; toggle: only the navbar hamburger + an
+  brand rules published (breadcrumb: one RTL-only line; alert: one
+  link-underline line, no geometry; tag/badge: empty greps; toggle: only
+  the navbar hamburger + an
   accessibility-widget position); reference geometry with brand colours
   applied.
 - **`pagination.minSize`, `radioLineHeight`, `iconSize`, `z`, `spacing`** —
-  not published; base/reference values retained.
+  not published (measured ad hoc z -1…9999); base/reference values retained.
 - **Tabs `paddingBlock` 0.5rem** — Bootstrap `.nav-link` block padding
   retained (the brand zeroes inline padding only); labelled vendor default
   retained, not a brand decision.
@@ -195,8 +206,9 @@ chain was needed (no derived value fails its floor).
   `Rethinksans-bold`) served from
   `/wp-content/themes/ipsen-main/dist/fonts/` (css-14:2886–2889);
   body 16px/20px regular, CTA labels bold-cut 16px/20px, headings
-  49/39/32/25/20/18px bold-cut. Consumption: Regular ×82, bold ×44,
-  SemiBold ×43, Medium ×11 (+3 lowercase-`s` `Rethinksans-Regular`). We
+  49/39/32/25/20/18px bold-cut. Consumption: Regular ×83, bold ×46,
+  SemiBold ×43, Medium ×11 (+3 lowercase-`s` `Rethinksans-Regular`, +3
+  capital-`S` `RethinkSans-Bold`). We
   reference the font *name* only.
 - **Lato** (`Lato-bold/-Light/-Regular/-Semibold`, css-14:2882–2885) —
   declared but **never consumed** (zero declarations outside `@font-face`);
@@ -220,8 +232,10 @@ chain was needed (no derived value fails its floor).
   navy border recolour; scoped variants exist (1px `#061f80`, 1px `#000`,
   2px `#0a58ca`, 2px `#dbdde8`, search `rgba(0,95,204,.95)`).
 - **Buttons**: primary = solid navy `#000e56` with white text → hover
-  `#061f80`; light buttons `#edebe4`/navy → hover navy/white; secondary =
-  **outlined** navy on white → hover fill `#153f99` (exit-modal scope).
+  `#061f80`; light buttons `#edebe4`/navy → hover navy/white; secondary
+  (exit-modal scope, desktop) = `#edebe4` fill + navy border/text → hover
+  fill `#153f99` (the exit-modal white is mobile ≤600px; the
+  book-a-meeting modal re-declares white on desktop).
 - **Tabs**: borderless navy labels; active keeps navy text with a 2px
   `#3286d6` bottom filet (`indicatorSide: "bottom"`,
   `indicatorMode: "border"`).
@@ -237,8 +251,9 @@ chain was needed (no derived value fails its floor).
   geometry published.
 - **Search**: 16px/20px navy on `.form-control` geometry, inline-start
   padding zeroed (13px block / 15px right transcribed).
-- **Motion**: 200/300/500ms + `ease-in` (all measured); shared transition
-  `background-color, color, box-shadow, transform` / 500ms / ease-in.
+- **Motion**: 200/300/500ms + `ease-in` (all measured — 42 transitions,
+  all mono-property, so no multi-property set is published and the
+  property list is reference geometry, à confirmer).
 - **Disabled**: `opacity:.5` (later rule wins over `.7`),
   `cursor:default` on disabled buttons.
 - **Overlay**: white at 80 % (last-rule win, see box above).
