@@ -492,6 +492,18 @@ sequence in order before concluding anything about your own diff; and if main mo
 again while the gates were running, rebase and replay rather than report a result
 measured against a base that no longer exists.
 
+**Re-read what a third-party tool wrote, because a silent failure returns success.**
+On this repository `gh pr edit` queries `repository.pullRequest.projectCards`, which
+returns `"pullRequest": null` with `{"type":"NOT_FOUND", "message":"Projects (classic)
+is being deprecated…"}` — the whole node it asks for is null, so the edit is dropped
+while the command still exits 0 and prints what reads as a deprecation warning. A title
+and body were believed updated and were untouched; it was found only by reading the
+pull request back. The workaround is
+`gh api -X PATCH repos/<owner>/<repo>/pulls/<n> -f title=… -F body=@<file>`, which
+works. The general rule outlives the bug: **after any write performed through a tool
+you do not control, read the object back.** An exit code describes the command, not the
+object.
+
 **What a repository guard is for — measured, not assumed.** The first lot reviewed
 with all three guards present cost **more** per review than the lot before it
 (210 501 against 178 142 tokens, +18.2 %), and **none of its fifteen blocking defects
@@ -613,6 +625,41 @@ Deterministic rule. Thresholds (WCAG 2.x): **4.5:1** for running text
 least 19px bold) and for non-text elements including the focus indicator
 (WCAG 1.4.11) — so `border.interactive` and `focus.color` are held to
 **3:1**, not 4.5:1: they are lines, not text.
+
+**`text.muted` is held to 3:1, and that is a measurement of the repository, not a
+concession.** Resolving `text.muted` to a hex across every theme package that declares
+one — 134 of them — and computing each ratio on white gives **86 below 4.5:1**. The
+lowest is 1.14, twenty-five sit below 3.0, and the lowest value at or above 4.5 is
+4.54. A muted text role under 4.5 is therefore this repository's norm and not its
+exception. So for a programme theme: `text.muted` must clear **3:1** and record its
+ratio; a value between 3 and 4.5 is a **documented arbitration**, stated with its
+number in `MAPPING.md`; below 3:1 is a defect and the stop rule applies.
+
+This rule is **forward-looking only**. It is not a judgement on the 134 existing
+packages — section 1 puts every existing id out of scope, and applying a programme
+prescription backwards across this repository is the defect that once produced some
+three hundred false positives in a single guard. Measure the distribution before
+proposing a floor; do not infer it from the handful of packages someone happened to
+cite.
+
+The case that produced the rule is worth keeping whole, because the reasoning failed
+twice before the measurement settled it. A theme shipped `text.muted` at **1.92:1**
+(only four existing packages are lower), which is a real defect, and it was routed to
+the brand's other measured text grey at **3.95:1** — better than 86 of the 134. A
+reviewer then argued, from section 9's letter, that a text role owes 4.5 and that the
+stop rule's next step `#737373` at 4.74 was the conforming answer. Applying it would
+have collapsed `muted` into `secondary` (5.01, three grey units away) **and** held one
+new theme to a bar that 86 shipped packages do not clear.
+
+**And the precedents both reviewers offered were not measurements.** The pair cited to
+justify the 3.5 band — `#888b8d` at "3.54" and `#8c8c8c` at "3.55", the latter
+attributed to a governmental theme — does not survive being resolved: `#888b8d` is
+**3.43**, `#8c8c8c` belongs to a different package entirely, and the governmental
+theme's actual `text.muted` is `#26374a` at **12.15:1**, among the highest in the
+repository. The conductor relayed that pair without resolving it. **A precedent is a
+measurement, not a citation**: open the package that allegedly sets it, resolve the
+token to a hex, and compute. A cited ratio is a claim about a file, and claims about
+files are cheap to check.
 
 Computation: relative luminance per channel
 `s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4`, then
