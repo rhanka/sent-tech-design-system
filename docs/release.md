@@ -142,6 +142,36 @@ Measured on 2026-09-25 against the registry (`npm view <name> version` for each 
 
 For these three, the bootstrap checklist above is the only order that works: the trusted publisher cannot be declared first, because npm has no package page to declare it on. The seven names whose registry version is behind the repository (`design-system-angular`, `dataviz-core`, `dataviz-react`, `dataviz-svelte`, `dataviz-vue`, `graph`, `design-system-skills`) exist on npm and need nothing but their tag, with the trusted publisher declared.
 
+### The eight whose version number is already taken
+
+The remaining eight workspaces carry a version that npm already holds, so the tag for that version would be refused — and their content is not the published content. Measured on 2026-09-25: the publish timestamp comes from `npm view <name> time`, and the drift is `git log --since=<that timestamp> origin/main -- packages/<dir>/src packages/<dir>/package.json`.
+
+| Package | Version (local = registry) | Published | Commits since, touching src or manifest | What drifted |
+|---|---|---|---|---|
+| `design-system-tokens` | 0.11.0 | 2026-06-06 | 11 | additive tokens (Badge circle, Collapsible trailing snippet, SelectableRow caption, link-hover geometry, card-hover background, icon stroke/colour), a lollipop overflow fix, licensing notices |
+| `design-system-themes` | 0.11.0 | 2026-06-06 | 6 | functional dark mode at theme level, icon tokens, size→font scale, licensing notices |
+| `design-system-theme-dsfr` | 0.2.2 | 2026-05-31 | 12 | phase-2 anatomy tokens (switch/toggle, card hover, link hover), usage-terms chronology, licensing notices |
+| `design-system-theme-canada` | 0.1.0 | 2026-06-11 | 3 | licensing only (upstream attribution, third-party notices) |
+| `design-system-svelte` | 0.35.0 | 2026-08-16 | 6 | the `ForceGraph` layout delegation to `@sentropic/graph/processing` (#113), PriorityMatrix, Icon cascade layer, licensing notices |
+| `design-system-react` | 0.37.0 | 2026-08-16 | 5 | PriorityMatrix, Icon cascade layer and token-driven stroke, licensing notices |
+| `design-system-vue` | 0.37.0 | 2026-08-16 | 5 | same set as react |
+| `design-system-codemirror` | 0.1.0 | 2026-06-05 | 3 | licensing notices, dev-dependency bumps |
+
+Measured consequence: **no publishable workspace currently matches its published counterpart** — three names do not exist, seven are behind, eight have a number that is taken.
+
+### Why this state is not fixed by bumping all eight at once
+
+Commit `7c731257` records the failure that produces: base packages were bumped ahead of their tags, and the publish smoke test broke with `No matching version theme-carbon@0.2.3`, because dependents had those versions in `dependencies` at runtime. Every dependent still pins the **published** base version exactly (`@sentropic/design-system-tokens` and `-themes` at `0.11.0` in `themes`, `theme-dsfr`, `theme-canada` and the four component packages). So a bump only becomes safe for the dependents once the base version it names exists on npm, and the train has to run one step at a time:
+
+1. `graph` 0.3.0 — exists on npm at 0.2.0, needs only its tag. It gates `design-system-svelte`, whose manifest pins `@sentropic/graph: 0.3.0`: publishing svelte first would ship a dependency npm cannot resolve.
+2. `design-system-tokens`, then `design-system-themes` — bump, tag, publish; only then move the pins in the packages that name them.
+3. `design-system-theme-dsfr` and `-theme-canada` — bump after their base pins move; `-theme-quebec` and `-theme-latex` take the bootstrap path above instead, being first publishes.
+4. `design-system-svelte`, `-react`, `-vue` — bump after step 2 is on npm (svelte also needs step 1); `design-system-angular` is already at 0.37.1 and needs only its tag.
+5. `dataviz-core`, `-svelte`, `-react`, `-vue` — already at 0.5.0, tags pending; `dataviz-angular` is a first publish, bootstrap path.
+6. `design-system-skills` (0.3.2, tag pending) and `design-system-codemirror` (bump then tag).
+
+Each step is: bump that package only → tag → let its workflow publish → then move the pins that name it. That is the order the commit above was written to protect.
+
 Publish by pushing `main`, then creating and pushing a tag:
 
 ```bash
