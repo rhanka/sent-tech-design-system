@@ -238,6 +238,49 @@ const SECTION_SLUGS = [
   "treemap-chart"
 ];
 
+test("store section demos pass channel ids, never literal numbers", () => {
+  // Every dataviz store channel is resolved through the model, so it is an
+  // id (string), not a value: GaugeChartConfig.value is a measure id. Passing
+  // a number makes resolveMeasure throw, and the buildGaugeData catch then
+  // returns displayValue 0 — a gauge that renders a plausible WRONG number
+  // instead of failing visibly. Neither svelte-check nor the browser gate can
+  // catch that regression: storeChartDemoNodes takes Record<string, unknown>,
+  // and the browser section check only requires an <svg> in the stage, which
+  // a 0-valued gauge still produces. So assert it on the page source.
+  const CHANNELS = [
+    "value",
+    "measure",
+    "category",
+    "x",
+    "y",
+    "source",
+    "target",
+    "task",
+    "start",
+    "end"
+  ];
+  for (const slug of SECTION_SLUGS) {
+    const page = readFileSync(
+      join(DOCS, "src/routes/components", slug, "+page.svelte"),
+      "utf8"
+    );
+    const at = page.indexOf("storeChartDemoNodes(");
+    assert.ok(at > -1, `${slug}: store demo builder call missing`);
+    const window = page.slice(at, at + 800);
+    const close = window.indexOf("})");
+    const call = close === -1 ? window : window.slice(0, close + 2);
+    for (const channel of CHANNELS) {
+      const found = new RegExp(`\\b${channel}:\\s*([^,\\n]+)`).exec(call);
+      if (found === null) continue;
+      const literal = found[1].trim();
+      assert.ok(
+        !/^-?\d/.test(literal),
+        `${slug}: store channel "${channel}" must be a measure/dimension id, got the literal ${literal}`
+      );
+    }
+  }
+});
+
 test("all four tabs render on the built site (Chromium)", async (t) => {
   const docsRequire = createRequire(join(DOCS, "package.json"));
   const { chromium } = docsRequire("playwright-core");
