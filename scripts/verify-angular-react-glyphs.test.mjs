@@ -178,16 +178,32 @@ export function sliceFromCatalog(catalog, base) {
  * degree sign — the gate passed on a real regression. The two regexes below
  * catch the ASCII stand-in itself, scoped so that identifiers and CSS do not
  * match: a unit right after an interpolation or a digit (`${x}deg`, `90deg`),
- * and a hyphen used as a separator BETWEEN two interpolated values
+ * and a hyphen used as a separator BETWEEN two rendered values
  * (`${x} - ${y}`). Measured across all 223 pairs, both are silent on the
  * aligned tree: `deg` as a bare word is not, since `(deg: number) => …` in
  * GaugeChart and SolidGaugeChart would match.
+ *
+ * WHAT THE SEPARATOR-DASH CLASS HAD TO GROW. Its first form only accepted an
+ * interpolation or an alphanumeric after the hyphen, so it did not see
+ * `VectorFieldChart`'s data list, which reads `y ${datum.y} · |v| ${…}`: turning
+ * that `·` into `-` puts a `|` after the hyphen, outside the class. Presence of
+ * `·` did not change either, because the same component's tooltip still spells
+ * it, so the whole gate passed 6/6 on that regression. `|` is therefore part of
+ * the class. The addition is measured, not assumed: across the 223 pairs, both
+ * sides each, the widened form matches the same four places as the narrow one
+ * (`DatePicker` and `Transcription`, symmetric on both frameworks, hence silent)
+ * and one more only when the regression is present. Widening further to any
+ * non-space character measured identically today, and was not taken: a wider
+ * class buys no caught defect and costs a larger false-positive surface, and a
+ * false finding sends a reader to correct code.
  */
+const DEG_STANDIN = /[}\d]\s?deg\b/;
+const SEPARATOR_DASH = /\}\s-\s(\$\{|[A-Za-z0-9]|\|)/;
 const TOKENS = [
   " -> ", "→", "▲", "▼", "↑", "↓", '"UP"', '"DOWN"',
   "°", "·", "—", "×",
-  /[}\d]\s?deg\b/,
-  /\}\s-\s(\$\{|[A-Za-z0-9])/,
+  DEG_STANDIN,
+  SEPARATOR_DASH,
 ];
 const has = (src, token) => (typeof token === "string" ? src.includes(token) : token.test(src));
 const tokenLabel = (token) => (token === " -> " ? "ASCII ->" : String(token));
@@ -273,6 +289,30 @@ test("each normalisation is load-bearing: removing it re-creates a false finding
   assert.equal(normalise('console.warn(`a — b`); const t = "x";').includes("—"), false);
   // and it does not eat the statement that follows the call.
   assert.ok(normalise('console.warn(`a — b`); const t = "x";').includes('const t = "x"'));
+});
+
+test("the ASCII stand-in regexes fire on the shapes they claim, and stay off the rest", () => {
+  // The separator dash, in each shape a data list or tooltip actually writes.
+  assert.ok(SEPARATOR_DASH.test("`${a} - ${b}`"), "between two interpolations");
+  assert.ok(SEPARATOR_DASH.test("`X ${p.from} - 105`"), "interpolation then a literal value");
+  assert.ok(SEPARATOR_DASH.test("`y ${d.y} - label`"), "interpolation then a word");
+  // VectorFieldChart:262. Missed until `|` joined the class, and missed silently:
+  // the component's tooltip still spelled `·`, so presence of `·` was unchanged.
+  assert.ok(SEPARATOR_DASH.test("`x ${d.x}, y ${d.y} - |v| ${fmt(d.length)}`"), "interpolation then |v|");
+  // And off the shapes that are not a separator between two rendered values.
+  assert.equal(SEPARATOR_DASH.test("const gap = a.length - b.length;"), false, "plain subtraction");
+  assert.equal(SEPARATOR_DASH.test("`--st-gap: calc(100% - 2px)`"), false, "CSS calc on a literal");
+  assert.equal(SEPARATOR_DASH.test("`${x}-${y}`"), false, "a hyphen with no spaces is a joiner, not a separator");
+  assert.equal(SEPARATOR_DASH.test("`${x} -${y}`"), false, "a unary minus is not a separator");
+  // Known and unchanged by the `|` addition: arithmetic whose left operand ends an
+  // interpolation does match. It is silent in practice because both frameworks
+  // spell the same arithmetic, so presence compares equal on the pair.
+  assert.ok(SEPARATOR_DASH.test("`calc(${w} - 2px)`"), "recorded limit, not a claim of precision");
+
+  // The degree stand-in stays scoped to a rendered unit, off the identifier.
+  assert.ok(DEG_STANDIN.test("`${d.direction}deg`"), "unit right after an interpolation");
+  assert.ok(DEG_STANDIN.test("`rotate(90deg)`"), "unit right after a digit");
+  assert.equal(DEG_STANDIN.test("(deg: number) => deg * 2"), false, "GaugeChart's parameter name");
 });
 
 test("a re-export shim is told apart from a real implementation", () => {
