@@ -68,7 +68,15 @@ returned 200 again. So the prescribed workaround is what triggers the block, and
 an executor that keeps retrying with only a UA loops on 403 for ever. Two
 builders were lost that way before the cause was found. Do not assume the
 direction: probe the three forms (bare, UA-only, full) and record which ones
-answer. When a host refuses, send
+answer — **three repetitions of each**, because one of them answered once and
+failed after, and a single sample would have made it look like the discriminant.
+
+**`Referer` is the header most often missing from a "full" set, and it is often the
+one that decides.** A survey of fourteen brands classed three as unreachable behind
+a CDN; the probe's header set had every field except `Referer`, and with it two of
+the three answer 200. Only one was genuinely hard. Isolate the discriminant **by
+difference** — add one header at a time to the failing form — rather than concluding
+from a set that either works or does not. When a host refuses, send
 the full browser header set: `User-Agent`, `Accept`, `Accept-Language`,
 `Accept-Encoding: gzip, deflate, br` with `--compressed`, `Referer`,
 `Sec-Fetch-Dest`/`-Mode`/`-Site`, `Upgrade-Insecure-Requests`; stylesheets
@@ -185,6 +193,21 @@ exists. Real example: Schneider Electric publishes "Quartz"
 `--qds-font-family-brand` = Nunito).
 
 (b) The custom CSS properties of the brand's official site stylesheet.
+
+**A declared token is not automatically a used one — measure consumption, not
+declaration.** One brand declares its two best-known colours as
+`--ds-color-brand-primary` and `--ds-color-brand-secondary`, and references
+**neither anywhere**: zero `var()` across 2551 declarations. Promoting either to
+`action.primary` would have shipped a colour that interface never paints. The
+operative blue was a different token, with 162 occurrences and 11 `var()`.
+
+This inverts the usual intuition, which is what makes it dangerous: a token named
+`brand-primary` looks like the most authoritative source obtainable — more
+authoritative than a hex found in a rule. It is the opposite when nothing consumes
+it. So for every hex promoted from a named token, **count its `var()` references
+and record the count**. A token with zero consumption cannot carry a Sentropic role
+unless the gap is documented; keep it in the raw palette for provenance, with no
+role, and say why.
 
 (c) A brand charter published as a PDF by the brand.
 
@@ -357,6 +380,15 @@ Green = all three pass. The builder runs the three commands itself
 builder never does is install dependencies: the full installation is the
 conductor's act, done once per lot (section 1).
 
+**A gate failure in a fresh worktree is environmental until proven otherwise, and
+the proof is to replay in full order — not to read the diff.** The order matters:
+`npm ci`, then `build`, then `check`, `test`, `licensing:check`, `pack:smoke`. Run
+out of order and `pack:smoke` fails on an unbuilt package, `packages/themes` fails
+to resolve the tokens package, and the licensing gate fails on a missing
+`node_modules` — three failures that look like regressions and are not. This was
+misread twice by the conductor and once elsewhere in the same day, each time by
+suspecting the code first. Check the environment first; it costs one command.
+
 ## 8. Fidelity levers
 
 1. **`field.style`: `outline` vs `filled-underline`.** Decide from the
@@ -515,8 +547,21 @@ repo — the summary is the handoff message.
 ## 12. Review protocol
 
 Cross-review is an adversarial pass by an agent other than the builder,
-cold: it re-reads the diff without justifying it. Verifiable checklist —
-fail the theme on any miss:
+cold: it re-reads the diff without justifying it.
+
+**Do not redo what the repository guards already do.** `verify-theme-shape`,
+`verify-theme-registration` and `verify-theme-invariants` run under `npm test` and
+mechanically cover the id against the folder name, missing token leaves against the
+base, hexes with no mapping row, unpinned font families, reference geometry claimed
+as the base, the contrast floors, and the private/unlicensed/pinned shape. Run
+`node --test scripts/verify-theme-*.test.mjs` once, report the result, and spend the
+rest of the budget on what no script can judge: whether a hex comes from a brand
+rule or a vendor block, whether a rule is scoped to one component, whether "the
+brand publishes no X" is true, whether a cited selector declares the property it is
+cited for, and whether a promoted token is actually consumed. Those five produced
+almost every blocking finding.
+
+Verifiable checklist — fail the theme on any miss:
 
 - Every hex in `index.test.ts` is found in `index.ts`, and every font family
   present in the compiled output is pinned by the test — not just the display
