@@ -48,8 +48,10 @@ query + video print rule). Boundary into brand rules: line 66
 vendor markup (`.cards .slick-*`, themed `.slick-dots`/`.slick-arrow`,
 `.gform*`/`.gfield*` form theme, Choices overrides 703–716, home-grown
 `.cookie-banner` in brand BEM with brand font and navy). Whole-file counts
-equal brand-region counts for every promoted hex (none occurs in a vendor
-range), so the split moves no figure. `rem` root (Step 0.2): 16px
+equal brand-region counts for every promoted long hex; the short forms
+`#fff` (145 whole-file / 108 brand) and `#000` (62 / 50) also occur in
+vendor ranges (normalize, Choices, Video.js), so the split moves no
+published brand figure. `rem` root (Step 0.2): 16px
 (`body,html{font-size:16px}`, style.css:87) — factor 1, no conversion.
 
 `rgb()/rgba()/hsl()` equivalents (reported separately, never merged into a
@@ -98,11 +100,40 @@ value.
 | `cyan.50` | `.btn-white:hover{color:#009fe3}` (:296) — accent fill only (2.97:1, never a text role) | `#009fe3` |
 | `slate.10` | = `surface.subtle` | `#f5f5f5` |
 | `slate.0` | white | `#ffffff` |
-| `focus.color` | `red` keyword, `a,button:focus-visible{outline:2px solid red}` (:89) — 6 brand declarations, 4.00:1 (line threshold 3:1) | `#ff0000` |
+| `focus.color` | `red` keyword, `a,button:focus-visible{outline:2px solid red}` (:89) — 9 brand declarations (6 `outline` + `border` :505/:643 + `color` :552), 4.00:1 (line threshold 3:1) | `#ff0000` |
 | `buttonSecondary` border/hover | `.btn__border.header-btn` (:158–159) | `#00072b` |
 | `tag.neutralBackground` | `.tag{background-color:#e9e9e9}` (:1293) | `#e9e9e9` |
 | `pagination.activeBackground` | `.page-numbers.current` (:1372) | `#c2c2c2` |
 | `field.underlineColor` | input border (:426 — unused for `outline`, kept for completeness) | `#d9d9d9` |
+| — (raw palette, no role) | `.cookie-banner__body{background:#001d39}` (:470) — 2 declarations | `#001d39` |
+| — (raw palette, no role) | `#03f` expanded — gradient stop (:94…) — 14 declarations | `#0033ff` |
+| — (raw palette, no role) | document shadow (:819) — 1 declaration | `#003b75` |
+| — (raw palette, no role) | `.key-numbers.gradient-green-dark` stop (:722) — 3 declarations | `#00825d` |
+| — (raw palette, no role) | `.key-numbers.gradient-green-dark` stop (:722) — 3 declarations | `#00eaa0` |
+| — (raw palette, no role) | date/share-price text + sub-menu fill (:291…) — 13 declarations | `#0133ff` |
+| — (raw palette, no role) | news-title underline gradient (:1809) — 4 declarations | `#043c74` |
+| — (raw palette, no role) | checked filter pill (:641) — 1 declaration | `#091537` |
+| — (raw palette, no role) | `.key-numbers.gradient-green-dark` stop (:722) — 3 declarations | `#09be80` |
+| — (raw palette, no role) | `#333` expanded — header-lang active (:1898) + invalid `:201` decl (see note) — 2 declarations | `#333333` |
+| — (raw palette, no role) | history highlight (:1985) — 1 declaration | `#64c1c7` |
+| — (raw palette, no role) | `.key-numbers.gradient-red-blue` stop (:719) — 6 declarations | `#9400ab` |
+| — (raw palette, no role) | `.key-numbers.gradient-red-dark` stop (:720) — 3 declarations | `#95023e` |
+| — (raw palette, no role) | floating-menu chevron (:385) — 1 declaration | `#a3a2a2` |
+| — (raw palette, no role) | `.key-numbers.gradient-purple` stop (:723) — 3 declarations | `#ac7cb5` |
+| — (raw palette, no role) | `.key-numbers.gradient-red-dark` stop (:720) — 3 declarations | `#c70236` |
+| — (raw palette, no role) | socialshare (:1390) — 2 declarations | `#cacaca` |
+| — (raw palette, no role) | underline track (:153) — 2 declarations | `#d4d4d4` |
+| — (raw palette, no role) | `.key-numbers.gradient-orange-yellow` stop (:721) — 3 declarations | `#e15727` |
+| — (raw palette, no role) | history wrapper (:564) — 2 declarations | `#ececec` |
+| — (raw palette, no role) | `#eee` expanded — `.bloc.grey` (:250) — 9 declarations | `#eeeeee` |
+| — (raw palette, no role) | floating-menu close (:373) — 6 declarations | `#efefef` |
+| — (raw palette, no role) | `.key-numbers.gradient-red-blue` stop (:719) — 3 declarations | `#fb0000` |
+| — (raw palette, no role) | header-lang pill (:1896) — 1 declaration | `#fbfbfb` |
+| — (raw palette, no role) | floating-menu body (:378) — 1 declaration | `#fcfbfb` |
+| — (raw palette, no role) | `.key-numbers.gradient-red-dark` stop (:720) — 3 declarations | `#fd0d2d` |
+| — (raw palette, no role) | `.key-numbers.gradient-orange-yellow` stop (:721) — 3 declarations | `#ff8b00` |
+| — (raw palette, no role) | `.key-numbers.gradient-orange-yellow` stop (:721) — 3 declarations | `#ffdf85` |
+| — (raw palette, no role) | calendar icon (:761) — 1 declaration | `#ffe2cf` |
 
 Stop-rule chains (§9: keep H/S, −0.05 L per step, first hex reaching 4.5:1
 on white — replay with the one-line HSL command in the handoff report):
@@ -185,14 +216,17 @@ in the same rule (:426) — effective property `border, color`.
   30px `.btn__border`) — `radius.md = 2px` transcribes the input family
   (square 0–3px across inputs/select/tags/validation); the pill CTA is
   unmapped (one Sentropic shape radius feeds both). Cards square (`lg = 0`),
-  tags square, pagination circular (36px, unmapped — same cause).
+  tags square, pagination circular (36px, unmapped — same cause). The
+  8px-bordered `.card.bordered` variant (:262) has no primitive.
 - **Focus**: `strategy = "outline"`, 2px, offset 0, `#ff0000` (`red`
   keyword, least-scoped brand rule :89; 4.00:1 ≥ 3:1 line floor). Inputs
   instead recolour to `#004a93` 2px with `outline:none` (:427); the white
   halo border has no primitive.
 - **Buttons**: uppercase 14px/600 pill CTAs, navy `#00205b` → hover
   `#1a5c9e` (:293–298); secondary = outlined dark-navy pill, transparent →
-  `#00072b` fill on hover (:158–159).
+  `#00072b` fill on hover (:158–159). CTA transition is a
+  `background-color` variant (`transition:background-color .3s,color .3s`,
+  :293/:418).
 - **Tabs**: none published (reference geometry, brand-navy active).
 - **Pagination**: 36px circular boxes, 12px/600, current filled `#c2c2c2`
   (:1371–1372); chevron icons 8×14, disabled opacity .3.
@@ -212,6 +246,9 @@ in the same rule (:426) — effective property `border, color`.
 - **Chrome**: deep navy `#000050` menus/slider, `#0d1630` footer with
   `#c2c2c2` text (10.04:1), signature gradient
   `linear-gradient(90deg,#03f,#000050 50.48%,#101c6f)` (:96).
+- **Stacking**: header `z-index:50` fixed (:195, matches the base); the
+  modal `.popin-wrapper` `z-index:25` (:450) sits under the header and is
+  not transcribed.
 - **Invalid CSS noted**: `.header-menu a{color:#000050 #333}` (:201) declares
   two colours — dropped at parse; both hexes are painted elsewhere
   (`#000050` ×32 more, `#333` at :1898), so no figure depends on it.
