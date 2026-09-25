@@ -35,7 +35,7 @@ function dsPackageDirs() {
     });
 }
 
-test("no design system package depends on the dataviz, graph or diagram layers", () => {
+test("no design system package depends on the dataviz or diagram-model layers", () => {
   const offenders = [];
   for (const dir of dsPackageDirs()) {
     const manifest = JSON.parse(readFileSync(join(packagesDir, dir, "package.json"), "utf8"));
@@ -50,7 +50,7 @@ test("no design system package depends on the dataviz, graph or diagram layers",
   assert.deepEqual(
     offenders,
     [],
-    `design system packages must not depend on the dataviz/graph/diagram layers:\n  ${offenders.join("\n  ")}`,
+    `design system packages must not depend on the dataviz/diagram-model layers:\n  ${offenders.join("\n  ")}`,
   );
 });
 
