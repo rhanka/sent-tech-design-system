@@ -128,7 +128,19 @@ Bootstrap checklist, only needed if a package has never been published:
 4. Configure Trusted Publishing on the created packages.
 5. Delete the `NPM_TOKEN` repository secret and revoke or let the temporary npm token expire.
 
-For normal releases, Trusted Publishing handles `npm publish` through OIDC. The workflow must keep `permissions.id-token = "write"` on the publish job and must not require an npm token secret.
+For normal releases, Trusted Publishing handles `npm publish` through OIDC. The workflow must keep `permissions.id-token = "write"` on the publish job and must not require an npm token secret. A bootstrap step guarded by `if: ${{ env.NPM_TOKEN != '' }}` does not make the token required — with no secret set, the step is skipped and the publish is pure OIDC. `scripts/verify-workflow-invariants.test.mjs` enforces that reading: a token reference in a `*-publish.yml` is accepted only when it is conditioned that way, named in a bootstrap comment, and declared in that guard's `DECLARED_TOKEN_BOOTSTRAPS` with the condition for removing it.
+
+### Names that have never been published
+
+Measured on 2026-09-25 against the registry (`npm view <name> version` for each of the 18 publishable workspaces):
+
+| Package | Repository version | Registry | Path to the first publish |
+|---|---|---|---|
+| `@sentropic/dataviz-angular` | 0.5.0 | E404 | bootstrap in `dataviz-publish.yml` |
+| `@sentropic/design-system-theme-latex` | 0.1.0 | E404 | bootstrap in `latex-publish.yml` |
+| `@sentropic/design-system-theme-quebec` | 0.1.0 | E404 | bootstrap in `quebec-publish.yml` |
+
+For these three, the bootstrap checklist above is the only order that works: the trusted publisher cannot be declared first, because npm has no package page to declare it on. The seven names whose registry version is behind the repository (`design-system-angular`, `dataviz-core`, `dataviz-react`, `dataviz-svelte`, `dataviz-vue`, `graph`, `design-system-skills`) exist on npm and need nothing but their tag, with the trusted publisher declared.
 
 Publish by pushing `main`, then creating and pushing a tag:
 
