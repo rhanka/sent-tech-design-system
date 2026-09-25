@@ -40,6 +40,14 @@ function formatProp(key: string, value: unknown, fw: FrameworkId): string | null
   if (value === undefined || value === null) return null;
   const name = attrName(key, fw);
 
+  // A live DashboardStore is not serializable: reference the `store` variable
+  // the page builds with `createDashboardStore` (shown in the page prose).
+  if (key === "store") {
+    if (fw === "vue") return `:store="store"`;
+    if (fw === "angular") return `[store]="store"`;
+    return `store={store}`;
+  }
+
   if (typeof value === "string") {
     return `${name}=${quote(value)}`;
   }
