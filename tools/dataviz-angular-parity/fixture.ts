@@ -82,6 +82,9 @@ export const wideModel: DataModel = {
     { id: 'service', label: 'Service', type: 'discrete' },
     { id: 'region', label: 'Region', type: 'discrete' },
     { id: 'shape', label: 'Shape', type: 'discrete' },
+    // CalendarHeatmapChart's DS component only accepts YYYY-MM-DD, so the epoch
+    // `ts` dimension cannot feed it: this is the ISO day it reads instead.
+    { id: 'day', label: 'Day', type: 'discrete' },
     { id: 'ts', label: 'Timestamp', type: 'continuous' },
     { id: 'lat', label: 'Latitude', type: 'continuous' },
     { id: 'lon', label: 'Longitude', type: 'continuous' },
@@ -98,9 +101,9 @@ export const wideModel: DataModel = {
 };
 
 export const wideRows: Row[] = [
-  { service: 'checkout', region: 'eu', shape: polygon(2, 48), ts: T0, lat: 48.85, lon: 2.35, dstLat: 51.5, dstLon: -0.12, amount: 10, open: 100, high: 110, low: 95, close: 105 },
-  { service: 'checkout', region: 'us', shape: polygon(-74, 40), ts: T0 + DAY, lat: 40.71, lon: -74.0, dstLat: 34.05, dstLon: -118.24, amount: 5, open: 105, high: 112, low: 101, close: 102 },
-  { service: 'billing', region: 'eu', shape: polygon(13, 52), ts: T0 + 2 * DAY, lat: 52.52, lon: 13.4, dstLat: 41.9, dstLon: 12.5, amount: 7, open: 102, high: 108, low: 99, close: 107 },
+  { service: 'checkout', region: 'eu', shape: polygon(2, 48), day: '2026-01-01', ts: T0, lat: 48.85, lon: 2.35, dstLat: 51.5, dstLon: -0.12, amount: 10, open: 100, high: 110, low: 95, close: 105 },
+  { service: 'checkout', region: 'us', shape: polygon(-74, 40), day: '2026-01-02', ts: T0 + DAY, lat: 40.71, lon: -74.0, dstLat: 34.05, dstLon: -118.24, amount: 5, open: 105, high: 112, low: 101, close: 102 },
+  { service: 'billing', region: 'eu', shape: polygon(13, 52), day: '2026-01-03', ts: T0 + 2 * DAY, lat: 52.52, lon: 13.4, dstLat: 41.9, dstLon: 12.5, amount: 7, open: 102, high: 108, low: 99, close: 107 },
 ];
 
 export const hierarchy = ['region', 'service'];
@@ -145,3 +148,28 @@ export const dsForceGraph = {
     { source: 'eu', target: 'billing' },
   ],
 };
+
+/**
+ * Bare-DS control input for the lot 5 Sparkline residue: exactly the numbers
+ * `buildSimpleCategoricalSeries` derives from wideRows for dimension=region,
+ * measure=amount (eu = 10 + 7, us = 5).
+ */
+export const dsSparklineData = [17, 5];
+
+/**
+ * Bare-DS control inputs for the other two lot 5 residues: exactly what the
+ * adapters hand their DS component for dimension=region, measure=amount over
+ * wideRows (eu = 10 + 7, us = 5). `dsDivergingBarDomain` is the core model's own
+ * domain, which the adapter passes when the caller sets none.
+ */
+export const dsStepLinePoints = [
+  { x: 'eu', y: 17 },
+  { x: 'us', y: 5 },
+];
+
+export const dsDivergingBarData = [
+  { label: 'eu', value: 17, tone: 'positive' as const },
+  { label: 'us', value: 5, tone: 'positive' as const },
+];
+
+export const dsDivergingBarDomain: [number, number] = [0, 17];
