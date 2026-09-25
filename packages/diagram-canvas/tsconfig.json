@@ -1,0 +1,22 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    // Same compiler-enforced DOM-free rule as `@sentropic/diagram-core`: no
+    // "DOM" in lib and no ambient types, so `document`, `window`, `navigator`
+    // and every node builtin are unresolvable identifiers in `src`. A module
+    // that reaches for one fails `npm run build` before any test runs. This is
+    // load-bearing here: a scene that quietly measured a DOM node would make
+    // hit testing untestable without a browser, which is the whole point of
+    // keeping it out.
+    "lib": ["ES2022"],
+    "types": [],
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["src"],
+  "exclude": ["dist", "node_modules"]
+}
