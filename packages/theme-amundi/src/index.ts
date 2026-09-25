@@ -151,8 +151,9 @@ const foundation = {
     16: "4rem" // 64px
   },
   // Measured radius steps: squared back button / meta-nav (0), modal + chips
-  // (.25rem), inputs + cards (.5rem), `--awf-radius-image` (1rem: images,
-  // dialog, autocomplete), pill buttons + search + pagers (9999px).
+  // (.25rem), inputs + cards (.5rem — pap-card .75rem exception),
+  // `--awf-radius-image` (1rem: images, dialog, autocomplete), pill buttons
+  // + search + pagers (9999px).
   radius: {
     none: "0",
     sm: "0.25rem", // 4px — modal body, logout button, quote highlight
@@ -167,23 +168,34 @@ const foundation = {
     medium: "0 10px 15px -3px rgb(0 0 0 / .1), 0 4px 6px -4px rgb(0 0 0 / .1)", // toast + dialog shadow — vendor default retained (Tailwind shadow-lg; brand bytes)
     floating: "0 20px 25px -5px rgb(0 0 0 / .1), 0 8px 10px -6px rgb(0 0 0 / .1)" // nav dropdown shadow — vendor default retained (Tailwind shadow-xl; brand bytes)
   },
-  // Measured durations: .15s (6 rules: arrows, toggle, tabled nav), .3s
-  // (4 rules incl. the modal), .5s max (single alto-cubes use). The easing is
-  // the Tailwind default, declared literally 14 times by brand rules.
+  // Measured durations: .15s (6 rules: carousel arrows ×2, accordion
+  // arrow, footer title, tabled nav, tabs nav), .3s (4 rules incl. the
+  // modal), .5s max (single alto-cubes use); scoped .1s (cubes echo), .2s
+  // (toggle-block) and .4s (carousel track) uses. The easing is the
+  // Tailwind default, declared literally 14 times by brand rules.
   motion: {
     fast: "150ms",
     normal: "300ms",
     slow: "500ms",
     easing: "cubic-bezier(.4,0,.2,1)" // vendor default retained (Tailwind ease-in-out; brand bytes)
   },
-  // Only the toast level is published (`[data-drupal-messages]` at z 100);
-  // the rest is the Sentropic base.
+  // Measured stacking (all brand region): fixed header z 10
+  // (`.awf-factory-page__header`), toast z 100
+  // (`[data-drupal-messages]`), fixed modal z 100000
+  // (`.awf-factory-modal`) — strictly above toast. Also published, with no
+  // Sentropic role: dropdowns/metanav/toggle-labels/pap-card 10,
+  // tabs/tabled/toggle-input 20, cubes 50/30/20/10, timeline/hero 9,
+  // sticky anchors 5, navbar 2, misc 1/0, autocomplete 9999. The scrim is
+  // the modal's own background (same rule), so no standalone overlay layer
+  // is published; `overlay` and `chat` are derived +-1 around the measured
+  // modal (Carrefour precedent), keeping header < toast < overlay < modal
+  // < chat (see MAPPING.md).
   z: {
-    header: 50,
-    toast: 100,
-    overlay: 80,
-    modal: 100,
-    chat: 110
+    header: 10, // `.awf-factory-page__header`
+    toast: 100, // `[data-drupal-messages]`
+    overlay: 99999, // à confirmer — derived one step under the measured modal (no standalone overlay layer published)
+    modal: 100000, // `.awf-factory-modal`
+    chat: 100001 // à confirmer — derived one step over the measured modal (no chat widget published)
   },
   // --- Anatomy primitives (Amundi) ----------------------------------------
   borderWidth: {
@@ -193,9 +205,10 @@ const foundation = {
   },
   borderStyle: { solid: "solid" }, // disclaimer divider, DS swatches
   // Control density. The brand publishes no sm/lg control system: md is the
-  // measured input geometry, lg the measured button geometry, sm the base.
+  // measured input geometry, lg the measured button geometry, sm the base
+  // except `fontSize` (see below).
   density: {
-    sm: { controlHeight: "2rem", paddingBlock: "0", paddingInline: "0.75rem", gap: "0.375rem", minWidth: "2rem", fontSize: "0.875rem" }, // à confirmer (Sentropic base — the brand publishes no small controls; `--small` only narrows one input)
+    sm: { controlHeight: "2rem", paddingBlock: "0", paddingInline: "0.75rem", gap: "0.375rem", minWidth: "2rem", fontSize: "0.875rem" }, // à confirmer (Sentropic base — the brand publishes no small controls; `--small` only narrows one input — except `fontSize`, aligned with the reference theme package's geometry)
     md: { controlHeight: "2.5rem", paddingBlock: "0.5rem", paddingInline: "1rem", gap: "0.5rem", minWidth: "2.5rem", fontSize: "1rem" }, // inputs: 2.5rem box, .5rem/1rem padding, 16px text; checkbox gap .5rem (minWidth: à confirmer, base — no generic min-width published)
     lg: { controlHeight: "3.125rem", paddingBlock: "0.25rem", paddingInline: "1.5rem", gap: "0.5rem", minWidth: "3rem", fontSize: "1rem" } // buttons: `--awf-btn-min-height` 3.125rem, inner 1.5rem/.25rem, 16px text (gap/minWidth: à confirmer, base)
   },
@@ -205,8 +218,10 @@ const foundation = {
     control: { family: "'Noto Sans', system-ui, sans-serif", size: "1rem", weight: "900", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
     field: { family: "'Noto Sans', system-ui, sans-serif", size: "1rem", weight: "400", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
     label: { family: "'Noto Sans', system-ui, sans-serif", size: "1rem", weight: "400", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
-    // Brand links are 16/900 cyan, explicitly not underlined at rest (CK body
-    // + EDM file link); no link hover is published.
+    // Brand links are 16/900 cyan, not underlined at rest (explicit none
+    // on the 4 EDM file links + the notification link; absent on
+    // CK/accordion/disclaimer links; nine scoped contexts underline — see
+    // MAPPING.md); no link hover is published.
     link: {
       family: "'Noto Sans', system-ui, sans-serif", size: "1rem", weight: "900", lineHeight: "1.5", letterSpacing: "0", textTransform: "none",
       textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto",
@@ -255,7 +270,7 @@ const foundation = {
   buttonSecondary: {
     background: "transparent",
     border: amundiColor.brand.prussianBlue, // #001c4b variant-1 in light mode
-    hoverBackground: amundiColor.grey.snow // unpublished hover — snow is the coherent neutral stand-in
+    hoverBackground: amundiColor.grey.snow // à confirmer (unpublished hover — snow is the coherent neutral stand-in)
   },
   // Tabs: 16/900 text tabs with a bottom indicator bar (alto pattern, light
   // translation: prussian text; the component draws the bar in the accent).
