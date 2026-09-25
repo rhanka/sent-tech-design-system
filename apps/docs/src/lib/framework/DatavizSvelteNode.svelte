@@ -16,7 +16,15 @@
     WebFrame,
     ScoreCard,
     DataImage,
-    DashboardGrid
+    DashboardGrid,
+    AreaChart,
+    DonutChart,
+    FunnelChart,
+    GanttChart,
+    GaugeChart,
+    HeatmapChart,
+    SankeyChart,
+    TreemapChart
   } from "@sentropic/dataviz-svelte";
   import Self from "./DatavizSvelteNode.svelte";
   import SvelteNode from "./SvelteNode.svelte";
@@ -24,12 +32,23 @@
   import type { NodeSpec } from "./examples";
   import { isComponentNode, isElementNode } from "./examples";
 
-  const COMPONENTS: Record<string, Component<Record<string, unknown>>> = {
-    UrlSync: UrlSync as unknown as Component<Record<string, unknown>>,
-    WebFrame: WebFrame as unknown as Component<Record<string, unknown>>,
-    ScoreCard: ScoreCard as unknown as Component<Record<string, unknown>>,
-    DataImage: DataImage as unknown as Component<Record<string, unknown>>,
-    DashboardGrid: DashboardGrid as unknown as Component<Record<string, unknown>>
+  type AnyComponent = Component<Record<string, unknown>>;
+  const dv = (comp: unknown): AnyComponent => comp as AnyComponent;
+
+  const COMPONENTS: Record<string, AnyComponent> = {
+    UrlSync: dv(UrlSync),
+    WebFrame: dv(WebFrame),
+    ScoreCard: dv(ScoreCard),
+    DataImage: dv(DataImage),
+    DashboardGrid: dv(DashboardGrid),
+    AreaChart: dv(AreaChart),
+    DonutChart: dv(DonutChart),
+    FunnelChart: dv(FunnelChart),
+    GanttChart: dv(GanttChart),
+    GaugeChart: dv(GaugeChart),
+    HeatmapChart: dv(HeatmapChart),
+    SankeyChart: dv(SankeyChart),
+    TreemapChart: dv(TreemapChart)
   };
 
   let { node }: { node: NodeSpec } = $props();
