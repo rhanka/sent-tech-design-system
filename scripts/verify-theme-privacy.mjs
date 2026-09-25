@@ -67,11 +67,26 @@ if (!ownProfile) {
   );
 }
 
+// A throwaway profile must go on EVERY path. Cleaning it only after a successful run
+// leaks one directory per crash — measured: three orphans under $HOME after three
+// failures. process.on("exit") covers the thrown, the rejected and the returned alike.
+if (ownProfile) {
+  process.on("exit", () => {
+    try { rmSync(profile, { recursive: true, force: true }); } catch {}
+  });
+}
+
 const page = await browser.newPage();
 const pageErrors = [];
 page.on("pageerror", (e) => pageErrors.push(String(e)));
 
 await page.goto(url, { waitUntil: "networkidle" });
+
+// An unstable read is neither a pass nor a failure: it names the instrument.
+process.on("unhandledRejection", (e) => {
+  console.log(`PRIVACY_CHECK_INVALID: ${e instanceof Error ? e.message : e}`);
+  process.exit(2);
+});
 
 const openPicker = async () => {
   await page.click(".docs-theme-trigger");
@@ -81,10 +96,36 @@ const closePicker = async () => {
   await page.keyboard.press("Escape");
   await page.waitForSelector('[role="dialog"]', { state: "detached", timeout: 5000 });
 };
-const pickerLabels = () =>
+const rawLabels = () =>
   page.$$eval('[role="dialog"] .st-menu__itemLabel', (nodes) =>
     nodes.map((n) => n.textContent.trim())
   );
+
+// The dialog exists before its list is finished, so waitForSelector is not enough:
+// reading straight after it returns a PARTIAL list. Measured once — the same code on
+// the same site read 131 labels and then 139, so the check had no verdict, it had a
+// coin. A short read of the FIRST pass is the dangerous direction, because a theme
+// that has not rendered yet looks hidden and a leak would pass.
+//
+// So read only a STABLE list: two consecutive reads agreeing on a non-zero count.
+// If it never stabilises the run has no verdict and says so, rather than guessing.
+const STABLE_TRIES = 40;
+const STABLE_INTERVAL_MS = 100;
+async function pickerLabels() {
+  let previous = null;
+  for (let i = 0; i < STABLE_TRIES; i++) {
+    const current = await rawLabels();
+    if (previous !== null && current.length === previous.length && current.length > 0) {
+      return current;
+    }
+    previous = current;
+    await page.waitForTimeout(STABLE_INTERVAL_MS);
+  }
+  throw new Error(
+    `the picker list never stabilised over ${STABLE_TRIES * STABLE_INTERVAL_MS}ms; ` +
+      "no reading of it is evidence about privacy"
+  );
+}
 
 // Pass 1 — no shortcut. The named themes must be absent.
 await openPicker();
@@ -122,7 +163,6 @@ const report = {
 console.log(JSON.stringify(report, null, 2));
 
 await browser.close();
-if (ownProfile) rmSync(profile, { recursive: true, force: true });
 
 // An inverted pair means the browser started REVEALED, so pass 1 measured the
 // revealed picker and pass 2 the public one. The run says nothing about privacy
