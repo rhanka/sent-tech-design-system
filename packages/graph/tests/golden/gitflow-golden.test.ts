@@ -511,6 +511,20 @@ afterAll(async () => {
   if (oracle) await oracle.close();
 });
 
+// The CDP blocks below announce that they "skip without Chrome". They used to
+// guard themselves with a bare `return`, and a vitest test body that returns
+// early is reported PASSED, not skipped (measured on vitest 4.1.11), so those
+// blocks reported green on a Chrome-less runner having asserted nothing.
+//
+// `ctx.skip()` is the RUNTIME skip and the only correct form here: `it.skipIf` /
+// `describe.skipIf` evaluate their condition at COLLECTION time, before the
+// `beforeAll` above has booted the oracle, so they would skip these blocks even
+// where Chrome IS present (measured). No assertion in this file changed.
+const NO_CHROME = "Chrome/CDP oracle did not boot — pixel capture NOT run";
+const NO_WEBGL = "no WebGL2 context in this Chrome — GL capture NOT run";
+// Same rule for the napi smoke path: absent addon must read as "not run".
+const NO_NAPI = "@napi-rs/canvas unavailable — smoke capture NOT run";
+
 describe("git-flow demo — layout sanity (pure, always runs)", () => {
   const demo = buildGitFlowDemo();
 
@@ -592,8 +606,8 @@ describe("git-flow demo — layout sanity (pure, always runs)", () => {
 });
 
 describe("git-flow demo — golden capture (Chrome/CDP; skips without Chrome)", () => {
-  it("re-captures byte-identical (A/B determinism floor)", async () => {
-    if (!chromeUp || !oracle) return;
+  it("re-captures byte-identical (A/B determinism floor)", async (ctx) => {
+    if (!chromeUp || !oracle) ctx.skip(NO_CHROME);
     const { fixture } = buildGitFlowDemo();
     const a = await oracle.capture(fixture, DEMO_OPTS);
     const b = await oracle.capture(fixture, DEMO_OPTS);
@@ -603,8 +617,8 @@ describe("git-flow demo — golden capture (Chrome/CDP; skips without Chrome)", 
     expect(d.failingPixels).toBe(0);
   }, 60_000);
 
-  it("PORTS: lane ink between commits, NO bottom exit at a fork, horizontal left-port arrival", async () => {
-    if (!chromeUp || !oracle) return;
+  it("PORTS: lane ink between commits, NO bottom exit at a fork, horizontal left-port arrival", async (ctx) => {
+    if (!chromeUp || !oracle) ctx.skip(NO_CHROME);
     const demo = buildGitFlowDemo();
     const cap = await oracle.capture(demo.fixture, DEMO_OPTS);
 
@@ -656,8 +670,8 @@ describe("git-flow demo — golden capture (Chrome/CDP; skips without Chrome)", 
     console.log(`[gitflow-golden] canvas2d demo screenshot: ${png}`);
   }, 60_000);
 
-  it("ARROW ASYMMETRY: an arrowed flow edge deposits measurably MORE ink at the left port than a bare one", async () => {
-    if (!chromeUp || !oracle) return;
+  it("ARROW ASYMMETRY: an arrowed flow edge deposits measurably MORE ink at the left port than a bare one", async (ctx) => {
+    if (!chromeUp || !oracle) ctx.skip(NO_CHROME);
     // Same two nodes + same S geometry, width 6 (arrow length 15): the ONLY
     // difference is edge_style. The rect just left of the target port must
     // hold clearly more ink when the arrowhead is present. This is the
@@ -690,13 +704,13 @@ describe("git-flow demo — golden capture (Chrome/CDP; skips without Chrome)", 
     expect(inkArrowed, `arrowed=${inkArrowed} bare=${inkBare}`).toBeGreaterThan(inkBare + 25);
   }, 60_000);
 
-  it("WebGL2 instanced path draws the same demo (skips without a GL context)", async () => {
-    if (!chromeUp || !oracle) return;
+  it("WebGL2 instanced path draws the same demo (skips without a GL context)", async (ctx) => {
+    if (!chromeUp || !oracle) ctx.skip(NO_CHROME);
     const hasGL = await oracle.hasWebGL();
     if (!hasGL) {
       // eslint-disable-next-line no-console
       console.warn("[gitflow-golden] no WebGL2 context — GL capture skipped (explicit)");
-      return;
+      ctx.skip(NO_WEBGL);
     }
     const demo = buildGitFlowDemo();
     const cap = await oracle.capture(demo.fixture, {
@@ -844,8 +858,8 @@ describe("git-flow labels — dense golden captures (Chrome/CDP; skips without C
     return ink;
   }
 
-  it("captures the dense fixture at the 3 tier cameras (artifacts) — deterministic A/B", async () => {
-    if (!chromeUp || !oracle) return;
+  it("captures the dense fixture at the 3 tier cameras (artifacts) — deterministic A/B", async (ctx) => {
+    if (!chromeUp || !oracle) ctx.skip(NO_CHROME);
     for (const [tag, zoom, center] of TIER_CAMERAS) {
       const demo = buildDenseGitFlowDemo(denseCamera(zoom, center));
       const opts = {
@@ -865,8 +879,8 @@ describe("git-flow labels — dense golden captures (Chrome/CDP; skips without C
     }
   }, 120_000);
 
-  it("AC4 probe: the selected demoted branch actually DRAWS its full-name pill", async () => {
-    if (!chromeUp || !oracle) return;
+  it("AC4 probe: the selected demoted branch actually DRAWS its full-name pill", async (ctx) => {
+    if (!chromeUp || !oracle) ctx.skip(NO_CHROME);
     const bare = buildDenseGitFlowDemo(denseCamera(0.6));
     // Pick the agent label whose placed pill would sit most centrally
     // on-screen (deterministic — computed from the layout, no randomness).
@@ -903,8 +917,8 @@ describe("git-flow labels — dense golden captures (Chrome/CDP; skips without C
 });
 
 describe("git-flow demo — napi smoke screenshot (always where napi is present)", () => {
-  it("renders the demo via the napi Canvas2D path and writes the PNG artifact", async () => {
-    if (!napiAvailable()) return;
+  it("renders the demo via the napi Canvas2D path and writes the PNG artifact", async (ctx) => {
+    if (!napiAvailable()) ctx.skip(NO_NAPI);
     const { fixture } = buildGitFlowDemo();
     const cap = await smokeCapture(fixture, DEMO_OPTS);
     expect(cap.width).toBe(900);
