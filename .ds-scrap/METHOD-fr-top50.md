@@ -1259,6 +1259,31 @@ failure, not a neutral result.
 - No shared file was touched (`git status` shows only
   `packages/theme-<id>/`).
 
+### Clause yield ledger
+
+A conductor clause that costs a builder reading time has to be shown to earn
+it. This ledger records what each of the five brief questions produced,
+measured on the first lot-4 delivery (theme `ipsen`, 2026-09-25). The cost
+recorded is the cost the builder actually met — 19 lines of brief — not the
+length of this document.
+
+| Question | Bit | What it produced |
+|---|---|---|
+| 1. Which property, and which instrument measures it? | no | Five instruments named. No consequence on the artefact is attributable to it. |
+| 2. Can the instrument redden? | yes | A planted `#bada55` detected twice; excluding vendor rules moved two counts (`#eee` 4→3, `#ccc` 3→1). |
+| 3. An aggregate where the question is a term, a set where it is a location? | yes | Three token attributions corrected: `#c02b0a` ×16 traced to Gravity Forms, `#00ff1a` and `#ff1a1a` kept out of system roles. |
+| 4. Is the threshold satisfiable by a correct artefact? | yes | The calibration pair reproduced before any use; `text.muted` at 3.0041 recorded as a numbered trade-off instead of passing in silence. |
+| 5. Are the two instruments independent on the hypothesis tested? | yes | Two implementations sharing one formula refused as two instruments; the external calibration named as the only independent leg; a corroboration graded weak and said to be weak. |
+
+Question 1 is **on probation**: kept for one more lot, removed if it does not
+bite there. One builder is a point, not an interval, so a single silent lot is
+not evidence that a clause is idle — and a single loud one is not evidence that
+it is load-bearing. The rule is written here instead of remembered so that the
+next lot judges question 1 on two measurements.
+
+None of this ledger belongs in a builder's brief. A builder told that a
+question is on probation answers the probation instead of the question.
+
 ## 13. Target list
 
 CAC 40 composition valid since Monday 2026-09-21 (annual review announced
