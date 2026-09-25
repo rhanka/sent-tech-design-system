@@ -523,8 +523,8 @@ const cases: Case[] = [
     component: TimelineChart,
     ds: "TimelineChart",
     template: `<st-dataviz-timeline-chart [store]="store" viewId="v" label_field="region" position="ts" label="L" class="probe"></st-dataviz-timeline-chart>`,
-    items: ["eu", "us", "eu"],
-    after: ["eu"],
+    items: ["1767225600000: eu", "1767312000000: us", "1767398400000: eu"],
+    after: ["1767398400000: eu"],
   },
   {
     family: "time and state charts",
@@ -674,8 +674,8 @@ const cases: Case[] = [
     component: VectorFieldChart,
     ds: "VectorFieldChart",
     template: `<st-dataviz-vector-field-chart [store]="store" viewId="v" x="amount" y="close" length="low" direction="high" label="L" class="probe"></st-dataviz-vector-field-chart>`,
-    items: ["x 10, y 105 - |v| 95 @ 110deg", "x 5, y 102 - |v| 101 @ 112deg", "x 7, y 107 - |v| 99 @ 108deg"],
-    after: ["x 7, y 107 - |v| 99 @ 108deg"],
+    items: ["x 10, y 105 · |v| 95 @ 110°", "x 5, y 102 · |v| 101 @ 112°", "x 7, y 107 · |v| 99 @ 108°"],
+    after: ["x 7, y 107 · |v| 99 @ 108°"],
     mark: [".st-vectorFieldChart__head", 6, 2],
   },
   {
@@ -684,8 +684,8 @@ const cases: Case[] = [
     component: WindBarbChart,
     ds: "WindBarbChart",
     template: `<st-dataviz-wind-barb-chart [store]="store" viewId="v" at="ts" speed="amount" direction="close" label="L" class="probe"></st-dataviz-wind-barb-chart>`,
-    items: ["1767225600k - 10 kt @ 105deg", "1767312000k - 5 kt @ 102deg", "1767398400k - 7 kt @ 107deg"],
-    after: ["1767398400k - 7 kt @ 107deg"],
+    items: ["1767225600k · 10 kt @ 105°", "1767312000k · 5 kt @ 102°", "1767398400k · 7 kt @ 107°"],
+    after: ["1767398400k · 7 kt @ 107°"],
   },
   {
     family: "grid and glyph charts",

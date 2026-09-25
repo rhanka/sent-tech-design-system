@@ -165,14 +165,14 @@ export class WindBarbChart {
   }
 
   get dataValueItems(): string[] {
-    return this.validData.map((datum) => `${formatTick(datum.at)} - ${formatTick(datum.speed)} kt @ ${formatTick(datum.direction)}deg`);
+    return this.validData.map((datum) => `${formatTick(datum.at)} · ${formatTick(datum.speed)} kt @ ${formatTick(datum.direction)}°`);
   }
 
   get hoveredBarb(): WindBarb | null { return this.hoveredKey === null ? null : this.barbs.find((barb) => barb.key === this.hoveredKey) ?? null; }
   get tooltipLeft(): string { const barb = this.hoveredBarb; return barb ? `${(barb.cx / this.resolvedWidth) * 100}%` : "0"; }
   get tooltipTop(): string { const barb = this.hoveredBarb; return barb ? `${(barb.cy / this.resolvedHeight) * 100}%` : "0"; }
   get tooltipLabel(): string { const barb = this.hoveredBarb; return barb ? formatTick(barb.datum.at) : ""; }
-  get tooltipValue(): string { const barb = this.hoveredBarb; return barb ? `${formatTick(barb.datum.speed)} kt @ ${formatTick(barb.datum.direction)}deg` : ""; }
+  get tooltipValue(): string { const barb = this.hoveredBarb; return barb ? `${formatTick(barb.datum.speed)} kt @ ${formatTick(barb.datum.direction)}°` : ""; }
 
   handlePointerMove(event: PointerEvent): void { const target = event.target; this.hoveredKey = target instanceof Element ? target.getAttribute("data-chart-key") : null; }
   handleLeave(): void { this.hoveredKey = null; }
