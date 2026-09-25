@@ -58,6 +58,37 @@ function buildJsChunks() {
   return out;
 }
 
+// --- The third outcome: "I cannot measure" ----------------------------------
+//
+// Three tests in this file read a BUILT docs site (apps/docs/build). The
+// unsharded `licensing` job runs this file through scripts/run-script-guards.mjs
+// after a bare `npm ci`, and builds no site; the sharded `verify` jobs build
+// package dists (ensure-theme-dists.mjs), never the site either. With the
+// precondition false, those tests reported `not ok`, which reads as "the built
+// site does not carry the dataviz code" when the truth is "there is no built
+// site here" — the instrument's own gap charged to the subject, turning a
+// correct branch red.
+//
+// So the absent build gets its own outcome: NOT RUN, naming the instrument.
+// Mechanism copied from packages/graph/tests/golden (commit f3901806): a
+// RUNTIME skip, probed when the test runs. Two node:test specifics:
+//   - t.skip() marks the report but does NOT abort the body (unlike vitest's
+//     ctx.skip(), which throws), so every guard below returns immediately after.
+//   - the collection-time form (node:test's `{ skip }` option, vitest's
+//     it.skipIf) is wrong here for the same reason it was wrong in the goldens:
+//     the condition must be probed at run time, not when the file is loaded.
+// No assertion below was weakened: with the site built they all still run, and
+// a neutralized assertion still fails rather than skipping.
+const NO_BUILD =
+  `docs site NOT built at apps/docs/build — built-site assertions NOT run ` +
+  `in this job (build it with: npm run docs:build)`;
+
+function builtSiteMissing() {
+  if (!existsSync(BUILD)) return NO_BUILD;
+  if (!existsSync(join(BUILD, "_app", "immutable"))) return NO_BUILD;
+  return null;
+}
+
 test("catalog carries the six lot-1 entries, category data, status documented", () => {
   const catalog = readFileSync(join(DOCS, "src/lib/components-catalog.ts"), "utf8");
   assert.equal(catalog.match(/name: "ScoreCard \(dataviz\)"/g)?.length ?? 0, 1);
@@ -117,7 +148,12 @@ test("parity ledger counts are exact and recomputed", () => {
   assert.equal(ledger.match(/\| documenté \(lot 1\) \|/g)?.length ?? 0, 6);
 });
 
-test("prerender ships coverage, API, and demo code on all six pages", () => {
+test("prerender ships coverage, API, and demo code on all six pages", (t) => {
+  const cannotMeasure = builtSiteMissing();
+  if (cannotMeasure !== null) {
+    t.skip(cannotMeasure);
+    return;
+  }
   for (const slug of LOT_SLUGS) {
     const html = builtPage(slug);
     assert.ok(html.includes("tex__render"), `${slug}: demo stage missing`);
@@ -134,7 +170,12 @@ test("prerender ships coverage, API, and demo code on all six pages", () => {
   assert.ok(scoreCard.includes("KpiCard"), "score-card: KpiCard relationship note missing");
 });
 
-test("dataviz renderer ships in the built client JS", () => {
+test("dataviz renderer ships in the built client JS", (t) => {
+  const cannotMeasure = builtSiteMissing();
+  if (cannotMeasure !== null) {
+    t.skip(cannotMeasure);
+    return;
+  }
   const chunks = buildJsChunks();
   const hits = chunks.filter((file) => readFileSync(file, "utf8").includes("Svelte adapter missing"));
   assert.ok(hits.length >= 1, "expected the lazy DatavizSvelteNode block in at least one chunk");
@@ -282,6 +323,14 @@ test("store section demos pass channel ids, never literal numbers", () => {
 });
 
 test("all four tabs render on the built site (Chromium)", async (t) => {
+  // Two independent preconditions, each reported as NOT RUN rather than as a
+  // defect of the pages: the built site (checked first, before any server or
+  // browser is started) and a runnable browser (checked below).
+  const cannotMeasure = builtSiteMissing();
+  if (cannotMeasure !== null) {
+    t.skip(cannotMeasure);
+    return;
+  }
   const docsRequire = createRequire(join(DOCS, "package.json"));
   const { chromium } = docsRequire("playwright-core");
   const server = serveBuild();
