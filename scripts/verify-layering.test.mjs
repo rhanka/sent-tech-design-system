@@ -18,6 +18,15 @@ import { join } from "node:path";
 const FORBIDDEN = [/^@sentropic\/dataviz(-|$)/, /^@sentropic\/diagram-core$/, /^@sentropic\/diagram-codecs$/];
 const DEPENDENCY_FIELDS = ["dependencies", "devDependencies", "peerDependencies", "optionalDependencies"];
 
+// Cardinality floor for the source-import scan below. Measured on the current tree
+// (2026-09-25): dsPackageDirs() walks 147 package directories and sourceFiles()
+// finds 1597 matching source files in total (1253 of those across the four
+// components-{react,vue,svelte,angular} packages alone). 500 is well below that
+// measured count, leaving headroom for legitimate tree changes, while still being
+// far above what any silent vacuity (a missing directory swallowed, or an
+// extension filter that stops matching anything) could produce.
+const MIN_SOURCE_FILES_EXAMINED = 500;
+
 const packagesDir = new URL("../packages/", import.meta.url).pathname;
 
 function dsPackageDirs() {
@@ -64,9 +73,12 @@ test("the guard actually sees the design system packages", () => {
 test("no design system source file imports the dataviz or diagram-model layers", () => {
   const offenders = [];
   const importPattern = /(?:from|import)\s*\(?\s*["'](@sentropic\/[^"']+)["']/g;
+  let examined = 0;
   for (const dir of dsPackageDirs()) {
     const root = join(packagesDir, dir, "src");
-    for (const file of sourceFiles(root)) {
+    const files = sourceFiles(root);
+    examined += files.length;
+    for (const file of files) {
       const text = readFileSync(file, "utf8");
       for (const match of text.matchAll(importPattern)) {
         const specifier = match[1];
@@ -76,6 +88,12 @@ test("no design system source file imports the dataviz or diagram-model layers",
       }
     }
   }
+  // Floor: catches a filter that silently matches nothing (directory exists, but no
+  // file passes the extension test), which a missing-directory guard alone cannot see.
+  assert.ok(
+    examined >= MIN_SOURCE_FILES_EXAMINED,
+    `expected at least ${MIN_SOURCE_FILES_EXAMINED} design system source files to be examined, but only saw ${examined} — the guard may be scanning an empty or unreachable tree`,
+  );
   assert.deepEqual(
     offenders,
     [],
@@ -87,8 +105,11 @@ function sourceFiles(dir) {
   let entries;
   try {
     entries = readdirSync(dir, { withFileTypes: true });
-  } catch {
-    return [];
+  } catch (error) {
+    // A missing/unreadable source directory means the guard's assumption about the
+    // tree is wrong: fail loudly and name the path, instead of silently examining
+    // nothing and letting the caller's assertions pass vacuously.
+    throw new Error(`expected a readable source directory at ${dir}: ${error.message}`);
   }
   const files = [];
   for (const entry of entries) {
