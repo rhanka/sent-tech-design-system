@@ -190,6 +190,21 @@ rules on bare element selectors (`html`, `body`, `h1`, `abbr[title]`, `pre`,
 namespace, usually near the top of the sheet. Report such a region by its line span
 and by what its selectors are, not by the name you could not find.
 
+**And a value equal to a vendor's default is checked against that vendor's stock before
+it is attributed to the brand.** Step 0.5 asks *where do I count*; this asks *to whom do
+I attribute*, and the two close the boundary between them. Measured on one brand: the
+ledger credited it with re-tinting the Bootstrap radius scale, and the stock 5.3.8 package
+fetched separately declares `--bs-border-radius:0.375rem`, `-sm:0.25rem`, `-lg:0.5rem`,
+`-xl:1rem` against the brand's `0.375rem`, `3px`, `6px`, `8px`. The brand re-tints three
+steps of four — and the step the package had transcribed was **the one it left alone**.
+The delivered value was right; the attribution was not. When the value is unchanged the
+ledger says **"vendor default retained"**, never "brand decision".
+
+This is the geometry guard's rule with a different upstream: one cannot tell a copy from a
+coincidence, so one declares which it is. And note what it does not say — the paint test
+proves **consumption**, not **choice**. A vendor default painted by the brand is genuinely
+painted; that still does not make it a decision of the brand.
+
 A hex that appears **only** in vendor blocks is not a brand colour, however
 frequent it is, and giving it a brand role is a provenance defect — the most
 serious one possible here, because it dresses a consent-banner grey as a
@@ -498,6 +513,16 @@ of them were the conductor's own. A sha quoted in a message is already stale by 
 time the worktree is free. Re-fetch and take `origin/main` at the moment of the
 rebase, and say which sha you actually used.
 
+**Replay the gates after a rebase, unless you can name, gate by gate, why the incoming
+change is invisible to that gate — and replay the cheapest one anyway, as a control.**
+The enumeration is made against the tip **of that moment** and quoted with its sha, because
+an enumeration is itself perishable: one made twenty minutes earlier concluded that no gate
+input had moved, and by the time it was written a merge had touched `package-lock.json`,
+`smoke-pack.mjs`, `verify-layering.test.mjs` and a components package — six inputs, no
+exemption possible. A derogation resting on a dated enumeration is more dangerous than a
+pointless replay, because it looks like a reasoning. The control is the gate whose inputs
+touch the changed directory, not the fastest gate in the abstract.
+
 The sharper half of the same rule: **two pull requests merged back to back means the
 first never ran against the second.** That is how a red gate appeared on a lot branch
 whose own code was correct — one merged change interacted with another that had never
@@ -589,6 +614,34 @@ in what the tool failed to do. A `sed` and an API call are the same operation in
 respect. So read the object back after every anchored edit, and prefer an anchor that
 ends on a line boundary over one that ends mid-sentence, since a mid-sentence anchor
 puts the burden of repeating context on the replacement.
+
+**And read back the whole region the write could reach, not the text you meant to put
+there.** A read-back framed on the intention cannot see an unintended effect. Measured:
+`String.prototype.replace` interprets `$` in the **replacement** (`$$`, `$&`, `$1`,
+backtick-`$`), so a replacement containing `page.$$eval` was written as `page.$eval`.
+**Four real checks passed and the file was still broken** — the anchor matched exactly
+once, the write succeeded, `node --check` parsed it because `$eval` is valid syntax, and
+the added lines read back intact, because the corruption lived in a line the read-back did
+not cover. Only execution caught it. The complete remedy is a replacement **function**
+(`t.replace(from, () => to)`), which disables the substitution entirely rather than
+escaping case by case.
+
+**Evidence has a validity window, and a browser verification is valid for a build, not
+for a branch.** A result that does not say which artefact it speaks of reads as though it
+spoke of the latest. Measured: a confidentiality run passed on a site built at one moment,
+and a rebase that changed a package the docs app consumes destroyed that artefact — so
+the proof had to be regenerated, not reused. The dating of evidence is as compulsory as the
+dating of a brief, and the enumeration that exempts a gate can equally certify that an
+artefact still stands: on the last rebase of that lot, nothing the docs build consumes had
+moved, and saying so on the record is what let the proof be kept.
+
+**A threshold a correct artefact can never satisfy is not a threshold, it is a
+prohibition** — it measures a writing convention rather than a property. Measured: a
+witness that counted `# suites` would have demanded a structurally impossible number,
+because the repository's guards are flat `test()` calls with no `describe()`, and it would
+have cried "empty glob" on a healthy run. So calibrate every threshold on a **known-good
+case before it guards anything**. That is the third property required of a guard, moved
+from the assertion to the threshold.
 
 **What a repository guard is for — measured, not assumed.** The first lot reviewed
 with all three guards present cost **more** per review than the lot before it
@@ -785,6 +838,20 @@ layout did not remove the ageing, it moved it to where it is free, *provided the
 object is read*.
 
 So the rule has two halves, and the second is the one that was missing:
+
+**A control run in the author's environment answers the author's question.** Whatever
+resolves from where you stand and nowhere else is invisible to you and fatal to a reader:
+a local branch, a worktree's `node_modules`, a cached font, an absolute path, an
+installed package. Measured: four commit hashes quoted by this lot's reports resolved in
+the authoring clone — kept alive by two branches that were never pushed — while
+`git ls-remote` showed the remote advertising **none** of them. They were live where the
+check is cheap and dead where the reader is, and no check available locally could see it.
+
+So for anything a reader will follow, the instrument must have **the reader's shape**:
+`git ls-remote`, a fresh clone, an install from the tarball. This repository already
+pays that discipline for another object — `pack:smoke` installs from tarballs precisely
+because "it works in the workspace" is not "it works for a consumer" — so the rule is
+that principle carried from packages to citations, not a new burden.
 
 **A precedent is a measurement, not a citation** — open the package, resolve the
 token, compute. **And resolve it in the package you are talking about, scoped to the
