@@ -947,15 +947,29 @@ instruction its author retracted while the agent was still running, and the only
 that was safe is that the brief happened to include a stop condition.
 
 **A second pass receives the questions the full review left open, by name, and declares
-its scope before it runs.** Measured: two second passes cost 87 500 and 111 847 tokens,
-41.6 % and 53.1 % of a full review's mean for that lot, and most of that went to
+its scope before it runs.** Measured over a full lot: four second passes cost 87 500,
+100 382, 111 847 and 127 908 tokens — a mean of 106 909, or **50.8 %** of a full
+review's mean for that lot, with two of the four above half. Most of that went to
 re-deriving what the full review had already established. A second pass is not a
 shorter review, it is a **list**: the named corrections to counter-measure, the claims
-the full review could not settle, and nothing else. Have it state that scope back before
-it spends, so a drift into a second full review shows at the start rather than in the
-total. And do not ask it to estimate its own cost — two agents asked for that estimate
-were wrong by a factor of two, both in the direction that flattered them, while the
-measured figure was already available.
+the full review could not settle, and nothing else. Cap it at **five named questions**.
+Have it state that scope back before it spends, so a drift into a second full review
+shows at the start rather than in the total.
+
+**And have it report the cost of its extensions separately from the cost of the list**,
+because the two answer different questions and one figure cannot separate them. That
+split is not bookkeeping: over one lot, **three of the four passes produced their
+findings through a declared extension rather than through the list** — 22 table rows
+measured instead of the 4 asked for, a vendor's stock package fetched to qualify an
+attribution, two figures counted that only the list's own claims carried. A scope
+constraint that forces extensions to be declared makes them **justifiable** instead of
+forbidding them, which is the opposite of what one fears from a constraint; but without
+the cost split there is no way to tell a list that is too long from an exploration that
+is paying.
+
+Do not ask it to estimate its own cost — two agents asked for that estimate were wrong
+by a factor of two, both in the direction that flattered them, while the measured figure
+was already available in the completion record.
 
 Verifiable checklist — fail the theme on any miss:
 
@@ -973,6 +987,34 @@ Verifiable checklist — fail the theme on any miss:
   belongs to: a consent banner, a carousel, a CMS default or a library reset
   is not the brand (section 2, Step 0.5). A hex living only in vendor blocks
   and given a brand role is a blocking provenance defect.
+
+**A control whose precondition can be false has three outcomes, and the invalid one
+names the instrument, not the subject.** Two verdicts are not enough as soon as a
+precondition can fail, because a broken precondition then spills into whichever verdict
+most resembles a defect of the subject. Measured on the confidentiality check: a browser
+profile that started in the revealed state inverted its two passes, and the check
+reported **four brand themes as leaked** — the gravest incident this repository can
+have — when nothing had leaked and the instrument simply was not in a position to
+measure. Its exit condition did catch the inversion, so the verdict was a failure rather
+than a false pass; but **a failure naming four themes points at the themes instead of at
+the instrument**.
+
+So: pass, fail, and **invalid**. The invalid outcome uses its own exit code and says in
+words that nothing in the run is evidence about the property — the wording matters as
+much as the code, because it forbids a hurried reader from taking it for an incident. An
+instrument that accuses must first prove it could measure. And the cost of getting this
+wrong is asymmetric on a confidentiality rule: after two false alarms the next lot
+unplugs the only control that measures it, which is a more probable failure than the one
+the control looks for.
+
+**A received number is a hypothesis, not a target.** An agent asked to correct a figure
+at four places and finding only three reports three. Measured: one builder did exactly
+that, writing that it had not invented a fourth occurrence — and the pressure to
+produce one is the *same* pressure that produced the wrong figure, since both adjust
+reality to the text in front of them. That pressure has a record here: a precedent
+relayed without being resolved, and a summary table written from memory whose four cells
+out of twelve were wrong. So every figure handed to an agent is marked as **to verify,
+not to reach**, and a brief that says "four places" is a claim the agent may refute.
 
 **Verifying a guard before shipping it.** A guard is delivered only after its own
 defect has been reintroduced and seen to turn it red, then restored byte-identically.
