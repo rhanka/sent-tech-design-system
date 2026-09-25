@@ -30,7 +30,7 @@ import type { TenantTheme } from "@sentropic/design-system-themes";
  *   Tangerine (brand accent)            #f32518   (:root --tangerine-color)
  *   Tangerine hover                     #CF1F14   (--tangerine-hover)
  *   Tangerine focus                     #980000   (--tangerine-focus)
- *   Tangerine tint                      #fde5e3   (derived — à confirmer)
+ *   Tangerine tint                      #fee5e3   (derived — à confirmer)
  *   Legacy submain red                  #e73f0d   (2024 theme-submain, no role)
  *   Groupe mid blue                     #376db3   (2024 theme-groupe)
  *   Fid petrol green                    #004650   (2024 theme-fid)
@@ -59,7 +59,7 @@ const adpColor = {
     primary: "#f32518", // :root --tangerine-color
     hover: "#CF1F14", // --tangerine-hover
     focus: "#980000", // --tangerine-focus (focus ring colour)
-    light: "#fde5e3" // derived 12% tint on white (à confirmer)
+    light: "#fee5e3" // derived 12% tint on white, consistently rounded (à confirmer)
   },
   // Legacy red (2024 `theme-submain`, footer `a:hover`). Superseded by the
   // tangerine on the current site; kept for provenance, with no role.
@@ -124,7 +124,7 @@ const foundation = {
     },
     // Sentropic "cyan" accent slot carries the tangerine family.
     cyan: {
-      10: adpColor.tangerine.light, // #fde5e3 derived tint (à confirmer)
+      10: adpColor.tangerine.light, // #fee5e3 derived tint (à confirmer)
       50: adpColor.tangerine.primary, // #f32518 tangerine accent
       70: adpColor.tangerine.focus // #980000 deep tangerine
     },
@@ -185,7 +185,8 @@ const foundation = {
     floating: "0 8px 24px rgb(3 31 115 / 0.18)"
   },
   // Motion durations measured per component: 150ms links, 200ms buttons and
-  // accordion, 500ms tooltip. Easing `ease-in-out` from the buttons (the
+  // accordion, 500ms `redirection-grille` + `frontTools .mentions` (not the
+  // tooltip — see MAPPING.md). Easing `ease-in-out` from the buttons (the
   // current accordion's `ease-out` is a likely framework default — MAPPING.md).
   motion: {
     fast: "150ms",
@@ -206,7 +207,7 @@ const foundation = {
   borderWidth: {
     none: "0",
     thin: "1px", // every measured brand border is 1px
-    thick: "2px"
+    thick: "2px" // Sentropic base (the brand declares only 1px borders — à confirmer)
   },
   borderStyle: { solid: "solid" },
   // Control density. The brand publishes no density scale; the Sentropic base
@@ -222,29 +223,33 @@ const foundation = {
   // never underlined, at rest or on hover.
   typography: {
     control: { family: "'Montserrat', Arial, sans-serif", size: "0.875rem", weight: "700", lineHeight: "1", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
-    field: { family: "'Montserrat', Arial, sans-serif", size: "1.0625rem", weight: "400", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
+    field: { family: "'Montserrat', Arial, sans-serif", size: "1.0625rem", weight: "400", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" }, // lineHeight 1.5 is the Sentropic base (à confirmer)
     label: { family: "'Montserrat', Arial, sans-serif", size: "0.875rem", weight: "400", lineHeight: "1.5714", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
     // Brand links inherit the body colour (`a` declares no colour) and are
-    // never underlined; hover repaints them red without underlining either.
+    // never underlined; hover repaints them (red text on footer/firstPage,
+    // petrol on two fullpage CTAs — see MAPPING.md) without underlining either.
     link: {
       family: "inherit", size: "inherit", weight: "inherit", lineHeight: "inherit", letterSpacing: "0", textTransform: "none",
       textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto",
       textDecorationHover: "none", decorationThicknessHover: "auto", decorationOffsetHover: "auto"
     }
   },
-  disabledOpacity: "0.55", // Sentropic base (the brand publishes none — à confirmer)
+  disabledOpacity: "0.55", // Sentropic base (the brand consumes .disabled:opacity-50 = .5 plus disabled colour tokens — 0.55 retained as a base-derived arbitration, à confirmer, see MAPPING.md)
   transition: { property: "all", duration: "200ms", easing: "ease-in-out" },
-  cursor: { interactive: "pointer", disabled: "not-allowed", text: "text" },
-  iconSize: { sm: "1rem", md: "1.125rem", lg: "1.25rem" },
+  cursor: { interactive: "pointer", disabled: "not-allowed", text: "text" }, // Sentropic base; disabled:not-allowed is the consumed .disabled:cursor-not-allowed utility (preflight :disabled{cursor:default} is the vendor default — à confirmer, see MAPPING.md)
+  iconSize: { sm: "1rem", md: "1.125rem", lg: "1.25rem" }, // Sentropic base (à confirmer)
   // FOCUS = a Tailwind RING in the deep tangerine: the current site paints
-  // `focus-visible:ring-[--focus-ring]` with `--tw-ring-color`, and the
-  // canonical `--focus-ring` is `--tangerine-focus`. Width 3px and offset 0
-  // are the consumed Tailwind ring defaults (vendor defaults retained).
+  // `focus-visible:ring-[--focus-ring]` with `--tw-ring-color`. The consumed
+  // focus-scoped widths are `ring-2` (calc 2px) and `ring-offset-2` (2px);
+  // the bare `.ring` 3px is unscoped and the 0px is the preflight init
+  // (vendor defaults retained, not brand decisions). The colour is an
+  // arbitration for `--tangerine-focus` across thirteen equal `--focus-ring`
+  // aliases (see MAPPING.md): the accent, also aliased by white.
   focus: {
     strategy: "ring",
-    width: "3px",
-    offset: "0",
-    color: adpColor.tangerine.focus, // #980000 (8.99:1 on white)
+    width: "2px",
+    offset: "2px",
+    color: adpColor.tangerine.focus, // #980000 (8.99:1 on white — documented arbitration, see MAPPING.md)
     inset: "0"
   },
   // Form fields are BOXED (outline): the measured search field is a 1px `#aaa`
@@ -256,24 +261,28 @@ const foundation = {
     underlineColor: adpColor.slate[200], // unused for outline, kept for completeness
     underlineWidth: "1px",
     // Native <select>: redraw the chevron in the main deep blue with a 40px
-    // right gutter (the brand styles no native select; transcription).
+    // right gutter (the brand styles no native select; transcription — à confirmer).
     selectAppearance: "none",
     selectChevron:
       "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23031F73' d='M8 11L3 6l1-1 4 4 4-4 1 1z'/%3E%3C/svg%3E\") no-repeat right 0.75rem center",
     selectPaddingRight: "2.5rem"
   },
   // Cards: squared, 1px hairline (`.bordered`), quiet hover on the page grey.
+  // The base publishes no `card` block: lineHeight/hoverBackground are aligned
+  // with the reference theme packages' geometry (à confirmer, see MAPPING.md).
   card: {
-    borderWidth: "1px",
-    lineHeight: "1.5",
-    hoverBackground: adpColor.slate[10] // #f7f7f7 page grey
+    borderWidth: "1px", // measured `.bordered` hairline
+    lineHeight: "1.5", // reference-package geometry (à confirmer)
+    hoverBackground: adpColor.slate[10] // #f7f7f7 page grey (à confirmer)
   },
   // Secondary button = OUTLINED in the main blue: transparent fill, blue
-  // border + text (`.theme-white-main`), light blue hover fill.
+  // border + text (`.theme-white-main`), inverting to a solid main-blue fill
+  // on hover with white text (measured `.btn.theme-white-main:hover`; the
+  // hover-text inversion has no primitive — see MAPPING.md).
   buttonSecondary: {
     background: "transparent",
     border: adpColor.main.primary, // #031f73 stroke
-    hoverBackground: adpColor.blue[100] // #e6e9f1 light fill on hover
+    hoverBackground: adpColor.main.primary // #031f73 measured hover inversion
   },
   // Tabs: the brand publishes no tab component (empty greps cited in
   // MAPPING.md). Active tab = bold main-blue label, bottom indicator filet —
@@ -299,7 +308,7 @@ const foundation = {
     borderWidth: "0",
     text: adpColor.main.primary, // #031f73 (à confirmer)
     activeBackground: adpColor.main.primary, // #031f73 (à confirmer)
-    activeText: "#ffffff", // white on the main blue (14.51:1)
+    activeText: "#ffffff", // white on the main blue (14.51:1) (à confirmer)
     activeBorderWidth: "0",
     paddingBlock: "0.25rem", // 4px (à confirmer)
     paddingInline: "0.75rem", // 12px (à confirmer)
@@ -316,7 +325,7 @@ const foundation = {
     separator: adpColor.slate[200], // #aaaaaa
     fontSize: "1.0625rem", // 17px
     lineHeight: "2.5rem", // 40px
-    currentWeight: "700"
+    currentWeight: "700" // unmeasured (`.fil-ariane` declares no weight — à confirmer)
   },
   // Alert / notice: the squared `.headerAlert` bar (10px gutters, 12px text,
   // white level-1 fill, no accent filet).
@@ -371,12 +380,13 @@ const foundation = {
     textTransform: "none",
     minHeight: "1.5rem", // 24px (à confirmer)
     infoBackground: adpColor.main.primary, // #031f73 (à confirmer)
-    infoText: "#ffffff" // white on the main blue (14.51:1)
+    infoText: "#ffffff" // white on the main blue (14.51:1) (à confirmer)
   },
-  // Checkbox/radio label: corporate-blue labels (`.label-filter label`,
-  // last rule wins), 17px inherited size.
+  // Checkbox/radio label: corporate-blue labels (`.label-filter label` in
+  // `listeProjets`; the actus twin at `#e73f0d` stays live — arbitration, see
+  // MAPPING.md), 17px inherited size.
   choice: {
-    labelFontSize: "1.0625rem", // 17px inherited
+    labelFontSize: "1.0625rem", // 17px inherited (à confirmer)
     labelLineHeight: "1.5rem", // 24px (à confirmer)
     radioLineHeight: "1.5rem", // 24px (à confirmer)
     labelColor: adpColor.corporate.groupe // #376db3
@@ -386,7 +396,7 @@ const foundation = {
   search: {
     paddingBlock: "0.375rem", // 6px (à confirmer)
     paddingInline: "0.75rem", // 12px (à confirmer)
-    fontSize: "1.0625rem", // 17px inherited
+    fontSize: "1.0625rem", // 17px inherited (à confirmer)
     lineHeight: "1.5rem" // 24px (à confirmer)
   },
   // Toggle / switch label: the brand publishes none (empty greps cited in
@@ -409,7 +419,7 @@ const semantic = {
   },
   text: {
     primary: adpColor.slate[800], // #272727 body (14.94:1 on white)
-    secondary: adpColor.slate[500], // #4a4a4a surtitles (8.86:1 on white)
+    secondary: adpColor.slate[500], // #4a4a4a surtitles (8.86:1 on white — documented arbitration, double declaration, see MAPPING.md)
     muted: adpColor.slate[600], // #848fb2 legends (3.20:1 on white — documented arbitration)
     inverse: adpColor.slate[0], // white on dark / coloured surfaces
     link: adpColor.slate[800] // #272727 inherited, never underlined (hover repaints red)
