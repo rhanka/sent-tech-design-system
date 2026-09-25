@@ -28,8 +28,31 @@ recipe):
 | `npm install`, then commit of `package-lock.json` alone | conductor | once per lot, after the lot's packages land |
 | dependency entry in `apps/docs/package.json` | conductor | once per lot |
 | `Chrome<Brand>.svelte` + `+layout.svelte` wiring (`useCustomChrome` and the render branch) + update of the `apps/docs/src/lib/header-contract.test.ts` literal | conductor | **second wave**, outside this package programme |
+| a single fully-determined value inside a package, after review — see the three conditions below | conductor | exceptionally, post-review |
 
-Without the lockfile entry `npm ci` fails: `package-lock.json` carries one
+**The fourth act is bounded, because "conductor act" is a category that widens on
+its own if nobody bounds it.** The conductor may apply a change inside a builder's
+package only when all three conditions hold together:
+
+1. It is **entirely determined** by a measurement already made and verifiable by a
+   third party — not by the conductor's own reading of the brand.
+2. It is **one value or one line**.
+3. It is **declared and put up for challenge** in the next pass, by name, so a
+   reviewer is asked to contest it rather than to discover it.
+
+The case that set the boundary: a text role shipped at 1.92:1, failing both the
+4.5:1 running-text floor and the 3:1 line floor, routed under section 9 to the
+brand's other measured text grey at 3.95:1 — one hex, measured twice before the
+conductor touched it, declared and contested in the following pass. Delegating one
+line there would have cost 50 000 to 100 000 tokens.
+
+The moment a judgement about the brand is required — which colour *represents* the
+brand, which scope to retain, which rule is the real one — it goes to a builder
+whatever the cost. Choosing a primary would never pass the three conditions; routing
+a failing role to an already-measured neighbour does.
+
+Without the lockfile entry
+ `npm ci` fails: `package-lock.json` carries one
 entry per theme package, and every workflow in `.github/workflows` installs
 with `npm ci`. The model for that act is the dedicated commit
 `139690f6 chore(lock): enregistrer les 5 packages thèmes Paris lot 4 dans le
