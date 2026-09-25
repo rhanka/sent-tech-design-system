@@ -625,9 +625,19 @@ export class LineChart {
     return classNames("st-lineChart__refLine", overlayToneClass("st-lineChart__refLine", line.tone));
   }
 
-  get trendLine(): { x1: number; y1: number; x2: number; y2: number } | null {
+  /**
+   * The regression itself, shared by `trendLine` (pixel geometry) and
+   * `dataValueItems` (the accessible text) so the two can never disagree — see
+   * `packages/components-react/src/LineChart.tsx`'s `trendModel` for the same
+   * split.
+   */
+  get trendModel(): { slope: number; intercept: number; minX: number; maxX: number } | null {
     if (!this.trend || !this.xIsNumeric) return null;
-    const model = linearRegression(this.safeData.map((d) => ({ x: d.x as number, y: d.y })));
+    return linearRegression(this.safeData.map((d) => ({ x: d.x as number, y: d.y })));
+  }
+
+  get trendLine(): { x1: number; y1: number; x2: number; y2: number } | null {
+    const model = this.trendModel;
     if (!model) return null;
     return {
       x1: MARGIN.left + scaleLinear(model.minX, this.xDomainMin, this.xDomainMax, 0, this.plotWidth),
@@ -705,7 +715,7 @@ export class LineChart {
         referenceLines: this.referenceLines,
         bands: this.bands,
         goalLine: this.goal,
-        trend: this.trendLine ? { slope: 0 } as never : null,
+        trend: this.trendModel,
       }),
       ...annotationDataListItems(this.annotations),
     ];
