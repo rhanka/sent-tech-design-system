@@ -39,12 +39,20 @@ describe("eurofinsTheme", () => {
 
   it("emits Eurofins Scientific brand colours and fonts in the compiled variables", () => {
     const css = compileTheme(eurofinsTheme);
-    // Corporate blue action + heading near-black text.
+    // Corporate blue action + operating near-black text (--dark-gray).
     expect(css).toContain("--st-semantic-action-primary: #003883;");
-    expect(css).toContain("--st-semantic-text-primary: #212b36;");
+    expect(css).toContain("--st-semantic-text-primary: #333333;");
     // Crimson danger and navy inverse surface.
     expect(css).toContain("--st-semantic-action-danger: #b71c1c;");
     expect(css).toContain("--st-semantic-surface-inverse: #00224F;");
+    // Secondary hover keeps the declared --cool-blue (gap documented).
+    expect(css).toContain("--st-semantic-action-secondaryHover: #DCEBFF;");
+    // Corrected measured keys: re-tinted generic radius, CTA typography,
+    // select gutter.
+    expect(css).toContain("--st-foundation-radius-sm: 0.375rem;");
+    expect(css).toContain("--st-foundation-typography-control-size: 1.25rem;");
+    expect(css).toContain("--st-foundation-typography-control-lineHeight: 1.2;");
+    expect(css).toContain("--st-foundation-field-selectPaddingRight: 2.25rem;");
     // Eurofins brand font families (Inter body, Fira Sans display).
     expect(css).toContain("Inter");
     expect(css).toContain("Fira Sans");
