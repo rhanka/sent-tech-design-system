@@ -852,7 +852,8 @@ fault, it does not map the guard's blind spots. Two of the four reviews that pro
 the measurement above spent budget doing exactly that, one to prove a guard wrong and
 one to establish that a failure could not touch its own package, and neither line of
 work was a finding about the theme under review. Guard disputes are the conductor's
-to settle, on the conductor's budget. nothing else.
+to settle, on the conductor's budget. Your budget buys the five judgements above and
+nothing else.
 
 **Every brief records the method sha it was written against, and integration compares
 that sha to the tip.** On a long lot the method moves under the builders — eleven
