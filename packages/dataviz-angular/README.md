@@ -3,8 +3,8 @@
 Angular adapter for `@sentropic/dataviz-core`, built against
 `@sentropic/design-system-angular`.
 
-Scope is still a subset of the Vue/React/Svelte adapters. **57 of 119** ported,
-62 remaining — `node tools/dataviz-angular-port/classify.mjs` prints the count and
+Scope is still a subset of the Vue/React/Svelte adapters. **76 of 119** ported,
+43 remaining — `node tools/dataviz-angular-port/classify.mjs` prints the count and
 how much of the remainder the generator can read:
 
 - signal-based bridge for the core dashboard store
@@ -16,15 +16,24 @@ how much of the remainder the generator can read:
 - flow, hierarchy and relation charts: `ArcDiagramChart`,
   `DecompositionTreeChart`, `DependencyWheelChart`, `FlamegraphChart`,
   `OrganizationChart`, `SankeyChart`, `TreegraphChart`
-- distribution and gauge charts: `BellCurveChart`, `ContourChart`,
-  `Density2DChart`, `GaugeChart`, `SolidGaugeChart`, `ViolinChart`
+- distribution and gauge charts: `BellCurveChart`, `BoxPlotChart`,
+  `BulletChart`, `ContourChart`, `Density2DChart`, `GaugeChart`,
+  `HistogramChart`, `SolidGaugeChart`, `ViolinChart`
 - time and state charts: `BumpChart`, `GanttChart`, `StateTimelineChart`,
   `StatusHistoryChart`, `StreamgraphChart`, `TimelineChart`
 - range charts: `AreaRangeChart`, `AreaSplineRangeChart`, `ColumnRangeChart`,
   `DumbbellChart`
 - OHLC-family charts: `CandlestickChart`, `HeikinAshiChart`,
-  `HollowCandlestickChart`, `HLCChart`, `OHLCChart`, `RenkoChart`
-- distribution and relation charts: `HeatmapChart`, `ScatterPlot`
+  `HollowCandlestickChart`, `HLCChart`, `OHLCChart`, `PointAndFigureChart`,
+  `RenkoChart`
+- distribution and relation charts: `CorrelationMatrix`, `HeatmapChart`,
+  `ParallelCoordinatesChart`, `ScatterPlot`
+- grid and glyph charts: `ItemChart`, `PolygonChart`, `TileMapChart`,
+  `VectorFieldChart`, `WindBarbChart`, `WordCloudChart`
+- analytics overlays reusing a DS chart: `AnalyticsClusterPlot` (ScatterPlot),
+  `ForecastLineChart` (LineChart)
+- trace, event and graph views: `AnomalySwimLaneChart`, `EventFeedPanel`,
+  `ForceGraph`, `RibbonChart`, `TraceWaterfallChart`
 - geo maps: `ChoroplethMap`, `GeoClusterMap`, `GeoDensityMap`, `GeoFlowMap`,
   `GeoHexbinMap`, `GeoJsonMap`, `GeoPointMap`
 - controls: `QueryBar`, `DashboardFilterBar`, `DateRangeFilter`

@@ -52,30 +52,31 @@ node tools/dataviz-angular-port/classify.mjs          # add --names for the list
 ```
 
 It runs the real `extract()` over every pending adapter and prints what it reads,
-what it refuses and why. The arc so far: the third lot widened the vocabulary from
-**28 of 87** readable to **41 of 87** and ported 25 of them; the fourth widened it
-again, from **16 of 62** to **21 of 62**.
+what it refuses and why. The arc, measured by the tool itself at the end of each
+lot: the third widened the vocabulary from **28 of 87** readable to **41 of 87** and
+ported 25 of them; the fourth widened it again, from **16 of 62** to **21 of 62**,
+and ported all 21 — minus two that the tightening then refused on purpose
+(`StackedBarChart`'s `measures: [props.measure]`, `ComboChart`'s pass-through
+`bars`/`lines`), so nineteen shipped.
 
-That second widening is much smaller than the first, and the refusal table says why:
-the vocabulary is close to its natural limit. Of the 41 still refused, **16 never
-read the dashboard signal at all** — stateful panels and filters
-(`BookmarkNavigator`, `CalculationEditor`, `FormatPanel`, `FieldPane`,
-`ExportMenu`, `TopNFilter`, `ValueSlicer`, …) that hold local state and will not
-benefit from a generator; **10 build their data bespoke** (a hand-written array
-literal, a `.map()` over the model, positional builder arguments with
-post-processing); and **9 are structural** — 3 render several charts from one
-adapter, 3 have no `Props` alias, 2 exist in one framework only, 1 imports no
-design-system component. The cheapest widening left is positional builder arguments
-(`builder(model, rows, props.date, props.measure)`), worth one or two components.
+**The lever is now spent, and that is a measurement, not an impression.** After the
+fourth lot the tool reads **0 of the 43 pending**. The refusal table says why, and
+it is a different population from the one the generator was built for:
 
-What is still refused is mostly *not* the same kind of component: 16 have no
-`void <state>.value` read at all — they are stateful panels and filters
-(`BookmarkNavigator`, `CalculationEditor`, `FormatPanel`, `FieldPane`,
-`ExportMenu`, `TopNFilter`, …) that hold local state and belong in hand-written
-code; 3 render several charts from one adapter (`ScatterPlotMatrix`,
-`AnimatedBubbleChart`, `AdvancedPivotDataTable`); 3 have no `Props` alias; 2 exist
-in one framework only and have no Vue source to read. The remaining 8 "no binding
-consumes the derived …" are the next cheap widening if a lot needs them.
+    16  no `void <state>.value` marker           stateful panels and filters
+    10  setup body matches no supported shape    bespoke data building
+     6  a binding reads a prop the descriptor cannot express
+     3  no trailing h() call                     several charts per adapter
+     3  no Props type alias
+     2  no dataviz-vue source                    one-framework-only components
+     2  two wrapping calls / non-`props.x` config entry
+     1  no design-system-vue import
+
+The 16 without a signal read (`BookmarkNavigator`, `CalculationEditor`,
+`FormatPanel`, `FieldPane`, `ExportMenu`, `TopNFilter`, `ValueSlicer`, …) hold
+local state; a descriptor has nothing to say about them. Widening further would
+mean teaching the extractor to read hand-written data construction, which is
+writing the adapter twice. The remaining 43 are hand-work.
 
 ## Adding a lot
 
