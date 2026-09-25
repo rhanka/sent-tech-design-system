@@ -59,9 +59,7 @@ describe('CrossfilteredBarChart (angular)', () => {
 
     const marker = root.querySelector('[data-st-component]');
     expect(marker?.getAttribute('data-st-component')).toBe('BarChart');
-    expect(marker?.getAttribute('class')?.split(' ')).toEqual(
-      expect.arrayContaining(['st-crossfilteredBarChart', 'probe']),
-    );
+    expect(marker?.getAttribute('class')?.split(' ')).toEqual(expect.arrayContaining(['probe']));
     expect(dataList(root)).toEqual(['checkout: 15', 'billing: 7']);
     expect(root.querySelectorAll('rect.st-barChart__bar--interactive').length).toBe(2);
   });

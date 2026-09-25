@@ -3,7 +3,6 @@ import type { OnChanges, OnDestroy, OnInit } from '@angular/core';
 import { Breadcrumb, Button, Inline, type BreadcrumbItem } from '@sentropic/design-system-angular';
 import { findDimension, type DashboardStore } from '@sentropic/dataviz-core';
 import { toSignalStore, type AngularSignalStore } from '../adapter.js';
-import { classNames } from './classNames.js';
 
 export type DrillBreadcrumbProps = {
   /** The dashboard store to bind to. */
@@ -33,7 +32,7 @@ export type DrillBreadcrumbProps = {
   imports: [Breadcrumb, Button, Inline],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <st-inline [gap]="2" [class]="classValue">
+    <st-inline [gap]="2" [class]="classInput">
       <st-breadcrumb [items]="items" [label]="label"></st-breadcrumb>
       @if (canGoBack) {
         <st-button variant="ghost" (click)="back()">{{ backLabel }}</st-button>
@@ -74,7 +73,6 @@ export class DrillBreadcrumb implements OnInit, OnChanges, OnDestroy {
   /** Recomputed by `recompute()`; never derived in a template getter. */
   items: BreadcrumbItem[] = [];
   canGoBack = false;
-  classValue = 'st-drillBreadcrumb';
 
   ngOnInit(): void {
     this.recompute();
@@ -99,7 +97,6 @@ export class DrillBreadcrumb implements OnInit, OnChanges, OnDestroy {
   }
 
   private recompute(): void {
-    this.classValue = classNames('st-drillBreadcrumb', this.classInput);
     if (!this.signals) return;
     const state = this.signals.state();
     const store = this.signals.store;

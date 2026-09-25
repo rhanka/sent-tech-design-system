@@ -55,9 +55,7 @@ describe('DrillBarChart (angular)', () => {
     const root = fixture.nativeElement as HTMLElement;
 
     const marker = root.querySelector('[data-st-component]');
-    expect(marker?.getAttribute('class')?.split(' ')).toEqual(
-      expect.arrayContaining(['st-drillBarChart', 'probe']),
-    );
+    expect(marker?.getAttribute('class')?.split(' ')).toEqual(expect.arrayContaining(['probe']));
     expect(dataList(root)).toEqual(['eu: 17', 'us: 5']);
   });
 

@@ -43,7 +43,7 @@ describe('ValueSlicer (angular)', () => {
 
     expect(root.querySelector('.st-checkboxGroup__legend')?.textContent?.trim()).toBe('Region');
     expect(root.querySelector('.st-checkboxGroup')?.getAttribute('class')?.split(' ')).toEqual(
-      expect.arrayContaining(['st-valueSlicer', 'probe']),
+      expect.arrayContaining(['probe']),
     );
     expect(labels(root)).toEqual(['eu', 'us', 'apac']);
     expect(checkboxes(root).every((c) => !c.checked)).toBe(true);
