@@ -511,8 +511,17 @@ reverses the standing instruction not to commit — and that commit is the deliv
 unit. The conductor integrates with one command, run from the lot worktree:
 
 ```
-git cherry-pick -n <builder-sha>
+git cherry-pick -n <lot-branch>..<theme-branch>
 ```
+
+The **range** form, not a sha: it takes however many commits the builder made — probed
+with three, one of them a second edit to a file an earlier commit had already touched,
+one adding a file — and stages their cumulative result in a single command, exit 0,
+with the new file staged as `A` and no sequencer state left behind. So the conductor
+never needs to know the builder's shas, only its branch name, and a builder is free to
+commit as often as it likes. (A *conflicting* pick does create sequencer state and
+needs `--quit` or `--abort`; that path stays rare because every commit touches only its
+own package directory.)
 
 `-n` stages without committing, so the builder's work arrives whole while the commit
 message — which is part of the provenance record — stays the conductor's to write.
