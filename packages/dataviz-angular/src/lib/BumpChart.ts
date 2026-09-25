@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input as NgInput, inject } from '@angular/core';
 import type { OnChanges, OnDestroy, OnInit } from '@angular/core';
-import { BumpChart as DsBumpChart, type BumpChartSeries } from '@sentropic/design-system-angular';
+import { BumpChart as DsBumpChart } from '@sentropic/design-system-angular';
 import { buildBumpModel, type DashboardStore } from '@sentropic/dataviz-core';
 import { toSignalStore, type AngularSignalStore } from '../adapter.js';
 
