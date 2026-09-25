@@ -59,6 +59,7 @@ import {
   dsComboCategories,
   dsComboBars,
   dsComboLines,
+  vennAreas,
 } from './fixture.js';
 
 import * as NG from '../../packages/dataviz-angular/dist/index.js';
@@ -78,6 +79,12 @@ type Case = {
   select?: boolean;
   /** This adapter takes no store (DashboardFilterBar is stateless). */
   storeless?: boolean;
+  /**
+   * Give the store an `include` filter before rendering (DashboardActiveFilters,
+   * ValueSlicer): otherwise the case would compare two renders with nothing to
+   * show a filter chip or a checked box.
+   */
+  presetFilter?: { dimension: string; values: string[] };
   /** Expected markup diffs; anything else is a regression. */
   expectedMarkupDiffs: number;
   /** Expected content-signature diffs. */
@@ -1179,6 +1186,77 @@ const cases: Case[] = [
     expectedSignatureDiffs: 0,
     attribution: '—',
   },
+  // Lot 8: hand-written adapters from the "no `void <state>.value` marker"
+  // refusal class (see tools/dataviz-angular-port/README.md for the refusal of
+  // each one).
+  {
+    name: 'CrossfilteredBarChart',
+    ng: NG.CrossfilteredBarChart as Type<unknown>,
+    template: `<st-dataviz-crossfiltered-bar-chart [store]="store" viewId="v" dimension="service" measure="amount" label="Amount by service" class="lot8"></st-dataviz-crossfiltered-bar-chart>`,
+    re: RE.CrossfilteredBarChart as ComponentType<Props>,
+    props: { viewId: 'v', dimension: 'service', measure: 'amount', label: 'Amount by service', className: 'lot8' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'DrillBarChart',
+    ng: NG.DrillBarChart as Type<unknown>,
+    template: `<st-dataviz-drill-bar-chart [store]="store" viewId="v" [hierarchy]="hierarchy" measure="amount" label="Amount by region" class="lot8"></st-dataviz-drill-bar-chart>`,
+    re: RE.DrillBarChart as ComponentType<Props>,
+    props: { viewId: 'v', hierarchy, measure: 'amount', label: 'Amount by region', className: 'lot8' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'DrillBreadcrumb',
+    ng: NG.DrillBreadcrumb as Type<unknown>,
+    template: `<st-dataviz-drill-breadcrumb [store]="store" viewId="v" [hierarchy]="hierarchy" class="lot8"></st-dataviz-drill-breadcrumb>`,
+    re: RE.DrillBreadcrumb as ComponentType<Props>,
+    props: { viewId: 'v', hierarchy, className: 'lot8' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'DashboardActiveFilters',
+    ng: NG.DashboardActiveFilters as Type<unknown>,
+    template: `<st-dataviz-dashboard-active-filters [store]="store" class="lot8"></st-dataviz-dashboard-active-filters>`,
+    re: RE.DashboardActiveFilters as ComponentType<Props>,
+    props: { className: 'lot8' },
+    fixture: 'wide',
+    presetFilter: { dimension: 'region', values: ['eu'] },
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'ValueSlicer',
+    ng: NG.ValueSlicer as Type<unknown>,
+    template: `<st-dataviz-value-slicer [store]="store" dimension="region" class="lot8"></st-dataviz-value-slicer>`,
+    re: RE.ValueSlicer as ComponentType<Props>,
+    props: { dimension: 'region', className: 'lot8' },
+    fixture: 'wide',
+    presetFilter: { dimension: 'region', values: ['eu'] },
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'VennChart',
+    ng: NG.VennChart as Type<unknown>,
+    template: `<st-dataviz-venn-chart [areas]="vennAreas" label="Overlap" class="lot8"></st-dataviz-venn-chart>`,
+    re: RE.VennChart as ComponentType<Props>,
+    props: { areas: vennAreas, label: 'Overlap', className: 'lot8' },
+    storeless: true,
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
 ];
 
 type Row = {
@@ -1223,8 +1301,10 @@ function dataListItems(root: Element): string[] {
  * and their own mount tests in packages/dataviz-angular assert it.
  */
 const NO_DATA_LIST = new Set([
+  'DashboardActiveFilters',
   'DashboardFilterBar',
   'DateRangeFilter',
+  'DrillBreadcrumb',
   'EventFeedPanel',
   'ForceGraph',
   'KpiCardGroup',
@@ -1233,6 +1313,7 @@ const NO_DATA_LIST = new Set([
   'ScoreCard',
   'SelectionLegend',
   'Sparkline',
+  'ValueSlicer',
 ]);
 
 function renderAngular(component: Type<unknown>, template: string, store: unknown, controlData?: unknown): Element {
@@ -1246,6 +1327,7 @@ function renderAngular(component: Type<unknown>, template: string, store: unknow
     readonly noop = () => {};
     readonly hierarchy = hierarchy;
     readonly controlData = controlData;
+    readonly vennAreas = vennAreas;
   }
   Component({ standalone: true, imports: [component], template })(Host);
   const fixture = TestBed.createComponent(Host);
@@ -1262,6 +1344,11 @@ describe('dataviz-angular ↔ dataviz-react rendered-markup parity', () => {
       if (testCase.select) {
         ngStore.toggleSelection('revenue', 'checkout');
         reStore.toggleSelection('revenue', 'checkout');
+      }
+      if (testCase.presetFilter) {
+        const { dimension, values } = testCase.presetFilter;
+        ngStore.setFilter(dimension, { kind: 'include', values });
+        reStore.setFilter(dimension, { kind: 'include', values });
       }
 
       const ngRoot = renderAngular(testCase.ng, testCase.template, ngStore);

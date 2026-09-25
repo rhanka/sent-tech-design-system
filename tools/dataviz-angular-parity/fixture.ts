@@ -183,3 +183,10 @@ export const dsDivergingBarDomain: [number, number] = [0, 17];
 export const dsComboCategories = ['eu', 'us'];
 export const dsComboBars = [{ label: 'Amount', data: [17, 5] }];
 export const dsComboLines = [{ label: 'Close', data: [106, 102] }];
+
+/** Lot 8: `VennChart` takes no store, so its areas are a plain fixture. */
+export const vennAreas = [
+  { sets: ['eu'], value: 17 },
+  { sets: ['us'], value: 5 },
+  { sets: ['eu', 'us'], value: 2 },
+];
