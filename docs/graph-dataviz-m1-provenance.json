@@ -333,7 +333,9 @@
       "destination": "packages/graph/tests/golden/gitflow-golden.test.ts",
       "gitBlob": "dc320285ef09d91fce072ba9163cd407dee0fb1c",
       "sha256": "ca4a1f8229389677f87061383aaad47ef213966b0595ea97b5c1211e4f33276e",
-      "status": "copied-byte-identical"
+      "status": "adapted-explicit-skip-gate",
+      "destinationSha256": "c7299f39115c4efc3fd35e60595612efeeb26d61470145e654518e33e4a48593",
+      "note": "A vitest test body that returns early is reported PASSED, not skipped (measured on vitest 4.1.11), so these two CDP suites went green on a Chrome-less runner without asserting anything. The guards now call ctx.skip(); no substantive assertion changed. Upstream M1 source hash kept in sha256."
     },
     {
       "repository": "graphify",
@@ -342,7 +344,9 @@
       "destination": "packages/graph/tests/golden/golden-harness.test.ts",
       "gitBlob": "465fece0b5f82d2d9f9b4f4328daec2cf1792050",
       "sha256": "4daf0e18b54b5b922227d477b4d7839290d93a9147cdfa3f9aa02fe3f8e0ee37",
-      "status": "copied-byte-identical"
+      "status": "adapted-explicit-skip-gate",
+      "destinationSha256": "10bf7585b046a10963515c10154647888ae0a56f49d36f052fd8af81fd8e3a6d",
+      "note": "A vitest test body that returns early is reported PASSED, not skipped (measured on vitest 4.1.11), so these two CDP suites went green on a Chrome-less runner without asserting anything. The guards now call ctx.skip(); no substantive assertion changed. Upstream M1 source hash kept in sha256."
     },
     {
       "repository": "graphify",
