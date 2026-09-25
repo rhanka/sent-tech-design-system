@@ -24,7 +24,8 @@ import type { TenantTheme } from "@sentropic/design-system-themes";
  *   Medium grey                          #808080   (strong border)
  *   Grey                                 #666666   (secondary text)
  *   Dim grey                             #4D4D4D   (muted text)
- *   Heading near-black                   #212b36   (primary text)
+ *   Operating near-black                 #333333   (primary text)
+ *   Declared-but-unpainted heading       #212b36   (raw palette only, no role)
  *   Navy blue (footer / inverse)         #00224F   (inverse surface)
  *   Corporate blue (brand / action)      #003883   (`--primary-color`)
  *   Button hover blue                    #00306F   (measured hover — see MAPPING.md)
@@ -67,10 +68,17 @@ const eurofinsColor = {
     50: "#FAFAFA", // light grey background — `--gray-background` (brand)
     200: "#E5E5E5", // light grey hairline — `--light-gray` (brand)
     400: "#808080", // medium grey — `--gray-2` (brand)
-    500: "#666666", // grey — `--grey` (brand)
+    500: "#666666", // grey — `--grey:#666` (brand, expanded form)
     600: "#4D4D4D", // dim grey — `--dim-gray` (brand)
-    800: "#212b36", // heading near-black — `--heading-color` (brand)
+    800: "#333333", // operating near-black — `--dark-gray` (brand, painted; see MAPPING.md)
     900: "#00224F" // navy — darkest brand surface (brand)
+  },
+  // Declared but never painted — kept for provenance with NO semantic role
+  // (see MAPPING.md): `--heading-color:#212b36` is 1 occurrence in
+  // 821 013 bytes (its own declaration), zero `var()`, zero brand-region
+  // paint. The operating text black is `--dark-gray:#333333` above.
+  declaredButUnpainted: {
+    heading: "#212b36" // `--heading-color` (brand declaration, unpainted)
   },
   // System / status colours — each is a brand-declared variable used in
   // brand-scoped rules (see MAPPING.md).
@@ -108,7 +116,7 @@ const foundation = {
       10: eurofinsColor.slate[50], // light grey background
       20: eurofinsColor.slate[200], // light grey hairline
       60: eurofinsColor.slate[500], // grey secondary text
-      80: eurofinsColor.slate[800], // heading near-black
+      80: eurofinsColor.slate[800], // operating near-black #333333
       90: eurofinsColor.slate[900] // navy darkest
     },
     feedback: {
@@ -142,15 +150,19 @@ const foundation = {
     12: "3rem", // 48px
     16: "4rem" // 64px
   },
-  // Eurofins aesthetic is rounded at 8px: brand CTAs (`.btn-get-started`,
-  // `.btn-get-notify`), inputs (`.form-control` brand override, search
-  // inputs) and menus all carry `border-radius:8px`.
+  // Eurofins radius: the brand re-tints the Bootstrap scale
+  // (`--bs-border-radius-sm:3px`, `--bs-border-radius:0.375rem`,
+  // `--bs-border-radius-lg:6px`, `--bs-border-radius-xl:8px`), so the generic
+  // control answers 6px; the 8px `-xl` is measured on brand CTAs
+  // (`.btn-get-started`, `.btn-get-notify`), scoped search inputs
+  // (`.footer … .form-control`, `.form-control-mobile`) and menus — 49
+  // strict `border-radius:8px` declarations in the brand region vs 24 at 4px.
   radius: {
-    none: "0",
-    sm: "0.5rem", // 8px — inputs / small controls (brand)
+    none: "0", // matches the Sentropic base
+    sm: "0.375rem", // 6px — generic control, brand re-tinted `--bs-border-radius` (brand)
     md: "0.5rem", // 8px — buttons / CTAs (brand)
     lg: "0.5rem", // 8px — cards (à confirmer)
-    pill: "999px" // tags / pills
+    pill: "999px" // tags / pills (matches the Sentropic base)
   },
   // Elevation: the subtle level is the brand menu shadow
   // (`box-shadow:0 6px 24px 0 rgb(0 0 0 / .25)` on the language menu);
@@ -181,24 +193,28 @@ const foundation = {
   borderWidth: {
     none: "0",
     thin: "1px", // field border 1px
-    thick: "2px"
+    thick: "2px" // matches the Sentropic base
   },
-  borderStyle: { solid: "solid" },
+  borderStyle: { solid: "solid" }, // matches the Sentropic base
   // Control density. The brand publishes input padding (`.form-control`
   // `padding:.375rem .75rem`, `font-size:1rem`) but no general control
-  // height (the 68px CTA and 42px search input are scoped widgets — see
-  // MAPPING.md), so heights stay on the Sentropic base, marked à confirmer.
+  // height — every declared height is scoped and they contradict each other
+  // (`.btn-get-started`/`.btn-get-notify` 68px hero CTAs,
+  // `.form-control-mobile` 52px career search, `.nav__toggle` 52px,
+  // `.search-row-input` 42px search widget, 48px responsive CTA/square
+  // buttons — see MAPPING.md), so heights stay on the Sentropic base,
+  // marked à confirmer.
   density: {
     sm: { controlHeight: "2rem", paddingBlock: "0", paddingInline: "0.5rem", gap: "0.5rem", minWidth: "2rem", fontSize: "0.875rem" }, // heights aligned with the reference theme package's geometry (à confirmer)
     md: { controlHeight: "2.5rem", paddingBlock: "0.375rem", paddingInline: "0.75rem", gap: "0.5rem", minWidth: "2.5rem", fontSize: "1rem" }, // padding + font-size measured from `.form-control` (brand)
     lg: { controlHeight: "3rem", paddingBlock: "0", paddingInline: "1rem", gap: "0.5rem", minWidth: "3rem", fontSize: "1.125rem" } // heights aligned with the reference theme package's geometry (à confirmer)
   },
   // Eurofins typography: Fira Sans 700 for brand buttons (`.btn-get-started`
-  // `font-family:"Fira Sans",sans-serif;font-size:20px;font-weight:700`);
+  // `font-family:"Fira Sans",sans-serif;font-size:20px;font-weight:700;line-height:24px`);
   // Inter 400 for fields (`.form-control` `font-size:1rem;font-weight:400`
   // over the Inter body); labels in Inter (à confirmer).
   typography: {
-    control: { family: "'Fira Sans', 'Inter', system-ui, sans-serif", size: "1rem", weight: "700", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" }, // family/weight measured from brand CTAs (à confirmer for size)
+    control: { family: "'Fira Sans', 'Inter', system-ui, sans-serif", size: "1.25rem", weight: "700", lineHeight: "1.2", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" }, // family/weight/size/line-height measured from `.btn-get-started` (brand)
     field: { family: "'Inter', system-ui, sans-serif", size: "1rem", weight: "400", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" }, // measured from `.form-control` (brand)
     label: { family: "'Inter', system-ui, sans-serif", size: "0.875rem", weight: "600", lineHeight: "1.4", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" }, // aligned with the reference theme package's geometry (à confirmer)
     // Brand links are the corporate blue #003883 (`--bs-link-color`), not
@@ -212,12 +228,15 @@ const foundation = {
   },
   disabledOpacity: "0.5", // aligned with the reference theme package's geometry (à confirmer)
   transition: { property: "background-color, border-color, color, box-shadow", duration: "150ms", easing: "ease-in-out" }, // aligned with the reference theme package's geometry (à confirmer)
-  cursor: { interactive: "pointer", disabled: "not-allowed", text: "text" },
+  cursor: { interactive: "pointer", disabled: "not-allowed", text: "text" }, // matches the Sentropic base
   iconSize: { sm: "1rem", md: "1.125rem", lg: "1.25rem" },
-  // FOCUS = a box-shadow RING in a corporate-blue tint. The brand's form
-  // controls declare `outline:0` + `box-shadow:0 0 0 .25rem rgb(0 56 131 /
-  // .25)` (`.form-control:focus`, `.form-select:focus`,
-  // `.form-check-input:focus` — rgb(0 56 131) is #003883).
+  // FOCUS = a box-shadow RING in a corporate-blue tint. The selectors are
+  // Bootstrap-namespace rules (`.form-control:focus`, `.form-select:focus`,
+  // `.form-check-input:focus` in the vendor region) — only the tint is
+  // brand: `outline:0` + `box-shadow:0 0 0 .25rem rgb(0 56 131 / .25)`
+  // (rgb(0 56 131) is #003883). The accompanying
+  // `border-color:rgb(127.5,155.5,193)` has no primitive carrying it
+  // (see MAPPING.md).
   focus: {
     strategy: "ring",
     width: "0.25rem",
@@ -233,11 +252,15 @@ const foundation = {
     fillBg: eurofinsColor.slate[0], // #ffffff
     underlineColor: eurofinsColor.slate[200], // unused for outline, kept for completeness
     underlineWidth: "1px",
-    // Native <select>: redraw the chevron in the corporate blue with a 40px right gutter.
+    // Native <select>: redraw the chevron in the corporate blue (the shipped
+    // chevron `stroke='%23343a40'` is the vendor default, so the redraw is
+    // derived) with the brand-measured right gutter (`.form-select`
+    // `padding:.375rem 2.25rem .375rem .75rem`, vendor namespace adopted
+    // for metrics, as for md density).
     selectAppearance: "none",
     selectChevron:
       "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23003883' d='M8 11L3 6l1-1 4 4 4-4 1 1z'/%3E%3C/svg%3E\") no-repeat right 0.75rem center",
-    selectPaddingRight: "2.5rem"
+    selectPaddingRight: "2.25rem" // measured from `.form-select` padding-right (brand-adopted vendor metric)
   },
   // Cards: a subtle 1px grey border + the 8px brand radius, light hover tint
   // (à confirmer).
@@ -288,7 +311,7 @@ const foundation = {
   breadcrumb: {
     linkText: eurofinsColor.blue.primary, // #003883
     text: eurofinsColor.slate[500], // #666666 trail text (à confirmer)
-    currentText: eurofinsColor.slate[800], // #212b36 current page (à confirmer)
+    currentText: eurofinsColor.slate[800], // #333333 current page (à confirmer)
     separator: eurofinsColor.slate[500], // #666666 (à confirmer)
     fontSize: "0.875rem", // 14px (à confirmer)
     lineHeight: "1.5rem", // 24px (à confirmer)
@@ -312,7 +335,7 @@ const foundation = {
   },
   // Accordion / details: a near-black bold summary trigger (à confirmer).
   accordion: {
-    text: eurofinsColor.slate[800], // #212b36 summary label (à confirmer)
+    text: eurofinsColor.slate[800], // #333333 summary label (à confirmer)
     paddingBlock: "0.75rem", // 12px (à confirmer)
     paddingInline: "1rem", // 16px (à confirmer)
     fontSize: "1rem", // 16px (à confirmer)
@@ -329,7 +352,7 @@ const foundation = {
     lineHeight: "1.5rem", // 24px (à confirmer)
     minHeight: "1.5rem", // 24px (à confirmer)
     neutralBackground: eurofinsColor.slate[50], // #FAFAFA (à confirmer)
-    neutralText: eurofinsColor.slate[800] // #212b36 (à confirmer)
+    neutralText: eurofinsColor.slate[800] // #333333 (à confirmer)
   },
   // Badge: an 8px-radius filled badge in the corporate blue with white text
   // (à confirmer).
@@ -350,7 +373,7 @@ const foundation = {
     labelFontSize: "1rem", // 16px (à confirmer)
     labelLineHeight: "1.5rem", // 24px (à confirmer)
     radioLineHeight: "1.5rem", // 24px (à confirmer)
-    labelColor: eurofinsColor.slate[800] // #212b36 (à confirmer)
+    labelColor: eurofinsColor.slate[800] // #333333 (à confirmer)
   },
   // Search input: brand input padding and metrics (`.form-control`
   // `padding:.375rem .75rem`, `font-size:1rem`, `line-height:1.5`).
@@ -364,7 +387,7 @@ const foundation = {
   toggle: {
     trackPadding: "0",
     lineHeight: "1.5rem", // 24px (à confirmer)
-    textColor: eurofinsColor.slate[800] // #212b36 (à confirmer)
+    textColor: eurofinsColor.slate[800] // #333333 (à confirmer)
   }
 } as const;
 
@@ -378,7 +401,7 @@ const semantic = {
     overlay: "rgb(0 34 79 / 0.6)" // modal backdrop, navy tint (à confirmer)
   },
   text: {
-    primary: eurofinsColor.slate[800], // #212b36 — `--heading-color`
+    primary: eurofinsColor.slate[800], // #333333 — `--dark-gray` (operating black; see MAPPING.md)
     secondary: eurofinsColor.slate[500], // #666666 — `--grey`
     muted: eurofinsColor.slate[600], // #4D4D4D — `--dim-gray`
     inverse: eurofinsColor.slate[0], // white on dark / coloured surfaces
@@ -394,7 +417,7 @@ const semantic = {
     primaryHover: eurofinsColor.blue.hover, // #00306F measured button hover
     primaryText: "#ffffff", // white on corporate blue — `.btn-primary --bs-btn-color:#ffffff` (brand)
     secondary: eurofinsColor.blue.sky, // #EBF3FF `--sky-background`
-    secondaryHover: eurofinsColor.blue.cool, // #DCEBFF `--cool-blue`
+    secondaryHover: eurofinsColor.blue.cool, // #DCEBFF `--cool-blue` (brand declaration, zero paint — gap documented in MAPPING.md)
     secondaryText: eurofinsColor.blue.primary, // #003883
     danger: eurofinsColor.system.error // #b71c1c `--crimson-red`
   },
@@ -421,7 +444,7 @@ const semantic = {
     category5: eurofinsColor.accent.burnt, // #C75000 burnt orange (brand)
     category6: eurofinsColor.purple, // #9398C7 soft purple (brand)
     category7: eurofinsColor.blue.deep, // #004BAD deep blue (brand)
-    category8: eurofinsColor.slate[800] // #212b36 near-black (brand)
+    category8: eurofinsColor.slate[800] // #333333 operating near-black (brand)
   }
 } as const;
 
