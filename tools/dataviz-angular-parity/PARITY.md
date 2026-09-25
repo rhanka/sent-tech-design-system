@@ -61,5 +61,24 @@ command to re-derive them.
 | `FlamegraphChart` | 38 | **0** | **0** | — | — |
 | `StreamgraphChart` | 41 | **0** | **0** | — | — |
 | `BumpChart` | 49 | **0** | **0** | — | — |
+| `BoxPlotChart` | 28 | **0** | **0** | — | — |
+| `BulletChart` | 61 | **0** | **0** | — | — |
+| `HistogramChart` | 92 | **0** | **0** | — | — |
+| `CorrelationMatrix` | 68 | **0** | **0** | — | — |
+| `ParallelCoordinatesChart` | 45 | **0** | **0** | — | — |
+| `AnalyticsClusterPlot` | 92 | **0** | **0** | — | — |
+| `ForecastLineChart` | 73 | **0** | **0** | — | — |
+| `ItemChart` | 96 | **0** | **0** | — | — |
+| `PolygonChart` | 77 | **0** | **0** | — | — |
+| `TileMapChart` | 55 | **0** | **0** | — | — |
+| `VectorFieldChart` | 93 | 3 | **0** | 3 | DS: Angular emits data-chart-key on each arrow group, React does not |
+| `WindBarbChart` | 52 | 3 | **0** | 3 | DS: Angular emits data-chart-key on each barb group, React does not |
+| `WordCloudChart` | 26 | **0** | **0** | — | — |
+| `PointAndFigureChart` | 143 | **0** | **0** | — | — |
+| `AnomalySwimLaneChart` | 65 | **0** | **0** | — | — |
+| `TraceWaterfallChart` | 60 | **0** | **0** | — | — |
+| `EventFeedPanel` | 58 | **0** | **0** | — | — |
+| `ForceGraph` | 48 | 42 | 8 | 42 | DS: components-angular renders no edge hit path and no per-node aria-label/role/tabindex |
+| `RibbonChart` | 40 | **0** | **0** | — | — |
 
-exact-markup matches: **49/55** · exact-signature matches: **54/55**
+exact-markup matches: **65/74** · exact-signature matches: **72/74**

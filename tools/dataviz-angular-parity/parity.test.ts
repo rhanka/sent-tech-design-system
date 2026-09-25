@@ -49,6 +49,9 @@ import {
   exportConfig,
   filterControls,
   newStore,
+  dsVectorFieldData,
+  dsWindBarbData,
+  dsForceGraph,
 } from './fixture.js';
 
 import * as NG from '../../packages/dataviz-angular/dist/index.js';
@@ -76,8 +79,12 @@ type Case = {
   attribution: string;
   /** Which fixture to mount: the lot 1 one by default, 'wide' for lot 2. */
   fixture?: 'wide';
-  /** Bare DS control: same inputs, no adapter. */
-  control?: { ng: Type<unknown>; template: string; re: ComponentType<Props>; props: Props };
+  /**
+   * Bare DS control: same inputs, no adapter. `controlData` in the Angular
+   * template is `props.data`, or `ngData` when the DS component takes several
+   * inputs instead of one `data` array (ForceGraph: nodes + edges).
+   */
+  control?: { ng: Type<unknown>; template: string; re: ComponentType<Props>; props: Props; ngData?: unknown };
 };
 
 const cases: Case[] = [
@@ -744,6 +751,234 @@ const cases: Case[] = [
     expectedSignatureDiffs: 0,
     attribution: '—',
   },
+  {
+    name: 'BoxPlotChart',
+    ng: NG.BoxPlotChart as Type<unknown>,
+    template: `<st-dataviz-box-plot-chart [store]="store" viewId="v" value="amount" label="L" class="lot4"></st-dataviz-box-plot-chart>`,
+    re: RE.BoxPlotChart as ComponentType<Props>,
+    props: { viewId: 'v', value: 'amount', label: 'L', className: 'lot4' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'BulletChart',
+    ng: NG.BulletChart as Type<unknown>,
+    template: `<st-dataviz-bullet-chart [store]="store" viewId="v" value="amount" target="close" label="L" class="lot4"></st-dataviz-bullet-chart>`,
+    re: RE.BulletChart as ComponentType<Props>,
+    props: { viewId: 'v', value: 'amount', target: 'close', label: 'L', className: 'lot4' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'HistogramChart',
+    ng: NG.HistogramChart as Type<unknown>,
+    template: `<st-dataviz-histogram-chart [store]="store" viewId="v" value="amount" label="L" class="lot4"></st-dataviz-histogram-chart>`,
+    re: RE.HistogramChart as ComponentType<Props>,
+    props: { viewId: 'v', value: 'amount', label: 'L', className: 'lot4' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'CorrelationMatrix',
+    ng: NG.CorrelationMatrix as Type<unknown>,
+    template: `<st-dataviz-correlation-matrix [store]="store" viewId="v" [measures]="['amount','close']" label="L" class="lot4"></st-dataviz-correlation-matrix>`,
+    re: RE.CorrelationMatrix as ComponentType<Props>,
+    props: { viewId: 'v', measures: ['amount', 'close'], label: 'L', className: 'lot4' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'ParallelCoordinatesChart',
+    ng: NG.ParallelCoordinatesChart as Type<unknown>,
+    template: `<st-dataviz-parallel-coordinates-chart [store]="store" viewId="v" [measures]="['amount','close']" label="L" class="lot4"></st-dataviz-parallel-coordinates-chart>`,
+    re: RE.ParallelCoordinatesChart as ComponentType<Props>,
+    props: { viewId: 'v', measures: ['amount', 'close'], label: 'L', className: 'lot4' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'AnalyticsClusterPlot',
+    ng: NG.AnalyticsClusterPlot as Type<unknown>,
+    template: `<st-dataviz-analytics-cluster-plot [store]="store" viewId="v" [fields]="['amount','close']" [k]="1" label="L" class="lot4"></st-dataviz-analytics-cluster-plot>`,
+    re: RE.AnalyticsClusterPlot as ComponentType<Props>,
+    props: { viewId: 'v', fields: ['amount', 'close'], k: 1, label: 'L', className: 'lot4' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'ForecastLineChart',
+    ng: NG.ForecastLineChart as Type<unknown>,
+    template: `<st-dataviz-forecast-line-chart [store]="store" viewId="v" x="amount" y="close" [periods]="1" label="L" class="lot4"></st-dataviz-forecast-line-chart>`,
+    re: RE.ForecastLineChart as ComponentType<Props>,
+    props: { viewId: 'v', x: 'amount', y: 'close', periods: 1, label: 'L', className: 'lot4' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'ItemChart',
+    ng: NG.ItemChart as Type<unknown>,
+    template: `<st-dataviz-item-chart [store]="store" viewId="v" label_field="region" value="amount" label="L" class="lot4"></st-dataviz-item-chart>`,
+    re: RE.ItemChart as ComponentType<Props>,
+    props: { viewId: 'v', label_field: 'region', value: 'amount', label: 'L', className: 'lot4' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'PolygonChart',
+    ng: NG.PolygonChart as Type<unknown>,
+    template: `<st-dataviz-polygon-chart [store]="store" viewId="v" x="amount" y="close" label="L" class="lot4"></st-dataviz-polygon-chart>`,
+    re: RE.PolygonChart as ComponentType<Props>,
+    props: { viewId: 'v', x: 'amount', y: 'close', label: 'L', className: 'lot4' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'TileMapChart',
+    ng: NG.TileMapChart as Type<unknown>,
+    template: `<st-dataviz-tile-map-chart [store]="store" viewId="v" label_field="region" col="lat" row="lon" value="amount" label="L" class="lot4"></st-dataviz-tile-map-chart>`,
+    re: RE.TileMapChart as ComponentType<Props>,
+    props: { viewId: 'v', label_field: 'region', col: 'lat', row: 'lon', value: 'amount', label: 'L', className: 'lot4' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'VectorFieldChart',
+    ng: NG.VectorFieldChart as Type<unknown>,
+    template: `<st-dataviz-vector-field-chart [store]="store" viewId="v" x="amount" y="close" length="low" direction="high" label="L" class="lot4"></st-dataviz-vector-field-chart>`,
+    re: RE.VectorFieldChart as ComponentType<Props>,
+    props: { viewId: 'v', x: 'amount', y: 'close', length: 'low', direction: 'high', label: 'L', className: 'lot4' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 3,
+    expectedSignatureDiffs: 0,
+    attribution: 'DS: Angular emits data-chart-key on each arrow group, React does not',
+    control: {
+      ng: NGDS.VectorFieldChart as Type<unknown>,
+      template: `<st-vector-field-chart [data]="controlData" label="L"></st-vector-field-chart>`,
+      re: REDS.VectorFieldChart as ComponentType<Props>,
+      props: { data: dsVectorFieldData, label: 'L' },
+    },
+  },
+  {
+    name: 'WindBarbChart',
+    ng: NG.WindBarbChart as Type<unknown>,
+    template: `<st-dataviz-wind-barb-chart [store]="store" viewId="v" at="ts" speed="amount" direction="close" label="L" class="lot4"></st-dataviz-wind-barb-chart>`,
+    re: RE.WindBarbChart as ComponentType<Props>,
+    props: { viewId: 'v', at: 'ts', speed: 'amount', direction: 'close', label: 'L', className: 'lot4' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 3,
+    expectedSignatureDiffs: 0,
+    attribution: 'DS: Angular emits data-chart-key on each barb group, React does not',
+    control: {
+      ng: NGDS.WindBarbChart as Type<unknown>,
+      template: `<st-wind-barb-chart [data]="controlData" label="L"></st-wind-barb-chart>`,
+      re: REDS.WindBarbChart as ComponentType<Props>,
+      props: { data: dsWindBarbData, label: 'L' },
+    },
+  },
+  {
+    name: 'WordCloudChart',
+    ng: NG.WordCloudChart as Type<unknown>,
+    template: `<st-dataviz-word-cloud-chart [store]="store" viewId="v" word_field="region" weight="amount" label="L" class="lot4"></st-dataviz-word-cloud-chart>`,
+    re: RE.WordCloudChart as ComponentType<Props>,
+    props: { viewId: 'v', word_field: 'region', weight: 'amount', label: 'L', className: 'lot4' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'PointAndFigureChart',
+    ng: NG.PointAndFigureChart as Type<unknown>,
+    template: `<st-dataviz-point-and-figure-chart [store]="store" viewId="v" date="ts" close="amount" label="L" class="lot4"></st-dataviz-point-and-figure-chart>`,
+    re: RE.PointAndFigureChart as ComponentType<Props>,
+    props: { viewId: 'v', date: 'ts', close: 'amount', label: 'L', className: 'lot4' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'AnomalySwimLaneChart',
+    ng: NG.AnomalySwimLaneChart as Type<unknown>,
+    template: `<st-dataviz-anomaly-swim-lane-chart [store]="store" viewId="v" job="region" at="ts" score="amount" label="L" class="lot4"></st-dataviz-anomaly-swim-lane-chart>`,
+    re: RE.AnomalySwimLaneChart as ComponentType<Props>,
+    props: { viewId: 'v', job: 'region', at: 'ts', score: 'amount', label: 'L', className: 'lot4' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'TraceWaterfallChart',
+    ng: NG.TraceWaterfallChart as Type<unknown>,
+    template: `<st-dataviz-trace-waterfall-chart [store]="store" viewId="v" spanId="service" parentSpanId="region" service="region" start="ts" duration="amount" label="L" class="lot4"></st-dataviz-trace-waterfall-chart>`,
+    re: RE.TraceWaterfallChart as ComponentType<Props>,
+    props: { viewId: 'v', spanId: 'service', parentSpanId: 'region', service: 'region', start: 'ts', duration: 'amount', label: 'L', className: 'lot4' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'EventFeedPanel',
+    ng: NG.EventFeedPanel as Type<unknown>,
+    template: `<st-dataviz-event-feed-panel [store]="store" viewId="v" at="ts" type="region" severity="service" message="shape" label="L" class="lot4"></st-dataviz-event-feed-panel>`,
+    re: RE.EventFeedPanel as ComponentType<Props>,
+    props: { viewId: 'v', at: 'ts', type: 'region', severity: 'service', message: 'shape', label: 'L', className: 'lot4' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'ForceGraph',
+    ng: NG.ForceGraph as Type<unknown>,
+    template: `<st-dataviz-force-graph [store]="store" viewId="v" source="region" target="service" label="L" class="lot4"></st-dataviz-force-graph>`,
+    re: RE.ForceGraph as ComponentType<Props>,
+    props: { viewId: 'v', source: 'region', target: 'service', label: 'L', className: 'lot4' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 42,
+    expectedSignatureDiffs: 8,
+    attribution: 'DS: components-angular renders no edge hit path and no per-node aria-label/role/tabindex',
+    control: {
+      ng: NGDS.ForceGraph as Type<unknown>,
+      template: `<st-force-graph [nodes]="controlData.nodes" [edges]="controlData.edges" label="L"></st-force-graph>`,
+      re: REDS.ForceGraph as ComponentType<Props>,
+      props: { nodes: dsForceGraph.nodes, edges: dsForceGraph.edges, label: 'L' },
+      ngData: dsForceGraph,
+    },
+  },
+  {
+    name: 'RibbonChart',
+    ng: NG.RibbonChart as Type<unknown>,
+    template: `<st-dataviz-ribbon-chart [store]="store" viewId="v" category="region" period="service" value="amount" label="L" class="lot4"></st-dataviz-ribbon-chart>`,
+    re: RE.RibbonChart as ComponentType<Props>,
+    props: { viewId: 'v', category: 'region', period: 'service', value: 'amount', label: 'L', className: 'lot4' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
 ];
 
 type Row = {
@@ -797,7 +1032,7 @@ describe('dataviz-angular ↔ dataviz-react rendered-markup parity', () => {
       let controlDiffs: number | null = null;
       if (testCase.control) {
         const controlNg = flatten(
-          renderAngular(testCase.control.ng, testCase.control.template, ngStore, testCase.control.props.data),
+          renderAngular(testCase.control.ng, testCase.control.template, ngStore, testCase.control.ngData ?? testCase.control.props.data),
         );
         const controlRe = flattenHtml(
           renderToStaticMarkup(createElement(testCase.control.re, testCase.control.props)),
@@ -843,7 +1078,11 @@ describe('dataviz-angular ↔ dataviz-react rendered-markup parity', () => {
       // two differ, the adapter is adding something of its own.
       const attributed = [
         'HeatmapChart', 'TreemapChart', 'OHLCChart', 'RenkoChart', 'DumbbellChart', 'SelectionLegend',
-        'MekkoChart', 'ArcDiagramChart', 'DependencyWheelChart', 'TimelineChart',
+        'MekkoChart', 'TimelineChart',
+        // Repaired in this lot: both sides are 0 now, and keeping them here
+        // asserts the bare DS control STAYS at 0.
+        'ArcDiagramChart', 'DependencyWheelChart',
+        'VectorFieldChart', 'WindBarbChart', 'ForceGraph',
       ];
       for (const name of attributed) {
         const row = table.find((entry) => entry.name === name);
