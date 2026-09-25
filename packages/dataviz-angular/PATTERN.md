@@ -286,6 +286,15 @@ written without an export.
     accessible data list did not use React's shared `Data values for <label>`
     wording. Sweep the whole class when you find one: the second lot re-found the
     same wording bug in three more spellings the first sweep's grep had missed.
+    Lot 7 found the same class again, from `TrendLineChart`'s first use of
+    `LineChart`'s `trend` input: `chartScale.linearRegression` was itself a stub
+    that always returned `slope: 0`, so every Angular `trend` overlay — text
+    (`Tendance: pente 0.00` regardless of the real slope) and the drawn line
+    alike — was flat no matter what the data said. Fixed to the same
+    least-squares formula `components-react/src/chartScale.tsx`'s
+    `linearRegression` already uses, and `LineChart.dataValueItems` now reads
+    the shared `trendModel` getter instead of the `{ slope: 0 } as never` cast
+    that had been hiding the stub's output.
 
 ## Adding a lot
 
@@ -516,3 +525,13 @@ match the React spelling.
   `st-divergentBarChart__bar--positive` appears twice in the React class list and
   once in the Angular one. Cost: **2 entries** on `DivergingBarChart`, equal to its
   bare-DS control. A `components-react` fix, and the cheapest of the three.
+- **The DS `ComboChart` legend swatch is `aria-hidden` in Angular, not in
+  React.** `components-angular/src/ComboChart.ts` marks each
+  `st-comboChart__legendSwatch` decorative dot `aria-hidden="true"`;
+  `components-react/src/ComboChart.tsx` does not. Cost: **2 entries** on
+  `ComboChart`, equal to its bare-DS control (measured in lot 7, `ComboChart`'s
+  first port). Most other React charts' legend swatches (`FunnelChart`,
+  `GanttChart`, `HeatmapChart`, `RibbonChart`, …) also omit it, so this is an
+  inconsistency across `components-react` itself, not something the Angular
+  side should chase in isolation — and Angular's `aria-hidden` is arguably the
+  more correct one of the two, so the arbitration is not a clear "React wins".

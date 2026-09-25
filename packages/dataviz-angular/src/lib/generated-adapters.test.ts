@@ -73,6 +73,11 @@ import { DivergingBarChart } from '../../dist/lib/DivergingBarChart.js';
 import { LollipopChart } from '../../dist/lib/LollipopChart.js';
 import { ParetoChart } from '../../dist/lib/ParetoChart.js';
 import { StepLineChart } from '../../dist/lib/StepLineChart.js';
+import { ComboChart } from '../../dist/lib/ComboChart.js';
+import { ErrorBarsChart } from '../../dist/lib/ErrorBarsChart.js';
+import { PercentileBandChart } from '../../dist/lib/PercentileBandChart.js';
+import { ReferenceLineChart } from '../../dist/lib/ReferenceLineChart.js';
+import { TrendLineChart } from '../../dist/lib/TrendLineChart.js';
 
 /**
  * One table for every adapter that is pure store-to-builder-to-DS wiring —
@@ -825,6 +830,57 @@ const cases: Case[] = [
     template: `<st-dataviz-pareto-chart [store]="store" viewId="v" category="region" measure="amount" label="L" class="probe"></st-dataviz-pareto-chart>`,
     items: ["eu: 17 (77.3% cumulé)", "us: 5 (100% cumulé)"],
     after: ["eu: 7 (100% cumulé)"],
+  },
+  {
+    family: "store-driven charts the port generator refuses (a binding reads a prop the descriptor cannot express, lot 7)",
+    name: "ErrorBarsChart",
+    component: ErrorBarsChart,
+    ds: "BarChart",
+    ownClass: "st-errorBarsChart",
+    template: `<st-dataviz-error-bars-chart [store]="store" viewId="v" category="region" value="amount" label="L" class="probe"></st-dataviz-error-bars-chart>`,
+    items: ["eu: 8.5", "us: 5"],
+    after: ["eu: 7"],
+  },
+  {
+    family: "store-driven charts the port generator refuses (a binding reads a prop the descriptor cannot express, lot 7)",
+    name: "PercentileBandChart",
+    component: PercentileBandChart,
+    ds: "LineChart",
+    ownClass: "st-percentileBandChart",
+    template: `<st-dataviz-percentile-band-chart [store]="store" viewId="v" value="amount" [lower]="0.25" [upper]="0.75" label="L" class="probe"></st-dataviz-percentile-band-chart>`,
+    items: ["25%: 6", "median: 7", "75%: 8.5", "Référence: Median = 7", "Bande: Percentiles (6–8.5)"],
+    after: ["25%: 7", "median: 7", "75%: 7", "Référence: Median = 7", "Bande: Percentiles (7–7)"],
+  },
+  {
+    family: "store-driven charts the port generator refuses (a binding reads a prop the descriptor cannot express, lot 7)",
+    name: "ReferenceLineChart",
+    component: ReferenceLineChart,
+    ds: "LineChart",
+    ownClass: "st-referenceLineChart",
+    template: `<st-dataviz-reference-line-chart [store]="store" viewId="v" measure="amount" label="L" class="probe"></st-dataviz-reference-line-chart>`,
+    items: ["0: 0", "22: 0", "Référence: Amount = 22"],
+    after: ["0: 0", "7: 0", "Référence: Amount = 7"],
+  },
+  {
+    family: "store-driven charts the port generator refuses (a binding reads a prop the descriptor cannot express, lot 7)",
+    name: "TrendLineChart",
+    component: TrendLineChart,
+    ds: "LineChart",
+    ownClass: "st-trendLineChart",
+    template: `<st-dataviz-trend-line-chart [store]="store" viewId="v" x="amount" y="close" label="L" class="probe"></st-dataviz-trend-line-chart>`,
+    items: ["5: 103.5", "10: 106", "Tendance: pente 0.50"],
+    // A single observation gives the regression nothing to fit: the trend line
+    // and its data both disappear.
+    after: [],
+  },
+  {
+    family: "store-driven charts the port generator refuses (a binding reads a prop the descriptor cannot express, lot 7)",
+    name: "ComboChart",
+    component: ComboChart,
+    ds: "ComboChart",
+    template: `<st-dataviz-combo-chart [store]="store" viewId="v" category="region" [measures]="['amount', { id: 'close', mark: 'line' }]" label="L" class="probe"></st-dataviz-combo-chart>`,
+    items: ["Amount, eu: 17", "Amount, us: 5", "Close, eu: 106", "Close, us: 102"],
+    after: ["Amount, eu: 7", "Close, eu: 107"],
   },
 ];
 
