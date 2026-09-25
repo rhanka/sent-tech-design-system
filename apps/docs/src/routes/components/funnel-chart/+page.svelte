@@ -2,7 +2,8 @@
   import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge } from "@sentropic/design-system-svelte";
   import { locale } from "$lib/locale.svelte";
-  import type { NodeSpec } from "$lib/framework/examples";
+  import { storeChartDemoNodes, type NodeSpec } from "$lib/framework/examples";
+  import { createDashboardStore, type DataModel } from "@sentropic/dataviz-core";
 
   const demoNodes = $derived<NodeSpec[]>([
     {
@@ -43,6 +44,30 @@
       ]
     }
   ]);
+
+  // Version adaptateur : les étapes sont dérivées d'un vrai store minimal.
+  const storeModel: DataModel = {
+    dimensions: [{ id: "stage", label: "Étape", type: "discrete" }],
+    measures: [{ id: "count", label: "Effectif", aggregation: "sum" }]
+  };
+  const store = createDashboardStore({
+    model: storeModel,
+    data: [
+      { stage: "Visiteurs", count: 8400 },
+      { stage: "Prospects", count: 3200 },
+      { stage: "Clients", count: 210 }
+    ]
+  });
+
+  const storeDemo = $derived<NodeSpec[]>(
+    storeChartDemoNodes("FunnelChart", {
+      store,
+      viewId: "store",
+      category: "stage",
+      measure: "count",
+      label: locale.value === "fr" ? "Entonnoir (store)" : "Funnel (store)"
+    })
+  );
 </script>
 
 <div class="docs-page">
@@ -182,6 +207,50 @@
         </tr>
       </tbody>
     </table>
+  </section>
+  <section class="docs-section">
+    <h2>{locale.value === "fr" ? "Piloté par store" : "Store-driven"}</h2>
+    <p class="section-desc">
+      {#if locale.value === "fr"}
+        La version adaptateur (<code>@sentropic/dataviz-svelte</code>,
+        <code>-react</code>, <code>-vue</code>, <code>-angular</code>) dérive les étapes
+        d’un <code>DashboardStore</code> partagé : <code>category</code> et
+        <code>measure</code> désignent les canaux, le reste du contrat est inchangé.
+      {:else}
+        The adapter version (<code>@sentropic/dataviz-svelte</code>,
+        <code>-react</code>, <code>-vue</code>, <code>-angular</code>) derives the steps
+        from a shared <code>DashboardStore</code>: <code>category</code> and
+        <code>measure</code> name the channels, the rest of the contract is unchanged.
+      {/if}
+    </p>
+    <TabbedExample nodes={storeDemo} title={locale.value === "fr" ? "Entonnoir (store)" : "Funnel (store)"} />
+    <table class="docs-table">
+      <thead>
+        <tr><th>Prop</th><th>Type</th><th>Par défaut</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>store</code></td><td><code>DashboardStore</code></td><td>requis</td></tr>
+        <tr><td><code>viewId</code></td><td><code>string</code></td><td>requis</td></tr>
+        <tr><td><code>category</code></td><td><code>string</code></td><td>requis</td></tr>
+        <tr><td><code>measure</code></td><td><code>string</code></td><td>requis</td></tr>
+        <tr><td><code>sort</code></td><td><code>PartWholeSort</code></td><td>non défini</td></tr>
+        <tr><td><code>orientation</code></td><td><code>"vertical" | "horizontal"</code></td><td><code>"vertical"</code></td></tr>
+        <tr><td><code>showPercentages</code></td><td><code>boolean</code></td><td>natif</td></tr>
+        <tr><td><code>percentMode</code></td><td><code>"ofFirst" | "ofPrevious"</code></td><td>natif</td></tr>
+        <tr><td><code>legend</code></td><td><code>boolean</code></td><td>natif</td></tr>
+        <tr><td><code>width</code> / <code>height</code></td><td><code>number</code></td><td>natif</td></tr>
+        <tr><td><code>label</code></td><td><code>string</code></td><td>requis (a11y)</td></tr>
+      </tbody>
+    </table>
+    <p class="docs-demo-context">
+      {#if locale.value === "fr"}
+        Props du natif non reprises par la version store : <code>data</code> (dérivé
+        du store via <code>category</code> / <code>measure</code>).
+      {:else}
+        Native props not carried by the store version: <code>data</code> (derived
+        from the store through <code>category</code> / <code>measure</code>).
+      {/if}
+    </p>
   </section>
 </div>
 
