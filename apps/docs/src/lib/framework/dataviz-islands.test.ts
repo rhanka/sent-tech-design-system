@@ -22,6 +22,7 @@ import { mountReactIsland } from "./react-island";
 import { mountVueIsland } from "./vue-island";
 import { mountAngularIsland } from "./angular-island";
 
+
 function host() {
   const dom = new JSDOM("<!doctype html><div id=\"host\"></div>");
   const el = dom.window.document.getElementById("host") as HTMLElement;
@@ -44,9 +45,10 @@ afterEach(async () => {
 });
 
 // Pay the one-time cost of the heavy island imports (react-dom, the DS and
-// dataviz dists) once, outside the per-test budget: under full-suite
-// parallel load the cold import alone can exceed the default 5 s timeout,
-// which measures transform contention, not demo rendering.
+// dataviz dists, the Angular runtime plus the DS and dataviz Angular packs)
+// once, outside the per-test budget: under full-suite parallel load the cold
+// import alone can exceed the per-test timeout, which measures transform
+// contention, not demo rendering.
 beforeAll(async () => {
   const el = host();
   const store = createDashboardStore({
@@ -61,6 +63,19 @@ beforeAll(async () => {
     mountVueIsland(el, urlSyncDemoNodes(store))
   ]);
   for (const handle of handles) handle.unmount();
+  // Warm the Angular island as well: whichever Angular test runs first must
+  // not pay the cold dynamic-import cost inside its own timeout.
+  const angularHandle = await mountAngularIsland(
+    el,
+    storeChartDemoNodes("AreaChart", {
+      store,
+      viewId: "warmup",
+      category: "d",
+      measure: "m",
+      label: "Warmup"
+    })
+  );
+  angularHandle.unmount();
 }, 30000);
 
 const model: DataModel = {
