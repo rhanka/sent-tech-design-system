@@ -1,6 +1,7 @@
 import { Component, Input as NgInput } from "@angular/core";
 
 import { classNames } from "./classNames.js";
+import { GraphLegend } from "./GraphLegend.js";
 
 import { contrastTextForTone } from "./chartContrast.js";
 
@@ -68,6 +69,9 @@ type RibbonItem = {
 
 type LegendEntry = {
   label: string;
+  /** Node legend: the shared GraphLegend draws a circle swatch for a shaped entry
+   * and an edge line for a shapeless one. React sets "circle" here. */
+  shape: "circle";
   tone: DependencyWheelChartTone;
 };
 
@@ -101,6 +105,7 @@ function arcPath(cx: number, cy: number, inner: number, outer: number, start: nu
 @Component({
   selector: "st-dependency-wheel-chart",
   standalone: true,
+  imports: [GraphLegend],
   template: `
     <div [attr.data-st-component]="componentName" [class]="hostClass">
       <div
@@ -150,14 +155,7 @@ function arcPath(cx: number, cy: number, inner: number, outer: number, start: nu
         </svg>
 
         @if (layout.legend.length > 0) {
-          <ul class="st-graphLegend st-dependencyWheelChart__legend" aria-hidden="true">
-            @for (entry of layout.legend; track entry.label) {
-              <li class="st-graphLegend__item">
-                <span [class]="legendSwatchClass(entry)"></span>
-                <span class="st-graphLegend__label">{{ entry.label }}</span>
-              </li>
-            }
-          </ul>
+          <st-graph-legend [class]="'st-dependencyWheelChart__legend'" [entries]="layout.legend"></st-graph-legend>
         }
       </div>
 
@@ -317,6 +315,7 @@ export class DependencyWheelChart {
 
     const legend: LegendEntry[] = arcs.map((arc) => ({
       label: this.displayLabel(arc.id),
+      shape: "circle" as const,
       tone: arc.tone,
     }));
 
