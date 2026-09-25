@@ -32,8 +32,8 @@ design system documente, et l'écart composant par composant.
 | Composants exportés `@sentropic/dataviz-vue` | **117** (−`UrlSync`) |
 | Composants exportés `@sentropic/dataviz-angular` | **76** (lot 1 : 10 ; lots 2 à 4 : 64, générés ; plus `QueryBar` et `DateHistogramChart`, antérieurs) + adaptateur |
 | Composants distincts (svelte ∪ react-only) | **119** |
-| Entrées au catalogue DS (`components-catalog.ts`) | **209** (203 natifs DS + 6 adaptateurs dataviz du lot 1) |
-| Routes `apps/docs/src/routes/components/` | **211** dossiers (206 pages dédiées + 4 pages groupes + 1 route dynamique `[slug]` ; 3 entrées catalogue couvertes par page groupe, sans route propre) |
+| Entrées au catalogue DS (`components-catalog.ts`) | **210** (204 natifs DS + 6 adaptateurs dataviz du lot 1) |
+| Routes `apps/docs/src/routes/components/` | **212** dossiers (207 pages dédiées + 4 pages groupes + 1 route dynamique `[slug]` ; 3 entrées catalogue couvertes par page groupe, sans route propre) |
 | Adaptateurs dataviz documentés sur le site DS | **6** (lot 1 : `UrlSync`, `WebFrame`, `TimeSeriesLineChart`, `ScoreCard`, `DataImage`, `DashboardGrid`) |
 | Slugs DS homonymes d'un adaptateur dataviz | **69** (documentent le composant natif, pas l'adaptateur) |
 | Adaptateurs adossés à un composant DS catalogué | **116** (69 homonymes + 47 non homonymes ; seuls `TimeSeriesLineChart`, `UrlSync` et `WebFrame` sans composant DS) |
