@@ -78,6 +78,8 @@ import { ErrorBarsChart } from '../../dist/lib/ErrorBarsChart.js';
 import { PercentileBandChart } from '../../dist/lib/PercentileBandChart.js';
 import { ReferenceLineChart } from '../../dist/lib/ReferenceLineChart.js';
 import { TrendLineChart } from '../../dist/lib/TrendLineChart.js';
+import { CrossfilteredBarChart } from '../../dist/lib/CrossfilteredBarChart.js';
+import { DrillBarChart } from '../../dist/lib/DrillBarChart.js';
 
 /**
  * One table for every adapter that is pure store-to-builder-to-DS wiring —
@@ -881,6 +883,26 @@ const cases: Case[] = [
     template: `<st-dataviz-combo-chart [store]="store" viewId="v" category="region" [measures]="['amount', { id: 'close', mark: 'line' }]" label="L" class="probe"></st-dataviz-combo-chart>`,
     items: ["Amount, eu: 17", "Amount, us: 5", "Close, eu: 106", "Close, us: 102"],
     after: ["Amount, eu: 7", "Close, eu: 107"],
+  },
+  {
+    family: "store-driven charts the port generator refuses (no `void <state>.value` marker, lot 8)",
+    name: "CrossfilteredBarChart",
+    component: CrossfilteredBarChart,
+    ds: "BarChart",
+    ownClass: "st-crossfilteredBarChart",
+    template: `<st-dataviz-crossfiltered-bar-chart [store]="store" viewId="v" dimension="service" measure="amount" label="L" class="probe"></st-dataviz-crossfiltered-bar-chart>`,
+    items: ["checkout: 15", "billing: 7"],
+    after: ["billing: 7"],
+  },
+  {
+    family: "store-driven charts the port generator refuses (no `void <state>.value` marker, lot 8)",
+    name: "DrillBarChart",
+    component: DrillBarChart,
+    ds: "BarChart",
+    ownClass: "st-drillBarChart",
+    template: `<st-dataviz-drill-bar-chart [store]="store" viewId="v" [hierarchy]="hierarchy" measure="amount" label="L" class="probe"></st-dataviz-drill-bar-chart>`,
+    items: ["eu: 17", "us: 5"],
+    after: ["eu: 7"],
   },
 ];
 

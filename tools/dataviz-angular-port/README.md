@@ -119,6 +119,48 @@ name inside the derivation, which Angular's class fields cannot do — the porte
 adapter keeps the public `rows`/`columns` `@Input`s and names the DS-facing
 derived arrays `tableRows`/`tableColumns` instead.
 
+Lot 8 took **six** of the sixteen refused with `no \`void <state>.value\`
+marker`, leaving `union 119 / ported 96 / pending 23`. **The refusal table's
+label for this class ("stateful panels and filters", above) is wrong, and
+measuring it — reading every one of the sixteen with `extract()`, not trusting
+the label — is what this lot actually did before writing anything.** Three of
+the six are charts: `CrossfilteredBarChart` and `DrillBarChart` wrap the DS
+`BarChart` and read `state.value.selections`/`state.value.drill` to compute
+`selectedKeys`/the current drill level; `VennChart` is the opposite case in the
+*same* refusal class — it holds no local state at all, so `setup()` never has a
+`void <state>.value` marker to anchor on either. The other two chosen —
+`DrillBarChart`'s companion `DrillBreadcrumb`, and `DashboardActiveFilters` —
+and `ValueSlicer` all read reactive dashboard state (drill path, active
+filters) that Vue's `setup()` names locally (`state`), which the extractor's
+state-read anchor does not recognise as a *rendered* value, only as a
+derivation input. None of the six needed a new Angular pattern:
+`toSignalStore` + `store.subscribe(() => { this.recompute(); this.
+changeDetector.markForCheck(); })` is already the load-bearing pattern behind
+89 of the 96 now-ported adapters (`EventFeedPanel` first, lot 1) — this lot
+just found five more consumers of it, plus one (`VennChart`) that needs no
+store at all.
+
+Ten of the sixteen are feasible by the same measure — no DS contract change,
+components-angular already has every input they need, dataviz-core already has
+every builder they need — and were left for a later lot purely for review
+budget (the six-adapter ceiling), not for a structural reason:
+`BookmarkNavigator`, `CalculationEditor`, `ExportMenu`, `FieldPane`,
+`FormatPanel`, `PalettePicker` (pure controlled components or store-write-only,
+no new pattern either), `RangeSliderFilter`, `RelativeDateFilter`, `TopNFilter`
+(the exact `DateRangeFilter` local-ref-then-`store.setFilter` shape, lot 1).
+
+`ChartExport` is the one genuine structural gap in the class, and is dropped
+rather than deferred: it needs `chart-export.ts` — dataviz-vue's ~250-line,
+framework-agnostic SVG/PNG/PDF/print DOM-export helper module — which has not
+been copied to `dataviz-angular` by any earlier lot (checked: no file in
+`packages/dataviz-angular/src` references `downloadPng`, `resolveSvg`, or
+`printElement`). `ExportMenu` depends on it too for its `rowsToCsv` re-export
+pattern via `ChartExport`, but `ExportMenu`'s own CSV button has no such
+dependency and is one of the ten deferred-for-budget above. Porting
+`chart-export.ts` is a full unit of work in its own right — a canvas/PDF
+rasteriser with its own SSR/jsdom guards — not "hand-write one more adapter",
+so it is named here rather than forced into this lot's six.
+
 ## Adding a lot
 
 1. Run `extract.mjs` with the names. Read the printed one-line-per-component
