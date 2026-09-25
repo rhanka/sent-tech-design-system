@@ -127,7 +127,8 @@ Other measured paints (no hex shipped in `index.ts`, recorded here only):
   proposal from the measured hues; the brand publishes no chart scale (the
   only `chart` match is an unstyled web-component host).
 - **Small density** (`density.sm.*` = 2rem / 0 / 0.75rem / 0.375rem / 2rem /
-  0.875rem) — Sentropic base values; the brand publishes no small controls
+  0.875rem) — Sentropic base values except `fontSize`, aligned with the
+  reference theme package's geometry; the brand publishes no small controls
   (its `--small` input only narrows width to 11.25rem).
 - **`density.md.minWidth` 2.5rem, `density.lg.gap` 0.5rem,
   `density.lg.minWidth` 3rem** — base values; no generic min-width or button
@@ -140,10 +141,16 @@ Other measured paints (no hex shipped in `index.ts`, recorded here only):
   faithful expression, the precise published stack is *à confirmer*.
 - **Monospace stack** — no brand monospace is published (Noto Sans,
   Montserrat and Arial are all proportional); system stack.
-- **`z` header/overlay/modal/chat** (50/80/100/110) — base values; only
-  toast (100, `[data-drupal-messages]`) is measured. The brand modal
-  carries no z-index (DOM order), so modal == toast is documented, not
-  resolved.
+- **`z` overlay/chat** (99999/100001) — derived +-1 around the measured
+  modal (Carrefour precedent): the scrim is the modal's own background
+  (same `.awf-factory-modal` rule), so no standalone overlay layer is
+  published, and no chat widget is published either. Measured absolutes
+  kept literally: header 10 (fixed `.awf-factory-page__header`), toast
+  100 (`[data-drupal-messages]`), modal 100000 (fixed
+  `.awf-factory-modal`, strictly above toast). Also published, with no
+  Sentropic role: dropdowns/metanav/toggle-labels/pap-card 10,
+  tabs/tabled/toggle-input 20, cubes 50/30/20/10, timeline/hero 9,
+  sticky anchors 5, navbar 2, misc 1/0, autocomplete 9999.
 - **Toggle unmapped leaves** (trackWidth/Height, thumbSize, trackPadding,
   trackColor, fontSize) — omitted to the defaults; the brand ships no
   switch, only the segmented agree/disagree control.
@@ -151,6 +158,9 @@ Other measured paints (no hex shipped in `index.ts`, recorded here only):
   muted); no breadcrumb is published, metrics follow the 14px nav text.
 - **Card hoverBackground** — omitted (keeps rest): the brand recolours the
   card border to cyan on hover and never the fill.
+- **Secondary-button hover fill** (`buttonSecondary.hoverBackground` snow
+  `#faf8f8`) — no button hover is published; snow (alt surface,
+  disabled-submit fill) is the coherent neutral stand-in.
 - **`cursor.text`** — no brand rule (UA default for inputs).
 
 ## Typography
@@ -165,14 +175,20 @@ Other measured paints (no hex shipped in `index.ts`, recorded here only):
   t3 20/500, t4 18/500/45px; b1 18/400, b1-bold 18/900, b2 16/400,
   b2-bold 16/900, b3 14/400, b3-bold 14/900 (150% unless noted).
 - **Montserrat** (account-CTA buttons, 9 rules) and **Arial** (meta-nav
-  reset) are scoped to those components and carry no font role.
+  reset + fallback in the same 9 CTA stacks) are scoped to those
+  components and carry no font role.
 - **Monospace** (`font.mono`): system stack.
-- Links: 16/900 cyan `#009ee0`, not underlined at rest (explicit on the
-  EDM file link; absent on CK/accordion/disclaimer links), underline on
-  hover *(à confirmer)*. Link text colour is routed to persian (5.27:1).
-- Tracking is 0 everywhere (two scoped negative values on WeSave
-  subtitles); text-transform is `none` globally (scoped capitalize on
-  user names, uppercase on warning titles + meta-nav links only).
+- Links: 16/900 cyan `#009ee0`, not underlined at rest (explicit `none`
+  on the 4 EDM file links + the notification link; absent on
+  CK/accordion/disclaimer links), underline on hover *(à confirmer)*.
+  Nine scoped contexts declare `underline` (PAP flows ×4, webform notice,
+  cookie find-more, chronology, xpay confirmation, author teaser).
+  Link text colour is routed to persian (5.27:1).
+- Tracking is unset (no `letter-spacing:0` anywhere; two scoped negative
+  values on WeSave subtitles), so the delivered `0` is the CSS initial;
+  text-transform is unpublished globally (the two `none` are excluded
+  preflight) — scoped capitalize on user names, uppercase on warning
+  titles + meta-nav links only — so the delivered `none` is the initial.
 
 ## Signatures anatomiques
 
@@ -190,8 +206,9 @@ Other measured paints (no hex shipped in `index.ts`, recorded here only):
   `accent-color`; radios unstyled (layout + red error + 14/400 dark-grey
   helper only).
 - **Radius**: 0 (back button, meta-nav), .25rem (modal body, logout,
-  quote), .5rem (inputs, cards), 1rem (`--awf-radius-image`: images,
-  dialog, autocomplete), 9999px (buttons, search, pagers, toggle).
+  quote), .5rem (inputs, cards — hero-card-item; pap-card .75rem
+  exception), 1rem (`--awf-radius-image`: images, dialog, autocomplete),
+  9999px (buttons, search, pagers, toggle).
   Residual: brand cards are .5rem but render at `lg` (1rem) through the
   shared card radius — images, dialog and autocomplete carry the 1rem.
 - **Focus**: `focus.strategy = "outline"`, 2px, 2px offset, cyan
@@ -234,15 +251,21 @@ Other measured paints (no hex shipped in `index.ts`, recorded here only):
   the outline under the autocomplete (alice hover + 3px theme filet).
 - **Messages/toast**: `[data-drupal-messages]` fixed stack at z 100,
   lg shadow; caption text midnight.
-- **Modal**: `display:none` + opacity 0 → scrim `rgb(0 0 0 / .4)` with
-  12px backdrop blur, .3s fade; body white .25rem; dialog 1rem radius,
-  2rem padding, lg shadow, 534px desktop width.
-- **Disabled**: icon nav buttons `cursor:not-allowed` + opacity .3
-  (3 rules) → `disabledOpacity: "0.3"`; submit exception noted above.
+- **Modal**: `display:none` + opacity 0 → fixed scrim at z 100000,
+  `rgb(0 0 0 / .4)` with 12px backdrop blur, .3s fade; body white .25rem;
+  dialog 1rem radius, 2rem padding, lg shadow, 534px desktop width.
+- **Badge**: unread pill (2 identical rules): red fill, white 12px/18px
+  text, 1.25rem box, .25rem inline padding, top 0 / bottom 2px — the
+  asymmetric 2px has no leaf (`paddingBlock: "0"` keeps the measured top).
+- **Disabled**: icon nav buttons dim to opacity .3 (3 rules: carousel
+  arrows ×2 + tabled nav; `cursor:not-allowed` on the tabled rule only)
+  → `disabledOpacity: "0.3"`; submit exception noted above.
 - **Density**: md = measured inputs (2.5/0.5/1rem, .5rem checkbox gap),
-  lg = measured buttons (3.125/.25/1.5rem), sm = base *(à confirmer)*.
+  lg = measured buttons (3.125/.25/1.5rem), sm = base except `fontSize`
+  *(à confirmer)*.
 - **Motion**: fast 150ms / normal 300ms (modal) / slow 500ms (single
-  max use); easing `cubic-bezier(.4,0,.2,1)` ×14 — vendor default
+  max use); scoped .1/.2/.4s (cubes echo, toggle-block, carousel track);
+  easing `cubic-bezier(.4,0,.2,1)` ×14 — vendor default
   retained (Tailwind `ease-in-out`, verified in the excluded utility
   line); interaction transitions use `transition-property: all` (×9).
 - **Shadows**: `0 1px 2px #3838381a` ×12 (brand) + retained lg (toast,
