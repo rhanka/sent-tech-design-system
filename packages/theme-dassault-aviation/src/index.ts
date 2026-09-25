@@ -56,8 +56,8 @@ const dassaultAviationColor = {
     darkAlt: "#596d87" // --color-dark-alt (3 var() + 5 literals, decorations only)
   },
   // Business-line re-scopings (`.tax__color-*`, brand region lines 75-79).
-  // Only the base and dark steps below carry Sentropic roles; the full
-  // per-line families are recorded in MAPPING.md.
+  // Only the base steps below carry Sentropic roles (data.category2-5);
+  // the dark/light steps are kept for provenance — see MAPPING.md.
   taxo: {
     defense: { base: "#4c5133", dark: "#43472c", light: "#757648" },
     civil: { base: "#218737", dark: "#1c752f", light: "#319a48" },
@@ -163,8 +163,10 @@ const foundation = {
     medium: "0 8px 24px rgb(15 23 42 / 0.12)", // Sentropic base (à confirmer)
     floating: "0 18px 45px rgb(15 23 42 / 0.18)" // Sentropic base (à confirmer)
   },
-  // Measured transition durations (.2s x66, .3s x29, .5s x10) with the `ease`
-  // easing; the cubic-bezier(.25,1,.5,1) signature drives arrow keyframes.
+  // Measured transition durations, in declarations (.2s x52, .3s x28,
+  // .5s x9; brand region, durations by value, SVG path-data bytes excluded)
+  // with the `ease` easing; the cubic-bezier(.25,1,.5,1) signature drives
+  // arrow keyframes.
   motion: {
     fast: ".2s",
     normal: ".3s",
@@ -187,10 +189,13 @@ const foundation = {
     thick: ".125rem" // 2px card/accordion/checkbox accents (brand unit)
   },
   borderStyle: { solid: "solid" },
-  // Control density. The brand sizes controls by padding (.btn, inputs,
-  // selects all pad-driven, no height/min-height declared — see MAPPING.md
-  // for the measured paddings and the empty height greps), which does not
-  // fit the fixed-height density model; the whole block below reuses the
+  // Control density. The brand sizes generic controls by padding (.btn,
+  // inputs, selects all pad-driven, no height/min-height on the generic
+  // rules — see MAPPING.md for the measured paddings). The heights the
+  // sheet does declare are scoped, not generic: the search input (4.375rem,
+  // rule 2425), the visually-hidden pattern (.0625rem, rules 153/164/320)
+  // and the custom checkbox/radio boxes (rules 155/156/166/167). None fits
+  // the fixed-height density model; the whole block below reuses the
   // Sentropic base ("à confirmer").
   density: {
     sm: { controlHeight: "2rem", paddingBlock: "0", paddingInline: "0.75rem", gap: "0.375rem", minWidth: "2rem" }, // (à confirmer)
@@ -203,7 +208,7 @@ const foundation = {
   typography: {
     control: { family: "'DassaultAviationSans', sans-serif", size: "0.875rem", weight: "700", lineHeight: "1rem", letterSpacing: "0.0625rem", textTransform: "uppercase", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
     field: { family: "'DassaultAviationSans', sans-serif", size: "1.25rem", weight: "400", lineHeight: "1.875rem", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
-    label: { family: "'DassaultAviationSans', sans-serif", size: "0.875rem", weight: "400", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
+    label: { family: "'DassaultAviationSans', sans-serif", size: "0.875rem", weight: "400", lineHeight: "1.4", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" }, // rule 145 declares no line-height — inherits body 1.4 (rule 195); unitless 1.5 is search-scoped (rule 542)
     // Brand links are black (#000) at rest AND on hover — the underline on
     // hover (plus Dassault blue in editorial content) is what makes a link.
     link: {
@@ -358,13 +363,16 @@ const foundation = {
     radioLineHeight: "1.5rem", // 24px
     labelColor: dassaultAviationColor.brand.primary // #324b6b choice label
   },
-  // Search input: the generic boxed field metrics (no search-specific
-  // paddings published).
+  // Search input: the three search-field variants disagree (white boxed,
+  // 3rem right pad, rule 543; transparent borderless, 1.25rem/6.4375rem
+  // pads, rule 2066; toolbox input, 5rem right pad + 4.375rem height, rule
+  // 2425 — see MAPPING.md), so the generic boxed field metrics below are a
+  // coherent stand-in ("à confirmer").
   search: {
-    paddingBlock: "0.9375rem", // 15px generic input
-    paddingInline: "1.25rem", // 20px generic input
-    fontSize: "1.25rem", // 20px generic input
-    lineHeight: "1.875rem" // 30px generic input
+    paddingBlock: "0.9375rem", // 15px generic input (à confirmer)
+    paddingInline: "1.25rem", // 20px generic input (à confirmer)
+    fontSize: "1.25rem", // 20px generic input (à confirmer)
+    lineHeight: "1.875rem" // 30px generic input (à confirmer)
   },
   // Toggle / switch: Dassault blue uppercase label over an #e8e9ed pill
   // track turning blue when checked.
