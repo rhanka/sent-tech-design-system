@@ -453,6 +453,20 @@ Green = all three pass. The builder runs the three commands itself
 builder never does is install dependencies: the full installation is the
 conductor's act, done once per lot (section 1).
 
+**Consequence of the per-theme worktree: the builder measures and writes, the conductor
+runs the gates.** A freshly created worktree has no `node_modules`, so
+`npm --workspace ... run test` is not executable inside it, and installing per worktree
+would mean four `npm ci` per lot for work that fits in one package directory. The
+builder therefore runs what the hoisted binaries allow and the conductor replays the
+three package gates in the integration tree, which has its dependencies. Two clauses
+make that a division of labour rather than a loss:
+
+1. the builder **names what it could not execute** — the list, not the phrase "gates
+   not run";
+2. it never reports **green** on a gate it did not execute. A silence over an unrun gate
+   is the same class of mutism as a domain left unstated, a version left unstated, and a
+   tool validated on one case: the report looks complete.
+
 **A gate failure in a fresh worktree is environmental until proven otherwise, and
 the proof is to replay in full order — not to read the diff.** The order matters:
 `npm ci`, then `build`, then `check`, `test`, `licensing:check`, `pack:smoke`. Run
@@ -753,6 +767,22 @@ the one direction nothing checks. Coarseness is not accuracy, but it fails
 a rule is measured twice, by methods that do not share an assumption: agreement on the
 extremes is the evidence, and disagreement is where the bug is. Agreement reached by
 running the same script twice is not agreement.
+
+**Scope-check a commit on the commit, never against a moving branch — `..` means two
+different things.** For `cherry-pick` and `rev-list`, `A..B` means "the commits in B
+that are not in A", which is what integration wants. For `git diff`, the same
+`A..B` compares the two **tips**. Once the lot branch has advanced past the point a
+theme branch was cut from, a tip diff therefore renders the *other* themes' work as
+deletions: on one lot it showed 202 deletions in a package the builder had never opened,
+and the builder was one command away from being accused of undoing another's work. Use
+`git show --stat <sha>` for the scope of a commit, or a merge-base diff if a range is
+really wanted.
+
+The same measurement carries a second consequence, less obvious: **a per-theme branch
+ages exactly as the lot base used to age, one level down.** That costs nothing at
+integration, because `cherry-pick` applies the commit and not the divergence — so the
+layout did not remove the ageing, it moved it to where it is free, *provided the right
+object is read*.
 
 So the rule has two halves, and the second is the one that was missing:
 
