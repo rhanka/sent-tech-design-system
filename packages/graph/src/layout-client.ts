@@ -76,29 +76,54 @@ export type {
  * Node count below which `"auto"` dispatch prefers the synchronous path.
  *
  * MEASURED, and NOT on the criterion the spec's §6 assumed. That section
- * expected the message boundary to make the worker slower below some size, and
- * asked for the crossover. There is no crossover: swept on this machine (AMD
- * Ryzen AI MAX+ 395, Node 22.22.1, median of 11 per size, warm worker) the
- * worker/sync ratio of caller-perceived wall time is 0.872 at 100 nodes, 0.971
- * at 150, 1.046 at 200, 0.978 at 250, 1.013 at 300, 1.104 at 350, 0.998 at 400,
- * 1.002 at 500 and 1.061 at 700 — noise around parity, with no size below which
- * the worker is materially slower. The boundary cost is real but never
- * dominates: 0.27 ms at 1 000 nodes, 8.29 ms at 5 000, 30.34 ms at 20 000,
- * against computations of 190.9 / 1 262.3 / 7 089.3 ms, so at most 0.5%. Part of
- * why the small sizes favour the worker is this client's own doing: the
- * deferred synchronous path pays Node's 1 ms `setTimeout` clamp (measured floor
- * 1.104 ms at 2 nodes) where the worker round trip costs 0.050 ms.
+ * expected the message boundary to make the worker slower below some size and
+ * asked for the crossover. THERE IS NO CROSSOVER — the worker/sync ratio of
+ * caller-perceived wall time does not trend with node count at all. Swept on an
+ * AMD Ryzen AI MAX+ 395 under Node 22.22.1, median of 11 per size, warm worker:
+ * 1.452 at 50 nodes, 1.036 at 100, 1.114 at 200, 1.147 at 250, 0.997 at 300,
+ * 1.003 at 400, 1.019 at 500, 1.021 at 600, 1.002 at 700, 1.018 at 800, 1.042 at
+ * 1 000, 1.028 at 1 500. A separate run of the same sweep read 0.864 / 0.912 /
+ * 0.904 / 0.942 / 1.024 / 0.899 / 0.988 / 1.050 / 1.002 / 0.982 / 1.019 / 0.996
+ * over the same sizes — i.e. the ratio wanders around parity by roughly ±15%,
+ * widest at the smallest size, and which side it lands on is a property of the
+ * run, not of the node count. An earlier revision of this comment read a single
+ * run as "small sizes favour the worker"; two runs do not support that, and the
+ * claim is withdrawn. What both runs do support is §6's prediction failing:
+ * there is no size below which the worker is materially and repeatably slower.
  *
- * What DOES justify a threshold is the one-off worker spawn, which the spec did
- * not consider: 30.1 ms median over five fresh clients (28.5 / 29.0 / 30.1 /
- * 31.7 / 32.3). Spawning a thread to avoid a computation shorter than the spawn
- * loses even counting only the first request. 250 nodes is the smallest swept
- * size whose synchronous computation (30.50 ms) exceeds that spawn cost, so
- * that is the threshold: below it `"auto"` computes on the calling thread, where
- * the whole freeze is at most ~30 ms and no thread is ever created.
+ * The boundary cost is real and never dominates. It is the noisiest figure the
+ * bench produces — a difference of two separately timed wall clocks at the
+ * computation's floor — so it is reported as min/median/max over 15 PAIRED shots
+ * rather than as one median: **-0.73 / 0.17 / 4.04 ms at 1 000 nodes,
+ * 2.87 / 8.36 / 18.61 ms at 5 000, 15.84 / 27.29 / 41.76 ms at 20 000**, against
+ * synchronous computations of ~190-212 / ~1 333-1 407 / ~6 856-7 246 ms. At
+ * 1 000 nodes it can even go negative, because the deferred synchronous path
+ * pays Node's 1 ms `setTimeout` clamp (floor 1.127 ms, median of 30 at 2 nodes)
+ * where a warm worker round trip costs 0.021 ms. An independent run on a loaded
+ * machine reported 5.54 / 56.09 / 44.78 ms, above the maxima seen here at 5 000;
+ * a previous revision of this comment quoted one quiet run's medians as "at most
+ * 0.5%", which was a best case presented as a ceiling. The conclusion that
+ * survives every one of these runs is the only one worth stating: the boundary
+ * is a few percent of the work at most, never the dominant term.
  *
- * Re-measure with `npm run bench:worker` after any change to the computation or
- * to the message shape; the boundary cost scales with `8 * nodeCount` bytes out.
+ * What DOES justify a threshold is the one-off worker spawn, which §6 did not
+ * consider: 24.4 ms in this run, 23.0-27.7 ms over five fresh clients in
+ * another, up to 31.4 ms across runs, and 33.4 ms in the independent one.
+ * Spawning a thread to avoid a computation shorter than the spawn loses even
+ * counting only the first request. **250 nodes is the smallest swept size whose
+ * synchronous computation crosses that spawn cost, and it crosses it narrowly:
+ * 32.1 ms here, 32.5 ms in the second run, 34.00 ms in the independent one,
+ * against spawns of 24.4 / 31.4 / 33.4 ms. The size below it — 200 nodes at
+ * 24.3-24.7 ms — stays under the spawn in all three.** Hence 250: under it
+ * `"auto"` computes on the calling thread, where the whole freeze is ~32 ms once
+ * and no thread is ever created. The margin is thin by construction — it is a
+ * break-even point, not a cliff — and nothing downstream depends on its exact
+ * value, only on there being one.
+ *
+ * `npm run bench:worker` re-derives every figure above, 250 and 200 included, so
+ * the constant can be re-checked rather than trusted. Re-measure after any change
+ * to the computation or to the message shape; the boundary cost scales with
+ * `8 * nodeCount` bytes out.
  */
 export const WORKER_NODE_THRESHOLD = 250;
 
