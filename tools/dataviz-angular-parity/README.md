@@ -21,7 +21,16 @@ props, then compares them:
   *design-system* components with identical inputs. When a case's markup diff
   count equals its bare-DS count, the adapter adds no difference of its own; the
   harness asserts that equality for `HeatmapChart` and `TreemapChart` rather than
-  claiming it in prose.
+  claiming it in prose;
+- **the accessible data list**, compared on its own and located by its
+  `aria-label` rather than by position. This one exists because the two counts
+  above **saturate**: they are positional, so once one framework emits an element
+  the other does not, every entry after it counts as a difference whatever it
+  contains, and a change downstream of that point moves no number.
+  `TimelineChart` is the worked example — its data list was missing the event
+  position a reader needs, and aligning it left 59 markup / 12 signature untouched
+  in both directions. Reverting that alignment now turns this assertion red while
+  the two counts stay put.
 
 Every count depends on the normalisation in [`normalize.ts`](./normalize.ts),
 whose allowlist is documented at the top of that file and covers only
