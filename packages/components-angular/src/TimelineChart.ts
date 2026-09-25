@@ -173,7 +173,9 @@ export class TimelineChart {
   }
 
   get dataValueItems(): string[] {
-    return this.safeData.map((e) => e.description ? `${e.label}: ${e.description}` : e.label);
+    return this.safeData.map((e) =>
+      e.description ? `${e.position}: ${e.label} — ${e.description}` : `${e.position}: ${e.label}`,
+    );
   }
 
   tooltipLeft(marker: Marker): number {
