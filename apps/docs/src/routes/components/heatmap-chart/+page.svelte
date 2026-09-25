@@ -240,11 +240,11 @@
       {#if locale.value === "fr"}
         Props du natif non reprises par la version store : <code>data</code> (dérivé
         du store via <code>x</code> / <code>y</code> / <code>measure</code>) et
-        <code>scale</code> (rampe fixe de l’adaptateur).
+        <code>scale</code> (non exposée : le défaut du natif s’applique).
       {:else}
         Native props not carried by the store version: <code>data</code> (derived
         from the store through <code>x</code> / <code>y</code> / <code>measure</code>)
-        and <code>scale</code> (adapter-fixed ramp).
+        and <code>scale</code> (not exposed: the native default applies).
       {/if}
     </p>
   </section>

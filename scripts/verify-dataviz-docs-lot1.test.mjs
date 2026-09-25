@@ -176,10 +176,15 @@ function serveBuild() {
   });
 }
 
-// slug -> framework -> expected live text (string) or live selector ([sel, attr?, value?]).
+// slug -> framework -> expected live text (string), live selector
+// ([sel, attr?, value?]), or null (the demo mounts but renders nothing by
+// design: the wrapper must appear and the stage must stay empty).
 const BROWSER_MATRIX = {
   "url-sync": {
-    svelte: "dash=",
+    // UrlSync is pure wiring: it renders no markup and writes nothing on a
+    // fresh load (useUrlSync only mirrors store *changes* into the URL), so
+    // no body text can prove it — the null case proves mount + emptiness.
+    svelte: null,
     react: "React adapter missing: UrlSync",
     vue: "Vue adapter missing: UrlSync",
     angular: "Angular component missing: UrlSync"
@@ -209,9 +214,11 @@ const BROWSER_MATRIX = {
     angular: "Angular component missing: DataImage"
   },
   "dataviz-dashboard-grid": {
-    svelte: "pipeline",
-    react: "pipeline",
-    vue: "pipeline",
+    // Stage-scoped: bare "pipeline" also matches the static layout snippet,
+    // so only a panel inside the live stage proves the render.
+    svelte: ["section[aria-label='pipeline']"],
+    react: ["section[aria-label='pipeline']"],
+    vue: ["section[aria-label='pipeline']"],
     angular: "Angular component missing: DashboardGrid"
   }
 };
@@ -275,7 +282,17 @@ test("all four tabs render on the built site (Chromium)", async (t) => {
             timeout: 30000
           });
           await page.waitForSelector(".tex__render", { timeout: 15000 });
-          if (typeof expected === "string") {
+          if (expected === null) {
+            // Renders nothing by design: the demo wrapper must mount (proves
+            // hydration ran — prerendered stages are empty) and carry no text.
+            // Scope to the wrapper, not the stage: the url-sync page appends a
+            // helper paragraph (the exact "?dash=…" query string) inside the
+            // same stage, so a stage-wide emptiness check would fail on live
+            // scaffolding rather than on the component.
+            await page.waitForSelector(".tex__render .chart-wrapper", { timeout: 20000 });
+            const text = await page.$eval(".tex__render .chart-wrapper", (el) => el.textContent ?? "");
+            assert.equal(text.trim(), "", `${slug}/${framework}: expected an empty component wrapper`);
+          } else if (typeof expected === "string") {
             await page.waitForFunction(
               (text) => document.body.textContent?.includes(text) ?? false,
               expected,

@@ -255,11 +255,11 @@
       {#if locale.value === "fr"}
         Props du natif non reprises par la version store : <code>data</code> (dérivé
         du store via <code>hierarchy</code> / <code>measure</code>) et
-        <code>tiling</code> (pavage fixe de l’adaptateur).
+        <code>tiling</code> (non exposé : le défaut du natif s’applique).
       {:else}
         Native props not carried by the store version: <code>data</code> (derived
         from the store through <code>hierarchy</code> / <code>measure</code>) and
-        <code>tiling</code> (adapter-fixed tiling).
+        <code>tiling</code> (not exposed: the native default applies).
       {/if}
     </p>
   </section>
