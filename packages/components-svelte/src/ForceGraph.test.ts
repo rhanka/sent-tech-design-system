@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/svelte";
+import { computeLayout } from "@sentropic/graph/processing";
 import { describe, expect, it, vi } from "vitest";
 import ForceGraph from "./lib/ForceGraph.svelte";
 import GraphLegend from "./lib/GraphLegend.svelte";
@@ -1028,6 +1029,54 @@ describe("ForceGraph", () => {
       });
       await new Promise((r) => setTimeout(r, 700));
       expect(onMergeComplete).not.toHaveBeenCalled();
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // GD-M2-DS-PRESENTATION: node layout is delegated to `@sentropic/graph/processing`.
+  // These tests pin the edge: a reintroduced local simulation with different
+  // physics fails the reference comparison.
+  // ---------------------------------------------------------------------------
+  describe("upstream layout delegation (@sentropic/graph/processing)", () => {
+    const centres = (container: Element) =>
+      Array.from(container.querySelectorAll(".st-forceGraph__node")).map((g) => {
+        const m = (g.getAttribute("transform") ?? "").match(
+          /translate\(([-\d.]+) ([-\d.]+)\)/
+        );
+        return { x: Number(m?.[1]), y: Number(m?.[2]) };
+      });
+
+    it("renders node centres identical to the computeLayout reference output", () => {
+      const { container } = render(ForceGraph, {
+        props: { nodes, edges, label: "Delegated" }
+      });
+      // Defaults: width 480, height 360, iterations 300, repulsion 1.
+      const expected = computeLayout(nodes, edges, {
+        width: 480,
+        height: 360,
+        iterations: 300,
+        repulsion: 1
+      });
+      const got = centres(container);
+      expect(got.length).toBe(expected.length);
+      // Node order matches the nodes array.
+      expected.forEach((p, i) => {
+        expect(got[i].x).toBeCloseTo(p.x, 6);
+        expect(got[i].y).toBeCloseTo(p.y, 6);
+      });
+    });
+
+    it("honours pinned fx/fy positions through the delegation", () => {
+      const pinned: ForceGraphNode[] = [
+        { id: "a", fx: 10, fy: 20 },
+        { id: "b" }
+      ];
+      const { container } = render(ForceGraph, {
+        props: { nodes: pinned, edges: [], label: "Pinned" }
+      });
+      const [a] = centres(container);
+      expect(a.x).toBeCloseTo(10, 6);
+      expect(a.y).toBeCloseTo(20, 6);
     });
   });
 });

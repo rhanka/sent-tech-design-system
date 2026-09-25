@@ -334,43 +334,14 @@
   }
 
   // ---------------------------------------------------------------------------
-  // Lightweight force simulation (no external dependency).
-  //   - repulsion (Coulomb-like, O(n^2), fine for ontology-scale graphs)
-  //   - spring links (Hooke toward a rest length)
-  //   - mild gravity toward the centre to keep disconnected nodes on-canvas
-  // A deterministic seeded layout keeps SSR / tests stable.
+  // Node layout (GD-M2-DS-PRESENTATION): delegated to `@sentropic/graph/processing`.
+  // `computeLayout` is the upstream extraction of this component's former local
+  // simulation (same FNV-1a/mulberry32 deterministic seed, same fx/fy pin and
+  // repulsion-clamp semantics), so this file holds no physics of its own. Only
+  // the `./processing` subpath is imported — never the package root, which would
+  // drag the WebGL renderer into every consumer bundle.
   // ---------------------------------------------------------------------------
-  type SimNode = { id: string; x: number; y: number; vx: number; vy: number; fixed: boolean };
-
-  function mulberry32(seed: number): () => number {
-    let a = seed >>> 0;
-    return () => {
-      a |= 0; a = (a + 0x6d2b79f5) | 0;
-      let t = Math.imul(a ^ (a >>> 15), 1 | a);
-      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-    };
-  }
-
-  // Stable seed from the SET of node ids (sorted), not from ns.length/es.length.
-  // A length-based seed reshuffled the whole layout whenever a node was added or
-  // removed (notably after a reconciliation merge), making the graph "jump". A
-  // hash over the sorted ids keeps the same topology → same layout, so removing
-  // one node leaves the rest essentially in place. (FNV-1a 32-bit over the joined
-  // sorted ids; deterministic and order-independent.)
-  function stableSeed(ns: ForceGraphNode[]): number {
-    const ids = ns.map((n) => n.id).sort();
-    let h = 0x811c9dc5; // FNV offset basis
-    const joined = ids.join("|");
-    for (let i = 0; i < joined.length; i++) {
-      h ^= joined.charCodeAt(i);
-      h = Math.imul(h, 0x01000193); // FNV prime
-    }
-    // Fold in the count too so wholly different graphs of equal id-hash still
-    // differ, but the dominant term is the (order-independent) id hash.
-    h ^= ns.length;
-    return h >>> 0;
-  }
+  import { computeLayout } from "@sentropic/graph/processing";
 
   function runSimulation(
     ns: ForceGraphNode[],
@@ -380,107 +351,14 @@
     ticks: number,
     repulsionFactor: number
   ): Map<string, { x: number; y: number }> {
-    const cx = w / 2;
-    const cy = h / 2;
-    // Seed from the stable id-set hash so adding/removing a node does not
-    // reshuffle the whole layout (same topology → same layout).
-    const rand = mulberry32(stableSeed(ns));
-    const idIndex = new Map<string, number>();
-    const sim: SimNode[] = ns.map((n, i) => {
-      idIndex.set(n.id, i);
-      const fixed = typeof n.fx === "number" && typeof n.fy === "number";
-      // Seed on a loose ring so the first ticks fan the graph out predictably.
-      const angle = (i / Math.max(ns.length, 1)) * Math.PI * 2;
-      const r = Math.min(w, h) * 0.3 * (0.5 + rand() * 0.5);
-      return {
-        id: n.id,
-        x: fixed ? (n.fx as number) : cx + Math.cos(angle) * r,
-        y: fixed ? (n.fy as number) : cy + Math.sin(angle) * r,
-        vx: 0,
-        vy: 0,
-        fixed
-      };
+    const results = computeLayout(ns, es, {
+      width: w,
+      height: h,
+      iterations: ticks,
+      repulsion: repulsionFactor
     });
-
-    const links = es
-      .map((e) => ({ s: idIndex.get(e.source), t: idIndex.get(e.target) }))
-      .filter((l): l is { s: number; t: number } => l.s !== undefined && l.t !== undefined);
-
-    const area = w * h;
-    const k = Math.sqrt(area / Math.max(ns.length, 1)); // ideal node distance
-    // Clamp the caller-supplied factor so extreme values can't explode or
-    // collapse the layout. >1 spreads nodes out, <1 packs them tighter; the
-    // fit-to-content viewBox is recomputed afterwards so spacing just fills space.
-    const clampedRepulsion = Math.min(Math.max(repulsionFactor, 0.1), 10);
-    const repulsion = k * k * 0.9 * clampedRepulsion;
-    const restLength = k * 0.8;
-    const springK = 0.04;
-    const gravity = 0.012;
-    const damping = 0.85;
-    let temperature = Math.min(w, h) * 0.08;
-    const cooling = ticks > 0 ? Math.pow(0.02, 1 / ticks) : 0.95;
-
-    for (let step = 0; step < ticks; step++) {
-      // Repulsion between all node pairs.
-      for (let i = 0; i < sim.length; i++) {
-        for (let j = i + 1; j < sim.length; j++) {
-          let dx = sim[i].x - sim[j].x;
-          let dy = sim[i].y - sim[j].y;
-          let dist2 = dx * dx + dy * dy;
-          if (dist2 < 0.01) {
-            dx = (rand() - 0.5) * 0.1;
-            dy = (rand() - 0.5) * 0.1;
-            dist2 = dx * dx + dy * dy + 0.01;
-          }
-          const dist = Math.sqrt(dist2);
-          const force = repulsion / dist2;
-          const fx = (dx / dist) * force;
-          const fy = (dy / dist) * force;
-          sim[i].vx += fx; sim[i].vy += fy;
-          sim[j].vx -= fx; sim[j].vy -= fy;
-        }
-      }
-      // Spring attraction along links.
-      for (const l of links) {
-        const a = sim[l.s];
-        const b = sim[l.t];
-        const dx = b.x - a.x;
-        const dy = b.y - a.y;
-        const dist = Math.sqrt(dx * dx + dy * dy) || 0.01;
-        const force = (dist - restLength) * springK;
-        const fx = (dx / dist) * force;
-        const fy = (dy / dist) * force;
-        a.vx += fx; a.vy += fy;
-        b.vx -= fx; b.vy -= fy;
-      }
-      // Gravity toward centre + integrate with capped, cooling step.
-      for (const node of sim) {
-        if (node.fixed) { node.vx = 0; node.vy = 0; continue; }
-        node.vx += (cx - node.x) * gravity;
-        node.vy += (cy - node.y) * gravity;
-        node.vx *= damping;
-        node.vy *= damping;
-        const speed = Math.sqrt(node.vx * node.vx + node.vy * node.vy);
-        if (speed > temperature) {
-          node.vx = (node.vx / speed) * temperature;
-          node.vy = (node.vy / speed) * temperature;
-        }
-        node.x += node.vx;
-        node.y += node.vy;
-        // Soft clamp: allow the layout to overflow the canvas so it keeps a
-        // natural shape (fit-to-content reframes it afterwards). The wide bound
-        // only guards against runaway coordinates, it no longer glues nodes to
-        // the four edges.
-        const padX = w * 0.5 + nodeRadius * 2;
-        const padY = h * 0.5 + nodeRadius * 2;
-        node.x = Math.max(-padX, Math.min(w + padX, node.x));
-        node.y = Math.max(-padY, Math.min(h + padY, node.y));
-      }
-      temperature *= cooling;
-    }
-
     const out = new Map<string, { x: number; y: number }>();
-    for (const node of sim) out.set(node.id, { x: node.x, y: node.y });
+    for (const r of results) out.set(r.id, { x: r.x, y: r.y });
     return out;
   }
 
