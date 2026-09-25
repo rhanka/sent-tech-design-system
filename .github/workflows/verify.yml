@@ -48,6 +48,27 @@ jobs:
 
       - run: npm ci
 
+      # The repository-level guards — layering, provenance invariants, theme
+      # shape and theme invariants, the licensing gate's own defect tests — were
+      # held by the root `npm test` only, and no workflow ran them: measured on
+      # origin/main, `git show origin/main:.github/workflows/verify.yml` had no
+      # `node --test` step, in this workflow or in any other. Root `npm test` is
+      # `node --test scripts/*.test.mjs && node scripts/run-workspaces.mjs test`,
+      # whose second half needs a working Chrome for the packages/graph golden
+      # tests, so nobody could use it as a gate. A guard nothing runs is a guard
+      # nobody has checked — a test with a false name survived weeks in
+      # scripts/verify-layering.test.mjs that way.
+      #
+      # It runs here, in the unsharded job, for the same reason the provenance
+      # ledger does: these guards read the whole tree, not a workspace slice, and
+      # the defect they catch is in the package nobody thought to select.
+      #
+      # Via the runner rather than `node --test scripts/*.test.mjs` because that
+      # form exits 0 when the glob resolves to nothing; the runner asserts a floor
+      # on the number of guard files first. See its header for the measurement.
+      - name: Repository guards (scripts/*.test.mjs)
+        run: node scripts/run-script-guards.mjs
+
       - name: Licensing gate (all publishable packages)
         run: npm run licensing:check
 
