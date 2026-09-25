@@ -41,8 +41,15 @@ if (targets.length === 0) {
 // inverted. Measured once: a stale profile reported all four themes as leaked
 // when they were not. So the default is a throwaway profile, created here and
 // removed on exit; PW_PROFILE overrides it only for deliberate debugging.
-// A snap Chromium cannot write its profile lock inside a hidden directory, so the
-// profile lives at a plain path under $HOME.
+//
+// WHY $HOME AND NOT os.tmpdir(). A snap Chromium cannot create its profile lock
+// under any path with a HIDDEN component. Measured on this machine: a plain
+// directory under $HOME works, /tmp works, a dot-directory under $HOME fails,
+// and a directory under $TMPDIR fails — because $TMPDIR here is
+// /home/<user>/.cache-tmp, which is hidden. So os.tmpdir(), the obvious choice,
+// is unusable, and its failure is misleading: Chromium reports "the profile is
+// already in use" for a directory created one millisecond earlier. $HOME is
+// chosen because it is the one base that is reliably non-hidden.
 const ownProfile = !process.env.PW_PROFILE;
 const profile = process.env.PW_PROFILE ?? mkdtempSync(`${process.env.HOME}/chromium-theme-privacy-`);
 const executablePath = process.env.PW_CHROMIUM ?? "/snap/bin/chromium";
@@ -52,6 +59,14 @@ const browser = await chromium.launchPersistentContext(profile, {
   args: ["--no-sandbox"],
   headless: true
 });
+if (!ownProfile) {
+  console.error(
+    "note: PW_PROFILE is set, so this run reuses a persistent profile. That is the " +
+      "path by which a revealed starting state comes back; the PRIVACY_CHECK_INVALID " +
+      "exit below catches it, but a clean verification should omit PW_PROFILE."
+  );
+}
+
 const page = await browser.newPage();
 const pageErrors = [];
 page.on("pageerror", (e) => pageErrors.push(String(e)));
