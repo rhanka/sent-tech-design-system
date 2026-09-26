@@ -48,7 +48,7 @@ excluded).
 | `border.strong` | `#a-dropdown-item{border-bottom:2px solid #c4c4c4}` (2 occurrences) | `#c4c4c4` |
 | `slate.20` / `action.secondaryHover` | table alt-row tint (2 occurrences; third match in a /* */ block) | `#e0e0e0` |
 | `slate.90` alternate / footer black | `#footer-jumbotron-2{background:#000000}` (4 unified occurrences) | `#000000` |
-| `cyan.10` | `#gouvernance-page-widget-title-div` background step (1 occurrence) | `#f5f5f5` |
+| `cyan.10` | `#gouvernance-page-widget-title-div` overridden background step (1 occurrence; winning value `#f7d3bf4f`, 8-digit, counted apart) — neutral filler | `#f5f5f5` *(à confirmer)* |
 | `grey.300` | table alt-column tint (2 occurrences) | `#efefef` |
 | `grey divider` | `.dropdown-menu .divider` base rule (1 occurrence; effective on desktop, mobile overrides with `#9c9c9c`) | `#c7c7c7` |
 | `tabs.activeText` / `pagination.activeText` / `badge.infoText` / `action.primaryText` | white nav labels on the dark navbar / white on navy (measured pairing) | `#ffffff` |
@@ -65,6 +65,7 @@ excluded).
 - **Feedback hues** (`success #1e7e34`, `warning #8a4b00`, `error #b3261e`, `info #013755`) — no status rule in `style.css`; stand-ins chosen to clear WCAG AA on white (5.14 / 6.80 / 6.54 / 12.51:1).
 - **Modal backdrop** (`rgb(0 0 0 / 0.6)`) — no `.modal`/`.backdrop`/`.overlay` rule in the brand region.
 - **Secondary-button composition** (transparent fill, `#393939` stroke, `#eeeeee` hover) — no secondary-button rule; composition of measured values.
+- **Light neutral `cyan.10` (`#f5f5f5`)** — the cited declaration is overridden in its own rule (the painted value is the 8-digit `#f7d3bf4f`, counted apart); kept as a neutral slot filler, not a painted brand tint.
 - **Tabs/pagination/search/toggle geometry and tab indicator** — no tab, pagination or toggle component published; structural values with the measured nav/pairing colours.
 - **`shadow.medium/floating`, `motion.fast`, `radius.pill`, `disabledOpacity`, `spacing`, `z`, `cursor`, `iconSize`, lg `density`** — not published; base/structural values. `shadow.subtle` is `none` (measured `box-shadow:unset` on menus); `motion.normal/slow/easing` and `transition` are measured (`.5s ease-out`, `transform 1s`).
 - **Categorical `data.*` palette** (`#013755`, `#313131`, `#1e7e34`, `#8a4b00`, `#b3261e`, `#013755`, `#666666`, `#d6d6d6`) — a coherent proposal from the brand navy + ramp + status hues, not an official scale.
