@@ -21,6 +21,7 @@ export type SelectProps = {
   value?: string;
   placeholder?: string;
   disabled?: boolean;
+  "aria-label"?: string;
   class?: string;
 };
 
@@ -41,6 +42,7 @@ let _counter = 0;
           [value]="currentValue"
           [disabled]="disabled ?? false"
           [attr.aria-invalid]="isInvalid ? 'true' : null"
+          [attr.aria-label]="ariaLabel ?? null"
           (change)="onChange($event)"
         >
           @if (placeholder) {
@@ -80,6 +82,7 @@ export class Select {
   @NgInput() value?: string;
   @NgInput() placeholder?: string;
   @NgInput() disabled?: boolean;
+  @NgInput("aria-label") ariaLabel?: string;
   @NgInput("class") classInput?: string;
 
   @Output() readonly modelValueChange = new EventEmitter<string>();

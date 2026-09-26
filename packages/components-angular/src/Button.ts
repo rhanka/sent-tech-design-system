@@ -11,6 +11,8 @@ export type ButtonProps = {
   size?: ButtonSize;
   type?: "button" | "submit" | "reset";
   disabled?: boolean;
+  "aria-label"?: string;
+  "aria-pressed"?: boolean | string;
   class?: string;
 };
 
@@ -23,6 +25,8 @@ export type ButtonProps = {
       [class]="hostClass"
       [type]="typeInput ?? 'button'"
       [disabled]="disabled ?? false"
+      [attr.aria-label]="ariaLabel ?? null"
+      [attr.aria-pressed]="ariaPressed ?? null"
     >
       <ng-content></ng-content>
     </button>
@@ -35,6 +39,8 @@ export class Button {
   @NgInput() size?: ButtonSize;
   @NgInput("type") typeInput?: "button" | "submit" | "reset";
   @NgInput() disabled?: boolean;
+  @NgInput("aria-label") ariaLabel?: string;
+  @NgInput("aria-pressed") ariaPressed?: boolean | string;
   @NgInput("class") classInput?: string;
 
   get hostClass(): string {
