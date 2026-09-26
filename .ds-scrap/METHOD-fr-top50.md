@@ -262,6 +262,21 @@ whitespace — as in `rel=["']?stylesheet`, or count by parsing rather than by
 matching, which is safer still for HTML. The direction of the error is not
 symmetric: a count too low invents a problem and spends a budget on it, a count
 too high hides one.
+(5) **The convention travels with the number, in the deliverable.** Stating it in
+your report is not enough: the reviewer reads `index.ts` and `MAPPING.md`, not
+your report, and a number standing alone there invites a correction that is worse
+than the number. Measured, 24-25 September: a builder published `.3s x28`
+declarations for a brand whose brand region holds 30 matches / 29 declarations /
+28 rules, the 29th declaration sharing rule 1369 with another `transition`. The
+package's own convention — one occurrence is one declaration — gives 29; counting
+28 requires collapsing a cascade, which neither the code nor the ledger stated.
+A review refuted the 29, the correction shipped 28, and the second pass restored
+29: **a correct value was overwritten because its convention was not written next
+to it.** So beside every published figure, one short clause saying what is counted
+(declarations, rules, literal occurrences, `var()` references) and what is
+excluded. The same day, on another brand, `red` was published as 6 where the
+package's own stated convention gives 9 — the 6 counted only `outline`
+declarations, a sub-convention nobody wrote down.
 
 ## 3. Allowed sources, ranked
 
@@ -1050,6 +1065,20 @@ rule or a vendor block, whether a rule is scoped to one component, whether "the
 brand publishes no X" is true, whether a cited selector declares the property it is
 cited for, and whether a promoted token is actually consumed. Those five produced
 almost every blocking finding.
+
+**A refutation is measured in both directions.** Before writing « this value is
+false », state the counting convention you are applying and check whether the
+package states another one. Two conventions give two numbers, and the difference
+is not a builder's defect. Measured on lot 4: a review refuted a correct figure
+(29 declarations), the correction shipped a false one (28), and the second pass
+had to restore 29 — the damage came from a correction applied to a value that was
+already right. If the package publishes a number with **no** convention beside it,
+that absence **is** the defect: name it as such, and do not substitute your own
+number for the builder's. The inverse case is equally measurable and equally
+reportable: a figure whose justification is wrong while the figure itself is
+right. On `getlink`, a fixer justified a count of 9 with a command that replays to
+17 — of which 8 are selector-side — and the 9 was nonetheless correct under two
+independent instruments. Report the broken proof, keep the value.
 
 **The guards are a floor, not a ceiling, and the floor is lower than the summary
 above suggests.** Measured on the first lot that ran with all three present: the
