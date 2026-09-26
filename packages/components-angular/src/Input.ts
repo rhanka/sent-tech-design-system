@@ -16,6 +16,7 @@ export type InputProps = {
   placeholder?: string;
   disabled?: boolean;
   readonly?: boolean;
+  "aria-label"?: string;
 };
 
 let _counter = 0;
@@ -43,6 +44,7 @@ function nextId(): string {
           [attr.required]="required ? '' : null"
           [attr.name]="name"
           [attr.aria-invalid]="isInvalid ? 'true' : null"
+          [attr.aria-label]="ariaLabel ?? null"
           (input)="onInput($event)"
           (change)="change.emit($event)"
         />
@@ -75,6 +77,7 @@ export class Input {
   @NgInput() required?: boolean;
   @NgInput() name?: string;
   @NgInput() type = "text";
+  @NgInput("aria-label") ariaLabel?: string;
   @NgInput("class") classInput?: string;
 
   @Output() readonly modelValueChange = new EventEmitter<string>();
