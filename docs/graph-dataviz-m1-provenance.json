@@ -7774,7 +7774,7 @@
     {
       "destination": "packages/dataviz-angular/src/lib/ObjectLayerPanel.ts",
       "status": "local-monorepo-helper",
-      "sha256": "5587e7e6747e8a265aeceae31f9c636385d8ed7d2cb11d728bb0fc36e7dd09f6",
+      "sha256": "50a08af800d12b8d05e086a93429bf1f579e2aa0e21dcb5041909af71ec44722",
       "note": "GD-M2-PARITY lot 11: monorepo-authored by hand for the ObjectLayerPanel adapter (shares the Vue ObjectLayers.ts file with WebFrame/DataImage, so the stem carries no ObjectLayerPanelProps alias, and setup() is pure prop derivation with no reactive state; follows the React single-TreeView contract; see its README), so no descriptor and no upstream source; hash-pinned"
     },
     {
@@ -7786,7 +7786,7 @@
     {
       "destination": "packages/dataviz-angular/src/lib/BookmarkNavigator.ts",
       "status": "local-monorepo-helper",
-      "sha256": "cba4e666c89afe6b6a0baf88e08e2f6351559710b1b0be626fe5e76f47dda6ed",
+      "sha256": "6acebb76a5ecb18f84c91035f787f277bae02300d57dad09c0b749895a65b6e0",
       "note": "GD-M2-PARITY lot 11: monorepo-authored by hand for the BookmarkNavigator adapter (local activeId/playing state, interval-timer playback and three watchers, so no `void <state>.value` marker to anchor on; applies bookmarks via core applyDashboardBookmark; see its README), so no descriptor and no upstream source; hash-pinned"
     },
     {
@@ -7798,7 +7798,7 @@
     {
       "destination": "packages/dataviz-angular/src/lib/CalculationEditor.ts",
       "status": "local-monorepo-helper",
-      "sha256": "b3d375ad8ce369d3fa91a9614ba91abc1bfde997ba3371ddab2c96c70f80d342",
+      "sha256": "719da3b1d2ea0397300e6b73602efa3afa24db568655c759245b40bc17a8d770",
       "note": "GD-M2-PARITY lot 11: monorepo-authored by hand for the CalculationEditor adapter (controlled editor writing through onChange; setup() holds no reactive state, so no `void <state>.value` marker to anchor on; suggestions derive from core suggestCalculationTokens; see its README), so no descriptor and no upstream source; hash-pinned"
     },
     {
@@ -7810,7 +7810,7 @@
     {
       "destination": "packages/dataviz-angular/src/lib/FormatPanel.ts",
       "status": "local-monorepo-helper",
-      "sha256": "acba89cc2de57bb97509778e694241829efd513527a9482866b4f7c4b4b819b6",
+      "sha256": "2662eea9324501747b4bf3f8f49fbcb69bd98d8b4bde49e5bff11d67b4c8df37",
       "note": "GD-M2-PARITY lot 11: monorepo-authored by hand for the FormatPanel adapter (fully controlled editor writing through core updateAxisFormat/updateLegendFormat/updateMarkerFormat; setup() holds no reactive state, so no `void <state>.value` marker to anchor on; see its README), so no descriptor and no upstream source; hash-pinned"
     },
     {
