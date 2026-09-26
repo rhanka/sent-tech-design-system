@@ -365,3 +365,65 @@ test("every *-publish.yml workflow refuses to publish a commit that is not an an
     `publish workflow(s) missing the tag-is-ancestor-of-default-branch guard:\n  ${offenders.join("\n  ")}`,
   );
 });
+
+// --- 5. every file a guard reads can trigger the workflow that runs the guards
+// Measured 2026-09-26: a change to `.ds-scrap/METHOD-fr-top50.md` (PR #145) ran
+// NO workflow at all, although `verify-theme-invariants.test.mjs` reads that file
+// to scope its checks — and only `.github/workflows/verify.yml` was listed, so a
+// PR touching nothing but a `*-publish.yml` would have skipped this very file.
+// A file a guard reads that cannot trigger the guards is a file whose changes
+// land unguarded. The inputs are taken from the guards themselves (every
+// `new URL("../<path>", import.meta.url)` in scripts/*.test.mjs), so a guard that
+// starts reading a new file brings its trigger requirement with it.
+const scriptsDir = new URL("./", import.meta.url).pathname;
+
+function pullRequestPathFilters(verifyText) {
+  const lines = verifyText.split("\n");
+  const start = lines.findIndex((l) => /^ {2}pull_request:\s*$/.test(l));
+  assert.ok(start >= 0, "verify.yml: no `pull_request:` trigger found");
+  const pathsAt = lines.findIndex((l, i) => i > start && /^ {4}paths:\s*$/.test(l));
+  assert.ok(pathsAt > start, "verify.yml: no `paths:` under `pull_request:`");
+  const globs = [];
+  for (let i = pathsAt + 1; i < lines.length; i++) {
+    const line = lines[i];
+    if (/^\s*#/.test(line) || line.trim() === "") continue;
+    const m = line.match(/^ {6}- ["']?([^"'#]+?)["']?\s*$/);
+    if (!m) break;
+    globs.push(m[1]);
+  }
+  return globs;
+}
+
+function globToRegExp(glob) {
+  const escaped = glob.replace(/[.+^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`^${escaped.replace(/\*\*/g, "\u0000").replace(/\*/g, "[^/]*").replace(/\u0000/g, ".*")}$`);
+}
+
+function filesGuardsRead() {
+  const inputs = new Set();
+  for (const name of readdirSync(scriptsDir).filter((f) => f.endsWith(".test.mjs"))) {
+    const text = readFileSync(join(scriptsDir, name), "utf8");
+    for (const m of text.matchAll(/new URL\(\s*["']\.\.\/([A-Za-z0-9._\/-]+)["']/g)) inputs.add(m[1]);
+  }
+  return [...inputs].sort();
+}
+
+test("every file a guard reads can trigger the workflow that runs the guards", () => {
+  const globs = pullRequestPathFilters(readWorkflow("verify.yml"));
+  const inputs = filesGuardsRead();
+  // Vacuity floors, measured 2026-09-26: 8 pull_request globs, 5 guard inputs.
+  assert.ok(globs.length >= 6, `expected verify.yml pull_request path filters, found ${globs.length}`);
+  assert.ok(inputs.length >= 4, `expected repository files read by the guards, found ${inputs.length}`);
+  const patterns = globs.map(globToRegExp);
+  const uncovered = inputs.filter((input) => {
+    // A directory input (trailing slash) must be covered for a file inside it.
+    const probe = input.endsWith("/") ? `${input}any-file` : input;
+    return !patterns.some((re) => re.test(probe));
+  });
+  assert.deepEqual(
+    uncovered,
+    [],
+    `file(s) read by a repository guard that cannot trigger verify.yml on a pull request — ` +
+      `a change to them would land with no guard running:\n  ${uncovered.join("\n  ")}`,
+  );
+});
