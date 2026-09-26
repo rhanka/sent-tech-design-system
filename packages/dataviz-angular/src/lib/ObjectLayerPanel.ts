@@ -49,17 +49,16 @@ export type ObjectLayerPanelProps = {
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div role="group" [attr.aria-label]="label" [class]="classInput">
-      <!-- No label binding: Vue and React both render the DS default
-        here — their adapters pass an aria-label both DS TreeViews
-        spread-then-override with the label default — so the measured
-        inter-framework contract is the default, not the label-plus-tree
-        string only Svelte renders (via the label prop). The parity run
-        measures that DS-level split instead of hiding it. -->
+      <!-- The tree carries "<label> tree" through the documented DS label
+        input, matching the fixed reference (whose adapters pass it as
+        `aria-label`, honoured by the React/Vue DS TreeViews, or `label`
+        in Svelte). -->
       <st-tree-view
         [nodes]="nodes"
         [selectedId]="selectedId"
         [expandedIds]="expandedIds"
         [defaultExpandedIds]="effectiveDefaults"
+        [label]="label + ' tree'"
       ></st-tree-view>
       <div>
         @for (layer of layers; track layer.id) {
