@@ -44,12 +44,9 @@ function normaliseIndex(index: number, length: number): number {
  * called from `ngOnInit`/`ngOnChanges`; the timer is started there and
  * cleared in `ngOnDestroy` (the adapter-pattern guard names that discipline).
  *
- * Parity residue, measured not hidden: the Angular DS `Button` declares
- * neither an `aria-label` nor an `aria-pressed` input (React/Vue forward
- * both onto the `<button>`), so the previous/next/playback labels and the
- * per-bookmark pressed state have no Angular counterpart. The buttons keep
- * their variant, size, disabled state, click handler and visible text; the
- * run attributes the missing attributes to the design system.
+ * The DS `Button` now forwards `aria-label`/`aria-pressed` (like
+ * React/Vue), so the previous/next/playback labels and the per-bookmark
+ * pressed state render on the `<button>`.
  */
 @Component({
   selector: 'st-dataviz-bookmark-navigator',
@@ -61,14 +58,14 @@ function normaliseIndex(index: number, length: number): number {
       @if (!hasBookmarks) {
         <span>{{ emptyLabel }}</span>
       } @else {
-        <st-button variant="secondary" size="sm" [disabled]="!hasMultiple" (click)="step(-1)">{{
+        <st-button variant="secondary" size="sm" [aria-label]="previousLabel" [disabled]="!hasMultiple" (click)="step(-1)">{{
           previousLabel
         }}</st-button>
-        <st-button variant="secondary" size="sm" [disabled]="!hasMultiple" (click)="step(1)">{{
+        <st-button variant="secondary" size="sm" [aria-label]="nextLabel" [disabled]="!hasMultiple" (click)="step(1)">{{
           nextLabel
         }}</st-button>
         @if (showPlaybackControls) {
-          <st-button variant="ghost" size="sm" [disabled]="!hasMultiple" (click)="togglePlay()">{{
+          <st-button variant="ghost" size="sm" [aria-label]="playing ? pauseLabel : playLabel" [disabled]="!hasMultiple" (click)="togglePlay()">{{
             playing ? pauseLabel : playLabel
           }}</st-button>
         }
@@ -76,6 +73,8 @@ function normaliseIndex(index: number, length: number): number {
           <st-button
             [variant]="bookmark.id === activeId ? 'primary' : 'secondary'"
             size="sm"
+            [aria-label]="bookmark.label"
+            [aria-pressed]="bookmark.id === activeId"
             (click)="applyBookmark(bookmark)"
             >{{ bookmark.label }}</st-button
           >

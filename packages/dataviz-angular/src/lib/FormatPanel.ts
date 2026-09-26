@@ -66,11 +66,9 @@ function shapeFrom(value: unknown): FormatMarkerShape {
  * the `ngOnInit`/`ngOnChanges` pair on every adapter, and this records that
  * there is nothing to derive.
  *
- * Parity residue, measured not hidden: the Angular DS `NumberInput`/
- * `Select`/`Checkbox`/`Input` declare no `aria-label` input (React/Vue
- * forward it onto the control), so the per-axis/legend/marker labels have no
- * Angular counterpart. The visible `label` inputs still render; the run
- * attributes the missing attributes to the design system.
+ * The DS `NumberInput`/`Select`/`Checkbox`/`Input` now forward `aria-label`
+ * (like React/Vue), so the per-axis/legend/marker labels render on the
+ * control alongside the visible `label` inputs.
  */
 @Component({
   selector: 'st-dataviz-format-panel',
@@ -83,22 +81,26 @@ function shapeFrom(value: unknown): FormatMarkerShape {
         <div>
           <st-number-input
             [label]="'Minimum ' + axis.label"
+            [aria-label]="'Minimum ' + axis.label"
             [modelValue]="axis.min ?? ''"
             (modelValueChange)="updateAxis(axis.id, { min: optionalNumber($event) })"
           ></st-number-input>
           <st-number-input
             [label]="'Maximum ' + axis.label"
+            [aria-label]="'Maximum ' + axis.label"
             [modelValue]="axis.max ?? ''"
             (modelValueChange)="updateAxis(axis.id, { max: optionalNumber($event) })"
           ></st-number-input>
           <st-select
             [label]="'Echelle ' + axis.label"
+            [aria-label]="'Echelle ' + axis.label"
             [modelValue]="axis.scale"
             [options]="scaleOptions"
             (modelValueChange)="updateAxis(axis.id, { scale: scaleFrom($event) })"
           ></st-select>
           <st-checkbox
             [label]="'Inverser ' + axis.label"
+            [aria-label]="'Inverser ' + axis.label"
             [modelValue]="axis.inverted"
             [checked]="axis.inverted"
             (modelValueChange)="updateAxis(axis.id, { inverted: $event })"
@@ -109,11 +111,13 @@ function shapeFrom(value: unknown): FormatMarkerShape {
         <div>
           <st-input
             [label]="'Titre ' + legend.label"
+            [aria-label]="'Titre ' + legend.label"
             [modelValue]="legend.title"
             (modelValueChange)="updateLegend(legend.id, { title: $event })"
           ></st-input>
           <st-checkbox
             [label]="'Afficher ' + legend.label"
+            [aria-label]="'Afficher ' + legend.label"
             [modelValue]="legend.visible"
             [checked]="legend.visible"
             (modelValueChange)="updateLegend(legend.id, { visible: $event })"
@@ -124,12 +128,14 @@ function shapeFrom(value: unknown): FormatMarkerShape {
         <div>
           <st-select
             [label]="'Forme ' + marker.label"
+            [aria-label]="'Forme ' + marker.label"
             [modelValue]="marker.shape"
             [options]="shapeOptions"
             (modelValueChange)="updateMarker(marker.id, { shape: shapeFrom($event) })"
           ></st-select>
           <st-number-input
             [label]="'Taille ' + marker.label"
+            [aria-label]="'Taille ' + marker.label"
             [modelValue]="marker.size"
             [min]="1"
             [step]="1"
@@ -137,6 +143,7 @@ function shapeFrom(value: unknown): FormatMarkerShape {
           ></st-number-input>
           <st-input
             [label]="'Couleur ' + marker.label"
+            [aria-label]="'Couleur ' + marker.label"
             [modelValue]="marker.color ?? ''"
             (modelValueChange)="updateMarker(marker.id, { color: $event || undefined })"
           ></st-input>
