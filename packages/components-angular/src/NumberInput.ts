@@ -19,6 +19,7 @@ export type NumberInputProps = {
   step?: number | string;
   incrementLabel?: string;
   decrementLabel?: string;
+  "aria-label"?: string;
   class?: string;
 };
 
@@ -48,6 +49,7 @@ function nextId(): string {
             [attr.max]="max"
             [attr.step]="step"
             [attr.aria-invalid]="isInvalid ? 'true' : null"
+            [attr.aria-label]="ariaLabel ?? null"
             (input)="onInput($event)"
             (change)="change.emit($event)"
           />
@@ -96,6 +98,7 @@ export class NumberInput {
   @NgInput() step?: number | string;
   @NgInput() incrementLabel?: string;
   @NgInput() decrementLabel?: string;
+  @NgInput("aria-label") ariaLabel?: string;
   @NgInput("class") classInput?: string;
 
   @Output() readonly modelValueChange = new EventEmitter<number | null>();
