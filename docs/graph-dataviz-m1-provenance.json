@@ -1906,8 +1906,8 @@
       "gitBlob": "e0da2ca152892d3985977fbd7588ec7e6bb4df31",
       "sha256": "cafea77294137e31b664bef0f053927c4c1edda93d2391f339b44ae3e669c98b",
       "status": "adapted-monorepo-pattern",
-      "destinationSha256": "45ba9d4f7271218ae607669dca95f31e274bf94cbc097babbb62c15714615674",
-      "note": "PR #76 exports the ten new adapters and their prop types; GD-M2-PARITY lot 7 adds the six hand-written adapters whose binding reads a prop the descriptor cannot express; lot 8 adds the six from the \"no `void <state>.value` marker\" class; lot 9 adds its own six; lot 10 adds its own six (AdvancedPivotDataTable, DrillChart, RadarChart, ScatterPlotMatrix, SmallMultiples, StackedBarChart)"
+      "destinationSha256": "31978b2bf67b215ced36ec28af7224af1c6546c7115eaab5bb404a963a059455",
+      "note": "PR #76 exports the ten new adapters and their prop types; GD-M2-PARITY lot 7 adds the six hand-written adapters whose binding reads a prop the descriptor cannot express; lot 8 adds the six from the \"no `void <state>.value` marker\" class; lot 9 adds its own six; lot 10 adds its own six (AdvancedPivotDataTable, DrillChart, RadarChart, ScatterPlotMatrix, SmallMultiples, StackedBarChart); lot 11 adds its own five (AnimatedBubbleChart, ObjectLayerPanel, BookmarkNavigator, CalculationEditor, FormatPanel)"
     },
     {
       "repository": "dataviz",
@@ -7030,8 +7030,8 @@
     {
       "destination": "packages/dataviz-angular/src/lib/adapter-pattern.test.ts",
       "status": "local-monorepo-helper",
-      "sha256": "dd5bfe2c8a940b7b1fd511c88ccc937dd425d30c81b24b67618d02dc713b7e25",
-      "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned. GD-M2-PARITY lot 7 adds the six new adapter files to the expected list; lot 8 adds its own six; lot 9 adds its own six; lot 10 adds its own six"
+      "sha256": "e3ffc1378dd57cc9b264e47982e820879414ed7dc2c2a14aacc5d8021cdcf38f",
+      "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned. GD-M2-PARITY lot 7 adds the six new adapter files to the expected list; lot 8 adds its own six; lot 9 adds its own six; lot 10 adds its own six; lot 11 adds its own five to the expected list and extends the teardown discipline to interval timers (ngOnDestroy must clearInterval)"
     },
     {
       "repository": "dataviz",
@@ -7758,6 +7758,66 @@
       "status": "local-monorepo-helper",
       "sha256": "ff5e37a5a3c57e3bc134f1a43ef6930ee96be8d6a7d131d1bc44ba7439c9bd89",
       "note": "GD-M2-PARITY lot 10: monorepo-authored dedicated test for AdvancedPivotDataTable (mirrors the React contract: subtotals, heat, sparklines, collapsed paths, subtotal-only toggles, filter updates); the DS DataTable renders no value list, so the family table cannot prove it — named in the parity harness NO_DATA_LIST; no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/AnimatedBubbleChart.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "cce402003832a6015f97d5cc2fed1fe72c6f78f40ecf0228064c81fe4a5db3bb",
+      "note": "GD-M2-PARITY lot 11: monorepo-authored by hand for the AnimatedBubbleChart adapter (local animation state plus an interval timer and several siblings, not one terminal h() over a derived value, so no `void <state>.value` marker to anchor on; derivation reuses core distinctSorted/buildBubbleFrame; controls are native elements like Vue/React; see its README), so no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/AnimatedBubbleChart.test.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "f2bddcf13bb13ddef64f5b91f6d452cf25f318496a48db08bb7ba2a6033bace5",
+      "note": "GD-M2-PARITY lot 11: monorepo-authored dedicated test for AnimatedBubbleChart (first-frame pause state, timer playback, slider pause, cross-view narrowing); no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/ObjectLayerPanel.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "5587e7e6747e8a265aeceae31f9c636385d8ed7d2cb11d728bb0fc36e7dd09f6",
+      "note": "GD-M2-PARITY lot 11: monorepo-authored by hand for the ObjectLayerPanel adapter (shares the Vue ObjectLayers.ts file with WebFrame/DataImage, so the stem carries no ObjectLayerPanelProps alias, and setup() is pure prop derivation with no reactive state; follows the React single-TreeView contract; see its README), so no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/ObjectLayerPanel.test.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "b0546cf52038e3badc02ee210e5887e92b80d94c2b093ee6e94e5229d8a72757",
+      "note": "GD-M2-PARITY lot 11: monorepo-authored dedicated test for ObjectLayerPanel; its DS TreeView renders no value list, so it is not a row in generated-adapters.test.ts, per PATTERN.md; no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/BookmarkNavigator.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "cba4e666c89afe6b6a0baf88e08e2f6351559710b1b0be626fe5e76f47dda6ed",
+      "note": "GD-M2-PARITY lot 11: monorepo-authored by hand for the BookmarkNavigator adapter (local activeId/playing state, interval-timer playback and three watchers, so no `void <state>.value` marker to anchor on; applies bookmarks via core applyDashboardBookmark; see its README), so no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/BookmarkNavigator.test.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "a566d635f0e8d260a22d25a3bd285e4d6d64780b02ae02b63ba72c1f2aad2828",
+      "note": "GD-M2-PARITY lot 11: monorepo-authored dedicated test for BookmarkNavigator (group rendering, click-to-apply, prev/next stepping, playback timer); its DS Buttons render no value list, so it is not a row in generated-adapters.test.ts, per PATTERN.md; no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/CalculationEditor.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "b3d375ad8ce369d3fa91a9614ba91abc1bfde997ba3371ddab2c96c70f80d342",
+      "note": "GD-M2-PARITY lot 11: monorepo-authored by hand for the CalculationEditor adapter (controlled editor writing through onChange; setup() holds no reactive state, so no `void <state>.value` marker to anchor on; suggestions derive from core suggestCalculationTokens; see its README), so no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/CalculationEditor.test.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "309ed4a8bdb6753a782e9b83bd28829eca77dbb0aa0ae1cb398fde73ad3aa0eb",
+      "note": "GD-M2-PARITY lot 11: monorepo-authored dedicated test for CalculationEditor (field rendering, onChange edits, suggestion-token append); its DS inputs render no value list, so it is not a row in generated-adapters.test.ts, per PATTERN.md; no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/FormatPanel.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "acba89cc2de57bb97509778e694241829efd513527a9482866b4f7c4b4b819b6",
+      "note": "GD-M2-PARITY lot 11: monorepo-authored by hand for the FormatPanel adapter (fully controlled editor writing through core updateAxisFormat/updateLegendFormat/updateMarkerFormat; setup() holds no reactive state, so no `void <state>.value` marker to anchor on; see its README), so no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/FormatPanel.test.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "442eef729c39853d43798ef83c834c9331a3739f12475008423ca7002d0114f9",
+      "note": "GD-M2-PARITY lot 11: monorepo-authored dedicated test for FormatPanel (field rendering, axis/legend/marker edits); its DS inputs render no value list, so it is not a row in generated-adapters.test.ts, per PATTERN.md; no upstream source; hash-pinned"
     }
   ]
 }

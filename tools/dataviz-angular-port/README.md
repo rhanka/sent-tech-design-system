@@ -322,6 +322,70 @@ The eleven not ported, each with its measured reason:
   were re-read in the Vue sources this lot. Still feasible, still deferred —
   panels behind charts under the ceiling.
 
+Lot 11 took the **five** feasible deferred panels and charts —
+`ObjectLayerPanel`, `AnimatedBubbleChart`, `BookmarkNavigator`,
+`CalculationEditor`, `FormatPanel` — leaving `union 119 / ported 113 /
+pending 6` (counts by `classify.mjs`: union = distinct names across the
+dataviz-svelte/react/vue barrels; ported = names in
+`dataviz-angular/src/index.ts`; pending = union minus ported). The pending
+six are exactly the six structural refusals above (`ChartExport`,
+`TimeSeriesLineChart`, `UrlSync`, `WebFrame`, `DataImage`,
+`DashboardGrid`), re-verified, not re-argued: nothing feasible remains, so
+the port is complete to what the measurement allows.
+
+**The five were selected by measurement, not by pick, and every figure below
+was read from the sources before anything was written.** All five pass
+check (b) — every core builder they need is in `@sentropic/dataviz-core`
+(`buildObjectLayerTree`/`isObjectLayerVisible`, `distinctSorted`/
+`buildBubbleFrame`, `applyDashboardBookmark`, `suggestCalculationTokens`,
+`updateAxisFormat`/`updateLegendFormat`/`updateMarkerFormat`) — and check
+(a) for every *functional* design-system input (`TreeView`
+`nodes`/`selectedId`/`expandedIds`/`defaultExpandedIds`, `ScatterPlot`
+`data`/`xLabel`/`yLabel`/`width`/`height`/`label`, `Button`
+`variant`/`size`/`type`/`disabled`, `Input`/`Select`/`Textarea`
+`label`/`modelValue`/`options`/`rows`, `Checkbox`
+`label`/`modelValue`/`checked`, `NumberInput`
+`label`/`modelValue`/`min`/`step`). What check (a) does **not** find on any
+Angular DS component used here is an `aria-label` (or `aria-pressed`)
+passthrough input — React and Vue forward both onto the control, Angular
+declares neither. That gap is a measured parity residue, not a refusal: the
+adapters keep the same DS component, functional inputs, callbacks and
+derived data, and the run attributes the missing attributes to the design
+system (four bare-DS controls prove the button/input/textarea/number-input
+classes). No DS component was widened for this lot — the lot 10 Grid probe
+stands — and no adapter was forced around the DS.
+
+Two corrections the measurement forced, both in the code, both stated.
+First, `ObjectLayerPanel` first passed `[label]` (`label-plus-tree`) to
+the DS TreeView; the run showed React rendering the DS default
+`Arborescence` instead — both the Vue and React adapters pass
+`aria-label`, which both DS TreeViews spread-then-override with the
+`label` default, so the dead prop never renders (only Svelte, which passes
+the `label` prop, renders the intended string). The port follows the
+measured Vue+React-rendered contract and drops the binding. Second,
+`AnimatedBubbleChart` renders its five Vue/React inline-style declarations
+unstyled: the adapter-pattern guard forbids literal `style` attributes in
+adapter sources, so the layout/control chrome has no Angular counterpart
+(5 markup diffs, 0 signature — every text and every aria attribute
+matches). Its initial state is the comparable one: `playing` starts
+`false`, `stepIndex` at `0`, the timer starts only on the play button, so
+the TestBed first render is exactly the SSR first frame.
+
+Parity outcome for the five (measured by `npm run parity:dataviz-angular`,
+data-list identities equal): `AnimatedBubbleChart` 5 / 0 (above),
+`ObjectLayerPanel` 9 / 11 (3x the `FieldPane` roving-tabindex class + 6x
+the Button aria gap; signature saturates from the first missing label),
+`BookmarkNavigator` 5 / 10 (5x the Button aria/pressed gap; same
+saturation), `CalculationEditor` 90 / 44 (the Angular DS Textarea binds
+value as a property and renders empty where React SSR renders the
+expression as content, shifting every later entry — plus per-site aria,
+`placeholder=""` and property-vs-attribute gaps), `FormatPanel` 13 / 35
+(aria gaps + missing select `for=` + serialised `selected`/`checked`/
+value + a React-defaulted `step="1"`; same saturation). The two playback
+adapters own the first interval timers in the package; the
+adapter-pattern guard now names their teardown discipline (`ngOnDestroy`
+must `clearInterval`).
+
 ## Adding a lot
 
 1. Run `extract.mjs` with the names. Read the printed one-line-per-component
