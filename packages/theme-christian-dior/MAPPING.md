@@ -46,7 +46,7 @@ excluded).
 | `surface.inverse` | `#my-navbar{background:#313131}` (8 occurrences) | `#313131` |
 | `border.subtle` | `#img-rapport-publication{border:1px solid #D6D6D6}` (10 occurrences) | `#d6d6d6` |
 | `border.strong` | `#a-dropdown-item{border-bottom:2px solid #c4c4c4}` (2 occurrences) | `#c4c4c4` |
-| `slate.20` / `action.secondaryHover` | table alt-row tint (3 occurrences) | `#e0e0e0` |
+| `slate.20` / `action.secondaryHover` | table alt-row tint (2 occurrences; third match in a /* */ block) | `#e0e0e0` |
 | `slate.90` alternate / footer black | `#footer-jumbotron-2{background:#000000}` (4 unified occurrences) | `#000000` |
 | `cyan.10` | `#gouvernance-page-widget-title-div` background step (1 occurrence) | `#f5f5f5` |
 | `grey.300` | table alt-column tint (2 occurrences) | `#efefef` |
