@@ -12,6 +12,7 @@ export type TextareaProps = {
   disabled?: boolean;
   readonly?: boolean;
   rows?: number;
+  "aria-label"?: string;
   class?: string;
 };
 
@@ -38,6 +39,7 @@ function nextId(): string {
           [attr.readonly]="readonly ? '' : null"
           [attr.rows]="rows"
           [attr.aria-invalid]="isInvalid ? 'true' : null"
+          [attr.aria-label]="ariaLabel ?? null"
           (input)="onInput($event)"
           (change)="change.emit($event)"
         ></textarea>
@@ -66,6 +68,7 @@ export class Textarea {
   @NgInput() disabled?: boolean;
   @NgInput() readonly?: boolean;
   @NgInput() rows?: number;
+  @NgInput("aria-label") ariaLabel?: string;
   @NgInput("class") classInput?: string;
 
   @Output() readonly modelValueChange = new EventEmitter<string>();
