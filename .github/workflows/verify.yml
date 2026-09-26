@@ -18,7 +18,11 @@ on:
       - "docs/graph-dataviz-*"
       - "package.json"
       - "package-lock.json"
-      - ".github/workflows/verify.yml"
+      # Every file a repository guard reads must be able to trigger this workflow,
+      # or a change to it lands with no guard running. Enforced by
+      # scripts/verify-workflow-invariants.test.mjs ("every file a guard reads …").
+      - ".github/workflows/**"
+      - ".ds-scrap/METHOD-fr-top50.md"
   pull_request:
     paths:
       - "packages/**"
@@ -28,7 +32,11 @@ on:
       - "docs/graph-dataviz-*"
       - "package.json"
       - "package-lock.json"
-      - ".github/workflows/verify.yml"
+      # Every file a repository guard reads must be able to trigger this workflow,
+      # or a change to it lands with no guard running. Enforced by
+      # scripts/verify-workflow-invariants.test.mjs ("every file a guard reads …").
+      - ".github/workflows/**"
+      - ".ds-scrap/METHOD-fr-top50.md"
   workflow_dispatch:
 
 jobs:
