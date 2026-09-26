@@ -798,6 +798,68 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
 
+  // Data — store-driven dataviz adapters (GD-DATAVIZ-DOCS lot 1)
+  {
+    name: "UrlSync",
+    slug: "url-sync",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Liaison store ↔ URL : deep-linking déclaratif de l’état dashboard.",
+      en: "Store ↔ URL binding: declarative deep-linking of dashboard state."
+    }
+  },
+  {
+    name: "WebFrame",
+    slug: "web-frame",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Cadre web intégré et durci (sandbox, titre, chargement paresseux).",
+      en: "Hardened embedded web frame (sandbox, title, lazy loading)."
+    }
+  },
+  {
+    name: "TimeSeriesLineChart",
+    slug: "time-series-line-chart",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Série temporelle continue depuis un store (React uniquement).",
+      en: "Continuous time series from a store (React-only)."
+    }
+  },
+  {
+    name: "ScoreCard (dataviz)",
+    slug: "dataviz-score-card",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Carte d’indicateur agrégée depuis un store (rend KpiCard).",
+      en: "Indicator card aggregated from a store (renders KpiCard)."
+    }
+  },
+  {
+    name: "DataImage (dataviz)",
+    slug: "dataviz-data-image",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Image résolue depuis une ligne de données (gabarits {{champ}}).",
+      en: "Image resolved from a data row ({{field}} templates)."
+    }
+  },
+  {
+    name: "DashboardGrid (dataviz)",
+    slug: "dataviz-dashboard-grid",
+    status: "documented",
+    category: "data",
+    description: {
+      fr: "Grille de panneaux sérialisable sur douze colonnes.",
+      en: "Serializable panel grid on twelve columns."
+    }
+  },
+
   // Layout
   {
     name: "Accordion",

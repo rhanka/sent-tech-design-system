@@ -50,7 +50,25 @@ describe("docs navigation model", () => {
       .sort();
     const catalogComponents = COMPONENTS.map((component) => component.name).sort();
 
-    expect(catalogComponents).toEqual(exportedComponents);
+    // GD-DATAVIZ-DOCS lot 1: the catalog also carries documented dataviz
+    // adapters, which are not DS natives. The guard keeps its original force
+    // (no native dropped) and pins the adapter extension exactly.
+    const datavizNames = [
+      "UrlSync",
+      "WebFrame",
+      "TimeSeriesLineChart",
+      "ScoreCard (dataviz)",
+      "DataImage (dataviz)",
+      "DashboardGrid (dataviz)"
+    ];
+    const nativeCatalog = catalogComponents.filter((name) => !datavizNames.includes(name));
+    expect(nativeCatalog).toEqual(exportedComponents);
+    for (const name of datavizNames) {
+      const entry = COMPONENTS.find((component) => component.name === name);
+      expect(entry, `dataviz catalog entry missing: ${name}`).toBeDefined();
+      expect(entry?.status).toBe("documented");
+      expect(entry?.category).toBe("data");
+    }
     expect(COMPONENTS.every((component) => component.status === "documented")).toBe(true);
   });
 

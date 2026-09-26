@@ -32,9 +32,9 @@ design system documente, et l'écart composant par composant.
 | Composants exportés `@sentropic/dataviz-vue` | **117** (−`UrlSync`) |
 | Composants exportés `@sentropic/dataviz-angular` | **76** (lot 1 : 10 ; lots 2 à 4 : 64, générés ; plus `QueryBar` et `DateHistogramChart`, antérieurs) + adaptateur |
 | Composants distincts (svelte ∪ react-only) | **119** |
-| Entrées au catalogue DS (`components-catalog.ts`) | **203**, toutes natifs DS |
-| Routes `apps/docs/src/routes/components/` | **205** dossiers (200 pages dédiées + 4 pages groupes + 1 route dynamique `[slug]` ; 3 entrées catalogue couvertes par page groupe, sans route propre) |
-| Adaptateurs dataviz documentés sur le site DS | **0** |
+| Entrées au catalogue DS (`components-catalog.ts`) | **209** (203 natifs DS + 6 adaptateurs dataviz du lot 1) |
+| Routes `apps/docs/src/routes/components/` | **211** dossiers (206 pages dédiées + 4 pages groupes + 1 route dynamique `[slug]` ; 3 entrées catalogue couvertes par page groupe, sans route propre) |
+| Adaptateurs dataviz documentés sur le site DS | **6** (lot 1 : `UrlSync`, `WebFrame`, `TimeSeriesLineChart`, `ScoreCard`, `DataImage`, `DashboardGrid`) |
 | Slugs DS homonymes d'un adaptateur dataviz | **69** (documentent le composant natif, pas l'adaptateur) |
 | Adaptateurs adossés à un composant DS catalogué | **116** (69 homonymes + 47 non homonymes ; seuls `TimeSeriesLineChart`, `UrlSync` et `WebFrame` sans composant DS) |
 
@@ -123,8 +123,8 @@ d'adaptateur à documenter, pas 119 surfaces inédites.
 | CrossfilteredBarChart | dashboards | aucune | BarChart | à documenter | présenté (vues dashboards), sans page DS |
 | DashboardActiveFilters | dashboards | aucune | FilterBar, FilterPill | à documenter | présenté (vues dashboards), sans page DS |
 | DashboardFilterBar | non présenté | aucune | Search, DatePicker, Select, MultiSelect, Button, FilterBar, FilterPill | à documenter | exporté mais non présenté sur le site dataviz, sans page DS |
-| DashboardGrid | non présenté | homonyme (natif DS) | DashboardGrid | à documenter | aucune entrée au registre (seulement cité dans l’entrée `full-dashboard`) ; homonyme natif DS |
-| DataImage | dashboards | homonyme (natif DS) | DataImage | à documenter | présenté (vues dashboards), sans page DS ; homonyme natif DS |
+| DashboardGrid | non présenté | homonyme (natif DS) | DashboardGrid | documenté (lot 1) | page adaptateur `/components/dataviz-dashboard-grid` (l’homonyme natif garde `/components/dashboard-grid`) |
+| DataImage | dashboards | homonyme (natif DS) | DataImage | documenté (lot 1) | page adaptateur `/components/dataviz-data-image` (l’homonyme natif garde `/components/data-image`) |
 | DateHistogramChart | non présenté | aucune | BarChart, DatePicker | à documenter | exporté mais non présenté sur le site dataviz, sans page DS |
 | DateRangeFilter | dashboards | aucune | DatePicker | à documenter | présenté (vues dashboards), sans page DS |
 | DecompositionTreeChart | charts | homonyme (natif DS) | DecompositionTreeChart | à documenter | homonyme : la page DS documente le composant natif (props value), pas l’adaptateur store |
@@ -185,7 +185,7 @@ d'adaptateur à documenter, pas 119 surfaces inédites.
 | SankeyChart | charts | homonyme (natif DS) | SankeyChart | à documenter | homonyme : la page DS documente le composant natif (props value), pas l’adaptateur store |
 | ScatterPlot | charts | homonyme (natif DS) | ScatterPlot | à documenter | homonyme : la page DS documente le composant natif (props value), pas l’adaptateur store |
 | ScatterPlotMatrix | charts | aucune | ScatterPlot | à documenter | présenté (charts), sans page DS |
-| ScoreCard | charts | homonyme (natif DS) | ScoreCard | à documenter | homonyme : la page DS documente le composant natif (props value), pas l’adaptateur store |
+| ScoreCard | charts | homonyme (natif DS) | ScoreCard | documenté (lot 1) | page adaptateur `/components/dataviz-score-card` (l’homonyme natif garde `/components/score-card`) ; l’adaptateur compose `KpiCard`, pas le natif |
 | SelectionLegend | dashboards | aucune | Inline, SelectionChip | à documenter | présenté (vues dashboards), sans page DS |
 | SmallMultiples | dashboards | aucune | Grid, BarChart | à documenter | présenté (vues dashboards), sans page DS |
 | SolidGaugeChart | charts | homonyme (natif DS) | SolidGaugeChart | à documenter | homonyme : la page DS documente le composant natif (props value), pas l’adaptateur store |
@@ -203,7 +203,7 @@ d'adaptateur à documenter, pas 119 surfaces inédites.
 | TreegraphChart | charts | homonyme (natif DS) | TreegraphChart | à documenter | homonyme : la page DS documente le composant natif (props value), pas l’adaptateur store |
 | TreemapChart | charts | homonyme (natif DS) | TreemapChart | à documenter | homonyme : la page DS documente le composant natif (props value), pas l’adaptateur store |
 | TrendLineChart | charts | aucune | LineChart | à documenter | présenté (charts), sans page DS |
-| UrlSync | non présenté | aucune | — | à documenter | absent react/vue ; à aligner avant page |
+| UrlSync | non présenté | aucune | — | documenté (lot 1) | page `/components/url-sync` ; composant Svelte uniquement, hook `useUrlSync` react/vue, absent Angular (énoncé sur la page) |
 | ValueSlicer | dashboards | aucune | CheckboxGroup | à documenter | présenté (vues dashboards), sans page DS |
 | VariablePieChart | charts | homonyme (natif DS) | VariablePieChart | à documenter | homonyme : la page DS documente le composant natif (props value), pas l’adaptateur store |
 | VectorFieldChart | charts | homonyme (natif DS) | VectorFieldChart | à documenter | homonyme : la page DS documente le composant natif (props value), pas l’adaptateur store |
@@ -211,12 +211,12 @@ d'adaptateur à documenter, pas 119 surfaces inédites.
 | ViolinChart | charts | homonyme (natif DS) | ViolinChart | à documenter | homonyme : la page DS documente le composant natif (props value), pas l’adaptateur store |
 | WaffleChart | charts | homonyme (natif DS) | WaffleChart | à documenter | homonyme : la page DS documente le composant natif (props value), pas l’adaptateur store |
 | WaterfallChart | charts | homonyme (natif DS) | WaterfallChart | à documenter | homonyme : la page DS documente le composant natif (props value), pas l’adaptateur store |
-| WebFrame | dashboards | aucune | — | à documenter | présenté (vues dashboards), sans page DS |
+| WebFrame | dashboards | aucune | — | documenté (lot 1) | page `/components/web-frame` (svelte/react/vue, absent Angular énoncé) |
 | WindBarbChart | charts | homonyme (natif DS) | WindBarbChart | à documenter | homonyme : la page DS documente le composant natif (props value), pas l’adaptateur store |
 | WordCloudChart | charts | homonyme (natif DS) | WordCloudChart | à documenter | homonyme : la page DS documente le composant natif (props value), pas l’adaptateur store |
-| TimeSeriesLineChart | non présenté | aucune | — | à documenter | react-only ; à aligner svelte/vue avant page |
+| TimeSeriesLineChart | non présenté | aucune | — | documenté (lot 1) | page `/components/time-series-line-chart`, react-only assumé (absences svelte/vue/angular énoncées, sans alignement préalable) |
 
-Synthèse du tableau : 119 « à documenter », 0 « déjà documenté » —
+Synthèse du tableau : 113 « à documenter », 6 « déjà documenté » (lot 1) —
 soit 119 API d'adaptateur à documenter, pas 119 surfaces inédites : 116
 s'adossent à un composant DS déjà catalogué (colonne « composant DS
 sous-jacent »).
@@ -289,5 +289,38 @@ Statut N-A : uniquement les utilitaires non-composants, exclus du décompte
 
 - Lot D1 (commit 1) : le présent document d'inventaire.
 - Lot D2 (commit 2) : renvoi DS → dataviz (catalogue + accueil).
+- Lot D3 = P2 lot 1 (branche `feat/dataviz-docs-lot1`) : les trois adaptateurs
+  sans composant DS (`UrlSync`, `WebFrame`, `TimeSeriesLineChart`) + les trois
+  faux amis (`ScoreCard`, `DataImage`, `DashboardGrid`), chacun sa page
+  catégorie `data` avec démos quatre frameworks via `TabbedExample` (store
+  réel `createDashboardStore`), table de props adaptateur, couverture par
+  framework énoncée (dont `UrlSync` sans composant Vue, `TimeSeriesLineChart`
+  React-only, Angular absent des six). Infra : discriminateur `library`
+  ds/dataviz sur `NodeSpec`, `DatavizSvelteNode` chargé paresseusement,
+  constructeurs dans `examples.ts`, libellés `i18n.ts`. Poids du bundle
+  (exigé §6 du cadrage) — AVANT : `apps/docs/build` = 67 916 572 octets
+  (69M), build `3:11.61` elapsed (mesure à froid incluant la reconstruction
+  des dists de thèmes ; vite `24.57s` + prerender 274 pages), plus gros chunk
+  JS `1 359 120` octets ; APRÈS : `apps/docs/build` = 70 922 430 octets
+  (72M), soit +3 005 858 octets (+4,4 %) pour 6 pages et 8 sections, build à
+  chaud `0:27.20` (280 pages). Le découpage paresseux tient : le chargeur
+  `DatavizSvelteNode` pèse `13 586` octets et le code dataviz partagé vit dans
+  des chunks séparés du chunk partagé, qui ne contient aucune référence
+  dataviz (vérifié par grep insensible à la casse). Le plus gros chunk passe
+  de `1 359 120` à `1 359 763` octets (+643 o) : ce n’est pas du code dataviz
+  ajouté mais un artefact de renommage du bundler (mêmes composants,
+  identifiants minifiés et hashes d’imports décalés) — le chunk partagé n’est
+  donc pas identique à l’octet, mais aucune démo store n’y tire un paquet
+  dataviz et aucune page existante n’en paie le poids ; les pages natives
+  (198 à 214 ko) et dataviz (~197 ko) sont au même ordre de grandeur.
+  Progression à peu près linéaire par page : le lot 2 garde le même motif
+  sans démos réduites, à réévaluer s’il double ce coût.
+  Vérification navigateur (critère 3) : aucun navigateur exécutable dans le
+  bac à sable (snap confiné, aucun build Playwright pour l’OS, cache
+  lecture seule, CDN Playwright refusé) — le gate
+  `scripts/verify-dataviz-docs-lot1.test.mjs` saute ce cas proprement et la
+  preuve quatre frameworks est portée par les montages jsdom (mêmes
+  constructeurs, mêmes îles, stores réels) ; à rejouer sous Chromium en CI
+  ou sur machine de dev.
 - Commandes et résultats : voir rapport de session (ci-dessous au moment de
   la livraison ; mis à jour à chaque lot).

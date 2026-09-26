@@ -1,7 +1,11 @@
 <script lang="ts">
   import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge, type DonutChartDatum } from "@sentropic/design-system-svelte";
-  import type { NodeSpec } from "$lib/framework/examples";
+  import { storeChartDemoNodes, type NodeSpec } from "$lib/framework/examples";
+  import { createDashboardStore, type DataModel } from "@sentropic/dataviz-core";
+  import { locale } from "$lib/locale.svelte";
+
+  const fr = $derived(locale.value === "fr");
 
   const data: DonutChartDatum[] = [
     { label: "Composants", value: 62 },
@@ -19,6 +23,29 @@
       ]
     }
   ];
+
+  // Version adaptateur : les parts sont dérivées d'un vrai store minimal.
+  const storeModel: DataModel = {
+    dimensions: [{ id: "product", label: "Produit", type: "discrete" }],
+    measures: [{ id: "revenue", label: "Revenu", aggregation: "sum" }]
+  };
+  const store = createDashboardStore({
+    model: storeModel,
+    data: [
+      { product: "Atlas", revenue: 120 },
+      { product: "Beacon", revenue: 80 }
+    ]
+  });
+
+  const storeDemo = $derived<NodeSpec[]>(
+    storeChartDemoNodes("DonutChart", {
+      store,
+      viewId: "store",
+      category: "product",
+      measure: "revenue",
+      label: fr ? "Revenu par produit (store)" : "Revenue by product (store)"
+    })
+  );
 </script>
 
 <div class="docs-page">
@@ -59,6 +86,48 @@
     <p class="docs-demo-context">
       <code>DonutChartDatum</code> = <code>{`{ label, value, tone? }`}</code> ;
       <code>tone</code> ∈ <code>category1…8</code> (sinon assigné cycliquement).
+    </p>
+  </section>
+
+  <section class="docs-section">
+    <h2>{fr ? "Piloté par store" : "Store-driven"}</h2>
+    <p class="section-desc">
+      {#if fr}
+        La version adaptateur (<code>@sentropic/dataviz-svelte</code>,
+        <code>-react</code>, <code>-vue</code>, <code>-angular</code>) dérive les parts
+        d’un <code>DashboardStore</code> partagé : <code>category</code> et
+        <code>measure</code> désignent les canaux, le reste du contrat est inchangé.
+      {:else}
+        The adapter version (<code>@sentropic/dataviz-svelte</code>,
+        <code>-react</code>, <code>-vue</code>, <code>-angular</code>) derives the
+        slices from a shared <code>DashboardStore</code>: <code>category</code> and
+        <code>measure</code> name the channels, the rest of the contract is unchanged.
+      {/if}
+    </p>
+    <TabbedExample nodes={storeDemo} title={fr ? "Revenu par produit (store)" : "Revenue by product (store)"} />
+    <table class="docs-table">
+      <thead>
+        <tr><th>Prop</th><th>Type</th><th>Par défaut</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>store</code></td><td><code>DashboardStore</code></td><td>requis</td></tr>
+        <tr><td><code>viewId</code></td><td><code>string</code></td><td>requis</td></tr>
+        <tr><td><code>category</code></td><td><code>string</code></td><td>requis</td></tr>
+        <tr><td><code>measure</code></td><td><code>string</code></td><td>requis</td></tr>
+        <tr><td><code>sort</code></td><td><code>PartWholeSort</code></td><td>non défini</td></tr>
+        <tr><td><code>size</code> / <code>thickness</code> / <code>centerLabel</code></td><td><code>number / number / string | null</code></td><td>natif</td></tr>
+        <tr><td><code>label</code></td><td><code>string</code></td><td>requis (a11y)</td></tr>
+        <tr><td><code>dataLabels</code></td><td><code>DataLabelsProp</code></td><td>non défini</td></tr>
+      </tbody>
+    </table>
+    <p class="docs-demo-context">
+      {#if fr}
+        Props du natif non reprises par la version store : <code>data</code> (dérivé
+        du store via <code>category</code> / <code>measure</code>).
+      {:else}
+        Native props not carried by the store version: <code>data</code> (derived
+        from the store through <code>category</code> / <code>measure</code>).
+      {/if}
     </p>
   </section>
 </div>

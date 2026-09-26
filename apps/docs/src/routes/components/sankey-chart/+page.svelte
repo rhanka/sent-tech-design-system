@@ -2,7 +2,8 @@
   import TabbedExample from "$lib/framework/TabbedExample.svelte";
   import { Badge } from "@sentropic/design-system-svelte";
   import { locale } from "$lib/locale.svelte";
-  import type { NodeSpec } from "$lib/framework/examples";
+  import { storeChartDemoNodes, type NodeSpec } from "$lib/framework/examples";
+  import { createDashboardStore, type DataModel } from "@sentropic/dataviz-core";
 
   const copy = {
     fr: {
@@ -112,6 +113,33 @@
       ]
     }
   ]);
+
+  // Version adaptateur : les flux sont dérivés d'un vrai store minimal.
+  const storeModel: DataModel = {
+    dimensions: [
+      { id: "from", label: "Source", type: "discrete" },
+      { id: "to", label: "Cible", type: "discrete" }
+    ],
+    measures: [{ id: "flow", label: "Flux", aggregation: "sum" }]
+  };
+  const store = createDashboardStore({
+    model: storeModel,
+    data: [
+      { from: "Marketing", to: "Prospects", flow: 120 },
+      { from: "Prospects", to: "Clients", flow: 45 }
+    ]
+  });
+
+  const storeDemo = $derived<NodeSpec[]>(
+    storeChartDemoNodes("SankeyChart", {
+      store,
+      viewId: "store",
+      source: "from",
+      target: "to",
+      measure: "flow",
+      label: locale.value === "fr" ? "Flux (store)" : "Flows (store)"
+    })
+  );
 </script>
 
 <div class="docs-page">
@@ -180,6 +208,46 @@
       <li><code>--st-semantic-text-inverse</code></li>
       <li><code>--st-radius-sm</code></li>
     </ul>
+  </section>
+  <section class="docs-section">
+    <h2>{locale.value === "fr" ? "Piloté par store" : "Store-driven"}</h2>
+    <p class="section-desc">
+      {#if locale.value === "fr"}
+        La version adaptateur (<code>@sentropic/dataviz-svelte</code>,
+        <code>-react</code>, <code>-vue</code>, <code>-angular</code>) dérive les flux
+        d’un <code>DashboardStore</code> partagé : <code>source</code>,
+        <code>target</code> et <code>measure</code> désignent les canaux.
+      {:else}
+        The adapter version (<code>@sentropic/dataviz-svelte</code>,
+        <code>-react</code>, <code>-vue</code>, <code>-angular</code>) derives the
+        flows from a shared <code>DashboardStore</code>: <code>source</code>,
+        <code>target</code>, and <code>measure</code> name the channels.
+      {/if}
+    </p>
+    <TabbedExample nodes={storeDemo} title={locale.value === "fr" ? "Flux (store)" : "Flows (store)"} />
+    <table class="docs-table">
+      <thead>
+        <tr><th>Prop</th><th>Type</th><th>Par défaut</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>store</code></td><td><code>DashboardStore</code></td><td>requis</td></tr>
+        <tr><td><code>viewId</code></td><td><code>string</code></td><td>requis</td></tr>
+        <tr><td><code>source</code> / <code>target</code> / <code>measure</code></td><td><code>string</code></td><td>requis</td></tr>
+        <tr><td><code>label</code></td><td><code>string</code></td><td>requis (a11y)</td></tr>
+        <tr><td><code>width</code> / <code>height</code></td><td><code>number</code></td><td>natif</td></tr>
+      </tbody>
+    </table>
+    <p class="docs-demo-context">
+      {#if locale.value === "fr"}
+        Props du natif non reprises par la version store : <code>nodes</code> et
+        <code>links</code> (reconstruits depuis le store via <code>source</code> /
+        <code>target</code> / <code>measure</code>).
+      {:else}
+        Native props not carried by the store version: <code>nodes</code> and
+        <code>links</code> (rebuilt from the store through <code>source</code> /
+        <code>target</code> / <code>measure</code>).
+      {/if}
+    </p>
   </section>
 </div>
 
