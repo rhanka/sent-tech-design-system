@@ -1257,6 +1257,111 @@ const cases: Case[] = [
     expectedSignatureDiffs: 0,
     attribution: '—',
   },
+  // Lot 9: hand-written adapters from the "no `void <state>.value` marker"
+  // refusal class (see tools/dataviz-angular-port/README.md for the refusal of
+  // each one). All six render no data-value list, so they join NO_DATA_LIST.
+  {
+    name: 'ExportMenu',
+    ng: NG.ExportMenu as Type<unknown>,
+    template: `<st-dataviz-export-menu [store]="store" viewId="v" class="lot9"></st-dataviz-export-menu>`,
+    re: RE.ExportMenu as ComponentType<Props>,
+    props: { viewId: 'v', className: 'lot9' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'RangeSliderFilter',
+    ng: NG.RangeSliderFilter as Type<unknown>,
+    template: `<st-dataviz-range-slider-filter [store]="store" dimension="lat" class="lot9"></st-dataviz-range-slider-filter>`,
+    re: RE.RangeSliderFilter as ComponentType<Props>,
+    props: { dimension: 'lat', className: 'lot9' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'RelativeDateFilter',
+    ng: NG.RelativeDateFilter as Type<unknown>,
+    template: `<st-dataviz-relative-date-filter [store]="store" dimension="ts" class="lot9"></st-dataviz-relative-date-filter>`,
+    re: RE.RelativeDateFilter as ComponentType<Props>,
+    props: { dimension: 'ts', className: 'lot9' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 2,
+    expectedSignatureDiffs: 0,
+    attribution:
+      'DS: components-react renders label for= on the select, components-angular does not; plus Angular sets the selected DOM property on the chosen option where React SSR serialises selected="" — same class as the DateRangeFilter value="" residue',
+    control: {
+      ng: NGDS.Select as Type<unknown>,
+      template: `<st-select label="Période" modelValue="all" [options]="[{ value: 'all', label: 'Tout' }, { value: '7d', label: '7 derniers jours' }]"></st-select>`,
+      re: REDS.Select as ComponentType<Props>,
+      props: {
+        label: 'Période',
+        value: 'all',
+        options: [
+          { value: 'all', label: 'Tout' },
+          { value: '7d', label: '7 derniers jours' },
+        ],
+      },
+    },
+  },
+  {
+    name: 'TopNFilter',
+    ng: NG.TopNFilter as Type<unknown>,
+    template: `<st-dataviz-top-n-filter [store]="store" dimension="region" measure="amount" class="lot9"></st-dataviz-top-n-filter>`,
+    re: RE.TopNFilter as ComponentType<Props>,
+    props: { dimension: 'region', measure: 'amount', className: 'lot9' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 1,
+    expectedSignatureDiffs: 0,
+    attribution:
+      'React serialises value="5" on the number input; Angular sets the property — same class as the DateRangeFilter value="" residue',
+  },
+  {
+    name: 'PalettePicker',
+    ng: NG.PalettePicker as Type<unknown>,
+    template: `<st-dataviz-palette-picker [categorical]="['#1f77b4', '#ff7f0e']" [sequential]="['#f7fbff', '#08306b']" [diverging]="['#053061', '#f7f7f7', '#67001f']" [steps]="3" label="Brand" class="lot9"></st-dataviz-palette-picker>`,
+    re: RE.PalettePicker as ComponentType<Props>,
+    props: {
+      categorical: ['#1f77b4', '#ff7f0e'],
+      sequential: ['#f7fbff', '#08306b'],
+      diverging: ['#053061', '#f7f7f7', '#67001f'],
+      steps: 3,
+      label: 'Brand',
+      className: 'lot9',
+    },
+    storeless: true,
+    expectedMarkupDiffs: 4,
+    expectedSignatureDiffs: 0,
+    attribution:
+      'Angular sets swatch/bar colours through the DOM so the browser serialises them as rgb(); React SSR emits the authored hex — same property-vs-attribute class as the DateRangeFilter value="" residue',
+  },
+  {
+    name: 'FieldPane',
+    ng: NG.FieldPane as Type<unknown>,
+    template: `<st-dataviz-field-pane [model]="store.model" class="lot9"></st-dataviz-field-pane>`,
+    re: RE.FieldPane as ComponentType<Props>,
+    props: { model: wideModel, className: 'lot9' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 17,
+    expectedSignatureDiffs: 0,
+    attribution:
+      'DS (16): components-angular TreeView sets a roving tabindex on every row, components-react TreeView sets none; plus React FieldPane spreads its ...rest so the store leaks as store="[object Object]" on the root, which neither Vue nor Angular renders',
+    control: {
+      ng: NGDS.TreeView as Type<unknown>,
+      template: `<st-tree-view [nodes]="[{ id: 'a', label: 'A' }, { id: 'b', label: 'B' }]" label="Fields"></st-tree-view>`,
+      re: REDS.TreeView as ComponentType<Props>,
+      props: {
+        nodes: [
+          { id: 'a', label: 'A' },
+          { id: 'b', label: 'B' },
+        ],
+        label: 'Fields',
+      },
+    },
+  },
 ];
 
 type Row = {
@@ -1306,13 +1411,19 @@ const NO_DATA_LIST = new Set([
   'DateRangeFilter',
   'DrillBreadcrumb',
   'EventFeedPanel',
+  'ExportMenu',
+  'FieldPane',
   'ForceGraph',
   'KpiCardGroup',
+  'PalettePicker',
   'PivotDataTable',
+  'RangeSliderFilter',
   'RecordsTable',
+  'RelativeDateFilter',
   'ScoreCard',
   'SelectionLegend',
   'Sparkline',
+  'TopNFilter',
   'ValueSlicer',
 ]);
 
