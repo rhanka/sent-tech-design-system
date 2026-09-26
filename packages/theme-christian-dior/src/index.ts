@@ -52,7 +52,7 @@ const diorColor = {
   grey: {
     0: "#ffffff", // surface default (19 unified occurrences)
     50: "#eeeeee", // body/page background (18 unified occurrences)
-    100: "#f5f5f5", // widget-title background (style.css, 1 occurrence)
+    100: "#f5f5f5", // overridden widget-title background step (style.css, 1 occurrence; winner is 8-digit, counted apart)
     200: "#e0e0e0", // table alt-row tint (style.css, 2 occurrences; third match in a /* */ block)
     300: "#efefef", // table alt-column tint (style.css, 2 occurrences)
     400: "#d6d6d6", // measured border grey, e.g. `#img-rapport-publication{border:1px solid #D6D6D6}` (10 occurrences)
