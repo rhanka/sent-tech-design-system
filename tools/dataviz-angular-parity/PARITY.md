@@ -100,5 +100,11 @@ command to re-derive them.
 | `DashboardActiveFilters` | 25 | **0** | **0** | — | — |
 | `ValueSlicer` | 25 | 1 | **0** | — | Angular sets the checked DOM property on the pre-filtered checkbox; React SSR serialises checked="" — same class as the DateRangeFilter value="" residue |
 | `VennChart` | 30 | **0** | **0** | — | — |
+| `ExportMenu` | 3 | **0** | **0** | — | — |
+| `RangeSliderFilter` | 32 | **0** | **0** | — | — |
+| `RelativeDateFilter` | 24 | 2 | **0** | 2 | DS: components-react renders label for= on the select, components-angular does not; plus Angular sets the selected DOM property on the chosen option where React SSR serialises selected="" — same class as the DateRangeFilter value="" residue |
+| `TopNFilter` | 23 | 1 | **0** | — | React serialises value="5" on the number input; Angular sets the property — same class as the DateRangeFilter value="" residue |
+| `PalettePicker` | 30 | 4 | **0** | — | Angular sets swatch/bar colours through the DOM so the browser serialises them as rgb(); React SSR emits the authored hex — same property-vs-attribute class as the DateRangeFilter value="" residue |
+| `FieldPane` | 114 | 17 | **0** | 2 | DS (16): components-angular TreeView sets a roving tabindex on every row, components-react TreeView sets none; plus React FieldPane spreads its ...rest so the store leaks as store="[object Object]" on the root, which neither Vue nor Angular renders |
 
-exact-markup matches: **80/94** · exact-signature matches: **92/94**
+exact-markup matches: **82/100** · exact-signature matches: **98/100**
