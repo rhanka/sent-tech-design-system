@@ -38,12 +38,9 @@ export type ObjectLayerPanelProps = {
  * `onSelect` is set — the same contract decision lot 9 recorded for
  * `FieldPane`).
  *
- * Parity residue, measured not hidden: the Angular DS `Button` declares no
- * `aria-label` input (React/Vue forward it onto the `<button>`), so the
- * per-layer `Select <label>` / `Show|Hide <label>` labels have no Angular
- * counterpart. The buttons keep their variant, size, disabled state, click
- * handler and visible text; the run attributes the missing attributes to
- * the design system.
+ * The DS `Button` now forwards `aria-label` (like React/Vue), so the
+ * per-layer `Select <label>` / `Show|Hide <label>` labels render on the
+ * `<button>`.
  */
 @Component({
   selector: 'st-dataviz-object-layer-panel',
@@ -71,6 +68,7 @@ export type ObjectLayerPanelProps = {
               type="button"
               [variant]="layer.id === selectedId ? 'primary' : 'secondary'"
               size="sm"
+              [aria-label]="'Select ' + layer.label"
               (click)="select(layer)"
               >Select</st-button
             >
@@ -78,6 +76,7 @@ export type ObjectLayerPanelProps = {
               type="button"
               variant="ghost"
               size="sm"
+              [aria-label]="(layerVisibility(layer) ? 'Hide ' : 'Show ') + layer.label"
               [disabled]="layer.locked"
               (click)="toggleVisibility(layer)"
               >{{ layerVisibility(layer) ? 'Hide' : 'Show' }}</st-button

@@ -64,11 +64,9 @@ function appendToken(expression: string, token: string): string {
  * in `recompute()`; the controlled inputs write through `(modelValueChange)`,
  * the design-system event the lot 9 `RelativeDateFilter` port established.
  *
- * Parity residue, measured not hidden: the Angular DS `Input`/`Select`/
- * `Textarea`/`Button` declare no `aria-label` input (React/Vue forward it
- * onto the control), so the fixed field labels and per-suggestion labels
- * have no Angular counterpart. The visible `label` inputs still render; the
- * run attributes the missing attributes to the design system.
+ * The DS `Input`/`Select`/`Textarea`/`Button` now forward `aria-label`
+ * (like React/Vue), so the fixed field labels and per-suggestion labels
+ * render on the control alongside the visible `label` inputs.
  */
 @Component({
   selector: 'st-dataviz-calculation-editor',
@@ -79,22 +77,26 @@ function appendToken(expression: string, token: string): string {
     <div role="group" [attr.aria-label]="label" [class]="classInput">
       <st-input
         label="Identifiant"
+        aria-label="Identifiant"
         [modelValue]="value.id"
         (modelValueChange)="update({ id: $event })"
       ></st-input>
       <st-input
         label="Nom du calcul"
+        aria-label="Nom du calcul"
         [modelValue]="value.label"
         (modelValueChange)="update({ label: $event })"
       ></st-input>
       <st-textarea
         label="Formule"
+        aria-label="Formule"
         [rows]="4"
         [modelValue]="value.expression"
         (modelValueChange)="update({ expression: $event })"
       ></st-textarea>
       <st-select
         label="Type"
+        aria-label="Type"
         [modelValue]="value.kind"
         [options]="kindOptions"
         (modelValueChange)="update({ kind: kindFrom($event) })"
@@ -102,6 +104,7 @@ function appendToken(expression: string, token: string): string {
       @if (value.kind === 'measure') {
         <st-select
           label="Agregation"
+          aria-label="Agregation"
           [modelValue]="value.aggregation ?? 'sum'"
           [options]="aggregationOptions"
           (modelValueChange)="update({ aggregation: aggregationFrom($event) })"
@@ -109,7 +112,7 @@ function appendToken(expression: string, token: string): string {
       }
       <div role="list" aria-label="Suggestions">
         @for (suggestion of suggestions; track suggestion.kind + ':' + suggestion.value) {
-          <st-button type="button" size="sm" (click)="insertToken(suggestion.value)">{{
+          <st-button type="button" size="sm" [aria-label]="suggestion.label" (click)="insertToken(suggestion.value)">{{
             suggestion.label
           }}</st-button>
         }
