@@ -51,7 +51,7 @@ export type ObjectLayerPanelProps = {
     <div role="group" [attr.aria-label]="label" [class]="classInput">
       <!-- The tree carries "<label> tree" through the documented DS label
         input, matching the fixed reference (whose adapters pass it as
-        `aria-label`, honoured by the React/Vue DS TreeViews, or `label`
+        aria-label, honoured by the React/Vue DS TreeViews, or label
         in Svelte). -->
       <st-tree-view
         [nodes]="nodes"

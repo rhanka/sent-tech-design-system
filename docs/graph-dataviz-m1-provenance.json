@@ -7774,7 +7774,7 @@
     {
       "destination": "packages/dataviz-angular/src/lib/ObjectLayerPanel.ts",
       "status": "local-monorepo-helper",
-      "sha256": "b7092e9debb8cbb103a784b3fa67c09d31cebfbae33e81ab1d0289cb533da798",
+      "sha256": "cdf4ba4bed0d7a8420922a9c8bbbc0e7d4d32ecc18be2410cfc3f24f58e9fdf5",
       "note": "GD-M2-PARITY lot 11: monorepo-authored by hand for the ObjectLayerPanel adapter (shares the Vue ObjectLayers.ts file with WebFrame/DataImage, so the stem carries no ObjectLayerPanelProps alias, and setup() is pure prop derivation with no reactive state; follows the React single-TreeView contract; see its README), so no descriptor and no upstream source; hash-pinned"
     },
     {
