@@ -214,6 +214,23 @@ export { ValueSlicer } from './lib/ValueSlicer.js';
 export type { ValueSlicerProps } from './lib/ValueSlicer.js';
 export { VennChart } from './lib/VennChart.js';
 export type { VennChartProps } from './lib/VennChart.js';
+
+// Lot 9: hand-written adapters from the "no `void <state>.value` marker"
+// refusal class — the six cheapest of the ten lot 8 deferred for review
+// budget (stateless panels, store-write-only filters and controlled previews;
+// see tools/dataviz-angular-port/README.md for the refusal of each one).
+export { ExportMenu, rowsToCsv } from './lib/ExportMenu.js';
+export type { ExportMenuProps } from './lib/ExportMenu.js';
+export { FieldPane } from './lib/FieldPane.js';
+export type { FieldPaneProps } from './lib/FieldPane.js';
+export { PalettePicker } from './lib/PalettePicker.js';
+export type { PalettePickerProps } from './lib/PalettePicker.js';
+export { RangeSliderFilter, numericDomain, rangeBoundsToSpec } from './lib/RangeSliderFilter.js';
+export type { NumericDomain, RangeSliderFilterProps } from './lib/RangeSliderFilter.js';
+export { RelativeDateFilter, DEFAULT_RELATIVE_PRESETS, relativeRangeToSpec } from './lib/RelativeDateFilter.js';
+export type { RelativeDateFilterProps, RelativeDatePreset } from './lib/RelativeDateFilter.js';
+export { TopNFilter } from './lib/TopNFilter.js';
+export type { TopNFilterProps } from './lib/TopNFilter.js';
 export {
   DASHBOARD_STORE,
   createDashboard,
