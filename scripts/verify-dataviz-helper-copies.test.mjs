@@ -21,7 +21,13 @@ const adapterPackages = readdirSync(packagesDir)
   .sort();
 
 /** The helper modules that are copied rather than shared. */
-const helpers = ["categoricalData.ts", "distributionData.ts", "drill.ts", "partOfWholeData.ts"];
+const helpers = [
+  "advancedPivotData.ts",
+  "categoricalData.ts",
+  "distributionData.ts",
+  "drill.ts",
+  "partOfWholeData.ts",
+];
 
 function sha256(path) {
   return createHash("sha256").update(readFileSync(path)).digest("hex");
