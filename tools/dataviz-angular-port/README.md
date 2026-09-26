@@ -161,6 +161,70 @@ dependency and is one of the ten deferred-for-budget above. Porting
 rasteriser with its own SSR/jsdom guards — not "hand-write one more adapter",
 so it is named here rather than forced into this lot's six.
 
+Lot 9 took **six** of the ten lot 8 deferred for review budget, leaving
+`union 119 / ported 102 / pending 17` (counts by `classify.mjs`: union =
+distinct names across the dataviz-svelte/react/vue barrels; ported = names in
+`dataviz-angular/src/index.ts`; pending = union minus ported).
+
+**The six were selected by measurement, not by pick, and every figure below
+was read from the sources before anything was written.** All nine pass both
+pre-write checks: (a) every design-system input their binding needs exists in
+`packages/components-angular` — `Button`, `Input`, `Select`, `Textarea`,
+`TreeView` (`nodes`/`selectedId`/`expandedIds`/`defaultExpandedIds`/`label` +
+`select`/`selectedChange`), `Checkbox`, `NumberInput`, `Stack`/`Inline`/`gap`,
+`ColorSwatch` (`color`/`shape`/`size`), `ColorScaleBar`
+(`colors`/`min`/`max`/`label`), `RangeSlider` (`modelValue`/`min`/`max`/
+`step`/`showValue` + `valueChange`) — and (b) every core builder they need is
+already in `@sentropic/dataviz-core` (`applyDashboardBookmark`,
+`suggestCalculationTokens`, `findMeasure`, `buildFieldPaneTree`,
+`updateAxisFormat`/`updateLegendFormat`/`updateMarkerFormat`,
+`buildSequentialScale`/`buildDivergingScale`, `findDimension`,
+`groupAggregate`). Ranked by review surface read from the Vue sources
+(DS-type count + state primitives + render branches), cheapest first:
+`ExportMenu` (1 DS, stateless, `rowsToCsv` local), `RelativeDateFilter` and
+`RangeSliderFilter` and `TopNFilter` (1 DS each, one `ref` + immediate
+side-effect watch — the exact lot 1 `DateRangeFilter` local-ref-then-
+`store.setFilter` shape), `PalettePicker` (4 DS, stateless, no store),
+`FieldPane` (1 DS). Three are left for a later lot, feasible, purely for
+budget: `BookmarkNavigator` (two refs + interval-timer playback + three
+watchers + store write with runtime — and every button carries
+`aria-label`/`aria-pressed`, which the Angular `Button` declares no input
+for, so it also carries the largest parity residue of the class),
+`CalculationEditor` (4 DS types with five fixed `aria-label` sites plus one
+per suggestion button, none forwardable through a declared Angular DS input),
+`FormatPanel` (the largest template of the class: three lists × four DS
+types, three core updaters, ~seven `aria-label` sites).
+
+**Correction to lot 8's note, measured:** `ExportMenu` does **not** depend on
+`chart-export.ts` "for its `rowsToCsv` re-export pattern" — the dependency
+runs the other way. `rowsToCsv` is defined locally in *both* frameworks'
+`ExportMenu` (Vue line 25, React line 24) with zero `chart-export` imports in
+either file; it is `ChartExport` that imports `rowsToCsv` *from*
+`ExportMenu` alongside six `chart-export.js` helpers. The CSV button ports
+with no new file. `ChartExport` itself stays refused as structural:
+`chart-export.ts` is still absent from `dataviz-angular` (no file under
+`packages/dataviz-angular/src` references `downloadPng`, `resolveSvg` or
+`printElement`), and it was never ported — per this tranche's brief it is not
+attempted here.
+
+`FieldPane` records one contract decision worth keeping: the Vue variant
+hand-renders its own tree rows when `onSelect` is set, but the React
+`FieldPane` always renders the DS `TreeView` with `onSelect` passed through —
+so the port follows the single-`TreeView` React contract, and the Vue dual
+path is not the contract. (The same comparison caught a React-side leak both
+other frameworks avoid: React spreads its `...rest`, so the store lands on
+the tree root as `store="[object Object]"` — measured as 1 of the case's 17
+markup diffs in `tools/dataviz-angular-parity/PARITY.md`, the other 16 being
+the Angular `TreeView`'s roving `tabindex`, proved by the bare-DS control.)
+
+Parity outcome for the six (measured by `npm run parity:dataviz-angular`,
+all signature diffs 0): `ExportMenu` 0, `RangeSliderFilter` 0,
+`RelativeDateFilter` 2 (`for=` the React DS `Select` renders and the Angular
+one does not, proved by the bare-DS control, plus `selected=""` in the
+`DateRangeFilter` property-vs-attribute class), `TopNFilter` 1
+(`value="5"`, same class), `PalettePicker` 4 (browser-normalised `rgb()`
+style serialisation vs SSR-authored hex, same class), `FieldPane` 17 (above).
+
 ## Adding a lot
 
 1. Run `extract.mjs` with the names. Read the printed one-line-per-component
