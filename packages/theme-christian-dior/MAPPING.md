@@ -50,7 +50,7 @@ excluded).
 | `slate.90` alternate / footer black | `#footer-jumbotron-2{background:#000000}` (4 unified occurrences) | `#000000` |
 | `cyan.10` | `#gouvernance-page-widget-title-div` background step (1 occurrence) | `#f5f5f5` |
 | `grey.300` | table alt-column tint (2 occurrences) | `#efefef` |
-| `grey divider` | `.dropdown-menu .divider` mobile (1 occurrence) | `#c7c7c7` |
+| `grey divider` | `.dropdown-menu .divider` base rule (1 occurrence; effective on desktop, mobile overrides with `#9c9c9c`) | `#c7c7c7` |
 | `tabs.activeText` / `pagination.activeText` / `badge.infoText` / `action.primaryText` | white nav labels on the dark navbar / white on navy (measured pairing) | `#ffffff` |
 | `pagination.activeBackground` / `badge.infoBackground` | brand navy as fill (measured `.btn-primary` pairing) | `#013755` |
 | `action.danger` / `feedback.error` | derived error red (6.54:1 on white) | `#b3261e` *(à confirmer)* |
@@ -68,7 +68,7 @@ excluded).
 - **Tabs/pagination/search/toggle geometry and tab indicator** — no tab, pagination or toggle component published; structural values with the measured nav/pairing colours.
 - **`shadow.medium/floating`, `motion.fast`, `radius.pill`, `disabledOpacity`, `spacing`, `z`, `cursor`, `iconSize`, lg `density`** — not published; base/structural values. `shadow.subtle` is `none` (measured `box-shadow:unset` on menus); `motion.normal/slow/easing` and `transition` are measured (`.5s ease-out`, `transform 1s`).
 - **Categorical `data.*` palette** (`#013755`, `#313131`, `#1e7e34`, `#8a4b00`, `#b3261e`, `#013755`, `#666666`, `#d6d6d6`) — a coherent proposal from the brand navy + ramp + status hues, not an official scale.
-- **Not promoted (measured but excluded)**: `#ccc` inputs and `#777777` dropdown links and `#333333` list links = vendor defaults retained (present in the Bootstrap 3 stock); `#9c9c9c` (2.75:1) and `#c4c4c4` as text would fail the text floor; live 8-digit alphas `#f7d3bf4f` (winning widget-title background), `#584848f5`, `#00000024` (1 occurrence each, no role); comment-only `#59e8f2`, `#db848f`, `#f2f2f2`.
+- **Not promoted (measured but excluded)**: `#ccc` inputs and `#777777` dropdown links and `#333333` list links = vendor defaults retained (present in the Bootstrap 3 stock); `#9c9c9c` (2.75:1 on white) is the mobile override of that same divider background — never text, so the text floor does not apply; not promoted, like `#c7c7c7`, for want of a divider-background role; `#c4c4c4` as text would fail the text floor; live 8-digit alphas `#f7d3bf4f` (winning widget-title background), `#584848f5`, `#00000024` (1 occurrence each, no role); comment-only `#59e8f2`, `#db848f`, `#f2f2f2`.
 - **Unresolved reference**: `var(--unnamed-character-spacing-0)` (style.css:693) is never declared — ignored.
 - **Root**: the brand declares no `rem` root; the effective 10px root comes from the Bootstrap stock (`html{font-size:10px}`) and the brand authors px, so no conversion distortion; px→rem transcribed at the 16px theme root.
 
