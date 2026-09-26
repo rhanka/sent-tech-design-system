@@ -35,27 +35,28 @@ import type { TenantTheme } from "@sentropic/design-system-themes";
  */
 
 // --- Rexel raw colour palette ------------------------------------------------
-// Convention de comptage (toutes les figures ci-dessous et dans MAPPING.md) :
-// occurrences de la forme hexadécimale 6 chiffres insensible à la casse,
-// normalisée en minuscules ; formes courtes (#333, #000) étendues avant
-// comptage ; équivalents rgb()/rgba() signalés sans être fusionnés ; région =
-// fichiers de marque (scss/rexel/_theme_rexel.scss,
-// scss/common/_variables_rexel_DS.scss, scss/common/_custom_components.scss) ;
-// répertoire vendor/ et import bootstrap exclus. Références $var = usages de la
-// variable SCSS de marque (déclaration incluse) sur la région de marque.
+// Counting convention (every figure below and in MAPPING.md): occurrences of
+// the 6-digit hexadecimal form, case-insensitive, normalised to lowercase;
+// short forms (#333, #000) expanded before counting; rgb()/rgba() equivalents
+// reported without merging; region = brand files
+// (scss/rexel/_theme_rexel.scss, scss/common/_variables_rexel_DS.scss,
+// scss/common/_custom_components.scss); vendor/ directory and the bootstrap
+// import excluded. $var references = exact-spelling uses of the brand SCSS
+// variable (declaration included) over the brand region — `$warning` does not
+// absorb `$warning-light` or `$warning-info-icon`.
 const rexelColor = {
   // Brand blue family — the France theme primary scale. $primary-600 is the
   // DEFAULT BUTTON COLOR ($primary, 47 $primary-600 refs + 97 $primary refs).
   blue: {
-    50: "#e8ebf6", // $primary-50 (dropdown hover bg, facet active — 16 refs)
+    50: "#e8ebf6", // $primary-50 ($dropdown-link-hover-bg, facet active fills — 16 refs)
     500: "#3556b4", // $primary-500 ($primary-hover, outline-btn hover — 18 refs)
     600: "#2e4eaa", // $primary-600 (DEFAULT BUTTON COLOR — 47 refs)
     900: "#0a287d" // $primary-900 (progress bar, badge-primary — 38 refs)
   },
   // Accent blue family — $secondary-700 is the DEFAULT 2nd BUTTON COLOR.
   accent: {
-    50: "#e3f5fc", // $secondary-50 (breadcrumb hover — 3 refs)
-    500: "#52a7e0", // $secondary-500 (scale step — declaration)
+    50: "#e3f5fc", // $secondary-50 ($breadcrumb-hover — 3 refs)
+    500: "#52a7e0", // $secondary-500 (scale step — declaration + palette map, 2 refs; no consumer rule)
     600: "#4c99d1", // $secondary-600 ($secondary-hover, lighter — 5 refs)
     700: "#4487bd" // $secondary-700 ($secondary DEFAULT BUTTON — 8 refs)
   },
@@ -67,18 +68,20 @@ const rexelColor = {
     400: "#838AA1", // $gray-400 (switch track off, control borders — 23 refs)
     500: "#666F8A", // $gray-500 ($text-muted — 47 refs)
     600: "#596179", // $gray-600 (breadcrumb links — 14 refs)
-    800: "#3E4457", // $gray-800 (large-pill text — declaration)
+    800: "#3E4457", // $gray-800 (large-pill text, pill switch fills — 9 refs; brand-consumed, no Sentropic role: palette reference)
     900: "#303545" // $gray-900 ($body-color, $headings-color — 54 refs)
   },
-  // Deep navy (footer backgrounds tertiary-500/700/800 — 3 refs each).
-  navy: "#092268", // $tertiary (footer top background)
+  // Deep navy (footer backgrounds: .responsiveFooterBackgroundTop = $tertiary-500,
+  // .responsiveFooterBackgroundMain = $tertiary-700, .responsiveFooterBackgroundBottom
+  // = $tertiary-800 — _variables_rexel_DS.scss footer block).
+  navy: "#092268", // $tertiary = $tertiary-500 (footer top background)
   navyDeep: "#02081A", // $tertiary-800 (footer bottom background)
   // System / status colours (brand-declared $green/$orange/$red/$blue).
   system: {
     success: "#16704a", // $green = $success (switch on, alerts — 37 $success refs)
-    warning: "#EE7900", // $orange = $warning (23 $warning refs)
-    error: "#C8102E", // $red = $danger (24 $danger refs)
-    info: "#0072CE" // $blue = $info (11 $info refs)
+    warning: "#EE7900", // $orange = $warning (17 $warning refs)
+    error: "#C8102E", // $red = $danger (18 $danger refs)
+    info: "#0072CE" // $blue = $info (7 $info refs)
   },
   // Promo orange (brand-declared $promo-color-button — 4 refs).
   promo: "#ec6507" // $promo-color-button (btn-promo fill, white text)
@@ -179,8 +182,12 @@ const foundation = {
   },
   borderStyle: { solid: "solid" },
   // Control density. md/sm heights computed from the brand formula
-  // ($input-line-height 1.5 × $font-size-base .875rem = 21px, + paddings —
-  // see MAPPING.md); lg/minWidth/gap follow the base (à confirmer).
+  // ($input-line-height 1.5 × $font-size-base .875rem = 21px, + paddings);
+  // md paddings ($input-padding-y, $input-btn-padding-x) and the three
+  // fontSize steps ($font-size-sm/base/lg) are brand values — see MAPPING.md.
+  // lg.controlHeight, all minWidth, md/lg gap and sm/lg paddingBlock follow
+  // the base (à confirmer). sm.paddingInline, sm.gap and lg.paddingInline are
+  // aligned with the reference theme package's geometry (à confirmer).
   density: {
     sm: { controlHeight: "1.75rem", paddingBlock: "0", paddingInline: "0.5rem", gap: "0.5rem", minWidth: "2rem", fontSize: "0.75rem" },
     md: { controlHeight: "2.375rem", paddingBlock: "0.5rem", paddingInline: "0.75rem", gap: "0.5rem", minWidth: "2.5rem", fontSize: "0.875rem" },
@@ -202,9 +209,15 @@ const foundation = {
       textDecorationHover: "none", decorationThicknessHover: "auto", decorationOffsetHover: "auto"
     }
   },
-  disabledOpacity: "0.5", // $btn-disabled-opacity
+  disabledOpacity: "0.5", // $btn-disabled-opacity (brand, against Bootstrap stock .65)
+  // Transition: duration is the base; easing is brand ($easeInOutCubic);
+  // property is aligned with the reference theme package's geometry
+  // (à confirmer — no $transition-* published by the brand).
   transition: { property: "background-color, border-color, color, box-shadow", duration: "120ms", easing: "cubic-bezier(0.645, 0.045, 0.355, 1)" },
   cursor: { interactive: "pointer", disabled: "not-allowed", text: "text" },
+  // Icon sizes: sm is the brand indicator ($input-control-indicator-size);
+  // lg is the search-icon render size (.form-search background-size
+  // $spacer × 1.25 with $spacer: 1rem); md follows the base (à confirmer).
   iconSize: { sm: "1rem", md: "1.125rem", lg: "1.25rem" },
   // FOCUS = a translucent brand-blue RING: `box-shadow: 0 0 0 0.2rem
   // rgba($primary, .25); outline: 0` on focused controls (input-group
@@ -232,7 +245,7 @@ const foundation = {
     selectAppearance: "none",
     selectChevron:
       "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%232e4eaa' d='M8 11L3 6l1-1 4 4 4-4 1 1z'/%3E%3C/svg%3E\") no-repeat right 0.625rem center",
-    selectPaddingRight: "1.625rem"
+    selectPaddingRight: "1.625rem" // à confirmer — computed gutter (0.625rem offset + 1rem icon), no padding-right published
   },
   // Cards: borderless, shadow-lifted ($card-box-shadow), white header, hover
   // deepens the shadow only (no fill change).
@@ -333,7 +346,8 @@ const foundation = {
     neutralText: rexelColor.slate[600] // #596179 = text.secondary
   },
   // Badge: Bootstrap pill (10rem) with the large-pill metrics (6px 15px,
-  // .875rem/600/normal); INFO tone = measured default-badge primary pair.
+  // .875rem/normal); weight 600 is brand ($badge-font-weight:
+  // $font-weight-semi-bold); INFO tone = measured default-badge primary pair.
   badge: {
     radius: "10rem",
     paddingBlock: "6px",
@@ -374,7 +388,7 @@ const foundation = {
 // --- semantic (Rexel-specific role mapping) ----------------------------------
 const semantic = {
   surface: {
-    default: rexelColor.slate[0], // white (fills — défaut vendeur conservé)
+    default: rexelColor.slate[0], // white (fills — vendor default retained)
     subtle: rexelColor.slate[50], // #f3f3fa $background-color
     raised: rexelColor.slate[0], // white
     inverse: rexelColor.slate[900], // #303545 $body-color near-black
@@ -395,10 +409,10 @@ const semantic = {
   action: {
     primary: rexelColor.blue[600], // #2e4eaa DEFAULT BUTTON COLOR
     primaryHover: rexelColor.blue[500], // #3556b4 lighter hover (measured)
-    primaryText: "#ffffff", // white btn text (7.54:1 — vendeur color-yiq)
+    primaryText: "#ffffff", // white btn text (7.54:1 — vendor color-yiq)
     secondary: rexelColor.accent[700], // #4487bd DEFAULT 2nd BUTTON COLOR
     secondaryHover: rexelColor.accent[600], // #4c99d1 lighter hover (measured)
-    secondaryText: "#ffffff", // white btn text (3.86:1 — arbitrage documenté)
+    secondaryText: "#ffffff", // white btn text (3.86:1 — documented arbitration)
     danger: rexelColor.system.error // #C8102E (5.88:1)
   },
   feedback: {
