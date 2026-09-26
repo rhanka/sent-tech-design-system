@@ -43,15 +43,18 @@ describe('adapter pattern guard', () => {
     expect(adapters.map((a) => a.file).sort()).toEqual([
       'AdvancedPivotDataTable.ts',
       'AnalyticsClusterPlot.ts',
+      'AnimatedBubbleChart.ts',
       'AnomalySwimLaneChart.ts',
       'ArcDiagramChart.ts',
       'AreaChart.ts',
       'AreaRangeChart.ts',
       'AreaSplineRangeChart.ts',
       'BellCurveChart.ts',
+      'BookmarkNavigator.ts',
       'BoxPlotChart.ts',
       'BulletChart.ts',
       'BumpChart.ts',
+      'CalculationEditor.ts',
       'CalendarHeatmapChart.ts',
       'CandlestickChart.ts',
       'ChordChart.ts',
@@ -82,6 +85,7 @@ describe('adapter pattern guard', () => {
       'FlamegraphChart.ts',
       'ForceGraph.ts',
       'ForecastLineChart.ts',
+      'FormatPanel.ts',
       'FunnelChart.ts',
       'GanttChart.ts',
       'GaugeChart.ts',
@@ -101,6 +105,7 @@ describe('adapter pattern guard', () => {
       'LollipopChart.ts',
       'MekkoChart.ts',
       'OHLCChart.ts',
+      'ObjectLayerPanel.ts',
       'OrganizationChart.ts',
       'PackedBubbleChart.ts',
       'PalettePicker.ts',
@@ -182,14 +187,26 @@ describe('adapter pattern guard', () => {
       });
 
       it('unsubscribes in ngOnDestroy when it subscribes to the store', () => {
-        if (!source.includes('.subscribe(')) {
+        // Lot 11: the two playback adapters (AnimatedBubbleChart,
+        // BookmarkNavigator) own an interval timer instead of — or beside —
+        // a store subscription. A timer leaks across TestBed fixtures the
+        // same way an unclosed subscription does, so it gets the same
+        // teardown discipline: ngOnDestroy clearing the interval.
+        const subscribes = source.includes('.subscribe(');
+        const ticks = source.includes('setInterval(');
+        if (!subscribes && !ticks) {
           expect(declaresHook(source, 'ngOnDestroy')).toBe(false);
           return;
         }
         expect(declaresHook(source, 'ngOnDestroy'), 'ngOnDestroy').toBe(true);
         const body = hookBody(source, 'ngOnDestroy');
-        expect(body).toContain('this.unsubscribe();');
-        expect(body).toContain('this.signals?.destroy();');
+        if (subscribes) {
+          expect(body).toContain('this.unsubscribe();');
+          expect(body).toContain('this.signals?.destroy();');
+        }
+        if (ticks) {
+          expect(body).toContain('clearInterval(');
+        }
       });
 
       it('renders no literal style attribute and no hard-coded colour', () => {
