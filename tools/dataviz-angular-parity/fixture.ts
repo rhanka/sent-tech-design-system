@@ -1,4 +1,14 @@
-import { createDashboardStore, type DashboardStore, type DataModel, type Row } from '@sentropic/dataviz-core';
+import {
+  createDashboardStore,
+  createFormatPanelState,
+  type CalculatedFieldConfig,
+  type DashboardBookmark,
+  type DashboardObjectLayer,
+  type DashboardStore,
+  type DataModel,
+  type FormatPanelState,
+  type Row,
+} from '@sentropic/dataviz-core';
 
 /** One fixture for both frameworks, so a diff can only come from the adapters. */
 export const T0 = Date.UTC(2026, 0, 1);
@@ -214,3 +224,41 @@ export const vennAreas = [
   { sets: ['us'], value: 5 },
   { sets: ['eu', 'us'], value: 2 },
 ];
+
+/**
+ * Lot 11: the five ported candidates take plain-data props no earlier Host
+ * field carries, so each gets a fixture here. One fixture for both
+ * frameworks, so a diff can only come from the adapters.
+ */
+export const parityBookmarks: DashboardBookmark[] = [
+  {
+    id: 'fr',
+    label: 'France',
+    state: { filters: { country: { kind: 'include', values: ['FR'] } } },
+  },
+  {
+    id: 'us',
+    label: 'Etats-Unis',
+    state: { filters: { country: { kind: 'include', values: ['US'] } } },
+  },
+];
+
+export const parityLayers: DashboardObjectLayer[] = [
+  { id: 'page', label: 'Page', kind: 'group' },
+  { id: 'web', label: 'Help page', kind: 'iframe', parentId: 'page' },
+  { id: 'logo', label: 'Customer logo', kind: 'image', parentId: 'page', visible: false },
+];
+
+export const parityCalculation: CalculatedFieldConfig = {
+  id: 'margin',
+  label: 'Margin',
+  kind: 'measure',
+  expression: '[revenue] - [cost]',
+  aggregation: 'sum',
+};
+
+export const parityFormat: FormatPanelState = createFormatPanelState({
+  axes: [{ id: 'revenue', label: 'Revenue' }],
+  legends: [{ id: 'segment', label: 'Segment' }],
+  markers: [{ id: 'points', label: 'Points' }],
+});

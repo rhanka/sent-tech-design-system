@@ -52,12 +52,17 @@ export type ObjectLayerPanelProps = {
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div role="group" [attr.aria-label]="label" [class]="classInput">
+      <!-- No label binding: Vue and React both render the DS default
+        here — their adapters pass an aria-label both DS TreeViews
+        spread-then-override with the label default — so the measured
+        inter-framework contract is the default, not the label-plus-tree
+        string only Svelte renders (via the label prop). The parity run
+        measures that DS-level split instead of hiding it. -->
       <st-tree-view
         [nodes]="nodes"
         [selectedId]="selectedId"
         [expandedIds]="expandedIds"
         [defaultExpandedIds]="effectiveDefaults"
-        [label]="treeLabel"
       ></st-tree-view>
       <div>
         @for (layer of layers; track layer.id) {
@@ -98,7 +103,6 @@ export class ObjectLayerPanel implements OnInit, OnChanges {
   /** Recomputed by `recompute()`; never derived in a template getter. */
   nodes: TreeNode[] = [];
   effectiveDefaults: string[] = [];
-  treeLabel = 'Objects tree';
 
   ngOnInit(): void {
     this.recompute();
@@ -124,6 +128,5 @@ export class ObjectLayerPanel implements OnInit, OnChanges {
     const tree = buildObjectLayerTree(this.layers ?? []);
     this.nodes = tree.nodes;
     this.effectiveDefaults = this.defaultExpandedIds ?? tree.defaultExpandedIds;
-    this.treeLabel = `${this.label} tree`;
   }
 }
