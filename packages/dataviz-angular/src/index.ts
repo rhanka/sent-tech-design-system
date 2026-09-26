@@ -232,6 +232,23 @@ export type { RelativeDateFilterProps, RelativeDatePreset } from './lib/Relative
 export { TopNFilter } from './lib/TopNFilter.js';
 export type { TopNFilterProps } from './lib/TopNFilter.js';
 
+// Lot 11: the five feasible deferred panels and charts — the interval-timer
+// playback chart (AnimatedBubbleChart), the layer tree panel
+// (ObjectLayerPanel), the bookmark playback navigator (BookmarkNavigator) and
+// the two controlled editors (CalculationEditor, FormatPanel); see
+// tools/dataviz-angular-port/README.md for the pre-write measurement of each
+// one.
+export { AnimatedBubbleChart } from './lib/AnimatedBubbleChart.js';
+export type { AnimatedBubbleChartProps } from './lib/AnimatedBubbleChart.js';
+export { BookmarkNavigator } from './lib/BookmarkNavigator.js';
+export type { BookmarkNavigatorProps } from './lib/BookmarkNavigator.js';
+export { CalculationEditor } from './lib/CalculationEditor.js';
+export type { CalculationEditorProps } from './lib/CalculationEditor.js';
+export { FormatPanel } from './lib/FormatPanel.js';
+export type { FormatPanelProps } from './lib/FormatPanel.js';
+export { ObjectLayerPanel } from './lib/ObjectLayerPanel.js';
+export type { ObjectLayerPanelProps } from './lib/ObjectLayerPanel.js';
+
 // Lot 10: hand-written adapters from four refusal classes — the six charts the
 // users see first (StackedBarChart's `measures: [props.measure]` config,
 // RadarChart's two wrapping calls, ScatterPlotMatrix's and
