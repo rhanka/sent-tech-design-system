@@ -76,7 +76,7 @@ excluded).
 ## Typography
 
 - **UI / controls / labels / tables** (`font.sans`, `typography.control/field/label`): **'Montserrat'** — buttons (`#p-button-slider`, `#button-telecharger-publication`), selects (`#annee-select-button`, `select.filterExercice`), fil d'Ariane, linked from the homepage head. We reference the font *name* only.
-- **Display / headings** (`font.display`): **'EB Garamond'** — hero (`.text-first-slider`), section titles (`#text-actualite`, `#gouvernance-page-title`), widget headings (~20 declarations vs 2 for Cochin). Late `h1/h2` rules set Cochin `!important` (2 rules) — observed minority, not promoted.
+- **Display / headings** (`font.display`): **'EB Garamond'** — hero (`.text-first-slider`), section titles (`#text-actualite`, `#gouvernance-page-title`), widget headings (~20 declarations vs 2 for Cochin). Late `h1`/`h2` rules set Cochin (1 `!important` font rule on `h2`, 1 plain font rule on `h1`) — observed minority, not promoted.
 - **Monospace** (`font.mono`): system stack (no brand monospace published; Arial appears as a table/data fallback, not promoted).
 - Links: `#393939`, underlined at rest and on hover (`a.fxd-link`, `a.link-ar`); brand buttons uppercase normal-weight Montserrat.
 
