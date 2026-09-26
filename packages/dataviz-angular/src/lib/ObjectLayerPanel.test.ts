@@ -30,7 +30,10 @@ describe('ObjectLayerPanel (angular)', () => {
     const root = fixture.nativeElement as HTMLElement;
 
     expect(root.querySelector('[role="group"]')?.getAttribute('aria-label')).toBe('Objects');
-    expect(root.querySelector('[role="tree"]')?.getAttribute('aria-label')).toBe('Objects tree');
+    // Measured contract, not intent: Vue and React both render the DS
+    // default here (their adapters' `aria-label` is spread-then-overridden),
+    // so the port renders it too — only Svelte honours `${label} tree`.
+    expect(root.querySelector('[role="tree"]')?.getAttribute('aria-label')).toBe('Arborescence');
     const text = root.textContent ?? '';
     for (const label of ['Page', 'Help page', 'Customer logo']) expect(text).toContain(label);
     const adapter = fixture.debugElement.children[0]!.componentInstance as ObjectLayerPanel;

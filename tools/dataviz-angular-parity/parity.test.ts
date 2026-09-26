@@ -61,6 +61,10 @@ import {
   dsComboBars,
   dsComboLines,
   vennAreas,
+  parityBookmarks,
+  parityLayers,
+  parityCalculation,
+  parityFormat,
 } from './fixture.js';
 
 import * as NG from '../../packages/dataviz-angular/dist/index.js';
@@ -1443,6 +1447,96 @@ const cases: Case[] = [
     expectedSignatureDiffs: 0,
     attribution: '—',
   },
+  // Lot 11: the five feasible deferred candidates. The four panels render no
+  // data-value list, so they join NO_DATA_LIST; AnimatedBubbleChart composes
+  // the DS ScatterPlot and compares its list like every other chart.
+  // Counts below are seeded by PARITY_RECORD=1 and classified from
+  // PARITY_DUMP before being written down — never guessed.
+  {
+    name: 'AnimatedBubbleChart',
+    ng: NG.AnimatedBubbleChart as Type<unknown>,
+    template: `<st-dataviz-animated-bubble-chart [store]="store" viewId="v" x="amount" y="close" size="open" time="day" series="region" label="Bubbles" class="lot11"></st-dataviz-animated-bubble-chart>`,
+    re: RE.AnimatedBubbleChart as ComponentType<Props>,
+    props: { viewId: 'v', x: 'amount', y: 'close', size: 'open', time: 'day', series: 'region', label: 'Bubbles', className: 'lot11' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 5,
+    expectedSignatureDiffs: 0,
+    attribution:
+      'adapter-pattern guard + framework (5 + 0): the guard forbids literal style attributes in adapter sources, so four entries differ by their Vue/React inline style alone (column layout, control row, play button, live region) and the range-input entry by its style plus the TopNFilter property-vs-attribute value gap (Angular sets the value property, React SSR serialises value="0"); no DS component is involved, and every text plus every aria attribute matches',
+  },
+  {
+    name: 'ObjectLayerPanel',
+    ng: NG.ObjectLayerPanel as Type<unknown>,
+    template: `<st-dataviz-object-layer-panel [layers]="parityLayers" selectedId="logo" class="lot11"></st-dataviz-object-layer-panel>`,
+    re: RE.ObjectLayerPanel as ComponentType<Props>,
+    props: { layers: parityLayers, selectedId: 'logo', className: 'lot11' },
+    storeless: true,
+    expectedMarkupDiffs: 9,
+    expectedSignatureDiffs: 11,
+    attribution:
+      'DS (9 + 11): 3x the FieldPane roving-tabindex class (components-angular TreeView sets tabindex on every row, components-react none) plus 6x the missing Button aria-label (the Angular DS Button declares no aria-label input; React/Vue forward it) — every button keeps its variant, size, text, disabled state and handler; the signature saturates from the first missing button label (same class as ScatterPlotMatrix 1/75); the tree itself matches since the port follows the measured Vue+React-rendered DS default instead of the swallowed label-plus-tree string (bare Button control shows the button gap alone)',
+    control: {
+      ng: NGDS.Button as Type<unknown>,
+      template: `<st-button variant="secondary" size="sm">Select</st-button>`,
+      re: REDS.Button as ComponentType<Props>,
+      props: { variant: 'secondary', size: 'sm', 'aria-label': 'Select Page', children: 'Select' },
+    },
+  },
+  {
+    name: 'BookmarkNavigator',
+    ng: NG.BookmarkNavigator as Type<unknown>,
+    template: `<st-dataviz-bookmark-navigator [store]="store" [bookmarks]="parityBookmarks" class="lot11"></st-dataviz-bookmark-navigator>`,
+    re: RE.BookmarkNavigator as ComponentType<Props>,
+    props: { bookmarks: parityBookmarks, className: 'lot11' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 5,
+    expectedSignatureDiffs: 10,
+    attribution:
+      'DS (5 + 10): 5x the missing Button aria-label/aria-pressed (the Angular DS Button declares neither input; React/Vue forward both, React rendering aria-pressed="false" explicitly) — variants, texts, disabled states and handlers all match; the signature saturates from the first missing label (same class as ScatterPlotMatrix 1/75; bare Button control shows the gap alone)',
+    control: {
+      ng: NGDS.Button as Type<unknown>,
+      template: `<st-button variant="primary" size="sm">France</st-button>`,
+      re: REDS.Button as ComponentType<Props>,
+      props: { variant: 'primary', size: 'sm', 'aria-label': 'France', 'aria-pressed': true, children: 'France' },
+    },
+  },
+  {
+    name: 'CalculationEditor',
+    ng: NG.CalculationEditor as Type<unknown>,
+    template: `<st-dataviz-calculation-editor [model]="store.model" [value]="parityCalculation" [onChange]="noop" class="lot11"></st-dataviz-calculation-editor>`,
+    re: RE.CalculationEditor as ComponentType<Props>,
+    props: { model: wideModel, value: parityCalculation, onChange: () => undefined, className: 'lot11' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 90,
+    expectedSignatureDiffs: 44,
+    attribution:
+      'DS + framework (90 + 44): the Angular DS Textarea binds value as a property and renders empty where React SSR renders the expression as content — the missing element shifts every later entry (same saturation class as TimelineChart 59/12); per-site gaps on top: no aria-label input on Input/Select/Textarea/Button (React/Vue forward it), Angular rendering placeholder="" where React omits it, and the DateRangeFilter property-vs-attribute class for input values (React serialises value="margin", Angular sets the property). Visible labels, options, suggestion texts and handlers all match (bare Textarea control shows the aria/placeholder/content classes alone)',
+    control: {
+      ng: NGDS.Textarea as Type<unknown>,
+      template: `<st-textarea label="Formule" [rows]="4" [modelValue]="controlData"></st-textarea>`,
+      re: REDS.Textarea as ComponentType<Props>,
+      props: { label: 'Formule', rows: 4, value: '[revenue] - [cost]', 'aria-label': 'Formule' },
+      ngData: '[revenue] - [cost]',
+    },
+  },
+  {
+    name: 'FormatPanel',
+    ng: NG.FormatPanel as Type<unknown>,
+    template: `<st-dataviz-format-panel [value]="parityFormat" [onChange]="noop" class="lot11"></st-dataviz-format-panel>`,
+    re: RE.FormatPanel as ComponentType<Props>,
+    props: { value: parityFormat, onChange: () => undefined, className: 'lot11' },
+    storeless: true,
+    expectedMarkupDiffs: 13,
+    expectedSignatureDiffs: 35,
+    attribution:
+      'DS + framework (13 + 35): no aria-label input on NumberInput/Select/Checkbox/Input (React/Vue forward it); Angular omitting label for= on the select (same class as the RelativeDateFilter 2, which carries the bare-DS proof); React SSR serialising selected=""/checked=""/value where Angular sets DOM properties (same class as the DateRangeFilter/TopNFilter residue); React defaulting step="1" where Angular omits it. The signature saturates from the first missing input label (same class as ScatterPlotMatrix 1/75). All labels, values, options and handlers match (bare NumberInput control shows the aria/value/step classes alone)',
+    control: {
+      ng: NGDS.NumberInput as Type<unknown>,
+      template: `<st-number-input label="Minimum Revenue"></st-number-input>`,
+      re: REDS.NumberInput as ComponentType<Props>,
+      props: { label: 'Minimum Revenue', value: '', 'aria-label': 'Minimum Revenue' },
+    },
+  },
 ];
 
 type Row = {
@@ -1488,6 +1582,8 @@ function dataListItems(root: Element): string[] {
  */
 const NO_DATA_LIST = new Set([
   'AdvancedPivotDataTable',
+  'BookmarkNavigator',
+  'CalculationEditor',
   'DashboardActiveFilters',
   'DashboardFilterBar',
   'DateRangeFilter',
@@ -1496,7 +1592,9 @@ const NO_DATA_LIST = new Set([
   'ExportMenu',
   'FieldPane',
   'ForceGraph',
+  'FormatPanel',
   'KpiCardGroup',
+  'ObjectLayerPanel',
   'PalettePicker',
   'PivotDataTable',
   'RangeSliderFilter',
@@ -1521,6 +1619,10 @@ function renderAngular(component: Type<unknown>, template: string, store: unknow
     readonly hierarchy = hierarchy;
     readonly controlData = controlData;
     readonly vennAreas = vennAreas;
+    readonly parityBookmarks = parityBookmarks;
+    readonly parityLayers = parityLayers;
+    readonly parityCalculation = parityCalculation;
+    readonly parityFormat = parityFormat;
   }
   Component({ standalone: true, imports: [component], template })(Host);
   const fixture = TestBed.createComponent(Host);
