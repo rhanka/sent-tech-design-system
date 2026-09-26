@@ -48,9 +48,12 @@ const keyOf = (v: unknown): string => (v == null ? 'null' : String(v));
  * extracted. Every builder it needs (`findDimension`, `findMeasure`,
  * `groupAggregate`) is already in `@sentropic/dataviz-core`.
  *
- * `role`/`aria-label` ride on the `st-grid` host: the DS `Grid` declares no
- * inputs for them, and the parity flattener unwraps `st-*` hosts, so the run
- * measures that framework-position residue instead of hiding it.
+ * `role`/`aria-label` land on the `st-grid` host element (static attributes
+ * fall through; Angular hijacks an `[ariaLabel]` property binding to the host
+ * as well, so a DS passthrough input is not wireable — probed and reverted in
+ * lot 10): real DOM, but invisible to the parity flattener, which unwraps
+ * `st-*` hosts — the run measures that framework-position residue instead of
+ * hiding it.
  */
 @Component({
   selector: 'st-dataviz-small-multiples',

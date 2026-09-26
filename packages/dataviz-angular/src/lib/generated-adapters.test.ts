@@ -913,8 +913,8 @@ const cases: Case[] = [
     component: StackedBarChart,
     ds: "StackedBarChart",
     template: `<st-dataviz-stacked-bar-chart [store]="store" viewId="v" category="service" series="region" measure="amount" label="L" class="probe"></st-dataviz-stacked-bar-chart>`,
-    items: ["checkout / eu: 10", "checkout / us: 5", "billing / eu: 7", "billing / us: 0"],
-    after: ["billing / eu: 7"],
+    items: ["checkout, eu: 10", "checkout, us: 5", "billing, eu: 7", "billing, us: 0"],
+    after: ["billing, eu: 7"],
   },
   {
     family: "charts the port generator refuses (lot 10: array config, two wraps, bespoke setup)",

@@ -175,6 +175,30 @@ export const dsDivergingBarData = [
 export const dsDivergingBarDomain: [number, number] = [0, 17];
 
 /**
+ * Bare-DS control input for the lot 10 StackedBarChart residue: exactly what
+ * `toStackedCategoricalData` derives from wideRows for category=service,
+ * series=region, measure=amount (checkout = 10 + 5, billing = 7; the absent
+ * billing/us combination is a zero segment). The control is only a control
+ * if the DS component receives what the adapter hands it.
+ */
+export const dsStackedBarData = [
+  {
+    label: 'checkout',
+    segments: [
+      { label: 'eu', value: 10 },
+      { label: 'us', value: 5 },
+    ],
+  },
+  {
+    label: 'billing',
+    segments: [
+      { label: 'eu', value: 7 },
+      { label: 'us', value: 0 },
+    ],
+  },
+];
+
+/**
  * Bare-DS control input for the lot 7 ComboChart residue: exactly what the
  * adapter hands the DS component for category=region,
  * measures=['amount', { id: 'close', mark: 'line' }] over wideRows (eu =
