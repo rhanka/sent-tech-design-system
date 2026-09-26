@@ -193,8 +193,10 @@ media grounds, `#ccc` cover grounds, `#f3ecdc` keyfigure fallback,
   transcribed from the pagination bar, à confirmer.
 - **Pagination**: borderless 18px/24px text links (`padding:0 4px`), 2px
   currentColor bar at opacity 0→1 on active/hover/focus; arrows opacity
-  .5→1 (no primitive). Note: the `a.active:after` selector is missing its
-  dot in the sheet (only `button.active:after` matches) — read, not fixed.
+  .5→1 (no primitive). The indicator rule is one selector group,
+  `.pagination__numbers a.active:after, … a:focus:after, … a:hover:after,
+  … button.active:after, …` — links and buttons share it (1× in each of the
+  three sheets).
 - **Select chevron**: redrawn triangle `M10 12h13l-6.5 7z` (32×32 viewBox,
   base64 in the sheet, decoded to verify): white generally, `#141b4d` in the
   light form (exp. 5447) — the transcribed variant, `selectAppearance:"none"`,
