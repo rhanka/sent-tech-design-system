@@ -5410,7 +5410,10 @@ export type TreeViewProps = Omit<React.HTMLAttributes<HTMLDivElement>, "onSelect
   defaultExpandedIds?: string[];
   /** Svelte-canonical alias of `defaultExpandedIds`. */
   defaultExpanded?: string[];
-  /** Accessible name for the tree (parity with the Svelte `label`). */
+  /**
+   * Accessible name for the tree (parity with the Svelte `label`).
+   * An explicit `aria-label` attribute takes precedence over this prop.
+   */
   label?: string;
   /**
    * Called with the selected node's `id` when a leaf is activated by click or
@@ -5549,8 +5552,13 @@ export function TreeView({
 
   const interactive = typeof onSelect === "function" || typeof onChange === "function";
 
+  // `rest` carries every extra HTML attribute the caller set, including an
+  // explicit `aria-label` — honour it instead of silently dropping it behind
+  // the `label` default (dataviz ObjectLayerPanel relies on it).
+  const { "aria-label": ariaLabel, ...restWithoutLabel } = rest;
+
   return (
-    <div {...rest} ref={rootRef} className={classNames("st-treeView", className)} role="tree" aria-label={label}>
+    <div {...restWithoutLabel} ref={rootRef} className={classNames("st-treeView", className)} role="tree" aria-label={ariaLabel ?? label}>
       {visible.map((flat) => {
         const isSelected = flat.node.id === resolvedSelectedId;
         return (
