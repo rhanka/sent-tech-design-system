@@ -59,6 +59,8 @@ are given per promoted hex: its `var()` **references** and its literal
 | `action.primaryText` / `text.inverse` / `field.fillBg` / `surface.default` | `--color-white` (204 references + 55 occurrences) | `#ffffff` |
 | `surface.subtle` / `card.hoverBackground` | `--color-grey-mercury` (12 references, `background-grey` sections) | `#ebebeb` |
 | `tag.neutralBackground` | `--color-grey-smoke` (17 references, filter/aside surfaces) | `#f2f2f2` |
+| (no role — raw palette only) | `--color-grey-abalaster` (3 references + its own declaration, header-nav hover/focus tint; no vacant Sentropic role) | `#fafafa` |
+| (no role — raw palette only) | `--color-grey-light` (9 references + 1 literal outside its declaration, disabled controls + dividers; no vacant Sentropic role) | `#d9d9d9` |
 | `border.subtle` | `--color-grey-silver` (40 references, dividers + field strokes) | `#cccccc` |
 | `border.strong` | strong divider grey (8 literal occurrences, article/event dividers) | `#b7b7b7` |
 | `text.muted` | `--color-grey-dark` (21 references, breadcrumb links; 4.48:1, arbitration) | `#777777` |
@@ -89,19 +91,20 @@ value above is a measured brand token.
 - `spacing.*`, `z.*`, `disabledOpacity` (`0.55`), `iconSize.*`, `motion.slow` (`450ms`), and the sm/lg `density.*` gaps, font sizes and min-widths — not tokenised by the brand; kept aligned with the Sentropic base / standard size scale.
 - Tabs indicator geometry, pagination `minSize`/`paddingBlock`/`lineHeight`, alert filet + paddings, tag/badge geometry, search + choice line-heights — aligned with the reference theme package's geometry.
 - **Observed but unassigned** (brand region, no token, no role — deliberately not promoted): `#003366` (literal of `#036`, a11y `highlight-links` mode + dialog hover, 3 occurrences), `#e0e0e0`/`#c9c9c9`/`#bdbdbd` (podcast-player gradients), `#e6e6e6` (section background gradients), `#9ebc36` (toggle-on knob, 1 occurrence). Endowment-scoped tokens (`Mansalva`, `#b3dff7`, `#eff8fb`) belong to the endowment subsite scope, not the corporate brand.
+- **Subscription-scoped form variants** (measured, one rule each — documented, not promoted): text-input radius 5px (`.cmp-form__subscription .cmp-form-text input{border-radius:5px}`; the general input radius stays 2px) and label 24px/700 (`.cmp-form__subscription .cmp-form-text label`; the general label stays 1rem/600).
 
 ## Typography
 
-- **Body / controls / fields / labels / display** (`font.sans`, `font.display`, `typography.control/field/label`): **'Arial'** — declared `font-family:Arial,sans-serif` on `html`; `--font-body` resolves to `var(--arial)`. Buttons bold (700); body size 1.125rem (`--font-text-rg`), line height 1.333 (`--line-height-body`). We reference the font *name* only.
+- **Body / controls / fields / labels / display** (`font.sans`, `font.display`, `typography.control/field/label`): **'Arial'** — declared `font-family:Arial,sans-serif` on `html`; `--font-body` resolves to `var(--arial)`. Buttons bold (700); body size 1.125rem (`--font-text-rg`), line height 1.333 (`--line-height-body`). Form labels are 1rem (`--font-text-sm`) semibold (600) in every general label rule and declare no line height, so they inherit the body 1.333. The 700 label at 24px (`.cmp-form__subscription .cmp-form-text label`) is subscription-scoped, not promoted. We reference the font *name* only.
 - **Monospace** (`font.mono`): system stack.
 - Links: corporate blue `#00427f`, not underlined at rest (`a{color:var(--color-blue-primary);text-decoration:none}`), not underlined on hover either (only the pager underlines — pagination's own rule).
 
 ## Signatures anatomiques
 
-- **Fields**: `field.style = "outline"` — unfilled inputs, 1px silver `#cccccc` border (`.cmp-form-text__text`), effective 5px radius (`.cmp-form-text input{border-radius:5px}` wins over the 2px class rule at higher specificity). Native `<select>` chevron redrawn in corporate blue `#00427f`.
-- **Radius**: form token 2px (`--border-radius-form`), inputs 5px effective, alerts/dialogs 10px (8 occurrences), buttons fully pill 50px (`--border-radius`); each figure counts declarations, short forms expanded.
-- **Focus**: **outline** in corporate blue `#00427f` (`focus.strategy = "outline"`, 2px width, 2px offset — measured form-control `:focus-visible` rule; the five `outline:none` rules are component-scoped removals, and no box-shadow ring is drawn on focus).
-- **Buttons**: pill primary = solid corporate blue `#00427f` with **white text** (10.07:1) → hover `#00325f` (`min-height:50px`, `padding:0 32px` — 6 declarations each, counted as declarations); secondary = **lime** `#cddb2e` with blue text → hover `#bdcb22`.
+- **Fields**: `field.style = "outline"` — unfilled inputs, 1px silver `#cccccc` border with the general 2px radius (`.cmp-form-text__text{border:1px solid var(--color-grey-silver);border-radius:var(--border-radius-form)}`). The 5px text-input radius is subscription-scoped (`.cmp-form__subscription .cmp-form-text input{border-radius:5px}` — scoped variant, not promoted). Native `<select>` chevron redrawn in corporate blue `#00427f`.
+- **Radius**: general form/input radius 2px (`--border-radius-form`); subscription-scoped input variant 5px (one rule); alerts/dialogs 10px (9 occurrences — a single alert rule, the rest podcast, progress-bar and focus rings); buttons fully pill 50px (`--border-radius`); each figure counts declarations, short forms expanded.
+- **Focus**: **outline** in corporate blue `#00427f` (`focus.strategy = "outline"`, 2px width, 2px offset — measured form-control `:focus-visible` rule; the five `outline:none` rules are component-scoped removals — accordion, timeline, language nav, subscription-toggle, worldmap — and no box-shadow ring is drawn on focus).
+- **Buttons**: pill primary = solid corporate blue `#00427f` with **white text** (10.07:1) → hover `#00325f` (`min-height:50px` — 6 declarations; `padding:0 32px` — 7 declarations, one endowment-scoped; counted as declarations); secondary = **lime** `#cddb2e` with blue text → hover `#bdcb22`.
 - **Tabs / top-nav**: active tab = bitter-lemon fill `#cddb2e` with corporate-blue label `#00427f`.
 - **Pagination**: borderless bold black links, blue underline on hover/focus; current page = light-blue `#d9e3ec` pill (`padding:0 .5rem`, counted as one declaration).
 - **Density**: inputs 40px (`min-height:40px`, 3 declarations), buttons 50px (`min-height:50px`, 6 declarations), teaser buttons 58px (`min-height:3.625rem`, 3 declarations) — each figure counts declarations of that property value.

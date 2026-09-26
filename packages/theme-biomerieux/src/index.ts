@@ -157,13 +157,15 @@ const foundation = {
     16: "4rem" // 64px
   },
   // Radii measured in brand rules: pill buttons 50px (`--border-radius`),
-  // form token 2px (`--border-radius-form`), effective text-input radius 5px
-  // (`.cmp-form-text input{border-radius:5px}` wins over the 2px class rule),
-  // alert/dialog boxes 10px (8 literal occurrences).
+  // general form/input radius 2px (`--border-radius-form`, consumed by the
+  // general `.cmp-form-text__text` rule). A 5px text-input radius exists only
+  // in the subscription scope (`.cmp-form__subscription .cmp-form-text
+  // input{border-radius:5px}` — scoped variant, not promoted, see MAPPING.md).
+  // Alert/dialog boxes 10px (9 literal occurrences, a single alert rule).
   radius: {
     none: "0",
     sm: "0.125rem", // 2px — form token
-    md: "0.3125rem", // 5px — effective text-input radius
+    md: "0.125rem", // 2px — general form/input radius (same token as sm)
     lg: "0.625rem", // 10px — alerts / dialogs
     pill: "50px" // pill buttons
   },
@@ -212,10 +214,15 @@ const foundation = {
   },
   // bioMérieux typography: Arial everywhere; buttons bold (700); body text
   // 1.125rem (`--font-text-rg`) with 1.333 line height (`--line-height-body`).
+  // Form labels are 1rem (`--font-text-sm`) semibold (600) in every general
+  // label rule; no general label rule declares a line height, so labels
+  // inherit the body 1.333. The 700 weight at 24px is subscription-scoped
+  // (`.cmp-form__subscription .cmp-form-text label` — scoped variant, see
+  // MAPPING.md).
   typography: {
     control: { family: "'Arial', system-ui, sans-serif", size: "1.125rem", weight: "700", lineHeight: "1.333", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
     field: { family: "'Arial', system-ui, sans-serif", size: "1.125rem", weight: "400", lineHeight: "1.333", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
-    label: { family: "'Arial', system-ui, sans-serif", size: "1rem", weight: "700", lineHeight: "1.5", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
+    label: { family: "'Arial', system-ui, sans-serif", size: "1rem", weight: "600", lineHeight: "1.333", letterSpacing: "0", textTransform: "none", textDecoration: "none", decorationThickness: "auto", decorationOffset: "auto" },
     // Brand links are the corporate blue #00427f, not underlined at rest
     // (`a{color:var(--color-blue-primary);text-decoration:none}`) and not
     // underlined on hover either (`a:hover` carries no underline; only the
@@ -234,8 +241,8 @@ const foundation = {
   // `.cmp-form-options__field--checkbox:focus-visible, ... {outline: 2px
   // solid var(--color-blue-primary); outline-offset: 2px}`. The five
   // `outline: none` rules are component-scoped removals (accordion, timeline,
-  // language nav), never the general control rule; no box-shadow ring is
-  // drawn on focus anywhere in the brand region.
+  // language nav, subscription-toggle, worldmap), never the general control
+  // rule; no box-shadow ring is drawn on focus anywhere in the brand region.
   focus: {
     strategy: "outline",
     width: "2px",
@@ -244,9 +251,10 @@ const foundation = {
     inset: "0"
   },
   // Form fields are BOXED (outline): no filled background, a 1px silver
-  // border (`.cmp-form-text__text{border:1px solid var(--color-grey-silver)}`)
-  // and the effective 5px radius. `style: "outline"` makes the builder draw
-  // four equal borders from `surface.default` + `border.subtle`.
+  // border with the general 2px radius (`.cmp-form-text__text{border:1px solid
+  // var(--color-grey-silver);border-radius:var(--border-radius-form)}`).
+  // `style: "outline"` makes the builder draw four equal borders from
+  // `surface.default` + `border.subtle`.
   field: {
     style: "outline",
     fillBg: biomerieuxColor.slate[0], // #ffffff
