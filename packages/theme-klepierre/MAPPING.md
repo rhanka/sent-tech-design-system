@@ -102,6 +102,9 @@ second stylesheet host, so no cross-host disagreement to record.
 | (no role — unpainted) | `--color-facebook` (0 var / 1 lit, declaration only) | `#4267b2` |
 | (no role — painted once) | `--color-twitter` (1 var / 2 lit, social icon) | `#508bdb` |
 | (no role — painted once) | `--color-nav-yellow` (1 var / 2 lit; `yellow.main` wins warning 3-vs-1) | `#fac84f` |
+| (no role — painted) | `--color-act-for-good-3` (1 var / 2 lit, overlay act-for-good) | `#8cd59f` |
+| (no role — painted) | `--color-act-for-good-4` (1 var / 2 lit, overlay act-for-good) | `#cad0b9` |
+| (no role — unpainted) | `--color-youtube` (0 var, fully transparent, declaration only) | `rgba(255,255,0,0)` |
 
 Unroled painted literals (context, no Sentropic role): `#0d0d0d` black-button
 hover, `#c49f72` gold-button hover (1 lit each); `#efefef`/`#e4e4e4`/`#dedede`
