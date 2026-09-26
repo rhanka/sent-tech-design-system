@@ -75,7 +75,7 @@ excluded).
 
 ## Typography
 
-- **UI / controls / labels / tables** (`font.sans`, `typography.control/field/label`): **'Montserrat'** — buttons (`#p-button-slider`, `#button-telecharger-publication`), selects (`#annee-select-button`, `select.filterExercice`), fil d'Ariane, linked from the homepage head. We reference the font *name* only.
+- **UI / controls / labels / tables** (`font.sans`, `typography.control/field/label`): **'Montserrat'** — buttons (`#p-button-slider`, `#button-telecharger-publication`), selects (`#annee-select-button`, `select.filterExercice`), breadcrumb trail (`#gouvernance-page-fil-dariane-text`), linked from the homepage head. We reference the font *name* only.
 - **Display / headings** (`font.display`): **'EB Garamond'** — hero (`.text-first-slider`), section titles (`#text-actualite`, `#gouvernance-page-title`), widget headings (~20 declarations vs 2 for Cochin). Late `h1`/`h2` rules set Cochin (1 `!important` font rule on `h2`, 1 plain font rule on `h1`) — observed minority, not promoted.
 - **Monospace** (`font.mono`): system stack (no brand monospace published; Arial appears as a table/data fallback, not promoted).
 - Links: `#393939`, underlined at rest and on hover (`a.fxd-link`, `a.link-ar`); brand buttons uppercase normal-weight Montserrat.
@@ -88,7 +88,7 @@ excluded).
 - **Buttons**: primary = solid brand navy `#013755` with white text (measured `.btn-primary`); secondary = light outlined composition (transparent, `#393939` stroke, `#eeeeee` hover).
 - **Tabs / top-nav**: white uppercase labels on the dark `#313131` navbar; active tab = white label, transparent fill, bottom border indicator.
 - **Pagination**: dark-grey links; active page = filled navy `#013755` with white text (measured pairing).
-- **Breadcrumb**: transcribed from the fil d'Ariane (`#gouvernance-page-fil-dariane-text`: 16px/19px Montserrat 200, `#666666`, links inherited).
+- **Breadcrumb**: transcribed from the breadcrumb trail (`#gouvernance-page-fil-dariane-text`: 16px/19px Montserrat 200, `#666666`, links inherited).
 - **Accordion**: transcribed from the governance widgets (20px padding, 40px/49px Montserrat 300 `#666666` title, `.expand-arrow` trigger).
 - **Density**: sm from `input#s` 25px (1.5625rem) + 4px/15px select paddings; md from `.cmsPage input` 45px (2.8125rem) + 10px/20px button paddings; lg unpublished. Greps quoted: `input|textarea|select` → `.cmsPage input{height:45px}`, `input#s{height:25px}`, `#annee-select-button{padding:4px 15px}`; no `form-control`/general control rule in the brand region.
 

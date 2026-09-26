@@ -269,7 +269,7 @@ const foundation = {
     fontSize: "1rem", // 16px
     lineHeight: "1.5rem" // 24px
   },
-  // Breadcrumb transcribed from the fil d'Ariane
+  // Breadcrumb transcribed from the breadcrumb trail
   // (`#gouvernance-page-fil-dariane-text{font:…200 16px/19px Montserrat;color:#666666}`,
   // links `color:unset` = inherited grey; titles `#393939`).
   breadcrumb: {
