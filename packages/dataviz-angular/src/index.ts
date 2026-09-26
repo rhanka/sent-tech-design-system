@@ -231,6 +231,26 @@ export { RelativeDateFilter, DEFAULT_RELATIVE_PRESETS, relativeRangeToSpec } fro
 export type { RelativeDateFilterProps, RelativeDatePreset } from './lib/RelativeDateFilter.js';
 export { TopNFilter } from './lib/TopNFilter.js';
 export type { TopNFilterProps } from './lib/TopNFilter.js';
+
+// Lot 10: hand-written adapters from four refusal classes — the six charts the
+// users see first (StackedBarChart's `measures: [props.measure]` config,
+// RadarChart's two wrapping calls, ScatterPlotMatrix's and
+// AdvancedPivotDataTable's non-reader-friendly trailing h() calls,
+// DrillChart's and SmallMultiples' bespoke setup bodies; see
+// tools/dataviz-angular-port/README.md for the refusal of each one).
+export { AdvancedPivotDataTable } from './lib/AdvancedPivotDataTable.js';
+export type { AdvancedPivotDataTableProps } from './lib/AdvancedPivotDataTable.js';
+export type { AdvancedPivotTableRowView, AdvancedPivotTableView } from './lib/advancedPivotData.js';
+export { DrillChart } from './lib/DrillChart.js';
+export type { DrillChartKind, DrillChartProps } from './lib/DrillChart.js';
+export { RadarChart } from './lib/RadarChart.js';
+export type { RadarChartProps } from './lib/RadarChart.js';
+export { ScatterPlotMatrix } from './lib/ScatterPlotMatrix.js';
+export type { ScatterPlotMatrixProps } from './lib/ScatterPlotMatrix.js';
+export { SmallMultiples } from './lib/SmallMultiples.js';
+export type { SmallMultiplesProps } from './lib/SmallMultiples.js';
+export { StackedBarChart } from './lib/StackedBarChart.js';
+export type { StackedBarChartProps } from './lib/StackedBarChart.js';
 export {
   DASHBOARD_STORE,
   createDashboard,

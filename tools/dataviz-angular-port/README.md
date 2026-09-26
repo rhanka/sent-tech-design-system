@@ -225,6 +225,103 @@ one does not, proved by the bare-DS control, plus `selected=""` in the
 (`value="5"`, same class), `PalettePicker` 4 (browser-normalised `rgb()`
 style serialisation vs SSR-authored hex, same class), `FieldPane` 17 (above).
 
+Lot 10 took **six charts** — the user-visible ones first — from four refusal
+classes, leaving `union 119 / ported 108 / pending 11` (counts by
+`classify.mjs`: union = distinct names across the dataviz-svelte/react/vue
+barrels; ported = names in `dataviz-angular/src/index.ts`; pending = union
+minus ported).
+
+**The six were selected by measurement, not by pick, and every figure below
+was read from the sources before anything was written.** `extract()` was run
+over all seventeen pending (on the exact barrel stems `classify.mjs` uses —
+`DataImage`/`ObjectLayerPanel`/`WebFrame` resolve to the shared
+`ObjectLayers` stem, `UrlSync` to the bare `UrlSync` stem), then the Vue and
+React sources of every chart candidate were read side by side. All six pass
+both pre-write checks: (a) every design-system input their binding needs
+exists in `packages/components-angular` — `StackedBarChart`
+(`data`/`label`/`showLegend`/`dataLabels`/`hiddenSeries`/`onToggleSeries`),
+`RadarChart` (`axes`/`series`/`maxValue`/`levels`/`legend`), `ScatterPlot`
+(`data`/`xLabel`/`yLabel`/`label`), `BarChart` (`data`/`label`/`domain`),
+`DataTable` (`columns`/`rows`/`caption`/`size`/`onRowClick`),
+`DonutChart`/`TreemapChart`/`DrillBarChart` (already ported),
+`Button` (`variant`) + `Inline` (`gap`/`role`/`aria-label`) — and (b) every
+builder they need is in `@sentropic/dataviz-core` or in a byte-identical
+helper copy (`categoricalData.ts`/`partOfWholeData.ts` already copied,
+`drill.ts`/`advancedPivotData.ts` copied by this lot). Ranked cheapest
+first: `StackedBarChart` (one array-literal config entry over the standard
+shape), `RadarChart` (two wraps of one model; public `axes`/`series`
+@Inputs kept, derived arrays named `radarAxes`/`radarSeries` — the lot 7
+`PivotDataTable` split), `ScatterPlotMatrix` (N×N `ScatterPlot` loop, no
+state), `DrillChart` (kind branches over three ported adapters + a button
+row), `AdvancedPivotDataTable` (one `h()` over a computed props object;
+`onRowClick` wired only when `onToggleRowPath` is set, like React),
+`SmallMultiples` (hand-built facet panels over core
+`findDimension`/`findMeasure`/`groupAggregate`).
+
+Parity outcome for the six (measured by `npm run parity:dataviz-angular`,
+all data-list identities equal): `RadarChart` 0, `DrillChart` 0,
+`AdvancedPivotDataTable` 0, `StackedBarChart` 49 markup / 0 signature (DS:
+the two DS StackedBarCharts diverged — `st-stackedBarChart__*` vs
+`st-stackedBar__*` classes, default height 240 vs 260, own tick scales —
+proved by a bare-DS control with the exact derived data, asserting adapter
+== control), `ScatterPlotMatrix` 1 / 75 and `SmallMultiples` 1 / 23
+(framework + DS: the adapters compose the DS `Grid` where React renders a
+plain div, and Angular places the group `role`/`label` on the `st-grid`
+host, which the parity flattener unwraps — one missing leading entry
+saturates the signature, same class as `TimelineChart` 59/12; cells and
+lists identical per the position-independent identity test).
+
+Two corrections the measurement forced, both in the code, both stated:
+`AdvancedPivotDataTable` first wired `onRowClick` unconditionally, which the
+DS marks with a clickable row class React never renders without a toggle —
+now wired only when `onToggleRowPath` is set. And three Angular DS gaps were
+repaired in their own commit (tranche 7 protocol): the DS `StackedBarChart`
+data-list separator (`/ ` vs the Vue/React `, `), its legend position
+(before vs after the list) and its Angular-only legend label — the Vue+React
+contract on all three.
+
+One attempted DS widening was probed and **reverted**: `role`/`aria-label`
+passthrough inputs on the DS `Grid` (on the `Inline` precedent) so the group
+semantics would land on the `.st-grid` div. `role` binds, but Angular
+hijacks an `[ariaLabel]` property binding to the host attribute instead of
+the component input — verified by an isolated TestBed probe (host carried
+`aria-label`, inner div did not). Dead API was not shipped: `Grid.ts` is
+byte-identical to before, and the adapters set static host attributes (real
+DOM, parity-invisible, measured as above).
+
+The eleven not ported, each with its measured reason:
+
+* `ChartExport` — structural, not attempted: needs `chart-export.ts`
+  (dataviz-vue's framework-agnostic SVG/PNG/PDF/print helper), still absent
+  from `dataviz-angular` (no file references `downloadPng`, `resolveSvg` or
+  `printElement`).
+* `TimeSeriesLineChart` — one-framework-only (React) and bespoke: a ~280-line
+  hand-rolled SVG renderer (own scales, ticks, paths, legend) with no DS
+  counterpart. A full unit of work, not an adapter.
+* `UrlSync` — not a component: a `useUrlSync` hook with no Vue component
+  source (bare-`UrlSync` stem, `ENOENT`).
+* `WebFrame` / `DataImage` — browser elements (`iframe`/`img`) sharing the
+  Vue `ObjectLayers.ts` file (hence `no Props type alias` via that stem);
+  SSR-invisible, refused as browser-dependent.
+* `ObjectLayerPanel` — same shared file, but feasible: `TreeView` + `Button`
+  over core `buildObjectLayerTree`/`isObjectLayerVisible`. Deferred by the
+  six-adapter ceiling — a panel, and charts came first.
+* `DashboardGrid` — bespoke 296-line pointer-drag layout editor with no
+  design-system-vue import; the Angular DS `DashboardGrid` speaks a
+  different contract (`tiles`/`onLayout` vs `layout`/`panels`/
+  `onLayoutChange`). Not an adapter.
+* `AnimatedBubbleChart` — feasible (core `distinctSorted`/`buildBubbleFrame`
+  + DS `ScatterPlot`) but the largest chart surface left: interval-timer
+  playback, play/pause button, range slider, live region. The seventh chart;
+  deferred by the ceiling.
+* `BookmarkNavigator`, `CalculationEditor`, `FormatPanel` — the lot 9
+  "feasible, deferred" note re-verified, not trusted: the timer +
+  `aria-pressed` sites (`BookmarkNavigator`), the
+  `Button`/`Input`/`Select`/`Textarea` inventory (`CalculationEditor`) and
+  the `Checkbox`/`Input`/`NumberInput`/`Select` inventory (`FormatPanel`)
+  were re-read in the Vue sources this lot. Still feasible, still deferred —
+  panels behind charts under the ceiling.
+
 ## Adding a lot
 
 1. Run `extract.mjs` with the names. Read the printed one-line-per-component

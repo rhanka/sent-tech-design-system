@@ -99,8 +99,20 @@ const TONES: StackedBarTone[] = ["category1", "category2", "category3", "categor
         </svg>
       </div>
 
+      <ul class="st-chartDataList" [attr.aria-label]="'Data values for ' + label">
+        @for (item of dataValueItems; track item) {
+          <li>{{ item }}</li>
+        }
+      </ul>
+
       @if (showLegend !== false && legendItems.length > 0) {
-        <ul class="st-stackedBarChart__legend" [attr.aria-label]="'Légende de ' + label">
+        <!--
+          Data list before legend, and no legend label: that is the
+          cross-framework contract — the Vue and React StackedBarChart render
+          the value list first and their legend list carries no aria-label.
+          (The list is visually hidden, so the reorder changes nothing visual.)
+        -->
+        <ul class="st-stackedBarChart__legend">
           @for (item of legendItems; track item.label) {
             @if (legendInteractive) {
               <li>
@@ -123,12 +135,6 @@ const TONES: StackedBarTone[] = ["category1", "category2", "category3", "categor
           }
         </ul>
       }
-
-      <ul class="st-chartDataList" [attr.aria-label]="'Data values for ' + label">
-        @for (item of dataValueItems; track item) {
-          <li>{{ item }}</li>
-        }
-      </ul>
     </div>
   `,
 })
@@ -259,10 +265,12 @@ export class StackedBarChart {
   }
 
   get dataValueItems(): string[] {
+    // The `, ` separator is the cross-framework contract: the Vue and React
+    // StackedBarChart render `${bar.label}, ${seg.label}: ${seg.value}`.
     return this.safeData.flatMap((datum) =>
       datum.segments
         .filter((s) => !this.hiddenSet.has(s.label))
-        .map((s) => `${datum.label} / ${s.label}: ${s.value}`)
+        .map((s) => `${datum.label}, ${s.label}: ${s.value}`)
     );
   }
 
