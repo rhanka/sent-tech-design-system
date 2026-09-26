@@ -41,6 +41,7 @@ function hookBody(source: string, hook: string): string {
 describe('adapter pattern guard', () => {
   it('finds every standalone adapter in src/lib', () => {
     expect(adapters.map((a) => a.file).sort()).toEqual([
+      'AdvancedPivotDataTable.ts',
       'AnalyticsClusterPlot.ts',
       'AnomalySwimLaneChart.ts',
       'ArcDiagramChart.ts',
@@ -72,6 +73,7 @@ describe('adapter pattern guard', () => {
       'DonutChart.ts',
       'DrillBarChart.ts',
       'DrillBreadcrumb.ts',
+      'DrillChart.ts',
       'DumbbellChart.ts',
       'ErrorBarsChart.ts',
       'EventFeedPanel.ts',
@@ -109,6 +111,7 @@ describe('adapter pattern guard', () => {
       'PointAndFigureChart.ts',
       'PolygonChart.ts',
       'QueryBar.ts',
+      'RadarChart.ts',
       'RangeSliderFilter.ts',
       'RecordsTable.ts',
       'ReferenceLineChart.ts',
@@ -118,10 +121,13 @@ describe('adapter pattern guard', () => {
       'RoseChart.ts',
       'SankeyChart.ts',
       'ScatterPlot.ts',
+      'ScatterPlotMatrix.ts',
       'ScoreCard.ts',
       'SelectionLegend.ts',
+      'SmallMultiples.ts',
       'SolidGaugeChart.ts',
       'Sparkline.ts',
+      'StackedBarChart.ts',
       'StateTimelineChart.ts',
       'StatusHistoryChart.ts',
       'StepLineChart.ts',
