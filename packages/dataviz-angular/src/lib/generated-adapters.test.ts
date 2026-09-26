@@ -80,6 +80,11 @@ import { ReferenceLineChart } from '../../dist/lib/ReferenceLineChart.js';
 import { TrendLineChart } from '../../dist/lib/TrendLineChart.js';
 import { CrossfilteredBarChart } from '../../dist/lib/CrossfilteredBarChart.js';
 import { DrillBarChart } from '../../dist/lib/DrillBarChart.js';
+import { DrillChart } from '../../dist/lib/DrillChart.js';
+import { RadarChart } from '../../dist/lib/RadarChart.js';
+import { ScatterPlotMatrix } from '../../dist/lib/ScatterPlotMatrix.js';
+import { SmallMultiples } from '../../dist/lib/SmallMultiples.js';
+import { StackedBarChart } from '../../dist/lib/StackedBarChart.js';
 
 /**
  * One table for every adapter that is pure store-to-builder-to-DS wiring —
@@ -899,6 +904,53 @@ const cases: Case[] = [
     component: DrillBarChart,
     ds: "BarChart",
     template: `<st-dataviz-drill-bar-chart [store]="store" viewId="v" [hierarchy]="hierarchy" measure="amount" label="L" class="probe"></st-dataviz-drill-bar-chart>`,
+    items: ["eu: 17", "us: 5"],
+    after: ["eu: 7"],
+  },
+  {
+    family: "charts the port generator refuses (lot 10: array config, two wraps, bespoke setup)",
+    name: "StackedBarChart",
+    component: StackedBarChart,
+    ds: "StackedBarChart",
+    template: `<st-dataviz-stacked-bar-chart [store]="store" viewId="v" category="service" series="region" measure="amount" label="L" class="probe"></st-dataviz-stacked-bar-chart>`,
+    items: ["checkout / eu: 10", "checkout / us: 5", "billing / eu: 7", "billing / us: 0"],
+    after: ["billing / eu: 7"],
+  },
+  {
+    family: "charts the port generator refuses (lot 10: array config, two wraps, bespoke setup)",
+    name: "RadarChart",
+    component: RadarChart,
+    ds: "RadarChart",
+    template: `<st-dataviz-radar-chart [store]="store" viewId="v" [axes]="measures" series="region" label="L" class="probe"></st-dataviz-radar-chart>`,
+    items: ["eu, Amount: 17", "eu, Close: 106", "us, Amount: 5", "us, Close: 102"],
+    after: ["eu, Amount: 7", "eu, Close: 107"],
+  },
+  {
+    family: "charts the port generator refuses (lot 10: array config, two wraps, bespoke setup)",
+    name: "ScatterPlotMatrix",
+    component: ScatterPlotMatrix,
+    ds: "Grid",
+    template: `<st-dataviz-scatter-plot-matrix [store]="store" viewId="v" [measures]="measures" label="L" class="probe"></st-dataviz-scatter-plot-matrix>`,
+    listAria: "Data values for L — Amount × Amount",
+    items: { count: 12, first: "x 10, y 10", last: "x 107, y 107" },
+    after: { count: 4, first: "x 7, y 7", last: "x 107, y 107" },
+  },
+  {
+    family: "charts the port generator refuses (lot 10: array config, two wraps, bespoke setup)",
+    name: "SmallMultiples",
+    component: SmallMultiples,
+    ds: "Grid",
+    template: `<st-dataviz-small-multiples [store]="store" viewId="v" facetBy="region" dimension="service" measure="amount" label="L" class="probe"></st-dataviz-small-multiples>`,
+    listAria: "Data values for L — eu",
+    items: ["checkout: 10", "billing: 7", "checkout: 5"],
+    after: ["billing: 7"],
+  },
+  {
+    family: "charts the port generator refuses (lot 10: array config, two wraps, bespoke setup)",
+    name: "DrillChart",
+    component: DrillChart,
+    ds: "BarChart",
+    template: `<st-dataviz-drill-chart [store]="store" viewId="v" [hierarchy]="hierarchy" measure="amount" label="L" class="probe"></st-dataviz-drill-chart>`,
     items: ["eu: 17", "us: 5"],
     after: ["eu: 7"],
   },
