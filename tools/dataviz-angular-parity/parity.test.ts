@@ -1474,7 +1474,7 @@ const cases: Case[] = [
     expectedMarkupDiffs: 3,
     expectedSignatureDiffs: 0,
     attribution:
-      'DS (3 + 0): 3x the FieldPane roving-tabindex class (components-angular TreeView sets tabindex on every row, components-react none) — the 6 Button aria-label gaps are closed since the Angular DS Button forwards aria-label like React/Vue (bare Button control is 0); every button keeps its variant, size, text, disabled state and handler; the tree itself matches since the port follows the measured Vue+React-rendered DS default instead of the swallowed label-plus-tree string',
+      'DS (3 + 0): 3x the FieldPane roving-tabindex class (components-angular TreeView sets tabindex on every row, components-react none) — the 6 Button aria-label gaps stay closed since the Angular DS Button forwards aria-label like React/Vue (bare Button control is 0); every button keeps its variant, size, text, disabled state and handler; the tree matches at "Objects tree" on both sides now that the React DS TreeView honours the adapter-passed aria-label and the port binds the documented label input',
     control: {
       ng: NGDS.Button as Type<unknown>,
       template: `<st-button variant="secondary" size="sm" [aria-label]="'Select Page'">Select</st-button>`,

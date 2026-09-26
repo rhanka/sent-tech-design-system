@@ -17,7 +17,10 @@ export type TreeViewProps = {
   defaultExpandedIds?: string[];
   /** Svelte-canonical alias of `defaultExpandedIds`. */
   defaultExpanded?: string[];
-  /** Accessible name for the tree (parity with the Svelte `label`). */
+  /**
+   * Accessible name for the tree (parity with the Svelte `label`).
+   * An explicit `aria-label` attribute takes precedence over this prop.
+   */
   label?: string;
   class?: string;
 };
@@ -188,6 +191,9 @@ export const TreeView = defineComponent({
         );
       });
 
+      // Honour an explicit `aria-label` over the `label` default instead of
+      // relying on fallthrough attrs to re-apply it after the spread.
+      const ariaLabel = attrs["aria-label"] as string | undefined;
       return h(
         "div",
         {
@@ -195,7 +201,7 @@ export const TreeView = defineComponent({
           ref: rootRef,
           class: classNames("st-treeView", props.class),
           role: "tree",
-          "aria-label": props.label,
+          "aria-label": ariaLabel ?? props.label,
         },
         rows,
       );
