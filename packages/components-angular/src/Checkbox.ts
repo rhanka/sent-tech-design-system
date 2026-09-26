@@ -15,6 +15,7 @@ export type CheckboxProps = {
   disabled?: boolean;
   name?: string;
   value?: string;
+  "aria-label"?: string;
   class?: string;
 };
 
@@ -38,6 +39,7 @@ function nextId(): string {
         [attr.value]="value"
         [attr.aria-invalid]="invalid ? 'true' : null"
         [attr.aria-describedby]="description ? descriptionId : null"
+        [attr.aria-label]="ariaLabel ?? null"
         (change)="onCheck($event)"
       />
       <span class="st-choice__content">
@@ -67,6 +69,7 @@ export class Checkbox {
   @NgInput() disabled?: boolean;
   @NgInput() name?: string;
   @NgInput() value?: string;
+  @NgInput("aria-label") ariaLabel?: string;
   @NgInput("class") classInput?: string;
 
   @Output() readonly modelValueChange = new EventEmitter<boolean>();
