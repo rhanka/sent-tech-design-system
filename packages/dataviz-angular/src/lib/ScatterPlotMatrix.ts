@@ -44,9 +44,13 @@ type ScatterCell = {
  * contract's `--st-spacing-2`), not a hand-styled `div`: the adapter-pattern
  * guard forbids literal `style` attributes in adapter sources. The fixed
  * per-cell px columns of the Vue/React inline grid have no DS `Grid`
- * equivalent (`repeat(N, minmax(0, 1fr))`), and `role`/`aria-label` ride on
- * the `st-grid` host (real DOM, invisible to the parity flattener, which
- * unwraps `st-*` hosts) — both are measured, not hidden, by the parity run.
+ * equivalent (`repeat(N, minmax(0, 1fr))`) — that column-definition residue is
+ * measured, not hidden, by the parity run. `role`/`aria-label` land on the
+ * `st-grid` host element (static attributes fall through; Angular hijacks an
+ * `[ariaLabel]` property binding to the host as well, so a DS passthrough
+ * input is not wireable — probed and reverted in lot 10): real DOM, but
+ * invisible to the parity flattener, which unwraps `st-*` hosts — the run
+ * measures that framework-position residue instead of hiding it.
  */
 @Component({
   selector: 'st-dataviz-scatter-plot-matrix',

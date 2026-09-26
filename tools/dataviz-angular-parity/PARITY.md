@@ -106,5 +106,11 @@ command to re-derive them.
 | `TopNFilter` | 23 | 1 | **0** | — | React serialises value="5" on the number input; Angular sets the property — same class as the DateRangeFilter value="" residue |
 | `PalettePicker` | 30 | 4 | **0** | — | Angular sets swatch/bar colours through the DOM so the browser serialises them as rgb(); React SSR emits the authored hex — same property-vs-attribute class as the DateRangeFilter value="" residue |
 | `FieldPane` | 114 | 17 | **0** | 2 | DS (16): components-angular TreeView sets a roving tabindex on every row, components-react TreeView sets none; plus React FieldPane spreads its ...rest so the store leaks as store="[object Object]" on the root, which neither Vue nor Angular renders |
+| `StackedBarChart` | 70 | 49 | **0** | 49 | DS (49): the two DS StackedBarCharts are different components sharing a name — st-stackedBarChart__* vs st-stackedBar__* classes, default height 240 vs 260, own tick scales; the lot also repaired three Angular-side contract gaps (data-list separator, legend after the list, no legend label), which is why the signature is 0 |
+| `RadarChart` | 62 | **0** | **0** | — | — |
+| `ScatterPlotMatrix` | 326 | 1 | 75 | — | framework + DS (1 + 75): the adapter composes the DS Grid where React renders a plain div — fixed-px columns vs fractional, st-grid vs splom-grid class, gap fallback 0.5rem vs 8px — and Angular places the group role/label on the st-grid host, which the flattener unwraps: the missing leading entry shifts the whole signature (same saturation class as TimelineChart 59/12); every cell and every data-list item is identical, proved by the position-independent data-list identity test |
+| `SmallMultiples` | 110 | 1 | 23 | — | framework (1 + 23): like ScatterPlotMatrix, Angular places the group role/label on the st-grid host, which the flattener unwraps: the missing leading entry shifts the whole signature (same saturation class as TimelineChart 59/12); the grid div itself is the single markup diff, and every facet and every data-list item is identical, proved by the position-independent data-list identity test |
+| `DrillChart` | 65 | **0** | **0** | — | — |
+| `AdvancedPivotDataTable` | 55 | **0** | **0** | — | — |
 
-exact-markup matches: **82/100** · exact-signature matches: **98/100**
+exact-markup matches: **85/106** · exact-signature matches: **102/106**

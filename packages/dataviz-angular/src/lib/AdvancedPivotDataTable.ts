@@ -51,7 +51,7 @@ export type AdvancedPivotDataTableProps = {
       [rows]="tableRows"
       [caption]="caption"
       [size]="size"
-      [onRowClick]="onRowClickHandler"
+      [onRowClick]="rowClickHandler"
       [class]="classInput"
     ></st-data-table>
   `,
@@ -96,6 +96,12 @@ export class AdvancedPivotDataTable implements OnInit, OnChanges, OnDestroy {
   /** Recomputed by `recompute()`; never derived in a template getter. */
   tableColumns: { key: string; label: string; sortable: boolean; align: 'start' | 'end' }[] = [];
   tableRows: AdvancedPivotTableRowView[] = [];
+  /**
+   * The DS `DataTable` marks every row clickable when `onRowClick` is set, so
+   * the handler is only wired when the caller opted into subtotal toggles —
+   * like the React adapter, which passes `undefined` otherwise.
+   */
+  rowClickHandler?: (row: DataTableRow) => void;
 
   readonly onRowClickHandler = (row: DataTableRow): void => {
     if (!this.onToggleRowPath) return;
@@ -134,5 +140,6 @@ export class AdvancedPivotDataTable implements OnInit, OnChanges, OnDestroy {
     );
     this.tableColumns = table.columns;
     this.tableRows = table.rows;
+    this.rowClickHandler = this.onToggleRowPath ? this.onRowClickHandler : undefined;
   }
 }

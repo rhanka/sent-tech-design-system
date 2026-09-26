@@ -45,6 +45,7 @@ import {
   wideModel,
   wideRows,
   dsHeatmapData,
+  dsStackedBarData,
   dsTreemapData,
   exportConfig,
   filterControls,
@@ -1362,6 +1363,86 @@ const cases: Case[] = [
       },
     },
   },
+  // Lot 10: hand-written chart adapters from four refusal classes (array
+  // builder config, two wrapping calls, two non-reader-friendly trailing h()
+  // calls, two bespoke setup bodies — see
+  // tools/dataviz-angular-port/README.md for the refusal of each one).
+  {
+    name: 'StackedBarChart',
+    ng: NG.StackedBarChart as Type<unknown>,
+    template: `<st-dataviz-stacked-bar-chart [store]="store" viewId="v" category="service" series="region" measure="amount" label="Stacked amount" class="lot10"></st-dataviz-stacked-bar-chart>`,
+    re: RE.StackedBarChart as ComponentType<Props>,
+    props: { viewId: 'v', category: 'service', series: 'region', measure: 'amount', label: 'Stacked amount', className: 'lot10' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 49,
+    expectedSignatureDiffs: 0,
+    attribution:
+      'DS (49): the two DS StackedBarCharts are different components sharing a name — st-stackedBarChart__* vs st-stackedBar__* classes, default height 240 vs 260, own tick scales; the lot also repaired three Angular-side contract gaps (data-list separator, legend after the list, no legend label), which is why the signature is 0',
+    control: {
+      ng: NGDS.StackedBarChart as Type<unknown>,
+      template: `<st-stacked-bar-chart [data]="controlData" label="Stacked amount" [showLegend]="true" class="lot10"></st-stacked-bar-chart>`,
+      re: REDS.StackedBarChart as ComponentType<Props>,
+      props: { data: dsStackedBarData, label: 'Stacked amount', showLegend: true, className: 'lot10' },
+      ngData: dsStackedBarData,
+    },
+  },
+  {
+    name: 'RadarChart',
+    ng: NG.RadarChart as Type<unknown>,
+    template: `<st-dataviz-radar-chart [store]="store" viewId="v" [axes]="['amount', 'close']" series="region" label="Region radar" class="lot10"></st-dataviz-radar-chart>`,
+    re: RE.RadarChart as ComponentType<Props>,
+    props: { viewId: 'v', axes: ['amount', 'close'], series: 'region', label: 'Region radar', className: 'lot10' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'ScatterPlotMatrix',
+    ng: NG.ScatterPlotMatrix as Type<unknown>,
+    template: `<st-dataviz-scatter-plot-matrix [store]="store" viewId="v" [measures]="['amount', 'close']" label="Measure matrix" class="lot10"></st-dataviz-scatter-plot-matrix>`,
+    re: RE.ScatterPlotMatrix as ComponentType<Props>,
+    props: { viewId: 'v', measures: ['amount', 'close'], label: 'Measure matrix', className: 'lot10' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 1,
+    expectedSignatureDiffs: 75,
+    attribution:
+      'framework + DS (1 + 75): the adapter composes the DS Grid where React renders a plain div — fixed-px columns vs fractional, st-grid vs splom-grid class, gap fallback 0.5rem vs 8px — and Angular places the group role/label on the st-grid host, which the flattener unwraps: the missing leading entry shifts the whole signature (same saturation class as TimelineChart 59/12); every cell and every data-list item is identical, proved by the position-independent data-list identity test',
+  },
+  {
+    name: 'SmallMultiples',
+    ng: NG.SmallMultiples as Type<unknown>,
+    template: `<st-dataviz-small-multiples [store]="store" viewId="v" facetBy="region" dimension="service" measure="amount" label="Amount facets" class="lot10"></st-dataviz-small-multiples>`,
+    re: RE.SmallMultiples as ComponentType<Props>,
+    props: { viewId: 'v', facetBy: 'region', dimension: 'service', measure: 'amount', label: 'Amount facets', className: 'lot10' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 1,
+    expectedSignatureDiffs: 23,
+    attribution:
+      'framework (1 + 23): like ScatterPlotMatrix, Angular places the group role/label on the st-grid host, which the flattener unwraps: the missing leading entry shifts the whole signature (same saturation class as TimelineChart 59/12); the grid div itself is the single markup diff, and every facet and every data-list item is identical, proved by the position-independent data-list identity test',
+  },
+  {
+    name: 'DrillChart',
+    ng: NG.DrillChart as Type<unknown>,
+    template: `<st-dataviz-drill-chart [store]="store" viewId="v" [hierarchy]="hierarchy" measure="amount" label="Amount drill" class="lot10"></st-dataviz-drill-chart>`,
+    re: RE.DrillChart as ComponentType<Props>,
+    props: { viewId: 'v', hierarchy, measure: 'amount', label: 'Amount drill', className: 'lot10' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
+  {
+    name: 'AdvancedPivotDataTable',
+    ng: NG.AdvancedPivotDataTable as Type<unknown>,
+    template: `<st-dataviz-advanced-pivot-data-table [store]="store" viewId="v" [rows]="['region']" [measures]="['amount']" caption="Amount by region" class="lot10"></st-dataviz-advanced-pivot-data-table>`,
+    re: RE.AdvancedPivotDataTable as ComponentType<Props>,
+    props: { viewId: 'v', rows: ['region'], measures: ['amount'], caption: 'Amount by region', className: 'lot10' },
+    fixture: 'wide',
+    expectedMarkupDiffs: 0,
+    expectedSignatureDiffs: 0,
+    attribution: '—',
+  },
 ];
 
 type Row = {
@@ -1406,6 +1487,7 @@ function dataListItems(root: Element): string[] {
  * and their own mount tests in packages/dataviz-angular assert it.
  */
 const NO_DATA_LIST = new Set([
+  'AdvancedPivotDataTable',
   'DashboardActiveFilters',
   'DashboardFilterBar',
   'DateRangeFilter',
@@ -1596,6 +1678,8 @@ describe('dataviz-angular ↔ dataviz-react rendered-markup parity', () => {
         'Sparkline', 'StepLineChart', 'DivergingBarChart',
         // Lot 7: the ComboChart legend swatch residue is DS-level too.
         'ComboChart',
+        // Lot 10: the StackedBarChart residue is DS-level too.
+        'StackedBarChart',
       ];
       for (const name of attributed) {
         const row = table.find((entry) => entry.name === name);
