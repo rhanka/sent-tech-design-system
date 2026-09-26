@@ -334,12 +334,12 @@ const foundation = {
     infoBackground: diorColor.brand.primary, // #013755
     infoText: diorColor.grey[0] // white
   },
-  // Choice label transcribed from `#annee-label{font:…18px/24px Montserrat}`.
+  // Choice label transcribed from `#annee-label{font:…18px/24px Montserrat;color:#666666}`.
   choice: {
     labelFontSize: "1.125rem", // 18px
     labelLineHeight: "1.5rem", // 24px
     radioLineHeight: "1.5rem", // 24px
-    labelColor: diorColor.grey[800] // #393939
+    labelColor: diorColor.grey[700] // #666666 label text
   },
   // Search input (`input#s{height:25px}` — geometry in density.sm; à confirmer).
   search: {
