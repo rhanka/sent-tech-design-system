@@ -1906,8 +1906,8 @@
       "gitBlob": "e0da2ca152892d3985977fbd7588ec7e6bb4df31",
       "sha256": "cafea77294137e31b664bef0f053927c4c1edda93d2391f339b44ae3e669c98b",
       "status": "adapted-monorepo-pattern",
-      "destinationSha256": "7b89dbc1c55cd3d53b1f08d4759c6cb27da0e06a8faca78a94bd9217af64b1c9",
-      "note": "PR #76 exports the ten new adapters and their prop types; GD-M2-PARITY lot 7 adds the six hand-written adapters whose binding reads a prop the descriptor cannot express; lot 8 adds the six from the \"no `void <state>.value` marker\" class; lot 9 adds its own six"
+      "destinationSha256": "45ba9d4f7271218ae607669dca95f31e274bf94cbc097babbb62c15714615674",
+      "note": "PR #76 exports the ten new adapters and their prop types; GD-M2-PARITY lot 7 adds the six hand-written adapters whose binding reads a prop the descriptor cannot express; lot 8 adds the six from the \"no `void <state>.value` marker\" class; lot 9 adds its own six; lot 10 adds its own six (AdvancedPivotDataTable, DrillChart, RadarChart, ScatterPlotMatrix, SmallMultiples, StackedBarChart)"
     },
     {
       "repository": "dataviz",
@@ -7030,8 +7030,8 @@
     {
       "destination": "packages/dataviz-angular/src/lib/adapter-pattern.test.ts",
       "status": "local-monorepo-helper",
-      "sha256": "d10b66318d385943b1d5e7bf27e3dbd6848ce91cdd24c502fce8ad21758055de",
-      "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned. GD-M2-PARITY lot 7 adds the six new adapter files to the expected list; lot 8 adds its own six; lot 9 adds its own six"
+      "sha256": "dd5bfe2c8a940b7b1fd511c88ccc937dd425d30c81b24b67618d02dc713b7e25",
+      "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned. GD-M2-PARITY lot 7 adds the six new adapter files to the expected list; lot 8 adds its own six; lot 9 adds its own six; lot 10 adds its own six"
     },
     {
       "repository": "dataviz",
@@ -7167,8 +7167,8 @@
     {
       "destination": "packages/dataviz-angular/src/lib/generated-adapters.test.ts",
       "status": "local-monorepo-helper",
-      "sha256": "b51a6ee079a2f48da85c3adbe55166d73201ede838aadb7a60787e080da849ca",
-      "note": "GD-M2-PARITY lot 2: monorepo-authored table-driven test over the generated adapters; no upstream source; hash-pinned. Lot 7 adds ErrorBarsChart/PercentileBandChart/ReferenceLineChart/TrendLineChart/ComboChart rows; lot 8 adds CrossfilteredBarChart/DrillBarChart"
+      "sha256": "f9ee44d066cea5d862cc790fd0634c5a0b406e794c00886fe0cf04caecb2793f",
+      "note": "GD-M2-PARITY lot 2: monorepo-authored table-driven test over the generated adapters; no upstream source; hash-pinned. Lot 7 adds ErrorBarsChart/PercentileBandChart/ReferenceLineChart/TrendLineChart/ComboChart rows; lot 8 adds CrossfilteredBarChart/DrillBarChart; lot 10 adds StackedBarChart/RadarChart/ScatterPlotMatrix/SmallMultiples/DrillChart rows (AdvancedPivotDataTable has its own test and a NO_DATA_LIST entry)"
     },
     {
       "destination": "packages/dataviz-angular/src/lib/ArcDiagramChart.ts",
@@ -7690,6 +7690,74 @@
       "status": "local-monorepo-helper",
       "sha256": "e03ff703ceed34476a3083f6cc49a7098f13f07c0dd2e2ad75cae8b27b4651e0",
       "note": "GD-M2-PARITY lot 9: monorepo-authored dedicated test for FieldPane; its DS TreeView renders no value list, so it is not a row in generated-adapters.test.ts, per PATTERN.md; no upstream source; hash-pinned"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-vue/src/lib/drill.ts",
+      "destination": "packages/dataviz-angular/src/lib/drill.ts",
+      "gitBlob": "1e66caf6834ea349ad8489050e8184de2cf8dfba",
+      "sha256": "1acb58ca097535d91bcafa9d21c6509590f7478b0680fb8a3bbb8cf343de3628",
+      "status": "copied-byte-identical",
+      "note": "fourth copy of the framework-free helper, byte-identical to the vue/react/svelte ones; the copies are pinned against drift by scripts/verify-dataviz-helper-copies.test.mjs (PR #76)"
+    },
+    {
+      "repository": "dataviz",
+      "commit": "0869ae5b59bb308be7d43fbe0de58c5487e11f25",
+      "source": "packages/dataviz-vue/src/lib/advancedPivotData.ts",
+      "destination": "packages/dataviz-angular/src/lib/advancedPivotData.ts",
+      "gitBlob": "4387fbbee0e630e333bc42000bbf34bba1b43214",
+      "sha256": "8d5ba17b72af0f81b5663b5c5e3c0e69a4dc9ef4b15066b42d52e148a14957e9",
+      "status": "copied-byte-identical",
+      "note": "fourth copy of the framework-free helper, byte-identical to the vue/react/svelte ones; the copies are pinned against drift by scripts/verify-dataviz-helper-copies.test.mjs (PR #76)"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/StackedBarChart.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "95a9f801d17120421a5fc122e36b39f2dc06536546e8895c83a7110dadc0e485",
+      "note": "GD-M2-PARITY lot 10: monorepo-authored by hand for the StackedBarChart adapter (the builder config wraps one prop in an array literal, `measures: [props.measure]`, which the descriptor refuses as `builder config entries that are not `key: props.<name>`: measures`; see its README), so no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/RadarChart.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "755a569bb6bf7932dfd129878540feced5eca9d3b14d56c62aaabd6f4cfd6c92",
+      "note": "GD-M2-PARITY lot 10: monorepo-authored by hand for the RadarChart adapter (two bindings wrap the same derived model in two different calls, refused as `two wrapping calls`; the public axes/series @Inputs keep their contract names and the derived arrays are radarAxes/radarSeries, the lot 7 PivotDataTable split; see its README), so no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/ScatterPlotMatrix.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "79bb9142f949ce64e24a8659ab65487332feee0434007923e1be70a12a7c1865",
+      "note": "GD-M2-PARITY lot 10: monorepo-authored by hand for the ScatterPlotMatrix adapter (an N x N loop of DS ScatterPlots in a wrapper, refused as `no trailing h() call`; layout is the DS Grid per the source's own \"mirrors SmallMultiples\" pointer, the adapter-pattern guard forbidding literal styles; see its README), so no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/SmallMultiples.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "f9ec2cda8d71fc4367880f928ede1cf4e5563c97b79034683891124683c80149",
+      "note": "GD-M2-PARITY lot 10: monorepo-authored by hand for the SmallMultiples adapter (hand-built facet panels with a shared min/max domain, refused as `setup body matches no supported shape`; every builder is already in dataviz-core; see its README), so no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/DrillChart.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "9a641a2e3a1382c177699787d8cf7c57987a062f75f7409b90afaae91b6f4e88",
+      "note": "GD-M2-PARITY lot 10: monorepo-authored by hand for the DrillChart adapter (kind branches delegating to the ported DrillBarChart/DonutChart/TreemapChart adapters plus a DS Button row, refused as `setup body matches no supported shape`; drill maths comes from the byte-identical ./drill.js copy; see its README), so no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/AdvancedPivotDataTable.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "e2427b80b04d21b67ae370feaddcc78afdfa1c3dbad3ba37bf4ba125a8a80f78",
+      "note": "GD-M2-PARITY lot 10: monorepo-authored by hand for the AdvancedPivotDataTable adapter (one h() call over a computed props object, refused as `no trailing h() call`; the view builder is the byte-identical ./advancedPivotData.js copy; onRowClick is wired only when onToggleRowPath is set, like React; see its README), so no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/DrillChart.test.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "b15ff89df24299a9748c768af1ae9207fafc22c87d15d0f85e5a08dada4dd40c",
+      "note": "GD-M2-PARITY lot 10: monorepo-authored dedicated test for DrillChart's donut/treemap branches and button-row drill-then-select interaction (beyond what the shared generated-adapters.test.ts family table proves); no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/AdvancedPivotDataTable.test.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "ff5e37a5a3c57e3bc134f1a43ef6930ee96be8d6a7d131d1bc44ba7439c9bd89",
+      "note": "GD-M2-PARITY lot 10: monorepo-authored dedicated test for AdvancedPivotDataTable (mirrors the React contract: subtotals, heat, sparklines, collapsed paths, subtotal-only toggles, filter updates); the DS DataTable renders no value list, so the family table cannot prove it — named in the parity harness NO_DATA_LIST; no upstream source; hash-pinned"
     }
   ]
 }
