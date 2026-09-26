@@ -1906,8 +1906,8 @@
       "gitBlob": "e0da2ca152892d3985977fbd7588ec7e6bb4df31",
       "sha256": "cafea77294137e31b664bef0f053927c4c1edda93d2391f339b44ae3e669c98b",
       "status": "adapted-monorepo-pattern",
-      "destinationSha256": "2a39c9f9e70fbf4eb3cd21dd931ea89544f61f4ddf21dd44a5aa4b8dae80fab1",
-      "note": "PR #76 exports the ten new adapters and their prop types; GD-M2-PARITY lot 7 adds the six hand-written adapters whose binding reads a prop the descriptor cannot express; lot 8 adds the six from the \"no `void <state>.value` marker\" class"
+      "destinationSha256": "7b89dbc1c55cd3d53b1f08d4759c6cb27da0e06a8faca78a94bd9217af64b1c9",
+      "note": "PR #76 exports the ten new adapters and their prop types; GD-M2-PARITY lot 7 adds the six hand-written adapters whose binding reads a prop the descriptor cannot express; lot 8 adds the six from the \"no `void <state>.value` marker\" class; lot 9 adds its own six"
     },
     {
       "repository": "dataviz",
@@ -7030,8 +7030,8 @@
     {
       "destination": "packages/dataviz-angular/src/lib/adapter-pattern.test.ts",
       "status": "local-monorepo-helper",
-      "sha256": "a9d915d2b81ac9febf9c252651333da1d81dc772db0f0015548cec10f89fb23f",
-      "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned. GD-M2-PARITY lot 7 adds the six new adapter files to the expected list; lot 8 adds its own six"
+      "sha256": "d10b66318d385943b1d5e7bf27e3dbd6848ce91cdd24c502fce8ad21758055de",
+      "note": "monorepo-authored in PR #76 (first Angular parity lot), no upstream source; hash-pinned. GD-M2-PARITY lot 7 adds the six new adapter files to the expected list; lot 8 adds its own six; lot 9 adds its own six"
     },
     {
       "repository": "dataviz",
@@ -7618,6 +7618,78 @@
       "status": "local-monorepo-helper",
       "sha256": "c3d59cda33832f550caad3071e2bd2509d7755a7b9306b7f73ef6c39439ba3d2",
       "note": "GD-M2-PARITY lot 5: monorepo-authored by hand for the mount test for the Sparkline adapter, whose DS component renders no value list; tools/dataviz-angular-port refuses this shape (see its README), so no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/ExportMenu.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "1b8828be21dc703da4f2f2c3570d96c8379a77eb340bd2422e417f5fe507f24c",
+      "note": "GD-M2-PARITY lot 9: monorepo-authored by hand for the ExportMenu adapter (stateless CSV export button; setup() holds no reactive state, so there is no `void <state>.value` marker to anchor on; see its README), so no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/ExportMenu.test.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "1285fc1c077fa50ce86ac12563fcf9b6b696c0a562611edf12025414f45c2693",
+      "note": "GD-M2-PARITY lot 9: monorepo-authored dedicated test for ExportMenu; its DS Button renders no value list, so it is not a row in generated-adapters.test.ts, per PATTERN.md; no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/RangeSliderFilter.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "d45a7b2704360fbba113892676b7e1202351fb52f01f5889288772442f8d0edc",
+      "note": "GD-M2-PARITY lot 9: monorepo-authored by hand for the RangeSliderFilter adapter (two-handle numeric filter; setup() keeps its handles in a plain ref watched for its side effect, never read as a rendered value, so there is no `void <state>.value` marker to anchor on; see its README), so no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/RangeSliderFilter.test.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "be804a1de5dd941c82ae53692f3e9373509bce86360775ccff66257a2de35174",
+      "note": "GD-M2-PARITY lot 9: monorepo-authored dedicated test for RangeSliderFilter; its DS RangeSlider renders no value list, so it is not a row in generated-adapters.test.ts, per PATTERN.md; no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/RelativeDateFilter.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "4620ef1eaa93dbdd25f77d084280dd81d96682ab70a43e02835f7ddb539c113e",
+      "note": "GD-M2-PARITY lot 9: monorepo-authored by hand for the RelativeDateFilter adapter (preset select filter; setup() keeps the selected preset in a plain ref watched for its side effect, never read as a rendered value, so there is no `void <state>.value` marker to anchor on; see its README), so no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/RelativeDateFilter.test.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "90b07e32efbf36b79540543875fa0193fff875e17fd0d2ac1bd97dd30d6dee9c",
+      "note": "GD-M2-PARITY lot 9: monorepo-authored dedicated test for RelativeDateFilter; its DS Select renders no value list, so it is not a row in generated-adapters.test.ts, per PATTERN.md; no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/TopNFilter.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "0a312fa84775ad0ce872e859701636fd98b6ad9f532b92b072711eb38b7ef5bd",
+      "note": "GD-M2-PARITY lot 9: monorepo-authored by hand for the TopNFilter adapter (top-N number filter; setup() keeps N in a plain ref watched for its side effect, never read as a rendered value, so there is no `void <state>.value` marker to anchor on; see its README), so no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/TopNFilter.test.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "b0c011b7e0bb4fd78f58fcca9ed2e1d735d80c8c7b131dc81b45eb9c51bca36c",
+      "note": "GD-M2-PARITY lot 9: monorepo-authored dedicated test for TopNFilter; its DS NumberInput renders no value list, so it is not a row in generated-adapters.test.ts, per PATTERN.md; no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/PalettePicker.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "bbab8561e3ac29f038d466900f9535d1738c3d3accb41f752803cd5cda0cfd82",
+      "note": "GD-M2-PARITY lot 9: monorepo-authored by hand for the PalettePicker adapter (categorical/sequential/diverging palette preview; setup() is pure prop derivation with no reactive state, so there is no `void <state>.value` marker to anchor on; see its README), so no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/PalettePicker.test.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "2f1051d8a663193c62676e20afc4f91baa908b84370391408be05661f08ea891",
+      "note": "GD-M2-PARITY lot 9: monorepo-authored dedicated test for PalettePicker; its DS Stack/Inline/ColorSwatch/ColorScaleBar renders no value list, so it is not a row in generated-adapters.test.ts, per PATTERN.md; no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/FieldPane.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "66514155b993f522f0b2e968a61ea787c26fee5b9aee5de464bfad6494eb1e29",
+      "note": "GD-M2-PARITY lot 9: monorepo-authored by hand for the FieldPane adapter (model field tree on the single-TreeView React contract; setup() is pure prop derivation with no reactive state, so there is no `void <state>.value` marker to anchor on; see its README), so no descriptor and no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-angular/src/lib/FieldPane.test.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "e03ff703ceed34476a3083f6cc49a7098f13f07c0dd2e2ad75cae8b27b4651e0",
+      "note": "GD-M2-PARITY lot 9: monorepo-authored dedicated test for FieldPane; its DS TreeView renders no value list, so it is not a row in generated-adapters.test.ts, per PATTERN.md; no upstream source; hash-pinned"
     }
   ]
 }
