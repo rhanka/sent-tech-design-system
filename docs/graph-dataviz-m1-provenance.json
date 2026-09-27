@@ -308,7 +308,9 @@
       "destination": "packages/graph/tests/golden/cdp-port-isolation.test.ts",
       "gitBlob": "e321b8feb93a05b039d9a199229154fec6344519",
       "sha256": "385b38cccb81c2d1abeb46757c8be4460f93b26580f9493a3e2c714552077ebd",
-      "status": "copied-byte-identical"
+      "status": "adapted-explicit-skip-gate",
+      "destinationSha256": "0932a87ef7a603a828635609b9fb0a5529513d4d7725e0fb09ca0cd3a1f64e3c",
+      "note": "DS-only no-Chrome guard (absent upstream): openOracle failures call ctx.skip() like the other golden tests, instead of failing on the environment. With Chrome present the test runs as upstream. Upstream source hash kept in sha256."
     },
     {
       "repository": "graphify",
