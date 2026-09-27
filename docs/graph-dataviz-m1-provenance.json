@@ -106,11 +106,11 @@
     },
     {
       "repository": "graphify",
-      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "commit": "a5ce7397e68b2e38a83778d24592c3d78b344102",
       "source": "packages/graph/src/layout-metro.ts",
       "destination": "packages/graph/src/layout-metro.ts",
-      "gitBlob": "f0c1b70385165340dee14e32c86d19ded43d4a23",
-      "sha256": "781ff61da7e67da865fff8f3ffcd1901a2f2e76e05a257e848f8742ffb91a0c6",
+      "gitBlob": "58a9292c5d416f495b41a3ac3216017a6998af01",
+      "sha256": "def5fb32cc33286d30d89588112944327494d2246d263ef03abe982cc6210360",
       "status": "copied-byte-identical"
     },
     {
@@ -164,20 +164,20 @@
     },
     {
       "repository": "graphify",
-      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "commit": "a5ce7397e68b2e38a83778d24592c3d78b344102",
       "source": "packages/graph/src/render-geometry.ts",
       "destination": "packages/graph/src/render-geometry.ts",
-      "gitBlob": "a16b8aa938c60f593efb76b8fac7ef244b4cdd15",
-      "sha256": "0df078a60d60e4dbc65f11ec643881cad6cd085ce93ae327a07fb2a595581d27",
+      "gitBlob": "4b79f6a7941163dae2941c9681edcf7e1d891986",
+      "sha256": "08d997215a9d95a92a6be7d1fafaf5165667722da2e5e1f9bc82a6331ec007de",
       "status": "copied-byte-identical"
     },
     {
       "repository": "graphify",
-      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "commit": "a5ce7397e68b2e38a83778d24592c3d78b344102",
       "source": "packages/graph/src/renderer.ts",
       "destination": "packages/graph/src/renderer.ts",
-      "gitBlob": "a3ab2255f051df71a860dba361eb4362b8ca651d",
-      "sha256": "b1f538526dadcd2925d45e55d73fd043d4cd499abbac82cf0793aad27d067300",
+      "gitBlob": "caa60b9f6b9f5bdae225b46eaacfdba64c21da08",
+      "sha256": "d32e89a41928677776bee5db2f316ebef033092754e83bb004539f681b8da0c3",
       "status": "copied-byte-identical"
     },
     {
@@ -191,23 +191,23 @@
     },
     {
       "repository": "graphify",
-      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "commit": "a5ce7397e68b2e38a83778d24592c3d78b344102",
       "source": "packages/graph/src/styles.ts",
       "destination": "packages/graph/src/styles.ts",
-      "gitBlob": "fa72000b05ed8921d85c9c1b8b9a9d3bc94fcd45",
-      "sha256": "8fcd577fafdc089f371b17e4785475ceb4386330da657572fd988ddc0a63cc95",
+      "gitBlob": "724a6dddafc7ae3d7703ce7b0a68422217642f4f",
+      "sha256": "6f084306a1fdfea996f1526f8fe37758ade20d1bad5c48dfc5c4b4ec7b0bc0ad",
       "status": "copied-byte-identical"
     },
     {
       "repository": "graphify",
-      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "commit": "a5ce7397e68b2e38a83778d24592c3d78b344102",
       "source": "packages/graph/src/types.ts",
       "destination": "packages/graph/src/types.ts",
-      "gitBlob": "01dfb76e0e500dcecca44d9a5ae158cf1c3c9e36",
-      "sha256": "7585c7304db663b0ca37b4027dd31327dd22e384eb543fdf34982a196d676cf0",
+      "gitBlob": "fb781e30219e7620427c9c01f864452842e1b1c1",
+      "sha256": "5fd7ac26581ccdb86586cdb37ed5c8e952942411707d8dc2256209e8b1e7e541",
       "status": "adapted-gd-m2-processing",
-      "destinationSha256": "1b8a4878b69cdd98cd45fd6eb57b17bd99bfbd8276e7c2876ee8810d0f7ab0f9",
-      "note": "GD-M2-PROCESSING: LayoutOutcome/toPositions/force-fa2/hierarchy-aware adaptation; prior M1 source hash kept in sha256"
+      "destinationSha256": "0955bccd22e3ed520c2d1295ab4d93dd68bbc8e255f3807bda406ca94cd20c30",
+      "note": "GD-M2-PROCESSING: LayoutOutcome/toPositions/force-fa2/hierarchy-aware adaptation; engram octilinear route style (EdgeRouteStyle \"octilinear\", code 5) merged 2026-09; sha256 = engram origin/HEAD source"
     },
     {
       "repository": "graphify",
@@ -220,11 +220,11 @@
     },
     {
       "repository": "graphify",
-      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "commit": "a5ce7397e68b2e38a83778d24592c3d78b344102",
       "source": "packages/graph/src/webgl-edges.ts",
       "destination": "packages/graph/src/webgl-edges.ts",
-      "gitBlob": "c9dc077b53c654e29a709318cc84ba90e8d9e0e9",
-      "sha256": "08e24e4759d62fc4ca14a799b6f7f58ef0c8aeb7483712b0ab6cc605752c076a",
+      "gitBlob": "e3831a7829df518dc7d751b075a7a09d6b59a5cc",
+      "sha256": "5b1fdc67a49ff61f7ecb7ad7c017f1667311a83e334c3ea7d004e5a3944960ac",
       "status": "copied-byte-identical"
     },
     {
@@ -294,11 +294,20 @@
     },
     {
       "repository": "graphify",
-      "commit": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "commit": "a5ce7397e68b2e38a83778d24592c3d78b344102",
       "source": "packages/graph/tests/golden/cdp-harness.mjs",
       "destination": "packages/graph/tests/golden/cdp-harness.mjs",
-      "gitBlob": "f2c4396d0ce39c7d129b645957771f0a1e18d1c0",
-      "sha256": "794210f403e7e6a722c84723768e97d3a99cfe603b38024d0563285c0efad6d5",
+      "gitBlob": "a0f7dd6d80e5e19721a70381cff98a2a386942d8",
+      "sha256": "53f1542c2bd34156009890a55b7eaf2bf2bfe9867380d2dcfab0b006fc2f23be",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "a5ce7397e68b2e38a83778d24592c3d78b344102",
+      "source": "packages/graph/tests/golden/cdp-port-isolation.test.ts",
+      "destination": "packages/graph/tests/golden/cdp-port-isolation.test.ts",
+      "gitBlob": "e321b8feb93a05b039d9a199229154fec6344519",
+      "sha256": "385b38cccb81c2d1abeb46757c8be4460f93b26580f9493a3e2c714552077ebd",
       "status": "copied-byte-identical"
     },
     {
@@ -469,6 +478,15 @@
       "destination": "packages/graph/tests/mat4.test.ts",
       "gitBlob": "11a30f7aca9b266601fa0a260c2a9feff941c269",
       "sha256": "9a9eca3751f35775d6ca0d818becafea6e3b90b441a5a2adec3363498d5076b2",
+      "status": "copied-byte-identical"
+    },
+    {
+      "repository": "graphify",
+      "commit": "a5ce7397e68b2e38a83778d24592c3d78b344102",
+      "source": "packages/graph/tests/octilinear-routing.test.ts",
+      "destination": "packages/graph/tests/octilinear-routing.test.ts",
+      "gitBlob": "c40820d489db896067650f11c43c90b16840c2cb",
+      "sha256": "3eedf27ec83dd593748fe19a25c9a7b4aeaee40e8bc52e59ce9d6d0b8be8fa98",
       "status": "copied-byte-identical"
     },
     {
