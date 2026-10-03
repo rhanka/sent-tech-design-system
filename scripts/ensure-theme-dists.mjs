@@ -29,8 +29,15 @@ const packagesDir = join(root, "packages") + sep;
 // package's generated stylesheet output (build:css writes there).
 const SKIP = new Set(["node_modules", "dist", "css", ".turbo", ".svelte-kit"]);
 
+// Throwaway Chrome profiles the graph golden tests create inside
+// packages/graph (`.graphify-cdp-prof-<pid>-<ts>`, git-ignored). They hold a
+// dangling `SingletonCookie` symlink once Chrome exits, which made
+// readFileSync throw ENOENT when tests ran before a build (graph-publish.yml).
+const SKIP_PREFIXES = [".graphify-cdp-prof-"];
+
 // Deterministic hash of every source file (path + content) in the package,
-// excluding build outputs and deps.
+// excluding build outputs and deps. Only regular files are hashed: symlinks,
+// sockets and the like are not sources.
 function sourceHash(pkgDir) {
   const files = [];
   const walk = (d) => {
@@ -41,10 +48,10 @@ function sourceHash(pkgDir) {
       return;
     }
     for (const e of entries) {
-      if (SKIP.has(e.name)) continue;
+      if (SKIP.has(e.name) || SKIP_PREFIXES.some((prefix) => e.name.startsWith(prefix))) continue;
       const p = join(d, e.name);
       if (e.isDirectory()) walk(p);
-      else files.push(p);
+      else if (e.isFile()) files.push(p);
     }
   };
   walk(pkgDir);
