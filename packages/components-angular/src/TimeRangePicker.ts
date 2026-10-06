@@ -115,6 +115,9 @@ function presetDurationMs(preset: TimeRangePreset): number | null {
             </st-selectable-list>
           } @else {
             <div class="st-timeRangePicker__custom">
+              <div class="st-timeRangePicker__customExtra">
+                <ng-content select="[slot=customExtra]"></ng-content>
+              </div>
               <div class="st-timeRangePicker__bounds">
                 <div class="st-timeRangePicker__bound">
                   <st-time-picker
@@ -187,6 +190,17 @@ export class TimeRangePicker {
 
   @Output() valueChange = new EventEmitter<TimeRange>();
   @Output() change = new EventEmitter<TimeRange>();
+  /**
+   * Fires whenever the panel opens (`true`) or closes (`false`).
+   *
+   * Slot `[slot=customExtra]`: optional consumer controls projected in the
+   * Custom tab, directly above the From/To fields (e.g. a "date basis" radio
+   * group). The Custom tab is staged behind Apply, so treat whatever the slot
+   * edits as a DRAFT: reseed it on `openChange(true)` and commit it on
+   * `change` when the emitted value has `mode: "absolute"` (that emit only
+   * happens on Apply). Cancel / Escape / outside click emit nothing.
+   */
+  @Output() openChange = new EventEmitter<boolean>();
 
   open = false;
   activeTab: TimeRangeMode = "relative";
@@ -327,11 +341,15 @@ export class TimeRangePicker {
     // Seed the custom draft from the concretely resolved current window, even in
     // relative mode, so switching to Custom starts from what the user sees.
     this.draft = splitAbsolute(v.from, v.to);
+    if (this.open) return;
     this.open = true;
+    this.openChange.emit(true);
   }
 
   close(): void {
+    if (!this.open) return;
     this.open = false;
+    this.openChange.emit(false);
   }
 
   /** Cancel discards the draft and emits nothing. */
