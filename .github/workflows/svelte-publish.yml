@@ -24,9 +24,15 @@ jobs:
           node-version: "22"
           cache: "npm"
       - run: npm ci
+      # @sentropic/graph is a runtime dependency since #113 (ForceGraph delegates
+      # its layout to @sentropic/graph/processing). npm ci links it to the
+      # packages/graph workspace, whose exports point at dist/ — so it must be
+      # built before svelte-check / svelte-package, or the subpath does not
+      # resolve ("Cannot find module '@sentropic/graph/processing'").
       - name: Build Svelte dependencies
         run: |
           npm --workspace @sentropic/design-system-tokens run build
+          npm --workspace @sentropic/graph run build
           npm --workspace @sentropic/design-system-themes run build
           npm --workspace @sentropic/design-system-theme-dsfr run build
       - name: Verify Svelte package
@@ -87,6 +93,7 @@ jobs:
           npm ci
           npm --workspace @sentropic/design-system-tokens run build
           npm --workspace @sentropic/design-system-themes run build
+          npm --workspace @sentropic/graph run build
           npm --workspace @sentropic/design-system-svelte run build
       - name: Publish Svelte package
         run: npm publish --workspace @sentropic/design-system-svelte --access public
