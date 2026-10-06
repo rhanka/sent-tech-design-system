@@ -598,6 +598,18 @@ describe("TimeRangePicker — customExtra slot + onOpenChange", () => {
     expect(onChange.mock.calls[0][0]).toEqual({ mode: "absolute", from: absolute.from, to: absolute.to });
   });
 
+  it("onOpenChange(true) runs before focus moves into the panel (same order as Svelte/Vue)", () => {
+    const focusAtCallback: (Element | null)[] = [];
+    const { container } = render(
+      <TimeRangePicker value={absolute} onOpenChange={() => focusAtCallback.push(document.activeElement)} locale="en-US" />
+    );
+    const trigger = triggerButton(container);
+    trigger.focus();
+    openPanel(container);
+    expect(focusAtCallback[0]).toBe(trigger);
+    expect(document.activeElement).not.toBe(trigger);
+  });
+
   it("onOpenChange reports open on the trigger and close on Cancel / Apply, never on mount", () => {
     const onOpenChange = vi.fn();
     const { container, getByRole } = render(
