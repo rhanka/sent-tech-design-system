@@ -226,3 +226,39 @@ describe("TimeRangePicker (angular)", () => {
     expect(c.open).toBe(false);
   });
 });
+
+describe("TimeRangePicker — customExtra slot + openChange (angular)", () => {
+  it("projects [slot=customExtra] in the Custom tab, above the From/To fields", () => {
+    const def = (TimeRangePicker as unknown as { ɵcmp?: { ngContentSelectors?: string[] } }).ɵcmp;
+    expect(def?.ngContentSelectors).toContain("[slot=customExtra]");
+  });
+
+  it("reports open/close transitions once each, never on construction", () => {
+    const c = new TimeRangePicker();
+    const seen: boolean[] = [];
+    c.openChange.subscribe((v: boolean) => seen.push(v));
+    expect(seen).toEqual([]);
+    c.openPanel();
+    c.openPanel();
+    c.cancel();
+    c.close();
+    c.openPanel();
+    c.onCalendarChange(["2026-08-01", "2026-08-02"]);
+    c.onFromTimeChange("08:00");
+    c.onToTimeChange("18:30");
+    c.apply();
+    expect(seen).toEqual([true, false, true, false]);
+  });
+
+  it("Apply re-emits the unchanged absolute range so a staged extra can be committed", () => {
+    const value = { mode: "absolute" as const, from: new Date(2026, 7, 1, 8, 0).getTime(), to: new Date(2026, 7, 2, 18, 0).getTime() };
+    const c = new TimeRangePicker();
+    c.value = value;
+    const seen: unknown[] = [];
+    c.change.subscribe((v: unknown) => seen.push(v));
+    c.openPanel();
+    expect(c.activeTab).toBe("absolute");
+    c.apply();
+    expect(seen).toEqual([{ mode: "absolute", from: value.from, to: value.to }]);
+  });
+});

@@ -150,8 +150,17 @@ export const TimeRangePicker = defineComponent({
       default: undefined,
     },
   },
-  emits: ["update:modelValue", "change"],
-  setup(props, { emit }) {
+  // `openChange` fires whenever the panel opens (true) or closes (false);
+  // listen with `@open-change` / `:onOpenChange`.
+  //
+  // Slot `customExtra`: optional consumer controls rendered in the Custom tab,
+  // directly above the From/To fields (e.g. a "date basis" radio group). The
+  // Custom tab is staged behind Apply, so treat whatever the slot edits as a
+  // DRAFT: reseed it on `openChange(true)` and commit it on `change` when the
+  // emitted value has `mode: "absolute"` (that emit only happens on Apply).
+  // Cancel / Escape / outside click emit nothing.
+  emits: ["update:modelValue", "change", "openChange"],
+  setup(props, { emit, slots }) {
     const autoId = ref(nextTrpId());
     const fieldLabelId = `${autoId.value}-label`;
     const triggerTextId = `${autoId.value}-text`;
@@ -325,6 +334,7 @@ export const TimeRangePicker = defineComponent({
     // transition: restore focus to whatever had it before opening (the
     // trigger, in the overwhelming majority of cases).
     watch(panelOpen, (isOpen) => {
+      emit("openChange", isOpen);
       if (isOpen) {
         activeTab.value = current.value.mode;
         seedDraft();
@@ -521,6 +531,7 @@ export const TimeRangePicker = defineComponent({
                 })
               : null,
           ]),
+          slots.customExtra ? h("div", { class: "st-timeRangePicker__customExtra" }, slots.customExtra()) : null,
           h("div", { class: "st-timeRangePicker__bounds" }, [
             h(
               "div",

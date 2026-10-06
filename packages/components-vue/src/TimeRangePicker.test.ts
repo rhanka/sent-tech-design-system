@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils";
 import type { VueWrapper } from "@vue/test-utils";
-import { nextTick } from "vue";
+import { h, nextTick } from "vue";
 import { describe, expect, it, vi, afterEach } from "vitest";
 import { TimeRangePicker } from "./index.js";
 import type { TimeRange } from "./index.js";
@@ -578,5 +578,73 @@ describe("TimeRangePicker — misc props", () => {
     expect(wrapper.find(".st-timeRangePicker__label").text()).toBe("Time window");
     const trigger = triggerButton(wrapper.element as HTMLElement);
     expect(trigger.getAttribute("aria-labelledby")).toBeTruthy();
+  });
+});
+
+describe("TimeRangePicker — customExtra slot + openChange", () => {
+  const extra = () =>
+    h("fieldset", { "data-testid": "extra" }, [
+      h("legend", "Date basis"),
+      h("label", [h("input", { type: "radio", name: "basis", value: "scrap" }), "Acquisition"]),
+    ]);
+  const absolute: TimeRange = {
+    mode: "absolute",
+    from: new Date(2024, 0, 1, 10, 0).getTime(),
+    to: new Date(2024, 0, 2, 11, 30).getTime(),
+  };
+  function mountWithExtra(props: Record<string, unknown> = {}): VueWrapper {
+    const wrapper = mount(TimeRangePicker, { props, slots: { customExtra: extra }, attachTo: document.body });
+    mounted.push(wrapper);
+    return wrapper;
+  }
+
+  it("renders the extra controls in the Custom tab, above the From/To fields", async () => {
+    const wrapper = mountWithExtra({ locale: "en-US" });
+    await openPanel(wrapper);
+    expect(document.querySelector('[data-testid="extra"]')).toBeNull();
+    await clickTab(wrapper, "Custom");
+    const slot = document.querySelector(".st-timeRangePicker__customExtra") as HTMLElement;
+    expect(slot.querySelector('[data-testid="extra"]')).toBeTruthy();
+    const bounds = document.querySelector(".st-timeRangePicker__bounds") as HTMLElement;
+    const actions = document.querySelector(".st-timeRangePicker__actions") as HTMLElement;
+    expect(slot.compareDocumentPosition(bounds) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(slot.compareDocumentPosition(actions) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it("renders no extra wrapper when the slot is not provided", async () => {
+    const wrapper = mountPicker({ locale: "en-US" });
+    await openPanel(wrapper);
+    await clickTab(wrapper, "Custom");
+    expect(document.querySelector(".st-timeRangePicker__customExtra")).toBeNull();
+  });
+
+  it("editing the extra controls emits nothing until Apply, which emits the absolute range", async () => {
+    const onChange = vi.fn();
+    const wrapper = mountWithExtra({ value: absolute, onChange, locale: "en-US" });
+    await openPanel(wrapper);
+    await wrapper.find('[data-testid="extra"] input').trigger("click");
+    expect(onChange).not.toHaveBeenCalled();
+    await actionButton(wrapper, "Apply").trigger("click");
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onChange.mock.calls[0][0]).toEqual({ mode: "absolute", from: absolute.from, to: absolute.to });
+  });
+
+  it("openChange reports open on the trigger and close on Cancel / Apply, never on mount", async () => {
+    const onOpenChange = vi.fn();
+    const wrapper = mountWithExtra({ value: absolute, onOpenChange, locale: "en-US" });
+    await nextTick();
+    expect(onOpenChange).not.toHaveBeenCalled();
+    await openPanel(wrapper);
+    await nextTick();
+    expect(onOpenChange).toHaveBeenLastCalledWith(true);
+    await actionButton(wrapper, "Cancel").trigger("click");
+    await nextTick();
+    expect(onOpenChange).toHaveBeenLastCalledWith(false);
+    await openPanel(wrapper);
+    await nextTick();
+    await actionButton(wrapper, "Apply").trigger("click");
+    await nextTick();
+    expect(onOpenChange.mock.calls.map((c) => c[0])).toEqual([true, false, true, false]);
+    expect(wrapper.emitted("openChange")?.map((e) => e[0])).toEqual([true, false, true, false]);
   });
 });
