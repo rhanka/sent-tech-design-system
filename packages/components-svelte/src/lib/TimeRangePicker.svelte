@@ -23,6 +23,7 @@
   // NOT trap focus or return it to the trigger on close (see its own docs), so
   // both are added here (mirrors Modal.svelte's trapFocus pattern).
   import { tick, untrack } from "svelte";
+  import type { Snippet } from "svelte";
   import { Clock, ChevronDown } from "@lucide/svelte";
   import MenuPopover from "./MenuPopover.svelte";
   import ContentSwitcher from "./ContentSwitcher.svelte";
@@ -62,6 +63,17 @@
     class?: string;
     formatRange?: (value: TimeRange, locale: string) => string;
     formatPresetLabel?: (token: string, locale: string) => string;
+    /**
+     * Optional consumer controls rendered in the Custom tab, directly above the
+     * From/To fields (e.g. a "date basis" radio group). The Custom tab is
+     * staged behind Apply, so treat whatever this snippet edits as a DRAFT:
+     * reseed it from `onOpenChange(true)` and commit it from `onChange` when
+     * the emitted value has `mode: "absolute"` (that emit only happens on
+     * Apply). Cancel / Escape / outside click emit nothing.
+     */
+    customExtra?: Snippet;
+    /** Fires whenever the panel opens (`true`) or closes (`false`). */
+    onOpenChange?: (open: boolean) => void;
   };
 
   let {
@@ -82,7 +94,9 @@
     size = "md",
     class: className,
     formatRange,
-    formatPresetLabel: formatPresetLabelProp
+    formatPresetLabel: formatPresetLabelProp,
+    customExtra,
+    onOpenChange
   }: TimeRangePickerProps = $props();
 
   const isFr = $derived((locale ?? "fr-FR").toLowerCase().startsWith("fr"));
@@ -247,6 +261,17 @@
   // in the overwhelming majority of cases). Reads other than `panelOpen` are
   // untracked so a controlled `value` change while the panel stays open does
   // NOT clobber in-progress edits.
+  // `onOpenChange` is notified on every real transition only (the initial
+  // closed state is not reported).
+  let reportedOpen = false;
+  $effect(() => {
+    const isOpen = panelOpen;
+    if (isOpen !== reportedOpen) {
+      reportedOpen = isOpen;
+      untrack(() => onOpenChange?.(isOpen));
+    }
+  });
+
   $effect(() => {
     if (panelOpen) {
       untrack(() => {
@@ -447,6 +472,12 @@
             {/if}
           </div>
 
+          {#if customExtra}
+            <div class="st-timeRangePicker__customExtra">
+              {@render customExtra()}
+            </div>
+          {/if}
+
           <div class="st-timeRangePicker__bounds">
             <div class="st-timeRangePicker__bound">
               <Input
@@ -590,6 +621,12 @@
   .st-timeRangePicker__calendars :global(.st-calendar) {
     flex: 1 1 16rem;
     min-width: 16rem;
+  }
+
+  .st-timeRangePicker__customExtra {
+    display: flex;
+    flex-direction: column;
+    gap: var(--st-spacing-2, 0.5rem);
   }
 
   .st-timeRangePicker__bounds {

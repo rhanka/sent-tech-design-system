@@ -56,6 +56,17 @@ export type TimeRangePickerProps = Omit<React.HTMLAttributes<HTMLDivElement>, "o
   size?: "sm" | "md" | "lg";
   formatRange?: (value: TimeRange, locale: string) => string;
   formatPresetLabel?: (token: string, locale: string) => string;
+  /**
+   * Optional consumer controls rendered in the Custom tab, directly above the
+   * From/To fields (e.g. a "date basis" radio group). The Custom tab is staged
+   * behind Apply, so treat whatever this node edits as a DRAFT: reseed it from
+   * `onOpenChange(true)` and commit it from `onChange` when the emitted value
+   * has `mode: "absolute"` (that emit only happens on Apply). Cancel / Escape /
+   * outside click emit nothing.
+   */
+  customExtra?: React.ReactNode;
+  /** Fires whenever the panel opens (`true`) or closes (`false`). */
+  onOpenChange?: (open: boolean) => void;
 };
 
 const FOCUSABLE_SELECTOR = [
@@ -134,6 +145,8 @@ export function TimeRangePicker({
   className,
   formatRange,
   formatPresetLabel: formatPresetLabelProp,
+  customExtra,
+  onOpenChange,
   ...rest
 }: TimeRangePickerProps) {
   const isFr = isFrLocale(locale);
@@ -222,6 +235,17 @@ export function TimeRangePicker({
     const focusable = root.querySelector<HTMLElement>(FOCUSABLE_SELECTOR);
     (focusable ?? root).focus();
   }
+
+  // `onOpenChange` is notified on every real transition only (the initial
+  // closed state is not reported). Declared BEFORE the focus effect below so the
+  // callback runs before focus moves in / is restored, as in Svelte and Vue.
+  const reportedOpenRef = React.useRef(false);
+  React.useEffect(() => {
+    if (open === reportedOpenRef.current) return;
+    reportedOpenRef.current = open;
+    onOpenChange?.(open);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
 
   // Open transition: seed the tab + draft from the current value, capture the
   // element to restore focus to, then move focus into the panel. Close
@@ -475,6 +499,10 @@ export function TimeRangePicker({
                     />
                   ) : null}
                 </div>
+
+                {customExtra != null && customExtra !== false ? (
+                  <div className="st-timeRangePicker__customExtra">{customExtra}</div>
+                ) : null}
 
                 <div className="st-timeRangePicker__bounds">
                   <div className="st-timeRangePicker__bound">

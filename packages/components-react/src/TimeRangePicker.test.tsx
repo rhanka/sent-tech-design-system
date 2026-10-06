@@ -548,3 +548,80 @@ describe("TimeRangePicker — misc props", () => {
     expect(trigger.getAttribute("aria-labelledby")).toBeTruthy();
   });
 });
+
+describe("TimeRangePicker — customExtra slot + onOpenChange", () => {
+  const extra = (
+    <fieldset data-testid="extra">
+      <legend>Date basis</legend>
+      <label>
+        <input type="radio" name="basis" value="scrap" />
+        Acquisition
+      </label>
+    </fieldset>
+  );
+  const absolute: TimeRange = {
+    mode: "absolute",
+    from: new Date(2024, 0, 1, 10, 0).getTime(),
+    to: new Date(2024, 0, 2, 11, 30).getTime()
+  };
+
+  it("renders the extra controls in the Custom tab, above the From/To fields", () => {
+    const { container, getByRole } = render(<TimeRangePicker customExtra={extra} locale="en-US" />);
+    openPanel(container);
+    expect(container.querySelector('[data-testid="extra"]')).toBeNull();
+    fireEvent.click(getByRole("button", { name: "Custom" }));
+    const slot = container.querySelector(".st-timeRangePicker__customExtra") as HTMLElement;
+    expect(slot.querySelector('[data-testid="extra"]')).toBeTruthy();
+    const bounds = container.querySelector(".st-timeRangePicker__bounds") as HTMLElement;
+    const actions = container.querySelector(".st-timeRangePicker__actions") as HTMLElement;
+    expect(slot.compareDocumentPosition(bounds) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(slot.compareDocumentPosition(actions) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it("renders no extra wrapper when the node is not provided", () => {
+    const { container, getByRole } = render(<TimeRangePicker locale="en-US" />);
+    openPanel(container);
+    fireEvent.click(getByRole("button", { name: "Custom" }));
+    expect(container.querySelector(".st-timeRangePicker__customExtra")).toBeNull();
+  });
+
+  it("editing the extra controls emits nothing until Apply, which emits the absolute range", () => {
+    const onChange = vi.fn();
+    const { container, getByRole } = render(
+      <TimeRangePicker value={absolute} onChange={onChange} customExtra={extra} locale="en-US" />
+    );
+    openPanel(container);
+    fireEvent.click(getByRole("radio", { name: "Acquisition" }));
+    expect(onChange).not.toHaveBeenCalled();
+    fireEvent.click(getByRole("button", { name: "Apply" }));
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onChange.mock.calls[0][0]).toEqual({ mode: "absolute", from: absolute.from, to: absolute.to });
+  });
+
+  it("onOpenChange(true) runs before focus moves into the panel (same order as Svelte/Vue)", () => {
+    const focusAtCallback: (Element | null)[] = [];
+    const { container } = render(
+      <TimeRangePicker value={absolute} onOpenChange={() => focusAtCallback.push(document.activeElement)} locale="en-US" />
+    );
+    const trigger = triggerButton(container);
+    trigger.focus();
+    openPanel(container);
+    expect(focusAtCallback[0]).toBe(trigger);
+    expect(document.activeElement).not.toBe(trigger);
+  });
+
+  it("onOpenChange reports open on the trigger and close on Cancel / Apply, never on mount", () => {
+    const onOpenChange = vi.fn();
+    const { container, getByRole } = render(
+      <TimeRangePicker value={absolute} onOpenChange={onOpenChange} customExtra={extra} locale="en-US" />
+    );
+    expect(onOpenChange).not.toHaveBeenCalled();
+    openPanel(container);
+    expect(onOpenChange).toHaveBeenLastCalledWith(true);
+    fireEvent.click(getByRole("button", { name: "Cancel" }));
+    expect(onOpenChange).toHaveBeenLastCalledWith(false);
+    openPanel(container);
+    fireEvent.click(getByRole("button", { name: "Apply" }));
+    expect(onOpenChange.mock.calls.map((c) => c[0])).toEqual([true, false, true, false]);
+  });
+});
