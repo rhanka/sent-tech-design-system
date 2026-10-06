@@ -1,0 +1,85 @@
+name: Graph golden (WebGL2)
+
+# The @sentropic/graph golden-image tests (packages/graph/tests/golden/) drive a
+# real headless Chrome over CDP and diff canvas pixels, Canvas2D against WebGL2.
+# They skip at runtime (`ctx.skip()`) when Chrome does not boot or exposes no
+# WebGL2 context, so a lane without a working browser reports green having
+# diffed nothing. In engram this lane was the `golden-webgl` job of
+# typescript-ci.yml; it was deleted along with packages/graph
+# (rhanka/engram#341) and nothing here ran these tests afterwards. This
+# workflow restores it with the same method: Chrome for Testing with its
+# install-dependencies, ANGLE/SwiftShader software GL (GOLDEN_ENABLE_WEBGL=1,
+# flags set by cdp-harness.mjs and webgl-preflight.mjs), and the
+# GOLDEN_REQUIRE_* switches. It adds one guard the old job did not have: the
+# vitest JSON report is checked for zero skipped tests, because some golden
+# tests skip regardless of GOLDEN_REQUIRE_* (see scripts/assert-vitest-report.mjs).
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "packages/graph/**"
+      - "scripts/assert-vitest-report.mjs"
+      - ".github/workflows/graph-golden.yml"
+      - "package-lock.json"
+  pull_request:
+    paths:
+      - "packages/graph/**"
+      - "scripts/assert-vitest-report.mjs"
+      - ".github/workflows/graph-golden.yml"
+      - "package-lock.json"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: graph-golden-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  golden-webgl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      # Chrome for Testing ships the SwiftShader (ANGLE software-GL) backend and
+      # is pinned to a known channel, instead of relying on whatever Chrome the
+      # runner image happens to preinstall. install-dependencies pulls the Linux
+      # GL/X libraries SwiftShader needs.
+      - name: Set up Chrome (with SwiftShader software GL)
+        id: setup-chrome
+        uses: browser-actions/setup-chrome@v2
+        with:
+          chrome-version: stable
+          install-dependencies: true
+
+      - run: npm ci
+
+      # test:golden:webgl = golden:build (tsup JS bundle the harness page
+      # imports) -> golden:webgl:preflight (hard-fails when the SwiftShader
+      # flags give no WebGL2 context) -> vitest over tests/golden/. The extra
+      # arguments reach that last vitest command and add a JSON report, written
+      # outside the checkout, next to the console output.
+      - name: Golden WebGL2 pixel lane (SwiftShader)
+        working-directory: packages/graph
+        env:
+          CHROME_BIN: ${{ steps.setup-chrome.outputs.chrome-path }}
+          GOLDEN_ENABLE_WEBGL: "1"
+          GOLDEN_REQUIRE_WEBGL: "1"
+          GOLDEN_REQUIRE_CHROME: "1"
+        run: npm run test:golden:webgl -- --reporter=default --reporter=json --outputFile.json="$RUNNER_TEMP/golden-report.json"
+
+      # Zero skipped, zero failed, and a floor on the set so an emptied or
+      # mis-globbed suite cannot pass. Measured at the commit adding this job:
+      # 6 golden test files, 134 tests. The floors sit under those counts so
+      # adding or regrouping tests does not require editing them.
+      - name: Assert every golden test ran (none skipped)
+        if: ${{ !cancelled() }}
+        run: node scripts/assert-vitest-report.mjs --report="$RUNNER_TEMP/golden-report.json" --min-files=6 --min-tests=120 --max-skipped=0
