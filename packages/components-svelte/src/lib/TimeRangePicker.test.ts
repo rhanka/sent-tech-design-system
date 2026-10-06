@@ -1,5 +1,5 @@
 import { fireEvent, render } from "@testing-library/svelte";
-import { tick } from "svelte";
+import { createRawSnippet, tick } from "svelte";
 import { describe, expect, it, vi } from "vitest";
 import TimeRangePicker from "./TimeRangePicker.svelte";
 import type { TimeRange } from "./TimeRangePicker.svelte";
@@ -556,5 +556,72 @@ describe("TimeRangePicker — misc props", () => {
     expect(container.querySelector(".st-timeRangePicker__label")?.textContent).toBe("Time window");
     const trigger = triggerButton(container);
     expect(trigger.getAttribute("aria-labelledby")).toBeTruthy();
+  });
+});
+
+describe("TimeRangePicker — customExtra slot + onOpenChange", () => {
+  const extra = createRawSnippet(() => ({
+    render: () =>
+      `<fieldset data-testid="extra"><legend>Date basis</legend><label><input type="radio" name="basis" value="scrap" />Acquisition</label></fieldset>`
+  }));
+  const absolute: TimeRange = {
+    mode: "absolute",
+    from: new Date(2024, 0, 1, 10, 0).getTime(),
+    to: new Date(2024, 0, 2, 11, 30).getTime()
+  };
+
+  it("renders the extra controls in the Custom tab, above the From/To fields", async () => {
+    const { container, getByRole } = render(TimeRangePicker, { props: { customExtra: extra, locale: "en-US" } });
+    await openPanel(container);
+    expect(container.querySelector('[data-testid="extra"]')).toBeNull();
+    await fireEvent.click(getByRole("tab", { name: "Custom" }));
+    const slot = container.querySelector(".st-timeRangePicker__customExtra") as HTMLElement;
+    expect(slot.querySelector('[data-testid="extra"]')).toBeTruthy();
+    const bounds = container.querySelector(".st-timeRangePicker__bounds") as HTMLElement;
+    const actions = container.querySelector(".st-timeRangePicker__actions") as HTMLElement;
+    expect(slot.compareDocumentPosition(bounds) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(slot.compareDocumentPosition(actions) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it("renders no extra wrapper when the snippet is not provided", async () => {
+    const { container, getByRole } = render(TimeRangePicker, { props: { locale: "en-US" } });
+    await openPanel(container);
+    await fireEvent.click(getByRole("tab", { name: "Custom" }));
+    expect(container.querySelector(".st-timeRangePicker__customExtra")).toBeNull();
+  });
+
+  it("editing the extra controls emits nothing until Apply, which emits the absolute range", async () => {
+    const onChange = vi.fn();
+    const { container, getByRole } = render(TimeRangePicker, {
+      props: { value: absolute, onChange, customExtra: extra, locale: "en-US" }
+    });
+    await openPanel(container);
+    // An absolute value opens straight on the Custom tab.
+    const radio = getByRole("radio", { name: "Acquisition" });
+    await fireEvent.click(radio);
+    expect(onChange).not.toHaveBeenCalled();
+    await fireEvent.click(getByRole("button", { name: "Apply" }));
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onChange.mock.calls[0][0]).toEqual({ mode: "absolute", from: absolute.from, to: absolute.to });
+  });
+
+  it("onOpenChange reports open on the trigger and close on Cancel / Apply, never on mount", async () => {
+    const onOpenChange = vi.fn();
+    const { container, getByRole } = render(TimeRangePicker, {
+      props: { value: absolute, onOpenChange, customExtra: extra, locale: "en-US" }
+    });
+    await tick();
+    expect(onOpenChange).not.toHaveBeenCalled();
+    await openPanel(container);
+    await tick();
+    expect(onOpenChange).toHaveBeenLastCalledWith(true);
+    await fireEvent.click(getByRole("button", { name: "Cancel" }));
+    await tick();
+    expect(onOpenChange).toHaveBeenLastCalledWith(false);
+    await openPanel(container);
+    await tick();
+    await fireEvent.click(getByRole("button", { name: "Apply" }));
+    await tick();
+    expect(onOpenChange.mock.calls.map((c) => c[0])).toEqual([true, false, true, false]);
   });
 });
