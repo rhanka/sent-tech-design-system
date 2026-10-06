@@ -1,6 +1,7 @@
 <script lang="ts">
   import TabbedExample from "$lib/framework/TabbedExample.svelte";
-  import { Badge } from "@sentropic/design-system-svelte";
+  import { Badge, RadioGroup, TimeRangePicker } from "@sentropic/design-system-svelte";
+  import type { TimeRange } from "@sentropic/design-system-svelte";
   import { locale } from "$lib/locale.svelte";
   import type { NodeSpec } from "$lib/framework/examples";
 
@@ -37,6 +38,60 @@
       }
     }
   ]);
+
+  // customExtra demo: a "date basis" choice staged with the Custom tab. The
+  // radio group edits a DRAFT; it is committed only when Apply emits an
+  // absolute range, and reseeded every time the panel opens.
+  let extraRange = $state<TimeRange>({
+    mode: "absolute",
+    from: new Date(2026, 8, 1, 0, 0).getTime(),
+    to: new Date(2026, 8, 30, 23, 45).getTime()
+  });
+  let appliedBasis = $state<"document" | "acquisition">("document");
+  let draftBasis = $state<"document" | "acquisition">("document");
+  const basisOptions = $derived([
+    { value: "document", label: fr ? "Date du document" : "Document date" },
+    { value: "acquisition", label: fr ? "Date d'acquisition" : "Acquisition date" }
+  ]);
+  function onExtraOpenChange(open: boolean) {
+    if (open) draftBasis = appliedBasis;
+  }
+  function onExtraChange(next: TimeRange) {
+    extraRange = next;
+    // A relative preset reads document dates; Apply commits the staged basis.
+    appliedBasis = next.mode === "absolute" ? draftBasis : "document";
+  }
+  function selectDraftBasis(next: string) {
+    if (next === "document" || next === "acquisition") draftBasis = next;
+  }
+  const customExtraUsage = `<!-- Svelte -->
+<TimeRangePicker value={range} onChange={onRangeChange} onOpenChange={onOpenChange}>
+  {#snippet customExtra()}
+    <RadioGroup legend="Date basis" name="basis" orientation="horizontal"
+      options={basisOptions} value={draftBasis} onchange={(v) => (draftBasis = v)} />
+  {/snippet}
+</TimeRangePicker>
+
+// React
+<TimeRangePicker value={range} onChange={onRangeChange} onOpenChange={onOpenChange}
+  customExtra={<RadioGroup ... value={draftBasis} onChange={setDraftBasis} />} />
+
+<!-- Vue -->
+<TimeRangePicker :value="range" @change="onRangeChange" @open-change="onOpenChange">
+  <template #customExtra><RadioGroup ... /></template>
+</TimeRangePicker>
+
+<!-- Angular -->
+<st-time-range-picker [value]="range" (change)="onRangeChange($event)" (openChange)="onOpenChange($event)">
+  <div slot="customExtra"><st-radio-group ...></st-radio-group></div>
+</st-time-range-picker>
+
+// Commit pattern (all frameworks)
+function onOpenChange(open) { if (open) draftBasis = appliedBasis; }
+function onRangeChange(next) {
+  range = next;
+  appliedBasis = next.mode === "absolute" ? draftBasis : "document";
+}`;
 
   const statesDemo = $derived<NodeSpec[]>([
     {
@@ -135,6 +190,53 @@
         ? "Le popover piège le focus tant qu'il est ouvert et le rend au déclencheur à la fermeture (Échap, clic extérieur, validation)."
         : "The popover traps focus while open and returns it to the trigger on close (Escape, outside click, apply)."}
     </p>
+  </section>
+
+  <section class="docs-section">
+    <h2>{fr ? "Contrôles additionnels de l'onglet Personnalisé" : "Extra controls in the Custom tab"}</h2>
+    <p class="section-desc">
+      {#if fr}
+        <code>customExtra</code> rend des contrôles du consommateur dans l'onglet
+        <strong>Personnalisé</strong>, juste au-dessus des champs Début / Fin (ici, une base de
+        date). L'onglet étant validé par <strong>Appliquer</strong>, ce que ces contrôles modifient
+        est un <strong>brouillon</strong> : réinitialisez-le à l'ouverture
+        (<code>onOpenChange(true)</code>) et validez-le dans <code>onChange</code> quand la valeur
+        émise est en mode <code>absolute</code> — émission qui n'a lieu que sur Appliquer.
+        Annuler, Échap ou un clic extérieur n'émettent rien.
+      {:else}
+        <code>customExtra</code> renders consumer controls in the <strong>Custom</strong> tab,
+        right above the From / To fields (here, a date basis). That tab is staged behind
+        <strong>Apply</strong>, so whatever those controls edit is a <strong>draft</strong>: reseed
+        it on open (<code>onOpenChange(true)</code>) and commit it in <code>onChange</code> when the
+        emitted value has <code>mode: 'absolute'</code> — an emit that only happens on Apply.
+        Cancel, Escape or an outside click emit nothing.
+      {/if}
+    </p>
+    <div class="docs-extra-demo">
+      <TimeRangePicker
+        label={fr ? "Période des signaux" : "Signal period"}
+        locale={fr ? "fr-FR" : "en-CA"}
+        value={extraRange}
+        onChange={onExtraChange}
+        onOpenChange={onExtraOpenChange}
+      >
+        {#snippet customExtra()}
+          <RadioGroup
+            legend={fr ? "Base de date" : "Date basis"}
+            name="docs-trp-date-basis"
+            orientation="horizontal"
+            options={basisOptions}
+            value={draftBasis}
+            onchange={selectDraftBasis}
+          />
+        {/snippet}
+      </TimeRangePicker>
+      <p class="docs-demo-note" data-testid="trp-applied-basis">
+        {fr ? "Base appliquée" : "Applied basis"} :
+        <code>{appliedBasis}</code>
+      </p>
+    </div>
+    <pre class="docs-codeblock"><code>{customExtraUsage}</code></pre>
   </section>
 
   <section class="docs-section">
@@ -326,6 +428,26 @@
           </td>
         </tr>
         <tr>
+          <td><code>customExtra</code></td>
+          <td><code>Snippet</code></td>
+          <td>—</td>
+          <td>
+            {fr
+              ? "Contrôles additionnels rendus dans l'onglet Personnalisé, au-dessus des champs Début / Fin (React : ReactNode ; Vue : slot customExtra ; Angular : [slot=customExtra])."
+              : "Extra controls rendered in the Custom tab, above the From / To fields (React: ReactNode; Vue: customExtra slot; Angular: [slot=customExtra])."}
+          </td>
+        </tr>
+        <tr>
+          <td><code>onOpenChange</code></td>
+          <td><code>(open: boolean) =&gt; void</code></td>
+          <td>—</td>
+          <td>
+            {fr
+              ? "Émis à chaque ouverture (true) ou fermeture (false) du popover (Vue : @open-change ; Angular : (openChange))."
+              : "Emitted on every popover open (true) or close (false) (Vue: @open-change; Angular: (openChange))."}
+          </td>
+        </tr>
+        <tr>
           <td><code>class</code></td>
           <td><code>string</code></td>
           <td>—</td>
@@ -381,6 +503,29 @@
   .api-subhead {
     font-size: 1rem;
     margin: 1.5rem 0 0.5rem;
+  }
+
+  .docs-codeblock {
+    background: var(--st-semantic-surface-subtle, #f8fafc);
+    border: 1px solid var(--docs-line);
+    border-radius: 0.5rem;
+    color: var(--docs-ink);
+    font-size: 0.82rem;
+    line-height: 1.55;
+    margin: 0.75rem 0 0;
+    overflow-x: auto;
+    padding: 0.9rem 1rem;
+  }
+
+  .docs-codeblock code {
+    background: transparent;
+  }
+
+  .docs-extra-demo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
   }
 
   .docs-demo-note {
