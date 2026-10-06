@@ -236,6 +236,17 @@ export function TimeRangePicker({
     (focusable ?? root).focus();
   }
 
+  // `onOpenChange` is notified on every real transition only (the initial
+  // closed state is not reported). Declared BEFORE the focus effect below so the
+  // callback runs before focus moves in / is restored, as in Svelte and Vue.
+  const reportedOpenRef = React.useRef(false);
+  React.useEffect(() => {
+    if (open === reportedOpenRef.current) return;
+    reportedOpenRef.current = open;
+    onOpenChange?.(open);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+
   // Open transition: seed the tab + draft from the current value, capture the
   // element to restore focus to, then move focus into the panel. Close
   // transition: restore focus to whatever had it before opening (the trigger,
@@ -257,16 +268,6 @@ export function TimeRangePicker({
       previousFocusRef.current = null;
       el?.focus();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open]);
-
-  // `onOpenChange` is notified on every real transition only (the initial
-  // closed state is not reported).
-  const reportedOpenRef = React.useRef(false);
-  React.useEffect(() => {
-    if (open === reportedOpenRef.current) return;
-    reportedOpenRef.current = open;
-    onOpenChange?.(open);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 

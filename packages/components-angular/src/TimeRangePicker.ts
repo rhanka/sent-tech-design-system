@@ -115,7 +115,11 @@ function presetDurationMs(preset: TimeRangePreset): number | null {
             </st-selectable-list>
           } @else {
             <div class="st-timeRangePicker__custom">
-              <div class="st-timeRangePicker__customExtra">
+              <!-- Native "change" events of projected controls (radios, selects)
+                   would bubble to the host and reach a consumer's "(change)"
+                   binding, which Angular also uses for the committed range
+                   output: contain them here so only Apply reaches "(change)". -->
+              <div class="st-timeRangePicker__customExtra" (change)="$event.stopPropagation()">
                 <ng-content select="[slot=customExtra]"></ng-content>
               </div>
               <div class="st-timeRangePicker__bounds">
